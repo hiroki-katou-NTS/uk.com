@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.daily;
+package nts.uk.ctx.at.record.dom.workrecord.erroralarm;
 
 import java.util.List;
 import java.util.function.Consumer;

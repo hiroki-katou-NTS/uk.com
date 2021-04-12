@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.daily.algorithm;
+package nts.uk.ctx.at.record.dom.workrecord.erroralarm.daily.algorithm;
 
 import lombok.AllArgsConstructor;
 import lombok.Value;
