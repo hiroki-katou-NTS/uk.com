@@ -101,8 +101,8 @@ public class ExacExeResultLogDto {
 				domain.getErrorCount(),
 				domain.getFileName(),
 				domain.getSystemType().value,
-				domain.getResultStatus().isPresent() ? 0 : domain.getResultStatus().get().value,
-				domain.getProcessEndDatetime().isPresent() ? null : domain.getProcessEndDatetime().get(),
+				domain.getResultStatus().isPresent() ? domain.getResultStatus().get().value : 0,
+				domain.getProcessEndDatetime().isPresent() ? domain.getProcessEndDatetime().get() : null,
 				domain.getProcessAtr().value);
 	}
 

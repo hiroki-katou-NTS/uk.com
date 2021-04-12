@@ -550,7 +550,7 @@ module nts.uk.com.view.cmf001.share.model {
             this.displayNo = displayNo
             this.companyCd = companyCd;
             this.userCodeName = userCode + "　　" + userName;
-            this.processStartDatetime = processStartDatetime;
+            this.processStartDatetime = moment.utc(processStartDatetime).format("YYYY/MM/DD HH:mm:ss");
             this.executeForm = executeForm;
             this.targetCount = targetCount;
             this.errorCount = errorCount;
