@@ -576,6 +576,9 @@ module nts.uk.at.view.ccg005.a.screenModel {
         reloadAvatar = setTimeout(() => { vm.bindingLoopData(); }, 1);
       });
       (ko.bindingHandlers.ntsIcon as any).init($('.ccg005-status-img-A1_7'), () => ({ no: vm.activityStatusIcon(), width: 20, height: 20 }));
+
+      //focus
+      $("#ccg005-selected-date").focus();
     }
 
     private toStartScreen() {
