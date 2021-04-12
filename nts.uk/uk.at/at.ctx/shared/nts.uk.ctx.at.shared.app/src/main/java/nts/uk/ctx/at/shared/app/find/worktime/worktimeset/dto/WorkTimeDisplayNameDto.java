@@ -18,13 +18,10 @@ public class WorkTimeDisplayNameDto {
 	
 	/** The work time symbol. */
 //	public String workTimeSymbol;
-	public String workTimeSymbol;
-	
 
     
     public static WorkTimeDisplayNameDto fromDomain(WorkTimeDisplayName domain) {
         return new WorkTimeDisplayNameDto(domain.getWorkTimeName() == null ? null : domain.getWorkTimeName().v(), 
-                domain.getWorkTimeAbName() == null ? null : domain.getWorkTimeAbName().v(), 
-                domain.getWorkTimeSymbol() == null ? null : domain.getWorkTimeSymbol().v());
+                domain.getWorkTimeAbName() == null ? null : domain.getWorkTimeAbName().v());
     }
 }
