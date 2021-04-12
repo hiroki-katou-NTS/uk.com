@@ -96,3 +96,7 @@ button.nts-switch-button {
 	display: inline-block;
 	margin-left: 15px;
 }
+
+.time-padding {
+    padding: 5px 10px 5px 0;
+}
