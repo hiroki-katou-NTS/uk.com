@@ -605,7 +605,7 @@ module nts.uk.ui.kdp001.a {
                         case 4:
                             return openDialogB();
                         case 2:
-                            if (notUseAttr !== 1) {
+                            if (notUseAttr !== 0) {
                                 return openDialogB();
                             }
 
