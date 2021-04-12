@@ -247,7 +247,7 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 							.filter(x -> x.getEmployeeId().equals(sid) && x.getYearMonth().equals(exMon))
 							.findFirst();
 					AttendanceTimeOfMonthly attendanceTimeOfMon = null;
-					if(!attendanceTimeOfMonOpt.isPresent()) {
+					if(attendanceTimeOfMonOpt.isPresent()) {
 						attendanceTimeOfMon = attendanceTimeOfMonOpt.get();
 					}
 
