@@ -10,8 +10,8 @@ module nts.uk.at.view.ksm011.e {
 
 
   const fetch = {
-    getRoleInfor: '',
-    saveRoleSetting: '',
+    getRoleInfor: 'screen/at/ksm/ksm011/e/getpermission/',
+    saveRoleSetting: 'screen/at/ksm/ksm011/e/register',
   };
   
   @bean()
@@ -69,17 +69,42 @@ module nts.uk.at.view.ksm011.e {
     }
 
     saveData() {
-
+      const vm = this;
+      vm.$blockui("show");
+      const data = {
+          roleId: vm.roleId(),
+          useAtr: vm.basicFunctionControl(),
+          deadLineDay: vm.dateSelected(),
+          scheModifyCtrlCommons: vm.permissionCommon().map((i: any) => ({
+              functionNo: i.functionNo,
+              available: i.available ? 1 : 0
+          })),
+          scheModifyByWorkplaces: vm.permissionByWorkplace().map((i: any) => ({
+              functionNo: i.functionNo,
+              available: i.available ? 1 : 0
+          })),
+          scheModifyByPersons: vm.permissionByIndividual().map((i: any) => ({
+              functionNo: i.functionNo,
+              available: i.available ? 1 : 0
+          }))
+      };
+        vm.$ajax(fetch.saveRoleSetting, data).done((data) => {
+            vm.$dialog.info({ messageId: 'Msg_15'});
+        }).fail(error => {
+            vm.$dialog.error(error);
+        }).always(() => {
+            vm.$blockui("hide");
+        });
     }
 
     getDayList() {
       const vm = this;
       vm.daysList = ko.observableArray([]);
       let days = [];
-      for (let day = 0; day < 30; day++) {
+      for (let day = 0; day < 31; day++) {
         days.push({ day: day, name: (day + 1) + vm.$i18n('KSM011_105') });
       }
-      days.push({ day: 30, name: vm.$i18n('KSM011_106') });
+      days.push({ day: 31, name: vm.$i18n('KSM011_106') });
       vm.daysList(days);
     }
 
@@ -120,32 +145,55 @@ module nts.uk.at.view.ksm011.e {
       });
 
       vm.roleId.subscribe((newRoleId) => {
-        //vm.getRoleInfor(newRoleId);
+        vm.getRoleInfor(newRoleId);
       });       
-    }
-
-    changeDataCommon = (data: Array<IPermision>) => {
-      const vm = this;
-      vm.permissionCommon(data);
-      console.log(data);
-    }
-
-    changeDataByWorkplace = (data: Array<IPermision>) => {
-      const vm = this;
-      vm.permissionByWorkplace(data);
-      console.log(data);
-    }
-
-    changeDataByIndividual = (data: Array<IPermision>) => {
-      const vm = this;
-      vm.permissionByIndividual(data);
-      console.log(data);
     }
 
     getRoleInfor(roleId?: string) {
       const vm = this;
-      vm.$ajax(fetch.saveRoleSetting, { roleId: roleId}).done(() => {
+      vm.$blockui("show");
+      vm.$ajax(fetch.getRoleInfor + roleId).done((data) => {
+          if (data) {
+            vm.basicFunctionControl(data.useAtr || 0);
+            vm.dateSelected(data.deadLineDay || 0);
 
+            const checkedCommon = data.scheModifyCommon.scheModifyAuthCtrlCommons
+                .filter((i: any) => i.available)
+                .map((i: any) => i.functionNo);
+            vm.permissionCommon(data.scheModifyCommon.scheModifyFuncCommons.map((i: any) => ({
+                available: checkedCommon.indexOf(i.functionNo) >= 0,
+                description: i.explanation,
+                functionName: i.name,
+                functionNo: i.functionNo,
+                orderNumber: i.displayOrder
+            })));
+
+              const checkedWorkplace = data.scheModifyByWorkplace.scheModifyAuthCtrlByWkp
+                  .filter((i: any) => i.available)
+                  .map((i: any) => i.functionNo);
+            vm.permissionByWorkplace(data.scheModifyByWorkplace.scheModifyFuncByWorkplaces.map((i: any) => ({
+                available: checkedWorkplace.indexOf(i.functionNo) >= 0,
+                description: i.explanation,
+                functionName: i.name,
+                functionNo: i.functionNo,
+                orderNumber: i.displayOrder
+            })));
+
+              const checkedPerson = data.scheduleModifyByPerson.scheModifyAuthCtrlByPersons
+                  .filter((i: any) => i.available)
+                  .map((i: any) => i.functionNo);
+            vm.permissionByIndividual(data.scheduleModifyByPerson.scheModifyFuncByPersons.map((i: any) => ({
+                available: checkedPerson.indexOf(i.functionNo) >= 0,
+                description: i.explanation,
+                functionName: i.name,
+                functionNo: i.functionNo,
+                orderNumber: i.displayOrder
+            })));
+          }
+      }).fail(error => {
+        vm.$dialog.error(error);
+      }).always(() => {
+        vm.$blockui("hide");
       });
     }
   }
