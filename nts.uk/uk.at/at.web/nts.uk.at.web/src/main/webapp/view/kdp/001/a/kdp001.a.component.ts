@@ -75,9 +75,11 @@ module nts.uk.ui.kdp001.a {
                     <span class="hours-minutes" data-bind="date: $component.time.now, format: 'HH:mm',attr: { style: $component.time.style }"></span>
                     <span class="seconds" data-bind="date: $component.time.now, format: ':ss', attr: { style: $component.time.style }"></span>
                 </div>
-                <div class="button-link">
-                    <a href="#" data-bind="i18n: 'KDP001_4'"></a>
-                </div>
+                <!-- ko if: $component.useTopMenuLink -->
+                    <div data-bind="if: modeA" class="button-link">
+                        <a href="#" data-bind="i18n: 'KDP001_4', click: toTopPage"></a>
+                    </div>
+                <!-- /ko -->
             </div>
             <div class="kdp-001-a kdp-001-a-msg"data-bind="
                     css: { 
@@ -318,7 +320,7 @@ module nts.uk.ui.kdp001.a {
                     font-size: 60px;
                     color: #E5F7F9;
                     top: -10px;
-                    left: calc(100vw /2 + 35px);
+                    left: calc(100% /2 + 35px);
                 }
                 .kdp-001-a.widget-title .date {
                     margin-right: 65px;
@@ -339,7 +341,7 @@ module nts.uk.ui.kdp001.a {
                 }
                 .kdp-001-a.widget-title .button-link {
                     text-align: center;
-                    padding-left: 357px;
+                    padding-left: 340px;
                     padding-bottom: 5px;
                 }
                 .kdp-001-a .left-content{
@@ -361,10 +363,12 @@ module nts.uk.ui.kdp001.a {
 
         modeOutUse: KnockoutObservable<boolean> = ko.observable(true);
         modeDisplayStampList: KnockoutObservable<boolean> = ko.observable(true);
+        useTopMenuLink: KnockoutObservable<boolean> = ko.observable(false);
 
         modeBasyo: KnockoutObservable<boolean> = ko.observable(false);
         workLocationName: KnockoutObservable<string | null> = ko.observable(null);
         workpalceId: KnockoutObservable<string | null> = ko.observable(null);
+        modeA: KnockoutObservable<boolean> = ko.observable(false);
 
         message: {
             data: KnockoutObservable<MessageData>;
@@ -376,8 +380,11 @@ module nts.uk.ui.kdp001.a {
 
         constructor(private mode: 'a' | 'b' | 'c' | 'd' | KnockoutObservable<'a' | 'b' | 'c' | 'd'> = 'a') {
             super();
-
             const vm = this;
+
+            if (mode.mode === 'a') {
+                vm.modeA(true);
+            }
 
             vm.basyo();
 
@@ -450,6 +457,7 @@ module nts.uk.ui.kdp001.a {
 
                     vm.modeOutUse(stamp.portalStampSettings.goOutUseAtr == 1 ? true : false);
                     vm.modeDisplayStampList(stamp.portalStampSettings.displayStampList == 1 ? true : false);
+                    vm.useTopMenuLink(stamp.portalStampSettings.useTopMenuLink == 1 ? true : false)
 
                     // show stamp data
                     vm.stampData(employees);
@@ -530,6 +538,11 @@ module nts.uk.ui.kdp001.a {
                 .always(() => vm.$blockui('clearView'));
         }
 
+        public toTopPage() {
+            let vm = this;
+            vm.$jump('com', '/view/ccg/008/a/index.xhtml');
+        }
+
         stamp(btn: ButtonSetting) {
             const vm = this;
             const { time, stampDisplay } = vm;
@@ -542,6 +555,7 @@ module nts.uk.ui.kdp001.a {
             const overtimeDeclaration: any = null;
             const { employeeId, employeeCode } = vm.$user;
             const { notUseAttr, displayItemId } = ko.unwrap(stampDisplay) || {};
+
             const openDialogB = () => {
                 return $
                     .when(
@@ -562,7 +576,10 @@ module nts.uk.ui.kdp001.a {
                             employeeId,
                             employeeCode,
                             mode: MODE_PERSON,
-                            stampDate
+                            stampDate,
+                            workLocationName: ko.unwrap(vm.workLocationName),
+                            workpalceId: ko.unwrap(vm.workpalceId)
+
                         })
                     )
                     .then(() => vm.$window.modal('at', '/view/kdp/002/c/index.xhtml'));
@@ -578,7 +595,6 @@ module nts.uk.ui.kdp001.a {
                     overtimeDeclaration
                 }
             };
-
             vm
                 .$blockui("invisibleView")
                 .then(() => vm.$ajax('at', REST_API.registerStampInput, command))
