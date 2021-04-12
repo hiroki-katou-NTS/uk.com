@@ -2554,6 +2554,8 @@ module nts.uk.ui.components.fullcalendar {
                 const component = { name, params: { data, position } };
 
                 element.removeAttribute('data-bind');
+
+                element.classList.add('ntsControl');
                 element.classList.add('fc-popup-editor');
                 element.classList.add('fc-popup-setting');
 
@@ -2854,7 +2856,7 @@ module nts.uk.ui.components.fullcalendar {
                             <tr>
                                 <td data-bind="i18n: 'KDW013_13'"></td>
                                 <td>
-                                    <select data-bind="
+                                    <select class="nts-input" data-bind="
                                             value: $component.params.firstDay,
                                             options: $component.firstDays,
                                             optionsText: 'title',
@@ -2867,13 +2869,13 @@ module nts.uk.ui.components.fullcalendar {
                             <tr>
                                 <td data-bind="i18n: 'KDW013_14'"></td>
                                 <td>
-                                    <input type="text" data-bind="input-time: $component.params.scrollTime" />
+                                    <input class="nts-input" type="text" data-bind="input-time: $component.params.scrollTime" />
                                 </td>
                             </tr>
                             <tr>
                                 <td data-bind="i18n: 'KDW013_15'"></td>
                                 <td>
-                                    <select data-bind="
+                                    <select class="nts-input" data-bind="
                                             value: $component.params.slotDuration,
                                             options: $component.slotDurations,
                                             optionsText: 'title',
