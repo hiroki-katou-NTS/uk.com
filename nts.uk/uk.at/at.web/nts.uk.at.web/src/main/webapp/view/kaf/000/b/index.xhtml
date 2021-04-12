@@ -195,144 +195,88 @@
 						data-bind="click: btnCancel, enable : enableCancelButton() &amp;&amp; $root.errors.isEmpty">#{i18n.getText('KAF000_24')}</button>
 				</div>
 			</div>
-			<div id="contents-area" style="background-color: inherit;">
-				<div class="two-panel" style="height: 100%;">
-					<div class="left-panel" style="width: calc(100% - 410px); height: inherit; overflow: auto">
-						<div style="height: inherit; background-color: #fff; padding: 10px;">
-							<div class="table" style="border-bottom: 2px solid #B1B1B1; padding-bottom: 30px; margin-bottom: 30px; width: 100%;">
-								<div class="cell" style="vertical-align: middle;">
-									<div data-bind="component: { name: 'kaf000-b-component4',
-														params: {
-															appType: appType,
-															application: application,
-															appDispInfoStartupOutput: appDispInfoStartupOutput
-														} }"></div>
-								</div>
-								<div class="cell" style="text-align: right; vertical-align: middle;">
-						       		<div data-bind="component: { name: 'kaf000-b-component8', 
-														params: {
-															appType: appType,
-															appDispInfoStartupOutput: appDispInfoStartupOutput
-														} }"></div>
-								</div>
-							</div>
-							<div data-bind="component: { name: 'kaf000-b-component5', 
-														params: {
-															appType: appType,
-															application: application,
-															appDispInfoStartupOutput: appDispInfoStartupOutput
-														} }"></div>
-							<div data-bind="component: { name: 'kaf000-b-component6', 
-														params: {
-															appType: appType,
-															application: application,
-															appDispInfoStartupOutput: appDispInfoStartupOutput
-														} }"></div>
-							<div data-bind="if: currentApp()=='sample'">
-								<div data-bind="if: ko.unwrap(appType) != null">
-									<div data-bind="component: {
-										name: 'kafsample-b',
-										params: childParam
-									}"></div>
-								</div>
-							</div>
-							<div data-bind="if: currentApp()!='sample'">
-								<div data-bind="if: ko.unwrap(appType) === getAppType('OVER_TIME_APPLICATION')">
-									<div data-bind="component: {
-											name: 'kaf005-b',
-											params: childParam
-										}"></div>
-								</div>
-								<div data-bind="if: ko.unwrap(appType) === getAppType('ABSENCE_APPLICATION')">
-									<div data-bind="component: {
-										name: 'kaf006-b', 
-										params: childParam
-									}"></div>
-								</div>
-								<div data-bind="if: ko.unwrap(appType) === getAppType('WORK_CHANGE_APPLICATION')">
-									<div data-bind="component: {
-											name: 'kaf007-b',
-											params: childParam
-										}"></div>
-								</div>
-								<div data-bind="if: ko.unwrap(appType) === getAppType('BUSINESS_TRIP_APPLICATION')">
-									<div data-bind="component: {
-											name: 'kaf008-b',
-											params: childParam
-										}"></div>
-								</div>
-								<div data-bind="if: ko.unwrap(appType) === getAppType('GO_RETURN_DIRECTLY_APPLICATION')">
-									<div data-bind="component: {
-											name: 'kaf009-b',
-											params: childParam
-										}"></div>
-								</div>
-								<div data-bind="if: ko.unwrap(appType) === getAppType('HOLIDAY_WORK_APPLICATION')">
-									<div data-bind="component: {
-										name: 'kaf010-b',
-										params: childParam
-									}"></div>
-								</div>
-								<div data-bind="if: ko.unwrap(appType) === getAppType('STAMP_APPLICATION')">
-									<div data-bind="if: ko.toJS(application).opStampRequestMode == 0">
-										<div data-bind="component: {
-											name: 'kaf002-c',
-											params: childParam
-										}"></div>
-									</div>
-									<div data-bind="if: ko.toJS(application).opStampRequestMode == 1">
-										<div data-bind="component: {
-											name: 'kaf002-d',
-											params: childParam
-										}"></div>
-									</div>
-								</div>
-								<div data-bind="if: ko.unwrap(appType) === getAppType('ANNUAL_HOLIDAY_APPLICATION')">
-				                    <div data-bind="component: {
-											name: 'kaf012-b',
-											params: childParam
-										}"></div>
-								</div>
-								<div data-bind="if: ko.unwrap(appType) === getAppType('EARLY_LEAVE_CANCEL_APPLICATION')">
-									<div data-bind="component: {
-											name: 'kaf004-b',
-											params: childParam
-										}"></div>
-								</div>
-								<div data-bind="if: ko.unwrap(appType) === getAppType('COMPLEMENT_LEAVE_APPLICATION') ">
-									<div class="kaf011" data-bind="with: kaf011BViewModel">
-										<ui:include src="../../011/b/index.xhtml" />
-									</div>
-								</div>
-								<div data-bind="if: ko.unwrap(appType) === getAppType('OPTIONAL_ITEM_APPLICATION')">
-									<div data-bind="component: {
-											name: 'kaf020-c',
-											params: childParam
-										}"></div>
-								</div>
-							</div>
-							<div data-bind="component: { name: 'kaf000-b-component7', 
-														params: {
-															appType: appType,
-															application: application,
-															appDispInfoStartupOutput: appDispInfoStartupOutput
-														} }"></div>
+			<div>
+				<div data-bind="if: currentApp()=='sample'">
+					<div data-bind="if: ko.unwrap(appType) != null">
+						<div data-bind="component: {
+							name: 'kafsample-b',
+							params: childParam
+						}"></div>
+					</div>
+				</div>
+				<div data-bind="if: currentApp()!='sample'">
+					<div data-bind="if: ko.unwrap(appType) === getAppType('OVER_TIME_APPLICATION')">
+						<div data-bind="component: {
+								name: 'kaf005-b',
+								params: childParam
+							}"></div>
+					</div>
+					<div data-bind="if: ko.unwrap(appType) === getAppType('ABSENCE_APPLICATION')">
+						<div data-bind="component: {
+							name: 'kaf006-b', 
+							params: childParam
+						}"></div>
+					</div>
+					<div data-bind="if: ko.unwrap(appType) === getAppType('WORK_CHANGE_APPLICATION')">
+						<div data-bind="component: {
+								name: 'kaf007-b',
+								params: childParam
+							}"></div>
+					</div>
+					<div data-bind="if: ko.unwrap(appType) === getAppType('BUSINESS_TRIP_APPLICATION')">
+						<div data-bind="component: {
+								name: 'kaf008-b',
+								params: childParam
+							}"></div>
+					</div>
+					<div data-bind="if: ko.unwrap(appType) === getAppType('GO_RETURN_DIRECTLY_APPLICATION')">
+						<div data-bind="component: {
+								name: 'kaf009-b',
+								params: childParam
+							}"></div>
+					</div>
+					<div data-bind="if: ko.unwrap(appType) === getAppType('HOLIDAY_WORK_APPLICATION')">
+						<div data-bind="component: {
+							name: 'kaf010-b',
+							params: childParam
+						}"></div>
+					</div>
+					<div data-bind="if: ko.unwrap(appType) === getAppType('STAMP_APPLICATION')">
+						<div data-bind="if: ko.toJS(application).opStampRequestMode == 0">
+							<div data-bind="component: {
+								name: 'kaf002-c',
+								params: childParam
+							}"></div>
+						</div>
+						<div data-bind="if: ko.toJS(application).opStampRequestMode == 1">
+							<div data-bind="component: {
+								name: 'kaf002-d',
+								params: childParam
+							}"></div>
 						</div>
 					</div>
-					<div class="right-panel" style="width: 410px; height: inherit;">
-						<div style="height: inherit; background-color: #fff; padding: 10px;">
-							<div data-bind="component: { name: 'kaf000-b-component1', 
-									params: {
-										appType: appType,
-										appDispInfoStartupOutput: appDispInfoStartupOutput	
-									} }"></div>
-							<div data-bind="component: { name: 'kaf000-b-component9',
-									params: {
-										appType: appType,
-										application: application,
-										appDispInfoStartupOutput: $vm.appDispInfoStartupOutput
-									} }"></div>
+					<div data-bind="if: ko.unwrap(appType) === getAppType('ANNUAL_HOLIDAY_APPLICATION')">
+						<div data-bind="component: {
+								name: 'kaf012-b',
+								params: childParam
+							}"></div>
+					</div>
+					<div data-bind="if: ko.unwrap(appType) === getAppType('EARLY_LEAVE_CANCEL_APPLICATION')">
+						<div data-bind="component: {
+								name: 'kaf004-b',
+								params: childParam
+							}"></div>
+					</div>
+					<div data-bind="if: ko.unwrap(appType) === getAppType('COMPLEMENT_LEAVE_APPLICATION') ">
+						<div class="kaf011" data-bind="with: kaf011BViewModel">
+							<ui:include src="../../011/b/index.xhtml" />
 						</div>
+					</div>
+					<div data-bind="if: ko.unwrap(appType) === getAppType('OPTIONAL_ITEM_APPLICATION')">
+						<div data-bind="component: {
+								name: 'kaf020-c',
+								params: childParam
+							}"></div>
 					</div>
 				</div>
 			</div>
