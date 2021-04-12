@@ -11,6 +11,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+
+import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
@@ -99,6 +101,9 @@ public class AttendanceInformationScreenQuery {
 	
 	@Inject
 	private AttendanceAdapter attendanceAdapter;
+	
+	@Inject
+	private ManagedParallelWithContext parallel;
 
 	public List<AttendanceInformationDto> getAttendanceInformation( List<EmpIdParam> empIds,
 			GeneralDate baseDate, boolean emojiUsage) {
@@ -156,8 +161,9 @@ public class AttendanceInformationScreenQuery {
 		List<String> pids = empIds.stream().map(empId -> empId.getPid()).collect(Collectors.toList());
 		List<UserAvatar> avatarList = avatarRepo.getAvatarByPersonalIds(pids);
 		
-		return empIds.stream().map(empId -> {
-			
+		List<AttendanceInformationDto> returnList = new ArrayList<>();
+		
+		this.parallel.forEach(empIds, empId -> { //#115360
 			// 13:  get(申請IDリスト): List<残業申請>
 			List<Application> applications = mapListApplication.get(empId.getSid());
 			List <String> appIds = applications.stream().map(item -> item.getAppID()).collect(Collectors.toList());
@@ -342,7 +348,8 @@ public class AttendanceInformationScreenQuery {
 			EmployeeEmojiStateDto emojiDto = EmployeeEmojiStateDto.builder().build();
 			emojiDomain.ifPresent(consumer -> consumer.setMemento(emojiDto));
 
-			return AttendanceInformationDto.builder()
+			returnList.add(
+			 AttendanceInformationDto.builder()
 					.applicationDtos(applicationDtos)
 					.sid(empId.getSid())
 					.attendanceDetailDto(attendanceDetailDto)
@@ -351,8 +358,10 @@ public class AttendanceInformationScreenQuery {
 					.commentDto(commentDto)
 					.goOutDto(goOutDto)
 					.emojiDto(emojiDto)
-					.build();
-		}).collect(Collectors.toList());
+					.build()
+			);
+		});
+		return returnList;
 	}
 	
 	private String covertNumberToTime(Integer minutes) {
