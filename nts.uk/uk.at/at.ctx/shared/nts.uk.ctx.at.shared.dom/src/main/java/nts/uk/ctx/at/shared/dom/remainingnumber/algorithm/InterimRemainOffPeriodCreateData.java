@@ -144,20 +144,20 @@ public class InterimRemainOffPeriodCreateData {
 						)
 				.collect(Collectors.toList());
 		appData = appData.stream().sorted((a,b) -> b.getInputDate().compareTo(a.getInputDate())).collect(Collectors.toList());
-		Integer excludeHolidayAtr = null;
-		if(!appData.isEmpty() && appData.get(0).getAppType() == ApplicationType.WORK_CHANGE_APPLICATION) {
-			excludeHolidayAtr = require.excludeHolidayAtr(cacheCarrier, cid, appData.get(0).getAppId());
-		}
+		//Integer excludeHolidayAtr = null;
+//		if(!appData.isEmpty() && appData.get(0).getAppType() == ApplicationType.WORK_CHANGE_APPLICATION) {
+//			//excludeHolidayAtr = require.excludeHolidayAtr(cacheCarrier, cid, appData.get(0).getAppId());
+//		}
 		//申請：　勤務変更申請、休日を除外する		
 		//又は　休暇申請
-		if((excludeHolidayAtr != null && excludeHolidayAtr == 1)
-				|| (!appData.isEmpty() && appData.get(0).getAppType() == ApplicationType.ABSENCE_APPLICATION)) {
-			//申請日は休日かチェック、休日なら申請データをセットしない
-			if((detailData.getRecordData().isPresent() && WorkTypeIsClosedService.checkHoliday(require, detailData.getRecordData().get().getWorkTypeCode()))
-					|| (detailData.getScheData().isPresent() && WorkTypeIsClosedService.checkHoliday(require, detailData.getScheData().get().getWorkTypeCode()))) {
-				return detailData;
-			}
-		}
+//		if((excludeHolidayAtr != null && excludeHolidayAtr == 1)
+//				|| (!appData.isEmpty() && appData.get(0).getAppType() == ApplicationType.ABSENCE_APPLICATION)) {
+//			//申請日は休日かチェック、休日なら申請データをセットしない
+//			if((detailData.getRecordData().isPresent() && WorkTypeIsClosedService.checkHoliday(require, detailData.getRecordData().get().getWorkTypeCode()))
+//					|| (detailData.getScheData().isPresent() && WorkTypeIsClosedService.checkHoliday(require, detailData.getScheData().get().getWorkTypeCode()))) {
+//				return detailData;
+//			}
+//		}
 		detailData.setAppData(appData);
 		return detailData;
 		
@@ -226,7 +226,7 @@ public class InterimRemainOffPeriodCreateData {
 	
 	public static interface RequireM3 extends WorkTypeIsClosedService.RequireM1 {
 		
-		Integer excludeHolidayAtr(CacheCarrier cacheCarrier, String cid,String appID);
+		//Integer excludeHolidayAtr(CacheCarrier cacheCarrier, String cid,String appID);
 	}
 	
 	public static interface RequireM2 extends RequireM4 {

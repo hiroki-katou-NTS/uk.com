@@ -508,10 +508,10 @@ public class RequireImp implements RemainNumberTempRequireService.Require {
 		return item;
 	}
 
-	@Override
-	public Integer excludeHolidayAtr(CacheCarrier cacheCarrier, String cid, String appID) {
-		return remainCreateInforByApplicationData.excludeHolidayAtr(cacheCarrier, cid, appID);
-	}
+//	@Override
+//	public Integer excludeHolidayAtr(CacheCarrier cacheCarrier, String cid, String appID) {
+//		return remainCreateInforByApplicationData.excludeHolidayAtr(cacheCarrier, cid, appID);
+//	}
 	@Override
 	public Optional<EmpSubstVacation> empSubstVacation(String companyId, String contractTypeCode) {
 		return empSubstVacationRepo.findById(companyId, contractTypeCode);

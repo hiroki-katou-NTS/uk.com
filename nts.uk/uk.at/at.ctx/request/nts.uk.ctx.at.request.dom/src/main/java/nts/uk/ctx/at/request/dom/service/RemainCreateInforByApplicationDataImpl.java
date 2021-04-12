@@ -286,15 +286,15 @@ public class RemainCreateInforByApplicationDataImpl implements RemainCreateInfor
 				.build();
 	}
 
-	@Override
-	public Integer excludeHolidayAtr(CacheCarrier cacheCarrier, String cid, String appID) {
-		val require =  new RequireImpl(cacheCarrier);
-		Optional<AppWorkChange> data = require.getAppworkChangeById(cid, appID);
-		if(data.isPresent()) {
-			//return data.get().getExcludeHolidayAtr();
-		}
-		return null;
-	}
+//	@Override
+//	public Integer excludeHolidayAtr(CacheCarrier cacheCarrier, String cid, String appID) {
+//		val require =  new RequireImpl(cacheCarrier);
+//		Optional<AppWorkChange> data = require.getAppworkChangeById(cid, appID);
+//		if(data.isPresent()) {
+//			//return data.get().getExcludeHolidayAtr();
+//		}
+//		return null;
+//	}
 
 
 	public static interface Require {
