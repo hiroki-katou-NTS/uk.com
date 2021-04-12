@@ -508,7 +508,7 @@ module nts.uk.at.view.kdp004.a {
 					mode: Mode.Personal,
 				});
 
-				modal('/view/kdp/002/b/index.xhtml').onClosed(() => {
+				modal('/view/kdp/002/b/index.xhtml', { screen: "KDP004" }).onClosed(() => {
 				});
 			}
 
@@ -523,7 +523,7 @@ module nts.uk.at.view.kdp004.a {
 					mode: Mode.Personal,
 				});
 
-				modal('/view/kdp/002/c/index.xhtml').onClosed(function(): any {
+				modal('/view/kdp/002/c/index.xhtml', { screen: "KDP004" }).onClosed(function(): any {
 				});
 			}
 
