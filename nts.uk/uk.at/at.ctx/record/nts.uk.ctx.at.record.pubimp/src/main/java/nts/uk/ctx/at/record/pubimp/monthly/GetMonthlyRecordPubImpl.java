@@ -215,30 +215,20 @@ public class GetMonthlyRecordPubImpl implements GetMonthlyRecordPub {
 		for (val anyItem : anyItems) {
 			val employeeId = anyItem.getEmployeeId();
 			val yearMonth = anyItem.getYearMonth();
-			
 			anyItemMap.putIfAbsent(employeeId, new HashMap<>());
-			if (anyItemMap.get(employeeId).containsKey(yearMonth)) {
-				anyItemMap.get(employeeId).get(yearMonth).add(anyItem);
-				continue;
+			anyItemMap.get(employeeId).putIfAbsent(yearMonth, new ArrayList<>());
+			ListIterator<AnyItemOfMonthly> itrAnyItem = anyItemMap.get(employeeId).get(yearMonth).listIterator();
+			boolean isSum = false;
+			while (itrAnyItem.hasNext()){
+				val outAnyItem = itrAnyItem.next();
+				if (outAnyItem.getAnyItemId() == anyItem.getAnyItemId()){
+					outAnyItem.sum(anyItem);
+					itrAnyItem.set(outAnyItem);
+					isSum = true;
+					break;
+				}
 			}
-			List<AnyItemOfMonthly> lstAnyItemOfMonthlies = new ArrayList<>();
-			lstAnyItemOfMonthlies.add(anyItem);
-			anyItemMap.get(employeeId).putIfAbsent(yearMonth, lstAnyItemOfMonthlies);
-//
-//			anyItemMap.putIfAbsent(employeeId, new HashMap<>());
-//			anyItemMap.get(employeeId).putIfAbsent(yearMonth, new ArrayList<>());
-//			ListIterator<AnyItemOfMonthly> itrAnyItem = anyItemMap.get(employeeId).get(yearMonth).listIterator();
-//			boolean isSum = false;
-//			while (itrAnyItem.hasNext()){
-//				val outAnyItem = itrAnyItem.next();
-//				if (outAnyItem.getAnyItemId() == anyItem.getAnyItemId()){
-//					outAnyItem.sum(anyItem);
-//					itrAnyItem.set(outAnyItem);
-//					isSum = true;
-//					break;
-//				}
-//			}
-//			if (!isSum) anyItemMap.get(employeeId).get(yearMonth).add(anyItem);
+			if (!isSum) anyItemMap.get(employeeId).get(yearMonth).add(anyItem);
 		}
 	
 		// 期間.開始日が早い方の値を使う
@@ -410,20 +400,30 @@ public class GetMonthlyRecordPubImpl implements GetMonthlyRecordPub {
 													  , Map<Integer, DisplayMonthResultsMethod> mapAtdCalMethod
 													  , List<Integer> itemIds) {
 		List<ItemValue> result = new ArrayList<>();
+
 		for (Integer atdId : itemIds) {
 			DisplayMonthResultsMethod displayMonthResultsMethod = mapAtdCalMethod.get(atdId);
 			if (displayMonthResultsMethod != null) {
 				switch (displayMonthResultsMethod) {
+					// 1件目を表示する
 					case DISPLAY_FIRST_ITEM:
+						// 月別実績の値一覧.値　←　1件目の月別実績から値を取得（ループ中の勤怠小目ID）;
 						Optional<ItemValue> actualValue = month1stResult.stream().filter(t -> t.getItemId() == atdId).findFirst();
 						if (actualValue.isPresent()) result.add(actualValue.get());
 						break;
+
+					// 2件目を表示する
 					case DISPLAY_SECOND_ITEM:
+						// 月別実績の値一覧.値　←　2件目の月別実績から値を取得（ループ中の勤怠小目ID）;
 						Optional<ItemValue> actualValue2nd = month2ndResult.stream().filter(t -> t.getItemId() == atdId).findFirst();
 						if (actualValue2nd.isPresent()) result.add(actualValue2nd.get());		
 						break;
+					
+					// 合計した値を表示する
 					case DISPLAY_TOTAL_VALUE:
+						// 1件目の値　←　1件目の月別実績から値を取得（ループ中の勤怠小目ID）;
 						Optional<ItemValue> actualValue1 = month1stResult.stream().filter(t -> t.getItemId() == atdId).findFirst();
+						// 2件目の値　←　2件目の月別実績から値を取得（ループ中の勤怠小目ID）;
 						Optional<ItemValue> actualValue2 = month2ndResult.stream().filter(t -> t.getItemId() == atdId).findFirst();
 						if (actualValue1.isPresent() && actualValue2.isPresent()) {
 							String value;
@@ -438,6 +438,8 @@ public class GetMonthlyRecordPubImpl implements GetMonthlyRecordPub {
 							} else {
 								value = actualValue1.get().getValue();
 							}
+							
+							// 月別実績の値一覧.値　←　1件目の値 + 2件目の値;
 							result.add(new ItemValue(value, actualValue1.get().getValueType(), actualValue1.get().getLayoutCode(), actualValue1.get().getItemId()));
 						}
 						break;

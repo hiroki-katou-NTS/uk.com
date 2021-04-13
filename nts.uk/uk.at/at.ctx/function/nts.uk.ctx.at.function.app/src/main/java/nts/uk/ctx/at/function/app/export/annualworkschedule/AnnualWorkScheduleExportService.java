@@ -242,7 +242,7 @@ public class AnnualWorkScheduleExportService extends ExportService<AnnualWorkSch
 		
 		// if can not find domain by condition
 		if (!domain.isPresent()) {
-			throw new BusinessException(new RawErrorMessage("Msg_1141"));
+			throw new BusinessException("");
 		}
 
 		SettingOutputItemOfAnnualWorkSchedule setOutItemsWoSc = domain.get();

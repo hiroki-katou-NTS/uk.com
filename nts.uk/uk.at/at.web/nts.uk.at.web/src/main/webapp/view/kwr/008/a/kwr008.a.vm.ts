@@ -488,12 +488,13 @@ module nts.uk.at.view.kwr008.a {
                     console.log(`fail : ${enumError}`);
                 });
 
-                var getAuthorityOfWorkPerformance = service.getAuthorityOfWorkPerformance().done(dto => {
+                const getAuthorityOfWorkPerformance = service.getAuthorityOfWorkPerformance().done(dto => {
                     if (!_.isNil(dto)) {
                         self.enableAuthority(dto.freeSetting);
                     }
                 })
 
+                block.invisible();
                 $.when(getCurrentLoginerRole,
                     getPeriod,
                     restoreOutputConditionAnnualWorkSchedule,
@@ -501,6 +502,8 @@ module nts.uk.at.view.kwr008.a {
                     getAuthorityOfWorkPerformance).done(() => {
                         dfd.resolve(self);
                         $('#A1_1').focus();
+                    }).always(() => {
+                        block.clear();
                     });
                 return dfd.promise();
             }
