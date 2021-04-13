@@ -548,7 +548,7 @@ public class CreateDailyResultDomainServiceNew {
 		// 暫定データの登録
 		this.interimRemainDataMngRegisterDateChange.registerDateChange(companyId, employeeId,
 				periodTime.datesBetween());
-		if(empCalAndSumExeLog.isPresent()) {
+		if(empCalAndSumExeLog.isPresent() && cStatus.getProcessState() == ProcessState.SUCCESS ) {
 			// ログ情報（実行内容の完了状態）を更新する
 			updateExecutionStatusOfDailyCreation(employeeId, executionAttr.value, empCalAndSumExeLog.get().getEmpCalAndSumExecLogID());
 		}
