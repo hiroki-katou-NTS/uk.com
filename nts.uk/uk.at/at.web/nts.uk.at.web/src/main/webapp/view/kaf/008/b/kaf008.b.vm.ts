@@ -10,15 +10,7 @@ module nts.uk.at.view.kaf008_ref.b.viewmodel {
 
     @component({
         name: 'kaf008-b',
-        template: `
-            <div>              
-                <div data-bind="component: { name: 'kaf008-share', params: {
-                                                mode: mode,
-                                                appType: appType,
-                                                dataFetch: dataFetch
-                                           } }"></div>
-            </div>
-        `
+        template: `/nts.uk.at.web/view/kaf/008/b/index.html`
     })
     class Kaf008BViewModel extends ko.ViewModel {
 

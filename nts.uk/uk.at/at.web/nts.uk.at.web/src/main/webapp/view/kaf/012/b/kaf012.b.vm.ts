@@ -13,38 +13,9 @@ module nts.uk.at.view.kaf012.b.viewmodel {
         getDetail: "at/request/application/timeLeave/init"
     };
 
-    const template = `
-        <div>
-            <div data-bind="component: { name: 'kaf012-share-component1',
-                                                    params: {
-                                                        reflectSetting: reflectSetting,
-                                                        timeLeaveManagement: timeLeaveManagement,
-                                                        timeLeaveRemaining: timeLeaveRemaining,
-                                                        leaveType: leaveType,
-                                                        application: application,
-                                                        specialLeaveFrame: specialLeaveFrame
-                                                    }}"/>
-            <div class="table">
-                <div class="cell" style="min-width: 825px; padding-right: 10px;">
-                    <div data-bind="component: { name: 'kaf012-share-component2',
-                                        params: {
-                                            reflectSetting: reflectSetting,
-                                            timeLeaveManagement: timeLeaveManagement,
-                                            timeLeaveRemaining: timeLeaveRemaining,
-                                            leaveType: leaveType,
-                                            appDispInfoStartupOutput: appDispInfoStartupOutput,
-                                            application: application,
-                                            applyTimeData: applyTimeData,
-                                            specialLeaveFrame: specialLeaveFrame,
-                                            eventCalc: eventCalc
-                                        }}"/>
-                </div>
-            </div>
-        </div>
-    `
     @component({
         name: 'kaf012-b',
-        template: template
+        template: '/nts.uk.at.web/view/kaf/008/b/index.html'
     })
     class Kaf012BViewModel extends ko.ViewModel {
 
