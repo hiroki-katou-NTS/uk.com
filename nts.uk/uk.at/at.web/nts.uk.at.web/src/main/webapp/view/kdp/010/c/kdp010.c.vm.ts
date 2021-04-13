@@ -58,8 +58,8 @@ module nts.uk.at.view.kdp010.c {
 	                    self.stampValue(totalTimeArr.resultDisplayTime);
 	                }
 	                
-	            }).fail(function(error: any) {
-	                error(error.message);
+	            }).fail(function(err: any) {
+	                error(err.message);
 	            }).always(function () {
 	                dfd.resolve();
 	            });
@@ -73,8 +73,8 @@ module nts.uk.at.view.kdp010.c {
 	                    self.checkInUp(true);
 	                else
 	                    self.checkInUp(false);
-	            }).fail(function(error: any) {
-	                error(error.message);
+	            }).fail(function(err: any) {
+	                error(err.message);
 	            }).always(function () {
 	                dfd.resolve();
 	            });
