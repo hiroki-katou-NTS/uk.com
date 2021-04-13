@@ -2,18 +2,14 @@ package nts.uk.ctx.at.function.app.find.annualworkschedule;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.error.BusinessException;
 import nts.uk.ctx.at.function.dom.annualworkschedule.SettingOutputItemOfAnnualWorkSchedule;
 import nts.uk.ctx.at.function.dom.annualworkschedule.enums.AnnualWorkSheetPrintingForm;
 import nts.uk.ctx.at.function.dom.annualworkschedule.enums.TotalAverageDisplay;
-import nts.uk.ctx.at.function.dom.annualworkschedule.primitivevalue.OutItemsWoScCode;
-import nts.uk.ctx.at.function.dom.annualworkschedule.primitivevalue.OutItemsWoScName;
 import nts.uk.ctx.at.function.dom.annualworkschedule.repository.SetOutputItemOfAnnualWorkSchRepository;
 import nts.uk.ctx.at.function.dom.attendanceitemframelinking.enums.TypeOfItem;
 import nts.uk.ctx.at.function.dom.attendanceitemname.service.AttendanceItemDto;
@@ -128,42 +124,4 @@ public class SettingOutputItemOfAnnualWorkScheduleFinder {
 		}
 		return false;
 	}
-
-	/**
-	 * アルゴリズム「レイアウト情報を複製する」を実行する
-	 * 
-	 * @param AnnualWorkScheduleDuplicateDto dto
-	 */
-	public void executeCopy(AnnualWorkScheduleDuplicateDto dto) {
-		String companyId = AppContexts.user().companyId();
-		
-		Optional<String> employeeId = dto.getSelectedType() == 0
-				? employeeId = Optional.empty()
-				: Optional.of(AppContexts.user().employeeId());
-		
-		// ドメインモデル「年間勤務表の出力項目設定」で コード重複チェックを行う
-		Optional<SettingOutputItemOfAnnualWorkSchedule> outputItem = this.setOutputItemOfAnnualWorkSchRepository.findByLayoutId(dto.getLayoutId());
-		
-		// 重複する場合
-		if(outputItem.get().getCd().v().equals(dto.getDuplicateCode())) {
-			throw new BusinessException("Msg_1776");
-		}
-		// 重複しない場合
-		Optional<SettingOutputItemOfAnnualWorkSchedule> duplicateItem = this.setOutputItemOfAnnualWorkSchRepository
-				.findByCode(dto.getDuplicateCode(), employeeId, companyId, dto.getSelectedType(), dto.getPrintFormat());
-		//複製元の存在チェックを行う
-		if(duplicateItem.isPresent()) {
-			// 複製元出力項目が存在しない場合
-			throw new BusinessException("Msg_1946");
-		} else {
-			String duplicateId = UUID.randomUUID().toString();
-			outputItem.get().setCd(new OutItemsWoScCode(dto.getDuplicateCode()));
-			outputItem.get().setName(new OutItemsWoScName(dto.getDuplicateName()));
-			outputItem.get().setLayoutId(duplicateId);
-			// 複製元出力項目が存在する場合
-			this.setOutputItemOfAnnualWorkSchRepository.add(outputItem.get());
-		}	
-	}
-	
-
 }

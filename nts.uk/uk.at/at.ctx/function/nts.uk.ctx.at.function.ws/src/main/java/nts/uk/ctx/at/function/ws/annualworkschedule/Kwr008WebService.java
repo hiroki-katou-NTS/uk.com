@@ -14,17 +14,16 @@ import nts.arc.layer.app.file.export.ExportServiceResult;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.function.app.command.annualworkschedule.SetOutItemsWoScCommand;
 import nts.uk.ctx.at.function.app.command.annualworkschedule.SetOutItemsWoScCommandSaveHandler;
+import nts.uk.ctx.at.function.app.command.annualworkschedule.SetOutItemsWoScCopyCommand;
+import nts.uk.ctx.at.function.app.command.annualworkschedule.SetOutItemsWoScCopyCommandHandler;
 import nts.uk.ctx.at.function.app.command.annualworkschedule.SetOutItemsWoScDeleteCommand;
 import nts.uk.ctx.at.function.app.command.annualworkschedule.SetOutItemsWoScDeleteCommandHandler;
 import nts.uk.ctx.at.function.app.export.annualworkschedule.AnnualWorkScheduleExportQuery;
 import nts.uk.ctx.at.function.app.export.annualworkschedule.AnnualWorkScheduleExportService;
-import nts.uk.ctx.at.function.app.find.annualworkschedule.AnnualWorkScheduleDuplicateDto;
-import nts.uk.ctx.at.function.app.find.annualworkschedule.ItemOutTblBookDto;
 import nts.uk.ctx.at.function.app.find.annualworkschedule.PeriodDto;
 import nts.uk.ctx.at.function.app.find.annualworkschedule.PeriodFinder;
 import nts.uk.ctx.at.function.app.find.annualworkschedule.RoleWhetherLoginDto;
 import nts.uk.ctx.at.function.app.find.annualworkschedule.RoleWhetherLoginFinder;
-import nts.uk.ctx.at.function.app.find.annualworkschedule.SetOutItemsWoScDto;
 import nts.uk.ctx.at.function.app.find.annualworkschedule.SetOutputItemOfAnnualWorkSchDto;
 import nts.uk.ctx.at.function.app.find.annualworkschedule.SettingOutputItemOfAnnualWorkScheduleFinder;
 import nts.uk.ctx.at.function.dom.annualworkschedule.enums.OutputAgreementTime;
@@ -60,6 +59,9 @@ public class Kwr008WebService extends WebService {
 	
 	@Inject
 	private SetOutItemsWoScDeleteCommandHandler removeHandler;
+	
+	@Inject
+	private SetOutItemsWoScCopyCommandHandler copyHandler;
 
 	@POST
 	@Path("getCurrentLoginerRole")
@@ -109,16 +111,6 @@ public class Kwr008WebService extends WebService {
 	public List<EnumConstant> getEnumOutputAgreementTime(){
 		return EnumAdaptor.convertToValueNameList(OutputAgreementTime.class, i18n);
 	}
-	
-	/* *
-	 * 出力項目設定コード
-	 * */
-	@POST
-	@Path("get/outputitemsetting")
-	public List<SetOutItemsWoScDto> getOutputItemSetting(){
-//		return outputItemSetting.getAllSetOutItemsWoSc();
-		return null;
-	}
 
 	@POST
 	@Path("export")
@@ -140,17 +132,7 @@ public class Kwr008WebService extends WebService {
 	public void addOutputItemSetting(SetOutItemsWoScCommand command) {
 		this.saveHandler.handle(command);
 	}
-	
-	/**
-	 * 帳表に出力する項目
-	 */
-	@POST
-	@Path("get/listItemOutput/{setOutCd}")
-	public List<ItemOutTblBookDto> listItemOuput(@PathParam("setOutCd") String setOutCd){
-//		return this.listItemOut.getItemOutTblBookBySetOutCd(setOutCd);
-		return null;
-	}
-	
+
 	@POST
 	@Path("checkAverage/{layoutId}")
 	public Boolean checkAverage(@PathParam("layoutId") String layoutId) {
@@ -178,7 +160,7 @@ public class Kwr008WebService extends WebService {
 	
 	@Path("executeCopy")
 	@POST
-	public void executeCopy(AnnualWorkScheduleDuplicateDto dto) {
-		this.settingFinder.executeCopy(dto);
+	public void executeCopy(SetOutItemsWoScCopyCommand command) {
+		this.copyHandler.handle(command);
 	}
 }

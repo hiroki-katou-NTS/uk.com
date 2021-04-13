@@ -10,12 +10,24 @@ import lombok.Value;
 @Value
 public class SetOutItemsWoScCopyCommand {
 	
-	/** The cd copy. */
-	private String cdCopy;
-	
-	/** The cd. */
-	private String cd;
+	/** The code. */
+	public String code;
 	
 	/** The name. */
-	private String name;
+	public String name;
+	
+	/** The selected type. */
+	public int selectedType;
+	
+	/** The duplicate code. */
+	public String duplicateCode;
+	
+	/** The duplicate name. */
+	public String duplicateName;
+	
+	/** The layout id. */
+	public String layoutId;
+	
+	/** The print format. */
+	public int printFormat;
 }

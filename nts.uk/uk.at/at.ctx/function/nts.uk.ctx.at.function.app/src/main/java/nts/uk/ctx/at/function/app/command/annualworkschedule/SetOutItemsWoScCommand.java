@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import lombok.Data;
-import lombok.Getter;
 import nts.uk.ctx.at.function.dom.annualworkschedule.ItemsOutputToBookTable;
 import nts.uk.ctx.at.function.dom.annualworkschedule.SettingOutputItemOfAnnualWorkSchedule;
 
@@ -46,8 +45,7 @@ public class SetOutItemsWoScCommand implements SettingOutputItemOfAnnualWorkSche
 	
 	/** 合計平均表示 */
 	private Integer totalAverageDisplay;
-	
-	@Getter
+
 	private boolean newMode;
 
 	public List<ItemsOutputToBookTable> getListItemsOutput() {

@@ -560,7 +560,7 @@ public class AnnualWorkScheduleExportService extends ExportService<AnnualWorkSch
 									, header
 									, false
 									, agreementTimeYearImport.get().getStatus()
-							).calc(true)
+							).calc(false)
 					);
 				}
 
@@ -579,7 +579,7 @@ public class AnnualWorkScheduleExportService extends ExportService<AnnualWorkSch
 									, exportData.getHeader().getMonthPeriodLabels()
 									, true
 									, agreementTimeYearImport.get().getStatus()
-							).calc(true)
+							).calc(false)
 					);
 				}
 			}
