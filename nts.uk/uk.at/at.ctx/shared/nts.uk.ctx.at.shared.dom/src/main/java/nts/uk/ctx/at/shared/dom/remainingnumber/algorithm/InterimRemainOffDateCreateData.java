@@ -22,12 +22,14 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.work.VacationUsageTimeDetail;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.WorkTypeRemainInfor;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.FuriClassifi;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.NumberOfDaySuspension;
+import nts.uk.ctx.at.shared.dom.workingcondition.SingleDaySchedule;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.service.WorkingConditionService;
 import nts.uk.ctx.at.shared.dom.worktime.common.SubHolTransferSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.SubHolTransferSetAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.subholtransferset.GetDesignatedTime;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeIsFluidWork;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.internal.PredetermineTimeSetForCalc;
 import nts.uk.ctx.at.shared.dom.worktype.HolidayAtr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkAtr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
@@ -35,6 +37,7 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeSet;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeSetCheck;
 import nts.uk.ctx.at.shared.dom.worktype.specialholidayframe.SpecialHdFrameNo;
+import nts.uk.shr.com.context.AppContexts;
 
 public class InterimRemainOffDateCreateData {
 	
@@ -120,7 +123,12 @@ public class InterimRemainOffDateCreateData {
 	public static InforFormerRemainData createInterimDataFromRecord(RequireM9 require, String cid,
 			RecordRemainCreateInfor recordData, InforFormerRemainData outputData) {
 		//アルゴリズム「勤務種類別残数情報を作成する」を実行する
-		List<WorkTypeRemainInfor> dataDetail = createWorkTypeRemainInfor(require, cid, CreateAtr.RECORD, recordData.getWorkTypeCode() , Optional.ofNullable(recordData.getTimeDigestionUsageInfor()),recordData.getNumberDaySuspension());
+		List<WorkTypeRemainInfor> dataDetail = createWorkTypeRemainInfor(require, 
+																			cid, 
+																			CreateAtr.RECORD,
+																			recordData.getWorkTypeCode(), 
+																			Optional.ofNullable(recordData.getTimeDigestionUsageInfor()),
+																			recordData.getNumberDaySuspension());
 		if(dataDetail.isEmpty()) {
 			return outputData;
 		}
@@ -339,9 +347,6 @@ public class InterimRemainOffDateCreateData {
 			if (after != null && !after.getOccurrenceDetailData().isEmpty()) {
 				lstOutputData.add(after);
 			}
-			
-			
-			
 		}
 		//勤務区分をチェックする
 		return lstOutputData;
@@ -360,14 +365,17 @@ public class InterimRemainOffDateCreateData {
 		if (morning == null || after == null) {
 			return;
 		}
+		
 		TargetWorkTypes().forEach(wkType -> {
-			morning.getOccurrenceDetailData().forEach(x->{
-				if(x.getWorkTypeAtr().equals(wkType)) {
-					x.setDays(1);
-				}
-			});
+			
+			Optional<OccurrenceUseDetail> morningType = morning.getOccurrenceDetailData().stream().filter(od ->od.getWorkTypeAtr().equals(wkType)).findFirst();
+			Optional<OccurrenceUseDetail> AfterNoonType = after.getOccurrenceDetailData().stream().filter(od ->od.getWorkTypeAtr().equals(wkType)).findFirst();
+			
+			if (morningType.isPresent() && AfterNoonType.isPresent()) {
+				morningType.get().setDays(1);
+				after.setOccurrenceDetailData(new ArrayList<>());
+			}
 		});
-		after.setOccurrenceDetailData(new ArrayList<>());
 	}
 	
 	/**
@@ -552,12 +560,68 @@ public class InterimRemainOffDateCreateData {
 			// 勤務種類の分類に対応する残数発生使用明細を設定する
 			setData(dataOutput, day, wkClasssifi);
 			break;
-
+		case SubstituteHoliday:
+			// 時間代休の時間を作成する
+			String sid = AppContexts.user().employeeId();
+			GeneralDate ymd = GeneralDate.today();
+			String wkTypeCd = "";
+			Optional<String> wkTimeCd = Optional.ofNullable("");
+			CreateTimeOff(require, cid, sid, ymd, wkTypeCd, wkTimeCd, wkClasssifi);
+			break;
 		default:
+			// 勤務種類の分類に対応する残数発生使用明細を設定する
+			setData(dataOutput, day, dataOutput.getWorkTypeClass());
 			break;
 		}
 
 		return new WorkTypeRemainInfor(dataOutput.getWorkTypeCode(), dataOutput.getWorkTypeClass(), dataOutput.getCreateData(), dataOutput.getOccurrenceDetailData(), dataOutput.getSpeHolidayDetailData(), dataOutput.getChildCareDetailData());
+	}
+
+	/**
+	 * 時間代休の時間を作成
+	 * @param require 
+	 * 
+	 * @param cid
+	 * @param sid
+	 * @param ymd
+	 * @param wkTypeCd
+	 * @param wkTimeCd
+	 * @param wkClasssifi
+	 */
+	private static void CreateTimeOff(RequireM8 require, String cid, String sid, GeneralDate ymd, String wkTypeCd,
+			Optional<String> wkTimeCd, WorkTypeClassification wkClasssifi) {
+		// 就業時間帯コードを判断
+		String workTimeCode = determineWorkTimeCode(require, cid, sid, ymd, wkTypeCd, wkTimeCd);
+		// 所定時間帯を取得
+		//require.getPredeterminedTimezone(cid, wkTimeCd, wkTypeCd, workNo);
+		// 所定時間を取得
+
+		// 取得した時間を設定
+
+	}
+
+	/**
+	 * 就業時間帯コードを判断
+	 * @param require 
+	 * 
+	 * @param cid
+	 * @param sid
+	 * @param ymd
+	 * @param wkTypeCd
+	 * @param wkTimeCd
+	 * @return 就業時間帯コード
+	 */
+	private static String determineWorkTimeCode(RequireM8 require, String cid, String sid, GeneralDate ymd, String wkTypeCd,
+			Optional<String> wkTimeCd) {
+		//就業時間帯コードがあるか
+		if(wkTimeCd.isPresent()){
+			return wkTimeCd.get();
+		}
+		// 出勤時の勤務情報を取得する
+		
+		return require.getHolidayWorkSchedule(cid, sid, ymd, wkTypeCd)
+				.map(x -> x.getWorkTimeCode().map(wktime -> wktime.v()).orElse(null)).orElse(null);
+		
 	}
 
 	/**
@@ -933,7 +997,12 @@ public class InterimRemainOffDateCreateData {
 			InforFormerRemainData outputData, boolean dayOffTimeIsUse) {
 		String workTimeCode = scheData.getWorkTimeCode().isPresent() ? scheData.getWorkTimeCode().get() : "";
 		//アルゴリズム「勤務種類別残数情報を作成する」を実行する
-		List<WorkTypeRemainInfor> remainInfor = createWorkTypeRemainInfor(require, cid, CreateAtr.SCHEDULE, scheData.getWorkTypeCode(), Optional.ofNullable(scheData.getTimeDigestionUsageInfor()),scheData.getNumberDaySuspension());
+		List<WorkTypeRemainInfor> remainInfor = createWorkTypeRemainInfor(require, 
+																			cid, 
+																			CreateAtr.SCHEDULE, 
+																			scheData.getWorkTypeCode(), 
+																			Optional.ofNullable(scheData.getTimeDigestionUsageInfor()),
+																			scheData.getNumberDaySuspension());
 		
 		//勤務種類別残数情報を設定する
 		outputData.setWorkTypeRemain(remainInfor);
@@ -1373,6 +1442,11 @@ public class InterimRemainOffDateCreateData {
 		List<Integer> getSpecialHolidayNumber(String cid, int sphdSpecLeaveNo);
 
 		CheckCareResult checkCare(WorkTypeSet wkSet, String cid);
+		
+		Optional<SingleDaySchedule> getHolidayWorkSchedule(String companyId, String employeeId, GeneralDate baseDate, String workTypeCode);
+		
+		PredetermineTimeSetForCalc getPredeterminedTimezone(String companyId, String workTimeCd, String workTypeCd,
+				Integer workNo);
 	}
 	
 	public static interface RequireM7 extends RequireM1, RequireM3 {

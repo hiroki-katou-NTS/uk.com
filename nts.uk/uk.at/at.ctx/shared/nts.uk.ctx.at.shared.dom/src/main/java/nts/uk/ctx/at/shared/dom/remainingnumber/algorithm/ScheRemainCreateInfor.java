@@ -34,7 +34,7 @@ public class ScheRemainCreateInfor {
 	private Integer transferOvertimesTotal = 0;
 	/** 時間休暇使用情報 */
 	private List<VacationTimeInforNew> lstVacationTimeInfor;
-	/**振休振出として扱う日数*/
+	/** 振休振出として扱う日数 */
 	private Optional<NumberOfDaySuspension> numberDaySuspension;
 	/** 時間消化使用情報 */
 	private TimeDigestionUsageInfor timeDigestionUsageInfor;

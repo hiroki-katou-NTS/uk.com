@@ -88,9 +88,11 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.subst.EmpSubstVacation;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.EmpSubstVacationRepository;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrame;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameRepository;
+import nts.uk.ctx.at.shared.dom.workingcondition.SingleDaySchedule;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemService;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
@@ -108,6 +110,8 @@ import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingService;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.internal.PredetermineTimeSetForCalc;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeSet;
@@ -241,6 +245,10 @@ public class RequireImp implements RemainNumberTempRequireService.Require {
 	private HashMap<Integer, Optional<Closure>> closureMap = new HashMap<Integer, Optional<Closure>>();
 
 	private CheckCareService checkCareService;
+	
+	private WorkingConditionItemService workingConditionItemService;
+	
+	private WorkTimeSettingService workTimeSettingService;
 
 
 	public RequireImp(ComSubstVacationRepository comSubstVacationRepo,
@@ -273,7 +281,10 @@ public class RequireImp implements RemainNumberTempRequireService.Require {
 			RegularLaborTimeEmpRepo regularLaborTimeEmpRepo, DeforLaborTimeEmpRepo deforLaborTimeEmpRepo,
 			RegularLaborTimeShaRepo regularLaborTimeShaRepo, DeforLaborTimeShaRepo deforLaborTimeShaRepo,
 			SharedAffWorkPlaceHisAdapter sharedAffWorkPlaceHisAdapter, LengthServiceRepository lengthServiceRepo,
-			GrantYearHolidayRepository grantYearHolidayRepo, PayoutSubofHDManaRepository payoutSubofHDManaRepo, LeaveComDayOffManaRepository leaveComDayOffManaRepo ,CheckCareService checkChildCareService) {
+			GrantYearHolidayRepository grantYearHolidayRepo, PayoutSubofHDManaRepository payoutSubofHDManaRepo,
+			LeaveComDayOffManaRepository leaveComDayOffManaRepo, CheckCareService checkChildCareService,
+			WorkingConditionItemService workingConditionItemService, WorkTimeSettingService workTimeSettingService
+			) {
 		this.comSubstVacationRepo = comSubstVacationRepo;
 		this.compensLeaveComSetRepo = compensLeaveComSetRepo;
 		this.specialLeaveGrantRepo = specialLeaveGrantRepo;
@@ -327,6 +338,8 @@ public class RequireImp implements RemainNumberTempRequireService.Require {
 		this.leaveComDayOffManaRepo = leaveComDayOffManaRepo;
 		this.payoutSubofHDManaRepo = payoutSubofHDManaRepo;
 		this.checkCareService = checkChildCareService;
+		this.workingConditionItemService = workingConditionItemService;
+		this.workTimeSettingService = workTimeSettingService;
 	}
 
 	@Override
@@ -738,5 +751,17 @@ public class RequireImp implements RemainNumberTempRequireService.Require {
 	public CompanyDto getFirstMonth(String companyId) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public Optional<SingleDaySchedule> getHolidayWorkSchedule(String companyId, String employeeId, GeneralDate baseDate,
+			String workTypeCode) {
+		return this.workingConditionItemService.getHolidayWorkSchedule(companyId, employeeId, baseDate, workTypeCode);
+	}
+
+	@Override
+	public PredetermineTimeSetForCalc getPredeterminedTimezone(String companyId, String workTimeCd, String workTypeCd,
+			Integer workNo) {
+		return this.workTimeSettingService.getPredeterminedTimezone(companyId, workTimeCd, workTypeCd, workNo);
 	}
 }

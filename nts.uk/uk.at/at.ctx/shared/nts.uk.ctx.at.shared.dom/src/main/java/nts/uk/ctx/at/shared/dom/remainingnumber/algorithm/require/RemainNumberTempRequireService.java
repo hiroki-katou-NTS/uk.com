@@ -52,6 +52,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacationRepositor
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.EmpSubstVacationRepository;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemService;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.service.WorkingConditionService;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
@@ -64,6 +65,7 @@ import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingService;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantYearHolidayRepository;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.LengthServiceRepository;
@@ -177,6 +179,10 @@ public class RemainNumberTempRequireService {
 	protected CheckCareService checkChildCareService;
 	@Inject
 	protected LeaveComDayOffManaRepository leaveComDayOffManaRepo;
+	@Inject
+	protected WorkTimeSettingService workTimeSettingService;
+	@Inject
+	protected WorkingConditionItemService workingConditionItemService;
 
 	public static interface Require
 			extends InterimRemainOffPeriodCreateData.RequireM4, BreakDayOffMngInPeriodQuery.RequireM10,
@@ -206,7 +212,8 @@ public class RemainNumberTempRequireService {
 				regularLaborTimeWkpRepo, deforLaborTimeWkpRepo, regularLaborTimeEmpRepo,
 				deforLaborTimeEmpRepo, regularLaborTimeShaRepo, deforLaborTimeShaRepo,
 				sharedAffWorkPlaceHisAdapter, lengthServiceRepo, grantYearHolidayRepo,
-				payoutSubofHDManaRepo, leaveComDayOffManaRepo ,checkChildCareService);
+				payoutSubofHDManaRepo, leaveComDayOffManaRepo, checkChildCareService, workingConditionItemService,
+				workTimeSettingService);
 	}
 
 
