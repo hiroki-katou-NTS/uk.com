@@ -19,6 +19,10 @@
     height: auto !important;
 }
 
+#kaf020-component #kaf020-fixed-table .nts-input {
+    width: 47px;
+}
+
 #kaf020-component .nts-fixed-table .nts-fixed-body-container {
-    border-bottom-width:0px;
+    border-bottom-width:0;
 }

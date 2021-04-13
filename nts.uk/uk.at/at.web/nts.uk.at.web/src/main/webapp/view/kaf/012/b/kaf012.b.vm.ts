@@ -15,7 +15,7 @@ module nts.uk.at.view.kaf012.b.viewmodel {
 
     @component({
         name: 'kaf012-b',
-        template: '/nts.uk.at.web/view/kaf/008/b/index.html'
+        template: '/nts.uk.at.web/view/kaf/012/b/index.html'
     })
     class Kaf012BViewModel extends ko.ViewModel {
 

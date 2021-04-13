@@ -35,15 +35,6 @@
                                                 } }"
                          style="width: fit-content; display: inline-block; vertical-align: middle;"></div>
 
-                    <div data-bind="component: { name: 'kaf012-share-component1',
-                                                    params: {
-                                                        reflectSetting: reflectSetting,
-                                                        timeLeaveManagement: timeLeaveManagement,
-                                                        timeLeaveRemaining: timeLeaveRemaining,
-                                                        leaveType: leaveType,
-                                                        application: application,
-                                                        specialLeaveFrame: specialLeaveFrame
-                                                    }}"></div>
                     <div class="table">
                         <div class="cell" style="min-width: 825px; padding-right: 10px;">
                             <div data-bind="component: { name: 'kaf012-share-component2',
@@ -76,6 +67,15 @@
                                 appType: appType,
                                 appDispInfoStartupOutput: appDispInfoStartupOutput
                             } }"></div>
+                    <div  data-bind="component: { name: 'kaf012-share-component1',
+                                                    params: {
+                                                        reflectSetting: reflectSetting,
+                                                        timeLeaveManagement: timeLeaveManagement,
+                                                        timeLeaveRemaining: timeLeaveRemaining,
+                                                        leaveType: leaveType,
+                                                        application: application,
+                                                        specialLeaveFrame: specialLeaveFrame
+                                                    }}"></div>
                     <div data-bind="component: { name: 'kaf000-b-component9',
                             params: {
                                 appType: appType,
