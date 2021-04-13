@@ -81,7 +81,7 @@ public class TempRemainCreateEachData {
 				inforData.getWorkTypeRemainInfor(workTypeClass).get().getCreateData(),
 				RemainType.ANNUAL,
 				new WorkTypeCode(inforData.getWorkTypeRemainInfor(workTypeClass).get().getWorkTypeCode()),
-				new LeaveUsedNumber(0d, occUseDetail.get().getVacationUsageTimeDetails().get(0).getTimes(), 0d),
+				new LeaveUsedNumber(occUseDetail.get().getDays(), 0, 0d),
 				Optional.empty());
 		mngData.getRecAbsData().add(annualMng);
 
