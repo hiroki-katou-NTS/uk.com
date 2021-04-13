@@ -47,7 +47,7 @@ public class RegistrationUserServiceImp implements RegistrationUserService {
 	private PasswordPolicyAdapter passwordPolicyAdap;
 
 	/** The password change log repository. */
-	@Inject
+//	@Inject
 	private PasswordChangeLogRepository passwordChangeLogRepository;
 
 	/** The last date. */

@@ -1,45 +1,41 @@
 package nts.uk.ctx.sys.gateway.infra.entity.login.identification;
 
-import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.Id;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
-import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.sys.gateway.dom.login.password.identification.PasswordAuthIdentificateFailureLog;
-import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
+/**
+ * 	パスワード認証による社員の識別失敗記録
+ * 
+ * @author hiroki_katou
+ *
+ */
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name="SGWDT_FAIL_LOG_IDEN_PASSWORD")
-public class SgwdtFailLogIdenPassword extends ContractUkJpaEntity {
-
-	@Id
-	@Column(name="FAILURE_DATE_TIME")
-	private GeneralDateTime failureDateTime;
+public class SgwdtFailLogIdenPassword extends UkJpaEntity {
 	
-	@Column(name="INPUT_COMPANY_CODE")
-	private String inputCompanyId;
-	
-	@Column(name="INPUT_EMPLOYEE_CODE")
-	private String inputEmployeeCode;
-	
-	public static final JpaEntityMapper<SgwdtFailLogIdenPassword> MAPPER = new JpaEntityMapper<>(SgwdtFailLogIdenPassword.class);
+	@EmbeddedId
+	public SgwdtFailLogIdenPasswordPK pk;
 
 	@Override
 	protected Object getKey() {
-		return this.failureDateTime;
+		return this.pk;
 	}
+	
+	public static final JpaEntityMapper<SgwdtFailLogIdenPassword> MAPPER = new JpaEntityMapper<>(SgwdtFailLogIdenPassword.class);
 	
 	public PasswordAuthIdentificateFailureLog toDomain() {
 		return new PasswordAuthIdentificateFailureLog(
-				failureDateTime, 
-				inputCompanyId, 
-				inputEmployeeCode 
-				);
+				pk.getFailureDateTime(), 
+				pk.getTriedCompanyId(), 
+				pk.getTriedEmployeeCode());
 	}
 }

@@ -48,22 +48,23 @@ public class PasswordAuthenticateCommandRequire {
 	private UserRepository userRepo;
 	
 	@Inject
-	private PasswordPolicyRepository passwordPolicyRepository;
+	private PasswordPolicyRepository passwordPolicyRepo;
 	
 	@Inject
-	private PasswordAuthenticateFailureLogRepository passwordAuthenticationFailuresLogRepository;
+	private PasswordAuthenticateFailureLogRepository passwordAuthenticateFailuresLogRepo;
 	
 	@Inject
 	private PasswordAuthIdentificateFailureLogRepository passwordAuthIdentificateFailureLogRepo;
 
 	@Inject
-	private LockOutDataRepository lockOutDataRepository;
+	private LockOutDataRepository lockOutDataRepo;
 	
 	@Inject
-	private AccountLockPolicyRepository accountLockPolicyRepository;
+	private AccountLockPolicyRepository accountLockPolicyRepo;
 	
 	@Inject
-	private PasswordChangeLogRepository passwordChangeLogRepository;
+	private PasswordChangeLogRepository passwordChangeLogRepo;
+	
 	
 	public Require createRequire(String tenantCode) {
 
@@ -99,27 +100,27 @@ public class PasswordAuthenticateCommandRequire {
 
 		@Override
 		public Optional<PasswordPolicy> getPasswordPolicy(String tenantCode) {
-			return passwordPolicyRepository.getPasswordPolicy(tenantCode);
+			return passwordPolicyRepo.getPasswordPolicy(tenantCode);
 		}
 
 		@Override
 		public Optional<AccountLockPolicy> getAccountLockPolicy(String contractCode) {
-			return accountLockPolicyRepository.getAccountLockPolicy(contractCode);
+			return accountLockPolicyRepo.getAccountLockPolicy(contractCode);
 		}
 
 		@Override
 		public void save(LockoutData lockOutData) {
-			lockOutDataRepository.add(lockOutData);
+			lockOutDataRepo.add(lockOutData);
 		}
 		
 		@Override
 		public Optional<LockoutData> getLockOutData(String userId) {
-			return lockOutDataRepository.find(userId);
+			return lockOutDataRepo.find(userId);
 		}
 
 		@Override
 		public PasswordChangeLog getPasswordChangeLog(String userId) {
-			return passwordChangeLogRepository.find(userId);
+			return passwordChangeLogRepo.find(userId);
 		}
 
 		@Override
@@ -129,7 +130,7 @@ public class PasswordAuthenticateCommandRequire {
 
 		@Override
 		public void save(PasswordAuthenticateFailureLog failuresLog) {
-			passwordAuthenticationFailuresLogRepository.insert(failuresLog);
+			passwordAuthenticateFailuresLogRepo.insert(failuresLog);
 		}
 	}
 

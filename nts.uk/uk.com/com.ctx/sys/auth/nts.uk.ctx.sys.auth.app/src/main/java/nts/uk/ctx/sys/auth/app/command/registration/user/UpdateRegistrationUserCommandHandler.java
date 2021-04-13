@@ -43,7 +43,7 @@ public class UpdateRegistrationUserCommandHandler
 	private RegistrationUserService registrationUserService;
 
 	/** The password change log repository. */
-	@Inject
+//	@Inject
 	private PasswordChangeLogRepository passwordChangeLogRepository;
 
 	/* (non-Javadoc)

@@ -36,7 +36,7 @@ public class AddRegistrationUserCommandHandler extends CommandHandlerWithResult<
 	private UserRepository userRepo;
 
 	/** The password change log repository. */
-	@Inject
+//	@Inject
 	private PasswordChangeLogRepository passwordChangeLogRepository;
 
 	/** The registration user service. */

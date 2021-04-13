@@ -112,10 +112,9 @@ public class PasswordAuthenticateCommandHandler extends LoginCommandHandlerBase<
 		return CheckChangePassDto.successToAuthPassword();
 	}
 
-	public static interface Require extends 
-			PasswordAuthenticateWithEmployeeCode.Require,
-			LoginCommandHandlerBase.Require,
-			LoginBuiltInUser.RequireLogin {
+	public static interface Require extends PasswordAuthenticateWithEmployeeCode.Require,
+											LoginCommandHandlerBase.Require,
+											LoginBuiltInUser.RequireLogin {
 		
 		String createCompanyId(String tenantCode, String companyCode);
 	}

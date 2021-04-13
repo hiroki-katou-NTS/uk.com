@@ -12,7 +12,7 @@ import nts.uk.ctx.sys.auth.pub.changelog.PasswordChangeLogOut;
 @Stateless
 public class PassWordChangeLogPubImp implements PassWordChangeLogPub{
 
-	@Inject
+//	@Inject
 	private PasswordChangeLogRepository pwChangeLogRepo;
 	
 	@Override

@@ -139,18 +139,10 @@ public abstract class LoginCommandHandlerBase<
 		IdentifiedEmployeeInfo getIdentified();
 	}
 	
-//	public static interface AuthorizationResult<R> {
-//
-//		Optional<AtomTask> getAtomTask();
-//		
-//		R getLoginResult();
-//	}
-	
 	protected abstract Req getRequire(Command command);
 	
-	public static interface Require extends
-		CheckIfCanLogin.Require, 
-		AuthenticateOfTenant.Require{
+	public static interface Require extends CheckIfCanLogin.Require, 
+											AuthenticateOfTenant.Require{
 		
 		void authorizeLoginSession(IdentifiedEmployeeInfo identified);
 	}	

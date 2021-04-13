@@ -1,4 +1,4 @@
-package nts.uk.ctx.sys.gateway.infra.entity.login.authnticate;
+package nts.uk.ctx.sys.gateway.infra.entity.login.identification;
 
 import java.io.Serializable;
 
@@ -12,7 +12,7 @@ import lombok.Setter;
 import nts.arc.time.GeneralDateTime;
 
 /**
- * パスワード認証失敗記録PK
+ * 	パスワード認証による社員の識別失敗記録PK
  * 
  * @author hiroki_katou
  *
@@ -22,16 +22,15 @@ import nts.arc.time.GeneralDateTime;
 @Getter
 @Setter
 @Embeddable
-public class SgwdtFailLogPasswordAuthPK implements Serializable {
+public class SgwdtFailLogIdenPasswordPK implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Column(name = "FAILURE_DATE_TIME")
 	private GeneralDateTime failureDateTime;
-
-	@Column(name = "TRIED_USER_ID")
-	private String triedUserId;
 	
-	@Column(name = "TRIED_PASSWORD")
-	private String triedPassword;
-
+	@Column(name = "TRIED_COMPANY_CODE")
+	private String triedCompanyId;
+	
+	@Column(name = "TRIED_EMPLOYEE_CODE")
+	private String triedEmployeeCode;
 }

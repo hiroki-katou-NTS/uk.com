@@ -9,7 +9,9 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.changelog.PasswordChangeLog;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.changelog.PasswordChangeLogDetail;
@@ -23,6 +25,8 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
  */
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
+@Setter
 @Entity
 @Table(name="SGWDT_PASSWORD_CHANGE_LOG")
 public class SgwdtPasswordChangeLog extends UkJpaEntity{

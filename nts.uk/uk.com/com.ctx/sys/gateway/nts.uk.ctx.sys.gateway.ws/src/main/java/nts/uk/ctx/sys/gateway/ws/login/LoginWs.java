@@ -27,6 +27,9 @@ import nts.uk.ctx.sys.gateway.app.command.login.password.PasswordAuthenticateCom
 import nts.uk.ctx.sys.gateway.app.command.tenantlogin.TenantAuthenticateCommand;
 import nts.uk.ctx.sys.gateway.app.command.tenantlogin.TenantAuthenticateCommandHandler;
 import nts.uk.ctx.sys.gateway.app.find.login.CompanyInformationFinder;
+import nts.uk.ctx.sys.gateway.app.find.login.EmployeeLoginSettingFinder;
+import nts.uk.ctx.sys.gateway.app.find.login.dto.CheckContractDto;
+import nts.uk.ctx.sys.gateway.app.find.login.dto.EmployeeLoginSettingDto;
 import nts.uk.ctx.sys.shared.dom.company.CompanyInformationImport;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.application.auth.WindowsAccount;
@@ -47,6 +50,10 @@ public class LoginWs extends WebService {
 
 	@Inject
 	private PasswordAuthenticateCommandHandler passwordAuthenticateCommandHandler;
+	
+	/** The employee login setting finder. */
+	@Inject
+	private EmployeeLoginSettingFinder employeeLoginSettingFinder;
 	
 	/** The Constant SIGN_ON. */
 	private static final String SIGN_ON = "on";
@@ -75,6 +82,19 @@ public class LoginWs extends WebService {
 		return companyInformationFinder.getCompanyInforByCode(companyId);
 	}
 	
+	/**
+	 * Check contract form 1.
+	 *
+	 * @param command the command
+	 * @return the check contract dto
+	 */
+	@POST
+	@Path("checkcontract")
+	public CheckContractDto checkContractForm1(@Context HttpServletRequest request, TenantAuthenticateCommand command) {
+		command.setRequest(request);
+		return this.tenantAuthenticateCommandHandler.handle(command);
+	}
+	
 
 	/**
 	 * テナント認証
@@ -96,7 +116,8 @@ public class LoginWs extends WebService {
 	 * @return
 	 */
 	@POST
-	@Path("password")
+//	@Path("password")
+	@Path("submit/form3")
 	public CheckChangePassDto loginOnPasswordAuthenticate(@Context HttpServletRequest request, PasswordAuthenticateCommand command) {
 		command.setRequest(request);
 		return passwordAuthenticateCommandHandler.handle(command);
@@ -143,6 +164,18 @@ public class LoginWs extends WebService {
 
 		return VerDto.builder().ver(GeneralDateTime.legacyDateTime(new Date(file.lastModified()))
 				.toString("yyyy/MM/dd HH:mm")).build();
+	}
+	
+	/**
+	 * Gets the employee login setting form 3.
+	 *
+	 * @param contractCode the contract code
+	 * @return the employee login setting form 3
+	 */
+	@POST
+	@Path("emlogsettingform3/{contractCode}")
+	public EmployeeLoginSettingDto getEmployeeLoginSettingForm3(@PathParam("contractCode") String contractCode) {
+		return this.employeeLoginSettingFinder.findByContractCodeForm3(contractCode);
 	}
 	
 	

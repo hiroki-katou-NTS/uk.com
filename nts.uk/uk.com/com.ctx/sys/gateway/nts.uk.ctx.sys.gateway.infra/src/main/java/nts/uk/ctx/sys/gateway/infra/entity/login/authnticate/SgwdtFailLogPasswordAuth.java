@@ -10,6 +10,12 @@ import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
 import nts.uk.ctx.sys.gateway.dom.login.password.authenticate.PasswordAuthenticateFailureLog;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
+/**
+ * パスワード認証失敗記録
+ * 
+ * @author hiroki_katou
+ *
+ */
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -28,7 +34,7 @@ public class SgwdtFailLogPasswordAuth extends UkJpaEntity{
 
 	public PasswordAuthenticateFailureLog toDomain() {
 		return new PasswordAuthenticateFailureLog(
-				pk.getFailureTimestamps(), 
+				pk.getFailureDateTime(), 
 				pk.getTriedUserId(), 
 				pk.getTriedPassword());
 	}

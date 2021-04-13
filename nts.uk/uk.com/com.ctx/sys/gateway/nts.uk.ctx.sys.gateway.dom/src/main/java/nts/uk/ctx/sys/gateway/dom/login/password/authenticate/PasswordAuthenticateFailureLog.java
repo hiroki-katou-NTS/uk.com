@@ -13,7 +13,7 @@ import nts.arc.time.GeneralDateTime;
 public class PasswordAuthenticateFailureLog implements DomainAggregate {
 
 	/** 失敗日時リスト */
-	private final GeneralDateTime failureTimestamps;
+	private final GeneralDateTime failureDateTime;
 	/** 試行したユーザID */
 	private final String triedUserId;
 	/** 試行したパスワード*/

@@ -3,7 +3,6 @@ package nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock;
 import java.util.Optional;
 
 import nts.uk.ctx.sys.gateway.dom.loginold.ContractCode;
-import nts.uk.ctx.sys.gateway.dom.outage.tenant.PlannedOutageByTenant;
 
 public interface AccountLockPolicyRepository {
 

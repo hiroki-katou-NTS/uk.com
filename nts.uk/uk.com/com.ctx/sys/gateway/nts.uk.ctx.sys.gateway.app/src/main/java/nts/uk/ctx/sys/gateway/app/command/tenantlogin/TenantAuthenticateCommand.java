@@ -25,7 +25,7 @@ public class TenantAuthenticateCommand {
 		this.tenantCode = tenantCode.trim();
 	}
 
-	public void setPassword(String password) {
+	public void setContractPassword(String password) {
 		this.password = password;
 	}
 

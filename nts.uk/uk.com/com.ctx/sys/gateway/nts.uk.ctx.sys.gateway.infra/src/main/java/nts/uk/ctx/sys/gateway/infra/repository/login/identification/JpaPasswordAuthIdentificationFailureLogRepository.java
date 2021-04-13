@@ -2,12 +2,16 @@ package nts.uk.ctx.sys.gateway.infra.repository.login.identification;
 
 import java.util.List;
 
+import javax.ejb.Stateless;
+
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.uk.ctx.sys.gateway.dom.login.password.identification.PasswordAuthIdentificateFailureLog;
 import nts.uk.ctx.sys.gateway.dom.login.password.identification.PasswordAuthIdentificateFailureLogRepository;
 import nts.uk.ctx.sys.gateway.infra.entity.login.identification.SgwdtFailLogIdenPassword;
+import nts.uk.ctx.sys.gateway.infra.entity.login.identification.SgwdtFailLogIdenPasswordPK;
 
+@Stateless
 public class JpaPasswordAuthIdentificationFailureLogRepository extends JpaRepository implements PasswordAuthIdentificateFailureLogRepository {
 	
 	private final String BASIC_SELECT 
@@ -15,9 +19,10 @@ public class JpaPasswordAuthIdentificationFailureLogRepository extends JpaReposi
 	
 	private SgwdtFailLogIdenPassword fromDomain(PasswordAuthIdentificateFailureLog domain) {
 		return new SgwdtFailLogIdenPassword(
-				domain.getFailureTimestamps(), 
-				domain.getCompanyCode(), 
-				domain.getEmployeeCode());
+				new SgwdtFailLogIdenPasswordPK(
+				domain.getFailureDateTime(), 
+				domain.getTriedCompanyCode(), 
+				domain.getTriedEmployeeCode()));
 	}
 
 	@Override

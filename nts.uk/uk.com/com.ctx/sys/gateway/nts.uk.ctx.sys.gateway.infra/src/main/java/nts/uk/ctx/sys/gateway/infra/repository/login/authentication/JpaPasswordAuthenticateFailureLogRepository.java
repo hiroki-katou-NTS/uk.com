@@ -2,6 +2,8 @@ package nts.uk.ctx.sys.gateway.infra.repository.login.authentication;
 
 import java.util.List;
 
+import javax.ejb.Stateless;
+
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.sys.gateway.dom.login.password.authenticate.PasswordAuthenticateFailureLog;
@@ -9,6 +11,7 @@ import nts.uk.ctx.sys.gateway.dom.login.password.authenticate.PasswordAuthentica
 import nts.uk.ctx.sys.gateway.infra.entity.login.authnticate.SgwdtFailLogPasswordAuth;
 import nts.uk.ctx.sys.gateway.infra.entity.login.authnticate.SgwdtFailLogPasswordAuthPK;
 
+@Stateless
 public class JpaPasswordAuthenticateFailureLogRepository extends JpaRepository implements PasswordAuthenticateFailureLogRepository{
 
 	private final String BASIC_SELECT = "select * from SGWDT_FAIL_LOG_PASSWORD_AUTH ";
@@ -16,7 +19,7 @@ public class JpaPasswordAuthenticateFailureLogRepository extends JpaRepository i
 	private SgwdtFailLogPasswordAuth toEntity(PasswordAuthenticateFailureLog domain) {
 		return new SgwdtFailLogPasswordAuth(
 				new SgwdtFailLogPasswordAuthPK(
-					domain.getFailureTimestamps(),
+					domain.getFailureDateTime(),
 					domain.getTriedUserId(), 
 					domain.getTriedPassword()));
 	}
