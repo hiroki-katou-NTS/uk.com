@@ -34,9 +34,12 @@ public class ReflectOvertimeApplicationTest {
 	 * テストしたい内容
 	 * 
 	 * 
-	 * →実績の勤務情報へ反映 ①[実績の勤務情報へ反映する] = しない
+	 * →実績の勤務情報へ反映 
 	 * 
-	 * →反映しない ②[実績の勤務情報へ反映する] = する →反映する
+	 * ①[実績の勤務情報へ反映する] = しない →反映しない 
+	 *
+	 * 
+	 * ②[実績の勤務情報へ反映する] = する →反映する
 	 * 
 	 * 
 	 * 準備するデータ
@@ -134,7 +137,8 @@ public class ReflectOvertimeApplicationTest {
 	}
 
 	private OtWorkAppReflect createOtWorkRfl(NotUseAtr reflectWork) {
-		return new OtWorkAppReflect(null, null, reflectWork);
+		return new OtWorkAppReflect(BeforeOtWorkAppReflect.create(reflectWork.value, 0, 0),
+				AfterOtWorkAppReflect.create(1, 1, 1, 1), reflectWork);
 	}
 
 	private OtWorkAppReflect otWorkRflBeforeAfter(NotUseAtr reflectWork) {

@@ -48,7 +48,7 @@ public class RCReflectGroupApplyForLeaveAppTest {
 	 * 
 	 * →休暇系申請の反映.就業時間帯を反映する = する;
 	 * 
-	 * →就業時間帯を変更する＝する
+	 * →input.就業時間帯を変更する＝する
 	 */
 	@Test
 	public void test1() {
@@ -61,6 +61,13 @@ public class RCReflectGroupApplyForLeaveAppTest {
 
 		option.process(require, workInfo, new ArrayList<>(), PrePostAtrShare.POSTERIOR,
 				NotUseAtr.USE, dailyApp);
+		
+		assertThat(dailyApp.getWorkInformation().getRecordInfo().getWorkTimeCode().v())
+				.isEqualTo("004");// 就業時間帯コード
+		assertThat(dailyApp.getWorkInformation().getRecordInfo().getWorkTypeCode().v())
+				.isEqualTo("003");// 勤務種類コード
+		
+		
 	}
 
 	/*
@@ -72,7 +79,7 @@ public class RCReflectGroupApplyForLeaveAppTest {
 	 * 
 	 * →休暇系申請の反映.就業時間帯を反映する = しない;
 	 * 
-	 * →就業時間帯を変更する＝する
+	 * →input.就業時間帯を変更する＝する
 	 */
 	@Test
 	public void test2() {
@@ -137,7 +144,7 @@ public class RCReflectGroupApplyForLeaveAppTest {
 	 * 
 	 * 準備するデータ
 	 * 
-	 * →休暇系申請の反映.出退勤を反映する = する;
+	 * →休暇系申請の反映.出退勤を反映する = しない;
 	 * 
 	 */
 	@Test

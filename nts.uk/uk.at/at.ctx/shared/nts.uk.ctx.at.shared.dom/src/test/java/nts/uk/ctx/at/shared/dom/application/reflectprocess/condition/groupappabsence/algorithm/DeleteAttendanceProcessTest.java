@@ -18,6 +18,7 @@ import nts.uk.ctx.at.shared.dom.application.reflectprocess.common.ReflectApplica
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.groupappabsence.algorithm.DeleteAttendanceProcess;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.ScheduleRecordClassifi;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.vtotalmethod.WorkTypeClassification;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 
@@ -48,7 +49,7 @@ public class DeleteAttendanceProcessTest {
 		new Expectations() {
 			{
 				require.getWorkType(anyString);
-				result = Optional.of(WorkType.createSimpleFromJavaType("003", "", "", "", "", 0, 1, // 休日
+				result = Optional.of(WorkType.createSimpleFromJavaType("003", "", "", "", "", 0, WorkTypeClassification.Holiday.value, // 休日
 						0, 0));
 				;
 			}
@@ -80,7 +81,7 @@ public class DeleteAttendanceProcessTest {
 	 * 
 	 * →休暇系申請の反映.1日休暇の場合は出退勤を削除 = する;
 	 * 
-	 * →出勤日区分＝1日休日系
+	 * →出勤日区分＜＞1日休日系
 	 */
 	@Test
 	public void test2() {
@@ -89,6 +90,14 @@ public class DeleteAttendanceProcessTest {
 					Pair.of(900, 1200));// no2 出勤 , 退勤
 		}, "001");// 勤務場所コード
 
+		new Expectations() {
+			{
+				require.getWorkType(anyString);
+				result = Optional.of(WorkType.createSimpleFromJavaType("003", "", "", "", "", 0, WorkTypeClassification.Attendance.value, // 出勤
+						0, 0));
+				;
+			}
+		};
 		val resultActual = DeleteAttendanceProcess.process(require, Optional.of(new WorkTypeCode("003")), dailyApp);
 
 		assertThat(resultActual.getDomainDaily().getAttendanceLeave().get().getTimeLeavingWorks())

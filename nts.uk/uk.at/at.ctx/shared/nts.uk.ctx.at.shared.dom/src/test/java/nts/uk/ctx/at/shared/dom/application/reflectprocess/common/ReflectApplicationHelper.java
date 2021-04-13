@@ -567,7 +567,7 @@ public class ReflectApplicationHelper {
 	}
 	
 	public static AppOverTimeShare createOverTimeAppNone() {
-		return createOverTimeAppBeforeAfter(PrePostAtrShare.NONE);
+		return createOverTimeAppBeforeAfter(PrePostAtrShare.POSTERIOR);
 	}
 	
 	public static AppOverTimeShare createOverTimeAppBeforeAfter(PrePostAtrShare type) {

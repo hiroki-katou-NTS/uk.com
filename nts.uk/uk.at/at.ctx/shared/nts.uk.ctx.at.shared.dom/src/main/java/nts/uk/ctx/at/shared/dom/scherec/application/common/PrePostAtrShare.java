@@ -16,12 +16,7 @@ public enum PrePostAtrShare {
 	/**
 	 * 1: 事後の受付制限
 	 */
-	POSTERIOR(1),
-
-	/**
-	 * 2: 選択なし
-	 */
-	NONE(2);
+	POSTERIOR(1);
 
 	public final int value;
 
