@@ -485,7 +485,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 
         return firstRow + totalAddRows;
     }
-
+    // NOT UPDATE IN VER 15
     private int printYearlyReserved(Cells cells, int firstRow, HolidaysRemainingEmployee employee,
                                     HolidayRemainingDataSource dataSource) throws Exception {
         // 積立年休
@@ -638,12 +638,11 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
         int rowIndexIsRemainingChargeSubstitute = 0;
         cells.copyRows(cells, NUMBER_ROW_OF_HEADER + 13, firstRow, 2);
         // I1_1
-        cells.get(firstRow, 2).setValue(TextResource.localize("Com_CompensationHoliday"));
+        cells.get(firstRow, 2).setValue(TextResource.localize("KDR001_77"));
         // I2_1
         cells.get(firstRow, 9).setValue(TextResource.localize("KDR001_16"));
         // I3_1
         cells.get(firstRow + 1, 9).setValue(TextResource.localize("KDR001_17"));
-
         if (isRepresentSubstitute) {
             rowIndexRepresentSubstitute = firstRow + totalRows;
             cells.copyRows(cells, NUMBER_ROW_OF_HEADER + 15, rowIndexRepresentSubstitute, 1);
