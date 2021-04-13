@@ -1,9 +1,7 @@
 package nts.uk.ctx.at.request.pubimp.application.lateorleaveearly;
 
-/*import java.util.Collection;*/
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -11,13 +9,9 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
-import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateOrLeaveEarlyRepository;
 import nts.uk.ctx.at.request.pub.application.lateorleaveearly.LateOrLeaveEarlyExport;
 import nts.uk.ctx.at.request.pub.application.lateorleaveearly.LateOrLeaveEarlyPub;
-import nts.uk.shr.com.context.AppContexts;
 /**
  * 
  * @author Doan Duy Hung
@@ -28,9 +22,6 @@ public class LateOrLeaveEarlyPubImpl implements LateOrLeaveEarlyPub {
 	
 	@Inject
 	private ApplicationRepository applicationRepository;
-	
-	@Inject
-	private LateOrLeaveEarlyRepository lateOrLeaveEarlyRepository;
 	
 	@Override
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)

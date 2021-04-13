@@ -66,7 +66,9 @@
                     <div class="date-cell-content">
                         <div class="date-cell-top">
                             <!-- A1_3_1 -->
-                            <span v-if="today == item.date" class="uk-bg-schedule-that-day" style="border-radius: 50%;">{{item.formatedDate}}</span>
+                            <span v-if="today == item.date" class="uk-bg-schedule-that-day" style="border-radius: 50%; height: 4vw; min-width: 3vw; padding-right: 0.25vw">
+                                {{item.formatedDate}}
+                            </span>
                             <span v-else>{{item.formatedDate}}</span>
                             <!-- A1_3_2 -->
                             <span v-show="workDesiredOpAtr && item.displayData.workDesireStatus != undefined && item.displayData.workDesireStatus != 0">
@@ -134,7 +136,7 @@
                     :value="index"
                     style="font-weight: bold;"
                 >
-                    {{item.attendanceStamp}}~{{item.leaveStamp}}
+                    {{item.attendanceStamp}}～{{item.leaveStamp}}
                 </span>
             </div>
             <div class="detail-spacing" v-show="detailCell && (detailCell.displayData.workScheduleAtr != undefined && detailCell.displayData.workScheduleAtr != 0)">
@@ -207,7 +209,7 @@
                             :value="timeZoneIndex"
                             style="font-weight: bold;"
                         >
-                            {{timeZone.start}}~{{timeZone.end}}
+                            {{timeZone.start}}～{{timeZone.end}}
                         </span>
                     </div>
                 </div>

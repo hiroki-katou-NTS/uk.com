@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.record.dom.worklocation.WorkLocationRepository;
+import nts.uk.ctx.at.record.dom.stampmanagement.workplace.WorkLocationRepository;
 import nts.uk.shr.com.context.AppContexts;
 @Stateless
 /**
@@ -27,15 +27,15 @@ public class WorkLocationFinder {
 	 * @return List
 	 */
 	public List<WorkLocationDto> getAllWorkPlace(){
-		String companyID = AppContexts.user().companyId();
-		return this.workPlaceRepository.findAll(companyID).stream()
+		String contractCode = AppContexts.user().contractCode();
+		return this.workPlaceRepository.findAll(contractCode).stream()
 				.map(workPlace -> WorkLocationDto.fromDomain(workPlace))
 				.collect(Collectors.toList());
 	}
 	
 	public Optional<WorkLocationDto> getWorkPlace(String workLocationCD){
-		String companyID = AppContexts.user().companyId();
-		return this.workPlaceRepository.findByCode(companyID, workLocationCD)
+		String contractCode = AppContexts.user().contractCode();
+		return this.workPlaceRepository.findByCode(contractCode, workLocationCD)
 				.map(workPlace -> WorkLocationDto.fromDomain(workPlace));
 	}
 	
@@ -46,9 +46,9 @@ public class WorkLocationFinder {
 	 */
 	public List<Kcp012WorkplaceListDto> findWorkplaceList() {
 		//	アルゴリズム「勤務場所リスト：リスト表示処理」を実行する
-		String companyID = AppContexts.user().companyId();
+		String contractCode = AppContexts.user().contractCode();
 		//	ドメインモデル「勤務場所」を取得する
-		List<WorkLocationDto> wLocationDto = this.workPlaceRepository.findAll(companyID).stream()
+		List<WorkLocationDto> wLocationDto = this.workPlaceRepository.findAll(contractCode).stream()
 				.map(workPlace -> WorkLocationDto.fromDomain(workPlace))
 				//	取得した勤務場所情報をリストに表示する
 				.sorted(Comparator.comparing(WorkLocationDto::getWorkLocationCD)).collect(Collectors.toList());

@@ -142,7 +142,7 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 
 	private static final String SELECT_FIXED_DATA = String.join(" ", "SELECT",
 			"DISTINCT mng.PID, mng.SID, mng.SCD, per.BUSINESS_NAME, per.PERSON_NAME, per.BIRTHDAY,",
-			"dpi.CD, dpi.NAME,",
+			"dpi.DEP_CD, dpi.DEP_NAME,",
 			"wif.WKP_CD, wif.WKP_DISP_NAME, wif.WKP_NAME,",
 			"ji.JOB_CD, ji.JOB_NAME,",
 			"epl.CODE, epl.NAME,",
@@ -158,7 +158,7 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 			"ON mng.SID = adh.SID AND adh.START_DATE <= '{basedate} 23:59:59' AND adh.END_DATE >= '{basedate} 00:00:00'",
 			"LEFT JOIN [dbo].[BSYMT_AFF_DEP_HIST_ITEM] adi",
 			"ON adh.HIST_ID = adi.HIST_ID AND adh.CID = '{comid}' ",
-			"LEFT JOIN [dbo].[BSYMT_DEPARTMENT_INFO] dpi",
+			"LEFT JOIN [dbo].[BSYMT_DEP_INFO] dpi",
 			"ON adi.DEP_ID = dpi.DEP_ID AND dpi.CID = '{comid}'",
 			"LEFT JOIN [dbo].[BSYMT_AFF_WKP_HIST] awh",
 			"ON mng.SID = awh.SID AND mng.CID = awh.CID AND awh.CID = '{comid}' AND awh.START_DATE <= '{basedate} 23:59:59' AND awh.END_DATE >= '{basedate} 00:00:00'",

@@ -376,18 +376,14 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 		}
 	}
 	
-//	/**
-//	 * 引数のNoと一致する遅刻判断時刻を取得する
-//	 * @param workNo
-//	 * @return　遅刻判断時刻
-//	 */
-//	public LateDecisionClock getlateDecisionClock(int workNo) {
-//		List<LateDecisionClock> clockList = this.lateDecisionClock.stream().filter(tc -> tc.getWorkNo()==workNo).collect(Collectors.toList());
-//		if(clockList.size()>1) {
-//			throw new RuntimeException("Exist duplicate workNo : " + workNo);
-//		}
-//		return clockList.get(0);
-//	}
+	/**
+	 * 遅刻判断時刻を取得する
+	 * @param workNo
+	 * @return 遅刻判断時刻
+	 */
+	public Optional<LateDecisionClock> getLateDecisionClock(int workNo) {
+		return this.lateDecisionClock.stream().filter(tc -> tc.getWorkNo() == workNo).findFirst();
+	}
 	
 //	/**
 //	 * 引数のNoと一致する早退判断時刻を取得する
@@ -2045,12 +2041,11 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 	
 	/**
 	 * 遅刻早退控除前時間帯を作成する
-	 * @param lateDecisionClocks 遅刻判断時刻(List)
-	 * @param leaveEarlyDecisionClocks 早退判断時刻(List)
 	 */
 	public void createBeforeLateEarlyTimeSheet() {
 		for(int i=0; i<this.withinWorkTimeFrame.size(); i++) {
-			this.withinWorkTimeFrame.get(i).createBeforeLateEarlyTimeSheet(this.lateDecisionClock.get(i));
+			this.withinWorkTimeFrame.get(i).createBeforeLateEarlyTimeSheet(
+					this.getLateDecisionClock(this.withinWorkTimeFrame.get(i).getWorkingHoursTimeNo().v()));
 		}
 	}
 	

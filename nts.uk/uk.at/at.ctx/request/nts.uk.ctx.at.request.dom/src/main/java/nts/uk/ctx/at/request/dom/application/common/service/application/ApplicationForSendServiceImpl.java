@@ -23,10 +23,6 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRoo
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootContentImport_New;
 import nts.uk.ctx.at.request.dom.application.common.service.application.output.ApplicationForSendOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.application.output.ApprovalRootOutput;
-import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispName;
-import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispNameRepository;
-import nts.uk.ctx.at.request.dom.setting.company.mailsetting.mailapplicationapproval.ApprovalTemp;
-import nts.uk.ctx.at.request.dom.setting.company.mailsetting.mailapplicationapproval.ApprovalTempRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -41,8 +37,8 @@ public class ApplicationForSendServiceImpl implements IApplicationForSendService
 	@Inject
 	private EmployeeRequestAdapter employeeRequestAdapter;
 	
-	@Inject
-	private ApprovalTempRepository appRep;
+//	@Inject
+//	private ApprovalTempRepository appRep;
 	
 	@Inject 
 	private IApplicationContentService appContentService;
@@ -50,8 +46,8 @@ public class ApplicationForSendServiceImpl implements IApplicationForSendService
 	@Inject
 	private EnvAdapter envAdapter;
 	
-	@Inject
-	private AppDispNameRepository appDispNameRepo;
+//	@Inject
+//	private AppDispNameRepository appDispNameRepo;
 	/**
 	 * ダイアログを開く kdl030
 	 */
@@ -69,13 +65,13 @@ public class ApplicationForSendServiceImpl implements IApplicationForSendService
 				});
 			});
 		});
-		Optional<ApprovalTemp> appTemp = appRep.getAppTem();
+//		Optional<ApprovalTemp> appTemp = appRep.getAppTem();
 		String appTempAsStr = "";
-		if (appTemp.isPresent()){
-			if (!Objects.isNull(appTemp.get().getContent())) {
-				appTempAsStr = appTemp.get().getContent().v();
-			}
-		}
+//		if (appTemp.isPresent()){
+//			if (!Objects.isNull(appTemp.get().getContent())) {
+//				appTempAsStr = appTemp.get().getContent().v();
+//			}
+//		}
 		if (application.isPresent()){
 			Application app = application.get();
 			//get empName
@@ -102,9 +98,9 @@ public class ApplicationForSendServiceImpl implements IApplicationForSendService
 			//hoatt 2019.05.02 bug #107518
 			//EA修正履歴No.3381
 			//ドメインモデル「申請表示名」を取得する
-			List<AppDispName> appDispNameLst = appDispNameRepo.getAll();
-			Optional<AppDispName> appNameOp = appDispNameLst.stream().filter(c -> c.getAppType().equals(application.get().getAppType())).findAny();
-			String appName = appNameOp.isPresent() && appNameOp.get().getDispName() != null ? appNameOp.get().getDispName().v() : "";
+//			List<AppDispName> appDispNameLst = appDispNameRepo.getAll();
+//			Optional<AppDispName> appNameOp = appDispNameLst.stream().filter(c -> c.getAppType().equals(application.get().getAppType())).findAny();
+			String appName = "";//appNameOp.isPresent() && appNameOp.get().getDispName() != null ? appNameOp.get().getDispName().v() : "";
 			//メール本文を編集する
 			String mailContentToSend = I18NText.getText("Msg_703",
 					loginName,//{0}　←　ログイン者の氏名
