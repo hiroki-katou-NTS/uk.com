@@ -11,5 +11,13 @@ public interface WorkLocationPub {
 	 */
 	WorkLocationPubExport getLocationName(String companyID, String workLocationCd);
 	
+	/**
+	 * コードリストから勤務場所名称を取得するPublish
+	 * @param listWorkLocationCd
+	 * @return
+	 */
+	List<WorkLocationExportNew> getWorkLocationName(List<String> listWorkLocationCd);
+
 	List<WorkLocationPubExport> findAll(String companyId);
+
 }

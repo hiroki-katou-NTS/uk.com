@@ -38,7 +38,9 @@ module nts.uk.at.view.kaf000.a.component8.viewmodel {
 									<span data-bind="if: !opAchievementDetail.opWorkTime">
 										<span style="visibility: hidden;">null</span>
 									</span>
-									<span> ~ </span>
+									<span data-bind="if: opAchievementDetail.opWorkTime || opAchievementDetail.opLeaveTime">
+										<span> ~ </span>
+									</span>
 									<span data-bind="if: opAchievementDetail.opLeaveTime">
 										<span data-bind="text: $parent.formatTime(opAchievementDetail.opLeaveTime)"></span>
 									</span>

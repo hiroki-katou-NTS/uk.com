@@ -25,7 +25,7 @@ import nts.uk.ctx.at.record.dom.daily.dailyperformance.classification.AutomaticC
 import nts.uk.ctx.at.record.dom.daily.dailyperformance.classification.DoWork;
 import nts.uk.ctx.at.record.dom.daily.dailyperformance.classification.ReasonGoOut;
 import nts.uk.ctx.at.record.dom.divergence.time.reason.DivergenceReasonSelectRepository;
-import nts.uk.ctx.at.record.dom.worklocation.WorkLocationRepository;
+import nts.uk.ctx.at.record.dom.stampmanagement.workplace.WorkLocationRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.TimeLimitUpperLimitSetting;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.AttendanceItemIdContainer;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.AttendanceItemUtil.AttendanceItemType;
@@ -75,6 +75,7 @@ public class DailyCorrectionLogProcessor extends DataCorrectionLogProcessor {
 		DailyCorrectionLogParameter parameter = context.getParameter();
 		Map<Integer, DPAttendanceItemRC> lstAttendanceItem = parameter.getLstAttendanceItem();
 		String companyId = AppContexts.user().companyId();
+		String contractCode = AppContexts.user().contractCode();
 		ItemInfo itemInfo = new ItemInfo(null, null, null, null);
 		List<GeneralDate> listDate =  new ArrayList<>();
 		List<String> listWorkTypeCd =  new ArrayList<>();
@@ -166,7 +167,7 @@ public class DailyCorrectionLogProcessor extends DataCorrectionLogProcessor {
 						? syWorkplaceAdapter.getWorkplaceMapCodeBaseDateName(companyId, listWorkplaceIdd, listDate)
 						: new HashMap<>();	
 		Map<String, String> listWorklocation = listWorklocationCd.size() > 0
-				? workLocationRepository.getNameByCode(companyId, listWorklocationCd) : new HashMap<>();
+				? workLocationRepository.getNameByCode(contractCode, listWorklocationCd) : new HashMap<>();
 
 		Map<Pair<String,String>, String> listReason = listReasonCode.size() > 0
 				? divergenceReasonSelectRepository.getNameByCodeNo(companyId, listReasonCode) : new HashMap<>();

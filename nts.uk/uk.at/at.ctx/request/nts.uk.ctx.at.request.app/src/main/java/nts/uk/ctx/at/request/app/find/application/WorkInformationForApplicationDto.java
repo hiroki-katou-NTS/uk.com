@@ -33,4 +33,8 @@ public class WorkInformationForApplicationDto {
                 workTimeCode == null ? null : new WorkTimeCode(workTimeCode), 
                 workTypeCode == null ? null : new WorkTypeCode(workTypeCode));
     }
+    
+    public static WorkInformationForApplicationDto fromDomain(WorkInformationForApplication domain) {
+        return new WorkInformationForApplicationDto(domain.getWorkTypeCode().v(), domain.getWorkTimeCode().v());
+    }
 }
