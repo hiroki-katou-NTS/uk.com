@@ -5,16 +5,15 @@ module nts.uk.at.view.kaf000.b.component1.viewmodel {
         name: 'kaf000-b-component1',
         template: `
             <div id="kaf000-b-component1" data-bind="if: displayArea">
-                <div class="table" data-bind="if: displayMsg">
-                    <div class="cell message-td-1" data-bind="text: $i18n('KAF000_1')"></div>
-                    <div class="cell message-td" data-bind="html: message"></div>
-                </div>
-                <div class="table" data-bind="if: displayDeadline">
-                    <div class="cell message-td-1" data-bind="text: $i18n('KAF000_2')"></div>
-                    <div class="cell message-td" data-bind="text: deadline"></div>
-                </div>
-            </div>
-
+				<div data-bind="if: displayMsg">
+					<div class="message-td-1" data-bind="text: $i18n('KAF000_1')"></div>
+					<div class="message-td-2" data-bind="html: message"></div>
+				</div>
+				<div data-bind="if: displayDeadline">
+					<div class="message-td-1" data-bind="text: $i18n('KAF000_2')"></div>
+					<div class="message-td-2" data-bind="text: deadline"></div>	
+				</div>
+			</div>
         `
     })
     class Kaf000BComponent1ViewModel extends ko.ViewModel {

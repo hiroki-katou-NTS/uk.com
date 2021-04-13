@@ -312,6 +312,16 @@ public class ProgramsManager {
      */
     public static final Program CPS008C = new Program(WebAppId.COM, ProgramIdConsts.CPS008C, "CPS008_38",
             "/view/cps/008/c/index.xhtml");
+    
+    
+    
+    public static final Program CMM040A = new Program(WebAppId.COM, ProgramIdConsts.CMM040A, "CMM040_1",
+            "/view/cmm/040/a/index.xhtml");
+    
+    
+    public static final Program CMM040B = new Program(WebAppId.COM, ProgramIdConsts.CMM040B, "CMM040_2",
+            "/view/cmm/040/b/index.xhtml");
+    
     /**
      * CMM044A
      */
@@ -3568,6 +3578,12 @@ public class ProgramsManager {
      */
     public static final Program KSM007A = new Program(WebAppId.AT, ProgramIdConsts.KSM007A, "KSM007_1",
             "/view/ksm/007/a/index.xhtml");
+    public static final Program KSM007B = new Program(WebAppId.AT, ProgramIdConsts.KSM007B, "KSM007_18",
+            "/view/ksm/007/b/index.xhtml");
+    public static final Program KSM007C = new Program(WebAppId.AT, ProgramIdConsts.KSM007C, "KSM007_19",
+            "/view/ksm/007/c/index.xhtml");
+    public static final Program KSM007D = new Program(WebAppId.AT, ProgramIdConsts.KSM007D, "KSM007_20",
+            "/view/ksm/007/d/index.xhtml");
 
     /**
      * KDL047
@@ -3760,6 +3776,11 @@ public class ProgramsManager {
      */
     public static final Program CCGS03A = new Program(WebAppId.MOBI, ProgramIdConsts.CCGS03A, "CCGS03A",
             "/ccg/s03/a");
+
+
+
+
+
 
     /**
      * All programs map.

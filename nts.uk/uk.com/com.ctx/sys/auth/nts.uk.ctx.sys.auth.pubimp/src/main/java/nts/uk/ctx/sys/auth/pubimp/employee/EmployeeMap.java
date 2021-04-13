@@ -5,13 +5,12 @@ import lombok.Data;
 @Data
 public class EmployeeMap {
 	
-
-	public String empID;
 	public String wplID;
+	public String empID;
 
-	public EmployeeMap(String empID, String wplID) {
+	public EmployeeMap(String wplID, String empID) {
 		super();
-		this.empID = empID;
 		this.wplID = wplID;
+		this.empID = empID;
 	}
 }

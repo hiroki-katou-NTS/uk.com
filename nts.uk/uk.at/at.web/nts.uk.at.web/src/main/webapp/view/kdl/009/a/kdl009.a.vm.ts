@@ -255,7 +255,49 @@ module nts.uk.at.view.kdl009.a {
                         itemId++;
                     }
                 }
-                return listItem;
+
+                //fix bug #115282
+                return vm.sortListItem(listItem);
+            }
+
+            //fix bug #115282
+            private sortListItem(listItem: DataItems[]): DataItems[] {
+
+                const dto = listItem.map((s1: DataItems) => {
+
+                    const listOccurrenceS1 = s1.listOccurrence ? (s1.listOccurrence[0].occurrenceDate ? s1.listOccurrence[0].occurrenceDate : undefined) : undefined;
+                    const listDigestionS1 = s1.listDigestion ? (s1.listDigestion[0].occurrenceDate ? s1.listDigestion[0].occurrenceDate : undefined) : undefined;
+                    const singleRowDetailS1 =  s1.singleRowDetail ? (s1.singleRowDetail.occurrenceDate ? s1.singleRowDetail.occurrenceDate : undefined) : undefined;
+               
+                    if(listOccurrenceS1) {
+                        return {
+                            itemId: s1.itemId,
+                            occurrenceDate: listOccurrenceS1
+                        }
+                    }
+                    if(listDigestionS1) {
+                        return {
+                            itemId: s1.itemId,
+                            occurrenceDate: listDigestionS1
+                        }
+                    }
+                    if(singleRowDetailS1) {
+                        return {
+                            itemId: s1.itemId,
+                            occurrenceDate: singleRowDetailS1
+                        }
+                    }
+                    return {
+                        itemId: s1.itemId,
+                        occurrenceDate: ""
+                    }
+                });
+
+                const sortedDto = _.orderBy(dto, ["occurrenceDate"]);
+
+                const sortedList = sortedDto.map(item => _.find(listItem, i => i.itemId === item.itemId));
+
+                return sortedList;
             }
 
             private convertDetailDtoToModel(item: RemainNumberDetailDto): RemainNumberDetailModel {

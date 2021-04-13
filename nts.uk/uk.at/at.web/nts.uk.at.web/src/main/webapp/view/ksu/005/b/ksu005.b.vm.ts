@@ -59,6 +59,7 @@ module nts.uk.at.view.ksu005.b {
         isEnableAttendanceItem :KnockoutObservable<boolean> = ko.observable(true);
         scheduleTableOutputSetting: KnockoutObservable<ScheduleTableOutputSetting> = ko.observable(new ScheduleTableOutputSetting());        
         isReload :KnockoutObservable<boolean> = ko.observable(false);
+        exitStatus: KnockoutObservable<string> = ko.observable("Cancel"); 
 
         constructor() {            
             super();
@@ -267,7 +268,7 @@ module nts.uk.at.view.ksu005.b {
                         self.currentCodeListSwap(tempSelected);
                         self.selectedCodeListSwap(tempSelectedCode);
                         self.persons(self.personalCounterCategory());
-                        self.selectedPerson(data.personalCounterCategories);
+                        self.selectedPerson(_.isEmpty(data.personalCounterCategories) ? -1 : data.personalCounterCategories );
                         self.isEditing(true);
                         self.enableDelete(true);
                         $('#outputSettingName').focus();
@@ -304,16 +305,18 @@ module nts.uk.at.view.ksu005.b {
             const self = this;
             let data = [];
             self.countNumberRow = 1;
-            data.push(new ScreenItem(true, self.countNumberRow, self.personalInfoItems()[1].value, self.attendanceItems()[1].value, self.attendanceItems()[1].value));
+            data.push(new ScreenItem(true, self.countNumberRow, self.personalInfoItems()[1].value, self.attendanceItems()[0].value, self.attendanceItems()[0].value));
             self.itemList.removeAll();
             self.itemList (data);
+
+            self.selectedTab('tab-1');
 
             self.itemsSwap.removeAll();
             self.itemsSwap((_.cloneDeep(self.workplaceCounterCategories())));
             self.currentCodeListSwap([]);
 
             self.persons(self.personalCounterCategory());
-            self.selectedPerson([]);
+            self.selectedPerson([-1]);
         }
 
         public registerOrUpdate(): void {        
@@ -375,7 +378,8 @@ module nts.uk.at.view.ksu005.b {
                 self.$ajax(Paths.REGISTER_SCHEDULE_TABLE_OUTPUT_SETTING, command).done(() =>{
                     self.$dialog.info({messageId: 'Msg_15'}).then(() => {
                         self.selectedCode(command.code);
-                        self.reloadData(command.code);                        
+                        self.reloadData(command.code);         
+                        self.exitStatus('Update');               
                     });  
                 }).fail((res) => {
                     if(res.messageId == 'Msg_3' || res.messageId == 'Msg_1971'){
@@ -396,6 +400,7 @@ module nts.uk.at.view.ksu005.b {
                     self.$dialog.info({messageId: "Msg_15"}).then(function() {
                         $('#outputSettingName').focus();
                     }); 
+                    self.exitStatus('Update');  
                 }).fail((res) => {
                     self.$dialog.alert({messageId: res.messageId});
                 }).always(() =>{
@@ -434,6 +439,7 @@ module nts.uk.at.view.ksu005.b {
                                 $('#outputSettingName').focus();
                             }
                         });
+                        self.exitStatus('Update');  
                     }).always(() =>{
                         self.$blockui("hide");
                     });    
@@ -550,9 +556,15 @@ module nts.uk.at.view.ksu005.b {
             let count: number = 0; 
             if(self.itemList().length > 1){
                 _.each(self.itemList(), x => {
-                    if (parseInt(x.personalInfo()) == -1 && parseInt(x.additionInfo()) == -1 && parseInt(x.attendanceItem()) == -1) {
-                        count = count + 1;
-                    }               
+                    if(self.isEnableAdditionInfo()){
+                        if (parseInt(x.personalInfo()) == -1 && parseInt(x.additionInfo()) == -1 && parseInt(x.attendanceItem()) == -1) {
+                            count = count + 1;
+                        }     
+                    } else {
+                        if (parseInt(x.personalInfo()) == -1 && parseInt(x.attendanceItem()) == -1) {
+                            count = count + 1;
+                        }   
+                    }                              
                 });
             }
             
@@ -600,9 +612,9 @@ module nts.uk.at.view.ksu005.b {
         closeDialog(): void {
             const self = this;
             let request: any = {
-                code: self.selectedCode(),
                 name: self.scheduleTableOutputSetting().name()
             };
+            self.exitStatus() === 'Update' ? request.code = self.selectedCode() :request.code = getShared('dataShareKSU005a');
             setShare('dataShareCloseKSU005b', request);
             self.$window.close();            
         }
@@ -617,6 +629,7 @@ module nts.uk.at.view.ksu005.b {
             self.currentScreen = nts.uk.ui.windows.sub.modal('/view/ksu/005/c/index.xhtml').onClosed(() =>{
                 let newCode = getShared('dataShareKSU005c');
                 newCode ? self.reloadData(newCode) : self.reloadData(self.scheduleTableOutputSetting().code());
+                newCode ? self.exitStatus('Update') : self.exitStatus('Cancel');
             });
         }
 

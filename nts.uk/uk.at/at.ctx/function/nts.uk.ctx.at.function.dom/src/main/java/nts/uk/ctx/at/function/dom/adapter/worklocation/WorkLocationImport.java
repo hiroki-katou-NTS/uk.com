@@ -7,29 +7,35 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class WorkLocationImport {
 
-	private String companyID;
+	private String contractCode;
 	
 	private String workLocationCD;
 	
 	private String workLocationName;
 	
-	private String horiDistance;
-	
-	private String vertiDistance;
-	
-	private String latitude;
-	
-	private String longitude;
-
-	public WorkLocationImport(String companyID, String workLocationCD, String workLocationName, String horiDistance,
-			String vertiDistance, String latitude, String longitude) {
-		this.companyID = companyID;
+	/**
+	 * bỏ dài rộng, thay bằng bán kính (Enum Radius)
+	 */
+	private int radius;
+	/**
+	 * 
+	 */
+	private double latitude;
+	/**
+	 * 
+	 */
+	private double longitude;
+	public WorkLocationImport(String contractCode, String workLocationCD, String workLocationName, int radius,
+			double latitude, double longitude) {
+		super();
+		this.contractCode = contractCode;
 		this.workLocationCD = workLocationCD;
 		this.workLocationName = workLocationName;
-		this.horiDistance = horiDistance;
-		this.vertiDistance = vertiDistance;
+		this.radius = radius;
 		this.latitude = latitude;
 		this.longitude = longitude;
 	}
+
+	
 	
 }

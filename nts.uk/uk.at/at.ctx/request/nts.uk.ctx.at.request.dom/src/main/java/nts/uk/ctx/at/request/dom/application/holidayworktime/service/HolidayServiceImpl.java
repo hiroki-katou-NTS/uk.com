@@ -57,6 +57,7 @@ import nts.uk.ctx.at.request.dom.application.overtime.CommonAlgorithm.ReasonDiss
 import nts.uk.ctx.at.request.dom.application.overtime.service.OverTimeContent;
 import nts.uk.ctx.at.request.dom.application.overtime.service.WorkContent;
 import nts.uk.ctx.at.request.dom.application.overtime.service.WorkHours;
+import nts.uk.ctx.at.request.dom.application.overtime.service.WorkInfo;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.PrePostInitAtr;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.CalcStampMiss;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.HolidayWorkAppSet;
@@ -119,9 +120,6 @@ public class HolidayServiceImpl implements HolidayService {
 	
 	@Inject
 	private ApplicationRepository applicationRepository;
-	
-//	@Inject
-//	private OvertimeService overtimeService;
 	
 	@Inject
 	private BrkOffSupChangeMngRepository brkOffSupChangeMngRepository;
@@ -186,15 +184,6 @@ public class HolidayServiceImpl implements HolidayService {
 			appHdWorkDispInfoOutput.setDivergenceTimeRoots(reasonDissociationOutput.getDivergenceTimeRoots());
 			appHdWorkDispInfoOutput.setDivergenceReasonInputMethod(reasonDissociationOutput.getDivergenceReasonInputMethod());
 		}
-//		if(!reasonDissociationOutput.getDivergenceReasonInputMethod().isEmpty()) {
-//			appHdWorkDispInfoOutput.setUseInputDivergenceReason(reasonDissociationOutput.getDivergenceReasonInputMethod().get(0).isDivergenceReasonInputed());
-//			appHdWorkDispInfoOutput.setUseComboDivergenceReason(reasonDissociationOutput.getDivergenceReasonInputMethod().get(0).isDivergenceReasonSelected());
-//			if(!reasonDissociationOutput.getDivergenceReasonInputMethod().get(0).getReasons().isEmpty()) {
-//				appHdWorkDispInfoOutput.setComboDivergenceReason(Optional.of(reasonDissociationOutput.getDivergenceReasonInputMethod().get(0).getReasons()));
-//			} else {
-//				appHdWorkDispInfoOutput.setComboDivergenceReason(Optional.empty());
-//			}
-//		}	
 		
 		return appHdWorkDispInfoOutput;
 	}
@@ -371,7 +360,9 @@ public class HolidayServiceImpl implements HolidayService {
 	}
 
 	@Override
-	public HdWorkDetailOutput getDetail(String companyId, String applicationId,
+	public HdWorkDetailOutput getDetail(
+			String companyId,
+			String applicationId,
 			AppDispInfoStartupOutput appDispInfoStartupOutput) {
 		HdWorkDetailOutput hdWorkDetailOutput = new HdWorkDetailOutput();
 		AppHdWorkDispInfoOutput appHdWorkDispInfoOutput = new AppHdWorkDispInfoOutput();
@@ -436,23 +427,10 @@ public class HolidayServiceImpl implements HolidayService {
 			appHdWorkDispInfoOutput.setDivergenceTimeRoots(reasonDissociationOutput.getDivergenceTimeRoots());
 			appHdWorkDispInfoOutput.setDivergenceReasonInputMethod(reasonDissociationOutput.getDivergenceReasonInputMethod());
 		}
-//		if(!reasonDissociationOutput.getDivergenceReasonInputMethod().isEmpty()) {
-//			appHdWorkDispInfoOutput.setUseInputDivergenceReason(reasonDissociationOutput.getDivergenceReasonInputMethod().get(0).isDivergenceReasonInputed());
-//			appHdWorkDispInfoOutput.setUseComboDivergenceReason(reasonDissociationOutput.getDivergenceReasonInputMethod().get(0).isDivergenceReasonSelected());
-//			if(!reasonDissociationOutput.getDivergenceReasonInputMethod().get(0).getReasons().isEmpty()) {
-//				appHdWorkDispInfoOutput.setComboDivergenceReason(Optional.of(reasonDissociationOutput.getDivergenceReasonInputMethod().get(0).getReasons()));
-//			} else {
-//				appHdWorkDispInfoOutput.setComboDivergenceReason(Optional.empty());
-//			}
-//		}
 		
 		//1-2.起動時勤務種類リストを取得する
 		List<WorkType> workTypeList = commonHolidayWorkAlgorithm.getWorkTypeList(companyId, appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpEmploymentSet().orElse(null));
 		hdWorkDispInfoWithDateOutput.setWorkTypeList(Optional.of(workTypeList));
-		
-//		//	起動時の36協定時間の状態を取得する 
-//		AgreementTimeStatusOfMonthly agreementTimeStatusOfMonthly = overtimeService.getTime36Detail(appHolidayWork.getAppOvertimeDetail().orElse(null));
-//		hdWorkDispInfoWithDateOutput.setActualMonthlyAgreeTimeStatus(Optional.ofNullable(agreementTimeStatusOfMonthly));
 		
 		//01-02_時間外労働を取得
 		String employeeId = appDispInfoStartupOutput.getAppDispInfoNoDateOutput().getEmployeeInfoLst().get(0).getSid();
@@ -511,6 +489,13 @@ public class HolidayServiceImpl implements HolidayService {
 				appHdWorkDispInfoOutput.setCalculationResult(Optional.of(calculationResult));
 			}
 		}
+		// 申請中の勤務情報をセットする
+		appHdWorkDispInfoOutput.setWorkInfo(Optional.of(new WorkInfo(
+				Optional.ofNullable(appHolidayWork.getWorkInformation().getWorkTypeCode()).map(x -> x.v()).orElse(null),
+				appHolidayWork.getWorkInformation().getWorkTimeCodeNotNull().map(x -> x.v()).orElse(null))));
+		
+		
+		
 		appHdWorkDispInfoOutput.setHdWorkDispInfoWithDateOutput(hdWorkDispInfoWithDateOutput);
 		
 		return hdWorkDetailOutput;
@@ -520,7 +505,12 @@ public class HolidayServiceImpl implements HolidayService {
 	public CheckBeforeOutput checkBeforeUpdate(boolean require, String companyId,
 			AppHdWorkDispInfoOutput appHdWorkDispInfoOutput, AppHolidayWork appHolidayWork) {
 		CheckBeforeOutput checkBeforeOutput = new CheckBeforeOutput();
-		
+		String workTypeCode = Optional.ofNullable(appHolidayWork.getWorkInformation().getWorkTypeCode()).map(x -> x.v()).orElse(null);
+		String workTimeCode = appHolidayWork.getWorkInformation().getWorkTimeCodeNotNull().map(x -> x.v()).orElse(null);
+		if (appHdWorkDispInfoOutput.getWorkInfo().isPresent()) {
+			workTypeCode = workTypeCode.equals(appHdWorkDispInfoOutput.getWorkInfo().get().getWorkType()) ? workTypeCode : null;
+			workTimeCode = workTimeCode.equals(appHdWorkDispInfoOutput.getWorkInfo().get().getWorkTime()) ? workTimeCode : null;			
+		}
 		//	4-1.詳細画面登録前の処理
 		detailBeforeProcessRegisterService.processBeforeDetailScreenRegistration(companyId, appHolidayWork.getApplication().getEmployeeID(), 
 				appHolidayWork.getAppDate().getApplicationDate(), 
@@ -528,8 +518,8 @@ public class HolidayServiceImpl implements HolidayService {
 				appHolidayWork.getAppID(), 
 				appHolidayWork.getApplication().getPrePostAtr(), 
 				appHolidayWork.getApplication().getVersion(), 
-				appHolidayWork.getWorkInformation().getWorkTypeCode().v(), 
-				appHolidayWork.getWorkInformation().getWorkTimeCode().v(), 
+				workTypeCode, 
+				workTimeCode, 
 				appHdWorkDispInfoOutput.getAppDispInfoStartupOutput());
 		
 		//3.個別エラーチェック

@@ -391,7 +391,6 @@ public class EmploymentSystemFinder {
 					itemDto.setManagementDataStatus(item.getDataAtr().value);
 					return itemDto;
 				})
-				.sorted(Comparator.comparing(RemainNumberDetailDto::getOccurrenceDate, Comparator.nullsLast(Comparator.reverseOrder()))) // fix bug #115282
 				.collect(Collectors.toList());
 		result.setListRemainNumberDetail(listRemainNumberDetail);
 		

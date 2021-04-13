@@ -143,10 +143,10 @@ public class JpaAnniversaryRepository extends JpaRepository implements Anniversa
                 .setParameter("personalId", loginPersonalId)
                 .getList(AnniversaryNotice::createFromMemento);
        	//AND(
-       	list.stream().filter(anniver -> this.filterToGetTodayAnniver(anniver, ymd)).collect(Collectors.toList());
-       	//) ORDER BY a.記念日 ASC
-       	list.sort(Comparator.comparing(AnniversaryNotice::getAnniversary));
-        return list;
+       	return list.stream()
+       		.filter(anniver -> this.filterToGetTodayAnniver(anniver, ymd))
+       		.sorted(Comparator.comparing(AnniversaryNotice::getAnniversary))
+       		.collect(Collectors.toList());
     }
     
     private boolean filterToGetTodayAnniver(AnniversaryNotice anniver, GeneralDate ymd) {
