@@ -189,8 +189,8 @@ public class ApplicationWebservice extends WebService {
 	}
 	@POST
 	@Path("getApplicationForSendByAppID")
-	public ApplicationSendDto getApplicationForSendByAppID(String appID){
-		return finderApp.getAppByIdForSend(appID);
+	public ApplicationSendDto getApplicationForSendByAppID(List<String> appIDLst){
+		return finderApp.getAppByIdForSend(appIDLst);
 	}
 	
 	@POST

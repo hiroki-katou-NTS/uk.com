@@ -383,7 +383,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
 
         btnSendEmail() {
 			const vm = this;
-            let command = { appID: vm.currentApp() };
+            let command = { appIDLst: [vm.currentApp()], isAgentMode: false };
             nts.uk.ui.windows.setShared("KDL030_PARAM", command);
             nts.uk.ui.windows.sub.modal("/view/kdl/030/a/index.xhtml");
         }
