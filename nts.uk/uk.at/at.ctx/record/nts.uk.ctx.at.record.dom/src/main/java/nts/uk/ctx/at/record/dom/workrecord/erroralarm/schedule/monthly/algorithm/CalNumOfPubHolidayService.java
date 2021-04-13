@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
-import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
@@ -13,7 +12,6 @@ import nts.uk.ctx.at.record.dom.adapter.workschedule.WorkScheduleWorkInforImport
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.GetYearProcessAndPeriodDto;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
-import nts.uk.ctx.at.shared.dom.worktype.algorithm.JudgmentWorkTypeService;
 
 /**
  * UKDesign.ドメインモデル."NittsuSystem.UniversalK".就業.contexts.勤務実績.勤務実績.勤務実績のエラーアラーム設定.アラームリスト.スケジュール日次・月次・年間.スケジュール月次のアラームリストのチェック条件.アルゴリズム.使用しない.特定属性の項目の予定を作成する.対比のチェック条件をチェック.所定公休日数比をチェック.公休使用数を計算する
@@ -21,8 +19,6 @@ import nts.uk.ctx.at.shared.dom.worktype.algorithm.JudgmentWorkTypeService;
  */
 @Stateless
 public class CalNumOfPubHolidayService {
-	@Inject
-	private JudgmentWorkTypeService judgmentWorkTypeService;
 	
 	/**
 	 * 公休使用数を計算する
@@ -107,7 +103,7 @@ public class CalNumOfPubHolidayService {
 			
 			// 公休消化するか判断
 			// Output: 公休区分
-			boolean hasUsePublicHoliday = judgmentWorkTypeService.hasUsePublicHoliday(workTypeOpt.get());
+			boolean hasUsePublicHoliday = workTypeOpt.get().getDailyWork().isHolidayWork();
 			if (!hasUsePublicHoliday) {
 				continue;
 			}

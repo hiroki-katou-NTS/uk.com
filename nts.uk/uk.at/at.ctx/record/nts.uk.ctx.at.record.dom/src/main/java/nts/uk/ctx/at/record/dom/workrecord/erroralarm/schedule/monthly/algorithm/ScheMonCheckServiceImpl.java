@@ -116,7 +116,6 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeUnit;
-import nts.uk.ctx.at.shared.dom.worktype.algorithm.JudgmentWorkTypeService;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 
@@ -174,6 +173,7 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 	private WorkingConditionItemRepository workingConditionItemRepository;
 	@Inject
 	private WorkingConditionRepository workingConditionRepository;
+	@SuppressWarnings("rawtypes")
 	@Inject
 	private CompareValueRangeChecking compareValueRangeChecking;
 	@Inject
@@ -194,8 +194,6 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 	private CalculateVacationDayService calculateVacationDayService;
 	@Inject
 	private CalMonWorkingTimeService calMonWorkingTimeService;
-	@Inject
-	private JudgmentWorkTypeService judgmentWorkTypeService;
 	
 	@Override
 	public void extractScheMonCheck(String cid, List<String> lstSid, DatePeriod dPeriod, String errorCheckId,
@@ -764,6 +762,7 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 	 * Process with チェック項目=対比
 	 * <Tab2>
 	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private ExtractionResultDetail conditionTab2ItemContrast(
 			String cid, String sid, String wkpId, String empCode, YearMonth ym, 
 			ClosureIdPresentClosingPeriod closureIdPresentClosingPeriod, 
@@ -1166,6 +1165,7 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 	 * 時間チェック条件をチェック
 	 * <Tab2>
 	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private ExtractionResultDetail conditionTab2ItemTime(
 			String cid, String sid, String wkpId, YearMonth ym,
 			AttendanceTimeOfMonthly attendanceTimeOfMonthly,
@@ -1217,6 +1217,7 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 	/**
 	 * 時間チェック条件をチェック
 	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private ExtractionResultDetail conditionTab2ItemDay(
 			String cid, String sid, String wkpId, YearMonth ym,
 			AttendanceTimeOfMonthly attendanceTimeOfMonthly,
@@ -1394,9 +1395,10 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 			
 			WorkType workType = workTypeOpt.get();
 			
-			// 勤務種類が休暇系か判断 TODO need QA method
+			// UKDesign.ドメインモデル."NittsuSystem.UniversalK".就業.shared.就業規則.勤務種類.アルゴリズム.勤務種類が休暇系か判断
+			// 勤務種類が休暇系か判断  QA#115702
 			// Output: 休日区分
-			boolean isHoliday = judgmentWorkTypeService.isVacationType(workType);
+			boolean isHoliday = workType.getDecisionAttendanceHolidayAttr();
 			if (!isHoliday) {
 				continue;
 			}
@@ -1427,6 +1429,7 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 	/**
 	 * Get parameter 0 for alarm content 
 	 */
+	@SuppressWarnings({ "rawtypes" })
 	public String getCompareOperatorText(CheckedCondition checkCondition, String checkCondTypeName) {
 		if (checkCondition == null) {
 			return checkCondTypeName;		
@@ -1485,7 +1488,7 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 		 */
 		SHA(3);
 		
-		public int value;
+		private int value;
 		private MonthlyWorkTimeSetAtr(int value){
 			this.value = value;
 		}
