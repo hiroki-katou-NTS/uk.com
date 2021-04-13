@@ -725,16 +725,15 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		timeLeavingOfDailyPerformance = correctStamp(integrationOfDaily.getAttendanceLeave(), employeeId, targetDate);
 
 		//所定労働時間帯の件数を取得
-		int predTimeSpanCount = predetermineTimeSet.isPresent()
-				? predetermineTimeSet.get().getTimezoneByAmPmAtrForCalc(workType.checkWorkDay().toAmPmAtr().orElse(AmPmAtr.ONE_DAY)).size()
-				: 0;
+		val amPmAtr = workType.checkWorkDay().toAmPmAtr().orElse(AmPmAtr.ONE_DAY);
+		int predTimeSpanCount = predetermineTimeSet.map(c -> c.getTimezoneByAmPmAtrForCalc(amPmAtr).size()).orElse(0);
 		
 		//所定労働時間帯の件数に合わせた出退勤
 		List<TimeLeavingWork> predTimeLeavingWorks = timeLeavingOfDailyPerformance.get().getTimeLeavingWorks(); //correctStamp()でemptyの可能性がない為、getしている
 		if(predTimeSpanCount < 2) {
 			predTimeLeavingWorks = predTimeLeavingWorks.stream()
-					.filter(t -> t.getWorkNo().equals(new WorkNo(1)))
-					.collect(Collectors.toList());
+					.sorted((c1, c2) -> c1.getWorkNo().compareTo(c2.getWorkNo()))
+					.limit(1).collect(Collectors.toList());
 		}
 		
 		//ジャスト遅刻、早退による時刻補正

@@ -38,9 +38,10 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.WorkRecordExtrac
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.ErAlAttendanceItemCondition;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.service.ErAlWorkRecordCheckService;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.service.ErAlWorkRecordCheckService.ErrorRecord;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.worktime.PlanActualWorkTime;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.worktime.SingleWorkTime;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.worktype.PlanActualWorkType;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.worktype.SingleWorkType;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.worktype.WorkTypeCondition;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.daily.DailyCheckService;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.CompareOperatorText;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.ConditionAtr;
@@ -176,7 +177,7 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 							prepareData.getLstItemDay(),
 							extractConditionWorkRecord, 
 							prepareData.getListWorkType(),
-							lstStatusEmp);
+							lstStatusEmp, prepareData.getListWorktime());
 					lstResultCondition.addAll(checkTab3.getLstResultCondition());
 					lstCheckType.addAll(checkTab3.getLstCheckType());
 				}
@@ -361,10 +362,9 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 			List<MonthlyAttendanceItemNameDto> lstItemDay,
 			List<String> extractConditionWorkRecord,
 			List<WorkType> lstWkType,
-			List<StatusOfEmployeeAdapterAl> lstStatusEmp) {
+			List<StatusOfEmployeeAdapterAl> lstStatusEmp, List<WorkTimeSetting> listWorktime) {
 		OutputCheckResult result = new OutputCheckResult(new ArrayList<>(), new ArrayList<>());
 		int renzoku = 0;
-		int renzokuWt = 1;
 		Optional<ErrorAlarmCondition> optErrorAlarm = listErrorAlarmCon.stream()
 				.filter(x -> x.getErrorAlarmCheckID().equals(extCond.getErrorAlarmCheckID()))
 				.findFirst();
@@ -373,7 +373,10 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 		AlarmMessageValues alMes = new AlarmMessageValues("","","","");
 		String alarmMessage = "";
 		GeneralDate renzokuDate = datePeriod.start();
-		SingleWorkType wtConCheck = null;
+		List<WorkTypeCode> lstWorkTypeCond = new ArrayList<>();
+		List<WorkTimeCode> lstWorkTimeCond = new ArrayList<>();
+		FilterByCompare wTypeCom = FilterByCompare.ALL;
+		FilterByCompare wTimeCom = FilterByCompare.ALL;
 		for(GeneralDate exDate : datePeriod.datesBetween()) {
 			// 社員の会社所属状況をチェック
 			List<StatusOfEmployeeAdapterAl> statusOfEmp = lstStatusEmp.stream()
@@ -407,6 +410,7 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 				if(mapCheck.isEmpty() || !mapCheck.get(0).isError()) {
 					if(renzoku != 0 && renzoku >= errorAlarm.getContinuousPeriod().v()) {
 						//Group 1
+						alMes = new AlarmMessageValues("","","","");
 						List<ErAlAttendanceItemCondition<?>> lstErCondition = errorAlarm.getAtdItemCondition().getGroup1().getLstErAlAtdItemCon();
 						createMess(lstItemDay, lstWkType, extCond, errorAlarm, mapCheck, lstErCondition, alMes);
 						this.createExtractAlarmRenzoku(sid,
@@ -421,8 +425,8 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 								getWplByListSidAndPeriod,
 								errorAlarm.getContinuousPeriod().v(),
 								extCond.getCheckItem(),
-								wtConCheck,
-								lstWkType);
+								lstWorkTypeCond, lstWkType, wTypeCom,
+								lstWorkTimeCond, listWorktime, wTimeCom);
 					}
 					renzoku = 0;
 					continue;	
@@ -436,6 +440,7 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 						if(!optCheckInfor.isPresent()) {
 							result.getLstCheckType().add(new AlarmListCheckInfor(String.valueOf(extCond.getSortOrderBy()), AlarmListCheckType.FreeCheck));
 						}
+						alMes = new AlarmMessageValues("","","","");
 						//Group 1
 						List<ErAlAttendanceItemCondition<?>> lstErCondition = errorAlarm.getAtdItemCondition().getGroup1().getLstErAlAtdItemCon();
 						createMess(lstItemDay, lstWkType, extCond, errorAlarm, mapCheck, lstErCondition, alMes);
@@ -466,7 +471,7 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 					
 				} else {
 					if(renzoku != 0  && renzoku >= errorAlarm.getContinuousPeriod().v()) {
-						//Group 1
+						alMes = new AlarmMessageValues("","","","");
 						List<ErAlAttendanceItemCondition<?>> lstErCondition = errorAlarm.getAtdItemCondition().getGroup1().getLstErAlAtdItemCon();
 						createMess(lstItemDay, lstWkType, extCond, errorAlarm, mapCheck, lstErCondition, alMes);
 						this.createExtractAlarmRenzoku(sid,
@@ -481,77 +486,165 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 								getWplByListSidAndPeriod,
 								errorAlarm.getContinuousPeriod().v(),
 								extCond.getCheckItem(),
-								wtConCheck,
-								lstWkType);
+								lstWorkTypeCond, lstWkType, wTypeCom,
+								lstWorkTimeCond, listWorktime, wTimeCom);
 					}
 					renzoku = 0;
 				}
 				break;
 			case CONTINUOUS_TIME_ZONE:
-				break;
-			case CONTINUOUS_WORK:
-				wtConCheck = (SingleWorkType) errorAlarm.getWorkTypeCondition();
-				if(wtConCheck != null) {
-					List<IntegrationOfDaily> lstDailyBefore = listIntegrationDai.stream()
-							.filter(x -> x.getEmployeeId().equals(sid) && x.getYmd().equals(exDate.addDays(-1)))
-							.collect(Collectors.toList());			
-					if(!lstDailyBefore.isEmpty()) {
-						WorkTypeCode workTypeCode = integrationDaily.getWorkInformation().getRecordInfo().getWorkTypeCode();
-						WorkTypeCode workTypeCodeBefore = lstDailyBefore.get(0).getWorkInformation().getRecordInfo().getWorkTypeCode();
-						if(workTypeCode.equals(workTypeCodeBefore)) {
-							switch (wtConCheck.getComparePlanAndActual()) {
-							case ALL:
-								isWorkTypeChk = true;
-								break;
-							case SELECTED:
-								if(wtConCheck.getTargetWorkType().getLstWorkType().contains(workTypeCode)) {
-									isWorkTypeChk = true;
-								}
-							case NOT_SELECTED:
-								if(!wtConCheck.getTargetWorkType().getLstWorkType().contains(workTypeCode)) {
-									isWorkTypeChk = true;
-								}
-							default:
-								break;
-							}
+				wTimeCom = errorAlarm.getWorkTimeCondition().getComparePlanAndActual();
+				if(wTimeCom != FilterByCompare.SELECTED) {
+					PlanActualWorkTime wtimeCondition = (PlanActualWorkTime) errorAlarm.getWorkTimeCondition();
+					lstWorkTimeCond = wtimeCondition.getWorkTimePlan().getLstWorkTime(); 
+				} else {
+					SingleWorkTime workTimeConCheck = (SingleWorkTime)errorAlarm.getWorkTimeCondition();
+					lstWorkTimeCond = workTimeConCheck.getTargetWorkTime().getLstWorkTime();
+				}
+				
+				wTypeCom = errorAlarm.getWorkTypeCondition().getComparePlanAndActual();
+				if(wTypeCom != FilterByCompare.SELECTED) {
+					PlanActualWorkType wtypeCondition = (PlanActualWorkType) errorAlarm.getWorkTypeCondition();
+					lstWorkTypeCond = wtypeCondition.getWorkTypePlan().getLstWorkType();					
+				} else {
+					SingleWorkType wtConCheck = (SingleWorkType) errorAlarm.getWorkTypeCondition();
+					lstWorkTypeCond = wtConCheck.getTargetWorkType().getLstWorkType();
+				}
+					
+				
+				WorkTypeCode workTypeCd = integrationDaily.getWorkInformation().getRecordInfo().getWorkTypeCode();
+				switch (wTypeCom) {
+				case ALL:
+					isWorkTypeChk = true;
+					break;
+				case SELECTED:
+					if(lstWorkTypeCond.contains(workTypeCd)) {
+						isWorkTypeChk = true;
+					} else {
+						isWorkTypeChk = false;
+					}
+					break;
+				case NOT_SELECTED:
+					if(!lstWorkTypeCond.contains(workTypeCd)) {
+						isWorkTypeChk = true;
+					} else {
+						isWorkTypeChk = false;
+					}
+					break;
+				default:
+					break;
+				}
+				WorkTimeCode workTimeCd = integrationDaily.getWorkInformation().getRecordInfo().getWorkTimeCode();
+				if(isWorkTypeChk && workTimeCd != null) {
+					switch (wTimeCom) {
+					case SELECTED:
+						if(lstWorkTimeCond.contains(workTimeCd)) {
+							isWorkTypeChk = true;
+						} else {
+							isWorkTypeChk = false;
 						}
+						break;
+					case NOT_SELECTED:
+						if(lstWorkTimeCond.contains(workTimeCd)) {
+							isWorkTypeChk = false;
+						} else {
+							isWorkTypeChk = true;
+						}
+						break;
+					default:
+						break;
 					}
 					if(isWorkTypeChk) {
-						renzokuWt += 1;
-						renzokuDate = exDate;
-					} else {
-						if(renzokuWt > 1 && renzokuWt >= errorAlarm.getContinuousPeriod().v()) {
-							this.createExtractAlarmRenzoku(sid,
-									new DatePeriod(exDate.addDays(-renzokuWt), exDate),
-									result.getLstResultCondition(),
-									extCond.getNameWKRecord().v(),
-									alMes,
-									Optional.ofNullable(errorAlarm.getDisplayMessage().v()),
-									renzokuWt,
-									String.valueOf(extCond.getSortOrderBy()),
-									AlarmListCheckType.FreeCheck,
-									getWplByListSidAndPeriod,
-									errorAlarm.getContinuousPeriod().v(),									
-									extCond.getCheckItem(),
-									wtConCheck,
-									lstWkType);
-						}
-						renzokuWt = 1;
+						renzoku += 1;
 						renzokuDate = exDate;
 					}
+				}
+				if(!isWorkTypeChk) {
+					if(renzoku > 1 && renzoku >= errorAlarm.getContinuousPeriod().v()) {
+						this.createExtractAlarmRenzoku(sid,
+								new DatePeriod(exDate.addDays(-renzoku), exDate),
+								result.getLstResultCondition(),
+								extCond.getNameWKRecord().v(),
+								alMes,
+								Optional.ofNullable(errorAlarm.getDisplayMessage().v()),
+								renzoku,
+								String.valueOf(extCond.getSortOrderBy()),
+								AlarmListCheckType.FreeCheck,
+								getWplByListSidAndPeriod,
+								errorAlarm.getContinuousPeriod().v(),									
+								extCond.getCheckItem(),
+								lstWorkTypeCond, lstWkType, wTypeCom,
+								lstWorkTimeCond, listWorktime, wTimeCom);
+					}
+					renzoku = 0;
+					renzokuDate = exDate;
+				} 				
+				break;
+			case CONTINUOUS_WORK:
+				wTypeCom = errorAlarm.getWorkTypeCondition().getComparePlanAndActual();
+				if(wTypeCom != FilterByCompare.SELECTED) {
+					PlanActualWorkType wtypeCondition = (PlanActualWorkType) errorAlarm.getWorkTypeCondition();
+					lstWorkTypeCond = wtypeCondition.getWorkTypePlan().getLstWorkType();					
+				} else {
+					SingleWorkType wtConCheck = (SingleWorkType) errorAlarm.getWorkTypeCondition();
+					lstWorkTypeCond = wtConCheck.getTargetWorkType().getLstWorkType();
+				}
+				
+				List<IntegrationOfDaily> lstDailyBefore = listIntegrationDai.stream()
+						.filter(x -> x.getEmployeeId().equals(sid) && x.getYmd().equals(exDate.addDays(-1)))
+						.collect(Collectors.toList());			
+				if(!lstDailyBefore.isEmpty()) {
+					WorkTypeCode workTypeCode = integrationDaily.getWorkInformation().getRecordInfo().getWorkTypeCode();
+					switch (wTypeCom) {
+					case ALL:
+						isWorkTypeChk = true;
+						break;
+					case SELECTED:
+						if(lstWorkTypeCond.contains(workTypeCode)) {
+							isWorkTypeChk = true;
+						}
+					case NOT_SELECTED:
+						if(!lstWorkTypeCond.contains(workTypeCode)) {
+							isWorkTypeChk = true;
+						}
+					default:
+						break;
+					}
+				}
+				if(isWorkTypeChk) {
+					renzoku += 1;
+					renzokuDate = exDate;
+				} else {
+					if(renzoku > 0 && renzoku >= errorAlarm.getContinuousPeriod().v()) {
+						this.createExtractAlarmRenzoku(sid,
+								new DatePeriod(exDate.addDays(-renzoku), exDate),
+								result.getLstResultCondition(),
+								extCond.getNameWKRecord().v(),
+								alMes,
+								Optional.ofNullable(errorAlarm.getDisplayMessage().v()),
+								renzoku,
+								String.valueOf(extCond.getSortOrderBy()),
+								AlarmListCheckType.FreeCheck,
+								getWplByListSidAndPeriod,
+								errorAlarm.getContinuousPeriod().v(),									
+								extCond.getCheckItem(),
+								lstWorkTypeCond, lstWkType, wTypeCom,
+								lstWorkTimeCond, listWorktime, wTimeCom);
+					}
+					renzoku = 0;
+					renzokuDate = exDate;
 				}
 				break;
 			default:
 				break;
 			}
 		}
-		renzoku = renzokuWt > 1 ? renzokuWt : renzoku;
 		if(renzoku != 0 && renzoku >= errorAlarm.getContinuousPeriod().v()) {
-			//Group 1
+			alMes = new AlarmMessageValues("","","","");
 			List<ErAlAttendanceItemCondition<?>> lstErCondition = errorAlarm.getAtdItemCondition().getGroup1().getLstErAlAtdItemCon();
 			createMess(lstItemDay, lstWkType, extCond, errorAlarm, new ArrayList<>(), lstErCondition, alMes);
 			this.createExtractAlarmRenzoku(sid,
-					new DatePeriod(renzokuDate.addDays(-renzoku), renzokuDate),
+					new DatePeriod(renzokuDate.addDays(-(renzoku-1)), renzokuDate),
 					result.getLstResultCondition(),
 					extCond.getNameWKRecord().v(),
 					alMes,
@@ -562,8 +655,8 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 					getWplByListSidAndPeriod,
 					errorAlarm.getContinuousPeriod().v(),
 					extCond.getCheckItem(),
-					wtConCheck,
-					lstWkType);
+					lstWorkTypeCond, lstWkType, wTypeCom,
+					lstWorkTimeCond, listWorktime, wTimeCom);
 		}
 		return result;
 	}
@@ -578,8 +671,8 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 			String alarmCode, AlarmListCheckType checkType,
 			List<WorkPlaceHistImportAl> getWplByListSidAndPeriod,
 			int continuousPeriod, TypeCheckWorkRecord typeCheck, 
-			SingleWorkType wtConCheck,
-			List<WorkType> lstWkType) {
+			List<WorkTypeCode> lstWorkTypeCond, List<WorkType> lstWkType, FilterByCompare wTypeCom,
+			List<WorkTimeCode> lstWorkTimeCond, List<WorkTimeSetting> lstWorkTime, FilterByCompare wTimeCom) {
 		String wplId = "";
 		Optional<WorkPlaceHistImportAl> optWorkPlaceHistImportAl = getWplByListSidAndPeriod.stream().filter(x -> x.getEmployeeId().equals(sid)).findFirst();
 		if(optWorkPlaceHistImportAl.isPresent()) {
@@ -598,14 +691,35 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 					alMes.getWtName().isEmpty() ?  alMes.getWorkTypeName() : alMes.getWtName(),
 					alMes.getAttendentName(), String.valueOf(continuousPeriod));	
 		} else if (typeCheck == TypeCheckWorkRecord.CONTINUOUS_WORK) {
-			List<String> condWt = lstWkType.stream().filter(x -> wtConCheck.getTargetWorkType().getLstWorkType().contains(x.getWorkTypeCode()))
+			List<String> condWt = lstWkType.stream().filter(x -> lstWorkTypeCond.contains(x.getWorkTypeCode()))
 					.collect(Collectors.toList())
-					.stream().map(a -> a.getName().v()).collect(Collectors.toList());
+					.stream().map(a -> a.getWorkTypeCode().v()+ ' ' + a.getName().v()).collect(Collectors.toList());
 			 String strWt = condWt.stream().map(Object::toString)
                      .collect(Collectors.joining(",")); 
 			alarmContent = TextResource.localize("KAL010_627",
-					wtConCheck.getComparePlanAndActual() == FilterByCompare.SELECTED ? TextResource.localize("KAL010_134") : TextResource.localize("KAL010_135"),
-							strWt,
+					wTypeCom == FilterByCompare.SELECTED ? TextResource.localize("KAL010_134") : TextResource.localize("KAL010_135"),
+					strWt,
+					String.valueOf(continuousPeriod));
+		} else if (typeCheck == TypeCheckWorkRecord.CONTINUOUS_TIME_ZONE) {
+			List<String> condWt = lstWkType.stream().filter(x -> lstWorkTypeCond.contains(x.getWorkTypeCode()))
+					.collect(Collectors.toList())
+					.stream().map(a -> a.getWorkTypeCode().v()+ ' ' + a.getName().v()).collect(Collectors.toList());
+			 String strWt = condWt.stream().map(Object::toString)
+                     .collect(Collectors.joining(",")); 
+			 
+			List<String> condWtime = lstWorkTime.stream().filter(x -> lstWorkTimeCond.contains(x.getWorktimeCode()))
+					.collect(Collectors.toList())
+					.stream().map(x -> x.getWorktimeCode().v() + ' ' + x.getWorkTimeDisplayName().getWorkTimeName().v())
+					.collect(Collectors.toList());
+			String strWtime = condWtime.stream().map(Object::toString)
+                    .collect(Collectors.joining(","));
+			alarmContent = TextResource.localize("KAL010_628",
+					wTypeCom == FilterByCompare.ALL ? "" :
+						wTypeCom == FilterByCompare.SELECTED ? TextResource.localize("KAL010_134") : TextResource.localize("KAL010_135"),
+					strWt,
+					wTimeCom == FilterByCompare.ALL ? "" :
+						wTimeCom == FilterByCompare.SELECTED ? TextResource.localize("KAL010_134") : TextResource.localize("KAL010_135"),
+					strWtime,
 					String.valueOf(continuousPeriod));
 		}
 		
@@ -633,6 +747,7 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 	private void createMess(List<MonthlyAttendanceItemNameDto> lstItemDay, List<WorkType> lstWkType,
 			WorkRecordExtractingCondition extCond, ErrorAlarmCondition errorAlarm, List<ErrorRecord> mapCheck,
 			List<ErAlAttendanceItemCondition<?>> lstErCondition, AlarmMessageValues alMes) {
+		
 		for (ErAlAttendanceItemCondition<?> erCondition : lstErCondition) {
 			//比較演算子
 			int compare = erCondition.getCompareSingleValue() == null ?
@@ -716,7 +831,7 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 					WorkTypeCode wt = lstWorkType.get(i);
 					Optional<WorkType> optWt = lstWkType.stream().filter(x -> x.getWorkTypeCode().equals(wt))
 							.findFirst();
-					if(optWt.isPresent()) alMes.setWtName(alMes.getWtName() + ", " + optWt.get().getName().v());
+					if(optWt.isPresent()) alMes.setWtName(alMes.getWtName() + ", " + optWt.get().getWorkTypeCode().v()  + ' ' + optWt.get().getName().v());
 				}
 				alMes.setWtName(alMes.getWtName().substring(2));
 			} else {

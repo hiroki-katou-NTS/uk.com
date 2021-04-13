@@ -232,7 +232,7 @@ public class FlexWorkSetting extends WorkTimeAggregateRoot implements Cloneable,
 
 	public FlowWorkRestTimezone getFlowWorkRestTimezone(WorkType workType) {
 		val attenHolAtr = workType.getAttendanceHolidayAttr();
-		if (attenHolAtr == AttendanceHolidayAttr.HOLIDAY) {
+		if (workType.isHolidayWork()) {
 			return this.offdayWorkTime.getRestTimezone();
 		}
 		if (this.getFlexHalfDayWorkTime(attenHolAtr).isPresent()) {
