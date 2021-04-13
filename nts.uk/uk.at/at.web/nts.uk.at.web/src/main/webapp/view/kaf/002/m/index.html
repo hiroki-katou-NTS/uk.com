@@ -1,5 +1,7 @@
+
 <div
-	data-bind="ntsTabPanel: { dataSource:  $component.tabs, active: selectedTab }">
+	id="kaf002TabPanel"
+	data-bind="ntsTabPanel: { dataSource:  $component.tabs, active: selectedTab }" style="width: 450px !important">
 	<div data-bind="if: comment1().content != ''" >
 		<div
 			data-bind="text: comment1().content,
