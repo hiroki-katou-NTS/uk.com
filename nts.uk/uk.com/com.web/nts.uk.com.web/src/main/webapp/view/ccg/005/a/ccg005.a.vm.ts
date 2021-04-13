@@ -203,7 +203,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
                   <i tabindex=16 class="ccg005-pagination-btn"
                     data-bind="ntsIcon: {no: 193, width: 15, height: 20}, click: $component.previousPage"></i>
                   <!-- A5_2 -->
-                  <span style="white-space: nowrap; width: 70px; text-align: center;"
+                  <span style="white-space: nowrap; width: auto; text-align: center;"
                     data-bind="text: $component.paginationText()"></span>
                   <!-- A5_3 -->
                   <i tabindex=17 class="ccg005-pagination-btn"
