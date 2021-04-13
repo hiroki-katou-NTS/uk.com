@@ -1,11 +1,43 @@
 module nts.uk.at.view.kaf002_ref.m.viewmodel {
     const template = `
-<div data-bind="ntsTabPanel: { dataSource:  $component.tabs, active: selectedTab }"></div>
-<div data-bind="foreach: $component.nameGrids">
-	<div data-bind="css: { 'hidden': $component.selectedTab() !== 'tab-' + ($index() + 1) }">
-		<table data-bind="attr: { 'id': $data }"></table>
+
+<div
+	id="kaf002TabPanel"
+	data-bind="ntsTabPanel: { dataSource:  $component.tabs, active: selectedTab }" style="width: 450px !important">
+	<div data-bind="if: comment1().content != ''" >
+		<div
+			data-bind="text: comment1().content,
+					   style: {color: comment1().color,
+					   margin:'10px',
+					   fontWeight: comment1().isBold ? 'bold' : 'normal'}"
+			class="label"
+			style="white-space: break-spaces; width: auto !important">
+			
+		</div>
 	</div>
-</div>`;
+
+	<div data-bind="foreach: $component.nameGrids">
+		<div
+			data-bind="css: { 'hidden': $component.selectedTab() !== 'tab-' + ($index() + 1) }">
+			<table data-bind="attr: { 'id': $data }"></table>
+		</div>
+	</div>
+
+	<div data-bind="if: comment2().content != ''" >
+		<div
+			data-bind="text: comment2().content,
+					   style: {color: comment2().color,
+					   margin:'10px',
+					   fontWeight: comment2().isBold ? 'bold' : 'normal'}"
+			class="label"
+			style="white-space: break-spaces; width: auto !important">
+			
+		</div>
+	</div>
+
+
+</div>
+`;
 
     @component({
         name: 'kaf002-m',
@@ -42,9 +74,30 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
         selectedTemp: any;
         reasonList: Array<GoOutTypeDispControl>;
         mode: KnockoutObservable<number>;
-        created(params) {
+
+		comment1: KnockoutObservable<Comment> = ko.observable(new Comment('', true, ''));
+        comment2: KnockoutObservable<Comment> = ko.observable(new Comment('', true, ''));
+
+        created(params: any) {
 
             const self = this;
+			
+			const comment1 = params.comment1 as KnockoutObservable<Comment>;
+			self.comment1(ko.unwrap(comment1));
+			comment1.subscribe((comment) => {
+				if (comment) {
+					self.comment1(comment);
+				}
+			})
+			const comment2 = params.comment2 as KnockoutObservable<Comment>;
+			self.comment2(ko.unwrap(comment2));
+			comment2.subscribe((comment) => {
+				if (comment) {
+					self.comment2(comment);
+				}
+			})
+
+
             self.mode = params.mode;
             self.reasonList = params.reasonList
             self.tabMs = params.tabMs;
@@ -165,6 +218,17 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
                             }
                         }
                     }
+
+
+					// tabPanel
+					if ($('#kaf002TabPanel').length) {
+						if (value == 'tab-2') {
+							$('#kaf002TabPanel').width(600)							
+						} else {
+							$('#kaf002TabPanel').width(450)							
+						}
+					}
+					
 
                 }
             })
@@ -623,7 +687,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
                 + '</div>'
                 + '</div>';
 
-            this.flag = '<div  style="display: block" align="center" data-bind="css: !' + param + '[' + idGetList + '].flagEnable ? \'disableFlag\' : \'enableFlag\' , ntsCheckBox: {enable: ' + param + '[' + idGetList + '].flagEnable, checked: ' + param + '[' + idGetList + '].flagObservable}"></div>';
+            this.flag = '<div align="center" data-bind="css: !' + param + '[' + idGetList + '].flagEnable ? \'disableFlag\' : \'enableFlag\' , ntsCheckBox: {enable: ' + param + '[' + idGetList + '].flagEnable, checked: ' + param + '[' + idGetList + '].flagObservable}"></div>';
         }
 
 
@@ -652,7 +716,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
                 + '</div>'
                 + '</div>';
 
-            this.flag = '<div class="flag" style="display: block" align="center" data-bind="css: !' + param + '[' + idGetList + '].flagEnable ? \'disableFlag\' : \'enableFlag\' , ntsCheckBox: {enable: ' + param + '[' + idGetList + '].flagEnable, checked: ' + param + '[' + idGetList + '].flagObservable}"></div>';
+            this.flag = '<div class="flag" align="center" data-bind="css: !' + param + '[' + idGetList + '].flagEnable ? \'disableFlag\' : \'enableFlag\' , ntsCheckBox: {enable: ' + param + '[' + idGetList + '].flagEnable, checked: ' + param + '[' + idGetList + '].flagObservable}"></div>';
         }
         public changeElementByPreAtr() {
             const self = this;
@@ -789,5 +853,21 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
             $(element).ntsGrid(options);
 
         }
+    }
+
+	class Comment{
+        public content: string;
+        public isBold: boolean;
+        public color: string;
+        constructor( content: string, isBold: boolean, color: string) {
+            this.content = content;
+            this.isBold = isBold;
+            this.color = color;
+        }
+        toHtml() {
+            const self = this;
+            return '<div style= {}>' + self.content + '</div>'
+        }
+        
     }
 }

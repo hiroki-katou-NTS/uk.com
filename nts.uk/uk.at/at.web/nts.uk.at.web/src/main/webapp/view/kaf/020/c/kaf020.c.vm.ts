@@ -7,9 +7,7 @@ module nts.uk.at.view.kaf020.c.viewmodel {
 
     @component({
         name: 'kaf020-c',
-        template: `<div>
-            <div style="padding-bottom: 10px" data-bind="component: { name: 'kaf020-share', params: {dataFetch: dataFetch }}"></div>
-        </div>`,
+        template: `/nts.uk.at.web/view/kaf/020/c/index.html`,
         })
 
     export class Kaf020CViewModel extends ko.ViewModel {

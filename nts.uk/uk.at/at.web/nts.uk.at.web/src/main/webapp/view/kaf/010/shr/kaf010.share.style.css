@@ -177,9 +177,7 @@ div.form-label.broken {
 #overtime-container .nts-fixed-body-container.ui-iggrid {
 	overflow: hidden;		
 }
-.nts-fixed-body-wrapper{
-	height: 96px !important;
-}
+
 .scroll-header{
 	height: 24px !important;
 }

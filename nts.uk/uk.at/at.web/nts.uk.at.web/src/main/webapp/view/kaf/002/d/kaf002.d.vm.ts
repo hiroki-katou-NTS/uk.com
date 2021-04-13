@@ -5,20 +5,71 @@ module nts.uk.at.view.kaf002_ref.d.viewmodel {
 	import CommonProcess = nts.uk.at.view.kaf000.shr.viewmodel.CommonProcess;
     
     const template = `
-           <div>
-	
-	
-	
-	
-	<div class="label" data-bind="text: comment1().content, style: {color: comment1().color , margin:'10px', fontWeight: comment1().isBold ? 'bold' : 'normal'}" style="margin: 10px">
-	</div>
+        
 
-	<div class="inlineBlockFirst">
-		<!-- B6_1 -->
-		<div class="labelFirst"
-			data-bind="ntsFormLabel: {required: true}, html: $i18n('KAF002_79')"></div>
-		<div style="margin-left: 40px"
-			data-bind="ntsComboBox: {
+
+
+
+<div id="kaf002-d">
+	<div id="contents-area"
+		style="background-color: inherit; height: calc(100vh - 165px);">
+		<div class="two-panel" style="height: 100%;">
+			<div class="left-panel"
+				style="width: calc(100% - 410px); height: inherit; overflow: auto">
+				<div style="height: inherit; background-color: #fff; padding: 10px;">
+					<div class="table"
+						style="border-bottom: 2px solid #B1B1B1; padding-bottom: 30px; margin-bottom: 30px; width: 100%;">
+						<div class="cell" style="vertical-align: middle;">
+							<div
+								data-bind="component: { name: 'kaf000-b-component4',
+                                                params: {
+                                                    appType: appType,
+                                                    application: application,
+                                                    appDispInfoStartupOutput: appDispInfoStartupOutput
+                                                } }"></div>
+						</div>
+						<div class="cell"
+							style="text-align: right; vertical-align: middle;">
+							<div
+								data-bind="component: { name: 'kaf000-b-component8', 
+                                                params: {
+                                                    appType: appType,
+                                                    appDispInfoStartupOutput: appDispInfoStartupOutput
+                                                } }"></div>
+						</div>
+					</div>
+					<div
+						data-bind="component: { name: 'kaf000-b-component5', 
+                                                params: {
+                                                    appType: appType,
+                                                    application: application,
+                                                    appDispInfoStartupOutput: appDispInfoStartupOutput
+                                                } }"></div>
+					<div
+						data-bind="component: { name: 'kaf000-b-component6', 
+                                                params: {
+                                                    appType: appType,
+                                                    application: application,
+                                                    appDispInfoStartupOutput: appDispInfoStartupOutput
+                                                } }"
+						style="width: fit-content; display: inline-block; vertical-align: middle;"></div>
+
+
+					<div>
+
+
+
+
+						<div class="label"
+							data-bind="text: comment1().content, style: {color: comment1().color , margin:'10px', fontWeight: comment1().isBold ? 'bold' : 'normal'}"
+							style="margin: 10px"></div>
+
+						<div class="inlineBlockFirst">
+							<!-- B6_1 -->
+							<div class="labelFirst"
+								data-bind="ntsFormLabel: {required: true}, html: $i18n('KAF002_79')"></div>
+							<div
+								data-bind="ntsComboBox: {
 						options: dataSource,
 						optionsValue: 'code',
 						value: selectedCode,
@@ -26,27 +77,66 @@ module nts.uk.at.view.kaf002_ref.d.viewmodel {
 						required: true,
 						name: $i18n('KAF002_77')
 					}"></div>
-	</div>
+						</div>
 
-	<div class="blockSecond">
-		<input class="inputBlockSecond" id="inputTimeKAF002"
-			data-bind=" css: selectedCode() == 3 ? 'adjustWidth' : '', ntsTimeEditor: {	name: $i18n('KAF002_79'), value: time, required: true, inputFormat: 'time', constraint: 'SampleTimeDuration', mode: 'time'
+						<div class="blockSecond">
+							<input class="inputBlockSecond" id="inputTimeKAF002"
+								data-bind=" css: selectedCode() == 3 ? 'adjustWidth' : '', ntsTimeEditor: {	name: $i18n('KAF002_79'), value: time, required: true, inputFormat: 'time', constraint: 'SampleTimeDuration', mode: 'time'
 													}" />
 
-		<div class="dropListBlockSecond"
-			data-bind="visible: selectedCode() == 3, ntsComboBox: {
+							<div class="dropListBlockSecond"
+								data-bind="visible: selectedCode() == 3, ntsComboBox: {
 						options: dataSourceReason,
 						optionsValue: 'code',
 						value: selectedCodeReason,
 						optionsText: 'name',
 						required: true
 					}"></div>
+						</div>
+
+						<div
+							data-bind="text: comment2().content, style: {color: comment2().color , margin:'10px', fontWeight: comment2().isBold ? 'bold' : 'normal'}"
+							class="label" style="margin: 10px"></div>
+
+
+					</div>
+
+
+
+
+					<div
+						data-bind="component: { name: 'kaf000-b-component7', 
+                                                params: {
+                                                    appType: appType,
+                                                    application: application,
+                                                    appDispInfoStartupOutput: appDispInfoStartupOutput
+                                                } }"></div>
+				</div>
+			</div>
+			<div class="right-panel" style="width: 410px; height: inherit;">
+				<div style="height: inherit; background-color: #fff; padding: 10px;">
+					<div
+						data-bind="component: { name: 'kaf000-b-component1', 
+                            params: {
+                                appType: appType,
+                                appDispInfoStartupOutput: appDispInfoStartupOutput	
+                            } }"></div>
+					<div
+						data-bind="component: { name: 'kaf000-b-component9',
+                            params: {
+                                appType: appType,
+                                application: application,
+                                appDispInfoStartupOutput: appDispInfoStartupOutput
+                            } }"></div>
+				</div>
+			</div>
+		</div>
 	</div>
-
-	<div data-bind="text: comment2().content, style: {color: comment2().color , margin:'10px', fontWeight: comment2().isBold ? 'bold' : 'normal'}" class="label" style="margin: 10px"></div>
-	
-
 </div>
+
+
+
+
         
     `
     
@@ -74,12 +164,7 @@ module nts.uk.at.view.kaf002_ref.d.viewmodel {
     
         public bindDataStart(data: any) {
             const self = this;
-    //        let listType = self.data.appStampSetting.goOutTypeDispControl;
-    //        let listTypeItem = [];
-    //        _.forEach(listType, i => {
-    //            listTypeItem.push(new ItemModel(String(i.goOutType), i.display))
-    //        })
-    //        self.dataSourceReason(listTypeItem);
+   
             self.bindComment(data);
         }
        fetchData() {
@@ -152,8 +237,8 @@ module nts.uk.at.view.kaf002_ref.d.viewmodel {
            self.approvalReason = params.approvalReason;
            
            
-           let itemModelList = [];
-           let itemModelReasonList = [];
+           let itemModelList = [] as Array<ItemModel>;
+           let itemModelReasonList = [] as Array<ItemModel>;
            _.forEach(new EngraveAtrObject(), prop => {
                itemModelList.push(new ItemModel(String(prop.value), prop.name))
            });
@@ -184,7 +269,7 @@ module nts.uk.at.view.kaf002_ref.d.viewmodel {
 	       self.fetchData();
 	   }
        
-       public handleConfirmMessage(listMes: any, res: any) {
+       public handleConfirmMessage(listMes: any, res: any): any {
            let self = this;
            if (!_.isEmpty(listMes)) {
                let item = listMes.shift();
@@ -199,8 +284,9 @@ module nts.uk.at.view.kaf002_ref.d.viewmodel {
                    }
                });
            }
+
        }
-       registerData(command) {
+       registerData(command: any) {
            let self = this; 
            return self.$ajax(API.update, command);
            
