@@ -104,3 +104,13 @@
     text-overflow: ellipsis;
     overflow: hidden;
 }
+
+.table-phase, .table-phase td, .table-phase th { 
+	border: 1px solid #CCC;
+	height: 25px;
+    padding-left: 2px;
+}
+
+.table-phase thead{
+	background-color: #E0F59E;
+}
