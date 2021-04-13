@@ -8,11 +8,12 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public enum RangeToCheck {
     // 全て
-    ALL(0),
+    ALL(0, "全て"),
     // 選択
-    CHOICE (1),
+    CHOICE (1, "選択"),
     // 選択以外
-    OTHER(2);
+    OTHER(2, "選択以外");
 
     public final int value;
+    public final String nameId;
 }

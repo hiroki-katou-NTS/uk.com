@@ -22,11 +22,13 @@ import nts.arc.time.GeneralDateTime;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.adapter.specificdatesetting.RecSpecificDateSettingAdapter;
+import nts.uk.ctx.at.record.dom.adapter.workschedule.AttendanceTimeOfDailyAttendanceImport;
 import nts.uk.ctx.at.record.dom.adapter.workschedule.TimeLeavingOfDailyAttdImport;
 import nts.uk.ctx.at.record.dom.adapter.workschedule.TimeLeavingWorkImport;
 import nts.uk.ctx.at.record.dom.adapter.workschedule.WorkScheduleWorkInforAdapter;
 import nts.uk.ctx.at.record.dom.adapter.workschedule.WorkScheduleWorkInforImport;
 import nts.uk.ctx.at.record.dom.adapter.workschedule.WorkStampImport;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmConstant;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.CheckedCondition;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.CompareRange;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.CompareSingleValue;
@@ -36,6 +38,7 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.ConvertCompareTypeTo
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.algorithm.StatusOfEmployeeAdapterAl;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.algorithm.WorkPlaceHistImportAl;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.algorithm.WorkPlaceIdAndPeriodImportAl;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedTimeDuration;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.daily.CondContinuousTime;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.daily.CondContinuousTimeZone;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.daily.CondContinuousWrkType;
@@ -64,7 +67,6 @@ import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.ExtractionResultDetai
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.ResultOfEachCondition;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.converter.DailyRecordShareFinder;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
@@ -74,6 +76,7 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
@@ -96,19 +99,16 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 	@Inject
 	private FixedExtracSDailyItemsRepository fixedExtracSDailyItemsRepository;
 	@Inject
-	private DailyRecordShareFinder dailyRecordShareFinder;
-	@Inject
 	private RecSpecificDateSettingAdapter specificDateSettingAdapter;
 	@Inject 
 	private CalCountForConsecutivePeriodChecking calcCountForConsecutivePeriodChecking;
+	@SuppressWarnings("rawtypes")
 	@Inject
 	private CompareValueRangeChecking compareValueRangeChecking;
 	@Inject
 	private AddOrSubAttendanceItem addOrSubAttendanceItem;
 	@Inject
 	private ConvertCompareTypeToText convertComparaToText;
-	@Inject
-	private ErAlWorkRecordCheckService erAlCheckService;
 	@Inject
 	private PredetemineTimeSettingRepository predTimeSetRepo;
 	
@@ -118,8 +118,10 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 			List<WorkPlaceHistImportAl> getWplByListSidAndPeriod, List<StatusOfEmployeeAdapterAl> lstStatusEmp,
 			List<ResultOfEachCondition> lstResultCondition, List<AlarmListCheckInfor> lstCheckType,
 			Consumer<Integer> counter, Supplier<Boolean> shouldStop) {
+		String contractCode = AppContexts.user().contractCode();
+		
 		// チェックする前にデータ準備
-		ScheDailyPrepareData prepareData = prepareDataBeforeChecking(cid, lstSid, dPeriod, errorDailyCheckId, listOptionalItem, listFixedItem);
+		ScheDailyPrepareData prepareData = prepareDataBeforeChecking(contractCode, cid, lstSid, dPeriod, errorDailyCheckId, listOptionalItem, listFixedItem);
 		
 		parallelManager.forEach(CollectionUtil.partitionBySize(lstSid, 100), emps -> {
 
@@ -177,7 +179,7 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 	 * @param errorDailyCheckCd
 	 * @return
 	 */
-	private ScheDailyPrepareData prepareDataBeforeChecking(String cid, List<String> lstSid, DatePeriod dPeriod, 
+	private ScheDailyPrepareData prepareDataBeforeChecking(String contractCode, String cid, List<String> lstSid, DatePeriod dPeriod, 
 			String errorDailyCheckId, String listOptionalItem, String listFixedItem) {
 		// スケジュール日次の勤怠項目を取得する
 		int typeOfItem = 0; // スケジュール
@@ -193,10 +195,10 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 		List<WorkTimeSetting> listWorktime = workTimeRep.findByCompanyId(cid);
 		
 		// スケジュール日次の任意抽出条件のデータを取得する
-		List<ExtractionCondScheduleDay> scheCondItems = extraCondScheDayRepository.getScheAnyCondDay("", cid, listOptionalItem, true);
+		List<ExtractionCondScheduleDay> scheCondItems = extraCondScheDayRepository.getScheAnyCondDay(contractCode, cid, listOptionalItem, true);
 		
 		// スケジュール日次の固定抽出条件のデータを取得する
-		List<FixedExtractionSDailyCon> fixedScheCondItems = fixedCondScheDayReporisoty.getScheFixCondDay("", cid, listFixedItem, true);
+		List<FixedExtractionSDailyCon> fixedScheCondItems = fixedCondScheDayReporisoty.getScheFixCondDay(contractCode, cid, listFixedItem, true);
 		
 		// ドメインモデル「スケジュール日次の固有抽出項目」を取得
 		List<FixedExtractionSDailyItems> fixedItems = fixedExtracSDailyItemsRepository.getAll();
@@ -250,14 +252,6 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 					continue;
 				}
 				
-				List<IntegrationOfDaily> lstDaily = listIntegrationDai.stream()
-						.filter(x -> x.getEmployeeId().equals(sid) && x.getYmd().equals(exDate))
-						.collect(Collectors.toList());			
-				IntegrationOfDaily integrationDaily = null;
-				if(!lstDaily.isEmpty()) {
-					integrationDaily = lstDaily.get(0);
-				}
-				
 				// 勤務予定を探す
 				Optional<WorkScheduleWorkInforImport> workScheduleWorks = lstWorkScheduleWorkInfos.stream()
 						.filter(x -> x.getEmployeeId().equals(sid) && x.getYmd().equals(exDate)).findFirst();
@@ -289,7 +283,7 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 					applicableAtr = checkWorkType(lstWorkTypeCode, targetWorkType, workTypeCode);
 					
 					// 予定時間をチェック
-					applicableAtr = checkTime(condTime.getCheckedCondition(), workSched, integrationDaily);
+					applicableAtr = checkTime(condTime.getCheckedCondition(), workSched);
 				}
 				
 				if (DaiCheckItemType.CONTINUOUS_TIME == scheCondItem.getCheckItemType()) {
@@ -302,7 +296,7 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 					applicableAtr = checkWorkType(lstWorkTypeCode, targetWorkType, workTypeCode);
 					
 					// 予定時間をチェック
-					applicableAtr = checkTime(condContinuousTime.getCheckedCondition(), workSched, integrationDaily);
+					applicableAtr = checkTime(condContinuousTime.getCheckedCondition(), workSched);
 				}
 				
 				// ループ中のスケジュール日次の任意抽出条件．連続時間帯の抽出条件をチェック
@@ -351,6 +345,7 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 						|| (DaiCheckItemType.TIME != scheCondItem.getCheckItemType() && optContinuousCount.isPresent())) {
 					String alarmContent = createAlarmContent(
 							scheCondItem.getCheckItemType(), 
+							targetWorkType,
 							listWorkType, lstWorkTypeCode, 
 							checkedCondition, 
 							continuousPeriod, 
@@ -427,7 +422,7 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 		ExtractionAlarmPeriodDate extractionAlarmPeriodDate = new ExtractionAlarmPeriodDate(Optional.of(day), Optional.empty());
 		if (dailyCheckType != null && DaiCheckItemType.TIME != dailyCheckType) {
 			// チェック項目種類　！＝　「時間」　－＞ループ中の年月日.ADD(-取得した連続カウント）
-			//TODO addDays or Year
+			//TODO QA addDays or Year
 			extractionAlarmPeriodDate = new ExtractionAlarmPeriodDate(Optional.of(day.addDays(-consecutiveYears)), Optional.empty());
 		}
 		
@@ -460,6 +455,7 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 	 */
 	private String createAlarmContent(
 			DaiCheckItemType dailyCheckType,
+			RangeToCheck targetWorkType,
 			List<WorkType> listWorkType,
 			List<String> lstWorkTypeCode,
 			CheckedCondition checkedCondition,
@@ -484,27 +480,40 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 							? ((CompareSingleValue) checkedCondition).getValue().toString()
 							: ((CompareRange) checkedCondition).getStartValue().toString();
 			endValue = checkedCondition instanceof CompareRange  ? ((CompareRange) checkedCondition).getEndValue().toString() : null;
+			
+			// format value to HH:MM
+			if (DaiCheckItemType.TIME == dailyCheckType || DaiCheckItemType.CONTINUOUS_TIME == dailyCheckType) {
+				CheckedTimeDuration checkedTimeDurationStartValue = new CheckedTimeDuration(Double.valueOf(startValue).intValue());
+				startValue = checkedTimeDurationStartValue.getTimeWithFormat();
+				
+				if (endValue != null) {
+					CheckedTimeDuration checkedTimeDurationEndValue = new CheckedTimeDuration(Double.valueOf(startValue).intValue());
+					startValue = checkedTimeDurationEndValue.getTimeWithFormat();
+				}
+			}
 		}
 		
 		// チェック項目種類　＝＝　「時間」　OR　　「連続時間」 #KAL010_1013　※1
 		if (DaiCheckItemType.TIME == dailyCheckType || DaiCheckItemType.CONTINUOUS_TIMEZONE == dailyCheckType) {
 			// ※1内容:  対象勤務：{0}条件：予約時間{1}{2}　実績：{3}
 			// {0}: ループ中のスケジュール日次の任意抽出条件．勤務種類の条件．予実比較による絞り込み方法
-			String variable0 = "";
+			String variable0 = targetWorkType.nameId;
+			
+			
+			// {1}: チェック条件　（例：　＜＞8：00）
+			String variable1 = "";
 			if(compare <= 5) {
-				variable0 = compareOperatorText.getCompareLeft() + startValue;
+				variable1 = compareOperatorText.getCompareLeft() + startValue;
 			} else {
 				if (compare > 5 && compare <= 7) {
-					variable0 = startValue + compareOperatorText.getCompareLeft()
+					variable1 = startValue + compareOperatorText.getCompareLeft()
 							+ compareOperatorText.getCompareright() + endValue;
 				} else {
-					variable0 = startValue + compareOperatorText.getCompareLeft()
+					variable1 = startValue + compareOperatorText.getCompareLeft()
 							+ ", " + compareOperatorText.getCompareright() + endValue;
 				}
 			}
 			
-			// {1}: チェック条件　（例：　＜＞8：00）
-			String variable1 = ""; //TODO i don't know
 			// {2}: 
 				// チェック項目種類　＝＝　「時間」　－＞""
 				// チェック項目種類　！＝　「時間」  －＞ #KAL010_1015　（{0}: ループ中のスケジュール日次の任意抽出条件．連続期間）
@@ -530,18 +539,7 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 			// チェック項目種類　！＝　「時間」　OR　　「連続時間」－＞#KAL010_1016　※2
 			// ※2内容：対象勤務：{0}/{1}日連続　実績：{2}日連続
 			// {0}: ループ中のスケジュール日次の任意抽出条件．勤務種類の条件．予実比較による絞り込み方法
-			String param0 = "";
-			if(compare <= 5) {
-				param0 = compareOperatorText.getCompareLeft() + startValue;
-			} else {
-				if (compare > 5 && compare <= 7) {
-					param0 = startValue + compareOperatorText.getCompareLeft()
-							+ compareOperatorText.getCompareright() + endValue;
-				} else {
-					param0 = startValue + compareOperatorText.getCompareLeft()
-							+ ", " + compareOperatorText.getCompareright() + endValue;
-				}
-			}
+			String param0 = targetWorkType.nameId;
 			
 			// {1}: ループ中のスケジュール日次の任意抽出条件．連続期間
 			String param1 = conPeriodStr;
@@ -614,15 +612,16 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 	 * TODO need check again confirm QA
 	 * @param scheCondDay
 	 */
-	private boolean checkTime(CheckedCondition checkedCondition, WorkScheduleWorkInforImport workScheduleWorkInfos, IntegrationOfDaily integrationDaily) {
+	@SuppressWarnings("unchecked")
+	private boolean checkTime(CheckedCondition checkedCondition, WorkScheduleWorkInforImport workSchedule) {
 		// Input．勤務予定．勤怠時間をチェック
-		Optional<AttendanceTimeOfDailyAttendance> attendanceTimeOfDailyPerformance = integrationDaily.getAttendanceTimeOfDailyPerformance();
+		Optional<AttendanceTimeOfDailyAttendanceImport> attendanceTimeOfDailyPerformance = workSchedule.getOptAttendanceTime();
 		if (!attendanceTimeOfDailyPerformance.isPresent()) {
 			return false;
 		}
 		
-		AttendanceTimeOfDailyAttendance attendanceTimeOfDaily = attendanceTimeOfDailyPerformance.get();
-		Double targetValue = getTargetValue(attendanceTimeOfDaily.getActualWorkingTimeOfDaily().getTotalWorkingTime().getActualTime().v());
+		AttendanceTimeOfDailyAttendanceImport attendanceTimeOfDaily = attendanceTimeOfDailyPerformance.get();
+		Double targetValue = getTargetValue(attendanceTimeOfDaily.getActualWorkingTimeOfDaily().getTotalWorkingTime().getActualTime());
 		
 				
 		// 集計値が条件に当てはまるかチェックする
@@ -735,11 +734,6 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 			// 勤務予定(Work)を探す
 			Optional<WorkScheduleWorkInforImport> workScheduleWorks = workScheduleWorkInfos.stream()
 					.filter(x -> x.getEmployeeId().equals(sid) && x.getYmd().equals(exDate)).findFirst();
-			if (!workScheduleWorks.isPresent()) {
-				continue;
-			}
-			
-			WorkScheduleWorkInforImport workSchedule = workScheduleWorks.get();
 			
 			// Input．List＜スケジュール日次の固有抽出条件＞をループする
 			for (FixedExtractionSDailyCon fixScheCondItem: fixedScheCondItems) {
@@ -759,8 +753,14 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 					}
 					break;
 				case WORKTYPE_NOTREGISTED:
+					if (!workScheduleWorks.isPresent()) {
+						break;
+					}
+					
+					WorkScheduleWorkInforImport workSchedule = workScheduleWorks.get();
+					
 					// NO2 = ：勤務種類未登録
-					// Input．日別勤怠の勤務情報が存在するかチェックする
+					// Input．日別勤怠の勤務情報が存在するかチェックする					
 					String wkType = workSchedule.getWorkTyle();
 					Optional<WorkType> listWk = listWorkType.stream()
 							.filter(x -> x.getWorkTypeCode().v().equals(wkType)).findFirst();
@@ -770,8 +770,13 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 					}
 					break;
 				case WORKTIME_NOTREGISTED:
+					if (!workScheduleWorks.isPresent()) {
+						break;
+					}
+					WorkScheduleWorkInforImport workScheduleWorkTime = workScheduleWorks.get();
+					
 					// NO3 = ：就業時間帯未登録
-					String wkTime = workSchedule.getWorkTime();
+					String wkTime = workScheduleWorkTime.getWorkTime();
 					if(wkTime == null) break;
 					Optional<WorkTimeSetting> optWtime = listWorktime.stream()
 							.filter(x -> x.getWorktimeCode().v().equals(wkTime)).findFirst();
@@ -785,19 +790,34 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 					getNo4(companyId, sid, exDate, listIntegrationDai, workScheduleWorkInfos, listWorkType, listWorktime, alarmMessage, alarmTarget);
 					break;
 				case WORK_MULTI_TIME:
+					if (!workScheduleWorks.isPresent()) {
+						break;
+					}
+					WorkScheduleWorkInforImport workScheWorkMultiTime = workScheduleWorks.get();
+					
 					// NO5 = ：複数回勤務
-					getNo5(workSchedule.getWorkTyle(), workSchedule.getWorkTime(), workSchedule.getTimeLeaving(), listWorkType, listWorktime, alarmMessage, alarmTarget);
+					getNo5(workScheWorkMultiTime.getWorkTyle(), workScheWorkMultiTime.getWorkTime(), workScheWorkMultiTime.getTimeLeaving(), listWorkType, listWorktime, alarmMessage, alarmTarget);
 					break;
 				case WORK_ON_SCHEDULEDAY:
+					if (!workScheduleWorks.isPresent()) {
+						break;
+					}
+					WorkScheduleWorkInforImport workScheWorkOn = workScheduleWorks.get();
+					
 					// NO6 = ：特定日出勤
-					String wtCode = workSchedule.getWorkTyle();
+					String wtCode = workScheWorkOn.getWorkTyle();
 					WorkType workType = listWorkType.stream().filter(x -> x.getWorkTypeCode().v().equals(wtCode)).findFirst().get();
 					getNo6(companyId, wplId, exDate, workType, alarmMessage, alarmTarget);
 					break;
 				case SCHEDULE_UNDECIDED:
+					if (!workScheduleWorks.isPresent()) {
+						break;
+					}
+					WorkScheduleWorkInforImport workScheUndecided = workScheduleWorks.get();
+					
 					// NO7 = ：スケジュール未確定
 					// Input　・確定区分　＝　探した勤務予定．確定区分
-					int confirmedATR = workScheduleWorks.get().getConfirmedATR();
+					int confirmedATR = workScheUndecided.getConfirmedATR();
 					getNo7(confirmedATR, alarmMessage, alarmTarget);
 					break;
 				default:
@@ -810,10 +830,10 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 				}
 				
 				Optional<AlarmListCheckInfor> optCheckInfor = result.getLstCheckType().stream()
-						.filter(x -> x.getChekType() == AlarmListCheckType.FreeCheck && x.getNo().equals(String.valueOf(fixScheCondItem.getFixedCheckDayItems().value)))
+						.filter(x -> x.getChekType() == AlarmListCheckType.FreeCheck && x.getNo().equals(String.valueOf(fixedAtr.value)))
 						.findFirst();
 				if(!optCheckInfor.isPresent()) {
-					result.getLstCheckType().add(new AlarmListCheckInfor(String.valueOf(fixScheCondItem.getFixedCheckDayItems().value), AlarmListCheckType.FreeCheck));
+					result.getLstCheckType().add(new AlarmListCheckInfor(String.valueOf(fixedAtr.value), AlarmListCheckType.FreeCheck));
 				}
 				
 				// 「抽出結果詳細」を作成する
@@ -822,11 +842,11 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 				String alarmContent = alarmMessage;
 				List<ResultOfEachCondition> listResultCond = this.createExtractAlarm(sid,
 						exDate,
-						fixScheCondItem.getFixedCheckDayItems().name(),
+						fixedAtr.nameId,
 						alarmContent,
 						Optional.ofNullable(fixScheCondItem.getMessageDisp() != null && fixScheCondItem.getMessageDisp().isPresent() ? fixScheCondItem.getMessageDisp().get().v() : ""),
 						checkValue,
-						String.valueOf(fixScheCondItem.getFixedCheckDayItems().value),
+						String.valueOf(fixedAtr.value),
 						AlarmListCheckType.FixCheck,
 						wplByListSidAndPeriod,
 						null,
@@ -928,7 +948,6 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 		Optional<PredetemineTimeSetting> predTimeSetInDayBeforeOpt = this.predTimeSetRepo.findByWorkTimeCode(cid, worktimeBeforeDay.getWorktimeCode().v());
 		
 		// 時刻を比較
-		// TODO
 		if (predTimeSetInDayOpt.isPresent() && predTimeSetInDayBeforeOpt.isPresent()) {
 			PredetemineTimeSetting predetemineTimeSettingInDay  = predTimeSetInDayOpt.get();
 			PrescribedTimezoneSetting prescribedTimezoneSettingInDay = predetemineTimeSettingInDay.getPrescribedTimezoneSetting();
@@ -948,9 +967,9 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 					|| prescribedTimezoneSettingInDayBefore.getAfternoonStartTime().getDayDivision().hours > prescribedTimezoneSettingInDay.getMorningEndTime().getDayDivision().hours) {
 				alarmMessage = TextResource.localize("KAL010_1005", exDate.addDays(-1).toString(), exDate.toString());
 				
-				String param1 = prescribedTimezoneSettingInDayBefore.getMorningEndTime().getRawTimeWithFormat() + "～" + prescribedTimezoneSettingInDayBefore.getAfternoonStartTime().getRawTimeWithFormat();
+				String param1 = prescribedTimezoneSettingInDayBefore.getMorningEndTime().getRawTimeWithFormat() + ErrorAlarmConstant.PERIOD_SEPERATOR + prescribedTimezoneSettingInDayBefore.getAfternoonStartTime().getRawTimeWithFormat();
 				String param2 = exDate.toString();
-				String param3 = prescribedTimezoneSettingInDay.getMorningEndTime().getRawTimeWithFormat() + "～" + prescribedTimezoneSettingInDay.getAfternoonStartTime().getRawTimeWithFormat();
+				String param3 = prescribedTimezoneSettingInDay.getMorningEndTime().getRawTimeWithFormat() + ErrorAlarmConstant.PERIOD_SEPERATOR + prescribedTimezoneSettingInDay.getAfternoonStartTime().getRawTimeWithFormat();
 				alarmTarget = TextResource.localize("KAL010_1021", exDate.addDays(-1).toString(), param1, param2, param3);
 			}
 		}
@@ -1003,7 +1022,7 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 		Optional<TimeLeavingWorkImport> timeLeavingWorkImport2 = attendanceLeave.getTimeLeavingWorks().stream()
 				.filter(x -> x.getWorkNo() == 2).findFirst();
 		if (timeLeavingWorkImport1.isPresent() && timeLeavingWorkImport2.isPresent()) {
-			// TODO need QA to get info
+			// TODO QA#115444
 			// 日別勤怠の出退勤．出退勤．出勤
 			WorkStampImport attendanceStamp1 = timeLeavingWorkImport1.get().getAttendanceStamp().get().getActualStamp().get();
 			WorkStampImport attendanceStamp2 = timeLeavingWorkImport1.get().getAttendanceStamp().get().getActualStamp().get();
@@ -1013,11 +1032,11 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 			
 			// Input．日別勤怠の出退勤．出退勤．出勤．実打刻　+　’～’　+　Input．日別勤怠の出退勤．出退勤．退勤．実打刻
 			String targetParam0 = timeLeavingWorkImport1.get().getAttendanceStamp().isPresent() 
-							? formatTimeWithDay(attendanceStamp1.getTimeDay().getTimeWithDay()) + '～' + formatTimeWithDay(leaveStamp1.getTimeDay().getTimeWithDay())
+							? formatTimeWithDay(attendanceStamp1.getTimeDay().getTimeWithDay()) + ErrorAlarmConstant.PERIOD_SEPERATOR + formatTimeWithDay(leaveStamp1.getTimeDay().getTimeWithDay())
 							: Strings.EMPTY;
 			// Input．日別勤怠の出退勤．出退勤．出勤．実打刻　+　’～’　+　Input．日別勤怠の出退勤．出退勤．退勤．実打刻
 			String targetParam1 = timeLeavingWorkImport2.get().getLeaveStamp().isPresent() 
-							? formatTimeWithDay(attendanceStamp2.getTimeDay().getTimeWithDay()) + '～' + formatTimeWithDay(leaveStamp2.getTimeDay().getTimeWithDay())
+							? formatTimeWithDay(attendanceStamp2.getTimeDay().getTimeWithDay()) + ErrorAlarmConstant.PERIOD_SEPERATOR + formatTimeWithDay(leaveStamp2.getTimeDay().getTimeWithDay())
 							: Strings.EMPTY;
 			alarmTarget = TextResource.localize("KAL010_1022", targetParam0, targetParam1);
 		}
