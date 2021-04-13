@@ -21,7 +21,7 @@ import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workschedulebreak.WorkS
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workscheduletime.WorkScheduleTime;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workscheduletimezone.WorkScheduleTimeZone;
 import nts.uk.ctx.at.schedule.dom.schedule.schedulemaster.ScheMasterInfo;
-import nts.uk.ctx.at.schedule.dom.schedule.workschedulestate.WorkScheduleState;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateOfDailyAttd;
 
 /**
  * The Class BasicSchedule. 勤務予定基本情報
@@ -74,7 +74,7 @@ public class BasicSchedule extends AggregateRoot {
 	/** 勤務予定マスタ情報 **/
 	private ScheMasterInfo workScheduleMaster;
 	
-	private List<WorkScheduleState> workScheduleStates  = new ArrayList<>();
+	private List<EditStateOfDailyAttd> workScheduleStates  = new ArrayList<>();
 
 	/**
 	 * Instantiates a new basic schedule.
@@ -262,7 +262,7 @@ public class BasicSchedule extends AggregateRoot {
 		this.workScheduleTime = Optional.ofNullable(scheduleTime);
 	}
 	
-	public void setWorkScheduleState(List<WorkScheduleState> scheduleState) {
+	public void setWorkScheduleState(List<EditStateOfDailyAttd> scheduleState) {
 		this.workScheduleStates = scheduleState;
 	}
 	

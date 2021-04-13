@@ -50,7 +50,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.time
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateSetting;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.secondorder.medical.MedicalCareTimeOfDaily;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ChildCareAttribute;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortWorkTimFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortWorkingTimeSheet;
@@ -62,6 +61,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workschedul
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.ActualWorkingTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.StayingTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.shortworktime.ChildCareAtr;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
 import nts.uk.ctx.at.shared.dom.workrule.businesstype.BusinessTypeCode;
 import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
@@ -291,7 +291,7 @@ public class KscdtSchBasicInfo extends ContractUkJpaEntity {
 		ShortTimeOfDailyAttd optSortTimeWork = null;
 		List<ShortWorkingTimeSheet> shortWorkingTimeSheets = new ArrayList<>();
 		schShortTimeTs.stream().forEach(x->{
-			ShortWorkingTimeSheet shortWorkingTimeSheet = new ShortWorkingTimeSheet(new ShortWorkTimFrameNo(x.getPk().getFrameNo()), EnumAdaptor.valueOf(x.getPk().getChildCareAtr(), ChildCareAttribute.class), 
+			ShortWorkingTimeSheet shortWorkingTimeSheet = new ShortWorkingTimeSheet(new ShortWorkTimFrameNo(x.getPk().getFrameNo()), EnumAdaptor.valueOf(x.getPk().getChildCareAtr(), ChildCareAtr.class), 
 					new TimeWithDayAttr(x.getShortTimeTsStart()), new TimeWithDayAttr(x.getShortTimeTsEnd()));
 			shortWorkingTimeSheets.add(shortWorkingTimeSheet);
 		});

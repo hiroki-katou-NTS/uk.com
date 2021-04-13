@@ -45,11 +45,11 @@ import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workscheduletime.WorkSc
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workscheduletimezone.BounceAtr;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workscheduletimezone.WorkScheduleTimeZone;
 import nts.uk.ctx.at.schedule.dom.schedule.schedulemaster.ScheMasterInfo;
-import nts.uk.ctx.at.schedule.dom.schedule.workschedulestate.ScheduleEditState;
-import nts.uk.ctx.at.schedule.dom.schedule.workschedulestate.WorkScheduleState;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeWorkSettingRepository;
@@ -545,20 +545,19 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 
 	private void addScheState(String employeeIdLogin, BasicSchedule bSchedule, boolean isInsertMode,
 			BasicSchedule basicSchedule) {
-		List<WorkScheduleState> listWorkScheduleStates = new ArrayList<WorkScheduleState>();
+		List<EditStateOfDailyAttd> listWorkScheduleStates = new ArrayList<EditStateOfDailyAttd>();
 		String sId = bSchedule.getEmployeeId();
-		GeneralDate ymd = bSchedule.getDate();
 		// get listItemId 
 		List<Integer> listId = this.getListIdInScheduleList(bSchedule, isInsertMode, basicSchedule);
 		if (employeeIdLogin.equals(sId)) {
 			listId.forEach(x -> {
 				listWorkScheduleStates.add(
-						new WorkScheduleState(ScheduleEditState.HAND_CORRECTION_PRINCIPAL, x.intValue(), ymd, sId));
+						new EditStateOfDailyAttd(x.intValue(), EditStateSetting.HAND_CORRECTION_MYSELF));
 			});
 		} else {
 			listId.forEach(x -> {
 				listWorkScheduleStates
-						.add(new WorkScheduleState(ScheduleEditState.HAND_CORRECTION_ORDER, x.intValue(), ymd, sId));
+						.add(new EditStateOfDailyAttd(x.intValue(), EditStateSetting.HAND_CORRECTION_OTHER));
 			});
 		}
 		bSchedule.setWorkScheduleState(listWorkScheduleStates);

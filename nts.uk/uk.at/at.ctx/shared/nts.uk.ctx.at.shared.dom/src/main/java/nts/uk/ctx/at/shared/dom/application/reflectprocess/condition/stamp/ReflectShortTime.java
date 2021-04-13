@@ -9,10 +9,10 @@ import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.DailyRecordOfApplication;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.UpdateEditSttCreateBeforeAppReflect;
 import nts.uk.ctx.at.shared.dom.application.stamp.TimeStampAppOtherShare;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ChildCareAttribute;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortWorkTimFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortWorkingTimeSheet;
+import nts.uk.ctx.at.shared.dom.shortworktime.ChildCareAtr;
 
 /**
  * @author thanh_nx
@@ -41,7 +41,7 @@ public class ReflectShortTime {
 					shortTimeOpt.get()
 							.setChildCareAttr(EnumAdaptor.valueOf(
 									data.getDestinationTimeZoneApp().getTimeZoneStampClassification().value,
-									ChildCareAttribute.class));
+									ChildCareAtr.class));
 					lstItemId.addAll(createItemId(shortTimeOpt.get()));
 				} else {
 					// 該当の打刻枠NOをキーに[短時間勤務時間帯]を作成する
@@ -67,14 +67,14 @@ public class ReflectShortTime {
 
 		return new ShortWorkingTimeSheet(new ShortWorkTimFrameNo(data.getDestinationTimeZoneApp().getEngraveFrameNo()),
 				EnumAdaptor.valueOf(data.getDestinationTimeZoneApp().getTimeZoneStampClassification().value,
-						ChildCareAttribute.class),
+						ChildCareAtr.class),
 				data.getTimeZone().getStartTime(), data.getTimeZone().getEndTime());
 
 	}
 
 	private static List<Integer> createItemId(ShortWorkingTimeSheet data) {
 		List<Integer> lstItemId = new ArrayList<>();
-		if (data.getChildCareAttr() == ChildCareAttribute.CARE) {
+		if (data.getChildCareAttr() == ChildCareAtr.CARE) {
 			lstItemId.addAll(Arrays.asList(CancelAppStamp.createItemId(759, data.getShortWorkTimeFrameNo().v(), 2),
 					CancelAppStamp.createItemId(760, data.getShortWorkTimeFrameNo().v(), 2)));
 		} else {
