@@ -26,7 +26,21 @@ module nts.uk.com.view.kal004.d.viewmodel {
             self.getCategoryId = ko.observable(categoryId);
             self.strMonth = ko.observable(self.getParam.strMonth);
             self.endMonth = ko.observable(self.getParam.endMonth);
+            
+            self.setFocus();
         }
+        
+        /**
+         * Set focus input
+         */
+        setFocus(): void {
+            let self = this; 
+  
+            setTimeout(function() {
+                $("#start-month").focus();
+            }, 20);
+        }
+        
         Decide(): any {
             var self = this;               
                let dataSetShare = self.getDataShare();
