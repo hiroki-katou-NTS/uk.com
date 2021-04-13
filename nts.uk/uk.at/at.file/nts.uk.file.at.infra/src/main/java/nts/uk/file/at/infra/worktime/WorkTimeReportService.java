@@ -1825,7 +1825,7 @@ public class WorkTimeReportService {
         List<DeductionTimeDto> timezones = data.getFlowWorkSetting().getHalfDayWorkTimezone().getRestTimezone().getFixedRestTimezone().getTimezones();
         
         for (int i = 0; i < timezones.size(); i++) {
-            if (!(displayMode.equals(DisplayMode.DETAIL.value) && !fixRestTime)) {
+            if (fixRestTime) {
                 /*
                  * R5_109
                  * 休憩時間帯.休憩時間の固定する.開始時間
@@ -1841,47 +1841,48 @@ public class WorkTimeReportService {
         }
         
         List<FlowRestSettingDto> flowRestSets = data.getFlowWorkSetting().getHalfDayWorkTimezone().getRestTimezone().getFlowRestTimezone().getFlowRestSets();
-        if (displayMode.equals(DisplayMode.DETAIL.value)) {
-            if (!fixRestTime) {
-                for (int i = 0; i < flowRestSets.size(); i++) {
-                    /*
-                     * R5_111
-                     * 休憩時間帯.休憩時間の固定しない.経過時間
-                     */
-                    Integer flowPassageTime = flowRestSets.get(i).getFlowPassageTime();
-                    cells.get("BG" + ((startIndex + 1) + i)).setValue(getInDayTimeWithFormat(flowPassageTime));
-                    
-                    /*
-                     * R5_112
-                     * 休憩時間帯.休憩時間の固定しない.休憩時間
-                     */
-                    Integer flowRestTime = flowRestSets.get(i).getFlowRestTime();
-                    cells.get("BH" + ((startIndex + 1) + i)).setValue(getInDayTimeWithFormat(flowRestTime));
-                }
-                
+        
+        if (!fixRestTime) {
+            for (int i = 0; i < flowRestSets.size(); i++) {
                 /*
-                 * R5_113
-                 * 休憩時間帯.休憩時間の固定しない.休憩時間
-                 */
-                boolean useHereAfterRestSet = data.getFlowWorkSetting().getHalfDayWorkTimezone().getRestTimezone().getFlowRestTimezone().isUseHereAfterRestSet();
-                cells.get("BH" + (startIndex + 7)).setValue(useHereAfterRestSet ? "○" : "-");
-                
-                FlowRestSettingDto hereAfterRestSet = data.getFlowWorkSetting().getHalfDayWorkTimezone().getRestTimezone().getFlowRestTimezone().getHereAfterRestSet();
-                /*
-                 * R5_114
+                 * R5_111
                  * 休憩時間帯.休憩時間の固定しない.経過時間
                  */
-                Integer flowPassageTime = hereAfterRestSet.getFlowPassageTime();
-                cells.get("BG" + (startIndex + 9)).setValue(getInDayTimeWithFormat(flowPassageTime));
+                Integer flowPassageTime = flowRestSets.get(i).getFlowPassageTime();
+                cells.get("BG" + ((startIndex + 1) + i)).setValue(getInDayTimeWithFormat(flowPassageTime));
                 
                 /*
-                 * R5_115
+                 * R5_112
                  * 休憩時間帯.休憩時間の固定しない.休憩時間
                  */
-                Integer flowRestTime = hereAfterRestSet.getFlowRestTime();
-                cells.get("BH" + (startIndex + 9)).setValue(getInDayTimeWithFormat(flowRestTime));
+                Integer flowRestTime = flowRestSets.get(i).getFlowRestTime();
+                cells.get("BH" + ((startIndex + 1) + i)).setValue(getInDayTimeWithFormat(flowRestTime));
             }
             
+            /*
+             * R5_113
+             * 休憩時間帯.休憩時間の固定しない.休憩時間
+             */
+            boolean useHereAfterRestSet = data.getFlowWorkSetting().getHalfDayWorkTimezone().getRestTimezone().getFlowRestTimezone().isUseHereAfterRestSet();
+            cells.get("BH" + (startIndex + 7)).setValue(useHereAfterRestSet ? "○" : "-");
+            
+            FlowRestSettingDto hereAfterRestSet = data.getFlowWorkSetting().getHalfDayWorkTimezone().getRestTimezone().getFlowRestTimezone().getHereAfterRestSet();
+            /*
+             * R5_114
+             * 休憩時間帯.休憩時間の固定しない.経過時間
+             */
+            Integer flowPassageTime = hereAfterRestSet.getFlowPassageTime();
+            cells.get("BG" + (startIndex + 9)).setValue(getInDayTimeWithFormat(flowPassageTime));
+            
+            /*
+             * R5_115
+             * 休憩時間帯.休憩時間の固定しない.休憩時間
+             */
+            Integer flowRestTime = hereAfterRestSet.getFlowRestTime();
+            cells.get("BH" + (startIndex + 9)).setValue(getInDayTimeWithFormat(flowRestTime));
+        }
+        
+        if (displayMode.equals(DisplayMode.DETAIL.value)) {
             /*
              * R5_116
              * 休憩時間帯.休憩計算設定.休憩中に退勤した場合の休憩時間の計算方法
