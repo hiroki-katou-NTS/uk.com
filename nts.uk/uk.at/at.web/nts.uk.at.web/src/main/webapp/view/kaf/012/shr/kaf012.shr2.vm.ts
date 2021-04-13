@@ -21,7 +21,7 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
 						optionsValue: 'code',
 						optionsText: 'name',
 						value: leaveType,
-						enable: !viewMode(),
+						enable: true,
 						required: true }">
 			</div>
         </div>
@@ -35,7 +35,7 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
                     value: specialLeaveFrame,
                     columns: [{ prop: 'specialHdFrameName', length: 20 }],
                     required: true,
-                    enable: !viewMode()}">  
+                    enable: true}">  
             </div>
         </div>
         <div class="control-group valign-top">
