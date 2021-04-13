@@ -124,23 +124,6 @@ module nts.uk.at.view.ccg005.a.screenModel {
                   ]}"></div>
           </div>
         </div>
-        <div class="grade-body-top">
-          <table style="width: 100%;">
-            <tr style="height: auto;">
-              <td class="ccg005-bottom-unset" style="width: 35px;"></td>
-              <!-- A2_5 -->
-              <td class="ccg005-w100 ccg005-pl-5 ccg005-bottom-unset">
-                <div class="ccg005-1rem" data-bind="ntsFormLabel: { required: false, text: $component.$i18n('CCG005_41') }"></div>
-              </td>
-              <!-- A2_6 -->
-              <td class="ccg005-w100 ccg005-pl-5 ccg005-bottom-unset">
-                <div class="ccg005-1rem" data-bind="ntsFormLabel: { required: false, text: $component.$i18n('CCG005_42') }"></div>
-              </td>
-              <td class="ccg005-bottom-unset"></td>
-              <td class="ccg005-bottom-unset"></td>
-            </tr>
-          </table>
-        </div>
         <!-- A5 -->
         <div class="grade-body-bottom" style="min-height: 55px; height: 55px">
           <table style="width: 100%; border-collapse: separate; border-spacing: 0 5px">
@@ -166,14 +149,14 @@ module nts.uk.at.view.ccg005.a.screenModel {
                     <!-- A4_2 -->
                     <label
                       data-bind="text: attendanceDetailDto.workName, attr:{ class: 'limited-label '+ attendanceDetailDto.workColorClass }"
-                      style="max-width: 80px; width: auto !important;" />
+                      style="max-width: 100px; width: auto !important;" />
                     <!-- A4_4 -->
                     <i tabindex=14
                       data-bind="visible: displayAppIcon, click: $component.initPopupA4_4InList.bind($component, $index, sid), attr:{ class: 'A4-4-application-icon-'+sid }, ntsIcon: {no: 190, width: 13, height: 13}"></i>
                   </div>
                   <div style="height: 20px;">
                     <!-- A4_3 -->
-                    <span class="limited-label" style="max-width: 120px;">
+                    <span style="white-space: nowrap;">
                       <label id="check-in-out"
                         data-bind="text: attendanceDetailDto.checkInTime, attr:{ class: attendanceDetailDto.checkInColorClass }" />
                       <label id="check-in-out"
@@ -215,7 +198,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
                   <i tabindex=16 class="ccg005-pagination-btn"
                     data-bind="ntsIcon: {no: 193, width: 15, height: 20}, click: $component.previousPage"></i>
                   <!-- A5_2 -->
-                  <span style="white-space: nowrap; width: 70px; text-align: center;"
+                  <span style="white-space: nowrap; width: auto; text-align: center;"
                     data-bind="text: $component.paginationText()"></span>
                   <!-- A5_3 -->
                   <i tabindex=17 class="ccg005-pagination-btn"
@@ -1005,7 +988,6 @@ module nts.uk.at.view.ccg005.a.screenModel {
       const subHeight = $('#ccg005-content').height()
         - $('.grade-header-center').height()
         - $('.grade-header-bottom').height()
-        - $('.grade-body-top').height()
         - $('.grade-bottom').height();
       if (subHeight >= 50) {
         vm.perPage(_.floor(subHeight / 50));

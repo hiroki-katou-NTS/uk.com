@@ -252,7 +252,7 @@ module nts.uk.at.view.ktg026.a {
                                 <!-- A1_1 -->
                                 <div data-bind="ntsFormLabel: { required: false, text: $component.$i18n('KTG026_5') }"></div>
                             </th>
-                            <th style="padding-right: 5px;font-size: initial;font-weight: initial;">
+                            <th style="padding-right: 5px;font-size: medium;font-weight: normal;">
                                 <div style="float: right;" data-bind="ntsDatePicker: {
                                     name: $component.$i18n('KTG026_1'),
                                     value: $component.targetYear,
