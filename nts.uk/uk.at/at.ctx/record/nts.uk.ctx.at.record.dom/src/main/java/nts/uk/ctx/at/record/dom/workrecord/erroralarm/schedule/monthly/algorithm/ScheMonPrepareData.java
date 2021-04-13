@@ -7,6 +7,7 @@ import java.util.Optional;
 import lombok.Builder;
 import lombok.Getter;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.record.dom.adapter.employment.SyEmploymentImport;
 import nts.uk.ctx.at.record.dom.adapter.workrule.closure.ClosureDateOfEmploymentImport;
 import nts.uk.ctx.at.record.dom.adapter.workschedule.WorkScheduleWorkInforImport;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.monthly.ExtractionCondScheduleMonth;
@@ -186,4 +187,6 @@ public class ScheMonPrepareData {
 	 * List 労働条件
 	 */
 	private List<WorkingCondition> workingConditions;
+	
+	//private Map<String, List<SyEmploymentImport>> employeeHistoryMap;
 }

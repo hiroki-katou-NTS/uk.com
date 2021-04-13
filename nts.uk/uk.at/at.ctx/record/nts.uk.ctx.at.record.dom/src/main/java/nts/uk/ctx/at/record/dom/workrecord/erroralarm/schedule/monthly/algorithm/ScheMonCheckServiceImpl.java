@@ -80,6 +80,7 @@ import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.employment.Emplo
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.employment.EmploymentMonthDaySettingRepository;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.workplace.WorkplaceMonthDaySetting;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.workplace.WorkplaceMonthDaySettingRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveRemainingTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.flex.CarryforwardSetInShortageFlex;
@@ -314,7 +315,7 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 		List<AttendanceTimeOfMonthly> attendanceTimeOfMonthlies = attendanceTimeOfMonthlyRepo.findBySidsAndYearMonths(lstSid, dPeriod.yearMonthsBetween());
 				
 		// アルゴリズム「社員IDと基準日から社員の雇用コードを取得」を実行する。
-		Map<String, List<SyEmploymentImport>> empHistory = this.syEmploymentAdapter.finds(lstSid, dPeriod);
+		Map<String, List<SyEmploymentImport>> employeeHistoryMap = this.syEmploymentAdapter.finds(lstSid, dPeriod);
         
 		Map<String, Map<DatePeriod, WorkingConditionItem>> empWorkingCondItem = new HashMap<>();
 		List<FixedExtractionSMonCon> fixedScheConds = new ArrayList<>();
@@ -506,6 +507,7 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 				.wkpFlexMonthActCalSets(wkpFlexMonthActCalSets)
 				.shaFlexMonthActCalSets(shaFlexMonthActCalSets)
 				.comFlexMonthActCalSetOpt(comFlexMonthActCalSetOpt)
+				//.employeeHistoryMap(employeeHistoryMap)
 				.build();
 	}
 	
@@ -702,6 +704,7 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 			AnnualLeaveOutput annualLeaveOutput = new AnnualLeaveOutput();
 			switch (fixScheMon.getFixedCheckSMonItems()) {
 			case ANNUAL_LEAVE:
+				// 年休優先
 				annualLeaveOutput = conditionTab3ItemAnnualLeave(
 						cid, sid, ym, workSchedules, integrationOfDailys, prepareData.getListWorkType(), 
 						prepareData.getFixedScheConds());
@@ -709,7 +712,7 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 			case HOLIDAY:
 			case PRIORITY_ANNUAL_LEAVE:
 			case SUB_HOLIDAY:
-				// EA not implement
+				// TODO EA not implement
 				break;
 			default:
 				break;
@@ -724,12 +727,12 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 			String param0 = TextResource.localize("KAL010_1114");
 			String param1 = String.valueOf(annualLeaveOutput.totalRemainingDays) + "日";
 			if (annualLeaveOutput.totalRemainingTimes > 0) {
-				// TODO need format time 8:00
-				param1 = param1 + "　" + String.valueOf(annualLeaveOutput.totalRemainingTimes) + "時間";
+				AnnualLeaveRemainingTime annualLeaveRemainingTime = new AnnualLeaveRemainingTime(annualLeaveOutput.totalRemainingTimes.intValue());
+				param1 = param1 + "　" + annualLeaveRemainingTime.getTimeWithFormat() + "時間";
 			}
-			String param2 = ""; //TODO need format date 2020/09/09
+			String param2 = "";
 			for (Map.Entry<GeneralDate, WorkTypeClassification> entry : annualLeaveOutput.workTypeMap.entrySet()) {
-				param2 +=  entry.getKey() + "　" + TextResource.localize(entry.getValue().nameId);
+				param2 +=  entry.getKey().toString() + "　" + TextResource.localize(entry.getValue().nameId);
 			}
 			// アラーム内容
 			String alarmContent = TextResource.localize("KAL010_1115", param0, param1, param2);
@@ -1107,7 +1110,7 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 	}
 	
 	/**
-	 * 比較対象基準時間を計算
+	 * 比較対象基準時間を計算 QA#115653
 	 * @param usageUnitSetting 労働時間と日数の設定の利用単位の設定
 	 * @param monthlyWorkTimeSetComOpt Optional＜会社別月単位労働時間＞
 	 * @param monthlyWorkTimeSetEmpOpt Optional＜雇用別月単位労働時間＞
@@ -1127,18 +1130,16 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 		// Input．社員別月単位労働時間　！＝　Empty AND Input．労働時間と日数の設定の利用単位の設定．社員の労働時間と日数の管理をする　＝＝　True
 		if (monthlyWorkTimeSetShasOpt.isPresent() && usageUnitSetting.isEmployee()) {
 			monthlyWorkTimeSetAtr = MonthlyWorkTimeSetAtr.SHA;
-			// 比較対象基準時間　＝　合計（Input．社員別月単位労働時間．労働時間）　　※１月～１２月   // データ情報区分　＝　社員
-			// TODO do not kown propery?
-			return 0.0;
+			// 比較対象基準時間　＝　合計（Input．社員別月単位労働時間．労働時間．法定労働時間）　　※１月～１２月   // データ情報区分　＝　社員
+			return monthlyWorkTimeSetShasOpt.get().getLaborTime().getLegalLaborTime().v().doubleValue();
 		}
 		
 		// 雇用の労働時間と日数の管理をするかチェック
 		// Input．雇用別月単位労働時間　！＝　Empty AND Input．労働時間と日数の設定の利用単位の設定．雇用の労働時間と日数の管理をする　＝＝　True
 		if (monthlyWorkTimeSetEmpOpt.isPresent() && usageUnitSetting.isEmployment()) {
 			monthlyWorkTimeSetAtr = MonthlyWorkTimeSetAtr.EMP;
-			// 比較対象基準時間　＝　合計（Input．雇用別月単位労働時間．労働時間）　　※１月～１２月   // データ情報区分　＝　雇用
-			// TODO do not kown propery?
-			return 0.0;
+			// 比較対象基準時間　＝　合計（Input．雇用別月単位労働時間．労働時間．法定労働時間）　　※１月～１２月   // データ情報区分　＝　雇用
+			return monthlyWorkTimeSetEmpOpt.get().getLaborTime().getLegalLaborTime().v().doubleValue();
 		}
 		
 		// 職場の労働時間と日数の管理をするかチェック
@@ -1147,17 +1148,15 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 		// Input．労働時間と日数の設定の利用単位の設定．職場の労働時間と日数の管理をする　＝＝　True
 		if (monthlyWorkTimeSetWkpOpt.isPresent() && usageUnitSetting.isWorkPlace()) {
 			monthlyWorkTimeSetAtr = MonthlyWorkTimeSetAtr.WKP;
-			// ・比較対象基準時間　＝　合計（Input．職場別月単位労働時間．労働時間）　※１月～１２月  // データ情報区分　＝　職場
-			// TODO do not kown propery?
-			return 0.0;
+			// ・比較対象基準時間　＝　合計（Input．職場別月単位労働時間．労働時間．法定労働時間）　※１月～１２月  // データ情報区分　＝　職場
+			return monthlyWorkTimeSetWkpOpt.get().getLaborTime().getLegalLaborTime().v().doubleValue();
 		}
 
 		// 比較対象基準時間　を計算
 		if (monthlyWorkTimeSetComOpt.isPresent()) {
 			monthlyWorkTimeSetAtr = MonthlyWorkTimeSetAtr.COM;
-			// 比較対象基準時間　＝　合計（Input．会社別月単位労働時間．労働時間）　※１月～１２月  // データ情報区分　＝　会社
-			// TODO do not kown propery?
-			return 0.0;
+			// 比較対象基準時間　＝　合計（Input．会社別月単位労働時間．労働時間．法定労働時間）　※１月～１２月  // データ情報区分　＝　会社
+			return monthlyWorkTimeSetComOpt.get().getLaborTime().getLegalLaborTime().v().doubleValue();
 		}
 		
 		return 0.0;
@@ -1311,7 +1310,8 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 	}
 	
 	/**
-	 * 年休優先
+	 * UKDesign.ドメインモデル."NittsuSystem.UniversalK".就業.contexts.勤務実績.勤務実績.勤務実績のエラーアラーム設定.アラームリスト.スケジュール日次・月次・年間.スケジュール月次のアラームリストのチェック条件.アルゴリズム.任意.年休優先
+	 * 
 	 */
 	private AnnualLeaveOutput conditionTab3ItemAnnualLeave(
 			String cid, String sid, YearMonth ym,
@@ -1351,7 +1351,7 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 		boolean check = totalRemainingDays > 0;
 		if (remainingNumber.getTotalRemainingTime().isPresent()) {
 			Double totalRemainingTime = remainingNumber.getTotalRemainingTime().get().v().doubleValue();
-			output.totalRemainingTimes += totalRemainingTime; //TODO need QA co phai cong don ko
+			output.totalRemainingTimes = totalRemainingTime;
 			check = check || totalRemainingTime > 0;
 		}
 		
@@ -1359,7 +1359,7 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 			return output;
 		}
 		
-		output.totalRemainingDays += totalRemainingDays; //TODO need QA co phai cong don ko
+		output.totalRemainingDays = totalRemainingDays;
 		
 		// Input．年月の開始日から終了日までループする
 		DatePeriod dPeriod = new DatePeriod(ym.firstGeneralDate(), ym.lastGeneralDate());

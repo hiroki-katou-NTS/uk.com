@@ -8,7 +8,6 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -17,6 +16,7 @@ import org.apache.logging.log4j.util.Strings;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.task.parallel.ManagedParallelWithContext;
+import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
@@ -115,15 +115,20 @@ public class WeeklyCheckServiceImpl implements WeeklyCheckService {
 						}
 						
 						// ループ中の社員の月の週別実績の勤務時間を絞り込み
+						// 期間．開始日　＞＝ （Input. 期間．開始日　＞　ループ中の年月．開始日　？　Input. 期間．開始日　：　ループ中の年月．開始日）　QA#115666
+						GeneralDate startCompare = period.start().after(ym.firstGeneralDate()) ? period.start() : ym.firstGeneralDate();
+						// 期間．終了日　＜＝　（Input. 期間．終了日　＜　ループ中の年月．終了日　？　Input. 期間．終了日　：　ループ中の年月．終了日）　QA#115666
+						GeneralDate endCompare = period.end().before(ym.lastGeneralDate()) ? period.end() : ym.lastGeneralDate();
 						List<AttendanceTimeOfWeekly> attendanceTimeOfWeeklyYms = attendanceTimeOfWeeklys.stream()
-								.filter(x -> x.getEmployeeId().equals(sid) && x.getYearMonth().equals(ym))
+								.filter(x -> x.getEmployeeId().equals(sid) && x.getYearMonth().equals(ym) 
+										&& x.getPeriod().start().afterOrEquals(startCompare) && x.getPeriod().start().beforeOrEquals(endCompare))
 								.collect(Collectors.toList());
 						
 						// 絞り込みしたList＜週別実績の勤怠時間＞をループする
 						for (AttendanceTimeOfWeekly attWeekly: attendanceTimeOfWeeklyYms) {
 							// 任意抽出条件のアラーム値を作成する
 							ExtractionResultDetail extractDetail = createAlarmExtraction(
-									attWeekly, weeklyCond, count, attendanceItemMap, cid, sid, wpkId, ym);
+									attWeekly, weeklyCond, count, attendanceItemMap, cid, sid, wpkId, ym, attendanceTimeOfWeeklyYms.size());
 							
 							List<ResultOfEachCondition> lstResultTmp = lstResultCondition.stream()
 									.filter(x -> x.getCheckType() == AlarmListCheckType.FreeCheck && x.getNo().equals(alarmCode)).collect(Collectors.toList());
@@ -166,43 +171,20 @@ public class WeeklyCheckServiceImpl implements WeeklyCheckService {
 			String cid,
 			String sid,
 			String wpkId,
-			YearMonth ym) {
+			YearMonth ym,
+			int sizeWeeklyActualAttendanceTime) {
 		
 		boolean check = false;
 		ContinuousOutput continuousOutput = new ContinuousOutput();
 		
 		// 週次のコンバーターを交換 ErAlAttendanceItemCondition
-		//List<ItemValue> convert = monthlyRecordToAttendanceItemConverter.convert(attendanceItemMap.keySet()); TODO
+		//List<ItemValue> convert = monthlyRecordToAttendanceItemConverter.convert(attendanceItemMap.keySet()); TODO QA#115685
 		List<ItemValue> convert = new ArrayList<>();
-		MonthlyRecordToAttendanceItemConverter con = attendanceItemConvertFactory.createMonthlyConverter();
-		ErAlAttendanceItemCondition cond = new ErAlAttendanceItemCondition<>(
-				cid, 
-				"",
-				weeklyCond.getSortOrder(), 
-				0, true, 
-				ErrorAlarmConditionType.ATTENDANCE_ITEM.value);
+		MonthlyRecordToAttendanceItemConverter weeklyConvert = attendanceItemConvertFactory.createMonthlyConverter();
+		weeklyConvert.withAttendanceTime(attWeekly);
 		
-		if(weeklyCond.getCheckedTarget().isPresent()) {
-			CountableTarget countableTarget = (CountableTarget)weeklyCond.getCheckedTarget().get();
-			cond.setCountableTarget(
-					countableTarget.getAddSubAttendanceItems().getAdditionAttendanceItems(), 
-					countableTarget.getAddSubAttendanceItems().getSubstractionAttendanceItems());			
-		}
-		
-		if (weeklyCond.getCheckConditions() != null) {
-			if (weeklyCond.getCheckConditions() instanceof CompareRange) {
-				CompareRange compareRange = (CompareRange)weeklyCond.getCheckConditions();
-				cond.setCompareRange(
-						compareRange.getCompareOperator().value, 
-						compareRange.getStartValue(), 
-						compareRange.getStartValue());
-			} else {
-				CompareSingleValue<Double> compareRange = (CompareSingleValue)weeklyCond.getCheckConditions();
-				cond.setCompareSingleValue(
-						compareRange.getCompareOpertor().value, 
-						ConditionType.ATTENDANCE_ITEM.value, (Double)compareRange.getValue());
-			}
-		}
+		@SuppressWarnings("rawtypes")
+		ErAlAttendanceItemCondition cond = convertToErAlAttendanceItem(cid, weeklyCond);
 		
 		WeeklyCheckItemType checkItemType = weeklyCond.getCheckItemType();
 		switch (checkItemType) {
@@ -211,7 +193,7 @@ public class WeeklyCheckServiceImpl implements WeeklyCheckService {
 		case DAY_NUMBER:
 			// 勤怠項目をチェックする
 			check = checkAttendanceItem(cond, item -> {
-				return convert.stream().map(iv -> getValue(iv))
+				return weeklyConvert.convert(attendanceItemMap.keySet()).stream().map(iv -> getValue(iv))
 						.collect(Collectors.toList());
 			});
 			break;
@@ -220,7 +202,7 @@ public class WeeklyCheckServiceImpl implements WeeklyCheckService {
 		case CONTINUOUS_DAY:
 			// 連続の項目の実績をチェック
 			continuousOutput = checkPerformanceOfConsecutiveItem(
-					attWeekly, weeklyCond, cond, convert, count);
+					attWeekly, weeklyCond, cond, weeklyConvert.convert(attendanceItemMap.keySet()), count);
 			break;
 			
 		default:
@@ -233,8 +215,8 @@ public class WeeklyCheckServiceImpl implements WeeklyCheckService {
 		String alarmContent = Strings.EMPTY;
 		
 		// チェック項目の種類は連続じゃないの場合　－＞#KAL010_1314 
-		// {0}　＝　Input．週別実績の勤怠時間から計算した値 TODO chua ro lay truong nao
-		String weeklyActualAttendanceTime = String.valueOf(attWeekly.getWeeklyCalculation().getTotalWorkingTime());
+		// {0}　＝　Input．週別実績の勤怠時間から計算した値 QA#115666
+		String weeklyActualAttendanceTime = String.valueOf(sizeWeeklyActualAttendanceTime);
 		String checkTargetValue = TextResource.localize("KAL010_1314");
 		
 		// 週別実績の任意抽出条件．チェック項目の種類！＝4,5,6　AND　該当区分　＝　True
@@ -264,7 +246,7 @@ public class WeeklyCheckServiceImpl implements WeeklyCheckService {
 				checkTargetValue = TextResource.localize("KAL010_1313", String.valueOf(continuousOutput.continuousCountOpt.get().getConsecutiveYears()));
 			}
 			
-			alarmContent = TextResource.localize("KAL010_1310", param0);
+			alarmContent = TextResource.localize("KAL010_1310", param0, param1, param2);
 		}
 		
 		// 取得したアカウント、作成した「抽出結果詳細」を返す
@@ -277,6 +259,46 @@ public class WeeklyCheckServiceImpl implements WeeklyCheckService {
 				comment, 
 				Optional.ofNullable(checkTargetValue));
 		return detail;
+	}
+	
+	/**
+	 * Convert ExtractionCondScheduleWeekly to ErAlAttendanceItemCondition
+	 * @param cid company id
+	 * @param weeklyCond ExtractionCondScheduleWeekly
+	 * @return ErAlAttendanceItemCondition
+	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	private ErAlAttendanceItemCondition convertToErAlAttendanceItem(String cid, ExtractionCondScheduleWeekly weeklyCond) {
+		ErAlAttendanceItemCondition cond = new ErAlAttendanceItemCondition<>(
+				cid, 
+				"",
+				weeklyCond.getSortOrder(), 
+				0, true, 
+				ErrorAlarmConditionType.ATTENDANCE_ITEM.value);
+		
+		if(weeklyCond.getCheckedTarget().isPresent()) {
+			CountableTarget countableTarget = (CountableTarget)weeklyCond.getCheckedTarget().get();
+			cond.setCountableTarget(
+					countableTarget.getAddSubAttendanceItems().getAdditionAttendanceItems(), 
+					countableTarget.getAddSubAttendanceItems().getSubstractionAttendanceItems());			
+		}
+		
+		if (weeklyCond.getCheckConditions() != null) {
+			if (weeklyCond.getCheckConditions() instanceof CompareRange) {
+				CompareRange compareRange = (CompareRange)weeklyCond.getCheckConditions();
+				cond.setCompareRange(
+						compareRange.getCompareOperator().value, 
+						compareRange.getStartValue(), 
+						compareRange.getStartValue());
+			} else {
+				CompareSingleValue<Double> compareRange = (CompareSingleValue)weeklyCond.getCheckConditions();
+				cond.setCompareSingleValue(
+						compareRange.getCompareOpertor().value, 
+						ConditionType.ATTENDANCE_ITEM.value, (Double)compareRange.getValue());
+			}
+		}
+		
+		return cond;
 	}
 	
 	private ContinuousOutput checkPerformanceOfConsecutiveItem(AttendanceTimeOfWeekly attWeekly,
@@ -329,9 +351,11 @@ public class WeeklyCheckServiceImpl implements WeeklyCheckService {
 	
 	private class ContinuousOutput {
 		/** カウント */
+		@SuppressWarnings("unused")
 		public int count = 0;
 		
 		/** 該当区分 */
+		@SuppressWarnings("unused")
 		public boolean check = false;
 		
 		/** Optional<連続カウント＞ */
