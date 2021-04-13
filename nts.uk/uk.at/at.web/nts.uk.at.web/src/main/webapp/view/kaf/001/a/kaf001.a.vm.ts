@@ -255,7 +255,7 @@ module kaf001.a.viewmodel {
                 let transfer: AppInitParam = {
                     appType: applicationType,
                     employeeIds,
-                    baseDate: self.selectedDate().toISOString(),
+                    baseDate: self.selectedDate(),
 					isAgentMode: true
                 };
                 switch (applicationType) {
