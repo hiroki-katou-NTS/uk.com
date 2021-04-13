@@ -4,6 +4,24 @@ module nts.uk.ui.at.kdp013.b {
     const { getTimeOfDate, number2String } = share;
 
     @handler({
+        bindingName: 'content',
+        validatable: true,
+        virtual: false
+    })
+    export class ContentBindingHandler implements KnockoutBindingHandler {
+        init(element: HTMLElement, valueAccessor: () => KeyValue) {
+            const { key, value } = valueAccessor();
+
+            if (key !== 'KDW013_29') {
+                $(element).text(value);
+            } else {
+                $(element).append($('<div>', { text: value }));
+            }
+        }
+    }
+
+
+    @handler({
         bindingName: COMPONENT_NAME,
         validatable: true,
         virtual: false
@@ -41,7 +59,7 @@ module nts.uk.ui.at.kdp013.b {
                 <tbody data-bind="foreach: { data: $component.dataSources, as: 'pair' }">
                     <tr>
                         <td data-bind="i18n: pair.key"></td>
-                        <td data-bind="html: pair.value"></td>
+                        <td data-bind="content: pair"></td>
                     </tr>
                 </tbody>
             </table>
@@ -79,6 +97,10 @@ module nts.uk.ui.at.kdp013.b {
             .detail-event table tr>td:first-child {
                 vertical-align: top;
                 padding-top: 6px;
+            }
+            .detail-event table tr>td>div {
+                max-height: 120px;
+                overflow-y: auto;
             }
         </style>
         `
