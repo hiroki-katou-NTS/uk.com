@@ -65,6 +65,7 @@ import nts.uk.ctx.at.request.dom.application.overtime.ApplicationTime;
 import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType_Update;
 import nts.uk.ctx.at.request.dom.application.overtime.OverStateOutput;
 import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode;
+import nts.uk.ctx.at.request.dom.application.timeleaveapplication.TimeLeaveApplicationDetail;
 import nts.uk.ctx.at.request.dom.setting.DisplayAtr;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.PrePostInitAtr;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appovertime.OvertimeAppSet;
@@ -509,6 +510,12 @@ public class AppContentServiceImpl implements AppContentService {
 				break;
 			case ANNUAL_HOLIDAY_APPLICATION:
 				// 時間休暇申請データを作成(tạo data của時間休暇申請 )
+				String contentAnnualHoliday = appContentDetailCMM045.createAnnualHolidayData(
+						application, 
+						approvalListDisplaySetting.getAppReasonDisAtr(), 
+						ScreenAtr.CMM045, 
+						companyID);
+				listOfApp.setAppContent(contentAnnualHoliday);
 				break;
 			case EARLY_LEAVE_CANCEL_APPLICATION:
 				// 遅刻早退取消申請データを作成(tạo data của 遅刻早退取消申請)
@@ -1351,6 +1358,84 @@ public class AppContentServiceImpl implements AppContentService {
 				application.getAppType(), 
 				Optional.empty());
 		// 申請内容を改行 (Xuống dòng nội dung đơn xin)
+		if(Strings.isNotBlank(appReasonContent)) {
+			result += "\n" + appReasonContent;
+		}
+		return result;
+	}
+
+	@Override
+	public String getAnnualHolidayContent(AppReason appReason, DisplayAtr appReasonDisAtr, ScreenAtr screenAtr,
+			List<TimeLeaveApplicationDetail> leaveApplicationDetails, AppStandardReasonCode appStandardReasonCD) {
+		String paramStr = "";
+		// ScreenID
+		if(screenAtr==ScreenAtr.KAF018 || screenAtr==ScreenAtr.CMM045) {
+			// @＝”　”
+			paramStr = " ";
+		} else {
+			// @＝改行
+			paramStr = "\n";
+		}
+		// <List>項目名、時間休種類、時間代休、時間年休、子の看護時間、介護時間、60H超休、時間特別休暇
+		String result = leaveApplicationDetails.stream().map(x -> {
+			String resultLoop = "";
+			// 申請内容＋＝<List>項目名
+			switch (x.getAppTimeType()) {
+			case ATWORK:
+				resultLoop += I18NText.getText("CMM045_294");
+				break;
+			case OFFWORK:
+				resultLoop += I18NText.getText("CMM045_295");
+				break;
+			case ATWORK2:
+				resultLoop += I18NText.getText("CMM045_294");
+				break;
+			case OFFWORK2:
+				resultLoop += I18NText.getText("CMM045_295");
+				break;
+			case PRIVATE:
+				resultLoop += I18NText.getText("CMM045_296");
+				break;
+			case UNION:
+				resultLoop += I18NText.getText("CMM045_297");
+				break;
+			default:
+				break;
+			}
+			// 申請内容＋＝'　'＋#CMM045_298（時間代休）＋'　'＋<List> 時間代休
+			if(x.getTimeDigestApplication().getTimeOff() != null && x.getTimeDigestApplication().getTimeOff().valueAsMinutes()>0) {
+				resultLoop += " " + I18NText.getText("CMM045_298") + " " + 
+								new TimeWithDayAttr(x.getTimeDigestApplication().getTimeOff().valueAsMinutes()).getRawTimeWithFormat();
+			}
+			// 申請内容＋＝'　'＋#CMM045_300（時間年休）＋'　'＋<List> 時間年休
+			if(x.getTimeDigestApplication().getTimeAnnualLeave() != null && x.getTimeDigestApplication().getTimeAnnualLeave().valueAsMinutes()>0) {
+				resultLoop += " " + I18NText.getText("CMM045_300") + " " + 
+								new TimeWithDayAttr(x.getTimeDigestApplication().getTimeAnnualLeave().valueAsMinutes()).getRawTimeWithFormat();
+			}
+			// 申請内容＋＝'　'＋#CMM045_302（子看護）＋'　'＋<List> 子の看護時間
+			if(x.getTimeDigestApplication().getChildTime() != null && x.getTimeDigestApplication().getChildTime().valueAsMinutes()>0) {
+				resultLoop += " " + I18NText.getText("CMM045_302") + " " + 
+								new TimeWithDayAttr(x.getTimeDigestApplication().getChildTime().valueAsMinutes()).getRawTimeWithFormat();
+			}
+			// 申請内容＋＝'　'＋#CMM045_303（介護）＋'　'＋<List> 介護時間
+			if(x.getTimeDigestApplication().getNursingTime() != null && x.getTimeDigestApplication().getNursingTime().valueAsMinutes()>0) {
+				resultLoop += " " + I18NText.getText("CMM045_303") + " " + 
+								new TimeWithDayAttr(x.getTimeDigestApplication().getNursingTime().valueAsMinutes()).getRawTimeWithFormat();
+			}
+			// 申請内容＋＝'　'＋#CMM045_299（60H超休）＋'　'＋<List> 60H超休
+			if(x.getTimeDigestApplication().getOvertime60H() != null && x.getTimeDigestApplication().getOvertime60H().valueAsMinutes()>0) {
+				resultLoop += " " + I18NText.getText("CMM045_299") + " " + 
+								new TimeWithDayAttr(x.getTimeDigestApplication().getOvertime60H().valueAsMinutes()).getRawTimeWithFormat();
+			}
+			// 申請内容＋＝'　'＋#CMM045_301（時間特休）＋'　'＋<List> 時間特別休暇
+			if(x.getTimeDigestApplication().getTimeSpecialVacation() != null && x.getTimeDigestApplication().getTimeSpecialVacation().valueAsMinutes()>0) {
+				resultLoop += " " + I18NText.getText("CMM045_301") + " " + 
+								new TimeWithDayAttr(x.getTimeDigestApplication().getTimeSpecialVacation().valueAsMinutes()).getRawTimeWithFormat();
+			}
+			return resultLoop;
+		}).collect(Collectors.joining(paramStr));
+		// アルゴリズム「申請内容の申請理由」を実行する
+		String appReasonContent = this.getAppReasonContent(appReasonDisAtr, appReason, screenAtr, appStandardReasonCD, ApplicationType.ANNUAL_HOLIDAY_APPLICATION, Optional.empty());
 		if(Strings.isNotBlank(appReasonContent)) {
 			result += "\n" + appReasonContent;
 		}
