@@ -420,7 +420,6 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 		ExtractionAlarmPeriodDate extractionAlarmPeriodDate = new ExtractionAlarmPeriodDate(Optional.of(day), Optional.empty());
 		if (dailyCheckType != null && DaiCheckItemType.TIME != dailyCheckType) {
 			// チェック項目種類　！＝　「時間」　－＞ループ中の年月日.ADD(-取得した連続カウント）
-			//TODO QA addDays or Year
 			extractionAlarmPeriodDate = new ExtractionAlarmPeriodDate(Optional.of(day.addDays(-consecutiveYears)), Optional.empty());
 		}
 		
@@ -451,6 +450,7 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 	 * create alarm content (アラーム内容)
 	 * @return
 	 */
+	@SuppressWarnings("rawtypes")
 	private String createAlarmContent(
 			DaiCheckItemType dailyCheckType,
 			RangeToCheck targetWorkType,
@@ -495,8 +495,7 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 		if (DaiCheckItemType.TIME == dailyCheckType || DaiCheckItemType.CONTINUOUS_TIMEZONE == dailyCheckType) {
 			// ※1内容:  対象勤務：{0}条件：予約時間{1}{2}　実績：{3}
 			// {0}: ループ中のスケジュール日次の任意抽出条件．勤務種類の条件．予実比較による絞り込み方法
-			String variable0 = targetWorkType.nameId;
-			
+			String variable0 = targetWorkType.nameId;			
 			
 			// {1}: チェック条件　（例：　＜＞8：00）
 			String variable1 = "";
@@ -610,7 +609,7 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 	 * TODO need check again confirm QA
 	 * @param scheCondDay
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private boolean checkTime(CheckedCondition checkedCondition, WorkScheduleWorkInforImport workSchedule) {
 		// Input．勤務予定．勤怠時間をチェック
 		Optional<AttendanceTimeOfDailyAttendanceImport> attendanceTimeOfDailyPerformance = workSchedule.getOptAttendanceTime();
@@ -646,7 +645,7 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 	}
 	
 	/**
-	 * case checktype = Continuous time zone
+	 * Case checktype = Continuous time zone
 	 */
 	private boolean checkContinuousTimeZone(WorkTimeCode workTimeCode, CondContinuousTimeZone condContinuousTimeZone, TimeZoneTargetRange timeZoneTargetRange) {
 		// 勤務予定の就業時間帯があるかチェック
@@ -720,14 +719,6 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 								.filter(y -> y.start().beforeOrEquals(exDate) && y.end().afterOrEquals(exDate)).collect(Collectors.toList()).isEmpty())
 					.collect(Collectors.toList());
 			if(statusOfEmp.isEmpty()) continue;
-			
-//			List<IntegrationOfDaily> lstDaily = listIntegrationDai.stream()
-//					.filter(x -> x.getEmployeeId().equals(sid) && x.getYmd().equals(exDate))
-//					.collect(Collectors.toList());			
-//			IntegrationOfDaily integrationDaily = null;
-//			if(!lstDaily.isEmpty()) {
-//				integrationDaily = lstDaily.get(0);
-//			}
 			
 			// 勤務予定(Work)を探す
 			Optional<WorkScheduleWorkInforImport> workScheduleWorks = workScheduleWorkInfos.stream()
@@ -838,11 +829,13 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 				// 各チェック条件の結果を作成
 				String checkValue = alarmTarget;
 				String alarmContent = alarmMessage;
+				String comment = fixScheCondItem.getMessageDisp() != null && fixScheCondItem.getMessageDisp().isPresent() 
+						? fixScheCondItem.getMessageDisp().get().v() : Strings.EMPTY;
 				List<ResultOfEachCondition> listResultCond = this.createExtractAlarm(sid,
 						exDate,
 						fixedAtr.nameId,
 						alarmContent,
-						Optional.ofNullable(fixScheCondItem.getMessageDisp() != null && fixScheCondItem.getMessageDisp().isPresent() ? fixScheCondItem.getMessageDisp().get().v() : ""),
+						Optional.ofNullable(comment),
 						checkValue,
 						String.valueOf(fixedAtr.value),
 						AlarmListCheckType.FixCheck,
@@ -1020,22 +1013,22 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 		Optional<TimeLeavingWorkImport> timeLeavingWorkImport2 = attendanceLeave.getTimeLeavingWorks().stream()
 				.filter(x -> x.getWorkNo() == 2).findFirst();
 		if (timeLeavingWorkImport1.isPresent() && timeLeavingWorkImport2.isPresent()) {
-			// TODO QA#115444
+			if (!timeLeavingWorkImport1.get().getAttendanceStamp().isPresent() && !timeLeavingWorkImport2.get().getLeaveStamp().isPresent()) {
+				return;
+			}
+			
+			// QA#115444
 			// 日別勤怠の出退勤．出退勤．出勤
 			WorkStampImport attendanceStamp1 = timeLeavingWorkImport1.get().getAttendanceStamp().get().getActualStamp().get();
-			WorkStampImport attendanceStamp2 = timeLeavingWorkImport1.get().getAttendanceStamp().get().getActualStamp().get();
+			WorkStampImport attendanceStamp2 = timeLeavingWorkImport2.get().getAttendanceStamp().get().getActualStamp().get();
 			// 日別勤怠の出退勤．出退勤．退勤
 			WorkStampImport leaveStamp1 = timeLeavingWorkImport1.get().getLeaveStamp().get().getActualStamp().get();
-			WorkStampImport leaveStamp2 = timeLeavingWorkImport1.get().getLeaveStamp().get().getActualStamp().get();
+			WorkStampImport leaveStamp2 = timeLeavingWorkImport2.get().getLeaveStamp().get().getActualStamp().get();
 			
-			// Input．日別勤怠の出退勤．出退勤．出勤．実打刻　+　’～’　+　Input．日別勤怠の出退勤．出退勤．退勤．実打刻
-			String targetParam0 = timeLeavingWorkImport1.get().getAttendanceStamp().isPresent() 
-							? formatTimeWithDay(attendanceStamp1.getTimeDay().getTimeWithDay()) + ErrorAlarmConstant.PERIOD_SEPERATOR + formatTimeWithDay(leaveStamp1.getTimeDay().getTimeWithDay())
-							: Strings.EMPTY;
-			// Input．日別勤怠の出退勤．出退勤．出勤．実打刻　+　’～’　+　Input．日別勤怠の出退勤．出退勤．退勤．実打刻
-			String targetParam1 = timeLeavingWorkImport2.get().getLeaveStamp().isPresent() 
-							? formatTimeWithDay(attendanceStamp2.getTimeDay().getTimeWithDay()) + ErrorAlarmConstant.PERIOD_SEPERATOR + formatTimeWithDay(leaveStamp2.getTimeDay().getTimeWithDay())
-							: Strings.EMPTY;
+			// Input．日別勤怠の出退勤．出退勤．出勤．実打刻.時刻　+　’～’　+　Input．日別勤怠の出退勤．出退勤．退勤．実打刻.時刻
+			String targetParam0 = formatTimeWithDay(attendanceStamp1.getTimeDay().getTimeWithDay()) + ErrorAlarmConstant.PERIOD_SEPERATOR + formatTimeWithDay(leaveStamp1.getTimeDay().getTimeWithDay());
+			// Input．日別勤怠の出退勤．出退勤．出勤．実打刻.時刻　+　’～’　+　Input．日別勤怠の出退勤．出退勤．退勤．実打刻.時刻
+			String targetParam1 = formatTimeWithDay(attendanceStamp2.getTimeDay().getTimeWithDay()) + ErrorAlarmConstant.PERIOD_SEPERATOR + formatTimeWithDay(leaveStamp2.getTimeDay().getTimeWithDay());
 			alarmTarget = TextResource.localize("KAL010_1022", targetParam0, targetParam1);
 		}
 	}

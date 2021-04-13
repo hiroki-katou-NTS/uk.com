@@ -380,7 +380,7 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 		        // Output: List＜職場月間日数設定＞
 		        optWorkplaceMonthDaySetting = this.workplaceMonthDaySettingRepo.findByYear(new CompanyId(cid), year);
 		        
-		        // TODO ドメインモデル「会社月間日数設定」を取得する
+		        // ドメインモデル「会社月間日数設定」を取得する
 		        // 条件：
 		        // ・会社ID　＝　Input．会社ID
 		        // ・公休管理年　＝　List＜Input．期間．年＞
@@ -1328,7 +1328,7 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 		// 基準日　＝　Input．年月の開始日
 		GeneralDate criteriaDate = ym.firstGeneralDate();
 		// 集計開始日　＝　Input．年月の開始日
-		// 集計終了日 = Input．年月.Add(1年）.Add（－１日） TODO need confirm firstDayInMonth - 1 day or lastDayInMonth
+		// 集計終了日 = Input．年月.Add(1年）.Add（－１日） 
 		DatePeriod period = new DatePeriod(ym.firstGeneralDate(), ym.firstGeneralDate().addYears(1).addDays(-1));
 		// Output: 年休の集計結果
 		AggrResultOfAnnAndRsvLeave aggResult = GetAnnAndRsvRemNumWithinPeriod.algorithm(require, cacheCarrier,
