@@ -166,9 +166,29 @@ module nts.uk.ui.at.kdp013.share {
                         const { code, name } = item;
 
                         $(element)
-                            .html('')
-                            .append($('<td>', { text: code }))
-                            .append($('<td>', { text: name }));
+                            .html(`<td>${name}</td><td>${code}</td>`);
+                    },
+                    disposeWhenNodeIsRemoved: element
+                });
+            }
+        }
+
+        @handler({
+            bindingName: 'scrollTo'
+        })
+        export class DropdownScrollToBindingHandler implements KnockoutBindingHandler {
+            init = (element: HTMLElement, valueAccessor: () => KnockoutObservable<number>) => {
+                const tbody = $(element).find('tbody').get(0);
+                const highlight = valueAccessor();
+
+                ko.computed({
+                    read: () => {
+                        const $hl = ko.unwrap(highlight);
+                        const $tr = $(element).find('tbody>tr').get($hl);
+
+                        if ($tr) {
+                            $(element).scrollTop($tr.offsetTop);
+                        }
                     },
                     disposeWhenNodeIsRemoved: element
                 });
@@ -179,7 +199,13 @@ module nts.uk.ui.at.kdp013.share {
             name: COMPONENT_NAME,
             template: `
             <div>
-                <input type="text" class="nts-input" data-bind="value: $component.filter, valueUpdate: 'input', attr: { readonly: !ko.unwrap($component.show) }" />
+                <input type="text" class="nts-input" data-bind="
+                        value: $component.filter,
+                        valueUpdate: 'input',
+                        attr: { 
+                            readonly: !ko.unwrap($component.show)
+                        }
+                    " />
                 <table>
                     <colgroup>
                         <col width="180px" />
@@ -193,7 +219,7 @@ module nts.uk.ui.at.kdp013.share {
                         </tr>
                     </tbody>
                 </table>
-                <div>
+                <div data-bind="scrollTo: $component.highlight">
                     <table>
                         <colgroup>
                             <col width="180px" />
@@ -277,6 +303,14 @@ module nts.uk.ui.at.kdp013.share {
                     if (!sh) {
                         vm.filter('');
                         vm.highlight(-1);
+                    } else {
+                        const items = ko.unwrap(vm.items).map(({ id }) => id);
+                        const selected = ko.unwrap(vm.params.selected);
+                        const index = _.indexOf(items, selected);
+
+                        if (index > -1) {
+                            vm.highlight(index);
+                        }
                     }
                 });
 
@@ -298,13 +332,15 @@ module nts.uk.ui.at.kdp013.share {
 
                 $container
                     .on('click', () => {
-                        if (!ko.unwrap(show)) {
-                            vm.show(true);
-                        }
+                        $.Deferred()
+                            .resolve(true)
+                            .then(() => {
+                                if (!ko.unwrap(show)) {
+                                    vm.show(true);
+                                }
 
-                        vm.focus(true);
-
-                        $input.focus();
+                                $input.focus();
+                            });
                     });
 
                 vm.clickEvent = (evt: JQueryEventObject) => {
@@ -367,16 +403,23 @@ module nts.uk.ui.at.kdp013.share {
 
                                 if (highlight < items.length - 1) {
                                     vm.highlight(highlight + 1);
+                                } else {
+                                    vm.highlight(0);
                                 }
                             }
                         } else if (keyCode === 38) {
                             // arrow up key
                             if (isShow) {
                                 // move up
+                                const items = ko.unwrap(vm.items);
                                 const highlight = ko.unwrap(vm.highlight);
 
                                 if (highlight > 0) {
-                                    vm.highlight(highlight - 1);
+                                    if (highlight > items.length - 1) {
+                                        vm.highlight(items.length - 1);
+                                    } else {
+                                        vm.highlight(highlight - 1);
+                                    }
                                 }
                             }
                         }
