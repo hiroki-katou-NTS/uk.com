@@ -60,12 +60,12 @@ module nts.uk.at.view.kdp010.j {
                 let param = {pageNo:1};
 				$.when(self.getSettingCommonStamp()).done(()=>{
 	                ajax("at", paths.getData, param).done(function(data: any) {
-						_.forEach(data.lstButtonSet, (btn:any) => {
-							if(self.checkNotUseBtnSupport(btn.buttonType)){
-								btn.usrArt = 0;								
-							}
-						});
 	                    if (data) {
+							_.forEach(data.lstButtonSet, (btn:any) => {
+								if(self.checkNotUseBtnSupport(btn.buttonType)){
+									btn.usrArt = 0;								
+								}
+							});
 	                        self.stampPageLayout.update(data);
 	                        self.isDel(true);
 	                    }
