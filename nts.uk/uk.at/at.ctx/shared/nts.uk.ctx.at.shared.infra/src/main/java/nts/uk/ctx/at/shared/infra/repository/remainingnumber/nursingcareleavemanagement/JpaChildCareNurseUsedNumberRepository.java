@@ -1,9 +1,11 @@
 package nts.uk.ctx.at.shared.infra.repository.remainingnumber.nursingcareleavemanagement;
 
 import java.util.Optional;
+
+import javax.ejb.Stateless;
+
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.ChildCareNurseUsedNumberRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.ChildCareNurseUsedNumber;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingCategory;
 import nts.uk.ctx.at.shared.infra.entity.remainingnumber.nursingcareleave.KrcdtHdnursingUse;
@@ -11,8 +13,8 @@ import nts.uk.ctx.at.shared.infra.entity.remainingnumber.nursingcareleave.KrcdtH
 
 /**
  * リポジトリ実装：子の看護介護(共通)休暇使用数データ
- * @author yuri_tamakoshi
  */
+@Stateless
 public class JpaChildCareNurseUsedNumberRepository extends JpaRepository {
 
 	/** 検索 */

@@ -28,7 +28,7 @@ import nts.uk.ctx.at.shared.dom.workingcondition.LaborContractTime;
  */
 @Getter
 @Setter
-public abstract class NursingCareLeaveRemainingInfo extends AggregateRoot {
+public abstract class NursingCareLeaveRemainingInfo{
 
 	// 社員ID
 	private String sId;

@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.ejb.Stateless;
+
 import lombok.val;
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
@@ -25,6 +27,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingLeaveSettin
  * 実装：期間中の子の看護休暇残数を取得
  * @author yuri_tamakoshi
  */
+@Stateless
 public class GetRemainingNumberChildCareService {
 
 	/**

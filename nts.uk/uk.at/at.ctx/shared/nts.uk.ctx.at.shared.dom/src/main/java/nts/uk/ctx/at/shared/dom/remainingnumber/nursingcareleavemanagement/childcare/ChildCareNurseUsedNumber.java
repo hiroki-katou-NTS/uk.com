@@ -33,6 +33,21 @@ public class ChildCareNurseUsedNumber implements Cloneable{
 	}
 
 	/**
+	 * コンストラクタ
+	 */
+	public ChildCareNurseUsedNumber(ChildCareNurseUsedNumber c) {
+		this.usedDay = new DayNumberOfUse(c.usedDay.v());
+		this.usedTimes = c.usedTimes.map(mapper->new TimeOfUse(mapper.v()));
+	}
+
+	/**
+	 * クローン
+	 */
+	public ChildCareNurseUsedNumber clone() {
+		return new ChildCareNurseUsedNumber(this);
+	}
+
+	/**
 	 * ファクトリー
 	 * @param usedDay 日数
 	 * @param usedTimes 時間

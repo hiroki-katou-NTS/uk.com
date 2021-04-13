@@ -8,25 +8,20 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.DbConsts;
-import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.ChildCareNurseUsedNumberRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.care.CareUsedNumberData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.care.CareUsedNumberRepository;
-import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.ChildCareNurseUsedNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.ChildCareUsedNumberData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.ChildCareUsedNumberRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.data.ChildCareLeaveRemainingData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.data.LeaveForCareData;
-import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.data.LeaveForCareDataRepo;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.CareLeaveDataInfo;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.CareLeaveRemainingInfo;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.CareLeaveRemainingInfoRepository;
@@ -39,13 +34,12 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.ChildCareNurseUppe
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingCategory;
 import nts.uk.ctx.at.shared.infra.entity.remainingnumber.nursingcareleave.KrcdtHdNursingInfo;
 import nts.uk.ctx.at.shared.infra.entity.remainingnumber.nursingcareleave.KrcdtHdNursingInfoPK;
-import nts.uk.ctx.at.shared.infra.entity.specialholiday.periodinformation.KshmtHdspGrantDeadlinePK;
 import nts.uk.ctx.at.shared.infra.repository.remainingnumber.nursingcareleavemanagement.JpaChildCareNurseLevRemainInfoRepo;
-import nts.uk.ctx.at.shared.infra.repository.remainingnumber.nursingcareleavemanagement.care.JpaCareUsedNumberRepository;
 
 /*
  * 介護用
  * */
+@Stateless
 public class JpaCareLeaveRemainingInfoRepository extends JpaChildCareNurseLevRemainInfoRepo
 	implements CareLeaveRemainingInfoRepository{
 
@@ -82,7 +76,7 @@ public class JpaCareLeaveRemainingInfoRepository extends JpaChildCareNurseLevRem
 
 		// 共通関数呼び出し
 		List<NursingCareLeaveRemainingInfo> remaingInfoList
-			= getDataByEmpIdsAndCidAndNursingCategory(cid, empIds, NursingCategory.ChildNursing);
+			= getDataByEmpIdsAndCidAndNursingCategory(cid, empIds, NursingCategory.Nursing);
 
 		// 型変換
 		List<CareLeaveRemainingInfo> careLeaveRemainingInfoList
@@ -111,7 +105,7 @@ public class JpaCareLeaveRemainingInfoRepository extends JpaChildCareNurseLevRem
 
 	@Override
 	public void update(CareLeaveRemainingInfo domain, String cId) {
-		KrcdtHdNursingInfoPK key = new KrcdtHdNursingInfoPK(domain.getSId(), NursingCategory.ChildNursing.value);
+		KrcdtHdNursingInfoPK key = new KrcdtHdNursingInfoPK(domain.getSId(), NursingCategory.Nursing.value);
 		Optional<KrcdtHdNursingInfo> entityOpt = this.queryProxy().find(key, KrcdtHdNursingInfo.class);
 		if (entityOpt.isPresent()) {
 			KrcdtHdNursingInfo entity = entityOpt.get();
@@ -205,7 +199,6 @@ public class JpaCareLeaveRemainingInfoRepository extends JpaChildCareNurseLevRem
 					enums.put("IS00380", rec.getInt("IUSE_ATR"));
 					enums.put("IS00381", rec.getInt("IUPPER_LIM_SET_ART"));
 
-					//LeaveForCareData leaveForCareData = LeaveForCareData.getCareHDRemaining(rec.getString("DSID"), rec.getDouble("DUSED_DAYS"));
 					CareUsedNumberData careUsedNumberData = new CareUsedNumberData(rec.getString("DSID"));
 					careUsedNumberData.setUsedDay(new DayNumberOfUse(rec.getDouble("DUSED_DAYS")));
 

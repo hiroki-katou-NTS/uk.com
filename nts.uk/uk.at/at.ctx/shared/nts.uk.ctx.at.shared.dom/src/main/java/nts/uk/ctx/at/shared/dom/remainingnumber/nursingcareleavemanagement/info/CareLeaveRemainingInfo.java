@@ -3,6 +3,8 @@ package nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info
 import java.util.Optional;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.layer.dom.AggregateRoot;
+import nts.arc.layer.dom.objecttype.DomainAggregate;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.ChildCareNurseUpperLimit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingCategory;
 
@@ -12,7 +14,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingCategory;
  * @author xuan vinh
  *
  */
-public class CareLeaveRemainingInfo extends NursingCareLeaveRemainingInfo {
+public class CareLeaveRemainingInfo extends NursingCareLeaveRemainingInfo  implements DomainAggregate  {
 
 	public CareLeaveRemainingInfo() {
 	}

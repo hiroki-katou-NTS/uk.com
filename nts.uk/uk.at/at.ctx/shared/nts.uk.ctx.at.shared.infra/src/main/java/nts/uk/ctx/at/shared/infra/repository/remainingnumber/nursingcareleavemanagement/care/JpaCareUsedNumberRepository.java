@@ -2,7 +2,10 @@ package nts.uk.ctx.at.shared.infra.repository.remainingnumber.nursingcareleavema
 
 import java.util.Optional;
 
-import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.ChildCareNurseUsedNumberRepository;
+import javax.ejb.Stateless;
+
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.care.CareUsedNumberData;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.care.CareUsedNumberRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.ChildCareNurseUsedNumber;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingCategory;
 import nts.uk.ctx.at.shared.infra.entity.remainingnumber.nursingcareleave.KrcdtHdnursingUse;
@@ -13,17 +16,26 @@ import nts.uk.ctx.at.shared.infra.repository.remainingnumber.nursingcareleaveman
  * リポジトリ実装：子の看護休暇使用数データ
  * @author yuri_tamakoshi
  */
-public class JpaCareUsedNumberRepository extends JpaChildCareNurseUsedNumberRepository implements ChildCareNurseUsedNumberRepository{
+@Stateless
+public class JpaCareUsedNumberRepository extends JpaChildCareNurseUsedNumberRepository implements CareUsedNumberRepository{
 
 	/** 検索 */
 	@Override
-	public Optional<ChildCareNurseUsedNumber> find(String employeeId) {
-		return this.find(employeeId, NursingCategory.Nursing);
+	public Optional<CareUsedNumberData> find(String employeeId) {
+
+		// 共通処理呼び出し
+		Optional<ChildCareNurseUsedNumber> childCareNurseUsedNumberOpt = this.find(employeeId, NursingCategory.ChildNursing);
+
+		// 型変換
+		Optional<CareUsedNumberData> careUsedNumberData
+				= childCareNurseUsedNumberOpt.map(mapper->new CareUsedNumberData(employeeId, mapper ));
+
+		return careUsedNumberData;
 	}
 
 	/** 登録および更新 */
 	@Override
-	public void persistAndUpdate(String employeeId, ChildCareNurseUsedNumber domain) {
+	public void persistAndUpdate(String employeeId, CareUsedNumberData domain) {
 		this.persistAndUpdate(employeeId, NursingCategory.Nursing, domain);
 	}
 

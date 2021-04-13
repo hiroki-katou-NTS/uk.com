@@ -37,44 +37,12 @@ public class JpaChildCareNurseLevRemainInfoRepo extends JpaRepository {
 		KrcdtHdNursingInfoPK key = new KrcdtHdNursingInfoPK(empId, nursingType);
 		Optional<KrcdtHdNursingInfo> entityOpt = this.queryProxy().find(key, KrcdtHdNursingInfo.class);
 		return entityOpt;
-//		if (entityOpt.isPresent()) {
-//			KrcmtChildCareHDInfo entity = entityOpt.get();
-//			return Optional.of(ChildCareLeaveRemainingInfo.createChildCareLeaveInfo(entity.getSId(), entity.getUseAtr(),
-//					entity.getUpperLimSetAtr(), entity.getMaxDayThisFiscalYear(), entity.getMaxDayNextFiscalYear()));
-//		}
-//		return Optional.empty();
 	}
 
-//	public void add(ChildCareLeaveRemainingInfo obj, String cId) {
-//		KrcmtChildCareHDInfo entity = new KrcmtChildCareHDInfo(obj.getSId(), cId, obj.isUseClassification() ? 1 : 0,
-//				obj.getUpperlimitSetting().value,
-//				obj.getMaxDayForThisFiscalYear().isPresent() ? obj.getMaxDayForThisFiscalYear().get().v() : null,
-//				obj.getMaxDayForNextFiscalYear().isPresent() ? obj.getMaxDayForNextFiscalYear().get().v() : null);
-//		this.commandProxy().insert(entity);
-//
-//	}
 	protected void add(KrcdtHdNursingInfo entity) {
-//		KrcdtHdNursingInfo entity = new KrcmtChildCareHDInfo(obj.getSId(), cId, obj.isUseClassification() ? 1 : 0,
-//				obj.getUpperlimitSetting().value,
-//				obj.getMaxDayForThisFiscalYear().isPresent() ? obj.getMaxDayForThisFiscalYear().get().v() : null,
-//				obj.getMaxDayForNextFiscalYear().isPresent() ? obj.getMaxDayForNextFiscalYear().get().v() : null);
 		this.commandProxy().insert(entity);
 	}
 
-//	public void update(ChildCareLeaveRemainingInfo obj, String cId) {
-//		Optional<KrcmtChildCareHDInfo> entityOpt = this.queryProxy().find(obj.getSId(), KrcmtChildCareHDInfo.class);
-//		if (entityOpt.isPresent()) {
-//			KrcmtChildCareHDInfo entity = entityOpt.get();
-//			entity.setCId(cId);
-//			entity.setUseAtr(obj.isUseClassification() ? 1 : 0);
-//			entity.setUpperLimSetAtr(obj.getUpperlimitSetting().value);
-//			entity.setMaxDayNextFiscalYear(
-//					obj.getMaxDayForNextFiscalYear().isPresent() ? obj.getMaxDayForNextFiscalYear().get().v() : null);
-//			entity.setMaxDayThisFiscalYear(
-//					obj.getMaxDayForThisFiscalYear().isPresent() ? obj.getMaxDayForThisFiscalYear().get().v() : null);
-//			this.commandProxy().update(entity);
-//		}
-//	}
 	protected void update(KrcdtHdNursingInfo entity) {
 		Optional<KrcdtHdNursingInfo> entityOpt = this.queryProxy().find(entity.getPk(), KrcdtHdNursingInfo.class);
 		if (entityOpt.isPresent()) {
