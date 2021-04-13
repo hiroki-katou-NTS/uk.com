@@ -368,10 +368,10 @@ public class InterimRemainOffDateCreateData {
 		
 		TargetWorkTypes().forEach(wkType -> {
 			
-			Optional<OccurrenceUseDetail> morningType = morning.getOccurrenceDetailData().stream().filter(od ->od.getWorkTypeAtr().equals(wkType)).findFirst();
-			Optional<OccurrenceUseDetail> AfterNoonType = after.getOccurrenceDetailData().stream().filter(od ->od.getWorkTypeAtr().equals(wkType)).findFirst();
+			Optional<OccurrenceUseDetail> morningType = morning.getOccurrenceDetailData().stream().filter(od ->od.getWorkTypeAtr().equals(wkType) && od.isUseAtr()).findFirst();
+			Optional<OccurrenceUseDetail> afterNoonType = after.getOccurrenceDetailData().stream().filter(od ->od.getWorkTypeAtr().equals(wkType) && od.isUseAtr()).findFirst();
 			
-			if (morningType.isPresent() && AfterNoonType.isPresent()) {
+			if (morningType.isPresent() && afterNoonType.isPresent()) {
 				morningType.get().setDays(1);
 				after.setOccurrenceDetailData(new ArrayList<>());
 			}
