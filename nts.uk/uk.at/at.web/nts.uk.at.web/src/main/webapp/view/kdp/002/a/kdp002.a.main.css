@@ -105,12 +105,7 @@ html{
   padding-top: 137px !important;
 }
 
-.clock .text-time {
-  top: 7px !important;
-  left: calc(100% / 2 + 50px);
-}
-
-.state2 .clock .text-time {
+.state1 .clock .text-time {
   top: 7px !important;
   left: 495px !important;
 }
@@ -118,4 +113,9 @@ html{
 .state2 .clock .text-time {
   top: 7px !important;
   left: 535px !important;
+}
+
+.state3 .clock .text-time {
+  top: 7px !important;
+  left: 280px !important;
 }
