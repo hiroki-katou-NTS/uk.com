@@ -240,11 +240,11 @@ public class AttendanceInformationScreenQuery {
 							workDivision = WorkDivision.HOLIDAY.value;
 						}
 						// 午前と午後の場合、午前が休み AND 午後が休み → 休み || その他 → 出勤
-						if (daily.getWorkTypeUnit() == WorkTypeUnit.MonringAndAfternoon.value && !notIn.stream().anyMatch(item -> item == daily.getMorning())
+						else if (daily.getWorkTypeUnit() == WorkTypeUnit.MonringAndAfternoon.value && !notIn.stream().anyMatch(item -> item == daily.getMorning())
 								&& !notIn.stream().anyMatch(item -> item == daily.getAfternoon())) {
 							workDivision = WorkDivision.HOLIDAY.value;
 						}
-						workDivision = WorkDivision.WORK.value;
+						else workDivision = WorkDivision.WORK.value;
 					}
 				}
 				
