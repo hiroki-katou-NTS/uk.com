@@ -9,9 +9,10 @@ import nts.arc.primitive.constraint.IntegerRange;
 
 /**
  * The Class NumberDayNursing.
+ * 子の看護介護上限日数
  */
 @IntegerRange(max = 99, min = 0)
-public class NumberDayNursing extends IntegerPrimitiveValue<NumberDayNursing> {
+public class NursingNumberLeaveDay extends IntegerPrimitiveValue<NursingNumberLeaveDay> {
     
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
@@ -21,7 +22,7 @@ public class NumberDayNursing extends IntegerPrimitiveValue<NumberDayNursing> {
      *
      * @param rawValue the raw value
      */
-    public NumberDayNursing(Integer rawValue) {
+    public NursingNumberLeaveDay(Integer rawValue) {
         super(rawValue);
     }
 }

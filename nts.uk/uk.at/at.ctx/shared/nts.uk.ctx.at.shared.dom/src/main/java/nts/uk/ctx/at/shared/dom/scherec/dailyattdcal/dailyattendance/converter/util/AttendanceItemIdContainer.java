@@ -716,8 +716,8 @@ public class AttendanceItemIdContainer implements ItemConst {
 		temp.put(605, join(totalLabol, LEAVE_EARLY, TIME, joinNS(CALC, NUMBER_1)));
 		temp.put(610, join(totalLabol, LEAVE_EARLY, TIME, joinNS(TIME, NUMBER_2)));
 		temp.put(611, join(totalLabol, LEAVE_EARLY, TIME, joinNS(CALC, NUMBER_2)));
-		temp.put(606, join(totalLabol, LEAVE_EARLY, DEDUCTION, joinNS(TIME, NUMBER_1)));
-		temp.put(612, join(totalLabol, LEAVE_EARLY, DEDUCTION, joinNS(TIME, NUMBER_2)));
+		temp.put(606, join(totalLabol, LEAVE_EARLY, DEDUCTION, joinNS(CALC, NUMBER_1)));
+		temp.put(612, join(totalLabol, LEAVE_EARLY, DEDUCTION, joinNS(CALC, NUMBER_2)));
 		temp.put(607, join(totalLabol, LEAVE_EARLY, HOLIDAY + USAGE, joinNS(ANNUNAL_LEAVE, NUMBER_1)));
 		temp.put(613, join(totalLabol, LEAVE_EARLY, HOLIDAY + USAGE, joinNS(ANNUNAL_LEAVE, NUMBER_2)));
 		
@@ -736,8 +736,8 @@ public class AttendanceItemIdContainer implements ItemConst {
 		temp.put(614, join(totalLabol, LEAVE_EARLY, HOLIDAY + USAGE, joinNS(EXCESS, NUMBER_2)));
 		temp.put(867, join(totalLabol, LEAVE_EARLY,  joinNS(VALUE, NUMBER_1)));
 		temp.put(868, join(totalLabol, LEAVE_EARLY,  joinNS(VALUE, NUMBER_2)));
-		temp.put(594, join(totalLabol, LATE, DEDUCTION, joinNS(TIME, NUMBER_1)));
-		temp.put(600, join(totalLabol, LATE, DEDUCTION, joinNS(TIME, NUMBER_2)));
+		temp.put(594, join(totalLabol, LATE, DEDUCTION, joinNS(CALC, NUMBER_1)));
+		temp.put(600, join(totalLabol, LATE, DEDUCTION, joinNS(CALC, NUMBER_2)));
 		temp.put(592, join(totalLabol, LATE, TIME, joinNS(TIME, NUMBER_1)));
 		temp.put(593, join(totalLabol, LATE, TIME, joinNS(CALC, NUMBER_1)));
 		temp.put(598, join(totalLabol, LATE, TIME, joinNS(TIME, NUMBER_2)));
