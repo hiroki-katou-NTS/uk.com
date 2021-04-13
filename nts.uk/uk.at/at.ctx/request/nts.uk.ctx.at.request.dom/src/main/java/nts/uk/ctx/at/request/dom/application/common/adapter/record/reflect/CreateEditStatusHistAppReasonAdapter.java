@@ -3,7 +3,7 @@ package nts.uk.ctx.at.request.dom.application.common.adapter.record.reflect;
 import java.util.Map;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.shared.dom.application.reflectprocess.ScheduleRecordClassifi;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.ScheduleRecordClassifi;
 
 public interface CreateEditStatusHistAppReasonAdapter {
 

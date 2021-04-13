@@ -10,23 +10,23 @@ import nts.uk.ctx.at.schedule.dom.schedule.task.taskschedule.TaskSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ConfirmedATR;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
-import nts.uk.ctx.at.shared.dom.application.common.ApplicationDateShare;
-import nts.uk.ctx.at.shared.dom.application.common.ApplicationShare;
-import nts.uk.ctx.at.shared.dom.application.common.ApplicationTypeShare;
-import nts.uk.ctx.at.shared.dom.application.common.PrePostAtrShare;
-import nts.uk.ctx.at.shared.dom.application.common.ReflectedStateShare;
-import nts.uk.ctx.at.shared.dom.application.common.ReflectionStatusShare;
-import nts.uk.ctx.at.shared.dom.application.reflect.ReflectStatusResultShare;
-import nts.uk.ctx.at.shared.dom.application.stamp.AppStampShare;
-import nts.uk.ctx.at.shared.dom.application.stamp.DestinationTimeAppShare;
-import nts.uk.ctx.at.shared.dom.application.stamp.DestinationTimeZoneAppShare;
-import nts.uk.ctx.at.shared.dom.application.stamp.StartEndClassificationShare;
-import nts.uk.ctx.at.shared.dom.application.stamp.TimeStampAppEnumShare;
-import nts.uk.ctx.at.shared.dom.application.stamp.TimeStampAppOtherShare;
-import nts.uk.ctx.at.shared.dom.application.stamp.TimeStampAppShare;
-import nts.uk.ctx.at.shared.dom.application.stamp.TimeZoneStampClassificationShare;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.DayOfWeek;
+import nts.uk.ctx.at.shared.dom.scherec.application.common.ApplicationDateShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.common.ApplicationShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.common.ApplicationTypeShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.common.PrePostAtrShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.common.ReflectedStateShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.common.ReflectionStatusShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.reflect.ReflectStatusResultShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.stamp.AppStampShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.stamp.DestinationTimeAppShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.stamp.DestinationTimeZoneAppShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.stamp.StartEndClassificationShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.stamp.TimeStampAppEnumShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.stamp.TimeStampAppOtherShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.stamp.TimeStampAppShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.stamp.TimeZoneStampClassificationShare;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.stampapplication.StampAppReflect;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
@@ -139,7 +139,7 @@ public class SCReflectApplicationHelper {
 				MedicalCareTimeOfDaily.defaultValue()));
 		return new WorkSchedule("1", GeneralDate.today(), ConfirmedATR.UNSETTLED,
 				new WorkInfoOfDailyAttendance(new WorkInformation("001", "001"), CalculationState.No_Calculated,
-						NotUseAttribute.Not_use, NotUseAttribute.Not_use, DayOfWeek.FRIDAY, new ArrayList<>()),
+						NotUseAttribute.Not_use, NotUseAttribute.Not_use, DayOfWeek.FRIDAY, new ArrayList<>(), Optional.empty()),
 				null, breakTime, new ArrayList<>(), TaskSchedule.createWithEmptyList(), attendanceLeave, attTimeOpt,
 				shortTime, Optional.empty());
 	}

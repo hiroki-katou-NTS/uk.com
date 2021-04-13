@@ -321,26 +321,23 @@ public class ScheduleCreatorExecutionTransaction {
 			this.workScheduleRepository.insertAll(companyId, result.getListWorkSchedule());
 			
 			// Outputの勤務種類一覧を繰り返す
-			this.managedParallelWithContext.forEach(ControlOption.custom().millisRandomDelay(MAX_DELAY_PARALLEL),
-					result.getListWorkSchedule(), ws -> {
-						// 暫定データの登録
-						if (ws != null) {
-							this.interimRemainDataMngRegisterDateChange.registerDateChange(companyId, ws.getEmployeeID(),
-									Arrays.asList(ws.getYmd()));
-						}
-					});
-
+			result.getListWorkSchedule().forEach( ws -> {
+				// 暫定データの登録
+				if (ws != null) {
+					this.interimRemainDataMngRegisterDateChange.registerDateChange(companyId, ws.getEmployeeID(),
+							Arrays.asList(ws.getYmd()));
+				}
+			});
+			
 			// エラー一覧を繰り返す
-			this.managedParallelWithContext.forEach(ControlOption.custom().millisRandomDelay(MAX_DELAY_PARALLEL),
-					result.getListError(), error -> {
-						// エラーを登録する
-						if (error != null) {
-							error.setExecutionId(command.getExecutionId());
-							this.scheduleErrorLogRepository.addByTransaction(error);
-						}
-					});
-
-			// }
+			result.getListError().forEach( error -> {
+				// エラーを登録する
+				if (error != null) {
+					error.setExecutionId(command.getExecutionId());
+					this.scheduleErrorLogRepository.addByTransaction(error);
+				}
+			});
+			
 		}
 	}
 
@@ -481,7 +478,7 @@ public class ScheduleCreatorExecutionTransaction {
 								CalculationState.No_Calculated, NotUseAttribute.Not_use, NotUseAttribute.Not_use,
 								nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.DayOfWeek
 										.valueOf(dateInPeriod.dayOfWeek() - 1),
-								new ArrayList<>()),
+								new ArrayList<>(), Optional.empty()),
 						null,
 						new BreakTimeOfDailyAttd(),
 						new ArrayList<>(),

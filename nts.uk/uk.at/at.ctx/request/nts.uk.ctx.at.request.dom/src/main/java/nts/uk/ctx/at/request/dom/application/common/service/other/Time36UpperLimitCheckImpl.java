@@ -96,7 +96,6 @@ public class Time36UpperLimitCheckImpl implements Time36UpperLimitCheck {
 		List<Time36ErrorOutput> errorFlg = new ArrayList<Time36ErrorOutput>();
 		// 「時間外時間の詳細」をクリア
 		AppOvertimeDetail appOvertimeDetail = new AppOvertimeDetail();
-		appOvertimeDetail.setCid(companyID);
 		
 		// 時間外時間の詳細を作成
 		this.createAppOvertimeDetail(appOvertimeDetail, employeeID, appDate, appType, appTimeItems);

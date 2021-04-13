@@ -416,9 +416,7 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 	public Optional<EmployeeInfoImport> getEnterPersonInfor(String employeeID, String enterPersonID) {
 		List<EmployeeInfoImport> employeeInfoLst = new ArrayList<>();
 		// INPUT．申請者とINPUT．入力者をチェックする (Check INPUT. Applicant and INPUT.người input/nhập)
-		if(employeeID.equals(enterPersonID)) {
-			employeeInfoLst = this.getEmployeeInfoLst(Arrays.asList(employeeID));
-		} else {
+		if(!employeeID.equals(enterPersonID)) {
 			// 社員ID（List）から社員コードと表示名を取得 (Lấy tên hiển thị và employee code từ Employee ID (List))
 			employeeInfoLst = this.getEmployeeInfoLst(Arrays.asList(enterPersonID));
 		}
@@ -996,18 +994,15 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 			Optional<String> workTimeCode,
 			List<WorkType> workTypes,
 			List<WorkTimeSetting> workTimes) {
-		List<WorkType> workTypesOutput = new ArrayList<WorkType>();
-		List<WorkTimeSetting> workTimesOutput = new ArrayList<WorkTimeSetting>();
+		List<WorkType> workTypesOutput = workTypes;
+		List<WorkTimeSetting> workTimesOutput = workTimes;
 		// INPUT「申請中の勤務種類」がINPUT「勤務種類リスト」に含まれているかチェックする
 		if (!workTypes.stream().map(x -> x.getWorkTypeCode().v()).collect(Collectors.toList()).contains(workTypeCode)) { 
 			// ドメインモデル「勤務種類」を取得する
-			Optional<WorkType> workTypeOp = wkTypeRepo.findByDeprecated(companyId, workTypeCode);
+			Optional<WorkType> workTypeOp = wkTypeRepo.findByPK(companyId, workTypeCode);
 			if (workTypeOp.isPresent()) {
 				workTypesOutput.add(workTypeOp.get());
 			}
-			
-		} else {
-			workTypesOutput = workTypes;
 		}
 		// INPUT「申請中の就業時間帯」を確認する
 		if (workTimeCode.isPresent()) {
@@ -1018,13 +1013,7 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 				if (workTimeOp.isPresent()) {
 					workTimesOutput.add(workTimeOp.get());
 				}
-			} else {
-				workTimesOutput = workTimes;
 			}
-			
-			
-		} else {
-			workTimesOutput = workTimes;
 		}
 		// 取得した「勤務種類」と「就業時間帯の設定」をそれぞれINPUT「勤務種類リスト」とINPUT「就業時間帯リスト」に追加して返す
 		return new WorkInfoListOutput(workTypesOutput, workTimesOutput);

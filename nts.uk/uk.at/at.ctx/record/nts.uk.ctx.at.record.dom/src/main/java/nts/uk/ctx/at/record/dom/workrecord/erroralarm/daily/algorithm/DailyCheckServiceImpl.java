@@ -40,11 +40,13 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.service.ErAlWork
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.service.ErAlWorkRecordCheckService.ErrorRecord;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.worktype.PlanActualWorkType;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.worktype.SingleWorkType;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.worktype.WorkTypeCondition;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.daily.DailyCheckService;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.CompareOperatorText;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.ConditionAtr;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.ConvertCompareTypeToText;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.FilterByCompare;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.TypeCheckWorkRecord;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.algorithm.StatusOfEmployeeAdapterAl;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.algorithm.WorkPlaceHistImportAl;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.algorithm.WorkPlaceIdAndPeriodImportAl;
@@ -163,6 +165,21 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 			// get work place id
 			for(String sid : lstSid) {
 				List<GeneralDate> listDate = dPeriod.datesBetween();
+				for(WorkRecordExtractingCondition extCond : prepareData.getWorkRecordCond()) {
+					// 日次のチェック条件のアラーム値を生成する
+					OutputCheckResult checkTab3 = this.extractAlarmConditionTab3(extCond, 
+							prepareData.getListErrorAlarmCon(),
+							prepareData.getListIntegrationDai(),
+							sid,
+							dPeriod,
+							getWplByListSidAndPeriod,
+							prepareData.getLstItemDay(),
+							extractConditionWorkRecord, 
+							prepareData.getListWorkType(),
+							lstStatusEmp);
+					lstResultCondition.addAll(checkTab3.getLstResultCondition());
+					lstCheckType.addAll(checkTab3.getLstCheckType());
+				}
 				for(int day = 0; day < listDate.size(); day++) {
 					GeneralDate exDate = listDate.get(day);
 					// 社員の会社所属状況をチェック
@@ -182,18 +199,7 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 						integrationDaily = lstDaily.get(0);
 					}
 					if(integrationDaily != null) {
-						// 日次のチェック条件のアラーム値を生成する
-						OutputCheckResult checkTab3 = this.extractAlarmConditionTab3(prepareData.getWorkRecordCond(), 
-								prepareData.getListErrorAlarmCon(),
-								integrationDaily,
-								sid,
-								exDate,
-								getWplByListSidAndPeriod,
-								prepareData.getLstItemDay(),
-								extractConditionWorkRecord, 
-								prepareData.getListWorkType());
-						lstResultCondition.addAll(checkTab3.getLstResultCondition());
-						lstCheckType.addAll(checkTab3.getLstCheckType());
+						
 						
 						// 日別実績のエラーアラームのアラーム値を生成する
 						OutputCheckResult checkTab2 = this.extractAlarmDailyTab2(prepareData.getListError(),
@@ -230,7 +236,7 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 	}
 
 	/**
-	 * ドメインモデル「勤務実績の固定抽出条件」を取得する
+	 * チェックする前にデータを準備
 	 * @param cid
 	 * @param lstSid
 	 * @param dPeriod
@@ -346,68 +352,282 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 	  * アラームチェック条件Tab3
 	  * 日次のチェック条件のアラーム値を生成する 
 	  */
-	private OutputCheckResult extractAlarmConditionTab3(List<WorkRecordExtractingCondition> workRecordCond,
+	private OutputCheckResult extractAlarmConditionTab3(WorkRecordExtractingCondition extCond,
 			List<ErrorAlarmCondition> listErrorAlarmCon,
-			IntegrationOfDaily integra,
+			List<IntegrationOfDaily> listIntegrationDai,
 			String sid,
-			GeneralDate day,
+			DatePeriod datePeriod,
 			List<WorkPlaceHistImportAl> getWplByListSidAndPeriod,
 			List<MonthlyAttendanceItemNameDto> lstItemDay,
 			List<String> extractConditionWorkRecord,
-			List<WorkType> lstWkType) {
+			List<WorkType> lstWkType,
+			List<StatusOfEmployeeAdapterAl> lstStatusEmp) {
 		OutputCheckResult result = new OutputCheckResult(new ArrayList<>(), new ArrayList<>());
-		if(listErrorAlarmCon.isEmpty()) return result;
-		
-		for(WorkRecordExtractingCondition extCond : workRecordCond) {
-			Optional<ErrorAlarmCondition> optErrorAlarm = listErrorAlarmCon.stream()
-					.filter(x -> x.getErrorAlarmCheckID().equals(extCond.getErrorAlarmCheckID()))
-					.findFirst();
+		int renzoku = 0;
+		int renzokuWt = 1;
+		Optional<ErrorAlarmCondition> optErrorAlarm = listErrorAlarmCon.stream()
+				.filter(x -> x.getErrorAlarmCheckID().equals(extCond.getErrorAlarmCheckID()))
+				.findFirst();
+		if(!optErrorAlarm.isPresent()) return result;
+		ErrorAlarmCondition errorAlarm = optErrorAlarm.get();
+		AlarmMessageValues alMes = new AlarmMessageValues("","","","");
+		String alarmMessage = "";
+		GeneralDate renzokuDate = datePeriod.start();
+		SingleWorkType wtConCheck = null;
+		for(GeneralDate exDate : datePeriod.datesBetween()) {
+			// 社員の会社所属状況をチェック
+			List<StatusOfEmployeeAdapterAl> statusOfEmp = lstStatusEmp.stream()
+					.filter(x -> x.getEmployeeId().equals(sid) 
+							&& !x.getListPeriod().stream()
+								.filter(y -> y.start().beforeOrEquals(exDate) && y.end().afterOrEquals(exDate)).collect(Collectors.toList()).isEmpty())
+					.collect(Collectors.toList());
+			if(statusOfEmp.isEmpty()) continue;
+			
+			// 日別実績を絞り込む
+			List<IntegrationOfDaily> lstDaily = listIntegrationDai.stream()
+					.filter(x -> x.getEmployeeId().equals(sid) && x.getYmd().equals(exDate))
+					.collect(Collectors.toList());			
+			if(lstDaily.isEmpty()) continue;
+			
+			IntegrationOfDaily integrationDaily = lstDaily.get(0);
+			
 			if(!optErrorAlarm.isPresent()) continue;
-			ErrorAlarmCondition errorAlarm = optErrorAlarm.get();
+			boolean isWorkTypeChk = false;
+			switch (extCond.getCheckItem()) {
 			
-			//List<ErrorRecord> mapCheck = erAlCheckService.checkWithRecord(day, Arrays.asList(sid), errorAlarm, Arrays.asList(integra));
-			List<ErrorRecord> mapCheck = erAlCheckService.checkWithRecord(day, Arrays.asList(sid),
-					Arrays.asList(extCond.getErrorAlarmCheckID()),
-					Arrays.asList(integra));
-			if(mapCheck.isEmpty() || !mapCheck.get(0).isError()) continue;
-			
-			if(mapCheck.get(0).isError() == true) {
-				Optional<AlarmListCheckInfor> optCheckInfor = result.getLstCheckType().stream()
-						.filter(x -> x.getChekType() == AlarmListCheckType.FreeCheck && x.getNo().equals(String.valueOf(extCond.getSortOrderBy())))
-						.findFirst();
-				if(!optCheckInfor.isPresent()) {
-					result.getLstCheckType().add(new AlarmListCheckInfor(String.valueOf(extCond.getSortOrderBy()), AlarmListCheckType.FreeCheck));
+			case TIME:
+			case TIMES:
+			case AMOUNT_OF_MONEY:
+			case TIME_OF_DAY:
+			case CONTINUOUS_CONDITION:
+			case CONTINUOUS_TIME:				
+				List<ErrorRecord> mapCheck = erAlCheckService.checkWithRecord(exDate, Arrays.asList(sid),
+						Arrays.asList(extCond.getErrorAlarmCheckID()),
+						Arrays.asList(integrationDaily));
+				if(mapCheck.isEmpty() || !mapCheck.get(0).isError()) {
+					if(renzoku != 0 && renzoku >= errorAlarm.getContinuousPeriod().v()) {
+						//Group 1
+						List<ErAlAttendanceItemCondition<?>> lstErCondition = errorAlarm.getAtdItemCondition().getGroup1().getLstErAlAtdItemCon();
+						createMess(lstItemDay, lstWkType, extCond, errorAlarm, mapCheck, lstErCondition, alMes);
+						this.createExtractAlarmRenzoku(sid,
+								new DatePeriod(exDate.addDays(-renzoku), exDate),
+								result.getLstResultCondition(),
+								extCond.getNameWKRecord().v(),
+								alMes,
+								Optional.ofNullable(errorAlarm.getDisplayMessage().v()),
+								renzoku,
+								String.valueOf(extCond.getSortOrderBy()),
+								AlarmListCheckType.FreeCheck,
+								getWplByListSidAndPeriod,
+								errorAlarm.getContinuousPeriod().v(),
+								extCond.getCheckItem(),
+								wtConCheck,
+								lstWkType);
+					}
+					renzoku = 0;
+					continue;	
 				}
-				//Group 1
-				List<ErAlAttendanceItemCondition<?>> lstErCondition = errorAlarm.getAtdItemCondition().getGroup1().getLstErAlAtdItemCon();
-								
-				AlarmMessageValues alMes = new AlarmMessageValues("","","","");
-				createMess(lstItemDay, lstWkType, extCond, errorAlarm, mapCheck, lstErCondition, alMes);
-				//Group 2
-				if(errorAlarm.getAtdItemCondition().isUseGroup2()) {
-					List<ErAlAttendanceItemCondition<?>> lstErCondition2 = errorAlarm.getAtdItemCondition().getGroup2().getLstErAlAtdItemCon();	
-					createMess(lstItemDay, lstWkType, extCond, errorAlarm, mapCheck, lstErCondition2, alMes);
+				if(mapCheck.get(0).isError() == true) {
+					
+					if(extCond.getCheckItem() != TypeCheckWorkRecord.CONTINUOUS_TIME) {
+						Optional<AlarmListCheckInfor> optCheckInfor = result.getLstCheckType().stream()
+								.filter(x -> x.getChekType() == AlarmListCheckType.FreeCheck && x.getNo().equals(String.valueOf(extCond.getSortOrderBy())))
+								.findFirst();
+						if(!optCheckInfor.isPresent()) {
+							result.getLstCheckType().add(new AlarmListCheckInfor(String.valueOf(extCond.getSortOrderBy()), AlarmListCheckType.FreeCheck));
+						}
+						//Group 1
+						List<ErAlAttendanceItemCondition<?>> lstErCondition = errorAlarm.getAtdItemCondition().getGroup1().getLstErAlAtdItemCon();
+						createMess(lstItemDay, lstWkType, extCond, errorAlarm, mapCheck, lstErCondition, alMes);
+						//Group 2
+						if(errorAlarm.getAtdItemCondition().isUseGroup2()) {
+							List<ErAlAttendanceItemCondition<?>> lstErCondition2 = errorAlarm.getAtdItemCondition().getGroup2().getLstErAlAtdItemCon();	
+							createMess(lstItemDay, lstWkType, extCond, errorAlarm, mapCheck, lstErCondition2, alMes);
+						}
+						
+						alarmMessage = TextResource.localize("KAL010_78",
+								alMes.getWtName().isEmpty() ? "" : alMes.getWorkTypeName(),
+								alMes.getWtName().isEmpty() ?  alMes.getWorkTypeName() : alMes.getWtName(),
+								alMes.getAttendentName());
+						this.createExtractAlarm(sid,
+								exDate,
+								result.getLstResultCondition(),
+								extCond.getNameWKRecord().v(),
+								alarmMessage,
+								Optional.ofNullable(errorAlarm.getDisplayMessage().v()),
+								alMes.getAlarmTarget(),
+								String.valueOf(extCond.getSortOrderBy()),
+								AlarmListCheckType.FreeCheck,
+								getWplByListSidAndPeriod);
+					} else {
+						renzoku += 1;
+						renzokuDate = exDate;
+					}
+					
+				} else {
+					if(renzoku != 0  && renzoku >= errorAlarm.getContinuousPeriod().v()) {
+						//Group 1
+						List<ErAlAttendanceItemCondition<?>> lstErCondition = errorAlarm.getAtdItemCondition().getGroup1().getLstErAlAtdItemCon();
+						createMess(lstItemDay, lstWkType, extCond, errorAlarm, mapCheck, lstErCondition, alMes);
+						this.createExtractAlarmRenzoku(sid,
+								new DatePeriod(exDate.addDays(-renzoku), exDate),
+								result.getLstResultCondition(),
+								extCond.getNameWKRecord().v(),
+								alMes,
+								Optional.ofNullable(errorAlarm.getDisplayMessage().v()),
+								renzoku,
+								String.valueOf(extCond.getSortOrderBy()),
+								AlarmListCheckType.FreeCheck,
+								getWplByListSidAndPeriod,
+								errorAlarm.getContinuousPeriod().v(),
+								extCond.getCheckItem(),
+								wtConCheck,
+								lstWkType);
+					}
+					renzoku = 0;
 				}
-				
-				
-				String alarmMessage = TextResource.localize("KAL010_78",
-						alMes.getWtName().isEmpty() ? "" : alMes.getWorkTypeName(),
-						alMes.getWtName().isEmpty() ?  alMes.getWorkTypeName() : alMes.getWtName(),
-						alMes.getAttendentName());
-				
-				this.createExtractAlarm(sid,
-						day,
-						result.getLstResultCondition(),
-						extCond.getNameWKRecord().v(),
-						alarmMessage,
-						Optional.ofNullable(errorAlarm.getDisplayMessage().v()),
-						alMes.getAlarmTarget(),
-						String.valueOf(extCond.getSortOrderBy()),
-						AlarmListCheckType.FreeCheck,
-						getWplByListSidAndPeriod);
+				break;
+			case CONTINUOUS_TIME_ZONE:
+				break;
+			case CONTINUOUS_WORK:
+				wtConCheck = (SingleWorkType) errorAlarm.getWorkTypeCondition();
+				if(wtConCheck != null) {
+					List<IntegrationOfDaily> lstDailyBefore = listIntegrationDai.stream()
+							.filter(x -> x.getEmployeeId().equals(sid) && x.getYmd().equals(exDate.addDays(-1)))
+							.collect(Collectors.toList());			
+					if(!lstDailyBefore.isEmpty()) {
+						WorkTypeCode workTypeCode = integrationDaily.getWorkInformation().getRecordInfo().getWorkTypeCode();
+						WorkTypeCode workTypeCodeBefore = lstDailyBefore.get(0).getWorkInformation().getRecordInfo().getWorkTypeCode();
+						if(workTypeCode.equals(workTypeCodeBefore)) {
+							switch (wtConCheck.getComparePlanAndActual()) {
+							case ALL:
+								isWorkTypeChk = true;
+								break;
+							case SELECTED:
+								if(wtConCheck.getTargetWorkType().getLstWorkType().contains(workTypeCode)) {
+									isWorkTypeChk = true;
+								}
+							case NOT_SELECTED:
+								if(!wtConCheck.getTargetWorkType().getLstWorkType().contains(workTypeCode)) {
+									isWorkTypeChk = true;
+								}
+							default:
+								break;
+							}
+						}
+					}
+					if(isWorkTypeChk) {
+						renzokuWt += 1;
+						renzokuDate = exDate;
+					} else {
+						if(renzokuWt > 1 && renzokuWt >= errorAlarm.getContinuousPeriod().v()) {
+							this.createExtractAlarmRenzoku(sid,
+									new DatePeriod(exDate.addDays(-renzokuWt), exDate),
+									result.getLstResultCondition(),
+									extCond.getNameWKRecord().v(),
+									alMes,
+									Optional.ofNullable(errorAlarm.getDisplayMessage().v()),
+									renzokuWt,
+									String.valueOf(extCond.getSortOrderBy()),
+									AlarmListCheckType.FreeCheck,
+									getWplByListSidAndPeriod,
+									errorAlarm.getContinuousPeriod().v(),									
+									extCond.getCheckItem(),
+									wtConCheck,
+									lstWkType);
+						}
+						renzokuWt = 1;
+						renzokuDate = exDate;
+					}
+				}
+				break;
+			default:
+				break;
 			}
 		}
+		renzoku = renzokuWt > 1 ? renzokuWt : renzoku;
+		if(renzoku != 0 && renzoku >= errorAlarm.getContinuousPeriod().v()) {
+			//Group 1
+			List<ErAlAttendanceItemCondition<?>> lstErCondition = errorAlarm.getAtdItemCondition().getGroup1().getLstErAlAtdItemCon();
+			createMess(lstItemDay, lstWkType, extCond, errorAlarm, new ArrayList<>(), lstErCondition, alMes);
+			this.createExtractAlarmRenzoku(sid,
+					new DatePeriod(renzokuDate.addDays(-renzoku), renzokuDate),
+					result.getLstResultCondition(),
+					extCond.getNameWKRecord().v(),
+					alMes,
+					Optional.ofNullable(errorAlarm.getDisplayMessage().v()),
+					renzoku,
+					String.valueOf(extCond.getSortOrderBy()),
+					AlarmListCheckType.FreeCheck,
+					getWplByListSidAndPeriod,
+					errorAlarm.getContinuousPeriod().v(),
+					extCond.getCheckItem(),
+					wtConCheck,
+					lstWkType);
+		}
 		return result;
+	}
+	
+	private void createExtractAlarmRenzoku(String sid,
+			DatePeriod dateP,
+			List<ResultOfEachCondition> listResultCond,
+			String alarmName,
+			AlarmMessageValues alMes,
+			Optional<String> alarmMess,
+			int dayRenzoku,
+			String alarmCode, AlarmListCheckType checkType,
+			List<WorkPlaceHistImportAl> getWplByListSidAndPeriod,
+			int continuousPeriod, TypeCheckWorkRecord typeCheck, 
+			SingleWorkType wtConCheck,
+			List<WorkType> lstWkType) {
+		String wplId = "";
+		Optional<WorkPlaceHistImportAl> optWorkPlaceHistImportAl = getWplByListSidAndPeriod.stream().filter(x -> x.getEmployeeId().equals(sid)).findFirst();
+		if(optWorkPlaceHistImportAl.isPresent()) {
+			Optional<WorkPlaceIdAndPeriodImportAl> optWorkPlaceIdAndPeriodImportAl = optWorkPlaceHistImportAl.get().getLstWkpIdAndPeriod().stream()
+					.filter(x -> x.getDatePeriod().start()
+							.beforeOrEquals(dateP.start()) 
+							&& x.getDatePeriod().end()
+							.afterOrEquals(dateP.start())).findFirst();
+			if(optWorkPlaceIdAndPeriodImportAl.isPresent()) {
+				wplId = optWorkPlaceIdAndPeriodImportAl.get().getWorkplaceId();
+			}
+		}
+		String alarmContent = "";
+		if(typeCheck == TypeCheckWorkRecord.CONTINUOUS_TIME) {
+			alarmContent = TextResource.localize("KAL010_626", alMes.getWtName().isEmpty() ? "" : alMes.getWorkTypeName(),
+					alMes.getWtName().isEmpty() ?  alMes.getWorkTypeName() : alMes.getWtName(),
+					alMes.getAttendentName(), String.valueOf(continuousPeriod));	
+		} else if (typeCheck == TypeCheckWorkRecord.CONTINUOUS_WORK) {
+			List<String> condWt = lstWkType.stream().filter(x -> wtConCheck.getTargetWorkType().getLstWorkType().contains(x.getWorkTypeCode()))
+					.collect(Collectors.toList())
+					.stream().map(a -> a.getName().v()).collect(Collectors.toList());
+			 String strWt = condWt.stream().map(Object::toString)
+                     .collect(Collectors.joining(",")); 
+			alarmContent = TextResource.localize("KAL010_627",
+					wtConCheck.getComparePlanAndActual() == FilterByCompare.SELECTED ? TextResource.localize("KAL010_134") : TextResource.localize("KAL010_135"),
+							strWt,
+					String.valueOf(continuousPeriod));
+		}
+		
+		ExtractionResultDetail detail = new ExtractionResultDetail(sid, 
+				new ExtractionAlarmPeriodDate(Optional.ofNullable(dateP.start()),
+						Optional.ofNullable(dateP.end())), 
+				alarmName, 
+				alarmContent, 
+				GeneralDateTime.now(), 
+				Optional.ofNullable(wplId), 
+				alarmMess, 
+				Optional.ofNullable(TextResource.localize("KAL010_625", String.valueOf(dayRenzoku))));
+		List<ResultOfEachCondition> lstResultTmp = listResultCond.stream()
+				.filter(x -> x.getCheckType().value == checkType.value && x.getNo().equals(alarmCode)).collect(Collectors.toList());
+		List<ExtractionResultDetail> listDetail = new ArrayList<>();
+		if(lstResultTmp.isEmpty()) {
+			listDetail.add(detail);
+			listResultCond.add(new ResultOfEachCondition(EnumAdaptor.valueOf(1, AlarmListCheckType.class), alarmCode, 
+					listDetail));	
+		} else {
+			listResultCond.stream().forEach(x -> x.getLstResultDetail().add(detail));
+		}
 	}
 
 	private void createMess(List<MonthlyAttendanceItemNameDto> lstItemDay, List<WorkType> lstWkType,
@@ -431,28 +651,33 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 			nameItem = dataCheckSevice.getNameErrorAlarm(subStrName, 1, nameItem);
 			CompareOperatorText compareOperatorText = convertComparaToText.convertCompareType(
 					erCondition.getCompareSingleValue() != null 
-							? erCondition.getCompareSingleValue().getConditionType().value
+							? erCondition.getCompareSingleValue().getCompareOpertor().value
 							: erCondition.getCompareRange().getCompareOperator().value);
 			String startValue = erCondition.getCompareSingleValue() == null ?
 					erCondition.getCompareRange().getStartValue().toString() : erCondition.getCompareSingleValue().getValue().toString();
 			String endValue = erCondition.getCompareRange() == null ? null : erCondition.getCompareRange().getEndValue().toString();
-			if(erCondition.getConditionAtr() == ConditionAtr.TIME_DURATION) {
+			if(erCondition.getConditionAtr() == ConditionAtr.TIME_DURATION ) {
 				startValue = dataCheckSevice.timeToString((Double.valueOf(startValue).intValue()));
 				endValue = endValue == null ? null : dataCheckSevice.timeToString((Double.valueOf(endValue).intValue()));
-				alMes.setAlarmTarget(alMes.getAlarmTarget() + "," + nameItem + ": " + dataCheckSevice.timeToString((Double.valueOf(mapCheck.get(0).getCheckedValue()).intValue())));
-			} else if (erCondition.getConditionAtr() == ConditionAtr.TIME_WITH_DAY) {
-				TimeWithDayAttr startTimeDay = new TimeWithDayAttr(Double.valueOf(startValue).intValue());
-				startValue = startTimeDay.getInDayTimeWithFormat();
-				TimeWithDayAttr endTimeDay = endValue == null ? null : new TimeWithDayAttr(Double.valueOf(endValue).intValue());
-				endValue = endValue == null ? null : endTimeDay.getInDayTimeWithFormat();
-				TimeWithDayAttr targetV =  new TimeWithDayAttr(Double.valueOf(mapCheck.get(0).getCheckedValue()).intValue());
-				alMes.setAlarmTarget(alMes.getAlarmTarget() + "," + nameItem + ": " + targetV.getInDayTimeWithFormat());
-			} else {
-				alMes.setAlarmTarget(alMes.getAlarmTarget() + "," + nameItem + ": " + mapCheck.get(0).getCheckedValue());
 			}
-			if(alMes.getAlarmTarget().substring(0,1).equals(",")) {
-				alMes.setAlarmTarget(alMes.getAlarmTarget().substring(1));	
+			if(!mapCheck.isEmpty()) {
+				if(erCondition.getConditionAtr() == ConditionAtr.TIME_DURATION ) {
+					alMes.setAlarmTarget(alMes.getAlarmTarget() + "," + nameItem + ": " + dataCheckSevice.timeToString((Double.valueOf(mapCheck.get(0).getCheckedValue()).intValue())));
+				} else if (erCondition.getConditionAtr() == ConditionAtr.TIME_WITH_DAY) {
+					TimeWithDayAttr startTimeDay = new TimeWithDayAttr(Double.valueOf(startValue).intValue());
+					startValue = startTimeDay.getInDayTimeWithFormat();
+					TimeWithDayAttr endTimeDay = endValue == null ? null : new TimeWithDayAttr(Double.valueOf(endValue).intValue());
+					endValue = endValue == null ? null : endTimeDay.getInDayTimeWithFormat();
+					TimeWithDayAttr targetV =  new TimeWithDayAttr(Double.valueOf(mapCheck.get(0).getCheckedValue()).intValue());
+					alMes.setAlarmTarget(alMes.getAlarmTarget() + "," + nameItem + ": " + targetV.getInDayTimeWithFormat());
+				} else {
+					alMes.setAlarmTarget(alMes.getAlarmTarget() + "," + nameItem + ": " + mapCheck.get(0).getCheckedValue());
+				}
+				if(alMes.getAlarmTarget().substring(0,1).equals(",")) {
+					alMes.setAlarmTarget(alMes.getAlarmTarget().substring(1));	
+				}
 			}
+			
 			
 			if(compare <= 5) {
 				alMes.setAttendentName(alMes.getAttendentName()  + "," + nameItem + compareOperatorText.getCompareLeft() + startValue);

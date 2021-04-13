@@ -1,6 +1,10 @@
 .ksus01a {
     margin-top: -1rem;
 
+    i {
+        font-size: 4.5vw;
+    }
+
     .card-header {
         font-size: 3.75vw;
         padding: 0.35rem 0.75rem;
@@ -36,7 +40,7 @@
 
     #year-month-component .form-group {
         margin: 0;
-        width: 9.25em;
+        width: 8.25em;
     }
 
     #backCurrentMonth {
@@ -53,7 +57,7 @@
     #detail-component {
         position: fixed;
         bottom: 0;
-        height: calc(100vh - 6.5vh - 4vh - 39px - (100vh - 6.5vh - 4vh - 39px)/6);
+        height: calc(var(--vh, 1vh) * 100 - 6.5vh - 4vh - 39px - (100vh - 6.5vh - 4vh - 39px)/6);
         width: 100vw;
     }
 
