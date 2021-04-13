@@ -13,7 +13,7 @@ import nts.uk.ctx.at.shared.infra.entity.remainingnumber.nursingcareleave.KrcdtH
 import nts.uk.ctx.at.shared.infra.repository.remainingnumber.nursingcareleavemanagement.JpaChildCareNurseUsedNumberRepository;
 
 /**
- * リポジトリ実装：介護休暇使用数データ
+ * リポジトリ実装：子の看護休暇使用数データ
  */
 @Stateless
 public class JpaChildCareUsedNumberRepository extends JpaChildCareNurseUsedNumberRepository implements ChildCareUsedNumberRepository{

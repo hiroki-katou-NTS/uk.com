@@ -13,8 +13,7 @@ import nts.uk.ctx.at.shared.infra.entity.remainingnumber.nursingcareleave.KrcdtH
 import nts.uk.ctx.at.shared.infra.repository.remainingnumber.nursingcareleavemanagement.JpaChildCareNurseUsedNumberRepository;
 
 /**
- * リポジトリ実装：子の看護休暇使用数データ
- * @author yuri_tamakoshi
+ * リポジトリ実装：介護休暇使用数データ
  */
 @Stateless
 public class JpaCareUsedNumberRepository extends JpaChildCareNurseUsedNumberRepository implements CareUsedNumberRepository{
@@ -24,7 +23,7 @@ public class JpaCareUsedNumberRepository extends JpaChildCareNurseUsedNumberRepo
 	public Optional<CareUsedNumberData> find(String employeeId) {
 
 		// 共通処理呼び出し
-		Optional<ChildCareNurseUsedNumber> childCareNurseUsedNumberOpt = this.find(employeeId, NursingCategory.ChildNursing);
+		Optional<ChildCareNurseUsedNumber> childCareNurseUsedNumberOpt = this.find(employeeId, NursingCategory.Nursing);
 
 		// 型変換
 		Optional<CareUsedNumberData> careUsedNumberData

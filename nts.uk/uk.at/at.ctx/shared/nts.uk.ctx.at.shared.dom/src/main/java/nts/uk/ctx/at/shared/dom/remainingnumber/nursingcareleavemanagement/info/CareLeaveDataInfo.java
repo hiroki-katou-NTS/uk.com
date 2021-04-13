@@ -20,9 +20,6 @@ public class CareLeaveDataInfo {
 	 */
 	private ChildCareLeaveRemainingInfo childCareLeaveRemainingInfo;
 
-//	private LeaveForCareData careData;
-//	private ChildCareLeaveRemainingData childCareLeaveRemainingData;
-
 	/**
 	 * 介護使用数データ
 	 */

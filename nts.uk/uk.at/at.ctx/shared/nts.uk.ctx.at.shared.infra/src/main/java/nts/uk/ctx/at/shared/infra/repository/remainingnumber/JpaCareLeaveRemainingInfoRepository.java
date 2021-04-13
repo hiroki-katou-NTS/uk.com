@@ -135,18 +135,17 @@ public class JpaCareLeaveRemainingInfoRepository extends JpaChildCareNurseLevRem
 	@Override
 	public Optional<CareLeaveDataInfo> getCareInfoDataBysId(String empId) {
 
-//		Optional<CareLeaveRemainingInfo> careRemaingInfo = this.getCareByEmpId(empId);
-//		Optional<CareUsedNumberData> careUsedInfo = this.careUsedNumberRepo.find(empId);
-//		Optional<ChildCareLeaveRemainingInfo> childCareRemaingInfo = this.childCareLeaveRemInfoRepository.getChildCareByEmpId(empId);
-//		Optional<ChildCareUsedNumberData> careUsedInfo = this.careUsedNumberRepo.find(empId);
-//
-//		CareLeaveDataInfo dto = new CareLeaveDataInfo(
-//				careRemaingInfo.orElse(null),
-//				careUsedInfo.orElse(null),
-//				childCareRemaingInfo.orElse(null),
-//				childCareUsedInfo.orElse(null));
-//		return Optional.of(dto);
-		return Optional.empty();
+		Optional<CareLeaveRemainingInfo> careRemaingInfo = this.getCareByEmpId(empId);
+		Optional<CareUsedNumberData> careUsedInfo = this.careUsedNumberRepo.find(empId);
+		Optional<ChildCareLeaveRemainingInfo> childCareRemaingInfo = this.childCareLeaveRemInfoRepository.getChildCareByEmpId(empId);
+		Optional<ChildCareUsedNumberData> childCareUsedInfo = this.childCareUsedNumberRepo.find(empId);
+
+		CareLeaveDataInfo dto = new CareLeaveDataInfo(
+				careRemaingInfo.orElse(null),
+				childCareRemaingInfo.orElse(null),
+				careUsedInfo.orElse(null),
+				childCareUsedInfo.orElse(null));
+		return Optional.of(dto);
 	}
 
 	/*介護、看護*/
