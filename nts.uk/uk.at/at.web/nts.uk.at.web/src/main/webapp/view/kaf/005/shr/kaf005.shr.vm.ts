@@ -11,7 +11,7 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 		<div class="table-time">
 			<table id="fixed-table">
 				<colgroup>
-					<col width="109px" />
+					<col width="25px" />
 					<col width="115px" />
 					<col width="115px" />
 				</colgroup>

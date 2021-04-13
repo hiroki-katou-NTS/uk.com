@@ -1,9 +1,12 @@
 module nts.uk.at.view.kaf005.shr.footer.viewmodel {
 	const template = `
 <div id="kaf005-footer" data-bind="with: $parent">
-	<div class="table" style="margin-bottom: 5px;" data-bind="if: visibleModel.c11_1()">
-		<div style="width: 120px" class="cell col-1">
-			<div class="cell valign-center" data-bind="ntsFormLabel: {}, text: $i18n('KAF005_90', [messageInfos()[0].titleDrop()])"></div>
+	<div class="table" style="margin-bottom: 12px;" data-bind="if: visibleModel.c11_1()">
+		
+		<div style="width: 120px" class="cell valign-top cm-column2">
+				<div class="lblTitle"
+					data-bind="text: $i18n('KAF005_90', [messageInfos()[0].titleDrop()]), ntsFormLabel: {}"
+					></div>
 		</div>
 		<div class="cell valign-center">
 			<div id="combo-box" data-bind="ntsComboBox: {
@@ -18,7 +21,7 @@ module nts.uk.at.view.kaf005.shr.footer.viewmodel {
 		</div>
 	</div>
 	
-	<div class="table" style="margin-bottom: 5px;" data-bind="if: visibleModel.c11_2()">
+	<div class="table" style="margin-bottom: 12px;" data-bind="if: visibleModel.c11_2()">
 		<div style="width: 120px" class="cell col-1">
 			<div class="cell valign-center labelCustom" data-bind="ntsFormLabel: {
 				constraint: 'DivergenceReason',
@@ -40,10 +43,11 @@ module nts.uk.at.view.kaf005.shr.footer.viewmodel {
 	</div>
 	
 	
-	<div class="table" style="margin-bottom: 5px;" data-bind="if: visibleModel.c12_1()">
-		<div style="width: 120px" class="cell col-1">
-			<div class="cell valign-center" data-bind="ntsFormLabel: {
-			}, text: $i18n('KAF005_90', [messageInfos()[1].titleDrop()])"></div>
+	<div class="table" style="margin-bottom: 12px;" data-bind="if: visibleModel.c12_1()">
+		<div style="width: 120px" class="cell valign-top cm-column2">
+				<div class="lblTitle"
+					data-bind="text: $i18n('KAF005_90', [messageInfos()[1].titleDrop()]), ntsFormLabel: {}"
+					></div>
 		</div>
 		<div class="cell valign-center">
 			<div id="combo-box" data-bind="ntsComboBox: {
@@ -58,7 +62,7 @@ module nts.uk.at.view.kaf005.shr.footer.viewmodel {
 		</div>
 	</div>
 	
-	<div class="table" style="margin-bottom: 5px;" data-bind="if: visibleModel.c12_2()">
+	<div class="table" style="margin-bottom: 12px;" data-bind="if: visibleModel.c12_2()">
 		<div style="width: 120px" class="cell col-1">
 			<div class="cell valign-center labelCustom" data-bind="ntsFormLabel: {
 				constraint: 'DivergenceReason',

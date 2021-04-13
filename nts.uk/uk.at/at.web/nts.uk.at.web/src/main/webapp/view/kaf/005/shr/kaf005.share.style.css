@@ -72,9 +72,8 @@ div.form-label.broken {
 	vertical-align: top;
 }
 
-.workSelect{
+.workSelectKAF005{
     height: 70px;
-    margin-left: 45px;
     margin-top: 10px;
 }
 .panel.panel-gray-bg {
@@ -99,6 +98,10 @@ div.form-label.broken {
 
 .lblTitle {
 	width: 110px;
+	color: #C6C6D1;
+    font-size: 12px;
+    line-height: 32px;
+    font-weight: 500;
 }
 
 .btnSendMail {
@@ -194,4 +197,9 @@ div.form-label.broken {
 .holidayTime2 .nts-fixed-body-wrapper {
 	height: 96px !important;
 }
-
+th {
+	text-align: center !important;
+}
+#kaf005-footer {
+	margin-top: 12px;
+}
