@@ -221,13 +221,30 @@
 	height: 120px !important;
 }
 
+.tab-button-panel .grid-container.btn-layout-type-0>div:nth-child(2)>button>i,
+.tab-button-panel .grid-container.btn-layout-type-0>div:nth-child(3)>button>i {
+	width: 60px !important;
+	height: 60px !important;
+}
+
 .tab-button-panel .grid-container.btn-layout-type-1>div>button>i {
 	width: 68px !important;
 	height: 68px !important;
 }
 
-.tab-button-panel .grid-container.btn-layout-type-0>div>button>div,
 .tab-button-panel .grid-container.btn-layout-type-1>div>button>div {
+	font-size: 22px !important;
+}
+
+.fs-30 {
+	font-size: 30px;
+}
+
+.fs-24 {
+	font-size: 24px;
+}
+
+.fs-20 {
 	font-size: 20px;
 }
 
