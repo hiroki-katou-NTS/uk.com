@@ -4,6 +4,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * 実績工数で参照可能社員を取得する
@@ -27,10 +28,10 @@ public class GetEmployeesService {
 		//	if $ロール.実績工数社員参照 == 社員参照範囲と同じ		
 		if(employmentRole.isPresent() && employmentRole.get().getScheduleEmployeeRef() == ScheduleEmployeeRef.SAME_EMPLOYEE_REF_RANGE) {
 			//return 参照可能社員を取得する(ログインのユーザID,ログインの社員ID,$今日)	
-			return require.getReferenceableEmployees(userID, employeeID, baseDate);
+			return require.getReferenceableEmployees(AppContexts.user().userId(), AppContexts.user().employeeId(), GeneralDate.today());
 		}
 		//	return 全社員を取得する(会社ID,基準日)	
-		return require.getAllEmployees(companyId, baseDate);
+		return require.getemployeesAllWorkplaces(companyId, baseDate);
 	}
 	
 	public static interface Require {
@@ -39,10 +40,12 @@ public class GetEmployeesService {
 		Optional<EmploymentRole> getEmploymentRoleById(String companyId, String roleId);
 		
 		//[R-2] 社員の締めを取得する
+		//name 参照可能社員の所属職場を取得するAdapter
 		Map<String, String> getReferenceableEmployees(String userID, String employeeID, GeneralDate date);
 		
 		//[R-3] 全社員を取得する
-		Map<String, String> getAllEmployees(String companyId, GeneralDate baseDate);
+		// name 全ての職場の所属社員を取得するAdapter
+		Map<String, String> getemployeesAllWorkplaces(String companyId, GeneralDate baseDate);
 		
 	}
 }
