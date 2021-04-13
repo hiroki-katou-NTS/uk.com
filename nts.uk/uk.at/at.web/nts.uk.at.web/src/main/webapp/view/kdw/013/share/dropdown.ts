@@ -16,7 +16,7 @@ module nts.uk.ui.at.kdp013.share {
                 overflow: hidden;
             }
             .nts-dropdown>div:before {
-                content: '▼';
+                content: '▾';
                 position: absolute;
                 top: 5px;
                 right: 10px;
@@ -59,7 +59,11 @@ module nts.uk.ui.at.kdp013.share {
                 height: 27px;
             }
             .nts-dropdown>div>table+div>table tr.selected {
-                background-color: #ccc;
+                color: #fff;
+                background-color: #007fff;
+            }
+            .nts-dropdown>div>table+div>table tr.highlight {
+                background-color: #91c8ff;
             }
             .nts-dropdown.show {
                 border: 0;
@@ -123,6 +127,33 @@ module nts.uk.ui.at.kdp013.share {
         }
 
         @handler({
+            bindingName: 'dropdownToggle'
+        })
+        export class DropdownToggleBindingHandler implements KnockoutBindingHandler {
+            init = (element: HTMLTableRowElement, valueAccessor: () => KnockoutComputed<boolean>) => {
+                const show = valueAccessor();
+
+                ko.computed({
+                    read: () => {
+                        const $show = ko.unwrap(show);
+                        const $ct = $(element).find('div').get(0);
+
+                        if (!$show) {
+                            $ct.style.top = '';
+                            $ct.style.width = '';
+                        } else {
+                            const { top, width } = element.getBoundingClientRect();
+
+                            $ct.style.top = top + 'px';
+                            $ct.style.width = width + 'px';
+                        }
+                    },
+                    disposeWhenNodeIsRemoved: element
+                });
+            }
+        }
+
+        @handler({
             bindingName: 'dropdownSelect'
         })
         export class DropdownSelectedBindingHandler implements KnockoutBindingHandler {
@@ -135,9 +166,29 @@ module nts.uk.ui.at.kdp013.share {
                         const { code, name } = item;
 
                         $(element)
-                            .html('')
-                            .append($('<td>', { text: code }))
-                            .append($('<td>', { text: name }));
+                            .html(`<td>${name}</td><td>${code}</td>`);
+                    },
+                    disposeWhenNodeIsRemoved: element
+                });
+            }
+        }
+
+        @handler({
+            bindingName: 'scrollTo'
+        })
+        export class DropdownScrollToBindingHandler implements KnockoutBindingHandler {
+            init = (element: HTMLElement, valueAccessor: () => KnockoutObservable<number>) => {
+                const tbody = $(element).find('tbody').get(0);
+                const highlight = valueAccessor();
+
+                ko.computed({
+                    read: () => {
+                        const $hl = ko.unwrap(highlight);
+                        const $tr = $(element).find('tbody>tr').get($hl);
+
+                        if ($tr) {
+                            $(element).scrollTop($tr.offsetTop);
+                        }
                     },
                     disposeWhenNodeIsRemoved: element
                 });
@@ -148,7 +199,13 @@ module nts.uk.ui.at.kdp013.share {
             name: COMPONENT_NAME,
             template: `
             <div>
-                <input type="text" class="nts-input" data-bind="value: $component.filter, valueUpdate: 'input'" />
+                <input type="text" class="nts-input" data-bind="
+                        value: $component.filter,
+                        valueUpdate: 'input',
+                        attr: { 
+                            readonly: !ko.unwrap($component.show)
+                        }
+                    " />
                 <table>
                     <colgroup>
                         <col width="180px" />
@@ -162,13 +219,13 @@ module nts.uk.ui.at.kdp013.share {
                         </tr>
                     </tbody>
                 </table>
-                <div>
+                <div data-bind="scrollTo: $component.highlight">
                     <table>
                         <colgroup>
                             <col width="180px" />
                         </colgroup>
                         <tbody data-bind="foreach: { data: $component.items, as: 'item' }">
-                            <tr data-bind="click: function(item, evt) { $component.selecteItem(item, evt) }, css: { selected: item.selected }">
+                            <tr data-bind="click: function(item, evt) { $component.selecteItem(item, evt) }, css: { selected: item.selected, highlight: item.highlight }">
                                 <td data-bind="text: item.name"></td>
                                 <td data-bind="text: item.code"></td>
                             </tr>
@@ -179,17 +236,15 @@ module nts.uk.ui.at.kdp013.share {
             `
         })
         export class DropdownViewModel extends ko.ViewModel {
+            show: KnockoutObservable<boolean> = ko.observable(false);
             focus: KnockoutObservable<boolean> = ko.observable(false);
             clickEvent!: (evt: JQueryEventObject) => void;
 
             selected!: KnockoutComputed<DropdownItem>;
-            items!: KnockoutComputed<(DropdownItem & { selected: boolean; })[]>;
+            items!: KnockoutComputed<(DropdownItem & { selected: boolean; highlight: boolean; })[]>;
 
             filter: KnockoutObservable<string> = ko.observable('');
             highlight: KnockoutObservable<number> = ko.observable(-1);
-
-            hideDropdown!: () => void;
-            showDropdown!: () => void;
 
             constructor(private params: { selected: KnockoutObservable<string>; items: KnockoutObservableArray<DropdownItem> }) {
                 super();
@@ -201,10 +256,17 @@ module nts.uk.ui.at.kdp013.share {
                         const filter = ko.unwrap(vm.filter);
                         const items = ko.unwrap(params.items);
                         const selected = ko.unwrap(params.selected);
+                        const highlight = ko.unwrap(vm.highlight);
 
                         return _.chain(items)
                             .filter(({ name, code }) => name.indexOf(filter) > -1 || code.indexOf(filter) > -1)
-                            .map(({ name, id, code }) => ({ id, code, name, selected: selected === id }))
+                            .map(({ name, id, code }, index) => ({
+                                id,
+                                code,
+                                name,
+                                selected: selected === id,
+                                highlight: highlight === index
+                            }))
                             .value();
                     }
                 });
@@ -212,8 +274,9 @@ module nts.uk.ui.at.kdp013.share {
                 vm.selected = ko.computed({
                     read: () => {
                         const items = ko.unwrap(params.items);
+                        const highlight = ko.unwrap(vm.highlight);
                         const selected = ko.unwrap(params.selected);
-                        const exist = _.find(items, ({ id }) => id === selected);
+                        const exist = _.find(items, ({ id }, index) => highlight === index || id === selected);
 
 
                         if (exist) {
@@ -229,30 +292,27 @@ module nts.uk.ui.at.kdp013.share {
 
             mounted() {
                 const vm = this;
-                const { $el } = vm;
+                const { $el, focus, show } = vm;
                 const $container = $($el);
                 const $input = $container.find('input').first();
 
-                vm.showDropdown = () => {
-                    const $ct = $container.find('div').get(0);
-                    const bound = $el.getBoundingClientRect();
+                // apply show & focus state to container element
+                ko.applyBindingsToNode($el, { css: { show, focus }, dropdownToggle: show }, vm);
 
-                    $ct.style.top = bound.top + 'px';
-                    $ct.style.width = bound.width + 'px';
+                show.subscribe((sh: boolean) => {
+                    if (!sh) {
+                        vm.filter('');
+                        vm.highlight(-1);
+                    } else {
+                        const items = ko.unwrap(vm.items).map(({ id }) => id);
+                        const selected = ko.unwrap(vm.params.selected);
+                        const index = _.indexOf(items, selected);
 
-                    vm.filter('');
-                    $el.classList.add('show');
-                };
-                vm.hideDropdown = () => {
-                    const $ct = $container.find('div').get(0);
-
-                    $ct.style.top = '';
-                    $ct.style.width = '';
-
-                    $el.classList.remove('show');
-
-                    vm.filter('');
-                };
+                        if (index > -1) {
+                            vm.highlight(index);
+                        }
+                    }
+                });
 
                 ko.computed({
                     read: () => {
@@ -272,24 +332,23 @@ module nts.uk.ui.at.kdp013.share {
 
                 $container
                     .on('click', () => {
-                        if (!$el.classList.contains('show')) {
-                            vm.showDropdown();
-                        }
+                        $.Deferred()
+                            .resolve(true)
+                            .then(() => {
+                                if (!ko.unwrap(show)) {
+                                    vm.show(true);
+                                }
 
-                        vm.focus(true);
-
-                        $input.focus();
+                                $input.focus();
+                            });
                     });
 
                 vm.clickEvent = (evt: JQueryEventObject) => {
                     const $closest = $(evt.target).closest('.nts-dropdown');
 
                     if (!$closest.is($el)) {
-                        vm.hideDropdown();
-
+                        vm.show(false);
                         vm.focus(false);
-
-                        $el.classList.remove('focus');
                     }
                 };
 
@@ -298,36 +357,71 @@ module nts.uk.ui.at.kdp013.share {
 
                 $input
                     .on('focus', () => {
-                        $el.classList.add('focus');
-
                         vm.focus(true);
                     })
                     .on('blur', () => {
                         if (!vm.focus()) {
-                            $el.classList.remove('focus');
-
-                            vm.hideDropdown();
+                            vm.show(false);
                         }
                     })
                     .on('keydown', (evt: JQueryEventObject) => {
                         const { keyCode } = evt;
+                        const isShow = ko.unwrap(show);
 
                         if (keyCode === 9) {
-                            // tabkey
+                            // tab key
                             vm.focus(false);
-                            $el.classList.remove('focus');
-                        } else if ([13, 40].indexOf(keyCode) > -1) {
-                            // enter or arrow down
-                            if (!$el.classList.contains('show')) {
-                                vm.showDropdown();
+                        } else if (keyCode === 13) {
+                            // enter key
+                            if (!isShow) {
+                                vm.show(true);
+                            } else {
+                                const items = ko.unwrap(vm.items);
+                                const highlight = ko.unwrap(vm.highlight);
+
+                                if (highlight > -1) {
+                                    const exist = _.find(items, ({ }, index) => index === highlight);
+
+                                    if (exist) {
+                                        vm.params.selected(exist.id);
+                                    }
+
+                                    vm.show(false);
+                                }
                             }
                         } else if (keyCode === 27) {
                             // escape key
-                            vm.hideDropdown();
-                        } else if (keyCode !== 9 && !$el.classList.contains('show')) {
-                            // other key
-                            evt.preventDefault();
-                            evt.stopImmediatePropagation();
+                            vm.show(false);
+                        } else if (keyCode === 40) {
+                            // arrow down key
+                            if (!isShow) {
+                                vm.show(true);
+                            } else {
+                                // move down
+                                const items = ko.unwrap(vm.items);
+                                const highlight = ko.unwrap(vm.highlight);
+
+                                if (highlight < items.length - 1) {
+                                    vm.highlight(highlight + 1);
+                                } else {
+                                    vm.highlight(0);
+                                }
+                            }
+                        } else if (keyCode === 38) {
+                            // arrow up key
+                            if (isShow) {
+                                // move up
+                                const items = ko.unwrap(vm.items);
+                                const highlight = ko.unwrap(vm.highlight);
+
+                                if (highlight > 0) {
+                                    if (highlight > items.length - 1) {
+                                        vm.highlight(items.length - 1);
+                                    } else {
+                                        vm.highlight(highlight - 1);
+                                    }
+                                }
+                            }
                         }
                     });
             }
@@ -339,7 +433,7 @@ module nts.uk.ui.at.kdp013.share {
                 // emit selected id to parent component
                 params.selected(item.id);
 
-                vm.hideDropdown();
+                vm.show(false);
 
                 evt.preventDefault();
                 evt.stopPropagation();
