@@ -15,7 +15,7 @@ import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.aggregation.dom.schedulecounter.budget.laborcost.LaborCostBudget;
-import nts.uk.ctx.at.aggregation.dom.schedulecounter.laborcostandtime.LaborCostAndTime;
+import nts.uk.ctx.at.aggregation.dom.schedulecounter.tally.laborcostandtime.LaborCostAndTime;
 import nts.uk.ctx.at.shared.dom.scherec.aggregation.perdaily.AggregationUnitOfLaborCosts;
 import nts.uk.ctx.at.shared.dom.scherec.aggregation.perdaily.DailyAttendanceGroupingUtil;
 import nts.uk.ctx.at.shared.dom.scherec.aggregation.perdaily.LaborCostsTotalizationService;
@@ -45,13 +45,13 @@ public class CountLaborCostTimeService {
 	public static Map<GeneralDate, Map<LaborCostAggregationUnit, BigDecimal>> aggregate(
 				Require require
 			,	TargetOrgIdenInfor targetOrg
-			,   DatePeriod datePeriod	
+			,   DatePeriod datePeriod
 			,	Map<AggregationUnitOfLaborCosts, LaborCostAndTime> targetLaborCost
 			,	List<IntegrationOfDaily> dailyWorks
 	) {
-		
+
 		val dailyWorkFilters = dailyWorks.stream().filter(c -> datePeriod.contains(c.getYmd())).collect(Collectors.toList());
-		
+
 		val dailyWorksByDate = DailyAttendanceGroupingUtil.byDateWithoutEmpty( dailyWorkFilters, e -> e.getAttendanceTimeOfDailyPerformance() );
 
 		val totalResults = Stream.of( LaborCostItemType.AMOUNT, LaborCostItemType.TIME )
@@ -171,13 +171,13 @@ public class CountLaborCostTimeService {
 						Optional<LaborCostBudget> budgetOpt = budgets.stream()
 								.filter(budget -> budget.getYmd().equals(ymd))
 								.findFirst();
-						
+
 						return budgetOpt
 								.map(budget -> BigDecimal.valueOf(budget.getAmount().v()))
 								.orElse(BigDecimal.ZERO);
 					}
 				));
-		
+
 		return result;
 	}
 
