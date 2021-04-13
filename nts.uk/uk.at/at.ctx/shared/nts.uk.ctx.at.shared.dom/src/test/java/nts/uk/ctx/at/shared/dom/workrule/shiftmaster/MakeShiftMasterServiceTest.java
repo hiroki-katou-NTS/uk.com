@@ -20,9 +20,6 @@ public class MakeShiftMasterServiceTest {
 	@Injectable
 	private Require require;
 
-	@Injectable
-	private nts.uk.ctx.at.shared.dom.WorkInformation.Require requireWorkinfo;
-
 	@Test
 	public void testMakeShiftMater_throw_Msg_1610() {
 		String companyId = "companyId";
@@ -33,10 +30,10 @@ public class MakeShiftMasterServiceTest {
 		ShiftMasterDisInfor shiftMasterDisInfor =  new ShiftMasterDisInfor(new ShiftMasterName("name"),new ColorCodeChar6("color"),new ColorCodeChar6("color"), null);
 		new Expectations() {
 			{
-				requireWorkinfo.getWorkType(workTypeCode);
+				require.getWorkType(workTypeCode);
 				result = Optional.of(new WorkType());
 				
-				requireWorkinfo.checkNeededOfWorkTimeSetting(workTypeCode);
+				require.checkNeededOfWorkTimeSetting(workTypeCode);
 				result = SetupType.OPTIONAL;
 				
 				require.checkExists(companyId, // dummy
@@ -67,7 +64,7 @@ public class MakeShiftMasterServiceTest {
 		ShiftMasterDisInfor shiftMasterDisInfor =  new ShiftMasterDisInfor(new ShiftMasterName("name"),new ColorCodeChar6("color"),new ColorCodeChar6("color"), null);
 		new Expectations() {
 			{
-				requireWorkinfo.getWorkType(anyString);
+				require.getWorkType(anyString);
 			}
 		};
 		NtsAssert.businessException("Msg_1608", () -> {
@@ -91,13 +88,13 @@ public class MakeShiftMasterServiceTest {
 		ShiftMasterDisInfor shiftMasterDisInfor =  new ShiftMasterDisInfor(new ShiftMasterName("name"),new ColorCodeChar6("color"),new ColorCodeChar6("color"), null);
 		new Expectations() {
 			{
-				requireWorkinfo.getWorkType(workTypeCode);
+				require.getWorkType(workTypeCode);
 				result = Optional.of(new WorkType());
 				
-				requireWorkinfo.checkNeededOfWorkTimeSetting(workTypeCode);
+				require.checkNeededOfWorkTimeSetting(workTypeCode);
 				result = SetupType.REQUIRED;
 				
-				requireWorkinfo.getWorkTime(workTimeCode.get());
+				require.getWorkTime(workTimeCode.get());
 			}
 		};
 		NtsAssert.businessException("Msg_1609", () -> {
@@ -121,10 +118,10 @@ public class MakeShiftMasterServiceTest {
 		ShiftMasterDisInfor shiftMasterDisInfor =  new ShiftMasterDisInfor(new ShiftMasterName("name"),new ColorCodeChar6("color"),new ColorCodeChar6("color"), null);
 		new Expectations() {
 			{
-				requireWorkinfo.getWorkType(workTypeCode);
+				require.getWorkType(workTypeCode);
 				result = Optional.of(new WorkType());
 				
-				requireWorkinfo.checkNeededOfWorkTimeSetting(workTypeCode);
+				require.checkNeededOfWorkTimeSetting(workTypeCode);
 				result = SetupType.REQUIRED;
 			}
 		};
@@ -151,10 +148,10 @@ public class MakeShiftMasterServiceTest {
 
 		new Expectations() {
 			{
-				requireWorkinfo.getWorkType(workTypeCode);
+				require.getWorkType(workTypeCode);
 				result = Optional.of(new WorkType());
 				
-				requireWorkinfo.checkNeededOfWorkTimeSetting(workTypeCode);
+				require.checkNeededOfWorkTimeSetting(workTypeCode);
 				result = SetupType.NOT_REQUIRED;
 			}
 		};
@@ -239,10 +236,10 @@ public class MakeShiftMasterServiceTest {
 		ShiftMaster shiftMater = new ShiftMaster("companyId",new ShiftMasterCode(shiftMasterCode), displayInfor, workTypeCode, null, importCode);
 		new Expectations() {
 			{
-				requireWorkinfo.getWorkType(shiftMater.getWorkTypeCode().v());
+				require.getWorkType(shiftMater.getWorkTypeCode().v());
 				result = Optional.of(new WorkType());
 				
-				requireWorkinfo.checkNeededOfWorkTimeSetting(shiftMater.getWorkTypeCode().v());
+				require.checkNeededOfWorkTimeSetting(shiftMater.getWorkTypeCode().v());
 				result = SetupType.OPTIONAL;
 
 				require.checkExists(shiftMater.getCompanyId(), // dummy

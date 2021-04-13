@@ -112,7 +112,6 @@ public class ShiftMasterTest {
 
 	@Test
 	public void testCreateAndChange() {
-		/** */
 		//勤務情報
 		val workInfoBefore = new WorkInformation("WorkType01", "WorkTime01");
 		val workInfoAfter = new WorkInformation("WorkType02", "WorkTime02");
