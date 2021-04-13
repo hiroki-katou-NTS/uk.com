@@ -1,7 +1,9 @@
 module nts.uk.at.view.kaf002_ref.m.viewmodel {
     const template = `
+
 <div
-	data-bind="ntsTabPanel: { dataSource:  $component.tabs, active: selectedTab }">
+	id="kaf002TabPanel"
+	data-bind="ntsTabPanel: { dataSource:  $component.tabs, active: selectedTab }" style="width: 450px !important">
 	<div data-bind="if: comment1().content != ''" >
 		<div
 			data-bind="text: comment1().content,
@@ -216,6 +218,17 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
                             }
                         }
                     }
+
+
+					// tabPanel
+					if ($('#kaf002TabPanel').length) {
+						if (value == 'tab-2') {
+							$('#kaf002TabPanel').width(600)							
+						} else {
+							$('#kaf002TabPanel').width(450)							
+						}
+					}
+					
 
                 }
             })
