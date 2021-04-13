@@ -96,7 +96,7 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 							
 										}"></div>
 
-						<div data-bind="component: { name: 'kaf005-share-footer'}"></div>
+
 
 					</div>
 
@@ -112,6 +112,10 @@ module nts.uk.at.view.kafsample.b.viewmodel {
                                                     application: application,
                                                     appDispInfoStartupOutput: appDispInfoStartupOutput
                                                 } }"></div>
+                                                
+                                                
+                                                
+                   <div data-bind="component: { name: 'kaf005-share-footer'}"></div>                             
 				</div>
 			</div>
 			<div class="right-panel" style="width: 410px; height: inherit;">
