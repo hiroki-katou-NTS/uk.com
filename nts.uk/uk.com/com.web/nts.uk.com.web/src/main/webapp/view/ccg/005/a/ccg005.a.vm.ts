@@ -887,7 +887,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
     //handle attendance data for all employee in loop
     private getAttendanceInformationDtosDisplay(res: object.DisplayInformationDto): AttendanceInformationViewModel[] {
       const vm = this;
-      return _.map(res.attendanceInformationDtos, (item => {
+      const listModel = _.map(res.attendanceInformationDtos, (item => {
         let businessName = "";
         const personalInfo = _.find(res.listPersonalInfo, (emp => emp.employeeId === item.sid));
         if (personalInfo) {
@@ -910,6 +910,8 @@ module nts.uk.at.view.ccg005.a.screenModel {
           backgroundColor: vm.getBackgroundColorClass(item.activityStatusDto)
         });
       }));
+      const sortedByNameList = _.orderBy(listModel, ["businessName"]);
+      return sortedByNameList;
     }
 
     //handle check-in check-out display
