@@ -59,7 +59,11 @@ module nts.uk.ui.at.kdp013.share {
                 height: 27px;
             }
             .nts-dropdown>div>table+div>table tr.selected {
-                background-color: #ccc;
+                color: #fff;
+                background-color: #007fff;
+            }
+            .nts-dropdown>div>table+div>table tr.highlight {
+                background-color: #91c8ff;
             }
             .nts-dropdown.show {
                 border: 0;
@@ -195,7 +199,7 @@ module nts.uk.ui.at.kdp013.share {
                             <col width="180px" />
                         </colgroup>
                         <tbody data-bind="foreach: { data: $component.items, as: 'item' }">
-                            <tr data-bind="click: function(item, evt) { $component.selecteItem(item, evt) }, css: { selected: item.selected }">
+                            <tr data-bind="click: function(item, evt) { $component.selecteItem(item, evt) }, css: { selected: item.selected, highlight: item.highlight }">
                                 <td data-bind="text: item.name"></td>
                                 <td data-bind="text: item.code"></td>
                             </tr>
@@ -211,7 +215,7 @@ module nts.uk.ui.at.kdp013.share {
             clickEvent!: (evt: JQueryEventObject) => void;
 
             selected!: KnockoutComputed<DropdownItem>;
-            items!: KnockoutComputed<(DropdownItem & { selected: boolean; })[]>;
+            items!: KnockoutComputed<(DropdownItem & { selected: boolean; highlight: boolean; })[]>;
 
             filter: KnockoutObservable<string> = ko.observable('');
             highlight: KnockoutObservable<number> = ko.observable(-1);
@@ -226,10 +230,17 @@ module nts.uk.ui.at.kdp013.share {
                         const filter = ko.unwrap(vm.filter);
                         const items = ko.unwrap(params.items);
                         const selected = ko.unwrap(params.selected);
+                        const highlight = ko.unwrap(vm.highlight);
 
                         return _.chain(items)
                             .filter(({ name, code }) => name.indexOf(filter) > -1 || code.indexOf(filter) > -1)
-                            .map(({ name, id, code }) => ({ id, code, name, selected: selected === id }))
+                            .map(({ name, id, code }, index) => ({
+                                id,
+                                code,
+                                name,
+                                selected: selected === id,
+                                highlight: highlight === index
+                            }))
                             .value();
                     }
                 });
@@ -237,8 +248,9 @@ module nts.uk.ui.at.kdp013.share {
                 vm.selected = ko.computed({
                     read: () => {
                         const items = ko.unwrap(params.items);
+                        const highlight = ko.unwrap(vm.highlight);
                         const selected = ko.unwrap(params.selected);
-                        const exist = _.find(items, ({ id }) => id === selected);
+                        const exist = _.find(items, ({ id }, index) => highlight === index || id === selected);
 
 
                         if (exist) {
@@ -264,6 +276,7 @@ module nts.uk.ui.at.kdp013.share {
                 show.subscribe((sh: boolean) => {
                     if (!sh) {
                         vm.filter('');
+                        vm.highlight(-1);
                     }
                 });
 
@@ -326,6 +339,19 @@ module nts.uk.ui.at.kdp013.share {
                             // enter key
                             if (!isShow) {
                                 vm.show(true);
+                            } else {
+                                const items = ko.unwrap(vm.items);
+                                const highlight = ko.unwrap(vm.highlight);
+
+                                if (highlight > -1) {
+                                    const exist = _.find(items, ({ }, index) => index === highlight);
+
+                                    if (exist) {
+                                        vm.params.selected(exist.id);
+                                    }
+
+                                    vm.show(false);
+                                }
                             }
                         } else if (keyCode === 27) {
                             // escape key
@@ -336,12 +362,22 @@ module nts.uk.ui.at.kdp013.share {
                                 vm.show(true);
                             } else {
                                 // move down
+                                const items = ko.unwrap(vm.items);
+                                const highlight = ko.unwrap(vm.highlight);
 
+                                if (highlight < items.length - 1) {
+                                    vm.highlight(highlight + 1);
+                                }
                             }
                         } else if (keyCode === 38) {
                             // arrow up key
                             if (isShow) {
                                 // move up
+                                const highlight = ko.unwrap(vm.highlight);
+
+                                if (highlight > 0) {
+                                    vm.highlight(highlight - 1);
+                                }
                             }
                         }
                     });
