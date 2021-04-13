@@ -1,6 +1,11 @@
 module nts.uk.ui.at.kdp013.share {
     const { number2String, string2Number, validateNumb } = share;
 
+    export type BussinessTime = {
+        startTime: number;
+        endTime: number;
+    };
+
     @handler({
         bindingName: 'input-time-raw'
     })
@@ -131,6 +136,7 @@ module nts.uk.ui.at.kdp013.share {
             const $error = document.createElement('div');
             const update: () => void = allBindingsAccessor.get('update');
             const hasError: KnockoutObservable<boolean> = allBindingsAccessor.get('hasError');
+            const excludeTimes: KnockoutObservableArray<BussinessTime> = allBindingsAccessor.get('exclude-times');
             const value = valueAccessor();
 
             const errorId = ko.observable('');
@@ -234,6 +240,8 @@ module nts.uk.ui.at.kdp013.share {
             $end.classList.add('nts-input');
 
             const validateRange = (start: number | null, end: number | null) => {
+                const $excludes = ko.unwrap(excludeTimes);
+                console.log($excludes);
                 // validate required
                 if (!validateNumb(start) || !validateNumb(end)) {
                     errorParams(['TIME_RANGE']);

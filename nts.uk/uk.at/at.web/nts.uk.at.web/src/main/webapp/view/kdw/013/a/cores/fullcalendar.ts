@@ -376,6 +376,7 @@ module nts.uk.ui.components.fullcalendar {
         mouse: KnockoutObservable<boolean>;
         delete: KnockoutObservable<boolean>;
         target: KnockoutObservable<TargetElement>;
+        pointer: KnockoutObservable<{ screenX: number; screenY: number; }>;
     };
 
     type TargetElement = 'event' | 'date' | null;
@@ -449,6 +450,7 @@ module nts.uk.ui.components.fullcalendar {
     type PopupData = {
         event: KnockoutObservable<null | EventApi>;
         setting: SettingApi;
+        excludeTimes: KnockoutObservableArray<BussinessTime>;
     };
 
     type SettingApi = {
@@ -496,7 +498,8 @@ module nts.uk.ui.components.fullcalendar {
         shift: ko.observable(false),
         mouse: ko.observable(false),
         delete: ko.observable(false),
-        target: ko.observable(null)
+        target: ko.observable(null),
+        pointer: ko.observable({ screenX: -1, screenY: -1 })
     });
 
     const defaultPopupData = (): PopupData => ({
@@ -505,7 +508,8 @@ module nts.uk.ui.components.fullcalendar {
             firstDay: ko.observable(0),
             scrollTime: ko.observable(480),
             slotDuration: ko.observable(30)
-        }
+        },
+        excludeTimes: ko.observableArray([])
     });
 
     const defaultPPosition = (): PopupPosition => ({
@@ -545,7 +549,9 @@ module nts.uk.ui.components.fullcalendar {
                 mutated: $component.subscribeEvent,
                 fc-editor: $component.popupData.event,
                 position: $component.popupPosition.event,
-                components: $component.params.components
+                components: $component.params.components,
+                exclude-times: $component.popupData.excludeTimes,
+                mouse-pointer: $component.dataEvent.pointer
             "></div>
         <div data-bind="
                 fc-setting: $component.popupData.setting,
@@ -1607,7 +1613,7 @@ module nts.uk.ui.components.fullcalendar {
                         }
                     }
                 },
-                eventClick: ({ el, event }) => {
+                eventClick: ({ el, event, jsEvent }) => {
                     const shift = ko.unwrap<boolean>(dataEvent.shift);
                     /**
                      * Note: remove group id before change other prop
@@ -1637,9 +1643,16 @@ module nts.uk.ui.components.fullcalendar {
                         }
 
                         popupData.event(event);
+                        // update exclude-times at here
+                        // ??? 
 
                         // show popup on edit mode
                         popupPosition.event(el);
+
+                        // update mouse pointer
+                        const { screenX, screenY } = jsEvent;
+
+                        dataEvent.pointer({ screenX, screenY });
                     } else {
                         // multi select
                         const [first] = seletions();
@@ -2347,6 +2360,8 @@ module nts.uk.ui.components.fullcalendar {
             position: KnockoutObservable<null | HTMLElement>;
             components: { view: string, editor: string; };
             mutated: KnockoutObservable<null>;
+            excludeTimes: KnockoutObservableArray<BussinessTime>;
+            mousePointer: KnockoutObservable<{ screenX: number; screenY: number; }>;
         };
 
         @handler({
@@ -2363,8 +2378,10 @@ module nts.uk.ui.components.fullcalendar {
                 const mutated = allBindingsAccessor.get('mutated');
                 const position = allBindingsAccessor.get('position');
                 const components = allBindingsAccessor.get('components');
+                const excludeTimes = allBindingsAccessor.get('exclude-times');
+                const mousePointer = allBindingsAccessor.get('mouse-pointer');
 
-                const component = { name, params: { data, position, components, mode, view, mutated } };
+                const component = { name, params: { data, position, components, mode, view, mutated, excludeTimes, mousePointer } };
 
                 element.removeAttribute('data-bind');
                 element.classList.add('fc-popup-editor');
@@ -2391,7 +2408,7 @@ module nts.uk.ui.components.fullcalendar {
             mounted() {
                 const vm = this;
                 const { $el, params } = vm;
-                const { components, data, position, mode, view, mutated } = params;
+                const { components, data, position, mode, view, excludeTimes, mousePointer } = params;
                 const $ctn = $('<div>');
                 const $view = document.createElement('div');
                 const $edit = document.createElement('div');
@@ -2434,18 +2451,22 @@ module nts.uk.ui.components.fullcalendar {
                     };
 
                     ko.applyBindingsToNode($view, { component: { name: components.view, params: { update, remove, close, data, mode } } });
-                    ko.applyBindingsToNode($edit, { component: { name: components.editor, params: { remove, close, data, mode, view, position } } });
+                    ko.applyBindingsToNode($edit, { component: { name: components.editor, params: { remove, close, data, mode, view, position, excludeTimes } } });
                 }
 
                 ko.computed({
                     read: () => {
                         const pst = ko.unwrap(position);
+                        const pot = ko.unwrap(mousePointer);
+
+                        console.log(pot);
 
                         if (!pst) {
                             $el.removeAttribute('style');
                             $el.classList.remove('show');
                         } else {
                             const { innerWidth, innerHeight } = window;
+                            const { screenX, screenY } = pot;
                             const { top, left, width: wd, height: hg } = pst.getBoundingClientRect();
 
                             const first = $el.querySelector('div');
@@ -2466,6 +2487,12 @@ module nts.uk.ui.components.fullcalendar {
 
                                 if (left + wd + width < innerWidth - 20) {
                                     $el.style.left = `${(left || 0) + wd + 3}px`;
+                                } else if ((left || 0) - width - 23 < 0) {
+                                    if (screenX + width < innerWidth - 20) {
+                                        $el.style.left = `${screenX - 55}px`;
+                                    } else {
+                                        $el.style.left = `${screenX - width - 70}px`;
+                                    }
                                 } else {
                                     $el.style.left = `${(left || 0) - width - 23}px`;
                                 }

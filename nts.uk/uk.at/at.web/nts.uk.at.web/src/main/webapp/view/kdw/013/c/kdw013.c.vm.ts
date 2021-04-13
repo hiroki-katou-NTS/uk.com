@@ -129,7 +129,8 @@ module nts.uk.ui.at.kdp013.c {
                             <div data-bind="
                                     kdw-timerange: $component.model.timeRange,
                                     update: $component.params.update,
-                                    hasError: $component.hasError
+                                    hasError: $component.hasError,
+                                    exclude-times: $component.params.excludeTimes
                                 "></div>
                         </td>
                     </tr>
@@ -193,7 +194,7 @@ module nts.uk.ui.at.kdp013.c {
         mounted() {
             const vm = this;
             const { $el, params, model, hasError } = vm;
-            const { view, position, data } = params;
+            const { view, position, data, excludeTimes } = params;
             const cache = {
                 view: ko.unwrap(view),
                 position: ko.unwrap(position)
@@ -307,5 +308,6 @@ module nts.uk.ui.at.kdp013.c {
         view: KnockoutObservable<'view' | 'edit'>;
         data: KnockoutObservable<FullCalendar.EventApi>;
         position: KnockoutObservable<null | any>;
+        excludeTimes: KnockoutObservableArray<share.BussinessTime>;
     }
 }
