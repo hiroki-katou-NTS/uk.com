@@ -58,6 +58,7 @@ public class JpaEmploymentRoleRepository extends JpaRepository implements Employ
 		newData.setEmployeeRefSpecAgent(dataUpdate.employeeRefSpecAgent);
 		newData.setPresentInqEmployeeRef(dataUpdate.presentInqEmployeeRef);
 		newData.setFutureDateRefPermit(dataUpdate.futureDateRefPermit);
+		newData.setAtdTaskEmployeeRef(dataUpdate.atdTaskEmployeeRef);
 		this.commandProxy().update(newData);
 	}
 

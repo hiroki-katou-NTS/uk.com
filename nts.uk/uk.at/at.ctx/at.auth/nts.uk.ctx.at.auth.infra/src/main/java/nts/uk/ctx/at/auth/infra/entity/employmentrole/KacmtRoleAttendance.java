@@ -41,6 +41,9 @@ public class KacmtRoleAttendance extends ContractUkJpaEntity implements Serializ
 	
 	@Column(name = "FUTURE_DATE_REF_PERMIT")
 	public int futureDateRefPermit;
+	
+	@Column(name = "ATD_TASK_EMPLOYEE_REF")
+	public int atdTaskEmployeeRef;
 
 	@Override
 	protected Object getKey() {
@@ -56,7 +59,8 @@ public class KacmtRoleAttendance extends ContractUkJpaEntity implements Serializ
 			EnumAdaptor.valueOf(this.bookEmployeeRef,EmployeeRefRange.class),
 			EnumAdaptor.valueOf(this.employeeRefSpecAgent,EmployeeRefRange.class),
 			EnumAdaptor.valueOf(this.presentInqEmployeeRef,EmployeeReferenceRange.class),
-			EnumAdaptor.valueOf(this.futureDateRefPermit,DisabledSegment.class)
+			EnumAdaptor.valueOf(this.futureDateRefPermit,DisabledSegment.class),
+			EnumAdaptor.valueOf(this.atdTaskEmployeeRef,EmployeeRefRange.class)
 		);
 	}
 
@@ -67,7 +71,7 @@ public class KacmtRoleAttendance extends ContractUkJpaEntity implements Serializ
 
 
 	public KacmtRoleAttendance(KacmtEmploymentRolePK kacmtEmploymentRolePK, int scheduleEmployeeRef,
-			int bookEmployeeRef, int employeeRefSpecAgent, int presentInqEmployeeRef, int futureDateRefPermit) {
+			int bookEmployeeRef, int employeeRefSpecAgent, int presentInqEmployeeRef, int futureDateRefPermit, int atdTaskEmployeeRef) {
 		super();
 		this.kacmtEmploymentRolePK = kacmtEmploymentRolePK;
 		this.scheduleEmployeeRef = scheduleEmployeeRef;
@@ -75,6 +79,7 @@ public class KacmtRoleAttendance extends ContractUkJpaEntity implements Serializ
 		this.employeeRefSpecAgent = employeeRefSpecAgent;
 		this.presentInqEmployeeRef = presentInqEmployeeRef;
 		this.futureDateRefPermit = futureDateRefPermit;
+		this.atdTaskEmployeeRef = atdTaskEmployeeRef;
 	}
 	
 	public static KacmtRoleAttendance toEntity(EmploymentRole domain) {
@@ -84,7 +89,8 @@ public class KacmtRoleAttendance extends ContractUkJpaEntity implements Serializ
 				domain.getBookEmployeeRef().value,
 				domain.getEmployeeRefSpecAgent().value,
 				domain.getPresentInqEmployeeRef().value,
-				domain.getFutureDateRefPermit().value
+				domain.getFutureDateRefPermit().value,
+				domain.getAtdTaskEmployeeRef().value
 				);
 	}
 
