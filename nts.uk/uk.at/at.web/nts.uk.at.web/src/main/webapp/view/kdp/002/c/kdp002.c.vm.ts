@@ -100,7 +100,7 @@ module nts.uk.at.view.kdp002.c {
 				let itemIds: DISPLAY_ITEM_IDS = nts.uk.ui.windows.getShared("KDP010_2C");
 				self.infoEmpFromScreenA = nts.uk.ui.windows.getShared("infoEmpToScreenC");
 
-				self.$window.shared("screenB").done((nameScreen: any) => {
+				self.$window.shared("screenC").done((nameScreen: any) => {
 					switch (nameScreen.screen) {
 						case 'KDP001':
 						case 'KDP002':

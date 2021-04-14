@@ -317,7 +317,7 @@ module nts.uk.ui.kdp001.a {
                 }                
                 .kdp-001-a.widget-title .text-time {
                     position: absolute;
-                    font-size: 60px;
+                    font-size: 70px;
                     color: #E5F7F9;
                     top: -10px;
                     left: calc(100% /2 + 35px);
@@ -330,14 +330,15 @@ module nts.uk.ui.kdp001.a {
                 .kdp-001-a.widget-title .hours-minutes {
                     box-sizing: border-box;
                     color: #7F7F7F;
-                    font-size: 50px;
-                    background-color: white !important;
+                    font-size: 55px;
+                    line-height: 60px;  
                 }
                 .kdp-001-a.widget-title .seconds {
                     box-sizing: border-box;
-                    font-size: 30px;
+                    font-size: 35px;
                     color: #7F7F7F;
-                    background-color: white !important;
+                    position: relative;
+                    z-index: 1;
                 }
                 .kdp-001-a.widget-title .button-link {
                     text-align: center;
@@ -479,7 +480,7 @@ module nts.uk.ui.kdp001.a {
 
                         vm.time.displayTime(resultDisplayTime || 0);
 
-                        vm.time.style(`color: ${textColor || '#000'}; background-color: ${backgroundColor || '#fff'};`);
+                        vm.time.style(`color: ${textColor || '#000'};`);
 
                         const btns = _
                             .chain(buttonSettings)
