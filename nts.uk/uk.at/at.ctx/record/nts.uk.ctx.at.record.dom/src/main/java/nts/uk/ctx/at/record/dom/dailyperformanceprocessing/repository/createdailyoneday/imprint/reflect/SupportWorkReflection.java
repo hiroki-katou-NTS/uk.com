@@ -927,9 +927,6 @@ public class SupportWorkReflection {
 						&& (x.getTimeSheet().getStart().get().getTimeWithDay().get().v() >= (time1 - time2))
 						&& (x.getTimeSheet().getStart().isPresent())
 								&& (x.getTimeSheet().getStart().get().getTimeWithDay().get().v() <= (time1 + time2)))
-						.collect(Collectors.toList()).stream()
-						.sorted((y, z) -> y.getTimeSheet().getEnd().get().getTimeWithDay().get().v()
-								- z.getTimeSheet().getEnd().get().getTimeWithDay().get().v())
 						.collect(Collectors.toList()));
 				
 				if (!lstOuenWorkTimeAfter.isEmpty()) {
@@ -974,9 +971,6 @@ public class SupportWorkReflection {
 									&& x.getTimeSheet().getEnd().get().getTimeWithDay().get().v() >= (time1 - time2))
 									&& (x.getTimeSheet().getEnd().isPresent()
 											&& x.getTimeSheet().getEnd().get().getTimeWithDay().get().v() <= (time1 + time2)))
-							.collect(Collectors.toList()).stream()
-							.sorted((y, z) -> y.getTimeSheet().getEnd().get().getTimeWithDay().get().v()
-									- z.getTimeSheet().getEnd().get().getTimeWithDay().get().v())
 							.collect(Collectors.toList()));
 				}
 				if (!lstOuenWorkTimeAfter.isEmpty()) {
