@@ -22,7 +22,7 @@ module nts.uk.at.view.kaf007_ref.shr.viewmodel {
                     </button>
                 </div>
                 <div class="cell valign-center">
-                    <div class="valign-center" style="margin: 3px 5px; line-height: 32px">
+                    <div class="valign-center" style="margin: 3px 5px; height: 32px">
                         <!--A6_2 勤務種類名-->
                         <div class="cell valign-center">
                             <span data-bind="text: appWorkChange.workTypeCode"></span>
@@ -30,7 +30,7 @@ module nts.uk.at.view.kaf007_ref.shr.viewmodel {
                             <span data-bind="text: appWorkChange.workTypeName"></span>
                         </div>
                     </div>
-                    <div class="valign-center" style="margin: 3px 5px; line-height: 32px">
+                    <div class="valign-center" style="margin: 3px 5px; height: 32px">
                         <!--A6_4 就業時間帯名-->
                         <div class="cell valign-center">
                             <span data-bind="text: appWorkChange.workTimeCode"></span>
@@ -103,7 +103,7 @@ module nts.uk.at.view.kaf007_ref.shr.viewmodel {
                 </div>
             </div>
             <div class="table" style="margin-top: 5px;">
-                <div class="cell col-1"></div>
+                <div class="cell col-1" style="width: 120px"></div>
                 <!-- A8_4 -->
                 <div class="cell valign-center col-2-5" style="display: block;" data-bind="ntsCheckBox: {
                     text: $i18n('KAF007_16'),

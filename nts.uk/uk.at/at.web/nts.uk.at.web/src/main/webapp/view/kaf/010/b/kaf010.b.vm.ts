@@ -30,6 +30,9 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 
 
 
+
+
+
 <div id="kaf010-b">
 	<div id="contents-area" style="background-color: inherit; height: calc(100vh - 165px);">
 		<div class="two-panel" style="height: 100%;">
@@ -68,12 +71,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
                      <div>
 
 	
-	<div
-		data-bind="component: { name: 'kaf010-share-header',
-											params: {
-												overTimeWork: overTimeWork
-											}
-											}, visible: overTimeWorkVisible"></div>
+	
 	
 	<div class="table"></div>
 
@@ -115,6 +113,12 @@ module nts.uk.at.view.kaf010.a.viewmodel {
                                 appType: appType,
                                 appDispInfoStartupOutput: appDispInfoStartupOutput	
                             } }"></div>
+                    <div
+		data-bind="component: { name: 'kaf010-share-header',
+											params: {
+												overTimeWork: overTimeWork
+											}
+											}, visible: overTimeWorkVisible"></div>        
                     <div data-bind="component: { name: 'kaf000-b-component9',
                             params: {
                                 appType: appType,

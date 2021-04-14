@@ -262,7 +262,7 @@ module nts.uk.at.view.kaf000.shr.viewmodel {
 			if(appDeadlineUseCategory) {
 				deadlinePart = vm.$i18n('KAF000_40', [value.appDispInfoWithDateOutput.opAppDeadline]);	
 			}
-            vm.deadline(prePart + '<br/><br/>' + postPart + '<br/><br/>' + deadlinePart);    
+            vm.deadline(prePart + '<br/>' + postPart + '<br/>' + deadlinePart);
         }
         
         public static checkUsage(

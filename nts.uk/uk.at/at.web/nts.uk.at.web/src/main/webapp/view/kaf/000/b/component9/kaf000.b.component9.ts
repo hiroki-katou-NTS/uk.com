@@ -6,10 +6,13 @@ module nts.uk.at.view.kaf000.a.component9.viewmodel {
         template: `
             <div id="kaf000-b-component9" style="padding-left: 15px; padding-right: 15px;">
 				<div class="table" style="padding-top: 20px; padding-bottom: 20px;">
-				    <div class="cell" data-bind="i18n: 'KAF000_54'"></div>
+				    <div class="cell" data-bind="i18n: 'KAF000_54'" style="font-weight: bold;"></div>
 				</div>
 				<div class="panel panel-frame" data-bind="foreach: actualContentDisplayDtoLst" style="overflow: auto; height: 200px; margin-left: 3px; margin-top: 5px;">
-					<div style="margin-top: 3px; margin-bottom: 3px;">
+					<div style="margin-bottom: 10px;">
+						<div data-bind="if: $index">
+							<div style="border-bottom: 1px solid #B1B1B1; margin-bottom: 10px;"></div>
+						</div>
 						<div class="table" style="margin-bottom: 3px;">
 			              	<div class="cell column1" data-bind="i18n: 'KAF000_55'"></div>
 			              	<div class="cell column2" data-bind="text: date"></div>

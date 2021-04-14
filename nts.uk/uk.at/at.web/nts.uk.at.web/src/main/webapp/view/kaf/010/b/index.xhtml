@@ -40,12 +40,7 @@
                      <div>
 
 	
-	<div
-		data-bind="component: { name: 'kaf010-share-header',
-											params: {
-												overTimeWork: overTimeWork
-											}
-											}, visible: overTimeWorkVisible"></div>
+	
 	
 	<div class="table"></div>
 
@@ -87,6 +82,12 @@
                                 appType: appType,
                                 appDispInfoStartupOutput: appDispInfoStartupOutput	
                             } }"></div>
+                    <div
+		data-bind="component: { name: 'kaf010-share-header',
+											params: {
+												overTimeWork: overTimeWork
+											}
+											}, visible: overTimeWorkVisible"></div>        
                     <div data-bind="component: { name: 'kaf000-b-component9',
                             params: {
                                 appType: appType,
