@@ -4,7 +4,7 @@
 #workSelectKAF009{
 	height: 70px;
     margin-top: 10px;
-    margin-left: 25px;
+    margin-left: 27px;
     width: 43px !important;
 }
 
@@ -159,11 +159,11 @@ div.form-label.broken {
 	width: 120px;
 	padding: 0px !important;
 }
-.centerCheckBox .firstCheckBox {
+.centerCheckBox .firstCheckBoxKAF009 {
 	display: inline-block;
-	margin-left: -8px;
+	margin-left: -8px !important;
 }
-.centerCheckBox .secondCheckBox {
+.centerCheckBox .secondCheckBoxKAF009 {
 	display: inline-block; 
 	margin-left: 27px;
 }

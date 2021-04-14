@@ -9,9 +9,9 @@ module nts.uk.at.view.kaf009_ref.shr.viewmodel {
 	<div class="centerCheckBox">
 		<div class="titleKAF009"
 			data-bind="ntsFormLabel: {required:true , text: $i18n('KAF009_45')}"></div>
-		<div class="firstCheckBox"
+		<div class="firstCheckBoxKAF009"
 			data-bind="ntsCheckBox: { checked: model.checkbox1, text: $i18n('KAF009_16'), enable: ko.toJS(mode) == 'edit'}"></div>
-		<div class="secondCheckBox"
+		<div class="secondCheckBoxKAF009"
 			data-bind="ntsCheckBox: { checked: model.checkbox2, text: $i18n('KAF009_18'), enable: ko.toJS(mode) == 'edit'}"></div>
 	</div>
 
