@@ -37,7 +37,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Builder
 @EqualsAndHashCode(callSuper = true)
 @Entity
-@Table(name = "SPTDT_TOPPAGE_ALARM_1")
+@Table(name = "SPTDT_TOPPAGE_ALARM")
 public class SptdtToppageAlarm extends UkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
