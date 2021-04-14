@@ -425,7 +425,7 @@ module nts.uk.at.view.kdp.share {
 
 						if (tabs) {
 							const bound = tabs.getBoundingClientRect();
-							const height = Math.floor((window.innerHeight - bound.top - 110 - marginBottom) / 5.65);
+							const height = Math.floor((window.innerHeight - bound.top - 150 - marginBottom) / 7);
 
 							vm.buttonSize(height);
 						}

@@ -10,8 +10,7 @@ module nts.uk.at.view.kdp.share {
         <div class="company" data-bind="style: { 'color': headOfficeNotice.textColor, 
                                 'background-color': headOfficeNotice.backGroudColor }">
             <span data-bind="i18n: headOfficeNotice.title"></span>
-            <span>:</span>
-            <span data-bind:"i18n: headOfficeNotice.contentMessager"></span>
+            <span class="text-company" data-bind:"i18n: headOfficeNotice.contentMessager"></span>
         </div>
         <div data-bind="style: { 'color': workplaceNotice.textColor, 
                                     'background-color': workplaceNotice.backGroudColor }">
@@ -19,7 +18,6 @@ module nts.uk.at.view.kdp.share {
                 <div class="title">
                     <div class="name-title">
                         <div style:"box-sizing: border-box" data-bind="i18n: workplaceNotice.title"></div>
-                        <div style:"box-sizing: border-box">:</div>
                     </div>
                     <div class="btn-title">
                         <button class="icon" data-bind="ntsIcon: { no: 160, width: 30, height: 30 }, click: events.registerNoti.click">
@@ -42,15 +40,15 @@ module nts.uk.at.view.kdp.share {
 
         .kdp-message-error .company {
             padding: 3px;
-            height: 60px;
-            max-height: 60px;
+            height: 66px;
+            max-height: 66px;
         }
 
         .kdp-message-error .workPlace {
             padding: 3px;
             margin-top: 5px;
-            height: 60px;
-            max-height: 60px;
+            height: 66px;
+            max-height: 66px;
         }
 
         .kdp-message-error .workPlace .title {
@@ -58,6 +56,14 @@ module nts.uk.at.view.kdp.share {
             width: 64px;
             height: 100px;
             float: left;
+        }
+
+        .kdp-message-error .workPlace .text-company {
+            box-sizing: border-box;
+            margin-right:40px;
+            max-height:66px;
+            text-overflow: ellipsis;
+            overflow: hidden;
         }
 
         .kdp-message-error .workPlace .title .name-title {
@@ -71,7 +77,10 @@ module nts.uk.at.view.kdp.share {
 
         .kdp-message-error .workPlace .text-content {
             box-sizing: border-box;
-            margin-right:40px
+            margin-right:40px;
+            max-height:66px;
+            text-overflow: ellipsis;
+            overflow: hidden;
         }
 
         .kdp-message-error .workPlace .btn-content {
@@ -243,7 +252,7 @@ module nts.uk.at.view.kdp.share {
 
             if (type == DestinationClassification.ALL) {
                 if (setting) {
-                    vm.title(setting.companyTitle);
+                    vm.title(setting.companyTitle + ':');
                     vm.textColor(setting.comMsgColor.textColor);
                     vm.backGroudColor(setting.comMsgColor.backGroundColor);
                 }
@@ -251,7 +260,7 @@ module nts.uk.at.view.kdp.share {
 
             if (type == DestinationClassification.WORKPLACE) {
                 if (setting) {
-                    vm.title(setting.wkpTitle);
+                    vm.title(setting.wkpTitle + ':');
                     vm.textColor(setting.wkpMsgColor.textColor);
                     vm.backGroudColor(setting.wkpMsgColor.backGroundColor);
                 }
