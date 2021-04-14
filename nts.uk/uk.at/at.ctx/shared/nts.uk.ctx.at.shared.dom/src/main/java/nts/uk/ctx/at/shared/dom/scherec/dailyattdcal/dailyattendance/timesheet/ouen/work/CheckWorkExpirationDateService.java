@@ -22,7 +22,7 @@ public class CheckWorkExpirationDateService {
    
 //■Public
 	/**
-     * @name: 作業の有効期限をチェックする
+     * @name: [1] 確認する
      * @Description 基準日に指定の作業コードを利用できるか確認する
      * @input require
      * @input date 年月日	
@@ -56,15 +56,11 @@ public class CheckWorkExpirationDateService {
     }
 //■Require
     public interface Require {
-    	 /**
-         * [R-1] 作業を取得する
-         * 作業Repository.Get(会社ID,作業枠NO,コード)
-         */
+         // [R-1] 作業を取得する
+         // 作業Repository.Get(会社ID,作業枠NO,コード)
         Optional<Task> getTask(TaskFrameNo taskFrameNo, WorkCode code);
-    	/**
-         * [R-2] 作業枠利用設定を取得する
-         * 作業枠利用設定Repository.Get(会社ID)
-         */
+         // [R-2] 作業枠利用設定を取得する
+         // 作業枠利用設定Repository.Get(会社ID)
         TaskFrameUsageSetting getTaskFrameUsageSetting();
     }
 }

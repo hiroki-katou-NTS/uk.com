@@ -13,7 +13,9 @@ import nts.arc.time.GeneralDate;
  */
 public class GetEmployeesService {
 	
+//■Public
 	/**
+	 * @name [1] 取得する
 	 * @param require
 	 * @param cID 会社ID
 	 * @param userID ユーザID
@@ -32,7 +34,8 @@ public class GetEmployeesService {
 		//	return 全社員を取得する(会社ID,基準日)	
 		return require.getemployeesAllWorkplaces(companyId, baseDate);
 	}
-	
+
+//■Require	
 	public static interface Require {
 		 
 		//[R-1] ロールを取得する

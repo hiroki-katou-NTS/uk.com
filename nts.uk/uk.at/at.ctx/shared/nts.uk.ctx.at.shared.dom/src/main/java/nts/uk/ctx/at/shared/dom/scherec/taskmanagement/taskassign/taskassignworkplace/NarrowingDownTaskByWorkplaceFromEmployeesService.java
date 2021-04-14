@@ -19,13 +19,13 @@ public class NarrowingDownTaskByWorkplaceFromEmployeesService {
    
 //■Public
 	/**
-     * @name: 社員から職場別作業の絞込を取得する
+     * @name: [1] 取得する
      * @Description 説明:指定社員の基準日時点の所属職場の職場別作業の絞込を取得する。ない場合、上位職場の設定を参照する	
      * @input require
      * @input companyID 会社ID
      * @input employeeID 社員ID
      * @input date 年月日
-     * @input taskFrameNo 基準日
+     * @input taskFrameNo 作業枠NO
      * @output Optional<NarrowingDownTaskByWorkplace> 職場別作業の絞込
      */
     public static Optional<NarrowingDownTaskByWorkplace> get(Require require, String companyID, String employeeID, GeneralDate date,TaskFrameNo taskFrameNo) {
@@ -45,15 +45,11 @@ public class NarrowingDownTaskByWorkplaceFromEmployeesService {
     }
 //■Require
     public interface Require {
-    	 /**
-         * [R-1] 職場を取得する
-         * 	アルゴリズム.所属職場を含む上位職場を取得(会社ID,社員ID,基準日)
-         */
+         // [R-1] 職場を取得する
+         // アルゴリズム.所属職場を含む上位職場を取得(会社ID,社員ID,基準日)
     	List<String> findWpkIdsBySid(String employeeID, GeneralDate date);
-    	/**
-         * [R-2] 職場別作業の絞込を取得する
-         *  職場別作業の絞込Repository.Get(職場ID,作業枠NO)
-         */
+         // [R-2] 職場別作業の絞込を取得する
+         // 職場別作業の絞込Repository.Get(職場ID,作業枠NO)
     	Optional<NarrowingDownTaskByWorkplace> getNarrowingDownTaskByWorkplace(String workPlaceId, TaskFrameNo taskFrameNo);
     }
 }
