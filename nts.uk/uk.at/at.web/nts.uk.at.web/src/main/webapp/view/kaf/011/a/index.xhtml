@@ -82,7 +82,7 @@
 					<div class="left-panel"
 						style="width: calc(100% - 410px); height: inherit; overflow-y: auto">
 						<div
-							style="height: inherit; background-color: #fff; padding: 10px;">
+							style="height: inherit; background-color: #fff; padding: 0 10px;">
 							<div class="remainInfor">
 								<div class="remainLable">#{i18n.getText('KAF011_64')}</div>
 								<div class="remainNumber">
@@ -130,8 +130,8 @@
 												appDispInfoStartupOutput: appDispInfoStartupOutput
 											} }"></div>
 							<com:ko-if bind="appCombinaDipslay">
-								<div style="margin-top: 10px;">
-									<div data-bind="ntsFormLabel: {}">#{i18n.getText('KAF011_18')}</div>
+								<div style="margin-top: 10px; display: flex ">
+									<div style="padding-right: 0px !important; width: 120px" data-bind="ntsFormLabel: {}">#{i18n.getText('KAF011_18')}</div>
 									<div class="cf"
 										data-bind="ntsSwitchButton: {
 																name:  $i18n('KAF011_18'),

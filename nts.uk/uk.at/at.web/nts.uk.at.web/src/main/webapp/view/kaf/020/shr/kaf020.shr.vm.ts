@@ -8,8 +8,8 @@ module nts.uk.at.view.kaf020.shr.viewmodel {
             <div id="ruredLine"></div>
             <table id="kaf020-fixed-table">
                 <colgroup>
+                    <col width="200px"/>
                     <col width="120px"/>
-                    <col width="80px"/>
                     <col width="40px"/>
                     <col width="300px"/>
                 </colgroup>

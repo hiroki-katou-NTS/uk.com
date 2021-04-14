@@ -51,10 +51,10 @@ input {
 .nts-grid-control-typeReason-10 {
 	margin-bottom: 10px
 }
-th {
+#kaf002TabPanel th {
 	text-align: center !important;
 }
 
-td {
+#kaf002TabPanel td {
 	text-align: center !important;
 }

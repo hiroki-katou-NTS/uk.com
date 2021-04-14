@@ -1,8 +1,11 @@
 .control-group.valign-center>* {
 	vertical-align: middle;
 }
-#workSelect{
-	margin-left: 20px;
+#workSelectKAF009{
+	height: 70px;
+    margin-top: 10px;
+    margin-left: 25px;
+    width: 43px !important;
 }
 
 .valign-center.control-group {
@@ -108,10 +111,13 @@ div.form-label.broken {
 	height:1000	px;
 }
 
-.lstApprover {
-}
 /*workType, Sift */
-.lblSiftCd, .lblWorkTypeCd {
+.lblWorkTypeCd {
+	line-height: 40px;
+	margin-left: 20px;
+	
+}
+.lblSiftCd {
 	line-height: 40px;
 	margin-left: 20px;
 }
@@ -119,8 +125,8 @@ div.form-label.broken {
 .kaf009-lblComment {
 	width: 260px;
 }
-.clsWorkType{
-	margin-left: 50px !important;
+.clsWorkTypeKAF009{
+	margin-left: 25px !important;
 }
 
 .overlay-reason {
@@ -146,13 +152,18 @@ div.form-label.broken {
 }
 .centerCheckBox {
 	display: block;
+	margin-top: 12px;
 }
-.centerCheckBox .title {
+.centerCheckBox .titleKAF009 {
 	display: inline-block;
+	width: 120px;
+	padding: 0px !important;
 }
 .centerCheckBox .firstCheckBox {
-	display: inline-block; margin-left: 4px
+	display: inline-block;
+	margin-left: -8px;
 }
 .centerCheckBox .secondCheckBox {
-	display: inline-block; margin-left: 27px
+	display: inline-block; 
+	margin-left: 27px;
 }

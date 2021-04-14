@@ -222,10 +222,18 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
 
 					// tabPanel
 					if ($('#kaf002TabPanel').length) {
-						if (value == 'tab-2') {
-							$('#kaf002TabPanel').width(600)							
+						if (self.isPreAtr()) {
+							if (value == 'tab-2') {
+								$('#kaf002TabPanel').width(600)							
+							} else {
+								$('#kaf002TabPanel').width(450)							
+							}							
 						} else {
-							$('#kaf002TabPanel').width(450)							
+							if (value == 'tab-2') {
+								$('#kaf002TabPanel').width(700)							
+							} else {
+								$('#kaf002TabPanel').width(550)							
+							}
 						}
 					}
 					
@@ -235,6 +243,20 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
             self.isPreAtr.subscribe((value) => {
                 if (!_.isNull(value) && self.mode() == 0) {
                     self.loadAll();
+					if (value) {
+						if (self.selectedTab() == 'tab-2') {
+								$('#kaf002TabPanel').width(600)							
+						} else {
+								$('#kaf002TabPanel').width(450)							
+						}
+						
+					} else {
+						if (self.selectedTab() == 'tab-2') {
+								$('#kaf002TabPanel').width(700)							
+						} else {
+								$('#kaf002TabPanel').width(550)							
+						}
+					}
                 }
 
             });
@@ -298,6 +320,20 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
             // change tabs by root component
             self.tabsTemp(self.tabs());
             self.loadAll();
+			if (self.isPreAtr()) {
+				if (self.selectedTab() == 'tab-2') {
+						$('#kaf002TabPanel').width(600)							
+				} else {
+						$('#kaf002TabPanel').width(450)							
+				}
+				
+			} else {
+				if (self.selectedTab() == 'tab-2') {
+						$('#kaf002TabPanel').width(700)							
+				} else {
+						$('#kaf002TabPanel').width(550)							
+				}
+			}
 
         }
         loadAll() {
