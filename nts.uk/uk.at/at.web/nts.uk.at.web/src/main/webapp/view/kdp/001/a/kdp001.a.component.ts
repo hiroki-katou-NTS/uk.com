@@ -323,9 +323,9 @@ module nts.uk.ui.kdp001.a {
                     left: calc(100% /2 + 35px);
                 }
                 .kdp-001-a.widget-title .date {
-                    margin-right: 65px;
+                    margin-right: 83px;
                     color: #7F7F7F;
-                    background-color: white !important;
+                    font-size: 15px;
                 }
                 .kdp-001-a.widget-title .hours-minutes {
                     box-sizing: border-box;
