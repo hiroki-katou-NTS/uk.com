@@ -419,11 +419,14 @@ module nts.uk.at.view.kal003.b.viewmodel {
                         new sharemodel.InputModel(0, true, endValue, operator > 5, true, nts.uk.resource.getText("KAL003_83"))];
                     self.workRecordExtractingCondition().errorAlarmCondition().monthlyCondition().inputs(defaultInputs);
                 }
-                return new model.ComparisonValueRange(
+                var comparisonValueRange new model.ComparisonValueRange(
                     self.workRecordExtractingCondition().checkItem
                     , self.workRecordExtractingCondition().errorAlarmCondition().monthlyCondition().comparisonOperator
                     , startValue
                     , endValue);
+                comparisonValueRange.minValue(startValue);
+                comparisonValueRange.maxValue(endValue);
+                return comparisonValueRange;
             }
 
             let erAlAtdItemCondition = self.workRecordExtractingCondition().errorAlarmCondition().atdItemCondition().group1().lstErAlAtdItemCon()[0];
