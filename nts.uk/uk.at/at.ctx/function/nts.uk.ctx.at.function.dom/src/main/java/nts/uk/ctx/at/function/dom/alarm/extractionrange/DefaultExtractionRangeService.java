@@ -289,6 +289,9 @@ public class DefaultExtractionRangeService implements ExtractionRangeService {
 
 		} else {
 			DatePeriod datePeriod = ClosureService.getClosurePeriod(require, closureId, startMonthly.addMonths((-1)*extraction.getStartDate().getStrMonth().get().getMonth()));
+			if(datePeriod == null) {
+				return new CheckConditionPeriod(GeneralDate.ymd(startMonthly, 1).date(), GeneralDate.ymd(endMonthly.addMonths(1), 1).addDays(-1).date());
+			}
 			startDate = datePeriod.start().date();
 		}
 
@@ -304,6 +307,9 @@ public class DefaultExtractionRangeService implements ExtractionRangeService {
 			endDate = calendar.getTime();
 		} else {
 			DatePeriod datePeriod = ClosureService.getClosurePeriod(require, closureId, endMonthly.addMonths((-1)*extraction.getEndDate().getEndMonth().get().getMonth()));
+			if(datePeriod == null) {
+				return new CheckConditionPeriod(GeneralDate.ymd(startMonthly, 1).date(), GeneralDate.ymd(endMonthly.addMonths(1), 1).addDays(-1).date());
+			}
 			endDate = datePeriod.end().date();
 		}
 		

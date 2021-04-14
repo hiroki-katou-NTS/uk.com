@@ -84,7 +84,7 @@ public class AsposeAppStamp {
 				for (TimeStampApp timeStampApp : listTimeStampApp) {
 					DestinationTimeApp destTimeApp = timeStampApp.getDestinationTimeApp();
 
-					if (appStampOutputOp.get().getAppStampReflectOptional().get().getAttendence()
+					if (appStampOutputOp.get().getAppStampReflectOptional().get().getWorkReflectAtr()
 							.equals(NotUseAtr.USE)) {
 						/*
 						 * workHour1
@@ -120,7 +120,7 @@ public class AsposeAppStamp {
 						}
 					}
 
-					if (appStampOutputOp.get().getAppStampReflectOptional().get().getTemporaryAttendence()
+					if (appStampOutputOp.get().getAppStampReflectOptional().get().getExtraWorkReflectAtr()
 							.equals(NotUseAtr.USE)) {
 						/*
 						 * temporaryTime
@@ -166,7 +166,7 @@ public class AsposeAppStamp {
 						}
 					}
 
-					if (appStampOutputOp.get().getAppStampReflectOptional().get().getOutingHourse()
+					if (appStampOutputOp.get().getAppStampReflectOptional().get().getGoOutReflectAtr()
 							.equals(NotUseAtr.USE)) {
 						/*
 						 * outTime
@@ -393,7 +393,7 @@ public class AsposeAppStamp {
 					DestinationTimeZoneApp destTimeZone = timeStampAppOther.getDestinationTimeZoneApp();
 					TimeZone timeZone = timeStampAppOther.getTimeZone();
 
-					if (appStampOutputOp.get().getAppStampReflectOptional().get().getBreakTime()
+					if (appStampOutputOp.get().getAppStampReflectOptional().get().getBreakReflectAtr()
 							.equals(NotUseAtr.USE)) {
 						/*
 						 * breakTime
@@ -507,7 +507,7 @@ public class AsposeAppStamp {
 						}
 					}
 
-					if (appStampOutputOp.get().getAppStampReflectOptional().get().getParentHours()
+					if (appStampOutputOp.get().getAppStampReflectOptional().get().getChildCareReflectAtr()
 							.equals(NotUseAtr.USE)) {
 						/*
 						 * childCareTime
@@ -533,7 +533,7 @@ public class AsposeAppStamp {
 						}
 					}
 
-					if (appStampOutputOp.get().getAppStampReflectOptional().get().getParentHours()
+					if (appStampOutputOp.get().getAppStampReflectOptional().get().getCareReflectAtr()
 							.equals(NotUseAtr.USE)) {
 						/*
 						 * nursingTime

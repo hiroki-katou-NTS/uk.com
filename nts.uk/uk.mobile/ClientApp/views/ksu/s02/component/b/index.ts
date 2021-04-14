@@ -329,7 +329,7 @@ export class CalendarBComponent extends Vue {
         if (!self.isCurrentMonth) {
             this.memoInput();
             this.setData(el);
-            $('textArea').attr('disabled', 'disabled');
+            // $('nts-text-area').attr('disabled', 'disabled');
 
             return;
         }

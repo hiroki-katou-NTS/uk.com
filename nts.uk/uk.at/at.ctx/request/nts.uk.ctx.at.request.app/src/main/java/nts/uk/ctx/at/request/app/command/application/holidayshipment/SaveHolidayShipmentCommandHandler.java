@@ -1,88 +1,33 @@
 package nts.uk.ctx.at.request.app.command.application.holidayshipment;
 
 
-import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoAdapter;
-import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoImport;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HolidayApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HolidayApplicationSettingRepository;
-import org.apache.logging.log4j.util.Strings;
 
-import nts.arc.enums.EnumAdaptor;
-import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
-import nts.arc.time.GeneralDate;
-import nts.arc.time.GeneralDateTime;
-import nts.arc.time.calendar.period.DatePeriod;
-import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.refactor5.HolidayShipmentScreenAFinder;
-import nts.uk.ctx.at.request.dom.application.Application;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
-import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.EmploymentHistoryImported;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WorkplaceAdapter;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeUpdate;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
-import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementOutput;
-import nts.uk.ctx.at.request.dom.application.common.service.other.output.PeriodCurrentMonth;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
-import nts.uk.ctx.at.request.dom.application.holidayshipment.ApplicationCombination;
-import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveApp;
-import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveWorkingHour;
-import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.WorkTime;
-import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.WorkTimeCode;
-import nts.uk.ctx.at.request.dom.application.holidayshipment.compltleavesimmng.AppHdsubRec;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.compltleavesimmng.AppHdsubRecRepository;
-import nts.uk.ctx.at.request.dom.application.holidayshipment.compltleavesimmng.SyncState;
-import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentApp;
-import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentWorkingHour;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.triprequestsetting.ContractCheck;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.withdrawalrequestset.AllowAtr;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.withdrawalrequestset.CheckUper;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.withdrawalrequestset.WithDrawalReqSet;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.withdrawalrequestset.WithDrawalReqSetRepository;
-import nts.uk.ctx.at.request.dom.setting.company.request.RequestSetting;
-import nts.uk.ctx.at.request.dom.setting.company.request.RequestSettingRepository;
-import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.AppTypeSetting;
-import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.displaysetting.DisplayAtr;
-import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.AppRemainCreateInfor;
-import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.EarchInterimRemainCheck;
-import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainCheckInputParam;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngCheckRegister;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
-import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.PrePostAtr;
-import nts.uk.ctx.at.shared.dom.vacation.setting.ExpirationTime;
-import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacation;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacationRepository;
-import nts.uk.ctx.at.shared.dom.vacation.setting.subst.EmpSubstVacation;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.EmpSubstVacationRepository;
-import nts.uk.ctx.at.shared.dom.vacation.setting.subst.SubstVacationSetting;
-import nts.uk.ctx.at.shared.dom.worktype.DailyWork;
-import nts.uk.ctx.at.shared.dom.worktype.HolidayAtr;
-import nts.uk.ctx.at.shared.dom.worktype.WorkType;
-import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
-import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
-import nts.uk.ctx.at.shared.dom.worktype.WorkTypeUnit;
 import nts.uk.ctx.at.shared.dom.worktype.holidayset.HolidaySettingRepository;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 @Stateless
 public class SaveHolidayShipmentCommandHandler
 		extends CommandHandlerWithResult<SaveHolidayShipmentCommand, ProcessResult> {
 	
-	@Inject
-	private WithDrawalReqSetRepository withDrawRepo;
+//	@Inject
+//	private WithDrawalReqSetRepository withDrawRepo;
 //	@Inject
 //	private ApplicationRepository appRepo;
 	@Inject
@@ -129,8 +74,8 @@ public class SaveHolidayShipmentCommandHandler
 	private OtherCommonAlgorithm otherCommonAlgorithm;
 	@Inject
 	private DetailBeforeUpdate detailBeforeUpdate;
-	@Inject
-	private RequestSettingRepository requestSettingRepository;
+//	@Inject
+//	private RequestSettingRepository requestSettingRepository;
 
 	@Override
 	protected ProcessResult handle(CommandHandlerContext<SaveHolidayShipmentCommand> context) {

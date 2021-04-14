@@ -2,7 +2,6 @@
 // import result = require("lodash/result");
 
 module kdl012.test.viewmodel {
-    import login = nts.uk.at.view.kdp004.a.service.login;
     import getShared = nts.uk.ui.windows.getShared;
 
     @bean()
@@ -14,7 +13,7 @@ module kdl012.test.viewmodel {
 
         isMultiple: KnockoutObservable<boolean>;
         showExpireDate: KnockoutObservable<boolean>;
-        workFrameNoSelection: KnockoutObservable<string>;
+        workFrameNoSelection: KnockoutObservable<number>;
         referenceDate: KnockoutObservable<string>
         selectionCodeTxt: KnockoutObservable<string>
         selectionCodeList: KnockoutObservableArray<string>;
@@ -36,7 +35,7 @@ module kdl012.test.viewmodel {
             ]);
             self.selectedShowExpireDateCode = ko.observable(1);
 
-            self.workFrameNoSelection = ko.observable("");
+            self.workFrameNoSelection = ko.observable(1);
             self.referenceDate = ko.observable(moment.utc().format("YYYY/MM/DD"));
             self.showExpireDate = ko.observable(false);
             self.selectionCodeTxt = ko.observable("B0000000000000000001, B0000000000000000002");
@@ -63,7 +62,7 @@ module kdl012.test.viewmodel {
                 if (self.selectionCodeTxt() !== undefined) {
                     let temp = _.split(self.selectionCodeTxt(), ", ");
                     // If isMultiple = false
-                    if (self.selectedModeCode() === 0) {
+                    if (self.selectedModeCode() == '0') {
                         let tempArr: string[] = [];
                         tempArr.push(temp[0]);
                         self.selectionCodeList(tempArr);
@@ -80,24 +79,29 @@ module kdl012.test.viewmodel {
                     referenceDate: moment(self.referenceDate()).format("YYYY/MM/DD"),
                     selectionCodeList: self.selectionCodeList()
                 };
-                nts.uk.ui.windows.setShared('KDL012', request);
+                nts.uk.ui.windows.setShared('KDL012Params', request);
 
                 nts.uk.ui.windows.sub.modal("/view/kdl/012/index.xhtml", {dialogClass: "no-close"}).onClosed(() => {
                     let self = this;
-                    let curentCode = getShared('currentCodeList_KDL012');
+                    let curentCode: any = getShared('KDL012Output');
 
                     if (curentCode !== undefined) {
-                        self.selectionCodeList(curentCode);
-                        self.currentCodeList(curentCode);
-                        self.selectionCodeTxt(curentCode.toString());
-                        nts.uk.ui.block.clear();
+                        if (_.isArray(curentCode)) {
+                            self.selectionCodeList(curentCode);
+                            self.currentCodeList(curentCode);
+                            self.selectionCodeTxt(curentCode.join(', '));
+                        } else {
+                            self.selectionCodeList([curentCode]);
+                            self.currentCodeList([curentCode]);
+                            self.selectionCodeTxt(curentCode.toString());
+                        }
+                    } else {
+                        self.selectionCodeList([]);
+                        self.selectionCodeTxt("");
+                        self.currentCodeList([]);
                     }
-                    else {
-                        self.selectionCodeList = ko.observableArray([]);
-                        self.selectionCodeTxt = ko.observable("");
-                        self.currentCodeList = ko.observableArray([]);
-                        nts.uk.ui.block.clear();
-                    }
+
+                    nts.uk.ui.block.clear();
                 });
             });
         }

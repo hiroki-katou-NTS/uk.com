@@ -61,8 +61,8 @@ public class ChildNursingLeaveFinder {
 				.manageType(childNursingLeave.getManageType().value)
 				.nursingCategory(childNursingLeave.getNursingCategory().value)
 				.startMonthDay(childNursingLeave.getStartMonthDay() !=null ? childNursingLeave.getStartMonthDay() : null)
-				.nursingNumberLeaveDay(childNursingLeave.getMaxPersonSetting().getNursingNumberLeaveDay().v())
-				.nursingNumberPerson(childNursingLeave.getMaxPersonSetting().getNursingNumberLeaveDay2().v())
+				.nursingNumberLeaveDay(childNursingLeave.getMaxPersonSetting().get(1).getNursingNumberLeaveDay().v())
+				.nursingNumberPerson(childNursingLeave.getMaxPersonSetting().get(1).getNursingNumberPerson().v())
 				.specialHolidayFrame(childNursingLeave.getSpecialHolidayFrame().orElse(0))
 				.absenceWork(childNursingLeave.getWorkAbsence().orElse(0))
 				.build();
@@ -106,8 +106,8 @@ public class ChildNursingLeaveFinder {
 				.manageType(nursingLeave.getManageType().value)
 				.nursingCategory(NursingCategory.Nursing.value)
 				.startMonthDay(nursingLeave.getStartMonthDay())
-				.nursingNumberLeaveDay(nursingLeave.getMaxPersonSetting().getNursingNumberLeaveDay().v())
-				.nursingNumberPerson(nursingLeave.getMaxPersonSetting().getNursingNumberLeaveDay2().v())
+				.nursingNumberLeaveDay(nursingLeave.getMaxPersonSetting().get(0).getNursingNumberLeaveDay().v())
+				.nursingNumberPerson(nursingLeave.getMaxPersonSetting().get(0).getNursingNumberPerson().v())
 				.specialHolidayFrame(nursingLeave.getSpecialHolidayFrame().orElse(0))
 				.absenceWork(nursingLeave.getWorkAbsence().orElse(0))
 				.build();

@@ -1,5 +1,6 @@
 import { _, Vue, moment } from '@app/provider';
 import { input, InputComponent } from './input';
+import { browser } from '@app/utils';
 
 @input()
 class DateComponent extends InputComponent {
@@ -58,50 +59,58 @@ class DateComponent extends InputComponent {
     }
 
     public click() {
-        let self = this,
-            { year, month, date } = self,
-            daysInMonth = moment.utc(Date.UTC(year, month - 1)).daysInMonth();
+        const vm = this;
+        const { $refs, year, month, date } = vm;
+        const daysInMonth = moment.utc(Date.UTC(year, month - 1)).daysInMonth();
 
-        self.$picker({
+        vm.$picker({
             year,
             month,
             date
         }, {
-                year: _.range(1900, 2101, 1).map((value: number) => ({ text: value.toString(), value })),
-                month: _.range(1, 13, 1).map((value: number) => ({ text: _.padStart(`${value}`, 2, '0'), value })),
-                date: _.range(1, daysInMonth + 1, 1).map((value) => ({ text: _.padStart(`${value}`, 2, '0'), value }))
-            }, (select: ISelected, pkr: IPicker) => {
-                if (_.isEmpty(pkr.selects)) {
-                    return;
-                }
+            year: _.range(1900, 2101, 1).map((value: number) => ({ text: value.toString(), value })),
+            month: _.range(1, 13, 1).map((value: number) => ({ text: _.padStart(`${value}`, 2, '0'), value })),
+            date: _.range(1, daysInMonth + 1, 1).map((value) => ({ text: _.padStart(`${value}`, 2, '0'), value }))
+        }, (select: ISelected, pkr: IPicker) => {
+            if (_.isEmpty(pkr.selects)) {
+                return;
+            }
 
-                let daysInMonth = moment.utc(Date.UTC(select.year, select.month - 1)).daysInMonth();
+            let daysInMonth = moment.utc(Date.UTC(select.year, select.month - 1)).daysInMonth();
 
-                if (pkr.dataSources.date.length !== daysInMonth) {
-                    pkr.dataSources.date = _.range(1, daysInMonth + 1, 1).map((value) => ({ text: _.padStart(`${value}`, 2, '0'), value }));
-                }
+            if (pkr.dataSources.date.length !== daysInMonth) {
+                pkr.dataSources.date = _.range(1, daysInMonth + 1, 1).map((value) => ({ text: _.padStart(`${value}`, 2, '0'), value }));
+            }
 
-                if (pkr.selects.date > daysInMonth) {
-                    pkr.selects.date = daysInMonth;
-                }
+            if (pkr.selects.date > daysInMonth) {
+                pkr.selects.date = daysInMonth;
+            }
 
-                let { year, month, date } = pkr.selects;
+            let { year, month, date } = pkr.selects;
 
-                pkr.title = self.titlePicker({ year, month, date });
-            }, {
-                title: self.titlePicker({ year, month, date }),
-                required: self.constraints && self.constraints.required
-            }).then((select: ISelected) => {
-                if (select === undefined) {
+            pkr.title = vm.titlePicker({ year, month, date });
+        }, {
+            title: vm.titlePicker({ year, month, date }),
+            required: vm.constraints && vm.constraints.required
+        }).then((select: ISelected) => {
+            if (select === undefined) {
 
-                } else if (select === null) {
-                    self.$emit('input', null);
-                } else {
-                    let $utc = Date.UTC(select.year, select.month - 1, select.date);
+            } else if (select === null) {
+                vm.$emit('input', null);
+            } else {
+                let $utc = Date.UTC(select.year, select.month - 1, select.date);
 
-                    self.$emit('input', moment.utc($utc).toDate());
-                }
-            });
+                vm.$emit('input', moment.utc($utc).toDate());
+            }
+        })
+        .then(() => {
+            const { version } = browser;
+            const input: HTMLInputElement = $refs.input as any;
+
+            if (input && version.match(/Safari (7|8|9|10)/)) {
+                input.blur();
+            }
+        });
 
     }
 }

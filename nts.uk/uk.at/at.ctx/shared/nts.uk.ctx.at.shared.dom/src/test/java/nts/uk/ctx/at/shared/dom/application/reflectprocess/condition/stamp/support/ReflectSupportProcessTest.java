@@ -11,15 +11,15 @@ import org.junit.runner.RunWith;
 
 import mockit.Injectable;
 import mockit.integration.junit4.JMockit;
-import nts.uk.ctx.at.shared.dom.application.common.ApplicationTypeShare;
-import nts.uk.ctx.at.shared.dom.application.common.PrePostAtrShare;
-import nts.uk.ctx.at.shared.dom.application.reflectprocess.DailyRecordOfApplication;
-import nts.uk.ctx.at.shared.dom.application.reflectprocess.ScheduleRecordClassifi;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.common.ReflectApplicationHelper;
-import nts.uk.ctx.at.shared.dom.application.stamp.AppStampShare;
-import nts.uk.ctx.at.shared.dom.application.stamp.StartEndClassificationShare;
-import nts.uk.ctx.at.shared.dom.application.stamp.TimeStampAppEnumShare;
-import nts.uk.ctx.at.shared.dom.application.stamp.TimeStampAppShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.common.ApplicationTypeShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.common.PrePostAtrShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.stamp.AppStampShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.stamp.StartEndClassificationShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.stamp.TimeStampAppEnumShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.stamp.TimeStampAppShare;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.DailyRecordOfApplication;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.ScheduleRecordClassifi;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.stampapplication.StampAppReflect;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
@@ -27,7 +27,7 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 public class ReflectSupportProcessTest {
 
 	@Injectable
-	private ReflectSupportProcess.Require require;
+	private StampAppReflect.Require require;
 
 	/*
 	 * テストしたい内容
@@ -54,7 +54,7 @@ public class ReflectSupportProcessTest {
 						PrePostAtrShare.PREDICT));
 
 		StampAppReflect reflectApp = reflect(NotUseAtr.NOT_USE);//// 応援開始、終了を反映する
-		List<Integer> actualResult = ReflectSupportProcess.reflect(require, application, dailyApp, reflectApp);
+		List<Integer> actualResult = reflectApp.reflectSupport(require, application, dailyApp);
 
 		assertThat(actualResult).isEmpty();
 
@@ -85,7 +85,7 @@ public class ReflectSupportProcessTest {
 						PrePostAtrShare.PREDICT));
 
 		StampAppReflect reflectApp = reflect(NotUseAtr.USE);//// 応援開始、終了を反映する
-		List<Integer> actualResult = ReflectSupportProcess.reflect(require, application, dailyApp, reflectApp);
+		List<Integer> actualResult = reflectApp.reflectSupport(require, application, dailyApp);
 
 		assertThat(actualResult).isEqualTo(Arrays.asList(929, 921));
 	}

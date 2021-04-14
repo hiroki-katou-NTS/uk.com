@@ -16,7 +16,7 @@ import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
-import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsence;
+import nts.uk.ctx.at.request.dom.application.appabsence.ApplyForLeave;
 import nts.uk.ctx.at.request.dom.application.common.adapter.employeemanage.EmployeeManageRQAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.infoterminal.EmpInfoTerminalAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.infoterminal.TimeRecordReqSettingAdapter;
@@ -128,7 +128,7 @@ public class ConvertTRAppServicePubImpl implements ConvertTRAppServicePub {
 
 		// 休暇申請
 		case VACATION:
-			// AppAbsence
+			// ApplyForLeave
 			return null;
 
 		// 勤務変更申請
@@ -229,7 +229,7 @@ public class ConvertTRAppServicePubImpl implements ConvertTRAppServicePub {
 		}
 
 		@Override
-		public void insert(AppAbsence appAbsence) {
+		public void insert(ApplyForLeave appAbsence) {
 			// TODO Auto-generated method stub
 
 		}

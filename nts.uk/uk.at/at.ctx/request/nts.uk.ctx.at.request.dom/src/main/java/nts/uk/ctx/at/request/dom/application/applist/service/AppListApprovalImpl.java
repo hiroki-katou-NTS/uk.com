@@ -9,7 +9,6 @@ import javax.inject.Inject;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.DetailAfterApproval;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeUpdate;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationcommonsetting.AppCommonSet;
 import nts.uk.shr.com.context.AppContexts;
 /**
  * 
@@ -23,15 +22,15 @@ public class AppListApprovalImpl implements AppListApprovalRepository{
 	private DetailBeforeUpdate detailBefUpdate;
 	@Inject
 	private DetailAfterApproval detailAfAppv;
-	/**
-	 * 15 - 申請一覧承認登録チェック
-	 */
-	@Override
-	public boolean checkResAppvListApp(AppCommonSet appCommonSet, PrePostAtr prePostAtr, String achievement,
-			String workOperation) {
-		// TODO Auto-generated method stub
-		return true;
-	}
+//	/**
+//	 * 15 - 申請一覧承認登録チェック
+//	 */
+//	@Override
+//	public boolean checkResAppvListApp(AppCommonSet appCommonSet, PrePostAtr prePostAtr, String achievement,
+//			String workOperation) {
+//		// TODO Auto-generated method stub
+//		return true;
+//	}
 	/**
 	 * 16 - 申請一覧承認登録実行
 	 */
