@@ -19,6 +19,9 @@ module nts.uk.at.view.kdl030.a.viewmodel {
             let param = getShared("KDL030_PARAM");
             vm.appIDLst = param.appIDLst;
 			vm.isAgentMode(param.isAgentMode);
+			if(!vm.isAgentMode()) {
+				vm.isSendApplicant(false);
+			}
 			if (!_.isEmpty(vm.appIDLst)){
                 vm.$ajax(API.applicationForSendByAppID, vm.appIDLst).done((result) => {
 					vm.mailContent(result.mailTemplate);
@@ -216,7 +219,7 @@ module nts.uk.at.view.kdl030.a.viewmodel {
                 }
             }).fail(function(res: any) {
                 nts.uk.ui.block.clear();
-                if (res.messageId == 'Msg_1309') {//エラーメッセージを表示する（Msg_1309）
+                if (res.messageId == 'Msg_1309' || res.messageId == 'Msg_14') {//エラーメッセージを表示する（Msg_1309）
                     dialog.alertError({ messageId: res.messageId });
                 } else {
                     //Msg1057
