@@ -29,7 +29,7 @@ module nts.uk.at.view.kdp.share {
 		</div>
 		<style>
 		#stamp-desc div {
-			font-size: 17px;
+			font-size: 25px;
 		}
 	</style>
 		<!-- /ko -->

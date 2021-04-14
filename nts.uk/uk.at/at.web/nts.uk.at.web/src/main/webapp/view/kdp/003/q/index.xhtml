@@ -13,8 +13,8 @@
 
 			<script type='text/javascript'>
 				var dialogSize = {
-					width : 548,
-					height : 390
+					width : 432,
+					height : 380
 				};
 			</script>
 
@@ -38,10 +38,6 @@
 							value: dateValue, 
 							name: '#[KDP003_60]',
 							maxRange: 'none'}"></div>
-					<!-- Q2_3 更新日 -->
-					<!-- <div id="update-date"> -->
-						<label id="lbl-update-date" data-bind="text: updateDate"></label>
-					<!-- </div> -->
 				</div>
 				<!-- Q3メッセージ -->
 				<div id="txt-area-notice">
@@ -53,9 +49,13 @@
 	                            required: true,
 								option: {
 				                   resizeable: false,
-	                               width: '494px',
+	                               width: '391px',
 	                               textalign: 'left'}
 				                }"></textarea>
+				</div>
+				<!-- Q2_3 更新日 -->
+				<div id="update-date">
+					<label id="lbl-update-date" data-bind="text: updateDate"></label>
 				</div>
 				<!-- Q4_1 対象職場(タイトル) -->
 				<label id="lbl-wkp" data-bind="text: $i18n('KDP003_62')"></label>

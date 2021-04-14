@@ -13,15 +13,11 @@
 }
 
 #txt-area-notice {
-    padding: 15px;
-}
-
-#update-date {
-	padding-top: 5px;
+    padding: 10px 10px 0 10px;
 }
 
 #lbl-update-date {
-	margin-left: 20px;
+	padding-left: 264px;
 }
 
 #master-wrapper div#contents-area{
@@ -33,7 +29,7 @@
 }
 
 .btn-footer{
-	margin: 10px 30px;
+	margin: 10px 15px;
 	padding: 0 20px;
 }
 
