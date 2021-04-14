@@ -506,7 +506,7 @@ module nts.uk.at.view.kal004.tab2.viewModel {
             if (extractionScheYear.endSpecify == share.SpecifyEndMonth.SPECIFY_PERIOD_FROM_START_MONTH) {
                 end = _.find(self.ExtractPeriodFromStrMonth, ['value', extractionScheYear.endFromStrMonth]).name;
             } else {
-                end = _.find(self.standardMonth, ['value', extractionScheYear.endMonth]).name;
+                end = _.find(self.ScheBaseMonth, ['value', extractionScheYear.endMonth]).name;
             }
             this.extractionPeriod = str + ' ' + getText('KAL004_30') + ' ' + end;
         }
