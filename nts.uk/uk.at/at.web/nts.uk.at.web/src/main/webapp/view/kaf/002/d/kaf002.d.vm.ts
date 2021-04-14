@@ -10,6 +10,8 @@ module nts.uk.at.view.kaf002_ref.d.viewmodel {
 
 
 
+
+
 <div id="kaf002-d">
 	<div id="contents-area"
 		style="background-color: inherit; height: calc(100vh - 165px);">
@@ -67,7 +69,7 @@ module nts.uk.at.view.kaf002_ref.d.viewmodel {
 						<div class="inlineBlockFirst">
 							<!-- B6_1 -->
 							<div class="labelFirst"
-								data-bind="ntsFormLabel: {required: true}, html: $i18n('KAF002_79')"></div>
+								data-bind="ntsFormLabel: {required: true, text: $i18n('KAF002_79')} "></div>
 							<div
 								data-bind="ntsComboBox: {
 						options: dataSource,
@@ -137,6 +139,8 @@ module nts.uk.at.view.kaf002_ref.d.viewmodel {
 		</div>
 	</div>
 </div>
+
+
 
 
 
