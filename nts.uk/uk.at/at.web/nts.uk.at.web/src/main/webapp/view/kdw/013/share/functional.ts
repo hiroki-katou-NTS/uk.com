@@ -24,7 +24,7 @@ module nts.uk.ui.at.kdp013.share {
     };
 
     // validate (model) value range
-    export const validateNumb = (value: number) => {
+    export const validateNumb = (value: number | null) => {
         return _.isNumber(value) && !_.isNaN(value) && 0 <= value && value <= 1440;
     };
 
@@ -37,6 +37,11 @@ module nts.uk.ui.at.kdp013.share {
     };
 
     // convert value from view to model
+    // null: null value
+    // -3: invalid charactor
+    // -2: minute invalid
+    // -1: negative value
+    // 1441: over 24 hours value
     export const string2Number = (value: string): number | null => {
         if (value === '') {
             return null;
@@ -44,9 +49,14 @@ module nts.uk.ui.at.kdp013.share {
 
         const numb = Number(value.replace(/:/, ''));
 
-        // input is not a number
-        if (_.isNaN(numb) || numb < 0) {
-            return null;
+        // input other charactor
+        if (isNaN(numb)) {
+            return -3;
+        }
+
+        // input lower 0
+        if (numb < 0) {
+            return -1;
         }
 
         const hour = Math.floor(numb / 100);
@@ -54,17 +64,17 @@ module nts.uk.ui.at.kdp013.share {
 
         // hour is not valid
         if (hour > 24) {
-            return null;
-        }
-
-        // minute is not valid
-        if (minute > 59) {
-            return null;
+            return 1441;
         }
 
         // case is not equal 24:00
         if (hour === 24 && minute !== 0) {
-            return null;
+            return 1441;
+        }
+
+        // minute is not valid
+        if (minute > 59) {
+            return -2;
         }
 
         return hour * 60 + minute;

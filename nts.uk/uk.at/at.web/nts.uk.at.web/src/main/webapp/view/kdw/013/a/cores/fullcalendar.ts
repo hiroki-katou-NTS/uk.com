@@ -2459,8 +2459,6 @@ module nts.uk.ui.components.fullcalendar {
                         const pst = ko.unwrap(position);
                         const pot = ko.unwrap(mousePointer);
 
-                        console.log(pot);
-
                         if (!pst) {
                             $el.removeAttribute('style');
                             $el.classList.remove('show');
@@ -2491,7 +2489,7 @@ module nts.uk.ui.components.fullcalendar {
                                     if (screenX + width < innerWidth - 20) {
                                         $el.style.left = `${screenX - 55}px`;
                                     } else {
-                                        $el.style.left = `${screenX - width - 70}px`;
+                                        $el.style.left = `${screenX - width - 75}px`;
                                     }
                                 } else {
                                     $el.style.left = `${(left || 0) - width - 23}px`;

@@ -141,8 +141,8 @@ module nts.uk.ui.at.kdp013.share {
 
             const errorId = ko.observable('');
             const errorParams = ko.observableArray(['']);
-            const startTime: KnockoutObservable<number | null> = ko.observable(null);
-            const endTime: KnockoutObservable<number | null> = ko.observable(null);
+            const startTime: KnockoutObservable<number | null> = ko.observable(null).extend({ rateLimit: 50 });
+            const endTime: KnockoutObservable<number | null> = ko.observable(null).extend({ rateLimit: 50 });
             const range: KnockoutComputed<string> = ko.computed({
                 read: () => {
                     const start = ko.unwrap(startTime);
@@ -240,24 +240,54 @@ module nts.uk.ui.at.kdp013.share {
             $end.classList.add('nts-input');
 
             const validateRange = (start: number | null, end: number | null) => {
+                const $value = ko.unwrap(value);
                 const $excludes = ko.unwrap(excludeTimes);
-                console.log($excludes);
-                // validate required
-                if (!validateNumb(start) || !validateNumb(end)) {
-                    errorParams(['TIME_RANGE']);
 
+                // validate start & end required
+                if (start === null && end === null) {
+                    errorId('Msg_858');
+
+                    return;
+                }
+
+                // validate start required
+                if (start === null) {
                     errorId('MsgB_1');
+                    errorParams(['KDW013_14']);
+
+                    return;
+                }
+
+                // validate true value
+                if ([-3, -2, -1, 1441].indexOf(start) > -1) {
+                    errorId('MsgB_16');
+                    errorParams(['KDW013_14', number2String(0), number2String(1440)]);
+
+                    return;
+                }
+
+                // validate end required
+                if (end === null) {
+                    errorId('MsgB_1');
+                    errorParams(['KDW013_31']);
+
+                    return;
+                }
+
+                // validate true value
+                if ([-3, -2, -1, 1441].indexOf(end) > -1) {
+                    errorId('MsgB_16');
+                    errorParams(['KDW013_31', number2String(0), number2String(1440)]);
 
                     return;
                 }
 
                 // validate outofrange at here
-
-                // validate time range small than slotDuration
+                // Msg_2164
 
                 // validate revert value
-                if (start > end) {
-                    errorId('Msg_1811');
+                if (start >= end) {
+                    errorId('Msg_1400');
 
                     return;
                 }
@@ -266,7 +296,9 @@ module nts.uk.ui.at.kdp013.share {
                 errorId('');
 
                 // binding value to model
-                value({ start, end });
+                if ($value.start !== start || $value.end !== end) {
+                    value({ start, end });
+                }
             };
 
             startTime.subscribe((s: number | null) => {
@@ -280,6 +312,16 @@ module nts.uk.ui.at.kdp013.share {
 
                 validateRange(s, e);
             });
+
+            $($start)
+                .on('blur', () => {
+                    startTime.valueHasMutated();
+                });
+
+            $($end)
+                .on('blur', () => {
+                    endTime.valueHasMutated();
+                });
         }
     }
 }

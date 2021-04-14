@@ -59,18 +59,22 @@ module nts.uk.ui.at.kdp013.c {
         margin-left: 7px;
         margin-right: 7px;
     }
+    .edit-event .nts-description .message,
     .edit-event .time-range-control .message {
         display: none;
         color: #ff6666;
         font-size: 12px;
         padding-top: 3px;
     }
+    .edit-event .nts-description.error .message,
     .edit-event .time-range-control.error .message {
         display: block;
     }
+    .edit-event .nts-description.error textarea.nts-input,
     .edit-event .time-range-control.error input.nts-input {
         border: 1px solid #ff6666 !important;
     }
+    .edit-event .nts-description:not(.error) textarea.nts-input,
     .edit-event .time-range-control:not(.error) input.nts-input {
         border: 1px solid #999 !important;
     }`;
@@ -129,7 +133,7 @@ module nts.uk.ui.at.kdp013.c {
                             <div data-bind="
                                     kdw-timerange: $component.model.timeRange,
                                     update: $component.params.update,
-                                    hasError: $component.hasError,
+                                    hasError: $component.errors.time,
                                     exclude-times: $component.params.excludeTimes
                                 "></div>
                         </td>
@@ -163,7 +167,12 @@ module nts.uk.ui.at.kdp013.c {
                     <tr class="note">
                         <td data-bind="i18n: 'KDW013_29'"></td>
                         <td>
-                            <textarea data-bind="ntsMultilineEditor: { value: $component.model.descriptions }" />
+                            <div data-bind="
+                                    description: $component.model.descriptions,
+                                    name: 'KDW013_29', 
+                                    constraint: '',
+                                    hasError: $component.errors.description
+                                "></div>
                         </td>
                     </tr>
                     <tr class="functional">
@@ -177,7 +186,15 @@ module nts.uk.ui.at.kdp013.c {
         `
     })
     export class ViewModel extends ko.ViewModel {
-        hasError: KnockoutObservable<boolean> = ko.observable(false);
+        hasError!: KnockoutComputed<boolean>;
+
+        errors: {
+            time: KnockoutObservable<boolean>;
+            description: KnockoutObservable<boolean>;
+        } = {
+                time: ko.observable(false),
+                description: ko.observable(false)
+            };
 
         model: EventModel = defaultModelValue();
 
@@ -189,6 +206,20 @@ module nts.uk.ui.at.kdp013.c {
             const items = _.range(0, 10).map((v: number) => ({ selected: false, id: randomId(), name: `Option ${v}`, code: `0000${v}` }));
 
             this.items(items);
+
+            this.hasError = ko.computed({
+                read: () => {
+                    const errors = ko.toJS(this.errors);
+
+                    return !!errors.time || !!errors.description;
+                },
+                write: (value: boolean) => {
+                    this.errors.time(value);
+                    this.errors.description(value);
+                }
+            });
+
+            this.model.timeRange.subscribe(({ start, end }) => { console.log(start, end) });
         }
 
         mounted() {
@@ -200,22 +231,25 @@ module nts.uk.ui.at.kdp013.c {
                 position: ko.unwrap(position)
             };
             const subscribe = (event: FullCalendar.EventApi | null) => {
-                if (event) {
-                    const { extendedProps, start, end } = event;
-                    const { descriptions } = extendedProps;
-                    const startTime = getTimeOfDate(start);
-                    const endTime = getTimeOfDate(end);
+                $.Deferred()
+                    .resolve(true)
+                    .then(() => {
+                        if (event) {
+                            const { extendedProps, start, end } = event;
+                            const { descriptions } = extendedProps;
+                            const startTime = getTimeOfDate(start);
+                            const endTime = getTimeOfDate(end);
 
-                    model.descriptions(descriptions);
+                            model.descriptions(descriptions);
 
-                    model.timeRange({ start: startTime, end: endTime });
-                } else {
-                    model.descriptions('');
-                    model.timeRange({ start: null, end: null });
-                }
-
-                // clear error
-                hasError(false);
+                            model.timeRange({ start: startTime, end: endTime });
+                        } else {
+                            model.descriptions('');
+                            model.timeRange({ start: null, end: null });
+                        }
+                    })
+                    // clear error
+                    .then(() => hasError(false));
             };
 
             data.subscribe(subscribe);
