@@ -32,12 +32,11 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 
 
 
-
 <div id="kaf010-b">
 	<div id="contents-area" style="background-color: inherit; height: calc(100vh - 165px);">
 		<div class="two-panel" style="height: 100%;">
             <div class="left-panel" style="width: calc(100% - 410px); height: inherit; overflow: auto">
-                <div style="height: inherit; background-color: #fff; padding: 0 10px;">
+                <div style="height: auto; min-height: 700px; background-color: #fff; padding: 0 10px;">
                     <div class="table" style="border-bottom: 2px solid #B1B1B1; padding-bottom: 30px; margin-bottom: 30px; width: 100%;">
                         <div class="cell" style="vertical-align: middle;">
                             <div data-bind="component: { name: 'kaf000-b-component4',
@@ -103,11 +102,16 @@ module nts.uk.at.view.kaf010.a.viewmodel {
                                                     appDispInfoStartupOutput: appDispInfoStartupOutput
                                                 } }"></div>
                                                 
-                 <div data-bind="component: { name: 'kaf010-share-footer'}"></div>                               
+                 <div data-bind="component: { name: 'kaf010-share-footer'}"></div>    
+                 
+                 <div style="padding-top: 30px;">
+								
+				 </div>
+                                            
                 </div>
             </div>
-            <div class="right-panel" style="width: 410px; height: inherit;">
-                <div style="height: inherit; background-color: #fff; padding: 10px;">
+            <div class="right-panel" style="width: 410px; height: inherit; overflow-y: auto">
+                <div style="height: auto; min-height: 700px; background-color: #fff; padding: 10px;">
                     <div data-bind="component: { name: 'kaf000-b-component1', 
                             params: {
                                 appType: appType,
@@ -273,6 +277,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 							vm.getBreakTimes();
 						}
 					});
+					vm.appDispInfoStartupOutput(vm.appDispInfoStartupOutput());
 					
 					if (vm.application().prePostAtr() == 0) {
 						$('.table-time2 .nts-fixed-header-wrapper').width(224);

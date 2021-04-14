@@ -158,6 +158,7 @@ module nts.uk.at.view.kaf012.b.viewmodel {
                     vm.$nextTick(() => {
                         $("#updateKAF000").focus();
                     });
+					vm.appDispInfoStartupOutput(vm.appDispInfoStartupOutput());
                 }
             }).fail(err => {
                 vm.$dialog.error(err).then(() => {

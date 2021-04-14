@@ -112,6 +112,7 @@ module nts.uk.at.view.kaf020.b {
                     }
                 });
                 vm.dataFetch({applicationContents: ko.observableArray(contents), name: params.name, appDispInfoStartupOutput: ko.observable(vm.appDispInfoStartupOutput())});
+				vm.appDispInfoStartupOutput(vm.appDispInfoStartupOutput());
             }).then(() => {
                 vm.focusDate();
             }).always(() => {

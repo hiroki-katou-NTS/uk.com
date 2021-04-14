@@ -58,3 +58,6 @@ input {
 #kaf002TabPanel td {
 	text-align: center !important;
 }
+#kaf002TabPanel > div > label > span {
+	font-size: 110%;
+}

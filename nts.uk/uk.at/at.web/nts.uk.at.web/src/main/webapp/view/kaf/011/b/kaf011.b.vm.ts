@@ -74,6 +74,8 @@ module nts.uk.at.view.kaf011.b.viewmodel {
 					}
 					vm.displayInforWhenStarting(new DisplayInforWhenStarting(data));
 					vm.comment.update(data.substituteHdWorkAppSet);
+					
+					vm.appDispInfoStartupOutput(vm.appDispInfoStartupOutput());
 				}).fail((fail: any) => {
 					dialog.error({ messageId: fail.messageId, messageParams: fail.parameterIds });
 				}).always(() => {

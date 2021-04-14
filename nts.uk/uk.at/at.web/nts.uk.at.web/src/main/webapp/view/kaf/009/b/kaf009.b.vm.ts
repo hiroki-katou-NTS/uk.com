@@ -9,7 +9,7 @@ module nts.uk.at.view.kaf009_ref.b.viewmodel {
 	<div id="contents-area" style="background-color: inherit; height: calc(100vh - 165px);">
 		<div class="two-panel" style="height: 100%;">
             <div class="left-panel" style="width: calc(100% - 410px); height: inherit; overflow: auto">
-                <div style="height: inherit; background-color: #fff; padding: 0 10px;">
+                <div style="height: auto; min-height: 700px; background-color: #fff; padding: 0 10px;">
                     <div class="table" style="border-bottom: 2px solid #B1B1B1; padding-bottom: 30px; margin-bottom: 30px; width: 100%;">
                         <div class="cell" style="vertical-align: middle;">
                             <div data-bind="component: { name: 'kaf000-b-component4',
@@ -51,9 +51,14 @@ module nts.uk.at.view.kaf009_ref.b.viewmodel {
                                                     application: application,
                                                     appDispInfoStartupOutput: appDispInfoStartupOutput
                                                 } }"></div>
+                                                
+                                                
+                    <div style="padding-top: 30px;">
+								
+				 	</div>                            
                 </div>
             </div>
-            <div class="right-panel" style="width: 410px; height: inherit;">
+            <div class="right-panel" style="width: 410px; height: inherit; overflow-y: auto">
                 <div style="height: inherit; background-color: #fff; padding: 10px;">
                     <div data-bind="component: { name: 'kaf000-b-component1', 
                             params: {
@@ -71,6 +76,8 @@ module nts.uk.at.view.kaf009_ref.b.viewmodel {
         </div>
 	</div>
 </div>
+
+
 
 
     `
@@ -165,6 +172,7 @@ module nts.uk.at.view.kaf009_ref.b.viewmodel {
                         goBackApplication: ko.observable(res.goBackApplication)
                     });
                     vm.printContentOfEachAppDto().opInforGoBackCommonDirectOutput = ko.toJS(vm.dataFetch);
+					vm.appDispInfoStartupOutput(vm.appDispInfoStartupOutput());
                 }
             }).fail(err => {
                 vm.handleError(err);
