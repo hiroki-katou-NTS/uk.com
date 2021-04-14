@@ -166,6 +166,7 @@ module nts.uk.at.view.kaf009_ref.b.viewmodel {
                         goBackApplication: ko.observable(res.goBackApplication)
                     });
                     vm.printContentOfEachAppDto().opInforGoBackCommonDirectOutput = ko.toJS(vm.dataFetch);
+					vm.appDispInfoStartupOutput(vm.appDispInfoStartupOutput());
                 }
             }).fail(err => {
                 vm.handleError(err);
