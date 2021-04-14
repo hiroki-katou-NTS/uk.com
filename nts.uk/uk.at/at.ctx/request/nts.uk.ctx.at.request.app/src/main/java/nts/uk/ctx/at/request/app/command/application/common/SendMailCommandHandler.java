@@ -37,7 +37,7 @@ public class SendMailCommandHandler extends CommandHandlerWithResult<SendMailCom
 				.flatMap(Collection::stream).collect(Collectors.toList());
 		if(CollectionUtil.isEmpty(approverInfoLst)) {
 			// 申請者にメールを送信するかをチェックする
-			if(sendMailParam.getOpSendMailApplicant().orElse(false)) {
+			if(!sendMailParam.getOpSendMailApplicant().orElse(false)) {
 				throw new BusinessException("Msg_14");
 			}
 		}
