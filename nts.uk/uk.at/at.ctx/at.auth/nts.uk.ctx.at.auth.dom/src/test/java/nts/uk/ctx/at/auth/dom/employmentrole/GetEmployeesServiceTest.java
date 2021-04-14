@@ -51,7 +51,7 @@ public class GetEmployeesServiceTest {
 			{
 				require.getEmploymentRoleById(companyId, roleID);
 				
-				require.getAllEmployees(companyId, baseDate);
+				require.getemployeesAllWorkplaces(companyId, baseDate);
 				result = map;
 			}
 		};
@@ -76,7 +76,7 @@ public class GetEmployeesServiceTest {
 				require.getEmploymentRoleById(companyId, roleID);
 				result = Optional.of(employmentRole);
 
-				require.getAllEmployees(companyId, baseDate);
+				require.getemployeesAllWorkplaces(companyId, baseDate);
 				result = map;
 			}
 		};
