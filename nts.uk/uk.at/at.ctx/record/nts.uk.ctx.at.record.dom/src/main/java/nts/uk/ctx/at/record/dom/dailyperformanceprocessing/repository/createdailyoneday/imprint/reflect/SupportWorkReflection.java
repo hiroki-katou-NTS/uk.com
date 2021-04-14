@@ -947,7 +947,7 @@ public class SupportWorkReflection {
 			Optional<OuenWorkTimeSheetOfDailyAttendance> ouenWorkTimeAfter = Optional.empty();
 				if(time1 != null) {
 					ouenWorkTimeAfter = lstOuenWorkTime.stream().filter(x ->{
-						val time = x.getTimeSheet().getStart().flatMap(c -> c.getTimeWithDay()).map(c -> c.v()).orElse(null);
+						val time = x.getTimeSheet().getEnd().flatMap(c -> c.getTimeWithDay()).map(c -> c.v()).orElse(null);
 						if(time == null)
 						return false;
 						return time1 - time2 < time &&  time< time1 + time2;}).findFirst();
