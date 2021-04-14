@@ -1,17 +1,6 @@
 package nts.uk.ctx.at.request.app.find.application.common.dto;
 
 import lombok.AllArgsConstructor;
-import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.at.request.dom.application.UseAtr;
-import nts.uk.ctx.at.request.dom.setting.company.request.appreflect.ApplyTimeSchedulePriority;
-import nts.uk.ctx.at.request.dom.setting.company.request.appreflect.ClassifyScheAchieveAtr;
-import nts.uk.ctx.at.request.dom.setting.request.application.common.AppCanAtr;
-import nts.uk.ctx.at.request.dom.setting.request.application.common.BaseDateFlg;
-import nts.uk.ctx.at.request.dom.setting.request.application.common.NumDaysOfWeek;
-import nts.uk.ctx.at.request.dom.setting.request.application.common.PriorityFLg;
-import nts.uk.ctx.at.request.dom.setting.request.application.common.ReflectionFlg;
-import nts.uk.ctx.at.request.dom.setting.request.application.common.RequiredFlg;
-import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.AppDisplayAtr;
 
 /**
  * 
