@@ -75,7 +75,6 @@ module nts.uk.at.view.kaf007_ref.c.viewmodel {
                         vm.fetchData(res);
                         vm.printContentOfEachAppDto().opPrintContentOfWorkChange = res;
                     }
-					vm.appDispInfoStartupOutput(vm.appDispInfoStartupOutput());
                 }).fail(err => {
                     vm.handleError(err);
                 }).always(() => vm.$blockui('hide'));

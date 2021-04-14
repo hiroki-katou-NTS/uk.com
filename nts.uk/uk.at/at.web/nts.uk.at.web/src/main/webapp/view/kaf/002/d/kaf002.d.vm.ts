@@ -208,9 +208,6 @@ module nts.uk.at.view.kaf002_ref.d.viewmodel {
                    }
                    self.bindDataStart(self.data);
                    self.printContentOfEachAppDto().opAppStampOutput = res;
-
-
-				   self.appDispInfoStartupOutput(self.appDispInfoStartupOutput());
                    
                }).fail(res => {
                    console.log('fail');

@@ -134,8 +134,6 @@ module nts.uk.at.view.kaf008_ref.b.viewmodel {
                     vm.dataFetch.valueHasMutated();
 
                     vm.printContent.opBusinessTripInfoOutput = ko.toJS(vm.dataFetch().businessTripContent);
-
-					vm.appDispInfoStartupOutput(vm.appDispInfoStartupOutput());
                 }
             }).fail(err => {
                 vm.$dialog.error({messageId: err.msgId});

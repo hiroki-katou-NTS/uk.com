@@ -277,7 +277,6 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 							vm.getBreakTimes();
 						}
 					});
-					vm.appDispInfoStartupOutput(vm.appDispInfoStartupOutput());
 					
 					if (vm.application().prePostAtr() == 0) {
 						$('.table-time2 .nts-fixed-header-wrapper').width(224);

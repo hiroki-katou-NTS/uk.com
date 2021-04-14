@@ -290,8 +290,6 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 					} else {
 						vm.$dialog.error({ messageId: 'Msg_1568'});	
 					}
-					
-					vm.appDispInfoStartupOutput(vm.appDispInfoStartupOutput());
                 }
             }).fail(err => {
 				// xử lý lỗi nghiệp vụ riêng
