@@ -682,8 +682,6 @@ public class RecordDomRequireService {
 	private CheckCareService checkChildCareService;
 	@Inject
 	private WorkingConditionItemService workingConditionItemService;
-	@Inject
-	private WorkTimeSettingService workTimeSettingService;
 
 	public static interface Require extends RemainNumberTempRequireService.Require, GetAnnAndRsvRemNumWithinPeriod.RequireM2, CalcAnnLeaAttendanceRate.RequireM3,
 		GetClosurePeriod.RequireM1, GetClosureStartForEmployee.RequireM1, CalcNextAnnLeaGrantInfo.RequireM1, GetNextAnnualLeaveGrantProcKdm002.RequireM1,
@@ -726,7 +724,7 @@ public class RecordDomRequireService {
 				comRegulaMonthActCalSetRepo, shaDeforLaborMonthActCalSetRepo, shaRegulaMonthActCalSetRepo, wkpDeforLaborMonthActCalSetRepo, wkpRegulaMonthActCalSetRepo, monthlyWorkTimeSetRepo,
 				verticalTotalMethodOfMonthlyRepo, stampCardRepo, bentoReservationRepo, bentoMenuRepo, integrationOfDailyGetter, weekRuleManagementRepo, sharedAffWorkPlaceHisAdapter, getProcessingDate,
 				roleOfOpenPeriodRepo, elapseYearRepository, syCompanyRecordAdapter, snapshotAdapter, superHD60HConMedRepo, monthlyAggregationRemainingNumber, interrimCommonRepo,
-				payoutSubofHDManaRepo, leaveComDayOffManaRepo , interimRemainRepository, checkChildCareService, workingConditionItemService,workTimeSettingService);
+				payoutSubofHDManaRepo, leaveComDayOffManaRepo , interimRemainRepository, checkChildCareService, workingConditionItemService);
 	}
 
 	public  class RequireImpl extends nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.require.RequireImp implements Require {
@@ -780,14 +778,14 @@ public class RecordDomRequireService {
 
 				GetProcessingDate getProcessingDate, RoleOfOpenPeriodRepository roleOfOpenPeriodRepo, ElapseYearRepository elapseYearRepo,SyCompanyRecordAdapter syCompanyRecordAdapter, DailySnapshotWorkAdapter snapshotAdapter,
 				SuperHD60HConMedRepository superHD60HConMedRepo, MonthlyAggregationRemainingNumber monthlyAggregationRemainingNumber, InterimCommonRepository interrimCommonRepo, PayoutSubofHDManaRepository payoutSubofHDManaRepo,
-				LeaveComDayOffManaRepository leaveComDayOffManaRepo,InterimRemainRepository interimRemainRepository,CheckCareService checkChildCareService,WorkingConditionItemService workingConditionItemService,WorkTimeSettingService workTimeSettingService) {
+				LeaveComDayOffManaRepository leaveComDayOffManaRepo,InterimRemainRepository interimRemainRepository,CheckCareService checkChildCareService,WorkingConditionItemService workingConditionItemService) {
 
 			super(comSubstVacationRepo, compensLeaveComSetRepo, specialLeaveGrantRepo2, empEmployeeAdapter, grantDateTblRepo, annLeaEmpBasicInfoRepo, specialHolidayRepo2, interimSpecialHolidayMngRepo2, specialLeaveBasicInfoRepo,
 					interimRecAbasMngRepo2, empSubstVacationRepo, interimRemainRepo2, substitutionOfHDManaDataRepo2, payoutManagementDataRepo2, interimBreakDayOffMngRepo2, comDayOffManaDataRepo2, companyAdapter2, shareEmploymentAdapter,
 					leaveManaDataRepo2, workingConditionItemRepo, workingConditionRepo, workTimeSettingRepo, fixedWorkSettingRepo, flowWorkSettingRepo, diffTimeWorkSettingRepo, flexWorkSettingRepo, predetemineTimeSettingRepo2, closureRepo,
 					closureEmploymentRepo, workTypeRepo, remainCreateInforByApplicationData2, compensLeaveEmSetRepo, employmentSettingRepo, retentionYearlySettingRepo, annualPaidLeaveSettingRepo, outsideOTSettingRepo, workdayoffFrameRepo,
 					yearHolidayRepo, usageUnitSettingRepo, regularLaborTimeComRepo, deforLaborTimeComRepo, regularLaborTimeWkpRepo, deforLaborTimeWkpRepo, regularLaborTimeEmpRepo, deforLaborTimeEmpRepo, regularLaborTimeShaRepo,
-					deforLaborTimeShaRepo, sharedAffWorkPlaceHisAdapter, lengthServiceRepository, grantYearHolidayRepo, payoutSubofHDManaRepo, leaveComDayOffManaRepo,checkChildCareService,workingConditionItemService,workTimeSettingService);
+					deforLaborTimeShaRepo, sharedAffWorkPlaceHisAdapter, lengthServiceRepository, grantYearHolidayRepo, payoutSubofHDManaRepo, leaveComDayOffManaRepo,checkChildCareService,workingConditionItemService);
 
 			this.tmpResereLeaveMngRepo = tmpResereLeaveMngRepo;
 			this.sysEmploymentHisAdapter = sysEmploymentHisAdapter;

@@ -40,12 +40,6 @@ public class KshdtInterimHDSTK extends ContractUkJpaEntity {
 	public int createAtr;
 
 	/**
-	 * 残数分類
-	 */
-	@Column(name = "REMAIN_ATR")
-	public int remainAtr;
-
-	/**
 	 * 使用日数
 	 */
 	//@Column(name = "USED_DAYS")

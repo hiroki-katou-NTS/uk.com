@@ -111,7 +111,6 @@ import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepositor
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingService;
-import nts.uk.ctx.at.shared.dom.worktime.worktimeset.internal.PredetermineTimeSetForCalc;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeSet;
@@ -247,9 +246,6 @@ public class RequireImp implements RemainNumberTempRequireService.Require {
 	private CheckCareService checkCareService;
 	
 	private WorkingConditionItemService workingConditionItemService;
-	
-	private WorkTimeSettingService workTimeSettingService;
-
 
 	public RequireImp(ComSubstVacationRepository comSubstVacationRepo,
 			CompensLeaveComSetRepository compensLeaveComSetRepo, SpecialLeaveGrantRepository specialLeaveGrantRepo,
@@ -283,7 +279,7 @@ public class RequireImp implements RemainNumberTempRequireService.Require {
 			SharedAffWorkPlaceHisAdapter sharedAffWorkPlaceHisAdapter, LengthServiceRepository lengthServiceRepo,
 			GrantYearHolidayRepository grantYearHolidayRepo, PayoutSubofHDManaRepository payoutSubofHDManaRepo,
 			LeaveComDayOffManaRepository leaveComDayOffManaRepo, CheckCareService checkChildCareService,
-			WorkingConditionItemService workingConditionItemService, WorkTimeSettingService workTimeSettingService
+			WorkingConditionItemService workingConditionItemService
 			) {
 		this.comSubstVacationRepo = comSubstVacationRepo;
 		this.compensLeaveComSetRepo = compensLeaveComSetRepo;
@@ -339,7 +335,6 @@ public class RequireImp implements RemainNumberTempRequireService.Require {
 		this.payoutSubofHDManaRepo = payoutSubofHDManaRepo;
 		this.checkCareService = checkChildCareService;
 		this.workingConditionItemService = workingConditionItemService;
-		this.workTimeSettingService = workTimeSettingService;
 	}
 
 	@Override
@@ -757,11 +752,5 @@ public class RequireImp implements RemainNumberTempRequireService.Require {
 	public Optional<SingleDaySchedule> getHolidayWorkSchedule(String companyId, String employeeId, GeneralDate baseDate,
 			String workTypeCode) {
 		return this.workingConditionItemService.getHolidayWorkSchedule(companyId, employeeId, baseDate, workTypeCode);
-	}
-
-	@Override
-	public PredetermineTimeSetForCalc getPredeterminedTimezone(String companyId, String workTimeCd, String workTypeCd,
-			Integer workNo) {
-		return this.workTimeSettingService.getPredeterminedTimezone(companyId, workTimeCd, workTypeCd, workNo);
 	}
 }

@@ -38,7 +38,7 @@ public class JpaTmpResereLeaveMngRepository extends JpaRepository implements Tmp
 				x.getPk().sid,
 				x.getPk().ymd ,
 				EnumAdaptor.valueOf(x.createAtr, CreateAtr.class),
-				EnumAdaptor.valueOf(x.remainAtr, RemainType.class),
+				RemainType.FUNDINGANNUAL,
 				new UseDay(x.usedDays));
 	}
 
@@ -60,7 +60,6 @@ public class JpaTmpResereLeaveMngRepository extends JpaRepository implements Tmp
 		if(optKrcmtInterimReserveMng.isPresent()) {
 			KshdtInterimHDSTK entity = optKrcmtInterimReserveMng.get();
 			entity.createAtr = dataMng.getCreatorAtr().value;
-			entity.remainAtr = dataMng.getRemainType().value;
 			entity.remainMngId = dataMng.getRemainManaID();
 			entity.usedDays = dataMng.getUseDays().v();
 			this.commandProxy().update(entity);
@@ -68,7 +67,6 @@ public class JpaTmpResereLeaveMngRepository extends JpaRepository implements Tmp
 			KshdtInterimHDSTK entity = new KshdtInterimHDSTK();
 			entity.setPk(pk);
 			entity.createAtr = dataMng.getCreatorAtr().value;
-			entity.remainAtr = dataMng.getRemainType().value;
 			entity.remainMngId = dataMng.getRemainManaID();
 			entity.usedDays = dataMng.getUseDays().v();
 			this.getEntityManager().persist(entity);

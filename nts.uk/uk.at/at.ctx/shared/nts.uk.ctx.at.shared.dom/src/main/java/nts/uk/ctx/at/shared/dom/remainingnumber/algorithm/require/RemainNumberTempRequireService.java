@@ -212,8 +212,8 @@ public class RemainNumberTempRequireService {
 				regularLaborTimeWkpRepo, deforLaborTimeWkpRepo, regularLaborTimeEmpRepo,
 				deforLaborTimeEmpRepo, regularLaborTimeShaRepo, deforLaborTimeShaRepo,
 				sharedAffWorkPlaceHisAdapter, lengthServiceRepo, grantYearHolidayRepo,
-				payoutSubofHDManaRepo, leaveComDayOffManaRepo, checkChildCareService, workingConditionItemService,
-				workTimeSettingService);
+				payoutSubofHDManaRepo, leaveComDayOffManaRepo, checkChildCareService, workingConditionItemService
+				);
 	}
 
 
