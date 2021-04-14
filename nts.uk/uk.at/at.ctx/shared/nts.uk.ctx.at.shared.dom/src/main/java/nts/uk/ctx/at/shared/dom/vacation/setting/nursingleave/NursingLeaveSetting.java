@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave;
 
+import java.util.List;
 import java.util.Optional;
 
 import lombok.Getter;
@@ -34,7 +35,7 @@ public class NursingLeaveSetting extends AggregateRoot {
 	private Integer startMonthDay;
 
 	/** 上限人数設定 */
-	private MaxPersonSetting maxPersonSetting;
+	private List<MaxPersonSetting> maxPersonSetting;
 
 	/** 特別休暇枠NO */
 	private Optional<Integer> specialHolidayFrame;
@@ -87,10 +88,7 @@ public class NursingLeaveSetting extends AggregateRoot {
 		memento.setAbsenceFrameNo(this.workAbsence);
 		memento.setTimeCareNursingSet(this.timeCareNursingSetting);
 		memento.setNumPer1(1);
-		memento.setNumPer2(2);
-	
-		
-		
+		memento.setNumPer2(2);	
 	}
 //	/**
 //	 * 家族情報から対象人数を履歴で求める
