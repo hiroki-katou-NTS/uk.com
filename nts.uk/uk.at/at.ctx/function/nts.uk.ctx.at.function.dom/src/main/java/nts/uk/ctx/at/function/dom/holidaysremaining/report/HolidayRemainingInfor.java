@@ -23,6 +23,8 @@ import nts.uk.ctx.at.function.dom.adapter.reserveleave.ReservedYearHolidayImport
 import nts.uk.ctx.at.function.dom.adapter.reserveleave.RsvLeaUsedCurrentMonImported;
 import nts.uk.ctx.at.function.dom.adapter.vacation.CurrentHolidayImported;
 import nts.uk.ctx.at.function.dom.adapter.vacation.StatusHolidayImported;
+import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.param.CompenLeaveAggrResult;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.SubstituteHolidayAggrResult;
 
 @Setter
 @Getter
@@ -65,7 +67,10 @@ public class HolidayRemainingInfor {
 	//
 	private CurrentHolidayImported currentHolidayLeft;
 	
-	private CurrentHolidayRemainImported currentHolidayRemainLeft ; 
+	private CurrentHolidayRemainImported currentHolidayRemainLeft ;
+	private SubstituteHolidayAggrResult substituteHolidayAggrResult;
+	//RequestList204
+	private CompenLeaveAggrResult compenLeaveAggrResult;
 	public HolidayRemainingInfor(Optional<GeneralDate> grantDate, List<AnnLeaGrantNumberImported> listAnnLeaGrantNumber,
 			AnnLeaveOfThisMonthImported annLeaveOfThisMonth, List<AnnualLeaveUsageImported> listAnnualLeaveUsage,
 			List<AnnLeaveUsageStatusOfThisMonthImported> listAnnLeaveUsageStatusOfThisMonth,
@@ -79,7 +84,10 @@ public class HolidayRemainingInfor {
 			ChildNursingLeaveCurrentSituationImported childNursingLeave,
 			NursingLeaveCurrentSituationImported nursingLeave,
 			CurrentHolidayImported currentHolidayLeft,
-			CurrentHolidayRemainImported currentHolidayRemainLeft
+			CurrentHolidayRemainImported currentHolidayRemainLeft,
+			SubstituteHolidayAggrResult substituteHolidayAggrResult,
+			CompenLeaveAggrResult compenLeaveAggrResult
+
 			) {
 		super();
 		this.grantDate = grantDate;
@@ -101,6 +109,8 @@ public class HolidayRemainingInfor {
 		this.nursingLeave = nursingLeave;
 		this.currentHolidayLeft = currentHolidayLeft;
 		this.currentHolidayRemainLeft = currentHolidayRemainLeft;
+		this. substituteHolidayAggrResult =  substituteHolidayAggrResult;
+		this.compenLeaveAggrResult = compenLeaveAggrResult;
 	}
 	
 	

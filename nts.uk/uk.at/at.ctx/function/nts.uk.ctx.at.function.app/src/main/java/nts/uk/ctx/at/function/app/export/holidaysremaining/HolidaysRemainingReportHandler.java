@@ -153,8 +153,8 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 	private NumberRemainVacationLeaveRangeProcess numberRemainVacationLeaveRangeProcess;
 	@Inject
 	private NumberCompensatoryLeavePeriodProcess numberCompensatoryLeavePeriodProcess;
-	@Inject
-	private RemainNumberTempRequireService requireService;
+    @Inject
+    private RemainNumberTempRequireService requireService;
 	@Override
 	protected void handle(ExportServiceContext<HolidaysRemainingReportQuery> context) {
 		val query = context.getQuery();
@@ -323,257 +323,290 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 			Optional<ClosureInfo> closureInforOpt, String employeeId, GeneralDate baseDate, GeneralDate startDate,
 			GeneralDate endDate, Optional<YearMonth> currMonth) {
 
-		// RequestList369
-		Optional<GeneralDate> grantDate = Optional.empty();
-		// RequestList281
-		List<AnnLeaGrantNumberImported> listAnnLeaGrantNumber = null;
-		// RequestList265
-		AnnLeaveOfThisMonthImported annLeaveOfThisMonth = null;
-		// RequestList255
-		List<AnnualLeaveUsageImported> listAnnualLeaveUsage = null;
-		// RequestList363
-		List<AnnLeaveUsageStatusOfThisMonthImported> listAnnLeaveUsageStatusOfThisMonth = null;
-		// RequestList268
-		ReserveHolidayImported reserveHoliday = null;
-		// RequestList258
-		List<ReservedYearHolidayImported> listReservedYearHoliday = null;
-		// RequestList364
-		List<RsvLeaUsedCurrentMonImported> listRsvLeaUsedCurrentMon = null;
-		// RequestList269
-		List<CurrentHolidayImported> listCurrentHoliday = new ArrayList<>();
-		// RequestList259
-		List<StatusHolidayImported> listStatusHoliday = null;
-		// RequestList270
-		List<CurrentHolidayRemainImported> listCurrentHolidayRemain = new ArrayList<>();
-		// RequestList260
-		List<StatusOfHolidayImported> listStatusOfHoliday = null;
+        // RequestList369
+        Optional<GeneralDate> grantDate = Optional.empty();
+        // RequestList281
+        List<AnnLeaGrantNumberImported> listAnnLeaGrantNumber = null;
+        // RequestList265
+        AnnLeaveOfThisMonthImported annLeaveOfThisMonth = null;
+        // RequestList255
+        List<AnnualLeaveUsageImported> listAnnualLeaveUsage = null;
+        // RequestList363
+        List<AnnLeaveUsageStatusOfThisMonthImported> listAnnLeaveUsageStatusOfThisMonth = null;
+        // RequestList268
+        ReserveHolidayImported reserveHoliday = null;
+        // RequestList258
+        List<ReservedYearHolidayImported> listReservedYearHoliday = null;
+        // RequestList364
+        List<RsvLeaUsedCurrentMonImported> listRsvLeaUsedCurrentMon = null;
+        // RequestList269
+        List<CurrentHolidayImported> listCurrentHoliday = new ArrayList<>();
+        // RequestList259
+        List<StatusHolidayImported> listStatusHoliday = null;
+        // RequestList270
+        List<CurrentHolidayRemainImported> listCurrentHolidayRemain = new ArrayList<>();
+        // RequestList260
+        List<StatusOfHolidayImported> listStatusOfHoliday = null;
 
-		// RequestList206
-		ChildNursingLeaveCurrentSituationImported childNursingLeave = null;
-		// RequestList207
-		NursingLeaveCurrentSituationImported nursingLeave = null;
+        // RequestList206
+        ChildNursingLeaveCurrentSituationImported childNursingLeave = null;
+        // RequestList207
+        NursingLeaveCurrentSituationImported nursingLeave = null;
 
-		//add by HieuLT
-		CurrentHolidayImported currentHolidayLeft = null;
-		
-		CurrentHolidayRemainImported currentHolidayRemainLeft = null; 
-		
-		
-		
-		if (!closureInforOpt.isPresent()) {
-			return null;
-		}
+        //add by HieuLT
+        CurrentHolidayImported currentHolidayLeft = null;
 
-		YearMonth currentMonth = closureInforOpt.get().getCurrentMonth();
-		val cId = AppContexts.user().companyId();
-		val datePeriod = new DatePeriod(startDate, endDate);
-		// hoatt
-		YearMonthPeriod period = new YearMonthPeriod(startDate.yearMonth(), currentMonth.previousMonth());
-		// Mer RQ255,258,259,260,263
-		HolidayRemainMerEx hdRemainMer = hdRemainAdapter.getRemainMer(employeeId, period);
-		// Mer RQ265,268,269,363,364,369
-		boolean call265 = variousVacationControl.isAnnualHolidaySetting();
-		boolean call268 = variousVacationControl.isYearlyReservedSetting();
-		boolean call269 = variousVacationControl.isSubstituteHolidaySetting();
-		boolean call363 = variousVacationControl.isAnnualHolidaySetting()
-				&& currentMonth.compareTo(endDate.yearMonth()) <= 0;
-		boolean call364 = variousVacationControl.isYearlyReservedSetting()
-				&& currentMonth.compareTo(endDate.yearMonth()) <= 0;
-		boolean call369 = variousVacationControl.isAnnualHolidaySetting();
-		CheckCallRequest check = new CheckCallRequest(call265, call268, call269, call363, call364, call369);
-		HdRemainDetailMerEx remainDel = hdRemainAdapter.getRemainDetailMer(employeeId, currentMonth, baseDate,
-				new DatePeriod(startDate, endDate), check);
-		if (variousVacationControl.isAnnualHolidaySetting()) {
-			// Call RequestList369
-			grantDate = remainDel.getResult369();
-			// Call RequestList281
-			listAnnLeaGrantNumber = annLeaveAdapter.algorithm(employeeId);
-			listAnnLeaGrantNumber = listAnnLeaGrantNumber.stream()
-					.sorted(Comparator.comparing(AnnLeaGrantNumberImported::getGrantDate)).collect(Collectors.toList());
-			// Call RequestList265
-			annLeaveOfThisMonth = remainDel.getResult265();
-			// Call RequestList255 ver2 - hoatt
-			if (currentMonth.compareTo(startDate.yearMonth()) > 0) {
-				listAnnualLeaveUsage = hdRemainMer.getResult255();
-			}
-			// Call RequestList363
-			if (currentMonth.compareTo(endDate.yearMonth()) <= 0) {
-				listAnnLeaveUsageStatusOfThisMonth = remainDel.getResult363();
-			}
-		}
+        CurrentHolidayRemainImported currentHolidayRemainLeft = null;
 
-		if (variousVacationControl.isYearlyReservedSetting()) {
-			// Call RequestList268
-			reserveHoliday = remainDel.getResult268();
-			// Call RequestList258 ver2 - hoatt
-			if (currentMonth.compareTo(startDate.yearMonth()) > 0) {
-				listReservedYearHoliday = hdRemainMer.getResult258();
-			}
-			// Call RequestList364
-			if (currentMonth.compareTo(endDate.yearMonth()) <= 0) {
-				listRsvLeaUsedCurrentMon = remainDel.getResult364();
-			}
-		}
-		val cacheCarrier = new CacheCarrier();
 
-		if (variousVacationControl.isSubstituteHolidaySetting()) {
-			
-			val breakDayOffMngInPeriodQueryRequire = numberRemainVacationLeaveRangeProcess.createRequire();
-			
-			// Call RequestList269
-			// listCurrentHoliday = remainDel.getResult269();
-			for (YearMonth s = currentMonth; s.lessThanOrEqualTo(endDate.yearMonth()); s = s.addMonths(1)) {
-				GeneralDate end = GeneralDate.ymd(s.year(), s.month(), 1).addMonths(1).addDays(-1);
-				DatePeriod periodDate = new DatePeriod(GeneralDate.ymd(s.year(), s.month(), 1),
-						endDate.before(end) ? endDate : end);
-				BreakDayOffRemainMngRefactParam inputRefactor = new BreakDayOffRemainMngRefactParam(
-						cId, employeeId,
-						periodDate,
-						false, 
-						closureInforOpt.get().getPeriod().end(), 
-						false,
-						new ArrayList<>(), 
-						Optional.empty(), 
-						Optional.empty(), 
-						new ArrayList<>(), 
-						new ArrayList<>(),
-						Optional.empty(), new FixedManagementDataMonth());
-				SubstituteHolidayAggrResult currentHoliday = NumberRemainVacationLeaveRangeQuery
-						.getBreakDayOffMngInPeriod(breakDayOffMngInPeriodQueryRequire, inputRefactor);
-				listCurrentHoliday.add(new CurrentHolidayImported(s, currentHoliday.getCarryoverDay().v(),
-						currentHoliday.getOccurrenceDay().v(), currentHoliday.getDayUse().v(),
-						currentHoliday.getUnusedDay().v(), currentHoliday.getRemainDay().v()));
-			}
-			// Call RequestList259 ver2 - hoatt
-			if (currentMonth.compareTo(startDate.yearMonth()) > 0) {
-				listStatusHoliday = hdRemainMer.getResult259();
-			}
-			DatePeriod periodDate = new DatePeriod(GeneralDate.ymd(currentMonth.year(), currentMonth.month(), 1), GeneralDate.ymd(currentMonth.year(), currentMonth.month(), 1).addMonths(1).addDays(-1));
-			BreakDayOffRemainMngRefactParam inputRefactor = new BreakDayOffRemainMngRefactParam(
-					cId, employeeId,
+        if (!closureInforOpt.isPresent()) {
+            return null;
+        }
+
+        YearMonth currentMonth = closureInforOpt.get().getCurrentMonth();
+        val cId = AppContexts.user().companyId();
+        val datePeriod = new DatePeriod(startDate, endDate);
+        // hoatt
+        YearMonthPeriod period = new YearMonthPeriod(startDate.yearMonth(), currentMonth.previousMonth());
+        // Mer RQ255,258,259,260,263
+        HolidayRemainMerEx hdRemainMer = hdRemainAdapter.getRemainMer(employeeId, period);
+        // Mer RQ265,268,269,363,364,369
+        boolean call265 = variousVacationControl.isAnnualHolidaySetting();
+        boolean call268 = variousVacationControl.isYearlyReservedSetting();
+        boolean call269 = variousVacationControl.isSubstituteHolidaySetting();
+        boolean call363 = variousVacationControl.isAnnualHolidaySetting()
+                && currentMonth.compareTo(endDate.yearMonth()) <= 0;
+        boolean call364 = variousVacationControl.isYearlyReservedSetting()
+                && currentMonth.compareTo(endDate.yearMonth()) <= 0;
+        boolean call369 = variousVacationControl.isAnnualHolidaySetting();
+        CheckCallRequest check = new CheckCallRequest(call265, call268, call269, call363, call364, call369);
+        HdRemainDetailMerEx remainDel = hdRemainAdapter.getRemainDetailMer(employeeId, currentMonth, baseDate,
+                new DatePeriod(startDate, endDate), check);
+        if (variousVacationControl.isAnnualHolidaySetting()) {
+            // Call RequestList369
+            grantDate = remainDel.getResult369();
+            // Call RequestList281
+            listAnnLeaGrantNumber = annLeaveAdapter.algorithm(employeeId);
+            listAnnLeaGrantNumber = listAnnLeaGrantNumber.stream()
+                    .sorted(Comparator.comparing(AnnLeaGrantNumberImported::getGrantDate)).collect(Collectors.toList());
+            // Call RequestList265
+            annLeaveOfThisMonth = remainDel.getResult265();
+            // Call RequestList255 ver2 - hoatt
+            if (currentMonth.compareTo(startDate.yearMonth()) > 0) {
+                listAnnualLeaveUsage = hdRemainMer.getResult255();
+            }
+            // Call RequestList363
+            if (currentMonth.compareTo(endDate.yearMonth()) <= 0) {
+                listAnnLeaveUsageStatusOfThisMonth = remainDel.getResult363();
+            }
+        }
+
+        if (variousVacationControl.isYearlyReservedSetting()) {
+            // Call RequestList268
+            reserveHoliday = remainDel.getResult268();
+            // Call RequestList258 ver2 - hoatt
+            if (currentMonth.compareTo(startDate.yearMonth()) > 0) {
+                listReservedYearHoliday = hdRemainMer.getResult258();
+            }
+            // Call RequestList364
+            if (currentMonth.compareTo(endDate.yearMonth()) <= 0) {
+                listRsvLeaUsedCurrentMon = remainDel.getResult364();
+            }
+        }
+        val cacheCarrier = new CacheCarrier();
+
+        if (variousVacationControl.isSubstituteHolidaySetting()) {
+
+            val breakDayOffMngInPeriodQueryRequire = numberRemainVacationLeaveRangeProcess.createRequire();
+
+            // Call RequestList269
+            // listCurrentHoliday = remainDel.getResult269();
+            for (YearMonth s = currentMonth; s.lessThanOrEqualTo(endDate.yearMonth()); s = s.addMonths(1)) {
+                GeneralDate end = GeneralDate.ymd(s.year(), s.month(), 1).addMonths(1).addDays(-1);
+                DatePeriod periodDate = new DatePeriod(GeneralDate.ymd(s.year(), s.month(), 1),
+                        endDate.before(end) ? endDate : end);
+                BreakDayOffRemainMngRefactParam inputRefactor = new BreakDayOffRemainMngRefactParam(
+                        cId, employeeId,
+                        periodDate,
+                        false,
+                        closureInforOpt.get().getPeriod().end(),
+                        false,
+                        new ArrayList<>(),
+                        Optional.empty(),
+                        Optional.empty(),
+                        new ArrayList<>(),
+                        new ArrayList<>(),
+                        Optional.empty(), new FixedManagementDataMonth());
+                SubstituteHolidayAggrResult currentHoliday = NumberRemainVacationLeaveRangeQuery
+                        .getBreakDayOffMngInPeriod(breakDayOffMngInPeriodQueryRequire, inputRefactor);
+                listCurrentHoliday.add(new CurrentHolidayImported(s, currentHoliday.getCarryoverDay().v(),
+                        currentHoliday.getOccurrenceDay().v(), currentHoliday.getDayUse().v(),
+                        currentHoliday.getUnusedDay().v(), currentHoliday.getRemainDay().v()));
+            }
+            // Call RequestList259 ver2 - hoatt
+            if (currentMonth.compareTo(startDate.yearMonth()) > 0) {
+                listStatusHoliday = hdRemainMer.getResult259();
+            }
+            DatePeriod periodDate = new DatePeriod(GeneralDate.ymd(currentMonth.year(), currentMonth.month(), 1), GeneralDate.ymd(currentMonth.year(), currentMonth.month(), 1).addMonths(1).addDays(-1));
+            BreakDayOffRemainMngRefactParam inputRefactor = new BreakDayOffRemainMngRefactParam(
+                    cId, employeeId,
+                    periodDate,
+                    false,
+                    closureInforOpt.get().getPeriod().end(),
+                    false,
+                    new ArrayList<>(),
+                    Optional.empty(),
+                    Optional.empty(),
+                    new ArrayList<>(),
+                    new ArrayList<>(),
+                    Optional.empty(), new FixedManagementDataMonth());
+            SubstituteHolidayAggrResult currentHoliday = NumberRemainVacationLeaveRangeQuery.getBreakDayOffMngInPeriod(breakDayOffMngInPeriodQueryRequire, inputRefactor);
+            currentHolidayLeft = new CurrentHolidayImported(currentMonth, currentHoliday.getCarryoverDay().v(),
+                    currentHoliday.getOccurrenceDay().v(), currentHoliday.getDayUse().v(), currentHoliday.getUnusedDay().v(),
+                    currentHoliday.getRemainDay().v());
+
+        }
+
+        if (variousVacationControl.isPauseItemHolidaySetting()) {
+            val absenceReruitmentMngInPeriodQueryRequire = AbsenceReruitmentMngInPeriodQuery.createRequireM10(
+                    interimRemainRepo, interimRecAbasMngRepo, closureRepository, closureEmploymentRepo,
+                    companyAdapter, shareEmploymentAdapter, empSubstVacationRepo, comSubstVacationRepo,
+                    substitutionOfHDManaDataRepo, payoutManagementDataRepo);
+
+            // Call RequestList270
+            /*
+             * listCurrentHolidayRemain =
+             * absenceReruitmentAdapter.getAbsRecRemainAggregate(employeeId,
+             * baseDate, startDate.yearMonth(), endDate.yearMonth());
+             */
+            for (YearMonth s = currentMonth; s.lessThanOrEqualTo(endDate.yearMonth()); s = s.addMonths(1)) {
+                GeneralDate end = GeneralDate.ymd(s.year(), s.month(), 1).addMonths(1).addDays(-1);
+                DatePeriod periodDate = new DatePeriod(GeneralDate.ymd(s.year(), s.month(), 1),
+                        endDate.before(end) ? endDate : end);
+                val mngParam = new AbsRecMngInPeriodRefactParamInput(cId, employeeId, periodDate,
+                        closureInforOpt.get().getPeriod().end(), false, false, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), Optional.empty()
+                        , Optional.empty()
+                        , Optional.empty(),
+                        new FixedManagementDataMonth());
+                CompenLeaveAggrResult remainMng = NumberCompensatoryLeavePeriodQuery
+                        .process(numberCompensatoryLeavePeriodProcess.createRequire(), mngParam);
+                listCurrentHolidayRemain.add(new CurrentHolidayRemainImported(s, remainMng.getCarryoverDay().v(),
+                        remainMng.getOccurrenceDay().v(), remainMng.getDayUse().v(), remainMng.getUnusedDay().v(),
+                        remainMng.getRemainDay().v()));
+            }
+
+            // Call RequestList260 ver2 - hoatt
+            if (currentMonth.compareTo(startDate.yearMonth()) > 0) {
+                listStatusOfHoliday = hdRemainMer.getResult260();
+            }
+            DatePeriod periodDate = new DatePeriod(GeneralDate.ymd(currentMonth.year(), currentMonth.month(), 1), GeneralDate.ymd(currentMonth.year(), currentMonth.month(), 1).addMonths(1).addDays(-1));
+            val param = new AbsRecMngInPeriodRefactParamInput(cId, employeeId, periodDate, closureInforOpt.get().getPeriod().end(),
+                    false, false, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), Optional.empty()
+                    , Optional.empty()
+                    , Optional.empty(), new FixedManagementDataMonth());
+            CompenLeaveAggrResult remainMng = NumberCompensatoryLeavePeriodQuery.process(numberCompensatoryLeavePeriodProcess.createRequire(), param);
+            currentHolidayRemainLeft = new CurrentHolidayRemainImported(currentMonth, remainMng.getCarryoverDay().v(),
+                    remainMng.getOccurrenceDay().v(), remainMng.getDayUse().v(), remainMng.getUnusedDay().v(),
+                    remainMng.getRemainDay().v());
+        }
+        // hoatt
+        Map<Integer, SpecialVacationImported> mapSpecVaca = new HashMap<>();
+        Map<YearMonth, Map<Integer, SpecialVacationImported>> lstMapSPVaCurrMon = new HashMap<>();// key
+        // ym,
+        // values:
+        Map<Integer, List<SpecialHolidayImported>> mapSpeHd = new HashMap<>();
+        // Call RequestList273
+        if (currMonth.isPresent() && currMonth.get().lessThanOrEqualTo(endDate.yearMonth())) {
+            List<YearMonth> lstMon = new ArrayList<>();
+            YearMonth monCheck = currMonth.get().greaterThanOrEqualTo(startDate.yearMonth()) ? currMonth.get()
+                    : startDate.yearMonth();
+            for (YearMonth i = monCheck; i.lessThanOrEqualTo(endDate.yearMonth()); i = i.addMonths(1)) {
+                lstMon.add(i);
+            }
+            for (YearMonth ym : lstMon) {// year mon
+                Map<Integer, SpecialVacationImported> mapSPVaCurrMon = new HashMap<>();
+                for (SpecialHoliday specialHolidayDto : variousVacationControl.getListSpecialHoliday()) {// sphdCd
+                    int sphdCode = specialHolidayDto.getSpecialHolidayCode().v();
+                    YearMonth ymEnd = ym.addMonths(1);
+                    SpecialVacationImported spVaImported = specialLeaveAdapter.complileInPeriodOfSpecialLeave(cId,
+                            employeeId,
+                            new DatePeriod(GeneralDate.ymd(ym.year(), ym.month(), 1),
+                                    GeneralDate.ymd(ymEnd.year(), ymEnd.month(), 1).addDays(-1)),
+                            false, baseDate, sphdCode, false);
+                    mapSPVaCurrMon.put(sphdCode, spVaImported);
+                }
+                lstMapSPVaCurrMon.put(ym, mapSPVaCurrMon);
+            }
+        }
+        for (SpecialHoliday specialHolidayDto : variousVacationControl.getListSpecialHoliday()) {
+            int sphdCode = specialHolidayDto.getSpecialHolidayCode().v();
+            // Call RequestList273
+            SpecialVacationImported specialVacationImported = specialLeaveAdapter.complileInPeriodOfSpecialLeave(cId,
+                    employeeId, closureInforOpt.get().getPeriod(), false, baseDate, sphdCode, false);
+            mapSpecVaca.put(sphdCode, specialVacationImported);
+
+            // Call RequestList263 ver2 -
+
+            if (currentMonth.compareTo(startDate.yearMonth()) > 0) {
+                List<SpecialHolidayImported> specialHolidayList = specialLeaveAdapter.getSpeHoliOfConfirmedMonthly(
+                        employeeId, startDate.yearMonth(), currentMonth.previousMonth(), Arrays.asList(sphdCode));
+                mapSpeHd.put(sphdCode, specialHolidayList);
+
+            } else {
+                mapSpeHd.put(sphdCode, new ArrayList<SpecialHolidayImported>());
+            }
+        }
+
+        if (variousVacationControl.isChildNursingSetting()) {
+            // Call RequestList206
+            childNursingLeave = childNursingAdapter.getChildNursingLeaveCurrentSituation(cId, employeeId, datePeriod);
+        }
+
+        if (variousVacationControl.isNursingCareSetting()) {
+            // Call RequestList207
+            nursingLeave = nursingLeaveAdapter.getNursingLeaveCurrentSituation(cId, employeeId, datePeriod);
+        }
+        val rq = requireService.createRequire();
+        SubstituteHolidayAggrResult substituteHolidayAggrResult = null;
+        // 期間内の休出代休残数を取得する
+        DatePeriod periodDate = new DatePeriod(GeneralDate.ymd(currentMonth.year(), currentMonth.month(), 1),
+                GeneralDate.ymd(currentMonth.year(), currentMonth.month(), 1).addMonths(1).addDays(-1));
+        BreakDayOffRemainMngRefactParam inputRefactor = new BreakDayOffRemainMngRefactParam(
+                cId, employeeId,
+                periodDate,
+                false,
+                closureInforOpt.get().getPeriod().end(),
+                false,
+                new ArrayList<>(),
+                Optional.empty(),
+                Optional.empty(),
+                new ArrayList<>(),
+                new ArrayList<>(),
+                Optional.empty(), new FixedManagementDataMonth());
+        substituteHolidayAggrResult  = NumberRemainVacationLeaveRangeQuery
+                .getBreakDayOffMngInPeriod(rq, inputRefactor);
+        // RequestList204
+		CompenLeaveAggrResult subVaca = null;
+        if(closureInforOpt.isPresent()){
+			val param = new AbsRecMngInPeriodRefactParamInput(
+					cId,
+					employeeId,
 					periodDate,
-					false, 
-					closureInforOpt.get().getPeriod().end(), 
-					false,
-					new ArrayList<>(), 
-					Optional.empty(), 
-					Optional.empty(), 
-					new ArrayList<>(), 
-					new ArrayList<>(),
-					Optional.empty(), new FixedManagementDataMonth());
-			SubstituteHolidayAggrResult currentHoliday = NumberRemainVacationLeaveRangeQuery.getBreakDayOffMngInPeriod(breakDayOffMngInPeriodQueryRequire, inputRefactor);
-			currentHolidayLeft = new CurrentHolidayImported(currentMonth, currentHoliday.getCarryoverDay().v(),
-					currentHoliday.getOccurrenceDay().v(), currentHoliday.getDayUse().v(), currentHoliday.getUnusedDay().v(),
-					currentHoliday.getRemainDay().v());
-
-		}
-
-		if (variousVacationControl.isPauseItemHolidaySetting()) {
-			val absenceReruitmentMngInPeriodQueryRequire = AbsenceReruitmentMngInPeriodQuery.createRequireM10(
-					interimRemainRepo, interimRecAbasMngRepo, closureRepository, closureEmploymentRepo,
-					companyAdapter, shareEmploymentAdapter, empSubstVacationRepo, comSubstVacationRepo,
-					substitutionOfHDManaDataRepo, payoutManagementDataRepo);
-			
-			// Call RequestList270
-			/*
-			 * listCurrentHolidayRemain =
-			 * absenceReruitmentAdapter.getAbsRecRemainAggregate(employeeId,
-			 * baseDate, startDate.yearMonth(), endDate.yearMonth());
-			 */
-			for (YearMonth s = currentMonth; s.lessThanOrEqualTo(endDate.yearMonth()); s = s.addMonths(1)) {
-				GeneralDate end = GeneralDate.ymd(s.year(), s.month(), 1).addMonths(1).addDays(-1);
-				DatePeriod periodDate = new DatePeriod(GeneralDate.ymd(s.year(), s.month(), 1),
-						endDate.before(end) ? endDate : end);
-				val mngParam = new AbsRecMngInPeriodRefactParamInput(cId, employeeId, periodDate, 
-						closureInforOpt.get().getPeriod().end(), false, false, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), Optional.empty()
-						, Optional.empty()
-						, Optional.empty(), 
-						new FixedManagementDataMonth());
-				CompenLeaveAggrResult remainMng = NumberCompensatoryLeavePeriodQuery
-						.process(numberCompensatoryLeavePeriodProcess.createRequire(), mngParam);
-				listCurrentHolidayRemain.add(new CurrentHolidayRemainImported(s, remainMng.getCarryoverDay().v(),
-						remainMng.getOccurrenceDay().v(), remainMng.getDayUse().v(), remainMng.getUnusedDay().v(),
-						remainMng.getRemainDay().v()));
-			}
-				
-			// Call RequestList260 ver2 - hoatt
-			if (currentMonth.compareTo(startDate.yearMonth()) > 0) {
-				listStatusOfHoliday = hdRemainMer.getResult260();
-			}
-			DatePeriod periodDate =new DatePeriod(GeneralDate.ymd(currentMonth.year(), currentMonth.month(), 1), GeneralDate.ymd(currentMonth.year(), currentMonth.month(), 1).addMonths(1).addDays(-1));
-			val param = new AbsRecMngInPeriodRefactParamInput(cId, employeeId, periodDate, closureInforOpt.get().getPeriod().end(), 
-					false, false, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), Optional.empty()
+					closureInforOpt.get().getPeriod().end(),
+					false, false, new ArrayList<>(),
+					new ArrayList<>(), new ArrayList<>(), Optional.empty()
 					, Optional.empty()
 					, Optional.empty(), new FixedManagementDataMonth());
-			CompenLeaveAggrResult remainMng = NumberCompensatoryLeavePeriodQuery.process(numberCompensatoryLeavePeriodProcess.createRequire(), param);
-			currentHolidayRemainLeft = new CurrentHolidayRemainImported(currentMonth, remainMng.getCarryoverDay().v(),
-					remainMng.getOccurrenceDay().v(), remainMng.getDayUse().v(), remainMng.getUnusedDay().v(),
-					remainMng.getRemainDay().v());
-		}
-		// hoatt
-		Map<Integer, SpecialVacationImported> mapSpecVaca = new HashMap<>();
-		Map<YearMonth, Map<Integer, SpecialVacationImported>> lstMapSPVaCurrMon = new HashMap<>();// key
-																									// ym,
-																									// values:
-		Map<Integer, List<SpecialHolidayImported>> mapSpeHd = new HashMap<>();
-		// Call RequestList273
-		if (currMonth.isPresent() && currMonth.get().lessThanOrEqualTo(endDate.yearMonth())) {
-			List<YearMonth> lstMon = new ArrayList<>();
-			YearMonth monCheck = currMonth.get().greaterThanOrEqualTo(startDate.yearMonth()) ? currMonth.get()
-					: startDate.yearMonth();
-			for (YearMonth i = monCheck; i.lessThanOrEqualTo(endDate.yearMonth()); i = i.addMonths(1)) {
-				lstMon.add(i);
-			}
-			for (YearMonth ym : lstMon) {// year mon
-				Map<Integer, SpecialVacationImported> mapSPVaCurrMon = new HashMap<>();
-				for (SpecialHoliday specialHolidayDto : variousVacationControl.getListSpecialHoliday()) {// sphdCd
-					int sphdCode = specialHolidayDto.getSpecialHolidayCode().v();
-					YearMonth ymEnd = ym.addMonths(1);
-					SpecialVacationImported spVaImported = specialLeaveAdapter.complileInPeriodOfSpecialLeave(cId,
-							employeeId,
-							new DatePeriod(GeneralDate.ymd(ym.year(), ym.month(), 1),
-									GeneralDate.ymd(ymEnd.year(), ymEnd.month(), 1).addDays(-1)),
-							false, baseDate, sphdCode, false);
-					mapSPVaCurrMon.put(sphdCode, spVaImported);
-				}
-				lstMapSPVaCurrMon.put(ym, mapSPVaCurrMon);
-			}
-		}
-		for (SpecialHoliday specialHolidayDto : variousVacationControl.getListSpecialHoliday()) {
-			int sphdCode = specialHolidayDto.getSpecialHolidayCode().v();
-			// Call RequestList273
-			SpecialVacationImported specialVacationImported = specialLeaveAdapter.complileInPeriodOfSpecialLeave(cId,
-					employeeId, closureInforOpt.get().getPeriod(), false, baseDate, sphdCode, false);
-			mapSpecVaca.put(sphdCode, specialVacationImported);
-
-			// Call RequestList263 ver2 - 
-
-			if (currentMonth.compareTo(startDate.yearMonth()) > 0) {
-				List<SpecialHolidayImported> specialHolidayList = specialLeaveAdapter.getSpeHoliOfConfirmedMonthly(
-						employeeId, startDate.yearMonth(), currentMonth.previousMonth(), Arrays.asList(sphdCode));
-				mapSpeHd.put(sphdCode, specialHolidayList);
-
-			} else {
-				mapSpeHd.put(sphdCode, new ArrayList<SpecialHolidayImported>());
-			}
+			 subVaca = NumberCompensatoryLeavePeriodQuery
+					.process(rq, param);
 		}
 
-		if (variousVacationControl.isChildNursingSetting()) {
-			// Call RequestList206
-			childNursingLeave = childNursingAdapter.getChildNursingLeaveCurrentSituation(cId, employeeId, datePeriod);
-		}
-
-		if (variousVacationControl.isNursingCareSetting()) {
-			// Call RequestList207
-			nursingLeave = nursingLeaveAdapter.getNursingLeaveCurrentSituation(cId, employeeId, datePeriod);
-		}
-		SubstituteHolidayAggrResult =
-		return new HolidayRemainingInfor(grantDate, listAnnLeaGrantNumber, annLeaveOfThisMonth, listAnnualLeaveUsage,
-				listAnnLeaveUsageStatusOfThisMonth, reserveHoliday, listReservedYearHoliday, listRsvLeaUsedCurrentMon,
-				listCurrentHoliday, listStatusHoliday, listCurrentHolidayRemain, listStatusOfHoliday, mapSpecVaca,
-				lstMapSPVaCurrMon, mapSpeHd, childNursingLeave, nursingLeave , currentHolidayLeft , currentHolidayRemainLeft);
-	}
-
+        return new HolidayRemainingInfor(grantDate, listAnnLeaGrantNumber, annLeaveOfThisMonth, listAnnualLeaveUsage,
+                listAnnLeaveUsageStatusOfThisMonth, reserveHoliday, listReservedYearHoliday, listRsvLeaUsedCurrentMon,
+                listCurrentHoliday, listStatusHoliday, listCurrentHolidayRemain, listStatusOfHoliday, mapSpecVaca,
+                lstMapSPVaCurrMon, mapSpeHd, childNursingLeave, nursingLeave, currentHolidayLeft,
+                currentHolidayRemainLeft, substituteHolidayAggrResult,subVaca);
+    }
 	private Optional<ClosureInfo> getClosureInfor(int closureId) {
 		val listClosureInfo = ClosureService.getAllClosureInfo(ClosureService.createRequireM2(closureRepository));
 		return listClosureInfo.stream().filter(i -> i.getClosureId().value == closureId).findFirst();
