@@ -69,6 +69,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.param.AbsRecMngInPeriodRefactParamInput;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.param.CompenLeaveAggrResult;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecAbasMngRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.require.RemainNumberTempRequireService;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.NumberRemainVacationLeaveRangeProcess;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.NumberRemainVacationLeaveRangeQuery;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.BreakDayOffRemainMngRefactParam;
@@ -152,7 +153,8 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 	private NumberRemainVacationLeaveRangeProcess numberRemainVacationLeaveRangeProcess;
 	@Inject
 	private NumberCompensatoryLeavePeriodProcess numberCompensatoryLeavePeriodProcess;
-
+	@Inject
+	private RemainNumberTempRequireService requireService;
 	@Override
 	protected void handle(ExportServiceContext<HolidaysRemainingReportQuery> context) {
 		val query = context.getQuery();
@@ -565,7 +567,7 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 			// Call RequestList207
 			nursingLeave = nursingLeaveAdapter.getNursingLeaveCurrentSituation(cId, employeeId, datePeriod);
 		}
-
+		SubstituteHolidayAggrResult =
 		return new HolidayRemainingInfor(grantDate, listAnnLeaGrantNumber, annLeaveOfThisMonth, listAnnualLeaveUsage,
 				listAnnLeaveUsageStatusOfThisMonth, reserveHoliday, listReservedYearHoliday, listRsvLeaUsedCurrentMon,
 				listCurrentHoliday, listStatusHoliday, listCurrentHolidayRemain, listStatusOfHoliday, mapSpecVaca,

@@ -643,6 +643,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
         cells.get(firstRow, 9).setValue(TextResource.localize("KDR001_16"));
         // I3_1
         cells.get(firstRow + 1, 9).setValue(TextResource.localize("KDR001_17"));
+
         if (isRepresentSubstitute) {
             rowIndexRepresentSubstitute = firstRow + totalRows;
             cells.copyRows(cells, NUMBER_ROW_OF_HEADER + 15, rowIndexRepresentSubstitute, 1);
@@ -755,6 +756,13 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                 //	}
             }
         }
+        //I1_2: 代休_月初残_日数時間数 TODO
+
+        cells.get(firstRow, 5).setValue(currentHolidayLeft.getMonthStartRemain());
+        //if (currentHolidayLeft.getMonthStartRemain() < 0) {
+        //    setForegroundRed(cells.get(firstRow, 5));
+        //}
+
         cells.get(firstRow, 5).setValue(currentHolidayLeft.getMonthStartRemain());
         if (currentHolidayLeft.getMonthStartRemain() < 0) {
             setForegroundRed(cells.get(firstRow, 5));
