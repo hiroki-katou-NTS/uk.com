@@ -49,7 +49,7 @@
 			<div id="contents-area" style="background-color: inherit;">
 				<div class="two-panel" style="height: 100%;">
 					<div class="left-panel" style="width: calc(100% - 410px); height: inherit;">
-						<div style="height: inherit; background-color: #fff; padding: 0 10px;">
+						<div style="height: inherit; background-color: #fff; padding: 0 10px; overflow: auto;">
 							<div class="table" style="border-bottom: 2px solid #B1B1B1; padding-bottom: 30px; margin-bottom: 30px; width: 100%;">
 								<div class="cell" style="vertical-align: middle;">
 									<div data-bind="component: { name: 'kaf000-a-component2',
@@ -69,19 +69,19 @@
 														} }"></div>
 								</div>
 							</div>
-							<div data-bind="component: { name: 'kaf000-a-component3', 
+							<div class="mv-13" data-bind="component: { name: 'kaf000-a-component3', 
 														params: {
 															appType: appType,
 															application: application,
 															appDispInfoStartupOutput: appDispInfoStartupOutput
 														} }"></div>
-							<div data-bind="component: { name: 'kaf000-a-component4', 
+							<div class="mv-13" data-bind="component: { name: 'kaf000-a-component4', 
 														params: {
 															appType: appType,
 															application: application,
 															appDispInfoStartupOutput: appDispInfoStartupOutput
 														} }"></div>
-							<div data-bind="component: { name: 'kaf007-share', 
+							<div class="mv-13" data-bind="component: { name: 'kaf007-share', 
 														params: {
 															model: model,
 															mode: 0,
@@ -91,7 +91,7 @@
 															isStraightGo: isStraightGo
 														} }">
 							</div>
-							<div data-bind="component: { name: 'kaf000-a-component5', 
+							<div class="mv-13" data-bind="component: { name: 'kaf000-a-component5', 
 														params: {
 															appType: appType,
 															application: application,
@@ -99,7 +99,7 @@
 														} }"></div>
 							<div style="text-align: center; padding-top: 30px;">
 								<div style="padding-bottom: 5px;">
-									<button style="width: 200px;" class="proceed" data-bind="click: register, enable: $root.errors.isEmpty">#{i18n.getText('KAF007_54')}</button>
+									<button style="width: 300px;" class="proceed x-large" data-bind="click: register, enable: $root.errors.isEmpty">#{i18n.getText('KAF007_54')}</button>
 								</div>
 								<div>
 									<div data-bind="component: { name: 'kaf000-a-component7', 
