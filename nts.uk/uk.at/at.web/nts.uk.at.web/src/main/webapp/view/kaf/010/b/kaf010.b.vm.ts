@@ -105,7 +105,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
                  <div data-bind="component: { name: 'kaf010-share-footer'}"></div>                               
                 </div>
             </div>
-            <div class="right-panel" style="width: 410px; height: inherit;">
+            <div class="right-panel" style="width: 410px; height: inherit; overflow-y: auto">
                 <div style="height: auto; min-height: 700px; background-color: #fff; padding: 10px;">
                     <div data-bind="component: { name: 'kaf000-b-component1', 
                             params: {

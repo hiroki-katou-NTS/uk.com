@@ -16,6 +16,9 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 	const template= `
 	
 
+
+
+
 <div id="kaf005-b">
 	<div id="contents-area"
 		style="background-color: inherit; height: calc(100vh - 165px);">
@@ -111,7 +114,7 @@ module nts.uk.at.view.kafsample.b.viewmodel {
                    <div data-bind="component: { name: 'kaf005-share-footer'}"></div>                             
 				</div>
 			</div>
-			<div class="right-panel" style="width: 410px; height: inherit;">
+			<div class="right-panel" style="width: 410px; height: inherit; overflow-y: auto">
 				<div style="height: inherit; background-color: #fff; padding: 10px;">
 					<div
 						data-bind="component: { name: 'kaf000-b-component1', 

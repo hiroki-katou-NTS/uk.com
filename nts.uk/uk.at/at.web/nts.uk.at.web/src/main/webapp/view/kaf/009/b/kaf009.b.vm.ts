@@ -53,7 +53,7 @@ module nts.uk.at.view.kaf009_ref.b.viewmodel {
                                                 } }"></div>
                 </div>
             </div>
-            <div class="right-panel" style="width: 410px; height: inherit;">
+            <div class="right-panel" style="width: 410px; height: inherit; overflow-y: auto">
                 <div style="height: inherit; background-color: #fff; padding: 10px;">
                     <div data-bind="component: { name: 'kaf000-b-component1', 
                             params: {

@@ -8,6 +8,8 @@ module nts.uk.at.view.kaf002_ref.d.viewmodel {
         
 
 
+
+
 <div id="kaf002-d">
 	<div id="contents-area"
 		style="background-color: inherit; height: calc(100vh - 165px);">
@@ -111,7 +113,7 @@ module nts.uk.at.view.kaf002_ref.d.viewmodel {
                                                 } }"></div>
 				</div>
 			</div>
-			<div class="right-panel" style="width: 410px; height: inherit;">
+			<div class="right-panel" style="width: 410px; height: inherit; overflow-y: auto">
 				<div style="height: inherit; background-color: #fff; padding: 10px;">
 					<div
 						data-bind="component: { name: 'kaf000-b-component1', 
@@ -131,6 +133,8 @@ module nts.uk.at.view.kaf002_ref.d.viewmodel {
 		</div>
 	</div>
 </div>
+
+
 
         
     `
