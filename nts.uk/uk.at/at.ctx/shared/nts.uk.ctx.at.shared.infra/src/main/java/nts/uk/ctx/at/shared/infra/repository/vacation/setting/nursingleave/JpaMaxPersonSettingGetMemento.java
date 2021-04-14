@@ -5,7 +5,8 @@
 package nts.uk.ctx.at.shared.infra.repository.vacation.setting.nursingleave;
 
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.MaxPersonSettingGetMemento;
-import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NumberDayNursing;
+import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingNumberLeaveDay;
+import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingNumberPerson;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.nursingleave.KshmtHdnursingLeave;
 
 /**
@@ -32,8 +33,8 @@ public class JpaMaxPersonSettingGetMemento implements MaxPersonSettingGetMemento
      * MaxPersonSettingGetMemento#getNursingNumberLeaveDay()
      */
     @Override
-    public NumberDayNursing getNursingNumberLeaveDay() {
-        return new NumberDayNursing(this.entity.getNursingNumLeaveDay());
+    public NursingNumberLeaveDay getNursingNumberLeaveDay() {
+        return new NursingNumberLeaveDay(this.entity.getNursingNumLeaveDay());
     }
 
     /*
@@ -43,8 +44,17 @@ public class JpaMaxPersonSettingGetMemento implements MaxPersonSettingGetMemento
      * MaxPersonSettingGetMemento#getNursingNumberLeaveDay2()
      */
     @Override
-    public NumberDayNursing getNursingNumberLeaveDay2() {
-        return new NumberDayNursing(this.entity.getNursingNumLeaveDay2());
-    }
+	public NursingNumberLeaveDay getNursingNumberLeaveDay2() {
+		return new NursingNumberLeaveDay(this.entity.getNursingNumLeaveDay2());
+	}
 
+	@Override
+	public NursingNumberPerson getNursingNumberPerson() {
+		return new NursingNumberPerson(this.entity.getNursingNumPerson());
+	}	
+
+	@Override
+	public NursingNumberPerson getNursingNumberPerson2() {
+		return new NursingNumberPerson(this.entity.getNursingNumPerson2());
+	}
 }
