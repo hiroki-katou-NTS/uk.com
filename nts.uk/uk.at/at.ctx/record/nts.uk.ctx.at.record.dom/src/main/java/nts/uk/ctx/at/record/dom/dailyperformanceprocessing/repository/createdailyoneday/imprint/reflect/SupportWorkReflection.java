@@ -13,6 +13,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.AllArgsConstructor;
+import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.support.GetSupportDataJudgedSameDS;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.support.JudCriteriaSameStampOfSupportRepo;
@@ -325,23 +326,6 @@ public class SupportWorkReflection {
 		}
 		// 応援・作業を補正する
 		this.correctSupportWork(ouenStamp, ouenStampNew.get());
-		for(OuenWorkTimeSheetOfDailyAttendance ouen : lstClearOuen) {
-			if((ouen.getTimeSheet().getStart().isPresent() && ouenStampNew.get().getTimeSheet().getStart().isPresent() 
-					&&  ouen.getTimeSheet().getStart().get().getTimeWithDay().get().v() == ouenStampNew.get().getTimeSheet().getStart().get().getTimeWithDay().get().v()) || 
-					(ouen.getTimeSheet().getEnd().isPresent() && ouenStampNew.get().getTimeSheet().getEnd().isPresent() 
-							&&  ouen.getTimeSheet().getEnd().get().getTimeWithDay().get().v() == ouenStampNew.get().getTimeSheet().getEnd().get().getTimeWithDay().get().v())) {
-				
-				if (startAtr == StartAtr.START_OF_SUPPORT && timeOverWritten.isPresent()) {
-					ouen.getTimeSheet().getStart().get().setTimeWithDay(ouenStampNew.get().getTimeSheet().getStart().get().getTimeWithDay());
-				}
-
-				if (startAtr == StartAtr.END_OF_SUPPORT && timeOverWritten.isPresent()) {
-					ouen.getTimeSheet().getEnd().get().setTimeWithDay(ouenStampNew.get().getTimeSheet().getEnd().get().getTimeWithDay());
-				}
-				ouen.getWorkContent().setWork(ouenStampNew.get().getWorkContent().getWork());
-				ouen.getWorkContent().setWorkplace(ouenStampNew.get().getWorkContent().getWorkplace());
-			}
-		}
 		return lstClearOuen;
 	}
 
@@ -920,24 +904,17 @@ public class SupportWorkReflection {
 					.get().v();
 			// 同一打刻の判断基準。同一打刻とみなす範囲
 			Integer time2 = judgmentSupport.getSameStampRanceInMinutes().v();
-			List<OuenWorkTimeSheetOfDailyAttendance> lstOuenWorkTimeAfter = new ArrayList<>();
-				// 最初の出勤の応援データ
-				lstOuenWorkTimeAfter.addAll(lstOuenWorkTime.stream().filter(x -> (x
-						.getTimeSheet().getStart().isPresent())
-						&& (x.getTimeSheet().getStart().get().getTimeWithDay().get().v() >= (time1 - time2))
-						&& (x.getTimeSheet().getStart().isPresent())
-								&& (x.getTimeSheet().getStart().get().getTimeWithDay().get().v() <= (time1 + time2)))
-						.collect(Collectors.toList()).stream()
-						.sorted((y, z) -> y.getTimeSheet().getEnd().get().getTimeWithDay().get().v()
-								- z.getTimeSheet().getEnd().get().getTimeWithDay().get().v())
-						.collect(Collectors.toList()));
+			Optional<OuenWorkTimeSheetOfDailyAttendance> ouenWorkTimeAfter = lstOuenWorkTime.stream().filter(x ->{
+					val time = x.getTimeSheet().getStart().flatMap(c -> c.getTimeWithDay()).map(c -> c.v()).orElse(null);
+					if(time == null)
+					return false;
+					return time1 - time2 < time &&  time< time1 + time2;}).findFirst();
 				
-				if (!lstOuenWorkTimeAfter.isEmpty()) {
-					
-					lstOuenWorkTime = lstOuenWorkTime.stream().filter(x -> !lstOuenWorkTimeAfter.stream().map(e->e.getWorkNo()).collect(Collectors.toList()).contains(x.getWorkNo())).collect(Collectors.toList());
+				if (ouenWorkTimeAfter.isPresent()) {
+					lstOuenWorkTime.remove(ouenWorkTimeAfter.get());
 					// 検索できる
 					// 出退勤の応援。最初の出勤をセットする
-					departureTempo.setFirstAttendance(Optional.of(lstOuenWorkTimeAfter.get(0)));
+					departureTempo.setFirstAttendance(ouenWorkTimeAfter);
 
 					// 出退勤の応援。最初の出勤。時間帯。開始。時刻。時刻＝最初の出勤。打刻。時刻。時刻
 					departureTempo.getFirstAttendance().get().getTimeSheet().getStart().get().setTimeWithDay(
@@ -967,24 +944,20 @@ public class SupportWorkReflection {
 			Integer time2 = judgmentSupport.getSameStampRanceInMinutes().v();
 			
 				// 最後の退勤の応援データ
-				List<OuenWorkTimeSheetOfDailyAttendance> lstOuenWorkTimeAfter = new ArrayList<>();
+			Optional<OuenWorkTimeSheetOfDailyAttendance> ouenWorkTimeAfter = Optional.empty();
 				if(time1 != null) {
-					lstOuenWorkTimeAfter.addAll(lstOuenWorkTime.stream()
-							.filter(x -> (x.getTimeSheet().getEnd().isPresent()
-									&& x.getTimeSheet().getEnd().get().getTimeWithDay().get().v() >= (time1 - time2))
-									&& (x.getTimeSheet().getEnd().isPresent()
-											&& x.getTimeSheet().getEnd().get().getTimeWithDay().get().v() <= (time1 + time2)))
-							.collect(Collectors.toList()).stream()
-							.sorted((y, z) -> y.getTimeSheet().getEnd().get().getTimeWithDay().get().v()
-									- z.getTimeSheet().getEnd().get().getTimeWithDay().get().v())
-							.collect(Collectors.toList()));
+					ouenWorkTimeAfter = lstOuenWorkTime.stream().filter(x ->{
+						val time = x.getTimeSheet().getStart().flatMap(c -> c.getTimeWithDay()).map(c -> c.v()).orElse(null);
+						if(time == null)
+						return false;
+						return time1 - time2 < time &&  time< time1 + time2;}).findFirst();
 				}
-				if (!lstOuenWorkTimeAfter.isEmpty()) {
+				if (ouenWorkTimeAfter.isPresent()) {
 					
-					lstOuenWorkTime = lstOuenWorkTime.stream().filter(x -> !lstOuenWorkTimeAfter.stream().map(e->e.getWorkNo()).collect(Collectors.toList()).contains(x.getWorkNo())).collect(Collectors.toList());
+					lstOuenWorkTime.remove(ouenWorkTimeAfter.get());
 					// 検索できる
 					// 出退勤の応援。最後の退勤をセットする
-					departureTempo.setLastLeave(Optional.of(lstOuenWorkTimeAfter.get(lstOuenWorkTimeAfter.size() - 1)));
+					departureTempo.setLastLeave(ouenWorkTimeAfter);
 
 					// 出退勤の応援。最後の退勤。時間帯。開始。時刻。時刻＝最後の退勤。打刻。時刻。時刻
 					if (departureTempo.getLastLeave().get().getTimeSheet().getStart().isPresent()) {
