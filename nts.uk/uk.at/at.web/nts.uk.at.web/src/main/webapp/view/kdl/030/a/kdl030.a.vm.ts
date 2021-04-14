@@ -164,8 +164,8 @@ module nts.uk.at.view.kdl030.a.viewmodel {
 			let appInfoLst: Array<any> = [];
 			_.forEach(self.appSendMailByEmpLst(), appSendMailByEmp => {
 				let approverInfoLst: Array<any> = [],
-					application = appSendMailByEmp.application,
-					applicantMail = appSendMailByEmp.applicantMail;
+					application = ko.mapping.toJS(appSendMailByEmp.application),
+					applicantMail = appSendMailByEmp.applicantMail();
 				_.forEach(appSendMailByEmp.approvalRoot.listApprovalPhaseStateDto(), phase => {
 					_.forEach(phase.listApprovalFrame(), frame => {
 						_.forEach(frame.listApprover(), approver => {
@@ -178,7 +178,7 @@ module nts.uk.at.view.kdl030.a.viewmodel {
 						});	
 					});	
 				});
-				approverInfoLst.push({ approverInfoLst, application, applicantMail });
+				appInfoLst.push({ approverInfoLst, application, applicantMail });
 			});
 
 			let mailTemplate = self.mailContent(),
