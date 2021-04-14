@@ -74,7 +74,7 @@ module nts.uk.at.view.kdp.share {
 			case 17:
 				return 221;
 			case 18:
-				return 213;
+				return 222;
 			case 19:
 				return 223;
 			case 20:
@@ -162,6 +162,16 @@ module nts.uk.at.view.kdp.share {
 			ko.applyBindingsToNode(icon, { ntsIcon: { no: getIcon(data.changeClockArt, data.changeCalArt, data.setPreClockArt, data.changeHalfDay, data.btnReservationArt), 'width': '68', 'height': '68' } });
 
 			const text = document.createElement('div');
+			if (data.btnPositionNo === 1 || data.btnPositionNo === 2) {
+				if (data.btnName.length <= 8 ) {
+					text.className = "fs-30";
+				} else {
+					text.className = "fs-24";
+				}
+			} else {
+				text.className = "fs-20";
+			}
+			
 
 			const { supportUse } = data;
 

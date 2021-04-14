@@ -34,7 +34,7 @@ html{
 
 #stamp-desc{
   height: 73px;
-  width: 73vmin;
+  width: 102vmin;
   font-size: 1.5vmin;
   padding: 0 0 0 0.5vmin;
   word-break: break-word;
@@ -94,7 +94,7 @@ html{
   text-align: center;
 }
 #time-card-list td {
-  text-align: left;
+  text-align: right;
 }
 
 #tab-1, #tab-2, #tab-3, #tab-4, #tab-5{

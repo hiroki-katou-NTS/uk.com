@@ -12,6 +12,7 @@
         <span id="date">
           {{ $dt.now | date("YYYY/MM/DD（ddd）") }}
         </span>
+        <span class="text-time">Time</span>
       </div>
     </div>
      <div class="pl-4 lh-1" v-bind:style="{color: setting.displaySettingsStampScreen.settingDateTimeColor.textColor}">
@@ -45,7 +46,7 @@
           >
             <img v-bind:src="'/nts.uk.mobile.web/dist/resources/' + button.icon" height="50" width="50"/> 
             <br>
-            {{ button.buttonDisSet.buttonNameSet.buttonName }}
+            <div>{{ button.buttonDisSet.buttonNameSet.buttonName }}</div>
           </button>
         </div>
       </div>
