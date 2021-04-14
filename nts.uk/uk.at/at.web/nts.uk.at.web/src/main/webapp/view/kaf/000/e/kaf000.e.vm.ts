@@ -1,6 +1,7 @@
  /// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
 
 module nts.uk.at.view.kaf000.e.viewmodel {
+	import CommonProcess = nts.uk.at.view.kaf000.shr.viewmodel.CommonProcess;
 
     @bean()
     class Kaf000EViewModel extends ko.ViewModel {
@@ -16,7 +17,7 @@ module nts.uk.at.view.kaf000.e.viewmodel {
 			const vm = this;
             vm.$blockui("show");
             let memo = vm.approvalReason(),
-            	appDispInfoStartupOutput = ko.toJS(vm.appDispInfoStartupOutput()),
+            	appDispInfoStartupOutput = vm.appDispInfoStartupOutput,
             	command = { memo, appDispInfoStartupOutput };
 
             vm.$ajax(API.approve, command)
@@ -37,7 +38,7 @@ module nts.uk.at.view.kaf000.e.viewmodel {
 		
 		close() {
 			const vm = this;
-			vm.$window.close();	
+			vm.$window.close({reload: false});	
 		}
     }
 

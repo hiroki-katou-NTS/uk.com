@@ -100,7 +100,8 @@ module nts.uk.at.view.kaf000.d.viewmodel {
 
         getApproverLabel(loopPhase, loopFrame, loopApprover) {
             const vm = this;
-           	let index = vm.getFrameIndex(loopPhase, loopFrame, loopApprover);
+			let indexBefore = _.chain(vm.approvalRootState()).filter(o => o.phaseOrder() < loopPhase.phaseOrder()).map(o => vm.frameCount(o.listApprovalFrame())).sum().value(),
+           		index = indexBefore + vm.getFrameIndex(loopPhase, loopFrame, loopApprover);
             // case group approver
             if(_.size(loopFrame.listApprover()) > 1) {
                 index++;
