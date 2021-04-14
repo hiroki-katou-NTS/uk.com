@@ -182,7 +182,7 @@ module nts.uk.ui.ktg001.a {
                 .ktg001-border table tr td,
 			    .ktg001-border table tr th {
                     border-width: 0px;
-                    border-bottom: 1px solid #ccc;
+                    border-bottom: 1px solid #BFBFBF;
 			    }
             </style>
         `
@@ -297,6 +297,7 @@ module nts.uk.ui.ktg001.a {
                         $(vm.$el)
                             .find('[data-bind]')
                             .removeAttr('data-bind');
+                        _.forEach($(".row-show td"), element => $(element).removeClass("ktg001-no-border"));    
                         _.forEach($($(".row-show").last().children()), element => $(element).addClass("ktg001-no-border"));
                     });
                 })

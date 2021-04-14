@@ -45,7 +45,7 @@
   width: 220px;
 }
 #popup-result, #popup-search {
-  min-width: 182px;
+  min-width: 200px;
   padding: 0;
 }
 ul#list-box-search {
@@ -185,6 +185,7 @@ div#user-image {
   cursor: pointer;
 }
 #radio-search-category {
-  display: grid !important;
   padding: 0 !important;
+  display: inline-block;
+  white-space: normal;
 }
