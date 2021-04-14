@@ -4,7 +4,6 @@
 .label-div {
 	margin-top: 10px;
     margin-left: 20px;
-    margin-bottom: 20px;	
 }
 .label-div > label {
 	font-size: large;
@@ -113,4 +112,13 @@
 
 .table-phase thead{
 	background-color: #E0F59E;
+}
+
+#table-body {
+	margin-top: -1px;
+	height: 167px;
+	/*min-width: 774px;*/
+	width: auto;
+	overflow-y: auto;
+	border: #cccccc solid 1px;
 }

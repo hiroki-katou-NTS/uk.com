@@ -36,6 +36,13 @@ module nts.uk.at.view.kdl030.a.viewmodel {
 					});
 						
 					vm.appSendMailByEmpLst(ko.mapping.fromJS(result.appSendMailByEmpLst)());
+
+                    if ($('#checkSendApplicant').length > 0) {
+                        $('#checkSendApplicant').focus();
+                    } else {
+                        $('.switchBtn')[0].focus();
+                    }
+
 				});
 			}
         }
