@@ -2,8 +2,8 @@ div#master-wrapper {
 	&>div#operation-info {
 		overflow: hidden;
 		position: relative;
-		background-color: #FFE9DF;
-		border-left: 7px solid #F18855;
+		background-color: #FDE9DF;
+		border-left: 7px solid #E88450;
 
 		font-size: 16px;
 		font-weight: 700;
@@ -11,6 +11,7 @@ div#master-wrapper {
 		&>svg,
 		&>span.close {
 			position: absolute;
+			cursor: pointer;
 		}
 
 		&>svg {

@@ -275,8 +275,6 @@ module nts.uk.ui.header {
                 const getPositionLeftRight = $('.slide-item').eq(index).position().left + $('.slide-item').eq(index).outerWidth();
                 if ( getPositionLeftRight > $('.user-info').last().position().left) {
                     bar.hover = ko.observable(false);
-                } else {
-                    bar.hover(true);
                 }
             });
 
@@ -299,11 +297,11 @@ module nts.uk.ui.header {
             const vm = this;
             _.each(vm.menuSet.items(), (set: MenuSet) => {
                 _.each(set.menuBar, (bar: MenuBar, index: number) => {
-                    bar.hover = ko.observable(false);
+                    bar.hover(false);
                     if (index < vm.countMenuBar()) {
-                        bar.display = ko.observable('none');
+                        bar.display('none');
                     } else {
-                        bar.display = ko.observable('');
+                        bar.display('');
                     }
                 });
             });
@@ -311,9 +309,7 @@ module nts.uk.ui.header {
             _.each(vm.menuBars(), (bar: MenuBar, index: number) => {
                 const getPositionLeftRight = $('.slide-item').eq(index).position().left + $('.slide-item').eq(index).outerWidth();
                 if ( getPositionLeftRight > $('.user-info').last().position().left) {
-                    bar.hover = ko.observable(false);
-                } else {
-                    bar.hover(true);
+                    bar.hover(false);
                 }
             });
         }
@@ -379,7 +375,9 @@ module nts.uk.ui.header {
                 $('.pre-slider').css("visibility", "");
                 $('.pre-slider').css("visibility", "hidden");
             }
-            const lastItemPositionLeft = $('.slide-item').last().position() ? $('.slide-item').last().position().left : 0;
+            const lastItemPositionLeft = $('.slide-item').last().position()
+                ? $('.slide-item').last().position().left + $('.slide-item').last().outerWidth()
+                : 0;
             const userInfoLeft = $('.user-info').last() ? $('.user-info').last().position().left : 0;
             if (lastItemPositionLeft > userInfoLeft) {
                 $('.next-slider').css("visibility", "");

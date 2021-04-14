@@ -322,8 +322,7 @@ module nts.uk.at.view.ktg027.a {
                     { colorCode: '#00CC00', labelText: vm.$i18n('KTG027_3') },
                 ],
                 template :
-                '<div class="legend-item-symbol" style="background-color: #{colorCode}; width: 16px; height: 16px; border: 1px groove;"></div>'
-                + '<div class="legend-item-label" style="color: #{colorCode};">'
+                '<div class="legend-item-label" style="color: #{colorCode};">'
                 + '<div data-bind="ntsFormLabel: { required: false }">#{labelText}</div>'
                 + '</div>'
             };

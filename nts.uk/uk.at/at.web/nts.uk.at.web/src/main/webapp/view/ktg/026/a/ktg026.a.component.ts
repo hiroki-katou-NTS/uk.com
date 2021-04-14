@@ -250,7 +250,7 @@ module nts.uk.at.view.ktg026.a {
                         <tr>
                             <th class="ktg026-fontsize">
                                 <!-- A1_1 -->
-                                <div data-bind="ntsFormLabel: { required: false, text: $component.$i18n('KTG026_5') }"></div>
+                                <div class="ktg026-title" data-bind="ntsFormLabel: { required: false, text: $component.$i18n('KTG026_5') }"></div>
                             </th>
                             <th style="padding-right: 5px;font-size: medium;font-weight: normal;">
                                 <div style="float: right;" data-bind="ntsDatePicker: {
@@ -261,7 +261,7 @@ module nts.uk.at.view.ktg026.a {
                                     showJumpButtons: true
                                 }"></div>
                                 <!-- A1_7 -->
-                                <button style="float: right;" class="ktg026-hidden" data-bind="click: $component.close, i18n: 'KTG026_8'"></button>
+                                <button style="float: right; width: 75px;" class="ktg026-hidden" data-bind="click: $component.close, i18n: 'KTG026_8'"></button>
                             </th>
                             <th>
                                 <!-- A1_9 -->
@@ -281,13 +281,14 @@ module nts.uk.at.view.ktg026.a {
                         <tr class="ktg026-hidden">
                             <td colspan="2">
                                 <!-- A1_6 -->
-                                <div data-bind="ntsFormLabel: { required: false, text: $component.employeeName }"></div>
+                                <label class="ktg026-employee-name" data-bind="text: $component.employeeName"></label>
                             </td>
                         </tr>
                         <tr>
                             <td colspan="2" class="ktg026-1rem" style="padding-left: 8px;">
                                 <!-- A1_5 -->
-                                <div data-bind="ntsFormLabel: { required: false, text: $component.exceededNumber }"></div>
+                                <div data-bind="ntsFormLabel: { required: false, text: $component.textExceededNumber }" style="padding: 0"></div>
+                                <label data-bind="text: $component.exceededNumber"></label>
                             </td>
                         </tr>
                         
@@ -447,6 +448,7 @@ module nts.uk.at.view.ktg026.a {
         excessTimes: KnockoutObservable<number> = ko.observable(0);
         // A1_5 超過回数
         exceededNumber!: KnockoutComputed<string>;
+        textExceededNumber!: KnockoutComputed<string>;
 
         // A1_6 社員名
         employeeName: KnockoutObservable<String> = ko.observable('');
@@ -483,12 +485,18 @@ module nts.uk.at.view.ktg026.a {
                 }
             });
 
-            vm.exceededNumber = ko.computed({
+            vm.textExceededNumber = ko.computed({
                 read: () => {
                     const year = ko.unwrap<string>(vm.targetYear);
+
+                    return `${vm.$i18n('KTG026_6', [`${year}`])}`;
+                }
+            });
+            vm.exceededNumber = ko.computed({
+                read: () => {
                     const time = ko.unwrap<number>(vm.excessTimes);
 
-                    return `${vm.$i18n('KTG026_6', [`${year}`])}${vm.$i18n('KTG026_9', [`${time}`])}`;
+                    return `${vm.$i18n('KTG026_9', [`${time}`])}`;
                 }
             });
         }
@@ -508,8 +516,7 @@ module nts.uk.at.view.ktg026.a {
                     { colorCode: '#00CC00', labelText: vm.$i18n('KTG026_3') },
                 ],
                 template :
-                '<div class="legend-item-symbol" style="background-color: #{colorCode}; width: 16px; height: 16px; border: 1px groove;"></div>'
-                + '<div class="legend-item-label" style="color: #{colorCode};">'
+                '<div class="legend-item-label" style="color: #{colorCode};">'
                 + '<div data-bind="ntsFormLabel: { required: false }">#{labelText}</div>'
                 + '</div>'
             };

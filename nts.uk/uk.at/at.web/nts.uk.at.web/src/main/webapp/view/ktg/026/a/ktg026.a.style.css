@@ -12,6 +12,18 @@ body {
 #master-wrapper .ktg-026-dialog .ktg026-hidden {
   display: block !important;
 }
+#master-wrapper .ktg-026-dialog .ktg026-border-top {
+  padding: 0 !important;
+}
+
+#master-wrapper .ktg-026-dialog .ktg026-title {
+  padding-left: 5px;
+}
+
+#master-wrapper .ktg-026-dialog .ktg026-employee-name {
+  padding-left: 20px;
+  line-height: 35px;
+}
 
 #master-wrapper .ktg-026-dialog .nts-datepicker-wrapper {
   display: none !important;
