@@ -459,7 +459,7 @@ public class EmployeePublisherImpl implements EmployeePublisher {
 			result.put(k, v.stream().map(i->i.getEmpID()).distinct().collect(Collectors.toList()));
 		});
 		// 重複するものを排除した「Map<職場ID、社員ID>」を返す
-		return mapWkpIdAndSid1;
+		return result;
 	}
 
 	@AllArgsConstructor
