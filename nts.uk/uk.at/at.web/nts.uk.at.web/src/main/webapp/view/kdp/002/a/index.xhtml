@@ -30,7 +30,7 @@
           <div data-bind="css: { 'state3': $vm.state() === 'state3',
                                   'state2': $vm.state() === 'state2',
                                   'state1': $vm.state() === 'state1'}">
-            <stamp-clock params="setting: stampSetting()"></stamp-clock>
+          <div data-bind="stamp-clock: { setting: stampSetting() }"></div>
           </div>
           <div class="pull-left" id="stamp-input">
             <!-- <div class="panel" style="padding: 0 10px 10px 10px">

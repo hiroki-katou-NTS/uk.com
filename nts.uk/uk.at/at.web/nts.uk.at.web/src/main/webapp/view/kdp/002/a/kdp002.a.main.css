@@ -106,16 +106,16 @@ html{
 }
 
 .state1 .clock .text-time {
-  top: 7px !important;
+  top: 0px !important;
   left: 495px !important;
 }
 
 .state2 .clock .text-time {
-  top: 7px !important;
+  top: 0px !important;
   left: 535px !important;
 }
 
 .state3 .clock .text-time {
-  top: 7px !important;
+  top: 0px !important;
   left: 280px !important;
 }

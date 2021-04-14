@@ -88,7 +88,7 @@ class KDP002BViewModel extends ko.ViewModel {
                 switch (nameScreen.screen) {
                     case 'KDP001':
                     case 'KDP002':
-                        vm.showBtnNoti(false);
+                        vm.showBtnNoti(true);
                         break
                     case 'KDP003':
                     case 'KDP004':
@@ -111,16 +111,16 @@ class KDP002BViewModel extends ko.ViewModel {
         if (!ko.unwrap(vm.showBtnNoti)) {
 
             if (!ko.unwrap(vm.modeNikoNiko)) {
-                vm.$window.size(600, 470);
+                vm.$window.size(630, 470);
             } else {
-                vm.$window.size(620, 470);
+                vm.$window.size(630, 470);
             }
 
         } else {
             if (!ko.unwrap(vm.modeNikoNiko)) {
-                vm.$window.size(640, 470);
+                vm.$window.size(630, 470);
             } else {
-                vm.$window.size(660, 470);
+                vm.$window.size(630, 470);
             }
         }
     }
