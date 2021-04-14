@@ -9,7 +9,7 @@ module nts.uk.at.view.kaf000.a.component9.viewmodel {
 				    <div class="cell" data-bind="i18n: 'KAF000_54'" style="font-weight: bold;"></div>
 				</div>
 				<div class="panel panel-frame" data-bind="foreach: actualContentDisplayDtoLst" style="overflow: auto; height: 200px; margin-left: 3px; margin-top: 5px;">
-					<div style="margin-bottom: 10px;">
+					<div style="margin-bottom: 10px;" data-bind="style: { color: opAchievementDetail && opAchievementDetail.trackRecordAtr == 1 ? 'green' : 'black' }">
 						<div data-bind="if: $index">
 							<div style="border-bottom: 1px solid #B1B1B1; margin-bottom: 10px;"></div>
 						</div>
@@ -40,7 +40,9 @@ module nts.uk.at.view.kaf000.a.component9.viewmodel {
 								<span data-bind="if: !opAchievementDetail.opWorkTime">
 									<span style="visibility: hidden;">null</span>
 								</span>
-								<span> ~ </span>
+								<span data-bind="if: opAchievementDetail.opWorkTime || opAchievementDetail.opLeaveTime">
+									<span> ~ </span>
+								</span>
 								<span data-bind="if: opAchievementDetail.opLeaveTime">
 									<span data-bind="text: $parent.formatTime(opAchievementDetail.opLeaveTime)"></span>
 								</span>

@@ -702,8 +702,8 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
                 param = param + 6;
             } else if ( typeStamp == STAMPTYPE.EXTRAORDINARY ) {
                 this.text1 = nts.uk.resource.getText( 'KAF002_66', [dataObject.frameNo - 2] );
-				this.nameStart = nts.uk.resource.getText('KAF002_89', [dataObject.frameNo]);
-				this.nameEnd = nts.uk.resource.getText('KAF002_90', [dataObject.frameNo]);
+				this.nameStart = nts.uk.resource.getText('KAF002_89', [dataObject.frameNo -2]);
+				this.nameEnd = nts.uk.resource.getText('KAF002_90', [dataObject.frameNo -2]);
                 param = param + 2;
             }
             this.startTime = '<div style="display: block; margin: 0px 5px 5px 5px">'

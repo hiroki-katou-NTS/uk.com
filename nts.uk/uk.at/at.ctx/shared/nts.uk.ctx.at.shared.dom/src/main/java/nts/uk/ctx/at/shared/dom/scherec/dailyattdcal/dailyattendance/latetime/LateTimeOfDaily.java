@@ -62,6 +62,9 @@ public class LateTimeOfDaily {
 	private TimevacationUseTimeOfDaily timePaidUseTime;
 	//インターバル時間
 	private IntervalExemptionTime exemptionTime;
+	//遅刻報告したのでアラームにしない
+	@Setter
+	private boolean doNotSetAlarm;
 	
 	public LateTimeOfDaily(TimeWithCalculation lateTime, TimeWithCalculation lateDeductionTime, WorkNo workNo,
 			TimevacationUseTimeOfDaily timePaidUseTime, IntervalExemptionTime exemptionTime) {		
@@ -70,6 +73,7 @@ public class LateTimeOfDaily {
 		this.workNo = workNo;
 		this.timePaidUseTime = timePaidUseTime;
 		this.exemptionTime = exemptionTime;
+		this.doNotSetAlarm = false;
 	}	
 
 	/**
@@ -171,7 +175,7 @@ public class LateTimeOfDaily {
 				forRecordTimeSheet.setDeductionTimeSheet(
 						lateTimeSheetList.stream().flatMap(t -> t.getForRecordTimeSheet().get().getDeductionTimeSheet().stream()).collect(Collectors.toList()));
 				forRecordTimeSheet.setRecordedTimeSheet(
-						lateTimeSheetList.stream().flatMap(t -> t.getForRecordTimeSheet().get().getDeductionTimeSheet().stream()).collect(Collectors.toList()));
+						lateTimeSheetList.stream().flatMap(t -> t.getForRecordTimeSheet().get().getRecordedTimeSheet().stream()).collect(Collectors.toList()));
 			}
 			forDeductTimeSheet = new LateLeaveEarlyTimeSheet(
 					new TimeSpanForDailyCalc(
@@ -182,7 +186,7 @@ public class LateTimeOfDaily {
 			forDeductTimeSheet.setDeductionTimeSheet(
 					lateTimeSheetList.stream().flatMap(t -> t.getForDeducationTimeSheet().get().getDeductionTimeSheet().stream()).collect(Collectors.toList()));
 			forDeductTimeSheet.setRecordedTimeSheet(
-					lateTimeSheetList.stream().flatMap(t -> t.getForDeducationTimeSheet().get().getDeductionTimeSheet().stream()).collect(Collectors.toList()));
+					lateTimeSheetList.stream().flatMap(t -> t.getForDeducationTimeSheet().get().getRecordedTimeSheet().stream()).collect(Collectors.toList()));
 		}
 		
 		LateTimeSheet lateTimeSheet = new LateTimeSheet(Optional.of(forRecordTimeSheet), Optional.of(forDeductTimeSheet), workNo.v(), Optional.empty());

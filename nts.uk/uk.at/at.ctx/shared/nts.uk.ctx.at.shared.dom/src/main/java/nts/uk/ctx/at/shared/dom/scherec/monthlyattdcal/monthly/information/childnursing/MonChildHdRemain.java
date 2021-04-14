@@ -11,7 +11,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 
 /**
  * @author phongtq
- * 子の看護月別残数データ
+ * 子の看護休暇月別残数データ
  */
 @Getter
 @AllArgsConstructor

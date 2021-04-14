@@ -7,15 +7,20 @@ package nts.uk.ctx.at.shared.app.find.vacation.setting.nursingleave.dto;
 import java.util.List;
 import java.util.Optional;
 
-import lombok.val;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.MaxPersonSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingCategory;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingLeaveSettingSetMemento;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.TimeCareNursingSet;
-import nts.uk.shr.com.time.calendar.MonthDay;
 
 public class NursingLeaveSettingDto implements NursingLeaveSettingSetMemento {
+	
+	/** The Constant INDEX_NURSING_SETTING. */
+    private static final int INDEX_NURSING_SETTING = 0;
+    
+    /** The Constant INDEX_CHILD_NURSING_SETTING. */
+    private static final int INDEX_CHILD_NURSING_SETTING = 1;
+    
 
     /** The manage type. 管理区分 */
     public Integer manageType;
@@ -107,13 +112,21 @@ public class NursingLeaveSettingDto implements NursingLeaveSettingSetMemento {
 	}
 
 	@Override
-	public void setMaxPersonSetting(MaxPersonSetting maxPersonSetting) {
-		if (maxPersonSetting.getNursingNumberLeaveDay() != null) {
-		    this.nursingNumberLeaveDay = maxPersonSetting.getNursingNumberLeaveDay().v();
+	public void setMaxPersonSetting(List<MaxPersonSetting> maxPersonSetting) {
+		if (!maxPersonSetting.isEmpty() && maxPersonSetting.size() == 2) {
+			if (maxPersonSetting.get(INDEX_NURSING_SETTING).getNursingNumberPerson() != null) {
+				this.nursingNumberPerson = maxPersonSetting.get(INDEX_NURSING_SETTING).getNursingNumberPerson().v();
+			}
+			if (maxPersonSetting.get(INDEX_NURSING_SETTING).getNursingNumberLeaveDay() != null) {
+				this.nursingNumberLeaveDay = maxPersonSetting.get(INDEX_NURSING_SETTING).getNursingNumberLeaveDay().v();
+			}
+			if (maxPersonSetting.get(INDEX_CHILD_NURSING_SETTING).getNursingNumberPerson() != null) {
+				this.nursingNumberPerson2 = maxPersonSetting.get(INDEX_CHILD_NURSING_SETTING).getNursingNumberPerson().v();
+			}
+			if (maxPersonSetting.get(INDEX_CHILD_NURSING_SETTING).getNursingNumberLeaveDay() != null) {
+				this.nursingNumberLeaveDay2 = maxPersonSetting.get(INDEX_CHILD_NURSING_SETTING).getNursingNumberLeaveDay().v();
+			}
 		}
-        if (maxPersonSetting.getNursingNumberLeaveDay2() != null) {
-            this.nursingNumberLeaveDay2 = maxPersonSetting.getNursingNumberLeaveDay2().v();
-        }
 	}
 
 	@Override
@@ -134,4 +147,6 @@ public class NursingLeaveSettingDto implements NursingLeaveSettingSetMemento {
 		this.nursingNumberPerson = 2;
 		
 	}
+
+	
 }

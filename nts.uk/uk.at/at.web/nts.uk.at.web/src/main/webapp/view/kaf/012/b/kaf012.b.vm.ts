@@ -104,8 +104,8 @@ module nts.uk.at.view.kaf012.b.viewmodel {
                         detail.timeZones.forEach(z => {
                             const index = detail.appTimeType < 4 ? 0 : z.workNo - 1;
                             const startTime = detail.appTimeType >= 4
-                                            || detail.appTimeType == AppTimeType.ATWORK
-                                            || detail.appTimeType == AppTimeType.ATWORK2 ? z.startTime : z.endTime;
+                                            || detail.appTimeType == AppTimeType.OFFWORK
+                                            || detail.appTimeType == AppTimeType.OFFWORK2 ? z.startTime : z.endTime;
                             const endTime = detail.appTimeType < 4 ? null : z.endTime;
                             if (detail.appTimeType >= 4) {
                                 if (vm.applyTimeData()[4].timeZones[index].displayCombobox())
@@ -196,20 +196,19 @@ module nts.uk.at.view.kaf012.b.viewmodel {
                             || applyTime.childCareAppTime > 0
                             || applyTime.careAppTime > 0
                             || applyTime.super60AppTime > 0
-                            || applyTime.specialAppTime > 0
-                            || !!row.timeZones[0].startTime()) {
+                            || applyTime.specialAppTime > 0) {
                             details.push({
                                 appTimeType: row.appTimeType,
                                 timeZones: [{
                                     workNo: row.appTimeType == AppTimeType.ATWORK || row.appTimeType == AppTimeType.OFFWORK ? 1 : 2,
-                                    startTime: row.appTimeType == AppTimeType.ATWORK || row.appTimeType == AppTimeType.ATWORK2 ? row.timeZones[0].startTime() : null,
-                                    endTime: row.appTimeType == AppTimeType.ATWORK || row.appTimeType == AppTimeType.ATWORK2 ? null : row.timeZones[0].startTime(),
+                                    startTime: row.appTimeType == AppTimeType.ATWORK || row.appTimeType == AppTimeType.ATWORK2 ? row.scheduledTime() : row.timeZones[0].startTime(),
+                                    endTime: row.appTimeType == AppTimeType.ATWORK || row.appTimeType == AppTimeType.ATWORK2 ? row.timeZones[0].startTime() : row.scheduledTime(),
                                 }],
                                 applyTime: applyTime
                             });
                         }
                     } else {
-                        const privateTimeZones = row.timeZones.filter(z => z.appTimeType() == AppTimeType.PRIVATE && z.display() && (!!z.startTime() || !!z.endTime()));
+                        const privateTimeZones = row.timeZones.filter(z => z.appTimeType() == AppTimeType.PRIVATE && (!!z.startTime() || !!z.endTime()));
                         const privateApplyTime = {
                             substituteAppTime: vm.leaveType() == LeaveType.SUBSTITUTE || vm.leaveType() == LeaveType.COMBINATION ? row.applyTime[0].substituteAppTime() : 0,
                             annualAppTime: vm.leaveType() == LeaveType.ANNUAL || vm.leaveType() == LeaveType.COMBINATION ? row.applyTime[0].annualAppTime() : 0,
@@ -224,15 +223,14 @@ module nts.uk.at.view.kaf012.b.viewmodel {
                             || privateApplyTime.childCareAppTime > 0
                             || privateApplyTime.careAppTime > 0
                             || privateApplyTime.super60AppTime > 0
-                            || privateApplyTime.specialAppTime > 0
-                            || privateTimeZones.length > 0) {
+                            || privateApplyTime.specialAppTime > 0) {
                             details.push({
                                 appTimeType: AppTimeType.PRIVATE,
                                 timeZones: privateTimeZones.map(z => ({workNo: z.workNo, startTime: z.startTime(), endTime: z.endTime()})),
                                 applyTime: privateApplyTime
                             });
                         }
-                        const unionTimeZones = row.timeZones.filter(z => z.appTimeType() == AppTimeType.UNION && z.display() && (!!z.startTime() || !!z.endTime()));
+                        const unionTimeZones = row.timeZones.filter(z => z.appTimeType() == AppTimeType.UNION && (!!z.startTime() || !!z.endTime()));
                         const unionApplyTime = {
                             substituteAppTime: vm.leaveType() == LeaveType.SUBSTITUTE || vm.leaveType() == LeaveType.COMBINATION ? row.applyTime[1].substituteAppTime() : 0,
                             annualAppTime: vm.leaveType() == LeaveType.ANNUAL || vm.leaveType() == LeaveType.COMBINATION ? row.applyTime[1].annualAppTime() : 0,
@@ -247,8 +245,7 @@ module nts.uk.at.view.kaf012.b.viewmodel {
                             || unionApplyTime.childCareAppTime > 0
                             || unionApplyTime.careAppTime > 0
                             || unionApplyTime.super60AppTime > 0
-                            || unionApplyTime.specialAppTime > 0
-                            || unionTimeZones.length > 0) {
+                            || unionApplyTime.specialAppTime > 0) {
                             details.push({
                                 appTimeType: AppTimeType.UNION,
                                 timeZones: unionTimeZones.map(z => ({workNo: z.workNo, startTime: z.startTime(), endTime: z.endTime()})),
@@ -262,18 +259,7 @@ module nts.uk.at.view.kaf012.b.viewmodel {
             vm.$blockui("show");
             return vm.$validate('.nts-input', '#kaf000-b-component3-prePost', '#kaf000-b-component5-comboReason')
                 .then(isValid => {
-                    let timeZoneError = false;
-                    details.forEach(d => {
-                        if (d.appTimeType >= 4) {
-                            d.timeZones.forEach((tz: any) => {
-                                if (tz.startTime > tz.endTime) {
-                                    timeZoneError = true;
-                                    $("#endTime-" + tz.workNo).ntsError("set", {messageId: "Msg_857"});
-                                }
-                            });
-                        }
-                    });
-                    if (isValid && !timeZoneError) {
+                    if (isValid && !nts.uk.ui.errors.hasError()) {
                         const params = {
                             timeDigestAppType: vm.leaveType(),
                             applicationUpdate: ko.toJS(vm.application),

@@ -59,6 +59,7 @@ import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.service.DateRegistedEmpSche;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.service.RegistrationListDateSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.createworkschedule.createschedulecommon.correctworkschedule.CorrectWorkSchedule;
+import nts.uk.ctx.at.schedule.dom.schedule.task.taskschedule.TaskSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ConfirmedATR;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ProcessingStatus;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ScheManaStatuTempo;
@@ -337,26 +338,23 @@ public class ScheduleCreatorExecutionTransaction {
 			this.workScheduleRepository.insertAll(companyId, result.getListWorkSchedule());
 			
 			// Outputの勤務種類一覧を繰り返す
-			this.managedParallelWithContext.forEach(ControlOption.custom().millisRandomDelay(MAX_DELAY_PARALLEL),
-					result.getListWorkSchedule(), ws -> {
-						// 暫定データの登録
-						if (ws != null) {
-							this.interimRemainDataMngRegisterDateChange.registerDateChange(companyId, ws.getEmployeeID(),
-									Arrays.asList(ws.getYmd()));
-						}
-					});
-
+			result.getListWorkSchedule().forEach( ws -> {
+				// 暫定データの登録
+				if (ws != null) {
+					this.interimRemainDataMngRegisterDateChange.registerDateChange(companyId, ws.getEmployeeID(),
+							Arrays.asList(ws.getYmd()));
+				}
+			});
+			
 			// エラー一覧を繰り返す
-			this.managedParallelWithContext.forEach(ControlOption.custom().millisRandomDelay(MAX_DELAY_PARALLEL),
-					result.getListError(), error -> {
-						// エラーを登録する
-						if (error != null) {
-							error.setExecutionId(command.getExecutionId());
-							this.scheduleErrorLogRepository.addByTransaction(error);
-						}
-					});
-
-			// }
+			result.getListError().forEach( error -> {
+				// エラーを登録する
+				if (error != null) {
+					error.setExecutionId(command.getExecutionId());
+					this.scheduleErrorLogRepository.addByTransaction(error);
+				}
+			});
+			
 		}
 	}
 
@@ -489,14 +487,23 @@ public class ScheduleCreatorExecutionTransaction {
 		// データ（処理状態付き）を生成して返す
 		return new DataProcessingStatusResult(CID, null,
 				ProcessingStatus.valueOf(ProcessingStatus.NORMAL_PROCESS.value),
-				new WorkSchedule(creator.getEmployeeId(), dateInPeriod, ConfirmedATR.UNSETTLED,
+				new WorkSchedule(
+						creator.getEmployeeId(),
+						dateInPeriod,
+						ConfirmedATR.UNSETTLED,
 						new WorkInfoOfDailyAttendance(new WorkInformation("", ""), 
 								CalculationState.No_Calculated, NotUseAttribute.Not_use, NotUseAttribute.Not_use,
 								nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.DayOfWeek
 										.valueOf(dateInPeriod.dayOfWeek() - 1),
-								new ArrayList<>()),
-						null, new BreakTimeOfDailyAttd(), new ArrayList<>(), Optional.empty(), Optional.empty(),
-						Optional.empty(),Optional.empty()),
+								new ArrayList<>(), Optional.empty()),
+						null,
+						new BreakTimeOfDailyAttd(),
+						new ArrayList<>(),
+						TaskSchedule.createWithEmptyList(),
+						Optional.empty(),
+						Optional.empty(),
+						Optional.empty(),
+						Optional.empty()),
 				workingConditionItem, employmentInfo);
 
 	}
@@ -755,10 +762,15 @@ public class ScheduleCreatorExecutionTransaction {
 					if(command.getContent().getConfirm()) {
 						atr = ConfirmedATR.CONFIRMED;
 					}
-					WorkSchedule workSchedule = new WorkSchedule(integrationOfDaily.getEmployeeId(),
-							integrationOfDaily.getYmd(), atr,
-							integrationOfDaily.getWorkInformation(), integrationOfDaily.getAffiliationInfor(),
-							integrationOfDaily.getBreakTime(), integrationOfDaily.getEditState(),
+					WorkSchedule workSchedule = new WorkSchedule(
+							integrationOfDaily.getEmployeeId(),
+							integrationOfDaily.getYmd(),
+							atr,
+							integrationOfDaily.getWorkInformation(),
+							integrationOfDaily.getAffiliationInfor(),
+							integrationOfDaily.getBreakTime(),
+							integrationOfDaily.getEditState(),
+							TaskSchedule.createWithEmptyList(),
 							integrationOfDaily.getAttendanceLeave(),
 							integrationOfDaily.getAttendanceTimeOfDailyPerformance(),
 							integrationOfDaily.getShortTime(),

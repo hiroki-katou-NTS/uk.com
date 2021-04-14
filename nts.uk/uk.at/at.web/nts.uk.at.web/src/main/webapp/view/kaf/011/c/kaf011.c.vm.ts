@@ -78,7 +78,8 @@ module nts.uk.at.view.kaf011.c.viewmodel {
 				block.invisible();
 				ajax('at/request/application/holidayshipment/saveChangeDateScreenC',{appDateNew: new Date(self.appDate()), displayInforWhenStarting: self.displayInforWhenStarting, appReason: self.appReason(), appStandardReasonCD: self.appStandardReasonCD()}).then((data: any) =>{
 					dialog.info({ messageId: "Msg_15"}).then(()=>{
-						return self.handleMailResult(data, self).then(() => {
+						nts.uk.request.ajax("at", "at/request/application/reflect-app", data.reflectAppIdLst);
+						return CommonProcess.handleMailResult(data, self).then(() => {
 							nts.uk.ui.windows.setShared('KAF011C_RESLUT', { appID: data.appIDLst[0] });
 							self.closeDialog();
                             return true;

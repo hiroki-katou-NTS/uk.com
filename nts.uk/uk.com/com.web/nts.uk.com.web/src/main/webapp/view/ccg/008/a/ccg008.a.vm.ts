@@ -1,5 +1,6 @@
 module nts.uk.com.view.ccg008.a.screenModel {
 	import request = nts.uk.request;
+	import ntsFile = nts.uk.request.file;
 	const MINUTESTOMILISECONDS = 60000;
 
 	const D_FORMAT = 'YYYY/MM/DD';
@@ -38,6 +39,8 @@ module nts.uk.com.view.ccg008.a.screenModel {
 
 	type LAYOUT_DISPLAY_TYPE = null | 0 | 1 | 2 | 3;
 
+	type LAYOUT_DATA = string | FlowMenuOutputCCG008 | null;
+
 	type WIDGET = {
 		name: string;
 		params: any;
@@ -75,7 +78,7 @@ module nts.uk.com.view.ccg008.a.screenModel {
 		virtual: false
 	})
 	export class WidgetFrameBindingHandler implements KnockoutBindingHandler {
-		init = (element: HTMLElement, valueAccessor: () => KnockoutObservable<string | null>, allBindingsAccessor: KnockoutAllBindingsAccessor, viewModel: ViewModel, bindingContext: KnockoutBindingContext): void | { controlsDescendantBindings: boolean; } => {
+		init = (element: HTMLElement, valueAccessor: () => KnockoutObservable<LAYOUT_DATA>, allBindingsAccessor: KnockoutAllBindingsAccessor, viewModel: ViewModel, bindingContext: KnockoutBindingContext): void | { controlsDescendantBindings: boolean; } => {
 			element.removeAttribute('data-bind');
 
 			if (element.tagName !== 'DIV') {
@@ -90,12 +93,34 @@ module nts.uk.com.view.ccg008.a.screenModel {
 
 			ko.computed({
 				read: () => {
-					const src = ko.unwrap<string | null>(url);
+					const src = ko.unwrap<LAYOUT_DATA>(url);
 
 					if (!src) {
 						element.innerHTML = '';
 					} else {
-						element.innerHTML = `<iframe src="${src}" />`;
+						if (_.isString(src)) {
+							element.innerHTML = `<iframe src="${src}" />`;
+						} else {
+							const { fileId, isFlowmenu } = src;
+              if (!!fileId) {
+                if (isFlowmenu) {
+                  viewModel
+                    .$ajax("com", `/sys/portal/createflowmenu/extract/${fileId}`)
+                    .then((res: { htmlContent: string; }) => {
+                      const frame = document.createElement('iframe');
+  
+                      $('.widget-center').append(frame);
+
+                      const doc = frame.contentDocument || frame.contentWindow.document;
+  
+                      doc.body.innerHTML = res.htmlContent;
+                    });
+                } else {
+                  element.innerHTML = `<iframe src="${ntsFile.liveViewUrl(fileId, 'index.htm')}"></iframe>`;
+                }
+              }
+							
+						}
 					}
 				},
 				disposeWhenNodeIsRemoved: element
@@ -128,7 +153,7 @@ module nts.uk.com.view.ccg008.a.screenModel {
 		layoutDisplayType: KnockoutObservable<LAYOUT_DISPLAY_TYPE> = ko.observable(null);
 
 		widgetLeft: KnockoutObservableArray<WIDGET> = ko.observableArray([]);
-		widgetCenter: KnockoutObservable<string | null> = ko.observable(null);
+		widgetCenter: KnockoutObservable<LAYOUT_DATA> = ko.observable(null);
 		widgetRight: KnockoutObservableArray<WIDGET> = ko.observableArray([]);
 
 		classLayoutName!: KnockoutComputed<string>;
@@ -172,7 +197,9 @@ module nts.uk.com.view.ccg008.a.screenModel {
 							})
 							.then((cache: any) => vm.$window.shared('cache', cache));
 
-              const dataProcess = currentOrNextMonth && currentOrNextMonth == 1 ? parseInt(vm.startDateInClosure()) : parseInt(vm.startDateInClosure()) + 1
+              const dataProcess = currentOrNextMonth && currentOrNextMonth == 1
+								? parseInt(vm.startDateInClosure())
+								: parseInt(moment.utc(vm.startDateInClosure(), 'YYYYMM').add(1, 'M').format('YYYYMM'));
               const params: any = {
                 closureId:  closureId,
                 processDate : dataProcess
@@ -273,7 +300,9 @@ module nts.uk.com.view.ccg008.a.screenModel {
                       });
                       vm.dataToppage(null);
                       vm.startDateInClosure(cache.startDate);
-                      const dataProcess = vm.currentOrNextMonth() && vm.currentOrNextMonth() === 1 ? parseInt(cache.startDate) : parseInt(cache.startDate) + 1
+                      const dataProcess = vm.currentOrNextMonth() && vm.currentOrNextMonth() == 1
+												? parseInt(vm.startDateInClosure())
+												: parseInt(moment.utc(vm.startDateInClosure(), 'YYYYMM').add(1, 'M').format('YYYYMM'));
                       const params: any = {
                         closureId:  cache.closureId,
                         processDate : dataProcess
@@ -290,7 +319,9 @@ module nts.uk.com.view.ccg008.a.screenModel {
                       vm.startDateInClosure(cache.startDate);
                       vm.closureId(obj.closureId);
                       vm.currentOrNextMonth(obj.currentOrNextMonth);
-                      const dataProcess = vm.currentOrNextMonth() && vm.currentOrNextMonth() == 1 ? parseInt(cache.startDate) : parseInt(cache.startDate) + 1
+                      const dataProcess = vm.currentOrNextMonth() && vm.currentOrNextMonth() == 1
+												? parseInt(vm.startDateInClosure())
+												: parseInt(moment.utc(vm.startDateInClosure(), 'YYYYMM').add(1, 'M').format('YYYYMM'));
                       const params: any = {
                         closureId:  cache.closureId,
                         processDate : dataProcess
@@ -361,7 +392,7 @@ module nts.uk.com.view.ccg008.a.screenModel {
 					return;
 				}
 
-				const { layout2, layout3, urlLayout1, layoutDisplayType } = displayTopPage;
+				const { layout1, layout2, layout3, urlLayout1, layoutDisplayType } = displayTopPage;
 
 				const layout2Widget = (settings: WidgetSettingDto[]) => {
 					return _
@@ -377,7 +408,17 @@ module nts.uk.com.view.ccg008.a.screenModel {
 						.value();
 				};
 
-				vm.widgetCenter(urlLayout1);
+				if (urlLayout1) {
+					vm.widgetCenter(urlLayout1);
+				} else {
+					if (layout1) {
+						const [first] = layout1;
+
+						if (first) {
+							vm.widgetCenter(first);
+						}
+					}
+				}
 
 				switch (layoutDisplayType) {
 					default:

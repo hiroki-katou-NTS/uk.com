@@ -21,15 +21,33 @@ module nts.uk.at.view.kaf000.b.component4.viewmodel {
         employeeName: KnockoutObservable<string>;
         created(params: any) {
             const vm = this;
+			const startFormInputPerson = '（入力者： ';
+			const endFormInputPerson = '）';
 			vm.appType = params.appType;
             vm.appDispInfoStartupOutput = params.appDispInfoStartupOutput;
             vm.employeeName = ko.observable("employeeName");
 
-			vm.employeeName(vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.employeeInfoLst[0].bussinessName);
+			let inputPerson = 
+				_.isNil(vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.opEmployeeInfo) ? 
+				null : 
+				(startFormInputPerson + vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.opEmployeeInfo.bussinessName + endFormInputPerson);
+			if (_.isNil(inputPerson)) {
+	            vm.employeeName(vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.employeeInfoLst[0].bussinessName);				
+			} else {
+				vm.employeeName(vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.employeeInfoLst[0].bussinessName + inputPerson);
+			}
             params.application().employeeIDLst(_.map(vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.employeeInfoLst, (o: any) => o.sid));
 
 			vm.appDispInfoStartupOutput.subscribe(value => {
-         		vm.employeeName(value.appDispInfoNoDateOutput.employeeInfoLst[0].bussinessName);
+				let inputPerson = 
+				_.isNil(vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.opEmployeeInfo) ? 
+				null : 
+				(startFormInputPerson + vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.opEmployeeInfo.bussinessName + endFormInputPerson);
+				if (_.isNil(inputPerson)) {
+		            vm.employeeName(vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.employeeInfoLst[0].bussinessName);				
+				} else {
+					vm.employeeName(vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.employeeInfoLst[0].bussinessName + inputPerson);
+				}
             	params.application().employeeIDLst(_.map(value.appDispInfoNoDateOutput.employeeInfoLst, (o: any) => o.sid));
             });
         }

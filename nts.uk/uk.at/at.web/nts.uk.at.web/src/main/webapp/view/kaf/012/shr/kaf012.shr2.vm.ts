@@ -12,16 +12,16 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
 
     const template = `
     <div id="kaf012-share-component2">
-        <div class="control-group valign-center d-flex">
+        <div class="control-group valign-center">
             <div data-bind="ntsFormLabel: {required:true , text: $i18n('KAF012_46')}"></div>
-            <div id="leave-type-switch" class="ml_-5" 
+            <div id="leave-type-switch"
                 data-bind="ntsSwitchButton: {
 						name: $i18n('KAF012_5'),
 						options: switchOptions,
 						optionsValue: 'code',
 						optionsText: 'name',
 						value: leaveType,
-						enable: true,
+						enable: !viewMode(),
 						required: true }">
 			</div>
         </div>
@@ -35,12 +35,12 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
                     value: specialLeaveFrame,
                     columns: [{ prop: 'specialHdFrameName', length: 20 }],
                     required: true,
-                    enable: true}">  
+                    enable: !viewMode()}">  
             </div>
         </div>
         <div class="control-group valign-top">
             <div data-bind="ntsFormLabel: {required:true , text: $i18n('KAF012_6')}"></div>
-            <div class="d-flex ml_-10">
+            <div style="display: inline-flex;" data-bind="css: {hidden: appDispInfoStartupOutput().appDispInfoWithDateOutput.opErrorFlag > 0}">
                 <div class="pull-left">
                     <table id="kaf012-input-table">
                         <thead>
@@ -126,6 +126,7 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
                     </table>
                 </div>
                 <div id="cal-button-wrapper" class="pull-left">
+                    <div data-bind="style: {height: leaveType() == 6 ? '33px' : '0px'}" />
                     <div>
                         <button id="time-calc-button" 
                                 class="proceed caret-right" 
@@ -738,18 +739,29 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
 
             this.startTime.subscribe((value) => {
                 if (this.appTimeType() >= 4) {
-                    if (value <= this.endTime()) {
-                        $("#endTime-" + this.workNo).ntsError("clear");
-                    }
+                    this.validateTime(value, this.endTime());
                 }
             });
             this.endTime.subscribe(value => {
                 if (this.appTimeType() >= 4) {
-                    if (value >= this.startTime()) {
-                        $("#endTime-" + this.workNo).ntsError("clear");
-                    }
+                    this.validateTime(this.startTime(), value);
                 }
             });
+        }
+
+        validateTime(start: any, end: any) {
+            $("#endTime-" + this.workNo).ntsError("clear");
+            if (nts.uk.ntsNumber.isNumber(start) && nts.uk.ntsNumber.isNumber(end)) {
+                if (end < start) {
+                    setTimeout(() => {
+                        if (nts.uk.ui.errors.getErrorByElement($("#endTime-" + this.workNo)).filter((e: any) => e.errorCode == "Msg_857").length == 0)
+                            $("#endTime-" + this.workNo).ntsError("set", {messageId: "Msg_857"});
+                    }, 100);
+                }
+            } else if (_.isEmpty(start) || _.isEmpty(end)) {
+                $("#startTime-" + this.workNo).trigger("validate");
+                $("#endTime-" + this.workNo).trigger("validate");
+            }
         }
     }
 

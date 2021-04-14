@@ -81,7 +81,8 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 					ApplicationListAtr.APPLICATION, 
 					approvalListDisplaySetting, 
 					companyID, 
-					Collections.emptyMap());
+					Collections.emptyMap(),
+					ScreenAtr.KDL030);
 			content = appOvertimeDataOutput.getAppContent();
 			break;
 		case HOLIDAY_WORK_APPLICATION:
@@ -94,7 +95,8 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 					ApplicationListAtr.APPLICATION, 
 					approvalListDisplaySetting, 
 					companyID,
-					Collections.emptyMap());
+					Collections.emptyMap(),
+					ScreenAtr.KDL030);
 			content = appHolidayWorkDataOutput.getAppContent();
 			break;
 		case BUSINESS_TRIP_APPLICATION:

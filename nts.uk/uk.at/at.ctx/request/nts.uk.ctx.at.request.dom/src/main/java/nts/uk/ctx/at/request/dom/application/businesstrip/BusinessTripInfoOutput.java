@@ -1,8 +1,7 @@
 package nts.uk.ctx.at.request.dom.application.businesstrip;
 
 import lombok.*;
-import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTripWorkTypes;
-import nts.uk.ctx.at.request.dom.setting.request.application.businesstrip.AppTripRequestSet;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.businesstrip.AppTripRequestSet;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ActualContentDisplay;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;

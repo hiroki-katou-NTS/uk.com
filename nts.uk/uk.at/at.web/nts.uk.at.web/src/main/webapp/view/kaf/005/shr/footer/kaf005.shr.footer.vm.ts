@@ -10,6 +10,7 @@ module nts.uk.at.view.kaf005.shr.footer.viewmodel {
 		</div>
 		<div class="cell valign-center">
 			<div id="combo-box" data-bind="ntsComboBox: {
+					enable: outputMode,
 					options: messageInfos()[0].listDrop,
 					optionsValue: 'code',
 					value: messageInfos()[0].selectedCode,
@@ -51,6 +52,7 @@ module nts.uk.at.view.kaf005.shr.footer.viewmodel {
 		</div>
 		<div class="cell valign-center">
 			<div id="combo-box" data-bind="ntsComboBox: {
+					enable: outputMode,
 					options: messageInfos()[1].listDrop,
 					optionsValue: 'code',
 					value: messageInfos()[1].selectedCode,

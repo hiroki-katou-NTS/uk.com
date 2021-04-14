@@ -102,7 +102,7 @@ public class OutingTimeOfDailyAttd {
 			if((fluidprefixBreakTimeSet.isUsePrivateGoOutRest() && deductionItem.getGoOutReason().get().isPrivate())
 				||(fluidprefixBreakTimeSet.isUseAssoGoOutRest() && deductionItem.getGoOutReason().get().isUnion())) {
 				/** ○控除項目の時間帯の休憩用の区分を変更 */
-				returnList.add(TimeSheetOfDeductionItem.createTimeSheetOfDeductionItemAsFixed(deductionItem.getTimeSheet(),
+				returnList.add(TimeSheetOfDeductionItem.createTimeSheetOfDeductionItem(deductionItem.getTimeSheet(),
 																							  deductionItem.getRounding(),
 																							  deductionItem.getRecordedTimeSheet(),
 																							  deductionItem.getDeductionTimeSheet(),

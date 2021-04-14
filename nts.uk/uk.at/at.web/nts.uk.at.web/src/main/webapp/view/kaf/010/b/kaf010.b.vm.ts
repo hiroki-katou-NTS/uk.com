@@ -2061,6 +2061,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 		holidayWorkAppSet: any;
 		divergenceReasonInputMethod: Array<DivergenceReasonInputMethod>;
 		hdWorkOvertimeReflect: any;
+		workInfo?: any;
 	}
 	interface DivergenceReasonInputMethod{
 		divergenceTimeNo: number;

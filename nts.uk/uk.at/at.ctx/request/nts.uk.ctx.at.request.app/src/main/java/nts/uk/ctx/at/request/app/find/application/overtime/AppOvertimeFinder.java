@@ -236,50 +236,10 @@ public class AppOvertimeFinder {
 			return null;
 		}
 	}	
-	/**
-	 * フレックス時間を表示するかチェック
-	 * 
-	 * @param baseDate
-	 * @param employeeID
-	 * @return フレックス時間を表示する区分
-	 */
-	public boolean flexDisplayCheck(GeneralDate baseDate, String employeeID) {
-//		if (appOvertimeSettingRepository.getAppOver().get().getFlexJExcessUseSetAtr().equals(FlexExcessUseSetAtr.DISPLAY)) {
-//			Optional<WorkingConditionItem> personalLablorCodition = workingConditionItemRepository.getBySidAndStandardDate(employeeID, baseDate);
-//			if (personalLablorCodition.isPresent()) {
-//				if (personalLablorCodition.get().getLaborSystem().isFlexTimeWork()) {
-//					return true;
-//				} else {
-//					return false;
-//				}
-//			} else {
-//				return false;
-//			}
-//		} else if (appOvertimeSettingRepository.getAppOver().get().getFlexJExcessUseSetAtr().equals(FlexExcessUseSetAtr.ALWAYSDISPLAY)) {
-//			return true;
-//		} else {
-//			return false;
-//		}
-		return true;
-	}
 	
 	
-//	public Application createApplication(ApplicationDto application) {
-//		
-//		return Application.createFromNew(
-//				EnumAdaptor.valueOf(application.getPrePostAtr(), PrePostAtr.class),
-//				application.getEmployeeID(),
-//				ApplicationType.OVER_TIME_APPLICATION,
-//				new ApplicationDate(GeneralDate.fromString(application.getAppDate(), PATTERN_DATE)),
-//				application.getEnteredPerson(),
-//				application.getOpStampRequestMode() == null ? Optional.empty() : Optional.of(EnumAdaptor.valueOf(application.getOpStampRequestMode(), StampRequestMode.class)),
-//				application.getOpReversionReason() == null ? Optional.empty() : Optional.of(new ReasonForReversion(application.getOpReversionReason())),
-//				application.getOpAppStartDate() == null ? Optional.empty() : Optional.of(new ApplicationDate(GeneralDate.fromString(application.getOpAppStartDate(), PATTERN_DATE))),
-//				application.getOpAppEndDate() == null ? Optional.empty() : Optional.of(new ApplicationDate(GeneralDate.fromString(application.getOpAppEndDate(), PATTERN_DATE))),
-//				application.getOpAppReason() == null ? Optional.empty() : Optional.of(new AppReason(application.getOpAppReason())),
-//				application.getOpAppStandardReasonCD() == null ? Optional.empty() : Optional.of(new AppStandardReasonCode(application.getOpAppStandardReasonCD())));
-//	}
 	
+
 	/**
 	 * Mobile
 	 */
