@@ -59,6 +59,7 @@ module nts.uk.ui.at.kdp013.c {
         margin-left: 7px;
         margin-right: 7px;
     }
+    .edit-event .nts-dropdown .message,
     .edit-event .nts-description .message,
     .edit-event .time-range-control .message {
         display: none;
@@ -66,6 +67,7 @@ module nts.uk.ui.at.kdp013.c {
         font-size: 12px;
         padding-top: 3px;
     }
+    .edit-event .nts-dropdown.error .message,
     .edit-event .nts-description.error .message,
     .edit-event .time-range-control.error .message {
         display: block;
@@ -140,7 +142,7 @@ module nts.uk.ui.at.kdp013.c {
                     </tr>
                     <tr>
                         <td data-bind="i18n: 'C1_10'"></td>
-                        <td><div data-bind="dropdown: ko.observable(''), items: $component.items"></div></td>
+                        <td><div data-bind="dropdown: ko.observable(''), items: $component.items, required: true, name: ''"></div></td>
                     </tr>
                     <tr>
                         <td data-bind="i18n: 'C1_13'"></td>
@@ -318,20 +320,29 @@ module nts.uk.ui.at.kdp013.c {
             const event = data();
             const { timeRange, descriptions } = model;
 
-            if (event) {
-                const { start } = event;
-                const tr = ko.unwrap(timeRange);
+            $.Deferred()
+                .resolve(true)
+                // validate control
+                .then(() => $(vm.$el).find('input, textarea').trigger('blur'))
+                .then(() => vm.hasError())
+                .then((invalid: boolean) => {
+                    if (!invalid) {
+                        if (event) {
+                            const { start } = event;
+                            const tr = ko.unwrap(timeRange);
 
-                event.setStart(setTimeOfDate(start, tr.start));
-                event.setEnd(setTimeOfDate(start, tr.end));
+                            event.setStart(setTimeOfDate(start, tr.start));
+                            event.setEnd(setTimeOfDate(start, tr.end));
 
-                event.setExtendedProp('id', randomId());
-                event.setExtendedProp('status', 'update');
-                event.setExtendedProp('descriptions', descriptions());
-            }
+                            event.setExtendedProp('id', randomId());
+                            event.setExtendedProp('status', 'update');
+                            event.setExtendedProp('descriptions', descriptions());
+                        }
 
-            // close popup
-            params.close();
+                        // close popup
+                        params.close();
+                    }
+                });
         }
     }
 

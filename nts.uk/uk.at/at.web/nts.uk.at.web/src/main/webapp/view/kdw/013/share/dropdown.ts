@@ -4,10 +4,9 @@ module nts.uk.ui.at.kdp013.share {
     export module dropdown {
         const style = `
             .nts-dropdown {
-                height: 31px;
                 position: relative;
             }
-            .nts-dropdown>div {
+            .nts-dropdown>div.dropdown-container {
                 height: 31px;
                 box-sizing: border-box;
                 background-color: #fff;
@@ -15,71 +14,81 @@ module nts.uk.ui.at.kdp013.share {
                 border-radius: 2px;
                 overflow: hidden;
             }
-            .nts-dropdown>div:before {
+            .nts-dropdown.error>div.dropdown-container {
+                border: 1px solid #ff6666 !important;
+            }
+            .nts-dropdown>div.dropdown-container:before {
                 content: '▾';
                 position: absolute;
                 top: 5px;
                 right: 10px;
             }
-            .nts-dropdown.show>div:before { 
+            .nts-dropdown.show>div.dropdown-container:before { 
                 top: 4px;
                 right: 9px;
             }
-            .nts-dropdown.focus>div{
+            .nts-dropdown.focus>div.dropdown-container {
                 box-shadow: 0 0 1px 1px #0096f2;
             }
-            .nts-dropdown>div>table {
+            .nts-dropdown>div.dropdown-container>table {
                 width: 100%;
                 display: block;
             }
-            .nts-dropdown>div>table tr {
+            .nts-dropdown>div.dropdown-container>table tr {
                 height: 30px;
             }
-            .nts-dropdown>div>table>tbody>tr.space {
+            .nts-dropdown>div.dropdown-container>table>tbody>tr.space {
                 height: 38px;
             }
-            .nts-dropdown>div>table tr td:first-child,
-            .nts-dropdown>div>table+div>table tr td:first-child {
+            .nts-dropdown>div.dropdown-container>table tr td:first-child,
+            .nts-dropdown>div.dropdown-container>table+div>table tr td:first-child {
                 padding-left: 10px;
                 padding-right: 5px;
             }
-            .nts-dropdown>div>table tr td:first-child,
-            .nts-dropdown>div>table+div>table tr td:first-child {
+            .nts-dropdown>div.dropdown-container>table tr td:first-child,
+            .nts-dropdown>div.dropdown-container>table+div>table tr td:first-child {
                 padding-left: 5px;
                 padding-right: 10px;
             }
-            .nts-dropdown>div>table+div {
+            .nts-dropdown>div.dropdown-container>table+div {
                 overflow-y: auto;
-                max-height: 135px;
+                max-height: 270px;
             }
-            .nts-dropdown>div>table+div>table {
+            .nts-dropdown>div.dropdown-container>table+div>table {
                 width: 100%;
             }
-            .nts-dropdown>div>table+div>table tr {
+            .nts-dropdown>div.dropdown-container>table+div>table tr {
                 height: 27px;
             }
-            .nts-dropdown>div>table+div>table tr.selected {
+            .nts-dropdown>div.dropdown-container>table+div>table tr.selected {
                 color: #fff;
                 background-color: #007fff;
             }
-            .nts-dropdown>div>table+div>table tr.highlight {
+            .nts-dropdown>div.dropdown-container>table+div>table tr.highlight {
                 background-color: #91c8ff;
             }
             .nts-dropdown.show {
                 border: 0;
                 outline: none;
+                height: 31px;
             }
-            .nts-dropdown.show>div {
+            .nts-dropdown.show.error {
+                height: 52px;
+            }
+            .nts-dropdown.show>div.message {
+                display: none;
+            }
+            .nts-dropdown.show>div.dropdown-container {
                 height: auto;
                 z-index: 3;
                 position: fixed;
             }
-            .nts-dropdown.show>div {
+            .nts-dropdown.show>div.dropdown-container {
                 background-color: #fff;
                 border: 1px solid #999;
                 box-shadow: 0 0 1px 1px #0096f2;
             }
-            .nts-dropdown:not(.show)>div input {
+            .nts-dropdown:not(.show)>div.dropdown-container input {
                 border: none;
                 height: 0;
                 padding: 0;
@@ -87,10 +96,10 @@ module nts.uk.ui.at.kdp013.share {
                 box-shadow: none;
                 position: absolute;
             }
-            .nts-dropdown:not(.show)>div input:focus {
+            .nts-dropdown:not(.show)>div.dropdown-container input:focus {
                 box-shadow: none;
             }
-            .nts-dropdown.show>div input {
+            .nts-dropdown.show>div.dropdown-container input {
                 position: absolute;
                 top: 33px;
                 width: calc(100% - 6px) !important;
@@ -111,14 +120,51 @@ module nts.uk.ui.at.kdp013.share {
             bindingName: COMPONENT_NAME
         })
         export class DropdownBindingHandler implements KnockoutBindingHandler {
-            init = (element: HTMLElement, valueAccessor: () => KnockoutObservable<string>, allBindingsAccessor: KnockoutAllBindingsAccessor, viewModel: any, bindingContext: KnockoutBindingContext) => {
+            init = (element: HTMLElement, valueAccessor: () => KnockoutObservable<string>, allBindingsAccessor: KnockoutAllBindingsAccessor, viewModel: nts.uk.ui.vm.ViewModel, bindingContext: KnockoutBindingContext) => {
                 element.classList.add('nts-dropdown');
                 element.classList.add('ntsControl');
 
                 const selected = valueAccessor();
+                const name = allBindingsAccessor.get('name');
                 const items = allBindingsAccessor.get('items');
+                const required = allBindingsAccessor.get('required');
+                const msg = $('<div>', { class: 'message' }).get(0);
+                const subscribe = ($selected: string) => {
+                    const $required = ko.unwrap(required);
 
-                ko.applyBindingsToNode(element, { component: { name: COMPONENT_NAME, params: { selected, items } } });
+                    if ($required && !$selected) {
+                        $(msg).appendTo(element);
+                        element.classList.add('error');
+                    } else {
+                        msg.remove();
+                        element.classList.remove('error');
+                    }
+                };
+
+                $(element)
+                    .on('validate', () => subscribe(selected()));
+
+                selected
+                    .subscribe(subscribe);
+
+
+                const text = ko.computed({
+                    read: () => {
+                        const $selected = ko.unwrap(selected);
+                        const $required = ko.unwrap(required);
+
+                        if ($required && !$selected) {
+                            return viewModel.$i18n.message('MsgB_2', [ko.unwrap(name)]);
+                        }
+
+                        return '';
+                    },
+                    disposeWhenNodeIsRemoved: element
+                });
+
+                ko.applyBindingsToNode(msg, { text }, bindingContext);
+
+                ko.applyBindingsToNode(element, { component: { name: COMPONENT_NAME, params: { selected, items, required } } }, bindingContext);
 
                 element.removeAttribute('data-bind');
 
@@ -198,7 +244,7 @@ module nts.uk.ui.at.kdp013.share {
         @component({
             name: COMPONENT_NAME,
             template: `
-            <div>
+            <div class="dropdown-container">
                 <input type="text" class="nts-input" data-bind="
                         value: $component.filter,
                         valueUpdate: 'input',
@@ -246,7 +292,7 @@ module nts.uk.ui.at.kdp013.share {
             filter: KnockoutObservable<string> = ko.observable('');
             highlight: KnockoutObservable<number> = ko.observable(-1);
 
-            constructor(private params: { selected: KnockoutObservable<string>; items: KnockoutObservableArray<DropdownItem> }) {
+            constructor(private params: { selected: KnockoutObservable<string>; items: KnockoutObservableArray<DropdownItem>; required: undefined | boolean | KnockoutObservable<undefined | boolean>; }) {
                 super();
 
                 const vm = this;
@@ -363,6 +409,9 @@ module nts.uk.ui.at.kdp013.share {
                         if (!vm.focus()) {
                             vm.show(false);
                         }
+
+                        // trigger validate
+                        $(vm.$el).trigger('validate');
                     })
                     .on('keydown', (evt: JQueryEventObject) => {
                         const { keyCode } = evt;
