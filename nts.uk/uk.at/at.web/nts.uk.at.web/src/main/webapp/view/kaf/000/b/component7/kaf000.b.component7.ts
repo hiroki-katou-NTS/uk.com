@@ -4,7 +4,7 @@ module nts.uk.at.view.kaf000.b.component7.viewmodel {
         name: 'kaf000-b-component7',
         template: `
             <div id="kaf000-b-component7">
-				<div class="table" style="margin-bottom: 5px;" data-bind="if: appReasonCDDisp">
+				<div class="table" style="margin-bottom: 13px;" data-bind="if: appReasonCDDisp">
 			    	<div class="cell col-1">
 			        	<div class="cell valign-center" data-bind="ntsFormLabel: {required: appReasonCDRequired}, text: $i18n('KAF000_51')"></div>
 					</div>
@@ -22,7 +22,7 @@ module nts.uk.at.view.kaf000.b.component7.viewmodel {
 			             </div>
 			         </div>
 				</div>
-				<div class="table" style="margin-top: 5px;" data-bind="if: appReasonDisp">
+				<div class="table" style="margin-top: 13px;" data-bind="if: appReasonDisp">
 					<div class="cell col-1">
 						<div class="cell valign-center" data-bind="ntsFormLabel: {
 											required: appReasonRequired,
