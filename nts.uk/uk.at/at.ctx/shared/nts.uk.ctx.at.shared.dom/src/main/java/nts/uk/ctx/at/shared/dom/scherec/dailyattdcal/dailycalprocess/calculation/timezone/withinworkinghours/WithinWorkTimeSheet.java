@@ -1402,12 +1402,16 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 		if(lateDecisionClock.isPresent())
 			this.lateDecisionClock.add(lateDecisionClock.get());
 		
+		val within = getWithinWorkTimeFrame(workNo);
+		
+		if(within == null) return timeLeavingWork; 
+		
 		//遅刻時間帯の作成
-		this.withinWorkTimeFrame.get(workNo - 1).createLateTimeSheet(
+		within.createLateTimeSheet(
 				lateDecisionClock,
 				timeLeavingWork,
 				integrationOfWorkTime.getCommonSetting().getLateEarlySet().getOtherEmTimezoneLateEarlySet(LateEarlyAtr.LATE),
-				this.withinWorkTimeFrame.get(workNo - 1),
+				within,
 				deductionTimeSheet,
 				predetermineTimeSet.getTimeSheets(todayWorkType.getDailyWork().decisionNeedPredTime(), workNo),
 				workNo,
@@ -1424,8 +1428,8 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 				todayWorkType);
 
 		//控除する場合
-		if(isDeductLateTime && this.withinWorkTimeFrame.get(workNo - 1).getLateTimeSheet().isPresent()){
-			LateTimeSheet lateTimeSheet = this.withinWorkTimeFrame.get(workNo - 1).getLateTimeSheet().get();
+		if(isDeductLateTime && within.getLateTimeSheet().isPresent()){
+			LateTimeSheet lateTimeSheet = within.getLateTimeSheet().get();
 			if (lateTimeSheet.getForDeducationTimeSheet().isPresent()){
 				if(!timeLeavingWork.getStampOfAttendance().isPresent()) return timeLeavingWork;
 				
@@ -1435,6 +1439,12 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 			}
 		}
 		return timeLeavingWork;
+	}
+
+
+	private WithinWorkTimeFrame getWithinWorkTimeFrame(int workNo) {
+		return this.withinWorkTimeFrame.stream().filter(c -> c.getWorkingHoursTimeNo().v() == workNo)
+				.findFirst().orElse(null);
 	}
 	
 	 /**
@@ -1472,12 +1482,16 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 		if(leaveEarlyDecisionClock.isPresent())
 			this.leaveEarlyDecisionClock.add(leaveEarlyDecisionClock.get());
 		
+		val within = getWithinWorkTimeFrame(workNo);
+		
+		if(within == null) return timeLeavingWork; 
+		
 		//早退時間帯の作成
-		this.withinWorkTimeFrame.get(workNo - 1).createLeaveEarlyTimeSheet(
+		within.createLeaveEarlyTimeSheet(
 				leaveEarlyDecisionClock,
 				timeLeavingWork,
 				integrationOfWorkTime.getCommonSetting().getLateEarlySet().getOtherEmTimezoneLateEarlySet(LateEarlyAtr.EARLY),
-				this.withinWorkTimeFrame.get(workNo - 1),
+				within,
 				deductionTimeSheet,
 				predetermineTimeSet.getTimeSheets(todayWorkType.getDailyWork().decisionNeedPredTime(), workNo),
 				workNo,
@@ -1494,8 +1508,8 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 				todayWorkType);
 	
 		//控除する場合
-		if(isDeductLateTime && this.withinWorkTimeFrame.get(workNo - 1).getLeaveEarlyTimeSheet().isPresent()){
-			LeaveEarlyTimeSheet leaveEarlyTimeSheet = this.withinWorkTimeFrame.get(workNo - 1).getLeaveEarlyTimeSheet().get();
+		if(isDeductLateTime && within.getLeaveEarlyTimeSheet().isPresent()){
+			LeaveEarlyTimeSheet leaveEarlyTimeSheet = within.getLeaveEarlyTimeSheet().get();
 			if (leaveEarlyTimeSheet.getForDeducationTimeSheet().isPresent()){
 				if(!timeLeavingWork.getStampOfLeave().isPresent()) return timeLeavingWork;
 				
@@ -1592,18 +1606,18 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 			List<OutingTimeOfDaily> outingTimeOfDailyPerformance) {
 		
 		//遅刻早退休暇使用時間
-		for(int i = 0; i<this.withinWorkTimeFrame.size(); i++) {
+		for(val within : this.withinWorkTimeFrame) {
 			//枠No取得
-			EmTimeFrameNo frameNo = new EmTimeFrameNo(this.withinWorkTimeFrame.get(i).getWorkingHoursTimeNo().v());
+			EmTimeFrameNo frameNo = new EmTimeFrameNo(within.getWorkingHoursTimeNo().v());
 			
 			//就業時間内時間枠の枠Noと日別実績の遅刻時間の勤務Noが一致しているものをセットする。遅刻早退は勤務Noが2しかない場合がある為。
-			this.withinWorkTimeFrame.get(i).setLateVacationUseTime(
+			within.setLateVacationUseTime(
 					lateTimeOfDaily.stream()
 							.filter(late -> late.getWorkNo().v().equals(frameNo.v()))
 							.map(late -> late.getTimePaidUseTime())
 							.findFirst());
 			
-			this.withinWorkTimeFrame.get(i).setLeaveEarlyVacationUseTime(
+			within.setLeaveEarlyVacationUseTime(
 					lateTimeOfDaily.stream()
 							.filter(leaveEarly -> leaveEarly.getWorkNo().v().equals(frameNo.v()))
 							.map(leaveEarly -> leaveEarly.getTimePaidUseTime())
@@ -1628,20 +1642,20 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 			CompanyHolidayPriorityOrder holidayPriorityOrder,
 			List<TimeSheetOfDeductionItem> timeSheetOfDeductionItems) {
 		
-		for(int i = 0; i<this.withinWorkTimeFrame.size(); i++) {
+		for(val within : this.withinWorkTimeFrame) {
 			//遅刻相殺時間の計算
-			if(this.withinWorkTimeFrame.get(i).getLateTimeSheet().isPresent() && this.withinWorkTimeFrame.get(i).getLateVacationUseTime().isPresent()) {
-				this.withinWorkTimeFrame.get(i).getLateTimeSheet().get().calcLateOffsetTime(
+			if(within.getLateTimeSheet().isPresent() && within.getLateVacationUseTime().isPresent()) {
+				within.getLateTimeSheet().get().calcLateOffsetTime(
 						DeductionAtr.Deduction,
 						holidayPriorityOrder,
-						this.withinWorkTimeFrame.get(i).getLateVacationUseTime().get());
+						within.getLateVacationUseTime().get());
 			}
 			//早退相殺時間の計算
-			if(this.withinWorkTimeFrame.get(i).getLeaveEarlyTimeSheet().isPresent() && this.withinWorkTimeFrame.get(i).getLeaveEarlyVacationUseTime().isPresent()) {
-				this.withinWorkTimeFrame.get(i).getLeaveEarlyTimeSheet().get().calcLeaveEarlyOffsetTime(
+			if(within.getLeaveEarlyTimeSheet().isPresent() && within.getLeaveEarlyVacationUseTime().isPresent()) {
+				within.getLeaveEarlyTimeSheet().get().calcLeaveEarlyOffsetTime(
 						DeductionAtr.Deduction,
 						holidayPriorityOrder,
-						this.withinWorkTimeFrame.get(i).getLeaveEarlyVacationUseTime().get());
+						within.getLeaveEarlyVacationUseTime().get());
 			}
 		}
 		//外出相殺時間の計算
@@ -1759,11 +1773,15 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 		//退勤時刻を求める
 		//2勤務目がある場合、2勤務目の退勤時刻
 		if(this.withinWorkTimeFrame.size() >= 2) {
-			leaveTime = this.withinWorkTimeFrame.get(1).getTimeSheet().getEnd();
+			leaveTime = this.withinWorkTimeFrame.stream()
+					.sorted((c1, c2) -> c2.getWorkingHoursTimeNo().compareTo(c1.getWorkingHoursTimeNo()))
+					.findFirst().get().getTimeSheet().getEnd();
 		}
 		//1勤務のみの場合、1勤務目の退勤時刻
 		else {
-			leaveTime = this.withinWorkTimeFrame.get(0).getTimeSheet().getEnd();
+			leaveTime = this.withinWorkTimeFrame.stream()
+					.sorted((c1, c2) -> c1.getWorkingHoursTimeNo().compareTo(c2.getWorkingHoursTimeNo()))
+					.findFirst().get().getTimeSheet().getEnd();
 		}
 		//就業時間内時間帯終了時刻←退勤時刻
 		if(leaveTime.lessThan(endTime)) {

@@ -808,7 +808,8 @@ public class CalculationRangeOfOneDay {
 			IntegrationOfWorkTime integrationOfWorkTime,
 			IntegrationOfDaily integrationOfDaily,
 			TimeLeavingOfDailyAttd timeLeavingOfDaily,
-			WithinWorkTimeSheet creatingWithinWorkTimeSheet){
+			WithinWorkTimeSheet creatingWithinWorkTimeSheet,
+			boolean correctWithEndTime){
 		
 		if(!integrationOfDaily.getAttendanceLeave().isPresent()) return new ArrayList<>();
 		
@@ -829,7 +830,7 @@ public class CalculationRangeOfOneDay {
 				integrationOfWorkTime,
 				integrationOfDaily,
 				companyCommonSetting,
-				personDailySetting);
+				personDailySetting, correctWithEndTime);
 		DeductionTimeSheet deductionTimeSheetCalcBefore = new DeductionTimeSheet(
 				deductionItemsCalcBefore,
 				new ArrayList<>(),
@@ -865,7 +866,7 @@ public class CalculationRangeOfOneDay {
 				this.oneDayOfRange,
 				timeLeavingForCorrect,
 				this.predetermineTimeSetForCalc,
-				lateTimeSheet, true, betweenWorkTimeSheets,
+				lateTimeSheet, correctWithEndTime, betweenWorkTimeSheets,
 				companyCommonSetting,
 				personDailySetting);
 		
@@ -891,7 +892,7 @@ public class CalculationRangeOfOneDay {
 	public List<TimeSheetOfDeductionItem> getDeductionTimeSheetOnFixed(WorkType workType,
 			IntegrationOfWorkTime workTime, IntegrationOfDaily integrationOfDaily,
 			ManagePerCompanySet companyCommonSetting,
-			ManagePerPersonDailySet personDailySetting) {
+			ManagePerPersonDailySet personDailySetting, boolean correctWithEndTime) {
 		
 		//** 1日半日出勤・1日休日系の判定 */
 		if(workType.checkWorkDay() == WorkStyle.ONE_DAY_REST) {
@@ -903,7 +904,7 @@ public class CalculationRangeOfOneDay {
 		val deductionTimeSheet = provisionalDeterminationOfDeductionTimeSheet(
 						workType, workTime, integrationOfDaily, this.oneDayOfRange, 
 						integrationOfDaily.getAttendanceLeave().get(), this.predetermineTimeSetForCalc, 
-						new ArrayList<>(), true, Optional.empty(),
+						new ArrayList<>(), correctWithEndTime, Optional.empty(),
 						companyCommonSetting, personDailySetting)
 				.getForDeductionTimeZoneList();
 		
@@ -959,7 +960,7 @@ public class CalculationRangeOfOneDay {
 		}
 
 		//遅刻時間帯を計算
-		timeLeavingWork = creatingWithinWorkTimeSheet.calcLateTimeDeduction(
+		val newTimeLeavingWork = creatingWithinWorkTimeSheet.calcLateTimeDeduction(
 				todayWorkType,
 				integrationOfWorkTime,
 				integrationOfDaily,
@@ -972,10 +973,11 @@ public class CalculationRangeOfOneDay {
 			return timeLeavingWork;
 		
 		//時間帯.出勤←流動勤務用出退勤.出勤
-		creatingWithinWorkTimeSheet.getWithinWorkTimeFrame().get(timeLeavingWork.getWorkNo().v() - 1).shiftStart(
-				timeLeavingWork.getAttendanceTime().get());
+		creatingWithinWorkTimeSheet.getWithinWorkTimeFrame().stream()
+			.filter(c -> c.getWorkingHoursTimeNo().v() == newTimeLeavingWork.getWorkNo().v())
+			.findFirst().ifPresent(c -> c.shiftStart(newTimeLeavingWork.getAttendanceTime().get()));
 		
-		return timeLeavingWork;
+		return newTimeLeavingWork;
 	}
 	
 	/**
@@ -1002,7 +1004,7 @@ public class CalculationRangeOfOneDay {
 		PredetermineTimeSetForCalc predetermineTimeSet = getPredetermineTimeSheetForFlow(timeLeavingWork.getWorkNo(), todayWorkType);
 		
 		//早退時間帯を計算
-		timeLeavingWork = creatingWithinWorkTimeSheet.calcLeaveEarlyTimeDeduction(
+		val newTimeLeavingWork = creatingWithinWorkTimeSheet.calcLeaveEarlyTimeDeduction(
 				todayWorkType,
 				integrationOfWorkTime,
 				integrationOfDaily,
@@ -1015,10 +1017,11 @@ public class CalculationRangeOfOneDay {
 			return timeLeavingWork;
 		
 		//時間帯.退勤←流動勤務用出退勤.退勤
-		creatingWithinWorkTimeSheet.getWithinWorkTimeFrame().get(timeLeavingWork.getWorkNo().v() - 1).shiftEnd(
-				timeLeavingWork.getLeaveTime().get());
+		creatingWithinWorkTimeSheet.getWithinWorkTimeFrame().stream()
+			.filter(c -> c.getWorkingHoursTimeNo().v() == newTimeLeavingWork.getWorkNo().v())
+			.findFirst().ifPresent(c -> c.shiftEnd(newTimeLeavingWork.getLeaveTime().get()));
 		
-		return timeLeavingWork;
+		return newTimeLeavingWork;
 	}
 	
 	/**

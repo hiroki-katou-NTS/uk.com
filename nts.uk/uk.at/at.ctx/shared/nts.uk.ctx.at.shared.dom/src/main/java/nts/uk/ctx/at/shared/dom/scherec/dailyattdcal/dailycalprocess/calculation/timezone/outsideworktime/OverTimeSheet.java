@@ -1016,30 +1016,26 @@ public class OverTimeSheet {
 	/**
 	 * 残業開始終了時刻を取得する
 	 * @param integrationOfDaily 日別実績(Work)
-	 * @param createdWithinWorkTimeSheet 就業時間内時間帯
+	 * @param withinWorkTimeSheet 就業時間内時間帯
 	 * @return 残業開始終了時刻
 	 */
-	private static Optional<TimeSpanForDailyCalc> getStartEnd(IntegrationOfDaily integrationOfDaily, WithinWorkTimeSheet createdWithinWorkTimeSheet) {
-		if(!createdWithinWorkTimeSheet.getStartEndToWithinWorkTimeFrame().isPresent())
-			return Optional.empty();
-		
-		if(!integrationOfDaily.getAttendanceLeave().isPresent()
-				|| !integrationOfDaily.getAttendanceLeave().get().getLeavingWork().isPresent()
-				|| !integrationOfDaily.getAttendanceLeave().get().getLeavingWork().get().getStamp().isPresent())
-			return Optional.empty();
-		
+	private static Optional<TimeSpanForDailyCalc> getStartEnd(IntegrationOfDaily integrationOfDaily, WithinWorkTimeSheet withinWorkTimeSheet) {
 		//残業開始時刻
-		TimeWithDayAttr start = createdWithinWorkTimeSheet.getStartEndToWithinWorkTimeFrame().get().getEnd();
-		
+		Optional<TimeWithDayAttr> start = withinWorkTimeSheet.getStartEndToWithinWorkTimeFrame().map(span -> span.getEnd());
+		if (!start.isPresent()) {
+			return Optional.empty();
+		}
 		//残業終了時刻
-		Optional<TimeWithDayAttr> end = integrationOfDaily.getAttendanceLeave().get().getLeavingWork().get().getStamp().get().getTimeDay().getTimeWithDay();
+		Optional<TimeWithDayAttr> end = integrationOfDaily.getAttendanceLeave().flatMap(attd -> attd.getLastLeaveTime());
 		if (!end.isPresent()) {
 			return Optional.empty();
 		}
-		if(start.greaterThan(end.get()))
+		if(start.get().greaterThan(end.get())) {
 			return Optional.empty();
-		
-		return Optional.of(new TimeSpanForDailyCalc(start, end.get()));
+		}
+		return Optional.of(new TimeSpanForDailyCalc(
+				new TimeWithDayAttr(start.get().valueAsMinutes()),
+				new TimeWithDayAttr(end.get().valueAsMinutes())));
 	}
 	
 	/**

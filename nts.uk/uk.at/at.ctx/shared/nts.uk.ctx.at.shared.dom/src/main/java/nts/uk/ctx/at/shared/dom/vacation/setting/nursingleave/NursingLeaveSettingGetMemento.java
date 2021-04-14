@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave;
 
+import java.util.List;
 import java.util.Optional;
 
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
@@ -47,7 +48,7 @@ public interface NursingLeaveSettingGetMemento {
      *
      * @return the max person setting
      */
-    MaxPersonSetting getMaxPersonSetting();
+    List<MaxPersonSetting> getMaxPersonSetting();
 
 	/**
      * Gets the special holiday frame.

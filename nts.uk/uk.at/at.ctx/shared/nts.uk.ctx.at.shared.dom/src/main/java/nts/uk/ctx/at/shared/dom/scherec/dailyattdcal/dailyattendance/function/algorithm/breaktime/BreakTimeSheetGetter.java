@@ -79,14 +79,14 @@ public class BreakTimeSheetGetter {
 		switch (workTimeSet.getWorkTimeSetting().getWorkTimeDivision().getWorkTimeForm()) {
 		case FIXED: /** 固定勤務 */
 			deductionTimeSheet = oneDayCalcRange.getDeductionTimeSheetOnFixed(
-					workType, workTimeSet, domainDaily, companyCommonSetting, personDailySetting);
+					workType, workTimeSet, domainDaily, companyCommonSetting, personDailySetting, correctWithEndTime);
 			break;
 		case FLEX: /** フレックス勤務 */
 			
 			if(workTimeSet.isFixBreak(workType)) {
 				/** 固定休憩 */
 				deductionTimeSheet = oneDayCalcRange.getDeductionTimeSheetOnFixed(
-						workType, workTimeSet, domainDaily, companyCommonSetting, personDailySetting);
+						workType, workTimeSet, domainDaily, companyCommonSetting, personDailySetting, correctWithEndTime);
 				
 			} else  {
 				
@@ -104,7 +104,7 @@ public class BreakTimeSheetGetter {
 			deductionTimeSheet = oneDayCalcRange.prePocessForFlowCorrect(
 					companyCommonSetting, personDailySetting, workType, workTimeSet, domainDaily, 
 					domainDaily.getAttendanceLeave().get(), 
-					withinWorkTimeSheet);
+					withinWorkTimeSheet, correctWithEndTime);
 			break;
 		default:
 			
