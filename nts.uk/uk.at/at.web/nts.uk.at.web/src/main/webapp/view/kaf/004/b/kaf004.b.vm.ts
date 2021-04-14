@@ -14,7 +14,7 @@ module nts.uk.at.view.kaf004_ref.b.viewmodel {
             <div id="contents-area" style="background-color: inherit; height: calc(100vh - 165px);">
                 <div class="two-panel" style="height: 100%;">
                     <div class="left-panel" style="width: calc(100% - 410px); height: inherit; overflow: auto">
-                        <div style="height: inherit; background-color: #fff; padding: 10px;">
+                        <div style="height: inherit; background-color: #fff; padding: 0 10px; overflow: auto">
                             <div class="table" style="border-bottom: 2px solid #B1B1B1; padding-bottom: 30px; margin-bottom: 30px; width: 100%;">
                                 <div class="cell" style="vertical-align: middle;">
                                     <div data-bind="component: { name: 'kaf000-b-component4',
@@ -44,8 +44,8 @@ module nts.uk.at.view.kaf004_ref.b.viewmodel {
                                                             application: application,
                                                             appDispInfoStartupOutput: appDispInfoStartupOutput
                                                         } }" style="width: fit-content; display: inline-block; vertical-align: middle;"></div>
-                            <div class="fixed-flex-layout" style="margin-left: -10px;" data-bind="component: {name: 'kaf004_share'}"></div>
-                            <div data-bind="component: { name: 'kaf000-b-component7', 
+                            <div data-bind="component: {name: 'kaf004_share'}" style="margin: 7px 0"></div>
+                            <div class="mv-13" data-bind="component: { name: 'kaf000-b-component7', 
                                                         params: {
                                                             appType: appType,
                                                             application: application,
