@@ -23,6 +23,15 @@ public class PasswordAuthenticateResult {
 	
 	/** 認証失敗記録の永続化処理*/
 	Optional<AtomTask> outlockData;	
+
+	
+	public boolean isSuccess() {
+		return this.success;
+	}
+
+	public boolean isFailed() {
+		return !this.success;
+	}
 	
 	/**
 	 * 認証成功

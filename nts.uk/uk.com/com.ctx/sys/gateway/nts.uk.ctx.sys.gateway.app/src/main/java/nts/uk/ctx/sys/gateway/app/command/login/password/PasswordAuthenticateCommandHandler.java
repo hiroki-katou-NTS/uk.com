@@ -61,22 +61,27 @@ public class PasswordAuthenticateCommandHandler extends LoginCommandHandlerBase<
 		}
 		
 		// ログイン社員の識別
-		val idenResult = EmployeeIdentify.identifyByEmployeeCode(require, companyId, employeeCode);
+		IdentificationResult idenResult = EmployeeIdentify.identifyByEmployeeCode(require, companyId, employeeCode);
 		
 		if(idenResult.isFailed()) {
 			transaction.execute(() ->{
 				idenResult.getFailureLog().get();
-				
+				return AuthenticateResult.identificationFailure(idenResult);
 			});
 		}
 		
 		// パスワード認証
-		val authenticationResult = PasswordAuthenticateWithEmployeeCode.authenticate(
+		PasswordAuthenticateResult passAuthResult = PasswordAuthenticateWithEmployeeCode.authenticate(
 				require, 
 				idenResult.getEmployeeInfo().get(), 
 				password);
 		
-		return AuthenticateResult.of(idenResult, authenticationResult);
+		if(passAuthResult.isFailed()) {
+
+			return AuthenticateResult.passAuthenticateFailure(idenResult, passAuthResult);
+		}
+			
+		return AuthenticateResult.success(idenResult, passAuthResult);
 	}
 	
 	/**

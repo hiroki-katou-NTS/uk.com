@@ -116,8 +116,8 @@ public class LoginWs extends WebService {
 	 * @return
 	 */
 	@POST
-//	@Path("password")
-	@Path("submit/form3")
+	@Path("password")
+//	@Path("submit/form3")
 	public CheckChangePassDto loginOnPasswordAuthenticate(@Context HttpServletRequest request, PasswordAuthenticateCommand command) {
 		command.setRequest(request);
 		return passwordAuthenticateCommandHandler.handle(command);

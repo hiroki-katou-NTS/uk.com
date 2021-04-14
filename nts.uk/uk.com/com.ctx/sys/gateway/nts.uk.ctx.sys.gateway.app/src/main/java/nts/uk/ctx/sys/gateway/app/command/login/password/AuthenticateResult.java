@@ -26,9 +26,25 @@ public class AuthenticateResult implements LoginCommandHandlerBase.Authenticatio
 	private String tenantCodeForBuiltInUser;
 	private String companyIdForBuiltInUser;
 	
-	public static AuthenticateResult of(IdentificationResult idenResult, PasswordAuthenticateResult authResult) {
+	public static AuthenticateResult identificationFailure(IdentificationResult idenResult) {
 		return new AuthenticateResult(
-				authResult.isSuccess(), 
+				false, 
+				idenResult.getEmployeeInfo(), 
+				Optional.empty(), 
+				false, null, null);
+	}
+	
+	public static AuthenticateResult passAuthenticateFailure(IdentificationResult idenResult, PasswordAuthenticateResult authResult) {
+		return new AuthenticateResult(
+				false, 
+				idenResult.getEmployeeInfo(), 
+				authResult.getPasswordValidation(), 
+				false, null, null);
+	}
+	
+	public static AuthenticateResult success(IdentificationResult idenResult, PasswordAuthenticateResult authResult) {
+		return new AuthenticateResult(
+				true, 
 				idenResult.getEmployeeInfo(), 
 				authResult.getPasswordValidation(), 
 				false, null, null);

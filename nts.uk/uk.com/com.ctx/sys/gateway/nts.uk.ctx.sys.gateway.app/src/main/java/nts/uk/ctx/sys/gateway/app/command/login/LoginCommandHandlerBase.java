@@ -21,7 +21,6 @@ import nts.uk.shr.com.net.Ipv4Address;
  *
  * @param <Command> Command
  * @param <Authen> 認証処理の結果
- * @param <Author> 認可処理の結果
  * @param <Result> ログイン全体の結果、CommandHandlerの戻り値
  * @param <Req> Require
  */
