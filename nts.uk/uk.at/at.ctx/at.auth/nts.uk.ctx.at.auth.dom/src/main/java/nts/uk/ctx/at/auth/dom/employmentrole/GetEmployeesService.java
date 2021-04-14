@@ -4,7 +4,6 @@ import java.util.Map;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.shr.com.context.AppContexts;
 
 /**
  * 実績工数で参照可能社員を取得する
@@ -28,7 +27,7 @@ public class GetEmployeesService {
 		//	if $ロール.実績工数社員参照 == 社員参照範囲と同じ		
 		if(employmentRole.isPresent() && employmentRole.get().getScheduleEmployeeRef() == ScheduleEmployeeRef.SAME_EMPLOYEE_REF_RANGE) {
 			//return 参照可能社員を取得する(ログインのユーザID,ログインの社員ID,$今日)	
-			return require.getReferenceableEmployees(AppContexts.user().userId(), AppContexts.user().employeeId(), GeneralDate.today());
+			return require.getReferenceableEmployees(userID, employeeID, GeneralDate.today());
 		}
 		//	return 全社員を取得する(会社ID,基準日)	
 		return require.getemployeesAllWorkplaces(companyId, baseDate);
