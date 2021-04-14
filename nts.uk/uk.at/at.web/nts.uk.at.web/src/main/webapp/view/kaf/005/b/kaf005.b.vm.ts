@@ -16,16 +16,13 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 	const template= `
 	
 
-
-
-
 <div id="kaf005-b">
 	<div id="contents-area"
 		style="background-color: inherit; height: calc(100vh - 165px);">
 		<div class="two-panel" style="height: 100%;">
 			<div class="left-panel"
 				style="width: calc(100% - 410px); height: inherit; overflow: auto">
-				<div style="height: auto; background-color: #fff; padding: 10px;">
+				<div style="height: auto; min-height: 700px; background-color: #fff; padding: 10px;">
 					<div class="table"
 						style="border-bottom: 2px solid #B1B1B1; padding-bottom: 30px; margin-bottom: 30px; width: 100%;">
 						<div class="cell" style="vertical-align: middle;">
