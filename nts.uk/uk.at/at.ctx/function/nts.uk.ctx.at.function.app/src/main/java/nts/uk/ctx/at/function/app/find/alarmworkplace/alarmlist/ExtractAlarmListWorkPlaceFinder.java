@@ -281,8 +281,8 @@ public class ExtractAlarmListWorkPlaceFinder {
                     GeneralDate.today());
             Optional<Month> endMonth = period.getEndDate().getEndMonth();
             if (endMonth.isPresent()) {
-                // ・終了の年月　＝　「Input．当月の年月」－　「Input．抽出期間(日単位)．終了日．締め日指定．月数」 + 1
-                YearMonth endYm = processingYm.addMonths(-endMonth.get().getMonth()).addMonths(1);
+                // ・年月　＝　「Input．締め．当月．当月」－　「Input．抽出期間(日単位)．終了日．締め日指定．月数」
+                YearMonth endYm = processingYm.addMonths(-endMonth.get().getMonth());
                 // ・終了の日　＝　締め期間．終了日の日
                 // endDate = GeneralDate.ymd(endYm.year(), endYm.month(), closurePeriod.end().day());
                 if (closureOpt.isPresent()) {
