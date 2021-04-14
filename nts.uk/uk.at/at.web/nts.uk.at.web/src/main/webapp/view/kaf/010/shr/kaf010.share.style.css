@@ -72,9 +72,8 @@ div.form-label.broken {
 	vertical-align: top;
 }
 
-.workSelect{
+.workSelectKAF010{
     height: 70px;
-    margin-left: 45px;
     margin-top: 10px;
 }
 .panel.panel-gray-bg {
@@ -180,4 +179,7 @@ div.form-label.broken {
 
 .scroll-header{
 	height: 24px !important;
+}
+th {
+	text-align: center !important;
 }
