@@ -16,6 +16,7 @@ body {
 
 .control-group {
     margin: 5px 5px 5px 20px;
+    margin: 5px 5px 5px 20px;
 }
 
 #search-div {
@@ -56,8 +57,12 @@ div.nts-column {
     padding-left: 20px;
 }
 
-#day-list-div th, #day-list-div td {
+#day-list-div td {
     padding-left: 10px;
+}
+
+#day-list-div th {
+    text-align: center;
 }
 
 #day-list-tbl > tbody > tr > td:LAST-CHILD > span {
@@ -124,5 +129,11 @@ table.bottom_tbl td {
 }
 
 .nts-searchbbox-wrapper {
+    margin-bottom: 10px;
+}
+
+.runeLine {
+    height: 1px;
+    background-color: #7f7f7f;
     margin-bottom: 10px;
 }

@@ -26,7 +26,7 @@
 
 		<ui:define name="content">
 			<div id="contents-area">
-				<div style=" margin-left: 10px;">#{i18n.getText('KDL003_2')}</div>
+				<div style=" margin-left: 10px; margin-bottom: 5px">#{i18n.getText('KDL003_2')}</div>
 				<!--  <div style="border: 0.5px solid; border-radius: 12px; padding-top: 15px; 
 						margin-left: 10px; margin-right: 10px;" class="caret-bottom kdl003-border">-->
 				<div style="margin-left: 10px;">
@@ -38,10 +38,14 @@
 								colspan="2"><div data-bind="ntsFormLabel: {}">#{i18n.getText('KDL003_8')}</div></td>
 						</tr>
 						<tr>
-							<td><hr /></td>
-							<td style="padding-right: 20px"><hr /></td>
+							<td >
+								<div class="runeLine"></div>
+							</td>
+							<td style="padding-right: 20px">
+								<div class="runeLine"></div>
+							</td>
 							<td style="border-left: solid #9a9a9a 1px; padding-left: 20px;"
-								colspan="2"><hr /></td>
+								colspan="2"><div class="runeLine"></div></td>
 						</tr>
 						<tr>
 							<td colspan="2" style="vertical-align: top; padding-right: 20px;">
