@@ -721,17 +721,15 @@ public class CalculationRangeOfOneDay {
 		List<TimeLeavingWork> timeLeavingWorksForCorrect = timeLeavingForCorrect.getTimeLeavingWorks();
 		
 		//1回目と2回目の間の時間帯を作成  遅刻丸めによる時刻補正を行うよりも前に時間帯を作成する必要がある為、ここで作成。
-		Optional<TimeSheetOfDeductionItem> betweenWorkTimeSheets = this.createBetweenWork(
+		Optional<TimeSheetOfDeductionItem> betweenTimeSheet = this.createBetweenWork(
 				timeLeavingForCorrect.getTimeLeavingWorks(),
 				integrationOfWorkTime.getFlowWorkSetting().get());
 		
 		//間の休憩を非勤務時間帯へ
-		if(betweenWorkTimeSheets.isPresent()) {
-			if(betweenWorkTimeSheets.get().getWorkingBreakAtr().isWorking() && betweenWorkTimeSheets.get().getDeductionAtr().isBreak()) {
-				List<TimeSpanForDailyCalc> whithinBreakTimeSheet = new ArrayList<TimeSpanForDailyCalc>();
-				whithinBreakTimeSheet.add(betweenWorkTimeSheets.get().getTimeSheet());
-				this.nonWorkingTimeSheet = Optional.of(new NonWorkingTimeSheet(whithinBreakTimeSheet, Collections.emptyList()));
-			}
+		if(betweenTimeSheet.isPresent()
+				&& betweenTimeSheet.get().getWorkingBreakAtr().isWorking()
+				&& betweenTimeSheet.get().getDeductionAtr().isBreak()) {
+			this.nonWorkingTimeSheet = Optional.of(new NonWorkingTimeSheet(betweenTimeSheet.get()));
 		};
 		
 		//控除時間帯の取得
@@ -741,7 +739,7 @@ public class CalculationRangeOfOneDay {
 				integrationOfDaily,
 				this.oneDayOfRange,
 				timeLeavingForCorrect,
-				betweenWorkTimeSheets,
+				betweenTimeSheet,
 				companyCommonSetting,
 				personDailySetting);
 		
@@ -767,7 +765,7 @@ public class CalculationRangeOfOneDay {
 				integrationOfDaily,
 				this.oneDayOfRange,
 				timeLeavingForCorrect,
-				betweenWorkTimeSheets,
+				betweenTimeSheet,
 				companyCommonSetting,
 				personDailySetting);
 		
@@ -1175,7 +1173,7 @@ public class CalculationRangeOfOneDay {
 		//控除時間帯を作成
 		Optional<TimeSheetOfDeductionItem> deductionTimeBetweenWork = Optional.of(TimeSheetOfDeductionItem.createTimeSheetOfDeductionItem(
 				betweenWorkTimeSheet, 
-				new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN),
+				flowWorkSetting.getRestSetting().getFlowRestSetting().getRoundingBreakMultipleWork(),
 				Collections.emptyList(),
 				Collections.emptyList(),
 				WorkingBreakTimeAtr.WORKING,
@@ -1375,5 +1373,16 @@ public class CalculationRangeOfOneDay {
 			return true;
 		}
 		return false;
+	}
+	
+	/**
+	 * 勤務間休憩時間を計算する
+	 * @return 勤務間休憩時間
+	 */
+	public AttendanceTime calcBetweenBreakTime() {
+		if(!this.nonWorkingTimeSheet.isPresent()) {
+			return AttendanceTime.ZERO;
+		}
+		return this.nonWorkingTimeSheet.get().calcBetweenBreakTime();
 	}
 }
