@@ -111,7 +111,11 @@ module nts.uk.at.view.kafsample.b.viewmodel {
                                                 
                                                 
                                                 
-                   <div data-bind="component: { name: 'kaf005-share-footer'}"></div>                             
+                   <div data-bind="component: { name: 'kaf005-share-footer'}"></div>
+                   
+                   <div style="padding-top: 30px;">
+								
+				 	</div>                          
 				</div>
 			</div>
 			<div class="right-panel" style="width: 410px; height: inherit; overflow-y: auto">

@@ -21,6 +21,8 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
 
 
 
+
+
 <div id="kaf002-c">
 	<div id="contents-area"
 		style="background-color: inherit; height: calc(100vh - 165px);">
@@ -111,6 +113,10 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
                                                     application: application,
                                                     appDispInfoStartupOutput: appDispInfoStartupOutput
                                                 } }"></div>
+                                                
+                                                <div style="padding-top: 30px;">
+								
+				 	</div>  
 				</div>
 			</div>
 			<div class="right-panel" style="width: 410px; height: inherit; overflow-y: auto">

@@ -51,6 +51,11 @@ module nts.uk.at.view.kaf009_ref.b.viewmodel {
                                                     application: application,
                                                     appDispInfoStartupOutput: appDispInfoStartupOutput
                                                 } }"></div>
+                                                
+                                                
+                    <div style="padding-top: 30px;">
+								
+				 	</div>                            
                 </div>
             </div>
             <div class="right-panel" style="width: 410px; height: inherit; overflow-y: auto">
@@ -71,6 +76,7 @@ module nts.uk.at.view.kaf009_ref.b.viewmodel {
         </div>
 	</div>
 </div>
+
 
 
 
