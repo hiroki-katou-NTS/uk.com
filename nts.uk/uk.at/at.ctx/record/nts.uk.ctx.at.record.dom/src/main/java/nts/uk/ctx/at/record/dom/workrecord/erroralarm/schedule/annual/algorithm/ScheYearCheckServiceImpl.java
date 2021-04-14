@@ -103,6 +103,7 @@ public class ScheYearCheckServiceImpl implements ScheYearCheckService {
 	private CheckScheTimeAndTotalWorkingService scheTimeAndTotalWorkingService;
 	@Inject
 	private ConvertCompareTypeToText convertComparaToText;
+	@SuppressWarnings("rawtypes")
 	@Inject
 	private CompareValueRangeChecking compareValueRangeChecking;
 	
@@ -245,6 +246,7 @@ public class ScheYearCheckServiceImpl implements ScheYearCheckService {
 	/**
 	 * Extract condition Tab2
 	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private OutputCheckResult extractCondition(
 			String cid, List<String> listSid, DatePeriod dPeriod, ScheYearPrepareData prepareData,
 			List<WorkPlaceHistImportAl> getWplByListSidAndPeriod) {
@@ -280,6 +282,7 @@ public class ScheYearCheckServiceImpl implements ScheYearCheckService {
 					}
 				}
 				
+				String checkCondTypeName = Strings.EMPTY;
 				List<YearMonth> listDate = dPeriod.yearMonthsBetween();
 				for(YearMonth ym: listDate) {
 					
@@ -319,20 +322,6 @@ public class ScheYearCheckServiceImpl implements ScheYearCheckService {
 									&& x.getYmd().afterOrEquals(ym.firstGeneralDate()) && x.getYmd().beforeOrEquals(ym.lastGeneralDate()))
 							.collect(Collectors.toList());
 					
-					// ・職場ID　＝　Input．List＜職場ID＞をループ中の年月日から探す
-					String wplId = "";
-					Optional<WorkPlaceHistImportAl> optWorkPlaceHistImportAl = getWplByListSidAndPeriod.stream().filter(x -> x.getEmployeeId().equals(sid)).findFirst();
-					if(optWorkPlaceHistImportAl.isPresent()) {
-						Optional<WorkPlaceIdAndPeriodImportAl> optWorkPlaceIdAndPeriodImportAl = optWorkPlaceHistImportAl.get().getLstWkpIdAndPeriod().stream()
-								.filter(x -> x.getDatePeriod().start().beforeOrEquals(ym.firstGeneralDate()) 
-										&& x.getDatePeriod().end().afterOrEquals(ym.lastGeneralDate())).findFirst();
-						if(optWorkPlaceIdAndPeriodImportAl.isPresent()) {
-							wplId = optWorkPlaceIdAndPeriodImportAl.get().getWorkplaceId();
-						}
-					}
-					
-					String checkCondTypeName = Strings.EMPTY;
-					
 					// チェック項目をチェック
 					switch (condScheYear.getCheckItemType()) {
 					case TIME:
@@ -340,7 +329,7 @@ public class ScheYearCheckServiceImpl implements ScheYearCheckService {
 						checkCondTypeName = dayCheckCond.getTypeOfTime().nameId;
 						// 総取得結果　+＝　取得結果
 						totalTime += checkItemTime(
-								cid, sid, wplId, ym, condScheYear, attendanceTimeOfMonthly, 
+								cid, sid, ym, condScheYear, attendanceTimeOfMonthly, 
 								prepareData, presentClosingPeriod, lstDaily, workScheduleWorkInfosOpt);
 						break;
 					case DAY_NUMBER:
@@ -348,59 +337,70 @@ public class ScheYearCheckServiceImpl implements ScheYearCheckService {
 						checkCondTypeName = timeCheckCond.getTypeOfDays().nameId;
 						// 総取得結果　+＝　取得結果
 						totalTime += checkItemDay(
-								cid, sid, wplId, ym, condScheYear, attendanceTimeOfMonthly, 
+								cid, sid, ym, condScheYear, attendanceTimeOfMonthly, 
 								prepareData, presentClosingPeriod, lstDaily, workScheduleWorkInfosOpt);
 						break;
 					default:
 						break;
 					}
-					
-					// 条件をチェックする
-					boolean checkValue = false;
-					if (condScheYear.getCheckConditions() instanceof CompareRange) {
-						checkValue = compareValueRangeChecking.checkCompareRange((CompareRange)condScheYear.getCheckConditions(), totalTime);
-					} else {
-						checkValue = compareValueRangeChecking.checkCompareSingleRange((CompareSingleValue)condScheYear.getCheckConditions(), totalTime);
+				}
+				
+				// 条件をチェックする
+				boolean checkValue = false;
+				if (condScheYear.getCheckConditions() instanceof CompareRange) {
+					checkValue = compareValueRangeChecking.checkCompareRange((CompareRange)condScheYear.getCheckConditions(), totalTime);
+				} else {
+					checkValue = compareValueRangeChecking.checkCompareSingleRange((CompareSingleValue)condScheYear.getCheckConditions(), totalTime);
+				}
+				
+				if (!checkValue) {
+					continue;
+				}
+				
+				// ・職場ID　＝　Input．List＜職場ID＞をループ中の年月日から探す
+				String wplId = "";
+				Optional<WorkPlaceHistImportAl> optWorkPlaceHistImportAl = getWplByListSidAndPeriod.stream().filter(x -> x.getEmployeeId().equals(sid)).findFirst();
+				if(optWorkPlaceHistImportAl.isPresent()) {
+					Optional<WorkPlaceIdAndPeriodImportAl> optWorkPlaceIdAndPeriodImportAl = optWorkPlaceHistImportAl.get().getLstWkpIdAndPeriod().stream()
+							.filter(x -> x.getDatePeriod().start().beforeOrEquals(dPeriod.start()) 
+									&& x.getDatePeriod().end().afterOrEquals(dPeriod.end())).findFirst();
+					if(optWorkPlaceIdAndPeriodImportAl.isPresent()) {
+						wplId = optWorkPlaceIdAndPeriodImportAl.get().getWorkplaceId();
 					}
-					
-					// TODO need check again EA
-					if (!checkValue) {
-						continue;
-					}
-					
-					// 抽出結果詳細を作成
-					String alarmCode = String.valueOf(condScheYear.getSortOrder());
-					String alarmContent = getAlarmContent(getCompareOperatorText(condScheYear.getCheckItemType(), condScheYear.getCheckConditions(), checkCondTypeName), totalTime);
-					Optional<String> comment = condScheYear.getErrorAlarmMessage().isPresent()
-							? Optional.of(condScheYear.getErrorAlarmMessage().get().v())
-							: Optional.empty();
-					ExtractionAlarmPeriodDate extractionAlarmPeriodDate = new ExtractionAlarmPeriodDate(Optional.of(ym.firstGeneralDate()), Optional.empty());
-					ExtractionResultDetail detail = new ExtractionResultDetail(sid, 
-							extractionAlarmPeriodDate, 
-							condScheYear.getName().v(), 
-							alarmContent, 
-							GeneralDateTime.now(), 
-							Optional.ofNullable(wplId), 
-							comment, 
-							Optional.ofNullable(getCheckValue(totalTime)));
-					
-					List<ResultOfEachCondition> lstResultTmp = result.getLstResultCondition().stream()
-							.filter(x -> x.getCheckType() == AlarmListCheckType.FreeCheck && x.getNo().equals(alarmCode)).collect(Collectors.toList());
-					List<ExtractionResultDetail> listDetail = new ArrayList<>();
-					if(lstResultTmp.isEmpty()) {
-						listDetail.add(detail);
-						result.getLstResultCondition().add(new ResultOfEachCondition(EnumAdaptor.valueOf(1, AlarmListCheckType.class), alarmCode, 
-								listDetail));	
-					} else {
-						result.getLstResultCondition().stream().forEach(x -> x.getLstResultDetail().add(detail));
-					}
-					
-					Optional<AlarmListCheckInfor> optCheckInfor = result.getLstCheckType().stream()
-							.filter(x -> x.getChekType() == AlarmListCheckType.FreeCheck && x.getNo().equals(String.valueOf(condScheYear.getSortOrder())))
-							.findFirst();
-					if(!optCheckInfor.isPresent()) {
-						result.getLstCheckType().add(new AlarmListCheckInfor(String.valueOf(condScheYear.getSortOrder()), AlarmListCheckType.FreeCheck));
-					}
+				}
+				
+				// 抽出結果詳細を作成
+				String alarmCode = String.valueOf(condScheYear.getSortOrder());
+				String alarmContent = getAlarmContent(getCompareOperatorText(condScheYear.getCheckItemType(), condScheYear.getCheckConditions(), checkCondTypeName), totalTime);
+				Optional<String> comment = condScheYear.getErrorAlarmMessage().isPresent()
+						? Optional.of(condScheYear.getErrorAlarmMessage().get().v())
+						: Optional.empty();
+				ExtractionAlarmPeriodDate extractionAlarmPeriodDate = new ExtractionAlarmPeriodDate(Optional.of(dPeriod.start()), Optional.empty());
+				ExtractionResultDetail detail = new ExtractionResultDetail(sid, 
+						extractionAlarmPeriodDate, 
+						condScheYear.getName().v(), 
+						alarmContent, 
+						GeneralDateTime.now(), 
+						Optional.ofNullable(wplId), 
+						comment, 
+						Optional.ofNullable(getCheckValue(totalTime)));
+				
+				List<ResultOfEachCondition> lstResultTmp = result.getLstResultCondition().stream()
+						.filter(x -> x.getCheckType() == AlarmListCheckType.FreeCheck && x.getNo().equals(alarmCode)).collect(Collectors.toList());
+				List<ExtractionResultDetail> listDetail = new ArrayList<>();
+				if(lstResultTmp.isEmpty()) {
+					listDetail.add(detail);
+					result.getLstResultCondition().add(new ResultOfEachCondition(EnumAdaptor.valueOf(1, AlarmListCheckType.class), alarmCode, 
+							listDetail));	
+				} else {
+					result.getLstResultCondition().stream().forEach(x -> x.getLstResultDetail().add(detail));
+				}
+				
+				Optional<AlarmListCheckInfor> optCheckInfor = result.getLstCheckType().stream()
+						.filter(x -> x.getChekType() == AlarmListCheckType.FreeCheck && x.getNo().equals(String.valueOf(condScheYear.getSortOrder())))
+						.findFirst();
+				if(!optCheckInfor.isPresent()) {
+					result.getLstCheckType().add(new AlarmListCheckInfor(String.valueOf(condScheYear.getSortOrder()), AlarmListCheckType.FreeCheck));
 				}
 			}
 			
@@ -435,6 +435,7 @@ public class ScheYearCheckServiceImpl implements ScheYearCheckService {
 	/**
 	 * Get parameter 0 for alarm content 
 	 */
+	@SuppressWarnings("rawtypes")
 	public String getCompareOperatorText(YearCheckItemType checkItemType, CheckedCondition checkCondition, String checkCondTypeName) {
 		if (checkCondition == null) {
 			return checkCondTypeName;		
@@ -482,7 +483,7 @@ public class ScheYearCheckServiceImpl implements ScheYearCheckService {
 	 * 日数チェック条件をチェック
 	 */
 	private Double checkItemDay(
-			String cid, String sid, String wplId, YearMonth ym, 
+			String cid, String sid, YearMonth ym, 
 			ExtractionCondScheduleYear condScheYear,
 			AttendanceTimeOfMonthly attendanceTimeOfMonthly,
 			ScheYearPrepareData prepareData,
@@ -540,7 +541,7 @@ public class ScheYearCheckServiceImpl implements ScheYearCheckService {
 	 * 時間チェック条件をチェック
 	 */
 	private Double checkItemTime(
-			String cid, String sid, String wplId, YearMonth ym, 
+			String cid, String sid, YearMonth ym, 
 			ExtractionCondScheduleYear condScheYear,
 			AttendanceTimeOfMonthly attendanceTimeOfMonthly,
 			ScheYearPrepareData prepareData,
