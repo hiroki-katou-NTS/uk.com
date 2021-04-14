@@ -4,16 +4,14 @@ module nts.uk.at.view.kdl030.a.viewmodel {
     import getShared = nts.uk.ui.windows.getShared;
     import setShared = nts.uk.ui.windows.setShared;
     import dialog = nts.uk.ui.dialog;
-    import getText = nts.uk.resource.getText;
     import getMessage = nts.uk.resource.getMessage;
-    import ApplicationDto = nts.uk.at.view.kaf000.b.viewmodel.model.ApplicationDto;
 
 	@bean()
     export class Kdl030AViewModel extends ko.ViewModel {
 		appIDLst: Array<string> = [];
 		isAgentMode : KnockoutObservable<boolean> = ko.observable(false);
 		appSendMailByEmpLst: KnockoutObservableArray<any> = ko.observableArray([]);
-		isSendApplicant: KnockoutObservable<boolean> = ko.observable(false);
+		isSendApplicant: KnockoutObservable<boolean> = ko.observable(true);
 		mailContent: KnockoutObservable<String> = ko.observable(null);
 		appEmailSet: any = null;
         created() {

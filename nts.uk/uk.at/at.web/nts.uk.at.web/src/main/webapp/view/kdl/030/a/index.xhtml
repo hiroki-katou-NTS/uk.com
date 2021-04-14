@@ -24,14 +24,14 @@
 				<div class="label-div" style="margin-left: 25px;">
 					<label>#{i18n.getText('KDL030_2')}</label>
 				</div>
-				<div tabindex="0" class="table valign-center" data-bind="if: isAgentMode" style="margin-left: 22px">
+				<div class="table valign-center" data-bind="if: isAgentMode" style="margin-left: 22px">
 					<div id="checkSendApplicant" data-bind="i18n: 'KDL030_36', ntsCheckBox: { checked: isSendApplicant }"></div>
 				</div>
 				<div class="table valign-center">
 					<div class="cell">
 						<!-- A2_1 送信対象者 -->
 						<div data-bind="if: !isAgentMode()">
-							<div id="A2_1" style="width: 100px;"
+							<div id="A2_1" style="width: 104px;"
 								data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDL030_3')}</div>
 						</div>
 						

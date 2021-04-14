@@ -17,7 +17,7 @@
 	width: 240px;		
 }
 #A4_2 {
-	width: 640px;
+	width: 635px;
     height: 200px;
 }
 .message-td {
@@ -116,9 +116,13 @@
 
 #table-body {
 	margin-top: -1px;
-	height: 167px;
+	height: 200px;
 	/*min-width: 774px;*/
 	width: auto;
 	overflow-y: auto;
 	border: #cccccc solid 1px;
+}
+
+#table-body tr {
+	height: 33px;
 }
