@@ -572,9 +572,13 @@ module nts.uk.at.view.ccg005.a.screenModel {
       vm.perPage.subscribe(() => vm.resetPagination());
       vm.paginationText.subscribe(() => {
         vm.attendanceInformationDtosDisplay(_.slice(vm.attendanceInformationDtosDisplayClone(), vm.startPage() - 1, vm.endPage()));
+      });
+
+      vm.attendanceInformationDtosDisplay.subscribe(() => {
         clearTimeout(reloadAvatar);
         reloadAvatar = setTimeout(() => { vm.bindingLoopData(); }, 1);
       });
+
       (ko.bindingHandlers.ntsIcon as any).init($('.ccg005-status-img-A1_7'), () => ({ no: vm.activityStatusIcon(), width: 20, height: 20 }));
 
       //focus
@@ -1268,6 +1272,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
      */
     public onSearchEmployee() {
       const vm = this;
+      let reloadAvatar: any;
       if (vm.searchValue().trim().length > 0) {
         const param = {
           keyWorks: vm.searchValue(),
