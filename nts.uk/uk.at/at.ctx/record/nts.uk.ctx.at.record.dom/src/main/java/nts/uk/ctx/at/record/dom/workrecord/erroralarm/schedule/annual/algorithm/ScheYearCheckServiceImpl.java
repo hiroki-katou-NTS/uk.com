@@ -376,6 +376,7 @@ public class ScheYearCheckServiceImpl implements ScheYearCheckService {
 						? Optional.of(condScheYear.getErrorAlarmMessage().get().v())
 						: Optional.empty();
 				ExtractionAlarmPeriodDate extractionAlarmPeriodDate = new ExtractionAlarmPeriodDate(Optional.of(dPeriod.start()), Optional.empty());
+				
 				ExtractionResultDetail detail = new ExtractionResultDetail(sid, 
 						extractionAlarmPeriodDate, 
 						condScheYear.getName().v(), 
@@ -385,6 +386,10 @@ public class ScheYearCheckServiceImpl implements ScheYearCheckService {
 						comment, 
 						Optional.ofNullable(getCheckValue(totalTime)));
 				
+				// 各チェック条件の結果を作成する
+				// ・チェック種類　＝　自由チェック
+				// ・コード　＝　ループ中のスケジュール年間の任意抽出条件．並び順
+				// ・抽出結果　＝　作成した抽出結果
 				List<ResultOfEachCondition> lstResultTmp = result.getLstResultCondition().stream()
 						.filter(x -> x.getCheckType() == AlarmListCheckType.FreeCheck && x.getNo().equals(alarmCode)).collect(Collectors.toList());
 				List<ExtractionResultDetail> listDetail = new ArrayList<>();
@@ -403,11 +408,6 @@ public class ScheYearCheckServiceImpl implements ScheYearCheckService {
 					result.getLstCheckType().add(new AlarmListCheckInfor(String.valueOf(condScheYear.getSortOrder()), AlarmListCheckType.FreeCheck));
 				}
 			}
-			
-			// 各チェック条件の結果を作成する
-			// ・チェック種類　＝　自由チェック
-			// ・コード　＝　ループ中のスケジュール年間の任意抽出条件．並び順
-			// ・抽出結果　＝　作成した抽出結果
 		}
 		
 		return result;
