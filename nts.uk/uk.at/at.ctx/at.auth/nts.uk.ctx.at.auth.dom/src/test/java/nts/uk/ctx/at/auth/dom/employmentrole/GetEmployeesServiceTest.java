@@ -35,7 +35,7 @@ public class GetEmployeesServiceTest {
 	EmploymentRole employmentRole = new EmploymentRole(companyId, roleID);
 	EmploymentRole employmentRole1 = new EmploymentRole(companyId, roleID,
 			EnumAdaptor.valueOf(4, ScheduleEmployeeRef.class),
-			null, null, null, null);
+			null, null, null, null, null);
 
 	@Injectable
 	private GetEmployeesService.Require require;
