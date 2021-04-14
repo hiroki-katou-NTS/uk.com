@@ -25,13 +25,13 @@ module nts.uk.at.view.kaf000.b.component5.viewmodel {
             vm.prePostAtrName = ko.observable("prePostAtrName");
             vm.prePostAtrDisp = ko.observable(false);
 
-//            vm.prePostAtrName(vm.getPrePostAtrName(vm.appDispInfoStartupOutput().appDetailScreenInfo.application.prePostAtr));
-//			if(vm.appDispInfoStartupOutput().appDetailScreenInfo.application.opStampRequestMode==1) {
-//				vm.prePostAtrDisp(false);
-//			} else {
-//            	vm.prePostAtrDisp(vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.applicationSetting.appDisplaySetting.prePostDisplayAtr == 1);
-//			}
-//            params.application().prePostAtr(vm.appDispInfoStartupOutput().appDetailScreenInfo.application.prePostAtr);
+            vm.prePostAtrName(vm.getPrePostAtrName(vm.appDispInfoStartupOutput().appDetailScreenInfo.application.prePostAtr));
+			if(vm.appDispInfoStartupOutput().appDetailScreenInfo.application.opStampRequestMode==1) {
+				vm.prePostAtrDisp(false);
+			} else {
+            	vm.prePostAtrDisp(vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.applicationSetting.appDisplaySetting.prePostDisplayAtr == 1);
+			}
+            params.application().prePostAtr(vm.appDispInfoStartupOutput().appDetailScreenInfo.application.prePostAtr);
 
 			vm.appDispInfoStartupOutput.subscribe(value => {
          		vm.prePostAtrName(vm.getPrePostAtrName(value.appDetailScreenInfo.application.prePostAtr));

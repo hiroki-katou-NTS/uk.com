@@ -272,22 +272,26 @@ module nts.uk.at.view.kaf000.b.viewmodel {
 
 		btnApproveComment() {
 			const vm = this;
-			let appDispInfoStartupOutput = vm.appDispInfoStartupOutput,
+			let appDispInfoStartupOutput = ko.toJS(vm.appDispInfoStartupOutput()),
 				dParam = { appDispInfoStartupOutput };
 			vm.$window.modal('/view/kaf/000/e/index.xhtml', dParam).then((result) => {
 				if(result) {
-					vm.loadData();	
+					if(result.reload) {
+						vm.loadData();	
+					}
 				}
 			});
         }
 
         btnDenyComment() {
 			const vm = this;
-			let appDispInfoStartupOutput = vm.appDispInfoStartupOutput,
+			let appDispInfoStartupOutput = ko.toJS(vm.appDispInfoStartupOutput()),
 				dParam = { appDispInfoStartupOutput };
 			vm.$window.modal('/view/kaf/000/f/index.xhtml', dParam).then((result) => {
 				if(result) {
-					vm.loadData();		
+					if(result.reload) {
+						vm.loadData();	
+					}	
 				}
 			});
 		}

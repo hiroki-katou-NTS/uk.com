@@ -5,7 +5,7 @@ module nts.uk.at.view.kaf000.a.component6.viewmodel {
         template: `
             <div id="kaf000-a-component6" data-bind="click: openApproverDetail">
 				<div style="display: inline-block; width: calc(100% - 22px);" data-bind="if: approvalRootStateShort().length != 0">
-					<div data-bind="foreach: approvalRootStateShort">
+					<div data-bind="foreach: approvalRootStateShort" style="padding-top: 5px;">
 						<div class="approver-block" data-bind="style: { 'max-width': $component.getMaxWidth() }">
 							<div data-bind="text: $component.getApproverLabel($index())"></div>
 							<div style="min-width: 112px;">

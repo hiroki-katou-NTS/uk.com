@@ -24,18 +24,18 @@ module nts.uk.at.view.kaf000.b.component6.viewmodel {
             vm.appDateString = ko.observable("appDateString");
 
 
-//            params.application().appDate(vm.appDispInfoStartupOutput().appDetailScreenInfo.application.appDate);
-//            params.application().opAppStartDate(vm.appDispInfoStartupOutput().appDetailScreenInfo.application.opAppStartDate);
-//		    params.application().opAppEndDate(vm.appDispInfoStartupOutput().appDetailScreenInfo.application.opAppEndDate);
-//
-//			let inputDate = moment(vm.appDispInfoStartupOutput().appDetailScreenInfo.application.inputDate).format("YYYY/MM/DD HH:mm");
-//			let appDateString = "";
-//			if(params.application().opAppStartDate()==params.application().opAppEndDate()) {
-//				appDateString = params.application().appDate();
-//			} else {
-//				appDateString = params.application().opAppStartDate() + '～' +params.application().opAppEndDate();
-//			}
-//			vm.appDateString(vm.$i18n('KAF011_23', [appDateString, inputDate]));
+            params.application().appDate(vm.appDispInfoStartupOutput().appDetailScreenInfo.application.appDate);
+            params.application().opAppStartDate(vm.appDispInfoStartupOutput().appDetailScreenInfo.application.opAppStartDate);
+		    params.application().opAppEndDate(vm.appDispInfoStartupOutput().appDetailScreenInfo.application.opAppEndDate);
+
+			let inputDate = moment(vm.appDispInfoStartupOutput().appDetailScreenInfo.application.inputDate).format("YYYY/MM/DD HH:mm");
+			let appDateString = "";
+			if(params.application().opAppStartDate()==params.application().opAppEndDate()) {
+				appDateString = params.application().appDate();
+			} else {
+				appDateString = params.application().opAppStartDate() + '～' +params.application().opAppEndDate();
+			}
+			vm.appDateString(vm.$i18n('KAF011_23', [appDateString, inputDate]));
 
 			vm.appDispInfoStartupOutput.subscribe(value => {
          		params.application().appDate(value.appDetailScreenInfo.application.appDate);
