@@ -484,6 +484,8 @@ public class InterimRemainOffDateCreateData {
 			double day, WorkTypeRemainInfor dataOutput, Optional<TimeDigestionUsageInfor> timedigOpt,
 			FuriClassifi furiClassifi, Double usedDays) {
 		
+		WorkTypeRemainInfor result = new WorkTypeRemainInfor(dataOutput.getWorkTypeCode(), dataOutput.getWorkTypeClass(), dataOutput.getCreateData(), dataOutput.getOccurrenceDetailData(), dataOutput.getSpeHolidayDetailData(), dataOutput.getChildCareDetailData());
+		
 		WorkTypeClassification wkClasssifi = null;
 				
 		if (workAtr.equals(WorkAtr.OneDay)) {
@@ -497,15 +499,15 @@ public class InterimRemainOffDateCreateData {
 		}
 		
 				
-		dataOutput.setWorkTypeClass(wkClasssifi);
+		result.setWorkTypeClass(wkClasssifi);
 		//アルゴリズム「残数発生使用対象の勤務種類の分類かを判定」を実行する
 		JudgmentTypeOfWorkType judmentType = judgmentType(wkClasssifi);
 		if(judmentType == JudgmentTypeOfWorkType.REMAINOCCNOTCOVER) {
-			return dataOutput;
+			return result;
 		}
 		
 		//振休振出として扱う日数をチェックする
-		checkNumberDays(cid, wkClasssifi, workAtr, furiClassifi, usedDays, workType, dataOutput);
+		checkNumberDays(cid, wkClasssifi, workAtr, furiClassifi, usedDays, workType, result);
 		
 		List<WorkTypeSet> workTypeSetList = workType.getWorkTypeSetList();
 		
@@ -514,12 +516,12 @@ public class InterimRemainOffDateCreateData {
 		switch (wkClasssifi) {
 		case Absence:
 			// 子の看護介護の残数発生使用明細を設定する
-			setCare(require, cid, day, workTypeSetList, dataOutput);
+			setCare(require, cid, day, workTypeSetList, result);
 			break;
 		case SpecialHoliday:
 			// INPUT.勤務種類の分類＝特別休暇
 			// 特休使用明細を追加する
-			List<SpecialHolidayUseDetail> lstSpeUseDetail = new ArrayList<>(dataOutput.getSpeHolidayDetailData());
+			List<SpecialHolidayUseDetail> lstSpeUseDetail = new ArrayList<>(result.getSpeHolidayDetailData());
 
 			workTypeSetList.stream().filter(x -> x.getWorkAtr().equals(WorkAtr.OneDay)).findFirst().ifPresent(x -> {
 				// アルゴリズム「特別休暇枠NOから特別休暇を取得する」を実行する
@@ -530,9 +532,9 @@ public class InterimRemainOffDateCreateData {
 				}
 			});
 
-			dataOutput.setSpeHolidayDetailData(lstSpeUseDetail);
+			result.setSpeHolidayDetailData(lstSpeUseDetail);
 			// 子の看護介護の残数発生使用明細を設定する
-			setCare(require, cid, day, workTypeSetList, dataOutput);
+			setCare(require, cid, day, workTypeSetList, result);
 			break;
 
 		case HolidayWork:
@@ -540,25 +542,25 @@ public class InterimRemainOffDateCreateData {
 			if (!workTypeSetList.stream().filter(x -> x.getGenSubHodiday().equals(WorkTypeSetCheck.CHECK))
 					.collect(Collectors.toList()).isEmpty()) {
 				// 勤務種類の分類に対応する残数発生使用明細を設定する
-				setData(dataOutput, day, dataOutput.getWorkTypeClass());
+				setData(result, day, result.getWorkTypeClass());
 			}
 		case Holiday:
 		case Pause:
 		case Shooting:
 			// 公休の残数発生使用明細を設定する
-			setNumberHolidays(cid, workType, workAtr, dataOutput, day);
+			setNumberHolidays(cid, workType, workAtr, result, day);
 			if (wkClasssifi.equals(WorkTypeClassification.Pause)
 					|| wkClasssifi.equals(WorkTypeClassification.Shooting)) {
 				// 勤務種類の分類に対応する残数発生使用明細を設定する
-				setData(dataOutput, day, wkClasssifi);
+				setData(result, day, wkClasssifi);
 			}
 			break;
 
 		case TimeDigestVacation:
 			// 時間休暇使用時間詳細を設定する
-			setTimeVacation(timedigOpt, dataOutput);
+			setTimeVacation(timedigOpt, result);
 			// 勤務種類の分類に対応する残数発生使用明細を設定する
-			setData(dataOutput, day, wkClasssifi);
+			setData(result, day, wkClasssifi);
 			break;
 		case SubstituteHoliday:
 			// 時間代休の時間を作成する
@@ -570,11 +572,11 @@ public class InterimRemainOffDateCreateData {
 			break;
 		default:
 			// 勤務種類の分類に対応する残数発生使用明細を設定する
-			setData(dataOutput, day, dataOutput.getWorkTypeClass());
+			setData(result, day, result.getWorkTypeClass());
 			break;
 		}
 
-		return new WorkTypeRemainInfor(dataOutput.getWorkTypeCode(), dataOutput.getWorkTypeClass(), dataOutput.getCreateData(), dataOutput.getOccurrenceDetailData(), dataOutput.getSpeHolidayDetailData(), dataOutput.getChildCareDetailData());
+		return result;
 	}
 
 	/**
