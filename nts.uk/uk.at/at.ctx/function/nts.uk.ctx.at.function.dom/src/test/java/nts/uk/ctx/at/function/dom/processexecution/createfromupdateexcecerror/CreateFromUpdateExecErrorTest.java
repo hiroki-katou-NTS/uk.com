@@ -174,7 +174,6 @@ public class CreateFromUpdateExecErrorTest {
 	/**
 	 * 更新処理自動実行項目の状態 = 実行中
 	 * 前回実行日時  EMPTY
-	 * [R-3] 過去の実行平均時間を超過しているか = TRUE
 	 */
 	@Test
 	public void CreateFromUpdateExecErrorTest3() {
