@@ -29,11 +29,6 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class JpaTmpAnnualHolidayMngRepository extends JpaRepository implements TmpAnnualHolidayMngRepository{
 
-	private TempAnnualLeaveMngs toDomain(KshdtInterimHdpaid x) {
-		return toDomain(x.remainMngId, x.pk.sid, x.pk.ymd, x.creatorAtr, x.pk.timeDigestiveAtr,
-						x.pk.timeHdType, x.workTypeCode, x.useDays, x.useTime);
-	}
-
 	private TempAnnualLeaveMngs toDomain(String mngId, String sid, GeneralDate ymd,
 			int creatorAtr, int timeDigestAtr, int timeHdType, String workTypeCode,
 			Double useDays, Integer useTime) {
