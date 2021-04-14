@@ -29,9 +29,11 @@ module nts.uk.at.view.kdp.share {
 		<div class="time">
 			<div class="text-time" data-bind="i18n: 'KDP001_5'"></div>
 			<div class="date" data-bind="clock-day: time, setting: settings"></div>
-			<div class="hour-second">
-				<span class="hour" data-bind="date: time, format: 'HH:mm'"></span>
-				<span class="second" data-bind="date: time, format: ':ss'"></span>
+			<div class="hour-second" >
+				<span class="hour" data-bind="date: time, format: 'HH:mm', style:{
+					'color': ko.toJS(settings).textColor}"></span>
+				<span class="second" data-bind="date: time, format: ':ss', style:{
+					'color': ko.toJS(settings).textColor}"></span>
 			</div>
 		</div>
 		<div class="button-group" data-bind="events: $component.events"></div>

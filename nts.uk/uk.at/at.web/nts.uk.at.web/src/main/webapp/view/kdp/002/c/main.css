@@ -1,3 +1,7 @@
+.kdp002-c {
+	padding: 11px;
+}
+
 #contents-area{
 	overflow: hidden !important;
 }
@@ -15,10 +19,6 @@
 
 #text-b4-2 {
 	margin-left: 43px;
-}
-
-#contents-area {
-	margin-left: 25px !important;
 }
 
 #single-list_container {
