@@ -240,6 +240,11 @@
 	font-size: 20px;
 }
 
+.top-15 {
+	position: relative;
+    top: 15px;
+}
+
 .tab-button-panel .grid-container.btn-layout-type-0>div:first-child {
 	height: 232px;
 }

@@ -164,9 +164,9 @@ module nts.uk.at.view.kdp.share {
 			const text = document.createElement('div');
 			if (data.btnPositionNo === 1 || data.btnPositionNo === 2) {
 				if (data.btnName.length <= 8 ) {
-					text.className = "fs-30";
+					text.className = "fs-30 top-15";
 				} else {
-					text.className = "fs-24";
+					text.className = "fs-24 top-15";
 				}
 			} else {
 				text.className = "fs-20";
