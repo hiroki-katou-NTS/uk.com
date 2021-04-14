@@ -2,16 +2,14 @@ package nts.uk.ctx.sys.portal.dom.toppagealarm.service.registeralarmdata;
 
 import java.util.Arrays;
 import java.util.Optional;
-import java.util.function.Supplier;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import mockit.Expectations;
 import mockit.Injectable;
 import mockit.Mocked;
+import mockit.Verifications;
 import mockit.integration.junit4.JMockit;
 import nts.arc.task.tran.AtomTask;
-import nts.arc.testing.assertion.AtomTaskAssert;
 import nts.uk.ctx.sys.portal.dom.toppagealarm.AlarmClassification;
 import nts.uk.ctx.sys.portal.dom.toppagealarm.DisplayAtr;
 import nts.uk.ctx.sys.portal.dom.toppagealarm.ToppageAlarmData;
@@ -36,9 +34,6 @@ public class RegisterAlarmDataDsTest {
 		
 		//given
 		ToppageAlarmParam param = RegisterAlarmDataDsHelper.mockParamHealthLife();
-		String cid = "cid";
-		String sid = "sid";
-		String patternCode = "patternCode";
 		DisplayAtr displayAtr = param.getDisplayEmpClassfication();
 		AlarmClassification alarmCls = param.getAlarmClassification();
 		
@@ -47,16 +42,45 @@ public class RegisterAlarmDataDsTest {
 		
 		new Expectations() {
 			{
-				require.get(cid, sid, displayAtr.value, alarmCls.value, Optional.of(patternCode), Optional.empty());
+				require.get(RegisterAlarmDataDsHelper.CID, 
+						RegisterAlarmDataDsHelper.SID, 
+						displayAtr.value, 
+						alarmCls.value, 
+						Optional.of(RegisterAlarmDataDsHelper.PARTTERN_CD),
+						Optional.empty());
 				result = checkDomain;
 			}
 		};
 		
 		//when
-		Supplier<AtomTask> result = () -> AtomTask.of(() -> RegisterAlarmDataDs.register(require, cid, param));
+		AtomTask result = AtomTask.of(() -> RegisterAlarmDataDs.register(require, RegisterAlarmDataDsHelper.CID, param));
 		
-		//then
-		AtomTaskAssert.atomTask(result);
+		// Before
+		new Verifications() {
+			{
+				require.update((ToppageAlarmData) any);
+				times = 0;
+			}
+			{
+				require.insert((ToppageAlarmData) any);
+				times = 0;
+			}
+		};
+
+		// Execute
+		result.run();
+
+		// After
+		new Verifications() {
+			{
+				require.update((ToppageAlarmData) any);
+				times = 0;
+			}
+			{
+				require.insert((ToppageAlarmData) any);
+				times = 0;
+			}
+		};
 	}
 	
 	/**
@@ -68,27 +92,48 @@ public class RegisterAlarmDataDsTest {
 		
 		//given
 		ToppageAlarmParam param = RegisterAlarmDataDsHelper.mockParamHealthLife();
-		String cid = "cid";
-		String sid = "sid";
-		String patternCode = "patternCode";
 		DisplayAtr displayAtr = param.getDisplayEmpClassfication();
 		AlarmClassification alarmCls = param.getAlarmClassification();
 		
 		//[R-1]
-		Optional<ToppageAlarmData> checkDomain = RegisterAlarmDataDsHelper.mockToppageAlarmDataReadDateBefore();
+		Optional<ToppageAlarmData> checkDomain = RegisterAlarmDataDsHelper.mockToppageAlarmDataReadDateAfter();
 		
 		new Expectations() {
 			{
-				require.get(cid, sid, displayAtr.value, alarmCls.value, Optional.of(patternCode), Optional.empty());
+				require.get(RegisterAlarmDataDsHelper.CID, RegisterAlarmDataDsHelper.SID, displayAtr.value, alarmCls.value, Optional.of(RegisterAlarmDataDsHelper.PARTTERN_CD), Optional.empty());
 				result = checkDomain;
 			}
 		};
 		
 		//when
-		Supplier<AtomTask> result = () -> AtomTask.of(() -> RegisterAlarmDataDs.register(require, cid, param));
+		AtomTask result = AtomTask.of(() -> RegisterAlarmDataDs.register(require, RegisterAlarmDataDsHelper.CID, param));
 		
-		//then
-		AtomTaskAssert.atomTask(result);
+		// Before
+		new Verifications() {
+			{
+				require.update((ToppageAlarmData) any);
+				times = 0;
+			}
+			{
+				require.insert((ToppageAlarmData) any);
+				times = 0;
+			}
+		};
+
+		// Execute
+		result.run();
+
+		// After
+		new Verifications() {
+			{
+				require.update((ToppageAlarmData) any);
+				times = 0;
+			}
+			{
+				require.insert((ToppageAlarmData) any);
+				times = 0;
+			}
+		};
 	}
 	
 	/**
@@ -100,27 +145,53 @@ public class RegisterAlarmDataDsTest {
 		
 		//given
 		ToppageAlarmParam param = RegisterAlarmDataDsHelper.mockParamHealthLife();
-		String cid = "cid";
-		String sid = "sid";
-		String patternCode = "patternCode";
 		DisplayAtr displayAtr = param.getDisplayEmpClassfication();
 		AlarmClassification alarmCls = param.getAlarmClassification();
 		
 		//[R-1]
-		Optional<ToppageAlarmData> checkDomain = RegisterAlarmDataDsHelper.mockToppageAlarmDataReadDateAfter();
+		Optional<ToppageAlarmData> checkDomain = RegisterAlarmDataDsHelper.mockToppageAlarmDataReadDateBefore();
 		
 		new Expectations() {
 			{
-				require.get(cid, sid, displayAtr.value, alarmCls.value, Optional.of(patternCode), Optional.empty());
+				require.get(RegisterAlarmDataDsHelper.CID, 
+						RegisterAlarmDataDsHelper.SID, 
+						displayAtr.value, 
+						alarmCls.value, 
+						Optional.of(RegisterAlarmDataDsHelper.PARTTERN_CD), 
+						Optional.empty());
 				result = checkDomain;
 			}
 		};
 		
 		//when
-		Supplier<AtomTask> result = () -> AtomTask.of(() -> RegisterAlarmDataDs.register(require, cid, param));
+		AtomTask result = AtomTask.of(() -> RegisterAlarmDataDs.register(require, RegisterAlarmDataDsHelper.CID, param));
 		
-		//then
-		AtomTaskAssert.atomTask(result);
+		// Before
+		new Verifications() {
+			{
+				require.update((ToppageAlarmData) any);
+				times = 0;
+			}
+			{
+				require.insert((ToppageAlarmData) any);
+				times = 0;
+			}
+		};
+
+		// Execute
+		result.run();
+
+		// After
+		new Verifications() {
+			{
+				require.update((ToppageAlarmData) any);
+				times = 1;
+			}
+			{
+				require.insert((ToppageAlarmData) any);
+				times = 0;
+			}
+		};
 	}
 	
 	/**
@@ -132,13 +203,36 @@ public class RegisterAlarmDataDsTest {
 		
 		//given
 		ToppageAlarmParam param = RegisterAlarmDataDsHelper.mockParamHealthLife();
-		String cid = "cid";
 		
 		//when
-		Supplier<AtomTask> result = () -> AtomTask.of(() -> RegisterAlarmDataDs.register(require, cid, param));
+		AtomTask result = AtomTask.of(() -> RegisterAlarmDataDs.register(require, RegisterAlarmDataDsHelper.CID, param));
 		
-		//then
-		AtomTaskAssert.atomTask(result);
+		// Before
+		new Verifications() {
+			{
+				require.update((ToppageAlarmData) any);
+				times = 0;
+			}
+			{
+				require.insert((ToppageAlarmData) any);
+				times = 0;
+			}
+		};
+
+		// Execute
+		result.run();
+
+		// After
+		new Verifications() {
+			{
+				require.update((ToppageAlarmData) any);
+				times = 0;
+			}
+			{
+				require.insert((ToppageAlarmData) any);
+				times = 1;
+			}
+		};
 	}
 	
 	/**
@@ -151,30 +245,52 @@ public class RegisterAlarmDataDsTest {
 		
 		//given
 		ToppageAlarmParam param = RegisterAlarmDataDsHelper.mockParamAlarmListPrincipal();
-		String cid = "cid";
-		String url = "url";
 		String patternName = param.getPatternName().orElse("");
-		String kal001 = "KAL001";
-		String b = "B";
-		Integer kinjirou = 1; // 勤次郎
-		Integer standard = 0; // 標準
 		
 		new Expectations() {
 			{
-				require.getUrl(cid, kinjirou, standard, kal001, b);
-				result = Optional.of(url);
+				require.getUrl(RegisterAlarmDataDsHelper.CID, 
+						RegisterAlarmDataDsHelper.KINJIRO, 
+						RegisterAlarmDataDsHelper.STANDARD, 
+						RegisterAlarmDataDsHelper.KAL001,
+						RegisterAlarmDataDsHelper.B);
+				result = Optional.of(RegisterAlarmDataDsHelper.URL);
 			}
 			{
-				TextResource.localize("KTG031_37", Arrays.asList(patternName));
-				result = "KTG031_37";
+				TextResource.localize(RegisterAlarmDataDsHelper.KTG031_37, Arrays.asList(patternName));
+				result = RegisterAlarmDataDsHelper.KTG031_37;
 			}
 		};
 		
 		//when
-		Supplier<AtomTask> result = () -> AtomTask.of(() -> RegisterAlarmDataDs.register(require, cid, param));
+		AtomTask result = AtomTask.of(() -> RegisterAlarmDataDs.register(require, RegisterAlarmDataDsHelper.CID, param));
 		
-		//then
-		AtomTaskAssert.atomTask(result);
+		// Before
+		new Verifications() {
+			{
+				require.update((ToppageAlarmData) any);
+				times = 0;
+			}
+			{
+				require.insert((ToppageAlarmData) any);
+				times = 0;
+			}
+		};
+
+		// Execute
+		result.run();
+
+		// After
+		new Verifications() {
+			{
+				require.update((ToppageAlarmData) any);
+				times = 0;
+			}
+			{
+				require.insert((ToppageAlarmData) any);
+				times = 1;
+			}
+		};
 	}
 	
 	/**
@@ -187,30 +303,52 @@ public class RegisterAlarmDataDsTest {
 		
 		//given
 		ToppageAlarmParam param = RegisterAlarmDataDsHelper.mockParamAlarmListBoss();
-		String cid = "cid";
-		String url = "url";
 		String patternName = param.getPatternName().orElse("");
-		String kal001 = "KAL001";
-		String b = "B";
-		Integer kinjirou = 1; // 勤次郎
-		Integer standard = 0; // 標準
-		
+
 		new Expectations() {
 			{
-				require.getUrl(cid, kinjirou, standard, kal001, b);
-				result = Optional.of(url);
+				require.getUrl(RegisterAlarmDataDsHelper.CID, 
+						RegisterAlarmDataDsHelper.KINJIRO, 
+						RegisterAlarmDataDsHelper.STANDARD, 
+						RegisterAlarmDataDsHelper.KAL001, 
+						RegisterAlarmDataDsHelper.B);
+				result = Optional.of(RegisterAlarmDataDsHelper.URL);
 			}
 			{
-				TextResource.localize("KTG031_38", Arrays.asList(patternName));
-				result = "KTG031_38";
+				TextResource.localize(RegisterAlarmDataDsHelper.KTG031_38, Arrays.asList(patternName));
+				result = RegisterAlarmDataDsHelper.KTG031_38;
 			}
 		};
 		
 		//when
-		Supplier<AtomTask> result = () -> AtomTask.of(() -> RegisterAlarmDataDs.register(require, cid, param));
+		AtomTask result = AtomTask.of(() -> RegisterAlarmDataDs.register(require, RegisterAlarmDataDsHelper.CID, param));
 		
-		//then
-		AtomTaskAssert.atomTask(result);
+		// Before
+		new Verifications() {
+			{
+				require.update((ToppageAlarmData) any);
+				times = 0;
+			}
+			{
+				require.insert((ToppageAlarmData) any);
+				times = 0;
+			}
+		};
+
+		// Execute
+		result.run();
+
+		// After
+		new Verifications() {
+			{
+				require.update((ToppageAlarmData) any);
+				times = 0;
+			}
+			{
+				require.insert((ToppageAlarmData) any);
+				times = 1;
+			}
+		};
 	}
 	
 	/**
@@ -222,29 +360,51 @@ public class RegisterAlarmDataDsTest {
 		
 		//given
 		ToppageAlarmParam param = RegisterAlarmDataDsHelper.mockParamAlarmListBusinessErr();
-		String cid = "cid";
-		String url = "url";
-		String kbt002 = "KBT002";
-		String f = "F";
-		Integer kinjirou = 1; // 勤次郎
-		Integer standard = 0; // 標準
 		
 		new Expectations() {
 			{
-				require.getUrl(cid, kinjirou, standard, kbt002, f);
-				result = Optional.of(url);
+				require.getUrl(RegisterAlarmDataDsHelper.CID, 
+						RegisterAlarmDataDsHelper.KINJIRO, 
+						RegisterAlarmDataDsHelper.STANDARD, 
+						RegisterAlarmDataDsHelper.KBT002, 
+						RegisterAlarmDataDsHelper.F);
+				result = Optional.of(RegisterAlarmDataDsHelper.URL);
 			}
 			{
-				TextResource.localize("KTG031_39");
-				result = "KTG031_39";
+				TextResource.localize(RegisterAlarmDataDsHelper.KTG031_39);
+				result = RegisterAlarmDataDsHelper.KTG031_39;
 			}
 		};
 		
 		//when
-		Supplier<AtomTask> result = () -> AtomTask.of(() -> RegisterAlarmDataDs.register(require, cid, param));
+		AtomTask result = AtomTask.of(() -> RegisterAlarmDataDs.register(require, RegisterAlarmDataDsHelper.CID, param));
 		
-		//then
-		AtomTaskAssert.atomTask(result);
+		// Before
+		new Verifications() {
+			{
+				require.update((ToppageAlarmData) any);
+				times = 0;
+			}
+			{
+				require.insert((ToppageAlarmData) any);
+				times = 0;
+			}
+		};
+
+		// Execute
+		result.run();
+
+		// After
+		new Verifications() {
+			{
+				require.update((ToppageAlarmData) any);
+				times = 0;
+			}
+			{
+				require.insert((ToppageAlarmData) any);
+				times = 1;
+			}
+		};
 	}
 	
 	/**
@@ -257,28 +417,50 @@ public class RegisterAlarmDataDsTest {
 		
 		//given
 		ToppageAlarmParam param = RegisterAlarmDataDsHelper.mockParamAlarmListPic();
-		String cid = "cid";
-		String url = "url";
-		String kal001 = "KAL001";
-		String b = "B";
-		Integer kinjirou = 1; // 勤次郎
-		Integer standard = 0; // 標準
 		
 		new Expectations() {
 			{
-				require.getUrl(cid, kinjirou, standard, kal001, b);
-				result = Optional.of(url);
+				require.getUrl(RegisterAlarmDataDsHelper.CID, 
+						RegisterAlarmDataDsHelper.KINJIRO, 
+						RegisterAlarmDataDsHelper.STANDARD, 
+						RegisterAlarmDataDsHelper.KAL001,
+						RegisterAlarmDataDsHelper.B);
+				result = Optional.of(RegisterAlarmDataDsHelper.URL);
 			}
 			{
-				TextResource.localize("KTG031_40");
-				result = "KTG031_40";
+				TextResource.localize(RegisterAlarmDataDsHelper.KTG031_40);
+				result = RegisterAlarmDataDsHelper.KTG031_40;
 			}
 		};
 		
 		//when
-		Supplier<AtomTask> result = () -> AtomTask.of(() -> RegisterAlarmDataDs.register(require, cid, param));
+		AtomTask result = AtomTask.of(() -> RegisterAlarmDataDs.register(require, RegisterAlarmDataDsHelper.CID, param));
 		
-		//then
-		AtomTaskAssert.atomTask(result);
+		// Before
+		new Verifications() {
+			{
+				require.update((ToppageAlarmData) any);
+				times = 0;
+			}
+			{
+				require.insert((ToppageAlarmData) any);
+				times = 0;
+			}
+		};
+
+		// Execute
+		result.run();
+
+		// After
+		new Verifications() {
+			{
+				require.update((ToppageAlarmData) any);
+				times = 0;
+			}
+			{
+				require.insert((ToppageAlarmData) any);
+				times = 1;
+			}
+		};
 	}
 }

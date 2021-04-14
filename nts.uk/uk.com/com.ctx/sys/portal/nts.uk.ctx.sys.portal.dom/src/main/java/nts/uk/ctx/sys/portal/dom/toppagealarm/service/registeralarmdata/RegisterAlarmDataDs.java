@@ -46,7 +46,7 @@ public class RegisterAlarmDataDs {
 		if (checkDomain.isPresent()) {
 			// update
 			ToppageAlarmData domain = checkDomain.get();
-			if (domain.getReadDateTime().isPresent() && domain.getReadDateTime().get().after(occurrenceDateTime)) {
+			if (domain.getReadDateTime().isPresent() && domain.getReadDateTime().get().before(occurrenceDateTime)) {
 				domain.updateOccurrenceDateTime(occurrenceDateTime);
 				rq.update(domain);
 			}

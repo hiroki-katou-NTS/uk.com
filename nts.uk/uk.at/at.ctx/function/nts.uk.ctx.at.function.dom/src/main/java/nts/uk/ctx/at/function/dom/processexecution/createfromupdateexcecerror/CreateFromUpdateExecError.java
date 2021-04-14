@@ -80,9 +80,12 @@ public class CreateFromUpdateExecError {
 
 		// すべて項目はエラーがない → 削除
 		if(errorList.isEmpty()) {
-			DeleteInfoAlarmImport delInfo = DeleteInfoAlarmImport.builder().alarmClassification(2) // 更新処理自動実行動作異常
-					.sids(sids).displayAtr(1) // 上長
-					.patternCode(Optional.empty()).build();
+			DeleteInfoAlarmImport delInfo = DeleteInfoAlarmImport.builder()
+					.alarmClassification(2) // 更新処理自動実行動作異常
+					.sids(sids)
+					.displayAtr(1) // 上長
+					.patternCode(Optional.empty())
+					.build();
 
 			rq.createAlarmData(cid, Collections.emptyList(), Optional.ofNullable(delInfo));
 		}

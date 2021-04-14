@@ -12,7 +12,22 @@ import nts.uk.ctx.sys.portal.dom.toppagealarm.ToppageAlarmData;
 
 public class RegisterAlarmDataDsHelper {
 
-	/*
+	public static final String CID = "cid";
+	public static final String SID = "sid";
+	public static final String PARTTERN_CD = "patternCode";
+	public static final String URL = "url";
+	public static final String KAL001 = "KAL001";
+	public static final String KBT002 = "KBT002";
+	public static final String B = "B";
+	public static final String F = "F";
+	public static final Integer KINJIRO = 1; // 勤次郎
+	public static final Integer STANDARD = 0; // 標準
+	public static final String KTG031_37 = "KTG031_37";
+	public static final String KTG031_38 = "KTG031_38";
+	public static final String KTG031_39 = "KTG031_39";
+	public static final String KTG031_40 = "KTG031_40";
+	
+	/* 
 	 * Mock [R-1] 取得する
 	 * 
 	 * 既読日時  EMPTY

@@ -3,6 +3,8 @@ package nts.uk.ctx.sys.portal.dom.toppagealarm.service.createalarmdata;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.sys.portal.dom.toppagealarm.AlarmClassification;
@@ -13,6 +15,9 @@ import nts.uk.ctx.sys.portal.dom.toppagealarm.LinkURL;
 import nts.uk.ctx.sys.portal.dom.toppagealarm.service.registeralarmdata.ToppageAlarmParam;
 
 public class CreateAlarmDataDsHelper {
+	
+	public static final String CID = "cid";
+	public static final List<String> SIDS = Stream.of("sids").collect(Collectors.toList());
 	
 	/**
 	 * Mock List<トップアラームパラメータ>

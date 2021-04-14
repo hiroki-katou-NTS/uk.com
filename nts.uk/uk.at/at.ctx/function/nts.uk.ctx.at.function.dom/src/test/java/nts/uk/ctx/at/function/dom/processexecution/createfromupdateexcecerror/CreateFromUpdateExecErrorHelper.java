@@ -3,9 +3,13 @@ package nts.uk.ctx.at.function.dom.processexecution.createfromupdateexcecerror;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
+import nts.uk.ctx.at.function.dom.adapter.toppagealarmpub.DeleteInfoAlarmImport;
+import nts.uk.ctx.at.function.dom.adapter.toppagealarmpub.TopPageAlarmImport;
 import nts.uk.ctx.at.function.dom.processexecution.ExecutionCode;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.CurrentExecutionStatus;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.EndStatus;
@@ -24,6 +28,10 @@ import nts.uk.ctx.at.function.dom.processexecution.tasksetting.primitivevalue.St
 
 public class CreateFromUpdateExecErrorHelper {
 	
+	public static final String CID = "cid";
+	public static final List<String> SIDS = Stream.of("sid").collect(Collectors.toList());
+	public static final GeneralDate REFER_DATE = GeneralDate.today();
+
 	/*
 	 * Mock [R-1] 更新処理自動実行管理を取得
 	 * 
@@ -158,5 +166,29 @@ public class CreateFromUpdateExecErrorHelper {
 				.endScheduleId(Optional.empty())
 				.repeatScheduleId(Optional.empty())
 				.build();
+	}
+	
+	public static DeleteInfoAlarmImport mockDelInfoImport() {
+		return DeleteInfoAlarmImport.builder()
+				.alarmClassification(2) // 更新処理自動実行動作異常
+				.sids(CreateFromUpdateExecErrorHelper.SIDS)
+				.displayAtr(1) // 上長
+				.patternCode(Optional.empty())
+				.build();
+	}
+	
+	public static List<TopPageAlarmImport> mockListTopPageAlarmInport() {
+		return CreateFromUpdateExecErrorHelper.SIDS.stream()
+			.map(sid -> TopPageAlarmImport.builder()
+					.alarmClassification(2) // 更新処理自動実行動作異常
+					.occurrenceDateTime(GeneralDateTime.now())
+					.displaySId(sid)
+					.displayAtr(1) // 上長
+					.patternCode(Optional.empty())
+					.patternName(Optional.empty())
+					.linkUrl(Optional.empty())
+					.displayMessage(Optional.empty())
+					.build())
+			.collect(Collectors.toList());
 	}
 }

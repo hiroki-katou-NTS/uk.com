@@ -1,17 +1,13 @@
 package nts.uk.ctx.sys.portal.dom.toppagealarm.service.updatealarmdata;
-
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.function.Supplier;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import mockit.Expectations;
 import mockit.Injectable;
+import mockit.Verifications;
 import mockit.integration.junit4.JMockit;
 import nts.arc.task.tran.AtomTask;
-import nts.arc.testing.assertion.AtomTaskAssert;
-import nts.uk.ctx.sys.portal.dom.toppagealarm.AlarmListPatternCode;
-import nts.uk.ctx.sys.portal.dom.toppagealarm.DisplayAtr;
 import nts.uk.ctx.sys.portal.dom.toppagealarm.ToppageAlarmData;
 import nts.uk.ctx.sys.portal.dom.toppagealarm.service.updatealarmdata.UpdateAlarmDataDs.UpdateAlarmDataRequire;
 
@@ -21,31 +17,80 @@ public class UpdateAlarmDataDsTest {
 	@Injectable
 	private UpdateAlarmDataRequire require;
 	
+	/**
+	 * List<トップアラーム> NOT EMPTY
+	 */
 	@Test
 	public void updateAlarmDataDsTest1() {
 		
-		//given
-		String cid = "fakeCid";
-		List<String> sids = new ArrayList<>();
-		sids.add("sid");
-		DisplayAtr displayAtr = DisplayAtr.SUPERIOR;
-		String patternCode = "patternCode";
-		AlarmListPatternCode alarmListPatternCode = new AlarmListPatternCode(patternCode);
-		
-		//[R-1]
-		List<ToppageAlarmData> toppageAlarmDatas = UpdateAlarmDataDsHelper.mockR1();
+		//given	
+		List<ToppageAlarmData> toppageAlarmDatas = UpdateAlarmDataDsHelper.mockR1(); 
 		
 		new Expectations() {
 			{
-				require.getAlarmList(cid, sids, displayAtr, alarmListPatternCode);
+				require.getAlarmList(UpdateAlarmDataDsHelper.CID, 
+						UpdateAlarmDataDsHelper.SIDS, 
+						UpdateAlarmDataDsHelper.DISP_ATTR, 
+						UpdateAlarmDataDsHelper.ALARM_LIST_CD
+						);
 				result = toppageAlarmDatas;
 			}
 		};
 		
 		//when
-		Supplier<AtomTask> result = () -> UpdateAlarmDataDs.create(require, cid, sids, patternCode, displayAtr.value);
+		AtomTask result = UpdateAlarmDataDs.create(require, 
+				UpdateAlarmDataDsHelper.CID,  
+				UpdateAlarmDataDsHelper.SIDS, 
+				UpdateAlarmDataDsHelper.PATTER_CD,
+				UpdateAlarmDataDsHelper.DISP_ATTR.value
+				);
+		 
+		// Before
+		new Verifications() {{
+			require.updateAll(toppageAlarmDatas);
+			times = 0;
+		}};
+
+		// Execute
+		result.run();
+
+		// After
+		new Verifications() {{
+			require.updateAll(toppageAlarmDatas);
+			times = 1;
+		}};
+	}
+	
+	/**
+	 * List<トップアラーム> EMPTY
+	 */
+	@Test
+	public void updateAlarmDataDsTest2() {
 		
-		 //then
-		AtomTaskAssert.atomTask(result);
+		//given	
+		List<ToppageAlarmData> toppageAlarmDatas = Collections.emptyList(); 
+			
+		//when
+		AtomTask result = UpdateAlarmDataDs.create(require, 
+				UpdateAlarmDataDsHelper.CID,  
+				UpdateAlarmDataDsHelper.SIDS, 
+				UpdateAlarmDataDsHelper.PATTER_CD,
+				UpdateAlarmDataDsHelper.DISP_ATTR.value
+				);
+		 
+		// Before
+		new Verifications() {{
+			require.updateAll(toppageAlarmDatas);
+			times = 0;
+		}};
+
+		// Execute
+		result.run();
+
+		// After
+		new Verifications() {{
+			require.updateAll(toppageAlarmDatas);
+			times = 1;
+		}};
 	}
 }

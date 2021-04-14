@@ -3,6 +3,8 @@ package nts.uk.ctx.sys.portal.dom.toppagealarm.service.updatealarmdata;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.sys.portal.dom.toppagealarm.AlarmClassification;
 import nts.uk.ctx.sys.portal.dom.toppagealarm.AlarmListPatternCode;
@@ -13,6 +15,12 @@ import nts.uk.ctx.sys.portal.dom.toppagealarm.NotificationId;
 import nts.uk.ctx.sys.portal.dom.toppagealarm.ToppageAlarmData;
 
 public class UpdateAlarmDataDsHelper {
+	
+	public static final String CID = "fakeCid";
+	public static final List<String> SIDS = Stream.of("sid").collect(Collectors.toList());
+	public static final DisplayAtr DISP_ATTR = DisplayAtr.SUPERIOR;
+	public static final String PATTER_CD = "patternCode";
+	public static final AlarmListPatternCode ALARM_LIST_CD = new AlarmListPatternCode(PATTER_CD);
 
 	/**
 	 * Mock [R-1] アラームリストを取得する

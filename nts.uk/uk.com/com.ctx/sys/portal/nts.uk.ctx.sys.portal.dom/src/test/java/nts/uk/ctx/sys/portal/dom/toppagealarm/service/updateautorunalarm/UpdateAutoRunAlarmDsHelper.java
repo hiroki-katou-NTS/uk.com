@@ -3,6 +3,8 @@ package nts.uk.ctx.sys.portal.dom.toppagealarm.service.updateautorunalarm;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.sys.portal.dom.toppagealarm.AlarmClassification;
@@ -15,6 +17,10 @@ import nts.uk.ctx.sys.portal.dom.toppagealarm.ToppageAlarmData;
 
 public class UpdateAutoRunAlarmDsHelper {
 
+	public static final String CID = "cid";
+	public static final AlarmClassification ALARM_CLS = AlarmClassification.ALARM_LIST;
+	public static final List<String> SIDS = Stream.of("sid").collect(Collectors.toList());
+	
 	/**
 	 * Mock [R-1]自動実行のアラームを取得する
 	 */

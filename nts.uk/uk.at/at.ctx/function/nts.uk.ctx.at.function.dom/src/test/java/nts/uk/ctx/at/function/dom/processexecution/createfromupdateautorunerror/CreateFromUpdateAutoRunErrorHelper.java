@@ -3,8 +3,12 @@ package nts.uk.ctx.at.function.dom.processexecution.createfromupdateautorunerror
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
+import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
+import nts.uk.ctx.at.function.dom.adapter.toppagealarmpub.DeleteInfoAlarmImport;
 import nts.uk.ctx.at.function.dom.processexecution.ExecutionCode;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.CurrentExecutionStatus;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.EndStatus;
@@ -13,6 +17,9 @@ import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecution
 
 public class CreateFromUpdateAutoRunErrorHelper {
 
+	public static final String CID = "cid";
+	public static final GeneralDate REFER_DATE = GeneralDate.today();
+	public static final List<String> LIST_EMP_ID = Stream.of("sid").collect(Collectors.toList());
 	/*
 	 * Mock [R-1] 更新処理自動実行管理を取得
 	 * 
@@ -88,5 +95,14 @@ public class CreateFromUpdateAutoRunErrorHelper {
 				.build());
 		
 		return returnList;
+	}
+	
+	public static DeleteInfoAlarmImport mockDeleteInfoAlarmImport() {
+		return DeleteInfoAlarmImport.builder()
+				.alarmClassification(1) // 更新処理自動実行業務エラー
+				.sids(CreateFromUpdateAutoRunErrorHelper.LIST_EMP_ID)
+				.displayAtr(1) // 上長
+				.patternCode(Optional.empty())
+				.build();
 	}
 }
