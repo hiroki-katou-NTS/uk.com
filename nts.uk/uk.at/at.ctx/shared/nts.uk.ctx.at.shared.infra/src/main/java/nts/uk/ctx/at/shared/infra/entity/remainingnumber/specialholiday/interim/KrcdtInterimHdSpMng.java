@@ -39,11 +39,11 @@ public class KrcdtInterimHdSpMng extends ContractUkJpaEntity implements Serializ
 	public int mngAtr;
 	
 	/** 使用日数 */
-	@Column(name ="USE_DAYS")
+	@Column(name ="USED_DAYS")
 	public Double usedDays;
 	
 	/** 使用時間 */
-	@Column(name ="USE_TIMES")
+	@Column(name ="USED_TIME")
 	public Integer usedTime;
 	
 	private static final long serialVersionUID = 1L;

@@ -36,7 +36,6 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeSet;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeSetCheck;
 import nts.uk.ctx.at.shared.dom.worktype.specialholidayframe.SpecialHdFrameNo;
-import nts.uk.shr.com.context.AppContexts;
 
 public class InterimRemainOffDateCreateData {
 	
@@ -932,10 +931,6 @@ public class InterimRemainOffDateCreateData {
 			case SubstituteHoliday:
 				TempRemainCreateEachData.createInterimDayOffData(inforData, wkCls, outputData);
 				break;
-			// 特休
-			case SpecialHoliday:
-				TempRemainCreateEachData.createInterimSpecialHoliday(inforData, wkCls, outputData);
-				break;
 			// 年休
 			case AnnualHoliday:
 				TempRemainCreateEachData.createInterimAnnualHoliday(inforData, wkCls, outputData);
@@ -973,6 +968,10 @@ public class InterimRemainOffDateCreateData {
 						break;
 					}
 				}
+			}
+			
+			if (!workTypeInfor.getSpeHolidayDetailData().isEmpty()) {
+				TempRemainCreateEachData.createInterimSpecialHoliday(inforData, wkCls, outputData);
 			}
 		}
 		
