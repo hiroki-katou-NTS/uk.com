@@ -22,7 +22,7 @@ module nts.uk.at.view.kaf006.shr.tab3.viewmodel {
                         <div class="cell" style="vertical-align: middle">
                             <button style="margin-right: 5px;" data-bind="text: $i18n('KAF006_20'), enable: $parent.isChangeWorkHour() && $parent.updateMode(), click: openKDL003"></button>
                         </div>
-                        <div class="cell" data-bind="text: $data.selectedWorkTimeDisp"></div>
+                        <div class="cell valign-center" data-bind="text: $parent.selectedWorkTimeDisp"></div>
                     </div>
                     <div style="padding-top: 10px;">
                         <div class="cell col-1">

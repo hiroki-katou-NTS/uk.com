@@ -131,12 +131,8 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
             // luôn là component
             params.eventUpdate(vm.update.bind(vm));
 			params.eventReload(vm.reload.bind(vm));
-        };
-		
-        mounted() {
-			const vm = this;
 
-            vm.maxNumberOfDay = ko.computed(() => {
+			vm.maxNumberOfDay = ko.computed(() => {
 				let data = vm.$i18n("KAF006_44").concat("\n");
 				if (vm.specAbsenceDispInfo()) {
 					if (vm.isDispMourn() && vm.isCheckMourn()) {
@@ -164,8 +160,8 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 
 				return vm.$i18n("KAF006_21");
             });
-            
-            vm.selectedDateSpec.subscribe(() => {
+
+			vm.selectedDateSpec.subscribe(() => {
 				if (vm.selectedType() !== 3 || vm.dateSpecHdRelationLst().length === 0) {
 					return;
 				}
@@ -506,6 +502,11 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 
 				return false;
 			});
+        };
+		
+        mounted() {
+			const vm = this;
+
         };
 
         reload() {
