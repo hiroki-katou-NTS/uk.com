@@ -388,7 +388,7 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 			entityApprover.wwfdpApprovrStatePK.approverId = approver.getApproverID();
 			entityApprover.agentID = approver.getAgentID();
 			entityApprover.approvalDate = approver.getApprovalDate();
-			entityApprover.approvalReason = approver.getApprovalReason().v();
+			entityApprover.approvalReason = approver.getApprovalReason()==null ? null : approver.getApprovalReason().v();
 			lstEntityApprover.add(entityApprover);
 		}
 		return lstEntityApprover;

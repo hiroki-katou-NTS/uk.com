@@ -134,6 +134,13 @@ module nts.uk.at.view.kaf000.d.viewmodel {
 				default: return '';
 			}
 		}
+		
+		getApprovalReason(approvalReason: string) {
+			if(approvalReason) {
+				return approvalReason.replace(/\n/g, "\<br/>");
+			}
+			return '';
+		}
     }
 
 	export interface KAF000DParam {

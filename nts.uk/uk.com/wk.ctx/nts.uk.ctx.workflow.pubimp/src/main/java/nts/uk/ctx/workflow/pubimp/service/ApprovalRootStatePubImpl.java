@@ -204,7 +204,7 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 															representerID, 
 															representerName,
 															z.getApprovalDate(),
-															z.getApprovalReason().v(),
+															z.getApprovalReason()==null?null:z.getApprovalReason().v(),
 															z.getApproverInListOrder());
 												}).collect(Collectors.toList()), 
 												y.getConfirmAtr().value,
@@ -274,7 +274,7 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 														representerID, 
 														representerName,
 														z.getApprovalDate(),
-														z.getApprovalReason().v(),
+														z.getApprovalReason()==null?null:z.getApprovalReason().v(),
 														z.getApproverInListOrder());
 											}).collect(Collectors.toList()), 
 											y.getConfirmAtr().value,
@@ -876,7 +876,7 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 															representerID, 
 															representerName,
 															z.getApprovalDate(),
-															z.getApprovalReason().v(),
+															z.getApprovalReason()==null?null:z.getApprovalReason().v(),
 															z.getApproverInListOrder());
 												}).collect(Collectors.toList()), 
 												y.getConfirmAtr().value,
@@ -928,7 +928,7 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 													representerID, 
 													representerName,
 													z.getApprovalDate(),
-													z.getApprovalReason().v(),
+													z.getApprovalReason()==null?null:z.getApprovalReason().v(),
 													z.getApproverInListOrder());
 										}).collect(Collectors.toList()), 
 										y.getConfirmAtr().value,
@@ -998,7 +998,7 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 														representerID, 
 														representerName,
 														z.getApprovalDate(),
-														z.getApprovalReason().v(),
+														z.getApprovalReason()==null?null:z.getApprovalReason().v(),
 														z.getApproverInListOrder());
 											}).collect(Collectors.toList()), 
 											y.getConfirmAtr().value,
@@ -1106,7 +1106,7 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 									Strings.EMPTY, 
 									Strings.EMPTY, 
 									z.getApprovalDate(), 
-									z.getApprovalReason().v(), 
+									z.getApprovalReason()==null?null:z.getApprovalReason().v(), 
 									z.getApproverInListOrder())
 									).collect(Collectors.toList()), 
 							y.getConfirmAtr().value, 

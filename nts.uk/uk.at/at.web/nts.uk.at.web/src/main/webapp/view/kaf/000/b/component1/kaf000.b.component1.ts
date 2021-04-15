@@ -40,6 +40,7 @@ module nts.uk.at.view.kaf000.b.component1.viewmodel {
 			
             vm.appDispInfoStartupOutput.subscribe(value => {
                 CommonProcess.initDeadlineMsg(value, vm);
+				vm.displayDeadline(false);
             });
         }
 
