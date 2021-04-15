@@ -237,6 +237,7 @@ public class CreateFromUpdateExecErrorTest {
 		};
 	}
 	
+	@SuppressWarnings("unchecked")
 	/**
 	 * 更新処理自動実行項目の状態 = 待機中
 	 * $次回実行日時 = システム日時
@@ -281,7 +282,7 @@ public class CreateFromUpdateExecErrorTest {
 		new Verifications() {
 			{
 				require.createAlarmData(CreateFromUpdateExecErrorHelper.CID, 
-						CreateFromUpdateExecErrorHelper.mockListTopPageAlarmInport(),
+						(List<TopPageAlarmImport>) any,
 						Optional.empty());
 				times = 0;
 			}
@@ -300,15 +301,15 @@ public class CreateFromUpdateExecErrorTest {
 		new Verifications() {
 			{
 				require.createAlarmData(CreateFromUpdateExecErrorHelper.CID, 
-						CreateFromUpdateExecErrorHelper.mockListTopPageAlarmInport(),
+						(List<TopPageAlarmImport>) any,
 						Optional.empty());
-				times = 0;
+				times = 1;
 			}
 			{
 				require.createAlarmData(CreateFromUpdateExecErrorHelper.CID, 
 						Collections.emptyList(), 
 						Optional.ofNullable(CreateFromUpdateExecErrorHelper.mockDelInfoImport()));
-				times = 1;
+				times = 0;
 			}
 		};
 	}
