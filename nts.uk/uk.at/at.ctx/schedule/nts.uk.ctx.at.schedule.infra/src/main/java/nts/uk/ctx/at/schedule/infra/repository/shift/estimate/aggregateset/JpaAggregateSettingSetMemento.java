@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.aggregateset.AggregateSettingSetMemento;
@@ -86,7 +87,12 @@ public class JpaAggregateSettingSetMemento extends JpaRepository implements Aggr
 			if (mapEntity.containsKey(pk)) {
 				return mapEntity.get(pk);
 			}
-			return new KscmtPremiumItem(pk);
+			val entity = new KscmtPremiumItem();
+			entity.setKmnmpPremiumItemPK(pk);
+			entity.setName("");
+			entity.setUseAtr(1);
+			entity.setKscstEstAggregateSet(this.kscstEstAggregateSet);
+			return entity;
 		}).collect(Collectors.toList()));
 	}
 
