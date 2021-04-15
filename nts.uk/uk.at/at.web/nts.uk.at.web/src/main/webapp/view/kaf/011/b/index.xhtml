@@ -53,6 +53,28 @@
 
 					<div>
 
+
+
+						<ui:include src="../shr/index.xhtml" />
+
+					</div>
+
+
+					<div
+						data-bind="component: { name: 'kaf000-b-component7', 
+                                                params: {
+                                                    appType: appType,
+                                                    application: applicationCommon,
+                                                    appDispInfoStartupOutput: appDispInfoStartupOutput
+                                                } }"></div>
+
+					<div style="padding-top: 30px;"></div>
+				</div>
+			</div>
+			<div class="right-panel"
+				style="width: 410px; height: inherit; overflow-y: auto">
+				<div style="height: inherit; background-color: #fff; padding: 10px;">
+					<!-- 
 						<div class="remainInfor">
 							<div class="remainLable">#{i18n.getText('KAF011_64')}</div>
 							<div class="remainNumber">
@@ -71,27 +93,8 @@
 									data-bind="text: nts.uk.resource.getText('KAF011_82', [displayInforWhenStarting().remainingHolidayInfor.closestDueDate])"></span>
 							</com:ko-if>
 						</div>
-
-						<ui:include src="../shr/index.xhtml" />
-
-					</div>
-
-
-					<div
-						data-bind="component: { name: 'kaf000-b-component7', 
-                                                params: {
-                                                    appType: appType,
-                                                    application: applicationCommon,
-                                                    appDispInfoStartupOutput: appDispInfoStartupOutput
-                                                } }"></div>
-                                                
-                                                <div style="padding-top: 30px;">
-								
-				 	</div>  
-				</div>
-			</div>
-			<div class="right-panel" style="width: 410px; height: inherit; overflow-y: auto">
-				<div style="height: inherit; background-color: #fff; padding: 10px;">
+					
+					 -->
 					<div
 						data-bind="component: { name: 'kaf000-b-component1', 
                             params: {
