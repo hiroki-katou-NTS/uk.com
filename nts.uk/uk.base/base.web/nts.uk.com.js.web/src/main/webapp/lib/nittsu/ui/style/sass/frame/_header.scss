@@ -122,6 +122,7 @@ div#master-wrapper {
 				z-index: 1000;
 				border-radius: 50%;
 				background-color: #2DCD3D;
+				transition: visibility 0s ease 0.1s;
 			}
 			&>#logo {
 				cursor: pointer;
@@ -349,6 +350,7 @@ div#master-wrapper {
 					border-radius: 50%;
 					top: 30px;
 					background-color: #2DCD3D;
+					transition: visibility 0s ease 0.1s;
 				}
 			}
 		}

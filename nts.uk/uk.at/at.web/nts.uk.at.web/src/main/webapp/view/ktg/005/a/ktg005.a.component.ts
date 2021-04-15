@@ -80,7 +80,7 @@ module nts.uk.ui.ktg005.a {
 			.ktg005-border table tr td,
 			.ktg005-border table tr th {
 				border-width: 0px;
-				border-bottom: 1px solid #ccc;
+				border-bottom: 1px solid #BFBFBF;
 			}
 			.ktg-005-a tr:last-child td {
 				border: none !important;

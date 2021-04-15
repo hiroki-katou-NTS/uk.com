@@ -185,6 +185,7 @@ module nts.uk.ui.header {
             });
 
             $(window).on('wd.resize', () => {
+
                 vm.setDisplayMenu();
                 vm.showPrevOrNextSlider();
             });
@@ -422,7 +423,7 @@ module nts.uk.ui.header {
 
         handleNextSlider() {
             const vm = this;
-            const lastItemPositionLeft = $('.slide-item').last().position().left;
+            const lastItemPositionLeft = $('.slide-item').last().position().left + $('.slide-item').last().outerWidth();
             if (lastItemPositionLeft > $('.user-info').last().position().left) {
                 vm.countMenuBar(vm.countMenuBar() + 1);
             } else {

@@ -57,7 +57,7 @@ module nts.uk.ui.ktg004.a {
                             <col width="auto" />
                         </colgroup>
                         <tbody data-bind="foreach: { data: $component.itemsDisplay, as: 'row' }">
-                            <tr class="row-show">
+                            <tr class="row-show-ktg004">
                                 <td style="position: relative;">
                                     <div data-bind="if: row.btn" style="float: left; position: relative;">
                                         <!-- A2_2 -->
@@ -77,7 +77,7 @@ module nts.uk.ui.ktg004.a {
                             </tr>
                         </tbody>
                         <tbody data-bind="foreach: { data: $component.specialHolidaysRemainings, as: 'row'}"> 
-                            <tr class="row-show">
+                            <tr class="row-show-ktg004">
                                 <td>
                                     <div data-bind="ntsFormLabel: { required: false, text: row.name }"></div>
                                 </td>
@@ -104,14 +104,14 @@ module nts.uk.ui.ktg004.a {
                 .ktg004-no-border {
                     border: none !important;
                 }
+                .ktg004-no-border td {
+                    border: none !important;
+                }
                 .ktg004-border table tr td,
 			    .ktg004-border table tr th {
                     border-width: 0px;
-                    border-bottom: 1px solid #ccc;
+                    border-bottom: 1px solid #BFBFBF;
 			    }
-                .row-show:last-child td {
-                    border: none !important;
-                }
             </style>
         `
     })
@@ -304,6 +304,8 @@ module nts.uk.ui.ktg004.a {
                         $(vm.$el)
                             .find('[data-bind]')
                             .removeAttr('data-bind');
+                        _.forEach($(".row-show-ktg004 td"), element => $(element).removeClass("ktg004-no-border"));    
+                        $(".row-show-ktg004").last().addClass("ktg004-no-border");
                     });
                 })
                 .always(() => vm.$blockui('clearView'));
