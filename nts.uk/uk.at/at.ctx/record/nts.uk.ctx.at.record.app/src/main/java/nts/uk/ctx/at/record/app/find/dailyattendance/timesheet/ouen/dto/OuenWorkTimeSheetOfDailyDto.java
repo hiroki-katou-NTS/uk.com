@@ -54,7 +54,7 @@ public class OuenWorkTimeSheetOfDailyDto extends AttendanceItemCommon {
 		if(domain != null && !domain.isEmpty()){
 			dto.setEmpId(employeeId);
 			dto.setYmd(date);
-			dto.setOuenTimeSheet(domain.stream().map(c -> OuenWorkTimeSheetOfDailyAttendanceDto.from(c))
+			dto.setOuenTimeSheet(domain.stream().map(c -> OuenWorkTimeSheetOfDailyAttendanceDto.from(employeeId, date, c))
 											.collect(Collectors.toList()));
 			dto.exsistData();
 		}
