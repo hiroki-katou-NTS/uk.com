@@ -55,7 +55,7 @@ public class WorkInformationStamp implements DomainValue {
 		WorkInformationTemporary result = new WorkInformationTemporary(); 
 		
 		// 場所コードと職場IDを確認する
-		if(this.workplaceID.isPresent() && this.cardNumberSupport.isPresent()){
+		if(this.workplaceID.isPresent() && this.workLocationCD.isPresent()){
 			// 両方がある場合
 			// 打刻場所コードと職場IDを返す
 			result = new WorkInformationTemporary(this.workplaceID, this.workLocationCD);
