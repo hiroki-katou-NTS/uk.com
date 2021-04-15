@@ -13,6 +13,8 @@ public interface OuenWorkTimeSheetOfDailyRepo {
 	public void insert(List<OuenWorkTimeSheetOfDaily> domain);
 	
 	public void delete(List<OuenWorkTimeSheetOfDaily> domain);
+	
+	public void remove(String sid, GeneralDate ymd);
 
 	boolean findPK(String empId, GeneralDate ymd, int ouenNo);
 }

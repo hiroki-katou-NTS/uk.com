@@ -483,7 +483,7 @@ public class SupportWorkReflection {
 				OuenWorkTimeSheetOfDailyAttendance attendance = null;
 				if (lstOuenWorkTime.size() > 0) {
 					// 後ろの応援データを取得する
-					attendance = lstOuenWorkTime.get(lstOuenWorkTime.size() - 1);
+					attendance = lstSetSupportData.get(lstSetSupportData.size() - 1);
 					if (attendance == null) {
 						// 応援データを補正して一覧に入れる
 						this.correctSupportDataPutInList(informationWork, lstSetSupportData, lstOuenWorkTime.get(i));
