@@ -10,6 +10,7 @@ import javax.ejb.Stateless;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.daily.ouen.OuenWorkTimeSheetOfDaily;
 import nts.uk.ctx.at.record.dom.daily.ouen.OuenWorkTimeSheetOfDailyRepo;
 import nts.uk.ctx.at.record.infra.entity.daily.ouen.KrcdtDayOuenTimeSheet;
@@ -41,6 +42,30 @@ public class OuenWorkTimeSheetOfDailyRepoImpl extends JpaRepository implements O
 		
 		OuenWorkTimeSheetOfDaily rs = toDomain(entitis);
 		
+		return rs;
+	}
+	
+	@Override
+	public List<OuenWorkTimeSheetOfDaily> find(String sid, DatePeriod period) {
+		
+		List<KrcdtDayOuenTimeSheet> entitis = this.queryProxy().query("SELECT s FROM KrcdtDayOuenTimeSheet s WHERE o.pk.sid = :sid"
+				+ " AND s.pk.ymd >= :start AND s.pk.ymd <= :end", KrcdtDayOuenTimeSheet.class)
+				.setParameter("sid", sid)
+				.setParameter("start", period.start())
+				.setParameter("end", period.end())
+				.getList();
+		
+		if(entitis.isEmpty())
+			return new ArrayList<>();
+		List<OuenWorkTimeSheetOfDaily> rs = new ArrayList<>();
+		
+		period.datesBetween().forEach(ymd -> {
+			List<KrcdtDayOuenTimeSheet> entitisBySidAndDate = entitis.stream().filter(i -> i.pk.sid.equals(sid) && i.pk.ymd.equals(ymd)).collect(Collectors.toList());
+			if(!entitisBySidAndDate.isEmpty()){
+				rs.add(toDomain(entitisBySidAndDate));
+				
+			}
+		});
 		return rs;
 	}
 	

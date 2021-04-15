@@ -59,11 +59,13 @@ public class OuenWorkTimeSheetOfDailyAttendanceDto extends AttendanceItemCommon{
 	@AttendanceItemLayout(layout = LAYOUT_B, jpPropertyName = TIME_ZONE)
 	private TimeSheetOfAttendanceEachOuenSheetDto timeSheet;
 	
-	public static OuenWorkTimeSheetOfDailyAttendanceDto from(OuenWorkTimeSheetOfDailyAttendance domain) {
-		OuenWorkTimeSheetOfDailyAttendanceDto result = new OuenWorkTimeSheetOfDailyAttendanceDto();
+	public static OuenWorkTimeSheetOfDailyAttendanceDto from(String sid, GeneralDate ymd, OuenWorkTimeSheetOfDailyAttendance domain) {
+		OuenWorkTimeSheetOfDailyAttendanceDto dto = new OuenWorkTimeSheetOfDailyAttendanceDto();
 		if(domain != null){
-			result.setNo(domain.getWorkNo());
-			result.setWorkContent(new WorkContentDto(domain.getWorkContent().getCompanyId(), 
+			dto.setEmployeeId(sid);
+			dto.setDate(ymd);
+			dto.setNo(domain.getWorkNo());
+			dto.setWorkContent(new WorkContentDto(domain.getWorkContent().getCompanyId(), 
 					new WorkplaceOfWorkEachOuenDto(
 							domain.getWorkContent().getWorkplace().getWorkplaceId(),
 							!domain.getWorkContent().getWorkplace().getWorkLocationCD().isPresent() ? null :
@@ -74,7 +76,7 @@ public class OuenWorkTimeSheetOfDailyAttendanceDto extends AttendanceItemCommon{
 							domain.getWorkContent().getWork().get().getWorkCD3().isPresent() ? domain.getWorkContent().getWork().get().getWorkCD3().get().v() : null, 
 							domain.getWorkContent().getWork().get().getWorkCD4().isPresent() ? domain.getWorkContent().getWork().get().getWorkCD4().get().v() : null, 
 							domain.getWorkContent().getWork().get().getWorkCD5().isPresent() ? domain.getWorkContent().getWork().get().getWorkCD5().get().v() : null)));
-			result.setTimeSheet(new TimeSheetOfAttendanceEachOuenSheetDto(domain.getTimeSheet().getWorkNo().v(), 
+			dto.setTimeSheet(new TimeSheetOfAttendanceEachOuenSheetDto(domain.getTimeSheet().getWorkNo().v(), 
 					new WorkTimeInformationDto(new ReasonTimeChangeDto(
 							domain.getTimeSheet().getStart().isPresent() ? domain.getTimeSheet().getStart().get().getReasonTimeChange().getTimeChangeMeans().value : null, 
 							domain.getTimeSheet().getStart().isPresent() ? domain.getTimeSheet().getStart().get().getReasonTimeChange().getTimeChangeMeans().value : null), 
@@ -84,7 +86,7 @@ public class OuenWorkTimeSheetOfDailyAttendanceDto extends AttendanceItemCommon{
 							domain.getTimeSheet().getEnd().isPresent() ? domain.getTimeSheet().getEnd().get().getReasonTimeChange().getTimeChangeMeans().value : null), 
 							domain.getTimeSheet().getEnd().isPresent() ? domain.getTimeSheet().getEnd().get().getTimeWithDay().get().v() : null)));
 		}
-		return result;
+		return dto;
 	}
 	
 	@Override

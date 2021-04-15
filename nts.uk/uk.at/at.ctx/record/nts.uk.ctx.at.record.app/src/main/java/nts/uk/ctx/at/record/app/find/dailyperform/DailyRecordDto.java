@@ -195,7 +195,7 @@ public class DailyRecordDto extends AttendanceItemCommon {
 			dto.setPcLogInfo(domain.getPcLogOnInfo().map(pc -> PCLogOnInforOfDailyPerformDto.from(employeeId,ymd,pc)));
 			dto.setRemarks(RemarksOfDailyDto.getDto(employeeId,ymd,domain.getRemarks()));
 			dto.setSnapshot(domain.getSnapshot().map(c -> SnapshotDto.from(employeeId, ymd, c)));
-			dto.setOuenTimeSheet(domain.getOuenTimeSheet().stream().map(ouen -> OuenWorkTimeSheetOfDailyAttendanceDto.from(ouen)).collect(Collectors.toList()));
+			dto.setOuenTimeSheet(domain.getOuenTimeSheet().stream().map(ouen -> OuenWorkTimeSheetOfDailyAttendanceDto.from(employeeId, ymd, ouen)).collect(Collectors.toList()));
 			dto.exsistData();
 		}
 		return dto;
@@ -229,7 +229,7 @@ public class DailyRecordDto extends AttendanceItemCommon {
 			dto.setPcLogInfo(domain.getPcLogOnInfo().map(pc -> PCLogOnInforOfDailyPerformDto.from(employeeId,ymd,pc)));
 			dto.setRemarks(RemarksOfDailyDto.getDto(employeeId,ymd,domain.getRemarks()));
 			dto.setSnapshot(domain.getSnapshot().map(c -> SnapshotDto.from(employeeId, ymd, c)));
-			dto.setOuenTimeSheet(domain.getOuenTimeSheet().stream().map(ouen -> OuenWorkTimeSheetOfDailyAttendanceDto.from(ouen)).collect(Collectors.toList()));
+			dto.setOuenTimeSheet(domain.getOuenTimeSheet().stream().map(ouen -> OuenWorkTimeSheetOfDailyAttendanceDto.from(employeeId, ymd,ouen)).collect(Collectors.toList()));
 			dto.exsistData();
 		}
 		return dto;
@@ -248,7 +248,7 @@ public class DailyRecordDto extends AttendanceItemCommon {
 		this.snapshot = Optional.ofNullable(snapshot);
 		return this;
 	}
-
+	
 	public DailyRecordDto withCalcAttr(CalcAttrOfDailyPerformanceDto calcAttr) {
 		this.calcAttr = calcAttr;
 		return this;

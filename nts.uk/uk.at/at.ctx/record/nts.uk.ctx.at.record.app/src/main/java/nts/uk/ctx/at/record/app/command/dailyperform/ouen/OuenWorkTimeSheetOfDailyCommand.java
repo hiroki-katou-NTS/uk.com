@@ -39,6 +39,6 @@ public class OuenWorkTimeSheetOfDailyCommand extends DailyWorkCommonCommand {
 	
 	@Override
 	public List<OuenWorkTimeSheetOfDailyAttendanceDto> toDto() {
-		return getData().stream().map(b -> OuenWorkTimeSheetOfDailyAttendanceDto.from(b)).collect(Collectors.toList());
+		return getData().stream().map(b -> OuenWorkTimeSheetOfDailyAttendanceDto.from(getEmployeeId(), getWorkDate(),b)).collect(Collectors.toList());
 	}
 }
