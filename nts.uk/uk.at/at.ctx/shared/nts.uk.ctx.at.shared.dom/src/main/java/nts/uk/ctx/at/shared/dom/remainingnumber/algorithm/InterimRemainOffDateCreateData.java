@@ -412,17 +412,16 @@ public class InterimRemainOffDateCreateData {
 			WorkAtr workAtrMorning, WorkAtr workAtrAfternoon, WorkTypeRemainInfor outputData) {
 
 		TotalNumberOfDay result = new TotalNumberOfDay();
-		WorkTypeClassification wkType = outputData.getWorkTypeClass();
 		numberOfDay.ifPresent(x -> {
 			if (x.getClassifiction().equals(FuriClassifi.DRAWER)) {
 				// 1日の休暇系日数合計＝0
 				double totalHoliday = 0;
 				// 午前の勤務種類が休暇系か
-				if (isHasWorkClass(wkType, workType, workAtrMorning)) {
+				if (isHasWorkClass(workType.getDailyWork().getMorning(), workType, workAtrMorning)) {
 					totalHoliday = totalHoliday + 0.5;
 				}
 				// 午後の勤務種類が休暇系か
-				if (isHasWorkClass(wkType, workType, workAtrAfternoon)) {
+				if (isHasWorkClass(workType.getDailyWork().getAfternoon(), workType, workAtrAfternoon)) {
 					totalHoliday = totalHoliday + 0.5;
 				}
 				// INPUT．振休振出として扱う．日数 = 1 and 1日の休暇系日数合計 = 1
@@ -433,8 +432,8 @@ public class InterimRemainOffDateCreateData {
 
 				if ((Double.compare(totalHoliday, 0.5) == 0 && Double.compare(x.getDays().v(), 1) == 0)
 						|| (Double.compare(totalHoliday, 1) == 0 && Double.compare(x.getDays().v(), 0.5) == 0)) {
-					boolean isMorning = isHasWorkClass(wkType, workType, workAtrMorning);
-					boolean isAfternoon = isHasWorkClass(wkType, workType, workAtrAfternoon);
+					boolean isMorning = isHasWorkClass(workType.getDailyWork().getMorning(), workType, workAtrMorning);
+					boolean isAfternoon = isHasWorkClass(workType.getDailyWork().getAfternoon(), workType, workAtrAfternoon);
 
 					if ((isMorning && !isAfternoon) || (isMorning && isAfternoon)) {
 						result.setTotalNumberMorning(0.5);
