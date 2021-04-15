@@ -246,18 +246,28 @@ module nts.uk.ui.kdp001.a {
                 }
                 .kdp-001-a.kdp-001-a-btn .btn-start-2 {
                     font-size: 34px;
+                    position: relative;
+                    top: 15px;
                 }
                 .kdp-001-a.kdp-001-a-btn .btn-start-3 {
                     font-size: 29px;
+                    position: relative;
+                    top: 15px;
                 }
                 .kdp-001-a.kdp-001-a-btn .btn-start-4 {
                     font-size: 25px;
+                    position: relative;
+                    top: 15px;
                 }
                 .kdp-001-a.kdp-001-a-btn .btn-start-5 {
                     font-size: 22px;
+                    position: relative;
+                    top: 15px;
                 }
                 .kdp-001-a.kdp-001-a-btn .btn-start-6 {
                     font-size: 20px;
+                    position: relative;
+                    top: 15px;
                 }
                 .kdp-001-a.kdp-001-a-btn1 .btn-end {
                     font-size: 20px;
