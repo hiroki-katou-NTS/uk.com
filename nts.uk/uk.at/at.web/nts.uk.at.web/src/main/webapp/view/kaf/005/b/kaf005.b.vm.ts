@@ -193,6 +193,42 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 		restTemp: Array<any>;
 	
 		justSelectWork: boolean = false;
+		
+		titleLabel1: KnockoutObservable<String>;
+		titleLabelInput1: KnockoutObservable<String>;
+		titleLabel2: KnockoutObservable<String>;
+		titleLabelInput2: KnockoutObservable<String>;
+		
+		
+		setTitleLabel() {
+			const vm = this;
+			
+			vm.titleLabel1 = ko.computed(() => {
+				if (_.isEmpty( vm.messageInfos())) return '';
+				const param = vm.messageInfos()[0].titleDrop();
+				
+				return vm.$i18n('KAF005_90', [param]);
+			})
+			vm.titleLabelInput1 = ko.computed(() => {
+				if (_.isEmpty( vm.messageInfos())) return '';
+				const param = vm.messageInfos()[0].titleInput();
+				
+				return vm.$i18n('KAF005_92', [param]);
+			})
+			vm.titleLabel2 = ko.computed(() => {
+				if (_.isEmpty( vm.messageInfos())) return '';
+				const param = vm.messageInfos()[1].titleDrop();
+				
+				return vm.$i18n('KAF005_90', [param]);
+			})
+			vm.titleLabelInput2 = ko.computed(() => {
+				if (_.isEmpty( vm.messageInfos())) return '';
+				const param = vm.messageInfos()[1].titleInput();
+				
+				return vm.$i18n('KAF005_92', [param]);
+			})
+			
+		}
         created(
             params: {
                 appType: any,
@@ -205,6 +241,8 @@ module nts.uk.at.view.kafsample.b.viewmodel {
             }
         ) {
             const vm = this;
+
+			vm.setTitleLabel();
 			vm.bindWorkInfo(null);
 			vm.bindMessageInfo(null);
 			vm.createRestTime(vm.restTime);
