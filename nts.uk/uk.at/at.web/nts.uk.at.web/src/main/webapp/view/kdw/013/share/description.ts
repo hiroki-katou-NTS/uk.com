@@ -23,7 +23,9 @@ module nts.uk.ui.at.kdp013.share {
                 const maxLength = 10;
 
                 if (!$value || $value.length > maxLength) {
-                    hasError(true);
+                    if (ko.isObservable(hasError)) {
+                        hasError(true);
+                    }
 
                     element.classList.add('error');
 
@@ -32,7 +34,9 @@ module nts.uk.ui.at.kdp013.share {
                     return text($mgs);
                 }
 
-                hasError(false);
+                if (ko.isObservable(hasError)) {
+                    hasError(false);
+                }
 
                 // emit out
                 if ($value !== raw()) {
@@ -43,13 +47,15 @@ module nts.uk.ui.at.kdp013.share {
             value
                 .subscribe(subscribe);
 
-            hasError
-                .subscribe((notValid) => {
-                    if (!notValid) {
-                        text('');
-                        element.classList.remove('error');
-                    }
-                });
+            if (ko.isObservable(hasError)) {
+                hasError
+                    .subscribe((notValid) => {
+                        if (!notValid) {
+                            text('');
+                            element.classList.remove('error');
+                        }
+                    });
+            }
 
             raw
                 // binding to view

@@ -142,7 +142,13 @@ module nts.uk.ui.at.kdp013.c {
                     </tr>
                     <tr>
                         <td data-bind="i18n: 'C1_10'"></td>
-                        <td><div data-bind="dropdown: ko.observable(''), items: $component.items, required: true, name: ''"></div></td>
+                        <td><div data-bind="
+                                dropdown: ko.observable(''),
+                                items: $component.items,
+                                required: true,
+                                name: 'GET_FROM_DOMAIN',
+                                hasError: $component.errors.dropdown
+                            "></div></td>
                     </tr>
                     <tr>
                         <td data-bind="i18n: 'C1_13'"></td>
@@ -192,9 +198,11 @@ module nts.uk.ui.at.kdp013.c {
 
         errors: {
             time: KnockoutObservable<boolean>;
+            dropdown: KnockoutObservable<boolean>;
             description: KnockoutObservable<boolean>;
         } = {
                 time: ko.observable(false),
+                dropdown: ko.observable(false),
                 description: ko.observable(false)
             };
 
@@ -213,10 +221,11 @@ module nts.uk.ui.at.kdp013.c {
                 read: () => {
                     const errors = ko.toJS(this.errors);
 
-                    return !!errors.time || !!errors.description;
+                    return !!errors.time || !!errors.description || !!errors.dropdown;
                 },
                 write: (value: boolean) => {
                     this.errors.time(value);
+                    this.errors.dropdown(value);
                     this.errors.description(value);
                 }
             });

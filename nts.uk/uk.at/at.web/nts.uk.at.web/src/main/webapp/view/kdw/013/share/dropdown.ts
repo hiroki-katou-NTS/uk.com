@@ -128,14 +128,22 @@ module nts.uk.ui.at.kdp013.share {
                 const name = allBindingsAccessor.get('name');
                 const items = allBindingsAccessor.get('items');
                 const required = allBindingsAccessor.get('required');
+                const hasError: undefined | KnockoutObservable<boolean> = allBindingsAccessor.get('hasError');
+
                 const msg = $('<div>', { class: 'message' }).get(0);
                 const subscribe = ($selected: string) => {
                     const $required = ko.unwrap(required);
 
                     if ($required && !$selected) {
+                        if (ko.isObservable(hasError)) {
+                            hasError(true);
+                        }
                         $(msg).appendTo(element);
                         element.classList.add('error');
                     } else {
+                        if (ko.isObservable(hasError)) {
+                            hasError(false);
+                        }
                         msg.remove();
                         element.classList.remove('error');
                     }
