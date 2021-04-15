@@ -22,6 +22,11 @@ module nts.uk.at.view.kaf000.d.viewmodel {
 			vm.approvalRootDisp = ko.observable(!vm.isAgentMode || _.size(vm.appDispInfoStartupOutput.appDispInfoNoDateOutput.employeeInfoLst)<=1);
         }
 
+		mounted() {
+			const vm = this;
+			$('#closeDialogD').focus();
+		}
+
 		isFirstIndexFrame(loopPhase, loopFrame, loopApprover) {
             if(_.size(loopFrame.listApprover()) > 1) {
                 return _.findIndex(loopFrame.listApprover(), o => o == loopApprover) == 0;
