@@ -21,6 +21,7 @@ import nts.uk.ctx.at.shared.dom.worktime.TimeLeaveChangeEvent;
 import nts.uk.ctx.at.shared.dom.worktime.common.JustCorrectionAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZone;
 import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
  * 日別勤怠の出退勤
@@ -28,22 +29,31 @@ import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
  * @author tutk
  *
  */
-@Getter
 @Setter
 @NoArgsConstructor
 public class TimeLeavingOfDailyAttd implements DomainObject{
 	
 	// 1 ~ 2
 	/** 出退勤 */
+	@Getter
 	private List<TimeLeavingWork> timeLeavingWorks;
 	
-	/** 勤務回数 */
+	/** 【削除予定】勤務回数 */
 	private WorkTimes workTimes;
 	
 	public TimeLeavingOfDailyAttd(List<TimeLeavingWork> timeLeavingWorks, WorkTimes workTimes) {
 		super();
 		this.timeLeavingWorks = timeLeavingWorks;
 		this.workTimes = workTimes;
+	}
+	
+	/**
+	 * 出退勤の数から勤務回数を取得する
+	 * 削除予定の属性で正常な値が入らない可能性がある為、自身の出退勤をカウントして返す
+	 * @return 勤務回数
+	 */
+	public WorkTimes getWorkTimes() {
+		return new WorkTimes(timeLeavingWorks.size());
 	}
 	
 	/**
@@ -134,12 +144,14 @@ public class TimeLeavingOfDailyAttd implements DomainObject{
 	}
 	
 	/**
-	 * 退勤を返す   （勤務回数が2回目の場合は2回目の退勤を返す）
-	 * @return
+	 * 最後の退勤時刻を取得する
+	 * @return 退勤時刻
 	 */
-	public Optional<TimeActualStamp> getLeavingWork() {
-		Optional<TimeLeavingWork> targetAttendanceLeavingWorkTime = this.getAttendanceLeavingWork(new WorkNo(this.getWorkTimes().v()));
-		return (targetAttendanceLeavingWorkTime.isPresent())?targetAttendanceLeavingWorkTime.get().getLeaveStamp():Optional.empty();
+	public Optional<TimeWithDayAttr> getLastLeaveTime() {
+		Optional<TimeLeavingWork> last = this.timeLeavingWorks.stream()
+				.sorted((f, s) -> s.getWorkNo().compareTo(f.getWorkNo()))
+				.findFirst();
+		return last.flatMap(l -> l.getLeaveTime());
 	}
 	
 	/**

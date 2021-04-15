@@ -14,11 +14,11 @@ import nts.uk.ctx.at.request.dom.applicationreflect.AppReflectExecutionCondition
 import nts.uk.ctx.at.request.dom.applicationreflect.algorithm.checkprocess.PreCheckProcessWorkRecord;
 import nts.uk.ctx.at.request.dom.applicationreflect.algorithm.checkprocess.PreCheckProcessWorkSchedule.PreCheckProcessResult;
 import nts.uk.ctx.at.request.dom.applicationreflect.object.ReflectStatusResult;
-import nts.uk.ctx.at.shared.dom.application.common.ApplicationShare;
-import nts.uk.ctx.at.shared.dom.application.common.ReasonNotReflectDailyShare;
-import nts.uk.ctx.at.shared.dom.application.common.ReasonNotReflectShare;
-import nts.uk.ctx.at.shared.dom.application.common.ReflectedStateShare;
-import nts.uk.ctx.at.shared.dom.application.reflect.ReflectStatusResultShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.common.ApplicationShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.common.ReasonNotReflectDailyShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.common.ReasonNotReflectShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.common.ReflectedStateShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.reflect.ReflectStatusResultShare;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
