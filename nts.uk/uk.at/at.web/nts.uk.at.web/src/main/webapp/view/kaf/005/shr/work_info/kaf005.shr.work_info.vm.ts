@@ -79,7 +79,7 @@ module nts.uk.at.view.kaf005.shr.work_info.viewmodel {
 		
 		
 		<div class="table" data-bind="if: visibleModel.c29()">
-			<div style="width: 113px" class="cell valign-top cm-column2">
+			<div style="width: 120px" class="cell valign-top cm-column2">
 				<div class="lblTitle"
 					
 					style="margin-right: 6px"></div>
@@ -88,6 +88,7 @@ module nts.uk.at.view.kaf005.shr.work_info.viewmodel {
 				<div>
 					<!--A4_12 勤務時間From1-->
 					<input
+						style="margin: 0px"
 						class="row-cell-margin inputTime-kaf005 right-content"
 						id="inpStartTime2"
 						data-bind="ntsTimeWithDayEditor: { 
