@@ -3,7 +3,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
 
 <div
 	id="kaf002TabPanel"
-	data-bind="ntsTabPanel: { dataSource:  $component.tabs, active: selectedTab }" style="width: 450px !important">
+	data-bind="ntsTabPanel: { dataSource:  $component.tabs, active: selectedTab }" style="width: 450px">
 	<div data-bind="if: comment1().content != ''" >
 		<div
 			data-bind="text: comment1().content,
@@ -109,26 +109,13 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
                 if (ko.toJS(data)) {
                     self.dataSource = self.dataSourceOb();
                     self.loadAll();
-					if (self.isPreAtr()) {
-						if (self.selectedTab() == 'tab-2') {
-								$('#kaf002TabPanel').width(600)							
-						} else {
-								$('#kaf002TabPanel').width(450)							
-						}
-						
-					} else {
-						if (self.selectedTab() == 'tab-2') {
-								$('#kaf002TabPanel').width(700)							
-						} else {
-								$('#kaf002TabPanel').width(550)							
-						}
-					}
+					
             	}
             });
             self.initDataSource();
             // param of parent
-            let nameGridsArray = [];
-            let paramTabs = [];
+            let nameGridsArray = [] as Array<any>;
+            let paramTabs = [] as Array<any>;
             self.enableList = [];
             self.isLinkList = [];
             _.each(self.tabMs, (item, index) => {
@@ -149,128 +136,28 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
             self.selectedTab = ko.observable(paramTabs[0].id);
             self.selectedTemp = params.selectedTab;
             self.selectedTab.subscribe(value => {
-                let isChrome = !!window.chrome && (!!window.chrome.webstore || !!window.chrome.runtime);
-
-                if (value) {
-                    // fix UI on IE
-                    let el = $('#' + value);
-                    let elChrome = $('#tab-panel');
-
-                    if (value == 'tab-1') {
-                        self.selectedTemp(0);
-                        if (isChrome) {
-                            if (((!self.isVisibleComlumn && !ko.toJS(self.isPreAtr)) || ko.toJS(self.isPreAtr))) {
-                                elChrome.css('width', '450px');
-                            } else {
-                                elChrome.css('width', '550px');
-                            }
-                        } else {
-                            if (((!self.isVisibleComlumn && !ko.toJS(self.isPreAtr)) || ko.toJS(self.isPreAtr))) {
-                                el.css('width', '410px');
-                            } else {
-                                el.css('width', '510px');
-                            }
-                        }
-                    } else if (value == 'tab-2') {
-                        self.selectedTemp(1);
-                        if (isChrome) {
-                            if (((!self.isVisibleComlumn && !ko.toJS(self.isPreAtr)) || ko.toJS(self.isPreAtr))) {
-                                elChrome.css('width', '590px');
-                            } else {
-                                elChrome.css('width', '690px');
-                            }
-                        } else {
-                            if (((!self.isVisibleComlumn && !ko.toJS(self.isPreAtr)) || ko.toJS(self.isPreAtr))) {
-                                el.css('width', '550px');
-                            } else {
-                                el.css('width', '650px');
-                            }
-                        }
-                    } else if (value == 'tab-3') {
-                        self.selectedTemp(5);
-                        if (isChrome) {
-                            if (((!self.isVisibleComlumn && !ko.toJS(self.isPreAtr)) || ko.toJS(self.isPreAtr))) {
-                                elChrome.css('width', '450px');
-                            } else {
-                                elChrome.css('width', '550px');
-                            }
-                        } else {
-                            if (((!self.isVisibleComlumn && !ko.toJS(self.isPreAtr)) || ko.toJS(self.isPreAtr))) {
-                                el.css('width', '410px');
-                            } else {
-                                el.css('width', '510px');
-                            }
-                        }
-                    } else if (value == 'tab-4') {
-                        self.selectedTemp(2);
-                        if (isChrome) {
-                            if (((!self.isVisibleComlumn && !ko.toJS(self.isPreAtr)) || ko.toJS(self.isPreAtr))) {
-                                elChrome.css('width', '450px');
-                            } else {
-                                elChrome.css('width', '550px');
-                            }
-                        } else {
-                            if (((!self.isVisibleComlumn && !ko.toJS(self.isPreAtr)) || ko.toJS(self.isPreAtr))) {
-                                el.css('width', '410px');
-                            } else {
-                                el.css('width', '510px');
-                            }
-                        }
-                    } else if (value == 'tab-5') {
-                        self.selectedTemp(4);
-                        if (isChrome) {
-                            if (((!self.isVisibleComlumn && !ko.toJS(self.isPreAtr)) || ko.toJS(self.isPreAtr))) {
-                                elChrome.css('width', '450px');
-                            } else {
-                                elChrome.css('width', '550px');
-                            }
-                        } else {
-                            if (((!self.isVisibleComlumn && !ko.toJS(self.isPreAtr)) || ko.toJS(self.isPreAtr))) {
-                                el.css('width', '410px');
-                            } else {
-                                el.css('width', '510px');
-                            }
-                        }
-                    }
-
-
-					// tabPanel
-					if ($('#kaf002TabPanel').length) {
-						if (self.isPreAtr()) {
-							if (value == 'tab-2') {
-								$('#kaf002TabPanel').width(600)							
-							} else {
-								$('#kaf002TabPanel').width(450)							
-							}							
-						} else {
-							if (value == 'tab-2') {
-								$('#kaf002TabPanel').width(700)							
-							} else {
-								$('#kaf002TabPanel').width(550)							
-							}
-						}
+                
+				if (self.isPreAtr()) {
+					if (self.selectedTab() == 'tab-2') {
+							$('#kaf002TabPanel').width(600)							
+					} else {
+							$('#kaf002TabPanel').width(450)							
 					}
-					
+				
+				} else {
+					if (self.selectedTab() == 'tab-2') {
+							$('#kaf002TabPanel').width(700)							
+					} else {
+							$('#kaf002TabPanel').width(550)							
+					}
+				}
 
-                }
+                
             })
             self.isPreAtr.subscribe((value) => {
                 if (!_.isNull(value) && self.mode() == 0) {
                     self.loadAll();
-					if (value) {
-						if (self.selectedTab() == 'tab-2') {
-								$('#kaf002TabPanel').width(600)							
-						} else {
-								$('#kaf002TabPanel').width(450)							
-						}
-						
-					} else {
-						if (self.selectedTab() == 'tab-2') {
-								$('#kaf002TabPanel').width(700)							
-						} else {
-								$('#kaf002TabPanel').width(550)							
-						}
-					}
+					
                 }
 
             });
@@ -279,7 +166,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
 
         }
         createdReasonItem(reasonList: Array<GoOutTypeDispControl>) {
-            let comboItems = [];
+            let comboItems = [] as Array<any>;
             _.forEach(reasonList, (e: GoOutTypeDispControl) => {
                 if (e.goOutType == 0) {
                     comboItems.push(new ItemModel('0', '私用'));
@@ -334,7 +221,12 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
             // change tabs by root component
             self.tabsTemp(self.tabs());
             self.loadAll();
-			if (self.isPreAtr()) {
+			
+
+        }
+        loadAll() {
+            const self = this;
+            if (self.isPreAtr()) {
 				if (self.selectedTab() == 'tab-2') {
 						$('#kaf002TabPanel').width(600)							
 				} else {
@@ -348,42 +240,6 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
 						$('#kaf002TabPanel').width(550)							
 				}
 			}
-
-        }
-        loadAll() {
-            const self = this;
-            let isChrome = !!window.chrome && (!!window.chrome.webstore || !!window.chrome.runtime);
-            if (isChrome) {
-                if (((!self.isVisibleComlumn && !ko.toJS(self.isPreAtr)) || ko.toJS(self.isPreAtr))) {
-                    if (self.selectedTab() == 'tab-2') {
-                        $('#tab-panel').css('width', '590px');
-                    } else {
-                        $('#tab-panel').css('width', '450px');
-                    }
-                } else {
-                    if (self.selectedTab() == 'tab-2') {
-                        $('#tab-panel').css('width', '690px');
-                    } else {
-                        $('#tab-panel').css('width', '550px');
-                    }
-                }
-
-            } else {
-                if (((!self.isVisibleComlumn && !ko.toJS(self.isPreAtr)) || ko.toJS(self.isPreAtr))) {
-                    if (self.selectedTab() == 'tab-2') {
-                        $('#' + self.selectedTab()).css('width', '550px');
-                    } else {
-                        $('#' + self.selectedTab()).css('width', '410px');
-                    }
-                } else {
-                    if (self.selectedTab() == 'tab-2') {
-                        $('#' + self.selectedTab()).css('width', '650px');
-                    } else {
-                        $('#' + self.selectedTab()).css('width', '510px');
-                    }
-                }
-
-            }
             if (_.isEmpty(self.dataSource)) return;
 
             _.each(self.dataSource, (item, index) => {
@@ -460,21 +316,20 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
 
         loadGrid(id: string, items: any, type: number) {
             const self = this;
-            let isChrome = !!window.chrome && (!!window.chrome.webstore || !!window.chrome.runtime);
-            if (!id) {
+            
+			
+			if (!id || !items) return;
+			
+            const isChrome = /Chrome/.test(navigator.userAgent) && /Google Inc/.test(navigator.vendor);
 
-                return;
-            }
-            if (!items) {
-
-                return;
-            }
-            if ($('#' + id + '_container').length > 0) {
+			
+			
+			
+            if ($('#' + id + '_container').length) {
                 $('#' + id).ntsGrid("destroy");
             }
-            let statesTable = [];
+            let statesTable = [] as Array<any>;
             let numberDisable = 0;
-            let isGreater_10 = items.length > 10;
 
             for (let i = 1; i < items.length + 1; i++) {
                 if (!ko.toJS(items[i - 1].flagEnable)) {
@@ -510,8 +365,8 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
             });
 
             let optionGrid = {
-                width: (((!self.isVisibleComlumn && !ko.toJS(self.isPreAtr)) || ko.toJS(self.isPreAtr))) ? '420px' : '517px',
-                height: isChrome ? '310px' : (ko.toJS(self.isPreAtr) ? '300px' : '320px'),
+                width: (((!self.isVisibleComlumn && !ko.toJS(self.isPreAtr)) || ko.toJS(self.isPreAtr))) ? '420px' : '520px',
+                height: isChrome ? (ko.toJS(self.isPreAtr) ? '310px' : '340px') : (ko.toJS(self.isPreAtr) ? '310px' : '340px'),
                 dataSource: dataSource,
                 primaryKey: 'id',
                 virtualization: true,
@@ -569,7 +424,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
                 new ItemModel('3', '組合')];
             let option2 = {
               width: (((!self.isVisibleComlumn && !ko.toJS(self.isPreAtr)) || ko.toJS(self.isPreAtr))) ? '555px' : '655px',
-              height: isChrome ? '310px' : (ko.toJS(self.isPreAtr) ? '300px' : '320px'),
+              height: isChrome ? (ko.toJS(self.isPreAtr) ? '310px' : '340px') : (ko.toJS(self.isPreAtr) ? '310px' : '340px'),
               dataSource: dataSource,
               primaryKey: 'id',
               virtualization: true,
@@ -636,8 +491,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
             }
             // add row to display expand row
             if (items.length >= 10 && self.isLinkList[items[0].index]) {
-                if ($('#' + id)) {
-                    //                    $('#' + id).append('<tr id="trLink2"><td></td><td class="titleCorlor" style="height: 50px; background-color: #CFF1A5"><div></div></td><td colspan="4"><div id="moreRow'+ String(items[0].index) + '" style="display: block" align="center"><a data-bind="ntsLinkButton: { action: doSomething.bind($data, dataSource['+ items[0].index +']) }, text: \'' + self.$i18n('KAF002_73') + '\'"></a></div></td></tr>');
+                if ($('#' + id).length) {
                     $('#' + id).append('<tr id="trLink2"><td></td><td class="titleCorlor" style="height: 50px; background-color: #CFF1A5"><div></div></td><td colspan="4"><div id="moreRow' + String(items[0].index) + '" style="display: block" align="center"><a style="color: blue; text-decoration: underline" data-bind="click: doSomething.bind($data, dataSource[' + items[0].index + ']) , text: \'' + self.$i18n('KAF002_73') + '\'"></a></div></td></tr>');
                 }
 
