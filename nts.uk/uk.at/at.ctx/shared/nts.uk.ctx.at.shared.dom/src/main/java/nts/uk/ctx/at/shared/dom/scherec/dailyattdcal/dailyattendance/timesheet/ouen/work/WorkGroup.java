@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.objecttype.DomainObject;
 import nts.arc.time.GeneralDate;
@@ -15,6 +16,7 @@ import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskframe.TaskFrameUsageS
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.Task;
 
 @Getter
+@AllArgsConstructor
 /** 作業グループ */
 public class WorkGroup implements DomainObject {
 
@@ -34,15 +36,6 @@ public class WorkGroup implements DomainObject {
 	private Optional<WorkCode> workCD5;
 
 	//[C-0] 作業グループ(作業CD1,作業CD2,作業CD3,作業CD4,作業CD5)
-	private WorkGroup(WorkCode workCD1, Optional<WorkCode> workCD2, 
-			Optional<WorkCode> workCD3, Optional<WorkCode> workCD4, Optional<WorkCode> workCD5) {
-		super();
-		this.workCD1 = workCD1;
-		this.workCD2 = workCD2;
-		this.workCD3 = workCD3;
-		this.workCD4 = workCD4;
-		this.workCD5 = workCD5;
-	}
 	
 	public static WorkGroup create(WorkCode workCD1, Optional<WorkCode> workCD2, 
 			Optional<WorkCode> workCD3, Optional<WorkCode> workCD4, Optional<WorkCode> workCD5){
