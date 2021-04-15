@@ -1,9 +1,14 @@
 package nts.uk.ctx.at.function.dom.adapter.holidayover60h;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import nts.arc.time.GeneralDate;
 
 import java.util.List;
 
+
+@AllArgsConstructor
+@Getter
 public class HolidayOver60hInfoImport {
     /** 年月日 */
     private GeneralDate ymd;

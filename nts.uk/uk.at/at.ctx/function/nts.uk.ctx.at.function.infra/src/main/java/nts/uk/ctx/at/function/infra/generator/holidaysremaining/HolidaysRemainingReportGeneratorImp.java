@@ -1094,99 +1094,99 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 
 
         int maxRange = totalMonths(dataSource.getStartMonth().yearMonth(), dataSource.getEndMonth().yearMonth());
-        if (StatusOfHolidayList != null) {
-            for (StatusOfHolidayImported statusOfHDItem : StatusOfHolidayList) {
-                // Before this month
-                if (currentMonth.compareTo(statusOfHDItem.getYm()) <= 0) {
-                    continue;
-                }
-                int totalMonth = totalMonths(dataSource.getStartMonth().yearMonth(), statusOfHDItem.getYm());
-                if (maxRange < totalMonth || totalMonth < 0) {
-                    continue;
-                }
-                // J2_5 振休_発生, set lại giá trị cho cột này nếu bằng 0 thì không hiển thị ra
-                cells.get(firstRow, 10 + totalMonth).setValue(statusOfHDItem.getOccurredDay() != null && statusOfHDItem.getOccurredDay() == 0 ? null : statusOfHDItem.getOccurredDay());
-                // J2_6 振休_使用, set lại giá trị cho cột này nếu bằng 0 thì không hiển thị ra
-                cells.get(firstRow + 1, 10 + totalMonth).setValue(statusOfHDItem.getUsedDays() != null && statusOfHDItem.getUsedDays() == 0 ? null : statusOfHDItem.getUsedDays());
-                if (isUndigestedPause) {
-                    // J2_7 振休_未消化, set lại giá trị cho cột này nếu bằng 0 thì không hiển thị ra
-                    cells.get(rowIndexUndigestedPause, 10 + totalMonth).setValue(statusOfHDItem.getUnUsedDays() != null && statusOfHDItem.getUnUsedDays() == 0 ? null : statusOfHDItem.getUnUsedDays());
-                    if (statusOfHDItem.getUnUsedDays() != null && statusOfHDItem.getUnUsedDays() > 0) {
-                        setForegroundRed(cells.get(rowIndexUndigestedPause, 10 + totalMonth));
-                    }
-                }
-                if (isNumberRemainingPause) {
-                    // J2_8 振休_残数
-                    cells.get(rowIndexNumberRemainingPause, 10 + totalMonth)
-                            .setValue(statusOfHDItem.getRemainingDays());
-                    if (statusOfHDItem.getRemainingDays() < 0) {
-                        setForegroundRed(cells.get(rowIndexNumberRemainingPause, 10 + totalMonth));
-                    }
-                }
-            }
-        }
-
-        if (currentHolidayList != null) {
-            for (CurrentHolidayRemainImported holidayRemainItem : currentHolidayList) {
-                if (currentMonth.compareTo(holidayRemainItem.getYm()) <= 0) {
-                    int totalMonth = totalMonths(dataSource.getStartMonth().yearMonth(), holidayRemainItem.getYm());
-                    if (maxRange >= totalMonth && totalMonth >= 0) {
-                        // J2_5 振休_発生, set lại giá trị cho cột này nếu bằng 0 thì không hiển thị ra
-                        cells.get(firstRow, 10 + totalMonth).setValue(holidayRemainItem.getMonthOccurrence() != null
-                                && holidayRemainItem.getMonthOccurrence() == 0 ? null : holidayRemainItem.getMonthOccurrence());
-                        // J2_6 振休_使用, set lại giá trị cho cột này nếu bằng 0 thì không hiển thị ra
-                        cells.get(firstRow + 1, 10 + totalMonth).setValue(holidayRemainItem.getMonthUse() != null
-                                && holidayRemainItem.getMonthUse() == 0 ? null : holidayRemainItem.getMonthUse());
-                        if (currentMonth.compareTo(holidayRemainItem.getYm()) == 0) {
-                            if (isUndigestedPause) {
-                                // J2_7 振休_未消化, set lại giá trị cho cột này nếu bằng 0 thì không hiển thị ra
-                                cells.get(rowIndexUndigestedPause, 10 + totalMonth).setValue(holidayRemainItem.getMonthExtinction() != null
-                                        && holidayRemainItem.getMonthExtinction() == 0 ? null : holidayRemainItem.getMonthExtinction());
-                                if (holidayRemainItem.getMonthExtinction() != null
-                                        && holidayRemainItem.getMonthExtinction() > 0) {
-                                    setForegroundRed(cells.get(rowIndexUndigestedPause, 10 + totalMonth));
-                                }
-                            }
-                            if (isNumberRemainingPause) {
-                                // J2_8 振休_残数
-                                cells.get(rowIndexNumberRemainingPause, 10 + totalMonth)
-                                        .setValue(holidayRemainItem.getMonthEndRemain());
-                                if (holidayRemainItem.getMonthEndRemain() < 0) {
-                                    setForegroundRed(cells.get(rowIndexNumberRemainingPause, 10 + totalMonth));
-                                }
-                            }
-                        }
-                    }
-                }
-
-                //}
-            }
-        }
-
-        // Current month
-        //if (currentMonth.compareTo(holidayRemainItem.getYm()) == 0) {
-        // J1_2 振休_月初残
-        cells.get(firstRow, 5).setValue(currentHolidayRemainLeft.getMonthStartRemain());
-        if (currentHolidayRemainLeft.getMonthStartRemain() < 0) {
-            setForegroundRed(cells.get(firstRow, 5));
-        }
-        // J1_3 振休_使用数
-        cells.get(firstRow, 6).setValue(currentHolidayRemainLeft.getMonthUse());
-        if (isPauseItem) {
-            // J1_4 振休_残数
-            cells.get(firstRow, 7).setValue(currentHolidayRemainLeft.getMonthEndRemain());
-            if (currentHolidayRemainLeft.getMonthEndRemain() < 0) {
-                setForegroundRed(cells.get(firstRow, 7));
-            }
-        }
-        if (isUndigestedPause) {
-            // J1_5 振休_未消化
-            cells.get(firstRow, 8).setValue(currentHolidayRemainLeft.getMonthExtinction());
-            if (currentHolidayRemainLeft.getMonthExtinction() != null
-                    && currentHolidayRemainLeft.getMonthExtinction() > 0) {
-                setForegroundRed(cells.get(firstRow, 8));
-            }
-        }
+//        if (StatusOfHolidayList != null) {
+//            for (StatusOfHolidayImported statusOfHDItem : StatusOfHolidayList) {
+//                // Before this month
+//                if (currentMonth.compareTo(statusOfHDItem.getYm()) <= 0) {
+//                    continue;
+//                }
+//                int totalMonth = totalMonths(dataSource.getStartMonth().yearMonth(), statusOfHDItem.getYm());
+//                if (maxRange < totalMonth || totalMonth < 0) {
+//                    continue;
+//                }
+//                // J2_5 振休_発生, set lại giá trị cho cột này nếu bằng 0 thì không hiển thị ra
+//                cells.get(firstRow, 10 + totalMonth).setValue(statusOfHDItem.getOccurredDay() != null && statusOfHDItem.getOccurredDay() == 0 ? null : statusOfHDItem.getOccurredDay());
+//                // J2_6 振休_使用, set lại giá trị cho cột này nếu bằng 0 thì không hiển thị ra
+//                cells.get(firstRow + 1, 10 + totalMonth).setValue(statusOfHDItem.getUsedDays() != null && statusOfHDItem.getUsedDays() == 0 ? null : statusOfHDItem.getUsedDays());
+//                if (isUndigestedPause) {
+//                    // J2_7 振休_未消化, set lại giá trị cho cột này nếu bằng 0 thì không hiển thị ra
+//                    cells.get(rowIndexUndigestedPause, 10 + totalMonth).setValue(statusOfHDItem.getUnUsedDays() != null && statusOfHDItem.getUnUsedDays() == 0 ? null : statusOfHDItem.getUnUsedDays());
+//                    if (statusOfHDItem.getUnUsedDays() != null && statusOfHDItem.getUnUsedDays() > 0) {
+//                        setForegroundRed(cells.get(rowIndexUndigestedPause, 10 + totalMonth));
+//                    }
+//                }
+//                if (isNumberRemainingPause) {
+//                    // J2_8 振休_残数
+//                    cells.get(rowIndexNumberRemainingPause, 10 + totalMonth)
+//                            .setValue(statusOfHDItem.getRemainingDays());
+//                    if (statusOfHDItem.getRemainingDays() < 0) {
+//                        setForegroundRed(cells.get(rowIndexNumberRemainingPause, 10 + totalMonth));
+//                    }
+//                }
+//            }
+//        }
+//
+//        if (currentHolidayList != null) {
+//            for (CurrentHolidayRemainImported holidayRemainItem : currentHolidayList) {
+//                if (currentMonth.compareTo(holidayRemainItem.getYm()) <= 0) {
+//                    int totalMonth = totalMonths(dataSource.getStartMonth().yearMonth(), holidayRemainItem.getYm());
+//                    if (maxRange >= totalMonth && totalMonth >= 0) {
+//                        // J2_5 振休_発生, set lại giá trị cho cột này nếu bằng 0 thì không hiển thị ra
+//                        cells.get(firstRow, 10 + totalMonth).setValue(holidayRemainItem.getMonthOccurrence() != null
+//                                && holidayRemainItem.getMonthOccurrence() == 0 ? null : holidayRemainItem.getMonthOccurrence());
+//                        // J2_6 振休_使用, set lại giá trị cho cột này nếu bằng 0 thì không hiển thị ra
+//                        cells.get(firstRow + 1, 10 + totalMonth).setValue(holidayRemainItem.getMonthUse() != null
+//                                && holidayRemainItem.getMonthUse() == 0 ? null : holidayRemainItem.getMonthUse());
+//                        if (currentMonth.compareTo(holidayRemainItem.getYm()) == 0) {
+//                            if (isUndigestedPause) {
+//                                // J2_7 振休_未消化, set lại giá trị cho cột này nếu bằng 0 thì không hiển thị ra
+//                                cells.get(rowIndexUndigestedPause, 10 + totalMonth).setValue(holidayRemainItem.getMonthExtinction() != null
+//                                        && holidayRemainItem.getMonthExtinction() == 0 ? null : holidayRemainItem.getMonthExtinction());
+//                                if (holidayRemainItem.getMonthExtinction() != null
+//                                        && holidayRemainItem.getMonthExtinction() > 0) {
+//                                    setForegroundRed(cells.get(rowIndexUndigestedPause, 10 + totalMonth));
+//                                }
+//                            }
+//                            if (isNumberRemainingPause) {
+//                                // J2_8 振休_残数
+//                                cells.get(rowIndexNumberRemainingPause, 10 + totalMonth)
+//                                        .setValue(holidayRemainItem.getMonthEndRemain());
+//                                if (holidayRemainItem.getMonthEndRemain() < 0) {
+//                                    setForegroundRed(cells.get(rowIndexNumberRemainingPause, 10 + totalMonth));
+//                                }
+//                            }
+//                        }
+//                    }
+//                }
+//
+//                //}
+//            }
+//        }
+//
+//        // Current month
+//        //if (currentMonth.compareTo(holidayRemainItem.getYm()) == 0) {
+//        // J1_2 振休_月初残
+//        cells.get(firstRow, 5).setValue(currentHolidayRemainLeft.getMonthStartRemain());
+//        if (currentHolidayRemainLeft.getMonthStartRemain() < 0) {
+//            setForegroundRed(cells.get(firstRow, 5));
+//        }
+//        // J1_3 振休_使用数
+//        cells.get(firstRow, 6).setValue(currentHolidayRemainLeft.getMonthUse());
+//        if (isPauseItem) {
+//            // J1_4 振休_残数
+//            cells.get(firstRow, 7).setValue(currentHolidayRemainLeft.getMonthEndRemain());
+//            if (currentHolidayRemainLeft.getMonthEndRemain() < 0) {
+//                setForegroundRed(cells.get(firstRow, 7));
+//            }
+//        }
+//        if (isUndigestedPause) {
+//            // J1_5 振休_未消化
+//            cells.get(firstRow, 8).setValue(currentHolidayRemainLeft.getMonthExtinction());
+//            if (currentHolidayRemainLeft.getMonthExtinction() != null
+//                    && currentHolidayRemainLeft.getMonthExtinction() > 0) {
+//                setForegroundRed(cells.get(firstRow, 8));
+//            }
+//        }
 
         // Set background
         for (int i = 0; i <= totalMonths(dataSource.getStartMonth().yearMonth(),
