@@ -27,6 +27,7 @@
 
 #table-phase, #table-phase td, #table-phase th { 
 	border: 1px solid #CCC;
+	border-left: none;
 	height: 25px;
     padding-left: 2px;
 }
