@@ -109,7 +109,21 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
                 if (ko.toJS(data)) {
                     self.dataSource = self.dataSourceOb();
                     self.loadAll();
-                }
+					if (self.isPreAtr()) {
+						if (self.selectedTab() == 'tab-2') {
+								$('#kaf002TabPanel').width(600)							
+						} else {
+								$('#kaf002TabPanel').width(450)							
+						}
+						
+					} else {
+						if (self.selectedTab() == 'tab-2') {
+								$('#kaf002TabPanel').width(700)							
+						} else {
+								$('#kaf002TabPanel').width(550)							
+						}
+					}
+            	}
             });
             self.initDataSource();
             // param of parent
