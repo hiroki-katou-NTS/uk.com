@@ -153,7 +153,7 @@ public class SupportWorkReflection {
 		WorkInformationWork informationWork = new WorkInformationWork(null, null, startAtr);
 
 		// 個人情報を取得する
-		WorkInformationWork informationWork2 = this.getPersonalInformation(sid, informationWork);
+		WorkInformationWork informationWork2 = this.getPersonalInformation(affiliationInfor.getWplID(), informationWork);
 
 		// パラメータ。場所コードを確認する
 		if (locationCode.isPresent()) {
@@ -177,15 +177,12 @@ public class SupportWorkReflection {
 	 * @param informationWork
 	 * @return
 	 */
-	public WorkInformationWork getPersonalInformation(String sid, WorkInformationWork informationWork) {
-		GeneralDate baseDate = GeneralDate.today();
-		// [RQ30]社員所属職場履歴を取得
-		Optional<SWkpHistImport> hist = sysWorkplaceAdapter.findBySid(sid, baseDate);
+	public WorkInformationWork getPersonalInformation(String wplId, WorkInformationWork informationWork) {
 
-		if (hist.isPresent()) {
+		if (wplId != null) {
 			// 勤務先情報Workを上書きする
 			// 勤務先情報Work。職場ID＝取得した「社員所属職場履歴」。職場ID
-			informationWork.setWorkplaceId(new WorkplaceId(hist.get().getWorkplaceId()));
+			informationWork.setWorkplaceId(new WorkplaceId(wplId));
 		}
 
 		return informationWork;
