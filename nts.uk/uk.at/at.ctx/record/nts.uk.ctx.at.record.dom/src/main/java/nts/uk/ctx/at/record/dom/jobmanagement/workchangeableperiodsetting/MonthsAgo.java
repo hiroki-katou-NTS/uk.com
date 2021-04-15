@@ -7,7 +7,7 @@ import lombok.AllArgsConstructor;
  * @path UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.勤務実績.作業管理.作業変更可能期間設定.経過月数
  */
 @AllArgsConstructor
-public enum ElapsedMonths {
+public enum MonthsAgo {
 	
 	CURRENT_MONTH(0, "当月"),
 
