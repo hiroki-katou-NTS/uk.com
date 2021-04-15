@@ -1,8 +1,10 @@
 package nts.uk.ctx.bs.employee.dom.workplace.group.hospitalofficeinfo;
 
+import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * 病棟・事業所情報履歴Repository
@@ -70,5 +72,14 @@ public interface HospitalBusinessOfficeInfoHistoryRepository {
 	 * @param historyId 履歴ID
 	 */
 	void delete(String workplaceGroupId, String historyId);
+
+
+	/**
+	 * 期間付き履歴項目を取得する
+	 * @param workplaceGroupId 職場グループID
+	 * @param period 期間
+	 * @return
+	 */
+	List<HospitalBusinessOfficeInfoWithPeriod> getItemWithDataForPeriod(String workplaceGroupId, DatePeriod period);
 
 }
