@@ -369,10 +369,10 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 			String mailContentToSend = I18NText.getText("Msg_703",
 					loginName, 
 					newText,
-					application.getAppDate().getApplicationDate().toLocalDate().toString(), 
+					application.getAppDate().getApplicationDate().toString(), 
 					appName,
 					applicantName, 
-					application.getAppDate().getApplicationDate().toLocalDate().toString(),
+					application.getAppDate().getApplicationDate().toString(),
 					appContent, 
 					loginName, 
 					loginMail);
