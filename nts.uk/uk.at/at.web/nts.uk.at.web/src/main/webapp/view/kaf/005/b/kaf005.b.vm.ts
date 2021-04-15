@@ -19,13 +19,18 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 
 
 
+
+
+
+
+
 <div id="kaf005-b">
 	<div id="contents-area"
-		style="background-color: inherit; height: calc(100vh - 165px);">
+		style="background-color: inherit; height: calc(100vh - 165px); min-width: 1230px">
 		<div class="two-panel" style="height: 100%;">
 			<div class="left-panel"
-				style="width: calc(100% - 410px); height: inherit; overflow: auto">
-				<div style="height: auto; min-height: 700px; background-color: #fff; padding: 10px;">
+				style="width: calc(100% - 410px); height: inherit">
+				<div style="height: inherit; overflow-y: auto; background-color: #fff; padding: 10px;">
 					<div class="table"
 						style="border-bottom: 2px solid #B1B1B1; padding-bottom: 30px; margin-bottom: 30px; width: 100%;">
 						<div class="cell" style="vertical-align: middle;">
@@ -188,6 +193,42 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 		restTemp: Array<any>;
 	
 		justSelectWork: boolean = false;
+		
+		titleLabel1: KnockoutObservable<String>;
+		titleLabelInput1: KnockoutObservable<String>;
+		titleLabel2: KnockoutObservable<String>;
+		titleLabelInput2: KnockoutObservable<String>;
+		
+		
+		setTitleLabel() {
+			const vm = this;
+			
+			vm.titleLabel1 = ko.computed(() => {
+				if (_.isEmpty( vm.messageInfos())) return '';
+				const param = vm.messageInfos()[0].titleDrop();
+				
+				return vm.$i18n('KAF005_90', [param]);
+			})
+			vm.titleLabelInput1 = ko.computed(() => {
+				if (_.isEmpty( vm.messageInfos())) return '';
+				const param = vm.messageInfos()[0].titleInput();
+				
+				return vm.$i18n('KAF005_92', [param]);
+			})
+			vm.titleLabel2 = ko.computed(() => {
+				if (_.isEmpty( vm.messageInfos())) return '';
+				const param = vm.messageInfos()[1].titleDrop();
+				
+				return vm.$i18n('KAF005_90', [param]);
+			})
+			vm.titleLabelInput2 = ko.computed(() => {
+				if (_.isEmpty( vm.messageInfos())) return '';
+				const param = vm.messageInfos()[1].titleInput();
+				
+				return vm.$i18n('KAF005_92', [param]);
+			})
+			
+		}
         created(
             params: {
                 appType: any,
@@ -200,6 +241,8 @@ module nts.uk.at.view.kafsample.b.viewmodel {
             }
         ) {
             const vm = this;
+
+			vm.setTitleLabel();
 			vm.bindWorkInfo(null);
 			vm.bindMessageInfo(null);
 			vm.createRestTime(vm.restTime);
