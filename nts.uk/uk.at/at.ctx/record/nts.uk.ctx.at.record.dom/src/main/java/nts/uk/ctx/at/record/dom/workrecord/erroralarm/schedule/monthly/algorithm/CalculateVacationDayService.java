@@ -69,13 +69,15 @@ public class CalculateVacationDayService {
 			Map<DatePeriod, WorkingConditionItem> workingConditionItemMap) {
 		Double totalTime = 0.0;
 		
-		// 当月より前の月かチェック
-		boolean isBeforeThisMonth = monthIsBeforeThisMonthChecking.checkMonthIsBeforeThisMonth(ym,
-				presentClosingPeriod.getProcessingYm());
-		if (isBeforeThisMonth && attendanceTimeOfMonthly != null) {
-			// 日数 を計算
-			WorkDaysOfMonthly workDays = attendanceTimeOfMonthly.getVerticalTotal().getWorkDays();
-			return getNumberOfDays(typeOfDay, workDays);
+		if (presentClosingPeriod != null) {
+			// 当月より前の月かチェック
+			boolean isBeforeThisMonth = monthIsBeforeThisMonthChecking.checkMonthIsBeforeThisMonth(ym,
+					presentClosingPeriod.getProcessingYm());
+			if (isBeforeThisMonth && attendanceTimeOfMonthly != null) {
+				// 日数 を計算
+				WorkDaysOfMonthly workDays = attendanceTimeOfMonthly.getVerticalTotal().getWorkDays();
+				return getNumberOfDays(typeOfDay, workDays);
+			}
 		}
 
 		// Input．年月の開始日から終了日までループする

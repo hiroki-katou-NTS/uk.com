@@ -257,28 +257,19 @@ public class ScheYearCheckServiceImpl implements ScheYearCheckService {
 				// 総取得結果＝0
 				Double totalTime = 0.0;
 				
-				Closure cloure = null;
-				PresentClosingPeriodImport presentClosingPeriod = null;
+				Closure cloure = getClosure(cid, sid);
+				PresentClosingPeriodImport presentClosingPeriod = getPresentClosingPeriod(cid, sid, cloure);
 				
 				//スケジュール年間の任意抽出条件．チェック項目の種類　＝　日数
 				//AND
 				//スケジュール年間の任意抽出条件．スケジュール年間チェック条件　！＝　3，6，7
 				if (YearCheckItemType.DAY_NUMBER == condScheYear.getCheckItemType()) {
 					DayCheckCond dayCheckCond = (DayCheckCond)condScheYear.getScheCheckConditions();
-					if (dayCheckCond.getTypeOfDays() != TypeOfDays.PUBLIC_HOLIDAY_NUMBER
-							|| dayCheckCond.getTypeOfDays() != TypeOfDays.ANNUAL_LEAVE_NUMBER
-							|| dayCheckCond.getTypeOfDays() != TypeOfDays.ACC_ANNUAL_LEAVE_NUMBER) {
-						// 社員に対応する処理締めを取得する
-						val require = requireService.createRequire();
-				        val cacheCarrier = new CacheCarrier();
-				        GeneralDate criteriaDate = GeneralDate.today();
-						cloure = ClosureService.getClosureDataByEmployee(require, cacheCarrier, sid, criteriaDate);
-					
-						// 処理年月と締め期間を取得する
-						Optional<PresentClosingPeriodImport> presentClosingPeriodOpt = closureAdapter.findByClosureId(cid, cloure.getClosureId().value);
-						if (presentClosingPeriodOpt.isPresent()) {
-							presentClosingPeriod = presentClosingPeriodOpt.get();
-						}
+					if (dayCheckCond.getTypeOfDays() == TypeOfDays.PUBLIC_HOLIDAY_NUMBER
+							|| dayCheckCond.getTypeOfDays() == TypeOfDays.ANNUAL_LEAVE_NUMBER
+							|| dayCheckCond.getTypeOfDays() == TypeOfDays.ACC_ANNUAL_LEAVE_NUMBER) {
+						cloure = null;
+						presentClosingPeriod = null;
 					}
 				}
 				
@@ -371,7 +362,9 @@ public class ScheYearCheckServiceImpl implements ScheYearCheckService {
 				
 				// 抽出結果詳細を作成
 				String alarmCode = String.valueOf(condScheYear.getSortOrder());
-				String alarmContent = getAlarmContent(getCompareOperatorText(condScheYear.getCheckItemType(), condScheYear.getCheckConditions(), checkCondTypeName), totalTime);
+				String alarmContent = getAlarmContent(
+						getCompareOperatorText(condScheYear.getCheckItemType(), condScheYear.getCheckConditions(), checkCondTypeName), 
+						totalTime, condScheYear.getCheckItemType());
 				Optional<String> comment = condScheYear.getErrorAlarmMessage().isPresent()
 						? Optional.of(condScheYear.getErrorAlarmMessage().get().v())
 						: Optional.empty();
@@ -384,7 +377,7 @@ public class ScheYearCheckServiceImpl implements ScheYearCheckService {
 						GeneralDateTime.now(), 
 						Optional.ofNullable(wplId), 
 						comment, 
-						Optional.ofNullable(getCheckValue(totalTime)));
+						Optional.ofNullable(getCheckValue(totalTime, condScheYear.getCheckItemType())));
 				
 				// 各チェック条件の結果を作成する
 				// ・チェック種類　＝　自由チェック
@@ -417,9 +410,9 @@ public class ScheYearCheckServiceImpl implements ScheYearCheckService {
 	 * アラーム内容
 	 * @return アラーム内容
 	 */
-	private String getAlarmContent(String checkCondTypeName, Double totalTime) {
+	private String getAlarmContent(String checkCondTypeName, Double totalTime, YearCheckItemType yearCheckItemType) {
 		String param0 = checkCondTypeName;
-		String param1 = String.valueOf(totalTime);
+		String param1 = YearCheckItemType.TIME == yearCheckItemType ? formatTime(totalTime.intValue()) : String.valueOf(totalTime);
 		return TextResource.localize("KAL010_1203", param0, param1);
 	}
 	
@@ -427,8 +420,8 @@ public class ScheYearCheckServiceImpl implements ScheYearCheckService {
 	 * チェック対象値
 	 * @return チェック対象値
 	 */
-	private String getCheckValue(Double totalTime) {
-		String param = String.valueOf(totalTime);
+	private String getCheckValue(Double totalTime, YearCheckItemType yearCheckItemType) {
+		String param = YearCheckItemType.TIME == yearCheckItemType ? formatTime(totalTime.intValue()) : String.valueOf(totalTime);
 		return TextResource.localize("KAL010_1204", param);
 	}
 	
@@ -551,5 +544,35 @@ public class ScheYearCheckServiceImpl implements ScheYearCheckService {
 		int totalTime = scheTimeAndTotalWorkingService.getScheTimeAndTotalWorkingTime(
 				ym, attendanceTimeOfMonthly, presentClosingPeriod, lstDaily, lstWorkSchedule);
 		return Double.valueOf(String.valueOf(totalTime));
+	}
+	
+	private Closure getClosure(String cid, String sid) {
+		// 社員に対応する処理締めを取得する
+		val require = requireService.createRequire();
+        val cacheCarrier = new CacheCarrier();
+        GeneralDate criteriaDate = GeneralDate.today();
+		return ClosureService.getClosureDataByEmployee(require, cacheCarrier, sid, criteriaDate);
+	}
+	
+	private PresentClosingPeriodImport getPresentClosingPeriod(String cid, String sid, Closure cloure) {	
+		// 処理年月と締め期間を取得する
+		Optional<PresentClosingPeriodImport> presentClosingPeriodOpt = closureAdapter.findByClosureId(cid, cloure.getClosureId().value);
+		if (presentClosingPeriodOpt.isPresent()) {
+			return presentClosingPeriodOpt.get();
+		}
+		return null;
+	}
+	
+	/**
+	 * Format time
+	 * because not defined primitive value => function created!
+	 * @param value integer value time
+	 * @return format time HH:MM
+	 */
+	private String formatTime(int value) {
+		int hours = Math.abs(value) / 60;
+		int minute = Math.abs(value) % 60;
+		
+		return hours + ":" + (minute < 10 ? "0" + minute : minute); 
 	}
 }

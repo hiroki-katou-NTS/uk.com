@@ -4,7 +4,6 @@ import javax.ejb.Stateless;
 
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.CompareRange;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.CompareSingleValue;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.SingleValueCompareType;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 
 /**

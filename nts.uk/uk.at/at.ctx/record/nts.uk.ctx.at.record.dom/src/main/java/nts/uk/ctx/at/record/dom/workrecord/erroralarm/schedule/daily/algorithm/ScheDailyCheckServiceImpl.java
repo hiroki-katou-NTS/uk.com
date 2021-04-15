@@ -347,12 +347,14 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 							listWorkType, lstWorkTypeCode, 
 							checkedCondition, 
 							continuousPeriod, 
-							optContinuousCount.isPresent() ? optContinuousCount.get().getConsecutiveYears() : 0);
+							optContinuousCount.isPresent() ? optContinuousCount.get().getConsecutiveYears() : 0,
+							workSched);
 					String checkValue = createCheckValue(
 							scheCondItem.getCheckItemType(), 
 							lstWorkTypeCode, 
 							listWorkType, 
-							optContinuousCount.isPresent() ? optContinuousCount.get().getConsecutiveYears() : 0);
+							optContinuousCount.isPresent() ? optContinuousCount.get().getConsecutiveYears() : 0,
+							workSched);
 					
 					Optional<AlarmListCheckInfor> optCheckInfor = result.getLstCheckType().stream()
 							.filter(x -> x.getChekType() == AlarmListCheckType.FreeCheck && x.getNo().equals(String.valueOf(scheCondItem.getSortOrder())))
@@ -458,7 +460,8 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 			List<String> lstWorkTypeCode,
 			CheckedCondition checkedCondition,
 			int conPeriod,
-			int consecutiveYears) {
+			int consecutiveYears,
+			WorkScheduleWorkInforImport workSched) {
 		String content = "";
 		CompareOperatorText compareOperatorText = null;
 		int compare = 0;
@@ -514,16 +517,14 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 			// {2}: 
 				// チェック項目種類　＝＝　「時間」　－＞""
 				// チェック項目種類　！＝　「時間」  －＞ #KAL010_1015　（{0}: ループ中のスケジュール日次の任意抽出条件．連続期間）
-			String variable2 = TextResource.localize("KAL010_1013", conPeriodStr);
+			String variable2 = DaiCheckItemType.TIME != dailyCheckType ? TextResource.localize("KAL010_1013", conPeriodStr) : Strings.EMPTY;
 			// {3}:
 				// チェック項目種類　＝＝　「時間」　－＞探した勤務予定．勤怠時間．勤務時間．総労働時間
 			String variable3 = "";
 			if (DaiCheckItemType.TIME == dailyCheckType) {
-				for(int i = 0; i < lstWorkTypeCode.size(); i++) {
-					String wtCode = lstWorkTypeCode.get(i);
-					Optional<WorkType> optWt = listWorkType.stream().filter(x -> x.getWorkTypeCode().v().equals(wtCode))
-							.findFirst();
-					if(optWt.isPresent()) variable3 = variable3 + ", " + optWt.get().getName().v();
+				if (workSched != null && workSched.getOptAttendanceTime().isPresent()) {
+					int actualTime = workSched.getOptAttendanceTime().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getActualTime();
+					variable3 = formatTime(actualTime);
 				}
 			} else {
 				// チェック項目種類　！＝　「時間」　－＞　取得した連続カウント　+　#KAL010_1017 
@@ -534,6 +535,7 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 			content = TextResource.localize("KAL010_1013", variable0, variable1, variable2, variable3);
 		} else { 
 			// チェック項目種類　！＝　「時間」　OR　　「連続時間」－＞#KAL010_1016　※2
+			
 			// ※2内容：対象勤務：{0}/{1}日連続　実績：{2}日連続
 			// {0}: ループ中のスケジュール日次の任意抽出条件．勤務種類の条件．予実比較による絞り込み方法
 			String param0 = targetWorkType.nameId;
@@ -553,20 +555,16 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 	 * create check value (チェック対象値)
 	 * @return
 	 */
-	private String createCheckValue(DaiCheckItemType dailyCheckType, List<String> lstWorkTypeCode, List<WorkType> listWorkType, int consecutiveYear) {
+	private String createCheckValue(DaiCheckItemType dailyCheckType, List<String> lstWorkTypeCode, List<WorkType> listWorkType, int consecutiveYear, WorkScheduleWorkInforImport workSched) {
 		String consecutiveYearStr = String.valueOf(consecutiveYear);
 		// チェック対象値 = 
 			// チェック項目種類　==　時間　－＞#KAL010_1025
 		if (DaiCheckItemType.TIME == dailyCheckType) {
 			// {0} = 探した勤務予定．勤怠時間．勤務時間．総労働時間
 			String param = "";
-			if(!lstWorkTypeCode.isEmpty()) {
-				for(int i = 0; i < lstWorkTypeCode.size(); i++) {
-					String wtCode = lstWorkTypeCode.get(i);
-					Optional<WorkType> optWt = listWorkType.stream().filter(x -> x.getWorkTypeCode().v().equals(wtCode))
-							.findFirst();
-					if(optWt.isPresent()) param = param + "," + optWt.get().getName().v();
-				}
+			if (workSched != null && workSched.getOptAttendanceTime().isPresent()) {
+				int actualTime = workSched.getOptAttendanceTime().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getActualTime();
+				param = formatTime(actualTime);
 			}
 			
 			return TextResource.localize("KAL010_1025", param);
@@ -606,11 +604,14 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 	
 	/**
 	 * 予定時間をチェック
-	 * TODO need check again confirm QA
 	 * @param scheCondDay
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private boolean checkTime(CheckedCondition checkedCondition, WorkScheduleWorkInforImport workSchedule) {
+		if (checkedCondition == null) {
+			return true;
+		}
+		
 		// Input．勤務予定．勤怠時間をチェック
 		Optional<AttendanceTimeOfDailyAttendanceImport> attendanceTimeOfDailyPerformance = workSchedule.getOptAttendanceTime();
 		if (!attendanceTimeOfDailyPerformance.isPresent()) {
@@ -635,9 +636,9 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 			return compareValueRangeChecking.checkCompareSingleRange(compareSingleValue, targetValue);
 		}
 		
-		// 値を集計した値と比較する
-		// TODO
-		return compareValueRangeChecking.checkCompareAggRange();
+		// 値を集計した値と比較する Remove this process beacause QA#115708 
+		
+		return false;
 	}
 	
 	private Double getTargetValue(Integer target) {
@@ -1109,5 +1110,18 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 		}
 		
 		return wplId;
+	}
+	
+	/**
+	 * Format time
+	 * because not defined primitive value => function created!
+	 * @param value integer value time
+	 * @return format time HH:MM
+	 */
+	private String formatTime(int value) {
+		int hours = Math.abs(value) / 60;
+		int minute = Math.abs(value) % 60;
+		
+		return hours + ":" + (minute < 10 ? "0" + minute : minute); 
 	}
 }
