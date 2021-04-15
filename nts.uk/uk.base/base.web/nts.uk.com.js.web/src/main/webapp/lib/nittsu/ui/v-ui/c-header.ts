@@ -44,7 +44,7 @@ module nts.uk.ui.header {
                         mouseout: function() { $component.itemBarMouseOut(bar) }
                     },
                     css: {
-                        'hover': bar.hover() && $component.click()
+                        'hover': bar.hover() && bar.canHover() && $component.click()
                     },
                     style: {
                         'display': bar.display()
@@ -185,7 +185,7 @@ module nts.uk.ui.header {
             });
 
             $(window).on('wd.resize', () => {
-
+                vm.positionLastMenuItem();
                 vm.setDisplayMenu();
                 vm.showPrevOrNextSlider();
             });
@@ -238,6 +238,7 @@ module nts.uk.ui.header {
             _.each(menuSet, (set: MenuSet) => {
                 _.each(set.menuBar, (bar: MenuBar, index: number) => {
                     bar.hover = ko.observable(false);
+                    bar.canHover = ko.observable(false);
                     if (index < vm.countMenuBar()) {
                         bar.display = ko.observable('none');
                     } else {
@@ -276,6 +277,9 @@ module nts.uk.ui.header {
                 const getPositionLeftRight = $('.slide-item').eq(index).position().left + $('.slide-item').eq(index).outerWidth();
                 if ( getPositionLeftRight > $('.user-info').last().position().left) {
                     bar.hover = ko.observable(false);
+                    bar.canHover = ko.observable(false);
+                } else {
+                    bar.canHover = ko.observable(true);
                 }
             });
 
@@ -291,27 +295,6 @@ module nts.uk.ui.header {
                 }
 
                 return `${item.programId}${item.screenId}`;
-            });
-        }
-
-        setDisplayMenu() {
-            const vm = this;
-            _.each(vm.menuSet.items(), (set: MenuSet) => {
-                _.each(set.menuBar, (bar: MenuBar, index: number) => {
-                    bar.hover(false);
-                    if (index < vm.countMenuBar()) {
-                        bar.display('none');
-                    } else {
-                        bar.display('');
-                    }
-                });
-            });
-
-            _.each(vm.menuBars(), (bar: MenuBar, index: number) => {
-                const getPositionLeftRight = $('.slide-item').eq(index).position().left + $('.slide-item').eq(index).outerWidth();
-                if ( getPositionLeftRight > $('.user-info').last().position().left) {
-                    bar.hover(false);
-                }
             });
         }
 
@@ -338,10 +321,53 @@ module nts.uk.ui.header {
 
             $(vm.$el).find('[data-bind]').removeAttr('data-bind');
 
+            vm.$nextTick(() => vm.setHoverMenu());
+
             //  $(vm.$el).css({ 'background-color': menuBar.backgroundColor });
 
             // storage selected set for reload page
             nts.uk.localStorage.setItem(MENU_KEY, `${item.companyId}:${item.webMenuCode}`);
+        }
+
+        setDisplayMenu() {
+            const vm = this;
+            _.each(vm.menuSet.items(), (set: MenuSet) => {
+                _.each(set.menuBar, (bar: MenuBar, index: number) => {
+                    bar.hover(false);
+                    bar.canHover(false);
+                    if (index < vm.countMenuBar()) {
+                        bar.display('none');
+                    } else {
+                        bar.display('');
+                    }
+                });
+            });
+
+            vm.setHoverMenu();
+        }
+
+        setHoverMenu() {
+            const vm = this;
+            _.each(vm.menuBars(), (bar: MenuBar, index: number) => {
+                const getPositionLeftRight = $('.slide-item').eq(index).position().left + $('.slide-item').eq(index).outerWidth();
+                if (getPositionLeftRight > $('.user-info').last().position().left) {
+                    bar.hover(false);
+                    bar.canHover(false);
+                } else {
+                    bar.canHover(true);
+                }
+            });
+        }
+
+        positionLastMenuItem() {
+            const vm = this;
+            const userInfoPosition = $('.user-info').last().position().left;
+            const currentLastPosition = $('.slide-item').last().position().left + $('.slide-item').last().outerWidth();
+            if (currentLastPosition < userInfoPosition
+                && vm.countMenuBar() > 0 
+            ) {
+                vm.countMenuBar(vm.countMenuBar() - 1);
+            }
         }
 
         selectBar(item: MenuBar) {
@@ -430,7 +456,7 @@ module nts.uk.ui.header {
                 $('.next-slider').css("visibility", "");
                 $('.next-slider').css("visibility", "hidden");
             }
-            vm.loadData();
+            vm.setDisplayMenu();
             vm.showPrevOrNextSlider();
         }
 
@@ -443,7 +469,7 @@ module nts.uk.ui.header {
                 $('.pre-slider').css("visibility", "");
                 $('.pre-slider').css("visibility", "hidden");
             }
-            vm.loadData();
+            vm.setDisplayMenu();
             vm.showPrevOrNextSlider();
         }
 
@@ -493,6 +519,7 @@ module nts.uk.ui.header {
 
     interface MenuBar {
         hover: KnockoutObservable<boolean>;
+        canHover: KnockoutObservable<boolean>;
         backgroundColor: string;
         code: string;
         displayOrder: number;

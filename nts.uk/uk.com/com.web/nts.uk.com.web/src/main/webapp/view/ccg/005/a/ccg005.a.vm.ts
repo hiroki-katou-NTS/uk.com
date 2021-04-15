@@ -40,15 +40,15 @@ module nts.uk.at.view.ccg005.a.screenModel {
             </th>
             <th>
               <!-- A1_5 -->
-              <i tabindex=3 data-bind="visible: $component.inCharge, ntsIcon: {no: 5, width: 25, height: 25}, click: $component.openScreenCCG005B"></i>
+              <i tabindex=3 style="position: relative; right: 0; top: 5px;" data-bind="visible: $component.inCharge, ntsIcon: {no: 5, width: 25, height: 25}, click: $component.openScreenCCG005B"></i>
             </th>
           </tr>
         </thead>
       </table>
     </div>
-    <div data-bind="widget-content: 200, default: 510" id="ccg005-watching">
-    <div id="ccg005-content">
-      <div>
+    <div data-bind="widget-content: 200, default: 430" id="ccg005-watching">
+    <div id="ccg005-content" style="padding-bottom: 0px;">
+      <div style="height: 100%; position: relative;">
         <div class="grade-header-center" style="padding-bottom: 5px;">
           <table>
             <tr>
@@ -191,7 +191,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
           </table>
         </div>
         <div class="grade-bottom ccg005-flex"
-          style="width: 100%; align-items: center; position: relative; margin-top: 5px;">
+          style="width: 100%; align-items: center; position: absolute; margin-top: 5px; bottom: 0;">
           <table style="width: 100%;">
             <tr>
               <td class="ccg005-bottom-unset">
@@ -1004,13 +1004,17 @@ module nts.uk.at.view.ccg005.a.screenModel {
     }
 
     private onResizeable(vm: any) {
+      const lineHeight = 54;
+      const paddingInContent = 10;
       const subHeight = $('#ccg005-content').height()
         - $('.grade-header-center').height()
         - $('.grade-header-bottom').height()
-        - $('.grade-bottom').height();
-      if (subHeight >= 50) {
-        vm.perPage(_.floor(subHeight / 50));
+        - $('.grade-bottom').height()
+        - paddingInContent;
+      if (subHeight >= lineHeight) {
+        vm.perPage(_.floor(subHeight / lineHeight));
       }
+      console.log(_.floor(subHeight / lineHeight))
       $('.grade-body-bottom').height(subHeight);
     }
 
