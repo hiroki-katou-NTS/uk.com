@@ -74,7 +74,6 @@ public class InterimRemainDataMngRegisterDateChangeImpl implements InterimRemain
 	private TempCareManagementRepository careManagementRepo;
 	@Inject
 	private CompensLeaveComSetRepository leaveSetRepos;
-
 	@Inject
 	private ComSubstVacationRepository subRepos;
 
@@ -107,7 +106,7 @@ public class InterimRemainDataMngRegisterDateChangeImpl implements InterimRemain
 					lstAppData,
 					false);
 
-				Map<GeneralDate, DailyInterimRemainMngData> dailyMap = InterimRemainOffPeriodCreateData.createInterimRemainDataMng(requireService.createRequire(), new CacheCarrier(), inputParam, new CompanyHolidayMngSetting(cid , subRepos.findById(cid),leaveSetRepos.find(cid)));
+				Map<GeneralDate, DailyInterimRemainMngData> dailyMap = InterimRemainOffPeriodCreateData.createInterimRemainDataMng(requireService.createRequire(), new CacheCarrier(), inputParam, new CompanyHolidayMngSetting(cid , subRepos.findById(cid), leaveSetRepos.find(cid)));
 
 			// もらった暫定残数管理データを受け取る
 

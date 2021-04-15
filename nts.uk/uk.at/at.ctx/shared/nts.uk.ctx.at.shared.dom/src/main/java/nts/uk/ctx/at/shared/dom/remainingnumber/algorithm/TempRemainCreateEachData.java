@@ -161,9 +161,9 @@ public class TempRemainCreateEachData {
 						inforData.getYmd(),
 						inforData.getWorkTypeRemainInfor(workTypeClass).get().getCreateData(),
 						RemainType.SUBHOLIDAY,
-						new RequiredTime(0),
+						new RequiredTime(occUseDetail.get().getSubstituteHolidayTime().map(x -> x.v()).orElse(0)),
 						new RequiredDay(occUseDetail.get().getDays()),
-						new UnOffsetTime(0),
+						new UnOffsetTime(occUseDetail.get().getSubstituteHolidayTime().map(x -> x.v()).orElse(0)),
 						new UnOffsetDay(occUseDetail.get().getDays()),
 						Optional.ofNullable(DigestionHourlyTimeType.of(false, Optional.empty()))
 						);

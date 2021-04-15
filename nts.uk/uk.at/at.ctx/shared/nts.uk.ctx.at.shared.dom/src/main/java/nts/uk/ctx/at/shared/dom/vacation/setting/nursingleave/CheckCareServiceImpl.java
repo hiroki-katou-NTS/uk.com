@@ -33,9 +33,9 @@ public class CheckCareServiceImpl implements CheckCareService {
 
 		if (childNursing != null && (
 		// 特別休暇枠NO ＝ 看護介護休暇設定．特別休暇枠 and 看護介護休暇設定．特別休暇枠 != Optional．empty
-		childNursing.getWorkAbsence().map(x -> x.equals(absenseNo)).orElse(false) ||
+		childNursing.getWorkAbsence().map(x -> (x.equals(absenseNo) && x != 0)).orElse(false) ||
 		// 欠勤枠NO ＝ 看護介護休暇設定．欠勤枠 and 看護介護休暇設定．欠勤枠 !=Optional．empty}
-				childNursing.getSpecialHolidayFrame().map(x -> x.equals(holidayNo)).orElse(false))) {
+				childNursing.getSpecialHolidayFrame().map(x -> (x.equals(holidayNo)&& x != 0)).orElse(false))) {
 			return new CheckCareResult(true, CareType.ChildNursing);
 		} else {
 
@@ -44,8 +44,8 @@ public class CheckCareServiceImpl implements CheckCareService {
 					NursingCategory.Nursing.value);
 			
 			if (nursing != null && (
-					nursing.getWorkAbsence().map(x -> x.equals(absenseNo)).orElse(false) ||
-					nursing.getSpecialHolidayFrame().map(x -> x.equals(holidayNo)).orElse(false))) {
+					nursing.getWorkAbsence().map(x -> (x.equals(absenseNo)&& x != 0)).orElse(false) ||
+					nursing.getSpecialHolidayFrame().map(x -> (x.equals(holidayNo) && x != 0)).orElse(false))) {
 				return new CheckCareResult(true, CareType.Nursing);
 				
 			}

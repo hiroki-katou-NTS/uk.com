@@ -128,7 +128,9 @@ public class InterimRemainOffDateCreateData {
 																			recordData.getWorkTypeCode(), 
 																			Optional.ofNullable(recordData.getTimeDigestionUsageInfor()),
 																			recordData.getNumberDaySuspension(),
-																			recordData.getWorkTimeCode());
+																			recordData.getWorkTimeCode(),
+																			recordData.getSid(),
+																			recordData.getYmd());
 		if(dataDetail.isEmpty()) {
 			return outputData;
 		}
@@ -287,7 +289,8 @@ public class InterimRemainOffDateCreateData {
 			String workTypeCode, 
 			Optional<TimeDigestionUsageInfor> timedigOpt,
 			Optional<NumberOfDaySuspension> numberOfDayOpt,
-			Optional<String> wkTimeCd) {
+			Optional<String> wkTimeCd,String sid,
+			GeneralDate ymd) {
 		WorkTypeRemainInfor outputData = new WorkTypeRemainInfor(null, null, null, new ArrayList<>(), new ArrayList<>(),
 				new ArrayList<>());
 		List<WorkTypeRemainInfor> lstOutputData = new ArrayList<>();
@@ -310,7 +313,7 @@ public class InterimRemainOffDateCreateData {
 		if(workType.getDailyWork().isOneDay()) {
 			//アルゴリズム「残数発生使用明細を作成する」を実行する (Thực hiện thuật toán "Tạo chi tiết sử dụng phát sinh số lượng tồn")
 			outputData = createWithOneDayWorkType(require, cid, workType, WorkAtr.OneDay, 1, outputData, timedigOpt, furiClass,
-					days,workTypeCode,wkTimeCd);
+					days,workTypeCode,wkTimeCd,sid,ymd);
 			lstOutputData.add(outputData);
 			//勤務区分をチェックする
 			return lstOutputData;
@@ -328,7 +331,7 @@ public class InterimRemainOffDateCreateData {
 				
 				//アルゴリズム「残数発生使用明細を作成する」を実行する (Thực hiện thuật toán 「残数発生使用明細を作成する」 )
 				morning = createWithOneDayWorkType(require, cid, workType, WorkAtr.Monring, 0.5, outputData, timedigOpt, furiClass,
-						totalNumberOfDay.getTotalNumberMorning(),workTypeCode,wkTimeCd);
+						totalNumberOfDay.getTotalNumberMorning(),workTypeCode,wkTimeCd,sid,ymd);
 				
 			}
 			//午後
@@ -336,7 +339,7 @@ public class InterimRemainOffDateCreateData {
 			if(lstZansu().contains(workTypAfternoon)) {
 				//アルゴリズム「残数発生使用明細を作成する」を実行する(Thực hiện thuật toán 「残数発生使用明細を作成する」 )
 				after = createWithOneDayWorkType(require, cid, workType, WorkAtr.Afternoon, 0.5, outputData, timedigOpt, furiClass,
-						totalNumberOfDay.getTotalNumberAfternoon(),workTypeCode,wkTimeCd); 
+						totalNumberOfDay.getTotalNumberAfternoon(),workTypeCode,wkTimeCd,sid,ymd); 
 				
 			}
 			//午前と午後で同じ勤務種類の残数発生明細をまとめる
@@ -483,7 +486,8 @@ public class InterimRemainOffDateCreateData {
 	 */
 	public static WorkTypeRemainInfor createWithOneDayWorkType(RequireM9 require, String cid, WorkType workType, WorkAtr workAtr,
 			double day, WorkTypeRemainInfor dataOutput, Optional<TimeDigestionUsageInfor> timedigOpt,
-			FuriClassifi furiClassifi, Double usedDays,String wkTypeCd,Optional<String> wkTimeCd) {
+			FuriClassifi furiClassifi, Double usedDays, String wkTypeCd, Optional<String> wkTimeCd, String sid,
+			GeneralDate ymd) {
 		
 		WorkTypeRemainInfor result = new WorkTypeRemainInfor(dataOutput.getWorkTypeCode(), dataOutput.getWorkTypeClass(), dataOutput.getCreateData(), dataOutput.getOccurrenceDetailData(), dataOutput.getSpeHolidayDetailData(), dataOutput.getChildCareDetailData());
 		
@@ -565,9 +569,9 @@ public class InterimRemainOffDateCreateData {
 			break;
 		case SubstituteHoliday:
 			// 時間代休の時間を作成する
-			String sid = AppContexts.user().employeeId();
-			GeneralDate ymd = GeneralDate.today();
 			CreateTimeOff(require, cid, sid, ymd, wkTypeCd, wkTimeCd, wkClasssifi, result);
+			// 勤務種類の分類に対応する残数発生使用明細を設定する
+			setData(result, day, wkClasssifi);
 			break;
 		default:
 			// 勤務種類の分類に対応する残数発生使用明細を設定する
@@ -600,8 +604,7 @@ public class InterimRemainOffDateCreateData {
 		// 取得した時間を設定
 		result.getOccurrenceDetailData().forEach(x -> {
 			if (x.getWorkTypeAtr().equals(WorkTypeClassification.SubstituteHoliday)) {
-				x.setVacationUsageTimeDetails(
-						Arrays.asList(new VacationUsageTimeDetail(HolidayType.SUBSTITUTE, predTime, Optional.empty())));
+				x.setSubstituteHolidayTime(Optional.ofNullable(new AttendanceTime(predTime)));
 			}
 		});
 	}
@@ -902,72 +905,77 @@ public class InterimRemainOffDateCreateData {
 		DailyInterimRemainMngData outputData = new DailyInterimRemainMngData(inforData.getYmd(), Optional.empty(), new ArrayList<>(), Optional.empty(), 
 				Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), new ArrayList<>());
 		
-		List<WorkTypeRemainInfor> workTypeRemain = inforData.getWorkTypeRemain();
+		List<OccurrenceUseDetail> occList = inforData.getWorkTypeRemain().stream().map(x -> x.getOccurrenceDetailData())
+				.flatMap(List::stream).collect(Collectors.toList());
 		
-		if(!workTypeRemain.isEmpty()) {
-		//暫定残数管理データ(List)を作成する
-		for (WorkTypeRemainInfor workTypeInfor : workTypeRemain) {
-			WorkTypeClassification wkCls = workTypeInfor.getWorkTypeClass();
-			//各種暫定残数管理データを作成する
+		occList.forEach(x -> {
+			WorkTypeClassification wkCls = x.getWorkTypeAtr();
+
 			switch (wkCls) {
-				//振出
-				case Shooting:
-					outputData = TempRemainCreateEachData.createInterimRecData(require, inforData, wkCls, outputData);
-					break;
-				// 休出
-				case HolidayWork:
-					outputData = TempRemainCreateEachData.createInterimBreak(require, inforData, wkCls, outputData);
-					break;
-				// 休日
-				case Holiday:
-					outputData = TempRemainCreateEachData.createInterimHolidayData(inforData, wkCls, outputData);
-					break;
-				// 振休
-				case Pause:
-					outputData = TempRemainCreateEachData.createInterimAbsData(inforData, wkCls, outputData);
-					break;
-				// 代休
-				case SubstituteHoliday:
-					outputData = TempRemainCreateEachData.createInterimDayOffData(inforData, wkCls, outputData);
-					break;
-				// 特休
-				case SpecialHoliday:
-					outputData = TempRemainCreateEachData.createInterimSpecialHoliday(inforData, wkCls, outputData);
-					break;
-				// 年休
-				case AnnualHoliday:
-					outputData = TempRemainCreateEachData.createInterimAnnualHoliday(inforData, wkCls, outputData);
-					break;
-				// 積立年休
-				case YearlyReserved:
-					outputData = TempRemainCreateEachData.createInterimReserveHoliday(inforData, wkCls, outputData);
-					break;
-				// 時間消化
-				case TimeDigestVacation:
-					outputData = TempRemainCreateEachData.createInterimDigestVacation(inforData, wkCls, outputData);
-					break;
-			
-				default:
-					break;
-				}
-			
-				List<CareUseDetail> cares = workTypeInfor.getChildCareDetailData();
-				if (!cares.isEmpty()) {
-					for (CareUseDetail care : cares) {
-						switch (care.getCareType()) {
-						// 子の看護
-						case ChildNursing:
-							TempRemainCreateEachData.createInterimChildNursing(inforData, care, wkCls, outputData);
-							break;
-						// 介護
-						case Nursing:
-							TempRemainCreateEachData.createInterimNursing(inforData, care, wkCls, outputData);
-							break;
-						}
+			// 振出
+			case Shooting:
+				TempRemainCreateEachData.createInterimRecData(require, inforData, wkCls, outputData);
+				break;
+			// 休出
+			case HolidayWork:
+				TempRemainCreateEachData.createInterimBreak(require, inforData, wkCls, outputData);
+				break;
+			// 休日
+			case Holiday:
+				TempRemainCreateEachData.createInterimHolidayData(inforData, wkCls, outputData);
+				break;
+			// 振休
+			case Pause:
+				TempRemainCreateEachData.createInterimAbsData(inforData, wkCls, outputData);
+				break;
+			// 代休
+			case SubstituteHoliday:
+				TempRemainCreateEachData.createInterimDayOffData(inforData, wkCls, outputData);
+				break;
+			// 特休
+			case SpecialHoliday:
+				TempRemainCreateEachData.createInterimSpecialHoliday(inforData, wkCls, outputData);
+				break;
+			// 年休
+			case AnnualHoliday:
+				TempRemainCreateEachData.createInterimAnnualHoliday(inforData, wkCls, outputData);
+				break;
+			// 積立年休
+			case YearlyReserved:
+				TempRemainCreateEachData.createInterimReserveHoliday(inforData, wkCls, outputData);
+				break;
+			// 時間消化
+			case TimeDigestVacation:
+				TempRemainCreateEachData.createInterimDigestVacation(inforData, wkCls, outputData);
+				break;
+
+			default:
+				break;
+			}
+		});
+		
+		//暫定残数管理データ(List)を作成する
+		for (WorkTypeRemainInfor workTypeInfor : inforData.getWorkTypeRemain()) {
+			WorkTypeClassification wkCls = workTypeInfor.getWorkTypeClass();
+			// 各種暫定残数管理データを作成する
+
+			List<CareUseDetail> cares = workTypeInfor.getChildCareDetailData();
+			if (!cares.isEmpty()) {
+				for (CareUseDetail care : cares) {
+					switch (care.getCareType()) {
+					// 子の看護
+					case ChildNursing:
+						TempRemainCreateEachData.createInterimChildNursing(inforData, care, wkCls, outputData);
+						break;
+					// 介護
+					case Nursing:
+						TempRemainCreateEachData.createInterimNursing(inforData, care, wkCls, outputData);
+						break;
 					}
 				}
 			}
 		}
+		
 
 		//時間暫定残数管理データを作成する
 		
@@ -1009,7 +1017,9 @@ public class InterimRemainOffDateCreateData {
 																			scheData.getWorkTypeCode(), 
 																			Optional.ofNullable(scheData.getTimeDigestionUsageInfor()),
 																			scheData.getNumberDaySuspension(),
-																			scheData.getWorkTimeCode());
+																			scheData.getWorkTimeCode(),
+																			scheData.getSid(),
+																			scheData.getYmd());
 		
 		//勤務種類別残数情報を設定する
 		outputData.setWorkTypeRemain(remainInfor);
@@ -1162,7 +1172,7 @@ public class InterimRemainOffDateCreateData {
 		//アルゴリズム「勤務種類別残数情報を作成する」を実行する
 		List<WorkTypeRemainInfor> remainInfor = createWorkTypeRemainInfor(require, cid, createAtr, workTypeCode,
 				appInfor.getTimeDigestionUsageInfor(), recordData.getNumberDaySuspension(),
-				appInfor.getWorkTimeCode());
+				appInfor.getWorkTimeCode(),appInfor.getSid(),appInfor.getAppDate());
 		if(remainInfor.isEmpty()) {
 			return null;
 		}
