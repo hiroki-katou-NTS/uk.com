@@ -33,6 +33,8 @@ import nts.uk.ctx.at.function.dom.adapter.RegulationInfoEmployeeAdapter;
 import nts.uk.ctx.at.function.dom.adapter.annualworkschedule.EmployeeInformationAdapter;
 import nts.uk.ctx.at.function.dom.adapter.annualworkschedule.EmployeeInformationImport;
 import nts.uk.ctx.at.function.dom.adapter.annualworkschedule.EmployeeInformationQueryDtoImport;
+import nts.uk.ctx.at.function.dom.adapter.holidayover60h.AggrResultOfHolidayOver60hImport;
+import nts.uk.ctx.at.function.dom.adapter.holidayover60h.GetHolidayOver60hRemNumWithinPeriodAdapter;
 import nts.uk.ctx.at.function.dom.adapter.holidaysremaining.AnnLeaGrantNumberImported;
 import nts.uk.ctx.at.function.dom.adapter.holidaysremaining.AnnLeaveOfThisMonthImported;
 import nts.uk.ctx.at.function.dom.adapter.holidaysremaining.AnnLeaveRemainingAdapter;
@@ -70,6 +72,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.param.CompenLeaveAggrResult;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecAbasMngRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.require.RemainNumberTempRequireService;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.NumberRemainVacationLeaveRangeProcess;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.NumberRemainVacationLeaveRangeQuery;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.BreakDayOffRemainMngRefactParam;
@@ -155,6 +158,9 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 	private NumberCompensatoryLeavePeriodProcess numberCompensatoryLeavePeriodProcess;
     @Inject
     private RemainNumberTempRequireService requireService;
+	@Inject
+	private GetHolidayOver60hRemNumWithinPeriodAdapter getHolidayOver60hRemNumWithinPeriodAdapter;
+
 	@Override
 	protected void handle(ExportServiceContext<HolidaysRemainingReportQuery> context) {
 		val query = context.getQuery();
@@ -600,12 +606,23 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 			 subVaca = NumberCompensatoryLeavePeriodQuery
 					.process(rq, param);
 		}
+		// [RQ677]期間中の60H超休残数を取得する
+		AggrResultOfHolidayOver60hImport aggrResultOfHolidayOver60h = this.getHolidayOver60hRemNumWithinPeriodAdapter.algorithm(
+				cId,
+				employeeId,
+				datePeriod,
+				InterimRemainMngMode.OTHER,
+				baseDate,
+				Optional.of(false),
+				Optional.empty(),
+				Optional.empty()
+		);
 
         return new HolidayRemainingInfor(grantDate, listAnnLeaGrantNumber, annLeaveOfThisMonth, listAnnualLeaveUsage,
                 listAnnLeaveUsageStatusOfThisMonth, reserveHoliday, listReservedYearHoliday, listRsvLeaUsedCurrentMon,
                 listCurrentHoliday, listStatusHoliday, listCurrentHolidayRemain, listStatusOfHoliday, mapSpecVaca,
                 lstMapSPVaCurrMon, mapSpeHd, childNursingLeave, nursingLeave, currentHolidayLeft,
-                currentHolidayRemainLeft, substituteHolidayAggrResult,subVaca);
+                currentHolidayRemainLeft, substituteHolidayAggrResult,subVaca,aggrResultOfHolidayOver60h);
     }
 	private Optional<ClosureInfo> getClosureInfor(int closureId) {
 		val listClosureInfo = ClosureService.getAllClosureInfo(ClosureService.createRequireM2(closureRepository));
