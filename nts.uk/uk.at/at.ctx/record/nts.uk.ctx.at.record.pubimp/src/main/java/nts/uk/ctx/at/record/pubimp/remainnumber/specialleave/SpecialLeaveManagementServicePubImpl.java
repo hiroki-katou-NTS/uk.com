@@ -55,18 +55,19 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialh
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialLeaveUseNumber;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialLeaveUsedInfo;
 
+/**
+ * 特別休暇残数処理
+ * @author masaaki_jinno
+ *
+ */
 public class SpecialLeaveManagementServicePubImpl implements SpecialLeaveManagementServicePub{
-
-//	@Inject
-//	private InterimRemainRepository interimRemainRepo;
-//
-//	/** 社員 */
-//	@Inject
-//	private EmpEmployeeAdapter empEmployee;
 
 	@Inject
 	private RecordDomRequireService requireService;
 
+	/**
+	 * 期間中の年休残数を取得
+	 */
 	@Override
 	public InPeriodOfSpecialLeaveResultInforExport complileInPeriodOfSpecialLeave(
 			ComplileInPeriodOfSpecialLeavePubParam pubParam) {
