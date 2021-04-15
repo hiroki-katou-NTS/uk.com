@@ -35,6 +35,10 @@ public class CorrectSupportDataWork {
 		// output : 終了状態, 打刻反映範囲
 		OutputTimeReflectForWorkinfo workinfo = fromWorkinfo.get(companyId, integrationOfDaily.getEmployeeId(), integrationOfDaily.getYmd(), integrationOfDaily.getWorkInformation());
 		
+		// Check list lỗi (Không có trong EA nhưng đã comfirm vs Tín)
+		if(!workinfo.getError().isEmpty())
+			return new SupportDataWork(null, workinfo.getError().get(0).getMessageError().v());
+		
 		// 終了状態が正常以外の場合
 		if(workinfo.getEndStatus() != EndStatus.NORMAL) {
 			switch(workinfo.getEndStatus()) {
