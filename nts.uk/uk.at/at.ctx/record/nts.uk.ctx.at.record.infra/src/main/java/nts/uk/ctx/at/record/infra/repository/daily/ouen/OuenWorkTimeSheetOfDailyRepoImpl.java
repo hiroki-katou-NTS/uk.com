@@ -137,4 +137,13 @@ public class OuenWorkTimeSheetOfDailyRepoImpl extends JpaRepository implements O
 		return OuenWorkTimeSheetOfDaily.create(es.get(0).pk.sid, es.get(0).pk.ymd, ouenTimeSheet);
 	}
 
+	@Override
+	public void remove(String sid, GeneralDate ymd) {
+		String delete = "delete from KrcdtDayOuenTimeSheet o " + " where o.pk.sid = :sid "
+				+ " and o.pk.ymd = :ymd ";
+		this.getEntityManager().createQuery(delete).setParameter("sid", sid)
+												   .setParameter("ymd", ymd)
+												   .executeUpdate();
+	}
+
 }

@@ -125,7 +125,11 @@ public class CorrectSupportDataWork {
 			//終了状態は正常の場合
 			// 1回目の出退勤を取得する
 			// 日別勤怠（Work）。出退勤。時間帯（勤務枠No１）
-			Optional<TimeLeavingWork> leavingWork = integrationOfDaily.getAttendanceLeave().get().getTimeLeavingWorks().stream().filter(x -> x.getWorkNo().v() == 1).findFirst();
+			Optional<TimeLeavingWork> leavingWork = Optional.empty();
+			
+			if(integrationOfDaily.getAttendanceLeave().isPresent())
+			leavingWork = integrationOfDaily.getAttendanceLeave().get().getTimeLeavingWorks().stream().filter(x -> x.getWorkNo().v() == 1).findFirst();
+			
 			// 取得できる
 			if(leavingWork.isPresent()) {
 				ReflectionAtr reflectionAtr = this.supportCorrectWork(leavingWork, workinfo.getStampReflectRangeOutput(), integrationOfDaily);
@@ -138,7 +142,11 @@ public class CorrectSupportDataWork {
 			// 取得できない
 			// 反映状態を確認する - 未反映の場合
 			// 2回目の出退勤を取得する
-			Optional<TimeLeavingWork> leavingWork2 = integrationOfDaily.getAttendanceLeave().get().getTimeLeavingWorks().stream().filter(x -> x.getWorkNo().v() == 2).findFirst();
+			Optional<TimeLeavingWork> leavingWork2 = Optional.empty();
+			
+			if(integrationOfDaily.getAttendanceLeave().isPresent())
+			leavingWork2 = integrationOfDaily.getAttendanceLeave().get().getTimeLeavingWorks().stream().filter(x -> x.getWorkNo().v() == 2).findFirst();
+			
 			if(leavingWork2.isPresent()) {
 				this.supportCorrectWork(leavingWork, workinfo.getStampReflectRangeOutput(), integrationOfDaily);
 			}
