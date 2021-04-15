@@ -249,6 +249,10 @@
 	height: 232px;
 }
 
+.tab-button-panel .grid-container.btn-layout-type-1>div>button>div {
+	top: 0;
+}
+
 .tab-button-panel .grid-container.btn-layout-type-1>div,
 .tab-button-panel .grid-container.btn-layout-type-0>div:not(:first-child) {
 	height: 122px;
