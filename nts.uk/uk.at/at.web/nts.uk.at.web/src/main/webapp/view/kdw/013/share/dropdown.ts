@@ -188,10 +188,21 @@ module nts.uk.ui.at.kdp013.share {
                             $ct.style.top = '';
                             $ct.style.width = '';
                         } else {
-                            const { top, width } = element.getBoundingClientRect();
+                            const { innerHeight } = window;
+                            const { width } = element.getBoundingClientRect();
 
-                            $ct.style.top = top + 'px';
                             $ct.style.width = width + 'px';
+
+                            ko.tasks
+                                .schedule(() => {
+                                    const { top, height } = $(element).children().get(0).getBoundingClientRect();
+
+                                    if (top + height < innerHeight - 10) {
+                                        $ct.style.top = top + 'px';
+                                    } else {
+                                        $ct.style.top = top - height + 31 + 'px';
+                                    }
+                                });
                         }
                     },
                     disposeWhenNodeIsRemoved: element
