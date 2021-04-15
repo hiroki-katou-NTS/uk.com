@@ -48,7 +48,7 @@ public class CreateFromUpdateExecError {
 
 				if (item.getCurrentStatus().get() == CurrentExecutionStatus.WAITING) {
 					// 次回実行日時作成処理
-					GeneralDateTime nextTime = rq.processNextExecDateTimeCreation(executionTaskSettingMap.get(item.getExecItemCd()));
+					GeneralDateTime nextTime = rq.processNextExecDateTimeCreation(executionTaskSettingMap.get(item.getExecItemCd())); //#115526
 					
 					if (nextTime != null && nextTime.before(GeneralDateTime.now())) { 
 						alarmFlag = true;
