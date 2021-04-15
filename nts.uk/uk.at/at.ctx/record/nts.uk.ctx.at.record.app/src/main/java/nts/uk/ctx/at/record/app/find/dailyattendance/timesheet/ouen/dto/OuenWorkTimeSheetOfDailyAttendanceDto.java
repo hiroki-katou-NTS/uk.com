@@ -71,11 +71,11 @@ public class OuenWorkTimeSheetOfDailyAttendanceDto extends AttendanceItemCommon{
 							!domain.getWorkContent().getWorkplace().getWorkLocationCD().isPresent() ? null :
 							domain.getWorkContent().getWorkplace().getWorkLocationCD().get().v()), 
 					new WorkGroupDto(
-							domain.getWorkContent().getWork().get().getWorkCD1().v(), 
-							domain.getWorkContent().getWork().get().getWorkCD2().isPresent() ? domain.getWorkContent().getWork().get().getWorkCD2().get().v() : null, 
-							domain.getWorkContent().getWork().get().getWorkCD3().isPresent() ? domain.getWorkContent().getWork().get().getWorkCD3().get().v() : null, 
-							domain.getWorkContent().getWork().get().getWorkCD4().isPresent() ? domain.getWorkContent().getWork().get().getWorkCD4().get().v() : null, 
-							domain.getWorkContent().getWork().get().getWorkCD5().isPresent() ? domain.getWorkContent().getWork().get().getWorkCD5().get().v() : null)));
+							domain.getWorkContent().getWork().isPresent() && domain.getWorkContent().getWork().get().getWorkCD1() != null ? domain.getWorkContent().getWork().get().getWorkCD1().v() : null, 
+							domain.getWorkContent().getWork().isPresent() && domain.getWorkContent().getWork().get().getWorkCD2().isPresent() ? domain.getWorkContent().getWork().get().getWorkCD2().get().v() : null, 
+							domain.getWorkContent().getWork().isPresent() && domain.getWorkContent().getWork().get().getWorkCD3().isPresent() ? domain.getWorkContent().getWork().get().getWorkCD3().get().v() : null, 
+							domain.getWorkContent().getWork().isPresent() && domain.getWorkContent().getWork().get().getWorkCD4().isPresent() ? domain.getWorkContent().getWork().get().getWorkCD4().get().v() : null, 
+							domain.getWorkContent().getWork().isPresent() && domain.getWorkContent().getWork().get().getWorkCD5().isPresent() ? domain.getWorkContent().getWork().get().getWorkCD5().get().v() : null)));
 			dto.setTimeSheet(new TimeSheetOfAttendanceEachOuenSheetDto(domain.getTimeSheet().getWorkNo().v(), 
 					new WorkTimeInformationDto(new ReasonTimeChangeDto(
 							domain.getTimeSheet().getStart().isPresent() ? domain.getTimeSheet().getStart().get().getReasonTimeChange().getTimeChangeMeans().value : null, 
