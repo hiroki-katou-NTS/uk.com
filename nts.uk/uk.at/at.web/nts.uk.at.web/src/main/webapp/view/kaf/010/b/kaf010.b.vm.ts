@@ -32,6 +32,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 
 
 
+
 <div id="kaf010-b">
 	<div id="contents-area" style="background-color: inherit; height: calc(100vh - 165px); min-width: 1230px">
 		<div class="two-panel" style="height: 100%;">
@@ -65,7 +66,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
                                                     appType: appType,
                                                     application: application,
                                                     appDispInfoStartupOutput: appDispInfoStartupOutput
-                                                } }" style="width: fit-content; display: inline-block; vertical-align: middle;"></div>
+                                                } }" style="width: fit-content; display: inline-block; vertical-align: middle; margin-top: 12px"></div>
                                                 
                      <div>
 
@@ -95,7 +96,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
                      
                                                 
                                                 
-                    <div data-bind="component: { name: 'kaf000-b-component7', 
+                    <div style="margin-top: 12px" data-bind="component: { name: 'kaf000-b-component7', 
                                                 params: {
                                                     appType: appType,
                                                     application: application,
