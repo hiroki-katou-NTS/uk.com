@@ -741,8 +741,8 @@ public class AttendanceItemIdContainer implements ItemConst {
 		temp.put(605, join(totalLabol, LEAVE_EARLY, TIME, joinNS(CALC, NUMBER_1)));
 		temp.put(610, join(totalLabol, LEAVE_EARLY, TIME, joinNS(TIME, NUMBER_2)));
 		temp.put(611, join(totalLabol, LEAVE_EARLY, TIME, joinNS(CALC, NUMBER_2)));
-		temp.put(606, join(totalLabol, LEAVE_EARLY, DEDUCTION, joinNS(TIME, NUMBER_1)));
-		temp.put(612, join(totalLabol, LEAVE_EARLY, DEDUCTION, joinNS(TIME, NUMBER_2)));
+		temp.put(606, join(totalLabol, LEAVE_EARLY, DEDUCTION, joinNS(CALC, NUMBER_1)));
+		temp.put(612, join(totalLabol, LEAVE_EARLY, DEDUCTION, joinNS(CALC, NUMBER_2)));
 		temp.put(607, join(totalLabol, LEAVE_EARLY, HOLIDAY + USAGE, joinNS(ANNUNAL_LEAVE, NUMBER_1)));
 		temp.put(613, join(totalLabol, LEAVE_EARLY, HOLIDAY + USAGE, joinNS(ANNUNAL_LEAVE, NUMBER_2)));
 		
@@ -759,8 +759,10 @@ public class AttendanceItemIdContainer implements ItemConst {
 		temp.put(615, join(totalLabol, LEAVE_EARLY, HOLIDAY + USAGE, joinNS(COMPENSATORY, NUMBER_2)));
 		temp.put(608, join(totalLabol, LEAVE_EARLY, HOLIDAY + USAGE, joinNS(EXCESS, NUMBER_1)));
 		temp.put(614, join(totalLabol, LEAVE_EARLY, HOLIDAY + USAGE, joinNS(EXCESS, NUMBER_2)));
-		temp.put(594, join(totalLabol, LATE, DEDUCTION, joinNS(TIME, NUMBER_1)));
-		temp.put(600, join(totalLabol, LATE, DEDUCTION, joinNS(TIME, NUMBER_2)));
+		temp.put(867, join(totalLabol, LEAVE_EARLY,  joinNS(VALUE, NUMBER_1)));
+		temp.put(868, join(totalLabol, LEAVE_EARLY,  joinNS(VALUE, NUMBER_2)));
+		temp.put(594, join(totalLabol, LATE, DEDUCTION, joinNS(CALC, NUMBER_1)));
+		temp.put(600, join(totalLabol, LATE, DEDUCTION, joinNS(CALC, NUMBER_2)));
 		temp.put(592, join(totalLabol, LATE, TIME, joinNS(TIME, NUMBER_1)));
 		temp.put(593, join(totalLabol, LATE, TIME, joinNS(CALC, NUMBER_1)));
 		temp.put(598, join(totalLabol, LATE, TIME, joinNS(TIME, NUMBER_2)));
@@ -782,6 +784,8 @@ public class AttendanceItemIdContainer implements ItemConst {
 		temp.put(603, join(totalLabol, LATE, HOLIDAY + USAGE, joinNS(COMPENSATORY, NUMBER_2)));
 		temp.put(596, join(totalLabol, LATE, HOLIDAY + USAGE, joinNS(EXCESS, NUMBER_1)));
 		temp.put(602, join(totalLabol, LATE, HOLIDAY + USAGE, joinNS(EXCESS, NUMBER_2)));
+		temp.put(865, join(totalLabol, LATE,  joinNS(VALUE, NUMBER_1)));
+		temp.put(866, join(totalLabol, LATE,  joinNS(VALUE, NUMBER_1)));
 		temp.put(462, join(totalLabol, GO_OUT, joinNS(COUNT, DEFAULT_ENUM_SEPERATOR, E_SUPPORT)));
 		temp.put(475, join(totalLabol, GO_OUT, joinNS(COUNT, DEFAULT_ENUM_SEPERATOR, E_UNION)));
 		temp.put(482, join(totalLabol, GO_OUT, joinNS(COUNT, DEFAULT_ENUM_SEPERATOR, E_CHARGE)));
