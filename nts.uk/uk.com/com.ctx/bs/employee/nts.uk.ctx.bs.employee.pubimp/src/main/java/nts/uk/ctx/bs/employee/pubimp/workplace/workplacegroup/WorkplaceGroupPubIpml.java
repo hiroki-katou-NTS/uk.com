@@ -28,13 +28,12 @@ import nts.uk.ctx.bs.employee.pub.workplace.ResultRequest597Export;
 import nts.uk.ctx.bs.employee.pub.workplace.master.WorkplacePub;
 import nts.uk.ctx.bs.employee.pub.workplace.workplacegroup.EmpOrganizationExport;
 import nts.uk.ctx.bs.employee.pub.workplace.workplacegroup.WorkplaceGroupPublish;
-
 import nts.uk.shr.com.context.AppContexts;
 
 
 /**
  * 職場グループPublish
- * 
+ *
  * @author HieuLt
  *
  */
@@ -66,8 +65,8 @@ public class WorkplaceGroupPubIpml implements WorkplaceGroupPublish {
 		String companyId = AppContexts.user().companyId();
 		// $職場グループリスト = require.職場グループIDを指定して職場グループを取得する( 職場グループIDリスト )
 		List<WorkplaceGroup> data = require.getAllById(companyId, lstWorkplaceGroupId);
-		List<WorkplaceGroupExport> result = data.stream().map(c -> new WorkplaceGroupExport(c.getWKPGRPID(),
-				c.getWKPGRPCode().v(), c.getWKPGRPName().v(), c.getWKPGRPType().value)).collect(Collectors.toList());
+		List<WorkplaceGroupExport> result = data.stream().map(c -> new WorkplaceGroupExport(c.getId(),
+				c.getCode().v(), c.getName().v(), c.getType().value)).collect(Collectors.toList());
 		// return $職場グループリスト: map 職場グループExported( $.職場グループID, $.職場グループコード,
 		// $.職場グループ名称, $.職場グループ種別 )
 		return result;
@@ -79,8 +78,8 @@ public class WorkplaceGroupPubIpml implements WorkplaceGroupPublish {
 		String companyId = AppContexts.user().companyId();
 		// $職場グループリスト = require.職場グループIDを指定して職場グループを取得する( 職場グループIDリスト )
 		List<WorkplaceGroup> data = require.getAllById(companyId, Arrays.asList(workplaceGroupId));
-		List<WorkplaceGroupExport> result = data.stream().map(c -> new WorkplaceGroupExport(c.getWKPGRPID(),
-				c.getWKPGRPCode().v(), c.getWKPGRPName().v(), c.getWKPGRPType().value)).collect(Collectors.toList());
+		List<WorkplaceGroupExport> result = data.stream().map(c -> new WorkplaceGroupExport(c.getId(),
+				c.getCode().v(), c.getName().v(), c.getType().value)).collect(Collectors.toList());
 		// return $職場グループリスト: map 職場グループExported( $.職場グループID, $.職場グループコード,
 		// $.職場グループ名称, $.職場グループ種別 )
 		return result;
@@ -121,7 +120,7 @@ public class WorkplaceGroupPubIpml implements WorkplaceGroupPublish {
 
 		/**
 		 * [R-1] 職場グループIDを指定して職場グループを取得する
-		 * 
+		 *
 		 * @param companyId
 		 * @param lstWKPGRPID
 		 * @return

@@ -15,35 +15,35 @@ import nts.uk.ctx.bs.employee.dom.workplace.group.WorkplaceReplaceResult;
  * @author phongtq
  *
  */
-public class ReplaceWorkplacesService {	
+public class ReplaceWorkplacesService {
 	/**
-	 * [1] 入れ替える	
+	 * [1] 入れ替える
 	 * @param require
 	 * @param group
 	 * @param lstWorkplaceId
-	 * @return	
+	 * @return
 	 */
 	public static Map<String, WorkplaceReplaceResult> replaceWorkplace(Require require,WorkplaceGroup group, List<String> lstWorkplaceId){
 		// require.職場グループを指定して職場グループ所属情報を取得する( 職場グループ.職場グループID )
 		// 旧所属情報リスト=get*(ログイン会社ID, 職場グループ.職場グループID):List<職場グループ所属情報>
-		List<AffWorkplaceGroup> lstFormerAffInfo = require.getByWKPGRPID(group.getWKPGRPID());
-		
+		List<AffWorkplaceGroup> lstFormerAffInfo = require.getByWKPGRPID(group.getId());
+
 		// filter not 職場IDリスト.contains( $.職場ID )
 		List<AffWorkplaceGroup> lstDel = lstFormerAffInfo.stream()
-				.filter(x-> !lstWorkplaceId.contains(x.getWKPID()))
+				.filter(x-> !lstWorkplaceId.contains(x.getWorkplaceId()))
 				.collect(Collectors.toList());
-		
+
 		Map<String, WorkplaceReplaceResult> dateHistLst = new HashMap<>();
-		// $削除結果リスト = $削除対象リスト:					
+		// $削除結果リスト = $削除対象リスト:
 		lstDel.forEach(x->{
-			// require.職場を指定して職場グループ所属情報を削除する( $.職場ID )	
+			// require.職場を指定して職場グループ所属情報を削除する( $.職場ID )
 			AtomTask atomTaks = AtomTask.of(() -> {
-				require.deleteByWKPID(x.getWKPID());
+				require.deleteByWKPID(x.getWorkplaceId());
 			});
-			
+
 			//職場グループの職場入替処理結果#離脱する( $.value )
 			// fix by QA http://192.168.50.4:3000/issues/110132 (Edit document ver 2)
-			dateHistLst.put(x.getWKPID(),WorkplaceReplaceResult.delete(atomTaks));
+			dateHistLst.put(x.getWorkplaceId(),WorkplaceReplaceResult.delete(atomTaks));
 		});
 
 		// $追加結果リスト = 職場IDリスト:
@@ -52,18 +52,18 @@ public class ReplaceWorkplacesService {
 			// fix by QA http://192.168.50.4:3000/issues/110132 (Edit document ver 2)
 			dateHistLst.put(x, AddWplOfWorkGrpService.addWorkplace(require, group, x));
 		});
-		
+
 		return dateHistLst;
 	}
-	
+
 	public static interface Require extends AddWplOfWorkGrpService.Require{
-		
-		// [R-1] 職場グループを指定して職場グループ所属情報を取得する																
-		// 職場グループ所属情報Repository.*get( 会社ID, 職場ID )	
+
+		// [R-1] 職場グループを指定して職場グループ所属情報を取得する
+		// 職場グループ所属情報Repository.*get( 会社ID, 職場ID )
 		List<AffWorkplaceGroup> getByWKPGRPID(String WKPGRPID);
-		
-		// 職場を指定して職場グループ所属情報を削除する																		
-		// 職場グループ所属情報Repository.delete( 会社ID, 職場ID )	
+
+		// 職場を指定して職場グループ所属情報を削除する
+		// 職場グループ所属情報Repository.delete( 会社ID, 職場ID )
 		void deleteByWKPID(String WKPID);
 	}
 }
