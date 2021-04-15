@@ -8,7 +8,17 @@ import * as $ from 'jquery';
     style: require('./main.scss'),
     template: require('./index.vue'),
     resource: require('./resources.json'),
-    constraints: [],
+    validations: {
+        yearMonth: {
+            required: true
+        },
+        memoCurent: {
+            constraint: 'WorkAvailabilityMemo'
+        }
+    },
+    constraints: [
+        'nts.uk.ctx.at.schedule.dom.shift.management.workavailability.WorkAvailabilityMemo'  
+    ]
 })
 export class CalendarAComponent extends Vue {
 
@@ -19,9 +29,13 @@ export class CalendarAComponent extends Vue {
     })
     public params!: { dataFromParent: any };
     public clnLst = [];
+
+    private startWork = '';
+
     public created() { // gioongs contructor    
         let vm = this;
         vm.dataStartPage = vm.params.dataFromParent.data;
+        vm.startWork = vm.dataStartPage.startWork;
     }
 
     @Watch('params.dataFromParent')
@@ -88,7 +102,7 @@ export class CalendarAComponent extends Vue {
         self.closePopup();
         let year = parseInt((yearMonth / 100).toString());
         let month = yearMonth % 100;
-        if (year > new Date().getFullYear() || year == new Date().getFullYear() && month > (new Date().getMonth() + 1)) {
+        if (year > parseInt(self.startWork.substring(0, 4)) || year == parseInt(self.startWork.substring(0, 4)) && month >= parseInt(self.startWork.substring(5, 7)) ) {
             self.isCurrentMonth = true;
         } else {
             self.isCurrentMonth = false;
@@ -104,6 +118,10 @@ export class CalendarAComponent extends Vue {
     @Watch('memoCurent')
     public changeMemo(memo: any) {
         let self = this;
+        if (memo.length > 100) {
+
+            return;
+        }
         let dataClick = _.find(self.listDataDisplay, function (o) { return o.id == self.idCurent; });
         if (dataClick != null) {
             dataClick.workAvailabilityOfOneDayDto.memo = self.memoCurent;
@@ -131,6 +149,7 @@ export class CalendarAComponent extends Vue {
     public cellFocus(el) {
         let self = this;
         self.showPopup = true;
+        self.firstShow = true;
         //close Memo area
         // self.showMemoArea = true;  
         //clear and set color focus
@@ -186,6 +205,11 @@ export class CalendarAComponent extends Vue {
 
     public closePopup() {
         let self = this;
+        if (self.checkClear) {
+            self.checkClear = false;
+
+            return;
+        }
         self.updateDataRegister();
         if ($($(document.body)[0]).find('textarea').val() != '') { this.setMemo(); }
         this.showPopup = false;
@@ -253,10 +277,24 @@ export class CalendarAComponent extends Vue {
     }
 
     public setDataDisplay(el) {
-        if (el.target.type != 'checkbox') {
+        let self = this;
+        if (el.target.type != 'checkbox' && el.target.classList.value != 'form-check') {
+
             return;
         }
-        let self = this;
+        if (el.target.classList.value == 'form-check') {
+            let d = $(el.target.getElementsByTagName('input'));
+            if (d.prop('checked')) {
+                _.remove(self.checked2s, function (n) {
+                    return n == el.target.getElementsByTagName('input')[0]._value;
+                });
+                d.prop('checked', false);
+            } else {
+                self.checked2s.push(el.target.getElementsByTagName('input')[0]._value);
+                d.prop('checked', true);
+            }
+        }
+        
         let items = $($(document.body)[0]).find('input.form-check-input');
         if (items.length == 0) { return; }
 
@@ -358,9 +396,10 @@ export class CalendarAComponent extends Vue {
         let dataRegister = this.createDataSubmitWorkRequestCmd();
         this.$emit('passDataToParent', dataRegister);
     }
-
+    private checkClear = false;
     public clearAll() {
         let self = this;
+        self.checkClear = true;
         self.idCurent;
         let dataClick = _.find(self.listDataDisplay, function (o) { return o.id == self.idCurent; });
         self.checked2s = [];
@@ -419,11 +458,16 @@ export class CalendarAComponent extends Vue {
         $($(document.body)[0]).find('span#monthday')[0].innerHTML = text;
     }
 
+    private checkEndTouch = true;
     public getNextBackWeek(el) {
         let id = +$($($(document.body)[0]).find('td.cell-focus')[0]).attr('id').slice(1) + el;
         //let id = + event.target.id.slice(1) + el;
 
-        if (id <= -1 || id > (this.maxDataID + 7)) { return; }
+        if (id <= -1 || id > (this.maxDataID + 7)) { 
+            this.checkEndTouch = true;
+            
+            return;
+         }
 
         let newTr, newFocusCell = null;
         if (id < this.idFirst) {
@@ -435,6 +479,8 @@ export class CalendarAComponent extends Vue {
             if (newTrs.length == 0) {
                 newFocusCell = $($(document.body)[0]).find('#d' + (this.maxDataID - 1))[0];
             } else {
+                this.checkEndTouch = true;
+
                 return;
             }
         } else {
@@ -555,13 +601,19 @@ export class CalendarAComponent extends Vue {
 
     public endTouch(e) {
         let self = this;
+        if (self.checkEndTouch) {
+            self.checkEndTouch = false;
+
+            return;
+        }
         this.initialX = e.changedTouches[0].clientX;
         this.initialY = e.changedTouches[0].clientY;
         // let classList = e.target.id != '' ? e.target.classList : $(e.currentTarget).find('td.cell-focus')[0].classList;
-        if (e.changedTouches[0].target.classList.contains('uk-bg-white-smoke')) { return; }
+        if (e.changedTouches[0].target.classList.contains('uk-bg-white-smoke') 
+        || e.changedTouches[0].target.closest('td').classList.contains('uk-bg-silver')) { return; }
         //clear and set color focus
         $($(document.body)[0]).find('td.cell-focus').removeClass('cell-focus');
-        let id = e.changedTouches[0].target.id != '' ? e.changedTouches[0].target.id : e.changedTouches[0].target.closest('td').id;
+        let id = e.changedTouches[0].target.id != '' && e.changedTouches[0].target.id != 'memo-area' ? e.changedTouches[0].target.id : e.changedTouches[0].target.closest('td').id;
         let tdAddFocusLst = $($(document.body)[0]).find('td#' + id);
         for (let i = 0; i < tdAddFocusLst.length; i++) {
             tdAddFocusLst[i].classList.add('cell-focus');
@@ -601,7 +653,7 @@ export class CalendarAComponent extends Vue {
         if (this.initialY === null) {
             return;
         }
-        if (e.target.classList.contains('uk-bg-white-smoke')) { return; }
+        // if (e.target.classList.contains('uk-bg-white-smoke')) { return; }
 
         this.slide = true;
         let currentX = e.touches[0].clientX;
@@ -684,7 +736,7 @@ export class CalendarAComponent extends Vue {
                 classDisplayToDay = 'class=\"uk-bg-schedule-that-day\"';
                 // console.log(moment().format('YYYY/MM/DD'));
             }
-            let dateDisplayD = (date.getDate() == 1 && ((date.getMonth() > startDateClone.getMonth()) || (date.getMonth() == 0 && startDateClone.getMonth() == 11))) ?
+            let dateDisplayD = date.getDate() == 1  ?
                 (date.getMonth() + 1).toString() + '/' +
                 date.getDate().toString() : date.getDate().toString();
             let isHoliday = _.find(self.dataStartPage.listDateIsHoliday, function (o) { return o == moment(date).format('YYYY/MM/DD'); });
@@ -742,7 +794,7 @@ export class CalendarAComponent extends Vue {
                     classDisplayToDay = 'class=\"uk-bg-schedule-that-day\"';
                     // console.log(moment().format('YYYY/MM/DD'));
                 }
-                let dateDisplayD = (date.getDate() == 1 && ((date.getMonth() > startDateClone.getMonth()) || (date.getMonth() == 0 && startDateClone.getMonth() == 11))) ?
+                let dateDisplayD = date.getDate() == 1 ?
                     (date.getMonth() + 1).toString() + '/' +
                     date.getDate().toString() : date.getDate().toString();
                 let isHoliday = _.find(self.dataStartPage.listDateIsHoliday, function (o) { return o == moment(date).format('YYYY/MM/DD'); });

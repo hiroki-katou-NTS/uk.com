@@ -173,10 +173,10 @@ public class TaskPaletteOrganizationTest {
 			require.getTask( (TaskFrameNo) any , new TaskCode("code3"));
 			result = Optional.of(task3);
 			
-			task2.isWithinExpirationDate( (GeneralDate) any );
+			task2.checkExpirationDate( (GeneralDate) any );
 			result = false;
 			
-			task3.isWithinExpirationDate( (GeneralDate) any );
+			task3.checkExpirationDate( (GeneralDate) any );
 			result = true;
 		}};
 		
@@ -204,8 +204,15 @@ public class TaskPaletteOrganizationTest {
 		
 		public static Task createTask(String code, String name, String abName) {
 			return new Task(
-					new TaskFrameNo(1), 
-					new TaskCode(code), 
+					new TaskCode(code),
+					new TaskFrameNo(1),
+					new ExternalCooperationInfo(
+							Optional.empty(),
+							Optional.empty(),
+							Optional.empty(),
+							Optional.empty(),
+							Optional.empty()),
+					new ArrayList<>(),
 					new DatePeriod(
 							GeneralDate.ymd(2020, 1, 1), 
 							GeneralDate.ymd(2020, 12, 31)), 
@@ -213,14 +220,8 @@ public class TaskPaletteOrganizationTest {
 							new TaskName(name), 
 							new TaskAbName(abName), 
 							Optional.empty(), 
-							Optional.empty()), 
-					new ExternalCooperationInfo(
-							Optional.empty(), 
-							Optional.empty(), 
-							Optional.empty(), 
-							Optional.empty(),
-							Optional.empty()), 
-					new ArrayList<>());
+							Optional.empty())
+			);
 		}
 		
 	}

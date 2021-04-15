@@ -73,7 +73,7 @@ module nts.uk.at.view.ccg005.b.screenModel {
       vm.listJobDataSource(jobGridDataSource);
 
       $("#grid").ntsGrid({
-        width: "175px",
+        width: "240px",
         height: "209px",
         dataSource: vm.listJobDataSource(),
         primaryKey: "jobTitleId",
@@ -94,7 +94,7 @@ module nts.uk.at.view.ccg005.b.screenModel {
             headerText: vm.$i18n("CCG005_6"),
             key: "jobTitleName",
             dataType: "string",
-            width: "110px",
+            width: "175px",
           }
         ],
         features: [{ name: "Sorting", type: "local" }],

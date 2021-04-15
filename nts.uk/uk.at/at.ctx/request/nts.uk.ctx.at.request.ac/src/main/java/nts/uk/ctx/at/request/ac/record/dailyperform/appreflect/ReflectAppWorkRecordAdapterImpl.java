@@ -11,7 +11,7 @@ import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.pub.appreflect.ReflectApplicationWorkRecordPub;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.reflect.ReflectApplicationWorkRecordAdapter;
-import nts.uk.ctx.at.shared.dom.application.reflect.ReflectStatusResultShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.reflect.ReflectStatusResultShare;
 
 @Stateless
 public class ReflectAppWorkRecordAdapterImpl implements ReflectApplicationWorkRecordAdapter {

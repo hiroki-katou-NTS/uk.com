@@ -301,9 +301,9 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 		TextBoxCollection textBoxCollection = worksheet.getTextBoxes();
 		// resource text
 		Cell cellB3 = cells.get("B3");
-		cellB3.setValue(I18NText.getText("Com_Workplace"));
+		cellB3.setValue("【" + I18NText.getText("Com_Workplace") + "】");
 		Cell cellB4 = cells.get("B4");
-		cellB4.setValue(I18NText.getText("Com_Person"));
+		cellB4.setValue("【" + I18NText.getText("Com_Person") + "】");
 //		Cell cellB6 = cells.get("B6");
 //		cellB6.setValue(I18NText.getText("KAF000_49"));
 //		Cell cellB7 = cells.get("B7");

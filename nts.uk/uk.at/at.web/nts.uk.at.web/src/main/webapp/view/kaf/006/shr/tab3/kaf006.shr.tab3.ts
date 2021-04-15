@@ -141,16 +141,16 @@ module nts.uk.at.view.kaf006.shr.tab3.viewmodel {
                     <table data-bind="visible: $parent.leaveComDayOffManas().length > 0">
                         <thead>
                             <tr class="text-center bg-green">
-                                <th style="width: 120px;" class="py-10 text-center" data-bind="text: $i18n('KAF006_53')"></th>
-                                <th style="width: 120px;" class="py-10 text-center" data-bind="text: $i18n('KAF006_87')"></th>
-                                <th style="width: 120px;" class="py-10 text-center" data-bind="text: $i18n('KAF006_55')"></th>
+                                <th style="width: 120px;" class="py-10 table-border text-center" data-bind="text: $i18n('KAF006_53')"></th>
+                                <th style="width: 120px;" class="py-10 table-border text-center" data-bind="text: $i18n('KAF006_87')"></th>
+                                <th style="width: 120px;" class="py-10 table-border text-center" data-bind="text: $i18n('KAF006_55')"></th>
                             </tr>
                         </thead>
                         <tbody data-bind="foreach: ko.toJS($parent.leaveComDayOffManas)">
                             <tr>
-                                <td class="py-10 text-center" data-bind="text: nts.uk.time.formatDate(new Date(outbreakDay), 'yyyy/MM/ddD')"></td>
-                                <td class="py-10 text-center" data-bind="text: nts.uk.time.formatDate(new Date(dateOfUse), 'yyyy/MM/ddD')"></td>
-                                <td class="py-10 text-center" data-bind="text: nts.uk.resource.getText('KAF006_46', [dayNumberUsed])"></td>
+                                <td class="py-10 table-border text-center" data-bind="text: nts.uk.time.formatDate(new Date(outbreakDay), 'yyyy/MM/ddD')"></td>
+                                <td class="py-10 table-border text-center" data-bind="text: nts.uk.time.formatDate(new Date(dateOfUse), 'yyyy/MM/ddD')"></td>
+                                <td class="py-10 table-border text-center" data-bind="text: nts.uk.resource.getText('KAF006_46', [dayNumberUsed])"></td>
                             </tr>
                         </tbody>
                     </table>
@@ -163,7 +163,7 @@ module nts.uk.at.view.kaf006.shr.tab3.viewmodel {
                 </div>
                 <div class="cell valign-center">
                     <button style="width: 60px; margin-right: 5px;" data-bind="text: $i18n('KAF006_50'), enable: !_.isEmpty($parent.application().appDate()) && $parent.updateMode() && $parent.checkAppDate(), click: openKDL035"></button>
-                    <div style="display: inline-block" data-bind="text: $i18n('KAF006_81')"></div>
+                    <div style="display: inline-block" data-bind="text: $i18n('KAF006_62')"></div>
                 </div>
             </div>
             <div class="table" style="margin: 10px 0;" data-bind="visible: $parent.condition14">
@@ -172,16 +172,16 @@ module nts.uk.at.view.kaf006.shr.tab3.viewmodel {
                     <table data-bind="visible: $parent.payoutSubofHDManagements().length > 0" >
                         <thead>
                             <tr class="bg-green">
-                                <th style="width: 120px; text-center" class="py-10" data-bind="text: $i18n('KAF006_52')"></th>
-                                <th style="width: 120px; text-center" class="py-10" data-bind="text: $i18n('KAF006_95')"></th>
-                                <th style="width: 120px; text-center" class="py-10" data-bind="text: $i18n('KAF006_55')"></th>
+                                <th style="width: 120px;" class="py-10 table-border text-center" data-bind="text: $i18n('KAF006_52')"></th>
+                                <th style="width: 120px;" class="py-10 table-border text-center" data-bind="text: $i18n('KAF006_95')"></th>
+                                <th style="width: 120px;" class="py-10 table-border text-center" data-bind="text: $i18n('KAF006_55')"></th>
                             </tr>
                         </thead>
                         <tbody data-bind="foreach: ko.toJS($parent.payoutSubofHDManagements)">
                             <tr>
-                                <td class="py-10 text-center" data-bind="text: nts.uk.time.formatDate(new Date(outbreakDay), 'yyyy/MM/ddD')"></td>
-                                <td class="py-10 text-center" data-bind="text: nts.uk.time.formatDate(new Date(dateOfUse), 'yyyy/MM/ddD')"></td>
-                                <td class="py-10 text-center" data-bind="text: nts.uk.resource.getText('KAF006_46', [dayNumberUsed])"></td>
+                                <td class="py-10 table-border text-center" data-bind="text: nts.uk.time.formatDate(new Date(outbreakDay), 'yyyy/MM/ddD')"></td>
+                                <td class="py-10 table-border text-center" data-bind="text: nts.uk.time.formatDate(new Date(dateOfUse), 'yyyy/MM/ddD')"></td>
+                                <td class="py-10 table-border text-center" data-bind="text: nts.uk.resource.getText('KAF006_46', [dayNumberUsed])"></td>
                             </tr>
                         </tbody>
                     </table>

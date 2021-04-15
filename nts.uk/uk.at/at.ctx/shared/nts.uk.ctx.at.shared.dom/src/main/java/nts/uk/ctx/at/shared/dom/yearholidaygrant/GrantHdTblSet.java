@@ -66,14 +66,14 @@ public class GrantHdTblSet extends AggregateRoot implements Serializable{
 			GrantCondition currentCondition = this.grantConditions.get(i);
 
 			// 付与日数の計算対象」が「出勤率」の場合、条件値<=100
-			if (CalculationMethod.WORKING_DAY.equals(this.calculationMethod)) {
+			if (CalculationMethod.ATTENDENCE_RATE.equals(this.calculationMethod)) {
 				if (currentCondition.getConditionValue() != null && currentCondition.getConditionValue().v() > 100) {
 					throw new BusinessException("Msg_262");
 				}
 			}
 			
 			// 付与日数の計算対象」が「労働日数」の場合、条件値<=366
-			if (CalculationMethod.ATTENDENCE_RATE.equals(this.calculationMethod)) {
+			if (CalculationMethod.WORKING_DAY.equals(this.calculationMethod)) {
 				if (currentCondition.getConditionValue() != null && currentCondition.getConditionValue().v() > 366) {
 					throw new BusinessException("Msg_263");
 				}
