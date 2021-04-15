@@ -84,6 +84,7 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.NumberCompensatoryLeavePeriodQuery;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.param.AbsRecMngInPeriodRefactParamInput;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.param.CompenLeaveAggrResult;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.require.RemainNumberTempRequireService;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.TargetSelectionAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.NumberRemainVacationLeaveRangeQuery;
@@ -276,6 +277,9 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
 
     @Inject
     private FlexWorkSettingRepository flexWorkSet;
+    
+    @Inject
+	private InterimRemainDataMngRegisterDateChange interimRemainDataMngRegisterDateChange;
 
 	private final String FORMAT_DATE = "yyyy/MM/dd";
 
@@ -1699,7 +1703,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
         listDates = listDates.stream().filter(date -> !listHolidayDates.contains(date)).collect(Collectors.toList());
 
         // 暫定データの登録
-       // this.interimRemainData.registerDateChange(companyId, applyForLeave.getApplication().getEmployeeID(), listDates);
+        this.interimRemainDataMngRegisterDateChange.registerDateChange(companyId, applyForLeave.getApplication().getEmployeeID(), listDates);
 
         // アルゴリズム「新規画面登録後の処理」を実行する
         ProcessResult result = this.afterRegisterService.processAfterRegister(
