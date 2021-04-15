@@ -45,7 +45,7 @@
         </ui:define>
         <ui:define name="content">
             <div id="functions-area">
-            	<div style="display: inline-block;" data-bind="component: { name: 'kaf000-a-component9', params: isFromOther }"></div>
+            	<!-- <div style="display: inline-block;" data-bind="component: { name: 'kaf000-a-component9', params: isFromOther }"></div> -->
                 <!-- A1_1 -->
                 <button class="proceed" data-bind="click: register, enable: $root.errors.isEmpty"
                     tabindex="1">#{i18n.getText('KAF006_1')}</button>
@@ -62,6 +62,7 @@
 												appDispInfoStartupOutput: appDispInfoStartupOutput
 											} }" style="display: inline-block;"></div>
             </div>
+            <div style="display: inline-block; position: absolute; z-index: 1000; margin-left: 70px;" data-bind="component: { name: 'kaf000-a-component9', params: isFromOther }"></div>
             <div id="contents-area" style="background-color: inherit;">
                 <div class="two-panel" style="height: 100%;">
                     <div class="left-panel" style="width: calc(100% - 410px); height: inherit; overflow-y: auto;">
