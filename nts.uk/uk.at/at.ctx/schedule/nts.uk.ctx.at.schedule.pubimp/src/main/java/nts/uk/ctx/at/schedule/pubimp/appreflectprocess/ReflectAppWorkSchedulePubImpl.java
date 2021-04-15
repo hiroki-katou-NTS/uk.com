@@ -24,28 +24,33 @@ import nts.uk.ctx.at.shared.dom.adapter.application.reflect.SHAppReflectionSetti
 import nts.uk.ctx.at.shared.dom.adapter.application.reflect.SHApplyTimeSchedulePriority;
 import nts.uk.ctx.at.shared.dom.adapter.application.reflect.SHClassifyScheAchieveAtr;
 import nts.uk.ctx.at.shared.dom.adapter.application.reflect.SHPriorityTimeReflectAtr;
-import nts.uk.ctx.at.shared.dom.application.common.ApplicationShare;
-import nts.uk.ctx.at.shared.dom.application.common.ApplicationTypeShare;
-import nts.uk.ctx.at.shared.dom.application.reflect.ReflectStatusResultShare;
-import nts.uk.ctx.at.shared.dom.application.reflectprocess.cancellation.ApplicationReflectHistory;
-import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.businesstrip.ReflectBusinessTripApp;
+import nts.uk.ctx.at.shared.dom.calculationsetting.StampReflectionManagement;
+import nts.uk.ctx.at.shared.dom.calculationsetting.repository.StampReflectionManagementRepository;
 import nts.uk.ctx.at.shared.dom.dailyprocess.calc.CalculateDailyRecordServiceCenterNew;
 import nts.uk.ctx.at.shared.dom.dailyprocess.calc.CalculateOption;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
+import nts.uk.ctx.at.shared.dom.scherec.application.common.ApplicationShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.common.ApplicationTypeShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.reflect.ReflectStatusResultShare;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.businesstrip.ReflectBusinessTripApp;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.directgoback.GoBackReflect;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.directgoback.GoBackReflectRepository;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.lateearlycancellation.LateEarlyCancelReflect;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.lateearlycancellation.LateEarlyCancelReflectRepository;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.cancellation.ApplicationReflectHistory;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.stampapplication.StampAppReflect;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.stampapplication.StampAppReflectRepository;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.timeleaveapplication.TimeLeaveAppReflectRepository;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.timeleaveapplication.TimeLeaveApplicationReflect;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.workchangeapp.ReflectWorkChangeApp;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.workchangeapp.ReflectWorkChangeAppRepository;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.TimePriority;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.DailyRecordConverter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.DailyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.ChangeDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.ICorrectionAttendanceRule;
-import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.directgoback.GoBackReflect;
-import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.directgoback.GoBackReflectRepository;
-import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.lateearlycancellation.LateEarlyCancelReflect;
-import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.lateearlycancellation.LateEarlyCancelReflectRepository;
-import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.stampapplication.StampAppReflect;
-import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.stampapplication.StampAppReflectRepository;
-import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.workchangeapp.ReflectWorkChangeApp;
-import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.workchangeapp.ReflectWorkChangeAppRepository;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
@@ -59,7 +64,6 @@ import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepositor
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingService;
-import nts.uk.ctx.at.shared.dom.worktime.worktimeset.internal.PredetermineTimeSetForCalc;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -120,9 +124,15 @@ public class ReflectAppWorkSchedulePubImpl implements ReflectApplicationWorkSche
 
 	@Inject
 	private ReflectWorkChangeAppRepository reflectWorkChangeAppRepository;
+	
+	@Inject
+	private TimeLeaveAppReflectRepository timeLeaveAppReflectRepository;
+	
+	@Inject
+	private StampReflectionManagementRepository timePriorityRepository;
 
 	@Override
-	public Pair<Object, AtomTask> process(int type, Object application, GeneralDate date, Object reflectStatus, int preAppWorkScheReflectAttr) {
+	public Pair<Object, AtomTask> process(Object application, GeneralDate date, Object reflectStatus, int preAppWorkScheReflectAttr) {
 		String companyId = AppContexts.user().companyId();
 		
 		RequireImpl impl = new RequireImpl(companyId, workTypeRepo, workTimeSettingRepository, service,
@@ -130,10 +140,10 @@ public class ReflectAppWorkSchedulePubImpl implements ReflectApplicationWorkSche
 				calculateDailyRecordServiceCenterNew, requestSettingAdapter, snapshotRepo, flexWorkSettingRepository,
 				predetemineTimeSettingRepository, fixedWorkSettingRepository, flowWorkSettingRepository,
 				goBackReflectRepository, stampAppReflectRepository, lateEarlyCancelReflectRepository,
-				reflectWorkChangeAppRepository);
+				reflectWorkChangeAppRepository, timeLeaveAppReflectRepository, timePriorityRepository);
 		Pair<ReflectStatusResultShare, AtomTask> result = ReflectApplicationWorkSchedule.process(impl, companyId,
-				EnumAdaptor.valueOf(type, ExecutionType.class), (ApplicationShare) application, date,
-				(ReflectStatusResultShare) reflectStatus, preAppWorkScheReflectAttr);
+				(ApplicationShare) application, date, (ReflectStatusResultShare) reflectStatus,
+				preAppWorkScheReflectAttr);
 		return Pair.of(result.getLeft(), result.getRight());
 	}
 
@@ -177,6 +187,10 @@ public class ReflectAppWorkSchedulePubImpl implements ReflectApplicationWorkSche
 		private final LateEarlyCancelReflectRepository lateEarlyCancelReflectRepository;
 
 		private final ReflectWorkChangeAppRepository reflectWorkChangeAppRepository;
+		
+		private final TimeLeaveAppReflectRepository timeLeaveAppReflectRepository;
+		
+		private final StampReflectionManagementRepository timePriorityRepository;
 
 		@Override
 		public Optional<WorkType> getWorkType(String workTypeCd) {
@@ -303,6 +317,16 @@ public class ReflectAppWorkSchedulePubImpl implements ReflectApplicationWorkSche
 		@Override
 		public Optional<LateEarlyCancelReflect> findReflectArrivedLateLeaveEarly(String companyId) {
 			return Optional.ofNullable(lateEarlyCancelReflectRepository.getByCompanyId(companyId));
+		}
+
+		@Override
+		public Optional<TimeLeaveApplicationReflect> findReflectTimeLeav(String companyId) {
+			return timeLeaveAppReflectRepository.findByCompany(companyId);
+		}
+
+		@Override
+		public Optional<StampReflectionManagement> findByCid(String companyId) {
+			return timePriorityRepository.findByCid(companyId);
 		}
 
 	}

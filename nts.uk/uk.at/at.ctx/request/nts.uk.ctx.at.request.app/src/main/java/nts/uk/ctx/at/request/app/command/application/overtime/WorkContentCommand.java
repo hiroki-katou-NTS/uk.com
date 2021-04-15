@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.overtime.service.WorkContent;
 
 public class WorkContentCommand {
@@ -23,13 +24,13 @@ public class WorkContentCommand {
 		return new WorkContent(
 				Optional.ofNullable(workTypeCode),
 				Optional.ofNullable(workTimeCode),
-				timeZones.isEmpty() ? 
+				CollectionUtil.isEmpty(timeZones) ? 
 						Collections.emptyList() : 
 						timeZones
 							.stream()
 							.map(x -> x.toDomain())
 							.collect(Collectors.toList()),
-				breakTimes.isEmpty() ? 
+				CollectionUtil.isEmpty(breakTimes) ? 
 						Collections.emptyList() : 
 						breakTimes
 							.stream()

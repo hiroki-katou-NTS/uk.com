@@ -204,6 +204,7 @@ export class KafS10Component extends KafS00ShrComponent {
             command.appDate = vm.modeNew ? vm.date : vm.appDispInfoStartupOutput.appDetailScreenInfo.application.appDate;
             command.mode = vm.modeNew;
             command.appHdWorkDispInfo = vm.model.appHdWorkDispInfo;
+            command.isAgent = false;
             if (vm.modeNew) {
                 command.appHolidayWorkInsert = vm.model.appHolidayWork;
             } else {
@@ -589,7 +590,7 @@ export class KafS10Component extends KafS00ShrComponent {
                     appTypeSetting: vm.model.appHdWorkDispInfo.appDispInfoStartupOutput.appDispInfoNoDateOutput.applicationSetting.appTypeSetting[0],
                     appHdWorkDispInfo: vm.model.appHdWorkDispInfo
                 }).then((result: any) => {
-                    vm.appId = result.data.appID;
+                    vm.appId = result.data.appIDLst[0];
                     vm.toStep(3);
                 });
             }

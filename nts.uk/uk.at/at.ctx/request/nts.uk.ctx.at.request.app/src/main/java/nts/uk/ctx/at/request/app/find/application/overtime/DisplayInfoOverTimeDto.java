@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto;
 import nts.uk.ctx.at.request.dom.application.overtime.service.DisplayInfoOverTime;
+import nts.uk.ctx.at.request.dom.application.overtime.service.WorkInfo;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -21,14 +22,14 @@ public class DisplayInfoOverTimeDto {
 	public Integer overtimeAppAtr;
 	// 申請表示情報
 	public AppDispInfoStartupDto appDispInfoStartup;
-	// 代行申請か
-	public Boolean isProxy;
 	// 計算結果
 	public CalculationResultDto calculationResultOp;
 	// 申請日に関係する情報
 	public InfoWithDateApplicationDto infoWithDateApplicationOp;
 	// 計算済フラグ
 	public Integer calculatedFlag;
+	
+	public WorkInfo workInfo;
 	
 	public DisplayInfoOverTimeDto(
 			List<WorkdayoffFrameDto> workdayoffFrames,
@@ -63,10 +64,11 @@ public class DisplayInfoOverTimeDto {
 					.collect(Collectors.toList()),
 				displayInfoOverTime.getOvertimeAppAtr() == null ? null : displayInfoOverTime.getOvertimeAppAtr().value,
 				AppDispInfoStartupDto.fromDomain(displayInfoOverTime.getAppDispInfoStartup()),
-				displayInfoOverTime.getIsProxy(),
 				CalculationResultDto.fromDomain(displayInfoOverTime.getCalculationResultOp().orElse(null)),
 				InfoWithDateApplicationDto.fromDomain(displayInfoOverTime.getInfoWithDateApplicationOp().orElse(null)),
-				displayInfoOverTime.getCalculatedFlag().value);
+				displayInfoOverTime.getCalculatedFlag().value,
+				displayInfoOverTime.getWorkInfo().orElse(null)
+				);
 	}
 	public static DisplayInfoOverTimeDto fromDomainChangeDate(DisplayInfoOverTime displayInfoOverTime) {
 		

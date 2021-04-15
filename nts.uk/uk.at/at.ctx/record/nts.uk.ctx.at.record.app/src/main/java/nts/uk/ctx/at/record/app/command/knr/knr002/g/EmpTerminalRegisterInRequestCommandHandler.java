@@ -32,7 +32,7 @@ public class EmpTerminalRegisterInRequestCommandHandler extends CommandHandler<E
 		EmpInfoTerminalCode terminalCode = command.getTerminalCode();
 		//	1. get*(契約コード、就業情報端末コード)
 		Optional<TimeRecordReqSetting> timeRecordReqSetting = this.timeRecordReqSettingRepository
-																  .getTimeRecordReqSetting(terminalCode, contractCode);
+																  .getTrRequest(terminalCode, contractCode);
 		if(!timeRecordReqSetting.isPresent()) {
 			//	2. create(契約コード、就業情報端末コード、就業情報端末のリクエスト一覧）
 			TimeRecordReqSetting timeRecordReqSettingRegist = new TimeRecordReqSetting.ReqSettingBuilder(

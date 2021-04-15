@@ -25,7 +25,7 @@ public class JpaReqComStatusMonitoringRepository extends JpaRepository implement
 
 	@Override
 	public void update(ReqComStatusMonitoring reqComStatusMonitoring) {
-		KrcdtTrRqStMonitorPK key = new KrcdtTrRqStMonitorPK(reqComStatusMonitoring.getContractCode().v(), Integer.parseInt(reqComStatusMonitoring.getTerminalCode().v()));
+		KrcdtTrRqStMonitorPK key = new KrcdtTrRqStMonitorPK(reqComStatusMonitoring.getContractCode().v(), reqComStatusMonitoring.getTerminalCode().v());
 		KrcdtTrRqStMonitor entity = this.queryProxy().find(key, KrcdtTrRqStMonitor.class).get();
 		entity.connecting = reqComStatusMonitoring.isConnecting() ? 1 : 0;
 		this.commandProxy().update(entity);
@@ -33,17 +33,17 @@ public class JpaReqComStatusMonitoringRepository extends JpaRepository implement
 
 	@Override
 	public void delete(ReqComStatusMonitoring reqComStatusMonitoring) {
-		KrcdtTrRqStMonitorPK key = new KrcdtTrRqStMonitorPK(reqComStatusMonitoring.getContractCode().v(), Integer.parseInt(reqComStatusMonitoring.getTerminalCode().v()));
+		KrcdtTrRqStMonitorPK key = new KrcdtTrRqStMonitorPK(reqComStatusMonitoring.getContractCode().v(), reqComStatusMonitoring.getTerminalCode().v());
 		this.commandProxy().remove(KrcdtTrRqStMonitor.class, key);
 	}
 
 	@Override
 	public List<ReqComStatusMonitoring> get(ContractCode contractCode, List<EmpInfoTerminalCode> listTerminalCode,
 			boolean connecting) {
-		List<Integer> listCode = listTerminalCode.stream().map(e -> Integer.parseInt(e.v())).collect(Collectors.toList());
+//		List<Integer> listCode = listTerminalCode.stream().map(e -> Integer.parseInt(e.v())).collect(Collectors.toList());
 		return this.queryProxy().query(FIND_CONTRACTCD_CODE_CONNECTING, KrcdtTrRqStMonitor.class)
 					.setParameter("contractCode", contractCode.v())
-					.setParameter("listCode", listCode)
+					.setParameter("listCode", listTerminalCode.stream().map(e -> e.v()).collect(Collectors.toList()))
 					.setParameter("connecting", connecting ? 1 : 0).getList().stream().map(e -> e.toDomain()).collect(Collectors.toList());
 	}
 

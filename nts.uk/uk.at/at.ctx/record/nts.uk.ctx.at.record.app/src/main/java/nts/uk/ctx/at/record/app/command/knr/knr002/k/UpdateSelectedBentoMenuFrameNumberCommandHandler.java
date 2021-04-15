@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.app.command.knr.knr002.k;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -39,7 +40,7 @@ public class UpdateSelectedBentoMenuFrameNumberCommandHandler extends CommandHan
 		List<Integer> selectedBentoMenuFrameNumbers = command.getSelectedBentoMenuFrameNumbers();
 		//	1. get*(契約コード、就業情報端末コード)
 		Optional<TimeRecordReqSetting> timeRecordReqSetting = this.timeRecordReqSettingRepository
-																  .getTimeRecordReqSetting(terminalCode, contractCode);
+																  .getTimeRecordReservation(terminalCode, contractCode);
 		if(!timeRecordReqSetting.isPresent())
 			return;
 		TimeRecordReqSetting timeRecordReqSettingVal = timeRecordReqSetting.get();
@@ -49,9 +50,9 @@ public class UpdateSelectedBentoMenuFrameNumberCommandHandler extends CommandHan
 																	timeRecordReqSettingVal.getContractCode(),
 																	timeRecordReqSettingVal.getCompanyId(),
 																	timeRecordReqSettingVal.getCompanyCode(),
-																	timeRecordReqSettingVal.getEmployeeIds(),
+																	Collections.emptyList(),
 																	selectedBentoMenuFrameNumbers,
-																	timeRecordReqSettingVal.getWorkTypeCodes())
+																	Collections.emptyList())
 														  .build();
 		//	3. persist
 		this.timeRecordReqSettingSendReservationRepository.delete(timeRecordReqSettingVal);

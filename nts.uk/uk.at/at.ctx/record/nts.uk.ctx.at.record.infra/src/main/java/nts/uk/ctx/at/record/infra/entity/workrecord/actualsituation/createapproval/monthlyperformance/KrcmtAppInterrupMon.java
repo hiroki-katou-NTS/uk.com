@@ -9,11 +9,11 @@ import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.workrecord.actualsituation.createapproval.monthlyperformance.AppInterrupMon;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Entity
 @Table(name="KRCMT_APP_INTERRUP_MON")
 @NoArgsConstructor
-public class KrcmtAppInterrupMon extends UkJpaEntity implements Serializable {
+public class KrcmtAppInterrupMon extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	@Id

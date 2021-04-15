@@ -9,11 +9,15 @@ import java.util.Optional;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.WorkRegularAdditionSet;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.WorkRegularAdditionSetRepository;
-import nts.uk.ctx.at.shared.infra.entity.calculation.holiday.KshstWorkRegularSet;
+import nts.uk.ctx.at.shared.infra.entity.calculation.holiday.KshmtCalcCAddHdReg;
+import nts.uk.ctx.at.shared.infra.entity.calculation.holiday.KshstWorkRegularSetPK;
+
+import javax.ejb.Stateless;
 
 /**
  * The Class JpaWorkRegularAdditionSetRepository.
  */
+@Stateless
 public class JpaWorkRegularAdditionSetRepository extends JpaRepository implements WorkRegularAdditionSetRepository{
 
 	/* (non-Javadoc)
@@ -21,7 +25,7 @@ public class JpaWorkRegularAdditionSetRepository extends JpaRepository implement
 	 */
 	@Override
 	public Optional<WorkRegularAdditionSet> findByCID(String companyID) {
-		Optional<KshstWorkRegularSet> optEntity = this.queryProxy().find(companyID, KshstWorkRegularSet.class);
+		Optional<KshmtCalcCAddHdReg> optEntity = this.queryProxy().find(new KshstWorkRegularSetPK(companyID), KshmtCalcCAddHdReg.class);
 		if (optEntity.isPresent()) {
 			JpaHolidayAddtionRepository holidayAddtionRepository = new JpaHolidayAddtionRepository();
 			WorkRegularAdditionSet domain = holidayAddtionRepository.convertToDomainRegularWork(optEntity.get());

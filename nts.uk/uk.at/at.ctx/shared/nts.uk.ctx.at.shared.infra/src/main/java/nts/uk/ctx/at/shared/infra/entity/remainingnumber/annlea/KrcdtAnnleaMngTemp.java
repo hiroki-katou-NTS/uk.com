@@ -30,35 +30,35 @@ public class KrcdtAnnleaMngTemp extends UkJpaEntity implements Serializable {
 	/** プライマリキー */
 	@EmbeddedId
 	public KrcdtAnnleaMngTempPK PK;
-	
+
 	/** 年休使用 */
 	@Column(name = "ANNLEA_USE")
 	public double annualLeaveUse;
-	
+
 	/** 時間年休使用 */
 	@Column(name = "TIMEAL_USE")
 	public int timeAnnualLeaveUse;
-	
+
 	/** 出勤前時間年休使用 */
 	@Column(name = "TIMEAL_USE_BFR_WORK")
 	public int timeAnnualLeaveUseBeforeWork;
-	
+
 	/** 退勤後時間年休使用 */
 	@Column(name = "TIMEAL_USE_AFT_WORK")
 	public int timeAnnualLeaveUseAfterWork;
-	
+
 	/** 出勤前2時間年休使用 */
 	@Column(name = "TIMEAL_USE_BFR_WORK2")
 	public int timeAnnualLeaveUseBeforeWork2;
-	
+
 	/** 退勤後2時間年休使用 */
 	@Column(name = "TIMEAL_USE_AFT_WORK2")
 	public int timeAnnualLeaveUseAfterWork2;
-	
+
 	/** 私用外出時間年休使用 */
 	@Column(name = "TIMEAL_USE_PRIV_GOOUT")
 	public int timeAnnualLeaveUsePrivateGoOut;
-	
+
 	/** 組合外出時間年休使用 */
 	@Column(name = "TIMEAL_USE_UNION_GOOUT")
 	public int timeAnnualLeaveUseUnionGoOut;
@@ -66,11 +66,11 @@ public class KrcdtAnnleaMngTemp extends UkJpaEntity implements Serializable {
 	/** 勤務種類コード */
 	@Column(name = "WORK_TYPE_CODE")
 	public String workTypeCode;
-	
+
 	/** 予定実績区分 */
 	@Column(name = "SCHE_RECD_ATR")
 	public int scheduleRecordAtr;
-	
+
 	/**
 	 * キー取得
 	 */
@@ -78,13 +78,13 @@ public class KrcdtAnnleaMngTemp extends UkJpaEntity implements Serializable {
 	protected Object getKey() {
 		return this.PK;
 	}
-	
+
 	/**
 	 * ドメインに変換
 	 * @return 暫定年休管理データ
 	 */
 	public TempAnnualLeaveManagement toDomain(){
-		
+
 		return TempAnnualLeaveManagement.of(
 				this.PK.employeeId,
 				this.PK.ymd,
@@ -99,25 +99,25 @@ public class KrcdtAnnleaMngTemp extends UkJpaEntity implements Serializable {
 				new WorkTypeCode(this.workTypeCode),
 				EnumAdaptor.valueOf(this.scheduleRecordAtr, ScheduleRecordAtr.class));
 	}
-	
+
 	/**
 	 * ドメインから変換　（for Insert）
 	 * @param domain 暫定年休管理データ
 	 */
 	public void fromDomainForPersist(TempAnnualLeaveManagement domain){
-		
+
 		this.PK = new KrcdtAnnleaMngTempPK(
 				domain.getEmployeeId(),
 				domain.getYmd());
 		this.fromDomainForUpdate(domain);
 	}
-	
+
 	/**
 	 * ドメインから変換　(for Update)
 	 * @param domain 暫定年休管理データ
 	 */
 	public void fromDomainForUpdate(TempAnnualLeaveManagement domain){
-		
+
 		this.annualLeaveUse = domain.getAnnualLeaveUse().v();
 		this.timeAnnualLeaveUse = domain.getTimeAnnualLeaveUse().v();
 		this.timeAnnualLeaveUseBeforeWork = domain.getTimeAnnualLeaveUseBeforeWork().v();

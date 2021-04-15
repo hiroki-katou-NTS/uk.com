@@ -10,6 +10,7 @@ import nts.uk.ctx.at.request.dom.application.lateleaveearly.ArrivedLateLeaveEarl
 import nts.uk.ctx.at.request.dom.application.stamp.AppRecordImage;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStamp;
 import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode;
+import nts.uk.ctx.at.request.dom.application.timeleaveapplication.TimeLeaveApplication;
 import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange;
 
 public class GetApplicationForReflect {
@@ -47,8 +48,8 @@ public class GetApplicationForReflect {
 			}
 			
 		case ANNUAL_HOLIDAY_APPLICATION:
-			// TODO: 8：時間休暇申請
-			return null;
+			// 8：時間休暇申請
+			return require.findTimeLeavById(companyId, appID).orElse(null);
 		case EARLY_LEAVE_CANCEL_APPLICATION:
 			// 9: 遅刻早退取消申請
 			return require.findArrivedLateLeaveEarly(companyId, appID, app).orElse(null);
@@ -78,5 +79,7 @@ public class GetApplicationForReflect {
 		public Optional<BusinessTrip> findBusinessTripApp(String companyId, String appID, Application app);
 		
 		public Optional<AppRecordImage> findAppRecordImage(String companyId, String appID, Application app);
+		
+		public Optional<TimeLeaveApplication> findTimeLeavById(String companyId, String appId);
 	}
 }

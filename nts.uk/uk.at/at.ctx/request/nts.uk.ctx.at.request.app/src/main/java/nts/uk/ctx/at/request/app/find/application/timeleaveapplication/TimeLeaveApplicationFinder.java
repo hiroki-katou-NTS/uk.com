@@ -4,6 +4,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.error.RawErrorMessage;
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.app.find.application.common.service.other.output.AchievementDetailDto;
 import nts.uk.ctx.at.request.app.find.application.timeleaveapplication.dto.*;
 import nts.uk.ctx.at.request.dom.application.*;
@@ -23,15 +24,16 @@ import nts.uk.ctx.at.request.dom.application.timeleaveapplication.output.TimeVac
 import nts.uk.ctx.at.request.dom.application.timeleaveapplication.service.TimeLeaveApplicationService;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.RecordDate;
 import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppStandardReasonCode;
-import nts.uk.ctx.at.shared.app.find.workcheduleworkrecord.appreflectprocess.appreflectcondition.timeleaveapplication.TimeLeaveAppReflectDto;
-import nts.uk.ctx.at.shared.dom.remainingnumber.work.AppTimeType;
+import nts.uk.ctx.at.shared.app.find.scherec.appreflectprocess.appreflectcondition.timeleaveapplication.TimeLeaveAppReflectDto;
 import nts.uk.ctx.at.shared.dom.vacation.setting.TimeDigestiveUnit;
-import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.timeleaveapplication.TimeLeaveApplicationReflect;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.timeleaveapplication.TimeLeaveApplicationReflect;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
 import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZone;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 import org.apache.commons.lang3.StringUtils;
@@ -61,6 +63,9 @@ public class TimeLeaveApplicationFinder {
 
     @Inject
     private DetailBeforeUpdate detailBeforeProcessRegisterService;
+
+    @Inject
+    private PredetemineTimeSettingRepository predetemineTimeSettingRepo;
 
     /**
      * 時間休申請の起動処理（新規）
@@ -188,19 +193,31 @@ public class TimeLeaveApplicationFinder {
      */
     public CalculationResultDto calculateApplicationTime(Integer timeLeaveType, GeneralDate baseDate, TimeLeaveAppDisplayInfoDto info, List<TimeZoneDto> lstTimeZone, List<OutingTimeZoneDto> lstOutingTimeZone) {
         String employeeId = info.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().getEmployeeInfoLst().get(0).getSid();
-        AchievementDetailDto achievementDetailDto = info.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().
-                getOpActualContentDisplayLst().get(0).getOpAchievementDetail();
-
+        AchievementDetailDto achievementDetailDto = CollectionUtil.isEmpty(info.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getOpActualContentDisplayLst())
+                ? null
+                : info.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getOpActualContentDisplayLst().get(0).getOpAchievementDetail();
+        Map<Integer, TimeZone> mapTimeZone = lstTimeZone.stream()
+                .filter(i -> i.getStartTime() != null && i.getEndTime() != null)
+                .collect(Collectors.toMap(TimeZoneDto::getWorkNo, i -> new TimeZone(new TimeWithDayAttr(i.getStartTime()), new TimeWithDayAttr(i.getEndTime()))));
+        if (achievementDetailDto != null && achievementDetailDto.getWorkTimeCD() != null) {
+            // 2回勤務かどうかの判断処理
+            Optional<PredetemineTimeSetting> timeSetting = predetemineTimeSettingRepo.findByWorkTimeCode(
+                    AppContexts.user().companyId(),
+                    info.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getOpActualContentDisplayLst().get(0).getOpAchievementDetail().getWorkTimeCD()
+            );
+            if (!timeSetting.isPresent() || !timeSetting.get().checkTwoTimesWork()){
+                if (mapTimeZone.get(2) != null) mapTimeZone.remove(2);
+            }
+        } else {
+            if (mapTimeZone.get(2) != null) mapTimeZone.remove(2);
+        }
         // 1日分の勤怠時間を仮計算
         DailyAttendanceTimeCaculationImport calcImport = dailyAttendanceTimeCaculation.getCalculation(
                 employeeId,
                 baseDate,
-                achievementDetailDto.getWorkTypeCD(),
-                achievementDetailDto.getWorkTimeCD(),
-                lstTimeZone.stream().map(i -> new TimeZone(
-                        i.getStartTime() == null ? null : new TimeWithDayAttr(i.getStartTime()),
-                        i.getEndTime() == null ? null : new TimeWithDayAttr(i.getEndTime())
-                )).collect(Collectors.toList()),
+                achievementDetailDto == null ? null : achievementDetailDto.getWorkTypeCD(),
+                achievementDetailDto == null ? null : achievementDetailDto.getWorkTimeCD(),
+                mapTimeZone,
                 Collections.emptyList(),
                 Collections.emptyList(),
                 lstOutingTimeZone.stream().map(i -> new OutingTimeZoneExport(
@@ -208,7 +225,7 @@ public class TimeLeaveApplicationFinder {
                         i.getStartTime(),
                         i.getEndTime()
                 )).collect(Collectors.toList()),
-                achievementDetailDto.getShortWorkTimeLst().stream().map(i -> new ChildCareTimeZoneExport(
+                achievementDetailDto == null ? Collections.emptyList() : achievementDetailDto.getShortWorkTimeLst().stream().map(i -> new ChildCareTimeZoneExport(
                         i.getChildCareAttr(),
                         i.getStartTime(),
                         i.getEndTime()

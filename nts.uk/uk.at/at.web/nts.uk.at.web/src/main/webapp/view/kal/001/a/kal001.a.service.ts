@@ -91,29 +91,23 @@ module nts.uk.at.view.kal001.a.service {
                     this.category = p.category;
                     this.name = p.categoryName;     
                                         
-                    if(p.category==2|| p.category==5){
+                    if(p.category==2|| p.category==5 || p.category == 8){ //スケジュール4週,日次,申請承認
                         this.startDate =nts.uk.time.parseMoment(p.dateValue().startDate).momentObject.toISOString() ;
                         this.endDate = nts.uk.time.parseMoment(p.dateValue().endDate).momentObject.toISOString() ;
                         
-                    }else if(p.category ==7 || p.category == 9){
-//                        this.startDate = null ;
-//                        this.endDate = null;
-                        let sDate =p.dateValue().startDate + '/01';
-                            let eDate = p.dateValue().endDate;
-
-                            let lastDay = new Date(Number(eDate.slice(0, 4)), Number(eDate.slice(5, 7)), 0);
-                            eDate = eDate + "/"  +(lastDay.getDate() <10? "0" + lastDay.getDate() : lastDay.getDate());
-                                                        
-                            this.startDate =nts.uk.time.parseMoment(sDate).momentObject.toISOString() ;
-                            this.endDate = nts.uk.time.parseMoment(eDate).momentObject.toISOString() ;   
+                    }else if(p.category ==7 || p.category == 9){ //月次、複数月次
+                        let sDate =p.dateValue().startDate + '01';
+                        let eDate = p.dateValue().endDate + '01';;
+                        this.startDate =nts.uk.time.parseMoment(sDate).momentObject.toISOString() ;
+                        this.endDate = nts.uk.time.parseMoment(eDate).momentObject.toISOString() ;   
                         
-                    }else if(p.category==12){
+                    }else if(p.category == 12){
                         this.name=nts.uk.resource.getText("KAL010_208");
-                        if(p.categoryName =="36協定　1・2・4週間"){
+                        if(p.period36Agreement == 0 || p.period36Agreement == 1 || p.period36Agreement == 2){ //"36協定　1・2・4週間"
                             this.startDate =nts.uk.time.parseMoment(p.dateValue().startDate).momentObject.toISOString() ;
                             this.endDate = nts.uk.time.parseMoment(p.dateValue().endDate).momentObject.toISOString() ;
                                                         
-                        } else if(p.categoryName=="36協定　年間"){
+                        } else if(p.categoryName == 6){ //"36協定　年間"
                             let sDate =p.year() +'/' + p.dateValue().startDate.slice(5, 7) +"/01";
                             let eDate =(parseInt(p.year()) + 1) +'/' + p.dateValue().endDate.slice(5,7) ;
                             
@@ -123,7 +117,7 @@ module nts.uk.at.view.kal001.a.service {
                             this.startDate =nts.uk.time.parseMoment(sDate).momentObject.toISOString() ;
                             this.endDate = nts.uk.time.parseMoment(eDate).momentObject.toISOString() ;    
                                                     
-                        } else if(p.categoryName=="36協定　複数月平均"){
+                        } else if(p.categoryName == 7){ //"36協定　複数月平均"
                             let sDate =p.dateValue().startDate + '/01';
                             
                             this.startDate =nts.uk.time.parseMoment(sDate).momentObject.toISOString() ;

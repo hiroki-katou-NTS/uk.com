@@ -1,11 +1,14 @@
 package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation;
 
+import java.io.Serializable;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.layer.dom.DomainObject;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo;
+import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
 import nts.uk.shr.com.time.TimeWithDayAttr;
+
 
 /**
  * 
@@ -15,7 +18,12 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  */
 @Getter
 @NoArgsConstructor
-public class ScheduleTimeSheet extends DomainObject{
+public class ScheduleTimeSheet extends DomainObject implements Serializable{
+	
+	/**
+	 * Serializable
+	 */
+	private static final long serialVersionUID = 1L;
 	
 	private WorkNo workNo;
 	@Setter

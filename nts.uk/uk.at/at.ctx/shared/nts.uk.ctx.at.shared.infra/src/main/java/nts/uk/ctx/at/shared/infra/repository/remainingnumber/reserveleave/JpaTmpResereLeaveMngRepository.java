@@ -16,7 +16,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemainRepos
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UseDay;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.interim.TmpResereLeaveMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.interim.TmpResereLeaveMngRepository;
-import nts.uk.ctx.at.shared.infra.entity.remainingnumber.reserveleave.KrcmtInterimReserveMng;
+import nts.uk.ctx.at.shared.infra.entity.remainingnumber.reserveleave.KrcdtHdstkTemp;
 import nts.arc.time.calendar.period.DatePeriod;
 @Stateless
 public class JpaTmpResereLeaveMngRepository extends JpaRepository implements TmpResereLeaveMngRepository{
@@ -24,18 +24,18 @@ public class JpaTmpResereLeaveMngRepository extends JpaRepository implements Tmp
 	private InterimRemainRepository interRemain;
 	@Override
 	public Optional<TmpResereLeaveMng> getById(String resereMngId) {
-		Optional<TmpResereLeaveMng> optKrcmtInterimReserveMng = this.queryProxy().find(resereMngId, KrcmtInterimReserveMng.class)
+		Optional<TmpResereLeaveMng> optKrcmtInterimReserveMng = this.queryProxy().find(resereMngId, KrcdtHdstkTemp.class)
 				.map(x -> toDomain(x));
 		return optKrcmtInterimReserveMng;
 	}
 
-	private TmpResereLeaveMng toDomain(KrcmtInterimReserveMng x) {
-		return new TmpResereLeaveMng(x.reserveMngId, new UseDay(x.useDays));
+	private TmpResereLeaveMng toDomain(KrcdtHdstkTemp x) {
+		return new TmpResereLeaveMng(x.remainMngId, new UseDay(x.usedDays));
 	}
 
 	@Override
 	public void deleteById(String resereMngId) {
-		Optional<KrcmtInterimReserveMng> optKrcmtInterimReserveMng = this.queryProxy().find(resereMngId, KrcmtInterimReserveMng.class);
+		Optional<KrcdtHdstkTemp> optKrcmtInterimReserveMng = this.queryProxy().find(resereMngId, KrcdtHdstkTemp.class);
 		optKrcmtInterimReserveMng.ifPresent(x -> {
 			this.commandProxy().remove(x);
 		});
@@ -43,15 +43,15 @@ public class JpaTmpResereLeaveMngRepository extends JpaRepository implements Tmp
 
 	@Override
 	public void persistAndUpdate(TmpResereLeaveMng dataMng) {
-		Optional<KrcmtInterimReserveMng> optKrcmtInterimReserveMng = this.queryProxy().find(dataMng.getResereId(), KrcmtInterimReserveMng.class);
+		Optional<KrcdtHdstkTemp> optKrcmtInterimReserveMng = this.queryProxy().find(dataMng.getResereId(), KrcdtHdstkTemp.class);
 		if(optKrcmtInterimReserveMng.isPresent()) {
-			KrcmtInterimReserveMng entity = optKrcmtInterimReserveMng.get();
-			entity.useDays = dataMng.getUseDays().v();
+			KrcdtHdstkTemp entity = optKrcmtInterimReserveMng.get();
+			entity.usedDays = dataMng.getUseDays().v();
 			this.commandProxy().update(entity);
 		} else {
-			KrcmtInterimReserveMng entity = new KrcmtInterimReserveMng();
-			entity.reserveMngId = dataMng.getResereId();
-			entity.useDays = dataMng.getUseDays().v();
+			KrcdtHdstkTemp entity = new KrcdtHdstkTemp();
+			entity.remainMngId = dataMng.getResereId();
+			entity.usedDays = dataMng.getUseDays().v();
 			this.getEntityManager().persist(entity);
 		}
 		this.getEntityManager().flush();
@@ -59,8 +59,8 @@ public class JpaTmpResereLeaveMngRepository extends JpaRepository implements Tmp
 	@SneakyThrows
 	@Override
 	public List<TmpResereLeaveMng> findBySidPriod(String sid, DatePeriod period) {
-		try(PreparedStatement sql = this.connection().prepareStatement("SELECT * FROM KRCMT_INTERIM_RESERVE_MNG a1"
-				+ " INNER JOIN KRCMT_INTERIM_REMAIN_MNG a2 ON a1.RESERVE_MNG_ID = a2.REMAIN_MNG_ID"
+		try(PreparedStatement sql = this.connection().prepareStatement("SELECT * FROM KRCDT_HDSTK_TEMP a1"
+				+ " INNER JOIN KRCDT_INTERIM_REMAIN_MNG a2 ON a1.RESERVE_MNG_ID = a2.REMAIN_MNG_ID"
 				+ " WHERE a2.SID = ?"
 				+ " AND  a2.REMAIN_TYPE = 1"
 				+ " AND a2.YMD >= ? and a2.YMD <= ?"
@@ -75,7 +75,7 @@ public class JpaTmpResereLeaveMngRepository extends JpaRepository implements Tmp
 			return lstOutput;
 		}
 	}
-	private TmpResereLeaveMng toDomainNts(NtsResultRecord x) {		
+	private TmpResereLeaveMng toDomainNts(NtsResultRecord x) {
 		return new TmpResereLeaveMng(x.getString("RESERVE_MNG_ID"),
 				new UseDay(x.getBigDecimal("USE_DAYS") == null ? 0 : x.getBigDecimal("USE_DAYS").doubleValue()));
 	}

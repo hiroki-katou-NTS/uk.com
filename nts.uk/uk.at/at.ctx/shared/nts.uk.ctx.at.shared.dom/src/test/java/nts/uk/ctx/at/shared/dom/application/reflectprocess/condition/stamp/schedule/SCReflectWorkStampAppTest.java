@@ -12,20 +12,20 @@ import org.junit.runner.RunWith;
 
 import mockit.Injectable;
 import mockit.integration.junit4.JMockit;
-import nts.uk.ctx.at.shared.dom.application.reflectprocess.DailyRecordOfApplication;
-import nts.uk.ctx.at.shared.dom.application.reflectprocess.ScheduleRecordClassifi;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.common.ReflectApplicationHelper;
-import nts.uk.ctx.at.shared.dom.application.stamp.AppStampShare;
-import nts.uk.ctx.at.shared.dom.application.stamp.TimeStampAppEnumShare;
-import nts.uk.ctx.at.shared.dom.application.stamp.TimeZoneStampClassificationShare;
-import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.stampapplication.StampAppReflect;
+import nts.uk.ctx.at.shared.dom.scherec.application.stamp.AppStampShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.stamp.TimeStampAppEnumShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.stamp.TimeZoneStampClassificationShare;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.DailyRecordOfApplication;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.ScheduleRecordClassifi;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.stampapplication.StampAppReflect;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 @RunWith(JMockit.class)
 public class SCReflectWorkStampAppTest {
 
 	@Injectable
-	private SCReflectWorkStampApp.Require require;
+	private StampAppReflect.Require require;
 
 	/*
 	 * テストしたい内容
@@ -38,14 +38,14 @@ public class SCReflectWorkStampAppTest {
 	 */
 	@Test
 	public void testNoReflectAll() {
-		DailyRecordOfApplication dailyApp = ReflectApplicationHelper.createRCWithTimeLeav(ScheduleRecordClassifi.RECORD,
-				1, true);// no = 1
+		DailyRecordOfApplication dailyApp = ReflectApplicationHelper.createRCWithTimeLeavFull(ScheduleRecordClassifi.RECORD,
+				1);// no = 1
 
 		AppStampShare application = createAppStamp();
 
 		StampAppReflect reflectApp = noReflect();//// 応援開始、終了を反映する
 
-		Collection<Integer> actualResult = SCReflectWorkStampApp.reflect(require, application, dailyApp, reflectApp);
+		Collection<Integer> actualResult = reflectApp.reflectStampApp(application, dailyApp);
 
 		assertThat(actualResult).isEmpty();
 
@@ -62,8 +62,8 @@ public class SCReflectWorkStampAppTest {
 	 */
 	@Test
 	public void testReflect() {
-		DailyRecordOfApplication dailyApp = ReflectApplicationHelper.createRCWithTimeLeav(ScheduleRecordClassifi.RECORD,
-				1, true);// no = 1
+		DailyRecordOfApplication dailyApp = ReflectApplicationHelper.createRCWithTimeLeavFull(ScheduleRecordClassifi.RECORD,
+				1);// no = 1
 
 		AppStampShare application = createAppStamp();
 
@@ -71,7 +71,7 @@ public class SCReflectWorkStampAppTest {
 		StampAppReflect reflectApp = reflectTimeLeav(NotUseAtr.USE);
 
 		List<Integer> actualResult = new ArrayList<Integer>();
-		actualResult.addAll(SCReflectWorkStampApp.reflect(require, application, dailyApp, reflectApp));
+		actualResult.addAll(reflectApp.reflectStampApp(application, dailyApp));
 
 		assertThat(actualResult).isEqualTo(Arrays.asList(30, 31));
 
@@ -80,7 +80,7 @@ public class SCReflectWorkStampAppTest {
 
 		List<Integer> actualResult1 = new ArrayList<Integer>();
 		application = ReflectApplicationHelper.createAppStamp(TimeStampAppEnumShare.ATTEENDENCE_OR_RETIREMENT, TimeZoneStampClassificationShare.PARENT);
-		actualResult1.addAll(SCReflectWorkStampApp.reflect(require, application, dailyApp, reflectApp1));
+		actualResult1.addAll(reflectApp1.reflectStampApp(application, dailyApp));
 
 		assertThat(actualResult1).isEqualTo(Arrays.asList(759, 760, 763, 764));
 
@@ -89,7 +89,7 @@ public class SCReflectWorkStampAppTest {
 
 		List<Integer> actualResult2 = new ArrayList<Integer>();
 		application = ReflectApplicationHelper.createAppStamp(TimeStampAppEnumShare.EXTRAORDINARY, TimeZoneStampClassificationShare.PARENT);
-		actualResult2.addAll(SCReflectWorkStampApp.reflect(require, application, dailyApp, reflectApp2));
+		actualResult2.addAll(reflectApp2.reflectStampApp(application, dailyApp));
 
 		assertThat(actualResult2).isEqualTo(Arrays.asList(50, 51));
 
@@ -98,7 +98,7 @@ public class SCReflectWorkStampAppTest {
 
 		List<Integer> actualResult4 = new ArrayList<Integer>();
 		application = ReflectApplicationHelper.createAppStamp(null, TimeZoneStampClassificationShare.NURSE);
-		actualResult4.addAll(SCReflectWorkStampApp.reflect(require, application, dailyApp, reflectApp4));
+		actualResult4.addAll(reflectApp4.reflectStampApp(application, dailyApp));
 
 		assertThat(actualResult4).isEqualTo(Arrays.asList(759, 760, 763, 764));
 
@@ -107,7 +107,7 @@ public class SCReflectWorkStampAppTest {
 
 		List<Integer> actualResult5 = new ArrayList<Integer>();
 		application = ReflectApplicationHelper.createAppStamp(TimeStampAppEnumShare.GOOUT_RETURNING, null);
-		actualResult5.addAll(SCReflectWorkStampApp.reflect(require, application, dailyApp, reflectApp5));
+		actualResult5.addAll(reflectApp5.reflectStampApp(application, dailyApp));
 
 		assertThat(actualResult5).isEqualTo(Arrays.asList(87, 88));
 
@@ -116,7 +116,7 @@ public class SCReflectWorkStampAppTest {
 
 		List<Integer> actualResult6 = new ArrayList<Integer>();
 		application = ReflectApplicationHelper.createAppStamp(null, TimeZoneStampClassificationShare.BREAK);
-		actualResult6.addAll(SCReflectWorkStampApp.reflect(require, application, dailyApp, reflectApp6));
+		actualResult6.addAll(reflectApp6.reflectStampApp(application, dailyApp));
 
 		assertThat(actualResult6).isEqualTo(Arrays.asList(7, 8, 157, 159));
 

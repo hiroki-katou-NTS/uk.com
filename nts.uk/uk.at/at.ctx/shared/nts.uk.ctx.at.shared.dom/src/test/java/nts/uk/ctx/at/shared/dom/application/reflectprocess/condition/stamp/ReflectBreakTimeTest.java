@@ -9,10 +9,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import mockit.integration.junit4.JMockit;
-import nts.uk.ctx.at.shared.dom.application.reflectprocess.DailyRecordOfApplication;
-import nts.uk.ctx.at.shared.dom.application.reflectprocess.ScheduleRecordClassifi;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.common.ReflectApplicationHelper;
-import nts.uk.ctx.at.shared.dom.application.stamp.TimeStampAppOtherShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.stamp.TimeStampAppOtherShare;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.DailyRecordOfApplication;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.ScheduleRecordClassifi;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.stampapplication.algorithm.ReflectBreakTime;
 
 @RunWith(JMockit.class)
 public class ReflectBreakTimeTest {
@@ -33,7 +34,7 @@ public class ReflectBreakTimeTest {
 	public void testUpdate() {
 
 		DailyRecordOfApplication dailyApp = ReflectApplicationHelper
-				.createRCWithTimeLeav(ScheduleRecordClassifi.SCHEDULE, 1, true);// 打刻NO= 1
+				.createRCWithTimeLeavFull(ScheduleRecordClassifi.SCHEDULE, 1);// 打刻NO= 1
 
 		List<TimeStampAppOtherShare> listTimeStampApp = ReflectApplicationHelper.createlstTimeStampOther(1, // no
 				666, // 開始時刻
@@ -61,7 +62,7 @@ public class ReflectBreakTimeTest {
 	@Test
 	public void testCreate() {
 		DailyRecordOfApplication dailyApp = ReflectApplicationHelper
-				.createRCWithTimeLeav(ScheduleRecordClassifi.SCHEDULE, 1, true);// 打刻NO= 1
+				.createRCWithTimeLeavFull(ScheduleRecordClassifi.SCHEDULE, 1);// 打刻NO= 1
 
 		List<TimeStampAppOtherShare> listTimeStampApp = ReflectApplicationHelper.createlstTimeStampOther(2, // no
 				666, // 開始時刻

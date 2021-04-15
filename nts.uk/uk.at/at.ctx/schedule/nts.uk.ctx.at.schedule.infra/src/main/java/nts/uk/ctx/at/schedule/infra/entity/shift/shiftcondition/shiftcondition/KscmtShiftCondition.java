@@ -9,7 +9,7 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * シフト条件
@@ -21,7 +21,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "KSCMT_SHIFT_CONDITION")
-public class KscmtShiftCondition extends UkJpaEntity implements Serializable {
+public class KscmtShiftCondition extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

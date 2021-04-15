@@ -1,5 +1,10 @@
 module nts.uk.knockout.binding.widget {
-    type WG_SIZE_STORAGE = { [name: string]: string } | undefined;
+    type WG_SIZE_STORAGE = {
+        [name: string]: {
+            set: boolean;
+            value: string;
+        };
+    };
 
     @handler({
         bindingName: 'widget',
@@ -41,13 +46,16 @@ module nts.uk.knockout.binding.widget {
         virtual: false
     })
     export class WidgetResizeContentBindingHandler implements KnockoutBindingHandler {
-        init(element: HTMLDivElement, valueAccessor: () => number | undefined | KnockoutObservable<number | undefined>, allBindingsAccessor: KnockoutAllBindingsAccessor, viewModel: { widget: string; }, bindingContext: KnockoutBindingContext): { controlsDescendantBindings: boolean; } {
-            const { widget } = viewModel;
-            const WG_SIZE = 'WIDGET_SIZE';
+        init(element: HTMLDivElement, valueAccessor: () => number | undefined | KnockoutObservable<number | undefined>, allBindingsAccessor: KnockoutAllBindingsAccessor, viewModel: nts.uk.ui.vm.ViewModel & { widget: string; }, bindingContext: KnockoutBindingContext): { controlsDescendantBindings: boolean; } {
+            const $el = $(element);
+            const { widget, $user } = viewModel;
+            const WG_SIZE = `${$user.employeeId}.WIDGET_SIZE`;
             const mkv = new ko.ViewModel();
             const minHeight = valueAccessor();
+            const key = ko.unwrap<string>(widget);
 
             const src: string | undefined = allBindingsAccessor.get('src');
+            const def: number | undefined = allBindingsAccessor.get('default');
 
             if (element.tagName !== 'DIV') {
                 element.innerText = 'Please use [div] tag with [widget-content] binding';
@@ -78,26 +86,75 @@ module nts.uk.knockout.binding.widget {
                 element.appendChild(frame);
             }
 
-            $(element)
+            $el
                 .removeAttr('data-bind')
                 .addClass('widget-content')
                 .resizable({
                     handles: 's',
-                    resize: () => {
+                    start: () => {
+                        // clear max height if resize by enduser
+                        element.style.maxHeight = '';
+                    },
+                    stop: () => {
                         const { offsetHeight } = element;
 
-                        if (widget) {
+                        if (key) {
                             mkv
                                 .$window
                                 .storage(WG_SIZE)
                                 .then((size: WG_SIZE_STORAGE) => size || {})
                                 .then((size: WG_SIZE_STORAGE) => {
-                                    size[widget] = offsetHeight + 'px';
+                                    size[key] = {
+                                        set: true,
+                                        value: offsetHeight + 'px'
+                                    };
 
                                     mkv.$window.storage(WG_SIZE, size);
                                 });
                         }
+                    },
+                    resize: () => $el.trigger('wg.resize')
+                })
+                .on('wg.resize', () => {
+                    const scr = $el.find('div').first();
+                    const ctn = $el.closest('.widget-container');
+
+                    if (scr) {
+                        const { offsetHeight, scrollHeight } = scr.get(0);
+
+                        if (offsetHeight < scrollHeight) {
+                            ctn.addClass('has-scroll');
+                        } else {
+                            ctn.removeClass('has-scroll');
+                        }
+                    } else {
+                        ctn.removeClass('has-scroll');
                     }
+                })
+                .find('.ui-resizable-s')
+                // support quick toggle widget height
+                .on('dblclick', () => {
+                    const fx = element.style.height;
+
+                    mkv
+                        .$window
+                        .storage(WG_SIZE)
+                        .then((size: WG_SIZE_STORAGE | undefined) => size || {})
+                        .then((size: WG_SIZE_STORAGE) => {
+                            const height = size[key] || { value: '' };
+                            const { value } = height;
+
+                            if (fx) {
+                                element.style.height = '';
+                            } else {
+                                element.style.height = value;
+                            }
+
+                            size[key] = { set: !fx, value };
+
+                            mkv.$window.storage(WG_SIZE, size);
+                        })
+                        .always(() => $el.trigger('wg.resize'));
                 });
 
             if (widget) {
@@ -106,9 +163,18 @@ module nts.uk.knockout.binding.widget {
                     .storage(WG_SIZE)
                     .then((size: WG_SIZE_STORAGE) => {
                         if (size) {
-                            $(element).css({
-                                height: size[widget]
-                            });
+                            const height = size[key];
+
+                            if (height && height.set) {
+                                element.style.maxHeight = '';
+                                element.style.height = height.value;
+                            } else if (def) {
+                                element.style.height = `${def}px`;
+                                element.style.maxHeight = `${def}px`;
+                            }
+                        } else if (def) {
+                            element.style.height = `${def}px`;
+                            element.style.maxHeight = `${def}px`;
                         }
                     });
             }

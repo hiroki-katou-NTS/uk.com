@@ -26,6 +26,8 @@ public class ShiftMasterDto {
 	private String workTimeName;
 	private String workTime1;
 	private String workTime2;
+	private String colorSmartphone;
+	private String colorText;
 
 	public ShiftMasterDto(ShiftMaster domain) {
 		this.companyId = domain.getCompanyId();
@@ -59,5 +61,33 @@ public class ShiftMasterDto {
 		this.workTime1 = "";
 		this.workTime2 = "";
 	}
+	
+	public ShiftMasterDto(String companyId, String shiftMasterName, String shiftMaterCode, String color, String remark,
+			String workTypeCd, String workTypeName, String wtypecid, String workTimeCd, String workTimeName,
+			String wtimecid,String colorSmartphone) {
+		this.companyId = companyId;
+		this.shiftMasterName = shiftMasterName;
+		this.shiftMasterCode = shiftMaterCode;
+		this.color = color;
+		this.remark = !StringUtils.isEmpty(remark) ? remark : "";
+		this.workTypeCd = workTypeCd;
+		this.workTypeName = !StringUtils.isEmpty(workTypeName) ? workTypeName : "";
+		if (StringUtils.isEmpty(wtypecid)) {
+			this.workTypeName = I18NText.getText("KSM015_28", workTypeCd, I18NText.getText("KSM015_29"));
+		}
+
+		this.workTimeCd = !StringUtils.isEmpty(workTimeCd) ? workTimeCd : "";
+		this.workTimeName = !StringUtils.isEmpty(workTimeName) ? workTimeName : "";
+		if (StringUtils.isEmpty(wtimecid) && !StringUtils.isEmpty(workTimeCd)) {
+			this.workTimeName = I18NText.getText("KSM015_28", workTimeCd, I18NText.getText("KSM015_29"));
+		}
+		
+		this.workTime1 = "";
+		this.workTime2 = "";
+		this.colorSmartphone = colorSmartphone;
+		this.colorText = "";
+	}
+	
+	
 
 }

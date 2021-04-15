@@ -5,8 +5,10 @@
 package nts.uk.ctx.sys.auth.pub.workplace;
 
 import java.util.List;
+import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.sys.auth.pub.wkpmanager.WorkPlaceAuthorityExport;
 
 /**
  * The Interface WorkplaceListPub.
@@ -32,5 +34,15 @@ public interface WorkplaceListPub {
 	
 	// 職場管理者Repository.取得する(社員ID, 年月日)
 	List<WorkplaceManagerExport> findListWkpManagerByEmpIdAndBaseDate(String employeeId, GeneralDate baseDate);
+	
+	/**
+	 * Request list 679
+	 * UKDesign.ドメインモデル."NittsuSystem.UniversalK".システム.権限管理.職場管理権限.Export.[RQ679]所属職場権限を取得する.所属職場権限を取得する
+	 * @param companyId
+	 * @param roleId
+	 * @param functionNo
+	 * @return
+	 */
+	Optional<WorkPlaceAuthorityExport> getWorkPlaceAuthorityById(String companyId, String roleId, int functionNo);
 }
 

@@ -15,12 +15,13 @@ import org.junit.runner.RunWith;
 import mockit.Expectations;
 import mockit.Injectable;
 import mockit.integration.junit4.JMockit;
-import nts.uk.ctx.at.shared.dom.application.reflectprocess.DailyRecordOfApplication;
-import nts.uk.ctx.at.shared.dom.application.reflectprocess.ScheduleRecordClassifi;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.common.ReflectApplicationHelper;
-import nts.uk.ctx.at.shared.dom.application.stamp.StartEndClassificationShare;
-import nts.uk.ctx.at.shared.dom.application.stamp.TimeStampAppShare;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailywork.worktime.empwork.EmployeeWorkDataSetting;
+import nts.uk.ctx.at.shared.dom.scherec.application.stamp.StartEndClassificationShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.stamp.TimeStampAppShare;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.DailyRecordOfApplication;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.ScheduleRecordClassifi;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.stampapplication.algorithm.support.ReflectSupportStartEnd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD;
 
@@ -58,8 +59,8 @@ public class ReflectSupportStartEndTest {
 	@Test
 	public void testUpdateStart() {
 
-		DailyRecordOfApplication dailyApp = ReflectApplicationHelper.createRCWithTimeLeav(ScheduleRecordClassifi.RECORD,
-				1, true);// no = 1
+		DailyRecordOfApplication dailyApp = ReflectApplicationHelper.createRCWithTimeLeavFull(ScheduleRecordClassifi.RECORD,
+				1);// no = 1
 
 		List<TimeStampAppShare> lstStampAppShare = ReflectApplicationHelper.createlstTimeStamp(
 				StartEndClassificationShare.START, // 開始終了区分
@@ -102,8 +103,8 @@ public class ReflectSupportStartEndTest {
 	@Test
 	public void testCreateStart() {
 
-		DailyRecordOfApplication dailyApp = ReflectApplicationHelper.createRCWithTimeLeav(ScheduleRecordClassifi.RECORD,
-				1, true);// no = 1
+		DailyRecordOfApplication dailyApp = ReflectApplicationHelper.createRCWithTimeLeavFull(ScheduleRecordClassifi.RECORD,
+				1);// no = 1
 
 		List<TimeStampAppShare> lstStampAppShare = ReflectApplicationHelper.createlstTimeStamp(
 				StartEndClassificationShare.START, // 開始終了区分
@@ -152,8 +153,8 @@ public class ReflectSupportStartEndTest {
 	@Test
 	public void testUpdateEnd() {
 
-		DailyRecordOfApplication dailyApp = ReflectApplicationHelper.createRCWithTimeLeav(ScheduleRecordClassifi.RECORD,
-				1, true);// no = 1
+		DailyRecordOfApplication dailyApp = ReflectApplicationHelper.createRCWithTimeLeavFull(ScheduleRecordClassifi.RECORD,
+				1);// no = 1
 
 		List<TimeStampAppShare> lstStampAppShare = ReflectApplicationHelper.createlstTimeStamp(
 				StartEndClassificationShare.END, // 開始終了区分
@@ -196,8 +197,8 @@ public class ReflectSupportStartEndTest {
 	@Test
 	public void testCreateEnd() {
 
-		DailyRecordOfApplication dailyApp = ReflectApplicationHelper.createRCWithTimeLeav(ScheduleRecordClassifi.RECORD,
-				1, true);// no = 1
+		DailyRecordOfApplication dailyApp = ReflectApplicationHelper.createRCWithTimeLeavFull(ScheduleRecordClassifi.RECORD,
+				1);// no = 1
 
 		List<TimeStampAppShare> lstStampAppShare = ReflectApplicationHelper.createlstTimeStamp(
 				StartEndClassificationShare.END, // 開始終了区分

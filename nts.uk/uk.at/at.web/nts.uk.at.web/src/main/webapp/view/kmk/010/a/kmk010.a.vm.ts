@@ -10,7 +10,7 @@ module nts.uk.at.view.kmk010.a {
 
     export module viewmodel {
 
-        export class ScreenModel {
+        export class ScreenModel extends ko.ViewModel {
             calculationMethods: KnockoutObservableArray<EnumConstantDto>;
             outsideOTSettingModel: OutsideOTSettingModel;
             superHD60HConMedModel: SuperHD60HConMedModel;
@@ -24,8 +24,11 @@ module nts.uk.at.view.kmk010.a {
             isManage : KnockoutObservable<boolean>;
             static LANGUAGE_ID_JAPAN = 'ja';
             tabFinalArray: KnockoutObservable<number>;
-            
+            isEnableSettingOverTime: KnockoutObservable<boolean> = ko.observable(true);
+
             constructor() {
+                super();
+
                 var self = this;
                 self.calculationMethods = ko.observableArray<EnumConstantDto>([]);
                 self.outsideOTSettingModel = new OutsideOTSettingModel();
@@ -34,8 +37,9 @@ module nts.uk.at.view.kmk010.a {
                 self.languageId = 'ja';
                 self.isManage = ko.observable(true);
                 self.checkRounding = ko.observable(0);
-                self.superHD60HConMedModel.roundingTime.subscribe(function(selectUnit: number) {         
-                        self.updateSelectUnitRounding(selectUnit);
+                //self.superHD60HConMedModel.roundingTime.subscribe(function(selectUnit: number) {         
+                self.outsideOTSettingModel.roundingUnit.subscribe(function(selectUnit: number) {         
+                    self.updateSelectUnitRounding(selectUnit);
                 });
                 self.tabFinalArray = ko.observable(12);
                 
@@ -50,7 +54,7 @@ module nts.uk.at.view.kmk010.a {
              */
             startPage(): JQueryPromise<any> {
                 var self = this;
-                nts.uk.ui.block.invisible();
+                nts.uk.ui.block.grayout();
                 var dfd = $.Deferred();
 
                 // find all unit
@@ -65,7 +69,8 @@ module nts.uk.at.view.kmk010.a {
                       // find all rounding sub
                     service.findAllOvertimeRoundingSub().done(function(lstRoundingSub) {
                         self.lstRoundingSub = lstRoundingSub;
-                        self.updateSelectUnitRounding(self.superHD60HConMedModel.roundingTime());
+                        //self.updateSelectUnitRounding(self.superHD60HConMedModel.roundingTime());
+                        self.outsideOTSettingModel.roundingUnit.valueHasMutated();
                     });
                 });
                 
@@ -76,6 +81,7 @@ module nts.uk.at.view.kmk010.a {
                 
                 service.findByIdOutsideOTSetting().done(function(dataOutsideOTSetting) {
                     self.outsideOTSettingModel.updateData(dataOutsideOTSetting);
+
                     for (var brdItem of self.outsideOTSettingModel.breakdownItems()) {
                         var rateBRDItems: PremiumExtra60HRateModel[] = [];
                         for (var overtimeItem of self.outsideOTSettingModel.overtimes()) {
@@ -85,6 +91,12 @@ module nts.uk.at.view.kmk010.a {
                         }
                         brdItem.updateRateData(rateBRDItems);
                     }
+
+                    //ドメインモデル「60H超休管理設定」の「管理区分」＝Falseの場合は非活性, 休暇発生＝trueが0件に場合も非活性
+                    //A1_6
+                    let overTimeCol = _.filter(self.outsideOTSettingModel.overtimes(), (item: any)  => item.superHoliday60HOccurs() === true );                                        
+                    self.isEnableSettingOverTime(overTimeCol.length > 0 && self.isManage());
+
                     service.findAllOvertimeCalculationMethod().done(function(dataMethod) {
                         self.calculationMethods(dataMethod);
                         var tabIndex = 11;
@@ -98,12 +110,18 @@ module nts.uk.at.view.kmk010.a {
                         self.updateEnableInputRate();
                         self.applyChangeEnableInputRate();
                         self.updateLanguage();
+
+                        //self.updateSelectUnitRounding(dataOutsideOTSetting.roundingUnit);                       
+                        //self.outsideOTSettingModel.roundingUnit.valueHasMutated();
                         nts.uk.ui.block.clear();
                         dfd.resolve(self);
                     });
                 }).fail(function(error) {
                     nts.uk.ui.dialog.alertError(error);
                 });
+
+                $('#selectMethodOutsideOT').focus();
+
                 return dfd.promise();
             }
             /**
@@ -338,6 +356,22 @@ module nts.uk.at.view.kmk010.a {
                     self.lstRoundingSet(self.lstRoundingSub);
                 }
             }
+
+            /**
+             * function on click button open dialog vacation conversion settings
+             */
+            private openDialogVCSettings(): void {
+                var self = this;
+                //nts.uk.ui.windows.setShared("languageId", self.languageId);
+                self.$window.modal("/view/kmk/010/d/index.xhtml").then((data) => {                         
+                    if (data && data.isSave) {
+                        nts.uk.ui.errors.clearAll();
+                        self.startPage().done(() => {
+                            service.initTooltip();
+                        });
+                    }             
+                });
+            }
         }
         export class OvertimeModel {
             name: KnockoutObservable<string>;
@@ -347,6 +381,7 @@ module nts.uk.at.view.kmk010.a {
             useClassification: KnockoutObservable<boolean>;
             superHoliday60HOccurs: KnockoutObservable<boolean>;
             requiredText: KnockoutObservable<boolean>;
+            requiredOverTime: KnockoutObservable<boolean>;
 
             constructor() {
                 this.name = ko.observable('');
@@ -356,6 +391,7 @@ module nts.uk.at.view.kmk010.a {
                 this.useClassification = ko.observable(true);
                 this.superHoliday60HOccurs = ko.observable(true);
                 this.requiredText = ko.observable(true);
+                this.requiredOverTime = ko.observable(true);                
             }
 
             updateData(dto: OvertimeDto) {
@@ -364,19 +400,27 @@ module nts.uk.at.view.kmk010.a {
                 this.overtime(dto.overtime);
                 this.overtimeNo(dto.overtimeNo);
                 this.useClassification(dto.useClassification);
-                this.superHoliday60HOccurs(dto.superHoliday60HOccurs);
+                this.superHoliday60HOccurs(dto.superHoliday60HOccurs && dto.useClassification);
             }
+
             updateEnableCheck(enableCheckbox: boolean) : void{
                 this.requiredText(this.useClassification() && enableCheckbox);
+                this.requiredOverTime(this.useClassification() && enableCheckbox);
             }
             
             setUpdateData(enableCheckbox: boolean): void {
                 var self = this;
                 self.useClassification.subscribe(function(use: boolean) {
                     self.requiredText(use && enableCheckbox);
+                    self.superHoliday60HOccurs(use && self.superHoliday60HOccurs());
+                    self.requiredOverTime(use && enableCheckbox);
+                    if( !use && enableCheckbox && self.overtime.length === 0 ) {
+                        self.overtime(0); //default in DB
+                    }
                 });
                 self.requiredText.subscribe(function(use: boolean) {
                     $('#overtimeNo_' + self.overtimeNo()).ntsError("clear");
+                    $('#overtimeNum_' + self.overtimeNo()).ntsError("clear");
                 });
             }
 
@@ -389,8 +433,7 @@ module nts.uk.at.view.kmk010.a {
                     superHoliday60HOccurs: this.superHoliday60HOccurs()
                 };
                 return dto;
-            }
-            
+            }            
         }
         
 
@@ -458,6 +501,9 @@ module nts.uk.at.view.kmk010.a {
              */
             public openDialogDailyAttendanceItems(): void {
                 var self = this;
+
+                nts.uk.ui.block.grayout();  
+
                 nts.uk.at.view.kmk010.a.service.findAllMonthlyAttendanceItem().done(function(dataAllItem){
                     // Map to model
                     nts.uk.at.view.kmk010.a.service.findAllAttendanceItemOvertime().done(function(dataCanSelecte: any) {
@@ -488,6 +534,8 @@ module nts.uk.at.view.kmk010.a {
                                 self.attendanceItemName(selectedName.join(' + '));
                                 service.initTooltip();
                             }
+                            
+                            nts.uk.ui.block.clear();
                         });
                     });
                 }).fail(function(error){
@@ -513,12 +561,16 @@ module nts.uk.at.view.kmk010.a {
             calculationMethod: KnockoutObservable<number>;
             overtimes: KnockoutObservableArray<OvertimeModel>;
             breakdownItems: KnockoutObservableArray<OutsideOTBRDItemModel>;
+            roundingUnit:  KnockoutObservable<number>;
+            roundingProcess:  KnockoutObservable<number>; 
 
             constructor() {
                 this.note = ko.observable('');
                 this.calculationMethod = ko.observable(0);
                 this.overtimes = ko.observableArray([]);
-                this.breakdownItems = ko.observableArray([]);
+                this.breakdownItems = ko.observableArray([]);                
+                this.roundingProcess = ko.observable(0);
+                this.roundingUnit = ko.observable(0);
             }
 
             updateData(dto: OutsideOTSettingDto) {
@@ -538,7 +590,9 @@ module nts.uk.at.view.kmk010.a {
                     modelBRD.updateData(overtimeBRD, true);
                     dataBreakdownItemModel.push(modelBRD);
                 }
-                this.breakdownItems(dataBreakdownItemModel);
+                this.breakdownItems(dataBreakdownItemModel);                
+                this.roundingUnit(dto.roundingUnit);                
+                this.roundingProcess(dto.roundingProcess);
 
             }
 
@@ -558,7 +612,9 @@ module nts.uk.at.view.kmk010.a {
                     note: this.note(),
                     calculationMethod: this.calculationMethod(),
                     breakdownItems: breakdownItems,
-                    overtimes: overtimes
+                    overtimes: overtimes,
+                    roundingUnit: this.roundingUnit(),
+                    roundingProcess: this.roundingProcess() 
                 };
 
                 return dto;

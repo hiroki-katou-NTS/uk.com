@@ -17,7 +17,8 @@ module nts.uk.at.view.kaf000.b.component7.viewmodel {
                                             optionsText: 'reasonForFixedForm',
                                             value: opAppStandardReasonCD,
                                             columns: [{ prop: 'reasonForFixedForm', length: 20 }],
-                                            required: appReasonCDRequired }">
+                                            required: appReasonCDRequired,
+											enable: appReasonCDEnable }">
                         </div>
                     </div>
                 </div>
@@ -40,7 +41,8 @@ module nts.uk.at.view.kaf000.b.component7.viewmodel {
                                             width: '450',
                                             textalign: 'left'
                                         },
-                                        required : appReasonRequired }" />
+                                        required : appReasonRequired,
+										enable: appReasonEnable }" />
                     </div>
                 </div>
             </div>
@@ -56,6 +58,8 @@ module nts.uk.at.view.kaf000.b.component7.viewmodel {
         appReasonRequired: KnockoutObservable<boolean>;
         appReasonCDDisp: KnockoutObservable<boolean>;
         appReasonDisp: KnockoutObservable<boolean>;
+		appReasonCDEnable: KnockoutObservable<boolean>;
+        appReasonEnable: KnockoutObservable<boolean>;
         created(params: any) {
             const vm = this;
 			vm.appType = params.appType;
@@ -67,14 +71,19 @@ module nts.uk.at.view.kaf000.b.component7.viewmodel {
             vm.appReasonRequired = ko.observable(false);
             vm.appReasonCDDisp = ko.observable(false);
             vm.appReasonDisp = ko.observable(false);
+			vm.appReasonCDEnable = ko.observable(false);
+            vm.appReasonEnable = ko.observable(false);
 
             vm.appReasonCDRequired(vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.applicationSetting.appLimitSetting.standardReasonRequired);
             vm.appReasonRequired(vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.applicationSetting.appLimitSetting.requiredAppReason);
             vm.appReasonCDDisp(vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.displayStandardReason == 1);
             vm.appReasonDisp(vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.displayAppReason == 1);
+			vm.appReasonCDEnable(vm.appDispInfoStartupOutput().appDetailScreenInfo.outputMode == 1);
+            vm.appReasonEnable(vm.appDispInfoStartupOutput().appDetailScreenInfo.outputMode == 1);
             vm.reasonTypeItemLst(vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.reasonTypeItemLst);
             vm.opAppStandardReasonCD(vm.appDispInfoStartupOutput().appDetailScreenInfo.application.opAppStandardReasonCD);
-			let initReasonTypeItem = _.find(vm.reasonTypeItemLst(), (o) => o.appStandardReasonCD == vm.opAppStandardReasonCD());
+			let initReasonTypeItem = _.find(vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.reasonTypeItemLst, 
+					(o: any) => o.appStandardReasonCD == vm.appDispInfoStartupOutput().appDetailScreenInfo.application.opAppStandardReasonCD);
 			if(_.isUndefined(initReasonTypeItem)) {
 				let dataLst = [{
 		            appStandardReasonCD: '',
@@ -92,9 +101,12 @@ module nts.uk.at.view.kaf000.b.component7.viewmodel {
 	            vm.appReasonRequired(value.appDispInfoNoDateOutput.applicationSetting.appLimitSetting.requiredAppReason);
 	            vm.appReasonCDDisp(value.appDispInfoNoDateOutput.displayStandardReason == 1);
 	            vm.appReasonDisp(value.appDispInfoNoDateOutput.displayAppReason == 1);
+				vm.appReasonCDEnable(value.appDetailScreenInfo.outputMode == 1);
+            	vm.appReasonEnable(value.appDetailScreenInfo.outputMode == 1);
 	            vm.reasonTypeItemLst(value.appDispInfoNoDateOutput.reasonTypeItemLst);
 	            vm.opAppStandardReasonCD(value.appDetailScreenInfo.application.opAppStandardReasonCD);
-				let initReasonTypeItem = _.find(vm.reasonTypeItemLst(), (o) => o.appStandardReasonCD == vm.opAppStandardReasonCD());
+				let initReasonTypeItem = _.find(value.appDispInfoNoDateOutput.reasonTypeItemLst, 
+					(o: any) => o.appStandardReasonCD == value.appDetailScreenInfo.application.opAppStandardReasonCD);
 				if(_.isUndefined(initReasonTypeItem)) {
 					let dataLst = [{
 			            appStandardReasonCD: '',

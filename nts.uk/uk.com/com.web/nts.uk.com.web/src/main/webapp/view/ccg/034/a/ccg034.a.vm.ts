@@ -93,7 +93,7 @@ module nts.uk.com.view.ccg034.a {
         .then((res: Map<string, string>) => {
           const arr: FlowMenuModel[] = [];
           _.forEach(res, (value, key) => arr.push({ flowMenuCode: key, flowMenuName: value }));
-          vm.flowMenuList(arr);
+          vm.flowMenuList(_.orderBy(arr, 'flowMenuCode', 'asc'));
         });
     }
 
@@ -143,7 +143,9 @@ module nts.uk.com.view.ccg034.a {
         width: Math.round(Number(window.innerWidth) * 80 / 100),
         height: Math.round(Number(window.innerHeight) * 80 / 100),
         resizable: true,
-      }).then(() => vm.selectFlowMenu());
+      })
+      .then(() => vm.getFlowMenuList())
+      .then(() => vm.selectFlowMenu());
     }
 
     public register() {

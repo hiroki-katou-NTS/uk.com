@@ -8,7 +8,7 @@ import nts.uk.ctx.at.function.dom.processexecution.ProcessExecutionScope;
 import nts.uk.ctx.at.function.dom.processexecution.ProcessExecutionSetting;
 import nts.uk.ctx.at.function.dom.processexecution.ReExecutionCondition;
 import nts.uk.ctx.at.function.dom.processexecution.UpdateProcessAutoExecution;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -20,10 +20,10 @@ import java.util.stream.Collectors;
  */
 @Data
 @Entity
-@Table(name = "KFNMT_PROC_EXEC")
+@Table(name = "KFNMT_AUTOEXEC")
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
-public class KfnmtProcessExecution extends UkJpaEntity
+public class KfnmtProcessExecution extends ContractUkJpaEntity
 		implements UpdateProcessAutoExecution.MementoGetter, UpdateProcessAutoExecution.MementoSetter, Serializable {
 
 	public static final long serialVersionUID = 1L;
@@ -34,13 +34,6 @@ public class KfnmtProcessExecution extends UkJpaEntity
 	@Version
 	@Column(name = "EXCLUS_VER")
 	private long version;
-
-	/**
-	 * The contract code<br>
-	 * Column 契約コード
-	 */
-	@Column(name = "CONTRACT_CD")
-	private String contractCode;
 
 	/**
 	 * The primary key
@@ -55,11 +48,11 @@ public class KfnmtProcessExecution extends UkJpaEntity
 	private String execItemName;
 
 	@OneToOne(mappedBy = "procExec", cascade = CascadeType.ALL, orphanRemoval = true)
-	@JoinTable(name = "KFNMT_EXECUTION_SCOPE")
-	private KfnmtExecutionScope execScope;
+	@JoinTable(name = "KFNMT_AUTOEXEC_SCOPE")
+	private KfnmtAutoexecScope execScope;
 
 	@OneToOne(mappedBy = "procExec", cascade = CascadeType.ALL, orphanRemoval = true)
-	@JoinTable(name = "KFNMT_PROC_EXEC_SETTING")
+	@JoinTable(name = "KFNMT_AUTOEXEC_SETTEING")
 	private KfnmtProcessExecutionSetting execSetting;
 
 	/**
@@ -92,8 +85,6 @@ public class KfnmtProcessExecution extends UkJpaEntity
 	 */
 	public KfnmtProcessExecution(@NonNull String contractCode, @NonNull UpdateProcessAutoExecution domain) {
 		domain.setMemento(this);
-		this.execSetting.contractCode = contractCode;
-		this.contractCode = contractCode;
 	}
 
 	/**
@@ -129,7 +120,7 @@ public class KfnmtProcessExecution extends UkJpaEntity
 	 */
 	@Override
 	public void setExecScope(ProcessExecutionScope execScope) {
-		this.execScope = KfnmtExecutionScope.createFromDomain(this.getCompanyId(), this.getExecItemCode(), execScope);
+		this.execScope = KfnmtAutoexecScope.createFromDomain(this.getCompanyId(), this.getExecItemCode(), execScope);
 	}
 
 	/**
@@ -141,7 +132,7 @@ public class KfnmtProcessExecution extends UkJpaEntity
 	public void setExecSetting(ProcessExecutionSetting execSetting) {
 		this.execSetting = KfnmtProcessExecutionSetting.createFromDomain(this.getCompanyId(),
 																		 this.getExecItemCode(),
-																		 this.contractCode,
+																		 this.contractCd,
 																		 execSetting);
 	}
 

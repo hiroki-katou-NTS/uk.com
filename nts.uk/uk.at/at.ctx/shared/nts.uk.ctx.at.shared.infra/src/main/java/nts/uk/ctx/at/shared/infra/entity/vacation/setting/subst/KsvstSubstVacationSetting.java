@@ -12,7 +12,6 @@ import javax.persistence.MappedSuperclass;
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
  * The Class KsvstComSubstVacation.

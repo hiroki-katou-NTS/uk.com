@@ -19,6 +19,7 @@ public class FixedConditionWorkRecordDto {
 	private int fixConWorkRecordNo;
 	private String message;
 	private boolean useAtr;
+	private Integer eralarmAtr;
 	
 	public FixedConditionWorkRecordDto(FixedConWorkRecordAdapterDto importDto) {
 		super();

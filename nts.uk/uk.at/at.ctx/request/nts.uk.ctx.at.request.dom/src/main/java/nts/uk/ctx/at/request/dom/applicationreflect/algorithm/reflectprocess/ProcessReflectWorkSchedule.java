@@ -2,7 +2,6 @@ package nts.uk.ctx.at.request.dom.applicationreflect.algorithm.reflectprocess;
 
 import java.util.Optional;
 
-import nts.uk.ctx.at.request.dom.applicationreflect.object.PreApplicationWorkScheReflectAttr;
 import org.apache.commons.lang3.tuple.Pair;
 
 import nts.arc.enums.EnumAdaptor;
@@ -17,13 +16,13 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.reflect.con
 import nts.uk.ctx.at.request.dom.applicationreflect.AppReflectExecutionCondition;
 import nts.uk.ctx.at.request.dom.applicationreflect.algorithm.checkprocess.PreCheckProcessWorkSchedule;
 import nts.uk.ctx.at.request.dom.applicationreflect.algorithm.checkprocess.PreCheckProcessWorkSchedule.PreCheckProcessResult;
+import nts.uk.ctx.at.request.dom.applicationreflect.object.PreApplicationWorkScheReflectAttr;
 import nts.uk.ctx.at.request.dom.applicationreflect.object.ReflectStatusResult;
-import nts.uk.ctx.at.request.dom.applicationreflect.service.workschedule.ExecutionType;
-import nts.uk.ctx.at.shared.dom.application.common.ApplicationShare;
-import nts.uk.ctx.at.shared.dom.application.common.ReasonNotReflectDailyShare;
-import nts.uk.ctx.at.shared.dom.application.common.ReasonNotReflectShare;
-import nts.uk.ctx.at.shared.dom.application.common.ReflectedStateShare;
-import nts.uk.ctx.at.shared.dom.application.reflect.ReflectStatusResultShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.common.ApplicationShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.common.ReasonNotReflectDailyShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.common.ReasonNotReflectShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.common.ReflectedStateShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.reflect.ReflectStatusResultShare;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
@@ -34,7 +33,7 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 public class ProcessReflectWorkSchedule {
 
 	public static Pair<ReflectStatusResult, Optional<AtomTask>> processReflect(Require require, String companyId,
-			int closureId, Application application, ExecutionType execType, boolean isCalWhenLock,
+			int closureId, Application application, boolean isCalWhenLock,
 			GeneralDate targetDate, ReflectStatusResult statusWorkSchedule) {
 
 		// [input. 処理中の申請. 事前事後区分]をチェック
@@ -62,7 +61,7 @@ public class ProcessReflectWorkSchedule {
 		}
 
 		// 勤務予定に反映
-		Pair<Object, AtomTask> result = require.process(execType, ConvertApplicationToShare.toAppliction(application), targetDate,
+		Pair<Object, AtomTask> result = require.process(ConvertApplicationToShare.toAppliction(application), targetDate,
 				new ReflectStatusResultShare(ReflectedStateShare.valueOf(statusWorkSchedule.getReflectStatus().value),
 						statusWorkSchedule.getReasonNotReflectWorkRecord() == null ? null
 								: ReasonNotReflectDailyShare
@@ -98,7 +97,7 @@ public class ProcessReflectWorkSchedule {
 //		public Optional<AppReflectionSetting> getAppReflectionSetting(String companyId, ApplicationType appType);
 
 		// ReflectApplicationWorkScheduleAdapter
-		public Pair<Object, AtomTask> process(ExecutionType executionType, ApplicationShare application, GeneralDate date,
+		public Pair<Object, AtomTask> process(ApplicationShare application, GeneralDate date,
 				ReflectStatusResultShare reflectStatus, int preAppWorkScheReflectAttr);
 
 	}

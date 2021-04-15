@@ -76,17 +76,19 @@ public class NumberCompensatoryLeavePeriodProcess {
 	private PayoutSubofHDManaRepository payoutSubofHDManaRepository;
 
 	public CompenLeaveAggrResult process(AbsRecMngInPeriodRefactParamInput inputParam) {
-		RequireImpl impl = new RequireImplBuilder(substitutionOfHDManaDataRepository, payoutManagementDataRepository,
-				interimRemainRepository, interimRecAbasMngRepository, shareEmploymentAdapter)
-						.empSubstVacationRepository(empSubstVacationRepository)
-						.comSubstVacationRepository(comSubstVacationRepository).companyAdapter(companyAdapter)
-						.closureEmploymentRepo(closureEmploymentRepo).closureRepo(closureRepo)
-						.payoutSubofHDManaRepository(payoutSubofHDManaRepository).build();
-
-		return NumberCompensatoryLeavePeriodQuery.process(impl, inputParam);
+		return NumberCompensatoryLeavePeriodQuery.process(createRequire(), inputParam);
 
 	}
 
+	public RequireImpl createRequire() {
+		return new RequireImplBuilder(substitutionOfHDManaDataRepository, payoutManagementDataRepository,
+				interimRemainRepository, interimRecAbasMngRepository, shareEmploymentAdapter)
+				.empSubstVacationRepository(empSubstVacationRepository)
+				.comSubstVacationRepository(comSubstVacationRepository).companyAdapter(companyAdapter)
+				.closureEmploymentRepo(closureEmploymentRepo).closureRepo(closureRepo)
+				.payoutSubofHDManaRepository(payoutSubofHDManaRepository).build();
+	}
+	
 	public class RequireImpl implements NumberCompensatoryLeavePeriodQuery.Require {
 
 		private final SubstitutionOfHDManaDataRepository substitutionOfHDManaDataRepository;
@@ -171,11 +173,6 @@ public class NumberCompensatoryLeavePeriodProcess {
 		}
 
 		@Override
-		public CompanyDto getFirstMonth(String companyId) {
-			return companyAdapter.getFirstMonth(companyId);
-		}
-
-		@Override
 		public List<EmploymentHistShareImport> findByEmployeeIdOrderByStartDate(String employeeId) {
 			return shareEmploymentAdapter.findByEmployeeIdOrderByStartDate(employeeId);
 		}
@@ -189,23 +186,6 @@ public class NumberCompensatoryLeavePeriodProcess {
 		public List<PayoutSubofHDManagement> getByPayoutId(String sid, GeneralDate occDate) {
 			return payoutSubofHDManaRepository.getByPayoutId(sid, occDate);
 		}
-
-		@Override
-		public Optional<BsEmploymentHistoryImport> employmentHistory(CacheCarrier cacheCarrier, String companyId,
-				String employeeId, GeneralDate baseDate) {
-			return shareEmploymentAdapter.findEmploymentHistoryRequire(cacheCarrier, companyId, employeeId, baseDate);
-		}
-
-		@Override
-		public Optional<ClosureEmployment> employmentClosure(String companyID, String employmentCD) {
-			return closureEmploymentRepo.findByEmploymentCD(companyID, employmentCD);
-		}
-
-		@Override
-		public Optional<Closure> closure(String companyId, int closureId) {
-			return closureRepo.findById(companyId, closureId);
-		}
-
 	}
 
 	@Getter

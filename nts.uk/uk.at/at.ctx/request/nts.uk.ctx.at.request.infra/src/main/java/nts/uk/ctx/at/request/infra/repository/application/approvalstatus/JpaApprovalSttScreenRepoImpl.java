@@ -35,8 +35,8 @@ public class JpaApprovalSttScreenRepoImpl extends JpaRepository implements Appro
 				"        SELECT SKBSYIN.WORKPLACE_ID,SKBSYIN.SID,SKBSYIN.START_DATE as WORK_ST,SKBSYIN.END_DATE as WORK_ED,SKR.START_DATE as COMP_ST,SKR.END_DATE as COMP_ED " +
 				"        FROM ( " +
 				"                SELECT SSRK.WORKPLACE_ID,SSRK.SID,SSR.START_DATE,SSR.END_DATE " +
-				"                FROM         BSYMT_AFF_WORKPLACE_HIST SSR " +
-				"                INNER JOIN   BSYMT_AFF_WPL_HIST_ITEM SSRK " +
+				"                FROM         BSYMT_AFF_WKP_HIST SSR " +
+				"                INNER JOIN   BSYMT_AFF_WKP_HIST_ITEM SSRK " +
 				"                ON           SSR.HIST_ID = SSRK.HIST_ID " +
 				"                WHERE        @startDate <= SSR.END_DATE " +
 				"                AND          SSR.START_DATE <= @endDate " +
@@ -44,7 +44,7 @@ public class JpaApprovalSttScreenRepoImpl extends JpaRepository implements Appro
 				"                ) SKBSYIN " +
 				"        INNER JOIN       BSYMT_AFF_COM_HIST SKR " +
 				"        ON               SKBSYIN.SID = SKR.SID " +
-				"        INNER JOIN       BSYMT_EMP_DTA_MNG_INFO SDKJ " +
+				"        INNER JOIN       BSYMT_SYAIN SDKJ " +
 				"        ON               SDKJ.SID = SKR.SID " +
 				"        WHERE            @startDate <= SKR.END_DATE " +
 				"        AND              SKR.START_DATE <= @endDate " +
@@ -52,8 +52,8 @@ public class JpaApprovalSttScreenRepoImpl extends JpaRepository implements Appro
 				") SKBSYINIO " +
 				"INNER JOIN  ( " +
 				"        SELECT KRK.SID,KRK.EMP_CD,KR.START_DATE,KR.END_DATE " +
-				"        FROM BSYMT_EMPLOYMENT_HIST KR " +
-				"        INNER JOIN BSYMT_EMPLOYMENT_HIS_ITEM KRK " +
+				"        FROM BSYMT_AFF_EMP_HIST KR " +
+				"        INNER JOIN BSYMT_AFF_EMP_HIST_ITEM KRK " +
 				"        ON KR.HIST_ID = KRK.HIST_ID " +
 				"        WHERE KRK.EMP_CD IN @employmentCDLst " +
 				"        AND @startDate <= KR.END_DATE " +
@@ -95,8 +95,8 @@ public class JpaApprovalSttScreenRepoImpl extends JpaRepository implements Appro
 				"                            SELECT SKBSYIN.WORKPLACE_ID,SKBSYIN.SID,SKBSYIN.START_DATE as WORK_ST,SKBSYIN.END_DATE as WORK_ED,SKR.START_DATE as COMP_ST,SKR.END_DATE as COMP_ED " +
 				"                            FROM ( " +
 				"                                    SELECT SSRK.WORKPLACE_ID,SSRK.SID,SSR.START_DATE,SSR.END_DATE " +
-				"                                    FROM         BSYMT_AFF_WORKPLACE_HIST SSR " +
-				"                                    INNER JOIN   BSYMT_AFF_WPL_HIST_ITEM SSRK " +
+				"                                    FROM         BSYMT_AFF_WKP_HIST SSR " +
+				"                                    INNER JOIN   BSYMT_AFF_WKP_HIST_ITEM SSRK " +
 				"                                    ON           SSR.HIST_ID = SSRK.HIST_ID " +
 				"                                    WHERE        @startDate <= SSR.END_DATE " +
 				"                                    AND          SSR.START_DATE <= @endDate " +
@@ -104,7 +104,7 @@ public class JpaApprovalSttScreenRepoImpl extends JpaRepository implements Appro
 				"                                    ) SKBSYIN " +
 				"                            INNER JOIN       BSYMT_AFF_COM_HIST SKR " +
 				"                            ON               SKBSYIN.SID = SKR.SID " +
-				"                            INNER JOIN       BSYMT_EMP_DTA_MNG_INFO SDKJ " +
+				"                            INNER JOIN       BSYMT_SYAIN SDKJ " +
 				"                            ON               SDKJ.SID = SKR.SID " +
 				"                            WHERE            @startDate <= SKR.END_DATE " +
 				"                            AND              SKR.START_DATE <= @endDate " +
@@ -112,8 +112,8 @@ public class JpaApprovalSttScreenRepoImpl extends JpaRepository implements Appro
 				"                    ) SKBSYINIO " +
 				"                    INNER JOIN  ( " +
 				"                            SELECT KRK.SID,KRK.EMP_CD,KR.START_DATE,KR.END_DATE " +
-				"                            FROM BSYMT_EMPLOYMENT_HIST KR " +
-				"                            INNER JOIN BSYMT_EMPLOYMENT_HIS_ITEM KRK " +
+				"                            FROM BSYMT_AFF_EMP_HIST KR " +
+				"                            INNER JOIN BSYMT_AFF_EMP_HIST_ITEM KRK " +
 				"                            ON KR.HIST_ID = KRK.HIST_ID " +
 				"                            WHERE KRK.EMP_CD IN @employmentCDLst " +
 				"                            AND @startDate <= KR.END_DATE " +
@@ -123,8 +123,8 @@ public class JpaApprovalSttScreenRepoImpl extends JpaRepository implements Appro
 				"                   ) SKBSYITERM " +
 				"        INNER JOIN  ( " +
 				"                               SELECT             SRI.EMPLOYEE_ID as APP_SID,SRI.APPROVAL_RECORD_DATE as APP_DATE,SRI.ROOT_STATE_ID " +
-				"                               FROM               WWFDT_APPROVAL_ROOT_STATE SRI " +
-				"                               INNER JOIN         WWFDT_APPROVAL_PHASE_ST SFI " +
+				"                               FROM               WWFDT_APP_INST_ROUTE SRI " +
+				"                               INNER JOIN         WWFDT_APP_INST_PHASE SFI " +
 				"                               ON                 SRI.ROOT_STATE_ID = SFI.ROOT_STATE_ID " +
 				"                               WHERE              SFI.APP_PHASE_ATR IN ('0','3','4') " +
 				"                               AND                @startDate <= SRI.APPROVAL_RECORD_DATE " +
@@ -168,8 +168,8 @@ public class JpaApprovalSttScreenRepoImpl extends JpaRepository implements Appro
 				"                             SELECT SKBSYIN.WORKPLACE_ID,SKBSYIN.SID,SKBSYIN.START_DATE as WORK_ST,SKBSYIN.END_DATE as WORK_ED,SKR.START_DATE as COMP_ST,SKR.END_DATE as COMP_ED " +
 				"                             FROM ( " +
 				"                                     SELECT SSRK.WORKPLACE_ID,SSRK.SID,SSR.START_DATE,SSR.END_DATE " +
-				"                                     FROM         BSYMT_AFF_WORKPLACE_HIST SSR " +
-				"                                     INNER JOIN   BSYMT_AFF_WPL_HIST_ITEM SSRK " +
+				"                                     FROM         BSYMT_AFF_WKP_HIST SSR " +
+				"                                     INNER JOIN   BSYMT_AFF_WKP_HIST_ITEM SSRK " +
 				"                                     ON           SSR.HIST_ID = SSRK.HIST_ID " +
 				"                                     WHERE        @startDate <= SSR.END_DATE " +
 				"                                     AND          SSR.START_DATE <= @endDate " +
@@ -177,7 +177,7 @@ public class JpaApprovalSttScreenRepoImpl extends JpaRepository implements Appro
 				"                                     ) SKBSYIN " +
 				"                             INNER JOIN       BSYMT_AFF_COM_HIST SKR " +
 				"                             ON               SKBSYIN.SID = SKR.SID " +
-				"                              INNER JOIN       BSYMT_EMP_DTA_MNG_INFO SDKJ " +
+				"                              INNER JOIN       BSYMT_SYAIN SDKJ " +
 				"                             ON               SDKJ.SID = SKR.SID " +
 				"                             WHERE            @startDate <= SKR.END_DATE " +
 				"                             AND              SKR.START_DATE <= @endDate " +
@@ -185,8 +185,8 @@ public class JpaApprovalSttScreenRepoImpl extends JpaRepository implements Appro
 				"                     ) SKBSYINIO " +
 				"                     INNER JOIN  ( " +
 				"                             SELECT KRK.SID,KRK.EMP_CD,KR.START_DATE,KR.END_DATE " +
-				"                             FROM BSYMT_EMPLOYMENT_HIST KR " +
-				"                             INNER JOIN BSYMT_EMPLOYMENT_HIS_ITEM KRK " +
+				"                             FROM BSYMT_AFF_EMP_HIST KR " +
+				"                             INNER JOIN BSYMT_AFF_EMP_HIST_ITEM KRK " +
 				"                             ON KR.HIST_ID = KRK.HIST_ID " +
 				"                             WHERE KRK.EMP_CD IN @employmentCDLst " +
 				"                             AND @startDate <= KR.END_DATE " +
@@ -198,8 +198,8 @@ public class JpaApprovalSttScreenRepoImpl extends JpaRepository implements Appro
 				"                               SELECT   MIDFOD.EMPLOYEE_ID,SGJFOD.RECORD_DATE,'0' as NONAPP " +  
 				"                               FROM   ( " +
 				"                                             SELECT     SNRMID.EMPLOYEE_ID,MIN(SNFMID.PHASE_ORDER) as FINF,SNRMID.START_DATE,SNRMID.END_DATE " +
-				"                                             FROM       WWFDT_APP_ROOT_INSTANCE SNRMID " +
-				"                                             INNER JOIN WWFDT_APP_PHASE_INSTANCE SNFMID " +
+				"                                             FROM       WWFDT_INST_ROUTE SNRMID " +
+				"                                             INNER JOIN WWFDT_INST_PHASE SNFMID " +
 				"                                             ON         SNRMID.ROOT_ID = SNFMID.ROOT_ID " +
 				"                                             WHERE      @startDate <= SNRMID.END_DATE " +
 				"                                             AND        SNRMID.START_DATE <= @endDate " +
@@ -207,8 +207,8 @@ public class JpaApprovalSttScreenRepoImpl extends JpaRepository implements Appro
 				"                                             GROUP BY   SNRMID.EMPLOYEE_ID,SNRMID.START_DATE,SNRMID.END_DATE " +
 				"                                            )  MIDFOD " +
 				"                               INNER JOIN (    SELECT SGJKNJT.EMPLOYEE_ID,SGJKNJT.RECORD_DATE,SYNZMF.PHASE_ORDER,SYNZMF.APP_PHASE_ATR " +
-				"                                                               FROM WWFDT_APP_ROOT_CONFIRM SGJKNJT " +
-				"                                                               INNER JOIN WWFDT_APP_PHASE_CONFIRM SYNZMF " +
+				"                                                               FROM WWFDT_CONF_ROUTE SGJKNJT " +
+				"                                                               INNER JOIN WWFDT_CONF_PHASE SYNZMF " +
 				"                                                               ON         SGJKNJT.ROOT_ID = SYNZMF.ROOT_ID " +
 				"                                                               WHERE      SGJKNJT.ROOT_TYPE = '1' " +
 				"                                                               AND        @startDate <= SGJKNJT.RECORD_DATE " +
@@ -224,8 +224,8 @@ public class JpaApprovalSttScreenRepoImpl extends JpaRepository implements Appro
 				"                               FROM          (     SELECT MIDFOD.EMPLOYEE_ID,SGJT.RECORD_DATE,SGJT.ROOT_ID,MIDFOD.FINF " +
 				"                                                           FROM   ( " +
 				"                                                                         SELECT     SNRMID.EMPLOYEE_ID,MIN(SNFMID.PHASE_ORDER) as FINF,SNRMID.START_DATE,SNRMID.END_DATE " +
-				"                                                                         FROM       WWFDT_APP_ROOT_INSTANCE SNRMID " +
-				"                                                                         INNER JOIN WWFDT_APP_PHASE_INSTANCE SNFMID " +
+				"                                                                         FROM       WWFDT_INST_ROUTE SNRMID " +
+				"                                                                         INNER JOIN WWFDT_INST_PHASE SNFMID " +
 				"                                                                         ON         SNRMID.ROOT_ID = SNFMID.ROOT_ID " +
 				"                                                                         WHERE      @startDate <= SNRMID.END_DATE " +
 				"                                                                         AND        SNRMID.START_DATE <= @endDate " +
@@ -233,14 +233,14 @@ public class JpaApprovalSttScreenRepoImpl extends JpaRepository implements Appro
 				"                                                                         GROUP BY   SNRMID.EMPLOYEE_ID,SNRMID.START_DATE,SNRMID.END_DATE " +
 				"                                                                       ) MIDFOD " +
 				"                                                               INNER JOIN (    SELECT SGJKNJT.ROOT_ID,SGJKNJT.EMPLOYEE_ID,SGJKNJT.RECORD_DATE " +
-				"                                                                                               FROM WWFDT_APP_ROOT_CONFIRM SGJKNJT " +
+				"                                                                                               FROM WWFDT_CONF_ROUTE SGJKNJT " +
 				"                                                                                               WHERE       @startDate <= SGJKNJT.RECORD_DATE " +
 				"                                                                                               AND SGJKNJT.RECORD_DATE <= @endDate " +
 				"                                                                                               AND SGJKNJT.ROOT_TYPE = '1'                        ) SGJT " +
 				"                                                               ON       MIDFOD.EMPLOYEE_ID = SGJT.EMPLOYEE_ID " +
 				"                                                               WHERE    MIDFOD.START_DATE <= SGJT.RECORD_DATE " +
 				"                                                               AND      SGJT.RECORD_DATE <= MIDFOD.END_DATE                                ) SGJKN " +
-				"                               LEFT JOIN       WWFDT_APP_PHASE_CONFIRM SYNZMF " +
+				"                               LEFT JOIN       WWFDT_CONF_PHASE SYNZMF " +
 				"                               ON      (       SGJKN.ROOT_ID = SYNZMF.ROOT_ID " +
 				"                               AND             SGJKN.FINF = SYNZMF.PHASE_ORDER      ) " +
 				"                               WHERE           SYNZMF.APP_PHASE_ATR IS NULL " +
@@ -283,8 +283,8 @@ public class JpaApprovalSttScreenRepoImpl extends JpaRepository implements Appro
 				"                                          SELECT SKBSYIN.WORKPLACE_ID,SKBSYIN.SID,SKBSYIN.START_DATE as WORK_ST,SKBSYIN.END_DATE as WORK_ED,SKR.START_DATE as COMP_ST,SKR.END_DATE as COMP_ED " +
 				"                                          FROM ( " +
 				"                                          	SELECT SSRK.WORKPLACE_ID,SSRK.SID,SSR.START_DATE,SSR.END_DATE " +
-				"                                          	FROM         BSYMT_AFF_WORKPLACE_HIST SSR " +
-				"                                          	INNER JOIN   BSYMT_AFF_WPL_HIST_ITEM SSRK " +
+				"                                          	FROM         BSYMT_AFF_WKP_HIST SSR " +
+				"                                          	INNER JOIN   BSYMT_AFF_WKP_HIST_ITEM SSRK " +
 				"                                          	ON           SSR.HIST_ID = SSRK.HIST_ID " +
 				"                                          	WHERE        @startDate <= SSR.END_DATE " +
 				"                                          	AND          SSR.START_DATE <= @endDate " +
@@ -292,7 +292,7 @@ public class JpaApprovalSttScreenRepoImpl extends JpaRepository implements Appro
 				"                                          	) SKBSYIN " +
 				"                                          INNER JOIN       BSYMT_AFF_COM_HIST SKR " +
 				"                                          ON               SKBSYIN.SID = SKR.SID " +
-				"                                          INNER JOIN       BSYMT_EMP_DTA_MNG_INFO SDKJ " +
+				"                                          INNER JOIN       BSYMT_SYAIN SDKJ " +
 				"                                          ON               SDKJ.SID = SKR.SID " +
 				"                                          WHERE            @startDate <= SKR.END_DATE " +
 				"                                          AND              SKR.START_DATE <= @endDate " +
@@ -300,8 +300,8 @@ public class JpaApprovalSttScreenRepoImpl extends JpaRepository implements Appro
 				"                                   ) SKBSYINIO " +
 				"                                   INNER JOIN  ( " +
 				"                                          SELECT KRK.SID,KRK.EMP_CD,KR.START_DATE,KR.END_DATE " +
-				"                                          FROM BSYMT_EMPLOYMENT_HIST KR " +
-				"                                          INNER JOIN BSYMT_EMPLOYMENT_HIS_ITEM KRK " +
+				"                                          FROM BSYMT_AFF_EMP_HIST KR " +
+				"                                          INNER JOIN BSYMT_AFF_EMP_HIST_ITEM KRK " +
 				"                                          ON KR.HIST_ID = KRK.HIST_ID " +
 				"                                          WHERE KRK.EMP_CD IN @employmentCDLst " +
 				"                                          AND @startDate <= KR.END_DATE " +
@@ -311,8 +311,8 @@ public class JpaApprovalSttScreenRepoImpl extends JpaRepository implements Appro
 				"                                  )  SKBSYITERM " +
 				"	INNER JOIN   ( " +
 				"         SELECT  SGJSKNJT.EMPLOYEE_ID as SYAIN_ID,SGJSKNJT.RECORD_DATE as TG_DAY,'0' as NON_APP " +
-				"         FROM WWFDT_APP_ROOT_CONFIRM SGJSKNJT " +
-				"         LEFT JOIN KRCDT_CONFIRMATION_DAY DAYKN " +
+				"         FROM WWFDT_CONF_ROUTE SGJSKNJT " +
+				"         LEFT JOIN KRCDT_DAY_SELF_CHECK DAYKN " +
 				"         ON       ( SGJSKNJT.CID = DAYKN.CID " +
 				"	AND SGJSKNJT.EMPLOYEE_ID = DAYKN.SID " +
 				"	AND SGJSKNJT.RECORD_DATE = DAYKN.PROCESSING_YMD   ) " +
@@ -359,8 +359,8 @@ public class JpaApprovalSttScreenRepoImpl extends JpaRepository implements Appro
 				"                                           SELECT SKBSYIN.WORKPLACE_ID,SKBSYIN.SID " +
 				"                                           FROM ( " +
 				"                                                   SELECT       SSRK.WORKPLACE_ID,SSRK.SID,SSR.START_DATE,SSR.END_DATE " +
-				"                                                   FROM         BSYMT_AFF_WORKPLACE_HIST SSR " +
-				"                                                   INNER JOIN   BSYMT_AFF_WPL_HIST_ITEM SSRK " +
+				"                                                   FROM         BSYMT_AFF_WKP_HIST SSR " +
+				"                                                   INNER JOIN   BSYMT_AFF_WKP_HIST_ITEM SSRK " +
 				"                                                   ON           SSR.HIST_ID = SSRK.HIST_ID " +
 				"                                                   WHERE        @endDate <= SSR.END_DATE " +
 				"                                                   AND          SSR.START_DATE <= @endDate " +
@@ -368,7 +368,7 @@ public class JpaApprovalSttScreenRepoImpl extends JpaRepository implements Appro
 				"                                                   ) SKBSYIN " +
 				"                                           INNER JOIN       BSYMT_AFF_COM_HIST SKR " +
 				"                                           ON               SKBSYIN.SID = SKR.SID " +
-				"                                           INNER JOIN       BSYMT_EMP_DTA_MNG_INFO SDKJ " +
+				"                                           INNER JOIN       BSYMT_SYAIN SDKJ " +
 				"                                           ON               SDKJ.SID = SKR.SID " +
 				"                                           WHERE            @endDate <= SKR.END_DATE " +
 				"                                           AND              SKR.START_DATE <= @endDate " +
@@ -376,8 +376,8 @@ public class JpaApprovalSttScreenRepoImpl extends JpaRepository implements Appro
 				"                                   ) SKBSYINIO " +
 				"                                   INNER JOIN  ( " +
 				"                                           SELECT         KRK.SID,KRK.EMP_CD " +
-				"                                           FROM           BSYMT_EMPLOYMENT_HIST KR " +
-				"                                           INNER JOIN     BSYMT_EMPLOYMENT_HIS_ITEM KRK " +
+				"                                           FROM           BSYMT_AFF_EMP_HIST KR " +
+				"                                           INNER JOIN     BSYMT_AFF_EMP_HIST_ITEM KRK " +
 				"                                           ON             KR.HIST_ID = KRK.HIST_ID " +
 				"                                           WHERE          KRK.EMP_CD IN  @employmentCDLst " +
 				"                                           AND            @endDate <= KR.END_DATE " +
@@ -389,8 +389,8 @@ public class JpaApprovalSttScreenRepoImpl extends JpaRepository implements Appro
 				"                                    SELECT                MIDFOD.EMPLOYEE_ID,SGJFOD.RECORD_DATE,'0' as NONAPP " +
 				"                                    FROM       ( " +
 				"                                                                    SELECT SNRMID.EMPLOYEE_ID,MIN(SNFMID.PHASE_ORDER) as FINF " +
-				"                                                                    FROM WWFDT_APP_ROOT_INSTANCE SNRMID " +
-				"                                                                    INNER JOIN WWFDT_APP_PHASE_INSTANCE SNFMID " +
+				"                                                                    FROM WWFDT_INST_ROUTE SNRMID " +
+				"                                                                    INNER JOIN WWFDT_INST_PHASE SNFMID " +
 				"                                                                    ON             SNRMID.ROOT_ID = SNFMID.ROOT_ID " +
 				"                                                                    WHERE          @endDate <= SNRMID.END_DATE " +
 				"                                                                    AND SNRMID.START_DATE <= @endDate " +
@@ -398,8 +398,8 @@ public class JpaApprovalSttScreenRepoImpl extends JpaRepository implements Appro
 				"                                                            ) MIDFOD " +
 				"                                    INNER JOIN (    " +
 				"                                                                    SELECT SGJKNJT.EMPLOYEE_ID,SGJKNJT.RECORD_DATE,SYNZMF.PHASE_ORDER,SYNZMF.APP_PHASE_ATR " +
-				"                                                                    FROM WWFDT_APP_ROOT_CONFIRM SGJKNJT " +
-				"                                                                    INNER JOIN WWFDT_APP_PHASE_CONFIRM SYNZMF " +
+				"                                                                    FROM WWFDT_CONF_ROUTE SGJKNJT " +
+				"                                                                    INNER JOIN WWFDT_CONF_PHASE SYNZMF " +
 				"                                                                    ON SGJKNJT.ROOT_ID = SYNZMF.ROOT_ID " +
 				"                                                                    WHERE SGJKNJT.ROOT_TYPE = '2' " +
 				"                                                                    AND            @yearMonth = SGJKNJT.YEARMONTH " +
@@ -412,8 +412,8 @@ public class JpaApprovalSttScreenRepoImpl extends JpaRepository implements Appro
 				"                                    FROM        ( " +
 				"                                                                    SELECT  MIDFOD.EMPLOYEE_ID,SGJT.RECORD_DATE,SGJT.ROOT_ID,MIDFOD.FINF " +
 				"                                                                    FROM        (   SELECT     SNRMID.EMPLOYEE_ID,MIN(SNFMID.PHASE_ORDER) as FINF " +
-				"                                                                                                    FROM       WWFDT_APP_ROOT_INSTANCE SNRMID " +
-				"                                                                                                    INNER JOIN WWFDT_APP_PHASE_INSTANCE SNFMID " +
+				"                                                                                                    FROM       WWFDT_INST_ROUTE SNRMID " +
+				"                                                                                                    INNER JOIN WWFDT_INST_PHASE SNFMID " +
 				"                                                                                                    ON         SNRMID.ROOT_ID = SNFMID.ROOT_ID " +
 				"                                                                                                    WHERE      @endDate <= SNRMID.END_DATE " +
 				"                                                                                                    AND        SNRMID.START_DATE <= @endDate " +
@@ -421,13 +421,13 @@ public class JpaApprovalSttScreenRepoImpl extends JpaRepository implements Appro
 				"                                                                                                    GROUP BY   SNRMID.EMPLOYEE_ID " +
 				"                                                                                            ) MIDFOD " +
 				"                                                                    INNER JOIN  (   SELECT     SGJKNJT.ROOT_ID,SGJKNJT.EMPLOYEE_ID,SGJKNJT.RECORD_DATE " +
-				"                                                                                                    FROM       WWFDT_APP_ROOT_CONFIRM SGJKNJT " +
+				"                                                                                                    FROM       WWFDT_CONF_ROUTE SGJKNJT " +
 				"                                                                                                    WHERE      SGJKNJT.ROOT_TYPE = '2' " +
 				"                                                                                                    AND        @yearMonth = SGJKNJT.YEARMONTH " +
 				"                                                                                            ) SGJT " +
 				"                                                                    ON      MIDFOD.EMPLOYEE_ID = SGJT.EMPLOYEE_ID " +
 				"                                                            ) SGJKN " +
-				"                                    LEFT JOIN   WWFDT_APP_PHASE_CONFIRM SYNZMF " +
+				"                                    LEFT JOIN   WWFDT_CONF_PHASE SYNZMF " +
 				"                                    ON          SGJKN.ROOT_ID = SYNZMF.ROOT_ID " +
 				"                                    WHERE       SYNZMF.APP_PHASE_ATR  IS NULL " +
 				"                                     ) JCHOSN_M " +
@@ -463,8 +463,8 @@ public class JpaApprovalSttScreenRepoImpl extends JpaRepository implements Appro
 				"                                      SELECT SKBSYIN.WORKPLACE_ID,SKBSYIN.SID " +
 				"                                      FROM ( " +
 				"                                                SELECT       SSRK.WORKPLACE_ID,SSRK.SID,SSR.START_DATE,SSR.END_DATE " +
-				"                                                FROM         BSYMT_AFF_WORKPLACE_HIST SSR " +
-				"                                                INNER JOIN   BSYMT_AFF_WPL_HIST_ITEM SSRK " +
+				"                                                FROM         BSYMT_AFF_WKP_HIST SSR " +
+				"                                                INNER JOIN   BSYMT_AFF_WKP_HIST_ITEM SSRK " +
 				"                                                ON           SSR.HIST_ID = SSRK.HIST_ID " +
 				"                                                WHERE        @endDate <= SSR.END_DATE " +
 				"                                                AND          SSR.START_DATE <= @endDate " +
@@ -472,7 +472,7 @@ public class JpaApprovalSttScreenRepoImpl extends JpaRepository implements Appro
 				"                                                ) SKBSYIN " +
 				"                                      INNER JOIN       BSYMT_AFF_COM_HIST SKR " +
 				"                                      ON               SKBSYIN.SID = SKR.SID " +
-				"                                      INNER JOIN       BSYMT_EMP_DTA_MNG_INFO SDKJ " +
+				"                                      INNER JOIN       BSYMT_SYAIN SDKJ " +
 				"                                      ON               SDKJ.SID = SKR.SID " +
 				"                                      WHERE            @endDate <= SKR.END_DATE " +
 				"                                      AND              SKR.START_DATE <= @endDate " +
@@ -480,8 +480,8 @@ public class JpaApprovalSttScreenRepoImpl extends JpaRepository implements Appro
 				"                                      ) SKBSYINIO " +
 				"                            INNER JOIN  ( " +
 				"                                                SELECT         KRK.SID,KRK.EMP_CD " +
-				"                                                FROM           BSYMT_EMPLOYMENT_HIST KR " +
-				"                                                INNER JOIN     BSYMT_EMPLOYMENT_HIS_ITEM KRK " +
+				"                                                FROM           BSYMT_AFF_EMP_HIST KR " +
+				"                                                INNER JOIN     BSYMT_AFF_EMP_HIST_ITEM KRK " +
 				"                                                ON             KR.HIST_ID = KRK.HIST_ID " +
 				"                                                WHERE          KRK.EMP_CD IN   @employmentCDLst " +
 				"                                                AND            @endDate <= KR.END_DATE " +
@@ -491,8 +491,8 @@ public class JpaApprovalSttScreenRepoImpl extends JpaRepository implements Appro
 				"                     ) SKBSYITERM_MON " +
 				"        INNER JOIN  ( " +
 				"SELECT SGJSKNJT.EMPLOYEE_ID,SGJSKNJT.RECORD_DATE,'0' as NONAPP " +
-				"FROM WWFDT_APP_ROOT_CONFIRM SGJSKNJT " +
-				"LEFT JOIN KRCDT_CONFIRMATION_MONTH MONKN " +
+				"FROM WWFDT_CONF_ROUTE SGJSKNJT " +
+				"LEFT JOIN KRCDT_MON_SELF_CHECK MONKN " +
 				"ON       ( SGJSKNJT.CID = MONKN.CID " +
 				"  AND SGJSKNJT.EMPLOYEE_ID = MONKN.SID " +
 				"  AND SGJSKNJT.CLOSURE_ID  = MONKN.CLOSURE_ID " +
@@ -525,9 +525,9 @@ public class JpaApprovalSttScreenRepoImpl extends JpaRepository implements Appro
 		String sql = 
 				"SELECT  KWF.WKPID,KWF.CONFIRM_SID,KWF.CONFIRM_DATE_TIME " + 
 				"FROM  KRCDT_WORK_FIXED KWF " + 
-				"WHERE KWF.CLOSURE_ID = @closureId " + 
-				"AND   KWF.PROCESS_YM = @yearMonth " + 
-				"AND   KWF.CID        = @companyID " + 
+				"WHERE KWF.CLOSURE_ID = @closureId " +
+				"AND   KWF.PROCESS_YM = @yearMonth " +
+				"AND   KWF.CID        = @companyID " +
 				"AND   KWF.WKPID IN @wkpIDLst ;";
 		new NtsStatement(sql, this.jdbcProxy())
 				.paramInt("closureId", closureId.value)
@@ -550,36 +550,55 @@ public class JpaApprovalSttScreenRepoImpl extends JpaRepository implements Appro
 			return Collections.emptyList();
 		}
 		String sql = 
-				"SELECT SKBSYINIO.WORKPLACE_ID,SKBSYINIO.SID,SKBSYINIO.COMP_ST,SKBSYINIO.COMP_ED,KYO.START_DATE as KYO_ST,KYO.END_DATE as KYO_ED " +
+				"SELECT DISTINCT SKBSYITERM.WORKPLACE_ID,SKBSYITERM.SID,SKBSYITERM.WORK_ST,SKBSYITERM.WORK_ED,SKBSYITERM.KYO_ST,SKBSYITERM.KYO_ED " +
 				"FROM ( " +
-				"        SELECT SKBSYIN.WORKPLACE_ID,SKBSYIN.SID,SKBSYIN.START_DATE as WORK_ST,SKBSYIN.END_DATE as WORK_ED,SKR.START_DATE as COMP_ST,SKR.END_DATE as COMP_ED " +
-				"        FROM ( " +
-				"                        SELECT SSRK.WORKPLACE_ID,SSRK.SID,SSR.START_DATE,SSR.END_DATE " +
-				"                        FROM         BSYMT_AFF_WORKPLACE_HIST SSR " +
-				"                        INNER JOIN   BSYMT_AFF_WPL_HIST_ITEM SSRK " +
-				"                        ON           SSR.HIST_ID = SSRK.HIST_ID " +
-				"                        WHERE        @startDate <= SSR.END_DATE " +
-				"                        AND          SSR.START_DATE <= @endDate " +
-				"                      　      　　　　　　	 AND          SSRK.WORKPLACE_ID IN @wkpIDLst " +    
-				"                    ) SKBSYIN " +
-				"        INNER JOIN       BSYMT_AFF_COM_HIST SKR " +
-				"        ON               SKBSYIN.SID = SKR.SID " +
-				"        INNER JOIN       BSYMT_EMP_DTA_MNG_INFO SDKJ " +
-				"        ON               SDKJ.SID = SKR.SID " +
-				"        WHERE            @startDate <= SKR.END_DATE " +
-				"        AND              SKR.START_DATE <= @endDate " +
-				"        AND SDKJ.DEL_STATUS_ATR = '0' " +
-				") SKBSYINIO " +
+				"                SELECT SKBSYINIO.WORKPLACE_ID,SKBSYINIO.SID,KYO.EMP_CD,SKBSYINIO.WORK_ST,SKBSYINIO.WORK_ED,SKBSYINIO.COMP_ST,SKBSYINIO.COMP_ED,KYO.START_DATE as KYO_ST,KYO.END_DATE as KYO_ED " +
+				"                FROM ( " +
+				"                        SELECT SKBSYIN.WORKPLACE_ID,SKBSYIN.SID,SKBSYIN.START_DATE as WORK_ST,SKBSYIN.END_DATE as WORK_ED,SKR.START_DATE as COMP_ST,SKR.END_DATE as COMP_ED " +
+				"                        FROM ( " +
+				"                                        SELECT SSRK.WORKPLACE_ID,SSRK.SID,SSR.START_DATE,SSR.END_DATE " +
+				"                                        FROM         BSYMT_AFF_WKP_HIST SSR " +
+				"                                        INNER JOIN   BSYMT_AFF_WKP_HIST_ITEM SSRK " +
+				"                                        ON           SSR.HIST_ID = SSRK.HIST_ID " +
+				"                                        WHERE        @startDate <= SSR.END_DATE " +
+				"                                        AND          SSR.START_DATE <= @endDate " +
+				"                                        AND          SSRK.WORKPLACE_ID IN @wkpIDLst " +          
+				"                                    ) SKBSYIN " +
+				"                        INNER JOIN       BSYMT_AFF_COM_HIST SKR " +
+				"                        ON               SKBSYIN.SID = SKR.SID " +
+				"                        INNER JOIN       BSYMT_SYAIN SDKJ " +
+				"                        ON               SDKJ.SID = SKR.SID " +
+				"                        WHERE            @startDate <= SKR.END_DATE " +
+				"                        AND              SKR.START_DATE <= @endDate " +
+				"                        AND SDKJ.DEL_STATUS_ATR = '0' " +
+				"                ) SKBSYINIO " +
+				"                LEFT JOIN  ( " +
+				"                        SELECT KRK.SID,KRK.EMP_CD,KR.START_DATE,KR.END_DATE " +
+				"                        FROM BSYMT_AFF_EMP_HIST KR " +
+				"                        INNER JOIN BSYMT_AFF_EMP_HIST_ITEM KRK " +
+				"                        ON KR.HIST_ID = KRK.HIST_ID " +
+				"                        WHERE KRK.EMP_CD IN @employmentCDLst " +
+				"                        AND @startDate <= KR.END_DATE " +
+				"                        AND KR.START_DATE <= @endDate " +
+				"                ) KYO " +
+				"                ON SKBSYINIO.SID = KYO.SID " +
+				"            ) SKBSYITERM " +
 				"INNER JOIN  ( " +
-				"        SELECT KRK.SID,KRK.EMP_CD,KR.START_DATE,KR.END_DATE " +
-				"        FROM BSYMT_EMPLOYMENT_HIST KR " +
-				"        INNER JOIN BSYMT_EMPLOYMENT_HIS_ITEM KRK " +
-				"        ON KR.HIST_ID = KRK.HIST_ID " +
-				"        WHERE KRK.EMP_CD IN @employmentCDLst " +
-				"        AND @startDate <= KR.END_DATE " +
-				"        AND KR.START_DATE <= @endDate " +
-				") KYO " +
-				"ON SKBSYINIO.SID = KYO.SID;";
+				"                        SELECT             SRI.EMPLOYEE_ID as APP_SID,SRI.APPROVAL_RECORD_DATE as APP_DATE,SRI.ROOT_STATE_ID " +
+				"                        FROM               WWFDT_APP_INST_ROUTE SRI " +
+				"                        INNER JOIN         WWFDT_APP_INST_PHASE SFI " +
+				"                        ON                 SRI.ROOT_STATE_ID = SFI.ROOT_STATE_ID " +
+				"                        WHERE              SFI.APP_PHASE_ATR IN ('0','3','4') " +
+				"                        AND                @startDate <= SRI.APPROVAL_RECORD_DATE " +
+				"                        AND                SRI.APPROVAL_RECORD_DATE <= @endDate " +
+				"                        ) MSNSNS " +
+				"ON              SKBSYITERM.SID  = MSNSNS.APP_SID " +
+				"WHERE        SKBSYITERM.WORK_ST <= MSNSNS.APP_DATE " +
+				"AND             SKBSYITERM.COMP_ST <= MSNSNS.APP_DATE " +
+				"AND             SKBSYITERM.KYO_ST <= MSNSNS.APP_DATE " +
+				"AND             MSNSNS.APP_DATE <= SKBSYITERM.WORK_ED " +
+				"AND             MSNSNS.APP_DATE <= SKBSYITERM.COMP_ED " +
+				"AND             MSNSNS.APP_DATE <= SKBSYITERM.KYO_ED;";
 		return new NtsStatement(sql, this.jdbcProxy())
 				.paramDate("startDate", startDate)
 				.paramDate("endDate", endDate)
@@ -592,8 +611,8 @@ public class JpaApprovalSttScreenRepoImpl extends JpaRepository implements Appro
 							"", 
 							null, 
 							null, 
-							rec.getGeneralDate("COMP_ST"), 
-							rec.getGeneralDate("COMP_ED"), 
+							rec.getGeneralDate("WORK_ST"), 
+							rec.getGeneralDate("WORK_ED"), 
 							rec.getGeneralDate("KYO_ST"), 
 							rec.getGeneralDate("KYO_ED"), 
 							"", 
@@ -615,8 +634,8 @@ public class JpaApprovalSttScreenRepoImpl extends JpaRepository implements Appro
 				"                                        SELECT SKBSYIN.WORKPLACE_ID,SKBSYIN.SID,SKBSYIN.START_DATE as WORK_ST,SKBSYIN.END_DATE as WORK_ED,SKR.START_DATE as COMP_ST,SKR.END_DATE as COMP_ED " +
 				"                                        FROM ( " +
 				"                                                        SELECT SSRK.WORKPLACE_ID,SSRK.SID,SSR.START_DATE,SSR.END_DATE " +
-				"                                                        FROM         BSYMT_AFF_WORKPLACE_HIST SSR " +
-				"                                                        INNER JOIN   BSYMT_AFF_WPL_HIST_ITEM SSRK " +
+				"                                                        FROM         BSYMT_AFF_WKP_HIST SSR " +
+				"                                                        INNER JOIN   BSYMT_AFF_WKP_HIST_ITEM SSRK " +
 				"                                                        ON           SSR.HIST_ID = SSRK.HIST_ID " +
 				"                                                        WHERE        @startDate <= SSR.END_DATE " +
 				"                                                        AND          SSR.START_DATE <= @endDate " +
@@ -624,7 +643,7 @@ public class JpaApprovalSttScreenRepoImpl extends JpaRepository implements Appro
 				"                                                    ) SKBSYIN " +
 				"                                        INNER JOIN       BSYMT_AFF_COM_HIST SKR " +
 				"                                        ON               SKBSYIN.SID = SKR.SID " +
-				"                                        INNER JOIN       BSYMT_EMP_DTA_MNG_INFO SDKJ " +
+				"                                        INNER JOIN       BSYMT_SYAIN SDKJ " +
 				"                                        ON               SDKJ.SID = SKR.SID " +
 				"                                        WHERE            @startDate <= SKR.END_DATE " +
 				"                                        AND              SKR.START_DATE <= @endDate " +
@@ -632,8 +651,8 @@ public class JpaApprovalSttScreenRepoImpl extends JpaRepository implements Appro
 				"                            ) SKBSYINIO " +
 				"                    INNER JOIN  ( " +
 				"                                        SELECT KRK.SID,KRK.EMP_CD,KR.START_DATE,KR.END_DATE " +
-				"                                        FROM BSYMT_EMPLOYMENT_HIST KR " +
-				"                                        INNER JOIN BSYMT_EMPLOYMENT_HIS_ITEM KRK " +
+				"                                        FROM BSYMT_AFF_EMP_HIST KR " +
+				"                                        INNER JOIN BSYMT_AFF_EMP_HIST_ITEM KRK " +
 				"                                        ON KR.HIST_ID = KRK.HIST_ID " +
 				"                                        WHERE KRK.EMP_CD IN @employmentCDLst " +
 				"                                        AND @startDate <= KR.END_DATE " +
@@ -643,8 +662,8 @@ public class JpaApprovalSttScreenRepoImpl extends JpaRepository implements Appro
 				"                    )  SKBSYITERM " +
 				"INNER JOIN   ( " +
 				"                        SELECT             SGJSKNJT.EMPLOYEE_ID as SYAIN_ID,SGJSKNJT.RECORD_DATE as TG_DAY,'0' as NON_APP " +
-				"                        FROM               WWFDT_APP_ROOT_CONFIRM SGJSKNJT " +
-				"                        LEFT JOIN          KRCDT_CONFIRMATION_DAY DAYKN " +
+				"                        FROM               WWFDT_CONF_ROUTE SGJSKNJT " +
+				"                        LEFT JOIN          KRCDT_DAY_SELF_CHECK DAYKN " +
 				"                        ON       (         SGJSKNJT.CID = DAYKN.CID " +
 				"                                AND        SGJSKNJT.EMPLOYEE_ID = DAYKN.SID " +
 				"                                AND        SGJSKNJT.RECORD_DATE = DAYKN.PROCESSING_YMD   ) " +
@@ -686,8 +705,8 @@ public class JpaApprovalSttScreenRepoImpl extends JpaRepository implements Appro
 				"                                SELECT SKBSYIN.WORKPLACE_ID,SKBSYIN.SID,SKBSYIN.START_DATE as WORK_ST,SKBSYIN.END_DATE as WORK_ED,SKR.START_DATE as COMP_ST,SKR.END_DATE as COMP_ED " +
 				"                                FROM ( " +
 				"                                            SELECT SSRK.WORKPLACE_ID,SSRK.SID,SSR.START_DATE,SSR.END_DATE " +
-				"                                            FROM         BSYMT_AFF_WORKPLACE_HIST SSR " +
-				"                                            INNER JOIN   BSYMT_AFF_WPL_HIST_ITEM SSRK " +
+				"                                            FROM         BSYMT_AFF_WKP_HIST SSR " +
+				"                                            INNER JOIN   BSYMT_AFF_WKP_HIST_ITEM SSRK " +
 				"                                            ON           SSR.HIST_ID = SSRK.HIST_ID " +
 				"                                            WHERE        @startDate <= SSR.END_DATE " +
 				"                                            AND          SSR.START_DATE <= @endDate " +
@@ -695,7 +714,7 @@ public class JpaApprovalSttScreenRepoImpl extends JpaRepository implements Appro
 				"                                        ) SKBSYIN " +
 				"                                INNER JOIN       BSYMT_AFF_COM_HIST SKR " +
 				"                                ON               SKBSYIN.SID = SKR.SID " +
-				"                                INNER JOIN       BSYMT_EMP_DTA_MNG_INFO SDKJ " +
+				"                                INNER JOIN       BSYMT_SYAIN SDKJ " +
 				"                                ON               SDKJ.SID = SKR.SID " +
 				"                                WHERE            @startDate <= SKR.END_DATE " +
 				"                                AND              SKR.START_DATE <= @endDate " +
@@ -703,8 +722,8 @@ public class JpaApprovalSttScreenRepoImpl extends JpaRepository implements Appro
 				"                        ) SKBSYINIO " +
 				"                    INNER JOIN  ( " +
 				"                            SELECT KRK.SID,KRK.EMP_CD,KR.START_DATE,KR.END_DATE " +
-				"                            FROM BSYMT_EMPLOYMENT_HIST KR " +
-				"                            INNER JOIN BSYMT_EMPLOYMENT_HIS_ITEM KRK " +
+				"                            FROM BSYMT_AFF_EMP_HIST KR " +
+				"                            INNER JOIN BSYMT_AFF_EMP_HIST_ITEM KRK " +
 				"                            ON KR.HIST_ID = KRK.HIST_ID " +
 				"                            WHERE KRK.EMP_CD IN @employmentCDLst " +
 				"                            AND @startDate <= KR.END_DATE " +
@@ -716,8 +735,8 @@ public class JpaApprovalSttScreenRepoImpl extends JpaRepository implements Appro
 				"                        SELECT   MIDFOD.EMPLOYEE_ID,SGJFOD.RECORD_DATE,'0' as NONAPP      " + 
 				"                        FROM   ( " +
 				"                                        SELECT     SNRMID.EMPLOYEE_ID,MIN(SNFMID.PHASE_ORDER) as FINF,SNRMID.START_DATE,SNRMID.END_DATE " +
-				"                                        FROM       WWFDT_APP_ROOT_INSTANCE SNRMID " +
-				"                                        INNER JOIN WWFDT_APP_PHASE_INSTANCE SNFMID " +
+				"                                        FROM       WWFDT_INST_ROUTE SNRMID " +
+				"                                        INNER JOIN WWFDT_INST_PHASE SNFMID " +
 				"                                        ON         SNRMID.ROOT_ID = SNFMID.ROOT_ID " +
 				"                                        WHERE      @startDate <= SNRMID.END_DATE " +
 				"                                        AND SNRMID.START_DATE <= @endDate " +
@@ -725,8 +744,8 @@ public class JpaApprovalSttScreenRepoImpl extends JpaRepository implements Appro
 				"            GROUP BY SNRMID.EMPLOYEE_ID,SNRMID.START_DATE,SNRMID.END_DATE " +
 				"        ) MIDFOD " +
 				"INNER JOIN ( SELECT SGJKNJT.EMPLOYEE_ID,SGJKNJT.RECORD_DATE,SYNZMF.PHASE_ORDER,SYNZMF.APP_PHASE_ATR " +
-				"FROM WWFDT_APP_ROOT_CONFIRM SGJKNJT " +
-				"INNER JOIN WWFDT_APP_PHASE_CONFIRM SYNZMF " +
+				"FROM WWFDT_CONF_ROUTE SGJKNJT " +
+				"INNER JOIN WWFDT_CONF_PHASE SYNZMF " +
 				"ON SGJKNJT.ROOT_ID = SYNZMF.ROOT_ID " +
 				"WHERE SGJKNJT.ROOT_TYPE = '1' " +
 				"AND @startDate <= SGJKNJT.RECORD_DATE " +
@@ -742,8 +761,8 @@ public class JpaApprovalSttScreenRepoImpl extends JpaRepository implements Appro
 				"FROM          ( SELECT MIDFOD.EMPLOYEE_ID,SGJT.RECORD_DATE,SGJT.ROOT_ID,MIDFOD.FINF " +
 				"FROM      ( " +
 				"        SELECT SNRMID.EMPLOYEE_ID,MIN(SNFMID.PHASE_ORDER) as FINF,SNRMID.START_DATE,SNRMID.END_DATE " +
-				"        FROM WWFDT_APP_ROOT_INSTANCE SNRMID " +
-				"        INNER JOIN WWFDT_APP_PHASE_INSTANCE SNFMID " +
+				"        FROM WWFDT_INST_ROUTE SNRMID " +
+				"        INNER JOIN WWFDT_INST_PHASE SNFMID " +
 				"        ON SNRMID.ROOT_ID = SNFMID.ROOT_ID " +
 				"        WHERE @startDate <= SNRMID.END_DATE " +
 				"        AND SNRMID.START_DATE <= @endDate " +
@@ -751,14 +770,14 @@ public class JpaApprovalSttScreenRepoImpl extends JpaRepository implements Appro
 				"        GROUP BY SNRMID.EMPLOYEE_ID,SNRMID.START_DATE,SNRMID.END_DATE " +
 				"        ) MIDFOD " +
 				"INNER JOIN ( SELECT SGJKNJT.ROOT_ID,SGJKNJT.EMPLOYEE_ID,SGJKNJT.RECORD_DATE " +
-				"                                                                            FROM WWFDT_APP_ROOT_CONFIRM SGJKNJT " +
+				"                                                                            FROM WWFDT_CONF_ROUTE SGJKNJT " +
 				"                                                                            WHERE @startDate <= SGJKNJT.RECORD_DATE " +
 				"                                                                            AND SGJKNJT.RECORD_DATE <= @endDate " +
 				"                                                                            AND SGJKNJT.ROOT_TYPE = '1'      ) SGJT " +
 				"ON MIDFOD.EMPLOYEE_ID = SGJT.EMPLOYEE_ID " +
 				"WHERE MIDFOD.START_DATE <= SGJT.RECORD_DATE " +
 				"AND SGJT.RECORD_DATE <= MIDFOD.END_DATE     ) SGJKN " +
-				"LEFT JOIN WWFDT_APP_PHASE_CONFIRM SYNZMF " +
+				"LEFT JOIN WWFDT_CONF_PHASE SYNZMF " +
 				"ON      ( SGJKN.ROOT_ID = SYNZMF.ROOT_ID " +
 				"AND SGJKN.FINF = SYNZMF.PHASE_ORDER      ) " +
 				"WHERE SYNZMF.APP_PHASE_ATR IS NULL       " +
@@ -796,8 +815,8 @@ public class JpaApprovalSttScreenRepoImpl extends JpaRepository implements Appro
 				"                                    SELECT SKBSYIN.WORKPLACE_ID,SKBSYIN.SID " +
 				"                                    FROM ( " +
 				"                                                SELECT       SSRK.WORKPLACE_ID,SSRK.SID,SSR.START_DATE,SSR.END_DATE " +
-				"                                                FROM         BSYMT_AFF_WORKPLACE_HIST SSR " +
-				"                                                INNER JOIN   BSYMT_AFF_WPL_HIST_ITEM SSRK " +
+				"                                                FROM         BSYMT_AFF_WKP_HIST SSR " +
+				"                                                INNER JOIN   BSYMT_AFF_WKP_HIST_ITEM SSRK " +
 				"                                                ON           SSR.HIST_ID = SSRK.HIST_ID " +
 				"                                                WHERE        @endDate <= SSR.END_DATE " +
 				"                                                AND          SSR.START_DATE <= @endDate " +
@@ -805,7 +824,7 @@ public class JpaApprovalSttScreenRepoImpl extends JpaRepository implements Appro
 				"                                            )  SKBSYIN " +
 				"                                    INNER JOIN       BSYMT_AFF_COM_HIST SKR " +
 				"                                    ON               SKBSYIN.SID = SKR.SID " +
-				"                                    INNER JOIN       BSYMT_EMP_DTA_MNG_INFO SDKJ " +
+				"                                    INNER JOIN       BSYMT_SYAIN SDKJ " +
 				"                                    ON               SDKJ.SID = SKR.SID " +
 				"                                    WHERE            @endDate <= SKR.END_DATE " +
 				"                                    AND              SKR.START_DATE <= @endDate " +
@@ -813,8 +832,8 @@ public class JpaApprovalSttScreenRepoImpl extends JpaRepository implements Appro
 				"                            ) SKBSYINIO " +
 				"                    INNER JOIN  ( " +
 				"                                            SELECT         KRK.SID,KRK.EMP_CD " +
-				"                                            FROM           BSYMT_EMPLOYMENT_HIST KR " +
-				"                                            INNER JOIN     BSYMT_EMPLOYMENT_HIS_ITEM KRK " +
+				"                                            FROM           BSYMT_AFF_EMP_HIST KR " +
+				"                                            INNER JOIN     BSYMT_AFF_EMP_HIST_ITEM KRK " +
 				"                                            ON             KR.HIST_ID = KRK.HIST_ID " +
 				"                                            WHERE          KRK.EMP_CD IN  @employmentCDLst " +
 				"                                            AND            @endDate <= KR.END_DATE " +
@@ -824,8 +843,8 @@ public class JpaApprovalSttScreenRepoImpl extends JpaRepository implements Appro
 				"                ) SKBSYITERM_MON " +
 				"INNER JOIN  ( " +
 				"                                SELECT SGJSKNJT.EMPLOYEE_ID,SGJSKNJT.RECORD_DATE,'0' as NONAPP " +
-				"                                FROM               WWFDT_APP_ROOT_CONFIRM SGJSKNJT " +
-				"                                LEFT JOIN        KRCDT_CONFIRMATION_MONTH MONKN " +
+				"                                FROM               WWFDT_CONF_ROUTE SGJSKNJT " +
+				"                                LEFT JOIN        KRCDT_MON_SELF_CHECK MONKN " +
 				"ON       (   SGJSKNJT.CID = MONKN.CID " +
 				"            AND  SGJSKNJT.EMPLOYEE_ID = MONKN.SID " +
 				"            AND  SGJSKNJT.CLOSURE_ID  = MONKN.CLOSURE_ID " +
@@ -860,8 +879,8 @@ public class JpaApprovalSttScreenRepoImpl extends JpaRepository implements Appro
 				"                                SELECT SKBSYIN.WORKPLACE_ID,SKBSYIN.SID " +
 				"                                FROM ( " +
 				"                                        SELECT       SSRK.WORKPLACE_ID,SSRK.SID,SSR.START_DATE,SSR.END_DATE " +
-				"                                        FROM         BSYMT_AFF_WORKPLACE_HIST SSR " +
-				"                                        INNER JOIN   BSYMT_AFF_WPL_HIST_ITEM SSRK " +
+				"                                        FROM         BSYMT_AFF_WKP_HIST SSR " +
+				"                                        INNER JOIN   BSYMT_AFF_WKP_HIST_ITEM SSRK " +
 				"                                        ON           SSR.HIST_ID = SSRK.HIST_ID " +
 				"                                        WHERE        @endDate <= SSR.END_DATE " +
 				"                                        AND          SSR.START_DATE <= @endDate " +
@@ -869,7 +888,7 @@ public class JpaApprovalSttScreenRepoImpl extends JpaRepository implements Appro
 				"                                        ) SKBSYIN " +
 				"                                INNER JOIN       BSYMT_AFF_COM_HIST SKR " +
 				"                                ON               SKBSYIN.SID = SKR.SID " +
-				"                                INNER JOIN       BSYMT_EMP_DTA_MNG_INFO SDKJ " +
+				"                                INNER JOIN       BSYMT_SYAIN SDKJ " +
 				"                                ON               SDKJ.SID = SKR.SID " +
 				"                                WHERE            @endDate <= SKR.END_DATE " +
 				"                                AND              SKR.START_DATE <= @endDate " +
@@ -877,8 +896,8 @@ public class JpaApprovalSttScreenRepoImpl extends JpaRepository implements Appro
 				"                        ) SKBSYINIO " +
 				"                        INNER JOIN  ( " +
 				"                                SELECT         KRK.SID,KRK.EMP_CD " +
-				"                                FROM           BSYMT_EMPLOYMENT_HIST KR " +
-				"                                INNER JOIN     BSYMT_EMPLOYMENT_HIS_ITEM KRK " +
+				"                                FROM           BSYMT_AFF_EMP_HIST KR " +
+				"                                INNER JOIN     BSYMT_AFF_EMP_HIST_ITEM KRK " +
 				"                                ON             KR.HIST_ID = KRK.HIST_ID " +
 				"                                WHERE          KRK.EMP_CD IN  @employmentCDLst " +
 				"                                AND            @endDate <= KR.END_DATE " +
@@ -890,8 +909,8 @@ public class JpaApprovalSttScreenRepoImpl extends JpaRepository implements Appro
 				"                    SELECT                MIDFOD.EMPLOYEE_ID,SGJFOD.RECORD_DATE,'0' as NONAPP " +
 				"                    FROM       ( " +
 				"                                                    SELECT SNRMID.EMPLOYEE_ID,MIN(SNFMID.PHASE_ORDER) as FINF " +
-				"                                                    FROM WWFDT_APP_ROOT_INSTANCE SNRMID " +
-				"                                                    INNER JOIN WWFDT_APP_PHASE_INSTANCE SNFMID " +
+				"                                                    FROM WWFDT_INST_ROUTE SNRMID " +
+				"                                                    INNER JOIN WWFDT_INST_PHASE SNFMID " +
 				"                                                    ON             SNRMID.ROOT_ID = SNFMID.ROOT_ID " +
 				"                                                    WHERE          @endDate <= SNRMID.END_DATE " +
 				"                                                    AND SNRMID.START_DATE <= @endDate " +
@@ -899,8 +918,8 @@ public class JpaApprovalSttScreenRepoImpl extends JpaRepository implements Appro
 				"                                            ) MIDFOD " +
 				"                    INNER JOIN (    " +
 				"                                                    SELECT SGJKNJT.EMPLOYEE_ID,SGJKNJT.RECORD_DATE,SYNZMF.PHASE_ORDER,SYNZMF.APP_PHASE_ATR " +
-				"                                                    FROM WWFDT_APP_ROOT_CONFIRM SGJKNJT " +
-				"                                                    INNER JOIN WWFDT_APP_PHASE_CONFIRM SYNZMF " +
+				"                                                    FROM WWFDT_CONF_ROUTE SGJKNJT " +
+				"                                                    INNER JOIN WWFDT_CONF_PHASE SYNZMF " +
 				"                                                    ON SGJKNJT.ROOT_ID = SYNZMF.ROOT_ID " +
 				"                                                    WHERE SGJKNJT.ROOT_TYPE = '2' " +
 				"                                                    AND            @yearMonth = SGJKNJT.YEARMONTH " +
@@ -913,8 +932,8 @@ public class JpaApprovalSttScreenRepoImpl extends JpaRepository implements Appro
 				"                    FROM        ( " +
 				"                                                    SELECT  MIDFOD.EMPLOYEE_ID,SGJT.RECORD_DATE,SGJT.ROOT_ID,MIDFOD.FINF " +
 				"                                                    FROM        (   SELECT     SNRMID.EMPLOYEE_ID,MIN(SNFMID.PHASE_ORDER) as FINF " +
-				"                                                                                    FROM       WWFDT_APP_ROOT_INSTANCE SNRMID " +
-				"                                                                                    INNER JOIN WWFDT_APP_PHASE_INSTANCE SNFMID " +
+				"                                                                                    FROM       WWFDT_INST_ROUTE SNRMID " +
+				"                                                                                    INNER JOIN WWFDT_INST_PHASE SNFMID " +
 				"                                                                                    ON         SNRMID.ROOT_ID = SNFMID.ROOT_ID " +
 				"                                                                                    WHERE      @endDate <= SNRMID.END_DATE " +
 				"                                                                                    AND        SNRMID.START_DATE <= @endDate " +
@@ -922,13 +941,13 @@ public class JpaApprovalSttScreenRepoImpl extends JpaRepository implements Appro
 				"                                                                                    GROUP BY   SNRMID.EMPLOYEE_ID " +
 				"                                                                            ) MIDFOD " +
 				"                                                    INNER JOIN  (     SELECT     SGJKNJT.ROOT_ID,SGJKNJT.EMPLOYEE_ID,SGJKNJT.RECORD_DATE " +
-				"                                                                                FROM       WWFDT_APP_ROOT_CONFIRM SGJKNJT " +
+				"                                                                                FROM       WWFDT_CONF_ROUTE SGJKNJT " +
 				"                                                                                WHERE      SGJKNJT.ROOT_TYPE = '2' " +
 				"                                                                                AND        @yearMonth = SGJKNJT.YEARMONTH " +
 				"                                                                            ) SGJT " +
 				"                                                    ON      MIDFOD.EMPLOYEE_ID = SGJT.EMPLOYEE_ID " +
 				"                                        ) SGJKN " +
-				"                    LEFT JOIN   WWFDT_APP_PHASE_CONFIRM SYNZMF " +
+				"                    LEFT JOIN   WWFDT_CONF_PHASE SYNZMF " +
 				"                    ON              SGJKN.ROOT_ID = SYNZMF.ROOT_ID " +
 				"                    WHERE       SYNZMF.APP_PHASE_ATR  IS NULL " +
 				"                ) JCHOSN_M " +
@@ -959,8 +978,8 @@ public class JpaApprovalSttScreenRepoImpl extends JpaRepository implements Appro
 				"                                   SELECT SKBSYIN.WORKPLACE_ID,SKBSYIN.SID,SKBSYIN.START_DATE as WORK_ST,SKBSYIN.END_DATE as WORK_ED,SKR.START_DATE as COMP_ST,SKR.END_DATE as COMP_ED " +
 				"                                   FROM ( " +
 				"                                                  SELECT SSRK.WORKPLACE_ID,SSRK.SID,SSR.START_DATE,SSR.END_DATE " +
-				"                                                  FROM         BSYMT_AFF_WORKPLACE_HIST SSR " +
-				"                                                  INNER JOIN   BSYMT_AFF_WPL_HIST_ITEM SSRK " +
+				"                                                  FROM         BSYMT_AFF_WKP_HIST SSR " +
+				"                                                  INNER JOIN   BSYMT_AFF_WKP_HIST_ITEM SSRK " +
 				"                                                  ON           SSR.HIST_ID = SSRK.HIST_ID " +
 				"                                                  WHERE        @startDate <= SSR.END_DATE " +
 				"                                                  AND          SSR.START_DATE <= @endDate " +
@@ -968,7 +987,7 @@ public class JpaApprovalSttScreenRepoImpl extends JpaRepository implements Appro
 				"                                                ) SKBSYIN " +
 				"                                   INNER JOIN       BSYMT_AFF_COM_HIST SKR " +
 				"                                   ON               SKBSYIN.SID = SKR.SID " +
-				"                                   INNER JOIN       BSYMT_EMP_DTA_MNG_INFO SDKJ " +
+				"                                   INNER JOIN       BSYMT_SYAIN SDKJ " +
 				"                                   ON               SDKJ.SID = SKR.SID " +
 				"                                   WHERE            @startDate <= SKR.END_DATE " +
 				"                                   AND              SKR.START_DATE <= @endDate " +
@@ -976,8 +995,8 @@ public class JpaApprovalSttScreenRepoImpl extends JpaRepository implements Appro
 				"                             ) SKBSYINIO " +
 				"                   INNER JOIN  ( " +
 				"                                         SELECT KRK.SID,KRK.EMP_CD,KR.START_DATE,KR.END_DATE " +
-				"                                         FROM BSYMT_EMPLOYMENT_HIST KR " +
-				"                                         INNER JOIN BSYMT_EMPLOYMENT_HIS_ITEM KRK " +
+				"                                         FROM BSYMT_AFF_EMP_HIST KR " +
+				"                                         INNER JOIN BSYMT_AFF_EMP_HIST_ITEM KRK " +
 				"                                         ON KR.HIST_ID = KRK.HIST_ID " +
 				"                                         WHERE KRK.EMP_CD IN @employmentCDLst " +
 				"                                         AND @startDate <= KR.END_DATE " +

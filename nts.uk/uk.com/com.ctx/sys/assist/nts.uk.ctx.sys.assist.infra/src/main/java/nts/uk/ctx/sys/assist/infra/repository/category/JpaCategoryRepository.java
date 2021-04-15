@@ -15,12 +15,12 @@ import nts.uk.ctx.sys.assist.dom.category.Category;
 import nts.uk.ctx.sys.assist.dom.category.CategoryRepository;
 import nts.uk.ctx.sys.assist.dom.category.SystemUsability;
 import nts.uk.ctx.sys.assist.dom.category.TimeStore;
-import nts.uk.ctx.sys.assist.infra.entity.category.SspmtCategory;
+import nts.uk.ctx.sys.assist.infra.entity.category.SspctSaveCategory;
 
 @Stateless
 public class JpaCategoryRepository extends JpaRepository implements CategoryRepository {
 
-	private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM SspmtCategory f";
+	private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM SspctSaveCategory f";
 
 	private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.categoryId =:categoryId ";
 	private static final String SELECT_BY_ATTENDANCE_SYSTEM = SELECT_ALL_QUERY_STRING
@@ -52,34 +52,34 @@ public class JpaCategoryRepository extends JpaRepository implements CategoryRepo
 	private static final String SELECT_BY_LIST_KEY_STRING = SELECT_ALL_QUERY_STRING
 			+ " WHERE  f.categoryId IN :lstCID ";
 	
-	private static final String SELECT_BY_ID = "SELECT f FROM SspmtCategory f WHERE f.categoryId IN ( SELECT t.tableListPk.categoryId FROM SspmtTableList t WHERE  t.dataRecoveryProcessId =:storeProcessingId AND t.selectionTargetForRes =:selectionTargetForRes )";
+	private static final String SELECT_BY_ID = "SELECT f FROM SspctSaveCategory f WHERE f.categoryId IN ( SELECT t.tableListPk.categoryId FROM SspdtSaveTableList t WHERE  t.dataRecoveryProcessId =:storeProcessingId AND t.selectionTargetForRes =:selectionTargetForRes )";
 	
-	private static final String GET_LIST_CATEGORYID = "SELECT t.tableListPk.categoryId FROM SspmtTableList t WHERE  t.dataRecoveryProcessId =:storeProcessingId AND t.selectionTargetForRes =:selectionTargetForRes ";
+	private static final String GET_LIST_CATEGORYID = "SELECT t.tableListPk.categoryId FROM SspdtSaveTableList t WHERE  t.dataRecoveryProcessId =:storeProcessingId AND t.selectionTargetForRes =:selectionTargetForRes ";
 
 	@Override
 	public List<Category> getAllCategory() {
-		return this.queryProxy().query(SELECT_ALL_QUERY_STRING, SspmtCategory.class).getList(item -> item.toDomain());
+		return this.queryProxy().query(SELECT_ALL_QUERY_STRING, SspctSaveCategory.class).getList(item -> item.toDomain());
 	}
 
 	@Override
 	public Optional<Category> getCategoryById(String categoryId) {
-		return this.queryProxy().query(SELECT_BY_KEY_STRING, SspmtCategory.class).setParameter("categoryId", categoryId)
+		return this.queryProxy().query(SELECT_BY_KEY_STRING, SspctSaveCategory.class).setParameter("categoryId", categoryId)
 				.getSingle(c -> c.toDomain());
 	}
 
 	@Override
 	public void add(Category domain) {
-		this.commandProxy().insert(SspmtCategory.toEntity(domain));
+		this.commandProxy().insert(SspctSaveCategory.toEntity(domain));
 	}
 
 	@Override
 	public void update(Category domain) {
-		this.commandProxy().update(SspmtCategory.toEntity(domain));
+		this.commandProxy().update(SspctSaveCategory.toEntity(domain));
 	}
 
 	@Override
 	public void remove(String categoryId) {
-		this.commandProxy().remove(SspmtCategory.class, categoryId);
+		this.commandProxy().remove(SspctSaveCategory.class, categoryId);
 	}
 
 	@Override
@@ -96,25 +96,25 @@ public class JpaCategoryRepository extends JpaRepository implements CategoryRepo
 
 	@Override
 	public List<Category> findByAttendanceSystem() {
-		return this.queryProxy().query(SELECT_BY_ATTENDANCE_SYSTEM, SspmtCategory.class)
+		return this.queryProxy().query(SELECT_BY_ATTENDANCE_SYSTEM, SspctSaveCategory.class)
 				.setParameter("attendanceSystem", SystemUsability.AVAILABLE.value).getList(c -> c.toDomain());
 	}
 
 	@Override
 	public List<Category> findByPaymentAvailability() {
-		return this.queryProxy().query(SELECT_BY_PAYMENT_AVAIABILITY, SspmtCategory.class)
+		return this.queryProxy().query(SELECT_BY_PAYMENT_AVAIABILITY, SspctSaveCategory.class)
 				.setParameter("paymentAvailability", SystemUsability.AVAILABLE.value).getList(c -> c.toDomain());
 	}
 
 	@Override
 	public List<Category> findByPossibilitySystem() {
-		return this.queryProxy().query(SELECT_BY_POSSIBILITY_SYSTEM, SspmtCategory.class)
+		return this.queryProxy().query(SELECT_BY_POSSIBILITY_SYSTEM, SspctSaveCategory.class)
 				.setParameter("possibilitySystem", SystemUsability.AVAILABLE.value).getList(c -> c.toDomain());
 	}
 
 	@Override
 	public List<Category> findBySchelperSystem() {
-		return this.queryProxy().query(SELECT_BY_SCHELPER_SYSTEM, SspmtCategory.class)
+		return this.queryProxy().query(SELECT_BY_SCHELPER_SYSTEM, SspctSaveCategory.class)
 				.setParameter("schelperSystem", SystemUsability.AVAILABLE.value).getList(c -> c.toDomain());
 	}
 
@@ -122,13 +122,13 @@ public class JpaCategoryRepository extends JpaRepository implements CategoryRepo
 	public List<Category> findByAttendanceSystemAndCodeName(String keySearch, List<String> categoriesIgnore) {
 		List<Category> resultList = new ArrayList<>();
 		if (categoriesIgnore == null || categoriesIgnore.isEmpty()) {
-			resultList.addAll(this.queryProxy().query(SELECT_BY_ATTENDANCE_SYSTEM_AND_CODENAME_CATEIGNORE, SspmtCategory.class)
+			resultList.addAll(this.queryProxy().query(SELECT_BY_ATTENDANCE_SYSTEM_AND_CODENAME_CATEIGNORE, SspctSaveCategory.class)
 					.setParameter("keySearch", "%" + keySearch + "%")
 					.setParameter("timeStore", TimeStore.FULL_TIME.value)
 					.setParameter("attendanceSystem", SystemUsability.AVAILABLE.value).getList(c -> c.toDomain()));
 		} else {
 			CollectionUtil.split(categoriesIgnore, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-				resultList.addAll(this.queryProxy().query(SELECT_BY_ATTENDANCE_SYSTEM_AND_CODENAME, SspmtCategory.class)
+				resultList.addAll(this.queryProxy().query(SELECT_BY_ATTENDANCE_SYSTEM_AND_CODENAME, SspctSaveCategory.class)
 					.setParameter("keySearch", "%" + keySearch + "%").setParameter("categoriesIgnore", subList)
 					.setParameter("timeStore", TimeStore.FULL_TIME.value)
 					.setParameter("attendanceSystem", SystemUsability.AVAILABLE.value)
@@ -147,13 +147,13 @@ public class JpaCategoryRepository extends JpaRepository implements CategoryRepo
 	public List<Category> findByPaymentAvailabilityAndCodeName(String keySearch, List<String> categoriesIgnore) {
 		List<Category> resultList = new ArrayList<>();
 		if (categoriesIgnore == null || categoriesIgnore.isEmpty()) {
-			resultList.addAll(this.queryProxy().query(SELECT_BY_PAYMENT_AVAIABILITY_AND_CODENAME_CATEIGNORE, SspmtCategory.class)
+			resultList.addAll(this.queryProxy().query(SELECT_BY_PAYMENT_AVAIABILITY_AND_CODENAME_CATEIGNORE, SspctSaveCategory.class)
 					.setParameter("keySearch", "%" + keySearch + "%")
 					.setParameter("timeStore", TimeStore.FULL_TIME.value)
 					.setParameter("paymentAvailability", SystemUsability.AVAILABLE.value).getList(c -> c.toDomain()));
 		} else {
 			CollectionUtil.split(categoriesIgnore, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-				resultList.addAll(this.queryProxy().query(SELECT_BY_PAYMENT_AVAIABILITY_AND_CODENAME, SspmtCategory.class)
+				resultList.addAll(this.queryProxy().query(SELECT_BY_PAYMENT_AVAIABILITY_AND_CODENAME, SspctSaveCategory.class)
 					.setParameter("keySearch", "%" + keySearch + "%").setParameter("categoriesIgnore", subList)
 					.setParameter("timeStore", TimeStore.FULL_TIME.value)
 					.setParameter("paymentAvailability", SystemUsability.AVAILABLE.value).getList(c -> c.toDomain()));
@@ -171,13 +171,13 @@ public class JpaCategoryRepository extends JpaRepository implements CategoryRepo
 	public List<Category> findByPossibilitySystemAndCodeName(String keySearch, List<String> categoriesIgnore) {
 		List<Category> resultList = new ArrayList<>();
 		if (categoriesIgnore == null || categoriesIgnore.isEmpty()) {
-			resultList.addAll(this.queryProxy().query(SELECT_BY_POSSIBILITY_SYSTEM_AND_CODENAME_CATEIGNORE, SspmtCategory.class)
+			resultList.addAll(this.queryProxy().query(SELECT_BY_POSSIBILITY_SYSTEM_AND_CODENAME_CATEIGNORE, SspctSaveCategory.class)
 					.setParameter("keySearch", "%" + keySearch + "%")
 					.setParameter("timeStore", TimeStore.FULL_TIME.value)
 					.setParameter("possibilitySystem", SystemUsability.AVAILABLE.value).getList(c -> c.toDomain()));
 		} else {
 			CollectionUtil.split(categoriesIgnore, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-				resultList.addAll(this.queryProxy().query(SELECT_BY_POSSIBILITY_SYSTEM_AND_CODENAME, SspmtCategory.class)
+				resultList.addAll(this.queryProxy().query(SELECT_BY_POSSIBILITY_SYSTEM_AND_CODENAME, SspctSaveCategory.class)
 						.setParameter("keySearch", "%" + keySearch + "%").setParameter("categoriesIgnore", subList)
 						.setParameter("timeStore", TimeStore.FULL_TIME.value)
 						.setParameter("possibilitySystem", SystemUsability.AVAILABLE.value).getList(c -> c.toDomain()));
@@ -195,13 +195,13 @@ public class JpaCategoryRepository extends JpaRepository implements CategoryRepo
 	public List<Category> findBySchelperSystemAndCodeName(String keySearch, List<String> categoriesIgnore) {
 		List<Category> resultList = new ArrayList<>();
 		if (categoriesIgnore == null || categoriesIgnore.isEmpty()) {
-			resultList.addAll(this.queryProxy().query(SELECT_BY_SCHELPER_SYSTEM_AND_CODENAME_CATEIGNORE, SspmtCategory.class)
+			resultList.addAll(this.queryProxy().query(SELECT_BY_SCHELPER_SYSTEM_AND_CODENAME_CATEIGNORE, SspctSaveCategory.class)
 					.setParameter("keySearch", "%" + keySearch + "%")
 					.setParameter("timeStore", TimeStore.FULL_TIME.value)
 					.setParameter("schelperSystem", SystemUsability.AVAILABLE.value).getList(c -> c.toDomain()));
 		} else {
 			CollectionUtil.split(categoriesIgnore, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-				resultList.addAll(this.queryProxy().query(SELECT_BY_SCHELPER_SYSTEM_AND_CODENAME, SspmtCategory.class)
+				resultList.addAll(this.queryProxy().query(SELECT_BY_SCHELPER_SYSTEM_AND_CODENAME, SspctSaveCategory.class)
 					.setParameter("keySearch", "%" + keySearch + "%").setParameter("categoriesIgnore", subList)
 					.setParameter("timeStore", TimeStore.FULL_TIME.value)
 					.setParameter("schelperSystem", SystemUsability.AVAILABLE.value).getList(c -> c.toDomain()));
@@ -232,20 +232,20 @@ public class JpaCategoryRepository extends JpaRepository implements CategoryRepo
 
 		List<Category> lstCategory = new ArrayList<>();
 		CollectionUtil.split(categoryIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subIdList -> {
-			lstCategory.addAll(this.queryProxy().query(SELECT_BY_LIST_KEY_STRING, SspmtCategory.class)
+			lstCategory.addAll(this.queryProxy().query(SELECT_BY_LIST_KEY_STRING, SspctSaveCategory.class)
 					.setParameter("lstCID", subIdList).getList(f -> f.toDomain()));
 		});
 				
 		return lstCategory;
 
 		// return this.queryProxy().query(SELECT_BY_LIST_KEY_STRING,
-		// SspmtCategory.class)
+		// SspmtSaveCategory.class)
 		// .setParameter("lstCID", categoryIds).getList(c->c.toDomain());
 	}
 
 	@Override
 	public List<Category> findById(String storeProcessingId, int selectionTargetForRes) {
-		return this.queryProxy().query(SELECT_BY_ID, SspmtCategory.class)
+		return this.queryProxy().query(SELECT_BY_ID, SspctSaveCategory.class)
 				.setParameter("storeProcessingId", storeProcessingId)
 				.setParameter("selectionTargetForRes", selectionTargetForRes)
 				.getList(c -> c.toDomain());

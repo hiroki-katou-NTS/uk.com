@@ -6,10 +6,11 @@ import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.request.dom.application.WorkInformationForApplication;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.workchange.AppWorkChangeSet;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
-import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.workchangeapp.ReflectWorkChangeApp;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.workchangeapp.ReflectWorkChangeApp;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 
@@ -47,6 +48,11 @@ public class AppWorkChangeDispInfo {
 	 * 所定時間設定
 	 */
 	private Optional<PredetemineTimeSetting> predetemineTimeSetting = Optional.empty();
+	
+	/**
+	 * 申請中の勤務情報
+	 */
+	private Optional<WorkInformationForApplication> workInformationForApplication = Optional.empty();
 	
 	/**
 	 * 選択中の勤務種類

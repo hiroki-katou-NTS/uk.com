@@ -10,12 +10,13 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import mockit.integration.junit4.JMockit;
-import nts.uk.ctx.at.shared.dom.application.reflectprocess.DailyRecordOfApplication;
-import nts.uk.ctx.at.shared.dom.application.reflectprocess.ScheduleRecordClassifi;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.common.ReflectApplicationHelper;
-import nts.uk.ctx.at.shared.dom.application.stamp.DestinationTimeAppShare;
-import nts.uk.ctx.at.shared.dom.application.stamp.StartEndClassificationShare;
-import nts.uk.ctx.at.shared.dom.application.stamp.TimeStampAppEnumShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.stamp.DestinationTimeAppShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.stamp.StartEndClassificationShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.stamp.TimeStampAppEnumShare;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.DailyRecordOfApplication;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.ScheduleRecordClassifi;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.stampapplication.algorithm.support.CancelSupportStartEnd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
 
 @RunWith(JMockit.class)
@@ -35,8 +36,8 @@ public class CancelSupportStartEndTest {
 	public void testAtt() {
 
 		// 開始終了区分が開始
-		DailyRecordOfApplication dailyApp = ReflectApplicationHelper.createRCWithTimeLeav(ScheduleRecordClassifi.RECORD,
-				1, true);// 勤務no = 1
+		DailyRecordOfApplication dailyApp = ReflectApplicationHelper.createRCWithTimeLeavFull(ScheduleRecordClassifi.RECORD,
+				1);// 勤務no = 1
 
 		List<DestinationTimeAppShare> listDestinationTimeApp = ReflectApplicationHelper.createlstDisTimeStamp(
 				TimeStampAppEnumShare.ATTEENDENCE_OR_RETIREMENT, StartEndClassificationShare.START, // 開始
@@ -57,8 +58,8 @@ public class CancelSupportStartEndTest {
 
 		/************************************************************************************************/
 		// 開始終了区分が終了
-		DailyRecordOfApplication dailyApp2 = ReflectApplicationHelper.createRCWithTimeLeav(ScheduleRecordClassifi.RECORD,
-				1, true);// 勤務no = 1
+		DailyRecordOfApplication dailyApp2 = ReflectApplicationHelper.createRCWithTimeLeavFull(ScheduleRecordClassifi.RECORD,
+				1);// 勤務no = 1
 
 		List<DestinationTimeAppShare> listDestinationTimeApp2 = ReflectApplicationHelper.createlstDisTimeStamp(
 				TimeStampAppEnumShare.ATTEENDENCE_OR_RETIREMENT, StartEndClassificationShare.END, // 開始

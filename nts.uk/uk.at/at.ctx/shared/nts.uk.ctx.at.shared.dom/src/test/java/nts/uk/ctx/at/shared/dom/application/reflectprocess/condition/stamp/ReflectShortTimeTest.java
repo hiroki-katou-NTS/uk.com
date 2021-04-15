@@ -9,10 +9,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import mockit.integration.junit4.JMockit;
-import nts.uk.ctx.at.shared.dom.application.reflectprocess.DailyRecordOfApplication;
-import nts.uk.ctx.at.shared.dom.application.reflectprocess.ScheduleRecordClassifi;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.common.ReflectApplicationHelper;
-import nts.uk.ctx.at.shared.dom.application.stamp.TimeZoneStampClassificationShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.stamp.TimeZoneStampClassificationShare;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.DailyRecordOfApplication;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.ScheduleRecordClassifi;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.stampapplication.algorithm.ReflectShortTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ChildCareAttribute;
 
 @RunWith(JMockit.class)
@@ -34,7 +35,7 @@ public class ReflectShortTimeTest {
 	public void testUpdate() {
 
 		DailyRecordOfApplication dailyApp = ReflectApplicationHelper
-				.createRCWithTimeLeav(ScheduleRecordClassifi.SCHEDULE, 1, true);// 打刻NO= 1
+				.createRCWithTimeLeavFull(ScheduleRecordClassifi.SCHEDULE, 1);// 打刻NO= 1
 
 		// case 介護
 		List<Integer> actualResult = ReflectShortTime.reflect(dailyApp,
@@ -52,7 +53,7 @@ public class ReflectShortTimeTest {
 
 		// case 育児
 		DailyRecordOfApplication dailyApp2 = ReflectApplicationHelper
-				.createRCWithTimeLeav(ScheduleRecordClassifi.SCHEDULE, 1, true);// 打刻NO= 1
+				.createRCWithTimeLeavFull(ScheduleRecordClassifi.SCHEDULE, 1);// 打刻NO= 1
 		List<Integer> actualResult2 = ReflectShortTime.reflect(dailyApp2,
 				ReflectApplicationHelper.createlstTimeStampOther(1, // 打刻NO= 1
 						600, // 開始時刻
@@ -83,7 +84,7 @@ public class ReflectShortTimeTest {
 	public void testCreate() {
 
 		DailyRecordOfApplication dailyApp = ReflectApplicationHelper
-				.createRCWithTimeLeav(ScheduleRecordClassifi.SCHEDULE, 1, true);// 打刻NO= 1
+				.createRCWithTimeLeavFull(ScheduleRecordClassifi.SCHEDULE, 1);// 打刻NO= 1
 
 		List<Integer> actualResult = ReflectShortTime.reflect(dailyApp,
 				ReflectApplicationHelper.createlstTimeStampOther(2, // 打刻NO= 2
@@ -101,7 +102,7 @@ public class ReflectShortTimeTest {
 
 		// case 育児
 		DailyRecordOfApplication dailyApp2 = ReflectApplicationHelper
-				.createRCWithTimeLeav(ScheduleRecordClassifi.SCHEDULE, 1, true);// 打刻NO= 1
+				.createRCWithTimeLeavFull(ScheduleRecordClassifi.SCHEDULE, 1);// 打刻NO= 1
 		List<Integer> actualResult2 = ReflectShortTime.reflect(dailyApp2,
 				ReflectApplicationHelper.createlstTimeStampOther(2, // 打刻NO= 2
 						600, // 開始時刻

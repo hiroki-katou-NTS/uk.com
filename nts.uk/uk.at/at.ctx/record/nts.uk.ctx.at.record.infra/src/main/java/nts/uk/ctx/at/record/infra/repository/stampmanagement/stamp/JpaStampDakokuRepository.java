@@ -31,6 +31,7 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.pref
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeClockArt;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.SetPreClockArt;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampType;
+import nts.uk.ctx.at.record.infra.entity.stamp.stampcard.KrcmtStampCard;
 import nts.uk.ctx.at.record.infra.entity.workrecord.stampmanagement.stamp.KrcdtStamp;
 import nts.uk.ctx.at.record.infra.entity.workrecord.stampmanagement.stamp.KrcdtStampPk;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
@@ -56,36 +57,39 @@ public class JpaStampDakokuRepository extends JpaRepository implements StampDako
 			+ " where s.pk.contractCode = :contractCode" + " and s.pk.cardNumber = :cardNumbers " + " order by s.pk.cardNumber asc, s.pk.stampDateTime asc";
 	
 	
-	private static final String GET_NOT_STAMP_NUMBER = "select s from KrcdtStamp s left join KwkdtStampCard k on s.pk.cardNumber = k.cardNo"
+	private static final String GET_NOT_STAMP_NUMBER = "select s from KrcdtStamp s left join KrcmtStampCard k on s.pk.cardNumber = k.cardNo AND k.contractCd = s.pk.contractCode"
 			+ " where k.cardNo is NULL " +" and s.pk.contractCode = :contractCode" + " and s.pk.stampDateTime >= :startStampDate "
 			+ " and s.pk.stampDateTime <= :endStampDate " + " order by s.pk.cardNumber asc, s.pk.stampDateTime asc";
 
 	private static final String GET_STAMP_BY_LIST_CARD = "select s from KrcdtStamp s "
-			+ " where s.pk.cardNumber in  :cardNumbers ";
+			+ " where s.pk.cardNumber in  :cardNumbers AND s.pk.contractCode = :contractCode ";
 	
 	private static final String GET_STAMP_BY_DATEPERIOD = "select d.workLocationName, s from KrcdtStamp s "
-			+ " LEFT JOIN KwlmtWorkLocation d ON s.stampPlace = d.kwlmtWorkLocationPK.workLocationCD"
+			+ " LEFT JOIN KrcmtWorkLocation d ON s.stampPlace = d.kwlmtWorkLocationPK.workLocationCD"
 			+ " AND d.kwlmtWorkLocationPK.companyID = :cid"
 			+ " where s.pk.stampDateTime >= :startStampDate "
 			+ " and s.pk.stampDateTime <= :endStampDate " 
 			+ " and s.cid = :cid"
+			+ " AND s.pk.contractCode = :contractCode "
 			+ " order by s.pk.cardNumber asc, s.pk.stampDateTime asc";
 	
 	private static final String GET_STAMP_BY_DATEPERIOD_AND_CARDS = "select  e.sid, d.workLocationName, from KrcdtStamp s "
-			+ " LEFT JOIN KwlmtWorkLocation d ON c.workLocationCd = d.kwlmtWorkLocationPK.workLocationCD"
+			+ " LEFT JOIN KrcmtWorkLocation d ON c.workLocationCd = d.kwlmtWorkLocationPK.workLocationCD"
 			+ " AND d.kwlmtWorkLocationPK.companyID = :cid"
-			+ " INNER JOIN KwkdtStampCard e ON e.cardNo = s.pk.cardNumber"
+			+ " INNER JOIN KrcmtStampCard e ON e.cardNo = s.pk.cardNumber AND e.contractCd = s.pk.contractCode"
 			+ " where s.pk.stampDateTime >= :startStampDate "
 			+ " and s.pk.stampDateTime <= :endStampDate " 
 			+ " and s.cid = :cid"
 			+ " and s.pk.cardNumber in :listCard"
+			+ " AND s.pk.contractCode = :contractCode "
 			+ " order by s.pk.cardNumber asc, s.pk.stampDateTime asc";
 	private static final String GET_STAMP_BY_DATEPERIOD_AND_CARDS_2 = "select s from KrcdtStamp s "
-			+ " INNER JOIN KwkdtStampCard e ON e.cardNo = s.pk.cardNumber"
+			+ " INNER JOIN KrcmtStampCard e ON e.cardNo = s.pk.cardNumber AND e.contractCd = s.pk.contractCode "
 			+ " where s.pk.stampDateTime >= :startStampDate "
 			+ " and s.pk.stampDateTime <= :endStampDate " 
 			+ " and s.cid = :cid"
 			+ " and s.pk.cardNumber in :listCard"
+			+ " AND s.pk.contractCode = :contractCode "
 			+ " order by s.pk.cardNumber asc, s.pk.stampDateTime asc";
 	
 	// [1] insert(打刻)
@@ -264,7 +268,10 @@ public class JpaStampDakokuRepository extends JpaRepository implements StampDako
 	public List<Stamp> getByListCard(List<String> stampNumbers) {
 		if(stampNumbers.isEmpty())
 			return Collections.emptyList();
-		List<Stamp> data = this.queryProxy().query(GET_STAMP_BY_LIST_CARD, KrcdtStamp.class).setParameter("cardNumbers", stampNumbers)
+		String contractCode = AppContexts.user().contractCode();
+		List<Stamp> data = this.queryProxy().query(GET_STAMP_BY_LIST_CARD, KrcdtStamp.class)
+				.setParameter("cardNumbers", stampNumbers)
+				.setParameter("contractCode", contractCode)
 				.getList(x -> toDomain(x));
 		
 		return data;
@@ -277,22 +284,25 @@ public class JpaStampDakokuRepository extends JpaRepository implements StampDako
 
 		GeneralDateTime end = GeneralDateTime.ymdhms(period.end().year(), period.end().month(), period.end().day(), 23,
 				59, 59);
-
+		String contractCode = AppContexts.user().contractCode();
 		return this.queryProxy().query(GET_STAMP_BY_DATEPERIOD, Object[].class)
 				.setParameter("startStampDate", start)
 				.setParameter("endStampDate", end)
 				.setParameter("cid", companyId)
+				.setParameter("contractCode", contractCode)
 				.getList(x -> toDomainVer2(x));
 
 	}
 	
 	@Override
 	public List<Stamp> getByDateTimeperiod(List<String> listCard,String companyId, GeneralDateTime startDate, GeneralDateTime endDate) {
+		String contractCode = AppContexts.user().contractCode();
 		List<Stamp> data =  this.queryProxy().query(GET_STAMP_BY_DATEPERIOD_AND_CARDS_2, KrcdtStamp.class)
 				.setParameter("startStampDate", startDate)
 				.setParameter("endStampDate", endDate)
 				.setParameter("cid", companyId)
 				.setParameter("listCard", listCard)
+				.setParameter("contractCode", contractCode)
 				.getList(x -> toDomain(x));
 		return data;
 	}
@@ -308,12 +318,14 @@ public class JpaStampDakokuRepository extends JpaRepository implements StampDako
 		GeneralDateTime end = GeneralDateTime.ymdhms(period.end().year(), period.end().month(), period.end().day(), 23,
 				59, 59);
 		List<Stamp> data = new ArrayList<>();
+		String contractCode = AppContexts.user().contractCode();
 		CollectionUtil.split(listCard, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
 			data.addAll(this.queryProxy().query(GET_STAMP_BY_DATEPERIOD_AND_CARDS, Object[].class)
 				.setParameter("startStampDate", start)
 				.setParameter("endStampDate", end)
 				.setParameter("cid", companyId)
 				.setParameter("listCard", listCard)
+				.setParameter("contractCode", contractCode)
 				.getList(x -> toDomainVer3(x)));
 		});
 		return data;

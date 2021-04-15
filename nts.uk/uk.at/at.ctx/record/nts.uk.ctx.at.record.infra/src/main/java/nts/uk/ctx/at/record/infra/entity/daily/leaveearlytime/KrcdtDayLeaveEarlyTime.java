@@ -15,20 +15,19 @@ import javax.persistence.Table;
 import lombok.val;
 import nts.arc.time.GeneralDate;
 //import nts.uk.ctx.at.record.infra.entity.daily.actualworktime.KrcdtDayAttendanceTime;
-import nts.uk.ctx.at.record.infra.entity.daily.time.KrcdtDayTime;
+import nts.uk.ctx.at.record.infra.entity.daily.time.KrcdtDayTimeAtd;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.TimevacationUseTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeWithCalculation;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.earlyleavetime.LeaveEarlyTimeOfDaily;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo;
-import nts.uk.ctx.at.shared.dom.worktype.specialholidayframe.SpecialHdFrameNo;
-import nts.uk.ctx.at.shared.dom.worktype.specialholidayframe.SpecialHdFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.IntervalExemptionTime;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
+import nts.uk.ctx.at.shared.dom.worktype.specialholidayframe.SpecialHdFrameNo;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
-@Table(name = "KRCDT_DAY_LEAVEEARLYTIME")
-public class KrcdtDayLeaveEarlyTime  extends UkJpaEntity implements Serializable{
+@Table(name = "KRCDT_DAY_TIME_LEAVEEARLY")
+public class KrcdtDayLeaveEarlyTime  extends ContractUkJpaEntity implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
 	/*主キー*/
@@ -80,7 +79,7 @@ public class KrcdtDayLeaveEarlyTime  extends UkJpaEntity implements Serializable
 			@JoinColumn(name = "SID", referencedColumnName = "SID", insertable = false, updatable = false),
 			@JoinColumn(name = "YMD", referencedColumnName = "YMD", insertable = false, updatable = false)
 	})
-	public KrcdtDayTime krcdtDayTime;
+	public KrcdtDayTimeAtd krcdtDayTime;
 	
 	@Override
 	protected Object getKey() {
@@ -124,7 +123,7 @@ public class KrcdtDayLeaveEarlyTime  extends UkJpaEntity implements Serializable
 			/*特別休暇枠No*/
 			this.specialHdFrameNo = vacationUse.getSpecialHolidayFrameNo().map(c -> c.v()).orElse(null);
 			/*子の看護休暇使用時間*/
-			this.childCareUseTime = vacationUse.getTimeChildCareHolidayUseTime() == null ? 0 : vacationUse.getTimeCareHolidayUseTime().valueAsMinutes();
+			this.childCareUseTime = vacationUse.getTimeChildCareHolidayUseTime() == null ? 0 : vacationUse.getTimeChildCareHolidayUseTime().valueAsMinutes();
 			/*介護休暇使用時間*/
 			this.careUseTime = vacationUse.getTimeCareHolidayUseTime() == null ? 0 : vacationUse.getTimeCareHolidayUseTime().valueAsMinutes();
 		}

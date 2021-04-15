@@ -60,9 +60,13 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 				}
 			}
 			vm.$blockui("grayout");
-			vm.loadData(vm.params?vm.params.employeeIds:[], paramDate?[paramDate]:[], vm.appType()).then(() => {
-				vm.$blockui("grayout");
-				vm.$ajax('at/request/application/holidayshipment/startPageARefactor',{sIDs: [], appDate: [], appDispInfoStartup: vm.appDispInfoStartupOutput()}).then((data: any) =>{
+			vm.loadData(vm.params?vm.params.employeeIds:[], paramDate?[paramDate]:[], vm.appType()).then((loadDataFlag: any) => {
+				if(loadDataFlag) {
+					vm.$blockui("grayout");
+					return vm.$ajax('at/request/application/holidayshipment/startPageARefactor',{sIDs: [], appDate: [], appDispInfoStartup: vm.appDispInfoStartupOutput()});
+				}
+			}).then((data: any) =>{
+				if(data) {
 					vm.displayInforWhenStarting(data);
 					vm.isSendMail(data.appDispInfoStartup.appDispInfoNoDateOutput.applicationSetting.appDisplaySetting.manualSendMailAtr == 1);
 					vm.remainDays(data.remainingHolidayInfor.remainDays + '日');
@@ -74,19 +78,15 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 					$('#contents-area').css({'display': ''});
 					$('#functions-area').css({'opacity': ''});
 					CommonProcess.checkUsage(true, "#recAppDate", vm);
-					$("#recAppDate").focus();
-					vm.$blockui("hide"); 
-				}).fail((failData: any) => {
-					vm.$dialog.error({ messageId: failData.messageId, messageParams: failData.parameterIds }).then(() => { vm.$jump("com", "/view/ccg/008/a/index.xhtml"); });
-				}).always(() => {
-					
-				});
+					$("#recAppDate").focus();	
+				}
+				vm.$blockui("hide"); 
 			}).fail((failData: any) => {
 				console.log(failData);
 				if (failData.messageId === "Msg_43") {
 					vm.$dialog.error(failData).then(() => { vm.$jump("com", "/view/ccg/008/a/index.xhtml"); });
 				} else {
-					vm.$dialog.error({ messageId: failData.messageId, messageParams: failData.parameterIds });
+					vm.$dialog.error({ messageId: failData.messageId, messageParams: failData.parameterIds }).then(() => { vm.$jump("com", "/view/ccg/008/a/index.xhtml"); });
 				}
 				vm.$blockui("hide"); 
 			});
@@ -153,7 +153,8 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 			
 		}
 		
-		triggerValidate(): boolean{
+		triggerValidate(): boolean {
+			$('#kaf000-a-component3-prePost').trigger("validate");
 			$('.nts-input').trigger("validate");
 			$('input').trigger("validate");
 			return nts.uk.ui.errors.hasError();
@@ -177,17 +178,19 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 							return n.timeZone.startTime == undefined || n.timeZone.startTime == undefined;  
 						}); 
 					}
-				console.log(data);	
 				vm.$blockui("show");
-				vm.$ajax('at/request/application/holidayshipment/save', data).then(() =>{
+
+				vm.$ajax('at/request/application/holidayshipment/save', data).then((result) => {
 					vm.$blockui("hide");
-					vm.$dialog.info({ messageId: "Msg_15" }).done(()=>{
-						vm.$jump("/view/kaf/011/a/index.xhtml", vm.params);
+					vm.$dialog.info({messageId: "Msg_15"}).done(() => {
+						nts.uk.request.ajax("at", "at/request/application/reflect-app", result.reflectAppIdLst);
+						CommonProcess.handleAfterRegister(result, vm.isSendMail(), vm);
 					});
 				}).fail((failData) => {
-					vm.$dialog.error({ messageId: failData.messageId, messageParams: failData.parameterIds });
+					vm.$dialog.error({messageId: failData.messageId, messageParams: failData.parameterIds});
 					vm.$blockui("hide");
 				});
+
 			}
 			
 			

@@ -4,7 +4,9 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -13,6 +15,7 @@ import javax.ejb.Stateless;
 import org.apache.commons.lang3.StringUtils;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet.NtsResultRecord;
 import nts.arc.time.GeneralDate;
@@ -29,7 +32,6 @@ import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTimeRepository;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOvertimeDetail;
 import nts.uk.ctx.at.request.dom.application.overtime.ApplicationTime;
-import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType_Update;
 import nts.uk.ctx.at.request.dom.application.overtime.HolidayMidNightTime;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeShiftNight;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeAppAtr;
@@ -50,7 +52,7 @@ import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtAppOverTimeD
 import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtAppOvertimeDetail;
 import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtAppOvertimeDetailPk;
 import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtAppOvertimePK;
-import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtOvertimeInput;
+import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtAppOvertimeInput;
 import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtOvertimeInputPK;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.common.TimeZoneWithWorkNo;
@@ -63,7 +65,6 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.onem
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.oneyear.AgreementOneYearTime;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.StaturoryAtrOfHolidayWork;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.time.TimeWithDayAttr;
 
 @Stateless
 public class JpaAppOverTimeRepository extends JpaRepository implements AppOverTimeRepository{
@@ -72,6 +73,8 @@ public class JpaAppOverTimeRepository extends JpaRepository implements AppOverTi
 			+ " WHERE a.APP_ID = @appID AND a.CID = @companyId";
 	
 	public static final String SELECT_ALL_BY_JPA = "SELECT a FROM KrqdtAppOverTime as a WHERE a.krqdtAppOvertimePK.cid = :cid and a.krqdtAppOvertimePK.appId = :appId";
+	
+	public static final String SELECT_ALL_BY_APP_IDs = "SELECT a FROM KrqdtAppOverTime a WHERE a.krqdtAppOvertimePK.cid = :cid and a.krqdtAppOvertimePK.appId IN :appIds";
 	
 	@Override
 	public Optional<AppOverTime> find(String companyId, String appId) {
@@ -89,7 +92,6 @@ public class JpaAppOverTimeRepository extends JpaRepository implements AppOverTi
 		this.getEntityManager().flush();
 	}
 	private KrqdtAppOverTime toEntity(AppOverTime appOverTime) {
-		String cid = AppContexts.user().companyId();
 		KrqdtAppOverTime krqdtAppOverTime = new KrqdtAppOverTime();
 		KrqdtAppOvertimePK krqdtAppOvertimePK = new KrqdtAppOvertimePK(
 				AppContexts.user().companyId(),
@@ -97,8 +99,8 @@ public class JpaAppOverTimeRepository extends JpaRepository implements AppOverTi
 				
 		krqdtAppOverTime.krqdtAppOvertimePK = krqdtAppOvertimePK;
 		krqdtAppOverTime.overtimeAtr = appOverTime.getOverTimeClf().value;
-		krqdtAppOverTime.workTypeCode = appOverTime.getWorkInfoOp().map(x -> x.getWorkTypeCode().v()).orElse(null);
-		krqdtAppOverTime.workTimeCode = appOverTime.getWorkInfoOp().map(x -> x.getWorkTimeCode().v()).orElse(null);
+		krqdtAppOverTime.workTypeCode = appOverTime.getWorkInfoOp().flatMap(x -> Optional.ofNullable(x.getWorkTypeCode())).map(x -> x.v()).orElse(null);
+		krqdtAppOverTime.workTimeCode = appOverTime.getWorkInfoOp().flatMap(x -> Optional.ofNullable(x.getWorkTimeCode())).map(x -> x.v()).orElse(null);
 		List<TimeZoneWithWorkNo> workHours = appOverTime.getWorkHoursOp().orElse(Collections.emptyList());
 		workHours.stream().forEach(item -> {
 			if (item.getWorkNo().v() == 1) {
@@ -195,13 +197,13 @@ public class JpaAppOverTimeRepository extends JpaRepository implements AppOverTi
 				krqdtAppOverTime.breakTimeEnd10 = item.getTimeZone().getEndTime().v();
 			}
 		});
-		krqdtAppOverTime.overtimeInputs = new ArrayList<KrqdtOvertimeInput>();
+		krqdtAppOverTime.overtimeInputs = new ArrayList<KrqdtAppOvertimeInput>();
 		// ------
 		List<OvertimeApplicationSetting> overtimeApplicationSettings = appOverTime.getApplicationTime().getApplicationTime();
 		if (!CollectionUtil.isEmpty(overtimeApplicationSettings)) {
 			krqdtAppOverTime.overtimeInputs = overtimeApplicationSettings
 				.stream()
-				.map(x -> new KrqdtOvertimeInput(
+				.map(x -> new KrqdtAppOvertimeInput(
 										new KrqdtOvertimeInputPK(
 												AppContexts.user().companyId(),
 												appOverTime.getAppID(),
@@ -310,16 +312,16 @@ public class JpaAppOverTimeRepository extends JpaRepository implements AppOverTi
 		updateAppOverTime.get().breakTimeStart10 = krqdtAppOverTime.breakTimeStart10;
 		updateAppOverTime.get().breakTimeEnd10 = krqdtAppOverTime.breakTimeEnd10;
 		
-		List<KrqdtOvertimeInput> overtimeInputs = new ArrayList<KrqdtOvertimeInput>();
+		List<KrqdtAppOvertimeInput> overtimeInputs = new ArrayList<KrqdtAppOvertimeInput>();
 		
 		krqdtAppOverTime.overtimeInputs.stream().forEach(x -> {
-			Optional<KrqdtOvertimeInput> result = updateAppOverTime.get().overtimeInputs.stream().filter(
+			Optional<KrqdtAppOvertimeInput> result = updateAppOverTime.get().overtimeInputs.stream().filter(
 					a -> a.krqdtOvertimeInputPK.getAttendanceType() == x.krqdtOvertimeInputPK.getAttendanceType()
 							&& a.krqdtOvertimeInputPK.getAppId() == x.krqdtOvertimeInputPK.getAppId()
 							&& a.krqdtOvertimeInputPK.getCid() == x.krqdtOvertimeInputPK.getCid()
 							&& a.krqdtOvertimeInputPK.getFrameNo() == x.krqdtOvertimeInputPK.getFrameNo()
 					).findFirst();
-			KrqdtOvertimeInput krqdtOvertimeInput;
+			KrqdtAppOvertimeInput krqdtOvertimeInput;
 			if (result.isPresent()) {
 				result.get().applicationTime = x.applicationTime;
 				krqdtOvertimeInput = result.get();
@@ -675,8 +677,6 @@ public class JpaAppOverTimeRepository extends JpaRepository implements AppOverTi
 		Integer regLimitTimeMulti = res.getInt("REG_LIMIT_TIME_MULTI");
 		
 		AppOvertimeDetail appOvertimeDetail = new AppOvertimeDetail();
-		appOvertimeDetail.setCid(AppContexts.user().companyId());
-		appOvertimeDetail.setAppId(appID);
 		
 		if(year_month != null) {
 			YearMonth yearMonth = new YearMonth(year_month);
@@ -734,5 +734,30 @@ public class JpaAppOverTimeRepository extends JpaRepository implements AppOverTi
 		this.commandProxy().remove(KrqdtAppOverTime.class, new KrqdtAppOvertimePK(companyID, appID));
 		
 	}
-
+	
+	@Override
+	public Map<String, Integer> getByAppIdAndOTAttr(String companyId, List<String> appIds) { //#115387
+		Map<String, Integer> returnMap = new HashMap<>();
+		CollectionUtil.split(appIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			returnMap.putAll(this.queryProxy()
+					   .query(SELECT_ALL_BY_APP_IDs, KrqdtAppOverTime.class)
+					   .setParameter("cid", companyId)
+					   .setParameter("appIds", subList)
+					   .getList().stream().collect(Collectors.toMap(item -> item.krqdtAppOvertimePK.appId, item -> item.overtimeAtr)));
+		});
+		return returnMap;
+	}
+	@Override
+	public Map<String, AppOverTime> getHashMapByID(String companyId, List<String> appIds) {
+		Map<String, AppOverTime> result = new HashMap<>();
+		CollectionUtil.split(appIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			this.queryProxy()
+					   .query(SELECT_ALL_BY_APP_IDs, KrqdtAppOverTime.class)
+					   .setParameter("cid", companyId)
+					   .setParameter("appIds", subList)
+					   .getList(x -> result.put(x.krqdtAppOvertimePK.appId, x.toDomain()));
+		});
+		
+		return result;
+	}
 }

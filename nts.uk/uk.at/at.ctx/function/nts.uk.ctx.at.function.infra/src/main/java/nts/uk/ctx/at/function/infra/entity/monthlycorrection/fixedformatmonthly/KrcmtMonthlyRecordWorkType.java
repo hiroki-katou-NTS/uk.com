@@ -14,13 +14,13 @@ import javax.persistence.Table;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.function.dom.monthlycorrection.fixedformatmonthly.MonthlyActualResults;
 import nts.uk.ctx.at.function.dom.monthlycorrection.fixedformatmonthly.MonthlyRecordWorkType;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 import nts.uk.ctx.at.shared.dom.workrule.businesstype.BusinessTypeCode;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCMT_BUS_MON_FORM")
-public class KrcmtMonthlyRecordWorkType extends UkJpaEntity implements Serializable {
+@Table(name = "KFNMT_MON_FORM_BUS")
+public class KrcmtMonthlyRecordWorkType extends ContractUkJpaEntity implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 
@@ -28,7 +28,7 @@ public class KrcmtMonthlyRecordWorkType extends UkJpaEntity implements Serializa
 	public KrcmtMonthlyRecordWorkTypePK krcmtMonthlyRecordWorkTypePK;
 
 	@OneToMany(mappedBy="monthlyactualresult", cascade = CascadeType.ALL, orphanRemoval = true)
-	@JoinTable(name = "KRCMT_BUS_MON_FORM_SHEET")
+	@JoinTable(name = "KFNMT_MON_FORM_BUS_SHEET")
 	public List<KrcmtMonthlyActualResultRC> listKrcmtMonthlyActualResultRC;
 	
 	

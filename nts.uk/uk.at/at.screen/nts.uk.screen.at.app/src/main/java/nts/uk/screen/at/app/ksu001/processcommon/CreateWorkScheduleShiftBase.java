@@ -34,13 +34,16 @@ import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterName;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterRepository;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingService;
-import nts.uk.ctx.at.shared.dom.worktime.worktimeset.internal.PredetermineTimeSetForCalc;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.screen.at.app.ksu001.displayinshift.ShiftMasterMapWithWorkStyle;
@@ -67,6 +70,14 @@ public class CreateWorkScheduleShiftBase {
 	private WorkTimeSettingService workTimeSettingService;
 	@Inject
 	private ShiftMasterRepository shiftMasterRepo;
+	@Inject
+	private FixedWorkSettingRepository fixedWorkSet; 
+	@Inject
+	private FlowWorkSettingRepository flowWorkSet;
+	@Inject
+	private FlexWorkSettingRepository flexWorkSet;
+	@Inject
+	private PredetemineTimeSettingRepository predetemineTimeSet;
 
 	public WorkScheduleShiftBaseResult getWorkScheduleShiftBase(
 			Map<ScheManaStatuTempo, Optional<IntegrationOfDaily>> mapDataDaily,
@@ -88,7 +99,7 @@ public class CreateWorkScheduleShiftBase {
 		List<WorkInformation> lstWorkInfo = GetWorkInforUsedDailyAttenRecordService.getListWorkInfo(workInfoOfDailyAttendances);
 
 		// call シフトマスタと出勤休日区分の組み合わせを取得する
-		GetCombinationrAndWorkHolidayAtrService.Require requireImpl2 = new RequireCombiAndWorkHolidayImpl(shiftMasterRepo, basicScheduleService, workTypeRepo,workTimeSettingRepo,workTimeSettingService);
+		GetCombinationrAndWorkHolidayAtrService.Require requireImpl2 = new RequireCombiAndWorkHolidayImpl(shiftMasterRepo, basicScheduleService, workTypeRepo,workTimeSettingRepo,workTimeSettingService, fixedWorkSet, flowWorkSet, flexWorkSet, predetemineTimeSet);
 		Map<ShiftMaster,Optional<WorkStyle>> mapShiftMasterWithWorkStyle = GetCombinationrAndWorkHolidayAtrService.getbyWorkInfo(requireImpl2,AppContexts.user().companyId(), lstWorkInfo);
 
 		List<ShiftMasterMapWithWorkStyle> listShiftMaster = listShiftMasterNotNeedGetNew;
@@ -156,7 +167,7 @@ public class CreateWorkScheduleShiftBase {
 		Map<ShiftMaster, Optional<WorkStyle>> mapShiftMasterWithWorkStyle2 = new HashMap<>();
 		String companyId = AppContexts.user().companyId();
 		for (ShiftMasterMapWithWorkStyle obj : listShiftMaster) {
-			ShiftMasterDisInfor displayInfor = new ShiftMasterDisInfor(new ShiftMasterName(obj.shiftMasterName),new ColorCodeChar6(obj.color), new Remarks(obj.remark));
+			ShiftMasterDisInfor displayInfor = new ShiftMasterDisInfor(new ShiftMasterName(obj.shiftMasterName),new ColorCodeChar6(obj.color),new ColorCodeChar6(obj.color), new Remarks(obj.remark));
 			ShiftMaster ShiftMaster = new ShiftMaster(companyId, new ShiftMasterCode(obj.shiftMasterCode), displayInfor,obj.workTypeCode, obj.workTimeCode);
 			mapShiftMasterWithWorkStyle2.put(ShiftMaster, obj.workStyle == null ? Optional.empty(): Optional.of(EnumAdaptor.valueOf(Integer.valueOf(obj.workStyle), WorkStyle.class)));
 		}
@@ -178,6 +189,14 @@ public class CreateWorkScheduleShiftBase {
 		private WorkTimeSettingRepository workTimeSettingRepository;
 		@Inject
 		private WorkTimeSettingService workTimeSettingService;
+		@Inject
+		private FixedWorkSettingRepository fixedWorkSet;
+		@Inject
+		private FlowWorkSettingRepository flowWorkSet;
+		@Inject
+		private FlexWorkSettingRepository flexWorkSet;
+		@Inject
+		private PredetemineTimeSettingRepository predetemineTimeSet;
 
 		@Override
 		public List<ShiftMaster> getByListEmp(String companyID, List<String> lstShiftMasterCd) {
@@ -213,26 +232,23 @@ public class CreateWorkScheduleShiftBase {
 
 		@Override
 		public FixedWorkSetting getWorkSettingForFixedWork(WorkTimeCode code) {
-			// TODO 自動生成されたメソッド・スタブ
-			return null;
+			Optional<FixedWorkSetting> workSetting = fixedWorkSet.findByKey(companyId, code.v());
+			return workSetting.isPresent() ? workSetting.get() : null;
 		}
-
 		@Override
 		public FlowWorkSetting getWorkSettingForFlowWork(WorkTimeCode code) {
-			// TODO 自動生成されたメソッド・スタブ
-			return null;
+			Optional<FlowWorkSetting> workSetting = flowWorkSet.find(companyId, code.v());
+			return workSetting.isPresent() ? workSetting.get() : null;
 		}
-
 		@Override
 		public FlexWorkSetting getWorkSettingForFlexWork(WorkTimeCode code) {
-			// TODO 自動生成されたメソッド・スタブ
-			return null;
+			Optional<FlexWorkSetting> workSetting = flexWorkSet.find(companyId, code.v());
+			return workSetting.isPresent() ? workSetting.get() : null;
 		}
-
 		@Override
 		public PredetemineTimeSetting getPredetermineTimeSetting(WorkTimeCode wktmCd) {
-			// TODO 自動生成されたメソッド・スタブ
-			return null;
+			Optional<PredetemineTimeSetting> workSetting = predetemineTimeSet.findByWorkTimeCode(companyId, wktmCd.v());
+			return workSetting.isPresent() ? workSetting.get() : null;
 		}
 
 	}

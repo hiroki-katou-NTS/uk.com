@@ -13,7 +13,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.sys.log.dom.logbasicinfo.LogBasicInfoRepository;
-import nts.uk.ctx.sys.log.infra.entity.logbasicinfo.SrcdtLogBasicInfo;
+import nts.uk.ctx.sys.log.infra.entity.logbasicinfo.SrcdtBasicInfo;
 import nts.uk.shr.com.security.audittrail.basic.LogBasicInformation;
 import nts.uk.shr.com.security.audittrail.correction.processor.LogBasicInformationWriter;
 
@@ -28,8 +28,8 @@ public class JpaLogBasicInformationRepository extends JpaRepository implements L
 
 	@Override
 	public Optional<LogBasicInformation> getLogBasicInfo(String companyId, String operationId) {
-		String query = "SELECT a FROM SrcdtLogBasicInfo a WHERE a.companyId = :companyId AND a.operationId = :operationId";
-		return this.queryProxy().query(query, SrcdtLogBasicInfo.class).setParameter("companyId", companyId)
+		String query = "SELECT a FROM SrcdtBasicInfo a WHERE a.companyId = :companyId AND a.operationId = :operationId";
+		return this.queryProxy().query(query, SrcdtBasicInfo.class).setParameter("companyId", companyId)
 				.setParameter("operationId", operationId).getSingle(item -> item.toDomain());
 	}
 
@@ -42,16 +42,16 @@ public class JpaLogBasicInformationRepository extends JpaRepository implements L
 				59, 59);*/
 		List<LogBasicInformation> resultList = new ArrayList<>();
 		if (listEmployeeId == null || listEmployeeId.isEmpty()) {
-			String query = "SELECT a FROM SrcdtLogBasicInfo a WHERE a.companyId = :companyId"
+			String query = "SELECT a FROM SrcdtBasicInfo a WHERE a.companyId = :companyId"
 					+ " AND a.modifiedDateTime BETWEEN :startPeriod AND :endPeriod ORDER BY a.modifiedDateTime DESC";
-			resultList.addAll(this.queryProxy().query(query, SrcdtLogBasicInfo.class).setParameter("companyId", companyId)
+			resultList.addAll(this.queryProxy().query(query, SrcdtBasicInfo.class).setParameter("companyId", companyId)
 					.setParameter("startPeriod", start)
 					.setParameter("endPeriod", end).getList(i -> i.toDomain()));
 		} else {
-			String query = "SELECT a FROM SrcdtLogBasicInfo a WHERE a.companyId = :companyId AND a.employeeId IN :employeeId "
+			String query = "SELECT a FROM SrcdtBasicInfo a WHERE a.companyId = :companyId AND a.employeeId IN :employeeId "
 					+ "AND a.modifiedDateTime BETWEEN :startPeriod AND :endPeriod ORDER BY a.modifiedDateTime DESC";
 			CollectionUtil.split(listEmployeeId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-				resultList.addAll(this.queryProxy().query(query, SrcdtLogBasicInfo.class).setParameter("companyId", companyId)
+				resultList.addAll(this.queryProxy().query(query, SrcdtBasicInfo.class).setParameter("companyId", companyId)
 						.setParameter("employeeId", subList).setParameter("startPeriod", start)
 						.setParameter("endPeriod", end).getList(i -> i.toDomain()));
 			});
@@ -62,16 +62,16 @@ public class JpaLogBasicInformationRepository extends JpaRepository implements L
 
 	@Override
 	public void save(LogBasicInformation basicInfo) {
-		this.commandProxy().insert(SrcdtLogBasicInfo.fromDomain(basicInfo));
+		this.commandProxy().insert(SrcdtBasicInfo.fromDomain(basicInfo));
 	}
 
 	@Override
 	public List<LogBasicInformation> getLogBasicInfo(String companyId, List<String> operationIds) {
 		if (operationIds.isEmpty()) return Collections.emptyList();
-		String query = "SELECT a FROM SrcdtLogBasicInfo a WHERE a.companyId = :companyId AND a.operationId IN :operationIds";
+		String query = "SELECT a FROM SrcdtBasicInfo a WHERE a.companyId = :companyId AND a.operationId IN :operationIds";
 		List<LogBasicInformation> results = new ArrayList<>();
 		CollectionUtil.split(operationIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, splitData -> {
-			results.addAll(this.queryProxy().query(query, SrcdtLogBasicInfo.class).setParameter("companyId", companyId)
+			results.addAll(this.queryProxy().query(query, SrcdtBasicInfo.class).setParameter("companyId", companyId)
 					.setParameter("operationIds", splitData).getList(item -> item.toDomain()));
 		});
 		return results;

@@ -29,25 +29,23 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.Inter
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.CompensatoryDayoffDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.DigestionAtr;
+import nts.uk.ctx.at.shared.dom.remainingnumber.base.HolidayAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.ManagementDataDaysAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.ManagementDataRemainUnit;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.DaikyuFurikyuHelper;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.AccumulationAbsenceDetail;
-import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.FixedManagementDataMonth;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.VacationDetails;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.OccurrenceDay;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RequiredDay;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.StatutoryAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UnOffsetDay;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UnUsedDay;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutManagementData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SubstitutionOfHDManagementData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveRemainingDayNumber;
-import nts.uk.ctx.at.shared.dom.worktype.HolidayAtr;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.breakinfo.FixedManagementDataMonth;
 
 @RunWith(JMockit.class)
 public class NumberCompensatoryLeavePeriodQueryTest {
@@ -142,22 +140,22 @@ public class NumberCompensatoryLeavePeriodQueryTest {
 
 		List<InterimRecMng> useRecMng = Arrays.asList(
 				new InterimRecMng("adda6a46-2cbe-48c8-85f8-c04ca554e333", GeneralDate.max(), new OccurrenceDay(1.0),
-						StatutoryAtr.PUBLIC, new UnUsedDay(1.0)),
+						HolidayAtr.PUBLICHOLIDAY, new UnUsedDay(1.0)),
 				new InterimRecMng("62d542c3-4b79-4bf3-bd39-7e7f06711c34", GeneralDate.max(), new OccurrenceDay(1.0),
-						StatutoryAtr.PUBLIC, new UnUsedDay(1.0)),
+						HolidayAtr.PUBLICHOLIDAY, new UnUsedDay(1.0)),
 				new InterimRecMng("077a8929-3df0-4fd6-859e-29e615a921ee", GeneralDate.max(), new OccurrenceDay(1.0),
-						StatutoryAtr.PUBLIC, new UnUsedDay(1.0)));
+						HolidayAtr.PUBLICHOLIDAY, new UnUsedDay(1.0)));
 
 		List<InterimRemain> interimMng = Arrays.asList(
 				new InterimRemain("adda6a46-2cbe-48c8-85f8-c04ca554e132", SID, GeneralDate.ymd(2019, 11, 4),
-						CreateAtr.SCHEDULE, RemainType.PAUSE, RemainAtr.SINGLE),
+						CreateAtr.SCHEDULE, RemainType.PAUSE),
 
 				new InterimRemain("adda6a46-2cbe-48c8-85f8-c04ca554e333", SID, GeneralDate.ymd(2019, 11, 5),
-						CreateAtr.RECORD, RemainType.PICKINGUP, RemainAtr.SINGLE),
+						CreateAtr.RECORD, RemainType.PICKINGUP),
 				new InterimRemain("62d542c3-4b79-4bf3-bd39-7e7f06711c34", SID, GeneralDate.ymd(2019, 11, 14),
-						CreateAtr.RECORD, RemainType.PICKINGUP, RemainAtr.SINGLE),
+						CreateAtr.RECORD, RemainType.PICKINGUP),
 				new InterimRemain("077a8929-3df0-4fd6-859e-29e615a921ee", SID, GeneralDate.ymd(2019, 11, 15),
-						CreateAtr.RECORD, RemainType.PICKINGUP, RemainAtr.SINGLE));
+						CreateAtr.RECORD, RemainType.PICKINGUP));
 
 		new Expectations() {
 			{
@@ -176,18 +174,18 @@ public class NumberCompensatoryLeavePeriodQueryTest {
 
 				require.getByUnUseState(CID, SID, (GeneralDate) any, 0, DigestionAtr.UNUSED);
 				result = Arrays.asList(new PayoutManagementData("62d542c3-4b79-4bf3-bd39-7e7f06711ccc", CID, SID, false,
-						GeneralDate.ymd(2019, 10, 28), GeneralDate.max(), HolidayAtr.PUBLIC_HOLIDAY.value, 1.0, 1.0, 0),
+						GeneralDate.ymd(2019, 10, 28), GeneralDate.max(), HolidayAtr.PUBLICHOLIDAY.value, 1.0, 1.0, 0),
 						new PayoutManagementData("62d542c3-4b79-4bf3-bd39-7e7f06711ccb", CID, SID, false,
-								GeneralDate.ymd(2019, 10, 25), GeneralDate.max(), HolidayAtr.PUBLIC_HOLIDAY.value, 1.0,
+								GeneralDate.ymd(2019, 10, 25), GeneralDate.max(), HolidayAtr.PUBLICHOLIDAY.value, 1.0,
 								1.0, 0),
 						new PayoutManagementData("62d542c3-4b79-4bf3-bd39-7e7f06711aaa", CID, SID, false,
-								GeneralDate.ymd(2019, 10, 27), GeneralDate.max(), HolidayAtr.PUBLIC_HOLIDAY.value, 1.0,
+								GeneralDate.ymd(2019, 10, 27), GeneralDate.max(), HolidayAtr.PUBLICHOLIDAY.value, 1.0,
 								1.0, 0),
 						new PayoutManagementData("62d542c3-4b79-4bf3-bd39-7e7f06711aaa", CID, SID, false,
-								GeneralDate.ymd(2019, 12, 27), GeneralDate.max(), HolidayAtr.PUBLIC_HOLIDAY.value, 1.0,
+								GeneralDate.ymd(2019, 12, 27), GeneralDate.max(), HolidayAtr.PUBLICHOLIDAY.value, 1.0,
 								1.0, 0),
 						new PayoutManagementData("62d542c3-4b79-4bf3-bd39-7e7f06711aaa", CID, SID, false,
-								GeneralDate.ymd(2019, 10, 25), GeneralDate.max(), HolidayAtr.PUBLIC_HOLIDAY.value, 1.0,
+								GeneralDate.ymd(2019, 10, 25), GeneralDate.max(), HolidayAtr.PUBLICHOLIDAY.value, 1.0,
 								-1.0, 0));
 
 			}
@@ -300,7 +298,7 @@ public class NumberCompensatoryLeavePeriodQueryTest {
 	private PayoutManagementData createPayoutMngData(String id, GeneralDate dateExec, GeneralDate deadLine,
 			Double unUse) {
 		return new PayoutManagementData(id, CID, SID, dateExec == null, dateExec, deadLine,
-				HolidayAtr.PUBLIC_HOLIDAY.value, 1.0, unUse, 0);
+				HolidayAtr.PUBLICHOLIDAY.value, 1.0, unUse, 0);
 	}
 	
 	private CompenLeaveAggrResult compenLeaveAggrResult(List<AccumulationAbsenceDetail> lstAccDetail, Double carryDay, GeneralDate nextDay) {

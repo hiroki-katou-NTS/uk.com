@@ -1,17 +1,18 @@
 package nts.uk.ctx.at.record.app.find.monthly.root;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.ClosureDateDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.MonthlyItemCommon;
-import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
+import nts.uk.ctx.at.record.app.find.monthly.root.dto.SpecialHolidayRemainDataDtoWrap;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.AttendanceItemUtil.AttendanceItemType;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemRoot;
@@ -72,9 +73,8 @@ public class MonthlyRecordWorkDto extends MonthlyItemCommon {
 	private RsvLeaRemNumEachMonthDto rsvLeave;
 
 	/** 特別休暇月別残数データ: 特別休暇残数月別データ */
-	@AttendanceItemLayout(jpPropertyName = MONTHLY_SPECIAL_HOLIDAY_REMAIN_NAME, layout = MONTHLY_SPECIAL_HOLIDAY_REMAIN_CODE, 
-			listMaxLength = 20, indexField = DEFAULT_INDEX_FIELD_NAME)
-	private List<SpecialHolidayRemainDataDto> specialHoliday = new ArrayList<>();
+	@AttendanceItemLayout(jpPropertyName = MONTHLY_SPECIAL_HOLIDAY_REMAIN_NAME, layout = MONTHLY_SPECIAL_HOLIDAY_REMAIN_CODE)
+	private SpecialHolidayRemainDataDtoWrap specialHoliday;
 
 	/** 代休月別残数データ: 代休月別残数データ */
 	@AttendanceItemLayout(jpPropertyName = MONTHLY_OFF_REMAIN_NAME, layout = MONTHLY_OFF_REMAIN_CODE)
@@ -85,9 +85,8 @@ public class MonthlyRecordWorkDto extends MonthlyItemCommon {
 	private AbsenceLeaveRemainDataDto absenceLeave;
 	
 	/** 月別実績の備考: 月別実績の備考 */
-	@AttendanceItemLayout(jpPropertyName = MONTHLY_REMARKS_NAME, layout = MONTHLY_REMARKS_CODE, 
-			listMaxLength = 5, indexField = DEFAULT_INDEX_FIELD_NAME)
-	private List<MonthlyRemarksDto> remarks = new ArrayList<>();
+	@AttendanceItemLayout(jpPropertyName = MONTHLY_REMARKS_NAME, layout = MONTHLY_REMARKS_CODE)
+	private MonthlyRemarksDto remarks;
 	
 	/** 介護休暇月別残数データ: 介護休暇月別残数データ */
 	@AttendanceItemLayout(jpPropertyName = MONTHLY_CARE_HD_REMAIN_NAME, layout = MONTHLY_CARE_HD_REMAIN_CODE)
@@ -160,8 +159,8 @@ public class MonthlyRecordWorkDto extends MonthlyItemCommon {
 		return this;
 	}
 	
-	public MonthlyRecordWorkDto withSpecialHoliday(List<SpecialHolidayRemainDataDto> specialHoliday){
-		this.specialHoliday = new ArrayList<>(specialHoliday);
+	public MonthlyRecordWorkDto withSpecialHoliday(SpecialHolidayRemainDataDtoWrap specialHoliday){
+		this.specialHoliday = specialHoliday;
 		return this;
 	}
 	
@@ -175,7 +174,7 @@ public class MonthlyRecordWorkDto extends MonthlyItemCommon {
 		return this;
 	}
 	
-	public MonthlyRecordWorkDto withRemarks(List<MonthlyRemarksDto> remarks){
+	public MonthlyRecordWorkDto withRemarks(MonthlyRemarksDto remarks){
 		this.remarks = remarks;
 		return this;
 	}
@@ -220,7 +219,7 @@ public class MonthlyRecordWorkDto extends MonthlyItemCommon {
 	}
 	
 	public List<SpecialHolidayRemainData> toSpecialHoliday(){
-		return this.specialHoliday.stream().map(s -> s.toDomain(getEmployeeId(), getYearMonth(), getClosureID(), getClosureDate())).collect(Collectors.toList());
+		return this.specialHoliday.toDomain(getEmployeeId(), getYearMonth(), getClosureID(), getClosureDate());
 	}
 	
 	public MonthlyDayoffRemainData toDayOff(){
@@ -232,7 +231,7 @@ public class MonthlyRecordWorkDto extends MonthlyItemCommon {
 	}
 	
 	public List<RemarksMonthlyRecord> toRemarks(){
-		return this.remarks == null ? null :  this.remarks.stream().map(r -> r.toDomain(getEmployeeId(), getYearMonth(), getClosureID(), getClosureDate())).collect(Collectors.toList());
+		return this.remarks == null ? new ArrayList<>() : this.remarks.toDomain(getEmployeeId(), getYearMonth(), getClosureID(), getClosureDate());
 	}
 	
 	public MonCareHdRemain toMonCare(){
@@ -242,6 +241,8 @@ public class MonthlyRecordWorkDto extends MonthlyItemCommon {
 	public MonChildHdRemain toMonChildCare(){
 		return this.childCare == null ? null :  this.childCare.toDomain(getEmployeeId(), getYearMonth(), getClosureID(), getClosureDate());
 	}
+	
+	
 
 	@Override
 	public IntegrationOfMonthly toDomain(String employeeId, YearMonth ym, int closureID, ClosureDateDto closureDate) {
@@ -255,67 +256,155 @@ public class MonthlyRecordWorkDto extends MonthlyItemCommon {
 				Optional.ofNullable(this.rsvLeave == null ? null : this.rsvLeave.toDomain(employeeId, ym, closureID, closureDate)),
 				Optional.ofNullable(this.absenceLeave == null ? null : this.absenceLeave.toDomain(employeeId, ym, closureID, closureDate)),
 				Optional.ofNullable(this.dayOff == null ? null : this.dayOff.toDomain(employeeId, ym, closureID, closureDate)),
-				ConvertHelper.mapTo(this.specialHoliday, s -> s.toDomain(employeeId, ym, closureID, closureDate)),
-				ConvertHelper.mapTo(this.remarks, s -> s.toDomain(employeeId, ym, closureID, closureDate)),
+				this.specialHoliday == null ? new ArrayList<>()
+						: this.specialHoliday.toDomain(employeeId, ym, closureID, closureDate),
+				this.remarks == null ? new ArrayList<>(): this.remarks.toDomain(employeeId, ym, closureID, closureDate),
 				Optional.ofNullable(this.care == null ? null : this.care.toDomain(employeeId, ym, closureID, closureDate)),
 				Optional.ofNullable(this.childCare == null ? null : this.childCare.toDomain(employeeId, ym, closureID, closureDate)));
 	}
 	
-	public static MonthlyRecordWorkDto fromOnlyAttTime(IntegrationOfMonthly domain){
-		MonthlyRecordWorkDto dto = new MonthlyRecordWorkDto();
-		if(domain != null) {
-			dto.setAttendanceTime(AttendanceTimeOfMonthlyDto.from(domain.getAttendanceTime().orElse(null)));
-			dto.setAffiliation(AffiliationInfoOfMonthlyDto.from(domain.getAffiliationInfo().orElse(null)));
-			dto.setAbsenceLeave(AbsenceLeaveRemainDataDto.from(domain.getAbsenceLeaveRemain().orElse(null)));
-			if (domain.getAgreementTimeList().size() > 0) {
-				dto.setAgreementTime(AgreementTimeOfManagePeriodDto.from(domain.getAgreementTimeList().get(0)));
-			}
-			else {
-				dto.setAgreementTime(AgreementTimeOfManagePeriodDto.from(null));
-			}
-			dto.setAnnLeave(AnnLeaRemNumEachMonthDto.from(domain.getAnnualLeaveRemain().orElse(null)));
-			dto.setAnyItem(AnyItemOfMonthlyDto.from(domain.getAnyItemList()));
-			dto.setCare(MonthlyCareHdRemainDto.from(domain.getCare().orElse(null)));
-			dto.setChildCare(MonthlyChildCareHdRemainDto.from(domain.getChildCare().orElse(null)));
-			dto.setDayOff(MonthlyDayoffRemainDataDto.from(domain.getMonthlyDayoffRemain().orElse(null)));
-			dto.setRemarks(ConvertHelper.mapTo(domain.getRemarks(), c -> MonthlyRemarksDto.from(c)));
-			dto.setRsvLeave(RsvLeaRemNumEachMonthDto.from(domain.getReserveLeaveRemain().orElse(null)));
-			dto.setSpecialHoliday(ConvertHelper.mapTo(domain.getSpecialLeaveRemainList(), c -> SpecialHolidayRemainDataDto.from(c)));
-			dto.setYearMonth(domain.getAffiliationInfo().get().getYearMonth());
-			dto.setEmployeeId(domain.getAffiliationInfo().get().getEmployeeId());
-			dto.setClosureDate(ClosureDateDto.from(domain.getAffiliationInfo().get().getClosureDate()));
-			dto.setClosureID(domain.getAffiliationInfo().get().getClosureId().value);
-			dto.exsistData();
-		}
-		return dto;
+	public static MonthlyRecordWorkDto fromOnlyAttTime(IntegrationOfMonthly domain) {
+		return fromDtoWithOptional(domain, new HashMap<>());
 	}
 	
 	public static MonthlyRecordWorkDto fromDtoWithOptional(IntegrationOfMonthly domain, Map<Integer, OptionalItem> optionalMaster){
 		MonthlyRecordWorkDto dto = new MonthlyRecordWorkDto();
 		if(domain != null) {
 			dto.setAttendanceTime(AttendanceTimeOfMonthlyDto.from(domain.getAttendanceTime().orElse(null)));
-			dto.setAffiliation(AffiliationInfoOfMonthlyDto.from(domain.getAffiliationInfo().orElse(null)));
 			dto.setAbsenceLeave(AbsenceLeaveRemainDataDto.from(domain.getAbsenceLeaveRemain().orElse(null)));
-			if (domain.getAgreementTimeList().size() > 0) {
-				dto.setAgreementTime(AgreementTimeOfManagePeriodDto.from(domain.getAgreementTimeList().get(0)));
-			}
-			else {
-				dto.setAgreementTime(AgreementTimeOfManagePeriodDto.from(null));
-			}
+			dto.setAgreementTime(AgreementTimeOfManagePeriodDto.from(domain.getAgreementTime().orElse(null)));
 			dto.setAnnLeave(AnnLeaRemNumEachMonthDto.from(domain.getAnnualLeaveRemain().orElse(null)));
 			dto.setAnyItem(AnyItemOfMonthlyDto.from(domain.getAnyItemList(), optionalMaster));
 			dto.setCare(MonthlyCareHdRemainDto.from(domain.getCare().orElse(null)));
 			dto.setChildCare(MonthlyChildCareHdRemainDto.from(domain.getChildCare().orElse(null)));
 			dto.setDayOff(MonthlyDayoffRemainDataDto.from(domain.getMonthlyDayoffRemain().orElse(null)));
-			dto.setRemarks(ConvertHelper.mapTo(domain.getRemarks(), c -> MonthlyRemarksDto.from(c)));
+			dto.setRemarks(MonthlyRemarksDto.from(domain.getRemarks()));
 			dto.setRsvLeave(RsvLeaRemNumEachMonthDto.from(domain.getReserveLeaveRemain().orElse(null)));
-			dto.setSpecialHoliday(ConvertHelper.mapTo(domain.getSpecialLeaveRemainList(), c -> SpecialHolidayRemainDataDto.from(c)));
-			dto.setYearMonth(domain.getAffiliationInfo().get().getYearMonth());
-			dto.setEmployeeId(domain.getAffiliationInfo().get().getEmployeeId());
-			dto.setClosureDate(ClosureDateDto.from(domain.getAffiliationInfo().get().getClosureDate()));
-			dto.setClosureID(domain.getAffiliationInfo().get().getClosureId().value);
+			dto.setSpecialHoliday(SpecialHolidayRemainDataDtoWrap.from(domain.getSpecialLeaveRemain()));
+			domain.getAffiliationInfo().ifPresent(aff -> {
+				dto.setAffiliation(AffiliationInfoOfMonthlyDto.from(aff));
+				dto.setYearMonth(aff.getYearMonth());
+				dto.setEmployeeId(aff.getEmployeeId());
+				dto.setClosureDate(ClosureDateDto.from(aff.getClosureDate()));
+				dto.setClosureID(aff.getClosureId().value);
+			});
 			dto.exsistData();
 		}
 		return dto;
 	}
+	
+	@Override
+	public Optional<AttendanceItemDataGate> get(String path) {
+		switch (path) {
+		case MONTHLY_AFFILIATION_INFO_NAME:
+			return Optional.ofNullable(this.affiliation);
+		case MONTHLY_ATTENDANCE_TIME_NAME:
+			return Optional.ofNullable(this.attendanceTime);
+		case MONTHLY_OPTIONAL_ITEM_NAME:
+			return Optional.ofNullable(this.anyItem);
+		case MONTHLY_ANNUAL_LEAVING_REMAIN_NAME:
+			return Optional.ofNullable(this.annLeave);
+		case MONTHLY_RESERVE_LEAVING_REMAIN_NAME:
+			return Optional.ofNullable(this.rsvLeave);
+		case MONTHLY_SPECIAL_HOLIDAY_REMAIN_NAME:
+			return Optional.ofNullable(this.specialHoliday);
+		case MONTHLY_OFF_REMAIN_NAME:
+			return Optional.ofNullable(this.dayOff);
+		case MONTHLY_ABSENCE_LEAVE_REMAIN_NAME:
+			return Optional.ofNullable(this.absenceLeave);
+		case MONTHLY_REMARKS_NAME:
+			return Optional.ofNullable(this.remarks);
+		case MONTHLY_CARE_HD_REMAIN_NAME:
+			return Optional.ofNullable(this.care);
+		case MONTHLY_CHILD_CARE_HD_REMAIN_NAME:
+			return Optional.ofNullable(this.childCare);
+		case AGREEMENT_TIME_OF_MANAGE_PERIOD_NAME:
+			return Optional.ofNullable(this.agreementTime);
+		default:
+			return Optional.empty();
+		}
+	}
+	
+	
+	@Override
+	public void set(String path, AttendanceItemDataGate value) {
+		switch (path) {
+		case MONTHLY_AFFILIATION_INFO_NAME:
+			this.affiliation = (AffiliationInfoOfMonthlyDto) value;
+			break;
+		case MONTHLY_ATTENDANCE_TIME_NAME:
+			this.attendanceTime = (AttendanceTimeOfMonthlyDto) value;
+			break;
+		case MONTHLY_OPTIONAL_ITEM_NAME:
+			this.anyItem = (AnyItemOfMonthlyDto) value;
+			break;
+		case MONTHLY_ANNUAL_LEAVING_REMAIN_NAME:
+			this.annLeave = (AnnLeaRemNumEachMonthDto) value;
+			break;
+		case MONTHLY_RESERVE_LEAVING_REMAIN_NAME:
+			this.rsvLeave = (RsvLeaRemNumEachMonthDto) value;
+			break;
+		case MONTHLY_SPECIAL_HOLIDAY_REMAIN_NAME:
+			this.specialHoliday = (SpecialHolidayRemainDataDtoWrap) value;
+			break;
+		case MONTHLY_OFF_REMAIN_NAME:
+			this.dayOff = (MonthlyDayoffRemainDataDto) value;
+			break;
+		case MONTHLY_ABSENCE_LEAVE_REMAIN_NAME:
+			this.absenceLeave = (AbsenceLeaveRemainDataDto) value;
+			break;
+		case MONTHLY_REMARKS_NAME:
+			this.remarks = (MonthlyRemarksDto) value;
+			break;
+		case MONTHLY_CARE_HD_REMAIN_NAME:
+			this.care = (MonthlyCareHdRemainDto) value;
+			break;
+		case MONTHLY_CHILD_CARE_HD_REMAIN_NAME:
+			this.childCare = (MonthlyChildCareHdRemainDto) value;
+			break;
+		case AGREEMENT_TIME_OF_MANAGE_PERIOD_NAME:
+			this.agreementTime = (AgreementTimeOfManagePeriodDto) value;
+			break;
+		default:
+			break;
+		}
+	}
+	
+	@Override
+	public AttendanceItemDataGate newInstanceOf(String path) {
+		switch (path) {
+		case MONTHLY_AFFILIATION_INFO_NAME:
+			return new AffiliationInfoOfMonthlyDto();
+		case MONTHLY_ATTENDANCE_TIME_NAME:
+			return new AttendanceTimeOfMonthlyDto();
+		case MONTHLY_OPTIONAL_ITEM_NAME:
+			return new AnyItemOfMonthlyDto();
+		case MONTHLY_ANNUAL_LEAVING_REMAIN_NAME:
+			return new AnnLeaRemNumEachMonthDto();
+		case MONTHLY_RESERVE_LEAVING_REMAIN_NAME:
+			return new RsvLeaRemNumEachMonthDto();
+		case MONTHLY_SPECIAL_HOLIDAY_REMAIN_NAME:
+			return new SpecialHolidayRemainDataDtoWrap();
+		case MONTHLY_OFF_REMAIN_NAME:
+			return new MonthlyDayoffRemainDataDto();
+		case MONTHLY_ABSENCE_LEAVE_REMAIN_NAME:
+			return new AbsenceLeaveRemainDataDto();
+		case MONTHLY_REMARKS_NAME:
+			return new MonthlyRemarksDto();
+		case MONTHLY_CARE_HD_REMAIN_NAME:
+			return new MonthlyCareHdRemainDto();
+		case MONTHLY_CHILD_CARE_HD_REMAIN_NAME:
+			return new MonthlyChildCareHdRemainDto();
+		case AGREEMENT_TIME_OF_MANAGE_PERIOD_NAME:
+			return new AgreementTimeOfManagePeriodDto();
+		default:
+			return null;
+		}
+	}
+	
+	@Override
+	public boolean isRoot() { return true; }
+	
+	@Override
+	public boolean isContainer() { return true; }
 }

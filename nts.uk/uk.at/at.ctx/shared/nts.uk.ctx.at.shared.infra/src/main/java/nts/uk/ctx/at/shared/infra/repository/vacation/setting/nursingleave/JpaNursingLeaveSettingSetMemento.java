@@ -4,36 +4,37 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.vacation.setting.nursingleave;
 
-//import java.util.ArrayList;
-//import java.util.List;
+import java.util.List;
 import java.util.Optional;
-
-//import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.MaxPersonSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingCategory;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingLeaveSettingSetMemento;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.TimeCareNursingSet;
-import nts.uk.ctx.at.shared.infra.entity.vacation.setting.nursingleave.KnlmtNursingLeaveSet;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.nursingleave.KnlmtNursingLeaveSetPK;
-//import nts.uk.ctx.at.shared.infra.entity.vacation.setting.nursingleave.KnlmtNursingWorkType;
-//import nts.uk.ctx.at.shared.infra.entity.vacation.setting.nursingleave.KnlmtNursingWorkTypePK;
-import nts.uk.shr.com.time.calendar.MonthDay;
+import nts.uk.ctx.at.shared.infra.entity.vacation.setting.nursingleave.KshmtHdnursingLeave;
 
 /**
  * The Class JpaNursingVacationSettingSetMemento.
  */
 public class JpaNursingLeaveSettingSetMemento implements NursingLeaveSettingSetMemento {
+	
+	/** The Constant INDEX_NURSING_SETTING. */
+    private static final int INDEX_NURSING_SETTING = 0;
+    
+    /** The Constant INDEX_CHILD_NURSING_SETTING. */
+    private static final int INDEX_CHILD_NURSING_SETTING = 1;
+    
 
     /** The entity nursing. */
-    private KnlmtNursingLeaveSet entityNursing;
+    private KshmtHdnursingLeave entityNursing;
 
     /**
      * Instantiates a new jpa nursing leave setting set memento.
      *
      * @param entityNursing the entity nursing
      */
-    public JpaNursingLeaveSettingSetMemento(KnlmtNursingLeaveSet entityNursing) {
+    public JpaNursingLeaveSettingSetMemento(KshmtHdnursingLeave entityNursing) {
         // check exist primary key
         if (entityNursing.getKnlmtNursingLeaveSetPK() == null) {
             entityNursing.setKnlmtNursingLeaveSetPK(new KnlmtNursingLeaveSetPK());
@@ -87,18 +88,32 @@ public class JpaNursingLeaveSettingSetMemento implements NursingLeaveSettingSetM
     	this.entityNursing.setStartMonthDay(startMonthDay);
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.
-     * NursingVacationSettingSetMemento#setMaxPersonSetting(nts.uk.ctx.at.shared
-     * .dom.vacation.setting.nursingleave.MaxPersonSetting)
-     */
     @Override
-    public void setMaxPersonSetting(MaxPersonSetting maxPersonSetting) {
-    	this.entityNursing.setNursingNumLeaveDay(maxPersonSetting.getNursingNumberLeaveDay().v());
-    	this.entityNursing.setNursingNumLeaveDay2(maxPersonSetting.getNursingNumberLeaveDay2().v());
-    }
+	public void setMaxPersonSetting(List<MaxPersonSetting> maxPersonSetting) {
+    	if(!maxPersonSetting.isEmpty() && maxPersonSetting.size() == 2) {
+    		if(maxPersonSetting.get(INDEX_NURSING_SETTING).getNursingNumberPerson() != null) {
+    			this.entityNursing.setNursingNumPerson(maxPersonSetting.get(INDEX_NURSING_SETTING).getNursingNumberPerson().v());
+    		} else {
+    			this.entityNursing.setNursingNumPerson(0);
+    		}
+    		if(maxPersonSetting.get(INDEX_NURSING_SETTING).getNursingNumberLeaveDay() !=null) {
+    			this.entityNursing.setNursingNumLeaveDay(maxPersonSetting.get(INDEX_NURSING_SETTING).getNursingNumberLeaveDay().v());
+    		} else {
+    			this.entityNursing.setNursingNumLeaveDay(0);
+    		}
+    		
+    		if(maxPersonSetting.get(INDEX_CHILD_NURSING_SETTING).getNursingNumberPerson() != null) {
+    			this.entityNursing.setNursingNumPerson2(maxPersonSetting.get(INDEX_CHILD_NURSING_SETTING).getNursingNumberPerson().v());
+    		} else {
+    			this.entityNursing.setNursingNumPerson2(0);
+    		}
+    		if(maxPersonSetting.get(INDEX_CHILD_NURSING_SETTING).getNursingNumberLeaveDay() !=null) {
+    			this.entityNursing.setNursingNumLeaveDay2(maxPersonSetting.get(INDEX_CHILD_NURSING_SETTING).getNursingNumberLeaveDay().v());
+    		} else {
+    			this.entityNursing.setNursingNumLeaveDay2(0);
+    		}
+    	}
+	}
 
 	@Override
 	public void setHdspFrameNo(Optional<Integer> hdspFrameNo) {
@@ -125,17 +140,14 @@ public class JpaNursingLeaveSettingSetMemento implements NursingLeaveSettingSetM
 
 	@Override
 	public void setNumPer1(Integer numPer1) {
-		this.entityNursing.setNursingNumPerson(1);
-		
+		this.entityNursing.setNursingNumPerson(1);		
 	}
 
 	@Override
 	public void setNumPer2(Integer numPer2) {
-		this.entityNursing.setNursingNumPerson2(2);
-		
+		this.entityNursing.setNursingNumPerson2(2);	
 	}
-
-
+	
     /*
      * (non-Javadoc)
      *

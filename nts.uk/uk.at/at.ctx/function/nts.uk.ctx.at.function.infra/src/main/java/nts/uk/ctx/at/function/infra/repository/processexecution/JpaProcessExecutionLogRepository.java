@@ -51,7 +51,7 @@ public class JpaProcessExecutionLogRepository extends JpaRepository
 			+ "WHERE pel.kfnmtProcExecLogPK.companyId = :companyId "
 			+ "AND pel.kfnmtProcExecLogPK.execItemCd = :execItemCd ";
 	
-	private static final String SELECT_BY_KEY_NATIVE = "SELECT * FROM KFNMT_PROC_EXEC_LOG as pel WITH (READUNCOMMITTED)"
+	private static final String SELECT_BY_KEY_NATIVE = "SELECT * FROM KFNDT_AUTOEXEC_LOG as pel WITH (READUNCOMMITTED)"
 			+ "WHERE pel.CID = ? "
 			+ "AND pel.EXEC_ITEM_CD = ? ";
 
@@ -101,7 +101,7 @@ public class JpaProcessExecutionLogRepository extends JpaRepository
 //		oldData.taskLogList = updateData.taskLogList;
 //		this.commandProxy().update(oldData);
 		try {
-			String updateTableSQL = " UPDATE KFNMT_PROC_EXEC_LOG SET"
+			String updateTableSQL = " UPDATE KFNDT_AUTOEXEC_LOG SET"
 					+ " SCH_CREATE_START = ?" 
 					+ " ,SCH_CREATE_END = ? "
 					+ " ,DAILY_CREATE_START = ? " 
@@ -130,7 +130,7 @@ public class JpaProcessExecutionLogRepository extends JpaRepository
 		}
 		try {
 			for(KfnmtExecutionTaskLog kfnmtExecutionTaskLog : updateData.taskLogList) {
-				String updateTableSQL = " UPDATE KFNMT_EXEC_TASK_LOG SET"
+				String updateTableSQL = " UPDATE KFNDT_AUTOEXEC_TASK_LOG SET"
 						+ " STATUS = ?"
 						+ " ,LAST_EXEC_DATETIME = ?"
 						+ " ,LAST_END_EXEC_DATETIME = ?"

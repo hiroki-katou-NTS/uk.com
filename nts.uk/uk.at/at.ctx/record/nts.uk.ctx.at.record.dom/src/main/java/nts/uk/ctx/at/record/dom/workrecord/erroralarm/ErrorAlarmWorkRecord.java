@@ -18,6 +18,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
+ * 日別実績のエラーアラーム
  * @author hungnm 勤務実績のエラーアラーム
  */
 @Getter
@@ -99,7 +100,7 @@ public class ErrorAlarmWorkRecord extends AggregateRoot {
 	 * @return ErrorAlarmWorkRecord
 	 **/
 	public static ErrorAlarmWorkRecord createFromJavaType(String companyId, String code, String name, boolean fixedAtr,
-			boolean useAtr, int remarkCancelErrorInput, int remarkColumnNo, int typeAtr, boolean boldAtr,
+			boolean useAtr, boolean remarkCancelErrorInput, int remarkColumnNo, int typeAtr, boolean boldAtr,
 			String messageColor, boolean cancelableAtr, Integer errorDisplayItem, List<Integer> lstApplication,
 			String errorAlarmCheckID) {
 		ErrorAlarmWorkRecord errorAlarmWorkRecord = new ErrorAlarmWorkRecord(companyId,
