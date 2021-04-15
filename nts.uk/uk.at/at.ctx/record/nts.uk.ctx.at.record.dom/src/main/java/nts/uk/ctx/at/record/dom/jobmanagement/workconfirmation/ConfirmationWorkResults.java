@@ -22,5 +22,13 @@ public class ConfirmationWorkResults extends AggregateRoot {
 	private GeneralDate targetYMD;
 	/** 確認者一覧 */
 	private List<Confirmer> confirmers;
+	
+	public void addConfirmer(Confirmer confirmer) {
+		this.confirmers.add(confirmer);
+	}
+	
+	public void removeConfirmer(String confirmSid) {
+		this.confirmers.removeIf(c->c.getConfirmSID().equals(confirmSid));
+	}
 
 }
