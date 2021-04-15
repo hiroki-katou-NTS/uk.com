@@ -25,11 +25,11 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
 
 <div id="kaf002-c">
 	<div id="contents-area"
-		style="background-color: inherit; height: calc(100vh - 165px);">
+		style="background-color: inherit; height: calc(100vh - 165px); min-width: 1130px">
 		<div class="two-panel" style="height: 100%;">
 			<div class="left-panel"
-				style="width: calc(100% - 410px); height: inherit; overflow: auto">
-				<div style="height: auto; min-height: 700px; background-color: #fff; padding: 10px;">
+				style="width: calc(100% - 410px); height: inherit;">
+				<div style="height: inherit; overflow-y: auto; background-color: #fff; padding: 10px; overflow-x: hidden;">
 					<div class="table"
 						style="border-bottom: 2px solid #B1B1B1; padding-bottom: 30px; margin-bottom: 30px; width: 100%;">
 						<div class="cell" style="vertical-align: middle;">
@@ -779,7 +779,12 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
         }
 
 		reload() {
+			
 		    const self = this;
+			if (self.appType() != AppType.STAMP_APPLICATION && self.application().opStampRequestMode() != StampRequestMode.STAMP_ADDITIONAL) {
+				
+				return;
+			}	
             self.$blockui('show');
             let appplication = ko.toJS(self.application) as Application;
             let appId = appplication.appID;
@@ -1048,6 +1053,11 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
         
 
     }
+	enum StampRequestMode {
+		STAMP_ADDITIONAL,
+		STAMP_ONLINE_RECORD
+	}
+
     class Comment{
         public content: string;
         public isBold: boolean;

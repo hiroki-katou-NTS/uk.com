@@ -79,4 +79,7 @@
     margin-left: 5px;
 }
 
+.master-content {
+    overflow-x: auto !important;
+}
 

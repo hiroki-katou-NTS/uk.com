@@ -7,12 +7,12 @@
 
 <div id="kaf011-b">
 	<div id="contents-area-kaf011b"
-		style="background-color: inherit; height: calc(100vh - 165px);">
+		style="background-color: inherit; height: calc(100vh - 165px); min-width: 1130px">
 		<div class="two-panel" style="height: 100%;">
 			<div class="left-panel"
-				style="width: calc(100% - 410px); height: inherit; overflow: auto">
+				style="width: calc(100% - 410px); height: inherit">
 				<div
-					style="height: auto; min-height: 700px; background-color: #fff; padding: 0 10px;">
+					style="height: inherit; overflow-y: auto; background-color: #fff; padding: 0 10px;  overflow-x: hidden">
 					<div class="table"
 						style="border-bottom: 2px solid #B1B1B1; padding-bottom: 30px; margin-bottom: 30px; width: 100%;">
 						<div class="cell" style="vertical-align: middle;">
@@ -53,6 +53,28 @@
 
 					<div>
 
+
+
+						<ui:include src="../shr/index.xhtml" />
+
+					</div>
+
+
+					<div
+						data-bind="component: { name: 'kaf000-b-component7', 
+                                                params: {
+                                                    appType: appType,
+                                                    application: applicationCommon,
+                                                    appDispInfoStartupOutput: appDispInfoStartupOutput
+                                                } }"></div>
+
+					<div style="padding-top: 30px;"></div>
+				</div>
+			</div>
+			<div class="right-panel"
+				style="width: 410px; height: inherit; overflow-y: auto">
+				<div style="height: inherit; background-color: #fff; padding: 10px;">
+					<!-- 
 						<div class="remainInfor">
 							<div class="remainLable">#{i18n.getText('KAF011_64')}</div>
 							<div class="remainNumber">
@@ -71,27 +93,8 @@
 									data-bind="text: nts.uk.resource.getText('KAF011_82', [displayInforWhenStarting().remainingHolidayInfor.closestDueDate])"></span>
 							</com:ko-if>
 						</div>
-
-						<ui:include src="../shr/index.xhtml" />
-
-					</div>
-
-
-					<div
-						data-bind="component: { name: 'kaf000-b-component7', 
-                                                params: {
-                                                    appType: appType,
-                                                    application: applicationCommon,
-                                                    appDispInfoStartupOutput: appDispInfoStartupOutput
-                                                } }"></div>
-                                                
-                                                <div style="padding-top: 30px;">
-								
-				 	</div>  
-				</div>
-			</div>
-			<div class="right-panel" style="width: 410px; height: inherit; overflow-y: auto">
-				<div style="height: inherit; background-color: #fff; padding: 10px;">
+					
+					 -->
 					<div
 						data-bind="component: { name: 'kaf000-b-component1', 
                             params: {

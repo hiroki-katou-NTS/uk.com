@@ -92,6 +92,7 @@ module nts.uk.at.view.kaf012.a.viewmodel {
                 vm.$blockui("hide");
                 $(vm.$el).find('#kaf000-a-component4-singleDate').focus();
             });
+
         }
 
         mounted() {
