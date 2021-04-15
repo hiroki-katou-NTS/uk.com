@@ -15,24 +15,24 @@ import nts.gul.text.IdentifierUtil;
 
 @Getter
 public class WorkplaceGroup implements DomainAggregate {
-										
+
 	/** 会社ID */
 	private final String CID;
-	
+
 	/** 職場グループID */
 	private final String WKPGRPID;
-	
+
 	/** 職場グループコード */
 	private final WorkplaceGroupCode WKPGRPCode;
-	
+
 	/** 職場グループ名称 */
 	@Setter
 	private WorkplaceGroupName WKPGRPName;
-	
+
 	/** 職場グループ種別 */
 	@Setter
 	private WorkplaceGroupType WKPGRPType;
-	
+
 	/**
 	 * [C-0] 職場グループを作成する
 	 */
@@ -57,7 +57,7 @@ public class WorkplaceGroup implements DomainAggregate {
 	public static WorkplaceGroup getWpg(String cID, WorkplaceGroupCode wKPGRPCode, WorkplaceGroupName wKPGRPName, WorkplaceGroupType wKPGRPType) {
 		return new WorkplaceGroup(cID, IdentifierUtil.randomUniqueId(), wKPGRPCode, wKPGRPName, wKPGRPType);
 	}
-	
+
 	/**
 	 * [1] 所属する職場を追加する
 	 * @param WKPID
@@ -66,7 +66,7 @@ public class WorkplaceGroup implements DomainAggregate {
 	public AffWorkplaceGroup addAffWorkplaceGroup(String WKPID){
 		return new AffWorkplaceGroup(this.WKPGRPID, WKPID);
 	}
-	
+
 	/**
 	 * 	[2] 職場グループに属する職場を取得する
 	 * @param require
@@ -75,13 +75,13 @@ public class WorkplaceGroup implements DomainAggregate {
 	public List<String> getAffWorkplace(Require require){
 		return require.getWKPID(this.CID, this.WKPGRPID);
 	}
-	
+
 	/**
-	 * [R-1] 職場グループに属する職場を取得する	
+	 * [R-1] 職場グループに属する職場を取得する
 	 *
 	 */
 	public static interface Require {
-		// 職場グループに属する職場を取得する																					
+		// 職場グループに属する職場を取得する
 		// 職場グループ所属情報Repository.職場グループに所属する職場を取得する(会社ID, 職場グループID)
 		List<String> getWKPID(String CID, String WKPGRPID);
 	}
