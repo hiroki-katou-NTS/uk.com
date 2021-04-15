@@ -35,7 +35,6 @@ public class WorkGroup implements DomainObject {
 	/** 作業CD5: int */
 	private Optional<WorkCode> workCD5;
 
-	//[C-0] 作業グループ(作業CD1,作業CD2,作業CD3,作業CD4,作業CD5)
 	
 	public static WorkGroup create(WorkCode workCD1, Optional<WorkCode> workCD2, 
 			Optional<WorkCode> workCD3, Optional<WorkCode> workCD4, Optional<WorkCode> workCD5){
@@ -52,7 +51,6 @@ public class WorkGroup implements DomainObject {
 				Optional.of(workCode(workCd4)),
 				Optional.of(workCode(workCd5)));
 	}
-
 	private static WorkCode workCode(String workCd2) {
 		return workCd2 == null ? null : new WorkCode(workCd2);
 	}
