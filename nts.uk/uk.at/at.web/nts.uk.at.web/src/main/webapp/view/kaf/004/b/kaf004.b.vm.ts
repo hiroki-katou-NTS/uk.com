@@ -11,7 +11,7 @@ module nts.uk.at.view.kaf004_ref.b.viewmodel {
         name: 'kaf004-b',
         template: `
         <div id="kaf004-b">
-            <div id="contents-area" style="background-color: inherit; height: calc(100vh - 165px);">
+            <div id="contents-area" style="background-color: inherit; height: calc(100vh - 137px);">
                 <div class="two-panel" style="height: 100%;">
                     <div class="left-panel" style="width: calc(100% - 410px); height: inherit; overflow-y: auto">
                         <div style="height: inherit; background-color: #fff; padding: 0 10px; overflow-y: auto">
