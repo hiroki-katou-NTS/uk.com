@@ -1,62 +1,32 @@
-# Old layout structure
+# Old layout with two panel structure
 
 | Note: Use right id: functions-area, contents-area, functions-area-bottom
 
 ``` xml
-<div id="functions-area">
-	<!-- Buttons design-->
-</div>
-<div id="contents-area">
-	<!-- Content layout -->
-</div>
-<div id="functions-area-bottom">
-	<!-- Buttons design-->
-</div>
-```
-
-# Custom title
-
-| Use binding: pg-name for child element of #functions-area
-
-```xml
-<div id="functions-area">
-	<div data-bind="pg-name: 'RESOURCE_ID'"></div>
-	<!-- Buttons design-->
-</div>
-<div id="contents-area">
-	<!-- Content layout -->
-</div>
-```
-
-# Floating buttons
-
-| Use binding: floating for child element of #functions-area
-
-```xml
-<div id="functions-area">
-	<div data-bind="floating: true, left: 100, bottom: -15"></div>
-	<!-- or -->
-	<div data-bind="floating: true, right: 100, bottom: -15"></div>
-	<!-- or -->
-	<div data-bind="floating: true, top: -15, left: 100"></div>
-	<!-- or -->
-	<div data-bind="floating: true, top: -15, right: 100"></div>
-	<!-- Buttons design-->
-</div>
-<div id="contents-area">
-	<!-- Content layout -->
-</div>
-```
-
-# Transparent background
-
-| Add class `bg-transparent` to element
-
-``` xml
 <div id="functions-area" class="bg-transparent">
-	<!-- Buttons design-->
+	<div data-bind="pg-name: 'PG_NAME_ID', back: ''"></div>
+	<div data-bind="floating: true, left: 100, bottom: -15">
+		<button class="green solid">Solid</button>
+		<button class="green outline">Outline</button>
+	</div>
+	<button class="green solid">Solid</button>
+	<button class="green outline">Outline</button>
+	<button class="green">Proceed</button>
+	<button class="white">Normal</button>
+	<button class="red">Danger</button>
 </div>
-<div id="contents-area" class="bg-transparent">
-	<!-- Content layout -->
+<div id="contents-area" class="overflow-none bg-transparent">
+	<div class="two-panel">
+		<div class="left-panel">
+			<div id="contents-area">
+				<div data-bind="markdown: 'document.md'"></div>
+			</div>
+		</div>
+		<div class="right-panel">
+			<div id="contents-area">
+				<div data-bind="markdown: 'document.md'"></div>
+			</div>
+		</div>
+	</div>
 </div>
 ```
