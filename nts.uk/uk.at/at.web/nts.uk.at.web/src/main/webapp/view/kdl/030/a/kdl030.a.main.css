@@ -25,7 +25,7 @@
 	padding-top: 10px;
 }
 
-#table-phase, #table-phase td, #table-phase th { 
+.table-phase td, .table-phase th {
 	border: 1px solid #CCC;
 	border-left: none;
 	height: 25px;
@@ -65,9 +65,6 @@
 	height: 25px !important;
 	margin-top: 5px;
 	color: #FF0000;
-}
-#table-phase thead{
-	background-color: #E0F59E;
 }
 
 /* list approver */
@@ -115,9 +112,18 @@
 	background-color: #E0F59E;
 }
 
+.table-phase {
+	border-style: hidden;
+	border-bottom: solid 1px;
+}
+
+.table-phase tr td:first-child{
+	width: 100px;
+}
+
 #table-body {
 	margin-top: -1px;
-	height: 200px;
+	height: 199px;
 	/*min-width: 774px;*/
 	width: auto;
 	overflow-y: auto;

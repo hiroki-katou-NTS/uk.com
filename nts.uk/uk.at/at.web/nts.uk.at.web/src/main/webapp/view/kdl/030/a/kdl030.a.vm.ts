@@ -127,6 +127,11 @@ module nts.uk.at.view.kdl030.a.viewmodel {
             }
         }
 
+        getApplicantName(appSendMailByEmp: any){
+            return appSendMailByEmp.applicantName()
+                .concat(nts.uk.util.isNullOrEmpty(appSendMailByEmp.applicantMail()) ? '' : ' @');
+        }
+
         getPhaseLabel(phaseOrder) {
             const vm = this;
             switch(phaseOrder) {
