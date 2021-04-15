@@ -13,7 +13,7 @@ module nts.uk.at.view.kaf010.shr.time.viewmodel {
 		<div class="table-time1">
 			<table id="fixed-table">
 				<colgroup>
-					<col width="109px" />
+					<col width="25px" />
 					<col width="115px" />
 					<col width="115px" />
 				</colgroup>
