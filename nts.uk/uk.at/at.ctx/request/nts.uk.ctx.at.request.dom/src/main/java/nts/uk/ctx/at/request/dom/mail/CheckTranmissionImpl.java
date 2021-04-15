@@ -56,7 +56,7 @@ public class CheckTranmissionImpl implements CheckTransmission {
 				mailSender.sendFromAdmin(
 						sendMailApproverInfoParam.getApproverMail(), 
 						new MailContents(
-								sendMailAppInfoParam.getApplication().getAppDate().getApplicationDate().toString("yyyy/MM/dd") + "　" + sendMailAppInfoParam.getApplication().getAppType().name,
+								sendMailAppInfoParam.getApplication().getAppDate().getApplicationDate().toString() + "　" + sendMailAppInfoParam.getApplication().getAppType().name,
 								mailTemplate + urlInfo));
 				successList.add(sendMailApproverInfoParam.getApproverID());
 			} catch (Exception e) {
