@@ -21,17 +21,17 @@
         </ui:define>
         
         <ui:define name="content">
-            <div id="functions-area-bottom">
+            <!-- <div id="functions-area-bottom">
 				<button tabindex="2" class="x-large proceed" data-bind="click: register">#{i18n.getText('KAF006_1')}</button>
 				<button tabindex="3" data-bind="click: closeDialog">#{i18n.getText('KAF006_84')}</button>
-            </div>
+            </div> -->
             <div id="contents-area" style="margin: 0 10px">
                 <div id="kaf-006-c" class="control-group valign-center">
                     <!-- C1_1 -->
                     <div class="label">#{i18n.getText('KAF006_81')}</div>
                     <div class="table" style="margin: 5px 0">
                         <!-- C2_1 -->
-                        <div class="cell col-1" style="vertical-align: middle; width: 110px;" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAF006_8')}</div>
+                        <div class="cell col-1" style="vertical-align: middle; width: 100px;" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAF006_8')}</div>
                         <div class="cell valign-center">
                             <!-- C2_2 -->
                             <div class="inline" data-bind="ntsCheckBox: { 
@@ -56,7 +56,7 @@
                     </div>
                     <div class="table" style="margin: 5px 0" data-bind="visible: dispListReasons">
                         <!-- C3_1 -->
-                        <div class="cell col-1" style="vertical-align: middle; width: 110px;" data-bind="ntsFormLabel: { required: requireLabel1 }">#{i18n.getText('KAF006_24')}</div>
+                        <div class="cell col-1" style="vertical-align: middle; width: 100px;" data-bind="ntsFormLabel: { required: requireLabel1 }">#{i18n.getText('KAF006_24')}</div>
                         <!-- C3_2 -->
                         <div id="reasonLst" class="cell valign-center" data-bind="ntsComboBox: { 
                             required: requireLabel1, 
@@ -93,6 +93,10 @@
                                                                             appDispInfoStartupOutput: appDispInfoStartupOutput
                                                                         } }"></div>
                 </div>
+            </div>
+            <div id="functions-area-bottom">
+				<button tabindex="2" class="x-large proceed" data-bind="click: register">#{i18n.getText('KAF006_1')}</button>
+				<button tabindex="3" data-bind="click: closeDialog">#{i18n.getText('KAF006_84')}</button>
             </div>
         </ui:define>
     </ui:composition>
