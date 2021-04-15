@@ -463,7 +463,7 @@ public class AnnualWorkScheduleData {
 		annualWorkScheduleData.calcNumMonthFromAgreement(agreementTimeResults);
 		if (!check36MaximumAgreement) {
 			annualWorkScheduleData.setMonthsExceeded(monthsExceeded);
-			annualWorkScheduleData.setMonthsRemaining(monthLimit - monthsExceeded);
+			annualWorkScheduleData.setMonthsRemaining(monthLimit);
 		}
 		annualWorkScheduleData.setCheck36MaximumAgreement(check36MaximumAgreement);
 		annualWorkScheduleData.setAgreementTime(true);
