@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.function.dom.processexecution.createfromupdateexcecerror;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -11,7 +10,6 @@ import mockit.Injectable;
 import mockit.Verifications;
 import mockit.integration.junit4.JMockit;
 import nts.arc.task.tran.AtomTask;
-import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.function.dom.adapter.toppagealarmpub.TopPageAlarmImport;
 import nts.uk.ctx.at.function.dom.processexecution.createfromupdateexcecerror.CreateFromUpdateExecError.Require;
@@ -381,13 +379,13 @@ public class CreateFromUpdateExecErrorTest {
 				require.createAlarmData(CreateFromUpdateExecErrorHelper.CID, 
 						(List<TopPageAlarmImport>) any,
 						Optional.empty());
-				times = 1;
+				times = 0;
 			}
 			{
 				require.createAlarmData(CreateFromUpdateExecErrorHelper.CID, 
 						Collections.emptyList(), 
 						Optional.ofNullable(CreateFromUpdateExecErrorHelper.mockDelInfoImport()));
-				times = 0;
+				times = 1;
 			}
 		};
 	}
@@ -472,6 +470,7 @@ public class CreateFromUpdateExecErrorTest {
 	 * 更新処理自動実行項目の状態 = 待機中
 	 * $次回実行日時 < システム日時
 	 */
+	@SuppressWarnings("unchecked")
 	@Test
 	public void CreateFromUpdateExecErrorTest7() {
 		
@@ -512,7 +511,7 @@ public class CreateFromUpdateExecErrorTest {
 		new Verifications() {
 			{
 				require.createAlarmData(CreateFromUpdateExecErrorHelper.CID, 
-						CreateFromUpdateExecErrorHelper.mockListTopPageAlarmInport(),
+						(List<TopPageAlarmImport>) any,
 						Optional.empty());
 				times = 0;
 			}
@@ -531,15 +530,15 @@ public class CreateFromUpdateExecErrorTest {
 		new Verifications() {
 			{
 				require.createAlarmData(CreateFromUpdateExecErrorHelper.CID, 
-						CreateFromUpdateExecErrorHelper.mockListTopPageAlarmInport(),
+						(List<TopPageAlarmImport>) any,
 						Optional.empty());
-				times = 0;
+				times = 1;
 			}
 			{
 				require.createAlarmData(CreateFromUpdateExecErrorHelper.CID, 
 						Collections.emptyList(), 
 						Optional.ofNullable(CreateFromUpdateExecErrorHelper.mockDelInfoImport()));
-				times = 1;
+				times = 0;
 			}
 		};
 	}

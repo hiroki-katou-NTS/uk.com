@@ -50,7 +50,7 @@ public class CreateFromUpdateExecError {
 					// 次回実行日時作成処理
 					GeneralDateTime nextTime = rq.processNextExecDateTimeCreation(executionTaskSettingMap.get(item.getExecItemCd()));
 					
-					if (nextTime != null && nextTime.after(GeneralDateTime.now())) {
+					if (nextTime != null && nextTime.before(GeneralDateTime.now())) { 
 						alarmFlag = true;
 					}
 				}
