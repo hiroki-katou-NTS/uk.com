@@ -48,7 +48,7 @@ public class OuenWorkTimeSheetOfDailyRepoImpl extends JpaRepository implements O
 	@Override
 	public List<OuenWorkTimeSheetOfDaily> find(String sid, DatePeriod period) {
 		
-		List<KrcdtDayOuenTimeSheet> entitis = this.queryProxy().query("SELECT s FROM KrcdtDayOuenTimeSheet s WHERE o.pk.sid = :sid"
+		List<KrcdtDayOuenTimeSheet> entitis = this.queryProxy().query("SELECT s FROM KrcdtDayOuenTimeSheet s WHERE s.pk.sid = :sid"
 				+ " AND s.pk.ymd >= :start AND s.pk.ymd <= :end", KrcdtDayOuenTimeSheet.class)
 				.setParameter("sid", sid)
 				.setParameter("start", period.start())
