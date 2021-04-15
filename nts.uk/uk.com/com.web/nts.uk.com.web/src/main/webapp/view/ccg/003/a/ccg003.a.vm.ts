@@ -246,7 +246,6 @@ module nts.uk.com.view.ccg003.a {
       if (!vm.isEmployee()) {
         return;
       }
-      vm.$blockui('grayoutView');
       vm.$ajax('com', API.getEmployeeNotification)
         .then((response: EmployeeNotification) => {
           if (response) {
@@ -312,6 +311,7 @@ module nts.uk.com.view.ccg003.a {
       const vm = this;
       vm.$validate('#ccg003-A4_2').then(valid => {
         if (!valid) {
+          nts.uk.ui.errors.show();
           return;
         }
         vm.$blockui('grayoutView');

@@ -2,6 +2,7 @@ package nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workinfomation;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import nts.uk.ctx.at.shared.dom.WorkInfoAndTimeZone;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
@@ -17,13 +18,13 @@ public class WorkInfoOfDailyAttendanceHelper {
 	public static WorkInfoOfDailyAttendance getWorkInfoOfDailyAttendanceDefault() {
 		WorkInformation recordInfo1 = new WorkInformation("ty1", "ti1");
 		WorkInfoOfDailyAttendance workInfoOfDailyAttendance = new WorkInfoOfDailyAttendance(recordInfo1, CalculationState.Calculated, NotUseAttribute.Not_use, NotUseAttribute.Not_use,
-				DayOfWeek.FRIDAY, new ArrayList<>());
+				DayOfWeek.FRIDAY, new ArrayList<>(), Optional.empty());
 		return workInfoOfDailyAttendance;
 	}
 	
 	public static WorkInfoOfDailyAttendance getData(WorkInformation recordInfo) {
 		return new WorkInfoOfDailyAttendance(recordInfo, CalculationState.Calculated, NotUseAttribute.Not_use, NotUseAttribute.Not_use,
-				DayOfWeek.FRIDAY, new ArrayList<>());
+				DayOfWeek.FRIDAY, new ArrayList<>(), Optional.empty());
 	}
 	
 	public static WorkInfoAndTimeZone createWorkInfoAndTimeZone(List<TimeZone> listTimeZone) {

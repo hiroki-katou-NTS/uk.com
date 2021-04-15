@@ -8,7 +8,7 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.pub.appreflect.CreateEditStatusHistAppReasonPub;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.reflect.CreateEditStatusHistAppReasonAdapter;
-import nts.uk.ctx.at.shared.dom.application.reflectprocess.ScheduleRecordClassifi;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.ScheduleRecordClassifi;
 
 @Stateless
 public class CreateEditStatusHistAppReasonAdapterImpl implements CreateEditStatusHistAppReasonAdapter {

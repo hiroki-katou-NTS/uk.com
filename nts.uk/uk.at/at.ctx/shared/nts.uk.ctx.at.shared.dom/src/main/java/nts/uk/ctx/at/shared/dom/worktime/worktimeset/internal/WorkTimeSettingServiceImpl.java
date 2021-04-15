@@ -98,8 +98,21 @@ public class WorkTimeSettingServiceImpl implements WorkTimeSettingService {
 		if (!optWorkTimeSetting.isPresent()) {
 			return Collections.emptyList();
 		}
+		//所定時間設定を取得
 		PredetemineTimeSetting predTime = this.predetemineTimeRepo.findByWorkTimeCode(companyId, workTimeCode).get();
-
+		if(start1 == null && start2 == null && end1==null && end2 == null) {
+			//所定時間帯をパラメータへセット
+			for(TimezoneUse timezoneUse : predTime.getPrescribedTimezoneSetting().getLstTimezone()) {
+				if(timezoneUse.getWorkNo() == 1) {
+					start1 = timezoneUse.getStart().v();
+					end1 = timezoneUse.getEnd().v();
+				}else if(timezoneUse.getWorkNo() == 2) {
+					start2 = timezoneUse.getStart().v();
+					end2 = timezoneUse.getEnd().v();
+				}
+				
+			}
+		}
 		if (optWorkTimeSetting.get().getWorkTimeDivision().getWorkTimeDailyAtr() == WorkTimeDailyAtr.REGULAR_WORK) {
 			switch (optWorkTimeSetting.get().getWorkTimeDivision().getWorkTimeMethodSet()) {
 			case FIXED_WORK:
@@ -227,11 +240,13 @@ public class WorkTimeSettingServiceImpl implements WorkTimeSettingService {
 	private List<StampReflectTimezone> getFromFlow(String companyId, String workTimeCode, Integer start1,
 			Integer start2, Integer end1, Integer end2, PredetemineTimeSetting predTime) {
 		FlowWorkSetting flowWorkSetting = this.flowWorkSettingRepo.find(companyId, workTimeCode).get();
-
+		
 		// use shift 2
 		if (predTime.getPrescribedTimezoneSetting().isUseShiftTwo()) {
 			ArrayList<StampReflectTimezone> rs = new ArrayList<StampReflectTimezone>();
-
+			if(start2 == null) {
+				start2 = predTime.getPrescribedTimezoneSetting().getLstTimezone().stream().filter(c->c.getWorkNo() ==2).findFirst().get().getStart().v();
+			}
 			// ２回目勤務の打刻反映時間帯の開始時刻を計算
 			int start = start2
 					- flowWorkSetting.getStampReflectTimezone().getTwoTimesWorkReflectBasicTime().valueAsMinutes();

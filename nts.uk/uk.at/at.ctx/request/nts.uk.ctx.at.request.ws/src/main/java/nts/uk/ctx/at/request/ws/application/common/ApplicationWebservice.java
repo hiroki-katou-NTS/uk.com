@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.request.ws.application.common;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -40,7 +39,6 @@ import nts.uk.ctx.at.request.app.find.application.common.AppPrintQuery;
 import nts.uk.ctx.at.request.app.find.application.common.ApplicationExportService;
 import nts.uk.ctx.at.request.app.find.application.common.ApplicationFinder;
 import nts.uk.ctx.at.request.app.find.application.common.ApprovalRootOfSubjectRequestDto;
-import nts.uk.ctx.at.request.app.find.application.common.DetailMobDto;
 import nts.uk.ctx.at.request.app.find.application.common.GetDataApprovalRootOfSubjectRequest;
 import nts.uk.ctx.at.request.app.find.application.common.GetDataCheckDetail;
 import nts.uk.ctx.at.request.app.find.application.common.ObjApprovalRootInput;
@@ -56,11 +54,9 @@ import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.appabsence.HolidayAppType;
 import nts.uk.ctx.at.request.dom.application.common.service.application.output.ApplicationForRemandOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.InputGetDetailCheck;
-import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.DetailAfterUpdate;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.RemandCommand;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeUpdate;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.MailSenderResult;
-import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewAfterRegister;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ApproveProcessResult;
@@ -129,12 +125,6 @@ public class ApplicationWebservice extends WebService {
 	@Inject
 	private ApplicationExportService applicationExportService;
 	
-	@Inject
-	private NewAfterRegister newAfterRegister;
-	
-	@Inject
-	private DetailAfterUpdate detailAfterUpdate;
-	
 	/**
 	 * remand application
 	 * @return
@@ -178,11 +168,7 @@ public class ApplicationWebservice extends WebService {
 		return this.getDataCheckDetail.getDataCheckDetail(inputGetDetailCheck);
 	}
 	
-	@POST
-	@Path("getApplicationInfo")
-	public List<ApplicationMetaDto> getAppInfo(ApplicationPeriodDto periodDate){
-		return this.finderApp.getAppbyDate(periodDate);
-	}
+	
 	
 	@POST
 	@Path("getAppInfoByAppID")
@@ -266,12 +252,6 @@ public class ApplicationWebservice extends WebService {
 	@Path("write-log")
 	public void writeLog(ParamWriteLog paramLog){
 		writeLogSv.writeLog(new ScreenIdentifier(paramLog.getProgramId(), paramLog.getScreenId(), paramLog.getQueryString()));
-	}
-	
-	@POST
-	@Path("getDetailMob")
-	public DetailMobDto getDetailMob(String appID) {
-		return finderApp.getDetailMob(appID);
 	}
 	
 	// refactor 4

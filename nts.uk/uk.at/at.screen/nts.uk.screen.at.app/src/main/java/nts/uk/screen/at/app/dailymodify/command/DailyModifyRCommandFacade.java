@@ -25,11 +25,15 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.util.value.MutableValue;
+import nts.uk.ctx.at.record.app.command.dailyperform.DailyCorrectEventServiceCenter;
 import nts.uk.ctx.at.record.app.command.dailyperform.DailyRecordWorkCommand;
 import nts.uk.ctx.at.record.app.command.dailyperform.audittrail.DPAttendanceItemRC;
+import nts.uk.ctx.at.record.app.command.dailyperform.checkdata.DailyModifyRCResult;
 import nts.uk.ctx.at.record.app.command.dailyperform.checkdata.RCDailyCorrectionResult;
+import nts.uk.ctx.at.record.app.command.dailyperform.correctevent.EventCorrectResult;
 import nts.uk.ctx.at.record.app.command.dailyperform.month.UpdateMonthDailyParam;
 import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordDto;
+import nts.uk.ctx.at.record.app.find.dailyperform.editstate.EditStateOfDailyPerformanceDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.MonthlyRecordWorkDto;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.approvalmanagement.dailyperformance.algorithm.ContentApproval;
@@ -53,13 +57,17 @@ import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.repository.Ident
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.EmpProvisionalInput;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.RegisterProvisionalData;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.ScheduleRecordClassifi;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.CorrectDailyAttendanceService;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.AttendanceItemUtil;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.AttendanceItemUtil.AttendanceItemType;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.ChangeDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.IntegrationOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.erroralarm.EmployeeMonthlyPerError;
@@ -72,6 +80,7 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeUnit;
+import nts.uk.screen.at.app.dailymodify.CorrectDaiAttRequireImpl;
 import nts.uk.screen.at.app.dailymodify.command.common.DailyCalcParam;
 import nts.uk.screen.at.app.dailymodify.command.common.DailyCalcResult;
 import nts.uk.screen.at.app.dailymodify.command.common.ProcessCommonCalc;
@@ -167,6 +176,12 @@ public class DailyModifyRCommandFacade {
 
 	@Inject
 	private ProcessMonthlyCalc processMonthlyCalc;
+	
+	@Inject
+	private CorrectDaiAttRequireImpl correctDaiAttRequireImpl;
+	
+	@Inject
+	private DailyCorrectEventServiceCenter dailyCorrectEventServiceCenter;
 
 	public DataResultAfterIU insertItemDomain(DPItemParent dataParent) {
 		// Map<Integer, List<DPItemValue>> resultError = new HashMap<>();
@@ -224,7 +239,7 @@ public class DailyModifyRCommandFacade {
 				.collect(Collectors.groupingBy(x -> Pair.of(x.getEmployeeId(), x.getDate())));
 
 		Map<Pair<String, GeneralDate>, List<DPItemValue>> mapSidDateNotChange = dataParent.getItemValues().stream()
-				.filter(x -> !DPText.ITEM_CHANGE.contains(x.getItemId()))
+				//.filter(x -> !DPText.ITEM_CHANGE.contains(x.getItemId()))
 				.collect(Collectors.groupingBy(x -> Pair.of(x.getEmployeeId(), x.getDate())));
 
 		List<DailyModifyQuery> querys = createQuerys(mapSidDate);
@@ -358,7 +373,41 @@ public class DailyModifyRCommandFacade {
 
 			List<EmployeeMonthlyPerError> errorMonthHoliday = new ArrayList<>();
 			if (dataParent.isCheckDailyChange() || flagTempCalc) {
-				//
+				//勤怠ルールの補正処理
+				//2021/03/19 - 日別修正から補正処理を実行する対応
+				val changeSetting = new ChangeDailyAttendance(false, false, false, true, ScheduleRecordClassifi.RECORD);
+				List<DailyRecordDto> dtoOldTemp = dailyOlds;
+				dailyEdits = dailyEdits.stream().map(x -> {
+					val domDaily = CorrectDailyAttendanceService.processAttendanceRule(
+							correctDaiAttRequireImpl.createRequire(), x.toDomain(x.getEmployeeId(), x.getDate()),
+							changeSetting);
+					//振休振出として扱う日数を補正する
+					val dailyOldSameDate = dtoOldTemp.stream().filter(
+							old -> old.getEmployeeId().equals(x.getEmployeeId()) && old.getDate().equals(x.getDate()))
+							.findFirst().orElse(null);
+					CorrectDailyAttendanceService.correctFurikyu(correctDaiAttRequireImpl.createRequire(),
+							dailyOldSameDate.getWorkInfo().toDomain(x.getEmployeeId(), x.getDate()), domDaily.getWorkInformation());
+					//ootsuka mode
+					if (AppContexts.optionLicense().customize().ootsuka()) {
+						 List<DPItemValue> lstItemValue = mapSidDateNotChange.get(Pair.of(x.getEmployeeId(), x.getDate()));
+						 if(lstItemValue.isEmpty()) {
+							 return  DailyRecordDto.from(domDaily);
+						 }
+						 val itemValues = lstItemValue.stream()
+									.map(it -> new ItemValue(it.getValue(),
+											it.getValueType() == null ? ValueType.UNKNOWN : ValueType.valueOf(it.getValueType()),
+											it.getLayoutCode(), it.getItemId()))
+									.collect(Collectors.toList());
+							
+						DailyModifyRCResult updatedOoTsuka = DailyModifyRCResult.builder().employeeId(x.getEmployeeId())
+								.workingDate(x.getDate()).items(itemValues).completed();
+						EventCorrectResult result = dailyCorrectEventServiceCenter.correctRunTime(DailyRecordDto
+								.from(domDaily), updatedOoTsuka, AppContexts.user().companyId());
+						return result.getCorrected();
+					}
+					return DailyRecordDto.from(domDaily);
+				}).collect(Collectors.toList());
+				//日別実績の計算
 				DailyCalcResult daiCalcResult = processDailyCalc.processDailyCalc(
 						new DailyCalcParam(mapSidDate, dataParent.getLstNotFoundWorkType(), resultOlds,
 								dataParent.getDateRange(), dataParent.getDailyEdits(), dataParent.getItemValues()),
@@ -1217,6 +1266,17 @@ public class DailyModifyRCommandFacade {
 				return o;
 			List<ItemValue> itemValues = itemChanges.get().getItemValues();
 			AttendanceItemUtil.fromItemValues(o, itemValues);
+			//update state
+			List<EditStateOfDailyAttd> lstState = ProcessCommonCalc.convertTo(o.getEmployeeId(), itemChanges.get());
+			o.getEditStates().removeIf(z -> {
+				return lstState.stream().filter(y -> y.getAttendanceItemId() == z.getAttendanceItemId()).findFirst()
+						.isPresent();
+			});
+			o.getEditStates()
+					.addAll(lstState.stream()
+							.map(c -> EditStateOfDailyPerformanceDto.getDto(o.getEmployeeId(), o.getDate(), c))
+							.collect(Collectors.toList()));
+			
 			createStampSourceInfo(o, querys);
 			o.getTimeLeaving().ifPresent(dto -> {
 				if (dto.getWorkAndLeave() != null)

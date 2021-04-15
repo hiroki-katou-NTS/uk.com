@@ -91,6 +91,12 @@ module nts.uk.at.view.ktg001.b {
 							vm.aggrChecked(s.displayType == USE ? true : false);
 						}
 					})
+					} else {
+						vm.title(vm.$i18n('KTG001_12'));
+						vm.appChecked(true);
+						vm.dayChecked(approvalProcessingUse.useDayApproverConfirm);
+						vm.monChecked(approvalProcessingUse.useMonthApproverConfirm);
+						vm.aggrChecked(false);
 					}
 				} else {
 					vm.appChecked(true);
