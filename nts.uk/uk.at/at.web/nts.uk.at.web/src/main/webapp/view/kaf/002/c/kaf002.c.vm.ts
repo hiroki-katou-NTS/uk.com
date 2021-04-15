@@ -29,7 +29,7 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
 		<div class="two-panel" style="height: 100%;">
 			<div class="left-panel"
 				style="width: calc(100% - 410px); height: inherit;">
-				<div style="height: inherit; overflow-y: auto; background-color: #fff; padding: 10px;">
+				<div style="height: inherit; overflow-y: auto; background-color: #fff; padding: 10px; overflow-x: hidden;">
 					<div class="table"
 						style="border-bottom: 2px solid #B1B1B1; padding-bottom: 30px; margin-bottom: 30px; width: 100%;">
 						<div class="cell" style="vertical-align: middle;">
