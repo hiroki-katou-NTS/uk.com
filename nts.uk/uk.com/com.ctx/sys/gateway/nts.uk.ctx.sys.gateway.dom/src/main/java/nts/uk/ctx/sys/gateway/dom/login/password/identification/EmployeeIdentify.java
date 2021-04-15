@@ -31,7 +31,7 @@ public class EmployeeIdentify {
 		val user = require.getUserByPersonId(employee.get().getPersonId());
 		
 		// 個人IDからユーザを特定できない or 有効期限が切れている
-		if (!user.isPresent() || user.get().isAvailableAt(GeneralDate.today())) {
+		if (!user.isPresent() || !user.get().isAvailableAt(GeneralDate.today())) {
 			return identifyFailure(require, companyId, employeeCode);
 		}
 		

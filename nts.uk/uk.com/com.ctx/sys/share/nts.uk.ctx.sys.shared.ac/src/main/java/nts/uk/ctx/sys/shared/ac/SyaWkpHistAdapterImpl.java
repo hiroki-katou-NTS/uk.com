@@ -2,6 +2,7 @@ package nts.uk.ctx.sys.shared.ac;
 
 import java.util.Optional;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.val;
@@ -11,6 +12,7 @@ import nts.uk.ctx.bs.employee.pub.workplace.master.WorkplacePub;
 import nts.uk.ctx.sys.shared.dom.employee.syworkplace.SyaWkpHistAdapter;
 import nts.uk.ctx.sys.shared.dom.employee.syworkplace.SyaWkpHistImport;
 
+@Stateless
 public class SyaWkpHistAdapterImpl implements SyaWkpHistAdapter {
 	
 	@Inject

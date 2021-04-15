@@ -7,6 +7,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.val;
+import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.sys.gateway.app.command.login.session.LoginAuthorizeAdapter;
 import nts.uk.ctx.sys.gateway.dom.login.CheckIfCanLogin;
@@ -27,6 +28,14 @@ import nts.uk.ctx.sys.gateway.dom.tenantlogin.TenantAuthenticateFailureLogReposi
 import nts.uk.ctx.sys.gateway.dom.tenantlogin.TenantAuthenticateRepository;
 import nts.uk.ctx.sys.shared.dom.company.CompanyInforImport;
 import nts.uk.ctx.sys.shared.dom.company.CompanyInformationAdapter;
+import nts.uk.ctx.sys.shared.dom.employee.employment.SyaEmpHistAdapter;
+import nts.uk.ctx.sys.shared.dom.employee.employment.SyaEmpHistImport;
+import nts.uk.ctx.sys.shared.dom.employee.sycompany.SyaCompanyHistAdapter;
+import nts.uk.ctx.sys.shared.dom.employee.sycompany.SyaCompanyHistImport;
+import nts.uk.ctx.sys.shared.dom.employee.syjobtitle.SyaJobHistAdapter;
+import nts.uk.ctx.sys.shared.dom.employee.syjobtitle.SyaJobHistImport;
+import nts.uk.ctx.sys.shared.dom.employee.syworkplace.SyaWkpHistAdapter;
+import nts.uk.ctx.sys.shared.dom.employee.syworkplace.SyaWkpHistImport;
 import nts.uk.shr.com.context.loginuser.LoginUserContextManager;
 import nts.uk.shr.com.context.loginuser.role.LoginUserRoles;
 
@@ -37,13 +46,32 @@ public class LoginRequire {
 	private CompanyInformationAdapter companyInformationAdapter;
 	
 	@Inject
-    private TenantAuthenticateRepository tenantAuthenticationRepository;
+    private TenantAuthenticateRepository tenantAuthenticationRepo;
 
 	@Inject
 	private LoginAuthorizeAdapter loginAuthorizeAdapter;
 	
 	@Inject
 	private LoginUserContextManager loginUserContextManager;
+
+	@Inject
+	private PlannedOutageByTenantRepository plannedOutageByTenantRepo;
+	
+	@Inject
+	private PlannedOutageByCompanyRepository plannedOutageByCompanyRepo;
+	
+	@Inject
+	private SyaCompanyHistAdapter syaCompanyHistAdapter;
+	
+	@Inject
+	private SyaEmpHistAdapter syaEmpHistAdapter;
+	
+	@Inject
+	private SyaJobHistAdapter syaJobHistAdapter;
+
+	@Inject
+	private SyaWkpHistAdapter syaWkpHistAdapter;
+
 
 	/**
 	 * 社員に紐付かないユーザのログイン用
@@ -53,9 +81,15 @@ public class LoginRequire {
 		
 		require.setDependencies(
 				companyInformationAdapter,
-				tenantAuthenticationRepository,
+				tenantAuthenticationRepo,
 				loginAuthorizeAdapter,
-				loginUserContextManager);
+				loginUserContextManager,
+				plannedOutageByTenantRepo,
+				plannedOutageByCompanyRepo, 
+				syaCompanyHistAdapter, 
+				syaEmpHistAdapter, 
+				syaJobHistAdapter, 
+				syaWkpHistAdapter);
 	}
 
 	public static interface CommonRequire extends
@@ -67,26 +101,45 @@ public class LoginRequire {
 	public static class BaseImpl implements CommonRequire {
 
 		private CompanyInformationAdapter companyInformationAdapter;
+		private TenantAuthenticateRepository tenantAuthenticationRepo;
 		private LoginAuthorizeAdapter loginAuthorizeAdapter;
 		private LoginUserContextManager loginUserContextManager;
-		private PlannedOutageByTenantRepository plannedOutageByTenantRepository;
-		private PlannedOutageByCompanyRepository plannedOutageByCompanyRepository;
+		
+		private PlannedOutageByTenantRepository plannedOutageByTenantRepo;
+		private PlannedOutageByCompanyRepository plannedOutageByCompanyRepo;
 		private AccountLockPolicyRepository accountLockPolicyRepository;
 		private LockOutDataRepository lockOutDataRepository;
-		private TenantAuthenticateRepository tenantAuthenticationRepo;
 		private TenantAuthenticateFailureLogRepository tenantAuthenticationFailureLogRepo;
 		private PasswordAuthenticateFailureLogRepository passwordAuthenticateFailureLogRepo;
+		
+		private SyaCompanyHistAdapter syaCompanyHistAdapter;
+		private SyaEmpHistAdapter syaEmpHistAdapter;
+		private SyaJobHistAdapter syaJobHistAdapter;
+		private SyaWkpHistAdapter syaWkpHistAdapter;
+		
 
 		public void setDependencies(
-				CompanyInformationAdapter companyInformationAdapter,
-				TenantAuthenticateRepository tenantAuthenticationRepo,
+				CompanyInformationAdapter companyInformationAdapter, 
+				TenantAuthenticateRepository tenantAuthenticationRepo, 
 				LoginAuthorizeAdapter loginAuthorizeAdapter,
-				LoginUserContextManager loginUserContextManager) {
+				LoginUserContextManager loginUserContextManager, 
+				PlannedOutageByTenantRepository plannedOutageByTenantRepo,
+				PlannedOutageByCompanyRepository plannedOutageByCompanyRepo, 
+				SyaCompanyHistAdapter syaCompanyHistAdapter, 
+				SyaEmpHistAdapter syaEmpHistAdapter, 
+				SyaJobHistAdapter syaJobHistAdapter, 
+				SyaWkpHistAdapter syaWkpHistAdapter) {
 
 			this.companyInformationAdapter = companyInformationAdapter;
 			this.tenantAuthenticationRepo = tenantAuthenticationRepo;
 			this.loginAuthorizeAdapter = loginAuthorizeAdapter;
 			this.loginUserContextManager = loginUserContextManager;
+			this.plannedOutageByTenantRepo = plannedOutageByTenantRepo;
+			this.plannedOutageByCompanyRepo = plannedOutageByCompanyRepo;
+			this.syaCompanyHistAdapter = syaCompanyHistAdapter;
+			this.syaEmpHistAdapter = syaEmpHistAdapter;
+			this.syaJobHistAdapter = syaJobHistAdapter;
+			this.syaWkpHistAdapter = syaWkpHistAdapter;
 		}
 
 		@Override
@@ -95,13 +148,13 @@ public class LoginRequire {
 		}
 
 		@Override
-		public Optional<PlannedOutageByCompany> getPlannedOutageByCompany(String companyId) {
-			return plannedOutageByCompanyRepository.find(companyId);
+		public Optional<PlannedOutageByTenant> getPlannedOutageByTenant(String tenantCode) {
+			return plannedOutageByTenantRepo.find(tenantCode);
 		}
 
 		@Override
-		public Optional<PlannedOutageByTenant> getPlannedOutageByTenant(String tenantCode) {
-			return plannedOutageByTenantRepository.find(tenantCode);
+		public Optional<PlannedOutageByCompany> getPlannedOutageByCompany(String companyId) {
+			return plannedOutageByCompanyRepo.find(companyId);
 		}
 		
 		@Override
@@ -130,6 +183,37 @@ public class LoginRequire {
 		}
 
 		@Override
+		public Optional<TenantAuthenticate> getTenantAuthentication(String tenantCode) {
+			return tenantAuthenticationRepo.find(tenantCode);
+		}
+
+		@Override
+		public void insert(TenantAuthenticateFailureLog failureLog) {
+			tenantAuthenticationFailureLogRepo.insert(failureLog);
+			
+		}
+
+		@Override
+		public Optional<SyaCompanyHistImport> getCompanyHist(String employeeId, GeneralDate date) {
+			return syaCompanyHistAdapter.find(employeeId, date);
+		}
+
+		@Override
+		public Optional<SyaEmpHistImport> getEmploymentHist(String employeeId, GeneralDate date) {
+			return syaEmpHistAdapter.findBySid(employeeId, date);
+		}
+
+		@Override
+		public Optional<SyaJobHistImport> getJobtitleHist(String employeeId, GeneralDate date) {
+			return syaJobHistAdapter.findBySid(employeeId, date);
+		}
+
+		@Override
+		public Optional<SyaWkpHistImport> getWorkplaceHist(String employeeId, GeneralDate date) {
+			return syaWkpHistAdapter.findBySid(employeeId, date);
+		}
+
+		@Override
 		public void authorizeLoginSession(IdentifiedEmployeeInfo identified) {
 			val CompanyInforImport =  getCompanyInforImport(identified.getCompanyId());
 			loginUserContextManager.loggedInAsEmployee(
@@ -144,17 +228,6 @@ public class LoginRequire {
 			loginAuthorizeAdapter.authorize(
 					loginUserContextManager.roleIdSetter(),
 					identified.getUserId());
-		}
-
-		@Override
-		public Optional<TenantAuthenticate> getTenantAuthentication(String tenantCode) {
-			return tenantAuthenticationRepo.find(tenantCode);
-		}
-
-		@Override
-		public void insert(TenantAuthenticateFailureLog failureLog) {
-			tenantAuthenticationFailureLogRepo.insert(failureLog);
-			
 		}
 	}
 }

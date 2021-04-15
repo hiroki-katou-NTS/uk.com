@@ -15,7 +15,7 @@ public class CheckUserAvailability {
 	public static void check(Require require, IdentifiedEmployeeInfo identified) {
 		
 		// ユーザの有効期限が切れていないかチェック
-		if(identified.getUser().isAvailableAt(GeneralDate.today())) {
+		if(!identified.getUser().isAvailableAt(GeneralDate.today())) {
 			throw new BusinessException("Msg_316");
 		}
 		

@@ -2,6 +2,7 @@ package nts.uk.ctx.sys.shared.ac;
 
 import java.util.Optional;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.val;
@@ -12,6 +13,7 @@ import nts.uk.ctx.bs.employee.pub.jobtitle.SyJobTitlePub;
 import nts.uk.ctx.sys.shared.dom.employee.syjobtitle.SyaJobHistAdapter;
 import nts.uk.ctx.sys.shared.dom.employee.syjobtitle.SyaJobHistImport;
 
+@Stateless
 public class SyaJodHistAdapterImpl implements SyaJobHistAdapter {
 
 	@Inject

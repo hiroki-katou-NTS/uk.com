@@ -46,7 +46,7 @@ public class JpaPasswordPolicyRepository extends JpaRepository implements Passwo
 	
 	@Override
 	public Optional<PasswordPolicy> getPasswordPolicy(String tenantCode) {
-		return getPasswordPolicy(tenantCode);
+		return getPasswordPolicy(new ContractCode(tenantCode));
 	}
 	
 	@Override

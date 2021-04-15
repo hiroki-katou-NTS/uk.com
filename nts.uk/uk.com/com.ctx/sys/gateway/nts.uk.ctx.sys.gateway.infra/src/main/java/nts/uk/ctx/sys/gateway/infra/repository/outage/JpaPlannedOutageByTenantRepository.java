@@ -2,12 +2,15 @@ package nts.uk.ctx.sys.gateway.infra.repository.outage;
 
 import java.util.Optional;
 
+import javax.ejb.Stateless;
+
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.uk.ctx.sys.gateway.dom.outage.tenant.PlannedOutageByTenant;
 import nts.uk.ctx.sys.gateway.dom.outage.tenant.PlannedOutageByTenantRepository;
 import nts.uk.ctx.sys.gateway.infra.entity.stopbysystem.SgwdtStopBySystem;
 
+@Stateless
 public class JpaPlannedOutageByTenantRepository extends JpaRepository implements PlannedOutageByTenantRepository{
 	
 	private final String BASIC_SELECT = "select * from SGWMT_STOP_BY_SYSTEM ";

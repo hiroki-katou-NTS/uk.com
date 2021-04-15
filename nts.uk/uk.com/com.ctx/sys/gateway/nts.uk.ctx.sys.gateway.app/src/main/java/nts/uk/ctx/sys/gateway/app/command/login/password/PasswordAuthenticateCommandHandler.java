@@ -5,11 +5,12 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
-import lombok.val;
 import nts.arc.task.tran.TransactionService;
 import nts.uk.ctx.sys.gateway.app.command.login.LoginCommandHandlerBase;
+import nts.uk.ctx.sys.gateway.dom.login.password.authenticate.PasswordAuthenticateResult;
 import nts.uk.ctx.sys.gateway.dom.login.password.authenticate.PasswordAuthenticateWithEmployeeCode;
 import nts.uk.ctx.sys.gateway.dom.login.password.identification.EmployeeIdentify;
+import nts.uk.ctx.sys.gateway.dom.login.password.identification.EmployeeIdentify.IdentificationResult;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -66,8 +67,8 @@ public class PasswordAuthenticateCommandHandler extends LoginCommandHandlerBase<
 		if(idenResult.isFailed()) {
 			transaction.execute(() ->{
 				idenResult.getFailureLog().get();
-				return AuthenticateResult.identificationFailure(idenResult);
 			});
+			return AuthenticateResult.identificationFailure(idenResult);
 		}
 		
 		// パスワード認証

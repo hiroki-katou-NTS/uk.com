@@ -1,5 +1,6 @@
 package nts.uk.ctx.sys.shared.dom.employee;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.bs.employee.pub.employee.EmployeeDataMngInfoExport;
@@ -10,6 +11,7 @@ import nts.uk.ctx.bs.employee.pub.employee.EmployeeDataMngInfoExport;
  *
  */
 @Data
+@AllArgsConstructor
 public class EmployeeDataMngInfoImport {
 
 	/** 会社ID */
@@ -35,10 +37,6 @@ public class EmployeeDataMngInfoImport {
 
 	/** 外部コード */
 	private String externalCode;
-	
-	public EmployeeDataMngInfoImport(String companyId, String personId, String employeeId, String employeeCode,
-			SDelAtr valueOf, GeneralDateTime deleteDateTemporary, String removeReason, String externalCode) {
-	}
 	
 	public static EmployeeDataMngInfoImport of(EmployeeDataMngInfoExport export) {
 		return new EmployeeDataMngInfoImport(
