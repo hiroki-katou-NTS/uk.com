@@ -779,7 +779,12 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
         }
 
 		reload() {
+			
 		    const self = this;
+			if (self.appType() != AppType.STAMP_APPLICATION && self.application().opStampRequestMode() != StampRequestMode.STAMP_ADDITIONAL) {
+				
+				return;
+			}	
             self.$blockui('show');
             let appplication = ko.toJS(self.application) as Application;
             let appId = appplication.appID;
@@ -1048,6 +1053,11 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
         
 
     }
+	enum StampRequestMode {
+		STAMP_ADDITIONAL,
+		STAMP_ONLINE_RECORD
+	}
+
     class Comment{
         public content: string;
         public isBold: boolean;

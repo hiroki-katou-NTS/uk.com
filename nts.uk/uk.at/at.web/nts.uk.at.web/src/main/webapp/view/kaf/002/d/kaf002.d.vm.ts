@@ -275,6 +275,10 @@ module nts.uk.at.view.kaf002_ref.d.viewmodel {
 
 	   reload() {
 	       const self = this;
+			if (self.appType() != AppType.STAMP_APPLICATION && self.application().opStampRequestMode() != StampRequestMode.STAMP_ADDITIONAL) {
+				
+				return;
+			}	
 	       self.fetchData();
 	   }
        
@@ -456,6 +460,11 @@ module nts.uk.at.view.kaf002_ref.d.viewmodel {
          */
         UNION
     }
+
+	enum StampRequestMode {
+		STAMP_ADDITIONAL,
+		STAMP_ONLINE_RECORD
+	}
     
     class Comment{
         public content: string;
