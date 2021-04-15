@@ -10,7 +10,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.AllArgsConstructor;
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.i18n.I18NText;
 import nts.arc.layer.app.command.CommandHandlerContext;
@@ -23,7 +22,6 @@ import nts.uk.ctx.bs.employee.dom.workplace.group.AffWorkplaceGroupRespository;
 import nts.uk.ctx.bs.employee.dom.workplace.group.WorkplaceGroup;
 import nts.uk.ctx.bs.employee.dom.workplace.group.WorkplaceGroupName;
 import nts.uk.ctx.bs.employee.dom.workplace.group.WorkplaceGroupRespository;
-import nts.uk.ctx.bs.employee.dom.workplace.group.WorkplaceGroupType;
 import nts.uk.ctx.bs.employee.dom.workplace.group.WorkplaceReplaceResult;
 import nts.uk.ctx.bs.employee.dom.workplace.group.WorkplaceReplacement;
 import nts.uk.ctx.bs.employee.dom.workplace.group.domainservice.ReplaceWorkplacesService;
@@ -65,7 +63,6 @@ public class UpdateWorkplaceGroupCommandHandler
 
 		// 2: set(職場グループ名称, 職場グループ種別)
 		wpgrp.get().setName(new WorkplaceGroupName(cmd.getWkpGrName()));
-		wpgrp.get().setType(EnumAdaptor.valueOf(cmd.getWkpGrType(), WorkplaceGroupType.class));
 
 		ReplaceWorkplacesService.Require updateRequire = new UpdateWplOfWorkGrpRequireImpl(affRepo);
 
