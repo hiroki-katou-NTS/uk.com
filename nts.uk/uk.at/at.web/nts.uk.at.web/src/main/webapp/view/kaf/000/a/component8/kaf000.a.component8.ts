@@ -5,7 +5,7 @@ module nts.uk.at.view.kaf000.a.component8.viewmodel {
         name: 'kaf000-a-component8',
         template: `
             <div id="kaf000-a-component8" style="padding-left: 15px; padding-right: 15px;">
-				<div class="table" style="padding-top: 20px; padding-bottom: 20px;">
+				<div class="table" style="padding-top: 20px; padding-bottom: 10px;">
 					<div class="cell" data-bind="i18n: 'KAF000_54'" style="font-weight: bold;"></div>
 				</div>
 				<div class="panel panel-frame" data-bind="foreach: actualContentDisplayDtoLst" style="overflow: auto; height: 200px; margin-left: 3px; margin-top: 5px;">

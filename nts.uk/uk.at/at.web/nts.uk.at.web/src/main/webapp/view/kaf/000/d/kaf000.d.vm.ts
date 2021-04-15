@@ -124,6 +124,16 @@ module nts.uk.at.view.kaf000.d.viewmodel {
 			const vm = this;
 			vm.$window.close();	
 		}
+		
+		getApprovalColor(approvalAtrValue: number) {
+			switch(approvalAtrValue) {
+				case 1: return '#BFEA60';
+				case 2: return '#FD4D4D';
+				case 3: return '#FD4D4D';
+				case 4: return '#FD4D4D';
+				default: return '';
+			}
+		}
     }
 
 	export interface KAF000DParam {

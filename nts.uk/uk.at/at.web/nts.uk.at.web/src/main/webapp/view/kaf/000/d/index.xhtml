@@ -47,23 +47,23 @@
 				                                <span style="text-align: left;" class="bg-green"></span>
 				                           	</td>
 				                            <td style="width: 275px;">
-				                                <span class="limited-label" style="width: 270px; text-align: left; padding-left: 5px"
+				                                <span class="limited-label" style="width: 270px; text-align: left; padding-left: 5px; vertical-align: middle;"
 				                                    data-bind="text: ko.pureComputed(function() { return $vm.getApproverAtr(loopApprover)})">
 				                                </span>
 				                            </td>
 				                            <td >
 				                                <span class="limited-label"
-				                                style="width: 85px;"
-				                                data-bind="text: loopApprover.approvalAtrName"></span>
+				                                style="width: 85px; vertical-align: middle;"
+				                                data-bind="style: { 'color': $vm.getApprovalColor(loopApprover.approvalAtrValue()) }, text: loopApprover.approvalAtrName"></span>
 				                            </td>
 				                            <td >
 				                                <span class="limited-label"
-				                                style="width: 130px; text-align: left; padding-left: 5px;"
+				                                style="width: 130px; text-align: left; padding-left: 5px; vertical-align: middle;"
 				                                data-bind="text: $vm.getApprovalDateFormat(loopApprover)"></span>
 				                            </td>
 				                            <td>
 				                                <span class="limited-label"
-				                                style="width: 160px; text-align: left; padding-left: 5px;"
+				                                style="width: 160px; text-align: left; padding-left: 5px; vertical-align: middle;"
 				                                data-bind="text: loopApprover.approvalReason"></span>
 				                            </td>
 				                        </tr>
