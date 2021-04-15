@@ -16,7 +16,7 @@ module nts.uk.at.view.kaf000.b.component8.viewmodel {
 							<div data-bind="if: $data.representerName()" style="min-width: 112px;">
 								<div class="limited-label" style="vertical-align: middle;" data-bind="text: '(' + $data.representerName() + ')'"></div>
 							</div>
-							<div data-bind="if: $data.approvalAtrValue()!=0">
+							<div>
 								<div class="limited-label" style="vertical-align: middle;" data-bind="style: { 'color': $component.getApprovalColor($data.approvalAtrValue()) }, text: $data.approvalAtrName"></div>
 							</div>
 							<div data-bind="if: $data.approvalReason">

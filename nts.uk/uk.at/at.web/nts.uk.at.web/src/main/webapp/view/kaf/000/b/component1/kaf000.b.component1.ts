@@ -36,6 +36,8 @@ module nts.uk.at.view.kaf000.b.component1.viewmodel {
             vm.displayMsg = ko.observable(false);
             vm.displayDeadline = ko.observable(false);
 
+			CommonProcess.initDeadlineMsg(vm.appDispInfoStartupOutput(), vm);
+			
             vm.appDispInfoStartupOutput.subscribe(value => {
                 CommonProcess.initDeadlineMsg(value, vm);
             });
