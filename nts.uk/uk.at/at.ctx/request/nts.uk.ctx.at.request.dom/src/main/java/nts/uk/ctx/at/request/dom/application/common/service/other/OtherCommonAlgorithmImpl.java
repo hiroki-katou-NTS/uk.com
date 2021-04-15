@@ -376,7 +376,7 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 					appContent, 
 					loginName, 
 					loginMail);
-			String mailTitle = application.getAppDate().getApplicationDate().toLocalDate().toString()+" "+appName;
+			String mailTitle = application.getAppDate().getApplicationDate().toString()+"　"+appName;
 			String mailBody = mailContentToSend;
 			try {
 				// メールを送信する(gửi mail)
@@ -451,7 +451,7 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 				appContent, 
 				loginName, 
 				loginMail);
-		String mailTitle = application.getAppDate().getApplicationDate().toLocalDate().toString()+" "+appName;
+		String mailTitle = application.getAppDate().getApplicationDate().toString()+"　"+appName;
 		String mailBody = mailContentToSend;
 		try {
 			// メールを送信する
