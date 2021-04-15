@@ -38,3 +38,8 @@ button.nts-switch-button {
     text-align: center !important;
     border: 1px solid black !important;
 }
+
+#kaf006component2 label.radio-wrapper span {
+    width: 72px;
+    text-align: center;
+}
