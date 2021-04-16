@@ -127,9 +127,43 @@ module nts.uk.at.view.kdl030.a.viewmodel {
             }
         }
 
+        checkApproverFive() {
+            let count = 0;
+            this.appSendMailByEmpLst().forEach(app => {
+                app.approvalRoot.listApprovalPhaseStateDto().forEach(lst => {
+                    count += lst.listApprovalFrame().length;
+                })
+            })
+            return count === 5 ? 'border-b-none' : '';
+        }
+
+        checkApproverMoreFive() {
+            let count = 0;
+            let self = this;
+            self.appSendMailByEmpLst().forEach(app => {
+                app.approvalRoot.listApprovalPhaseStateDto().forEach(lst => {
+                    count += lst.listApprovalFrame().length;
+                })
+            })
+            if (count > 5){
+                return self.isAgentMode() ? 'min-774' : 'min-671';
+            }
+            return "";
+        }
+
+        checkApproverTwo(appSendMailByEmp){
+            let count = 0;
+
+            appSendMailByEmp.approvalRoot.listApprovalPhaseStateDto().forEach(lst => {
+                count += lst.listApprovalFrame().length;
+            })
+
+            return count > 1 ? 'break-all' : 'limited-label';
+        }
+
         getApplicantName(appSendMailByEmp: any){
             return appSendMailByEmp.applicantName()
-                .concat(nts.uk.util.isNullOrEmpty(appSendMailByEmp.applicantMail()) ? '' : ' @');
+                .concat(nts.uk.util.isNullOrEmpty(appSendMailByEmp.applicantMail()) ? '' : '(@)');
         }
 
         getPhaseLabel(phaseOrder) {
