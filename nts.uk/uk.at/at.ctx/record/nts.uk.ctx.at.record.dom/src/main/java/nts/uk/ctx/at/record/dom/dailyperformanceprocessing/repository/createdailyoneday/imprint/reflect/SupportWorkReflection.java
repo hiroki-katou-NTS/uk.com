@@ -618,9 +618,9 @@ public class SupportWorkReflection {
 
 			// 最大応援回数で補正する
 			dataAutoSetNew = this.correctWithMaxNumberCheers(
-					judgmentSupport.getSupportMaxFrame() == null ? judgmentSupport.getSupportMaxFrame().v() - 1 : null,
+					judgmentSupport.getSupportMaxFrame() != null ? judgmentSupport.getSupportMaxFrame().v() - 1 : null,
 					dataAutoSet);
-			if (dataAutoSetNew.size() > 1) {
+			if (dataAutoSetNew.size() < 2) {
 				// 最後の退勤の応援データを補正する
 				lastData.getTimeSheet()
 						.setStart(firstData.getTimeSheet().getStart().isPresent()
@@ -656,10 +656,12 @@ public class SupportWorkReflection {
 	 */
 	public List<OuenWorkTimeSheetOfDailyAttendance> correctWithMaxNumberCheers(Integer support,
 			List<OuenWorkTimeSheetOfDailyAttendance> dataAutoSet) {
+		// 応援データ一覧のsizeは最大応援回数まで守って、残りの応援データは消す
 		List<OuenWorkTimeSheetOfDailyAttendance> dataAutoSetNew = new ArrayList<>();
-		if (support != null && dataAutoSet.size() > support) {
+		if (dataAutoSet.size() > support) {
 			dataAutoSetNew = dataAutoSet.subList(0, support);
 		}
+		dataAutoSetNew.addAll(dataAutoSet);
 		return dataAutoSetNew;
 	}
 
@@ -791,8 +793,8 @@ public class SupportWorkReflection {
 			List<OuenWorkTimeSheetOfDailyAttendance> lstCorrectMaximum, Map<Integer, List<ItemValue>> mapItemValue) {
 		for (OuenWorkTimeSheetOfDailyAttendance attendance : lstCorrectMaximum) {
 			// 処理中の応援データの開始の変更手段を確認する
-			TimeChangeMeans changeMeansStart = attendance.getTimeSheet().getStart().get().getReasonTimeChange()
-					.getTimeChangeMeans();
+			TimeChangeMeans changeMeansStart = attendance.getTimeSheet().getStart().isPresent() ? 
+					attendance.getTimeSheet().getStart().get().getReasonTimeChange().getTimeChangeMeans() : null;
 
 			if ((changeMeansStart == TimeChangeMeans.HAND_CORRECTION_PERSON)
 					|| (changeMeansStart == TimeChangeMeans.HAND_CORRECTION_OTHERS)
@@ -1027,12 +1029,13 @@ public class SupportWorkReflection {
 		if (lstOuenWorkTime.get(0).getTimeSheet().getStart().isPresent()) {
 			
 			// 同一と認識すべきの打刻か
-			if(!ouenStamp.getTimeSheet().getStart().isPresent()) return;
-			val standardStamp = ouenStamp.getTimeSheet().getStart().get().getTimeWithDay();
-			val targetStamp = lstOuenWorkTime.get(0).getTimeSheet().getStart().get().getTimeWithDay();
-			
-			boolean checkStamp = judgmentSupport.checkStampRecognizedAsSame(standardStamp.get(), targetStamp.get());
-			if(checkStamp == true) return;
+			if(ouenStamp.getTimeSheet().getStart().isPresent()) {
+				val standardStamp = ouenStamp.getTimeSheet().getStart().get().getTimeWithDay();
+				val targetStamp = lstOuenWorkTime.get(0).getTimeSheet().getStart().get().getTimeWithDay();
+				
+				boolean checkStamp = judgmentSupport.checkStampRecognizedAsSame(standardStamp.get(), targetStamp.get());
+				if(checkStamp == true) return;
+			}
 			
 			WorkContent workContent = lstOuenWorkTime.get(0).getWorkContent();
 			TimeSheetOfAttendanceEachOuenSheet timeSheet = TimeSheetOfAttendanceEachOuenSheet.create(new WorkNo(0),
@@ -1060,12 +1063,13 @@ public class SupportWorkReflection {
 		// 終了応援かを確認する
 		// 終了の場合
 		if (lstOuenWorkTime.get(lstOuenWorkTime.size() - 1).getTimeSheet().getEnd().isPresent()) {
-			if(!ouenStamp.getTimeSheet().getEnd().isPresent()) return;
-			val standardStamp = ouenStamp.getTimeSheet().getEnd().get().getTimeWithDay();
-			val targetStamp = lstOuenWorkTime.get(lstOuenWorkTime.size() - 1).getTimeSheet().getEnd().get().getTimeWithDay();
-			
-			boolean checkStamp = judgmentSupport.checkStampRecognizedAsSame(standardStamp.get(), targetStamp.get());
-			if(checkStamp == true) return;
+			if(ouenStamp.getTimeSheet().getEnd().isPresent()) {
+				val standardStamp = ouenStamp.getTimeSheet().getEnd().get().getTimeWithDay();
+				val targetStamp = lstOuenWorkTime.get(lstOuenWorkTime.size() - 1).getTimeSheet().getEnd().get().getTimeWithDay();
+				
+				boolean checkStamp = judgmentSupport.checkStampRecognizedAsSame(standardStamp.get(), targetStamp.get());
+				if(checkStamp == true) return;
+			}
 			
 			WorkContent workContent = lstOuenWorkTime.get(lstOuenWorkTime.size() - 1).getWorkContent();
 			TimeSheetOfAttendanceEachOuenSheet timeSheet = TimeSheetOfAttendanceEachOuenSheet.create(new WorkNo(0),
