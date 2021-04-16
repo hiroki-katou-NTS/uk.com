@@ -46,6 +46,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdat
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UseDay;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UseTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.InterimSpecialHolidayMng;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.ManagermentAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRemainingData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.grantnumber.SpecialLeaveUndigestNumber;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialLeave;
@@ -78,20 +79,15 @@ public class SpecialLeaveManagementServicePubImpl implements SpecialLeaveManagem
 		val require = requireService.createRequire();
 		val cacheCarrier = new CacheCarrier();
 
-		try {
+		// 期間中の年休残数を取得
+		InPeriodOfSpecialLeaveResultInfor aggrResult
+				= SpecialLeaveManagementService.complileInPeriodOfSpecialLeave(
+						require, cacheCarrier, param);
 
-			// 期間中の年休残数を取得
-			InPeriodOfSpecialLeaveResultInfor aggrResult
-					= SpecialLeaveManagementService.complileInPeriodOfSpecialLeave(
-							require, cacheCarrier, param);
+		// Exportへ変換
+		InPeriodOfSpecialLeaveResultInforExport result = fromDomain( aggrResult );
 
-			// Exportへ変換
-			InPeriodOfSpecialLeaveResultInforExport result = fromDomain( aggrResult );
-
-			return result;
-		} catch (Exception e) {
-			return null;
-		}
+		return result;
 	}
 
 	/**
@@ -362,7 +358,7 @@ public class SpecialLeaveManagementServicePubImpl implements SpecialLeaveManagem
 		return new InterimSpecialHolidayMng(
 				param.getSpecialHolidayId(),
 				param.getSpecialHolidayCode(),
-				param.getMngAtr(),
+				EnumAdaptor.valueOf(param.getMngAtr(), ManagermentAtr.class),
 				param.getUseTimes().map(mapper->new UseTime(mapper.v())),
 				param.getUseDays().map(mapper->new UseDay(mapper.v()))
 				);

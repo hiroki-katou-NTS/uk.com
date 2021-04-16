@@ -24,7 +24,7 @@ public class InterimSpecialHolidayMngPubParam {
 	private int specialHolidayCode;
 
 	/**	予定実績区分 */
-	private ManagermentAtr mngAtr;
+	private Integer mngAtr;
 
 	/**時間特休使用 */
 	private Optional<UseTime> useTimes;
