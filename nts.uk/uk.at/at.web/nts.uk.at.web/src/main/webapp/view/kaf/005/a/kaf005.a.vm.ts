@@ -463,7 +463,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 
 		changeDate() {
 			const self = this;
-			
+			self.$blockui('show');
 			let param1 = {
 
 			} as FirstParam;
@@ -490,23 +490,27 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 				displayInfoOverTime: self.dataSource,
 				agent: self.isAgentMode()
 			}
-			self.$ajax(API.changeDate, command)
+			self.$validate(
+			'#kaf000-a-component3-prePost')
+				.then((isVal: any) => {
+					if (isVal) {
+						return self.$ajax(API.changeDate, command)
+					}
+				})
+			
 				.done((res: DisplayInfoOverTime) => {
-					self.dataSource = res;
-					self.createVisibleModel(self.dataSource);
-					// self.dataSource.infoWithDateApplicationOp = res.infoWithDateApplicationOp;
-					// self.dataSource.calculationResultOp = res.calculationResultOp;
-					// self.dataSource.workdayoffFrames = res.workdayoffFrames;
-					// self.dataSource.calculatedFlag = res.calculatedFlag;
-					// self.dataSource.appDispInfoStartup = res.appDispInfoStartup;
-					// self.createVisibleModel(self.dataSource);
-					self.bindOverTimeWorks(self.dataSource);
-					self.bindWorkInfo(self.dataSource, ACTION.CHANGE_DATE);
-					self.bindRestTime(self.dataSource);
-					self.bindHolidayTime(self.dataSource, 1);
-					self.bindOverTime(self.dataSource, 1);
-					self.assginTimeTemp();
-					self.assignWorkHourAndRest(true);
+					if (res) {
+						self.dataSource = res;
+						self.createVisibleModel(self.dataSource);
+						self.bindOverTimeWorks(self.dataSource);
+						self.bindWorkInfo(self.dataSource, ACTION.CHANGE_DATE);
+						self.bindRestTime(self.dataSource);
+						self.bindHolidayTime(self.dataSource, 1);
+						self.bindOverTime(self.dataSource, 1);
+						self.assginTimeTemp();
+						self.assignWorkHourAndRest(true);
+						
+					}
 
 				})
 				.fail((res: any) => {
@@ -2504,7 +2508,15 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 						agent: self.isAgentMode()
 					};
 					self.$blockui('show')
-					self.$ajax(API.selectWorkInfo, command)
+					
+					self.$validate(
+						'#kaf000-a-component3-prePost')
+						.then((isVal) => {
+							if (isVal) {
+								return self.$ajax(API.selectWorkInfo, command);
+							}
+						})
+					
 						.done((res: DisplayInfoOverTime) => {
 							if (res) {
 								self.dataSource.infoWithDateApplicationOp = res.infoWithDateApplicationOp;
@@ -2852,7 +2864,14 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 			});
 			workContent.breakTimes = breakTimeSheetArray;
 			command.workContent = workContent;
-			self.$ajax(API.calculate, command)
+			self.$validate(
+						'#kaf000-a-component3-prePost')
+						.then((isVal) => {
+							if (isVal) {
+								return self.$ajax(API.calculate, command);
+							}
+						})
+			
 				.done((res: DisplayInfoOverTime) => {
 					if (res) {
 						self.dataSource.calculationResultOp = res.calculationResultOp;
