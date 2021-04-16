@@ -3,6 +3,7 @@ package nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info
 import java.util.Optional;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.layer.dom.objecttype.DomainAggregate;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.ChildCareNurseUpperLimit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingCategory;
 
@@ -11,14 +12,38 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingCategory;
  * @author danpv
  *
  */
-public class ChildCareLeaveRemainingInfo extends NursingCareLeaveRemainingInfo{
+public class ChildCareLeaveRemainingInfo extends NursingCareLeaveRemainingInfo implements DomainAggregate {
 
+	/**
+	 * コンストラクタ
+	 * @param sId
+	 * @param leaveType
+	 * @param useClassification
+	 * @param upperlimitSetting
+	 * @param maxDayForThisFiscalYear
+	 * @param maxDayForNextFiscalYear
+	 */
 	public ChildCareLeaveRemainingInfo(String sId, NursingCategory leaveType, boolean useClassification,
 			UpperLimitSetting upperlimitSetting, Optional<ChildCareNurseUpperLimit> maxDayForThisFiscalYear,
 			Optional<ChildCareNurseUpperLimit> maxDayForNextFiscalYear) {
 		super(sId, leaveType, useClassification, upperlimitSetting, maxDayForThisFiscalYear, maxDayForNextFiscalYear);
 	}
 
+	/**
+	 * ファクトリ
+	 * @param nursingCareLeaveRemainingInfo
+	 * @return
+	 */
+	static public ChildCareLeaveRemainingInfo of(NursingCareLeaveRemainingInfo nursingCareLeaveRemainingInfo) {
+		ChildCareLeaveRemainingInfo c = new ChildCareLeaveRemainingInfo(
+				nursingCareLeaveRemainingInfo.getSId(),
+				nursingCareLeaveRemainingInfo.getLeaveType(),
+				nursingCareLeaveRemainingInfo.isUseClassification(),
+				nursingCareLeaveRemainingInfo.getUpperlimitSetting(),
+				nursingCareLeaveRemainingInfo.getMaxDayForThisFiscalYear(),
+				nursingCareLeaveRemainingInfo.getMaxDayForNextFiscalYear());
+		return c;
+	}
 
 	/**
 	 * ファクトリー
@@ -49,7 +74,7 @@ public class ChildCareLeaveRemainingInfo extends NursingCareLeaveRemainingInfo{
 
 	public static ChildCareLeaveRemainingInfo createChildCareLeaveInfo(String sId, int useClassification,
 			int upperlimitSetting, Integer maxDayForThisFiscalYear, Integer maxDayForNextFiscalYear) {
-		return new ChildCareLeaveRemainingInfo(sId, EnumAdaptor.valueOf(1, NursingCategory.class), useClassification == 1,
+		return new ChildCareLeaveRemainingInfo(sId, NursingCategory.ChildNursing, useClassification == 1,
 				EnumAdaptor.valueOf(upperlimitSetting, UpperLimitSetting.class),
 				maxDayForThisFiscalYear != null ? Optional.of(new ChildCareNurseUpperLimit(maxDayForThisFiscalYear))
 						: Optional.empty(),

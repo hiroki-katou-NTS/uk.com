@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement;
+package nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare;
 
 import java.util.Optional;
 
@@ -30,6 +30,21 @@ public class ChildCareNurseUsedNumber implements Cloneable{
 	public ChildCareNurseUsedNumber(){
 		this.usedDay = new DayNumberOfUse(0.0);
 		this.usedTimes = Optional.empty();
+	}
+
+	/**
+	 * コンストラクタ
+	 */
+	public ChildCareNurseUsedNumber(ChildCareNurseUsedNumber c) {
+		this.usedDay = new DayNumberOfUse(c.usedDay.v());
+		this.usedTimes = c.usedTimes.map(mapper->new TimeOfUse(mapper.v()));
+	}
+
+	/**
+	 * クローン
+	 */
+	public ChildCareNurseUsedNumber clone() {
+		return new ChildCareNurseUsedNumber(this);
 	}
 
 	/**
