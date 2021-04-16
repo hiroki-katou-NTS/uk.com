@@ -96,7 +96,7 @@ public class SupportWorkReflection {
 
 		// 出退勤で応援データを補正する - 補正済みの応援データ一覧 & 勤務Temporary - chỉnh sửa data support lúc đến lúc về
 		CorrectSupportData correctSupportData = this.correctSupportDataFromWork(integrationOfDaily.getAttendanceLeave(),
-				lstStampedSupport, informationWork, judgmentSupport);
+				lstStampedSupport, informationWork, judgmentSupport, ouenStamp);
 
 		// 応援データを自動セットしてマージする - セット済み応援データ - set tự động data support rồi merge dữ liệu - qua buoc nay la chi con lai 2 thang dung data
 		List<OuenWorkTimeSheetOfDailyAttendance> dataAutoSet = this
@@ -406,14 +406,14 @@ public class SupportWorkReflection {
 	 */
 	public CorrectSupportData correctSupportDataFromWork(Optional<TimeLeavingOfDailyAttd> attendanceLeave,
 			List<OuenWorkTimeSheetOfDailyAttendance> lstOuenWorkTime, WorkInformationWork informationWork,
-			JudgmentCriteriaSameStampOfSupport judgmentSupport) {
+			JudgmentCriteriaSameStampOfSupport judgmentSupport, OuenWorkTimeSheetOfDailyAttendance ouenStamp) {
 
 		// 最初の出勤と最後の退勤を検出する
 		WorkTemporary detectAttendance = this.detectAttendance(attendanceLeave);
 
 		// 最初の出勤の応援データと最後の退勤の応援データを取得する
 		SupportAttendanceDepartureTempo suportDataFirtAndLast = this.getSupportFataFirstAttendanceLastDeparture(
-				lstOuenWorkTime, detectAttendance, judgmentSupport, informationWork);
+				lstOuenWorkTime, detectAttendance, judgmentSupport, ouenStamp, informationWork);
 
 		// ほかの出退勤を補正する
 		this.correctOtherAttendance(informationWork, detectAttendance, lstOuenWorkTime, judgmentSupport);
@@ -886,7 +886,8 @@ public class SupportWorkReflection {
 	 */
 	public SupportAttendanceDepartureTempo getSupportFataFirstAttendanceLastDeparture(
 			List<OuenWorkTimeSheetOfDailyAttendance> lstOuenWorkTime, WorkTemporary detectAttendance,
-			JudgmentCriteriaSameStampOfSupport judgmentSupport, WorkInformationWork informationWork) {
+			JudgmentCriteriaSameStampOfSupport judgmentSupport, OuenWorkTimeSheetOfDailyAttendance ouenStamp, 
+			WorkInformationWork informationWork) {
 
 		// Emptyの出退勤の応援を作成する
 		SupportAttendanceDepartureTempo departureTempo = new SupportAttendanceDepartureTempo(Optional.empty(),
@@ -928,7 +929,7 @@ public class SupportWorkReflection {
 				}
 		} else {
 			// 最初の応援終了を自動セットする
-			this.automaticSetFirstSupport(lstOuenWorkTime);
+			this.automaticSetFirstSupport(lstOuenWorkTime, judgmentSupport, ouenStamp);
 		}
 		// 最後の退勤を確認する
 		if (detectAttendance.getLastLeave().isPresent()) {
@@ -973,7 +974,7 @@ public class SupportWorkReflection {
 				}
 		} else {
 			// 最後の応援開始を自動セットする
-			this.automaticSetLastSupport(lstOuenWorkTime);
+			this.automaticSetLastSupport(lstOuenWorkTime, judgmentSupport, ouenStamp);
 		}
 		// 出退勤の応援を返す
 		return departureTempo;
@@ -1015,7 +1016,8 @@ public class SupportWorkReflection {
 	 * 
 	 * @param lstOuenWorkTime
 	 */
-	public void automaticSetFirstSupport(List<OuenWorkTimeSheetOfDailyAttendance> lstOuenWorkTime) {
+	public void automaticSetFirstSupport(List<OuenWorkTimeSheetOfDailyAttendance> lstOuenWorkTime, 
+			JudgmentCriteriaSameStampOfSupport judgmentSupport, OuenWorkTimeSheetOfDailyAttendance ouenStamp) {
 		// 応援データ一覧の先頭の応援データを取得する
 		if (lstOuenWorkTime.isEmpty()) {
 			return;
@@ -1023,6 +1025,14 @@ public class SupportWorkReflection {
 		// 開始応援かを確認する
 		// 開始の場合
 		if (lstOuenWorkTime.get(0).getTimeSheet().getStart().isPresent()) {
+			
+			// 同一と認識すべきの打刻か
+			val standardStamp = ouenStamp.getTimeSheet().getStart().get().getTimeWithDay();
+			val targetStamp = lstOuenWorkTime.get(0).getTimeSheet().getStart().get().getTimeWithDay();
+			
+			boolean checkStamp = judgmentSupport.checkStampRecognizedAsSame(standardStamp.get(), targetStamp.get());
+			if(checkStamp == true) return;
+			
 			WorkContent workContent = lstOuenWorkTime.get(0).getWorkContent();
 			TimeSheetOfAttendanceEachOuenSheet timeSheet = TimeSheetOfAttendanceEachOuenSheet.create(new WorkNo(0),
 					Optional.empty(), lstOuenWorkTime.get(0).getTimeSheet().getStart());
@@ -1040,7 +1050,8 @@ public class SupportWorkReflection {
 	 * 
 	 * @param lstOuenWorkTime
 	 */
-	public void automaticSetLastSupport(List<OuenWorkTimeSheetOfDailyAttendance> lstOuenWorkTime) {
+	public void automaticSetLastSupport(List<OuenWorkTimeSheetOfDailyAttendance> lstOuenWorkTime, 
+			JudgmentCriteriaSameStampOfSupport judgmentSupport, OuenWorkTimeSheetOfDailyAttendance ouenStamp) {
 		// 応援データ一覧の末尾の応援データを取得する
 		if (lstOuenWorkTime.isEmpty()) {
 			return;
@@ -1048,6 +1059,13 @@ public class SupportWorkReflection {
 		// 終了応援かを確認する
 		// 終了の場合
 		if (lstOuenWorkTime.get(lstOuenWorkTime.size() - 1).getTimeSheet().getEnd().isPresent()) {
+			
+			val standardStamp = ouenStamp.getTimeSheet().getEnd().get().getTimeWithDay();
+			val targetStamp = lstOuenWorkTime.get(lstOuenWorkTime.size() - 1).getTimeSheet().getEnd().get().getTimeWithDay();
+			
+			boolean checkStamp = judgmentSupport.checkStampRecognizedAsSame(standardStamp.get(), targetStamp.get());
+			if(checkStamp == true) return;
+			
 			WorkContent workContent = lstOuenWorkTime.get(lstOuenWorkTime.size() - 1).getWorkContent();
 			TimeSheetOfAttendanceEachOuenSheet timeSheet = TimeSheetOfAttendanceEachOuenSheet.create(new WorkNo(0),
 					lstOuenWorkTime.get(lstOuenWorkTime.size() - 1).getTimeSheet().getEnd(), Optional.empty());
