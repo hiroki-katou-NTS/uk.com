@@ -48,7 +48,11 @@ module nts.uk.at.view.kaf000.a.component3.viewmodel {
 						vm.application().prePostAtr(1);
 						vm.prePostAtrDisp(false);
 					} else {
-						vm.prePostAtr(value.appDispInfoWithDateOutput.prePostAtr);
+						if(value.appDispInfoWithDateOutput.prePostAtr && _.includes([0, 1], value.appDispInfoWithDateOutput.prePostAtr)) {
+							vm.prePostAtr(value.appDispInfoWithDateOutput.prePostAtr);		
+						} else {
+							vm.prePostAtr(null);	
+						}
 	                	vm.prePostAtrDisp(value.appDispInfoNoDateOutput.applicationSetting.appDisplaySetting.prePostDisplayAtr == 1);
 					}
 					let appTypeSetting = _.find(value.appDispInfoNoDateOutput.applicationSetting.appTypeSetting, (o: any) => o.appType == vm.appType());

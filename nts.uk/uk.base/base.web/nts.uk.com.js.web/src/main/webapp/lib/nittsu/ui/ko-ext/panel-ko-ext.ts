@@ -17,7 +17,7 @@ module nts.uk.ui.koExtentions {
             bindingName: 'ntsPanel'
         })
         export class NtsPanelBindingHandler implements KnockoutBindingHandler {
-            init(element: any, valueAccessor: () => ValueAccessor, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext) {
+            init(element: HTMLElement, valueAccessor: () => ValueAccessor, allBindingsAccessor: KnockoutAllBindingsAccessor, viewModel: any, bindingContext: KnockoutBindingContext) {
                 const $panel = $(element);
                 const accessor = valueAccessor();
                 const { direction, height, showIcon, visible, width } = accessor;

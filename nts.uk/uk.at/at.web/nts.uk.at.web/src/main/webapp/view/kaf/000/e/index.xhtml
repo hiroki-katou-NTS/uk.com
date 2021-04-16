@@ -10,9 +10,12 @@
 			<script>
 				var dialogSize = {
 					width : 380,
-					height : 265
+					height : 215
 				};
 			</script>
+			<com:ValidatorScript>
+				nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalComment
+			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="/view/kaf/000/e/kaf000.e.css" />
 			<com:scriptfile path="/view/kaf/000/shr/kaf000.shr.vm.js" />
@@ -30,12 +33,13 @@
 							                    	width: '340',
 							                    	textalign: 'left'
 							                   	},
-					             				required : false,
-					             				enable: true }" />
+					             				required : true,
+					             				enable: true,
+					             				constraint: 'ApprovalComment' }" />
 				</div>
 			</div>
 			<div id="functions-area-bottom">
-				<button class="proceed" style="width: 200px;" data-bind="click: approve">#{i18n.getText('KAF000_19')}</button>
+				<button class="proceed" style="width: 200px;" data-bind="click: approve, enable: $root.errors.isEmpty">#{i18n.getText('KAF000_19')}</button>
 				<button data-bind="click: close">#{i18n.getText('KAF000_36')}</button>
 			</div>
 		</ui:define>

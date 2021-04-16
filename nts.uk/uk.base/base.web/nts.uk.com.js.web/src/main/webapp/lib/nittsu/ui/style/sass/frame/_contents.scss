@@ -72,6 +72,10 @@ div#master-wrapper {
 			}
 
 			@extend %two-panel;
+
+			&.overflow-none {
+				overflow: hidden;
+			}
 		}
 
 		& > div[id^="contents-area"],

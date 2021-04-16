@@ -196,6 +196,21 @@
 						data-bind="click: btnCancel, enable : enableCancelButton() &amp;&amp; $root.errors.isEmpty">#{i18n.getText('KAF000_24')}</button>
 				</div>
 			</div>
+			<div style="display: inline-block; position: absolute; left: 70px; z-index: 1000;">
+				<a class="goback link-button" data-bind="click: backtoCMM045">#{i18n.getText('KAF000_14')}</a>
+			</div>
+			<div style="display: inline-block; margin-left: 10px; margin-right: 10px; position: absolute; left: 200px; z-index: 1000;">
+				<!-- B1_2 -->
+				<button class="kaf000-function-btn"
+					data-bind="click: back, enable: $vm.enableBack">
+					<i data-bind="ntsIcon: { no: 9 }"></i>
+				</button>
+				<!-- B1_3 -->
+				<button class="kaf000-function-btn"
+					data-bind="click: next, enable: $vm.enableNext">
+					<i data-bind="ntsIcon: { no: 10 }"></i>
+				</button>
+			</div>
 			<div>
 				<div data-bind="if: currentApp()=='sample'">
 					<div data-bind="if: ko.unwrap(appType) != null">
@@ -280,21 +295,6 @@
 							}"></div>
 					</div>
 				</div>
-			</div>
-			<div style="display: inline-block; position: absolute; top: 125px; left: 70px;">
-				<a class="goback link-button" data-bind="click: backtoCMM045">#{i18n.getText('KAF000_14')}</a>
-			</div>
-			<div style="display: inline-block; margin-left: 10px; margin-right: 10px; position: absolute; top: 125px; left: 200px;">
-				<!-- B1_2 -->
-				<button class="kaf000-function-btn"
-					data-bind="click: back, enable: $vm.enableBack">
-					<i data-bind="ntsIcon: { no: 9 }"></i>
-				</button>
-				<!-- B1_3 -->
-				<button class="kaf000-function-btn"
-					data-bind="click: next, enable: $vm.enableNext">
-					<i data-bind="ntsIcon: { no: 10 }"></i>
-				</button>
 			</div>
 		</ui:define>
 	</ui:composition>
