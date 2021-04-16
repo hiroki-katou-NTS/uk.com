@@ -25,7 +25,7 @@
 				<span>#{i18n.getText('CCG013_17')}</span>
 				<table class="control">
 					<tr>
-						<td><div data-bind="ntsFormLabel: { constraint: 'MenuBarName', required: true }">#{i18n.getText('CCG013_18')}</div></td>
+						<td><div data-bind="ntsFormLabel: { constraint: 'MenuBarName', required: true }" class="ccg013-nowrap">#{i18n.getText('CCG013_18')}</div></td>
 						<td><input id="B1_3" class="menu-bar-name"
 							data-bind="ntsTextEditor: {name: '#[CCG013_18]',value: nameMenuBar, constraint: 'MenuBarName', required: true, option: {width: '160px'} }, hasFocus: true" /></td>
 						<td><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CCG013_19')}</div></td>
@@ -45,7 +45,7 @@
 							<button
 								data-bind="ntsHelpButton: {image: 'CCG013_002.png', position: 'bottom center', enable: true }">?</button>
 						</td>
-						<td><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CCG013_23')}</div></td>
+						<td><div data-bind="ntsFormLabel: { required: true }" class="ccg013-nowrap">#{i18n.getText('CCG013_23')}</div></td>
 						<td><div id="colorpicker"
 								data-bind="ntsColorPicker: {name: '#[CCG013_23]', value: backgroundColor, enable: true, width: 50, required: true}" /></td>
 					</tr>
@@ -53,7 +53,7 @@
 
 				<div id="list">
 					<div class="system selec">
-						<div data-bind="ntsFormLabel: {}">#{i18n.getText('CCG013_24')}</div>
+						<div data-bind="ntsFormLabel: {}" class="ccg013-nowrap">#{i18n.getText('CCG013_24')}</div>
 						<div id="system selection"
 							data-bind="ntsComboBox: {
 									options: listSystemSelect,

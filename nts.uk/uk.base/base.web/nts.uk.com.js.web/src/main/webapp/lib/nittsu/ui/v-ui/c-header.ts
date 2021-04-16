@@ -1,7 +1,6 @@
 module nts.uk.ui.header {
     const MENU_KEY = 'UK-Menu';
     const MENU_SET = 'nts.uk.session.MENU_SET';
-
     @component({
         name: 'ui-header',
         template: `
@@ -24,7 +23,7 @@ module nts.uk.ui.header {
                     <div class="menu-item" data-bind="foreach: $component.menuSet.items">
                         <div class="item" data-bind="
                             i18n: $data.webMenuName,
-                            click: function() { $component.selectSet($data) },                        
+                            click: function() { $component.selectSet($data, true) },                        
                             css: { 
                                 selected: $component.menuSet.items() && $data.selected
                             }"></div>
@@ -32,15 +31,23 @@ module nts.uk.ui.header {
                 </div>
             </div>
         </div>
-        <img class="favicon" src="/nts.uk.com.js.web/lib/nittsu/ui/style/images/kinjirou.png" />
-        <div class="menu-groups" data-bind="foreach: { data: $component.menuBars, as: 'bar' }">
-            <div class="item-group" data-bind="
+        <div class="logo-area">
+            <i id="logo" data-bind="ntsIcon: { no: 162 }" class="img-icon"></i>
+            <i class="control-slider pre-slider" data-bind="
+                ntsIcon: { no: 129, width: 25, height: 25 },
+                click: $component.handlePrevSlider"></i>
+        </div>
+        <div class="menu-groups" data-bind="foreach: { data: $component.menuBars, as: 'bar', afterRender: $component.showPrevOrNextSlider.bind($component) }">
+            <div class="item-group slide-item" data-bind="
                     event: {
                         mouseover: function() { $component.itemBarHover(bar) },
                         mouseout: function() { $component.itemBarMouseOut(bar) }
                     },
                     css: {
-                        'hover': bar.hover() && $component.click()
+                        'hover': bar.hover() && bar.canHover() && $component.click()
+                    },
+                    style: {
+                        'display': bar.display()
                     },
                     attr: {
                         'data-column': (bar.titleMenu || []).length
@@ -68,9 +75,18 @@ module nts.uk.ui.header {
             </div>
         </div>
         <div class="user-info">
+            <div class="next-slider-area">
+                <i class="control-slider next-slider" data-bind="
+                    ntsIcon: { no: 128, width: 25, height: 25 },
+                    click: $component.handleNextSlider"></i>
+            </div>
             <div class="menu-groups">
+                <div class="item-group" style="margin-right: 10px;">
+                    <ccg020-component></ccg020-component>
+                </div>
                 <div class="item-group">
                     <span class="bar-item-title company" data-bind="text: $component.companyName"></span>
+                    <i data-bind="ntsIcon: { no: 135, width: 10, height: 10 }"></i>
                 </div>
                 <span class="divider"></span>
                 <div class="item-group" data-bind="
@@ -91,9 +107,12 @@ module nts.uk.ui.header {
                             </div>
                         </div>
                     </div>
+                    <i data-bind="ntsIcon: { no: 135, width: 10, height: 10 }" style="margin-right: 5px;"></i>
                 </div>
             </div>
-            <div class="avatar notification"></div>
+            <div id="notice-msg" class="avatar notification">
+                <i id="new-mark-msg" style="display: none" data-bind="ntsIcon: { no: 165, width: 13, height: 13 }"></i>
+            </div>
         </div>
         `
     })
@@ -110,6 +129,7 @@ module nts.uk.ui.header {
             }
 
         menuBars!: KnockoutComputed<MenuBar[]>;
+        countMenuBar: KnockoutObservable<number> = ko.observable(0);
 
         userName: KnockoutObservable<string> = ko.observable('');
         userNameHover: KnockoutObservable<boolean> = ko.observable(false);
@@ -152,6 +172,7 @@ module nts.uk.ui.header {
                     return '';
                 }
             });
+
         }
 
         mounted() {
@@ -159,6 +180,15 @@ module nts.uk.ui.header {
 
             vm.loadData();
 
+            $('#logo').on('click', function() {
+                uk.request.jumpToTopPage();
+            });
+
+            $(window).on('wd.resize', () => {
+                vm.positionLastMenuItem();
+                vm.setDisplayMenu();
+                vm.showPrevOrNextSlider();
+            });
             ko.computed({
                 read: () => {
                     const mode = ko.unwrap(vm.$window.mode);
@@ -184,7 +214,10 @@ module nts.uk.ui.header {
                             .$ajax('com', '/sys/portal/webmenu/companies')
                             .then((data) => vm.companies(data));
 
-                        vm.$nextTick(() => $(window).trigger('wd.resize'))
+                        vm.$nextTick(() => {
+                            $(window).trigger('wd.resize');
+                            $(window).trigger('wd.setAvatar');
+                        });
                     } else {
                         vm.$el.classList.add('hidden');
                     }
@@ -203,8 +236,14 @@ module nts.uk.ui.header {
             const menuSet: MenuSet[] = JSON.parse(nts.uk.sessionStorage.getItem(MENU_SET).orElse('[]'));
 
             _.each(menuSet, (set: MenuSet) => {
-                _.each(set.menuBar, (bar: MenuBar) => {
+                _.each(set.menuBar, (bar: MenuBar, index: number) => {
                     bar.hover = ko.observable(false);
+                    bar.canHover = ko.observable(false);
+                    if (index < vm.countMenuBar()) {
+                        bar.display = ko.observable('none');
+                    } else {
+                        bar.display = ko.observable('');
+                    }
                 });
             });
 
@@ -234,6 +273,16 @@ module nts.uk.ui.header {
                 }
             }
 
+            _.each(vm.menuBars(), (bar: MenuBar, index: number) => {
+                const getPositionLeftRight = $('.slide-item').eq(index).position().left + $('.slide-item').eq(index).outerWidth();
+                if ( getPositionLeftRight > $('.user-info').last().position().left) {
+                    bar.hover = ko.observable(false);
+                    bar.canHover = ko.observable(false);
+                } else {
+                    bar.canHover = ko.observable(true);
+                }
+            });
+
             $(vm.$el).find('data-bind').removeAttr('data-bind');
         }
 
@@ -249,9 +298,14 @@ module nts.uk.ui.header {
             });
         }
 
-        selectSet(item: MenuSet) {
+        selectSet(item: MenuSet, resetCountMenu?: boolean) {
             const vm = this;
             const sets = ko.unwrap<MenuSet[]>(vm.menuSet.items);
+
+            if (resetCountMenu) {
+                vm.countMenuBar(0);
+                vm.setDisplayMenu();
+            }
 
             vm.menuSet.hover(false);
 
@@ -267,10 +321,55 @@ module nts.uk.ui.header {
 
             $(vm.$el).find('[data-bind]').removeAttr('data-bind');
 
+            vm.$nextTick(() => vm.setHoverMenu());
+
             //  $(vm.$el).css({ 'background-color': menuBar.backgroundColor });
 
             // storage selected set for reload page
             nts.uk.localStorage.setItem(MENU_KEY, `${item.companyId}:${item.webMenuCode}`);
+        }
+
+        setDisplayMenu() {
+            const vm = this;
+            _.each(vm.menuSet.items(), (set: MenuSet) => {
+                _.each(set.menuBar, (bar: MenuBar, index: number) => {
+                    bar.hover(false);
+                    bar.canHover(false);
+                    if (index < vm.countMenuBar()) {
+                        bar.display('none');
+                    } else {
+                        bar.display('');
+                    }
+                });
+            });
+
+            vm.setHoverMenu();
+        }
+
+        setHoverMenu() {
+            const vm = this;
+            _.each(vm.menuBars(), (bar: MenuBar, index: number) => {
+                const getPositionLeftRight = $('.slide-item').eq(index).position().left + $('.slide-item').eq(index).outerWidth();
+                if (getPositionLeftRight > $('.user-info').last().position().left) {
+                    bar.hover(false);
+                    bar.canHover(false);
+                } else {
+                    bar.canHover(true);
+                }
+            });
+        }
+
+        positionLastMenuItem() {
+            const vm = this;
+            const userInfoPosition = $('.user-info').last().position().left;
+            const currentLastPosition = $('.slide-item').last().position()
+                ? $('.slide-item').last().position().left + $('.slide-item').last().outerWidth()
+                : 0;
+            if (currentLastPosition < userInfoPosition
+                && vm.countMenuBar() > 0 
+            ) {
+                vm.countMenuBar(vm.countMenuBar() - 1);
+            }
         }
 
         selectBar(item: MenuBar) {
@@ -292,6 +391,29 @@ module nts.uk.ui.header {
                 } else {
                     window.location.href = `${item.url}?${item.queryString}`.replace(/\?{2,}/, '?');
                 }
+            }
+        }
+
+        showPrevOrNextSlider() {
+            const vm = this;
+
+            if (vm.countMenuBar() > 0) {
+                $('.pre-slider').css("visibility", "");
+                $('.pre-slider').css("visibility", "none");
+            } else {
+                $('.pre-slider').css("visibility", "");
+                $('.pre-slider').css("visibility", "hidden");
+            }
+            const lastItemPositionLeft = $('.slide-item').last().position()
+                ? $('.slide-item').last().position().left + $('.slide-item').last().outerWidth()
+                : 0;
+            const userInfoLeft = $('.user-info').last() ? $('.user-info').last().position().left : 0;
+            if (lastItemPositionLeft > userInfoLeft) {
+                $('.next-slider').css("visibility", "");
+                $('.next-slider').css("visibility", "none");
+            } else {
+                $('.next-slider').css("visibility", "");
+                $('.next-slider').css("visibility", "hidden");
             }
         }
 
@@ -325,6 +447,32 @@ module nts.uk.ui.header {
             const vm = this;
 
             vm.userNameHover(false);
+        }
+
+        handleNextSlider() {
+            const vm = this;
+            const lastItemPositionLeft = $('.slide-item').last().position().left + $('.slide-item').last().outerWidth();
+            if (lastItemPositionLeft > $('.user-info').last().position().left) {
+                vm.countMenuBar(vm.countMenuBar() + 1);
+            } else {
+                $('.next-slider').css("visibility", "");
+                $('.next-slider').css("visibility", "hidden");
+            }
+            vm.setDisplayMenu();
+            vm.showPrevOrNextSlider();
+        }
+
+
+        handlePrevSlider() {
+            const vm = this;
+            if (vm.countMenuBar() > 0) {
+                vm.countMenuBar(vm.countMenuBar() - 1);
+            } else {
+                $('.pre-slider').css("visibility", "");
+                $('.pre-slider').css("visibility", "hidden");
+            }
+            vm.setDisplayMenu();
+            vm.showPrevOrNextSlider();
         }
 
         manual() {
@@ -373,6 +521,7 @@ module nts.uk.ui.header {
 
     interface MenuBar {
         hover: KnockoutObservable<boolean>;
+        canHover: KnockoutObservable<boolean>;
         backgroundColor: string;
         code: string;
         displayOrder: number;
@@ -384,6 +533,7 @@ module nts.uk.ui.header {
         system: number;
         textColor: string;
         titleMenu: MenuTitle[];
+        display: KnockoutObservable<string>;
     }
 
     interface MenuTitle {

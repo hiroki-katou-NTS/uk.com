@@ -69,3 +69,6 @@ table.control {
 #contents-area>span {
 	margin-left: 15px
 }
+.ccg013-nowrap {
+	white-space: nowrap;
+}
