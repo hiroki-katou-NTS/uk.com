@@ -50637,6 +50637,58 @@ var NtsSortableBindingHandler = /** @class */ (function () {
     return NtsSortableBindingHandler;
 }());
 ko.bindingHandlers["ntsSortable"] = new NtsSortableBindingHandler();
+var nts;
+(function (nts) {
+    var uk;
+    (function (uk) {
+        var ui;
+        (function (ui) {
+            var koExtentions;
+            (function (koExtentions) {
+                var tabrounded;
+                (function (tabrounded) {
+                    var TabRoundedBindingHandler = /** @class */ (function () {
+                        function TabRoundedBindingHandler() {
+                        }
+                        TabRoundedBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                            var $element = $(element);
+                            var rounded = valueAccessor();
+                            $element
+                                // prevent tabable to out of popup control
+                                .on("keydown", ":tabbable", function (evt) {
+                                if (ko.unwrap(rounded)) {
+                                    var fable = $element
+                                        .find(':tabbable')
+                                        .toArray();
+                                    var $chain = _.chain(fable).orderBy(function (el) { return el.getAttribute('tabindex'); });
+                                    var last = $chain.last().value() || _.last(fable);
+                                    var first = $chain.first().value() || _.first(fable);
+                                    if (evt.keyCode === 9) {
+                                        if ($(evt.target).is(last) && evt.shiftKey === false) {
+                                            first.focus();
+                                            evt.preventDefault();
+                                        }
+                                        else if ($(evt.target).is(first) && evt.shiftKey === true) {
+                                            last.focus();
+                                            evt.preventDefault();
+                                        }
+                                    }
+                                }
+                            });
+                        };
+                        TabRoundedBindingHandler = __decorate([
+                            handler({
+                                bindingName: 'tab-rounded'
+                            })
+                        ], TabRoundedBindingHandler);
+                        return TabRoundedBindingHandler;
+                    }());
+                    tabrounded.TabRoundedBindingHandler = TabRoundedBindingHandler;
+                })(tabrounded = koExtentions.tabrounded || (koExtentions.tabrounded = {}));
+            })(koExtentions = ui.koExtentions || (ui.koExtentions = {}));
+        })(ui = uk.ui || (uk.ui = {}));
+    })(uk = nts.uk || (nts.uk = {}));
+})(nts || (nts = {}));
 /// <reference path="../../reference.ts"/>
 var nts;
 (function (nts) {
@@ -52289,12 +52341,57 @@ var nts;
                     return MasterUIBindingHandler;
                 }());
                 layout.MasterUIBindingHandler = MasterUIBindingHandler;
+                var PGNameBindingHandler = /** @class */ (function () {
+                    function PGNameBindingHandler() {
+                    }
+                    PGNameBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        var vm = new ko.ViewModel();
+                        var pgName = valueAccessor();
+                        var back = allBindingsAccessor.get('back');
+                        var _a = __viewContext.program, programId = _a.programId, programName = _a.programName;
+                        var $span = $('<span>').get(0);
+                        var $title = $(element);
+                        $title
+                            .append($span)
+                            .addClass('pg-name')
+                            .removeAttr('data-bind');
+                        var text = ko.computed({
+                            read: function () {
+                                var $pg = ko.unwrap(pgName);
+                                if (_.isString($pg)) {
+                                    return vm.$i18n($pg);
+                                }
+                                if ($pg) {
+                                    return ((programId || '') + " " + (programName || '')).trim();
+                                }
+                                return '';
+                            },
+                            disposeWhenNodeIsRemoved: element
+                        });
+                        ko.applyBindingsToNode($span, { text: text }, bindingContext);
+                        if (back) {
+                            $title.addClass('navigator');
+                            var svg = document.createElement('svg');
+                            ko.applyBindingsToNode(svg, { 'svg-icon': 'ARROW_LEFT_SQUARE', size: 20 });
+                            $($title)
+                                .prepend(svg)
+                                .on('click', function () { return vm.$jump(back); });
+                        }
+                        return { controlsDescendantBindings: false };
+                    };
+                    PGNameBindingHandler = __decorate([
+                        handler({
+                            bindingName: 'pg-name'
+                        })
+                    ], PGNameBindingHandler);
+                    return PGNameBindingHandler;
+                }());
+                layout.PGNameBindingHandler = PGNameBindingHandler;
                 // Handler for fixed functional area on top or bottom page
                 var MasterUIFunctionalBindingHandler = /** @class */ (function () {
                     function MasterUIFunctionalBindingHandler() {
                     }
                     MasterUIFunctionalBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                        var mvm = new ko.ViewModel();
                         var position = valueAccessor();
                         var back = allBindingsAccessor.get('back');
                         var title = allBindingsAccessor.get('title');
@@ -52307,28 +52404,22 @@ var nts;
                                 element.id = "functions-area";
                             }
                             if (title && mode === 'view') {
-                                var $title = document.createElement('div');
-                                $title.classList.add('pg-name');
-                                var _a = __viewContext.program, programId = _a.programId, programName = _a.programName;
-                                $title.innerHTML = "<span>" + mvm.$i18n(_.isString(title) ? title.trim() : ((programId || '') + " " + (programName || '')).trim()) + "</span>";
-                                if (back) {
-                                    $title.classList.add('navigator');
-                                    var svg = document.createElement('svg');
-                                    ko.applyBindingsToNode(svg, { 'svg-icon': 'ARROW_LEFT_SQUARE', size: 20 });
-                                    $($title)
-                                        .prepend(svg)
-                                        .on('click', function () { return mvm.$jump(back); });
+                                var pgName = $(element).find('.pg-name');
+                                var $title = pgName.get(0) || document.createElement('div');
+                                if (!pgName.length) {
+                                    ko.applyBindingsToNode($title, { 'pg-name': title, back: back }, bindingContext);
                                 }
                                 $(element).prepend($title);
                                 if (element.childNodes.length > 1) {
                                     var $btnGroup_1 = document.createElement('div');
                                     $btnGroup_1.classList.add('button-group');
+                                    var $pgName = $(element).find('.pg-name');
                                     $(element).children().each(function (__, e) {
-                                        if (!e.classList.contains('pg-name')) {
+                                        if (!e.classList.contains('pg-name') && !e.classList.contains('floating-btn')) {
                                             $($btnGroup_1).append(e);
                                         }
                                     });
-                                    $(element).append($btnGroup_1);
+                                    $($btnGroup_1).insertAfter($pgName);
                                     ko.applyBindingsToNode($btnGroup_1, null, bindingContext);
                                 }
                                 // button error in function bar
@@ -52415,6 +52506,86 @@ var nts;
                     return MasterUIContentBindingHandler;
                 }());
                 layout.MasterUIContentBindingHandler = MasterUIContentBindingHandler;
+                var FloatingButtonsBindingHandler = /** @class */ (function () {
+                    function FloatingButtonsBindingHandler() {
+                    }
+                    FloatingButtonsBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        var float = valueAccessor();
+                        var top = allBindingsAccessor.get('top');
+                        var left = allBindingsAccessor.get('left');
+                        var right = allBindingsAccessor.get('right');
+                        var bottom = allBindingsAccessor.get('bottom');
+                        var replacer = function ($t) { return ($t + "px").replace(/(px){2,}/, 'px').replace(/ptpx/, 'pt').replace(/%px/, '%'); };
+                        ko.computed({
+                            read: function () {
+                                var $f = ko.unwrap(float);
+                                if ($f !== false) {
+                                    element.classList.add('floating-btn');
+                                }
+                                else {
+                                    element.classList.remove('floating-btn');
+                                }
+                            },
+                            disposeWhenNodeIsRemoved: element
+                        });
+                        ko.computed({
+                            read: function () {
+                                var $t = ko.unwrap(top);
+                                if (_.isNil($t)) {
+                                    element.style.top = '';
+                                }
+                                else {
+                                    element.style.top = replacer($t);
+                                }
+                            },
+                            disposeWhenNodeIsRemoved: element
+                        });
+                        ko.computed({
+                            read: function () {
+                                var $l = ko.unwrap(left);
+                                if (_.isNil($l)) {
+                                    element.style.left = '';
+                                }
+                                else {
+                                    element.style.left = replacer($l);
+                                }
+                            },
+                            disposeWhenNodeIsRemoved: element
+                        });
+                        ko.computed({
+                            read: function () {
+                                var $r = ko.unwrap(right);
+                                if (_.isNil($r)) {
+                                    element.style.right = '';
+                                }
+                                else {
+                                    element.style.right = replacer($r);
+                                }
+                            },
+                            disposeWhenNodeIsRemoved: element
+                        });
+                        ko.computed({
+                            read: function () {
+                                var $b = ko.unwrap(bottom);
+                                if (_.isNil($b)) {
+                                    element.style.bottom = '';
+                                }
+                                else {
+                                    element.style.bottom = replacer($b);
+                                }
+                            },
+                            disposeWhenNodeIsRemoved: element
+                        });
+                        element.removeAttribute('data-bind');
+                    };
+                    FloatingButtonsBindingHandler = __decorate([
+                        handler({
+                            bindingName: 'floating'
+                        })
+                    ], FloatingButtonsBindingHandler);
+                    return FloatingButtonsBindingHandler;
+                }());
+                layout.FloatingButtonsBindingHandler = FloatingButtonsBindingHandler;
             })(layout = ui.layout || (ui.layout = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
