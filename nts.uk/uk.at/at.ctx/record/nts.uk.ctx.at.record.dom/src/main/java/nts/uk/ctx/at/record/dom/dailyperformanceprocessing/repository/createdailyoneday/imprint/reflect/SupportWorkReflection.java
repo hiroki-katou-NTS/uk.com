@@ -1027,6 +1027,7 @@ public class SupportWorkReflection {
 		if (lstOuenWorkTime.get(0).getTimeSheet().getStart().isPresent()) {
 			
 			// 同一と認識すべきの打刻か
+			if(!ouenStamp.getTimeSheet().getStart().isPresent()) return;
 			val standardStamp = ouenStamp.getTimeSheet().getStart().get().getTimeWithDay();
 			val targetStamp = lstOuenWorkTime.get(0).getTimeSheet().getStart().get().getTimeWithDay();
 			
@@ -1059,7 +1060,7 @@ public class SupportWorkReflection {
 		// 終了応援かを確認する
 		// 終了の場合
 		if (lstOuenWorkTime.get(lstOuenWorkTime.size() - 1).getTimeSheet().getEnd().isPresent()) {
-			
+			if(!ouenStamp.getTimeSheet().getEnd().isPresent()) return;
 			val standardStamp = ouenStamp.getTimeSheet().getEnd().get().getTimeWithDay();
 			val targetStamp = lstOuenWorkTime.get(lstOuenWorkTime.size() - 1).getTimeSheet().getEnd().get().getTimeWithDay();
 			
