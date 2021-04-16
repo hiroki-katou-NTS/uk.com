@@ -7,11 +7,13 @@ package nts.uk.ctx.at.shared.infra.repository.statutory.worktime_new;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.YearMonthPeriod;
@@ -63,7 +65,15 @@ public class JpaMonthlyWorkTimeSetRepo extends JpaRepository implements MonthlyW
 	
 	private static final String SELECT_YEAR_COM_BY_CID = "SELECT x FROM KshmtLegalTimeMCom x "
 			+ "WHERE x.pk.cid = :cid AND x.pk.type = :type";
-
+	
+	private static final String SELECT_BY_CID_YEAR = "SELECT x FROM KshmtLegalTimeMCom x "
+			+ "WHERE x.pk.cid = :cid "
+			//TODO + "AND x.pk.ym >= :start AND x.pk.ym <= :end "
+			+ "ORDER BY x.pk.ym ASC";
+	private static final String SELECT_LEGATIMEMEMP_BY_CID = "SELECT x FROM KshmtLegalTimeMEmp x WHERE x.pk.cid = :cid";
+	private static final String SELECT_LEGATIMEMWKP_BY_CID = "SELECT x FROM KshmtLegalTimeMWkp x WHERE x.pk.cid = :cid";
+	private static final String SELECT_LEGATIMEMSYA_BY_CID = "SELECT x FROM KshmtLegalTimeMSya x WHERE x.pk.cid = :cid AND x.pk.sid IN :listSid";
+	
 	@Override
 	public Optional<MonthlyWorkTimeSetCom> findCompany(String cid, LaborWorkTypeAttr laborAttr, YearMonth ym) {
 		
@@ -93,6 +103,15 @@ public class JpaMonthlyWorkTimeSetRepo extends JpaRepository implements MonthlyW
 
 		return this.queryProxy().find(new KshmtLegalTimeMWkpPK(cid, workplaceId, laborAttr.value, ym.v()), KshmtLegalTimeMWkp.class)
 				.map(c -> MonthlyWorkTimeSetWkp.of(cid, workplaceId, laborAttr, ym, c.domain()));
+	}
+	
+	@Override
+	public List<MonthlyWorkTimeSetCom> findCompany(String cid, int year) {
+		return this.queryProxy().query(SELECT_BY_CID_YEAR, KshmtLegalTimeMCom.class)
+				.setParameter("cid", cid)
+//				.setParameter("start", year * 100 + 01) TODO 
+//				.setParameter("end", year * 100 + 12)
+				.getList(c -> MonthlyWorkTimeSetCom.of(cid, EnumAdaptor.valueOf(c.pk.type, LaborWorkTypeAttr.class), new YearMonth(c.pk.ym), c.domain()));
 	}
 
 	@Override
@@ -219,7 +238,7 @@ public class JpaMonthlyWorkTimeSetRepo extends JpaRepository implements MonthlyW
 			this.commandProxy().update(entity);
 		});
 	}
-
+	
 	@Override
 	public List<String> findEmploymentCD(String cid, int year) {
 		
@@ -254,7 +273,7 @@ public class JpaMonthlyWorkTimeSetRepo extends JpaRepository implements MonthlyW
 					.setParameter("end", year * 100 + 12)
 					.getList().forEach(c -> commandProxy().remove(cid));
 	}
-
+	
 	@Override
 	public List<MonthlyWorkTimeSetSha> findEmployee(String cid, String sid, LaborWorkTypeAttr laborAttr) {
 		
@@ -264,6 +283,24 @@ public class JpaMonthlyWorkTimeSetRepo extends JpaRepository implements MonthlyW
 				.setParameter("type", laborAttr.value)
 				.setParameter("sid", sid)
 				.getList(c -> MonthlyWorkTimeSetSha.of(cid, sid, laborAttr, new YearMonth(c.pk.ym), c.domain()));
+	}
+	
+	@Override
+	public List<MonthlyWorkTimeSetSha> findMonWorkTimeShaEmployee(String cid, List<String> listSid) {
+		List<KshmtLegalTimeMSya> legals = new ArrayList<>();
+		CollectionUtil.split(listSid, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			legals.addAll(this.queryProxy().query(SELECT_LEGATIMEMSYA_BY_CID, KshmtLegalTimeMSya.class)
+					.setParameter("cid", cid)
+					.setParameter("", subList)
+					.getList());
+		});
+		
+		return legals.stream()
+				.map(c -> MonthlyWorkTimeSetSha.of(
+						cid, c.pk.sid, 
+						EnumAdaptor.valueOf(c.pk.type, LaborWorkTypeAttr.class),
+						new YearMonth(c.pk.ym), c.domain()))
+				.collect(Collectors.toList());
 	}
 
 	@Override
@@ -287,7 +324,16 @@ public class JpaMonthlyWorkTimeSetRepo extends JpaRepository implements MonthlyW
 				.getList(c -> MonthlyWorkTimeSetWkp.of(c.pk.cid, c.pk.wkpId,
 						EnumAdaptor.valueOf(c.pk.type, LaborWorkTypeAttr.class) , new YearMonth(c.pk.ym), c.domain()));
 	}
-
+	
+	@Override
+	public List<MonthlyWorkTimeSetEmp> findEmployment(String cid) {
+		return this.queryProxy().query(SELECT_LEGATIMEMEMP_BY_CID, KshmtLegalTimeMEmp.class)
+					.setParameter("cid", cid)
+					.getList(c -> MonthlyWorkTimeSetEmp.of(
+							cid, new EmploymentCode(c.pk.empCD),
+							EnumAdaptor.valueOf(c.pk.type, LaborWorkTypeAttr.class), new YearMonth(c.pk.ym), c.domain()));
+	}
+	
 	@Override
 	public List<MonthlyWorkTimeSetEmp> findEmployment(String cid, String empCD, LaborWorkTypeAttr laborAttr) {
 		
@@ -572,6 +618,16 @@ public class JpaMonthlyWorkTimeSetRepo extends JpaRepository implements MonthlyW
 				.setParameter("cid", cid)
 				.setParameter("type", laborAttr.value)
 				.getList(c -> MonthlyWorkTimeSetWkp.of(cid, c.pk.wkpId, laborAttr, new YearMonth(c.pk.ym), c.domain()));
+	}
+	
+	@Override
+	public List<MonthlyWorkTimeSetWkp> findWorkplace(String cid) {
+		return this.queryProxy().query(SELECT_LEGATIMEMWKP_BY_CID, KshmtLegalTimeMWkp.class)
+				.setParameter("cid", cid)
+				.getList(c -> MonthlyWorkTimeSetWkp.of(
+						cid, c.pk.wkpId, 
+						EnumAdaptor.valueOf(c.pk.type, LaborWorkTypeAttr.class), 
+						new YearMonth(c.pk.ym), c.domain()));
 	}
 
 	@Override

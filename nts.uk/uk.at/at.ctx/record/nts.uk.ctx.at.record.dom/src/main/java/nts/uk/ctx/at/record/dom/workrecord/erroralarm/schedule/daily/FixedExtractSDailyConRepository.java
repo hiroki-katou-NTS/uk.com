@@ -23,6 +23,15 @@ public interface FixedExtractSDailyConRepository {
     List<FixedExtractionSDailyCon> getScheFixCondDay(String contractCode, String companyId, String eralCheckIds);
     
     /**
+     * Get Schedule fix condition day
+     * @param contractCode contract code
+     * @param companyId company id
+     * @param eralCheckIds list of error alarm check Id
+     * @return list of schedule fix condition day
+     */
+    List<FixedExtractionSDailyCon> getScheFixCondDay(String contractCode, String companyId, String eralCheckIds, boolean isUse);
+    
+    /**
      * Add new スケジュール日次の固有抽出条件
      * @param contractCode contract code
      * @param companyId company id

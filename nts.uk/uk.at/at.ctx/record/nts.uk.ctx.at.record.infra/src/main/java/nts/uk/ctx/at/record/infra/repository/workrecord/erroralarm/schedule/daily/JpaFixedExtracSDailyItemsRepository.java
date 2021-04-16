@@ -12,20 +12,10 @@ import java.util.stream.Collectors;
 @Stateless
 public class JpaFixedExtracSDailyItemsRepository extends JpaRepository implements FixedExtracSDailyItemsRepository {
 	private static final String SELECT_BASIC = "SELECT a FROM KscdtScheFixItemDay a";
-	private static final String BY_CONTRACT_COMPANY = " WHERE a.pk.cid = :companyCode AND a.contractCd = :contractCode";
 	
     @Override
     public List<FixedExtractionSDailyItems> getAll() {
         List<KscdtScheFixItemDay> entities = this.queryProxy().query(SELECT_BASIC, KscdtScheFixItemDay.class).getList();
         return entities.stream().map(item -> item.toDomain()).collect(Collectors.toList());
     }
-
-	@Override
-	public List<FixedExtractionSDailyItems> getScheFixItemDay(String contractCode, String companyCode) {
-		List<KscdtScheFixItemDay> entities = this.queryProxy().query(SELECT_BASIC + BY_CONTRACT_COMPANY, KscdtScheFixItemDay.class)
-				.setParameter("contractCode", contractCode)
-				.setParameter("companyCode", companyCode)
-				.getList();
-        return entities.stream().map(item -> item.toDomain()).collect(Collectors.toList());
-	}
 }

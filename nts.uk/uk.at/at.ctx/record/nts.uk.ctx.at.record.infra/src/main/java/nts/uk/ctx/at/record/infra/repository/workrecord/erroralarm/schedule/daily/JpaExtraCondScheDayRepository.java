@@ -45,6 +45,7 @@ public class JpaExtraCondScheDayRepository extends JpaRepository implements Extr
 	private static final String SELECT_BASIC = "SELECT a FROM KscdtScheAnyCondDay a";
 	private static final String BY_CONTRACT_COMPANY = " WHERE a.pk.cid = :companyId AND a.contractCd = :contractCode";
 	private static final String BY_ERAL_CHECK_ID = " AND a.pk.checkId = :eralCheckIds";
+	private static final String BY_USE_ATTR = " AND a.useAtr = :useAtr";
 	private static final String ORDER_BY_NO = " ORDER BY a.pk.sortBy";
 	private static final String SELECT_WT = "SELECT a FROM KscdtScheConDayWt a WHERE a.pk.cid = :companyId AND a.pk.checkId = :checkId";
 	private static final String BY_WT_NO = " AND a.pk.No = :no";
@@ -80,6 +81,29 @@ public class JpaExtraCondScheDayRepository extends JpaRepository implements Extr
 				.setParameter("contractCode", contractCode)
 				.setParameter("companyId", companyId)
 				.setParameter("eralCheckIds", eralCheckIds)
+				.getList();
+        List<ExtractionCondScheduleDay> domain = new ArrayList<>();
+    	for(KscdtScheAnyCondDay item: entities) {
+    		Optional<KrcstErAlCompareSingle> single = this.queryProxy().find(new KrcstErAlCompareSinglePK(eralCheckIds, item.pk.sortBy), KrcstErAlCompareSingle.class);
+    		Optional<KrcstErAlSingleFixed> singleFixed = this.queryProxy().find(new KrcstErAlSingleFixedPK(eralCheckIds, item.pk.sortBy), KrcstErAlSingleFixed.class);
+    		Optional<KrcstErAlCompareRange> range = this.queryProxy().find(new KrcstErAlCompareRangePK(eralCheckIds, item.pk.sortBy), KrcstErAlCompareRange.class);
+    		domain.add(item.toDomain(
+    				single.isPresent() ? single.get() : null, 
+					singleFixed.isPresent() ? singleFixed.get() : null, 
+    				range.isPresent() ? range.get() : null));
+        }
+    	
+    	return domain;
+	}
+    
+    @Override
+	public List<ExtractionCondScheduleDay> getScheAnyCondDay(String contractCode, String companyId, String eralCheckIds,
+			boolean isUse) {
+    	List<KscdtScheAnyCondDay> entities = this.queryProxy().query(SELECT_BASIC + BY_CONTRACT_COMPANY + BY_ERAL_CHECK_ID + BY_USE_ATTR + ORDER_BY_NO, KscdtScheAnyCondDay.class)
+				.setParameter("contractCode", contractCode)
+				.setParameter("companyId", companyId)
+				.setParameter("eralCheckIds", eralCheckIds)
+				.setParameter("useAtr", isUse)
 				.getList();
         List<ExtractionCondScheduleDay> domain = new ArrayList<>();
     	for(KscdtScheAnyCondDay item: entities) {

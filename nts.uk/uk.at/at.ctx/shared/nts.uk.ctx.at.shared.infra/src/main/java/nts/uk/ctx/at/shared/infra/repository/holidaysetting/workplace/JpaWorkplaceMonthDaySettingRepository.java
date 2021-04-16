@@ -178,4 +178,18 @@ public class JpaWorkplaceMonthDaySettingRepository extends JpaRepository impleme
 						.distinct()
 						.collect(toList());
 	}
+
+	@Override
+	public List<WorkplaceMonthDaySetting> findByYear(CompanyId companyId, Year year) {
+		List<KshmtHdpubDPerMWkp> result = this.findBy(companyId, null, year, null, null);
+		// Check exist
+		if (result.isEmpty()) {
+			return new ArrayList<>();
+		}
+		
+		Map<Integer, List<KshmtHdpubDPerMWkp>> entityAll = result.stream()
+				.collect(Collectors.groupingBy(x -> x.getKshmtWkpMonthDaySetPK().getManageYear(), Collectors.toList()));
+		return entityAll.entrySet().stream().map(x -> new WorkplaceMonthDaySetting(new JpaWorkplaceMonthDaySettingGetMemento(x.getValue())))
+				.collect(Collectors.toList());
+	}
 }

@@ -8,10 +8,4 @@ public interface FixedExtracSDailyItemsRepository {
 	 * @return list schedule fix item day
 	 */
     List<FixedExtractionSDailyItems> getAll();
-    
-    /**
-	 * Get data default schedule fix item day by contract code and company code
-	 * @return list schedule fix item day
-	 */
-    List<FixedExtractionSDailyItems> getScheFixItemDay(String contractCode, String companyCode);
 }

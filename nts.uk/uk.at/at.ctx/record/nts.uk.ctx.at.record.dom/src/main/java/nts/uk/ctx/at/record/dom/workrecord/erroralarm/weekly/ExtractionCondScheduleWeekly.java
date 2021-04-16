@@ -78,5 +78,11 @@ public class ExtractionCondScheduleWeekly extends AggregateRoot {
     	}
     	domain.checkItemType = checkType;
     	return domain;
-    }  
+    } 
+    
+    public boolean isContinuos() {
+    	return this.checkItemType == WeeklyCheckItemType.CONTINUOUS_TIME
+    			|| this.checkItemType == WeeklyCheckItemType.CONTINUOUS_TIMES
+    			|| this.checkItemType == WeeklyCheckItemType.CONTINUOUS_DAY;
+    }
 }

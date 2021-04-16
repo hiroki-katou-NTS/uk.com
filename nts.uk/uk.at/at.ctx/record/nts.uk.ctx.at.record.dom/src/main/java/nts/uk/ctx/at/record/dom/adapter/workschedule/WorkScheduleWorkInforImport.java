@@ -5,6 +5,7 @@ import java.util.Optional;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nts.arc.time.GeneralDate;
 
 /**
  * 
@@ -19,6 +20,9 @@ public class WorkScheduleWorkInforImport  {
 
 	private int confirmedATR;
 
+	/**
+	 * 勤務情報．勤務情報．勤務種類コード
+	 */
 	private String workTyle;
 	
 	private String workTime;
@@ -30,13 +34,20 @@ public class WorkScheduleWorkInforImport  {
 	
 	private BreakTimeOfDailyAttdImport breakTime;
 	
-	
 	///** 日別勤怠の出退勤**/
 	private Optional<TimeLeavingOfDailyAttdImport> timeLeaving = Optional.empty();
+	
+	/** 社員ID(年月日(YMD) */
+	private GeneralDate ymd;
+	
+	/** 勤怠時間 */
+	private Optional<AttendanceTimeOfDailyAttendanceImport> optAttendanceTime;
 
 	public WorkScheduleWorkInforImport(String employeeId, int confirmedATR, String workTyle, String workTime, int goStraightAtr, int backStraightAtr,
 			TimeLeavingOfDailyAttdImport timeLeavingOfDailyAttd,
-			BreakTimeOfDailyAttdImport listBreakTimeOfDailyAttdImport) {
+			BreakTimeOfDailyAttdImport listBreakTimeOfDailyAttdImport,
+			GeneralDate ymd,
+			AttendanceTimeOfDailyAttendanceImport attendanceTime) {
 		super();
 		this.employeeId = employeeId;
 		this.confirmedATR = confirmedATR;
@@ -46,6 +57,8 @@ public class WorkScheduleWorkInforImport  {
 		this.backStraightAtr = backStraightAtr;
 		this.timeLeaving = Optional.ofNullable(timeLeavingOfDailyAttd);
 		this.breakTime = listBreakTimeOfDailyAttdImport;
+		this.ymd = ymd;
+		this.optAttendanceTime = Optional.ofNullable(attendanceTime);
 	}
 	
 }
