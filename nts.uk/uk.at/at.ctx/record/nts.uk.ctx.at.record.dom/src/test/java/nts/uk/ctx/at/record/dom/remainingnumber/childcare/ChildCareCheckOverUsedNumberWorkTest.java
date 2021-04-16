@@ -20,7 +20,7 @@ import nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare.Aggrega
 import nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare.ChildCareCheckOverUsedNumberWork;
 import nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare.ChildCareNurseRemainingNumber;
 import nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare.ChildCareShortageRemainingNumberWork;
-import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.ChildCareNurseUsedNumber;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.ChildCareNurseUsedNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.interimdata.TempChildCareNurseManagement;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.ChildCareLeaveRemainingInfo;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.UpperLimitSetting;

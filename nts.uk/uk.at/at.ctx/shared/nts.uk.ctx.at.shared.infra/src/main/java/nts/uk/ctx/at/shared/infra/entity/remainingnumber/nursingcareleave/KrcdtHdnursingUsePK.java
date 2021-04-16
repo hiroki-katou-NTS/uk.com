@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.infra.entity.monthly.vacation.childcarenurse;
+package nts.uk.ctx.at.shared.infra.entity.remainingnumber.nursingcareleave;
 
 import java.io.Serializable;
 

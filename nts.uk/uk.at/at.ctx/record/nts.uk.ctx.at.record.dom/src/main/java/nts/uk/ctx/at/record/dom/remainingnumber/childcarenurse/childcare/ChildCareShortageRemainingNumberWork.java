@@ -2,7 +2,7 @@ package nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.ChildCareNurseUsedNumber;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.ChildCareNurseUsedNumber;
 
 /**
  *　子の看護介護残数不足数

@@ -1,7 +1,7 @@
 package nts.uk.ctx.at.request.dom.adapter.monthly.vacation.childcarenurse;
 
 import lombok.Data;
-import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.ChildCareNurseUsedNumber;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.ChildCareNurseUsedNumber;
 
 
 /**

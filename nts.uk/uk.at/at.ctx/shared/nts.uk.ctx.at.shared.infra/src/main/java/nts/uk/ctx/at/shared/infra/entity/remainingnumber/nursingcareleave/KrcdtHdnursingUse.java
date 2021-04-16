@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.infra.entity.monthly.vacation.childcarenurse;
+package nts.uk.ctx.at.shared.infra.entity.remainingnumber.nursingcareleave;
 
 import java.io.Serializable;
 import java.util.Optional;
@@ -10,7 +10,7 @@ import javax.persistence.Table;
 import javax.persistence.Version;
 
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.ChildCareNurseUsedNumber;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.ChildCareNurseUsedNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.usenumber.DayNumberOfUse;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.usenumber.TimeOfUse;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
