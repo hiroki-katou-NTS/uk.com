@@ -490,6 +490,11 @@ public class ScheYearCheckServiceImpl implements ScheYearCheckService {
 		case PUBLIC_HOLIDAY_NUMBER:
 			// 期間内の公休残数を集計する
 			//TODO RQ718 not implement QA#113101
+			
+			// 休暇日数を計算
+			// 休暇日数　＝　合計（取得した公休の集計結果．公休情報．公休消化情報．取得数）
+			totalTime = 0.0;
+			
 			break;
 		case ANNUAL_LEAVE_NUMBER:
 		case ACC_ANNUAL_LEAVE_NUMBER:
