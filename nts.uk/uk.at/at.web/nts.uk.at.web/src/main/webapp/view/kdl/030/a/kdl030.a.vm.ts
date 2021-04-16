@@ -11,7 +11,7 @@ module nts.uk.at.view.kdl030.a.viewmodel {
 		appIDLst: Array<string> = [];
 		isAgentMode : KnockoutObservable<boolean> = ko.observable(false);
 		appSendMailByEmpLst: KnockoutObservableArray<any> = ko.observableArray([]);
-		isSendApplicant: KnockoutObservable<boolean> = ko.observable(true);
+		isSendApplicant: KnockoutObservable<boolean> = ko.observable(false);
 		mailContent: KnockoutObservable<String> = ko.observable(null);
 		appEmailSet: any = null;
 		isOpEmployee: any = false;
@@ -21,8 +21,8 @@ module nts.uk.at.view.kdl030.a.viewmodel {
             vm.appIDLst = param.appIDLst;
 			vm.isAgentMode(param.isAgentMode);
 			vm.isOpEmployee = param.isOpEmployee;
-			if(!vm.isAgentMode()) {
-				vm.isSendApplicant(false);
+			if(vm.isAgentMode() || vm.isOpEmployee) {
+				vm.isSendApplicant(true);
 			}
 			if (!_.isEmpty(vm.appIDLst)){
                 vm.$ajax(API.applicationForSendByAppID, vm.appIDLst).done((result) => {
