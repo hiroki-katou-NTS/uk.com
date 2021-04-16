@@ -25,4 +25,12 @@ public class AnnualLeaveRemainingTime extends LeaveRemainingTime{
 //		if (rawValue < -(999 * 60 + 59)) rawValue = -(999 * 60 + 59);
 //		return super.reviseRawValue(rawValue);
 //	}
+	
+	/**
+	 * Convert to format time 
+	 * @return <String> format time HH:MM
+	 */
+	public String getTimeWithFormat(){
+		return this.hour() + ":" + (this.minute() < 10 ? "0" + this.minute() : this.minute());
+	}
 }

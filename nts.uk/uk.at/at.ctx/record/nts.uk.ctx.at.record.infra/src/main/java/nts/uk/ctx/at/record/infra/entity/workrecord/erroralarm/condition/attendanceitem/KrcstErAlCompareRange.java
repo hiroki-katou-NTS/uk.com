@@ -65,4 +65,9 @@ public class KrcstErAlCompareRange extends ContractUkJpaEntity implements Serial
 		this.startValue = startValue;
 		this.endValue = endValue;
 	}
+
+	public KrcstErAlCompareRange(KrcstErAlCompareRangePK krcstEralCompareRangePK) {
+		super();
+		this.krcstEralCompareRangePK = krcstEralCompareRangePK;
+	}
 }

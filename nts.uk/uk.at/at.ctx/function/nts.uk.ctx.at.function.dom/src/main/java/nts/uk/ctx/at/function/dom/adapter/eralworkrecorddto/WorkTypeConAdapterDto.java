@@ -1,7 +1,9 @@
 package nts.uk.ctx.at.function.dom.adapter.eralworkrecorddto;
 
+import java.math.BigDecimal;
 import java.util.List;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -9,6 +11,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 public class WorkTypeConAdapterDto {
 
 	private boolean useAtr;
@@ -17,6 +20,11 @@ public class WorkTypeConAdapterDto {
     private List<String> planLstWorkType;
     private boolean actualFilterAtr;
     private List<String> actualLstWorkType;
+    
+    private int comparisonOperator;
+    private Double compareStartValue;
+	private Double compareEndValue;
+	private int checkTimeType;
     
 	public WorkTypeConAdapterDto(boolean useAtr, int comparePlanAndActual, boolean planFilterAtr,
 			List<String> planLstWorkType, boolean actualFilterAtr, List<String> actualLstWorkType) {

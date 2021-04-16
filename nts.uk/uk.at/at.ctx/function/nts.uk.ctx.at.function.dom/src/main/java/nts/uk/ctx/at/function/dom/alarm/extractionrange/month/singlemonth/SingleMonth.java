@@ -1,8 +1,10 @@
 package nts.uk.ctx.at.function.dom.alarm.extractionrange.month.singlemonth;
 
 import lombok.Getter;
-import lombok.Setter;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.PreviousClassification;
+import nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.EndSpecify;
+import nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.StartSpecify;
+import nts.uk.ctx.at.function.dom.alarmworkplace.RangeToExtract;
 
 /**
  * 単月
@@ -10,8 +12,7 @@ import nts.uk.ctx.at.function.dom.alarm.extractionrange.PreviousClassification;
  *
  */
 @Getter
-@Setter
-public class SingleMonth {
+public class SingleMonth implements RangeToExtract {
 
 	/** 前・先区分  */
 	private PreviousClassification monthPrevious;
