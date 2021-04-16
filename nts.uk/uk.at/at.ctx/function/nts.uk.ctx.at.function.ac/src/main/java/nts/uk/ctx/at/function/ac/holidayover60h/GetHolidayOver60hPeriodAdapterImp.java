@@ -11,12 +11,14 @@ import nts.uk.ctx.at.record.pub.remainnumber.holidayover60h.export.HolidayOver60
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
 import nts.uk.ctx.at.shared.dom.remainingnumber.holidayover60h.interim.TmpHolidayOver60hMng;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class GetHolidayOver60hRemNumWithinPeriodAdapterImp implements GetHolidayOver60hRemNumWithinPeriodAdapter {
+@Stateless
+public class GetHolidayOver60hPeriodAdapterImp implements GetHolidayOver60hPeriodAdapter {
     @Inject
     private GetHolidayOver60hRemNumWithinPeriodPub publisher;
 

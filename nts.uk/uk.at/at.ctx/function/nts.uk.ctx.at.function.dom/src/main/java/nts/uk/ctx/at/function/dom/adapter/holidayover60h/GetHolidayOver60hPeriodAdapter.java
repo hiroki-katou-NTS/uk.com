@@ -8,7 +8,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.holidayover60h.interim.TmpHolida
 import java.util.List;
 import java.util.Optional;
 
-public interface GetHolidayOver60hRemNumWithinPeriodAdapter {
+public interface GetHolidayOver60hPeriodAdapter {
     /**
      * [RQ677]期間中の60H超休残数を取得する
      * @param companyId 会社ID
