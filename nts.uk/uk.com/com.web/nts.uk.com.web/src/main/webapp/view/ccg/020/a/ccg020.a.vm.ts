@@ -86,9 +86,7 @@ module nts.uk.com.view.ccg020.a {
         $("#popup-search-category").ntsPopup("toggle");
       });
 
-      $(window).on('wd.setAvatar', () => {
-        vm.$nextTick(() => vm.getAvatar());
-      });
+      $(window).on('wd.setAvatar', () => vm.getAvatar());
     }
 
     private getAvatar() {

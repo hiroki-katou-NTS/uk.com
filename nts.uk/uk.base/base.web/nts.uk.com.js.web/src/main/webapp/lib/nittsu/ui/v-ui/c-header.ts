@@ -217,7 +217,7 @@ module nts.uk.ui.header {
                         vm.$nextTick(() => {
                             $(window).trigger('wd.resize');
                             $(window).trigger('wd.setAvatar');
-                        })
+                        });
                     } else {
                         vm.$el.classList.add('hidden');
                     }
@@ -362,7 +362,9 @@ module nts.uk.ui.header {
         positionLastMenuItem() {
             const vm = this;
             const userInfoPosition = $('.user-info').last().position().left;
-            const currentLastPosition = $('.slide-item').last().position().left + $('.slide-item').last().outerWidth();
+            const currentLastPosition = $('.slide-item').last().position()
+                ? $('.slide-item').last().position().left + $('.slide-item').last().outerWidth()
+                : 0;
             if (currentLastPosition < userInfoPosition
                 && vm.countMenuBar() > 0 
             ) {
