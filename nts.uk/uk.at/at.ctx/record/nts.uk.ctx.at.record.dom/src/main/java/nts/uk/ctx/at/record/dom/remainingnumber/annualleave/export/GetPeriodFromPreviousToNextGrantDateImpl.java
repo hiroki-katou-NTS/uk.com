@@ -68,6 +68,9 @@ public class GetPeriodFromPreviousToNextGrantDateImpl implements GetPeriodFromPr
 			}
 			// 指定した年月の期間を算出する - 2
 			DatePeriod datePeriodClosure = ClosureService.getClosurePeriod(require, closureInfor.getClosureId().value, ym);
+			if (datePeriodClosure == null) {
+				return Optional.empty();
+			}
 			//指定した年月日を基準に、前回付与日から次回付与日までの期間を取得 - 3
 			periodGrant = this.getPeriodYMDGrant(cid, sid, datePeriodClosure.start().addDays(1), periodOutput, fromTo);
 		}
