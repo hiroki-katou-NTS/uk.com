@@ -150,9 +150,9 @@ module nts.uk.at.view.kaf000.b.viewmodel {
 						return condition;
 					});
 				if(appNameInfo) {
-					// document.getElementById("pg-name").innerHTML = appNameInfo.opProgramID + opString + " " + appNameInfo.appName;
+					$('.pg-name > span').text(appNameInfo.opProgramID + opString + " " + appNameInfo.appName);
 				} else {
-					// document.getElementById("pg-name").innerHTML = "";
+					$('.pg-name > span').text("");
 				}
                 vm.setControlButton(
                     successData.appDetailScreenInfo.user,
@@ -556,9 +556,9 @@ module nts.uk.at.view.kaf000.b.viewmodel {
 			const vm = this;
 			let appNameInfo = _.find(vm.appNameList, (o: any) => vm.appType() == 0 && o.opApplicationTypeDisplay==overtimeAtr);
 			if(appNameInfo) {
-				document.getElementById("pg-name").innerHTML = appNameInfo.opProgramID + "B " + appNameInfo.appName;
+				$('.pg-name > span').text(appNameInfo.opProgramID + "B " + appNameInfo.appName);
 			} else {
-				document.getElementById("pg-name").innerHTML = "";
+				$('.pg-name > span').text("");
 			}
 		}
     }

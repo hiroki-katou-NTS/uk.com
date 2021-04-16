@@ -10,7 +10,7 @@ module nts.uk.at.view.kaf000.b.component1.viewmodel {
 						<div style="word-break: break-all; word-wrap: break-word; line-height: 1.6;" data-bind="html: message"></div>
 					</div>
 				</div>
-				<div data-bind="if: displayDeadline">
+				<div style="display: none;">
 					<div class="message-div">
 						<div data-bind="text: $i18n('KAF000_2')" style="padding-top: 20px; padding-bottom: 10px; font-weight: bold;"></div>
 						<div data-bind="html: deadline" style="line-height: 1.8;"></div>
