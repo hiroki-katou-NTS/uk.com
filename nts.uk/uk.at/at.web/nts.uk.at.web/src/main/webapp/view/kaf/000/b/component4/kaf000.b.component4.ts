@@ -3,7 +3,7 @@ module nts.uk.at.view.kaf000.b.component4.viewmodel {
     @component({
         name: 'kaf000-b-component4',
         template: `
-            <div id="kaf000-b-component4">
+            <div id="kaf000-b-component4" style="max-width: 185px">
 				<div>
 					<div class="col-1">
 						<div class="cell valign-center" data-bind="ntsFormLabel:{}, text: $i18n('KAF000_44')"></div>
