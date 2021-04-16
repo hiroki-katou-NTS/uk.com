@@ -18,6 +18,7 @@
 			<com:stylefile path="/view/kaf/000/a/component5/kaf000.a.component5.css" />
 			<com:stylefile path="/view/kaf/000/a/component6/kaf000.a.component6.css" />
 			<com:stylefile path="/view/kaf/000/a/component8/kaf000.a.component8.css" />
+			<com:stylefile path="/view/kaf/000/shr/kaf000.shr.css" />
 			<com:stylefile path="/view/kaf/007/shr/kaf007.shr.css" />
 			<com:scriptfile path="/view/kaf/000/shr/kaf000.shr.vm.js" />
 			<com:scriptfile path="/view/kaf/000/a/component1/kaf000.a.component1.js" />
@@ -35,7 +36,7 @@
 			<com:stylefile path="/view/kaf/007/a/kaf007.a.css" />
 		</ui:define>
 		<ui:define name="content">
-			<div id="functions-area" style="background-color: inherit;">
+			<div id="functions-area">
 				<!-- <div style="display: inline-block;" data-bind="component: { name: 'kaf000-a-component9', params: isFromOther }"></div> -->
 				<!-- A1_1 -->
 				<button class="proceed" data-bind="click: register, enable: $root.errors.isEmpty" tabindex="1">#{i18n.getText('KAF007_54')}</button>
@@ -114,13 +115,13 @@
 						</div>
 					</div>
 					<div class="right-panel" style="width: 410px; height: inherit;">
-						<div style="height: inherit; background-color: #fff; padding: 10px; overflow-y: auto; overflow-x: hidden;">
-							<div data-bind="component: { name: 'kaf000-a-component1', 
+						<div style="height: inherit; background-color: #fff; overflow-y: auto; overflow-x: hidden;">
+							<div style="margin: 10px;" data-bind="component: { name: 'kaf000-a-component1', 
 														params: {
 															appType: appType,
 															appDispInfoStartupOutput: appDispInfoStartupOutput
 														} }"></div>
-							<div data-bind="component: { name: 'kaf000-a-component8',
+							<div style="margin: 10px;" data-bind="component: { name: 'kaf000-a-component8',
 														params: {
 															appType: appType,
 															application: application,
