@@ -396,7 +396,7 @@ module nts.uk.at.view.ksu005.b {
                     if(!command.shiftBackgroundColor || command.shiftBackgroundColor == self.scheduleTableOutputSetting().shiftBackgroundColor()){
                         self.reloadData(command.code);
                     } else {
-                        self.loadDetail(command.code, command.additionalColumn, self.isShiftBackgroundColor());
+                        self.loadDetail(command.code, command.additionalColumn == 1, self.isShiftBackgroundColor());
                     } 
                     self.$dialog.info({messageId: "Msg_15"}).then(function() {
                         $('#outputSettingName').focus();
