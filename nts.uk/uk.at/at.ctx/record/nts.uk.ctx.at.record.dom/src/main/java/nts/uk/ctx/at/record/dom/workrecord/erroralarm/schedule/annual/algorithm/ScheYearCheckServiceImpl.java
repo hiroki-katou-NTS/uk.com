@@ -458,14 +458,14 @@ public class ScheYearCheckServiceImpl implements ScheYearCheckService {
 				
 		String variable0 = "";
 		if(compare <= 5) {
-			variable0 = startValue + compareOperatorText.getCompareLeft() + checkCondTypeName;
+			variable0 = checkCondTypeName + compareOperatorText.getCompareLeft() + startValue;
 		} else {
 			if (compare > 5 && compare <= 7) {
 				variable0 = startValue + compareOperatorText.getCompareLeft() + checkCondTypeName
 						+ compareOperatorText.getCompareright() + endValue;
 			} else {
-				variable0 = startValue + compareOperatorText.getCompareLeft()
-						+ ", " + compareOperatorText.getCompareright() + endValue + checkCondTypeName;
+				variable0 = checkCondTypeName + compareOperatorText.getCompareLeft() + startValue
+						+ ", " + checkCondTypeName +  compareOperatorText.getCompareright() + endValue;
 			}
 		}
 		
