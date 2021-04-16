@@ -15,12 +15,13 @@ import org.junit.runner.RunWith;
 import mockit.Expectations;
 import mockit.Injectable;
 import mockit.integration.junit4.JMockit;
-import nts.uk.ctx.at.shared.dom.application.reflectprocess.DailyRecordOfApplication;
-import nts.uk.ctx.at.shared.dom.application.reflectprocess.ScheduleRecordClassifi;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.common.ReflectApplicationHelper;
-import nts.uk.ctx.at.shared.dom.application.stamp.StartEndClassificationShare;
-import nts.uk.ctx.at.shared.dom.application.stamp.TimeStampAppShare;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailywork.worktime.empwork.EmployeeWorkDataSetting;
+import nts.uk.ctx.at.shared.dom.scherec.application.stamp.StartEndClassificationShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.stamp.TimeStampAppShare;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.DailyRecordOfApplication;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.ScheduleRecordClassifi;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.stampapplication.algorithm.support.ReflectSupportStartEnd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD;
 
@@ -82,7 +83,7 @@ public class ReflectSupportStartEndTest {
 		assertThat(dailyApp.getOuenTimeSheet().get(0).getTimeSheet().getStart().get().getReasonTimeChange()
 				.getTimeChangeMeans()).isEqualTo(TimeChangeMeans.APPLICATION);// 時刻変更手段
 
-		assertThat(dailyApp.getOuenTimeSheet().get(0).getWorkContent().getWorkplace().getWorkLocationCD().v())
+		assertThat(dailyApp.getOuenTimeSheet().get(0).getWorkContent().getWorkplace().getWorkLocationCD().get().v())
 				.isEqualTo("lo");// 勤務場所コード
 	}
 
@@ -130,7 +131,7 @@ public class ReflectSupportStartEndTest {
 		assertThat(dailyApp.getOuenTimeSheet().get(1).getTimeSheet().getStart().get().getReasonTimeChange()
 				.getTimeChangeMeans()).isEqualTo(TimeChangeMeans.APPLICATION);// 時刻変更手段
 
-		assertThat(dailyApp.getOuenTimeSheet().get(1).getWorkContent().getWorkplace().getWorkLocationCD().v())
+		assertThat(dailyApp.getOuenTimeSheet().get(1).getWorkContent().getWorkplace().getWorkLocationCD().get().v())
 				.isEqualTo("lo");// 勤務場所コード
 
 		assertThat(dailyApp.getOuenTimeSheet().get(1).getWorkContent().getWorkplace().getWorkplaceId())
@@ -176,7 +177,7 @@ public class ReflectSupportStartEndTest {
 		assertThat(dailyApp.getOuenTimeSheet().get(0).getTimeSheet().getEnd().get().getReasonTimeChange()
 				.getTimeChangeMeans()).isEqualTo(TimeChangeMeans.APPLICATION);// 時刻変更手段
 
-		assertThat(dailyApp.getOuenTimeSheet().get(0).getWorkContent().getWorkplace().getWorkLocationCD().v())
+		assertThat(dailyApp.getOuenTimeSheet().get(0).getWorkContent().getWorkplace().getWorkLocationCD().get().v())
 				.isEqualTo("lo");// 勤務場所コード
 	}
 
@@ -224,7 +225,7 @@ public class ReflectSupportStartEndTest {
 		assertThat(dailyApp.getOuenTimeSheet().get(1).getTimeSheet().getEnd().get().getReasonTimeChange()
 				.getTimeChangeMeans()).isEqualTo(TimeChangeMeans.APPLICATION);// 時刻変更手段
 
-		assertThat(dailyApp.getOuenTimeSheet().get(1).getWorkContent().getWorkplace().getWorkLocationCD().v())
+		assertThat(dailyApp.getOuenTimeSheet().get(1).getWorkContent().getWorkplace().getWorkLocationCD().get().v())
 				.isEqualTo("lo");// 勤務場所コード
 
 		assertThat(dailyApp.getOuenTimeSheet().get(1).getWorkContent().getWorkplace().getWorkplaceId())

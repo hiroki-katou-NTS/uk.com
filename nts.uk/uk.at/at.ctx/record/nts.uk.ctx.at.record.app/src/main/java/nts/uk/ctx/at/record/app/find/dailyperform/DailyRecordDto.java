@@ -12,6 +12,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.app.find.dailyattendance.timesheet.ouen.dto.OuenWorkTimeSheetOfDailyAttendanceDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.affiliationInfor.dto.AffiliationInforOfDailyPerforDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.attendanceleavinggate.dto.AttendanceLeavingGateOfDailyDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.calculationattribute.dto.CalcAttrOfDailyPerformanceDto;
@@ -150,7 +151,22 @@ public class DailyRecordDto extends AttendanceItemCommon {
 	@JsonDeserialize(using = CustomOptionalDeserializer.class)
 	@JsonSerialize(using = CustomOptionalSerializer.class)
 	private Optional<SnapshotDto> snapshot = Optional.empty();
+	
+	/**応援時刻: 日別勤怠の応援作業時間帯 */
+	@AttendanceItemLayout( layout = DAILY_SUPPORT_TIMESHEET_CODE, jpPropertyName = DAILY_SUPPORT_TIMESHEET_NAME, 
+						   listMaxLength = 20, indexField = DEFAULT_INDEX_FIELD_NAME)
+	@JsonDeserialize(using = CustomOptionalDeserializer.class)
+	@JsonSerialize(using = CustomOptionalSerializer.class)
+	private List<OuenWorkTimeSheetOfDailyAttendanceDto> ouenTimeSheet = new ArrayList<>();
 
+	@Override
+	public PropType typeOf(String path) {
+		if (path.equals(DAILY_SUPPORT_TIMESHEET_NAME)) {
+			return PropType.IDX_LIST;
+		}
+		return super.typeOf(path);
+	}
+	
 	public static DailyRecordDto from(IntegrationOfDaily domain){
 		DailyRecordDto dto = new DailyRecordDto();
 		if(domain != null){
@@ -179,6 +195,7 @@ public class DailyRecordDto extends AttendanceItemCommon {
 			dto.setPcLogInfo(domain.getPcLogOnInfo().map(pc -> PCLogOnInforOfDailyPerformDto.from(employeeId,ymd,pc)));
 			dto.setRemarks(RemarksOfDailyDto.getDto(employeeId,ymd,domain.getRemarks()));
 			dto.setSnapshot(domain.getSnapshot().map(c -> SnapshotDto.from(employeeId, ymd, c)));
+			dto.setOuenTimeSheet(domain.getOuenTimeSheet().stream().map(ouen -> OuenWorkTimeSheetOfDailyAttendanceDto.from(employeeId, ymd, ouen)).collect(Collectors.toList()));
 			dto.exsistData();
 		}
 		return dto;
@@ -212,6 +229,7 @@ public class DailyRecordDto extends AttendanceItemCommon {
 			dto.setPcLogInfo(domain.getPcLogOnInfo().map(pc -> PCLogOnInforOfDailyPerformDto.from(employeeId,ymd,pc)));
 			dto.setRemarks(RemarksOfDailyDto.getDto(employeeId,ymd,domain.getRemarks()));
 			dto.setSnapshot(domain.getSnapshot().map(c -> SnapshotDto.from(employeeId, ymd, c)));
+			dto.setOuenTimeSheet(domain.getOuenTimeSheet().stream().map(ouen -> OuenWorkTimeSheetOfDailyAttendanceDto.from(employeeId, ymd,ouen)).collect(Collectors.toList()));
 			dto.exsistData();
 		}
 		return dto;
@@ -230,7 +248,7 @@ public class DailyRecordDto extends AttendanceItemCommon {
 		this.snapshot = Optional.ofNullable(snapshot);
 		return this;
 	}
-
+	
 	public DailyRecordDto withCalcAttr(CalcAttrOfDailyPerformanceDto calcAttr) {
 		this.calcAttr = calcAttr;
 		return this;
@@ -243,6 +261,11 @@ public class DailyRecordDto extends AttendanceItemCommon {
 	
 	public DailyRecordDto withErrors(List<EmployeeDailyPerErrorDto> errors) {
 		this.errors = errors;
+		return this;
+	}
+	
+	public DailyRecordDto withOuenSheet(List<OuenWorkTimeSheetOfDailyAttendanceDto> ouenSheet) {
+		this.ouenTimeSheet = ouenSheet;
 		return this;
 	}
 	
@@ -404,12 +427,12 @@ public class DailyRecordDto extends AttendanceItemCommon {
 
 	@Override
 	public GeneralDate workingDate() {
-		return this.date;
+		return this.date;  
 	}
 
 	@Override
 	public IntegrationOfDaily toDomain(String employeeId, GeneralDate date) {
-		return new IntegrationOfDaily(
+		IntegrationOfDaily integrationOfDaily = new IntegrationOfDaily(
 				employeeId,
 				date,
 				this.workInfo == null ? null : this.workInfo.toDomain(employeeId, date),
@@ -430,6 +453,10 @@ public class DailyRecordDto extends AttendanceItemCommon {
 				this.remarks == null ? new ArrayList<>() : this.remarks.toDomain(employeeId, date),
 				this.snapshot.map(c -> c.toDomain(employeeId, date))
 				);
+		// set support time
+		integrationOfDaily.setOuenTimeSheet(this.ouenTimeSheet.stream().map(ouen -> ouen.toDomain(employeeId, date)).collect(Collectors.toList()));
+		
+		return integrationOfDaily;
 	}
 
 //	@Override
@@ -461,12 +488,13 @@ public class DailyRecordDto extends AttendanceItemCommon {
 		dto.setPcLogInfo(pcLogInfo.map(pc -> pc.clone()));
 		dto.setRemarks(remarks == null ? null : remarks.clone());
 		dto.setSnapshot(snapshot.map(ss -> ss.clone()));
+		dto.setOuenTimeSheet(ouenTimeSheet.stream().map(p -> p.clone()).collect(Collectors.toList()));
 		if(isHaveData()){
 			dto.exsistData();
 		}
 		return dto;
 	}
-
+	
 	@Override
 	public Optional<AttendanceItemDataGate> get(String path) {
 		switch (path) {
@@ -505,6 +533,15 @@ public class DailyRecordDto extends AttendanceItemCommon {
 		default:
 			return Optional.empty();
 		}
+	}
+	
+	@Override
+	@SuppressWarnings("unchecked")
+	public <T extends AttendanceItemDataGate> List<T> gets(String path) {
+		if (DAILY_SUPPORT_TIMESHEET_NAME.equals(path)) {
+			return (List<T>) this.ouenTimeSheet;
+		}
+		return new ArrayList<>();
 	}
 
 	@Override
@@ -562,7 +599,15 @@ public class DailyRecordDto extends AttendanceItemCommon {
 			break;
 		}
 	}
-	
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public <T extends AttendanceItemDataGate> void set(String path, List<T> value) {
+		if (DAILY_SUPPORT_TIMESHEET_NAME.equals(path)) {
+			this.ouenTimeSheet = (List<OuenWorkTimeSheetOfDailyAttendanceDto>) value;
+		}
+	}
+
 	@Override
 	public AttendanceItemDataGate newInstanceOf(String path) {
 		switch (path) {
@@ -598,6 +643,8 @@ public class DailyRecordDto extends AttendanceItemCommon {
 			return new RemarksOfDailyDto();
 		case DAILY_SNAPSHOT_NAME:
 			return new SnapshotDto();
+		case DAILY_SUPPORT_TIMESHEET_NAME:
+			return new OuenWorkTimeSheetOfDailyAttendanceDto();
 		default:
 			return null;
 		}

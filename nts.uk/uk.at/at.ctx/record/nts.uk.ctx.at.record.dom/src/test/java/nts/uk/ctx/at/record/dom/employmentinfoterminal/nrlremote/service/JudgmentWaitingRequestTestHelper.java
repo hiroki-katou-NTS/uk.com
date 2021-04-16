@@ -37,7 +37,7 @@ public class JudgmentWaitingRequestTestHelper {
 				empInfoTerminalCode, Optional.of(new EmpInfoTerSerialNo("1")), new EmpInfoTerminalName(""),
 				contractCode)
 						.createStampInfo(new CreateStampInfo(new OutPlaceConvert(NotUseAtr.NOT_USE, Optional.empty()),
-								new ConvertEmbossCategory(NotUseAtr.NOT_USE, NotUseAtr.NOT_USE), Optional.empty()))
+								new ConvertEmbossCategory(NotUseAtr.NOT_USE, NotUseAtr.NOT_USE), Optional.empty(),Optional.empty()))
 						.modelEmpInfoTer(ModelEmpInfoTer.NRL_1).intervalTime((new MonitorIntervalTime(1))).build();
 		
 		EmpInfoTerminal empInfoTerminal2 = new EmpInfoTerminalBuilder(Optional.of(new FullIpAddress(
@@ -45,7 +45,7 @@ public class JudgmentWaitingRequestTestHelper {
 				empInfoTerminalCode2, Optional.of(new EmpInfoTerSerialNo("1")), new EmpInfoTerminalName(""),
 				contractCode)
 						.createStampInfo(new CreateStampInfo(new OutPlaceConvert(NotUseAtr.NOT_USE, Optional.empty()),
-								new ConvertEmbossCategory(NotUseAtr.NOT_USE, NotUseAtr.NOT_USE), Optional.empty()))
+								new ConvertEmbossCategory(NotUseAtr.NOT_USE, NotUseAtr.NOT_USE), Optional.empty(),Optional.empty()))
 						.modelEmpInfoTer(ModelEmpInfoTer.NRL_1).intervalTime((new MonitorIntervalTime(1))).build();
 		
 		List<EmpInfoTerminal> empInfoTerminalList = new ArrayList<EmpInfoTerminal>();

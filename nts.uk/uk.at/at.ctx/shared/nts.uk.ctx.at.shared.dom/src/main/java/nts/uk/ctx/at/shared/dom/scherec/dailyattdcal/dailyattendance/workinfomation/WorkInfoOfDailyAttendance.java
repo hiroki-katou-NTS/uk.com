@@ -13,7 +13,6 @@ import lombok.val;
 import nts.arc.layer.dom.objecttype.DomainObject;
 import nts.uk.ctx.at.shared.dom.WorkInfoAndTimeZone;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.NumberOfDaySuspension;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.DayOfWeek;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZone;
@@ -44,13 +43,13 @@ public class WorkInfoOfDailyAttendance implements DomainObject {
 	private NotUseAttribute backStraightAtr;
 	// 曜日
 	private DayOfWeek dayOfWeek;
-	// 勤務予定時間帯
+	// 始業終業時間帯
 	private List<ScheduleTimeSheet> scheduleTimeSheets = new ArrayList<>();
 	//振休振出として扱う日数
 	@Setter
 	private Optional<NumberOfDaySuspension> numberDaySuspension = Optional.empty();
 
-	//Ver
+	//排他version
 	@Setter
 	@Getter
 	private long ver;
@@ -58,7 +57,7 @@ public class WorkInfoOfDailyAttendance implements DomainObject {
 	
 	public WorkInfoOfDailyAttendance(WorkInformation workInfo,
 			CalculationState calculationState, NotUseAttribute goStraightAtr, NotUseAttribute backStraightAtr,
-			DayOfWeek dayOfWeek, List<ScheduleTimeSheet> scheduleTimeSheets) {
+			DayOfWeek dayOfWeek, List<ScheduleTimeSheet> scheduleTimeSheets, Optional<NumberOfDaySuspension> numberDaySuspension) {
 		super();
 		this.recordInfo = workInfo;
 		this.calculationState = calculationState;
@@ -66,7 +65,7 @@ public class WorkInfoOfDailyAttendance implements DomainObject {
 		this.backStraightAtr = backStraightAtr;
 		this.dayOfWeek = dayOfWeek;
 		this.scheduleTimeSheets = scheduleTimeSheets;
-
+        this.numberDaySuspension = numberDaySuspension;
 	}
 
 	/**
@@ -104,7 +103,7 @@ public class WorkInfoOfDailyAttendance implements DomainObject {
 				goStraightAtr, 
 				backStraightAtr, 
 				dayOfWeek, 
-				scheduleTimeSheets);
+				scheduleTimeSheets, Optional.empty());
 	}
 	
 	/**

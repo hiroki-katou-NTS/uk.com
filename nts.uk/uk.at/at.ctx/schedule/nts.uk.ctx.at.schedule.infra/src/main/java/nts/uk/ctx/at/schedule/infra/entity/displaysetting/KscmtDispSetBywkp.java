@@ -51,11 +51,11 @@ public class KscmtDispSetBywkp extends ContractUkJpaEntity{
 
 	public static KscmtDispSetBywkp toEntity( DisplaySettingByWorkplace workScheDisplaySetting) {
 		String CID = AppContexts.user().companyId();
-		/*return new KscmtDispSetting(
-				new KscmtDispSettingPK(CID),
+
+		return new KscmtDispSetBywkp(new KscmtDispSetBywkpPK(CID),
 				workScheDisplaySetting.getInitDispMonth().value,
-				workScheDisplaySetting.getEndDay().;*/
-		return null;
+				workScheDisplaySetting.getEndDay().getClosingDate().getDay(),
+				workScheDisplaySetting.getEndDay().getClosingDate().isLastDay());
 	}
 	public DisplaySettingByWorkplace toDomain (){
 		return new  DisplaySettingByWorkplace(pk.cid,

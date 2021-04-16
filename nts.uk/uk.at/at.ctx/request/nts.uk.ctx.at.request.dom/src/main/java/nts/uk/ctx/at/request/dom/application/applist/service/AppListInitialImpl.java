@@ -54,7 +54,6 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WkpInfo;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WorkPlaceHistBySIDImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WorkplaceAdapter;
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.ActualStatusCheckResult;
-import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.OvertimeColorCheck;
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.PreActualColorCheck;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AppCompltLeaveSyncOutput;
@@ -829,99 +828,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		return appStatus;
 	}
 
-	/**
-	 * 申請一覧リスト取得実績
-	 */
-	@Override
-	public TimeResultOutput getDataActual(String sID, GeneralDate date, List<OverTimeFrame> time,
-			ApplicationType appType, String wkTypeCd, String wkTimeCd, List<WorkType> lstWkType,
-			List<WorkTimeSetting> lstWkTime) {
-		OverrideSet overrideSet = OverrideSet.SYSTEM_TIME_PRIORITY;
-		Optional<CalcStampMiss> calStampMiss = Optional.empty();
-		if (appType.equals(ApplicationType.OVER_TIME_APPLICATION)) {
-			Optional<OvertimeAppSet> otSet = appOtSetRepo.findSettingByCompanyId(AppContexts.user().companyId());
-			overrideSet = otSet.isPresent() ? otSet.get().getOvertimeLeaveAppCommonSet().getOverrideSet() : overrideSet;
-		} else {
-			Optional<HolidayWorkAppSet> hdSet = withdrawalAppSetRepo.findSettingByCompany(AppContexts.user().companyId());
-			overrideSet = hdSet.isPresent() ? hdSet.get().getOvertimeLeaveAppCommonSet().getOverrideSet() : overrideSet;
-			calStampMiss = hdSet.isPresent() ? Optional.of(hdSet.get().getCalcStampMiss()) : calStampMiss;
-		}
-
-		//07-02_実績取得・状態チェック
-		ActualStatusCheckResult cal = preActualCheck.actualStatusCheck(AppContexts.user().companyId(), sID, date,
-				appType, wkTypeCd, wkTimeCd, overrideSet, calStampMiss, Collections.emptyList());
-
-		boolean checkColor = false;
-		List<OverTimeFrame> lstFrameResult = new ArrayList<>();
-
-		List<OvertimeColorCheck> actualLst = Collections.emptyList();
-		for (OverTimeFrame timeFrame : time) {
-			Integer actTime = this.findTimeRes(actualLst, timeFrame);
-			if (actTime == null || actTime < timeFrame.getApplicationTime()) {
-				checkColor = true;
-			}
-			OverTimeFrame frameRes = timeFrame;
-			frameRes.setApplicationTime(actTime);
-			lstFrameResult.add(frameRes);
-		}
-		if (lstFrameResult.size() < actualLst.size()) {// TH xin sau k co nhung thuc te co
-			for (OvertimeColorCheck act : actualLst) {
-				if (lstFrameResult.stream()
-						.filter(c -> c.getAttendanceType() == act.attendanceID && c.getFrameNo() == act.frameNo)
-						.collect(Collectors.toList()).size() == 0) {
-					String name = "";
-					if (act.frameNo == 11) {
-						name = I18NText.getText("CMM045_270");
-					} else if (act.frameNo == 12) {
-						name = I18NText.getText("CMM045_271");
-					} else {
-						if (act.attendanceID == 1) {//
-							List<OvertimeWorkFrame> lstFramOt = repoOverTimeFr.getOvertimeWorkFrameByFrameNos(
-									AppContexts.user().companyId(), Arrays.asList(act.frameNo));
-							name = !lstFramOt.isEmpty() ? lstFramOt.get(0).getOvertimeWorkFrName().v()
-									: act.frameNo + "マスタ未登録";
-						}
-						if (act.attendanceID == 2) {
-							List<WorkdayoffFrame> lstFramWork = repoWork
-									.getWorkdayoffFrameBy(AppContexts.user().companyId(), Arrays.asList(act.frameNo));
-							name = !lstFramWork.isEmpty() ? lstFramWork.get(0).getWorkdayoffFrName().v()
-									: act.frameNo + "マスタ未登録";
-						}
-					}
-					lstFrameResult.add(
-							new OverTimeFrame(act.attendanceID, act.frameNo, name, null, act.actualTime, null, null));
-				}
-			}
-		}
-		/** 就業時間外深夜 - 計算就業外深夜 */
-		Integer shiftNightTime = this.findTimeRes(actualLst, new OverTimeFrame(1, 11, "", null, null, null, null));
-		/** フレックス超過時間 - 計算フレックス */
-		Integer flexTime = this.findTimeRes(actualLst, new OverTimeFrame(1, 12, "", null, null, null, null));
-		;
-		String workTypeName = "";
-		String workTimeName = "";
-		if (appType.equals(ApplicationType.HOLIDAY_WORK_APPLICATION)) {
-			if (Strings.isNotBlank(cal.workType)) {
-				workTypeName = repoAppDetail.findWorkTypeName(lstWkType, cal.workType);
-			}
-			if (Strings.isNotBlank(cal.workTime)) {
-				workTimeName = repoAppDetail.findWorkTimeName(lstWkTime, cal.workTime);
-			}
-		}
-
-		return new TimeResultOutput(checkColor, lstFrameResult, repoAppDetail.convertTime(cal.startTime),
-				repoAppDetail.convertTime(cal.endTime), repoAppDetail.convertTime(null),
-				repoAppDetail.convertTime(null), shiftNightTime, flexTime, workTypeName, workTimeName);
-	}
-
-	private Integer findTimeRes(List<OvertimeColorCheck> actualLst, OverTimeFrame time) {
-		for (OvertimeColorCheck act : actualLst) {
-			if (act.attendanceID == time.getAttendanceType() && act.frameNo == time.getFrameNo()) {
-				return act.actualTime;
-			}
-		}
-		return null;
-	}
+	
 
 	/**
 	 * 6 - 申請一覧リスト取得振休振出 wait SonLB - kaf011

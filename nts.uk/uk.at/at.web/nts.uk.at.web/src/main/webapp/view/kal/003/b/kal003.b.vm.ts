@@ -598,11 +598,20 @@ module nts.uk.at.view.kal003.b.viewmodel {
                 self.listAllWorkingTime = self.getListWorkTimeCdFromDtos(settingTimeZones);
                 //get name
                 let listItems = self.workRecordExtractingCondition().errorAlarmCondition().workTimeCondition().planLstWorkTime();
-
-                self.generateNameCorrespondingToAttendanceItem(listItems).done((data) => {
-                    self.displayWorkingTimeSelections_BA5_3(data);
-                });
-                //self.initialWorkTimeCodesFromDtos(settingTimeZones);
+                var strWt = "";
+                for (var i = 0; i < listItems.length; i++) {
+                    var wt = _.filter(settingTimeZones, function(o) { return o.worktimeCode == listItems[i]});
+                    if(wt != null || wt != undefined){
+                        strWt += ', ' + wt[0].workTimeName;
+                    }
+                }
+                if(strWt != ""){
+                    self.displayWorkingTimeSelections_BA5_3(strWt.substring(2));    
+                } else {
+                    self.displayWorkingTimeSelections_BA5_3(strWt);
+                }
+                
+                
                 //ドメインモデル「勤務種類」を取得する - Acquire domain model "WorkType"
                 self.initialWorkTypes(defered);
             }, function(rejected) {
@@ -841,10 +850,24 @@ module nts.uk.at.view.kal003.b.viewmodel {
                     let listItems: Array<any> = windows.getShared("kml001selectedCodeList");
                     if (listItems != null && listItems != undefined) {
                         workTimeCondition.planLstWorkTime(listItems);
-                        //get name
-                        self.generateNameCorrespondingToAttendanceItem(listItems).done((data) => {
-                            self.displayWorkingTimeSelections_BA5_3(data);
-                        });
+                        var dfd = $.Deferred();
+                        service.getAttendCoutinousTimeZone().done((settingTimeZones) => {
+                            //get name
+                            var strWt = "";
+                            for (var i = 0; i < listItems.length; i++) {
+                                var wt = _.filter(settingTimeZones, function(o) { return o.worktimeCode === listItems[i]});
+                                if(wt != null || wt != undefined){
+                                    strWt += ', ' + wt[0].workTimeName;
+                                }
+                            }
+                            if(strWt != ""){
+                                self.displayWorkingTimeSelections_BA5_3(strWt.substring(2));    
+                            } else {
+                                self.displayWorkingTimeSelections_BA5_3(strWt);
+                            }
+                        }, function(rejected) {
+                            dfd.resolve();
+                        });                        
                     }
                     block.clear();
                 });

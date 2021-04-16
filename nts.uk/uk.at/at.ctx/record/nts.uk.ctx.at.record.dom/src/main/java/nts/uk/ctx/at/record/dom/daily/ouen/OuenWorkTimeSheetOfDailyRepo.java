@@ -7,7 +7,7 @@ import nts.arc.time.calendar.period.DatePeriod;
 
 public interface OuenWorkTimeSheetOfDailyRepo {
 
-	public List<OuenWorkTimeSheetOfDaily> find(String empId, GeneralDate ymd);
+	public OuenWorkTimeSheetOfDaily find(String empId, GeneralDate ymd);
 	
 	public void update(List<OuenWorkTimeSheetOfDaily> domain);
 	
@@ -17,4 +17,11 @@ public interface OuenWorkTimeSheetOfDailyRepo {
 	
 	//	日別実績の応援作業別勤怠時間帯Repository.get(社員,期間)	
 	public List<OuenWorkTimeSheetOfDaily> findByDatePeriod(String empId, DatePeriod datePeriod);
+
+	public void remove(String sid, GeneralDate ymd);
+
+	boolean findPK(String empId, GeneralDate ymd, int ouenNo);
+
+	List<OuenWorkTimeSheetOfDaily> find(String sid, DatePeriod ymd);
+
 }

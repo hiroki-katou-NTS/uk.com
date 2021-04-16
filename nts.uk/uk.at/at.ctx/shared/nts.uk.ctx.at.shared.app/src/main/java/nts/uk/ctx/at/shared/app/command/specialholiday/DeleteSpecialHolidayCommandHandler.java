@@ -10,6 +10,8 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHoliday;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayRepository;
 import nts.uk.ctx.at.shared.dom.specialholiday.event.SpecialHolidayDomainEvent;
+import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.ElapseYearRepository;
+import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.GrantDateTblRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -21,6 +23,12 @@ import nts.uk.shr.com.context.AppContexts;
 public class DeleteSpecialHolidayCommandHandler extends CommandHandler<SpecialHolidayDeleteCommand> {
 	@Inject
 	private SpecialHolidayRepository sphdRepo;
+	
+	@Inject
+	private ElapseYearRepository elapseYearRepository;
+	
+	@Inject
+	private GrantDateTblRepository grantDateTblRepository;
 
 	@Override
 	protected void handle(CommandHandlerContext<SpecialHolidayDeleteCommand> context) {
@@ -36,6 +44,8 @@ public class DeleteSpecialHolidayCommandHandler extends CommandHandler<SpecialHo
 		// Delete Special Holiday
 
 		sphdRepo.delete(companyId, sHECD);
+		elapseYearRepository.delete(companyId, sHECD);
+		grantDateTblRepository.delete(companyId, sHECD, command.getGrantDateCode());
 
 //		sphdRepo.delete(companyId, command.getSpecialHolidayCode());
 //		

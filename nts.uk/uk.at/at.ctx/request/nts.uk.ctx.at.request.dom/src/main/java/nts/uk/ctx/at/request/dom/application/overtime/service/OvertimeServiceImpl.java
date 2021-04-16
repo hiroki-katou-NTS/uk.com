@@ -22,7 +22,6 @@ import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
-import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
@@ -43,7 +42,6 @@ import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.New
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.CheckBeforeRegisMultiEmpOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.CollectAchievement;
-import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.other.PreAppContentDisplay;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementDetail;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ActualContentDisplay;
@@ -60,7 +58,6 @@ import nts.uk.ctx.at.request.dom.application.lateleaveearly.ArrivedLateLeaveEarl
 import nts.uk.ctx.at.request.dom.application.lateleaveearly.ArrivedLateLeaveEarlyRepository;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTimeRepository;
-import nts.uk.ctx.at.request.dom.application.overtime.AppOvertimeDetail;
 import nts.uk.ctx.at.request.dom.application.overtime.ApplicationTime;
 import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType_Update;
 import nts.uk.ctx.at.request.dom.application.overtime.CalculationResult;
@@ -88,17 +85,14 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appo
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.OverrideSet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeLeaveAppCommonSet;
 import nts.uk.ctx.at.request.dom.workrecord.dailyrecordprocess.dailycreationwork.BreakTimeZoneSetting;
-import nts.uk.ctx.at.shared.dom.application.common.ApplicationShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.common.ApplicationShare;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.BreakFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.ErrorAlarmWorkRecordCode;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeStatusOfMonthly;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrame;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameRepository;
-import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
-import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZone;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
@@ -115,14 +109,7 @@ public class OvertimeServiceImpl implements OvertimeService {
 	private EmployeeRequestAdapter employeeRequestAdapter;
 	
 	@Inject
-	private OtherCommonAlgorithm otherCommonAlgorithm;
-	
-	
-	@Inject
 	ApplicationApprovalService appRepository;
-	
-	@Inject
-	private WorkingConditionItemRepository workingConditionItemRepository;
 	
 	@Inject
 	private CollectAchievement collectAchievement;
@@ -189,164 +176,13 @@ public class OvertimeServiceImpl implements OvertimeService {
 	}
 
 	
-	/**
-	 * // １日の勤務＝以下に該当するもの
-	 * 　出勤、休出、振出、連続勤務
-	 * @return
-	 */
-	private List<Integer> allDayAtrs(){
-		
-		List<Integer> allDayAtrs = new ArrayList<>();
-		//出勤
-		allDayAtrs.add(0);
-		//休出
-		allDayAtrs.add(11);
-		//振出
-		allDayAtrs.add(7);
-		// 連続勤務
-		allDayAtrs.add(10);
-		return allDayAtrs;
-	}
-	/**
-	 * 午前 また 午後 in (休日, 振出, 年休, 出勤, 特別休暇, 欠勤, 代休, 時間消化休暇)
-	 * @return
-	 */
-	private List<Integer> halfAtrs(){
-		List<Integer> halfAtrs = new ArrayList<>();
-		// 休日
-		halfAtrs.add(1);
-		// 振出
-		halfAtrs.add(7);
-		// 年休
-		halfAtrs.add(2);
-		// 出勤
-		halfAtrs.add(0);
-		//特別休暇
-		halfAtrs.add(4);
-		// 欠勤
-		halfAtrs.add(5);
-		// 代休
-		halfAtrs.add(6);
-		//時間消化休暇
-		halfAtrs.add(9);
-		return halfAtrs;
-	}
+	
 
 
 
 	
 
-	@Override
-	/** 09_勤務種類就業時間帯の初期選択をセットする */
-	public WorkTypeAndSiftType getWorkTypeAndSiftTypeByPersonCon(String companyID,String employeeID, GeneralDate baseDate,
-			List<WorkTypeOvertime> workTypes, List<SiftType> siftTypes) {
-		WorkTypeAndSiftType workTypeAndSiftType = new WorkTypeAndSiftType();
-		if (baseDate != null) {
-			//申請日の入力があり
-			//勤務種類と就業時間帯を取得できた
-			workTypeAndSiftType = getDataDateExists(companyID, employeeID, baseDate);
-            if (StringUtil.isNullOrEmpty(workTypeAndSiftType.getWorkType().getWorkTypeCode(), true)
-                    || StringUtil.isNullOrEmpty(workTypeAndSiftType.getSiftType().getSiftCode(), true)) {
-				//取得できなかった
-				workTypeAndSiftType = getDataNoDateExists(companyID, employeeID, workTypes, siftTypes);
-			}
-		} else {
-			//申請日の入力がない
-			workTypeAndSiftType = getDataNoDateExists(companyID, employeeID, workTypes, siftTypes);
-		}
-		
-		if (workTypeAndSiftType.getWorkType() != null && workTypeAndSiftType.getSiftType() != null) {
-			// 12.マスタ勤務種類、就業時間帯データをチェック
-			CheckWorkingInfoResult checkResult = otherCommonAlgorithm.checkWorkingInfo(companyID,
-					workTypeAndSiftType.getWorkType().getWorkTypeCode(),
-					workTypeAndSiftType.getSiftType().getSiftCode());
-			boolean wkTypeError = checkResult.isWkTypeError();
-			boolean wkTimeError = checkResult.isWkTimeError();
-			if (wkTypeError) {
-				// 先頭の勤務種類を選択する
-				workTypeAndSiftType.setWorkType(workTypes.get(0));
-			}
-
-			if (wkTimeError) {
-				// 先頭の就業時間帯を選択する
-				workTypeAndSiftType.setSiftType(siftTypes.get(0));
-			}
-		}
-		return workTypeAndSiftType;
-	}
 	
-	private WorkTypeAndSiftType getDataNoDateExists(String companyID, String employeeID,
-			List<WorkTypeOvertime> workTypes, List<SiftType> siftTypes) {
-		WorkTypeAndSiftType workTypeAndSiftType = new WorkTypeAndSiftType();
-		WorkTypeOvertime workTypeOvertime = new  WorkTypeOvertime();
-		SiftType siftType = new SiftType();
-		GeneralDate baseDate = GeneralDate.today();
-		//ドメインモデル「個人労働条件」を取得する(lay dieu kien lao dong ca nhan(個人労働条件))
-		Optional<WorkingConditionItem> personalLablorCodition = workingConditionItemRepository.getBySidAndStandardDate(employeeID,baseDate);
-		
-		if(!personalLablorCodition.isPresent() || personalLablorCodition.get().getWorkCategory().getWeekdayTime() == null){
-			//先頭の勤務種類を選択する
-			if(!CollectionUtil.isEmpty(workTypes)){
-				workTypeAndSiftType.setWorkType(workTypes.get(0));
-			}
-			//先頭の就業時間帯を選択する
-			if(!CollectionUtil.isEmpty(siftTypes)){
-				workTypeAndSiftType.setSiftType(siftTypes.get(0));
-			}
-		}else{
-			
-			String wktypeCd = personalLablorCodition.get().getWorkCategory().getWeekdayTime().getWorkTypeCode().get()
-					.v().toString();
-			if(workTypes.stream().map(x -> x.getWorkTypeCode()).collect(Collectors.toList()).contains(wktypeCd)){
-				workTypeOvertime = workTypes.stream().filter(x -> x.getWorkTypeCode().equals(wktypeCd)).findAny().get();
-				//ドメインモデル「個人勤務日区分別勤務」．平日時．勤務種類コードを選択する
-				workTypeAndSiftType.setWorkType(workTypeOvertime);
-			} else {
-				//先頭の勤務種類を選択する
-				if(!CollectionUtil.isEmpty(workTypes)){
-					workTypeAndSiftType.setWorkType(workTypes.get(0));
-				}
-			}
-			
-			//ドメインモデル「個人勤務日区分別勤務」．平日時．就業時間帯コードを選択する
-			String wkTimeCd = personalLablorCodition.get().getWorkCategory().getWeekdayTime().getWorkTimeCode().get()
-					.v().toString();
-			if(siftTypes.stream().map(x -> x.getSiftCode()).collect(Collectors.toList()).contains(wkTimeCd)){
-				siftType = siftTypes.stream().filter(x -> x.getSiftCode().equals(wkTimeCd)).findAny().get();
-				workTypeAndSiftType.setSiftType(siftType);
-			} else {
-				if(!CollectionUtil.isEmpty(siftTypes)){
-					workTypeAndSiftType.setSiftType(siftTypes.get(0));
-				}
-			}
-		}
-		return workTypeAndSiftType;
-	}
-
-	private WorkTypeAndSiftType getDataDateExists(String companyID, String employeeID, GeneralDate baseDate) {
-		WorkTypeAndSiftType workTypeAndSiftType = new WorkTypeAndSiftType();
-		//実績の取得
-		/*AchievementOutput achievementOutput = collectAchievement.getAchievement(companyID, employeeID, baseDate);
-			workTypeAndSiftType.setWorkType(new WorkTypeOvertime(achievementOutput.getWorkType().getWorkTypeCode(), achievementOutput.getWorkType().getName()));
-			workTypeAndSiftType.setSiftType(new SiftType(achievementOutput.getWorkTime().getWorkTimeCD(), achievementOutput.getWorkTime().getWorkTimeName()));
-			return workTypeAndSiftType;*/
-		return null;
-	}
-
-	@Override
-	public AgreementTimeStatusOfMonthly getTime36Detail(AppOvertimeDetail appOvertimeDetail) {
-		if(appOvertimeDetail.getTime36Agree().getAgreeMonth().getLimitErrorTime().v() <= 0){
-			return null;
-		}
-		/** TODO: 36協定時間対応により、コメントアウトされた */
-		return null;
-//		return agreementTimeStatusAdapter.checkAgreementTimeStatus(
-//				new AttendanceTimeMonth(appOvertimeDetail.getTime36Agree().getApplicationTime().v()+appOvertimeDetail.getTime36Agree().getAgreeMonth().getActualTime().v()), 
-//				appOvertimeDetail.getTime36Agree().getAgreeMonth().getLimitAlarmTime(), 
-//				appOvertimeDetail.getTime36Agree().getAgreeMonth().getLimitErrorTime(), 
-//				appOvertimeDetail.getTime36Agree().getAgreeMonth().getExceptionLimitAlarmTime(), 
-//				appOvertimeDetail.getTime36Agree().getAgreeMonth().getExceptionLimitErrorTime());
-	}
 
 	@Override
 	public DisplayInfoOverTime calculate(

@@ -39,7 +39,7 @@ public class TaskByWorkPlaceProcessStartupScreenQuery {
             throw new BusinessException("Msg_2114");
         val frameSetting = frameUsageSettingQuery.getWorkFrameUsageSetting(cid);
         if (frameSetting == null)
-            throw new BusinessException("Msg_2109");
+            throw new BusinessException("Msg_2109", "KMT011_1");
         return frameSetting.getFrameSettingList()
                 .stream()
                 .map(s -> new TaskFrameSettingDto(
