@@ -318,14 +318,14 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 			//暫定年休管理データを取得 締め開始日 <= 対象日 < INPUT．期間．終了日
 			List<TmpAnnualHolidayMng> lstTmpAnnual = annualRepository.getBySidPeriod(sid, new DatePeriod(startDate, datePeriod.end()));
 			for (TmpAnnualHolidayMng x : lstTmpAnnual) {
-//				Optional<InterimRemain> interimInfor = interimRepo.getById(x.getRemainManaID());
-//				if(interimInfor.isPresent()) {
-				DailyInterimRemainMngData remainMng = new DailyInterimRemainMngData();
-				remainMng.setRecAbsData(Arrays.asList(x));
-				remainMng.setAnnualHolidayData(Optional.of(x));
-				DailyInterimRemainMngDataAndFlg outData = new DailyInterimRemainMngDataAndFlg(remainMng, false);
-				lstOutputData.add(outData);
-//				}
+				Optional<InterimRemain> interimInfor = interimRepo.getById(x.getRemainManaID());
+				if(interimInfor.isPresent()) {
+					DailyInterimRemainMngData remainMng = new DailyInterimRemainMngData();
+					remainMng.setRecAbsData(Arrays.asList(x));
+					remainMng.setAnnualHolidayData(Optional.of(x));
+					DailyInterimRemainMngDataAndFlg outData = new DailyInterimRemainMngDataAndFlg(remainMng, false);
+					lstOutputData.add(outData);
+				}
 			}
 		}
 
@@ -425,31 +425,15 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 			if (tmp == null) {
 				return data;
 			}
-			LeaveGrantRemainingData result = GetAnnualLeaveUsedNumberFromRemDataService
+			List<LeaveGrantRemainingData> results = GetAnnualLeaveUsedNumberFromRemDataService
 					.getAnnualLeaveGrantRemainingData(AppContexts.user().companyId(), sid,
 							new ArrayList<>(Arrays.asList((LeaveGrantRemainingData) data)), tmp.getDetails().getUsedNumber(),
-							new RequireImpl(workingConditionItemRepository, annualPaidLeaveSettingRepository))
-					.get(0);
-//			// 付与数、使用数から付与時点の使用数を減算する。
-//			data.getDetails().getGrantNumber()
-//					.setDays(new LeaveGrantDayNumber(data.getDetails().getGrantNumber().getDays().v()
-//							- result.getDetails().getUsedNumber().getDays().v()));
-//			data.getDetails().getGrantNumber().setMinutes(
-//					data.getDetails().getGrantNumber().getMinutes().map(m -> m.addMinutes(result.getDetails()
-//							.getUsedNumber().getMinutes().map(LeaveUsedTime::valueAsMinutes).orElse(0))));
-//			data.getDetails().getUsedNumber()
-//					.setDays(new LeaveUsedDayNumber(data.getDetails().getUsedNumber().getDays().v()
-//							- result.getDetails().getUsedNumber().getDays().v()));
-//			data.getDetails().getUsedNumber()
-//					.setMinutes(data.getDetails().getUsedNumber().getMinutes().map(m -> m.addMinutes(result.getDetails()
-//							.getUsedNumber().getMinutes().map(LeaveUsedTime::valueAsMinutes).orElse(0))));
-//			if (!data.getExpirationStatus().IsAVAILABLE()) {
-//				LeaveNumberInfo detail = data.getDetails();
-//				data.setDetails(new LeaveNumberInfo(detail.getGrantNumber(), detail.getUsedNumber(), 
-//						new LeaveRemainingNumber(0, 0), detail.getUsedPercent()));
-//			}
-			return (AnnualLeaveGrantRemainingData) result;
-		}).map(data -> (AnnualLeaveGrantRemainingData) data).collect(Collectors.toList());
+							new RequireImpl(workingConditionItemRepository, annualPaidLeaveSettingRepository));
+			if (results.isEmpty()) {
+				return null;
+			}
+			return (AnnualLeaveGrantRemainingData) results.get(0);
+		}).filter(Objects::nonNull).map(data -> (AnnualLeaveGrantRemainingData) data).collect(Collectors.toList());
 	}
 
 	//前回付与日～INPUT．指定年月の間で期限が切れた付与情報を取得 - 7 
@@ -475,8 +459,6 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 		}
 		// 指定月時点の使用数を計算指定月時点の使用数を計算 - 6
 		List<AnnualLeaveGrantRemainingData> lstAnnRemainHis = this.lstRemainHistory(sid, lstAnnLeaRem, period.start());
-		// Loại bỏ bug trùng lặp
-//		lstAnnRemainHis.removeAll(lstAnnLeaRem);
 		// 取得した年休付与残数データをOUTPUTのクラスに移送
 		return lstAnnRemainHis.stream().map(AnnualHolidayGrant::fromData).collect(Collectors.toList());
 	}

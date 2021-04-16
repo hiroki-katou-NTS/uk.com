@@ -51,6 +51,7 @@ public class AnnualHolidayGrantDetailInforImpl implements AnnualHolidayGrantDeta
 				new DatePeriod(startDate, datePeriod.end()),
 				referenceAtr);
 		
+		// 暫定年休管理データを年休使用詳細へ変換
 		lstRemainMngData.stream().forEach(x ->{
 			TmpAnnualHolidayMng annData = x.getData().getAnnualHolidayData().get();
 			
@@ -72,6 +73,7 @@ public class AnnualHolidayGrantDetailInforImpl implements AnnualHolidayGrantDeta
 					annData.getCreatorAtr().equals(CreateAtr.FLEXCOMPEN));
 			lstOutputData.add(annDetail);
 		});
+		// 年休使用詳細(List)を返す
 		return lstOutputData.stream().sorted((a,b) -> a.getYmd().compareTo(b.getYmd()))
 				.collect(Collectors.toList());
 	}
