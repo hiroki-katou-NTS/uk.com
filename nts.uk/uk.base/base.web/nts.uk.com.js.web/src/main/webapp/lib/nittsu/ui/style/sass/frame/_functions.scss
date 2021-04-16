@@ -2,7 +2,6 @@ div#master-wrapper {
 	div#master-content {
 		div[id^="functions-area"] {
 			padding: 5px 10px;
-			overflow: hidden;
 			position: relative;
 			white-space: nowrap;
 			box-sizing: border-box;
@@ -75,6 +74,11 @@ div#master-wrapper {
 						min-width: 90px;
 					}
 				}
+			}
+
+			.floating-btn {
+				z-index: 9;
+				position: absolute;
 			}
 		}
 

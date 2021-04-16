@@ -118,6 +118,60 @@ module nts.uk.ui.layout {
         }
     }
 
+    @handler({
+        bindingName: 'pg-name'
+    })
+    export class PGNameBindingHandler implements KnockoutBindingHandler {
+        init(element: HTMLElement, valueAccessor: () => KnockoutObservable<string | boolean>, allBindingsAccessor: KnockoutAllBindingsAccessor, viewModel: nts.uk.ui.vm.ViewModel, bindingContext: KnockoutBindingContext & { $vm: nts.uk.ui.vm.ViewModel }): { controlsDescendantBindings: boolean; } {
+            const vm = new ko.ViewModel();
+            const pgName = valueAccessor();
+            const back = allBindingsAccessor.get('back');
+
+            const { programId, programName } = __viewContext.program;
+
+            const $span = $('<span>').get(0);
+            const $title = $(element);
+
+            $title
+                .append($span)
+                .addClass('pg-name')
+                .removeAttr('data-bind');
+
+            const text = ko.computed({
+                read: () => {
+                    const $pg = ko.unwrap(pgName);
+
+                    if (_.isString($pg)) {
+                        return vm.$i18n($pg);
+                    }
+
+                    if ($pg) {
+                        return `${programId || ''} ${programName || ''}`.trim();
+                    }
+
+                    return '';
+                },
+                disposeWhenNodeIsRemoved: element
+            });
+
+            ko.applyBindingsToNode($span, { text }, bindingContext);
+
+            if (back) {
+                $title.addClass('navigator');
+
+                const svg = document.createElement('svg');
+
+                ko.applyBindingsToNode(svg, { 'svg-icon': 'ARROW_LEFT_SQUARE', size: 20 });
+
+                $($title)
+                    .prepend(svg)
+                    .on('click', () => vm.$jump(back));
+            }
+
+            return { controlsDescendantBindings: false };
+        }
+    }
+
     // Handler for fixed functional area on top or bottom page
     @handler({
         bindingName: 'ui-function-bar',
@@ -126,7 +180,6 @@ module nts.uk.ui.layout {
     })
     export class MasterUIFunctionalBindingHandler implements KnockoutBindingHandler {
         init(element: HTMLElement, valueAccessor: () => 'top' | 'bottom', allBindingsAccessor: KnockoutAllBindingsAccessor, viewModel: nts.uk.ui.vm.ViewModel, bindingContext: KnockoutBindingContext & { $vm: nts.uk.ui.vm.ViewModel }): { controlsDescendantBindings: boolean; } {
-            const mvm = new ko.ViewModel();
             const position: 'top' | 'bottom' = valueAccessor();
             const back: string = allBindingsAccessor.get('back');
             const title: boolean | string = allBindingsAccessor.get('title');
@@ -142,24 +195,11 @@ module nts.uk.ui.layout {
                 }
 
                 if (title && mode === 'view') {
-                    const $title = document.createElement('div');
+                    const pgName = $(element).find('.pg-name');
+                    const $title = pgName.get(0) || document.createElement('div');
 
-                    $title.classList.add('pg-name');
-
-                    const { programId, programName } = __viewContext.program;
-
-                    $title.innerHTML = `<span>${mvm.$i18n(_.isString(title) ? title.trim() : `${programId || ''} ${programName || ''}`.trim())}</span>`;
-
-                    if (back) {
-                        $title.classList.add('navigator');
-
-                        const svg = document.createElement('svg');
-
-                        ko.applyBindingsToNode(svg, { 'svg-icon': 'ARROW_LEFT_SQUARE', size: 20 });
-
-                        $($title)
-                            .prepend(svg)
-                            .on('click', () => mvm.$jump(back));
+                    if (!pgName.length) {
+                        ko.applyBindingsToNode($title, { 'pg-name': title, back }, bindingContext);
                     }
 
                     $(element).prepend($title);
@@ -167,14 +207,15 @@ module nts.uk.ui.layout {
                     if (element.childNodes.length > 1) {
                         const $btnGroup = document.createElement('div');
                         $btnGroup.classList.add('button-group');
+                        const $pgName = $(element).find('.pg-name');
 
                         $(element).children().each((__: null, e: HTMLElement) => {
-                            if (!e.classList.contains('pg-name')) {
+                            if (!e.classList.contains('pg-name') && !e.classList.contains('floating-btn')) {
                                 $($btnGroup).append(e);
                             }
                         });
 
-                        $(element).append($btnGroup);
+                        $($btnGroup).insertAfter($pgName);
 
                         ko.applyBindingsToNode($btnGroup, null, bindingContext);
                     }
@@ -257,6 +298,87 @@ module nts.uk.ui.layout {
 
                     element.style.display = '';
                 });
+        }
+    }
+
+    @handler({
+        bindingName: 'floating'
+    })
+    export class FloatingButtonsBindingHandler implements KnockoutBindingHandler {
+        init(element: HTMLElement, valueAccessor: () => KnockoutObservable<boolean>, allBindingsAccessor: KnockoutAllBindingsAccessor, viewModel: any, bindingContext: KnockoutBindingContext): void | { controlsDescendantBindings: boolean; } {
+            const float = valueAccessor();
+            const top = allBindingsAccessor.get('top');
+            const left = allBindingsAccessor.get('left');
+            const right = allBindingsAccessor.get('right');
+            const bottom = allBindingsAccessor.get('bottom');
+            const replacer = ($t: string | number) => `${$t}px`.replace(/(px){2,}/, 'px').replace(/ptpx/, 'pt').replace(/%px/, '%');
+
+            ko.computed({
+                read: () => {
+                    const $f = ko.unwrap(float);
+
+                    if ($f !== false) {
+                        element.classList.add('floating-btn');
+                    } else {
+                        element.classList.remove('floating-btn');
+                    }
+                },
+                disposeWhenNodeIsRemoved: element
+            });
+
+            ko.computed({
+                read: () => {
+                    const $t = ko.unwrap(top);
+
+                    if (_.isNil($t)) {
+                        element.style.top = '';
+                    } else {
+                        element.style.top = replacer($t);
+                    }
+                },
+                disposeWhenNodeIsRemoved: element
+            });
+
+            ko.computed({
+                read: () => {
+                    const $l = ko.unwrap(left);
+
+                    if (_.isNil($l)) {
+                        element.style.left = '';
+                    } else {
+                        element.style.left = replacer($l);
+                    }
+                },
+                disposeWhenNodeIsRemoved: element
+            });
+
+            ko.computed({
+                read: () => {
+                    const $r = ko.unwrap(right);
+
+                    if (_.isNil($r)) {
+                        element.style.right = '';
+                    } else {
+                        element.style.right = replacer($r);
+                    }
+                },
+                disposeWhenNodeIsRemoved: element
+            });
+
+            ko.computed({
+                read: () => {
+                    const $b = ko.unwrap(bottom);
+
+                    if (_.isNil($b)) {
+                        element.style.bottom = '';
+                    } else {
+                        element.style.bottom = replacer($b);
+                    }
+                },
+                disposeWhenNodeIsRemoved: element
+            });
+
+            element.removeAttribute('data-bind');
         }
     }
 
