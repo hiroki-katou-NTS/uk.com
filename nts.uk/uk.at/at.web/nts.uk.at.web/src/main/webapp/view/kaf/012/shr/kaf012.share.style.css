@@ -1,5 +1,7 @@
 #kaf012-share-component1 {
 	width: auto;
+	margin-top: 20px;
+	margin-left: 12px;
 }
 
 #remaining-table, #kaf012-input-table, #kaf012-calc-table {
@@ -44,7 +46,7 @@
 }
 
 #kaf012-calc-table th, #kaf012-calc-table td {
-	width: 90px;
+	width: 95px;
 }
 
 #kaf012-input-table th, #kaf012-calc-table th {
@@ -96,3 +98,20 @@
 #kaf000-a-component3 button.nts-switch-button {
 	width: 92px;
 }
+
+.d-flex {
+	display: inline-flex;
+}
+
+.ml_-5 {
+	margin-left: -5px;
+}
+
+.ml_-10 {
+	margin-left: -10px;
+}
+
+.master-content {
+	overflow-x: auto !important;
+}
+

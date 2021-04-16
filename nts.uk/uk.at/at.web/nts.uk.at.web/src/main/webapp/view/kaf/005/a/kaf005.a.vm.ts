@@ -17,7 +17,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 
 	@bean()
 	class Kaf005AViewModel extends Kaf000AViewModel {
-
+	
 		appType: KnockoutObservable<number> = ko.observable(AppType.OVER_TIME_APPLICATION);
 		application: KnockoutObservable<Application>;
 		isSendMail: KnockoutObservable<boolean>;
@@ -47,15 +47,50 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 		restTemp: Array<any>;
 		
 	
+		titleLabel1: KnockoutObservable<String>;
+		titleLabelInput1: KnockoutObservable<String>;
+		titleLabel2: KnockoutObservable<String>;
+		titleLabelInput2: KnockoutObservable<String>;
 		
 		
-		
-		
+		setTitleLabel() {
+			const vm = this;
+			
+			vm.titleLabel1 = ko.computed(() => {
+				if (_.isEmpty( vm.messageInfos())) return '';
+				const param = vm.messageInfos()[0].titleDrop();
+				
+				return vm.$i18n('KAF005_90', [param]);
+			})
+			vm.titleLabelInput1 = ko.computed(() => {
+				if (_.isEmpty( vm.messageInfos())) return '';
+				const param = vm.messageInfos()[0].titleInput();
+				
+				return vm.$i18n('KAF005_92', [param]);
+			})
+			vm.titleLabel2 = ko.computed(() => {
+				if (_.isEmpty( vm.messageInfos())) return '';
+				const param = vm.messageInfos()[1].titleDrop();
+				
+				return vm.$i18n('KAF005_90', [param]);
+			})
+			vm.titleLabelInput2 = ko.computed(() => {
+				if (_.isEmpty( vm.messageInfos())) return '';
+				const param = vm.messageInfos()[1].titleInput();
+				
+				return vm.$i18n('KAF005_92', [param]);
+			})
+			
+		}
 		
 		created(params: AppInitParam) {
 			// new 
 			const vm = this;
 			vm.$blockui("show");
+			
+			vm.setTitleLabel();
+			
+			
 			vm.urlParam = $(location).attr('search').split("=")[1];
 			let dataTransfer: DataTransfer;
 			if (_.isNil(params)) {

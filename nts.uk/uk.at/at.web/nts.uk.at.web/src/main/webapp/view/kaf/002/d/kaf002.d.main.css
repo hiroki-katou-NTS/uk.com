@@ -9,7 +9,7 @@ input {
 }
 .labelFirst {
 	float: left;
-	padding-top: 10px !important;
+	width: 112px;
 }
 .blockSecond {
 	display: block;

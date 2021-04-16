@@ -50637,6 +50637,58 @@ var NtsSortableBindingHandler = /** @class */ (function () {
     return NtsSortableBindingHandler;
 }());
 ko.bindingHandlers["ntsSortable"] = new NtsSortableBindingHandler();
+var nts;
+(function (nts) {
+    var uk;
+    (function (uk) {
+        var ui;
+        (function (ui) {
+            var koExtentions;
+            (function (koExtentions) {
+                var tabrounded;
+                (function (tabrounded) {
+                    var TabRoundedBindingHandler = /** @class */ (function () {
+                        function TabRoundedBindingHandler() {
+                        }
+                        TabRoundedBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                            var $element = $(element);
+                            var rounded = valueAccessor();
+                            $element
+                                // prevent tabable to out of popup control
+                                .on("keydown", ":tabbable", function (evt) {
+                                if (ko.unwrap(rounded)) {
+                                    var fable = $element
+                                        .find(':tabbable')
+                                        .toArray();
+                                    var $chain = _.chain(fable).orderBy(function (el) { return el.getAttribute('tabindex'); });
+                                    var last = $chain.last().value() || _.last(fable);
+                                    var first = $chain.first().value() || _.first(fable);
+                                    if (evt.keyCode === 9) {
+                                        if ($(evt.target).is(last) && evt.shiftKey === false) {
+                                            first.focus();
+                                            evt.preventDefault();
+                                        }
+                                        else if ($(evt.target).is(first) && evt.shiftKey === true) {
+                                            last.focus();
+                                            evt.preventDefault();
+                                        }
+                                    }
+                                }
+                            });
+                        };
+                        TabRoundedBindingHandler = __decorate([
+                            handler({
+                                bindingName: 'tab-rounded'
+                            })
+                        ], TabRoundedBindingHandler);
+                        return TabRoundedBindingHandler;
+                    }());
+                    tabrounded.TabRoundedBindingHandler = TabRoundedBindingHandler;
+                })(tabrounded = koExtentions.tabrounded || (koExtentions.tabrounded = {}));
+            })(koExtentions = ui.koExtentions || (ui.koExtentions = {}));
+        })(ui = uk.ui || (uk.ui = {}));
+    })(uk = nts.uk || (nts.uk = {}));
+})(nts || (nts = {}));
 /// <reference path="../../reference.ts"/>
 var nts;
 (function (nts) {

@@ -5,62 +5,82 @@ module nts.uk.at.view.kaf009_ref.b.viewmodel {
 	import PrintContentOfEachAppDto = nts.uk.at.view.kaf000.shr.viewmodel.PrintContentOfEachAppDto;
 	import CommonProcess = nts.uk.at.view.kaf000.shr.viewmodel.CommonProcess;
     const template = `
-        <div>
-    <div data-bind="component: { name: 'kaf000-b-component1',
-                                params: {
-                                    appType: appType,
-                                    appDispInfoStartupOutput: appDispInfoStartupOutput
-                                } }"></div>
-    <div data-bind="component: { name: 'kaf000-b-component2',
-                                params: {
-                                    appType: appType,
-                                    appDispInfoStartupOutput: appDispInfoStartupOutput
-                                } }"></div>
-    <div data-bind="component: { name: 'kaf000-b-component3',
-                                params: {
-                                    appType: appType,
-                                    approvalReason: approvalReason,
-                                    appDispInfoStartupOutput: appDispInfoStartupOutput
-                                } }"></div>
-    <div class="table">
-        <div class="cell" style="width: 825px;" data-bind="component: { name: 'kaf000-b-component4',
+<div id="kaf009-b">
+	<div id="contents-area" style="background-color: inherit; height: calc(100vh - 165px); min-width: 1130px">
+		<div class="two-panel" style="height: 100%;">
+            <div class="left-panel" style="width: calc(100% - 410px); height: inherit">
+                <div style="height: inherit; overflow-y: auto; background-color: #fff; padding: 0 10px;">
+                    <div class="table" style="border-bottom: 2px solid #B1B1B1; padding-bottom: 30px; margin-bottom: 30px; width: 100%;">
+                        <div class="cell" style="vertical-align: middle;">
+                            <div data-bind="component: { name: 'kaf000-b-component4',
+                                                params: {
+                                                    appType: appType,
+                                                    application: application,
+                                                    appDispInfoStartupOutput: appDispInfoStartupOutput
+                                                } }"></div>
+                        </div>
+                        <div class="cell" style="text-align: right; vertical-align: middle;">
+                               <div data-bind="component: { name: 'kaf000-b-component8', 
+                                                params: {
+                                                    appType: appType,
+                                                    appDispInfoStartupOutput: appDispInfoStartupOutput
+                                                } }"></div>
+                        </div>
+                    </div>
+                    <div data-bind="component: { name: 'kaf000-b-component5', 
+                                                params: {
+                                                    appType: appType,
+                                                    application: application,
+                                                    appDispInfoStartupOutput: appDispInfoStartupOutput
+                                                } }"></div>
+                    <div data-bind="component: { name: 'kaf000-b-component6', 
+                                                params: {
+                                                    appType: appType,
+                                                    application: application,
+                                                    appDispInfoStartupOutput: appDispInfoStartupOutput
+                                                } }" style="width: fit-content; display: inline-block; vertical-align: middle; margin-top: 12px"></div>
+                                                
+                                                
+                   <div
+						data-bind="component: { name: 'kaf009-share', params: {dataFetch: dataFetch, model:model, mode: mode } }"></div>                             
+                                                
+                                                
+                    <div style="margin-top: 12px" data-bind="component: { name: 'kaf000-b-component7', 
+                                                params: {
+                                                    appType: appType,
+                                                    application: application,
+                                                    appDispInfoStartupOutput: appDispInfoStartupOutput
+                                                } }"></div>
+                                                
+                                                
+                    <div style="padding-top: 30px;">
+								
+				 	</div>                            
+                </div>
+            </div>
+            <div class="right-panel" style="width: 410px; height: inherit; overflow-y: auto">
+                <div style="height: inherit; background-color: #fff; padding: 0px 10px;">
+                    <div style="padding-top: 10px" data-bind="component: { name: 'kaf000-b-component1', 
                             params: {
                                 appType: appType,
-                                application: application,
-                                appDispInfoStartupOutput: appDispInfoStartupOutput
+                                appDispInfoStartupOutput: appDispInfoStartupOutput	
                             } }"></div>
-        <div class="cell" style="position: absolute;" data-bind="component: { name: 'kaf000-b-component9',
+                    <div data-bind="component: { name: 'kaf000-b-component9',
                             params: {
                                 appType: appType,
                                 application: application,
                                 appDispInfoStartupOutput: $vm.appDispInfoStartupOutput
                             } }"></div>
-    </div>
-    <div data-bind="component: { name: 'kaf000-b-component5',
-                                params: {
-                                    appType: appType,
-                                    application: application,
-                                    appDispInfoStartupOutput: appDispInfoStartupOutput
-                                } }"></div>
-    <div data-bind="component: { name: 'kaf000-b-component6',
-                                params: {
-                                    appType: appType,
-                                    application: application,
-                                    appDispInfoStartupOutput: appDispInfoStartupOutput
-                                } }"></div>
-    <div data-bind="component: { name: 'kaf009-share', params: {dataFetch: dataFetch, model:model, mode: mode } }"></div>
-    <div data-bind="component: { name: 'kaf000-b-component7',
-                                params: {
-                                    appType: appType,
-                                    application: application,
-                                    appDispInfoStartupOutput: appDispInfoStartupOutput
-                                } }"></div>
-    <div data-bind="component: { name: 'kaf000-b-component8',
-                                params: {
-                                    appType: appType,
-                                    appDispInfoStartupOutput: appDispInfoStartupOutput
-                                } }"></div>
+                </div>
+            </div>
+        </div>
+	</div>
 </div>
+
+
+
+
+
     `
     @component({
         name: 'kaf009-b',

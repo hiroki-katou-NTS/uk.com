@@ -1,6 +1,6 @@
 
 #kaf008-share .A5 span {
-    width: 120px;
+    width: 90px;
 }
 
 #kaf008-share #A5_2 span {
@@ -16,7 +16,7 @@
 }
 
 #kaf008-share .A5 #A5_1 {
-    width: 120px
+    width: 113px
 }
 
 
@@ -26,7 +26,7 @@
 }
 
 #kaf008-share .A5 .nts-input {
-    width: 100px;
+    width: 70px;
 }
 
 #kaf008-share #A6_1 {
@@ -79,4 +79,7 @@
     margin-left: 5px;
 }
 
+.master-content {
+    overflow-x: auto !important;
+}
 
