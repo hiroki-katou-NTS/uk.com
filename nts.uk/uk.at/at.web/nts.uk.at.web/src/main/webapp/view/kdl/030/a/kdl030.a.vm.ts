@@ -28,6 +28,7 @@ module nts.uk.at.view.kdl030.a.viewmodel {
                 vm.$ajax(API.applicationForSendByAppID, vm.appIDLst).done((result) => {
 					vm.mailContent(result.mailTemplate);
 					vm.appEmailSet = result.appEmailSet;
+					result.appSendMailByEmpLst.sort((app1, app2) => app1.applicantName.localeCompare(app2.applicantName));
 					_.forEach(result.appSendMailByEmpLst, appSendMailByEmp => {
 						_.forEach(appSendMailByEmp.approvalRoot.listApprovalPhaseStateDto, phase => {
 							_.forEach(phase.listApprovalFrame, frame => {
