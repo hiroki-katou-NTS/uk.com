@@ -7,6 +7,10 @@ public interface AttendanceItemNameAdapter {
 	
 	Map<Integer, String> getAttendanceItemNameAsMapName(List<Integer> dailyAttendanceItemIds, int typeOfAttendanceItem);
 
+	Map<Integer, String> getAttendanceItemNameAsMapName(int typeOfAttendanceItem);
+
+	Map<Integer, String> getAttendanceItemNameAsMapName(String cid, int typeOfAttendanceItem);
+
 	List<MonthlyAttendanceItemNameDto> getMonthlyAttendanceItemName(List<Integer> attendanceItemIds);
 	/**
 	 * 

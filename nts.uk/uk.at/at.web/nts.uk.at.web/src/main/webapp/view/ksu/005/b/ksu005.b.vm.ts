@@ -200,6 +200,7 @@ module nts.uk.at.view.ksu005.b {
             });
             
             self.selectedCode.subscribe((code: string) => { 
+                self.selectedTab('tab-1');
                 if (_.isEmpty(code)) {
                     self.clearData();
                 } else {
@@ -577,12 +578,33 @@ module nts.uk.at.view.ksu005.b {
         private condition2(): boolean {
             const self = this;
             let count: number = 0; 
-            _.each(self.itemList(), x => {
-                if (parseInt(x.personalInfo()) == parseInt(x.additionInfo())) {
-                    count = count + 1;
-                }               
-            });
-            if(count == self.itemList().length){
+            let data: any = [];
+
+            if(self.isEnableAdditionInfo()){
+                _.each(self.itemList(), x => {
+                    if(parseInt(x.personalInfo()) != -1){
+                        data.push(parseInt(x.personalInfo()));
+                    }                
+                    if(parseInt(x.additionInfo()) != -1){
+                        data.push(parseInt(x.additionInfo()));
+                    }  
+                });
+            } else {
+                _.each(self.itemList(), x => {
+                    if(parseInt(x.personalInfo()) != -1){
+                        data.push(parseInt(x.personalInfo()));
+                    } 
+                });
+            }
+
+            for (let i = 0; i < data.length - 1; i++) {
+                for (let j = i + 1; j < data.length; j++) {
+                    if (data[i] == data[j]) {
+                        count = count + 1;
+                    }
+                }
+            }           
+            if(count >= 1){
                 return true;
             }
             return false;

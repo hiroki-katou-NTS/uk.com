@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.bs.employee.pub.jobtitle.affiliate.JobTitleHistoryExport;
 import org.apache.commons.lang3.tuple.Pair;
 
 import nts.arc.time.GeneralDate;
@@ -134,6 +136,15 @@ public interface SyJobTitlePub {
 	 * @param approverGroupCD
 	 * @return
 	 */
-	List<String> getJobIDFromGroup(String companyID, String approverGroupCD); 
+	List<String> getJobIDFromGroup(String companyID, String approverGroupCD);
 
+	/**
+	 * 	期間から職位情報を取得
+	 */
+	List<JobTitleInfoExport> findByDatePeriod(String companyId, DatePeriod datePeriod);
+
+	/**
+	 * 社員（List）と期間から職位履歴を取得する
+	 */
+	JobTitleHistoryExport getJobTitleHist(List<String> employeeIds, DatePeriod period);
 }

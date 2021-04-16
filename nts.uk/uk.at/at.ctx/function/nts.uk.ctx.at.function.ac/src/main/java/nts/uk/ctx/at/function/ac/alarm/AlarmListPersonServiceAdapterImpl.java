@@ -13,7 +13,14 @@ import nts.arc.time.calendar.period.YearMonthPeriod;
 import nts.uk.ctx.at.function.dom.adapter.WorkPlaceHistImport;
 import nts.uk.ctx.at.function.dom.adapter.alarm.AlarmListPersonServiceAdapter;
 import nts.uk.ctx.at.function.dom.adapter.companyRecord.StatusOfEmployeeAdapter;
+import nts.uk.ctx.at.function.dom.alarm.alarmlist.annual.ScheduleAnnualAlarmCheckCond;
+import nts.uk.ctx.at.function.dom.alarm.alarmlist.schedaily.ScheduleDailyAlarmCheckCond;
+import nts.uk.ctx.at.function.dom.alarm.alarmlist.schemonthly.ScheduleMonthlyAlarmCheckCond;
+import nts.uk.ctx.at.function.dom.alarm.alarmlist.weekly.WeeklyAlarmCheckCond;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.daily.DailyAlarmCondition;
+import nts.uk.ctx.at.function.dom.attendanceitemframelinking.enums.TypeOfItem;
+import nts.uk.ctx.at.function.dom.attendanceitemname.AttendanceItemName;
+import nts.uk.ctx.at.function.dom.attendanceitemname.service.AttendanceItemNameDomainService;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.algorithm.StatusOfEmployeeAdapterAl;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.algorithm.WorkPlaceHistImportAl;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.algorithm.WorkPlaceIdAndPeriodImportAl;
@@ -24,6 +31,8 @@ import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.ResultOfEachCondition
 public class AlarmListPersonServiceAdapterImpl implements AlarmListPersonServiceAdapter{
 	@Inject
 	private AlarmListPersonExtractServicePub extractService;
+	@Inject
+	private AttendanceItemNameDomainService attendanceItemNameDomainService;
 
 	@Override
 	public void extractMasterCheckResult(String cid, List<String> lstSid, DatePeriod dPeriod,
@@ -115,6 +124,93 @@ public class AlarmListPersonServiceAdapterImpl implements AlarmListPersonService
 				lstWkpIdAndPeriod,
 				lstResultCondition,
 				lstCheckInfor);
+	}
+
+	@Override
+	public void extractScheDailyCheckResult(String cid, List<String> lstSid, DatePeriod dPeriod,
+			String errorDailyCheckId, ScheduleDailyAlarmCheckCond dailyAlarmCondition,
+			List<WorkPlaceHistImport> getWplByListSidAndPeriod, List<StatusOfEmployeeAdapter> lstStatusEmp,
+			List<ResultOfEachCondition> lstResultCondition, List<AlarmListCheckInfor> lstCheckType,
+			Consumer<Integer> counter, Supplier<Boolean> shouldStop) {
+				
+		String listOptionalItem = dailyAlarmCondition.getListOptionalItem();
+		String listFixedItem = dailyAlarmCondition.getListFixedItem();
+		
+		List<WorkPlaceHistImportAl> lstWkpIdAndPeriod = getWplByListSidAndPeriod.stream().map(x -> 
+			new WorkPlaceHistImportAl(x.getEmployeeId(), 
+					x.getLstWkpIdAndPeriod().stream()
+					.map(a -> new WorkPlaceIdAndPeriodImportAl(a.getDatePeriod(), a.getWorkplaceId())).collect(Collectors.toList()))).collect(Collectors.toList());
+
+		List<StatusOfEmployeeAdapterAl> lstStaEmp = lstStatusEmp.stream()
+				.map(x -> new StatusOfEmployeeAdapterAl(x.getEmployeeId(), x.getListPeriod())).collect(Collectors.toList());
+		
+		extractService.extractScheDailyCheckResult(
+				cid, lstSid, dPeriod, errorDailyCheckId, 
+				listOptionalItem, listFixedItem, 
+				lstWkpIdAndPeriod, lstStaEmp, lstResultCondition, lstCheckType, counter, shouldStop);		
+	}
+
+	@Override
+	public void extractScheYearCheckResult(String cid, List<String> lstSid, DatePeriod dPeriod,
+			String errorCheckId, ScheduleAnnualAlarmCheckCond scheYearAlarmCondition,
+			List<WorkPlaceHistImport> wplByListSidAndPeriod, List<StatusOfEmployeeAdapter> lstStatusEmp,
+			List<ResultOfEachCondition> lstResultCondition, List<AlarmListCheckInfor> lstCheckType,
+			Consumer<Integer> counter, Supplier<Boolean> shouldStop) {
+		String listOptionalItem = scheYearAlarmCondition.getListOptionalItem();
+		
+		List<WorkPlaceHistImportAl> lstWkpIdAndPeriod = wplByListSidAndPeriod.stream().map(x -> 
+			new WorkPlaceHistImportAl(x.getEmployeeId(), 
+					x.getLstWkpIdAndPeriod().stream()
+					.map(a -> new WorkPlaceIdAndPeriodImportAl(a.getDatePeriod(), a.getWorkplaceId())).collect(Collectors.toList()))).collect(Collectors.toList());
+
+		List<StatusOfEmployeeAdapterAl> lstStaEmp = lstStatusEmp.stream()
+				.map(x -> new StatusOfEmployeeAdapterAl(x.getEmployeeId(), x.getListPeriod())).collect(Collectors.toList());
+		
+		extractService.extractScheYearCheckResult(
+				cid, lstSid, dPeriod, errorCheckId, 
+				listOptionalItem, 
+				lstWkpIdAndPeriod, lstStaEmp, lstResultCondition, lstCheckType, counter, shouldStop);
+	}
+
+	@Override
+	public void extractWeeklyCheckResult(String cid, List<String> lstSid, DatePeriod period,
+			List<WorkPlaceHistImport> wplByListSidAndPeriods, WeeklyAlarmCheckCond weeklyAlarmCheckCond,
+			List<ResultOfEachCondition> lstResultCondition, List<AlarmListCheckInfor> lstCheckType,
+			Consumer<Integer> counter, Supplier<Boolean> shouldStop) {
+		String listOptionalItemId = weeklyAlarmCheckCond.getListOptionalItem();
+		
+		List<WorkPlaceHistImportAl> lstWkpIdAndPeriod = wplByListSidAndPeriods.stream().map(x -> 
+			new WorkPlaceHistImportAl(x.getEmployeeId(), 
+					x.getLstWkpIdAndPeriod().stream()
+					.map(a -> new WorkPlaceIdAndPeriodImportAl(a.getDatePeriod(), a.getWorkplaceId())).collect(Collectors.toList()))).collect(Collectors.toList());
+		
+		extractService.extractWeeklyCheckResult(
+				cid, lstSid, period, lstWkpIdAndPeriod, 
+				listOptionalItemId, lstResultCondition, lstCheckType, counter, shouldStop);
+	}
+
+	@Override
+	public void extractScheMonCheckResult(String cid, List<String> lstSid, DatePeriod dPeriod, String errorCheckId,
+			ScheduleMonthlyAlarmCheckCond scheduleMonthlyAlarmCheckCond,
+			List<WorkPlaceHistImport> getWplByListSidAndPeriod, List<StatusOfEmployeeAdapter> lstStatusEmp,
+			List<ResultOfEachCondition> lstResultCondition, List<AlarmListCheckInfor> lstCheckType,
+			Consumer<Integer> counter, Supplier<Boolean> shouldStop) {
+		String listOptionalItemId = scheduleMonthlyAlarmCheckCond.getListOptionalItem();
+		String listFixedItemId = scheduleMonthlyAlarmCheckCond.getListFixedItem();
+		
+		List<WorkPlaceHistImportAl> lstWkpIdAndPeriod = getWplByListSidAndPeriod.stream().map(x -> 
+			new WorkPlaceHistImportAl(x.getEmployeeId(), 
+					x.getLstWkpIdAndPeriod().stream()
+					.map(a -> new WorkPlaceIdAndPeriodImportAl(a.getDatePeriod(), a.getWorkplaceId())).collect(Collectors.toList()))).collect(Collectors.toList());
+
+		List<StatusOfEmployeeAdapterAl> lstStaEmp = lstStatusEmp.stream()
+				.map(x -> new StatusOfEmployeeAdapterAl(x.getEmployeeId(), x.getListPeriod())).collect(Collectors.toList());
+		
+		extractService.extractScheMonCheckResult(
+				cid, lstSid, dPeriod, errorCheckId, 
+				listFixedItemId, listOptionalItemId, 
+				lstWkpIdAndPeriod, lstStaEmp, 
+				lstResultCondition, lstCheckType, counter, shouldStop);
 	}
 
 	
