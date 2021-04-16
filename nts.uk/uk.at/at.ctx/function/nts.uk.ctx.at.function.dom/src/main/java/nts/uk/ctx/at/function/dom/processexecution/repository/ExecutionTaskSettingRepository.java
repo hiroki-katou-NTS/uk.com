@@ -11,6 +11,9 @@ public interface ExecutionTaskSettingRepository {
 	
 	public List<ExecutionTaskSetting> getByCidAndExecItemCd(String companyId, List<String> execItemCds);
 	
+	//get list by cid
+	public List<ExecutionTaskSetting> getByCid(String cid);
+	
 	// insert
 	public void insert(ExecutionTaskSetting domain);
 	
