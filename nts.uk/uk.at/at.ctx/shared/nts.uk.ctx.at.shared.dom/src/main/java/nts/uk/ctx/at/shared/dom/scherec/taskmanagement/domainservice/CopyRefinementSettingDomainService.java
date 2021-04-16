@@ -19,17 +19,15 @@ import java.util.List;
 public class CopyRefinementSettingDomainService {
     public static AtomTask doCopy(Require require,
                                   String copySourceWplId, String copyDestinationWplId) {
-        val copySourceSettings = require.getListWorkByWpl(copySourceWplId);
+        List<NarrowingDownTaskByWorkplace> copySourceSettings = require.getListWorkByWpl(copySourceWplId);
         if (copySourceSettings.isEmpty()) {
             throw new BusinessException("Msg_1185");
         }
-        val registeredList = require.getListWorkByWpl(copyDestinationWplId);
+
         return AtomTask.of(() -> {
-            registeredList.forEach(e -> {
-                require.delete(copyDestinationWplId, e.getTaskFrameNo());
-            });
+            require.delete(copyDestinationWplId);
             copySourceSettings.forEach(e -> {
-                val newSetting = NarrowingDownTaskByWorkplace.create(require, copyDestinationWplId,
+                NarrowingDownTaskByWorkplace newSetting = NarrowingDownTaskByWorkplace.create(require, copyDestinationWplId,
                         e.getTaskFrameNo(), e.getTaskCodeList());
                 require.insert(newSetting);
             });
@@ -59,9 +57,8 @@ public class CopyRefinementSettingDomainService {
          * 職場別作業の絞込Repository.Delete (職場ID, 作業枠NO)
          *
          * @param workPlaceId
-         * @param taskFrameNo
          */
-        void delete(String workPlaceId, TaskFrameNo taskFrameNo);
+        void delete(String workPlaceId);
 
 
     }

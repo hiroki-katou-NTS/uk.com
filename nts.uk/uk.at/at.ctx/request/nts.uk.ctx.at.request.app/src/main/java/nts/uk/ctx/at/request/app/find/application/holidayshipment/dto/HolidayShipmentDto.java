@@ -10,9 +10,7 @@ import nts.uk.ctx.at.request.app.find.application.ApplicationDto;
 import nts.uk.ctx.at.request.app.find.application.applicationlist.AppTypeSetDto;
 import nts.uk.ctx.at.request.app.find.application.common.dto.AppEmploymentSettingDto;
 import nts.uk.ctx.at.request.app.find.application.common.dto.ApplicationSettingDto;
-import nts.uk.ctx.at.request.app.find.application.holidayshipment.refactor5.dto.AbsenceLeaveAppDto;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.refactor5.dto.RecruitmentAppDto;
-import nts.uk.ctx.at.request.app.find.setting.company.applicationapprovalsetting.withdrawalrequestset.WithDrawalReqSetDto;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeInfoImport;
 import nts.uk.ctx.at.shared.app.find.worktype.WorkTypeDto;
 /*import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecRemainMngOfInPeriod;*/
@@ -80,7 +78,7 @@ public class HolidayShipmentDto {
 	/**
 	 * 振休振出申請設定
 	 */
-	private WithDrawalReqSetDto drawalReqSet;
+//	private WithDrawalReqSetDto drawalReqSet;
 
 	/**
 	 * 振休申請

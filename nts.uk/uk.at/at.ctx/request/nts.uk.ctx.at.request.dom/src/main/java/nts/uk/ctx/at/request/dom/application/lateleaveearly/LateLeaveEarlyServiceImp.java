@@ -9,6 +9,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.apache.logging.log4j.util.Strings;
+
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
@@ -95,8 +97,6 @@ public class LateLeaveEarlyServiceImp implements LateLeaveEarlyService {
 			AppDispInfoStartupOutput appDispInfoStartupOutput) {
 		String companyId = AppContexts.user().companyId();
 
-		// ApplicationType applicationType = EnumAdaptor.valueOf(appId,
-		// ApplicationType.class);
 
 		List<String> sIds = new ArrayList<String>();
 		sIds.add(AppContexts.user().employeeId());
@@ -108,10 +108,6 @@ public class LateLeaveEarlyServiceImp implements LateLeaveEarlyService {
 			}
 		}
 
-		// // 起動時の申請表示情報を取得する
-		// AppDispInfoStartupOutput appDispInfoStartupOutput =
-		// common.getAppDispInfoStart(companyId, applicationType, sIds,
-		// appDatesLst, true, Optional.empty(), Optional.empty());
 
 		// 遅刻早退取消初期（新規）
 		ArrivedLateLeaveEarlyInfoOutput displayInfo = this.initCancelLateEarlyApp(companyId, sIds, appDatesLst,
@@ -458,7 +454,7 @@ public class LateLeaveEarlyServiceImp implements LateLeaveEarlyService {
 
 
 		// 2-2.新規画面登録時承認反映情報の整理
-		this.registerService.newScreenRegisterAtApproveInfoReflect(employeeId, application);
+		String reflectAppId = this.registerService.newScreenRegisterAtApproveInfoReflect(employeeId, application);
 
 		// 2-3.新規画面登録後の処理
 		AppTypeSetting appTypeSetting = infoOutput.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().getApplicationSetting()
@@ -467,7 +463,9 @@ public class LateLeaveEarlyServiceImp implements LateLeaveEarlyService {
 				appTypeSetting,
 				infoOutput.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().isMailServerSet(),
 				false);
-
+		if(Strings.isNotBlank(reflectAppId)) {
+			processResult.setReflectAppIdLst(Arrays.asList(reflectAppId));
+		}
 		return processResult;
 	}
 

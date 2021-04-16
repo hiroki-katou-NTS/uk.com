@@ -12,7 +12,6 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAd
 import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.shift.businesscalendar.daycalendar.ObtainDeadlineDateAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WorkplaceAdapter;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
-import nts.uk.ctx.at.request.dom.setting.company.request.RequestSettingRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -43,8 +42,8 @@ public class GetDataAppCfDetailFinder {
 	@Inject
 	private ObtainDeadlineDateAdapter obtainDeadlineDateAdapter;
 	
-	@Inject
-	private RequestSettingRepository requestSettingRepository;
+//	@Inject
+//	private RequestSettingRepository requestSettingRepository;
 	
 	public OutputMessageDeadline getDataConfigDetail(ApplicationMetaDto metaDto, int overtimeAtr) {
 //		String message = "";

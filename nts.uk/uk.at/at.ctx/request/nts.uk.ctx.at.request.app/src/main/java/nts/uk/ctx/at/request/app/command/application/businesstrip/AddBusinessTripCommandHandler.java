@@ -8,6 +8,8 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.apache.logging.log4j.util.Strings;
+
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
@@ -96,7 +98,7 @@ public class AddBusinessTripCommandHandler extends CommandHandlerWithResult<AddB
                         .get() : null);
 
         // アルゴリズム「2-2.新規画面登録時承認反映情報の整理」を実行する
-        this.registerService.newScreenRegisterAtApproveInfoReflect(application.getEmployeeID(), application);
+        String reflectAppId = this.registerService.newScreenRegisterAtApproveInfoReflect(application.getEmployeeID(), application);
 
         // ドメインモデル「出張申請」を追加する
         this.businessTripRepository.add(businessTrip);
@@ -119,11 +121,15 @@ public class AddBusinessTripCommandHandler extends CommandHandlerWithResult<AddB
                 .findFirst();
 
 	    // 2-3.新規画面登録後の処理
-	    return this.newAfterRegister.processAfterRegister(
+        ProcessResult processResult = this.newAfterRegister.processAfterRegister(
 	            Arrays.asList(application.getAppID()),
 	            appTypeSet.get(),
 	            businessTripInfoOutput.getAppDispInfoStartup().getAppDispInfoNoDateOutput().isMailServerSet(),
 	            false);
+        if(Strings.isNotBlank(reflectAppId)) {
+        	processResult.setReflectAppIdLst(Arrays.asList(reflectAppId));
+        }
+        return processResult;
     }
 
 }

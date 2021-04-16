@@ -4,7 +4,9 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -675,8 +677,6 @@ public class JpaAppOverTimeRepository extends JpaRepository implements AppOverTi
 		Integer regLimitTimeMulti = res.getInt("REG_LIMIT_TIME_MULTI");
 		
 		AppOvertimeDetail appOvertimeDetail = new AppOvertimeDetail();
-		appOvertimeDetail.setCid(AppContexts.user().companyId());
-		appOvertimeDetail.setAppId(appID);
 		
 		if(year_month != null) {
 			YearMonth yearMonth = new YearMonth(year_month);
@@ -736,15 +736,28 @@ public class JpaAppOverTimeRepository extends JpaRepository implements AppOverTi
 	}
 	
 	@Override
-	public List<AppOverTime> getByListAppId(String companyId, List<String> appIds) {
-		List<AppOverTime> returnList = new ArrayList<>();
+	public Map<String, Integer> getByAppIdAndOTAttr(String companyId, List<String> appIds) { //#115387
+		Map<String, Integer> returnMap = new HashMap<>();
 		CollectionUtil.split(appIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			returnList.addAll(this.queryProxy()
+			returnMap.putAll(this.queryProxy()
 					   .query(SELECT_ALL_BY_APP_IDs, KrqdtAppOverTime.class)
 					   .setParameter("cid", companyId)
 					   .setParameter("appIds", subList)
-					   .getList(x -> x.toDomain()));
+					   .getList().stream().collect(Collectors.toMap(item -> item.krqdtAppOvertimePK.appId, item -> item.overtimeAtr)));
 		});
-		return returnList;
+		return returnMap;
+	}
+	@Override
+	public Map<String, AppOverTime> getHashMapByID(String companyId, List<String> appIds) {
+		Map<String, AppOverTime> result = new HashMap<>();
+		CollectionUtil.split(appIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			this.queryProxy()
+					   .query(SELECT_ALL_BY_APP_IDs, KrqdtAppOverTime.class)
+					   .setParameter("cid", companyId)
+					   .setParameter("appIds", subList)
+					   .getList(x -> result.put(x.krqdtAppOvertimePK.appId, x.toDomain()));
+		});
+		
+		return result;
 	}
 }

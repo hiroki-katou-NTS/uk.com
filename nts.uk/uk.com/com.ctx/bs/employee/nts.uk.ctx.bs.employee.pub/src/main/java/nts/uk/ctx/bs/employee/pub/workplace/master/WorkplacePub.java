@@ -164,4 +164,12 @@ public interface WorkplacePub {
 
 	Optional<SWkpHistWrkLocationExport> findBySidWrkLocationCD(String employeeId, GeneralDate baseDate);
 
+	/**
+	 * 期間から職場情報を取得
+	 * @param companyId
+	 * @param datePeriod
+	 * @return
+	 */
+	List<WorkplaceInformationExport> getByCidAndPeriod(String companyId, DatePeriod datePeriod);
+
 }

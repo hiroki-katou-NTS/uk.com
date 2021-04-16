@@ -253,6 +253,7 @@ module nts.uk.at.view.kaf006.c.viewmodel {
                 }).done((result) => {
                     if (result) {
                         return vm.$dialog.info({ messageId: "Msg_15"}).then(() => {
+							service.reflectApp(result.reflectAppIdLst);
 							return CommonProcess.handleMailResult(result, vm).then(() => {
 								nts.uk.ui.windows.setShared('KAF006C_RESULT', { appID: result.appIDLst[0] });
 								vm.closeDialog();

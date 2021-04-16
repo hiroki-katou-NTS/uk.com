@@ -5,7 +5,6 @@ import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.BeforeAddCheckMethod;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.AppAcceptLimitDay;
-import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.BeforehandRestriction;
 import nts.uk.shr.com.time.AttendanceClock;
 
 @AllArgsConstructor
@@ -51,28 +50,28 @@ public class BeforehandRestrictionDto {
 	 */
 	public boolean otToUse;
 	
-	public static BeforehandRestrictionDto fromDomain(BeforehandRestriction beforehandRestriction) {
-		BeforehandRestrictionDto beforehandRestrictionDto = new BeforehandRestrictionDto();
-		beforehandRestrictionDto.methodCheck = beforehandRestriction.getMethodCheck().value;
-		beforehandRestrictionDto.toUse = beforehandRestriction.getToUse();
-		beforehandRestrictionDto.dateBeforehandRestriction = beforehandRestriction.getDateBeforehandRestriction().value;
-		beforehandRestrictionDto.timeBeforehandRestriction = beforehandRestriction.getTimeBeforehandRestriction() == null ? null : beforehandRestriction.getTimeBeforehandRestriction().v();
-		beforehandRestrictionDto.preOtTime = beforehandRestriction.getPreOtTime() == null ? null : beforehandRestriction.getPreOtTime().v();
-		beforehandRestrictionDto.normalOtTime = beforehandRestriction.getNormalOtTime() == null ? null : beforehandRestriction.getNormalOtTime().v();
-		beforehandRestrictionDto.otRestrictPreDay = beforehandRestriction.getOtRestrictPreDay().value;
-		beforehandRestrictionDto.otToUse = beforehandRestriction.getOtToUse();
-		return beforehandRestrictionDto;
-	}
+//	public static BeforehandRestrictionDto fromDomain(BeforehandRestriction beforehandRestriction) {
+//		BeforehandRestrictionDto beforehandRestrictionDto = new BeforehandRestrictionDto();
+//		beforehandRestrictionDto.methodCheck = beforehandRestriction.getMethodCheck().value;
+//		beforehandRestrictionDto.toUse = beforehandRestriction.getToUse();
+//		beforehandRestrictionDto.dateBeforehandRestriction = beforehandRestriction.getDateBeforehandRestriction().value;
+//		beforehandRestrictionDto.timeBeforehandRestriction = beforehandRestriction.getTimeBeforehandRestriction() == null ? null : beforehandRestriction.getTimeBeforehandRestriction().v();
+//		beforehandRestrictionDto.preOtTime = beforehandRestriction.getPreOtTime() == null ? null : beforehandRestriction.getPreOtTime().v();
+//		beforehandRestrictionDto.normalOtTime = beforehandRestriction.getNormalOtTime() == null ? null : beforehandRestriction.getNormalOtTime().v();
+//		beforehandRestrictionDto.otRestrictPreDay = beforehandRestriction.getOtRestrictPreDay().value;
+//		beforehandRestrictionDto.otToUse = beforehandRestriction.getOtToUse();
+//		return beforehandRestrictionDto;
+//	}
 	
-	public BeforehandRestriction toDomain() {
-		return new BeforehandRestriction(
-				EnumAdaptor.valueOf(methodCheck, BeforeAddCheckMethod.class), 
-				toUse, 
-				EnumAdaptor.valueOf(dateBeforehandRestriction, AppAcceptLimitDay.class), 
-				timeBeforehandRestriction == null ? null : new AttendanceClock(timeBeforehandRestriction), 
-				preOtTime == null ? null : new AttendanceClock(preOtTime), 
-				normalOtTime ==null ? null : new AttendanceClock(normalOtTime), 
-				EnumAdaptor.valueOf(otRestrictPreDay, AppAcceptLimitDay.class), 
-				otToUse);
-	}
+//	public BeforehandRestriction toDomain() {
+//		return new BeforehandRestriction(
+//				EnumAdaptor.valueOf(methodCheck, BeforeAddCheckMethod.class),
+//				toUse,
+//				EnumAdaptor.valueOf(dateBeforehandRestriction, AppAcceptLimitDay.class),
+//				timeBeforehandRestriction == null ? null : new AttendanceClock(timeBeforehandRestriction),
+//				preOtTime == null ? null : new AttendanceClock(preOtTime),
+//				normalOtTime ==null ? null : new AttendanceClock(normalOtTime),
+//				EnumAdaptor.valueOf(otRestrictPreDay, AppAcceptLimitDay.class),
+//				otToUse);
+//	}
 }

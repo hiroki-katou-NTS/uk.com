@@ -10,14 +10,14 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.schedule.dom.adapter.executionlog.ScShortWorkTimeAdapter;
 import nts.uk.ctx.at.schedule.dom.adapter.executionlog.dto.ShortChildCareFrameDto;
 import nts.uk.ctx.at.schedule.dom.adapter.executionlog.dto.ShortWorkTimeDto;
-import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.childcareschedule.ChildCareAtr;
+import nts.uk.ctx.at.shared.dom.shortworktime.ChildCareAtr;
 import nts.uk.ctx.at.shared.pub.shortworktime.ShShortChildCareFrameExport;
 import nts.uk.ctx.at.shared.pub.shortworktime.ShShortWorkTimeExport;
 import nts.uk.ctx.at.shared.pub.shortworktime.ShShortWorkTimePub;
-import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * The Class ScShortWorkTimeAdapterImpl.
@@ -45,7 +45,7 @@ public class ScShortWorkTimeAdapterImpl implements ScShortWorkTimeAdapter {
 	 */
 	private ShortWorkTimeDto convertExport(ShShortWorkTimeExport export) {
 		ShortWorkTimeDto dto = new ShortWorkTimeDto();
-		dto.setChildCareAtr(ChildCareAtr.valueOf(export.getChildCareAtr().value));
+		dto.setChildCareAtr(ChildCareAtr.valueOf(export.getChildCareAtr()));
 		dto.setEmployeeId(export.getEmployeeId());
 		dto.setPeriod(export.getPeriod());
 		dto.setLstTimeSlot(export.getLstTimeSlot().stream()

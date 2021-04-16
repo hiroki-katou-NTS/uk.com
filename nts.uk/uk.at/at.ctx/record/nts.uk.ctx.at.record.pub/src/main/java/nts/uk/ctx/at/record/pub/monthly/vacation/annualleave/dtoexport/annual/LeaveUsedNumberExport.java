@@ -36,4 +36,22 @@ public class LeaveUsedNumberExport{
 	 */
 	public Optional<LeaveOverNumberExport> leaveOverLimitNumber;
 
+	/**
+	 * コンストラクタ
+	 * @param c
+	 */
+	public LeaveUsedNumberExport(LeaveUsedNumberExport c) {
+		days = c.getDays();
+		minutes = c.getMinutes().map(mapper->mapper);
+		stowageDays = c.getStowageDays().map(mapper->mapper);
+		leaveOverLimitNumber = c.getLeaveOverLimitNumber().map(mapper->mapper.clone());
+	}
+
+	/**
+	 * クローン
+	 */
+	public LeaveUsedNumberExport clone() {
+		return new LeaveUsedNumberExport(this);
+	}
+
 }

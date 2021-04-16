@@ -15,7 +15,6 @@ import nts.uk.ctx.at.record.app.command.stamp.management.DeleteStampSettingComma
 import nts.uk.ctx.at.record.app.command.stamp.management.DeleteStampSettingCommandHandler;
 import nts.uk.ctx.at.record.app.command.stamp.management.StampPageLayoutCommand;
 import nts.uk.ctx.at.record.app.command.stamp.management.UpdateStampPageLayoutCommandHandler;
-import nts.uk.ctx.at.record.app.command.stamp.management.UpdateStampSettingPersonCommandHandler;
 import nts.uk.ctx.at.record.app.find.stamp.management.StamDisplayFinder;
 import nts.uk.ctx.at.record.app.find.stamp.management.StampPageLayoutDto;
 import nts.uk.ctx.at.record.app.find.stamp.management.StampSettingPersonDto;
@@ -36,9 +35,6 @@ public class StampDisplayWS extends WebService {
 	private AddStampSettingPersonCommandHandler addSetPerHandler;
 	
 	@Inject
-	private UpdateStampSettingPersonCommandHandler updateSetPerHandler;
-	
-	@Inject
 	private AddStampPageLayoutCommandHandler  addStampPageHandler;
 	
 	@Inject
@@ -57,12 +53,6 @@ public class StampDisplayWS extends WebService {
 	@Path("saveStampSetting")
 	public void save(AddStampSettingPersonCommand command) {
 		this.addSetPerHandler.handle(command);
-	}
-	
-	@POST
-	@Path("updateStampSetting")
-	public void update(AddStampSettingPersonCommand command) {
-		this.updateSetPerHandler.handle(command);
 	}
 	
 	@POST

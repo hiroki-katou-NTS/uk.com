@@ -1,5 +1,6 @@
 package nts.uk.ctx.sys.assist.app.command.autosetting.storage;
 
+import lombok.Builder;
 import lombok.Data;
 import nts.uk.ctx.sys.assist.app.find.autosetting.storage.CategoryDto;
 import nts.uk.ctx.sys.assist.app.find.autosetting.storage.DataStoragePatternSettingDto;
@@ -8,6 +9,7 @@ import nts.uk.ctx.sys.assist.app.find.autosetting.storage.DataStoragePatternSett
  * 選択カテゴリ名称DTO
  */
 @Data
+@Builder
 public class SelectionCategoryNameDto {
 	
 	/**

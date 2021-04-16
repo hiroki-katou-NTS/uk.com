@@ -4,7 +4,7 @@ import java.util.List;
 
 
 import lombok.Value;
-import nts.uk.ctx.at.shared.app.query.workrule.closure.ClosureResultModel;
+import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureResultModel;
 
 @Value
 
