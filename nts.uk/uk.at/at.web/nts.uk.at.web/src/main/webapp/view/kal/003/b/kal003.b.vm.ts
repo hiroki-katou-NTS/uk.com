@@ -1688,7 +1688,8 @@ module nts.uk.at.view.kal003.b.viewmodel {
                     if (self.workRecordExtractingCondition().errorAlarmCondition().alCheckTargetCondition == null) {
                         self.workRecordExtractingCondition().errorAlarmCondition().alCheckTargetCondition = ko.observable();
                     }
-                    self.workRecordExtractingCondition().errorAlarmCondition().alCheckTargetCondition(alchecktargetcondition);                    
+                    self.workRecordExtractingCondition().errorAlarmCondition().alCheckTargetCondition(alchecktargetcondition);
+                    self.workRecordExtractingCondition().errorAlarmCondition().monthlyCondition().scheCheckCondition(self.scheCheckTypeCondition());                 
                     self.workRecordExtractingCondition().errorAlarmCondition().monthlyCondition().comparisonOperator(self.comparisonRange().comparisonOperator());
                     self.workRecordExtractingCondition().errorAlarmCondition().monthlyCondition().compareStartValue(self.comparisonRange().minValue());
                     self.workRecordExtractingCondition().errorAlarmCondition().monthlyCondition().compareEndValue(self.comparisonRange().maxValue());
@@ -2039,6 +2040,11 @@ module nts.uk.at.view.kal003.b.viewmodel {
             self.getChangeListCheckTimeTypeScheduleYear(self.workRecordExtractingCondition().checkItem());
             
             self.settingEnableComparisonMaxValueField(false);
+            
+            self.scheCheckTypeCondition(self.workRecordExtractingCondition().errorAlarmCondition().monthlyCondition().scheCheckCondition());
+            self.workRecordExtractingCondition().errorAlarmCondition().monthlyCondition().scheCheckCondition.subscribe((value) => {
+                self.scheCheckTypeCondition(value);
+            });
             
             // change select item check
             self.workRecordExtractingCondition().checkItem.subscribe((itemCheck) => {
