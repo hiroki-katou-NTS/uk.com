@@ -1,13 +1,14 @@
 .ksus01a {
     margin-top: -1rem;
 
-    i {
+    .large-icon {
         font-size: 4.5vw;
     }
 
     .card-header {
         font-size: 3.75vw;
         padding: 0.35rem 0.75rem;
+        align-items: center;
     }
 
     .card-body {
@@ -35,7 +36,7 @@
     }
 
     #year-month-component .input-group-text {
-        font-size: 3.75vw;
+        font-size: 3.5vw;
     }
 
     #year-month-component .form-group {
@@ -63,6 +64,7 @@
 
     #detail-component .card-header {
         padding-right: 3rem;
+        min-height: 5.5vh;
     }
 
     #detail-component .card-body {
