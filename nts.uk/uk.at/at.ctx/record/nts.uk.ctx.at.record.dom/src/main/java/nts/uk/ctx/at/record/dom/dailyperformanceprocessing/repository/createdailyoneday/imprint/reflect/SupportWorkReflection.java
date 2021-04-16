@@ -14,12 +14,10 @@ import javax.inject.Inject;
 
 import lombok.AllArgsConstructor;
 import lombok.val;
-import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.support.GetSupportDataJudgedSameDS;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.support.JudCriteriaSameStampOfSupportRepo;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.support.JudgmentCriteriaSameStampOfSupport;
 import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
-import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SWkpHistImport;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SysWorkplaceAdapter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.affiliationinfor.AffiliationInforOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
@@ -128,7 +126,7 @@ public class SupportWorkReflection {
 	public boolean checkStarEndSupport(WorkTimeInformation timeDay, StampReflectRangeOutput stampReflectRangeOutput) {
 		// パラメータ。勤怠打刻を反映範囲ないか確認する
 		// 打刻反映範囲。外出。開始＜＝勤怠打刻。時刻。時刻＜＝打刻反映範囲。外出。終了
-		if (stampReflectRangeOutput.getGoOut().getStart().v() <= timeDay.getTimeWithDay().get().v()
+		if (timeDay != null && stampReflectRangeOutput.getGoOut().getStart().v() <= timeDay.getTimeWithDay().get().v()
 				&& timeDay.getTimeWithDay().get().v() <= stampReflectRangeOutput.getGoOut().getEnd().v()) {
 			return true;
 		}
@@ -480,7 +478,9 @@ public class SupportWorkReflection {
 				OuenWorkTimeSheetOfDailyAttendance attendance = null;
 				if (lstOuenWorkTime.size() > 0) {
 					// 後ろの応援データを取得する
+					if (lstSetSupportData.size() > 0)
 					attendance = lstSetSupportData.get(lstSetSupportData.size() - 1);
+					
 					if (attendance == null) {
 						// 応援データを補正して一覧に入れる
 						this.correctSupportDataPutInList(informationWork, lstSetSupportData, lstOuenWorkTime.get(i));
@@ -1047,16 +1047,16 @@ public class SupportWorkReflection {
 		}
 		// 終了応援かを確認する
 		// 終了の場合
-		if (lstOuenWorkTime.get(0).getTimeSheet().getEnd().isPresent()) {
-			WorkContent workContent = lstOuenWorkTime.get(0).getWorkContent();
+		if (lstOuenWorkTime.get(lstOuenWorkTime.size() - 1).getTimeSheet().getEnd().isPresent()) {
+			WorkContent workContent = lstOuenWorkTime.get(lstOuenWorkTime.size() - 1).getWorkContent();
 			TimeSheetOfAttendanceEachOuenSheet timeSheet = TimeSheetOfAttendanceEachOuenSheet.create(new WorkNo(0),
-					lstOuenWorkTime.get(0).getTimeSheet().getEnd(), Optional.empty());
+					lstOuenWorkTime.get(lstOuenWorkTime.size() - 1).getTimeSheet().getEnd(), Optional.empty());
 			timeSheet.getStart().get().getReasonTimeChange().setTimeChangeMeans(TimeChangeMeans.AUTOMATIC_SET);
 			// 取得した応援データをベースして終了の応援データ作る
 			OuenWorkTimeSheetOfDailyAttendance dailyAttendance = OuenWorkTimeSheetOfDailyAttendance.create(0,
 					workContent, timeSheet);
 			// 作成した応援データを応援データ一覧の先頭に入れる
-			lstOuenWorkTime.add(0, dailyAttendance);
+			lstOuenWorkTime.add(dailyAttendance);
 		}
 	}
 
