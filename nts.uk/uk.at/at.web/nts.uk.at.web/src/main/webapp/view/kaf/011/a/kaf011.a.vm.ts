@@ -121,6 +121,7 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 			vm.absenceLeaveApp.application.appDate.subscribe(value =>{
 				if(value != "" && !$('#absAppDate').ntsError('hasError') && vm.recruitmentApp.started){
 					vm.$blockui("grayout");
+					vm.$errors('clear');
 					let displayInforWhenStartingdto = vm.displayInforWhenStarting();
 					displayInforWhenStartingdto.rec = null;
 					displayInforWhenStartingdto.abs = null;
@@ -184,7 +185,7 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 					vm.$blockui("hide");
 					vm.$dialog.info({messageId: "Msg_15"}).done(() => {
 						nts.uk.request.ajax("at", "at/request/application/reflect-app", result.reflectAppIdLst);
-						CommonProcess.handleAfterRegister(result, vm.isSendMail(), vm);
+						CommonProcess.handleAfterRegister(result, vm.isSendMail(), vm, vm.isAgentMode());
 					});
 				}).fail((failData) => {
 					vm.$dialog.error({messageId: failData.messageId, messageParams: failData.parameterIds});

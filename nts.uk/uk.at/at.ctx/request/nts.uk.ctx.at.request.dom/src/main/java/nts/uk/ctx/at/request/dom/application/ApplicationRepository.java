@@ -206,6 +206,8 @@ public interface ApplicationRepository {
 	public List<Application> getApprSttByEmpPeriod(String employeeID, DatePeriod period);
 	
 	public Optional<String> getNewestPreAppIDByEmpDate(String employeeID, GeneralDate date, ApplicationType appType);
+	
+	public List<Application> findByIDLst(List<String> appIDLst);
 
 	// 期間に一致する申請を取得する
 	public List<Application> getAllApplication(List<String> sID, DatePeriod period);
