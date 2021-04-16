@@ -14,11 +14,13 @@ module nts.uk.at.view.kdl030.a.viewmodel {
 		isSendApplicant: KnockoutObservable<boolean> = ko.observable(true);
 		mailContent: KnockoutObservable<String> = ko.observable(null);
 		appEmailSet: any = null;
+		isOpEmployee: any = false;
         created() {
             const vm = this;
             let param = getShared("KDL030_PARAM");
             vm.appIDLst = param.appIDLst;
 			vm.isAgentMode(param.isAgentMode);
+			vm.isOpEmployee = param.isOpEmployee;
 			if(!vm.isAgentMode()) {
 				vm.isSendApplicant(false);
 			}
