@@ -1,0 +1,92 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component"
+>
+<body>
+<ui:composition template="../../../../master/dialog.xhtml">
+    <ui:define name="htmlHead">
+        <com:ValidatorScript>
+            nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.Day
+        </com:ValidatorScript>
+        <com:scriptfile set="IGNITE"/>
+        <script>var dialogSize = {width: 500, height: 400};</script>
+        <com:EnumScript>
+            nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.SpecifiedMonth
+        </com:EnumScript>
+        <com:stylefile path="styles.css"/>
+        <com:scriptfile path="/view/kal/014/common/common.js"/>
+        <com:scriptfile path="kal014.b.vm.js"/>
+    </ui:define>
+    <ui:define name="content">
+        <div id="contents-area">
+            <div class="header">
+                <!-- B1_1 -->
+                <span class="label" data-bind="text: modalDTO.categoryName"></span>
+            </div>
+            <hr></hr>
+            <div class="cf">
+                <div class="valign-center control-group start" style="padding-left: 30px;">
+                    <div class="table" style="width: 100%">
+                        <div class="cell valign-center" style="width: 50%">
+                            <!-- B2_1 -->
+                            <div data-bind="ntsFormLabel: { enable: true, required:true }">#{i18n.getText('KAL014_34')}</div>
+                        </div>
+                        <div class="cell valign-center"></div>
+                        <div class="cell valign-center" data-bind="if :isEndDateEnable">
+                            <!-- B2_3 -->
+                            <div data-bind="ntsFormLabel: { enable: true, required:true }">#{i18n.getText('KAL014_36')}</div>
+                        </div>
+                    </div>
+                    <div class="table" id="date-selecttion-table">
+                        <div class="cell valign-center" style="width: 20%">
+                            <!-- B3_1 -->
+                            <div id="combo-box" tabindex="1" class="strComboMonth" data-bind="ntsComboBox: {
+                                options: strComboMonth,
+                                optionsValue: 'value',
+                                visibleItemsCount: 7,
+                                value: modalDTO.startMonth,
+                                optionsText: 'name',
+                                enable: isStartDateEnable,
+                                required: true,
+                                name: $vm.$i18n('KAL014_37'),
+                                columns: [
+                                { prop: 'name', length: 5 }
+                                ]},style:{width:'100px'}">
+                            </div>
+                        </div>
+                        <div class="cell valign-center" style="width: 27%" data-bind="if :isEndDateEnable">
+                            <!-- B2_2 -->
+                            <span class="label" id="B2_2">#{i18n.getText('KAL014_35')}</span>
+                        </div>
+                        <div class="cell valign-center" data-bind="if :isEndDateEnable">
+                            <!-- B3_2 -->
+                            <div id="B3_2" tabindex="2" class="endComboMonth" data-bind="ntsComboBox: {
+                                options: endComboMonth,
+                                optionsValue: 'value',
+                                visibleItemsCount: 7,
+                                value: modalDTO.endMonth,
+                                optionsText: 'name',
+                                enable: isEndDateEnable,
+                                required: true,
+                                name:  $vm.$i18n('KAL014_38'),
+                                columns: [
+                                { prop: 'name', length: 5 }
+                                ]},style:{width:'100px'}">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="functions-area-bottom">
+            <!-- B4_2 -->
+            <button tabindex="3" class="proceed large" data-bind="click:decide">#{i18n.getText('KAL014_39')}</button>
+            <!-- B4_3 -->
+            <button tabindex="4" data-bind="click:cancel_Dialog">#{i18n.getText('KAL014_40')}</button>
+        </div>
+    </ui:define>
+</ui:composition>
+</body>
+</html>

@@ -28,19 +28,19 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 public class KscdtScheState extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-	
+
 	@EmbeddedId
 	public KscdtScheStatePK kscdtScheStatePK; 
-	
+
 	@Column(name = "SCHE_EDIT_STATE")
 	public int scheduleEditState;
-	
+
 	@ManyToOne
 	@JoinColumns({
 			@JoinColumn(name = "SID", referencedColumnName = "KSCDT_SCHE_BASIC.SID", insertable = false, updatable = false),
 			@JoinColumn(name = "YMD", referencedColumnName = "KSCDT_SCHE_BASIC.YMD", insertable = false, updatable = false) })
 	public KscdtBasicSchedule kscdtBasicSchedule;
-	
+
 	@Override
 	protected Object getKey() {
 		return this.kscdtScheStatePK;
