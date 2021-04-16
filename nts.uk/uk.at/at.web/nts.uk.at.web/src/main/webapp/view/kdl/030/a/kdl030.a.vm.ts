@@ -66,16 +66,23 @@ module nts.uk.at.view.kdl030.a.viewmodel {
 		}
 
         isFirstIndexFrame(loopPhase, loopFrame, loopApprover) {
-            if(_.size(loopFrame.listApprover()) > 1) {
-                return _.findIndex(loopFrame.listApprover(), o => o == loopApprover) == 0;
-            }
+			const vm = this;
+//            if(_.size(loopFrame.listApprover()) > 1) {
+//                return _.findIndex(loopFrame.listApprover(), o => o == loopApprover) == 0;
+//            }
             let firstIndex = _.chain(loopPhase.listApprovalFrame()).filter(x => _.size(x.listApprover()) > 0).orderBy(x => x.frameOrder()).first().value().frameOrder();
-            let approver = _.find(loopPhase.listApprovalFrame(), o => o == loopFrame);
-            if(approver) {
-                return approver.frameOrder() == firstIndex;
-            }
-            return false;
+//            let approver = _.find(loopPhase.listApprovalFrame(), o => o == loopFrame);
+//            if(approver) {
+//                return approver.frameOrder() == firstIndex;
+//            }
+//            return false;
+			return loopFrame.frameOrder() == firstIndex && vm.isFirstIndexApprover(loopFrame, loopApprover);
         }
+
+		isFirstIndexApprover(loopFrame, loopApprover) {
+			return loopApprover.approverInListOrder() == 1;
+			// return _.findIndex(loopFrame.listApprover(), o => o == loopApprover) == 1;
+		}
 
         getFrameIndex(loopPhase, loopFrame, loopApprover) {
             if(_.size(loopFrame.listApprover()) > 1) {
@@ -96,10 +103,11 @@ module nts.uk.at.view.kdl030.a.viewmodel {
         frameCount(listFrame) {
             const vm = this;
             let listExist = _.filter(listFrame, x => _.size(x.listApprover()) > 0);
-            if(_.size(listExist) > 1) {
-                return _.size(listExist);
-            }
-            return _.chain(listExist).map(o => vm.approverCount(o.listApprover())).value()[0];
+			return _.chain(listExist).map(o => vm.approverCount(o.listApprover())).sum().value();
+//            if(_.size(listExist) > 1) {
+//                return _.size(listExist);
+//            }
+//            return _.chain(listExist).map(o => vm.approverCount(o.listApprover())).value()[0];
         }
 
         approverCount(listApprover) {

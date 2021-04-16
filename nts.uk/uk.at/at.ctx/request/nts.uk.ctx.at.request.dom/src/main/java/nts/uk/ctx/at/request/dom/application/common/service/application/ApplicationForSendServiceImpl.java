@@ -10,6 +10,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.apache.logging.log4j.util.Strings;
+
 import nts.arc.i18n.I18NText;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
@@ -18,9 +20,12 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.PesionInforIm
 import nts.uk.ctx.at.request.dom.application.common.adapter.sys.EnvAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.sys.dto.MailDestinationImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootStateAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalBehaviorAtrImport_New;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalFrameImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseStateImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootContentImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootStateImport_New;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverStateImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ErrorFlagImport;
 import nts.uk.ctx.at.request.dom.application.common.service.application.output.AppSendMailByEmp;
 import nts.uk.ctx.at.request.dom.application.common.service.application.output.ApplicationForSendOutput;
@@ -86,6 +91,7 @@ public class ApplicationForSendServiceImpl implements IApplicationForSendService
 							application.getAppDate().getApplicationDate()), 
 					ErrorFlagImport.NO_ERROR);
 			ApprovalRootOutput approvalRoot = ApprovalRootOutput.fromApprovalRootImportToOutput(approvalRootContentImport);
+			flatApprover(approvalRoot);
 			String applicantName = applicantNameMap.get(application.getEmployeeID());
 			/**
 			 * 申請者のメールアドレス
@@ -97,5 +103,65 @@ public class ApplicationForSendServiceImpl implements IApplicationForSendService
 		}
 		
 		return new ApplicationForSendOutput(mailTemplate, appEmailSet, appSendMailByEmpLst);
+	}
+	
+	private void flatApprover(ApprovalRootOutput approvalRoot) {
+		for(ApprovalPhaseStateImport_New phase : approvalRoot.getListApprovalPhaseState()) {
+			int index = 0;
+			for(ApprovalFrameImport_New frame : phase.getListApprovalFrame()) {
+				List<ApproverStateImport_New> listApprover = new ArrayList<>();
+				for(ApproverStateImport_New approver : frame.getListApprover()) {
+					if(approver.getApprovalAtr()==ApprovalBehaviorAtrImport_New.UNAPPROVED && Strings.isNotBlank(approver.getRepresenterID())) {
+						index += 1;
+						listApprover.add(new ApproverStateImport_New(
+								approver.getApproverID(), 
+								approver.getApprovalAtr(), 
+								approver.getAgentID(), 
+								approver.getApproverName(), 
+								approver.getAgentName(), 
+								"", 
+								"", 
+								approver.getApprovalDate(), 
+								approver.getApprovalReason(), 
+								approver.getApproverEmail(), 
+								approver.getAgentMail(), 
+								"", 
+								index));
+						index += 1;
+						listApprover.add(new ApproverStateImport_New(
+								approver.getRepresenterID(), 
+								approver.getApprovalAtr(), 
+								approver.getAgentID(), 
+								approver.getRepresenterName(), 
+								approver.getAgentName(), 
+								"", 
+								"", 
+								approver.getApprovalDate(), 
+								approver.getApprovalReason(), 
+								approver.getRepresenterEmail(), 
+								approver.getAgentMail(), 
+								"", 
+								index));
+					} else {
+						index += 1;
+						listApprover.add(new ApproverStateImport_New(
+								approver.getApproverID(), 
+								approver.getApprovalAtr(), 
+								approver.getAgentID(), 
+								approver.getApproverName(), 
+								approver.getAgentName(), 
+								approver.getRepresenterID(), 
+								approver.getRepresenterName(), 
+								approver.getApprovalDate(), 
+								approver.getApprovalReason(), 
+								approver.getApproverEmail(), 
+								approver.getAgentMail(), 
+								approver.getRepresenterEmail(), 
+								index));
+					}
+				}
+				frame.setListApprover(listApprover);
+			}
+		}
 	}
 }
