@@ -91,7 +91,6 @@ public class JpaAggregateSettingSetMemento extends JpaRepository implements Aggr
 			entity.setKmnmpPremiumItemPK(pk);
 			entity.setName("");
 			entity.setUseAtr(1);
-			entity.setKscstEstAggregateSet(this.kscstEstAggregateSet);
 			return entity;
 		}).collect(Collectors.toList()));
 	}
