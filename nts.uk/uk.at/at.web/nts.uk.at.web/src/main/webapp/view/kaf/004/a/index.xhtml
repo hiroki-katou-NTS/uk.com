@@ -36,7 +36,7 @@
         </ui:define>
         <ui:define name="content">
             <div id="functions-area">
-            	<div style="display: inline-block;" data-bind="component: { name: 'kaf000-a-component9', params: isFromOther }"></div>
+            	<!-- <div style="display: inline-block;" data-bind="component: { name: 'kaf000-a-component9', params: isFromOther }"></div> -->
                 <!-- A1_1 -->
                 <button class="proceed"
                     data-bind="enable: $root.errors.isEmpty, click: $vm.register, enable: $root.errors.isEmpty">#{i18n.getText('KAF004_8')}</button>
@@ -48,10 +48,11 @@
 												appDispInfoStartupOutput: $vm.appDispInfoStartupOutput
                                             } }"></span>
             </div>
+			<div style="display: inline-block; position: absolute; z-index: 1000; margin-left: 70px;" data-bind="component: { name: 'kaf000-a-component9', params: isFromOther }"></div>
             <div id="contents-area" style="background-color: inherit;">
 				<div class="two-panel" style="height: 100%;">
-					<div class="left-panel" style="width: calc(100% - 500px); height: inherit; overflow: auto;">
-						<div style="height: inherit; background-color: #fff; padding: 0 10px; overflow: auto;">
+					<div class="left-panel" style="width: calc(100% - 410px); height: inherit; overflow-y: auto;">
+						<div style="height: inherit; background-color: #fff; padding: 0 10px; overflow-y: auto;">
 
 							<div style="height: fit-content;">
 
@@ -109,8 +110,8 @@
 							</div>
 						</div>
 					</div>
-					<div class="right-panel" style="width: 500px; height: inherit;">
-						<div style="height: inherit; background-color: #fff; padding: 10px;">
+					<div class="right-panel" style="width: 410px; height: inherit;">
+						<div style="height: inherit; background-color: #fff; padding: 10px; overflow-y: auto;">
 							<div data-bind="component: { name: 'kaf000-a-component1', 
 														params: {
 															appType: appType,

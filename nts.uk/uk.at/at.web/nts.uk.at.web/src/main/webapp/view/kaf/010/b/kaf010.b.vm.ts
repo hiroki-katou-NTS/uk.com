@@ -32,6 +32,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 
 
 
+
 <div id="kaf010-b">
 	<div id="contents-area" style="background-color: inherit; height: calc(100vh - 165px); min-width: 1230px">
 		<div class="two-panel" style="height: 100%;">
@@ -65,7 +66,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
                                                     appType: appType,
                                                     application: application,
                                                     appDispInfoStartupOutput: appDispInfoStartupOutput
-                                                } }" style="width: fit-content; display: inline-block; vertical-align: middle;"></div>
+                                                } }" style="width: fit-content; display: inline-block; vertical-align: middle; margin-top: 12px"></div>
                                                 
                      <div>
 
@@ -95,7 +96,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
                      
                                                 
                                                 
-                    <div data-bind="component: { name: 'kaf000-b-component7', 
+                    <div style="margin-top: 12px" data-bind="component: { name: 'kaf000-b-component7', 
                                                 params: {
                                                     appType: appType,
                                                     application: application,
@@ -111,8 +112,8 @@ module nts.uk.at.view.kaf010.a.viewmodel {
                 </div>
             </div>
             <div class="right-panel" style="width: 410px; height: inherit; overflow-y: auto">
-                <div style="height: auto; min-height: 700px; background-color: #fff; padding: 10px;">
-                    <div data-bind="component: { name: 'kaf000-b-component1', 
+                <div style="height: auto; min-height: 700px; background-color: #fff; padding: 0px 10px;">
+                    <div style="padding-top: 10px" data-bind="component: { name: 'kaf000-b-component1', 
                             params: {
                                 appType: appType,
                                 appDispInfoStartupOutput: appDispInfoStartupOutput	

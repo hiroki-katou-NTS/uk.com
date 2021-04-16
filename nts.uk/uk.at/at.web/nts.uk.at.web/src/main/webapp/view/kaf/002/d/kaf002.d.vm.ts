@@ -11,6 +11,7 @@ module nts.uk.at.view.kaf002_ref.d.viewmodel {
 
 
 
+
 <div id="kaf002-d">
 	<div id="contents-area"
 		style="background-color: inherit; height: calc(100vh - 165px);min-width: 1125px">
@@ -46,14 +47,14 @@ module nts.uk.at.view.kaf002_ref.d.viewmodel {
                                                     application: application,
                                                     appDispInfoStartupOutput: appDispInfoStartupOutput
                                                 } }"></div>
-					<div
+					<div 
 						data-bind="component: { name: 'kaf000-b-component6', 
                                                 params: {
                                                     appType: appType,
                                                     application: application,
                                                     appDispInfoStartupOutput: appDispInfoStartupOutput
                                                 } }"
-						style="width: fit-content; display: inline-block; vertical-align: middle;"></div>
+						style="width: fit-content; display: inline-block; vertical-align: middle; margin-top: 12px"></div>
 
 
 					<div>
@@ -105,7 +106,7 @@ module nts.uk.at.view.kaf002_ref.d.viewmodel {
 
 
 
-					<div
+					<divstyle="margin-top: 12px"
 						data-bind="component: { name: 'kaf000-b-component7', 
                                                 params: {
                                                     appType: appType,
@@ -119,8 +120,8 @@ module nts.uk.at.view.kaf002_ref.d.viewmodel {
 				</div>
 			</div>
 			<div class="right-panel" style="width: 410px; height: inherit; overflow-y: auto">
-				<div style="height: inherit; background-color: #fff; padding: 10px;">
-					<div
+				<div style="height: inherit; background-color: #fff; padding: 0px 10px;">
+					<div style="padding-top: 10px"
 						data-bind="component: { name: 'kaf000-b-component1', 
                             params: {
                                 appType: appType,
@@ -138,6 +139,8 @@ module nts.uk.at.view.kaf002_ref.d.viewmodel {
 		</div>
 	</div>
 </div>
+
+
 
 
 

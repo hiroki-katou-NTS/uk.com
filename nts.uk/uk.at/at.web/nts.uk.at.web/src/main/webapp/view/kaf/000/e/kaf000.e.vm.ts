@@ -12,7 +12,10 @@ module nts.uk.at.view.kaf000.e.viewmodel {
 			const vm = this;
 			vm.appDispInfoStartupOutput = params.appDispInfoStartupOutput;
         }
-
+		mounted() {
+			const vm = this;
+			$('#inpReasonTextareaApprovalReason').focus();
+		}
 		approve() {
 			const vm = this;
             vm.$blockui("show");

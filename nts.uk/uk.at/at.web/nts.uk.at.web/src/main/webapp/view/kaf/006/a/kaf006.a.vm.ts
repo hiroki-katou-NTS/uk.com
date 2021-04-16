@@ -176,10 +176,6 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
             }).always(() => {
                 vm.$blockui("hide");
             });
-        }
-
-        mounted() {
-            const vm = this;
 
             vm.maxNumberOfDay = ko.computed(() => {
                 let data = vm.$i18n("KAF006_44").concat("\n");
@@ -555,6 +551,11 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
                     }
                 }
             });
+        }
+
+        mounted() {
+            const vm = this;
+
         }
 
         fetchData(data: any) {
