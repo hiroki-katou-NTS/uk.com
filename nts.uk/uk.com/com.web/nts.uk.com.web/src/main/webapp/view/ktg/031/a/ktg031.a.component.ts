@@ -75,7 +75,6 @@ module nts.uk.com.view.ktg031.a {
           padding: 5px;
           box-sizing: border-box;
           width: 100%;
-          height: 245px;
           display: flex;
           flex-direction: column;
         }
@@ -180,11 +179,18 @@ module nts.uk.com.view.ktg031.a {
     }
 
     setListAlarm(res: any[], stopReload?: boolean) {
+
       if (stopReload) {
         return;
       }
+
       const vm = this;
-      vm.listAlarm(_.map(res, (item) => new AlarmDisplayDataDto(vm, item)));
+
+      const alarmList = _.map(res, (item) => new AlarmDisplayDataDto(vm, item));
+      
+      const sortedList = _.orderBy(alarmList, ["order", "occurrenceDateTime", "patternCode", "notificationId", "displayAtr"]);
+
+      vm.listAlarm(sortedList);
       // Render row backgournd color
       vm.$nextTick(() => {
         vm.$grid = $('#ktg031-grid');
@@ -266,6 +272,7 @@ module nts.uk.com.view.ktg031.a {
     // Client info
     dateMonth: string;
     isReaded: KnockoutObservable<boolean>;
+    order: number;
 
     constructor(vm: Ktg031ComponentViewModel, init?: Partial<AlarmDisplayDataDto>) {
       $.extend(this, init);
@@ -285,6 +292,34 @@ module nts.uk.com.view.ktg031.a {
           vm.changeToUnread(model.companyId, model.sid, model.displayAtr, model.alarmClassification, model.patternCode, model.notificationId);
         }
       });
+
+      /**
+       * set order
+       * 
+       * 1：アラームリスト
+       * 2：更新処理自動実行業務エラー
+       * 3：更新処理自動実行動作異常
+       * 4：ヘルス×ライフメッセージ
+       * 
+       * order 3/2/1/4  => 2/1/0/3
+       */
+      switch(model.alarmClassification) {
+        case 0:
+          model.order = 2;
+        break;
+        case 1:
+          model.order = 1;
+        break;
+        case 2:
+          model.order = 0;
+        break;
+        case 3:
+          model.order = 3;
+        break;
+        default:
+          model.order = 4;
+        break;
+      }
     }
   }
 
