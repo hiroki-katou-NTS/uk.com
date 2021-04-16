@@ -63,7 +63,7 @@ public class LoginWs extends WebService {
 	}
 
 	@POST
-	@Path("employeeRoleStamping/{roleId}")
+	@Path("employeeRoleStamping")
 	public RoleEmployeeStampingDto getRole() {
 		return employeeRoleStamping.getRoleEmployee();
 	}
