@@ -7,12 +7,20 @@ module nts.uk.at.view.kaf000.b.component8.viewmodel {
 				<div style="display: inline-block; width: calc(100% - 22px);" data-bind="if: approvalRootStateShort().length != 0">
 					<div data-bind="foreach: approvalRootStateShort" style="padding-top: 5px;">
 						<div class="approver-block" data-bind="style: { 'max-width': $component.getMaxWidth() }">
-							<div data-bind="text: $component.getApproverLabel($index())"></div>
+							<div style="height: 24px;">
+								<div class="limited-label" style="vertical-align: middle;" data-bind="ntsFormLabel:{}, text: $component.getApproverLabel($index())"></div>
+							</div>
 							<div style="min-width: 112px;">
-								<div class="limited-label" data-bind="text: $data.approverName"></div>
+								<div class="limited-label" style="vertical-align: middle;" data-bind="text: $data.approverName"></div>
 							</div>
 							<div data-bind="if: $data.representerName()" style="min-width: 112px;">
-								<div class="limited-label" data-bind="text: '(' + $data.representerName() + ')'"></div>
+								<div class="limited-label" style="vertical-align: middle;" data-bind="text: '(' + $data.representerName() + ')'"></div>
+							</div>
+							<div>
+								<div class="limited-label" style="vertical-align: middle;" data-bind="style: { 'color': $component.getApprovalColor($data.approvalAtrValue()) }, text: $data.approvalAtrName"></div>
+							</div>
+							<div data-bind="if: $data.approvalReason">
+								<div class="limited-label" style="vertical-align: middle;" data-bind="text: $data.approvalReason"></div>
 							</div>
 						</div>
 					</div>
@@ -38,13 +46,35 @@ module nts.uk.at.view.kaf000.b.component8.viewmodel {
 			vm.approvalRootStateShort = ko.observableArray([]);
 			vm.numberApprover = ko.observable(0);
 			
+			let approvalRootStateShort = [],
+				listPhase: any = vm.appDispInfoStartupOutput().appDetailScreenInfo.approvalLst;
+			for(let phase of listPhase) {
+				for(let frame of phase.listApprovalFrame) {
+					for(let approver of frame.listApprover) {
+						approvalRootStateShort.push(new ApproverInforShort(
+							approver.approverName, 
+							approver.representerName,
+							approver.approvalAtrValue,
+							approver.approvalAtrName,
+							approver.approvalReason));
+					}
+				}
+			}
+			vm.numberApprover(_.size(approvalRootStateShort));
+			vm.approvalRootStateShort(_.take(approvalRootStateShort, 5));
+			
             vm.appDispInfoStartupOutput.subscribe(value => {
 				let approvalRootStateShort = [],
 					listPhase: any = value.appDetailScreenInfo.approvalLst;
 				for(let phase of listPhase) {
 					for(let frame of phase.listApprovalFrame) {
 						for(let approver of frame.listApprover) {
-							approvalRootStateShort.push(new ApproverInforShort(approver.approverName, approver.representerName));
+							approvalRootStateShort.push(new ApproverInforShort(
+								approver.approverName, 
+								approver.representerName,
+								approver.approvalAtrValue,
+								approver.approvalAtrName,
+								approver.approvalReason));
 						}
 					}
 				}
@@ -77,16 +107,32 @@ module nts.uk.at.view.kaf000.b.component8.viewmodel {
 				default: return "calc(20% - 6px)";
 			}
 		}
+		
+		getApprovalColor(approvalAtrValue: number) {
+			switch(approvalAtrValue) {
+				case 1: return '#BFEA60';
+				case 2: return '#FD4D4D';
+				case 3: return '#FD4D4D';
+				case 4: return '#FD4D4D';
+				default: return '';
+			}
+		}
     }
 
 	class ApproverInforShort {
 		
 		approverName: KnockoutObservable<string>;
 		representerName: KnockoutObservable<string>;
+		approvalAtrValue: KnockoutObservable<number>;
+		approvalAtrName: KnockoutObservable<string>;
+		approvalReason: KnockoutObservable<string>;
 		
-		constructor(approverName: string, representerName: string) {
+		constructor(approverName: string, representerName: string, approvalAtrValue: number, approvalAtrName: string, approvalReason: string) {
 			this.approverName = ko.observable(approverName);
 			this.representerName = ko.observable(representerName);
+			this.approvalAtrValue = ko.observable(approvalAtrValue);
+			this.approvalAtrName = ko.observable(approvalAtrName);
+			this.approvalReason = ko.observable(approvalReason);
 		}
 	}
 }

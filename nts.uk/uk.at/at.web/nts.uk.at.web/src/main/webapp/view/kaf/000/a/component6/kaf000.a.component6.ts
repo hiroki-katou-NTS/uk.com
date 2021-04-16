@@ -4,15 +4,17 @@ module nts.uk.at.view.kaf000.a.component6.viewmodel {
         name: 'kaf000-a-component6',
         template: `
             <div id="kaf000-a-component6" data-bind="click: openApproverDetail">
-				<div style="display: inline-block; width: calc(100% - 22px);" data-bind="if: approvalRootStateShort().length != 0">
+				<div style="display: inline-block; width: calc(100% - 22px);" data-bind="if: approvalRootStateShort().length != 0 && approvalRootDisp">
 					<div data-bind="foreach: approvalRootStateShort" style="padding-top: 5px;">
 						<div class="approver-block" data-bind="style: { 'max-width': $component.getMaxWidth() }">
-							<div data-bind="text: $component.getApproverLabel($index())"></div>
+							<div style="height: 24px;">
+								<div class="limited-label" style="vertical-align: middle;" data-bind="ntsFormLabel:{}, text: $component.getApproverLabel($index())"></div>
+							</div>
 							<div style="min-width: 112px;">
-								<div class="limited-label" data-bind="text: $data.approverName"></div>
+								<div class="limited-label" style="vertical-align: middle;" data-bind="text: $data.approverName"></div>
 							</div>
 							<div data-bind="if: $data.representerName()" style="min-width: 112px;">
-								<div class="limited-label" data-bind="text: '(' + $data.representerName() + ')'"></div>
+								<div class="limited-label" style="vertical-align: middle;" data-bind="text: '(' + $data.representerName() + ')'"></div>
 							</div>
 						</div>
 					</div>
@@ -30,6 +32,7 @@ module nts.uk.at.view.kaf000.a.component6.viewmodel {
 		isAgentMode: KnockoutObservable<boolean>;
 		approvalRootStateShort: KnockoutObservableArray<ApproverInforShort>;
 		numberApprover: KnockoutObservable<number>;
+		approvalRootDisp: KnockoutObservable<boolean>;
 		
         created(params: any) {
             const vm = this;
@@ -37,6 +40,7 @@ module nts.uk.at.view.kaf000.a.component6.viewmodel {
 			vm.isAgentMode = params.isAgentMode ? params.isAgentMode : ko.observable(false);
 			vm.approvalRootStateShort = ko.observableArray([]);
 			vm.numberApprover = ko.observable(0);
+			vm.approvalRootDisp = ko.observable(false);
 			
             vm.appDispInfoStartupOutput.subscribe(value => {
 				let approvalRootStateShort = [],
@@ -49,7 +53,8 @@ module nts.uk.at.view.kaf000.a.component6.viewmodel {
 					}
 				}
 				vm.numberApprover(_.size(approvalRootStateShort));
-				vm.approvalRootStateShort(_.take(approvalRootStateShort, 5));    
+				vm.approvalRootStateShort(_.take(approvalRootStateShort, 5));
+				vm.approvalRootDisp(!vm.isAgentMode() || _.size(value.appDispInfoNoDateOutput.employeeInfoLst)<=1);  
             });
         }
 

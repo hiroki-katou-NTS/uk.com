@@ -20,7 +20,7 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 				<div class="two-panel" style="height: 100%;">
 					<div class="left-panel"
 						style="width: calc(100% - 410px); height: inherit">
-						<div style="height: inherit; overflow-y: auto; background-color: #fff; padding: 10px; overflow-x: hidden">
+						<div style="height: inherit; overflow-y: auto; background-color: #fff; padding:0 10px; overflow-x: hidden">
 							<div class="table"
 								style="border-bottom: 2px solid #B1B1B1; padding-bottom: 30px; margin-bottom: 30px; width: 100%;">
 								<div class="cell" style="vertical-align: middle;">
@@ -289,7 +289,7 @@ module nts.uk.at.view.kafsample.b.viewmodel {
                 if (res) {
                     vm.printContentOfEachAppDto().opDetailOutput = res;
 					vm.appOverTime = res.appOverTime;
-					// ko.contextFor(vm.$el).$parent.content.getAppNameForAppOverTime(vm.appOverTime.overTimeClf);
+					ko.contextFor(vm.$el).$vm.getAppNameForAppOverTime(vm.appOverTime.overTimeClf);
 					vm.dataSource = res.displayInfoOverTime;
 					vm.visibleModel = vm.createVisibleModel(vm.dataSource);
 					vm.bindOverTimeWorks(vm.dataSource);
