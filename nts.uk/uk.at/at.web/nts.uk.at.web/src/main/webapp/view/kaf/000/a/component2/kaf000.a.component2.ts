@@ -18,7 +18,7 @@ module nts.uk.at.view.kaf000.a.component2.viewmodel {
 							<div style="min-width: 112px; vertical-align: bottom; padding-right: 10px;" class="limited-label" data-bind="text: employeeName"></div>
 						</div>
 						<div style="display: inline-block;">
-							<button class="popup-btn" style="width: 20px; height: 20px;">
+							<button class="popup-btn" style="width: 20px; height: 20px; padding: 0 2px;">
 							    <i data-bind="ntsIcon: { no: 11 }"></i>
 							</button>
 						</div>
