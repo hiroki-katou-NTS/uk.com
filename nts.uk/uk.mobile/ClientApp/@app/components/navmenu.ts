@@ -34,8 +34,8 @@ const _NavMenu = Vue.observable({
         <a v-on:click="" class="navbar-brand mr-n2">{{pgName |i18n}}</a>
         <div class="d-flex justify-content-end align-items-center">
             <div class="div-ccgs08">
-                <img :class="isNewNotice ? 'left-style' : ''" :src="iconNotice" class="img-notice" @click="showCcg003()">
-                <img v-if="isNewNotice" :src="redCircle" class="img-red-circle">
+                <img :class="isNewNotice ? 'left-style' : ''" src="/nts.uk.mobile.web/dist/resources/164.png" class="img-notice" @click="showCcg003()">
+                <img v-if="isNewNotice" src="/nts.uk.mobile.web/dist/resources/165.png" class="img-red-circle">
             </div>
             <button class="navbar-toggler dropdown-toggle" v-on:click="show = !show"></button>
         </div>
@@ -82,8 +82,6 @@ const _NavMenu = Vue.observable({
 export class NavMenuBar extends Vue {
     public active: any = {};
     public isNewNotice: boolean = false;
-    public iconNotice: string = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACYAAAAsCAYAAAAJpsrIAAAFKUlEQVRYR7VZ908qTRS9qzRFnx3sLRGNQcUSif7/RBSNCfYSsYKCBRVR6ryc+byblY9l2X04vzx9OzP3zC3nFhWyuMrlsmhqalKSyaS4ubmhfD5PTU1N1NLSQj6fj1wul8J7rIhQrBziM6enp+Lj44N6enpIUf67SghBFxcXtLy8TO3t7Zbvt3ywWCyKUChEExMTVC6XJSCAw8/QXDwep/X1dcv3Wz54fn4uAMZms0lA+BkLoLAeHh5oZWUFv1uSYXioVCoJFtzc3KzuD4fDor+/XzUfmxd7AS6ZTNLo6Ch5PB55hu/5Bm8o13ADTGaz2dTLo9EofX5+0p8/f+BDqqZYYxDM/vby8iL3Dg4O0vj4uLyjUCgIu91uKNdwA0dWKpUSh4eHNDQ0RHa7XWqlWCzKfwGKgTEorXnf3t7o6+uLFhYWqLm5WZ4xMrEhMGjs9fWVTk5O5MtxKRycI5A1xM5fTXMAmcvlKJVK0draGvtiTdmGwHK5nAiHwz+iT+tPDJA1VUk/DBjfobVsNkuLi4uGcg03HB4ewifI4XBImdCWHgg9TmRwTCOzs7PwUfMa0zJ2KBQSiK5CoaD6078AQzDArPPz8wpHajV/q4qagV1dXYlMJkNtbW2qT/HrzWQMLflC83d3d7S0tCQfqqUg7Z1VgeElOBCJRATSDZOmFVBaH+RIBY2MjY1Rd3e3bj6tCoy5ZmNjQyAScSFTgxlN8V48CI8rlUqSLuAW8FWfz2cO2LeTi0gkQmB3LQVYBVaZtt7f38nv9+sGgO6HbDYr9vf3yev1WopEPdrAI6G1RCJBwWDQPLB0Oi1QvsDH/lVjWpAM7OrqCtWHOefHRYlEQjw9Pf3Ih1bMWE1zqEhisZgExnm4cp+uKmOxmABToyJt5OJSCcCCwSA5nc6qGHSBHR8fo3RWGb9R4BjY9fU1BQIBcrvd5oAhFYEMofZGLvYxkOzc3BzI2xywg4MD0draajovGj2COQ3+Ozk5SZ2dneaAQWPwL7N5sR5guBMki2LT6/WaA7a9vS08Ho9k60aC05ZBSOgzMzP1A8vn82Jzc1Pms98EhpwZCATqB/b4+CjJFenot4CB/W9vb1HR1gaGigL+gaoCjSzMx62Zkd+Y+c7ODypCBw8ug0yUWt8RK4GqaLXd0NbWlhgYGJA50krFWgsoA8PD0Uu4XC6amppSIF/bpPwAhg+oyQ8ODoiBWa3BjMpsDih07DBnZTWr/gfqLYfDIYvD3t7eH7OIRkZlZeGYTqcJ8qAIYIDvQZ4ExuXt5eWlTNzYyL1io0Fpi0et1vx+v2xQ2NdUU56dnQmELypWkN9vAaosgbhPhUmnp6ehFAlOyWQy4ujoSKqwr6/vVxzeKBh43oH82dHRAdIlZXd3VyA1gBp+23xGtAKAmLc5nU5SdnZ2BMpnEKnR0o4BzJq63uiGaTFKUMBZ6Bt5HlELHA9QtPMLo8dwFNZzhh+LXlaJx+MCnXG9GuCXwyeNFvcKZtIaFCTpyuhy7XftQBhdDjfCtcgUkaZXPteS/b8cVWszp61oNKrWatp+UXsWoEGeKJ2Gh4frnmBzzjalMQa2t7cnq1tEMg+Dqw3u7u/vkQepq6vLlJwfSbwek3KWwGwfzQTzXqXWvpOxrB5WV1fl1Xptmp5cUy+Bj8GRMUPFXANOioalkv+gSdRaKDRhSl56k51q4EwB014As2K24Xa7Ze0OLUFz+AsJRukAjaFJPZZoODCYBx378/Oz+icbsPbIyIhuv1gv0L+7301f5WpnEwAAAABJRU5ErkJggg==';
-    public redCircle: string = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAANCAYAAACdKY9CAAAAQ0lEQVQoU2NkQANvZVT+IwsJP7nDiMyHc9AVohsE0wjWQEgxTDNIE+kaiDUdZgvjcNBA+2CFBReh0EKJaeRkQCgtAQBEFSrqz4IE/AAAAABJRU5ErkJggg==';
 
     @Watch('show', { immediate: true })
     public toggleMaskLayer(show: boolean) {
