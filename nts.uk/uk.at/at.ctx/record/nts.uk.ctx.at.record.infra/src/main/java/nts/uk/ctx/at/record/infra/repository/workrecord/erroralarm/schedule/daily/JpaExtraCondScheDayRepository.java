@@ -530,6 +530,7 @@ public class JpaExtraCondScheDayRepository extends JpaRepository implements Extr
 				.getList();
 		if (!ranges.isEmpty()) {
 			this.commandProxy().removeAll(ranges);
+			this.getEntityManager().flush();
 		}
 		
 		List<KrcstErAlCompareSingle> singleRanges = this.queryProxy().query(SELECT_COMPARE_RANGE_SINGLE + BY_COMPARE_RANGE_SINGLE_NO, KrcstErAlCompareSingle.class)
@@ -538,6 +539,7 @@ public class JpaExtraCondScheDayRepository extends JpaRepository implements Extr
 				.getList();
 		if (!singleRanges.isEmpty()) {
 			this.commandProxy().removeAll(singleRanges);
+			this.getEntityManager().flush();
 		}
 		
 		List<KrcstErAlSingleFixed> singleRangeFixeds = this.queryProxy().query(SELECT_COMPARE_RANGE_SINGLE_FIXED + BY_COMPARE_RANGE_SINGLE_FIXED_NO, KrcstErAlSingleFixed.class)
@@ -546,6 +548,7 @@ public class JpaExtraCondScheDayRepository extends JpaRepository implements Extr
 				.getList();
 		if (!singleRangeFixeds.isEmpty()) {
 			this.commandProxy().removeAll(singleRangeFixeds);
+			this.getEntityManager().flush();
 		}
 		
 		removeWorkTypes(companyId, erAlCheckIds, alarmNo);

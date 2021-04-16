@@ -37,7 +37,7 @@ module nts.uk.at.view.kal003.a.tab {
         initData(category): void {
             let self = this;
             let serviceRequest = service.getScheduleFixItemDaily();
-            if (category == 3) {
+            if (category == model.CATEGORY.SCHEDULE_MONTHLY) {
                 serviceRequest = service.getScheduleFixItemMonthly();
             }
             serviceRequest.done((data: Array<any>) => {
@@ -47,6 +47,9 @@ module nts.uk.at.view.kal003.a.tab {
                     });
                     self.listFixedConditionWorkRecord(_list);
                     self.tmpListFixedConditionWorkRecord = data;
+                } else {
+                    self.listFixedConditionWorkRecord([]);
+                    self.tmpListFixedConditionWorkRecord = [];
                 }
             });
         }

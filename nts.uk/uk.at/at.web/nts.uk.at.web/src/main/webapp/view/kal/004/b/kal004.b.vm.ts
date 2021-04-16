@@ -31,6 +31,8 @@ module nts.uk.com.view.kal004.b.viewmodel {
         
         constructor() {
             var self = this;
+            
+            let categoryId = nts.uk.ui.windows.getShared("categoryId");
             self.enable = true;
             self.txtDay = ko.observable(getText("KAL004_32"));
             self.dateSpecify = ko.observableArray([
@@ -43,10 +45,15 @@ module nts.uk.com.view.kal004.b.viewmodel {
             self.endComboDay = ko.observableArray(__viewContext.enums.PreviousClassification);
             self.strComboMonth = ko.observableArray(__viewContext.enums.SpecifiedMonth);
             self.endComboMonth = ko.observableArray(__viewContext.enums.SpecifiedMonth);
+            // QA#115367
+            if (categoryId == model.AlarmCategory.SCHEDULE_DAILY || categoryId == model.AlarmCategory.APPLICATION_APPROVAL) {
+                self.strComboMonth = ko.observableArray(__viewContext.enums.ScheSpecifiedMonth);
+                self.endComboMonth = ko.observableArray(__viewContext.enums.ScheSpecifiedMonth);
+            }
             
             self.getParam = nts.uk.ui.windows.getShared("extractionDailyDto");
             self.getCategoryName = nts.uk.ui.windows.getShared("categoryName");
-            self.getCategoryId = ko.observable(nts.uk.ui.windows.getShared("categoryId"));
+            self.getCategoryId = ko.observable(categoryId);
             
             //start date
             self.strSelected = ko.observable(self.getParam.strSpecify);
@@ -60,6 +67,23 @@ module nts.uk.com.view.kal004.b.viewmodel {
             self.endMonth = ko.observable(self.getParam.endMonth);
             
             self.registerClearInputError();
+            self.setFocus();
+        }
+        
+        /**
+         * Set focus input
+         */
+        setFocus(): void {
+            let self = this; 
+            if (self.strSelected() == 0) {
+                setTimeout(function() {
+                    $(".input-str").focus();
+                }, 20);
+            } else {
+                setTimeout(function() {
+                    $(".cbStrMonth").focus();
+                }, 20);    
+            }
         }
         
         Decide(): any {
@@ -117,11 +141,12 @@ module nts.uk.com.view.kal004.b.viewmodel {
                     strCurrentMonth = 1;
                 }else{
                     strCurrentMonth = 0;
-                } 
+                }
+                strPreviousDay = 0; //TODO because database not null
             }
             //end
             if(self.endSelected()==0) {
-                if(self.getCategoryId() == 5 || self.getCategoryId() == 13) {
+                if(self.getCategoryId() == 5 || self.getCategoryId() == 13 || self.getCategoryId() == 6) {
                     endPreviousDay = 0;       
                 } else {
                     endPreviousDay = self.endPreviousDay();
@@ -139,7 +164,8 @@ module nts.uk.com.view.kal004.b.viewmodel {
                     endCurrentMonth = 1;
                 }else{
                     endCurrentMonth = 0;
-                } 
+                }
+                endPreviousDay = 0; //TODO because database not null
             }
             
             return {

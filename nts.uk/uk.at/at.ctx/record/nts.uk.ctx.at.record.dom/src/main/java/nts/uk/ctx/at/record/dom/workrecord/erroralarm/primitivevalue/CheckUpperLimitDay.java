@@ -1,16 +1,18 @@
 package nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue;
 
-import nts.arc.primitive.HalfIntegerPrimitiveValue;
-import nts.arc.primitive.constraint.HalfIntegerMaxValue;
-import nts.arc.primitive.constraint.HalfIntegerMinValue;
+import java.math.BigDecimal;
+
+import nts.arc.primitive.DecimalPrimitiveValue;
+import nts.arc.primitive.constraint.DecimalMantissaMaxLength;
+import nts.arc.primitive.constraint.DecimalRange;
 
 /**
  * チェック上限日数
  *
  */
-@HalfIntegerMinValue(0.0)
-@HalfIntegerMaxValue(99.9)
-public class CheckUpperLimitDay  extends HalfIntegerPrimitiveValue<CheckUpperLimitDay> {
+@DecimalRange(min = "0.0", max = "99.9")
+@DecimalMantissaMaxLength(1)
+public class CheckUpperLimitDay  extends DecimalPrimitiveValue<CheckUpperLimitDay> {
 
 	private static final long serialVersionUID = 1L;
 
@@ -19,7 +21,7 @@ public class CheckUpperLimitDay  extends HalfIntegerPrimitiveValue<CheckUpperLim
 	 *
 	 * @param rawValue the raw value
 	 */	
-	public CheckUpperLimitDay(Double rawValue) {
+	public CheckUpperLimitDay(BigDecimal rawValue) {
 		super(rawValue);
 	}
 	
