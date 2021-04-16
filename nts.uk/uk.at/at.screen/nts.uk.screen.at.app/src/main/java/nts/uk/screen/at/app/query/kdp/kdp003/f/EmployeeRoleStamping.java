@@ -7,6 +7,7 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.sys.auth.dom.role.Role;
 import nts.uk.ctx.sys.auth.dom.role.RoleRepository;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * 打刻入力で社員のロールを取得する
@@ -21,11 +22,11 @@ public class EmployeeRoleStamping {
 	@Inject
 	private RoleRepository roleRepo;
 	
-	public RoleEmployeeStampingDto getRoleEmployee(String roleId) {
+	public RoleEmployeeStampingDto getRoleEmployee() {
 		
 		RoleEmployeeStampingDto result = new RoleEmployeeStampingDto();
 		
-		Optional<Role> optRole = this.roleRepo.findByRoleId(roleId);
+		Optional<Role> optRole = this.roleRepo.findByRoleId(AppContexts.user().roles().forPersonalInfo());
 		
 		if (optRole.isPresent()) {
 			Role role = optRole.get();

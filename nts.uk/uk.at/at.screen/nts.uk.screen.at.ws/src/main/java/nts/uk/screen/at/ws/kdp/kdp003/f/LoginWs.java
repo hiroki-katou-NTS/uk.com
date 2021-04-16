@@ -11,7 +11,6 @@ import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 
@@ -65,7 +64,7 @@ public class LoginWs extends WebService {
 
 	@POST
 	@Path("employeeRoleStamping/{roleId}")
-	public RoleEmployeeStampingDto getRole(@PathParam("roleId") String roleId) {
-		return employeeRoleStamping.getRoleEmployee(roleId);
+	public RoleEmployeeStampingDto getRole() {
+		return employeeRoleStamping.getRoleEmployee();
 	}
 }
