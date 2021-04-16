@@ -4,7 +4,7 @@ module nts.uk.at.view.kaf000.a.component2.viewmodel {
 		name: 'kaf000-a-component2',
 		template: `
             <div id="kaf000-a-component2">
-				<div>
+				<div style="margin-top: 10px">
 				    <div class="col-1">
 						<div class="cell valign-center" data-bind="ntsFormLabel:{}, text: $i18n('KAF000_44')"></div>
 					</div>
