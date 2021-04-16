@@ -27,7 +27,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.Time
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.earlyleavetime.LeaveEarlyTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.latetime.LateTimeOfDaily;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ChildCareAttribute;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortWorkingTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.CalculationRangeOfOneDay;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.BreakClassification;
@@ -42,9 +41,9 @@ import nts.uk.ctx.at.shared.dom.shortworktime.ChildCareAtr;
 import nts.uk.ctx.at.shared.dom.worktime.IntegrationOfWorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.RestTimeOfficeWorkCalcMethod;
 import nts.uk.ctx.at.shared.dom.worktime.common.TotalRoundingSet;
-import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.childcareset.ShortTimeWorkGetRange;
+import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeForm;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -464,8 +463,7 @@ public class DeductionTimeSheet {
 		List<TimeSpanForDailyCalc> results = new ArrayList<>();
 	
 		// 育児介護区分の確認
-		ChildCareAtr childCareAtr = ChildCareAtr.CHILD_CARE;
-		if (shortTimeWorkSheet.getChildCareAttr() == ChildCareAttribute.CARE) childCareAtr = ChildCareAtr.CARE;
+		ChildCareAtr childCareAtr = shortTimeWorkSheet.getChildCareAttr();
 		
 		// 控除区分を確認する
 		ShortTimeWorkGetRange checkResult = ShortTimeWorkGetRange.NOT_GET;
@@ -519,7 +517,7 @@ public class DeductionTimeSheet {
 				Finally.empty(),
 				decisionShortTimeAtr(attendanceLeaveWork.getTimeLeavingWorks(), sts),
 				DeductionClassification.CHILD_CARE,
-				Optional.of(getChildCareAtr(sts.getChildCareAttr())));
+				Optional.of(sts.getChildCareAttr()));
 	}
 	
 	/**
@@ -949,13 +947,6 @@ public class DeductionTimeSheet {
 		} else {
 			return this.forRecordTimeZoneList;
 		}
-	}
-	
-	private static ChildCareAtr getChildCareAtr(ChildCareAttribute childCareAttr) {
-		if(childCareAttr==ChildCareAttribute.CHILD_CARE) {
-			return ChildCareAtr.CHILD_CARE;
-		}
-		return ChildCareAtr.CARE;
 	}
 	
 	/**

@@ -48,4 +48,25 @@ public class LeaveGrantRemainingDataExport extends AggregateRoot {
 	 */
 	protected LeaveNumberInfoExport details;
 
+	/**
+	 * コンストラクタ
+	 * @param c
+	 */
+	public LeaveGrantRemainingDataExport(LeaveGrantRemainingDataExport c) {
+		employeeId = c.getEmployeeId();
+		grantDate = c.getGrantDate();
+		deadline = c.getDeadline();
+		expirationStatus = c.getExpirationStatus();
+		registerType = c.getRegisterType();
+		details = c.getDetails().clone();
+	}
+
+	/**
+	 *　クローン
+	 */
+	public LeaveGrantRemainingDataExport clone(){
+		return new LeaveGrantRemainingDataExport(this);
+	}
+
+
 }

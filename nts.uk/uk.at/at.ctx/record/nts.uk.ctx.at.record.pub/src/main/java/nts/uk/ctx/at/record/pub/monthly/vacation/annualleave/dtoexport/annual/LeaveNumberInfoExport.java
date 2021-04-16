@@ -8,7 +8,7 @@ import lombok.Setter;
 
 /**
  * 休暇数情報（明細）
- * 
+ *
  * @author masaaki_jinno
  *
  */
@@ -36,5 +36,23 @@ public class LeaveNumberInfoExport implements Cloneable {
 	 * 使用率
 	 */
 	protected BigDecimal usedPercent;
+
+	/**
+	 * コンストラクタ
+	 * @param c
+	 */
+	public LeaveNumberInfoExport(LeaveNumberInfoExport c) {
+		grantNumber = c.getGrantNumber().clone();
+		usedNumber = c.getUsedNumber().clone();
+		remainingNumber = c.getRemainingNumber().clone();
+		usedPercent = c.getUsedPercent();
+	}
+
+	/**
+	 * クローン
+	 */
+	public LeaveNumberInfoExport clone() {
+		return new LeaveNumberInfoExport(this);
+	}
 
 }
