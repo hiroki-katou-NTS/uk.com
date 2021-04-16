@@ -28,8 +28,16 @@ module nts.uk.at.view.kdl030.a.viewmodel {
                 vm.$ajax(API.applicationForSendByAppID, vm.appIDLst).done((result) => {
 					vm.mailContent(result.mailTemplate);
 					vm.appEmailSet = result.appEmailSet;
-					result.appSendMailByEmpLst.sort((app1, app2) => app1.applicantName.localeCompare(app2.applicantName));
-					_.forEach(result.appSendMailByEmpLst, appSendMailByEmp => {
+					let appSendMails = [];
+					if (!_.isNil(param.employeeInfoLst)) {
+                        _.forEach(param.employeeInfoLst, emp => {
+                            let x = result.appSendMailByEmpLst.filter(app => app.applicantName.localeCompare(emp.bussinessName) == 0);
+                            appSendMails.push(x[0]);
+                        })
+                    } else {
+					    appSendMails = result.appSendMailByEmpLst;
+                    }
+					_.forEach(appSendMails, appSendMailByEmp => {
 						_.forEach(appSendMailByEmp.approvalRoot.listApprovalPhaseStateDto, phase => {
 							_.forEach(phase.listApprovalFrame, frame => {
 								_.forEach(frame.listApprover, approver => {
@@ -39,7 +47,7 @@ module nts.uk.at.view.kdl030.a.viewmodel {
 						});	
 					});
 						
-					vm.appSendMailByEmpLst(ko.mapping.fromJS(result.appSendMailByEmpLst)());
+					vm.appSendMailByEmpLst(ko.mapping.fromJS(appSendMails)());
 
                     if ($('#checkSendApplicant').length > 0) {
                         $('#checkSendApplicant').focus();
@@ -149,7 +157,7 @@ module nts.uk.at.view.kdl030.a.viewmodel {
                 })
             })
             if (count > 5){
-                return self.isAgentMode() ? 'min-774' : 'min-671';
+                return (self.isAgentMode() || self.isOpEmployee) ? 'min-774' : 'min-671';
             }
             return "";
         }
