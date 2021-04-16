@@ -33,4 +33,23 @@ public class OuenWorkTimeSheetOfDaily extends AggregateRoot {
 
 		return new OuenWorkTimeSheetOfDaily(empId, ymd, ouenTimeSheet);
 	}
+	
+	/**
+	 * @name [1] 変更する
+	 * @input 時間帯リスト	List<日別勤怠の応援作業時間帯>
+	 * @output	変更する勤怠項目
+	 */
+	public AttendanceItemToChange change(List<OuenWorkTimeSheetOfDailyAttendance> ouenTimeSheet) {
+		//@応援時間帯 = 時間帯リスト			
+		this.ouenTimeSheet = ouenTimeSheet;
+		return null;
+	}
+	
+	/**
+	 * @name [2] 応援時間帯に対応する勤怠項目ID一覧
+	 * @output 	勤怠項目リスト	List<勤怠項目ID>
+	 */
+	public List<String> getAttendanceId() {
+		return null;
+	}
 }

@@ -146,12 +146,4 @@ public class OuenWorkTimeSheetOfDailyRepoImpl extends JpaRepository implements O
 												   .executeUpdate();
 	}
 
-	@Override
-	public List<OuenWorkTimeSheetOfDaily> findByDatePeriod(String empId, DatePeriod datePeriod) {
-		return queryProxy().query("SELECT o FROM KrcdtDayOuenTimeSheet o WHERE o.pk.sid = :sid AND o.pk.ymd >= :str AND o.pk.ymd <= :end", 
-				KrcdtDayOuenTimeSheet.class)
-				.setParameter("sid", empId).setParameter("str", datePeriod.start()).setParameter("end", datePeriod.end())
-				.getList(e -> e.domain());
-	}
-
 }

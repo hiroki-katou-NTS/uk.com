@@ -15,9 +15,6 @@ public interface OuenWorkTimeSheetOfDailyRepo {
 	
 	public void delete(List<OuenWorkTimeSheetOfDaily> domain);
 	
-	//	日別実績の応援作業別勤怠時間帯Repository.get(社員,期間)	
-	public List<OuenWorkTimeSheetOfDaily> findByDatePeriod(String empId, DatePeriod datePeriod);
-
 	public void remove(String sid, GeneralDate ymd);
 
 	boolean findPK(String empId, GeneralDate ymd, int ouenNo);
