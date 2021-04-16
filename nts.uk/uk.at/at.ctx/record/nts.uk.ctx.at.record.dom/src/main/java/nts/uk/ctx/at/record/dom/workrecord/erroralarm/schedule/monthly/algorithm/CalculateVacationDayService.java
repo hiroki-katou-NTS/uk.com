@@ -73,7 +73,11 @@ public class CalculateVacationDayService {
 			// 当月より前の月かチェック
 			boolean isBeforeThisMonth = monthIsBeforeThisMonthChecking.checkMonthIsBeforeThisMonth(ym,
 					presentClosingPeriod.getProcessingYm());
-			if (isBeforeThisMonth && attendanceTimeOfMonthly != null) {
+			if (isBeforeThisMonth) {
+				if (attendanceTimeOfMonthly == null) {
+					return totalTime;
+				}
+				
 				// 日数 を計算
 				WorkDaysOfMonthly workDays = attendanceTimeOfMonthly.getVerticalTotal().getWorkDays();
 				return getNumberOfDays(typeOfDay, workDays);
