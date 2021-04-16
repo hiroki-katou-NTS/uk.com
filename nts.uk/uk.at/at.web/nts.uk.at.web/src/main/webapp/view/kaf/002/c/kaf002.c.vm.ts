@@ -16,134 +16,122 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
     import GoOutTypeDispControl = nts.uk.at.view.kaf002_ref.m.viewmodel.GoOutTypeDispControl;
 	import CommonProcess = nts.uk.at.view.kaf000.shr.viewmodel.CommonProcess;
     const template = `
+        <div id="kaf002-c">
+            <div id="contents-area"
+                style="background-color: inherit; height: calc(100vh - 165px); min-width: 1130px">
+                <div class="two-panel" style="height: 100%;">
+                    <div class="left-panel"
+                        style="width: calc(100% - 410px); height: inherit;">
+                        <div style="height: inherit; overflow-y: auto; background-color: #fff; padding: 10px; overflow-x: hidden;">
+                            <div class="table"
+                                style="border-bottom: 2px solid #B1B1B1; padding-bottom: 30px; margin-bottom: 30px; width: 100%;">
+                                <div class="cell" style="vertical-align: middle;">
+                                    <div
+                                        data-bind="component: { name: 'kaf000-b-component4',
+                                                        params: {
+                                                            appType: appType,
+                                                            application: application,
+                                                            appDispInfoStartupOutput: appDispInfoStartupOutput
+                                                        } }"></div>
+                                </div>
+                                <div class="cell"
+                                    style="text-align: right; vertical-align: middle;">
+                                    <div
+                                        data-bind="component: { name: 'kaf000-b-component8', 
+                                                        params: {
+                                                            appType: appType,
+                                                            appDispInfoStartupOutput: appDispInfoStartupOutput
+                                                        } }"></div>
+                                </div>
+                            </div>
+                            <div
+                                data-bind="component: { name: 'kaf000-b-component5', 
+                                                        params: {
+                                                            appType: appType,
+                                                            application: application,
+                                                            appDispInfoStartupOutput: appDispInfoStartupOutput
+                                                        } }"></div>
+                            <div 
+                                data-bind="component: { name: 'kaf000-b-component6', 
+                                                        params: {
+                                                            appType: appType,
+                                                            application: application,
+                                                            appDispInfoStartupOutput: appDispInfoStartupOutput
+                                                        } }"
+                                style="width: fit-content; display: inline-block; vertical-align: middle; margin-top: 12px"></div>
 
 
 
+                            <div>
+                                <div class="table"></div>
+
+                                <!-- C5 -->
+
+                                <div style="display: block">
+                                    <!-- C6_1 -->
+                                    <div id="labelM"
+                                        data-bind="ntsFormLabel: {}, text: $i18n('KAF002_17')"></div>
+                                    <!-- C6_2 -->
+                                    <div data-bind="if: isM">
+                                        <div
+                                            data-bind="
+                            component: {
+                                name: 'kaf002-m',
+                                params: {
+                                            mode: mode,
+                                            selectedTab: selectedTab,
+                                            tabs: tabs,
+                                            dataSourceOb: dataSourceOb,
+                                            tabMs: tabMs,
+                                            isVisibleComlumn: isVisibleComlumn,
+                                            isPreAtr: isPreAtr,
+                                            comment1: comment1,
+                                            comment2: comment2
+                                        }
+                            }
+                            "
+                                            id="componentM"></div>
+                                    </div>
+                                </div>
 
 
 
+                            </div>
 
 
-
-
-
-
-<div id="kaf002-c">
-	<div id="contents-area"
-		style="background-color: inherit; height: calc(100vh - 165px); min-width: 1130px">
-		<div class="two-panel" style="height: 100%;">
-			<div class="left-panel"
-				style="width: calc(100% - 410px); height: inherit;">
-				<div style="height: inherit; overflow-y: auto; background-color: #fff; padding: 10px; overflow-x: hidden;">
-					<div class="table"
-						style="border-bottom: 2px solid #B1B1B1; padding-bottom: 30px; margin-bottom: 30px; width: 100%;">
-						<div class="cell" style="vertical-align: middle;">
-							<div
-								data-bind="component: { name: 'kaf000-b-component4',
-                                                params: {
-                                                    appType: appType,
-                                                    application: application,
-                                                    appDispInfoStartupOutput: appDispInfoStartupOutput
-                                                } }"></div>
-						</div>
-						<div class="cell"
-							style="text-align: right; vertical-align: middle;">
-							<div
-								data-bind="component: { name: 'kaf000-b-component8', 
-                                                params: {
-                                                    appType: appType,
-                                                    appDispInfoStartupOutput: appDispInfoStartupOutput
-                                                } }"></div>
-						</div>
-					</div>
-					<div
-						data-bind="component: { name: 'kaf000-b-component5', 
-                                                params: {
-                                                    appType: appType,
-                                                    application: application,
-                                                    appDispInfoStartupOutput: appDispInfoStartupOutput
-                                                } }"></div>
-					<div 
-						data-bind="component: { name: 'kaf000-b-component6', 
-                                                params: {
-                                                    appType: appType,
-                                                    application: application,
-                                                    appDispInfoStartupOutput: appDispInfoStartupOutput
-                                                } }"
-						style="width: fit-content; display: inline-block; vertical-align: middle; margin-top: 12px"></div>
-
-
-
-					<div>
-						<div class="table"></div>
-
-						<!-- C5 -->
-
-						<div style="display: block">
-							<!-- C6_1 -->
-							<div id="labelM"
-								data-bind="ntsFormLabel: {}, text: $i18n('KAF002_17')"></div>
-							<!-- C6_2 -->
-							<div data-bind="if: isM">
-								<div
-									data-bind="
-					component: {
-						name: 'kaf002-m',
-						params: {
-									mode: mode,
-									selectedTab: selectedTab,
-									tabs: tabs,
-									dataSourceOb: dataSourceOb,
-									tabMs: tabMs,
-									isVisibleComlumn: isVisibleComlumn,
-									isPreAtr: isPreAtr,
-									comment1: comment1,
-									comment2: comment2
-								}
-					}
-					"
-									id="componentM"></div>
-							</div>
-						</div>
-
-
-
-					</div>
-
-
-					<div style="margin-top: 12px"
-						data-bind="component: { name: 'kaf000-b-component7', 
-                                                params: {
-                                                    appType: appType,
-                                                    application: application,
-                                                    appDispInfoStartupOutput: appDispInfoStartupOutput
-                                                } }"></div>
-                                                
-                                                <div style="padding-top: 30px;">
-								
-				 	</div>  
-				</div>
-			</div>
-			<div class="right-panel" style="width: 410px; height: inherit; overflow-y: auto">
-				<div style="height: inherit; background-color: #fff; padding: 0px 10px;">
-					<div style="padding-top: 10px"
-						data-bind="component: { name: 'kaf000-b-component1', 
-                            params: {
-                                appType: appType,
-                                appDispInfoStartupOutput: appDispInfoStartupOutput	
-                            } }"></div>
-					<div
-						data-bind="component: { name: 'kaf000-b-component9',
-                            params: {
-                                appType: appType,
-                                application: application,
-                                appDispInfoStartupOutput: $vm.appDispInfoStartupOutput
-                            } }"></div>
-				</div>
-			</div>
-		</div>
-	</div>
-</div>
+                            <div style="margin-top: 12px"
+                                data-bind="component: { name: 'kaf000-b-component7', 
+                                                        params: {
+                                                            appType: appType,
+                                                            application: application,
+                                                            appDispInfoStartupOutput: appDispInfoStartupOutput
+                                                        } }"></div>
+                                                        
+                                                        <div style="padding-top: 30px;">
+                                        
+                            </div>  
+                        </div>
+                    </div>
+                    <div class="right-panel" style="width: 410px; height: inherit;">
+                        <div style="height: inherit; background-color: #fff; padding: 0px 10px; overflow-y: auto; overflow-x: hidden">
+                            <div style="padding-top: 10px"
+                                data-bind="component: { name: 'kaf000-b-component1', 
+                                    params: {
+                                        appType: appType,
+                                        appDispInfoStartupOutput: appDispInfoStartupOutput	
+                                    } }"></div>
+                            <div
+                                data-bind="component: { name: 'kaf000-b-component9',
+                                    params: {
+                                        appType: appType,
+                                        application: application,
+                                        appDispInfoStartupOutput: $vm.appDispInfoStartupOutput
+                                    } }"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     `
     
     @component({
