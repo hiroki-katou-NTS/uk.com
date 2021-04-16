@@ -11,21 +11,24 @@ module nts.uk.at.view.kdl030.a.viewmodel {
 		appIDLst: Array<string> = [];
 		isAgentMode : KnockoutObservable<boolean> = ko.observable(false);
 		appSendMailByEmpLst: KnockoutObservableArray<any> = ko.observableArray([]);
-		isSendApplicant: KnockoutObservable<boolean> = ko.observable(true);
+		isSendApplicant: KnockoutObservable<boolean> = ko.observable(false);
 		mailContent: KnockoutObservable<String> = ko.observable(null);
 		appEmailSet: any = null;
+		isOpEmployee: any = false;
         created() {
             const vm = this;
             let param = getShared("KDL030_PARAM");
             vm.appIDLst = param.appIDLst;
 			vm.isAgentMode(param.isAgentMode);
-			if(!vm.isAgentMode()) {
-				vm.isSendApplicant(false);
+			vm.isOpEmployee = param.isOpEmployee;
+			if(vm.isAgentMode() || vm.isOpEmployee) {
+				vm.isSendApplicant(true);
 			}
 			if (!_.isEmpty(vm.appIDLst)){
                 vm.$ajax(API.applicationForSendByAppID, vm.appIDLst).done((result) => {
 					vm.mailContent(result.mailTemplate);
 					vm.appEmailSet = result.appEmailSet;
+					result.appSendMailByEmpLst.sort((app1, app2) => app1.applicantName.localeCompare(app2.applicantName));
 					_.forEach(result.appSendMailByEmpLst, appSendMailByEmp => {
 						_.forEach(appSendMailByEmp.approvalRoot.listApprovalPhaseStateDto, phase => {
 							_.forEach(phase.listApprovalFrame, frame => {
