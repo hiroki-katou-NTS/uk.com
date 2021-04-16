@@ -1724,13 +1724,7 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 				if(!overlapptingTime.isPresent() && !endTime.equals(item.getTimeSheet().getStart())) continue;
 				
 				//控除時間分、終了時刻をズラす
-				if(item.getDeductionAtr().isGoOut()) {
-					endTime = endTime.forwardByMinutes(item.getTimeSheet().lengthAsMinutes() - item.getDeductionOffSetTime().get().getTotalOffSetTime());
-					if(endTime.isNegative()) endTime = TimeWithDayAttr.THE_PRESENT_DAY_0000;
-				}
-				else {
-					endTime = endTime.forwardByMinutes(item.getTimeSheet().lengthAsMinutes());
-				}
+				endTime = endTime.forwardByMinutes(item.calcTotalTime(NotUseAtr.USE, NotUseAtr.NOT_USE).valueAsMinutes());
 			}
 		}
 		
