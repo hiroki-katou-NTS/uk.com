@@ -21,7 +21,7 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
 						optionsValue: 'code',
 						optionsText: 'name',
 						value: leaveType,
-						enable: !viewMode(),
+						enable: true,
 						required: true }">
 			</div>
         </div>
