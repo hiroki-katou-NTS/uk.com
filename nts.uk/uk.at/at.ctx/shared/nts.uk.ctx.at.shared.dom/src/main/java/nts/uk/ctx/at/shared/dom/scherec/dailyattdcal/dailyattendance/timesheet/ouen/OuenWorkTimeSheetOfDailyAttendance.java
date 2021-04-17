@@ -7,7 +7,7 @@ import nts.arc.layer.dom.objecttype.DomainObject;
 /** 日別勤怠の応援作業時間帯 */
 public class OuenWorkTimeSheetOfDailyAttendance implements DomainObject {
 
-	/** 応援勤務枠No: 応援勤務枠No */
+	/** 応援勤務枠No: 応援勤務枠No supportNo*/
 	private int workNo;
 
 	/** 作業内容: 作業内容 */

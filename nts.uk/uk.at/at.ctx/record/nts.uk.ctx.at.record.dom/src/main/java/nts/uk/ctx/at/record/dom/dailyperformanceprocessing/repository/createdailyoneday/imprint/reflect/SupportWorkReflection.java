@@ -225,7 +225,7 @@ public class SupportWorkReflection {
 			timeSheet = TimeSheetOfAttendanceEachOuenSheet.create(new WorkNo(0), Optional.empty(),
 					Optional.ofNullable(information));
 		}
-		sheetOfDaily = OuenWorkTimeSheetOfDailyAttendance.create(0, workContent, timeSheet);
+		sheetOfDaily = OuenWorkTimeSheetOfDailyAttendance.create(1, workContent, timeSheet);
 
 		return sheetOfDaily;
 	}
@@ -333,9 +333,9 @@ public class SupportWorkReflection {
 	public void correctSupportWork(OuenWorkTimeSheetOfDailyAttendance ouenStamp,
 			OuenWorkTimeSheetOfDailyAttendance ouenStampNew) {
 		// 作業データを上書きする
-		ouenStampNew.getWorkContent().setWork(ouenStamp.getWorkContent().getWork());
+		ouenStamp.getWorkContent().setWork(ouenStampNew.getWorkContent().getWork());
 		// 勤務先を上書きする
-		ouenStampNew.getWorkContent().setWorkplace(ouenStamp.getWorkContent().getWorkplace());
+		ouenStamp.getWorkContent().setWorkplace(ouenStampNew.getWorkContent().getWorkplace());
 	}
 
 	/**
@@ -556,7 +556,7 @@ public class SupportWorkReflection {
 			List<OuenWorkTimeSheetOfDailyAttendance> lstSetSupportData,
 			OuenWorkTimeSheetOfDailyAttendance ouenWorkTime) {
 		this.correctWorkFrameNumber(informationWork, ouenWorkTime);
-		ouenWorkTime.setWorkNo(lstSetSupportData.size());
+		ouenWorkTime.setWorkNo(lstSetSupportData.size()+1);
 		lstSetSupportData.add(ouenWorkTime);
 	}
 
@@ -1008,12 +1008,12 @@ public class SupportWorkReflection {
 		if (startAtr == StartAtr.START_OF_SUPPORT) {
 			TimeSheetOfAttendanceEachOuenSheet timeSheet = TimeSheetOfAttendanceEachOuenSheet.create(new WorkNo(0),
 					Optional.ofNullable(timeDay), Optional.empty());
-			attendance = OuenWorkTimeSheetOfDailyAttendance.create(0, workContent, timeSheet);
+			attendance = OuenWorkTimeSheetOfDailyAttendance.create(1, workContent, timeSheet);
 			return attendance;
 		}
 		TimeSheetOfAttendanceEachOuenSheet timeSheet = TimeSheetOfAttendanceEachOuenSheet.create(new WorkNo(0),
 				Optional.empty(), Optional.ofNullable(timeDay));
-		attendance = OuenWorkTimeSheetOfDailyAttendance.create(0, workContent, timeSheet);
+		attendance = OuenWorkTimeSheetOfDailyAttendance.create(1, workContent, timeSheet);
 		return attendance;
 	}
 
@@ -1046,7 +1046,7 @@ public class SupportWorkReflection {
 					Optional.empty(), lstOuenWorkTime.get(0).getTimeSheet().getStart());
 			timeSheet.getEnd().get().getReasonTimeChange().setTimeChangeMeans(TimeChangeMeans.AUTOMATIC_SET);
 			// 取得した応援データをベースして終了の応援データ作る
-			OuenWorkTimeSheetOfDailyAttendance dailyAttendance = OuenWorkTimeSheetOfDailyAttendance.create(0,
+			OuenWorkTimeSheetOfDailyAttendance dailyAttendance = OuenWorkTimeSheetOfDailyAttendance.create(1,
 					workContent, timeSheet);
 			// 作成した応援データを応援データ一覧の先頭に入れる
 			lstOuenWorkTime.add(0, dailyAttendance);
@@ -1080,7 +1080,7 @@ public class SupportWorkReflection {
 					lstOuenWorkTime.get(lstOuenWorkTime.size() - 1).getTimeSheet().getEnd(), Optional.empty());
 			timeSheet.getStart().get().getReasonTimeChange().setTimeChangeMeans(TimeChangeMeans.AUTOMATIC_SET);
 			// 取得した応援データをベースして終了の応援データ作る
-			OuenWorkTimeSheetOfDailyAttendance dailyAttendance = OuenWorkTimeSheetOfDailyAttendance.create(0,
+			OuenWorkTimeSheetOfDailyAttendance dailyAttendance = OuenWorkTimeSheetOfDailyAttendance.create(1,
 					workContent, timeSheet);
 			// 作成した応援データを応援データ一覧の先頭に入れる
 			lstOuenWorkTime.add(dailyAttendance);

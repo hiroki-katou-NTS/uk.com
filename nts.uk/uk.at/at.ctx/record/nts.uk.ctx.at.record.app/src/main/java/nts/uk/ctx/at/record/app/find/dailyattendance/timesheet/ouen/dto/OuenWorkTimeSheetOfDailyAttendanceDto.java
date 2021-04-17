@@ -96,13 +96,10 @@ public class OuenWorkTimeSheetOfDailyAttendanceDto extends AttendanceItemCommon{
 	public boolean isRoot() { return true; }
 	
 	@Override
-	public int size(String path) {
-		return 20;
-	}
-
-	@Override
 	public OuenWorkTimeSheetOfDailyAttendanceDto clone() {
 		OuenWorkTimeSheetOfDailyAttendanceDto result = new OuenWorkTimeSheetOfDailyAttendanceDto();
+		result.setEmployeeId(employeeId());
+		result.setDate(workingDate());
 		result.setNo(no);
 		result.setWorkContent(workContent == null ? null : workContent.clone());
 		result.setTimeSheet(timeSheet == null ? null : timeSheet.clone());
@@ -169,9 +166,15 @@ public class OuenWorkTimeSheetOfDailyAttendanceDto extends AttendanceItemCommon{
 	public OuenWorkTimeSheetOfDailyAttendance toDomain(String employeeId, GeneralDate date) {
 		
 		WorkContent workContent = WorkContent.create(this.workContent.getCompanyId(), 
-				WorkplaceOfWorkEachOuen.create(this.workContent.getWorkplace().getWorkplaceId(), new WorkLocationCD(this.workContent.getWorkplace().getWorkLocationCD())), 
-				Optional.ofNullable(WorkGroup.create(this.workContent.getWork().getWorkCD1(), this.workContent.getWork().getWorkCD2(), 
-						this.workContent.getWork().getWorkCD3(), this.workContent.getWork().getWorkCD4(), this.workContent.getWork().getWorkCD5())));
+				WorkplaceOfWorkEachOuen.create(
+						this.workContent.getWorkplace() == null ? null : this.workContent.getWorkplace().getWorkplaceId(), 
+						new WorkLocationCD(this.workContent.getWorkplace() == null ? null : this.workContent.getWorkplace().getWorkLocationCD())), 
+				Optional.ofNullable(WorkGroup.create(
+						this.workContent.getWork() == null ? null : this.workContent.getWork().getWorkCD1(), 
+						this.workContent.getWork() == null ? null : this.workContent.getWork().getWorkCD2(), 
+						this.workContent.getWork() == null ? null : this.workContent.getWork().getWorkCD3(), 
+						this.workContent.getWork() == null ? null : this.workContent.getWork().getWorkCD4(), 
+						this.workContent.getWork() == null ? null : this.workContent.getWork().getWorkCD5())));
 		
 		ReasonTimeChange reasonTimeChangeStart = new ReasonTimeChange(TimeChangeMeans.valueOf(this.timeSheet.getStart().getReasonTimeChange().getTimeChangeMeans()), 
 																 Optional.ofNullable(EngravingMethod.valueOf(this.timeSheet.getStart().getReasonTimeChange().getEngravingMethod())));
@@ -179,8 +182,8 @@ public class OuenWorkTimeSheetOfDailyAttendanceDto extends AttendanceItemCommon{
 		ReasonTimeChange reasonTimeChangeEnd = new ReasonTimeChange(TimeChangeMeans.valueOf(this.timeSheet.getEnd().getReasonTimeChange().getTimeChangeMeans()), 
 				 Optional.ofNullable(EngravingMethod.valueOf(this.timeSheet.getEnd().getReasonTimeChange().getEngravingMethod())));
 		
-		WorkTimeInformation start = new WorkTimeInformation(reasonTimeChangeStart, new TimeWithDayAttr(this.timeSheet.getStart().getTimeWithDay()));
-		WorkTimeInformation end = new WorkTimeInformation(reasonTimeChangeEnd, new TimeWithDayAttr(this.timeSheet.getEnd().getTimeWithDay()));
+		WorkTimeInformation start = new WorkTimeInformation(reasonTimeChangeStart, this.timeSheet.getStart().getTimeWithDay() == null ? null : new TimeWithDayAttr(this.timeSheet.getStart().getTimeWithDay()));
+		WorkTimeInformation end = new WorkTimeInformation(reasonTimeChangeEnd, this.timeSheet.getEnd().getTimeWithDay() == null ? null : new TimeWithDayAttr(this.timeSheet.getEnd().getTimeWithDay()));
 		TimeSheetOfAttendanceEachOuenSheet timeSheet = TimeSheetOfAttendanceEachOuenSheet.create(new WorkNo(this.timeSheet.getNo()), Optional.ofNullable(start), Optional.ofNullable(end));
 		OuenWorkTimeSheetOfDailyAttendance attendance = OuenWorkTimeSheetOfDailyAttendance.create(this.no, workContent, timeSheet);
 		return attendance;
