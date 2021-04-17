@@ -486,7 +486,9 @@ public class InterimRemainOffDateCreateData {
 			FuriClassifi furiClassifi, Double usedDays, String wkTypeCd, Optional<String> wkTimeCd, String sid,
 			GeneralDate ymd) {
 		
-		WorkTypeRemainInfor result = new WorkTypeRemainInfor(dataOutput.getWorkTypeCode(), dataOutput.getWorkTypeClass(), dataOutput.getCreateData(), dataOutput.getOccurrenceDetailData(), dataOutput.getSpeHolidayDetailData(), dataOutput.getChildCareDetailData());
+		WorkTypeRemainInfor result = new WorkTypeRemainInfor(dataOutput.getWorkTypeCode(),
+				dataOutput.getWorkTypeClass(), dataOutput.getCreateData(), createDetailData(),
+				dataOutput.getSpeHolidayDetailData(), dataOutput.getChildCareDetailData());
 		
 		WorkTypeClassification wkClasssifi = null;
 				
