@@ -1256,6 +1256,7 @@ public class InterimRemainOffDateCreateData {
 		//残数関連の申請を抽出する
 		List<AppRemainCreateInfor> lstAppInfor = lstAppData.stream()
 				.filter(x -> x.getSid().equals(sid)
+						&& x.getWorkTypeCode().isPresent() 
 						&& (x.getAppDate().equals(baseDate)
 								|| (x.getStartDate().isPresent() 
 										&& x.getEndDate().isPresent()
