@@ -100,8 +100,7 @@ public class InterimRemainOffDateCreateData {
 		} else {
 			//最新の勤務種類変更を伴う申請から残数作成元情報を設定する
 			CreateAtr createAtr = appWithWorkType.getPrePosAtr().equals(PrePostAtr.PREDICT)  ? CreateAtr.APPBEFORE : CreateAtr.APPAFTER;
-			return createInterimDataFromApp(require, cid, detailData, appWithWorkType, detailData.getRecordData().map(x-> x).orElse(new RecordRemainCreateInfor()) ,
-					outputData, dayOffTimeIsUse, createAtr);
+			return createInterimDataFromApp(require, cid, detailData, appWithWorkType,outputData, dayOffTimeIsUse, createAtr);
 		}
 		return outputData;
 	}
@@ -1164,12 +1163,16 @@ public class InterimRemainOffDateCreateData {
 	 * @param dayOffTimeIsUse
 	 * @return
 	 */
-	public static InforFormerRemainData createInterimDataFromApp(RequireM9 require, String cid, InterimRemainCreateInfor createInfo, AppRemainCreateInfor appInfor,
-			RecordRemainCreateInfor recordData, InforFormerRemainData outputData, boolean dayOffTimeIsUse, CreateAtr createAtr) {
+	public static InforFormerRemainData createInterimDataFromApp(RequireM9 require, String cid, InterimRemainCreateInfor createInfo, AppRemainCreateInfor appInfor
+			, InforFormerRemainData outputData, boolean dayOffTimeIsUse, CreateAtr createAtr) {
 		String workTypeCode = appInfor.getWorkTypeCode().map(x -> x).orElse("");
+		
+		Optional<NumberOfDaySuspension> numberDaySuspension = createInfo.getRecordData()
+				.map(x -> x.getNumberDaySuspension()).orElse(createInfo.getScheData().get().getNumberDaySuspension());
+				
 		//アルゴリズム「勤務種類別残数情報を作成する」を実行する
 		List<WorkTypeRemainInfor> remainInfor = createWorkTypeRemainInfor(require, cid, createAtr, workTypeCode,
-				appInfor.getTimeDigestionUsageInfor(), recordData.getNumberDaySuspension(),
+				appInfor.getTimeDigestionUsageInfor(), numberDaySuspension ,
 				appInfor.getWorkTimeCode(),appInfor.getSid(),appInfor.getAppDate());
 		if(remainInfor.isEmpty()) {
 			return null;
