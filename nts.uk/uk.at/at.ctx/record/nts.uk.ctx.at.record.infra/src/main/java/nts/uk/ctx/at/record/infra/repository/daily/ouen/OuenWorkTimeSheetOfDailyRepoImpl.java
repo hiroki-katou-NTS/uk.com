@@ -2,18 +2,23 @@ package nts.uk.ctx.at.record.infra.repository.daily.ouen;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.query.TypedQueryWrapper;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.daily.ouen.OuenWorkTimeSheetOfDaily;
 import nts.uk.ctx.at.record.dom.daily.ouen.OuenWorkTimeSheetOfDailyRepo;
 import nts.uk.ctx.at.record.infra.entity.daily.ouen.KrcdtDayOuenTimeSheet;
+import nts.uk.ctx.at.record.infra.entity.daily.remarks.KrcdtDayRemarksColumn;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.EngravingMethod;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.ReasonTimeChange;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
@@ -144,6 +149,34 @@ public class OuenWorkTimeSheetOfDailyRepoImpl extends JpaRepository implements O
 		this.getEntityManager().createQuery(delete).setParameter("sid", sid)
 												   .setParameter("ymd", ymd)
 												   .executeUpdate();
+	}
+
+	@Override
+	public List<OuenWorkTimeSheetOfDaily> find(Map<String, List<GeneralDate>> param) {
+		List<KrcdtDayOuenTimeSheet> supports = new ArrayList<>();
+		String query = new StringBuilder("SELECT sp FROM KrcdtDayOuenTimeSheet sp")
+								.append(" WHERE sp.pk.sid IN :sid")
+								.append(" AND sp.pk.ymd IN :date")
+								.toString();
+		TypedQueryWrapper<KrcdtDayOuenTimeSheet> tpQuery = queryProxy().query(query, KrcdtDayOuenTimeSheet.class);
+		CollectionUtil.split(param, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, p -> {
+			supports.addAll(tpQuery.setParameter("sid", p.keySet())
+					.setParameter("date", p.values().stream().flatMap(List::stream).collect(Collectors.toSet()))
+					.getList().stream()
+					.collect(Collectors.toList()));
+		});
+		
+		List<OuenWorkTimeSheetOfDaily> domains = new ArrayList<>();
+		param.forEach((sid, dates) -> {
+			dates.forEach(date -> {
+				List<KrcdtDayOuenTimeSheet> supportsByEmp = supports.stream().filter(c -> c.pk.sid.equals(sid) && c.pk.ymd.equals(dates)).collect(Collectors.toList());
+				if (!supportsByEmp.isEmpty()) {
+					domains.add(toDomain(supportsByEmp));
+				}
+			});
+		});
+
+		return domains;
 	}
 
 }

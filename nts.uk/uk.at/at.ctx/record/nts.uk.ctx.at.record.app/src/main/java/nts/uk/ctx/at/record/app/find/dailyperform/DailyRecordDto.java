@@ -155,8 +155,6 @@ public class DailyRecordDto extends AttendanceItemCommon {
 	/**応援時刻: 日別勤怠の応援作業時間帯 */
 	@AttendanceItemLayout( layout = DAILY_SUPPORT_TIMESHEET_CODE, jpPropertyName = DAILY_SUPPORT_TIMESHEET_NAME, 
 						   indexField = DEFAULT_INDEX_FIELD_NAME)
-	@JsonDeserialize(using = CustomOptionalDeserializer.class)
-	@JsonSerialize(using = CustomOptionalSerializer.class)
 	private List<OuenWorkTimeSheetOfDailyAttendanceDto> ouenTimeSheet = new ArrayList<>();
 
 	@Override
