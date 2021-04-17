@@ -113,7 +113,7 @@ public class OuenWorkTimeSheetOfDailyRepoImpl extends JpaRepository implements O
 	
 	public OuenWorkTimeSheetOfDaily toDomain(List<KrcdtDayOuenTimeSheet> es) {
 		List<OuenWorkTimeSheetOfDailyAttendance> ouenTimeSheet = es.stream().map(ots -> OuenWorkTimeSheetOfDailyAttendance.create(
-				es.get(0).pk.ouenNo, 
+				ots.pk.ouenNo, 
 				WorkContent.create(
 						ots.cid, 
 						WorkplaceOfWorkEachOuen.create(ots.workplaceId, new WorkLocationCD(ots.workLocationCode)), 
