@@ -136,7 +136,7 @@ public class InterimRemainOffDateCreateData {
 		outputData.setWorkTypeRemain(dataDetail);
 		//時間休暇使用時間を作成する
 		
-		List<VacationTimeInfor> vactionTime = createVacationUsageTime(require,cid, dataDetail.get(0).getCreateData(), recordData.getLstVacationTimeInfor(),
+		List<VacationTimeInfor> vactionTime = createVacationUsageTime(require,cid, CreateAtr.RECORD, recordData.getLstVacationTimeInfor(),
 				recordData.getWorkTypeCode());
 		
 		//時間年休使用時間を設定する
@@ -1177,7 +1177,7 @@ public class InterimRemainOffDateCreateData {
 		outputData.setWorkTypeRemain(remainInfor);
 
 		//時間休暇使用時間を作成する
-		List<VacationTimeInfor> vactionTimes = createVacationUsageTime(require,cid, remainInfor.get(0).getCreateData(), appInfor.getVacationTimes(),
+		List<VacationTimeInfor> vactionTimes = createVacationUsageTime(require,cid, createAtr, appInfor.getVacationTimes(),
 				workTypeCode);
 		//時間年休使用時間を設定する
 		outputData.setVactionTime(vactionTimes);
