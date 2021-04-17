@@ -740,7 +740,7 @@ public class TempRemainCreateEachData {
 							vac.getCreateData(),
 							RemainType.SIXTYHOUR,
 							Optional.ofNullable(new UseTime(vac.getTotalTimes())),
-							Optional.ofNullable(DigestionHourlyTimeType.of(true, Optional.ofNullable(vac.getTimeType()))))
+							Optional.ofNullable(DigestionHourlyTimeType.of(false, Optional.ofNullable(vac.getTimeType()))))
 					);
 		});
 

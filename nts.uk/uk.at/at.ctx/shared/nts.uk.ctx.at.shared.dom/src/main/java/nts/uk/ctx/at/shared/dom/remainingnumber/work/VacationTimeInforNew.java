@@ -28,7 +28,7 @@ public class VacationTimeInforNew {
 	/**
 	 * 時間休種類
 	 */
-	private AppTimeType timeType;
+	private AppTimeType timeType = AppTimeType.USEDAY;
 	/**
 	 * 時間年休使用時間
 	 */
