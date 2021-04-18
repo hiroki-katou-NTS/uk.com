@@ -37,7 +37,7 @@ public class CreateInterimAnnualMngData {
 		val deductDays = timeMonth.getMonthlyCalculation().getFlexTime().getFlexShortDeductTime().getAnnualLeaveDeductDays().v();
 		
 		TmpAnnualHolidayMng result = new TmpAnnualHolidayMng(IdentifierUtil.randomUniqueId(), timeMonth.getEmployeeId(),
-				timeMonth.getYearMonth().lastGeneralDate(), CreateAtr.FLEXCOMPEN,
+				timeMonth.getDatePeriod().end(), CreateAtr.FLEXCOMPEN,
 				new DigestionHourlyTimeType(), new WorkTypeCode("000"), 
 				AnnualLeaveUsedNumber.of(Optional.of(new AnnualLeaveUsedDayNumber(deductDays)), Optional.empty()));
 		

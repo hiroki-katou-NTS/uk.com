@@ -10,7 +10,7 @@ import lombok.Getter;
 @Getter
 public class RegistrationErrorListDto {
 	private String employeeCdName;
-	private String date;
+	private String dateCsv;
 	private String errName;
 	private String errorMessage;	
 }

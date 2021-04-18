@@ -20,8 +20,8 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.WorkTimes;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.DeductionTotalTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeWithCalculation;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ChildCareAttribute;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortWorkTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.shortworktime.ChildCareAtr;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
@@ -99,7 +99,7 @@ public class KscdtSchShortTime extends ContractUkJpaEntity {
 					DeductionTotalTime.of(TimeWithCalculation.sameTime(new AttendanceTime(x.getTotalTime())),
 							TimeWithCalculation.sameTime(new AttendanceTime(x.getTotalTimeWithIn())),
 							TimeWithCalculation.sameTime(new AttendanceTime(x.getTotalTimeWithOut()))),
-					null, EnumAdaptor.valueOf(x.getPk().getChildCareAtr(), ChildCareAttribute.class));
+					null, EnumAdaptor.valueOf(x.getPk().getChildCareAtr(), ChildCareAtr.class));
 			result.add(timeOfDaily);
 			}
 		});

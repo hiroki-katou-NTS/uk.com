@@ -218,7 +218,7 @@ module nts.uk.at.view.kaf008_ref.a.viewmodel {
                     vm.$dialog.info({messageId: "Msg_15"})
                         .then(() => {
 							nts.uk.request.ajax("at", API.reflectApp, data.reflectAppIdLst);
-   							CommonProcess.handleAfterRegister(data, vm.isSendMail(), vm);
+   							CommonProcess.handleAfterRegister(data, vm.isSendMail(), vm, vm.isAgentMode());
                         });
                 }
             }).fail(res => {

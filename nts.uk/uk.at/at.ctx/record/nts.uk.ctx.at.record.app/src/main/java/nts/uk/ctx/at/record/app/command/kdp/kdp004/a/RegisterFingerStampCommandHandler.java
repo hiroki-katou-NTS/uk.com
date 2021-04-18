@@ -8,7 +8,6 @@ import javax.inject.Inject;
 
 import lombok.AllArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
-import nts.arc.layer.app.command.AsyncCommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.time.GeneralDate;
@@ -16,8 +15,9 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.adapter.employee.EmployeeDataMngInfoImport;
 import nts.uk.ctx.at.record.dom.adapter.employee.EmployeeRecordAdapter;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.ExecutionAttr;
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.CreateDailyResultDomainService;
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.CreateDailyResultDomainServiceImpl.ProcessState;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.ExecutionTypeDaily;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyresults.CreateDailyResultDomainServiceNew;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyresults.OutputCreateDailyResult;
 import nts.uk.ctx.at.record.dom.stamp.card.stamcardedit.StampCardEditing;
 import nts.uk.ctx.at.record.dom.stamp.card.stamcardedit.StampCardEditingRepo;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
@@ -34,7 +34,7 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.S
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.TimeStampInputResult;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSetCommunal;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSetCommunalRepository;
-import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ExecutionLog;
+import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.EmpCalAndSumExeLog;
 import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyImport622;
 import nts.uk.shr.com.context.AppContexts;
@@ -70,7 +70,7 @@ public class RegisterFingerStampCommandHandler extends CommandHandlerWithResult<
 	private StampDakokuRepository stampDakokuRepo;
 
 	@Inject
-	private CreateDailyResultDomainService createDailyResultDomainSv;
+	private CreateDailyResultDomainServiceNew createDailyResultDomainServiceNew;
 
 	@Override
 	protected GeneralDate handle(CommandHandlerContext<RegisterFingerStampCommand> context) {
@@ -85,7 +85,7 @@ public class RegisterFingerStampCommandHandler extends CommandHandlerWithResult<
 																												, sysEmpPub
 																												, stampRecordRepo
 																												, stampDakokuRepo
-																												, createDailyResultDomainSv);
+																												, createDailyResultDomainServiceNew);
 
 		//require, 契約コード, 社員ID, なし, 打刻する方法, 打刻日時, 打刻ボタン, 実績への反映内容
 		TimeStampInputResult inputResult = EnterStampForSharedStampService.create(
@@ -141,7 +141,7 @@ public class RegisterFingerStampCommandHandler extends CommandHandlerWithResult<
 		private StampDakokuRepository stampDakokuRepo;
 
 		@Inject
-		private CreateDailyResultDomainService createDailyResultDomainSv;
+		private CreateDailyResultDomainServiceNew createDailyResultDomainServiceNew;
 
 		@Override
 		public List<StampCard> getLstStampCardBySidAndContractCd(String sid) {
@@ -184,13 +184,12 @@ public class RegisterFingerStampCommandHandler extends CommandHandlerWithResult<
 			this.stampDakokuRepo.insert(stamp);
 		}
 
-		@SuppressWarnings("rawtypes")
 		@Override
-		public ProcessState createDailyResult(AsyncCommandHandlerContext asyncContext, List<String> emloyeeIds,
-				DatePeriod periodTime, ExecutionAttr executionAttr, String companyId, String empCalAndSumExecLogID,
-				Optional<ExecutionLog> executionLog) {
-			return this.createDailyResultDomainSv.createDailyResult(asyncContext, emloyeeIds, periodTime, executionAttr,
-					companyId, empCalAndSumExecLogID, executionLog);
+		public OutputCreateDailyResult createDataNewNotAsync(String employeeId, DatePeriod periodTime,
+				ExecutionAttr executionAttr, String companyId, ExecutionTypeDaily executionType,
+				Optional<EmpCalAndSumExeLog> empCalAndSumExeLog, Optional<Boolean> checkLock) {
+			return createDailyResultDomainServiceNew.createDataNewNotAsync(employeeId, periodTime, executionAttr,
+					companyId, executionType, empCalAndSumExeLog, checkLock);
 		}
 
 		@Override

@@ -94,7 +94,7 @@ public class BreakTimeOfDaily {
 			//休憩回数
 			goOutTimes = new BreakTimeGoOutTimes(breakTimeCount);
 			//勤務間時間
-			duringTime = new AttendanceTime(0);
+			duringTime = oneDay.calcBetweenBreakTime();
 			//補正後時間帯
 			breakTimeSheets = new ArrayList<>();
 		}
@@ -139,6 +139,11 @@ public class BreakTimeOfDaily {
 			HolidayCalcMethodSet holidayCalcMethodSet,
 			Optional<WorkTimezoneCommonSet> commonSetting) {
 		val withinDedTime = oneDay.calcWithinTotalTime(conditionAtr,dedAtr,StatutoryAtr.Statutory,pertimesheet,premiumAtr,holidayCalcMethodSet,commonSetting);
+		if(dedAtr.isAppropriate()) {
+			//勤務間休憩時間帯
+			AttendanceTime betweenBreakTime = oneDay.calcBetweenBreakTime();
+			withinDedTime.addMinutesNotReturn(betweenBreakTime, betweenBreakTime);
+		}
 		val excessDedTime = oneDay.calcWithinTotalTime(conditionAtr,dedAtr,StatutoryAtr.Excess,pertimesheet,premiumAtr,holidayCalcMethodSet,commonSetting);
 		return DeductionTotalTime.of(withinDedTime.addMinutes(excessDedTime.getTime(), excessDedTime.getCalcTime()), withinDedTime, excessDedTime);
 	}

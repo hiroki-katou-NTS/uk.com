@@ -4,7 +4,6 @@
 .label-div {
 	margin-top: 10px;
     margin-left: 20px;
-    margin-bottom: 20px;	
 }
 .label-div > label {
 	font-size: large;
@@ -18,16 +17,17 @@
 	width: 240px;		
 }
 #A4_2 {
-	width: 640px;
-    height: 200px;
+	width: 633px;
+    height: 170px;
 }
 .message-td {
 	padding-left: 10px;
 	padding-top: 10px;
 }
 
-#table-phase, #table-phase td, #table-phase th { 
+.table-phase td, .table-phase th {
 	border: 1px solid #CCC;
+	border-left: none;
 	height: 25px;
     padding-left: 2px;
 }
@@ -66,9 +66,6 @@
 	margin-top: 5px;
 	color: #FF0000;
 }
-#table-phase thead{
-	background-color: #E0F59E;
-}
 
 /* list approver */
 .phase-app{
@@ -103,4 +100,52 @@
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
+}
+
+.table-phase, .table-phase td, .table-phase th { 
+	border: 1px solid #CCC;
+	height: 25px;
+    padding-left: 2px;
+}
+
+.table-phase thead{
+	background-color: #E0F59E;
+}
+
+.table-phase {
+	border-style: hidden;
+	border-bottom: solid 1px;
+}
+
+.table-phase tr td:first-child{
+	width: 100px;
+}
+
+#table-body {
+	margin-top: -1px;
+	height: 166px;
+	/*min-width: 774px;*/
+	width: auto;
+	overflow-y: auto;
+	border: #cccccc solid 1px;
+}
+
+#table-body tr {
+	height: 33px;
+}
+
+.border-b-none {
+	border-bottom: none !important;
+}
+
+.min-774 {
+	min-width: 774px;
+}
+
+.min-671 {
+	min-width: 671px;
+}
+
+.break-all {
+	word-break: break-all;
 }

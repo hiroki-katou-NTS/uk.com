@@ -1,0 +1,182 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component"
+>
+<body>
+<ui:composition template="../../../../master/base.xhtml">
+    <ui:define name="htmlHead">
+        <com:ValidatorScript>
+            nts.uk.ctx.at.function.dom.alarm.AlarmPatternCode
+            nts.uk.ctx.at.function.dom.alarm.AlarmPatternName
+        </com:ValidatorScript>
+        <com:scriptfile set="IGNITE"/>
+        <com:stylefile path="styles.css"/>
+        <com:scriptfile path="/view/kal/014/common/common.js"/>
+        <com:scriptfile path="kal014.a.vm.js"/>
+    </ui:define>
+    <ui:define name="content">
+        <div id="functions-area">
+            <!--A1_1-->
+            <a class="goback" tabindex="1"
+               data-bind="ntsLinkButton: { jump: backButon }">#{i18n.getText('KAL014_8')}</a>
+            <!--A1_2-->
+            <button id="A1_2" tabindex="2" data-bind="click:clickNewButton,enable: true">#{i18n.getText('KAL014_9')}</button>
+            <!--A1_3-->
+            <button id="A1_3" tabindex="3" class="proceed"
+                    data-bind="click:clickRegister, enable: $root.errors.isEmpty">#{i18n.getText('KAL014_10')}</button>
+            <!--A1_4-->
+            <button id="A1_4" tabindex="4" class="danger"
+                    data-bind="click:clickDeleteButton, enable :!isNewMode()">#{i18n.getText('KAL014_11')}</button>
+        </div>
+        <div id="contents-area">
+            <div class="table" style="margin-top: 8px;max-width: 100%;">
+                <div class="cell valign-top" style="width: 30%">
+                    <!-- A2_6-->
+                    <div data-bind="ntsPanel:{direction: 'right', visible: true}">
+                        <!-- A2_1-->
+                        <table tabindex="5" id="single-list" data-bind="ntsGridList: {
+                                dataSource: gridItems,
+                                primaryKey: 'code',
+                                columns: [ { headerText: '#{i18n.getText('KAL014_12')}', key: 'code', width: 80, formatter: _.escape },
+                                           { headerText: '#{i18n.getText('KAL014_13')}', key: 'name', width: 200, formatter: _.escape }
+                                          ],
+                                deleteOptions : {visible : false},
+                                multiple: false,
+                                rows: 16,
+                                value: currentCode
+                        }">
+                        </table>
+                    </div>
+                </div>
+                <div class="cell valign-top" data-bind="with: $vm.alarmPatterSet">
+                    <div class="table">
+                        <!-- A3_1 -->
+                        <div class="cell valign-center">
+                            <div data-bind="ntsFormLabel: { constraint: ['AlarmPatternCode','AlarmPatternName'], enable: true, required:true }">#{i18n.getText('KAL014_14')}</div>
+                        </div>
+                        <div class="cell valign-center">
+                            <!-- A3_2 -->
+                            <input tabindex="6" id="A3_2"
+                                   data-bind="ntsTextEditor: {constraint: 'AlarmPatternCode', value: alarmPatternCD,enable: $vm.isNewMode(),required: true, name: $vm.$i18n('KAL014_15')}, style: { width: '27px', marginRight: '5px'}"/>
+                        </div>
+                        <div class="cell valign-center">
+                            <!-- A3_3 -->
+                            <input tabindex="7" id="A3_3"
+                                   data-bind="ntsTextEditor: {constraint: 'AlarmPatternName', value: alarmPatternName, required: true, name: $vm.$i18n('KAL014_16')}"/>
+                        </div>
+                    </div>
+                    <!-- A4_1 -->
+                    <div id="tab-panel" tabindex="8" style="padding: 15px 12px 15px 0px;"
+                         data-bind="ntsTabPanel: { dataSource: $vm.tabs, active: $vm.selectedTab}">
+                        <!-- A4_2 -->
+                        <div class="tab-content-1">
+                            <div class="table">
+                                <!-- A5_1 A5_2-->
+                                <div class="cell valign-center item-A513-custom-style">
+                                    <div class="label">#{i18n.getText('KAL014_20')}</div>
+                                    <hr></hr>
+                                </div>
+                                <div class="cell valign-center" style="width: 97px"></div>
+                                <!-- A5_3 A5_4-->
+                                <div class="cell valign-center item-A513-custom-style">
+                                    <div class="label">#{i18n.getText('KAL014_21')}</div>
+                                    <hr></hr>
+                                </div>
+                            </div>
+                            <!-- A5_6-->
+                            <div class="table" style="padding-top: 8px">
+                                <div tabindex="9" id="swap-list" data-bind="ntsSwapList: {
+                                    showSearchBox: { showLeft : true, showRight: true},
+                                    height: 260,
+                                    dataSource: $vm.itemsSwap,
+                                    primaryKey: 'key',
+                                    columns: $vm.columns,
+                                    searchCriterion:['code','name'],
+                                    value: allCtgCdSelected
+                                }"></div>
+                            </div>
+                        </div>
+                        <!-- A4_3 -->
+                        <div class="tab-content-2">
+                            <div class="">
+                                <!-- A6_1 -->
+                                <table id="fixed-table">
+                                    <colgroup>
+                                        <col width="240px"/>
+                                        <col width="487px"/>
+                                        <col width="90px"/>
+                                    </colgroup>
+                                    <thead>
+                                    <tr><!-- A6_2 -->
+                                        <th class="ui-widget-header">#{i18n.getText('KAL014_22')}</th>
+                                        <!-- A6_3 -->
+                                        <th class="ui-widget-header">#{i18n.getText('KAL014_27')}</th>
+                                        <th class="ui-widget-header"></th>
+                                    </tr>
+                                    </thead>
+                                    <tbody data-bind="foreach: checkConList">
+                                    <tr>
+                                        <!-- A6_4 -->
+                                        <td><span class="label" data-bind="text:alarmCtgName"></span></td>
+                                        <!-- A6_5 -->
+                                        <td><span class="label" data-bind="text:displayText"></span></td>
+                                        <!-- A6_6 -->
+                                        <td style="text-align: center;">
+                                            <button class = "A6_6_button_style" tabindex="11"
+                                                    data-bind="click: function() {$vm.clickTableItem($data)}">#{i18n.getText('KAL014_28')}</button>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <!-- A4_4 -->
+                        <div class="tab-content-3" style="width: 819.81px; height: 302px">
+                            <div class="table">
+                                <div class="cell valign-center">
+                                    <!-- A7_1 -->
+                                    <div data-bind="ntsFormLabel: {inline: true, required: true, enable: true}">
+                                        #{i18n.getText('KAL014_29')}</div>
+                                </div>
+                                <div class="cell valign-center">
+                                    <!-- A7_2 -->
+                                    <div tabindex="12" class="cf" data-bind="ntsSwitchButton: {
+                                        name: 'Sample Switch',
+                                        options: $vm.roundingRules,
+                                        optionsValue: 'code',
+                                        optionsText: 'name',
+                                        value: alarmPerSet().authSetting,
+                                        required: true,
+                                        enable: true }">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="table" style="padding-top: 15px">
+                                <div class="cell valign-center">
+                                    <!-- A8_1 -->
+                                    <div data-bind="ntsFormLabel: {}">#{i18n.getText('KAL014_32')}</div>
+                                </div>
+                                <div class="cell valign-center">
+                                    <!-- A8_2 -->
+                                    <input tabindex="-1" id="A8_2" style="margin-left: 40px;"
+                                           data-bind="ntsTextEditor: {value: alarmPerSet().roleIdDis, readonly : true}"/>
+                                </div>
+                                <div class="cell valign-center">
+                                    <!-- A8_3 -->
+                                    <button tabindex="13" style="margin-left: 10px;"
+                                            data-bind="click:$vm.clickConfiguration,
+                                            enable: alarmPerSet().authSetting()== 1">
+                                        #{i18n.getText('KAL014_33')}</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </ui:define>
+</ui:composition>
+</body>
+</html>

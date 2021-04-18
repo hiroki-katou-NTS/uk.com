@@ -569,6 +569,9 @@ public class MonthlyAggregationRemainingNumberImpl implements MonthlyAggregation
 		proc.setEmployeeId(employeeId);
 		proc.setCompanySets(comSetting);
 		proc.setMonthlyCalculatingDailys(dailys);
+		// Tạm fix bug NullPointerException (a Tín sửa)
+		proc.aggregateResult = new AggregateMonthlyRecordValue();
+		proc.aggregateResult.setAttendanceTime(Optional.empty());
 		proc.createDailyInterimRemainMngs(require,cacheCarrier,period);
 		return proc.getDailyInterimRemainMngs();
 	}
