@@ -139,7 +139,7 @@ public class FlexOffdayWorkTime extends WorkTimeDomainObject implements Cloneabl
 
 	public void correctData(ScreenMode screenMode, FlexWorkSetting oldDomain) {
 		if (!this.restTimezone.getFlowRestTimezone().isUseHereAfterRestSet()) {
-			this.restTimezone.correctData(screenMode, oldDomain.getOffdayWorkTime().getRestTimezone());
+			this.restTimezone.correctData(oldDomain.getOffdayWorkTime().getRestTimezone());
 		}
 	}
 	

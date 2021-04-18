@@ -170,7 +170,7 @@ public class FlexHalfDayWorkTime extends WorkTimeDomainObject implements Cloneab
 				this.restTimezone.restoreFixRestTime(oneDay.get().getRestTimezone().isFixRestTime());
 			}
 		} else {
-			this.restTimezone.correctData(screenMode, oldDomain.getRestTimezone());
+			this.restTimezone.correctData(oldDomain.getRestTimezone());
 		}
 	}
 	

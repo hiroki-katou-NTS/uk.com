@@ -150,6 +150,11 @@ public class FlexWorkSetting extends WorkTimeAggregateRoot implements Cloneable,
 				this.getLstHalfDayWorkTimezone().size() > 0
 						? this.getLstHalfDayWorkTimezone().get(0).getRestTimezone().isFixRestTime()
 						: false);
+		
+		this.lstHalfDayWorkTimezone
+		    .forEach(x -> x.getRestTimezone().correctData(
+		            other.getLstHalfDayWorkTimezone().stream()
+		            .filter(y -> y.getAmpmAtr().value == x.getAmpmAtr().value).findFirst().get().getRestTimezone()));
 	}
 
 	/**
