@@ -12,12 +12,13 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.function.dom.adapter.actualmultiplemonth.MonthlyRecordValueImport;
+import nts.uk.ctx.at.function.dom.adapter.monthly.agreement.AgreMaxAverageTimeImport;
 import nts.uk.ctx.at.function.dom.adapter.monthly.agreement.AgreTimeOfMonthlyImport;
-import nts.uk.ctx.at.function.dom.adapter.monthly.agreement.AgreementTimeByPeriodImport;
 import nts.uk.ctx.at.function.dom.annualworkschedule.CalculationFormulaOfItem;
 import nts.uk.ctx.at.function.dom.annualworkschedule.ItemsOutputToBookTable;
 import nts.uk.ctx.at.function.dom.annualworkschedule.enums.ValueOuputFormat;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreMaxTimeStatusOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeOfManagePeriod;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeStatusOfMonthly;
 import nts.uk.shr.com.i18n.TextResource;
@@ -51,13 +52,13 @@ public class AnnualWorkScheduleData {
 	private Integer monthsExceeded;
 	private Integer monthsRemaining;
 
-	private ItemData period1st;
-	private ItemData period2nd;
-	private ItemData period3rd;
-	private ItemData period4th;
-	private ItemData period5th;
-	private ItemData period6th;
-	private ItemData period7th;
+	private ItemDataPeriod period1st;
+	private ItemDataPeriod period2nd;
+	private ItemDataPeriod period3rd;
+	private ItemDataPeriod period4th;
+	private ItemDataPeriod period5th;
+	private ItemDataPeriod period6th;
+	private ItemDataPeriod period7th;
 
 	private Integer maxDigitAfterDecimalPoint = null;
 
@@ -107,7 +108,7 @@ public class AnnualWorkScheduleData {
 		}
 	}
 
-	public void setPeriodMonthData(ItemData item, int index) {
+	public void setPeriodMonthData(ItemDataPeriod item, int index) {
 		switch (index) {
 		case 1:
 			this.period1st = item;
@@ -180,6 +181,12 @@ public class AnnualWorkScheduleData {
 	}
 
 	private String formatItemData(ItemData item) {
+		if (item == null)
+			return "";
+		return formatBigDecimal(item.getValue());
+	}
+	
+	private String formatItemData(ItemDataPeriod item) {
 		if (item == null)
 			return "";
 		return formatBigDecimal(item.getValue());
@@ -297,8 +304,9 @@ public class AnnualWorkScheduleData {
 		return this.formatItemData(this.period7th);
 	}
 
-	private Integer getColor(ItemData item) {
+	private Integer getColor(ItemData item, boolean isSum) {
 		if (item == null || item.getStatus() == null)
+			// check gray for sum column
 			return null;
 		switch (item.getStatus()) {
 		case EXCESS_LIMIT_ERROR:
@@ -312,90 +320,106 @@ public class AnnualWorkScheduleData {
 			// No57: #F6F636 = 16184886
 			return 16184886;
 		case EXCESS_BG_GRAY:
-			return 11119017;
+			// KWR008 update specs ver 17 redmine #115614
+			return isSum ? 11119017 : 16600397;
+		default:
+			return null;
+		}
+	}
+	
+	private Integer getColorPeriodValue(ItemDataPeriod item) {
+		if (item == null || item.getStatus() == null)
+			return null;
+		switch (item.getStatus()) {
+		case ERROR_OVER:
+			// No56: #FD4D4D = 16600397
+			return 16600397;
+		case ALARM_OVER:
+			// No57: #F6F636 = 16184886
+			return 16184886;
 		default:
 			return null;
 		}
 	}
 
 	public Integer getColorMonth1st() {
-		return this.getColor(this.month1st);
+		return this.getColor(this.month1st, false);
 	}
 
 	public Integer getColorMonth2nd() {
-		return this.getColor(this.month2nd);
+		return this.getColor(this.month2nd, false);
 	}
 
 	public Integer getColorMonth3rd() {
-		return this.getColor(this.month3rd);
+		return this.getColor(this.month3rd, false);
 	}
 
 	public Integer getColorMonth4th() {
-		return this.getColor(this.month4th);
+		return this.getColor(this.month4th, false);
 	}
 
 	public Integer getColorMonth5th() {
-		return this.getColor(this.month5th);
+		return this.getColor(this.month5th, false);
 	}
 
 	public Integer getColorMonth6th() {
-		return this.getColor(this.month6th);
+		return this.getColor(this.month6th, false);
 	}
 
 	public Integer getColorMonth7th() {
-		return this.getColor(this.month7th);
+		return this.getColor(this.month7th, false);
 	}
 
 	public Integer getColorMonth8th() {
-		return this.getColor(this.month8th);
+		return this.getColor(this.month8th, false);
 	}
 
 	public Integer getColorMonth9th() {
-		return this.getColor(this.month9th);
+		return this.getColor(this.month9th, false);
 	}
 
 	public Integer getColorMonth10th() {
-		return this.getColor(this.month10th);
+		return this.getColor(this.month10th, false);
 	}
 
 	public Integer getColorMonth11th() {
-		return this.getColor(this.month11th);
+		return this.getColor(this.month11th, false);
 	}
 
 	public Integer getColorMonth12th() {
-		return this.getColor(this.month12th);
+		return this.getColor(this.month12th, false);
 	}
 
 	public Integer getColorSum() {
-		return this.getColor(this.sum);
+		return this.getColor(this.sum, true);
 	}
 
 	public Integer getColorPeriodMonth1st() {
-		return this.getColor(this.period1st);
+		return this.getColorPeriodValue(this.period1st);
 	}
 
 	public Integer getColorPeriodMonth2nd() {
-		return this.getColor(this.period2nd);
+		return this.getColorPeriodValue(this.period2nd);
 	}
 
 	public Integer getColorPeriodMonth3rd() {
-		return this.getColor(this.period3rd);
+		return this.getColorPeriodValue(this.period3rd);
 	}
 
 	public Integer getColorPeriodMonth4th() {
-		return this.getColor(this.period4th);
+		return this.getColorPeriodValue(this.period4th);
 	}
 
 	public Integer getColorPeriodMonth5th() {
-		return this.getColor(this.period5th);
+		return this.getColorPeriodValue(this.period5th);
 	}
 
 	public Integer getColorPeriodMonth6th() {
-		return this.getColor(this.period6th);
+		return this.getColorPeriodValue(this.period6th);
 	}
 
 	public Integer getColorPeriodMonth7th() {
-		return this.getColor(this.period7th);
+		return this.getColorPeriodValue(this.period7th);
 	}
 
 	public static AnnualWorkScheduleData fromMonthlyAttendanceList(ItemsOutputToBookTable itemOut
@@ -448,7 +472,7 @@ public class AnnualWorkScheduleData {
 	public static AnnualWorkScheduleData fromAgreementTimeList(ItemsOutputToBookTable itemOut,
 			AgreTimeOfMonthlyImport agreTimeOfMonthlyImport,
 			List<AgreementTimeOfManagePeriod> agreementTimeResults,
-			List<AgreementTimeByPeriodImport> listExcesMonths,
+			List<AgreMaxAverageTimeImport> listExcesMonths,
 			YearMonth startYm,
 			Integer monthsExceeded,
 			Integer monthLimit,
@@ -482,25 +506,25 @@ public class AnnualWorkScheduleData {
 		}
 
 		listExcesMonths = listExcesMonths.stream().sorted((excesMonth1, excesMonth2) -> Integer
-				.compare(excesMonth1.getStartMonth().v(), excesMonth2.getStartMonth().v()))
+				.compare(excesMonth1.getPeriod().start().v(), excesMonth1.getPeriod().start().v()))
 				.collect(Collectors.toList());
 
 		for (int i = 0; i < header.size(); i++) {
 			int monthValue = Integer.valueOf(header.get(i).split("～")[0]).intValue();
 			@SuppressWarnings("unused")
 			boolean mark = false;
-			for (AgreementTimeByPeriodImport m : listExcesMonths) {
-				if (monthValue == m.getStartMonth().month()) {
-					BigDecimal value = new BigDecimal(m.getAgreementTime().v());
-					AgreementTimeStatusOfMonthly statusEnum = m.getStatus();
-					ItemData item = new ItemData(value, statusEnum);
+			for (AgreMaxAverageTimeImport m : listExcesMonths) {
+				if (monthValue == m.getPeriod().start().month()) {
+					BigDecimal value = new BigDecimal(m.getAverageTime());
+					AgreMaxTimeStatusOfMonthly statusEnum = EnumAdaptor.valueOf(m.getStatus(), AgreMaxTimeStatusOfMonthly.class);
+					ItemDataPeriod item = new ItemDataPeriod(value, statusEnum);
 					annualWorkScheduleData.setPeriodMonthData(item, i + 1);
 					mark = true;
 					break;
 				}
 			}
 			if (mark = false) {
-				ItemData item = new ItemData(null, AgreementTimeStatusOfMonthly.NORMAL);
+				ItemDataPeriod item = new ItemDataPeriod(null, AgreMaxTimeStatusOfMonthly.NORMAL);
 				annualWorkScheduleData.setPeriodMonthData(item, i + 1);
 			} else {
 				mark = false;

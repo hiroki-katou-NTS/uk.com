@@ -43,7 +43,6 @@ import nts.uk.ctx.at.function.dom.adapter.jobtitle.JobTitleImport;
 import nts.uk.ctx.at.function.dom.adapter.monthly.agreement.AgreMaxAverageTimeImport;
 import nts.uk.ctx.at.function.dom.adapter.monthly.agreement.AgreMaxAverageTimeMultiImport;
 import nts.uk.ctx.at.function.dom.adapter.monthly.agreement.AgreementTimeByPeriodAdapter;
-import nts.uk.ctx.at.function.dom.adapter.monthly.agreement.AgreementTimeByPeriodImport;
 import nts.uk.ctx.at.function.dom.adapter.monthly.agreement.AgreementTimeYearImport;
 import nts.uk.ctx.at.function.dom.adapter.monthly.agreement.GetAgreementPeriodAdapter;
 import nts.uk.ctx.at.function.dom.adapter.standardtime.AgreementOperationSettingAdapter;
@@ -71,11 +70,8 @@ import nts.uk.ctx.at.record.dom.monthly.agreement.export.GetExcessTimesYear;
 import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.record.dom.workrecord.export.WorkRecordExport;
 import nts.uk.ctx.at.record.dom.workrecord.export.dto.EmpAffInfoExport;
-import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeYear;
 import nts.uk.ctx.at.shared.dom.monthlyattditem.aggregate.MonthlyAttItemCanAggregateRepository;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreMaxTimeStatusOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeOfManagePeriod;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeStatusOfMonthly;
 import nts.uk.shr.com.company.CompanyAdapter;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
@@ -485,9 +481,7 @@ public class AnnualWorkScheduleExportService extends ExportService<AnnualWorkSch
 			// [RQ.555] 年間超過回数と残数の取得
 			agreementExcessInfo = GetExcessTimesYear.getWithRemainTimes(require, employeeId, non36Agreement, baseDate);
 		}
-
-		List<AgreementTimeByPeriodImport> listAgreMaxAverageTime = new ArrayList<>();
-		
+		List<AgreMaxAverageTimeImport> listAgreMaxAverageTime = new ArrayList<>();
 		// 複数月表示をチェック
 		if (setting.isMultiMonthDisplay()) {
 			// 暦上の年月変換処理
@@ -504,19 +498,7 @@ public class AnnualWorkScheduleExportService extends ExportService<AnnualWorkSch
 			// for header
 			List<String> periodLable = new ArrayList<>();
 			for (AgreMaxAverageTimeImport agreMaxAverage: listAgreMaxAverageTimeImport) {
-				AgreementTimeByPeriodImport item = new AgreementTimeByPeriodImport(
-						agreMaxAverage.getPeriod().start()
-						, null
-						, new AttendanceTimeYear(agreMaxAverage.getAverageTime())
-						, null
-						, null
-						, null
-						, null
-						, agreMaxAverage.getStatus() == AgreMaxTimeStatusOfMonthly.NORMAL.value
-								? AgreementTimeStatusOfMonthly.NORMAL
-								: AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR
-				);
-				listAgreMaxAverageTime.add(item);
+				listAgreMaxAverageTime.add(agreMaxAverage);
 				periodLable.add(agreMaxAverage.getPeriod().start().month() + "～" +  agreMaxAverage.getPeriod().end().month());
 			}
 			
