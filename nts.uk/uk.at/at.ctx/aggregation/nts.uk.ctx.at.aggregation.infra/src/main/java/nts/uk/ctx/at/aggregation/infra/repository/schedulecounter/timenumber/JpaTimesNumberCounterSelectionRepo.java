@@ -49,6 +49,7 @@ public class JpaTimesNumberCounterSelectionRepo extends JpaRepository implements
         builderString.append(" ON a.pk.timeNo = b.kshstTotalTimesPK.totalTimesNo AND a.pk.companyId = b.kshstTotalTimesPK.cid ");
         builderString.append(" WHERE a.pk.companyId = :companyId ");
         builderString.append(" AND a.pk.countType = :type AND b.useAtr = 1 ");
+        builderString.append(" ORDER BY a.dispOrder");
         FIND_BY_CID_AND_TYPE = builderString.toString();
     }
 
