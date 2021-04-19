@@ -28,7 +28,7 @@ public class SgwdtFailLogIdenPasswordPK implements Serializable {
 	@Column(name = "FAILURE_DATE_TIME")
 	private GeneralDateTime failureDateTime;
 	
-	@Column(name = "TRIED_COMPANY_CODE")
+	@Column(name = "TRIED_COMPANY_ID")
 	private String triedCompanyId;
 	
 	@Column(name = "TRIED_EMPLOYEE_CODE")

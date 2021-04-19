@@ -17,13 +17,13 @@ public class PasswordAuthIdentificateFailureLog  implements DomainAggregate {
 
 	/** 試行した会社コード */
 	@Getter
-	private final String triedCompanyCode;
+	private final String triedCompanyId;
 
 	/** 試行した社員コード */
 	@Getter
 	private final String triedEmployeeCode;
 
-	public static PasswordAuthIdentificateFailureLog create(String companyCode, String employeeCode) {
-		return new PasswordAuthIdentificateFailureLog(GeneralDateTime.now(), companyCode, employeeCode);
+	public static PasswordAuthIdentificateFailureLog create(String companyId, String employeeCode) {
+		return new PasswordAuthIdentificateFailureLog(GeneralDateTime.now(), companyId, employeeCode);
 	}
 }

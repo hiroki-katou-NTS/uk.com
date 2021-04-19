@@ -21,7 +21,7 @@ public class JpaPasswordAuthIdentificationFailureLogRepository extends JpaReposi
 		return new SgwdtFailLogIdenPassword(
 				new SgwdtFailLogIdenPasswordPK(
 				domain.getFailureDateTime(), 
-				domain.getTriedCompanyCode(), 
+				domain.getTriedCompanyId(), 
 				domain.getTriedEmployeeCode()));
 	}
 
