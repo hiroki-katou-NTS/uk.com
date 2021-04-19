@@ -53,6 +53,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.GetClosureIdHistory;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.GetClosureStartForEmployee;
+import nts.uk.ctx.at.shared.dom.workrule.closure.service.GetClosureStartForEmployee.RequireM1;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantDays;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantHdTblSet;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantNum;
@@ -458,9 +459,9 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 		if (sttMng.isPresent()){
 			// 受け取った「年月日」を返す
 			closureStart = sttMng.get().getPeriod().end();
-			if (closureStart.before(GeneralDate.max())){
-				closureStart = closureStart.addDays(1);
-			}
+//			if (closureStart.before(GeneralDate.max())){
+//				closureStart = closureStart.addDays(1);
+//			}
 			closureStartOpt = Optional.of(closureStart);
 		}
 		else {

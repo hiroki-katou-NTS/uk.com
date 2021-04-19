@@ -24,27 +24,28 @@ public class GetWorkplaceNotWorkgroupService {
 	public static List<WorkplaceInformation> getWorkplace(Require require, GeneralDate baseDate){
 		// require.運用している職場の情報をすべて取得する( 基準日 )
 		List<WorkplaceInformation> lstInfoImports = require.getAllActiveWorkplace(baseDate);
-		
+
 		// 職場情報リスト.isEmpty
-		if(lstInfoImports.isEmpty())
+		if(lstInfoImports.isEmpty()) {
 			return Collections.emptyList();
-		
+		}
+
 		// QA http://192.168.50.4:3000/issues/110130 fixed
 		List<AffWorkplaceGroup> workplaceGroup = require.getAll();
-		// require.職場グループ所属情報をすべて取得する(): map $.職場ID																
-		List<String> lstWpid = workplaceGroup.stream().map(mapper->mapper.getWKPID()).collect(Collectors.toList());
-		
-		// filter not $所属済み職場IDリスト.contains( $.職場ID )														
+		// require.職場グループ所属情報をすべて取得する(): map $.職場ID
+		List<String> lstWpid = workplaceGroup.stream().map(mapper->mapper.getWorkplaceId()).collect(Collectors.toList());
+
+		// filter not $所属済み職場IDリスト.contains( $.職場ID )
 		lstInfoImports = lstInfoImports.stream().filter(predicate-> !lstWpid.contains(predicate.getWorkplaceId())).collect(Collectors.toList());
 		return lstInfoImports;
 	}
-	
+
 	public static interface Require {
-		// [R-1] 運用している職場の情報をすべて取得する    WorkplaceExportService																				
-		// アルゴリズム.運用している職場の情報をすべて取得する( 会社ID, 職場ID )		
+		// [R-1] 運用している職場の情報をすべて取得する    WorkplaceExportService
+		// アルゴリズム.運用している職場の情報をすべて取得する( 会社ID, 職場ID )
 		List<WorkplaceInformation> getAllActiveWorkplace(GeneralDate baseDate);
-		
-		// [R-2] 職場グループ所属情報をすべて取得する    AffWorkplaceGroupRespository																					
+
+		// [R-2] 職場グループ所属情報をすべて取得する    AffWorkplaceGroupRespository
 		// 職場グループ所属情報Repository.getAll( 会社ID ) :: JpaAffWorkplaceGroupRespository
 		List<AffWorkplaceGroup> getAll();
 	}

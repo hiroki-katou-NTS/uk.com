@@ -930,7 +930,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 						return vm.$ajax('at', vm.mode() != MODE.MULTiPLE_AGENT ? API.register : API.registerMultiple, commandRegister).then((successData) => {
 							return vm.$dialog.info({ messageId: "Msg_15" }).then(() => {
 								nts.uk.request.ajax("at", API.reflectApp, successData.reflectAppIdLst);
-								CommonProcess.handleAfterRegister(successData, vm.isSendMail(), vm, vm.isAgentMode());
+								CommonProcess.handleAfterRegister(successData, vm.isSendMail(), vm, vm.isAgentMode(), appDispInfoStartupOutput.appDispInfoNoDateOutput.employeeInfoLst);
 							});
 						});
 					}

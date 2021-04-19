@@ -1,6 +1,9 @@
 package nts.uk.ctx.at.request.dom.mail;
 
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.MailSenderResult;
+import nts.uk.ctx.at.request.dom.setting.company.emailset.AppEmailSet;
 
 /**
  * @author hiep.ld
@@ -22,5 +25,16 @@ public interface CheckTransmission {
 	 * @param applicantID
 	 * @return sendMailResult
 	 */
-	public MailSenderResult doCheckTranmission(SendMailAppInfoParam sendMailAppInfoParam, boolean sendMailApplicant, String mailTemplate);
+	public MailSenderResult doCheckTranmission(SendMailAppInfoParam sendMailAppInfoParam, boolean sendMailApplicant, String mailTemplate, AppEmailSet appEmailSet);
+	
+	/**
+	 * 申請メール埋込URL取得
+	 * @param appID 申請ID
+	 * @param appType 申請種類
+	 * @param prePostAtr 事前事後区分
+	 * @param employeeID 社員ID
+	 * @param urlInclude URL理込(boolean)
+	 * @return
+	 */
+	public String getAppEmailEmbeddedURL(String appID, ApplicationType appType, PrePostAtr prePostAtr, String employeeID, boolean urlInclude);
 }
