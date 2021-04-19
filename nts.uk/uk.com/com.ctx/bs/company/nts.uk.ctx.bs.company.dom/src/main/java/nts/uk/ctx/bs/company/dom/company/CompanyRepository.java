@@ -25,6 +25,12 @@ public interface CompanyRepository {
 	 */
 	List<Company> findAll(String contractCd);
 	
+	/** 
+	 * get all company by listCid and contractcode
+	 * @author: tutk
+	 */
+	List<Company> findAllByListCid(String contractCd,List<String> companyIds);
+	
 	/**
 	 * find a company infor item by code 
 	 * @param contractCd

@@ -70,7 +70,7 @@ module nts.uk.at.view.kmt005.a.viewmodel {
 
         register() {
             const self = this;
-            self.$validate(['.nts-input']).then((valid: boolean) => {
+            self.$validate(['.nts-input:not(:disabled)']).then((valid: boolean) => {
                 if (valid) {
                     const command = ko.toJS(self.settings);
                     self.$blockui("show").then(() => {

@@ -338,7 +338,7 @@ public class WithinWorkTimeFrame extends ActualWorkingTimeSheet {
 			if(lateDupulicateTime.isPresent()) {
 				//就業時間内時間枠の時間帯と重複している遅刻時間帯のみを控除する
 				this.lateTimeSheet.get().getForDeducationTimeSheet().get().shiftTimeSheet(lateDupulicateTime.get());
-				lateDeductTime = this.lateTimeSheet.get().calcDedctionTime(autoCalcOfLeaveEarlySetting.isLate(), NotUseAtr.USE).getTime().valueAsMinutes();
+				lateDeductTime = this.lateTimeSheet.get().calcDedctionTime(autoCalcOfLeaveEarlySetting.isLate(), NotUseAtr.USE).getCalcTime().valueAsMinutes();
 			}
 		}
 		
@@ -353,7 +353,7 @@ public class WithinWorkTimeFrame extends ActualWorkingTimeSheet {
 			if(leaveEarlyDupulicateTime.isPresent()) {
 				//就業時間内時間枠の時間帯と重複している早退時間帯のみを控除する
 				this.leaveEarlyTimeSheet.get().getForDeducationTimeSheet().get().shiftTimeSheet(leaveEarlyDupulicateTime.get());
-				leaveEarlyDeductTime = this.leaveEarlyTimeSheet.get().calcDedctionTime(autoCalcOfLeaveEarlySetting.isLeaveEarly(), NotUseAtr.USE).getTime().valueAsMinutes();
+				leaveEarlyDeductTime = this.leaveEarlyTimeSheet.get().calcDedctionTime(autoCalcOfLeaveEarlySetting.isLeaveEarly(), NotUseAtr.USE).getCalcTime().valueAsMinutes();
 			}
 		}
 		int lateLeaveEarlySubtraction = lateDeductTime + leaveEarlyDeductTime;
@@ -1125,10 +1125,11 @@ public class WithinWorkTimeFrame extends ActualWorkingTimeSheet {
 	 * 遅刻早退控除前時間帯を作成する
 	 * @param lateDecisionClocks 遅刻判断時刻
 	 */
-	public void createBeforeLateEarlyTimeSheet(LateDecisionClock lateDecisionClocks) {
+	public void createBeforeLateEarlyTimeSheet(Optional<LateDecisionClock> lateDecisionClock) {
 		this.beforeLateEarlyTimeSheet = this.timeSheet.clone();
-		if(this.timeSheet.getStart().greaterThan(lateDecisionClocks.getLateDecisionClock())){
-			this.beforeLateEarlyTimeSheet = this.beforeLateEarlyTimeSheet.shiftOnlyStart(lateDecisionClocks.getLateDecisionClock());
+		
+		if(lateDecisionClock.isPresent() && this.timeSheet.getStart().greaterThan(lateDecisionClock.get().getLateDecisionClock())){
+			this.beforeLateEarlyTimeSheet = this.beforeLateEarlyTimeSheet.shiftOnlyStart(lateDecisionClock.get().getLateDecisionClock());
 		}
 		
 		if(!this.getLeaveEarlyTimeSheet().isPresent() || !this.getLeaveEarlyTimeSheet().get().getForRecordTimeSheet().isPresent()) {

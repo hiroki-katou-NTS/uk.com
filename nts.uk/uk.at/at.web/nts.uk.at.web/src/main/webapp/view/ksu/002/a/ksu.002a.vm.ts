@@ -655,7 +655,7 @@ module nts.uk.ui.at.ksu002.a {
 									};
 
 									// call KDL053
-									return vm.$window.modal('at', '/view/kdl/053/a/index.xhtml', params);
+									return vm.$window.modeless('at', '/view/kdl/053/a/index.xhtml', params);
 								}
 							})
 							// reload data

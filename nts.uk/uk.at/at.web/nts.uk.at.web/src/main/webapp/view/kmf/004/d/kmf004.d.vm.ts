@@ -1,25 +1,54 @@
 module nts.uk.at.view.kmf004.d.viewmodel {
     import isNullOrEmpty = nts.uk.text.isNullOrEmpty;
     export class ScreenModel {
-        grantDates: KnockoutObservableArray<GrantDateTbl>;
-        lstGrantDate: KnockoutObservableArray<GrantDateItem>;
+        // smt
+        grantDates: KnockoutObservableArray<GrantDateTblDto> = ko.observableArray([]);
+        // D2_3
+        lstGrantDate: KnockoutObservableArray<GrantDateItem> = ko.observableArray([]);
+        // D2_3
         columns: KnockoutObservableArray<any>;
-        selectedCode: KnockoutObservable<string>;
-        grantDateCode: KnockoutObservable<string>;
-        grantDateName: KnockoutObservable<string>;
-        provisionCheck: KnockoutObservable<boolean>;
-        items: KnockoutObservableArray<Item>;
-        editMode: KnockoutObservable<boolean>;
-        fixedAssignCheck: KnockoutObservable<boolean>;
-        numberOfDays: KnockoutObservable<number>;
-        sphdCode: any;
-        codeEnable: KnockoutObservable<boolean>;
-        numberOfDaysEnable: KnockoutObservable<boolean>;
-        daysReq: KnockoutObservable<boolean>;
-        newModeEnable: KnockoutObservable<boolean>;
-        isDelete: KnockoutObservable<boolean>;
+        // D2_3
+        selectedCode: KnockoutObservable<string> = ko.observable(null);
+        // D3_5
+        grantDateCode: KnockoutObservable<string> = ko.observable("");
+        // D3_7
+        grantDateName: KnockoutObservable<string> = ko.observable("");
+        // D3_8
+        isSpecified: KnockoutObservable<boolean> = ko.observable(false);
+        // D4_3
+        items: KnockoutObservableArray<Item> = ko.observableArray([]);
+        // D4_7, D4_8
+        enableElapsedYears: KnockoutObservable<boolean> = ko.observable(false);
+        // D1_3
+        editMode: KnockoutObservable<boolean> = ko.observable(true);
         
-        provisionActive: KnockoutObservable<boolean> = ko.observable(true);
+        fixedAssign: KnockoutObservable<boolean> = ko.observable(false);
+        // D5_3
+        gDateGrantedDays: KnockoutObservable<number> = ko.observable(null);
+        sphdCode: any;
+        // D3_6
+        codeEnable: KnockoutObservable<boolean> = ko.observable(false);
+        // D5_3, 
+        gDateGrantedDaysEnable: KnockoutObservable<boolean> = ko.observable(false);
+        // D5_5. D5_6
+        gDateGrantedCycleEnable: KnockoutObservable<boolean> = ko.observable(false);
+        // D5_5, D5_3
+        daysReq: KnockoutObservable<boolean> = ko.observable(false);
+        // D1_1
+        newModeEnable: KnockoutObservable<boolean> = ko.observable(true);
+        isDelete: KnockoutObservable<boolean> = ko.observable(false);
+        // D5_1
+        grantCls: KnockoutObservable<boolean> = ko.observable(false);
+        
+        isSpecifiedEnable: KnockoutObservable<boolean> = ko.observable(true);
+        // D5_5
+        cycleYear: KnockoutObservable<number> = ko.observable(null);
+        // D5_6
+        cycleMonth: KnockoutObservable<number> = ko.observable(null);
+        // reg
+        regFixedAssign: boolean = false;
+        regCycleYear: number = null;
+        regCycleMonth: number = null;
 
         constructor() {
             let self = this;
@@ -30,77 +59,110 @@ module nts.uk.at.view.kmf004.d.viewmodel {
                 { headerText: nts.uk.resource.getText("KMF004_5"), key: 'grantDateCode', width: 60 },
                 { headerText: nts.uk.resource.getText("KMF004_6"), key: 'grantDateName', width: 160, formatter: _.escape}
             ]);
+            self.items.subscribe(() => {
+                if($("#D4_4").ntsError("hasError"))
+                    $("#D4_4").ntsError('clear');
+            });
+            $("#D4_3").click(() => {
+                if($("#D4_4").ntsError("hasError"))
+                    $("#D4_4").ntsError('clear');
+            });
             
-            self.grantDates = ko.observableArray([]);
-            self.lstGrantDate = ko.observableArray([]);
-            self.selectedCode = ko.observable("");
-
-            self.grantDateCode = ko.observable("");
-            self.grantDateName = ko.observable("");
-
-            self.provisionCheck = ko.observable(false);
-            
-            self.newModeEnable = ko.observable(true);
-            self.isDelete = ko.observable(false);
-
-            self.items = ko.observableArray([]);
-            self.editMode = ko.observable(false); 
-
-            self.fixedAssignCheck = ko.observable(false); 
-            self.numberOfDays = ko.observable();
-            
-            self.codeEnable = ko.observable(true);
-            
-            self.numberOfDaysEnable = ko.observable(false);
-            
-            self.daysReq = ko.observable(false);
-
             self.selectedCode.subscribe(function(grantDateCode) {
                 // clear all error
                 nts.uk.ui.errors.clearAll();
-                
-                if(grantDateCode.length > 0){
-                    var selectedItem = _.find(self.grantDates, function(o) { return o.grantDateCode == grantDateCode; });
-                    
+                if(isNullOrEmpty(grantDateCode)){
+                    self.bindElapseYearDto([], []);
+                    self.editMode(false);
+                } else if(self.grantDates().length > 0){
+                    var selectedItem = _.find(self.grantDates(), function(o) { return o.grantDateCode == grantDateCode; });
                     self.grantDateCode(selectedItem.grantDateCode);
                     self.grantDateName(selectedItem.grantDateName);
-                    self.provisionCheck(selectedItem.specified);
-                    self.fixedAssignCheck(selectedItem.fixedAssign);
-                    self.numberOfDays(selectedItem.numberOfDays);
-                    if (self.provisionCheck() == true) {
-                        self.provisionActive(false);
+                    self.isSpecified(selectedItem.isSpecified);
+                    self.fixedAssign(selectedItem.fixedAssign);
+                    self.cycleYear(selectedItem.grantCycleAfterTblDto ? selectedItem.grantCycleAfterTblDto.year : null);
+                    self.cycleMonth(selectedItem.grantCycleAfterTblDto ? selectedItem.grantCycleAfterTblDto.month : null);
+                    self.gDateGrantedDays(selectedItem.grantedDays);
+                    let elapseYearList: Array<GrantElapseYearMonthDto> = [];
+                    let elapseYearMonthTblList: Array<ElapseYearMonthTblDto> = [];
+                    nts.uk.ui.block.invisible();
+                    // get Granted Day
+                    service.findByGrantDateCd(self.sphdCode, selectedItem.grantDateCode)
+                    .done(function(data) {
+                        _.forEach(data.elapseYear, e => {
+                            let elap = new GrantElapseYearMonthDto(e.elapseNo, e.grantedDays);
+                            elapseYearList.push(elap);
+                        });
+                        // get Month, Year
+                        service.findElapseYearByCd(self.sphdCode)
+                        .done(function(data) {
+                            _.forEach(data.elapseYearMonthTblList, e => {
+                                let elap = new ElapseYearMonthTblDto(e.grantCnt, e.year, e.month);
+                                elapseYearMonthTblList.push(elap);
+                            });
+                            // Binding Item
+                            self.bindElapseYearDto(elapseYearList, elapseYearMonthTblList);
+                        }).fail(function(res) {                        
+                        }).always(() => {
+                            nts.uk.ui.block.clear();
+                        });
+                    }).fail(function(res) {                        
+                    }).always(() => {
+                        nts.uk.ui.block.clear();
+                    });
+                    if (self.isSpecified() == true) {
+                        self.isSpecifiedEnable(false);
                     } else {
-                        self.provisionActive(true);
+                        self.isSpecifiedEnable(true);
                     }
                     self.codeEnable(false);
                     self.editMode(true);
-                    self.newModeEnable(true);
-                    
+                    self.newModeEnable(true);                    
                     if(!self.isDelete()) {
                         $("#inpPattern").focus();
                     }
-                    
-                    service.findByGrantDateCd(self.sphdCode, selectedItem.grantDateCode).done(function(data) {
-                        self.elapseBind(data);
-                    }).fail(function(res) {
-                        
-                    });
                 }
             });  
             
-            self.fixedAssignCheck.subscribe(function(value) {
+            self.fixedAssign.subscribe(function(value) {
                 if(value){
-                    self.numberOfDaysEnable(true);
+                    self.gDateGrantedDaysEnable(true);
+                    self.gDateGrantedCycleEnable(true);
                     self.daysReq(true);
                     // clear all error
                     nts.uk.ui.errors.clearAll();
                 } else {
-                    self.numberOfDaysEnable(false);
+                    self.gDateGrantedDaysEnable(false);
+                    self.gDateGrantedCycleEnable(false);
                     self.daysReq(false);
                     // clear all error
                     nts.uk.ui.errors.clearAll();
                 }
-            });  
+            }); 
+            
+            self.isSpecified.subscribe((val) => {
+                if(val == true){
+                    self.enableElapsedYears(true);
+                    if(self.fixedAssign()){
+                        self.gDateGrantedCycleEnable(true);
+                        self.gDateGrantedDaysEnable(true);
+                        self.gDateGrantedDaysEnable(true);
+                    } else {
+                        self.gDateGrantedCycleEnable(false);
+                        self.gDateGrantedDaysEnable(false);
+                        self.gDateGrantedDaysEnable(false);
+                    }
+                } else {
+                    self.enableElapsedYears(false);
+                    self.gDateGrantedCycleEnable(false);
+                    if(self.fixedAssign()){
+                        self.gDateGrantedDaysEnable(true);
+                    } else {
+                        self.gDateGrantedDaysEnable(false);
+                    }
+                }
+
+            });
         }
 
         /** get data when start dialog **/
@@ -109,7 +171,7 @@ module nts.uk.at.view.kmf004.d.viewmodel {
             var dfd = $.Deferred();
 
             $.when(self.getData()).done(function() {
-                                    
+
                 if (self.lstGrantDate().length > 0) {
                     self.selectedCode(self.lstGrantDate()[0].grantDateCode);
                     self.selectedCode.valueHasMutated();
@@ -134,141 +196,195 @@ module nts.uk.at.view.kmf004.d.viewmodel {
         getData(): JQueryPromise<any> {
             let self = this;
             let dfd = $.Deferred();
-            
+            nts.uk.ui.block.invisible();
             self.lstGrantDate([]);
-            
-            service.findBySphdCd(self.sphdCode).done(function(data) {
-                self.grantDates = data;
-                
-                _.forEach(data, function(item) {
-                    self.lstGrantDate.push(new GrantDateItem(item.grantDateCode, item.grantDateName));
-                });
-                
-                dfd.resolve(data);
+            self.grantDates([]);
+            service.findElapseYearByCd(self.sphdCode).done(function(elapse) {
+                if(elapse){
+                    nts.uk.ui.block.invisible();
+                    service.findBySphdCd(self.sphdCode).done(function(data) {
+                        _.forEach(data, function(item) {
+                            if(!isNullOrEmpty(item)){
+                                self.lstGrantDate.push(new GrantDateItem(item.grantDateCode, item.grantDateName));
+                                self.grantDates.push(new GrantDateTblDto(item.grantDateCode, 
+                                                                        item.grantDateName, null, item.specified, item.grantedDays, null, elapse.grantCycleAfterTbl, elapse.fixedAssign));
+                            }
+                        });
+                    dfd.resolve(data);
+                    }).fail(function(res) {
+                        dfd.reject(res);    
+                    });
+                    self.regFixedAssign = elapse.fixedAssign;
+                    self.regCycleYear = elapse.grantCycleAfterTbl ? elapse.grantCycleAfterTbl.year : null;
+                    self.regCycleMonth = elapse.grantCycleAfterTbl ? elapse.grantCycleAfterTbl.month : null;
+                } else {
+                    self.cycleYear(null);
+                    self.cycleMonth(null);
+                    self.fixedAssign(false);
+                }
             }).fail(function(res) {
                 dfd.reject(res);    
+            }).always(() => {
+                nts.uk.ui.block.clear();
             });
-            
             return dfd.promise();
         }
         
         /** bind elapse year data **/
-        elapseBind(data: any) {
-            let self = this; 
+        bindElapseYearDto(elapseYearList: Array<GrantElapseYearMonthDto>, elapseYearMonthTblList: Array<ElapseYearMonthTblDto>) {  
+              if(!elapseYearList){
+                elapseYearList = [];
+            } else {
+                elapseYearList = _.sortBy(elapseYearList, e => e.elapseNo);
+            }
+            if(!elapseYearMonthTblList){
+                elapseYearMonthTblList = [];
+            } else {
+                elapseYearMonthTblList = _.sortBy(elapseYearMonthTblList, e => e.grantCnt);
+            }
             
+            let self = this;            
             self.items([]);
-            
-            if(data.length > 0) {
-                for(var i = 0; i < data.length; i++){
-                    var item : IItem = {
-                        grantDateCode: data[i].grantDateCode,
-                        elapseNo: data[i].elapseNo,
-                        months: data[i].months,
-                        years: data[i].years,
-                        grantedDays: data[i].grantedDays
-                    };
-                    
-                    self.items.push(new Item(item));
-                }
-                
-                for(var j = data.length; j < 20; j++) {
-                    var item : IItem = {
-                        grantDateCode: data[0].grantDateCode,
-                        elapseNo: j + 1,
-                        months: null,
-                        years: null,
-                        grantedDays: null
-                    };
-                    
-                    self.items.push(new Item(item));    
+            let keyMap: any = {};
+       
+            if(elapseYearMonthTblList) {
+                _.forEach(elapseYearMonthTblList, e => {
+                    keyMap[e.grantCnt] = e;
+                }); 
+                let itemTotals = 0;
+                for(let item of elapseYearList){
+                    let elapse = new Item(ko.observable(null), ko.observable(null), ko.observable(null), ko.observable(null));
+                    let currentItem = keyMap[item.elapseNo];
+                    if(currentItem){
+                        elapse.elapseNo(currentItem.grantCnt);
+                        elapse.months(currentItem.month);
+                        elapse.years(currentItem.year);
+                        elapse.grantedDays(item.grantedDays);
+                        itemTotals ++;
+                    }
+                    self.items.push(elapse);
+                }      
+                for(let i = itemTotals + 1; i <= 20; i++) {
+                    let elapseNull = new Item(ko.observable(i), ko.observable(null), ko.observable(null), ko.observable(null));
+                    self.items.push(elapseNull); 
                 }
             } else {
-                for(var i = 0; i < 20; i++){
-                    var item : IItem = {
-                        grantDateCode: self.grantDateCode(),
-                        elapseNo: i + 1,
-                        months: null,
-                        years: null,
-                        grantedDays: null
-                    };
-                    
-                    self.items.push(new Item(item));
+                for(let i = 1; i <= 20; i++) {
+                    let elapseNull = new Item(ko.observable(i), ko.observable(null), ko.observable(null), ko.observable(null));
+                    self.items.push(elapseNull);   
                 }
             }
+            self.items(_.sortBy(self.items(), e => e.elapseNo));
         }
         
         /** update or insert data when click button register **/
         register() {  
             let self = this; 
             let checkErr = false;
+            $('#D4_4').ntsError('clear');
                         
             $("#inpCode").trigger("validate");
             $("#inpPattern").trigger("validate");
-                
-            if (nts.uk.ui.errors.hasError()) {
-                return;       
-            }
-            
-            
-            
-            let elapseData = [];
+            if(self.fixedAssign()){
+                $("#D5_3").trigger("validate");
+                if(!self.cycleMonth() && self.cycleMonth() <= 0)
+                    $("#D5_5").trigger("validate");
+                if(!self.cycleYear() && self.cycleYear() <= 0)
+                    $("#D5_6").trigger("validate");
+            }  
+            let elapseYearMonthTblList: Array<service.ElapseYearMonthTblCommand> = [];
+            let elapseYear: Array<service.GrantElapseYearMonthCommand> = [];
+                let displayMsg_100 = false;
+                let displayMsg_101 = false;
+                let displayMsg_144 = true;
+
             _.forEach(self.items(), function(item, index) {
-                elapseData.push({
-                    specialHolidayCode: self.sphdCode,
-                    grantDateCode: self.grantDateCode(),
-                    elapseNo: index + 1,
-                    months: item.months(),
-                    years: item.years(),
-                    grantedDays: item.grantedDays()
-                });
-            });
-            
-            if(elapseData.length > 0) {
-                var evens = _.remove(elapseData, function(item) {
-                    return isNullOrEmpty(item.months) && isNullOrEmpty(item.years) && isNullOrEmpty(item.grantedDays);
-                });
-            }
-            
-            _.forEach(elapseData, function(item) {
-                if(isNullOrEmpty(item.grantedDays)  && (!isNullOrEmpty(item.months)|| !isNullOrEmpty(item.months))) {
-                    nts.uk.ui.dialog.alertError({ messageId: "Msg_101" });
-                    checkErr = true;
-                    return;
+                if(item.grantedDays() && item.grantedDays() >= 0 && 
+                    ((!item.months() || item.months() < 0) && (!item.years() || item.years() < 0))){
+                        // setTimeout(() => {
+                        //     $(`#D4_3 > tbody > tr:nth-child(${index})`.toString()).ntsError('set', { messageId:'Msg_100' });
+                        // }, 25);  
+                        // self.addListError(["Msg_100"]); 
+                        displayMsg_100 = true;
+                        displayMsg_144 = false;
+                }
+                
+                if(((item.months() && item.months() >= 0) || (item.years() && item.years() >= 0) ) && (!item.grantedDays() || item.grantedDays() < 0) ){
+                    // nts.uk.ui.dialog.error({ messageId: "Msg_101" }).then(() => {
+                    //     return;
+                    // });
+                    displayMsg_101 = true;
+                    displayMsg_144 = false;
+                }
+
+                if((!item.years() && item.months() <= 0) || (!item.months() && item.years() <= 0) || (!item.months() && !item.years()) || !item.grantedDays() || (item.years() == 0 && item.months() == 0 && item.grantedDays() == 0)){
+                    // do nothing
+                } else if(item.years() >= 0 && item.months() >= 0 && item.grantedDays() >= 0){
+                    elapseYearMonthTblList.push({
+                        grantCnt: index + 1,
+                        elapseYearMonth: new service.ElapseYearMonthCommand(item.years(), item.months())
+                    });
+                    elapseYear.push({
+                        elapseNo: index + 1,
+                        grantedDays: item.grantedDays(),
+                    });
+                    displayMsg_144 = false;
                 }
             });
+
+            // if(self.isSpecified() && 
+            //     (elapseYearMonthTblList.length <= 0 || 
+            //         (elapseYearMonthTblList.length == 1 && 
+            //             (elapseYearMonthTblList[0].elapseYearMonth.month == 0 && elapseYearMonthTblList[0].elapseYearMonth.year == 0))))
+                        // nts.uk.ui.dialog.error({ messageId: "Msg_144" }).then(() => {
+                        //     return;
+                        // });
+            if(displayMsg_100)
+                $('#D4_4').ntsError('set', { messageId:'Msg_100' });
+            if(displayMsg_101)
+                $('#D4_4').ntsError('set', { messageId:'Msg_101' });
+            if(!self.items() || self.items().length <= 0 || displayMsg_144 )
+                $('#D4_4').ntsError('set', { messageId:'Msg_144' });
             
-            // 「経過年数に対する付与日数」は1件以上登録すること
-            if(elapseData.length <= 0) {
-                nts.uk.ui.dialog.alertError({ messageId: "Msg_144" });
-                return;
+            // self.addListError(["Msg_144"]);
+            let itemId: number = elapseYearMonthTblList.length;
+            for(let i = 0; i< itemId; i++){
+                elapseYear[i].elapseNo = i + 1;
+                elapseYearMonthTblList[i].grantCnt = i + 1;
             }
-            
-            let dataItem : service.GrantDateTblDto = {
+            let grantDateTblCommand : service.GrantDateTblCommand = {
                 specialHolidayCode: self.sphdCode,
                 grantDateCode: self.grantDateCode(),
                 grantDateName: self.grantDateName(),
-                isSpecified: self.provisionCheck(),
-                fixedAssign: self.fixedAssignCheck(),
-                numberOfDays: self.numberOfDays(),
-                elapseYear: elapseData
+                elapseYear: elapseYear,
+                isSpecified: self.isSpecified(),
+                grantedDays: self.gDateGrantedDays(),
+                elapseYearMonthTblList: elapseYearMonthTblList,
+                fixedAssign: self.fixedAssign(),
+                year: self.cycleYear(),
+                month: self.cycleMonth(),
+                isUpdate: self.editMode()
             };
             
-            if(self.daysReq() && dataItem.numberOfDays === "") {
-                $("#granted-days-number").ntsError("set", "固定付与日数を入力してください", "MsgB_1");
-                return;
-            }
-            
+            // if(self.daysReq() && dataItem.gDateGrantedDays === "") {
+            //     $("#granted-days-number").ntsError("set", "固定付与日数を入力してください", "MsgB_1");
+            //     return;
+            // }
+            if (nts.uk.ui.errors.hasError() || $('#D4_4').ntsError('hasError')) {
+                return;       
+            }           
             if(!checkErr) {
                 if(!self.editMode()) {
                     nts.uk.ui.block.invisible();
-                    service.addGrantDate(dataItem).done(function(errors){
+                    service.addGrantDate(grantDateTblCommand).done(function(errors){
                         if (errors && errors.length > 0) {
                             self.addListError(errors);    
                         } else {
                             $.when(self.getData()).done(function() {
                                 nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => { 
-                                    self.selectedCode(dataItem.grantDateCode);
+                                    self.selectedCode(grantDateTblCommand.grantDateCode);
                                     self.selectedCode.valueHasMutated();
+                                    self.editMode(true);
                                 });
                             });
                         }
@@ -279,14 +395,16 @@ module nts.uk.at.view.kmf004.d.viewmodel {
                     });
                 } else {
                     nts.uk.ui.block.invisible();
-                    service.updateGrantDate(dataItem).done(function(errors){
+                    
+                    service.addGrantDate(grantDateTblCommand).done(function(errors){
                         if (errors && errors.length > 0) {
                             self.addListError(errors);    
                         } else {
                             $.when(self.getData()).done(function() {
                                 nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => { 
-                                    self.selectedCode(dataItem.grantDateCode);
+                                    self.selectedCode(grantDateTblCommand.grantDateCode);
                                     self.selectedCode.valueHasMutated();
+                                    self.editMode(true);
                                 });
                             });
                         }
@@ -301,28 +419,57 @@ module nts.uk.at.view.kmf004.d.viewmodel {
         
         prescribedEnable() {
             let self = this;
-            return !(self.editMode() == true && self.provisionCheck() == true);
+            return !(self.editMode() == true && self.isSpecified() == true);
         }
         
         //  new mode 
         newMode() {
             let self = this;
-            
             self.codeEnable(true);
             self.newModeEnable(false);
             self.editMode(false);
             self.selectedCode("");
             self.grantDateCode("");
             self.grantDateName("");
-            if (self.lstGrantDate().length) {
-                self.provisionCheck(false);
+            self.isSpecifiedEnable(true);
+            self.gDateGrantedDays(null);
+            if(!self.lstGrantDate() || self.lstGrantDate().length <= 0){
+                self.fixedAssign(false);
+                self.cycleYear(null);
+                self.cycleMonth(null);
             } else {
-                self.provisionCheck(true);
+                self.fixedAssign(self.regFixedAssign);
+                self.cycleYear(self.regCycleYear);
+                self.cycleMonth(self.regCycleMonth);
+                let elapseYearList: Array<GrantElapseYearMonthDto> = [];
+                let elapseYearMonthTblList: Array<ElapseYearMonthTblDto> = [];
+                
+                nts.uk.ui.block.invisible();
+                service.findElapseYearByCd(self.sphdCode)
+                .done(function(data) {
+                    elapseYearMonthTblList = data ? data.elapseYearMonthTblList : [];
+                    if(!elapseYearMonthTblList || elapseYearMonthTblList == null || elapseYearMonthTblList.length <= 0){
+                        self.bindElapseYearDto([], []);
+                    } else {
+                        _.forEach(elapseYearMonthTblList, (e) => {
+                            let elapseYear: GrantElapseYearMonthDto = new GrantElapseYearMonthDto(e.grantCnt, null);
+                            elapseYearList.push(elapseYear);
+                        });
+                        self.bindElapseYearDto(elapseYearList, elapseYearMonthTblList);
+                    }
+                }).fail(function(res) {                        
+                }).always(() => {
+                    nts.uk.ui.block.clear();
+                });    
             }
-            self.provisionActive(true);
-            self.fixedAssignCheck(false);
-            self.numberOfDays("");
-            self.elapseBind([]);
+            if(self.lstGrantDate().length > 0) {
+                self.isSpecified(false);
+            } else {
+                self.isSpecified(true);
+                self.isSpecifiedEnable(false);
+            }
+
+           
             
             $("#inpCode").focus();
             
@@ -342,11 +489,12 @@ module nts.uk.at.view.kmf004.d.viewmodel {
                 }
             }
             
-            if(self.provisionCheck()) {
+            if(self.isSpecified()) {
                 nts.uk.ui.dialog.alertError({ messageId: "Msg_1219" });
                 nts.uk.ui.block.clear();
             } else {
                 nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
+                    nts.uk.ui.block.invisible();
                     service.deleteGrantDate(self.sphdCode, self.grantDateCode()).done(function() {
                         self.getData().done(function(){
                             self.isDelete(true);
@@ -358,16 +506,19 @@ module nts.uk.at.view.kmf004.d.viewmodel {
                             // delete the last item
                             if(count == ((self.lstGrantDate().length))){
                                 self.selectedCode(self.lstGrantDate()[count-1].grantDateCode);
+                                self.editMode(true);
                                 return;
                             }
                             // delete the first item
                             if(count == 0 ){
                                 self.selectedCode(self.lstGrantDate()[0].grantDateCode);
+                                self.editMode(true);
                                 return;
                             }
                             // delete item at mediate list 
                             else if(count > 0 && count < self.lstGrantDate().length){
                                 self.selectedCode(self.lstGrantDate()[count].grantDateCode);    
+                                self.editMode(true);
                                 return;
                             }
                         });
@@ -405,8 +556,8 @@ module nts.uk.at.view.kmf004.d.viewmodel {
     }
     
     class GrantDateItem {
-        grantDateCode: KnockoutObservable<string>;
-        grantDateName: KnockoutObservable<string>;
+        grantDateCode: string;
+        grantDateName: string;
         
         constructor(grantDateCode: string, grantDateName: string) {
             this.grantDateCode = grantDateCode;
@@ -414,44 +565,82 @@ module nts.uk.at.view.kmf004.d.viewmodel {
         }
     }
 
-    export class GrantDateTbl {
-        grantDateCode: KnockoutObservable<string>;
-        grantDateName: KnockoutObservable<string>;
-        isSpecified: KnockoutObservable<number>;
-        fixedAssign: KnockoutObservable<number>;
-        numberOfDays: KnockoutObservable<number>;
-
-        constructor(grantDateCode: string, grantDateName: string, isSpecified: number, fixedAssign: number, numberOfDays: number) {
+    export class GrantDateTblDto { 
+        grantDateCode: string;
+        grantDateName: string;
+        elapseYear: Array<GrantElapseYearMonthDto>;
+        isSpecified: boolean;
+        grantedDays: number;
+        elapseYearDto: ElapseYearDto;
+        grantCycleAfterTblDto: GrantCycleAfterTblDto;
+        fixedAssign: boolean;
+ 
+        constructor(grantDateCode: string, grantDateName: string, 
+                    elapseYear: Array<any>,
+                    isSpecified: boolean,
+                    grantedDays: number,
+                    elapseYearDto: ElapseYearDto,
+                    grantCycleAfterTblDto: GrantCycleAfterTblDto,
+                    fixedAssign: boolean) {
             this.grantDateCode = grantDateCode;
             this.grantDateName = grantDateName;
+            this.elapseYear = elapseYear;
             this.isSpecified = isSpecified;
+            this.grantedDays = grantedDays;
+            this.elapseYearDto = elapseYearDto;
+            this.grantCycleAfterTblDto = grantCycleAfterTblDto;
             this.fixedAssign = fixedAssign;
-            this.numberOfDays = numberOfDays;
+        }
+    }
+    export class ElapseYearDto {
+        elapseYearMonthTblList: Array<ElapseYearMonthTblDto>;
+        fixedAssign: boolean;
+        grantCycleAfterTbl: GrantCycleAfterTblDto;
+
+        constructor(elapseYearMonthTblList : Array<any>, fixedAssign: boolean, grantCycleAfterTbl:  GrantCycleAfterTblDto){
+            this.elapseYearMonthTblList = elapseYearMonthTblList;
+            this.fixedAssign = fixedAssign;
+            this.grantCycleAfterTbl = grantCycleAfterTbl;
         }
     }
 
-    export interface IItem{
-        grantDateCode: KnockoutObservable<string>;
-        elapseNo: KnockoutObservable<number>;
-        months: KnockoutObservable<number>;
-        years: KnockoutObservable<number>;
-        grantedDays: KnockoutObservable<number>;
+    export class GrantElapseYearMonthDto {
+        elapseNo: number;
+        grantedDays: number;
+        constructor(elapseNo: number, grantedDays: number){
+            this.elapseNo = elapseNo;
+            this.grantedDays = grantedDays;
+        }
+    }
+    export class ElapseYearMonthTblDto{
+        grantCnt: number;
+        year: number;
+        month: number;    
+        constructor(grantCnt: number, year: number, month: number){
+            this.grantCnt = grantCnt;
+            this.year = year;
+            this.month = month;
+        }
+    }
+    export interface GrantCycleAfterTblDto{
+        year: number;
+        month: number;
     }
 
     export class Item {
-        grantDateCode: KnockoutObservable<string>;
         elapseNo: KnockoutObservable<number>;
         months: KnockoutObservable<number>;
         years: KnockoutObservable<number>;
         grantedDays: KnockoutObservable<number>;
 
-        constructor(param: IItem) {
-            var self = this;
-            self.grantDateCode = ko.observable(param.grantDateCode);
-            self.elapseNo = ko.observable(param.elapseNo);
-            self.months = ko.observable(param.months);
-            self.years = ko.observable(param.years);
-            self.grantedDays = ko.observable(param.grantedDays);
+        constructor(elapseNo: KnockoutObservable<number>, 
+                    years: KnockoutObservable<number>, 
+                    months: KnockoutObservable<number>,
+                    grantedDays: KnockoutObservable<number>) {
+            this.elapseNo = elapseNo;
+            this.years = years;
+            this.months = months;
+            this.grantedDays = grantedDays;
         }
     }
 }

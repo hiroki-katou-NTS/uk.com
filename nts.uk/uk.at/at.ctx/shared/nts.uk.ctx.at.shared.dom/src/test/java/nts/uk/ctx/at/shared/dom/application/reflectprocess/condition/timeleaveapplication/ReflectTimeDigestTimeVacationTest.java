@@ -8,12 +8,13 @@ import java.util.Optional;
 
 import org.junit.Test;
 
-import nts.uk.ctx.at.shared.dom.application.reflectprocess.DailyRecordOfApplication;
-import nts.uk.ctx.at.shared.dom.application.reflectprocess.ScheduleRecordClassifi;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.common.ReflectApplicationHelper;
-import nts.uk.ctx.at.shared.dom.application.timeleaveapplication.TimeDigestApplicationShare;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.AppTimeType;
+import nts.uk.ctx.at.shared.dom.scherec.application.timeleaveapplication.TimeDigestApplicationShare;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.DailyRecordOfApplication;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.ScheduleRecordClassifi;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.timeleaveapplication.TimeLeaveAppReflectCondition;
 
 public class ReflectTimeDigestTimeVacationTest {
 
@@ -33,7 +34,7 @@ public class ReflectTimeDigestTimeVacationTest {
 	public void test1() {
 		DailyRecordOfApplication dailyApp = ReflectApplicationHelper.createRCWithTimeLeavFull(ScheduleRecordClassifi.RECORD,
 				1);
-		List<Integer> result = ReflectTimeDigestTimeVacation.process(dailyApp, AppTimeType.ATWORK, createDigest());
+		List<Integer> result = new TimeLeaveAppReflectCondition().process(dailyApp, AppTimeType.ATWORK, createDigest()).getLstItemId();
 		assertThat(dailyApp.getAttendanceTimeOfDailyPerformance().get().getLateTimeOfDaily().get(0).getTimePaidUseTime()
 				.getTimeAnnualLeaveUseTime().v()).isEqualTo(60);
 
@@ -119,7 +120,7 @@ public class ReflectTimeDigestTimeVacationTest {
 	public void test2() {
 		DailyRecordOfApplication dailyApp = ReflectApplicationHelper.createRCWithTimeLeavFull(ScheduleRecordClassifi.RECORD,
 				1);
-		List<Integer> result = ReflectTimeDigestTimeVacation.process(dailyApp, AppTimeType.OFFWORK, createDigest());
+		List<Integer> result = new TimeLeaveAppReflectCondition().process(dailyApp, AppTimeType.OFFWORK, createDigest()).getLstItemId();
 		assertThat(dailyApp.getAttendanceTimeOfDailyPerformance().get().getLeaveEarlyTimeOfDaily().get(0)
 				.getTimePaidUseTime().getTimeAnnualLeaveUseTime().v()).isEqualTo(60);
 
@@ -204,7 +205,7 @@ public class ReflectTimeDigestTimeVacationTest {
 	public void test3() {
 		DailyRecordOfApplication dailyApp = ReflectApplicationHelper.createRCWithTimeLeavFull(ScheduleRecordClassifi.RECORD,
 				1);
-		List<Integer> result = ReflectTimeDigestTimeVacation.process(dailyApp, AppTimeType.PRIVATE, createDigest());
+		List<Integer> result = new TimeLeaveAppReflectCondition().process(dailyApp, AppTimeType.PRIVATE, createDigest()).getLstItemId();
 		assertThat(dailyApp.getAttendanceTimeOfDailyPerformance().get().getOutingTimeOfDaily().get(0)
 				.getTimeVacationUseOfDaily().getTimeAnnualLeaveUseTime().v()).isEqualTo(60);
 

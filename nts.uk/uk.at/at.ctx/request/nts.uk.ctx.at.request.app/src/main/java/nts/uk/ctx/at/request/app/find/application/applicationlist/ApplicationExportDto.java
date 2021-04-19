@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.request.app.find.application.applicationlist;
 
+import lombok.Builder;
 import lombok.Data;
 import nts.arc.time.GeneralDate;
 /**
@@ -7,7 +8,7 @@ import nts.arc.time.GeneralDate;
  * ApplicationExportDto
  */
 @Data
-
+@Builder
 public class ApplicationExportDto {
 	/**
 	 * appDate,申請日

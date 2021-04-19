@@ -9,7 +9,7 @@ import java.util.List;
 
 @Getter
 public class HelperTaskFrame {
-    public static List<TaskFrameSetting> createListDomain() {
+    public static List<TaskFrameSetting> createListDomainSorted() {
         return Arrays.asList(
                 new TaskFrameSetting(
                         new TaskFrameNo(1),
@@ -17,8 +17,8 @@ public class HelperTaskFrame {
                         UseAtr.USE
                 ),
                 new TaskFrameSetting(
-                        new TaskFrameNo(5),
-                        new TaskFrameName("Name05"),
+                        new TaskFrameNo(2),
+                        new TaskFrameName("Name02"),
                         UseAtr.USE
 
                 ), new TaskFrameSetting(
@@ -32,6 +32,35 @@ public class HelperTaskFrame {
                         UseAtr.USE
 
                 ), new TaskFrameSetting(
+                        new TaskFrameNo(5),
+                        new TaskFrameName("Name05"),
+                        UseAtr.USE
+
+                )
+        );
+    }   public static List<TaskFrameSetting> createListDomain() {
+        return Arrays.asList(
+                new TaskFrameSetting(
+                        new TaskFrameNo(4),
+                        new TaskFrameName("Name04"),
+                        UseAtr.USE
+                ),
+                new TaskFrameSetting(
+                        new TaskFrameNo(5),
+                        new TaskFrameName("Name05"),
+                        UseAtr.USE
+
+                ), new TaskFrameSetting(
+                        new TaskFrameNo(3),
+                        new TaskFrameName("Name03"),
+                        UseAtr.USE
+
+                ), new TaskFrameSetting(
+                        new TaskFrameNo(1),
+                        new TaskFrameName("Name01"),
+                        UseAtr.USE
+
+                ), new TaskFrameSetting(
                         new TaskFrameNo(2),
                         new TaskFrameName("Name02"),
                         UseAtr.USE
@@ -39,37 +68,6 @@ public class HelperTaskFrame {
                 )
         );
     }
-    public static List<TaskFrameSetting> createDomain() {
-        return  Arrays.asList(
-                new TaskFrameSetting(
-                        new TaskFrameNo(1),
-                        new TaskFrameName("Name012"),
-                        UseAtr.USE
-                ),
-                new TaskFrameSetting(
-                        new TaskFrameNo(5),
-                        new TaskFrameName("Name053"),
-                        UseAtr.NOTUSE
-
-                ), new TaskFrameSetting(
-                        new TaskFrameNo(3),
-                        new TaskFrameName("Name033"),
-                        UseAtr.USE
-
-                ), new TaskFrameSetting(
-                        new TaskFrameNo(4),
-                        new TaskFrameName("Name043"),
-                        UseAtr.USE
-
-                ), new TaskFrameSetting(
-                        new TaskFrameNo(2),
-                        new TaskFrameName("Name023"),
-                        UseAtr.USE
-
-                )
-        );
-    }
-
     public static List<TaskFrameSetting> createListDomain04() {
         return Arrays.asList(
                 new TaskFrameSetting(
@@ -78,8 +76,8 @@ public class HelperTaskFrame {
                         UseAtr.USE
                 ),
                 new TaskFrameSetting(
-                        new TaskFrameNo(5),
-                        new TaskFrameName("Name05"),
+                        new TaskFrameNo(2),
+                        new TaskFrameName("Name02"),
                         UseAtr.USE
 
                 ), new TaskFrameSetting(
@@ -93,8 +91,8 @@ public class HelperTaskFrame {
                         UseAtr.NOTUSE
 
                 ), new TaskFrameSetting(
-                        new TaskFrameNo(2),
-                        new TaskFrameName("Name02"),
+                        new TaskFrameNo(5),
+                        new TaskFrameName("Name05"),
                         UseAtr.USE
 
                 )
@@ -109,8 +107,8 @@ public class HelperTaskFrame {
                         UseAtr.USE
                 ),
                 new TaskFrameSetting(
-                        new TaskFrameNo(5),
-                        new TaskFrameName("Name05"),
+                        new TaskFrameNo(2),
+                        new TaskFrameName("Name02"),
                         UseAtr.USE
 
                 ), new TaskFrameSetting(
@@ -124,8 +122,8 @@ public class HelperTaskFrame {
                         UseAtr.USE
 
                 ), new TaskFrameSetting(
-                        new TaskFrameNo(2),
-                        new TaskFrameName("Name02"),
+                        new TaskFrameNo(5),
+                        new TaskFrameName("Name05"),
                         UseAtr.USE
 
                 )
@@ -140,9 +138,9 @@ public class HelperTaskFrame {
                         UseAtr.USE
                 ),
                 new TaskFrameSetting(
-                        new TaskFrameNo(5),
-                        new TaskFrameName("Name05"),
-                        UseAtr.USE
+                        new TaskFrameNo(2),
+                        new TaskFrameName("Name02"),
+                        UseAtr.NOTUSE
 
                 ), new TaskFrameSetting(
                         new TaskFrameNo(3),
@@ -155,9 +153,9 @@ public class HelperTaskFrame {
                         UseAtr.USE
 
                 ), new TaskFrameSetting(
-                        new TaskFrameNo(2),
-                        new TaskFrameName("Name02"),
-                        UseAtr.NOTUSE
+                        new TaskFrameNo(5),
+                        new TaskFrameName("Name05"),
+                        UseAtr.USE
 
                 )
         );
@@ -171,8 +169,8 @@ public class HelperTaskFrame {
                         UseAtr.NOTUSE
                 ),
                 new TaskFrameSetting(
-                        new TaskFrameNo(5),
-                        new TaskFrameName("Name05"),
+                        new TaskFrameNo(2),
+                        new TaskFrameName("Name02"),
                         UseAtr.USE
 
                 ), new TaskFrameSetting(
@@ -186,8 +184,8 @@ public class HelperTaskFrame {
                         UseAtr.USE
 
                 ), new TaskFrameSetting(
-                        new TaskFrameNo(2),
-                        new TaskFrameName("Name02"),
+                        new TaskFrameNo(5),
+                        new TaskFrameName("Name05"),
                         UseAtr.USE
 
                 )

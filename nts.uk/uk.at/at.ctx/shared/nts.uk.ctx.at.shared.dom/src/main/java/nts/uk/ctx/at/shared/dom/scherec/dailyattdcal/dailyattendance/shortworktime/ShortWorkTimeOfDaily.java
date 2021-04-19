@@ -27,6 +27,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.outsideworktime.OverTimeFrameTimeSheetForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.withinworkinghours.WithinWorkTimeFrame;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.withinworkinghours.WithinWorkTimeSheet;
+import nts.uk.ctx.at.shared.dom.shortworktime.ChildCareAtr;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.StatutoryAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
@@ -43,13 +44,13 @@ public class ShortWorkTimeOfDaily {
 	private WorkTimes workTimes;
 	private DeductionTotalTime totalTime;
 	private DeductionTotalTime totalDeductionTime;
-	private ChildCareAttribute childCareAttribute;
+	private ChildCareAtr childCareAttribute;
 	
 	/**
 	 * Constructor 
 	 */
 	public ShortWorkTimeOfDaily(WorkTimes workTimes, DeductionTotalTime totalTime,
-			DeductionTotalTime totalDeductionTime, ChildCareAttribute childCareAttribute) {
+			DeductionTotalTime totalDeductionTime, ChildCareAtr childCareAttribute) {
 		super();
 		this.workTimes = workTimes;
 		this.totalTime = totalTime;
@@ -84,7 +85,7 @@ public class ShortWorkTimeOfDaily {
 				TimeWithCalculation.sameTime(new AttendanceTime(0)),
 				TimeWithCalculation.sameTime(new AttendanceTime(0)));
 		
-		ChildCareAttribute careAtr = getChildCareAttributeToDaily(recordClass.getIntegrationOfDaily());
+		ChildCareAtr careAtr = getChildCareAttributeToDaily(recordClass.getIntegrationOfDaily());
 		
 		if(recordClass.getCalculatable() && recordClass.getIntegrationOfDaily().getShortTime().isPresent()){
 			//短時間勤務回数
@@ -241,7 +242,7 @@ public class ShortWorkTimeOfDaily {
 	 * @param integrationOfDaily 日別実績(Work)
 	 * @return 育児介護区分
 	 */
-	private static ChildCareAttribute getChildCareAttributeToDaily(IntegrationOfDaily integrationOfDaily) {
+	private static ChildCareAtr getChildCareAttributeToDaily(IntegrationOfDaily integrationOfDaily) {
 		if(integrationOfDaily.getShortTime().isPresent()) {
 			val firstTimeSheet = integrationOfDaily.getShortTime().get().getShortWorkingTimeSheets().stream().findFirst();
 			if(firstTimeSheet.isPresent()) {
@@ -251,7 +252,7 @@ public class ShortWorkTimeOfDaily {
 		if(integrationOfDaily.getAttendanceTimeOfDailyPerformance().isPresent()) {
 			return integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getShotrTimeOfDaily().getChildCareAttribute();
 		}
-		return ChildCareAttribute.CHILD_CARE;
+		return ChildCareAtr.CHILD_CARE;
 	}
 	
 }

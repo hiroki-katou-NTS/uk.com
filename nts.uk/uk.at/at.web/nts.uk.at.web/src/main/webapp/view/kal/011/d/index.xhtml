@@ -1,0 +1,71 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component"
+>
+<body>
+<ui:composition template="../../../../master/dialog.xhtml">
+    <ui:define name="htmlHead">
+        <com:scriptfile set="IGNITE"/>
+        <script>var dialogSize = {width: 520, height: 280};</script>
+        <com:stylefile path="kal011.d.styles.css"/>
+        <com:scriptfile path="kal011.d.vm.js"/>
+    </ui:define>
+    <ui:define name="content">
+        <div id="contents-area">
+            <table id="D1">
+                <colgroup>
+                    <col width="130px"/>
+                    <col width="300px"/>
+                </colgroup>
+                <tr>
+                    <!--D1_1-->
+                    <th><span class="label" data-bind="text: $vm.$i18n('KAL011_27')"/></th>
+                    <!--D1_2-->
+                    <td></td>
+                </tr>
+                <tr>
+                    <!--D1_3-->
+                    <th><span class="label" data-bind="text: $vm.$i18n('KAL011_28')"/></th>
+                    <!--D1_4-->
+                    <td><span data-bind="text: $vm.startTime"></span></td>
+                </tr>
+                <tr>
+                    <!--D1_5-->
+                    <th><span class="label" data-bind="text: $vm.$i18n('KAL011_29')"/></th>
+                    <!--D1_6-->
+                    <td><span data-bind="text: $vm.endTime"></span></td>
+                </tr>
+                <tr>
+                    <!--D1_7-->
+                    <th><span class="label" data-bind="text: $vm.$i18n('KAL011_30')"/></th>
+                    <!--D1_8-->
+                    <td><span data-bind="text:$vm.elapsedTime"></span></td>
+                </tr>
+                <tr class="last-row">
+                    <!--D1_9-->
+                    <th><span class="label" data-bind="text: $vm.$i18n('KAL011_31')"/></th>
+                    <!--D1_10-->
+                    <td><span data-bind="text:$vm.progress"/>/<span data-bind="text:$vm.categoryPeriods.length.toString()"/><span class="label" data-bind="text: '　' + $vm.$i18n('KAL011_8')"/></td>
+                </tr>
+            </table>
+        </div>
+        <div id="functions-area-bottom">
+             <!-- D2_2 -->
+             <com:ko-if bind="$vm.canInterrupt()">
+                <button tabindex="3" class="danger" data-bind="click:interruptProcess, text: $vm.$i18n('KAL011_32')"/>
+            </com:ko-if>
+            <com:ko-if bind="$vm.canCheckResult()">
+                <!-- D4_2 -->
+                <button tabindex="3" data-bind="click:checkResult, text: $vm.$i18n('KAL011_33')"/>
+            </com:ko-if>
+            <com:ko-if bind="$vm.canClose()">
+                <!-- B4_3 -->
+                <button tabindex="4" data-bind="click:closeDialog, text: $vm.$i18n('KAL011_34')"/>
+            </com:ko-if>
+        </div>
+    </ui:define>
+</ui:composition>
+</body>
+</html>

@@ -6,13 +6,13 @@ module nts.uk.at.view.kal003.share.model {
 
     export function getListCategory(): Array<ItemModel> {
         return [
-            //            new ItemModel(0, nts.uk.resource.getText("KAL010_1000")), //スケジュール日次
+            new ItemModel(0, nts.uk.resource.getText("KAL010_1000")), //スケジュール日次
             //            new ItemModel(1, nts.uk.resource.getText("KAL010_1500")), //スケジュール週次
             new ItemModel(2, nts.uk.resource.getText("KAL010_200")), //スケジュール４週
-            //            new ItemModel(3, nts.uk.resource.getText("KAL010_1100")), //スケジュール月次
-            //            new ItemModel(4, nts.uk.resource.getText("KAL010_1200")),//スケジュール年間
+            new ItemModel(3, nts.uk.resource.getText("KAL010_1100")), //スケジュール月次
+            new ItemModel(4, nts.uk.resource.getText("KAL010_1200")),//スケジュール年間
             new ItemModel(5, nts.uk.resource.getText("KAL010_1")), //日次
-            //            new ItemModel(6, nts.uk.resource.getText("KAL010_1300")), //週次
+            new ItemModel(6, nts.uk.resource.getText("KAL010_1300")), //週次
             new ItemModel(7, nts.uk.resource.getText("KAL010_100")), //月次
             new ItemModel(8, nts.uk.resource.getText("KAL010_500")), //申請承認
             new ItemModel(9, nts.uk.resource.getText("KAL010_250")), //複数月
@@ -67,7 +67,10 @@ module nts.uk.at.view.kal003.share.model {
         mulMonCheckCond: KnockoutObservable<MulMonCheckCond> = ko.observable(new MulMonCheckCond([]));
         annualHolidayAlCon: KnockoutObservable<AnnualHolidayAlarmCondition> = ko.observable(new AnnualHolidayAlarmCondition(null, null));
         masterCheckAlarmCheckCondition: KnockoutObservable<MasterCheckCondition> = ko.observable(new MasterCheckCondition([]));
-
+        // schedule
+        scheFixCondDay: KnockoutObservable<ScheFixCondDay> = ko.observable(new ScheFixCondDay("", []));
+        scheAnyCondDay: KnockoutObservable<ScheFixCondDay> = ko.observable(new ScheAnyCondDay("", []));
+        
         constructor(code: string, name: string, category: ItemModel, availableRoles: Array<string>, targetCondition: AlarmCheckTargetCondition) {
             this.code = ko.observable(code);
             this.name = ko.observable(name);
@@ -1625,13 +1628,15 @@ module nts.uk.at.view.kal003.share.model {
             self.useAtr = ko.computed(function() {
                 return self.useCheckSwitch() == '1' ? true : false;
             });
-
-            self.checkItem.subscribe((v) => {
-                self.errorAlarmCondition().atdItemCondition().group1(kal003utils.getDefaultAttdItemGroup3Item());
-                self.errorAlarmCondition().atdItemCondition().group2(kal003utils.getDefaultAttdItemGroup3Item());
-                self.errorAlarmCondition().atdItemCondition().group2UseAtr(false);
-                self.errorAlarmCondition().atdItemCondition().operatorBetweenGroups(0);
-            });
+            
+            if (self.errorAlarmCondition().atdItemCondition) {
+                self.checkItem.subscribe((v) => {
+                    self.errorAlarmCondition().atdItemCondition().group1(kal003utils.getDefaultAttdItemGroup3Item());
+                    self.errorAlarmCondition().atdItemCondition().group2(kal003utils.getDefaultAttdItemGroup3Item());
+                    self.errorAlarmCondition().atdItemCondition().group2UseAtr(false);
+                    self.errorAlarmCondition().atdItemCondition().operatorBetweenGroups(0);
+                });
+            }
         }
     }
 
@@ -2258,6 +2263,10 @@ module nts.uk.at.view.kal003.share.model {
         planLstWorkType: Array<string>;
         actualFilterAtr: boolean;
         actualLstWorkType: Array<string>;
+        comparisonOperator: KnockoutObservable<number>;
+        compareStartValue: KnockoutObservable<number>;
+        compareEndValue: KnockoutObservable<number>;
+        checkTimeType: KnockoutObservable<number>;
     }
 
     export class WorkTypeCondition {
@@ -2266,7 +2275,12 @@ module nts.uk.at.view.kal003.share.model {
         planFilterAtr: boolean;
         planLstWorkType: KnockoutObservableArray<string> = ko.observableArray([]);
         actualFilterAtr: boolean;
-        actualLstWorkType: KnockoutObservableArray<string> = ko.observableArray([]);
+        actualLstWorkType: Array<string>;
+        comparisonOperator: KnockoutObservable<number> = ko.observable(0);
+        compareStartValue: KnockoutObservable<number> = ko.observable();
+        compareEndValue: KnockoutObservable<number> = ko.observable();
+        checkTimeType: KnockoutObservable<number> = ko.observable(0);
+        
         constructor(param: IWorkTypeCondition) {
             let self = this;
             self.useAtr = param && param.useAtr ? param.useAtr : false;
@@ -2274,7 +2288,11 @@ module nts.uk.at.view.kal003.share.model {
             self.planFilterAtr = param && param.planFilterAtr ? param.planFilterAtr : false;
             self.planLstWorkType(param && param.planLstWorkType ? param.planLstWorkType : []);
             self.actualFilterAtr = param && param.actualFilterAtr ? param.actualFilterAtr : false;
-            self.actualLstWorkType(param && param.actualLstWorkType ? param.actualLstWorkType : []);
+            self.actualLstWorkType = param && param.actualLstWorkType ? param.actualLstWorkType : [];
+            self.comparisonOperator(param && param.comparisonOperator ? param.comparisonOperator : 0);
+            self.compareStartValue(param && (param.compareStartValue || param.compareStartValue == 0) ? param.compareStartValue : "");
+            self.compareEndValue(param && (param.compareEndValue || param.compareEndValue == 0) ? param.compareEndValue : "");
+            self.checkTimeType(param && param.checkTimeType ? param.checkTimeType : 0);
         }
     }
 
@@ -2287,6 +2305,7 @@ module nts.uk.at.view.kal003.share.model {
         workTimeCondition: WorkTimeCondition; // 勤怠項目のエラーアラーム条件
         atdItemCondition: AttendanceItemCondition;
         continuousPeriod: number; //連続期間
+        monthlyCondition: ScheMonCond; // schedule monlhty
     }
 
     export class ErrorAlarmCondition {
@@ -2297,6 +2316,7 @@ module nts.uk.at.view.kal003.share.model {
         workTimeCondition: KnockoutObservable<WorkTimeCondition>;
         atdItemCondition: KnockoutObservable<AttendanceItemCondition>;
         continuousPeriod: KnockoutObservable<number> = ko.observable(null); //連続期間
+        monthlyCondition: KnockoutObservable<ScheMonCond>;
         constructor(param: IErrorAlarmCondition) {
             let self = this;
             self.errorAlarmCheckID(param && param.errorAlarmCheckID ? param.errorAlarmCheckID : '')
@@ -2306,6 +2326,7 @@ module nts.uk.at.view.kal003.share.model {
             self.workTimeCondition = ko.observable(param && param.workTimeCondition ? param.workTimeCondition : null);
             self.atdItemCondition = ko.observable(param && param.atdItemCondition ? param.atdItemCondition : null);
             self.continuousPeriod(param.continuousPeriod || 0); //連続期間
+            self.monthlyCondition = ko.observable(param && param.monthlyCondition ? param.monthlyCondition : new ScheMonCond());
         }
     }
 
@@ -2628,5 +2649,61 @@ module nts.uk.at.view.kal003.share.model {
         }
     }
     //MinhVV Multiple Month end
-
+    
+    export class ScheFixCondDay {
+        erAlCheckLinkId: KnockoutObservable<string>;
+        sheFixItemDays: KnockoutObservableArray<FixedConditionWorkRecord>;
+        
+        constructor(erAlCheckLinkId: string, sheFixItemDays: KnockoutObservableArray<FixedConditionWorkRecord>) {
+            this.erAlCheckLinkId = ko.observable(erAlCheckLinkId);
+            this.sheFixItemDays = ko.observableArray(sheFixItemDays);
+        }
+    }
+    
+    export class ScheAnyCondDay {
+        erAlCheckLinkId: KnockoutObservable<string>;
+        scheAnyCondDays: KnockoutObservableArray<FixedConditionWorkRecord>;
+        
+        constructor(erAlCheckLinkId: string, scheAnyCondDays: KnockoutObservableArray<FixedConditionWorkRecord>) {
+            this.erAlCheckLinkId = ko.observable(erAlCheckLinkId);
+            this.scheAnyCondDays = ko.observableArray(scheAnyCondDays);
+        }  
+    } 
+    
+    export class ScheMonCond {
+        /* チェックする対比 | チェックする日数*/
+        scheCheckCondition: KnockoutObservable<number>;
+        
+        /* 比較演算子 */
+        comparisonOperator: KnockoutObservable<number>;
+        
+        /* 範囲との比較．開始値 */
+        compareStartValue: KnockoutObservable<number>;
+        
+        /* 範囲との比較．終了値 */
+        compareEndValue: KnockoutObservable<number>;
+        
+        /* スケジュール月次の残数チェック.特別休暇 */
+        specialHolidayCode: KnockoutObservable<string>;
+        
+        countableAddAtdItems: KnockoutObservableArray<number>;
+        countableSubAtdItems: KnockoutObservableArray<number>;
+        
+        inputs: KnockoutObservableArray<InputModel>;
+        
+        constructor(param) {
+            this.scheCheckCondition = ko.observable(param && param.scheCheckCondition ? param.scheCheckCondition : 0);
+            this.comparisonOperator = ko.observable(param && param.comparisonOperator ? param.comparisonOperator : 0);
+            this.compareStartValue = ko.observable(param && param.compareStartValue != null ? param.compareStartValue : null);
+            this.compareEndValue = ko.observable(param && param.compareEndValue != null ? param.compareEndValue : null);
+            this.specialHolidayCode = ko.observable(param && param.specialHolidayCode ? param.specialHolidayCode : "");
+            
+            this.countableAddAtdItems = ko.observableArray(param && param.countableAddAtdItems ? _.values(param.countableAddAtdItems) : []);
+            this.countableSubAtdItems = ko.observableArray(param && param.countableSubAtdItems ? _.values(param.countableSubAtdItems) : []);
+            
+            let defaultInputs = [new InputModel(0, true, null, true, true, nts.uk.resource.getText("KAL003_80")), new InputModel(0, true, null, false, true, nts.uk.resource.getText("KAL003_83"))];
+            this.inputs = ko.observableArray(defaultInputs);
+        }
+    }
+    
 }

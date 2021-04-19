@@ -2,7 +2,7 @@ package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.a
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import nts.uk.ctx.at.shared.dom.application.reflectprocess.ScheduleRecordClassifi;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.ScheduleRecordClassifi;
 
 /**
  * @author ThanhNX

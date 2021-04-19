@@ -12,7 +12,7 @@ import nts.uk.ctx.at.schedule.dom.adapter.appreflect.SCAppReflectionSetting;
 import nts.uk.ctx.at.schedule.dom.adapter.appreflect.SCApplyTimeSchedulePriority;
 import nts.uk.ctx.at.schedule.dom.adapter.appreflect.SCClassifyScheAchieveAtr;
 import nts.uk.ctx.at.schedule.dom.adapter.appreflect.SCPriorityTimeReflectAtr;
-import nts.uk.ctx.at.shared.dom.application.common.ApplicationTypeShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.common.ApplicationTypeShare;
 
 @Stateless
 public class RequestSettingAdapterImpl implements RequestSettingAdapter {
