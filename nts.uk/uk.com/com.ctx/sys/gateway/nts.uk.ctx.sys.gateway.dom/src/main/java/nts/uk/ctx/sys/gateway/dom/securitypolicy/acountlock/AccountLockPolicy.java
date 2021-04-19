@@ -83,11 +83,11 @@ public class AccountLockPolicy extends AggregateRoot {
 	 * @return
 	 */
 	private int countFail(Require require, String userId) {
-		if(lockInterval.v() == 0) {
-			return require.getFailureLog(userId).size();
+		if(lockInterval.v() != 0) {
+			val startDateTime = GeneralDateTime.now().addMinutes(-lockInterval.valueAsMinutes());
+			return require.getFailureLog(userId, startDateTime, GeneralDateTime.now()).size();
 		}
-		val startDateTime = GeneralDateTime.now().addMinutes(-lockInterval.valueAsMinutes());
-		return require.getFailureLog(userId, startDateTime, GeneralDateTime.now()).size();
+		return require.getFailureLog(userId).size();
 	}
 	
 	public static interface Require {
