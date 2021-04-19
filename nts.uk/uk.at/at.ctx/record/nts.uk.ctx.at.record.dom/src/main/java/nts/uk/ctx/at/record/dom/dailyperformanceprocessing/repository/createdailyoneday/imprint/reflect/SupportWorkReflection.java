@@ -621,12 +621,14 @@ public class SupportWorkReflection {
 					dataAutoSet);
 			if (judgmentSupport.getSupportMaxFrame().v() < 2) {
 				// 最後の退勤の応援データを補正する
-				lastData.getTimeSheet()
-						.setStart(firstData.getTimeSheet().getStart().isPresent()
-								? firstData.getTimeSheet().getStart().get()
-								: null);
-				// 最後の退勤の応援データを補正済みの応援データ一覧に入れる
-				dataAutoSet.add(lastData);
+				if(lastData.getTimeSheet().getStart().isPresent() && lastData.getTimeSheet().getEnd().isPresent()) {
+					lastData.getTimeSheet()
+					.setStart(firstData.getTimeSheet().getStart().isPresent()
+							? firstData.getTimeSheet().getStart().get()
+							: null);
+					// 最後の退勤の応援データを補正済みの応援データ一覧に入れる
+					dataAutoSet.add(lastData);
+				}
 			} else {
 				// 補正で使う応援データを探す
 				Optional<WorkTimeInformation> endOuenLast = dataAutoSet.get(dataAutoSet.size() - 1).getTimeSheet().getEnd();
@@ -1186,12 +1188,13 @@ public class SupportWorkReflection {
 	 * @return
 	 */
 	public List<OuenWorkTimeSheetOfDailyAttendance> rearrangeSupportData(
-			List<OuenWorkTimeSheetOfDailyAttendance> lstOuenWorkTime) {
+			List<OuenWorkTimeSheetOfDailyAttendance> lstOuenWorkTime) {		
 		Comparator<OuenWorkTimeSheetOfDailyAttendance> comparator = new Comparator<OuenWorkTimeSheetOfDailyAttendance>() {
 
 			@Override
 			public int compare(OuenWorkTimeSheetOfDailyAttendance arg0, OuenWorkTimeSheetOfDailyAttendance arg1) {
 				// TODO Auto-generated method stub
+				List<OuenWorkTimeSheetOfDailyAttendance> lstOuenWorkTimes = lstOuenWorkTime;
 				Optional<TimeWithDayAttr> start1 = arg0.getTimeSheet().getStart().isPresent()
 						? arg0.getTimeSheet().getStart().get().getTimeWithDay()
 						: Optional.empty();
@@ -1205,28 +1208,30 @@ public class SupportWorkReflection {
 				Optional<TimeWithDayAttr> end2 = arg1.getTimeSheet().getEnd().isPresent()
 						? arg1.getTimeSheet().getEnd().get().getTimeWithDay()
 						: Optional.empty();
+				// 両方が終了の場合、終了使う
+				if (end1.isPresent() && end2.isPresent()) {
+					return end1.get().v().compareTo(end2.get().v());
+				}
+						
 				// 両方が開始の場合開始使う
 				if (start1.isPresent() && start2.isPresent()) {
 					return start1.get().v().compareTo(start2.get().v());
 				}
 				// 一方が開始、一方が終了の場合、開始と終了を使う ・同じ時刻の場合、終了は前にする
-				if (start1.isPresent() && end2.isPresent() && !start2.isPresent()) {
+				if (start1.isPresent() && end2.isPresent()) {
 					if (start1.get().v() != end2.get().v())
 						return start1.get().v().compareTo(end2.get().v());
 					else
-						return end2.get().v() - start1.get().v();
+						return 1;
 				}
 
-				if (start2.isPresent() && end1.isPresent() && !start1.isPresent()) {
+				if (start2.isPresent() && end1.isPresent()) {
 					if (start2.get().v() != end1.get().v())
-						return start2.get().v().compareTo(end1.get().v());
+						return end1.get().v().compareTo(start2.get().v());
 					else
-						return end1.get().v() - start2.get().v();
+						return 1;
 				}
-				// 両方が終了の場合、終了使う
-				if (!start1.isPresent() && !start2.isPresent() && end1.isPresent() && end2.isPresent()) {
-					return end1.get().v().compareTo(end2.get().v());
-				}
+				
 				return 0;
 			}
 		};
