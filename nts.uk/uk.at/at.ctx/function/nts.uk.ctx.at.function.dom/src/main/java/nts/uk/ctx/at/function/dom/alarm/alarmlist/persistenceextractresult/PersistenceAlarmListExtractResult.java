@@ -10,6 +10,7 @@ import java.util.List;
 
 /**
  * 永続化のアラームリスト抽出結果
+ * @author viet.tx
  */
 @AllArgsConstructor
 @Getter
