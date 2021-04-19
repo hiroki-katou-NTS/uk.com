@@ -384,8 +384,8 @@ public class SupportWorkReflection {
 		if (startAtr == StartAtr.END_OF_SUPPORT) {
 			// 上書き対象の時刻を取得する
 			// 「打刻応援データ。終了。時刻 ＞ 応援データ。終了。時刻」 OR 時刻優先フラグ＝True
-			if ((ouenStamp.getTimeSheet().getStart().get().getTimeWithDay().isPresent()
-					&& ouenStampNew.getTimeSheet().getStart().get().getTimeWithDay().isPresent()
+			if ((ouenStamp.getTimeSheet().getEnd().get().getTimeWithDay().isPresent()
+					&& ouenStampNew.getTimeSheet().getEnd().get().getTimeWithDay().isPresent()
 					&& ouenStamp.getTimeSheet().getEnd().get().getTimeWithDay().get().v() > ouenStampNew.getTimeSheet()
 							.getEnd().get().getTimeWithDay().get().v())
 					|| timePriorityFlag == true) {
@@ -1140,11 +1140,13 @@ public class SupportWorkReflection {
 			List<OuenWorkTimeSheetOfDailyAttendance> lstOuenFilter = new ArrayList<>();
 			
 			if(workTemporary.getOneHourLeavingWork().get().getStamp().isPresent()) {
-				lstOuenFilter = lstOuenWorkTime.stream().filter(x -> x
-						.getTimeSheet().getEnd().isPresent()
-						&& x.getTimeSheet().getEnd().get().getTimeWithDay().get().v() == workTemporary
-								.getOneHourLeavingWork().get().getStamp().get().getTimeDay().getTimeWithDay().get().v())
-						.collect(Collectors.toList());
+				lstOuenFilter = lstOuenWorkTime.stream()
+				.filter(x -> {
+					val end = x.getTimeSheet().getEnd().flatMap(c -> c.getTimeWithDay()).map(c -> c.v()).orElse(null);
+					if (end == null) return false;
+					
+					return end == workTemporary.getOneHourLeavingWork().get().getStamp().get().getTimeDay().getTimeWithDay().get().v();
+				}).collect(Collectors.toList());
 			}
 
 			// if 検索できない
@@ -1163,9 +1165,12 @@ public class SupportWorkReflection {
 			// 応援データ一覧から出勤２時刻と同じ時刻持つ応援データを探す
 			if (workTemporary.getTwoHoursWork().isPresent()) {
 				List<OuenWorkTimeSheetOfDailyAttendance> lstOuenFilter = lstOuenWorkTime.stream()
-						.filter(x -> x.getTimeSheet().getEnd().get().getTimeWithDay().get().v() == workTemporary
-								.getTwoHoursWork().get().getStamp().get().getTimeDay().getTimeWithDay().get().v())
-						.collect(Collectors.toList());
+				.filter(x -> {
+					val start = x.getTimeSheet().getStart().flatMap(c -> c.getTimeWithDay()).map(c -> c.v()).orElse(null);
+					if (start == null) return false;
+					
+					return start == workTemporary.getTwoHoursWork().get().getStamp().get().getTimeDay().getTimeWithDay().get().v();
+				}).collect(Collectors.toList());
 
 				// if 検索できない
 				if (lstOuenFilter.isEmpty()) {
