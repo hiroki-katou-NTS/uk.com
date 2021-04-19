@@ -485,8 +485,8 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 				startValue = checkedTimeDurationStartValue.getTimeWithFormat();
 				
 				if (endValue != null) {
-					CheckedTimeDuration checkedTimeDurationEndValue = new CheckedTimeDuration(Double.valueOf(startValue).intValue());
-					startValue = checkedTimeDurationEndValue.getTimeWithFormat();
+					CheckedTimeDuration checkedTimeDurationEndValue = new CheckedTimeDuration(Double.valueOf(endValue).intValue());
+					endValue = checkedTimeDurationEndValue.getTimeWithFormat();
 				}
 			}
 		}
