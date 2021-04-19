@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.aggregation.dom.schedulecounter.aggregationprocess.personCounter;
+package nts.uk.ctx.at.aggregation.dom.schedulecounter.aggregationprocess.personcounter;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -12,6 +12,7 @@ import lombok.val;
 import mockit.Expectations;
 import mockit.Injectable;
 import mockit.integration.junit4.JMockit;
+import nts.uk.ctx.at.aggregation.dom.schedulecounter.aggregationprocess.personcounter.WorkClassificationAsAggregationTarget;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.worktype.DailyWork;
 import nts.uk.ctx.at.shared.dom.worktype.HalfDayWorkTypeClassification;
@@ -26,10 +27,10 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeUnit;
  *
  */
 @RunWith(JMockit.class)
-public class TargetAggreWorkClassificationTest {
+public class WorkClassificationAsAggregationTargetTest {
 
 	@Injectable
-	TargetAggreWorkClassification.Require require;
+	WorkClassificationAsAggregationTarget.Require require;
 
 	/**
 	 * input : 勤務種類がない 
@@ -37,7 +38,7 @@ public class TargetAggreWorkClassificationTest {
 	 */
 	@Test
 	public void getNumberDay_workType_not_exist(@Injectable WorkInformation workInfo) {
-		val target = TargetAggreWorkClassification.WORKING;
+		val target = WorkClassificationAsAggregationTarget.WORKING;
 
 		new Expectations() {
 			{
@@ -61,7 +62,7 @@ public class TargetAggreWorkClassificationTest {
 	public void getNumberDay_target_working_all_workType_working(@Injectable WorkInformation workInfo,
 			@Injectable WorkType workType, @Injectable DailyWork dailyWork) {
 
-		val target = TargetAggreWorkClassification.WORKING;
+		val target = WorkClassificationAsAggregationTarget.WORKING;
 		
 		//出勤
 		{
@@ -129,7 +130,7 @@ public class TargetAggreWorkClassificationTest {
 	public void getNumberDay_target_working_all_workType_holiday(@Injectable WorkInformation workInfo,
 			@Injectable WorkType workType, @Injectable DailyWork dailyWork) {
 
-		val target = TargetAggreWorkClassification.WORKING;
+		val target = WorkClassificationAsAggregationTarget.WORKING;
 		
 		//休日
 		{
@@ -181,7 +182,7 @@ public class TargetAggreWorkClassificationTest {
 	public void getNumberDay_target_holiday_all_workType_working(@Injectable WorkInformation workInfo,
 			@Injectable WorkType workType, @Injectable DailyWork dailyWork) {
 
-		val target = TargetAggreWorkClassification.HOLIDAY;
+		val target = WorkClassificationAsAggregationTarget.HOLIDAY;
 		
 		//出勤
 		{
@@ -247,7 +248,7 @@ public class TargetAggreWorkClassificationTest {
 	public void getNumberDay_target_holiday_all_workType_holiday(@Injectable WorkInformation workInfo,
 			@Injectable WorkType workType, @Injectable DailyWork dailyWork) {
 
-		val target = TargetAggreWorkClassification.HOLIDAY;
+		val target = WorkClassificationAsAggregationTarget.HOLIDAY;
 		
 		//休日
 		{
@@ -302,7 +303,7 @@ public class TargetAggreWorkClassificationTest {
 		 * output: 日数　 = 0.5
 		 */
 		{
-			val target = TargetAggreWorkClassification.HOLIDAY;
+			val target = WorkClassificationAsAggregationTarget.HOLIDAY;
 			val halfDay = HalfDayWorkTypeClassification.createByAmAndPm(WorkTypeClassification.Pause, WorkTypeClassification.Attendance);
 
 			new Expectations() {
@@ -327,7 +328,7 @@ public class TargetAggreWorkClassificationTest {
 		 * output: 日数　 = 0.5
 		 */
 		{
-			val target = TargetAggreWorkClassification.HOLIDAY;
+			val target = WorkClassificationAsAggregationTarget.HOLIDAY;
 			val halfDay = HalfDayWorkTypeClassification.createByAmAndPm(WorkTypeClassification.Holiday, WorkTypeClassification.Attendance);
 
 			new Expectations() {
@@ -353,7 +354,7 @@ public class TargetAggreWorkClassificationTest {
 		 */
 		
 		{
-			val target = TargetAggreWorkClassification.WORKING;
+			val target = WorkClassificationAsAggregationTarget.WORKING;
 			val halfDay = HalfDayWorkTypeClassification.createByAmAndPm(WorkTypeClassification.Attendance, WorkTypeClassification.Pause);
 
 			new Expectations() {
@@ -383,7 +384,7 @@ public class TargetAggreWorkClassificationTest {
 		
 		//午前 = 休日, 午後 = 振休
 		{
-			val target = TargetAggreWorkClassification.HOLIDAY;
+			val target = WorkClassificationAsAggregationTarget.HOLIDAY;
 			val halfDay = HalfDayWorkTypeClassification.createByAmAndPm(WorkTypeClassification.Holiday,	WorkTypeClassification.Pause);
 
 			new Expectations() {
@@ -404,7 +405,7 @@ public class TargetAggreWorkClassificationTest {
 
 		//午前 = 出勤, 午後 = 連続出勤
 		{
-			val target = TargetAggreWorkClassification.WORKING;
+			val target = WorkClassificationAsAggregationTarget.WORKING;
 			val halfDay = HalfDayWorkTypeClassification.createByAmAndPm(WorkTypeClassification.Attendance, WorkTypeClassification.ContinuousWork);
 
 			new Expectations() {

@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.aggregation.dom.schedulecounter.aggregationprocess.personCounter;
+package nts.uk.ctx.at.aggregation.dom.schedulecounter.aggregationprocess.personcounter;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -22,7 +22,8 @@ import mockit.MockUp;
 import mockit.Mocked;
 import mockit.integration.junit4.JMockit;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.aggregation.dom.schedulecounter.aggregationprocess.personCounter.WorkingTimeCounterServiceHelper.AttendanceTimeOfDailyAttendanceHelp;
+import nts.uk.ctx.at.aggregation.dom.schedulecounter.aggregationprocess.personcounter.WorkingTimeCounterService;
+import nts.uk.ctx.at.aggregation.dom.schedulecounter.aggregationprocess.personcounter.WorkingTimeCounterServiceHelper.AttendanceTimeOfDailyAttendanceHelp;
 import nts.uk.ctx.at.shared.dom.common.EmployeeId;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.scherec.aggregation.perdaily.AttendanceTimeTotalizationService;

@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.aggregation.dom.schedulecounter.aggregationprocess.personCounter;
+package nts.uk.ctx.at.aggregation.dom.schedulecounter.aggregationprocess.personcounter;
 
 import java.math.BigDecimal;
 import java.util.Optional;
@@ -17,7 +17,7 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
  *
  */
 @AllArgsConstructor
-public enum TargetAggreWorkClassification {
+public enum WorkClassificationAsAggregationTarget {
 	//出勤
 	WORKING(0),
 	//休日

@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.aggregation.dom.schedulecounter.aggregationprocess.personCounter;
+package nts.uk.ctx.at.aggregation.dom.schedulecounter.aggregationprocess.personcounter;
 
 import java.math.BigDecimal;
 import java.util.Arrays;

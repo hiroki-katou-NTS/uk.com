@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.aggregation.dom.schedulecounter.aggregationprocess.personCounter;
+package nts.uk.ctx.at.aggregation.dom.schedulecounter.aggregationprocess.personcounter;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -31,6 +31,8 @@ import nts.gul.util.value.MutableValue;
 import nts.uk.ctx.at.aggregation.dom.common.DailyAttendanceGettingService;
 import nts.uk.ctx.at.aggregation.dom.common.IntegrationOfDailyHelperInAggregation;
 import nts.uk.ctx.at.aggregation.dom.common.ScheRecGettingAtr;
+import nts.uk.ctx.at.aggregation.dom.schedulecounter.aggregationprocess.personcounter.EstimatedSalary;
+import nts.uk.ctx.at.aggregation.dom.schedulecounter.aggregationprocess.personcounter.EstimatedSalaryAggregationService;
 import nts.uk.ctx.at.aggregation.dom.schedulecounter.criterion.CriterionAmountHelper;
 import nts.uk.ctx.at.aggregation.dom.schedulecounter.criterion.CriterionAmountList;
 import nts.uk.ctx.at.aggregation.dom.schedulecounter.criterion.CriterionAmountValue;

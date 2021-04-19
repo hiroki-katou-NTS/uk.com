@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.aggregation.dom.schedulecounter.aggregationprocess.personCounter;
+package nts.uk.ctx.at.aggregation.dom.schedulecounter.aggregationprocess.personcounter;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
@@ -29,11 +29,11 @@ public class WorkdayHolidayCounterService {
 	 * @param dailyWorks 日別勤怠リスト
 	 * @return Map<社員ID, Map<集計対象の勤務分類, BigDecimal>>
 	 */
-	public static Map<EmployeeId, Map<TargetAggreWorkClassification, BigDecimal>> count(Require require, List<IntegrationOfDaily> dailyWorks) {
+	public static Map<EmployeeId, Map<WorkClassificationAsAggregationTarget, BigDecimal>> count(Require require, List<IntegrationOfDaily> dailyWorks) {
 		
 		val workInfoOfEachEmp = DailyAttendanceGroupingUtil.byEmployeeIdWithAnyItem(dailyWorks, e -> e.getWorkInformation().getRecordInfo());
 		
-		val targetCounts = Arrays.asList(TargetAggreWorkClassification.values());
+		val targetCounts = Arrays.asList(WorkClassificationAsAggregationTarget.values());
 		
 		return workInfoOfEachEmp.entrySet().stream()
 				.collect(Collectors.toMap(
@@ -53,8 +53,8 @@ public class WorkdayHolidayCounterService {
 	 * @param workInfo 勤務情報
 	 * @return Map<集計対象の勤務分類, BigDecimal>
 	 */
-	private static Map<TargetAggreWorkClassification, BigDecimal> getValueOfTargetAggregation(Require require
-			,	List<TargetAggreWorkClassification> target
+	private static Map<WorkClassificationAsAggregationTarget, BigDecimal> getValueOfTargetAggregation(Require require
+			,	List<WorkClassificationAsAggregationTarget> target
 			,	WorkInformation workInfo) {		
 		return target.stream()
 				.collect(Collectors.toMap(
@@ -62,7 +62,7 @@ public class WorkdayHolidayCounterService {
 				, 	c -> c.getNumberDay(require, workInfo)));
 	}
 	
-	public static interface Require extends TargetAggreWorkClassification.Require{
+	public static interface Require extends WorkClassificationAsAggregationTarget.Require{
 		
 	}
 }

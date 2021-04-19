@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.aggregation.dom.schedulecounter.aggregationprocess.personCounter;
+package nts.uk.ctx.at.aggregation.dom.schedulecounter.aggregationprocess.personcounter;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -18,6 +18,8 @@ import mockit.Injectable;
 import mockit.integration.junit4.JMockit;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.aggregation.dom.schedulecounter.aggregationprocess.personcounter.WorkClassificationAsAggregationTarget;
+import nts.uk.ctx.at.aggregation.dom.schedulecounter.aggregationprocess.personcounter.WorkdayHolidayCounterService;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.common.EmployeeId;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.DayOfWeek;
@@ -63,7 +65,7 @@ public class WorkdayHolidayCounterServiceTest {
 			,	@Injectable WorkType workType
 			,	@Injectable DailyWork dailyWork) {
 		
-		val targetCounts = new ArrayList<>(Arrays.asList(TargetAggreWorkClassification.values()));
+		val targetCounts = new ArrayList<>(Arrays.asList(WorkClassificationAsAggregationTarget.values()));
 		
 		new Expectations() {
 			{
@@ -75,18 +77,18 @@ public class WorkdayHolidayCounterServiceTest {
 			}
 		};
 		
-		Map<TargetAggreWorkClassification, BigDecimal>  result = NtsAssert.Invoke.staticMethod(WorkdayHolidayCounterService.class, "getValueOfTargetAggregation", require, targetCounts, workInfo);
+		Map<WorkClassificationAsAggregationTarget, BigDecimal>  result = NtsAssert.Invoke.staticMethod(WorkdayHolidayCounterService.class, "getValueOfTargetAggregation", require, targetCounts, workInfo);
 		
 		//HOLIDAY
 		{
-			val numberHoliday = result.get(TargetAggreWorkClassification.HOLIDAY);
+			val numberHoliday = result.get(WorkClassificationAsAggregationTarget.HOLIDAY);
 			assertThat(numberHoliday).isEqualByComparingTo(BigDecimal.ZERO);
 			
 		}
 		
 		//WORKING
 		{
-			val numberHoliday = result.get(TargetAggreWorkClassification.WORKING);
+			val numberHoliday = result.get(WorkClassificationAsAggregationTarget.WORKING);
 			assertThat(numberHoliday).isEqualByComparingTo(BigDecimal.valueOf(1));
 			
 		}
@@ -104,7 +106,7 @@ public class WorkdayHolidayCounterServiceTest {
 			,	@Injectable WorkType workType
 			,	@Injectable DailyWork dailyWork) {
 		
-		val targetCounts = new ArrayList<>(Arrays.asList(TargetAggreWorkClassification.values()));
+		val targetCounts = new ArrayList<>(Arrays.asList(WorkClassificationAsAggregationTarget.values()));
 		
 		new Expectations() {
 			{
@@ -116,18 +118,18 @@ public class WorkdayHolidayCounterServiceTest {
 			}
 		};
 		
-		Map<TargetAggreWorkClassification, BigDecimal>  result = NtsAssert.Invoke.staticMethod(WorkdayHolidayCounterService.class, "getValueOfTargetAggregation", require, targetCounts, workInfo);
+		Map<WorkClassificationAsAggregationTarget, BigDecimal>  result = NtsAssert.Invoke.staticMethod(WorkdayHolidayCounterService.class, "getValueOfTargetAggregation", require, targetCounts, workInfo);
 		
 		//HOLIDAY
 		{
-			val numberHoliday = result.get(TargetAggreWorkClassification.HOLIDAY);
+			val numberHoliday = result.get(WorkClassificationAsAggregationTarget.HOLIDAY);
 			assertThat(numberHoliday).isEqualByComparingTo(BigDecimal.valueOf(1));
 			
 		}
 		
 		//WORKING
 		{
-			val numberHoliday = result.get(TargetAggreWorkClassification.WORKING);
+			val numberHoliday = result.get(WorkClassificationAsAggregationTarget.WORKING);
 			assertThat(numberHoliday).isEqualByComparingTo(BigDecimal.ZERO);
 			
 		}
@@ -145,7 +147,7 @@ public class WorkdayHolidayCounterServiceTest {
 			,	@Injectable WorkType workType
 			,	@Injectable DailyWork dailyWork) {
 		
-		val targetCounts = new ArrayList<>(Arrays.asList(TargetAggreWorkClassification.values()));
+		val targetCounts = new ArrayList<>(Arrays.asList(WorkClassificationAsAggregationTarget.values()));
 		
 		new Expectations() {
 			{
@@ -157,18 +159,18 @@ public class WorkdayHolidayCounterServiceTest {
 			}
 		};
 		
-		Map<TargetAggreWorkClassification, BigDecimal>  result = NtsAssert.Invoke.staticMethod(WorkdayHolidayCounterService.class, "getValueOfTargetAggregation", require, targetCounts, workInfo);
+		Map<WorkClassificationAsAggregationTarget, BigDecimal>  result = NtsAssert.Invoke.staticMethod(WorkdayHolidayCounterService.class, "getValueOfTargetAggregation", require, targetCounts, workInfo);
 		
 		//HOLIDAY
 		{
-			val numberHoliday = result.get(TargetAggreWorkClassification.HOLIDAY);
+			val numberHoliday = result.get(WorkClassificationAsAggregationTarget.HOLIDAY);
 			assertThat(numberHoliday).isEqualByComparingTo(BigDecimal.valueOf(0.5));
 			
 		}
 		
 		//WORKING
 		{
-			val numberHoliday = result.get(TargetAggreWorkClassification.WORKING);
+			val numberHoliday = result.get(WorkClassificationAsAggregationTarget.WORKING);
 			assertThat(numberHoliday).isEqualByComparingTo(BigDecimal.valueOf(0.5));
 			
 		}
@@ -226,7 +228,7 @@ public class WorkdayHolidayCounterServiceTest {
 			}
 		};
 		
-		Map<EmployeeId, Map<TargetAggreWorkClassification, BigDecimal>> results = WorkdayHolidayCounterService.count(require, dailyWorks);
+		Map<EmployeeId, Map<WorkClassificationAsAggregationTarget, BigDecimal>> results = WorkdayHolidayCounterService.count(require, dailyWorks);
 		
 		assertThat(results.keySet()).containsOnlyElementsOf(Arrays.asList(
 					new EmployeeId("sid1")
@@ -237,29 +239,29 @@ public class WorkdayHolidayCounterServiceTest {
 		{
 			val actual = results.get(new EmployeeId("sid1"));
 			//1日休日 + 1日出勤
-			assertThat(actual.get(TargetAggreWorkClassification.WORKING)).isEqualTo(BigDecimal.valueOf(1.0));
-			assertThat(actual.get(TargetAggreWorkClassification.HOLIDAY)).isEqualTo(BigDecimal.valueOf(1.0));
+			assertThat(actual.get(WorkClassificationAsAggregationTarget.WORKING)).isEqualTo(BigDecimal.valueOf(1.0));
+			assertThat(actual.get(WorkClassificationAsAggregationTarget.HOLIDAY)).isEqualTo(BigDecimal.valueOf(1.0));
 		}
 		
 		{
 			val actual = results.get(new EmployeeId("sid2"));
 			//１日出勤 + 午前午後
-			assertThat(actual.get(TargetAggreWorkClassification.WORKING)).isEqualTo(BigDecimal.valueOf(1.5));
-			assertThat(actual.get(TargetAggreWorkClassification.HOLIDAY)).isEqualTo(BigDecimal.valueOf(0.5));
+			assertThat(actual.get(WorkClassificationAsAggregationTarget.WORKING)).isEqualTo(BigDecimal.valueOf(1.5));
+			assertThat(actual.get(WorkClassificationAsAggregationTarget.HOLIDAY)).isEqualTo(BigDecimal.valueOf(0.5));
 		}
 		
 		{
 			val actual = results.get(new EmployeeId("sid3"));
 			//１日休日 + 午前午後
-			assertThat(actual.get(TargetAggreWorkClassification.WORKING)).isEqualTo(BigDecimal.valueOf(0.5));
-			assertThat(actual.get(TargetAggreWorkClassification.HOLIDAY)).isEqualTo(BigDecimal.valueOf(1.5));
+			assertThat(actual.get(WorkClassificationAsAggregationTarget.WORKING)).isEqualTo(BigDecimal.valueOf(0.5));
+			assertThat(actual.get(WorkClassificationAsAggregationTarget.HOLIDAY)).isEqualTo(BigDecimal.valueOf(1.5));
 		}
 		
 		{
 			val actual = results.get(new EmployeeId("sid4"));
 			//午前出勤 + 午後出勤
-			assertThat(actual.get(TargetAggreWorkClassification.WORKING)).isEqualTo(BigDecimal.valueOf(1.0));
-			assertThat(actual.get(TargetAggreWorkClassification.HOLIDAY)).isEqualTo(BigDecimal.valueOf(1.0));
+			assertThat(actual.get(WorkClassificationAsAggregationTarget.WORKING)).isEqualTo(BigDecimal.valueOf(1.0));
+			assertThat(actual.get(WorkClassificationAsAggregationTarget.HOLIDAY)).isEqualTo(BigDecimal.valueOf(1.0));
 		}
 		
 	}
