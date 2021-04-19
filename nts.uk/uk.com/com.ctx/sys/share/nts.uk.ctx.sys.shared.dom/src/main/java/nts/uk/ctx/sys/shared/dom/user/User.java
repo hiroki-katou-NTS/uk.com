@@ -98,7 +98,7 @@ public class User extends AggregateRoot {
 	 * @return
 	 */
 	public boolean isAvailableAt(GeneralDate date) {
-		return this.expirationDate.after(date);
+		return this.expirationDate.afterOrEquals(date);
 	} 
 	
 }
