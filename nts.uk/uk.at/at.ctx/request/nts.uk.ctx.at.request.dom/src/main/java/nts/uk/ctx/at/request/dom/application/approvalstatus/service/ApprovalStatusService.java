@@ -24,8 +24,6 @@ import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprS
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprSttSendMailInfoOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprSttWkpEmpMailOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalStatusEmployeeOutput;
-import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalSttAppOutput;
-import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalSttByEmpListOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ConfirmWorkplaceInfoOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.DailyConfirmOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.DisplayWorkplace;
@@ -35,7 +33,6 @@ import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.MailT
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.PhaseApproverStt;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.SendMailResultOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.UnApprovalSendMail;
-import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.WorkplaceInfor;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeEmailImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.AppRootInsImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseStateImport_New;
@@ -57,15 +54,6 @@ public interface ApprovalStatusService {
 	 */
 	List<ApprovalStatusEmployeeOutput> getApprovalStatusEmployee(String wkpId, GeneralDate closureStart,
 			GeneralDate closureEnd, List<String> listEmpCd);
-
-	/**
-	 * アルゴリズム「承認状況取得申請承認」を実行する
-	 * 
-	 * @param wkpInfoDto
-	 * @return ApprovalSttAppDto
-	 */
-	ApprovalSttAppOutput getApprovalSttApp(WorkplaceInfor wkpInfor,
-			List<ApprovalStatusEmployeeOutput> listAppStatusEmp);
 
 	/**
 	 * 承認状況社員メールアドレス取得
@@ -118,21 +106,6 @@ public interface ApprovalStatusService {
 	 * @return 取得社員ID＜社員ID、社員名、メールアドレス＞
 	 */
 	EmployeeEmailOutput findEmpMailAddr();
-
-	/**
-	 * アルゴリズム「承認状況未承認メール送信実行」を実行する
-	 * 
-	 * @param unAppMailTransmis
-	 * @return 
-	 */
-	SendMailResultOutput exeSendUnconfirmedMail(List<String> listWkpId, GeneralDate closureStart, GeneralDate closureEnd, List<String> listEmpCd);
-
-	/**
-	 * アルゴリズム「承認状況社員別一覧作成」を実行する
-	 * @return 
-	 */
-	List<ApprovalSttByEmpListOutput> getApprovalSttById(String selectedWkpId, List<String> listWkpId,
-			GeneralDate startDate, GeneralDate endDate, List<String> listEmpCode);
 	
 	// refactor 5
 	/**

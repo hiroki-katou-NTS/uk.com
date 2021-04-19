@@ -9,27 +9,41 @@ module nts.uk.at.view.kdl030.a.viewmodel {
 	@bean()
     export class Kdl030AViewModel extends ko.ViewModel {
 		appIDLst: Array<string> = [];
-		isAgentMode : KnockoutObservable<boolean> = ko.observable(false);
+		isAgentMode : boolean = false;
 		appSendMailByEmpLst: KnockoutObservableArray<any> = ko.observableArray([]);
 		isSendApplicant: KnockoutObservable<boolean> = ko.observable(false);
 		mailContent: KnockoutObservable<String> = ko.observable(null);
 		appEmailSet: any = null;
-		isOpEmployee: any = false;
+		isOpEmployee: false = false;
         created() {
             const vm = this;
             let param = getShared("KDL030_PARAM");
             vm.appIDLst = param.appIDLst;
-			vm.isAgentMode(param.isAgentMode);
+			vm.isAgentMode = param.isAgentMode;
+			//recheck agentMode
+            if (vm.isAgentMode && param.employeeInfoLst.length == 1){
+                if (param.employeeInfoLst[0].bussinessName.includes(__viewContext.user.employeeCode)){
+                    vm.isAgentMode = false;
+                }
+            }
 			vm.isOpEmployee = param.isOpEmployee;
-			if(vm.isAgentMode() || vm.isOpEmployee) {
+			if(vm.isAgentMode || vm.isOpEmployee) {
 				vm.isSendApplicant(true);
 			}
 			if (!_.isEmpty(vm.appIDLst)){
                 vm.$ajax(API.applicationForSendByAppID, vm.appIDLst).done((result) => {
 					vm.mailContent(result.mailTemplate);
 					vm.appEmailSet = result.appEmailSet;
-					result.appSendMailByEmpLst.sort((app1, app2) => app1.applicantName.localeCompare(app2.applicantName));
-					_.forEach(result.appSendMailByEmpLst, appSendMailByEmp => {
+					let appSendMails = [];
+					if (!_.isNil(param.employeeInfoLst) && param.employeeInfoLst.length > 1) {
+                        _.forEach(param.employeeInfoLst, emp => {
+                            let x = result.appSendMailByEmpLst.filter(app => app.applicantName.localeCompare(emp.bussinessName) == 0);
+                            appSendMails.push(x[0]);
+                        })
+                    } else {
+					    appSendMails = result.appSendMailByEmpLst;
+                    }
+					_.forEach(appSendMails, appSendMailByEmp => {
 						_.forEach(appSendMailByEmp.approvalRoot.listApprovalPhaseStateDto, phase => {
 							_.forEach(phase.listApprovalFrame, frame => {
 								_.forEach(frame.listApprover, approver => {
@@ -39,7 +53,7 @@ module nts.uk.at.view.kdl030.a.viewmodel {
 						});	
 					});
 						
-					vm.appSendMailByEmpLst(ko.mapping.fromJS(result.appSendMailByEmpLst)());
+					vm.appSendMailByEmpLst(ko.mapping.fromJS(appSendMails)());
 
                     if ($('#checkSendApplicant').length > 0) {
                         $('#checkSendApplicant').focus();
@@ -72,15 +86,15 @@ module nts.uk.at.view.kdl030.a.viewmodel {
         }
 
 		isFirstIndexApprover(loopFrame, loopApprover) {
-			return loopApprover.approverInListOrder() == 1;
-			// return _.findIndex(loopFrame.listApprover(), o => o == loopApprover) == 1;
+			// return loopApprover.approverInListOrder() == 1;
+			return _.findIndex(loopFrame.listApprover(), o => o == loopApprover) == 0;
 		}
 
         getFrameIndex(loopPhase, loopFrame, loopApprover) {
-            if(_.size(loopFrame.listApprover()) > 1) {
-                return _.findIndex(loopFrame.listApprover(), o => o == loopApprover);
-            }
-            return loopFrame.frameOrder();
+//            if(_.size(loopFrame.listApprover()) > 1) {
+//                return _.findIndex(loopFrame.listApprover(), o => o == loopApprover);
+//            }
+        	return loopFrame.frameOrder();
         }
 
 		phaseCount(listPhase) {
@@ -157,7 +171,7 @@ module nts.uk.at.view.kdl030.a.viewmodel {
                 })
             })
             if (count > 5){
-                return self.isAgentMode() ? 'min-774' : 'min-671';
+                return (self.isAgentMode || self.isOpEmployee) ? 'min-774' : 'min-671';
             }
             return "";
         }
@@ -193,9 +207,9 @@ module nts.uk.at.view.kdl030.a.viewmodel {
             const vm = this;
            	let index = vm.getFrameIndex(loopPhase, loopFrame, loopApprover);
             // case group approver
-            if(_.size(loopFrame.listApprover()) > 1) {
-                index++;
-            }
+//            if(_.size(loopFrame.listApprover()) > 1) {
+//                index++;
+//            }
             if(index <= 10){
                 return vm.$i18n("KAF000_9",[index+'']);
             }
