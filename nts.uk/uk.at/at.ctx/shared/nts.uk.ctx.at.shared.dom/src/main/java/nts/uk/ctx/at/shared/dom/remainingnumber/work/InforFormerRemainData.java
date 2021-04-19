@@ -43,7 +43,8 @@ public class InforFormerRemainData {
 	 */
 	public Optional<OccurrenceUseDetail> getOccurrenceUseDetail(WorkTypeClassification workTypeClass) {
 		//勤務種類別残数情報をチェックする
-		Optional<WorkTypeRemainInfor> optWorkTypeRemainInfor = this.getWorkTypeRemainInfor(workTypeClass);
+		Optional<WorkTypeRemainInfor> optWorkTypeRemainInfor = this.getWorkTypeRemain().stream()
+				.filter(x -> x.getOccurrenceDetailData().stream().filter(od -> od.getWorkTypeAtr().equals(workTypeClass)&& od.isUseAtr() && od.getDays() > 0).findFirst().isPresent()).findFirst();
 		if(!optWorkTypeRemainInfor.isPresent()) {
 			return Optional.empty();
 		}
@@ -60,7 +61,7 @@ public class InforFormerRemainData {
 	
 	public Optional<WorkTypeRemainInfor> getWorkTypeRemainInfor(WorkTypeClassification workTypeClass) {
 		List<WorkTypeRemainInfor> lstWorkTypeRemainInfor = this.getWorkTypeRemain().stream()
-				.filter(x -> x.getOccurrenceDetailData().stream().filter(od -> od.getWorkTypeAtr().equals(workTypeClass)&& od.isUseAtr() && od.getDays() > 0).findFirst().isPresent()).collect(Collectors.toList());
+				.filter(x -> x.getWorkTypeClass().equals(workTypeClass)).collect(Collectors.toList());
 		if(lstWorkTypeRemainInfor.isEmpty()) {
 			return Optional.empty();
 		}
