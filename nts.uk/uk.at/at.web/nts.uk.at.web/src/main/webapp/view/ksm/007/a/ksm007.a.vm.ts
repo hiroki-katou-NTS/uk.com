@@ -7,12 +7,12 @@ module nts.uk.at.view.ksm007.a {
     import resource = nts.uk.resource;
 
     export class ScreenModel {
-        options: Option;
+        options: any;
         currentIds: KnockoutObservable<any> = ko.observable(null);
         currentCodes: KnockoutObservable<any> = ko.observable([]);
         currentNames: KnockoutObservable<any> = ko.observable([]);
         workplaceGroupList: KnockoutObservable<any> = ko.observable([]);
-        registerForm: RegisterForm = ko.observable(new RegisterForm());
+        registerForm: KnockoutObservable<RegisterForm> = ko.observable(new RegisterForm());
         isModeNew: KnockoutObservable<boolean> = ko.observable(false);
 
         constructor() {
