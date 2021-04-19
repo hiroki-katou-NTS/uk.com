@@ -463,4 +463,25 @@ public class JpaStandardMenuRepository extends JpaRepository implements Standard
 				.setParameter("queryString", queryString)
 				.getSingle(x-> toDomain(x));
 	}
+	
+	private static final String GET_SINGLE_URL = "SELECT c FROM SptmtStandardMenu c"
+			+ " WHERE c.ccgmtStandardMenuPK.companyId = :cid"
+			+ " AND c.ccgmtStandardMenuPK.system = :system"
+			+ " AND c.ccgmtStandardMenuPK.classification = :menuClassfication"
+			+ " AND c.programId = :programId"
+			+ " AND c.screenID = :screenId";
+
+	@Override
+	public Optional<String> getUrl(String cid, int system, int menuClassfication, String programId, String screenId) {
+		
+		Optional<StandardMenu> standardMenu = this.queryProxy().query(GET_SINGLE_URL, SptmtStandardMenu.class)
+		.setParameter("cid", cid)
+		.setParameter("system", system)
+		.setParameter("menuClassfication", menuClassfication)
+		.setParameter("programId", programId)
+		.setParameter("screenId", screenId)
+		.getSingle(x-> toDomain(x));
+		
+		return Optional.ofNullable(standardMenu.map(StandardMenu::getUrl).orElse(null));
+	}
 }

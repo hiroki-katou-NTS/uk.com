@@ -12,6 +12,7 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.GetAnnLeaUsedDays;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.GetPeriodFromPreviousToNextGrantDate;
+import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.GrantPeriodDto;
 import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.ReferenceAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnLeaGrantRemDataRepository;
@@ -165,7 +166,7 @@ public class ObligedAnnLeaUseServiceImpl implements ObligedAnnLeaUseService {
 		
 		// 指定した月を基準に、前回付与日から次回付与日までの期間を取得
 		val periodOpt = this.getPeriodFromPreviousToNextGrantDate.getPeriodGrantDate(
-				AppContexts.user().companyId(), employeeId, currentMonth, criteria);
+				AppContexts.user().companyId(), employeeId, currentMonth, criteria, null , null ).map(GrantPeriodDto::getPeriod);
 		if (!periodOpt.isPresent()) return result;
 		val period = periodOpt.get();
 		
@@ -343,7 +344,7 @@ public class ObligedAnnLeaUseServiceImpl implements ObligedAnnLeaUseService {
 
 		// 指定した年月日を基準に、前回付与日から次回付与日までの期間を取得
 		val periodOpt = this.getPeriodFromPreviousToNextGrantDate.getPeriodYMDGrant(
-				AppContexts.user().companyId(), employeeId, criteria);
+				AppContexts.user().companyId(), employeeId, criteria, null, null ).map(GrantPeriodDto::getPeriod);
 		if (!periodOpt.isPresent()) return Optional.empty();
 		val period = periodOpt.get();
 		

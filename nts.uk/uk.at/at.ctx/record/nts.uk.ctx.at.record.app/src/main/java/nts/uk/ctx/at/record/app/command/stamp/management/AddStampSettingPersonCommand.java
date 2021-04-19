@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.app.command.stamp.management;
 
+import java.util.List;
+
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
@@ -7,6 +9,7 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.pref
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.CorrectionInterval;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.HistoryDisplayMethod;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ResultDisplayTime;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampPageLayout;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSettingPerson;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampingScreenSet;
 import nts.uk.ctx.at.shared.dom.common.color.ColorCode;
@@ -39,7 +42,7 @@ public class AddStampSettingPersonCommand {
 	/** 打刻結果自動閉じる時間 */
 	private int resultDisplayTime;
 	
-	public StampSettingPerson toDomain(){
+	public StampSettingPerson toDomain(List<StampPageLayout> lstStampPageLayout){
 		String companyId = AppContexts.user().companyId();
 		HistoryDisplayMethod historyDisplayMethods = EnumAdaptor.valueOf(historyDisplayMethod, HistoryDisplayMethod.class);
 		CorrectionInterval correctionIntervals = new CorrectionInterval(correctionInterval);
@@ -49,6 +52,7 @@ public class AddStampSettingPersonCommand {
 		ResultDisplayTime resultDisplayTimes = new ResultDisplayTime(resultDisplayTime);
 		StampingScreenSet stampingScreenSet = new StampingScreenSet(historyDisplayMethods, correctionIntervals, colorSetting, resultDisplayTimes);
 		
-		return new StampSettingPerson(companyId, buttonEmphasisArt, stampingScreenSet, null, null);
+		return new StampSettingPerson(companyId, buttonEmphasisArt, stampingScreenSet, lstStampPageLayout,
+				EnumAdaptor.valueOf(historyDisplayMethod, HistoryDisplayMethod.class));
 	}
 }

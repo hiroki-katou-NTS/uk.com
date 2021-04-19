@@ -186,6 +186,12 @@ public class EmpEmployeeAdapterImpl implements EmpEmployeeAdapter {
 		return result;
 	}
 
+	@Override
+	public List<ClassificationImport> getClassificationByCompanyId(String companyId) {
+		return this.classPub.getClassificationByCompanyId(companyId).stream()
+				.map(x -> new ClassificationImport(x.getCompanyId(), x.getClassificationCode(),x.getClassificationName(),x.getMemo()))
+				.collect(Collectors.toList());
+	}
 
 	@Override
 	public List<EmployeeBasicInfoImport> getEmpInfoLstBySids(List<String> sids, DatePeriod period, boolean isDelete, boolean isGetAffCompany) {

@@ -27,6 +27,16 @@ public interface EmployeeMonthDaySettingRepository {
 	Optional<EmployeeMonthDaySetting> findByYear(CompanyId companyId, String employee, Year year);
 	
 	/**
+	 * Find by year.
+	 *
+	 * @param companyId the company id
+	 * @param employee the list employee
+	 * @param year the year
+	 * @return the List
+	 */
+	List<EmployeeMonthDaySetting> findByYear(CompanyId companyId, List<String> employee, Year year);
+	
+	/**
 	 * Find all employee register.
 	 *
 	 * @param companyId the company id

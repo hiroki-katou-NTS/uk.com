@@ -35,8 +35,12 @@ import nts.uk.ctx.at.function.dom.alarm.alarmlist.AlarmExtraValueWkReDto;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.EmployeeSearchDto;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.PeriodByAlarmCategory;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.aggregationprocess.agreementprocess.AgreementCheckService;
+import nts.uk.ctx.at.function.dom.alarm.alarmlist.annual.ScheduleAnnualAlarmCheckCond;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.appapproval.AppApprovalAggregationProcessService;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.attendanceholiday.TotalProcessAnnualHoliday;
+import nts.uk.ctx.at.function.dom.alarm.alarmlist.schedaily.ScheduleDailyAlarmCheckCond;
+import nts.uk.ctx.at.function.dom.alarm.alarmlist.schemonthly.ScheduleMonthlyAlarmCheckCond;
+import nts.uk.ctx.at.function.dom.alarm.alarmlist.weekly.WeeklyAlarmCheckCond;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategory;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategoryRepository;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckTargetCondition;
@@ -246,6 +250,18 @@ public class AggregationProcessService {
 				switch (x.getCategory()) {
 				
 				case SCHEDULE_DAILY:
+					ScheduleDailyAlarmCheckCond scheDailyAlarmCondition = (ScheduleDailyAlarmCheckCond) x.getExtractionCondition();
+					extractAlarmService.extractScheDailyCheckResult(cid,
+							lstSid,
+							datePeriod, 
+							extractTargetCondition.getId(),
+							scheDailyAlarmCondition,
+							getWplByListSidAndPeriod,
+							lstStatusEmp,
+							lstResultCondition,
+							lstCheckType,
+							counter,
+							shouldStop);
 					break;
 					
 				case SCHEDULE_WEEKLY:
@@ -270,9 +286,27 @@ public class AggregationProcessService {
 					break;
 					
 				case SCHEDULE_MONTHLY:
+					ScheduleMonthlyAlarmCheckCond scheduleMonthlyAlarmCheckCond = (ScheduleMonthlyAlarmCheckCond)x.getExtractionCondition();
+					extractAlarmService.extractScheMonCheckResult(
+							cid, lstSid, datePeriod, extractTargetCondition.getId(), 
+							scheduleMonthlyAlarmCheckCond, 
+							getWplByListSidAndPeriod, lstStatusEmp, 
+							lstResultCondition, lstCheckType, counter, shouldStop);
 					break;
 					
 				case SCHEDULE_YEAR:
+					ScheduleAnnualAlarmCheckCond scheYearAlarmCondition = (ScheduleAnnualAlarmCheckCond)x.getExtractionCondition();
+					extractAlarmService.extractScheYearCheckResult(cid,
+							lstSid,
+							datePeriod, 
+							extractTargetCondition.getId(),
+							scheYearAlarmCondition,
+							getWplByListSidAndPeriod,
+							lstStatusEmp,
+							lstResultCondition,
+							lstCheckType,
+							counter,
+							shouldStop);
 					break;
 					
 				case DAILY:
@@ -290,6 +324,11 @@ public class AggregationProcessService {
 							shouldStop);
 					break;
 				case WEEKLY:
+					WeeklyAlarmCheckCond weeklyAlarmCheckCond = (WeeklyAlarmCheckCond)x.getExtractionCondition();
+					extractAlarmService.extractWeeklyCheckResult( 
+							cid, lstSid, datePeriod, getWplByListSidAndPeriod, 
+							weeklyAlarmCheckCond, lstResultCondition, 
+							lstCheckType, counter, shouldStop);
 					break;
 					
 				case MONTHLY:
@@ -569,5 +608,12 @@ public class AggregationProcessService {
 			}
 		}
 	}
-
+	
+	/**
+	 * スケジュール日次の集計処理
+	 */
+	private void processWithScheduleDaily() {
+		// チェックする前にデータ準備
+		
+	}
 }

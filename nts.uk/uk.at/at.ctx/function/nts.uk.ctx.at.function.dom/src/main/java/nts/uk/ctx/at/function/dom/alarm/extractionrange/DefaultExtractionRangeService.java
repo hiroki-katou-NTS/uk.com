@@ -66,7 +66,7 @@ public class DefaultExtractionRangeService implements ExtractionRangeService {
 		List<CheckCondition> checkConList = alarmRepo.getCheckCondition(companyId, alarmCode);
 
 		checkConList.forEach(c -> {
-			if (c.isDaily() || c.isApplication()) {
+			if (c.isDaily() || c.isApplication() || c.isScheduleDaily() || c.isWeekly()) {
 				CheckConditionTimeDto daily = this.getDailyTime(c, closureId, new YearMonth(processingYm));
 				result.add(daily);
 				
@@ -74,7 +74,7 @@ public class DefaultExtractionRangeService implements ExtractionRangeService {
 				CheckConditionTimeDto schedual_4week = this.get4WeekTime(c, closureId, new YearMonth(processingYm), companyId);
 				result.add(schedual_4week);
 				
-			} else if(c.isMonthly() || c.isMultipleMonth()) {
+			} else if(c.isMonthly() || c.isMultipleMonth() || c.isScheduleMonthly()) {
 				CheckConditionTimeDto other = this.getMonthlyTime(c,closureId,new YearMonth(processingYm));
 				result.add(other);
 				
@@ -84,8 +84,10 @@ public class DefaultExtractionRangeService implements ExtractionRangeService {
 				CheckConditionTimeDto attHoliday = new CheckConditionTimeDto(c.getAlarmCategory().value, c.getAlarmCategory().nameId, 0);
 				attHoliday.setTabOrder(7);
 				result.add(attHoliday);
+			} else if (c.isScheduleYear()) {
+				CheckConditionTimeDto other = this.getScheYearTime(c,closureId,new YearMonth(processingYm));
+				result.add(other);
 			}
-			
 
 		});
 		
@@ -257,6 +259,43 @@ public class DefaultExtractionRangeService implements ExtractionRangeService {
 		}
 		if(extractionPeriodMonth.getEndMonth().getSpecifyEndMonth().value == SpecifyEndMonth.SPECIFY_CLOSE_END_MONTH.value ) {
 			endMonthly = yearMonth.addMonths((-1)*extractionPeriodMonth.getEndMonth().getEndMonthNo().get().getMonthNo());
+		}
+		
+		return new CheckConditionTimeDto(c.getAlarmCategory().value,
+				EnumAdaptor.convertToValueName(c.getAlarmCategory()).getLocalizedName(), null,
+				null, startMonthly.toString(), endMonthly.toString());
+	}
+	
+	/**
+	 * 月次単位の期間を算出する
+	 * @param c
+	 * @param closureId
+	 * @param yearMonth
+	 * @return
+	 */
+	public CheckConditionTimeDto getScheYearTime(CheckCondition c, int closureId, YearMonth yearMonth) {	
+		YearMonth startMonthly = yearMonth;
+		YearMonth endMonthly = yearMonth;
+		ExtractionPeriodMonth extractionPeriodMonth =  (ExtractionPeriodMonth) c.getExtractPeriodList().get(0);
+		
+		// 固定の月度を指定する
+		// 「パラメータ．処理月」-「固定月度．指定月」を開始月とする　(lấy 「パラメータ．処理月」-「固定月度．指定月」trở thành start month)
+		if (SpecifyStartMonth.SPECIFY_FIXED_MOON_DEGREE == extractionPeriodMonth.getStartMonth().getSpecifyStartMonth()) {
+			startMonthly = yearMonth.addMonths((-1) * extractionPeriodMonth.getStartMonth().getFixedMonthly().get().getDesignatedMonth());
+		} else {
+			// 締め開始月を指定する
+			int startMonthNo = extractionPeriodMonth.getStartMonth().getStrMonthNo().get().getMonthNo();
+			startMonthly = yearMonth.addMonths((-1) * startMonthNo);
+		}
+		
+		// 開始から期間を指定する
+		// 終了月　=　「パラメータ．処理月」　-　「月数指定．月数」とする (để end month = 「」 - 「」)
+		if(extractionPeriodMonth.getEndMonth().getSpecifyEndMonth().value == SpecifyEndMonth.SPECIFY_PERIOD_FROM_START_MONTH.value ) {
+			endMonthly = yearMonth.addMonths((-1)*extractionPeriodMonth.getEndMonth().getExtractFromStartMonth().value);
+		} else {
+			// 締め終了月を指定する
+			int endMonthNo = extractionPeriodMonth.getEndMonth().getEndMonthNo().get().getMonthNo();
+			endMonthly = yearMonth.addMonths(endMonthNo);
 		}
 		
 		return new CheckConditionTimeDto(c.getAlarmCategory().value,
