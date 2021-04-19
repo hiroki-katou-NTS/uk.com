@@ -7,7 +7,6 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveGrantRemainingData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.param.AnnualHolidayGrant;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.param.AnnualHolidayGrantInfor;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.param.DailyInterimRemainMngDataAndFlg;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.param.ReferenceAtr;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
@@ -21,11 +20,18 @@ public interface GetAnnualHolidayGrantInfor {
 	 * @param sid 社員ID
 	 * @param referenceAtr 参照先区分
 	 * @param ym 指定年月
-	 * @param ymd 基準日
-	 * @return 年休付与情報
+	 * @param ymd 基準日 - reference date
+	 * @param periodOutput 対象期間区分（現在/１年経過時点/過去）
+	 * @param fromTo １年経過用期間(From-To)
+	 * @param isDoubletrack
+	 * @param exCondition
+	 * @param exConditionDays
+	 * @param exComparison
+	 * @return 年休付与情報 - GetAnnualHolidayGrantInforDto ( 年休付与情報  and 抽出対象社員 )
 	 */
-	Optional<AnnualHolidayGrantInfor> getAnnGrantInfor(String cid, String sid, ReferenceAtr referenceAtr, YearMonth ym,
-			GeneralDate ymd);
+	GetAnnualHolidayGrantInforDto getAnnGrantInfor(String cid, String sid, ReferenceAtr referenceAtr, YearMonth ym,
+			GeneralDate ymd, Integer periodOutput, Optional<DatePeriod> fromTo, boolean doubletrack , 
+			boolean exCondition,int exConditionDays, int exComparison);
 	/**
 	 * [NO.551]期間内の年休使用明細を取得する
 	 * @param cid

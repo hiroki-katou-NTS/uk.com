@@ -10,7 +10,6 @@ module nts.uk.at.view.kal002.b.viewmodel {
 
         startPage(): JQueryPromise<any> {
             var self = this;
-
             var dfd = $.Deferred();
             var MailSettingsDefault = ({subject : "", text : "", mailAddressCC : [], mailAddressBCC : [], mailRely : ""});
             block.grayout();

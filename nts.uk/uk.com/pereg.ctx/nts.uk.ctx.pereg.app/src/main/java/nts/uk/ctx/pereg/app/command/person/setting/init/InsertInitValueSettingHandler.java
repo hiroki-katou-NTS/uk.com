@@ -41,7 +41,7 @@ public class InsertInitValueSettingHandler extends CommandHandlerWithResult<Inse
 					initSettingId, companyId, insert.getItemCode(), insert.getItemName());
 			this.settingRepo.insert(initSetting);
 		}
-		
+
 		return initSettingId;
 
 	}

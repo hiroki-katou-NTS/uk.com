@@ -169,9 +169,10 @@ module nts.uk.at.view.kal004.a.model {
                         }
                         let yearly = categoryInputed.extractionYear == null ? null : new share.ExtractionRangeYearCommand(categoryInputed.extractionYear);
                         let averMonth = categoryInputed.extractionAverMonth == null ? null : new share.ExtractionAverageMonthCommand(categoryInputed.extractionAverMonth);
-                        shareTab2.push(new share.CheckConditionCommand(category, checkConditionCodes, daily, unit, listMonthly, yearly, averMonth));
+                        let scheYear = categoryInputed.extractionScheYear == null ? null : new share.ExtractionPeriodECommand(categoryInputed.extractionScheYear);
+                        shareTab2.push(new share.CheckConditionCommand(category, checkConditionCodes, daily, unit, listMonthly, yearly, averMonth, scheYear));
                     } else {
-                        shareTab2.push(new share.CheckConditionCommand(category, checkConditionCodes, null, null, [], null, null));
+                        shareTab2.push(new share.CheckConditionCommand(category, checkConditionCodes, null, null, [], null, null, null));
                     }
 
                 });

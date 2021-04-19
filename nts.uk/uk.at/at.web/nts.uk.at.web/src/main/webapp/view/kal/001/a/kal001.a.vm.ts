@@ -288,15 +288,17 @@ module nts.uk.at.view.kal001.a.model {
             this.category = dto.category;
             this.categoryName = dto.categoryName;
             this.period36Agreement = dto.period36Agreement;
-            if(dto.category == 0
-                || dto.category == 3
+            if(dto.category == CATEGORY.SCHEDULE_DAILY
+                || dto.category == CATEGORY.SCHEDULE_MONTHLY
                 || dto.category == 5
-                || dto.category == 7){
+                || dto.category == CATEGORY.WEEKLY
+                || dto.category == 7
+                || dto.category == CATEGORY.SCHEDULE_YEAR){
                 this.isEnable =  ko.observable(true);
             } else {
                 this.isEnable =  ko.observable(false);
             }
-            if(dto.category==2 || dto.category==5 || dto.category==8){
+            if(dto.category==2 || dto.category==5 || dto.category==8 || dto.category == 0 || dto.category == 6){
                 this.dateValue= ko.observable(new DateValue(dto.startDate, dto.endDate) );
                 this.typeInput = "fullDate"; 
                 this.isMultiMonthAverage = ko.observable(false);
@@ -305,7 +307,7 @@ module nts.uk.at.view.kal001.a.model {
                 this.nameStartRequired = getText("KAL004_74");
                 this.nameEndRequired = getText("KAL004_76");
                     
-            }else if(dto.category ==7 || dto.category == 9 ){
+            }else if(dto.category ==7 || dto.category == 9 || dto.category == CATEGORY.SCHEDULE_MONTHLY || dto.category == CATEGORY.SCHEDULE_YEAR){
                 this.dateValue= ko.observable(new DateValue(dto.startMonth, dto.endMonth));
                 this.typeInput = "yearmonth";   
                 this.isMultiMonthAverage = ko.observable(false);
@@ -348,7 +350,7 @@ module nts.uk.at.view.kal001.a.model {
             } else if(dto.category = CATEGORY.ATTENDANCE_RATE_FOR_ANNUAL_HOLIDAYS){
                 this.isHoliday = ko.observable(true);
                 this.isMultiMonthAverage = ko.observable(false);
-            }else if(dto.category = CATEGORY.MASTER_CHECK){
+            } else if(dto.category = CATEGORY.MASTER_CHECK){
                 this.isHoliday = ko.observable(true);
                 this.isMultiMonthAverage = ko.observable(false);
             }

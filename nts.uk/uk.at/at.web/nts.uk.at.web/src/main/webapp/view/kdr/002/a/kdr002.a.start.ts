@@ -14,13 +14,13 @@ module nts.uk.at.view.kdr002.a {
                 let $startDate = $("#ccg001-search-period .ntsStartDatePicker"),
                     $endDate = $("#ccg001-search-period .ntsEndDatePicker");
                 if ($startDate) {
-                    $startDate.change(function(data) {
+                    $startDate.change(function(data: any) {
                         if (data.currentTarget.value == screenModel.startDateString()) return;
                         screenModel.startDateString(data.currentTarget.value);
                     });
                 }
                 if ($endDate) {
-                    $endDate.change(function(data) {
+                    $endDate.change(function(data: any) {
                         screenModel.endDateString(data.currentTarget.value);
                     });
                 }
