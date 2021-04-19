@@ -26,4 +26,8 @@ public class CheckedTimeDuration extends TimeDurationPrimitiveValue<CheckedTimeD
 		super(timeAsMinutes);
 	}
 	
+	public String getTimeWithFormat(){
+		return this.hour() + ":" + (this.minute() < 10 ? "0" + this.minute() : this.minute());
+	}
+	
 }

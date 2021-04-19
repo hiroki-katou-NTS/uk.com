@@ -200,13 +200,13 @@ public class IntegrationOfWorkTime {
 	
 	/**
 	 * 法定内残業として扱うか判定する
-	 * @return true：法定内残業として扱う false法定内残業として扱わない
+	 * @return true：法定内残業として扱う false：法定内残業として扱わない
 	 */
 	public boolean isLegalInternalTime() {
 		switch(this.workTimeSetting.getWorkTimeDivision().getWorkTimeForm()) {
 			case FIXED:				return this.fixedWorkSetting.get().getLegalOTSetting().isLegal();
 			case FLEX:				return false;
-			case FLOW:				return false;
+			case FLOW:				return this.flowWorkSetting.get().getLegalOTSetting().isLegal();
 			case TIMEDIFFERENCE:	throw new RuntimeException("Unimplemented");/*時差勤務はまだ実装しない。2020/5/19 渡邉*/
 			default:				throw new RuntimeException("Non-conformity No Work");
 		}

@@ -35,6 +35,10 @@ public class KrcmtEralstCndexprange extends ContractUkJpaEntity implements Seria
 	@EmbeddedId
     public KrcstErAlAtdTargetPK krcstErAlAtdTargetPK;
 	
+	/**
+	 * Add = 0
+	 * Sub = 1
+	 */
 	@Basic(optional = false)
     @NotNull
     @Column(name = "TARGET_ATR")

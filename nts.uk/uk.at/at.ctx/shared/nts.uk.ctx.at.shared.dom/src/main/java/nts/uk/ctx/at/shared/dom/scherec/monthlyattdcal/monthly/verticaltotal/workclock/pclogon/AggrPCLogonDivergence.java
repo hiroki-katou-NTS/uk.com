@@ -161,15 +161,9 @@ public class AggrPCLogonDivergence implements Serializable{
 		
 		// 退勤時刻<>NULL
 		if (timeLeavingOfDaily == null) return;
-		TimeWithDayAttr leaveStamp = null;
 		Integer targetWorkNo = timeLeavingOfDaily.getWorkTimes().v();	// 勤務No ← 勤務回数
-		Optional<TimeActualStamp> leavingWorkOpt = timeLeavingOfDaily.getLeavingWork();		// 2回勤務があれば2回目
-		if (leavingWorkOpt.isPresent()) {
-			if (leavingWorkOpt.get().getStamp().isPresent()) {
-				leaveStamp = leavingWorkOpt.get().getStamp().get().getTimeDay().getTimeWithDay().get();
-			}
-		}
-		if (leaveStamp == null) return;
+		Optional<TimeWithDayAttr> leaveStamp = timeLeavingOfDaily.getLastLeaveTime();
+		if (!leaveStamp.isPresent()) return;
 		
 		// ログオフ時刻<>NULL
 		if (!pcLogonInfoOpt.isPresent()) return;
@@ -180,7 +174,7 @@ public class AggrPCLogonDivergence implements Serializable{
 		TimeWithDayAttr logoffStamp = logonInfoOpt.get().getLogOff().get();
 		
 		// 退勤時刻>=ログオフ時刻　なら対象外
-		int leaveMinutes = leaveStamp.valueAsMinutes();
+		int leaveMinutes = leaveStamp.get().valueAsMinutes();
 		int logoffMinutes = logoffStamp.valueAsMinutes();
 		if (leaveMinutes >= logoffMinutes) return;
 

@@ -1,0 +1,104 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+<ui:composition template="../../../../master/base.xhtml">
+    <ui:define name="htmlHead">
+        <com:scriptfile set="IGNITE"/>
+        <com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web"/>
+        <com:stylefile path="kal011.a.styles.css"/>
+        <com:scriptfile path="/view/kal/014/common/common.js"/>
+        <com:scriptfile path="kal011.a.vm.js"/>
+    </ui:define>
+    <ui:define name="content">
+        <div id="functions-area">
+            <div class="container">
+                <!--A1_1-->
+                <button id="A1_1" tabindex="1" class="proceed" data-bind="click:exportAlarmList, enable: $root.errors.isEmpty, text: $vm.$i18n('KAL011_5')"/>
+            </div>
+        </div>
+        <div id="contents-area">
+            <div class="table tbl-wrap">
+                <div class="cell valign-top">
+                     <!-- A3_1 -->
+                    <div id="tree-grid"></div>
+                </div>
+                <div class="cell valign-top">
+                    <div class="table tbl-control">
+                        <div class="cell valign-center">
+                            <!-- A4_1 -->
+                            <div data-bind="ntsFormLabel: {text: $vm.$i18n('KAL011_6')}"/>
+                        </div>
+                        <div class="cell valign-center">
+                            <!-- A4_2 -->
+                            <div id="B3_2" tabindex="4" data-bind="ntsComboBox: {
+                                name: $vm.$i18n('KAL011_6'),
+                                options: alarmPatterns,
+                                optionsValue: 'code',
+                                visibleItemsCount: 10,
+                                value: alarmPatternCode,
+                                optionsText: 'name',
+                                enable: true,
+                                required: false,
+                                columns: [{ prop: 'name', length: 5 }]
+                            }"/>
+                        </div>
+                    </div>
+                    <div class="table tbl-control">
+                        <div class="cell valign-top">
+                            <!-- A5_1 -->
+                            <div data-bind="ntsFormLabel: {text: $vm.$i18n('KAL011_7')}"/>
+                        </div>
+                        <div class="cell valign-top">
+                            <!-- A6 -->
+                            <table id="fixed-table" tabindex="5">
+                                <colgroup>
+                                    <col width="35px"/>
+                                    <col width="150px"/>
+                                    <col width="250px"/>
+                                </colgroup>
+                                <thead>
+                                    <tr>
+                                         <!-- A6_1 -->
+                                        <th class="ui-widget-header" data-bind="click: checkAll"><div tabindex="-1" data-bind="ntsCheckBox: { checked: $vm.isCheckAll }"/></th>
+                                        <!-- A6_2 -->
+                                        <th class="ui-widget-header"><span class="label" data-bind="text: $vm.$i18n('KAL011_8')"/></th>
+                                        <!-- A6_3 -->
+                                        <th class="ui-widget-header"><span class="label" data-bind="text: $vm.$i18n('KAL011_9')"/></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <com:ko-foreach bind="conditions">
+                                        <tr>
+                                            <!-- A6_4 -->
+                                            <td data-bind="click: function() {$vm.checkBoxAllOrNot($data)}"><div tabindex="-1" data-bind="ntsCheckBox: { checked: isChecked }"/></td>
+                                            <!-- A6_5-->
+                                            <td><span data-bind="text: $data.categoryName"></span></td>
+                                            <!-- A6_6 and A6_7-->
+                                            <td class="periodTime">
+                                                <com:ko-if bind="$data.periodType == 1">
+                                                    <div tabindex="-1" data-bind="attr:{id: $data.index}, ntsDateRangePicker: {name: $vm.$i18n('KAL011_9'), enable: true, value: $data.dateRange, type: 'date', maxRange: 'oneYear', required: isChecked}"/>
+                                                </com:ko-if>
+                                                <com:ko-if bind="$data.periodType == 2">
+                                                    <div tabindex="-1" data-bind="attr:{id: $data.index}, ntsDateRangePicker: {name: $vm.$i18n('KAL011_9'), enable: true, value: $data.dateRangeYm, type: 'yearmonth', maxRange: 'oneYear', required: isChecked}"/>
+                                                </com:ko-if>
+                                                <com:ko-if bind="$data.periodType == 3">
+                                                    <div tabindex="-1" data-bind="attr:{id: $data.index}, ntsDatePicker: {name: $vm.$i18n('KAL011_9'), value: $data.yearMonth, type: 'yearmonth', required: isChecked}"/>
+                                                </com:ko-if>                                                
+                                            </td>
+                                        </tr>
+                                    </com:ko-foreach>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </ui:define>
+</ui:composition>
+</body>
+</html>

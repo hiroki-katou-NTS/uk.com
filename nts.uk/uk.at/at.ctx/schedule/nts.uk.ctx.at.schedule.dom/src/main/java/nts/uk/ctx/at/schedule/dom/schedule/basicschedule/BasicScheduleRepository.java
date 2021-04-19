@@ -8,11 +8,10 @@ import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.childcareschedule.ChildCareSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.personalfee.WorkSchedulePersonFee;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workschedulebreak.WorkScheduleBreak;
-import nts.uk.ctx.at.schedule.dom.schedule.workschedulestate.WorkScheduleState;
-import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * The Interface BasicScheduleRepository.
@@ -135,7 +134,7 @@ public interface BasicScheduleRepository {
 	 * @param endDate
 	 * @return
 	 */
-	void insertAllScheduleState(List<WorkScheduleState> listWorkScheduleState);
+//	void insertAllScheduleState(List<WorkScheduleState> listWorkScheduleState);
 	/**
 	 * 検索
 	 * @param employeeId 社員ID
@@ -144,6 +143,6 @@ public interface BasicScheduleRepository {
 	 */
 	List<BasicSchedule> getBasicScheduleBySidPeriodDate(String employeeId, List<GeneralDate> dates);
 	
-	void removeScheState(String employeeId, GeneralDate baseDate,
-			List<WorkScheduleState> listWorkScheduleState);
+//	void removeScheState(String employeeId, GeneralDate baseDate,
+//			List<WorkScheduleState> listWorkScheduleState);
 }

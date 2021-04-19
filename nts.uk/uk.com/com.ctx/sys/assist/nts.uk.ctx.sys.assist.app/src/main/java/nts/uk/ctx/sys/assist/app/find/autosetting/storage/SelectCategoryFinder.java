@@ -56,7 +56,7 @@ public class SelectCategoryFinder {
 		// 選択カテゴリを取得する
 		List<DataStorageSelectionCategory> selectCategories = dataStorageSelectionCategoryRepository
 				.findByPatternCdAndPatternAtrAndSystemTypes(command.getPatternCode(),
-						command.getPatternClassification(), command.getSystemType());
+						command.getPatternClassification(), command.getSystemType(), AppContexts.user().contractCode());
 
 		// ドメインモデル「カテゴリ」を取得する
 		List<Category> categories = categoryRepository.getCategoryByListId(

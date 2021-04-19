@@ -24,11 +24,11 @@
 }
 
 table.top-content-tbl {
-    margin-bottom: 40px;
+    margin-bottom: 0px;
 }
 
 table.top-content-tbl tr {
-	height: 60px;
+	height: 45px;
 }
 
 table.top-content-tbl td {
@@ -60,7 +60,7 @@ div.grant-date button.nts-switch-button {
 	margin-bottom: 40px;
 }
 
-table.method-tbl tr {
+table.typeTime-tbl tr {
 	height: 30px;
 }
 
@@ -68,13 +68,13 @@ div#tab-panel {
 	width: 750px;
 }
 
-.methodsCls.ntsControl.radio-wrapper.reset-element {
+.typeTimesCls.ntsControl.radio-wrapper.reset-element {
     width: 265px;
     margin: 10px 40px;
     float: left;
 }
 
-.methodsCls label.ntsRadioBox:FIRST-CHILD {
+.typeTimesCls label.ntsRadioBox:FIRST-CHILD {
 	height: 90px;
 }
 
@@ -126,12 +126,12 @@ table.exp-date-tbl {
 	margin-left: 25px;
 }
 
-.timeMethods label.ntsRadioBox {
+.timeSpecifyMethods label.ntsRadioBox {
     height: 50px;
 }
 
 div#tab-1, div#tab-2, div#tab-3 {
-    height: 370px;
+    height: 425px;
 }
 
 table.exp-date-options {
@@ -216,4 +216,21 @@ div.ageBaseDate {
 }
 #auto_grant .nts-switch-button {
 	width: 70px;
+}
+table.typeTime1-tbl tr{
+    height: 35px;
+}
+table.typeTime1-tbl td div.radioBtn{
+    margin-top: 3px;
+	vertical-align: top;
+	width: 77px;
+}
+table.typeTime2-tbl tr{
+    height: 35px;
+}
+.div_line {
+	margin-bottom: 5px;
+	float: left;
+	clear: both;
+	width: 100%;
 }

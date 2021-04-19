@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.function.dom.adapter;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -7,9 +8,11 @@ import nts.uk.ctx.at.function.dom.adapter.eralworkrecorddto.ErrorAlarmConAdapter
 
 @Getter
 @NoArgsConstructor
+@Builder
 public class WorkRecordExtraConAdapterDto {
 	@Setter
 	private String errorAlarmCheckID;
+	
 	//TypeCheckWorkRecord
 	private int checkItem;
 	
@@ -17,6 +20,7 @@ public class WorkRecordExtraConAdapterDto {
 	//ColorCode
 	private String messageColor;
 	
+	@Setter
 	private int sortOrderBy;
 	
 	private boolean useAtr;
