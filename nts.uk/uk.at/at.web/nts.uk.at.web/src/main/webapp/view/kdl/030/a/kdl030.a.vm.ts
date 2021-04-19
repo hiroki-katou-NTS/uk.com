@@ -9,19 +9,25 @@ module nts.uk.at.view.kdl030.a.viewmodel {
 	@bean()
     export class Kdl030AViewModel extends ko.ViewModel {
 		appIDLst: Array<string> = [];
-		isAgentMode : KnockoutObservable<boolean> = ko.observable(false);
+		isAgentMode : boolean = false;
 		appSendMailByEmpLst: KnockoutObservableArray<any> = ko.observableArray([]);
 		isSendApplicant: KnockoutObservable<boolean> = ko.observable(false);
 		mailContent: KnockoutObservable<String> = ko.observable(null);
 		appEmailSet: any = null;
-		isOpEmployee: any = false;
+		isOpEmployee: false = false;
         created() {
             const vm = this;
             let param = getShared("KDL030_PARAM");
             vm.appIDLst = param.appIDLst;
-			vm.isAgentMode(param.isAgentMode);
+			vm.isAgentMode = param.isAgentMode;
+			//recheck agentMode
+            if (vm.isAgentMode && param.employeeInfoLst.length == 1){
+                if (param.employeeInfoLst[0].bussinessName.includes(__viewContext.user.employeeCode)){
+                    vm.isAgentMode = false;
+                }
+            }
 			vm.isOpEmployee = param.isOpEmployee;
-			if(vm.isAgentMode() || vm.isOpEmployee) {
+			if(vm.isAgentMode || vm.isOpEmployee) {
 				vm.isSendApplicant(true);
 			}
 			if (!_.isEmpty(vm.appIDLst)){
@@ -29,7 +35,7 @@ module nts.uk.at.view.kdl030.a.viewmodel {
 					vm.mailContent(result.mailTemplate);
 					vm.appEmailSet = result.appEmailSet;
 					let appSendMails = [];
-					if (!_.isNil(param.employeeInfoLst)) {
+					if (!_.isNil(param.employeeInfoLst) && param.employeeInfoLst.length > 1) {
                         _.forEach(param.employeeInfoLst, emp => {
                             let x = result.appSendMailByEmpLst.filter(app => app.applicantName.localeCompare(emp.bussinessName) == 0);
                             appSendMails.push(x[0]);
@@ -165,7 +171,7 @@ module nts.uk.at.view.kdl030.a.viewmodel {
                 })
             })
             if (count > 5){
-                return (self.isAgentMode() || self.isOpEmployee) ? 'min-774' : 'min-671';
+                return (self.isAgentMode || self.isOpEmployee) ? 'min-774' : 'min-671';
             }
             return "";
         }
