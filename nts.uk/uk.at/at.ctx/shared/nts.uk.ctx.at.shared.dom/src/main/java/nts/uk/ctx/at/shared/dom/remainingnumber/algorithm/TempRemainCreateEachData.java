@@ -449,8 +449,12 @@ public class TempRemainCreateEachData {
 
 		occUseDetail.ifPresent(x -> {
 			//発生使用明細＝設定あり
+			
+			WorkTypeRemainInfor Rinfor = inforData.getWorkTypeRemainInfor(workTypeClass).map(ri -> ri)
+					.orElse(inforData.getWorkTypeRemainInforByOd(workTypeClass));
+			
 			InterimHolidayMng holidayMng = new InterimHolidayMng(IdentifierUtil.randomUniqueId(), inforData.getSid(),
-					inforData.getYmd(), inforData.getWorkTypeRemainInfor(workTypeClass).get().getCreateData(),
+					inforData.getYmd(), Rinfor.getCreateData(),
 					RemainType.PUBLICHOLIDAY, x.getDays());
 			mngData.getRecAbsData().add(holidayMng);
 		});

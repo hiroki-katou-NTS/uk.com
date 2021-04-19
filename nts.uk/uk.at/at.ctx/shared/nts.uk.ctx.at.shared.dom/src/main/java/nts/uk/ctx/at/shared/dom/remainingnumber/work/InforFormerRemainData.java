@@ -59,6 +59,15 @@ public class InforFormerRemainData {
 		}
 	}
 	
+	public WorkTypeRemainInfor getWorkTypeRemainInforByOd(WorkTypeClassification workTypeClass) {
+		Optional<WorkTypeRemainInfor> optWorkTypeRemainInfor = this.getWorkTypeRemain().stream()
+				.filter(x -> x.getOccurrenceDetailData().stream()
+						.filter(od -> od.getWorkTypeAtr().equals(workTypeClass) && od.isUseAtr() && od.getDays() > 0)
+						.findFirst().isPresent())
+				.findFirst();
+		return optWorkTypeRemainInfor.get();
+	}
+	
 	public Optional<WorkTypeRemainInfor> getWorkTypeRemainInfor(WorkTypeClassification workTypeClass) {
 		List<WorkTypeRemainInfor> lstWorkTypeRemainInfor = this.getWorkTypeRemain().stream()
 				.filter(x -> x.getWorkTypeClass().equals(workTypeClass)).collect(Collectors.toList());
