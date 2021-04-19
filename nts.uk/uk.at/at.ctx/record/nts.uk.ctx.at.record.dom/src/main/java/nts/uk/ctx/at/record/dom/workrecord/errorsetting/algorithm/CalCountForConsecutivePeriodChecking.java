@@ -26,6 +26,7 @@ public class CalCountForConsecutivePeriodChecking {
 		// エラー発生区分をチェック
 		if (errorAtr) {
 			count = count + 1;
+			return;
 		}
 		
 		// カウントと連続期間を比べる
