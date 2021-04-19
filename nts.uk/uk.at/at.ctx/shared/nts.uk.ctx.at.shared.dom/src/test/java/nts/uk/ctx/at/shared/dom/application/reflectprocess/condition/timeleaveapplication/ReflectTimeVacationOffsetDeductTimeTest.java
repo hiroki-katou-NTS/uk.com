@@ -1,21 +1,22 @@
 package nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.timeleaveapplication;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.timeleaveapplication.TimeLeaveAppReflectCondition;
 import org.junit.Test;
-import static org.assertj.core.api.Assertions.assertThat;
 
-import nts.uk.ctx.at.shared.dom.application.reflectprocess.DailyRecordOfApplication;
-import nts.uk.ctx.at.shared.dom.application.reflectprocess.ScheduleRecordClassifi;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.common.ReflectApplicationHelper;
-import nts.uk.ctx.at.shared.dom.application.timeleaveapplication.TimeDigestApplicationShare;
-import nts.uk.ctx.at.shared.dom.application.timeleaveapplication.TimeLeaveApplicationDetailShare;
 import nts.uk.ctx.at.shared.dom.common.TimeZoneWithWorkNo;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.AppTimeType;
+import nts.uk.ctx.at.shared.dom.scherec.application.timeleaveapplication.TimeDigestApplicationShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.timeleaveapplication.TimeLeaveApplicationDetailShare;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.DailyRecordOfApplication;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.ScheduleRecordClassifi;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.timeleaveapplication.TimeLeaveAppReflectCondition;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
@@ -43,8 +44,8 @@ public class ReflectTimeVacationOffsetDeductTimeTest {
 				1080);//時間帯 終了時刻
 		
 		TimeLeaveAppReflectCondition condition = createCondi();
-		List<Integer> lstResult = ReflectTimeVacationOffsetDeductTime.process(appTimeLeavDetail, dailyApp, condition,
-				NotUseAtr.USE);
+		List<Integer> lstResult = condition.process(appTimeLeavDetail, dailyApp,
+				NotUseAtr.USE).getLstItemId();
 		assertThat(dailyApp.getAttendanceTimeOfDailyPerformance().get().getLateTimeOfDaily().get(0).getTimePaidUseTime()
 				.getTimeAnnualLeaveUseTime().v()).isEqualTo(60);
 
@@ -94,8 +95,8 @@ public class ReflectTimeVacationOffsetDeductTimeTest {
 				495,//時間帯 開始時刻
 				1080);//時間帯 終了時刻);
 		TimeLeaveAppReflectCondition condition = createCondi();
-		List<Integer> lstResult = ReflectTimeVacationOffsetDeductTime.process(appTimeLeavDetail, dailyApp, condition,
-				NotUseAtr.NOT_USE);
+		List<Integer> lstResult = condition.process(appTimeLeavDetail, dailyApp,
+				NotUseAtr.NOT_USE).getLstItemId();
 		assertThat(dailyApp.getAttendanceTimeOfDailyPerformance().get().getLateTimeOfDaily().get(0).getTimePaidUseTime()
 				.getTimeAnnualLeaveUseTime().v()).isEqualTo(60);
 

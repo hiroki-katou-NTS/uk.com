@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component"
+>
+<body>
+<ui:composition template="../../../../master/dialog.xhtml">
+    <ui:define name="htmlHead">
+        <script>var dialogSize = {width: 1260, height: 610};</script>
+        <com:scriptfile set="IGNITE"/>
+        <com:stylefile path="styles.css"/>
+        <com:scriptfile path="kal011.b.vm.js"/>
+    </ui:define>
+    <ui:define name="content">
+        <div id="functions-area">
+            <!--B1_1-->
+            <button tabindex="1" data-bind="click: exportExcel, enable:flgActive, text: $vm.$i18n('KAL011_10') "/>
+            <!--B1_2-->
+            <button tabindex="2" data-bind="click: sendEmail, enable:flgActive, text: $vm.$i18n('KAL011_11') "/>
+            <!--B1_3-->
+            <button tabindex="3" data-bind="click: closeDialog, text: $vm.$i18n('KAL011_12')"/>
+        </div>
+        <div id="contents-area">
+            <!--B3_1-->
+            <table id="grid"></table>
+        </div>
+    </ui:define>
+</ui:composition>
+</body>
+</html>

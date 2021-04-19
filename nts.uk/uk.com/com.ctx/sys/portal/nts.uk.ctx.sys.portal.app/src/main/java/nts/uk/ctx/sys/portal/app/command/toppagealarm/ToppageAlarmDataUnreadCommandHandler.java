@@ -6,17 +6,11 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
-
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.sys.portal.dom.toppagealarm.AlarmClassification;
-import nts.uk.ctx.sys.portal.dom.toppagealarm.DisplayAtr;
+import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.sys.portal.dom.toppagealarm.ToppageAlarmData;
 import nts.uk.ctx.sys.portal.dom.toppagealarm.ToppageAlarmDataRepository;
-import nts.uk.ctx.sys.portal.dom.toppagealarm.ToppageAlarmLog;
-import nts.uk.ctx.sys.portal.dom.toppagealarm.ToppageAlarmLogRepository;
-import nts.uk.shr.com.context.AppContexts;
 
 /**
  * UKDesign.UniversalK.就業.KTG_ウィジェット.KTG031_トップページアラーム.トップページアラームver4.A:トップページアラーム.メニュー別OCD.アラームを未読にする
@@ -28,35 +22,28 @@ public class ToppageAlarmDataUnreadCommandHandler extends CommandHandler<Toppage
 	@Inject
 	private ToppageAlarmDataRepository toppageAlarmDataRepo;
 	
-	@Inject
-	private ToppageAlarmLogRepository toppageAlarmLogRepo;
-	
 	@Override
 	protected void handle(CommandHandlerContext<ToppageAlarmDataUnreadCommand> context) {
 		ToppageAlarmDataUnreadCommand command = context.getCommand();
-		String contractCd = AppContexts.user().contractCode();
 		
-		Optional<ToppageAlarmData> oExistedData = this.toppageAlarmDataRepo.get(
+		//1:get(会社ID、アラーム分類、パターンコード、通知ID、表示社員ID、表示社員区分)
+		Optional<ToppageAlarmData> exDomain = toppageAlarmDataRepo.get(
 				command.getCompanyId(), 
-				EnumAdaptor.valueOf(command.getAlarmClassification(), AlarmClassification.class), 
-				command.getIdentificationKey(), 
 				command.getSid(), 
-				EnumAdaptor.valueOf(command.getDisplayAtr(), DisplayAtr.class));
-		if (!oExistedData.isPresent()) {
-			return;
-		}
-		Optional<ToppageAlarmLog> oExistedLog = this.toppageAlarmLogRepo.get(
-				command.getCompanyId(), 
-				EnumAdaptor.valueOf(command.getAlarmClassification(), AlarmClassification.class), 
-				command.getIdentificationKey(), 
-				command.getSid(), 
-				EnumAdaptor.valueOf(command.getDisplayAtr(), DisplayAtr.class));
-		if (!oExistedLog.isPresent()) {
-			return;
-		}
-		ToppageAlarmLog updateLog = oExistedLog.get();
-		updateLog.changeToUnread(oExistedData.get().getOccurrenceDateTime());
-		this.toppageAlarmLogRepo.update(contractCd, updateLog);
+				command.getDisplayAtr(),
+				command.getAlarmClassification(), 
+				Optional.ofNullable(command.getPatternCode()), 
+				Optional.ofNullable(command.getNotificationId()));
+		
+		exDomain.ifPresent(domain -> {
+			
+			//2:set(トップページアラームデータ．発生日時－1分)
+			GeneralDateTime dateTime = domain.getOccurrenceDateTime().addMinutes(-1);
+			domain.updateReadDateTime(dateTime);
+			
+			//3:persist()
+			toppageAlarmDataRepo.update(domain);
+		});
 	}
 
 }

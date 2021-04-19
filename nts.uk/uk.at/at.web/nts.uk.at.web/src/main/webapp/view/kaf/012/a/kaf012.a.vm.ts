@@ -106,6 +106,7 @@ module nts.uk.at.view.kaf012.a.viewmodel {
                         apply.childCareAppTime(0);
                         apply.super60AppTime(0);
                         apply.specialAppTime(0);
+                        apply.calculatedTime(0);
                     });
                 });
             });

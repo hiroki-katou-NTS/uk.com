@@ -10,19 +10,19 @@ import java.util.Optional;
 import org.junit.Test;
 
 import mockit.Injectable;
-import nts.uk.ctx.at.shared.dom.application.common.PrePostAtrShare;
-import nts.uk.ctx.at.shared.dom.application.reflectprocess.DailyRecordOfApplication;
-import nts.uk.ctx.at.shared.dom.application.reflectprocess.ScheduleRecordClassifi;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.common.ReflectApplicationHelper;
-import nts.uk.ctx.at.shared.dom.application.workchange.AppWorkChangeShare;
 import nts.uk.ctx.at.shared.dom.common.TimeZoneWithWorkNo;
+import nts.uk.ctx.at.shared.dom.scherec.application.common.PrePostAtrShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.workchange.AppWorkChangeShare;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.DailyRecordOfApplication;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.ScheduleRecordClassifi;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.workchangeapp.ReflectWorkChangeApp;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 public class RCReflectWorkChangeAppTest {
 
 	@Injectable
-	private RCReflectWorkChangeApp.Require require;
+	private ReflectWorkChangeApp.Require require;
 
 	/*
 	 * テストしたい内容
@@ -44,8 +44,8 @@ public class RCReflectWorkChangeAppTest {
 		ReflectWorkChangeApp reflectWorkChange = new ReflectWorkChangeApp("", NotUseAtr.USE);// 出退勤を反映するか＝
 																												// true;
 		List<Integer> actualResult = new ArrayList<Integer>();
-		actualResult.addAll(RCReflectWorkChangeApp.reflect(require, createAppChange(ScheduleRecordClassifi.RECORD),
-				dailyApp, reflectWorkChange));
+		actualResult.addAll(reflectWorkChange.reflectRecord(require, createAppChange(ScheduleRecordClassifi.RECORD),
+				dailyApp));
 
 		assertThat(actualResult).isEqualTo(Arrays.asList(34, 41, 44, 31));
 
@@ -71,8 +71,8 @@ public class RCReflectWorkChangeAppTest {
 																													// =
 																													// false;
 		List<Integer> actualResult = new ArrayList<Integer>();
-		actualResult.addAll(RCReflectWorkChangeApp.reflect(require, createAppChange(ScheduleRecordClassifi.RECORD),
-				dailyApp, reflectWorkChange));
+		actualResult.addAll(reflectWorkChange.reflectRecord(require, createAppChange(ScheduleRecordClassifi.RECORD),
+				dailyApp));
 
 		assertThat(actualResult).isEmpty();
 

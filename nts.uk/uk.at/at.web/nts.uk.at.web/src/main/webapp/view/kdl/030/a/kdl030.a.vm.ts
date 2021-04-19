@@ -86,15 +86,15 @@ module nts.uk.at.view.kdl030.a.viewmodel {
         }
 
 		isFirstIndexApprover(loopFrame, loopApprover) {
-			return loopApprover.approverInListOrder() == 1;
-			// return _.findIndex(loopFrame.listApprover(), o => o == loopApprover) == 1;
+			// return loopApprover.approverInListOrder() == 1;
+			return _.findIndex(loopFrame.listApprover(), o => o == loopApprover) == 0;
 		}
 
         getFrameIndex(loopPhase, loopFrame, loopApprover) {
-            if(_.size(loopFrame.listApprover()) > 1) {
-                return _.findIndex(loopFrame.listApprover(), o => o == loopApprover);
-            }
-            return loopFrame.frameOrder();
+//            if(_.size(loopFrame.listApprover()) > 1) {
+//                return _.findIndex(loopFrame.listApprover(), o => o == loopApprover);
+//            }
+        	return loopFrame.frameOrder();
         }
 
 		phaseCount(listPhase) {
@@ -207,9 +207,9 @@ module nts.uk.at.view.kdl030.a.viewmodel {
             const vm = this;
            	let index = vm.getFrameIndex(loopPhase, loopFrame, loopApprover);
             // case group approver
-            if(_.size(loopFrame.listApprover()) > 1) {
-                index++;
-            }
+//            if(_.size(loopFrame.listApprover()) > 1) {
+//                index++;
+//            }
             if(index <= 10){
                 return vm.$i18n("KAF000_9",[index+'']);
             }

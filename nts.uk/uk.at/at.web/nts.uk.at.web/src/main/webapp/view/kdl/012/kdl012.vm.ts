@@ -38,6 +38,7 @@ module nts.uk.at.view.kdl012 {
                 vm.workFrameNoSelection(object.workFrameNoSelection);//作業枠NO選択
                 vm.selectionCodeList(object.selectionCodeList);
                 vm.currentCodeList(object.selectionCodeList); //初期選択コードリスト
+                vm.currentCode(_.isEmpty(object.selectionCodeList) ? null : object.selectionCodeList[0]);
             }
 
             if (vm.isShowExpireDate()) {
@@ -94,19 +95,30 @@ module nts.uk.at.view.kdl012 {
         proceed() {
             const vm = this;
 
-            let selectionList: Array<any> = _.filter(vm.items(), (x) => {
-                return _.includes(vm.currentCodeList(), x.code)
-            });
-
-            if (selectionList.length === 0) {
-                vm.$dialog.error({messageId: 'Msg_1629'}).then(() => {
+            if (vm.isMultiple) {
+                let selectionList: Array<any> = _.filter(vm.items(), (x) => {
+                    return _.includes(vm.currentCodeList(), x.code)
                 });
+
+                if (selectionList.length === 0) {
+                    vm.$dialog.error({messageId: 'Msg_2092'}).then(() => {
+                    });
+                } else {
+                    let currentCodeList: Array<any> = selectionList.map(i => i.code);
+                    nts.uk.ui.windows.setShared('KDL012Output', currentCodeList);
+                    //new
+                    vm.$window.close({setShareKDL012: currentCodeList});
+                }
             } else {
-                let currentCodeList: Array<any> = selectionList.map(i => i.code);
-                nts.uk.ui.windows.setShared('KDL012Output', currentCodeList);
-                //new
-                vm.$window.close({setShareKDL012: currentCodeList});
+                if (_.isEmpty(vm.currentCode())) {
+                    vm.$dialog.error({messageId: 'Msg_2092'});
+                } else {
+                    nts.uk.ui.windows.setShared('KDL012Output', vm.currentCode());
+                    //new
+                    vm.$window.close({setShareKDL012: vm.currentCode()});
+                }
             }
+
         }
 
         closeDialog() {
