@@ -54,7 +54,6 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.daily.RangeToChec
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.daily.ScheDailyCheckService;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.daily.TimeZoneTargetRange;
 import nts.uk.ctx.at.record.dom.workrecord.errorsetting.ContinuousCount;
-import nts.uk.ctx.at.record.dom.workrecord.errorsetting.algorithm.AddOrSubAttendanceItem;
 import nts.uk.ctx.at.record.dom.workrecord.errorsetting.algorithm.CalCountForConsecutivePeriodChecking;
 import nts.uk.ctx.at.record.dom.workrecord.errorsetting.algorithm.CompareValueRangeChecking;
 import nts.uk.ctx.at.shared.dom.adapter.attendanceitemname.AttendanceItemNameAdapter;
@@ -103,8 +102,6 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 	@SuppressWarnings("rawtypes")
 	@Inject
 	private CompareValueRangeChecking compareValueRangeChecking;
-	@Inject
-	private AddOrSubAttendanceItem addOrSubAttendanceItem;
 	@Inject
 	private ConvertCompareTypeToText convertComparaToText;
 	@Inject

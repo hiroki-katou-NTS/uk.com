@@ -113,7 +113,7 @@ public class DefaultExtractionRangeService implements ExtractionRangeService {
 			
 			if(extractBase instanceof ExtractionPeriodDaily) {
 				ExtractionPeriodDaily extraction = (ExtractionPeriodDaily) extractBase;				
-				CheckConditionPeriod period  = this.getPeriodDaily(extraction, closureId, yearMonth);
+				CheckConditionPeriod period  = this.getPeriodDaily(extraction, closureId, yearMonth, c);
 				startDate = period.getStartDate();
 				endDate = period.getEndDate();
 				CheckConditionTimeDto dailyDto = new CheckConditionTimeDto(c.getAlarmCategory().value, 
@@ -233,7 +233,7 @@ public class DefaultExtractionRangeService implements ExtractionRangeService {
 	
 		ExtractionPeriodDaily extraction = (ExtractionPeriodDaily) c.getExtractPeriodList().get(0);
 		
-		CheckConditionPeriod period = this.getPeriodDaily(extraction, closureId, yearMonth);
+		CheckConditionPeriod period = this.getPeriodDaily(extraction, closureId, yearMonth, c);
 		startDate = period.getStartDate();
 		endDate = period.getEndDate();
 		
@@ -310,7 +310,7 @@ public class DefaultExtractionRangeService implements ExtractionRangeService {
 	 * @param yearMonth
 	 * @return
 	 */
-	private CheckConditionPeriod getPeriodDaily(ExtractionPeriodDaily extraction, int closureId, YearMonth yearMonth ) {
+	private CheckConditionPeriod getPeriodDaily(ExtractionPeriodDaily extraction, int closureId, YearMonth yearMonth, CheckCondition c) {
 		val require = ClosureService.createRequireM1(closureRepo, closureEmploymentRepo);
 		Date startDate =null;
 		Date endDate =null;
@@ -327,7 +327,12 @@ public class DefaultExtractionRangeService implements ExtractionRangeService {
 				startDate = calendar.getTime();
 
 		} else {
-			DatePeriod datePeriod = ClosureService.getClosurePeriod(require, closureId, startMonthly.addMonths((-1)*extraction.getStartDate().getStrMonth().get().getMonth()));
+			YearMonth extractStartMon = startMonthly.addMonths((-1)*extraction.getStartDate().getStrMonth().get().getMonth());
+			if (c.isScheduleDaily()) {
+				extractStartMon = extractStartMon.addMonths(extraction.getStartDate().getStrMonth().get().getMonth());
+			}
+			
+			DatePeriod datePeriod = ClosureService.getClosurePeriod(require, closureId, extractStartMon);
 			if(datePeriod == null) {
 				return new CheckConditionPeriod(GeneralDate.ymd(startMonthly, 1).date(), GeneralDate.ymd(endMonthly.addMonths(1), 1).addDays(-1).date());
 			}
@@ -345,7 +350,12 @@ public class DefaultExtractionRangeService implements ExtractionRangeService {
 
 			endDate = calendar.getTime();
 		} else {
-			DatePeriod datePeriod = ClosureService.getClosurePeriod(require, closureId, endMonthly.addMonths((-1)*extraction.getEndDate().getEndMonth().get().getMonth()));
+			YearMonth extractEndMon = endMonthly.addMonths((-1)*extraction.getEndDate().getEndMonth().get().getMonth());
+			if (c.isScheduleDaily()) {
+				extractEndMon = endMonthly.addMonths(extraction.getEndDate().getEndMonth().get().getMonth());
+			}
+			
+			DatePeriod datePeriod = ClosureService.getClosurePeriod(require, closureId, extractEndMon);
 			if(datePeriod == null) {
 				return new CheckConditionPeriod(GeneralDate.ymd(startMonthly, 1).date(), GeneralDate.ymd(endMonthly.addMonths(1), 1).addDays(-1).date());
 			}
