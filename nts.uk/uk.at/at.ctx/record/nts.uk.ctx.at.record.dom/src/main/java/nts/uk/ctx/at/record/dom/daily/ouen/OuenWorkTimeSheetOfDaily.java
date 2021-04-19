@@ -1,11 +1,17 @@
 package nts.uk.ctx.at.record.dom.daily.ouen;
 
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.AttendanceItemIdContainer;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.AttendanceItemUtil.AttendanceItemType;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenWorkTimeSheetOfDailyAttendance;
 
 @Getter
@@ -40,16 +46,37 @@ public class OuenWorkTimeSheetOfDaily extends AggregateRoot {
 	 * @output	変更する勤怠項目
 	 */
 	public AttendanceItemToChange change(List<OuenWorkTimeSheetOfDailyAttendance> ouenTimeSheet) {
+		// việc lấy attendanceId anh tuấn bảo tham khảo anh phong và anh lai.
+		List<Integer> itemValues = this.getAttendanceId();
 		//@応援時間帯 = 時間帯リスト			
+		List<Integer> itemValuesNew = this.getAttendanceId(ouenTimeSheet);
+
+		List<Integer> attendanceId = itemValues.stream().filter(c-> itemValuesNew.contains(c)).collect(Collectors.toList());
+		attendanceId.addAll(itemValuesNew.stream().filter(c->itemValues.contains(c)).collect(Collectors.toList()));
+		
 		this.ouenTimeSheet = ouenTimeSheet;
-		return null;
+		
+		return new AttendanceItemToChange(attendanceId, this);
 	}
 	
 	/**
 	 * @name [2] 応援時間帯に対応する勤怠項目ID一覧
 	 * @output 	勤怠項目リスト	List<勤怠項目ID>
 	 */
-	public List<String> getAttendanceId() {
-		return null;
+	public List<Integer> getAttendanceId() {
+		return this.getAttendanceId(this.ouenTimeSheet);
+	}
+	
+	private List<Integer> getAttendanceId(List<OuenWorkTimeSheetOfDailyAttendance> ouenTimeSheet){
+		
+		List<ItemValue> itemValues = AttendanceItemIdContainer.getIds(AttendanceItemType.DAILY_ITEM);
+		
+		Map<Integer, List<ItemValue>> mapWorkNoItemsValue = AttendanceItemIdContainer.mapWorkNoItemsValue(itemValues);
+		List<Integer> result = new ArrayList<Integer>();
+		for (OuenWorkTimeSheetOfDailyAttendance i : ouenTimeSheet) {
+			List<ItemValue> id = mapWorkNoItemsValue.get(i.getWorkNo());
+			result.addAll(id.stream().map(c->c.getItemId()).collect(Collectors.toList()));
+		}
+		return result;
 	}
 }

@@ -16,7 +16,7 @@ public class AttendanceItemToChange {
 	/**
 	 * 	勤怠項目リスト	List<勤怠項目ID>
 	 */
-	private List<String> attendanceId;
+	private List<Integer> attendanceId;
 	
 	/**
 	 * 応援作業別時間帯	日別実績の応援作業別勤怠時間帯
