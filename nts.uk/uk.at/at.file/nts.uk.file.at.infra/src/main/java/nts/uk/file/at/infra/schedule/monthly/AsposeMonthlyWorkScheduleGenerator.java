@@ -1893,11 +1893,11 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 						int maxPossibleRow = Math.min(numOfChunksRemark, dataRowCount);
 						
 			        	for(int i = 0; i < maxPossibleRow; i++) {
-				            start = i * 10;
+			        		start = i * 15;
 				            length = Math.min(errorDetail.length() - start, 15);
 				            
 				            // add ... to remark when remark length > maximum possible length
-							remarkContentRow = errorDetail.length() > maxPossibleRow * length && (i == (maxPossibleRow - 1))
+							remarkContentRow = errorDetail.length() > dataRowCount * 15 && (i == (dataRowCount - 1))
 								            		? (errorDetail.substring(start, start + length) + "…")
 						            				: errorDetail.substring(start, start + length);
 				            
@@ -2608,11 +2608,11 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 					int maxPossibleRow = Math.min(numOfChunksRemark, dataRowCount);
 					
 		        	for(int i = 0; i < maxPossibleRow; i++) {
-			            start = i * 10;
+		        		start = i * 15;
 			            length = Math.min(errorDetail.length() - start, 15);
-
-		            	// add ... to remark when remark length >  maximum possible length
-						remarkContentRow = errorDetail.length() > maxPossibleRow * length && (i == (maxPossibleRow - 1))
+			            
+			            // add ... to remark when remark length > maximum possible length
+						remarkContentRow = errorDetail.length() > dataRowCount * 15 && (i == (dataRowCount - 1))
 							            		? (errorDetail.substring(start, start + length) + "…")
 					            				: errorDetail.substring(start, start + length);
 			            
