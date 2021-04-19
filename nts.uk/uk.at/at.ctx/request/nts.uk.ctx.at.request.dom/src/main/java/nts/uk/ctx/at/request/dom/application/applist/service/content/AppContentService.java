@@ -26,6 +26,7 @@ import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.Abs
 import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentApp;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
+import nts.uk.ctx.at.request.dom.application.timeleaveapplication.TimeLeaveApplicationDetail;
 import nts.uk.ctx.at.request.dom.setting.DisplayAtr;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.approvallistsetting.ApprovalListDisplaySetting;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.optionalitemappsetting.OptionalItemApplicationTypeName;
@@ -242,4 +243,16 @@ public interface AppContentService {
 	 */
 	public String getComplementLeaveContent(AbsenceLeaveApp absenceLeaveApp, RecruitmentApp recruitmentApp, DisplayAtr appReasonDisAtr,
 			ScreenAtr screenAtr, ComplementLeaveAppLink complementLeaveAppLink, Application application, List<WorkType> workTypeLst);
+	
+	/**
+	 * UKDesign.UniversalK.就業.KAF_申請.CMM045_申請一覧・承認一覧.A:申請一覧画面ver4.アルゴリズム.申請内容ver4.申請内容（時間年休申請）.申請内容（時間年休申請）
+	 * @param appReason 申請理由
+	 * @param appReasonDisAtr 申請理由表示区分
+	 * @param screenAtr ScreenID
+	 * @param leaveApplicationDetails <List>項目名、時間休種類、時間代休、時間年休、子の看護時間、介護時間、60H超休、時間特別休暇
+	 * @param appStandardReasonCD 定型理由コード
+	 * @return
+	 */
+	public String getAnnualHolidayContent(AppReason appReason, DisplayAtr appReasonDisAtr, ScreenAtr screenAtr,
+			List<TimeLeaveApplicationDetail> leaveApplicationDetails, AppStandardReasonCode appStandardReasonCD);
 }

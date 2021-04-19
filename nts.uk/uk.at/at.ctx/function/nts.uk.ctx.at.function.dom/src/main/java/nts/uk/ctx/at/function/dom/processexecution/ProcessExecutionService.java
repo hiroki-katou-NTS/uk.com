@@ -34,7 +34,7 @@ public interface ProcessExecutionService {
 	 * @param execStartDateTime
 	 * @return
 	 */
-	boolean isPassAverageExecTimeExceeded(String companyId, UpdateProcessAutoExecution updateProcessAutoExec,
+	boolean isPassAverageExecTimeExceeded(String companyId, ExecutionCode execItemCode, //#115526
 			GeneralDateTime execStartDateTime);
 
 	/**

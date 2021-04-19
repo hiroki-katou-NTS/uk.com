@@ -10,7 +10,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.AllArgsConstructor;
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.i18n.I18NText;
 import nts.arc.layer.app.command.CommandHandlerContext;
@@ -23,7 +22,6 @@ import nts.uk.ctx.bs.employee.dom.workplace.group.AffWorkplaceGroupRespository;
 import nts.uk.ctx.bs.employee.dom.workplace.group.WorkplaceGroup;
 import nts.uk.ctx.bs.employee.dom.workplace.group.WorkplaceGroupName;
 import nts.uk.ctx.bs.employee.dom.workplace.group.WorkplaceGroupRespository;
-import nts.uk.ctx.bs.employee.dom.workplace.group.WorkplaceGroupType;
 import nts.uk.ctx.bs.employee.dom.workplace.group.WorkplaceReplaceResult;
 import nts.uk.ctx.bs.employee.dom.workplace.group.WorkplaceReplacement;
 import nts.uk.ctx.bs.employee.dom.workplace.group.domainservice.ReplaceWorkplacesService;
@@ -34,7 +32,7 @@ import nts.uk.shr.com.context.AppContexts;
 /**
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.基幹.社員.職場.職場グループ.App.職場グループを削除する
  * <<Command>> 職場グループを更新する
- * 
+ *
  * @author phongtq
  *
  */
@@ -64,8 +62,7 @@ public class UpdateWorkplaceGroupCommandHandler
 		Optional<WorkplaceGroup> wpgrp = repo.getById(CID, cmd.getWkpGrID());
 
 		// 2: set(職場グループ名称, 職場グループ種別)
-		wpgrp.get().setWKPGRPName(new WorkplaceGroupName(cmd.getWkpGrName()));
-		wpgrp.get().setWKPGRPType(EnumAdaptor.valueOf(cmd.getWkpGrType(), WorkplaceGroupType.class));
+		wpgrp.get().setName(new WorkplaceGroupName(cmd.getWkpGrName()));
 
 		ReplaceWorkplacesService.Require updateRequire = new UpdateWplOfWorkGrpRequireImpl(affRepo);
 
@@ -74,10 +71,10 @@ public class UpdateWorkplaceGroupCommandHandler
 				wpgrp.get(), cmd.getLstWKPID());
 		List<WorkplaceReplaceResult> resultProcessData = wplResult.entrySet().stream()
 				.map(x -> (WorkplaceReplaceResult) x.getValue()).collect(Collectors.toList());
-		
+
 		List<WorkplaceReplaceResultDto> resultData = new ArrayList<>();
 		wplResult.forEach((a,b)->{
-			resultData.add(new WorkplaceReplaceResultDto(b.getWorkplaceReplacement().value, b.getWKPGRPID().isPresent() ? b.getWKPGRPID().get() : null,a, b.getPersistenceProcess().isPresent() ? b.getPersistenceProcess().get() : null));
+			resultData.add(new WorkplaceReplaceResultDto(b.getWorkplaceReplacement().value, b.getWorkplaceGroupId().isPresent() ? b.getWorkplaceGroupId().get() : null,a, b.getPersistenceProcess().isPresent() ? b.getPersistenceProcess().get() : null));
 		});
 
 		// 4: [No.560]職場IDから職場の情報をすべて取得する
@@ -93,7 +90,7 @@ public class UpdateWorkplaceGroupCommandHandler
 
 		// flow
 		// 所属職場グループIDリスト
-		List<String> lstWplGrId = lstResultProcess.stream().map(mapper -> mapper.getWKPGRPID().get())
+		List<String> lstWplGrId = lstResultProcess.stream().map(mapper -> mapper.getWorkplaceGroupId().get())
 				.collect(Collectors.toList());
 
 		// 6: [所属職場グループIDリスト.isPresent()]:*get(ログイン会社ID, 所属職場グループIDリスト): List<職場グループ>
@@ -117,11 +114,11 @@ public class UpdateWorkplaceGroupCommandHandler
 
 		// List<Optional<職場グループコード, 職場グループ名称>>
 		List<WorkplaceGroupResult> groupResults = lstWplGroups.stream()
-				.map(x -> new WorkplaceGroupResult(x.getWKPGRPID(), x.getWKPGRPCode().v(), x.getWKPGRPName().v()))
+				.map(x -> new WorkplaceGroupResult(x.getId(), x.getCode().v(), x.getName().v()))
 				.collect(Collectors.toList());
 		boolean checkProcessResult = false;
 		if (lstReplaceAdd.size() < 1) {
-			return new ResWorkplaceGroupResult(checkProcessResult, workplaceParams, resultData, groupResults, wpgrp.get().getWKPGRPID());
+			return new ResWorkplaceGroupResult(checkProcessResult, workplaceParams, resultData, groupResults, wpgrp.get().getId());
 		}
 
 		// 8: 職場グループ所属情報の永続化処理 = 処理結果リスト : filter $.永続化処理.isPresent
@@ -144,7 +141,7 @@ public class UpdateWorkplaceGroupCommandHandler
 		});
 
 		ResWorkplaceGroupResult groupResult = new ResWorkplaceGroupResult(checkProcessResult, workplaceParams,
-				resultData, groupResults, wpgrp.get().getWKPGRPID());
+				resultData, groupResults, wpgrp.get().getId());
 
 		return groupResult;
 	}

@@ -61,7 +61,7 @@ public class SelectDelCategoryFinder {
 		// 選択削除カテゴリを取得する
 		List<DataDeletionSelectionCategory> selectCategories = dataDeletionSelectionCategoryRepository
 				.findByPatternCdAndPatternAtrAndSystemTypes(command.getPatternCode(),
-						command.getPatternClassification(), command.getSystemType());
+						command.getPatternClassification(), command.getSystemType(), AppContexts.user().contractCode());
 
 		// ドメインモデル「データ削除カテゴリ」を取得する
 		List<CategoryForDelete> categories = categoryRepository.getCategoryByListId(

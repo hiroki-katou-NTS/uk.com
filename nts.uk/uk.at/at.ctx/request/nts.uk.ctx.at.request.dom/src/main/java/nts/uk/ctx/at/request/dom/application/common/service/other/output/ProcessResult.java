@@ -25,6 +25,7 @@ public class ProcessResult {
 	private List<String> autoFailServer;
 	private List<String> appIDLst;
 	private List<String> reflectAppIdLst;
+	private boolean multiPeopleFlg;
 	
 	public ProcessResult() {
 		this.isProcessDone = false;
@@ -34,5 +35,6 @@ public class ProcessResult {
 		this.autoFailServer = new ArrayList<>();
 		this.appIDLst = new ArrayList<>();
 		this.reflectAppIdLst = new ArrayList<>();
+		this.multiPeopleFlg = false;
 	} 
 }

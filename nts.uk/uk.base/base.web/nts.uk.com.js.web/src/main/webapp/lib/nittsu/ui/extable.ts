@@ -1576,7 +1576,7 @@ module nts.uk.ui.exTable {
                             }
                         } else if (cStyle) {
                             if (cStyle.textColor) {
-                                $c.style.color = null;
+                                $c.style.color = (helper.isIE() ? '' : null);
                             }
                             
                             if (cStyle.class) {
@@ -1584,7 +1584,7 @@ module nts.uk.ui.exTable {
                             }
                             
                             if (cStyle.background) {
-                                $c.style.backgroundColor = null;
+                                $c.style.backgroundColor = (helper.isIE() ? '' : null);
                             }
                         }
                         
