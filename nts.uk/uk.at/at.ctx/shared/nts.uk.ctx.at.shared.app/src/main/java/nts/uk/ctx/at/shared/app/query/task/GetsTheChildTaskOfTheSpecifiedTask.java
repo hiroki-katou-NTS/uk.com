@@ -34,7 +34,7 @@ public class GetsTheChildTaskOfTheSpecifiedTask {
 
         TaskFrameNo taskFrameNo = new TaskFrameNo(taskNo);
         TaskCode taskCode = new TaskCode(code);
-        return taskingRepository.getListTask(cid, taskFrameNo, taskCode);
+        return taskingRepository.getListChildTask(cid, taskFrameNo, taskCode);
     }
 
     ;
