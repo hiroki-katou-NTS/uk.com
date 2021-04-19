@@ -13,7 +13,7 @@ import nts.arc.enums.EnumAdaptor;
  *
  */
 @RequiredArgsConstructor
-public enum LaborCostItemTypeOfWkpCounter {
+public enum LaborCostItemType {
 	/** 金額 **/
 	AMOUNT(0),
 	/** 時間**/
@@ -23,7 +23,7 @@ public enum LaborCostItemTypeOfWkpCounter {
 	
 	public final int value;
 	
-	public static LaborCostItemTypeOfWkpCounter of(int value) {
-		return EnumAdaptor.valueOf(value, LaborCostItemTypeOfWkpCounter.class);
+	public static LaborCostItemType of(int value) {
+		return EnumAdaptor.valueOf(value, LaborCostItemType.class);
 	}
 }
