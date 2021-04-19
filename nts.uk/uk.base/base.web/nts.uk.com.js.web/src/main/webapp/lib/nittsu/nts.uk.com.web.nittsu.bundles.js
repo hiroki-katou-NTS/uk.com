@@ -8666,13 +8666,13 @@ var nts;
                                     }
                                     else if (cStyle) {
                                         if (cStyle.textColor) {
-                                            $c.style.color = null;
+                                            $c.style.color = (helper.isIE() ? '' : null);
                                         }
                                         if (cStyle.class) {
                                             $c.classList.remove(cStyle.class);
                                         }
                                         if (cStyle.background) {
-                                            $c.style.backgroundColor = null;
+                                            $c.style.backgroundColor = (helper.isIE() ? '' : null);
                                         }
                                     }
                                     // Compare each inner separately to color
@@ -36218,17 +36218,30 @@ var nts;
                                             return;
                                         child.reposition({ start: childSlide.start + step_1, end: childSlide.end + step_1, left: childSlide.left + step_1 * child.unitToPx });
                                     }
-                                    else if (diff > 0 && child.start < pDec_1.start && !child.pin) {
-                                        childSlide = _.find(self.slideTrigger.children, function (c) { return c.id === child.id; });
-                                        if (!childSlide)
-                                            return;
-                                        child.reposition({ width: childSlide.length + (childSlide.start - pDec_1.start) * child.unitToPx, left: pDec_1.start * child.unitToPx, start: pDec_1.start });
-                                    }
-                                    else if (diff < 0 && child.end > pDec_1.end && !child.pin) {
-                                        childSlide = _.find(self.slideTrigger.children, function (c) { return c.id === child.id; });
-                                        if (!childSlide)
-                                            return;
-                                        child.reposition({ width: childSlide.length + (pDec_1.end - childSlide.end) * child.unitToPx, end: pDec_1.end });
+                                    else if (!child.pin || (child.pin && child.pruneOnSlide)) {
+                                        var childStart = Math.max(child.initStart, pDec_1.start), childEnd = Math.min(child.initEnd, pDec_1.end);
+                                        if (childStart < childEnd) {
+                                            var childLength = (childEnd - childStart) * child.unitToPx - 1;
+                                            if (child.pin && child.rollup) {
+                                                child.reposition({
+                                                    width: childLength,
+                                                    left: childStart * child.unitToPx
+                                                });
+                                            }
+                                            else {
+                                                child.reposition({
+                                                    width: childLength,
+                                                    start: childStart,
+                                                    end: childEnd,
+                                                    left: childStart * child.unitToPx
+                                                });
+                                            }
+                                            if (childLength > 0 && !self.chartArea.contains(child.html)) {
+                                                self.chartArea.appendChild(child.html);
+                                            }
+                                        }
+                                        else
+                                            child.reposition({ width: 0 });
                                     }
                                 });
                                 chart.reposition(pDec_1);
@@ -36450,7 +36463,17 @@ var nts;
                                 length: parseFloat(chart.html.style.width),
                                 start: chart.start,
                                 end: chart.end,
-                                children: _.map(chart.children, function (c) { return ({ id: c.id, start: c.start, end: c.end, length: parseFloat(c.html.style.width), left: parseFloat(c.html.style.left) }); }),
+                                children: _.map(chart.children, function (c) {
+                                    return ({
+                                        id: c.id,
+                                        start: c.start,
+                                        end: c.end,
+                                        initStart: c.initStart,
+                                        initEnd: c.initEnd,
+                                        length: parseFloat(c.html.style.width),
+                                        left: parseFloat(c.html.style.left)
+                                    });
+                                }),
                                 edgeCharts: []
                             };
                             if (!_.isNil(chart.parent)) {
@@ -36765,6 +36788,7 @@ var nts;
                         this.drawerSize = options.drawerSize;
                         this.bePassedThrough = options.bePassedThrough;
                         this.pin = options.pin;
+                        this.pruneOnSlide = options.pruneOnSlide;
                         this.rollup = options.rollup;
                         this.roundEdge = options.roundEdge;
                         this.resizeFinished = options.resizeFinished;
@@ -36793,6 +36817,7 @@ var nts;
                         this.locked = false;
                         this.rollup = false;
                         this.pin = false;
+                        this.pruneOnSlide = false;
                         this.roundEdge = false;
                         var self = this;
                         if (!_.keys(options).length)
@@ -36800,6 +36825,8 @@ var nts;
                         self.limitStartMax = options.limitStartMax || options.maxArea || self.maxArea;
                         self.limitEndMax = options.limitEndMax || options.maxArea || self.maxArea;
                         $.extend(self, options);
+                        self.initStart = self.start;
+                        self.initEnd = self.end;
                     }
                     GanttChart.prototype.newChart = function () {
                         if (_.isNil(this.id)) {
@@ -36843,6 +36870,7 @@ var nts;
                         if (_.has(style, "width")) {
                             if (style.width <= 0) {
                                 if (self.html.parentNode) {
+                                    self.html.style.width = "0px";
                                     self.html.parentNode.removeChild(self.html);
                                 }
                             }
@@ -51333,6 +51361,7 @@ var nts;
                             hover: ko.observable(false),
                             items: ko.observableArray([])
                         };
+                        _this.countMenuBar = ko.observable(0);
                         _this.userName = ko.observable('');
                         _this.userNameHover = ko.observable(false);
                         _this.companies = ko.observableArray([]);
@@ -51367,6 +51396,14 @@ var nts;
                     HeaderViewModel.prototype.mounted = function () {
                         var vm = this;
                         vm.loadData();
+                        $('#logo').on('click', function () {
+                            uk.request.jumpToTopPage();
+                        });
+                        $(window).on('wd.resize', function () {
+                            vm.positionLastMenuItem();
+                            vm.setDisplayMenu();
+                            vm.showPrevOrNextSlider();
+                        });
                         ko.computed({
                             read: function () {
                                 var mode = ko.unwrap(vm.$window.mode);
@@ -51387,7 +51424,10 @@ var nts;
                                     vm
                                         .$ajax('com', '/sys/portal/webmenu/companies')
                                         .then(function (data) { return vm.companies(data); });
-                                    vm.$nextTick(function () { return $(window).trigger('wd.resize'); });
+                                    vm.$nextTick(function () {
+                                        $(window).trigger('wd.resize');
+                                        $(window).trigger('wd.setAvatar');
+                                    });
                                 }
                                 else {
                                     vm.$el.classList.add('hidden');
@@ -51403,8 +51443,15 @@ var nts;
                         var vm = this;
                         var menuSet = JSON.parse(nts.uk.sessionStorage.getItem(MENU_SET).orElse('[]'));
                         _.each(menuSet, function (set) {
-                            _.each(set.menuBar, function (bar) {
+                            _.each(set.menuBar, function (bar, index) {
                                 bar.hover = ko.observable(false);
+                                bar.canHover = ko.observable(false);
+                                if (index < vm.countMenuBar()) {
+                                    bar.display = ko.observable('none');
+                                }
+                                else {
+                                    bar.display = ko.observable('');
+                                }
                             });
                         });
                         vm.menuSet.items(menuSet);
@@ -51429,6 +51476,16 @@ var nts;
                                 }
                             }
                         }
+                        _.each(vm.menuBars(), function (bar, index) {
+                            var getPositionLeftRight = $('.slide-item').eq(index).position().left + $('.slide-item').eq(index).outerWidth();
+                            if (getPositionLeftRight > $('.user-info').last().position().left) {
+                                bar.hover = ko.observable(false);
+                                bar.canHover = ko.observable(false);
+                            }
+                            else {
+                                bar.canHover = ko.observable(true);
+                            }
+                        });
                         $(vm.$el).find('data-bind').removeAttr('data-bind');
                     };
                     HeaderViewModel.prototype.getName = function (item) {
@@ -51440,9 +51497,13 @@ var nts;
                             return "" + item.programId + item.screenId;
                         });
                     };
-                    HeaderViewModel.prototype.selectSet = function (item) {
+                    HeaderViewModel.prototype.selectSet = function (item, resetCountMenu) {
                         var vm = this;
                         var sets = ko.unwrap(vm.menuSet.items);
+                        if (resetCountMenu) {
+                            vm.countMenuBar(0);
+                            vm.setDisplayMenu();
+                        }
                         vm.menuSet.hover(false);
                         _.each(sets, function (set) {
                             set.selected = false;
@@ -51451,9 +51512,50 @@ var nts;
                         vm.menuSet.items.valueHasMutated();
                         var menuBar = item.menuBar[0];
                         $(vm.$el).find('[data-bind]').removeAttr('data-bind');
+                        vm.$nextTick(function () { return vm.setHoverMenu(); });
                         //  $(vm.$el).css({ 'background-color': menuBar.backgroundColor });
                         // storage selected set for reload page
                         nts.uk.localStorage.setItem(MENU_KEY, item.companyId + ":" + item.webMenuCode);
+                    };
+                    HeaderViewModel.prototype.setDisplayMenu = function () {
+                        var vm = this;
+                        _.each(vm.menuSet.items(), function (set) {
+                            _.each(set.menuBar, function (bar, index) {
+                                bar.hover(false);
+                                bar.canHover(false);
+                                if (index < vm.countMenuBar()) {
+                                    bar.display('none');
+                                }
+                                else {
+                                    bar.display('');
+                                }
+                            });
+                        });
+                        vm.setHoverMenu();
+                    };
+                    HeaderViewModel.prototype.setHoverMenu = function () {
+                        var vm = this;
+                        _.each(vm.menuBars(), function (bar, index) {
+                            var getPositionLeftRight = $('.slide-item').eq(index).position().left + $('.slide-item').eq(index).outerWidth();
+                            if (getPositionLeftRight > $('.user-info').last().position().left) {
+                                bar.hover(false);
+                                bar.canHover(false);
+                            }
+                            else {
+                                bar.canHover(true);
+                            }
+                        });
+                    };
+                    HeaderViewModel.prototype.positionLastMenuItem = function () {
+                        var vm = this;
+                        var userInfoPosition = $('.user-info').last().position().left;
+                        var currentLastPosition = $('.slide-item').last().position()
+                            ? $('.slide-item').last().position().left + $('.slide-item').last().outerWidth()
+                            : 0;
+                        if (currentLastPosition < userInfoPosition
+                            && vm.countMenuBar() > 0) {
+                            vm.countMenuBar(vm.countMenuBar() - 1);
+                        }
                     };
                     HeaderViewModel.prototype.selectBar = function (item) {
                         var vm = this;
@@ -51473,6 +51575,29 @@ var nts;
                             else {
                                 window.location.href = (item.url + "?" + item.queryString).replace(/\?{2,}/, '?');
                             }
+                        }
+                    };
+                    HeaderViewModel.prototype.showPrevOrNextSlider = function () {
+                        var vm = this;
+                        if (vm.countMenuBar() > 0) {
+                            $('.pre-slider').css("visibility", "");
+                            $('.pre-slider').css("visibility", "none");
+                        }
+                        else {
+                            $('.pre-slider').css("visibility", "");
+                            $('.pre-slider').css("visibility", "hidden");
+                        }
+                        var lastItemPositionLeft = $('.slide-item').last().position()
+                            ? $('.slide-item').last().position().left + $('.slide-item').last().outerWidth()
+                            : 0;
+                        var userInfoLeft = $('.user-info').last() ? $('.user-info').last().position().left : 0;
+                        if (lastItemPositionLeft > userInfoLeft) {
+                            $('.next-slider').css("visibility", "");
+                            $('.next-slider').css("visibility", "none");
+                        }
+                        else {
+                            $('.next-slider').css("visibility", "");
+                            $('.next-slider').css("visibility", "hidden");
                         }
                     };
                     HeaderViewModel.prototype.hambergerHover = function () {
@@ -51496,6 +51621,31 @@ var nts;
                     HeaderViewModel.prototype.userMouseOut = function () {
                         var vm = this;
                         vm.userNameHover(false);
+                    };
+                    HeaderViewModel.prototype.handleNextSlider = function () {
+                        var vm = this;
+                        var lastItemPositionLeft = $('.slide-item').last().position().left + $('.slide-item').last().outerWidth();
+                        if (lastItemPositionLeft > $('.user-info').last().position().left) {
+                            vm.countMenuBar(vm.countMenuBar() + 1);
+                        }
+                        else {
+                            $('.next-slider').css("visibility", "");
+                            $('.next-slider').css("visibility", "hidden");
+                        }
+                        vm.setDisplayMenu();
+                        vm.showPrevOrNextSlider();
+                    };
+                    HeaderViewModel.prototype.handlePrevSlider = function () {
+                        var vm = this;
+                        if (vm.countMenuBar() > 0) {
+                            vm.countMenuBar(vm.countMenuBar() - 1);
+                        }
+                        else {
+                            $('.pre-slider').css("visibility", "");
+                            $('.pre-slider').css("visibility", "hidden");
+                        }
+                        vm.setDisplayMenu();
+                        vm.showPrevOrNextSlider();
                     };
                     HeaderViewModel.prototype.manual = function () {
                         var pathToManual = __viewContext.env.pathToManual;
@@ -51524,7 +51674,7 @@ var nts;
                     HeaderViewModel = __decorate([
                         component({
                             name: 'ui-header',
-                            template: "\n        <div class=\"hamberger\" data-bind=\"\n                event: {\n                    mouseover: $component.hambergerHover,\n                    mouseout: $component.hambergerMouseOut\n                },\n                css: {\n                    'hover': $component.menuSet.hover\n                }\">\n            <svg viewBox=\"0 0 16 14\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n                <rect width=\"16\" height=\"2\" rx=\"1\" fill=\"white\"/>\n                <rect y=\"6\" width=\"16\" height=\"2\" rx=\"1\" fill=\"white\"/>\n                <rect y=\"12\" width=\"16\" height=\"2\" rx=\"1\" fill=\"white\"/>\n            </svg>\n            <div class=\"menu-dropdown menu-hamberger\" data-bind=\"css: { hidden: !$component.menuSet.hover() }\">\n                <div class=\"menu-column\">\n                    <div class=\"menu-header\" data-bind=\"i18n: nts.uk.ui.toBeResource.selectMenu\"></div>\n                    <div class=\"menu-item\" data-bind=\"foreach: $component.menuSet.items\">\n                        <div class=\"item\" data-bind=\"\n                            i18n: $data.webMenuName,\n                            click: function() { $component.selectSet($data) },                        \n                            css: { \n                                selected: $component.menuSet.items() && $data.selected\n                            }\"></div>\n                    </div>\n                </div>\n            </div>\n        </div>\n        <img class=\"favicon\" src=\"/nts.uk.com.js.web/lib/nittsu/ui/style/images/kinjirou.png\" />\n        <div class=\"menu-groups\" data-bind=\"foreach: { data: $component.menuBars, as: 'bar' }\">\n            <div class=\"item-group\" data-bind=\"\n                    event: {\n                        mouseover: function() { $component.itemBarHover(bar) },\n                        mouseout: function() { $component.itemBarMouseOut(bar) }\n                    },\n                    css: {\n                        'hover': bar.hover() && $component.click()\n                    },\n                    attr: {\n                        'data-column': (bar.titleMenu || []).length\n                    }\">\n                <span class=\"bar-item-title\" data-bind=\"text: bar.menuBarName, click: function() { $component.selectBar(bar) }\"></span>\n                <div class=\"menu-dropdown menu-item\" data-bind=\"css: { hidden: !bar.hover() || !bar.titleMenu.length }, foreach: { data: bar.titleMenu, as: 'title' }\">\n                    <div class=\"menu-column\">\n                        <div class=\"menu-header\" data-bind=\"\n                            i18n: title.titleMenuName,\n                            style: {\n                                'color': title.textColor,\n                                'background-color': title.backgroundColor\n                            }\"></div>\n                        <div class=\"menu-items\" data-bind=\"foreach: title.treeMenu\">\n                            <div class=\"item\" data-bind=\"\n                                i18n: $component.getName($data),\n                                click: function() { $component.selectMenu($data, bar) },                        \n                                css: { \n                                    selected: false,\n                                    'divider': !$data.url || $data.url === '-'\n                                }\"></div>\n                        </div>\n                    </div>\n                </div>\n            </div>\n        </div>\n        <div class=\"user-info\">\n            <div class=\"menu-groups\">\n                <div class=\"item-group\">\n                    <span class=\"bar-item-title company\" data-bind=\"text: $component.companyName\"></span>\n                </div>\n                <span class=\"divider\"></span>\n                <div class=\"item-group\" data-bind=\"\n                        event: {\n                            mouseover: $component.userHover,\n                            mouseout: $component.userMouseOut\n                        },\n                        css: {\n                            hover: $component.userNameHover\n                        }\">\n                    <span class=\"bar-item-title user-name\" data-bind=\"text: $component.userName\"></span>\n                    <div class=\"menu-dropdown menu-item\">\n                        <div class=\"menu-column\">\n                            <div class=\"menu-items\">\n                                <div class=\"item\" data-bind=\"i18n: nts.uk.ui.toBeResource.manual, click: $component.manual\"></div>\n                                <div class=\"item divider\"></div>\n                                <div class=\"item\" data-bind=\"i18n: nts.uk.ui.toBeResource.logout, click: $component.logout\"></div>\n                            </div>\n                        </div>\n                    </div>\n                </div>\n            </div>\n            <div class=\"avatar notification\"></div>\n        </div>\n        "
+                            template: "\n        <div class=\"hamberger\" data-bind=\"\n                event: {\n                    mouseover: $component.hambergerHover,\n                    mouseout: $component.hambergerMouseOut\n                },\n                css: {\n                    'hover': $component.menuSet.hover\n                }\">\n            <svg viewBox=\"0 0 16 14\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n                <rect width=\"16\" height=\"2\" rx=\"1\" fill=\"white\"/>\n                <rect y=\"6\" width=\"16\" height=\"2\" rx=\"1\" fill=\"white\"/>\n                <rect y=\"12\" width=\"16\" height=\"2\" rx=\"1\" fill=\"white\"/>\n            </svg>\n            <div class=\"menu-dropdown menu-hamberger\" data-bind=\"css: { hidden: !$component.menuSet.hover() }\">\n                <div class=\"menu-column\">\n                    <div class=\"menu-header\" data-bind=\"i18n: nts.uk.ui.toBeResource.selectMenu\"></div>\n                    <div class=\"menu-item\" data-bind=\"foreach: $component.menuSet.items\">\n                        <div class=\"item\" data-bind=\"\n                            i18n: $data.webMenuName,\n                            click: function() { $component.selectSet($data, true) },                        \n                            css: { \n                                selected: $component.menuSet.items() && $data.selected\n                            }\"></div>\n                    </div>\n                </div>\n            </div>\n        </div>\n        <div class=\"logo-area\">\n            <i id=\"logo\" data-bind=\"ntsIcon: { no: 162 }\" class=\"img-icon\"></i>\n            <i class=\"control-slider pre-slider\" data-bind=\"\n                ntsIcon: { no: 129, width: 25, height: 25 },\n                click: $component.handlePrevSlider\"></i>\n        </div>\n        <div class=\"menu-groups\" data-bind=\"foreach: { data: $component.menuBars, as: 'bar', afterRender: $component.showPrevOrNextSlider.bind($component) }\">\n            <div class=\"item-group slide-item\" data-bind=\"\n                    event: {\n                        mouseover: function() { $component.itemBarHover(bar) },\n                        mouseout: function() { $component.itemBarMouseOut(bar) }\n                    },\n                    css: {\n                        'hover': bar.hover() && bar.canHover() && $component.click()\n                    },\n                    style: {\n                        'display': bar.display()\n                    },\n                    attr: {\n                        'data-column': (bar.titleMenu || []).length\n                    }\">\n                <span class=\"bar-item-title\" data-bind=\"text: bar.menuBarName, click: function() { $component.selectBar(bar) }\"></span>\n                <div class=\"menu-dropdown menu-item\" data-bind=\"css: { hidden: !bar.hover() || !bar.titleMenu.length }, foreach: { data: bar.titleMenu, as: 'title' }\">\n                    <div class=\"menu-column\">\n                        <div class=\"menu-header\" data-bind=\"\n                            i18n: title.titleMenuName,\n                            style: {\n                                'color': title.textColor,\n                                'background-color': title.backgroundColor\n                            }\"></div>\n                        <div class=\"menu-items\" data-bind=\"foreach: title.treeMenu\">\n                            <div class=\"item\" data-bind=\"\n                                i18n: $component.getName($data),\n                                click: function() { $component.selectMenu($data, bar) },                        \n                                css: { \n                                    selected: false,\n                                    'divider': !$data.url || $data.url === '-'\n                                }\"></div>\n                        </div>\n                    </div>\n                </div>\n            </div>\n        </div>\n        <div class=\"user-info\">\n            <div class=\"next-slider-area\">\n                <i class=\"control-slider next-slider\" data-bind=\"\n                    ntsIcon: { no: 128, width: 25, height: 25 },\n                    click: $component.handleNextSlider\"></i>\n            </div>\n            <div class=\"menu-groups\">\n                <div class=\"item-group\" style=\"margin-right: 10px;\">\n                    <ccg020-component></ccg020-component>\n                </div>\n                <div class=\"item-group\">\n                    <span class=\"bar-item-title company\" data-bind=\"text: $component.companyName\"></span>\n                    <i data-bind=\"ntsIcon: { no: 135, width: 10, height: 10 }\"></i>\n                </div>\n                <span class=\"divider\"></span>\n                <div class=\"item-group\" data-bind=\"\n                        event: {\n                            mouseover: $component.userHover,\n                            mouseout: $component.userMouseOut\n                        },\n                        css: {\n                            hover: $component.userNameHover\n                        }\">\n                    <span class=\"bar-item-title user-name\" data-bind=\"text: $component.userName\"></span>\n                    <div class=\"menu-dropdown menu-item\">\n                        <div class=\"menu-column\">\n                            <div class=\"menu-items\">\n                                <div class=\"item\" data-bind=\"i18n: nts.uk.ui.toBeResource.manual, click: $component.manual\"></div>\n                                <div class=\"item divider\"></div>\n                                <div class=\"item\" data-bind=\"i18n: nts.uk.ui.toBeResource.logout, click: $component.logout\"></div>\n                            </div>\n                        </div>\n                    </div>\n                    <i data-bind=\"ntsIcon: { no: 135, width: 10, height: 10 }\" style=\"margin-right: 5px;\"></i>\n                </div>\n            </div>\n            <div id=\"notice-msg\" class=\"avatar notification\">\n                <i id=\"new-mark-msg\" style=\"display: none\" data-bind=\"ntsIcon: { no: 165, width: 13, height: 13 }\"></i>\n            </div>\n        </div>\n        "
                         })
                     ], HeaderViewModel);
                     return HeaderViewModel;
