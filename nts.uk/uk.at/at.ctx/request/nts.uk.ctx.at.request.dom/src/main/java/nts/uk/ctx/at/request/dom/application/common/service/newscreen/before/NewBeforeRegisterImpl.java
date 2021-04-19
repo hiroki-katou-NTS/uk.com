@@ -368,10 +368,10 @@ public class NewBeforeRegisterImpl implements NewBeforeRegister {
 				if(application.getAppDate().getApplicationDate().equals(GeneralDate.today()) &&
 						application.getAppType()==ApplicationType.OVER_TIME_APPLICATION && application.getPrePostAtr()==PrePostAtr.PREDICT) {
 					// 6.確定チェック（事前残業申請用）
-					confirmCheckOvertime(companyID, application.getEmployeeID(), application.getAppDate().getApplicationDate(), appDispInfoStartupOutput);
+					confirmCheckOvertime(companyID, employeeID, application.getAppDate().getApplicationDate(), appDispInfoStartupOutput);
 				} else {
 					// 3.確定チェック
-					confirmationCheck(companyID, application.getEmployeeID(), application.getAppDate().getApplicationDate(), appDispInfoStartupOutput);
+					confirmationCheck(companyID, employeeID, application.getAppDate().getApplicationDate(), appDispInfoStartupOutput);
 				}
 				// 12_承認ルートを取得
 				ApprovalRootContentImport_New approvalRootContentImport = commonAlgorithm.getApprovalRoot(

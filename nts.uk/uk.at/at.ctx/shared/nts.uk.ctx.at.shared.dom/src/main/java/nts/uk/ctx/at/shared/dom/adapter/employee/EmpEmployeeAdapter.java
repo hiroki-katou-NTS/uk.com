@@ -64,6 +64,8 @@ public interface EmpEmployeeAdapter {
 	 */
 	List<AffCompanyHistSharedImport> getAffComHisBySids(String cid, List<String> sid);
 
+	List<ClassificationImport> getClassificationByCompanyId(String companyId);
+
 	/**
 	 * Call RequestList600
 	 * @param sids - 社員一覧　：　List＜社員ID＞
@@ -73,4 +75,5 @@ public interface EmpEmployeeAdapter {
 	 * @return
 	 */
 	List<EmployeeBasicInfoImport> getEmpInfoLstBySids(List<String> sids, DatePeriod period, boolean isDelete, boolean isGetAffCompany);
+
 }

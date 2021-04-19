@@ -101,17 +101,14 @@
 						</div>
 						<div class="control-group valign-center">
 							<div data-bind="ntsFormLabel: { required: true, text: $vm.$i18n('KMT001_28') }" />
-							<div tabindex="11" data-bind="ntsDatePicker: {
-												value: model().expStartDate,
-												name: '#[KMT001_30]',
-												required: true
-											 }"></div>
-							<span>～</span>
-							<div tabindex="12" data-bind="ntsDatePicker: {
-												value: model().expEndDate,
-												name: '#[KMT001_31]',
-												required: true
-											 }"></div>
+							<div style="display: inline-block;"
+								 tabindex="11"
+								 data-bind="ntsDateRangePicker: {
+												required: true,
+												enable: true,
+												showNextPrevious: false,
+												value: model().period
+											}"/>
 						</div>
 						<div class="control-group valign-top">
 							<div data-bind="ntsFormLabel: { required: false, constraint: 'TaskNote', text: $vm.$i18n('KMT001_34') }" />

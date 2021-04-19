@@ -28,4 +28,12 @@ public interface RecSpecificDateSettingAdapter {
 	
 	public List<RecSpecificDateSettingImport> getList(String companyID, List<String> workPlaceID, DatePeriod datePeriod);
 	
+	/**
+	 * Get list 特定日項目 by 特定日項目No
+	 * @param companyId
+	 * @param specifiDateNos
+	 * @return
+	 */
+	List<RecSpecificDateItemImport> getSpecifiDateItem(String companyId, List<Integer> specifiDateNos);
+	
 }

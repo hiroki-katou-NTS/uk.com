@@ -28,7 +28,7 @@ public class ShShortWorkTimeExport {
 	
 	/** The child care atr. */
 	// 育児介護区分
-	private ChildCareAtr childCareAtr;
+	private int childCareAtr;
 	 
  	/** The time slot. */
  	// 時間帯

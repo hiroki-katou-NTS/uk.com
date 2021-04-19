@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.shared.infra.repository.holidaysetting.employee;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -154,5 +155,20 @@ public class JpaEmployeeMonthDaySettingRepository extends JpaRepository implemen
 		TypedQuery<KshmtHdpubMonthdaysSya> query = em.createQuery(cq);
 
 		return query.getResultList();
+	}
+
+	@Override
+	public List<EmployeeMonthDaySetting> findByYear(CompanyId companyId, List<String> employee, Year year) {
+		List<KshmtHdpubMonthdaysSya> result = this.findBy(companyId, null, year, null);
+		
+		// Check exist
+		if (result.isEmpty()) {
+			return new ArrayList<>();
+		}
+		
+		return result.stream()
+				.filter(x -> employee.contains(x.getKshmtEmployeeMonthDaySetPK().getSid()))
+				.map(x -> new EmployeeMonthDaySetting(new JpaEmployeeMonthDaySettingGetMemento(Arrays.asList(x))))
+				.collect(Collectors.toList());
 	}
 }

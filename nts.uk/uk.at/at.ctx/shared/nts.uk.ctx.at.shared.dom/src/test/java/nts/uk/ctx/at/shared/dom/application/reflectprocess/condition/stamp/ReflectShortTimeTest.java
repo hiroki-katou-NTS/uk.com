@@ -9,11 +9,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import mockit.integration.junit4.JMockit;
-import nts.uk.ctx.at.shared.dom.application.reflectprocess.DailyRecordOfApplication;
-import nts.uk.ctx.at.shared.dom.application.reflectprocess.ScheduleRecordClassifi;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.common.ReflectApplicationHelper;
-import nts.uk.ctx.at.shared.dom.application.stamp.TimeZoneStampClassificationShare;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ChildCareAttribute;
+import nts.uk.ctx.at.shared.dom.scherec.application.stamp.TimeZoneStampClassificationShare;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.DailyRecordOfApplication;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.ScheduleRecordClassifi;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.stampapplication.algorithm.ReflectShortTime;
+import nts.uk.ctx.at.shared.dom.shortworktime.ChildCareAtr;
 
 @RunWith(JMockit.class)
 public class ReflectShortTimeTest {
@@ -48,7 +49,7 @@ public class ReflectShortTimeTest {
 		assertThat(dailyApp.getShortTime().get().getShortWorkingTimeSheets().get(0).getStartTime().v()).isEqualTo(600);// 開始
 		assertThat(dailyApp.getShortTime().get().getShortWorkingTimeSheets().get(0).getEndTime().v()).isEqualTo(1200); // 終了
 		assertThat(dailyApp.getShortTime().get().getShortWorkingTimeSheets().get(0).getChildCareAttr())
-				.isEqualTo(ChildCareAttribute.CARE);// 育児介護区分
+				.isEqualTo(ChildCareAtr.CARE);// 育児介護区分
 
 		// case 育児
 		DailyRecordOfApplication dailyApp2 = ReflectApplicationHelper
@@ -64,7 +65,7 @@ public class ReflectShortTimeTest {
 		assertThat(dailyApp2.getShortTime().get().getShortWorkingTimeSheets().get(0).getStartTime().v()).isEqualTo(600);// 開始
 		assertThat(dailyApp2.getShortTime().get().getShortWorkingTimeSheets().get(0).getEndTime().v()).isEqualTo(1200); // 終了
 		assertThat(dailyApp2.getShortTime().get().getShortWorkingTimeSheets().get(0).getChildCareAttr())
-				.isEqualTo(ChildCareAttribute.CHILD_CARE);// 育児介護区分
+				.isEqualTo(ChildCareAtr.CHILD_CARE);// 育児介護区分
 
 	}
 
@@ -95,7 +96,7 @@ public class ReflectShortTimeTest {
 		assertThat(dailyApp.getShortTime().get().getShortWorkingTimeSheets().get(1).getStartTime().v()).isEqualTo(600);// 開始
 		assertThat(dailyApp.getShortTime().get().getShortWorkingTimeSheets().get(1).getEndTime().v()).isEqualTo(1200); // 終了
 		assertThat(dailyApp.getShortTime().get().getShortWorkingTimeSheets().get(1).getChildCareAttr())
-				.isEqualTo(ChildCareAttribute.CARE);// 育児介護区分
+				.isEqualTo(ChildCareAtr.CARE);// 育児介護区分
 		assertThat(dailyApp.getShortTime().get().getShortWorkingTimeSheets().get(1).getShortWorkTimeFrameNo().v())
 				.isEqualTo(2);// 短時間勤務枠NO
 
@@ -113,7 +114,7 @@ public class ReflectShortTimeTest {
 		assertThat(dailyApp2.getShortTime().get().getShortWorkingTimeSheets().get(1).getStartTime().v()).isEqualTo(600);// 開始
 		assertThat(dailyApp2.getShortTime().get().getShortWorkingTimeSheets().get(1).getEndTime().v()).isEqualTo(1200); // 終了
 		assertThat(dailyApp2.getShortTime().get().getShortWorkingTimeSheets().get(1).getChildCareAttr())
-				.isEqualTo(ChildCareAttribute.CHILD_CARE);// 育児介護区分
+				.isEqualTo(ChildCareAtr.CHILD_CARE);// 育児介護区分
 		assertThat(dailyApp2.getShortTime().get().getShortWorkingTimeSheets().get(1).getShortWorkTimeFrameNo().v())
 				.isEqualTo(2);// 短時間勤務枠NO
 

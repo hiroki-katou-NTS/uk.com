@@ -228,7 +228,11 @@ public class ProgramIdConsts {
 	public static final String KSM004E = "KSM004E";
 
 	public static final String KSM004F = "KSM004F";
-
+	
+	public static final String CMM040A = "CMM040A";
+	
+	public static final String CMM040B = "CMM040B";
+	
 	public static final String CMM044A = "CMM044A";
 
 	public static final String CMM044C = "CMM044C";
@@ -965,10 +969,25 @@ public class ProgramIdConsts {
 	public static final String KAL004A = "KAL004A";
 	public static final String KAL004B = "KAL004B";
 	public static final String KAL004D = "KAL004D";
+	public static final String KAL004E = "KAL004E";
 	public static final String KAL004F = "KAL004F";
 	public static final String KAL004G = "KAL004G";
 	public static final String KAL002A = "KAL002A";
 	public static final String KAL002B = "KAL002B";
+
+	public static final String KAL011A = "KAL011A";
+	public static final String KAL011B = "KAL011B";
+	public static final String KAL011C = "KAL011C";
+	public static final String KAL011D = "KAL011D";
+
+	public static final String KAL014A = "KAL014A";
+	public static final String KAL014B = "KAL014B";
+	public static final String KAL014C = "KAL014C";
+
+	public static final String KAL013A = "KAL013A";
+	public static final String KAL013B = "KAL013B";
+	public static final String KAL013D = "KAL013D";
+
 	public static final String KDM002A = "KDM002A";
 	public static final String KDM002B = "KDM002B";
 	public static final String KDW004A = "KDW004A";
@@ -1596,7 +1615,6 @@ public class ProgramIdConsts {
 	 * KNR001
 	 */
 	public static final String KNR001A = "KNR001A";
-	
 	/**
 	 * KNR002
 	 */
@@ -1616,5 +1634,9 @@ public class ProgramIdConsts {
 	 * CCGS03
 	 */
 	public static final String CCGS03A = "CCGS03A";
+	public static final String KSM007B = "KSM007B";
+	public static final String KSM007C = "KSM007C";
+	public static final String KSM007D = "KSM007D";
+
 
 }

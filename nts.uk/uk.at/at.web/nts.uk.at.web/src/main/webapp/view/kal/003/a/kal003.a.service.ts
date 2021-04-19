@@ -23,6 +23,11 @@ module nts.uk.at.view.kal003.a.service {
         getAllFixedApprovalItem: "at/function/alarm/approval/findallfixedapprovalcheckitem",
         
         getName: "at/function/alarm/checkcondition/agree36/findName",
+        
+        // schedule fix item day
+        getScheduleFixItemDaily: "at/record/workrecord/erroralarm/schedule/schefixitemday",
+        // schedule fix item month
+        getScheduleFixItemMonthly: "at/record/workrecord/erroralarm/schedule/monthly/fixeditemmonth",
 
     }
         
@@ -66,6 +71,14 @@ module nts.uk.at.view.kal003.a.service {
         return ajax("at", paths.getAllFixedApprovalItem)
     }
     
+    export function getScheduleFixItemDaily(): JQueryPromise<any> {
+        return ajax("at", paths.getScheduleFixItemDaily);
+    }
+    
+    export function getScheduleFixItemMonthly(): JQueryPromise<any> {
+        return ajax("at", paths.getScheduleFixItemMonthly);
+    }
+    
     export function getClsNameByCodes(data: Array<string>): JQueryPromise<any> {
         return ajax("com", paths.getClsNameByCodes, data);
     } 
@@ -78,11 +91,6 @@ module nts.uk.at.view.kal003.a.service {
         return ajax("at", paths.getBusTypeNamesByCodes, data);
     }
     
-    export function getJobNamesByIds(data: Array<string>): JQueryPromise<any> {
-        return ajax("com", paths.getJobNamesByIds, data);
-    }
-
-    
 //    export function getAgreementHour(): JQueryPromise<any> {
 //        return ajax("at", paths.getAgreementHour);
 //    }
@@ -94,6 +102,10 @@ module nts.uk.at.view.kal003.a.service {
     export function getAllFixedExtraItemMon(): JQueryPromise<Array<any>>{
         return ajax("at", paths.getAllFixedExtraItemMon); 
 
+    }
+    
+    export function getJobNamesByIds(data: Array<string>): JQueryPromise<any> {
+        return ajax("com", paths.getJobNamesByIds, data);
     }
     
    

@@ -6,7 +6,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
-import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsence;
+import nts.uk.ctx.at.request.dom.application.appabsence.ApplyForLeave;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseStateImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootContentImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ErrorFlagImport;
@@ -96,7 +96,7 @@ public class RegisterApplicationFromNR {
 		public void insert(AppOverTime appOverTime);
 
 		// [R-10] 休暇申請を作る
-		public void insert(AppAbsence appAbsence);
+		public void insert(ApplyForLeave appAbsence);
 
 		// [R-11] 勤務変更申請を作る
 		public void insert(AppWorkChange appWorkChange);

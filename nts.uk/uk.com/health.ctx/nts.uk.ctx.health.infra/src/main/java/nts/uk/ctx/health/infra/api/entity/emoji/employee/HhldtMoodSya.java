@@ -40,6 +40,11 @@ public class HhldtMoodSya extends UkJpaEntity
 	// Embedded primary key 社員ID and 年月日
 	@EmbeddedId
 	private HhldtMoodSyaPK pk;
+	
+	// column 会社ID
+	@NotNull
+	@Column(name = "CID")
+	private String cid;
 
 	// column 社員ID
 	@NotNull

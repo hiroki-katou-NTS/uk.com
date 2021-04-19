@@ -20,14 +20,14 @@ public class KwlmtWorkLocationPK implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	/** CompanyID */
+	/** 契約コード */
 	@NotNull
-	@Column(name = "CID")
-	public String companyID;
+	@Column(name = "CONTRACT_CD")
+	public String contractCode;
 
-	/** Work Location Code */
+	/** 勤務場所コード */
 	@NotNull
-	@Column(name = "WORK_LOCATION_CD")
+	@Column(name = "WK_LOCATION_CD")
 	public String workLocationCD;
 
 }
