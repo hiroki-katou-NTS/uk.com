@@ -107,12 +107,10 @@ public class ApplicationForSendServiceImpl implements IApplicationForSendService
 	
 	private void flatApprover(ApprovalRootOutput approvalRoot) {
 		for(ApprovalPhaseStateImport_New phase : approvalRoot.getListApprovalPhaseState()) {
-			int index = 0;
 			for(ApprovalFrameImport_New frame : phase.getListApprovalFrame()) {
 				List<ApproverStateImport_New> listApprover = new ArrayList<>();
 				for(ApproverStateImport_New approver : frame.getListApprover()) {
 					if(approver.getApprovalAtr()==ApprovalBehaviorAtrImport_New.UNAPPROVED && Strings.isNotBlank(approver.getRepresenterID())) {
-						index += 1;
 						listApprover.add(new ApproverStateImport_New(
 								approver.getApproverID(), 
 								approver.getApprovalAtr(), 
@@ -126,8 +124,7 @@ public class ApplicationForSendServiceImpl implements IApplicationForSendService
 								approver.getApproverEmail(), 
 								approver.getAgentMail(), 
 								"", 
-								index));
-						index += 1;
+								approver.getApproverInListOrder()));
 						listApprover.add(new ApproverStateImport_New(
 								approver.getRepresenterID(), 
 								approver.getApprovalAtr(), 
@@ -141,9 +138,8 @@ public class ApplicationForSendServiceImpl implements IApplicationForSendService
 								approver.getRepresenterEmail(), 
 								approver.getAgentMail(), 
 								"", 
-								index));
+								approver.getApproverInListOrder()));
 					} else {
-						index += 1;
 						listApprover.add(new ApproverStateImport_New(
 								approver.getApproverID(), 
 								approver.getApprovalAtr(), 
@@ -157,7 +153,7 @@ public class ApplicationForSendServiceImpl implements IApplicationForSendService
 								approver.getApproverEmail(), 
 								approver.getAgentMail(), 
 								approver.getRepresenterEmail(), 
-								index));
+								approver.getApproverInListOrder()));
 					}
 				}
 				frame.setListApprover(listApprover);
