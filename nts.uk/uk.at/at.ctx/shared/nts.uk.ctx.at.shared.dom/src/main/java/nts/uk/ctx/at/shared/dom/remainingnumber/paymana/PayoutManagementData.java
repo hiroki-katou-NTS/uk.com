@@ -52,7 +52,7 @@ public class PayoutManagementData extends AggregateRoot {
 	private DigestionAtr stateAtr;
 	
 	// 消滅日
-	public Optional<GeneralDate> disapearDate;
+	public Optional<GeneralDate> disapearDate = Optional.empty(); //sửa đoạn này vì làm exception chết màn KAF011 ngày 19/04
 	
 	public PayoutManagementData(String payoutId,String cid, String sid, boolean unknowDate, GeneralDate dayoffDate, GeneralDate expiredDate, int lawId,
 			Double occurredDays, Double unUsedDays, int stateAtr){
@@ -110,7 +110,6 @@ public class PayoutManagementData extends AggregateRoot {
 		domain.payoutId = payout.getManageId();
 		domain.payoutDate = new CompensatoryDayoffDate(payout.getDateOccur().isUnknownDate(), payout.getDateOccur().getDayoffDate());
 		domain.update(payout);
-		
 		return domain;
 	}
 }
