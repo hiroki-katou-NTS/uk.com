@@ -84,7 +84,7 @@ public class CorrectSupportDataWork {
 			leavingWork2 = integrationOfDaily.getAttendanceLeave().get().getTimeLeavingWorks().stream().filter(x -> x.getWorkNo().v() == 2).findFirst();
 			
 			if(leavingWork2.isPresent()) {
-				this.supportCorrectWork(leavingWork, workinfo.getStampReflectRangeOutput(), integrationOfDaily);
+				this.supportCorrectWork(leavingWork2, workinfo.getStampReflectRangeOutput(), integrationOfDaily);
 			}
 			
 		}
