@@ -86,6 +86,7 @@ public class OuenWorkTimeSheetOfDailyAttendanceDto extends AttendanceItemCommon{
 							domain.getTimeSheet().getEnd().isPresent() ? domain.getTimeSheet().getEnd().get().getReasonTimeChange().getTimeChangeMeans().value : null), 
 							domain.getTimeSheet().getEnd().isPresent() ? domain.getTimeSheet().getEnd().get().getTimeWithDay().get().v() : null)));
 		}
+		dto.exsistData();
 		return dto;
 	}
 	
@@ -103,6 +104,7 @@ public class OuenWorkTimeSheetOfDailyAttendanceDto extends AttendanceItemCommon{
 		result.setNo(no);
 		result.setWorkContent(workContent == null ? null : workContent.clone());
 		result.setTimeSheet(timeSheet == null ? null : timeSheet.clone());
+		result.exsistData();
 		return result;
 	}
 	
