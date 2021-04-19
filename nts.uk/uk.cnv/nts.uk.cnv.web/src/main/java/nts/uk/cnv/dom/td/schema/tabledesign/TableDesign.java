@@ -140,4 +140,5 @@ public class TableDesign implements Cloneable {
 				.map(col -> col.isContractCd())
 				.anyMatch(con -> con == true);
 	}
+
 }

@@ -8,8 +8,8 @@ import javax.inject.Inject;
 import lombok.val;
 import nts.uk.cnv.dom.td.alteration.summary.AlterationSummaryRepository;
 import nts.uk.cnv.dom.td.feature.FeatureRepository;
-import nts.uk.cnv.ws.alteration.summary.AlterationDevStatusDto;
-import nts.uk.cnv.ws.feature.FeatureInfoDto;
+import nts.uk.cnv.ws.td.alteration.summary.AlterationDevStatusDto;
+import nts.uk.cnv.ws.td.feature.FeatureInfoDto;
 
 public class FeatureQuery {
 	

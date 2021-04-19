@@ -146,12 +146,12 @@ public class ConversionTableService {
 			return result;
 		case Parent:
 			ParentJoinPattern parent = (ParentJoinPattern) domain.getPattern();
-			result.setParentTable(parent.getParentJoin().getTableName().getName());
+			result.setParentTable(parent.getParentTableName());
 			result.setSourceColumn_parent(parent.getParentColumn());
 			result.setJoinPKs(
 						String.join(
 							",",
-							parent.getParentJoin().onSentences.stream()
+							parent.getMappingJoin().onSentences.stream()
 								.map(on -> on.getLeft().getName())
 								.collect(Collectors.toList())
 							)

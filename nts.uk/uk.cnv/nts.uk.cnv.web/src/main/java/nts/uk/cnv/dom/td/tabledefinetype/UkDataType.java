@@ -59,7 +59,7 @@ public class UkDataType implements TableDefineType {
 	}
 
 	@Override
-	public String convertBoolDefault(String value) {
+	public String convertBoolValue(String value) {
 		return value;
 	}
 

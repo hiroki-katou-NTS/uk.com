@@ -18,9 +18,9 @@ var servicePath = {
 	registCategoryPriority: "/nts.uk.cnv.web/webapi/cnv/categorypriority/regist",
 	registCategory: "/nts.uk.cnv.web/webapi/cnv/conversiontable/category/regist",
 	loaddata: "/nts.uk.cnv.web/webapi/cnv/cnv001b/loaddata",
-    getuktables: "/nts.uk.cnv.web/webapi/cnv/tabledesign/getuktables",
     regist: "/nts.uk.cnv.web/webapi/cnv/category/regist"
 }
+var ukTables = [];
 
 $(function(){
 	startPage();
@@ -36,6 +36,21 @@ $(function(){
 		});
 
 		$.ajax(ajaxOption.build(servicePath.getCategoryList, {
+		})).done(function (res) {
+			var options = $.map(res, function (value, index) {
+				return $('<option>', { value: index, text: value });
+			});
+
+			$('#category > option').remove();
+			$("#category").append(options);
+
+			selectCategory();
+
+		}).fail(function(rej){
+			console.log(rej);
+		});
+
+		$.ajax(ajaxOption.build(servicePath.getuktables, {
 		})).done(function (res) {
 			var options = $.map(res, function (value, index) {
 				return $('<option>', { value: index, text: value });

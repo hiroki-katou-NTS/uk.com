@@ -62,6 +62,15 @@ public class ParentJoinPatternManager {
 		return sourcePkName + (index + 1);
 	}
 
+	public static TableFullName mappingTableName(ConversionInfo info, String alias) {
+		return new TableFullName(
+				info.getWorkDatabaseName(),
+				info.getWorkSchema(),
+				parentMappingTable,
+				alias
+			);
+	}
+
 	public AdditionalConversionCode createAdditionalConversionCode(ConversionInfo info, String category, ConversionTable ct) {
 
 		String preProcessing = "";
@@ -77,12 +86,7 @@ public class ParentJoinPatternManager {
 				);
 		}
 
-		TableFullName mappingTableName = new TableFullName(
-				info.getTargetDatabaseName(),
-				info.getTargetSchema(),
-				parentMappingTable,
-				""
-			);
+		TableFullName mappingTableName = mappingTableName(info, "");
 
 		Set<String> referencedColumns = children.stream()
 			.map(c -> c.getParentColumn())
@@ -94,7 +98,7 @@ public class ParentJoinPatternManager {
 				.findFirst()
 				.get();
 
-			List<String> columns = child.getParentJoin().onSentences.stream()
+			List<String> columns = child.getMappingJoin().onSentences.stream()
 				.map(c -> c.getRight().getName())
 				.collect(Collectors.toList());
 
@@ -150,7 +154,7 @@ public class ParentJoinPatternManager {
 			cnvSql = colmnConversion.getPattern().apply(cnvSql);
 
 			if (!preProcessing.isEmpty()) {
-				preProcessing += "\r\n\r\n";
+				preProcessing += "\r\n";
 			}
 
 			preProcessing += cnvSql.build(info);
@@ -166,8 +170,8 @@ public class ParentJoinPatternManager {
 	public static String createTable(ConversionInfo info) {
 
 		TableFullName mappingTableName = new TableFullName(
-				info.getTargetDatabaseName(),
-				info.getTargetSchema(),
+				info.getWorkDatabaseName(),
+				info.getWorkSchema(),
 				parentMappingTable,
 				""
 			);
@@ -196,8 +200,8 @@ public class ParentJoinPatternManager {
 
 	public static String dropTable(ConversionInfo info) {
 		TableFullName mappingTableName = new TableFullName(
-				info.getTargetDatabaseName(),
-				info.getTargetSchema(),
+				info.getWorkDatabaseName(),
+				info.getWorkSchema(),
 				parentMappingTable,
 				""
 			);

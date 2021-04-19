@@ -128,6 +128,11 @@ public class UkConverter {
 		}
 
 		@Override
+		public void truncateMappingTable() throws SQLException {
+			mappingRepo.truncateTable();
+		}
+
+		@Override
 		public void save(StoredFileInfo mapptingFile, JmKihon employee, String fileType) throws SQLException {
 			mappingRepo.insert(mapptingFile, employee, fileType);
 		}
@@ -179,6 +184,11 @@ public class UkConverter {
 			if (cache.containsKey(companyCode)) return cache.get(companyCode);
 
 			return new ArrayList<>();
+		}
+
+		@Override
+		public void truncateMappingTable() throws SQLException {
+			mappingPasswordRepo.truncateTable();
 		}
 
 		@Override

@@ -44,6 +44,8 @@ $(function(){
 		var sourceSchema = $("#txtSourceSchema").val();
 		var targetDbName = $("#txtTargetDbName").val();
 		var targetSchema = $("#txtTargetSchema").val();
+		var workDbName = $("#txtWorkDbName").val();
+		var workSchema = $("#txtWorkSchema").val();
 		var contractCode = $("#txtContractCode").val();
 
 		if (typeof filePath === "undefined" || filePath === "") {
@@ -57,6 +59,8 @@ $(function(){
 			sourceSchema: sourceSchema,
 			targetDbName: targetDbName,
 			targetSchema: targetSchema,
+			workDbName: workDbName,
+			workSchema: workSchema,
 			contractCode: contractCode,
 			filePath : filePath
 		})).done(function (res) {

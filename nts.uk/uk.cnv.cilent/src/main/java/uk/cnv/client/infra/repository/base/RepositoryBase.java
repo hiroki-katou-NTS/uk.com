@@ -205,8 +205,40 @@ public abstract class RepositoryBase {
 			}
 
 			conn.setAutoCommit(false);
-			ps = require.getPreparedStatement(conn);
+			ps = require.insert(conn);
+			ps.executeUpdate();
 
+			conn.commit();
+		}
+		catch (SQLException ex) {
+			try {
+				conn.rollback();
+			} catch (SQLException e) {
+				LogManager.err(e);
+			}
+			throw ex;
+		}
+		finally {
+			if(ps != null) {
+				try {
+					ps.close();
+				} catch (SQLException e) {
+					LogManager.err(e);
+				}
+			}
+			this.disConnect();
+		}
+	}
+
+	public <T> void truncateTable(TruncateTableRequire require) throws SQLException {
+		PreparedStatement ps = null;
+		try {
+			if(conn == null || conn.isClosed()) {
+				this.connect();
+			}
+
+			conn.setAutoCommit(false);
+			ps = require.truncateTable(conn);
 			ps.executeUpdate();
 
 			conn.commit();
@@ -236,6 +268,10 @@ public abstract class RepositoryBase {
 	}
 
 	public interface InsertRequire {
-		PreparedStatement getPreparedStatement(Connection conn) throws SQLException;
+		PreparedStatement insert(Connection conn) throws SQLException;
+	}
+
+	public interface TruncateTableRequire {
+		PreparedStatement truncateTable(Connection conn) throws SQLException;
 	}
 }

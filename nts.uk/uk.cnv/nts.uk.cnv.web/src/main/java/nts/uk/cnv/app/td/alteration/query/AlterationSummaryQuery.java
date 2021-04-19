@@ -10,7 +10,7 @@ import nts.uk.cnv.dom.td.alteration.summary.AlterationSummary;
 import nts.uk.cnv.dom.td.alteration.summary.AlterationSummaryRepository;
 import nts.uk.cnv.dom.td.devstatus.DevelopmentProgress;
 import nts.uk.cnv.dom.td.devstatus.DevelopmentStatus;
-import nts.uk.cnv.ws.alteration.summary.AlterationDevStatusDto;
+import nts.uk.cnv.ws.td.alteration.summary.AlterationDevStatusDto;
 
 public class AlterationSummaryQuery {
 	

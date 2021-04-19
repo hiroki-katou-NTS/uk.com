@@ -34,14 +34,14 @@ $(function () {
 
 	$("#view").click(function () {
 		$('#tabledesign').val('');
-		$.ajax(ajaxOption.build("/nts.uk.cnv.web/webapi/cnv/tabledesign/exportddl", {
+		$.ajax(ajaxOption.build("/nts.uk.cnv.web/webapi/td/ddl/exportddl", {
 			tableName: $('#tablename').val(),
 			type: $('[name="tabledesign_type"]:checked').val(),
 			withComment:
 				$('#withComment').prop('checked') ? true : false
 		})).done(function (res) {
 
-			$('#tabledesign').val(res[0].ddl);
+			$('#tabledesign').val(res.ddl);
 			if (typeof res.message === "undefined") {
 				showMsg('処理が完了しました。');
 			}

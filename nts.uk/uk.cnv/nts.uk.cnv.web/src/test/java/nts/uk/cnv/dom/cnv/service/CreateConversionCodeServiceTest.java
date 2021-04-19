@@ -20,8 +20,6 @@ import nts.uk.cnv.dom.cnv.conversiontable.ConversionTable;
 import nts.uk.cnv.dom.cnv.conversiontable.ConversionTableTestHelper;
 import nts.uk.cnv.dom.cnv.conversiontable.pattern.manager.AdditionalConversionCode;
 import nts.uk.cnv.dom.cnv.conversiontable.pattern.manager.ParentJoinPatternManager;
-import nts.uk.cnv.dom.cnv.service.ConversionInfo;
-import nts.uk.cnv.dom.cnv.service.CreateConversionCodeService;
 import nts.uk.cnv.dom.td.tabledefinetype.databasetype.DatabaseType;
 
 @RunWith(JMockit.class)
@@ -37,7 +35,7 @@ public class CreateConversionCodeServiceTest {
 
 	@Test
 	public void test_methodCall() {
-		ConversionInfo info = new ConversionInfo(DatabaseType.sqlserver, "KINJIROU", "dbo", "UK", "dbo", "000000000000");
+		ConversionInfo info = new ConversionInfo(DatabaseType.sqlserver, "KINJIROU", "dbo", "UK", "dbo", "UK_CNV", "dbo", "000000000000");
 		List<String> dummyCategories = Arrays.asList("", "2_PERSON", "3_WEBMENU");
 		List<String> dummyTables = Arrays.asList("TABLE_1", "TABLE_2");
 		List<ConversionRecord> dummyRecords = new ArrayList<>();
@@ -97,7 +95,7 @@ public class CreateConversionCodeServiceTest {
 
 	@Test
 	public void test_sqlServer_simple() {
-		ConversionInfo info = new ConversionInfo(DatabaseType.sqlserver, "KINJIROU", "dbo", "UK", "dbo", "000000000000");
+		ConversionInfo info = new ConversionInfo(DatabaseType.sqlserver, "KINJIROU", "dbo", "UK", "dbo", "UK_CNV", "dbo", "000000000000");
 		List<ConversionRecord> dummyRecords = new ArrayList<>();
 		dummyRecords.add(new ConversionRecord("1_COMPANY", "TABLE_1", 1, "guidxxxxxxxxx", "レコードの説明"));
 

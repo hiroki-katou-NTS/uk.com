@@ -29,9 +29,9 @@ public class CodeToIdPattern extends ConversionPattern {
 
 	//TODO: 履歴あるテーブルどうしよう...
 	public enum CodeToIdType{
-		TO_CID("SCVMT_MAPPING_CODE_TO_CID", "CODE", "ID", ""),
-		TO_SID("SCVMT_MAPPING_CODE_TO_SID", "SCD", "SID", "CCD"),
-		TO_JOB_ID("SCVMT_MAPPING_CODE_TO_JOBID", "JOB_CD", "JOB_ID", "CCD");
+		TO_CID("SCVMT_MAPPING_CODE_TO_CID", "会社CD", "CID", ""),
+		TO_SID("SCVMT_MAPPING_CODE_TO_SID", "社員CD", "SID", "会社CD"),
+		TO_JOB_ID("SCVMT_MAPPING_CODE_TO_JOBID", "職位CD", "JOB_ID", "会社CD");
 
 		private final String tableName;
 		private final String idColumnName;
@@ -113,8 +113,8 @@ public class CodeToIdPattern extends ConversionPattern {
 
 		return new Join(
 				new TableFullName(
-					info.getTargetDatabaseName(),
-					info.getTargetSchema(),
+					info.getWorkDatabaseName(),
+					info.getWorkSchema(),
 					this.codeToIdType.getTableName(),
 					this.mappingAlias()
 				),

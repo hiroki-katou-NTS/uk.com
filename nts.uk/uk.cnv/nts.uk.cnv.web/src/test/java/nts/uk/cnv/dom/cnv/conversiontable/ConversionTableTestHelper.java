@@ -9,14 +9,12 @@ import nts.uk.cnv.dom.cnv.conversionsql.Join;
 import nts.uk.cnv.dom.cnv.conversionsql.JoinAtr;
 import nts.uk.cnv.dom.cnv.conversionsql.OnSentence;
 import nts.uk.cnv.dom.cnv.conversionsql.TableFullName;
-import nts.uk.cnv.dom.cnv.conversiontable.ConversionTable;
-import nts.uk.cnv.dom.cnv.conversiontable.OneColumnConversion;
 import nts.uk.cnv.dom.cnv.conversiontable.pattern.CodeToIdPattern;
 import nts.uk.cnv.dom.cnv.conversiontable.pattern.FixedValuePattern;
 import nts.uk.cnv.dom.cnv.conversiontable.pattern.NotChangePattern;
 import nts.uk.cnv.dom.cnv.conversiontable.pattern.ParentJoinPattern;
-import nts.uk.cnv.dom.constants.Constants;
 import nts.uk.cnv.dom.cnv.service.ConversionInfo;
+import nts.uk.cnv.dom.constants.Constants;
 
 public class ConversionTableTestHelper {
 
@@ -54,6 +52,7 @@ public class ConversionTableTestHelper {
 									new Join(new TableFullName(info.getSourceDatabaseName(), info.getSourceSchema(), Constants.CidMappingTableName, "ccd_cid"),
 									JoinAtr.InnerJoin,
 									Arrays.asList(new OnSentence(new ColumnName(Constants.BaseTableAlias, "会社CD"), new ColumnName("ccd_cid", "会社CD"), Optional.empty()))),
+									"BCMMT_COMPANY",
 									"CCD"
 							)
 					),

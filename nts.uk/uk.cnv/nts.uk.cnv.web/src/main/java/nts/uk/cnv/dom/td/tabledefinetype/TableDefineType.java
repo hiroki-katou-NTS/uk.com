@@ -10,6 +10,6 @@ public interface TableDefineType {
 	public String tableCommentDdl(String tableName, String jpName);
 	public String columnCommentDdl(String tableName, String columnName, String jpName);
 	public String rlsDdl(String tableName);
-	public String convertBoolDefault(String value);
+	public String convertBoolValue(String value);
 	public String renameColumnDdl(String tableName, String beforeColumnName,String columnName);
 }

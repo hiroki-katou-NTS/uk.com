@@ -14,8 +14,8 @@ var ajaxOption = {
 	}
 };
 var servicePath = {
-    getukcolumns: "/nts.uk.cnv.web/webapi/cnv/tabledesign/getukcolumns",
-    geterpcolumns: "/nts.uk.cnv.web/webapi/cnv/tabledesign/geterpcolumns",
+    getukcolumns: "/nts.uk.cnv.web/webapi/cnv/tableinfo/getukcolumns",
+    geterpcolumns: "/nts.uk.cnv.web/webapi/cnv/tableinfo/geterpcolumns",
     find: "/nts.uk.cnv.web/webapi/cnv/conversiontable/find",
     regist: "/nts.uk.cnv.web/webapi/cnv/conversiontable/regist",
     test: "/nts.uk.cnv.web/webapi/cnv/conversiontable/test"
@@ -110,9 +110,9 @@ $(function(){
 			console.log(rej);
 		});
 
-		$.ajax(ajaxOption.build(servicePath.geterpcolumns,
-			erpTable
-		)).done(function (res) {
+		$.ajax(ajaxOption.build(servicePath.geterpcolumns,{
+			tableName: erpTable
+		})).done(function (res) {
 			var options = $.map(res, function (value, index) {
 				return $('<option>', { value: value.columnName, text: value.columnName + String.fromCharCode( 160 ).repeat(25-getLen(value.columnName)) + " : " + value.dataType });
 			});

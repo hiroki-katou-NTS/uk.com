@@ -28,10 +28,10 @@ public class JpaSnapshotRepository extends JpaRepository implements SnapshotRepo
 
 	@Override
 	public Optional<SchemaSnapshot> getSchemaLatest() {
-		
+
 		String sql = "select * from NEM_TD_SNAPSHOT_SCHEMA"
 				+ " order by GENERATED_AT desc";
-		
+
 		return this.jdbcProxy()
 				.query(sql)
 				.getList(rec -> new SchemaSnapshot(
@@ -47,26 +47,28 @@ public class JpaSnapshotRepository extends JpaRepository implements SnapshotRepo
 
 		String sql = "select * from NEM_TD_SNAPSHOT_TABLE"
 				+ " where SNAPSHOT_ID = @ssid";
-		
+
 		val tables = this.jdbcProxy()
 				.query(sql)
 				.paramString("ssid", snapshotId)
 				.getList(rec -> new TableIdentity(
 						rec.getString("TABLE_ID"),
 						rec.getString("NAME")));
-		
+
 		return new TableListSnapshot(snapshotId, tables);
 	}
-	
+
 	private <E> List<E> getEntitiesByTable(
 			String snapshotId,
 			String tableId,
 			String targetTableName,
+			Optional<String> orderBy,
 			JpaEntityMapper<E> mapper) {
-		
+
 		String sql = "select * from " + targetTableName
 				+ " where SNAPSHOT_ID = @ssid"
 				+ " and TABLE_ID = @tid";
+		sql += (orderBy.isPresent() ? " order by " + orderBy.get() : "");
 		return this.jdbcProxy().query(sql)
 				.paramString("ssid", snapshotId)
 				.paramString("tid", tableId)
@@ -75,17 +77,17 @@ public class JpaSnapshotRepository extends JpaRepository implements SnapshotRepo
 
 	@Override
 	public Optional<TableSnapshot> getTable(String snapshotId, String tableId) {
-		
+
 		val columns = getTableColumnsBy(snapshotId, tableId);
-		
+
 		val indexColumns = getIndexColumnsBy(snapshotId, tableId);
-		
+
 		val indexes = getIndexesBy(snapshotId, tableId);
 		indexes.forEach(index -> {
 			index.columns = indexColumns.get(index.pk);
 		});
-		
-		return this.getEntitiesByTable(snapshotId, tableId, "NEM_TD_SNAPSHOT_TABLE", NemTdSnapshotTable.MAPPER)
+
+		return this.getEntitiesByTable(snapshotId, tableId, "NEM_TD_SNAPSHOT_TABLE", Optional.empty(), NemTdSnapshotTable.MAPPER)
 				.stream()
 				.findFirst()
 				.map(t -> {
@@ -96,18 +98,20 @@ public class JpaSnapshotRepository extends JpaRepository implements SnapshotRepo
 	}
 
 	private List<NemTdSnapshotTableIndex> getIndexesBy(String snapshotId, String tableId) {
-		return this.getEntitiesByTable(snapshotId, tableId, "NEM_TD_SNAPSHOT_TABLE_INDEX", NemTdSnapshotTableIndex.MAPPER);
+		return this.getEntitiesByTable(snapshotId, tableId, "NEM_TD_SNAPSHOT_TABLE_INDEX", Optional.empty(), NemTdSnapshotTableIndex.MAPPER);
 	}
 
 	private Map<NemTdSnapshotTableIndexPk, List<NemTdSnapshotTableIndexColumns>> getIndexColumnsBy(String snapshotId,String tableId) {
 		return this
-				.getEntitiesByTable(snapshotId, tableId, "NEM_TD_SNAPSHOT_TABLE_INDEX_COLUMNS", NemTdSnapshotTableIndexColumns.MAPPER)
+				.getEntitiesByTable(snapshotId, tableId, "NEM_TD_SNAPSHOT_TABLE_INDEX_COLUMNS", Optional.of("SUFFIX asc, COLUMN_ORDER asc"), NemTdSnapshotTableIndexColumns.MAPPER)
 				.stream()
 				.collect(Collectors.groupingBy(e -> e.pk.parentPk()));
 	}
 
 	private List<NemTdSnapshotColumn> getTableColumnsBy(String snapshotId, String tableId) {
-		return this.getEntitiesByTable(snapshotId, tableId, "NEM_TD_SNAPSHOT_COLUMN", NemTdSnapshotColumn.MAPPER);
+		val columns = this.getEntitiesByTable(snapshotId, tableId, "NEM_TD_SNAPSHOT_COLUMN", Optional.of("DISPORDER asc"), NemTdSnapshotColumn.MAPPER);
+		columns.sort((c1, c2) -> Integer.compare(c1.getDispOrder(), c2.getDispOrder()));
+		return columns;
 	}
 
 	@Override
@@ -131,7 +135,7 @@ public class JpaSnapshotRepository extends JpaRepository implements SnapshotRepo
 					return new TableSnapshot(schemaSnapShot.get().getSnapshotId(), entity.toDomain());
 				});
 	}
-	
+
 	@Override
 	public void regist(SchemaSnapshot snapShot) {
 		this.commandProxy().insert(NemTdSnapShotSchema.toEntity(snapShot));
@@ -139,5 +143,21 @@ public class JpaSnapshotRepository extends JpaRepository implements SnapshotRepo
 	@Override
 	public void regist(String snapshotId, List<TableDesign> snapShots) {
 		this.commandProxy().insertAll(NemTdSnapshotTable.toEntities(snapshotId, snapShots));
+	}
+
+	@Override
+	public Optional<TableSnapshot> getTableByName(String snapshotId, String tableName) {
+		String sql = "select TABLE_ID from NEM_TD_SNAPSHOT_TABLE"
+				+ " where SNAPSHOT_ID = @ssid"
+				+ " and NAME = @name";
+
+		val tableId = this.jdbcProxy()
+				.query(sql)
+				.paramString("ssid", snapshotId)
+				.paramString("name", tableName)
+				.getSingle(rec -> rec.getString("TABLE_ID"))
+			.orElse(tableName);
+
+		return getTable(snapshotId, tableId);
 	}
 }

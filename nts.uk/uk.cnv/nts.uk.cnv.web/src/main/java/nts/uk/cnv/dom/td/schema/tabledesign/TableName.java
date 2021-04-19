@@ -18,7 +18,7 @@ public class TableName {
 	public TableName(String name) {
 		this.value = name;
 	}
-	
+
 	@Override
 	public String toString() {
 		return value;
@@ -64,5 +64,12 @@ public class TableName {
 		sb.setCharAt(4, 'I');
 
 		return sb.toString() + suffix;
+	}
+
+	public String checkConstraint(String columnName) {
+		StringBuilder sb = new StringBuilder();
+		sb.append(this.value);
+		sb.setCharAt(4, 'C');
+		return sb.toString() + "_" + columnName;
 	}
 }

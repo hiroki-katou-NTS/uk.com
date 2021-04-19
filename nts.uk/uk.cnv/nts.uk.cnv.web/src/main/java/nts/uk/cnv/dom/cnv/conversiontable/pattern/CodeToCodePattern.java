@@ -79,8 +79,8 @@ public class CodeToCodePattern extends ConversionPattern  {
 
 		return new Join(
 				new TableFullName(
-					info.getTargetDatabaseName(),
-					info.getTargetSchema(),
+					info.getWorkDatabaseName(),
+					info.getWorkSchema(),
 					Constants.MAPPING_TABLE_NAME,
 					this.mappingAlias()
 				),

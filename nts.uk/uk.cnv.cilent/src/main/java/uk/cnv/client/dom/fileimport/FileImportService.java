@@ -148,6 +148,7 @@ public class FileImportService {
 		List<JmDaicyo> getAllDocuments(int companyCode) throws SQLException;
 		List<JmGenAdd> getAllAddress(int companyCode) throws SQLException;
 		StoredFileInfo store(Path path, String stereotype, String type);
+		void truncateMappingTable() throws SQLException;
 		void save(StoredFileInfo mapptingFile, JmKihon employee, String fileType) throws SQLException;
 	}
 }

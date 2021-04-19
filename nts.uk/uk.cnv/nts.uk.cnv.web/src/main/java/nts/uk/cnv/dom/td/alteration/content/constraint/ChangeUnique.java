@@ -2,10 +2,12 @@ package nts.uk.cnv.dom.td.alteration.content.constraint;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
+import lombok.val;
 import nts.uk.cnv.dom.td.alteration.AlterationType;
 import nts.uk.cnv.dom.td.alteration.content.AlterationContent;
 import nts.uk.cnv.dom.td.schema.prospect.definition.TableProspectBuilder;
@@ -55,6 +57,13 @@ public class ChangeUnique extends AlterationContent {
 			.filter(uk -> uk.getSuffix().equals(this.suffix))
 			.findFirst()
 			.get();
+		val columnNames = columnIds.stream()
+				.map(colId -> tableDesign.getColumns().stream()
+						.filter(cd -> cd.getId().equals(colId))
+						.findFirst()
+						.get()
+						.getName())
+				.collect(Collectors.toList());
 
 		String delUk = "ALTER TABLE " + tableDesign.getName().v()
 				+ " DROP CONSTRAINT " + tableDesign.getName().ukName(uqConst.getSuffix()) + ";\r\n";
@@ -66,6 +75,6 @@ public class ChangeUnique extends AlterationContent {
 		return delUk
 				+ "ALTER TABLE " + tableDesign.getName().v()
 				+ " ADD CONSTRAINT " + tableDesign.getName().ukName(this.suffix)
-				+ " UNIQUE (" + String.join(",", this.columnIds) + ");\r\n";
+				+ " UNIQUE (" + String.join(",", columnNames) + ");\r\n";
 	}
 }

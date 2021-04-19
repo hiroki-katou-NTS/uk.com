@@ -9,6 +9,7 @@ import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -33,7 +34,7 @@ import nts.uk.cnv.infra.td.entity.snapshot.index.NemTdSnapshotTableIndex;
 @Table(name = "NEM_TD_SNAPSHOT_TABLE")
 public class NemTdSnapshotTable extends JpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
-	
+
 	public static final JpaEntityMapper<NemTdSnapshotTable> MAPPER = new JpaEntityMapper<>(NemTdSnapshotTable.class);
 
 	@EmbeddedId
@@ -46,9 +47,11 @@ public class NemTdSnapshotTable extends JpaEntity implements Serializable {
 	public String jpName;
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "columnOfTable")
+	@OrderBy("dispOrder ASC")
 	public List<NemTdSnapshotColumn> columns;
-	
+
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "indexOfTable")
+	@OrderBy("pk.suffix ASC")
 	public List<NemTdSnapshotTableIndex> indexes;
 
 	@Override
@@ -64,11 +67,11 @@ public class NemTdSnapshotTable extends JpaEntity implements Serializable {
 
 		return new TableDesign(pk.tableId, new TableName(name), jpName, cd, tableConstraints);
 	}
-	
+
 	public static List<NemTdSnapshotTable> toEntities(String snapshotId, List<TableDesign> tables){
 		return tables.stream().map(table -> toEntity(snapshotId, table)).collect(Collectors.toList());
 	}
-	
+
 	public static NemTdSnapshotTable toEntity(String snapshotId, TableDesign table) {
 		val pk = new NemTdSnapshotTablePk(snapshotId,table.getId());
 		val columns = table.getColumns().stream()

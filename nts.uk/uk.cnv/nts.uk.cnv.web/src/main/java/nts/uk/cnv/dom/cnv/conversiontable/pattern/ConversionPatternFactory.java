@@ -16,7 +16,7 @@ import nts.uk.cnv.dom.td.tabledefinetype.databasetype.DatabaseType;
 public class ConversionPatternFactory {
 
 	public static ConversionPattern create(ConversionPatternValue param) {
-		ConversionInfo info = new ConversionInfo(DatabaseType.sqlserver, "KINJIROU_ERP", "dbo", "KINJIROU_UK", "dbo", "000000000000");
+		ConversionInfo info = new ConversionInfo(DatabaseType.sqlserver, "KINJIROU_ERP", "dbo", "KINJIROU_UK", "dbo", "UK_CNV", "dbo", "000000000000");
 		Join join = new Join(
 				new TableFullName("KINJIROU_ERP", "dbo", param.getSourceTable(), "base"),
 				JoinAtr.Main, new ArrayList<>());
@@ -67,6 +67,7 @@ public class ConversionPatternFactory {
 								new TableFullName("KINJIROU_ERP", "dbo", param.getParentTable(), "parent"),
 								JoinAtr.InnerJoin,
 								onSentences),
+						param.getParentTable(),
 						param.getSourceColumn_parent());
 			case StringConcat:
 				return new StringConcatPattern(info, join,

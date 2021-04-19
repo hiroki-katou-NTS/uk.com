@@ -14,7 +14,6 @@ import nts.uk.cnv.dom.cnv.conversionsql.Join;
 import nts.uk.cnv.dom.cnv.conversionsql.JoinAtr;
 import nts.uk.cnv.dom.cnv.conversionsql.OnSentence;
 import nts.uk.cnv.dom.cnv.conversionsql.TableFullName;
-import nts.uk.cnv.dom.cnv.conversiontable.pattern.CodeToIdPattern;
 import nts.uk.cnv.dom.cnv.service.ConversionInfo;
 import nts.uk.cnv.dom.td.tabledefinetype.databasetype.DatabaseType;
 
@@ -28,7 +27,7 @@ public class CodeToIdPatternTest {
 	public void test_sql() {
 		ConversionSQL cs = ConversionSQLHelper.create();
 		ConversionInfo info = new ConversionInfo(
-				DatabaseType.sqlserver,"ERP","dbo","UK","dbo","000000000000");
+				DatabaseType.sqlserver,"ERP","dbo","UK","dbo", "UK_CNV", "dbo","000000000000");
 
 		Join join = new Join(
 				new TableFullName("UKDB", "dbo", "BSYMT_JOB_INFO", "jobinfo"),

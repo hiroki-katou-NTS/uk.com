@@ -6,8 +6,11 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.error.BusinessException;
+import nts.arc.error.RawErrorMessage;
 import nts.uk.cnv.dom.cnv.conversiontable.ConversionCategoryTableRepository;
-import nts.uk.cnv.dom.td.schema.tabledesign.UkTableDesignRepository;
+import nts.uk.cnv.dom.td.schema.snapshot.SchemaSnapshot;
+import nts.uk.cnv.dom.td.schema.snapshot.SnapshotRepository;
 import nts.uk.cnv.screen.app.query.dto.Cnv001BLoadDataDto;
 import nts.uk.cnv.screen.app.query.dto.Cnv001BLoadParamDto;
 
@@ -15,7 +18,7 @@ import nts.uk.cnv.screen.app.query.dto.Cnv001BLoadParamDto;
 public class Cnv001BService {
 
 	@Inject
-	UkTableDesignRepository ukTableDesignRepository;
+	SnapshotRepository ssRepo;
 
 	@Inject
 	ConversionCategoryTableRepository repository;
@@ -26,11 +29,10 @@ public class Cnv001BService {
 				.map(cate -> cate.getTablename())
 				.collect(Collectors.toList());
 
-		// TODO:
-		String eventId = "";
-
-		List<String> tables = ukTableDesignRepository.getAllTableList(param.getFeature(), eventId).stream()
-				.map(tb -> tb.getTableName())
+		SchemaSnapshot sss = ssRepo.getSchemaLatest()
+				.orElseThrow(() -> new BusinessException(new RawErrorMessage("スキーマスナップショットがありません")));
+		List<String> tables = ssRepo.getTableList(sss.getSnapshotId()).getList().stream()
+				.map(ti -> ti.getName())
 				.collect(Collectors.toList());
 
 		tables.removeAll(conversionTableCategories);

@@ -1,17 +1,10 @@
 package nts.uk.cnv.app.cnv.dto;
 
 import lombok.Value;
-import nts.arc.time.GeneralDateTime;
 
 @Value
 public class GetUkColumnsParamDto {
 	String category;
-	String tableId;
+	String tableName;
 	int recordNo;
-	private String feature;
-	private String date;
-
-	public GeneralDateTime getDateTime() {
-		return GeneralDateTime.now();
-	}
 }

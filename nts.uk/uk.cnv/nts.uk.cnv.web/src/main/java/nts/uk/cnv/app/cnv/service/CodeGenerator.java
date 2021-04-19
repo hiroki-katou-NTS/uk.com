@@ -2,6 +2,7 @@ package nts.uk.cnv.app.cnv.service;
 
 import java.io.File;
 import java.io.FileWriter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -83,8 +84,8 @@ public class CodeGenerator {
 
 		private final ConversionCategoryTableRepository conversionCategoryTableRepository;
 
-		private String preProcessing = "";
-		private String postProcessing = "";
+		private List<String> preProcessing = new ArrayList<>();
+		private List<String> postProcessing = new ArrayList<>();
 
 		@Override
 		public List<String> getCategoryPriorities() {
@@ -115,24 +116,28 @@ public class CodeGenerator {
 
 		@Override
 		public void addPreProcessing(String sql) {
-			this.preProcessing += sql;
+			this.preProcessing.add(sql);
 
 		}
 
 		@Override
 		public void addPostProcessing(String sql) {
-			this.postProcessing += sql;
+			this.postProcessing.add(sql);
 		}
 
 		@Override
 		public String getPreProcessing() {
-			return this.preProcessing;
+			return String.join("\r\n", this.preProcessing.stream()
+					.filter(sql -> !sql.isEmpty())
+					.collect(Collectors.toList()));
 
 		}
 
 		@Override
 		public String getPostProcessing() {
-			return this.postProcessing;
+			return String.join("\r\n", this.postProcessing.stream()
+					.filter(sql -> !sql.isEmpty())
+					.collect(Collectors.toList()));
 		}
 
 	}
