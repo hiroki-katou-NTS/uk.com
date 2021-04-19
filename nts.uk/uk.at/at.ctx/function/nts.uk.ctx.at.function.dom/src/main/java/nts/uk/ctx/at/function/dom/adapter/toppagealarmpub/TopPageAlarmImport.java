@@ -2,6 +2,7 @@ package nts.uk.ctx.at.function.dom.adapter.toppagealarmpub;
 
 import java.util.Optional;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import nts.arc.time.GeneralDateTime;
@@ -12,6 +13,7 @@ import nts.arc.time.GeneralDateTime;
  */
 @Data
 @Builder
+@AllArgsConstructor
 public class TopPageAlarmImport {
 	/**
 	 * アラーム分類
