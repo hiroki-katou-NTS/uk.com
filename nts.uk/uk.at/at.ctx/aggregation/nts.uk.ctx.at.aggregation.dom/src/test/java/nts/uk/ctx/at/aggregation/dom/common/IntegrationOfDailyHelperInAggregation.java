@@ -9,10 +9,12 @@ import lombok.SneakyThrows;
 import lombok.val;
 import mockit.Injectable;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.common.EmployeeId;
 import nts.uk.ctx.at.shared.dom.common.amount.AttendanceAmountDaily;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
+import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.DayOfWeek;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.ExcessOfStatutoryTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.WithinStatutoryMidNightTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.WithinStatutoryTimeOfDaily;
@@ -30,6 +32,8 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.premiumtime
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortWorkTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.TemporaryTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.vacationusetime.HolidayOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.CalculationState;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.NotUseAttribute;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workschedule.WorkScheduleTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.ActualWorkingTimeOfDaily;
@@ -49,6 +53,7 @@ public class IntegrationOfDailyHelperInAggregation {
 
 	@Injectable private static WorkInfoOfDailyAttendance workInfo = new WorkInfoOfDailyAttendance();
 	@Injectable private static BreakTimeOfDailyAttd breakTime = new BreakTimeOfDailyAttd();
+	@Injectable private static AffiliationInforOfDailyAttd affInfo = new AffiliationInforOfDailyAttd();
 
 
 	/**
@@ -89,6 +94,15 @@ public class IntegrationOfDailyHelperInAggregation {
 	}
 
 
+	/**
+	 * 日別勤怠(Work)を作成する
+	 * @param employeeId 社員ID
+	 * @param ymd 年月日
+	 * @param workInfo 勤務情報
+	 * @param affInfo 所属情報
+	 * @param breakTime 休憩時間帯
+	 * @return
+	 */
 	private static IntegrationOfDaily create(String employeeId, GeneralDate ymd
 			, WorkInfoOfDailyAttendance workInfo
 			, AffiliationInforOfDailyAttd affInfo
@@ -138,7 +152,16 @@ public class IntegrationOfDailyHelperInAggregation {
 		return IntegrationOfDailyHelperInAggregation.create( employeeId, ymd, workInfo, affInfo, breakTime );
 	}
 
-
+	/**
+	 * 日別勤怠(Work)を作成する
+	 * @param employeeId 社員ID
+	 * @param ymd 年月日
+	 * @param workInfo 日別勤怠の勤務情報
+	 * @return 日別勤怠(Work)
+	 */
+	public static IntegrationOfDaily createWithWorkInfo(String employeeId, GeneralDate ymd, WorkInfoOfDailyAttendance workInfo) {
+		return IntegrationOfDailyHelperInAggregation.create(employeeId, ymd, workInfo, affInfo, breakTime);
+	}
 
 	/** 日別勤怠の所属情報に関するHelper **/
 	public static class AffInfoHelper {
@@ -188,8 +211,58 @@ public class IntegrationOfDailyHelperInAggregation {
 
 	}
 
+	/** 日別勤怠の勤務情報に関するHelper **/
+	public static class WorkInfoHelper {
+
+		/**
+		 * 日別勤怠の勤務情報を作成する
+		 * @return 日別勤怠の勤務情報(dummy)
+		 */
+		public static WorkInfoOfDailyAttendance createDummuy() {
+			return WorkInfoHelper.createWithCode("WorkTypeCd", Optional.of("WorkTimeCd"));
+		}
+
+		/**
+		 * 日別勤怠の勤務情報を作成する
+		 * @param workTypeCode 勤務種類コード
+		 * @param workTimeCode 就業時間帯コード
+		 * @return 日別勤怠の勤務情報
+		 */
+		public static WorkInfoOfDailyAttendance createWithCode(String workTypeCode, Optional<String> workTimeCode) {
+			return WorkInfoHelper.createWithRequired(
+							workTypeCode, workTimeCode
+						,	workTimeCode.isPresent() ? DayOfWeek.MONDAY : DayOfWeek.SUNDAY
+						,	CalculationState.Calculated, NotUseAttribute.Not_use, NotUseAttribute.Not_use
+					);
+		}
+
+		/**
+		 * 日別勤怠の勤務情報を作成する
+		 * @return 日別勤怠の勤務情報
+		 */
+		public static WorkInfoOfDailyAttendance createWithRequired(String workTypeCode, Optional<String> workTimeCode, DayOfWeek dayOfWeek, CalculationState calcStatus, NotUseAttribute isGoStraight, NotUseAttribute isBackStraight) {
+			return new WorkInfoOfDailyAttendance(
+							WorkInfoHelper.createWorkInformation(workTypeCode, workTimeCode)
+						,	calcStatus, isGoStraight, isBackStraight, dayOfWeek, Collections.emptyList()
+					);
+		}
+
+
+		/**
+		 * 勤務情報を作成する
+		 * @param workTypeCode 勤務種類コード
+		 * @param workTimeCode 就業時間帯コード
+		 * @return 勤務情報
+		 */
+		private static WorkInformation createWorkInformation(String workTypeCode, Optional<String> workTimeCode) {
+			return new WorkInformation( workTypeCode, workTimeCode.orElse(null) );
+		}
+
+	}
+
 	/** 日別勤怠の勤怠時間に関するHelper **/
 	public static class AtdTimeHelper {
+
 
 		/* 共通 */
 		@Injectable private static AttendanceTime atdTime;
