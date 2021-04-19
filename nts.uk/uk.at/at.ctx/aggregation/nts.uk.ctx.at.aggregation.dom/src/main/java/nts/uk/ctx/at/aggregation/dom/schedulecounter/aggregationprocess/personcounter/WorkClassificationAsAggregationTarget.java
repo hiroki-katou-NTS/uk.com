@@ -13,6 +13,7 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 
 /**
  * 集計対象の勤務分類
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.予実集計.スケジュール集計.集計処理.個人計.個人計の出勤休日日数カテゴリを集計する.集計対象の勤務分類
  * @author lan_lt
  *
  */
@@ -22,9 +23,9 @@ public enum WorkClassificationAsAggregationTarget {
 	WORKING(0),
 	//休日
 	HOLIDAY(1);
-	
+
 	public final int value;
-	
+
 	/**
 	 * 日数を取得する
 	 * @param require Require
@@ -39,7 +40,7 @@ public enum WorkClassificationAsAggregationTarget {
 		}
 
 		val workContent = workType.get().getDailyWork().getHalfDayWorkTypeClassification();
-		
+
 		Function<WorkTypeClassification, Boolean> condition = (workTypeClass) -> {
 			if (this == WORKING) {
 				return workTypeClass.isContinuousWork() || workTypeClass.isWeekDayAttendance();
@@ -47,14 +48,14 @@ public enum WorkClassificationAsAggregationTarget {
 				return workTypeClass.isHoliday() || workTypeClass.isPause();
 			}
 		};
-		
+
 		return workContent.getAsMap()
 				.entrySet().stream()
 				.map(c -> condition.apply(c.getValue())? BigDecimal.valueOf(0.5) : BigDecimal.ZERO)
 				.reduce(BigDecimal.ZERO, BigDecimal::add);
 	}
-	
-	
+
+
 	public static interface Require {
 		/**
 		 * 勤務種類を取得する
