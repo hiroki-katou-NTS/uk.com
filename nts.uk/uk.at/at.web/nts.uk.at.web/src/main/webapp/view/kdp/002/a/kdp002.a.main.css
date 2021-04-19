@@ -101,8 +101,12 @@ html{
   min-width: 63vmin;
 }
 
-.panel {
-  padding-top: 141px !important;
+.panel1 {
+  padding-top: 63px !important;
+}
+
+.panel2 {
+  padding-top: 132px !important;
 }
 
 .state1 .clock .text-time {

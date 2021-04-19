@@ -46,7 +46,9 @@
               marginBottom: 0
             }"></div>
           </div>
-          <div class="pull-left" id="stamp-info">
+          <div class="pull-left" id="stamp-info"
+          	data-bind="css: { 'panel1': stampTab().tabs().length == 1,
+          					  'panel2': stampTab().tabs().length > 1}">
             <ui:include src="emboss-info.xhtml" />
           </div>
         </div>
