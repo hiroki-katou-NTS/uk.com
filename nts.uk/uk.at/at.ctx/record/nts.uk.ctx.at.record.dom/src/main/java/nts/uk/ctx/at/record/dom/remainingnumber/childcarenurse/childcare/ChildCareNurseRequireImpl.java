@@ -12,7 +12,10 @@ import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employment.SharedSidPeriodDateEmploymentImport;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.care.CareUsedNumberData;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.care.CareUsedNumberRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.ChildCareUsedNumberData;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.ChildCareUsedNumberRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.interimdata.TempChildCareNurseManagement;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.data.CareManagementDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.NursingCareLeaveRemainingInfo;
@@ -43,6 +46,8 @@ public class ChildCareNurseRequireImpl implements GetRemainingNumberChildCareNur
 	private ClosureRepository closureRepo;
 	private EmpEmployeeAdapter empEmployeeAdapter;
 	private NursingLeaveSettingRepository nursingLeaveSettingRepo;
+	private ChildCareUsedNumberRepository childCareUsedNumberRepository;
+	private CareUsedNumberRepository careUsedNumberRepository;
 
 	public ChildCareNurseRequireImpl(
 			WorkingConditionItemRepository workingConditionItemRepository,
@@ -52,7 +57,10 @@ public class ChildCareNurseRequireImpl implements GetRemainingNumberChildCareNur
 			ShareEmploymentAdapter shareEmploymentAdapterIn,
 			ClosureRepository closureRepository,
 			EmpEmployeeAdapter empEmployeeAdapterIn,
-			NursingLeaveSettingRepository nursingLeaveSettingRepository) {
+			NursingLeaveSettingRepository nursingLeaveSettingRepository,
+			ChildCareUsedNumberRepository childCareUsedNumberRepositoryIn,
+			CareUsedNumberRepository careUsedNumberRepositoryIn
+			) {
 
 		this.workingConditionItemRepo=workingConditionItemRepository;
 		this.annualPaidLeaveSettingRepo=annualPaidLeaveSettingRepository;
@@ -62,9 +70,10 @@ public class ChildCareNurseRequireImpl implements GetRemainingNumberChildCareNur
 		this.closureRepo=closureRepository;
 		this.empEmployeeAdapter=empEmployeeAdapterIn;
 		this.nursingLeaveSettingRepo=nursingLeaveSettingRepository;
+		this.childCareUsedNumberRepository=childCareUsedNumberRepositoryIn;
+		this.careUsedNumberRepository=careUsedNumberRepositoryIn;
 
 	}
-
 
 	@Override
 	public Optional<WorkingConditionItem> workingConditionItem(String employeeId, GeneralDate baseDate) {
@@ -145,9 +154,13 @@ public class ChildCareNurseRequireImpl implements GetRemainingNumberChildCareNur
 	}
 
 	@Override
-	public ChildCareUsedNumberData childCareNurseUsedNumber(String employeeId) {
-		// TODO 自動生成されたメソッド・スタブ
-		return null;
+	public Optional<ChildCareUsedNumberData> childCareUsedNumber(String employeeId) {
+		return childCareUsedNumberRepository.find(employeeId);
+	}
+
+	@Override
+	public Optional<CareUsedNumberData> careUsedNumber(String employeeId) {
+		return careUsedNumberRepository.find(employeeId);
 	}
 
 	@Override

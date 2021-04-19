@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.infra.entity.remainingnumber.nursingcareleave.childcare.interimdata;
+package nts.uk.ctx.at.shared.infra.entity.remainingnumber.nursingcareleave.care.interimdata;
 
 import java.io.Serializable;
 import java.util.Optional;
@@ -14,9 +14,8 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainAtr;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.care.interimdata.TempCareManagement;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.ChildCareNurseUsedNumber;
-import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.interimdata.TempChildCareManagement;
-import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.interimdata.TempChildCareNurseManagement;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.usenumber.DayNumberOfUse;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.usenumber.TimeOfUse;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.AppTimeType;
@@ -24,19 +23,18 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.work.DigestionHourlyTimeType;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
- * 暫定子の看護管理データ
+ * 暫定介護管理データ
  * @author yuri_tamakoshi
  */
-
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table( name = "KRCDT_INTERIM_CHILD_CARE")
-public class KrcdtInterimChildCare  extends UkJpaEntity implements Serializable {
+@Table( name = "KSHDT_INTERIM_CARE_DATA")
+public class KshdtInterimCareData  extends UkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	/**残数管理データID 	 */
+	/**残数管理データID	 */
 	@Id
 	@Column(name = "REMAIN_MNG_ID")
 	public String remainMngID;
@@ -59,7 +57,7 @@ public class KrcdtInterimChildCare  extends UkJpaEntity implements Serializable 
 
 	/** 使用日数 */
 	@Column(name = "USED_DAYS")
-	public Double usedDays;
+	public double usedDays;
 
 	/** 使用時間 */
 	@Column(name = "USED_TIME")
@@ -77,8 +75,8 @@ public class KrcdtInterimChildCare  extends UkJpaEntity implements Serializable 
 		return remainMngID;
 	}
 
-	public TempChildCareManagement toDomain() {
-		return TempChildCareManagement.of(remainMngID, sID, ymd,
+	public TempCareManagement toDomain() {
+		return TempCareManagement.of(remainMngID, sID, ymd,
 					EnumAdaptor.valueOf(createAtr, CreateAtr.class),
 					EnumAdaptor.valueOf(remainAtr, RemainAtr.class),
 					ChildCareNurseUsedNumber.of(
@@ -97,21 +95,20 @@ public class KrcdtInterimChildCare  extends UkJpaEntity implements Serializable 
 												Optional.ofNullable(timeHdType == null ? null : EnumAdaptor.valueOf(timeHdType, AppTimeType.class))));
 	}
 
-
 	/**
 	 * ドメインから変換　（for Insert）
-	 * @param domain 暫定子の看護管理データ
+	 * @param domain 暫定介護管理データ
 	 */
-	public void fromDomainForPersist(TempChildCareManagement domain) {
+	public void fromDomainForPersist(TempCareManagement domain) {
 		this.remainMngID = domain.getRemainManaID();
 		this.fromDomainForUpdate(domain);
 	}
 
 	/**
 	 * ドメインから変換　(for Update)
-	 * @param domain 暫定子の看護管理データ
+	 * @param domain 暫定介護管理データ
 	 */
-	public void fromDomainForUpdate(TempChildCareNurseManagement domain){
+	public void fromDomainForUpdate(TempCareManagement domain){
 
 		this.sID = domain.getSID();
 		this.ymd = domain.getYmd();

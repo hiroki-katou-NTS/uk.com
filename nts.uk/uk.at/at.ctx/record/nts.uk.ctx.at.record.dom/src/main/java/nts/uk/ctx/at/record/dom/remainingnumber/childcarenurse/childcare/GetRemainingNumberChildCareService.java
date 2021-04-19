@@ -19,6 +19,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.InterimRemain
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.ChildCareNurseUsedNumber;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.ChildCareUsedNumberData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.interimdata.TempChildCareNurseManagement;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingCategory;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingLeaveSetting;
@@ -183,13 +184,14 @@ public class GetRemainingNumberChildCareService {
 			Require require) {
 
 		// 子の看護介護使用数
-		ChildCareNurseUsedNumber childCareNurseUsedNumber = new ChildCareNurseUsedNumber();
+		Optional<ChildCareUsedNumberData> childCareUsedNumberData = Optional.empty();
 
 		// 取得した締め開始日とパラメータ「集計開始日」を比較
 		// ===締め開始日<パラメータ「集計開始日」
 		if(closureStartDate.before(period.start())) {
 			// 開始日までの子の看護休暇使用数を計算
-			AggrResultOfChildCareNurse getChildCareRemNumWithinPeriod = getChildCareRemNumWithinPeriod(companyId, employeeId,period,
+			AggrResultOfChildCareNurse getChildCareRemNumWithinPeriod
+				= getChildCareRemNumWithinPeriod(companyId, employeeId,period,
 					performReferenceAtr,
 					criteriaDate,
 					isOverWrite,
@@ -205,8 +207,12 @@ public class GetRemainingNumberChildCareService {
 
 		}else {
 			// ドメインモデル「子の看護休暇使用数データ」を取得
-			childCareNurseUsedNumber = require.childCareNurseUsedNumber(employeeId);
-			return childCareNurseUsedNumber;
+			childCareUsedNumberData = require.childCareUsedNumber(employeeId);
+			if ( childCareUsedNumberData.isPresent() ) {
+				return childCareUsedNumberData.get();
+			} else {
+				return new ChildCareUsedNumberData(employeeId);
+			}
 		}
 	}
 

@@ -20,7 +20,9 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.ConfirmLeavePeriod;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.care.CareUsedNumberData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.ChildCareNurseUsedNumber;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.ChildCareUsedNumberData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.interimdata.TempChildCareNurseManagement;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingCategory;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingLeaveSetting;
@@ -178,7 +180,8 @@ public class GetRemainingNumberCareService {
 	 * @param closureStartDate 締め開始日
 	 * @return ChildCareNurseUsedNumber 子の看護介護使用数
 	 */
-	public ChildCareNurseUsedNumber childCareEmployeeUsedNumber(String companyId, String employeeId,DatePeriod period,
+	public ChildCareNurseUsedNumber childCareEmployeeUsedNumber(
+			String companyId, String employeeId,DatePeriod period,
 			InterimRemainMngMode performReferenceAtr,
 			GeneralDate criteriaDate,
 			Optional<Boolean> isOverWrite,
@@ -191,7 +194,7 @@ public class GetRemainingNumberCareService {
 			Require require) {
 
 		// 子の看護介護使用数
-		ChildCareNurseUsedNumber childCareNurseUsedNumber = new ChildCareNurseUsedNumber();
+		Optional<CareUsedNumberData> careUsedNumber = Optional.empty();
 
 		// 取得した締め開始日とパラメータ「集計開始日」を比較
 		// ===締め開始日<パラメータ「集計開始日」
@@ -213,8 +216,12 @@ public class GetRemainingNumberCareService {
 
 		}else {
 			// ドメインモデル「介護休暇使用数データ」を取得
-			childCareNurseUsedNumber = require.childCareNurseUsedNumber(employeeId);
-			return childCareNurseUsedNumber;
+			careUsedNumber = require.careUsedNumber(employeeId);
+			if ( careUsedNumber.isPresent() ) {
+				return careUsedNumber.get();
+			} else {
+				return new CareUsedNumberData(employeeId);
+			}
 		}
 	}
 

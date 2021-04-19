@@ -15,6 +15,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.ConfirmLeavePeriod;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.care.CareUsedNumberData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.ChildCareNurseUsedNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.ChildCareUsedNumberData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.interimdata.TempChildCareNurseManagement;
@@ -59,7 +60,10 @@ public class GetRemainingNumberChildCareNurseService {
 		LaborContractTime empContractTime(String employeeId, GeneralDate criteriaDate );
 
 		// 子の看護休暇使用数データを取得（社員ID）
-		ChildCareUsedNumberData childCareNurseUsedNumber(String employeeId);
+		Optional<ChildCareUsedNumberData> childCareUsedNumber(String employeeId);
+
+		// 介護休暇使用数データを取得（社員ID）
+		Optional<CareUsedNumberData> careUsedNumber(String employeeId);
 
 		//	介護対象管理データ（家族ID）
 		CareManagementDate careData(String familyID);

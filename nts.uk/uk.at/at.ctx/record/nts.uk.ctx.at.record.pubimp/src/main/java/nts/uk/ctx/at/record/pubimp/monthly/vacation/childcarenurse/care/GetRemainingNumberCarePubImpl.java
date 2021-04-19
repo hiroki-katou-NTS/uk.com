@@ -75,8 +75,7 @@ public class GetRemainingNumberCarePubImpl  implements GetRemainingNumberCarePub
 		val cacheCarrier = new CacheCarrier();
 
 		List<TempChildCareNurseManagement>domChildCareNurseManagemenList =
-//			tempCareDataforOverWriteList.stream().map(c->c.toDomain()).collect(Collectors.toList());
-			new ArrayList<>();
+			tempCareDataforOverWriteList.stream().map(c->c.toDomain()).collect(Collectors.toList());
 
 		Optional<AggrResultOfChildCareNurse> domPrevCareLeave = Optional.empty();
 

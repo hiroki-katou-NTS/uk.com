@@ -2,6 +2,7 @@ package nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.chil
 
 import java.util.Optional;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
@@ -17,6 +18,7 @@ import nts.uk.ctx.at.shared.dom.workingcondition.LaborContractTime;
  */
 @Getter
 @Setter
+@AllArgsConstructor
 public class ChildCareNurseUsedNumber implements Cloneable{
 
 	/** 日数 */

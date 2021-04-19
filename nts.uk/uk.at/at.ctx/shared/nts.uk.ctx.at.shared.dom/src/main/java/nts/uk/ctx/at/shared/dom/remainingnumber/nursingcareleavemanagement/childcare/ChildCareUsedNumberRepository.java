@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare;
 
+import java.util.List;
 import java.util.Optional;
 
 
@@ -14,6 +15,13 @@ public interface ChildCareUsedNumberRepository{
 	 * @return 該当する子の看護休暇使用数データ
 	 */
 	Optional<ChildCareUsedNumberData> find(String employeeId);
+
+	/**
+	 * 子の看護介護使用数データの検索
+	 * @param employeeId 社員IDリスト
+	 * @return 該当する子の看護休暇使用数データ
+	 */
+	List<ChildCareUsedNumberData> find(List<String> employeeIds);
 
 	/**
 	 * 登録および更新

@@ -153,10 +153,25 @@ public class JpaCareLeaveRemainingInfoRepository extends JpaChildCareNurseLevRem
 	public List<CareLeaveDataInfo> getAllCareInfoDataBysId(String cid, List<String> sids) {
 		List<CareLeaveRemainingInfo> careRemaingInfo = this.getCareByEmpIdsAndCid(cid, sids);
 		List<ChildCareLeaveRemainingInfo> childCareRemaingInfo = this.childCareLeaveRemInfoRepository.getChildCareByEmpIdsAndCid(cid, sids);
-		List<LeaveForCareData>careUsedInfo = null;
-		List<ChildCareLeaveRemainingData> childCareUsedInfo = null;
+		List<CareUsedNumberData>careUsedInfo = this.careUsedNumberRepo.find(sids);
+		List<ChildCareUsedNumberData> childCareUsedInfo = this.childCareUsedNumberRepo.find(sids);;
 
+		//要修正jinno
 		List<CareLeaveDataInfo> dtoList = new ArrayList<>();
+		sids.stream().forEach(c->{
+			Optional<CareLeaveRemainingInfo>careRemain = careRemaingInfo.stream().filter(a->a.getSId().equals(c)).findFirst();
+			Optional<ChildCareLeaveRemainingInfo>childcareRemain = childCareRemaingInfo.stream().filter(a->a.getSId().equals(c)).findFirst();
+			Optional<CareUsedNumberData>careUsed = careUsedInfo.stream().filter(a->a.getEmployeeId().equals(c)).findFirst();
+			Optional<ChildCareUsedNumberData>childcareUsed = childCareUsedInfo.stream().filter(a->a.getEmployeeId().equals(c)).findFirst();
+
+			if(careRemain.isPresent() && childcareRemain.isPresent() && careUsed.isPresent() && childcareUsed.isPresent())
+				dtoList.add(new CareLeaveDataInfo(
+						careRemain.get(),
+						childcareRemain.get(),
+						careUsed.get(),
+						childcareUsed.get()
+						));
+		});
 
 		return dtoList;
 	}
