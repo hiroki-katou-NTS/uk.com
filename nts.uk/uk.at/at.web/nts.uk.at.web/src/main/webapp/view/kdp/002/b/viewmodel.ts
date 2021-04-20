@@ -88,7 +88,7 @@ class KDP002BViewModel extends ko.ViewModel {
                 switch (nameScreen.screen) {
                     case 'KDP001':
                     case 'KDP002':
-                        vm.showBtnNoti(true);
+                        vm.showBtnNoti(false);
                         break
                     case 'KDP003':
                     case 'KDP004':
