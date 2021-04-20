@@ -277,8 +277,8 @@ public class SupportWorkReflection {
 				OuenWorkTimeSheetOfDailyAttendance dailyAttendance2 = OuenWorkTimeSheetOfDailyAttendance
 						.create(ouen.getWorkNo(), ouen.getWorkContent(), eachOuenSheet2);
 
-				lstOuenWork.add(dailyAttendance);
 				lstOuenWork.add(dailyAttendance2);
+				lstOuenWork.add(dailyAttendance);
 			}
 		}
 
@@ -978,7 +978,7 @@ public class SupportWorkReflection {
 				}
 		} else {
 			// 最初の応援終了を自動セットする
-			this.automaticSetFirstSupport(lstOuenWorkTime, judgmentSupport, ouenStamp);
+			this.automaticSetFirstSupport(lstOuenWorkTime, departureTempo);
 		}
 		// 最後の退勤を確認する
 		if (detectAttendance.getLastLeave().isPresent()) {
@@ -1025,7 +1025,7 @@ public class SupportWorkReflection {
 				}
 		} else {
 			// 最後の応援開始を自動セットする
-			this.automaticSetLastSupport(lstOuenWorkTime, judgmentSupport, ouenStamp);
+			this.automaticSetLastSupport(lstOuenWorkTime, departureTempo);
 		}
 		// 出退勤の応援を返す
 		return departureTempo;
@@ -1068,7 +1068,7 @@ public class SupportWorkReflection {
 	 * @param lstOuenWorkTime
 	 */
 	public void automaticSetFirstSupport(List<OuenWorkTimeSheetOfDailyAttendance> lstOuenWorkTime, 
-			JudgmentCriteriaSameStampOfSupport judgmentSupport, OuenWorkTimeSheetOfDailyAttendance ouenStamp) {
+			SupportAttendanceDepartureTempo departureTempo) {
 		// 応援データ一覧の先頭の応援データを取得する
 		if (lstOuenWorkTime.isEmpty()) {
 			return;
@@ -1094,7 +1094,7 @@ public class SupportWorkReflection {
 			OuenWorkTimeSheetOfDailyAttendance dailyAttendance = OuenWorkTimeSheetOfDailyAttendance.create(1,
 					workContent, timeSheet);
 			// 作成した応援データを応援データ一覧の先頭に入れる
-			lstOuenWorkTime.add(0, dailyAttendance);
+			departureTempo.setFirstAttendance(Optional.ofNullable(dailyAttendance));
 		}
 	}
 
@@ -1104,7 +1104,7 @@ public class SupportWorkReflection {
 	 * @param lstOuenWorkTime
 	 */
 	public void automaticSetLastSupport(List<OuenWorkTimeSheetOfDailyAttendance> lstOuenWorkTime, 
-			JudgmentCriteriaSameStampOfSupport judgmentSupport, OuenWorkTimeSheetOfDailyAttendance ouenStamp) {
+			SupportAttendanceDepartureTempo departureTempo) {
 		// 応援データ一覧の末尾の応援データを取得する
 		if (lstOuenWorkTime.isEmpty()) {
 			return;
@@ -1128,7 +1128,7 @@ public class SupportWorkReflection {
 			OuenWorkTimeSheetOfDailyAttendance dailyAttendance = OuenWorkTimeSheetOfDailyAttendance.create(1,
 					workContent, timeSheet);
 			// 作成した応援データを応援データ一覧の先頭に入れる
-			lstOuenWorkTime.add(dailyAttendance);
+			departureTempo.setLastLeave(Optional.ofNullable(dailyAttendance));
 		}
 	}
 
