@@ -16,12 +16,12 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
     import GoOutTypeDispControl = nts.uk.at.view.kaf002_ref.m.viewmodel.GoOutTypeDispControl;
 	import CommonProcess = nts.uk.at.view.kaf000.shr.viewmodel.CommonProcess;
     const template = `
-        <div id="kaf002-c">
+	<div id="kaf002-c">
             <div id="contents-area"
-                style="background-color: inherit; height: calc(100vh - 165px); min-width: 1130px">
-                <div class="two-panel" style="height: 100%;">
+                style="background-color: inherit; height: calc(100vh - 165px);">
+                <div class="two-panel" style="height: 100%; width: 1297px">
                     <div class="left-panel"
-                        style="width: calc(100% - 410px); height: inherit;">
+                        style="width: calc(1297px - 388px); height: inherit;">
                         <div style="height: inherit; overflow-y: auto; background-color: #fff; padding: 10px; overflow-x: hidden;">
                             <div class="table"
                                 style="border-bottom: 2px solid #B1B1B1; padding-bottom: 30px; margin-bottom: 30px; width: 100%;">
@@ -112,7 +112,7 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
                             </div>  
                         </div>
                     </div>
-                    <div class="right-panel" style="width: 410px; height: inherit;">
+                    <div class="right-panel" style="width: 388px; height: inherit; padding-right: 0px">
                         <div style="height: inherit; background-color: #fff; overflow-y: auto; overflow-x: hidden">
                             <div style="margin: 10px;"
                                 data-bind="component: { name: 'kaf000-b-component1', 
@@ -132,7 +132,7 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
                 </div>
             </div>
         </div>
-    `
+`
     
     @component({
         name: 'kaf002-c',
