@@ -238,6 +238,106 @@ public class GetSupportDataJudgedSameDSTest {
 		Optional<OuenWorkTimeSheetOfDailyAttendance> rs = GetSupportDataJudgedSameDS.getSupportDataJudgedSame(required,
 				supportDataList, targetSupportData, isStart);
 		assertThat(rs).isEqualTo(Optional.empty());
+	} 
+	
+	
+	/**
+	 * required.getCriteriaSameStampOfSupport != null
+	 * isStart = true
+	 * start_ouenWorkTime1 = 15, start_targetSupportData = 20, RangeRegardedSupportStamp(応援打刻の同一とみなす範囲) = 10 => jcSameStampOfSupport.checkStampRecognizedAsSame(start_ouenWorkTime1, start_targetSupportData) ==> true
+	 * start_ouenWorkTime2 = 5, start_targetSupportData = 20,  RangeRegardedSupportStamp(応援打刻の同一とみなす範囲) = 10 => jcSameStampOfSupport.checkStampRecognizedAsSame(start_ouenWorkTime2, start_targetSupportData) ==> false
+	 * start_ouenWorkTime3 = 20, start_targetSupportData = 20, RangeRegardedSupportStamp(応援打刻の同一とみなす範囲) = 10 => jcSameStampOfSupport.checkStampRecognizedAsSame(start_ouenWorkTime3, start_targetSupportData) ==> true
+	 * 
+	 * => return ouenWorkTime1;
+	 */
+	@Test
+	public void case6() {
+		OuenWorkTimeSheetOfDailyAttendance ouenWorkTime1 = OuenWorkTimeSheetOfDailyAttendance.create(1, null,
+				TimeSheetOfAttendanceEachOuenSheet.create(new WorkNo(1),
+						Optional.of(new WorkTimeInformation(ReasonTimeChange.createByAutomaticSet(),new TimeWithDayAttr(15))),
+						Optional.of(new WorkTimeInformation(ReasonTimeChange.createByAutomaticSet(),new TimeWithDayAttr(60)))));
+
+		OuenWorkTimeSheetOfDailyAttendance ouenWorkTime2 = OuenWorkTimeSheetOfDailyAttendance.create(1, null,
+				TimeSheetOfAttendanceEachOuenSheet.create(new WorkNo(1),
+						Optional.of(new WorkTimeInformation(ReasonTimeChange.createByAutomaticSet(),new TimeWithDayAttr(5))),
+						Optional.of(new WorkTimeInformation(ReasonTimeChange.createByAutomaticSet(),new TimeWithDayAttr(60)))));
+
+		OuenWorkTimeSheetOfDailyAttendance ouenWorkTime3 = OuenWorkTimeSheetOfDailyAttendance.create(1, null,
+				TimeSheetOfAttendanceEachOuenSheet.create(new WorkNo(1),
+						Optional.of(new WorkTimeInformation(ReasonTimeChange.createByAutomaticSet(),new TimeWithDayAttr(20))),
+						Optional.of(new WorkTimeInformation(ReasonTimeChange.createByAutomaticSet(),new TimeWithDayAttr(60)))));
+
+		List<OuenWorkTimeSheetOfDailyAttendance> supportDataList = new ArrayList<OuenWorkTimeSheetOfDailyAttendance>();
+		supportDataList.add(ouenWorkTime1);
+		supportDataList.add(ouenWorkTime2);
+		supportDataList.add(ouenWorkTime3);
+		
+		OuenWorkTimeSheetOfDailyAttendance targetSupportData = OuenWorkTimeSheetOfDailyAttendance.create(1, null,
+				TimeSheetOfAttendanceEachOuenSheet.create(new WorkNo(1),
+						Optional.of(new WorkTimeInformation(ReasonTimeChange.createByAutomaticSet(),new TimeWithDayAttr(20))),
+						Optional.of(new WorkTimeInformation(ReasonTimeChange.createByAutomaticSet(),new TimeWithDayAttr(70)))));
+
+		boolean isStart = true;
+
+		JudgmentCriteriaSameStampOfSupport support = new JudgmentCriteriaSameStampOfSupport("cid", new RangeRegardedSupportStamp(10), new MaximumNumberOfSupport(20));
+		new Expectations() {
+			{
+				required.getCriteriaSameStampOfSupport();
+				result = support;
+			}
+		};
+		Optional<OuenWorkTimeSheetOfDailyAttendance> rs = GetSupportDataJudgedSameDS.getSupportDataJudgedSame(required,supportDataList, targetSupportData, isStart);
+		assertThat(rs).isEqualTo(Optional.of(ouenWorkTime1));
 	}
+	
+	/**
+	 * required.getCriteriaSameStampOfSupport != null
+	 * isStart = false
+	 * end_ouenWorkTime1 = 15, end_targetSupportData = 20, RangeRegardedSupportStamp(応援打刻の同一とみなす範囲) = 10 => jcSameStampOfSupport.checkStampRecognizedAsSame(end_ouenWorkTime1, end_targetSupportData) ==> true
+	 * end_ouenWorkTime2 = 5,  end_targetSupportData = 20, RangeRegardedSupportStamp(応援打刻の同一とみなす範囲) = 10 => jcSameStampOfSupport.checkStampRecognizedAsSame(end_ouenWorkTime2, end_targetSupportData) ==> false
+	 * end_ouenWorkTime3 = 20, end_targetSupportData = 20, RangeRegardedSupportStamp(応援打刻の同一とみなす範囲) = 10 => jcSameStampOfSupport.checkStampRecognizedAsSame(end_ouenWorkTime3, end_targetSupportData) ==> true
+	 * 
+	 * => return ouenWorkTime1;
+	 */
+	@Test
+	public void case7() {
+		OuenWorkTimeSheetOfDailyAttendance ouenWorkTime1 = OuenWorkTimeSheetOfDailyAttendance.create(1, null,
+				TimeSheetOfAttendanceEachOuenSheet.create(new WorkNo(1),
+						Optional.of(new WorkTimeInformation(ReasonTimeChange.createByAutomaticSet(),new TimeWithDayAttr(15))),
+						Optional.of(new WorkTimeInformation(ReasonTimeChange.createByAutomaticSet(),new TimeWithDayAttr(60)))));
+
+		OuenWorkTimeSheetOfDailyAttendance ouenWorkTime2 = OuenWorkTimeSheetOfDailyAttendance.create(1, null,
+				TimeSheetOfAttendanceEachOuenSheet.create(new WorkNo(1),
+						Optional.of(new WorkTimeInformation(ReasonTimeChange.createByAutomaticSet(),new TimeWithDayAttr(5))),
+						Optional.of(new WorkTimeInformation(ReasonTimeChange.createByAutomaticSet(),new TimeWithDayAttr(60)))));
+
+		OuenWorkTimeSheetOfDailyAttendance ouenWorkTime3 = OuenWorkTimeSheetOfDailyAttendance.create(1, null,
+				TimeSheetOfAttendanceEachOuenSheet.create(new WorkNo(1),
+						Optional.of(new WorkTimeInformation(ReasonTimeChange.createByAutomaticSet(),new TimeWithDayAttr(20))),
+						Optional.of(new WorkTimeInformation(ReasonTimeChange.createByAutomaticSet(),new TimeWithDayAttr(60)))));
+
+		List<OuenWorkTimeSheetOfDailyAttendance> supportDataList = new ArrayList<OuenWorkTimeSheetOfDailyAttendance>();
+		supportDataList.add(ouenWorkTime1);
+		supportDataList.add(ouenWorkTime2);
+		supportDataList.add(ouenWorkTime3);
+		
+		OuenWorkTimeSheetOfDailyAttendance targetSupportData = OuenWorkTimeSheetOfDailyAttendance.create(1, null,
+				TimeSheetOfAttendanceEachOuenSheet.create(new WorkNo(1),
+						Optional.of(new WorkTimeInformation(ReasonTimeChange.createByAutomaticSet(),new TimeWithDayAttr(20))),
+						Optional.of(new WorkTimeInformation(ReasonTimeChange.createByAutomaticSet(),new TimeWithDayAttr(70)))));
+
+		boolean isStart = false;
+
+		JudgmentCriteriaSameStampOfSupport support = new JudgmentCriteriaSameStampOfSupport("cid", new RangeRegardedSupportStamp(10), new MaximumNumberOfSupport(20));
+		new Expectations() {
+			{
+				required.getCriteriaSameStampOfSupport();
+				result = support;
+			}
+		};
+		Optional<OuenWorkTimeSheetOfDailyAttendance> rs = GetSupportDataJudgedSameDS.getSupportDataJudgedSame(required,supportDataList, targetSupportData, isStart);
+		assertThat(rs).isEqualTo(Optional.of(ouenWorkTime1));
+	}
+	
 
 }
