@@ -701,12 +701,14 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 			List<StatusOfEmployeeAdapterAl> lstStatusEmp,
 			List<IntegrationOfDaily> listIntegrationDai) {
 		OutputCheckResult result = new OutputCheckResult(new ArrayList<>(), new ArrayList<>());
-		String alarmMessage = new String();
-		String alarmTarget = new String();
 		
 		List<GeneralDate> listDate = dPeriod.datesBetween();
 		for(int day = 0; day < listDate.size(); day++) {
 			GeneralDate exDate = listDate.get(day);
+			
+			String alarmMessage = new String();
+			String alarmTarget = new String();
+			
 			// ・職場ID　＝　Input．List＜職場ID＞をループ中の年月日から探す
 			String wplId = getWorkplaceId(sid, exDate, wplByListSidAndPeriod);			
 			
