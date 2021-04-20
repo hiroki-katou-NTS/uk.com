@@ -15,27 +15,27 @@ import nts.uk.shr.com.context.AppContexts;
 @Path("bs/employee/kdl046")
 @Produces("application/json")
 public class WorkplaceGroupKDL046Ws extends WebService {
-	
+
 	@Inject
 	private AffWorkplaceGroupRespository repo;
-	
+
 	@POST
 	@Path("getData")
 	public WorkplaceInforDto getAllActiveWorkplace(String workplaceID) {
 		String companyId = AppContexts.user().companyId();
 		WorkplaceInforDto result = null;
-	
+
 		Optional<WorkplaceGroup> optWorkplaceGroup = repo.getWorkplaceGroup(companyId, workplaceID);
 		if (optWorkplaceGroup.isPresent()) {
 			 result = new WorkplaceInforDto(
-					 optWorkplaceGroup.get().getWKPGRPID(),
-					 optWorkplaceGroup.get().getWKPGRPCode().v(),
-					 optWorkplaceGroup.get().getWKPGRPName().v(),
+					 optWorkplaceGroup.get().getId(),
+					 optWorkplaceGroup.get().getCode().v(),
+					 optWorkplaceGroup.get().getName().v(),
 					 true);
 		} else {
 			 result = new WorkplaceInforDto("", "", "", false);
 		}
-		
+
 		return result;
 	}
 }
