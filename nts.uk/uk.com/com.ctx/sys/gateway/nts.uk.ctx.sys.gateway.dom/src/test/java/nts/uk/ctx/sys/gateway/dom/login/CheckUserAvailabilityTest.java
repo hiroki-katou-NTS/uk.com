@@ -39,10 +39,8 @@ public class CheckUserAvailabilityTest {
 	
 	private static class Dummy {
 		private static String companyId = "comcom";
-		private static String companyCd = "comcom";
 		private static String tenantCd = "tenten";
 		private static String userId = "useruser";
-		private static String employeeId = "empemp";
 		private static EmployeeDataMngInfoImport employee = new EmployeeDataMngInfoImport(companyId, "perper", "empemp", "empemp", SDelAtr.NOTDELETED, null, null, null);
 		private static User user = new User("useruser", false, new HashPassword("passpass"), new LoginID("loginlogin"), new ContractCode(tenantCd), GeneralDate.ymd(9999, 12, 31), DisabledSegment.False, DisabledSegment.False, Optional.of(new MailAddress("mailmail")), Optional.of(new UserName("useruser")), Optional.of("perper"), PassStatus.Official);
 		private static IdentifiedEmployeeInfo identified = new IdentifiedEmployeeInfo(employee, user);
@@ -90,17 +88,9 @@ public class CheckUserAvailabilityTest {
 			result = Dummy.message;
 		}};
 		
-		String errorMessage = "";
-		try {
-			CheckUserAvailability.check(require, Dummy.identified);
-			
-		}catch(BusinessException e) {
-			errorMessage = e.getMessage();
-		}
-		
-		assertThat(errorMessage).isEqualTo(Dummy.message.v());
-		
-		
+		assertThatThrownBy(() -> CheckUserAvailability.check(require, Dummy.identified))
+		.isInstanceOfSatisfying(BusinessException.class, e -> {
+			assertThat(e.getMessage()).isEqualTo(Dummy.message.v());
+		});
 	}
-
 }
