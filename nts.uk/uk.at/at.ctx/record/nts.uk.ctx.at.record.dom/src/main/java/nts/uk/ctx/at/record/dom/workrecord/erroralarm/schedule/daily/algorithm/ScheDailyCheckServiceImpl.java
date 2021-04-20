@@ -474,18 +474,18 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 					
 			compareOperatorText = convertComparaToText.convertCompareType(compare);
 			
-			startValue = checkedCondition instanceof CompareSingleValue 
-							? ((CompareSingleValue) checkedCondition).getValue().toString()
-							: ((CompareRange) checkedCondition).getStartValue().toString();
-			endValue = checkedCondition instanceof CompareRange  ? ((CompareRange) checkedCondition).getEndValue().toString() : null;
+			Double startVal = checkedCondition instanceof CompareSingleValue 
+							? (Double)((CompareSingleValue) checkedCondition).getValue()
+							: (Double)((CompareRange) checkedCondition).getStartValue();
+			Double endVal = checkedCondition instanceof CompareRange  ? (Double)((CompareRange) checkedCondition).getEndValue() : null;
 			
 			// format value to HH:MM
 			if (DaiCheckItemType.TIME == dailyCheckType || DaiCheckItemType.CONTINUOUS_TIME == dailyCheckType) {
-				CheckedTimeDuration checkedTimeDurationStartValue = new CheckedTimeDuration(Double.valueOf(startValue).intValue());
+				CheckedTimeDuration checkedTimeDurationStartValue = new CheckedTimeDuration(startVal.intValue());
 				startValue = checkedTimeDurationStartValue.getTimeWithFormat();
 				
 				if (endValue != null) {
-					CheckedTimeDuration checkedTimeDurationEndValue = new CheckedTimeDuration(Double.valueOf(endValue).intValue());
+					CheckedTimeDuration checkedTimeDurationEndValue = new CheckedTimeDuration(endVal.intValue());
 					endValue = checkedTimeDurationEndValue.getTimeWithFormat();
 				}
 			}
@@ -502,7 +502,7 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 			if(compare <= 5) {
 				variable1 = compareOperatorText.getCompareLeft() + startValue;
 			} else {
-				if (compare > 5 && compare <= 7) {
+				if (compare == 6 || compare == 7) {
 					variable1 = startValue + compareOperatorText.getCompareLeft()
 							+ compareOperatorText.getCompareright() + endValue;
 				} else {

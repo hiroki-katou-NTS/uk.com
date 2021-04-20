@@ -460,7 +460,7 @@ public class ScheYearCheckServiceImpl implements ScheYearCheckService {
 		if(compare <= 5) {
 			variable0 = checkCondTypeName + compareOperatorText.getCompareLeft() + startValue;
 		} else {
-			if (compare > 5 && compare <= 7) {
+			if (compare == 6 || compare == 7) {
 				variable0 = startValue + compareOperatorText.getCompareLeft() + checkCondTypeName
 						+ compareOperatorText.getCompareright() + endValue;
 			} else {
