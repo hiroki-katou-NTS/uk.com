@@ -185,10 +185,9 @@ module nts.uk.ui.koExtentions {
                         $input.data("change", true);
                         if (_.has(data, "type") && ko.toJS(data.type) === "date") {
                             let momentDate = moment(result.parsedValue);
-                            const oldValue = ko.unwrap(value);
+                            value(new Date(Date.UTC(momentDate.year(), momentDate.month(), momentDate.date())));
                         } else {
                             value(result.parsedValue);
-                            const oldValue = ko.unwrap(value);
                         }
                         $input.data("change", false);
                         let dateFormatValue = (value() !== "") ? text.removeFromStart(time.formatPattern(value(), valueFormat, ISOFormat), "0") : "";
@@ -197,15 +196,14 @@ module nts.uk.ui.koExtentions {
                             $input.datepicker('setDate', new Date(dateFormatValue.replace(/\//g, "-")));
                         }
                     } else {
-                        const oldValue = ko.unwrap(value);
+                        value(result.parsedValue);
                     }
                     value.valueWillMutate();
-                    // value.valueWillMutate();
                 }
                 else {                    
                     $input.ntsError('set', result.errorMessage, result.errorCode, false);
 //                    container.data("changed", true);
-                    const oldValue = ko.unwrap(value);
+                    value(newText);
                 }
                 //$input.focus();
             });
