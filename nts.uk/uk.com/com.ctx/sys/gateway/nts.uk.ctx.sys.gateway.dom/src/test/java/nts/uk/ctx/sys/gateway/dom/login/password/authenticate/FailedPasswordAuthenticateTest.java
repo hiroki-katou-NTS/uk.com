@@ -12,11 +12,11 @@ import mockit.Verifications;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.sys.gateway.dom.login.IdentifiedEmployeeInfo;
-import nts.uk.ctx.sys.gateway.dom.loginold.ContractCode;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.AccountLockPolicy;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.locked.LockoutData;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.locked.LoginMethod;
 import nts.uk.ctx.sys.shared.dom.employee.EmployeeDataMngInfoImport;
+import nts.uk.ctx.sys.shared.dom.user.ContractCode;
 import nts.uk.ctx.sys.shared.dom.user.User;
 
 public class FailedPasswordAuthenticateTest {
