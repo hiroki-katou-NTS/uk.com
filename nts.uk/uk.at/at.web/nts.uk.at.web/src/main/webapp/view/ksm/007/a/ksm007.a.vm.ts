@@ -28,7 +28,7 @@ module nts.uk.at.view.ksm007.a {
                 isAlreadySetting: false,
                 showEmptyItem: false,
                 reloadData: ko.observable(''),
-                height: 373,
+                height: 408,
                 selectedMode: 1
             };
 
@@ -84,6 +84,18 @@ module nts.uk.at.view.ksm007.a {
                 self.createNew();                
             }
 
+            self.registerForm().selectedWkpType.subscribe(value => {
+                if (value == 0) {
+                    $("#multi-list_displayContainer").height(346);
+                    $("#multi-list_scrollContainer").height(346);
+                    $("#workplace-group-pannel").height(420);
+                } else {
+                    $("#multi-list_displayContainer").height(384);
+                    $("#multi-list_scrollContainer").height(384);
+                    $("#workplace-group-pannel").height(458);
+                }
+            });
+
         }
 
         startPage(): JQueryPromise<any> {
@@ -111,11 +123,7 @@ module nts.uk.at.view.ksm007.a {
             if (self.registerForm().newMode()) {
                 service.registerWorkplaceGroup(self.registerForm().convertToCommand(null))
                     .done((res) => {
-                        self.checkWorkplaceGroupRegisterResult(res, wpType)
-                            .done(() => {
-                                self.options.reloadData.valueHasMutated();
-                                self.options.currentIds(res.wkpgrpid);
-                            });
+                        self.checkWorkplaceGroupRegisterResult(res, wpType);
                     }).fail((res) => {
                         nts.uk.ui.dialog.alertError({ messageId: res.messageId });
                     }).always(function () {
@@ -124,12 +132,7 @@ module nts.uk.at.view.ksm007.a {
             } else {
                 service.updateWorkplaceGroup(self.registerForm().convertToCommand(self.currentIds()))
                     .done((res) => {
-                        self.checkWorkplaceGroupRegisterResult(res, -1)
-                            .done(() => {
-                                self.options.reloadData.valueHasMutated();
-                                // self.options.currentIds(res.wkpGrId);
-                                self.options.currentIds.valueHasMutated();
-                            });
+                        self.checkWorkplaceGroupRegisterResult(res, -1);
                     }).fail((res) => {
                         nts.uk.ui.dialog.alertError({ messageId: res.messageId });
                     }).always(function () {
@@ -139,13 +142,11 @@ module nts.uk.at.view.ksm007.a {
         }
 
         checkWorkplaceGroupRegisterResult(res: any, wpType: number = 0) {
-            const vm = this;
-
-            let dfd = $.Deferred();
+            const self = this;
             let resultProcess = res.replaceResult;
             let listWorkplaceInfo = res.listWorkplaceInfo;
             let listWorkplaceGroupInfo = res.workplaceGroupResult;
-            let bundledErrors = [];
+            let bundledErrors: Array<any> = [];
             for (let idx in resultProcess) {
                 let result = resultProcess[idx];
                 if (resultProcess[idx].workplaceReplacement == 3) {
@@ -160,22 +161,28 @@ module nts.uk.at.view.ksm007.a {
                     }
                 }
             }
+            if (self.registerForm().newMode()) {
+                self.options.reloadData.valueHasMutated();
+                self.options.currentIds(res.wkpgrpid);
+            } else {
+                self.options.reloadData.valueHasMutated();
+                // self.options.currentIds(res.wkpGrId);
+                self.options.currentIds.valueHasMutated();
+            }
             if (res.resProcessResult) {
                 let mgsId = ( wpType > 0 ) ? "Msg_2097" :  'Msg_15';
                 nts.uk.ui.dialog.info({ messageId: mgsId }).then(() => {
                     if (bundledErrors.length > 0) {
                         nts.uk.ui.dialog.bundledErrors({ errors: bundledErrors });
+                    } else {
+                        self.openDialogScreenB();
                     }
-                    dfd.resolve();
                 });
             } else {
                 if (bundledErrors.length > 0) {
                     nts.uk.ui.dialog.bundledErrors({ errors: bundledErrors });
                 }
-                dfd.resolve();
             }
-
-            return dfd.promise();
         }
 
         deleteWkpGroup() {
