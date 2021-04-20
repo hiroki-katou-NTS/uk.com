@@ -9,9 +9,9 @@ import lombok.val;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.sys.gateway.dom.login.password.authenticate.PasswordAuthenticateFailureLog;
-import nts.uk.ctx.sys.gateway.dom.loginold.ContractCode;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.locked.LockoutData;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.locked.LoginMethod;
+import nts.uk.ctx.sys.shared.dom.user.ContractCode;
 
 /**
  * アカウントロックポリシー

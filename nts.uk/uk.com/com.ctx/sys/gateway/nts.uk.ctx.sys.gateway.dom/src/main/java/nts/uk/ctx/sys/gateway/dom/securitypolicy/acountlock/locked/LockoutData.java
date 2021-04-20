@@ -8,7 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDateTime;
-import nts.uk.ctx.sys.gateway.dom.loginold.ContractCode;
+import nts.uk.ctx.sys.shared.dom.user.ContractCode;
 
 /**
  * The Class LogoutData.

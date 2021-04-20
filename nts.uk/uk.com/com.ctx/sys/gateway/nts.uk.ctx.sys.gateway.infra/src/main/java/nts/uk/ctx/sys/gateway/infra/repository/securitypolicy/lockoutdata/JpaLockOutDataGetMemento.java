@@ -1,11 +1,11 @@
 package nts.uk.ctx.sys.gateway.infra.repository.securitypolicy.lockoutdata;
 
 import nts.arc.time.GeneralDateTime;
-import nts.uk.ctx.sys.gateway.dom.loginold.ContractCode;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.locked.LockOutDataGetMemento;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.locked.LockType;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.locked.LoginMethod;
 import nts.uk.ctx.sys.gateway.infra.entity.securitypolicy.lockoutdata.SgwdtLockout;
+import nts.uk.ctx.sys.shared.dom.user.ContractCode;
 
 /**
  * The Class JpaLockOutDataGetMemento.
