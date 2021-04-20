@@ -31,27 +31,15 @@
                                   'state2': $vm.state() === 'state2',
                                   'state1': $vm.state() === 'state1'}"> -->
           <div data-bind="stamp-clock: { setting: stampSetting() }"></div>
-          <!-- </div> -->
-          <div class="pull-left" id="stamp-input">
-            <!-- <div class="panel" style="padding: 0 10px 10px 10px">
-              <div id="stamp-desc" data-bind="style: {'color': stampTab().stampPageCommentColor }">
-                <span data-bind="text: stampTab().stampPageComment"></span>
-              </div>
-              <ui:include src="stamp-tab.xhtml" />
-            </div> -->
-            <div data-bind="kdp-tab-button-panel: { 
-              tabs: stampTab().tabs,
-              stampToSuppress: $vm.stampToSuppress,
-              click: function(btn, layout) { $vm.clickBtn1.apply($vm, [btn, layout]); },
-              marginBottom: 0
-            }"></div>
-          </div>
-          	<div class="pull-left" id="stamp-info"
-          	data-bind="css: { 'panel1': stampTab().tabs().length == 1,
-          					  'panel2': stampTab().tabs().length > 1,
-          					  'panel3': stampTab().tabs().length > 1 &#38;&#38; stampTab().stampPageComment().length == 0,
-          					  'panel4': stampTab().tabs().length == 1 &#38;&#38; stampTab().stampPageComment().length == 0 }">
-            <ui:include src="emboss-info.xhtml" />
+          <!-- </div> --> 
+          <div id="stamp-input" class="pull-left" data-bind="kdp-tab-button-panel: { 
+            tabs: stampTab().tabs,
+            stampToSuppress: $vm.stampToSuppress,
+            click: function(btn, layout) { $vm.clickBtn1.apply($vm, [btn, layout]); },
+            marginBottom: 0
+          }"></div> 
+          	<div class="pull-left" id="stamp-info">
+              <ui:include src="emboss-info.xhtml" />
           	</div>
           
         </div>

@@ -292,6 +292,20 @@ module nts.uk.at.view.kdp.share {
 
 					// escape html and replace new line chars to break tag
 					currentTab.stampPageComment = _.escape(currentTab.stampPageComment).replace(/(\r|\n)/g, '<br />');
+					
+					if (vm.$el) {
+						if (currentTab.stampPageComment) {
+							vm.$el.classList.add('has-comment');
+						} else {
+							vm.$el.classList.remove('has-comment');
+						}
+						
+						if (filteredTabs.length > 1) {
+							vm.$el.classList.add('has-tab');							
+						} else {
+							vm.$el.classList.remove('has-tab');							
+						}
+					}
 
 					return currentTab;
 				}
