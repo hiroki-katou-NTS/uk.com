@@ -1,6 +1,6 @@
 package nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.*;
 
 import java.util.Optional;
 
@@ -11,11 +11,11 @@ import mockit.Expectations;
 import mockit.Injectable;
 import mockit.MockUp;
 import nts.arc.time.GeneralDateTime;
-import nts.uk.ctx.sys.gateway.dom.loginold.ContractCode;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.AccountLockPolicy.Require;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.locked.LockType;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.locked.LockoutData;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.locked.LoginMethod;
+import nts.uk.ctx.sys.shared.dom.user.ContractCode;
 
 public class AccountLockPolicyTest {
 

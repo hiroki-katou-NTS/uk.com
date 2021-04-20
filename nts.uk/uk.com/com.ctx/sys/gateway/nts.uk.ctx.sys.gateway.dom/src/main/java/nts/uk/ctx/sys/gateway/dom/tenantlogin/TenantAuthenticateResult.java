@@ -30,7 +30,7 @@ public class TenantAuthenticateResult {
 	 * @return
 	 */
 	public static TenantAuthenticateResult failed(AtomTask atomTask) {
-		return new TenantAuthenticateResult(true, Optional.of(atomTask));
+		return new TenantAuthenticateResult(false, Optional.of(atomTask));
 	}
 	
 	public boolean isSuccess() {

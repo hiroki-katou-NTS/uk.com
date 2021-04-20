@@ -2,7 +2,7 @@ package nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock;
 
 import java.math.BigDecimal;
 
-import nts.uk.ctx.sys.gateway.dom.loginold.ContractCode;
+import nts.uk.ctx.sys.shared.dom.user.ContractCode;
 
 public class AccountLockPolicyTestHelper {
 	static AccountLockPolicy accountLockPolicy =	 

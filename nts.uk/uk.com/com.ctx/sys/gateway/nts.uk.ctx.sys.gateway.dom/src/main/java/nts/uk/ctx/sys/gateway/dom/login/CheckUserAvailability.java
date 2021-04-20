@@ -25,15 +25,13 @@ public class CheckUserAvailability {
 		require.getAccountLockPolicy(tenantCode)
 				.ifPresent(policy -> {
 					if (policy.isLocked(require, userId)) {
-						throw new BusinessException(new RawErrorMessage(policy.getLockOutMessage().v()));		
+						throw new BusinessException(new RawErrorMessage(policy.getLockOutMessage().v()));
 					}
 				});
-		
 	}
 	
 	public static interface Require extends 
 			AccountLockPolicy.Require {
-
 		Optional<AccountLockPolicy> getAccountLockPolicy(String tenantCode);
 	}
 }
