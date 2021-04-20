@@ -30,3 +30,7 @@
 #kaf020-component .nts-fixed-table .nts-fixed-body-container {
     border-bottom-width:0;
 }
+
+#kaf020-component .table-name {
+    max-width: 210px;
+}
