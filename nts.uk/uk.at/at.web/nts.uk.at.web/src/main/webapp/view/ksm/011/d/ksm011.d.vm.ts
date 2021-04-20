@@ -73,10 +73,6 @@ module nts.uk.at.view.ksm011.d {
       $('#KSM011_D24').focus();
     }
 
-    list(str: string):Array<string>{
-      return _.split(str, ',');
-    }
-
     openDialogScreenF() {
       const vm = this;
 
@@ -85,7 +81,7 @@ module nts.uk.at.view.ksm011.d {
         if( data ) {
           let conditionListText: Array<string> = data.listItemsSelected.map((i: any) => i.name);
           vm.alarmConditionList(data.listItemsSelected.map((i: any) => i.code));
-          vm.alarmConditionListText(_.join(conditionListText, ' + '));
+          vm.alarmConditionListText(_.join(conditionListText, '、'));
           vm.$blockui('hide');
         } else 
           vm.$blockui('hide');
@@ -110,7 +106,7 @@ module nts.uk.at.view.ksm011.d {
           vm.confirm(data.confirmUsage);
           vm.alarmCheck(data.alarmCheckUsage);
           vm.alarmConditionList(data.alarmConditions.map((i: any) => i.code));
-          vm.alarmConditionListText(_.join(data.alarmConditions.map((i: any) => i.name), ' + '));
+          vm.alarmConditionListText(_.join(data.alarmConditions.map((i: any) => i.name), '、'));
           vm.personalInforDisplay(
               data.conditionDisplayControls
                   .filter((i: any) => i.displayCategory == 1)

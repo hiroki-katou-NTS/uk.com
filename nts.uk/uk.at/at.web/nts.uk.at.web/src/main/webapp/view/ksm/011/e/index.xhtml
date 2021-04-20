@@ -55,7 +55,7 @@
             <div class="nts-panel"
               data-bind="ntsPanel:{ width: '330px', height: '380px', direction: 'right', showIcon: true, visible: true }"
             >
-              <div
+              <div tabindex="3"
                 class="ccg025"
                 id="ccg025"
                 data-bind="with: componentViewmodel"
@@ -71,7 +71,7 @@
               <span data-bind="text: roleName"></span>
             </div>
             <hr />
-            <div
+            <div tabindex="4"
               id="tab-panel"
               data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}"
             >
@@ -115,7 +115,7 @@
                   <div
                     class="cf"
                     id="KSM011_D24"
-                    tabindex="6"
+                    tabindex="7"
                     data-bind="ntsSwitchButton: {
 										name: '#[KSM011_100]',
 										options: switchItems,
@@ -127,11 +127,11 @@
                   ></div>
                   <div class="table mt-5">
                     <div class="cell valign-center">
-                      <label data-bind="text: $vm.$i18n('KSM011_100')"></label>
+                      <label data-bind="text: $vm.$i18n('KSM011_102')"></label>
                     </div>
                     <div class="cell valign-center">
                       <div
-                        tabindex="7"
+                        tabindex="8"
                         id="combo-box"
                         class="comboBox"
                         data-bind="ntsComboBox: {

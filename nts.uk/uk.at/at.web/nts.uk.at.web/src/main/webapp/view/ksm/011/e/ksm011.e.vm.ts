@@ -21,7 +21,7 @@ module nts.uk.at.view.ksm011.e {
     selectedTab: KnockoutObservable<string>;
     basicFunctionControl: KnockoutObservable<number> = ko.observable(0);
     daysList: KnockoutObservableArray<any> = ko.observableArray([]);
-    dateSelected: KnockoutObservable<number> = ko.observable(0);
+    dateSelected: KnockoutObservable<number> = ko.observable(31);
 
     //ccg025    
     componentViewmodel: ccg.component.viewmodel.ComponentModel;

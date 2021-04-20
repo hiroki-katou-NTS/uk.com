@@ -12,7 +12,12 @@ module nts.uk.com.view.ksm011.f.viewmodel {
         proceed() {
             const vm = this;
             const items: Array<any> = ko.dataFor($("#kcp016-component")[0]).items();
-            vm.$window.close({listItemsSelected: items.filter(i => vm.value().indexOf(i.code) >= 0)});
+            const selectedItems = items.filter(i => vm.value().indexOf(i.code) >= 0);
+            if (selectedItems.length == 0) {
+                vm.$dialog.error({messageId: "Msg_718"});
+                return;
+            }
+            vm.$window.close({listItemsSelected: selectedItems});
         }
 
         cancel() {

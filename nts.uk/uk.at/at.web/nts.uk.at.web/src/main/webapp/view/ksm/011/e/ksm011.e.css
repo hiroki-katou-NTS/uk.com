@@ -10,8 +10,8 @@
 
 .ksm-011 .comboBox {
   width: 70px;
-  padding-left: 15px;
-  padding-right: 15px;
+  margin-left: 15px;
+  margin-right: 15px;
 }
 
 .ksm-011 .mt-5 {
