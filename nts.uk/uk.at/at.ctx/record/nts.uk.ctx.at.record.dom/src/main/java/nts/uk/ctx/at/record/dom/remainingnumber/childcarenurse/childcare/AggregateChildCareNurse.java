@@ -406,7 +406,8 @@ public class AggregateChildCareNurse {
 	 *
 	 */
 	public AggrResultOfChildCareNurse createAggrResult(String companyId,
-			String employeeId, DatePeriod period, GeneralDate criteriaDate, ChildCareNurseUsedNumber startUsed, NursingCategory nursingCategory, Require require) {
+			String employeeId, DatePeriod period, GeneralDate criteriaDate,
+			ChildCareNurseUsedNumber startUsed, NursingCategory nursingCategory, Require require) {
 
 			// 子の看護介護集計期間．期間の件数ループ
 			for (int idx = 0; idx < this.period.size(); idx++) {
@@ -414,7 +415,7 @@ public class AggregateChildCareNurse {
 				val currentDayProcess = this.period.get(idx);
 
 				// 残数と使用数を計算する
-				currentDayProcess.calcRemainingUsed(companyId, employeeId, period, criteriaDate, startUsed, require);
+				currentDayProcess.calcRemainingUsed(companyId, employeeId, period, criteriaDate, startUsed, nursingCategory, require);
 			}
 
 			// 子の看護介護休暇集計結果をセットする

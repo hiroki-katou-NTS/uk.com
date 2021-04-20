@@ -59,7 +59,8 @@ public class CareManagementDate extends AggregateRoot{
 	 * @return careTargetPeriodWork 看護介護対象人数変更日（List）、介護対象期間
 	 *
 	 */
-	public CareTargetPeriodWork careTargetPeriodWork(DatePeriod period, Optional<GeneralDate> deadYmd, List<ChildCareTargetChanged> childCareTargetChanged){
+	public CareTargetPeriodWork careTargetPeriodWork(
+			DatePeriod period, Optional<GeneralDate> deadYmd, List<ChildCareTargetChanged> childCareTargetChanged){
 
 		// 介護期間変更日
 		CarePeriodChangeDate carePeriodChangeDate;

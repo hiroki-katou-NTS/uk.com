@@ -73,7 +73,7 @@ public class ChildCareCheckOverUsedNumberWork {
 	 */
 	public ChildCareShortageRemainingNumberWork calcShortageRemainingNumber(String companyId,
 			String employeeId, DatePeriod period, GeneralDate criteriaDate,
-			TempChildCareNurseManagement interimDate, RequireM4 require) {
+			TempChildCareNurseManagement interimDate, NursingCategory nursingCategory, RequireM4 require) {
 
 		// 子の看護介護残数不足数
 		ChildCareShortageRemainingNumberWork shortageRemainingNumberWork = new ChildCareShortageRemainingNumberWork();
@@ -90,10 +90,12 @@ public class ChildCareCheckOverUsedNumberWork {
 		resultCheckOverUsedNumberWork.usedNumber.contractTime(require, companyId, employeeId, criteriaDate);
 
 		// INPUT．Require．子の看護・介護休暇基本情報を取得する
-		NursingCareLeaveRemainingInfo employeeInfo = require.employeeInfo(employeeId);
+		Optional<NursingCareLeaveRemainingInfo> employeeInfo = require.employeeInfo(employeeId, nursingCategory);
 
 		// 期間ごとの上限日数を求める
-		List<ChildCareNurseUpperLimitPeriod> childCareNurseUpperLimitPeriod = employeeInfo.childCareNurseUpperLimitPeriod(companyId, employeeId, period, criteriaDate, require);
+		List<ChildCareNurseUpperLimitPeriod> childCareNurseUpperLimitPeriod = new ArrayList<>();
+		if(employeeInfo.isPresent())
+			childCareNurseUpperLimitPeriod= employeeInfo.get().childCareNurseUpperLimitPeriod(companyId, employeeId, period, criteriaDate, require);
 
 		// 期間終了日時点の上限日数を確認
 		ChildCareNurseUpperLimitPeriod upperLimitPeriod =childCareNurseUpperLimitPeriod.stream().
@@ -229,7 +231,8 @@ public class ChildCareCheckOverUsedNumberWork {
 	 * @return ChildCareNurseErrors 子の看護介護エラー情報
 	 */
 	public List<ChildCareNurseErrors> checkOverUsedNumberWork(String companyId,
-			String employeeId, DatePeriod period, GeneralDate criteriaDate, TempChildCareNurseManagement interimDate, Require require){
+			String employeeId, DatePeriod period, GeneralDate criteriaDate,
+			TempChildCareNurseManagement interimDate, NursingCategory nursingCategory, Require require){
 
 		List<ChildCareNurseErrors> childCareNurseErrors = new ArrayList<>();
 
@@ -243,11 +246,13 @@ public class ChildCareCheckOverUsedNumberWork {
 		this.usedNumber.contractTime(require, companyId, employeeId, criteriaDate);
 
 		// INPUT．Require．子の看護・介護休暇基本情報を取得する
-		NursingCareLeaveRemainingInfo employeeInfo = require.employeeInfo(employeeId);
+		Optional<NursingCareLeaveRemainingInfo> employeeInfo = require.employeeInfo(employeeId, nursingCategory);
 
 		// 期間ごとの上限日数を求める
-		List<ChildCareNurseUpperLimitPeriod> childCareNurseUpperLimitPeriod = employeeInfo.childCareNurseUpperLimitPeriod(companyId,
-				employeeId, period, criteriaDate, require);
+		List<ChildCareNurseUpperLimitPeriod> childCareNurseUpperLimitPeriod = new ArrayList<>();
+		if(employeeInfo.isPresent()) {
+			employeeInfo.get().childCareNurseUpperLimitPeriod(companyId,employeeId, period, criteriaDate, require);
+		}
 
 		// 対象日の上限日数を確認
 		// ===上限日数期間．期間．開始日 <=暫定残数管理データ．対象日<= 上限日数期間．期間．終了日
@@ -277,7 +282,7 @@ public class ChildCareCheckOverUsedNumberWork {
 		NursingLeaveSetting nursingLeaveSetting(String companyId, NursingCategory nursingCategory);
 
 		// 子の看護・介護休暇基本情報を取得する（社員ID）
-		NursingCareLeaveRemainingInfo employeeInfo(String employeeId);
+		Optional<NursingCareLeaveRemainingInfo> employeeInfo(String employeeId, NursingCategory nursingCategory);
 
 		// 会社の年休設定を取得する（会社ID）
 		AnnualPaidLeaveSetting annualLeaveSet(String companyId);
@@ -292,11 +297,7 @@ public class ChildCareCheckOverUsedNumberWork {
 		List<FamilyInfo> familyInfo(String employeeId);
 
 		// 介護対象管理データ（家族ID）
-		CareManagementDate careData(String familyID);
-
-		// 期間の上限日数取得する（会社ID、社員ID、期間、介護看護区分）
-		NursingCareLeaveRemainingInfo upperLimitPeriod (String companyId, String employeeId, DatePeriod period, NursingCategory nursingCategory);
-
+		Optional<CareManagementDate> careData(String familyID);
 
 	}
 	public static interface RequireM4 extends RequireM5, RequireM3,  ChildCareNurseUsedNumber.RequireM3, NursingCareLeaveRemainingInfo.RequireM7{
@@ -308,7 +309,7 @@ public class ChildCareCheckOverUsedNumberWork {
 		List<FamilyInfo> familyInfo(String employeeId);
 
 		// 介護対象管理データ（家族ID）
-		CareManagementDate careData(String familyID);
+		Optional<CareManagementDate> careData(String familyID);
 	}
 
 	public static interface RequireM1 {
@@ -319,7 +320,7 @@ public class ChildCareCheckOverUsedNumberWork {
 
 	public static interface RequireM2 {
 		// 子の看護・介護休暇基本情報を取得する（社員ID）
-		NursingCareLeaveRemainingInfo employeeInfo(String employeeId);
+		Optional<NursingCareLeaveRemainingInfo> employeeInfo(String employeeId, NursingCategory nursingCategory);
 	}
 
 	public static interface RequireM3 extends DayAndTime.RequireM3{

@@ -14,8 +14,6 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.care.
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.ChildCareNurseUsedNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.ChildCareUsedNumberData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.ChildCareUsedNumberRepository;
-import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.data.ChildCareLeaveRemaiDataRepo;
-import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.data.LeaveForCareDataRepo;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.ChildCareLeaveRemInfoRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.ChildCareLeaveRemainingInfo;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.CareLeaveRemainingInfo;
@@ -38,10 +36,10 @@ public class AddCareLeaveCommandHandler extends CommandHandlerWithResult<AddCare
 	private ChildCareLeaveRemInfoRepository childCareInfoRepo;
 
 	@Inject
-	private ChildCareLeaveRemaiDataRepo childCareDataRepo;
+	private ChildCareUsedNumberRepository childCareDataRepo;
 
 	@Inject
-	private LeaveForCareDataRepo careDataRepo;
+	private CareUsedNumberRepository careDataRepo;
 
 	@Inject
 	private ChildCareUsedNumberRepository childCareUsedNumberRepository;

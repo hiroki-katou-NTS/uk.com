@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Optional;
 
 import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -21,13 +22,13 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremain
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.usenumber.TimeOfUse;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.AppTimeType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.DigestionHourlyTimeType;
+import nts.uk.ctx.at.shared.infra.entity.remainingnumber.nursingcareleave.KrcdtHdNursingInfoPK;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
  * 暫定子の看護管理データ
  * @author yuri_tamakoshi
  */
-
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -36,18 +37,13 @@ public class KshdtInterimChildCare  extends UkJpaEntity implements Serializable 
 
 	private static final long serialVersionUID = 1L;
 
+	/** プライマリキー */
+	@EmbeddedId
+	public KshdtInterimChildCarePK pk;
+
 	/**残数管理データID 	 */
-	@Id
 	@Column(name = "REMAIN_MNG_ID")
 	public String remainMngID;
-
-	/**社員ID	 */
-	@Column(name = "SID")
-	public String sID;
-
-	/**	対象日 */
-	@Column(name = "YMD")
-	public GeneralDate ymd;
 
 	/**	作成元区分 */
 	@Column(name = "CREATOR_ATR")
@@ -65,20 +61,12 @@ public class KshdtInterimChildCare  extends UkJpaEntity implements Serializable 
 	@Column(name = "USED_TIME")
 	public Integer usedTime;
 
-	/** 時間消化休暇かどうか */
-	@Column(name = "TIME_DIGESTIVE_ATR")
-	public Integer timeDigestiveAtr;
-
-	/**時間休暇種類 */
-	@Column(name = "TIME_HD_TYPE")
-	public Integer timeHdType;
-
 	protected Object getKey() {
 		return remainMngID;
 	}
 
 	public TempChildCareManagement toDomain() {
-		return TempChildCareManagement.of(remainMngID, sID, ymd,
+		return TempChildCareManagement.of(remainMngID, pk.sID, pk.ymd,
 					EnumAdaptor.valueOf(createAtr, CreateAtr.class),
 					EnumAdaptor.valueOf(remainAtr, RemainAtr.class),
 					ChildCareNurseUsedNumber.of(
@@ -88,39 +76,50 @@ public class KshdtInterimChildCare  extends UkJpaEntity implements Serializable 
 	}
 
 	private Optional<DigestionHourlyTimeType> createHourlyTime() {
-		if (timeDigestiveAtr == null) {
+		if (pk.timeDigestiveAtr == null) {
 			return Optional.empty();
 		}
 
 		return Optional.of(DigestionHourlyTimeType.of(
-												timeDigestiveAtr == 1 ? true : false,
-												Optional.ofNullable(timeHdType == null ? null : EnumAdaptor.valueOf(timeHdType, AppTimeType.class))));
+				pk.timeDigestiveAtr == 1 ? true : false,
+					Optional.ofNullable(pk.timeHdType == null ? null : EnumAdaptor.valueOf(pk.timeHdType, AppTimeType.class))));
 	}
-
 
 	/**
 	 * ドメインから変換　（for Insert）
 	 * @param domain 暫定子の看護管理データ
 	 */
-	public void fromDomainForPersist(TempChildCareManagement domain) {
-		this.remainMngID = domain.getRemainManaID();
-		this.fromDomainForUpdate(domain);
+	public void fromDomain(TempChildCareManagement domain) {
+		remainMngID = domain.getRemainManaID();
+		createAtr = domain.getCreatorAtr().value;
+		remainAtr = domain.getRemainType().value;
+		usedDays = domain.getUsedNumber().getUsedDay().v();
+		usedTime = domain.getUsedNumber().getUsedTimes().map(mapper->mapper.v()).orElse(null);
 	}
 
-	/**
-	 * ドメインから変換　(for Update)
-	 * @param domain 暫定子の看護管理データ
-	 */
-	public void fromDomainForUpdate(TempChildCareNurseManagement domain){
-
-		this.sID = domain.getSID();
-		this.ymd = domain.getYmd();
-		this.createAtr  = domain.getCreatorAtr().value;
-		this.remainAtr = domain.getRemainType().value;
-		this.usedDays = domain.getUsedNumber().getUsedDay().v();
-		this.usedTime = domain.getUsedNumber().getUsedTimes().map(c -> c.v()).orElse(null);
-		this.timeDigestiveAtr = domain.getAppTimeType().map(c -> c.isHourlyTimeType() ? 1 : 0).orElse(null);
-		this.timeHdType = domain.getAppTimeType().flatMap(c -> c.getAppTimeType()).map(c -> c.value).orElse(null);
-
-	}
+//	/**
+//	 * ドメインから変換　（for Insert）
+//	 * @param domain 暫定子の看護管理データ
+//	 */
+//	public void fromDomainForPersist(TempChildCareManagement domain) {
+//		this.remainMngID = domain.getRemainManaID();
+//		this.fromDomainForUpdate(domain);
+//	}
+//
+//	/**
+//	 * ドメインから変換　(for Update)
+//	 * @param domain 暫定子の看護管理データ
+//	 */
+//	public void fromDomainForUpdate(TempChildCareNurseManagement domain){
+//
+//		this.sID = domain.getSID();
+//		this.ymd = domain.getYmd();
+//		this.createAtr  = domain.getCreatorAtr().value;
+//		this.remainAtr = domain.getRemainType().value;
+//		this.usedDays = domain.getUsedNumber().getUsedDay().v();
+//		this.usedTime = domain.getUsedNumber().getUsedTimes().map(c -> c.v()).orElse(null);
+//		this.timeDigestiveAtr = domain.getAppTimeType().map(c -> c.isHourlyTimeType() ? 1 : 0).orElse(null);
+//		this.timeHdType = domain.getAppTimeType().flatMap(c -> c.getAppTimeType()).map(c -> c.value).orElse(null);
+//
+//	}
 }

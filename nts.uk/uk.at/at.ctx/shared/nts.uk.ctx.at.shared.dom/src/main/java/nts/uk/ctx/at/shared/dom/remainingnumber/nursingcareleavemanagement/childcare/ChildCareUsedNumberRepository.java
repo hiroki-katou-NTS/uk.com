@@ -30,6 +30,33 @@ public interface ChildCareUsedNumberRepository{
 	void persistAndUpdate(String employeeId, ChildCareUsedNumberData domain);
 
 	/**
+	 * 新規登録
+	 * @param obj
+	 */
+	void add(String cId, ChildCareUsedNumberData obj);
+
+	/**
+	 * 新規登録
+	 * @param cid　会社ID
+	 * @param childCareDataInsert　子の看護休暇使用数データリスト
+	 */
+	void addAll(String cid, List<ChildCareUsedNumberData> childCareDataInsert);
+
+	/**
+	 * 更新
+	 * @param cid　会社ID
+	 * @param childCareDataUpdate　子の看護休暇使用数データ
+	 */
+	void update(String cid, ChildCareUsedNumberData childCareDataUpdate);
+
+	/**
+	 * 更新
+	 * @param cid　会社ID
+	 * @param childCareDataUpdate　子の看護休暇使用数データリスト
+	 */
+	void updateAll(String cid, List<ChildCareUsedNumberData> childCareDataUpdate);
+
+	/**
 	 * 削除
 	 * @param employeeId 社員ID
 	 */

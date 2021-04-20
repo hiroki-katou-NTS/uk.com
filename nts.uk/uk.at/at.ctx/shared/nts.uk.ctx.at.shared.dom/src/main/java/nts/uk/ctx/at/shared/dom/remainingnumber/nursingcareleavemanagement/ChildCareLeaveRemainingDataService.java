@@ -6,10 +6,10 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
-import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.data.ChildCareLeaveRemaiDataRepo;
-import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.data.ChildCareLeaveRemainingData;
-import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.data.LeaveForCareData;
-import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.data.LeaveForCareDataRepo;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.care.CareUsedNumberData;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.care.CareUsedNumberRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.ChildCareUsedNumberData;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.ChildCareUsedNumberRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.ChildCareLeaveRemInfoRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.ChildCareLeaveRemainingInfo;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.CareLeaveRemainingInfo;
@@ -25,13 +25,13 @@ public class ChildCareLeaveRemainingDataService {
 	private ChildCareLeaveRemInfoRepository childCareInfoRepo;/*看護　基本情報*/
 
 	@Inject
-	private ChildCareLeaveRemaiDataRepo childCareDataRepo;
+	private CareUsedNumberRepository careDataRepo;
 
 	@Inject
-	private LeaveForCareDataRepo careDataRepo;
+	private ChildCareUsedNumberRepository childCareDataRepo;
 
-	public void addData(String cid, List<ChildCareLeaveRemainingData> childCareDataInsert,
-			List<LeaveForCareData> leaveCareDataInsert, List<ChildCareLeaveRemainingInfo> childCareLeaveInfoInsert,
+	public void addData(String cid, List<ChildCareUsedNumberData> childCareDataInsert,
+			List<CareUsedNumberData> leaveCareDataInsert, List<ChildCareLeaveRemainingInfo> childCareLeaveInfoInsert,
 			List<CareLeaveRemainingInfo> leaveCareInfoInsert) {
 		// data
 		if (!childCareDataInsert.isEmpty()) {
@@ -52,10 +52,10 @@ public class ChildCareLeaveRemainingDataService {
 		}
 	}
 
-
-
-	public void updateData(String cid, List<ChildCareLeaveRemainingData> childCareDataUpdate,
-			List<LeaveForCareData> leaveCareDataUpdate, List<ChildCareLeaveRemainingInfo> childCareLeaveInfoUpdate,
+	public void updateData(String cid,
+			List<ChildCareUsedNumberData> childCareDataUpdate,
+			List<CareUsedNumberData> leaveCareDataUpdate,
+			List<ChildCareLeaveRemainingInfo> childCareLeaveInfoUpdate,
 			List<CareLeaveRemainingInfo> leaveCareInfoUpdate) {
 		// data
 		if (!childCareDataUpdate.isEmpty()) {

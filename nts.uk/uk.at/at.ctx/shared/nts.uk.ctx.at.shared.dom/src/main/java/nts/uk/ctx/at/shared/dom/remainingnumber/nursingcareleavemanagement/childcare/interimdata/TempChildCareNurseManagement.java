@@ -5,6 +5,7 @@ import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
@@ -35,6 +36,14 @@ public class TempChildCareNurseManagement extends InterimRemain{
 		super(remainManaID, sID, ymd, creatorAtr, remainType);
 		this.usedNumber = new ChildCareNurseUsedNumber();
 		this.appTimeType = Optional.empty();
+	}
+
+	public TempChildCareNurseManagement(TempChildCareNurseManagement c) {
+		super(c.getRemainManaID(), c.getSID(), c.getYmd(), c.getCreatorAtr(), c.getRemainType());
+		this.usedNumber = c.getUsedNumber().clone();
+		this.appTimeType = c.getAppTimeType()
+				.map(mapper->new DigestionHourlyTimeType(mapper.isHourlyTimeType(),mapper.getAppTimeType()));
+
 	}
 	/**
 	 * コンストラクタ

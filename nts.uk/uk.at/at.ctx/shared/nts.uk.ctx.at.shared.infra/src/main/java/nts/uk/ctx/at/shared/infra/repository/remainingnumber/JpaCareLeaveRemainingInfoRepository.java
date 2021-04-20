@@ -20,8 +20,6 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.care.
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.care.CareUsedNumberRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.ChildCareUsedNumberData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.ChildCareUsedNumberRepository;
-import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.data.ChildCareLeaveRemainingData;
-import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.data.LeaveForCareData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.CareLeaveDataInfo;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.CareLeaveRemainingInfo;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.CareLeaveRemainingInfoRepository;
@@ -156,7 +154,6 @@ public class JpaCareLeaveRemainingInfoRepository extends JpaChildCareNurseLevRem
 		List<CareUsedNumberData>careUsedInfo = this.careUsedNumberRepo.find(sids);
 		List<ChildCareUsedNumberData> childCareUsedInfo = this.childCareUsedNumberRepo.find(sids);;
 
-		//要修正jinno
 		List<CareLeaveDataInfo> dtoList = new ArrayList<>();
 		sids.stream().forEach(c->{
 			Optional<CareLeaveRemainingInfo>careRemain = careRemaingInfo.stream().filter(a->a.getSId().equals(c)).findFirst();

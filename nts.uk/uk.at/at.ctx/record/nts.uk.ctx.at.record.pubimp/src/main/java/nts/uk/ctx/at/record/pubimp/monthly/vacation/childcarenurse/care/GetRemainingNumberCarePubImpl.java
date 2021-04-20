@@ -27,6 +27,7 @@ import nts.uk.ctx.at.record.pub.monthly.vacation.childcarenurse.childcare.GetRem
 import nts.uk.ctx.at.record.pub.monthly.vacation.childcarenurse.childcare.TempChildCareNurseManagementExport;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.care.interimdata.TempCareManagement;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.interimdata.TempChildCareNurseManagement;
 
 /**
@@ -74,8 +75,8 @@ public class GetRemainingNumberCarePubImpl  implements GetRemainingNumberCarePub
 		val require = childCareNurseRequireImplFactory.createRequireImpl();
 		val cacheCarrier = new CacheCarrier();
 
-		List<TempChildCareNurseManagement>domChildCareNurseManagemenList =
-			tempCareDataforOverWriteList.stream().map(c->c.toDomain()).collect(Collectors.toList());
+		List<TempCareManagement>domChildCareNurseManagemenList =
+				tempCareDataforOverWriteList.stream().map(c->new TempCareManagement(c.toDomain())).collect(Collectors.toList());
 
 		Optional<AggrResultOfChildCareNurse> domPrevCareLeave = Optional.empty();
 

@@ -18,6 +18,9 @@ import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.GetAnnAndRsvRemNumWithinPeriod;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggrResultOfAnnAndRsvLeave;
+import nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare.AggrResultOfChildCareNurse;
+import nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare.ChildCareNurseRequireImplFactory;
+import nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare.GetRemainingNumberChildCareService;
 import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.ComplileInPeriodOfSpecialLeaveParam;
 import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.InPeriodOfSpecialLeaveResultInfor;
 import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.export.SpecialLeaveManagementService;
@@ -44,6 +47,8 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimDa
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveUndigestDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveUndigestTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
+import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.interimdata.TempChildCareManagement;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveRemainingDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.interim.TmpReserveLeaveMngWork;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.InterimSpecialHolidayMng;
@@ -116,6 +121,10 @@ public class MonthlyAggregationRemainingNumberImpl implements MonthlyAggregation
 	/** 暫定残数データ上書きフラグ */
 	private boolean isOverWriteRemain;
 
+	//あとでrequire経由に修正すること
+	@Inject
+	private GetRemainingNumberChildCareService getRemainingNumberChildCareService;
+
 	@Inject
 	private RecordDomRequireService requireService;
 
@@ -168,6 +177,10 @@ public class MonthlyAggregationRemainingNumberImpl implements MonthlyAggregation
 		this.specialLeaveRemain(cacheCarrier, period, interimRemainMngMode);
 
 		ConcurrentStopwatches.stop("12440:特別休暇：");
+
+
+		//子の看護
+		this.childCareRemain(cacheCarrier, period, interimRemainMngMode);
 
 		return this.aggregateResult;
 	}
@@ -355,12 +368,12 @@ public class MonthlyAggregationRemainingNumberImpl implements MonthlyAggregation
 		// 期間内の振休振出残数を取得する
 		val inputParam = new AbsRecMngInPeriodRefactParamInput(this.companyId, this.employeeId,
 				period,
-				period.end(), (interimRemainMngMode == InterimRemainMngMode.MONTHLY), 
+				period.end(), (interimRemainMngMode == InterimRemainMngMode.MONTHLY),
 				this.isOverWriteRemain,
 				useAbsMng, interimMng, useRecMng,
-				Optional.empty(), 
-				Optional.empty(), 
-				Optional.empty(), 
+				Optional.empty(),
+				Optional.empty(),
+				Optional.empty(),
 				new FixedManagementDataMonth());
 		val aggrResult = NumberCompensatoryLeavePeriodQuery.process(require, inputParam);
 		if (aggrResult != null) {
@@ -415,17 +428,17 @@ public class MonthlyAggregationRemainingNumberImpl implements MonthlyAggregation
 		}
 
 		// 期間内の休出代休残数を取得する
-		
+
 		BreakDayOffRemainMngRefactParam inputRefactor = new BreakDayOffRemainMngRefactParam(
 				this.companyId, this.employeeId,
 				period,
-				(interimRemainMngMode == InterimRemainMngMode.MONTHLY), 
-				period.end(), 
+				(interimRemainMngMode == InterimRemainMngMode.MONTHLY),
+				period.end(),
 				this.isOverWriteRemain,
-				interimMng, 
-				Optional.empty(), 
-				Optional.empty(), 
-				breakMng, 
+				interimMng,
+				Optional.empty(),
+				Optional.empty(),
+				breakMng,
 				dayOffMng,
 				Optional.empty(), new FixedManagementDataMonth());
 		//代休残数 ← 残日数　（アルゴリズム「期間内の代休残数を取得する」のoutput）
@@ -532,6 +545,44 @@ public class MonthlyAggregationRemainingNumberImpl implements MonthlyAggregation
 		}
 	}
 
+	//子の看護
+	public void childCareRemain(CacheCarrier cacheCarrier, DatePeriod period,
+			InterimRemainMngMode interimRemainMngMode) {
+
+		List<TempChildCareManagement> overWriteList = new ArrayList<>();
+
+		for (val dailyInterimRemainMng : this.dailyInterimRemainMngs) {
+			if (dailyInterimRemainMng.getRecAbsData().size() <= 0)
+				continue;
+
+			//TODO:暫定データの作成処理が完了したら、dailyInterimRemainMngから子の看護の暫定データをoverWriteListにaddする
+		}
+
+		val require = new ChildCareNurseRequireImplFactory().createRequireImpl();
+
+		AggrResultOfChildCareNurse result =
+		getRemainingNumberChildCareService.getChildCareRemNumWithinPeriod(
+				companyId,
+				employeeId,
+				period,
+				interimRemainMngMode,
+				period.end(),
+				Optional.of(true),
+				overWriteList,
+				Optional.empty(),
+				Optional.of(CreateAtr.RECORD),
+				Optional.of(period),
+				cacheCarrier,
+				require);
+
+		// 月別残数データを更新
+
+		// 月別残数エラー一覧を作成する
+
+		// 集計結果を前回集計結果に引き継ぐ
+	}
+
+
 	/**
 	 * Workを考慮した月次処理用の暫定残数管理データを作成する
 	 *
@@ -544,9 +595,9 @@ public class MonthlyAggregationRemainingNumberImpl implements MonthlyAggregation
 		// this.dailyInterimRemainMngs =
 		// this.interimRemOffMonth.monthInterimRemainData(
 		// this.companyId, this.employeeId, period);
-		
+
 		/** Workを考慮した月次処理用の暫定残数管理データを作成する */
-		this.dailyInterimRemainMngs = CreateDailyInterimRemainMngs.createDailyInterimRemainMngs(require, cacheCarrier, 
+		this.dailyInterimRemainMngs = CreateDailyInterimRemainMngs.createDailyInterimRemainMngs(require, cacheCarrier,
 				this.companyId, this.employeeId, period, this.monthlyCalculatingDailys.getDailyWorks(this.employeeId),
 				this.companySets.getAbsSettingOpt(), this.companySets.getDayOffSetting(), this.aggregateResult.getAttendanceTime());
 

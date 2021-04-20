@@ -65,15 +65,16 @@ public class JpaChildCareNurseLevRemainInfoRepo extends JpaRepository {
 				}
 
 				List<NursingCareLeaveRemainingInfo> data = new NtsResultSet(stmt.executeQuery()).getList(rec -> {
-					// 要修正jinno 見直す
 					if ( nursingType.equals(NursingCategory.ChildNursing)) {
 						return ChildCareLeaveRemainingInfo.createChildCareLeaveInfo(rec.getString("SID"),
 								rec.getInt("USE_ATR"), rec.getInt("UPPER_LIM_SET_ART"),
 								rec.getInt("MAX_DAY_THIS_FISCAL_YEAR"), rec.getInt("MAX_DAY_NEXT_FISCAL_YEAR"));
-					} else { // if ( nursingType.equals(NursingCategory.Nursing)) {
+					} else  if ( nursingType.equals(NursingCategory.Nursing)) {
 						return CareLeaveRemainingInfo.createCareLeaveInfo(rec.getString("SID"),
 								rec.getInt("USE_ATR"), rec.getInt("UPPER_LIM_SET_ART"),
 								rec.getInt("MAX_DAY_THIS_FISCAL_YEAR"), rec.getInt("MAX_DAY_NEXT_FISCAL_YEAR"));
+					} else {
+						return null;
 					}
 				});
 				result.addAll(data);

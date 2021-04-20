@@ -10,9 +10,12 @@ import javax.persistence.Table;
 import javax.persistence.Version;
 
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.care.CareUsedNumberData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.ChildCareNurseUsedNumber;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.ChildCareUsedNumberData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.usenumber.DayNumberOfUse;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.usenumber.TimeOfUse;
+import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingCategory;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 
@@ -28,11 +31,9 @@ public class KrcdtHdnursingUse extends UkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-
 	/** プライマリキー */
 	@EmbeddedId
 	public KrcdtHdnursingUsePK pk;
-
 
 	/** 排他バージョン */
 	@Version
@@ -64,27 +65,26 @@ public class KrcdtHdnursingUse extends UkJpaEntity implements Serializable {
 	 * @return 子の看護介護休暇使用数
 	 */
 	public ChildCareNurseUsedNumber toDomain() {
-		return ChildCareNurseUsedNumber.of(new DayNumberOfUse(usedDays),
-																	Optional.ofNullable(usedMinutes == null ? null : new TimeOfUse(usedMinutes)));
+		ChildCareNurseUsedNumber childCareNurseUsedNumber = ChildCareNurseUsedNumber.of(
+				new DayNumberOfUse(usedDays),
+				Optional.ofNullable(usedMinutes == null ? null : new TimeOfUse(usedMinutes)));
+
+		if (this.pk.nursingType.equals(NursingCategory.ChildNursing.value)) {
+			return new ChildCareUsedNumberData(this.pk.employeeId, childCareNurseUsedNumber);
+		} else if (this.pk.nursingType.equals(NursingCategory.Nursing.value)) {
+			return new CareUsedNumberData(this.pk.employeeId, childCareNurseUsedNumber);
+		}
+
+		return new ChildCareNurseUsedNumber();
 	}
 
 	/**
-	 * ドメインから変換　（for Insert）
+	 * ドメインから変換
 	 * @param domain 子の看護介護休暇使用数
 	 */
-	public void fromDomainForPersist(String employeeId, ChildCareNurseUsedNumber domain) {
-
-		this.pk = new KrcdtHdnursingUsePK();
-		this.fromDomainForUpdate(employeeId, domain);
-	}
-
-	/**
-	 * ドメインから変換　(for Update)
-	 * @param domain 子の看護介護休暇使用数
-	 */
-	public void fromDomainForUpdate(String employeeId, ChildCareNurseUsedNumber domain){
-
+	public void fromDomain(ChildCareNurseUsedNumber domain) {
 		this.usedDays = domain.getUsedDay().v();
-		this.usedMinutes = domain.getUsedTimes().map(c -> c.v()).orElse(null);
+		this.usedMinutes = domain.getUsedTimes().map(mapper->mapper.v()).orElse(null);
 	}
+
 }
