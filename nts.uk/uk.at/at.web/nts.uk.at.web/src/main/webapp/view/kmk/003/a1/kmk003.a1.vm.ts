@@ -208,17 +208,6 @@ module a1 {
                 self.predseting.predTime.addTime.morning(returnObject.morningDialog);
                 self.predseting.predTime.addTime.afternoon(returnObject.afternoonDialog);
                 self.linkedWithDialogF(self.checkLinked(returnObject));
-//                if (self.linkedWithDialogF()) {
-//                    //bind from parent to dialog model
-//                    self.predseting.predTime.addTime.oneDay(self.predseting.predTime.predTime.oneDay());
-//                    self.predseting.predTime.addTime.morning(self.predseting.predTime.predTime.morning());
-//                    self.predseting.predTime.addTime.afternoon(self.predseting.predTime.predTime.afternoon());
-//                }
-//                else {
-//                    self.predseting.predTime.addTime.oneDay(returnObject.oneDayDialog);
-//                    self.predseting.predTime.addTime.morning(returnObject.morningDialog);
-//                    self.predseting.predTime.addTime.afternoon(returnObject.afternoonDialog);
-//                }
             });
         }
         
@@ -233,7 +222,7 @@ module a1 {
         
         private checkLinked(dialogDataObject: any): boolean {
             let self = this;
-            return (dialogDataObject.oneDayDialog == self.predseting.predTime.predTime.oneDay()) && (dialogDataObject.morningDialog == self.predseting.predTime.predTime.morning()) && (dialogDataObject.afternoonDialog == self.predseting.predTime.predTime.afternoon());
+            return (dialogDataObject.oneDayDialog != self.predseting.predTime.predTime.oneDay()) || (dialogDataObject.morningDialog != self.predseting.predTime.predTime.morning()) || (dialogDataObject.afternoonDialog != self.predseting.predTime.predTime.afternoon());
         }
     }
     export class Item {
