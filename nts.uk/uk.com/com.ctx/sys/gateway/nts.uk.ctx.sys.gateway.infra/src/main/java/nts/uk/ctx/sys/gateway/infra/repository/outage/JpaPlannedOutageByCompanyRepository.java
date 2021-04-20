@@ -10,7 +10,6 @@ import nts.uk.ctx.sys.gateway.dom.outage.company.PlannedOutageByCompany;
 import nts.uk.ctx.sys.gateway.dom.outage.company.PlannedOutageByCompanyRepository;
 import nts.uk.ctx.sys.gateway.infra.entity.stopbycompany.SgwdtStopByCompany;
 import nts.uk.ctx.sys.gateway.infra.entity.stopbycompany.SgwdtStopByCompanyPK;
-import nts.uk.ctx.sys.shared.dom.company.CompanyInforImport;
 import nts.uk.shr.com.company.CompanyId;
 
 @Stateless
@@ -21,8 +20,10 @@ public class JpaPlannedOutageByCompanyRepository extends JpaRepository implement
 	private SgwdtStopByCompany toEntity(PlannedOutageByCompany domain) {
 		return new SgwdtStopByCompany(
 				new SgwdtStopByCompanyPK(
-						CompanyInforImport.extractTenantCode(domain.getCompanyId()), 
-						CompanyInforImport.extractCompanyCode(domain.getCompanyId())), 
+						CompanyId.getTenantCode(domain.getCompanyId()), 
+						//CompanyInforImport.extractTenantCode(domain.getCompanyId()), 
+						CompanyId.getCompanyCode(domain.getCompanyId())), 
+						//CompanyInforImport.extractCompanyCode(domain.getCompanyId())), 
 				domain.getState().getSystemAvailability().value, 
 				domain.getState().getNoticeMessage().toString(), 
 				domain.getState().getOutageMode().value, 
@@ -45,8 +46,8 @@ public class JpaPlannedOutageByCompanyRepository extends JpaRepository implement
 				+ "where CONTRACT_CD = @tenantCode "
 				+ "and COMPANY_CD = @companyCode ";
 		return new NtsStatement(query, this.jdbcProxy())
-				.paramString("tenantCode", new CompanyId().getTenantCode(companyId))
-				.paramString("companyCode", new CompanyId().getCompanyCode(companyId))
+				.paramString("tenantCode", CompanyId.getTenantCode(companyId))
+				.paramString("companyCode", CompanyId.getCompanyCode(companyId))
 				.getSingle(rec -> SgwdtStopByCompany.MAPPER.toEntity(rec).toDomain());
 	}
 }

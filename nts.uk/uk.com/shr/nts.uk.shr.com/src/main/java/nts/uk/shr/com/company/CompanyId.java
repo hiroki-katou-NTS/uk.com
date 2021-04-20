@@ -6,14 +6,14 @@ public class CompanyId {
 		return tenantCode + "-" + companyCode;
 	}
 	
-	public String getTenantCode(String companyId) {
+	public static String getTenantCode(String companyId) {
 		if(!companyId.contains("-")) {
 			throw new RuntimeException("会社IDが不正です");
 		}
 		return companyId.split("-")[0];
 	}
 
-	public String getCompanyCode(String companyId) {
+	public static String getCompanyCode(String companyId) {
 		if(!companyId.contains("-")) {
 			throw new RuntimeException("会社IDが不正です");
 		}
