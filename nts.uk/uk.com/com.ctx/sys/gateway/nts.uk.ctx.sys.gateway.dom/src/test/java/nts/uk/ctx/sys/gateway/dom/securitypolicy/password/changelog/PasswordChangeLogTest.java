@@ -2,7 +2,9 @@ package nts.uk.ctx.sys.gateway.dom.securitypolicy.password.changelog;
 
 import static org.assertj.core.api.Assertions.*;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import org.junit.Test;
 
@@ -34,5 +36,20 @@ public class PasswordChangeLogTest {
 
 	private static PasswordChangeLogDetail changedAt(GeneralDate date) {
 		return new PasswordChangeLogDetail(GeneralDateTime.midnightOf(date), "hash");
+	}
+	
+	@Test
+	public void getLasterLog() {
+		List<PasswordChangeLogDetail> lists = new ArrayList<>(); 
+		
+		val oldDummy     = new PasswordChangeLogDetail(GeneralDateTime.now(), "");
+		val latestDummy = new PasswordChangeLogDetail(GeneralDateTime.now().addDays(1), ""); 
+		
+		lists.add(oldDummy);
+		lists.add(latestDummy);
+		val target = new PasswordChangeLog("", lists);
+		
+		assertThat(target.latestLog()).isEqualTo(latestDummy);
+		
 	}
 }
