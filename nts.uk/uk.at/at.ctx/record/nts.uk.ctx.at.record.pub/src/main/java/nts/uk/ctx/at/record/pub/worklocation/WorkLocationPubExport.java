@@ -8,9 +8,9 @@ import nts.arc.layer.dom.AggregateRoot;
 @AllArgsConstructor
 public class WorkLocationPubExport extends AggregateRoot {
 	/**
-	 * 会社CD
+	 * thay CID thành contractCode
 	 */
-	private String companyID;
+	private String contractCode;
 	/**
 	 * 場所CD
 	 */
@@ -19,26 +19,30 @@ public class WorkLocationPubExport extends AggregateRoot {
 	 * 場所名
 	 */
 	private String workLocationName;
+//	/**
+//	 * 
+//	 */
+//	private String horiDistance;
+//	/**
+//	 * 
+//	 */
+//	private String vertiDistance;
+	/**
+	 * bỏ dài rộng, thay bằng bán kính (Enum Radius)
+	 */
+	private int radius;
 	/**
 	 * 
 	 */
-	private String horiDistance;
+	private double latitude;
 	/**
 	 * 
 	 */
-	private String vertiDistance;
-	/**
-	 * 
-	 */
-	private String latitude;
-	/**
-	 * 
-	 */
-	private String longitude;
+	private double longitude;
 
-	public static WorkLocationPubExport createSimpleFromJavaType(String companyID, String workLocationCD,
-			String workLocationName, String horiDistance, String vertiDistance, String latitude, String longitude) {
-		return new WorkLocationPubExport(companyID, workLocationCD, workLocationName, horiDistance, vertiDistance,
+	public static WorkLocationPubExport createSimpleFromJavaType(String contractCode, String workLocationCD,
+			String workLocationName, int radius, double latitude, double longitude) {
+		return new WorkLocationPubExport(contractCode, workLocationCD, workLocationName, radius,
 				latitude, longitude);
 	}
 }

@@ -47,7 +47,7 @@ public class NursingLeaveCommandHandler extends CommandHandler<NursingLeaveComma
         List<NursingLeaveSetting> result = this.nursingLeaveRepo.findByCompanyId(companyId);
 
         // Check fields enable/disable.
-        this.validateField(command, result);
+//        this.validateField(command, result);
 
         NursingLeaveSetting nursingSetting = command.getNursingSetting().toDomain(companyId);
         NursingLeaveSetting childNursingSetting = command.getChildNursingSetting().toDomain(companyId);

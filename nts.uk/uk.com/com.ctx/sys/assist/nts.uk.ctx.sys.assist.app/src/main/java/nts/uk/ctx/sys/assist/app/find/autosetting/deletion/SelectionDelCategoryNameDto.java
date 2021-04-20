@@ -1,8 +1,10 @@
 package nts.uk.ctx.sys.assist.app.find.autosetting.deletion;
 
+import lombok.Builder;
 import lombok.Data;
 
 @Data
+@Builder
 public class SelectionDelCategoryNameDto {
 	/**
 	 * カテゴリ名称

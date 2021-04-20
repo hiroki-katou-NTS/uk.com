@@ -4,16 +4,15 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.command.vacation.setting.nursingleave.dto;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.TimeDigestiveUnit;
-import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.ChildCareNurseUpperLimit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.MaxPersonSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.MaxPersonSettingGetMemento;
@@ -46,6 +45,12 @@ public class NursingLeaveSettingDto {
 
     /** The nursing number person. */
     private Integer nursingNumberPerson;
+    
+    /** The nursing number leave day 2. */
+    private Integer nursingNumberLeaveDay2;
+
+    /** The nursing number person 2. */
+    private Integer nursingNumberPerson2;
 
     /** The special holiday frame. */
     private Integer specialHolidayFrame;
@@ -162,13 +167,8 @@ public class NursingLeaveSettingDto {
 
 		@Override
 		public List<MaxPersonSetting> getMaxPersonSetting() {
-			List<MaxPersonSetting> result = new ArrayList<>();
-			result.add(MaxPersonSetting.of(
-					new ChildCareNurseUpperLimit(this.setting.nursingNumberLeaveDay), new NumberOfCaregivers(1)));
-			result.add(MaxPersonSetting.of(
-					new ChildCareNurseUpperLimit(this.setting.nursingNumberPerson), new NumberOfCaregivers(2)));
-
-			return result;
+			 return MaxPersonSetting.getList(new JpaMaxPersonSettingGetMemento(this.setting.nursingNumberLeaveDay,
+	                    this.setting.nursingNumberPerson));
 		}
 
     }
@@ -182,7 +182,14 @@ public class NursingLeaveSettingDto {
         private Integer nursingNumberLeaveDay;
 
         /** The nursing number person. */
+        private Integer nursingNumberPerson;
+        
+        /** The nursing number leave day. */
         private Integer nursingNumberLeaveDay2;
+
+        /** The nursing number person. */
+        private Integer nursingNumberPerson2;
+
 
         /**
          * Instantiates a new jpa max person setting get memento.
@@ -201,9 +208,18 @@ public class NursingLeaveSettingDto {
 		}
 
 		@Override
-		public NumberOfCaregivers getNursingNumberPerson() {
-			 return this.nursingNumberLeaveDay2 != null ? new NumberOfCaregivers(this.nursingNumberLeaveDay2) : null;
+		public ChildCareNurseUpperLimit getNursingNumberLeaveDay2() {
+			 return this.nursingNumberLeaveDay2 != null ? new ChildCareNurseUpperLimit(this.nursingNumberLeaveDay2) : null;
 		}
 
+		@Override
+		public NumberOfCaregivers getNursingNumberPerson() {			
+			return this.nursingNumberPerson != null ? new NumberOfCaregivers(this.nursingNumberPerson) : null;
+		}
+
+		@Override
+		public NumberOfCaregivers getNursingNumberPerson2() {
+			return this.nursingNumberPerson2 != null ? new NumberOfCaregivers(this.nursingNumberPerson2) : null;
+		}
     }
 }

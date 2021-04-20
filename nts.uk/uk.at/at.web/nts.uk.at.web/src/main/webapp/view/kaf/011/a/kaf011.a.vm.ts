@@ -60,9 +60,13 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 				}
 			}
 			vm.$blockui("grayout");
-			vm.loadData(vm.params?vm.params.employeeIds:[], paramDate?[paramDate]:[], vm.appType()).then(() => {
-				vm.$blockui("grayout");
-				vm.$ajax('at/request/application/holidayshipment/startPageARefactor',{sIDs: [], appDate: [], appDispInfoStartup: vm.appDispInfoStartupOutput()}).then((data: any) =>{
+			vm.loadData(vm.params?vm.params.employeeIds:[], paramDate?[paramDate]:[], vm.appType()).then((loadDataFlag: any) => {
+				if(loadDataFlag) {
+					vm.$blockui("grayout");
+					return vm.$ajax('at/request/application/holidayshipment/startPageARefactor',{sIDs: [], appDate: [], appDispInfoStartup: vm.appDispInfoStartupOutput()});
+				}
+			}).then((data: any) =>{
+				if(data) {
 					vm.displayInforWhenStarting(data);
 					vm.isSendMail(data.appDispInfoStartup.appDispInfoNoDateOutput.applicationSetting.appDisplaySetting.manualSendMailAtr == 1);
 					vm.remainDays(data.remainingHolidayInfor.remainDays + '日');
@@ -74,19 +78,15 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 					$('#contents-area').css({'display': ''});
 					$('#functions-area').css({'opacity': ''});
 					CommonProcess.checkUsage(true, "#recAppDate", vm);
-					$("#recAppDate").focus();
-					vm.$blockui("hide"); 
-				}).fail((failData: any) => {
-					vm.$dialog.error({ messageId: failData.messageId, messageParams: failData.parameterIds }).then(() => { vm.$jump("com", "/view/ccg/008/a/index.xhtml"); });
-				}).always(() => {
-					
-				});
+					$("#recAppDate").focus();	
+				}
+				vm.$blockui("hide"); 
 			}).fail((failData: any) => {
 				console.log(failData);
 				if (failData.messageId === "Msg_43") {
 					vm.$dialog.error(failData).then(() => { vm.$jump("com", "/view/ccg/008/a/index.xhtml"); });
 				} else {
-					vm.$dialog.error({ messageId: failData.messageId, messageParams: failData.parameterIds });
+					vm.$dialog.error({ messageId: failData.messageId, messageParams: failData.parameterIds }).then(() => { vm.$jump("com", "/view/ccg/008/a/index.xhtml"); });
 				}
 				vm.$blockui("hide"); 
 			});
@@ -98,12 +98,17 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 			vm.absenceLeaveApp.application.opAppReason = vm.recruitmentApp.application.opAppReason = vm.applicationCommon().opAppReason;
 			
 			vm.recruitmentApp.application.appDate.subscribe(value =>{
-				if(value != "" && !$('#recAppDate').ntsError('hasError') && vm.recruitmentApp.started){
+				const recDateMoment = moment(value, 'YYYY/MM/DD') as any;
+				if(recDateMoment._isValid && vm.recruitmentApp.started){
 					vm.$blockui("grayout");
-					let holidayDate = (vm.appCombinaSelected() != 1 && vm.absenceLeaveApp.application.appDate() && !$('#absAppDate').ntsError('hasError')) ? moment(vm.absenceLeaveApp.application.appDate()).format('YYYY/MM/DD'): null;
+					vm.$errors('clear');
+					const absDate = vm.absenceLeaveApp.application.appDate() as any;
+					const absDateMoment = moment(absDate, 'YYYY/MM/DD') as any;
+					let holidayDate = (vm.appCombinaSelected() != 1 && vm.absenceLeaveApp.application.appDate() && absDateMoment._isValid) ? absDateMoment.format('YYYY/MM/DD') : null;
 					let displayInforWhenStartingdto = vm.displayInforWhenStarting();
 					displayInforWhenStartingdto.rec = null;
 					displayInforWhenStartingdto.abs = null;
+					
 					vm.$ajax('at/request/application/holidayshipment/changeRecDate',{workingDate: moment(value).format('YYYY/MM/DD'), holidayDate: holidayDate, displayInforWhenStarting: displayInforWhenStartingdto}).then((data: any) =>{
 						vm.appDispInfoStartupOutput(data.appDispInfoStartup);
 						vm.displayInforWhenStarting(data);
@@ -111,7 +116,11 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 							vm.recruitmentApp.bindingScreenA(data.applicationForWorkingDay, data);					
 						}
 						vm.absenceLeaveApp.workInformation.workType(data.applicationForHoliday.workType);
-						CommonProcess.checkUsage(true, "#recAppDate", vm);
+						if (recDateMoment.format('YYYY/MM/DD') === data.appDispInfoStartup.appDispInfoWithDateOutput.baseDate) {
+							CommonProcess.checkUsage(true, "#recAppDate", vm);							
+						} else {
+							CommonProcess.checkUsage(true, "#absAppDate", vm);	
+						}
 					}).always(() => {
 						vm.$blockui("hide"); 
 					});
@@ -119,19 +128,27 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 			});
 			
 			vm.absenceLeaveApp.application.appDate.subscribe(value =>{
-				if(value != "" && !$('#absAppDate').ntsError('hasError') && vm.recruitmentApp.started){
+				const absDateMoment = moment(value, 'YYYY/MM/DD') as any;
+				if(absDateMoment._isValid && vm.recruitmentApp.started){
 					vm.$blockui("grayout");
+					vm.$errors('clear');
 					let displayInforWhenStartingdto = vm.displayInforWhenStarting();
 					displayInforWhenStartingdto.rec = null;
 					displayInforWhenStartingdto.abs = null;
-					let workingDate = (vm.appCombinaSelected() != 2 && vm.recruitmentApp.application.appDate() && !$('#recAppDate').ntsError('hasError')) ? moment(vm.recruitmentApp.application.appDate()).format('YYYY/MM/DD'): null;
+					const recDate = vm.recruitmentApp.application.appDate() as any;
+					const recDateMoment = moment(recDate, 'YYYY/MM/DD') as any;
+					let workingDate = (vm.appCombinaSelected() != 2 && vm.recruitmentApp.application.appDate() && recDateMoment._isValid) ? recDateMoment.format('YYYY/MM/DD') : null;
 					vm.$ajax('at/request/application/holidayshipment/changeAbsDate',{workingDate: workingDate, holidayDate: moment(value).format('YYYY/MM/DD'), displayInforWhenStarting: displayInforWhenStartingdto}).then((data: any) =>{
 						vm.appDispInfoStartupOutput(data.appDispInfoStartup)
 						vm.displayInforWhenStarting(data);
 						if(data.appDispInfoStartup.appDispInfoNoDateOutput.applicationSetting.recordDate == 1){
 							vm.absenceLeaveApp.bindingScreenA(data.applicationForHoliday, data);
 						}
-						CommonProcess.checkUsage(true, "#absAppDate", vm);
+						if (absDateMoment.format('YYYY/MM/DD') === data.appDispInfoStartup.appDispInfoWithDateOutput.baseDate) {
+							CommonProcess.checkUsage(true, "#absAppDate", vm);							
+						} else {
+							CommonProcess.checkUsage(true, "#recAppDate", vm);		
+						}
 					}).always(() => {
 						vm.$blockui("hide"); 
 					});
@@ -149,11 +166,13 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 			});
 		}
 		
+		
 		mounted(){
 			
 		}
 		
-		triggerValidate(): boolean{
+		triggerValidate(): boolean {
+			$('#kaf000-a-component3-prePost').trigger("validate");
 			$('.nts-input').trigger("validate");
 			$('input').trigger("validate");
 			return nts.uk.ui.errors.hasError();
@@ -177,17 +196,19 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 							return n.timeZone.startTime == undefined || n.timeZone.startTime == undefined;  
 						}); 
 					}
-				console.log(data);	
 				vm.$blockui("show");
-				vm.$ajax('at/request/application/holidayshipment/save', data).then((result) =>{
+
+				vm.$ajax('at/request/application/holidayshipment/save', data).then((result) => {
 					vm.$blockui("hide");
-					vm.$dialog.info({ messageId: "Msg_15" }).done(()=>{
-						CommonProcess.handleAfterRegister(result, vm.isSendMail(), vm);
+					vm.$dialog.info({messageId: "Msg_15"}).done(() => {
+						nts.uk.request.ajax("at", "at/request/application/reflect-app", result.reflectAppIdLst);
+						CommonProcess.handleAfterRegister(result, vm.isSendMail(), vm, vm.isAgentMode(), vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.employeeInfoLst);
 					});
 				}).fail((failData) => {
-					vm.$dialog.error({ messageId: failData.messageId, messageParams: failData.parameterIds });
+					vm.$dialog.error({messageId: failData.messageId, messageParams: failData.parameterIds});
 					vm.$blockui("hide");
 				});
+
 			}
 			
 			

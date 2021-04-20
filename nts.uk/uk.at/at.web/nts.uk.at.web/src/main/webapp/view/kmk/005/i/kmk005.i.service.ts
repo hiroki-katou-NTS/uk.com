@@ -6,11 +6,15 @@ module nts.uk.at.view.kmk005.i.service {
         'gets': 'at/share/psBonusPaySetting/getList',
         'get': 'at/share/psBonusPaySetting/getSetting/{0}',
         'save': 'at/share/psBonusPaySetting/saveSetting',
-        getName: 'at/share/bonusPaySetting/getBonusPaySetting/{0}'
+        getName: 'at/share/bonusPaySetting/getBonusPaySetting/{0}',
+        getListHist: 'ctx/at/shared/workingcondition/getList',
+        getHistItem: 'ctx/at/shared/wcitem/findOne',
+        getList: 'ctx/at/shared/wcitem/getList',
+        register: 'ctx/at/shared/wcitem/register'
     }
 
     export function getList(wids: Array<string>) {
-        return ajax(paths.gets, wids);
+        return ajax(paths.getList, wids);
     }
 
     export function getData(wid) {
@@ -31,5 +35,16 @@ module nts.uk.at.view.kmk005.i.service {
         }
         // call webservices
         return ajax(paths.save, command);
+    }
+    export function getHist(employeeId: string) : JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.getListHist + "/" + employeeId);
+    }
+
+    export function getHistItem(histId: string) : JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.getHistItem + "/" + histId);
+    }
+
+    export function register(command: any): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.register, command);
     }
 }

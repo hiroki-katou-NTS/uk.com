@@ -8,11 +8,12 @@ import java.util.List;
 import org.assertj.core.groups.Tuple;
 import org.junit.Test;
 
-import nts.uk.ctx.at.shared.dom.application.reflectprocess.DailyRecordOfApplication;
-import nts.uk.ctx.at.shared.dom.application.reflectprocess.ScheduleRecordClassifi;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.common.ReflectApplicationHelper;
 import nts.uk.ctx.at.shared.dom.common.TimeZoneWithWorkNo;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.AppTimeType;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.DailyRecordOfApplication;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.ScheduleRecordClassifi;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.timeleaveapplication.TimeLeaveAppReflectCondition;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
 import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
 
@@ -40,8 +41,8 @@ public class ReflectTimeVacationTimeZoneTest {
 		// ドメイン日別実績には勤務Noが存在します
 		List<TimeZoneWithWorkNo> timeZoneWithWorkNoLst = Arrays.asList(new TimeZoneWithWorkNo(1, 481, 1081),
 				new TimeZoneWithWorkNo(2, 1082, 1200));
-		List<Integer> lstResult = ReflectTimeVacationTimeZone.process(AppTimeType.ATWORK, timeZoneWithWorkNoLst,
-				dailyApp);
+		List<Integer> lstResult = new TimeLeaveAppReflectCondition().processVacationTimeZone(AppTimeType.ATWORK, timeZoneWithWorkNoLst,
+				dailyApp).getLstItemId();
 		assertThat(dailyApp.getAttendanceLeave().get().getTimeLeavingWorks())
 				.extracting(x -> x.getWorkNo().v(),
 						x -> x.getAttendanceStamp().get().getTimeVacation().get().getStart().v(),
@@ -53,7 +54,7 @@ public class ReflectTimeVacationTimeZoneTest {
 		dailyApp = ReflectApplicationHelper.createRCWithTimeLeavFull(ScheduleRecordClassifi.SCHEDULE, 1);
 		timeZoneWithWorkNoLst = Arrays.asList(new TimeZoneWithWorkNo(1, 481, 1081),
 				new TimeZoneWithWorkNo(2, 1082, 1200));
-		lstResult = ReflectTimeVacationTimeZone.process(AppTimeType.ATWORK2, timeZoneWithWorkNoLst, dailyApp);
+		lstResult =  new TimeLeaveAppReflectCondition().processVacationTimeZone(AppTimeType.ATWORK2, timeZoneWithWorkNoLst, dailyApp).getLstItemId();
 		assertThat(dailyApp.getAttendanceLeave().get().getTimeLeavingWorks())
 				.extracting(x -> x.getWorkNo() == null ? null : x.getWorkNo().v(),
 						x -> x.getAttendanceStamp().get().getTimeVacation().map(y -> y.getStart().v()).orElse(null),
@@ -85,8 +86,8 @@ public class ReflectTimeVacationTimeZoneTest {
 		// ドメイン日別実績には勤務Noが存在します
 		List<TimeZoneWithWorkNo> timeZoneWithWorkNoLst = Arrays.asList(new TimeZoneWithWorkNo(1, 481, 1081),
 				new TimeZoneWithWorkNo(2, 1082, 1200));
-		List<Integer> lstResult = ReflectTimeVacationTimeZone.process(AppTimeType.ATWORK, timeZoneWithWorkNoLst,
-				dailyApp);
+		List<Integer> lstResult =  new TimeLeaveAppReflectCondition().processVacationTimeZone(AppTimeType.ATWORK, timeZoneWithWorkNoLst,
+				dailyApp).getLstItemId();
 		assertThat(dailyApp.getAttendanceLeave().get().getTimeLeavingWorks()).extracting(x -> x.getWorkNo().v(),
 				x -> x.getAttendanceStamp().get().getStamp().get().getTimeDay().getTimeWithDay().get().v(),
 				x -> x.getAttendanceStamp().get().getStamp().get().getTimeDay().getReasonTimeChange()
@@ -98,7 +99,7 @@ public class ReflectTimeVacationTimeZoneTest {
 		dailyApp = ReflectApplicationHelper.createRCWithTimeLeavFull(ScheduleRecordClassifi.RECORD, 1);
 		timeZoneWithWorkNoLst = Arrays.asList(new TimeZoneWithWorkNo(1, 481, 1081),
 				new TimeZoneWithWorkNo(2, 1082, 1200));
-		lstResult = ReflectTimeVacationTimeZone.process(AppTimeType.ATWORK2, timeZoneWithWorkNoLst, dailyApp);
+		lstResult =  new TimeLeaveAppReflectCondition().processVacationTimeZone(AppTimeType.ATWORK2, timeZoneWithWorkNoLst, dailyApp).getLstItemId();
 		assertThat(dailyApp.getAttendanceLeave().get().getTimeLeavingWorks()).extracting(x -> x.getWorkNo().v(),
 				x -> x.getAttendanceStamp().get().getStamp().get().getTimeDay().getTimeWithDay().get().v(),
 				x -> x.getAttendanceStamp().get().getStamp().get().getTimeDay().getReasonTimeChange()
@@ -128,8 +129,8 @@ public class ReflectTimeVacationTimeZoneTest {
 
 		// ドメイン日別実績には勤務Noが存在します
 		List<TimeZoneWithWorkNo> timeZoneWithWorkNoLst = Arrays.asList(new TimeZoneWithWorkNo(1, 481, 1081));
-		List<Integer> lstResult = ReflectTimeVacationTimeZone.process(AppTimeType.PRIVATE, timeZoneWithWorkNoLst,
-				dailyApp);// 私用外出
+		List<Integer> lstResult =  new TimeLeaveAppReflectCondition().processVacationTimeZone(AppTimeType.PRIVATE, timeZoneWithWorkNoLst,
+				dailyApp).getLstItemId();// 私用外出
 		assertThat(dailyApp.getOutingTime().get().getOutingTimeSheets()).extracting(x -> x.getOutingFrameNo().v(),
 				x -> x.getGoOut().get().getTimeDay().getTimeWithDay().get().v(),
 				x -> x.getComeBack().get().getTimeDay().getTimeWithDay().get().v(),
@@ -137,7 +138,7 @@ public class ReflectTimeVacationTimeZoneTest {
 		assertThat(lstResult).isEqualTo(Arrays.asList(88, 91, 86));
 
 		dailyApp = ReflectApplicationHelper.createRCWithTimeLeavFull(ScheduleRecordClassifi.RECORD, 1);
-		lstResult = ReflectTimeVacationTimeZone.process(AppTimeType.UNION, timeZoneWithWorkNoLst, dailyApp);// 組合外出
+		lstResult =  new TimeLeaveAppReflectCondition().processVacationTimeZone(AppTimeType.UNION, timeZoneWithWorkNoLst, dailyApp).getLstItemId();// 組合外出
 		assertThat(dailyApp.getOutingTime().get().getOutingTimeSheets()).extracting(x -> x.getOutingFrameNo().v(),
 				x -> x.getGoOut().get().getTimeDay().getTimeWithDay().get().v(),
 				x -> x.getComeBack().get().getTimeDay().getTimeWithDay().get().v(),
@@ -147,7 +148,7 @@ public class ReflectTimeVacationTimeZoneTest {
 		// ドメイン日別実績には勤務Noが存在しない
 		dailyApp = ReflectApplicationHelper.createRCWithTimeLeavFull(ScheduleRecordClassifi.RECORD, 1);
 		timeZoneWithWorkNoLst = Arrays.asList(new TimeZoneWithWorkNo(2, 481, 1081));
-		lstResult = ReflectTimeVacationTimeZone.process(AppTimeType.PRIVATE, timeZoneWithWorkNoLst, dailyApp);// 私用外出
+		lstResult =  new TimeLeaveAppReflectCondition().processVacationTimeZone(AppTimeType.PRIVATE, timeZoneWithWorkNoLst, dailyApp).getLstItemId();// 私用外出
 		assertThat(dailyApp.getOutingTime().get().getOutingTimeSheets()).extracting(x -> x.getOutingFrameNo().v(),
 				x -> x.getGoOut().get().getTimeDay().getTimeWithDay().get().v(),
 				x -> x.getComeBack().get().getTimeDay().getTimeWithDay().get().v(),
@@ -156,7 +157,7 @@ public class ReflectTimeVacationTimeZoneTest {
 		assertThat(lstResult).isEqualTo(Arrays.asList(95, 98, 93));
 
 		dailyApp = ReflectApplicationHelper.createRCWithTimeLeavFull(ScheduleRecordClassifi.RECORD, 1);
-		lstResult = ReflectTimeVacationTimeZone.process(AppTimeType.UNION, timeZoneWithWorkNoLst, dailyApp);// 組合外出
+		lstResult =  new TimeLeaveAppReflectCondition().processVacationTimeZone(AppTimeType.UNION, timeZoneWithWorkNoLst, dailyApp).getLstItemId();// 組合外出
 		assertThat(dailyApp.getOutingTime().get().getOutingTimeSheets()).extracting(x -> x.getOutingFrameNo().v(),
 				x -> x.getGoOut().get().getTimeDay().getTimeWithDay().get().v(),
 				x -> x.getComeBack().get().getTimeDay().getTimeWithDay().get().v(),

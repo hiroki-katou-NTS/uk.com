@@ -47,5 +47,15 @@ public class JpaMaxPersonSettingGetMemento implements MaxPersonSettingGetMemento
     public NumberOfCaregivers getNursingNumberPerson() {
         return new NumberOfCaregivers(this.entity.getNursingNumPerson());
     }
+    
+	@Override
+	public ChildCareNurseUpperLimit getNursingNumberLeaveDay2() {
+		return new ChildCareNurseUpperLimit(this.entity.getNursingNumLeaveDay2());
+	}
 
+
+	@Override
+	public NumberOfCaregivers getNursingNumberPerson2() {
+		return new NumberOfCaregivers(this.entity.getNursingNumPerson2());
+	}
 }

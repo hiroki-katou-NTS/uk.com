@@ -197,7 +197,9 @@ module nts.uk.com.view.ccg008.a.screenModel {
 							})
 							.then((cache: any) => vm.$window.shared('cache', cache));
 
-              const dataProcess = currentOrNextMonth && currentOrNextMonth == 1 ? parseInt(vm.startDateInClosure()) : parseInt(vm.startDateInClosure()) + 1
+              const dataProcess = currentOrNextMonth && currentOrNextMonth == 1
+								? parseInt(vm.startDateInClosure())
+								: parseInt(moment.utc(vm.startDateInClosure(), 'YYYYMM').add(1, 'M').format('YYYYMM'));
               const params: any = {
                 closureId:  closureId,
                 processDate : dataProcess
@@ -298,7 +300,9 @@ module nts.uk.com.view.ccg008.a.screenModel {
                       });
                       vm.dataToppage(null);
                       vm.startDateInClosure(cache.startDate);
-                      const dataProcess = vm.currentOrNextMonth() && vm.currentOrNextMonth() === 1 ? parseInt(cache.startDate) : parseInt(cache.startDate) + 1
+                      const dataProcess = vm.currentOrNextMonth() && vm.currentOrNextMonth() == 1
+												? parseInt(vm.startDateInClosure())
+												: parseInt(moment.utc(vm.startDateInClosure(), 'YYYYMM').add(1, 'M').format('YYYYMM'));
                       const params: any = {
                         closureId:  cache.closureId,
                         processDate : dataProcess
@@ -315,7 +319,9 @@ module nts.uk.com.view.ccg008.a.screenModel {
                       vm.startDateInClosure(cache.startDate);
                       vm.closureId(obj.closureId);
                       vm.currentOrNextMonth(obj.currentOrNextMonth);
-                      const dataProcess = vm.currentOrNextMonth() && vm.currentOrNextMonth() == 1 ? parseInt(cache.startDate) : parseInt(cache.startDate) + 1
+                      const dataProcess = vm.currentOrNextMonth() && vm.currentOrNextMonth() == 1
+												? parseInt(vm.startDateInClosure())
+												: parseInt(moment.utc(vm.startDateInClosure(), 'YYYYMM').add(1, 'M').format('YYYYMM'));
                       const params: any = {
                         closureId:  cache.closureId,
                         processDate : dataProcess
@@ -405,10 +411,12 @@ module nts.uk.com.view.ccg008.a.screenModel {
 				if (urlLayout1) {
 					vm.widgetCenter(urlLayout1);
 				} else {
-					const [first] = layout1;
+					if (layout1) {
+						const [first] = layout1;
 
-					if (first) {
-						vm.widgetCenter(first);
+						if (first) {
+							vm.widgetCenter(first);
+						}
 					}
 				}
 

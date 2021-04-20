@@ -4,17 +4,16 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.vacation.setting.nursingleave;
 
-import java.util.ArrayList;
 import java.util.List;
+
+//import java.util.List;
 import java.util.Optional;
 //import java.util.stream.Collectors;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.TimeDigestiveUnit;
-import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.ChildCareNurseUpperLimit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.MaxPersonSetting;
-import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NumberOfCaregivers;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingCategory;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingLeaveSettingGetMemento;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.TimeCareNursingSet;
@@ -93,13 +92,7 @@ public class JpaNursingLeaveSettingGetMemento implements NursingLeaveSettingGetM
      */
     @Override
     public List<MaxPersonSetting> getMaxPersonSetting() {
-    	// 介護看護休暇上限人数設定
-    	List<MaxPersonSetting> maxPersonSetting = new ArrayList<>();
-
-    	maxPersonSetting.add(MaxPersonSetting.of(new ChildCareNurseUpperLimit(this.entityNursing.getNursingNumLeaveDay()), new NumberOfCaregivers(1)));
-    	maxPersonSetting.add(MaxPersonSetting.of(new ChildCareNurseUpperLimit(this.entityNursing.getNursingNumLeaveDay2()), new NumberOfCaregivers(2))); //一時対応　要確認
-
-    	return maxPersonSetting;
+        return MaxPersonSetting.getList(new JpaMaxPersonSettingGetMemento(this.entityNursing));
     }
 
 	@Override

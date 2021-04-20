@@ -186,7 +186,6 @@ public class GetAnnAndRsvRemNumWithinPeriod {
 		if (noCheckStartDate.isPresent())
 			noCheckStartDate.get();
 
-		// Require の不整合によるエラー
 		Optional<AggrResultOfAnnualLeave> aggrResultOfAnnualOpt
 			= GetAnnLeaRemNumWithinPeriodProc.algorithm(
 				require, cacheCarrier, companyId, employeeId, aggrPeriod,

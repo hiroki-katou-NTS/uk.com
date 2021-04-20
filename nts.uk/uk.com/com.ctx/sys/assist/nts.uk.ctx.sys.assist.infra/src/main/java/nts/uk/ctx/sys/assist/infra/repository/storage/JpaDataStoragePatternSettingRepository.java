@@ -23,8 +23,8 @@ public class JpaDataStoragePatternSettingRepository extends JpaRepository
 	private static final String SELECT_BY_CONTRACT_CD_AND_PATTERN_CD = SELECT_ALL
 			+ "WHERE t.pk.contractCode = :contractCd AND t.pk.patternCode = :patternCd";
 
-	private static final String SELECT_BY_PATTERN_ATR_AND_PATTERN_CD = SELECT_ALL
-			+ "WHERE t.pk.patternClassification = :patternAtr AND t.pk.patternCode = :patternCd";
+	private static final String SELECT_BY_PATTERN_ATR_AND_PATTERN_CD_AND_CONTRACT_CD = SELECT_ALL
+			+ "WHERE t.pk.patternClassification = :patternAtr AND t.pk.patternCode = :patternCd AND t.pk.contractCode = :contractCd";
 
 	@Override
 	@Transactional(value = TxType.REQUIRES_NEW)
@@ -53,11 +53,13 @@ public class JpaDataStoragePatternSettingRepository extends JpaRepository
 	}
 
 	@Override
-	public void update(DataStoragePatternSetting domain) {
+	public void update(DataStoragePatternSetting domain, String contractCd) {
 		SspmtDataStoragePatternSetting entity = this.queryProxy()
-				.query(SELECT_BY_PATTERN_ATR_AND_PATTERN_CD, SspmtDataStoragePatternSetting.class)
+				.query(SELECT_BY_PATTERN_ATR_AND_PATTERN_CD_AND_CONTRACT_CD, SspmtDataStoragePatternSetting.class)
 				.setParameter("patternAtr", domain.getPatternClassification().value)
-				.setParameter("patternCd", domain.getPatternCode().v()).getSingle().get();
+				.setParameter("patternCd", domain.getPatternCode().v())
+				.setParameter("contractCd", contractCd)
+				.getSingle().get();
 		domain.setMemento(entity);
 		this.commandProxy().update(entity);
 	}
