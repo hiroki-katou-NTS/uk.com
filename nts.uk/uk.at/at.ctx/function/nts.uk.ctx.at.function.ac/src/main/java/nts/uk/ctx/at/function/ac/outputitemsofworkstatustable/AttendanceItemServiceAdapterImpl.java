@@ -66,7 +66,7 @@ public class AttendanceItemServiceAdapterImpl implements AttendanceItemServiceAd
             if (item == null) continue;
               rs.put(e,new AnyPeriodRecordValuesExportDto(item.getAnyAggrFrameCode(),item.getItemValues()));
         }
-        return null;
+        return rs;
     }
 
 }
