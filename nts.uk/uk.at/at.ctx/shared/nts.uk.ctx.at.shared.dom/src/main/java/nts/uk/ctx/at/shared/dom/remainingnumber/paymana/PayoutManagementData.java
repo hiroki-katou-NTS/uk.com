@@ -52,7 +52,7 @@ public class PayoutManagementData extends AggregateRoot {
 	private DigestionAtr stateAtr;
 	
 	// 消滅日
-	public Optional<GeneralDate> disapearDate;
+	public Optional<GeneralDate> disapearDate = Optional.empty();
 	
 	public PayoutManagementData(String payoutId,String cid, String sid, boolean unknowDate, GeneralDate dayoffDate, GeneralDate expiredDate, int lawId,
 			Double occurredDays, Double unUsedDays, int stateAtr){
