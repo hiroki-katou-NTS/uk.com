@@ -3,8 +3,12 @@
 module nts.uk.at.view.kdp.share {
 	const tabButtonTempate = `
 		<!-- ko if: ko.unwrap($component.filteredTabs).length -->
-		<div id="stamp-desc" data-bind="let: { $tab: ko.toJS($component.currentTab) }">
-			<div data-bind="html: $tab.stampPageComment, style: { color: $tab.stampPageCommentColor }"></div>
+		<div data-bind="let: { $tab: ko.toJS($component.currentTab) }">
+			<div id= "stamp-desc" data-bind = "css: { 'hideCmt': $tab.stampPageComment.length == 0 }">
+			<!-- ko if: $tab.stampPageComment.length -->
+				<div data-bind="html: $tab.stampPageComment, style: { color: $tab.stampPageCommentColor }"></div>
+			<!-- /ko -->
+			</div>
 		</div>
 		<!-- ko if: ko.unwrap($component.filteredTabs).length > 1 -->
 			<div data-bind="ntsTabPanel: { dataSource: $component.filteredTabs, active: $component.selected }"></div>

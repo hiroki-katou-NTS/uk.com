@@ -27,19 +27,17 @@ module nts.uk.at.kdp003.r {
 		// stoppingNotice: KnockoutObservable<string> = ko.observable('現在システムはメンテナンスの為、停止されいています。メンテナンス終了予定は１５：００となります。');
 
         noticeSetting: NoticeSet = new NoticeSet();
+        screen: String = '';
 
-        constructor(private params: NoticeSet) {
+        constructor(private params: IParam) {
 			super();
 
             const vm = this;
-            
-            if (!params) {
-                params = {comMsgColor: new ColorSettingDto({textColor: '', backGroundColor:''}), 
-                companyTitle:'',
-                wkpMsgColor: new ColorSettingDto({textColor: '', backGroundColor:''}), 
-                wkpTitle: ''}
+            if (params) {
+	            vm.noticeSetting = params.setting;
+	            vm.screen = params.screen;
             }
-            vm.noticeSetting = params;
+            
         }
 
         created() {
@@ -49,42 +47,17 @@ module nts.uk.at.kdp003.r {
         mounted() {
             const vm = this;
 
-            nts.uk.characteristics.restore('loginKDP003').done((cache:any) =>{
+            if (vm.screen === 'KDP003') {
+                vm.displayNotice('loginKDP003');
+            }
 
-            const noticeParam: NoticeParam = {
-                //システム日付～システム日付
-                periodDto: new DatePeriod({startDate: moment().toDate(),
-                endDate: moment().toDate()}),
+            if (vm.screen === 'KDP004') {
+                vm.displayNotice('loginKDP004');
+            }
 
-                //「localStorage.選択職場ID」(List)
-                wkpIds: cache.WKPID
-                
-            };
-            
-            vm.$blockui('show');
-			vm.$ajax('at', API.DISPLAY_NOTICE, noticeParam)
-				.then((noticeList: Array<MsgNoticeDto>) => {
-                    if (noticeList) {
-
-                        let headOfficeNoticeList = _.filter(noticeList, n => n.message.targetInformation.destination == DestinationClassification.ALL);
-                        let workplaceNoticeList = _.filter(noticeList, n => n.message.targetInformation.destination == DestinationClassification.WORKPLACE);
-                    
-                        let headOfficeNotices = headOfficeNoticeList.map((h) => {
-                            return new DisplayResult(h);
-                        });
-
-                        let workplaceNotices = workplaceNoticeList.map((w) => {
-                            return new DisplayResult(w);
-                        });
-
-                        vm.headOfficeNoticeList(headOfficeNotices);
-                        vm.workplaceNoticeList(workplaceNotices);
-
-                }
-				})
-				.fail(error => vm.$dialog.error(error))
-				.always(() => vm.$blockui('hide'));
-            });
+            if (vm.screen === 'KDP005') {
+                vm.displayNotice('loginKDP005');
+            }
 
         }
 
@@ -92,6 +65,54 @@ module nts.uk.at.kdp003.r {
 			const vm = this;
 			vm.$window.close();
 		}
+
+        displayNotice (cacheNm: String) {
+            const vm = this;
+            nts.uk.characteristics.restore(cacheNm).done((cache:any) =>{
+
+                const noticeParam: NoticeParam = {
+                    //システム日付～システム日付
+                    periodDto: new DatePeriod({startDate: moment().toDate(),
+                    endDate: moment().toDate()}),
+    
+                    //「localStorage.選択職場ID」(List)
+                    wkpIds: []
+                    
+                };
+
+                if (cacheNm === 'loginKDP003') {
+                    noticeParam.wkpIds = cache.WKPID;
+                }
+
+                if (cacheNm === 'loginKDP004' || cacheNm === 'loginKDP005') {
+                    noticeParam.wkpIds = cache.selectedWP;
+                }
+                
+                vm.$blockui('show');
+                vm.$ajax('at', API.DISPLAY_NOTICE, noticeParam)
+                    .then((noticeList: Array<MsgNoticeDto>) => {
+                        if (noticeList) {
+    
+                            let headOfficeNoticeList = _.filter(noticeList, n => n.message.targetInformation.destination == DestinationClassification.ALL);
+                            let workplaceNoticeList = _.filter(noticeList, n => n.message.targetInformation.destination == DestinationClassification.WORKPLACE);
+                        
+                            let headOfficeNotices = headOfficeNoticeList.map((h) => {
+                                return new DisplayResult(h);
+                            });
+    
+                            let workplaceNotices = workplaceNoticeList.map((w) => {
+                                return new DisplayResult(w);
+                            });
+    
+                            vm.headOfficeNoticeList(headOfficeNotices);
+                            vm.workplaceNoticeList(workplaceNotices);
+    
+                    }
+                    })
+                    .fail(error => vm.$dialog.error(error))
+                    .always(() => vm.$blockui('hide'));
+                });
+        }
     }
 
     enum DestinationClassification {
@@ -121,16 +142,20 @@ module nts.uk.at.kdp003.r {
         companyTitle: string; //会社宛タイトル
         wkpMsgColor: ColorSettingDto //職場メッセージ色
         wkpTitle: string //職場宛タイトル
-        constructor(init?: Partial<NoticeSet>) {
-			$.extend(this, init);
+        constructor() {
+			this.comMsgColor = new ColorSettingDto();
+			this.companyTitle = '';
+			this.wkpMsgColor = new ColorSettingDto();
+			this.wkpTitle = '';
 		}
     }
 
     export class ColorSettingDto {
 		textColor: string; //文字色
         backGroundColor: string //背景色
-		constructor(init?: Partial<ColorSettingDto>) {
-			$.extend(this, init);
+		constructor() {
+			this.textColor = '';
+			this.backGroundColor = '';
 		}
 	}
 
@@ -188,5 +213,10 @@ module nts.uk.at.kdp003.r {
         constructor(init?: Partial<TargetInformationDto>) {
 			$.extend(this, init);
 		}
+    }
+
+    export interface IParam {
+        setting: NoticeSet;
+        screen: String;
     }
 }

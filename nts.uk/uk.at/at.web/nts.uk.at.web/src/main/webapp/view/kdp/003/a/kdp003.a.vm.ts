@@ -116,8 +116,8 @@ module nts.uk.at.kdp003.a {
 
 		shoNoti() {
 			const vm = this;
-			const param = ko.unwrap(vm.fingerStampSetting).noticeSetDto;
-
+			const param = {setting: ko.unwrap(vm.fingerStampSetting).noticeSetDto, screen: 'KDP003'};
+			
 			vm.$window.modal(DIALOG.R, param);
 		}
 

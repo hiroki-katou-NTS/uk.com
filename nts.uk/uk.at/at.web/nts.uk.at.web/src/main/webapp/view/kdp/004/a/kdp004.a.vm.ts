@@ -128,6 +128,8 @@ module nts.uk.at.view.kdp004.a {
 									self.stampSetting(res.stampSetting);
 									self.stampTab().bindData(res.stampSetting.pageLayouts);
 									self.stampResultDisplay(res.stampResultDisplay);
+									self.fingerStampSetting(res);
+									console.log(res.noticeSetDto);
 									dfd.resolve();
 								}).fail((res) => {
 									dialog.alertError({ messageId: res.messageId }).then(() => {
@@ -232,6 +234,8 @@ module nts.uk.at.view.kdp004.a {
 							self.stampSetting(res.stampSetting);
 							self.stampTab().bindData(res.stampSetting.pageLayouts);
 							self.stampResultDisplay(res.stampResultDisplay);
+							self.fingerStampSetting(res);
+							
 
 						}).fail((res) => {
 							dialog.alertError({ messageId: res.messageId }).then(() => {
@@ -482,9 +486,6 @@ module nts.uk.at.view.kdp004.a {
 					} else {
 						self.openScreenB(button, layout, loginInfo.em);
 					}
-					if (res) {
-						self.fingerStampSetting(res);
-					}
 					
 				}).fail((res) => {
 					dialog.alertError({ messageId: res.messageId });
@@ -541,10 +542,10 @@ module nts.uk.at.view.kdp004.a {
 			}
 			
 			shoNoti() {
-				const vm = this;
-				const param = ko.unwrap(vm.fingerStampSetting).noticeSetDto;
-	
-				modal(DIALOG.R, param);
+				const self = this;
+				let vm = new ko.ViewModel();
+				const param = {setting: ko.unwrap(self.fingerStampSetting).noticeSetDto, screen: 'KDP004'};
+				vm.$window.modal(DIALOG.R, param);
 			}
 
 			loadNotice(storage: StorageData) {

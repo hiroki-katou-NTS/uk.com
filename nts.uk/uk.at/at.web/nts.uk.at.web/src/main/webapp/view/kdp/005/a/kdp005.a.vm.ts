@@ -545,10 +545,10 @@ module nts.uk.at.view.kdp005.a {
 			}
 			
 			shoNoti() {
-				const vm = this;
-				const param = ko.unwrap(vm.fingerStampSetting).noticeSetDto;
-	
-				modal(DIALOG.R, param);
+				const self = this;
+				let vm = new ko.ViewModel();
+				const param = {setting: ko.unwrap(self.fingerStampSetting).noticeSetDto, screen: 'KDP005'};
+				vm.$window.modal(DIALOG.R, param);
 			}
 
 			loadNotice(storage: StorageData) {
