@@ -14,8 +14,6 @@ import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 
-import org.apache.http.annotation.Contract;
-
 import nts.arc.error.BusinessException;
 import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.app.command.CommandHandlerContext;
@@ -43,7 +41,6 @@ import nts.uk.ctx.sys.gateway.dom.adapter.syjobtitle.GwSyJobTitleAdapter;
 import nts.uk.ctx.sys.gateway.dom.adapter.syworkplace.GwSyWorkplaceAdapter;
 import nts.uk.ctx.sys.gateway.dom.adapter.syworkplace.SWkpHistImport;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.CheckBeforeChangePass;
-import nts.uk.ctx.sys.gateway.dom.adapter.user.PassStatus;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.UserAdapter;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.UserImportNew;
 import nts.uk.ctx.sys.gateway.dom.company.CollectCompanyList;
@@ -86,6 +83,7 @@ import nts.uk.ctx.sys.shared.dom.employee.EmployeeImport;
 import nts.uk.ctx.sys.shared.dom.employee.EmployeeImportNew;
 import nts.uk.ctx.sys.shared.dom.employee.SDelAtr;
 import nts.uk.ctx.sys.shared.dom.employee.SysEmployeeAdapter;
+import nts.uk.ctx.sys.shared.dom.user.password.PassStatus;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.loginuser.LoginUserContextManager;
 import nts.uk.shr.com.context.loginuser.role.DefaultLoginUserRoles;
