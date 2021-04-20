@@ -71,9 +71,6 @@ public class CreateDetailOfArbitraryScheduleQuery {
         val listSidDistinct = employeeBasicInfoImportList.stream().filter(distinctByKey(EmployeeInfor::getEmployeeId))
                 .collect(Collectors.toList());
 
-        Map<String, WorkplaceInfor> mapWorkplaceInfor =
-                listWplDistinct.stream()
-                        .collect(Collectors.toMap(WorkplaceInfor::getWorkplaceId, i -> i));
         Map<String, EmployeeInfor> mapEmployeeInfor =
                 listSidDistinct.stream().collect(Collectors.toMap(EmployeeInfor::getEmployeeId, i -> i));
 
@@ -81,32 +78,18 @@ public class CreateDetailOfArbitraryScheduleQuery {
 
         //1.  ⓪: <call> 社員の指定期間中の所属期間を取得する
         List<StatusOfEmployee> employees = affComHistAdapter.getListAffComHist(lisSids, period);
-        //2.  ①: <call> 任意期間別実績を取得する
-        List<AttendanceTimeOfAnyPeriod> listActualAttendances = new ArrayList<>(); // TODO QA: 40272
         List<AttendanceItemToPrint> outputItemList = ofArbitrary != null ?
                 ofArbitrary.getOutputItemList() : Collections.emptyList();
         val listAttIds = outputItemList.stream().map(AttendanceItemToPrint::getAttendanceId).distinct()
                 .collect(Collectors.toList());
-        // Lấy value của item theo màn KWR005
-//        YearMonth start = YearMonth.of(period.start().year(), period.start().month());
-//        YearMonth end = YearMonth.of(period.end().year(), period.end().month());
-//        YearMonthPeriod yearMonthPeriod = new YearMonthPeriod(start, end);
-//        Map<String, List<MonthlyRecordValueImport>> actualMultipleMonth =
-//                actualMultipleMonthAdapter.getActualMultipleMonth(lisSids, yearMonthPeriod, listAttIds);
-//        val employees = affComHistAdapter.getAffiliationPeriod(lisSids, yearMonthPeriod, period.end());
-        // Lấy value của item theo màn KWR003
-        val listValue = attendanceItemServiceAdapter.getValueOf(lisSids, period, listAttIds);
-        //3. [①.isEmpty()]
-        //if (listActualAttendances.isEmpty()) {
-        //   throw new BusinessException("Msg_1894");
-        //}
-        //3. [①.isEmpty()]
-
-
-        if (listValue.isEmpty()) {
-            throw new BusinessException("Msg_1894");
-        }
+        //2.  ①: <call> 任意期間別実績を取得する
+        val values = attendanceItemServiceAdapter.getRecordValues(lisSids,aggrFrameCode,listAttIds);
         val listAttId = listAttIds.stream().sorted(Integer::compareTo).collect(Collectors.toList());
+        //3. [①.isEmpty()]
+        if (values.values().isEmpty()) {
+           throw new BusinessException("Msg_1894");
+        }
+
         //4.  ② 集計可能勤怠項目ID
         List<Integer> getAggregableMonthlyAttId = monthlyAttItemCanAggregateRepo.getMonthlyAtdItemCanAggregate(cid)
                 .stream()
@@ -124,31 +107,11 @@ public class CreateDetailOfArbitraryScheduleQuery {
         // SUM THEO SID, ATTID
         Map<String, List<DisplayContent>> mapEplIdAndDisplayContent = new HashMap<>();
 
-        employees.forEach(e -> {
-            List<DatePeriod> listPeriod = e.getListPeriod();
-//            val listValueMonthly = actualMultipleMonth.getOrDefault(e.getEmployeeId(), null);
-//
-//            if (listValueMonthly != null) {
-//                val listItemSids = listValueMonthly.stream().filter(i ->
-//                        checkInYearMonthPeriod(listPeriod, i.getYearMonth()))
-//                        .map(l->new AttendanceArbResultDto(
-//                               e.getEmployeeId(),
-//                               l.getYearMonth(),
-//                               l.getItemValues().stream().map(s->new AttendanceItemDtoValue(
-//                                       s.getValueType().value,
-//                                       s.getItemId(),
-//                                       s.value()
-//                               )).collect(Collectors.toList())
-//                        ))
-//                        .collect(Collectors.toList())
-//                        ;
-//            }
-
-            val listItemSids = listValue.stream().filter(i -> i.getEmployeeId().equals(e.getEmployeeId())
-                    && checkInPeriod(listPeriod, i.getWorkingDate())).collect(Collectors.toList());
-
+        for (StatusOfEmployee employee : employees) {
+            val listValue = values.getOrDefault(employee.getEmployeeId(), null);
+            if(listValue.getItemValues() == null) continue;
+            val listItemSids = listValue.getItemValues();
             val listAtt = listItemSids.stream()
-                    .flatMap(x -> x.getAttendanceItems().stream())
                     .filter(x -> checkAttId(getAggregableMonthlyAttId, x.getItemId()))
                     .collect(Collectors.toCollection(ArrayList::new));
 
@@ -171,8 +134,8 @@ public class CreateDetailOfArbitraryScheduleQuery {
                     rs.add(item);
                 });
             }
-            mapEplIdAndDisplayContent.put(e.getEmployeeId(), rs);
-        });
+            mapEplIdAndDisplayContent.put(employee.getEmployeeId(), rs);
+        }
         // SUM THEO WPLID, ATTID
         Map<String, List<DisplayContent>> mapWplIdAndDisplayContent = new HashMap<>();
         listWplDistinct.forEach(e -> {
@@ -279,30 +242,34 @@ public class CreateDetailOfArbitraryScheduleQuery {
             });
             //7.3 「６」 == TRUE
             if (isTotal) {
-                // SUM THEO ATTID
-                val listValues = listValue.stream().flatMap(x -> x.getAttendanceItems().stream())
-                        .filter(x -> checkAttId(getAggregableMonthlyAttId, x.getItemId()))
-                        .collect(Collectors.toList());
-                for (Integer h : listAttId) {
-                    val its = listValues.stream().filter(q -> q.getItemId() == h && q.getValue() != null).collect(Collectors.toList());
+                if(!values.values().isEmpty()){
+                    // SUM THEO ATTID
+                    val listValues = values.values().stream().flatMap(x -> x.getItemValues().stream())
+                            .filter(x -> checkAttId(getAggregableMonthlyAttId, x.getItemId()))
+                            .collect(Collectors.toList());
 
-                    val itemPrint = outputItemList.stream().filter(x -> x.getAttendanceId() == h).findFirst();
-                    Double vl;
-                    if (its != null && its.size() != 0) {
-                        vl = its.stream().filter(q -> checkNumber(q.getValue())).mapToDouble(x ->
-                                Double.parseDouble(x.getValue())).sum();
-                    } else {
-                        vl = null;
+                    for (Integer h : listAttId) {
+                        val its = listValues.stream().filter(q -> q.getItemId() == h && q.getValue() != null).collect(Collectors.toList());
+
+                        val itemPrint = outputItemList.stream().filter(x -> x.getAttendanceId() == h).findFirst();
+                        Double vl;
+                        if (its != null && its.size() != 0) {
+                            vl = its.stream().filter(q -> checkNumber(q.getValue())).mapToDouble(x ->
+                                    Double.parseDouble(x.getValue())).sum();
+                        } else {
+                            vl = null;
+                        }
+                        itemPrint.ifPresent(j -> {
+                            val item = new DisplayContent(
+                                    vl,
+                                    j.getAttendanceId(),
+                                    j.getRanking()
+                            );
+                            totalAll.add(item);
+                        });
                     }
-                    itemPrint.ifPresent(j -> {
-                        val item = new DisplayContent(
-                                vl,
-                                j.getAttendanceId(),
-                                j.getRanking()
-                        );
-                        totalAll.add(item);
-                    });
                 }
+
             }
             // 7.4 「７」 == TRUE
             if (isCumulativeWorkplace) {
