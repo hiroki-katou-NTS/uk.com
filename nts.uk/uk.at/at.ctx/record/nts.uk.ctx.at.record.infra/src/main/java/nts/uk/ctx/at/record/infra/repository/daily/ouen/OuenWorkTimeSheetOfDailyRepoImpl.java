@@ -88,6 +88,17 @@ public class OuenWorkTimeSheetOfDailyRepoImpl extends JpaRepository implements O
 		
 		return false;
 	}
+	
+	public Optional<KrcdtDayOuenTimeSheet> getEntity(String empId, GeneralDate ymd, int ouenNo ) {
+		Optional<KrcdtDayOuenTimeSheet> entitis = queryProxy()
+				.query("SELECT o FROM KrcdtDayOuenTimeSheet o WHERE o.pk.sid = :sid AND o.pk.ymd = :ymd AND o.pk.ouenNo = :ouenNo", KrcdtDayOuenTimeSheet.class)
+				.setParameter("sid", empId)
+				.setParameter("ymd", ymd)
+				.setParameter("ouenNo", ouenNo)
+				.getSingle();
+		
+		return entitis;
+	}
 
 	@Override
 	public void update(List<OuenWorkTimeSheetOfDaily> domain) {
@@ -101,11 +112,24 @@ public class OuenWorkTimeSheetOfDailyRepoImpl extends JpaRepository implements O
 			lstEntity.addAll(e);
 		});
 		lstEntity.forEach(i -> {
-			if(!this.findPK(i.pk.sid, i.pk.ymd, i.pk.ouenNo))
+			Optional<KrcdtDayOuenTimeSheet> entityOld = getEntity(i.pk.sid, i.pk.ymd, i.pk.ouenNo);
+			if(!entityOld.isPresent()){
 				commandProxy().insert(i);
-			else
-				commandProxy().update(i);
+			} else{
+				updateData(entityOld.get(), i);
+				commandProxy().update(entityOld.get());
+			}
 		});
+	}
+
+	private void updateData(KrcdtDayOuenTimeSheet entityOld, KrcdtDayOuenTimeSheet dataUpdate) {
+		entityOld.startTime = dataUpdate.startTime;
+		entityOld.endTime = dataUpdate.endTime;
+		entityOld.workCd1 = dataUpdate.workCd1;
+		entityOld.workCd2 = dataUpdate.workCd2;
+		entityOld.workCd3 = dataUpdate.workCd3;
+		entityOld.workCd4 = dataUpdate.workCd4;
+		entityOld.workCd5 = dataUpdate.workCd5;
 	}
 
 	@Override
