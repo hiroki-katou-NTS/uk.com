@@ -305,10 +305,10 @@ module nts.uk.at.view.ksu003.a.model {
 
 	//時間休暇
 	export class TimeVacationDto {
-		timeZone: Array<TimeZoneDto>; //時間帯リスト
-		usageTime: Array<DailyAttdTimeVacationDto>;//使用時間
-		constructor(timeZone: Array<TimeZoneDto>,
-			usageTime: Array<DailyAttdTimeVacationDto>) {
+		timeZone: Array<TimeSpanForCalcDto>; //時間帯リスト
+		usageTime: DailyAttdTimeVacationDto;//使用時間
+		constructor(timeZone: Array<TimeSpanForCalcDto>,
+			usageTime: DailyAttdTimeVacationDto) {
 			this.timeZone = timeZone;
 			this.usageTime = usageTime;
 		}
@@ -742,6 +742,5 @@ module nts.uk.at.view.ksu003.a.model {
 		color: string;
 		listShortTime: Array<TimeShortDto>;
 	}
-	
 
 }

@@ -21,14 +21,13 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.schedule.dom.schedule.task.taskschedule.TaskSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ConfirmedATR;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.FuriClassifi;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.NumberOfDaySuspension;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.DayOfWeek;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.UsedDays;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.affiliationinfor.AffiliationInforOfDailyAttd;
@@ -49,18 +48,20 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.time
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateSetting;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.secondorder.medical.MedicalCareTimeOfDaily;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ChildCareAttribute;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortWorkTimFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortWorkingTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.CalculationState;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.FuriClassifi;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.NotUseAttribute;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.NumberOfDaySuspension;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workschedule.WorkScheduleTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workschedule.WorkScheduleTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.ActualWorkingTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.StayingTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.shortworktime.ChildCareAtr;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
 import nts.uk.ctx.at.shared.dom.workrule.businesstype.BusinessTypeCode;
 import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
@@ -182,8 +183,8 @@ public class KscdtSchBasicInfo extends ContractUkJpaEntity {
 		// trường hợp chỉ có workNo = 1 thì chỉ insert item28,29,31,34. Nếu có
 		// workNo = 2 nữa thì mới insert thêm item 41,44
 		if (workSchedule.getOptTimeLeaving().isPresent()) {
-			if (workSchedule.getOptTimeLeaving().get().getWorkTimes() != null) {
-				if (workSchedule.getOptTimeLeaving().get().getWorkTimes().v() == 1 || workSchedule.getOptTimeLeaving().get().getWorkTimes().v() == 0 ) {
+			if (workSchedule.getOptTimeLeaving().get().getWorkTimes() != null && workSchedule.getOptTimeLeaving().get().getWorkTimes().v() != 0) {
+				if (workSchedule.getOptTimeLeaving().get().getWorkTimes().v() == 1) {
 					kscdtSchAtdLvwTimes = kscdtSchAtdLvwTimes.stream().filter(i -> i.pk.workNo == 1).collect(Collectors.toList());
 				}
 			}
@@ -236,8 +237,11 @@ public class KscdtSchBasicInfo extends ContractUkJpaEntity {
 		
 		// create WorkInfoOfDailyAttendance
 		WorkInformation recordInfo = new WorkInformation(wktpCd, wktmCd);
-		WorkInfoOfDailyAttendance workInfo = new WorkInfoOfDailyAttendance(recordInfo, CalculationState.No_Calculated, EnumAdaptor.valueOf(goStraightAtr ? 1 : 0, NotUseAttribute.class), 
-				EnumAdaptor.valueOf(backStraightAtr ? 1 : 0, NotUseAttribute.class), EnumAdaptor.valueOf(GeneralDate.today().dayOfWeek() - 1, DayOfWeek.class), new ArrayList<>());
+		WorkInfoOfDailyAttendance workInfo = new WorkInfoOfDailyAttendance(recordInfo, CalculationState.No_Calculated,
+				EnumAdaptor.valueOf(goStraightAtr ? 1 : 0, NotUseAttribute.class),
+				EnumAdaptor.valueOf(backStraightAtr ? 1 : 0, NotUseAttribute.class),
+				EnumAdaptor.valueOf(GeneralDate.today().dayOfWeek() - 1, DayOfWeek.class), new ArrayList<>(),
+				Optional.empty());
 		if(treatAsSubstituteAtr != null && treatAsSubstituteDays != null) {
 			workInfo.setNumberDaySuspension(Optional.of(
 					new NumberOfDaySuspension(
@@ -277,7 +281,7 @@ public class KscdtSchBasicInfo extends ContractUkJpaEntity {
 			}
 			TimeSpanForCalc timeVacation2 = null;
 			if(mapper.getLvwHourlyHDTSStart() !=null && mapper.getLvwHourlyHDTSEnd() != null) {
-				timeVacation = new TimeSpanForCalc(new TimeWithDayAttr(mapper.getLvwHourlyHDTSStart()) , new TimeWithDayAttr(mapper.getLvwHourlyHDTSEnd()));
+				timeVacation2 = new TimeSpanForCalc(new TimeWithDayAttr(mapper.getLvwHourlyHDTSStart()) , new TimeWithDayAttr(mapper.getLvwHourlyHDTSEnd()));
 			}
 			TimeActualStamp timeActualStamp = new TimeActualStamp(null, workStamp, 0 , null, timeVacation);
 			TimeActualStamp timeActualStamp2 = new TimeActualStamp(null, workStamp2, 0, null, timeVacation2);
@@ -290,7 +294,7 @@ public class KscdtSchBasicInfo extends ContractUkJpaEntity {
 		ShortTimeOfDailyAttd optSortTimeWork = null;
 		List<ShortWorkingTimeSheet> shortWorkingTimeSheets = new ArrayList<>();
 		schShortTimeTs.stream().forEach(x->{
-			ShortWorkingTimeSheet shortWorkingTimeSheet = new ShortWorkingTimeSheet(new ShortWorkTimFrameNo(x.getPk().getFrameNo()), EnumAdaptor.valueOf(x.getPk().getChildCareAtr(), ChildCareAttribute.class), 
+			ShortWorkingTimeSheet shortWorkingTimeSheet = new ShortWorkingTimeSheet(new ShortWorkTimFrameNo(x.getPk().getFrameNo()), EnumAdaptor.valueOf(x.getPk().getChildCareAtr(), ChildCareAtr.class), 
 					new TimeWithDayAttr(x.getShortTimeTsStart()), new TimeWithDayAttr(x.getShortTimeTsEnd()));
 			shortWorkingTimeSheets.add(shortWorkingTimeSheet);
 		});
@@ -314,8 +318,19 @@ public class KscdtSchBasicInfo extends ContractUkJpaEntity {
 			List<OutingTimeSheet> outingTimeSheets = kscdtSchGoingOutTs.stream().map(c-> c.toDomain()).collect(Collectors.toList());
 			outingTime = new OutingTimeOfDailyAttd(outingTimeSheets);
 		}
-		return new WorkSchedule(sID, yMD, EnumAdaptor.valueOf(confirmedATR ? 1 : 0, ConfirmedATR.class), 
-				workInfo, affInfo, dailyAttd, lstEditState, Optional.ofNullable(optTimeLeaving), Optional.ofNullable(attendance), Optional.ofNullable(optSortTimeWork),Optional.ofNullable(outingTime));
+		return new WorkSchedule(
+				sID,
+				yMD,
+				EnumAdaptor.valueOf(confirmedATR ? 1 : 0, ConfirmedATR.class),
+				workInfo,
+				affInfo,
+				dailyAttd,
+				lstEditState,
+				TaskSchedule.createWithEmptyList(), //TODO Cチームに修正してもらいます。
+				Optional.ofNullable(optTimeLeaving),
+				Optional.ofNullable(attendance),
+				Optional.ofNullable(optSortTimeWork),
+				Optional.ofNullable(outingTime));
 	}
 
 	@Override

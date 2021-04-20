@@ -149,11 +149,11 @@ module nts.uk.at.view.kal001.d.service {
                     this.name = p.categoryName;     
                     this.period36Agreement = p.period36Agreement;     
                                         
-                    if(p.category==2 || p.category==5 || p.category==8){//スケジュール4週,日次,申請承認
+                    if(p.category==2 || p.category==5 || p.category==8 || p.category==0 || p.category==6){//スケジュール4週,日次,申請承認
                         this.startDate =nts.uk.time.parseMoment(p.startDate).momentObject.toISOString() ;
                         this.endDate = nts.uk.time.parseMoment(p.endDate).momentObject.toISOString() ;
                         
-                    }else if(p.category ==7 || p.category ==9){ //月次、複数月次
+                    }else if(p.category ==7 || p.category ==9 || p.category==3 || p.category==4){ //月次、複数月次
                         let sDate =p.startDate + '01';
                         let eDate = p.endDate + '01';                
                         this.startDate =nts.uk.time.parseMoment(sDate).momentObject.toISOString() ;
@@ -181,11 +181,20 @@ module nts.uk.at.view.kal001.d.service {
                             this.endDate = nts.uk.time.parseMoment(eDate).momentObject.toISOString() ;    
                                                     
                         } else{
-                            let sDate =p.startDate + '01';
+                            let sDate;
                             let eDate = p.endDate;
+                            if(p.period36Agreement == 3 || p.period36Agreement == 4 || p.period36Agreement == 5){
+                                sDate = p.startDate + '01';
+                            } else {
+                                sDate = p.startDate + '/01';
+                            }
 
                             let lastDay = new Date(Number(eDate.slice(0, 4)), Number(eDate.slice(5, 7)), 0);
-                            eDate = eDate + (lastDay.getDate() <10? "0" + lastDay.getDate() : lastDay.getDate());
+                            if(p.period36Agreement == 3 || p.period36Agreement == 4 || p.period36Agreement == 5){
+                                eDate = eDate  + (lastDay.getDate() < 10 ? "0" + lastDay.getDate() : lastDay.getDate());    
+                            } else {
+                                eDate = eDate + '/' + (lastDay.getDate() < 10 ? "0" + lastDay.getDate() : lastDay.getDate());    
+                            }                           
                                                         
                             this.startDate =nts.uk.time.parseMoment(sDate).momentObject.toISOString() ;
                             this.endDate = nts.uk.time.parseMoment(eDate).momentObject.toISOString() ;                                 

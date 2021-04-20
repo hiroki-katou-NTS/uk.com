@@ -371,12 +371,12 @@ public class TotalWorkingTimeDto implements ItemConst, AttendanceItemDataGate {
 								(c) -> new LateEarlyTimeDailyPerformDto(CalcAttachTimeDto.toTimeWithCal(c.getLateTime()),
 										CalcAttachTimeDto.toTimeWithCal(c.getLateDeductionTime()),
 										getValicationUseDto(c.getTimePaidUseTime()),
-										getAttendanceTime(c.getExemptionTime().getExemptionTime()), c.getWorkNo().v())),
+										getAttendanceTime(c.getExemptionTime().getExemptionTime()), c.getWorkNo().v(), c.isDoNotSetAlarm())),
 						ConvertHelper.mapTo(domain.getLeaveEarlyTimeOfDaily(),
 								(c) -> new LateEarlyTimeDailyPerformDto(CalcAttachTimeDto.toTimeWithCal(c.getLeaveEarlyTime()),
 										CalcAttachTimeDto.toTimeWithCal(c.getLeaveEarlyDeductionTime()),
 										getValicationUseDto(c.getTimePaidUseTime()),
-										getAttendanceTime(c.getIntervalTime().getExemptionTime()), c.getWorkNo().v())),
+										getAttendanceTime(c.getIntervalTime().getExemptionTime()), c.getWorkNo().v(), c.isDoNotSetAlarm())),
 						BreakTimeSheetDailyPerformDto.fromBreakTimeOfDaily(domain.getBreakTimeOfDaily()),
 						ConvertHelper.mapTo(domain.getOutingTimeOfDailyPerformance(), c -> GoOutTimeSheetDailyPerformDto.toDto(c)),
 						//Arrays.asList(ShortWorkTimeDto.toDto(domain.getShotrTimeOfDaily())),
@@ -430,7 +430,7 @@ public class TotalWorkingTimeDto implements ItemConst, AttendanceItemDataGate {
 				new TemporaryTimeOfDaily(ConvertHelper.mapTo(temporaryTime, (c) -> new TemporaryFrameTimeOfDaily(new WorkNo(c.getNo()),
 										toAttendanceTime(c.getTemporaryTime()),
 										toAttendanceTime(c.getTemporaryNightTime())))),
-				shortWorkTime == null | shortWorkTime.isEmpty() ? ShortWorkTimeDto.defaultDomain() : shortWorkTime.get(0).toDomain(),
+				shortWorkTime == null || shortWorkTime.isEmpty() ? ShortWorkTimeDto.defaultDomain() : shortWorkTime.get(0).toDomain(),
 				dailyOfHoliday == null ? HolidayDailyPerformDto.defaulDomain() : dailyOfHoliday.toDomain(),
 				IntervalTimeOfDaily.of(new AttendanceClock(intervalAttendanceClock), new AttendanceTime(intervalTime)));
 		

@@ -66,9 +66,9 @@
 
 #time-calc-button.caret-right::after {
 	left: 105%;
-	margin-top: -5em;
-	border-top-width: 5em;
-	border-bottom-width: 5em;
+	margin-top: -3.5em;
+	border-top-width: 3.5em;
+	border-bottom-width: 3.5em;
 }
 
 #kaf012-share-component2 button.nts-switch-button {
@@ -78,4 +78,21 @@
 #kaf012-share-component2 .control-group {
 	margin-bottom: 10px;
 	margin-top: 0px;
+}
+
+#cal-button-wrapper {
+	width: 100px;
+	text-align: center;
+	display: flex;
+	flex-direction: column;
+}
+
+#cal-button-wrapper::before,
+#cal-button-wrapper::after {
+	content: "";
+	flex: 1;
+}
+
+#kaf000-a-component3 button.nts-switch-button {
+	width: 92px;
 }

@@ -37,8 +37,6 @@ import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.ReflectedState;
-import nts.uk.ctx.at.shared.app.query.workrule.closure.ClosureResultModel;
-import nts.uk.ctx.at.shared.app.query.workrule.closure.WorkClosureQueryProcessor;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
@@ -55,7 +53,9 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
+import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureResultModel;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
+import nts.uk.ctx.at.shared.dom.workrule.closure.service.WorkClosureQueryProcessor;
 import nts.uk.ctx.at.shared.pub.workrule.closure.PresentClosingPeriodExport;
 import nts.uk.ctx.at.shared.pub.workrule.closure.ShClosurePub;
 import nts.uk.ctx.sys.portal.dom.smartphonetoppageset.NotificationDetailSet;
@@ -451,7 +451,7 @@ public class ToppageStartupProcessMobFinder {
 				// nghỉ bù ngày lễ không nghỉ"
 				// Xử lý 19
 				Double remainLeft = AbsenceReruitmentMngInPeriodQuery.getAbsRecMngRemain(
-						requireService.createRequire(), new CacheCarrier(), employeeId, systemDate).getRemainDays();
+						requireService.createRequire(), new CacheCarrier(), employeeId, systemDate).getRemainDay().v();
 				dataKTG029.setRemainsLeft(remainLeft != null ? remainLeft : 0.0);
 			} else if (timeStatusDisplayItem.getDetailType() == TimeStatusType.REMAINING_HOLIDAY
 					&& timeStatusDisplayItem.getDisplayAtr() == NotUseAtr.USE) {

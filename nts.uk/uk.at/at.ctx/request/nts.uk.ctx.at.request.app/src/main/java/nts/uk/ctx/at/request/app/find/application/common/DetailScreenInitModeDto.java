@@ -2,7 +2,6 @@ package nts.uk.ctx.at.request.app.find.application.common;
 
 /*import nts.uk.ctx.at.request.dom.setting.request.application.common.AprovalPersonFlg;*/
 import lombok.Value;
-import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.AppCanAtr;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.BaseDateFlg;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.NumDaysOfWeek;
@@ -47,21 +46,21 @@ public class DetailScreenInitModeDto {
 
 	private ReflectionFlg attendentTimeReflectFlg;
 
-	public static DetailScreenInitModeDto fromDomain (ApplicationSetting domain){
-		return new DetailScreenInitModeDto (
-				domain.getCompanyID(),
-				domain.getBaseDateFlg(),
-				domain.getAdvanceExcessMessDispAtr(),
-				domain.getHwAdvanceDispAtr(),
-				domain.getHwActualDispAtr(),
-				domain.getActualExcessMessDispAtr(),
-				domain.getOtAdvanceDispAtr(),
-				domain.getOtActualDispAtr(),
-				domain.getWarningDateDispAtr(),
-				domain.getAppReasonDispAtr(),
-				domain.getAppContentChangeFlg(),
-				domain.getScheReflectFlg(),
-				domain.getPriorityTimeReflectFlg(),
-				domain.getAttendentTimeReflectFlg());
-				}
+//	public static DetailScreenInitModeDto fromDomain (ApplicationSetting domain){
+//		return new DetailScreenInitModeDto (
+//				domain.getCompanyID(),
+//				domain.getBaseDateFlg(),
+//				domain.getAdvanceExcessMessDispAtr(),
+//				domain.getHwAdvanceDispAtr(),
+//				domain.getHwActualDispAtr(),
+//				domain.getActualExcessMessDispAtr(),
+//				domain.getOtAdvanceDispAtr(),
+//				domain.getOtActualDispAtr(),
+//				domain.getWarningDateDispAtr(),
+//				domain.getAppReasonDispAtr(),
+//				domain.getAppContentChangeFlg(),
+//				domain.getScheReflectFlg(),
+//				domain.getPriorityTimeReflectFlg(),
+//				domain.getAttendentTimeReflectFlg());
+//				}
 }

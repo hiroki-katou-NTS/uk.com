@@ -8,8 +8,8 @@
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
 
-			<com:ValidatorScript>
-				nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NumberDayNursing
+			<com:ValidatorScript>				
+				nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingNumberLeaveDay
 			</com:ValidatorScript>
 
 			<com:scriptfile set="IGNITE" />
@@ -73,7 +73,7 @@
 											tabindex="6" class="nts-input"
 											data-bind="ntsNumberEditor: {
 											value: nursingNumberLeaveDay,
-											constraint: 'NumberDayNursing',
+											constraint: 'NursingNumberLeaveDay',
 											name: '#[KMF001_111]',
 											required: enableNursing,
 											option: $parent.numberEditorOption,
@@ -93,7 +93,7 @@
 											class="nts-input"
 											data-bind="ntsNumberEditor: {
 											value: nursingNumberPerson,
-											constraint: 'NumberDayNursing',
+											constraint: 'NursingNumberLeaveDay',
 											name: '#[KMF001_112]',
 											required: enableNursing,
 											option: $parent.numberEditorOption,
@@ -213,7 +213,7 @@
 											data-bind="ntsNumberEditor: {
 											value: nursingNumberLeaveDay,
 											name: '#[KMF001_119]',
-											constraint: 'NumberDayNursing',
+											constraint: 'NursingNumberLeaveDay',
 											required: enableNursing,
 											option: $parent.numberEditorOption,
 											enable: enableNursing}" /></div>
@@ -232,7 +232,7 @@
 											tabindex="12" class="nts-input"
 											data-bind="ntsNumberEditor: {
 											value: nursingNumberPerson,
-											constraint: 'NumberDayNursing',
+											constraint: 'NursingNumberLeaveDay',
 											name: '#[KMF001_120]',
 											required: enableNursing,
 											option: $parent.numberEditorOption,

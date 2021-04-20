@@ -48,8 +48,10 @@ import nts.uk.ctx.at.function.dom.adapter.appreflectmanager.AppReflectManagerAda
 import nts.uk.ctx.at.function.dom.adapter.appreflectmanager.ProcessStateReflectImport;
 import nts.uk.ctx.at.function.dom.adapter.dailymonthlyprocessing.DailyMonthlyprocessAdapterFn;
 import nts.uk.ctx.at.function.dom.adapter.dailymonthlyprocessing.ExeStateOfCalAndSumImportFn;
+import nts.uk.ctx.at.function.dom.adapter.employeemanage.EmployeeManageAdapter;
 import nts.uk.ctx.at.function.dom.adapter.resultsperiod.optionalaggregationperiod.AnyAggrPeriodAdapter;
 import nts.uk.ctx.at.function.dom.adapter.resultsperiod.optionalaggregationperiod.AnyAggrPeriodImport;
+import nts.uk.ctx.at.function.dom.adapter.toppagealarmpub.TopPageAlarmAdapter;
 import nts.uk.ctx.at.function.dom.adapter.worklocation.RecordWorkInfoFunAdapter;
 import nts.uk.ctx.at.function.dom.adapter.worklocation.WorkInfoOfDailyPerFnImport;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.createextractionprocess.CreateExtraProcessService;
@@ -77,6 +79,8 @@ import nts.uk.ctx.at.function.dom.processexecution.ProcessExecutionService;
 import nts.uk.ctx.at.function.dom.processexecution.ServerExternalOutputAdapter;
 import nts.uk.ctx.at.function.dom.processexecution.ServerExternalOutputImport;
 import nts.uk.ctx.at.function.dom.processexecution.UpdateProcessAutoExecution;
+import nts.uk.ctx.at.function.dom.processexecution.createfromupdateautorunerror.CreateFromUpdateAutoRunError;
+import nts.uk.ctx.at.function.dom.processexecution.createfromupdateautorunerror.DefaultRequireImpl;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.CurrentExecutionStatus;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.EachProcessPeriod;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.EndStatus;
@@ -113,10 +117,10 @@ import nts.uk.ctx.at.record.dom.adapter.company.SyCompanyRecordAdapter;
 import nts.uk.ctx.at.record.dom.affiliationinformation.wkplaceinfochangeperiod.WkplaceInfoChangePeriod;
 import nts.uk.ctx.at.record.dom.affiliationinformation.wktypeinfochangeperiod.WkTypeInfoChangePeriod;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.ExecutionAttr;
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.CreateDailyResultDomainServiceImpl.ProcessState;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.ExecutionTypeDaily;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyresults.CreateDailyResultDomainServiceNew;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyresults.OutputCreateDailyResult;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyresults.ProcessState;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.DailyCalculationEmployeeService;
 import nts.uk.ctx.at.record.dom.executionstatusmanage.optionalperiodprocess.periodexcution.PresenceOfError;
 import nts.uk.ctx.at.record.dom.executionstatusmanage.optionalperiodprocess.periodtarget.State;
@@ -311,6 +315,14 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 	@Inject
 	private AutoExecutionPreparationAdapter autoExecutionPreparationAdapter;
 
+	@Inject
+	private ProcessExecutionLogManageRepository processExecutionLogManageRepository;
+	
+	@Inject
+	private EmployeeManageAdapter employeeManageAdapter;
+	
+	@Inject
+	private TopPageAlarmAdapter topPageAlarmAdapter;
     /**
      * 更新処理を開始する
      * 会社ID
@@ -439,6 +451,10 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
                 processExecutionLogManage, dateTimeOutput);
         //アルゴリズム「実行状態ログファイル作成処理」を実行する
         createLogFileExecution.createLogFile(companyId, execItemCd);
+        
+        //更新処理自動実行エラーからトップページアラームを作成する
+        DefaultRequireImpl rq = new DefaultRequireImpl(processExecutionLogManageRepository, employeeManageAdapter, topPageAlarmAdapter);
+        CreateFromUpdateAutoRunError.create(rq, companyId);
     }
 
     /**

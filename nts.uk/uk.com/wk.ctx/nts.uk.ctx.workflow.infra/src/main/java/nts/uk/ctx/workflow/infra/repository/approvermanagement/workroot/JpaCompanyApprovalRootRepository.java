@@ -428,7 +428,7 @@ public class JpaCompanyApprovalRootRepository extends JpaRepository implements C
 		val domain = CompanyApprovalRoot.convert(entity.wwfmtComApprovalRootPK.companyId,
 				entity.wwfmtComApprovalRootPK.approvalId,
 				entity.wwfmtComApprovalRootPK.historyId,
-				entity.applicationType,
+				entity.employmentRootAtr != 2 ? entity.applicationType : entity.confirmationRootType,
 				entity.startDate,
 				entity.endDate,
 				entity.confirmationRootType,
@@ -570,7 +570,7 @@ public class JpaCompanyApprovalRootRepository extends JpaRepository implements C
 	@SneakyThrows
 	public List<CompanyApprovalRoot> findByDatePeriod(String cid, DatePeriod period, SystemAtr sysAtr, List<Integer> lstRootAtr) {
 		String sql = "SELECT * "
-				+ "FROM WWFMT_COM_APPROVAL_ROOT  WHERE CID = @companyID "
+				+ "FROM WWFMT_APPROVAL_ROUTE_COM  WHERE CID = @companyID "
 				+ "AND SYSTEM_ATR = @sysAtr AND START_DATE <= @eDate AND END_DATE >= @sDate "
 				+ "AND EMPLOYMENT_ROOT_ATR in @rootAtr";
 		List<CompanyApprovalRoot> lstResult = new NtsStatement(sql, this.jdbcProxy())

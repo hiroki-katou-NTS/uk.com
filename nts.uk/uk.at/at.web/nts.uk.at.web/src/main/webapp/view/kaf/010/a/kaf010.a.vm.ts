@@ -498,7 +498,8 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 						};
 						return vm.$ajax('at', API.register, commandRegister).then((successData) => {
 							return vm.$dialog.info({ messageId: "Msg_15" }).then(() => {
-								CommonProcess.handleAfterRegister(successData, vm.isSendMail(), vm);
+								nts.uk.request.ajax("at", API.reflectApp, successData.reflectAppIdLst);
+								CommonProcess.handleAfterRegister(successData, vm.isSendMail(), vm, vm.isAgentMode(), vm.dataSource.appDispInfoStartupOutput.appDispInfoNoDateOutput.employeeInfoLst);
 							});
 						});
 					}
@@ -617,7 +618,8 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 						};
 						return vm.$ajax('at', API.registerMulti, commandRegister).then((successData) => {
 							return vm.$dialog.info({ messageId: "Msg_15" }).then(() => {
-								CommonProcess.handleAfterRegister(successData, vm.isSendMail(), vm);
+								nts.uk.request.ajax("at", API.reflectApp, successData.reflectAppIdLst);
+								CommonProcess.handleAfterRegister(successData, vm.isSendMail(), vm, vm.isAgentMode());
 							});
 						});
 					}
@@ -1576,7 +1578,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 							timeZone1.end = workInfo.workHours1.end();
 							timeZoneArray.push(timeZone1);
 						}
-						if(!self.managementMultipleWorkCyclescheck()){
+						if(self.managementMultipleWorkCyclescheck()){
 							let timeZone2 = {} as TimeZone;
 							if (!_.isNil(workInfo.workHours2) && _.isNumber(workInfo.workHours2.start()) && _.isNumber(workInfo.workHours2.end())) {
 								timeZone2.frameNo = 2;
@@ -1713,7 +1715,8 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 		checkBeforeRegister: "at/request/application/holidaywork/checkBeforeRegister",
 		register: "at/request/application/holidaywork/register",
 		checkBeforeRegisterMulti: "at/request/application/holidaywork/checkBeforeRegisterMulti",
-		registerMulti: "at/request/application/holidaywork/registerMulti"
+		registerMulti: "at/request/application/holidaywork/registerMulti",
+		reflectApp: "at/request/application/reflect-app"
 	}
 	interface AppHdWorkDispInfo {
 		dispFlexTime: boolean;

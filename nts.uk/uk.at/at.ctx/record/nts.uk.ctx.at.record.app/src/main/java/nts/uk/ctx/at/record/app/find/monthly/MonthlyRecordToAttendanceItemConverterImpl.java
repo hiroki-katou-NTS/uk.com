@@ -3,7 +3,6 @@ package nts.uk.ctx.at.record.app.find.monthly;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.app.find.monthly.root.AbsenceLeaveRemainDataDto;
@@ -17,7 +16,6 @@ import nts.uk.ctx.at.record.app.find.monthly.root.MonthlyChildCareHdRemainDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.MonthlyDayoffRemainDataDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.MonthlyRemarksDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.RsvLeaRemNumEachMonthDto;
-import nts.uk.ctx.at.record.app.find.monthly.root.SpecialHolidayRemainDataDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.ClosureDateDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.MonthlyItemCommon;
 import nts.uk.ctx.at.record.app.find.monthly.root.dto.SpecialHolidayRemainDataDtoWrap;
@@ -91,7 +89,7 @@ public class MonthlyRecordToAttendanceItemConverterImpl  extends AttendanceItemC
 		this.withAnyItem(domain.getAnyItemList());
 		this.withAnnLeave(domain.getAnnualLeaveRemain().orElse(null));
 		this.withRsvLeave(domain.getReserveLeaveRemain().orElse(null));
-		this.withSpecialLeave(domain.getSpecialLeaveRemainList());
+		this.withSpecialLeave(domain.getSpecialLeaveRemain());
 		this.withDayOff(domain.getMonthlyDayoffRemain().orElse(null));
 		this.withAbsenceLeave(domain.getAbsenceLeaveRemain().orElse(null));
 		this.withMonCareHd(domain.getCare().orElse(null));

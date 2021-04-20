@@ -7,6 +7,11 @@
 <body>
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
+			<com:ValidatorScript>
+				nts.uk.ctx.at.record.dom.workrecord.temporarywork.MaxUsage
+				nts.uk.ctx.at.shared.dom.common.time.AttendanceTime
+				nts.uk.ctx.at.record.dom.workrecord.goout.MaxGoOut
+			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="kmk013.g.start.js" />
 			<com:scriptfile path="kmk013.g.vm.js" />
@@ -19,74 +24,143 @@
 				<a class="goback"
 					data-bind="ntsLinkButton: { jump: '/view/kmk/013/a/index.xhtml' }"
 					tabindex="1"> #{i18n.getText('KMK013_204')} </a>
-				<button class="proceed save" tabindex="2" data-bind="click:saveData">#{i18n.getText('KMK013_205')}</button>
+				<button class="proceed save" tabindex="2" data-bind="enable: $root.errors.isEmpty, click:saveData">#{i18n.getText('KMK013_205')}</button>
 			</div>
 			<div id="contents-area">
-				<table>
-					<TBODY>
-						<tr>
-							<td>
-								<div id="form-lb" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK013_206')}</div>
-							</td>
-						</tr>
-						<tr>
-							<td class="td-content">
-								<div class="child-lb">#{i18n.getText('KMK013_207')}</div>
-							</td>
-							<td class="td-content">
-    								<div id="flex-radio" tabindex="3" data-bind="ntsSwitchButton: {
-    												options: flexSettingOpt,     
-    												optionsValue: 'id',     
-    												optionsText: 'name',     
-    												value: flexSetting}, hasFocus: true"></div>     
-							</td>
-						</tr>
-						<tr>
-							<td class="td-content">
-								<div class="child-lb">#{i18n.getText('KMK013_211')}</div>
-							</td>
-							<td class="td-content">
-    								<span tabindex="4" data-bind="ntsSwitchButton: {
-    												options: aggWorkSetOpt,     
-    												optionsValue: 'id',     
-    												optionsText: 'name',     
-    												value: aggWorkSet}"></span>     
-							</td>
-						</tr>
-						
-						<tr>
-							<td>
-								<div id="form-lb" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK013_215')}</div>
-							</td>
-						</tr>
-						<tr>
-							<td class="td-content">
-								<div class="child-lb">#{i18n.getText('KMK013_216')}</div>
-							</td>
-							<td class="td-content">
-								<div tabindex="5" data-bind="ntsSwitchButton: {
-	    												options: multipleWorkOpt,     
-	    												optionsValue: 'id',     
-	    												optionsText: 'name',     
-	    												value: multipleWorkSet}"></div>     
-   								
-							</td>
-						</tr>
-						<tr>
-							<td class="td-content">
-								<div class="child-lb">#{i18n.getText('KMK013_220')}</div>
-							</td>
-							<td class="td-content">
-   								<div tabindex="6" data-bind="ntsSwitchButton: {
-  												options: tempWorkOpt,     
-  												optionsValue: 'id',     
-  												optionsText: 'name',     
-  												value: tempWorkSet}"></div>     
-							</td>
-						</tr>
-					</TBODY>
-				</table>
-				
+				<div class="control-group valign-center">
+					<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK013_486')}</div>
+				</div>
+				<div class="control-group valign-center">
+					<div class="child-lb">#{i18n.getText('KMK013_207')}</div>
+					<div id="flex-radio"
+                         data-bind="ntsSwitchButton: {
+										name:'#{i18n.getText('KMK013_208')}',
+										options: settingOptions,
+										optionsValue: 'id',
+										optionsText: 'name',
+										value: flexSetting}, hasFocus: true"/>
+				</div>
+				<div class="control-group valign-center">
+					<div class="child-lb">#{i18n.getText('KMK013_211')}</div>
+					<div data-bind="ntsSwitchButton: {
+										name:'#{i18n.getText('KMK013_212')}',
+										options: settingOptions,
+										optionsValue: 'id',
+										optionsText: 'name',
+										value: aggWorkSet}"/>
+				</div>
+				<div class="control-group valign-center">
+					<div class="child-lb">#{i18n.getText('KMK013_216')}</div>
+					<div data-bind="ntsSwitchButton: {
+										name:'#{i18n.getText('KMK013_217')}',
+										options: settingOptions,
+										optionsValue: 'id',
+										optionsText: 'name',
+										value: multipleWorkSet}"/>
+				</div>
+				<div class="control-group valign-center">
+					<div class="child-lb">#{i18n.getText('KMK013_220')}</div>
+					<div data-bind="ntsSwitchButton: {
+										name:'#{i18n.getText('KMK013_221')}',
+										options: settingOptions,
+										optionsValue: 'id',
+										optionsText: 'name',
+										value: tempWorkSet}"/>
+				</div>
+				<div class="control-group valign-center">
+					<span class="label" style="padding-left: 232px;">#{i18n.getText('KMK013_348')}</span>
+					<input id="tempmaxuse" style="width: 20px;"
+						   data-bind="ntsNumberEditor: {
+											name: '#{i18n.getText('KMK013_423')}',
+											value: tempMaxUsage,
+											constraint: 'MaxUsage',
+											option: {unitID: 'TIMES'},
+											enable: tempMaxUsageRequired,
+											required: tempMaxUsageRequired}"/>
+					<span class="label">#{i18n.getText('KMK013_349')}</span>
+					<input id="temptime" style="width: 44px;"
+						   data-bind="ntsTimeEditor: {
+											name: '#{i18n.getText('KMK013_350')}',
+											constraint: 'AttendanceTime',
+											value: timeTreatTemporarySame,
+											inputFormat: 'time',
+											mode: 'time',
+											enable: tempMaxUsageRequired,
+											required: tempMaxUsageRequired}"/>
+				</div>
+				<div class="control-group valign-center">
+					<div style="width: 143px;" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK013_487')}</div>
+					<input id="midnightstart" style="width: 70px;"
+						   data-bind="ntsTimeWithDayEditor: {
+											name: '#{i18n.getText('KMK013_365')}',
+											constraint:'TimeWithDayAttr',
+											value: midNightStartTime,
+											required: true }" />
+					<span class="label">#{i18n.getText('KAF012_30')}</span>
+					<input id="midnightend" style="width: 70px;"
+						   data-bind="ntsTimeWithDayEditor: {
+											name: '#{i18n.getText('KMK013_367')}',
+											constraint:'TimeWithDayAttr',
+											value: midNightEndTime,
+											required: true }" />
+				</div>
+				<div class="control-group valign-center">
+					<div style="width: 143px;" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK013_488')}</div>
+					<div style="width: 92px;"
+						 data-bind="ntsComboBox: {
+										name:'#{i18n.getText('KMK013_488')}',
+										options: daysOfWeekOptions,
+										optionsValue: 'id',
+										value: startOfWeek,
+										visibleItemsCount: 7,
+										optionsText: 'name',
+										columns: [
+											{ prop: 'name', length: 2 }
+										]}"/>
+				</div>
+				<div class="control-group valign-center">
+					<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK013_489')}</div>
+				</div>
+				<div class="control-group valign-center">
+					<div class="child-lb">#{i18n.getText('KMK013_289')}</div>
+					<div data-bind="ntsSwitchButton: {
+										options: settingOptions,
+										optionsValue: 'id',
+										optionsText: 'name',
+										value: goOutUsage }"/>
+				</div>
+				<div class="control-group valign-center">
+					<span class="label" style="padding-left: 232px;">#{i18n.getText('KMK013_290')}</span>
+					<input id="gooutmaxuse" style="width: 20px;"
+						   data-bind="ntsNumberEditor: {
+											name: '#{i18n.getText('KMK013_291')}',
+											value: goOutMaxUsage,
+											constraint: 'MaxGoOut',
+											option: {unitID: 'TIMES'},
+											enable: goOutMaxUsageRequired,
+											required: goOutMaxUsageRequired }"/>
+					<span class="label">#{i18n.getText('KMK013_292')}</span>
+					<div style="width: 92px;"
+						 data-bind="ntsComboBox: {
+										name:'#{i18n.getText('KMK013_293')}',
+										options: goOutReasonOptions,
+										optionsValue: 'id',
+										value: initValueReasonGoOut,
+										visibleItemsCount: 7,
+										enable: goOutUsage() == 1,
+										optionsText: 'name',
+										columns: [
+											{ prop: 'name', length: 2 }
+										]}"/>
+				</div>
+				<div class="control-group valign-center" style="margin-bottom: 20px;">
+					<div class="child-lb">#{i18n.getText('KMK013_227')}</div>
+					<div data-bind="ntsSwitchButton: {
+										options: settingOptions,
+										optionsValue: 'id',
+										optionsText: 'name',
+										value: entranceExitUse}"/>
+				</div>
 			</div>
 		</ui:define>
 	</ui:composition>

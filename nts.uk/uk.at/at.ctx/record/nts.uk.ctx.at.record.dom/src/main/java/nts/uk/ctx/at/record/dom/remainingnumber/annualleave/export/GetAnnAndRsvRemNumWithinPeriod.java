@@ -182,7 +182,6 @@ public class GetAnnAndRsvRemNumWithinPeriod {
 		if (noCheckStartDate.isPresent())
 			noCheckStartDate.get();
 
-		// Require の不整合によるエラー
 		Optional<AggrResultOfAnnualLeave> aggrResultOfAnnualOpt
 			= GetAnnLeaRemNumWithinPeriodProc.algorithm(
 				require, cacheCarrier, companyId, employeeId, aggrPeriod,
@@ -203,8 +202,8 @@ public class GetAnnAndRsvRemNumWithinPeriod {
 		}
 		GetRsvLeaRemNumWithinPeriodParam rsvParam = new GetRsvLeaRemNumWithinPeriodParam(
 				companyId, employeeId, aggrPeriod, mode, criteriaDate,
-				isGetNextMonthData, lapsedAnnualLeaveInfos, isOverWrite, tempRsvDataforOverWriteList,
-				isOutputForShortage, noCheckStartDate, prevReserveLeave);
+				lapsedAnnualLeaveInfos, isOverWrite, tempRsvDataforOverWriteList,
+				prevReserveLeave);
 		val aggrResultOfreserveOpt = GetRsvLeaRemNumWithinPeriod.algorithm(
 				require, cacheCarrier,
 				rsvParam, companySets, monthlyCalcDailys);
@@ -310,8 +309,8 @@ public class GetAnnAndRsvRemNumWithinPeriod {
 			}
 			GetRsvLeaRemNumWithinPeriodParam rsvParam = new GetRsvLeaRemNumWithinPeriodParam(
 					cID, sID, aggrPeriod, mode, criteriaDate,
-					isGetNextMonthData, lapsedAnnualLeaveInfos, isOverWrite, tempRsvDataforOverWriteList,
-					isOutputForShortage, noCheckStartDate, prevReserveLeave);
+					lapsedAnnualLeaveInfos, isOverWrite, tempRsvDataforOverWriteList,
+					prevReserveLeave);
 			val aggrResultOfreserveOpt = GetRsvLeaRemNumWithinPeriod.algorithm(require, cacheCarrier,
 					rsvParam, companySets, monthlyCalcDailys);
 

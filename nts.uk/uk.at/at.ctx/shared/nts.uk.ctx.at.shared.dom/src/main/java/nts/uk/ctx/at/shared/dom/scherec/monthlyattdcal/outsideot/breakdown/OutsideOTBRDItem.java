@@ -9,6 +9,7 @@ import java.util.Collections;
 import java.util.List;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.DomainObject;
 import nts.gul.collection.CollectionUtil;
@@ -47,6 +48,7 @@ public class OutsideOTBRDItem extends DomainObject implements Serializable{
 	
 	/** The premium extra 60 H rates. */
 	// 換算率: 60H超休換算率
+	@Setter
 	private List<PremiumExtra60HRate> premiumExtra60HRates;
 	
 	/** The Constant MAX_SIZE_ATTENDANCE_ITEM. */

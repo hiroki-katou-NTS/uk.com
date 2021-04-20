@@ -14,9 +14,9 @@ public class PrelaunchAppSettingDto {
 	/** 基準日 */
 	String cacheDate;
 
-	public static PrelaunchAppSettingDto convertToDto(PrelaunchAppSetting domain) {
-		return new PrelaunchAppSettingDto(
-				ApplicationSettingDto.convertToDto(domain.getAppCommonSetting()),
-				domain.getCacheDate() == null ? null : domain.getCacheDate().toString("yyyy/MM/dd"));
-	}
+//	public static PrelaunchAppSettingDto convertToDto(PrelaunchAppSetting domain) {
+//		return new PrelaunchAppSettingDto(
+//				ApplicationSettingDto.convertToDto(domain.getAppCommonSetting()),
+//				domain.getCacheDate() == null ? null : domain.getCacheDate().toString("yyyy/MM/dd"));
+//	}
 }

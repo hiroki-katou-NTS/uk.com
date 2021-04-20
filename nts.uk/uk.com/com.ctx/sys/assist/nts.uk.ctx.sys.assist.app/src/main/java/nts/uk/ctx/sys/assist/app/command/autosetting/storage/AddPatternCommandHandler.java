@@ -57,7 +57,7 @@ public class AddPatternCommandHandler extends CommandHandler<AddPatternCommand> 
 
 	private void handleUpdate(AddPatternCommand command, String contractCode) {
 		updateCommand(command, contractCode);
-		dataStoragePatternSettingRepository.update(DataStoragePatternSetting.createFromMemento(command));
+		dataStoragePatternSettingRepository.update(DataStoragePatternSetting.createFromMemento(command), contractCode);
 	}
 
 	private void updateCommand(AddPatternCommand command, String contractCode) {

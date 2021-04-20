@@ -14,12 +14,12 @@ public interface MaxPersonSettingSetMemento {
      *
      * @param nursingNumberLeaveDay the new nursing number leave day
      */
-    void setNursingNumberLeaveDay(NumberDayNursing nursingNumberLeaveDay);
+    void setNursingNumberLeaveDay(NursingNumberLeaveDay nursingNumberLeaveDay);
 
     /**
      * Sets the nursing number person.
      *
      * @param nursingNumberPerson the new nursing number person
      */
-    void setNursingNumberLeaveDay2(NumberDayNursing nursingNumberPerson);
+    void setNursingNumberPerson(NursingNumberPerson nursingNumberPerson);
 }

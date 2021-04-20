@@ -38,6 +38,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 //import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicSchedule;
@@ -50,7 +51,6 @@ import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workscheduletime.Person
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workscheduletime.WorkScheduleTime;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workscheduletimezone.WorkScheduleTimeZone;
 import nts.uk.ctx.at.schedule.dom.schedule.schedulemaster.ScheMasterInfo;
-import nts.uk.ctx.at.schedule.dom.schedule.workschedulestate.WorkScheduleState;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.KscdtBasicSchedule;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.KscdtBasicSchedulePK;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.childcareschedule.KscdtScheChildCare;
@@ -72,7 +72,6 @@ import nts.uk.ctx.at.schedule.infra.entity.schedule.schedulemaster.KscdtScheMast
 import nts.uk.ctx.at.schedule.infra.repository.schedule.basicschedule.childcareschedule.JpaChildCareScheduleGetMemento;
 import nts.uk.ctx.at.schedule.infra.repository.schedule.basicschedule.childcareschedule.JpaChildCareScheduleSetMememto;
 import nts.uk.ctx.at.schedule.infra.repository.schedule.basicschedule.personalfee.JpaWorkSchedulePersonFeeGetMemento;
-import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.shr.infra.data.jdbc.JDBCUtil;
 
 /**
@@ -102,7 +101,7 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 		this.insertScheBasic(bSchedule);
 		this.insertRelateToWorkTimeCd(bSchedule);
 		this.insertScheduleMaster(bSchedule.getWorkScheduleMaster());
-		this.insertAllScheduleState(bSchedule.getWorkScheduleStates());
+//		this.insertAllScheduleState(bSchedule.getWorkScheduleStates());
 	}
 
 	private void insertRelateToWorkTimeCd(BasicSchedule bSchedule) {
@@ -158,8 +157,8 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 		this.updateScheduleTime(employeeId, date, bSchedule.getWorkScheduleTime());
 		this.updateScheduleMaster(bSchedule.getWorkScheduleMaster());
 		
-		this.removeScheState(employeeId, date, bSchedule.getWorkScheduleStates());
-		this.insertAllScheduleState(bSchedule.getWorkScheduleStates());
+//		this.removeScheState(employeeId, date, bSchedule.getWorkScheduleStates());
+//		this.insertAllScheduleState(bSchedule.getWorkScheduleStates());
 	}
 	
 	private void updateScheBasic(BasicSchedule bSchedule) {
@@ -924,28 +923,28 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 		}
 	}
 
-	@Override
-	public void insertAllScheduleState(List<WorkScheduleState> listWorkScheduleState) {
-		if (listWorkScheduleState == null || listWorkScheduleState.size() == 0) {
-			return;
-		}
-
-		Connection con = this.getEntityManager().unwrap(Connection.class);
-		int sizeListWorkScheduleState = listWorkScheduleState.size();
-		
-		for (int i = 0; i < sizeListWorkScheduleState; i++) {
-			String sqlQuery = "INSERT INTO KSCDT_SCHE_STATE (SID, SCHE_ITEM_ID, YMD, SCHE_EDIT_STATE) VALUES ( '"
-					+ listWorkScheduleState.get(i).getSId() + "', " + listWorkScheduleState.get(i).getScheduleItemId()
-					+ ", " + "'" + listWorkScheduleState.get(i).getYmd() + "', "
-					+ listWorkScheduleState.get(i).getScheduleEditState().value + ")";
-			try {
-				con.createStatement().executeUpdate(JDBCUtil.toInsertWithCommonField(sqlQuery));
-			} catch (SQLException e) {
-				throw new RuntimeException(e);
-			}
-		}
-		
-	}
+//	@Override
+//	public void insertAllScheduleState(List<WorkScheduleState> listWorkScheduleState) {
+//		if (listWorkScheduleState == null || listWorkScheduleState.size() == 0) {
+//			return;
+//		}
+//
+//		Connection con = this.getEntityManager().unwrap(Connection.class);
+//		int sizeListWorkScheduleState = listWorkScheduleState.size();
+//		
+//		for (int i = 0; i < sizeListWorkScheduleState; i++) {
+//			String sqlQuery = "INSERT INTO KSCDT_SCHE_STATE (SID, SCHE_ITEM_ID, YMD, SCHE_EDIT_STATE) VALUES ( '"
+//					+ listWorkScheduleState.get(i).getSId() + "', " + listWorkScheduleState.get(i).getScheduleItemId()
+//					+ ", " + "'" + listWorkScheduleState.get(i).getYmd() + "', "
+//					+ listWorkScheduleState.get(i).getScheduleEditState().value + ")";
+//			try {
+//				con.createStatement().executeUpdate(JDBCUtil.toInsertWithCommonField(sqlQuery));
+//			} catch (SQLException e) {
+//				throw new RuntimeException(e);
+//			}
+//		}
+//		
+//	}
 
 	/**
 	 * update 勤務予定休憩
@@ -995,32 +994,32 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 //		}
 //	}
 	
-	@Override
-	public void removeScheState(String employeeId, GeneralDate baseDate,
-			List<WorkScheduleState> listWorkScheduleState) {
-		
-		if(CollectionUtil.isEmpty(listWorkScheduleState)){
-			return;
-		}
-		
-		List<Integer> listItemId = listWorkScheduleState.stream().map(x -> x.getScheduleItemId()).collect(Collectors.toList());
-		CollectionUtil.split(listItemId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			String listItemIdString = "(";
-			for(int i = 0; i < subList.size(); i++){
-				listItemIdString += "'"+ subList.get(i) +"',";
-			}
-			// remove last , in string and add )
-			listItemIdString = listItemIdString.substring(0, listItemIdString.length() - 1) + ")";
-			Connection con = this.getEntityManager().unwrap(Connection.class);
-			String sqlQuery = "Delete From KSCDT_SCHE_STATE Where SID = " + "'" + employeeId + "'" + " and YMD = " + "'" + baseDate.toString("yyyy-MM-dd")
-					+ "'"+ " and SCHE_ITEM_ID IN " + listItemIdString ;
-			try {
-				con.createStatement().executeUpdate(sqlQuery);
-			} catch (SQLException e) {
-				throw new RuntimeException(e);
-			}
-		});
-	}
+//	@Override
+//	public void removeScheState(String employeeId, GeneralDate baseDate,
+//			List<WorkScheduleState> listWorkScheduleState) {
+//		
+//		if(CollectionUtil.isEmpty(listWorkScheduleState)){
+//			return;
+//		}
+//		
+//		List<Integer> listItemId = listWorkScheduleState.stream().map(x -> x.getScheduleItemId()).collect(Collectors.toList());
+//		CollectionUtil.split(listItemId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+//			String listItemIdString = "(";
+//			for(int i = 0; i < subList.size(); i++){
+//				listItemIdString += "'"+ subList.get(i) +"',";
+//			}
+//			// remove last , in string and add )
+//			listItemIdString = listItemIdString.substring(0, listItemIdString.length() - 1) + ")";
+//			Connection con = this.getEntityManager().unwrap(Connection.class);
+//			String sqlQuery = "Delete From KSCDT_SCHE_STATE Where SID = " + "'" + employeeId + "'" + " and YMD = " + "'" + baseDate.toString("yyyy-MM-dd")
+//					+ "'"+ " and SCHE_ITEM_ID IN " + listItemIdString ;
+//			try {
+//				con.createStatement().executeUpdate(sqlQuery);
+//			} catch (SQLException e) {
+//				throw new RuntimeException(e);
+//			}
+//		});
+//	}
 	
 	private void removeScheStateWithoutListScheState(String employeeId, GeneralDate baseDate) {
 		

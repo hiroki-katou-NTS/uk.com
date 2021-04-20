@@ -1,0 +1,19 @@
+table td.limited-label {
+  display: table-cell;
+}
+.mb-2 {
+  margin-bottom: 10px;
+}
+.nts-searchbbox-wrapper {
+  display: flex;
+}
+.nts-searchbbox-wrapper .input-wrapper:first-child {
+  width: 85%;
+}
+.nts-searchbbox-wrapper .input-wrapper:first-child span,
+.nts-searchbbox-wrapper .input-wrapper:first-child input {
+  width: 100% !important;
+}
+.ui-iggrid .ui-iggrid-tablebody td {
+  height: 22px;
+}

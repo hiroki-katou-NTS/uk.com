@@ -103,14 +103,6 @@ public class TimeLeavingOfDailyPerformance extends AggregateRoot {
 	}
 	
 	/**
-	 * 退勤を返す　　　（勤務回数が2回目の場合は2回目の退勤を返す）
-	 * @return
-	 */
-	public Optional<TimeActualStamp> getLeavingWork() {
-		return attendance.getLeavingWork();
-	}
-	
-	/**
 	 * 勤務回数が1回か判定する
 	 * @return　true:1回　false:2回目
 	 */

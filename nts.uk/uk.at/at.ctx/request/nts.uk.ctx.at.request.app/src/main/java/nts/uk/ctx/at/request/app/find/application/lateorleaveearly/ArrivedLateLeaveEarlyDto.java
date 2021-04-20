@@ -6,9 +6,7 @@ import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.request.app.find.application.ApplicationDto;
 import nts.uk.ctx.at.request.dom.application.lateleaveearly.ArrivedLateLeaveEarly;
-import nts.uk.ctx.at.request.dom.application.lateorleaveearly.ArrivedLateLeaveEarly_Old;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -35,10 +33,6 @@ public class ArrivedLateLeaveEarlyDto {
 		dto.setLateOrLeaveEarlies(this.lateOrLeaveEarlies.stream().map(x -> x.toDomain()).collect(Collectors.toList()));
 		
 		return dto;
-	}
-	
-	public static ArrivedLateLeaveEarlyDto convertDto(ArrivedLateLeaveEarly_Old app) {
-		return null;
 	}
 
 }

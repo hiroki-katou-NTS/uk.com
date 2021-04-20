@@ -67,7 +67,7 @@ export const input = (tagName: 'input' | 'textarea' | 'select' = 'input') => com
                         v-on:keyup="evt => $emit('keyup', evt)"
                         v-on:focus="evt => $emit('focus', evt)"
                         v-on:blur="evt => $emit('blur', evt)"
-                        v-on:dblclick="evt => $emit('dblclick', evt)"
+                        v-on:dblclick="evt => { evt.preventDefault(); $emit('dblclick', evt); }"
                     />`
         }
                 <template v-if="showError">

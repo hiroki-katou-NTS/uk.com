@@ -120,9 +120,9 @@ public class KfnmtExtractPeriodMonth extends ContractUkJpaEntity implements Seri
 		this.strPreviousAtr = PreviousClassification.BEFORE.value;
 		this.endSpecify = domain.getEndMonth().getSpecifyEndMonth().value;
 		this.extractPeriod = domain.getEndMonth().getExtractFromStartMonth().value;
-		this.endMonth = domain.getEndMonth().getEndMonthNo().get().getMonthNo();
-		this.endCurrentMonth = domain.getEndMonth().getEndMonthNo().get().isCurentMonth()? 1: 0;
-		this.endPreviousAtr = domain.getEndMonth().getEndMonthNo().get().getMonthPrevious().value;
+		this.endMonth = domain.getEndMonth().getEndMonthNo() != null && domain.getEndMonth().getEndMonthNo().isPresent()  ? domain.getEndMonth().getEndMonthNo().get().getMonthNo() : 0;
+		this.endCurrentMonth = domain.getEndMonth().getEndMonthNo() != null && domain.getEndMonth().getEndMonthNo().isPresent() && domain.getEndMonth().getEndMonthNo().get().isCurentMonth()? 1: 0;
+		this.endPreviousAtr = domain.getEndMonth().getEndMonthNo() != null && domain.getEndMonth().getEndMonthNo().isPresent() ? domain.getEndMonth().getEndMonthNo().get().getMonthPrevious().value : 0;
 	}
 	
 	public static KfnmtExtractPeriodMonth toEntity(String companyId, String alarmPatternCode, int alarmCategory, ExtractionPeriodMonth domain) {

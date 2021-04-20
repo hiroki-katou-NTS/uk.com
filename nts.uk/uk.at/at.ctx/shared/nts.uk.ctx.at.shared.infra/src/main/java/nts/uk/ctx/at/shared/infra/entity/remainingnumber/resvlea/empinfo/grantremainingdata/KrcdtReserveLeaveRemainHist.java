@@ -9,10 +9,15 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
+import lombok.val;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.ReserveLeaveGrantRemainHistoryData;
+import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.ReserveLeaveGrantRemainingData;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
+import nts.uk.shr.infra.data.entity.ContractCompanyUkJpaEntity;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
@@ -24,13 +29,10 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "KRCDT_HDSTK_REM_HIST")
-public class KrcdtReserveLeaveRemainHist extends ContractUkJpaEntity implements Serializable{
+public class KrcdtReserveLeaveRemainHist extends ContractCompanyUkJpaEntity implements Serializable{
 
 	@EmbeddedId
 	public KrcdtReserveLeaveRemainHistPK  krcdtReserveLeaveRemainHistPK;
-
-	@Column(name = "CID")
-	public String cid;
 
 	@Column(name = "DEADLINE")
 	public GeneralDate deadline;
@@ -54,9 +56,8 @@ public class KrcdtReserveLeaveRemainHist extends ContractUkJpaEntity implements 
 	@Column(name = "REMAINING_DAYS")
 	public double remainingDays;
 
-	public static KrcdtReserveLeaveRemainHist fromDomain(ReserveLeaveGrantRemainHistoryData domain, String cid) {
+	public static KrcdtReserveLeaveRemainHist fromDomain(ReserveLeaveGrantRemainHistoryData domain) {
 		return new KrcdtReserveLeaveRemainHist(
-				cid,
 				domain.getEmployeeId(),
 				domain.getYearMonth().v(),
 				domain.getClosureId().value,
@@ -73,19 +74,20 @@ public class KrcdtReserveLeaveRemainHist extends ContractUkJpaEntity implements 
 	}
 
 	public ReserveLeaveGrantRemainHistoryData toDomain() {
-		return new ReserveLeaveGrantRemainHistoryData(
-				this.krcdtReserveLeaveRemainHistPK.sid, new YearMonth(this.krcdtReserveLeaveRemainHistPK.yearMonth), this.krcdtReserveLeaveRemainHistPK.closureId,
-				new ClosureDate(this.krcdtReserveLeaveRemainHistPK.closeDay, this.krcdtReserveLeaveRemainHistPK.isLastDay == 1), this.krcdtReserveLeaveRemainHistPK.grantDate, this.deadline,
-				this.expStatus, this.registerType, this.grantDays, this.usedDays, this.overLimitDays,
-				this.remainingDays);
+		
+		val data = ReserveLeaveGrantRemainingData.createFromJavaType("", this.krcdtReserveLeaveRemainHistPK.sid, this.krcdtReserveLeaveRemainHistPK.grantDate, 
+				deadline, expStatus, registerType, grantDays, usedDays, overLimitDays, grantDays);
+		
+		return new ReserveLeaveGrantRemainHistoryData(data, new YearMonth(this.krcdtReserveLeaveRemainHistPK.yearMonth),
+				EnumAdaptor.valueOf(this.krcdtReserveLeaveRemainHistPK.closureId, ClosureId.class),
+				new ClosureDate(this.krcdtReserveLeaveRemainHistPK.closeDay, this.krcdtReserveLeaveRemainHistPK.isLastDay == 1));
 	}
 
-	public KrcdtReserveLeaveRemainHist(String cid, String sid, Integer yearMonth, Integer closureId, Integer closeDay,
+	public KrcdtReserveLeaveRemainHist(String sid, Integer yearMonth, Integer closureId, Integer closeDay,
 			int isLastDay, GeneralDate grantDate,
 			GeneralDate deadline, int expStatus, int registerType, double grantDays, double usedDays,
 			Double overLimitDays, double remainingDays) {
 		super();
-		this.cid = cid;
 		this.krcdtReserveLeaveRemainHistPK = new KrcdtReserveLeaveRemainHistPK(sid, yearMonth, closureId, closeDay, isLastDay, grantDate);
 		this.deadline = deadline;
 		this.expStatus = expStatus;

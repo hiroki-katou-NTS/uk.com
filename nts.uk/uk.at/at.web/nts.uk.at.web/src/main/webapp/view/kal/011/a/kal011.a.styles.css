@@ -1,0 +1,38 @@
+.tbl-wrap{
+   width: 1240px;
+}
+
+.tbl-wrap > .cell:nth-child(1){
+    width: 515px;
+    padding: 10px 10px 0 10px;
+}
+
+.tbl-wrap > .cell:nth-child(2){
+    width: auto;
+    padding: 10px 0 0 30px;
+}
+
+.tbl-control{
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.tbl-control > .cell:nth-child(1){
+     width: 85px;
+}
+ 
+.tbl-control > .cell:nth-child(2){
+     width: auto;
+}
+
+.periodTime{
+    padding-left: 5px !important;
+}
+
+.periodTime .ntsDateRange{
+    padding-top: 4px;
+}
+
+.nts-datepicker-wrapper .ntsDatepicker.yearmonth-picker {
+    width: 85px !important;
+}

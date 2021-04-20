@@ -6,7 +6,7 @@
             <div id="year-month-component" class="flex-center-vert" style="border-color: #E0F59E;">
                 <!-- A1_1_1 -->
                 <span v-on:click="changeYearMonth(false)">
-                    <i class="fas fa-arrow-alt-circle-left"></i>
+                    <i style="padding-top: 1vw;" class="fas fa-arrow-alt-circle-left large-icon"></i>
                 </span>
                 <!-- A1_1_2 -->
                 <nts-year-month
@@ -16,7 +16,7 @@
                 />
                 <!-- A1_1_3 -->
                 <span v-on:click="changeYearMonth(true)">
-                    <i class="fas fa-arrow-alt-circle-right"></i>
+                    <i style="padding-top: 1vw;" class="fas fa-arrow-alt-circle-right large-icon"></i>
                 </span>
             </div>
             <div class="flex-center-vert">
@@ -31,7 +31,7 @@
                 </span>
                 <!-- A1_1_5 -->
                 <span v-on:click="openKSUS01B()">
-                    <i class="fas fa-info-circle"></i>
+                    <i style="padding-top: 1vw;" class="fas fa-info-circle large-icon"></i>
                 </span>
             </div>
         </div>
@@ -66,7 +66,9 @@
                     <div class="date-cell-content">
                         <div class="date-cell-top">
                             <!-- A1_3_1 -->
-                            <span v-if="today == item.date" class="uk-bg-schedule-that-day" style="border-radius: 50%;">{{item.formatedDate}}</span>
+                            <span v-if="today == item.date" class="uk-bg-schedule-that-day" style="border-radius: 50%; height: 4vw; min-width: 3vw; padding-right: 0.25vw">
+                                {{item.formatedDate}}
+                            </span>
                             <span v-else>{{item.formatedDate}}</span>
                             <!-- A1_3_2 -->
                             <span v-show="workDesiredOpAtr && item.displayData.workDesireStatus != undefined && item.displayData.workDesireStatus != 0">
@@ -98,7 +100,7 @@
         <!-- A3_1 -->
         <div class="card-header uk-bg-choice-row" v-on:click="showDetail(false)">
             <span style="font-weight: bold;">{{detailCell && detailCell.formatedLongMdwDate}}</span>
-            <i class="fas fa-sort-down"></i>
+            <i class="fas fa-sort-down large-icon"></i>
             <!-- an invisible span to center the icon with flex -->
             <span style="font-weight: bold; visibility: hidden">{{detailCell && detailCell.formatedLongMdwDate}}</span>
         </div>
@@ -134,7 +136,7 @@
                     :value="index"
                     style="font-weight: bold;"
                 >
-                    {{item.attendanceStamp}}~{{item.leaveStamp}}
+                    {{item.attendanceStamp}}～{{item.leaveStamp}}
                 </span>
             </div>
             <div class="detail-spacing" v-show="detailCell && (detailCell.displayData.workScheduleAtr != undefined && detailCell.displayData.workScheduleAtr != 0)">
@@ -207,7 +209,7 @@
                             :value="timeZoneIndex"
                             style="font-weight: bold;"
                         >
-                            {{timeZone.start}}~{{timeZone.end}}
+                            {{timeZone.start}}～{{timeZone.end}}
                         </span>
                     </div>
                 </div>

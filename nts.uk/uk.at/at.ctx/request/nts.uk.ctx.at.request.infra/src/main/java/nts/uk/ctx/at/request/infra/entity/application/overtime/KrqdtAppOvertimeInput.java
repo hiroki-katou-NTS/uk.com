@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.request.infra.entity.application.overtime;
 
 import java.io.Serializable;
-import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;

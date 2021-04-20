@@ -43,7 +43,8 @@ public class SelectedPatternFinder {
 				.findByPatternCdAndPatternAtrAndSystemTypes(
 						command.getPatternCode(), 
 						command.getPatternClassification(), 
-						command.getCategories().stream().map(CategoryDto::getSystemType).collect(Collectors.toList()));
+						command.getCategories().stream().map(CategoryDto::getSystemType).distinct().collect(Collectors.toList()),
+						AppContexts.user().contractCode());
 		//ドメインモデル「カテゴリ」を取得する
 		List<Category> categories = categoryRepository.getCategoryByListId(selectCategories.stream()
 																			.map(c -> c.getCategoryId().v())
@@ -56,30 +57,24 @@ public class SelectedPatternFinder {
 		
 		//List<選択カテゴリ名称＞を作成
 		dto.setSelectedCategories(selectCategories.stream()
-				.map(sc -> {
-					SelectionCategoryNameDto obj = new SelectionCategoryNameDto();
-					obj.setCategoryId(sc.getCategoryId().v());
-					obj.setCategoryName(command.getCategories().stream()
-							.filter(u -> u.getCategoryId().equals(sc.getCategoryId().v()))
-							.filter(u -> u.getSystemType() == sc.getSystemType().value)
-							.findFirst()
-							.map(CategoryDto::getCategoryName)
-							.orElse(null));
-					obj.setPatternClassification(sc.getPatternClassification().value);
-					obj.setPatternCode(sc.getPatternCode().v());
-					obj.setRetentionPeriod(categories.stream()
-							.filter(u -> u.getCategoryId().v().equals(sc.getCategoryId().v()))
-							.findFirst()
-							.map(c -> c.getTimeStore().nameId)
-							.get());
-					obj.setSystemType(sc.getSystemType().value);
-					op.ifPresent(pattern -> {
-						DataStoragePatternSettingDto patternDto = new DataStoragePatternSettingDto();
-						pattern.setMemento(patternDto);
-						obj.setPattern(patternDto);
-					});
-					return obj;
-				})
+				.map(sc -> SelectionCategoryNameDto.builder()
+						.categoryId(sc.getCategoryId().v())
+						.categoryName(command.getCategories().stream()
+								.filter(u -> u.getCategoryId().equals(sc.getCategoryId().v())
+										&& u.getSystemType() == sc.getSystemType().value)
+								.findFirst()
+								.map(CategoryDto::getCategoryName)
+								.orElse(null))
+						.pattern(op.map(DataStoragePatternSettingDto::createFromDomain).orElse(null))
+						.patternClassification(sc.getPatternClassification().value)
+						.patternCode(sc.getPatternCode().v())
+						.retentionPeriod(categories.stream()
+								.filter(u -> u.getCategoryId().equals(sc.getCategoryId()))
+								.findFirst()
+								.map(c -> c.getTimeStore().nameId)
+								.orElse(null))
+						.systemType(sc.getSystemType().value)
+						.build())
 				.sorted(Comparator.comparing(SelectionCategoryNameDto::getCategoryId))
 				.collect(Collectors.toList()));
 		

@@ -46,7 +46,7 @@
 					class="myLinkButton" data-bind="click: navigateView"> <span
 					class="myLinkButtonText">#{i18n.getText('KMK005_58')}</span>
 				</a>
-				<button class="proceed" data-bind="click: saveData">#{i18n.getText('KMK005_60')}</button>
+				<button class="proceed" data-bind="click: saveData, enable: enableRegister">#{i18n.getText('KMK005_60')}</button>
 				<button class="danger" data-bind="click: removeData, enable: removeAble">#{i18n.getText('KMK005_62')}</button>
 			</div>
 			<div id="tabpanel-g" role="tabpanel" class="screen-g"

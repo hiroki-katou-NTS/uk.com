@@ -35,8 +35,12 @@ import nts.uk.ctx.at.function.dom.alarm.alarmlist.AlarmExtraValueWkReDto;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.EmployeeSearchDto;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.PeriodByAlarmCategory;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.aggregationprocess.agreementprocess.AgreementCheckService;
+import nts.uk.ctx.at.function.dom.alarm.alarmlist.annual.ScheduleAnnualAlarmCheckCond;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.appapproval.AppApprovalAggregationProcessService;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.attendanceholiday.TotalProcessAnnualHoliday;
+import nts.uk.ctx.at.function.dom.alarm.alarmlist.schedaily.ScheduleDailyAlarmCheckCond;
+import nts.uk.ctx.at.function.dom.alarm.alarmlist.schemonthly.ScheduleMonthlyAlarmCheckCond;
+import nts.uk.ctx.at.function.dom.alarm.alarmlist.weekly.WeeklyAlarmCheckCond;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategory;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategoryRepository;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckTargetCondition;
@@ -181,10 +185,10 @@ public class AggregationProcessService {
 			if(!findByAlarmPatternCode.isPresent()) {
 				throw new BusinessException("Msg_2059", pattentCd);
 			}
-			
+			List<Integer> lstCategory = lstCategoryPeriod.stream().map(x -> x.getCategory()).collect(Collectors.toList());
 			alarmPattern = findByAlarmPatternCode.get();
 			//ドメインモデル「カテゴリ別アラームチェック条件」を取得
-			alarmPattern.getCheckConList().stream().forEach(x->{
+			alarmPattern.getCheckConList().stream().filter(a -> lstCategory.contains(a.getAlarmCategory().value)).forEach(x->{
 				List<AlarmCheckConditionByCategory> lstCond = checkConditionRepo.findByCategoryAndCode(cid, 
 						x.getAlarmCategory().value, 
 						x.getCheckConditionList());
@@ -201,7 +205,7 @@ public class AggregationProcessService {
 			CategoryCondValueDto valuesDto = new CategoryCondValueDto(x.getCategory(), x.getCode().v(), mapCondCdCheckNoType);
 			DatePeriod datePeriod = null;
 			
-			//期間条件を絞り込む TODO can xem lai voi truong hop 36
+			//期間条件を絞り込む
 			List<PeriodByAlarmCategory> periodCheck = lstCategoryPeriod.stream()
 					.filter(y -> y.getCategory() == x.getCategory().value)
 					.collect(Collectors.toList());
@@ -246,6 +250,18 @@ public class AggregationProcessService {
 				switch (x.getCategory()) {
 				
 				case SCHEDULE_DAILY:
+					ScheduleDailyAlarmCheckCond scheDailyAlarmCondition = (ScheduleDailyAlarmCheckCond) x.getExtractionCondition();
+					extractAlarmService.extractScheDailyCheckResult(cid,
+							lstSid,
+							datePeriod, 
+							extractTargetCondition.getId(),
+							scheDailyAlarmCondition,
+							getWplByListSidAndPeriod,
+							lstStatusEmp,
+							lstResultCondition,
+							lstCheckType,
+							counter,
+							shouldStop);
 					break;
 					
 				case SCHEDULE_WEEKLY:
@@ -270,9 +286,27 @@ public class AggregationProcessService {
 					break;
 					
 				case SCHEDULE_MONTHLY:
+					ScheduleMonthlyAlarmCheckCond scheduleMonthlyAlarmCheckCond = (ScheduleMonthlyAlarmCheckCond)x.getExtractionCondition();
+					extractAlarmService.extractScheMonCheckResult(
+							cid, lstSid, datePeriod, extractTargetCondition.getId(), 
+							scheduleMonthlyAlarmCheckCond, 
+							getWplByListSidAndPeriod, lstStatusEmp, 
+							lstResultCondition, lstCheckType, counter, shouldStop);
 					break;
 					
 				case SCHEDULE_YEAR:
+					ScheduleAnnualAlarmCheckCond scheYearAlarmCondition = (ScheduleAnnualAlarmCheckCond)x.getExtractionCondition();
+					extractAlarmService.extractScheYearCheckResult(cid,
+							lstSid,
+							datePeriod, 
+							extractTargetCondition.getId(),
+							scheYearAlarmCondition,
+							getWplByListSidAndPeriod,
+							lstStatusEmp,
+							lstResultCondition,
+							lstCheckType,
+							counter,
+							shouldStop);
 					break;
 					
 				case DAILY:
@@ -288,8 +322,13 @@ public class AggregationProcessService {
 							lstCheckType,
 							counter,
 							shouldStop);
-					
+					break;
 				case WEEKLY:
+					WeeklyAlarmCheckCond weeklyAlarmCheckCond = (WeeklyAlarmCheckCond)x.getExtractionCondition();
+					extractAlarmService.extractWeeklyCheckResult( 
+							cid, lstSid, datePeriod, getWplByListSidAndPeriod, 
+							weeklyAlarmCheckCond, lstResultCondition, 
+							lstCheckType, counter, shouldStop);
 					break;
 					
 				case MONTHLY:
@@ -347,7 +386,7 @@ public class AggregationProcessService {
 				case AGREEMENT:
 					check36Alarm.get36AlarmCheck(cid,
 							x.getAlarmChkCondAgree36(),
-							lstCategoryPeriod,
+							periodCheck,
 							counter,
 							shouldStop,
 							getWplByListSidAndPeriod,
@@ -569,5 +608,12 @@ public class AggregationProcessService {
 			}
 		}
 	}
-
+	
+	/**
+	 * スケジュール日次の集計処理
+	 */
+	private void processWithScheduleDaily() {
+		// チェックする前にデータ準備
+		
+	}
 }

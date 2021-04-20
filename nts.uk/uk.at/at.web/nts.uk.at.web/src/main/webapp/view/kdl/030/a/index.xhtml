@@ -10,7 +10,7 @@
 			<com:ValidatorScript>
 				nts.uk.ctx.at.request.dom.setting.company.mailsetting.mailapplicationapproval.ApplicationEmailBody
 			</com:ValidatorScript>
-			<script>var dialogSize = { width: 870, height: 620 };</script>
+			<script>var dialogSize = { width: 870, height: 625 };</script>
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="kdl030.a.start.js" />
 			<com:scriptfile path="kdl030.a.vm.js" />
@@ -21,103 +21,95 @@
 			
 			<div id="contents-area" style="width: 850px; height: 620px">
 				<!-- A1_1 承認者にメールを送信します。 -->
-				<div class="label-div">
+				<div class="label-div" style="margin-left: 25px;">
 					<label>#{i18n.getText('KDL030_2')}</label>
+				</div>
+				<div class="table valign-center" data-bind="if: isAgentMode || isOpEmployee" style="margin-left: 22px">
+					<div id="checkSendApplicant" data-bind="i18n: 'KDL030_36', ntsCheckBox: { checked: isSendApplicant }"></div>
 				</div>
 				<div class="table valign-center">
 					<div class="cell">
 						<!-- A2_1 送信対象者 -->
-						<div id="A2_1" style="width: 100px;"
-							data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDL030_3')}</div>
+						<div data-bind="if: !(isAgentMode || isOpEmployee)">
+							<div id="A2_1" style="width: 104px;"
+								data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDL030_3')}</div>
+						</div>
+						
 					</div>
-					<div id = "A2_2">
-						<table id="table-phase">
-						<thead>
-							<tr style = "background-color: #E0F59E !important ">
-								<th class="phase-app">#{i18n.getText('KDL030_10')}</th>
-								<th class="order-app">#{i18n.getText('KDL030_11')}</th>
-								<th class="name-app">#{i18n.getText('KDL030_12')}</th>
-								<th class="status-app">#{i18n.getText('KDL030_13')}</th>
-								<th class="isMail-appr">#{i18n.getText('KDL030_14')}</th>
-							</tr>
-						</thead>
-						<tbody data-bind="foreach: {data :approvalRootState, as: 'loopPhase' }">
-							<!-- 1 フェーズ -->
-							<com:ko-foreach bind="{data : $data.listApprovalFrame, as :'loopFrame'}">
-								<tr>
-									<com:ko bind="$index() === 0" tag="if">
-										<td data-bind="attr: {rowspan: $parent.listApprovalFrame.length}, text: '#{i18n.getText('KDL030_15')}'+$parent.phaseOrder" 
-											class="bg-green phase-app"></td>
-									</com:ko>
-									<com:ko bind= "loopPhase.listApprovalFrame.length = 1" tag ="if">
-										<!-- 承認者 -->
-											<td data-bind="text: $vm.getApproverLabel($data.frameOrder)" class="order-app bg-green" ></td>
-										<!-- 社員名 -->
-										<td class = "name-app" data-bind="foreach: $data.listApprover">
-											<div class = "rowPerName" data-bind="css: { rowBorder:  ($parent.listApprover.length - $index()) > 1 }">
-												<div class = "nameApprover" data-bind="text: $data.dispApproverName"></div>
-											</div>
-										</td>
-									</com:ko>		<!-- 状況 -->
-									<td class = "status-app" data-bind="text: approvalAtrName" ></td>
- 									<!-- メール送信 -->
- 									<td class = "isMail-appr" data-bind="foreach: $data.listApprover">
- 										<div data-bind = "if: $data.showButton,
- 												css: {rowBorder: ($parent.listApprover.length - $index()) > 1 &amp; showButton, rowPer: showButton}">
-	 										<div data-bind="ntsSwitchButton: { 
-			   										name: '#{i18n.getText('KAF030_25')}',   
-			   										options: $parents[2].optionList,   
-			  										optionsValue: 'dispCode',  
-			  										optionsText: 'dispName',  
-			  										value: $data.isSend}">
-	  										</div>
- 										</div>
- 										<div data-bind = "ifnot: $data.showButton, 
- 											css: {rowBorder: ($parent.listApprover.length - $index()) > 1 &amp; showButton == false, 
- 													rowPer1: showButton == false }">#{i18n.getText('KDL030_31')}</div>
-									</td>
-								</tr>
-							</com:ko-foreach>
-						</tbody>
-					</table>
-					</div>
-				</div>
-				<div class="table valign-center" style = "padding-top: 10px">
-					<div class="cell">
-						<!-- A3_1 申請者 -->
-						<div id="A3_1" style="width: 100px;"
-							data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDL030_32')}</div>
-					</div>
-					<div id="A3_2">
-						<table id="table-applicant">
+					<div>
+						<table class="table-phase" style="border-style: solid">
 							<thead>
-								<tr class="bg-green">
-									<th class="applicant">#{i18n.getText('KDL030_33')}</th>
-									<!-- A3_2_2 -->
-									<th class="name-emp">#{i18n.getText('KDL030_35')}</th>
-									<th class="isMail-app">#{i18n.getText('KDL030_14')}</th>
-								</tr>
+							<tr class="bg-green">
+								<com:ko-if bind="isAgentMode || isOpEmployee">
+									<th style="width: 100px;" data-bind="text: $i18n('KDL030_32')"></th>
+								</com:ko-if>
+								<th style="width: 70px;" data-bind="text: $i18n('KDL030_10')"></th>
+								<th style="width: 78px;" data-bind="text: $i18n('KDL030_11')"></th>
+								<th style="width: 250px;" data-bind="text: $i18n('KDL030_12')"></th>
+								<th style="width: 70px;" data-bind="text: $i18n('KDL030_13')"></th>
+								<th style="width: 170px;" data-bind="text: $i18n('KDL030_14')"></th>
+							</tr>
 							</thead>
-							<tbody>
-								<tr data-bind="with: applicantObj">
-									<!-- A3_2_4 申請者（ラベル） -->
-									<td class="applicant bg-green">#{i18n.getText('KDL030_34')}</td>
-									<!-- A3_2_5 社員名 -->
-									<td class = "name-emp" data-bind="text: empName"></td>
-									<!-- メール送信 -->
-									<td class = "isMail-app">
-										<div data-bind = "if: isMail">
-											<div data-bind="ntsSwitchButton: { 
-			   										name: '#{i18n.getText('KAF030_25')}',   
-			   										options: $parent.optionList,   
-			  										optionsValue: 'dispCode',  
-			  										optionsText: 'dispName',  
-			  										value: $parent.isSendToApplicant}">
-											</div>
-										</div>
-										<div data-bind = "ifnot : isMail, css:{rowPer1: isMail == false}">#{i18n.getText('KDL030_31')}</div>
-									</td>
-								</tr>
+						</table>
+					</div>
+					<div id="table-body" data-bind="attr : { 'class' : (checkApproverFive() + '' + checkApproverMoreFive())}">
+						<table class="table-phase" data-bind="if: appSendMailByEmpLst().length != 0">
+							<tbody data-bind="foreach: { data: appSendMailByEmpLst, as: 'appSendMailByEmp' }">
+							<com:ko-foreach
+								bind="{data: appSendMailByEmp.approvalRoot.listApprovalPhaseStateDto, as: 'loopPhase'}">
+								<com:ko-foreach bind="{data: loopPhase.listApprovalFrame, as: 'loopFrame'}">
+									<com:ko-foreach bind="{data: loopFrame.listApprover, as: 'loopApprover'}">
+										<tr>
+											<com:ko-if
+												bind="$vm.isFirstIndexPhase(appSendMailByEmp, loopPhase, loopFrame, loopApprover) &amp;&amp; ($vm.isAgentMode || $vm.isOpEmployee) ">
+												<td data-bind="attr: {rowspan: ko.pureComputed(function() { return $vm.phaseCount(appSendMailByEmp.approvalRoot.listApprovalPhaseStateDto())}) }">
+													<span data-bind="text: ko.pureComputed(function() {return $vm.getApplicantName(appSendMailByEmp)}) , attr: {'class' : $vm.checkApproverTwo(appSendMailByEmp) }"
+														  style="width: 100px;" ></span>
+												</td>
+											</com:ko-if>
+											<com:ko-if bind="$vm.isFirstIndexFrame(loopPhase, loopFrame, loopApprover)">
+												<td data-bind="attr: {rowspan: ko.pureComputed(function() { return $vm.frameCount(loopPhase.listApprovalFrame())}) },
+					                					text: $vm.getPhaseLabel(loopPhase.phaseOrder())" style="width: 70px;"
+													class="bg-green"></td>
+											</com:ko-if>
+											<com:ko-if bind="$vm.isFirstIndexApprover(loopFrame, loopApprover)">
+												<td style="width: 78px; text-align: left;" class="bg-green"
+													data-bind="attr: {rowspan: ko.pureComputed(function() { return $vm.approverCount(loopFrame.listApprover())}) }">
+									            	<span style="padding-left: 5px;"
+														  data-bind="text: $vm.getApproverLabel(loopPhase, loopFrame, loopApprover)">
+									            	</span>
+												</td>
+											</com:ko-if>
+											<td style="width: 250px;">
+								                <span class="limited-label" style="width: 250px;"
+													  data-bind="text: ko.pureComputed(function() { return $vm.getApproverAtr(loopApprover)})">
+								                </span>
+											</td>
+											<td style="width: 70px;">
+												<span class="limited-label" style="width: 70px;"
+													  data-bind="text: loopApprover.approvalAtrName"></span>
+											</td>
+											<td style="width: 170px;">
+												<div data-bind="if: loopApprover.approverMail">
+													<div class="switchBtn" data-bind="ntsSwitchButton: {
+	   										name: '#{i18n.getText('KAF030_25')}',   
+	   										options: ko.observableArray([
+								                { dispCode: 1, dispName: $vm.$i18n('KDL030_26') },
+								                { dispCode: 0, dispName: $vm.$i18n('KDL030_27') }
+								            ]),   
+	  										optionsValue: 'dispCode',  
+	  										optionsText: 'dispName',  
+	  										value: handleSendMail }">
+													</div>
+												</div>
+												<div data-bind="ifnot: loopApprover.approverMail"
+													 style="color: #FF0000;">#{i18n.getText('KDL030_31')}
+												</div>
+											</td>
+										</tr>
+									</com:ko-foreach>
+								</com:ko-foreach>
+							</com:ko-foreach>
 							</tbody>
 						</table>
 					</div>
@@ -132,7 +124,7 @@
 					<div class="cell column2">
 						<textarea id="A4_2"
 							data-bind="ntsMultilineEditor: { 
-									name: '#[KDL034_14]',
+									name: '#[KDL030_6]',
 									value: mailContent,
 									required : true,
 									constraint: 'ApplicationEmailBody' }" />
