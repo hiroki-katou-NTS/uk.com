@@ -17,6 +17,7 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.OvertimeDeclaration;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeActualStamp;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkStampTest;
 import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -130,25 +131,16 @@ public class OutingTimeOfDailyAttdTest {
 
 		static OutingTimeSheet createOutingTimeSheetWithReason( GoingOutReason reason) {
 
-			TimeActualStamp goOut = new TimeActualStamp(
-					WorkStampTest.WorkStampHelper.createWorkStampWithTimeWithDay(1000)
-					, WorkStampTest.WorkStampHelper.createWorkStampWithTimeWithDay(1000)
-					, 1
-	                , new OvertimeDeclaration(new AttendanceTime(100), new AttendanceTime(0))
-	                , null);
 
-			TimeActualStamp comeBack = new TimeActualStamp(
-					WorkStampTest.WorkStampHelper.createWorkStampWithTimeWithDay(1000)
-					, WorkStampTest.WorkStampHelper.createWorkStampWithTimeWithDay(1000)
-					, 1
-	                , new OvertimeDeclaration(new AttendanceTime(100), new AttendanceTime(0))
-	                , null);
+			
+			WorkStamp goOut = WorkStampTest.WorkStampHelper.createWorkStampWithTimeWithDay(1000);
+			
+			WorkStamp comeBack = WorkStampTest.WorkStampHelper.createWorkStampWithTimeWithDay(1000);
+
 
 			return new OutingTimeSheet(
 					new OutingFrameNo(1)
 					, Optional.of(goOut)
-					, new AttendanceTime(1600)
-					, new AttendanceTime(1700)
 					, reason
 					, Optional.of(comeBack));
 		}

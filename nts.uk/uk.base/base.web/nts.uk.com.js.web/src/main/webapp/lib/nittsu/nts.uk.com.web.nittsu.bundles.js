@@ -1,19 +1,3 @@
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
 var nts;
 (function (nts) {
     var uk;
@@ -27,14 +11,14 @@ var nts;
                     get: function () {
                         return !this.landscapse;
                     },
-                    enumerable: true,
+                    enumerable: false,
                     configurable: true
                 });
                 Object.defineProperty(browser, "landscapse", {
                     get: function () {
                         return window.innerWidth > window.innerHeight;
                     },
-                    enumerable: true,
+                    enumerable: false,
                     configurable: true
                 });
                 Object.defineProperty(browser, "mobile", {
@@ -47,7 +31,7 @@ var nts;
                         })(navigator.userAgent || navigator.vendor || window.opera);
                         return check;
                     },
-                    enumerable: true,
+                    enumerable: false,
                     configurable: true
                 });
                 Object.defineProperty(browser, "tablet", {
@@ -60,7 +44,7 @@ var nts;
                         })(navigator.userAgent || navigator.vendor || window.opera);
                         return check;
                     },
-                    enumerable: true,
+                    enumerable: false,
                     configurable: true
                 });
                 Object.defineProperty(browser, "mp", {
@@ -70,7 +54,7 @@ var nts;
                     get: function () {
                         return this.mobile && this.portrait;
                     },
-                    enumerable: true,
+                    enumerable: false,
                     configurable: true
                 });
                 Object.defineProperty(browser, "ml", {
@@ -80,28 +64,28 @@ var nts;
                     get: function () {
                         return this.mobile && this.landscapse;
                     },
-                    enumerable: true,
+                    enumerable: false,
                     configurable: true
                 });
                 Object.defineProperty(browser, "ios", {
                     get: function () {
                         return /iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
                     },
-                    enumerable: true,
+                    enumerable: false,
                     configurable: true
                 });
                 Object.defineProperty(browser, "width", {
                     get: function () {
                         return window.innerWidth;
                     },
-                    enumerable: true,
+                    enumerable: false,
                     configurable: true
                 });
                 Object.defineProperty(browser, "height", {
                     get: function () {
                         return window.innerHeight;
                     },
-                    enumerable: true,
+                    enumerable: false,
                     configurable: true
                 });
                 Object.defineProperty(browser, "version", {
@@ -124,7 +108,7 @@ var nts;
                         }
                         return M.join(' ');
                     },
-                    enumerable: true,
+                    enumerable: false,
                     configurable: true
                 });
                 Object.defineProperty(browser, "private", {
@@ -193,7 +177,7 @@ var nts;
                         not();
                         return d.promise();
                     },
-                    enumerable: true,
+                    enumerable: false,
                     configurable: true
                 });
                 return browser;
@@ -210,84 +194,6 @@ b.private.then(function (v) {
         }
     }
 });
-var nts;
-(function (nts) {
-    var uk;
-    (function (uk) {
-        var devices;
-        (function (devices) {
-            var WS_URI = "ws://127.0.0.1:18080/pasori/";
-            var instance = null;
-            var callback = null;
-            var Felica = /** @class */ (function () {
-                function Felica(once) {
-                    if (once === void 0) { once = true; }
-                    var fc = this;
-                    // create socket for connect to c# app
-                    fc.socket = new WebSocket(WS_URI);
-                    fc.socket.onopen = function $open(evt) {
-                        if (callback) {
-                            callback('open', undefined, undefined);
-                        }
-                    };
-                    fc.socket.onclose = function $close(evt) {
-                        if (callback) {
-                            callback('close', undefined, undefined);
-                        }
-                    };
-                    fc.socket.onmessage = function $message(evt) {
-                        var json = JSON.parse(evt.data);
-                        if (!callback || json.Category.toUpperCase() !== "FELICA") {
-                            return;
-                        }
-                        // if message pass (send from felica app)
-                        switch (json.Command) {
-                            case 'S':
-                                callback('status', json.ReaderConnected, undefined);
-                                break;
-                            case 'C':
-                                callback('connect', undefined, undefined);
-                                break;
-                            case 'D':
-                                callback('disconnect', undefined, undefined);
-                                break;
-                            case 'R':
-                                if (once) {
-                                    fc.socket.close();
-                                }
-                                callback('read', undefined, json.CardNo);
-                                break;
-                        }
-                    };
-                }
-                Felica.prototype.status = function () {
-                    var f = this;
-                    return f.socket.OPEN;
-                };
-                Felica.prototype.close = function () {
-                    var f = this;
-                    if (f.status()) {
-                        f.socket.close();
-                    }
-                };
-                return Felica;
-            }());
-            // export only create method for Felica class
-            function felica(cb, once) {
-                if (once === void 0) { once = true; }
-                // if reconnect, close old connect
-                if (instance && instance.status()) {
-                    instance.close();
-                }
-                // register callback function
-                callback = cb;
-                // create new instance (and new socket connection)
-                return instance = new Felica(once);
-            }
-            devices.felica = felica;
-        })(devices = uk.devices || (uk.devices = {}));
-    })(uk = nts.uk || (nts.uk = {}));
-})(nts || (nts = {}));
 /**
  *
  */
@@ -663,7 +569,7 @@ var nts;
                         case 'Time':
                         case 'Clock':
                         case 'Duration': // ValidatorScriptではない。DynamicConstraintで使う？
-                        case 'TimePoint':// ValidatorScriptではない。DynamicConstraintで使う？
+                        case 'TimePoint': // ValidatorScriptではない。DynamicConstraintで使う？
                             constraintText += (constraintText.length > 0) ? "/" : "";
                             constraintText += constraint.min + "～" + constraint.max;
                             break;
@@ -1986,6 +1892,21 @@ var nts;
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
 /// <reference path="reference.ts"/>
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 var nts;
 (function (nts) {
     var uk;
@@ -2773,6 +2694,7 @@ var nts;
                     milliseconds = (uk.util.isNullOrUndefined(milliseconds)) ? currentDate.getUTCMilliseconds() : milliseconds;
                     return new Date(Date.UTC(year, month, date, hours, minutes, seconds, milliseconds));
                 }
+                // Return input time in UTC
                 else {
                     month = (uk.util.isNullOrUndefined(month)) ? 0 : month;
                     date = (uk.util.isNullOrUndefined(date)) ? 1 : date;
@@ -6727,9 +6649,11 @@ var nts;
                         if (uk.util.isNullOrUndefined(data)) {
                             transferData = data;
                         }
+                        // Data or KO data
                         else if (!_.isFunction(data) || ko.isObservable(data)) {
                             transferData = JSON.parse(JSON.stringify(ko.unwrap(data))); // Complete remove reference by object
                         }
+                        // Callback function
                         else {
                             transferData = data;
                         }
@@ -7866,8 +7790,7 @@ var nts;
                         self.$container.tabIndex = -1;
                         $.data(self.$container, NAMESPACE, self);
                         var pTable = $.data(self.$container, NAMESPACE);
-                        pTable.owner = { headers: [], bodies: [],
-                            find: function (name, where) {
+                        pTable.owner = { headers: [], bodies: [], find: function (name, where) {
                                 var o = this;
                                 var elm = o[where].filter(function (e, i) { return e.classList.contains(name); });
                                 if (!elm || elm.length === 0)
@@ -9876,7 +9799,7 @@ var nts;
                                         else
                                             helper.addClass($childCells, makeup.class);
                                     }
-                                    else if (makeup.textColor) {
+                                    else if (makeup.textColor) { // Don't set textColor
                                         $cell.style.color = makeup.textColor;
                                     }
                                     else {
@@ -10191,7 +10114,7 @@ var nts;
                         var $grid = $exTable.querySelector("." + BODY_PRF + DETAIL);
                         var $body = !land ? $grid : helper.getTable($exTable, land);
                         var exTable = $.data($exTable, NAMESPACE);
-                        if (!forced && (selector.is($cell, "." + style.DET_CLS)
+                        if (!forced && ( /*errors.occurred($exTable) ||*/selector.is($cell, "." + style.DET_CLS)
                             || (land === BODY_PRF + DETAIL && exTable.detailContent.banEmptyInput
                                 && exTable.detailContent.banEmptyInput.some(function (m) { return m === exTable.viewMode; })
                                 && $cell.textContent === "")
@@ -10322,7 +10245,7 @@ var nts;
                                     $grid_1 = $exTable.querySelector("." + land);
                                 }
                                 var editor_1 = $.data($exTable, update.EDITOR);
-                                if (!editor_1)
+                                if ( /*errors.occurred($exTable) ||*/!editor_1)
                                     return;
                                 var visibleColumns = helper.getVisibleColumnsOn(!editor_1.land ? helper.getMainTable($exTable) : helper.getTable($exTable, editor_1.land));
                                 var columnDf_2;
@@ -10942,7 +10865,8 @@ var nts;
                         var exTable = $.data($exTable, NAMESPACE);
                         var gen = $.data($grid, internal.TANGI) || $.data($grid, internal.CANON);
                         var pk = helper.getPrimaryKey($grid), pkVal = gen.dataSource[rowIdx][pk];
-                        if (!gen || helper.isDetCell($grid, rowIdx, columnKey))
+                        if (!gen || helper.isDetCell($grid, rowIdx, columnKey)
+                        /*|| helper.isXCell($grid, pkVal, columnKey, style.HIDDEN_CLS, style.SEAL_CLS)*/ )
                             return;
                         var cData = gen.dataSource[rowIdx][columnKey];
                         var opt = gen.options, fieldArr = opt.view(opt.viewMode), sticker = $.data($grid, internal.STICKER);
@@ -11009,7 +10933,8 @@ var nts;
                         _.assignInWith(gen.dataSource[rowIdx], clonedData, function (objVal, srcVal, key, obj, src) {
                             if ((!exTable.stickOverWrite
                                 && !helper.isEmpty(helper.viewData(opt.view, opt.viewMode, objVal)))
-                                || helper.isDetCell($grid, rowIdx, key)) {
+                                || helper.isDetCell($grid, rowIdx, key)
+                            /*|| helper.isXCell($grid, gen.dataSource[rowIdx][pk], key, style.HIDDEN_CLS, style.SEAL_CLS)*/ ) {
                                 src[key] = objVal;
                                 delete origData[key];
                                 return objVal;
@@ -11442,7 +11367,8 @@ var nts;
                                 var cell = selectedCells[0];
                                 var ds = internal.getDataSource(self.$grid);
                                 var pk = helper.getPrimaryKey(self.$grid);
-                                if (helper.isXCell(self.$grid, ds[cell.rowIndex][pk], cell.columnKey, style.HIDDEN_CLS /*, style.SEAL_CLS*/))
+                                if ( /*helper.isDetCell(self.$grid, cell.rowIndex, cell.columnKey)
+                                    ||*/helper.isXCell(self.$grid, ds[cell.rowIndex][pk], cell.columnKey, style.HIDDEN_CLS /*, style.SEAL_CLS*/))
                                     return;
                                 this.mode = Mode.SINGLE;
                                 copiedData += _.isObject(selectedCells[0].value) ? JSON.stringify(selectedCells[0].value) : selectedCells[0].value;
@@ -11488,7 +11414,8 @@ var nts;
                                 }
                                 var ds = internal.getDataSource(self.$grid);
                                 var pk = helper.getPrimaryKey(self.$grid);
-                                if (helper.isXCell(self.$grid, ds[rowIndex][pk], cell.columnKey, style.HIDDEN_CLS /*, style.SEAL_CLS*/)) {
+                                if ( /*helper.isDetCell(self.$grid, rowIndex, cell.columnKey)
+                                    ||*/helper.isXCell(self.$grid, ds[rowIndex][pk], cell.columnKey, style.HIDDEN_CLS /*, style.SEAL_CLS*/)) {
                                     structure[rowIndex][columnIndex] = undefined;
                                 }
                                 else
@@ -18254,6 +18181,7 @@ var nts;
                                 $element.attr('tabindex', 0);
                             }
                             $element
+                                // delegate event for change template (on old filter box)
                                 .on(SHOWVALUE, function (evt) {
                                 var data = $element.data(DATA), cws = data[CWIDTH], ks = _.keys(cws);
                                 var option = _.find(data[DATA], function (t) { return t[optionsValue] == data[VALUE]; }), _template = template;
@@ -18284,6 +18212,7 @@ var nts;
                                     }
                                 }
                             })
+                                // define event changed for save default data
                                 .on(CHANGED, function (evt, key, value) {
                                 if (value === void 0) { value = undefined; }
                                 var data = $element.data(DATA) || {};
@@ -18292,6 +18221,7 @@ var nts;
                                     $element.data(DATA, data);
                                 }
                             })
+                                // define event validate for check require
                                 .on(VALIDATE, function (evt, ui) {
                                 var data = $element.data(DATA), value = data[VALUE];
                                 if ((ui ? data[CHANGED] : true) && data[ENABLE] && data[REQUIRED] && (_.isEmpty(String(value).trim()) || _.isNil(value))) {
@@ -18311,6 +18241,7 @@ var nts;
                                     }
                                 }
                             })
+                                // delegate open or close event on enter key
                                 .on(KEYDOWN, function (evt, ui) {
                                 if ($element.data(IGCOMB)) {
                                     if ([13].indexOf(evt.which || evt.keyCode) > -1) {
@@ -18609,6 +18540,7 @@ var nts;
                             var sto = setTimeout(function () {
                                 if ($element.data("igCombo")) {
                                     $element
+                                        // enable or disable 
                                         .igCombo(OPTION, "disabled", !enable);
                                     clearTimeout(sto);
                                 }
@@ -18621,6 +18553,7 @@ var nts;
                                     $element.igCombo(OPTION, "dataSource", options);
                                 }
                                 $element
+                                    // set new value
                                     .igCombo("value", value);
                                 if (!enable) {
                                     $element.removeAttr(TAB_INDEX);
@@ -18637,7 +18570,7 @@ var nts;
                                     if (width != MINWIDTH) {
                                         $element.igCombo("option", "width", width);
                                     }
-                                    else {
+                                    else { // auto width
                                         $element
                                             .igCombo("option", "width", (_.sum(_.map(cws, function (c) { return c; })) * WoC + 60) + 'px');
                                     }
@@ -19995,6 +19928,7 @@ var nts;
                                 var $container = $dialog.closest("[role='dialog']");
                                 $container
                                     .show()
+                                    // hide "x" button
                                     .find(".ui-dialog-titlebar-close").hide();
                                 //$dialog.dialog("open");
                                 var $dialogs = window.top.$('body>[role="dialog"]').toArray();
@@ -20632,10 +20566,10 @@ var nts;
                                 }
                                 if (constraint) {
                                     var primitive = __viewContext.primitiveValueConstraints[constraint];
-                                    if (primitive) {
+                                    if (primitive) { // if primitive is avaiable
                                         var min = primitive.min, max = primitive.max, maxL = primitive.maxLength, dlen = primitive.mantissaMaxLength || 0;
                                         switch (primitive.valueType) {
-                                            case 'String':// check length
+                                            case 'String': // check length
                                                 if (maxL && ival.length > maxL) {
                                                     ival = dval;
                                                 }
@@ -20685,7 +20619,7 @@ var nts;
                                                         ival = dval;
                                                         $input.val(dval);
                                                     }
-                                                    else {
+                                                    else { // delete event
                                                         if (ival.match(/^0\d+$/)) {
                                                             ival = ival.replace(/^0+/, '0');
                                                             ival = Number(ival).toString();
@@ -20727,7 +20661,7 @@ var nts;
                                                         ival = dval;
                                                         $input.val(dval);
                                                     }
-                                                    else {
+                                                    else { // delete event
                                                         if (ival.match(/^0\d+$/)) {
                                                             ival = ival.replace(/^0+/, '0');
                                                             ival = Number(ival).toString();
@@ -20759,7 +20693,7 @@ var nts;
                                                         ival = dval;
                                                         $input.val(dval);
                                                     }
-                                                    else {
+                                                    else { // delete event
                                                         if (ival.match(/^0\d+$/)) {
                                                             ival = ival.replace(/^0+/, '0');
                                                             ival = Number(ival).toString();
@@ -21173,6 +21107,12 @@ var nts;
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
 /// <reference path="../../reference.ts"/>
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
 var nts;
 (function (nts) {
     var uk;
@@ -21331,7 +21271,7 @@ var nts;
                             ROW_HEIGHT = 24;
                             // Internet Explorer 6-11
                             var _document = document;
-                            var isIE = false || !!_document.documentMode;
+                            var isIE = /*@cc_on!@*/ false || !!_document.documentMode;
                             // Edge 20+
                             var _window = window;
                             var isEdge = !isIE && !!_window.StyleMedia;
@@ -21771,7 +21711,7 @@ var nts;
                         get: function () {
                             return this.model;
                         },
-                        enumerable: true,
+                        enumerable: false,
                         configurable: true
                     });
                     SwapHandler.prototype.handle = function (value) {
@@ -22524,12 +22464,12 @@ var nts;
                             selectedValue(self.data("value"));
                         }
                         else if (booleanValue) {
-                            var name = self.attr("name");
-                            if (nts.uk.util.isNullOrUndefined(name)) {
+                            var name_1 = self.attr("name");
+                            if (nts.uk.util.isNullOrUndefined(name_1)) {
                                 selectedValue(self.is(":checked"));
                             }
                             else {
-                                var selector = 'input[name=' + name + ']';
+                                var selector = 'input[name=' + name_1 + ']';
                                 $(selector).each(function (idx, e) {
                                     $(e).triggerHandler('selectionchanged');
                                 });
@@ -23227,7 +23167,7 @@ var nts;
                         get: function () {
                             return this.model;
                         },
-                        enumerable: true,
+                        enumerable: false,
                         configurable: true
                     });
                     SwapHandler.prototype.handle = function (parts, value) {
@@ -24348,8 +24288,7 @@ var nts;
                             $treegrid.addClass("row-limited");
                         }
                         if (isFilter) {
-                            features.push({ name: "Filtering", filterDelay: 100, filterDropDownAnimationDuration: 100,
-                                dataFiltered: function (evt, ui) {
+                            features.push({ name: "Filtering", filterDelay: 100, filterDropDownAnimationDuration: 100, dataFiltered: function (evt, ui) {
                                     var disabled = $treegrid.data("rowDisabled");
                                     if (!_.isEmpty(disabled)) {
                                         $treegrid.ntsTreeView("disableRows", disabled);
@@ -28521,7 +28460,7 @@ var nts;
                             if (_.has(_mDesc.fixedColIdxes, "rowNumber")) {
                                 no = _mDesc.fixedColIdxes.rowNumber;
                                 var tRow = _mDesc.fixedRows[idx][no];
-                                for (var i = 0; i < _mDesc.fixedRows.length; i++) {
+                                for (var i = /*idx + 2*/ 0; i < _mDesc.fixedRows.length; i++) {
                                     noc = _mDesc.fixedRows[i];
                                     if (noc && (noc = noc[no]) && parseInt(noc.innerHTML) > parseInt(tRow.innerHTML)) {
                                         noc.innerHTML = parseInt(noc.innerHTML) + 1;
@@ -28554,7 +28493,7 @@ var nts;
                             if (_.has(_mDesc.colIdxes, "rowNumber")) {
                                 no = _mDesc.colIdxes.rowNumber;
                                 var tRow = _mDesc.rows[idx][no];
-                                for (var i = 0; i < _mDesc.rows.length; i++) {
+                                for (var i = /*idx + 2*/ 0; i < _mDesc.rows.length; i++) {
                                     noc = _mDesc.rows[i];
                                     if (noc && (noc = noc[no]) && parseInt(noc.innerHTML) > parseInt(tRow.innerHTML)) {
                                         noc.innerHTML = parseInt(noc.innerHTML) + 1;
@@ -30711,7 +30650,7 @@ var nts;
                                 var check = $cell.querySelector("input[type='checkbox']");
                                 if (!check)
                                     return;
-                                if (val) {
+                                if (val) { //&& check.getAttribute("checked") !== "checked") {
                                     check.setAttribute("checked", "checked");
                                     check.checked = true;
                                     var evt = document.createEvent("HTMLEvents");
@@ -30720,7 +30659,7 @@ var nts;
                                     evt.checked = val;
                                     check.dispatchEvent(evt);
                                 }
-                                else if (!val) {
+                                else if (!val) { // && check.getAttribute("checked") === "checked") {
                                     check.removeAttribute("checked");
                                     check.checked = false;
                                     var evt = document.createEvent("HTMLEvents");
@@ -33703,7 +33642,7 @@ var nts;
                                         data = data.toLocaleDateString("ja-JP", { year: "numeric", month: "2-digit", day: "2-digit" });
                                     }
                                     var tDate = moment.utc($editor.value, ctrl.format, true);
-                                    if (_.isFunction(ctrl.inputProcess)) {
+                                    if ( /*data !== tDate && !d.classList.contains(khl.ERROR_CLS) &&*/_.isFunction(ctrl.inputProcess)) {
                                         ctrl.inputProcess(tDate.isValid() ? tDate.format(ctrl.format[0]) : $editor.value, _dataSource[coord.rowIdx]);
                                     }
                                     su.endEdit(_$grid[0]);
@@ -34430,8 +34369,7 @@ var nts;
                                 var txt = td.querySelector(".mgrid-refer-text");
                                 if (!txt)
                                     return;
-                                var args = { value: $.data(td, v.DATA), rowId: data.rowId, rowValue: data.rowObj, itemList: data.controlDef.pattern[data.controlDef.list[data.rowId]],
-                                    relatedItemList: function (nama) {
+                                var args = { value: $.data(td, v.DATA), rowId: data.rowId, rowValue: data.rowObj, itemList: data.controlDef.pattern[data.controlDef.list[data.rowId]], relatedItemList: function (nama) {
                                         var ctrl = _mafollicle[SheetDef][_currentSheet].controlMap && _mafollicle[SheetDef][_currentSheet].controlMap[nama];
                                         if (ctrl && ctrl.pattern && ctrl.list) {
                                             return ctrl.pattern[ctrl.list[data.rowId]];
@@ -36365,6 +36303,84 @@ var nts;
 /// <reference path="ui/ko-ext/charset-setting-ko-ext.ts"/>
 /// <reference path="ui/function-wrap/contextmenu.ts"/>
 /// <reference path="ui/mgrid.ts"/>
+var nts;
+(function (nts) {
+    var uk;
+    (function (uk) {
+        var devices;
+        (function (devices) {
+            var WS_URI = "ws://127.0.0.1:18080/pasori/";
+            var instance = null;
+            var callback = null;
+            var Felica = /** @class */ (function () {
+                function Felica(once) {
+                    if (once === void 0) { once = true; }
+                    var fc = this;
+                    // create socket for connect to c# app
+                    fc.socket = new WebSocket(WS_URI);
+                    fc.socket.onopen = function $open(evt) {
+                        if (callback) {
+                            callback('open', undefined, undefined);
+                        }
+                    };
+                    fc.socket.onclose = function $close(evt) {
+                        if (callback) {
+                            callback('close', undefined, undefined);
+                        }
+                    };
+                    fc.socket.onmessage = function $message(evt) {
+                        var json = JSON.parse(evt.data);
+                        if (!callback || json.Category.toUpperCase() !== "FELICA") {
+                            return;
+                        }
+                        // if message pass (send from felica app)
+                        switch (json.Command) {
+                            case 'S':
+                                callback('status', json.ReaderConnected, undefined);
+                                break;
+                            case 'C':
+                                callback('connect', undefined, undefined);
+                                break;
+                            case 'D':
+                                callback('disconnect', undefined, undefined);
+                                break;
+                            case 'R':
+                                if (once) {
+                                    fc.socket.close();
+                                }
+                                callback('read', undefined, json.CardNo);
+                                break;
+                        }
+                    };
+                }
+                Felica.prototype.status = function () {
+                    var f = this;
+                    return f.socket.OPEN;
+                };
+                Felica.prototype.close = function () {
+                    var f = this;
+                    if (f.status()) {
+                        f.socket.close();
+                    }
+                };
+                return Felica;
+            }());
+            // export only create method for Felica class
+            function felica(cb, once) {
+                if (once === void 0) { once = true; }
+                // if reconnect, close old connect
+                if (instance && instance.status()) {
+                    instance.close();
+                }
+                // register callback function
+                callback = cb;
+                // create new instance (and new socket connection)
+                return instance = new Felica(once);
+            }
+            devices.felica = felica;
+        })(devices = uk.devices || (uk.devices = {}));
+    })(uk = nts.uk || (nts.uk = {}));
+})(nts || (nts = {}));
 /// <reference path="../reference.ts"/>
 var nts;
 (function (nts) {
@@ -36424,135 +36440,6 @@ var nts;
                     });
                 })(content || (content = {}));
             })(action = ui.action || (ui.action = {}));
-        })(ui = uk.ui || (uk.ui = {}));
-    })(uk = nts.uk || (nts.uk = {}));
-})(nts || (nts = {}));
-var nts;
-(function (nts) {
-    var uk;
-    (function (uk) {
-        var ui;
-        (function (ui) {
-            var koExtentions;
-            (function (koExtentions) {
-                var ajax = nts.uk.request.ajax;
-                var setShared = nts.uk.ui.windows.setShared;
-                var getShared = nts.uk.ui.windows.getShared;
-                var openModal = nts.uk.ui.windows.sub.modal;
-                ko.components.register("assy-com", {
-                    viewModel: function (params) {
-                        var self = this;
-                        self.height = observableOrDefault(params.height, "120px");
-                        self.width = observableOrDefault(params.width, "640px");
-                        self.labelDistance = observableOrDefault(params.labelDistance, "60px");
-                        self.screenMode = params.screenMode;
-                        self.webAppId = params.webAppId || nts.uk.request.location.currentAppId;
-                        self.histIdName = params.histIdName || "histId";
-                        self.isLatestHistSelected = ko.observable(false);
-                        self.masterId = params.masterId;
-                        self.histList = params.histList;
-                        self.selectedHistId = params.selectedHistId;
-                        self.selectedHistId.subscribe(function (id) {
-                            if (!_.findIndex(self.histList(), function (h) { return h.histId === id; })) {
-                                self.isLatestHistSelected(true);
-                            }
-                            else {
-                                self.isLatestHistSelected(false);
-                            }
-                        });
-                        self.pathGet = params.servicePath.get;
-                        self.pathAdd = params.servicePath.add;
-                        self.pathUpdate = params.servicePath.update;
-                        self.pathDelete = params.servicePath.delete;
-                        self.getQueryResult = params.getQueryResult;
-                        self.getSelectedStartDate = params.getSelectedStartDate;
-                        self.loadHist = function (rendered) {
-                            if (!_.isNil(self.masterId) && self.masterId !== "") {
-                                ajax(self.webAppId, self.pathGet()).done(function (res) {
-                                    var queryResult = self.getQueryResult(res);
-                                    self.histList(queryResult);
-                                    if (!rendered && self.histList().length > 0) {
-                                        self.selectedHistId(self.histList()[0][self.histIdName]);
-                                    }
-                                    if (rendered && _.isFunction(params.afterRender)) {
-                                        _.defer(function () {
-                                            params.afterRender();
-                                        });
-                                    }
-                                });
-                            }
-                            else {
-                                if (rendered && _.isFunction(params.afterRender)) {
-                                    params.afterRender();
-                                }
-                            }
-                        };
-                        self.afterRender = self.loadHist.bind(self, true);
-                        self.delVisible = params.delVisible;
-                        self.delChecked = params.delChecked;
-                        self.delEnable = ko.computed(function () {
-                            return self.histList().length > 0 && self.screenMode() === SCREEN_MODE.UPD && self.isLatestHistSelected();
-                        });
-                        self.openAddHistDialog = function () {
-                            setShared("ASSY_COM_PARAM", new AssyShared(self.masterId(), self.selectedHistId()));
-                            setShared("ASSY_COM_PARAM_CMD", params.commandAdd);
-                            setShared("ASSY_COM_PARAM_AJAX", function (data) { return ajax(self.webAppId, self.pathAdd(), data); });
-                            openModal("com", "/view/assy/addhist/index.xhtml").onClosed(function () {
-                                var done = getShared("HIST_ADD");
-                                if (done) {
-                                    self.loadHist();
-                                    if (_.isFunction(params.afterAdd)) {
-                                        params.afterAdd();
-                                    }
-                                }
-                            });
-                        }.bind(self);
-                        self.openUpdHistDialog = function () {
-                            setShared("ASSY_COM_PARAM", new AssyShared(self.masterId(), self.selectedHistId(), self.getSelectedStartDate()));
-                            setShared("ASSY_COM_PARAM_CMD", params.commandUpdate);
-                            setShared("ASSY_COM_PARAM_AJAX", function (data) { return ajax(self.webAppId, self.pathUpdate(), data); });
-                            openModal("com", "/view/assy/updhist/index.xhtml").onClosed(function () {
-                                var done = getShared("HIST_UPD");
-                                if (done) {
-                                    self.loadHist();
-                                    if (_.isFunction(params.afterUpdate)) {
-                                        params.afterUpdate();
-                                    }
-                                }
-                            });
-                        }.bind(self);
-                        self.deleteHist = function () {
-                            nts.uk.ui.dialog.confirm({ messageId: 'Msg_18' }).ifYes(function () {
-                                ajax(self.webAppId, self.pathDelete(), params.commandDelete(self.masterId(), self.selectedHistId())).done(function () {
-                                    self.loadHist();
-                                    if (_.isFunction(params.afterDelete)) {
-                                        params.afterDelete();
-                                    }
-                                }).fail(function (res) {
-                                    nts.uk.ui.dialog.bundledErrors(res);
-                                });
-                            });
-                        }.bind(self);
-                    },
-                    template: "<div class=\"assy-hist\" data-bind=\"let: { text: nts.uk.resource.getText }, style: { height: height(), width: width() }\">\n            <div class=\"as-area hist-label\" data-bind=\"ntsFormLabel: {}, text: text('JAP0020_A1_1'), style: { paddingRight: labelDistance() }\"></div>\n            <div class=\"as-area hist-list\" id=\"" + nts.uk.util.randomId() + "\" tabindex=\"3\" \n                data-bind=\"ntsListBox: {\n                options: histList,\n                optionsValue: 'histId',\n                optionsText: 'displayText',\n                multiple: false,\n                value: selectedHistId,\n                enable: true,\n                rows: 5,\n                columns: [\n                    { key: 'displayText', length: 15 }\n                ]}\">\n            </div>\n            <div class=\"as-area\">\n                <div class=\"del-chk\" tabindex=\"6\" data-bind=\"ntsCheckBox: { checked: delChecked, enable: delEnable() },\n                    style: { visibility: delVisible() ? 'visible' : 'hidden' }\">\n                </div>\n            </div>\n            <div class=\"as-area hist-btn\" data-bind=\"template: { afterRender: afterRender }\">\n                <button class=\"add\" tabindex=\"4\"\n                    data-bind=\"click: openAddHistDialog,\n                    enable: histList().length == 0 || (screenMode() == 1 &amp;&amp; isLatestHistSelected), text: text('JAP0020_A1_3')\"></button>\n                <br/>\n                <button class=\"update\" tabindex=\"5\"\n                    data-bind=\"click: openUpdHistDialog,\n                    enable: histList().length > 0 &amp;&amp; screenMode() == 1 &amp;&amp; isLatestHistSelected, text: text('JAP0020_A1_4')\"></button>\n                <br/>\n                <button tabindex=\"7\" class=\"danger delete\"\n                    data-bind=\"click: deleteHist,\n                    enable: !delVisible() || (histList().length > 0 &amp;&amp; delEnable() &amp;&amp; delChecked()), text: text('JAP0020_A1_6')\"></button>\n            </div>\n        </div>"
-                });
-                function observableOrDefault(val, def) {
-                    return ko.isObservable(val) ? val : ko.observable(_.isNil(val) ? def : val);
-                }
-                var AssyShared = /** @class */ (function () {
-                    function AssyShared(masterId, histId, startDate) {
-                        this.masterId = masterId;
-                        this.histId = histId;
-                        this.startDate = startDate;
-                    }
-                    return AssyShared;
-                }());
-                var SCREEN_MODE;
-                (function (SCREEN_MODE) {
-                    SCREEN_MODE[SCREEN_MODE["NEW"] = 0] = "NEW";
-                    SCREEN_MODE[SCREEN_MODE["UPD"] = 1] = "UPD";
-                })(SCREEN_MODE || (SCREEN_MODE = {}));
-            })(koExtentions = ui.koExtentions || (ui.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -36667,17 +36554,17 @@ var nts;
                         self.gcChart[options.lineNo][options.id] = chart;
                         var show = true;
                         if (!_.isNil(options.parent)) {
-                            var parent = self.gcChart[options.lineNo][options.parent];
-                            if (parent) {
-                                parent.children.push(chart);
-                                if (chart.end <= parent.start || chart.start >= parent.end)
+                            var parent_1 = self.gcChart[options.lineNo][options.parent];
+                            if (parent_1) {
+                                parent_1.children.push(chart);
+                                if (chart.end <= parent_1.start || chart.start >= parent_1.end)
                                     show = false;
-                                else if (parent.start > chart.start) {
-                                    chart.html.style.left = chart.origin[0] + parent.start * chart.unitToPx + "px";
-                                    chart.html.style.width = (chart.end - parent.start) * chart.unitToPx - 1 + "px";
+                                else if (parent_1.start > chart.start) {
+                                    chart.html.style.left = chart.origin[0] + parent_1.start * chart.unitToPx + "px";
+                                    chart.html.style.width = (chart.end - parent_1.start) * chart.unitToPx - 1 + "px";
                                 }
-                                else if (parent.end < chart.end) {
-                                    chart.html.style.width = (parent.end - chart.start) * chart.unitToPx - 1 + "px";
+                                else if (parent_1.end < chart.end) {
+                                    chart.html.style.width = (parent_1.end - chart.start) * chart.unitToPx - 1 + "px";
                                 }
                             }
                         }
@@ -36711,10 +36598,10 @@ var nts;
                                 var lineCharts_1 = self.gcChart[chart.lineNo];
                                 if (_(lineCharts_1).keys().find(function (k) {
                                     var sameLineChart = lineCharts_1[k];
-                                    return (sameLineChart.id !== chart.id && _.isNil(sameLineChart.parent)
+                                    return (sameLineChart.id !== chart.id && sameLineChart.parent === chart.parent
                                         && !sameLineChart.bePassedThrough
-                                        && ((pDec_1.end > sameLineChart.start && pDec_1.end < sameLineChart.end)
-                                            || (pDec_1.start > sameLineChart.start && pDec_1.start < sameLineChart.end)));
+                                        && ((diff > 0 && chart.end <= sameLineChart.start && pDec_1.end > sameLineChart.start)
+                                            || (diff < 0 && chart.start >= sameLineChart.end && pDec_1.start < sameLineChart.end)));
                                 }))
                                     return;
                                 if (parentChart && ((diff > 0 && pDec_1.end > parentChart.end) || (diff < 0 && pDec_1.start < parentChart.start)))
@@ -36763,7 +36650,7 @@ var nts;
                                 var lineCharts_2 = self.gcChart[chart.lineNo];
                                 if (_(lineCharts_2).keys().find(function (k) {
                                     var sameLineChart = lineCharts_2[k];
-                                    return (sameLineChart.id !== chart.id && _.isNil(sameLineChart.parent)
+                                    return (sameLineChart.id !== chart.id && sameLineChart.parent === chart.parent
                                         && !sameLineChart.bePassedThrough
                                         && (nearestLine < chart.start && pDec_2.start < sameLineChart.end && chart.end > sameLineChart.end));
                                 }))
@@ -36829,7 +36716,7 @@ var nts;
                                 var lineCharts_3 = self.gcChart[chart.lineNo];
                                 if (_(lineCharts_3).keys().find(function (k) {
                                     var sameLineChart = lineCharts_3[k];
-                                    return (sameLineChart.id !== chart.id && _.isNil(sameLineChart.parent)
+                                    return (sameLineChart.id !== chart.id && sameLineChart.parent === chart.parent
                                         && !sameLineChart.bePassedThrough
                                         && (nearestLine > chart.end && pDec_3.end > sameLineChart.start && chart.start < sameLineChart.start));
                                 }))
@@ -37025,7 +36912,9 @@ var nts;
                             parentChart = self.gcChart[chart.lineNo][chart.parent];
                         }
                         if (chart.fixed === CHART_FIXED.BOTH && parentChart
-                            && chart.start > parentChart.start && chart.end < parentChart.end
+                            && ((chart.start > parentChart.start && chart.end < parentChart.end)
+                                || ((chart.start === parentChart.start || chart.end === parentChart.end)
+                                    && (chart.end - chart.start) * chart.unitToPx <= chart.drawerSize + 2))
                             && (event.offsetX < chart.drawerSize || parseFloat(chart.html.style.width) - chart.drawerSize < event.offsetX)) {
                             return HOLD_POS.BODY;
                         }
@@ -37421,6 +37310,1033 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+/// <reference path="../reference.ts"/>
+var nts;
+(function (nts) {
+    var uk;
+    (function (uk) {
+        var ui;
+        (function (ui) {
+            var guide;
+            (function (guide) {
+                var ROW_HEIGHT = 20;
+                var resource;
+                (function (resource) {
+                    resource.linkHide = "操作ガイド　非表示";
+                    resource.linkShow = "操作ガイド　表示";
+                })(resource || (resource = {}));
+                function operateCurrent(path, data, page) {
+                    operate.apply(null, _.concat(nts.uk.request.location.currentAppId, arguments));
+                }
+                guide.operateCurrent = operateCurrent;
+                function operate(appId, path, data, tabMapping, page) {
+                    nts.uk.request.ajax(appId, path, data).done(function (config) {
+                        if (_.isFunction(tabMapping) && _.isArray(config)) {
+                            _.forEach(config, function (c) {
+                                c.tabId = tabMapping(c.programId, c.screenId);
+                            });
+                        }
+                        var op = new OperationGuide(config);
+                        op.setPosition(page);
+                    });
+                }
+                guide.operate = operate;
+                var OperationGuide = /** @class */ (function () {
+                    function OperationGuide(config) {
+                        this.configs = [];
+                        if (_.isArray(config)) {
+                            this.configs = config;
+                            return;
+                        }
+                        this.configs.push(config);
+                    }
+                    OperationGuide.prototype.link = function (top, tabConfig) {
+                        var self = this;
+                        tabConfig.display = true;
+                        var $link = $("<a/>").addClass("nts-guide-link").text(resource.linkHide);
+                        $link.css("margin-top", top);
+                        $link.on("click", function () {
+                            var $guideArea;
+                            if (!_.isNil(tabConfig.tabId)) {
+                                var $tabPanel = $link.closest("div[role=tabpanel]");
+                                $guideArea = $tabPanel.find(".nts-guide-area");
+                            }
+                            else {
+                                $guideArea = $(".nts-guide-area");
+                            }
+                            if (tabConfig.display) {
+                                $link.text(resource.linkShow);
+                                $guideArea.hide();
+                                tabConfig.display = !tabConfig.display;
+                                return;
+                            }
+                            $link.text(resource.linkHide);
+                            $guideArea.show();
+                            tabConfig.display = !tabConfig.display;
+                        });
+                        return $link;
+                    };
+                    OperationGuide.prototype.textArea = function (tabConfig, position) {
+                        var self = this;
+                        var $area = $("<div/>").addClass("nts-guide-area");
+                        if (position === Position.BOTTOM) {
+                            $area.addClass("nts-bottom");
+                        }
+                        $area.height(ROW_HEIGHT * tabConfig.lineCount);
+                        var content = tabConfig.content.split('\n').join("<br/>");
+                        $area.html(content);
+                        return $area;
+                    };
+                    OperationGuide.prototype.setPosition = function (page) {
+                        var self = this;
+                        switch (page) {
+                            case Page.NORMAL:
+                            default:
+                                var $functionsArea = $("#functions-area");
+                                if ($functionsArea.length == 0) {
+                                    $functionsArea = $("#functions-area-bottom");
+                                    if ($functionsArea.find(".nts-guide-link").length == 0) {
+                                        var top_2 = ($functionsArea.height() - 24) / 2;
+                                        $functionsArea.append(self.link(top_2, self.configs[0]));
+                                    }
+                                    if (!$functionsArea.prev().is(".nts-guide-area")) {
+                                        $functionsArea.before(self.textArea(self.configs[0], Position.BOTTOM));
+                                    }
+                                    return;
+                                }
+                                if ($functionsArea.find(".nts-guide-link").length == 0) {
+                                    var top_3 = ($functionsArea.height() - 22) / 2;
+                                    $functionsArea.append(self.link(top_3, self.configs[0]));
+                                }
+                                if (!$functionsArea.next().is(".nts-guide-area")) {
+                                    $functionsArea.after(self.textArea(self.configs[0]));
+                                }
+                                break;
+                            case Page.SIDEBAR:
+                                _.forEach(self.configs, function (tabConfig) {
+                                    var $tab = $("#" + tabConfig.tabId);
+                                    var $contentHeader = $tab.find(".sidebar-content-header");
+                                    if ($contentHeader.find(".nts-guide-link").length == 0) {
+                                        var top_4 = ($contentHeader.height() - 18) / 2;
+                                        $contentHeader.append(self.link(top_4, tabConfig));
+                                    }
+                                    if (!$contentHeader.next().is(".nts-guide-area")) {
+                                        $contentHeader.after(self.textArea(tabConfig));
+                                    }
+                                });
+                                break;
+                            case Page.FREE_LAYOUT:
+                                break;
+                        }
+                    };
+                    return OperationGuide;
+                }());
+                var GuideConfig = /** @class */ (function () {
+                    function GuideConfig(tabId, isUsed, display, lineCount, content) {
+                        this.tabId = tabId;
+                        this.isUsed = isUsed;
+                        this.display = display;
+                        this.lineCount = lineCount;
+                        this.content = content;
+                    }
+                    return GuideConfig;
+                }());
+                var Page;
+                (function (Page) {
+                    Page[Page["NORMAL"] = 0] = "NORMAL";
+                    Page[Page["SIDEBAR"] = 1] = "SIDEBAR";
+                    Page[Page["FREE_LAYOUT"] = 2] = "FREE_LAYOUT";
+                })(Page || (Page = {}));
+                var Position;
+                (function (Position) {
+                    Position[Position["TOP"] = 0] = "TOP";
+                    Position[Position["BOTTOM"] = 1] = "BOTTOM";
+                })(Position || (Position = {}));
+            })(guide = ui.guide || (ui.guide = {}));
+        })(ui = uk.ui || (uk.ui = {}));
+    })(uk = nts.uk || (nts.uk = {}));
+})(nts || (nts = {}));
+/// <reference path="./viewcontext.d.ts" />
+var __spreadArray = (this && this.__spreadArray) || function (to, from) {
+    for (var i = 0, il = from.length, j = to.length; i < il; i++, j++)
+        to[j] = from[i];
+    return to;
+};
+/** Create new ViewModel and automatic binding to __viewContext */
+function bean(dialogOption) {
+    return function (ctor) {
+        __viewContext.ready(function () {
+            nts.uk.ui.viewmodel.$storage().then(function ($params) {
+                var $viewModel = new ctor($params), $created = $viewModel['created'];
+                _.extend($viewModel, { $el: undefined });
+                // hook to created function
+                if ($created && _.isFunction($created)) {
+                    $created.apply($viewModel, [$params]);
+                }
+                // hook to mounted function
+                $viewModel.$nextTick(function () {
+                    var $mounted = $viewModel['mounted'];
+                    var kvm = nts.uk.ui._viewModel.kiban;
+                    _.extend($viewModel, { $el: document.querySelector('#master-wrapper') });
+                    if (kvm) {
+                        ko.computed({
+                            read: function () {
+                                $viewModel.$validate.valid(!kvm.errorDialogViewModel.errors().length);
+                            },
+                            owner: $viewModel,
+                            disposeWhenNodeIsRemoved: $viewModel.$el
+                        });
+                    }
+                    if ($mounted && _.isFunction($mounted)) {
+                        $mounted.apply($viewModel, []);
+                    }
+                });
+                __viewContext.bind($viewModel, dialogOption);
+            });
+        });
+    };
+}
+function component(options) {
+    return function (ctor) {
+        return $.Deferred().resolve(options.template.match(/\.html$/))
+            .then(function (url) {
+            return url ? $.get(options.template) : options.template;
+        })
+            .then(function (template) {
+            if (!ko.components.isRegistered(options.name)) {
+                ko.components.register(options.name, {
+                    template: template,
+                    viewModel: {
+                        createViewModel: function ($params, $el) {
+                            var $viewModel = new ctor($params), $created = $viewModel['created'];
+                            _.extend($viewModel, { $el: undefined });
+                            // hook to created function
+                            if ($created && _.isFunction($created)) {
+                                $created.apply($viewModel, [$params]);
+                            }
+                            // hook to mounted function
+                            $viewModel.$nextTick(function () {
+                                var $mounted = $viewModel['mounted'];
+                                var kvm = nts.uk.ui._viewModel.kiban;
+                                _.extend($viewModel, { $el: $el.element });
+                                if (kvm) {
+                                    ko.computed({
+                                        read: function () {
+                                            $viewModel.$validate.valid(!kvm.errorDialogViewModel.errors().length);
+                                        },
+                                        owner: $viewModel,
+                                        disposeWhenNodeIsRemoved: $el.element
+                                    });
+                                }
+                                if ($mounted && _.isFunction($mounted)) {
+                                    $mounted.apply($viewModel, []);
+                                }
+                            });
+                            // run if component mode
+                            Object.defineProperty($viewModel, 'dispose', {
+                                value: function dispose() {
+                                    if (typeof $viewModel.destroyed === 'function') {
+                                        $viewModel.destroyed.apply($viewModel, []);
+                                    }
+                                }
+                            });
+                            return $viewModel;
+                        }
+                    }
+                });
+            }
+        });
+    };
+}
+function handler(params) {
+    return function (constructor) {
+        var _a;
+        ko.bindingHandlers[params.bindingName] = new constructor();
+        ko.virtualElements.allowedBindings[params.bindingName] = !!params.virtual;
+        // block rewrite binding
+        if (params.validatable) {
+            ko.utils.extend(ko.expressionRewriting.bindingRewriteValidators, (_a = {}, _a[params.bindingName] = false, _a));
+        }
+    };
+}
+var nts;
+(function (nts) {
+    var uk;
+    (function (uk) {
+        var ui;
+        (function (ui_21) {
+            var viewmodel;
+            (function (viewmodel) {
+                var OPENWD = 'OPEN_WINDOWS_DATA', _a = nts.uk, ui = _a.ui, request = _a.request, resource = _a.resource, windows = ui.windows, block = ui.block, dialog = ui.dialog, $storeSession = function (name, params) {
+                    if (arguments.length === 2) {
+                        return nts.uk.characteristics
+                            .save(name, params)
+                            .then(function () { return $storeSession(name); });
+                    }
+                    else if (arguments.length === 1) {
+                        // getter method
+                        return nts.uk.characteristics
+                            .restore(name)
+                            .then(function (data) {
+                            if (data !== undefined) {
+                                return data;
+                            }
+                            return windows.getShared(name);
+                        });
+                    }
+                };
+                viewmodel.$storage = function ($data) {
+                    if (arguments.length === 1) {
+                        return $storeSession(OPENWD, $data);
+                    }
+                    else if (arguments.length === 0) {
+                        return $storeSession(OPENWD)
+                            .then(function (value) {
+                            // return value;
+                            return nts.uk.characteristics
+                                .remove(OPENWD)
+                                .then(function () { return value; });
+                        });
+                    }
+                };
+                // create base viewmodel for all implement
+                function BaseViewModel() { }
+                function $i18n(text, params) {
+                    return resource.getText(text, params);
+                }
+                function $jump() {
+                    var args = Array.prototype.slice.apply(arguments), params = args.length === 3 && _.isString(args[0]) && _.isString(args[1]) ? args[2] :
+                        (args.length == 2 && _.indexOf(args[1], '.xhtml')) > -1 ? null : args[1];
+                    if (window.top === window.self) {
+                        viewmodel.$storage(params).then(function () { return request.jump.apply(null, args); });
+                    }
+                    else {
+                        // jump from dialog or frame
+                        viewmodel.$storage(params).then(function () { return request.jumpFromDialogOrFrame.apply(null, args); });
+                    }
+                }
+                ;
+                BaseViewModel.prototype.$i18n = $i18n;
+                Object.defineProperties($i18n, {
+                    text: {
+                        value: $i18n
+                    },
+                    message: {
+                        value: resource.getMessage
+                    },
+                    controlName: {
+                        value: resource.getControlName
+                    }
+                });
+                BaseViewModel.prototype.$ajax = request.ajax;
+                BaseViewModel.prototype.$nextTick = ko.tasks.schedule;
+                BaseViewModel.prototype.$user = __viewContext['user'];
+                BaseViewModel.prototype.$program = __viewContext['program'];
+                var $date = {
+                    diff: 0,
+                    tick: -1,
+                    clock: -1,
+                    now: function () {
+                        return Date.now();
+                    },
+                    today: function () {
+                        return $date.now();
+                    }
+                };
+                var getTime = function () {
+                    request.ajax('/server/time/now').then(function (time) {
+                        _.extend($date, {
+                            diff: moment(time, 'YYYY-MM-DDTHH:mm:ss').diff(moment())
+                        });
+                    });
+                };
+                // get date time now
+                setInterval(function () {
+                    var now = Date.now();
+                    var diff = now - $date.clock;
+                    $date.clock = now;
+                    if (Math.abs(diff) > 5000) {
+                        getTime();
+                    }
+                }, 500);
+                BaseViewModel.prototype.$date = Object.defineProperties($date, {
+                    now: {
+                        value: function $now() {
+                            return moment().add($date.diff, 'ms').toDate();
+                        }
+                    },
+                    today: {
+                        value: function $today() {
+                            return moment($date.now()).startOf('day').toDate();
+                        }
+                    },
+                    interval: {
+                        value: function $interval(interval) {
+                            // clear default intervale
+                            clearInterval($date.tick);
+                            // set new interface
+                            $date.tick = setInterval(getTime, interval);
+                        }
+                    }
+                });
+                var $dialog = Object.defineProperties({}, {
+                    info: {
+                        value: function $info() {
+                            var dfd = $.Deferred();
+                            var args = Array.prototype.slice.apply(arguments);
+                            dialog.info.apply(null, args).then(function () { return dfd.resolve(); });
+                            return dfd.promise();
+                        }
+                    },
+                    alert: {
+                        value: function $alert() {
+                            var dfd = $.Deferred();
+                            var args = Array.prototype.slice.apply(arguments);
+                            dialog.alert.apply(null, args).then(function () { return dfd.resolve(); });
+                            return dfd.promise();
+                        }
+                    },
+                    error: {
+                        value: function $error() {
+                            var dfd = $.Deferred();
+                            var args = Array.prototype.slice.apply(arguments);
+                            dialog.error.apply(null, args).then(function () { return dfd.resolve(); });
+                            return dfd.promise();
+                        }
+                    },
+                    confirm: {
+                        value: function $confirm() {
+                            var dfd = $.Deferred();
+                            var args = Array.prototype.slice.apply(arguments);
+                            var $cf = dialog.confirm.apply(null, args);
+                            $cf.ifYes(function () {
+                                dfd.resolve('yes');
+                            });
+                            $cf.ifNo(function () {
+                                dfd.resolve('no');
+                            });
+                            return dfd.promise();
+                        }
+                    }
+                });
+                Object.defineProperties($dialog.confirm, {
+                    yesNo: {
+                        value: function () {
+                            var dfd = $.Deferred();
+                            var args = Array.prototype.slice.apply(arguments);
+                            var $cf = dialog.confirm.apply(null, args);
+                            $cf.ifYes(function () {
+                                dfd.resolve('yes');
+                            });
+                            $cf.ifNo(function () {
+                                dfd.resolve('no');
+                            });
+                            return dfd.promise();
+                        }
+                    },
+                    yesCancel: {
+                        value: function () {
+                            var dfd = $.Deferred();
+                            var args = Array.prototype.slice.apply(arguments);
+                            var $cf = dialog.confirm.apply(null, args);
+                            $cf.ifYes(function () {
+                                dfd.resolve('yes');
+                            });
+                            $cf.ifCancel(function () {
+                                dfd.resolve('cancel');
+                            });
+                            return dfd.promise();
+                        }
+                    }
+                });
+                BaseViewModel.prototype.$dialog = $dialog;
+                BaseViewModel.prototype.$jump = $jump;
+                Object.defineProperties($jump, {
+                    self: {
+                        value: function $to() {
+                            $jump.apply(null, __spreadArray([], Array.prototype.slice.apply(arguments, [])));
+                        }
+                    },
+                    blank: {
+                        value: function $other() {
+                            var args = Array.prototype.slice.apply(arguments, []), params = args.length === 3 && _.isString(args[0]) && _.isString(args[1]) ? args[2] :
+                                (args.length == 2 && _.indexOf(args[1], '.xhtml')) > -1 ? null : args[1];
+                            viewmodel.$storage(params).then(function () { return request.jumpToNewWindow.apply(null, args); });
+                        }
+                    }
+                });
+                var $shared = [];
+                var $size = function (height, width) {
+                    var wd = nts.uk.ui.windows.getSelf();
+                    if (wd) {
+                        wd.setSize(height, width);
+                    }
+                };
+                Object.defineProperties($size, {
+                    width: {
+                        value: function (width) {
+                            var wd = nts.uk.ui.windows.getSelf();
+                            if (wd) {
+                                wd.setWidth(width);
+                            }
+                        }
+                    },
+                    height: {
+                        value: function (height) {
+                            var wd = nts.uk.ui.windows.getSelf();
+                            if (wd) {
+                                wd.setHeight(height);
+                            }
+                        }
+                    }
+                });
+                BaseViewModel.prototype.$window = Object.defineProperties({}, {
+                    mode: {
+                        get: function () {
+                            return window === window.top ? 'view' : 'modal';
+                        }
+                    },
+                    size: {
+                        value: $size
+                    },
+                    close: {
+                        value: function $close(result) {
+                            if (window.top !== window) {
+                                $.Deferred()
+                                    .resolve(true)
+                                    .then(function () { return viewmodel.$storage(result); })
+                                    .then(function () { return windows.close(); });
+                            }
+                        }
+                    },
+                    modal: {
+                        value: function $modal(webapp, path, params, options) {
+                            var jdf = $.Deferred();
+                            var nowapp = ['at', 'pr', 'hr', 'com'].indexOf(webapp) === -1;
+                            if (nowapp) {
+                                viewmodel.$storage(path)
+                                    .then(function () {
+                                    windows.sub.modal(webapp, params)
+                                        .onClosed(function () {
+                                        var localShared = windows.container.localShared;
+                                        _.each(localShared, function (value, key) {
+                                            $shared.push(key);
+                                            windows.setShared(key, value);
+                                        });
+                                        viewmodel.$storage().then(function ($data) { return jdf.resolve($data || (_.keys(localShared).length ? localShared : undefined)); });
+                                    });
+                                });
+                            }
+                            else {
+                                viewmodel.$storage(params)
+                                    .then(function () {
+                                    windows.sub.modal(webapp, path, options)
+                                        .onClosed(function () {
+                                        var localShared = windows.container.localShared;
+                                        _.each(localShared, function (value, key) {
+                                            $shared.push(key);
+                                            windows.setShared(key, value);
+                                        });
+                                        viewmodel.$storage().then(function ($data) { return jdf.resolve($data || (_.keys(localShared).length ? localShared : undefined)); });
+                                    });
+                                });
+                            }
+                            return jdf.promise();
+                        }
+                    },
+                    modeless: {
+                        value: function $modeless(webapp, path, params, options) {
+                            var jdf = $.Deferred();
+                            var nowapp = ['at', 'pr', 'hr', 'com'].indexOf(webapp) === -1;
+                            if (nowapp) {
+                                viewmodel.$storage(path)
+                                    .then(function () {
+                                    windows.sub.modeless(webapp, params)
+                                        .onClosed(function () {
+                                        var localShared = windows.container.localShared;
+                                        _.each(localShared, function (value, key) {
+                                            $shared.push(key);
+                                            windows.setShared(key, value);
+                                        });
+                                        viewmodel.$storage().then(function ($data) { return jdf.resolve($data || (_.keys(localShared).length ? localShared : undefined)); });
+                                    });
+                                });
+                            }
+                            else {
+                                viewmodel.$storage(params)
+                                    .then(function () {
+                                    windows.sub.modeless(webapp, path, options)
+                                        .onClosed(function () {
+                                        var localShared = windows.container.localShared;
+                                        _.each(localShared, function (value, key) {
+                                            $shared.push(key);
+                                            windows.setShared(key, value);
+                                        });
+                                        viewmodel.$storage().then(function ($data) { return jdf.resolve($data || (_.keys(localShared).length ? localShared : undefined)); });
+                                    });
+                                });
+                            }
+                            return jdf.promise();
+                        }
+                    },
+                    shared: {
+                        value: function $share(name, params) {
+                            if (arguments.length === 1) {
+                                return $.Deferred()
+                                    .resolve(true)
+                                    .then(function () {
+                                    var shared = windows.getShared(name);
+                                    if ($shared.indexOf(name) > -1) {
+                                        windows.setShared(name, undefined);
+                                        // remove shared
+                                        _.remove($shared, function (c) { return c === name; });
+                                    }
+                                    return shared;
+                                });
+                            }
+                            else {
+                                return $.Deferred()
+                                    .resolve(true)
+                                    .then(function () { return windows.setShared(name, params); })
+                                    .then(function () { return windows.getShared(name); });
+                            }
+                        }
+                    },
+                    storage: {
+                        value: function $storage(name, params) {
+                            if (arguments.length == 1) {
+                                return $storeSession(name)
+                                    .then(function (value) {
+                                    if ($shared.indexOf(name) > -1) {
+                                        windows.setShared(name, undefined);
+                                        // remove shared
+                                        _.remove($shared, function (c) { return c === name; });
+                                    }
+                                    return value;
+                                });
+                            }
+                            else {
+                                return $.Deferred()
+                                    .resolve(true)
+                                    .then(function () {
+                                    return $storeSession(name, params)
+                                        // for old page
+                                        .then(function () { return windows.setShared(name, params); });
+                                })
+                                    .then(function () { return $storeSession(name); });
+                            }
+                        }
+                    }
+                });
+                // Hàm blockui được wrapper lại để gọi cho thống nhất
+                BaseViewModel.prototype.$blockui = function $blockui(act) {
+                    var vm = this;
+                    return $.Deferred()
+                        .resolve(true)
+                        .then(function () {
+                        switch (act) {
+                            default:
+                            case 'hide':
+                            case 'clear':
+                                block.clear();
+                                break;
+                            case 'show':
+                            case 'invisible':
+                                block.invisible();
+                                break;
+                            case 'grayout':
+                                block.grayout();
+                                break;
+                            case 'clearView':
+                                block.clear(vm.$el);
+                                break;
+                            case 'grayoutView':
+                                block.grayout(vm.$el);
+                                break;
+                            case 'invisibleView':
+                                block.invisible(vm.$el);
+                                break;
+                        }
+                    });
+                };
+                BaseViewModel.prototype.$errors = function $errors() {
+                    var kvm = nts.uk.ui._viewModel.kiban;
+                    var args = Array.prototype.slice.apply(arguments);
+                    if (args.length == 1) {
+                        // if action is clear, call validate clear action
+                        if (args[0] === 'clear') {
+                            return $.Deferred()
+                                .resolve(true)
+                                .then(function () { return $('.nts-input').ntsError('clear'); })
+                                // if some element remove before clear func call
+                                .then(function () { return kvm.errorDialogViewModel.errors([]); })
+                                .then(function () { return !$('.nts-input').ntsError('hasError'); });
+                        }
+                        else {
+                            var errors_3 = args[0];
+                            return $.Deferred()
+                                .resolve(true)
+                                .then(function () {
+                                _.each(errors_3, function (value, key) { return $(key).ntsError('set', value); });
+                            })
+                                .then(function () { return !$(_.keys(errors_3).join(', ')).ntsError('hasError'); });
+                        }
+                    }
+                    else if (args.length === 2) {
+                        var name_2 = args[0], messageId_1 = args[1];
+                        if (name_2 === 'clear') {
+                            if (_.isString(messageId_1)) {
+                                var $selector_1 = messageId_1;
+                                return $.Deferred()
+                                    .resolve(true)
+                                    .then(function () { return $($selector_1).ntsError('clear'); })
+                                    .then(function () { return !$($selector_1).ntsError('hasError'); });
+                            }
+                            else if (_.isArray(messageId_1)) {
+                                var $selectors_1 = messageId_1.join(', ');
+                                return $.Deferred()
+                                    .resolve(true)
+                                    .then(function () { return $($selectors_1).ntsError('clear'); })
+                                    .then(function () { return !$($selectors_1).ntsError('hasError'); });
+                            }
+                        }
+                        else {
+                            if (_.isString(messageId_1)) {
+                                return $.Deferred()
+                                    .resolve(true)
+                                    .then(function () { return $(name_2).ntsError('set', { messageId: messageId_1 }); })
+                                    .then(function () { return !$(name_2).ntsError('hasError'); });
+                            }
+                            else {
+                                return $.Deferred()
+                                    .resolve(true)
+                                    .then(function () { return $(name_2).ntsError('set', messageId_1); })
+                                    .then(function () { return !$(name_2).ntsError('hasError'); });
+                            }
+                        }
+                    }
+                    else if (args.length > 2) {
+                        if (args[0] === 'clear') {
+                            var $selectors_2 = args.join(', ').replace(/^clear ,/, '');
+                            return $.Deferred()
+                                .resolve(true)
+                                .then(function () { return $($selectors_2).ntsError('clear'); })
+                                .then(function () { return !$($selectors_2).ntsError('hasError'); });
+                        }
+                    }
+                    return $.Deferred()
+                        .resolve(true)
+                        /** Nếu có lỗi thì trả về false, không thì true */
+                        .then(function () { return !$('.nts-input').ntsError('hasError'); });
+                    ;
+                };
+                // Hàm validate được wrapper lại để có thể thực hiện promisse
+                var $validate = function $validate(act) {
+                    var args = Array.prototype.slice.apply(arguments);
+                    if (args.length === 0) {
+                        return $.Deferred()
+                            .resolve(true)
+                            /** Gọi xử lý validate của kiban */
+                            .then(function () { return $('.nts-input').trigger("validate"); })
+                            /** Nếu có lỗi thì trả về false, không thì true */
+                            .then(function () { return !$('.nts-input').ntsError('hasError'); });
+                    }
+                    else if (args.length === 1) {
+                        var selectors_1 = '';
+                        if (_.isString(act)) {
+                            selectors_1 = act;
+                        }
+                        else if (_.isArray(act)) {
+                            selectors_1 = act.join(', ');
+                        }
+                        return $.Deferred()
+                            .resolve(true)
+                            /** Gọi xử lý validate của kiban */
+                            .then(function () { return $(selectors_1).trigger("validate"); })
+                            /** Nếu có lỗi thì trả về false, không thì true */
+                            .then(function () { return !$(selectors_1).ntsError('hasError'); });
+                    }
+                    else {
+                        var selectors_2 = args.join(', ');
+                        return $.Deferred()
+                            .resolve(true)
+                            /** Gọi xử lý validate của kiban */
+                            .then(function () { return $(selectors_2).trigger("validate"); })
+                            /** Nếu có lỗi thì trả về false, không thì true */
+                            .then(function () { return !$(selectors_2).ntsError('hasError'); });
+                    }
+                };
+                Object.defineProperties($validate, {
+                    valid: {
+                        value: ko.observable(true)
+                    },
+                    constraint: {
+                        value: function $constraint(name, value) {
+                            if (arguments.length === 0) {
+                                return $.Deferred()
+                                    .resolve(true)
+                                    .then(function () { return __viewContext.primitiveValueConstraints; });
+                            }
+                            else if (arguments.length === 1) {
+                                return $.Deferred()
+                                    .resolve(true)
+                                    .then(function () { return _.get(__viewContext.primitiveValueConstraints, name); });
+                            }
+                            else {
+                                return $.Deferred()
+                                    .resolve(true)
+                                    .then(function () { return ui.validation.writeConstraint(name, value); });
+                            }
+                        }
+                    }
+                });
+                BaseViewModel.prototype.$validate = $validate;
+                Object.defineProperty(ko, 'ViewModel', { value: BaseViewModel });
+            })(viewmodel = ui_21.viewmodel || (ui_21.viewmodel = {}));
+        })(ui = uk.ui || (uk.ui = {}));
+    })(uk = nts.uk || (nts.uk = {}));
+})(nts || (nts = {}));
+(function (nts) {
+    var uk;
+    (function (uk) {
+        var ui;
+        (function (ui) {
+            var bindings;
+            (function (bindings) {
+                var i18n;
+                (function (i18n) {
+                    var I18nBindingHandler = /** @class */ (function () {
+                        function I18nBindingHandler() {
+                        }
+                        I18nBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor) {
+                            var msg = ko.unwrap(valueAccessor());
+                            var params = ko.unwrap(allBindingsAccessor.get('params'));
+                            $(element).text(nts.uk.resource.getText(msg, params));
+                        };
+                        I18nBindingHandler = __decorate([
+                            handler({
+                                bindingName: 'i18n',
+                                validatable: true,
+                                virtual: false
+                            })
+                        ], I18nBindingHandler);
+                        return I18nBindingHandler;
+                    }());
+                    i18n.I18nBindingHandler = I18nBindingHandler;
+                })(i18n = bindings.i18n || (bindings.i18n = {}));
+            })(bindings = ui.bindings || (ui.bindings = {}));
+        })(ui = uk.ui || (uk.ui = {}));
+    })(uk = nts.uk || (nts.uk = {}));
+})(nts || (nts = {}));
+(function (nts) {
+    var uk;
+    (function (uk) {
+        var ui;
+        (function (ui) {
+            var bindings;
+            (function (bindings) {
+                var icon;
+                (function (icon) {
+                    var icons = [];
+                    var IconBindingHandler = /** @class */ (function () {
+                        function IconBindingHandler() {
+                        }
+                        IconBindingHandler.prototype.update = function (el, value, allBindingsAccessor) {
+                            var numb = ko.unwrap(value());
+                            var size = allBindingsAccessor.get('size') || 'contain';
+                            var url = "/nts.uk.com.js.web/lib/nittsu/ui/style/stylesheets/images/icons/numbered/" + numb + ".png";
+                            $.Deferred()
+                                .resolve(true)
+                                .then(function () { return icons.indexOf(numb) > -1; })
+                                .then(function (exist) { return !!exist || $.get(url); })
+                                .then(function () {
+                                if (icons.indexOf(numb) === -1) {
+                                    icons.push(numb);
+                                }
+                                $(el).css({
+                                    'background-image': "url('" + url + "')",
+                                    'background-repeat': 'no-repeat',
+                                    'background-position': 'center',
+                                    'background-size': size
+                                });
+                            });
+                        };
+                        IconBindingHandler = __decorate([
+                            handler({
+                                bindingName: 'icon',
+                                validatable: true,
+                                virtual: false
+                            })
+                        ], IconBindingHandler);
+                        return IconBindingHandler;
+                    }());
+                    icon.IconBindingHandler = IconBindingHandler;
+                })(icon = bindings.icon || (bindings.icon = {}));
+            })(bindings = ui.bindings || (ui.bindings = {}));
+        })(ui = uk.ui || (uk.ui = {}));
+    })(uk = nts.uk || (nts.uk = {}));
+})(nts || (nts = {}));
+(function (nts) {
+    var uk;
+    (function (uk) {
+        var ui;
+        (function (ui) {
+            var bindings;
+            (function (bindings) {
+                var date;
+                (function (date_1) {
+                    var DateBindingHandler = /** @class */ (function () {
+                        function DateBindingHandler() {
+                        }
+                        DateBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor) {
+                            var date = ko.unwrap(valueAccessor());
+                            var format = ko.unwrap(allBindingsAccessor.get('format')) || 'YYYY/MM/DD';
+                            $(element).text(moment(date).format(format));
+                        };
+                        DateBindingHandler = __decorate([
+                            handler({
+                                bindingName: 'date',
+                                validatable: true,
+                                virtual: false
+                            })
+                        ], DateBindingHandler);
+                        return DateBindingHandler;
+                    }());
+                    date_1.DateBindingHandler = DateBindingHandler;
+                })(date = bindings.date || (bindings.date = {}));
+            })(bindings = ui.bindings || (ui.bindings = {}));
+        })(ui = uk.ui || (uk.ui = {}));
+    })(uk = nts.uk || (nts.uk = {}));
+})(nts || (nts = {}));
+var nts;
+(function (nts) {
+    var uk;
+    (function (uk) {
+        var ui;
+        (function (ui) {
+            var koExtentions;
+            (function (koExtentions) {
+                var ajax = nts.uk.request.ajax;
+                var setShared = nts.uk.ui.windows.setShared;
+                var getShared = nts.uk.ui.windows.getShared;
+                var openModal = nts.uk.ui.windows.sub.modal;
+                ko.components.register("assy-com", {
+                    viewModel: function (params) {
+                        var self = this;
+                        self.height = observableOrDefault(params.height, "120px");
+                        self.width = observableOrDefault(params.width, "640px");
+                        self.labelDistance = observableOrDefault(params.labelDistance, "60px");
+                        self.screenMode = params.screenMode;
+                        self.webAppId = params.webAppId || nts.uk.request.location.currentAppId;
+                        self.histIdName = params.histIdName || "histId";
+                        self.isLatestHistSelected = ko.observable(false);
+                        self.masterId = params.masterId;
+                        self.histList = params.histList;
+                        self.selectedHistId = params.selectedHistId;
+                        self.selectedHistId.subscribe(function (id) {
+                            if (!_.findIndex(self.histList(), function (h) { return h.histId === id; })) {
+                                self.isLatestHistSelected(true);
+                            }
+                            else {
+                                self.isLatestHistSelected(false);
+                            }
+                        });
+                        self.pathGet = params.servicePath.get;
+                        self.pathAdd = params.servicePath.add;
+                        self.pathUpdate = params.servicePath.update;
+                        self.pathDelete = params.servicePath.delete;
+                        self.getQueryResult = params.getQueryResult;
+                        self.getSelectedStartDate = params.getSelectedStartDate;
+                        self.loadHist = function (rendered) {
+                            if (!_.isNil(self.masterId) && self.masterId !== "") {
+                                ajax(self.webAppId, self.pathGet()).done(function (res) {
+                                    var queryResult = self.getQueryResult(res);
+                                    self.histList(queryResult);
+                                    if (!rendered && self.histList().length > 0) {
+                                        self.selectedHistId(self.histList()[0][self.histIdName]);
+                                    }
+                                    if (rendered && _.isFunction(params.afterRender)) {
+                                        _.defer(function () {
+                                            params.afterRender();
+                                        });
+                                    }
+                                });
+                            }
+                            else {
+                                if (rendered && _.isFunction(params.afterRender)) {
+                                    params.afterRender();
+                                }
+                            }
+                        };
+                        self.afterRender = self.loadHist.bind(self, true);
+                        self.delVisible = params.delVisible;
+                        self.delChecked = params.delChecked;
+                        self.delEnable = ko.computed(function () {
+                            return self.histList().length > 0 && self.screenMode() === SCREEN_MODE.UPD && self.isLatestHistSelected();
+                        });
+                        self.openAddHistDialog = function () {
+                            setShared("ASSY_COM_PARAM", new AssyShared(self.masterId(), self.selectedHistId()));
+                            setShared("ASSY_COM_PARAM_CMD", params.commandAdd);
+                            setShared("ASSY_COM_PARAM_AJAX", function (data) { return ajax(self.webAppId, self.pathAdd(), data); });
+                            openModal("com", "/view/assy/addhist/index.xhtml").onClosed(function () {
+                                var done = getShared("HIST_ADD");
+                                if (done) {
+                                    self.loadHist();
+                                    if (_.isFunction(params.afterAdd)) {
+                                        params.afterAdd();
+                                    }
+                                }
+                            });
+                        }.bind(self);
+                        self.openUpdHistDialog = function () {
+                            setShared("ASSY_COM_PARAM", new AssyShared(self.masterId(), self.selectedHistId(), self.getSelectedStartDate()));
+                            setShared("ASSY_COM_PARAM_CMD", params.commandUpdate);
+                            setShared("ASSY_COM_PARAM_AJAX", function (data) { return ajax(self.webAppId, self.pathUpdate(), data); });
+                            openModal("com", "/view/assy/updhist/index.xhtml").onClosed(function () {
+                                var done = getShared("HIST_UPD");
+                                if (done) {
+                                    self.loadHist();
+                                    if (_.isFunction(params.afterUpdate)) {
+                                        params.afterUpdate();
+                                    }
+                                }
+                            });
+                        }.bind(self);
+                        self.deleteHist = function () {
+                            nts.uk.ui.dialog.confirm({ messageId: 'Msg_18' }).ifYes(function () {
+                                ajax(self.webAppId, self.pathDelete(), params.commandDelete(self.masterId(), self.selectedHistId())).done(function () {
+                                    self.loadHist();
+                                    if (_.isFunction(params.afterDelete)) {
+                                        params.afterDelete();
+                                    }
+                                }).fail(function (res) {
+                                    nts.uk.ui.dialog.bundledErrors(res);
+                                });
+                            });
+                        }.bind(self);
+                    },
+                    template: "<div class=\"assy-hist\" data-bind=\"let: { text: nts.uk.resource.getText }, style: { height: height(), width: width() }\">\n            <div class=\"as-area hist-label\" data-bind=\"ntsFormLabel: {}, text: text('JAP0020_A1_1'), style: { paddingRight: labelDistance() }\"></div>\n            <div class=\"as-area hist-list\" id=\"" + nts.uk.util.randomId() + "\" tabindex=\"3\" \n                data-bind=\"ntsListBox: {\n                options: histList,\n                optionsValue: 'histId',\n                optionsText: 'displayText',\n                multiple: false,\n                value: selectedHistId,\n                enable: true,\n                rows: 5,\n                columns: [\n                    { key: 'displayText', length: 15 }\n                ]}\">\n            </div>\n            <div class=\"as-area\">\n                <div class=\"del-chk\" tabindex=\"6\" data-bind=\"ntsCheckBox: { checked: delChecked, enable: delEnable() },\n                    style: { visibility: delVisible() ? 'visible' : 'hidden' }\">\n                </div>\n            </div>\n            <div class=\"as-area hist-btn\" data-bind=\"template: { afterRender: afterRender }\">\n                <button class=\"add\" tabindex=\"4\"\n                    data-bind=\"click: openAddHistDialog,\n                    enable: histList().length == 0 || (screenMode() == 1 &amp;&amp; isLatestHistSelected), text: text('JAP0020_A1_3')\"></button>\n                <br/>\n                <button class=\"update\" tabindex=\"5\"\n                    data-bind=\"click: openUpdHistDialog,\n                    enable: histList().length > 0 &amp;&amp; screenMode() == 1 &amp;&amp; isLatestHistSelected, text: text('JAP0020_A1_4')\"></button>\n                <br/>\n                <button tabindex=\"7\" class=\"danger delete\"\n                    data-bind=\"click: deleteHist,\n                    enable: !delVisible() || (histList().length > 0 &amp;&amp; delEnable() &amp;&amp; delChecked()), text: text('JAP0020_A1_6')\"></button>\n            </div>\n        </div>"
+                });
+                function observableOrDefault(val, def) {
+                    return ko.isObservable(val) ? val : ko.observable(_.isNil(val) ? def : val);
+                }
+                var AssyShared = /** @class */ (function () {
+                    function AssyShared(masterId, histId, startDate) {
+                        this.masterId = masterId;
+                        this.histId = histId;
+                        this.startDate = startDate;
+                    }
+                    return AssyShared;
+                }());
+                var SCREEN_MODE;
+                (function (SCREEN_MODE) {
+                    SCREEN_MODE[SCREEN_MODE["NEW"] = 0] = "NEW";
+                    SCREEN_MODE[SCREEN_MODE["UPD"] = 1] = "UPD";
+                })(SCREEN_MODE || (SCREEN_MODE = {}));
+            })(koExtentions = ui.koExtentions || (ui.koExtentions = {}));
+        })(ui = uk.ui || (uk.ui = {}));
+    })(uk = nts.uk || (nts.uk = {}));
+})(nts || (nts = {}));
 /// <reference path="../../reference.ts"/>
 var nts;
 (function (nts) {
@@ -37509,7 +38425,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_21) {
+        (function (ui_22) {
             var jqueryExtentions;
             (function (jqueryExtentions) {
                 var isNull = nts.uk.util.isNullOrUndefined;
@@ -37876,7 +38792,7 @@ var nts;
                     }());
                     ntsButtonTable.TableButtonEntity = TableButtonEntity;
                 })(ntsButtonTable || (ntsButtonTable = {}));
-            })(jqueryExtentions = ui_21.jqueryExtentions || (ui_21.jqueryExtentions = {}));
+            })(jqueryExtentions = ui_22.jqueryExtentions || (ui_22.jqueryExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -38286,7 +39202,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_22) {
+        (function (ui_23) {
             var jqueryExtentions;
             (function (jqueryExtentions) {
                 var ntsFixedTable;
@@ -38396,7 +39312,7 @@ var nts;
                         return controls;
                     }
                 })(ntsFixedTable || (ntsFixedTable = {}));
-            })(jqueryExtentions = ui_22.jqueryExtentions || (ui_22.jqueryExtentions = {}));
+            })(jqueryExtentions = ui_23.jqueryExtentions || (ui_23.jqueryExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -38406,7 +39322,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_23) {
+        (function (ui_24) {
             var jqueryExtentions;
             (function (jqueryExtentions) {
                 var ntsGridList;
@@ -38700,7 +39616,7 @@ var nts;
                             mousePos = {
                                 x: e.pageX,
                                 y: e.pageY,
-                                rowIndex: ui_23.ig.grid.getRowIndexFrom($(e.target))
+                                rowIndex: ui_24.ig.grid.getRowIndexFrom($(e.target))
                             };
                             // set position to start dragging
                             dragSelectRange.push(mousePos.rowIndex);
@@ -38717,7 +39633,7 @@ var nts;
                             }, 20);
                             // handle mousemove on window while dragging (unhandle when mouseup)
                             $(window).bind('pointermove.NtsGridListDragging', function (e) {
-                                var newPointedRowIndex = ui_23.ig.grid.getRowIndexFrom($(e.target));
+                                var newPointedRowIndex = ui_24.ig.grid.getRowIndexFrom($(e.target));
                                 // selected range is not changed
                                 if (mousePos.rowIndex === newPointedRowIndex) {
                                     return;
@@ -38823,7 +39739,7 @@ var nts;
                             ROW_HEIGHT = 24;
                             // Internet Explorer 6-11
                             var _document = document;
-                            var isIE = false || !!_document.documentMode;
+                            var isIE = /*@cc_on!@*/ false || !!_document.documentMode;
                             // Edge 20+
                             var _window = window;
                             var isEdge = !isIE && !!_window.StyleMedia;
@@ -39192,7 +40108,7 @@ var nts;
                         }
                     }
                 })(ntsGridList || (ntsGridList = {}));
-            })(jqueryExtentions = ui_23.jqueryExtentions || (ui_23.jqueryExtentions = {}));
+            })(jqueryExtentions = ui_24.jqueryExtentions || (ui_24.jqueryExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -39356,7 +40272,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_24) {
+        (function (ui_25) {
             var jqueryExtentions;
             (function (jqueryExtentions) {
                 var ntsGrid;
@@ -39958,8 +40874,8 @@ var nts;
                                             }, 110);
                                         }
                                         else {
-                                            var length = String($editor.igNumericEditor("value")).length;
-                                            $editor.igNumericEditor("select", length, length);
+                                            var length_1 = String($editor.igNumericEditor("value")).length;
+                                            $editor.igNumericEditor("select", length_1, length_1);
                                         }
                                     }
                                     // Validate
@@ -41415,7 +42331,7 @@ var nts;
                         ntsControls.PICKED_CLASS = "picked";
                         ntsControls.YM = "YYYY年MM月";
                         ntsControls.Y = "YYYY年";
-                        ntsControls.WEEK_DAYS = ui_24.toBeResource.weekDaysShort;
+                        ntsControls.WEEK_DAYS = ui_25.toBeResource.weekDaysShort;
                         /**
                          * Get control
                          */
@@ -44826,7 +45742,7 @@ var nts;
                             if (!loader) {
                                 $grid.data(internal.LOADER, new Loader(demandLoadFt.allKeysPath, demandLoadFt.pageRecordsPath));
                             }
-                            else if (loader.keys) {
+                            else if (loader.keys) { // Switch sheet
                                 pageSize = setting.pageSize;
                                 return false;
                             }
@@ -45584,7 +46500,7 @@ var nts;
                         utils.outsideGrid = outsideGrid;
                     })(utils || (utils = {}));
                 })(ntsGrid = jqueryExtentions.ntsGrid || (jqueryExtentions.ntsGrid = {}));
-            })(jqueryExtentions = ui_24.jqueryExtentions || (ui_24.jqueryExtentions = {}));
+            })(jqueryExtentions = ui_25.jqueryExtentions || (ui_25.jqueryExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -45649,7 +46565,7 @@ var nts;
                             $(window).on("mousedown.popup", function (e) {
                                 if (!$(e.target).is(control) // Target isn't Popup
                                     && control.has(e.target).length === 0 // Target isn't Popup's children
-                                    && !$(e.target).is(setting.trigger)) {
+                                    && !$(e.target).is(setting.trigger)) { // Target isn't Trigger element
                                     hide(control);
                                 }
                             });
@@ -45714,7 +46630,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_25) {
+        (function (ui_26) {
             var jqueryExtentions;
             (function (jqueryExtentions) {
                 var ntsSearchBox;
@@ -45857,9 +46773,9 @@ var nts;
                         }
                         var minusWidth = 0;
                         var fields = options.fields;
-                        var placeHolder = (options.placeHolder !== undefined) ? options.placeHolder : ui_25.toBeResource.searchByCodeName;
+                        var placeHolder = (options.placeHolder !== undefined) ? options.placeHolder : ui_26.toBeResource.searchByCodeName;
                         var searchMode = (options.searchMode !== undefined) ? options.searchMode : "highlight";
-                        var defaultSearchText = (searchMode === 'highlight') ? ui_25.toBeResource.search : ui_25.toBeResource.filter;
+                        var defaultSearchText = (searchMode === 'highlight') ? ui_26.toBeResource.search : ui_26.toBeResource.filter;
                         var searchText = (options.searchText !== undefined) ? options.searchText : defaultSearchText;
                         var label = (options.label !== undefined) ? options.label : "";
                         var enable = options.enable;
@@ -45911,7 +46827,7 @@ var nts;
                         $input.attr("data-name", nts.uk.ui.toBeResource.searchBox);
                         $input.outerWidth($container.outerWidth(true) - minusWidth);
                         var primaryKey = options.targetKey;
-                        var searchObject = new ui_25.koExtentions.SearchPub(primaryKey, searchMode, dataSource, fields, childField);
+                        var searchObject = new ui_26.koExtentions.SearchPub(primaryKey, searchMode, dataSource, fields, childField);
                         $container.data("searchObject", searchObject);
                         var search = function (searchKey) {
                             if (targetMode) {
@@ -46042,7 +46958,7 @@ var nts;
                         }
                     }
                 })(ntsSearchBox || (ntsSearchBox = {}));
-            })(jqueryExtentions = ui_25.jqueryExtentions || (ui_25.jqueryExtentions = {}));
+            })(jqueryExtentions = ui_26.jqueryExtentions || (ui_26.jqueryExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -46052,7 +46968,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_26) {
+        (function (ui_27) {
             var jqueryExtentions;
             (function (jqueryExtentions) {
                 var errorMementos = {};
@@ -46181,7 +47097,7 @@ var nts;
                         return control.find("#sidebar-area .navigator a.active").closest("li").index();
                     }
                 })(ntsSideBar || (ntsSideBar = {}));
-            })(jqueryExtentions = ui_26.jqueryExtentions || (ui_26.jqueryExtentions = {}));
+            })(jqueryExtentions = ui_27.jqueryExtentions || (ui_27.jqueryExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -46190,7 +47106,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_27) {
+        (function (ui_28) {
             var jqueryExtentions;
             (function (jqueryExtentions) {
                 var ntsTreeGrid;
@@ -46227,8 +47143,8 @@ var nts;
                         }
                         else {
                             displayColumns = [
-                                { headerText: ui_27.toBeResource.code, key: optionsValue, dataType: "string", hidden: true },
-                                { headerText: ui_27.toBeResource.codeAndName, key: optionsText, dataType: "string" }
+                                { headerText: ui_28.toBeResource.code, key: optionsValue, dataType: "string", hidden: true },
+                                { headerText: ui_28.toBeResource.codeAndName, key: optionsText, dataType: "string" }
                             ];
                         }
                         var tabIndex = nts.uk.util.isNullOrEmpty($treegrid.attr("tabindex")) ? "0" : $treegrid.attr("tabindex");
@@ -46292,8 +47208,7 @@ var nts;
                             $treegrid.addClass("row-limited");
                         }
                         if (isFilter) {
-                            features.push({ name: "Filtering", filterDelay: 100, filterDropDownAnimationDuration: 100,
-                                dataFiltered: function (evt, ui) {
+                            features.push({ name: "Filtering", filterDelay: 100, filterDropDownAnimationDuration: 100, dataFiltered: function (evt, ui) {
                                     var disabled = $treegrid.data("rowDisabled");
                                     if (!_.isEmpty(disabled)) {
                                         $treegrid.ntsTreeView("disableRows", disabled);
@@ -46340,7 +47255,7 @@ var nts;
                                     ui.owner._currentTarget.closest(".ui-iggrid-filtercell").find(".ui-iggrid-filterbutton").removeClass("ui-state-active ui-iggrid-filterbuttonactive");
                                 }, filterSummaryAlwaysVisible: false });
                         }
-                        $treegrid.data("expand", new ui_27.koExtentions.ExpandNodeHolder());
+                        $treegrid.data("expand", new ui_28.koExtentions.ExpandNodeHolder());
                         $treegrid.data("autoExpanding", false);
                         var colSet = _.map(displayColumns, function (col) {
                             return { columnKey: col.key, readOnly: true };
@@ -46488,7 +47403,7 @@ var nts;
                         $grid.igTreeGrid("option", "dataSource", sources);
                     }
                 })(ntsTreeGrid || (ntsTreeGrid = {}));
-            })(jqueryExtentions = ui_27.jqueryExtentions || (ui_27.jqueryExtentions = {}));
+            })(jqueryExtentions = ui_28.jqueryExtentions || (ui_28.jqueryExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -46688,7 +47603,8 @@ var nts;
                                             if ($tree.data("igTreeGrid") !== null) {
                                                 $tree.data("igTreeGridUpdating").deleteRow(rowId);
                                             }
-                                        }, initValue: value,
+                                        },
+                                        initValue: value,
                                         rowObj: rowObj,
                                         showHeaderCheckbox: col.showHeaderCheckbox,
                                         enable: isRowEnable,
@@ -47301,7 +48217,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_28) {
+        (function (ui_29) {
             var jqueryExtentions;
             (function (jqueryExtentions) {
                 var ntsWizard;
@@ -47390,7 +48306,7 @@ var nts;
                         return wizard.steps("getCurrentIndex");
                     }
                 })(ntsWizard || (ntsWizard = {}));
-            })(jqueryExtentions = ui_28.jqueryExtentions || (ui_28.jqueryExtentions = {}));
+            })(jqueryExtentions = ui_29.jqueryExtentions || (ui_29.jqueryExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -47400,7 +48316,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_29) {
+        (function (ui_30) {
             var koExtentions;
             (function (koExtentions) {
                 /**
@@ -47485,7 +48401,7 @@ var nts;
                     return NtsAccordionBindingHandler;
                 }());
                 ko.bindingHandlers['ntsAccordion'] = new NtsAccordionBindingHandler();
-            })(koExtentions = ui_29.koExtentions || (ui_29.koExtentions = {}));
+            })(koExtentions = ui_30.koExtentions || (ui_30.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -47619,7 +48535,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_30) {
+        (function (ui_31) {
             var koExtentions;
             (function (koExtentions) {
                 /**
@@ -47671,15 +48587,15 @@ var nts;
                             preferredFormat: "name",
                             showPaletteOnly: true,
                             togglePaletteOnly: true,
-                            togglePaletteMoreText: ui_30.toBeResource.otherColors,
-                            togglePaletteLessText: ui_30.toBeResource.hide,
+                            togglePaletteMoreText: ui_31.toBeResource.otherColors,
+                            togglePaletteLessText: ui_31.toBeResource.hide,
                             color: color,
                             disabled: !enable,
                             showInput: true,
                             showSelectionPalette: true,
                             showInitial: true,
-                            chooseText: ui_30.toBeResource.decide,
-                            cancelText: ui_30.toBeResource.cancel,
+                            chooseText: ui_31.toBeResource.decide,
+                            cancelText: ui_31.toBeResource.cancel,
                             allowEmpty: true,
                             showAlpha: false,
                             palette: [
@@ -47778,7 +48694,7 @@ var nts;
                     return NtsColorPickerBindingHandler;
                 }());
                 ko.bindingHandlers['ntsColorPicker'] = new NtsColorPickerBindingHandler();
-            })(koExtentions = ui_30.koExtentions || (ui_30.koExtentions = {}));
+            })(koExtentions = ui_31.koExtentions || (ui_31.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -47788,7 +48704,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_31) {
+        (function (ui_32) {
             var koExtentions;
             (function (koExtentions) {
                 /**
@@ -48050,7 +48966,7 @@ var nts;
                     };
                     return DateRangeHelper;
                 }());
-            })(koExtentions = ui_31.koExtentions || (ui_31.koExtentions = {}));
+            })(koExtentions = ui_32.koExtentions || (ui_32.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -48571,7 +49487,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_32) {
+        (function (ui_33) {
             var koExtentions;
             (function (koExtentions) {
                 /**
@@ -48661,7 +49577,7 @@ var nts;
                     return NtsFunctionPanelBindingHandler;
                 }());
                 ko.bindingHandlers['ntsFunctionPanel'] = new NtsFunctionPanelBindingHandler();
-            })(koExtentions = ui_32.koExtentions || (ui_32.koExtentions = {}));
+            })(koExtentions = ui_33.koExtentions || (ui_33.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -48851,7 +49767,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_33) {
+        (function (ui_34) {
             var koExtentions;
             (function (koExtentions) {
                 /**
@@ -48882,8 +49798,8 @@ var nts;
                         $container.append($uploadArea);
                         if (editable === true) {
                             croppable = true;
-                            var confirm = { checked: ko.observable(true) };
-                            $(element).data('checkbox', confirm);
+                            var confirm_1 = { checked: ko.observable(true) };
+                            $(element).data('checkbox', confirm_1);
                             var $editContainer = $("<div>", { "class": "edit-action-container image-editor-area" });
                             $container.append($editContainer);
                             constructSite.buildCheckBoxArea(allBindingsAccessor, viewModel, bindingContext);
@@ -48927,7 +49843,7 @@ var nts;
                         var $checkboxHolder = $("<div>", { "class": "checkbox-holder image-editor-component" });
                         var $editContainer = this.$root.find(".edit-action-container");
                         $editContainer.append($checkboxHolder);
-                        this.$checkbox = $("<div>", { "class": "comfirm-checkbox style-button", text: ui_33.toBeResource.selectViewArea });
+                        this.$checkbox = $("<div>", { "class": "comfirm-checkbox style-button", text: ui_34.toBeResource.selectViewArea });
                         var $comment = $("<div>", { "class": "crop-description cf" });
                         $checkboxHolder.append(this.$checkbox);
                         $checkboxHolder.append($comment);
@@ -48935,8 +49851,8 @@ var nts;
                         var $cropText = $("<div>", { "class": "crop-description-text inline-container" });
                         var $mousePointerIcon = $("<div>", { "class": "mouse-icon inline-container" });
                         var $mouseText = $("<div>", { "class": "mouse-description-text inline-container" });
-                        $("<label>", { "class": "info-label", "text": ui_33.toBeResource.showInsideAreaToMain }).appendTo($cropText);
-                        $("<label>", { "class": "info-label", "text": ui_33.toBeResource.dragAndDropToChangeArea }).appendTo($mouseText);
+                        $("<label>", { "class": "info-label", "text": ui_34.toBeResource.showInsideAreaToMain }).appendTo($cropText);
+                        $("<label>", { "class": "info-label", "text": ui_34.toBeResource.dragAndDropToChangeArea }).appendTo($mouseText);
                         $comment.append($cropAreaIcon).append($cropText).append($mousePointerIcon).append($mouseText);
                         var checkboxId = nts.uk.util.randomId();
                         ko.bindingHandlers["ntsCheckBox"].init(this.$checkbox[0], function () {
@@ -48969,7 +49885,7 @@ var nts;
                     };
                     ImageEditorConstructSite.prototype.buildUploadAction = function () {
                         var self = this;
-                        self.$uploadBtn.text(ui_33.toBeResource.refer).click(function (evt) {
+                        self.$uploadBtn.text(ui_34.toBeResource.refer).click(function (evt) {
                             self.$inputFile.click();
                         });
                     };
@@ -49117,7 +50033,7 @@ var nts;
                     };
                     ImageEditorConstructSite.prototype.destroyImg = function (query) {
                         var self = this;
-                        nts.uk.ui.dialog.alert(ui_33.toBeResource.invalidImageData).then(function () {
+                        nts.uk.ui.dialog.alert(ui_34.toBeResource.invalidImageData).then(function () {
                             //self.$root.data("img-status", self.buildImgStatus("load fail", 3));
                             self.changeStatus(ImageStatus.FAIL);
                             self.backupData(null, "", "", 0);
@@ -49277,7 +50193,7 @@ var nts;
                     ImageStatus[ImageStatus["LOADED"] = 3] = "LOADED";
                 })(ImageStatus || (ImageStatus = {}));
                 ko.bindingHandlers['ntsImageEditor'] = new NtsImageEditorBindingHandler();
-            })(koExtentions = ui_33.koExtentions || (ui_33.koExtentions = {}));
+            })(koExtentions = ui_34.koExtentions || (ui_34.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -49813,6 +50729,7 @@ var NtsSortableBindingHandler = /** @class */ (function () {
                             if (sourceParent) {
                                 $(sourceParent === targetParent ? this : ui.sender || this).sortable("cancel");
                             }
+                            //for a draggable item just remove the element
                             else {
                                 $(el).remove();
                             }
@@ -49840,7 +50757,7 @@ var NtsSortableBindingHandler = /** @class */ (function () {
                                 //rendering is handled by manipulating the observableArray; ignore dropped element
                                 self.dataSet(el, self.ITEMKEY, null);
                             }
-                            else {
+                            else { //employ the strategy of moving items
                                 if (targetIndex >= 0) {
                                     if (sourceParent) {
                                         if (sourceParent !== targetParent) {
@@ -49933,7 +50850,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_34) {
+        (function (ui_35) {
             var koExtentions;
             (function (koExtentions) {
                 /**
@@ -50163,7 +51080,7 @@ var nts;
                     return NtsTreeDragAndDropBindingHandler;
                 }());
                 ko.bindingHandlers['ntsTreeDragAndDrop'] = new NtsTreeDragAndDropBindingHandler();
-            })(koExtentions = ui_34.koExtentions || (ui_34.koExtentions = {}));
+            })(koExtentions = ui_35.koExtentions || (ui_35.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -50214,16 +51131,13 @@ var nts;
                         }
                         WidgetResizeContentBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                             var $el = $(element);
-                            var widget = viewModel.widget;
-                            var WG_SIZE = 'WIDGET_SIZE';
+                            var widget = viewModel.widget, $user = viewModel.$user;
+                            var WG_SIZE = $user.employeeId + ".WIDGET_SIZE";
                             var mkv = new ko.ViewModel();
                             var minHeight = valueAccessor();
                             var key = ko.unwrap(widget);
                             var src = allBindingsAccessor.get('src');
                             var def = allBindingsAccessor.get('default');
-                            if (def) {
-                                element.style.maxHeight = def + "px";
-                            }
                             if (element.tagName !== 'DIV') {
                                 element.innerText = 'Please use [div] tag with [widget-content] binding';
                                 return { controlsDescendantBindings: false };
@@ -50290,6 +51204,7 @@ var nts;
                                 }
                             })
                                 .find('.ui-resizable-s')
+                                // support quick toggle widget height
                                 .on('dblclick', function () {
                                 var fx = element.style.height;
                                 mkv
@@ -50318,8 +51233,15 @@ var nts;
                                     if (size) {
                                         var height = size[key];
                                         if (height && height.set) {
+                                            element.style.maxHeight = '';
                                             element.style.height = height.value;
                                         }
+                                        else if (def) {
+                                            element.style.maxHeight = def + "px";
+                                        }
+                                    }
+                                    else if (def) {
+                                        element.style.maxHeight = def + "px";
                                     }
                                 });
                             }
@@ -50338,152 +51260,6 @@ var nts;
                 })(widget = binding.widget || (binding.widget = {}));
             })(binding = knockout.binding || (knockout.binding = {}));
         })(knockout = uk.knockout || (uk.knockout = {}));
-    })(uk = nts.uk || (nts.uk = {}));
-})(nts || (nts = {}));
-/// <reference path="../reference.ts"/>
-var nts;
-(function (nts) {
-    var uk;
-    (function (uk) {
-        var ui;
-        (function (ui) {
-            var guide;
-            (function (guide) {
-                var ROW_HEIGHT = 20;
-                var resource;
-                (function (resource) {
-                    resource.linkHide = "操作ガイド　非表示";
-                    resource.linkShow = "操作ガイド　表示";
-                })(resource || (resource = {}));
-                function operateCurrent(path, data, page) {
-                    operate.apply(null, _.concat(nts.uk.request.location.currentAppId, arguments));
-                }
-                guide.operateCurrent = operateCurrent;
-                function operate(appId, path, data, tabMapping, page) {
-                    nts.uk.request.ajax(appId, path, data).done(function (config) {
-                        if (_.isFunction(tabMapping) && _.isArray(config)) {
-                            _.forEach(config, function (c) {
-                                c.tabId = tabMapping(c.programId, c.screenId);
-                            });
-                        }
-                        var op = new OperationGuide(config);
-                        op.setPosition(page);
-                    });
-                }
-                guide.operate = operate;
-                var OperationGuide = /** @class */ (function () {
-                    function OperationGuide(config) {
-                        this.configs = [];
-                        if (_.isArray(config)) {
-                            this.configs = config;
-                            return;
-                        }
-                        this.configs.push(config);
-                    }
-                    OperationGuide.prototype.link = function (top, tabConfig) {
-                        var self = this;
-                        tabConfig.display = true;
-                        var $link = $("<a/>").addClass("nts-guide-link").text(resource.linkHide);
-                        $link.css("margin-top", top);
-                        $link.on("click", function () {
-                            var $guideArea;
-                            if (!_.isNil(tabConfig.tabId)) {
-                                var $tabPanel = $link.closest("div[role=tabpanel]");
-                                $guideArea = $tabPanel.find(".nts-guide-area");
-                            }
-                            else {
-                                $guideArea = $(".nts-guide-area");
-                            }
-                            if (tabConfig.display) {
-                                $link.text(resource.linkShow);
-                                $guideArea.hide();
-                                tabConfig.display = !tabConfig.display;
-                                return;
-                            }
-                            $link.text(resource.linkHide);
-                            $guideArea.show();
-                            tabConfig.display = !tabConfig.display;
-                        });
-                        return $link;
-                    };
-                    OperationGuide.prototype.textArea = function (tabConfig, position) {
-                        var self = this;
-                        var $area = $("<div/>").addClass("nts-guide-area");
-                        if (position === Position.BOTTOM) {
-                            $area.addClass("nts-bottom");
-                        }
-                        $area.height(ROW_HEIGHT * tabConfig.lineCount);
-                        var content = tabConfig.content.split('\n').join("<br/>");
-                        $area.html(content);
-                        return $area;
-                    };
-                    OperationGuide.prototype.setPosition = function (page) {
-                        var self = this;
-                        switch (page) {
-                            case Page.NORMAL:
-                            default:
-                                var $functionsArea = $("#functions-area");
-                                if ($functionsArea.length == 0) {
-                                    $functionsArea = $("#functions-area-bottom");
-                                    if ($functionsArea.find(".nts-guide-link").length == 0) {
-                                        var top = ($functionsArea.height() - 24) / 2;
-                                        $functionsArea.append(self.link(top, self.configs[0]));
-                                    }
-                                    if (!$functionsArea.prev().is(".nts-guide-area")) {
-                                        $functionsArea.before(self.textArea(self.configs[0], Position.BOTTOM));
-                                    }
-                                    return;
-                                }
-                                if ($functionsArea.find(".nts-guide-link").length == 0) {
-                                    var top = ($functionsArea.height() - 22) / 2;
-                                    $functionsArea.append(self.link(top, self.configs[0]));
-                                }
-                                if (!$functionsArea.next().is(".nts-guide-area")) {
-                                    $functionsArea.after(self.textArea(self.configs[0]));
-                                }
-                                break;
-                            case Page.SIDEBAR:
-                                _.forEach(self.configs, function (tabConfig) {
-                                    var $tab = $("#" + tabConfig.tabId);
-                                    var $contentHeader = $tab.find(".sidebar-content-header");
-                                    if ($contentHeader.find(".nts-guide-link").length == 0) {
-                                        var top = ($contentHeader.height() - 18) / 2;
-                                        $contentHeader.append(self.link(top, tabConfig));
-                                    }
-                                    if (!$contentHeader.next().is(".nts-guide-area")) {
-                                        $contentHeader.after(self.textArea(tabConfig));
-                                    }
-                                });
-                                break;
-                            case Page.FREE_LAYOUT:
-                                break;
-                        }
-                    };
-                    return OperationGuide;
-                }());
-                var GuideConfig = /** @class */ (function () {
-                    function GuideConfig(tabId, isUsed, display, lineCount, content) {
-                        this.tabId = tabId;
-                        this.isUsed = isUsed;
-                        this.display = display;
-                        this.lineCount = lineCount;
-                        this.content = content;
-                    }
-                    return GuideConfig;
-                }());
-                var Page;
-                (function (Page) {
-                    Page[Page["NORMAL"] = 0] = "NORMAL";
-                    Page[Page["SIDEBAR"] = 1] = "SIDEBAR";
-                    Page[Page["FREE_LAYOUT"] = 2] = "FREE_LAYOUT";
-                })(Page || (Page = {}));
-                var Position;
-                (function (Position) {
-                    Position[Position["TOP"] = 0] = "TOP";
-                    Position[Position["BOTTOM"] = 1] = "BOTTOM";
-                })(Position || (Position = {}));
-            })(guide = ui.guide || (ui.guide = {}));
-        })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
 var nts;
@@ -50532,744 +51308,6 @@ var nts;
                 }());
                 sharedvm.KibanTimer = KibanTimer;
             })(sharedvm = ui.sharedvm || (ui.sharedvm = {}));
-        })(ui = uk.ui || (uk.ui = {}));
-    })(uk = nts.uk || (nts.uk = {}));
-})(nts || (nts = {}));
-/// <reference path="./viewcontext.d.ts" />
-/** Create new ViewModel and automatic binding to __viewContext */
-function bean(dialogOption) {
-    return function (ctor) {
-        __viewContext.ready(function () {
-            nts.uk.ui.viewmodel.$storage().then(function ($params) {
-                var $viewModel = new ctor($params), $created = $viewModel['created'];
-                _.extend($viewModel, { $el: undefined });
-                // hook to created function
-                if ($created && _.isFunction($created)) {
-                    $created.apply($viewModel, [$params]);
-                }
-                // hook to mounted function
-                $viewModel.$nextTick(function () {
-                    var $mounted = $viewModel['mounted'];
-                    var kvm = nts.uk.ui._viewModel.kiban;
-                    _.extend($viewModel, { $el: document.querySelector('#master-wrapper') });
-                    if (kvm) {
-                        ko.computed({
-                            read: function () {
-                                $viewModel.$validate.valid(!kvm.errorDialogViewModel.errors().length);
-                            },
-                            owner: $viewModel,
-                            disposeWhenNodeIsRemoved: $viewModel.$el
-                        });
-                    }
-                    if ($mounted && _.isFunction($mounted)) {
-                        $mounted.apply($viewModel, []);
-                    }
-                });
-                __viewContext.bind($viewModel, dialogOption);
-            });
-        });
-    };
-}
-function component(options) {
-    return function (ctor) {
-        return $.Deferred().resolve(options.template.match(/\.html$/))
-            .then(function (url) {
-            return url ? $.get(options.template) : options.template;
-        })
-            .then(function (template) {
-            if (!ko.components.isRegistered(options.name)) {
-                ko.components.register(options.name, {
-                    template: template,
-                    viewModel: {
-                        createViewModel: function ($params, $el) {
-                            var $viewModel = new ctor($params), $created = $viewModel['created'];
-                            _.extend($viewModel, { $el: undefined });
-                            // hook to created function
-                            if ($created && _.isFunction($created)) {
-                                $created.apply($viewModel, [$params]);
-                            }
-                            // hook to mounted function
-                            $viewModel.$nextTick(function () {
-                                var $mounted = $viewModel['mounted'];
-                                var kvm = nts.uk.ui._viewModel.kiban;
-                                _.extend($viewModel, { $el: $el.element });
-                                if (kvm) {
-                                    ko.computed({
-                                        read: function () {
-                                            $viewModel.$validate.valid(!kvm.errorDialogViewModel.errors().length);
-                                        },
-                                        owner: $viewModel,
-                                        disposeWhenNodeIsRemoved: $el.element
-                                    });
-                                }
-                                if ($mounted && _.isFunction($mounted)) {
-                                    $mounted.apply($viewModel, []);
-                                }
-                            });
-                            // run if component mode
-                            Object.defineProperty($viewModel, 'dispose', {
-                                value: function dispose() {
-                                    if (typeof $viewModel.destroyed === 'function') {
-                                        $viewModel.destroyed.apply($viewModel, []);
-                                    }
-                                }
-                            });
-                            return $viewModel;
-                        }
-                    }
-                });
-            }
-        });
-    };
-}
-function handler(params) {
-    return function (constructor) {
-        ko.bindingHandlers[params.bindingName] = new constructor();
-        ko.virtualElements.allowedBindings[params.bindingName] = !!params.virtual;
-        // block rewrite binding
-        if (params.validatable) {
-            ko.utils.extend(ko.expressionRewriting.bindingRewriteValidators, (_a = {}, _a[params.bindingName] = false, _a));
-        }
-        var _a;
-    };
-}
-var nts;
-(function (nts) {
-    var uk;
-    (function (uk) {
-        var ui;
-        (function (ui_35) {
-            var viewmodel;
-            (function (viewmodel) {
-                var OPENWD = 'OPEN_WINDOWS_DATA', _a = nts.uk, ui = _a.ui, request = _a.request, resource = _a.resource, windows = ui.windows, block = ui.block, dialog = ui.dialog, $storeSession = function (name, params) {
-                    if (arguments.length === 2) {
-                        return nts.uk.characteristics
-                            .save(name, params)
-                            .then(function () { return $storeSession(name); });
-                    }
-                    else if (arguments.length === 1) {
-                        // getter method
-                        return nts.uk.characteristics
-                            .restore(name)
-                            .then(function (data) {
-                            if (data !== undefined) {
-                                return data;
-                            }
-                            return windows.getShared(name);
-                        });
-                    }
-                };
-                viewmodel.$storage = function ($data) {
-                    if (arguments.length === 1) {
-                        return $storeSession(OPENWD, $data);
-                    }
-                    else if (arguments.length === 0) {
-                        return $storeSession(OPENWD)
-                            .then(function (value) {
-                            // return value;
-                            return nts.uk.characteristics
-                                .remove(OPENWD)
-                                .then(function () { return value; });
-                        });
-                    }
-                };
-                // create base viewmodel for all implement
-                function BaseViewModel() { }
-                function $i18n(text, params) {
-                    return resource.getText(text, params);
-                }
-                function $jump() {
-                    var args = Array.prototype.slice.apply(arguments), params = args.length === 3 && _.isString(args[0]) && _.isString(args[1]) ? args[2] :
-                        (args.length == 2 && _.indexOf(args[1], '.xhtml')) > -1 ? null : args[1];
-                    if (window.top === window.self) {
-                        viewmodel.$storage(params).then(function () { return request.jump.apply(null, args); });
-                    }
-                    else {
-                        // jump from dialog or frame
-                        viewmodel.$storage(params).then(function () { return request.jumpFromDialogOrFrame.apply(null, args); });
-                    }
-                }
-                ;
-                BaseViewModel.prototype.$i18n = $i18n;
-                Object.defineProperties($i18n, {
-                    text: {
-                        value: $i18n
-                    },
-                    message: {
-                        value: resource.getMessage
-                    },
-                    controlName: {
-                        value: resource.getControlName
-                    }
-                });
-                BaseViewModel.prototype.$ajax = request.ajax;
-                BaseViewModel.prototype.$nextTick = ko.tasks.schedule;
-                BaseViewModel.prototype.$user = __viewContext['user'];
-                BaseViewModel.prototype.$program = __viewContext['program'];
-                var $date = {
-                    diff: 0,
-                    tick: -1,
-                    clock: -1,
-                    now: function () {
-                        return Date.now();
-                    },
-                    today: function () {
-                        return $date.now();
-                    }
-                };
-                var getTime = function () {
-                    request.ajax('/server/time/now').then(function (time) {
-                        _.extend($date, {
-                            diff: moment(time, 'YYYY-MM-DDTHH:mm:ss').diff(moment())
-                        });
-                    });
-                };
-                // get date time now
-                setInterval(function () {
-                    var now = Date.now();
-                    var diff = now - $date.clock;
-                    $date.clock = now;
-                    if (Math.abs(diff) > 5000) {
-                        getTime();
-                    }
-                }, 500);
-                BaseViewModel.prototype.$date = Object.defineProperties($date, {
-                    now: {
-                        value: function $now() {
-                            return moment().add($date.diff, 'ms').toDate();
-                        }
-                    },
-                    today: {
-                        value: function $today() {
-                            return moment($date.now()).startOf('day').toDate();
-                        }
-                    },
-                    interval: {
-                        value: function $interval(interval) {
-                            // clear default intervale
-                            clearInterval($date.tick);
-                            // set new interface
-                            $date.tick = setInterval(getTime, interval);
-                        }
-                    }
-                });
-                var $dialog = Object.defineProperties({}, {
-                    info: {
-                        value: function $info() {
-                            var dfd = $.Deferred();
-                            var args = Array.prototype.slice.apply(arguments);
-                            dialog.info.apply(null, args).then(function () { return dfd.resolve(); });
-                            return dfd.promise();
-                        }
-                    },
-                    alert: {
-                        value: function $alert() {
-                            var dfd = $.Deferred();
-                            var args = Array.prototype.slice.apply(arguments);
-                            dialog.alert.apply(null, args).then(function () { return dfd.resolve(); });
-                            return dfd.promise();
-                        }
-                    },
-                    error: {
-                        value: function $error() {
-                            var dfd = $.Deferred();
-                            var args = Array.prototype.slice.apply(arguments);
-                            dialog.error.apply(null, args).then(function () { return dfd.resolve(); });
-                            return dfd.promise();
-                        }
-                    },
-                    confirm: {
-                        value: function $confirm() {
-                            var dfd = $.Deferred();
-                            var args = Array.prototype.slice.apply(arguments);
-                            var $cf = dialog.confirm.apply(null, args);
-                            $cf.ifYes(function () {
-                                dfd.resolve('yes');
-                            });
-                            $cf.ifNo(function () {
-                                dfd.resolve('no');
-                            });
-                            return dfd.promise();
-                        }
-                    }
-                });
-                Object.defineProperties($dialog.confirm, {
-                    yesNo: {
-                        value: function () {
-                            var dfd = $.Deferred();
-                            var args = Array.prototype.slice.apply(arguments);
-                            var $cf = dialog.confirm.apply(null, args);
-                            $cf.ifYes(function () {
-                                dfd.resolve('yes');
-                            });
-                            $cf.ifNo(function () {
-                                dfd.resolve('no');
-                            });
-                            return dfd.promise();
-                        }
-                    },
-                    yesCancel: {
-                        value: function () {
-                            var dfd = $.Deferred();
-                            var args = Array.prototype.slice.apply(arguments);
-                            var $cf = dialog.confirm.apply(null, args);
-                            $cf.ifYes(function () {
-                                dfd.resolve('yes');
-                            });
-                            $cf.ifCancel(function () {
-                                dfd.resolve('cancel');
-                            });
-                            return dfd.promise();
-                        }
-                    }
-                });
-                BaseViewModel.prototype.$dialog = $dialog;
-                BaseViewModel.prototype.$jump = $jump;
-                Object.defineProperties($jump, {
-                    self: {
-                        value: function $to() {
-                            $jump.apply(null, Array.prototype.slice.apply(arguments, []).slice());
-                        }
-                    },
-                    blank: {
-                        value: function $other() {
-                            var args = Array.prototype.slice.apply(arguments, []), params = args.length === 3 && _.isString(args[0]) && _.isString(args[1]) ? args[2] :
-                                (args.length == 2 && _.indexOf(args[1], '.xhtml')) > -1 ? null : args[1];
-                            viewmodel.$storage(params).then(function () { return request.jumpToNewWindow.apply(null, args); });
-                        }
-                    }
-                });
-                var $shared = [];
-                var $size = function (height, width) {
-                    var wd = nts.uk.ui.windows.getSelf();
-                    if (wd) {
-                        wd.setSize(height, width);
-                    }
-                };
-                Object.defineProperties($size, {
-                    width: {
-                        value: function (width) {
-                            var wd = nts.uk.ui.windows.getSelf();
-                            if (wd) {
-                                wd.setWidth(width);
-                            }
-                        }
-                    },
-                    height: {
-                        value: function (height) {
-                            var wd = nts.uk.ui.windows.getSelf();
-                            if (wd) {
-                                wd.setHeight(height);
-                            }
-                        }
-                    }
-                });
-                BaseViewModel.prototype.$window = Object.defineProperties({}, {
-                    mode: {
-                        get: function () {
-                            return window === window.top ? 'view' : 'modal';
-                        }
-                    },
-                    size: {
-                        value: $size
-                    },
-                    close: {
-                        value: function $close(result) {
-                            if (window.top !== window) {
-                                $.Deferred()
-                                    .resolve(true)
-                                    .then(function () { return viewmodel.$storage(result); })
-                                    .then(function () { return windows.close(); });
-                            }
-                        }
-                    },
-                    modal: {
-                        value: function $modal(webapp, path, params, options) {
-                            var jdf = $.Deferred();
-                            var nowapp = ['at', 'pr', 'hr', 'com'].indexOf(webapp) === -1;
-                            if (nowapp) {
-                                viewmodel.$storage(path)
-                                    .then(function () {
-                                    windows.sub.modal(webapp, params)
-                                        .onClosed(function () {
-                                        var localShared = windows.container.localShared;
-                                        _.each(localShared, function (value, key) {
-                                            $shared.push(key);
-                                            windows.setShared(key, value);
-                                        });
-                                        viewmodel.$storage().then(function ($data) { return jdf.resolve($data || (_.keys(localShared).length ? localShared : undefined)); });
-                                    });
-                                });
-                            }
-                            else {
-                                viewmodel.$storage(params)
-                                    .then(function () {
-                                    windows.sub.modal(webapp, path, options)
-                                        .onClosed(function () {
-                                        var localShared = windows.container.localShared;
-                                        _.each(localShared, function (value, key) {
-                                            $shared.push(key);
-                                            windows.setShared(key, value);
-                                        });
-                                        viewmodel.$storage().then(function ($data) { return jdf.resolve($data || (_.keys(localShared).length ? localShared : undefined)); });
-                                    });
-                                });
-                            }
-                            return jdf.promise();
-                        }
-                    },
-                    modeless: {
-                        value: function $modeless(webapp, path, params, options) {
-                            var jdf = $.Deferred();
-                            var nowapp = ['at', 'pr', 'hr', 'com'].indexOf(webapp) === -1;
-                            if (nowapp) {
-                                viewmodel.$storage(path)
-                                    .then(function () {
-                                    windows.sub.modeless(webapp, params)
-                                        .onClosed(function () {
-                                        var localShared = windows.container.localShared;
-                                        _.each(localShared, function (value, key) {
-                                            $shared.push(key);
-                                            windows.setShared(key, value);
-                                        });
-                                        viewmodel.$storage().then(function ($data) { return jdf.resolve($data || (_.keys(localShared).length ? localShared : undefined)); });
-                                    });
-                                });
-                            }
-                            else {
-                                viewmodel.$storage(params)
-                                    .then(function () {
-                                    windows.sub.modeless(webapp, path, options)
-                                        .onClosed(function () {
-                                        var localShared = windows.container.localShared;
-                                        _.each(localShared, function (value, key) {
-                                            $shared.push(key);
-                                            windows.setShared(key, value);
-                                        });
-                                        viewmodel.$storage().then(function ($data) { return jdf.resolve($data || (_.keys(localShared).length ? localShared : undefined)); });
-                                    });
-                                });
-                            }
-                            return jdf.promise();
-                        }
-                    },
-                    shared: {
-                        value: function $share(name, params) {
-                            if (arguments.length === 1) {
-                                return $.Deferred()
-                                    .resolve(true)
-                                    .then(function () {
-                                    var shared = windows.getShared(name);
-                                    if ($shared.indexOf(name) > -1) {
-                                        windows.setShared(name, undefined);
-                                        // remove shared
-                                        _.remove($shared, function (c) { return c === name; });
-                                    }
-                                    return shared;
-                                });
-                            }
-                            else {
-                                return $.Deferred()
-                                    .resolve(true)
-                                    .then(function () { return windows.setShared(name, params); })
-                                    .then(function () { return windows.getShared(name); });
-                            }
-                        }
-                    },
-                    storage: {
-                        value: function $storage(name, params) {
-                            if (arguments.length == 1) {
-                                return $storeSession(name)
-                                    .then(function (value) {
-                                    if ($shared.indexOf(name) > -1) {
-                                        windows.setShared(name, undefined);
-                                        // remove shared
-                                        _.remove($shared, function (c) { return c === name; });
-                                    }
-                                    return value;
-                                });
-                            }
-                            else {
-                                return $.Deferred()
-                                    .resolve(true)
-                                    .then(function () {
-                                    return $storeSession(name, params)
-                                        .then(function () { return windows.setShared(name, params); });
-                                })
-                                    .then(function () { return $storeSession(name); });
-                            }
-                        }
-                    }
-                });
-                // Hàm blockui được wrapper lại để gọi cho thống nhất
-                BaseViewModel.prototype.$blockui = function $blockui(act) {
-                    var vm = this;
-                    return $.Deferred()
-                        .resolve(true)
-                        .then(function () {
-                        switch (act) {
-                            default:
-                            case 'hide':
-                            case 'clear':
-                                block.clear();
-                                break;
-                            case 'show':
-                            case 'invisible':
-                                block.invisible();
-                                break;
-                            case 'grayout':
-                                block.grayout();
-                                break;
-                            case 'clearView':
-                                block.clear(vm.$el);
-                                break;
-                            case 'grayoutView':
-                                block.grayout(vm.$el);
-                                break;
-                            case 'invisibleView':
-                                block.invisible(vm.$el);
-                                break;
-                        }
-                    });
-                };
-                BaseViewModel.prototype.$errors = function $errors() {
-                    var kvm = nts.uk.ui._viewModel.kiban;
-                    var args = Array.prototype.slice.apply(arguments);
-                    if (args.length == 1) {
-                        // if action is clear, call validate clear action
-                        if (args[0] === 'clear') {
-                            return $.Deferred()
-                                .resolve(true)
-                                .then(function () { return $('.nts-input').ntsError('clear'); })
-                                .then(function () { return kvm.errorDialogViewModel.errors([]); })
-                                .then(function () { return !$('.nts-input').ntsError('hasError'); });
-                        }
-                        else {
-                            var errors_3 = args[0];
-                            return $.Deferred()
-                                .resolve(true)
-                                .then(function () {
-                                _.each(errors_3, function (value, key) { return $(key).ntsError('set', value); });
-                            })
-                                .then(function () { return !$(_.keys(errors_3).join(', ')).ntsError('hasError'); });
-                        }
-                    }
-                    else if (args.length === 2) {
-                        var name_1 = args[0], messageId_1 = args[1];
-                        if (name_1 === 'clear') {
-                            if (_.isString(messageId_1)) {
-                                var $selector_1 = messageId_1;
-                                return $.Deferred()
-                                    .resolve(true)
-                                    .then(function () { return $($selector_1).ntsError('clear'); })
-                                    .then(function () { return !$($selector_1).ntsError('hasError'); });
-                            }
-                            else if (_.isArray(messageId_1)) {
-                                var $selectors_1 = messageId_1.join(', ');
-                                return $.Deferred()
-                                    .resolve(true)
-                                    .then(function () { return $($selectors_1).ntsError('clear'); })
-                                    .then(function () { return !$($selectors_1).ntsError('hasError'); });
-                            }
-                        }
-                        else {
-                            if (_.isString(messageId_1)) {
-                                return $.Deferred()
-                                    .resolve(true)
-                                    .then(function () { return $(name_1).ntsError('set', { messageId: messageId_1 }); })
-                                    .then(function () { return !$(name_1).ntsError('hasError'); });
-                            }
-                            else {
-                                return $.Deferred()
-                                    .resolve(true)
-                                    .then(function () { return $(name_1).ntsError('set', messageId_1); })
-                                    .then(function () { return !$(name_1).ntsError('hasError'); });
-                            }
-                        }
-                    }
-                    else if (args.length > 2) {
-                        if (args[0] === 'clear') {
-                            var $selectors_2 = args.join(', ').replace(/^clear ,/, '');
-                            return $.Deferred()
-                                .resolve(true)
-                                .then(function () { return $($selectors_2).ntsError('clear'); })
-                                .then(function () { return !$($selectors_2).ntsError('hasError'); });
-                        }
-                    }
-                    return $.Deferred()
-                        .resolve(true)
-                        .then(function () { return !$('.nts-input').ntsError('hasError'); });
-                    ;
-                };
-                // Hàm validate được wrapper lại để có thể thực hiện promisse
-                var $validate = function $validate(act) {
-                    var args = Array.prototype.slice.apply(arguments);
-                    if (args.length === 0) {
-                        return $.Deferred()
-                            .resolve(true)
-                            .then(function () { return $('.nts-input').trigger("validate"); })
-                            .then(function () { return !$('.nts-input').ntsError('hasError'); });
-                    }
-                    else if (args.length === 1) {
-                        var selectors_1 = '';
-                        if (_.isString(act)) {
-                            selectors_1 = act;
-                        }
-                        else if (_.isArray(act)) {
-                            selectors_1 = act.join(', ');
-                        }
-                        return $.Deferred()
-                            .resolve(true)
-                            .then(function () { return $(selectors_1).trigger("validate"); })
-                            .then(function () { return !$(selectors_1).ntsError('hasError'); });
-                    }
-                    else {
-                        var selectors_2 = args.join(', ');
-                        return $.Deferred()
-                            .resolve(true)
-                            .then(function () { return $(selectors_2).trigger("validate"); })
-                            .then(function () { return !$(selectors_2).ntsError('hasError'); });
-                    }
-                };
-                Object.defineProperties($validate, {
-                    valid: {
-                        value: ko.observable(true)
-                    },
-                    constraint: {
-                        value: function $constraint(name, value) {
-                            if (arguments.length === 0) {
-                                return $.Deferred()
-                                    .resolve(true)
-                                    .then(function () { return __viewContext.primitiveValueConstraints; });
-                            }
-                            else if (arguments.length === 1) {
-                                return $.Deferred()
-                                    .resolve(true)
-                                    .then(function () { return _.get(__viewContext.primitiveValueConstraints, name); });
-                            }
-                            else {
-                                return $.Deferred()
-                                    .resolve(true)
-                                    .then(function () { return ui.validation.writeConstraint(name, value); });
-                            }
-                        }
-                    }
-                });
-                BaseViewModel.prototype.$validate = $validate;
-                Object.defineProperty(ko, 'ViewModel', { value: BaseViewModel });
-            })(viewmodel = ui_35.viewmodel || (ui_35.viewmodel = {}));
-        })(ui = uk.ui || (uk.ui = {}));
-    })(uk = nts.uk || (nts.uk = {}));
-})(nts || (nts = {}));
-(function (nts) {
-    var uk;
-    (function (uk) {
-        var ui;
-        (function (ui) {
-            var bindings;
-            (function (bindings) {
-                var i18n;
-                (function (i18n) {
-                    var I18nBindingHandler = /** @class */ (function () {
-                        function I18nBindingHandler() {
-                        }
-                        I18nBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor) {
-                            var msg = ko.unwrap(valueAccessor());
-                            var params = ko.unwrap(allBindingsAccessor.get('params'));
-                            $(element).text(nts.uk.resource.getText(msg, params));
-                        };
-                        I18nBindingHandler = __decorate([
-                            handler({
-                                bindingName: 'i18n',
-                                validatable: true,
-                                virtual: false
-                            })
-                        ], I18nBindingHandler);
-                        return I18nBindingHandler;
-                    }());
-                    i18n.I18nBindingHandler = I18nBindingHandler;
-                })(i18n = bindings.i18n || (bindings.i18n = {}));
-            })(bindings = ui.bindings || (ui.bindings = {}));
-        })(ui = uk.ui || (uk.ui = {}));
-    })(uk = nts.uk || (nts.uk = {}));
-})(nts || (nts = {}));
-(function (nts) {
-    var uk;
-    (function (uk) {
-        var ui;
-        (function (ui) {
-            var bindings;
-            (function (bindings) {
-                var icon;
-                (function (icon) {
-                    var icons = [];
-                    var IconBindingHandler = /** @class */ (function () {
-                        function IconBindingHandler() {
-                        }
-                        IconBindingHandler.prototype.update = function (el, value, allBindingsAccessor) {
-                            var numb = ko.unwrap(value());
-                            var size = allBindingsAccessor.get('size') || 'contain';
-                            var url = "/nts.uk.com.js.web/lib/nittsu/ui/style/stylesheets/images/icons/numbered/" + numb + ".png";
-                            $.Deferred()
-                                .resolve(true)
-                                .then(function () { return icons.indexOf(numb) > -1; })
-                                .then(function (exist) { return !!exist || $.get(url); })
-                                .then(function () {
-                                if (icons.indexOf(numb) === -1) {
-                                    icons.push(numb);
-                                }
-                                $(el).css({
-                                    'background-image': "url('" + url + "')",
-                                    'background-repeat': 'no-repeat',
-                                    'background-position': 'center',
-                                    'background-size': size
-                                });
-                            });
-                        };
-                        IconBindingHandler = __decorate([
-                            handler({
-                                bindingName: 'icon',
-                                validatable: true,
-                                virtual: false
-                            })
-                        ], IconBindingHandler);
-                        return IconBindingHandler;
-                    }());
-                    icon.IconBindingHandler = IconBindingHandler;
-                })(icon = bindings.icon || (bindings.icon = {}));
-            })(bindings = ui.bindings || (ui.bindings = {}));
-        })(ui = uk.ui || (uk.ui = {}));
-    })(uk = nts.uk || (nts.uk = {}));
-})(nts || (nts = {}));
-(function (nts) {
-    var uk;
-    (function (uk) {
-        var ui;
-        (function (ui) {
-            var bindings;
-            (function (bindings) {
-                var date;
-                (function (date_1) {
-                    var DateBindingHandler = /** @class */ (function () {
-                        function DateBindingHandler() {
-                        }
-                        DateBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor) {
-                            var date = ko.unwrap(valueAccessor());
-                            var format = ko.unwrap(allBindingsAccessor.get('format')) || 'YYYY/MM/DD';
-                            $(element).text(moment(date).format(format));
-                        };
-                        DateBindingHandler = __decorate([
-                            handler({
-                                bindingName: 'date',
-                                validatable: true,
-                                virtual: false
-                            })
-                        ], DateBindingHandler);
-                        return DateBindingHandler;
-                    }());
-                    date_1.DateBindingHandler = DateBindingHandler;
-                })(date = bindings.date || (bindings.date = {}));
-            })(bindings = ui.bindings || (ui.bindings = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));

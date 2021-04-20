@@ -40,7 +40,6 @@ import nts.uk.ctx.at.shared.dom.application.stamp.AppRecordImageShare;
 import nts.uk.ctx.at.shared.dom.application.stamp.AppStampShare;
 import nts.uk.ctx.at.shared.dom.application.stamp.EngraveShareAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.ChangeDailyAttendance;
-import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
 import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
 import nts.uk.shr.com.time.AttendanceClock;
 
@@ -98,7 +97,7 @@ public class ReflectApplicationWorkRecordTest {
 
 		};
 
-		val actualResult = ReflectApplicationWorkRecord.process(require, ExecutionType.NORMAL_EXECUTION, appImg,
+		val actualResult = ReflectApplicationWorkRecord.process(require, appImg,
 				GeneralDate.ymd(2020, 01, 01), reflectStatus);
 
 		assertThat(actualResult.getLeft().getReflectStatus()).isEqualTo(ReflectedStateShare.REFLECTED);
@@ -144,7 +143,7 @@ public class ReflectApplicationWorkRecordTest {
 
 		};
 
-		val actualResult = ReflectApplicationWorkRecord.process(require, ExecutionType.NORMAL_EXECUTION, appImg,
+		val actualResult = ReflectApplicationWorkRecord.process(require, appImg,
 				GeneralDate.ymd(2020, 01, 01), reflectStatus);
 
 		assertThat(actualResult.getLeft().getReflectStatus()).isEqualTo(ReflectedStateShare.REFLECTED);

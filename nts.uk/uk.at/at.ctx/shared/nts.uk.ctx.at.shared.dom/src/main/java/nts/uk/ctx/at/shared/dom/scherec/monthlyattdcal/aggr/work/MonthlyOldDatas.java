@@ -129,7 +129,7 @@ public class MonthlyOldDatas {
 		result.monthlyDayoffRemain = monthlyWork.getMonthlyDayoffRemain();
 		
 		// 特別休暇月別残数データ
-		result.specialLeaveRemainList = monthlyWork.getSpecialLeaveRemainList();
+		result.specialLeaveRemainList = monthlyWork.getSpecialLeaveRemain();
 		
 		return result;
 	}

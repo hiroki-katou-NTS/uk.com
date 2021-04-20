@@ -6,7 +6,6 @@ import lombok.Data;
 import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly_Old;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmployWorkType;
-import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.GoBackDirectlyCommonSetting;
 
 @Data
 public class GoBackDirectSettingNewDto {
@@ -17,7 +16,7 @@ public class GoBackDirectSettingNewDto {
 //  申請表示情報
 	private AppDispInfoStartupDto appDispInfoStartupOutput; 
 //	直行直帰申請共通設定
-	private GoBackDirectlyCommonSetting backDirectCommonSetting;
+//	private GoBackDirectlyCommonSetting backDirectCommonSetting;
 //	勤務種類リスト
 	private List<AppEmployWorkType> appSetting;
 //	直行直帰申請

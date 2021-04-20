@@ -11,6 +11,7 @@ import javax.inject.Inject;
 
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveRemainingTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.remainingnumber.TimeOfRemain;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 
@@ -26,7 +27,7 @@ public class SpecialLeaveGrantRemainService {
 
 		// Total day
 		Double result = grantRemains.stream()
-				.mapToDouble(item -> item.getDetails().getRemainingNumber().getDayNumberOfRemain().v()).sum();
+				.mapToDouble(item -> item.getDetails().getRemainingNumber().getDays().v()).sum();
 		
 		// Total time
 		// TODO No268特別休暇の利用制御
@@ -67,7 +68,7 @@ public class SpecialLeaveGrantRemainService {
 			String key = entry.getKey();
 			// Total day
 			Double totalDay = entry.getValue().stream()
-					.mapToDouble(item -> item.getDetails().getRemainingNumber().getDayNumberOfRemain().v()).sum();
+					.mapToDouble(item -> item.getDetails().getRemainingNumber().getDays().v()).sum();
 			result.put(key,
 					isNo == true ? (totalDay.toString() + "日") : (totalDay.toString() + "日と　" + calTime(entry.getValue())));
 
@@ -82,10 +83,10 @@ public class SpecialLeaveGrantRemainService {
 	private String calTime(List<SpecialLeaveGrantRemainingData> grantRemains){
 		
 		List<SpecialLeaveGrantRemainingData> grantRemainsTemp = grantRemains.stream()
-				.filter(i -> i.getDetails().getRemainingNumber().timeOfRemain.isPresent()).collect(Collectors.toList());
+				.filter(i -> i.getDetails().getRemainingNumber().getMinutes().isPresent()).collect(Collectors.toList());
 
 		Integer minute = grantRemainsTemp.stream().mapToInt(i -> {
-			TimeOfRemain timeOfRemain =  i.getDetails().getRemainingNumber().getTimeOfRemain().get();
+			LeaveRemainingTime timeOfRemain =  i.getDetails().getRemainingNumber().getMinutes().get();
 			return (timeOfRemain.valueAsMinutes());
 		}).sum();
 		

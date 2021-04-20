@@ -20,6 +20,7 @@ module kdl003.parent.viewmodel {
         remark:KnockoutObservable<string>;
         workPlaceId: KnockoutObservable<string> = ko.observable(null);
         baseDate: KnockoutObservable<string> = ko.observable(null);
+        workTimeSetting: KnockoutObservable<number> = ko.observable(null);
 
         constructor() {
             var self = this;
@@ -70,6 +71,7 @@ module kdl003.parent.viewmodel {
                     self.secondStartTime(childData.second.start);
                     self.secondEndTime(childData.second.end);
                     self.remark(childData.remark);
+                    self.workTimeSetting(childData.workTimeSetting);
                 }
             })
         }

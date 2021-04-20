@@ -38,12 +38,12 @@ public class LateOrLeaveEarlyWebservice extends WebService{
 	@Inject
 	private LateOrLeaveEarlyFinder finder;
 	
-	@POST
-	@Path("findbycode")
-	public ScreenLateOrLeaveEarlyDto getByCode(String appID) {
-		ScreenLateOrLeaveEarlyDto data = this.finder.getLateOrLeaveEarly(appID);
-		return data;
-	}
+//	@POST
+//	@Path("findbycode")
+//	public ScreenLateOrLeaveEarlyDto getByCode(String appID) {
+//		ScreenLateOrLeaveEarlyDto data = this.finder.getLateOrLeaveEarly(appID);
+//		return data;
+//	}
 	
 	@POST 
 	@Path("create")

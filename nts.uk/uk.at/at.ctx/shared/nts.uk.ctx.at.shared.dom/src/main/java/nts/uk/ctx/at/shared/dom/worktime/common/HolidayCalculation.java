@@ -59,4 +59,13 @@ public class HolidayCalculation extends WorkTimeDomainObject implements Cloneabl
 		}
 		return cloned;
 	}
+
+	/**
+	 * デフォルト設定のインスタンスを生成する
+	 * @return 休暇時の計算
+	 */
+	public static HolidayCalculation generateDefault(){
+		HolidayCalculation domain = new HolidayCalculation(NotUseAtr.NOT_USE);
+		return domain;
+	}
 }

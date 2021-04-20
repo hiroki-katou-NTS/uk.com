@@ -49,10 +49,10 @@ module nts.uk.com.view.cmm002.a {
             service.getData().done((data: AccessRestrictions) => {
                 self.accessLimitUseAtr(data.accessLimitUseAtr);
 				let tg = [];
-				_.forEach(data.allowedIPaddress, (item) => {
+				_.forEach(data.whiteList, (item) => {
 					tg.push(new AllowedIPAddressDto(item));
 				});
-				self.allowedIPAddressList(_.orderBy(tg, ['startAddress.ip1','startAddress.ip2','startAddress.ip3','startAddress.ip4','endAddress.ip1','endAddress.ip2','endAddress.ip3','endAddress.ip4'], ['asc','asc','asc','asc','asc','asc','asc','asc']));
+				self.allowedIPAddressList(_.orderBy(tg, ['startAddress.net1','startAddress.net2','startAddress.host1','startAddress.host2','endAddress.net1','endAddress.net2','endAddress.host1','endAddress.host2'], ['asc','asc','asc','asc','asc','asc','asc','asc']));
                 dfd.resolve();
             }).fail(function(error: any) {
                 dfd.reject();
@@ -142,7 +142,7 @@ module nts.uk.com.view.cmm002.a {
 		/** アクセス制限機能管理区分  */
 		accessLimitUseAtr: number;
 		/** 許可IPアドレス  */
-		allowedIPaddress: Array<AllowedIPAddressDto>;
+		whiteList: Array<AllowedIPAddressDto>;
 	}
 
 	class AllowedIPAddressDto {
@@ -161,16 +161,16 @@ module nts.uk.com.view.cmm002.a {
 			self.ipInputType = param.ipInputType;
 			self.endAddress = param.endAddress;
 			self.comment = param.comment;
-			self.id = 	param.startAddress.ip1 + '.' +  
-					  	param.startAddress.ip2 + '.' + 
-					  	param.startAddress.ip3 + '.' + 
-					  	param.startAddress.ip4
+			self.id = 	param.startAddress.net1 + '.' +  
+					  	param.startAddress.net2 + '.' + 
+					  	param.startAddress.host1 + '.' + 
+					  	param.startAddress.host2
 			if(param.ipInputType === 1){
 				self.id += '～' +
-						param.endAddress.ip1 + '.' +  
-						param.endAddress.ip2 + '.' + 
-						param.endAddress.ip3 + '.' + 
-						param.endAddress.ip4
+						param.endAddress.net1 + '.' +  
+						param.endAddress.net2 + '.' + 
+						param.endAddress.host1 + '.' + 
+						param.endAddress.host2
 			}
         }
     }
@@ -205,21 +205,21 @@ module nts.uk.com.view.cmm002.a {
 
     class IPAddressSetting {
 		/** IPアドレス1 */
-        ip1 = ko.observable('');
+        net1 = ko.observable('');
 		/** IPアドレス2 */        
-		ip2 = ko.observable('');
+		net2 = ko.observable('');
 		/** IPアドレス3 */
-		ip3 = ko.observable('');
+		host1 = ko.observable('');
 		/** IPアドレス4 */
-		ip4 = ko.observable('');
+		host2 = ko.observable('');
 		
     	constructor() {}
 		update(data? : any) :void {
 			let self = this;
-			self.ip1(data?data.ip1:'');
-            self.ip2(data?data.ip2:'');
-			self.ip3(data?data.ip3:'');
-			self.ip4(data?data.ip4:'');	
+			self.net1(data?data.net1:'');
+            self.net2(data?data.net2:'');
+			self.host1(data?data.host1:'');
+			self.host2(data?data.host2:'');	
         }
     }
 

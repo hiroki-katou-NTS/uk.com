@@ -37,8 +37,6 @@ import nts.uk.ctx.at.request.dom.application.overtime.service.SiftType;
 import nts.uk.ctx.at.request.dom.application.overtime.service.WorkTypeOvertime;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.AppDateContradictionAtr;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appovertime.OvertimeAppSet;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetting;
-import nts.uk.ctx.at.request.dom.setting.company.divergencereason.DivergenceReason;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrame;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
@@ -85,10 +83,10 @@ public class CheckConvertPrePost {
 		String employeeID = AppContexts.user().employeeId();
 		PreAppOvertimeDto preAppOvertimeDto = new PreAppOvertimeDto();
 		OverTimeDto result = new OverTimeDto();
-		OvertimeRestAppCommonSetting overtimeRestAppCommonSet = overtimeSettingData.overtimeRestAppCommonSet;
-		OvertimeAppSet appOvertimeSetting = overtimeSettingData.appOvertimeSetting;
-		UseAtr preExcessDisplaySetting = overtimeRestAppCommonSet.getPreExcessDisplaySetting();
-		AppDateContradictionAtr performanceExcessAtr = overtimeRestAppCommonSet.getPerformanceExcessAtr();
+//		OvertimeRestAppCommonSetting overtimeRestAppCommonSet = overtimeSettingData.overtimeRestAppCommonSet;
+//		OvertimeAppSet appOvertimeSetting = overtimeSettingData.appOvertimeSetting;
+//		UseAtr preExcessDisplaySetting = overtimeRestAppCommonSet.getPreExcessDisplaySetting();
+//		AppDateContradictionAtr performanceExcessAtr = overtimeRestAppCommonSet.getPerformanceExcessAtr();
 		Optional<Application> opAppBefore = Optional.empty();
 		boolean beforeAppStatus = false;
 		ActualStatus actualStatus = ActualStatus.NO_ACTUAL;
@@ -218,18 +216,18 @@ public class CheckConvertPrePost {
 //			result.setDisplayDivergenceReasonInput(false);
 //		}
 		// 07_事前申請・実績超過チェック(07_đơn xin trước. check vượt quá thực tế )
-		PreActualColorResult preActualColorResult = preActualColorCheck.preActualColorCheck(
-				preExcessDisplaySetting, 
-				performanceExcessAtr, 
-				ApplicationType.OVER_TIME_APPLICATION, 
-				EnumAdaptor.valueOf(prePostAtr, PrePostAtr.class), 
-				Collections.emptyList(),
-				otTimeLst,
-				opAppBefore,
-				beforeAppStatus,
-				actualLst,
-				actualStatus);
-		result.setResultLst(preActualColorResult.resultLst);
+//		PreActualColorResult preActualColorResult = preActualColorCheck.preActualColorCheck(
+//				preExcessDisplaySetting,
+//				performanceExcessAtr,
+//				ApplicationType.OVER_TIME_APPLICATION,
+//				EnumAdaptor.valueOf(prePostAtr, PrePostAtr.class),
+//				Collections.emptyList(),
+//				otTimeLst,
+//				opAppBefore,
+//				beforeAppStatus,
+//				actualLst,
+//				actualStatus);
+//		result.setResultLst(preActualColorResult.resultLst);
 		return result;
 	}
 	private void convertOverTimeDto(String companyID,PreAppOvertimeDto preAppOvertimeDto, OverTimeDto result,AppOverTime_Old appOvertime){
@@ -295,21 +293,19 @@ public class CheckConvertPrePost {
 	}
 	
 	/**
-	 * @param divergenceReasons
-	 * @param result
 	 */
-	private void convertToDivergenceReasonDto(List<DivergenceReason> divergenceReasons, OverTimeDto result){
-		List<DivergenceReasonDto> divergenceReasonDtos = new ArrayList<>();
-		for(DivergenceReason divergenceReason : divergenceReasons){
-			DivergenceReasonDto divergenceReasonDto = new DivergenceReasonDto();
-			divergenceReasonDto.setDivergenceReasonID(divergenceReason.getReasonTypeItem().getReasonID());
-			divergenceReasonDto.setReasonTemp(divergenceReason.getReasonTypeItem().getReasonTemp().toString());
-			// divergenceReasonDto.setDivergenceReasonIdDefault(divergenceReason.getReasonTypeItem().getDefaultFlg().value);
-			
-			divergenceReasonDtos.add(divergenceReasonDto);
-		}
-		result.setDivergenceReasonDtos(divergenceReasonDtos);
-	}
+//	private void convertToDivergenceReasonDto(List<DivergenceReason> divergenceReasons, OverTimeDto result){
+//		List<DivergenceReasonDto> divergenceReasonDtos = new ArrayList<>();
+//		for(DivergenceReason divergenceReason : divergenceReasons){
+//			DivergenceReasonDto divergenceReasonDto = new DivergenceReasonDto();
+//			divergenceReasonDto.setDivergenceReasonID(divergenceReason.getReasonTypeItem().getReasonID());
+//			divergenceReasonDto.setReasonTemp(divergenceReason.getReasonTypeItem().getReasonTemp().toString());
+//			// divergenceReasonDto.setDivergenceReasonIdDefault(divergenceReason.getReasonTypeItem().getDefaultFlg().value);
+//
+//			divergenceReasonDtos.add(divergenceReasonDto);
+//		}
+//		result.setDivergenceReasonDtos(divergenceReasonDtos);
+//	}
 	private String convertWorkClockFromTo(Integer startTime, Integer endTime){
 		String WorkClockFromTo = "";
 		if(startTime == null && endTime != null){

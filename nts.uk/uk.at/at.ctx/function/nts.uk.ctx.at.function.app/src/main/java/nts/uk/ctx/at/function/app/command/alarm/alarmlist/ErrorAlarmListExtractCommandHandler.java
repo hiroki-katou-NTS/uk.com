@@ -86,9 +86,10 @@ public class ErrorAlarmListExtractCommandHandler extends AsyncCommandHandler<Err
 		}
 		
 		AlarmPatternSetting alarmPattern = findByAlarmPatternCode.get();
+		List<Integer> lstCategory = command.getListPeriodByCategory().stream().map(x -> x.getCategory()).collect(Collectors.toList());
 		//ドメインモデル「カテゴリ別アラームチェック条件」を取得
 		List<AlarmCheckConditionByCategory> eralCate = new ArrayList<>();
-		alarmPattern.getCheckConList().stream().forEach(x->{
+		alarmPattern.getCheckConList().stream().filter(a -> lstCategory.contains(a.getAlarmCategory().value)).forEach(x->{
 			List<AlarmCheckConditionByCategory> lstCond = erAlByCateRepo.findByCategoryAndCode(comId, 
 					x.getAlarmCategory().value, 
 					x.getCheckConditionList());

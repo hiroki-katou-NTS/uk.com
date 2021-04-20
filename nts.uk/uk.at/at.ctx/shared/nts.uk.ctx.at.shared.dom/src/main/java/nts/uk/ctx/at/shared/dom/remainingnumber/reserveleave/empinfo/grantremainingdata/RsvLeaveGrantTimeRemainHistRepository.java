@@ -9,7 +9,7 @@ import nts.arc.time.GeneralDate;
  */
 public interface RsvLeaveGrantTimeRemainHistRepository {
 
-	public void addOrUpdate(ReserveLeaveGrantTimeRemainHistoryData domain, String cid);
+	public void addOrUpdate(ReserveLeaveGrantTimeRemainHistoryData domain);
 	
 	public void deleteAfterDate(String employeeId, GeneralDate date);
 

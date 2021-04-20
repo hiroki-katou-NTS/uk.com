@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package nts.uk.screen.at.app.query.kdp.kdp003.f;
 
@@ -19,7 +19,7 @@ import nts.uk.shr.com.context.AppContexts;
  */
 @Stateless
 public class LoginAsEmbossingAdministrator {
-	
+
 	@Inject
 	private TimeStampLoginCommandHandler timeStampLoginCommandHandler;
 
@@ -39,7 +39,7 @@ public class LoginAsEmbossingAdministrator {
 		command.setAdminMode(isAdminMode);
 		command.setRuntimeEnvironmentCreate(runtimeEnvironmentCreate);
 		command.setRequest(request);
-		
+
 		return this.timeStampLoginCommandHandler.handle(command);
 	}
 }

@@ -539,6 +539,20 @@ project (':hr.web:nts.uk.hr.web') {
 		runtime(group: 'com.pereg', name: 'nts.uk.ctx.pereg.infra', version: version)
 		runtime(group: 'com.pereg', name: 'nts.uk.ctx.pereg.pub', version: version)
 		runtime(group: 'com.pereg', name: 'nts.uk.ctx.pereg.pubimp', version: version)
+		
+		runtime(group: 'com.office', name: 'nts.uk.ctx.office.ac', version: version)		
+		runtime(group: 'com.office', name: 'nts.uk.ctx.office.app', version: version)
+		runtime(group: 'com.office', name: 'nts.uk.ctx.office.dom', version: version)
+		runtime(group: 'com.office', name: 'nts.uk.ctx.office.infra', version: version)
+		runtime(group: 'com.office', name: 'nts.uk.ctx.office.pub', version: version)
+		runtime(group: 'com.office', name: 'nts.uk.ctx.office.pubimp', version: version)
+		
+		runtime(group: 'com.health', name: 'nts.uk.ctx.health.ac', version: version)		
+		runtime(group: 'com.health', name: 'nts.uk.ctx.health.app', version: version)
+		runtime(group: 'com.health', name: 'nts.uk.ctx.health.dom', version: version)
+		runtime(group: 'com.health', name: 'nts.uk.ctx.health.infra', version: version)
+		runtime(group: 'com.health', name: 'nts.uk.ctx.health.pub', version: version)
+		runtime(group: 'com.health', name: 'nts.uk.ctx.health.pubimp', version: version)
 		 
 		runtime(group: 'com.bs.employee', name: 'nts.uk.ctx.bs.employee.app', version: version)
 		runtime(group: 'com.bs.employee', name: 'nts.uk.ctx.bs.employee.dom', version: version)
@@ -677,25 +691,26 @@ project (':hr.web:nts.uk.hr.web') {
 		runtime group: 'at.aggregation', name: 'nts.uk.ctx.at.aggregation.infra', version: version
 		runtime group: 'at.aggregation', name: 'nts.uk.ctx.at.aggregation.pub', version: version
 		runtime group: 'at.aggregation', name: 'nts.uk.ctx.at.aggregation.pubimp', version: version
-	}	
-	
-	task tsc(type: de.richsource.gradle.plugins.typescript.CompileTypeScript) {
-		target = "ES5"
-		noLib = true
-		watch = false
-		sourcemap = !project.hasProperty('sourceMap') || sourceMap == 'true'
-		include '**/*.ts'
-		source = new File('src/main/webapp/view')
-		outputDir = new File('src/main/webapp/view')
 	}
 	
-	task tscw(type: de.richsource.gradle.plugins.typescript.CompileTypeScript) {
-		target = "ES5"
-		noLib = true
-		watch = true
-		sourcemap = !project.hasProperty('sourceMap') || sourceMap == 'true'
-		include '**/*.ts'
-		source = new File('src/main/webapp/view')
-		outputDir = new File('src/main/webapp/view')
+	task tsc(type: Exec) {
+		if (System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('windows')) {
+			commandLine 'cmd', '/c', 'tsc'
+		} else {
+			commandLine 'tsc'
+		}
+
+		ignoreExitValue true
+	}
+	
+	task tscw(type: Exec) {
+		if (System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('windows')) {
+			commandLine 'cmd', '/c', 'tsc'
+		} else {
+			commandLine 'tsc'
+		}
+		
+		args '--watch'
+		ignoreExitValue true
 	}
 }

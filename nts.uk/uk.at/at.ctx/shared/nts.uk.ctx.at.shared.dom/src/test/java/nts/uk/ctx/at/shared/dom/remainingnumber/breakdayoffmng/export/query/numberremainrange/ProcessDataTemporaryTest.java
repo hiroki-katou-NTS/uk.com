@@ -16,7 +16,6 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.ProcessDataTemporary;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.BreakDayOffRemainMngRefactParam;
-import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.FixedManagementDataMonth;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimDayOffMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
@@ -26,6 +25,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.Required
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RequiredTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UnOffsetDay;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UnOffsetTime;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.breakinfo.FixedManagementDataMonth;
 
 @RunWith(JMockit.class)
 public class ProcessDataTemporaryTest {
@@ -62,9 +62,9 @@ public class ProcessDataTemporaryTest {
 
 		List<InterimRemain> interimMngParam = new ArrayList<>();
 		interimMngParam.add(new InterimRemain("a1", SID, GeneralDate.ymd(2019, 9, 5),
-				CreateAtr.RECORD, RemainType.SUBHOLIDAY, RemainAtr.SINGLE));
+				CreateAtr.RECORD, RemainType.SUBHOLIDAY));
 		interimMngParam.add(new InterimRemain("a2", SID, GeneralDate.ymd(2019, 9, 20),
-				CreateAtr.RECORD, RemainType.SUBHOLIDAY, RemainAtr.SINGLE));
+				CreateAtr.RECORD, RemainType.SUBHOLIDAY));
 
 		BreakDayOffRemainMngRefactParam inputParam = new BreakDayOffRemainMngRefactParam(CID, SID,
 				new DatePeriod(GeneralDate.ymd(2019, 9, 01), GeneralDate.ymd(2020, 9, 30)), false,
@@ -95,19 +95,19 @@ public class ProcessDataTemporaryTest {
 		List<InterimRemain> interimMngResult = new ArrayList<>();
 
 		interimMngResult.add(new InterimRemain("a3", SID,
-				GeneralDate.ymd(2019, 8, 30), CreateAtr.RECORD, RemainType.SUBHOLIDAY, RemainAtr.SINGLE));
+				GeneralDate.ymd(2019, 8, 30), CreateAtr.RECORD, RemainType.SUBHOLIDAY));
 		interimMngResult.add(new InterimRemain("a3", SID,
-				GeneralDate.ymd(2019, 9, 01), CreateAtr.RECORD, RemainType.SUBHOLIDAY, RemainAtr.SINGLE));
+				GeneralDate.ymd(2019, 9, 01), CreateAtr.RECORD, RemainType.SUBHOLIDAY));
 		interimMngResult.add(new InterimRemain("a4", SID, GeneralDate.ymd(2019, 9, 2),
-				CreateAtr.RECORD, RemainType.SUBHOLIDAY, RemainAtr.SINGLE));
+				CreateAtr.RECORD, RemainType.SUBHOLIDAY));
 		interimMngResult.add(new InterimRemain("a5", SID,
-				GeneralDate.ymd(2019, 9, 17), CreateAtr.RECORD, RemainType.SUBHOLIDAY, RemainAtr.SINGLE));
+				GeneralDate.ymd(2019, 9, 17), CreateAtr.RECORD, RemainType.SUBHOLIDAY));
 		interimMngResult.add(new InterimRemain("a6", SID,
-				GeneralDate.ymd(2019, 9, 20), CreateAtr.RECORD, RemainType.SUBHOLIDAY, RemainAtr.SINGLE));
+				GeneralDate.ymd(2019, 9, 20), CreateAtr.RECORD, RemainType.SUBHOLIDAY));
 		interimMngResult.add(new InterimRemain("a7", SID,
-				GeneralDate.ymd(2019, 9, 30), CreateAtr.RECORD, RemainType.SUBHOLIDAY, RemainAtr.SINGLE));
+				GeneralDate.ymd(2019, 9, 30), CreateAtr.RECORD, RemainType.SUBHOLIDAY));
 		interimMngResult.add(new InterimRemain("a9", SID,
-				GeneralDate.ymd(2019, 10, 01), CreateAtr.RECORD, RemainType.SUBHOLIDAY, RemainAtr.SINGLE));
+				GeneralDate.ymd(2019, 10, 01), CreateAtr.RECORD, RemainType.SUBHOLIDAY));
 
 		ProcessDataTemporary.processOverride(inputParam, inputParam.getDayOffMng(), interimMngResult, dayOffMngResult);
 

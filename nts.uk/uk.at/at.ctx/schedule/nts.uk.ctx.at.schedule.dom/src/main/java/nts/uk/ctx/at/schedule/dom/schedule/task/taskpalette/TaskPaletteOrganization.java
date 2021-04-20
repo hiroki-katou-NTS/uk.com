@@ -97,7 +97,7 @@ public class TaskPaletteOrganization implements DomainAggregate {
 				displayTasks.put( position, TaskPaletteOneFrameDisplayInfo.createWithNotYetRegisteredType( taskCode )); return;
 			}
 			
-			if ( ! task.get().isWithinExpirationDate(date) ) {
+			if ( ! task.get().checkExpirationDate(date) ) {
 				displayTasks.put( position, TaskPaletteOneFrameDisplayInfo.createWithExpiredType( taskCode )); return;
 			}
 			

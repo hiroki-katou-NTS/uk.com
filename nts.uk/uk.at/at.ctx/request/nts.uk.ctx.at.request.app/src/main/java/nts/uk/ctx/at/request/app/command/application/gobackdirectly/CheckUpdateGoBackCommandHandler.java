@@ -26,25 +26,25 @@ public class CheckUpdateGoBackCommandHandler extends CommandHandler<InsertApplic
 		//get new Application Item
 		String appID = command.getAppCommand().getAppID();
 		// get new GoBack Direct Item
-		GoBackDirectly_Old newGoBack = new GoBackDirectly_Old(
-				companyId, 
-				appID,
-				command.goBackCommand.workTypeCD, 
-				command.goBackCommand.siftCD, 
-				command.goBackCommand.workChangeAtr,
-				command.goBackCommand.goWorkAtr1, 
-				command.goBackCommand.backHomeAtr1,
-				command.goBackCommand.workTimeStart1, 
-				command.goBackCommand.workTimeEnd1,
-				command.goBackCommand.workLocationCD1, 
-				command.goBackCommand.goWorkAtr2,
-				command.goBackCommand.backHomeAtr2, 
-				command.goBackCommand.workTimeStart2,
-				command.goBackCommand.workTimeEnd2, 
-				command.goBackCommand.workLocationCD2);
-		//勤務を変更する
-		//直行直帰登録前チェック 
-		goBackDirectlyUpdateService.checkErrorBeforeUpdate(newGoBack, companyId, appID, new Long(command.getAppCommand().getVersion()));
+//		GoBackDirectly_Old newGoBack = new GoBackDirectly_Old(
+//				companyId,
+//				appID,
+//				command.goBackCommand.workTypeCD,
+//				command.goBackCommand.siftCD,
+//				command.goBackCommand.workChangeAtr,
+//				command.goBackCommand.goWorkAtr1,
+//				command.goBackCommand.backHomeAtr1,
+//				command.goBackCommand.workTimeStart1,
+//				command.goBackCommand.workTimeEnd1,
+//				command.goBackCommand.workLocationCD1,
+//				command.goBackCommand.goWorkAtr2,
+//				command.goBackCommand.backHomeAtr2,
+//				command.goBackCommand.workTimeStart2,
+//				command.goBackCommand.workTimeEnd2,
+//				command.goBackCommand.workLocationCD2);
+//		//勤務を変更する
+//		//直行直帰登録前チェック
+//		goBackDirectlyUpdateService.checkErrorBeforeUpdate(newGoBack, companyId, appID, new Long(command.getAppCommand().getVersion()));
 		
 	}
 

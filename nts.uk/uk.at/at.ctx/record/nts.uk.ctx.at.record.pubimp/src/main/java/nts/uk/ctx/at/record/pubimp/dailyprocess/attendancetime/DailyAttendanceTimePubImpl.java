@@ -114,7 +114,6 @@ public class DailyAttendanceTimePubImpl implements DailyAttendanceTimePub{
 		}
 		
 		//外出時間帯を作成
-		//ToDo:属性が勤怠打刻に変わる為、要修正
 		List<OutingTimeSheet> outingTimeSheets = new ArrayList<>();
 		List<OutingTimeZoneImport> impOutingTimeSheets = imp.getOutingTimeSheets().stream()
 				.sorted((f, s) -> f.getTimeZone().getStart().compareTo(s.getTimeZone().getStart()))
@@ -123,28 +122,16 @@ public class DailyAttendanceTimePubImpl implements DailyAttendanceTimePub{
 		for(int frameNo = 1; frameNo <= impOutingTimeSheets.size(); frameNo++) {
 			outingTimeSheets.add(new OutingTimeSheet(
 					new OutingFrameNo(frameNo),
-					Optional.of(new TimeActualStamp(
-							Optional.empty(),
-							Optional.of(new WorkStamp(
-									new WorkTimeInformation(
-											new ReasonTimeChange(TimeChangeMeans.REAL_STAMP, Optional.empty()),
-											impOutingTimeSheets.get(frameNo - 1).getTimeZone().getStart()),
-									Optional.empty())),
-							0,
-							Optional.empty(),
+					Optional.of(new WorkStamp(
+							new WorkTimeInformation(
+									new ReasonTimeChange(TimeChangeMeans.REAL_STAMP, Optional.empty()),
+									impOutingTimeSheets.get(frameNo - 1).getTimeZone().getStart()),
 							Optional.empty())),
-					AttendanceTime.ZERO,
-					AttendanceTime.ZERO,
-					impOutingTimeSheets.get(frameNo-1).getGoingOutReason(),
-					Optional.of(new TimeActualStamp(
-							Optional.empty(),
-							Optional.of(new WorkStamp(
-									new WorkTimeInformation(
-											new ReasonTimeChange(TimeChangeMeans.REAL_STAMP, Optional.empty()),
-											impOutingTimeSheets.get(frameNo -1 ).getTimeZone().getEnd()),
-									Optional.empty())),
-							0,
-							Optional.empty(),
+					impOutingTimeSheets.get(frameNo - 1).getGoingOutReason(),
+					Optional.of(new WorkStamp(
+							new WorkTimeInformation(
+									new ReasonTimeChange(TimeChangeMeans.REAL_STAMP, Optional.empty()),
+									impOutingTimeSheets.get(frameNo - 1).getTimeZone().getEnd()),
 							Optional.empty()))
 			));
 		}

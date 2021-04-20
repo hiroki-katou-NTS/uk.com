@@ -142,10 +142,6 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appr
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.approvallistsetting.ApprovalListDisplaySetting;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HolidayApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HolidayApplicationSettingRepository;
-import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispName;
-import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispNameRepository;
-import nts.uk.ctx.at.request.dom.setting.company.request.RequestSetting;
-import nts.uk.ctx.at.request.dom.setting.company.request.RequestSettingRepository;
 import nts.uk.ctx.at.shared.dom.relationship.repository.RelationshipRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
@@ -190,8 +186,8 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 	@Inject
 	private RegisterEmbededURL registerEmbededURL;
 
-	@Inject
-	private AppDispNameRepository repoAppDispName;
+//	@Inject
+//	private AppDispNameRepository repoAppDispName;
 
 	@Inject
 	private AppStampRepository_Old repoAppStamp;
@@ -229,8 +225,8 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 	@Inject
 	private EnvAdapter envAdapter;
 
-	@Inject
-	private RequestSettingRepository requestSetRepo;
+//	@Inject
+//	private RequestSettingRepository requestSetRepo;
 	
 	@Inject
 	private AtEmployeeAdapter atEmployeeAdapter;
@@ -356,7 +352,7 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 	/**
 	 * アルゴリズム「承認状況取得申請承認」を実行する
 	 * 
-	 * @param wkpInfoDto
+	 * @param wkpInfor
 	 * @return ApprovalSttAppDto
 	 */
 	@Override
@@ -1013,7 +1009,7 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 		for (ApplicationApprContent appContent : listAppContent) {
 			Application_New app = appContent.getApplication();
 			/// ドメインモデル「申請表示名」より申請表示名称を取得する
-			Optional<AppDispName> appDispName = repoAppDispName.getDisplay(app.getAppType().value);
+//			Optional<AppDispName> appDispName = repoAppDispName.getDisplay(app.getAppType().value);
 			// アルゴリズム「承認状況申請承認者取得」を実行する
 			List<ApproverOutput> listApprover = this.getApprovalSttApprover(appContent);
 			// アルゴリズム「承認状況申請内容取得実績」を実行する
@@ -1022,8 +1018,8 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 			String relationshipName = this.getApprovalSttDetailVacation(app);
 			WkpHistImport wkp = workplaceAdapter.findWkpBySid(app.getEmployeeID(), app.getAppDate());
 			int detailSet = this.detailSet(companyId, wkp.getWorkplaceId(), app.getAppType().value, endDateMax);
-			listApprovalSttAppDetail.add(new ApprovalSttAppDetail(appContent, appDispName.get(), listApprover,
-					approvalSttDetail, relationshipName, detailSet));
+//			listApprovalSttAppDetail.add(new ApprovalSttAppDetail(appContent, appDispName.get(), listApprover,
+//					approvalSttDetail, relationshipName, detailSet));
 		}
 		return listApprovalSttAppDetail;
 	}
@@ -1165,7 +1161,7 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 	 * 
 	 * @param appDate
 	 * @param confirmAtr
-	 * @param listApprovalFrame
+	 * @param listApproverState
 	 * 
 	 */
 	private List<ApproverSpecial> getUnAppSubstitutePriority(List<ApproverStateImport_New> listApproverState,
@@ -1291,10 +1287,10 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 	}
 
 	private boolean isDisplayPrePostFlg(String companyID) {
-		Optional<RequestSetting> requestSetting = this.requestSetRepo.findByCompany(companyID);
-		if (requestSetting.isPresent()
-				&& requestSetting.get().getApplicationSetting().getAppDisplaySetting().getPrePostAtrDisp().value == 1)
-			return true;
+//		Optional<RequestSetting> requestSetting = this.requestSetRepo.findByCompany(companyID);
+//		if (requestSetting.isPresent()
+//				&& requestSetting.get().getApplicationSetting().getAppDisplaySetting().getPrePostAtrDisp().value == 1)
+//			return true;
 		return false;
 	}
 
@@ -1696,7 +1692,8 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 						ApplicationListAtr.APPLICATION, 
 						apprSttContentPrepareOutput.getApprovalListDisplaySetting(), 
 						companyID, 
-						Collections.emptyMap());
+						Collections.emptyMap(),
+						ScreenAtr.KAF018);
 				content = appOvertimeDataOutput.getAppContent();
 				opAppTypeDisplay = appOvertimeDataOutput.getOpAppTypeDisplay();
 				break;
@@ -1710,7 +1707,8 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 						ApplicationListAtr.APPLICATION, 
 						apprSttContentPrepareOutput.getApprovalListDisplaySetting(), 
 						companyID,
-						Collections.emptyMap());
+						Collections.emptyMap(),
+						ScreenAtr.KAF018);
 				content = appHolidayWorkDataOutput.getAppContent();
 				break;
 			case BUSINESS_TRIP_APPLICATION:
@@ -2299,7 +2297,7 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 			// アルゴリズム「承認状況取得日別本人確認状況」を実行する
 			this.getApprovalSttByDateOfPerson(employeeID, wkpID, period.start(), period.end(), listDailyConfirm, sumCount);
 		}
-		return listDailyConfirm;
+		return listDailyConfirm.stream().sorted(Comparator.comparing(DailyConfirmOutput::getTargetDate)).collect(Collectors.toList());
 	}
 	
 	/**

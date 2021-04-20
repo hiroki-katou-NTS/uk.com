@@ -5,9 +5,9 @@ import java.util.Optional;
 import lombok.Getter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.DigestionAtr;
+import nts.uk.ctx.at.shared.dom.remainingnumber.base.HolidayAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.AccumulationAbsenceDetail;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.LeaveOccurrDetail;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.StatutoryAtr;
 
 /**
  * @author ThanhNX
@@ -20,10 +20,10 @@ public class UnbalanceCompensation extends LeaveOccurrDetail {
 	 * 法定内外区分
 	 */
 	@Getter
-	private StatutoryAtr legalInExClassi;
+	private HolidayAtr legalInExClassi;
 
 	public UnbalanceCompensation(AccumulationAbsenceDetail detail, GeneralDate deadline, DigestionAtr digestionCate, Optional<GeneralDate> extinctionDate,
-			StatutoryAtr legalInExClassi) {
+			HolidayAtr legalInExClassi) {
 		super(detail, deadline, digestionCate, extinctionDate);
 		this.legalInExClassi = legalInExClassi;
 	}

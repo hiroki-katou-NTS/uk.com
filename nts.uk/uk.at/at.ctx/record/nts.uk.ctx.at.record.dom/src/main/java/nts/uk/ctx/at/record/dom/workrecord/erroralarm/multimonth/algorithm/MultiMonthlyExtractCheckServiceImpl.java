@@ -15,9 +15,7 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.YearMonthPeriod;
-import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.monthly.TimeOfMonthlyRepository;
-import nts.uk.ctx.at.record.dom.monthly.mergetable.RemainMergeRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.algorithm.DataCheckAlarmListService;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.CompareSingleValue;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.ErAlAttendanceItemCondition;
@@ -26,6 +24,7 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.ConditionType;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.ConvertCompareTypeToText;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.TypeCheckWorkRecordMultipleMonth;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.algorithm.WorkPlaceHistImportAl;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.algorithm.WorkPlaceIdAndPeriodImportAl;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.algorithm.MonthlyRecordValuesDto;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.multimonth.MulMonAlarmCheckCondRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.multimonth.MulMonthAlarmCheckCond;
@@ -37,6 +36,7 @@ import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.ExtractionAlarmPeriod
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.ExtractionResultDetail;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.ResultOfEachCondition;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.remainmerge.RemainMergeRepository;
 import nts.uk.shr.com.i18n.TextResource;
 @Stateless
 public class MultiMonthlyExtractCheckServiceImpl<V> implements MultiMonthlyExtractCheckService{
@@ -299,11 +299,17 @@ public class MultiMonthlyExtractCheckServiceImpl<V> implements MultiMonthlyExtra
 					GeneralDate endDateTemp = GeneralDate.ymd(endMonthTemp.year(), endMonthTemp.month(), 1);
 					GeneralDate enDate = endDateTemp.addDays(-1);
 					ExtractionAlarmPeriodDate pDate = new ExtractionAlarmPeriodDate(Optional.ofNullable(startDate), Optional.ofNullable(enDate));
-					String workplaceId = getWplByListSidAndPeriod.stream().filter(x -> x.getEmployeeId().equals(sid))
-							.collect(Collectors.toList()).get(0)
-							.getLstWkpIdAndPeriod().stream().filter(x -> x.getDatePeriod().start().beforeOrEquals(enDate) 
-									&& x.getDatePeriod().end().afterOrEquals(startDate))
-							.collect(Collectors.toList()).get(0).getWorkplaceId();
+					
+					String workplaceId = "";
+					Optional<WorkPlaceHistImportAl> optWorkPlaceHistImportAl = 	getWplByListSidAndPeriod.stream().filter(x -> x.getEmployeeId().equals(sid)).findFirst();
+					if(optWorkPlaceHistImportAl.isPresent()) {
+						Optional<WorkPlaceIdAndPeriodImportAl> optWorkPlaceIdAndPeriodImportAl = optWorkPlaceHistImportAl.get()
+								.getLstWkpIdAndPeriod().stream().filter(x -> x.getDatePeriod().start().beforeOrEquals(enDate) 
+										&& x.getDatePeriod().end().afterOrEquals(startDate)).findFirst();
+						if(optWorkPlaceIdAndPeriodImportAl.isPresent()) {
+							workplaceId = optWorkPlaceIdAndPeriodImportAl.get().getWorkplaceId();
+						}
+					}
 							
 					ExtractionResultDetail detail = new ExtractionResultDetail(sid, 
 							pDate,

@@ -4,8 +4,8 @@ import java.util.List;
 import java.util.Map;
 
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.at.record.dom.monthly.mergetable.RemainMerge;
 import nts.arc.time.calendar.period.YearMonthPeriod;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.remainmerge.RemainMerge;
 
 public interface SpecialHolidayRemainDataSevice {
 	/**

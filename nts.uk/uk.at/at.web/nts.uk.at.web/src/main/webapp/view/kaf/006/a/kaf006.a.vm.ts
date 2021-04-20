@@ -45,6 +45,9 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
         updateMode: KnockoutObservable<boolean> = ko.observable(true);
         isDispTime2ByWorkTime: KnockoutObservable<boolean> = ko.observable(false);
 
+        // appDate
+        checkAppDate: KnockoutObservable<boolean> = ko.observable(true);
+
         yearRemain: KnockoutObservable<number> = ko.observable();
         subHdRemain: KnockoutObservable<number> = ko.observable();
         subVacaRemain: KnockoutObservable<number> = ko.observable();
@@ -103,7 +106,7 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
         condition10Substi: KnockoutObservable<boolean> = ko.observable(false);
         condition10Annual: KnockoutObservable<boolean> = ko.observable(false);
         condition10Accum: KnockoutObservable<boolean> = ko.observable(false);
-    ;
+
 
         created(params: AppInitParam) {
             const vm = this;
@@ -183,10 +186,10 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
                 if (vm.specAbsenceDispInfo()) {
                     if (vm.isDispMourn() && vm.isCheckMourn()) {
                         let param = vm.specAbsenceDispInfo().maxDay + vm.specAbsenceDispInfo().dayOfRela;
-                        data = data + vm.$i18n("KAF006_46", param.toString());
+                        data = data + vm.$i18n("KAF006_46", [param.toString()]);
                     } else {
                         let param = vm.specAbsenceDispInfo().maxDay;
-                        data = data + vm.$i18n("KAF006_46", param.toString());
+                        data = data + vm.$i18n("KAF006_46", [param.toString()]);
                     }
 
                 }
@@ -207,6 +210,11 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
                 if (vm.selectedType() !== 3 || vm.dateSpecHdRelationLst().length === 0) {
                     return;
                 }
+
+                if ($('#relaReason').ntsError('hasError')) {
+                    $('#relaReason').ntsError('clear');
+                }
+                
                 let command = {
                     frameNo: vm.specAbsenceDispInfo() ? vm.specAbsenceDispInfo().frameNo : null,
                     specHdEvent: vm.specAbsenceDispInfo() ? vm.specAbsenceDispInfo().specHdEvent : null,
@@ -220,6 +228,7 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
                             vm.specAbsenceDispInfo().maxDay = success.maxDayObj.maxDay;
                             vm.specAbsenceDispInfo().dayOfRela = success.maxDayObj.dayOfRela;
                             vm.specAbsenceDispInfo.valueHasMutated();
+                            vm.checkCondition8(vm.data);
                         }
                     }
                 }).fail((error) => {
@@ -311,6 +320,10 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
             vm.selectedWorkTypeCD.subscribe(() => {
                 if (_.isNil(vm.selectedWorkTypeCD()) || _.isEmpty(vm.workTypeLst())) {
                     return;
+                }
+
+                if ($('#relaReason').ntsError('hasError')) {
+                    $('#relaReason').ntsError('clear');
                 }
 
                 // return;
@@ -719,6 +732,9 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
 			}).then((isValid) => {
 				if (isValid) {
 					// validate riêng cho màn hình
+                    if (vm.selectedType() === 3 && vm.condition8() && vm.updateMode()) {
+                        return vm.$validate('#relaReason');
+                    }
 					return true;
 				}
 			}).then((result) => {
@@ -741,6 +757,7 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
 			}).done((result) => {
 				if (result) {
 					return vm.$dialog.info({ messageId: "Msg_15"}).then(() => {
+						nts.uk.request.ajax("at", API.reflectApp, result.reflectAppIdLst);
 						return CommonProcess.handleAfterRegister(result, vm.isSendMail(), vm);
 					});	
 				}
@@ -1171,7 +1188,7 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
                     vm.condition19Over60(false);
                 }
                 if (vm.data.vacationApplicationReflect.timeLeaveReflect.substituteLeaveTime === 1
-                    && vm.data.remainVacationInfo.substituteLeaveManagement.substituteLeaveManagement === 1) {
+                    && vm.data.remainVacationInfo.substituteLeaveManagement.timeAllowanceManagement === 1) {
                     vm.condition19Substitute(true);
                 } else {
                     vm.condition19Substitute(false);
@@ -1422,7 +1439,8 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
 
             let params: any = {
                 // 社員ID
-                employeeId: __viewContext.user.employeeId,
+                // employeeId: __viewContext.user.employeeId,
+                employeeId: ko.toJS(vm.application().employeeIDLst()[0]),
 
                 // 申請期間
                 period: {startDate: vm.application().opAppStartDate(), endDate: vm.application().opAppEndDate()},
@@ -1450,7 +1468,8 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
 
             let params: any = {
                 // 社員ID
-                employeeId: __viewContext.user.employeeId,
+                // employeeId: __viewContext.user.employeeId,
+                employeeId: ko.toJS(vm.application().employeeIDLst()[0]),
 
                 // 申請期間
                 period: {startDate: vm.application().opAppStartDate(), endDate: vm.application().opAppEndDate()},
@@ -1509,7 +1528,8 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
         checkVacationTyingManage: 'at/request/application/appforleave/checkVacationTyingManage',
         changeWorkType: 'at/request/application/appforleave/findChangeWorkType',
         changeWorkTime: 'at/request/application/appforleave/findChangeWorkTime',
-        changeRela: 'at/request/application/appforleave/changeRela'
+        changeRela: 'at/request/application/appforleave/changeRela',
+		reflectApp: "at/request/application/reflect-app"
     }
 
     interface DataTransfer {

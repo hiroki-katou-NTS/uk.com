@@ -9,7 +9,6 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendan
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.AppHolidayWorkPreAndReferDto;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.HolidayWorkInstruction;
 import nts.uk.ctx.at.request.dom.application.overtime.service.CaculationTime;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetting;
 
 public interface HolidayPreProcess {
 	/**
@@ -29,7 +28,7 @@ public interface HolidayPreProcess {
 	 * @param prePostAtr
 	 * @return
 	 */
-	public AppHolidayWorkPreAndReferDto getPreApplicationHoliday(String companyID, String employeeId, Optional<OvertimeRestAppCommonSetting> overtimeRestAppCommonSet,String appDate, int prePostAtr);
+//	public AppHolidayWorkPreAndReferDto getPreApplicationHoliday(String companyID, String employeeId, Optional<OvertimeRestAppCommonSetting> overtimeRestAppCommonSet,String appDate, int prePostAtr);
 	/**
 	 * 01-10_0時跨ぎチェック
 	 * @param holidayWorkCal
