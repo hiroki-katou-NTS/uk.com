@@ -8,6 +8,7 @@ module nts.uk.at.view.kaf011 {
 
 	/** 振出申請 */
 	export class RecruitmentApp {
+		isInit: KnockoutObservable<boolean> = ko.observable(true);
 		appType: number; //0: Rec-振出, 1: Abs-振休
 		application: Application = new Application();
 		applicationInsert: Application = this.application;
@@ -37,14 +38,15 @@ module nts.uk.at.view.kaf011 {
 		isAScreen: KnockoutObservable<boolean> = ko.observable(true); //true: screen A, false: screen B
 		outputMode: KnockoutObservable<number> = ko.observable(1); //DISPLAYMODE(0),EDITMODE(1);
 
-		constructor(appType: number, isAScreen?: boolean){
+		constructor(appType: number, isInit: KnockoutObservable<boolean>, isAScreen?: boolean){
 			let self = this;
 			if(isAScreen != undefined){
 				self.isAScreen(isAScreen);
 			}
+			self.isInit = isInit;
 			self.appType = appType;
 			self.workInformation.workType.subscribe((data: string)=>{
-				if(data){
+				if(data && self.isInit()){
 					let workTypeAfter = _.find(self.workTypeList(), {'workTypeCode': data});
 					self.workTypeSelected.update(workTypeAfter);
 					self.checkDisplay();
@@ -267,17 +269,19 @@ module nts.uk.at.view.kaf011 {
 
 	/** 振休申請 */
 	export class AbsenceLeaveApp extends RecruitmentApp {
+		isInit: KnockoutObservable<boolean> = ko.observable(true);
 		workChangeUse: KnockoutObservable<boolean> = ko.observable(false);
 		changeSourceHoliday: KnockoutObservable<string> = ko.observable();
 		payoutSubofHDManagements: KnockoutObservableArray<SubWorkSubHolidayLinkingMng> = ko.observableArray([]);
 		payoutSubofHDManagementsOld: KnockoutObservableArray<SubWorkSubHolidayLinkingMng> = ko.observableArray([]);
 
-		constructor(appType: number, isAScreen?: boolean){
-			super(appType, isAScreen);
+		constructor(appType: number, isInit: KnockoutObservable<boolean>, isAScreen?: boolean){
+			super(appType, isInit, isAScreen);
 			let self = this;
+			self.isInit = isInit;
 			self.workInformation.workType.subscribe((data: string)=>{
 				//only Abs-振休
-				if(data && self.appType == 1 && self.started){
+				if(data && self.appType == 1 && !self.isInit() && self.started){
 					let workTypeAfter = _.find(self.workTypeList(), {'workTypeCode': data});
 					let workTypeBefore = _.find(self.workTypeList(), {'workTypeCode': self.displayInforWhenStarting.applicationForHoliday.workType});
 					let command = {
