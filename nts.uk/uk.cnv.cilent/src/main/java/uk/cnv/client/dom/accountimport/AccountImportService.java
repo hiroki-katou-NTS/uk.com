@@ -24,7 +24,7 @@ public class AccountImportService {
 
 		int companyCount = 1;
 		for (JinKaisyaM company : companies) {
-			System.out.printf("%4d/%4d 会社\r\n", companyCount, companies.size());
+			LogManager.out("%4d/%4d 会社\r\n", companyCount, companies.size());
 			List<JmKihon> employees;
 			try {
 				employees = require.getAllEmployee(company.getCompanyCode());
@@ -33,8 +33,8 @@ public class AccountImportService {
 				return false;
 			}
 
-			int employeeCount = 1;
-			System.out.print("  0 ％の処理が完了しました。");
+			int employeeCount = 0;
+			LogManager.out("  0 ％の処理が完了しました。");
 			for (JmKihon employee : employees) {
 
 				String plainPassword = employee.getPassword();
@@ -50,11 +50,11 @@ public class AccountImportService {
 					return false;
 				}
 				employeeCount++;
-				System.out.printf("\r %2d", Math.round(employeeCount/employees.size()) * 100);
+				LogManager.out("\r %2d", Math.round(employeeCount/employees.size()) * 100);
 			}
 			companyCount++;
-			System.out.printf("\r %2d", 100);
-			System.out.println("\r\n");
+			LogManager.out("\r %2d", 100);
+			LogManager.out("\r\n");
 		}
 		LogManager.out("アカウントの移行 -- 正常終了 --");
 

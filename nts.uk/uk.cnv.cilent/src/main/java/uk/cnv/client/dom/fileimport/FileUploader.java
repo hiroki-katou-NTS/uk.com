@@ -49,7 +49,7 @@ public class FileUploader{
 
 	private StoredFileInfo callUploadApi(Path pathToSource, String stereotype, String fileType) throws JsonParseException, JsonMappingException, IOException {
 
-		String serverUrl = UkConvertProperty.getProperty(UkConvertProperty.UK_CLOUD_SERVER_URL);
+		String serverUrl = UkConvertProperty.getProperty(UkConvertProperty.UK_SERVER_URL);
 		URL url = new URL(serverUrl + "nts.uk.com.web/webapi/ntscommons/arc/filegate/upload");
 
 		ObjectMapper mapper = new ObjectMapper();
@@ -132,29 +132,25 @@ public class FileUploader{
 
     			int status = httpConn.getResponseCode();
 
-    			switch(status) {
-    				case 200:
-    				case 201:
-	    				{
-			    			BufferedReader reader = new BufferedReader(new InputStreamReader(httpConn.getInputStream()));
+    			if(status >= 200 && status <= 299) {
+	    			BufferedReader reader = new BufferedReader(new InputStreamReader(httpConn.getInputStream()));
 
-			    			StringBuilder responce = new StringBuilder();
-			    			String line = null;
-			    			while ((line = reader.readLine()) != null) {
-			    				responce.append(line + EOL);
-			    			}
-			    			reader.close();
-			    			responce.toString();
+	    			StringBuilder responce = new StringBuilder();
+	    			String line = null;
+	    			while ((line = reader.readLine()) != null) {
+	    				responce.append(line + EOL);
+	    			}
+	    			reader.close();
+	    			responce.toString();
 
-			    			return responce.toString();
-	    				}
+	    			return responce.toString();
+    			}
+    			else {
+    				throw new RuntimeException("ERROR(" + status + "):" + url.toString());
     			}
     		} finally {
     			httpConn.disconnect();
     		}
-
-    		return null;
-
     	}
 	}
 

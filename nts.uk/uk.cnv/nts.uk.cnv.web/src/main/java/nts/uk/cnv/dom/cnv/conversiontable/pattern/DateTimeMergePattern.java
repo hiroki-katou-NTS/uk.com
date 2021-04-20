@@ -202,8 +202,8 @@ public class DateTimeMergePattern extends ConversionPattern {
 		}
 
 		if (this.minutes != null && !this.minutes.isEmpty()) {
-			hh = "(" + this.minutes + "/ 60)";
-			mi = spec.mod(this.minutes, "60");
+			hh = spec.cast("(" + this.minutes + "/ 60)", DataType.NVARCHAR, 2);
+			mi = spec.cast(spec.mod(this.minutes, "60"), DataType.NVARCHAR, 2);
 		}
 		else {
 			hh = (this.hh == null || this.hh.isEmpty()) ? "'00'" : spec.cast(this.hh, DataType.NVARCHAR, 20);

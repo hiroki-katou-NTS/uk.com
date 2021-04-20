@@ -68,7 +68,7 @@ public final class Constants {
 		add (new ColumnDesign("8", "UPD_PG", "",
 				new DefineColumnType(DataType.CHAR, 14, 0, true, "", ""), "", 8));
 		add (new ColumnDesign("9", "EXCLUS_VER", "",
-				new DefineColumnType(DataType.INT, 8, 0, false, "", ""), "0", 9));
+				new DefineColumnType(DataType.INT, 8, 0, false, "0", ""), "", 9));
 	}} );
 
 	/** RLS対応のDDL生成のためのpostgreユーザ名 */

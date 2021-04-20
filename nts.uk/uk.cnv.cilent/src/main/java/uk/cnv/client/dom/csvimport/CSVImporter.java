@@ -51,7 +51,7 @@ public class CSVImporter {
 
 		try {
 			String serverUrl = UkConvertProperty.getProperty(UkConvertProperty.UK_CLOUD_SERVER_URL);
-			URL url = new URL(serverUrl + "webapi/ctx/cld/operate/tenant/csvimport");
+			URL url = new URL(serverUrl + "nts.uk.cloud.web/webapi/ctx/cld/operate/tenant/csvimport");
 			csvImport(zipFilePath.toAbsolutePath().toString(), fileList, url);
 		}
 		catch (Exception e){

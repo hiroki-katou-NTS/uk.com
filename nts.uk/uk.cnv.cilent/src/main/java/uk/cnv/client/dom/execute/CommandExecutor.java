@@ -23,7 +23,8 @@ public class CommandExecutor {
 		// -r 1 :エラーメッセージ出力を画面にリダイレクト
 		// -b :エラー時に中断する
 		// -j :エラーメッセージを表示する
-		String command = String.format("sqlcmd -S %s -U %s -P %s -i %s -r 1 -b", this.host, this.user, this.password, fileName);
+		// -f i:65001 :文字コードをUTF-8（65001）に
+		String command = String.format("sqlcmd -S %s -U %s -P %s -i %s -r 1 -b -f i:65001", this.host, this.user, this.password, fileName);
 		return execute(command);
 	}
 
@@ -31,7 +32,8 @@ public class CommandExecutor {
 		// -r 1 :エラーメッセージ出力を画面にリダイレクト
 		// -b :エラー時に中断する
 		// -j :エラーメッセージを表示する
-		String command = String.format("sqlcmd -S %s -d %s -U %s -P %s -i %s -r 1 -b", this.host, this.dbName, this.user, this.password, fileName);
+		// -f i:65001 :文字コードをUTF-8（65001）に
+		String command = String.format("sqlcmd -S %s -d %s -U %s -P %s -i %s -r 1 -b -f i:65001", this.host, this.dbName, this.user, this.password, fileName);
 		return execute(command);
 	}
 

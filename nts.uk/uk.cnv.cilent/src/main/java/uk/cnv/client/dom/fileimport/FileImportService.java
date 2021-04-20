@@ -46,7 +46,7 @@ public class FileImportService {
 
 		int companyCount = 1;
 		for (JinKaisyaM company : companies) {
-			System.out.printf("%4d/%4d 会社\r\n", companyCount, companies.size());
+			LogManager.out("%4d/%4d 会社\r\n", companyCount, companies.size());
 
 			List<JmKihon> employees;
 			List<JmGenAdd> employeeAddress;
@@ -60,8 +60,8 @@ public class FileImportService {
 				return false;
 			}
 
-			int employeeCount = 1;
-			System.out.print("  0 ％の処理が完了しました。");
+			int employeeCount = 0;
+			LogManager.out("  0 ％の処理が完了しました。");
 			for (JmKihon employee : employees) {
 				try {
 					uploadPersonPhoto(require, company, employee);
@@ -83,16 +83,16 @@ public class FileImportService {
 					}
 				}
 				catch (Exception e){
-					System.out.println("\r\n");
+					LogManager.err("\r\n");
 					LogManager.err(e);
 					return false;
 				}
 				employeeCount++;
-				System.out.printf("\r\033 %2d", Math.round(employeeCount/employees.size()) * 100);
+				LogManager.out("\r %2d", Math.round(employeeCount/employees.size()) * 100);
 			}
 			companyCount++;
-			System.out.printf("\r %2d", 100);
-			System.out.println("\r\n");
+			LogManager.out("\r %2d", 100);
+			LogManager.out("\r\n");
 		}
 		LogManager.out("ファイルの移行 -- 正常終了 --");
 

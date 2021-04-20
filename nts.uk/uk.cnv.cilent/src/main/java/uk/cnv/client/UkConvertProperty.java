@@ -17,6 +17,7 @@ public class UkConvertProperty {
 	public static final String UKDB_DBNAME = "UkDbName";
 
 	public static final String ERP_WWWROOT_PATH = "ErpWwwrootPath";
+	public static final String UK_SERVER_URL = "UkServerUrl";
 	public static final String UK_CLOUD_SERVER_URL = "UkCloudServerUrl";
 
     public static final String UK_CONTRACT_CODE = "UkContractCode";

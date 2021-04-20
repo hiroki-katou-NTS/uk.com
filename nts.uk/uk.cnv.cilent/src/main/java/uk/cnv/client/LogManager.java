@@ -13,9 +13,17 @@ public class LogManager {
 		logfile = UkConvertProperty.getProperty(UkConvertProperty.LOG_FILE_PATH);
 	}
 
+	public static void out(String str, Object ... args) {
+		out(String.format(str, args));
+	}
+
 	public static void out(String str) {
 		System.out.println(str);
 		outputLog(str);
+	}
+
+	public static void err(String str, Object ... args) {
+		err(String.format(str, args));
 	}
 
 	public static void err(String str) {
@@ -24,10 +32,14 @@ public class LogManager {
 	}
 
 	public static void err(Exception e) {
-		System.err.println(e.getMessage());
-		outputLog(e.getMessage());
+		System.err.println(e.getCause().toString());
+		outputLog(e.getCause().toString());
+
 		Arrays.stream(e.getStackTrace())
-			.forEach(st -> outputLog(st.toString()));
+			.forEach(st -> {
+				System.err.println(st.toString());
+				outputLog(st.toString());
+			});
 	}
 
 	private static void outputLog(String str) {
