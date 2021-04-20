@@ -121,20 +121,17 @@ public class OuenWorkTimeSheetOfDailyRepoImpl extends JpaRepository implements O
 				WorkContent.create(
 						ots.cid, 
 						WorkplaceOfWorkEachOuen.create(ots.workplaceId, new WorkLocationCD(ots.workLocationCode)), 
-						Optional.ofNullable(ots.workCd1 == null ? null : 
-							WorkGroup.create(ots.workCd1, ots.workCd2, ots.workCd3, ots.workCd4, ots.workCd5))), 
+						Optional.of(WorkGroup.create(ots.workCd1, ots.workCd2, ots.workCd3, ots.workCd4, ots.workCd5))), 
 				TimeSheetOfAttendanceEachOuenSheet.create(
 						new WorkNo(ots.workNo), 
-						Optional.ofNullable(ots.startTime == null ? null : 
-							new WorkTimeInformation(
+						Optional.of(new WorkTimeInformation(
 									new ReasonTimeChange(
-											EnumAdaptor.valueOf(ots.startTimeChangeWay, TimeChangeMeans.class), 
+											ots.startTimeChangeWay == null ? TimeChangeMeans.REAL_STAMP : EnumAdaptor.valueOf(ots.startTimeChangeWay, TimeChangeMeans.class), 
 											ots.startStampMethod == null ? Optional.empty() : Optional.of(EnumAdaptor.valueOf(ots.startStampMethod, EngravingMethod.class))), 
 									ots.startTime == null ? null : new TimeWithDayAttr(ots.startTime))), 
-						Optional.ofNullable(ots.endTime == null ? null : 
-							new WorkTimeInformation(
+						Optional.of(new WorkTimeInformation(
 									new ReasonTimeChange(
-											EnumAdaptor.valueOf(ots.endTimeChangeWay, TimeChangeMeans.class), 
+											ots.endTimeChangeWay == null ? TimeChangeMeans.REAL_STAMP : EnumAdaptor.valueOf(ots.endTimeChangeWay, TimeChangeMeans.class), 
 											ots.endStampMethod == null ? Optional.empty() : Optional.of(EnumAdaptor.valueOf(ots.endStampMethod, EngravingMethod.class))), 
 									ots.endTime == null ? null : new TimeWithDayAttr(ots.endTime)))))).collect(Collectors.toList());
 		
