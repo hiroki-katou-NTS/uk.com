@@ -2,19 +2,21 @@ package nts.uk.cnv.dom.td.schema.tabledesign;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
+import lombok.val;
+import nts.arc.error.BusinessException;
+import nts.arc.error.RawErrorMessage;
 import nts.uk.cnv.dom.constants.Constants;
 import nts.uk.cnv.dom.td.schema.tabledesign.column.ColumnDesign;
 import nts.uk.cnv.dom.td.schema.tabledesign.constraint.TableConstraints;
 import nts.uk.cnv.dom.td.tabledefinetype.TableDefineType;
 
-@AllArgsConstructor
 @Getter
 @EqualsAndHashCode
 @ToString
@@ -26,12 +28,23 @@ public class TableDesign implements Cloneable {
 	private List<ColumnDesign> columns;
 	private TableConstraints constraints;
 
+	public TableDesign(String id, TableName name, String jpName,
+			List<ColumnDesign> columns, TableConstraints constraints) {
+		this.validate(columns);
+		this.id = id;
+		this.name = name;
+		this.jpName = jpName;
+		this.columns = columns;
+		this.constraints = constraints;
+	}
+
 	public TableDesign(TableDesign source) {
-		id = source.id;
-		name = source.name;
-		jpName = source.jpName;
-		columns = source.columns;
-		constraints = source.constraints;
+		this.validate(source.columns);
+		this.id = source.id;
+		this.name = source.name;
+		this.jpName = source.jpName;
+		this.columns = source.columns;
+		this.constraints = source.constraints;
 	}
 
 	public static TableDesign empty() {
@@ -41,6 +54,15 @@ public class TableDesign implements Cloneable {
 				null,
 				Collections.emptyList(),
 				TableConstraints.empty());
+	}
+
+	private void validate(List<ColumnDesign> columns) {
+		val columnNames = columns.stream()
+				.map(cd -> cd.getName())
+				.collect(Collectors.toList());
+		if(columnNames.size() != new HashSet<>(columnNames).size()){
+			throw new BusinessException(new RawErrorMessage("列名が重複しています"));
+		}
 	}
 
 	/**
