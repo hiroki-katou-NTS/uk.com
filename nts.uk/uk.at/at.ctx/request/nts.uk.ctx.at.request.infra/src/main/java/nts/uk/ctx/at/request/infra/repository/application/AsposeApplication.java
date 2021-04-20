@@ -316,11 +316,11 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 		ShapeCollection sc = worksheet.getShapes();
 		if(printContentOfApp.getApproverColumnContents().getApproverPrintDetailsLst().size() > 0) {
 			ApproverPrintDetails approverPrintDetails1 = printContentOfApp.getApproverColumnContents().getApproverPrintDetailsLst().get(0);
+			Cell cellG1 = cells.get("G1");
+			cellG1.setValue(approverPrintDetails1.getAffJobTitleHistoryImport().getJobTitleName());
 			if (approverPrintDetails1.getApprovalBehaviorAtr() == ApprovalBehaviorAtrImport_New.APPROVED ||
 					approverPrintDetails1.getApprovalBehaviorAtr() == ApprovalBehaviorAtrImport_New.DENIAL) {
 				sc.get("APPORVAL1").setPrintable(true);
-				Cell cellG1 = cells.get("G1");
-				cellG1.setValue(approverPrintDetails1.getAffJobTitleHistoryImport().getJobTitleName());
 				TextBox textBoxName1 = textBoxCollection.get("NAME1");
 				textBoxName1.setText(approverPrintDetails1.getEmployeeInfoImport().getBussinessName().substring(0, 3));
 				TextBox textBoxDate1 = textBoxCollection.get("DATE1");
@@ -340,11 +340,11 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 		}
 		if(printContentOfApp.getApproverColumnContents().getApproverPrintDetailsLst().size() > 1) {
 			ApproverPrintDetails approverPrintDetails2 = printContentOfApp.getApproverColumnContents().getApproverPrintDetailsLst().get(1);
+			Cell cellH1 = cells.get("H1");
+			cellH1.setValue(approverPrintDetails2.getAffJobTitleHistoryImport().getJobTitleName());
 			if (approverPrintDetails2.getApprovalBehaviorAtr() == ApprovalBehaviorAtrImport_New.APPROVED ||
 					approverPrintDetails2.getApprovalBehaviorAtr() == ApprovalBehaviorAtrImport_New.DENIAL) {
 				sc.get("APPORVAL2").setPrintable(true);
-				Cell cellH1 = cells.get("H1");
-				cellH1.setValue(approverPrintDetails2.getAffJobTitleHistoryImport().getJobTitleName());
 				TextBox textBoxName2 = textBoxCollection.get("NAME2");
 				textBoxName2.setText(approverPrintDetails2.getEmployeeInfoImport().getBussinessName().substring(0, 3));
 				TextBox textBoxDate2 = textBoxCollection.get("DATE2");
@@ -363,11 +363,11 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 		}
 		if(printContentOfApp.getApproverColumnContents().getApproverPrintDetailsLst().size() > 2) {
 			ApproverPrintDetails approverPrintDetails3 = printContentOfApp.getApproverColumnContents().getApproverPrintDetailsLst().get(2);
+			Cell cellI1 = cells.get("I1");
+			cellI1.setValue(approverPrintDetails3.getAffJobTitleHistoryImport().getJobTitleName());
 			if (approverPrintDetails3.getApprovalBehaviorAtr() == ApprovalBehaviorAtrImport_New.APPROVED ||
 					approverPrintDetails3.getApprovalBehaviorAtr() == ApprovalBehaviorAtrImport_New.DENIAL) {
 				sc.get("APPORVAL3").setPrintable(true);
-				Cell cellI1 = cells.get("I1");
-				cellI1.setValue(approverPrintDetails3.getAffJobTitleHistoryImport().getJobTitleName());
 				TextBox textBoxName3 = textBoxCollection.get("NAME3");
 				textBoxName3.setText(approverPrintDetails3.getEmployeeInfoImport().getBussinessName().substring(0, 3));
 				TextBox textBoxDate3 = textBoxCollection.get("DATE3");
@@ -386,11 +386,11 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 		}
 		if(printContentOfApp.getApproverColumnContents().getApproverPrintDetailsLst().size() > 3) {
 			ApproverPrintDetails approverPrintDetails4 = printContentOfApp.getApproverColumnContents().getApproverPrintDetailsLst().get(3);
+			Cell cellJ1 = cells.get("J1");
+			cellJ1.setValue(approverPrintDetails4.getAffJobTitleHistoryImport().getJobTitleName());
 			if (approverPrintDetails4.getApprovalBehaviorAtr() == ApprovalBehaviorAtrImport_New.APPROVED ||
 					approverPrintDetails4.getApprovalBehaviorAtr() == ApprovalBehaviorAtrImport_New.DENIAL) {
 				sc.get("APPORVAL4").setPrintable(true);
-				Cell cellJ1 = cells.get("J1");
-				cellJ1.setValue(approverPrintDetails4.getAffJobTitleHistoryImport().getJobTitleName());
 				TextBox textBoxName4 = textBoxCollection.get("NAME4");
 				textBoxName4.setText(approverPrintDetails4.getEmployeeInfoImport().getBussinessName().substring(0, 3));
 				TextBox textBoxDate4 = textBoxCollection.get("DATE4");
@@ -409,11 +409,11 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 		}
 		if(printContentOfApp.getApproverColumnContents().getApproverPrintDetailsLst().size() > 4) {
 			ApproverPrintDetails approverPrintDetails5 = printContentOfApp.getApproverColumnContents().getApproverPrintDetailsLst().get(4);
+			Cell cellK1 = cells.get("K1");
+			cellK1.setValue(approverPrintDetails5.getAffJobTitleHistoryImport().getJobTitleName());
 			if (approverPrintDetails5.getApprovalBehaviorAtr() == ApprovalBehaviorAtrImport_New.APPROVED ||
 					approverPrintDetails5.getApprovalBehaviorAtr() == ApprovalBehaviorAtrImport_New.DENIAL) {
 				sc.get("APPORVAL5").setPrintable(true);
-				Cell cellK1 = cells.get("K1");
-				cellK1.setValue(approverPrintDetails5.getAffJobTitleHistoryImport().getJobTitleName());
 				TextBox textBoxName5 = textBoxCollection.get("NAME5");
 				textBoxName5.setText(approverPrintDetails5.getEmployeeInfoImport().getBussinessName().substring(0, 3));
 				TextBox textBoxDate5 = textBoxCollection.get("DATE5");
