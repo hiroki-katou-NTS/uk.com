@@ -141,6 +141,8 @@ module nts.uk.ui.koExtentions {
                 $input.attr("readonly", true);
                 $input.css("cursor", "default");
             }
+
+            const $cache = { value: '' };
             
             $input.on("change", (e) => {
 //                var onChanging = container.data("changed");
@@ -152,6 +154,12 @@ module nts.uk.ui.koExtentions {
                     $input.data("change", false);
                     return;
                 }
+
+                if ($cache.value === $input.val()) {
+                    return;
+                }
+
+                $cache.value = $input.val();
                 
                 var newText = $input.val();
                 var validator = new validation.TimeValidator(name, constraintName, {required: $input.data("required"), 
@@ -177,9 +185,10 @@ module nts.uk.ui.koExtentions {
                         $input.data("change", true);
                         if (_.has(data, "type") && ko.toJS(data.type) === "date") {
                             let momentDate = moment(result.parsedValue);
-                            value(new Date(Date.UTC(momentDate.year(), momentDate.month(), momentDate.date())));
+                            const oldValue = ko.unwrap(value);
                         } else {
                             value(result.parsedValue);
+                            const oldValue = ko.unwrap(value);
                         }
                         $input.data("change", false);
                         let dateFormatValue = (value() !== "") ? text.removeFromStart(time.formatPattern(value(), valueFormat, ISOFormat), "0") : "";
@@ -188,14 +197,15 @@ module nts.uk.ui.koExtentions {
                             $input.datepicker('setDate', new Date(dateFormatValue.replace(/\//g, "-")));
                         }
                     } else {
-                        value(result.parsedValue);
+                        const oldValue = ko.unwrap(value);
                     }
                     value.valueWillMutate();
+                    // value.valueWillMutate();
                 }
                 else {                    
                     $input.ntsError('set', result.errorMessage, result.errorCode, false);
 //                    container.data("changed", true);
-                    value(newText);
+                    const oldValue = ko.unwrap(value);
                 }
                 //$input.focus();
             });
