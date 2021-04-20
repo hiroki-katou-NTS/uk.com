@@ -895,23 +895,23 @@ public class SupportWorkReflection {
 
 		if (leavingWork.isPresent()) {
 			// 最初の出勤をセットする - 勤務Temporary。最初の出勤＝取得できる出退勤．出勤
-			if(leavingWork.get().getAttendanceStamp().isPresent())
+			if(leavingWork.get().getAttendanceStamp().isPresent() && leavingWork.get().getAttendanceStamp().get().getStamp().isPresent())
 			workTemporary.setFirstAttendance(leavingWork.get().getAttendanceStamp());
 
 			// 最後の退勤をセットする
 			// 勤務Temporary。最後の退勤＝取得できる出退勤．退勤
-			if(leavingWork.get().getLeaveStamp().isPresent())
+			if(leavingWork.get().getLeaveStamp().isPresent() && leavingWork.get().getLeaveStamp().get().getStamp().isPresent())
 			workTemporary.setLastLeave(leavingWork.get().getLeaveStamp());
 		}
 		if (leavingWork2.isPresent()) {
 			// 勤務Temporary。退勤1時刻＝勤務Temporary。最後の退勤
-			if(workTemporary.getLastLeave().isPresent())
+			if(workTemporary.getLastLeave().isPresent() && workTemporary.getLastLeave().get().getStamp().isPresent())
 			workTemporary.setOneHourLeavingWork(workTemporary.getLastLeave());
 			// 勤務Temporary。最後の退勤＝取得できる出退勤．退勤
-			if(leavingWork2.get().getLeaveStamp().isPresent())
+			if(leavingWork2.get().getLeaveStamp().isPresent() && leavingWork2.get().getLeaveStamp().get().getStamp().isPresent())
 			workTemporary.setLastLeave(leavingWork2.get().getLeaveStamp());
 			// 勤務Temporary。出勤２時刻＝取得できる出退勤．出勤
-			if(leavingWork2.get().getAttendanceStamp().isPresent())
+			if(leavingWork2.get().getAttendanceStamp().isPresent() && leavingWork2.get().getAttendanceStamp().get().getStamp().isPresent())
 			workTemporary.setTwoHoursWork(leavingWork2.get().getAttendanceStamp());
 		}
 
