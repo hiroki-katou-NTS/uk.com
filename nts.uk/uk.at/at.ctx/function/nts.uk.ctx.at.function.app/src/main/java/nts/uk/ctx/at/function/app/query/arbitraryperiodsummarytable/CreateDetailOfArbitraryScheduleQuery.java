@@ -337,9 +337,9 @@ public class CreateDetailOfArbitraryScheduleQuery {
                     val item0pt = contentList.stream().filter(j -> j.getAttendanceItemId() == e.getAttendanceId()).findFirst();
                     if (item0pt.isPresent()) {
                         val item = item0pt.get();
-//                        if (!checkAttId(getAggregableMonthlyAttId, item.getAttendanceItemId())) {
-//                            item.setValue(null);
-//                        }
+                        if (!checkAttId(getAggregableMonthlyAttId, item.getAttendanceItemId())) {
+                            item.setValue(null);
+                        }
                         rs.add(item);
                     }
                 }
