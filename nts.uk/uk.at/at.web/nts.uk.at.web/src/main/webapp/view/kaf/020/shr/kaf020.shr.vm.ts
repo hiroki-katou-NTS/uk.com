@@ -68,7 +68,7 @@ module nts.uk.at.view.kaf020.shr.viewmodel {
                     </td>
                     <td style="vertical-align: top">
                         <!--B4_3-->
-                        <div style="margin-top: 10px" class="label" data-bind="text: optionalItemAtr == 0 ? $vm.$i18n('KAF020_32') : unit"></div>
+                        <div style="margin-top: 10px" class="label" data-bind="text: unit"></div>
                     </td>
                     <td>
                         <div data-bind="text: description" style="white-space: normal; word-break: break-all;"></div>

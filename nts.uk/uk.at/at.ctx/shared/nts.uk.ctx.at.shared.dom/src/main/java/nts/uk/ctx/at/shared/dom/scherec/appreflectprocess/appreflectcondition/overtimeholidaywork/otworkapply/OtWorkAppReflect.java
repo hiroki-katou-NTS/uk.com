@@ -62,14 +62,14 @@ public class OtWorkAppReflect {
 			}).orElse(new WorkInfoDto(Optional.empty(), Optional.empty()));
 
 			// 勤務情報の反映
-			lstId.addAll(ReflectWorkInformation.reflectInfo(require, workInfoDto, dailyApp, Optional.of(true),
+			lstId.addAll(ReflectWorkInformation.reflectInfo(require, cid, workInfoDto, dailyApp, Optional.of(true),
 					Optional.of(true)));
 		}
 
 		// [input. 残業申請. 事前事後区分]をチェック
 		if (overTimeApp.getPrePostAtr() == PrePostAtrShare.PREDICT) {
 			// 事前残業申請の反映
-			this.getBefore().processRC(require, overTimeApp, dailyApp);
+			this.getBefore().processRC(require, cid, overTimeApp, dailyApp);
 		}
 
 		if (overTimeApp.getPrePostAtr() == PrePostAtrShare.POSTERIOR) {
@@ -91,9 +91,9 @@ public class OtWorkAppReflect {
 	 *         残業申請の反映（勤務予定）
 	 */
 
-	public List<Integer> process(RequireSC require, AppOverTimeShare overTimeApp, DailyRecordOfApplication dailyApp) {
+	public List<Integer> process(RequireSC require, String cid, AppOverTimeShare overTimeApp, DailyRecordOfApplication dailyApp) {
 
-		return this.getBefore().processSC(require, overTimeApp, dailyApp);
+		return this.getBefore().processSC(require, cid, overTimeApp, dailyApp);
 
 	}
 

@@ -17,11 +17,12 @@ import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.ov
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.algorithm.subtransfer.TranferHdWorkCompensatory;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.DailyRecordOfApplication;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.ScheduleRecordClassifi;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.condition.DailyAfterAppReflectResult;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.condition.ReflectAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.condition.ReflectDirectBounceClassifi;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.condition.ReflectWorkInformation;
-import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.condition.SCCreateDailyAfterApplicationeReflect.DailyAfterAppReflectResult;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.workchangeapp.ReflectWorkChangeApp.WorkInfoDto;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
@@ -79,7 +80,7 @@ public class AfterHdWorkAppReflect extends DomainObject {
 		if (!(workTypeApp.equals(workTypeDomain)
 				&& (workTimeApp == null ? workTimeDomain == null : workTimeApp.equals(workTimeDomain)))) {
 			// 勤務情報の反映
-			lstId.addAll(ReflectWorkInformation.reflectInfo(require, workInfoDto, dailyApp, Optional.of(true),
+			lstId.addAll(ReflectWorkInformation.reflectInfo(require, cid, workInfoDto, dailyApp, Optional.of(true),
 					Optional.of(true)));
 		}
 
@@ -90,9 +91,9 @@ public class AfterHdWorkAppReflect extends DomainObject {
 		// [出退勤を反映する]をチェック
 		if (this.getWorkReflect() == NotUseAtr.USE) {
 			// 出退勤の反映
-			lstId.addAll(ReflectAttendance.reflect(holidayApp.getWorkingTimeList(), ScheduleRecordClassifi.RECORD,
+			lstId.addAll(ReflectAttendance.reflect(require, cid, holidayApp.getWorkingTimeList(), ScheduleRecordClassifi.RECORD,
 					dailyApp, Optional.of(holidayApp.getGoWorkAtr() == NotUseAtr.NOT_USE),
-					Optional.of(holidayApp.getBackHomeAtr() == NotUseAtr.NOT_USE)));
+					Optional.of(holidayApp.getBackHomeAtr() == NotUseAtr.NOT_USE), Optional.of(TimeChangeMeans.APPLICATION)));
 		}
 
 		// 休出時間の反映
@@ -110,7 +111,7 @@ public class AfterHdWorkAppReflect extends DomainObject {
 		return new DailyAfterAppReflectResult(dailyApp, lstId);
 	}
 
-	public static interface Require extends ReflectWorkInformation.Require, TranferHdWorkCompensatory.Require {
+	public static interface Require extends ReflectWorkInformation.Require, TranferHdWorkCompensatory.Require, ReflectAttendance.Require {
 
 	}
 }

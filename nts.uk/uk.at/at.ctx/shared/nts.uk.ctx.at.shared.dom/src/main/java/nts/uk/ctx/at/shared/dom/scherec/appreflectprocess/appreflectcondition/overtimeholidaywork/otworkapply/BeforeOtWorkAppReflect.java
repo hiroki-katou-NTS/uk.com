@@ -17,6 +17,7 @@ import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.re
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.condition.ReflectAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.condition.ReflectWorkInformation;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.workchangeapp.ReflectWorkChangeApp.WorkInfoDto;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
@@ -55,7 +56,7 @@ public class BeforeOtWorkAppReflect {
 	 *         事前残業申請の反映（勤務実績）
 	 */
 
-	public void processRC(Require require, AppOverTimeShare overTimeApp, DailyRecordOfApplication dailyApp) {
+	public void processRC(Require require,  String cid, AppOverTimeShare overTimeApp, DailyRecordOfApplication dailyApp) {
 
 		List<Integer> lstId = new ArrayList<Integer>();
 		// [勤務情報、始業終業を反映する]をチェック
@@ -67,12 +68,12 @@ public class BeforeOtWorkAppReflect {
 			}).orElse(new WorkInfoDto(Optional.empty(), Optional.empty()));
 
 			// 勤務情報の反映
-			lstId.addAll(ReflectWorkInformation.reflectInfo(require, workInfoDto, dailyApp, Optional.of(true),
+			lstId.addAll(ReflectWorkInformation.reflectInfo(require, cid, workInfoDto, dailyApp, Optional.of(true),
 					Optional.of(true)));
 
 			// 予定出退勤の反映
-			lstId.addAll(ReflectAttendance.reflect(overTimeApp.getWorkHoursOp(), ScheduleRecordClassifi.RECORD,
-					dailyApp, Optional.of(true), Optional.of(true)));
+			lstId.addAll(ReflectAttendance.reflect(require, cid, overTimeApp.getWorkHoursOp(), ScheduleRecordClassifi.RECORD,
+					dailyApp, Optional.of(true), Optional.of(true), Optional.of(TimeChangeMeans.APPLICATION)));
 
 		}
 
@@ -97,7 +98,7 @@ public class BeforeOtWorkAppReflect {
 	 *
 	 *         事前残業申請の反映（勤務予定）
 	 */
-	public List<Integer> processSC(Require require, AppOverTimeShare overTimeApp, DailyRecordOfApplication dailyApp) {
+	public List<Integer> processSC(Require require, String cid, AppOverTimeShare overTimeApp, DailyRecordOfApplication dailyApp) {
 
 		List<Integer> lstId = new ArrayList<Integer>();
 		// [勤務情報、出退勤を反映する]をチェック
@@ -109,12 +110,12 @@ public class BeforeOtWorkAppReflect {
 			}).orElse(new WorkInfoDto(Optional.empty(), Optional.empty()));
 
 			// 勤務情報の反映
-			lstId.addAll(ReflectWorkInformation.reflectInfo(require, workInfoDto, dailyApp, Optional.of(true),
+			lstId.addAll(ReflectWorkInformation.reflectInfo(require, cid, workInfoDto, dailyApp, Optional.of(true),
 					Optional.of(true)));
 
 			// 出退勤の反映
-			lstId.addAll(ReflectAttendance.reflect(overTimeApp.getWorkHoursOp(), ScheduleRecordClassifi.RECORD,
-					dailyApp, Optional.of(true), Optional.of(true)));
+			lstId.addAll(ReflectAttendance.reflect(require, cid, overTimeApp.getWorkHoursOp(), ScheduleRecordClassifi.RECORD,
+					dailyApp, Optional.of(true), Optional.of(true), Optional.of(TimeChangeMeans.APPLICATION)));
 
 		}
 
@@ -125,7 +126,7 @@ public class BeforeOtWorkAppReflect {
 
 	}
 
-	public static interface Require extends ReflectWorkInformation.Require {
+	public static interface Require extends ReflectWorkInformation.Require, ReflectAttendance.Require {
 
 	}
 }

@@ -56,7 +56,7 @@ public class SCBeforeReflectAppHolidayWorkTest {
 				1088, // 勤務時間帯-終了時刻
 				600, // 休憩時間帯-開始時刻
 				660);// 休憩時間帯-終了時刻
-		(new BeforeHdWorkAppReflect()).processSC(require, holidayApp, dailyApp);
+		(new BeforeHdWorkAppReflect()).processSC(require, "", holidayApp, dailyApp);
 		// 勤務情報の反映ができます
 		assertThat(dailyApp.getWorkInformation().getRecordInfo().getWorkTypeCode().v()).isEqualTo("005");
 		assertThat(dailyApp.getWorkInformation().getRecordInfo().getWorkTimeCode().v()).isEqualTo("006");

@@ -7,15 +7,17 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<com:ValidatorScript>
-				nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.Day
-            </com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<script>var dialogSize = { width: 750, height: 550 };</script>
+			<com:ValidatorScript>
+				nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.Day
+			</com:ValidatorScript>
 			<com:EnumScript>
+				nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.ScheSpecifiedMonth
 				nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.SpecifiedMonth
 				nts.uk.ctx.at.function.dom.alarm.extractionrange.PreviousClassification
 			</com:EnumScript>
+			<com:scriptfile path="../share/model.js" />
 			<com:stylefile path="kal004.b.style.css" />
 			<com:scriptfile path="kal004.b.service.js" />
 			<com:scriptfile path="kal004.b.start.js" />
@@ -53,11 +55,14 @@
 							<com:ko-if bind="getCategoryId() == 5 || getCategoryId() == 13">
 								<span class="label txt">#{i18n.getText('KAL004_35')}</span>
 							</com:ko-if>
+							<com:ko-if bind="getCategoryId() == 6">
+								<span class="label txt">#{i18n.getText('KAL004_41')}</span>
+							</com:ko-if>
 						</div>
 						<div class="month">
 							<div tabindex="4" class="checkMonth"
 								data-bind="ntsRadioButton: {checked: strSelected, enable: enable, option: dateSpecify()[1], optionValue: 'value', optionText: '', group: 'strRadio'}"></div>
-							<div class="combo-box" tabindex="5"
+							<div class="combo-box cbStrMonth" tabindex="5" 
 								data-bind="ntsComboBox: {
 										options: strComboMonth,
 										optionsValue: 'value',
@@ -96,10 +101,13 @@
 							<com:ko-if bind="getCategoryId() == 5 || getCategoryId() == 13">
 								<span class="label txt">#{i18n.getText('KAL004_35')}</span>
 							</com:ko-if>
+							<com:ko-if bind="getCategoryId() == 6">
+								<span class="label txt">#{i18n.getText('KAL004_41')}</span>
+							</com:ko-if>
 						</div>
 						<div class="month">
 							<div tabindex="10" class="checkMonth"
-								data-bind="ntsRadioButton: {checked: endSelected, enable: strSelected() == 1, option: dateSpecify()[1], optionValue: 'value', optionText: '', group: 'endRadio'}"></div>
+								data-bind="ntsRadioButton: {checked: endSelected, option: dateSpecify()[1], optionValue: 'value', optionText: '', group: 'endRadio'}"></div>
 							<div class="combo-box" tabindex="10"
 								data-bind="ntsComboBox: {
 										options: endComboMonth,
@@ -107,7 +115,7 @@
 										value: endMonth,
 										optionsText: 'name',
 										visibleItemsCount: 7,
-										enable: (strSelected() == 1 &amp;&amp; endSelected() == 1),
+										enable: endSelected() == 1,
 										columns: [
 											{ prop: 'name', length: 5 }
 										]}"></div>
@@ -117,8 +125,8 @@
 				</div>
 			</div>
 			<div id="functions-area-bottom">
-				<button tabindex="11" data-bind="click :Decide">#{i18n.getText('KAL004_44')}</button>
-				<button tabindex="12" data-bind="click :cancel_Dialog">#{i18n.getText('KAL004_45')}</button>
+				<button tabindex="11" class="x-large" data-bind="click :Decide">#{i18n.getText('KAL004_44')}</button>
+				<button tabindex="12" class="large" data-bind="click :cancel_Dialog">#{i18n.getText('KAL004_45')}</button>
 			</div>
 		</ui:define>
 	</ui:composition>

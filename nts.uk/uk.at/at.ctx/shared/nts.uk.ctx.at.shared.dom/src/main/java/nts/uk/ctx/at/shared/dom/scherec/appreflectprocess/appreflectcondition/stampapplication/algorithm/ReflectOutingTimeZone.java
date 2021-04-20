@@ -11,6 +11,7 @@ import lombok.val;
 import nts.uk.ctx.at.shared.dom.scherec.application.stamp.StartEndClassificationShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.stamp.TimeStampAppShare;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.DailyRecordOfApplication;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.condition.UpdateEditSttCreateBeforeAppReflect;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.OutingFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.OutingTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.OutingTimeSheet;
@@ -56,7 +57,8 @@ public class ReflectOutingTimeZone {
 				dailyApp.setOutingTime(Optional.of(new OutingTimeOfDailyAttd(outs)));
 			}
 		});
-
+		//申請反映状態にする
+		UpdateEditSttCreateBeforeAppReflect.update(dailyApp, lstItemId);
 		return lstItemId;
 	}
 
@@ -95,6 +97,9 @@ public class ReflectOutingTimeZone {
 		List<Integer> lstItemId = new ArrayList<>();
 		if (data.getDestinationTimeApp().getStartEndClassification() == StartEndClassificationShare.START) {
 			sheet.setReasonForGoOut(data.getAppStampGoOutAtr().map(x -> GoingOutReason.valueOf(x.value)).orElse(null));
+			if(!sheet.getGoOut().isPresent()) {
+				sheet.setGoOut(Optional.of(WorkStamp.createDefault()));
+			}
 			sheet.getGoOut().ifPresent(y -> {
 				data.getWorkLocationCd().ifPresent(code -> {
 					y.setLocationCode(Optional.of(code));
@@ -108,6 +113,9 @@ public class ReflectOutingTimeZone {
 			lstItemId.add(CancelAppStamp.createItemId(91, data.getDestinationTimeApp().getEngraveFrameNo(), 7));
 
 			sheet.setReasonForGoOut(data.getAppStampGoOutAtr().map(x -> GoingOutReason.valueOf(x.value)).orElse(null));
+			if(!sheet.getComeBack().isPresent()) {
+				sheet.setComeBack(Optional.of(WorkStamp.createDefault()));
+			}
 			sheet.getComeBack().ifPresent(y -> {
 				data.getWorkLocationCd().ifPresent(code -> {
 					y.setLocationCode(Optional.of(code));

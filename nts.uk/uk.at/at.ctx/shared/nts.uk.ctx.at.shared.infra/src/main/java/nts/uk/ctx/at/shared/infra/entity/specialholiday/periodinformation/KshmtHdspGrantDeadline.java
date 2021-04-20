@@ -9,7 +9,7 @@ import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.specialholiday.periodinformation.GrantDeadline;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * 期限情報
@@ -19,7 +19,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "KSHMT_HDSP_GRANT_DEADLINE")
-public class KshmtHdspGrantDeadline extends UkJpaEntity implements Serializable {
+public class KshmtHdspGrantDeadline extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

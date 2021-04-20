@@ -52,5 +52,4 @@ public class JpaMaxPersonSettingSetMemento implements MaxPersonSettingSetMemento
         }
 
 	}
-
 }

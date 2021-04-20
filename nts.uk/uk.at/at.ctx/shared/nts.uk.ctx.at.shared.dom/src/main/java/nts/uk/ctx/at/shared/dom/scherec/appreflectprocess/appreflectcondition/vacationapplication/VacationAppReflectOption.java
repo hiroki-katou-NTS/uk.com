@@ -15,12 +15,13 @@ import nts.uk.ctx.at.shared.dom.scherec.application.common.PrePostAtrShare;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.groupappabsence.algorithm.DeleteAttendanceProcess;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.DailyRecordOfApplication;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.ScheduleRecordClassifi;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.condition.DailyAfterAppReflectResult;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.condition.ReflectAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.condition.ReflectStartEndWork;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.condition.ReflectWorkInformation;
-import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.condition.SCCreateDailyAfterApplicationeReflect.DailyAfterAppReflectResult;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.vacationapplication.leaveapplication.ReflectWorkHourCondition;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.workchangeapp.ReflectWorkChangeApp.WorkInfoDto;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
@@ -51,7 +52,7 @@ public class VacationAppReflectOption extends DomainObject {
 	 *
 	 *         休暇系申請の反映（勤務実績）
 	 */
-	public DailyAfterAppReflectResult process(Require require, WorkInformation workInfo,
+	public DailyAfterAppReflectResult process(Require require, String cid, WorkInformation workInfo,
 			List<TimeZoneWithWorkNo> workingHours, PrePostAtrShare prePostAtr, NotUseAtr workChangeUse,
 			DailyRecordOfApplication dailyApp) {
 
@@ -69,17 +70,17 @@ public class VacationAppReflectOption extends DomainObject {
 		}
 
 		// 勤務情報の反映
-		lstItemId.addAll(ReflectWorkInformation.reflectInfo(require, workInfoDto, dailyApp, Optional.of(true),
+		lstItemId.addAll(ReflectWorkInformation.reflectInfo(require, cid, workInfoDto, dailyApp, Optional.of(true),
 				Optional.of(reflectWorkTime)));
 
 		// 始業終業の反映
-		lstItemId.addAll(ReflectStartEndWork.reflect(dailyApp, workingHours, prePostAtr));
+		lstItemId.addAll(ReflectStartEndWork.reflect(require, cid, dailyApp, workingHours, prePostAtr));
 
 		// [出退勤を反映する]をチェック
 		if (this.getReflectAttendance() == NotUseAtr.USE) {
 			// 出退勤の反映
-			lstItemId.addAll(ReflectAttendance.reflect(workingHours, ScheduleRecordClassifi.RECORD, dailyApp,
-					Optional.of(true), Optional.of(true)));
+			lstItemId.addAll(ReflectAttendance.reflect(require, cid, workingHours, ScheduleRecordClassifi.RECORD, dailyApp,
+					Optional.of(true), Optional.of(true), Optional.of(TimeChangeMeans.APPLICATION)));
 		}
 
 		// [1日休暇の場合は出退勤を削除]をチェック
@@ -93,7 +94,8 @@ public class VacationAppReflectOption extends DomainObject {
 		return new DailyAfterAppReflectResult(dailyApp, lstItemId);
 	}
 
-	public static interface Require extends ReflectWorkInformation.Require, DeleteAttendanceProcess.Require {
+	public static interface Require extends ReflectWorkInformation.Require, DeleteAttendanceProcess.Require,
+			ReflectStartEndWork.Require, ReflectAttendance.Require {
 
 	}
 	
@@ -102,7 +104,7 @@ public class VacationAppReflectOption extends DomainObject {
 	 *
 	 *         休暇系申請の反映（勤務予定）
 	 */
-	public DailyAfterAppReflectResult processSC(RequireSC require, WorkInformation workInfo,
+	public DailyAfterAppReflectResult processSC(RequireSC require, String cid, WorkInformation workInfo,
 			List<TimeZoneWithWorkNo> workingHours, NotUseAtr workChangeUse, DailyRecordOfApplication dailyApp) {
 
 		List<Integer> lstItemId = new ArrayList<Integer>();
@@ -118,20 +120,20 @@ public class VacationAppReflectOption extends DomainObject {
 		}
 
 		// 勤務情報の反映
-		lstItemId.addAll(ReflectWorkInformation.reflectInfo(require, workInfoDto, dailyApp, Optional.of(true),
+		lstItemId.addAll(ReflectWorkInformation.reflectInfo(require, cid, workInfoDto, dailyApp, Optional.of(true),
 				Optional.of(reflectWorkTime)));
 
 		// [出退勤を反映する]をチェック
 		if (this.getReflectAttendance() == NotUseAtr.USE) {
 			// 出退勤の反映
-			lstItemId.addAll(ReflectAttendance.reflect(workingHours, ScheduleRecordClassifi.SCHEDULE, dailyApp,
-					Optional.of(true), Optional.of(true)));
+			lstItemId.addAll(ReflectAttendance.reflect(require, cid, workingHours, ScheduleRecordClassifi.SCHEDULE, dailyApp,
+					Optional.of(true), Optional.of(true), Optional.of(TimeChangeMeans.APPLICATION)));
 		}
 
 		return new DailyAfterAppReflectResult(dailyApp, lstItemId);
 	}
 
-	public static interface RequireSC extends ReflectWorkInformation.Require {
+	public static interface RequireSC extends ReflectWorkInformation.Require, ReflectAttendance.Require {
 
 	}
 }

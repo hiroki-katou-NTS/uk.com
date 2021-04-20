@@ -13,7 +13,6 @@ import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.common.TimeZoneWithWorkNo;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.DailyRecordOfApplication;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.ScheduleRecordClassifi;
-import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.condition.SCCreateDailyAfterApplicationeReflect.DailyAfterAppReflectResult;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.stampapplication.algorithm.CancelAppStamp;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.workchangeapp.ReflectWorkChangeApp.WorkInfoDto;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
@@ -27,7 +26,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.TimeZone;
  */
 public class ReflectWorkInformation {
 
-	public static List<Integer> reflectInfo(Require require, WorkInfoDto workInfo, DailyRecordOfApplication dailyApp,
+	public static List<Integer> reflectInfo(Require require, String cid, WorkInfoDto workInfo, DailyRecordOfApplication dailyApp,
 			Optional<Boolean> changeWorkType, Optional<Boolean> changeWorkTime) {
 
 		List<Integer> lstItemId = new ArrayList<>();
@@ -57,7 +56,7 @@ public class ReflectWorkInformation {
 			//申請の反映先をチェックする
 			if(dailyApp.getClassification() == ScheduleRecordClassifi.SCHEDULE) {
 				//予定に出退勤の反映
-				val resultLeav = reflectAttLeavSchedule(require, ScheduleRecordClassifi.RECORD, dailyApp);
+				val resultLeav = reflectAttLeavSchedule(require, cid, ScheduleRecordClassifi.RECORD, dailyApp);
 				lstItemId.addAll(resultLeav.getLstItemId());
 			}
 			
@@ -72,7 +71,7 @@ public class ReflectWorkInformation {
 	}
 
 	//予定に出退勤の反映
-	private static DailyAfterAppReflectResult reflectAttLeavSchedule(Require require, ScheduleRecordClassifi clasifi,
+	private static DailyAfterAppReflectResult reflectAttLeavSchedule(Require require, String cid, ScheduleRecordClassifi clasifi,
 			DailyRecordOfApplication dailyApp) {
 		List<Integer> lstItemId = new ArrayList<>();
 		//所定時間帯を取得する
@@ -111,12 +110,12 @@ public class ReflectWorkInformation {
 		}).collect(Collectors.toList());
 		
 		//出退勤の反映
-		lstItemId.addAll(ReflectAttendance.reflect(timeZoneWithWorkNoLst, clasifi, dailyApp, Optional.of(true),
-				Optional.of(true)));
+		lstItemId.addAll(ReflectAttendance.reflect(require, cid, timeZoneWithWorkNoLst, clasifi, dailyApp, Optional.of(true),
+				Optional.of(true), Optional.of(TimeChangeMeans.APPLICATION)));
 		return new DailyAfterAppReflectResult(dailyApp, lstItemId);
 	}
 	
-	public static interface Require extends WorkInfoOfDailyAttendance.Require {
+	public static interface Require extends WorkInfoOfDailyAttendance.Require, ReflectAttendance.Require {
 
 	}
 }

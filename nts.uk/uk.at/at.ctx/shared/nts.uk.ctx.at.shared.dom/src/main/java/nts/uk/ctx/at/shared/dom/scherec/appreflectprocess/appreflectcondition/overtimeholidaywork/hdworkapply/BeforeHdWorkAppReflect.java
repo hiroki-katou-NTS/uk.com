@@ -14,11 +14,12 @@ import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.ov
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.algorithm.reflectbreak.ReflectApplicationTime;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.DailyRecordOfApplication;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.ScheduleRecordClassifi;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.condition.DailyAfterAppReflectResult;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.condition.ReflectAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.condition.ReflectStartEndWork;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.condition.ReflectWorkInformation;
-import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.condition.SCCreateDailyAfterApplicationeReflect.DailyAfterAppReflectResult;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.workchangeapp.ReflectWorkChangeApp.WorkInfoDto;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
@@ -38,7 +39,7 @@ public class BeforeHdWorkAppReflect extends DomainObject {
 	 *
 	 *         事前休日出勤申請の反映（勤務実績）
 	 */
-	public DailyAfterAppReflectResult process(Require require, AppHolidayWorkShare holidayApp,
+	public DailyAfterAppReflectResult process(Require require, String cid, AppHolidayWorkShare holidayApp,
 			DailyRecordOfApplication dailyApp) {
 
 		List<Integer> lstId = new ArrayList<Integer>();
@@ -48,12 +49,12 @@ public class BeforeHdWorkAppReflect extends DomainObject {
 				holidayApp.getWorkInformation().getWorkTimeCodeNotNull());
 
 		// 勤務情報の反映
-		lstId.addAll(ReflectWorkInformation.reflectInfo(require, workInfoDto, dailyApp, Optional.of(true),
+		lstId.addAll(ReflectWorkInformation.reflectInfo(require, cid, workInfoDto, dailyApp, Optional.of(true),
 				Optional.of(true)));
 
 		// 始業終業の反映
 		lstId.addAll(
-				ReflectStartEndWork.reflect(dailyApp, holidayApp.getWorkingTimeList(), holidayApp.getPrePostAtr()));
+				ReflectStartEndWork.reflect(require, cid, dailyApp, holidayApp.getWorkingTimeList(), holidayApp.getPrePostAtr()));
 
 		// 事前休出時間の反映
 		ReflectApplicationTime.process(holidayApp.getApplicationTime().getApplicationTime(), dailyApp,
@@ -68,7 +69,7 @@ public class BeforeHdWorkAppReflect extends DomainObject {
 		return new DailyAfterAppReflectResult(dailyApp, lstId);
 	}
 
-	public static interface Require extends ReflectWorkInformation.Require {
+	public static interface Require extends ReflectWorkInformation.Require,ReflectStartEndWork.Require {
 
 	}
 
@@ -79,7 +80,7 @@ public class BeforeHdWorkAppReflect extends DomainObject {
 	 *         事前休日出勤申請の反映(勤務予定）
 	 */
 
-	public DailyAfterAppReflectResult processSC(Require require, AppHolidayWorkShare holidayApp,
+	public DailyAfterAppReflectResult processSC(Require require, String cid, AppHolidayWorkShare holidayApp,
 			DailyRecordOfApplication dailyApp) {
 
 		List<Integer> lstId = new ArrayList<Integer>();
@@ -89,12 +90,12 @@ public class BeforeHdWorkAppReflect extends DomainObject {
 				holidayApp.getWorkInformation().getWorkTimeCodeNotNull());
 
 		// 勤務情報の反映
-		lstId.addAll(ReflectWorkInformation.reflectInfo(require, workInfoDto, dailyApp, Optional.of(true),
+		lstId.addAll(ReflectWorkInformation.reflectInfo(require, cid, workInfoDto, dailyApp, Optional.of(true),
 				Optional.of(true)));
 
 		// 出退勤の反映
-		lstId.addAll(ReflectAttendance.reflect(holidayApp.getWorkingTimeList(), ScheduleRecordClassifi.RECORD, dailyApp,
-				Optional.of(true), Optional.of(true)));
+		lstId.addAll(ReflectAttendance.reflect(require, cid, holidayApp.getWorkingTimeList(), ScheduleRecordClassifi.RECORD, dailyApp,
+				Optional.of(true), Optional.of(true), Optional.of(TimeChangeMeans.APPLICATION)));
 
 		// ドメイン「休憩の申請反映」を作成する
 		// 休憩・外出の申請反映

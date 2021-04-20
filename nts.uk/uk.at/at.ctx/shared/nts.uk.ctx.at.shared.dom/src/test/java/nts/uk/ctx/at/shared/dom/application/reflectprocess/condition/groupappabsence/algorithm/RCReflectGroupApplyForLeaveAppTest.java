@@ -21,7 +21,7 @@ import nts.uk.ctx.at.shared.dom.common.TimeZoneWithWorkNo;
 import nts.uk.ctx.at.shared.dom.scherec.application.common.PrePostAtrShare;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.DailyRecordOfApplication;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.ScheduleRecordClassifi;
-import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.condition.SCCreateDailyAfterApplicationeReflect.DailyAfterAppReflectResult;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.condition.DailyAfterAppReflectResult;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.vacationapplication.VacationAppReflectOption;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.vacationapplication.leaveapplication.ReflectWorkHourCondition;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
@@ -59,7 +59,7 @@ public class RCReflectGroupApplyForLeaveAppTest {
 		VacationAppReflectOption option = new VacationAppReflectOption(NotUseAtr.NOT_USE, NotUseAtr.NOT_USE,
 				ReflectWorkHourCondition.REFLECT);// 出退勤を反映する=反映する
 
-		option.process(require, workInfo, new ArrayList<>(), PrePostAtrShare.POSTERIOR,
+		option.process(require, "", workInfo, new ArrayList<>(), PrePostAtrShare.POSTERIOR,
 				NotUseAtr.USE, dailyApp);
 		
 		assertThat(dailyApp.getWorkInformation().getRecordInfo().getWorkTimeCode().v())
@@ -93,7 +93,7 @@ public class RCReflectGroupApplyForLeaveAppTest {
 		VacationAppReflectOption option = new VacationAppReflectOption(NotUseAtr.NOT_USE, NotUseAtr.NOT_USE,
 				ReflectWorkHourCondition.NOT_REFLECT);// 出退勤を反映する=反映する
 
-		val resultActual = option.process(require, workInfo, new ArrayList<>(),
+		val resultActual = option.process(require, "", workInfo, new ArrayList<>(),
 				PrePostAtrShare.POSTERIOR, NotUseAtr.USE, dailyApp);
 
 		assertThat(resultActual.getDomainDaily().getWorkInformation().getRecordInfo().getWorkTimeCode().v())
@@ -125,7 +125,7 @@ public class RCReflectGroupApplyForLeaveAppTest {
 		VacationAppReflectOption option = new VacationAppReflectOption(NotUseAtr.NOT_USE, NotUseAtr.USE, // 出退勤を反映する=する
 				ReflectWorkHourCondition.REFLECT);
 
-		DailyAfterAppReflectResult resultActual = option.process(require, workInfo,
+		DailyAfterAppReflectResult resultActual = option.process(require, "", workInfo,
 				workingHours, PrePostAtrShare.POSTERIOR, NotUseAtr.USE, dailyApp);
 
 		assertThat(resultActual.getDomainDaily().getAttendanceLeave().get().getTimeLeavingWorks())
@@ -165,7 +165,7 @@ public class RCReflectGroupApplyForLeaveAppTest {
 		VacationAppReflectOption option = new VacationAppReflectOption(NotUseAtr.NOT_USE, NotUseAtr.NOT_USE, // 出退勤を反映する=しない
 				ReflectWorkHourCondition.REFLECT);
 
-		DailyAfterAppReflectResult resultActual = option.process(require, workInfo,
+		DailyAfterAppReflectResult resultActual = option.process(require, "", workInfo,
 				workingHours, PrePostAtrShare.POSTERIOR, NotUseAtr.USE, dailyApp);
 
 		assertThat(resultActual.getDomainDaily().getAttendanceLeave().get().getTimeLeavingWorks())
@@ -211,7 +211,7 @@ public class RCReflectGroupApplyForLeaveAppTest {
 				;
 			}
 		};
-		DailyAfterAppReflectResult resultActual = option.process(require, workInfo,
+		DailyAfterAppReflectResult resultActual = option.process(require, "", workInfo,
 				workingHours, PrePostAtrShare.POSTERIOR, NotUseAtr.USE, dailyApp);
 
 		assertThat(resultActual.getDomainDaily().getAttendanceLeave().get().getTimeLeavingWorks())
@@ -251,7 +251,7 @@ public class RCReflectGroupApplyForLeaveAppTest {
 
 		VacationAppReflectOption option = new VacationAppReflectOption(NotUseAtr.USE, NotUseAtr.NOT_USE, // 1日休暇の場合は出退勤を削除=する
 				ReflectWorkHourCondition.REFLECT);
-		DailyAfterAppReflectResult resultActual = option.process(require, workInfo,
+		DailyAfterAppReflectResult resultActual = option.process(require, "", workInfo,
 				workingHours, PrePostAtrShare.POSTERIOR, NotUseAtr.USE, dailyApp);
 
 		assertThat(resultActual.getDomainDaily().getAttendanceLeave().get().getTimeLeavingWorks())

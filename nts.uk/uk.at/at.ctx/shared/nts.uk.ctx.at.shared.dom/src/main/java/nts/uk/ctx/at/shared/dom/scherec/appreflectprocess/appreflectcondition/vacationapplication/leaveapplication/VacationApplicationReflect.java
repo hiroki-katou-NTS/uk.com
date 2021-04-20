@@ -7,7 +7,7 @@ import lombok.val;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.shared.dom.scherec.application.appabsence.ApplyForLeaveShare;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.DailyRecordOfApplication;
-import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.condition.SCCreateDailyAfterApplicationeReflect.DailyAfterAppReflectResult;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.condition.DailyAfterAppReflectResult;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.timeleaveapplication.TimeLeaveAppReflectCondition;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.vacationapplication.VacationAppReflectOption;
 
@@ -42,7 +42,7 @@ public class VacationApplicationReflect extends AggregateRoot {
 			DailyRecordOfApplication dailyApp) {
 
 		// 休暇系申請の反映
-		val groupAppLeav = this.getWorkAttendanceReflect().process(require,
+		val groupAppLeav = this.getWorkAttendanceReflect().process(require, companyId, 
 				leavApp.getReflectFreeTimeApp().getWorkInfo(), leavApp.getReflectFreeTimeApp().getWorkingHours(),
 				leavApp.getPrePostAtr(), leavApp.getReflectFreeTimeApp().getWorkChangeUse(), dailyApp);
 
@@ -68,7 +68,7 @@ public class VacationApplicationReflect extends AggregateRoot {
 			DailyRecordOfApplication dailyApp) {
 
 		// 休暇系申請の反映（勤務予定）
-		val groupAppLeav = this.getWorkAttendanceReflect().processSC(require,
+		val groupAppLeav = this.getWorkAttendanceReflect().processSC(require, companyId, 
 				leavApp.getReflectFreeTimeApp().getWorkInfo(), leavApp.getReflectFreeTimeApp().getWorkingHours(),
 				leavApp.getReflectFreeTimeApp().getWorkChangeUse(), dailyApp);
 

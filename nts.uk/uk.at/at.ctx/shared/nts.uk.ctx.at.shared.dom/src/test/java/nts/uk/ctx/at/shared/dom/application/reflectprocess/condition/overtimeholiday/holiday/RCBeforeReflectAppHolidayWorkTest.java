@@ -55,7 +55,7 @@ public class RCBeforeReflectAppHolidayWorkTest {
 				111);// 残業時間
 		val dailyApp = ReflectApplicationHelper.createRCWithTimeLeavFull(ScheduleRecordClassifi.RECORD, 1);
 		BeforeHdWorkAppReflect before = new BeforeHdWorkAppReflect(NotUseAtr.NOT_USE);// [休日出勤時間を実績項目へ反映する]=しない
-		before.process(require, holidayApp, dailyApp);
+		before.process(require, "", holidayApp, dailyApp);
 
 		// 勤務情報の反映ができます
 		assertThat(dailyApp.getWorkInformation().getRecordInfo().getWorkTypeCode().v()).isEqualTo("005");
@@ -112,7 +112,7 @@ public class RCBeforeReflectAppHolidayWorkTest {
 				111);// 残業時間
 		val dailyApp = ReflectApplicationHelper.createRCWithTimeLeavFull(ScheduleRecordClassifi.RECORD, 1);
 		BeforeHdWorkAppReflect before = new BeforeHdWorkAppReflect(NotUseAtr.USE);// [休日出勤時間を実績項目へ反映する]=する
-		before.process(require, holidayApp, dailyApp);
+		before.process(require, "", holidayApp, dailyApp);
 
 		// 勤務情報の反映ができます
 		assertThat(dailyApp.getWorkInformation().getRecordInfo().getWorkTypeCode().v()).isEqualTo("005");

@@ -4,6 +4,9 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
 
@@ -17,20 +20,27 @@ public class MaxPersonSetting extends DomainObject {
      * 介護看護休暇日数: 看護休暇日数
      * */
     private ChildCareNurseUpperLimit nursingNumberLeaveDay;
-
+    
     /** The nursing number person.
      * 要介護看護人数: 看護休暇人数
      * */
     private NumberOfCaregivers nursingNumberPerson;
-
+    
     /**
      * Instantiates a new max person setting.
      *
      * @param memento the memento
      */
-    public MaxPersonSetting(MaxPersonSettingGetMemento memento) {
-        this.nursingNumberLeaveDay = memento.getNursingNumberLeaveDay();
-        this.nursingNumberPerson = memento.getNursingNumberPerson();
+    public MaxPersonSetting(ChildCareNurseUpperLimit nursingNumberLeaveDay, NumberOfCaregivers nursingNumberPerson) {
+        this.nursingNumberLeaveDay = nursingNumberLeaveDay;
+        this.nursingNumberPerson = nursingNumberPerson;
+    }
+    
+    public static List<MaxPersonSetting> getList(MaxPersonSettingGetMemento memento){
+    	List<MaxPersonSetting> maxPersonSettings = new ArrayList<MaxPersonSetting>();
+    	maxPersonSettings.add(new MaxPersonSetting(memento.getNursingNumberLeaveDay(), memento.getNursingNumberPerson()));
+    	maxPersonSettings.add(new MaxPersonSetting(memento.getNursingNumberLeaveDay2(), memento.getNursingNumberPerson2()));
+    	return maxPersonSettings;
     }
 
     /**

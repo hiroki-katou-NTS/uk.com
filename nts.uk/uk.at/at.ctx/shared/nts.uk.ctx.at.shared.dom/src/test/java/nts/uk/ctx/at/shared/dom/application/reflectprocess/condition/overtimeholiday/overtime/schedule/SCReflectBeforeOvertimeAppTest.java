@@ -23,7 +23,6 @@ import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.re
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.ScheduleRecordClassifi;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
-
 /**
  * @author thanh_nx
  *
@@ -51,7 +50,7 @@ public class SCReflectBeforeOvertimeAppTest {
 	public void test1() {
 		DailyRecordOfApplication dailyApp = ReflectApplicationHelper
 				.createRCWithTimeLeavFull(ScheduleRecordClassifi.SCHEDULE, 1);
-		List<Integer> lstResult = createReflectSetting(NotUseAtr.USE).processSC(require, createOverTimeApp(), dailyApp
+		List<Integer> lstResult = createReflectSetting(NotUseAtr.USE).processSC(require, "", createOverTimeApp(), dailyApp
 				);
 
 		assertThat(dailyApp.getWorkInformation().getRecordInfo().getWorkTimeCode().v()).isEqualTo("003");// 就業時間帯コード
@@ -80,7 +79,7 @@ public class SCReflectBeforeOvertimeAppTest {
 	public void test2() {
 		DailyRecordOfApplication dailyApp = ReflectApplicationHelper
 				.createRCWithTimeLeavFull(ScheduleRecordClassifi.SCHEDULE, 1);
-		List<Integer> lstResult = createReflectSetting(NotUseAtr.NOT_USE).processSC(require, createOverTimeApp(),
+		List<Integer> lstResult = createReflectSetting(NotUseAtr.NOT_USE).processSC(require, "", createOverTimeApp(),
 				dailyApp);
 
 		assertThat(dailyApp.getBreakTime().getBreakTimeSheets().get(0).getStartTime().v()).isEqualTo(482);// 休憩時間帯

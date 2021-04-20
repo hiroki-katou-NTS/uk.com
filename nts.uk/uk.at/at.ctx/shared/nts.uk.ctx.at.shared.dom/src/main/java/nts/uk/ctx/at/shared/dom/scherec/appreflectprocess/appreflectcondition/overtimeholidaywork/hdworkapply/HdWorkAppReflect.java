@@ -10,7 +10,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.shared.dom.scherec.application.common.PrePostAtrShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.holidayworktime.AppHolidayWorkShare;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.DailyRecordOfApplication;
-import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.condition.SCCreateDailyAfterApplicationeReflect.DailyAfterAppReflectResult;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.condition.DailyAfterAppReflectResult;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
@@ -50,7 +50,7 @@ public class HdWorkAppReflect {
 		if (holidayApp.getPrePostAtr() == PrePostAtrShare.PREDICT) {
 
 			// 事前休日出勤申請の反映
-			lstId.addAll(this.getBefore().process(require, holidayApp, dailyApp).getLstItemId());
+			lstId.addAll(this.getBefore().process(require, cid, holidayApp, dailyApp).getLstItemId());
 		} else {
 
 			// 事後休日出勤申請の反映
@@ -70,11 +70,11 @@ public class HdWorkAppReflect {
 	 *         休日出勤申請の反映（勤務予定）
 	 */
 
-	public DailyAfterAppReflectResult process(RequireSC require, AppHolidayWorkShare holidayApp,
+	public DailyAfterAppReflectResult process(RequireSC require, String cid, AppHolidayWorkShare holidayApp,
 			DailyRecordOfApplication dailyApp) {
 
 		// 休日出勤申請の反映（勤務予定）
-		return this.getBefore().process(require, holidayApp, dailyApp);
+		return this.getBefore().process(require, cid, holidayApp, dailyApp);
 	}
 
 	public static interface RequireSC extends BeforeHdWorkAppReflect.Require {

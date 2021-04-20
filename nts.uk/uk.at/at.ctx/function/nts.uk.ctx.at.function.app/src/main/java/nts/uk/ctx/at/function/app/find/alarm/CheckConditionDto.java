@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import nts.uk.ctx.at.function.app.find.alarm.extractionrange.ExtractionAverMonthDto;
 import nts.uk.ctx.at.function.app.find.alarm.extractionrange.ExtractionPeriodDailyDto;
+import nts.uk.ctx.at.function.app.find.alarm.extractionrange.ExtractionPeriodEDto;
 import nts.uk.ctx.at.function.app.find.alarm.extractionrange.ExtractionPeriodMonthlyDto;
 import nts.uk.ctx.at.function.app.find.alarm.extractionrange.ExtractionPeriodUnitDto;
 import nts.uk.ctx.at.function.app.find.alarm.extractionrange.ExtractionRangeYearDto;
@@ -19,4 +20,5 @@ public class CheckConditionDto {
 	private List<ExtractionPeriodMonthlyDto> listExtractionMonthly;
 	private ExtractionRangeYearDto extractionYear;
 	private ExtractionAverMonthDto extractionAverMonth;
+	private ExtractionPeriodEDto extractionScheYear;
 }

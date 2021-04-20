@@ -17,6 +17,7 @@ import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.ov
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.DailyRecordOfApplication;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.ScheduleRecordClassifi;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.condition.ReflectAttendance;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
@@ -63,8 +64,8 @@ public class AfterOtWorkAppReflect {
 		// [出退勤を反映する]をチェック
 		if (this.getWorkReflect() == NotUseAtr.USE) {
 			// 出退勤の反映
-			lstId.addAll(ReflectAttendance.reflect(overTimeApp.getWorkHoursOp(), ScheduleRecordClassifi.RECORD,
-					dailyApp, Optional.of(true), Optional.of(true)));
+			lstId.addAll(ReflectAttendance.reflect(require, cid, overTimeApp.getWorkHoursOp(), ScheduleRecordClassifi.RECORD,
+					dailyApp, Optional.of(true), Optional.of(true), Optional.of(TimeChangeMeans.APPLICATION)));
 		}
 
 		// 残業時間の反映
@@ -82,7 +83,7 @@ public class AfterOtWorkAppReflect {
 		return lstId;
 	}
 
-	public static interface RequireAfter extends TranferOvertimeCompensatory.Require {
+	public static interface RequireAfter extends TranferOvertimeCompensatory.Require, ReflectAttendance.Require {
 
 	}
 }

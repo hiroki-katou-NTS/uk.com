@@ -550,36 +550,55 @@ public class JpaApprovalSttScreenRepoImpl extends JpaRepository implements Appro
 			return Collections.emptyList();
 		}
 		String sql = 
-				"SELECT SKBSYINIO.WORKPLACE_ID,SKBSYINIO.SID,SKBSYINIO.COMP_ST,SKBSYINIO.COMP_ED,KYO.START_DATE as KYO_ST,KYO.END_DATE as KYO_ED " +
+				"SELECT DISTINCT SKBSYITERM.WORKPLACE_ID,SKBSYITERM.SID,SKBSYITERM.WORK_ST,SKBSYITERM.WORK_ED,SKBSYITERM.KYO_ST,SKBSYITERM.KYO_ED " +
 				"FROM ( " +
-				"        SELECT SKBSYIN.WORKPLACE_ID,SKBSYIN.SID,SKBSYIN.START_DATE as WORK_ST,SKBSYIN.END_DATE as WORK_ED,SKR.START_DATE as COMP_ST,SKR.END_DATE as COMP_ED " +
-				"        FROM ( " +
-				"                        SELECT SSRK.WORKPLACE_ID,SSRK.SID,SSR.START_DATE,SSR.END_DATE " +
-				"                        FROM         BSYMT_AFF_WKP_HIST SSR " +
-				"                        INNER JOIN   BSYMT_AFF_WKP_HIST_ITEM SSRK " +
-				"                        ON           SSR.HIST_ID = SSRK.HIST_ID " +
-				"                        WHERE        @startDate <= SSR.END_DATE " +
-				"                        AND          SSR.START_DATE <= @endDate " +
-				"                      　      　　　　　　	 AND          SSRK.WORKPLACE_ID IN @wkpIDLst " +    
-				"                    ) SKBSYIN " +
-				"        INNER JOIN       BSYMT_AFF_COM_HIST SKR " +
-				"        ON               SKBSYIN.SID = SKR.SID " +
-				"        INNER JOIN       BSYMT_SYAIN SDKJ " +
-				"        ON               SDKJ.SID = SKR.SID " +
-				"        WHERE            @startDate <= SKR.END_DATE " +
-				"        AND              SKR.START_DATE <= @endDate " +
-				"        AND SDKJ.DEL_STATUS_ATR = '0' " +
-				") SKBSYINIO " +
+				"                SELECT SKBSYINIO.WORKPLACE_ID,SKBSYINIO.SID,KYO.EMP_CD,SKBSYINIO.WORK_ST,SKBSYINIO.WORK_ED,SKBSYINIO.COMP_ST,SKBSYINIO.COMP_ED,KYO.START_DATE as KYO_ST,KYO.END_DATE as KYO_ED " +
+				"                FROM ( " +
+				"                        SELECT SKBSYIN.WORKPLACE_ID,SKBSYIN.SID,SKBSYIN.START_DATE as WORK_ST,SKBSYIN.END_DATE as WORK_ED,SKR.START_DATE as COMP_ST,SKR.END_DATE as COMP_ED " +
+				"                        FROM ( " +
+				"                                        SELECT SSRK.WORKPLACE_ID,SSRK.SID,SSR.START_DATE,SSR.END_DATE " +
+				"                                        FROM         BSYMT_AFF_WKP_HIST SSR " +
+				"                                        INNER JOIN   BSYMT_AFF_WKP_HIST_ITEM SSRK " +
+				"                                        ON           SSR.HIST_ID = SSRK.HIST_ID " +
+				"                                        WHERE        @startDate <= SSR.END_DATE " +
+				"                                        AND          SSR.START_DATE <= @endDate " +
+				"                                        AND          SSRK.WORKPLACE_ID IN @wkpIDLst " +          
+				"                                    ) SKBSYIN " +
+				"                        INNER JOIN       BSYMT_AFF_COM_HIST SKR " +
+				"                        ON               SKBSYIN.SID = SKR.SID " +
+				"                        INNER JOIN       BSYMT_SYAIN SDKJ " +
+				"                        ON               SDKJ.SID = SKR.SID " +
+				"                        WHERE            @startDate <= SKR.END_DATE " +
+				"                        AND              SKR.START_DATE <= @endDate " +
+				"                        AND SDKJ.DEL_STATUS_ATR = '0' " +
+				"                ) SKBSYINIO " +
+				"                LEFT JOIN  ( " +
+				"                        SELECT KRK.SID,KRK.EMP_CD,KR.START_DATE,KR.END_DATE " +
+				"                        FROM BSYMT_AFF_EMP_HIST KR " +
+				"                        INNER JOIN BSYMT_AFF_EMP_HIST_ITEM KRK " +
+				"                        ON KR.HIST_ID = KRK.HIST_ID " +
+				"                        WHERE KRK.EMP_CD IN @employmentCDLst " +
+				"                        AND @startDate <= KR.END_DATE " +
+				"                        AND KR.START_DATE <= @endDate " +
+				"                ) KYO " +
+				"                ON SKBSYINIO.SID = KYO.SID " +
+				"            ) SKBSYITERM " +
 				"INNER JOIN  ( " +
-				"        SELECT KRK.SID,KRK.EMP_CD,KR.START_DATE,KR.END_DATE " +
-				"        FROM BSYMT_AFF_EMP_HIST KR " +
-				"        INNER JOIN BSYMT_AFF_EMP_HIST_ITEM KRK " +
-				"        ON KR.HIST_ID = KRK.HIST_ID " +
-				"        WHERE KRK.EMP_CD IN @employmentCDLst " +
-				"        AND @startDate <= KR.END_DATE " +
-				"        AND KR.START_DATE <= @endDate " +
-				") KYO " +
-				"ON SKBSYINIO.SID = KYO.SID;";
+				"                        SELECT             SRI.EMPLOYEE_ID as APP_SID,SRI.APPROVAL_RECORD_DATE as APP_DATE,SRI.ROOT_STATE_ID " +
+				"                        FROM               WWFDT_APP_INST_ROUTE SRI " +
+				"                        INNER JOIN         WWFDT_APP_INST_PHASE SFI " +
+				"                        ON                 SRI.ROOT_STATE_ID = SFI.ROOT_STATE_ID " +
+				"                        WHERE              SFI.APP_PHASE_ATR IN ('0','3','4') " +
+				"                        AND                @startDate <= SRI.APPROVAL_RECORD_DATE " +
+				"                        AND                SRI.APPROVAL_RECORD_DATE <= @endDate " +
+				"                        ) MSNSNS " +
+				"ON              SKBSYITERM.SID  = MSNSNS.APP_SID " +
+				"WHERE        SKBSYITERM.WORK_ST <= MSNSNS.APP_DATE " +
+				"AND             SKBSYITERM.COMP_ST <= MSNSNS.APP_DATE " +
+				"AND             SKBSYITERM.KYO_ST <= MSNSNS.APP_DATE " +
+				"AND             MSNSNS.APP_DATE <= SKBSYITERM.WORK_ED " +
+				"AND             MSNSNS.APP_DATE <= SKBSYITERM.COMP_ED " +
+				"AND             MSNSNS.APP_DATE <= SKBSYITERM.KYO_ED;";
 		return new NtsStatement(sql, this.jdbcProxy())
 				.paramDate("startDate", startDate)
 				.paramDate("endDate", endDate)
@@ -592,8 +611,8 @@ public class JpaApprovalSttScreenRepoImpl extends JpaRepository implements Appro
 							"", 
 							null, 
 							null, 
-							rec.getGeneralDate("COMP_ST"), 
-							rec.getGeneralDate("COMP_ED"), 
+							rec.getGeneralDate("WORK_ST"), 
+							rec.getGeneralDate("WORK_ED"), 
 							rec.getGeneralDate("KYO_ST"), 
 							rec.getGeneralDate("KYO_ED"), 
 							"", 

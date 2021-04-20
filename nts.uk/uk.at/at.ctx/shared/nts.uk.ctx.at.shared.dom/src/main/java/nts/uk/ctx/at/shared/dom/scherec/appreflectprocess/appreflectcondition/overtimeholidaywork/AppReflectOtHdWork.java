@@ -17,7 +17,7 @@ import nts.uk.ctx.at.shared.dom.scherec.application.overtime.ApplicationTimeShar
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.hdworkapply.HdWorkAppReflect;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.otworkapply.OtWorkAppReflect;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.DailyRecordOfApplication;
-import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.condition.SCCreateDailyAfterApplicationeReflect.DailyAfterAppReflectResult;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.condition.DailyAfterAppReflectResult;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.condition.UpdateEditSttCreateBeforeAppReflect;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.holidayworktime.HolidayMidnightWork;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.holidayworktime.HolidayWorkMidNightTime;
@@ -88,7 +88,7 @@ public class AppReflectOtHdWork extends AggregateRoot {
 
 	public List<Integer> processRC(RequireSC require, AppOverTimeShare overTimeApp, DailyRecordOfApplication dailyApp) {
 
-		return this.getOvertimeWorkAppReflect().process(require, overTimeApp, dailyApp);
+		return this.getOvertimeWorkAppReflect().process(require, companyId, overTimeApp, dailyApp);
 	}
 
 	public static interface RequireSC extends OtWorkAppReflect.RequireSC {
@@ -105,7 +105,7 @@ public class AppReflectOtHdWork extends AggregateRoot {
 			DailyRecordOfApplication dailyApp) {
 
 		// 休日出勤申請の反映（勤務予定）
-		return this.getHolidayWorkAppReflect().process(require, holidayApp, dailyApp);
+		return this.getHolidayWorkAppReflect().process(require, companyId, holidayApp, dailyApp);
 	}
 
 	public static interface RequireHolSC extends HdWorkAppReflect.RequireSC {

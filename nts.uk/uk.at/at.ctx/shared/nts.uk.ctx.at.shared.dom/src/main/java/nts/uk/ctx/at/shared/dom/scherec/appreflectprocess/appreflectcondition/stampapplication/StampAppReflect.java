@@ -105,14 +105,13 @@ public class StampAppReflect extends AggregateRoot {
 		if (application.getPrePostAtr() == PrePostAtrShare.POSTERIOR) {
 			// 事後
 			// 打刻申請の反映
-			lstItemId.addAll(reflectSchedule(application, dailyApp));
-
+			lstItemId.addAll(reflectStampApp(application, dailyApp));
 			// 応援の反映
 			lstItemId.addAll(reflectSupport(require, application, dailyApp));
 		} else {
 			// [事前]
 			// 始業終業の反映
-			lstItemId.addAll(ReflectStartEndWork.reflect(dailyApp,
+			lstItemId.addAll(ReflectStartEndWork.reflect(require, companyId, dailyApp,
 					application.getListTimeStampAppOther().stream()
 							.map(x -> new TimeZoneWithWorkNo(x.getDestinationTimeZoneApp().getEngraveFrameNo(),
 									x.getTimeZone().getStartTime().v(), x.getTimeZone().getEndTime().v()))
@@ -126,11 +125,19 @@ public class StampAppReflect extends AggregateRoot {
 	/**
 	 * @author thanh_nx
 	 *
+	 *         打刻申請を反映する（勤務予定）
+	 */
+	public Collection<Integer> reflectSchedule(AppStampShare application, DailyRecordOfApplication dailyApp) {
+		return reflectStampApp(application, dailyApp);
+	}
+	
+	/**
+	 * @author thanh_nx
+	 *
 	 *         打刻申請の反映
 	 */
 
-	public Collection<Integer> reflectSchedule(AppStampShare application, DailyRecordOfApplication dailyApp) {
-
+	public Collection<Integer> reflectStampApp(AppStampShare application, DailyRecordOfApplication dailyApp) {
 		Set<Integer> lstItemId = new HashSet<>();
 		// [出退勤を反映する]をチェック
 
@@ -262,7 +269,7 @@ public class StampAppReflect extends AggregateRoot {
 	}
 
 
-	public static interface Require extends ReflectSupportStartEnd.Require {
+	public static interface Require extends ReflectSupportStartEnd.Require, ReflectStartEndWork.Require {
 
 	}
 

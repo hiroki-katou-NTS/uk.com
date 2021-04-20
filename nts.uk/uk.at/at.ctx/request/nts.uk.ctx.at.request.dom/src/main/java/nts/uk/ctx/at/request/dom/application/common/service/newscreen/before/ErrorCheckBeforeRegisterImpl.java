@@ -8,18 +8,18 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeCheckResult;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetRepository;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetting;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appovertime.OvertimeAppSet;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appovertime.OvertimeAppSetRepository;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeLeaveAppCommonSet;
 
 @Stateless
 public class ErrorCheckBeforeRegisterImpl implements IErrorCheckBeforeRegister {
 
 	@Inject
-	private OvertimeRestAppCommonSetRepository overtimeRestAppCommonSetRepository;
+	private OvertimeAppSetRepository hdWorkAppSetRepo;
 	
 	@Inject
 	private ApplicationRepository appRepository;
@@ -114,11 +114,12 @@ public class ErrorCheckBeforeRegisterImpl implements IErrorCheckBeforeRegister {
 			return false;
 		}
 		// ドメインモデル「残業休出申請共通設定」を取得
-		Optional<OvertimeRestAppCommonSetting> overtimeRestAppCommonSet = this.overtimeRestAppCommonSetRepository
-				.getOvertimeRestAppCommonSetting(companyId, ApplicationType.OVER_TIME_APPLICATION.value);
-		if (overtimeRestAppCommonSet.isPresent()) {
+		Optional<OvertimeAppSet> hdWorkAppReflect = hdWorkAppSetRepo.findSettingByCompanyId(companyId);
+
+		if (hdWorkAppReflect.isPresent()) {
+			OvertimeLeaveAppCommonSet overtimeRestAppCommonSet = hdWorkAppReflect.get().getOvertimeLeaveAppCommonSet();
 			// 残業休出申請共通設定.事前表示区分＝表示する
-			if (overtimeRestAppCommonSet.get().getPreExcessDisplaySetting().equals(UseAtr.USE)) {
+			if (overtimeRestAppCommonSet.getPreExcessDisplaySetting().equals(UseAtr.USE)) {
 				// 表示する:Trueを返す
 				return true;
 			}

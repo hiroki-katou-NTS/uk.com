@@ -22,7 +22,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NumberOfCaregivers
  ****** 1.介護対象期間を確認
  *
  */
-@RunWith(JMockit.class)
+//@RunWith(JMockit.class)
 public class CareManagementDateTest {
 	/**
 	 * 介護対象期間を確認

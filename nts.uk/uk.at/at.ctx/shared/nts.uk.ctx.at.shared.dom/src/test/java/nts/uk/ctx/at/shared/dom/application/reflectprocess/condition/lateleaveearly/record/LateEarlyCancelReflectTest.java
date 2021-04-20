@@ -23,6 +23,7 @@ import nts.uk.ctx.at.shared.dom.scherec.application.stamp.TimeStampAppShare;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.lateearlycancellation.LateEarlyCancelReflect;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.DailyRecordOfApplication;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.ScheduleRecordClassifi;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.condition.DailyAfterAppReflectResult;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.TimevacationUseTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeWithCalculation;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.earlyleavetime.LeaveEarlyTimeOfDaily;
@@ -52,9 +53,9 @@ public class LateEarlyCancelReflectTest {
 				1);// no = 1
 		LateEarlyCancelReflect reflectApp = new LateEarlyCancelReflect("", false);
 
-		List<Integer> actualResult = reflectApp.reflect(appWorkChange, dailyApp);
+		DailyAfterAppReflectResult actualResult = reflectApp.reflect(appWorkChange, dailyApp);
 
-		assertThat(actualResult).isEqualTo(Arrays.asList(592, 861));
+		assertThat(actualResult.getLstItemId()).isEqualTo(Arrays.asList(592, 861));
 
 		// すべての値が０
 		// 遅刻時間をクリア
@@ -83,9 +84,9 @@ public class LateEarlyCancelReflectTest {
 				1);// no = 1
 		LateEarlyCancelReflect reflectApp = new LateEarlyCancelReflect("", false);
 
-		List<Integer> actualResult = reflectApp.reflect(appWorkChange, dailyApp);
+		DailyAfterAppReflectResult actualResult = reflectApp.reflect(appWorkChange, dailyApp);
 
-		assertThat(actualResult).isEqualTo(Arrays.asList(604, 863));
+		assertThat(actualResult.getLstItemId()).isEqualTo(Arrays.asList(604, 863));
 
 		// すべての値が０
 		// 早退時間をクリア

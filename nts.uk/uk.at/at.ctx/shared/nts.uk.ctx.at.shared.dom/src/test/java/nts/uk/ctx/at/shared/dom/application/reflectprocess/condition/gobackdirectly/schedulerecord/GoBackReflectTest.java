@@ -65,7 +65,7 @@ public class GoBackReflectTest {
 
 		List<Integer> actualResult = new ArrayList<>();
 
-		actualResult.addAll(reflect.reflect(require, "", appGoback, dailyApp));
+		actualResult.addAll(reflect.reflect(require, appGoback, dailyApp));
 
 		assertThat(actualResult).isEqualTo(Arrays.asList(28, 1292, 1293, 29));
 
@@ -83,7 +83,7 @@ public class GoBackReflectTest {
 
 		List<Integer> actualResult2 = new ArrayList<>();
 
-		actualResult2.addAll(reflect2.reflect(require, "", appGoback2, dailyApp2));
+		actualResult2.addAll(reflect2.reflect(require, appGoback2, dailyApp2));
 
 		assertThat(actualResult2).isEqualTo(Arrays.asList(28, 1292, 1293, 29));
 	}
@@ -111,7 +111,7 @@ public class GoBackReflectTest {
 
 		List<Integer> actualResult = new ArrayList<>();
 
-		actualResult.addAll(reflect.reflect(require, "", appGoback, dailyApp));
+		actualResult.addAll(reflect.reflect(require, appGoback, dailyApp));
 
 		assertThat(actualResult).isEmpty();
 
@@ -129,7 +129,7 @@ public class GoBackReflectTest {
 
 		List<Integer> actualResult2 = new ArrayList<>();
 
-		actualResult2.addAll(reflect2.reflect(require, "", appGoback2, dailyApp2));
+		actualResult2.addAll(reflect2.reflect(require, appGoback2, dailyApp2));
 
 		assertThat(actualResult2).isEmpty();
 
@@ -141,7 +141,7 @@ public class GoBackReflectTest {
 
 		List<Integer> actualResult3 = new ArrayList<>();
 
-		actualResult3.addAll(reflect3.reflect(require, "", appGoback3, dailyApp3));
+		actualResult3.addAll(reflect3.reflect(require, appGoback3, dailyApp3));
 
 		assertThat(actualResult3).isEmpty();
 
@@ -229,7 +229,7 @@ public class GoBackReflectTest {
 		assertThat(dailyApp.getWorkInformation().getGoStraightAtr()).isEqualTo(NotUseAttribute.Not_use);//直行区分
 		assertThat(dailyApp.getWorkInformation().getBackStraightAtr()).isEqualTo(NotUseAttribute.Not_use);//直帰区分
 		
-		reflect.reflect(require, "", setting, dailyApp);
+		reflect.reflect(require, setting, dailyApp);
 		//NotUseAttribute
 		assertThat(dailyApp.getWorkInformation().getGoStraightAtr()).isEqualTo(NotUseAttribute.Use);//直行区分
 		assertThat(dailyApp.getWorkInformation().getBackStraightAtr()).isEqualTo(NotUseAttribute.Not_use);//直帰区分
@@ -245,7 +245,7 @@ public class GoBackReflectTest {
 		assertThat(dailyApp.getWorkInformation().getGoStraightAtr()).isEqualTo(NotUseAttribute.Not_use);//直行区分
 		assertThat(dailyApp.getWorkInformation().getBackStraightAtr()).isEqualTo(NotUseAttribute.Not_use);//直帰区分
 		
-		reflect.reflect(require, "", setting, dailyApp);
+		reflect.reflect(require, setting, dailyApp);
 		//NotUseAttribute
 		assertThat(dailyApp.getWorkInformation().getGoStraightAtr()).isEqualTo(NotUseAttribute.Not_use);//直行区分
 		assertThat(dailyApp.getWorkInformation().getBackStraightAtr()).isEqualTo(NotUseAttribute.Use);//直帰区分

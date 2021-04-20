@@ -30,11 +30,11 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.OutingTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ChildCareAttribute;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortWorkTimFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortWorkingTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManagePerCompanySet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyprocess.calc.CalculateOption;
+import nts.uk.ctx.at.shared.dom.shortworktime.ChildCareAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZone;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
@@ -200,7 +200,7 @@ public class ScheduleTimePubImpl implements ScheduleTimePub{
 			if(shortTimeStamp <= childCareStartTime.size()
 			 &&shortTimeStamp <= childCareEndTime.size()) {
 				returnList.add(new ShortWorkingTimeSheet(new ShortWorkTimFrameNo(shortTimeStamp), 
-													 ChildCareAttribute.CHILD_CARE,
+													 ChildCareAtr.CHILD_CARE,
 													 new TimeWithDayAttr(childCareStartTime.get(shortTimeStamp - 1).intValue()),
 													 new TimeWithDayAttr(childCareEndTime.get(shortTimeStamp - 1).intValue())));
 			}

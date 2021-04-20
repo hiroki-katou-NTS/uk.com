@@ -4,9 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.scherec.application.appabsence.ApplyForLeaveShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.bussinesstrip.BusinessTripShare;
@@ -49,7 +46,6 @@ public class SCCreateDailyAfterApplicationeReflect {
 			// 1：休暇申請を反映する(勤務予定）
 			return ((VacationApplicationReflect) domainSetReflect).processSC(require, (ApplyForLeaveShare) application,
 					dailyApp);
-	
 		case WORK_CHANGE_APPLICATION:
 			// 2：勤務変更申請を反映する(勤務予定）inprocess xu ly set stampsource
 			itemIds.addAll(((ReflectWorkChangeApp) domainSetReflect).reflectSchedule(require,
@@ -62,7 +58,7 @@ public class SCCreateDailyAfterApplicationeReflect {
 			break;
 		case GO_RETURN_DIRECTLY_APPLICATION:
 			// 4：直行直帰申請を反映する(勤務予定）
-			itemIds.addAll(((GoBackReflect) domainSetReflect).reflect(require, companyId,
+			itemIds.addAll(((GoBackReflect) domainSetReflect).reflect(require,
 					(GoBackDirectlyShare) application, dailyApp));
 			break;
 		case HOLIDAY_WORK_APPLICATION:
@@ -100,18 +96,7 @@ public class SCCreateDailyAfterApplicationeReflect {
 
 	public static interface Require extends GetDomainReflectModelApp.Require, ReflectWorkChangeApp.Require,
 			GoBackReflect.Require, ReflectBusinessTripApp.Require, AppReflectOtHdWork.RequireSC,
-			VacationApplicationReflect.RequireSC, AppReflectOtHdWork.RequireHolSC {
-
-	}
-
-	@AllArgsConstructor
-	@NoArgsConstructor
-	@Data
-	public static class DailyAfterAppReflectResult {
-
-		private DailyRecordOfApplication domainDaily;
-
-		private List<Integer> lstItemId;
+			VacationApplicationReflect.RequireSC, AppReflectOtHdWork.RequireHolSC{
 
 	}
 }

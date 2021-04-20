@@ -18,8 +18,6 @@ import nts.uk.ctx.at.shared.dom.WorkInfoAndTimeZone;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.common.TimeZoneWithWorkNo;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.FuriClassifi;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.NumberOfDaySuspension;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.DayOfWeek;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.UsedDays;
 import nts.uk.ctx.at.shared.dom.scherec.application.common.ApplicationDateShare;
@@ -85,7 +83,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.overtimehou
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.paytime.BonusPayTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.paytime.RaiseSalaryTimeOfDailyPerfor;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.premiumtime.PremiumTimeOfDailyPerformance;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ChildCareAttribute;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortWorkTimFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortWorkingTimeSheet;
@@ -103,7 +100,9 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.vacationuse
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.vacationusetime.TransferHolidayOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.vacationusetime.YearlyReservedOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.CalculationState;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.FuriClassifi;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.NotUseAttribute;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.NumberOfDaySuspension;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.ScheduleTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.ActualWorkingTimeOfDaily;
@@ -115,6 +114,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.WithinOutingTotalTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.outsideworktime.OverTimeFrameTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.outsideworktime.OverTimeFrameTimeSheet;
+import nts.uk.ctx.at.shared.dom.shortworktime.ChildCareAtr;
 import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
@@ -143,7 +143,7 @@ public class ReflectApplicationHelper {
 		IntegrationOfDaily domainDaily = new IntegrationOfDaily(
 				new WorkInfoOfDailyAttendance(new WorkInformation("001", "001"),
 						CalculationState.No_Calculated, NotUseAttribute.Not_use, NotUseAttribute.Not_use,
-						DayOfWeek.FRIDAY, scheduleTimeSheets),
+						DayOfWeek.FRIDAY, scheduleTimeSheets, Optional.empty()),
 				null, null, Optional.empty(), new ArrayList<>(), Optional.empty(), new BreakTimeOfDailyAttd(), Optional.empty(),
 				Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(),
 				new ArrayList<>(), Optional.empty(), new ArrayList<>(), Optional.empty());
@@ -151,18 +151,22 @@ public class ReflectApplicationHelper {
 	}
 
 	public static DailyRecordOfApplication createRCWithTimeLeav(ScheduleRecordClassifi classification, int no) {
+		return createRCWithTimeLeav(classification, no, TimeChangeMeans.AUTOMATIC_SET);
+	}
+	
+	public static DailyRecordOfApplication createRCWithTimeLeav(ScheduleRecordClassifi classification, int no, TimeChangeMeans change) {
 
 		TimeLeavingWork work = new TimeLeavingWork(new WorkNo(no), null, null);
 		work.setAttendanceStamp(Optional.of(new TimeActualStamp(null,
 				new WorkStamp(
-						new WorkTimeInformation(new ReasonTimeChange(TimeChangeMeans.AUTOMATIC_SET, null),
+						new WorkTimeInformation(new ReasonTimeChange(change, null),
 								new TimeWithDayAttr(480)),
 						Optional.empty()),
 				0)));
 
 		work.setLeaveStamp(Optional.of(new TimeActualStamp(null,
 				new WorkStamp(
-						new WorkTimeInformation(new ReasonTimeChange(TimeChangeMeans.AUTOMATIC_SET, null),
+						new WorkTimeInformation(new ReasonTimeChange(change, null),
 								new TimeWithDayAttr(1200)),
 						Optional.empty()),
 				0)));
@@ -175,7 +179,7 @@ public class ReflectApplicationHelper {
 		IntegrationOfDaily domainDaily = new IntegrationOfDaily(
 				new WorkInfoOfDailyAttendance(new WorkInformation("001", "001"),
 						CalculationState.No_Calculated, NotUseAttribute.Not_use, NotUseAttribute.Not_use,
-						DayOfWeek.FRIDAY, new ArrayList<>()),
+						DayOfWeek.FRIDAY, new ArrayList<>(), Optional.empty()),
 				null, null, Optional.empty(), new ArrayList<>(), Optional.empty(), new BreakTimeOfDailyAttd(), Optional.empty(),
 				attendanceLeave, Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(),
 				new ArrayList<>(), Optional.empty(), new ArrayList<>(), Optional.empty());
@@ -237,7 +241,7 @@ public class ReflectApplicationHelper {
 
 		IntegrationOfDaily domainDaily = new IntegrationOfDaily(
 				new WorkInfoOfDailyAttendance(new WorkInformation("001", "001"), CalculationState.No_Calculated,
-						NotUseAttribute.Not_use, NotUseAttribute.Not_use, DayOfWeek.FRIDAY, new ArrayList<>()),
+						NotUseAttribute.Not_use, NotUseAttribute.Not_use, DayOfWeek.FRIDAY, new ArrayList<>(), Optional.empty()),
 				null, null, Optional.empty(), new ArrayList<>(), Optional.empty(), new BreakTimeOfDailyAttd(),
 				Optional.empty(), attendanceLeave, Optional.empty(), Optional.empty(), Optional.empty(),
 				Optional.empty(), new ArrayList<>(), Optional.empty(), new ArrayList<>(), Optional.empty());
@@ -316,7 +320,7 @@ public class ReflectApplicationHelper {
 
 		// 日別勤怠の短時間勤務時間帯
 		List<ShortWorkingTimeSheet> shortWorkingTimeSheets = new ArrayList<>();
-		shortWorkingTimeSheets.add(new ShortWorkingTimeSheet(new ShortWorkTimFrameNo(no), ChildCareAttribute.CARE,
+		shortWorkingTimeSheets.add(new ShortWorkingTimeSheet(new ShortWorkTimFrameNo(no), ChildCareAtr.CARE,
 				new TimeWithDayAttr(480), new TimeWithDayAttr(1020)));
 		Optional<ShortTimeOfDailyAttd> shortTime = Optional.of(new ShortTimeOfDailyAttd(shortWorkingTimeSheets));
 
@@ -407,7 +411,7 @@ public class ReflectApplicationHelper {
 		IntegrationOfDaily domainDaily = new IntegrationOfDaily(
 				new WorkInfoOfDailyAttendance(new WorkInformation("001", "001"),
 						CalculationState.No_Calculated, NotUseAttribute.Not_use, NotUseAttribute.Not_use,
-						DayOfWeek.FRIDAY, new ArrayList<>()),
+						DayOfWeek.FRIDAY, new ArrayList<>(), Optional.empty()),
 				null, null, Optional.empty(), new ArrayList<>(), outingTime, breakTime, Optional.of(attTime),
 				attendanceLeave, shortTime, Optional.empty(), Optional.empty(), Optional.empty(), new ArrayList<>(),
 				tempTime, new ArrayList<>(), Optional.empty());
@@ -542,7 +546,7 @@ public class ReflectApplicationHelper {
 		Optional<NumberOfDaySuspension> opt = Optional.of(new NumberOfDaySuspension(new UsedDays(useDay), furiClass));
 		WorkInfoOfDailyAttendance workInfo = new WorkInfoOfDailyAttendance(new WorkInformation(workTypeCode, "001"),
 				CalculationState.No_Calculated, NotUseAttribute.Not_use,
-				NotUseAttribute.Not_use, DayOfWeek.FRIDAY, new ArrayList<>());
+				NotUseAttribute.Not_use, DayOfWeek.FRIDAY, new ArrayList<>(), Optional.empty());
 		workInfo.setNumberDaySuspension(opt);
 		return workInfo;
 	}
@@ -550,7 +554,7 @@ public class ReflectApplicationHelper {
 	public static WorkInfoOfDailyAttendance createWorkInfoDefault(String workTypeCode) {
 		return new WorkInfoOfDailyAttendance(new WorkInformation(workTypeCode, "001"),
 				CalculationState.No_Calculated, NotUseAttribute.Not_use,
-				NotUseAttribute.Not_use, DayOfWeek.FRIDAY, new ArrayList<>());
+				NotUseAttribute.Not_use, DayOfWeek.FRIDAY, new ArrayList<>(), Optional.empty());
 	}
 
 	public static  AppRecordImageShare createAppRecord() {

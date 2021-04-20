@@ -21,7 +21,6 @@ import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.di
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.lateearlycancellation.LateEarlyCancelReflect;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.AppReflectOtHdWork;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.DailyRecordOfApplication;
-import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.condition.SCCreateDailyAfterApplicationeReflect.DailyAfterAppReflectResult;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.stampapplication.StampAppReflect;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.timeleaveapplication.TimeLeaveApplicationReflect;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.vacationapplication.leaveapplication.VacationApplicationReflect;
@@ -49,7 +48,6 @@ public class RCCreateDailyAfterApplicationeReflect {
 		case ABSENCE_APPLICATION:
 			// 1：休暇申請を反映する(勤務予定）
 			return ((VacationApplicationReflect) domainSetReflect).process(require, (ApplyForLeaveShare) application, dailyApp);
-			// TODO: 0：残業申請を反映する（勤務実績）
 		case WORK_CHANGE_APPLICATION:
 			// 2：勤務変更申請を反映する(勤務実績）
 			itemIds.addAll(((ReflectWorkChangeApp) domainSetReflect).reflectRecord(require, (AppWorkChangeShare) application, dailyApp));
@@ -61,8 +59,8 @@ public class RCCreateDailyAfterApplicationeReflect {
 			break;
 		case GO_RETURN_DIRECTLY_APPLICATION:
 			// 4：直行直帰申請を反映する(勤務実績）
-			itemIds.addAll(((GoBackReflect) domainSetReflect).reflect(require, companyId, (GoBackDirectlyShare) application,
-					dailyApp));
+		itemIds.addAll(((GoBackReflect) domainSetReflect).reflect(require, (GoBackDirectlyShare) application,
+		dailyApp));
 			break;
 		case HOLIDAY_WORK_APPLICATION:
 			// 6：休日出勤申請を反映する（勤務予定）
@@ -85,7 +83,7 @@ public class RCCreateDailyAfterApplicationeReflect {
 		case EARLY_LEAVE_CANCEL_APPLICATION:
 			// 9: 遅刻早退取消申請
 			itemIds.addAll(((LateEarlyCancelReflect) domainSetReflect).reflect((ArrivedLateLeaveEarlyShare) application,
-					dailyApp));
+					dailyApp).getLstItemId());
 			break;
 		case COMPLEMENT_LEAVE_APPLICATION:
 			// TODO: [input. 申請.振休振出申請種類]をチェック

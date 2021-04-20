@@ -11,6 +11,7 @@ import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.shared.dom.scherec.application.lateleaveearly.ArrivedLateLeaveEarlyShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.lateleaveearly.LateOrEarlyAtrShare;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.DailyRecordOfApplication;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.condition.DailyAfterAppReflectResult;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.condition.UpdateEditSttCreateBeforeAppReflect;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.stampapplication.algorithm.CancelAppStamp;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
@@ -35,11 +36,28 @@ public class LateEarlyCancelReflect extends AggregateRoot {
 
 	/**
 	 * @author thanh_nx
+	 * 
+	 *         遅刻早退取消申請の反映
+	 */
+	public DailyAfterAppReflectResult reflect(ArrivedLateLeaveEarlyShare appWorkChange,
+			DailyRecordOfApplication dailyApp) {
+		List<Integer> lstId = new ArrayList<>();
+		// 取消の反映
+		lstId.addAll(this.reflectCancel(appWorkChange, dailyApp).getLstItemId());
+		// [遅刻早退報告を行った場合はアラームとしない]をチェック
+		if (this.isClearLateReportWarning()) {
+			// 時刻報告の反映
+			lstId.addAll(this.reflectTimeReport(appWorkChange, dailyApp).getLstItemId());
+		}
+		return new DailyAfterAppReflectResult(dailyApp, lstId);
+	}
+		
+	/**
+	 * @author thanh_nx
 	 *
 	 *         取消の反映
 	 */
-	public List<Integer> reflect(ArrivedLateLeaveEarlyShare appWorkChange, DailyRecordOfApplication dailyApp) {
-
+	public DailyAfterAppReflectResult reflectCancel(ArrivedLateLeaveEarlyShare appWorkChange, DailyRecordOfApplication dailyApp) {
 		List<Integer> lstItemId = new ArrayList<>();
 		// [input.遅刻早退取消申請.取消（List）]でループ
 		appWorkChange.getLateCancelation().stream().forEach(data -> {
@@ -98,7 +116,51 @@ public class LateEarlyCancelReflect extends AggregateRoot {
 
 		// 申請反映状態にする
 		UpdateEditSttCreateBeforeAppReflect.update(dailyApp, lstItemId);
-		return lstItemId;
+		return new DailyAfterAppReflectResult(dailyApp, lstItemId);
 	}
 
+	/**
+	 * @author thanh_nx
+	 *
+	 *         時刻報告の反映
+	 */
+	public DailyAfterAppReflectResult reflectTimeReport(ArrivedLateLeaveEarlyShare appWorkChange,
+			DailyRecordOfApplication dailyApp) {
+		List<Integer> lstItemId = new ArrayList<>();
+		// input.遅刻早退取消申請.時刻報告（List）でループ
+		appWorkChange.getLateOrLeaveEarlies().forEach(data -> {
+			// 処理中の[時刻報告.区分]をチェック
+			if (data.getLateOrEarlyClassification() == LateOrEarlyAtrShare.LATE) {
+				// 処理中の時刻報告.勤務NOをもとに日別勤怠（work）の遅刻時間をチェック
+				dailyApp.getAttendanceTimeOfDailyPerformance().ifPresent(x -> {
+					Optional<LateTimeOfDaily> early = x.getActualWorkingTimeOfDaily().getTotalWorkingTime()
+							.getLateTimeOfDaily().stream().filter(er -> er.getWorkNo().v() == data.getWorkNo())
+							.findFirst();
+					// 処理中の[時刻報告.時刻]を日別勤怠(work）にセットする
+					early.ifPresent(value -> {
+						value.setDoNotSetAlarm(true);
+						lstItemId.add(CancelAppStamp.createItemId(865, data.getWorkNo(), 1));
+					});
+				});
+
+			} else {
+				// 処理中の時刻報告.勤務NOをもとに日別勤怠（work）の早退時間をチェック
+				dailyApp.getAttendanceTimeOfDailyPerformance().ifPresent(x -> {
+					Optional<LeaveEarlyTimeOfDaily> early = x.getActualWorkingTimeOfDaily().getTotalWorkingTime()
+							.getLeaveEarlyTimeOfDaily().stream().filter(er -> er.getWorkNo().v() == data.getWorkNo())
+							.findFirst();
+					// 処理中の[時刻報告.時刻]を日別勤怠(work）にセットする
+					early.ifPresent(value -> {
+						value.setDoNotSetAlarm(true);
+						lstItemId.add(CancelAppStamp.createItemId(867, data.getWorkNo(), 1));
+					});
+				});
+			}
+		});
+
+		// 申請反映状態にする
+		UpdateEditSttCreateBeforeAppReflect.update(dailyApp, lstItemId);
+		return new DailyAfterAppReflectResult(dailyApp, lstItemId);
+	}
+		
 }

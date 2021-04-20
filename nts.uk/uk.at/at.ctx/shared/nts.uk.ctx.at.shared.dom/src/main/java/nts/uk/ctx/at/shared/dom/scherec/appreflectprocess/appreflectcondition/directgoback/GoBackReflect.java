@@ -47,22 +47,21 @@ public class GoBackReflect extends AggregateRoot{
 	 *
 	 *         直行直帰申請の反映
 	 */
-	public Collection<Integer> reflect(Require require, String companyId, GoBackDirectlyShare appGoback,
+	public Collection<Integer> reflect(Require require, GoBackDirectlyShare appGoback,
 			DailyRecordOfApplication dailyApp) {
 
 		Set<Integer> lstResult = new HashSet<>();
 		// [勤務情報を反映する]をチェック
 		if (this.getReflectApplication() == ApplicationStatus.DO_REFLECT) {
 			// 1:反映する
-			lstResult.addAll(processWorkType(require, companyId, appGoback, dailyApp, this));
-
+			lstResult.addAll(processWorkType(require, appGoback, dailyApp, this));
 		}
 
 		if (this.getReflectApplication() == ApplicationStatus.DO_NOT_REFLECT_1
 				|| this.getReflectApplication() == ApplicationStatus.DO_REFLECT_1) {
 			// 2：申請時に決める、3：申請時に決める
 			if (appGoback.getIsChangedWork().isPresent() && appGoback.getIsChangedWork().get() == NotUseAtr.USE) {
-				lstResult.addAll(processWorkType(require, companyId, appGoback, dailyApp, this));
+				lstResult.addAll(processWorkType(require, appGoback, dailyApp, this));
 			}
 		}
 
@@ -72,7 +71,7 @@ public class GoBackReflect extends AggregateRoot{
 		return lstResult;
 	}
 
-	private  List<Integer> processWorkType(Require require, String companyId, GoBackDirectlyShare appGoback,
+	private  List<Integer> processWorkType(Require require, GoBackDirectlyShare appGoback,
 			DailyRecordOfApplication dailyApp, GoBackReflect reflectGoback) {
 		// 勤務種類を取得する
 		Optional<WorkType> workTypeOpt = require.findByPK(companyId,
@@ -83,8 +82,9 @@ public class GoBackReflect extends AggregateRoot{
 			WorkInfoDto workInfoDto = appGoback.getDataWork().map(x -> {
 				return new WorkInfoDto(Optional.ofNullable(x.getWorkTypeCode()), x.getWorkTimeCodeNotNull());
 			}).orElse(new WorkInfoDto(Optional.empty(), Optional.empty()));
+			
 			// 勤務情報の反映
-			return ReflectWorkInformation.reflectInfo(require, workInfoDto, dailyApp, Optional.of(true),
+			return ReflectWorkInformation.reflectInfo(require, companyId, workInfoDto, dailyApp, Optional.of(true),
 					Optional.of(true));
 		}
 		return new ArrayList<>();

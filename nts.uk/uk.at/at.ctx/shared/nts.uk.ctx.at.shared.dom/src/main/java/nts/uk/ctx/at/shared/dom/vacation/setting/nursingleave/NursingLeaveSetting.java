@@ -95,7 +95,7 @@ public class NursingLeaveSetting extends AggregateRoot {
 		memento.setAbsenceFrameNo(this.workAbsence);
 		memento.setTimeCareNursingSet(this.timeCareNursingSetting);
 		memento.setNumPer1(1);
-		memento.setNumPer2(2);
+		memento.setNumPer2(2);	
 	}
 
 	/**

@@ -24,6 +24,8 @@ import nts.uk.ctx.at.shared.dom.adapter.application.reflect.SHAppReflectionSetti
 import nts.uk.ctx.at.shared.dom.adapter.application.reflect.SHApplyTimeSchedulePriority;
 import nts.uk.ctx.at.shared.dom.adapter.application.reflect.SHClassifyScheAchieveAtr;
 import nts.uk.ctx.at.shared.dom.adapter.application.reflect.SHPriorityTimeReflectAtr;
+import nts.uk.ctx.at.shared.dom.calculationsetting.StampReflectionManagement;
+import nts.uk.ctx.at.shared.dom.calculationsetting.repository.StampReflectionManagementRepository;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
 import nts.uk.ctx.at.shared.dom.scherec.application.common.ApplicationShare;
@@ -135,6 +137,9 @@ public class ReflectAppWorkSchedulePubImpl implements ReflectApplicationWorkSche
 	@Inject
 	private VacationApplicationReflectRepository vacationApplicationReflectRepository;
 
+	@Inject
+	private StampReflectionManagementRepository timePriorityRepository;
+
 	@Override
 	public Pair<Object, AtomTask> process(Object application, GeneralDate date, Object reflectStatus, int preAppWorkScheReflectAttr) {
 		String companyId = AppContexts.user().companyId();
@@ -145,7 +150,7 @@ public class ReflectAppWorkSchedulePubImpl implements ReflectApplicationWorkSche
 				predetemineTimeSettingRepository, fixedWorkSettingRepository, flowWorkSettingRepository,
 				goBackReflectRepository, stampAppReflectRepository, lateEarlyCancelReflectRepository,
 				reflectWorkChangeAppRepository, timeLeaveAppReflectRepository, appReflectOtHdWorkRepository,
-				vacationApplicationReflectRepository);
+				vacationApplicationReflectRepository, timePriorityRepository);
 		Pair<ReflectStatusResultShare, AtomTask> result = ReflectApplicationWorkSchedule.process(impl, companyId,
 				(ApplicationShare) application, date, (ReflectStatusResultShare) reflectStatus,
 				preAppWorkScheReflectAttr);
@@ -198,6 +203,8 @@ public class ReflectAppWorkSchedulePubImpl implements ReflectApplicationWorkSche
 		private final AppReflectOtHdWorkRepository appReflectOtHdWorkRepository;
 		
 		private final VacationApplicationReflectRepository vacationApplicationReflectRepository;
+
+		private final StampReflectionManagementRepository timePriorityRepository;
 
 		@Override
 		public Optional<WorkType> getWorkType(String workTypeCd) {
@@ -272,11 +279,6 @@ public class ReflectAppWorkSchedulePubImpl implements ReflectApplicationWorkSche
 		}
 
 		@Override
-		public Optional<WorkType> findByPK(String companyId, String workTypeCd) {
-			return workTypeRepo.findByPK(companyId, workTypeCd);
-		}
-
-		@Override
 		public Optional<ReflectBusinessTripApp> findReflectBusinessTripApp(String companyId) {
 			return Optional.of(new ReflectBusinessTripApp(companyId));
 		}
@@ -339,6 +341,16 @@ public class ReflectAppWorkSchedulePubImpl implements ReflectApplicationWorkSche
 		@Override
 		public Optional<VacationApplicationReflect> findVacationApp(String companyId) {
 			return vacationApplicationReflectRepository.findReflectByCompanyId(companyId);
+		}
+
+		@Override
+		public Optional<StampReflectionManagement> findByCid(String companyId) {
+			return timePriorityRepository.findByCid(companyId);
+		}
+
+		@Override
+		public Optional<WorkType> findByPK(String companyId, String workTypeCd) {
+			return workTypeRepo.findByPK(companyId, workTypeCd);
 		}
 
 	}

@@ -46,10 +46,10 @@ module nts.uk.knockout.binding.widget {
         virtual: false
     })
     export class WidgetResizeContentBindingHandler implements KnockoutBindingHandler {
-        init(element: HTMLDivElement, valueAccessor: () => number | undefined | KnockoutObservable<number | undefined>, allBindingsAccessor: KnockoutAllBindingsAccessor, viewModel: { widget: string; }, bindingContext: KnockoutBindingContext): { controlsDescendantBindings: boolean; } {
+        init(element: HTMLDivElement, valueAccessor: () => number | undefined | KnockoutObservable<number | undefined>, allBindingsAccessor: KnockoutAllBindingsAccessor, viewModel: nts.uk.ui.vm.ViewModel & { widget: string; }, bindingContext: KnockoutBindingContext): { controlsDescendantBindings: boolean; } {
             const $el = $(element);
-            const { widget } = viewModel;
-            const WG_SIZE = 'WIDGET_SIZE';
+            const { widget, $user } = viewModel;
+            const WG_SIZE = `${$user.employeeId}.WIDGET_SIZE`;
             const mkv = new ko.ViewModel();
             const minHeight = valueAccessor();
             const key = ko.unwrap<string>(widget);
@@ -169,9 +169,11 @@ module nts.uk.knockout.binding.widget {
                                 element.style.maxHeight = '';
                                 element.style.height = height.value;
                             } else if (def) {
+                                element.style.height = `${def}px`;
                                 element.style.maxHeight = `${def}px`;
                             }
                         } else if (def) {
+                            element.style.height = `${def}px`;
                             element.style.maxHeight = `${def}px`;
                         }
                     });

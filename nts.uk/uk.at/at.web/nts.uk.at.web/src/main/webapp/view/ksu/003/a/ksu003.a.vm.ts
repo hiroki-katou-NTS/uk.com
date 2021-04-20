@@ -115,6 +115,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 		lstErr : any = [];
 		index045 : number = 0;
 		colorBreak45 : boolean = true;
+		checkCloseKsu003 : boolean = false;
 		constructor(data: any) {
 			let self = this;
 			// get data from sc A
@@ -437,6 +438,10 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				}
 				
 				if((dataCell.originalEvent.detail.columnKey === "worktypeCode" && dataMid.worktypeCode == "") /*|| (dataCell.originalEvent.detail.columnKey === "worktimeCode" && dataMid.worktimeCode == "")*/){
+						if(dataMid.worktypeName == "" && dataMid.worktimeCode == ""){
+							$(cssWorkType).removeClass("x-error");
+							return;
+						}
 						let errors = [];
 						errors.push({
 							message: nts.uk.resource.getMessage('Msg_1780', [dataCell.originalEvent.detail.columnKey === "worktypeCode" ? nts.uk.resource.getText("KSU003_24") : nts.uk.resource.getText("KSU003_26")]),
@@ -447,8 +452,10 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 							if(dataMid.worktypeCode == "" && dataCell.originalEvent.detail.columnKey === "worktypeCode"){
 								block.invisible();
 								bundledErrors({ errors: errors }).then(() => {
+									if(dataMid.worktypeName != "" && dataMid.worktimeCode != ""){
 									$(cssWorkType).click();
 									$(cssWorkType).click();
+									}
 									block.clear();
 								});
 							}
@@ -865,22 +872,6 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			totalBrkTime = self.calcAllBrk(lstTime);
 			totalBrkTime = totalBrkTime != null ? formatById("Clock_Short_HM", Math.round(totalBrkTime * 5)) : "";
 
-			/*if (totalBrkTime === (totalBrkTime + " "))
-				totalBrkTime = _.trim(totalBrkTime);
-			else
-				totalBrkTime = (totalBrkTime + " ");
-
-			if (totalBrkTime === ("0:00") || totalBrkTime === "")
-				totalBrkTime = totalBrkTime;
-			else
-				totalBrkTime = _.trim(totalBrkTime);
-				
-				if(totalBrkTime == totalBrkTime + " "){
-					totalBrkTime = _.trim(totalBrkTime);
-				} else {
-					totalBrkTime = totalBrkTime + " "
-				}*/
-
 			$("#extable-ksu003").exTable("cellValue", "middle", empId, "breaktime", totalBrkTime);
 			let cssbreakTime: string = self.dataScreen003A().targetInfor == 1 ? "#extable-ksu003 > .ex-body-middle > table > tbody tr:nth-child" + "(" + (index + 2).toString() + ")" + " > td:nth-child(10)" :
 								"#extable-ksu003 > .ex-body-middle > table > tbody tr:nth-child" + "(" + (index + 2).toString() + ")" + " > td:nth-child(8)";
@@ -1079,7 +1070,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			if (columnKey == "worktypeCode") {
 				service.checkWorkType(targetOrgDto).done((data: any) => {
 					self.checkNeedTime = data.typeWork;
-					if (!_.isNil(data) && data.typeWork == "NOT_REQUIRED") {
+					if (!_.isNil(data) && data.typeWork == "NOT_REQUIRED" && self.workTypeName != "") {
 						self.enableSave(true);
 						self.checkHoliday = true;
 							ruler.replaceAt(index, [{ // xóa chart khi là ngày nghỉ
@@ -1125,7 +1116,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 						$(cssTotalTime).css("background-color", "#ffffff");
 
 						$(".xcell").removeClass("x-error");
-					} else if (!_.isNil(data) && data.typeWork == SetupType.REQUIRED) {
+					} else if (!_.isNil(data) && data.typeWork == SetupType.REQUIRED && self.workTypeName != "") {
 						self.checkHoliday = false;
 						$(cssWorkTime).removeClass("xseal");
 						/*$(cssStartTime1).removeClass("xseal");
@@ -1154,7 +1145,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 						}
 						
 						
-					} else if (!_.isNil(data) && data.typeWork == SetupType.OPTIONAL){
+					} else if (!_.isNil(data) && data.typeWork == SetupType.OPTIONAL && self.workTypeName != ""){
 						self.enableSave(true);
 						ruler.replaceAt(index, [{ // xóa chart khi là ngày nghỉ
 							type: "Flex",
@@ -1185,6 +1176,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 						$(cssWorkTName).css("background-color",color);
 						$(cssWorkTime).css("background-color",color);
 						$(cssTotalTime).css("background-color","#FFFFFF");
+						if($("#extable-ksu003").exTable('dataSource', 'middle').body[index].breaktime != "0:00")
 						$(cssBreak).css("background-color",color);
 						
 						$(cssStartTime1).css("background-color","#DDDDD2");
@@ -1329,6 +1321,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 						if($("#extable-ksu003").exTable('dataSource', 'middle').body[index].worktimeCode == "" && columnKey == "worktimeCode" && error.messageId == "Msg_434"){
 							
 						}
+						
+						if(self.checkCloseKsu003 == true) return;
 						errorDialog({ messageId: error.messageId }).then(() => {
 							self.checkOpenDialog = false;
 							block.clear();
@@ -2086,7 +2080,11 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 						middleContentDeco.push(new CellColor("endTime2", self.lstEmpId[i].empId, "xseal"));
 						middleContentDeco.push(new CellColor("totalTime", self.lstEmpId[i].empId, "xseal"));
 						middleContentDeco.push(new CellColor("breaktime", self.lstEmpId[i].empId, "xseal"));
+						
+						for (let z = self.dispStartHours; z <= (self.timeRange + self.dispStartHours); z++) {
+						detailContentDeco.push(new CellColor(z.toString() + "_", self.lstEmpId[i].empId, "xseal"));
 					}
+						}
 
 					//self.checkDisByDate = true;
 					if (isConfirmed == 1) {
@@ -2098,16 +2096,11 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 
 		// Khởi tạo EXTABLE-GANTCHART
 		initExtableChart(timeGantChart: Array<ITimeGantChart>, leftDs: any, midData: any, disableDs: any, type ?: any) : JQueryPromise<any>{
-			
-			let self = this, dfd = $.Deferred();
-			let displayRange = self.timeRange, totalBreakTime = "0:00";
-
+			let self = this, dfd = $.Deferred(), displayRange = self.timeRange, totalBreakTime = "0:00";
 			let middleContentDeco: any = [], leftContentDeco: any = [], detailContentDeco: any = [];
 
 			// phần leftMost
-			let leftmostColumns = [],
-				leftmostHeader = {},
-				leftmostContent = {}, disableDSFilter: any = [];
+			let leftmostColumns = [], leftmostHeader = {}, leftmostContent = {}, disableDSFilter: any = [], leftmostDs = [], middleDs = [];
 			
 			leftmostColumns = [{
 				key: "empName",
@@ -2125,7 +2118,6 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				width: "200px"
 			};
 			
-			let leftmostDs = [], middleDs = [];
 			for (let i = 0; i < self.lstEmpId.length; i++) {
 				let dataLeft: any = _.filter(self.lstEmpId, (x: any) => { return x.empId === self.lstEmpId[i].empId }),
 					datafilter = _.filter(midData, (x: any) => { return x.empId === self.lstEmpId[i].empId }),
@@ -2167,9 +2159,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				}]
 			};
 			// Phần middle
-			let middleColumns = [], middleHeader = {}, middleContent = {};
-			let detailHeaders : any = {}, startHours = self.dispStartHours, range = displayRange + self.dispStartHours, index = 1;
-			let width = "42px", detailColumns : any = [], detailHeaderDs : any = [], detailContent = {}, detailHeader = {};
+			let middleColumns = [], middleHeader = {}, middleContent = {}, detailHeaders : any = {}, startHours = self.dispStartHours, range = displayRange + self.dispStartHours, 
+			index = 1, width = "42px", detailColumns : any = [], detailHeaderDs : any = [], detailContent = {}, detailHeader = {};
 			// Phần detail
 			detailHeaderDs = [{ empId: "" }];
 			// A8_2 TQP
@@ -2205,11 +2196,11 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					},
 					{
 						headerText: getText('KSU003_29'), group: [
-							{ visible: self.dataScreen003A().targetInfor == 1 ? true : false, headerText: "", key: "startTime2", width: "41px", handlerType: "input", dataType: "duration", primitiveValue: "TimeWithDayAttr", required: true }]
+							{ headerText: "", key: "startTime2", width: "41px", handlerType: "input", dataType: "duration", primitiveValue: "TimeWithDayAttr", required: true }]
 					},
 					{
 						headerText: getText('KSU003_30'), group: [
-							{ visible: self.dataScreen003A().targetInfor == 1 ? true : false, headerText: "", key: "endTime2", width: "41px", handlerType: "input", dataType: "duration", primitiveValue: "TimeWithDayAttr", required: true }]
+							{ headerText: "", key: "endTime2", width: "41px", handlerType: "input", dataType: "duration", primitiveValue: "TimeWithDayAttr", required: true }]
 					},
 					{
 						headerText: getText('KSU003_31'), group: [
@@ -2302,6 +2293,13 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				let datafilter = _.filter(timeGantChart, (x: any) => { return x.empId === self.lstEmpId[z].empId });
 				detailContentDs.push({ empId: datafilter[0].empId, ...detailHeaders });
 			}
+			
+			if(detailColumns.length < 24 ){
+				self.addColumn(1, detailContent, width);
+				if(self.timeRange > 24){
+					self.addColumn(25, detailContent, width);
+				}
+			}
 
 			detailContent = {
 				columns: detailColumns,
@@ -2312,14 +2310,25 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					decorator: detailContentDeco
 				}]
 			};
+			
 			if(detailColumns.length < 24 ){
-				self.addColumn(1, detailContent, width);
-				if(self.timeRange > 24){
-					self.addColumn(25, detailContent, width);
-				}
+				for (let z = 0; z < self.lstEmpId.length; z++) {
+				let datafilter = _.filter(timeGantChart, (x: any) => { return x.empId === self.lstEmpId[z].empId });
+				detailContentDs.push({ empId: datafilter[0].empId, ...detailHeaders });
 			}
+			detailContent = {
+				columns: detailColumns,
+				dataSource: detailContentDs,
+				primaryKey: "empId",
+				features: [{
+					name: "BodyCellStyle",
+					decorator: detailContentDeco
+				}]
+			};
+			}
+			
 				
-				let extable = new exTable.ExTable($("#extable-ksu003"), {
+			let extable = new exTable.ExTable($("#extable-ksu003"), {
 				headerHeight: "33px",
 				bodyRowHeight: "30px",
 				bodyHeight: "400px",
@@ -2342,7 +2351,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			ruler = extable.getChartRuler();
 			
 			console.log(detailContent);
-				self.initGantChart(self.dataOfGantChart, self.midDataGC);
+			self.initGantChart(self.dataOfGantChart, self.midDataGC);
 				
 			$("#hr-row2").css("width", window.innerWidth - 40 + 'px');
 			if (!_.isNil(self.localStore)) {
@@ -2683,6 +2692,11 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				}
 				
 				if((dataCell.originalEvent.detail.columnKey === "worktypeCode" && dataMid.worktypeCode == "") /*|| (dataCell.originalEvent.detail.columnKey === "worktimeCode" && dataMid.worktimeCode == "")*/){
+						if(dataMid.worktypeName == "" && dataMid.worktimeCode == ""){
+							$(cssWorkType).removeClass("x-error");
+							return;
+						}
+						
 						let errors = [];
 						errors.push({
 							message: nts.uk.resource.getMessage('Msg_1780', [dataCell.originalEvent.detail.columnKey === "worktypeCode" ? nts.uk.resource.getText("KSU003_24") : nts.uk.resource.getText("KSU003_26")]),
@@ -2693,8 +2707,10 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 							if(dataMid.worktypeCode == "" && dataCell.originalEvent.detail.columnKey === "worktypeCode"){
 								block.invisible();
 								bundledErrors({ errors: errors }).then(() => {
+									if(dataMid.worktypeName != "" && dataMid.worktimeCode != ""){
 									$(cssWorkType).click();
 									$(cssWorkType).click();
+								}	
 									block.clear();
 								});
 							}
@@ -2935,7 +2951,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				slide = false;
 			}
 			if(self.dataScreen003A().employeeInfo[i].fixedWorkInforDto != null && self.dataScreen003A().employeeInfo[i].fixedWorkInforDto.fixBreakTime == 1){
-				if(datafilter[0].typeOfTime === "Changeable")
+				if(datafilter[0].typeOfTime === "Changeable" || datafilter[0].typeOfTime === "Flex")
 				follow = false;
 			}
 
@@ -2962,24 +2978,31 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 							start1 = self.checkTimeOfChart(timeChart.startTime, timeRangeLimit);
 							end1 = self.checkTimeOfChart(timeChart.endTime, timeRangeLimit);
 						}
-						let limitStartMin = (isConfirmed == 1 || isFixBr == 1) ? start1 : limitTime.limitStartMin - dispStart,
-							limitStartMax = (isConfirmed == 1 || isFixBr == 1) ? start1 : limitTime.limitStartMax - dispStart,
-							limitEndMin = (isConfirmed == 1 || isFixBr == 1) ? end1 : limitTime.limitEndMin - dispStart,
-							limitEndMax = (isConfirmed == 1 || isFixBr == 1) ? end1 : limitTime.limitEndMax - dispStart;
+						let limitStartMin = (isConfirmed == 1 || isFixBr == 1) ? start1 : limitTime.limitStartMin,
+							limitStartMax = (isConfirmed == 1 || isFixBr == 1) ? start1 : limitTime.limitStartMax,
+							limitEndMin = (isConfirmed == 1 || isFixBr == 1) ? end1 : limitTime.limitEndMin,
+							limitEndMax = (isConfirmed == 1 || isFixBr == 1) ? end1 : limitTime.limitEndMax;
+							let canSlideFix = slide, fixedFix = fixedString;
+							
+							if(start1 - dispStart == limitStartMin - dispStart && limitStartMin - dispStart == limitStartMax - dispStart
+							&& end1 - dispStart  == limitEndMin - dispStart && limitEndMin - dispStart == limitEndMax - dispStart){
+								fixedFix = "Both";
+							} 
 						if (start1 != null) {
 							lgc = ruler.addChartWithType("Fixed", {
 								id: `lgc${i}`,
 								lineNo: i,
 								start: start1 - dispStart,
 								end: end1 - dispStart,
-								limitStartMin: limitStartMin,
-								limitStartMax: limitStartMax,
-								limitEndMin: limitEndMin,
-								limitEndMax: limitEndMax,
-								canSlide: slide
+								limitStartMin: limitStartMin - dispStart,
+								limitStartMax: limitStartMax - dispStart,
+								limitEndMin: limitEndMin - dispStart,
+								limitEndMax: limitEndMax - dispStart,
+								canSlide: false,
+								fixed: fixedFix
 							});
-							fixedGc.push(self.addChartWithType045(datafilter[0].empId, "Fixed", `lgc${i}`, { startTime: timeChart.startTime - dispStart, endTime: timeChart.endTime - dispStart }, i, null,
-								limitStartMin, limitStartMax, limitEndMin, limitEndMax));
+							fixedGc.push(self.addChartWithType045(fixedGc, datafilter, datafilter[0].empId, "Fixed", `lgc${i}`, { startTime: timeChart.startTime - dispStart, endTime: timeChart.endTime - dispStart }, i, null,
+								limitStartMin - dispStart, limitStartMax - dispStart, limitEndMin - dispStart, limitEndMax - dispStart));
 							indexLeft = indexLeft++;
 						}
 
@@ -2997,26 +3020,34 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 							}
 							//lgc = self.addChartWithTypes(ruler, "Fixed", `lgc${i}`, timeChart, i);
 							let limitTime = self.checkLimitTime(fixed, timeRangeLimit, 1),
-								limitStartMin = (isConfirmed == 1 || isFixBr == 1) ? start2 : limitTime.limitStartMin - dispStart,
-								limitStartMax = (isConfirmed == 1 || isFixBr == 1) ? start2 : limitTime.limitStartMax - dispStart,
-								limitEndMin = (isConfirmed == 1 || isFixBr == 1) ? end2 : limitTime.limitEndMin - dispStart,
-								limitEndMax = (isConfirmed == 1 || isFixBr == 1) ? end2 : limitTime.limitEndMax - dispStart;
+								limitStartMin = (isConfirmed == 1 || isFixBr == 1) ? start2  : limitTime.limitStartMin,
+								limitStartMax = (isConfirmed == 1 || isFixBr == 1) ? start2 : limitTime.limitStartMax,
+								limitEndMin = (isConfirmed == 1 || isFixBr == 1) ? end2 : limitTime.limitEndMin,
+								limitEndMax = (isConfirmed == 1 || isFixBr == 1) ? end2 : limitTime.limitEndMax;
+							let canSlideFix = slide, fixedFix = fixedString;
+							
+							if(start1 - dispStart == limitStartMin - dispStart && limitStartMin - dispStart == limitStartMax - dispStart
+							&& end1 - dispStart  == limitEndMin - dispStart && limitEndMin - dispStart == limitEndMax - dispStart){
+								fixedFix = "Both";
+								canSlideFix = false;
+							}
 							if (start2 != null) {
 								rgc = ruler.addChartWithType("Fixed", {
 									id: `rgc${i}`,
 									lineNo: i,
 									start: start2 - dispStart,
 									end: end2 - dispStart,
-									limitStartMin: limitStartMin,
-									limitStartMax: limitStartMax,
-									limitEndMin: limitEndMin,
-									limitEndMax: limitEndMax,
-									canSlide: slide
+									limitStartMin: limitStartMin - dispStart,
+									limitStartMax: limitStartMax - dispStart,
+									limitEndMin: limitEndMin - dispStart,
+									limitEndMax: limitEndMax - dispStart,
+									canSlide: false,
+									fixed: fixedFix
 								});
 							}
 
-							fixedGc.push(self.addChartWithType045(datafilter[0].empId, "Fixed", `rgc${i}`, { startTime: timeChart2.startTime - dispStart, endTime: timeChart2.endTime - dispStart }, i, null, limitStartMin,
-								limitStartMax, limitEndMin, limitEndMax));
+							fixedGc.push(self.addChartWithType045(fixedGc, datafilter, datafilter[0].empId, "Fixed", `rgc${i}`, { startTime: timeChart2.startTime - dispStart, endTime: timeChart2.endTime - dispStart }, i, null, 
+							limitStartMin - dispStart, limitStartMax - dispStart, limitEndMin - dispStart, limitEndMax - dispStart));
 							indexRight = indexRight++;
 						}
 					}
@@ -3050,19 +3081,28 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 
 						if (timeMinus[0].startTime < timeMinus[0].endTime && (self.timeRange === 24 && timeMinus[0].startTime < 1440 && timeMinus[0].startTime != null ||
 							self.timeRange === 48 && timeMinus[0].startTime < 2880 && timeMinus[0].startTime != null)) {
-							let limitStartMin = (isConfirmed == 1 || isFixBr == 1) ? start1 : limitTime.limitStartMin - dispStart,
-								limitStartMax = (isConfirmed == 1 || isFixBr == 1) ? start1 : limitTime.limitStartMax - dispStart,
-								limitEndMin = (isConfirmed == 1 || isFixBr == 1) ? end1 : limitTime.limitEndMin - dispStart,
-								limitEndMax = (isConfirmed == 1 || isFixBr == 1) ? end1 : limitTime.limitEndMax - dispStart;
+							let limitStartMin = (isConfirmed == 1 || isFixBr == 1) ? start1 : limitTime.limitStartMin,
+								limitStartMax = (isConfirmed == 1 || isFixBr == 1) ? start1 : limitTime.limitStartMax,
+								limitEndMin = (isConfirmed == 1 || isFixBr == 1) ? end1 : limitTime.limitEndMin,
+								limitEndMax = (isConfirmed == 1 || isFixBr == 1) ? end1 : limitTime.limitEndMax;
+							
+							let canSlideFix = slide, fixedFix = fixedString;
+							
+							if(start1 - dispStart == limitStartMin - dispStart && limitStartMin - dispStart == limitStartMax - dispStart
+							&& end1 - dispStart  == limitEndMin - dispStart && limitEndMin - dispStart == limitEndMax - dispStart){
+								fixedFix = "Both";
+								canSlideFix = false;
+							}
+								
 							lgc = ruler.addChartWithType("Changeable", {
 								id: `lgc${i}`,
 								lineNo: i,
 								start: start1 - dispStart,
 								end: end1 - dispStart,
-								limitStartMin: limitStartMin,
-								limitStartMax: limitStartMax,
-								limitEndMin: limitEndMin,
-								limitEndMax: limitEndMax,
+								limitStartMin: limitStartMin - dispStart,
+								limitStartMax: limitStartMax - dispStart,
+								limitEndMin: limitEndMin - dispStart,
+								limitEndMax: limitEndMax - dispStart,
 								resizeFinished: (b: any, e: any, p: any) => {
 									if (self.checkDisByDate == false)
 										return;
@@ -3071,13 +3111,13 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 									if (self.checkDisByDate == false)
 										return;
 								},
-								canSlide: slide,
-								fixed: fixedString,
+								canSlide: canSlideFix,
+								fixed: fixedFix,
 								bePassedThrough: false
 							});
 
-							fixedGc.push(self.addChartWithType045(datafilter[0].empId, "Changeable", `lgc${i}`, { startTime: timeChart.startTime - dispStart, endTime: timeChart.endTime - dispStart }, i, null, limitStartMin, limitStartMax,
-								limitEndMin,limitEndMax));
+							fixedGc.push(self.addChartWithType045(fixedGc, datafilter, datafilter[0].empId, "Changeable", `lgc${i}`, { startTime: timeChart.startTime - dispStart, endTime: timeChart.endTime - dispStart }, i, null, 
+							limitStartMin - dispStart, limitStartMax - dispStart, limitEndMin - dispStart,limitEndMax - dispStart));
 							indexLeft = indexLeft++;
 						}
 
@@ -3094,21 +3134,27 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 								start2 = self.checkTimeOfChart(timeChart2.startTime, timeRangeLimit);
 								end2 = self.checkTimeOfChart(timeChart2.endTime, timeRangeLimit);
 							}
-							let limitStartMin = (isConfirmed == 1 || isFixBr == 1) ? start2 : limitTime.limitStartMin - dispStart,
-									limitStartMax = (isConfirmed == 1 || isFixBr == 1) ? start2 : limitTime.limitStartMax - dispStart,
-									limitEndMin = (isConfirmed == 1 || isFixBr == 1) ? end2 : limitTime.limitEndMin - dispStart,
-									limitEndMax = (isConfirmed == 1 || isFixBr == 1) ? end2 : limitTime.limitEndMax - dispStart;
-
+							let limitStartMin = (isConfirmed == 1 || isFixBr == 1) ? start2 : limitTime.limitStartMin,
+									limitStartMax = (isConfirmed == 1 || isFixBr == 1) ? start2 : limitTime.limitStartMax,
+									limitEndMin = (isConfirmed == 1 || isFixBr == 1) ? end2 : limitTime.limitEndMin,
+									limitEndMax = (isConfirmed == 1 || isFixBr == 1) ? end2 : limitTime.limitEndMax;
+							let canSlideFix = slide, fixedFix = fixedString;
+							
+							if(start1 - dispStart == limitStartMin - dispStart && limitStartMin - dispStart == limitStartMax - dispStart
+							&& end1 - dispStart  == limitEndMin - dispStart && limitEndMin - dispStart == limitEndMax - dispStart){
+								fixedFix = "Both";
+								canSlideFix = false;
+							}
 							if (start2 != null) {
 								rgc = ruler.addChartWithType("Changeable", {
 									id: `rgc${i}`, 
 									lineNo: i,
 									start: start2 - dispStart,
 									end: end2 - dispStart,
-									limitStartMin: limitStartMin,
-									limitStartMax: limitStartMax,
-									limitEndMin: limitEndMin,
-									limitEndMax: limitEndMax,
+									limitStartMin: limitStartMin - dispStart,
+									limitStartMax: limitStartMax - dispStart,
+									limitEndMin: limitEndMin - dispStart,
+									limitEndMax: limitEndMax - dispStart,
 									resizeFinished: (b: any, e: any, p: any) => {
 										if (self.checkDisByDate == false)
 											return;
@@ -3117,12 +3163,12 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 										if (self.checkDisByDate == false)
 											return;
 									},
-									canSlide: slide,
-									fixed: fixedString,
+									canSlide: canSlideFix,
+									fixed: fixedFix,
 									bePassedThrough: false
 								});
-								fixedGc.push(self.addChartWithType045(datafilter[0].empId, "Changeable", `rgc${i}`, { startTime: timeChart2.startTime - dispStart, endTime: timeChart2.endTime - dispStart }, i, null, 
-								limitStartMin, limitStartMax, limitEndMin, limitEndMax));
+								fixedGc.push(self.addChartWithType045(fixedGc, datafilter, datafilter[0].empId, "Changeable", `rgc${i}`, { startTime: timeChart2.startTime - dispStart, endTime: timeChart2.endTime - dispStart }, i, null, 
+								limitStartMin - dispStart, limitStartMax - dispStart, limitEndMin - dispStart, limitEndMax - dispStart));
 								indexRight = indexRight++;
 							}
 
@@ -3155,6 +3201,14 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 						let timeStart = self.checkTimeOfChart(timeChart.startTime, timeRangeLimit) - dispStart,
                            	timeEnd = self.checkTimeOfChart(timeChart.endTime, timeRangeLimit) - dispStart;
 						
+						let canSlideFix = slide, fixedFix = fixedString;
+							
+						if(start1 - dispStart == limitStartMin && limitStartMin == limitStartMax
+						&& end1 - dispStart  == limitEndMin && limitEndMin == limitEndMax){
+							fixedFix = "Both";
+							canSlideFix = false;
+						}
+						
 						if (timeMinus[0].startTime < timeMinus[0].endTime && timeChart.startTime < timeRangeLimit) {
 							lgc = ruler.addChartWithType("Flex", {
 								id: `lgc${i}`,
@@ -3173,10 +3227,11 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 									if (self.checkDisByDate == false)
 										return;
 								},
-								canSlide: slide,
-								fixed: fixedString
+								canSlide: canSlideFix,
+								fixed: fixedFix
 							});
-							fixedGc.push(self.addChartWithType045(datafilter[0].empId, "Flex", `lgc${i}`, { startTime: timeStart, endTime: timeEnd }, i, null, limitStartMin, limitStartMax, limitEndMin, limitEndMax));
+							fixedGc.push(self.addChartWithType045(fixedGc, datafilter, datafilter[0].empId, "Flex", `lgc${i}`, { startTime: timeStart, endTime: timeEnd }, i, null, 
+							limitStartMin, limitStartMax, limitEndMin, limitEndMax));
 							indexLeft = ++indexLeft;
 							// Add CORE-TIME
 							if (coreTime.length > 0 && (_.inRange(coreTime[0].coreStartTime, timeMinus[0].startTime, timeMinus[0].endTime) ||
@@ -3189,7 +3244,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 									end: timeChartCore.endTime - dispStart,
 									pin: true
 								});
-								fixedGc.push(self.addChartWithType045(datafilter[0].empId, "CoreTime", `lgc${i}_` + indexLeft, { startTime: timeChartCore.startTime - dispStart, endTime: timeChartCore.endTime - dispStart }, i, `lgc${i}`));
+								fixedGc.push(self.addChartWithType045(fixedGc, datafilter, datafilter[0].empId, "CoreTime", `lgc${i}_` + indexLeft, { startTime: timeChartCore.startTime - dispStart, endTime: timeChartCore.endTime - dispStart }, i, `lgc${i}`));
 								indexLeft = ++indexLeft;
 							}
 						}
@@ -3222,10 +3277,10 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 								id: id,
 								parent: parent,
 								lineNo: i,
-								start: timeChartOver.startTime - dispStart < dispStart ? dispStart : timeChartOver.startTime - dispStart,
-								end: timeChartOver.endTime - dispStart > timeRangeLimit ? timeRangeLimit : timeChartOver.endTime
+								start: timeChartOver.startTime - dispStart <= 0 ? dispStart : timeChartOver.startTime - dispStart,
+								end: timeChartOver.endTime - dispStart > timeRangeLimit ? timeRangeLimit : timeChartOver.endTime - dispStart
 							});
-							fixedGc.push(self.addChartWithType045(datafilter[0].empId, "OT", id, { startTime: timeChartOver.startTime - dispStart, endTime: timeChartOver.endTime - dispStart }, i, parent, 0, 9999, 0, 9999, 1000));
+							fixedGc.push(self.addChartWithType045(fixedGc, datafilter, datafilter[0].empId, "OT", id, { startTime: timeChartOver.startTime - dispStart, endTime: timeChartOver.endTime - dispStart }, i, parent, 0, 9999, 0, 9999, 1000));
 							indexLeft = ++indexLeft;
 						}
 
@@ -3238,10 +3293,10 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 								id: id,
 								parent: parent,
 								lineNo: i,
-								start: timeChartOver.startTime - dispStart < dispStart ? dispStart : timeChartOver.startTime - dispStart,
-								end: timeChartOver.endTime - dispStart > timeRangeLimit ? timeRangeLimit : timeChartOver.endTime
+								start: timeChartOver.startTime - dispStart <= dispStart ? 0 : timeChartOver.startTime - dispStart,
+								end: timeChartOver.endTime - dispStart > timeRangeLimit ? timeRangeLimit : timeChartOver.endTime - dispStart
 							});
-							fixedGc.push(self.addChartWithType045(datafilter[0].empId, "OT", id, { startTime: timeChartOver.startTime - dispStart, endTime: timeChartOver.endTime - dispStart }, i, parent, 0, 9999, 0, 9999, 1000));
+							fixedGc.push(self.addChartWithType045(fixedGc, datafilter, datafilter[0].empId, "OT", id, { startTime: timeChartOver.startTime - dispStart, endTime: timeChartOver.endTime - dispStart }, i, parent, 0, 9999, 0, 9999, 1000));
 							indexRight = ++indexRight;
 						}
 					}
@@ -3266,8 +3321,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 						startTime1 = self.checkTimeOfChart(timeChartBrk.startTime, timeRangeLimit);
 						endTime1 = self.checkTimeOfChart(timeChartBrk.endTime, timeRangeLimit);
 						const indexBrks = indexLeft;
-						self.allTimeBrk.push(self.addChartWithType045(datafilter[0].empId, "BreakTime", `lgc${i}_` + indexBrks, { startTime: timeChartBrk.startTime - dispStart, endTime: timeChartBrk.endTime - dispStart }, i, parent));
-						self.breakChangeCore.push(self.addChartWithType045(datafilter[0].empId, "BreakTime", `lgc${i}_` + indexBrks, { startTime: timeChartBrk.startTime - dispStart, endTime: timeChartBrk.endTime - dispStart }, i, parent));
+						self.allTimeBrk.push(self.addChartWithType045(fixedGc, datafilter, datafilter[0].empId, "BreakTime", `lgc${i}_` + indexBrks, { startTime: timeChartBrk.startTime - dispStart, endTime: timeChartBrk.endTime - dispStart }, i, parent));
+						self.breakChangeCore.push(self.addChartWithType045(fixedGc, datafilter, datafilter[0].empId, "BreakTime", `lgc${i}_` + indexBrks, { startTime: timeChartBrk.startTime - dispStart, endTime: timeChartBrk.endTime - dispStart }, i, parent));
 						if (((timeChart2 != null && endTime1 < timeChart2.startTime) || (timeChart2 == null)) && 
 							(timeMinus.length > 0 && timeMinus[0].startTime != null && timeMinus[0].endTime != null) &&
 							(timeChart.startTime < (timeRangeLimit + self.dispStartHours * 12)) &&
@@ -3298,7 +3353,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 								id: `lgc${i}_` + indexBrks,
 								empId: datafilter[0].empId
 							})
-							fixedGc.push(self.addChartWithType045(datafilter[0].empId, "BreakTime", `lgc${i}_` + indexBrks, { startTime: timeChartBrk.startTime - dispStart, endTime: timeChartBrk.endTime - dispStart }, i, parent, timeRange.start, timeRange.end, timeRange.start, timeRange.end, 1001));
+							fixedGc.push(self.addChartWithType045(fixedGc, datafilter, datafilter[0].empId, "BreakTime", `lgc${i}_` + indexBrks, { startTime: timeChartBrk.startTime - dispStart, endTime: timeChartBrk.endTime - dispStart }, i, parent, timeRange.start, timeRange.end, timeRange.start, timeRange.end, 1001));
 							if ((startTime1 - dispStart) >= (timeChart.startTime - dispStart) && (endTime1 - dispStart) <= (timeChart.endTime - dispStart) && (endTime1 - dispStart) >= (timeChart.startTime - dispStart)) {
 								
 							}
@@ -3338,7 +3393,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 									id: `rgc${i}_` + indexBrkr,
 									empId: datafilter[0].empId
 								})
-								fixedGc.push(self.addChartWithType045(datafilter[0].empId, "BreakTime", `rgc${i}_` + indexBrkr, { startTime: timeChartBrk.startTime - dispStart, endTime: timeChartBrk.endTime - dispStart }, i, `rgc${i}`, 0, 9999, 0, 9999, 1001));
+								fixedGc.push(self.addChartWithType045(fixedGc, datafilter, datafilter[0].empId, "BreakTime", `rgc${i}_` + indexBrkr, { startTime: timeChartBrk.startTime - dispStart, endTime: timeChartBrk.endTime - dispStart }, i, `rgc${i}`, 0, 9999, 0, 9999, 1001));
 								if ((startTime1 - dispStart) >= (timeChart2.startTime - dispStart) && (endTime1 - dispStart) <= (timeChart2.endTime - dispStart) && (endTime1 - dispStart) >= (timeChart2.startTime - dispStart)) {
 								}
 								indexRight = ++indexRight;
@@ -3369,7 +3424,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 								pin: true,
 								bePassedThrough : false
 							});
-							fixedGc.push(self.addChartWithType045(datafilter[0].empId, "ShortTime", id, { startTime: timeChartShort.startTime - dispStart, endTime: timeChartShort.endTime - dispStart }, i, parent, 0, 9999, 0, 9999, 1052));
+							fixedGc.push(self.addChartWithType045(fixedGc, datafilter, datafilter[0].empId, "ShortTime", id, { startTime: timeChartShort.startTime - dispStart, endTime: timeChartShort.endTime - dispStart }, i, parent, 0, 9999, 0, 9999, 1052));
 							indexLeft = ++indexLeft;
 						}
 
@@ -3386,7 +3441,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 								pin: true,
 								bePassedThrough : false
 							});
-							fixedGc.push(self.addChartWithType045(datafilter[0].empId, "ShortTime", id, { startTime: timeChartShort.startTime - dispStart, endTime: timeChartShort.endTime - dispStart }, i, parent, 0, 9999, 0, 9999, 1052));
+							fixedGc.push(self.addChartWithType045(fixedGc, datafilter, datafilter[0].empId, "ShortTime", id, { startTime: timeChartShort.startTime - dispStart, endTime: timeChartShort.endTime - dispStart }, i, parent, 0, 9999, 0, 9999, 1052));
 							indexRight = ++indexRight;
 						}
 						self.lstAllHolShort.add({id : id,lineNo: i,type : "ShortTime", start : timeChartShort.startTime - dispStart, end : timeChartShort.endTime - dispStart});
@@ -3419,7 +3474,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 										zIndex: 1103,
 										bePassedThrough : false
 									});
-									fixedGc.push(self.addChartWithType045(datafilter[0].empId, "HolidayTime", id, { startTime: timeChartHoliday.startTime - dispStart, endTime: timeChartHoliday.endTime - dispStart }, i, parent, 0, 9999, 0, 9999, 1103));
+									fixedGc.push(self.addChartWithType045(fixedGc, datafilter, datafilter[0].empId, "HolidayTime", id, { startTime: timeChartHoliday.startTime - dispStart, endTime: timeChartHoliday.endTime - dispStart }, i, parent, 0, 9999, 0, 9999, 1103));
 									indexLeft = ++indexLeft;
 								}
 							}
@@ -3437,7 +3492,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 										zIndex: 1103,
 										bePassedThrough : false
 									});
-									fixedGc.push(self.addChartWithType045(datafilter[0].empId, "HolidayTime", id, { startTime: timeChartHoliday.startTime - dispStart, endTime: timeChartHoliday.endTime - dispStart }, i, parent, 0, 9999, 0, 9999, 1103));
+									fixedGc.push(self.addChartWithType045(fixedGc, datafilter, datafilter[0].empId, "HolidayTime", id, { startTime: timeChartHoliday.startTime - dispStart, endTime: timeChartHoliday.endTime - dispStart }, i, parent, 0, 9999, 0, 9999, 1103));
 									indexRight = ++indexRight;
 								}
 							}
@@ -3450,38 +3505,38 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 
 			// thay đổi giá trị khi kéo thanh chart
 			$(lgc).on("gcresize", (e: any) => {
-				self.gcResize(fixedGc, e, datafilter, i, "lgc");
+				self.gcResize(fixedGc, e, datafilter, i, "lgc", 0);
 			});
 
 			$(rgc).on("gcresize", (e: any) => {
-				self.gcResize(fixedGc, e, datafilter, i, "rgc");
+				self.gcResize(fixedGc, e, datafilter, i, "rgc", 0);
 			});
 
 			$(lgc).on("gcdrop", (e: any) => {
-				self.gcDrop(e,  i, datafilter, "lgc");
+				self.gcDrop(e,  i, datafilter, "lgc", 0);
 			});
 
 			$(rgc).on("gcdrop", (e: any) => {
-				self.gcDrop(e,  i, datafilter, "rgc");
+				self.gcDrop(e,  i, datafilter, "rgc", 0);
 			});
 
 			self.allGcShow = fixedGc;
 		}
 		
-		gcResize(fixedGc : any, e : any, datafilter : any, i : any, type : string){
+		gcResize(fixedGc : any, e : any, datafilter : any, i : any, type : string, checkType : number){
 			let self = this;
 			if (self.checkDisByDate == false || self.dataScreen003A().employeeInfo[i].workInfoDto.isConfirmed == 1)
 					return;
 				self.enableSave(true);
-				let param = e.detail;
+				let param = checkType == 0 ? e.detail : e;
 				let coreTimes = _.filter(fixedGc, (x : any) => {return x.type == "CoreTime"}), coreTime : any = [],
 				breakTimes = _.filter(self.breakChangeCore, (x : any) => {return x.type == "BreakTime"}), breakT : any = [];
 				if(coreTimes.length > 0){
-					coreTime = _.filter(coreTimes, (x : any) => {return _.includes(e.target.id, x.options.parent)});
+					coreTime = _.filter(coreTimes, (x : any) => {return _.includes(_.isNil(e.target) ? type + i : e.target.id, x.options.parent)});
 				}
 				
 				if(breakTimes.length > 0){
-					breakT = _.filter(breakTimes, (x : any) => {return _.includes(e.target.id, x.options.parent)});
+					breakT = _.filter(breakTimes, (x : any) => {return _.includes(_.isNil(e.target) ? type + i : e.target.id, x.options.parent)});
 				}
 				let indexBrStart = -1, indexBrEnd = -1, checkCore = 0, checkCore2 = 0;
 				let lstBrCoreStart : any = [], lstBrCoreEnd : any = [];
@@ -3589,17 +3644,17 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				self.checkTypeChange = [];
 		}
 		
-		gcDrop(e : any,  i : any, datafilter : any, type : string){
-			let param = e.detail, startMinute = 0, endMinute = 0, self = this;
+		gcDrop(e : any,  i : any, datafilter : any, type : string, checkType : number){
+			let param = checkType == 0 ? e.detail : e, startMinute = 0, endMinute = 0, self = this;
 			
 			let cssbreakTime: string = self.dataScreen003A().targetInfor == 1 ? "#extable-ksu003 > .ex-body-middle > table > tbody tr:nth-child" + "(" + (i + 2).toString() + ")" + " > td:nth-child(10)" :
 				"#extable-ksu003 > .ex-body-middle > table > tbody tr:nth-child" + "(" + (i + 2).toString() + ")" + " > td:nth-child(8)";
-				if(self.dataScreen003A().employeeInfo[i].workScheduleDto.startTime1 == param[0] * 5 + self.dispStartHours * 60) return;
-				
 				if(param[0] * 5 == 0) return;
 				
 				if(type == "rgc"){
 					if(self.dataScreen003A().employeeInfo[i].workScheduleDto.startTime2 == param[0] * 5 + self.dispStartHours * 60) return;
+				} else {
+					if(self.dataScreen003A().employeeInfo[i].workScheduleDto.startTime1 == param[0] * 5 + self.dispStartHours * 60) return;
 				}
 				if (self.checkDisByDate == false || self.dataScreen003A().employeeInfo[i].workInfoDto.isConfirmed == 1)
 					return;
@@ -3609,26 +3664,29 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				endMinute = duration.create(param[1] * 5 + self.dispStart * 5).text;
 				self.checkDragDrog = true;
 				
-				let index = e.currentTarget.id.split("-")[0], lstGcShow = _.filter(self.lstAllChildShow, (x: any) => { return x.index === parseInt(index) });
+				let index = checkType == 0 ? e.currentTarget.id.split("-")[0] : param[2], lstGcShow = _.filter(self.lstAllChildShow, (x: any) => { return x.index === parseInt(index) });
 				
 				if(type == "lgc"){
-					self.checkChartHide(lstGcShow, index, param, "lgc");
+					//self.checkChartHide(lstGcShow, index, param, "lgc");
 					if (param) {
 						$("#extable-ksu003").exTable("cellValue", "middle", datafilter[0].empId, "startTime1", startMinute);
 						$("#extable-ksu003").exTable("cellValue", "middle", datafilter[0].empId, "endTime1", endMinute);
+						
+						self.dataScreen003A().employeeInfo[i].workScheduleDto.startTime1 = param[0] * 5 + self.dispStartHours * 60;
+						self.dataScreen003A().employeeInfo[i].workScheduleDto.endTime1 = param[1] * 5 + self.dispStartHours * 60;
 					}
 				}
 				
 				if(type == "rgc"){
-					self.checkChartHide(lstGcShow, index, param, "rgc");
+					//self.checkChartHide(lstGcShow, index, param, "rgc");
 					if (param) {
 						$("#extable-ksu003").exTable("cellValue", "middle", datafilter[0].empId, "startTime2", startMinute);
 						$("#extable-ksu003").exTable("cellValue", "middle", datafilter[0].empId, "endTime2", endMinute);
+						
+						self.dataScreen003A().employeeInfo[i].workScheduleDto.startTime2 = param[0] * 5 + self.dispStartHours * 60;
+						self.dataScreen003A().employeeInfo[i].workScheduleDto.endTime2 = param[1] * 5 + self.dispStartHours * 60;
 					}
 				}
-				
-				self.dataScreen003A().employeeInfo[i].workScheduleDto.startTime1 = param[0] * 5 + self.dispStartHours * 60;
-				self.dataScreen003A().employeeInfo[i].workScheduleDto.endTime1 = param[1] * 5 + self.dispStartHours * 60;
 				                
                 let allBrk = [];
                 allBrk = _.filter(self.lstAllChildShow, (x : any) => {return x.type == "BREAK" && x.index == i});
@@ -3659,8 +3717,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				self.lstBreakSum = [], self.lstAllChildShow = [], self.lstHolidayShort = [];
 				lstTime = self.calcChartTypeTime(dataFixed, dataFixed.workScheduleDto.listBreakTimeZoneDto,
 					timeRangeLimit, lstTime, "BREAK", index);
-				for (let e = 0; e < dataFixed.workInfoDto.listTimeVacationAndType.length; e++) {
-					let y = dataFixed.workInfoDto.listTimeVacationAndType[e];
+				for (let f = 0; f < dataFixed.workInfoDto.listTimeVacationAndType.length; f++) {
+					let y = dataFixed.workInfoDto.listTimeVacationAndType[f];
 					lstTime = self.calcChartTypeTime(dataFixed, y.timeVacation.timeZone, timeRangeLimit, lstTime, "HOLIDAY", index);
 				}
 				lstTime = self.calcChartTypeTime(dataFixed, dataFixed.workInfoDto.shortTime,
@@ -3793,7 +3851,6 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					limitStartMax = self.dispStartHours;
 				}
 			} else if (time[0].startTimeRange != null) {
-
 				limitStartMin = ((time[0].startTimeRange.startTime.time) / 5)
 			}
 
@@ -3846,13 +3903,12 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			return rangeBreak;
 		}
 
-		// tạo tại chart
-		addChartWithType045(empId: string, type: any, id: any, timeChart: any, lineNo: any, parent?: any,
+		// tạo lại chart
+		addChartWithType045(fixedGc : any, datafilter : any ,empId: string, type: any, id: any, timeChart: any, lineNo: any, parent?: any,
 			limitStartMin?: any, limitStartMax?: any, limitEndMin?: any, limitEndMax?: any, zIndex?: any) {
 			let self = this, timeEnd = self.convertTimePixel(self.timeRange === 24 ? "24:00" : "48:00");
 			let fixed = "None", canSlide = false, pin =false, followParent = false, rollup = false, roundEdge = false, bePassedThrough = true,
 			isConfirmed = self.dataScreen003A().employeeInfo[lineNo].workInfoDto.isConfirmed;
-			
 			let lstType = self.dataScreen003A().scheCorrection; // 確定済みか
 			let fixCheck = _.filter(lstType, (x: any) => { return x === 0 }),
 				flexCheck = _.filter(lstType, (x: any) => { return x === 1 }),
@@ -3892,11 +3948,11 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				followParent = true;
 				canSlide = true;
 				if(self.dataScreen003A().employeeInfo[lineNo].fixedWorkInforDto != null && self.dataScreen003A().employeeInfo[lineNo].fixedWorkInforDto.fixBreakTime == 1){
-					if (self.dataScreen003A().employeeInfo[lineNo].fixedWorkInforDto.workType == 2)
+					if (self.dataScreen003A().employeeInfo[lineNo].fixedWorkInforDto.workType == WorkTimeForm.FLOW || self.dataScreen003A().employeeInfo[lineNo].fixedWorkInforDto.workType == WorkTimeForm.FLEX)
 					followParent = false;
 				}
 				if(self.dataScreen003A().employeeInfo[lineNo].fixedWorkInforDto != null && self.dataScreen003A().employeeInfo[lineNo].fixedWorkInforDto.fixBreakTime == 0){
-					if (self.dataScreen003A().employeeInfo[lineNo].fixedWorkInforDto.workType == 2)
+					if (self.dataScreen003A().employeeInfo[lineNo].fixedWorkInforDto.workType == WorkTimeForm.FLOW || self.dataScreen003A().employeeInfo[lineNo].fixedWorkInforDto.workType == WorkTimeForm.FLEX)
 					followParent = true;
 				}
 				bePassedThrough = false;
@@ -3936,67 +3992,30 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					roundEdge: roundEdge,
 					bePassedThrough: bePassedThrough,
 					resizeFinished: (b: any, e: any, p: any) => {
-						
 						if (self.checkDisByDate == false || self.dataScreen003A().employeeInfo[lineNo].workInfoDto.isConfirmed == 1) return;
 						self.enableSave(true);
 						self.checkDragDrog = false;
+						let param : any = [];
+						param.push(b);
+						param.push(e);
+						param.push(p);
 						if (!_.isNil(id) && _.includes(id, 'lgc')) {
-							if (p == true)
-								$("#extable-ksu003").exTable("cellValue", "middle", empId, "startTime1", formatById("Clock_Short_HM", (b) * 5));
-							else
-								$("#extable-ksu003").exTable("cellValue", "middle", empId, "endTime1", formatById("Clock_Short_HM", (e) * 5));
+							self.gcResize(fixedGc, param, datafilter, lineNo, "lgc", 1);
 						} else {
-							if (p == true)
-								$("#extable-ksu003").exTable("cellValue", "middle", empId, "startTime2", formatById("Clock_Short_HM", (b) * 5));
-							else
-								$("#extable-ksu003").exTable("cellValue", "middle", empId, "endTime2", formatById("Clock_Short_HM", (e) * 5));
+							self.gcResize(fixedGc, param, datafilter, lineNo, "rgc", 1);
 						}
 						self.checkTypeChange = [];
 					},
 					// kéo lại chart
 					dropFinished: (b: any, e: any) => {
-						let fixed = "None", slide = true, isConfirmed = self.dataScreen003A().employeeInfo[lineNo].workInfoDto.isConfirmed;
-						self.enableSave(true);
-						if (self.checkDisByDate == false || isConfirmed == 1) {
-							fixed = "Both"
-							slide = false
-						}
-						if (_.includes(id, '_')) {
-							let indexBrks = 0;
-							self.dropBreakTime(lineNo, id, b, e, slide, fixed, id);
-							return;
-						};
-						if (self.checkDisByDate == false || self.dataScreen003A().employeeInfo[lineNo].workInfoDto.isConfirmed == 1) return;
-						
-						if (_.includes(id, 'lgc')) {
-							$("#extable-ksu003").exTable("cellValue", "middle", empId, "startTime1", formatById("Clock_Short_HM", (b) * 5));
-							$("#extable-ksu003").exTable("cellValue", "middle", empId, "endTime1", formatById("Clock_Short_HM", (e) * 5));
+						let dataDrop : any = [];
+						dataDrop.push(b);
+						dataDrop.push(e);
+						dataDrop.push(lineNo);
+						if (!_.isNil(id) && _.includes(id, 'lgc')) {
+							self.gcDrop(dataDrop,  lineNo, datafilter, "lgc",1);
 						} else {
-							$("#extable-ksu003").exTable("cellValue", "middle", empId, "startTime2", formatById("Clock_Short_HM", (b) * 5));
-							$("#extable-ksu003").exTable("cellValue", "middle", empId, "endTime2", formatById("Clock_Short_HM", (e) * 5));	
-						}
-							
-						let param = {0 : b, 1 : e}, startMinute = 0, endMinute = 0;
-						startMinute = duration.create(param[0] * 5 + self.dispStart * 5).text;
-						endMinute = duration.create(param[1] * 5 + self.dispStart * 5).text;
-						self.checkDragDrog = true;
-						self.checkDragDrogAgain = true;
-						let index = lineNo, lstGcShow = _.filter(self.lstAllChildShow, (x: any) => { return x.index === parseInt(index) });
-						if (_.includes(id, 'lgc')) {
-							self.checkChartHide(lstGcShow, index, param, "lgc");
-							if (param) {
-								$("#extable-ksu003").exTable("cellValue", "middle", empId, "startTime1", startMinute);
-								$("#extable-ksu003").exTable("cellValue", "middle", empId, "endTime1", endMinute);
-							}
-							self.checkTypeChange = [];
-						} else {
-
-							self.checkChartHide(lstGcShow, index, param, "rgc");
-							if (param) {
-								$("#extable-ksu003").exTable("cellValue", "middle", empId, "startTime2", startMinute);
-								$("#extable-ksu003").exTable("cellValue", "middle", empId, "endTime2", endMinute);
-							}
-							self.checkTypeChange = [];
+							self.gcDrop(dataDrop,  lineNo, datafilter, "rgc",1);
 						}
 					}
 				}
@@ -4250,6 +4269,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			} 
 		}
 
+		// setting when click left button
 		toLeft() {
 			let self = this;
 			if(self.checkErrorTime == false) return;
@@ -4269,7 +4289,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			else
 			$("#extable-ksu003").exTable("scrollBack", 0, { h: 0 });
 		}
-
+		
+		// setting when click down button
 		toDown() {
 			let self = this;
 			if(self.checkErrorTime == false) return;
@@ -4304,7 +4325,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			}
 			self.indexBtnToDown(self.indexBtnToDown() + 1);
 		}
-
+		
+		// setting show hide for middle
 		showHide() {
 			let self = this;
 			if (self.indexBtnToLeft() % 2 == 0) {
@@ -4716,6 +4738,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			}
 			self.hoverEvent(self.targetDate());
 			self.destroyAndCreateGrid(self.lstEmpId, 0);
+			self.enableSave(false);
 		}
 
 		public nextAllDay() {
@@ -4749,6 +4772,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			}
 			self.hoverEvent(self.targetDate());
 			self.destroyAndCreateGrid(self.lstEmpId, 0);
+			self.enableSave(false);
 		}
 
 		public prevDay() {
@@ -4777,6 +4801,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			}
 			self.hoverEvent(self.targetDate());
 			self.destroyAndCreateGrid(self.lstEmpId, 0);
+			self.enableSave(false);
 		}
 
 		public prevAllDay() {
@@ -4808,6 +4833,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			}
 			self.hoverEvent(self.targetDate());
 			self.destroyAndCreateGrid(self.lstEmpId, 0);
+			self.enableSave(false);
 		}
 
 		public changeTargetDate(nextOrprev: number, index: number) {
@@ -4851,9 +4877,9 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				(columnKey === "endTime2" /*&& endTime2 != "" && startTime2 != ""*/)) {
 					if(_.isNaN(command.workTime1.startTime.time) || _.isNaN(command.workTime1.endTime.time) || (command.workTime2 != null && (_.isNaN(command.workTime2.startTime.time) || _.isNaN(command.workTime2.endTime.time))))
 					return;
-					
+				block.invisible();	
 				service.checkTimeIsIncorrect(command).done(function(result) {
-					block.clear();
+					//block.clear();
 					let errors = [];
 					
 					for (let i = 0; i < result.length; i++) {
@@ -5145,8 +5171,10 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					
 					if(lstCheckFalse.length > 0 && lstCheckTrue.length == 0)
 					self.colorBreak45 = false;
-					else if(lstCheckTrue.length > 0 )
+					else if(lstCheckTrue.length > 0 && lstCheckFalse.length != lstBrkTime.length && lstBrkTime.length == self.dataScreen003A().employeeInfo[lineNo].workScheduleDto.listBreakTimeZoneDto.length)
 					self.colorBreak45 = true;
+					else if(lstCheckTrue.length > 0 && lstCheckFalse.length == lstBrkTime.length && lstBrkTime.length == self.dataScreen003A().employeeInfo[lineNo].workScheduleDto.listBreakTimeZoneDto.length)
+					self.colorBreak45 = false;
 					
 					let checkColorTime = {
 						workTypeCode :self.dataScreen003A().employeeInfo[lineNo].workScheduleDto.workTypeCode == schedule.workTypeCode,
@@ -5686,7 +5714,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 		/** A1_4 - Close modal */
 		public closeDialog(): void {
 			let self = this;
-			if(self.checkOpenDialog == false) return;
+			self.checkCloseKsu003 = true;
+			//if(self.checkOpenDialog == false) return;
 			nts.uk.ui.windows.close();
 		}
 

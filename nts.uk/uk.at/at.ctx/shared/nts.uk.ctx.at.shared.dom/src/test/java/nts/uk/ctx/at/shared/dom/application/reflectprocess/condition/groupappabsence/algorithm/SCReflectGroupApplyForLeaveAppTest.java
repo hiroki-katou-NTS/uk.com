@@ -18,7 +18,7 @@ import nts.uk.ctx.at.shared.dom.application.reflectprocess.common.ReflectApplica
 import nts.uk.ctx.at.shared.dom.common.TimeZoneWithWorkNo;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.DailyRecordOfApplication;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.ScheduleRecordClassifi;
-import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.condition.SCCreateDailyAfterApplicationeReflect.DailyAfterAppReflectResult;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.condition.DailyAfterAppReflectResult;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.vacationapplication.VacationAppReflectOption;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.vacationapplication.leaveapplication.ReflectWorkHourCondition;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
@@ -54,7 +54,7 @@ public class SCReflectGroupApplyForLeaveAppTest {
 				.createRCWithTimeLeav(ScheduleRecordClassifi.SCHEDULE, 1);// no = 1, 就業時間帯コード = 001
 		VacationAppReflectOption option = new VacationAppReflectOption(NotUseAtr.NOT_USE, NotUseAtr.NOT_USE,
 				ReflectWorkHourCondition.REFLECT);// 出退勤を反映する=反映する
-		DailyAfterAppReflectResult resultActual = option.processSC(require, workInfo,
+		DailyAfterAppReflectResult resultActual = option.processSC(require, "", workInfo,
 				new ArrayList<>(), NotUseAtr.USE, dailyApp);
 		assertThat(resultActual.getDomainDaily().getWorkInformation().getRecordInfo().getWorkTimeCode().v())
 				.isEqualTo("004");// 就業時間帯コード
@@ -85,7 +85,7 @@ public class SCReflectGroupApplyForLeaveAppTest {
 		VacationAppReflectOption option = new VacationAppReflectOption(NotUseAtr.NOT_USE, NotUseAtr.NOT_USE,
 				ReflectWorkHourCondition.NOT_REFLECT);// 出退勤を反映する=反映する
 
-		DailyAfterAppReflectResult resultActual = option.processSC(require, workInfo,
+		DailyAfterAppReflectResult resultActual = option.processSC(require, "", workInfo,
 				new ArrayList<>(), NotUseAtr.USE, dailyApp);
 
 		assertThat(resultActual.getDomainDaily().getWorkInformation().getRecordInfo().getWorkTimeCode().v())
@@ -117,7 +117,7 @@ public class SCReflectGroupApplyForLeaveAppTest {
 		VacationAppReflectOption option = new VacationAppReflectOption(NotUseAtr.NOT_USE, NotUseAtr.USE, // 出退勤を反映する=する
 				ReflectWorkHourCondition.REFLECT);
 
-		DailyAfterAppReflectResult resultActual = option.processSC(require, workInfo,
+		DailyAfterAppReflectResult resultActual = option.processSC(require, "", workInfo,
 				workingHours, NotUseAtr.USE, dailyApp);
 
 		assertThat(resultActual.getDomainDaily().getWorkInformation().getScheduleTimeSheets())
@@ -149,7 +149,7 @@ public class SCReflectGroupApplyForLeaveAppTest {
 		VacationAppReflectOption option = new VacationAppReflectOption(NotUseAtr.NOT_USE, NotUseAtr.NOT_USE, // 出退勤を反映する=しない
 				ReflectWorkHourCondition.REFLECT);
 
-		DailyAfterAppReflectResult resultActual = option.processSC(require, workInfo,
+		DailyAfterAppReflectResult resultActual = option.processSC(require, "", workInfo,
 				workingHours, NotUseAtr.USE, dailyApp);
 
 		assertThat(resultActual.getDomainDaily().getWorkInformation().getScheduleTimeSheets()).isEqualTo(noBefore);

@@ -28,6 +28,8 @@ import nts.uk.ctx.at.shared.dom.adapter.application.reflect.SHAppReflectionSetti
 import nts.uk.ctx.at.shared.dom.adapter.application.reflect.SHApplyTimeSchedulePriority;
 import nts.uk.ctx.at.shared.dom.adapter.application.reflect.SHClassifyScheAchieveAtr;
 import nts.uk.ctx.at.shared.dom.adapter.application.reflect.SHPriorityTimeReflectAtr;
+import nts.uk.ctx.at.shared.dom.calculationsetting.StampReflectionManagement;
+import nts.uk.ctx.at.shared.dom.calculationsetting.repository.StampReflectionManagementRepository;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.converter.DailyRecordShareFinder;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailywork.worktime.empwork.EmployeeWorkDataSetting;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
@@ -161,6 +163,9 @@ public class ReflectApplicationWorkRecordPubImpl implements ReflectApplicationWo
 	@Inject
 	private VacationApplicationReflectRepository vacationApplicationReflectRepository;
 
+	@Inject
+	private StampReflectionManagementRepository timePriorityRepository;
+
 	@Override
 	public Pair<ReflectStatusResultShare, Optional<AtomTask>> process(Object application, GeneralDate date,
 			ReflectStatusResultShare reflectStatus) {
@@ -172,7 +177,7 @@ public class ReflectApplicationWorkRecordPubImpl implements ReflectApplicationWo
 				requestSettingAdapter, flexWorkSettingRepository, predetemineTimeSettingRepository,
 				fixedWorkSettingRepository, flowWorkSettingRepository, goBackReflectRepository,
 				stampAppReflectRepository, lateEarlyCancelReflectRepository, reflectWorkChangeAppRepository,
-				timeLeaveAppReflectRepository, appReflectOtHdWorkRepository, vacationApplicationReflectRepository);
+				timeLeaveAppReflectRepository, appReflectOtHdWorkRepository, vacationApplicationReflectRepository, timePriorityRepository);
 		return ReflectApplicationWorkRecord.process(impl ,(ApplicationShare) application, date, reflectStatus);
 	}
 
@@ -234,6 +239,8 @@ public class ReflectApplicationWorkRecordPubImpl implements ReflectApplicationWo
         private final AppReflectOtHdWorkRepository appReflectOtHdWorkRepository;
         
     	private final VacationApplicationReflectRepository vacationApplicationReflectRepository;
+
+        private final StampReflectionManagementRepository timePriorityRepository;
 
 		@Override
 		public List<StampCard> getLstStampCardBySidAndContractCd(String sid) {
@@ -336,11 +343,6 @@ public class ReflectApplicationWorkRecordPubImpl implements ReflectApplicationWo
 		}
 
 		@Override
-		public Optional<WorkType> findByPK(String companyId, String workTypeCd) {
-			return workTypeRepo.findByPK(companyId, workTypeCd);
-		}
-
-		@Override
 		public Optional<ReflectBusinessTripApp> findReflectBusinessTripApp(String companyId) {
 			return Optional.of(new ReflectBusinessTripApp(companyId));
 		}
@@ -363,11 +365,6 @@ public class ReflectApplicationWorkRecordPubImpl implements ReflectApplicationWo
 		@Override
 		public Optional<LateEarlyCancelReflect> findReflectArrivedLateLeaveEarly(String companyId) {
 			return Optional.ofNullable(lateEarlyCancelReflectRepository.getByCompanyId(companyId));
-		}
-
-		@Override
-		public String getCId() {
-			return companyId;
 		}
 
 		@Override
@@ -396,13 +393,34 @@ public class ReflectApplicationWorkRecordPubImpl implements ReflectApplicationWo
 		}
 
 		@Override
-		public Optional<PredetemineTimeSetting> findByWorkTimeCode(String companyId, String workTimeCode) {
-			return predetemineTimeSettingRepository.findByWorkTimeCode(companyId, workTimeCode);
+		public Optional<AppReflectOtHdWork> findOvertime(String companyId) {
+			return appReflectOtHdWorkRepository.findByCompanyId(companyId);
 		}
 
 		@Override
-		public Optional<AppReflectOtHdWork> findOvertime(String companyId) {
-			return appReflectOtHdWorkRepository.findByCompanyId(companyId);
+		public Optional<VacationApplicationReflect> findVacationApp(String companyId) {
+			return vacationApplicationReflectRepository.findReflectByCompanyId(companyId);
+		}
+		
+		@Override
+		public Optional<StampReflectionManagement> findByCid(String companyId) {
+			return timePriorityRepository.findByCid(companyId);
+		}
+
+		@Override
+		public Optional<WorkType> findByPK(String companyId, String workTypeCd) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public String getCId() {
+			return companyId;
+		}
+
+		@Override
+		public Optional<PredetemineTimeSetting> findByWorkTimeCode(String companyId, String workTimeCode) {
+			return predetemineTimeSettingRepository.findByWorkTimeCode(companyId, workTimeCode);
 		}
 
 		@Override
@@ -410,11 +428,6 @@ public class ReflectApplicationWorkRecordPubImpl implements ReflectApplicationWo
 				List<IntegrationOfDaily> integrationOfDaily, Optional<ManagePerCompanySet> companySet,
 				ExecutionType reCalcAtr) {
 			return calculateForSchedule(calcOption, integrationOfDaily, companySet, reCalcAtr);
-		}
-
-		@Override
-		public Optional<VacationApplicationReflect> findVacationApp(String companyId) {
-			return vacationApplicationReflectRepository.findReflectByCompanyId(companyId);
 		}
 
 	}

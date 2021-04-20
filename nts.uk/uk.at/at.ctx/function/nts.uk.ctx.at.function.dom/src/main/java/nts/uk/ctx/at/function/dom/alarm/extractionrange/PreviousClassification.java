@@ -11,9 +11,9 @@ public enum PreviousClassification {
 	 */
 	BEFORE(0, "前"),
 	/**
-	 * 先
+	 * 後
 	 */
-	AHEAD(1, "先");
+	AHEAD(1, "後");
 	
 	/** The value. */
 	public final int value;

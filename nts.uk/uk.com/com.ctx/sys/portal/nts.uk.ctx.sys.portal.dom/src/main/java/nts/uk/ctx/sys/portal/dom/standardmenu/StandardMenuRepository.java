@@ -175,4 +175,6 @@ public interface StandardMenuRepository {
 	List<StandardMenu> findByMenuAndWebMenuDisplay(String cid, int classification, int menuAtr, int webSetting);
 	
 	Optional<StandardMenu> findByCIDSystemMenuClassificationCode(String cid, int system, int classification, String code);
+	
+	Optional<String> getUrl(String cid, int system, int menuClassfication, String programId, String screenId);
 }

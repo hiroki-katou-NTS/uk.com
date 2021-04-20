@@ -51,7 +51,7 @@ public class SCReflectWorkChangeAppTest {
 		actualResult.addAll(reflectWorkChange.reflectSchedule(require, createAppChange(ScheduleRecordClassifi.SCHEDULE),
 				dailyApp));
 
-		assertThat(actualResult).isEqualTo(Arrays.asList(3, 4, 5, 6));
+		assertThat(actualResult).isEqualTo(Arrays.asList(34, 41, 44, 31));
 
 	}
 
