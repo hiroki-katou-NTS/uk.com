@@ -59,12 +59,6 @@ public class FailedPasswordAuthenticateTest {
 	
 	@Test
 	public void called_LockoutData_Save() {
-		
-		FailedAuthenticateTask requireResult = new FailedAuthenticateTask(
-				Optional.empty(), 
-				Optional.empty());
-		
-
 		EmployeeDataMngInfoImport imp = PasswordAuthenticateWithEmployeeCodeTestHelper.DUMMY_IMPORTED;
 		User user = PasswordAuthenticateWithEmployeeCodeTestHelper.USER;
 		
