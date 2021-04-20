@@ -109,7 +109,7 @@ public class CreateDetailOfArbitraryScheduleQuery {
 
         for (StatusOfEmployee employee : employees) {
             val listValue = values.getOrDefault(employee.getEmployeeId(), null);
-            if(listValue.getItemValues() == null) continue;
+            if(listValue == null || listValue.getItemValues() == null) continue;
             val listItemSids = listValue.getItemValues();
             val listAtt = listItemSids.stream()
                     .filter(x -> checkAttId(getAggregableMonthlyAttId, x.getItemId()))
