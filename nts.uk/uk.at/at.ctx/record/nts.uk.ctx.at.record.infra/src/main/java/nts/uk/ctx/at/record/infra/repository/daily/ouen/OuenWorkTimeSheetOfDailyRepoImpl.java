@@ -15,6 +15,7 @@ import nts.arc.layer.infra.data.query.TypedQueryWrapper;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.record.dom.daily.ouen.OuenWorkTimeSheetOfDaily;
 import nts.uk.ctx.at.record.dom.daily.ouen.OuenWorkTimeSheetOfDailyRepo;
 import nts.uk.ctx.at.record.infra.entity.daily.ouen.KrcdtDayOuenTimeSheet;
@@ -125,7 +126,7 @@ public class OuenWorkTimeSheetOfDailyRepoImpl extends JpaRepository implements O
 	private void updateData(KrcdtDayOuenTimeSheet entityOld, KrcdtDayOuenTimeSheet dataUpdate) {
 		entityOld.startTime = dataUpdate.startTime;
 		entityOld.endTime = dataUpdate.endTime;
-		entityOld.workCd1 = dataUpdate.workCd1;
+		entityOld.workCd1 = StringUtil.isNullOrEmpty(dataUpdate.workCd1, true) ? null : dataUpdate.workCd1;
 		entityOld.workCd2 = dataUpdate.workCd2;
 		entityOld.workCd3 = dataUpdate.workCd3;
 		entityOld.workCd4 = dataUpdate.workCd4;
