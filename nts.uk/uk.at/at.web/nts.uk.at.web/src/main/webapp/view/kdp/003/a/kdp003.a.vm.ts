@@ -183,7 +183,7 @@ module nts.uk.at.kdp003.a {
 					} = storageData as StorageData;
 
 					const loginParams: f.ModelData = {
-						contractCode: '000000000000',
+						contractCode: '000000000004',
 						companyCode: CCD,
 						companyId: CID,
 						employeeCode: SCD,
