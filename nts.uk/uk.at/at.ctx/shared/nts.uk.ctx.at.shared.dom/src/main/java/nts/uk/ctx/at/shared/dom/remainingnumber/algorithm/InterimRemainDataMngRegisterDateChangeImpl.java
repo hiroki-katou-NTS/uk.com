@@ -1,8 +1,12 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.algorithm;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -114,9 +118,36 @@ public class InterimRemainDataMngRegisterDateChangeImpl implements InterimRemain
 					.flatMap(List::stream).collect(Collectors.toList()));
 
 		}
+		
+		
 
 		//暫定データの登録処理
-		regisInterimDataProcess(cid, sid, interimRemains, lstDate);
+		regisInterimDataProcess(cid, sid,
+				distinctList(interimRemains, InterimRemain::getYmd, InterimRemain::getRemainType), lstDate);
+
+	}
+	
+	public static <T> List<T> distinctList(List<T> list, Function<? super T, ?>... keyExtractors) {
+
+	    return list
+	        .stream()
+	        .filter(distinctByKeys(keyExtractors))
+	        .collect(Collectors.toList());
+	}
+	
+	private static <T> Predicate<T> distinctByKeys(Function<? super T, ?>... keyExtractors) {
+
+	    final Map<List<?>, Boolean> seen = new ConcurrentHashMap<>();
+
+	    return t -> {
+
+	        final List<?> keys = Arrays.stream(keyExtractors)
+	            .map(ke -> ke.apply(t))
+	            .collect(Collectors.toList());
+
+	        return seen.putIfAbsent(keys, Boolean.TRUE) == null;
+
+	    };
 
 	}
 
