@@ -2,6 +2,7 @@ package nts.uk.ctx.at.shared.dom.scherec.taskmanagement.domainservice;
 
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -72,7 +73,7 @@ public class GetWorkAvailableToEmployeesService {
     	//if $子作業.isEmpty AND $絞込作業.isEmpty
     	if(childTaskList.isEmpty() && listTaskCode.isEmpty())
     		//return require.全ての作業を取得する(基準日, 作業枠NO)
-    		return require.getTask(date, taskFrameNo);
+    		return require.getTask(date, Arrays.asList(taskFrameNo));
     	
     	List<TaskCode> childTaskListfilter = new ArrayList<TaskCode>();
     	//if 子作業.isPresent AND $絞込作業.isPresent
@@ -122,7 +123,7 @@ public class GetWorkAvailableToEmployeesService {
         TaskFrameUsageSetting getTask();
          // [R-2] 全ての作業を取得する
          // 作業Repository.Get(会社ID,基準日,作業枠リスト)
-        List<Task> getTask(GeneralDate date, TaskFrameNo TaskFrameNo);
+        List<Task> getTask(GeneralDate date, List<TaskFrameNo> TaskFrameNo);
          // [R-3] 利用可能作業を取得する
          // 作業Repository.Get(会社ID,基準日,作業枠NO,作業コードリスト)
         List<Task> getListTask(GeneralDate referenceDate, TaskFrameNo taskFrameNo, List<TaskCode> codes);
