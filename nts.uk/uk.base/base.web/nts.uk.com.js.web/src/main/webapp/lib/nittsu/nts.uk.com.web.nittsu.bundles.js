@@ -18274,6 +18274,7 @@ var nts;
                         var tabIndex = nts.uk.util.isNullOrEmpty(container.attr("tabindex")) ? "0" : container.attr("tabindex");
                         var fiscalYear = data.fiscalYear !== undefined ? ko.unwrap(data.fiscalYear) : false;
                         var dateType = (data.type !== undefined) ? ko.unwrap(data.type) : "";
+                        var $cache = { value: '' };
                         if (dateType === "yearmonth") {
                             dateFormat = 'yearmonth';
                             valueFormat = 'YYYYMM';
@@ -18392,6 +18393,10 @@ var nts;
                                 $input.data("change", false);
                                 return;
                             }
+                            if ($cache.value === $input.val()) {
+                                return;
+                            }
+                            $cache.value = $input.val();
                             var newText = $input.val();
                             var validator = new ui.validation.TimeValidator(name, constraintName, { required: $input.data("required"),
                                 outputFormat: nts.uk.util.isNullOrEmpty(valueFormat) ? ISOFormat : valueFormat,
@@ -18501,6 +18506,7 @@ var nts;
                             return true;
                         };
                         $input.on('validate', (function (e) {
+                            $cache.value = '';
                             var newText = $input.val();
                             var validator = new ui.validation.TimeValidator(name, constraintName, { required: $input.data("required"),
                                 outputFormat: nts.uk.util.isNullOrEmpty(valueFormat) ? ISOFormat : valueFormat,

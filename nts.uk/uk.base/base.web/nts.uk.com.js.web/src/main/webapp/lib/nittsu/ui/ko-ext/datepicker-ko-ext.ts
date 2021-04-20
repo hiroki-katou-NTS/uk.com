@@ -25,6 +25,8 @@ module nts.uk.ui.koExtentions {
             var tabIndex = nts.uk.util.isNullOrEmpty(container.attr("tabindex")) ? "0" : container.attr("tabindex");
             var fiscalYear = data.fiscalYear !== undefined ? ko.unwrap(data.fiscalYear) : false;
             var dateType: string = (data.type !== undefined) ? ko.unwrap(data.type) : "";
+
+            const $cache = { value: '' };
             
             if (dateType === "yearmonth") {
                 dateFormat = 'yearmonth';
@@ -141,10 +143,8 @@ module nts.uk.ui.koExtentions {
                 $input.attr("readonly", true);
                 $input.css("cursor", "default");
             }
-
-            const $cache = { value: '' };
             
-            $input.on("change", (e) => {
+            $input.on("change", (e: JQueryEventObject) => {
 //                var onChanging = container.data("changed");
 //                if(onChanging === true){
 //                    return;
@@ -270,6 +270,7 @@ module nts.uk.ui.koExtentions {
 
 
             $input.on('validate', (function(e: Event) {
+                $cache.value = '';
                 var newText = $input.val();
                 var validator = new validation.TimeValidator(name, constraintName, {required: $input.data("required"), 
                                                     outputFormat: nts.uk.util.isNullOrEmpty(valueFormat) ? ISOFormat : valueFormat, 
