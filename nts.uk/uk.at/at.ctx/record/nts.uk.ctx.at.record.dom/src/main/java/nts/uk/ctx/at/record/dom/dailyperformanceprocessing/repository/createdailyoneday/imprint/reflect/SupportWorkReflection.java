@@ -604,6 +604,7 @@ public class SupportWorkReflection {
 	 */
 	public List<OuenWorkTimeSheetOfDailyAttendance> correctMaximumCheering(
 			JudgmentCriteriaSameStampOfSupport judgmentSupport, List<OuenWorkTimeSheetOfDailyAttendance> dataAutoSet) {
+		List<OuenWorkTimeSheetOfDailyAttendance> dataAutoSetNew = new ArrayList<>();
 		// パラメータ。応援データ一覧のsizeを確認する
 		if (dataAutoSet.size() <= 1 || dataAutoSet.size() <= judgmentSupport.getSupportMaxFrame().v()) {
 			// １以下の場合 - パラメータ。応援データ一覧を返す
@@ -614,9 +615,8 @@ public class SupportWorkReflection {
 			OuenWorkTimeSheetOfDailyAttendance lastData = dataAutoSet.get(dataAutoSet.size() - 1);
 			// パラメータ。応援データ一覧の先頭の応援データを取得する
 			OuenWorkTimeSheetOfDailyAttendance firstData = dataAutoSet.get(0);
-			dataAutoSet.remove(lastData);
 			// 最大応援回数で補正する
-			this.correctWithMaxNumberCheers(
+			dataAutoSetNew = this.correctWithMaxNumberCheers(
 					judgmentSupport.getSupportMaxFrame() != null ? judgmentSupport.getSupportMaxFrame().v() - 1 : null,
 					dataAutoSet);
 			if (judgmentSupport.getSupportMaxFrame().v() < 2) {
@@ -627,7 +627,7 @@ public class SupportWorkReflection {
 							? firstData.getTimeSheet().getStart().get()
 							: null);
 					// 最後の退勤の応援データを補正済みの応援データ一覧に入れる
-					dataAutoSet.add(lastData);
+					dataAutoSetNew.add(lastData);
 				}
 			} else {
 				// 補正で使う応援データを探す
@@ -639,10 +639,10 @@ public class SupportWorkReflection {
 							.setStart(supportCorrection);
 
 				// 最後の退勤の応援データを補正済みの応援データ一覧の末尾に入れる
-				dataAutoSet.add(dataAutoSet.size(), lastData);
+					dataAutoSetNew.add(lastData);
 			}
 		}
-		return dataAutoSet;
+		return dataAutoSetNew;
 	}
 	
 	// 補正で使う応援データを探す
@@ -891,18 +891,23 @@ public class SupportWorkReflection {
 
 		if (leavingWork.isPresent()) {
 			// 最初の出勤をセットする - 勤務Temporary。最初の出勤＝取得できる出退勤．出勤
+			if(leavingWork.get().getAttendanceStamp().isPresent())
 			workTemporary.setFirstAttendance(leavingWork.get().getAttendanceStamp());
 
 			// 最後の退勤をセットする
 			// 勤務Temporary。最後の退勤＝取得できる出退勤．退勤
+			if(leavingWork.get().getLeaveStamp().isPresent())
 			workTemporary.setLastLeave(leavingWork.get().getLeaveStamp());
-			// 勤務Temporary。退勤1時刻＝取得できる出退勤．退勤
-			workTemporary.setOneHourLeavingWork(leavingWork.get().getLeaveStamp());
 		}
 		if (leavingWork2.isPresent()) {
+			// 勤務Temporary。退勤1時刻＝勤務Temporary。最後の退勤
+			if(workTemporary.getLastLeave().isPresent())
+			workTemporary.setOneHourLeavingWork(workTemporary.getLastLeave());
 			// 勤務Temporary。最後の退勤＝取得できる出退勤．退勤
+			if(leavingWork2.get().getLeaveStamp().isPresent())
 			workTemporary.setLastLeave(leavingWork2.get().getLeaveStamp());
 			// 勤務Temporary。出勤２時刻＝取得できる出退勤．出勤
+			if(leavingWork2.get().getAttendanceStamp().isPresent())
 			workTemporary.setTwoHoursWork(leavingWork2.get().getAttendanceStamp());
 		}
 
