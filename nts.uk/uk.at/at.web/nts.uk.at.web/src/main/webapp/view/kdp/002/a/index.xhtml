@@ -46,11 +46,14 @@
               marginBottom: 0
             }"></div>
           </div>
-          <div class="pull-left" id="stamp-info"
+          	<div class="pull-left" id="stamp-info"
           	data-bind="css: { 'panel1': stampTab().tabs().length == 1,
-          					  'panel2': stampTab().tabs().length > 1}">
+          					  'panel2': stampTab().tabs().length > 1,
+          					  'panel3': stampTab().tabs().length > 1 &#38;&#38; stampTab().stampPageComment().length == 0,
+          					  'panel4': stampTab().tabs().length == 1 &#38;&#38; stampTab().stampPageComment().length == 0 }">
             <ui:include src="emboss-info.xhtml" />
-          </div>
+          	</div>
+          
         </div>
       </div>
     </ui:define>

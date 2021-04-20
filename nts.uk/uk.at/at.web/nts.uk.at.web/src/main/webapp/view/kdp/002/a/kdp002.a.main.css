@@ -102,11 +102,23 @@ html{
 }
 
 .panel1 {
-  padding-top: 63px !important;
+  padding-top: 63px;
 }
 
 .panel2 {
-  padding-top: 132px !important;
+  padding-top: 132px;
+}
+
+.panel3 {
+  padding-top: 68px;
+}
+
+.panel4 {
+  padding-top: 0px;
+}
+
+.panel5 {
+  padding-top: 10px;
 }
 
 .state1 .clock .text-time {

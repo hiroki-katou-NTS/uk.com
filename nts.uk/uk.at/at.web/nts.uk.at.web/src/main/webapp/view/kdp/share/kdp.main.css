@@ -120,6 +120,7 @@
 
 #stamp-input {
 	width: 540px;
+	padding-top: 10px;
 }
 
 /* #stamp-info {
@@ -299,4 +300,8 @@
 	font-size: 1.7vmin;
     padding: 0.7vmin;
     height: auto;
+}
+
+.hideCmt {
+	display: none;
 }
