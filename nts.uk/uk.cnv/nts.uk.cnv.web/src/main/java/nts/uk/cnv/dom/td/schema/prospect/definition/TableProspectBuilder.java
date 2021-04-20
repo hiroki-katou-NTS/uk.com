@@ -85,7 +85,7 @@ public class TableProspectBuilder {
 		if (!this.isEmpty()) {
 			throw new BusinessException(new RawErrorMessage("既に存在しているテーブルに対してテーブル作成は実行できません。oruta:" + alterationId));
 		}
-		
+
 		this.alterationId = alterationId;
 		transfer(base);
 	}
@@ -94,7 +94,7 @@ public class TableProspectBuilder {
 		if (this.isEmpty()) {
 			throw new BusinessException(new RawErrorMessage("既に存在していないテーブルに対してテーブル削除は実行できません。oruta:" + alterationId));
 		}
-		
+
 		this.alterationId = alterationId;
 		this.isEmpty = true;
 	}
@@ -204,7 +204,7 @@ public class TableProspectBuilder {
 			boolean nullable,
 			String defaultValue,
 			String check) {
-		
+
 		checkBeforeChangeColumn(alterationId, columnId);
 		this.alterationId = alterationId;
 
@@ -221,7 +221,7 @@ public class TableProspectBuilder {
 	public void removeColumn(String alterationId, String columnId) {
 		checkBeforeChangeTable(alterationId);
 		checkBeforeChangeColumn(alterationId, columnId);
-		
+
 		this.alterationId = alterationId;
 
 		String colName = this.columnName.get(columnId);
@@ -239,6 +239,7 @@ public class TableProspectBuilder {
 			throw new BusinessException(new RawErrorMessage(colName + "はインデックスに含まれるため削除できません。oruta:" + alterationId));
 		}
 
+		this.columnName.remove(columnId);
 		this.columnBuilder.remove(columnId);
 	}
 
@@ -256,7 +257,7 @@ public class TableProspectBuilder {
 					"対象の列が見つからないため操作できません。テーブル：" + this.name + "　列：" + columnId + ", oruta:" + alterationId));
 		}
 	}
-	
+
 	private boolean isEmpty() {
 		return id == null;
 	}
