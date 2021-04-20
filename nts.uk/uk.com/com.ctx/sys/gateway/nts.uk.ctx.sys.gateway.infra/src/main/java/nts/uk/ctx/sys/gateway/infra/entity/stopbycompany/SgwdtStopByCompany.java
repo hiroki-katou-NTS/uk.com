@@ -18,7 +18,7 @@ import nts.uk.ctx.sys.gateway.dom.outage.PlannedOutageState;
 import nts.uk.ctx.sys.gateway.dom.outage.SystemAvailability;
 import nts.uk.ctx.sys.gateway.dom.outage.company.PlannedOutageByCompany;
 import nts.uk.ctx.sys.gateway.dom.stopbycompany.StopMessage;
-import nts.uk.ctx.sys.shared.dom.company.CompanyInforImport;
+import nts.uk.shr.com.company.CompanyId;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -66,7 +66,7 @@ public class SgwdtStopByCompany extends UkJpaEntity implements Serializable {
 	
 	public PlannedOutageByCompany toDomain() {
 		return new PlannedOutageByCompany(
-				CompanyInforImport.createCompanyId(pk.contractCd, pk.companyCd), 
+				CompanyId.create(pk.contractCd, pk.companyCd), 
 				new PlannedOutageState(
 						EnumAdaptor.valueOf(systemStatus, SystemAvailability.class), 
 						EnumAdaptor.valueOf(stopMode, OutageMode.class), 

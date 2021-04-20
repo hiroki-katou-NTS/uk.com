@@ -5,7 +5,6 @@
 package nts.uk.ctx.sys.shared.dom.company;
 
 import lombok.Getter;
-import lombok.val;
 
 /**
  * The Class CompanyInformationDto.
@@ -44,19 +43,4 @@ public class CompanyInforImport {
 	public boolean isAbolished() {
 		return isAbolition == 1;
 	}
-
-	public static String createCompanyId(String contractCd, String companyCode) {
-		return contractCd + "-" + companyCode;
-	}
-	
-	public static String extractTenantCode(String CompanyId) {
-		val Parts = CompanyId.split("-");
-		return Parts[0];
-	}
-
-	public static String extractCompanyCode(String CompanyId) {
-		val Parts = CompanyId.split("-");
-		return Parts[1];
-	}
-	
 }
