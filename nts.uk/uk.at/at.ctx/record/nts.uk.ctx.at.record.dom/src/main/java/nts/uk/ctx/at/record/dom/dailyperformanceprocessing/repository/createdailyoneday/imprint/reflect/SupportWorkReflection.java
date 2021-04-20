@@ -110,7 +110,7 @@ public class SupportWorkReflection {
 		this.correctEditStatusSupportItem(integrationOfDaily, lstCorrectMaximum, lstOuenBefore);
 
 		// 日別勤怠（Work）にデータ入れる
-		integrationOfDaily.setOuenTimeSheet(dataAutoSet);
+		integrationOfDaily.setOuenTimeSheet(lstCorrectMaximum);
 
 		// 反映状態＝反映済みを返す
 		return ReflectionAtr.REFLECTED;
@@ -619,7 +619,7 @@ public class SupportWorkReflection {
 			dataAutoSetNew = this.correctWithMaxNumberCheers(
 					judgmentSupport.getSupportMaxFrame() != null ? judgmentSupport.getSupportMaxFrame().v() - 1 : null,
 					dataAutoSet);
-			if (judgmentSupport.getSupportMaxFrame().v() < 2) {
+			if (judgmentSupport.getSupportMaxFrame().v() == 1) {
 				// 最後の退勤の応援データを補正する
 				if(lastData.getTimeSheet().getStart().isPresent() && lastData.getTimeSheet().getEnd().isPresent()) {
 					lastData.getTimeSheet()
@@ -629,14 +629,18 @@ public class SupportWorkReflection {
 					// 最後の退勤の応援データを補正済みの応援データ一覧に入れる
 					dataAutoSetNew.add(lastData);
 				}
-			} else {
+			}
+			
+			if(judgmentSupport.getSupportMaxFrame().v() >= 2){
 				// 補正で使う応援データを探す
-				Optional<WorkTimeInformation> endOuenLast = dataAutoSet.get(dataAutoSet.size() - 1).getTimeSheet().getEnd();
-				WorkTimeInformation supportCorrection = this.findSupportCorrection(endOuenLast, dataAutoSet, StartAtr.START_OF_SUPPORT);
+				Optional<WorkTimeInformation> endOuenLast = dataAutoSetNew.get(dataAutoSetNew.size() - 1).getTimeSheet().getEnd();
 				
-				// 最後の退勤の応援データを補正する
+				if(lastData.getTimeSheet().getStart().get().getReasonTimeChange().getTimeChangeMeans() == TimeChangeMeans.AUTOMATIC_SET) {
+					// 最後の退勤の応援データを補正する
+					WorkTimeInformation information = WorkTimeInformation.createByAutomaticSet(endOuenLast.get().getTimeWithDay().get());
 					lastData.getTimeSheet()
-							.setStart(supportCorrection);
+							.setStart(information);
+				}
 
 				// 最後の退勤の応援データを補正済みの応援データ一覧の末尾に入れる
 					dataAutoSetNew.add(lastData);
