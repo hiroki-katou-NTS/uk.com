@@ -15,6 +15,7 @@ module nts.uk.at.view.ksm011.a {
 
     mounted() {
       const vm = this;
+      $("#contents-area button")[0].focus();
     }
 
     gotoScreenB() {      

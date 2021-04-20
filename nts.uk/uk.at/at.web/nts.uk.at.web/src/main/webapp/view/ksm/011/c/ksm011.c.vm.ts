@@ -75,9 +75,9 @@ module nts.uk.at.view.ksm011.c {
           vm.flexTime(data.changeableFlex);
           vm.fluidWork(data.changeableFluid);
           vm.workTypeControl(data.displayWorkTypeControl);
-          vm.workTypeList(data.workTypeCodeList);
+          vm.workTypeList(data.workTypeCodeList || []);
           vm.achievementDisplay(data.displayActual);
-          vm.selectableWorkTypes(data.displayableWorkTypeList);
+          vm.selectableWorkTypes(data.displayableWorkTypeList || []);
         }
       }).fail(error => {
         vm.$dialog.error(error);

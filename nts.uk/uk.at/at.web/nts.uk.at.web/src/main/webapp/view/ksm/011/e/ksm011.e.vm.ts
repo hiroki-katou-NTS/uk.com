@@ -66,6 +66,7 @@ module nts.uk.at.view.ksm011.e {
 
     mounted() {
       const vm = this;
+        $("#tab-panel li")[0].focus();
     }
 
     saveData() {

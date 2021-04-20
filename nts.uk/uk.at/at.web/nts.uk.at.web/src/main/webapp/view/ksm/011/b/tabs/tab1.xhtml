@@ -7,11 +7,11 @@
         class="title"
         data-bind="text: $vm.$i18n('Com_Company')"
       ></span>
-      <a
+      <a tabindex="2"
         class="goback"
         data-bind="ntsLinkButton: { jump: '/view/ksm/011/a/index.xhtml' }, text: $vm.$i18n('KSM011_17')"
       ></a>
-      <button
+      <button tabindex="3"
         class="proceed"
         data-bind="text: $vm.$i18n('KSM011_18'), click: registerRulesCompanyShiftTable"
       ></button>
@@ -24,7 +24,7 @@
           ></div>
         </div>
         <div class="cell">
-          <div
+          <div tabindex="4"
             class="cf"
             data-bind="ntsSwitchButton: {
             name: '#[KSM011_19]',
@@ -44,7 +44,7 @@
           ></div>
         </div>
         <div class="cell valign-center">
-          <div
+          <div tabindex="5"
             class="cf"
             data-bind="ntsSwitchButton: {
             name: '#[KSM011_23]',
@@ -69,7 +69,7 @@
                 </div>
               </div>
               <div class="cell valign-center">
-                <input
+                <input tabindex="6"
                   data-bind="ntsNumberEditor: { 
                     value: maxDesiredHolidays,
                     enable: workRequest() === 1,
@@ -89,15 +89,15 @@
                 <div
                   data-bind="ntsFormLabel: { required: false }, text: $vm.$i18n('KSM011_27')"
                 ></div>
-                <button
+                <button tabindex="7"
                   data-bind="ntsHelpButton: {image: '/view/ksm/011/b/tabs/ba48.png', position: 'right top', enable: true }"
                 >
                   ?
                 </button>
               </div>
               <div class="cell valign-center">
-                <div
-                  id="combo-box" class="comboBox"
+                <div tabindex="8"
+                  class="comboBox"
                   data-bind="ntsComboBox: {
                   name: '#[KSM011_27]',
                   options: daysList,
@@ -120,7 +120,7 @@
                 ></div>
               </div>
               <div class="cell valign-center">
-                <div
+                <div tabindex="9"
                   id="combo-box" class="comboBox"
                   data-bind="ntsComboBox: {
                   name: '#[KSM011_28]',
@@ -144,7 +144,7 @@
                 ></div>
               </div>
               <div class="cell valign-center">
-                <div
+                <div tabindex="10"
                   class="cf"
                   data-bind="ntsSwitchButton: {
                   name: '#[KSM011_29]',

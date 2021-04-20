@@ -9,16 +9,16 @@ module nts.uk.at.view.ksm011.b.tabs.tab1 {
   @bean()
   export class ViewModel extends ko.ViewModel {
     switchItems: KnockoutObservableArray<any>;
-    publicMethod: KnockoutObservable<number> = ko.observable(1);
-    workRequestSelected: KnockoutObservable<number> = ko.observable(1);
-    workRequest: KnockoutObservable<number> = ko.observable(1);    
-    maxDesiredHolidays: KnockoutObservable<number> = ko.observable(1);
+    publicMethod: KnockoutObservable<number> = ko.observable(0);
+    workRequestSelected: KnockoutObservable<number> = ko.observable(0);
+    workRequest: KnockoutObservable<number> = ko.observable(0);    
+    maxDesiredHolidays: KnockoutObservable<number> = ko.observable(0);
 
     daysList: KnockoutObservableArray<any>;
     workRequestInput: KnockoutObservableArray<any>;
-    workRequestInputSelected: KnockoutObservable<number> = ko.observable(1);  
-    deadlineSelected: KnockoutObservable<number> = ko.observable(1);
-    deadlineWorkSelected: KnockoutObservable<number> = ko.observable(1);
+    workRequestInputSelected: KnockoutObservable<number> = ko.observable(0);
+    deadlineSelected: KnockoutObservable<number> = ko.observable(32);
+    deadlineWorkSelected: KnockoutObservable<number> = ko.observable(32);
 
     constructor(params: any) {
       super();

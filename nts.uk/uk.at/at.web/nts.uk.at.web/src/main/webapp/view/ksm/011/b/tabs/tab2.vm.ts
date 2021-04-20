@@ -9,16 +9,15 @@ module nts.uk.at.view.ksm011.b.tabs.tab2 {
   @bean()
   export class ViewModel extends ko.ViewModel {
     switchItems: KnockoutObservableArray<any>;
-    publicMethod: KnockoutObservable<number> = ko.observable(1);
-    workRequestSelected: KnockoutObservable<number> = ko.observable(1);
-    workRequest: KnockoutObservable<number> = ko.observable(1);
-    maxDesiredHolidays: KnockoutObservable<number> = ko.observable(1);
+    publicMethod: KnockoutObservable<number> = ko.observable(0);
+    workRequestSelected: KnockoutObservable<number> = ko.observable(0);
+    workRequest: KnockoutObservable<number> = ko.observable(0);
+    maxDesiredHolidays: KnockoutObservable<number> = ko.observable(0);
 
     daysList: KnockoutObservableArray<any>;
-    workRequestInput: KnockoutObservableArray<any>;
-    workRequestInputSelected: KnockoutObservable<number> = ko.observable(1);
-    deadlineSelected: KnockoutObservable<number> = ko.observable(0);
-    deadlineWorkSelected: KnockoutObservable<number> = ko.observable(0);
+    workRequestInputSelected: KnockoutObservable<number> = ko.observable(0);
+    deadlineSelected: KnockoutObservable<number> = ko.observable(32);
+    deadlineWorkSelected: KnockoutObservable<number> = ko.observable(32);
 
     selectedWkpId: KnockoutObservable<any>;
     selectedWkpGroupId: KnockoutObservable<any>;
@@ -43,14 +42,8 @@ module nts.uk.at.view.ksm011.b.tabs.tab2 {
         { code: 0, name: vm.$i18n('KSM011_22') }
       ]);
 
-      vm.workRequestInput = ko.observableArray([
-        { code: 1, name: vm.$i18n('KSM011_21') },
-        { code: 0, name: vm.$i18n('KSM011_22') }
-      ]);
-
       vm.replaceThisVar.subscribe( code => {
-        let findIt = _.find(vm.switchItems(), (x) => { return x.code === code; });
-        vm.replaceThisName(findIt.name);
+        vm.replaceThisName(code == 0 ? vm.$i18n('Com_Workplace') : vm.$i18n('Com_WorkplaceGroup'));
         if (vm.replaceThisVar() == 0) vm.selectedWkpId.valueHasMutated();
         else vm.selectedWkpGroupId.valueHasMutated();
       });
