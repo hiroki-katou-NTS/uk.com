@@ -59,6 +59,8 @@ public class RoleCas005Command {
 	private int presentInqEmployeeRef; 
 	//未来日参照許可 
 	private int futureDateRefPermit;
+	//実績工数社員参照
+	private int atdTaskEmployeeRef;
 	/**
 	 * class WorkPlaceAuthority : 所属職場権限
 	 */
@@ -67,7 +69,7 @@ public class RoleCas005Command {
 	public RoleCas005Command(String roleId, String roleCode, int roleType, int employeeReferenceRange, String name,
 			String contractCode, int assignAtr, String companyId, String webMenuCd, int scheduleEmployeeRef,
 			int bookEmployeeRef, int employeeRefSpecAgent, int presentInqEmployeeRef, int futureDateRefPermit,
-			List<WorkPlaceAuthorityCommand> listWorkPlaceAuthority) {
+			List<WorkPlaceAuthorityCommand> listWorkPlaceAuthority, int atdTaskEmployeeRef) {
 		super();
 		this.roleId = roleId;
 		this.roleCode = roleCode;
@@ -84,6 +86,7 @@ public class RoleCas005Command {
 		this.presentInqEmployeeRef = presentInqEmployeeRef;
 		this.futureDateRefPermit = futureDateRefPermit;
 		this.listWorkPlaceAuthority = listWorkPlaceAuthority;
+		this.atdTaskEmployeeRef = atdTaskEmployeeRef;
 	}
 	
 }

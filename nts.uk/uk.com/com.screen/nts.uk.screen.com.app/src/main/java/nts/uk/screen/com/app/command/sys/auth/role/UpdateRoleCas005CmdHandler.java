@@ -63,7 +63,8 @@ public class UpdateRoleCas005CmdHandler extends CommandHandler<RoleCas005Command
 				data.getBookEmployeeRef(),
 				data.getEmployeeRefSpecAgent(),
 				data.getPresentInqEmployeeRef(),
-				data.getFutureDateRefPermit()
+				data.getFutureDateRefPermit(),
+				data.getAtdTaskEmployeeRef()
 				);
 		updateEmploymentRoleCmdHandler.handle(updateEmploymentRoleCmd);
 		
