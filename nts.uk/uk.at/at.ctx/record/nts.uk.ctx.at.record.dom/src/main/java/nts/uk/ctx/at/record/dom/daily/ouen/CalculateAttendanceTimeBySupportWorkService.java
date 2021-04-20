@@ -2,14 +2,10 @@ package nts.uk.ctx.at.record.dom.daily.ouen;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
-import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.ExecutionType;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecord;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.ErrorAlarmCondition;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeActualStamp;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.ReasonTimeChange;
@@ -17,7 +13,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.time
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkTimeInformation;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenWorkTimeSheetOfDailyAttendance;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
@@ -43,38 +38,20 @@ public class CalculateAttendanceTimeBySupportWorkService {
 		Optional<IntegrationOfDaily> integrationOfDaily = require.get(empId, ymd);
 		//	if $日別勤怠.isPresent
 		if(integrationOfDaily.isPresent()){
-			//	$新日別勤怠 = [prv-2] 退勤時刻をセットする($日別勤怠)
+			// $新日別勤怠 = [prv-1] 退勤時刻をセットする($日別勤怠)
 			IntegrationOfDaily integrationOfDailyNew = setTheLeaveTime(integrationOfDaily.get());
 			//$計算結果 = require.計算する($新日別勤怠, 実行区分.通常実行)
 			IntegrationOfDaily calculationResult = require.calculationIntegrationOfDaily(integrationOfDailyNew, ExecutionType.EXCECUTION);
-			//	[prv-1] 総労働時間を超えているかチェックする(require,年月日,$計算結果.エラー一覧)	
-			checkWorkingHours(require, ymd, calculationResult.getEmployeeError());
+			//	return $計算結果	
 			return Optional.of(calculationResult);
 		}
 		return Optional.empty();
 	}
 	
 //■Private
-	/**
-	 * @name [prv-1] 総労働時間を超えているかチェックする
-	 * @input require
-	 * @input employeeDailyPerError	エラー一覧	List<社員の日別実績エラー一覧>
-	 */
-	private static void checkWorkingHours(Require require, GeneralDate date, List<EmployeeDailyPerError> employeeDailyPerError) {
-		//	if エラー一覧.勤務実績のエラーアラームコード.含む(T001)
-		if(employeeDailyPerError.stream().map(c->c.getErrorAlarmWorkRecordCode().v()).collect(Collectors.toList()).contains("T001")) {
-			//	$エラーアラーム設定 = require.エラー設定を取得する(T001)	
-			ErrorAlarmWorkRecord errorAlarmWorkRecord = require.findByCode("T001");
-			//		$メッセージ設定 = require.エラーチェック設定を取得する($エラーアラーム設定.ID)
-			// chỗ này object errorAlarmWorkRecord không có trường ID đang xác nhận với anh Tuấn JP 
-			ErrorAlarmCondition errorAlarmCondition = require.get(errorAlarmWorkRecord.getErrorAlarmCheckID());
-			throw new BusinessException("Msg_1903", date.toString(), errorAlarmCondition.getDisplayMessage().v()); 
-		}
-	}
 	
 	/**
-	 * @name	[prv-2] 退勤時刻をセットする
-	 * @input date 年月日
+	 * @name	[prv-1] 退勤時刻をセットする
 	 * @input integrationOfDaily  日別勤怠(Work)
 	 */
 	private static IntegrationOfDaily setTheLeaveTime(IntegrationOfDaily integrationOfDaily) {
@@ -124,16 +101,12 @@ public class CalculateAttendanceTimeBySupportWorkService {
 	
 //■Require
 	public static interface Require {
+		//[R-2] 日別勤怠(Work)を取得する		
+		//日別勤怠(Work)を取得する(社員ID,期間)
 		Optional<IntegrationOfDaily> get(String employeeId, GeneralDate date);
-		//[R-1] 計算する
+		//	[R-1] 日別勤怠(Work)を取得する		
 		//アルゴリズム.日別実績の修正からの計算(日別実績(Work),実行種別)	
 		IntegrationOfDaily calculationIntegrationOfDaily(IntegrationOfDaily integrationOfDaily, ExecutionType executionType);
-		//[R-2] エラー設定を取得する
-		//日別実績のエラーアラームRepository.Get(コード)														
-		ErrorAlarmWorkRecord findByCode(String code);
-		//[R-3] エラーチェック設定を取得する
-		//勤務実績のエラーアラームチェックRepository.Get(ID)
-		ErrorAlarmCondition get(String id);
 	}
 
 }

@@ -8,14 +8,16 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.record.dom.adapter.workplace.EmployeeInfoImported;
-import nts.uk.ctx.at.record.dom.adapter.workplace.WorkplaceInformationImport;
 import org.apache.commons.lang3.tuple.Pair;
 
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.record.dom.adapter.workplace.EmployeeInfoImported;
 import nts.uk.ctx.at.record.dom.adapter.workplace.SWkpHistRcImported;
 import nts.uk.ctx.at.record.dom.adapter.workplace.SyWorkplaceAdapter;
+import nts.uk.ctx.at.record.dom.adapter.workplace.WorkplaceInformationImport;
+import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffAtWorkplaceImport;
+import nts.uk.ctx.bs.employee.pub.workplace.AffWorkplaceHistoryItemExport;
 import nts.uk.ctx.bs.employee.pub.workplace.master.WorkplacePub;
 
 /**
@@ -76,6 +78,13 @@ public class SyWorkplaceAdapterImp implements SyWorkplaceAdapter {
 						x.getHierarchyCode(),
 						x.getWorkplaceExternalCode()))
 				.collect(Collectors.toList());
+	}
+
+	@Override
+	public AffAtWorkplaceImport getAffWkpHistItemByEmpDate(String employeeID, GeneralDate date) {
+		// TODO Auto-generated method stub
+		AffWorkplaceHistoryItemExport e = this.workplacePub.getAffWkpHistItemByEmpDate(employeeID, date);
+		return new AffAtWorkplaceImport(employeeID, e.getWorkplaceId(), e.getHistoryId(), e.getNormalWorkplaceId());
 	}
 
 }
