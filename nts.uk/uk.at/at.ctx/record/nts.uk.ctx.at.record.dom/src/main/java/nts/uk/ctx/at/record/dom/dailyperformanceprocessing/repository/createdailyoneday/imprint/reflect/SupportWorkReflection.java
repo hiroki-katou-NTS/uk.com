@@ -955,7 +955,7 @@ public class SupportWorkReflection {
 					if(time1 == null)
 						return false;
 					
-					return time1 - time2 < time &&  time< time1 + time2;}).findFirst();
+					return time1 - time2 <= time &&  time <= time1 + time2;}).findFirst();
 				
 				if (ouenWorkTimeAfter.isPresent()) {
 					lstOuenWorkTime.remove(ouenWorkTimeAfter.get());
@@ -1000,7 +1000,7 @@ public class SupportWorkReflection {
 						if(time1 == null)
 							return false;
 						
-						return time1 - time2 < time &&  time< time1 + time2;}).findFirst();
+						return time1 - time2 <= time &&  time <= time1 + time2;}).findFirst();
 				if (ouenWorkTimeAfter.isPresent()) {
 					
 					lstOuenWorkTime.remove(ouenWorkTimeAfter.get());
