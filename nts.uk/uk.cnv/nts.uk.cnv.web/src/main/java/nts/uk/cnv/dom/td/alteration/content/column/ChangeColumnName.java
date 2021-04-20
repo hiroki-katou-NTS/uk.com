@@ -31,10 +31,14 @@ public class ChangeColumnName extends AlterationContent {
 		List<AlterationContent> result = new ArrayList<>();
 		for(int i=0; i<altered.get().getColumns().size(); i++) {
 			ColumnDesign alterdCol = altered.get().getColumns().get(i);
-			ColumnDesign baseCol = base.get().getColumns().stream()
+			Optional<ColumnDesign> baseColOpt = base.get().getColumns().stream()
 					.filter(col -> col.getId().equals(alterdCol.getId()))
-					.findFirst()
-					.get();
+					.findFirst();
+			if (!baseColOpt.isPresent()) {
+				continue;
+			}
+			
+			ColumnDesign baseCol = baseColOpt.get();
 			if(!baseCol.getName().equals(alterdCol.getName())) {
 				result.add(new ChangeColumnName(baseCol.getId(), alterdCol.getName()));
 			}

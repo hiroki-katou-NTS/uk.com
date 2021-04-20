@@ -7,6 +7,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.RequiredArgsConstructor;
+import nts.arc.diagnose.stopwatch.embed.EmbedStopwatch;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.uk.cnv.dom.td.alteration.Alteration;
@@ -39,7 +40,9 @@ public class AcceptCommandHandler extends CommandHandlerWithResult<AcceptCommand
 	
 	@Override
 	protected AddedResultDto handle(CommandHandlerContext<AcceptCommand> context) {
-		RequireImpl require = new RequireImpl(alterationRepository,alterationSummaryRepository, acceptEventRepo,snapshotRepository);
+		
+		AcceptService.Require require = EmbedStopwatch.embed(new RequireImpl());
+		
 		AcceptCommand command = context.getCommand();
 		AcceptedResult result = AcceptService.accept(
 				require,
@@ -60,11 +63,7 @@ public class AcceptCommandHandler extends CommandHandlerWithResult<AcceptCommand
 	}
 
 	@RequiredArgsConstructor
-	private static class RequireImpl implements AcceptService.Require {
-		private final AlterationRepository alterationRepository;
-		private final AlterationSummaryRepository alterationSummaryRepository;
-		private final AcceptEventRepository acceptEventRepo;
-		private final SnapshotRepository snapshotRepository;
+	private class RequireImpl implements AcceptService.Require {
 		
 		@Override
 		public Optional<String> getNewestAcceptId() {
