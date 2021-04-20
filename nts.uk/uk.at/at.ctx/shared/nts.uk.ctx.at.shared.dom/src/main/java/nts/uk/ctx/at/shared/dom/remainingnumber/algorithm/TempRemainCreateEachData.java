@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
@@ -127,10 +126,13 @@ public class TempRemainCreateEachData {
 		Optional<OccurrenceUseDetail> occUseDetail = inforData.getOccurrenceUseDetail(workTypeClass);
 		if(occUseDetail.isPresent()) {
 			String mngId = IdentifierUtil.randomUniqueId();
-
+			
+			WorkTypeRemainInfor Rinfor = inforData.getWorkTypeRemainInfor(workTypeClass).map(ri -> ri)
+					.orElse(inforData.getWorkTypeRemainInforByOd(workTypeClass));
+			
 			InterimAbsMng absDataMng = new InterimAbsMng(mngId,inforData.getSid(),
 					inforData.getYmd(),
-					inforData.getWorkTypeRemainInfor(workTypeClass).get().getCreateData(),
+					Rinfor.getCreateData(),
 					RemainType.PAUSE,
 					new RequiredDay(occUseDetail.get().getDays()),
 					new UnOffsetDay(occUseDetail.get().getDays()));
