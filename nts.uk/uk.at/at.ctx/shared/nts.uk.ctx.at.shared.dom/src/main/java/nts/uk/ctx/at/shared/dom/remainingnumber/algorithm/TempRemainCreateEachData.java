@@ -190,17 +190,17 @@ public class TempRemainCreateEachData {
 		//アルゴリズム「振休使用期限日の算出」を実行する
 		GeneralDate useDate = getUseDays(require, inforData);
 		String mngId = IdentifierUtil.randomUniqueId();
-		List<OccurrenceUseDetail> occurrenceDetailData =  inforData.getWorkTypeRemainInfor(workTypeClass).get().getOccurrenceDetailData()
-				.stream().filter(x -> x.getWorkTypeAtr() == workTypeClass)
-				.collect(Collectors.toList());
+		
+		WorkTypeRemainInfor Rinfor = inforData.getWorkTypeRemainInfor(workTypeClass).map(ri -> ri)
+				.orElse(inforData.getWorkTypeRemainInforByOd(workTypeClass));
 
 		InterimRecMng recMng = new InterimRecMng(mngId,inforData.getSid(),
 				inforData.getYmd(),
-				inforData.getWorkTypeRemainInfor(workTypeClass).get().getCreateData(),
+				Rinfor.getCreateData(),
 				RemainType.PICKINGUP,
 				useDate,
-				new OccurrenceDay(occurrenceDetailData.isEmpty() ? 0 : occurrenceDetailData.get(0).getDays()),
-				new UnUsedDay(occurrenceDetailData.isEmpty() ? 0 : occurrenceDetailData.get(0).getDays()));
+				new OccurrenceDay(occUseDetail.get().getDays()),
+				new UnUsedDay(occUseDetail.get().getDays()));
 		mngData.setRecData(Optional.of(recMng));
 		mngData.getRecAbsData().add(recMng);
 		return mngData;
