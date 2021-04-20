@@ -98,7 +98,7 @@ public class SupportWorkReflection {
 		CorrectSupportData correctSupportData = this.correctSupportDataFromWork(integrationOfDaily.getAttendanceLeave(),
 				lstStampedSupport, informationWork, judgmentSupport, ouenStamp);
 
-		// 応援データを自動セットしてマージする - セット済み応援データ - set tự động data support rồi merge dữ liệu - qua buoc nay la chi con lai 2 thang dung data
+		// 応援データを自動セットしてマージする - セット済み応援データ - set tự động data support rồi merge dữ liệu
 		List<OuenWorkTimeSheetOfDailyAttendance> dataAutoSet = this
 				.supportDataAutoSetMerged(correctSupportData.getInformationWork(), correctSupportData.getAttendance());
 
@@ -1009,8 +1009,8 @@ public class SupportWorkReflection {
 					departureTempo.setLastLeave(ouenWorkTimeAfter);
 
 					// 出退勤の応援。最後の退勤。時間帯。開始。時刻。時刻＝最後の退勤。打刻。時刻。時刻
-					if (departureTempo.getLastLeave().get().getTimeSheet().getStart().isPresent()) {
-						departureTempo.getLastLeave().get().getTimeSheet().getStart().get().setTimeWithDay(
+					if (departureTempo.getLastLeave().get().getTimeSheet().getEnd().isPresent()) {
+						departureTempo.getLastLeave().get().getTimeSheet().getEnd().get().setTimeWithDay(
 								detectAttendance.getLastLeave().get().getStamp().get().getTimeDay().getTimeWithDay());
 					}
 				} else {
