@@ -98,8 +98,8 @@ module nts.uk.ui.ktg005.a {
 				.then((widDisplay: IOptionalWidgetDisplay) => {
 					const { datePeriodDto } = widDisplay;
 					const { currentOrNextMonth } = params || { currentOrNextMonth: 11 };
-					const startDate = currentOrNextMonth === 1 ? datePeriodDto.strCurrentMonth : datePeriodDto.strNextMonth;
-					const endDate = currentOrNextMonth === 1 ? datePeriodDto.endCurrentMonth : datePeriodDto.endNextMonth;
+					const startDate = Number(currentOrNextMonth) === 1 ? datePeriodDto.strCurrentMonth : datePeriodDto.strNextMonth;
+					const endDate = Number(currentOrNextMonth) === 1 ? datePeriodDto.endCurrentMonth : datePeriodDto.endNextMonth;
 
 					return vm.$ajax('at', REST_API.startScreenA, { companyId, employeeId, startDate, endDate });
 				})
