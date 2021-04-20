@@ -54,4 +54,41 @@ public class HolidayAcqManageByYMDTest {
 				.isEqualTo(new DatePeriod(GeneralDate.ymd(2020, 11, 12), GeneralDate.ymd(2020, 12, 9)));
 	}
 
+	/**
+	 * 起算月日 = 1/1
+	 */
+	@Test
+	public void test_get28days() {
+		HolidayAcqManageByYMD holidayAcqManageByYMD = new HolidayAcqManageByYMD(GeneralDate.ymd(2021, 1, 1), new FourWeekDays(4.0));
+		
+		/**
+		 * ケース1	基準日 = 2021/1/1		期待値：2021/1/1 - 2021/1/28
+		 */
+		DatePeriod result = holidayAcqManageByYMD.get28Days(require, GeneralDate.ymd(2021, 1, 1));
+		assertThat(result.start()).isEqualTo(GeneralDate.ymd(2021, 1, 1));
+		assertThat(result.end()).isEqualTo(GeneralDate.ymd(2021, 1, 28));
+
+		/**
+		 * ケース2	基準日 = 2021/1/28	期待値：2021/1/1 - 2021/1/28
+		 */
+		result = holidayAcqManageByYMD.get28Days(require, GeneralDate.ymd(2021, 1, 28));
+		assertThat(result.start()).isEqualTo(GeneralDate.ymd(2021, 1, 1));
+		assertThat(result.end()).isEqualTo(GeneralDate.ymd(2021, 1, 28));
+
+		/**
+		 * ケース3	基準日 = 2021/1/29	期待値：2021/1/29 - 2021/2/25
+		 */
+		result = holidayAcqManageByYMD.get28Days(require, GeneralDate.ymd(2021, 1, 29));
+		assertThat(result.start()).isEqualTo(GeneralDate.ymd(2021, 1, 29));
+		assertThat(result.end()).isEqualTo(GeneralDate.ymd(2021, 2, 25));
+
+		/**
+		 * ケース4	基準日 = 2022/1/1		期待値：2021/12/31 - 2022/1/27
+		 */
+		result = holidayAcqManageByYMD.get28Days(require, GeneralDate.ymd(2022, 1, 1));
+		assertThat(result.start()).isEqualTo(GeneralDate.ymd(2021, 12, 31));
+		assertThat(result.end()).isEqualTo(GeneralDate.ymd(2022, 1, 27));
+		
+	}
+	
 }

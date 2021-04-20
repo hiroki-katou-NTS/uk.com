@@ -139,7 +139,7 @@ public class JpaNarrowingByWorkplaceRepository extends JpaRepository implements 
         Root<KsrmtTaskAssignWkp> root = criteriaQuery.from(KsrmtTaskAssignWkp.class);
         criteriaQuery.select(root);
         List<Predicate> conditions = new ArrayList<>();
-        conditions.add(criteriaBuilder.equal(root.get(KsrmtTaskAssignWkp_.pk).get(KsrmtTaskAssignWkpPk_.FRAMENO), taskFrameNo));
+        conditions.add(criteriaBuilder.equal(root.get(KsrmtTaskAssignWkp_.pk).get(KsrmtTaskAssignWkpPk_.FRAMENO), taskFrameNo.v()));
         conditions.add(criteriaBuilder.equal(root.get(KsrmtTaskAssignWkp_.companyId), cid));
         criteriaQuery.where(conditions.toArray(new Predicate[]{}));
         TypedQuery<KsrmtTaskAssignWkp> query = entityManager.createQuery(criteriaQuery);

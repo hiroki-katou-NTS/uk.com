@@ -86,7 +86,15 @@ module nts.uk.at.view.kaf018.g.viewmodel {
 			vm.columnIggridMonthFixed.push({ columnKey: 'approvalStatus', isFixed: true });
 			vm.columnIggridDayFixed.push({ columnKey: 'approvalStatus', isFixed: true });
 			vm.refreshDataSource().then(() => {
-				$("#kaf018-e-cancel-btn").focus();	
+				$("#kaf018-g-cancel-btn").focus();	
+			});
+			$(window).resize(() => {
+				let topRange = document.getElementById('gGrid2').getBoundingClientRect().top,
+					bottomRange = document.getElementById('functions-area-bottom').getBoundingClientRect().height,
+					height = window.innerHeight - topRange - bottomRange - 10;
+				$("#gGrid2").igGrid("option", "height", height + "px");
+				$("#gGrid2").igGrid("option", "width", window.innerWidth - 40 + "px");
+				$("#gGrid1").igGrid("option", "width", window.innerWidth - 40 + "px");
 			});
 		}
 		
@@ -99,7 +107,7 @@ module nts.uk.at.view.kaf018.g.viewmodel {
 		
 		createIggridMonth() {
 			const vm = this;
-			$("#eGrid1").igGrid({
+			$("#gGrid1").igGrid({
 				height: 66,
 				width: window.innerWidth - 40,
 				dataSource: vm.dataSourceMonth,
@@ -130,7 +138,7 @@ module nts.uk.at.view.kaf018.g.viewmodel {
 		
 		createIggridDay() {
 			const vm = this;
-			$("#eGrid2").igGrid({
+			$("#gGrid2").igGrid({
 				height: 434,
 				width: window.innerWidth - 40,
 				dataSource: vm.dataSourceDay,
@@ -271,6 +279,10 @@ module nts.uk.at.view.kaf018.g.viewmodel {
 			});
 			vm.dataSourceDay = dayDataSource;
 			vm.createIggridDay();
+			let topRange = document.getElementById('gGrid2').getBoundingClientRect().top,
+				bottomRange = document.getElementById('functions-area-bottom').getBoundingClientRect().height,
+				height = window.innerHeight - topRange - bottomRange - 10;
+			$("#gGrid2").igGrid("option", "height", height + "px");
 		}
 		
 		getPhaseStatusStr(phase: any) {

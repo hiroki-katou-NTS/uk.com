@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.time.GeneralDate;
@@ -65,10 +66,12 @@ import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.ExtractionAlarmPeriod
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.ExtractionResultDetail;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.ResultOfEachCondition;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.converter.DailyRecordShareFinder;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.DailyRecordConverter;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.service.AttendanceItemConvertFactory;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.DailyAttendanceItemNameAdapter;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
@@ -85,9 +88,6 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 	
 	@Inject
 	private AttendanceItemNameAdapter attendanceAdap;
-	
-	@Inject
-	private DailyAttendanceItemNameAdapter dailyNameAdapter;
 	
 	@Inject
 	private WorkTypeRepository workTypeRep;
@@ -129,9 +129,6 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 	private DailyRecordCreateErrorAlermService dailyAlermService;
 	
 	@Inject
-	private DailyRecordConverter dailyRecordConverter;
-	
-	@Inject
 	private ManagedParallelWithContext parallelManager;
 	@Inject
 	private IdentityProcessRepository indentiryRepo;
@@ -143,6 +140,8 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 	private DataCheckAlarmListService dataCheckSevice;
 	@Inject
 	private ConvertCompareTypeToText convertComparaToText;
+	@Inject
+	private AttendanceItemConvertFactory convertFactory;
 	@Override
 	public void extractDailyCheck(String cid, List<String> lstSid, DatePeriod dPeriod, 
 			String errorDailyCheckId, List<String> extractConditionWorkRecord,
@@ -222,7 +221,8 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 							exDate,
 							prepareData.getListWorkType(), 
 							prepareData.getListWorktime(),
-							getWplByListSidAndPeriod);
+							getWplByListSidAndPeriod,
+							prepareData.getLstItemDay());
 					lstResultCondition.addAll(checkTab4.getLstResultCondition());
 					lstCheckType.addAll(checkTab4.getLstCheckType());
 						
@@ -332,16 +332,20 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 					if(getApprovalProcessById.isPresent()) approverConfirm = getApprovalProcessById.get().getUseDailyBossChk() == 1 ? true : false;
 					result.setApproverConfirm(approverConfirm);
 					break;
-				/*case 13:
-				case 14:
+				case CONTRACT_TIME_EXCEEDED:
+				case LESS_THAN_CONTRACT_TIME:
+				case VIOLATION_DAY_OF_WEEK:
+				case ILL_WORK_TIME_DAY_THE_WEEK:
 					if(listWkConItem.isEmpty()) {
 						listWkConItem = workingConditionRepository.getBySidsAndDatePeriodNew(lstSid, dPeriod);	
 					}
+					result.setListWkConItem(listWkConItem);
 					break;
-				case 25:
-					//未反映打刻
+				case UNREFLECTED_STAMP:
+					//List<社員ID＞から打刻カードを全て取得する
 					listStampCard = stampCardRep.getLstStampCardByLstSid(lstSid);
-					break;*/
+					result.setListStampCard(listStampCard);
+					break;
 				default:
 			}
 		}
@@ -953,10 +957,12 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 			GeneralDate day,
 			List<WorkType> listWorkType,
 			List<WorkTimeSetting> listWorktime,
-			List<WorkPlaceHistImportAl> getWplByListSidAndPeriod) {
+			List<WorkPlaceHistImportAl> getWplByListSidAndPeriod,
+			List<MonthlyAttendanceItemNameDto> lstItemDay) {
 		
 		String alarmMessage = new String();
 		String alarmTarget = new String();
+		
 		List<ResultOfEachCondition> listResultCond = new ArrayList<>();
 		List<AlarmListCheckInfor> listAlarmChk = new ArrayList<>();		
 		
@@ -990,6 +996,9 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 			}
 			if(integra == null) continue;
 			
+			
+			List<EmployeeDailyPerError> lstDailyError = new ArrayList<>();
+			String itemName = "";
 			switch(item.getFixConWorkRecordNo()) {
 			
 				// NO=1:勤務種類未登録
@@ -1043,36 +1052,122 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 					break;
 				// NO = 6： 打刻漏れ
 				case CONTINUOUS_VATATION_CHECK:
-					if(!integra.getAttendanceLeave().isPresent() && !integra.getTempTime().isPresent() && !integra.getBreakTime().equals(null))
-						break;
-					else {
-						// 打刻漏れ
-						List<EmployeeDailyPerError> employeePer = dailyAlermService.lackOfTimeLeavingStamping(integra);
-						if(!employeePer.isEmpty()) {
-							alarmMessage = TextResource.localize("KAL010_79");
-							alarmTarget = TextResource.localize("KAL010_610");
-						}
-					}
+					// 打刻漏れ
+					lstDailyError = dailyAlermService.lackOfTimeLeavingStamping(integra);
+					if(lstDailyError.isEmpty()) break;
+					 
+					alarmMessage = TextResource.localize("KAL010_79", getItemName(lstDailyError, lstItemDay));
+					alarmTarget = TextResource.localize("KAL010_610");
 					break;
 				// NO =7:打刻漏れ(入退門)
 				case GATE_MISS_STAMP:
-					if(!integra.getAttendanceLeavingGate().isPresent()) break;
-					else {
-						// 入退門打刻漏れ
-						List<EmployeeDailyPerError> employeeEr = dailyAlermService.lackOfAttendanceGateStamping(integra);
-						if(!employeeEr.isEmpty()) {
-							alarmMessage = TextResource.localize("KAL010_80", "");
-							alarmTarget = TextResource.localize("KAL010_612", "");
-						}
-					}
+					// 入退門打刻漏れ
+					lstDailyError = dailyAlermService.lackOfAttendanceGateStamping(integra);
+					if(lstDailyError.isEmpty()) break;
+					itemName = getItemName(lstDailyError, lstItemDay);
+					if(itemName.isEmpty()) break;
+					alarmMessage = TextResource.localize("KAL010_80",  getItemName(lstDailyError, lstItemDay));
+					alarmTarget = TextResource.localize("KAL010_612");
 					break;
 				// NO =8： 打刻順序不正
 				case MISS_ORDER_STAMP:
-					if(!integra.getAttendanceLeave().isPresent() && !integra.getTempTime().isPresent() && !integra.getBreakTime().equals(null)
-							&& !integra.getOutingTime().isPresent()) break;
-					else {
+				case GATE_MISS_ORDER_STAMP:
+					lstDailyError = dailyAlermService.stampIncorrectOrderAlgorithm(integra);
+					if(lstDailyError.isEmpty()) break;				
+					itemName = getItemNameWithValue(lstDailyError, integra, lstItemDay);
+					if(itemName.isEmpty()) break;
+					alarmMessage = TextResource.localize("KAL010_81", itemName);
+					
+					alarmTarget = TextResource.localize("KAL010_611");
+					break;
+					
+				case MISS_HOLIDAY_STAMP:
+					Optional<EmployeeDailyPerError> optDailyError = dailyAlermService.checkHolidayStamp(integra);
+					if(!optDailyError.isPresent()) break;
+					
+					WorkTypeCode wtCode = integra.getWorkInformation().getRecordInfo().getWorkTypeCode();
+					String wtName = listWorkType.stream().filter(x -> x.getWorkTypeCode().equals(wtCode)).map(x -> x.getName().v()).findFirst().get();
+					List<TimeLeavingWork> lstTimeLeavingWork = integra.getAttendanceLeave().get().getTimeLeavingWorks();
+					if(lstTimeLeavingWork.isEmpty()) break;
+					
+					for(TimeLeavingWork x : lstTimeLeavingWork) {
+						String startTime = "";
+						String endTime = "";
+						if(x.getAttendanceStamp().isPresent() && x.getAttendanceStamp().get().getActualStamp().isPresent()) {
+							WorkStamp actualStamp = x.getAttendanceStamp().get().getActualStamp().get();
+							Optional<TimeWithDayAttr> timeWithDay = actualStamp.getTimeDay().getTimeWithDay();
+							if(timeWithDay.isPresent()) startTime = timeWithDay.get().toString();
+						}
+						
+						if(x.getLeaveStamp().isPresent() && x.getLeaveStamp().get().getActualStamp().isPresent()) {
+							WorkStamp actualStamp = x.getLeaveStamp().get().getActualStamp().get();
+							Optional<TimeWithDayAttr> timeWithDay = actualStamp.getTimeDay().getTimeWithDay();
+							if(timeWithDay.isPresent()) endTime = timeWithDay.get().toString();
+						}
+						
+						alarmMessage = TextResource.localize("KAL010_5",
+								wtName,
+								startTime,
+								endTime);
+						alarmTarget = TextResource.localize("KAL010_613", startTime, endTime);
 					}
-				break;
+										
+					break;
+					
+				case GATE_MISS_HOLIDAY_STAMP:
+					break;
+					
+				case ADDITION_NOT_REGISTERED:
+					break;
+					
+				case CONTRACT_TIME_EXCEEDED:
+					break;
+					
+				case LESS_THAN_CONTRACT_TIME:
+					break;
+					
+				case VIOLATION_DAY_OF_WEEK:
+					break;
+					
+				case ILL_WORK_TIME_DAY_THE_WEEK:
+					break;
+					
+				case DISSOCIATION_ERROR:
+					break;
+					
+				case MANUAL_INPUT:
+					break;
+					
+				case DOUBLE_STAMP:
+					break;
+					
+				case UNCALCULATED:
+					break;
+					
+				case OVER_APP_INPUT:
+					break;
+					
+				case MULTI_WORK_TIMES:
+					break;
+					
+				case TEMPORARY_WORK:
+					break;
+					
+				case SPEC_DAY_WORK:
+					break;
+					
+				case UNREFLECTED_STAMP:
+					break;
+					
+				case ACTUAL_STAMP_OVER:
+					break;
+					
+				case GATE_DOUBLE_STAMP:
+					break;
+					
+				case DISSOCIATION_ALARM:
+					break;
+				
 				default:
 					break;
 			}
@@ -1090,6 +1185,56 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 			}
 		}
 		return new OutputCheckResult(listResultCond, listAlarmChk);
+	}
+	private String getItemNameWithValue(List<EmployeeDailyPerError> lstDailyError,
+			IntegrationOfDaily integra,
+			List<MonthlyAttendanceItemNameDto> lstItemDay) {
+		List<Integer> lstItemErr = new ArrayList<>();
+		String itemNames = "";
+		for(EmployeeDailyPerError x : lstDailyError) {
+			if(x != null) {
+				lstItemErr.addAll(x.getAttendanceItemList());
+			}
+		}
+		if(lstItemErr.isEmpty()) return itemNames;
+		val converter = convertFactory.createDailyConverter();
+		converter.setData(integra);
+		List<ItemValue> lstItemValue = converter.convert(lstItemErr);
+		for (int i = 0; i < lstItemErr.size(); i++) {
+			Integer x = lstItemErr.get(i);
+			String itemName = lstItemDay.stream()
+					.filter(a -> lstItemErr.contains(x))
+					.map(y -> y.getAttendanceItemName())
+					.collect(Collectors.toList()).get(0);
+			List<String> value = lstItemValue.stream().filter(a -> a.getItemId() == x).map(b -> b.getValue()).collect(Collectors.toList());
+			if(!value.isEmpty()) {
+				TimeWithDayAttr timeDay = new TimeWithDayAttr(Integer.valueOf(value.get(0)));
+				itemName = itemName + ':' + timeDay.toString();
+			}
+			itemNames += '/' +  itemName;
+		}
+		
+		return itemNames.substring(1);
+	}
+	private String getItemName(List<EmployeeDailyPerError> lstDailyError, List<MonthlyAttendanceItemNameDto> lstItemDay) {
+		List<Integer> lstItemErr = new ArrayList<>();
+		List<String> lstItemName = new ArrayList<>();
+		String strItemName = "";
+		for(EmployeeDailyPerError x : lstDailyError) {
+			if(x != null) {
+				lstItemErr.addAll(x.getAttendanceItemList());
+			}
+		}
+		if(lstItemErr.isEmpty()) return strItemName;
+		
+		lstItemName =  lstItemDay.stream()
+				.filter(x -> lstItemErr.contains(x.getAttendanceItemId()))
+				.map(y -> y.getAttendanceItemName())
+				.collect(Collectors.toList());
+		
+		strItemName = lstItemName.stream().map(Object::toString)
+                 .collect(Collectors.joining("/"));
+		return strItemName;
 	}
 	
 }
