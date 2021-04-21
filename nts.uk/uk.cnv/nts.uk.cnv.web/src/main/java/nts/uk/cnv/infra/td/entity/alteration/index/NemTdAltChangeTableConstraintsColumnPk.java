@@ -26,4 +26,11 @@ public class NemTdAltChangeTableConstraintsColumnPk   implements Serializable {
 	@Column(name = "COLUMN_ID")
 	public String columnId;
 
+	public static NemTdAltChangeTableConstraintsColumnPk create(NemTdAltChangePrimaryKey parent, String columnId) {
+		return new NemTdAltChangeTableConstraintsColumnPk(
+				parent.pk.alterationId,
+				parent.pk.seqNo,
+				parent.pk.suffix,
+				columnId);
+	}
 }

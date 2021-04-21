@@ -53,7 +53,7 @@ public class NemTdAltChangeIndex extends NemTdAltContentBase implements Serializ
 		result.add(parent);
 		result.addAll(
 				domain.getColumnIds().stream()
-					.map(colId -> new NemTdAltChangePrimaryKeyColumn(
+					.map(colId -> new NemTdAltChangeIndexColumn(
 							new NemTdAltChangeTableConstraintsColumnPk(
 								parent.pk.alterationId,
 								parent.pk.seqNo,

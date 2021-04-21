@@ -2,6 +2,7 @@ package nts.uk.cnv.infra.td.entity.alteration.index;
 
 import java.io.Serializable;
 
+import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -22,15 +23,19 @@ public class NemTdAltChangePrimaryKeyColumn extends JpaEntity implements Seriali
 
 	@EmbeddedId
 	public NemTdAltChangeTableConstraintsColumnPk pk;
+	
+	@Column(name = "COLUMN_ORDER")
+	public int columnOrder;
 
-	public static NemTdAltChangePrimaryKeyColumn toEntity(NemTdAltChangeTableConstraintsPk parent, String columnId) {
+	public static NemTdAltChangePrimaryKeyColumn toEntity(NemTdAltChangeTableConstraintsPk parent, String columnId, int columnOrder) {
 		return new NemTdAltChangePrimaryKeyColumn(
 				new NemTdAltChangeTableConstraintsColumnPk(
 					parent.alterationId,
 					parent.seqNo,
 					parent.suffix,
 					columnId
-				)
+				),
+				columnOrder
 			);
 	}
 

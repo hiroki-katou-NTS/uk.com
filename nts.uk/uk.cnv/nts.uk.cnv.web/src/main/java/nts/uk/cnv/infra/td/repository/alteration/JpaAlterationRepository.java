@@ -1,8 +1,11 @@
 package nts.uk.cnv.infra.td.repository.alteration;
 
+import static java.util.stream.Collectors.*;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -242,11 +245,14 @@ public class JpaAlterationRepository extends JpaRepository implements Alteration
 					+ " WHERE col.pk.alterationId = :alterationId"
 					+ "   AND col.pk.seqNo = :seqNo"
 					+ "   AND col.pk.suffix = :suffix";
-		 return	 this.queryProxy().query(sql, NemTdAltChangePrimaryKeyColumn.class)
+		 return this.queryProxy().query(sql, NemTdAltChangePrimaryKeyColumn.class)
 					.setParameter("alterationId", alterationId)
 					.setParameter("seqNo", seqNo)
 					.setParameter("suffix", "PK")
-					.getList(entity -> entity.pk.columnId);
+					.getList().stream()
+					.sorted(Comparator.comparing(e -> e.columnOrder))
+					.map(e -> e.pk.columnId)
+					.collect(toList());
 	}
 
 	private List<String> getIndexColumnsUK(String alterationId, int seqNo, String suffix) {

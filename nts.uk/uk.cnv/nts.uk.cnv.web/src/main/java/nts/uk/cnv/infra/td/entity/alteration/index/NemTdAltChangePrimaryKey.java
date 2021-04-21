@@ -3,7 +3,6 @@ package nts.uk.cnv.infra.td.entity.alteration.index;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -41,23 +40,24 @@ public class NemTdAltChangePrimaryKey extends NemTdAltContentBase implements Ser
 	public static List<JpaEntity> toEntity(NemTdAltContentPk contentPk, AlterationContent ac) {
 		List<JpaEntity> result = new ArrayList<>();
 		val domain = (ChangePK) ac;
+		
 		val parent = new NemTdAltChangePrimaryKey(
 				NemTdAltChangeTableConstraintsPk.asPK(contentPk),
-				domain.isClustred()
-			);
+				domain.isClustred());
 		result.add(parent);
-		result.addAll(
-			domain.getColumnIds().stream()
-				.map(colId -> new NemTdAltChangePrimaryKeyColumn(
-						new NemTdAltChangeTableConstraintsColumnPk(
-							parent.pk.alterationId,
-							parent.pk.seqNo,
-							parent.pk.suffix,
-							colId
-						)
-					))
-				.collect(Collectors.toList())
-		);
+		
+		for (int i = 0; i < domain.getColumnIds().size(); i++) {
+			
+			String columnId = domain.getColumnIds().get(i);
+			int columnOrder = i + 1;
+			
+			val column = new NemTdAltChangePrimaryKeyColumn(
+					NemTdAltChangeTableConstraintsColumnPk.create(parent, columnId),
+					columnOrder);
+			
+			result.add(column);
+		}
+		
 		return result;
 	}
 
