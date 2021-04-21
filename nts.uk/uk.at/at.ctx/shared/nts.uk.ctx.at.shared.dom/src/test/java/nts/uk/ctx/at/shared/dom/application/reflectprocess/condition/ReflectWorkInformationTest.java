@@ -19,10 +19,11 @@ import mockit.integration.junit4.JMockit;
 import nts.uk.ctx.at.shared.dom.WorkInfoAndTimeZone;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.WorkInformation.Require;
-import nts.uk.ctx.at.shared.dom.application.reflectprocess.DailyRecordOfApplication;
-import nts.uk.ctx.at.shared.dom.application.reflectprocess.ScheduleRecordClassifi;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.common.ReflectApplicationHelper;
-import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.workchange.schedule.SCReflectWorkChangeApp.WorkInfoDto;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.DailyRecordOfApplication;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.ScheduleRecordClassifi;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.condition.ReflectWorkInformation;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.workchangeapp.ReflectWorkChangeApp.WorkInfoDto;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
@@ -69,7 +70,7 @@ public class ReflectWorkInformationTest {
 
 		DailyRecordOfApplication domaindaily = ReflectApplicationHelper
 				.createDailyRecord(ScheduleRecordClassifi.SCHEDULE);
-		List<Integer> resultActual = ReflectWorkInformation.reflectInfo(require, workInfoDto, // 勤務情報DTO
+		List<Integer> resultActual = ReflectWorkInformation.reflectInfo(require, "", workInfoDto, // 勤務情報DTO
 				domaindaily, // 日別勤怠(work）- 予定
 				Optional.of(true), // 勤務種類を変更する＝する
 				Optional.of(false));// 就業時間帯を変更する＝しない
@@ -124,7 +125,7 @@ public class ReflectWorkInformationTest {
 
 		DailyRecordOfApplication domaindaily = ReflectApplicationHelper
 				.createDailyRecord(ScheduleRecordClassifi.SCHEDULE);
-		List<Integer> resultActual = ReflectWorkInformation.reflectInfo(require, workInfoDto, // 勤務情報DTO
+		List<Integer> resultActual = ReflectWorkInformation.reflectInfo(require, "", workInfoDto, // 勤務情報DTO
 				domaindaily, // 日別勤怠(work）- 予定
 				Optional.of(false), // 勤務種類を変更する＝しない
 				Optional.of(true));// 就業時間帯を変更する＝する
@@ -177,7 +178,7 @@ public class ReflectWorkInformationTest {
 
 		DailyRecordOfApplication domaindaily = ReflectApplicationHelper
 				.createDailyRecord(ScheduleRecordClassifi.SCHEDULE, 1);
-		List<Integer> resultActual = ReflectWorkInformation.reflectInfo(require, workInfoDto, // 勤務情報DTO
+		List<Integer> resultActual = ReflectWorkInformation.reflectInfo(require, "", workInfoDto, // 勤務情報DTO
 				domaindaily, // 日別勤怠(work）- 予定
 				Optional.of(true), // 勤務種類を変更する＝する
 				Optional.of(true));// 就業時間帯を変更する＝する
@@ -224,7 +225,7 @@ public class ReflectWorkInformationTest {
 
 		DailyRecordOfApplication domaindaily = ReflectApplicationHelper
 				.createRCWithTimeLeav(ScheduleRecordClassifi.SCHEDULE, 1);
-		ReflectWorkInformation.reflectInfo(require, workInfoDto, // 勤務情報DTO
+		ReflectWorkInformation.reflectInfo(require, "", workInfoDto, // 勤務情報DTO
 				domaindaily, // 日別勤怠(work）- 予定
 				Optional.of(true), // 勤務種類を変更する＝する
 				Optional.of(true));// 就業時間帯を変更する＝しない
@@ -248,7 +249,7 @@ public class ReflectWorkInformationTest {
 
 		domaindaily = ReflectApplicationHelper
 				.createRCWithTimeLeav(ScheduleRecordClassifi.SCHEDULE, 1);
-		ReflectWorkInformation.reflectInfo(require, workInfoDto, // 勤務情報DTO
+		ReflectWorkInformation.reflectInfo(require, "", workInfoDto, // 勤務情報DTO
 				domaindaily, // 日別勤怠(work）- 予定
 				Optional.of(true), // 勤務種類を変更する＝する
 				Optional.of(true));// 就業時間帯を変更する＝しない
@@ -284,7 +285,7 @@ public class ReflectWorkInformationTest {
 		   int attBefore = domaindaily.getAttendanceLeave().get().getTimeLeavingWorks().get(0).getStampOfAttendance().get().getTimeDay().getTimeWithDay().get().v();
 		   int leavBefore = domaindaily.getAttendanceLeave().get().getTimeLeavingWorks().get(0).getStampOfLeave().get().getTimeDay().getTimeWithDay().get().v();
 		   
-		ReflectWorkInformation.reflectInfo(require, workInfoDto, // 勤務情報DTO
+		ReflectWorkInformation.reflectInfo(require, "", workInfoDto, // 勤務情報DTO
 				domaindaily, // 日別勤怠(work）- 予定
 				Optional.of(true), // 勤務種類を変更する＝する
 				Optional.of(true));// 就業時間帯を変更する＝しない

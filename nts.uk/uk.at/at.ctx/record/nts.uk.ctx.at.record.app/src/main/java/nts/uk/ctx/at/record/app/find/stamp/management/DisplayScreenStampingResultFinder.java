@@ -15,8 +15,8 @@ import nts.uk.ctx.at.record.app.find.stamp.management.personalengraving.dto.Stam
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
-import nts.uk.ctx.at.record.dom.worklocation.WorkLocation;
-import nts.uk.ctx.at.record.dom.worklocation.WorkLocationRepository;
+import nts.uk.ctx.at.record.dom.stampmanagement.workplace.WorkLocation;
+import nts.uk.ctx.at.record.dom.stampmanagement.workplace.WorkLocationRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampDakokuRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecord;
@@ -77,7 +77,7 @@ public class DisplayScreenStampingResultFinder {
 		// listStampDataOfEmployees.stream().map(r -> new
 		// StampDataOfEmployeesDto(r)).collect(Collectors.toList());
 		// 2 get* List<社員の打刻情報>．勤務場所コード : List< 勤務場所>
-		List<WorkLocation> listWorkLocation = workLocationRepository.findByCodes(AppContexts.user().companyId(),
+		List<WorkLocation> listWorkLocation = workLocationRepository.findByCodes(AppContexts.user().companyCode(),
 				listWorkLocationCode);
 
 		for (EmployeeStampInfo stampDataOfEmployees : listStampDataOfEmployees) {

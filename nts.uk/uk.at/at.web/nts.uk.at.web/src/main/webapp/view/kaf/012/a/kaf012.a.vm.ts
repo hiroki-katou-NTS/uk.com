@@ -106,6 +106,7 @@ module nts.uk.at.view.kaf012.a.viewmodel {
                         apply.childCareAppTime(0);
                         apply.super60AppTime(0);
                         apply.specialAppTime(0);
+                        apply.calculatedTime(0);
                     });
                 });
             });
@@ -317,7 +318,7 @@ module nts.uk.at.view.kaf012.a.viewmodel {
                         if (result != undefined) {
                             vm.$dialog.info({messageId: "Msg_15"}).then(() => {
 								nts.uk.request.ajax("at", API.reflectApp, result.reflectAppIdLst);
-                            	CommonProcess.handleAfterRegister(result, vm.isSendMail(), vm);
+                            	CommonProcess.handleAfterRegister(result, vm.isSendMail(), vm, vm.isAgentMode(), vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.employeeInfoLst);
                             });
                         }
                     }).fail(err => {

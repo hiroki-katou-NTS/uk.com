@@ -30,9 +30,9 @@ public class AddStampSettingPersonCommandHandler extends CommandHandler<AddStamp
 		
 		if(checkUpdate.isPresent())
 			// update 個人利用の打刻設定
-			repo.update(command.toDomain());
+			repo.update(command.toDomain(checkUpdate.get().getLstStampPageLayout()));
 		else
 			// add 個人利用の打刻設定
-			repo.insert(command.toDomain());
+			repo.insert(command.toDomain(checkUpdate.get().getLstStampPageLayout()));
 	}
 }

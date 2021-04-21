@@ -6,5 +6,6 @@ import javax.ejb.Stateless;
 
 @Stateless
 public interface DataDeletionSelectionCategoryRepository {
-	List<DataDeletionSelectionCategory> findByPatternCdAndPatternAtrAndSystemTypes(String patternCd, int patternAtr, List<Integer> systemTypes);
+	List<DataDeletionSelectionCategory> findByPatternCdAndPatternAtrAndSystemTypes(String patternCd, int patternAtr,
+			List<Integer> systemTypes, String contractCd);
 }

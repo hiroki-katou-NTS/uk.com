@@ -36,32 +36,30 @@ public class JpaNarrowingByWorkplaceRepository extends JpaRepository implements 
     }
 
     @Override
-    public void delete(String cid,String workPlaceId, TaskFrameNo taskFrameNo) {
-        EntityManager entityManager = this.getEntityManager();
-        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-        CriteriaDelete<KsrmtTaskAssignWkp> criteriaQuery = criteriaBuilder.createCriteriaDelete(KsrmtTaskAssignWkp.class);
-        Root<KsrmtTaskAssignWkp> root = criteriaQuery.from(KsrmtTaskAssignWkp.class);
-        List<Predicate> condition = new ArrayList<>();
-        condition.add(criteriaBuilder.equal(root.get(KsrmtTaskAssignWkp_.pk).get(KsrmtTaskAssignWkpPk_.WKPID), workPlaceId));
-        condition.add(criteriaBuilder.equal(root.get(KsrmtTaskAssignWkp_.pk).get(KsrmtTaskAssignWkpPk_.TASKCD), taskFrameNo.v()));
-        condition.add(criteriaBuilder.equal(root.get(KsrmtTaskAssignWkp_.companyId), cid));
-        criteriaQuery.where(condition.toArray(new Predicate[]{}));
-        entityManager.createQuery(criteriaQuery).executeUpdate();
-        entityManager.flush();
+    public void delete(String cid, String workPlaceId, TaskFrameNo taskFrameNo) {
+        List<KsrmtTaskAssignWkp> entites = this.queryProxy()
+                .query("select a from KsrmtTaskAssignWkp a where a.companyId = :cid and a.pk.WKPID = :wkpId and a.pk.FRAMENO = :frameNo", KsrmtTaskAssignWkp.class)
+                .setParameter("cid", cid)
+                .setParameter("wkpId", workPlaceId)
+                .setParameter("frameNo", taskFrameNo.v())
+                .getList();
+        if (!entites.isEmpty()) {
+            this.commandProxy().removeAll(entites);
+            this.getEntityManager().flush();
+        }
     }
 
     @Override
-    public void delete(String cid,String workPlaceId) {
-        EntityManager entityManager = this.getEntityManager();
-        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-        CriteriaDelete<KsrmtTaskAssignWkp> criteriaQuery = criteriaBuilder.createCriteriaDelete(KsrmtTaskAssignWkp.class);
-        Root<KsrmtTaskAssignWkp> root = criteriaQuery.from(KsrmtTaskAssignWkp.class);
-        List<Predicate> condition = new ArrayList<>();
-        condition.add(criteriaBuilder.equal(root.get(KsrmtTaskAssignWkp_.pk).get(KsrmtTaskAssignWkpPk_.WKPID), workPlaceId));
-        condition.add(criteriaBuilder.equal(root.get(KsrmtTaskAssignWkp_.companyId), cid));
-        criteriaQuery.where(condition.toArray(new Predicate[]{}));
-        entityManager.createQuery(criteriaQuery).executeUpdate();
-        entityManager.flush();
+    public void delete(String cid, String workPlaceId) {
+        List<KsrmtTaskAssignWkp> entites = this.queryProxy()
+                .query("select a from KsrmtTaskAssignWkp a where a.companyId = :cid and a.pk.WKPID = :wkpId", KsrmtTaskAssignWkp.class)
+                .setParameter("cid", cid)
+                .setParameter("wkpId", workPlaceId)
+                .getList();
+        if (!entites.isEmpty()) {
+            this.commandProxy().removeAll(entites);
+            this.getEntityManager().flush();
+        }
     }
 
     @Override
@@ -131,6 +129,21 @@ public class JpaNarrowingByWorkplaceRepository extends JpaRepository implements 
         TypedQuery<KsrmtTaskAssignWkp> query = entityManager.createQuery(criteriaQuery);
         return this.toDomains(query.getResultList());
 
+    }
+
+    @Override
+    public List<NarrowingDownTaskByWorkplace> getListWorkByCidAndFrameNo(String cid, TaskFrameNo taskFrameNo) {
+        EntityManager entityManager = this.getEntityManager();
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<KsrmtTaskAssignWkp> criteriaQuery = criteriaBuilder.createQuery(KsrmtTaskAssignWkp.class);
+        Root<KsrmtTaskAssignWkp> root = criteriaQuery.from(KsrmtTaskAssignWkp.class);
+        criteriaQuery.select(root);
+        List<Predicate> conditions = new ArrayList<>();
+        conditions.add(criteriaBuilder.equal(root.get(KsrmtTaskAssignWkp_.pk).get(KsrmtTaskAssignWkpPk_.FRAMENO), taskFrameNo.v()));
+        conditions.add(criteriaBuilder.equal(root.get(KsrmtTaskAssignWkp_.companyId), cid));
+        criteriaQuery.where(conditions.toArray(new Predicate[]{}));
+        TypedQuery<KsrmtTaskAssignWkp> query = entityManager.createQuery(criteriaQuery);
+        return this.toDomains(query.getResultList());
     }
 
     private List<NarrowingDownTaskByWorkplace> toDomains(List<KsrmtTaskAssignWkp> entitys) {

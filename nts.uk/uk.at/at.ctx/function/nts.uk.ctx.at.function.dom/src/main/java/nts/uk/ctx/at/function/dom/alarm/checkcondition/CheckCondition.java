@@ -102,4 +102,36 @@ public class CheckCondition  extends DomainObject {
 	public boolean isMasterChk() {
 		return this.alarmCategory== AlarmCategory.MASTER_CHECK;
 	}
+	
+	/**
+	 * スケジュール日次
+	 * @return
+	 */
+	public boolean isScheduleDaily() {
+		return this.alarmCategory== AlarmCategory.SCHEDULE_DAILY;
+	}
+	
+	/**
+	 * スケジュール月次
+	 * @return
+	 */
+	public boolean isScheduleMonthly() {
+		return this.alarmCategory== AlarmCategory.SCHEDULE_MONTHLY;
+	}
+	
+	/**
+	 * スケジュール年間
+	 * @return
+	 */
+	public boolean isScheduleYear() {
+		return this.alarmCategory== AlarmCategory.SCHEDULE_YEAR;
+	}
+	
+	/**
+	 * 週次
+	 * @return
+	 */
+	public boolean isWeekly() {
+		return this.alarmCategory== AlarmCategory.WEEKLY;
+	}
 }

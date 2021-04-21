@@ -8,18 +8,13 @@ import org.apache.commons.lang3.tuple.Pair;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.request.dom.application.Application;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
-import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.applist.extractcondition.AppListExtractCondition;
 import nts.uk.ctx.at.request.dom.application.applist.service.param.AppListInfo;
 import nts.uk.ctx.at.request.dom.application.applist.service.param.AppListInitOutput;
 import nts.uk.ctx.at.request.dom.application.applist.service.param.ListOfApplication;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SyEmployeeImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WkpInfo;
-import nts.uk.ctx.at.request.dom.application.common.service.other.output.AppCompltLeaveSyncOutput;
 import nts.uk.ctx.at.request.dom.setting.workplace.appuseset.ApplicationUseSetting;
-import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
-import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 /**
  * 
@@ -78,32 +73,6 @@ public interface AppListInitialRepository {
 	 * @return
 	 */
 	public ApplicationStatus countAppListApproval(List<ListOfApplication> listApp, ApplicationStatus appStatus);
-	/**
-	 * 5.1 - 申請一覧リスト取得実績(休出申請・残業申請）
-	 * @param sID
-	 * @param date
-	 * @param time
-	 * @param appType
-	 * @param lstWkType
-	 * @param lstWkTime
-	 * @return
-	 */
-	public TimeResultOutput getDataActual(String sID, GeneralDate date, List<OverTimeFrame> time, 
-			ApplicationType appType, String wkTypeCd, String wkTimeCd, List<WorkType> lstWkType, List<WorkTimeSetting> lstWkTime);
-	/**
-	 * 6 - 申請一覧リスト取得振休振出
-	 * @param 申請　application
-	 * @param 会社ID　companyId
-	 * @return
-	 */
-	public AppCompltLeaveSyncOutput getListAppComplementLeave(Application_New application, String companyId);
-	/**
-	 * 8 - 申請一覧リスト取得休暇
-	 * @param 申請　application
-	 * @param 会社ID　companyID
-	 * @return
-	 */
-	public List<Application_New> getListAppAbsence(Application_New application, String companyID);
 
 	/**
 	 * UKDesign.UniversalK.就業.KAF_申請.CMM045_申請一覧・承認一覧.A:申請一覧画面.アルゴリズム.申請一覧リスト取得マスタ情報.申請一覧リスト取得マスタ情報

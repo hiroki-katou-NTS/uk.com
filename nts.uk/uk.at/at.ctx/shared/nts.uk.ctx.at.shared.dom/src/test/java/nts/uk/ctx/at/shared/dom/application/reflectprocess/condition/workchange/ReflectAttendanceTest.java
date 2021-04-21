@@ -9,14 +9,25 @@ import java.util.Optional;
 
 import org.assertj.core.groups.Tuple;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
-import nts.uk.ctx.at.shared.dom.application.reflectprocess.DailyRecordOfApplication;
-import nts.uk.ctx.at.shared.dom.application.reflectprocess.ScheduleRecordClassifi;
+import mockit.Expectations;
+import mockit.Injectable;
+import mockit.integration.junit4.JMockit;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.common.ReflectApplicationHelper;
+import nts.uk.ctx.at.shared.dom.calculationsetting.ActualStampOfPriorityClass;
+import nts.uk.ctx.at.shared.dom.calculationsetting.StampReflectionManagement;
 import nts.uk.ctx.at.shared.dom.common.TimeZoneWithWorkNo;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.DailyRecordOfApplication;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.ScheduleRecordClassifi;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.condition.ReflectAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
 
+@RunWith(JMockit.class)
 public class ReflectAttendanceTest {
+	
+	@Injectable
+	private ReflectAttendance.Require require;
 
 	/*
 	 * テストしたい内容
@@ -39,8 +50,8 @@ public class ReflectAttendanceTest {
 		DailyRecordOfApplication dailyApp = ReflectApplicationHelper.createDailyRecord(ScheduleRecordClassifi.SCHEDULE,
 				2);
 
-		List<Integer> actualResult = ReflectAttendance.reflect(timeZoneWithWorkNoLst, ScheduleRecordClassifi.SCHEDULE,
-				dailyApp, Optional.of(true), Optional.of(true));
+		List<Integer> actualResult = ReflectAttendance.reflect(require, "", timeZoneWithWorkNoLst, ScheduleRecordClassifi.SCHEDULE,
+				dailyApp, Optional.of(true), Optional.of(true), Optional.empty());
 
 		assertThat(actualResult).isEqualTo(Arrays.asList(3, 4, 5, 6));
 
@@ -74,8 +85,8 @@ public class ReflectAttendanceTest {
 		DailyRecordOfApplication dailyApp = ReflectApplicationHelper.createDailyRecord(ScheduleRecordClassifi.SCHEDULE,
 				0);
 
-		List<Integer> actualResult = ReflectAttendance.reflect(timeZoneWithWorkNoLst, ScheduleRecordClassifi.SCHEDULE,
-				dailyApp, Optional.of(true), Optional.of(true));
+		List<Integer> actualResult = ReflectAttendance.reflect(require, "", timeZoneWithWorkNoLst, ScheduleRecordClassifi.SCHEDULE,
+				dailyApp, Optional.of(true), Optional.of(true), Optional.empty());
 
 		assertThat(actualResult).isEqualTo(Arrays.asList(3, 4, 5, 6));
 
@@ -109,8 +120,8 @@ public class ReflectAttendanceTest {
 		DailyRecordOfApplication dailyApp = ReflectApplicationHelper.createRCWithTimeLeav(ScheduleRecordClassifi.RECORD,
 				1);// WorkNO = 1;
 
-		List<Integer> actualResult = ReflectAttendance.reflect(timeZoneWithWorkNoLst, ScheduleRecordClassifi.RECORD,
-				dailyApp, Optional.of(true), Optional.of(false));
+		List<Integer> actualResult = ReflectAttendance.reflect(require, "", timeZoneWithWorkNoLst, ScheduleRecordClassifi.RECORD,
+				dailyApp, Optional.of(true), Optional.of(false), Optional.of(TimeChangeMeans.APPLICATION));
 
 		assertThat(actualResult).isEqualTo(Arrays.asList(31));
 
@@ -124,8 +135,8 @@ public class ReflectAttendanceTest {
 		DailyRecordOfApplication dailyApp2 = ReflectApplicationHelper
 				.createRCWithTimeLeav(ScheduleRecordClassifi.RECORD, 1);// WorkNO = 1;
 
-		List<Integer> actualResult2 = ReflectAttendance.reflect(timeZoneWithWorkNoLst, ScheduleRecordClassifi.RECORD,
-				dailyApp2, Optional.of(false), Optional.of(true));
+		List<Integer> actualResult2 = ReflectAttendance.reflect(require, "", timeZoneWithWorkNoLst, ScheduleRecordClassifi.RECORD,
+				dailyApp2, Optional.of(false), Optional.of(true), Optional.of(TimeChangeMeans.APPLICATION));
 
 		assertThat(actualResult2).isEqualTo(Arrays.asList(34));
 
@@ -139,8 +150,8 @@ public class ReflectAttendanceTest {
 		DailyRecordOfApplication dailyApp3 = ReflectApplicationHelper
 				.createRCWithTimeLeav(ScheduleRecordClassifi.RECORD, 1);// WorkNO = 1;
 
-		List<Integer> actualResult3 = ReflectAttendance.reflect(timeZoneWithWorkNoLst, ScheduleRecordClassifi.RECORD,
-				dailyApp3, Optional.of(true), Optional.of(true));
+		List<Integer> actualResult3 = ReflectAttendance.reflect(require, "",timeZoneWithWorkNoLst, ScheduleRecordClassifi.RECORD,
+				dailyApp3, Optional.of(true), Optional.of(true), Optional.of(TimeChangeMeans.APPLICATION));
 
 		assertThat(actualResult3).isEqualTo(Arrays.asList(31, 34));
 
@@ -160,8 +171,8 @@ public class ReflectAttendanceTest {
 		DailyRecordOfApplication dailyApp4 = ReflectApplicationHelper
 				.createRCWithTimeLeav(ScheduleRecordClassifi.RECORD, 1);// WorkNO = 1;
 
-		List<Integer> actualResult4 = ReflectAttendance.reflect(timeZoneWithWorkNoLst, ScheduleRecordClassifi.RECORD,
-				dailyApp4, Optional.of(false), Optional.of(false));
+		List<Integer> actualResult4 = ReflectAttendance.reflect(require, "", timeZoneWithWorkNoLst, ScheduleRecordClassifi.RECORD,
+				dailyApp4, Optional.of(false), Optional.of(false), Optional.empty());
 
 		assertThat(actualResult4).isEqualTo(Arrays.asList());
 
@@ -190,8 +201,8 @@ public class ReflectAttendanceTest {
 		DailyRecordOfApplication dailyApp = ReflectApplicationHelper.createRCWithTimeLeav(ScheduleRecordClassifi.RECORD,
 				1);// WorkNO = 1;
 
-		List<Integer> actualResult = ReflectAttendance.reflect(timeZoneWithWorkNoLst, ScheduleRecordClassifi.RECORD,
-				dailyApp, Optional.of(true), Optional.of(false));
+		List<Integer> actualResult = ReflectAttendance.reflect(require, "", timeZoneWithWorkNoLst, ScheduleRecordClassifi.RECORD,
+				dailyApp, Optional.of(true), Optional.of(false), Optional.of(TimeChangeMeans.APPLICATION));
 
 		assertThat(actualResult).isEqualTo(Arrays.asList(41));
 
@@ -206,8 +217,8 @@ public class ReflectAttendanceTest {
 		DailyRecordOfApplication dailyApp2 = ReflectApplicationHelper
 				.createRCWithTimeLeav(ScheduleRecordClassifi.RECORD, 1);// WorkNO = 1;
 
-		List<Integer> actualResult2 = ReflectAttendance.reflect(timeZoneWithWorkNoLst, ScheduleRecordClassifi.RECORD,
-				dailyApp2, Optional.of(false), Optional.of(true));
+		List<Integer> actualResult2 = ReflectAttendance.reflect(require, "", timeZoneWithWorkNoLst, ScheduleRecordClassifi.RECORD,
+				dailyApp2, Optional.of(false), Optional.of(true), Optional.of(TimeChangeMeans.APPLICATION));
 
 		assertThat(actualResult2).isEqualTo(Arrays.asList(44));
 
@@ -221,8 +232,8 @@ public class ReflectAttendanceTest {
 		DailyRecordOfApplication dailyApp3 = ReflectApplicationHelper
 				.createRCWithTimeLeav(ScheduleRecordClassifi.RECORD, 1);// WorkNO = 1;
 
-		List<Integer> actualResult3 = ReflectAttendance.reflect(timeZoneWithWorkNoLst, ScheduleRecordClassifi.RECORD,
-				dailyApp3, Optional.of(true), Optional.of(true));
+		List<Integer> actualResult3 = ReflectAttendance.reflect(require, "", timeZoneWithWorkNoLst, ScheduleRecordClassifi.RECORD,
+				dailyApp3, Optional.of(true), Optional.of(true), Optional.of(TimeChangeMeans.APPLICATION));
 
 		assertThat(actualResult3).isEqualTo(Arrays.asList(41, 44));
 
@@ -242,10 +253,50 @@ public class ReflectAttendanceTest {
 		DailyRecordOfApplication dailyApp4 = ReflectApplicationHelper
 				.createRCWithTimeLeav(ScheduleRecordClassifi.RECORD, 1);// WorkNO = 1;
 
-		List<Integer> actualResult4 = ReflectAttendance.reflect(timeZoneWithWorkNoLst, ScheduleRecordClassifi.RECORD,
-				dailyApp4, Optional.of(false), Optional.of(false));
+		List<Integer> actualResult4 = ReflectAttendance.reflect(require, "", timeZoneWithWorkNoLst, ScheduleRecordClassifi.RECORD,
+				dailyApp4, Optional.of(false), Optional.of(false), Optional.empty());
 
 		assertThat(actualResult4).isEqualTo(Arrays.asList());
+
+	}
+	
+	/*
+	 * テストしたい内容
+	 * 
+	 * →「出勤.時刻」と「退勤.時刻」を更新しない 
+	 * 
+	 * 準備するデータ
+	 * 
+	 * → 予定実績区分が実績
+	 * 
+	 * → 「時刻を変更してもいいか判断する」がfalse
+	 */
+	@Test
+	public void testNotUpdateRecord() {
+
+		List<TimeZoneWithWorkNo> timeZoneWithWorkNoLst = new ArrayList<>();
+		timeZoneWithWorkNoLst.add(new TimeZoneWithWorkNo(1, 1, 1));
+		// timeZoneWithWorkNoLst.add(new TimeZoneWithWorkNo(2, 2, 2));
+
+		// 出勤を反映する（初期値＝true）
+		DailyRecordOfApplication dailyApp = ReflectApplicationHelper.createRCWithTimeLeav(ScheduleRecordClassifi.RECORD,
+				1, TimeChangeMeans.REAL_STAMP);// WorkNO = 1;
+
+		new Expectations() {
+			{
+				require.findByCid(anyString);
+				result = Optional.of(new StampReflectionManagement("", null, null,
+						ActualStampOfPriorityClass.ACTUAL_STAMP_PRIORITY, null, null, null));
+			}
+		};
+		ReflectAttendance.reflect(require, "", timeZoneWithWorkNoLst, ScheduleRecordClassifi.RECORD,
+				dailyApp, Optional.of(true), Optional.of(false), Optional.of(TimeChangeMeans.DIRECT_BOUNCE_APPLICATION));
+
+		assertThat(dailyApp.getAttendanceLeave().get().getTimeLeavingWorks())
+				.extracting(x -> x.getAttendanceStamp().get().getStamp().get().getTimeDay().getTimeWithDay().get().v(),
+						x -> x.getAttendanceStamp().get().getStamp().get().getTimeDay().getReasonTimeChange()
+								.getTimeChangeMeans())
+				.containsExactly(Tuple.tuple(480, TimeChangeMeans.REAL_STAMP));
 
 	}
 }

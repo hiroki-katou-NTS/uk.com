@@ -201,10 +201,6 @@ module nts.uk.com.view.cmf004.b.viewmodel {
       });
       //End new code
 
-      self.dataRecoverySelection().selectedRecoveryFile.subscribe(value => {
-        self.recoveryProcessingId = nts.uk.util.randomId();
-      })
-
       self.dataContentConfirm().dataContentcategoryList.subscribe(value => {
         self.setWidthScrollHeader('.contentE', value);
       });
@@ -283,7 +279,6 @@ module nts.uk.com.view.cmf004.b.viewmodel {
             $('#data-recovery-wizard').ntsWizard("next");
             $('#E4_1').focus();
           } else {
-            self.recoveryProcessingId = nts.uk.util.randomId();
             if (passwordInfo.message) {
               dialog.alertError({ messageId: passwordInfo.message });
             }
@@ -553,6 +548,8 @@ module nts.uk.com.view.cmf004.b.viewmodel {
         let _employeeList = self.getRecoveryEmployee(self.employeeListScreenG(), self.selectedEmployeeCodeScreenG());
         _employeeList = _.sortBy(_employeeList, ["code"]);
         self.employeeListScreenH(_employeeList);
+      } else {
+        self.employeeListScreenH(self.employeeListScreenG());
       }
       let _recoveryMethod = self.dataContentConfirm().selectedRecoveryMethod();
       let _recoveryMethodDescription1 = self.getRecoveryMethodDescription1(_recoveryMethod);
@@ -606,6 +603,7 @@ module nts.uk.com.view.cmf004.b.viewmodel {
 
     nextToScreenE(): void {
       let self = this;
+      self.recoveryProcessingId = nts.uk.util.randomId();
       let paramObtainRecovery = {
         storeProcessingId: self.dataRecoverySelection().selectedRecoveryFile(),
         dataRecoveryProcessId: self.recoveryProcessingId
@@ -813,9 +811,6 @@ module nts.uk.com.view.cmf004.b.viewmodel {
       const self = this;
       $('#data-recovery-wizard').ntsWizard("prev");
       nts.uk.ui.errors.clearAll();
-      if ($("#data-recovery-wizard").ntsWizard("getCurrentStep") === 0) {
-        self.recoveryProcessingId = nts.uk.util.randomId();
-      }
     }
 
     start(): JQueryPromise<any> {
