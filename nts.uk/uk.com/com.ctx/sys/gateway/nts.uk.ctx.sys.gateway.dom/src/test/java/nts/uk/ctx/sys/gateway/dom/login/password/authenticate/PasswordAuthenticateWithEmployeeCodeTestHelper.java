@@ -8,7 +8,7 @@ import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.sys.gateway.dom.login.IdentifiedEmployeeInfo;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.AccountLockPolicy;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.PasswordPolicy;
-import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.PasswordPolicyTestHelper.Dummy;
+import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.PasswordPolicyTestHelper.DUMMY;
 import nts.uk.ctx.sys.shared.dom.employee.EmployeeDataMngInfoImport;
 import nts.uk.ctx.sys.shared.dom.employee.SDelAtr;
 import nts.uk.ctx.sys.shared.dom.user.ContractCode;
@@ -66,6 +66,6 @@ public class PasswordAuthenticateWithEmployeeCodeTestHelper {
 		static EmployeeDataMngInfoImport IMPORTED = FailedPasswordHelper.IMPORTED;
 		static IdentifiedEmployeeInfo EMP_INFO = new IdentifiedEmployeeInfo(PasswordAuthenticateWithEmployeeCodeTestHelper.IMPORTED, PasswordAuthenticateWithEmployeeCodeTestHelper.USER);
 		static AccountLockPolicy ACCOUNT_LOCK_POLICY = AccountLockPolicy.createFromJavaType("", 0, 0, "", true);
-		static PasswordPolicy PASSWORD_POLICY = 	new PasswordPolicy(Dummy.CONTRACT_CD,Dummy.NOTICE_PASSWORD_CHANGE,Dummy.IS_LOGIN,Dummy.INITIAL_PASSWORD_CHANGE,Dummy.IS_USE,Dummy.PASSWORD_HISTORY_COUNT,Dummy.PASSWORD_VALIDATE_PERIOD,Dummy.PASSWORD_COMPLEX);
+		static PasswordPolicy PASSWORD_POLICY = 	new PasswordPolicy(DUMMY.CONTRACT_CD,DUMMY.NOTICE_PASSWORD_CHANGE,DUMMY.IS_LOGIN,DUMMY.INITIAL_PASSWORD_CHANGE,DUMMY.IS_USE,DUMMY.PASSWORD_HISTORY_COUNT,DUMMY.PASSWORD_VALIDATE_PERIOD,DUMMY.PASSWORD_COMPLEX);
 	}
 }

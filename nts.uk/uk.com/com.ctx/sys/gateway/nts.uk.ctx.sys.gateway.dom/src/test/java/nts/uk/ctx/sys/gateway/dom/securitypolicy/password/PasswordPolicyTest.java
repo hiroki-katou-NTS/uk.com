@@ -15,7 +15,6 @@ import mockit.MockUp;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.PasswordPolicy.ValidateOnLoginRequire;
-import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.PasswordPolicyTestHelper.Dummy;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.changelog.PasswordChangeLog;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.changelog.PasswordChangeLogDetail;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.complexity.PasswordComplexityRequirement;
@@ -29,68 +28,56 @@ public class PasswordPolicyTest {
 	
 	@Test
 	public void calcRemainingDays() {
-		int validityPeriod = 5;
+		int passwordChangeLastDays = -5;
 		int rangeDays = 2;
-		PasswordPolicy policy = PasswordPolicyTestHelper.setValidityPeriod(rangeDays);
 		
-		String userId = "";
-		List<PasswordChangeLogDetail> list = Arrays.asList(new PasswordChangeLogDetail(GeneralDateTime.now().addDays(validityPeriod), ""));
-		val a = new PasswordChangeLog("", list);
+		List<PasswordChangeLogDetail> list = Arrays.asList(
+				new PasswordChangeLogDetail(GeneralDateTime.now().addDays(passwordChangeLastDays), PasswordPolicyTestHelper.DUMMY.PASSWORD));
 		
 		new Expectations() {{
-			require.getPasswordChangeLog(userId);
-			result = a;
+			require.getPasswordChangeLog(PasswordPolicyTestHelper.DUMMY.USER_ID);
+			result = new PasswordChangeLog(PasswordPolicyTestHelper.DUMMY.USER_ID, list);;
 		}};
 		
 		val result = (int)NtsAssert.Invoke.privateMethod(
-				policy, 
+				PasswordPolicyTestHelper.setValidityPeriod(rangeDays), 
 				"calculateRemainingDays", 
 				require,
-				userId);
-		assertThat(result).isEqualTo(validityPeriod + rangeDays);
-	}
-	
-	
-	@Test
-	public void notUserPolicy() {
-		val dummyInstance = PasswordPolicyTestHelper.dummyPolicy;
-		ValidationResultOnLogin result = run(dummyInstance, Dummy.PASSSTATUES);
-		assertThat(result.getStatus()).isEqualTo(ValidationResultOnLogin.Status.OK);
+				PasswordPolicyTestHelper.DUMMY.USER_ID);
+		assertThat(result).isEqualTo(passwordChangeLastDays + rangeDays);
 	}
 	
 	@Test
 	public void resetPassword() {
-		val dummyInstance = PasswordPolicyTestHelper.dummyPolicy;
+		val dummyInstance = PasswordPolicyTestHelper.DUMMY.PASSWORD_POLICY;
 		ValidationResultOnLogin result = run(dummyInstance, PassStatus.Reset);
 		assertThat(result.getStatus()).isEqualTo(ValidationResultOnLogin.Status.RESET);
 	}
 	
 	@Test
 	public void initialPass() {
-		val dummyInstance = PasswordPolicyTestHelper.dummyPolicy;
+		val dummyInstance = PasswordPolicyTestHelper.DUMMY.PASSWORD_POLICY;
 		ValidationResultOnLogin result = run(dummyInstance, PassStatus.InitPassword);
 		assertThat(result.getStatus()).isEqualTo(ValidationResultOnLogin.Status.INITIAL);
 	}
 
 	@Test
 	public void passComplex() {
-		val dummyInstance = PasswordPolicyTestHelper.dummyPolicy;
 		
 		new MockUp<PasswordComplexityRequirement>() {
 			@Mock
 			public List<String> validatePassword(String password){
-				return Arrays.asList("","");
+				return PasswordPolicyTestHelper.DUMMY.STRING_LIST;
 			}
 		};
-		
+		val dummyInstance = PasswordPolicyTestHelper.DUMMY.PASSWORD_POLICY;
 		ValidationResultOnLogin result = run(dummyInstance, PassStatus.Official);
-		
 		assertThat(result.getStatus()).isEqualTo(ValidationResultOnLogin.Status.VIOLATED);
 	}
 	
 	@Test
-	public void success() {
-		val dummyInstance = PasswordPolicyTestHelper.dummyPolicy;
+	public void use_Policy() {
+		val dummyInstance = PasswordPolicyTestHelper.DUMMY.PASSWORD_POLICY;
 		ValidationResultOnLogin result = run(dummyInstance, PassStatus.Official);
 		assertThat(result.getStatus()).isEqualTo(ValidationResultOnLogin.Status.OK);
 	}
@@ -98,8 +85,8 @@ public class PasswordPolicyTest {
 	private ValidationResultOnLogin run(PasswordPolicy dummyInstance, PassStatus passStatus) {
 		return (ValidationResultOnLogin)dummyInstance.validateOnLogin(
 				require, 
-				PasswordPolicyTestHelper.Dummy.USER_ID,
-				PasswordPolicyTestHelper.Dummy.PASSWORD,
+				PasswordPolicyTestHelper.DUMMY.USER_ID,
+				PasswordPolicyTestHelper.DUMMY.PASSWORD,
 				passStatus
 				 );
 	}

@@ -40,7 +40,7 @@ public class ConnectDataSourceOfTenantTest {
 				return false;
 			}
 		};
-		
+		assertThat(isCalledConnect.get()).isFalse();
 		new MockUp<TenantLocatorService>() {
 			@Mock
 			public void connect(String tenantCode) {
@@ -74,7 +74,7 @@ public class ConnectDataSourceOfTenantTest {
 				return true;
 			}
 		};
-		
+		assertThat(isCalledConnect.get()).isTrue();
 		new MockUp<TenantLocatorService>() {
 			@Mock
 			public void connect(String tenantCode) {
@@ -108,7 +108,7 @@ public class ConnectDataSourceOfTenantTest {
 				return true;
 			}
 		};
-		
+		assertThat(isCalledConnect.get()).isTrue();
 		new MockUp<TenantLocatorService>() {
 			@Mock
 			public void connect(String tenantCode) {
