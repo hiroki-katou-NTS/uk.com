@@ -2,48 +2,58 @@ package nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock;
 
 import java.math.BigDecimal;
 
+import com.google.common.base.Optional;
+
+import nts.arc.time.GeneralDateTime;
+import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.locked.LockType;
+import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.locked.LockoutData;
+import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.locked.LoginMethod;
 import nts.uk.ctx.sys.shared.dom.user.ContractCode;
 
 public class AccountLockPolicyTestHelper {
-	static AccountLockPolicy accountLockPolicy =	 
-			new AccountLockPolicy(
-					new ContractCode(""), 
-					new ErrorCount(BigDecimal.ZERO), 
-					new LockInterval(0), 
-					new LockOutMessage(""), 
-					true);
+	static LockoutData lockoutData =  
+			new LockoutData(
+					new ContractCode("0"), 
+					"", 
+					GeneralDateTime.now(), 
+					LockType.AUTO_LOCK, 
+					LoginMethod.NORMAL_LOGIN);
+	
+			
 	public static AccountLockPolicy setUse(boolean isUse) {
 		return new AccountLockPolicy(
-				Dummy.contractCode,
-				Dummy.errorCount, 
-				Dummy.lockInterval, 
-				Dummy.lockOutMessage,
+				DUMMY.CONTRACT_CD,
+				DUMMY.ERROR_COUNT, 
+				DUMMY.LOCK_INTERVAL, 
+				DUMMY.LOCKOUT_MESSAGE,
 				isUse);
 	}
 	
 	public static AccountLockPolicy setContractCode(String contractCD) {
 		return new AccountLockPolicy(
 				new ContractCode(contractCD),
-				Dummy.errorCount, 
-				Dummy.lockInterval, 
-				Dummy.lockOutMessage,
-				Dummy.isUse);
+				DUMMY.ERROR_COUNT, 
+				DUMMY.LOCK_INTERVAL, 
+				DUMMY.LOCKOUT_MESSAGE,
+				DUMMY.IS_USE);
 	}
 	
 	public static AccountLockPolicy setErrorCount(int errorCount) {
 		return new AccountLockPolicy(
-				Dummy.contractCode,
+				DUMMY.CONTRACT_CD,
 				new ErrorCount(BigDecimal.valueOf(errorCount)), 
-				Dummy.lockInterval, 
-				Dummy.lockOutMessage,
-				Dummy.isUse);
+				DUMMY.LOCK_INTERVAL, 
+				DUMMY.LOCKOUT_MESSAGE,
+				DUMMY.IS_USE);
 	}
 	
-	static class Dummy{
-		static ContractCode contractCode = new ContractCode("");
-		static ErrorCount errorCount = new ErrorCount(BigDecimal.ZERO);
-		static LockInterval lockInterval = new LockInterval(0);
-		static LockOutMessage lockOutMessage = new LockOutMessage("");
-		static boolean isUse = true;
+	static class DUMMY{
+		static ContractCode CONTRACT_CD = new ContractCode("contractCd");
+		static String USER_ID = "userId";
+		static ErrorCount ERROR_COUNT = new ErrorCount(BigDecimal.ZERO);
+		static LockInterval LOCK_INTERVAL = new LockInterval(0);
+		static LockOutMessage LOCKOUT_MESSAGE = new LockOutMessage("message");
+		static boolean IS_USE = true;
+		static LockoutData LOCKOUT_DATA = AccountLockPolicyTestHelper.lockoutData;
 	}
 }
