@@ -9,15 +9,8 @@ import mockit.Injectable;
 import mockit.Mock;
 import mockit.MockUp;
 import mockit.Verifications;
-import nts.arc.task.tran.AtomTask;
-import nts.arc.time.GeneralDateTime;
-import nts.uk.ctx.sys.gateway.dom.login.IdentifiedEmployeeInfo;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.AccountLockPolicy;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.locked.LockoutData;
-import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.locked.LoginMethod;
-import nts.uk.ctx.sys.shared.dom.employee.EmployeeDataMngInfoImport;
-import nts.uk.ctx.sys.shared.dom.user.ContractCode;
-import nts.uk.ctx.sys.shared.dom.user.User;
 
 public class FailedPasswordAuthenticateTest {
 
@@ -34,72 +27,56 @@ public class FailedPasswordAuthenticateTest {
 			@Mock
 			public PasswordAuthenticateFailureLog failedNow(String userId, String password) {
 				return new PasswordAuthenticateFailureLog(
-						GeneralDateTime.ymdhms(2000, 1, 1, 1, 0, 0), 
-						"user", 
-						"password"); 
+						Helper.DUMMY.DATETIME, 
+						Helper.DUMMY.USER_ID, 
+						Helper.DUMMY.PASSWORD); 
 			}
 		};
 		
-		EmployeeDataMngInfoImport imp = PasswordAuthenticateWithEmployeeCodeTestHelper.DUMMY_IMPORTED;
-		User user = PasswordAuthenticateWithEmployeeCodeTestHelper.USER;
-		
-		IdentifiedEmployeeInfo empInfo = new IdentifiedEmployeeInfo(imp, user);
-		
-		AtomTask persist = FailedPasswordAuthenticate.failed(faildPassAuthRequire, empInfo, "password").getFailedAuthenticate().get();
+		FailedAuthenticateTask result = FailedPasswordAuthenticate.failed(faildPassAuthRequire, Helper.DUMMY.EMP_INFO, Helper.DUMMY.PASSWORD);
 		new Verifications() {{
 			faildPassAuthRequire.save((PasswordAuthenticateFailureLog) any);
 			times = 0;
 		}};
-		persist.run();
+		result.getFailedAuthenticate().get().run();
 		new Verifications() {{
 			faildPassAuthRequire.save((PasswordAuthenticateFailureLog) any);
 			times = 1;
 		}};
 	}
 	
+	
 	@Test
 	public void called_LockoutData_Save() {
-		EmployeeDataMngInfoImport imp = PasswordAuthenticateWithEmployeeCodeTestHelper.DUMMY_IMPORTED;
-		User user = PasswordAuthenticateWithEmployeeCodeTestHelper.USER;
-		
-		IdentifiedEmployeeInfo empInfo = new IdentifiedEmployeeInfo(imp, user);
-		
-		Optional<LockoutData> lockoutData = Optional.of(
-				LockoutData.autoLock(
-						new ContractCode(""), 
-						"", 
-						LoginMethod.NORMAL_LOGIN));
 		
 		new MockUp<PasswordAuthenticateFailureLog>(){
 			@Mock
 			public PasswordAuthenticateFailureLog failedNow(String userId, String password) {
 				return new PasswordAuthenticateFailureLog(
-						GeneralDateTime.ymdhms(2000, 1, 1, 1, 0, 0), 
-						"user", 
-						"password"); 
+						Helper.DUMMY.DATETIME, 
+						Helper.DUMMY.USER_ID, 
+						Helper.DUMMY.PASSWORD); 
 			}
 		};
 		
 		new MockUp<AccountLockPolicy>(){
 			@Mock
 			public Optional<LockoutData> validateAuthenticate(AccountLockPolicy.Require require, String userId) {
-				return lockoutData;
+				return Optional.of(Helper.DUMMY.LOCKOUT_DATA);
 			}
 		};
-		Optional<AccountLockPolicy> policy = 
-				Optional.of(AccountLockPolicy.createFromJavaType("", 0, 0, "", true));
-		new Expectations() {{
-			faildPassAuthRequire.getAccountLockPolicy(empInfo.getTenantCode());
-			result = policy;
-		}};
-
 		
-		AtomTask persist = FailedPasswordAuthenticate.failed(faildPassAuthRequire, empInfo, "password").getLockoutData().get();
+		new Expectations() {{
+			faildPassAuthRequire.getAccountLockPolicy(Helper.DUMMY.EMP_INFO.getTenantCode());
+			result = Optional.of(Helper.DUMMY.ACCOUNT_LOCK_POLICY);
+		}};
+		
+		FailedAuthenticateTask result = FailedPasswordAuthenticate.failed(faildPassAuthRequire, Helper.DUMMY.EMP_INFO, Helper.DUMMY.PASSWORD);
 		new Verifications() {{
 			faildPassAuthRequire.save((LockoutData) any);
 			times = 0;
 		}};
-		persist.run();
+		result.getLockoutData().get().run();
 		new Verifications() {{
 			faildPassAuthRequire.save((LockoutData) any);
 			times = 1;

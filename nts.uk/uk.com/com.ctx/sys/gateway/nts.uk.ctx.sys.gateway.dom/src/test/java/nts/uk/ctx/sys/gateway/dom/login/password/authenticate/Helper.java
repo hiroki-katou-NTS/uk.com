@@ -5,6 +5,10 @@ import java.util.Optional;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
+import nts.uk.ctx.sys.gateway.dom.login.IdentifiedEmployeeInfo;
+import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.AccountLockPolicy;
+import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.locked.LockoutData;
+import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.locked.LoginMethod;
 import nts.uk.ctx.sys.shared.dom.employee.EmployeeDataMngInfoImport;
 import nts.uk.ctx.sys.shared.dom.employee.SDelAtr;
 import nts.uk.ctx.sys.shared.dom.user.ContractCode;
@@ -14,7 +18,7 @@ import nts.uk.ctx.sys.shared.dom.user.User;
 import nts.uk.ctx.sys.shared.dom.user.password.HashPassword;
 import nts.uk.ctx.sys.shared.dom.user.password.PassStatus;
 
-public class PasswordAuthenticateWithEmployeeCodeTestHelper {
+public class Helper {
 	
 	static FailedAuthenticateTask anyTask = new FailedAuthenticateTask(
 			Optional.of(AtomTask.none()),
@@ -28,7 +32,7 @@ public class PasswordAuthenticateWithEmployeeCodeTestHelper {
 					new HashPassword(DUMMY.PASSWORD),
 					new LoginID(DUMMY.LOGIN_ID),
 					new ContractCode(DUMMY.CONTRACT_CODE),
-					DUMMY.EXPIRATION_DATE,
+					DUMMY.DATE,
 					DisabledSegment.False,
 					DisabledSegment.False,
 					Optional.empty(),
@@ -37,7 +41,7 @@ public class PasswordAuthenticateWithEmployeeCodeTestHelper {
 					PassStatus.InitPassword
 					);
 	
-	static EmployeeDataMngInfoImport DUMMY_IMPORTED = 
+	static EmployeeDataMngInfoImport IMPORTED = 
 			new EmployeeDataMngInfoImport(
 					DUMMY.COMPANY_ID, 
 					DUMMY.PERSON_ID, 
@@ -60,9 +64,14 @@ public class PasswordAuthenticateWithEmployeeCodeTestHelper {
 		static String PASSWORD = "password";
 		static SDelAtr DELETE_STATUS = SDelAtr.DELETED;
 		static GeneralDateTime DATETIME = GeneralDateTime.now();
-		static GeneralDate EXPIRATION_DATE = GeneralDate.today();
+		static GeneralDate DATE = GeneralDate.today();
 		static String REMOVE_REASON = "reason";
 		static String EXTERNAL_CODE = "externalCode";
+		static User USER = Helper.USER;
+		static EmployeeDataMngInfoImport IMPORTED = Helper.IMPORTED;
+		static IdentifiedEmployeeInfo EMP_INFO = new IdentifiedEmployeeInfo(Helper.DUMMY.IMPORTED, Helper.DUMMY.USER);
+		static AccountLockPolicy ACCOUNT_LOCK_POLICY = AccountLockPolicy.createFromJavaType("", 0, 0, "", true);
+		static LockoutData LOCKOUT_DATA = LockoutData.autoLock(new ContractCode(""),"",LoginMethod.NORMAL_LOGIN);
 	}
 		
 }
