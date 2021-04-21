@@ -1,46 +1,51 @@
 package nts.uk.cnv.infra.td.entity.alteration.index;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
-import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import nts.arc.layer.infra.data.entity.JpaEntity;
+import lombok.val;
+import nts.arc.layer.infra.data.query.QueryProxy;
 
-@Getter
-@AllArgsConstructor
+@SuppressWarnings("serial")
 @NoArgsConstructor
 @Entity
 @Table(name = "NEM_TD_ALT_CHANGE_PK_COLUMN")
-public class NemTdAltChangePrimaryKeyColumn extends JpaEntity implements Serializable {
-
-	private static final long serialVersionUID = 1L;
-
-	@EmbeddedId
-	public NemTdAltChangeTableConstraintsColumnPk pk;
+public class NemTdAltChangePrimaryKeyColumn extends ChangeTableConstraintsColumn implements Serializable {
 	
-	@Column(name = "COLUMN_ORDER")
-	public int columnOrder;
-
-	public static NemTdAltChangePrimaryKeyColumn toEntity(NemTdAltChangeTableConstraintsPk parent, String columnId, int columnOrder) {
-		return new NemTdAltChangePrimaryKeyColumn(
-				new NemTdAltChangeTableConstraintsColumnPk(
-					parent.alterationId,
-					parent.seqNo,
-					parent.suffix,
-					columnId
-				),
-				columnOrder
-			);
+	public NemTdAltChangePrimaryKeyColumn(ChangeTableConstraintsColumnPk pk, int columnOrder) {
+		super(pk, columnOrder);
 	}
 
-	@Override
-	protected Object getKey() {
-		return pk;
+	public static List<NemTdAltChangePrimaryKeyColumn> toEntities(
+			ChangeTableConstraintsPk parentPk,
+			List<String> sortedColumnIds) {
+		
+		List<NemTdAltChangePrimaryKeyColumn> entities = new ArrayList<>();
+		
+		for (int i = 0; i < sortedColumnIds.size(); i++) {
+			
+			String columnId = sortedColumnIds.get(i);
+			int columnOrder = i + 1;
+			
+			val column = new NemTdAltChangePrimaryKeyColumn(
+					ChangeTableConstraintsColumnPk.create(parentPk, columnId),
+					columnOrder);
+			
+			entities.add(column);
+		}
+		
+		return entities;
+	}
+
+	public static List<String> getSortedColumnIds(QueryProxy queryProxy, ChangeTableConstraintsPk pk) {
+		return ChangeTableConstraintsColumn.getSortedColumnIds(
+				queryProxy,
+				NemTdAltChangePrimaryKeyColumn.class,
+				pk);
 	}
 }

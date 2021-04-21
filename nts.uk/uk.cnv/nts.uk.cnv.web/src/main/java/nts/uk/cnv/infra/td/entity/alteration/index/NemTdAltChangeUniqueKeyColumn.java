@@ -1,41 +1,29 @@
 package nts.uk.cnv.infra.td.entity.alteration.index;
 
 import java.io.Serializable;
+import java.util.List;
 
-import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import nts.arc.layer.infra.data.entity.JpaEntity;
+import nts.arc.layer.infra.data.query.QueryProxy;
 
-@Getter
-@AllArgsConstructor
+@SuppressWarnings("serial")
 @NoArgsConstructor
 @Entity
 @Table(name = "NEM_TD_ALT_CHANGE_UK_COLUMN")
-public class NemTdAltChangeUniqueKeyColumn extends JpaEntity implements Serializable {
-
-	private static final long serialVersionUID = 1L;
-
-	@EmbeddedId
-	public NemTdAltChangeTableConstraintsColumnPk pk;
-
-	public static NemTdAltChangeUniqueKeyColumn toEntity(NemTdAltChangeTableConstraintsPk parent, String columnId) {
-		return new NemTdAltChangeUniqueKeyColumn(
-				new NemTdAltChangeTableConstraintsColumnPk(
-					parent.alterationId,
-					parent.seqNo,
-					parent.suffix,
-					columnId
-				)
-			);
+public class NemTdAltChangeUniqueKeyColumn extends ChangeTableConstraintsColumn implements Serializable {
+	
+	public NemTdAltChangeUniqueKeyColumn(ChangeTableConstraintsColumnPk pk, int columnOrder) {
+		super(pk, columnOrder);
 	}
 
-	@Override
-	protected Object getKey() {
-		return pk;
+	public static List<String> getSortedColumnIds(QueryProxy queryProxy, ChangeTableConstraintsPk pk) {
+		
+		return ChangeTableConstraintsColumn.getSortedColumnIds(
+				queryProxy,
+				NemTdAltChangeUniqueKeyColumn.class,
+				pk);
 	}
 }

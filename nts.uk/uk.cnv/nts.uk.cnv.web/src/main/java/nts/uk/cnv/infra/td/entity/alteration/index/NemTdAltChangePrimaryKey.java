@@ -27,7 +27,7 @@ public class NemTdAltChangePrimaryKey extends NemTdAltContentBase implements Ser
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	public NemTdAltChangeTableConstraintsPk pk;
+	public ChangeTableConstraintsPk pk;
 
 	@Column(name = "IS_CLUSTERED")
 	public boolean clustered;
@@ -38,29 +38,17 @@ public class NemTdAltChangePrimaryKey extends NemTdAltContentBase implements Ser
 	}
 
 	public static List<JpaEntity> toEntity(NemTdAltContentPk contentPk, AlterationContent ac) {
-		List<JpaEntity> result = new ArrayList<>();
+		
 		val domain = (ChangePK) ac;
-		
-		val parent = new NemTdAltChangePrimaryKey(
-				NemTdAltChangeTableConstraintsPk.asPK(contentPk),
-				domain.isClustred());
-		result.add(parent);
-		
-		for (int i = 0; i < domain.getColumnIds().size(); i++) {
-			
-			String columnId = domain.getColumnIds().get(i);
-			int columnOrder = i + 1;
-			
-			val column = new NemTdAltChangePrimaryKeyColumn(
-					NemTdAltChangeTableConstraintsColumnPk.create(parent, columnId),
-					columnOrder);
-			
-			result.add(column);
-		}
+		val parentPk = ChangeTableConstraintsPk.asPK(contentPk);
+
+		List<JpaEntity> result = new ArrayList<>();
+		result.add(new NemTdAltChangePrimaryKey(parentPk, domain.isClustred()));
+		result.addAll(NemTdAltChangePrimaryKeyColumn.toEntities(parentPk, domain.getColumnIds()));
 		
 		return result;
 	}
-
+	
 	public AlterationContent toDomain(List<String> columnIds) {
 		return new ChangePK(columnIds, this.clustered);
 	}

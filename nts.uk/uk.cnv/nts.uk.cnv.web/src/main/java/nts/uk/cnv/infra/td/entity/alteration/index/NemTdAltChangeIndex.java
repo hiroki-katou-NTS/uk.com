@@ -3,7 +3,6 @@ package nts.uk.cnv.infra.td.entity.alteration.index;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -28,7 +27,7 @@ public class NemTdAltChangeIndex extends NemTdAltContentBase implements Serializ
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	public NemTdAltChangeTableConstraintsPk pk;
+	public ChangeTableConstraintsPk pk;
 
 	@Column(name = "IS_CLUSTERED")
 	public boolean clustered;
@@ -43,26 +42,14 @@ public class NemTdAltChangeIndex extends NemTdAltContentBase implements Serializ
 	}
 
 	public static List<JpaEntity> toEntity(NemTdAltContentPk contentPk, AlterationContent ac) {
-		List<JpaEntity> result = new ArrayList<>();
+		
 		val domain = (ChangeIndex) ac;
-		val parent = new NemTdAltChangeIndex(
-				NemTdAltChangeTableConstraintsPk.asIndex(contentPk, domain.getSuffix()),
-				domain.isClustred(),
-				domain.isDeleted()
-			);
-		result.add(parent);
-		result.addAll(
-				domain.getColumnIds().stream()
-					.map(colId -> new NemTdAltChangeIndexColumn(
-							new NemTdAltChangeTableConstraintsColumnPk(
-								parent.pk.alterationId,
-								parent.pk.seqNo,
-								parent.pk.suffix,
-								colId
-							)
-						))
-					.collect(Collectors.toList())
-			);
+		val parentPk = ChangeTableConstraintsPk.asIndex(contentPk, domain.getSuffix());
+
+		List<JpaEntity> result = new ArrayList<>();
+		result.add(new NemTdAltChangeIndex(parentPk, domain.isClustred(), domain.isDeleted()));
+		result.addAll(NemTdAltChangePrimaryKeyColumn.toEntities(parentPk, domain.getColumnIds()));
+		
 		return result;
 	}
 

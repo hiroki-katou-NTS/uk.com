@@ -1,11 +1,8 @@
 package nts.uk.cnv.infra.td.repository.alteration;
 
-import static java.util.stream.Collectors.*;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -188,7 +185,7 @@ public class JpaAlterationRepository extends JpaRepository implements Alteration
 					.setParameter("alterationId", alterationIds)
 					.getList()
 					.forEach(e -> {
-						val indexColumnIds = getIndexColumnsPK(e.pk.alterationId, e.pk.seqNo);
+						val indexColumnIds = NemTdAltChangePrimaryKeyColumn.getSortedColumnIds(queryProxy(), e.pk);
 						result.get(e.pk.alterationId).add(e.toDomain(indexColumnIds));
 					});
 				break;
@@ -198,7 +195,7 @@ public class JpaAlterationRepository extends JpaRepository implements Alteration
 					.setParameter("alterationId", alterationIds)
 					.getList()
 					.forEach(e -> {
-						val indexColumnIds = getIndexColumnsUK(e.pk.alterationId, e.pk.seqNo, e.pk.suffix);
+						val indexColumnIds = NemTdAltChangeUniqueKeyColumn.getSortedColumnIds(queryProxy(), e.pk);
 						result.get(e.pk.alterationId).add(e.toDomain(indexColumnIds));
 					});
 				break;
@@ -208,7 +205,7 @@ public class JpaAlterationRepository extends JpaRepository implements Alteration
 					.setParameter("alterationId", alterationIds)
 					.getList()
 					.forEach(e -> {
-						val indexColumnIds = getIndexColumnsIndex(e.pk.alterationId, e.pk.seqNo, e.pk.suffix);
+						val indexColumnIds = NemTdAltChangeIndexColumn.getSortedColumnIds(queryProxy(), e.pk);
 						result.get(e.pk.alterationId).add(e.toDomain(indexColumnIds));
 					});
 				break;
@@ -236,51 +233,6 @@ public class JpaAlterationRepository extends JpaRepository implements Alteration
 		}
 
 		return result;
-	}
-
-	private List<String> getIndexColumnsPK(String alterationId, int seqNo) {
-		 String sql = ""
-					+ " SELECT col"
-					+ " FROM NemTdAltChangePrimaryKeyColumn col"
-					+ " WHERE col.pk.alterationId = :alterationId"
-					+ "   AND col.pk.seqNo = :seqNo"
-					+ "   AND col.pk.suffix = :suffix";
-		 return this.queryProxy().query(sql, NemTdAltChangePrimaryKeyColumn.class)
-					.setParameter("alterationId", alterationId)
-					.setParameter("seqNo", seqNo)
-					.setParameter("suffix", "PK")
-					.getList().stream()
-					.sorted(Comparator.comparing(e -> e.columnOrder))
-					.map(e -> e.pk.columnId)
-					.collect(toList());
-	}
-
-	private List<String> getIndexColumnsUK(String alterationId, int seqNo, String suffix) {
-		 String sql = ""
-					+ " SELECT col"
-					+ " FROM NemTdAltChangeUniqueKeyColumn col"
-					+ " WHERE col.pk.alterationId = :alterationId"
-					+ "   AND col.pk.seqNo = :seqNo"
-					+ "   AND col.pk.suffix = :suffix";
-		 return	 this.queryProxy().query(sql, NemTdAltChangeUniqueKeyColumn.class)
-					.setParameter("alterationId", alterationId)
-					.setParameter("seqNo", seqNo)
-					.setParameter("suffix", suffix)
-					.getList(entity -> entity.pk.columnId);
-	}
-
-	private List<String> getIndexColumnsIndex(String alterationId, int seqNo, String suffix) {
-		 String sql = ""
-					+ " SELECT col"
-					+ " FROM NemTdAltChangeIndexColumn col"
-					+ " WHERE col.pk.alterationId = :alterationId"
-					+ "   AND col.pk.seqNo = :seqNo"
-					+ "   AND col.pk.suffix = :suffix";
-		 return	 this.queryProxy().query(sql, NemTdAltChangeIndexColumn.class)
-					.setParameter("alterationId", alterationId)
-					.setParameter("seqNo", seqNo)
-					.setParameter("suffix", suffix)
-					.getList(entity -> entity.pk.columnId);
 	}
 
 	private Map<String, List<NemTdAltAddTableColumn>> getAddTableColumns(List<String> alterationIds) {

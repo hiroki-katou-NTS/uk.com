@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Embeddable
 @NoArgsConstructor
 @AllArgsConstructor
-public class NemTdAltChangeTableConstraintsColumnPk   implements Serializable {
+public class ChangeTableConstraintsColumnPk implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Column(name = "ALTERATION_ID")
@@ -26,11 +26,11 @@ public class NemTdAltChangeTableConstraintsColumnPk   implements Serializable {
 	@Column(name = "COLUMN_ID")
 	public String columnId;
 
-	public static NemTdAltChangeTableConstraintsColumnPk create(NemTdAltChangePrimaryKey parent, String columnId) {
-		return new NemTdAltChangeTableConstraintsColumnPk(
-				parent.pk.alterationId,
-				parent.pk.seqNo,
-				parent.pk.suffix,
+	public static ChangeTableConstraintsColumnPk create(ChangeTableConstraintsPk parent, String columnId) {
+		return new ChangeTableConstraintsColumnPk(
+				parent.alterationId,
+				parent.seqNo,
+				parent.suffix,
 				columnId);
 	}
 }
