@@ -1,4 +1,4 @@
-package nts.uk.cnv.infra.td.entity.alteration.index;
+package nts.uk.cnv.infra.td.entity.alteration.constraints.index;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -17,6 +17,8 @@ import nts.uk.cnv.dom.td.alteration.content.AlterationContent;
 import nts.uk.cnv.dom.td.alteration.content.constraint.ChangeIndex;
 import nts.uk.cnv.infra.td.entity.alteration.NemTdAltContentBase;
 import nts.uk.cnv.infra.td.entity.alteration.NemTdAltContentPk;
+import nts.uk.cnv.infra.td.entity.alteration.constraints.ChangeTableConstraintsColumn;
+import nts.uk.cnv.infra.td.entity.alteration.constraints.ChangeTableConstraintsPk;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -48,7 +50,10 @@ public class NemTdAltChangeIndex extends NemTdAltContentBase implements Serializ
 
 		List<JpaEntity> result = new ArrayList<>();
 		result.add(new NemTdAltChangeIndex(parentPk, domain.isClustred(), domain.isDeleted()));
-		result.addAll(NemTdAltChangePrimaryKeyColumn.toEntities(parentPk, domain.getColumnIds()));
+		result.addAll(ChangeTableConstraintsColumn.toEntities(
+				parentPk,
+				domain.getColumnIds(),
+				NemTdAltChangeIndexColumn::new));
 		
 		return result;
 	}

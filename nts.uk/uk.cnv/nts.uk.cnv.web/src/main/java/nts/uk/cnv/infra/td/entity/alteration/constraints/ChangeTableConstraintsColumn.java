@@ -1,10 +1,12 @@
-package nts.uk.cnv.infra.td.entity.alteration.index;
+package nts.uk.cnv.infra.td.entity.alteration.constraints;
 
 import static java.util.stream.Collectors.*;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.function.BiFunction;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -14,6 +16,7 @@ import javax.persistence.MappedSuperclass;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import lombok.val;
 import nts.arc.layer.infra.data.entity.JpaEntity;
 import nts.arc.layer.infra.data.query.QueryProxy;
 
@@ -35,7 +38,30 @@ public abstract class ChangeTableConstraintsColumn extends JpaEntity implements 
 		return pk;
 	}
 	
-	static <E extends ChangeTableConstraintsColumn> List<String> getSortedColumnIds(
+	public static <E extends ChangeTableConstraintsColumn> List<E> toEntities(
+			ChangeTableConstraintsPk parentPk,
+			List<String> sortedColumnIds,
+			BiFunction<ChangeTableConstraintsColumnPk, Integer, E> constructor) {
+		
+
+		List<E> entities = new ArrayList<>();
+		
+		for (int i = 0; i < sortedColumnIds.size(); i++) {
+			
+			String columnId = sortedColumnIds.get(i);
+			int columnOrder = i + 1;
+			
+			val column = constructor.apply(
+					ChangeTableConstraintsColumnPk.create(parentPk, columnId),
+					columnOrder);
+			
+			entities.add(column);
+		}
+		
+		return entities;
+	}
+	
+	public static <E extends ChangeTableConstraintsColumn> List<String> getSortedColumnIds(
 			QueryProxy queryProxy,
 			Class<E> entityClass,
 			ChangeTableConstraintsPk pk) {

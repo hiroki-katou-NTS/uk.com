@@ -1,15 +1,16 @@
-package nts.uk.cnv.infra.td.entity.alteration.index;
+package nts.uk.cnv.infra.td.entity.alteration.constraints.primary;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
-import lombok.val;
 import nts.arc.layer.infra.data.query.QueryProxy;
+import nts.uk.cnv.infra.td.entity.alteration.constraints.ChangeTableConstraintsColumn;
+import nts.uk.cnv.infra.td.entity.alteration.constraints.ChangeTableConstraintsColumnPk;
+import nts.uk.cnv.infra.td.entity.alteration.constraints.ChangeTableConstraintsPk;
 
 @SuppressWarnings("serial")
 @NoArgsConstructor
@@ -19,27 +20,6 @@ public class NemTdAltChangePrimaryKeyColumn extends ChangeTableConstraintsColumn
 	
 	public NemTdAltChangePrimaryKeyColumn(ChangeTableConstraintsColumnPk pk, int columnOrder) {
 		super(pk, columnOrder);
-	}
-
-	public static List<NemTdAltChangePrimaryKeyColumn> toEntities(
-			ChangeTableConstraintsPk parentPk,
-			List<String> sortedColumnIds) {
-		
-		List<NemTdAltChangePrimaryKeyColumn> entities = new ArrayList<>();
-		
-		for (int i = 0; i < sortedColumnIds.size(); i++) {
-			
-			String columnId = sortedColumnIds.get(i);
-			int columnOrder = i + 1;
-			
-			val column = new NemTdAltChangePrimaryKeyColumn(
-					ChangeTableConstraintsColumnPk.create(parentPk, columnId),
-					columnOrder);
-			
-			entities.add(column);
-		}
-		
-		return entities;
 	}
 
 	public static List<String> getSortedColumnIds(QueryProxy queryProxy, ChangeTableConstraintsPk pk) {

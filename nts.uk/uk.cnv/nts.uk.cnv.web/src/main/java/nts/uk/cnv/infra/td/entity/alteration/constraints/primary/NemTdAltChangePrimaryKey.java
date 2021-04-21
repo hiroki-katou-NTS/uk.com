@@ -1,4 +1,4 @@
-package nts.uk.cnv.infra.td.entity.alteration.index;
+package nts.uk.cnv.infra.td.entity.alteration.constraints.primary;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -14,15 +14,17 @@ import lombok.NoArgsConstructor;
 import lombok.val;
 import nts.arc.layer.infra.data.entity.JpaEntity;
 import nts.uk.cnv.dom.td.alteration.content.AlterationContent;
-import nts.uk.cnv.dom.td.alteration.content.constraint.ChangeUnique;
+import nts.uk.cnv.dom.td.alteration.content.constraint.ChangePK;
 import nts.uk.cnv.infra.td.entity.alteration.NemTdAltContentBase;
 import nts.uk.cnv.infra.td.entity.alteration.NemTdAltContentPk;
+import nts.uk.cnv.infra.td.entity.alteration.constraints.ChangeTableConstraintsColumn;
+import nts.uk.cnv.infra.td.entity.alteration.constraints.ChangeTableConstraintsPk;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "NEM_TD_ALT_CHANGE_UK")
-public class NemTdAltChangeUniqueKey extends NemTdAltContentBase implements Serializable {
+@Table(name = "NEM_TD_ALT_CHANGE_PK")
+public class NemTdAltChangePrimaryKey extends NemTdAltContentBase implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -32,10 +34,6 @@ public class NemTdAltChangeUniqueKey extends NemTdAltContentBase implements Seri
 	@Column(name = "IS_CLUSTERED")
 	public boolean clustered;
 
-	@Column(name = "IS_DELETED")
-	public boolean deleted;
-
-
 	@Override
 	protected Object getKey() {
 		return pk;
@@ -43,19 +41,21 @@ public class NemTdAltChangeUniqueKey extends NemTdAltContentBase implements Seri
 
 	public static List<JpaEntity> toEntity(NemTdAltContentPk contentPk, AlterationContent ac) {
 		
-		val domain = (ChangeUnique) ac;
-		val parentPk = ChangeTableConstraintsPk.asUK(contentPk, domain.getSuffix());
+		val domain = (ChangePK) ac;
+		val parentPk = ChangeTableConstraintsPk.asPK(contentPk);
 
 		List<JpaEntity> result = new ArrayList<>();
-		result.add(new NemTdAltChangeUniqueKey(parentPk, domain.isClustred(), domain.isDeleted()));
-		result.addAll(NemTdAltChangePrimaryKeyColumn.toEntities(parentPk, domain.getColumnIds()));
+		result.add(new NemTdAltChangePrimaryKey(parentPk, domain.isClustred()));
+		result.addAll(ChangeTableConstraintsColumn.toEntities(
+				parentPk,
+				domain.getColumnIds(),
+				NemTdAltChangePrimaryKeyColumn::new));
 		
 		return result;
-		
 	}
-
-	public AlterationContent toDomain(List<String> indexColumnIds) {
-		return new ChangeUnique(this.pk.suffix, indexColumnIds, this.clustered, this.deleted);
+	
+	public AlterationContent toDomain(List<String> columnIds) {
+		return new ChangePK(columnIds, this.clustered);
 	}
 
 }
