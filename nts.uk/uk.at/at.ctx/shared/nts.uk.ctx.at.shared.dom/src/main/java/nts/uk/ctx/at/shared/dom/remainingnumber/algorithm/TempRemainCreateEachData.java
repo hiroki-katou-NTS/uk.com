@@ -336,7 +336,8 @@ public class TempRemainCreateEachData {
 		// 暫定年休管理データを作成する
 
 		occUseDetails.get().getVacationUsageTimeDetails().stream()
-				.filter(x -> x.getHolidayType().equals(HolidayType.ANNUAL)).findFirst().ifPresent(usageTimeDetail -> {
+				.filter(x -> x.getHolidayType().equals(HolidayType.ANNUAL) && x.getTimes() > 0).findFirst().
+				ifPresent(usageTimeDetail -> {
 					TempAnnualLeaveMngs annualMng = createInterimAnnualHolidayFromDigestVacation(inforData,
 							workTypeClass, usageTimeDetail);
 					mngData.getRecAbsData().add(annualMng);
@@ -344,7 +345,7 @@ public class TempRemainCreateEachData {
 
 		// 暫定代休管理データ作成する
 		occUseDetails.get().getVacationUsageTimeDetails().stream()
-				.filter(x -> x.getHolidayType().equals(HolidayType.SUBSTITUTE)).findFirst()
+				.filter(x -> x.getHolidayType().equals(HolidayType.SUBSTITUTE) && x.getTimes() > 0).findFirst()
 				.ifPresent(usageTimeDetail -> {
 					InterimDayOffMng dayOffMng = createInterimDayOffFromDigestVacation(inforData, workTypeClass,
 							usageTimeDetail);
@@ -353,7 +354,7 @@ public class TempRemainCreateEachData {
 
 		// 暫定60H超休管理データを作成する
 		occUseDetails.get().getVacationUsageTimeDetails().stream()
-				.filter(x -> x.getHolidayType().equals(HolidayType.SIXTYHOUR)).findFirst()
+				.filter(x -> x.getHolidayType().equals(HolidayType.SIXTYHOUR) && x.getTimes() > 0).findFirst()
 				.ifPresent(usageTimeDetail -> {
 					if (usageTimeDetail.getTimes() > 0) {
 						TmpHolidayOver60hMng holidayOver60hMng = createInterimHolidayOver60hMngFromDigestVacation(
