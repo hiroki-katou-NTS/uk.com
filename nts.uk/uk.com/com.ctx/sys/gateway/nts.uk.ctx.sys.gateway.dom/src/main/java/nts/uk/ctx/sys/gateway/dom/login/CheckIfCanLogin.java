@@ -11,34 +11,49 @@ import nts.uk.ctx.sys.shared.dom.company.CompanyInforImport;
 public class CheckIfCanLogin {
 
 	public static void check(Require require, IdentifiedEmployeeInfo identified) {
-
-		String companyId = identified.getCompanyId();
 		
-		// 会社の廃止
-		val company = require.getCompanyInforImport(companyId);
+		// 会社が廃止されていないかチェックする
+		checkAboloshCompany(require, identified);
+		
+		// システムが利用できるかチェックする
+		checkAbailableSystem(require, identified);
+		
+		// ログインできる社員かチェックする
+		CheckEmployeeAvailability.check(require, identified);
+	}
+	
+	/**
+	 * 会社が廃止されていないかチェックする
+	 * @param require
+	 * @param identified
+	 */
+	private static void checkAboloshCompany(Require require, IdentifiedEmployeeInfo identified) {
+		val company = require.getCompanyInforImport(identified.getCompanyId());
+		
 		if (company.isAbolished()) {
 			throw new BusinessException("Msg_281");
 		}
+	}
+	
+	/**
+	 * システムが利用できるかチェックする
+	 * @param require
+	 * @param identified
+	 */
+	private static void checkAbailableSystem(Require require, IdentifiedEmployeeInfo identified) {
+		val status = CheckSystemAvailability.isAvailable(require, 
+				identified.getTenantCode(), 
+				identified.getCompanyId(), 
+				identified.getUserId());
 		
-		String tenantCode = identified.getTenantCode();
-		String userId = identified.getUserId();
-		
-		// システムが利用できるかチェックする
-		val status = CheckSystemAvailability.isAvailable(require, tenantCode, companyId, userId);
 		if (!status.isAvailable()) {
 			throw new BusinessException("Msg_285");
 		}
-		
-		// 社員がログインできるかチェックする
-		CheckEmployeeAvailability.check(require, identified);
-
 	}
 	
 	public static interface Require extends
 			CheckSystemAvailability.Require,
 			CheckEmployeeAvailability.Require{
-		
 		CompanyInforImport getCompanyInforImport(String companyId);
-		
 	}
 }

@@ -12,7 +12,7 @@ import nts.uk.ctx.sys.shared.dom.employee.syjobtitle.SyaJobHistImport;
 import nts.uk.ctx.sys.shared.dom.employee.syworkplace.SyaWkpHistImport;
 
 /**
- * 社員がログインできるかチェックする
+ * ログインできる社員かチェックする
  */
 public class CheckEmployeeAvailability {
 
@@ -31,6 +31,7 @@ public class CheckEmployeeAvailability {
 		val affJob = require.getJobtitleHist(identified.getEmployeeId(), GeneralDate.today());
 		// 職場所属履歴
 		val affWkp = require.getWorkplaceHist(identified.getEmployeeId(), GeneralDate.today());
+		
 		if(!affEmp.isPresent() || !affJob.isPresent() || !affWkp.isPresent()) {
 			throw new BusinessException("Msg_1420");
 		}
@@ -46,6 +47,5 @@ public class CheckEmployeeAvailability {
 		Optional<SyaEmpHistImport> getEmploymentHist(String employeeId, GeneralDate date);
 		Optional<SyaJobHistImport> getJobtitleHist(String employeeId, GeneralDate date);
 		Optional<SyaWkpHistImport> getWorkplaceHist(String employeeId, GeneralDate date);
-		
 	}
 }

@@ -14,7 +14,7 @@ public class LoginClientTest {
 	}
 	
 	@Test
-	public void test() {
+	public void stringCut() {
 		val longUserAgent 	= "12345678901234567890"
 							+ "12345678901234567890"
 							+ "12345678901234567890"

@@ -33,7 +33,7 @@ public class CheckUserAvailabilityTest {
 	}
 
 	@Test
-	public void available_Test() {
+	public void available() {
 		new Expectations() {{
 			identifiedEmployeeInfo.getUser();
 			result = user;
@@ -47,7 +47,7 @@ public class CheckUserAvailabilityTest {
 	}
 
 	@Test
-	public void systemStop_Test() {
+	public void systemStop() {
 		new Expectations() {{
 			identifiedEmployeeInfo.getUser();
 			result = user;
