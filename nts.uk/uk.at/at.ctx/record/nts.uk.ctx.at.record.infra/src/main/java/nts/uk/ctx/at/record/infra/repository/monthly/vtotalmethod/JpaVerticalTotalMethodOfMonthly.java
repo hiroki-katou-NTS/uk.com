@@ -89,6 +89,8 @@ public class JpaVerticalTotalMethodOfMonthly extends JpaRepository implements Ve
 		entity.weekPremiumCalcWithPrevMonthLastWeek = setting.isCalcWithPreviousMonthLastWeek();
 		entity.methodEnterInMonthDeforLabor = setting.getDefoAggregateMethod().getPremiumTimeCalcMethod().value;
 		entity.methodEnterInMonthFlex = setting.getFlexAggregateMethod().isDivisionOnEntryRetire();
+		entity.compensatoryPenaltyMonthly = setting.getFlexAggregateMethod().getCompensatoryTimeSet().isCompensatoryPenalty();
+		entity.compensatoryUsageTimeDeductMethod = setting.getFlexAggregateMethod().getCompensatoryTimeSet().getTimeCompensatoryDeductMethod().value;
 		return entity;
 	}
 

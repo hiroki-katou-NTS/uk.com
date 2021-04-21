@@ -96,10 +96,10 @@ public class TotalWorkingTimeByPeriod implements Cloneable {
 	/**
 	 * 集計処理
 	 * @param datePeriod 期間
+	 * @param workingSystem 労働制
 	 * @param attendanceTimeOfDailyMap 日別実績の勤怠時間リスト
 	 * @param workInfoOfDailyMap 日別実績の勤務情報リスト
 	 * @param snapshots 日別実績のスナップショット
-	 * @param companySets 月別集計で必要な会社別設定
 	 */
 	public void aggregate(RequireM1 require,
 			DatePeriod datePeriod, WorkingSystem workingSystem,

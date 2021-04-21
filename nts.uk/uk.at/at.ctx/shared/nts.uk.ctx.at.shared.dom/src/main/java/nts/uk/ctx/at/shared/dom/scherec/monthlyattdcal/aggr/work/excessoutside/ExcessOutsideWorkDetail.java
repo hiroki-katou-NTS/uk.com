@@ -145,6 +145,8 @@ public class ExcessOutsideWorkDetail {
 	 * 丸め時間を割り当てる
 	 * @param monthlyDetail 月次明細
 	 * @param datePeriod 期間
+	 * @param roundingSet 月別実績の丸め設定
+	 * @param workingSystem 労働制
 	 */
 	public void assignRoundTime(MonthlyDetail monthlyDetail, DatePeriod datePeriod,
 			RoundingSetOfMonthly roundingSet, WorkingSystem workingSystem){
