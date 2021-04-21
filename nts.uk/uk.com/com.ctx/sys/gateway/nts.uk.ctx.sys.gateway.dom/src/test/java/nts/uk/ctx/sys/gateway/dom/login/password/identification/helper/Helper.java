@@ -17,10 +17,10 @@ import nts.uk.ctx.sys.shared.dom.user.password.PassStatus;
 public class Helper {
 	public static EmployeeDataMngInfoImport dummyImported = 
 			new EmployeeDataMngInfoImport(
-					"", 
-					"", 
-					"", 
-					"", 
+					DUMMY.COMPANY_ID, 
+					DUMMY.PERSON_ID, 
+					DUMMY.EMPLOYEE_ID, 
+					DUMMY.EMPLOYEE_CD, 
 					SDelAtr.NOTDELETED, 
 					GeneralDateTime.now(), 
 					"", 
@@ -76,5 +76,12 @@ public class Helper {
 						BASE.getPassStatus());
 			}
 		}
+	}
+	public static class DUMMY{
+		public static String COMPANY_ID = "companyId"; 
+		public static String USER_ID = "userId"; 
+		public static String PERSON_ID = "personId";
+		public static String EMPLOYEE_ID = "employeeId";
+		public static String EMPLOYEE_CD = "employeeCode";
 	}
 }

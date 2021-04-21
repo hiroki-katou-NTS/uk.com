@@ -9,9 +9,10 @@ import org.junit.Test;
 import lombok.val;
 import mockit.Expectations;
 import mockit.Injectable;
+import mockit.Verifications;
+import nts.arc.testing.assertion.NtsAssert;
+import nts.uk.ctx.sys.gateway.dom.login.password.identification.EmployeeIdentify.IdentificationResult;
 import nts.uk.ctx.sys.gateway.dom.login.password.identification.helper.Helper;
-import nts.uk.ctx.sys.shared.dom.employee.EmployeeDataMngInfoImport;
-import nts.uk.ctx.sys.shared.dom.user.User;
 
 public class EmployeeIdentifyTest {
 
@@ -20,35 +21,29 @@ public class EmployeeIdentifyTest {
 	
 	@Test  
 	public void success() {
-		String employeeID = "EMPEMPID";
-		Optional<EmployeeDataMngInfoImport> res =Optional.of(Helper.setEmployeeID(employeeID));
-		String userID = "USEUSERID"; 
-		val dummyUser = new Helper.DummyUser.Builder().userID(userID).addDay(1).build();
-		Optional<User> user = Optional.of(dummyUser);
+		int expireDaysAfter = 3;
+		val dummyUser = new Helper.DummyUser.Builder().addDay(expireDaysAfter).build();
+		
 		new Expectations() {{
-			require.getEmployeeDataMngInfoImportByEmployeeCode("", "");
-			result = res;
+			require.getEmployeeDataMngInfoImportByEmployeeCode(Helper.DUMMY.COMPANY_ID,Helper.DUMMY.EMPLOYEE_CD);
+			result = Optional.of(Helper.dummyImported);
 			
-			require.getUserByPersonId("");
-			result = user;
+			require.getUserByPersonId(Helper.DUMMY.PERSON_ID);
+			result = Optional.of(dummyUser);
 		}};
 		
-		val re = EmployeeIdentify.identifyByEmployeeCode(require, "", "");
-		
-		assertThat(re.isSuccess()).isTrue();
-		assertThat(re.getEmployeeInfo().get().getEmployee().getEmployeeId()).isEqualTo(employeeID);
-		assertThat(re.getEmployeeInfo().get().getUser().getUserID()).isEqualTo(userID);
-		assertThat(re.getFailureLog()).isEqualTo(Optional.empty());
+		val result = EmployeeIdentify.identifyByEmployeeCode(require, Helper.DUMMY.COMPANY_ID, Helper.DUMMY.EMPLOYEE_CD);
+		assertThat(result.isSuccess()).isTrue();
 	}
 	
 	@Test
 	public void unableToIdentifyEmployeeByCode() {
 		new Expectations() {{
-			require.getEmployeeDataMngInfoImportByEmployeeCode("", "");
+			require.getEmployeeDataMngInfoImportByEmployeeCode(Helper.DUMMY.COMPANY_ID, Helper.DUMMY.EMPLOYEE_CD);
 			result = Optional.empty();
 		}};
 		
-		val result = EmployeeIdentify.identifyByEmployeeCode(require, "", "");
+		val result = EmployeeIdentify.identifyByEmployeeCode(require, Helper.DUMMY.COMPANY_ID, Helper.DUMMY.EMPLOYEE_CD);
 		
 		assertThat(result.isFailed()).isTrue();
 		assertThat(result.getEmployeeInfo()).isEqualTo(Optional.empty());
@@ -56,16 +51,15 @@ public class EmployeeIdentifyTest {
 
 	@Test
 	public void unableToIdentifyUserByUserId() {
-		Optional<EmployeeDataMngInfoImport> dummyImport =Optional.of( Helper.dummyImported);
 		new Expectations() {{
-			require.getEmployeeDataMngInfoImportByEmployeeCode("", "");
-			result = dummyImport;
+			require.getEmployeeDataMngInfoImportByEmployeeCode(Helper.DUMMY.COMPANY_ID, Helper.DUMMY.EMPLOYEE_CD);
+			result = Optional.of(Helper.dummyImported);
 			
-			require.getUserByPersonId("");
+			require.getUserByPersonId(Helper.DUMMY.PERSON_ID);
 			result = Optional.empty();
 		}};
 		
-		val result = EmployeeIdentify.identifyByEmployeeCode(require, "", "");
+		val result = EmployeeIdentify.identifyByEmployeeCode(require, Helper.DUMMY.COMPANY_ID, Helper.DUMMY.EMPLOYEE_CD);
 		
 		assertThat(result.isFailed()).isTrue();
 		assertThat(result.getEmployeeInfo()).isEqualTo(Optional.empty());
@@ -73,19 +67,38 @@ public class EmployeeIdentifyTest {
 	
 	@Test
 	public void expiredUser() {
-		Optional<EmployeeDataMngInfoImport> res =Optional.of(Helper.dummyImported);
-		Optional<User> user = Optional.of(new Helper.DummyUser.Builder().build());
+		int expireDaysBefore = -3;
+		val dummyUser = new Helper.DummyUser.Builder().addDay(expireDaysBefore).build();
+		
 		new Expectations() {{
-			require.getEmployeeDataMngInfoImportByEmployeeCode("", "");
-			result = res;
+			require.getEmployeeDataMngInfoImportByEmployeeCode(Helper.DUMMY.COMPANY_ID, Helper.DUMMY.EMPLOYEE_CD);
+			result = Optional.of(Helper.dummyImported);
 			
-			require.getUserByPersonId("");
-			result = user;
+			require.getUserByPersonId(Helper.DUMMY.PERSON_ID);
+			result = Optional.of(dummyUser);
 		}};
 		
-		val result = EmployeeIdentify.identifyByEmployeeCode(require, "", "");
-		
+		val result = EmployeeIdentify.identifyByEmployeeCode(require, Helper.DUMMY.COMPANY_ID, Helper.DUMMY.EMPLOYEE_CD);
 		assertThat(result.isFailed()).isTrue();
-		assertThat(result.getEmployeeInfo()).isEqualTo(Optional.empty());
+	}
+	
+	@Test
+	public void callSaveFailureLog() {
+		val result =  (IdentificationResult)NtsAssert.Invoke.staticMethod(
+				EmployeeIdentify.class,
+				"identifyFailure",
+				require,
+				Helper.DUMMY.COMPANY_ID,
+				Helper.DUMMY.EMPLOYEE_ID
+				);
+		new Verifications() {{
+			require.addFailureLog((PasswordAuthIdentificateFailureLog)any);
+			times = 0;
+		}};
+		result.getFailureLog().get().run();
+		new Verifications() {{
+			require.addFailureLog((PasswordAuthIdentificateFailureLog)any);
+			times = 1;
+		}};
 	}
 }
