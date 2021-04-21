@@ -12,6 +12,7 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.FixedConditionData;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.FixedConditionWorkRecord;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.Identification;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -38,4 +39,6 @@ public class DataFixExtracCon {
 	private boolean personConfirm;
 	/**日の承認者確認を利用する	 */
 	private boolean approverConfirm;
+	/**労働条件項目	 */
+	List<WorkingConditionItem> lstWorkCondItem;
 }
