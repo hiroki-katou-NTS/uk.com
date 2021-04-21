@@ -8,7 +8,7 @@ import nts.uk.ctx.sys.shared.dom.user.password.PassStatus;
 
 public class PasswordPolicyTestHelper {
 	
-	public static PasswordPolicy dummyPolicy = new PasswordPolicy(
+	public static PasswordPolicy DUMMY_POLICY = new PasswordPolicy(
 			Dummy.CONTRACT_CD, 
 			Dummy.NOTICE_PASSWORD_CHANGE, 
 			Dummy.IS_LOGIN, 

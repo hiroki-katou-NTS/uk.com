@@ -27,13 +27,13 @@ public class FailedPasswordAuthenticateTest {
 			@Mock
 			public PasswordAuthenticateFailureLog failedNow(String userId, String password) {
 				return new PasswordAuthenticateFailureLog(
-						Helper.DUMMY.DATETIME, 
-						Helper.DUMMY.USER_ID, 
-						Helper.DUMMY.PASSWORD); 
+						FailedPasswordHelper.DUMMY.DATETIME, 
+						FailedPasswordHelper.DUMMY.USER_ID, 
+						FailedPasswordHelper.DUMMY.PASSWORD); 
 			}
 		};
 		
-		FailedAuthenticateTask result = FailedPasswordAuthenticate.failed(faildPassAuthRequire, Helper.DUMMY.EMP_INFO, Helper.DUMMY.PASSWORD);
+		FailedAuthenticateTask result = FailedPasswordAuthenticate.failed(faildPassAuthRequire, FailedPasswordHelper.DUMMY.EMP_INFO, FailedPasswordHelper.DUMMY.PASSWORD);
 		new Verifications() {{
 			faildPassAuthRequire.save((PasswordAuthenticateFailureLog) any);
 			times = 0;
@@ -53,25 +53,25 @@ public class FailedPasswordAuthenticateTest {
 			@Mock
 			public PasswordAuthenticateFailureLog failedNow(String userId, String password) {
 				return new PasswordAuthenticateFailureLog(
-						Helper.DUMMY.DATETIME, 
-						Helper.DUMMY.USER_ID, 
-						Helper.DUMMY.PASSWORD); 
+						FailedPasswordHelper.DUMMY.DATETIME, 
+						FailedPasswordHelper.DUMMY.USER_ID, 
+						FailedPasswordHelper.DUMMY.PASSWORD); 
 			}
 		};
 		
 		new MockUp<AccountLockPolicy>(){
 			@Mock
 			public Optional<LockoutData> validateAuthenticate(AccountLockPolicy.Require require, String userId) {
-				return Optional.of(Helper.DUMMY.LOCKOUT_DATA);
+				return Optional.of(FailedPasswordHelper.DUMMY.LOCKOUT_DATA);
 			}
 		};
 		
 		new Expectations() {{
-			faildPassAuthRequire.getAccountLockPolicy(Helper.DUMMY.EMP_INFO.getTenantCode());
-			result = Optional.of(Helper.DUMMY.ACCOUNT_LOCK_POLICY);
+			faildPassAuthRequire.getAccountLockPolicy(FailedPasswordHelper.DUMMY.EMP_INFO.getTenantCode());
+			result = Optional.of(FailedPasswordHelper.DUMMY.ACCOUNT_LOCK_POLICY);
 		}};
 		
-		FailedAuthenticateTask result = FailedPasswordAuthenticate.failed(faildPassAuthRequire, Helper.DUMMY.EMP_INFO, Helper.DUMMY.PASSWORD);
+		FailedAuthenticateTask result = FailedPasswordAuthenticate.failed(faildPassAuthRequire, FailedPasswordHelper.DUMMY.EMP_INFO, FailedPasswordHelper.DUMMY.PASSWORD);
 		new Verifications() {{
 			faildPassAuthRequire.save((LockoutData) any);
 			times = 0;

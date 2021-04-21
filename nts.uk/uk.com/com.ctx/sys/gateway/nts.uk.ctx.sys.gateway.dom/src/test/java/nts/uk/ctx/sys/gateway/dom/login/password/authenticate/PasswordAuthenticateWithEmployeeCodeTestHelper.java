@@ -7,8 +7,8 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.sys.gateway.dom.login.IdentifiedEmployeeInfo;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.AccountLockPolicy;
-import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.locked.LockoutData;
-import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.locked.LoginMethod;
+import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.PasswordPolicy;
+import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.PasswordPolicyTestHelper.Dummy;
 import nts.uk.ctx.sys.shared.dom.employee.EmployeeDataMngInfoImport;
 import nts.uk.ctx.sys.shared.dom.employee.SDelAtr;
 import nts.uk.ctx.sys.shared.dom.user.ContractCode;
@@ -18,12 +18,18 @@ import nts.uk.ctx.sys.shared.dom.user.User;
 import nts.uk.ctx.sys.shared.dom.user.password.HashPassword;
 import nts.uk.ctx.sys.shared.dom.user.password.PassStatus;
 
-public class Helper {
+public class PasswordAuthenticateWithEmployeeCodeTestHelper {
 	
-	static FailedAuthenticateTask anyTask = new FailedAuthenticateTask(
-			Optional.of(AtomTask.none()),
-			Optional.of(AtomTask.none()));
-	static FailedAuthenticateTask noTask = new FailedAuthenticateTask(Optional.empty(), Optional.empty());
+	static EmployeeDataMngInfoImport IMPORTED = 
+			new EmployeeDataMngInfoImport(
+					DUMMY.COMPANY_ID, 
+					DUMMY.PERSON_ID, 
+					DUMMY.EMPLOYEE_ID, 
+					DUMMY.EMPLOYEE_CODE, 
+					DUMMY.DELETE_STATUS, 
+					DUMMY.DATETIME, 
+					DUMMY.REMOVE_REASON, 
+					DUMMY.EXTERNAL_CODE);
 	
 	static User USER =
 			new User(
@@ -41,18 +47,7 @@ public class Helper {
 					PassStatus.InitPassword
 					);
 	
-	static EmployeeDataMngInfoImport IMPORTED = 
-			new EmployeeDataMngInfoImport(
-					DUMMY.COMPANY_ID, 
-					DUMMY.PERSON_ID, 
-					DUMMY.EMPLOYEE_ID, 
-					DUMMY.EMPLOYEE_CODE, 
-					DUMMY.DELETE_STATUS, 
-					DUMMY.DATETIME, 
-					DUMMY.REMOVE_REASON, 
-					DUMMY.EXTERNAL_CODE);
-	
-	static class DUMMY{
+	public static class DUMMY{
 		static String CONTRACT_CODE = "contractCode";
 		static String COMPANY_ID = "companyId";
 		static String USER_ID = "user";
@@ -67,11 +62,10 @@ public class Helper {
 		static GeneralDate DATE = GeneralDate.today();
 		static String REMOVE_REASON = "reason";
 		static String EXTERNAL_CODE = "externalCode";
-		static User USER = Helper.USER;
-		static EmployeeDataMngInfoImport IMPORTED = Helper.IMPORTED;
-		static IdentifiedEmployeeInfo EMP_INFO = new IdentifiedEmployeeInfo(Helper.DUMMY.IMPORTED, Helper.DUMMY.USER);
+		public static FailedAuthenticateTask FAILED_TASKS = new FailedAuthenticateTask(Optional.of(AtomTask.none()),Optional.of(AtomTask.none()));
+		static EmployeeDataMngInfoImport IMPORTED = FailedPasswordHelper.IMPORTED;
+		static IdentifiedEmployeeInfo EMP_INFO = new IdentifiedEmployeeInfo(PasswordAuthenticateWithEmployeeCodeTestHelper.IMPORTED, PasswordAuthenticateWithEmployeeCodeTestHelper.USER);
 		static AccountLockPolicy ACCOUNT_LOCK_POLICY = AccountLockPolicy.createFromJavaType("", 0, 0, "", true);
-		static LockoutData LOCKOUT_DATA = LockoutData.autoLock(new ContractCode(""),"",LoginMethod.NORMAL_LOGIN);
+		static PasswordPolicy PASSWORD_POLICY = 	new PasswordPolicy(Dummy.CONTRACT_CD,Dummy.NOTICE_PASSWORD_CHANGE,Dummy.IS_LOGIN,Dummy.INITIAL_PASSWORD_CHANGE,Dummy.IS_USE,Dummy.PASSWORD_HISTORY_COUNT,Dummy.PASSWORD_VALIDATE_PERIOD,Dummy.PASSWORD_COMPLEX);
 	}
-		
 }
