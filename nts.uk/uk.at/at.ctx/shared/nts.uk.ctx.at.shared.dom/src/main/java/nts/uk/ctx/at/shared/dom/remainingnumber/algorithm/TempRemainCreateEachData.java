@@ -781,7 +781,7 @@ public class TempRemainCreateEachData {
 							vac.getCreateData(),
 							ChildCareNurseUsedNumber.of(new DayNumberOfUse(0d),
 									Optional.ofNullable(new TimeOfUse(vac.getTotalTimes()))),
-							Optional.ofNullable(DigestionHourlyTimeType.of(true, Optional.ofNullable(vac.getTimeType()))))
+							Optional.ofNullable(DigestionHourlyTimeType.of(false, Optional.ofNullable(vac.getTimeType()))))
 					);
 		});
 
@@ -789,7 +789,8 @@ public class TempRemainCreateEachData {
 	}
 
 	/**
-	 *
+	 * 残数作成元情報から暫定介護管理データ（時間）を作成する
+	 * 
 	 * @param inforData
 	 * @return
 	 */
@@ -813,7 +814,7 @@ public class TempRemainCreateEachData {
 							vac.getCreateData(),
 							ChildCareNurseUsedNumber.of(new DayNumberOfUse(0d),
 									Optional.ofNullable(new TimeOfUse(vac.getTotalTimes()))),
-							Optional.ofNullable(DigestionHourlyTimeType.of(true, Optional.ofNullable(vac.getTimeType()))))
+							Optional.ofNullable(DigestionHourlyTimeType.of(false, Optional.ofNullable(vac.getTimeType()))))
 					);
 		});
 
