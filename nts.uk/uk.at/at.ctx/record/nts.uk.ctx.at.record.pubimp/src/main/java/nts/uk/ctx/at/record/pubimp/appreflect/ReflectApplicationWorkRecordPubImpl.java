@@ -409,8 +409,7 @@ public class ReflectApplicationWorkRecordPubImpl implements ReflectApplicationWo
 
 		@Override
 		public Optional<WorkType> findByPK(String companyId, String workTypeCd) {
-			// TODO Auto-generated method stub
-			return null;
+			return workTypeRepo.findByPK(companyId, workTypeCd);
 		}
 
 		@Override

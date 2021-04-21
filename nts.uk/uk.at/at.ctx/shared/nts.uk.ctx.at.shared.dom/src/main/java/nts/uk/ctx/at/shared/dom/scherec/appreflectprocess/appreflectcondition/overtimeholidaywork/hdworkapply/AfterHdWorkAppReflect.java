@@ -76,7 +76,8 @@ public class AfterHdWorkAppReflect extends DomainObject {
 		String workTypeApp = holidayApp.getWorkInformation().getWorkTypeCode().v();
 		String workTimeApp = workInfoDto.getWorkTimeCode().map(x -> x.v()).orElse(null);
 		String workTypeDomain = dailyApp.getWorkInformation().getRecordInfo().getWorkTypeCode().v();
-		String workTimeDomain = dailyApp.getWorkInformation().getRecordInfo().getWorkTimeCode().v();
+		String workTimeDomain = dailyApp.getWorkInformation().getRecordInfo().getWorkTimeCodeNotNull().map(x -> x.v())
+				.orElse(null);
 		if (!(workTypeApp.equals(workTypeDomain)
 				&& (workTimeApp == null ? workTimeDomain == null : workTimeApp.equals(workTimeDomain)))) {
 			// 勤務情報の反映
