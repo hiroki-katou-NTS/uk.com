@@ -27,7 +27,7 @@ public class CheckIfCanLoginTest {
 	}
 
 	@Test
-	public void abolish_Test() {
+	public void abolish() {
 		
 		new Expectations() {{
 			identifiedEmployeeInfo.getCompanyId();
@@ -46,7 +46,7 @@ public class CheckIfCanLoginTest {
 	}
 
 	@Test
-	public void notAvailable_Test() {
+	public void notAvailable() {
 		
 		new MockUp<CheckSystemAvailability>() {
 			@Mock

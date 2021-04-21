@@ -1,5 +1,7 @@
 package nts.uk.ctx.sys.gateway.dom.login;
 
+import static org.assertj.core.api.Assertions.*;
+
 import java.util.Optional;
 
 import org.junit.Test;
@@ -32,7 +34,7 @@ public class CheckEmployeeAvailabilityTest {
 	}
 
 	@Test
-	public void not_affCom_Test() {
+	public void not_affCom() {
 		
 		new Expectations() {{
 			employeeDataMngInfoImport.getEmployeeId();
@@ -48,7 +50,7 @@ public class CheckEmployeeAvailabilityTest {
 	}
 
 	@Test
-	public void not_affEmp_Test() {
+	public void not_affEmp() {
 		
 		new Expectations() {{
 			employeeDataMngInfoImport.getEmployeeId();
@@ -73,7 +75,7 @@ public class CheckEmployeeAvailabilityTest {
 	}
 
 	@Test
-	public void not_affJob_Test() {
+	public void not_affJob() {
 		
 		new Expectations() {{
 			employeeDataMngInfoImport.getEmployeeId();
@@ -98,7 +100,7 @@ public class CheckEmployeeAvailabilityTest {
 	}
 
 	@Test
-	public void not_affWkp_Test() {
+	public void not_affWkp() {
 		
 		new Expectations() {{
 			employeeDataMngInfoImport.getEmployeeId();
@@ -121,5 +123,34 @@ public class CheckEmployeeAvailabilityTest {
 			CheckEmployeeAvailability.check(require, identifiedEmployeeInfo);
 		});
 	}
-
+	
+	@Test
+	public void success() {
+		
+		new Expectations() {{
+			employeeDataMngInfoImport.getEmployeeId();
+			result = Dummy.employeeId;
+			
+			require.getCompanyHist(Dummy.employeeId, Dummy.today);
+			result = Optional.of(comHistImp);
+			
+			require.getEmploymentHist(Dummy.employeeId, Dummy.today);
+			result = Optional.of(empHistImp);
+			
+			require.getJobtitleHist(Dummy.employeeId, Dummy.today);
+			result = Optional.of(jobHistImp);
+			
+			require.getWorkplaceHist(Dummy.employeeId, Dummy.today);
+			result = Optional.of(wkpHistImp);
+		}};
+		
+		boolean errorFlag = false;
+		try {
+			CheckEmployeeAvailability.check(require, identifiedEmployeeInfo);
+		}
+		catch(Exception e) {
+			errorFlag = true;
+		}
+		assertThat(errorFlag).isFalse();
+	}
 }

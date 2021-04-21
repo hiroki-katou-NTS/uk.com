@@ -13,7 +13,7 @@ import nts.uk.ctx.sys.gateway.dom.login.LoginClient;
  *
  */
 public class AuthenticateOfTenant {
-	public static TenantAuthenticateResult authenticate(Require require, LoginClient loginClient, String tenantCode, String password) {
+	public static TenantAuthenticateResult authenticate(Require require, String tenantCode, String password, LoginClient loginClient) {
 		
 		// テナントロケータに接続できている以上取得できるはず
 		val tenant = require.getTenantAuthentication(tenantCode).get();
