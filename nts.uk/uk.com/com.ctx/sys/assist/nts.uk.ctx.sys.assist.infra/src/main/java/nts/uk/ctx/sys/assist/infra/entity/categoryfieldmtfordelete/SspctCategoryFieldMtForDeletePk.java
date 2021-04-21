@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @Embeddable
 @AllArgsConstructor
 @NoArgsConstructor
-public class SspmtCategoryFieldMtForDeletePk implements Serializable
+public class SspctCategoryFieldMtForDeletePk implements Serializable
 {
     private static final long serialVersionUID = 1L;
     

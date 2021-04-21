@@ -12,7 +12,7 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.sys.assist.dom.categoryfieldmt.CategoryFieldMt;
 import nts.uk.ctx.sys.assist.dom.categoryfieldmtfordelete.CategoryFieldMtForDelete;
-import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
  *  データ削除カテゴリ項目マスタ
@@ -20,15 +20,15 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "SSPMT_CTG_FIELD_MT_FORDEL")
-public class SspmtCategoryFieldMtForDelete extends ContractUkJpaEntity implements Serializable {
+@Table(name = "SSPCT_CTG_FIELD_MT_FORDEL")
+public class SspctCategoryFieldMtForDelete extends UkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/**
 	 * ID
 	 */
 	@EmbeddedId
-	public SspmtCategoryFieldMtForDeletePk categoryFieldMtPk;
+	public SspctCategoryFieldMtForDeletePk categoryFieldMtPk;
 
 	/**
 	 * テーブル日本語名
@@ -710,9 +710,9 @@ public class SspmtCategoryFieldMtForDelete extends ContractUkJpaEntity implement
 				this.fieldAcqEndDate, this.fieldAcqStartDate);
 	}
 
-	public static SspmtCategoryFieldMtForDelete toEntity(CategoryFieldMt domain) {
-		return new SspmtCategoryFieldMtForDelete(
-				new SspmtCategoryFieldMtForDeletePk(domain.getCategoryId(), domain.getTableNo(), domain.getSystemType().value),
+	public static SspctCategoryFieldMtForDelete toEntity(CategoryFieldMt domain) {
+		return new SspctCategoryFieldMtForDelete(
+				new SspctCategoryFieldMtForDeletePk(domain.getCategoryId(), domain.getTableNo(), domain.getSystemType().value),
 				domain.getTableJapanName(), domain.getTableEnglishName(),
 				domain.getTimeStopDelete(), domain.getClsKeyQuery1(), domain.getClsKeyQuery2(),
 				domain.getClsKeyQuery3(), domain.getClsKeyQuery4(), domain.getClsKeyQuery5(), domain.getClsKeyQuery6(),
