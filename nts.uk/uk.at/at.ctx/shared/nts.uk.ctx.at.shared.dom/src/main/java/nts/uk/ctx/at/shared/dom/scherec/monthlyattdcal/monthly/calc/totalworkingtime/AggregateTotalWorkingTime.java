@@ -270,10 +270,10 @@ public class AggregateTotalWorkingTime implements Cloneable, Serializable{
 			FlexTimeOfMonthly flexTime){
 		
 		// 残業合計時間を集計する
-		this.overTime.aggregateTotal(datePeriod);
+		this.overTime.aggregateTotal(datePeriod, workingSystem);
 		
 		// 休出合計時間を集計する
-		this.holidayWorkTime.aggregateTotal(datePeriod);
+		this.holidayWorkTime.aggregateTotal(datePeriod, workingSystem);
 		
 		// 休暇使用時間を集計する
 		this.vacationUseTime.aggregate(datePeriod);
@@ -299,10 +299,10 @@ public class AggregateTotalWorkingTime implements Cloneable, Serializable{
 			FlexTimeByPeriod flexTime){
 		
 		// 残業合計時間を集計する
-		this.overTime.aggregateTotal(datePeriod);
+		this.overTime.aggregateTotal(datePeriod, workingSystem);
 		
 		// 休出合計時間を集計する
-		this.holidayWorkTime.aggregateTotal(datePeriod);
+		this.holidayWorkTime.aggregateTotal(datePeriod, workingSystem);
 		
 		// 休暇使用時間を集計する
 		this.vacationUseTime.aggregate(datePeriod);

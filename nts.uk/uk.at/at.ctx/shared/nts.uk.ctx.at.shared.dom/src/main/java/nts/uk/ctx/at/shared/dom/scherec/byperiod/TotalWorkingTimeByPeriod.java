@@ -18,6 +18,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.totalworking
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.totalworkingtime.overtime.OverTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.totalworkingtime.vacationusetime.VacationUseTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameRole;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 
 /**
  * 期間別の総労働時間
@@ -101,11 +102,10 @@ public class TotalWorkingTimeByPeriod implements Cloneable {
 	 * @param companySets 月別集計で必要な会社別設定
 	 */
 	public void aggregate(RequireM1 require,
-			DatePeriod datePeriod,
+			DatePeriod datePeriod, WorkingSystem workingSystem,
 			Map<GeneralDate, AttendanceTimeOfDailyAttendance> attendanceTimeOfDailyMap,
 			Map<GeneralDate, WorkInfoOfDailyAttendance> workInfoOfDailyMap,
-			Map<GeneralDate, SnapShot> snapshots,
-			MonAggrCompanySettings companySets){
+			Map<GeneralDate, SnapShot> snapshots){
 		
 		// 就業時間の集計
 		{
@@ -123,15 +123,15 @@ public class TotalWorkingTimeByPeriod implements Cloneable {
 //			roleOverTimeFrameMap.putIfAbsent(frameNo, roleOverTimeFrame);
 //		}
 		// 残業の集計
-		this.overTime.aggregateForByPeriod(datePeriod, attendanceTimeOfDailyMap);
+		this.overTime.aggregateForByPeriod(datePeriod, workingSystem, attendanceTimeOfDailyMap);
 		
 		// 休日出勤の集計
-		Map<Integer, WorkdayoffFrameRole> roleHolidayWorkFrameMap = new HashMap<>();
-		for (val workdayoffFrame : companySets.getWorkDayoffFrameList()){
-			int frameNo = workdayoffFrame.getWorkdayoffFrNo().v().intValue();
-			roleHolidayWorkFrameMap.putIfAbsent(frameNo, workdayoffFrame.getRole());
-		}
-		this.holidayWorkTime.aggregateForByPeriod(datePeriod, attendanceTimeOfDailyMap, roleHolidayWorkFrameMap);
+//		Map<Integer, WorkdayoffFrameRole> roleHolidayWorkFrameMap = new HashMap<>();
+//		for (val workdayoffFrame : companySets.getWorkDayoffFrameList()){
+//			int frameNo = workdayoffFrame.getWorkdayoffFrNo().v().intValue();
+//			roleHolidayWorkFrameMap.putIfAbsent(frameNo, workdayoffFrame.getRole());
+//		}
+		this.holidayWorkTime.aggregateForByPeriod(datePeriod, workingSystem, attendanceTimeOfDailyMap);
 		
 		// 休暇使用時間を集計する
 		this.vacationUseTime.confirm(require, datePeriod, attendanceTimeOfDailyMap, workInfoOfDailyMap);

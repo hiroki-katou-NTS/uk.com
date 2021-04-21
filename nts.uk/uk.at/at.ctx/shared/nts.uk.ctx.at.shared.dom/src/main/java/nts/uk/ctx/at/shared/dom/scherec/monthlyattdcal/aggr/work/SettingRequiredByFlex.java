@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -14,12 +15,12 @@ import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.common.MonthlyEstimateTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.MonthlyAggregationErrorInfo;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.flex.FlexMonthWorkTimeAggrSet;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.vtotalmethod.FlexAggregateMethodOfMonthly;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.excessoutside.ExcessOutsideWorkMng.RequireM6;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceTimeOfMonthly;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.totalworkingtime.PrescribedWorkingTimeOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.totalworkingtime.AggregateTotalWorkingTime;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.totalworkingtime.vacationusetime.CompensatoryLeaveUseTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.flexshortage.FlexShortageLimit;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.flexshortage.InsufficientFlexHolidayMnt;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.workform.flex.MonthlyAggrSetOfFlex;
@@ -28,9 +29,7 @@ import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.algorithm.monthly.Mon
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.flex.GetFlexPredWorkTime;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.flex.ReferencePredTimeOfFlex;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameRole;
-import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageContent;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
-import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
 /**
@@ -105,12 +104,17 @@ public class SettingRequiredByFlex {
 		return this.statutoryWorkingTimeMonth;
 	}
 	
-	public AttendanceTimeMonth getStatutoryWorkingTimeMonth(Require require, YearMonth yearMonth, DatePeriod datePeriod, ClosureId closureId) {
+	public AttendanceTimeMonth getStatutoryWorkingTimeMonth(Require require, YearMonth yearMonth, DatePeriod datePeriod, 
+			ClosureId closureId, Optional<CompensatoryLeaveUseTimeOfMonthly> monthlyCompensatoryTime,
+			Collection<AttendanceTimeOfDailyAttendance> dailyAttendanceTime) {
 		
 		val newStatutory = flexAggregateMethodMonthly.getTimeDivisionByWorkingDays(require, yearMonth, 
 				new MonthlyEstimateTime(this.statutoryWorkingTimeMonth.valueAsMinutes()), datePeriod, closureId);
 		
-		return new AttendanceTimeMonth(newStatutory.valueAsMinutes());
+		int noCompensatoryTime = this.flexAggregateMethodMonthly.getCompensatoryTimeSet().getSubtractedTime(
+				monthlyCompensatoryTime.get(), dailyAttendanceTime, datePeriod, flexAggrSet, newStatutory).v();
+		
+		return new AttendanceTimeMonth(noCompensatoryTime);
 	}
 	
 	public AttendanceTimeMonth getPrescribedWorkingTimeMonthRaw() {
@@ -118,12 +122,17 @@ public class SettingRequiredByFlex {
 		return this.prescribedWorkingTimeMonth;
 	}
 	
-	public AttendanceTimeMonth getPrescribedWorkingTimeMonth(Require require, YearMonth yearMonth, DatePeriod datePeriod, ClosureId closureId) {
+	public AttendanceTimeMonth getPrescribedWorkingTimeMonth(Require require, YearMonth yearMonth, DatePeriod datePeriod, 
+			ClosureId closureId, Optional<CompensatoryLeaveUseTimeOfMonthly> monthlyCompensatoryTime,
+			Collection<AttendanceTimeOfDailyAttendance> dailyAttendanceTime) {
 		
 		val newPres = flexAggregateMethodMonthly.getTimeDivisionByWorkingDays(require, yearMonth, 
 				new MonthlyEstimateTime(this.prescribedWorkingTimeMonth.valueAsMinutes()), datePeriod, closureId);
+
+		int noCompensatoryTime = this.flexAggregateMethodMonthly.getCompensatoryTimeSet().getSubtractedTime(
+				monthlyCompensatoryTime.get(), dailyAttendanceTime, datePeriod, flexAggrSet, newPres).v();
 		
-		return new AttendanceTimeMonth(newPres.valueAsMinutes());
+		return new AttendanceTimeMonth(noCompensatoryTime);
 	}
 	
 	public AttendanceTimeMonth getWeekAverageTimeRaw() {
@@ -143,10 +152,11 @@ public class SettingRequiredByFlex {
 	/** 法定労働時間を取得する（フレックス用） */
 	public Optional<MonthlyFlexStatutoryLaborTime> getFlexStatutoryLaborTime(RequireM1 require, CacheCarrier cacheCarrier, boolean isCurrentMonth, YearMonth ym, 
 			String cid, String employmentCode, String sid, GeneralDate baseDate, Optional<DatePeriod> period, ClosureId closureId, 
-			ClosureDate closureDate, Optional<PrescribedWorkingTimeOfMonthly> laborTime) {
+			ClosureDate closureDate, Optional<AggregateTotalWorkingTime> agggregateTotalWorkingTime,
+			Collection<AttendanceTimeOfDailyAttendance> dailyAttendanceTime) {
 		
 		/** 按分した週、月の法定労働時間を取得(フレックス用) */
-		val statutoryTime = MonthlyStatutoryLaborDivisionService.getDivisiedStatutoryLabor(require, cacheCarrier, cid, employmentCode, 
+		val workingTime = MonthlyStatutoryLaborDivisionService.getDivisiedStatutoryLabor(require, cacheCarrier, cid, employmentCode, 
 				sid, baseDate, period, ym, closureId, this.flexAggregateMethodMonthly);
 		
 		/** 当月かを確認する */
@@ -158,13 +168,31 @@ public class SettingRequiredByFlex {
 				return Optional.empty();
 			}
 			/** ○「フレックス勤務所定労働時間取得」を確認する */
-			if(this.getFlexPredWorkTimeOpt.get().getReference() == ReferencePredTimeOfFlex.FROM_MASTER) {
-				return Optional.of(statutoryTime);
-			}
+			int prescribedTime = this.getFlexPredWorkTimeOpt.map(c -> {
+				if (c.getReference() == ReferencePredTimeOfFlex.FROM_MASTER)
+					return workingTime.getSpecifiedSetting().v();
+
+				/** 当月の月別実績の勤怠時間を取得する */
+				/** 所定労働時間を上書きする */
+				return agggregateTotalWorkingTime.get().getPrescribedWorkingTime().getTimeSeriesWorks().stream()
+							.mapToInt(t -> t.getPrescribedWorkingTime().getRecordPrescribedLaborTime().valueAsMinutes())
+							.sum();
+			}).get();
 			
-			/** 当月の月別実績の勤怠時間を取得する */
-			val speciTime = laborTime.get().getTimeSeriesWorks().stream().mapToInt(c -> c.getPrescribedWorkingTime().getRecordPrescribedLaborTime().valueAsMinutes()).sum();
-			return Optional.of(new MonthlyFlexStatutoryLaborTime(statutoryTime.getStatutorySetting(), new MonthlyEstimateTime(speciTime), statutoryTime.getWeekAveSetting()));
+			/** 法定労働時間から代休時間を引く時間を取得して上書きする */
+			int statutoryTime = this.flexAggregateMethodMonthly.getCompensatoryTimeSet().getSubtractedTime(
+					agggregateTotalWorkingTime.get().getVacationUseTime().getCompensatoryLeave(), 
+					dailyAttendanceTime, period.get(), flexAggrSet, workingTime.getStatutorySetting()).v();
+			
+			/** 所定労働時間から代休時間を引く時間を取得して上書きする */
+			prescribedTime = this.flexAggregateMethodMonthly.getCompensatoryTimeSet().getSubtractedTime(
+					agggregateTotalWorkingTime.get().getVacationUseTime().getCompensatoryLeave(), 
+					dailyAttendanceTime, period.get(), flexAggrSet, new MonthlyEstimateTime(prescribedTime)).v();
+			
+			/** 月の法定労働時間（フレックス用）を返す */
+			return Optional.of(new MonthlyFlexStatutoryLaborTime(new MonthlyEstimateTime(statutoryTime),
+																new MonthlyEstimateTime(prescribedTime), 
+																workingTime.getWeekAveSetting()));
 		}
 		
 		/** 月別実績の勤怠時間を取得する */
@@ -178,10 +206,10 @@ public class SettingRequiredByFlex {
 			
 			return Optional.of(new MonthlyFlexStatutoryLaborTime(new MonthlyEstimateTime(statutory.valueAsMinutes()),
 																 new MonthlyEstimateTime(specifi.valueAsMinutes()), 
-																 statutoryTime.getWeekAveSetting()));
+																 workingTime.getWeekAveSetting()));
 		}).orElseGet(() -> {
 			
-			return Optional.of(new MonthlyFlexStatutoryLaborTime(new MonthlyEstimateTime(0), new MonthlyEstimateTime(0), statutoryTime.getWeekAveSetting()));
+			return Optional.of(new MonthlyFlexStatutoryLaborTime(new MonthlyEstimateTime(0), new MonthlyEstimateTime(0), workingTime.getWeekAveSetting()));
 		});
 		
 	}

@@ -27,7 +27,7 @@ public class HolidayWorkTimeOfTimeSeries implements Serializable{
 	/** 休出時間 */
 	@Setter
 	private HolidayWorkFrameTime holidayWorkTime;
-	/** 法定内休出時間 */
+	/** 就業内休出時間 */
 	@Setter
 	private HolidayWorkFrameTime legalHolidayWorkTime;
 	
@@ -84,7 +84,7 @@ public class HolidayWorkTimeOfTimeSeries implements Serializable{
 	}
 	
 	/**
-	 * 法定内休出時間：休出時間を加算する
+	 * 就業内休出時間：休出時間を加算する
 	 * @param holidayWorkTime 休出時間　（計算付き時間）
 	 */
 	public void addHolidayWorkTimeInLegalHolidayWorkTime(TimeDivergenceWithCalculation holidayWorkTime){

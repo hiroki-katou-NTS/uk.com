@@ -24,6 +24,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.totalworking
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.totalworkingtime.hdwkandcompleave.AggregateHolidayWorkTime;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.totalworkingtime.overtime.AggregateOverTime;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.breakdown.OutsideOTBRDItem;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 
@@ -145,7 +146,8 @@ public class ExcessOutsideWorkDetail {
 	 * @param monthlyDetail 月次明細
 	 * @param datePeriod 期間
 	 */
-	public void assignRoundTime(MonthlyDetail monthlyDetail, DatePeriod datePeriod, RoundingSetOfMonthly roundingSet){
+	public void assignRoundTime(MonthlyDetail monthlyDetail, DatePeriod datePeriod,
+			RoundingSetOfMonthly roundingSet, WorkingSystem workingSystem){
 		
 		// 月次明細から時間外超過明細へ値をコピーする
 		this.workTime = monthlyDetail.getWorkTime();
@@ -154,7 +156,7 @@ public class ExcessOutsideWorkDetail {
 		
 		// 各時系列の時間を集計する
 		TotalTimeBeforeRound totalTimeBeforeRound = new TotalTimeBeforeRound();
-		totalTimeBeforeRound.aggregateValues(this, datePeriod);
+		totalTimeBeforeRound.aggregateValues(this, datePeriod, workingSystem);
 		
 		// 各合計時間を丸める
 		this.totalTimeAfterRound.setTotalTimeAfterRound(totalTimeBeforeRound, roundingSet);

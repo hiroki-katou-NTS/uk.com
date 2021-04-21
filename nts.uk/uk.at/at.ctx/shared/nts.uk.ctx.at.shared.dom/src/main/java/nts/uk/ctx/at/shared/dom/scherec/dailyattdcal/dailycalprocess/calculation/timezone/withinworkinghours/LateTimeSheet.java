@@ -29,6 +29,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.OtherEmTimezoneLateEarlySet;
 import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
@@ -313,7 +314,7 @@ public class LateTimeSheet {
 			IntegrationOfWorkTime integrationOfWorkTime,
 			IntegrationOfDaily integrationOfDaily) {
 
-		Boolean ootsukaMode = false;
+		Boolean ootsukaMode = AppContexts.optionLicense().customize().ootsuka();
 		
 		// 大塚モードの判断
 		if (!ootsukaMode) return new ArrayList<>();

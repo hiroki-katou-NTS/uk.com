@@ -57,6 +57,14 @@ public class KrcmtCalcMAgg extends ContractUkJpaEntity implements Serializable {
 	@Column(name="METHOD_ENTER_IN_MONTH_FLEX")
 	public boolean methodEnterInMonthFlex;
 	
+	/** フレックスの途中入社退職の集計方法 */
+	@Column(name="COMPENSATORY_PENALTY_MONTHLY")
+	public boolean compensatoryPenaltyMonthly;
+	
+	/** フレックスの途中入社退職の集計方法 */
+	@Column(name="COMPENSATORY_USAGE_TIME_DEDUCT_METHOD")
+	public int compensatoryUsageTimeDeductMethod;
+	
 	@Override
 	protected Object getKey() {
 		return cid;
