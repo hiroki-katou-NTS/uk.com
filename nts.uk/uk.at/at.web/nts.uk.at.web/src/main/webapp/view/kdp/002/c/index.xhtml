@@ -38,23 +38,24 @@
 									<td colspan="2" data-bind="i18n: employeeCodeName"></td>
 								</tr>
 								<tr>
-									<td colspan="2" >福岡別府店</td>
+									<td colspan="2" data-bind="i18n: $vm.laceName">福岡別府店</td>
 								</tr>
 								<tr>
 									<td>
-										<div data-bind="ntsFormLabel: { required: false}">#{i18n.getText('KDP002_56')}</div>
+										<div data-bind="ntsFormLabel: { required: false}">#{i18n.getText('KDP002_56')}
+										</div>
 									</td>
 								</tr>
 								<tr>
-									<td >勤務種類の名称
+									<td>勤務種類の名称
 									</td>
 									<td data-bind="i18n: $vm.timeName1"></td>
 								</tr>
 								<tr style="margin-top: 10px;">
 									<td data-bind="i18n: 'KDP002_57'"></td>
 									<td>
-										当日8:48　　～　　当日20:18
-	
+										<span data-bind="i18n: $vm.timeName1"></span>
+										<span data-bind="i18n: $vm.timeName2"></span>
 									</td>
 								</tr>
 								<tr>
@@ -108,7 +109,7 @@
 									#{i18n.getText('KDP002_99')}</span>
 							</div>
 						</div>
-	
+
 					</div>
 				</div>
 			</div>

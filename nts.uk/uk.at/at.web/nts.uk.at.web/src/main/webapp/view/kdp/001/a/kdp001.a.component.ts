@@ -53,8 +53,7 @@ module nts.uk.ui.kdp001.a {
     const MODE_PERSON = 1;
     const DEFAULT_PAGE_NO = 1;
     const STAMP_MEANS_PORTAL = 4;
-    // const DEFAULT_GRAY = '#E8E9EB';127D09
-    const DEFAULT_GRAY = '#127D09';
+    const DEFAULT_GRAY = '#E8E9EB';
     const D_FORMAT = 'YYYY/MM/DD HH:mm:ss';
 
     @component({
