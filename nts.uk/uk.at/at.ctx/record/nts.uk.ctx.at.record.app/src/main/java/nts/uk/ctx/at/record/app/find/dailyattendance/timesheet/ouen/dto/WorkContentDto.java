@@ -11,6 +11,9 @@ import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemValue;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ValueType;
 
 /**
  * @author laitv
@@ -30,12 +33,18 @@ public class WorkContentDto implements  ItemConst, AttendanceItemDataGate {
 	@AttendanceItemLayout(layout = LAYOUT_D, jpPropertyName = WORKGROUP)
 	private WorkGroupDto work;
 	
+	/** 備考: 作業入力備考 */
+	@AttendanceItemLayout(layout = LAYOUT_E, jpPropertyName = WORKREMARKS)
+	@AttendanceItemValue(type = ValueType.ATTR)
+	private String workRemarks;
+	
 	
 	@Override
 	public WorkContentDto clone() {
 		WorkContentDto result = new WorkContentDto();
 		result.setWorkplace(workplace == null ? null : workplace.clone());
 		result.setWork(work == null ? null : work.clone());
+		result.setWorkRemarks(workRemarks);
 		return result;
 	}
 	
@@ -52,6 +61,16 @@ public class WorkContentDto implements  ItemConst, AttendanceItemDataGate {
 	}
 	
 	@Override
+	public Optional<ItemValue> valueOf(String path) {
+		switch (path) {
+		case WORKREMARKS :
+			return Optional.of(ItemValue.builder().value(workRemarks).valueType(ValueType.CODE));
+		default:
+			return Optional.empty();
+		}
+	}
+	
+	@Override
 	public void set(String path, AttendanceItemDataGate value) {
 		switch (path) {
 		case WORKPLACE_BYSUPPORT:
@@ -59,6 +78,17 @@ public class WorkContentDto implements  ItemConst, AttendanceItemDataGate {
 			break;
 		case WORKGROUP:
 			work = (WorkGroupDto) value;
+			break;
+		default:
+			break;
+		}
+	}
+	
+	@Override
+	public void set(String path, ItemValue value) {
+		switch (path) {
+		case WORKREMARKS:
+			this.workRemarks = value.valueOrDefault(null);
 			break;
 		default:
 			break;
@@ -83,6 +113,8 @@ public class WorkContentDto implements  ItemConst, AttendanceItemDataGate {
 		case WORKPLACE_BYSUPPORT:
 		case WORKGROUP:
 			return PropType.OBJECT;
+		case WORKREMARKS:
+			return PropType.VALUE;
 		default:
 			break;
 		}
