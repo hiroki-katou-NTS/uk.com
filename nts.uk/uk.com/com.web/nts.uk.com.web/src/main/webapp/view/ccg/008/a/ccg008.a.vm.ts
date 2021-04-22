@@ -173,8 +173,8 @@ module nts.uk.com.view.ccg008.a.screenModel {
 			const vm = this;
 
 			vm.dateSwitch([
-				{ code: "1", name: vm.$i18n("CCG008_14") },
-				{ code: "2", name: vm.$i18n("CCG008_15") }
+				{ code: 1, name: vm.$i18n("CCG008_14") },
+				{ code: 2, name: vm.$i18n("CCG008_15") }
 			]);
 
 			vm.classLayoutName = ko.computed({
