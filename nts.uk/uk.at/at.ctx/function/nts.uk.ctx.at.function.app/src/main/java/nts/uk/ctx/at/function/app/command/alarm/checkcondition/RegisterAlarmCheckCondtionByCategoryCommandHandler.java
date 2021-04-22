@@ -828,12 +828,13 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 					dailyCheckItemType,
 					rangeToCheck);
 			
+			WorkTypeConAdapterDto workTypeCondition = item.getErrorAlarmCondition().getWorkTypeCondition();
+			if (item.getErrorAlarmCondition().getWorkTypeCondition() != null) {
+				rangeToCheck = EnumAdaptor.valueOf(workTypeCondition.getComparePlanAndActual(), RangeToCheck.class);
+				domain.setTargetWrkType(rangeToCheck);
+			}
+			
 			if (dailyCheckItemType == DaiCheckItemType.TIME) {
-				WorkTypeConAdapterDto workTypeCondition = item.getErrorAlarmCondition().getWorkTypeCondition();
-				if (item.getErrorAlarmCondition().getWorkTypeCondition() != null) {
-					rangeToCheck = EnumAdaptor.valueOf(workTypeCondition.getComparePlanAndActual(), RangeToCheck.class);
-					domain.setTargetWrkType(rangeToCheck);
-				}
 				CheckTimeType checkTimeType = EnumAdaptor.valueOf(workTypeCondition.getCheckTimeType(), CheckTimeType.class);
 				if (workTypeCondition.getComparisonOperator() > 5) {
 					if (workTypeCondition.getCompareStartValue() != null && workTypeCondition.getCompareEndValue() != null) {
@@ -855,11 +856,6 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 			}
 			
 			if (dailyCheckItemType == DaiCheckItemType.CONTINUOUS_TIME) {
-				WorkTypeConAdapterDto workTypeCondition = item.getErrorAlarmCondition().getWorkTypeCondition();
-				if (item.getErrorAlarmCondition().getWorkTypeCondition() != null) {
-					rangeToCheck = EnumAdaptor.valueOf(workTypeCondition.getComparePlanAndActual(), RangeToCheck.class);
-					domain.setTargetWrkType(rangeToCheck);
-				}
 				CheckTimeType checkTimeType = EnumAdaptor.valueOf(workTypeCondition.getCheckTimeType(), CheckTimeType.class);
 				if (workTypeCondition.getComparisonOperator() > 5) {
 					if (workTypeCondition.getCompareStartValue() != null && workTypeCondition.getCompareEndValue() != null) {
@@ -886,7 +882,6 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 			}
 			
 			if (dailyCheckItemType == DaiCheckItemType.CONTINUOUS_TIMEZONE) {
-				WorkTypeConAdapterDto workTypeCondition = item.getErrorAlarmCondition().getWorkTypeCondition();
 				WorkTimeConAdapterDto workTimeCondition = item.getErrorAlarmCondition().getWorkTimeCondition();
 				CondContinuousTimeZone continuousTimeZone = new CondContinuousTimeZone(
 						workTypeCondition.getPlanLstWorkType(),
@@ -897,7 +892,6 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 			}
 			
 			if (dailyCheckItemType == DaiCheckItemType.CONTINUOUS_WORK) {
-				WorkTypeConAdapterDto workTypeCondition = item.getErrorAlarmCondition().getWorkTypeCondition();
 				CondContinuousWrkType continuousWorkType = new CondContinuousWrkType(
 						workTypeCondition.getPlanLstWorkType(), 
 						new ContinuousPeriod(item.getErrorAlarmCondition().getContinuousPeriod()));

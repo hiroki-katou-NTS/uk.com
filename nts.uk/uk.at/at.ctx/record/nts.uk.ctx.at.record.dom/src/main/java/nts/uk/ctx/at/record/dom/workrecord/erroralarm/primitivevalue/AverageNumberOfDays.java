@@ -1,16 +1,18 @@
 package nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue;
 
-import nts.arc.primitive.HalfIntegerPrimitiveValue;
-import nts.arc.primitive.constraint.HalfIntegerMaxValue;
-import nts.arc.primitive.constraint.HalfIntegerMinValue;
+import java.math.BigDecimal;
+
+import nts.arc.primitive.DecimalPrimitiveValue;
+import nts.arc.primitive.constraint.DecimalMantissaMaxLength;
+import nts.arc.primitive.constraint.DecimalRange;
 
 /**
  * PrimitiveValue: 平均日数
  *
  */
-@HalfIntegerMinValue(0.0)
-@HalfIntegerMaxValue(99.9)
-public class AverageNumberOfDays extends HalfIntegerPrimitiveValue<AverageNumberOfDays> {
+@DecimalRange(min = "0.0", max = "99.9")
+@DecimalMantissaMaxLength(1)
+public class AverageNumberOfDays extends DecimalPrimitiveValue<AverageNumberOfDays> {
 
 	private static final long serialVersionUID = 1L;
 
@@ -19,7 +21,7 @@ public class AverageNumberOfDays extends HalfIntegerPrimitiveValue<AverageNumber
 	 *
 	 * @param rawValue the raw value
 	 */	
-	public AverageNumberOfDays(Double rawValue) {
+	public AverageNumberOfDays(BigDecimal rawValue) {
 		super(rawValue);
 	}
 	

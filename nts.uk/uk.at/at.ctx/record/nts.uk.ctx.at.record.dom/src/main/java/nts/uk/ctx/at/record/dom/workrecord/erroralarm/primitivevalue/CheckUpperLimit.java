@@ -1,17 +1,19 @@
 package nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue;
 
-import nts.arc.primitive.HalfIntegerPrimitiveValue;
-import nts.arc.primitive.constraint.HalfIntegerMaxValue;
-import nts.arc.primitive.constraint.HalfIntegerMinValue;
+import java.math.BigDecimal;
+
+import nts.arc.primitive.DecimalPrimitiveValue;
+import nts.arc.primitive.constraint.DecimalMantissaMaxLength;
+import nts.arc.primitive.constraint.DecimalRange;
 
 /**
  * 
  * チェック上限
  *
  */
-@HalfIntegerMinValue(-999.9)
-@HalfIntegerMaxValue(999.9)
-public class CheckUpperLimit extends HalfIntegerPrimitiveValue<CheckUpperLimit> {
+@DecimalRange(min = "-999.9", max = "999.9")
+@DecimalMantissaMaxLength(1)
+public class CheckUpperLimit extends DecimalPrimitiveValue<CheckUpperLimit> {
 	private static final long serialVersionUID = 1L;
 
 	/**
@@ -19,7 +21,7 @@ public class CheckUpperLimit extends HalfIntegerPrimitiveValue<CheckUpperLimit> 
 	 *
 	 * @param rawValue the raw value
 	 */	
-	public CheckUpperLimit(Double rawValue) {
+	public CheckUpperLimit(BigDecimal rawValue) {
 		super(rawValue);
 	}
 }
