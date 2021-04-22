@@ -21,16 +21,8 @@ public class AddDaiPerformanceFunCommandHandler extends CommandHandler<DaiPerfor
     protected void handle(CommandHandlerContext<DaiPerformanceFunCommand> context) {
         DaiPerformanceFunCommand addCommand = context.getCommand();
         repository.add(DaiPerformanceFun.createFromJavaType(addCommand.getCid(), addCommand.getComment(), 
-																addCommand.isMonthChkMsgAtr() ? 1 : 0, 
 																addCommand.isDisp36Atr() ? 1 : 0, 
-																addCommand.isClearManuAtr() ? 1 : 0, 
 																addCommand.isFlexDispAtr() ? 1 : 0, 
-																addCommand.isBreakCalcUpdAtr() ? 1 : 0, 
-																addCommand.isBreakTimeAutoAtr() ? 1 : 0, 
-																addCommand.isEalyCalcUpdAtr() ? 1 : 0, 
-																addCommand.isOvertimeCalcUpdAtr() ? 1 : 0, 
-																addCommand.isLawOverCalcUpdAtr() ? 1 : 0, 
-																addCommand.isManualFixAutoSetAtr()? 1 : 0,
 																addCommand.isCheckErrRefDisp()? 1 : 0));
 
     }

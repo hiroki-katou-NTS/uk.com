@@ -47,16 +47,8 @@ public class JpaDaiPerformanceFunRepository extends JpaRepository implements Dai
             return;
         }
         updateDaiPerformanceFun.comment = newDaiPerformanceFun.comment;
-        updateDaiPerformanceFun.monthChkMsgAtr = newDaiPerformanceFun.monthChkMsgAtr;
         updateDaiPerformanceFun.disp36Atr = newDaiPerformanceFun.disp36Atr;
-        updateDaiPerformanceFun.clearManuAtr = newDaiPerformanceFun.clearManuAtr;
         updateDaiPerformanceFun.flexDispAtr = newDaiPerformanceFun.flexDispAtr;
-        updateDaiPerformanceFun.breakCalcUpdAtr = newDaiPerformanceFun.breakCalcUpdAtr;
-        updateDaiPerformanceFun.breakTimeAutoAtr = newDaiPerformanceFun.breakTimeAutoAtr;
-        updateDaiPerformanceFun.ealyCalcUpdAtr = newDaiPerformanceFun.ealyCalcUpdAtr;
-        updateDaiPerformanceFun.overtimeCalcUpdAtr = newDaiPerformanceFun.overtimeCalcUpdAtr;
-        updateDaiPerformanceFun.lawOverCalcUpdAtr = newDaiPerformanceFun.lawOverCalcUpdAtr;
-        updateDaiPerformanceFun.manualFixAutoSetAtr = newDaiPerformanceFun.manualFixAutoSetAtr;
         updateDaiPerformanceFun.checkErrRefDisp = newDaiPerformanceFun.checkErrRefDisp;
         this.commandProxy().update(updateDaiPerformanceFun);
     }

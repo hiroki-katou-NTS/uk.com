@@ -262,23 +262,23 @@ public class OperationExcelRepoImpl implements MasterListData {
                         data.put("値", "-");
                     }
                 }
-                // manualFixAutoSetAtr
-                if (name.equals(manualFixAutoSetAtr)) {
-                    if (daiPerformanceFunOpt.get().getManualFixAutoSetAtr() == 1) {
-                        data.put("値", "○");
-                    } else {
-                        data.put("値", "-");
-                    }
-                }
-
-                // clearManuAtr
-                if (name.equals(clearManuAtr)) {
-                    if (daiPerformanceFunOpt.get().getClearManuAtr() == 1) {
-                        data.put("値", "○");
-                    } else {
-                        data.put("値", "-");
-                    }
-                }
+//                // manualFixAutoSetAtr
+//                if (name.equals(manualFixAutoSetAtr)) {
+//                    if (daiPerformanceFunOpt.get().getManualFixAutoSetAtr() == 1) {
+//                        data.put("値", "○");
+//                    } else {
+//                        data.put("値", "-");
+//                    }
+//                }
+//
+//                // clearManuAtr
+//                if (name.equals(clearManuAtr)) {
+//                    if (daiPerformanceFunOpt.get().getClearManuAtr() == 1) {
+//                        data.put("値", "○");
+//                    } else {
+//                        data.put("値", "-");
+//                    }
+//                }
                 // checkErrRefDisp
                 if (name.equals(checkErrRefDisp)) {
                     if (daiPerformanceFunOpt.get().getCheckErrRefDisp() == 1) {
