@@ -102,10 +102,10 @@ module nts.uk.at.view.ksm011.e {
       const vm = this;
       vm.daysList = ko.observableArray([]);
       let days = [];
-      for (let day = 0; day < 31; day++) {
-        days.push({ day: day, name: (day + 1) + vm.$i18n('KSM011_105') });
+      for (let day = 0; day <= 31; day++) {
+        days.push({ day: day, name: day + vm.$i18n('KSM011_105') });
       }
-      days.push({ day: 31, name: vm.$i18n('KSM011_106') });
+      // days.push({ day: 31, name: vm.$i18n('KSM011_106') });
       vm.daysList(days);
     }
 
