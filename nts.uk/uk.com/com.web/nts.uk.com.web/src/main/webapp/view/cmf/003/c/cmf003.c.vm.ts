@@ -383,6 +383,7 @@ module nts.uk.com.view.cmf003.c {
             pattern.patternName = param.patternName;
             pattern.displayCode = pattern.patternClassification + pattern.code;
             vm.patternList.push(pattern);
+            vm.patternList(_.orderBy(vm.patternList(), ['patternClassification', 'code'], ['desc', 'asc']));
             vm.selectPattern(pattern.code, pattern.patternClassification);
 
             if (vm.selectedPatternCode() === '') {

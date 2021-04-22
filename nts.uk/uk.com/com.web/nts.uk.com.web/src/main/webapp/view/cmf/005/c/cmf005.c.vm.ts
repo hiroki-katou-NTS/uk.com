@@ -261,7 +261,7 @@ module nts.uk.com.view.cmf005.c {
       const vm = this;
       vm.screenMode(ScreenMode.NEW);
       vm.$blockui("grayout").then(() => {
-        service.initDisplay()
+        return service.initDisplay()
           .then((res) => {
             vm.checkInCharge(res.pic);
             let patternArr: Pattern[] = [];
@@ -273,8 +273,6 @@ module nts.uk.com.view.cmf005.c {
               p.displayCode = x.patternClassification + x.patternCode;
               patternArr.push(p);
             });
-            vm.patternList(patternArr);
-            vm.patternList(_.orderBy(vm.patternList(), ['patternClassification', 'code'], ['desc', 'asc']));
 
             let arr: Category[] = [];
             _.map(res.categories, (x: any) => {
@@ -284,6 +282,12 @@ module nts.uk.com.view.cmf005.c {
             vm.categoriesDefault(arr);
             _.forEach(vm.categoriesDefault(), item => vm.categoriesFiltered().push(item));
             vm.categoriesFiltered.valueHasMutated();
+
+            if(patternArr.length > 0){
+              vm.patternList(patternArr);
+              vm.patternList(_.orderBy(vm.patternList(), ['patternClassification', 'code'], ['desc', 'asc']));
+              vm.selectedPatternCode(vm.patternList()[0].displayCode);
+            } 
           }).fail(err => vm.$dialog.error({ messageId: err.messageId }));
       }).always(() => {
         vm.$blockui("clear");
