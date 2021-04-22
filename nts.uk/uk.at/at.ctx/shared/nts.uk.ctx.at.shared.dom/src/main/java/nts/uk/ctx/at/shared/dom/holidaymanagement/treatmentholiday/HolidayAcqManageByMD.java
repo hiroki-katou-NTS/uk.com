@@ -74,7 +74,12 @@ public class HolidayAcqManageByMD implements FourWeekHolidayAcqMana, DomainValue
 	public StartDateClassification getStartDateType() {
 		return StartDateClassification.SPECIFY_MD;
 	}
-	
-	
 
+	/**
+	 * [4] 28日間を取得する
+	 */
+	@Override
+	public DatePeriod get28Days(Require require, GeneralDate ymd) {
+		return this.getManagementPeriod(require, ymd).getPeriod();
+	}
 }

@@ -232,14 +232,20 @@ public class OutingTimeOfDaily {
 			Optional<WorkTimezoneCommonSet> commonSetting) {
 		//外出合計時間の計算
 		DeductionTotalTime outingTotal = calculationDedBreakTime(dedAtr, oneDay,outingOfDaily,premiumAtr,holidayCalcMethodSet,commonSetting);
+		//所定内
+		TimeWithCalculation withinDedTime = oneDay.calcWithinTotalTime(
+				ConditionAtr.convertFromGoOutReason(outingOfDaily.getReasonForGoOut()),
+				dedAtr,
+				StatutoryAtr.Statutory,
+				TimeSheetRoundingAtr.PerTimeSheet,
+				premiumAtr,
+				holidayCalcMethodSet,
+				commonSetting);
 		//コア内と外を分けて計算するかどうか判定
 		//YES 所定内外出をコア内と外で分けて計算
-		TimeWithCalculation withinDedTime = TimeWithCalculation.sameTime(new AttendanceTime(0));
 		AttendanceTime withinFlex = new AttendanceTime(0);
 		AttendanceTime excessFlex = new AttendanceTime(0);
 		if(flexCalcSet.isPresent()) {
-			//所定内
-			withinDedTime = oneDay.calcWithinTotalTime(ConditionAtr.convertFromGoOutReason(outingOfDaily.getReasonForGoOut()),dedAtr,StatutoryAtr.Statutory,TimeSheetRoundingAtr.PerTimeSheet,premiumAtr,holidayCalcMethodSet,commonSetting);
 			FlexWithinWorkTimeSheet changedFlexTimeSheet = (FlexWithinWorkTimeSheet)oneDay.getWithinWorkingTimeSheet().get();
 			withinFlex = changedFlexTimeSheet.calcOutingTimeInFlex(true);
 			excessFlex = changedFlexTimeSheet.calcOutingTimeInFlex(false);
