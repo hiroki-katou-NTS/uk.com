@@ -29,7 +29,7 @@ public class AuthenticateResult implements LoginCommandHandlerBase.Authenticatio
 	public static AuthenticateResult identificationFailure(IdentificationResult idenResult) {
 		return new AuthenticateResult(
 				false, 
-				idenResult.getEmployeeInfo(), 
+				Optional.empty(), 
 				Optional.empty(), 
 				false, null, null);
 	}

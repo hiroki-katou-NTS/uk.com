@@ -41,6 +41,10 @@ public class TenantAuthenticateCommandHandler extends CommandHandlerWithResult<T
 		RequireImpl require = new RequireImpl();
 		val command = context.getCommand();
 		val request = command.getRequest();
+		if(command.getTenantCode().isEmpty()) {
+			// テナント認証情報がないので、再認証必要
+			return new CheckContractDto(true);
+		}
 		
 		// ログインクライアントの生成
 		val loginClient = new LoginClient(

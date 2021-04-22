@@ -61,6 +61,18 @@ public class LoginRequire {
 	private PlannedOutageByCompanyRepository plannedOutageByCompanyRepo;
 	
 	@Inject
+	private AccountLockPolicyRepository accountLockPolicyRepo;
+	
+	@Inject
+	private LockOutDataRepository lockOutDataRep;
+	
+	@Inject
+	private TenantAuthenticateFailureLogRepository tenantAuthenticationFailureLogRepo;
+	
+	@Inject
+	private PasswordAuthenticateFailureLogRepository passwordAuthenticateFailureLogRepo;
+	
+	@Inject
 	private SyaCompanyHistAdapter syaCompanyHistAdapter;
 	
 	@Inject
@@ -86,6 +98,10 @@ public class LoginRequire {
 				loginUserContextManager,
 				plannedOutageByTenantRepo,
 				plannedOutageByCompanyRepo, 
+				accountLockPolicyRepo, 
+				lockOutDataRep, 
+				tenantAuthenticationFailureLogRepo, 
+				passwordAuthenticateFailureLogRepo, 
 				syaCompanyHistAdapter, 
 				syaEmpHistAdapter, 
 				syaJobHistAdapter, 
@@ -107,8 +123,8 @@ public class LoginRequire {
 		
 		private PlannedOutageByTenantRepository plannedOutageByTenantRepo;
 		private PlannedOutageByCompanyRepository plannedOutageByCompanyRepo;
-		private AccountLockPolicyRepository accountLockPolicyRepository;
-		private LockOutDataRepository lockOutDataRepository;
+		private AccountLockPolicyRepository accountLockPolicyRepo;
+		private LockOutDataRepository lockOutDataRepo;
 		private TenantAuthenticateFailureLogRepository tenantAuthenticationFailureLogRepo;
 		private PasswordAuthenticateFailureLogRepository passwordAuthenticateFailureLogRepo;
 		
@@ -125,6 +141,11 @@ public class LoginRequire {
 				LoginUserContextManager loginUserContextManager, 
 				PlannedOutageByTenantRepository plannedOutageByTenantRepo,
 				PlannedOutageByCompanyRepository plannedOutageByCompanyRepo, 
+				AccountLockPolicyRepository accountLockPolicyRepo, 
+				LockOutDataRepository lockOutDataRepo, 
+				TenantAuthenticateFailureLogRepository tenantAuthenticationFailureLogRepo, 
+				PasswordAuthenticateFailureLogRepository passwordAuthenticateFailureLogRepo, 
+				
 				SyaCompanyHistAdapter syaCompanyHistAdapter, 
 				SyaEmpHistAdapter syaEmpHistAdapter, 
 				SyaJobHistAdapter syaJobHistAdapter, 
@@ -136,6 +157,10 @@ public class LoginRequire {
 			this.loginUserContextManager = loginUserContextManager;
 			this.plannedOutageByTenantRepo = plannedOutageByTenantRepo;
 			this.plannedOutageByCompanyRepo = plannedOutageByCompanyRepo;
+			this.accountLockPolicyRepo = accountLockPolicyRepo;
+			this.lockOutDataRepo = lockOutDataRepo;
+			this.tenantAuthenticationFailureLogRepo = tenantAuthenticationFailureLogRepo;
+			this.passwordAuthenticateFailureLogRepo = passwordAuthenticateFailureLogRepo;
 			this.syaCompanyHistAdapter = syaCompanyHistAdapter;
 			this.syaEmpHistAdapter = syaEmpHistAdapter;
 			this.syaJobHistAdapter = syaJobHistAdapter;
@@ -164,7 +189,7 @@ public class LoginRequire {
 
 		@Override
 		public Optional<AccountLockPolicy> getAccountLockPolicy(String tenantCode) {
-			return accountLockPolicyRepository.getAccountLockPolicy(tenantCode);
+			return accountLockPolicyRepo.getAccountLockPolicy(tenantCode);
 		}
 
 		@Override
@@ -179,7 +204,7 @@ public class LoginRequire {
 
 		@Override
 		public Optional<LockoutData> getLockOutData(String userId) {
-			return lockOutDataRepository.find(userId);
+			return lockOutDataRepo.find(userId);
 		}
 
 		@Override
@@ -199,18 +224,18 @@ public class LoginRequire {
 		}
 
 		@Override
-		public Optional<SyaEmpHistImport> getEmploymentHist(String employeeId, GeneralDate date) {
-			return syaEmpHistAdapter.findBySid(employeeId, date);
+		public Optional<SyaEmpHistImport> getEmploymentHist(String companyId, String employeeId, GeneralDate date) {
+			return syaEmpHistAdapter.findBySid(companyId, employeeId, date);
 		}
 
 		@Override
-		public Optional<SyaJobHistImport> getJobtitleHist(String employeeId, GeneralDate date) {
-			return syaJobHistAdapter.findBySid(employeeId, date);
+		public Optional<SyaJobHistImport> getJobtitleHist(String companyId, String employeeId, GeneralDate date) {
+			return syaJobHistAdapter.findBySid(companyId, employeeId, date);
 		}
 
 		@Override
-		public Optional<SyaWkpHistImport> getWorkplaceHist(String employeeId, GeneralDate date) {
-			return syaWkpHistAdapter.findBySid(employeeId, date);
+		public Optional<SyaWkpHistImport> getWorkplaceHist(String companyId, String employeeId, GeneralDate date) {
+			return syaWkpHistAdapter.findBySid(companyId, employeeId, date);
 		}
 
 		@Override

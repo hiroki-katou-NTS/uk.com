@@ -19,8 +19,8 @@ public class SyaWkpHistAdapterImpl implements SyaWkpHistAdapter {
 	private WorkplacePub workplacePub;
 
 	@Override
-	public Optional<SyaWkpHistImport> findBySid(String employeeId, GeneralDate baseDate) {
-		Optional<SWkpHistExport> optExport = workplacePub.findBySidNew(employeeId, baseDate);
+	public Optional<SyaWkpHistImport> findBySid(String companyId, String employeeId, GeneralDate baseDate) {
+		Optional<SWkpHistExport> optExport = workplacePub.findBySidNew(companyId, employeeId, baseDate);
 		if (optExport.isPresent()) {
 			val export = optExport.get();
 			return Optional.of(new SyaWkpHistImport(

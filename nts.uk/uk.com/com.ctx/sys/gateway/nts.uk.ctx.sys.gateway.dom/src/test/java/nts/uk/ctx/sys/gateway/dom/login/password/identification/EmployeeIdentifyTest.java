@@ -1,6 +1,6 @@
 package nts.uk.ctx.sys.gateway.dom.login.password.identification;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.*;
 
 import java.util.Optional;
 
@@ -95,7 +95,7 @@ public class EmployeeIdentifyTest {
 			require.addFailureLog((PasswordAuthIdentificateFailureLog)any);
 			times = 0;
 		}};
-		result.getFailureLog().get().run();
+		result.getAtomTask().run();
 		new Verifications() {{
 			require.addFailureLog((PasswordAuthIdentificateFailureLog)any);
 			times = 1;

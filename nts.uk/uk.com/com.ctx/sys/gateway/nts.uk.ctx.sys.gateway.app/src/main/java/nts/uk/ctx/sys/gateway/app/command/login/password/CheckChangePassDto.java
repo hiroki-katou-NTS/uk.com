@@ -62,6 +62,10 @@ public class CheckChangePassDto {
 		return new CheckChangePassDto(false, null, false);
 	}
 	
+	public static CheckChangePassDto failedToIdentificate() {
+		return new CheckChangePassDto(false, "Msg_301", false);
+	}
+	
 	public static CheckChangePassDto failedToAuthPassword() {
 		return new CheckChangePassDto(false, "Msg_302", false);
 	}

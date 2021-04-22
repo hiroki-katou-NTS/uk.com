@@ -65,9 +65,7 @@ public class PasswordAuthenticateCommandHandler extends LoginCommandHandlerBase<
 		IdentificationResult idenResult = EmployeeIdentify.identifyByEmployeeCode(require, companyId, employeeCode);
 		
 		if(idenResult.isFailed()) {
-			transaction.execute(() ->{
-				idenResult.getFailureLog().get();
-			});
+			transaction.execute(idenResult.getAtomTask());
 			return AuthenticateResult.identificationFailure(idenResult);
 		}
 		
@@ -76,9 +74,9 @@ public class PasswordAuthenticateCommandHandler extends LoginCommandHandlerBase<
 				require, 
 				idenResult.getEmployeeInfo().get(), 
 				password);
-		
+				
 		if(passAuthResult.isFailed()) {
-
+			transaction.execute(passAuthResult.getAtomTask());
 			return AuthenticateResult.passAuthenticateFailure(idenResult, passAuthResult);
 		}
 			
@@ -107,7 +105,15 @@ public class PasswordAuthenticateCommandHandler extends LoginCommandHandlerBase<
 	 */
 	@Override
 	protected CheckChangePassDto authenticationFailed(Require require, AuthenticateResult authen) {
-		return CheckChangePassDto.failedToAuthPassword();
+		
+		if(!authen.getEmployeeInfo().isPresent()) {
+			// 識別失敗
+			return CheckChangePassDto.failedToIdentificate();
+		}
+		else {
+			// 認証失敗
+			return CheckChangePassDto.failedToAuthPassword();
+		}
 	}
 
 	/**
