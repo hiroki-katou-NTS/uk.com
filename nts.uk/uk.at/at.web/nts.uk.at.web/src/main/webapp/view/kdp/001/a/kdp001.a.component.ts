@@ -392,9 +392,12 @@ module nts.uk.ui.kdp001.a {
             super();
             const vm = this;
 
-            if (mode.mode === 'a') {
+            if (mode === 'a') {
                 vm.modeA(true);
             }
+
+            // console.log(mode);
+            // console.log(ko.unwrap(vm.m));
 
             vm.basyo();
 
@@ -630,6 +633,7 @@ module nts.uk.ui.kdp001.a {
                     stampMeans: STAMP_MEANS_PORTAL
                 }))
                 .then((response: any) => {
+                    
                     if (response) {
                         const { dailyAttdErrorInfos } = response;
 
