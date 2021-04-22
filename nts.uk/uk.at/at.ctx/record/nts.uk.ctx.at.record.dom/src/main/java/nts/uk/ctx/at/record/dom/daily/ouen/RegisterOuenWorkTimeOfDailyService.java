@@ -26,7 +26,7 @@ public class RegisterOuenWorkTimeOfDailyService {
 	 */
 	public static AtomTask register(Require require,String empId, GeneralDate ymd, List<OuenWorkTimeOfDailyAttendance> ouenTimes) {
 		//$実績の作業時間 = require.作業時間を取得するを取得する(社員ID,年月日)	
-		Optional<OuenWorkTimeOfDaily> domain = require.get(empId, ymd);
+		Optional<OuenWorkTimeOfDaily> domain = require.getOuenWorkTimeOfDaily(empId, ymd);
 		//	if $実績の作業時間.isPresent
 		if(domain.isPresent()) {
 			//$更新時間 = $実績の作業時間.変更する(作業時間)	
@@ -56,7 +56,7 @@ public class RegisterOuenWorkTimeOfDailyService {
 	public static interface Require {
 		//[R-1] 作業時間を取得する
 		//日別実績の応援作業別勤怠時間Repository.Get(社員ID,年月日)	
-		Optional<OuenWorkTimeOfDaily> get(String empId, GeneralDate ymd);
+		Optional<OuenWorkTimeOfDaily> getOuenWorkTimeOfDaily(String empId, GeneralDate ymd);
 		
 		//[R-2] 作業時間を追加する
 		//日別実績の応援作業別勤怠時間Repository.Insert(日別実績の応援作業別勤怠時間)	

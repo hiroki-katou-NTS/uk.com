@@ -51,5 +51,5 @@ public class RegisterWorkHoursService {
 	
 //■Private
 //■Require
-	public static interface Require extends CreateAttendanceTimeZoneForEachSupportWork.Require, CalculateAttendanceTimeBySupportWorkService.Require, RegisterOuenWorkTimeSheetOfDailyService.Require {}
+	public static interface Require extends CreateAttendanceTimeZoneForEachSupportWork.Require, CalculateAttendanceTimeBySupportWorkService.Require, RegisterOuenWorkTimeSheetOfDailyService.Require, RegisterOuenWorkTimeOfDailyService.Require {}
 }
