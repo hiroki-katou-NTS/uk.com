@@ -80,7 +80,7 @@ public class PasswordAuthenticateWithEmployeeCodeTest {
 		};
 		
 		new Expectations() {{
-			passwordAuthRequire.getPasswordPolicy(PasswordAuthenticateWithEmployeeCodeTestHelper.DUMMY.CONTRACT_CODE);
+			passwordAuthRequire.getPasswordPolicy(PasswordAuthenticateWithEmployeeCodeTestHelper.DUMMY.CONTRACT_CD);
 			result = Optional.of(PasswordAuthenticateWithEmployeeCodeTestHelper.DUMMY.PASSWORD_POLICY);
 		}};
 		
