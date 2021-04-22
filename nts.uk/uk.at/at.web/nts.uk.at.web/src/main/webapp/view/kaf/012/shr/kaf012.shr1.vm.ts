@@ -4,7 +4,7 @@ module nts.uk.at.view.kaf012.shr.viewmodel1 {
 
     const template = `
     <div id="kaf012-share-component1" class="control-group">
-        <div class="table-label" data-bind="ntsFormLabel: {}, text: $i18n('KAF012_2')"></div>
+        <div class="cell" style="font-weight: bold" data-bind="text: $i18n('KAF012_2')"></div>
         <div class="space-between-table ">
             <!-- ko if: display1() -->
             <div class="row-underline" style="display: flex; justify-content: space-between">
