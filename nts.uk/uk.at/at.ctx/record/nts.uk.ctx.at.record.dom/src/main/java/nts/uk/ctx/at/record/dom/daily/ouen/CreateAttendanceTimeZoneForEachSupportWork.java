@@ -43,7 +43,7 @@ public class CreateAttendanceTimeZoneForEachSupportWork {
 	 * @output 	日別勤怠の応援作業時間帯
 	 */
 	private static OuenWorkTimeSheetOfDailyAttendance createSupportWorkTimeZone(Require require, String empId, GeneralDate ymd, WorkDetailsParam workDetailsParam) {
-		//作業詳細.作業グループ.作業内容の有効期限を確認する(require,年月日)		
+		//作業詳細.作業グループ.作業内容の有効期限を確認する(require,年月日) anh tuấn trả lời: khi naof co thi no moi goi, nen chac ko can dau
 		workDetailsParam.getWorkGroup().get().checkExpirationDate(require, ymd);
 		
 		//$旧の作業時間帯 = require.応援作業別勤怠時間帯を取得する(社員ID,年月日,作業詳細.応援勤務枠No)
