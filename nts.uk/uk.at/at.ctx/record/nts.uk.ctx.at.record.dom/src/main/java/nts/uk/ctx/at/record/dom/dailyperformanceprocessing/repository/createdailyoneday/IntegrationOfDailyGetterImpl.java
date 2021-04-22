@@ -212,7 +212,10 @@ public class IntegrationOfDailyGetterImpl implements IntegrationOfDailyGetter {
 					temporaryTimeOfDailyAttd,
 					listRemarksOfDailyPerform.stream().map(c->c.getRemarks()).collect(Collectors.toList()),
 					snapshot.map(c -> c.getSnapshot().toDomain()));
+			
+			if(ouenSheet != null)
 			daily.setOuenTimeSheet(ouenSheet.getOuenTimeSheet());
+			
 			returnList.add(daily);
 		}
 		return returnList;
