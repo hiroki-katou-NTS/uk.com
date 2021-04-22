@@ -4,13 +4,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffAtWorkplaceImport;
-import nts.uk.ctx.bs.employee.pub.workplace.AffWorkplaceHistoryItemExport;
-
 import org.apache.commons.lang3.tuple.Pair;
 
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * 
@@ -45,5 +42,5 @@ public interface SyWorkplaceAdapter {
 	 * @param date
 	 * @return
 	 */
-	AffAtWorkplaceImport getAffWkpHistItemByEmpDate(String employeeID, GeneralDate date);
+	String getAffWkpHistItemByEmpDate(String employeeID, GeneralDate date);
 }
