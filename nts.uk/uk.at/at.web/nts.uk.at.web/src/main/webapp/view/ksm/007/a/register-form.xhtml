@@ -72,7 +72,7 @@
         </button>
       </div>      
       <div class="cell">
-        <div class="table">
+        <div class="table" data-bind="if: nightShiftOperationAtr() == 1">
           <div
             class="cell"
             data-bind="text: '#{i18n.getText('KSM007_48')}'"
