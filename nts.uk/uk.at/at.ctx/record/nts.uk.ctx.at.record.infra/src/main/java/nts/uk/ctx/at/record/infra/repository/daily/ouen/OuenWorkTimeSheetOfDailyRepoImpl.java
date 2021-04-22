@@ -19,6 +19,7 @@ import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.record.dom.daily.ouen.OuenWorkTimeSheetOfDaily;
 import nts.uk.ctx.at.record.dom.daily.ouen.OuenWorkTimeSheetOfDailyRepo;
 import nts.uk.ctx.at.record.infra.entity.daily.ouen.KrcdtDayOuenTimeSheet;
+import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.EngravingMethod;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.ReasonTimeChange;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
@@ -27,6 +28,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.time
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenWorkTimeSheetOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.TimeSheetOfAttendanceEachOuenSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.WorkContent;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.WorkinputRemarks;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.record.WorkplaceOfWorkEachOuen;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.work.WorkGroup;
 import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
@@ -144,9 +146,9 @@ public class OuenWorkTimeSheetOfDailyRepoImpl extends JpaRepository implements O
 		List<OuenWorkTimeSheetOfDailyAttendance> ouenTimeSheet = es.stream().map(ots -> OuenWorkTimeSheetOfDailyAttendance.create(
 				ots.pk.ouenNo, 
 				WorkContent.create(
-						ots.cid, 
-						WorkplaceOfWorkEachOuen.create(ots.workplaceId, new WorkLocationCD(ots.workLocationCode)), 
-						Optional.of(WorkGroup.create(ots.workCd1, ots.workCd2, ots.workCd3, ots.workCd4, ots.workCd5))), 
+						WorkplaceOfWorkEachOuen.create(new WorkplaceId(ots.workplaceId), new WorkLocationCD(ots.workLocationCode)), 
+						Optional.of(WorkGroup.create(ots.workCd1, ots.workCd2, ots.workCd3, ots.workCd4, ots.workCd5)),
+						StringUtil.isNullOrEmpty(ots.workRemarks, true) ? Optional.empty() : Optional.of(new WorkinputRemarks(ots.workRemarks))), 
 				TimeSheetOfAttendanceEachOuenSheet.create(
 						new WorkNo(ots.workNo), 
 						Optional.of(new WorkTimeInformation(

@@ -17,6 +17,7 @@ import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.ModelEmpInfo
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.MonitorIntervalTime;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.PartialIpAddress;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
+import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD;
 
 /**
@@ -33,7 +34,7 @@ public class EmpInfoTerminalHelper {
 				Optional.of(new EmpInfoTerSerialNo("1")), 
 				new EmpInfoTerminalName(""),
 				new ContractCode("1"))
-				.createStampInfo(new CreateStampInfo(null, null, Optional.of(new WorkLocationCD("WCD")), Optional.of("WID")))
+				.createStampInfo(new CreateStampInfo(null, null, Optional.of(new WorkLocationCD("WCD")), Optional.of(new WorkplaceId("WID"))))
 				.modelEmpInfoTer(ModelEmpInfoTer.NRL_1)
 				.intervalTime((new MonitorIntervalTime(1))).build();
 		return empInfoTerminal;

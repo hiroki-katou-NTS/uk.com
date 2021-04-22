@@ -199,13 +199,13 @@ public class SupportWorkReflection {
 		// 作業Temporarｙから「日別実績の応援作業別勤怠時間帯」にデータ入れる
 		WorkplaceOfWorkEachOuen eachOuen = null;
 		if (informationWork.getLocationCD() != null) {
-			eachOuen = WorkplaceOfWorkEachOuen.create(informationWork.getWorkplaceId().v(),
+			eachOuen = WorkplaceOfWorkEachOuen.create(new WorkplaceId(informationWork.getWorkplaceId().v()),
 					new WorkLocationCD(informationWork.getLocationCD().v()));
 		} else {
-			eachOuen = WorkplaceOfWorkEachOuen.create(informationWork.getWorkplaceId().v(), null);
+			eachOuen = WorkplaceOfWorkEachOuen.create(new WorkplaceId(informationWork.getWorkplaceId().v()), null);
 		}
 
-		WorkContent workContent = WorkContent.create(companyId, eachOuen, Optional.empty());
+		WorkContent workContent = WorkContent.create(eachOuen, Optional.empty(), Optional.empty());
 
 		TimeSheetOfAttendanceEachOuenSheet timeSheet = null;
 
@@ -1041,11 +1041,11 @@ public class SupportWorkReflection {
 		String cid = AppContexts.user().companyId();
 
 		OuenWorkTimeSheetOfDailyAttendance attendance = null;
-		WorkplaceOfWorkEachOuen eachOuen = WorkplaceOfWorkEachOuen.create(informationWork.getWorkplaceId().v(),
+		WorkplaceOfWorkEachOuen eachOuen = WorkplaceOfWorkEachOuen.create(new WorkplaceId(informationWork.getWorkplaceId().v()),
 				informationWork.getLocationCD() == null ? null
 						: new WorkLocationCD(informationWork.getLocationCD().v()));
 
-		WorkContent workContent = WorkContent.create(cid, eachOuen, Optional.empty());
+		WorkContent workContent = WorkContent.create(eachOuen, Optional.empty(), Optional.empty());
 		if (startAtr == StartAtr.START_OF_SUPPORT) {
 			TimeSheetOfAttendanceEachOuenSheet timeSheet = TimeSheetOfAttendanceEachOuenSheet.create(new WorkNo(0),
 					Optional.ofNullable(timeDay), Optional.empty());
