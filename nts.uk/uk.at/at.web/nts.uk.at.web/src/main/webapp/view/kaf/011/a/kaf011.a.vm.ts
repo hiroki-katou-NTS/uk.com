@@ -26,8 +26,8 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 		appCombinaSelected = ko.observable(0);
 		appCombinaDipslay = ko.observable(false);
 		
-		recruitmentApp = new RecruitmentApp(0);
-		absenceLeaveApp = new AbsenceLeaveApp(1);
+		recruitmentApp = new RecruitmentApp(0, ko.observable(false));
+		absenceLeaveApp = new AbsenceLeaveApp(1, ko.observable(false));
 		
 		isAgentMode = ko.observable(false);
 		
