@@ -75,7 +75,7 @@ public class CreateAlarmDataTopPageService {
         List<String> checkWkplId = wkplHistoryInfos.stream().map(AffAtWorkplaceExport::getWorkplaceId).distinct().collect(Collectors.toList()); // 1,2,3,4
 
         //$エラーがある職場IDList　＝　$エラーがある社員IDList　：　map　$社員IDMap.get($)
-        List<String> wkplIdListErrors = empIdErrors.stream().map(empIdMap::get).filter(Objects::nonNull).collect(Collectors.toList()); // 1,2
+        List<String> wkplIdListErrors = empIdErrors.stream().map(empIdMap::get).filter(Objects::nonNull).distinct().collect(Collectors.toList()); // 1,2
         //$エラーがなくなった職場IDList　＝　$チェックの職場IDList　：　except　$エラーがある職場IDList
         List<String> wkplIdListNotErrors = checkWkplId.stream()
                 .filter(x -> !wkplIdListErrors.contains(x))
@@ -83,12 +83,11 @@ public class CreateAlarmDataTopPageService {
 
         Optional<DeleteInfoAlarmImport> delInfo = Optional.empty();
         if (!CollectionUtil.isEmpty(wkplIdListNotErrors)) {
-            //$全てエラーが解除済み社員　＝　$エラーがなくなった職場IDList　：　map　$職場Map.get($)
-            // TODO: QA
             List<String> allEmpErrorsRemoved = new ArrayList<>();
-//            List<String> allEmpErrorsRemoved = wkplIdListNotErrors.stream()
-//                    .flatMap(x -> workplaceMap.get(x).stream().map(z -> z.getEmployeeId()))
-//                    .collect(Collectors.toList());
+            wkplIdListNotErrors.forEach(x -> {
+                List<String> preEmpIds = require.getListEmployeeId(x, GeneralDate.today());
+                allEmpErrorsRemoved.addAll(preEmpIds);
+            });
 
             //$削除の情報　＝　削除の情報Param#作成する(アラームリスト、 $全てエラーが解除済み社員、 上長、 $パターンコード )
             delInfo = Optional.of(DeleteInfoAlarmImport.builder()

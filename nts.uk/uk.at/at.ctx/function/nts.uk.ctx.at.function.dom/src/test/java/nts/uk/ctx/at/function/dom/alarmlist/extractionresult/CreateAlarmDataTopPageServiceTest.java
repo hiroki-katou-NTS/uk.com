@@ -78,6 +78,9 @@ public class CreateAlarmDataTopPageServiceTest {
                 require.getWorkplaceId(employeeIds, GeneralDate.today());
                 result = affAtWorkplaceExports;
 
+                require.getListEmployeeId("S002", GeneralDate.today());
+                result = Arrays.asList("sya004", "sya005");
+
                 require.getListEmployeeId("S001", GeneralDate.today());
                 result = Arrays.asList("sya001", "sya002", "sya003");
             }
