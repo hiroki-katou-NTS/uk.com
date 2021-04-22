@@ -18,7 +18,6 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.support.GetSupportDat
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.support.JudCriteriaSameStampOfSupportRepo;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.support.JudgmentCriteriaSameStampOfSupport;
 import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
-import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SysWorkplaceAdapter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.affiliationinfor.AffiliationInforOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
@@ -52,9 +51,6 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  */
 @Stateless
 public class SupportWorkReflection {
-
-	@Inject
-	private SysWorkplaceAdapter sysWorkplaceAdapter;
 
 	@Inject
 	private JudCriteriaSameStampOfSupportRepo ofSupportRepo;
@@ -1207,8 +1203,6 @@ public class SupportWorkReflection {
 
 			@Override
 			public int compare(OuenWorkTimeSheetOfDailyAttendance arg0, OuenWorkTimeSheetOfDailyAttendance arg1) {
-				// TODO Auto-generated method stub
-				List<OuenWorkTimeSheetOfDailyAttendance> lstOuenWorkTimes = lstOuenWorkTime;
 				Optional<TimeWithDayAttr> start1 = arg0.getTimeSheet().getStart().isPresent()
 						? arg0.getTimeSheet().getStart().get().getTimeWithDay()
 						: Optional.empty();
