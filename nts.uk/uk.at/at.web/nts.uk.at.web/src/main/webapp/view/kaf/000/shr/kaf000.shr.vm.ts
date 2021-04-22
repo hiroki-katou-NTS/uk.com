@@ -358,7 +358,7 @@ module nts.uk.at.view.kaf000.shr.viewmodel {
 			});
 		}
 		
-		public static handleAfterRegister(result: any, isSendMail: boolean, vm: any, isAgentMode: boolean, employeeInfoLst?: any) {
+		public static handleAfterRegister(result: any, isSendMail: boolean, vm: any, isMultiEmp: boolean, employeeInfoLst?: any) {
 			if(result.autoSendMail) {
 				CommonProcess.handleMailResult(result, vm).then(() => {
 					location.reload();		
@@ -366,7 +366,7 @@ module nts.uk.at.view.kaf000.shr.viewmodel {
 			} else if(isSendMail) {
 				let command = {
 					appIDLst: result.appIDLst,
-					isAgentMode: isAgentMode,
+					isMultiEmp: isMultiEmp,
 					employeeInfoLst: employeeInfoLst
 				};
                 nts.uk.ui.windows.setShared("KDL030_PARAM", command);
