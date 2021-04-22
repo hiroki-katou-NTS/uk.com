@@ -20,7 +20,7 @@ public class SyaJodHistAdapterImpl implements SyaJobHistAdapter {
 	private SyJobTitlePub syJobTitlePub;
 
 	@Override
-	public Optional<SyaJobHistImport> findBySid(String employeeId, GeneralDate baseDate) {
+	public Optional<SyaJobHistImport> findBySid(String companyId, String employeeId, GeneralDate baseDate) {
 		Optional<EmployeeJobHistExport> optExport = syJobTitlePub.findSJobHistBySId(employeeId, baseDate);
 		if (optExport.isPresent()) {
 			val export = optExport.get();

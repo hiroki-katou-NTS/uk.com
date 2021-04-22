@@ -6,5 +6,5 @@ import nts.arc.time.GeneralDate;
 
 public interface SyaEmpHistAdapter {
 	
-	Optional<SyaEmpHistImport> findBySid(String employeeId, GeneralDate baseDate);
+	Optional<SyaEmpHistImport> findBySid(String companyId, String employeeId, GeneralDate baseDate);
 }

@@ -2,7 +2,8 @@ package nts.uk.ctx.sys.gateway.dom.login.password.identification;
 
 import java.util.Optional;
 
-import lombok.Value;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.val;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
@@ -50,13 +51,14 @@ public class EmployeeIdentify {
 	/**
 	 * 識別結果
 	 */
-	@Value
+	@AllArgsConstructor
 	public static class IdentificationResult {
 		
 		// 識別成功
 		private boolean identificationSuccess;
 		
 		// 識別された社員
+		@Getter
 		private Optional<IdentifiedEmployeeInfo> employeeInfo;
 		
 		// 識別失敗記録の永続化処理
@@ -68,6 +70,14 @@ public class EmployeeIdentify {
 
 		public boolean isFailed() {
 			return !this.identificationSuccess;
+		}
+		
+		public AtomTask getAtomTask() {
+			AtomTask atomTasks = AtomTask.none();
+			if(failureLog.isPresent()) {
+				atomTasks.then(failureLog.get());
+			}
+			return atomTasks;
 		}
 		
 		/**

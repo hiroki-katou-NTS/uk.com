@@ -29,6 +29,7 @@ public class CheckEmployeeAvailabilityTest {
 	private CheckEmployeeAvailability.Require require;
 	
 	private static class Dummy{
+		private static String companyId = "comcom";
 		private static String employeeId = "empemp";
 		private static GeneralDate today = GeneralDate.today();
 	}
@@ -59,13 +60,13 @@ public class CheckEmployeeAvailabilityTest {
 			require.getCompanyHist(Dummy.employeeId, Dummy.today);
 			result = Optional.of(comHistImp);
 			
-			require.getEmploymentHist(Dummy.employeeId, Dummy.today);
+			require.getEmploymentHist(Dummy.companyId, Dummy.employeeId, Dummy.today);
 			result = Optional.empty();
 			
-			require.getJobtitleHist(Dummy.employeeId, Dummy.today);
+			require.getJobtitleHist(Dummy.companyId, Dummy.employeeId, Dummy.today);
 			result = Optional.of(jobHistImp);
 			
-			require.getWorkplaceHist(Dummy.employeeId, Dummy.today);
+			require.getWorkplaceHist(Dummy.companyId, Dummy.employeeId, Dummy.today);
 			result = Optional.of(wkpHistImp);
 		}};
 		
@@ -84,13 +85,13 @@ public class CheckEmployeeAvailabilityTest {
 			require.getCompanyHist(Dummy.employeeId, Dummy.today);
 			result = Optional.of(comHistImp);
 			
-			require.getEmploymentHist(Dummy.employeeId, Dummy.today);
+			require.getEmploymentHist(Dummy.companyId, Dummy.employeeId, Dummy.today);
 			result = Optional.of(empHistImp);
 			
-			require.getJobtitleHist(Dummy.employeeId, Dummy.today);
+			require.getJobtitleHist(Dummy.companyId, Dummy.employeeId, Dummy.today);
 			result = Optional.empty();
 			
-			require.getWorkplaceHist(Dummy.employeeId, Dummy.today);
+			require.getWorkplaceHist(Dummy.companyId, Dummy.employeeId, Dummy.today);
 			result = Optional.of(wkpHistImp);
 		}};
 		
@@ -109,13 +110,13 @@ public class CheckEmployeeAvailabilityTest {
 			require.getCompanyHist(Dummy.employeeId, Dummy.today);
 			result = Optional.of(comHistImp);
 			
-			require.getEmploymentHist(Dummy.employeeId, Dummy.today);
+			require.getEmploymentHist(Dummy.companyId, Dummy.employeeId, Dummy.today);
 			result = Optional.of(empHistImp);
 			
-			require.getJobtitleHist(Dummy.employeeId, Dummy.today);
+			require.getJobtitleHist(Dummy.companyId, Dummy.employeeId, Dummy.today);
 			result = Optional.of(jobHistImp);
 			
-			require.getWorkplaceHist(Dummy.employeeId, Dummy.today);
+			require.getWorkplaceHist(Dummy.companyId, Dummy.employeeId, Dummy.today);
 			result = Optional.empty();
 		}};
 		
@@ -134,13 +135,13 @@ public class CheckEmployeeAvailabilityTest {
 			require.getCompanyHist(Dummy.employeeId, Dummy.today);
 			result = Optional.of(comHistImp);
 			
-			require.getEmploymentHist(Dummy.employeeId, Dummy.today);
+			require.getEmploymentHist(Dummy.companyId, Dummy.employeeId, Dummy.today);
 			result = Optional.of(empHistImp);
 			
-			require.getJobtitleHist(Dummy.employeeId, Dummy.today);
+			require.getJobtitleHist(Dummy.companyId, Dummy.employeeId, Dummy.today);
 			result = Optional.of(jobHistImp);
 			
-			require.getWorkplaceHist(Dummy.employeeId, Dummy.today);
+			require.getWorkplaceHist(Dummy.companyId, Dummy.employeeId, Dummy.today);
 			result = Optional.of(wkpHistImp);
 		}};
 		

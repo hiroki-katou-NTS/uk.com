@@ -19,8 +19,8 @@ public class SyaEmpHistAdapterImpl implements SyaEmpHistAdapter {
 	private SyEmploymentPub syEmploymentPub;
 
 	@Override
-	public Optional<SyaEmpHistImport> findBySid(String employeeId, GeneralDate baseDate) {
-		Optional<SEmpHistExport> optExport = syEmploymentPub.findSEmpHistBySid(employeeId, baseDate);
+	public Optional<SyaEmpHistImport> findBySid(String companyId, String employeeId, GeneralDate baseDate) {
+		Optional<SEmpHistExport> optExport = syEmploymentPub.findSEmpHistBySid(companyId, employeeId, baseDate);
 		if (optExport.isPresent()) {
 			val export = optExport.get();
 			return Optional.of(new SyaEmpHistImport(

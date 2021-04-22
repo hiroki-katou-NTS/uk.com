@@ -22,7 +22,7 @@ public class ConnectDataSourceOfTenant {
 		}
 		
 		// テナント認証
-		val result = AuthenticateOfTenant.authenticate(require, loginClient, tenantCode, password);
+		val result = AuthenticateOfTenant.authenticate(require, tenantCode, password, loginClient);
 		if(result.isFailure()) {
 			if (UKServerSystemProperties.usesTenantLocator()) {
 				// テナント認証に失敗した場合、データソースとの接続を切断する

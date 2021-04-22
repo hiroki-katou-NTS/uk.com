@@ -26,11 +26,11 @@ public class CheckEmployeeAvailability {
 		
 		// 社員の所属情報が正しいかチェックする
 		// 雇用所属履歴
-		val affEmp = require.getEmploymentHist(identified.getEmployeeId(), GeneralDate.today());
+		val affEmp = require.getEmploymentHist(identified.getCompanyId(), identified.getEmployeeId(), GeneralDate.today());
 		// 職位所属履歴
-		val affJob = require.getJobtitleHist(identified.getEmployeeId(), GeneralDate.today());
+		val affJob = require.getJobtitleHist(identified.getCompanyId(), identified.getEmployeeId(), GeneralDate.today());
 		// 職場所属履歴
-		val affWkp = require.getWorkplaceHist(identified.getEmployeeId(), GeneralDate.today());
+		val affWkp = require.getWorkplaceHist(identified.getCompanyId(), identified.getEmployeeId(), GeneralDate.today());
 		
 		if(!affEmp.isPresent() || !affJob.isPresent() || !affWkp.isPresent()) {
 			throw new BusinessException("Msg_1420");
@@ -44,8 +44,8 @@ public class CheckEmployeeAvailability {
 			AccountLockPolicy.Require, 
 			CheckUserAvailability.Require {
 		Optional<SyaCompanyHistImport> getCompanyHist(String employeeId, GeneralDate date);
-		Optional<SyaEmpHistImport> getEmploymentHist(String employeeId, GeneralDate date);
-		Optional<SyaJobHistImport> getJobtitleHist(String employeeId, GeneralDate date);
-		Optional<SyaWkpHistImport> getWorkplaceHist(String employeeId, GeneralDate date);
+		Optional<SyaEmpHistImport> getEmploymentHist(String companyId, String employeeId, GeneralDate date);
+		Optional<SyaJobHistImport> getJobtitleHist(String companyId, String employeeId, GeneralDate date);
+		Optional<SyaWkpHistImport> getWorkplaceHist(String companyId, String employeeId, GeneralDate date);
 	}
 }
