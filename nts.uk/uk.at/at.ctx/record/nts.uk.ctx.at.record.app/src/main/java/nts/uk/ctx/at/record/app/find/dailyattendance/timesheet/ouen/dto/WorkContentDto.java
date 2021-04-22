@@ -21,8 +21,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.u
 /** 作業内容 */
 public class WorkContentDto implements  ItemConst, AttendanceItemDataGate {
 	
-	/** 勤務先会社ID: 会社ID */
-	private String companyId;
 	
 	/** 勤務先: 応援別勤務の勤務先 */
 	@AttendanceItemLayout(layout = LAYOUT_C, jpPropertyName = WORKPLACE_BYSUPPORT)
@@ -36,7 +34,6 @@ public class WorkContentDto implements  ItemConst, AttendanceItemDataGate {
 	@Override
 	public WorkContentDto clone() {
 		WorkContentDto result = new WorkContentDto();
-		result.setCompanyId(companyId == null ? null : companyId);
 		result.setWorkplace(workplace == null ? null : workplace.clone());
 		result.setWork(work == null ? null : work.clone());
 		return result;

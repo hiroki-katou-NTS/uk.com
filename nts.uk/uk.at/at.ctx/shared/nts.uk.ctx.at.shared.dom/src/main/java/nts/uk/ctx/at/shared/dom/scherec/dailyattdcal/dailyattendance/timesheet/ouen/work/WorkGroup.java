@@ -46,10 +46,10 @@ public class WorkGroup implements DomainObject {
 		
 		return new WorkGroup(
 				new WorkCode(workCd1), 
-				Optional.of(workCode(workCd2)), 
-				Optional.of(workCode(workCd3)),
-				Optional.of(workCode(workCd4)),
-				Optional.of(workCode(workCd5)));
+				Optional.ofNullable(workCode(workCd2)), 
+				Optional.ofNullable(workCode(workCd3)),
+				Optional.ofNullable(workCode(workCd4)),
+				Optional.ofNullable(workCode(workCd5)));
 	}
 	private static WorkCode workCode(String workCd2) {
 		return workCd2 == null ? null : new WorkCode(workCd2);

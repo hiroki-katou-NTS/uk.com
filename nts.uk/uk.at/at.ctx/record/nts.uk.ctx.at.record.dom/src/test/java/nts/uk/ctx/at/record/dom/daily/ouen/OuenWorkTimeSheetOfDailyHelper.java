@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenWorkTimeSheetOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.TimeSheetOfAttendanceEachOuenSheet;
@@ -26,10 +27,9 @@ public class OuenWorkTimeSheetOfDailyHelper {
 	public static OuenWorkTimeSheetOfDaily getOuenWorkTimeSheetOfDailyDefault() {
 		OuenWorkTimeSheetOfDailyAttendance ouenTimeSheet = OuenWorkTimeSheetOfDailyAttendance.create(
 				1, 
-				WorkContent.create(
-						"companyId", 
-						WorkplaceOfWorkEachOuen.create("workplaceId", new WorkLocationCD("WCD")), 
-						Optional.empty()), 
+				WorkContent.create( 
+						WorkplaceOfWorkEachOuen.create(new WorkplaceId("workplaceId"), new WorkLocationCD("WCD")), 
+						Optional.empty(), Optional.empty()), 
 				TimeSheetOfAttendanceEachOuenSheet.create(new WorkNo(1), Optional.empty(), Optional.empty()));
 		ouenTimeSheets.add(ouenTimeSheet);
 		return OuenWorkTimeSheetOfDaily.create(

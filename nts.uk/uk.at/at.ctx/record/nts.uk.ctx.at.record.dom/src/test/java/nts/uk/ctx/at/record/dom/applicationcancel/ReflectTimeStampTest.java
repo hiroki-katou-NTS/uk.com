@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.dom.applicationcancel;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 import org.junit.Test;
@@ -181,6 +182,6 @@ public class ReflectTimeStampTest {
 	}
 
 	private OutputTimeReflectForWorkinfo createInput() {
-		return new OutputTimeReflectForWorkinfo(EndStatus.NORMAL, new StampReflectRangeOutput());
+		return new OutputTimeReflectForWorkinfo(EndStatus.NORMAL, new StampReflectRangeOutput(),new ArrayList<>());
 	}
 }

@@ -134,6 +134,7 @@ public class TimeReflectFromWorkinfo {
 					return outputTimeReflectForWorkinfo;
 				}
 			}
+			workTimeCode = optWorkInfo.get().getWorkTimeCode();
 		}
 		// ドメインモデル「就業時間帯の設定」を取得する
 		Optional<WorkTimeSetting> workTimeOpt = this.workTimeSettingRepository.findByCodeAndAbolishCondition(companyId,

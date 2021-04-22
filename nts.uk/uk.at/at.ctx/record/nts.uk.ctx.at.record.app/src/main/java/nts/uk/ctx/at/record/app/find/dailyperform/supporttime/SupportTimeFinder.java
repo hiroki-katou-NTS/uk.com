@@ -3,6 +3,7 @@
  */
 package nts.uk.ctx.at.record.app.find.dailyperform.supporttime;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -65,13 +66,31 @@ public class SupportTimeFinder extends FinderFacade{
 	@Override
 	@SuppressWarnings("unchecked")
 	public <T extends ConvertibleAttendanceItem> List<T> find(Map<String, List<GeneralDate>> param) {
-		return (List<T>) param.keySet().stream()
-						.map(c -> param.get(c).stream().map(d -> finds(c, d))
-													.flatMap(List::stream)
-													.filter(d -> d.isHaveData())
-													.collect(Collectors.toList()))
-						.flatMap(List::stream)
-						.collect(Collectors.toList());
+		
+		List<OuenWorkTimeSheetOfDaily> domains = this.repo.find(param);
+		List<OuenWorkTimeSheetOfDailyAttendanceDto> dtos = group(domains);
+		return (List<T>) dtos;
+	}
+	
+	private List<OuenWorkTimeSheetOfDailyAttendanceDto> group(List<OuenWorkTimeSheetOfDaily> domains) {
+		Map<String, Map<GeneralDate, List<OuenWorkTimeSheetOfDaily>>> supports = domains.stream()
+				.collect(Collectors.groupingBy(OuenWorkTimeSheetOfDaily::getEmpId,
+						Collectors.collectingAndThen(Collectors.toList(), list -> list.stream()
+								.collect(Collectors.groupingBy(OuenWorkTimeSheetOfDaily::getYmd, Collectors.toList())))));
+
+		List<OuenWorkTimeSheetOfDailyAttendanceDto> dto = new ArrayList<>();
+
+		supports.entrySet().forEach(es -> {
+			es.getValue().entrySet().forEach(ves -> {
+				ves.getValue().forEach( tves -> {
+					tves.getOuenTimeSheet().forEach( s -> {
+						dto.add(OuenWorkTimeSheetOfDailyAttendanceDto.from(es.getKey(), ves.getKey(), s));
+					});
+				});
+			});
+		});
+
+		return dto;
 	}
 
 	@Override

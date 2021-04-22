@@ -300,7 +300,7 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
             }
         }).then((result) => {
 			if(result) {
-				CommonProcess.handleAfterRegister(result, self.isSendMail(), self);
+				CommonProcess.handleAfterRegister(result, self.isSendMail(), self, self.isAgentMode());
 			}
 		}).fail(res => {
             self.showError(res);

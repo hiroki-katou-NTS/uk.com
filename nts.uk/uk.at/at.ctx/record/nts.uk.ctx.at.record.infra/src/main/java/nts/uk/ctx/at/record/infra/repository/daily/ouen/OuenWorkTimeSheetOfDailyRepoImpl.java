@@ -2,18 +2,24 @@ package nts.uk.ctx.at.record.infra.repository.daily.ouen;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.query.TypedQueryWrapper;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.gul.collection.CollectionUtil;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.record.dom.daily.ouen.OuenWorkTimeSheetOfDaily;
 import nts.uk.ctx.at.record.dom.daily.ouen.OuenWorkTimeSheetOfDailyRepo;
 import nts.uk.ctx.at.record.infra.entity.daily.ouen.KrcdtDayOuenTimeSheet;
+import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.EngravingMethod;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.ReasonTimeChange;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
@@ -22,6 +28,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.time
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenWorkTimeSheetOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.TimeSheetOfAttendanceEachOuenSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.WorkContent;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.WorkinputRemarks;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.record.WorkplaceOfWorkEachOuen;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.work.WorkGroup;
 import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
@@ -84,6 +91,17 @@ public class OuenWorkTimeSheetOfDailyRepoImpl extends JpaRepository implements O
 		
 		return false;
 	}
+	
+	public Optional<KrcdtDayOuenTimeSheet> getEntity(String empId, GeneralDate ymd, int ouenNo ) {
+		Optional<KrcdtDayOuenTimeSheet> entitis = queryProxy()
+				.query("SELECT o FROM KrcdtDayOuenTimeSheet o WHERE o.pk.sid = :sid AND o.pk.ymd = :ymd AND o.pk.ouenNo = :ouenNo", KrcdtDayOuenTimeSheet.class)
+				.setParameter("sid", empId)
+				.setParameter("ymd", ymd)
+				.setParameter("ouenNo", ouenNo)
+				.getSingle();
+		
+		return entitis;
+	}
 
 	@Override
 	public void update(List<OuenWorkTimeSheetOfDaily> domain) {
@@ -97,11 +115,24 @@ public class OuenWorkTimeSheetOfDailyRepoImpl extends JpaRepository implements O
 			lstEntity.addAll(e);
 		});
 		lstEntity.forEach(i -> {
-			if(!this.findPK(i.pk.sid, i.pk.ymd, i.pk.ouenNo))
+			Optional<KrcdtDayOuenTimeSheet> entityOld = getEntity(i.pk.sid, i.pk.ymd, i.pk.ouenNo);
+			if(!entityOld.isPresent()){
 				commandProxy().insert(i);
-			else
-				commandProxy().update(i);
+			} else{
+				updateData(entityOld.get(), i);
+				commandProxy().update(entityOld.get());
+			}
 		});
+	}
+
+	private void updateData(KrcdtDayOuenTimeSheet entityOld, KrcdtDayOuenTimeSheet dataUpdate) {
+		entityOld.startTime = dataUpdate.startTime;
+		entityOld.endTime = dataUpdate.endTime;
+		entityOld.workCd1 = StringUtil.isNullOrEmpty(dataUpdate.workCd1, true) ? null : dataUpdate.workCd1;
+		entityOld.workCd2 = dataUpdate.workCd2;
+		entityOld.workCd3 = dataUpdate.workCd3;
+		entityOld.workCd4 = dataUpdate.workCd4;
+		entityOld.workCd5 = dataUpdate.workCd5;
 	}
 
 	@Override
@@ -113,24 +144,21 @@ public class OuenWorkTimeSheetOfDailyRepoImpl extends JpaRepository implements O
 	
 	public OuenWorkTimeSheetOfDaily toDomain(List<KrcdtDayOuenTimeSheet> es) {
 		List<OuenWorkTimeSheetOfDailyAttendance> ouenTimeSheet = es.stream().map(ots -> OuenWorkTimeSheetOfDailyAttendance.create(
-				es.get(0).pk.ouenNo, 
+				ots.pk.ouenNo, 
 				WorkContent.create(
-						ots.cid, 
-						WorkplaceOfWorkEachOuen.create(ots.workplaceId, new WorkLocationCD(ots.workLocationCode)), 
-						Optional.ofNullable(ots.workCd1 == null ? null : 
-							WorkGroup.create(ots.workCd1, ots.workCd2, ots.workCd3, ots.workCd4, ots.workCd5))), 
+						WorkplaceOfWorkEachOuen.create(new WorkplaceId(ots.workplaceId), new WorkLocationCD(ots.workLocationCode)), 
+						Optional.of(WorkGroup.create(ots.workCd1, ots.workCd2, ots.workCd3, ots.workCd4, ots.workCd5)),
+						StringUtil.isNullOrEmpty(ots.workRemarks, true) ? Optional.empty() : Optional.of(new WorkinputRemarks(ots.workRemarks))), 
 				TimeSheetOfAttendanceEachOuenSheet.create(
 						new WorkNo(ots.workNo), 
-						Optional.ofNullable(ots.startTime == null ? null : 
-							new WorkTimeInformation(
+						Optional.of(new WorkTimeInformation(
 									new ReasonTimeChange(
-											EnumAdaptor.valueOf(ots.startTimeChangeWay, TimeChangeMeans.class), 
+											ots.startTimeChangeWay == null ? TimeChangeMeans.REAL_STAMP : EnumAdaptor.valueOf(ots.startTimeChangeWay, TimeChangeMeans.class), 
 											ots.startStampMethod == null ? Optional.empty() : Optional.of(EnumAdaptor.valueOf(ots.startStampMethod, EngravingMethod.class))), 
 									ots.startTime == null ? null : new TimeWithDayAttr(ots.startTime))), 
-						Optional.ofNullable(ots.endTime == null ? null : 
-							new WorkTimeInformation(
+						Optional.of(new WorkTimeInformation(
 									new ReasonTimeChange(
-											EnumAdaptor.valueOf(ots.endTimeChangeWay, TimeChangeMeans.class), 
+											ots.endTimeChangeWay == null ? TimeChangeMeans.REAL_STAMP : EnumAdaptor.valueOf(ots.endTimeChangeWay, TimeChangeMeans.class), 
 											ots.endStampMethod == null ? Optional.empty() : Optional.of(EnumAdaptor.valueOf(ots.endStampMethod, EngravingMethod.class))), 
 									ots.endTime == null ? null : new TimeWithDayAttr(ots.endTime)))))).collect(Collectors.toList());
 		
@@ -144,6 +172,34 @@ public class OuenWorkTimeSheetOfDailyRepoImpl extends JpaRepository implements O
 		this.getEntityManager().createQuery(delete).setParameter("sid", sid)
 												   .setParameter("ymd", ymd)
 												   .executeUpdate();
+	}
+
+	@Override
+	public List<OuenWorkTimeSheetOfDaily> find(Map<String, List<GeneralDate>> param) {
+		List<KrcdtDayOuenTimeSheet> supports = new ArrayList<>();
+		String query = new StringBuilder("SELECT sp FROM KrcdtDayOuenTimeSheet sp")
+								.append(" WHERE sp.pk.sid IN :sid")
+								.append(" AND sp.pk.ymd IN :date")
+								.toString();
+		TypedQueryWrapper<KrcdtDayOuenTimeSheet> tpQuery = queryProxy().query(query, KrcdtDayOuenTimeSheet.class);
+		CollectionUtil.split(param, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, p -> {
+			supports.addAll(tpQuery.setParameter("sid", p.keySet())
+					.setParameter("date", p.values().stream().flatMap(List::stream).collect(Collectors.toSet()))
+					.getList().stream()
+					.collect(Collectors.toList()));
+		});
+		
+		List<OuenWorkTimeSheetOfDaily> domains = new ArrayList<>();
+		param.forEach((sid, dates) -> {
+			dates.forEach(date -> {
+				List<KrcdtDayOuenTimeSheet> supportsByEmp = supports.stream().filter(c -> c.pk.sid.equals(sid) && c.pk.ymd.equals(date)).collect(Collectors.toList());
+				if (!supportsByEmp.isEmpty()) {
+					domains.add(toDomain(supportsByEmp));
+				}
+			});
+		});
+
+		return domains;
 	}
 
 }

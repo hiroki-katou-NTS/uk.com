@@ -3,7 +3,6 @@ package nts.uk.ctx.at.record.infra.entity.daily.ouen;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -12,33 +11,18 @@ import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.daily.ouen.OuenWorkTimeSheetOfDaily;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.EngravingMethod;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.ReasonTimeChange;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkTimeInformation;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenWorkTimeSheetOfDailyAttendance;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.TimeSheetOfAttendanceEachOuenSheet;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.WorkContent;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.record.WorkplaceOfWorkEachOuen;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.work.WorkGroup;
-import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
-import nts.uk.shr.com.time.TimeWithDayAttr;
-import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractCompanyUkJpaEntity;
 
 @Entity
 @NoArgsConstructor
 @Table(name = "KRCDT_DAY_TS_SUP")
-public class KrcdtDayOuenTimeSheet extends ContractUkJpaEntity implements Serializable {
+public class KrcdtDayOuenTimeSheet extends ContractCompanyUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	/** 主キー */
 	@EmbeddedId
 	public KrcdtDayOuenTimePK pk;
-
-	/** 勤務先会社ID */
-	@Column(name = "SUP_CID")
-	public String cid;
 
 	/** 職場ID */
 	@Column(name = "WORKPLACE_ID")
@@ -95,6 +79,10 @@ public class KrcdtDayOuenTimeSheet extends ContractUkJpaEntity implements Serial
 	/** 作業CD5 */
 	@Column(name = "WORK_CD5")
 	public String workCd5;
+	
+	/** 作業CD5 */
+	@Column(name = "WORK_REMARKS")
+	public String workRemarks;
 
 	@Override
 	protected Object getKey() {
@@ -111,8 +99,7 @@ public class KrcdtDayOuenTimeSheet extends ContractUkJpaEntity implements Serial
 			entity.pk = new KrcdtDayOuenTimePK(domain.getEmpId(), 
 					domain.getYmd(), oTimeSheetAtt.getWorkNo());
 			
-			entity.cid = oTimeSheetAtt.getWorkContent().getCompanyId();
-			entity.workplaceId = oTimeSheetAtt.getWorkContent().getWorkplace().getWorkplaceId();		
+			entity.workplaceId = oTimeSheetAtt.getWorkContent().getWorkplace().getWorkplaceId() == null ? null : oTimeSheetAtt.getWorkContent().getWorkplace().getWorkplaceId().v();		
 			entity.workLocationCode = !oTimeSheetAtt.getWorkContent().getWorkplace().getWorkLocationCD().isPresent() ? null 
 					: oTimeSheetAtt.getWorkContent().getWorkplace().getWorkLocationCD().get().v();
 			
@@ -122,6 +109,10 @@ public class KrcdtDayOuenTimeSheet extends ContractUkJpaEntity implements Serial
 				entity.workCd3 = work.getWorkCD3().map(w -> w.v()).orElse(null); 
 				entity.workCd4 = work.getWorkCD4().map(w -> w.v()).orElse(null);
 				entity.workCd5 = work.getWorkCD5().map(w -> w.v()).orElse(null);
+			});
+			
+			oTimeSheetAtt.getWorkContent().getWorkRemarks().ifPresent(remarks -> {
+				entity.workRemarks = remarks.v();
 			});
 			
 			entity.workNo = oTimeSheetAtt.getTimeSheet().getWorkNo().v();

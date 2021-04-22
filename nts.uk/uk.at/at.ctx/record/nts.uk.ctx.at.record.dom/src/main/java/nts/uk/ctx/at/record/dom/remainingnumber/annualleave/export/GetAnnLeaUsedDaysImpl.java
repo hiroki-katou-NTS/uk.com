@@ -120,17 +120,17 @@ public class GetAnnLeaUsedDaysImpl implements GetAnnLeaUsedDays {
 			
 			// 指定した年月日を基準に、前回付与日から1年後までの期間を取得
 			val usedPeriodOpt = this.getPeriodFromPreviousToNextGrantDate.getPeriodAfterOneYear(
-					AppContexts.user().companyId(), employeeId, specDate);
+					AppContexts.user().companyId(), employeeId, specDate, null, null);
 			if (!usedPeriodOpt.isPresent()) return results;
-			usedPeriod = usedPeriodOpt.get();
+			usedPeriod = usedPeriodOpt.get().getPeriod();
 		}
 		else {
 			
 			// 指定した年月日を基準に、前回付与日から次回付与日までの期間を取得
 			val usedPeriodOpt = this.getPeriodFromPreviousToNextGrantDate.getPeriodYMDGrant(
-					AppContexts.user().companyId(), employeeId, specDate);
+					AppContexts.user().companyId(), employeeId, specDate, null, null);
 			if (!usedPeriodOpt.isPresent()) return results;
-			usedPeriod = usedPeriodOpt.get();
+			usedPeriod = usedPeriodOpt.get().getPeriod();
 		}
 		if (usedPeriod == null) return results;
 		

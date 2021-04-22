@@ -18,7 +18,6 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.support.GetSupportDat
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.support.JudCriteriaSameStampOfSupportRepo;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.support.JudgmentCriteriaSameStampOfSupport;
 import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
-import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SysWorkplaceAdapter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.affiliationinfor.AffiliationInforOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
@@ -52,9 +51,6 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  */
 @Stateless
 public class SupportWorkReflection {
-
-	@Inject
-	private SysWorkplaceAdapter sysWorkplaceAdapter;
 
 	@Inject
 	private JudCriteriaSameStampOfSupportRepo ofSupportRepo;
@@ -96,9 +92,9 @@ public class SupportWorkReflection {
 
 		// 出退勤で応援データを補正する - 補正済みの応援データ一覧 & 勤務Temporary - chỉnh sửa data support lúc đến lúc về
 		CorrectSupportData correctSupportData = this.correctSupportDataFromWork(integrationOfDaily.getAttendanceLeave(),
-				lstStampedSupport, informationWork, judgmentSupport);
+				lstStampedSupport, informationWork, judgmentSupport, ouenStamp);
 
-		// 応援データを自動セットしてマージする - セット済み応援データ - set tự động data support rồi merge dữ liệu - qua buoc nay la chi con lai 2 thang dung data
+		// 応援データを自動セットしてマージする - セット済み応援データ - set tự động data support rồi merge dữ liệu
 		List<OuenWorkTimeSheetOfDailyAttendance> dataAutoSet = this
 				.supportDataAutoSetMerged(correctSupportData.getInformationWork(), correctSupportData.getAttendance());
 
@@ -110,7 +106,7 @@ public class SupportWorkReflection {
 		this.correctEditStatusSupportItem(integrationOfDaily, lstCorrectMaximum, lstOuenBefore);
 
 		// 日別勤怠（Work）にデータ入れる
-		integrationOfDaily.setOuenTimeSheet(dataAutoSet);
+		integrationOfDaily.setOuenTimeSheet(lstCorrectMaximum);
 
 		// 反映状態＝反映済みを返す
 		return ReflectionAtr.REFLECTED;
@@ -203,13 +199,13 @@ public class SupportWorkReflection {
 		// 作業Temporarｙから「日別実績の応援作業別勤怠時間帯」にデータ入れる
 		WorkplaceOfWorkEachOuen eachOuen = null;
 		if (informationWork.getLocationCD() != null) {
-			eachOuen = WorkplaceOfWorkEachOuen.create(informationWork.getWorkplaceId().v(),
+			eachOuen = WorkplaceOfWorkEachOuen.create(new WorkplaceId(informationWork.getWorkplaceId().v()),
 					new WorkLocationCD(informationWork.getLocationCD().v()));
 		} else {
-			eachOuen = WorkplaceOfWorkEachOuen.create(informationWork.getWorkplaceId().v(), null);
+			eachOuen = WorkplaceOfWorkEachOuen.create(new WorkplaceId(informationWork.getWorkplaceId().v()), null);
 		}
 
-		WorkContent workContent = WorkContent.create(companyId, eachOuen, Optional.empty());
+		WorkContent workContent = WorkContent.create(eachOuen, Optional.empty(), Optional.empty());
 
 		TimeSheetOfAttendanceEachOuenSheet timeSheet = null;
 
@@ -225,7 +221,7 @@ public class SupportWorkReflection {
 			timeSheet = TimeSheetOfAttendanceEachOuenSheet.create(new WorkNo(0), Optional.empty(),
 					Optional.ofNullable(information));
 		}
-		sheetOfDaily = OuenWorkTimeSheetOfDailyAttendance.create(0, workContent, timeSheet);
+		sheetOfDaily = OuenWorkTimeSheetOfDailyAttendance.create(1, workContent, timeSheet);
 
 		return sheetOfDaily;
 	}
@@ -277,8 +273,8 @@ public class SupportWorkReflection {
 				OuenWorkTimeSheetOfDailyAttendance dailyAttendance2 = OuenWorkTimeSheetOfDailyAttendance
 						.create(ouen.getWorkNo(), ouen.getWorkContent(), eachOuenSheet2);
 
-				lstOuenWork.add(dailyAttendance);
 				lstOuenWork.add(dailyAttendance2);
+				lstOuenWork.add(dailyAttendance);
 			}
 		}
 
@@ -333,9 +329,9 @@ public class SupportWorkReflection {
 	public void correctSupportWork(OuenWorkTimeSheetOfDailyAttendance ouenStamp,
 			OuenWorkTimeSheetOfDailyAttendance ouenStampNew) {
 		// 作業データを上書きする
-		ouenStampNew.getWorkContent().setWork(ouenStamp.getWorkContent().getWork());
+		ouenStamp.getWorkContent().setWork(ouenStampNew.getWorkContent().getWork());
 		// 勤務先を上書きする
-		ouenStampNew.getWorkContent().setWorkplace(ouenStamp.getWorkContent().getWorkplace());
+		ouenStamp.getWorkContent().setWorkplace(ouenStampNew.getWorkContent().getWorkplace());
 	}
 
 	/**
@@ -384,8 +380,8 @@ public class SupportWorkReflection {
 		if (startAtr == StartAtr.END_OF_SUPPORT) {
 			// 上書き対象の時刻を取得する
 			// 「打刻応援データ。終了。時刻 ＞ 応援データ。終了。時刻」 OR 時刻優先フラグ＝True
-			if ((ouenStamp.getTimeSheet().getStart().get().getTimeWithDay().isPresent()
-					&& ouenStampNew.getTimeSheet().getStart().get().getTimeWithDay().isPresent()
+			if ((ouenStamp.getTimeSheet().getEnd().get().getTimeWithDay().isPresent()
+					&& ouenStampNew.getTimeSheet().getEnd().get().getTimeWithDay().isPresent()
 					&& ouenStamp.getTimeSheet().getEnd().get().getTimeWithDay().get().v() > ouenStampNew.getTimeSheet()
 							.getEnd().get().getTimeWithDay().get().v())
 					|| timePriorityFlag == true) {
@@ -406,14 +402,14 @@ public class SupportWorkReflection {
 	 */
 	public CorrectSupportData correctSupportDataFromWork(Optional<TimeLeavingOfDailyAttd> attendanceLeave,
 			List<OuenWorkTimeSheetOfDailyAttendance> lstOuenWorkTime, WorkInformationWork informationWork,
-			JudgmentCriteriaSameStampOfSupport judgmentSupport) {
+			JudgmentCriteriaSameStampOfSupport judgmentSupport, OuenWorkTimeSheetOfDailyAttendance ouenStamp) {
 
 		// 最初の出勤と最後の退勤を検出する
 		WorkTemporary detectAttendance = this.detectAttendance(attendanceLeave);
 
 		// 最初の出勤の応援データと最後の退勤の応援データを取得する
 		SupportAttendanceDepartureTempo suportDataFirtAndLast = this.getSupportFataFirstAttendanceLastDeparture(
-				lstOuenWorkTime, detectAttendance, judgmentSupport, informationWork);
+				lstOuenWorkTime, detectAttendance, judgmentSupport, ouenStamp, informationWork);
 
 		// ほかの出退勤を補正する
 		this.correctOtherAttendance(informationWork, detectAttendance, lstOuenWorkTime, judgmentSupport);
@@ -556,7 +552,7 @@ public class SupportWorkReflection {
 			List<OuenWorkTimeSheetOfDailyAttendance> lstSetSupportData,
 			OuenWorkTimeSheetOfDailyAttendance ouenWorkTime) {
 		this.correctWorkFrameNumber(informationWork, ouenWorkTime);
-		ouenWorkTime.setWorkNo(lstSetSupportData.size());
+		ouenWorkTime.setWorkNo(lstSetSupportData.size()+1);
 		lstSetSupportData.add(ouenWorkTime);
 	}
 
@@ -606,7 +602,7 @@ public class SupportWorkReflection {
 			JudgmentCriteriaSameStampOfSupport judgmentSupport, List<OuenWorkTimeSheetOfDailyAttendance> dataAutoSet) {
 		List<OuenWorkTimeSheetOfDailyAttendance> dataAutoSetNew = new ArrayList<>();
 		// パラメータ。応援データ一覧のsizeを確認する
-		if (dataAutoSet.size() <= 1) {
+		if (dataAutoSet.size() <= 1 || dataAutoSet.size() <= judgmentSupport.getSupportMaxFrame().v()) {
 			// １以下の場合 - パラメータ。応援データ一覧を返す
 			return dataAutoSet;
 		} else {
@@ -615,36 +611,72 @@ public class SupportWorkReflection {
 			OuenWorkTimeSheetOfDailyAttendance lastData = dataAutoSet.get(dataAutoSet.size() - 1);
 			// パラメータ。応援データ一覧の先頭の応援データを取得する
 			OuenWorkTimeSheetOfDailyAttendance firstData = dataAutoSet.get(0);
-
 			// 最大応援回数で補正する
 			dataAutoSetNew = this.correctWithMaxNumberCheers(
-					judgmentSupport.getSupportMaxFrame() == null ? judgmentSupport.getSupportMaxFrame().v() - 1 : null,
+					judgmentSupport.getSupportMaxFrame() != null ? judgmentSupport.getSupportMaxFrame().v() - 1 : null,
 					dataAutoSet);
-			if (dataAutoSetNew.size() > 1) {
+			if (judgmentSupport.getSupportMaxFrame().v() == 1) {
 				// 最後の退勤の応援データを補正する
-				lastData.getTimeSheet()
-						.setStart(firstData.getTimeSheet().getStart().isPresent()
-								? firstData.getTimeSheet().getStart().get()
-								: null);
-				// 最後の退勤の応援データを補正済みの応援データ一覧に入れる
-				dataAutoSetNew.add(lastData);
-			} else {
-				// 補正済みの応援データ一覧の末尾の応援データを取得する
-				OuenWorkTimeSheetOfDailyAttendance lastDataProcess = dataAutoSetNew.isEmpty() ? null
-						: dataAutoSetNew.get(dataAutoSetNew.size() - 1); // check để không lỗi
-				// 最後の退勤の応援データを補正する
-				if (lastDataProcess != null) { // check để không lỗi
+				if(lastData.getTimeSheet().getStart().isPresent() && lastData.getTimeSheet().getEnd().isPresent()) {
 					lastData.getTimeSheet()
-							.setStart(lastDataProcess.getTimeSheet().getEnd().isPresent()
-									? lastDataProcess.getTimeSheet().getEnd().get()
-									: null);
+					.setStart(firstData.getTimeSheet().getStart().isPresent()
+							? firstData.getTimeSheet().getStart().get()
+							: null);
+					// 最後の退勤の応援データを補正済みの応援データ一覧に入れる
+					dataAutoSetNew.add(lastData);
+				}
+			}
+			
+			if(judgmentSupport.getSupportMaxFrame().v() >= 2){
+				// 補正で使う応援データを探す
+				Optional<WorkTimeInformation> endOuenLast = dataAutoSetNew.get(dataAutoSetNew.size() - 1).getTimeSheet().getEnd();
+				
+				if(lastData.getTimeSheet().getStart().get().getReasonTimeChange().getTimeChangeMeans() == TimeChangeMeans.AUTOMATIC_SET) {
+					// 最後の退勤の応援データを補正する
+					WorkTimeInformation information = WorkTimeInformation.createByAutomaticSet(endOuenLast.get().getTimeWithDay().get());
+					lastData.getTimeSheet()
+							.setStart(information);
 				}
 
 				// 最後の退勤の応援データを補正済みの応援データ一覧の末尾に入れる
-				dataAutoSetNew.add(dataAutoSetNew.size(), lastData);
+					dataAutoSetNew.add(lastData);
 			}
 		}
 		return dataAutoSetNew;
+	}
+	
+	// 補正で使う応援データを探す
+	public WorkTimeInformation findSupportCorrection(Optional<WorkTimeInformation> endOuenLast,
+			List<OuenWorkTimeSheetOfDailyAttendance> dataAutoSet, StartAtr startAtr) {
+		WorkTimeInformation timeInformation = null;
+		if(endOuenLast.get().getReasonTimeChange().getTimeChangeMeans() == TimeChangeMeans.AUTOMATIC_SET) {
+			if(startAtr == StartAtr.START_OF_SUPPORT) {
+				Optional<OuenWorkTimeSheetOfDailyAttendance> ouenTime = dataAutoSet.stream().filter(x -> {
+					val start = x.getTimeSheet().getStart().flatMap(c -> c.getTimeWithDay()).map(c -> c.v()).orElse(null);
+					if (start == null || !endOuenLast.get().getTimeWithDay().isPresent()) return false;
+					return start == endOuenLast.get().getTimeWithDay().get().v();
+				}).findFirst();
+				
+				if(ouenTime.isPresent()) {
+					timeInformation = ouenTime.get().getTimeSheet().getStart().get();
+					return timeInformation;
+				}
+			}
+			
+			if(startAtr == StartAtr.END_OF_SUPPORT) {
+				Optional<OuenWorkTimeSheetOfDailyAttendance> ouenTime = dataAutoSet.stream().filter(x -> {
+					val end = x.getTimeSheet().getEnd().flatMap(c -> c.getTimeWithDay()).map(c -> c.v()).orElse(null);
+					if (end == null || !endOuenLast.get().getTimeWithDay().isPresent()) return false;
+					return end == endOuenLast.get().getTimeWithDay().get().v();
+				}).findFirst();
+				
+				if(ouenTime.isPresent()) {
+					timeInformation = ouenTime.get().getTimeSheet().getEnd().get();
+					return timeInformation;
+				}
+			}
+		}
+		return endOuenLast.isPresent() ? endOuenLast.get() : null;
 	}
 
 	/**
@@ -656,11 +688,13 @@ public class SupportWorkReflection {
 	 */
 	public List<OuenWorkTimeSheetOfDailyAttendance> correctWithMaxNumberCheers(Integer support,
 			List<OuenWorkTimeSheetOfDailyAttendance> dataAutoSet) {
+		// 応援データ一覧のsizeは最大応援回数まで守って、残りの応援データは消す
 		List<OuenWorkTimeSheetOfDailyAttendance> dataAutoSetNew = new ArrayList<>();
-		if (support != null && dataAutoSet.size() > support) {
+		if (dataAutoSet.size() > support) {
 			dataAutoSetNew = dataAutoSet.subList(0, support);
+			return dataAutoSetNew;
 		}
-		return dataAutoSetNew;
+		return dataAutoSet;
 	}
 
 	/**
@@ -791,8 +825,8 @@ public class SupportWorkReflection {
 			List<OuenWorkTimeSheetOfDailyAttendance> lstCorrectMaximum, Map<Integer, List<ItemValue>> mapItemValue) {
 		for (OuenWorkTimeSheetOfDailyAttendance attendance : lstCorrectMaximum) {
 			// 処理中の応援データの開始の変更手段を確認する
-			TimeChangeMeans changeMeansStart = attendance.getTimeSheet().getStart().get().getReasonTimeChange()
-					.getTimeChangeMeans();
+			TimeChangeMeans changeMeansStart = attendance.getTimeSheet().getStart().isPresent() ? 
+					attendance.getTimeSheet().getStart().get().getReasonTimeChange().getTimeChangeMeans() : null;
 
 			if ((changeMeansStart == TimeChangeMeans.HAND_CORRECTION_PERSON)
 					|| (changeMeansStart == TimeChangeMeans.HAND_CORRECTION_OTHERS)
@@ -857,19 +891,24 @@ public class SupportWorkReflection {
 
 		if (leavingWork.isPresent()) {
 			// 最初の出勤をセットする - 勤務Temporary。最初の出勤＝取得できる出退勤．出勤
+			if(leavingWork.get().getAttendanceStamp().isPresent() && leavingWork.get().getAttendanceStamp().get().getStamp().isPresent())
 			workTemporary.setFirstAttendance(leavingWork.get().getAttendanceStamp());
 
 			// 最後の退勤をセットする
 			// 勤務Temporary。最後の退勤＝取得できる出退勤．退勤
+			if(leavingWork.get().getLeaveStamp().isPresent() && leavingWork.get().getLeaveStamp().get().getStamp().isPresent())
 			workTemporary.setLastLeave(leavingWork.get().getLeaveStamp());
-			// 勤務Temporary。退勤1時刻＝取得できる出退勤．退勤
-			workTemporary.setOneHourLeavingWork(leavingWork.get().getLeaveStamp());
 		}
 		if (leavingWork2.isPresent()) {
+			// 勤務Temporary。退勤1時刻＝勤務Temporary。最後の退勤
+			if(workTemporary.getLastLeave().isPresent() && workTemporary.getLastLeave().get().getStamp().isPresent())
+			workTemporary.setOneHourLeavingWork(workTemporary.getLastLeave());
 			// 勤務Temporary。最後の退勤＝取得できる出退勤．退勤
+			if(leavingWork2.get().getLeaveStamp().isPresent() && leavingWork2.get().getLeaveStamp().get().getStamp().isPresent())
 			workTemporary.setLastLeave(leavingWork2.get().getLeaveStamp());
 			// 勤務Temporary。出勤２時刻＝取得できる出退勤．出勤
-			workTemporary.setTwoHoursWork(leavingWork2.get().getLeaveStamp());
+			if(leavingWork2.get().getAttendanceStamp().isPresent() && leavingWork2.get().getAttendanceStamp().get().getStamp().isPresent())
+			workTemporary.setTwoHoursWork(leavingWork2.get().getAttendanceStamp());
 		}
 
 		return workTemporary;
@@ -886,7 +925,8 @@ public class SupportWorkReflection {
 	 */
 	public SupportAttendanceDepartureTempo getSupportFataFirstAttendanceLastDeparture(
 			List<OuenWorkTimeSheetOfDailyAttendance> lstOuenWorkTime, WorkTemporary detectAttendance,
-			JudgmentCriteriaSameStampOfSupport judgmentSupport, WorkInformationWork informationWork) {
+			JudgmentCriteriaSameStampOfSupport judgmentSupport, OuenWorkTimeSheetOfDailyAttendance ouenStamp, 
+			WorkInformationWork informationWork) {
 
 		// Emptyの出退勤の応援を作成する
 		SupportAttendanceDepartureTempo departureTempo = new SupportAttendanceDepartureTempo(Optional.empty(),
@@ -897,15 +937,21 @@ public class SupportWorkReflection {
 			// Nullじゃない場合
 			// 最初の出勤の時刻と同じ時刻もつ応援データを応援データ一覧から検索して抜き出し
 			// 最初の出勤。打刻。時刻。時刻
-			Integer time1 = detectAttendance.getFirstAttendance().get().getStamp().get().getTimeDay().getTimeWithDay()
-					.get().v();
+			Integer time1 = detectAttendance.getFirstAttendance().get().getStamp().isPresent() ?
+					detectAttendance.getFirstAttendance().get().getStamp().get().getTimeDay().getTimeWithDay()
+					.get().v() : null;
 			// 同一打刻の判断基準。同一打刻とみなす範囲
 			Integer time2 = judgmentSupport.getSameStampRanceInMinutes().v();
 			Optional<OuenWorkTimeSheetOfDailyAttendance> ouenWorkTimeAfter = lstOuenWorkTime.stream().filter(x ->{
 					val time = x.getTimeSheet().getStart().flatMap(c -> c.getTimeWithDay()).map(c -> c.v()).orElse(null);
+					
 					if(time == null)
-					return false;
-					return time1 - time2 < time &&  time< time1 + time2;}).findFirst();
+						return false;
+					
+					if(time1 == null)
+						return false;
+					
+					return time1 - time2 <= time &&  time <= time1 + time2;}).findFirst();
 				
 				if (ouenWorkTimeAfter.isPresent()) {
 					lstOuenWorkTime.remove(ouenWorkTimeAfter.get());
@@ -928,7 +974,7 @@ public class SupportWorkReflection {
 				}
 		} else {
 			// 最初の応援終了を自動セットする
-			this.automaticSetFirstSupport(lstOuenWorkTime);
+			this.automaticSetFirstSupport(lstOuenWorkTime, departureTempo);
 		}
 		// 最後の退勤を確認する
 		if (detectAttendance.getLastLeave().isPresent()) {
@@ -942,13 +988,15 @@ public class SupportWorkReflection {
 			
 				// 最後の退勤の応援データ
 			Optional<OuenWorkTimeSheetOfDailyAttendance> ouenWorkTimeAfter = Optional.empty();
-				if(time1 != null) {
 					ouenWorkTimeAfter = lstOuenWorkTime.stream().filter(x ->{
 						val time = x.getTimeSheet().getEnd().flatMap(c -> c.getTimeWithDay()).map(c -> c.v()).orElse(null);
 						if(time == null)
-						return false;
-						return time1 - time2 < time &&  time< time1 + time2;}).findFirst();
-				}
+							return false;
+						
+						if(time1 == null)
+							return false;
+						
+						return time1 - time2 <= time &&  time <= time1 + time2;}).findFirst();
 				if (ouenWorkTimeAfter.isPresent()) {
 					
 					lstOuenWorkTime.remove(ouenWorkTimeAfter.get());
@@ -957,8 +1005,8 @@ public class SupportWorkReflection {
 					departureTempo.setLastLeave(ouenWorkTimeAfter);
 
 					// 出退勤の応援。最後の退勤。時間帯。開始。時刻。時刻＝最後の退勤。打刻。時刻。時刻
-					if (departureTempo.getLastLeave().get().getTimeSheet().getStart().isPresent()) {
-						departureTempo.getLastLeave().get().getTimeSheet().getStart().get().setTimeWithDay(
+					if (departureTempo.getLastLeave().get().getTimeSheet().getEnd().isPresent()) {
+						departureTempo.getLastLeave().get().getTimeSheet().getEnd().get().setTimeWithDay(
 								detectAttendance.getLastLeave().get().getStamp().get().getTimeDay().getTimeWithDay());
 					}
 				} else {
@@ -973,7 +1021,7 @@ public class SupportWorkReflection {
 				}
 		} else {
 			// 最後の応援開始を自動セットする
-			this.automaticSetLastSupport(lstOuenWorkTime);
+			this.automaticSetLastSupport(lstOuenWorkTime, departureTempo);
 		}
 		// 出退勤の応援を返す
 		return departureTempo;
@@ -993,20 +1041,20 @@ public class SupportWorkReflection {
 		String cid = AppContexts.user().companyId();
 
 		OuenWorkTimeSheetOfDailyAttendance attendance = null;
-		WorkplaceOfWorkEachOuen eachOuen = WorkplaceOfWorkEachOuen.create(informationWork.getWorkplaceId().v(),
+		WorkplaceOfWorkEachOuen eachOuen = WorkplaceOfWorkEachOuen.create(new WorkplaceId(informationWork.getWorkplaceId().v()),
 				informationWork.getLocationCD() == null ? null
 						: new WorkLocationCD(informationWork.getLocationCD().v()));
 
-		WorkContent workContent = WorkContent.create(cid, eachOuen, Optional.empty());
+		WorkContent workContent = WorkContent.create(eachOuen, Optional.empty(), Optional.empty());
 		if (startAtr == StartAtr.START_OF_SUPPORT) {
 			TimeSheetOfAttendanceEachOuenSheet timeSheet = TimeSheetOfAttendanceEachOuenSheet.create(new WorkNo(0),
 					Optional.ofNullable(timeDay), Optional.empty());
-			attendance = OuenWorkTimeSheetOfDailyAttendance.create(0, workContent, timeSheet);
+			attendance = OuenWorkTimeSheetOfDailyAttendance.create(1, workContent, timeSheet);
 			return attendance;
 		}
 		TimeSheetOfAttendanceEachOuenSheet timeSheet = TimeSheetOfAttendanceEachOuenSheet.create(new WorkNo(0),
 				Optional.empty(), Optional.ofNullable(timeDay));
-		attendance = OuenWorkTimeSheetOfDailyAttendance.create(0, workContent, timeSheet);
+		attendance = OuenWorkTimeSheetOfDailyAttendance.create(1, workContent, timeSheet);
 		return attendance;
 	}
 
@@ -1015,7 +1063,8 @@ public class SupportWorkReflection {
 	 * 
 	 * @param lstOuenWorkTime
 	 */
-	public void automaticSetFirstSupport(List<OuenWorkTimeSheetOfDailyAttendance> lstOuenWorkTime) {
+	public void automaticSetFirstSupport(List<OuenWorkTimeSheetOfDailyAttendance> lstOuenWorkTime, 
+			SupportAttendanceDepartureTempo departureTempo) {
 		// 応援データ一覧の先頭の応援データを取得する
 		if (lstOuenWorkTime.isEmpty()) {
 			return;
@@ -1023,15 +1072,25 @@ public class SupportWorkReflection {
 		// 開始応援かを確認する
 		// 開始の場合
 		if (lstOuenWorkTime.get(0).getTimeSheet().getStart().isPresent()) {
+			
+			// 同一と認識すべきの打刻か
+//			if(ouenStamp.getTimeSheet().getStart().isPresent()) {
+//				val standardStamp = ouenStamp.getTimeSheet().getStart().get().getTimeWithDay();
+//				val targetStamp = lstOuenWorkTime.get(0).getTimeSheet().getStart().get().getTimeWithDay();
+//				
+//				boolean checkStamp = judgmentSupport.checkStampRecognizedAsSame(standardStamp.get(), targetStamp.get());
+//				if(checkStamp == true) return;
+//			}
+			
 			WorkContent workContent = lstOuenWorkTime.get(0).getWorkContent();
+			WorkTimeInformation ouenSpNew = WorkTimeInformation.createByAutomaticSet(lstOuenWorkTime.get(0).getTimeSheet().getStart().get().getTimeWithDay().get());
 			TimeSheetOfAttendanceEachOuenSheet timeSheet = TimeSheetOfAttendanceEachOuenSheet.create(new WorkNo(0),
-					Optional.empty(), lstOuenWorkTime.get(0).getTimeSheet().getStart());
-			timeSheet.getEnd().get().getReasonTimeChange().setTimeChangeMeans(TimeChangeMeans.AUTOMATIC_SET);
+					Optional.empty(), Optional.ofNullable(ouenSpNew));
 			// 取得した応援データをベースして終了の応援データ作る
-			OuenWorkTimeSheetOfDailyAttendance dailyAttendance = OuenWorkTimeSheetOfDailyAttendance.create(0,
+			OuenWorkTimeSheetOfDailyAttendance dailyAttendance = OuenWorkTimeSheetOfDailyAttendance.create(1,
 					workContent, timeSheet);
 			// 作成した応援データを応援データ一覧の先頭に入れる
-			lstOuenWorkTime.add(0, dailyAttendance);
+			departureTempo.setFirstAttendance(Optional.ofNullable(dailyAttendance));
 		}
 	}
 
@@ -1040,7 +1099,8 @@ public class SupportWorkReflection {
 	 * 
 	 * @param lstOuenWorkTime
 	 */
-	public void automaticSetLastSupport(List<OuenWorkTimeSheetOfDailyAttendance> lstOuenWorkTime) {
+	public void automaticSetLastSupport(List<OuenWorkTimeSheetOfDailyAttendance> lstOuenWorkTime, 
+			SupportAttendanceDepartureTempo departureTempo) {
 		// 応援データ一覧の末尾の応援データを取得する
 		if (lstOuenWorkTime.isEmpty()) {
 			return;
@@ -1048,15 +1108,23 @@ public class SupportWorkReflection {
 		// 終了応援かを確認する
 		// 終了の場合
 		if (lstOuenWorkTime.get(lstOuenWorkTime.size() - 1).getTimeSheet().getEnd().isPresent()) {
+//			if(ouenStamp.getTimeSheet().getEnd().isPresent()) {
+//				val standardStamp = ouenStamp.getTimeSheet().getEnd().get().getTimeWithDay();
+//				val targetStamp = lstOuenWorkTime.get(lstOuenWorkTime.size() - 1).getTimeSheet().getEnd().get().getTimeWithDay();
+//				
+//				boolean checkStamp = judgmentSupport.checkStampRecognizedAsSame(standardStamp.get(), targetStamp.get());
+//				if(checkStamp == true) return;
+//			}
+			
 			WorkContent workContent = lstOuenWorkTime.get(lstOuenWorkTime.size() - 1).getWorkContent();
+			WorkTimeInformation ouenSpNew = WorkTimeInformation.createByAutomaticSet(lstOuenWorkTime.get(lstOuenWorkTime.size() - 1).getTimeSheet().getEnd().get().getTimeWithDay().get());
 			TimeSheetOfAttendanceEachOuenSheet timeSheet = TimeSheetOfAttendanceEachOuenSheet.create(new WorkNo(0),
-					lstOuenWorkTime.get(lstOuenWorkTime.size() - 1).getTimeSheet().getEnd(), Optional.empty());
-			timeSheet.getStart().get().getReasonTimeChange().setTimeChangeMeans(TimeChangeMeans.AUTOMATIC_SET);
+					Optional.ofNullable(ouenSpNew), Optional.empty());
 			// 取得した応援データをベースして終了の応援データ作る
-			OuenWorkTimeSheetOfDailyAttendance dailyAttendance = OuenWorkTimeSheetOfDailyAttendance.create(0,
+			OuenWorkTimeSheetOfDailyAttendance dailyAttendance = OuenWorkTimeSheetOfDailyAttendance.create(1,
 					workContent, timeSheet);
 			// 作成した応援データを応援データ一覧の先頭に入れる
-			lstOuenWorkTime.add(dailyAttendance);
+			departureTempo.setLastLeave(Optional.ofNullable(dailyAttendance));
 		}
 	}
 
@@ -1077,11 +1145,13 @@ public class SupportWorkReflection {
 			List<OuenWorkTimeSheetOfDailyAttendance> lstOuenFilter = new ArrayList<>();
 			
 			if(workTemporary.getOneHourLeavingWork().get().getStamp().isPresent()) {
-				lstOuenFilter = lstOuenWorkTime.stream().filter(x -> x
-						.getTimeSheet().getEnd().isPresent()
-						&& x.getTimeSheet().getEnd().get().getTimeWithDay().get().v() == workTemporary
-								.getOneHourLeavingWork().get().getStamp().get().getTimeDay().getTimeWithDay().get().v())
-						.collect(Collectors.toList());
+				lstOuenFilter = lstOuenWorkTime.stream()
+				.filter(x -> {
+					val end = x.getTimeSheet().getEnd().flatMap(c -> c.getTimeWithDay()).map(c -> c.v()).orElse(null);
+					if (end == null) return false;
+					
+					return end == workTemporary.getOneHourLeavingWork().get().getStamp().get().getTimeDay().getTimeWithDay().get().v();
+				}).collect(Collectors.toList());
 			}
 
 			// if 検索できない
@@ -1091,8 +1161,8 @@ public class SupportWorkReflection {
 						workTemporary.getOneHourLeavingWork().get().getStamp().isPresent() ? workTemporary.getOneHourLeavingWork().get().getStamp().get().getTimeDay() : null,
 						StartAtr.END_OF_SUPPORT);
 				// 打刻応援データを応援データ一覧にいれる - 応援データ一覧
-				lstOuenWorkTime = this.getStampedSupportData(true, judgmentSupport, lstOuenFilter, convertStamp,
-						StartAtr.END_OF_SUPPORT);
+				lstOuenWorkTime.addAll(this.getStampedSupportData(true, judgmentSupport, lstOuenFilter, convertStamp,
+						StartAtr.END_OF_SUPPORT));
 			}
 		}
 		// 勤務Temporary。出勤２時刻を確認する
@@ -1100,9 +1170,12 @@ public class SupportWorkReflection {
 			// 応援データ一覧から出勤２時刻と同じ時刻持つ応援データを探す
 			if (workTemporary.getTwoHoursWork().isPresent()) {
 				List<OuenWorkTimeSheetOfDailyAttendance> lstOuenFilter = lstOuenWorkTime.stream()
-						.filter(x -> x.getTimeSheet().getEnd().get().getTimeWithDay().get().v() == workTemporary
-								.getTwoHoursWork().get().getStamp().get().getTimeDay().getTimeWithDay().get().v())
-						.collect(Collectors.toList());
+				.filter(x -> {
+					val start = x.getTimeSheet().getStart().flatMap(c -> c.getTimeWithDay()).map(c -> c.v()).orElse(null);
+					if (start == null) return false;
+					
+					return start == workTemporary.getTwoHoursWork().get().getStamp().get().getTimeDay().getTimeWithDay().get().v();
+				}).collect(Collectors.toList());
 
 				// if 検索できない
 				if (lstOuenFilter.isEmpty()) {
@@ -1111,8 +1184,8 @@ public class SupportWorkReflection {
 							workTemporary.getTwoHoursWork().get().getStamp().isPresent() ? workTemporary.getTwoHoursWork().get().getStamp().get().getTimeDay() : null,
 							StartAtr.START_OF_SUPPORT);
 					// 打刻応援データを応援データ一覧にいれる - 応援データ一覧
-					lstOuenWorkTime = this.getStampedSupportData(true, judgmentSupport, lstOuenFilter, convertStamp,
-							StartAtr.START_OF_SUPPORT);
+					lstOuenWorkTime.addAll(this.getStampedSupportData(true, judgmentSupport, lstOuenFilter, convertStamp,
+							StartAtr.START_OF_SUPPORT));
 				}
 			}
 		}
@@ -1125,12 +1198,11 @@ public class SupportWorkReflection {
 	 * @return
 	 */
 	public List<OuenWorkTimeSheetOfDailyAttendance> rearrangeSupportData(
-			List<OuenWorkTimeSheetOfDailyAttendance> lstOuenWorkTime) {
+			List<OuenWorkTimeSheetOfDailyAttendance> lstOuenWorkTime) {		
 		Comparator<OuenWorkTimeSheetOfDailyAttendance> comparator = new Comparator<OuenWorkTimeSheetOfDailyAttendance>() {
 
 			@Override
 			public int compare(OuenWorkTimeSheetOfDailyAttendance arg0, OuenWorkTimeSheetOfDailyAttendance arg1) {
-				// TODO Auto-generated method stub
 				Optional<TimeWithDayAttr> start1 = arg0.getTimeSheet().getStart().isPresent()
 						? arg0.getTimeSheet().getStart().get().getTimeWithDay()
 						: Optional.empty();
@@ -1144,28 +1216,30 @@ public class SupportWorkReflection {
 				Optional<TimeWithDayAttr> end2 = arg1.getTimeSheet().getEnd().isPresent()
 						? arg1.getTimeSheet().getEnd().get().getTimeWithDay()
 						: Optional.empty();
+				// 両方が終了の場合、終了使う
+				if (end1.isPresent() && end2.isPresent()) {
+					return end1.get().v().compareTo(end2.get().v());
+				}
+						
 				// 両方が開始の場合開始使う
 				if (start1.isPresent() && start2.isPresent()) {
 					return start1.get().v().compareTo(start2.get().v());
 				}
 				// 一方が開始、一方が終了の場合、開始と終了を使う ・同じ時刻の場合、終了は前にする
-				if (start1.isPresent() && end2.isPresent() && !start2.isPresent()) {
+				if (start1.isPresent() && end2.isPresent()) {
 					if (start1.get().v() != end2.get().v())
 						return start1.get().v().compareTo(end2.get().v());
 					else
-						return end2.get().v() - start1.get().v();
+						return 1;
 				}
 
-				if (start2.isPresent() && end1.isPresent() && !start1.isPresent()) {
+				if (start2.isPresent() && end1.isPresent()) {
 					if (start2.get().v() != end1.get().v())
-						return start2.get().v().compareTo(end1.get().v());
+						return end1.get().v().compareTo(start2.get().v());
 					else
-						return end1.get().v() - start2.get().v();
+						return 1;
 				}
-				// 両方が終了の場合、終了使う
-				if (!start1.isPresent() && !start2.isPresent() && end1.isPresent() && end2.isPresent()) {
-					return end1.get().v().compareTo(end2.get().v());
-				}
+				
 				return 0;
 			}
 		};

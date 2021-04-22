@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.daily.ouen;
 
 import java.util.List;
+import java.util.Map;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
@@ -20,5 +21,7 @@ public interface OuenWorkTimeSheetOfDailyRepo {
 	boolean findPK(String empId, GeneralDate ymd, int ouenNo);
 
 	List<OuenWorkTimeSheetOfDaily> find(String sid, DatePeriod ymd);
+
+	List<OuenWorkTimeSheetOfDaily> find(Map<String, List<GeneralDate>> param);
 
 }
