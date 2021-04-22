@@ -167,7 +167,7 @@ public class TempRemainCreateEachData {
 						new RequiredDay(occUseDetail.get().getDays()),
 						new UnOffsetTime(occUseDetail.get().getSubstituteHolidayTime().map(x -> x.v()).orElse(0)),
 						new UnOffsetDay(occUseDetail.get().getDays()),
-						Optional.ofNullable(DigestionHourlyTimeType.of(false, Optional.empty()))
+						Optional.ofNullable(DigestionHourlyTimeType.of(true, Optional.empty()))
 						);
 				mngData.setDayOffData(Optional.of(dayoffMng));
 				mngData.getRecAbsData().add(dayoffMng);
@@ -305,7 +305,7 @@ public class TempRemainCreateEachData {
 					speHolidayDetail.getSpecialHolidayCode(),
 					ManagermentAtr.DAYS, Optional.of(new UseTime(0)),
 					Optional.of(new UseDay(speHolidayDetail.getDays())),
-					Optional.ofNullable(DigestionHourlyTimeType.of(false, Optional.empty()))
+					Optional.ofNullable(DigestionHourlyTimeType.of(true, Optional.empty()))
 					);
 			specialHolidayData.add(holidayMng);
 		}
@@ -409,7 +409,7 @@ public class TempRemainCreateEachData {
 				new RequiredDay(0d) ,
 				new UnOffsetTime(times),
 				new UnOffsetDay(0d),
-				Optional.ofNullable(DigestionHourlyTimeType.of(false, Optional.empty()))
+				Optional.ofNullable(DigestionHourlyTimeType.of(true, Optional.empty()))
 				);
 	}
 
@@ -603,7 +603,7 @@ public class TempRemainCreateEachData {
 							new RequiredDay(0d),
 							new UnOffsetTime(vac.getTotalTimes()),
 							new UnOffsetDay(0d),
-							Optional.ofNullable(DigestionHourlyTimeType.of(true, Optional.ofNullable(vac.getTimeType())))
+							Optional.ofNullable(DigestionHourlyTimeType.of(false, Optional.ofNullable(vac.getTimeType())))
 							)
 					);
 		});
@@ -639,7 +639,7 @@ public class TempRemainCreateEachData {
 					RemainType.ANNUAL,
 					new WorkTypeCode(vac.getWorkTypeCode()),
 					new LeaveUsedNumber(0d, vac.getTotalTimes(), null),
-					Optional.ofNullable(DigestionHourlyTimeType.of(true, Optional.ofNullable(vac.getTimeType()))))
+					Optional.ofNullable(DigestionHourlyTimeType.of(false, Optional.ofNullable(vac.getTimeType()))))
 					);
 		});
 
@@ -711,7 +711,7 @@ public class TempRemainCreateEachData {
 					ManagermentAtr.TIMES,
 					Optional.ofNullable(new UseTime(vac.getTotalTimes())),
 					Optional.ofNullable(new UseDay(0d)),
-					Optional.ofNullable(DigestionHourlyTimeType.of(true, Optional.ofNullable(vac.getTimeType()))))
+					Optional.ofNullable(DigestionHourlyTimeType.of(false, Optional.ofNullable(vac.getTimeType()))))
 					);
 
 		});
@@ -833,7 +833,7 @@ public class TempRemainCreateEachData {
 				inforData.getYmd(),
 				inforData.getWorkTypeRemainInfor(workTypeClass).get().getCreateData(),
 				ChildCareNurseUsedNumber.of(new DayNumberOfUse(care.getDays()), Optional.empty()),
-				Optional.ofNullable(DigestionHourlyTimeType.of(false, Optional.empty())));
+				Optional.ofNullable(DigestionHourlyTimeType.of(true, Optional.empty())));
 
 		mngData.getRecAbsData().add(childData);
 		return mngData;
@@ -851,7 +851,7 @@ public class TempRemainCreateEachData {
 				inforData.getYmd(),
 				inforData.getWorkTypeRemainInfor(workTypeClass).get().getCreateData(),
 				ChildCareNurseUsedNumber.of(new DayNumberOfUse(care.getDays()), Optional.empty()),
-				Optional.ofNullable(DigestionHourlyTimeType.of(false, Optional.empty())));
+				Optional.ofNullable(DigestionHourlyTimeType.of(true, Optional.empty())));
 
 		mngData.getRecAbsData().add(careData);
 		return mngData;
