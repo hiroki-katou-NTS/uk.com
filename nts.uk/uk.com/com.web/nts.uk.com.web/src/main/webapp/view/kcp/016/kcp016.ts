@@ -57,7 +57,7 @@ module nts.uk.com.view.kcp016.a.viewmodel {
             }
             vm.columns = ko.observableArray([
                 { headerText: vm.$i18n("KCP016_3"), key: 'code', width: 70 },
-                { headerText: vm.$i18n("KCP016_3"), key: 'name', width: 200 },
+                { headerText: vm.$i18n("KCP016_4"), key: 'name', width: 200 },
             ]);
         }
 
