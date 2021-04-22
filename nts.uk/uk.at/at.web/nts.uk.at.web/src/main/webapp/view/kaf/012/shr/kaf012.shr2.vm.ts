@@ -150,7 +150,7 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
                                 <th class="bg-green" data-bind="css: {hidden: (leaveType() != 1 &amp;&amp; leaveType() != 6) &#124;&#124; !displayAnnCol()}">
                                     <span data-bind="text: leaveType() == 6 ? $i18n('KAF012_4') : $i18n('KAF012_8')"/>
                                 </th>
-                                <th class="bg-green" data-bind="css: {hidden: (leaveType() != 2 &amp;&amp; leaveType() != 6) &#124;&#124; !displayChiCol()}">
+                                <th style="width: 100px" class="bg-green" data-bind="css: {hidden: (leaveType() != 2 &amp;&amp; leaveType() != 6) &#124;&#124; !displayChiCol()}">
                                     <span data-bind="text: leaveType() == 6 ? $i18n('Com_ChildNurseHoliday') : $i18n('KAF012_8')"/>
                                 </th>
                                 <th class="bg-green" data-bind="css: {hidden: (leaveType() != 3 &amp;&amp; leaveType() != 6) &#124;&#124; !displayCarCol()}">
