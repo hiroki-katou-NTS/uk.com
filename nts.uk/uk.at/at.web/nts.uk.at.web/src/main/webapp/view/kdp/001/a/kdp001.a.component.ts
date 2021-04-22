@@ -291,7 +291,7 @@ module nts.uk.ui.kdp001.a {
                     border: 1px solid #b1b1b1;
                     max-height: 143px;
                     overflow-y: scroll;
-                    width: 450px;
+                    width: 448px;
                     margin: 5px auto;
                     border-radius: 3px;
                 }
