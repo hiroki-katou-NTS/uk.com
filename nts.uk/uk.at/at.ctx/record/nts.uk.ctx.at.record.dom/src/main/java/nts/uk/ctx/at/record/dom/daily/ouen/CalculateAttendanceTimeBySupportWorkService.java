@@ -33,7 +33,7 @@ public class CalculateAttendanceTimeBySupportWorkService {
 	 * @input ouenWorkTimeSheetOfDailyAttendance 作業時間帯
 	 * @output 計算結果 	Optional<日別勤怠(Work)>
 	 */
-	public static Optional<IntegrationOfDaily> calculat(Require require, String empId, GeneralDate ymd, List<OuenWorkTimeSheetOfDailyAttendance> ouenWorkTimeSheetOfDailyAttendance) {
+	public static Optional<IntegrationOfDaily> calculate(Require require, String empId, GeneralDate ymd, List<OuenWorkTimeSheetOfDailyAttendance> ouenWorkTimeSheetOfDailyAttendance) {
 		//	$日別勤怠 = require.日別勤怠(Work)を取得する(社員ID,年月日)	
 		Optional<IntegrationOfDaily> integrationOfDaily = require.get(empId, ymd);
 		//	if $日別勤怠.isPresent

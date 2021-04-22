@@ -29,7 +29,7 @@ public class CreateAttendanceTimeZoneForEachSupportWork {
 	 */
 	public static OuenWorkTimeSheetOfDailyAttendance create(Require require, String empId, GeneralDate ymd,  WorkDetailsParam workDetailsParam) {
 		//作業詳細.作業グループ.作業内容の有効期限を確認する(require,年月日)
-		//chỗ này đang xác nhận lại với anh tuấn
+		//chỗ này đang xác nhận lại với anh tuấn: Anh tuấn Trả lời: khi naof co thi no moi goi, nen chac ko can dau
 		workDetailsParam.getWorkGroup().get().checkExpirationDate(require, ymd);
 		//$旧の作業時間帯 = require.応援作業別勤怠時間帯を取得する(社員ID,年月日,作業詳細.応援勤務枠No)	
 		Optional<OuenWorkTimeSheetOfDaily> ouenWorkTimeOfDaily = require.find(empId, ymd, workDetailsParam.getSupportFrameNo().v());
