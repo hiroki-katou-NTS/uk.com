@@ -40,7 +40,7 @@ public class GetSupportDataJudgedSameDS {
 		// 応援データ一覧をループする
 		for (OuenWorkTimeSheetOfDailyAttendance supportData : supportDataList) {
 			// 開始区分を確認する
-			if (isStart && supportData.getTimeSheet().getStart().isPresent()) {
+			if (isStart && supportData.getTimeSheet().getStart().isPresent() && supportData.getTimeSheet().getStart().get().getTimeWithDay().isPresent()) {
 				// 同一と認識すべきの打刻か
 				TimeWithDayAttr standardStampStart = supportData.getTimeSheet().getStart().get().getTimeWithDay().get();
 				TimeWithDayAttr targetStampStart = targetSupportData.getTimeSheet().getStart().get().getTimeWithDay().get();
@@ -50,7 +50,7 @@ public class GetSupportDataJudgedSameDS {
 					break;
 				}
 			} 
-			if (!isStart && supportData.getTimeSheet().getEnd().isPresent()) {
+			if (!isStart && supportData.getTimeSheet().getEnd().isPresent() && supportData.getTimeSheet().getEnd().get().getTimeWithDay().isPresent()) {
 				// 同一と認識すべきの打刻か
 				TimeWithDayAttr standardStampEnd = supportData.getTimeSheet().getEnd().get().getTimeWithDay().get();
 				TimeWithDayAttr targetStampEnd = targetSupportData.getTimeSheet().getEnd().get().getTimeWithDay().get();
