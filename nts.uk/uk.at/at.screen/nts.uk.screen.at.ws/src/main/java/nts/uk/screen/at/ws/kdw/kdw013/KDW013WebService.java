@@ -25,7 +25,7 @@ import nts.uk.screen.at.app.kdw013.c.StartWorkInputPanel;
  * @author tutt
  *
  */
-@Path("screen/at/kdp013")
+@Path("screen/at/kdw013")
 @Produces("application/json")
 public class KDW013WebService {
 
@@ -84,7 +84,7 @@ public class KDW013WebService {
 	// C:作業入力パネル.メニュー別OCD.作業項目を選択する
 	@POST
 	@Path("c/select")
-	public List<TaskDto> selectWorkItem(selectWorkItemDto param) {
+	public List<TaskDto> selectWorkItem(SelectWorkItemParam param) {
 		return StartWorkInputPanelDto.setTaskListDto(selectWorkItem.select(param.sId, param.refDate,
 				new TaskFrameNo(param.taskFrameNo), Optional.of(new TaskCode(param.taskCode))));
 	}
