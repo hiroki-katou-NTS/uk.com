@@ -83,11 +83,11 @@ public class CreateDetailOfArbitraryScheduleQuery {
         val listAttIds = outputItemList.stream().map(AttendanceItemToPrint::getAttendanceId).distinct()
                 .collect(Collectors.toList());
         //2.  ①: <call> 任意期間別実績を取得する
-        val values = attendanceItemServiceAdapter.getRecordValues(lisSids,aggrFrameCode,listAttIds);
+        val values = attendanceItemServiceAdapter.getRecordValues(lisSids, aggrFrameCode, listAttIds);
         val listAttId = listAttIds.stream().sorted(Integer::compareTo).collect(Collectors.toList());
         //3. [①.isEmpty()]
         if (values.values().isEmpty()) {
-           throw new BusinessException("Msg_1894");
+            throw new BusinessException("Msg_1894");
         }
 
         //4.  ② 集計可能勤怠項目ID
@@ -109,7 +109,7 @@ public class CreateDetailOfArbitraryScheduleQuery {
 
         for (StatusOfEmployee employee : employees) {
             val listValue = values.getOrDefault(employee.getEmployeeId(), null);
-            if(listValue == null || listValue.getItemValues() == null) continue;
+            if (listValue == null || listValue.getItemValues() == null) continue;
             val listItemSids = listValue.getItemValues();
             val listAtt = listItemSids.stream()
                     .filter(x -> checkAttId(getAggregableMonthlyAttId, x.getItemId()))
@@ -242,7 +242,7 @@ public class CreateDetailOfArbitraryScheduleQuery {
             });
             //7.3 「６」 == TRUE
             if (isTotal) {
-                if(!values.values().isEmpty()){
+                if (!values.values().isEmpty()) {
                     // SUM THEO ATTID
                     val listValues = values.values().stream().flatMap(x -> x.getItemValues().stream())
                             .filter(x -> checkAttId(getAggregableMonthlyAttId, x.getItemId()))
@@ -271,9 +271,11 @@ public class CreateDetailOfArbitraryScheduleQuery {
                 }
 
             }
-            // 7.4 「７」 == TRUE
+            /* 7.4 「７」 == TRUE */
             if (isCumulativeWorkplace) {
-                workplacePrintTargetList.forEach(i -> {
+                val listWPL = workplacePrintTargetList.stream().sorted().collect(Collectors.toList());
+                Collections.reverse(listWPL);
+                listWPL.forEach(i -> {
                             val item = totalDisplayContents.stream().filter(e ->
                                     e.getLevel() >= i).collect(Collectors.toList());
 
@@ -308,6 +310,15 @@ public class CreateDetailOfArbitraryScheduleQuery {
                                         ).collect(Collectors.toList()),
                                         i
                                 ));
+                            } else {
+                                cumulativeWorkplaceDisplayContents.add(new CumulativeWorkplaceDisplayContent(
+                                        "",
+                                        "",
+                                        "",
+                                        "",
+                                        Collections.emptyList(),
+                                        i
+                                ));
                             }
 
                         }
@@ -318,13 +329,13 @@ public class CreateDetailOfArbitraryScheduleQuery {
         }
         val compareWplc = Comparator.comparing(AttendanceDetailDisplayContents::getWorkplaceCd);
         val totalDisplayContentComparator = Comparator.comparing(WorkplaceTotalDisplayContent::getHierarchyCode);
-        val tComparator = Comparator.comparing(CumulativeWorkplaceDisplayContent::getWorkplaceCode);
+
         return new DetailOfArbitrarySchedule(
                 contentsList,
                 detailDisplayContents.stream().sorted(compareWplc).collect(Collectors.toList()),
                 totalDisplayContents.stream().sorted(totalDisplayContentComparator).collect(Collectors.toList()),
                 totalAll,
-                cumulativeWorkplaceDisplayContents.stream().sorted(tComparator).collect(Collectors.toList())
+                cumulativeWorkplaceDisplayContents
         );
 
     }
