@@ -72,15 +72,16 @@ export class KdpS01BComponent extends Vue {
                 vm.employeeId = user.employeeId;
             });
 
-            vm.$http.post('at', servicePath.getEmojiSetting).then((result: any) => {
-                vm.isEmotionMode = true;
-            });
-
         }).catch((res: any) => {
             vm.$modal.error({ messageId: res.messageId, messageParams: res.parameterIds });
         });
 
-        vm.InitCountTime();
+        vm.$http.post('at', servicePath.getEmojiSetting).then((result: any) => {
+            vm.isEmotionMode = true;
+            if (!vm.isEmotionMode) {
+                vm.InitCountTime();
+            }
+        });
 
     }
 
@@ -118,6 +119,7 @@ export class KdpS01BComponent extends Vue {
                 date: moment(vm.$dt.now) //年月日
             };
         vm.$http.post('at', servicePath.registerEmoji, command).then((result: any) => {
+            vm.$close();
         });
     }
 
