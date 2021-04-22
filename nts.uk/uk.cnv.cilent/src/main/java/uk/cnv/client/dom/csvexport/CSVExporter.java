@@ -45,7 +45,7 @@ public class CSVExporter {
 			// 既に存在していたら中身を一度消す
 			deleteFolder(csvFolder);
 		}
-		if(!csvFolder.mkdir()) {
+		else if(!csvFolder.mkdir()) {
 			return new CommandResult(new RuntimeException("フォルダの生成に失敗しました。"));
 		}
 

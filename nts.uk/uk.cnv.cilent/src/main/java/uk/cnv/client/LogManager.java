@@ -32,8 +32,10 @@ public class LogManager {
 	}
 
 	public static void err(Exception e) {
-		System.err.println(e.getCause().toString());
-		outputLog(e.getCause().toString());
+		System.err.println(e.toString());
+		outputLog(e.toString());
+
+		if (e.getStackTrace() == null) return;
 
 		Arrays.stream(e.getStackTrace())
 			.forEach(st -> {
