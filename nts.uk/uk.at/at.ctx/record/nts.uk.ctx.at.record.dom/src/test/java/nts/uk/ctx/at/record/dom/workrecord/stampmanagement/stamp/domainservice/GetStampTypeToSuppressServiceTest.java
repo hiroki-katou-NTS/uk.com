@@ -196,30 +196,30 @@ public class GetStampTypeToSuppressServiceTest {
 	 * clockHourMinute.v() < startDateClock.v()
 	 * 
 	 */
-	@Test
-	public void testGetStampTypeToSuppressService_7() {
-		String employeeId = "employeeId";//dummy
-		StampMeans stampMeans = StampMeans.INDIVITION;
-		new Expectations() {
-			{
-				require.getStampSet();
-				result = Optional.of(StampSettingPersonHelper.DUMMY);
-				
-				require.findWorkConditionByEmployee(anyString,
-						(GeneralDate) any);
-				result = Optional.of(DomainServiceHeplper.getWorkingCondWorktimeNotNull());
-				
-				require.findByWorkTimeCode(anyString);
-				result = Optional.of(DomainServiceHeplper.getPredetemineTimeSettingByTime(2000));
-				
-			}
-		};
-		StampToSuppress stampToSuppress = GetStampTypeToSuppressService.get(require, employeeId, stampMeans);
-		assertThat(stampToSuppress.isGoingToWork()).isFalse();
-		assertThat(stampToSuppress.isDeparture()).isTrue();
-		assertThat(stampToSuppress.isGoOut()).isTrue();
-		assertThat(stampToSuppress.isTurnBack()).isTrue();
-	}
+//	@Test
+//	public void testGetStampTypeToSuppressService_7() {
+//		String employeeId = "employeeId";//dummy
+//		StampMeans stampMeans = StampMeans.INDIVITION;
+//		new Expectations() {
+//			{
+//				require.getStampSet();
+//				result = Optional.of(StampSettingPersonHelper.DUMMY);
+//				
+//				require.findWorkConditionByEmployee(anyString,
+//						(GeneralDate) any);
+//				result = Optional.of(DomainServiceHeplper.getWorkingCondWorktimeNotNull());
+//				
+//				require.findByWorkTimeCode(anyString);
+//				result = Optional.of(DomainServiceHeplper.getPredetemineTimeSettingByTime(2000));
+//				
+//			}
+//		};
+//		StampToSuppress stampToSuppress = GetStampTypeToSuppressService.get(require, employeeId, stampMeans);
+//		assertThat(stampToSuppress.isGoingToWork()).isFalse();
+//		assertThat(stampToSuppress.isDeparture()).isTrue();
+//		assertThat(stampToSuppress.isGoOut()).isTrue();
+//		assertThat(stampToSuppress.isTurnBack()).isTrue();
+//	}
 	
 	/**
 	 * stampMeans == StampMeans.INDIVITION;
@@ -235,30 +235,30 @@ public class GetStampTypeToSuppressServiceTest {
 	 * clockHourMinute.v() > startDateClock.v()
 	 * 
 	 */
-	@Test
-	public void testGetStampTypeToSuppressService_8() {
-		String employeeId = "employeeId";//dummy
-		StampMeans stampMeans = StampMeans.INDIVITION;
-		new Expectations() {
-			{
-				require.getStampSet();
-				result = Optional.of(StampSettingPersonHelper.DUMMY);
-				
-				require.findWorkConditionByEmployee(anyString,
-						(GeneralDate) any);
-				result = Optional.of(DomainServiceHeplper.getWorkingCondWorktimeNotNull());
-				
-				require.findByWorkTimeCode(anyString);
-				result = Optional.of(DomainServiceHeplper.getPredetemineTimeSettingByTime(1));
-				
-			}
-		};
-		StampToSuppress stampToSuppress = GetStampTypeToSuppressService.get(require, employeeId, stampMeans);
-		assertThat(stampToSuppress.isGoingToWork()).isFalse();
-		assertThat(stampToSuppress.isDeparture()).isTrue();
-		assertThat(stampToSuppress.isGoOut()).isTrue();
-		assertThat(stampToSuppress.isTurnBack()).isTrue();
-	}
+//	@Test
+//	public void testGetStampTypeToSuppressService_8() {
+//		String employeeId = "employeeId";//dummy
+//		StampMeans stampMeans = StampMeans.INDIVITION;
+//		new Expectations() {
+//			{
+//				require.getStampSet();
+//				result = Optional.of(StampSettingPersonHelper.DUMMY);
+//				
+//				require.findWorkConditionByEmployee(anyString,
+//						(GeneralDate) any);
+//				result = Optional.of(DomainServiceHeplper.getWorkingCondWorktimeNotNull());
+//				
+//				require.findByWorkTimeCode(anyString);
+//				result = Optional.of(DomainServiceHeplper.getPredetemineTimeSettingByTime(1));
+//				
+//			}
+//		};
+//		StampToSuppress stampToSuppress = GetStampTypeToSuppressService.get(require, employeeId, stampMeans);
+//		assertThat(stampToSuppress.isGoingToWork()).isFalse();
+//		assertThat(stampToSuppress.isDeparture()).isTrue();
+//		assertThat(stampToSuppress.isGoOut()).isTrue();
+//		assertThat(stampToSuppress.isTurnBack()).isTrue();
+//	}
 	
 	/**
 	 * stampMeans == StampMeans.INDIVITION;
