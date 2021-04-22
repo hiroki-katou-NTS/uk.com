@@ -50,7 +50,10 @@
 							<div class="row-label" data-bind="ntsFormLabel: { required: true, constraint: 'ResultDisplayTime' }">#{i18n.getText('KDP010_303')}</div> 
 							<div class="inline-display row-data">
 								<input tabindex="3" class="number-input" data-bind="ntsNumberEditor: {name: '#[KDP010_304]',value: resultDisplayTime, constraint: 'ResultDisplayTime', required: true}" /> 
-								<label class="text-note">#{i18n.getText('KDP010_305')}</label>
+								<div class="inline-display">
+									<div class="text-note">#{i18n.getText('KDP010_305')}</div>
+									<div class="text-note">#{i18n.getText('KDP010_31')}</div>
+								</div>
 							</div>
 						</td>
 					</tr>
@@ -58,7 +61,7 @@
 						<td>
 							<div class="row-label" data-bind="ntsFormLabel: { required: true, constraint: 'PasswordForRICOH' }">#{i18n.getText('KDP010_306')}</div> 
 							<div class="inline-display row-data ntsControl">
-								<input tabindex="4" data-bind="ntsTextEditor: {name: '#[KDP010_306]', value: icCardPassword, constraint: 'PasswordForRICOH', required: true, option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({textmode: 'password'}))}" />
+								<input tabindex="4" data-bind="ntsNumberEditor: {name: '#[KDP010_306]', value: icCardPassword, constraint: 'PasswordForRICOH', required: true, option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({textmode: 'password'}))}" />
 							</div>
 						</td>
 					</tr>
