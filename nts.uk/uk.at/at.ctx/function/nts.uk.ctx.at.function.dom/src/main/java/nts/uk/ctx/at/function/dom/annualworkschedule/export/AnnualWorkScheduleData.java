@@ -149,7 +149,7 @@ public class AnnualWorkScheduleData {
 					.add(this.getItemValueByNullOrZero(this.month10th))
 					.add(this.getItemValueByNullOrZero(this.month11th))
 					.add(this.getItemValueByNullOrZero(this.month12th));
-			this.sum = new ItemData(sum, null);
+			this.sum = new ItemData(sum, null, false);
 		}
 		if (this.numMonth == 0) {
 			return this;
@@ -162,14 +162,14 @@ public class AnnualWorkScheduleData {
 			this.average = this.sum.getValue().divide(BigDecimal.valueOf(this.numMonth), 1, RoundingMode.HALF_UP);
 			//KWR008 Update export excel ver11 set bg gray
 			if(this.check36MaximumAgreement) {
-				this.setSum(new ItemData(null, AgreementTimeStatusOfMonthly.EXCESS_BG_GRAY));
+				this.setSum(new ItemData(null, AgreementTimeStatusOfMonthly.EXCESS_BG_GRAY, false));
 			}
 			break;
 		case TIME:
 			this.average = this.sum.getValue().divide(BigDecimal.valueOf(this.numMonth), 0, RoundingMode.HALF_UP);
 			//KWR008 Update export excel ver11 set bg gray
 			if(this.check36MaximumAgreement) {
-				this.setSum(new ItemData(null, AgreementTimeStatusOfMonthly.EXCESS_BG_GRAY));
+				this.setSum(new ItemData(null, AgreementTimeStatusOfMonthly.EXCESS_BG_GRAY, false));
 			}
 			break;
 		}
@@ -308,22 +308,36 @@ public class AnnualWorkScheduleData {
 		if (item == null || item.getStatus() == null)
 			// check gray for sum column
 			return null;
+		if (!item.is36AgreementSecondRow()) {
+			switch (item.getStatus()) {
+			case EXCESS_LIMIT_ERROR:
+			case EXCESS_LIMIT_ERROR_SP:
+			case EXCESS_EXCEPTION_LIMIT_ALARM:
+			case EXCESS_EXCEPTION_LIMIT_ERROR:
+				// No56: #FD4D4D = 16600397
+				return 16600397;
+			case EXCESS_LIMIT_ALARM:
+			case EXCESS_LIMIT_ALARM_SP:
+				// No57: #F6F636 = 16184886
+				return 16184886;
+			case EXCESS_BG_GRAY:
+				// KWR008 update specs ver 17 redmine #115614
+				return isSum ? 11119017 : 16600397;
+			default:
+				return null;
+			}
+		}
+		
 		switch (item.getStatus()) {
-		case EXCESS_LIMIT_ERROR:
-		case EXCESS_LIMIT_ERROR_SP:
-		case EXCESS_EXCEPTION_LIMIT_ALARM:
-		case EXCESS_EXCEPTION_LIMIT_ERROR:
-			// No56: #FD4D4D = 16600397
-			return 16600397;
-		case EXCESS_LIMIT_ALARM:
-		case EXCESS_LIMIT_ALARM_SP:
-			// No57: #F6F636 = 16184886
-			return 16184886;
-		case EXCESS_BG_GRAY:
-			// KWR008 update specs ver 17 redmine #115614
-			return isSum ? 11119017 : 16600397;
-		default:
-			return null;
+			case EXCESS_EXCEPTION_LIMIT_ERROR:
+			case EXCESS_BG_GRAY:
+				// No56: #FD4D4D = 16600397
+				return 16600397;
+			case EXCESS_EXCEPTION_LIMIT_ALARM:
+				// No57: #F6F636 = 16184886
+				return 16184886;
+			default:
+				return null;
 		}
 	}
 	
@@ -466,7 +480,7 @@ public class AnnualWorkScheduleData {
 				}
 			}
 		}
-		return new ItemData(sum, null);
+		return new ItemData(sum, null, false);
 	}
 
 	public static AnnualWorkScheduleData fromAgreementTimeList(ItemsOutputToBookTable itemOut,
@@ -494,14 +508,14 @@ public class AnnualWorkScheduleData {
 		agreementTimeResults.forEach(m -> {
 			BigDecimal value = new BigDecimal(!check36MaximumAgreement ? m.getAgreementTime().getAgreementTime().v() : m.getLegalMaxTime().getAgreementTime().v());
 			AgreementTimeStatusOfMonthly statusEnum = m.getStatus();
-			ItemData item = new ItemData(value, statusEnum);
+			ItemData item = new ItemData(value, statusEnum, check36MaximumAgreement);
 			annualWorkScheduleData.setMonthlyData(item, YearMonth.of(m.getYm().year(), m.getYm().month()));
 		});
 		
 		if (agreTimeOfMonthlyImport != null) {
 			BigDecimal value = new BigDecimal(agreTimeOfMonthlyImport.getAgreementTime());
 			AgreementTimeStatusOfMonthly statusEnum = EnumAdaptor.valueOf(status, AgreementTimeStatusOfMonthly.class);
-			ItemData item = new ItemData(value, statusEnum);
+			ItemData item = new ItemData(value, statusEnum, check36MaximumAgreement);
 			annualWorkScheduleData.setSum(item);
 		}
 

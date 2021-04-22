@@ -11,4 +11,5 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeSt
 public class ItemData {
 	private BigDecimal value;
 	private AgreementTimeStatusOfMonthly status;
+	private boolean is36AgreementSecondRow;
 }
