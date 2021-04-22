@@ -65,7 +65,6 @@
 				<button class="proceed"
 					data-bind="click: register, enable: $root.errors.isEmpty"
 					tabindex="1">#{i18n.getText('KAF007_54')}</button>
-				<button class="" data-bind="click: openKDL009" tabindex="2">#{i18n.getText('KAF011_7')}</button>
 				<div
 					data-bind="component: { name: 'kaf000-a-component7', 
 											params: {
@@ -164,6 +163,18 @@
 						style="width: 388px; height: inherit; padding-right: 0px">
 						<div
 							style="height: inherit; background-color: #fff; overflow-y: auto; overflow-x: hidden;">
+							
+
+							<div style="padding-top: 10px"
+								data-bind="component: { name: 'kaf000-a-component1', 
+														params: {
+															appType: appType,
+															appDispInfoStartupOutput: appDispInfoStartupOutput
+														} }"></div>
+
+
+
+
 							<!-- 
 								<div class="remainInfor">
 								<div class="remainLable">#{i18n.getText('KAF011_64')}</div>
@@ -185,13 +196,21 @@
 							</div>
 							
 							 -->
-							<div style="padding-top: 10px"
-								data-bind="component: { name: 'kaf000-a-component1', 
-														params: {
-															appType: appType,
-															appDispInfoStartupOutput: appDispInfoStartupOutput
-														} }"></div>
+
+							 <div style="padding-top: 20px; padding-left: 15px; padding-right: 15px;" data-bind="foreach: remainDayList">
+								<div style="padding-bottom: 20px; border-bottom: 2px solid #B1B1B1; display: block;">
+									<div style="display: block;" data-bind="ntsFormLabel: {text: label}"></div>
+									<div style="border: 2px solid #B1B1B1; display: flow-root; padding: 8px 16px;">
+											<div style="display: inline; float: left;" data-bind="text: name"></div>
+											
+											<div style="display: inline; float: right;"><a class="hyperlink" data-bind="click: $parent.openKDL009, text: content"></a></div>
+									</div>	
+								</div>
+								
+							</div>											
 							<div
+
+
 								data-bind="component: { name: 'kaf000-a-component8',
 														params: {
 															appType: appType,
