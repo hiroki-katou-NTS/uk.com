@@ -10,7 +10,7 @@ import java.util.Optional;
 
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.worktime.common.BooleanGetAtr;
-import nts.uk.ctx.at.shared.dom.worktime.common.FixedWorkRestSet;
+import nts.uk.ctx.at.shared.dom.worktime.common.CommonRestSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.LegalOTSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.StampReflectTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
@@ -19,6 +19,7 @@ import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixHalfDayWorkTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixOffdayWorkTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkCalcSetting;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSettingSetMemento;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.HalfDayWorkSet;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeMethodSet;
 import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWtCom;
@@ -28,7 +29,6 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedStampReflec
 import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtWtFix;
 import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedWorkSetPK;
 import nts.uk.ctx.at.shared.infra.repository.worktime.common.JpaFixedWorkCalcSettingSetMemento;
-import nts.uk.ctx.at.shared.infra.repository.worktime.common.JpaFixedWorkRestSetSetMemento;
 import nts.uk.ctx.at.shared.infra.repository.worktime.common.JpaWorkTimezoneCommonSetSetMemento;
 
 /**
@@ -128,8 +128,15 @@ public class JpaFixedWorkSettingSetMemento implements FixedWorkSettingSetMemento
 	 * setUseHalfDayShift(java.lang.Boolean)
 	 */
 	@Override
-	public void setUseHalfDayShift(Boolean useHalfDayShift) {
-		this.entity.setUseHalfDay(BooleanGetAtr.getAtrByBoolean(useHalfDayShift));
+	public void setUseHalfDayShift(HalfDayWorkSet useHalfDayShift) {
+	    this.entity.setUseHalfDay(BooleanGetAtr.getAtrByBoolean(useHalfDayShift.isWorkingTimes()));
+	    this.entity.setUseHalfDayOverTime(BooleanGetAtr.getAtrByBoolean(useHalfDayShift.isOverTime()));
+	    this.entity.setUseHalfDayBreakTime(BooleanGetAtr.getAtrByBoolean(useHalfDayShift.isBreakTime()));
+	}
+	
+	@Override
+	public void setCommonRestSet(CommonRestSetting commonRestSet) {
+	    this.entity.setLevRestCalcType(commonRestSet.getCalculateMethod().value);
 	}
 
 	/*
@@ -140,10 +147,10 @@ public class JpaFixedWorkSettingSetMemento implements FixedWorkSettingSetMemento
 	 * setFixedWorkRestSetting(nts.uk.ctx.at.shared.dom.worktime.common.
 	 * FixedWorkRestSet)
 	 */
-	@Override
-	public void setFixedWorkRestSetting(FixedWorkRestSet fixedWorkRestSetting) {
-		fixedWorkRestSetting.saveToMemento(new JpaFixedWorkRestSetSetMemento<KshmtWtFix>(this.entity));
-	}
+//	@Override
+//	public void setFixedWorkRestSetting(FixedWorkRestSet fixedWorkRestSetting) {
+//		fixedWorkRestSetting.saveToMemento(new JpaFixedWorkRestSetSetMemento<KshmtWtFix>(this.entity));
+//	}
 
 	/*
 	 * (non-Javadoc)

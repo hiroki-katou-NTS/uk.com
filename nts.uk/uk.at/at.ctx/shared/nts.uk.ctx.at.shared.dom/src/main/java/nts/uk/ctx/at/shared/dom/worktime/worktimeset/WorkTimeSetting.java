@@ -44,7 +44,7 @@ public class WorkTimeSetting extends WorkTimeAggregateRoot implements Cloneable{
 
 	/** The color code. */
 	// 色
-	private ColorCode colorCode;
+//	private ColorCode colorCode;
 
 	/** The work time display name. */
 	// 表示名
@@ -68,7 +68,7 @@ public class WorkTimeSetting extends WorkTimeAggregateRoot implements Cloneable{
 		this.worktimeCode = memento.getWorktimeCode();
 		this.workTimeDivision = memento.getWorkTimeDivision();
 		this.abolishAtr = memento.getAbolishAtr();
-		this.colorCode = memento.getColorCode();
+//		this.colorCode = memento.getColorCode();
 		this.workTimeDisplayName = memento.getWorkTimeDisplayName();
 		this.memo = memento.getMemo();
 		this.note = memento.getNote();
@@ -84,7 +84,7 @@ public class WorkTimeSetting extends WorkTimeAggregateRoot implements Cloneable{
 		memento.setWorktimeCode(this.worktimeCode);
 		memento.setWorkTimeDivision(this.workTimeDivision);
 		memento.setAbolishAtr(this.abolishAtr);
-		memento.setColorCode(this.colorCode);
+//		memento.setColorCode(this.colorCode);
 		memento.setWorkTimeDisplayName(this.workTimeDisplayName);
 		memento.setMemo(this.memo);
 		memento.setNote(this.note);
@@ -141,14 +141,14 @@ public class WorkTimeSetting extends WorkTimeAggregateRoot implements Cloneable{
 	}
 
 	public WorkTimeSetting(String companyId, WorkTimeCode worktimeCode, WorkTimeDivision workTimeDivision,
-			AbolishAtr abolishAtr, ColorCode colorCode, WorkTimeDisplayName workTimeDisplayName, Memo memo,
+			AbolishAtr abolishAtr, WorkTimeDisplayName workTimeDisplayName, Memo memo,
 			WorkTimeNote note) {
 		super();
 		this.companyId = companyId;
 		this.worktimeCode = worktimeCode;
 		this.workTimeDivision = workTimeDivision;
 		this.abolishAtr = abolishAtr;
-		this.colorCode = colorCode;
+//		this.colorCode = colorCode;
 		this.workTimeDisplayName = workTimeDisplayName;
 		this.memo = memo;
 		this.note = note;
@@ -166,7 +166,7 @@ public class WorkTimeSetting extends WorkTimeAggregateRoot implements Cloneable{
 			cloned.worktimeCode = new WorkTimeCode(this.worktimeCode.v());
 			cloned.workTimeDivision = this.workTimeDivision.clone();
 			cloned.abolishAtr = AbolishAtr.valueOf(this.abolishAtr.value);
-			cloned.colorCode = new ColorCode(this.colorCode.v());
+//			cloned.colorCode = new ColorCode(this.colorCode.v());
 			cloned.workTimeDisplayName = this.workTimeDisplayName.clone();
 			cloned.memo = new Memo(this.memo.v());
 			cloned.note = new WorkTimeNote(this.note.v());

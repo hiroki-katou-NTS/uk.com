@@ -46,7 +46,7 @@ public interface PredetemineTimeSettingGetMemento {
      *
      * @return true, if is night shift
      */
-    public boolean isNightShift();
+//    public boolean isNightShift();
 
     /**
      * Gets the prescribed timezone setting.

@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
-import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixRestTimezoneSetSetMemento;
+import nts.uk.ctx.at.shared.dom.worktime.common.TimezoneOfFixedRestTimeSetSetMemento;
 import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtWtFixBrHolTs;
 import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedHolRestSetPK;
 import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtWtFix;
@@ -21,7 +21,7 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedWorkSetPK;
 /**
  * The Class JpaFixedOffDayRestTimeSetMemento.
  */
-public class JpaFixedOffDayRestTimeSetMemento implements FixRestTimezoneSetSetMemento {
+public class JpaFixedOffDayRestTimeSetMemento implements TimezoneOfFixedRestTimeSetSetMemento {
 
 	/** The entity. */
 	private KshmtWtFix entity;
@@ -42,7 +42,7 @@ public class JpaFixedOffDayRestTimeSetMemento implements FixRestTimezoneSetSetMe
 	 * @see nts.uk.ctx.at.shared.dom.worktime.fixedset.FixRestTimezoneSetSetMemento#setLstTimezone(java.util.List)
 	 */
 	@Override
-	public void setLstTimezone(List<DeductionTime> lstTimezone) {
+	public void setTimezones(List<DeductionTime> lstTimezone) {
 		List<KshmtWtFixBrHolTs> newListEntity = new ArrayList<>();
 
 		if (!CollectionUtil.isEmpty(lstTimezone)) {
