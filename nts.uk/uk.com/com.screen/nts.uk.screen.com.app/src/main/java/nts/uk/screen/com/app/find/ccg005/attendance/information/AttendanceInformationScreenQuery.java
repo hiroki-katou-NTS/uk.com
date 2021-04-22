@@ -26,6 +26,7 @@ import nts.uk.ctx.at.request.dom.application.ReflectedState;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTimeRepository;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkScheduleRepository;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
@@ -112,10 +113,24 @@ public class AttendanceInformationScreenQuery {
 		
 		// 1: get(社員IDリスト　＝　パラメータ社員のIDリスト.社員ID, 基準日): List<日別実績の勤務情報>
 		List<WorkInfoOfDailyPerformance> workInfoList = workInfoRepo.findByPeriodOrderByYmdAndEmps(sids, datePeriod);
-		List<String> subSids = workInfoList.stream().map(mapper -> mapper.getEmployeeId()).collect(Collectors.toList());
+		List<String> subSids1 = workInfoList.stream()
+				.filter(item -> item.getWorkInformation() == null)
+				.map(WorkInfoOfDailyPerformance::getEmployeeId)
+				.collect(Collectors.toList());
 		
 		// 2: get(社員IDリスト　＝　パラメータ社員のIDリスト.社員ID, 基準日): List<日別実績の出退勤>
 		List<TimeLeavingOfDailyPerformance> timeLeaveList = timeLeaveRepo.finds(sids, datePeriod);
+		
+		List<String> subSids2 = timeLeaveList.stream()
+			.filter(item -> {
+				Optional<TimeLeavingWork> attendance = item.getAttendance().getAttendanceLeavingWork(1);		
+				if(attendance.isPresent() && attendance.get().getAttendanceStamp().isPresent() && attendance.get().getAttendanceTime().isPresent()) {
+					return false;
+				}
+				return true;
+			})
+			.map(TimeLeavingOfDailyPerformance::getEmployeeId)
+			.collect(Collectors.toList());
 		
 		// 3: get(社員IDリスト　＝　パラメータ社員のIDリスト.社員ID, 基準日、勤務実績のエラーアラームコード＝S007、S008): List<社員の日別実績エラー一覧>
 		List<String> errorAlarmCodeLst = new ArrayList<>();
@@ -126,7 +141,8 @@ public class AttendanceInformationScreenQuery {
 		// 4: get(社員IDリスト　＝　パラメータ社員のIDリスト.社員ID, 基準日):  List<勤務予定>
 		List<String> allSids = new ArrayList<String>();
 		allSids.addAll(sids);
-		allSids.removeAll(subSids); //except「日別実績の勤務情報.社員ID」
+		allSids.removeAll(subSids1); //日別実績の勤務情報がある
+		allSids.removeAll(subSids2); //日別実績の出退勤の出勤時刻（NO＝１）がある　AND 日別実績の出退勤の退勤時刻（NO＝１）がある
 		List<WorkSchedule> workScheduleList = workScheduleRepo.getList(allSids, datePeriod);
 		
 		// 5: get(ログイン会社ID): List<勤務種類>

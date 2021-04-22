@@ -24,15 +24,15 @@ public class BsymtAffWorkPlaceGroup  extends ContractUkJpaEntity {
 		super();
 		this.pk = pk;
 	}
-	
+
 	public AffWorkplaceGroup toDomain(){
 		return new AffWorkplaceGroup(
 				pk.WKPGRPID,
 				pk.WKPID);
 	}
-	
+
 	public static BsymtAffWorkPlaceGroup toEntity(AffWorkplaceGroup dom) {
-		BsymtAffWorkPlaceGroupPk pk = new BsymtAffWorkPlaceGroupPk(AppContexts.user().companyId(), dom.getWKPGRPID(), dom.getWKPID());
+		BsymtAffWorkPlaceGroupPk pk = new BsymtAffWorkPlaceGroupPk(AppContexts.user().companyId(), dom.getWorkplaceGroupId(), dom.getWorkplaceId());
 		return new BsymtAffWorkPlaceGroup(pk);
 	}
 

@@ -32,7 +32,7 @@ import { KSUS01BComponent } from '../b/index';
         isDetailShow() {
             let scrollPos = 0;
             if (this.isDetailShow) {
-                scrollPos = window.pageYOffset;
+                // scrollPos = window.pageYOffset;
                 document.body.style.overflowY = 'hidden';
                 document.body.style.position = 'fixed';
                 document.body.style.top = `-${scrollPos}px`;
@@ -49,7 +49,7 @@ import { KSUS01BComponent } from '../b/index';
     }
 })
 export class KSUS01AComponent extends Vue {
-    public title: string = 'KSUS01A';
+    public title: string = 'ksus01a';
 
     public yearMonthOldVal: string = moment().format('YYYYMM');
     public yearMonth: string = moment().format('YYYYMM');

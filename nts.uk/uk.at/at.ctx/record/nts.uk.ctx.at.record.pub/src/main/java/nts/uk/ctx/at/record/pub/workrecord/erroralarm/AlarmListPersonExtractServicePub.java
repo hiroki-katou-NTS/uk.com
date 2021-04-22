@@ -67,4 +67,55 @@ public interface AlarmListPersonExtractServicePub {
 			List<String> lstAnyConID,
 			List<WorkPlaceHistImportAl> getWplByListSidAndPeriod, 
 			List<ResultOfEachCondition> lstResultCondition, List<AlarmListCheckInfor> lstCheckType);
+	
+	/**
+	 * スケジュール日次
+	 * @param cid
+	 * @param lstSid
+	 * @param dPeriod
+	 * @param errorMasterCheckId
+	 * @param getWplByListSidAndPeriod
+	 * @param lstStatusEmp
+	 * @param lstResultCondition
+	 * @param lstCheckType
+	 */
+	void extractScheDailyCheckResult(String cid, List<String> lstSid, DatePeriod dPeriod,
+			String errorDailyCheckId, String listOptionalItem, String listFixedItem,
+			List<WorkPlaceHistImportAl> getWplByListSidAndPeriod,
+			List<StatusOfEmployeeAdapterAl> lstStatusEmp, List<ResultOfEachCondition> lstResultCondition,
+			List<AlarmListCheckInfor> lstCheckType, Consumer<Integer> counter,
+			Supplier<Boolean> shouldStop);
+	
+	/**
+	 * スケジュール年間
+	 */
+	void extractScheYearCheckResult(String cid, List<String> lstSid, DatePeriod dPeriod, String errorCheckId,
+			String listOptionalItem, List<WorkPlaceHistImportAl> lstWkpIdAndPeriod,
+			List<StatusOfEmployeeAdapterAl> lstStaEmp, List<ResultOfEachCondition> lstResultCondition,
+			List<AlarmListCheckInfor> lstCheckType, Consumer<Integer> counter, Supplier<Boolean> shouldStop);
+	
+	/**
+	 * スケジュール月次
+	 *
+	 */
+	void extractScheMonCheckResult(String cid, List<String> lstSid, DatePeriod dPeriod,	
+			String errorCheckId, String listFixedItemId, String listOptionalItemId,
+			List<WorkPlaceHistImportAl> getWplByListSidAndPeriod, 
+			List<StatusOfEmployeeAdapterAl> lstStatusEmp, List<ResultOfEachCondition> lstResultCondition, 
+			List<AlarmListCheckInfor> lstCheckType, Consumer<Integer> counter,
+			Supplier<Boolean> shouldStop);  
+	
+	/**
+	 * 週次
+	 */
+	void extractWeeklyCheckResult(
+			String cid, 
+			List<String> lstSid, 
+			DatePeriod period, 
+			List<WorkPlaceHistImportAl> wplByListSidAndPeriods, 
+			String listOptionalItem,
+			List<ResultOfEachCondition> lstResultCondition, 
+			List<AlarmListCheckInfor> lstCheckType, 
+			Consumer<Integer> counter,
+			Supplier<Boolean> shouldStop);
 }

@@ -42,4 +42,8 @@ public class AlarmCheckConditionByCategoryDto {
 	private AnnualHolidayAlarmConditionDto annualHolidayAlConDto;
 	
 	private MasterCheckAlarmCheckConditionDto masterCheckAlarmCheckConDto;
+	
+	private ScheFixCondDayDto scheFixCondDay;
+	
+	private ScheAnyCondDayDto scheAnyCondDay;
 }

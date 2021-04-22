@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.time.GeneralDate;
@@ -21,6 +22,7 @@ import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ApproveRootStatusF
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.enums.ApprovalStatusForEmployee;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.finddata.IFindDataDCRecord;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.errorcheck.DailyRecordCreateErrorAlermService;
+import nts.uk.ctx.at.record.dom.divergence.time.service.DivTimeSysFixedCheckService;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmConditionRepository;
@@ -64,19 +66,39 @@ import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.AlarmListCheckType;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.ExtractionAlarmPeriodDate;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.ExtractionResultDetail;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.ResultOfEachCondition;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.converter.DailyRecordShareFinder;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.DailyRecordConverter;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.service.AttendanceItemConvertFactory;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.deviationtime.DivergenceTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateSetting;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.DailyAttendanceItemNameAdapter;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.SystemFixedErrorAlarm;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.CalculationState;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.deviationtime.deviationtimeframe.CheckExcessAtr;
+import nts.uk.ctx.at.shared.dom.workingcondition.LaborContractTime;
+import nts.uk.ctx.at.shared.dom.workingcondition.PersonalWorkCategory;
+import nts.uk.ctx.at.shared.dom.workingcondition.SingleDaySchedule;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
+import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktype.AttendanceHolidayAttr;
+import nts.uk.ctx.at.shared.dom.worktype.HolidayAtr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
@@ -85,9 +107,6 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 	
 	@Inject
 	private AttendanceItemNameAdapter attendanceAdap;
-	
-	@Inject
-	private DailyAttendanceItemNameAdapter dailyNameAdapter;
 	
 	@Inject
 	private WorkTypeRepository workTypeRep;
@@ -129,9 +148,6 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 	private DailyRecordCreateErrorAlermService dailyAlermService;
 	
 	@Inject
-	private DailyRecordConverter dailyRecordConverter;
-	
-	@Inject
 	private ManagedParallelWithContext parallelManager;
 	@Inject
 	private IdentityProcessRepository indentiryRepo;
@@ -143,6 +159,12 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 	private DataCheckAlarmListService dataCheckSevice;
 	@Inject
 	private ConvertCompareTypeToText convertComparaToText;
+	@Inject
+	private AttendanceItemConvertFactory convertFactory;
+	@Inject
+	private WorkingConditionItemRepository workConditionItemRepo;
+	@Inject
+	private DivTimeSysFixedCheckService divTimeCheckService;
 	@Override
 	public void extractDailyCheck(String cid, List<String> lstSid, DatePeriod dPeriod, 
 			String errorDailyCheckId, List<String> extractConditionWorkRecord,
@@ -153,7 +175,7 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 		
 		
 		// チェックする前にデータを準備
-		PrepareData prepareData = this.prepareDataBeforeChecking(cid, lstSid, dPeriod, errorDailyCheckId,
+		PrepareData prepareData = this.getDataBeforeChecking(cid, lstSid, dPeriod, errorDailyCheckId,
 																extractConditionWorkRecord, errorDailyCheckCd);
 		
 		parallelManager.forEach(CollectionUtil.partitionBySize(lstSid, 100), emps -> {
@@ -216,12 +238,10 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 					}
 					
 					// 日次の固定抽出条件のアラーム値を生成する
-					OutputCheckResult checkTab4 = this.extractAlarmFixTab4(prepareData.getDataforDailyFix(), 
+					OutputCheckResult checkTab4 = this.extractAlarmFixTab4(prepareData,
 							integrationDaily,
 							sid,
 							exDate,
-							prepareData.getListWorkType(), 
-							prepareData.getListWorktime(),
 							getWplByListSidAndPeriod);
 					lstResultCondition.addAll(checkTab4.getLstResultCondition());
 					lstCheckType.addAll(checkTab4.getLstCheckType());
@@ -246,7 +266,7 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 	 * @param errorDailyCheckCd tab2 日別実績のエラーアラームコード
 	 * @return
 	 */
-	private PrepareData prepareDataBeforeChecking(String cid, List<String> lstSid, DatePeriod dPeriod, 
+	private PrepareData getDataBeforeChecking(String cid, List<String> lstSid, DatePeriod dPeriod, 
 			String errorDailyCheckId, List<String> extractConditionWorkRecord, List<String> errorDailyCheckCd) {
 		// ドメインモデル「勤務実績のエラーアラームチェック」を取得する。
 		List<ErrorAlarmCondition> listErrorAlarmCon = new ArrayList<>();
@@ -298,7 +318,7 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 		List<Identification> listIdentity = new ArrayList<>();
 		List<StampCard> listStampCard = new ArrayList<>();
 		List<WorkingCondition> listWkConItem = new ArrayList<>();
-		
+		List<WorkingConditionItem> lstWorkCondItem  = new ArrayList<>();
 		// ドメインモデル「勤務実績の固定抽出条件」を取得する
 		List<FixedConditionWorkRecord> workRecordExtract = fixCondReRep.getFixConWorkRecordByIdUse(errorDailyCheckId, 1);
 		result.setListFixConWork(workRecordExtract);
@@ -332,16 +352,22 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 					if(getApprovalProcessById.isPresent()) approverConfirm = getApprovalProcessById.get().getUseDailyBossChk() == 1 ? true : false;
 					result.setApproverConfirm(approverConfirm);
 					break;
-				/*case 13:
-				case 14:
+				case CONTRACT_TIME_EXCEEDED:
+				case LESS_THAN_CONTRACT_TIME:
+				case VIOLATION_DAY_OF_WEEK:
+				case ILL_WORK_TIME_DAY_THE_WEEK:
 					if(listWkConItem.isEmpty()) {
-						listWkConItem = workingConditionRepository.getBySidsAndDatePeriodNew(lstSid, dPeriod);	
+						listWkConItem = workingConditionRepository.getBySidsAndDatePeriodNew(lstSid, dPeriod);
+						lstWorkCondItem = workConditionItemRepo.getBySidsAndDatePeriodNew(lstSid, dPeriod);
+						result.setListWkConItem(listWkConItem);
+						result.setLstWorkCondItem(lstWorkCondItem);
 					}
 					break;
-				case 25:
-					//未反映打刻
+				case UNREFLECTED_STAMP:
+					//List<社員ID＞から打刻カードを全て取得する
 					listStampCard = stampCardRep.getLstStampCardByLstSid(lstSid);
-					break;*/
+					result.setListStampCard(listStampCard);
+					break;
 				default:
 			}
 		}
@@ -947,16 +973,19 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 	/**
 	 * 日次の固定抽出条件のアラーム値を生成する
 	 */
-	private OutputCheckResult extractAlarmFixTab4(DataFixExtracCon dataforDailyFix,
+	private OutputCheckResult extractAlarmFixTab4(PrepareData prepareData,
 			IntegrationOfDaily integra,
 			String sid,
-			GeneralDate day,
-			List<WorkType> listWorkType,
-			List<WorkTimeSetting> listWorktime,
+			GeneralDate baseDate,
 			List<WorkPlaceHistImportAl> getWplByListSidAndPeriod) {
 		
+		DataFixExtracCon dataforDailyFix = prepareData.getDataforDailyFix();
+		List<WorkType> listWorkType = prepareData.getListWorkType();
+		List<WorkTimeSetting> listWorktime = prepareData.getListWorktime();
+		List<MonthlyAttendanceItemNameDto> lstItemDay = prepareData.getLstItemDay();
 		String alarmMessage = new String();
 		String alarmTarget = new String();
+		
 		List<ResultOfEachCondition> listResultCond = new ArrayList<>();
 		List<AlarmListCheckInfor> listAlarmChk = new ArrayList<>();		
 		
@@ -977,7 +1006,7 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 				alarmMessage = TextResource.localize("KAL010_66");
 				alarmTarget = TextResource.localize("KAL010_74");
 				this.createExtractAlarm(sid,
-						day,
+						baseDate,
 						listResultCond,
 						itemData.getFixConWorkRecordName().v(),
 						alarmMessage,
@@ -990,6 +1019,10 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 			}
 			if(integra == null) continue;
 			
+			
+			List<EmployeeDailyPerError> lstDailyError = new ArrayList<>();
+			String itemName = "";
+			AlarmMessageValues chkCheckResult = new AlarmMessageValues();
 			switch(item.getFixConWorkRecordNo()) {
 			
 				// NO=1:勤務種類未登録
@@ -1020,7 +1053,7 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 					if(!dataforDailyFix.isPersonConfirm()) break;
 					
 					List<Identification> identityVerifyStatus = dataforDailyFix.getIdentityVerifyStatus().stream()
-								.filter(x -> x.getEmployeeId().equals(sid) && x.getProcessingYmd().equals(day))
+								.filter(x -> x.getEmployeeId().equals(sid) && x.getProcessingYmd().equals(baseDate))
 								.collect(Collectors.toList());
 					
 					if(identityVerifyStatus.isEmpty()) {
@@ -1033,7 +1066,7 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 					if(!dataforDailyFix.isApproverConfirm()) break;
 					
 					List<ApproveRootStatusForEmpImport> adminUnconfirm = dataforDailyFix.getAdminUnconfirm()
-							.stream().filter(x -> x.getAppDate().equals(day) && x.getEmployeeID().equals(sid))
+							.stream().filter(x -> x.getAppDate().equals(baseDate) && x.getEmployeeID().equals(sid))
 							.collect(Collectors.toList());
 					
 					if(adminUnconfirm.isEmpty() || adminUnconfirm.get(0).getApprovalStatus() != ApprovalStatusForEmployee.APPROVED) {
@@ -1043,42 +1076,253 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 					break;
 				// NO = 6： 打刻漏れ
 				case CONTINUOUS_VATATION_CHECK:
-					if(!integra.getAttendanceLeave().isPresent() && !integra.getTempTime().isPresent() && !integra.getBreakTime().equals(null))
-						break;
-					else {
-						// 打刻漏れ
-						List<EmployeeDailyPerError> employeePer = dailyAlermService.lackOfTimeLeavingStamping(integra);
-						if(!employeePer.isEmpty()) {
-							alarmMessage = TextResource.localize("KAL010_79");
-							alarmTarget = TextResource.localize("KAL010_610");
-						}
-					}
+					// 打刻漏れ
+					lstDailyError = dailyAlermService.lackOfTimeLeavingStamping(integra);
+					if(lstDailyError.isEmpty()) break;
+					 
+					alarmMessage = TextResource.localize("KAL010_79", getItemName(lstDailyError, lstItemDay));
+					alarmTarget = TextResource.localize("KAL010_610");
 					break;
 				// NO =7:打刻漏れ(入退門)
 				case GATE_MISS_STAMP:
-					if(!integra.getAttendanceLeavingGate().isPresent()) break;
-					else {
-						// 入退門打刻漏れ
-						List<EmployeeDailyPerError> employeeEr = dailyAlermService.lackOfAttendanceGateStamping(integra);
-						if(!employeeEr.isEmpty()) {
-							alarmMessage = TextResource.localize("KAL010_80", "");
-							alarmTarget = TextResource.localize("KAL010_612", "");
-						}
-					}
+					// 入退門打刻漏れ
+					lstDailyError = dailyAlermService.lackOfAttendanceGateStamping(integra);
+					if(lstDailyError.isEmpty()) break;
+					itemName = getItemName(lstDailyError, lstItemDay);
+					if(itemName.isEmpty()) break;
+					alarmMessage = TextResource.localize("KAL010_80",  getItemName(lstDailyError, lstItemDay));
+					alarmTarget = TextResource.localize("KAL010_612");
 					break;
 				// NO =8： 打刻順序不正
 				case MISS_ORDER_STAMP:
-					if(!integra.getAttendanceLeave().isPresent() && !integra.getTempTime().isPresent() && !integra.getBreakTime().equals(null)
-							&& !integra.getOutingTime().isPresent()) break;
-					else {
+				case GATE_MISS_ORDER_STAMP:
+					lstDailyError = dailyAlermService.stampIncorrectOrderAlgorithm(integra);
+					if(lstDailyError.isEmpty()) break;				
+					itemName = getItemNameWithValue(lstDailyError, integra, lstItemDay);
+					if(itemName.isEmpty()) break;
+					alarmMessage = TextResource.localize("KAL010_81", itemName);
+					
+					alarmTarget = TextResource.localize("KAL010_611");
+					break;
+					
+				case MISS_HOLIDAY_STAMP:
+					Optional<EmployeeDailyPerError> optDailyError = dailyAlermService.checkHolidayStamp(integra);
+					if(!optDailyError.isPresent()) break;
+					
+					WorkTypeCode wtCode = integra.getWorkInformation().getRecordInfo().getWorkTypeCode();
+					String wtName = listWorkType.stream().filter(x -> x.getWorkTypeCode().equals(wtCode)).map(x -> x.getName().v()).findFirst().get();
+					List<TimeLeavingWork> lstTimeLeavingWork = integra.getAttendanceLeave().get().getTimeLeavingWorks();
+					if(lstTimeLeavingWork.isEmpty()) break;
+					
+					for(TimeLeavingWork x : lstTimeLeavingWork) {
+						String startTime = "";
+						String endTime = "";
+						if(x.getAttendanceStamp().isPresent() && x.getAttendanceStamp().get().getActualStamp().isPresent()) {
+							WorkStamp actualStamp = x.getAttendanceStamp().get().getActualStamp().get();
+							Optional<TimeWithDayAttr> timeWithDay = actualStamp.getTimeDay().getTimeWithDay();
+							if(timeWithDay.isPresent()) startTime = timeWithDay.get().toString();
+						}
+						
+						if(x.getLeaveStamp().isPresent() && x.getLeaveStamp().get().getActualStamp().isPresent()) {
+							WorkStamp actualStamp = x.getLeaveStamp().get().getActualStamp().get();
+							Optional<TimeWithDayAttr> timeWithDay = actualStamp.getTimeDay().getTimeWithDay();
+							if(timeWithDay.isPresent()) endTime = timeWithDay.get().toString();
+						}
+						
+						alarmMessage = TextResource.localize("KAL010_5",
+								wtName,
+								startTime,
+								endTime);
+						alarmTarget = TextResource.localize("KAL010_613", startTime, endTime);
 					}
-				break;
+										
+					break;
+					
+				case GATE_MISS_HOLIDAY_STAMP:
+					break;
+					
+				case ADDITION_NOT_REGISTERED:
+					break;
+					
+				case CONTRACT_TIME_EXCEEDED:
+					chkCheckResult = this.checkContracTime(sid,
+							baseDate,
+							dataforDailyFix,
+							integra,
+							true);
+					break;
+					
+				case LESS_THAN_CONTRACT_TIME:
+					chkCheckResult = this.checkContracTime(sid,
+							baseDate,
+							dataforDailyFix,
+							integra,
+							false);
+					break;
+				case VIOLATION_DAY_OF_WEEK:
+					chkCheckResult = this.checkDayOfWeek(sid,
+							baseDate,
+							dataforDailyFix,
+							integra,
+							listWorkType);
+					break;
+				case ILL_WORK_TIME_DAY_THE_WEEK:
+					chkCheckResult = this.checkWorkTimeWeek(sid,
+							baseDate,
+							dataforDailyFix,
+							integra,
+							listWorkType,
+							listWorktime);
+					break;
+					
+				case DISSOCIATION_ERROR:
+					String comId = AppContexts.user().companyId();
+					if(!integra.getAttendanceTimeOfDailyPerformance().isPresent()) break;
+					
+					List<EmployeeDailyPerError> employeeError = divTimeCheckService.divergenceTimeCheckBySystemFixed(comId,
+							sid,
+							baseDate,
+							integra.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getDivTime().getDivergenceTime(),
+							Optional.empty());
+					
+					String[] lstKairiError= {SystemFixedErrorAlarm.DIVERGENCE_ERROR_1.name(),
+							SystemFixedErrorAlarm.DIVERGENCE_ERROR_2.name(),
+							SystemFixedErrorAlarm.DIVERGENCE_ERROR_3.name(),
+							SystemFixedErrorAlarm.DIVERGENCE_ERROR_4.name(),
+							SystemFixedErrorAlarm.DIVERGENCE_ERROR_5.name(),
+							SystemFixedErrorAlarm.DIVERGENCE_ERROR_6.name(),
+							SystemFixedErrorAlarm.DIVERGENCE_ERROR_7.name(),
+							SystemFixedErrorAlarm.DIVERGENCE_ERROR_8.name(),
+							SystemFixedErrorAlarm.DIVERGENCE_ERROR_9.name(),
+							SystemFixedErrorAlarm.DIVERGENCE_ERROR_10.name()};
+					List<String> lstDivergenceError = Arrays.asList(lstKairiError);
+					if(!employeeError.isEmpty()) {
+						//取得した社員の日別実績エラー一覧を探す
+						List<EmployeeDailyPerError> lstErrorAlarmDivergence = employeeError
+								.stream().filter(a -> lstDivergenceError.contains(a.getErrorAlarmWorkRecordCode().v()))
+								.collect(Collectors.toList());
+						
+						if(!lstErrorAlarmDivergence.isEmpty()) {
+							List<Integer> attendanceItemList = new ArrayList<>();
+							lstErrorAlarmDivergence.stream().forEach(x -> attendanceItemList.addAll(x.getAttendanceItemList()));
+							
+							List<DivergenceTime> divergenceTime = integra.getAttendanceTimeOfDailyPerformance().get()
+									.getActualWorkingTimeOfDaily().getDivTime().getDivergenceTime()
+									.stream().filter(x -> attendanceItemList.contains(x.getDivTimeId()))
+									.collect(Collectors.toList());
+							if(divergenceTime.isEmpty()) break;
+							for(DivergenceTime x : divergenceTime) {
+								Optional<MonthlyAttendanceItemNameDto> optAttItem = lstItemDay.stream()
+										.filter(a -> a.getAttendanceItemId() == x.getDivTimeId()).findFirst();
+								alarmMessage += "/" + optAttItem.get().getAttendanceItemName() 
+										+ " " + x.getDivTime().hour() 
+										+ ":" 
+										+ (x.getDivTime().minute() < 10 ? "" : "0") + x.getDivTime().minute();
+								
+							}
+							alarmMessage = alarmMessage.substring(1);
+							alarmTarget = alarmMessage;
+						}
+					}
+					break;
+					
+				case MANUAL_INPUT:
+					List<EditStateOfDailyAttd> lstEditState = integra.getEditState().stream()
+							.filter(x -> x.getEditStateSetting() == EditStateSetting.HAND_CORRECTION_MYSELF 
+								|| x.getEditStateSetting() == EditStateSetting.HAND_CORRECTION_OTHER)
+							.collect(Collectors.toList());
+					if(lstEditState.isEmpty()) break;
+					String strItemName = "";
+					for(EditStateOfDailyAttd editSt: lstEditState) {
+						Optional<MonthlyAttendanceItemNameDto> optAttItem = lstItemDay.stream()
+								.filter(a -> a.getAttendanceItemId() == editSt.getAttendanceItemId())
+								.findFirst();
+						if(optAttItem.isPresent()) {
+							strItemName += ", " + optAttItem.get().getAttendanceItemName();
+						}
+					}
+					if(!strItemName.isEmpty()) {
+						strItemName = strItemName.substring(2);
+						alarmMessage = TextResource.localize("KAL010_16");
+						alarmTarget =  TextResource.localize("KAL010_617", strItemName);
+					}
+					break;
+					
+				case DOUBLE_STAMP:
+					List<EmployeeDailyPerError> lstDoubleStamp = dailyAlermService.doubleStampAlgorithm(integra);
+					if(lstDoubleStamp.isEmpty()) break;
+					String strItemNameD = "";
+					for(EmployeeDailyPerError doubleStamp : lstDoubleStamp) {
+						List<MonthlyAttendanceItemNameDto> lstItemName = lstItemDay.stream()
+								.filter(a -> doubleStamp.getAttendanceItemList().contains(a.getAttendanceItemId()))
+								.collect(Collectors.toList());
+						if(lstItemName.isEmpty()) continue;
+						for(MonthlyAttendanceItemNameDto dto: lstItemName) {
+							strItemNameD += ", " + dto.getAttendanceItemName();
+						}
+					}
+					if(!strItemNameD.isEmpty()) {
+						strItemNameD = strItemNameD.substring(2);
+						alarmMessage = TextResource.localize("KAL010_16");
+						alarmTarget =  TextResource.localize("KAL010_617", strItemNameD);
+					}
+					
+					break;
+					
+				case UNCALCULATED:
+					CalculationState calculationState = integra.getWorkInformation().getCalculationState();
+					if(calculationState == CalculationState.No_Calculated) {
+						alarmMessage = TextResource.localize("KAL010_20");
+						alarmTarget =  TextResource.localize("KAL010_20");
+					}
+					
+					break;
+					
+				case OVER_APP_INPUT:
+					
+					List<EmployeeDailyPerError> lstOtError = new ArrayList<>();
+					//残業時間実績超過
+					lstOtError = integra.getErrorList(sid, 
+							baseDate,
+							SystemFixedErrorAlarm.OVER_TIME_EXCESS,
+							CheckExcessAtr.OVER_TIME_EXCESS);
+					if(!lstOtError.isEmpty()) {
+						
+					}
+					break;
+					
+				case MULTI_WORK_TIMES:
+					break;
+					
+				case TEMPORARY_WORK:
+					break;
+					
+				case SPEC_DAY_WORK:
+					break;
+					
+				case UNREFLECTED_STAMP:
+					break;
+					
+				case ACTUAL_STAMP_OVER:
+					break;
+					
+				case GATE_DOUBLE_STAMP:
+					break;
+					
+				case DISSOCIATION_ALARM:
+					break;
+				
 				default:
 					break;
 			}
+			if(chkCheckResult != null && chkCheckResult.getAlarmTarget() != null) {
+				alarmMessage = chkCheckResult.getWtName();
+				alarmTarget = chkCheckResult.getAlarmTarget();	
+			}
+			
 			if(!alarmMessage.isEmpty()) {
 				this.createExtractAlarm(sid,
-						day,
+						baseDate,
 						listResultCond,
 						itemData.getFixConWorkRecordName().v(),
 						alarmMessage,
@@ -1091,5 +1335,445 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 		}
 		return new OutputCheckResult(listResultCond, listAlarmChk);
 	}
+	/**
+	 * 16.曜日別の就業時間帯不正チェック
+	 * @return
+	 */
+	private AlarmMessageValues checkWorkTimeWeek(String sid, GeneralDate baseDate,
+			DataFixExtracCon dataforDailyFix,
+			IntegrationOfDaily integra,
+			List<WorkType> lstWorkType,
+			List<WorkTimeSetting> lstWorktime) {
+		AlarmMessageValues result = new AlarmMessageValues();
+		WorkTypeCode workTypeCode = integra.getWorkInformation().getRecordInfo().getWorkTypeCode();
+		if(workTypeCode == null) return result;
+		
+		Optional<WorkType> optWorkType = lstWorkType.stream().filter(x -> x.getWorkTypeCode().equals(workTypeCode)).findFirst();
+		if(!optWorkType.isPresent()) return result;
+		
+		WorkType workTypeRecord = optWorkType.get();
+		
+		Optional<WorkingConditionItem> optWorkingConditionItem = this.getWorkingConditionItem(sid, baseDate, dataforDailyFix);
+		if(!optWorkingConditionItem.isPresent()) return result;
+		//該当の単一日勤務予定を探す
+		Optional<SingleDaySchedule> optSingleDaySchedule = optWorkingConditionItem.get().getWorkDayOfWeek().getSingleDaySchedule(baseDate);
+		
+		PersonalWorkCategory workCategory = optWorkingConditionItem.get().getWorkCategory();
+		
+		AlarmMessageValues wTimeCheck = new AlarmMessageValues();
+		
+		//勤務実績の勤務情報．勤務情報．勤務種類コードの休出かどうかの判断()
+		if(workTypeRecord.isHolidayWork()) {
+			wTimeCheck = this.checkWorktimeHoliday(workTypeRecord,
+					integra.getWorkInformation().getRecordInfo().getWorkTimeCode(),
+					optWorkingConditionItem.get().getWorkCategory(),
+					optSingleDaySchedule,
+					lstWorktime);
+		} else {
+			wTimeCheck = this.checkWorktimeNotHoliday(workTypeRecord,
+					integra.getWorkInformation().getRecordInfo().getWorkTimeCode(),
+					optSingleDaySchedule,
+					workCategory.getWeekdayTime(),
+					lstWorktime,
+					baseDate);
+		}
+		result.setWtName(TextResource.localize("KAL010_93",
+				wTimeCheck.getWorkTypeName(),
+				wTimeCheck.getWtName(),
+				wTimeCheck.getAlarmTarget()));
+		result.setAlarmTarget(wTimeCheck.getWtName() + " " + wTimeCheck.getWorkTypeName());
+		return result;
+	}
+	/**
+	 * 日次の勤務種類が休出以外のチェック
+	 * @param workTypeRecord
+	 * @param worktimeCodeRecord
+	 * @param optSingleDaySchedule
+	 * @param lstWorktime
+	 * @param baseDate
+	 * @return
+	 */
+	private AlarmMessageValues checkWorktimeNotHoliday(WorkType workTypeRecord,
+			WorkTimeCode worktimeCodeRecord,
+			Optional<SingleDaySchedule> optSingleDaySchedule,
+			SingleDaySchedule weekdayTime,
+			List<WorkTimeSetting> lstWorktime,
+			GeneralDate baseDate) {
+		AlarmMessageValues result = new AlarmMessageValues();
+		if(worktimeCodeRecord == null) return result;
+		
+		//Input．個人曜日別勤務の単一日勤務予定をチェック
+		if(optSingleDaySchedule.isPresent()
+				&& optSingleDaySchedule.get().getWorkTimeCode().isPresent()) {
+			//曜日の就業時間帯を比較
+			WorkTimeCode workTimeCodeDay = optSingleDaySchedule.get().getWorkTimeCode().get();
+			if(!workTimeCodeDay.equals(worktimeCodeRecord)) {
+				Optional<WorkTimeSetting> optWorkTimeSettingRecord = lstWorktime.stream()
+						.filter(x -> x.getWorktimeCode().equals(worktimeCodeRecord))
+						.findFirst();
+				//実績又はスケの勤務種類情報
+				result.setWorkTypeName(optWorkTimeSettingRecord.isPresent() 
+						? optWorkTimeSettingRecord.get().getWorktimeCode().v() + " " + optWorkTimeSettingRecord.get().getWorkTimeDisplayName().getWorkTimeName().v() : "未登録");
+				//項目エラ
+				int day = baseDate.localDate().getDayOfWeek().getValue();
+				String description = EnumAdaptor.valueOf(day, nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.DayOfWeek.class).description;
+				result.setWtName(description);
+				//個人の就業時間帯情報 
+				Optional<WorkTimeSetting> optWorkTimeSettingDay = lstWorktime.stream()
+						.filter(x -> x.getWorktimeCode().equals(workTimeCodeDay))
+						.findFirst();
+				result.setAlarmTarget(optWorkTimeSettingDay.isPresent() 
+						? (optWorkTimeSettingDay.get().getWorktimeCode().v() + " " + optWorkTimeSettingDay.get().getWorkTimeDisplayName().getWorkTimeName().v()) : "未登録");				
+			}
+		} else {
+			//Input．平日時の単一日勤務予定．Optional＜就業時間帯コード＞をチェック
+			if(weekdayTime.getWorkTimeCode().isPresent()
+					&& !weekdayTime.getWorkTimeCode().get().equals(worktimeCodeRecord)) {
+				Optional<WorkTimeSetting> optWorkTimeSettingRecord = lstWorktime.stream()
+						.filter(x -> x.getWorktimeCode().equals(worktimeCodeRecord))
+						.findFirst();
+				//実績又はスケの勤務種類情報
+				result.setWorkTypeName(optWorkTimeSettingRecord.isPresent() 
+						? optWorkTimeSettingRecord.get().getWorktimeCode().v() + " " + optWorkTimeSettingRecord.get().getWorkTimeDisplayName().getWorkTimeName().v() : "未登録");
+				//項目エラ
+				result.setWtName(TextResource.localize("KAL010_600"));
+				//個人の就業時間帯情報 
+				Optional<WorkTimeSetting> optWorkTimeSettingDay = lstWorktime.stream()
+						.filter(x -> x.getWorktimeCode().equals(weekdayTime.getWorkTimeCode().get()))
+						.findFirst();
+				result.setAlarmTarget(optWorkTimeSettingDay.isPresent() 
+						? (optWorkTimeSettingDay.get().getWorktimeCode().v() + " " + optWorkTimeSettingDay.get().getWorkTimeDisplayName().getWorkTimeName().v()) : "未登録");
+			}
+		}
+		
+		return result;
+	}
 	
+	/**
+	 * 日次の勤務種類が休出のチェック
+	 * @param workTypeRecord
+	 * @param optWorktimeCode
+	 * @param workCategory
+	 * @param optSingleDaySchedule
+	 * @param lstWorktime
+	 * @return
+	 */
+	private AlarmMessageValues checkWorktimeHoliday(WorkType workTypeRecord,
+			WorkTimeCode worktimeCodeRecord,
+			PersonalWorkCategory workCategory,
+			Optional<SingleDaySchedule> optSingleDaySchedule,
+			List<WorkTimeSetting> lstWorktime) {
+		AlarmMessageValues result = new AlarmMessageValues();
+		if(worktimeCodeRecord == null) return result;
+		String str1 = "";
+		String str2 = "";
+		
+		//Input．個人勤務日区分別勤務．公休出勤時をチェック
+		if(!workCategory.getPublicHolidayWork().isPresent()
+				|| !workCategory.getPublicHolidayWork().get().getWorkTimeCode().isPresent()
+				|| !workCategory.getPublicHolidayWork().get().getWorkTypeCode().isPresent()
+				|| !workTypeRecord.getWorkTypeCode().equals(workCategory.getPublicHolidayWork().get().getWorkTypeCode().get())) {
+			HolidayAtr holidayAtr = workTypeRecord.getWorkTypeSetList().get(0).getHolidayAtr();
+			//Input．勤務種類の休日区分をチェック
+			if(holidayAtr == HolidayAtr.STATUTORY_HOLIDAYS) {
+				//Input．個人勤務日区分別勤務．法内休出時をチェック
+				if(!workCategory.getInLawBreakTime().isPresent()
+						|| !workCategory.getInLawBreakTime().get().getWorkTimeCode().isPresent()) {
+					ErrorInfo getErrorInfo = this.getErrorInfo(workCategory.getHolidayWork(), worktimeCodeRecord, lstWorktime);
+					str1 = getErrorInfo.str1;
+					str2 = getErrorInfo.str2;
+				} else {
+					//法内休出時の就業時間帯を比較
+					if(!workCategory.getInLawBreakTime().get().getWorkTimeCode().get().equals(worktimeCodeRecord)) {
+						str1 = TextResource.localize("KAL010_95");
+						Optional<WorkTimeSetting> optWorkTimeSetting = lstWorktime.stream()
+								.filter(x -> x.getWorktimeCode().equals(workCategory.getInLawBreakTime().get().getWorkTimeCode().get()))
+								.findFirst();
+						str2 = optWorkTimeSetting.isPresent() 
+								? optWorkTimeSetting.get().getWorktimeCode().v() + " " + optWorkTimeSetting.get().getWorkTimeDisplayName().getWorkTimeName().v() : "未登録";
+					}
+				}
+			} else if (holidayAtr == HolidayAtr.NON_STATUTORY_HOLIDAYS) {
+				//Input．個人勤務日区分別勤務．法外休出時をチェック
+				if(!workCategory.getOutsideLawBreakTime().isPresent()
+						|| !workCategory.getOutsideLawBreakTime().get().getWorkTimeCode().isPresent()) {
+					ErrorInfo getErrorInfo = this.getErrorInfo(workCategory.getHolidayWork(), worktimeCodeRecord, lstWorktime);
+					str1 = getErrorInfo.str1;
+					str2 = getErrorInfo.str2;
+				} else {
+					//法外休出時の就業時間帯を比較
+					if(!workCategory.getOutsideLawBreakTime().get().getWorkTimeCode().get().equals(worktimeCodeRecord)) {
+						str1 = TextResource.localize("KAL010_96");
+						Optional<WorkTimeSetting> optWorkTimeSetting = lstWorktime.stream()
+								.filter(x -> x.getWorktimeCode().equals(workCategory.getOutsideLawBreakTime().get().getWorkTimeCode().get()))
+								.findFirst();
+						str2 = optWorkTimeSetting.isPresent() 
+								? optWorkTimeSetting.get().getWorktimeCode().v() + " " + optWorkTimeSetting.get().getWorkTimeDisplayName().getWorkTimeName().v() : "未登録";
+					}
+				}
+			} else {
+				//Input．個人勤務日区分別勤務．祝日休出時をチェック
+				if(!workCategory.getHolidayAttendanceTime().isPresent()
+						|| !workCategory.getHolidayAttendanceTime().get().getWorkTimeCode().isPresent()) {
+					ErrorInfo getErrorInfo = this.getErrorInfo(workCategory.getHolidayWork(), worktimeCodeRecord, lstWorktime);
+					str1 = getErrorInfo.str1;
+					str2 = getErrorInfo.str2;
+				} else {
+					//祝日休出時の就業時間帯を比較する
+					if(!workCategory.getHolidayAttendanceTime().get().getWorkTimeCode().get().equals(worktimeCodeRecord)) {
+						str1 = TextResource.localize("KAL010_97");
+						Optional<WorkTimeSetting> optWorkTimeSetting = lstWorktime.stream()
+								.filter(x -> x.getWorktimeCode().equals(workCategory.getHolidayAttendanceTime().get().getWorkTimeCode().get()))
+								.findFirst();
+						str2 = optWorkTimeSetting.isPresent() 
+								? optWorkTimeSetting.get().getWorktimeCode().v() + " " + optWorkTimeSetting.get().getWorkTimeDisplayName().getWorkTimeName().v() : "未登録";
+					}
+				}
+			}
+			
+		} else {
+			//公休出勤時の就業時間帯を比較
+			if(workCategory.getPublicHolidayWork().get().getWorkTimeCode().isPresent()
+					&& !workCategory.getPublicHolidayWork().get().getWorkTimeCode().get().equals(worktimeCodeRecord)) {
+				str1 = TextResource.localize("KAL010_94");
+				Optional<WorkTimeSetting> optWorkTimeSetting = lstWorktime.stream()
+						.filter(x -> x.getWorktimeCode().equals(workCategory.getPublicHolidayWork().get().getWorkTimeCode().get()))
+						.findFirst();
+				str2 = optWorkTimeSetting.isPresent() 
+						? (optWorkTimeSetting.get().getWorktimeCode().v() + " " + optWorkTimeSetting.get().getWorkTimeDisplayName().getWorkTimeName().v()) : "未登録";
+			}
+		}
+		if(!str1.isEmpty()) {
+			//実績又はスケの勤務種類情報
+			result.setWorkTypeName(workTypeRecord.getWorkTypeCode().v() + " " + workTypeRecord.getName().v());
+			//項目エラ
+			result.setWtName(str1);
+			//個人の就業時間帯情報 
+			result.setAlarmTarget(str2);
+		}
+		return result;
+	}
+	/**
+	 * Input．個人勤務日区分別勤務．休日出勤時をチェック
+	 * @param holidayWork
+	 * @return
+	 */
+	private ErrorInfo getErrorInfo(SingleDaySchedule holidayWork,
+			WorkTimeCode worktimeCodeRecord,
+			List<WorkTimeSetting> lstWorktime) {
+		ErrorInfo result = new ErrorInfo("", "");
+		
+		if(holidayWork == null
+				|| !holidayWork.getWorkTimeCode().isPresent()) {
+			return result;
+		}
+		//休日出勤時の就業時間帯と比較
+		if(!holidayWork.getWorkTimeCode().get().equals(worktimeCodeRecord)) {
+			result.str1 = TextResource.localize("KAL010_98");
+			Optional<WorkTimeSetting> optWorkTimeSetting = lstWorktime.stream().filter(a -> a.getWorktimeCode().equals(holidayWork.getWorkTimeCode().get()))
+					.findFirst();
+			result.str1 = optWorkTimeSetting.isPresent() 
+					? (optWorkTimeSetting.get().getWorktimeCode().v() + " " + optWorkTimeSetting.get().getWorkTimeDisplayName().getWorkTimeName().v()) : "未登録";
+		}
+		return result;
+	}
+	
+	/**
+	 * 15.曜日別の違反チェック
+	 * @param sid
+	 * @param baseDate
+	 * @param dataforDailyFix
+	 * @param integra
+	 * @return
+	 */
+	private AlarmMessageValues checkDayOfWeek(String sid,
+			GeneralDate baseDate,
+			DataFixExtracCon dataforDailyFix,
+			IntegrationOfDaily integra,
+			List<WorkType> lstWorkType) {
+		AlarmMessageValues result = new AlarmMessageValues();
+		Optional<TimeLeavingOfDailyAttd> optAttendanceLeave = integra.getAttendanceLeave();
+		if(!optAttendanceLeave.isPresent() || optAttendanceLeave.get().getAttendanceLeavingWork(new WorkNo(1)).isPresent()) return result;
+		
+		Optional<WorkingConditionItem> optWorkingConditionItem = this.getWorkingConditionItem(sid, baseDate, dataforDailyFix);
+		if(!optWorkingConditionItem.isPresent()) return result;
+		//該当の単一日勤務予定を探す
+		Optional<SingleDaySchedule> optSingleDaySchedule = optWorkingConditionItem.get().getWorkDayOfWeek().getSingleDaySchedule(baseDate);
+		if(!optSingleDaySchedule.isPresent()) return result;
+		
+		SingleDaySchedule singleDaySchedule = optSingleDaySchedule.get();
+		Optional<WorkTypeCode> optWorkTypeCodeApp = singleDaySchedule.getWorkTypeCode();
+		boolean isError = false;
+		Optional<WorkType> optWorkTypeApp = Optional.empty();
+		if(!optWorkTypeCodeApp.isPresent()) {
+			isError = true;
+		} else {
+			WorkTypeCode workTypeCodeApp = optWorkTypeCodeApp.get();
+			
+			optWorkTypeApp = lstWorkType.stream().filter(x -> x.getWorkTypeCode().equals(workTypeCodeApp)).findFirst();
+			if(!optWorkTypeApp.isPresent()) return result;
+			
+			if(optWorkTypeApp.get().getAttendanceHolidayAttr() == AttendanceHolidayAttr.HOLIDAY) {
+				isError = true;
+			}
+		}
+		if(isError) {
+			TimeLeavingWork timeLeavingWork = optAttendanceLeave.get().getAttendanceLeavingWork(new WorkNo(1)).get();
+			String strActualStamp = "";
+			String strLeaveStamp = "";
+			if(timeLeavingWork.getAttendanceStamp().isPresent()
+					&& timeLeavingWork.getAttendanceStamp().get().getActualStamp().isPresent()
+					&& timeLeavingWork.getAttendanceStamp().get().getActualStamp().get().getTimeDay().getTimeWithDay().isPresent()) {
+				strActualStamp = timeLeavingWork.getAttendanceStamp().get().getActualStamp().get().getTimeDay().getTimeWithDay().get().getInDayTimeWithFormat();
+			}
+			
+			if(timeLeavingWork.getLeaveStamp().isPresent()
+					&& timeLeavingWork.getLeaveStamp().get().getActualStamp().isPresent()
+					&& timeLeavingWork.getLeaveStamp().get().getActualStamp().get().getTimeDay().getTimeWithDay().isPresent()) {
+				strLeaveStamp = timeLeavingWork.getLeaveStamp().get().getActualStamp().get().getTimeDay().getTimeWithDay().get().getInDayTimeWithFormat();
+			}
+			int day = baseDate.localDate().getDayOfWeek().getValue();
+			String description = EnumAdaptor.valueOf(day, nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.DayOfWeek.class).description;
+			String strScheApp = description + ' ' 
+					+ (!optWorkTypeCodeApp.isPresent() ? "未設定" : optWorkTypeApp.get().getWorkTypeCode().v() + " " + optWorkTypeApp.get().getName().v());
+			String alarmMessage = TextResource.localize("KAL010_90",
+					strActualStamp + "～" + strLeaveStamp,
+					strScheApp);
+			String alarmTarget = TextResource.localize("KAL010_616", strActualStamp, strLeaveStamp);
+			result.setWtName(alarmMessage);
+			result.setAlarmTarget(alarmTarget);
+		}
+		
+		
+		return result;
+	}
+	
+	/**
+	 * 契約時間超過か未満かチェック
+	 * @param sid
+	 * @param baseDate
+	 * @param dataforDailyFix
+	 * @param isOver True: 超過, False: 未満
+	 * @return
+	 */
+	private AlarmMessageValues checkContracTime(String sid,
+			GeneralDate baseDate,
+			DataFixExtracCon dataforDailyFix,
+			IntegrationOfDaily integra,
+			boolean isOver) {
+		AlarmMessageValues result = new AlarmMessageValues();
+		Optional<AttendanceTimeOfDailyAttendance> optAttendanceTimeOfDailyPerformance = integra.getAttendanceTimeOfDailyPerformance();
+		if(!optAttendanceTimeOfDailyPerformance.isPresent()) return result;
+		
+		AttendanceTime totalTime = optAttendanceTimeOfDailyPerformance.get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getActualTime();
+		int intTotalTime = totalTime.v();
+		Optional<WorkingConditionItem> optWorkingConditionItem = this.getWorkingConditionItem(sid, baseDate, dataforDailyFix);
+		if(!optWorkingConditionItem.isPresent()) return result;
+		
+		WorkingConditionItem workingConditionItem = optWorkingConditionItem.get();
+		LaborContractTime contractTime = workingConditionItem.getContractTime();
+		int intContractTime = contractTime.v();
+		
+		if((isOver && intTotalTime > intContractTime)
+				|| (!isOver && intTotalTime < intContractTime)) {
+			String alarmMessage = "";
+			String alarmTarget = "";
+			String strTotalTime = totalTime.hour() + ":" + (totalTime.minute() < 10 ? "" : "0") + totalTime.minute();
+			String strContractTime = contractTime.hour() + ":" + (contractTime.minute() < 10 ? "" : "0") + totalTime.minute();
+			if(isOver) {
+				alarmMessage = TextResource.localize("KAL010_86",
+						strTotalTime,
+						strContractTime);
+				alarmTarget = TextResource.localize("KAL010_615", strTotalTime);
+				result.setWtName(alarmMessage);
+				result.setAlarmTarget(alarmTarget);
+			} else {
+				alarmMessage = TextResource.localize("KAL010_88",
+						strTotalTime,
+						strContractTime);
+				alarmTarget = TextResource.localize("KAL010_615", strTotalTime);
+				result.setWtName(alarmMessage);
+				result.setAlarmTarget(alarmTarget);
+			}
+		}
+		return result;		
+	}
+	
+	private Optional<WorkingConditionItem> getWorkingConditionItem(String sid,
+			GeneralDate baseDate,
+			DataFixExtracCon dataforDailyFix){
+		Optional<WorkingCondition> optWorkCond = dataforDailyFix.getListWkConItem().stream()
+				.filter(x -> x.getEmployeeId().equals(sid) 
+						&& x.getDateHistoryItem().stream()
+						.filter(a -> a.start().beforeOrEquals(baseDate) && a.end().afterOrEquals(baseDate)).findFirst().isPresent())
+				.findFirst();
+		if(!optWorkCond.isPresent()) return Optional.empty();
+		WorkingCondition workCond = optWorkCond.get();
+		
+		Optional<WorkingConditionItem> optWorkingConditionItem = dataforDailyFix.getLstWorkCondItem().stream()
+				.filter(x -> x.getEmployeeId().equals(sid) && x.getHistoryId().equals(workCond.getDateHistoryItem().get(0).identifier()))
+				.findFirst();
+		
+		return optWorkingConditionItem;
+	}
+	
+ 	private String getItemNameWithValue(List<EmployeeDailyPerError> lstDailyError,
+			IntegrationOfDaily integra,
+			List<MonthlyAttendanceItemNameDto> lstItemDay) {
+		List<Integer> lstItemErr = new ArrayList<>();
+		String itemNames = "";
+		for(EmployeeDailyPerError x : lstDailyError) {
+			if(x != null) {
+				lstItemErr.addAll(x.getAttendanceItemList());
+			}
+		}
+		if(lstItemErr.isEmpty()) return itemNames;
+		val converter = convertFactory.createDailyConverter();
+		converter.setData(integra);
+		List<ItemValue> lstItemValue = converter.convert(lstItemErr);
+		for (int i = 0; i < lstItemErr.size(); i++) {
+			Integer x = lstItemErr.get(i);
+			String itemName = lstItemDay.stream()
+					.filter(a -> lstItemErr.contains(x))
+					.map(y -> y.getAttendanceItemName())
+					.collect(Collectors.toList()).get(0);
+			List<String> value = lstItemValue.stream().filter(a -> a.getItemId() == x).map(b -> b.getValue()).collect(Collectors.toList());
+			if(!value.isEmpty()) {
+				TimeWithDayAttr timeDay = new TimeWithDayAttr(Integer.valueOf(value.get(0)));
+				itemName = itemName + ':' + timeDay.toString();
+			}
+			itemNames += '/' +  itemName;
+		}
+		
+		return itemNames.substring(1);
+	}
+	private String getItemName(List<EmployeeDailyPerError> lstDailyError, List<MonthlyAttendanceItemNameDto> lstItemDay) {
+		List<Integer> lstItemErr = new ArrayList<>();
+		List<String> lstItemName = new ArrayList<>();
+		String strItemName = "";
+		for(EmployeeDailyPerError x : lstDailyError) {
+			if(x != null) {
+				lstItemErr.addAll(x.getAttendanceItemList());
+			}
+		}
+		if(lstItemErr.isEmpty()) return strItemName;
+		
+		lstItemName =  lstItemDay.stream()
+				.filter(x -> lstItemErr.contains(x.getAttendanceItemId()))
+				.map(y -> y.getAttendanceItemName())
+				.collect(Collectors.toList());
+		
+		strItemName = lstItemName.stream().map(Object::toString)
+                 .collect(Collectors.joining("/"));
+		return strItemName;
+	}
+	
+	public class ErrorInfo {
+		String str1;
+		String str2;
+		public ErrorInfo(String str1, String str2) {
+			this.str1 = str1;
+			this.str2 = str2;
+		}
+	}
 }

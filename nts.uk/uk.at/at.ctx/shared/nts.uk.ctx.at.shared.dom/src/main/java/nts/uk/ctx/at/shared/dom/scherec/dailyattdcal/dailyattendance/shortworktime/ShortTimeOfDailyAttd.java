@@ -56,8 +56,7 @@ public class ShortTimeOfDailyAttd implements DomainObject{
 				//sWTimeSheets.remove(sWTimeSheetOpt.get());
 				// 時間帯を作成
 				ShortWorkingTimeSheet createNew = new ShortWorkingTimeSheet(new ShortWorkTimFrameNo(childF.timeSlot),
-						ChildCareAttribute.decisionValue(shortWTHistItem.getChildCareAtr().value), childF.getStartTime(), childF.getEndTime()
-						);
+						shortWTHistItem.getChildCareAtr(), childF.getStartTime(), childF.getEndTime()	);
 				sWTimeSheets.add(createNew);
 
 			}

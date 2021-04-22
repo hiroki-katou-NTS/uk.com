@@ -45,7 +45,7 @@ public class RegistrationErrorListExportService extends ExportService<List<Regis
 				.map(errorLine -> {
 					Map<String, Object> row = new HashMap<>();
 					row.put(header.get(0), errorLine.getEmployeeCdName());
-					row.put(header.get(1), errorLine.getDate());
+					row.put(header.get(1), errorLine.getDateCsv());
 					row.put(header.get(2), errorLine.getErrName());
 					row.put(header.get(3), errorLine.getErrorMessage());
 					return row;

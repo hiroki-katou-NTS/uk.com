@@ -7,11 +7,11 @@ import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.command.AsyncCommandHandlerContext;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.AppReflectManagerFromRecordImport;
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.CreateDailyResultDomainServiceImpl.ProcessState;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyresults.ProcessState;
 import nts.uk.ctx.at.request.pub.aplicationreflect.AppReflectManagerFromRecordPub;
 import nts.uk.ctx.at.request.pub.aplicationreflect.ProcessStateReflectExport;
-import nts.arc.time.calendar.period.DatePeriod;
 @Stateless
 public class AppReflectManagerFromRecordImportImpl implements AppReflectManagerFromRecordImport{
 	@Inject
