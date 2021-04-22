@@ -46,7 +46,7 @@ module nts.uk.at.view.kaf011 {
 			self.isInit = isInit;
 			self.appType = appType;
 			self.workInformation.workType.subscribe((data: string)=>{
-				if(data && self.isInit()){
+				if(data && !self.isInit()){
 					let workTypeAfter = _.find(self.workTypeList(), {'workTypeCode': data});
 					self.workTypeSelected.update(workTypeAfter);
 					self.checkDisplay();
@@ -118,7 +118,7 @@ module nts.uk.at.view.kaf011 {
 			if(data.workTime){
 				let workTime: any = _.find(displayInforWhenStarting.appDispInfoStartup.appDispInfoWithDateOutput.opWorkTimeLst, {'worktimeCode': data.workTime});
 				self.workTimeDisplay(data.workTime + ' ' +
-					(workTime?(workTime.workTimeDisplayName.workTimeName + ' ') : '' )+
+					(workTime?(workTime.workTimeDisplayName.workTimeName + ' ') : 'マスタ未登録 ' )+
 					moment(Math.floor(data.startTime / 60),'mm').format('mm') + ":" + moment(data.startTime % 60,'mm').format('mm') + getText('KAF011_37') + moment(Math.floor(data.endTime / 60),'mm').format('mm') + ":" + moment(data.endTime % 60,'mm').format('mm'));
 			}
 			self.checkDisplay();
@@ -130,7 +130,11 @@ module nts.uk.at.view.kaf011 {
 			let self = this;
 			self.application.update(param.application);
 			self.workTypeList(workTypeList);
+			if (_.filter(self.workTypeList(), {'workType': param.workInformation.workType}).length == 0) {
+				self.workTypeList().push({ workTypeCode: param.workInformation.workType, name: 'マスタ未登録' });
+			}
 			self.workInformation.update(param.workInformation);
+
 			self.leaveComDayOffMana(_.map(param.leaveComDayOffMana, (c) =>new SubWorkSubHolidayLinkingMng(c)));
 			self.leaveComDayOffManaOld(self.leaveComDayOffMana());
 
@@ -154,7 +158,7 @@ module nts.uk.at.view.kaf011 {
 			if(param.workInformation.workTime != null && time1 != undefined){
 				let workTime: any = _.find(displayInforWhenStarting.appDispInfoStartup.appDispInfoWithDateOutput.opWorkTimeLst, {'worktimeCode': param.workInformation.workTime});
 				self.workTimeDisplay(param.workInformation.workTime + ' ' +
-					(workTime?(workTime.workTimeDisplayName.workTimeName + ' ') : '' )+
+					(workTime?(workTime.workTimeDisplayName.workTimeName + ' ') : 'マスタ未登録 ' )+
 					moment(Math.floor(time1.timeZone.startTime / 60),'mm').format('mm') + ":" + moment(time1.timeZone.startTime % 60,'mm').format('mm') + getText('KAF011_37') + moment(Math.floor(time1.timeZone.endTime / 60),'mm').format('mm') + ":" + moment(time1.timeZone.endTime % 60,'mm').format('mm'));
 			}
 			self.checkDisplay();
