@@ -24,10 +24,10 @@ import nts.uk.shr.com.i18n.TextResource;
 public class JpaDayCalendarReportRepository extends JpaRepository implements DayCalendarReportRepository{
 
 //	private static final String GET_BEGIN_MONTH_COMPANY = "SELECT a.MONTH_STR FROM BCMMT_COMPANY a WHERE  a.CID = ?companyId";
-	private static final String SELECT_COMPANY_CALENDAR_BY_DATE = " SELECT c.CID, c.YMD_K, c.WORKING_DAY_ATR, c1.EVENT_NAME FROM KSCMT_CALENDAR_COM c LEFT JOIN KSCMT_EVENT_COM c1 on c.CID = c1.CID and c.YMD_K = c1.YMD_K" 
+	private static final String SELECT_COMPANY_CALENDAR_BY_DATE = " SELECT c.CID, c.YMD_K, c.WORKING_DAY_ATR, c1.EVENT_NAME FROM KSCMT_CALENDAR_COM c LEFT JOIN KSCMT_EVENT_CMP c1 on c.CID = c1.CID and c.YMD = c1.YMD" 
 			+ " WHERE c.CID = ?companyId"
-			+ " AND c.YMD_K >= ?startDate "
-			+ " AND c.YMD_K <= ?endDate";
+			+ " AND c.YMD >= ?startDate "
+			+ " AND c.YMD <= ?endDate";
 	
 	private static final String GET_WORKSPACE_CALENDAR_BY_DATE = "SELECT"
 			+ " s.WKPID, w.WKP_CD, s.YMD_K, s.WORKING_DAY_ATR, w.WKP_NAME, e.EVENT_NAME "

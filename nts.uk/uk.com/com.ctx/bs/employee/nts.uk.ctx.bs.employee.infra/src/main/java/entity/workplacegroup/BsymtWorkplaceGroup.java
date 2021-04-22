@@ -17,7 +17,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * 職場グループ
- * 
+ *
  * @author phongtq
  *
  */
@@ -63,20 +63,20 @@ public class BsymtWorkplaceGroup extends ContractUkJpaEntity {
 	public static BsymtWorkplaceGroup toEntity(WorkplaceGroup group) {
 		// TODO Auto-generated method stub
 		return new BsymtWorkplaceGroup(
-				new BsymtWorkplaceGroupPk(group.getCID(), group.getWKPGRPID()), 
-				group.getWKPGRPCode().v(),
-				group.getWKPGRPName().v(), 
-				group.getWKPGRPType().value);
+				new BsymtWorkplaceGroupPk(group.getCID(), group.getId()),
+				group.getCode().v(),
+				group.getName().v(),
+				group.getType().value);
 	}
-	
+
 	public void fromEntity(WorkplaceGroup group) {
-		BsymtWorkplaceGroupPk pk = new BsymtWorkplaceGroupPk(group.getCID(), group.getWKPGRPID());
+		BsymtWorkplaceGroupPk pk = new BsymtWorkplaceGroupPk(group.getCID(), group.getId());
 		this.pk = pk;
-		this.WKPGRPCode = group.getWKPGRPCode().v();
-		this.WKPGRPName = group.getWKPGRPName().v();
-		this.WKPGRPType = group.getWKPGRPType().value;
+		this.WKPGRPCode = group.getCode().v();
+		this.WKPGRPName = group.getName().v();
+		this.WKPGRPType = group.getType().value;
 	}
-	
+
 	public WorkplaceGroup toDomain(){
 		return new WorkplaceGroup(
 				pk.CID,

@@ -1,12 +1,15 @@
 package nts.uk.ctx.at.request.dom.application.workchange;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
+
+import org.apache.logging.log4j.util.Strings;
 
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
@@ -64,7 +67,7 @@ public class WorkChangeRegisterServiceImpl implements IWorkChangeRegisterService
 		// KAFS07
 		workChangeRepository.add(workChange);
 		// アルゴリズム「2-2.新規画面登録時承認反映情報の整理」を実行する
-		registerService.newScreenRegisterAtApproveInfoReflect(application.getEmployeeID(), application);
+		String reflectAppId = registerService.newScreenRegisterAtApproveInfoReflect(application.getEmployeeID(), application);
 
 		
 
@@ -96,47 +99,17 @@ public class WorkChangeRegisterServiceImpl implements IWorkChangeRegisterService
 		// TODO: 申請設定 domain has changed!
 		AppTypeSetting appTypeSetting = appDispInfoStartupOutput.getAppDispInfoNoDateOutput().getApplicationSetting().getAppTypeSettings()
 				.stream().filter(x -> x.getAppType()==application.getAppType()).findAny().get();
-		 return newAfterRegister.processAfterRegister(
-				 application.getAppID(), 
+		ProcessResult processResult = newAfterRegister.processAfterRegister(
+				 Arrays.asList(application.getAppID()), 
 				 appTypeSetting,
-				 appDispInfoStartupOutput.getAppDispInfoNoDateOutput().isMailServerSet());
-//		return null;
+				 appDispInfoStartupOutput.getAppDispInfoNoDateOutput().isMailServerSet(),
+				 false);
+		if(Strings.isNotBlank(reflectAppId)) {
+			processResult.setReflectAppIdLst(Arrays.asList(reflectAppId));
+		}
+		return processResult;
 	}
 
-	@Override
-	public void checkWorkHour(AppWorkChange_Old workChange) {
-		// 就業時間（開始時刻：終了時刻）
-		// 開始時刻 ＞ 終了時刻
-		if (workChange.getWorkTimeStart1() > workChange.getWorkTimeEnd1()) {
-			// エラーメッセージ(Msg_579)
-			// エラーリストにセットする
-			throw new BusinessException("Msg_579");
-		}
-		// 就業時間２（開始時刻：終了時刻）
-		// 開始時刻 ＞ 終了時刻
-		if (workChange.getWorkTimeStart2() > workChange.getWorkTimeEnd2()) {
-			// エラーメッセージ(Msg_580)
-			// エラーリストにセットする
-			throw new BusinessException("Msg_580");
-		}
-		// 就業時間：就業時間
-		// 就業時間（終了時刻） > 就業時刻２（開始時刻）
-		if (workChange.getWorkTimeEnd1() > workChange.getWorkTimeStart2()) {
-			// エラーメッセージ(Msg_581)
-			// エラーリストにセットする
-			throw new BusinessException("Msg_581");
-		}
-	}
-
-	@Override
-	public void checkBreakTime1(AppWorkChange_Old workChange) {
-		// 開始時刻 ＞ 終了時刻
-		if (workChange.getBreakTimeStart1() > workChange.getBreakTimeEnd1()) {
-			// エラーメッセージ(Msg_582)
-			// エラーリストにセットする
-			throw new BusinessException("Msg_582");
-		}
-	}
 
 	@Override
 	public boolean isTimeRequired(String workTypeCD) {

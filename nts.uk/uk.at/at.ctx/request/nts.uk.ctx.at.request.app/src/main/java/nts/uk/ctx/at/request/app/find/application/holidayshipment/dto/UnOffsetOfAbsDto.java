@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.UnOffsetOfAbs;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.AccumulationAbsenceDetail;
 
 @NoArgsConstructor
 @Setter
@@ -22,11 +23,11 @@ public class UnOffsetOfAbsDto {
 	 */
 	private double unOffSetDays;
 	
-	public UnOffsetOfAbsDto(UnOffsetOfAbs unOffsetOfAbs) {
+	public UnOffsetOfAbsDto(AccumulationAbsenceDetail unOffsetOfAbs) {
 		super();
-		this.absMngId = unOffsetOfAbs.getAbsMngId();
-		this.requestDays = unOffsetOfAbs.getRequestDays();
-		this.unOffSetDays = unOffsetOfAbs.getUnOffSetDays();
+		this.absMngId = unOffsetOfAbs.getManageId();
+		this.requestDays = unOffsetOfAbs.getNumberOccurren().getDay().v();
+		this.unOffSetDays = unOffsetOfAbs.getUnbalanceNumber().getDay().v();
 	}
 	
 	public UnOffsetOfAbs toDomain() {

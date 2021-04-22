@@ -324,44 +324,44 @@
 																<div class="popup-atwork1 popup-area popup-panel popup-color">
 																	<table class = "table-popup">
 																		<tr>
-																			<com:ko-if bind="atWork1A9.length>0 &amp;&amp; atWork1A9[0].timeAbbyakLeaveDisplay != ''">
+																			<com:ko-if bind="atWork1A9 != null &amp;&amp; atWork1A9.timeAbbyakLeaveDisplay != ''">
 																				<!-- A9_1_1 -->
 																				<td>#{i18n.getText('KDL045_57')}</td>
 																				<!-- A9_1_2 -->
-																				<td><span data-bind="text: atWork1A9[0].timeAbbyakLeaveDisplay "></span></td>
+																				<td><span data-bind="text: atWork1A9.timeAbbyakLeaveDisplay "></span></td>
 																			</com:ko-if>
 																		</tr>
 																		<tr>
-																			<com:ko-if bind="atWork1A9.length>0 &amp;&amp;  atWork1A9[0].timeOffDisplay != ''">
+																			<com:ko-if bind="atWork1A9 != null &amp;&amp;  atWork1A9.timeOffDisplay != ''">
 																				<!-- A9_2_1 -->
 																				<td>#{i18n.getText('KDL045_58')}</td>
 																				<!-- A9_2_2 -->
-																				<td><span data-bind="text: atWork1A9[0].timeOffDisplay "></span></td>
+																				<td><span data-bind="text: atWork1A9.timeOffDisplay "></span></td>
 																			</com:ko-if>
 																		</tr>
 																		<tr>
-																			<com:ko-if bind="atWork1A9.length>0 &amp;&amp; atWork1A9[0].excessPaidHolidayDisplay != ''">
+																			<com:ko-if bind="atWork1A9 != null  &amp;&amp; atWork1A9.excessPaidHolidayDisplay != ''">
 																				<!-- A9_3_1 -->
 																				<td>#{i18n.getText('KDL045_59')}</td>
 																				<!-- A9_3_2 -->
-																				<td><span data-bind="text: atWork1A9[0].excessPaidHolidayDisplay "></span></td>
+																				<td><span data-bind="text: atWork1A9.excessPaidHolidayDisplay "></span></td>
 																			</com:ko-if>
 																		</tr>
 																		<tr>
-																			<com:ko-if bind="atWork1A9.length>0 &amp;&amp;  atWork1A9[0].childNursingLeaveDisplay != ''">
+																			<com:ko-if bind="atWork1A9 != null &amp;&amp;  atWork1A9.childNursingLeaveDisplay != ''">
 																				<!-- A9_4_1 -->
 																				<td>#{i18n.getText('KDL045_60')}</td>
 																				<!-- A9_4_2 -->
 																				
-																				<td><span data-bind="text: atWork1A9[0].childNursingLeaveDisplay "></span></td>
+																				<td><span data-bind="text: atWork1A9.childNursingLeaveDisplay "></span></td>
 																			</com:ko-if>
 																		</tr>
 																		<tr>
-																			<com:ko-if bind="atWork1A9.length>0 &amp;&amp;  atWork1A9[0].nursingCareLeaveDisplay != ''">
+																			<com:ko-if bind="atWork1A9 != null  &amp;&amp;  atWork1A9.nursingCareLeaveDisplay != ''">
 																				<!-- A9_5_1 -->
 																				<td>#{i18n.getText('KDL045_61')}</td>
 																				<!-- A9_5_2 -->
-																				<td><span data-bind="text: atWork1A9[0].nursingCareLeaveDisplay "></span></td>
+																				<td><span data-bind="text: atWork1A9.nursingCareLeaveDisplay "></span></td>
 																			</com:ko-if>
 																		</tr>
 																		<tr>
@@ -370,16 +370,16 @@
 																				<td colspan="2">#{i18n.getText('KDL045_62')}</td>
 																			</com:ko-if>
 																		</tr>
-																		<com:ko bind=" atWork1A9" tag="foreach">
+																		<!-- <com:ko bind=" atWork1A9" tag="foreach"> -->
 																			<tr>
-																				<com:ko-if bind="specialHolidayDisplay != '' ">
+																				<com:ko-if bind="atWork1A9.specialHolidayDisplay != '' ">
 																					<!-- A9_6_1 -->
-																					<td><span data-bind="text: textKDL045_63 "></span></td>
+																					<td><span data-bind="text: atWork1A9.textKDL045_63 "></span></td>
 																					<!-- A9_6_2 -->
-																					<td><span data-bind="text: specialHolidayDisplay "></span></td>
+																					<td><span data-bind="text: atWork1A9.specialHolidayDisplay "></span></td>
 																				</com:ko-if>
 																			</tr>
-																		</com:ko>
+																		<!-- </com:ko> -->
 																	</table>
 																</div>
 																</com:ko-if>
@@ -400,43 +400,43 @@
 																<div class="popup-offwork1 popup-area popup-panel popup-color">
 																	<table class = "table-popup">
 																		<tr>
-																			<com:ko-if bind="offWork1A9.length>0 &amp;&amp; offWork1A9[0].timeAbbyakLeaveDisplay != ''">
+																			<com:ko-if bind="offWork1A9 != null &amp;&amp; offWork1A9.timeAbbyakLeaveDisplay != ''">
 																				<!-- A9_1_1 -->
 																				<td>#{i18n.getText('KDL045_57')}</td>
 																				<!-- A9_1_2 -->
-																				<td><span data-bind="text: offWork1A9[0].timeAbbyakLeaveDisplay "></span></td>
+																				<td><span data-bind="text: offWork1A9.timeAbbyakLeaveDisplay "></span></td>
 																			</com:ko-if>
 																		</tr>
 																		<tr>
-																			<com:ko-if bind="offWork1A9.length>0 &amp;&amp; offWork1A9[0].timeOffDisplay != ''">
+																			<com:ko-if bind="offWork1A9 != null &amp;&amp; offWork1A9.timeOffDisplay != ''">
 																				<!-- A9_2_1 -->
 																				<td>#{i18n.getText('KDL045_58')}</td>
 																				<!-- A9_2_2 -->
-																				<td><span data-bind="text: offWork1A9[0].timeOffDisplay "></span></td>
+																				<td><span data-bind="text: offWork1A9.timeOffDisplay "></span></td>
 																			</com:ko-if>
 																		</tr>
 																		<tr>
-																			<com:ko-if bind="offWork1A9.length>0 &amp;&amp; offWork1A9[0].excessPaidHolidayDisplay != ''">
+																			<com:ko-if bind="offWork1A9 != null &amp;&amp; offWork1A9.excessPaidHolidayDisplay != ''">
 																				<!-- A9_3_1 -->
 																				<td>#{i18n.getText('KDL045_59')}</td>
 																				<!-- A9_3_2 -->
-																				<td><span data-bind="text: offWork1A9[0].excessPaidHolidayDisplay "></span></td>
+																				<td><span data-bind="text: offWork1A9.excessPaidHolidayDisplay "></span></td>
 																			</com:ko-if>
 																		</tr>
 																		<tr>
-																			<com:ko-if bind="offWork1A9.length>0 &amp;&amp; offWork1A9[0].childNursingLeaveDisplay != ''">
+																			<com:ko-if bind="offWork1A9 != null &amp;&amp; offWork1A9.childNursingLeaveDisplay != ''">
 																				<!-- A9_4_1 -->
 																				<td>#{i18n.getText('KDL045_60')}</td>
 																				<!-- A9_4_2 -->
-																				<td><span data-bind="text: offWork1A9[0].childNursingLeaveDisplay "></span></td>
+																				<td><span data-bind="text: offWork1A9.childNursingLeaveDisplay "></span></td>
 																			</com:ko-if>
 																		</tr>
 																		<tr>
-																			<com:ko-if bind="offWork1A9.length>0 &amp;&amp; offWork1A9[0].nursingCareLeaveDisplay != ''">
+																			<com:ko-if bind="offWork1A9 != null &amp;&amp; offWork1A9.nursingCareLeaveDisplay != ''">
 																				<!-- A9_5_1 -->
 																				<td>#{i18n.getText('KDL045_61')}</td>
 																				<!-- A9_5_2 -->
-																				<td><span data-bind="text: offWork1A9[0].nursingCareLeaveDisplay "></span></td>
+																				<td><span data-bind="text: offWork1A9.nursingCareLeaveDisplay "></span></td>
 																			</com:ko-if>
 																		</tr>
 																		<tr>
@@ -445,16 +445,16 @@
 																				<td colspan="2">#{i18n.getText('KDL045_62')}</td>
 																			</com:ko-if>
 																		</tr>
-																		<com:ko bind="offWork1A9" tag="foreach">
+																		<!-- <com:ko bind="offWork1A9" tag="foreach"> -->
 																			<tr>
-																				<com:ko-if bind="specialHolidayDisplay != '' ">
+																				<com:ko-if bind="offWork1A9.specialHolidayDisplay != '' ">
 																					<!-- A9_6_1 -->
-																					<td><span data-bind="text: textKDL045_63 "></span></td>
+																					<td><span data-bind="text: offWork1A9.textKDL045_63 "></span></td>
 																					<!-- A9_6_2 -->
-																					<td><span data-bind="text: specialHolidayDisplay "></span></td>
+																					<td><span data-bind="text: offWork1A9.specialHolidayDisplay "></span></td>
 																				</com:ko-if>
 																			</tr>
-																		</com:ko>
+																		<!-- </com:ko> -->
 																	</table>
 																</div>
 																</com:ko-if>
@@ -475,43 +475,43 @@
 																<div class="popup-atwork2 popup-area popup-panel popup-color">
 																	<table class = "table-popup">
 																		<tr>
-																			<com:ko-if bind="atWork2A9.length>0 &amp;&amp; atWork2A9[0].timeAbbyakLeaveDisplay != ''">
+																			<com:ko-if bind="atWork2A9 !=null &amp;&amp; atWork2A9.timeAbbyakLeaveDisplay != ''">
 																				<!-- A9_1_1 -->
 																				<td>#{i18n.getText('KDL045_57')}</td>
 																				<!-- A9_1_2 -->
-																				<td><span data-bind="text: atWork2A9[0].timeAbbyakLeaveDisplay "></span></td>
+																				<td><span data-bind="text: atWork2A9.timeAbbyakLeaveDisplay "></span></td>
 																			</com:ko-if>
 																		</tr>
 																		<tr>
-																			<com:ko-if bind="atWork2A9.length>0 &amp;&amp; atWork2A9[0].timeOffDisplay != ''">
+																			<com:ko-if bind="atWork2A9 !=null &amp;&amp; atWork2A9.timeOffDisplay != ''">
 																				<!-- A9_2_1 -->
 																				<td>#{i18n.getText('KDL045_58')}</td>
 																				<!-- A9_2_2 -->
-																				<td><span data-bind="text: atWork2A9[0].timeOffDisplay "></span></td>
+																				<td><span data-bind="text: atWork2A9.timeOffDisplay "></span></td>
 																			</com:ko-if>
 																		</tr>
 																		<tr>
-																			<com:ko-if bind="atWork2A9.length>0 &amp;&amp; atWork2A9[0].excessPaidHolidayDisplay != ''">
+																			<com:ko-if bind="atWork2A9 !=null &amp;&amp; atWork2A9.excessPaidHolidayDisplay != ''">
 																				<!-- A9_3_1 -->
 																				<td>#{i18n.getText('KDL045_59')}</td>
 																				<!-- A9_3_2 -->
-																				<td><span data-bind="text: atWork2A9[0].excessPaidHolidayDisplay "></span></td>
+																				<td><span data-bind="text: atWork2A9.excessPaidHolidayDisplay "></span></td>
 																			</com:ko-if>
 																		</tr>
 																		<tr>
-																			<com:ko-if bind="atWork2A9.length>0 &amp;&amp; atWork2A9[0].childNursingLeaveDisplay != ''">
+																			<com:ko-if bind="atWork2A9 !=null &amp;&amp; atWork2A9.childNursingLeaveDisplay != ''">
 																				<!-- A9_4_1 -->
 																				<td>#{i18n.getText('KDL045_60')}</td>
 																				<!-- A9_4_2 -->
-																				<td><span data-bind="text: atWork2A9[0].childNursingLeaveDisplay "></span></td>
+																				<td><span data-bind="text: atWork2A9.childNursingLeaveDisplay "></span></td>
 																			</com:ko-if>
 																		</tr>
 																		<tr>
-																			<com:ko-if bind="atWork2A9.length>0 &amp;&amp; atWork2A9[0].nursingCareLeaveDisplay != ''">
+																			<com:ko-if bind="atWork2A9 !=null &amp;&amp; atWork2A9.nursingCareLeaveDisplay != ''">
 																				<!-- A9_5_1 -->
 																				<td>#{i18n.getText('KDL045_61')}</td>
 																				<!-- A9_5_2 -->
-																				<td><span data-bind="text: atWork2A9[0].nursingCareLeaveDisplay "></span></td>
+																				<td><span data-bind="text: atWork2A9.nursingCareLeaveDisplay "></span></td>
 																			</com:ko-if>
 																		</tr>
 																		<tr>
@@ -520,16 +520,16 @@
 																				<td colspan="2">#{i18n.getText('KDL045_62')}</td>
 																			</com:ko-if>
 																		</tr>
-																		<com:ko bind="atWork2A9" tag="foreach">
+																		<!-- <com:ko bind="atWork2A9" tag="foreach"> -->
 																			<tr>
-																				<com:ko-if bind="specialHolidayDisplay != '' ">
+																				<com:ko-if bind="atWork2A9.specialHolidayDisplay != '' ">
 																					<!-- A9_6_1 -->
-																					<td><span data-bind="text: textKDL045_63 "></span></td>
+																					<td><span data-bind="text: atWork2A9.textKDL045_63 "></span></td>
 																					<!-- A9_6_2 -->
-																					<td><span data-bind="text: specialHolidayDisplay "></span></td>
+																					<td><span data-bind="text: atWork2A9.specialHolidayDisplay "></span></td>
 																				</com:ko-if>
 																			</tr>
-																		</com:ko>
+																		<!-- </com:ko> -->
 																	</table>
 																</div>
 																</com:ko-if>
@@ -550,43 +550,43 @@
 																<div class="popup-offwork2 popup-area popup-panel popup-color">
 																	<table class = "table-popup">
 																		<tr>
-																			<com:ko-if bind="offWork2A9.length>0 &amp;&amp; offWork2A9[0].timeAbbyakLeaveDisplay != ''">
+																			<com:ko-if bind="offWork2A9 != null &amp;&amp; offWork2A9.timeAbbyakLeaveDisplay != ''">
 																				<!-- A9_1_1 -->
 																				<td>#{i18n.getText('KDL045_57')}</td>
 																				<!-- A9_1_2 -->
-																				<td><span data-bind="text: offWork2A9[0].timeAbbyakLeaveDisplay "></span></td>
+																				<td><span data-bind="text: offWork2A9.timeAbbyakLeaveDisplay "></span></td>
 																			</com:ko-if>
 																		</tr>
 																		<tr>
-																			<com:ko-if bind="offWork2A9.length>0 &amp;&amp; offWork2A9[0].timeOffDisplay != ''">
+																			<com:ko-if bind="offWork2A9 != null &amp;&amp; offWork2A9.timeOffDisplay != ''">
 																				<!-- A9_2_1 -->
 																				<td>#{i18n.getText('KDL045_58')}</td>
 																				<!-- A9_2_2 -->
-																				<td><span data-bind="text: offWork2A9[0].timeOffDisplay "></span></td>
+																				<td><span data-bind="text: offWork2A9.timeOffDisplay "></span></td>
 																			</com:ko-if>
 																		</tr>
 																		<tr>
-																			<com:ko-if bind="offWork2A9.length>0 &amp;&amp; offWork2A9[0].excessPaidHolidayDisplay != ''">
+																			<com:ko-if bind="offWork2A9 != null &amp;&amp; offWork2A9.excessPaidHolidayDisplay != ''">
 																				<!-- A9_3_1 -->
 																				<td>#{i18n.getText('KDL045_59')}</td>
 																				<!-- A9_3_2 -->
-																				<td><span data-bind="text: offWork2A9[0].excessPaidHolidayDisplay "></span></td>
+																				<td><span data-bind="text: offWork2A9.excessPaidHolidayDisplay "></span></td>
 																			</com:ko-if>
 																		</tr>
 																		<tr>
-																			<com:ko-if bind="offWork2A9.length>0 &amp;&amp; offWork2A9[0].childNursingLeaveDisplay != ''">
+																			<com:ko-if bind="offWork2A9 != null &amp;&amp; offWork2A9.childNursingLeaveDisplay != ''">
 																				<!-- A9_4_1 -->
 																				<td>#{i18n.getText('KDL045_60')}</td>
 																				<!-- A9_4_2 -->
-																				<td><span data-bind="text: offWork2A9[0].childNursingLeaveDisplay "></span></td>
+																				<td><span data-bind="text: offWork2A9.childNursingLeaveDisplay "></span></td>
 																			</com:ko-if>
 																		</tr>
 																		<tr>
-																			<com:ko-if bind="offWork2A9.length>0 &amp;&amp; offWork2A9[0].nursingCareLeaveDisplay != ''">
+																			<com:ko-if bind="offWork2A9 != null &amp;&amp; offWork2A9.nursingCareLeaveDisplay != ''">
 																				<!-- A9_5_1 -->
 																				<td>#{i18n.getText('KDL045_61')}</td>
 																				<!-- A9_5_2 -->
-																				<td><span data-bind="text: offWork2A9[0].nursingCareLeaveDisplay "></span></td>
+																				<td><span data-bind="text: offWork2A9.nursingCareLeaveDisplay "></span></td>
 																			</com:ko-if>
 																		</tr>
 																		<tr>
@@ -595,16 +595,16 @@
 																				<td colspan="2">#{i18n.getText('KDL045_62')}</td>
 																			</com:ko-if>
 																		</tr>
-																		<com:ko bind="offWork2A9" tag="foreach">
+																		<!-- <com:ko bind="offWork2A9" tag="foreach"> -->
 																			<tr>
-																				<com:ko-if bind="specialHolidayDisplay != '' ">
+																				<com:ko-if bind="offWork2A9.specialHolidayDisplay != '' ">
 																					<!-- A9_6_1 -->
-																					<td><span data-bind="text: textKDL045_63 "></span></td>
+																					<td><span data-bind="text: offWork2A9.textKDL045_63 "></span></td>
 																					<!-- A9_6_2 -->
-																					<td><span data-bind="text: specialHolidayDisplay "></span></td>
+																					<td><span data-bind="text: offWork2A9.specialHolidayDisplay "></span></td>
 																				</com:ko-if>
 																			</tr>
-																		</com:ko>
+																		<!-- </com:ko> -->
 																	</table>
 																</div>
 																</com:ko-if>
@@ -635,43 +635,43 @@
 																<div class="popup-privatetime popup-area popup-panel popup-color">
 																	<table class = "table-popup">
 																		<tr>
-																			<com:ko-if bind="privateTimeA9.length>0 &amp;&amp;  privateTimeA9[0].timeAbbyakLeaveDisplay != ''">
+																			<com:ko-if bind="privateTimeA9 != null &amp;&amp;  privateTimeA9.timeAbbyakLeaveDisplay != ''">
 																				<!-- A9_1_1 -->
 																				<td>#{i18n.getText('KDL045_57')}</td>
 																				<!-- A9_1_2 -->
-																				<td><span data-bind="text: privateTimeA9[0].timeAbbyakLeaveDisplay "></span></td>
+																				<td><span data-bind="text: privateTimeA9.timeAbbyakLeaveDisplay "></span></td>
 																			</com:ko-if>
 																		</tr>
 																		<tr>
-																			<com:ko-if bind="privateTimeA9.length>0 &amp;&amp; privateTimeA9[0].timeOffDisplay != ''">
+																			<com:ko-if bind="privateTimeA9 != null &amp;&amp; privateTimeA9.timeOffDisplay != ''">
 																				<!-- A9_2_1 -->
 																				<td>#{i18n.getText('KDL045_58')}</td>
 																				<!-- A9_2_2 -->
-																				<td><span data-bind="text: privateTimeA9[0].timeOffDisplay "></span></td>
+																				<td><span data-bind="text: privateTimeA9.timeOffDisplay "></span></td>
 																			</com:ko-if>
 																		</tr>
 																		<tr>
-																			<com:ko-if bind="privateTimeA9.length>0 &amp;&amp; privateTimeA9[0].excessPaidHolidayDisplay != ''">
+																			<com:ko-if bind="privateTimeA9 != null &amp;&amp; privateTimeA9.excessPaidHolidayDisplay != ''">
 																				<!-- A9_3_1 -->
 																				<td>#{i18n.getText('KDL045_59')}</td>
 																				<!-- A9_3_2 -->
-																				<td><span data-bind="text: privateTimeA9[0].excessPaidHolidayDisplay "></span></td>
+																				<td><span data-bind="text: privateTimeA9.excessPaidHolidayDisplay "></span></td>
 																			</com:ko-if>
 																		</tr>
 																		<tr>
-																			<com:ko-if bind="privateTimeA9.length>0 &amp;&amp; privateTimeA9[0].childNursingLeaveDisplay != ''">
+																			<com:ko-if bind="privateTimeA9 != null &amp;&amp; privateTimeA9.childNursingLeaveDisplay != ''">
 																				<!-- A9_4_1 -->
 																				<td>#{i18n.getText('KDL045_60')}</td>
 																				<!-- A9_4_2 -->
-																				<td><span data-bind="text: privateTimeA9[0].childNursingLeaveDisplay "></span></td>
+																				<td><span data-bind="text: privateTimeA9.childNursingLeaveDisplay "></span></td>
 																			</com:ko-if>
 																		</tr>
 																		<tr>
-																			<com:ko-if bind="privateTimeA9.length>0 &amp;&amp; privateTimeA9[0].nursingCareLeaveDisplay != ''">
+																			<com:ko-if bind="privateTimeA9 != null &amp;&amp; privateTimeA9.nursingCareLeaveDisplay != ''">
 																				<!-- A9_5_1 -->
 																				<td>#{i18n.getText('KDL045_61')}</td>
 																				<!-- A9_5_2 -->
-																				<td><span data-bind="text: privateTimeA9[0].nursingCareLeaveDisplay "></span></td>
+																				<td><span data-bind="text: privateTimeA9.nursingCareLeaveDisplay "></span></td>
 																			</com:ko-if>
 																		</tr>
 																		<tr>
@@ -680,16 +680,16 @@
 																				<td colspan="2">#{i18n.getText('KDL045_62')}</td>
 																			</com:ko-if>
 																		</tr>
-																		<com:ko bind="privateTimeA9" tag="foreach">
+																		<!-- <com:ko bind="privateTimeA9" tag="foreach"> -->
 																			<tr>
-																				<com:ko-if bind="specialHolidayDisplay != '' ">
+																				<com:ko-if bind="privateTimeA9.specialHolidayDisplay != '' ">
 																					<!-- A9_6_1 -->
-																					<td><span data-bind="text: textKDL045_63 "></span></td>
+																					<td><span data-bind="text: privateTimeA9.textKDL045_63 "></span></td>
 																					<!-- A9_6_2 -->
-																					<td><span data-bind="text: specialHolidayDisplay "></span></td>
+																					<td><span data-bind="text: privateTimeA9.specialHolidayDisplay "></span></td>
 																				</com:ko-if>
 																			</tr>
-																		</com:ko>	
+																		<!-- </com:ko> -->	
 																	</table>
 																</div>
 																</com:ko-if>
@@ -720,43 +720,43 @@
 																<div class="popup-uniontime popup-area popup-panel popup-color">
 																	<table class = "table-popup">
 																		<tr>
-																			<com:ko-if bind="unionTimeA9.length>0 &amp;&amp;  unionTimeA9[0].timeAbbyakLeaveDisplay != ''">
+																			<com:ko-if bind="unionTimeA9 != null &amp;&amp;  unionTimeA9.timeAbbyakLeaveDisplay != ''">
 																				<!-- A9_1_1 -->
 																				<td>#{i18n.getText('KDL045_57')}</td>
 																				<!-- A9_1_2 -->
-																				<td><span data-bind="text: unionTimeA9[0].timeAbbyakLeaveDisplay "></span></td>
+																				<td><span data-bind="text: unionTimeA9.timeAbbyakLeaveDisplay "></span></td>
 																			</com:ko-if>
 																		</tr>
 																		<tr>
-																			<com:ko-if bind="unionTimeA9.length>0 &amp;&amp; unionTimeA9[0].timeOffDisplay != ''">
+																			<com:ko-if bind="unionTimeA9 != null &amp;&amp; unionTimeA9.timeOffDisplay != ''">
 																				<!-- A9_2_1 -->
 																				<td>#{i18n.getText('KDL045_58')}</td>
 																				<!-- A9_2_2 -->
-																				<td><span data-bind="text: unionTimeA9[0].timeOffDisplay "></span></td>
+																				<td><span data-bind="text: unionTimeA9.timeOffDisplay "></span></td>
 																			</com:ko-if>
 																		</tr>
 																		<tr>
-																			<com:ko-if bind="unionTimeA9.length>0 &amp;&amp; unionTimeA9[0].excessPaidHolidayDisplay != ''">
+																			<com:ko-if bind="unionTimeA9 != null &amp;&amp; unionTimeA9.excessPaidHolidayDisplay != ''">
 																				<!-- A9_3_1 -->
 																				<td>#{i18n.getText('KDL045_59')}</td>
 																				<!-- A9_3_2 -->
-																				<td><span data-bind="text: unionTimeA9[0].excessPaidHolidayDisplay "></span></td>
+																				<td><span data-bind="text: unionTimeA9.excessPaidHolidayDisplay "></span></td>
 																			</com:ko-if>
 																		</tr>
 																		<tr>
-																			<com:ko-if bind="unionTimeA9.length>0 &amp;&amp; unionTimeA9[0].childNursingLeaveDisplay != ''">
+																			<com:ko-if bind="unionTimeA9 != null &amp;&amp; unionTimeA9.childNursingLeaveDisplay != ''">
 																				<!-- A9_4_1 -->
 																				<td>#{i18n.getText('KDL045_60')}</td>
 																				<!-- A9_4_2 -->
-																				<td><span data-bind="text: unionTimeA9[0].childNursingLeaveDisplay "></span></td>
+																				<td><span data-bind="text: unionTimeA9.childNursingLeaveDisplay "></span></td>
 																			</com:ko-if>
 																		</tr>
 																		<tr>
-																			<com:ko-if bind="unionTimeA9.length>0 &amp;&amp; unionTimeA9[0].nursingCareLeaveDisplay != ''">
+																			<com:ko-if bind="unionTimeA9 != null &amp;&amp; unionTimeA9.nursingCareLeaveDisplay != ''">
 																				<!-- A9_5_1 -->
 																				<td>#{i18n.getText('KDL045_61')}</td>
 																				<!-- A9_5_2 -->
-																				<td><span data-bind="text: unionTimeA9[0].nursingCareLeaveDisplay "></span></td>
+																				<td><span data-bind="text: unionTimeA9.nursingCareLeaveDisplay "></span></td>
 																			</com:ko-if>
 																		</tr>
 																		<tr>
@@ -765,16 +765,16 @@
 																				<td colspan="2">#{i18n.getText('KDL045_62')}</td>
 																			</com:ko-if>
 																		</tr>
-																		<com:ko bind="unionTimeA9" tag="foreach">
+																		<!-- <com:ko bind="unionTimeA9" tag="foreach"> -->
 																			<tr>
-																				<com:ko-if bind="specialHolidayDisplay != '' ">
+																				<com:ko-if bind="unionTimeA9.specialHolidayDisplay != '' ">
 																					<!-- A9_6_1 -->
-																					<td><span data-bind="text: textKDL045_63 "></span></td>
+																					<td><span data-bind="text: unionTimeA9.textKDL045_63 "></span></td>
 																					<!-- A9_6_2 -->
-																					<td><span data-bind="text: specialHolidayDisplay "></span></td>
+																					<td><span data-bind="text: unionTimeA9.specialHolidayDisplay "></span></td>
 																				</com:ko-if>
 																			</tr>
-																		</com:ko>		
+																		<!-- </com:ko> -->		
 																	</table>
 																</div>
 																</com:ko-if>

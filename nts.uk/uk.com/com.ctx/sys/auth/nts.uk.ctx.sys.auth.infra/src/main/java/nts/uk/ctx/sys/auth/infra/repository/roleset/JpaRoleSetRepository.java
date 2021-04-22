@@ -29,20 +29,20 @@ import nts.uk.ctx.sys.auth.infra.entity.roleset.SacmtRoleSetPK;
 @Stateless
 public class JpaRoleSetRepository extends JpaRepository implements RoleSetRepository {
 
-    private static final String SELECT_All_ROLE_SET_BY_COMPANY_ID = "SELECT rs FROM SacmtRoleset rs"
+    private static final String SELECT_All_ROLE_SET_BY_COMPANY_ID = "SELECT rs FROM SacmtRoleSet rs"
             + " WHERE rs.roleSetPK.companyId = :companyId "
             + " ORDER BY rs.roleSetPK.roleSetCd ASC ";
-    private static final String SELECT_All_ROLE_SET_BY_COMPANY_ID_AND_PERSON_ROLE = "SELECT rs FROM SacmtRoleset rs"
+    private static final String SELECT_All_ROLE_SET_BY_COMPANY_ID_AND_PERSON_ROLE = "SELECT rs FROM SacmtRoleSet rs"
             + " WHERE rs.roleSetPK.companyId = :companyId AND rs.personInfRole = :personRoleId ";
     
-    private static final String SELECT_ROLE_SET_BY_EMPLOYMENT_ROLE_CODE = "SELECT rs FROM SacmtRoleset rs"
+    private static final String SELECT_ROLE_SET_BY_EMPLOYMENT_ROLE_CODE = "SELECT rs FROM SacmtRoleSet rs"
             + " WHERE rs.employmentRole = :employmentRole ";
     
-    private static final String SELECT_ROLE_SET_BY_CID_EMPLOYMENT_ROLE_CODE = "SELECT rs FROM SacmtRoleset rs"
+    private static final String SELECT_ROLE_SET_BY_CID_EMPLOYMENT_ROLE_CODE = "SELECT rs FROM SacmtRoleSet rs"
             + " WHERE rs.roleSetPK.companyId = :companyId"
             + " AND rs.employmentRole = :employmentRole ";
     
-    private static final String FIND_BY_CID_ROLES = "SELECT rs FROM SacmtRoleset rs"
+    private static final String FIND_BY_CID_ROLES = "SELECT rs FROM SacmtRoleSet rs"
             + " WHERE rs.roleSetPK.companyId = :companyID"
             + " AND rs.employmentRole IN :empRoleLst ";
 
@@ -181,7 +181,7 @@ public class JpaRoleSetRepository extends JpaRepository implements RoleSetReposi
         return result;
 	}
      
-	private static final String SELECT_BY_CID_ROLLSETCD_AUTHOR = "SELECT rs FROM SacmtRoleset rs"
+	private static final String SELECT_BY_CID_ROLLSETCD_AUTHOR = "SELECT rs FROM SacmtRoleSet rs"
             + " WHERE rs.roleSetPK.companyId = :companyId"
             + " AND rs.roleSetPK.roleSetCd = :roleSetCd "
             + " AND rs.approvalAuthority = :approvalAuthority";

@@ -30,7 +30,7 @@ public class StartScreenB {
 		// Input :標準ウィジェット種別＝申請状況
 
 		Optional<StandardWidget> standardWigetOpt = this.approveWidgetRepo
-				.findByWidgetType(StandardWidgetType.APPLICATION_STATUS.value, AppContexts.user().companyId());
+				.findByWidgetTypeAndCompanyId(StandardWidgetType.APPLICATION_STATUS, AppContexts.user().companyId());
 		
 		if (!standardWigetOpt.isPresent()) {
 			return new StartScreenBResult("", Collections.emptyList());

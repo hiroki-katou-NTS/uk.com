@@ -2,6 +2,7 @@ module nts.uk.at.view.kaf002_ref.d.viewmodel {
     import AppType = nts.uk.at.view.kaf000.shr.viewmodel.model.AppType;
     import Application = nts.uk.at.view.kaf000.shr.viewmodel.Application;
     import PrintContentOfEachAppDto = nts.uk.at.view.kaf000.shr.viewmodel.PrintContentOfEachAppDto;
+	import CommonProcess = nts.uk.at.view.kaf000.shr.viewmodel.CommonProcess;
     
     const template = `
             <div>
@@ -315,7 +316,9 @@ module nts.uk.at.view.kaf002_ref.d.viewmodel {
                }
            }).done(res => {
                if (res != undefined) {
-                   return self.$dialog.info({messageId: "Msg_15" })
+                   return self.$dialog.info({messageId: "Msg_15" }).then(() => {
+						return CommonProcess.handleMailResult(res, self);
+					});
                }
            }).fail(res => {
                self.showError(res);

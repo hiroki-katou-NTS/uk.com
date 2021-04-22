@@ -2,6 +2,7 @@ package nts.uk.ctx.at.function.app.find.alarm.checkcondition;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.function.dom.adapter.FixedConWorkRecordAdapterDto;
 
 /**
@@ -12,6 +13,7 @@ import nts.uk.ctx.at.function.dom.adapter.FixedConWorkRecordAdapterDto;
 
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class FixedConditionWorkRecordDto {
 
 	private String dailyAlarmConID;
@@ -19,6 +21,7 @@ public class FixedConditionWorkRecordDto {
 	private int fixConWorkRecordNo;
 	private String message;
 	private boolean useAtr;
+	private Integer eralarmAtr;
 	
 	public FixedConditionWorkRecordDto(FixedConWorkRecordAdapterDto importDto) {
 		super();

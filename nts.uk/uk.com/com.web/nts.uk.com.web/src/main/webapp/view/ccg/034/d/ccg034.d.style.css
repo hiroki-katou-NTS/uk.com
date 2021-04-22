@@ -177,3 +177,9 @@
   margin-left: 10px;
   word-spacing: 10px;
 }
+.ui-selectable-helper, .ui-resizable-se { 
+  display: none !important;
+}
+#menu-creation-layout .menu-creation-item-container:hover > .ui-resizable-se {
+  display: block !important;
+}

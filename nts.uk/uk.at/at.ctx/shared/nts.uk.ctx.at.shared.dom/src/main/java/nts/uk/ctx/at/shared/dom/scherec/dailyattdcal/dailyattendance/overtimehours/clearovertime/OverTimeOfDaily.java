@@ -252,6 +252,7 @@ public class OverTimeOfDaily {
 		val overTimeFrameTimeSheet = overTimeSheet.changeOverTimeFrameTimeSheet();
 		//残業時間の計算
 		val overTimeFrame = overTimeSheet.collectOverTimeWorkTime(
+				recordReGet.getPersonDailySetting().getOverTimeSheetReq(),
 				recordReGet.getIntegrationOfDaily().getCalAttr().getOvertimeSetting(),
 				workType,
 				eachWorkTimeSet,
@@ -261,14 +262,21 @@ public class OverTimeOfDaily {
 				declareResult,
 				true,
 				recordReGet.getCompanyCommonSetting().getOvertimeFrameList());
-		
 		//残業深夜時間の計算
 		val excessOverTimeWorkMidNightTime = Finally.of(calcExcessMidNightTime(
 				overTimeSheet,
 				recordReGet.getIntegrationOfDaily().getCalAttr().getOvertimeSetting(),
 				beforeApplicationTime,
 				recordReGet.getIntegrationOfDaily().getCalAttr(),
-				declareResult));
+				declareResult,
+				conditionItem,
+				recordReGet,
+				workType,
+				vacationClass,
+				statutoryDivision,
+				siftCode,
+				predetermineTimeSetByPersonInfo,
+				coreTimeSetting));
 		//変形法定内残業時間の計算
 		val irregularTime = overTimeSheet.calcIrregularTime();
 		//フレックス時間
@@ -320,6 +328,14 @@ public class OverTimeOfDaily {
 	 * @param beforeApplicationTime 事前深夜時間
 	 * @param calAttr 日別実績の計算区分
 	 * @param declareResult 申告時間帯作成結果
+	 * @param conditionItem 労働条件項目
+	 * @param recordReGet 実績
+	 * @param workType 勤務種類
+	 * @param vacationClass 休暇クラス
+	 * @param statutoryDivision 法定内区分
+	 * @param siftCode 就業時間帯コード
+	 * @param predetermineTimeSetByPersonInfo 計算用所定時間設定（個人）
+	 * @param coreTimeSetting コアタイム時間帯設定
 	 * @return 法定外残業深夜時間
 	 */
 	private static ExcessOverTimeWorkMidNightTime calcExcessMidNightTime(
@@ -327,10 +343,56 @@ public class OverTimeOfDaily {
 			AutoCalOvertimeSetting autoCalcSet,
 			AttendanceTime beforeApplicationTime,
 			CalAttrOfDailyAttd calAttr,
-			DeclareTimezoneResult declareResult) {
+			DeclareTimezoneResult declareResult,
+			WorkingConditionItem conditionItem,
+			ManageReGetClass recordReGet,
+			WorkType workType,
+			VacationClass vacationClass,
+			StatutoryDivision statutoryDivision,
+			Optional<WorkTimeCode> siftCode,
+			Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo,
+			Optional<CoreTimeSetting> coreTimeSetting) {
 		
+		AttendanceTime flexWithoutTime = new AttendanceTime(0);
+		
+		// フレックスの時
+		if (recordReGet.getWorkTimeSetting().isPresent()){
+			if (recordReGet.getWorkTimeSetting().get().getWorkTimeDivision().isFlexWorkDay(conditionItem)){
+				// 所定外深夜時間の計算
+				Optional<WithinWorkTimeSheet> withinWorkTimeSheetOpt = Optional.empty();
+				if (recordReGet.getCalculationRangeOfOneDay().getWithinWorkingTimeSheet().isPresent()){
+					withinWorkTimeSheetOpt = Optional.of(recordReGet.getCalculationRangeOfOneDay().getWithinWorkingTimeSheet().get());
+				}
+				if (withinWorkTimeSheetOpt.isPresent()){
+					flexWithoutTime = ((FlexWithinWorkTimeSheet)withinWorkTimeSheetOpt.get()).calcWithoutMidnightTime(
+							recordReGet.getHolidayCalcMethodSet(),
+							recordReGet.getIntegrationOfDaily().getCalAttr().getFlexExcessTime().getFlexOtTime().getCalAtr(),
+							workType,
+							new SettingOfFlexWork(new FlexCalcMethodOfHalfWork(
+									new FlexCalcMethodOfEachPremiumHalfWork(FlexCalcMethod.Half, FlexCalcMethod.Half),
+									new FlexCalcMethodOfEachPremiumHalfWork(FlexCalcMethod.Half, FlexCalcMethod.Half))),
+							recordReGet.getCalculationRangeOfOneDay().getPredetermineTimeSetForCalc(),
+							vacationClass,
+							withinWorkTimeSheetOpt.get().getTimeVacationAdditionRemainingTime().get(),
+							statutoryDivision,
+							siftCode,
+							recordReGet.getIntegrationOfDaily().getCalAttr().getLeaveEarlySetting(),
+							recordReGet.getAddSetting(),
+							recordReGet.getHolidayAddtionSet().get(),
+							recordReGet.getDailyUnit(),
+							recordReGet.getWorkTimezoneCommonSet(),
+							recordReGet.getIntegrationOfDaily().getCalAttr().getFlexExcessTime().getFlexOtTime().getUpLimitORtSet(),
+							conditionItem,
+							predetermineTimeSetByPersonInfo,
+							coreTimeSetting,
+							NotUseAtr.NOT_USE);
+				}
+			}
+		}
+		// 残業深夜時間の計算
 		AttendanceTime calcTime = overTimeSheet.calcMidNightTime(autoCalcSet);
-		//事前申請制御
+		calcTime = calcTime.addMinutes(flexWithoutTime.valueAsMinutes());
+		// 事前申請制御
 		if(calAttr.getOvertimeSetting().getNormalMidOtTime().getUpLimitORtSet()==TimeLimitUpperLimitSetting.LIMITNUMBERAPPLICATION&&calcTime.greaterThanOrEqualTo(beforeApplicationTime.valueAsMinutes())) {
 			return new ExcessOverTimeWorkMidNightTime(TimeDivergenceWithCalculation.createTimeWithCalculation(beforeApplicationTime, calcTime));
 		}

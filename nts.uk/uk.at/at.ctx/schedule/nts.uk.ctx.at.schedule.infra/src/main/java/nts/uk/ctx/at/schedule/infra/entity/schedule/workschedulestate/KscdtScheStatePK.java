@@ -26,7 +26,7 @@ public class KscdtScheStatePK implements Serializable {
 
 	@Column(name = "SCHE_ITEM_ID")
 	public int scheduleItemId;
-	
+
 	@Column(name = "YMD")
 	public GeneralDate date;
 }

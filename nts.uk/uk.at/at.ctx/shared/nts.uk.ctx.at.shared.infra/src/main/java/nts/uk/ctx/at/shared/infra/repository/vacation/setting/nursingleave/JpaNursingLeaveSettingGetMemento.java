@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.vacation.setting.nursingleave;
 
+import java.util.ArrayList;
+import java.util.List;
 //import java.util.List;
 import java.util.Optional;
 //import java.util.stream.Collectors;
@@ -16,7 +18,6 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingCategory;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingLeaveSettingGetMemento;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.TimeCareNursingSet;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.nursingleave.KshmtHdnursingLeave;
-import nts.uk.shr.com.time.calendar.MonthDay;
 
 /**
  * The Class JpaNursingVacationSettingGetMemento.
@@ -91,8 +92,8 @@ public class JpaNursingLeaveSettingGetMemento implements NursingLeaveSettingGetM
      * NursingVacationSettingGetMemento#getMaxPersonSetting()
      */
     @Override
-    public MaxPersonSetting getMaxPersonSetting() {
-        return new MaxPersonSetting(new JpaMaxPersonSettingGetMemento(this.entityNursing));
+    public List<MaxPersonSetting> getMaxPersonSetting() {
+        return MaxPersonSetting.getList(new JpaMaxPersonSettingGetMemento(this.entityNursing));
     }
 
 	@Override

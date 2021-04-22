@@ -1,52 +1,99 @@
 package nts.uk.ctx.at.shared.dom.specialholiday.grantinformation;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.layer.dom.DomainObject;
+import nts.arc.time.YearMonth;
+import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayCode;
 import nts.uk.ctx.at.shared.dom.specialholiday.periodinformation.SpecialVacationMonths;
 
 /**
- * 経過年数に対する付与日数
- * 
- * @author tanlv
- *
+ * 特別休暇付与経過年数テーブル
  */
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
-public class ElapseYear extends DomainObject {
+public class ElapseYear extends AggregateRoot {
+	
 	/** 会社ID */
 	private String companyId;
-	
+
 	/** 特別休暇コード */
-	private int specialHolidayCode;
+	private SpecialHolidayCode specialHolidayCode;
 	
-	/** 付与テーブルコード */
-	private String grantDateCode;
+	/** 経過年数テーブル */
+	private List<ElapseYearMonthTbl> elapseYearMonthTblList;
 	
-	private int elapseNo;
+	/** テーブル以降の固定付与をおこなう */
+	private boolean fixedAssign;
 	
-	/** 付与テーブルコード */
-	private GrantedDays grantedDays;
+	/** テーブル以降の付与周期 */
+	private Optional<GrantCycleAfterTbl> grantCycleAfterTbl;
 	
-	/** 付与テーブルコード */
-	private SpecialVacationMonths months;
-	
-	/** 付与テーブルコード */
-	private GrantedYears years;
 	
 	@Override
 	public void validate() {
 		super.validate();
 	}
-
-	public static ElapseYear createFromJavaType(String companyId, int specialHolidayCode, String grantDateCode, int elapseNo, int grantedDays, int months, int years) {
-		return new ElapseYear(companyId, specialHolidayCode, grantDateCode, elapseNo, 
-				new GrantedDays(grantedDays),
-				new SpecialVacationMonths(months),
-				new GrantedYears(years));
+	
+	public List<String> validateInput() {
+		
+		List<String> errors = new ArrayList<>();
+		List<YearMonth> yearMonth = new ArrayList<>();
+		
+		for (int i = 0; i < this.elapseYearMonthTblList.size(); i++) {
+			ElapseYearMonthTbl elapseYearMonthTbl = this.elapseYearMonthTblList.get(i);
+			YearMonth currentYearMonth = YearMonth.of(elapseYearMonthTbl.getElapseYearMonth().getYear(), elapseYearMonthTbl.getElapseYearMonth().getMonth());
+			
+			
+			if (currentYearMonth.year() == 0 && currentYearMonth.month() == 0) {
+				errors.add("Msg_95");
+			}
+	
+			if (yearMonth.stream().anyMatch(x -> x.equals(currentYearMonth))) {
+				errors.add("Msg_96");
+			}
+			
+			yearMonth.add(currentYearMonth);
+		}
+		
+		return errors;
 	}
+	
+	// 	[1]付与日数テーブルの付与回数を合わせる
+	public List<GrantDateTbl> matchNumberOfGrantsInGrantDaysTable(List<GrantDateTbl> listGrantDateTbl) {
+		
+		listGrantDateTbl.forEach(e -> {
+			e.deleteMoreTableThanElapsedYearsTable(this.elapseYearMonthTblList.size());
+			e.addLessTableThanElapsedYearsTable(this.elapseYearMonthTblList.size());
+		});
+		
+		return listGrantDateTbl;
+	}
+
+	public static ElapseYear createFromJavaType(
+			String companyId, 
+			int specialHolidayCode, 
+			boolean fixedAssign, 
+			Integer years, Integer months ) {
+		
+		return new ElapseYear(
+				companyId, 
+				new SpecialHolidayCode(specialHolidayCode), 
+				new ArrayList<ElapseYearMonthTbl>(),
+				fixedAssign, 
+				years == null && months == null ? Optional.empty() 
+						: Optional.of(GrantCycleAfterTbl.createFromJavaType(years, months)));
+	}
+	
+	
+	
 }

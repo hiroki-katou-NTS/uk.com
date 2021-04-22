@@ -8,7 +8,6 @@ import nts.uk.ctx.at.request.app.command.application.common.AppDispInfoStartupCm
 import nts.uk.ctx.at.request.app.command.application.overtime.ApplicationTimeCommand;
 import nts.uk.ctx.at.request.app.command.application.overtime.WorkContentCommand;
 import nts.uk.ctx.at.request.app.command.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeLeaveAppCommonSetCommand;
-import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto;
 
 /**
  * Refactor5
@@ -31,7 +30,7 @@ public class ParamOverTimeStart {
 	
 	public Integer endTimeSPR;
 	
-	public Boolean isProxy;
+	public Boolean agent;
 	
 	public String employeeId;
 	

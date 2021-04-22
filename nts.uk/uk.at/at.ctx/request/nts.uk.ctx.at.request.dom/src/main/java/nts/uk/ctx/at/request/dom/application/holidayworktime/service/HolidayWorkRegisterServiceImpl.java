@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.request.dom.application.holidayworktime.service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -8,6 +9,8 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+
+import org.apache.logging.log4j.util.Strings;
 
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.request.dom.application.Application;
@@ -60,24 +63,30 @@ public class HolidayWorkRegisterServiceImpl implements HolidayWorkRegisterServic
 		//	2-2.新規画面登録時承認反映情報の整理
 		applicationApprovalService.insertApp(application, 
 				appHdWorkDispInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getOpListApprovalPhaseState().orElse(Collections.emptyList()));
-		registerAtApproveReflectionInfoService.newScreenRegisterAtApproveInfoReflect(appHolidayWork.getApplication().getEmployeeID(), application);
+		String reflectAppId = registerAtApproveReflectionInfoService.newScreenRegisterAtApproveInfoReflect(appHolidayWork.getApplication().getEmployeeID(), application);
 		appHolidayWorkRepository.add(appHolidayWork);
 		
 		//	暫定データの登録 (pending)
 		
 		//	2-3.新規画面登録後の処理
-		return newAfterRegister.processAfterRegister(
-				application.getAppID(), 
+		ProcessResult processResult = newAfterRegister.processAfterRegister(
+				Arrays.asList(application.getAppID()), 
 				appTypeSetting,
-				appHdWorkDispInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().isMailServerSet());
+				appHdWorkDispInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().isMailServerSet(),
+				false);
+		if(Strings.isNotBlank(reflectAppId)) {
+			processResult.setReflectAppIdLst(Arrays.asList(reflectAppId));
+		}
+		return processResult;
 	}
 	
 	@Override
-	public List<ProcessResult> registerMulti(String companyId, List<String> empList, AppTypeSetting appTypeSetting,
+	public ProcessResult registerMulti(String companyId, List<String> empList, AppTypeSetting appTypeSetting,
 			AppHdWorkDispInfoOutput appHdWorkDispInfoOutput, AppHolidayWork appHolidayWork,
 			Map<String, ApprovalRootContentImport_New> approvalRootContentMap,
 			Map<String, AppOvertimeDetail> appOvertimeDetailMap) {
 		List<String> applicationIdList = new ArrayList<String>();
+		List<String> reflectAppIdLst = new ArrayList<>();
 		//	INPUT．申請者リストをループする
 		empList.forEach(empId -> {
 			//	ループする社員の休日出勤申請＝INPUT．休日出勤申請
@@ -92,22 +101,24 @@ public class HolidayWorkRegisterServiceImpl implements HolidayWorkRegisterServic
 			
 			//	2-2.新規画面登録時承認反映情報の整理
 			applicationApprovalService.insertApp(empAppHolidayWork.getApplication(), listApprovalPhaseState);
-			registerAtApproveReflectionInfoService.newScreenRegisterAtApproveInfoReflect(appHolidayWork.getApplication().getEmployeeID(), empAppHolidayWork.getApplication());
+			String reflectAppId = registerAtApproveReflectionInfoService.newScreenRegisterAtApproveInfoReflect(appHolidayWork.getApplication().getEmployeeID(), empAppHolidayWork.getApplication());
+			if(Strings.isNotBlank(reflectAppId)) {
+				reflectAppIdLst.add(reflectAppId);
+			}
 			appHolidayWorkRepository.add(empAppHolidayWork);
 			
 			//	暫定データの登録 (pending)
 		});
 		
 		//	List＜申請ID＞をループする
-		List<ProcessResult> processResultList = new ArrayList<ProcessResult>();
-		applicationIdList.forEach(applicationId -> {
-			//2-3.新規画面登録後の処理
-			ProcessResult processResult = newAfterRegister.processAfterRegister(applicationId, 
-					appTypeSetting, 
-					appHdWorkDispInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().isMailServerSet());
-			processResultList.add(processResult);
-		});
-		return processResultList;
+		//2-3.新規画面登録後の処理
+		ProcessResult processResult = newAfterRegister.processAfterRegister(
+				applicationIdList, 
+				appTypeSetting, 
+				appHdWorkDispInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().isMailServerSet(),
+				true);
+		processResult.setReflectAppIdLst(reflectAppIdLst);
+		return processResult;
 	}
 	
 	@Override

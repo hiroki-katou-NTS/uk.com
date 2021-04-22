@@ -22,25 +22,25 @@ import nts.uk.pub.spr.login.paramcheck.LoginParamCheck;
 import nts.arc.time.calendar.period.DatePeriod;
 
 /**
- * 
+ *
  * @author Doan Duy Hung
  *
  */
 @Stateless
 public class SprDailyStatusImpl implements SprDailyStatusService {
-	
+
 	@Inject
 	private EmployeeSprPub employeeSprPub;
-	
+
 	@Inject
 	private IndentificationPub indentificationPub;
-	
+
 	@Inject
 	private LoginParamCheck loginParamCheck;
-	
+
 	@Inject
 	private IntermediateDataPub intermediateDataPub;
-	
+
 	@Override
 	public List<DailyStatusSpr> getStatusOfDaily(String loginEmpCD, String employeeCD, String startDate,
 			String endDate) {
@@ -54,8 +54,8 @@ public class SprDailyStatusImpl implements SprDailyStatusService {
 		}
 		// アルゴリズム「実績残業報告の有無」を実行する
 		return getEmpDailyStatus(
-				opEmployeeSpr.get().getEmployeeID(), 
-				loginParamCheck.getDate(startDate), 
+				opEmployeeSpr.get().getEmployeeID(),
+				loginParamCheck.getDate(startDate),
 				loginParamCheck.getDate(endDate));
 	}
 
@@ -95,7 +95,7 @@ public class SprDailyStatusImpl implements SprDailyStatusService {
 		if(startD.after(endD)){
 			throw new BusinessException("Msg_1003", startDate, endDate);
 		}
-		
+
 	}
 
 	@Override
@@ -130,8 +130,8 @@ public class SprDailyStatusImpl implements SprDailyStatusService {
 	public Integer getManagerStatus(GeneralDate appDate, String employeeID) {
 		// （ワークフローExport）アルゴリズム「承認対象者と期間から承認状況を取得する」を実行する
 		List<AppRootStateStatusSprExport> appRootStateStatusSprList = intermediateDataPub.getAppRootStatusByEmpPeriod(
-				employeeID, 
-				new DatePeriod(appDate, appDate), 
+				employeeID,
+				new DatePeriod(appDate, appDate),
 				1).getAppRootStateStatusLst();
 		if(CollectionUtil.isEmpty(appRootStateStatusSprList)){
 			return 0;

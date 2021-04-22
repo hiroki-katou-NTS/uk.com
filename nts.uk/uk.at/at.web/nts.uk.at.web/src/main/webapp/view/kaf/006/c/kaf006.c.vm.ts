@@ -4,7 +4,9 @@ module nts.uk.at.view.kaf006.c.viewmodel {
     import dialog = nts.uk.ui.dialog;
     import getText = nts.uk.resource.getText;
     import block = nts.uk.ui.block;
+	import CommonProcess = nts.uk.at.view.kaf000.shr.viewmodel.CommonProcess;
 
+    @bean()
     export class KAF006CViewModel extends ko.ViewModel {
         dispMultDate: KnockoutObservable<boolean> = ko.observable(true);
         dispListReasons: KnockoutObservable<boolean> = ko.observable(true);
@@ -190,14 +192,6 @@ module nts.uk.at.view.kaf006.c.viewmodel {
             }
         }
 
-        startPage(): JQueryPromise<any> {
-            const vm = this;
-            let dfd = $.Deferred();
-
-            dfd.resolve();
-            return dfd.promise();
-        }
-
         register() {
             const vm = this;
 
@@ -259,9 +253,12 @@ module nts.uk.at.view.kaf006.c.viewmodel {
                 }).done((result) => {
                     if (result) {
                         return vm.$dialog.info({ messageId: "Msg_15"}).then(() => {
-							nts.uk.ui.windows.setShared('KAF006C_RESULT', { appID: result.appID });
-							vm.closeDialog();
-                            return true;
+							service.reflectApp(result.reflectAppIdLst);
+							return CommonProcess.handleMailResult(result, vm).then(() => {
+								nts.uk.ui.windows.setShared('KAF006C_RESULT', { appID: result.appIDLst[0] });
+								vm.closeDialog();
+	                            return true;
+							});
                         });	
                     }
                 }).fail((error) => {

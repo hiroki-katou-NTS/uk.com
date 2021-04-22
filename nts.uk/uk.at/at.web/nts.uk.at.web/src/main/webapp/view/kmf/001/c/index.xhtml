@@ -31,9 +31,6 @@
 				<a class="goback" data-bind="ntsLinkButton: { jump: '/view/kmf/001/a/index.xhtml' }"  tabindex="1">#{i18n.getText('KMF001_27')}</a>
 				<button class="proceed" data-bind="click: save" tabindex="2">#{i18n.getText('KMF001_28')}</button>
 				<div class="pull-right" style="display: inline; margin-right: 15px;">
-					<a class="goout" data-bind="ntsLinkButton: {jump: '/view/kmf/003/a/index.xhtml' }"
-						tabindex="3">#{i18n.getText('KMF001_29')}
-					</a>
 					<!-- <label class="label-link-button" style="margin-right: 20px;">#{i18n.getText('KMF001_14')}</label> -->
 				</div>
 			</div>
@@ -396,7 +393,7 @@
 										value: selectC531,
 										optionsText: 'name',
 										editable: false,
-										enable: true,
+										enable: enableC5_31,
 										columns: [
 											{prop: 'name', length: 10 }
 										]}"></div>
@@ -440,7 +437,7 @@
 						
 						</td>
 						 </tr>
-						<tr data-bind="if: selectedAnnualManage()">
+						<tr>
 							<td><label class="content-label">#{i18n.getText('KMF001_134')}</label></td>
 							<td><!-- <div tabindex="20" id="combo-box"
 									data-bind="ntsComboBox: {
@@ -518,7 +515,7 @@
 										value: selectedroundProcessClassific,
 										optionsText: 'localizedName',
 										editable: false,
-										enable: enableTimeMaxNumberCompany,
+										enable: enableTimeSetting,
 										columns: [
 											{prop: 'localizedName', length: 10 }
 										]}"></div>

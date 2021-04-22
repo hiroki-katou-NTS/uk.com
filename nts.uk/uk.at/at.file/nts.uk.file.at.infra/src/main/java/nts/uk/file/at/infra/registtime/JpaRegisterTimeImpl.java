@@ -11,7 +11,6 @@ import nts.arc.i18n.I18NText;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.daily.dailyperformance.classification.DoWork;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.enums.*;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.timesetting.AgreementOverMaxTimes;
 import nts.uk.file.at.app.export.regisagreetime.RegistTimeColumn;
 import nts.uk.file.at.app.export.regisagreetime.RegistTimeRepository;
 import nts.uk.shr.com.context.AppContexts;

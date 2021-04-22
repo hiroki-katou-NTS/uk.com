@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.shared.app.command.specialholiday.grantinformation;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -11,7 +12,7 @@ import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.GrantDateTbl;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.GrantDateTblRepository;
 
 /**
- * 
+ *
  * @author tanlv
  *
  */
@@ -23,20 +24,21 @@ public class UpdateGrantDateTblCommandHandler extends CommandHandlerWithResult<G
 	@Override
 	protected List<String> handle(CommandHandlerContext<GrantDateTblCommand> context) {
 		GrantDateTblCommand command = context.getCommand();
-		
-		GrantDateTbl domain = command.toDomain();
-		
-		List<String> errList = domain.validateInput();
-		
-		if (errList.isEmpty()) {
-			// Add new data
-			if(domain.isSpecified()) {
-				repo.changeAllProvision(domain.getSpecialHolidayCode().v());
-			}
-			
-			repo.update(domain);
-		}
-		
+
+		List<String> errList = new ArrayList<String>();
+//		GrantDateTbl domain = command.toDomain();
+
+//		List<String> errList = domain.validateInput();
+//
+//		if (errList.isEmpty()) {
+//			// Add new data
+//			if(domain.isSpecified()) {
+//				repo.changeAllProvision(domain.getSpecialHolidayCode().v());
+//			}
+//
+//			repo.update(domain);
+//		}
+
 		return errList;
 	}
 }

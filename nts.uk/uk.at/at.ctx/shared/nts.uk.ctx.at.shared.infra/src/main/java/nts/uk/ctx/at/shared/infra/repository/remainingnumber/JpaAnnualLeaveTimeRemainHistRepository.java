@@ -29,7 +29,6 @@ public class JpaAnnualLeaveTimeRemainHistRepository extends JpaRepository
 				KrcdtAnnLeaTimeRemainHist.class);
 		if (entityOpt.isPresent()) {
 			KrcdtAnnLeaTimeRemainHist entity = entityOpt.get();
-			entity.cid = domain.getCid();
 			entity.deadline = domain.getDeadline();
 			entity.expStatus = domain.getExpirationStatus().value;
 			entity.registerType = domain.getRegisterType().value;
@@ -81,7 +80,7 @@ public class JpaAnnualLeaveTimeRemainHistRepository extends JpaRepository
 		String sql = "SELECT a FROM KrcdtAnnLeaTimeRemainHist a"
 				+ " WHERE a.krcdtAnnLeaTimeRemainHistPK.sid = :employeeId"
 				+ " AND a.krcdtAnnLeaTimeRemainHistPK.grantProcessDate <= :ymd"
-				+ " ORDER BY a.krcdtAnnLeaTimeRemainHistPK.grantProcessDate DESC, a.krcdtAnnLeaTimeRemainHistPK.grantDate asc";
+				+ " ORDER BY a.krcdtAnnLeaTimeRemainHistPK.grantDate asc";
 		return this.queryProxy().query(sql, KrcdtAnnLeaTimeRemainHist.class)
 				.setParameter("employeeId", sid)
 				.setParameter("ymd", ymd)

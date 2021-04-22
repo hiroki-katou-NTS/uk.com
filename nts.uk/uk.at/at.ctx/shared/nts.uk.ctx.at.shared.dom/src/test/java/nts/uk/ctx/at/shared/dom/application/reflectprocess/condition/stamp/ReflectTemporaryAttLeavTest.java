@@ -9,11 +9,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import mockit.integration.junit4.JMockit;
-import nts.uk.ctx.at.shared.dom.application.reflectprocess.DailyRecordOfApplication;
-import nts.uk.ctx.at.shared.dom.application.reflectprocess.ScheduleRecordClassifi;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.common.ReflectApplicationHelper;
-import nts.uk.ctx.at.shared.dom.application.stamp.StartEndClassificationShare;
-import nts.uk.ctx.at.shared.dom.application.stamp.TimeStampAppEnumShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.stamp.StartEndClassificationShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.stamp.TimeStampAppEnumShare;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.DailyRecordOfApplication;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.ScheduleRecordClassifi;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.stampapplication.algorithm.ReflectTemporaryAttLeav;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
 
 @RunWith(JMockit.class)
@@ -34,7 +35,7 @@ public class ReflectTemporaryAttLeavTest {
 	public void testUpdateStart() {
 		
 		DailyRecordOfApplication dailyApp = ReflectApplicationHelper
-				.createRCWithTimeLeav(ScheduleRecordClassifi.SCHEDULE, 1, true);//打刻NO= 1
+				.createRCWithTimeLeavFull(ScheduleRecordClassifi.SCHEDULE, 1);//打刻NO= 1
 		
 		List<Integer> actualResult = ReflectTemporaryAttLeav.reflect(dailyApp,
 				ReflectApplicationHelper.createlstTimeStamp(TimeStampAppEnumShare.EXTRAORDINARY, StartEndClassificationShare.START, //開始終了区分
@@ -71,8 +72,8 @@ public class ReflectTemporaryAttLeavTest {
 	public void testCreateStart() {
 
 		DailyRecordOfApplication dailyApp = ReflectApplicationHelper
-				.createRCWithTimeLeav(ScheduleRecordClassifi.SCHEDULE, 
-						1, true);//打刻NO= 1
+				.createRCWithTimeLeavFull(ScheduleRecordClassifi.SCHEDULE, 
+						1);//打刻NO= 1
 		
 		List<Integer> actualResult = ReflectTemporaryAttLeav.reflect(dailyApp,
 				ReflectApplicationHelper.createlstTimeStamp(StartEndClassificationShare.START, //開始終了区分
@@ -109,7 +110,7 @@ public class ReflectTemporaryAttLeavTest {
 	@Test
 	public void testUpdateEnd() {
 		DailyRecordOfApplication dailyApp = ReflectApplicationHelper
-				.createRCWithTimeLeav(ScheduleRecordClassifi.SCHEDULE, 1, true);//打刻NO= 1
+				.createRCWithTimeLeavFull(ScheduleRecordClassifi.SCHEDULE, 1);//打刻NO= 1
 		
 		List<Integer> actualResult = ReflectTemporaryAttLeav.reflect(dailyApp,
 				ReflectApplicationHelper.createlstTimeStamp(StartEndClassificationShare.END, //開始終了区分
@@ -146,8 +147,8 @@ public class ReflectTemporaryAttLeavTest {
 	public void testCreateEnd() {
 
 		DailyRecordOfApplication dailyApp = ReflectApplicationHelper
-				.createRCWithTimeLeav(ScheduleRecordClassifi.SCHEDULE, 
-						1, true);//打刻NO= 1
+				.createRCWithTimeLeavFull(ScheduleRecordClassifi.SCHEDULE, 
+						1);//打刻NO= 1
 		
 		List<Integer> actualResult = ReflectTemporaryAttLeav.reflect(dailyApp,
 				ReflectApplicationHelper.createlstTimeStamp(StartEndClassificationShare.END, //開始終了区分

@@ -51,7 +51,7 @@ module nts.uk.ui.ktg001.a {
     }
 
     interface IParam {
-        ym: number, //表示期間
+        //ym: number, //表示期間
         closureId: number //締めID
     }
 
@@ -160,7 +160,6 @@ module nts.uk.ui.ktg001.a {
         dayText: KnockoutObservable<string> = ko.observable('');
         monText: KnockoutObservable<string> = ko.observable('');
         aggrText: KnockoutObservable<string> = ko.observable('');
-        selectedSwitch: KnockoutObservable<number> = ko.observable(1);
 
         appRowVisible: KnockoutObservable<Boolean> = ko.observable(false);
         dayRowVisible: KnockoutObservable<Boolean> = ko.observable(false);
@@ -174,24 +173,17 @@ module nts.uk.ui.ktg001.a {
 
         settingIconVisible: KnockoutObservable<Boolean> = ko.observable(false);
 
-        param: IParam;
+        constructor(private params: { currentOrNextMonth: 1 | 2; }) {
+            super();
 
-        created() {
-            const vm = this;
-            const cacheCcg008 = windows.getShared("cache");
-            let closureId = 1;
-
-            if (!cacheCcg008 || !cacheCcg008.currentOrNextMonth) {
-                vm.selectedSwitch(1);
-            } else {
-                vm.selectedSwitch(cacheCcg008.currentOrNextMonth);
-                closureId = cacheCcg008.closureId;
+            if (this.params === undefined) {
+                this.params = { currentOrNextMonth: 1 };
             }
 
-            vm.param = {
-                ym: vm.selectedSwitch(),
-                closureId: closureId
-            };
+            if (this.params.currentOrNextMonth === undefined) {
+                this.params.currentOrNextMonth = 1;
+            }
+
         }
 
         mounted() {
@@ -204,7 +196,7 @@ module nts.uk.ui.ktg001.a {
 
         loadData(): void {
             const vm = this;
-            const { param } = vm;
+            const { params } = vm;
             const query = [
                 'nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget.ApprovedApplicationStatusItem',
                 'nts.uk.ctx.at.schedule.dom.plannedyearholiday.frame.NotUseAtr'
@@ -212,7 +204,7 @@ module nts.uk.ui.ktg001.a {
 
             const { GET_APPROVED_DATA_EXCECUTION } = KTG001_API;
             const enums = vm.$ajax('com', '/enums/map', query);
-            const aprov = vm.$ajax('at', GET_APPROVED_DATA_EXCECUTION, param);
+            const aprov = vm.$ajax('at', GET_APPROVED_DATA_EXCECUTION, { ...params, ym: params.currentOrNextMonth });
 
             vm.$blockui("invisibleView")
                 .then(() => $.when(enums, aprov))
@@ -263,7 +255,13 @@ module nts.uk.ui.ktg001.a {
                                 }
 
                             })
-                        }
+                        } else {
+							vm.title(vm.$i18n('KTG001_12'));
+							vm.appRowVisible(true);
+							vm.aggrRowVisible(false);
+							vm.dayRowVisible(approvalProcessingUse.useDayApproverConfirm);
+							vm.monRowVisible(approvalProcessingUse.useMonthApproverConfirm);
+						}
                     }
                 })
                 .then(() => {

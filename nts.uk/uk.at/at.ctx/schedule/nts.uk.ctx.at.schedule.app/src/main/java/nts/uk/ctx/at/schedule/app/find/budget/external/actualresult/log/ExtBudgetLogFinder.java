@@ -16,8 +16,8 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.schedule.app.find.budget.external.actualresult.log.dto.ExternalBudgetLogDto;
 import nts.uk.ctx.at.schedule.app.find.budget.external.actualresult.log.dto.ExternalBudgetQuery;
 import nts.uk.ctx.at.schedule.dom.budget.external.ExternalBudgetRepository;
-import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.log.ExternalBudgetLog;
-import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.log.ExternalBudgetLogRepository;
+import nts.uk.ctx.at.schedule.dom.budget.external.acceptance.log.ExternalBudgetLog;
+import nts.uk.ctx.at.schedule.dom.budget.external.acceptance.log.ExternalBudgetLogRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 

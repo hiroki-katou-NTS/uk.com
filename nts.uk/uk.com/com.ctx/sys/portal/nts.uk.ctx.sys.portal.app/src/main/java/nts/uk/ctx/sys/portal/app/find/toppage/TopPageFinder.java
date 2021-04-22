@@ -21,6 +21,9 @@ import nts.uk.ctx.sys.portal.dom.layout.LayoutType;
 import nts.uk.ctx.sys.portal.dom.toppage.Toppage;
 import nts.uk.ctx.sys.portal.dom.toppage.ToppageRepository;
 import nts.uk.ctx.sys.portal.dom.toppagepart.createflowmenu.CreateFlowMenuRepository;
+import nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget.ApproveWidgetRepository;
+import nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget.StandardWidget;
+import nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget.StandardWidgetType;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -36,6 +39,8 @@ public class TopPageFinder {
 	private CreateFlowMenuRepository CFlowMenuRepo;
 	@Inject
 	private LayoutRepository layoutNewRepository;
+	@Inject
+	private ApproveWidgetRepository widgetRepo;
 
 	public List<TopPageItemDto> findAll(String companyId) {
 		// 会社の「トップページ」を全て取得する
@@ -95,6 +100,38 @@ public class TopPageFinder {
 	
 		}
 		return listFlow;
+	}
+	
+	public boolean checkData(List<Integer> lstWidget) {
+		Optional<StandardWidget> ktg005Widget = Optional.empty();
+		Optional<StandardWidget> ktg001Widget = Optional.empty();
+		Optional<StandardWidget> ktg004Widget = Optional.empty();
+		boolean checkKtg005 = true;
+		boolean checkKtg001 = true;
+		boolean checkKtg004 = true;
+		if(lstWidget.contains(0)) {
+			ktg005Widget = this.widgetRepo.findByWidgetTypeAndCompanyId(StandardWidgetType.APPLICATION_STATUS, AppContexts.user().companyId());
+			if(!ktg005Widget.isPresent() || ktg005Widget.isPresent() &&  ktg005Widget.get().getAppStatusDetailedSettingList().isEmpty()) {
+				checkKtg005 = false;
+			}
+		}
+		if(lstWidget.contains(1)) {
+			ktg001Widget = this.widgetRepo.findByWidgetTypeAndCompanyId(StandardWidgetType.APPROVE_STATUS, AppContexts.user().companyId());
+			if(!ktg001Widget.isPresent() || ktg001Widget.isPresent() && ktg001Widget.get().getApprovedAppStatusDetailedSettingList().isEmpty()) {
+				checkKtg001 = false;
+			}
+		}
+		if(lstWidget.contains(2)) {
+			ktg004Widget = this.widgetRepo.findByWidgetTypeAndCompanyId(StandardWidgetType.WORK_STATUS, AppContexts.user().companyId());
+			if(!ktg004Widget.isPresent() || ktg004Widget.isPresent() && ktg004Widget.get().getDetailedWorkStatusSettingList().isEmpty()) {
+				checkKtg004 = false;
+			}
+		}
+		if(checkKtg001 && checkKtg004 && checkKtg005) {
+			return true;
+		}
+		return false;
+		
 	}
 
 	private LayoutNewDto toDto(Layout domain) {

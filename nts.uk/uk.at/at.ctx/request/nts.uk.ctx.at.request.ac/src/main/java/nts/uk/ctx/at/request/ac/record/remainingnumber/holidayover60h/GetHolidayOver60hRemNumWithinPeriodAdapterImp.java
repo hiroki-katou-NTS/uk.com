@@ -2,8 +2,8 @@ package nts.uk.ctx.at.request.ac.record.remainingnumber.holidayover60h;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.record.dom.remainingnumber.holidayover60h.export.param.HolidayOver60hGrantRemaining;
 import nts.uk.ctx.at.record.pub.remainingnumber.holidayover60h.*;
+import nts.uk.ctx.at.record.pub.remainnumber.holidayover60h.export.HolidayOver60hGrantRemainingExport;
 import nts.uk.ctx.at.request.dom.adapter.record.remainingnumber.holidayover60h.*;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
 import nts.uk.ctx.at.shared.dom.remainingnumber.holidayover60h.interim.TmpHolidayOver60hMng;
@@ -77,17 +77,15 @@ public class GetHolidayOver60hRemNumWithinPeriodAdapterImp implements GetHoliday
                         export.getRemainingNumber().getCarryForwardTimes(),
                         export.getRemainingNumber().getHolidayOver60hUndigestNumber()
                 ),
-                export.getGrantRemainingList().stream().map(i -> {
+                export.getGrantRemainingExportList().stream().map(i -> {
                     HolidayOver60hGrantRemainingImport tmp = new HolidayOver60hGrantRemainingImport();
-                    tmp.setAnnLeavID(i.getAnnLeavID());
-                    tmp.setCid(i.getCid());
+                    tmp.setLeaveID(i.getLeaveID());
                     tmp.setEmployeeId(i.getEmployeeId());
                     tmp.setGrantDate(i.getGrantDate());
                     tmp.setDeadline(i.getDeadline());
                     tmp.setExpirationStatus(i.getExpirationStatus());
                     tmp.setRegisterType(i.getRegisterType());
                     tmp.setDetails(i.getDetails());
-                    tmp.setDummyAtr(i.isDummyAtr());
                     return tmp;
                 }).collect(Collectors.toList())
         );
@@ -106,15 +104,13 @@ public class GetHolidayOver60hRemNumWithinPeriodAdapterImp implements GetHoliday
                 ),
                 importData.getGrantRemainingList().stream().map(i -> {
                     HolidayOver60hGrantRemainingExport tmp = new HolidayOver60hGrantRemainingExport();
-                    tmp.setAnnLeavID(i.getAnnLeavID());
-                    tmp.setCid(i.getCid());
+                    tmp.setLeaveID(i.getLeaveID());
                     tmp.setEmployeeId(i.getEmployeeId());
                     tmp.setGrantDate(i.getGrantDate());
                     tmp.setDeadline(i.getDeadline());
                     tmp.setExpirationStatus(i.getExpirationStatus());
                     tmp.setRegisterType(i.getRegisterType());
                     tmp.setDetails(i.getDetails());
-                    tmp.setDummyAtr(i.isDummyAtr());
                     return tmp;
                 }).collect(Collectors.toList())
         );

@@ -166,7 +166,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
 	            }
             }).fail((res: any) => {
                 vm.handlerExecuteErrorMsg(res);
-            }).always(() => vm.$blockui("hide"));
+            });
         }
 
 		getAppType(key: string) {
@@ -259,9 +259,11 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             vm.$ajax(API.approve, command)
             .done((successData: any) => {
                 vm.$dialog.info({ messageId: "Msg_220" }).then(() => {
-                	let param = [successData.reflectAppId];
-                	nts.uk.request.ajax("at", API.reflectAppSingle, param);
-                    vm.loadData();
+					CommonProcess.handleMailResult(successData, vm).then(() => {
+						let param = successData.reflectAppIdLst;
+	                	nts.uk.request.ajax("at", API.reflectApp, param);
+	                    vm.loadData();
+					});
                 });
             }).fail((res: any) => {
                 vm.handlerExecuteErrorMsg(res);
@@ -279,7 +281,9 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             .done((successData: any) => {
                 if(successData.processDone) {
                     vm.$dialog.info({ messageId: "Msg_222" }).then(() => {
-                        vm.loadData();
+						CommonProcess.handleMailResult(successData, vm).then(() => {
+		                    vm.loadData();
+						});
                     });
                 }
             }).fail((res: any) => {
@@ -298,7 +302,9 @@ module nts.uk.at.view.kaf000.b.viewmodel {
 				if(successData) {
 					if(successData.processDone) {
 	                    vm.$dialog.info({ messageId: "Msg_221" }).then(() => {
-	                        vm.loadData();
+							CommonProcess.handleMailResult(successData, vm).then(() => {
+			                    vm.loadData();
+							});
 	                    });
 	                }
 				}
@@ -309,9 +315,18 @@ module nts.uk.at.view.kaf000.b.viewmodel {
 
         btnRemand() {
 			const vm = this;
-			let appID = vm.application().appID(),
-				version = vm.appDispInfoStartupOutput().appDetailScreenInfo.application.version,
-				command = { appID, version };
+			let appID = [vm.application().appID()],
+				version = vm.appDispInfoStartupOutput().appDetailScreenInfo.application.version;
+			if(vm.appType()==AppType.COMPLEMENT_LEAVE_APPLICATION) {
+				appID = [];
+				if(vm.childParam.printContentOfEachAppDto.optHolidayShipment.abs) {
+					appID.push(vm.childParam.printContentOfEachAppDto.optHolidayShipment.abs.application.appID);
+				}
+				if(vm.childParam.printContentOfEachAppDto.optHolidayShipment.rec) {
+					appID.push(vm.childParam.printContentOfEachAppDto.optHolidayShipment.rec.application.appID);
+				}
+			}
+			let command = { appID, version };
 			vm.$window.storage('KDL034_PARAM', command);
 			vm.$window.modal('/view/kdl/034/a/index.xhtml').then(() => {
 				vm.loadData();
@@ -367,7 +382,14 @@ module nts.uk.at.view.kaf000.b.viewmodel {
         }
 
         btnSendEmail() {
-
+			const vm = this;
+            let command = {
+            	appIDLst: [vm.currentApp()],
+				isAgentMode: false,
+				appDispInfoStartupOutput: vm.appDispInfoStartupOutput()
+            };
+            nts.uk.ui.windows.setShared("KDL030_PARAM", command);
+            nts.uk.ui.windows.sub.modal("/view/kdl/030/a/index.xhtml");
         }
 
         btnDelete() {
@@ -382,13 +404,15 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             }).done((successData: any) => {
 				if(successData) {
 					vm.$dialog.info({ messageId: "Msg_16" }).then(() => {
-						character.restore("AppListExtractCondition").then((obj: any) => {
-							let param = 0;
-							if(obj.appListAtr==1) {
-								param = 1;
-							}
-							vm.$jump("at", "/view/cmm/045/a/index.xhtml?a="+param);
-			            });
+						CommonProcess.handleMailResult(successData, vm).then(() => {
+		                    character.restore("AppListExtractCondition").then((obj: any) => {
+								let param = 0;
+								if(obj.appListAtr==1) {
+									param = 1;
+								}
+								vm.$jump("at", "/view/cmm/045/a/index.xhtml?a="+param);
+				            });
+						});
 	                });
 				}
             }).fail((res: any) => {
@@ -446,7 +470,9 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                 });
                 break;
             case "Msg_1691":
-                vm.$dialog.error({ messageId: res.messageId, messageParams: res.parameterIds });
+                vm.$dialog.error({ messageId: res.messageId, messageParams: res.parameterIds }).then(() => {
+					vm.$blockui("hide");
+				});
                 break;
             case "Msg_1692":
             case "Msg_1693": {
@@ -480,7 +506,9 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             case 'Msg_1686':
             case 'Msg_1706':
             case 'Msg_1983':
-				vm.$dialog.error({ messageId: res.messageId, messageParams: res.parameterIds });
+				vm.$dialog.error({ messageId: res.messageId, messageParams: res.parameterIds }).then(() => {
+					vm.$blockui("hide");
+				});
 				break;
             default:
                 vm.$dialog.error(res.message).then(() => {
@@ -553,6 +581,6 @@ module nts.uk.at.view.kaf000.b.viewmodel {
         print: "at/request/application/print",
 		getAppNameInAppList: "at/request/application/screen/applist/getAppNameInAppList",
 		sendMailAfterUpdate: "",
-		reflectAppSingle: "at/request/application/reflect-app"
+		reflectApp: "at/request/application/reflect-app"
     }
 }

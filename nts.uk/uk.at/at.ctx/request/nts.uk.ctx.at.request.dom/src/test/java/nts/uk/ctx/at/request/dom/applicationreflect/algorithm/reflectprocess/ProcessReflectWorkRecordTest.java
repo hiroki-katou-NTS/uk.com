@@ -5,7 +5,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.ArrayList;
 import java.util.Optional;
 
-import nts.uk.ctx.at.request.dom.applicationreflect.object.PreApplicationWorkScheReflectAttr;
 import org.apache.commons.lang3.tuple.Pair;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -26,11 +25,11 @@ import nts.uk.ctx.at.request.dom.applicationreflect.AppReflectExecutionCondition
 import nts.uk.ctx.at.request.dom.applicationreflect.algorithm.checkprocess.PreCheckProcessWorkRecord;
 import nts.uk.ctx.at.request.dom.applicationreflect.algorithm.checkprocess.PreCheckProcessWorkSchedule.PreCheckProcessResult;
 import nts.uk.ctx.at.request.dom.applicationreflect.algorithm.common.ReflectApplicationHelper;
+import nts.uk.ctx.at.request.dom.applicationreflect.object.PreApplicationWorkScheReflectAttr;
 import nts.uk.ctx.at.request.dom.applicationreflect.object.ReflectStatusResult;
-import nts.uk.ctx.at.request.dom.applicationreflect.service.workschedule.ExecutionType;
-import nts.uk.ctx.at.shared.dom.application.common.ApplicationShare;
-import nts.uk.ctx.at.shared.dom.application.common.ReflectedStateShare;
-import nts.uk.ctx.at.shared.dom.application.reflect.ReflectStatusResultShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.common.ApplicationShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.common.ReflectedStateShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.reflect.ReflectStatusResultShare;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 @RunWith(JMockit.class)
@@ -42,8 +41,6 @@ public class ProcessReflectWorkRecordTest {
 	private String companyId;
 
 	private Integer closureId;
-
-	private ExecutionType execType;
 
 	private ReflectStatusResult statusWorkRecord;
 
@@ -57,7 +54,6 @@ public class ProcessReflectWorkRecordTest {
 	public void setUp() throws Exception {
 		companyId = "cid";
 		closureId = 1;
-		execType = ExecutionType.NORMALECECUTION;
 		statusWorkRecord = new ReflectStatusResult(ReflectedState.NOTREFLECTED, null, null);
 		dateRefer = GeneralDate.ymd(2020, 05, 10);
 	}
@@ -86,14 +82,14 @@ public class ProcessReflectWorkRecordTest {
 				result = Optional
 						.of(new AppReflectExecutionCondition(companyId, PreApplicationWorkScheReflectAttr.NOT_REFLECT, NotUseAtr.NOT_USE, NotUseAtr.USE));// 勤務実績が確定状態でも反映する
 
-				require.processWork((ExecutionType)any, (ApplicationShare)any, dateRefer, (ReflectStatusResultShare) any);
+				require.processWork((ApplicationShare)any, dateRefer, (ReflectStatusResultShare) any);
 				result = Pair.of(new ReflectStatusResultShare(ReflectedStateShare.REFLECTED, null, null),
 						Optional.empty());
 
 			}
 		};
 
-		val actualResult = ProcessReflectWorkRecord.processReflect(require, companyId, closureId,  stamp, execType,
+		val actualResult = ProcessReflectWorkRecord.processReflect(require, companyId, closureId,  stamp,
 				true, dateRefer, statusWorkRecord);
 
 		assertThat(actualResult.getLeft().getReflectStatus()).isEqualTo(ReflectedState.REFLECTED);
@@ -131,7 +127,7 @@ public class ProcessReflectWorkRecordTest {
 			}
 		};
 
-		val actualResult = ProcessReflectWorkRecord.processReflect(require, companyId, closureId, stamp, execType,
+		val actualResult = ProcessReflectWorkRecord.processReflect(require, companyId, closureId, stamp,
 				true, dateRefer, statusWorkRecord);
 
 		assertThat(actualResult.getLeft().getReflectStatus()).isEqualTo(ReflectedState.NOTREFLECTED);
@@ -167,13 +163,13 @@ public class ProcessReflectWorkRecordTest {
 						(ReflectStatusResult) any, dateRefer);
 				result = new PreCheckProcessResult(NotUseAtr.USE, statusWorkRecord);
 				
-				require.processWork((ExecutionType)any, (ApplicationShare)any, dateRefer, (ReflectStatusResultShare) any);
+				require.processWork((ApplicationShare)any, dateRefer, (ReflectStatusResultShare) any);
 				result = Pair.of(new ReflectStatusResultShare(ReflectedStateShare.REFLECTED, null, null),
 						Optional.empty());
 			}
 		};
 
-		val actualResult = ProcessReflectWorkRecord.processReflect(require, companyId, closureId, stamp, execType,
+		val actualResult = ProcessReflectWorkRecord.processReflect(require, companyId, closureId, stamp,
 				true, dateRefer, statusWorkRecord);
 
 		assertThat(actualResult.getLeft().getReflectStatus()).isEqualTo(ReflectedState.REFLECTED);

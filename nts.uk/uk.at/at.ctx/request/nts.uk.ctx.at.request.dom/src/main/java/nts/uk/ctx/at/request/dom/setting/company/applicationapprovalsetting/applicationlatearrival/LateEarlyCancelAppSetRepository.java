@@ -1,6 +1,6 @@
 package nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationlatearrival;
 
-import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.lateearlycancellation.LateEarlyCancelReflect;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.lateearlycancellation.LateEarlyCancelReflect;
 
 /**
  * @author anhnm

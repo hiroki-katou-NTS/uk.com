@@ -115,7 +115,8 @@ module nts.uk.at.view.kal003.share {
                 workTypeCondition: getDefaultWorkTypeCondition(),
                 workTimeCondition: getDefaultWorkTimeCondition(),
                 atdItemCondition: getDefaultAttendanceItemCondition(),
-                continuousPeriod: 0
+                continuousPeriod: 0,
+                monthlyCondition: new model.ScheMonCond()
             });
         }
         
@@ -287,7 +288,7 @@ module nts.uk.at.view.kal003.share {
                         compareRangeExValue = null;
                     }
                     let  listItemID = [];
-                    listItemID.push(con.listItemID()[0] != undefined?con.listItemID()[0]:con.listItemID());
+                    listItemID.push(con.listItemID() != null && con.listItemID()[0] != undefined?con.listItemID()[0]:vmodel.errorAlarmCheckID());
                     convertExtraResultMonthly["specHolidayCheckCon"] = null;
                     convertExtraResultMonthly["agreementCheckCon36"] = null;
                     convertExtraResultMonthly["checkConMonthly"] = null;
@@ -406,42 +407,54 @@ module nts.uk.at.view.kal003.share {
 
             convertWorkRecordExtractingCondition.errorAlarmCondition(new model.ErrorAlarmCondition(workRecordExtractingCondition.errorAlarmCondition));
             convertWorkRecordExtractingCondition.errorAlarmCondition()
-                .alCheckTargetCondition(new model.AlCheckTargetCondition(workRecordExtractingCondition.errorAlarmCondition.alCheckTargetCondition));
-
-            convertWorkRecordExtractingCondition.errorAlarmCondition()
                 .workTypeCondition(new model.WorkTypeCondition(workRecordExtractingCondition.errorAlarmCondition.workTypeCondition));
-            convertWorkRecordExtractingCondition.errorAlarmCondition()
-                .workTimeCondition(new model.WorkTimeCondition(workRecordExtractingCondition.errorAlarmCondition.workTimeCondition));
-            convertWorkRecordExtractingCondition.errorAlarmCondition()
-                .atdItemCondition(new model.AttendanceItemCondition(workRecordExtractingCondition.errorAlarmCondition.atdItemCondition));
-            //group 1
-            convertWorkRecordExtractingCondition.errorAlarmCondition().atdItemCondition()
-                .group1(new model.ErAlConditionsAttendanceItem(workRecordExtractingCondition.errorAlarmCondition.atdItemCondition.group1));
-            //ErAlAtdItemCondition
-            let lstErAlAtdItemCon1 = workRecordExtractingCondition.errorAlarmCondition.atdItemCondition.group1.lstErAlAtdItemCon;
-            convertWorkRecordExtractingCondition.errorAlarmCondition().atdItemCondition().group1().lstErAlAtdItemCon = ko.observableArray([]);
-            if (lstErAlAtdItemCon1) {
-                for (var i = 0; i < lstErAlAtdItemCon1.length; i++) {
-                    var erAlAtdItemCondition1 = new model.ErAlAtdItemCondition(lstErAlAtdItemCon1[i].targetNO, lstErAlAtdItemCon1[i]);
-                    convertWorkRecordExtractingCondition.errorAlarmCondition().atdItemCondition().group1().lstErAlAtdItemCon().push(erAlAtdItemCondition1);
-                }
-
-
+            
+            if (workRecordExtractingCondition.errorAlarmCondition.alCheckTargetCondition) {
+                convertWorkRecordExtractingCondition.errorAlarmCondition()
+                    .alCheckTargetCondition(new model.AlCheckTargetCondition(workRecordExtractingCondition.errorAlarmCondition.alCheckTargetCondition));    
             }
-
-            //group 2
-            convertWorkRecordExtractingCondition.errorAlarmCondition().atdItemCondition()
-                .group2(new model.ErAlConditionsAttendanceItem(workRecordExtractingCondition.errorAlarmCondition.atdItemCondition.group2));
-            //ErAlAtdItemCondition
-            let lstErAlAtdItemCon2 = workRecordExtractingCondition.errorAlarmCondition.atdItemCondition.group2.lstErAlAtdItemCon;
-            convertWorkRecordExtractingCondition.errorAlarmCondition().atdItemCondition().group2().lstErAlAtdItemCon = ko.observableArray([]);
-
-            if (lstErAlAtdItemCon2) {
-                for (var i = 0; i < lstErAlAtdItemCon2.length; i++) {
-                    var erAlAtdItemCondition2 = new model.ErAlAtdItemCondition(lstErAlAtdItemCon2[i].targetNO, lstErAlAtdItemCon2[i]);
-                    convertWorkRecordExtractingCondition.errorAlarmCondition().atdItemCondition().group2().lstErAlAtdItemCon().push(erAlAtdItemCondition2);
+            
+            if (workRecordExtractingCondition.errorAlarmCondition.workTimeCondition) {
+                convertWorkRecordExtractingCondition.errorAlarmCondition()
+                    .workTimeCondition(new model.WorkTimeCondition(workRecordExtractingCondition.errorAlarmCondition.workTimeCondition));
+            }
+            
+            if (workRecordExtractingCondition.errorAlarmCondition.atdItemCondition) {
+                convertWorkRecordExtractingCondition.errorAlarmCondition()
+                    .atdItemCondition(new model.AttendanceItemCondition(workRecordExtractingCondition.errorAlarmCondition.atdItemCondition));
+                //group 1
+                convertWorkRecordExtractingCondition.errorAlarmCondition().atdItemCondition()
+                    .group1(new model.ErAlConditionsAttendanceItem(workRecordExtractingCondition.errorAlarmCondition.atdItemCondition.group1));
+                //ErAlAtdItemCondition
+                let lstErAlAtdItemCon1 = workRecordExtractingCondition.errorAlarmCondition.atdItemCondition.group1.lstErAlAtdItemCon;
+                convertWorkRecordExtractingCondition.errorAlarmCondition().atdItemCondition().group1().lstErAlAtdItemCon = ko.observableArray([]);
+                if (lstErAlAtdItemCon1) {
+                    for (var i = 0; i < lstErAlAtdItemCon1.length; i++) {
+                        var erAlAtdItemCondition1 = new model.ErAlAtdItemCondition(lstErAlAtdItemCon1[i].targetNO, lstErAlAtdItemCon1[i]);
+                        convertWorkRecordExtractingCondition.errorAlarmCondition().atdItemCondition().group1().lstErAlAtdItemCon().push(erAlAtdItemCondition1);
+                    }
+                }
+    
+                //group 2
+                convertWorkRecordExtractingCondition.errorAlarmCondition().atdItemCondition()
+                    .group2(new model.ErAlConditionsAttendanceItem(workRecordExtractingCondition.errorAlarmCondition.atdItemCondition.group2));
+                //ErAlAtdItemCondition
+                let lstErAlAtdItemCon2 = workRecordExtractingCondition.errorAlarmCondition.atdItemCondition.group2.lstErAlAtdItemCon;
+                convertWorkRecordExtractingCondition.errorAlarmCondition().atdItemCondition().group2().lstErAlAtdItemCon = ko.observableArray([]);
+    
+                if (lstErAlAtdItemCon2) {
+                    for (var i = 0; i < lstErAlAtdItemCon2.length; i++) {
+                        var erAlAtdItemCondition2 = new model.ErAlAtdItemCondition(lstErAlAtdItemCon2[i].targetNO, lstErAlAtdItemCon2[i]);
+                        convertWorkRecordExtractingCondition.errorAlarmCondition().atdItemCondition().group2().lstErAlAtdItemCon().push(erAlAtdItemCondition2);
+                    }
                 }
             }
+            
+            if (workRecordExtractingCondition.errorAlarmCondition.monthlyCondition) {
+                convertWorkRecordExtractingCondition.errorAlarmCondition()
+                    .monthlyCondition(new model.ScheMonCond(workRecordExtractingCondition.errorAlarmCondition.monthlyCondition));
+            }
+            
             return convertWorkRecordExtractingCondition;
         }
         //monthly
@@ -456,12 +469,16 @@ module nts.uk.at.view.kal003.share {
             let errorAlarmCondition = workRecordExtractingCondition.errorAlarmCondition();
             dataJS.errorAlarmCondition.workTypeCondition.planLstWorkType = _.values(errorAlarmCondition.workTypeCondition().planLstWorkType() || []);
             dataJS.errorAlarmCondition.workTypeCondition.actualLstWorkType = _.values(errorAlarmCondition.workTypeCondition().actualLstWorkType || []);
-
-            dataJS.errorAlarmCondition.workTimeCondition.planLstWorkTime = _.values(errorAlarmCondition.workTimeCondition().planLstWorkTime() || []);
-            dataJS.errorAlarmCondition.workTimeCondition.actualLstWorkTime = _.values(errorAlarmCondition.workTimeCondition().actualLstWorkTime || []);
-
-            dataJS.errorAlarmCondition.atdItemCondition =
-                convertArrayOfAttendanceItemCondition(dataJS.errorAlarmCondition.atdItemCondition, errorAlarmCondition.atdItemCondition());
+            
+            if (errorAlarmCondition.workTimeCondition() && dataJS.errorAlarmCondition.workTimeCondition) {
+                dataJS.errorAlarmCondition.workTimeCondition.planLstWorkTime = _.values(errorAlarmCondition.workTimeCondition().planLstWorkTime() || []);
+                dataJS.errorAlarmCondition.workTimeCondition.actualLstWorkTime = _.values(errorAlarmCondition.workTimeCondition().actualLstWorkTime || []);
+            }
+            
+            if (dataJS.errorAlarmCondition.atdItemCondition) {
+                dataJS.errorAlarmCondition.atdItemCondition =
+                    convertArrayOfAttendanceItemCondition(dataJS.errorAlarmCondition.atdItemCondition, errorAlarmCondition.atdItemCondition());
+            }
             return dataJS;
         }
         /**

@@ -47,6 +47,17 @@
 				}
 				
 				.color-schedule-performance {color:#008000 !important;}
+				
+				#undo[disabled] {
+    				background-color: #d9d9d9 !important;
+    				cursor: default;
+    				color: #888888;
+				}
+				#redo[disabled] {
+    				background-color: #d9d9d9 !important;
+    				cursor: default;
+    				color: #888888;
+				}
 			</style>
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
@@ -75,7 +86,7 @@
 		<ui:define name="content">
 			<div id = "main-area" data-bind="with: viewA" style="overflow-y: hidden;">
 				<div id="functions-area">
-					<button  id="A1_1"  class="proceed"  tabindex="1" >#{i18n.getText('KSU001_1')}</button>
+					<button  id="A1_1"  class="proceed"  tabindex="1" data-bind="enable: enableBtnReg , click: saveData ">#{i18n.getText('KSU001_1')}</button>
 					<button  id="A1_2"  class="proceed marginleft15px" tabindex="2">#{i18n.getText('KSU001_2')}</button>
 					<button  id="A1_3"  class="create  marginleft15px" tabindex="3">#{i18n.getText('KSU001_3')}</button>
 					<button  id="A1_4"  class="check   marginleft15px" tabindex="4">#{i18n.getText('KSU001_4')}</button>
@@ -233,11 +244,11 @@
 				<div id="A16" class="popup-area popup-panel">
 					<table style="border: 0px solid #ccc;">
 						<tr>
-							<td>
+							<td style="padding-bottom: 35px">
 								<div class="inline" data-bind="ntsFormLabel: {}">#{i18n.getText('KSU001_53')}</div>
 							</td>
 							<td>
-								<div class="inline" style="width: 170px;"
+								<div id ="A16_3" class="inline" style="width: 170px; height: 70px;"
 									data-bind="ntsRadioBoxGroup: {
 											options: [{id: 1, name: '#{i18n.getText('KSU001_48')}'}, {id: 2, name: '#{i18n.getText('KSU001_49')}'}] ,
 											optionsValue: 'id',
@@ -245,8 +256,8 @@
 											value: selectedTypeHeightExTable ,
 											enable: true}"></div>
 							</td>
-							<td>		
-								<input id="input-heightExtable" style="text-align: center; width: 35px;margin-top: 10px;"
+							<td style="padding-top: 25px;">		
+								<input id="input-heightExtable" style="text-align: center; width: 35px;margin-top: 6px;"
 									data-bind="ntsNumberEditor: {value: heightGridSetting , 
 											constraint: 'ItemGridHeight', 
 											enable: isEnableInputHeight, 

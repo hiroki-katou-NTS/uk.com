@@ -72,43 +72,39 @@ export class CmmS45ShrComponentsApp15Component extends Vue {
                 vm.settingItems = application;
 
                 optionalItemSetting.forEach((item) => {
-                    let optionalItem = optionalItems.find((optionalItem) => {
+                    let optionalItem = optionalItems.find((optionalItem) => optionalItem.optionalItemNo == item.itemNo);
+                    if (optionalItem) {
+                        let controlAttendance = controlOfAttendanceItems.find((controlAttendance) => item.itemNo == controlAttendance.itemDailyID - 640);
 
-                        return optionalItem.optionalItemNo == item.itemNo;
-                    });
-                    let controlAttendance = controlOfAttendanceItems.find((controlAttendance) => {
+                        const { calcResultRange, optionalItemAtr, optionalItemName, optionalItemNo, unit, description,dispOrder, } = optionalItem;
+                        const { lowerCheck, upperCheck,amountLower,amountUpper,numberLower,numberUpper,timeLower,timeUpper } = calcResultRange;
 
-                        return item.itemNo == controlAttendance.itemDailyID - 640;
-                    });
+                        const { amount, times, time } = item;
 
-                    const { calcResultRange, optionalItemAtr, optionalItemName, optionalItemNo, unit, description,dispOrder, } = optionalItem;
-                    const { lowerCheck, upperCheck,amountLower,amountUpper,numberLower,numberUpper,timeLower,timeUpper } = calcResultRange;
-    
-                    const { amount, times, time } = item;
-
-                    vm.optionalItemApplication.push({
-                        lowerCheck,
-                        upperCheck,
-                        amountLower,
-                        amountUpper,
-                        numberLower,
-                        numberUpper,
-                        timeLower,
-                        timeUpper,
-                        amount,
-                        number: times,
-                        time,
-                        inputUnitOfTimeItem: controlAttendance ? controlAttendance.inputUnitOfTimeItem : null,
-                        optionalItemAtr,
-                        optionalItemName,
-                        optionalItemNo,
-                        unit,
-                        description,
-                        dispOrder,
-                    });
-                    vm.$emit('loading-complete');
+                        vm.optionalItemApplication.push({
+                            lowerCheck,
+                            upperCheck,
+                            amountLower,
+                            amountUpper,
+                            numberLower,
+                            numberUpper,
+                            timeLower,
+                            timeUpper,
+                            amount,
+                            number: times,
+                            time,
+                            inputUnitOfTimeItem: controlAttendance ? controlAttendance.inputUnitOfTimeItem : null,
+                            optionalItemAtr,
+                            optionalItemName,
+                            optionalItemNo,
+                            unit,
+                            description,
+                            dispOrder,
+                        });
+                    }
                 });
                 vm.optionalItemApplication.sort((a,b) => a.dispOrder - b.dispOrder );
+                vm.$emit('loading-complete');
             });
         });
     }

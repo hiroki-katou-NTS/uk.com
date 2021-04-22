@@ -5,7 +5,9 @@ import java.util.List;
 
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.calcategory.CalAttrOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.declare.DeclareAttdLeave;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.declare.DeclareCalcRange;
 import nts.uk.ctx.at.shared.dom.worktime.IntegrationOfWorkTime;
@@ -22,15 +24,15 @@ public class DeclareSet extends AggregateRoot {
 	/** 会社ID */
 	private String companyId;
 	/** 申告利用区分 */
-	public NotUseAtr usageAtr;
+	private NotUseAtr usageAtr;
 	/** 枠設定 */
-	public DeclareFrameSet frameSet;
+	private DeclareFrameSet frameSet;
 	/** 深夜時間自動計算 */
-	public NotUseAtr midnightAutoCalc;
+	private NotUseAtr midnightAutoCalc;
 	/** 残業枠 */
-	public DeclareOvertimeFrame overtimeFrame;
+	private DeclareOvertimeFrame overtimeFrame;
 	/** 休出枠 */
-	public DeclareHolidayWorkFrame holidayWorkFrame;
+	private DeclareHolidayWorkFrame holidayWorkFrame;
 	
 	/**
 	 * コンストラクタ
@@ -118,16 +120,20 @@ public class DeclareSet extends AggregateRoot {
 	/**
 	 * 残業休出枠設定を調整する
 	 * @param itgOfWorkTime 統合就業時間帯(ref)
+	 * @param calAttr 日別勤怠の計算区分
 	 * @param calcRange 申告計算範囲
 	 * @param workType 勤務種類
 	 */
 	public void adjustOvertimeHolidayWorkFrameSet(
 			IntegrationOfWorkTime itgOfWorkTime,
+			CalAttrOfDailyAttd calAttr,
 			DeclareCalcRange calcRange,
 			WorkType workType){
 		
 		// 「枠設定」を確認する
 		if (calcRange.getDeclareSet().getFrameSet() == DeclareFrameSet.WORKTIME_SET) return;
+		// 法定内自動計算しない設定にする
+		calAttr.SetLegalAutoCalToNot();
 		// 申告残業枠の設定
 		{
 			// 固定勤務の申告残業枠の設定
@@ -153,11 +159,11 @@ public class DeclareSet extends AggregateRoot {
 	public boolean checkError(boolean isHolidayWork, DeclareAttdLeave attdLeave){
 	
 		// 申告設定残業枠エラーチェック
-		if (this.overtimeFrame.checkErrorOvertimeFrame()) return true;
+		this.overtimeFrame.checkErrorOvertimeFrame();
 		// 申告設定休出枠エラーチェック
-		if (this.holidayWorkFrame.checkErrorHolidayWorkFrame()) return true;
+		this.holidayWorkFrame.checkErrorHolidayWorkFrame();
 		// 申告設定深夜エラーチェック
-		if (this.checkErrorMidnightFrame()) return true;
+		this.checkErrorMidnightFrame();
 		// 申告時間枠エラーチェック
 		List<DeclareTimeFrameError> errors = this.checkErrorFrame(isHolidayWork, attdLeave);
 		if (errors.size() > 0) return true;
@@ -172,19 +178,24 @@ public class DeclareSet extends AggregateRoot {
 	public boolean checkErrorMidnightFrame(){
 		
 		// 枠設定を確認する
+		boolean result = false;
 		if (this.frameSet == DeclareFrameSet.OT_HDWK_SET){
 			// 深夜時間自動計算を確認する
 			if (this.midnightAutoCalc == NotUseAtr.USE){
 				// 残業枠を確認する
 				if (!this.overtimeFrame.getEarlyOvertimeMn().isPresent() ||		// 早出残業深夜
 					!this.overtimeFrame.getOvertimeMn().isPresent()){			// 普通残業深夜 
-					return true;
+					result = true;
 				}
 				// 休出枠を確認する
 				if (!this.holidayWorkFrame.getHolidayWorkMn().isPresent()){		// 休出深夜 
-					return true;
+					result = true;
 				}
 			}
+		}
+		if (result == true){
+			// システムエラーとする
+			throw new BusinessException("Msg_2055");
 		}
 		return false;
 	}

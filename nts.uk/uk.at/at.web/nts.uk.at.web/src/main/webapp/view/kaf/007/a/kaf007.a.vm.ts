@@ -8,6 +8,7 @@ module nts.uk.at.view.kaf007_ref.a.viewmodel {
 	import Kaf000AViewModel = nts.uk.at.view.kaf000.a.viewmodel.Kaf000AViewModel;
 	import ReflectWorkChangeApp = nts.uk.at.view.kaf007_ref.shr.viewmodel.ReflectWorkChangeApp;
 	import AppInitParam = nts.uk.at.view.kaf000.shr.viewmodel.AppInitParam;
+	import CommonProcess = nts.uk.at.view.kaf000.shr.viewmodel.CommonProcess;
 
 	@bean()
 	export class Kaf007AViewModel extends Kaf000AViewModel {
@@ -16,7 +17,7 @@ module nts.uk.at.view.kaf007_ref.a.viewmodel {
 		isAgentMode : KnockoutObservable<boolean> = ko.observable(false);
 		application: KnockoutObservable<Application> = ko.observable(new Application(this.appType()));
 		model: KnockoutObservable<ModelDto> = ko.observable(null);
-		isSendMail: KnockoutObservable<Boolean>;
+		isSendMail: KnockoutObservable<boolean>;
 		reflectWorkChange: ReflectWorkChangeApp;
 		appWorkChange: AppWorkChange;
 		setupType: number;
@@ -281,7 +282,7 @@ module nts.uk.at.view.kaf007_ref.a.viewmodel {
 
 			vm.$blockui("show");
 
-			vm.$validate('#kaf000-a-component4 .nts-input', '#kaf000-a-component3-prePost', '#kaf000-a-component5-comboReason')
+			vm.$validate('#kaf000-a-component4 .nts-input', '#kaf000-a-component3-prePost', '#kaf000-a-component5-comboReason', '#kaf000-a-component5-textReason')
 				.then(isValid => {
 					if (isValid) {
 						if(vm.reflectWorkChange.whetherReflectAttendance() === 1 && vm.model().setupType() === 0) {
@@ -324,14 +325,16 @@ module nts.uk.at.view.kaf007_ref.a.viewmodel {
 					if (result != undefined) {
 						if (_.isEmpty(holidayDateLst)) {
 							return vm.$dialog.info({ messageId: "Msg_15" }).then(() => {
-								location.reload();
+								nts.uk.request.ajax("at", API.reflectApp, result.reflectAppIdLst);
+								CommonProcess.handleAfterRegister(result, vm.isSendMail(), vm, vm.isAgentMode(), vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.employeeInfoLst);
 							});
 						} else {
 							let dispMsg = nts.uk.resource.getMessage('Msg_15') + "\n";
 							let x = nts.uk.resource.getMessage('Msg_1663', [holidayDateLst.join('、')]);
 							dispMsg += x;
 							return vm.$dialog.info(dispMsg).then(() => {
-								location.reload();
+								nts.uk.request.ajax("at", API.reflectApp, result.reflectAppIdLst);
+								CommonProcess.handleAfterRegister(result, vm.isSendMail(), vm, vm.isAgentMode(), vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.employeeInfoLst);
 							})
 						}
 					}
@@ -379,6 +382,7 @@ module nts.uk.at.view.kaf007_ref.a.viewmodel {
 		startNew: "at/request/application/workchange/startNew",
 		register: "at/request/application/workchange/addworkchange",
 		changeAppDate: "at/request/application/workchange/changeAppDate",
-		checkBeforeRegister: "at/request/application/workchange/checkBeforeRegisterPC"
+		checkBeforeRegister: "at/request/application/workchange/checkBeforeRegisterPC",
+		reflectApp: "at/request/application/reflect-app"
 	}
 }

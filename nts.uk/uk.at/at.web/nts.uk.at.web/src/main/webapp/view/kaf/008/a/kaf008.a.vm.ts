@@ -6,6 +6,7 @@ module nts.uk.at.view.kaf008_ref.a.viewmodel {
     import BusinessTripOutput = nts.uk.at.view.kaf008_ref.shr.viewmodel.BusinessTripOutput;
     import BusinessTripContent = nts.uk.at.view.kaf008_ref.shr.viewmodel.BusinessTripContent;
 	import AppInitParam = nts.uk.at.view.kaf000.shr.viewmodel.AppInitParam;
+	import CommonProcess = nts.uk.at.view.kaf000.shr.viewmodel.CommonProcess;
 
     @bean()
     class Kaf008AViewModel extends Kaf000AViewModel {
@@ -130,7 +131,7 @@ module nts.uk.at.view.kaf008_ref.a.viewmodel {
                 businessTripInfoOutputDto, applicationDto
             };
 
-            vm.$errors("clear");
+            // vm.$errors("clear");
 
             vm.$validate([
                 '#kaf000-a-component4 .nts-input'
@@ -216,7 +217,8 @@ module nts.uk.at.view.kaf008_ref.a.viewmodel {
                 if (data) {
                     vm.$dialog.info({messageId: "Msg_15"})
                         .then(() => {
-                            location.reload();
+							nts.uk.request.ajax("at", API.reflectApp, data.reflectAppIdLst);
+   							CommonProcess.handleAfterRegister(data, vm.isSendMail(), vm, vm.isAgentMode(), vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.employeeInfoLst);
                         });
                 }
             }).fail(res => {
@@ -345,7 +347,8 @@ module nts.uk.at.view.kaf008_ref.a.viewmodel {
         startNew: "at/request/application/businesstrip/start",
         checkBeforeRegister: "at/request/application/businesstrip/checkBeforeRegister",
         register: "at/request/application/businesstrip/register",
-        changeAppDate: "at/request/application/businesstrip/changeAppDate"
+        changeAppDate: "at/request/application/businesstrip/changeAppDate",
+		reflectApp: "at/request/application/reflect-app"
     };
 
 }

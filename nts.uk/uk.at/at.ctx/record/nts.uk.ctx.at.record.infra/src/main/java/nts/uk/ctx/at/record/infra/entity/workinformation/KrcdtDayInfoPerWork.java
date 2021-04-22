@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.infra.entity.workinformation;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
@@ -21,8 +22,11 @@ import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.DayOfWeek;
+import nts.uk.ctx.at.shared.dom.remainingnumber.base.UsedDays;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.CalculationState;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.FuriClassifi;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.NotUseAttribute;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.NumberOfDaySuspension;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
@@ -61,8 +65,14 @@ public class KrcdtDayInfoPerWork extends ContractUkJpaEntity implements Serializ
 	
 	@Column(name = "DAY_OF_WEEK")
 	public Integer dayOfWeek;
+	
+	@Column(name = "TREAT_AS_SUBSTITUTE_ATR")
+	public Integer treatAsSubstituteAtr;
+	
+	@Column(name = "TREAT_AS_SUBSTITUTE_DAYS")
+	public Double treatAsSubstituteDays;
 
-	@OneToMany(mappedBy = "daiPerWorkInfo", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "daiPerWorkInfo", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
 	@JoinColumn(nullable = true)
 	public List<KrcdtDayTsAtdSche> scheduleTimes;
 	
@@ -86,6 +96,13 @@ public class KrcdtDayInfoPerWork extends ContractUkJpaEntity implements Serializ
 	}
 	
 	public static WorkInfoOfDailyPerformance toDomain(KrcdtDayInfoPerWork entity, List<KrcdtDayTsAtdSche> scheduleTimes) {
+//		if(treatAsSubstituteAtr != null && treatAsSubstituteDays != null) {
+//			workInfo.setNumberDaySuspension(Optional.of(
+//					new NumberOfDaySuspension(
+//						new UsedDays(treatAsSubstituteDays),
+//						EnumAdaptor.valueOf(treatAsSubstituteAtr, FuriClassifi.class)
+//					)));
+//		}
 		WorkInfoOfDailyPerformance domain = new WorkInfoOfDailyPerformance(entity.krcdtDaiPerWorkInfoPK.employeeId,
 												new WorkInformation(entity.recordWorkWorktypeCode, entity.recordWorkWorktimeCode),
 												EnumAdaptor.valueOf(entity.calculationState, CalculationState.class),
@@ -93,8 +110,12 @@ public class KrcdtDayInfoPerWork extends ContractUkJpaEntity implements Serializ
 												EnumAdaptor.valueOf(entity.backStraightAttribute, NotUseAttribute.class), 
 												entity.krcdtDaiPerWorkInfoPK.ymd,
 												EnumAdaptor.valueOf(entity.dayOfWeek, DayOfWeek.class),
-												KrcdtDayTsAtdSche.toDomain(scheduleTimes));
-		
+												KrcdtDayTsAtdSche.toDomain(scheduleTimes),
+												(entity.treatAsSubstituteAtr != null && entity.treatAsSubstituteDays != null)
+														? Optional.of(new NumberOfDaySuspension(new UsedDays(entity.treatAsSubstituteDays),
+																EnumAdaptor.valueOf(entity.treatAsSubstituteAtr, FuriClassifi.class)))
+														: Optional.empty());
+
 		domain.setVersion(entity.version);
 		return domain;
 	}
@@ -111,6 +132,8 @@ public class KrcdtDayInfoPerWork extends ContractUkJpaEntity implements Serializ
 				wki.getGoStraightAtr() != null ? wki.getGoStraightAtr().value : null,
 				wki.getBackStraightAtr() != null ? wki.getBackStraightAtr().value : null,
 				wki.getDayOfWeek() != null ? wki.getDayOfWeek().value : null,
+				wki.getNumberDaySuspension().map(x -> x.getClassifiction().value).orElse(null),
+				wki.getNumberDaySuspension().map(x -> x.getDays().v()).orElse(null),
 				wki.getScheduleTimeSheets() != null ? wki.getScheduleTimeSheets().stream()
 						.map(f -> KrcdtDayTsAtdSche.toEntity(workInfoOfDailyPerformance.getEmployeeId(),
 								workInfoOfDailyPerformance.getYmd(), f))

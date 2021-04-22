@@ -63,9 +63,8 @@ public class TmpReserveLeaveMngWork {
 		TmpReserveLeaveMngWork domain = new TmpReserveLeaveMngWork();
 		domain.manageId = interimRemain.getRemainManaID();
 		domain.ymd = interimRemain.getYmd();
-		domain.useDays = tmpRsvLeaMng.getUseDays();
+		domain.useDays = new UseDay(tmpRsvLeaMng.getUseDays().v());
 		domain.creatorAtr = interimRemain.getCreatorAtr();
-		domain.remainAtr = interimRemain.getRemainAtr();
 		return domain;
 	}
 	

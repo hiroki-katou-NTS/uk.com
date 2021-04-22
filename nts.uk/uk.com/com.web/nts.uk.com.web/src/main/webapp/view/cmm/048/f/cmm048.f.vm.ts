@@ -6,9 +6,6 @@ module nts.uk.com.view.cmm048.f {
    
     snapYet : KnockoutObservable<boolean> = ko.observable(false);
     avatarUri : KnockoutObservable<string> = ko.observable('');
-    mounted() {
-      const vm = this;
-    }
 
     public snap() {
       const vm = this;
@@ -28,7 +25,6 @@ module nts.uk.com.view.cmm048.f {
 
     public takeThis() {
       const vm = this;
-      //TODO
       vm.$window.close(vm.avatarUri());
     }
 

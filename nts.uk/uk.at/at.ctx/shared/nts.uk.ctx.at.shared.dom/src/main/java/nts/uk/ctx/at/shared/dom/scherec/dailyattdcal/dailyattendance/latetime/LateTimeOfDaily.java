@@ -7,6 +7,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.Getter;
+import lombok.Setter;
 import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.PremiumAtr;
@@ -23,7 +24,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancet
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeWithCalculation;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.ErrorAlarmWorkRecordCode;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.vacationusetime.VacationClass;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.AttendanceItemDictionaryForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.FlexWithinWorkTimeSheet;
@@ -39,6 +39,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.StatutoryD
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
+import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
@@ -61,6 +62,9 @@ public class LateTimeOfDaily {
 	private TimevacationUseTimeOfDaily timePaidUseTime;
 	//インターバル時間
 	private IntervalExemptionTime exemptionTime;
+	//遅刻報告したのでアラームにしない
+	@Setter
+	private boolean doNotSetAlarm;
 	
 	public LateTimeOfDaily(TimeWithCalculation lateTime, TimeWithCalculation lateDeductionTime, WorkNo workNo,
 			TimevacationUseTimeOfDaily timePaidUseTime, IntervalExemptionTime exemptionTime) {		
@@ -69,6 +73,7 @@ public class LateTimeOfDaily {
 		this.workNo = workNo;
 		this.timePaidUseTime = timePaidUseTime;
 		this.exemptionTime = exemptionTime;
+		this.doNotSetAlarm = false;
 	}	
 
 	/**
@@ -170,7 +175,7 @@ public class LateTimeOfDaily {
 				forRecordTimeSheet.setDeductionTimeSheet(
 						lateTimeSheetList.stream().flatMap(t -> t.getForRecordTimeSheet().get().getDeductionTimeSheet().stream()).collect(Collectors.toList()));
 				forRecordTimeSheet.setRecordedTimeSheet(
-						lateTimeSheetList.stream().flatMap(t -> t.getForRecordTimeSheet().get().getDeductionTimeSheet().stream()).collect(Collectors.toList()));
+						lateTimeSheetList.stream().flatMap(t -> t.getForRecordTimeSheet().get().getRecordedTimeSheet().stream()).collect(Collectors.toList()));
 			}
 			forDeductTimeSheet = new LateLeaveEarlyTimeSheet(
 					new TimeSpanForDailyCalc(
@@ -181,7 +186,7 @@ public class LateTimeOfDaily {
 			forDeductTimeSheet.setDeductionTimeSheet(
 					lateTimeSheetList.stream().flatMap(t -> t.getForDeducationTimeSheet().get().getDeductionTimeSheet().stream()).collect(Collectors.toList()));
 			forDeductTimeSheet.setRecordedTimeSheet(
-					lateTimeSheetList.stream().flatMap(t -> t.getForDeducationTimeSheet().get().getDeductionTimeSheet().stream()).collect(Collectors.toList()));
+					lateTimeSheetList.stream().flatMap(t -> t.getForDeducationTimeSheet().get().getRecordedTimeSheet().stream()).collect(Collectors.toList()));
 		}
 		
 		LateTimeSheet lateTimeSheet = new LateTimeSheet(Optional.of(forRecordTimeSheet), Optional.of(forDeductTimeSheet), workNo.v(), Optional.empty());
@@ -320,5 +325,11 @@ public class LateTimeOfDaily {
 		this.lateDeductionTime = TimeWithCalculation.sameTime(new AttendanceTime(0));
 		this.timePaidUseTime = TimevacationUseTimeOfDaily.defaultValue();
 		this.exemptionTime = IntervalExemptionTime.defaultValue();
+	}
+	
+	public static LateTimeOfDaily createDefaultWithNo(int no) {
+		return new LateTimeOfDaily(TimeWithCalculation.sameTime(new AttendanceTime(0)),
+				TimeWithCalculation.sameTime(new AttendanceTime(0)), new WorkNo(no),
+				TimevacationUseTimeOfDaily.defaultValue(), IntervalExemptionTime.defaultValue());
 	}
 }

@@ -9,15 +9,18 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyDto;
+import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.NumberCompensatoryLeavePeriodQuery;
+import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.param.AbsRecMngInPeriodRefactParamInput;
+import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.param.CompenLeaveAggrResult;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimAbsMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecAbasMngRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecAbsMng;
@@ -25,16 +28,17 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.Inter
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.DailyInterimRemainMngData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.CompensatoryDayoffDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.DigestionAtr;
+import nts.uk.ctx.at.shared.dom.remainingnumber.base.HolidayAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemainRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.DataManagementAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.StatutoryAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutManagementData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutManagementDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SubstitutionOfHDManaDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SubstitutionOfHDManagementData;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.breakinfo.FixedManagementDataMonth;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.AbsenceTenProcess;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.LeaveSetOutput;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacation;
@@ -51,68 +55,6 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class AbsenceReruitmentMngInPeriodQuery {
 	
-	/**
-	 * Requestlist204 期間内の振出振休残数を取得する
-	 * @return
-	 */
-	public static AbsRecRemainMngOfInPeriod getAbsRecMngInPeriod(RequireM10 require, CacheCarrier cacheCarrier,
-			AbsRecMngInPeriodParamInput paramInput) {
-		List<AbsRecDetailPara> lstAbsRec = new ArrayList<>();
-		ResultAndError carryForwardDays = new ResultAndError(0.0, false);
-		//パラメータ「前回振休の集計結果」をチェックする
-		//前回振休の集計結果 = NULL || 前回振休の集計結果.前回集計期間の翌日 ≠ 集計開始日
-		if(!paramInput.getOptBeforeResult().isPresent()
-				|| (paramInput.getOptBeforeResult().get().getNextDay().isPresent()
-						&& !paramInput.getOptBeforeResult().get().getNextDay().get().equals(paramInput.getDateData().start()))) {
-			//アルゴリズム「未相殺の振休(確定)を取得する」を実行する
-			lstAbsRec = getAbsOfUnOffset(require, paramInput.getCid(), paramInput.getSid(), paramInput.getDateData().start());		
-			//アルゴリズム「未使用の振出(確定)を取得する」を実行する
-			lstAbsRec = getUnUseDaysConfirmRec(require, paramInput.getCid(), paramInput.getSid(), lstAbsRec, paramInput.getDateData().start());
-			//繰越数を計算する
-			carryForwardDays = calcCarryForwardDays(paramInput.getDateData().start(), lstAbsRec, paramInput.isMode());		
-		} else {
-			AbsRecRemainMngOfInPeriod beforeResult = paramInput.getOptBeforeResult().get();
-			if(paramInput.getOptBeforeResult().get().getNextDay().isPresent()
-					&& paramInput.getOptBeforeResult().get().getNextDay().get().equals(paramInput.getDateData().start())) {
-				carryForwardDays.setRerultDays(beforeResult.getCarryForwardDays());
-				lstAbsRec.addAll(beforeResult.getLstAbsRecMng());
-			}
-		}
-		
-		//アルゴリズム「未相殺の振休(暫定)を取得する」を実行する
-		//アルゴリズム「未使用の振出(暫定)を取得する」を実行する
-		lstAbsRec = lstInterimInfor(require, cacheCarrier, paramInput, lstAbsRec);
-		//「振出振休明細」をソートする 
-		lstAbsRec = lstAbsRec.stream().sorted((a, b) -> a.getYmdData().getDayoffDate().isPresent() ? 
-				a.getYmdData().getDayoffDate().get().compareTo(b.getYmdData().getDayoffDate().isPresent() ? b.getYmdData().getDayoffDate().get() 
-						: GeneralDate.max())
-				: GeneralDate.max().compareTo(GeneralDate.max())).collect(Collectors.toList());
-		//アルゴリズム「時系列順で相殺する」を実行する
-		lstAbsRec = offsetSortTimes(lstAbsRec);		
-		//消化区分と消滅日を計算する
-		lstAbsRec = calDigestionAtr(lstAbsRec, paramInput.getBaseDate());
-		//残数と未消化を集計する
-		AbsDaysRemain remainUnDigestedDays = getRemainUnDigestedDays(lstAbsRec, paramInput.getBaseDate(), paramInput.isMode());
-		//発生数・使用数を計算する
-		AbsDaysRemain occurrenceUseDays= getOccurrenceUseDays(lstAbsRec, paramInput.getDateData());
-		List<PauseError> lstError = new ArrayList<>();
-		if(remainUnDigestedDays.getRemainDays() < 0) {
-			lstError.add(PauseError.PAUSEREMAINNUMBER);
-		}
-		if(remainUnDigestedDays.isErrors()) {
-			lstError.add(PauseError.OFFSETNUMBER);
-		}
-		AbsRecRemainMngOfInPeriod outputData = new AbsRecRemainMngOfInPeriod(lstAbsRec,
-				remainUnDigestedDays.getRemainDays(), 
-				remainUnDigestedDays.getUnDigestedDays(),
-				occurrenceUseDays.getRemainDays(),
-				occurrenceUseDays.getUnDigestedDays(),
-				carryForwardDays.getRerultDays(),
-				lstError,
-				Finally.of(paramInput.getDateData().end().addDays(1)));
-		return outputData;
-	}
-
 	/**
 	 * 1.未相殺の振休(確定)を取得する
 	 * @param sid
@@ -199,7 +141,7 @@ public class AbsenceReruitmentMngInPeriodQuery {
 				UnUseOfRec unUseDayOfRec = new UnUseOfRec(confirmRecData.getExpiredDate(), 
 						confirmRecData.getPayoutId(), 
 						confirmRecData.getOccurredDays().v(), 
-						EnumAdaptor.valueOf(confirmRecData.getLawAtr().value, StatutoryAtr.class), 
+						EnumAdaptor.valueOf(confirmRecData.getLawAtr().value, HolidayAtr.class), 
 						unUseDays,
 						DigestionAtr.USED,
 						Optional.empty(),
@@ -726,13 +668,12 @@ public class AbsenceReruitmentMngInPeriodQuery {
 	 * @param date
 	 * @return
 	 */
-	public static AbsRecRemainMngOfInPeriod getAbsRecMngRemain(RequireM2 require, CacheCarrier cacheCarrier,
+	public static CompenLeaveAggrResult getAbsRecMngRemain(RequireM2 require, CacheCarrier cacheCarrier,
 			String employeeID, GeneralDate date) {
 		String companyID = AppContexts.user().companyId();
 		//社員に対応する締め期間を取得する
 		DatePeriod period = ClosureService.findClosurePeriod(require, cacheCarrier, employeeID, date);
-		AbsRecMngInPeriodParamInput paramInput = new AbsRecMngInPeriodParamInput(
-				companyID, //・ログイン会社ID
+		val inputParam = new AbsRecMngInPeriodRefactParamInput(companyID, //・ログイン会社ID
 				employeeID, //・INPUT．社員ID
 				new DatePeriod(period.start(), period.start().addYears(1).addDays(-1)), //・集計開始日＝締め期間．開始年月日 - ・集計終了日＝締め期間．開始年月日＋１年－１日
 				date, //・基準日＝INPUT．基準日
@@ -741,8 +682,8 @@ public class AbsenceReruitmentMngInPeriodQuery {
 				Collections.emptyList(), //上書き用の暫定管理データ：なし
 				Collections.emptyList(), 
 				Collections.emptyList(),
-				Optional.empty(),Optional.empty(),Optional.empty());
-		return getAbsRecMngInPeriod(require, cacheCarrier, paramInput);
+				Optional.empty(),Optional.empty(),Optional.empty(), new FixedManagementDataMonth());
+		return NumberCompensatoryLeavePeriodQuery.process(require, inputParam);
 	}
 
 
@@ -884,7 +825,7 @@ public class AbsenceReruitmentMngInPeriodQuery {
 		
 	}
 	
-	public static interface RequireM2 extends ClosureService.RequireM3, RequireM10  {
+	public static interface RequireM2 extends ClosureService.RequireM3, NumberCompensatoryLeavePeriodQuery.Require  {
 		
 	}
 	

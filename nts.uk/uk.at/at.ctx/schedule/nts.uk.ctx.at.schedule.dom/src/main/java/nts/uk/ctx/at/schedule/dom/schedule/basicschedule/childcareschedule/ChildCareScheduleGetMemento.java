@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.schedule.dom.schedule.basicschedule.childcareschedule;
 
+import nts.uk.ctx.at.shared.dom.shortworktime.ChildCareAtr;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**

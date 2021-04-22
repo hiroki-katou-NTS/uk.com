@@ -17,7 +17,7 @@ public interface TmpResereLeaveMngRepository {
 	 * @param resereMngId
 	 */
 	public void deleteById(String resereMngId);
-	
+
 	/**
 	 * 登録および更新
 	 * @param dataMng

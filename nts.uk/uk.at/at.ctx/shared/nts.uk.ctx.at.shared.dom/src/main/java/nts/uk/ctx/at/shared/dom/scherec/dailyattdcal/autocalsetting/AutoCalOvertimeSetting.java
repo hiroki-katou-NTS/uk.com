@@ -122,7 +122,7 @@ public class AutoCalOvertimeSetting extends DomainObject {
 	 * @return 打刻から計算する
 	 */
 	public boolean decisionCalcAtr(StatutoryAtr statutoryAtr,boolean goEarly) {
-		if(statutoryAtr.isStatutory()) {
+		if(!statutoryAtr.isStatutory()) {
 			if(goEarly) {
 				/*早出残業区分を参照*/
 				return this.getEarlyOtTime().getCalAtr().isCalculateEmbossing();
