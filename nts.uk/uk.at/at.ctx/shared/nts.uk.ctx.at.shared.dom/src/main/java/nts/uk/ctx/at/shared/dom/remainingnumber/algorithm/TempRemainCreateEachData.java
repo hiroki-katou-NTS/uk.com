@@ -303,7 +303,7 @@ public class TempRemainCreateEachData {
 					inforData.getWorkTypeRemainInfor(workTypeClass).get().getCreateData(),
 					RemainType.SPECIAL,
 					speHolidayDetail.getSpecialHolidayCode(),
-					ManagermentAtr.DAYS, Optional.of(new UseTime(0)),
+					ManagermentAtr.DAYS, Optional.empty(),
 					Optional.of(new UseDay(speHolidayDetail.getDays())),
 					Optional.ofNullable(DigestionHourlyTimeType.of(true, Optional.empty()))
 					);
@@ -710,7 +710,7 @@ public class TempRemainCreateEachData {
 					vac.getVacationUsageTimeDetails().get(0).getSpecialHolidayCode().map(x -> x).orElse(0),
 					ManagermentAtr.TIMES,
 					Optional.ofNullable(new UseTime(vac.getTotalTimes())),
-					Optional.ofNullable(new UseDay(0d)),
+					Optional.empty(),
 					Optional.ofNullable(DigestionHourlyTimeType.of(false, Optional.ofNullable(vac.getTimeType()))))
 					);
 

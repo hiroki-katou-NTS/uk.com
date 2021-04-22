@@ -64,16 +64,16 @@ public class JpaInterimSpecialHolidayMngRepo extends JpaRepository implements In
 			entity = new KrcdtInterimHdSpMng();
 			entity.createAtr = domain.getCreatorAtr().value;
 			entity.mngAtr = domain.getMngAtr().value;
-			entity.usedDays = domain.getUseDays().isPresent() ? domain.getUseDays().get().v() : 0.0;
-			entity.usedTime = domain.getUseTimes().isPresent() ? domain.getUseTimes().get().v() : 0;
+			entity.usedDays = domain.getUseDays().map(x-> x.v()).orElse(null);
+			entity.usedTime = domain.getUseTimes().map(x-> x.v()).orElse(null);
 			entity.remainMngId = domain.getRemainManaID();
 			entity.pk = key;
 			this.getEntityManager().persist(entity);
 		} else {
 			entity.createAtr = domain.getCreatorAtr().value;
 			entity.mngAtr = domain.getMngAtr().value;
-			entity.usedDays = domain.getUseDays().isPresent() ? domain.getUseDays().get().v() : 0.0;
-			entity.usedTime = domain.getUseTimes().isPresent() ? domain.getUseTimes().get().v() : 0;
+			entity.usedDays = domain.getUseDays().map(x-> x.v()).orElse(null);
+			entity.usedTime = domain.getUseTimes().map(x-> x.v()).orElse(null);
 			this.commandProxy().update(entity);
 		}
 		this.getEntityManager().flush();
