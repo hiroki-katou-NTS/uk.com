@@ -5,6 +5,7 @@ import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.WorkinputRemarks;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.work.WorkGroup;
 
 /**
@@ -23,7 +24,7 @@ public class WorkDetailsParam {
 	//作業グループ 
 	private Optional<WorkGroup> workGroup;
 	//備考: 作業入力備考
-	private Optional<String> remarks;
+	private Optional<WorkinputRemarks> remarks;
 	//勤務場所: 勤務場所コード
 	private Optional<WorkLocationCD> workLocationCD;
 }
