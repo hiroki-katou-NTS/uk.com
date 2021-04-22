@@ -561,7 +561,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
         $('.legend-item-symbol').first().css('border', '1px groove').height(16).width(16);
         $('.legend-item').css('margin-bottom', '5px');
       });
-      vm.selectedDate(moment.utc(new Date()).format('YYYYMMDD'));
+      vm.selectedDate(moment.utc().format('YYYYMMDD'));
       vm.toStartScreen();
       vm.initResizeable(vm);
       vm.initPopupArea();
@@ -631,7 +631,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
         }
 
         const selectedDate = moment.utc(moment.utc(vm.selectedDate()).format('YYYY/MM/DD'));
-        const baseDate = moment.utc(moment.utc(new Date()).format('YYYY/MM/DD'));
+        const baseDate = moment.utc(moment.utc().format('YYYY/MM/DD'));
         vm.isSameOrBeforeBaseDate(selectedDate.isSameOrBefore(baseDate));
         vm.isAfter(selectedDate.isAfter(baseDate));
         vm.isBaseDate(selectedDate.isSame(baseDate));
@@ -787,7 +787,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
         vm.goOutParams(new GoOutParam({
           sid: vm.loginSid,
           businessName: vm.businessName(),
-          goOutDate: moment.utc(new Date()).format("YYYY/MM/DD")
+          goOutDate: moment.utc().format("YYYY/MM/DD")
         }));
         vm.activatedStatus(vm.activityStatus());
         $('#ccg005-status-popup').ntsPopup({
@@ -822,7 +822,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
       vm.goOutParams(new GoOutParam({
         sid: sid,
         businessName: businessName,
-        goOutDate: moment.utc(new Date()).format("YYYY/MM/DD")
+        goOutDate: moment.utc().format("YYYY/MM/DD")
       }));
 
       //update current status
@@ -976,7 +976,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
       const vm = this;
 
       //fix bug #115227
-      if(moment.utc(vm.selectedDate()).format('YYYYMMDD') !== moment.utc(new Date()).format('YYYYMMDD')) {
+      if(moment.utc(vm.selectedDate()).format('YYYYMMDD') !== moment.utc().format('YYYYMMDD')) {
         return "background-color-default";
       }
 
@@ -1115,7 +1115,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
       vm.searchValue('');
 
       //reset selected date to today
-      vm.selectedDate(moment.utc(new Date()).format('YYYYMMDD'));
+      vm.selectedDate(moment.utc().format('YYYYMMDD'));
 
       //reset pagination
       vm.currentPage(0);
@@ -1174,7 +1174,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
 
     private createdDefaultFavorite() {
       const vm = this;
-      const inputDate = moment.utc(new Date()).toISOString();
+      const inputDate = moment.utc().toISOString();
       const favoriteSpecify = new FavoriteSpecifyData({
         favoriteName: vm.$i18n('CCG005_27'),
         creatorId: vm.loginSid,
@@ -1194,7 +1194,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
       const vm = this;
       const command = {
         comment: vm.comment(),
-        date: moment.utc(new Date()).toISOString(),
+        date: moment.utc().toISOString(),
         sid: vm.loginSid
       };
       vm.$blockui('show');
@@ -1239,7 +1239,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
         showNoSelection: false,
         selectedCodes: vm.workplaceFromCDL008(),
         isShowBaseDate: true,
-        baseDate: moment.utc(new Date()).toISOString(),
+        baseDate: moment.utc().toISOString(),
         selectedSystemType: SystemType.EMPLOYMENT,
         isrestrictionOfReferenceRange: false
       };

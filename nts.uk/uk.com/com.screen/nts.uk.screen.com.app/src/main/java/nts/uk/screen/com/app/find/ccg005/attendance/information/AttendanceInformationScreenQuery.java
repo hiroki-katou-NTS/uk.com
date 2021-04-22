@@ -124,10 +124,8 @@ public class AttendanceInformationScreenQuery {
 		List<String> subSids2 = timeLeaveList.stream()
 			.filter(item -> {
 				Optional<TimeLeavingWork> attendance = item.getAttendance().getAttendanceLeavingWork(1);		
-				if(attendance.isPresent()) {
-					if(attendance.get().getAttendanceStamp().isPresent() && attendance.get().getAttendanceTime().isPresent()) {
-						return false;
-					}
+				if(attendance.isPresent() && attendance.get().getAttendanceStamp().isPresent() && attendance.get().getAttendanceTime().isPresent()) {
+					return false;
 				}
 				return true;
 			})
