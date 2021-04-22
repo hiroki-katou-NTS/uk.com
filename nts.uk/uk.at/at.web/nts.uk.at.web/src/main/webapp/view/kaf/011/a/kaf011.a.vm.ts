@@ -202,7 +202,7 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 					vm.$blockui("hide");
 					vm.$dialog.info({messageId: "Msg_15"}).done(() => {
 						nts.uk.request.ajax("at", "at/request/application/reflect-app", result.reflectAppIdLst);
-						CommonProcess.handleAfterRegister(result, vm.isSendMail(), vm, vm.isAgentMode(), vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.employeeInfoLst);
+						CommonProcess.handleAfterRegister(result, vm.isSendMail(), vm, false, vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.employeeInfoLst);
 					});
 				}).fail((failData) => {
 					vm.$dialog.error({messageId: failData.messageId, messageParams: failData.parameterIds});
