@@ -54,7 +54,7 @@
 }
 
 .pl-5, .px-5 {
-  padding-left: 2rem !important;
+  padding-left: 1.5rem !important;
 }
 
 .lh-1 {
@@ -65,7 +65,11 @@
   position: absolute;
   font-size: 55px;
   color: rgb(229, 247, 249);
-  top: 82px;
+  top: 7px;
   left: 160px;
   z-index: -1;
+}
+
+#textComment{
+  max-width: 19rem;
 }

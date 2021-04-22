@@ -2,12 +2,13 @@
   <div class="mx-n3">
     <div
       class="pl-5 text-break"
+      id="textComment"
       v-bind:style="{
         color: setting.stampPageComment.commentColor
       }"
       v-html="textComment"
     ></div>
-    <div class="pl-5 pt-2 pr-2">
+    <div class="pl-5 pt-2 pr-2" style="position: relative;" >
       <div class="clearfix" v-bind:style="{color: setting.displaySettingsStampScreen.settingDateTimeColor.textColor}">
         <span id="date">
           {{ $dt.now | date("YYYY/MM/DD（ddd）") }}

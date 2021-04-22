@@ -28,13 +28,12 @@
           >{{ screenData.stampAtr }}</label
         >
         </div>
-    </div>
-    <div class="col-12 value" style="padding-top: 20px; padding-bottom: 40px;">
+      <div class="col-12 value" style="padding-top: 20px; padding-bottom: 40px;">
       <label>{{ screenData.employeeCode }} {{ screenData.employeeName }}</label>
       <div>{{ screenData.localtion }}</div>
     </div>
 
-     <label class="font-weight-bold col-12 value"> {{ "KDPS01_67" | i18n }}</label>
+     <label class="font-weight-bold col-13 value"> {{ "KDPS01_67" | i18n }}</label>
 
     <div v-show="isEmotionMode" class="col-12 value" style="padding-bottom: 40px;">
       <img tabindex="2" v-bind:src="'/nts.uk.mobile.web/dist/resources/185.png'" v-on:click="clickEmoji(4)" height="50" width="50"/>
@@ -63,5 +62,7 @@
         {{ "KDPS01_37" | i18n }}
       </button>
     </div>
+    </div>
+    
   </div>
 </template>
