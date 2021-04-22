@@ -8,8 +8,8 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.aggregation.dom.schedulecounter.timezonepeople.WorkplaceCounterTimeZonePeopleNumber;
-import nts.uk.ctx.at.aggregation.dom.schedulecounter.timezonepeople.WorkplaceCounterTimeZonePeopleNumberRepo;
+import nts.uk.ctx.at.aggregation.dom.schedulecounter.tally.timezonepeople.WorkplaceCounterTimeZonePeopleNumber;
+import nts.uk.ctx.at.aggregation.dom.schedulecounter.tally.timezonepeople.WorkplaceCounterTimeZonePeopleNumberRepo;
 import nts.uk.ctx.at.aggregation.infra.entity.schedulecounter.wkptimezonepeoplenumber.KscmtTallyByWkpEveryTimeZone;
 
 @Stateless

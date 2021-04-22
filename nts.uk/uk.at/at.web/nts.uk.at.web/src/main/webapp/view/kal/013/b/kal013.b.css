@@ -1,0 +1,37 @@
+.pad_left_5px{
+    padding-left: 10px;
+}
+.row {
+    height: 50px;
+}
+
+.last-row{
+    height: 120px;
+}
+
+#combo-box-check-item{
+    width: 269px !important;
+}
+
+.pad_left_20px{
+    padding-left: 20px;
+}
+
+.fix-length-combobox{
+    width: 237px !important;
+}
+
+.text-area-style{
+    width: 884px;
+    height: 90px;
+}
+
+@media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
+    .fix-length-combobox{
+        width: 243px !important;
+    }
+    .text-area-style{
+        width: 907px; !important;
+        height: 90px; !important;
+    }
+}

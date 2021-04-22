@@ -48,9 +48,15 @@ public class KrcstErAlSingleFixed extends ContractUkJpaEntity implements Seriali
 	protected Object getKey() {
 		return this.krcstEralSingleFixedPK;
 	}
+	
 	public KrcstErAlSingleFixed(KrcstErAlSingleFixedPK krcstEralSingleFixedPK, double fixedValue) {
 		super();
 		this.krcstEralSingleFixedPK = krcstEralSingleFixedPK;
 		this.fixedValue = fixedValue;
+	}
+	
+	public KrcstErAlSingleFixed(KrcstErAlSingleFixedPK krcstEralSingleFixedPK) {
+		super();
+		this.krcstEralSingleFixedPK = krcstEralSingleFixedPK;
 	}
 }

@@ -20,8 +20,8 @@ public class ApproveProcessResult {
 	private List<String> autoSuccessMail;
 	private List<String> autoFailMail;
 	private List<String> autoFailServer;
-	private String appID;
-	private String reflectAppId;
+	private List<String> appIDLst;
+	private List<String> reflectAppIdLst;
 	private String appReason;
 	
 	public ApproveProcessResult() {
@@ -30,8 +30,8 @@ public class ApproveProcessResult {
 		this.autoSuccessMail = new ArrayList<>();
 		this.autoFailMail = new ArrayList<>();
 		this.autoFailServer = new ArrayList<>();
-		this.appID = "";
-		this.reflectAppId = "";
+		this.appIDLst = new ArrayList<>();
+		this.reflectAppIdLst = new ArrayList<>();
 		this.appReason = "";
 	}
 }

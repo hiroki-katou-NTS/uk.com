@@ -6,7 +6,7 @@
             <div id="year-month-component" class="flex-center-vert" style="border-color: #E0F59E;">
                 <!-- A1_1_1 -->
                 <span v-on:click="changeYearMonth(false)">
-                    <i class="fas fa-arrow-alt-circle-left"></i>
+                    <i style="padding-top: 1vw;" class="fas fa-arrow-alt-circle-left large-icon"></i>
                 </span>
                 <!-- A1_1_2 -->
                 <nts-year-month
@@ -16,7 +16,7 @@
                 />
                 <!-- A1_1_3 -->
                 <span v-on:click="changeYearMonth(true)">
-                    <i class="fas fa-arrow-alt-circle-right"></i>
+                    <i style="padding-top: 1vw;" class="fas fa-arrow-alt-circle-right large-icon"></i>
                 </span>
             </div>
             <div class="flex-center-vert">
@@ -31,7 +31,7 @@
                 </span>
                 <!-- A1_1_5 -->
                 <span v-on:click="openKSUS01B()">
-                    <i class="fas fa-info-circle"></i>
+                    <i style="padding-top: 1vw;" class="fas fa-info-circle large-icon"></i>
                 </span>
             </div>
         </div>
@@ -100,7 +100,7 @@
         <!-- A3_1 -->
         <div class="card-header uk-bg-choice-row" v-on:click="showDetail(false)">
             <span style="font-weight: bold;">{{detailCell && detailCell.formatedLongMdwDate}}</span>
-            <i class="fas fa-sort-down"></i>
+            <i class="fas fa-sort-down large-icon"></i>
             <!-- an invisible span to center the icon with flex -->
             <span style="font-weight: bold; visibility: hidden">{{detailCell && detailCell.formatedLongMdwDate}}</span>
         </div>

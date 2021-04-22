@@ -60,5 +60,10 @@ public class KrcstErAlCompareSingle extends ContractUkJpaEntity implements Seria
 		this.compareAtr = compareAtr;
 		this.conditionType = conditionType;
 	}
+
+	public KrcstErAlCompareSingle(KrcstErAlCompareSinglePK krcstEralCompareSinglePK) {
+		super();
+		this.krcstEralCompareSinglePK = krcstEralCompareSinglePK;
+	}
     
 }

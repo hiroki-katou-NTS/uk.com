@@ -58,8 +58,8 @@ module common.error.system {
 
         public contractEntered() {
             var contract: ContractInfo = {
-                contractCode: $("#tenantCode").val(),
-                password: $("#tenantPass").val(),
+                tenantCode: $("#tenantCode").val(),
+                tenantPassword: $("#tenantPass").val(),
                 issueUrl: location.href,
                 requestUrl: this.getParam("requestUrl", location.href)
             }
