@@ -545,6 +545,9 @@ public class MonthlyAggregationRemainingNumberImpl implements MonthlyAggregation
 		}
 	}
 
+	@Inject
+	private ChildCareNurseRequireImplFactory childCareNurseRequireImplFactory;
+
 	//子の看護
 	public void childCareRemain(CacheCarrier cacheCarrier, DatePeriod period,
 			InterimRemainMngMode interimRemainMngMode) {
@@ -558,7 +561,7 @@ public class MonthlyAggregationRemainingNumberImpl implements MonthlyAggregation
 			//TODO:暫定データの作成処理が完了したら、dailyInterimRemainMngから子の看護の暫定データをoverWriteListにaddする
 		}
 
-		val require = new ChildCareNurseRequireImplFactory().createRequireImpl();
+		val require = childCareNurseRequireImplFactory.createRequireImpl();
 
 		AggrResultOfChildCareNurse result =
 		getRemainingNumberChildCareService.getChildCareRemNumWithinPeriod(
