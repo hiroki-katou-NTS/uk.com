@@ -40,6 +40,8 @@ public class CalculateAttendanceTimeBySupportWorkService {
 		if(integrationOfDaily.isPresent()){
 			// $新日別勤怠 = [prv-1] 退勤時刻をセットする($日別勤怠)
 			IntegrationOfDaily integrationOfDailyNew = setTheLeaveTime(integrationOfDaily.get());
+			//$新日別勤怠.応援時刻 = 作業時間帯
+			integrationOfDailyNew.setOuenTimeSheet(ouenWorkTimeSheetOfDailyAttendance);
 			//$計算結果 = require.計算する($新日別勤怠, 実行区分.通常実行)
 			IntegrationOfDaily calculationResult = require.calculationIntegrationOfDaily(integrationOfDailyNew, ExecutionType.EXCECUTION);
 			//	return $計算結果	
