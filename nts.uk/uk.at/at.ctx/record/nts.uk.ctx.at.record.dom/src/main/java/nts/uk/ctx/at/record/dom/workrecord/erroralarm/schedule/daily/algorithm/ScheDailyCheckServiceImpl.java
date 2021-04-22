@@ -498,16 +498,17 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 			String variable0 = targetWorkType.nameId;			
 			
 			// {1}: チェック条件　（例：　＜＞8：00）
+			String checkCondTypeName = dailyCheckType.nameId;
 			String variable1 = "";
 			if(compare <= 5) {
-				variable1 = compareOperatorText.getCompareLeft() + startValue;
+				variable1 = checkCondTypeName + compareOperatorText.getCompareLeft() + startValue;
 			} else {
 				if (compare == 6 || compare == 7) {
-					variable1 = startValue + compareOperatorText.getCompareLeft()
+					variable1 = startValue + compareOperatorText.getCompareLeft() + checkCondTypeName 
 							+ compareOperatorText.getCompareright() + endValue;
 				} else {
-					variable1 = startValue + compareOperatorText.getCompareLeft()
-							+ ", " + compareOperatorText.getCompareright() + endValue;
+					variable1 = checkCondTypeName + compareOperatorText.getCompareLeft() + startValue
+							+ ", " + checkCondTypeName + compareOperatorText.getCompareright() + endValue;
 				}
 			}
 			
