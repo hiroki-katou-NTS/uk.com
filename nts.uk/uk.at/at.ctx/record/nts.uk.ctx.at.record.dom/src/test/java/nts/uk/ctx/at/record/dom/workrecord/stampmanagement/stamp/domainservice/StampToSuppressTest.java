@@ -34,13 +34,13 @@ public class StampToSuppressTest {
 		assertThat(stampToSuppress.isGoOut()).isFalse();
 		assertThat(stampToSuppress.isTurnBack()).isFalse();
 	}
-//	@Test
-//	public void testStampToSuppress_C2() {
-//		StampToSuppress stampToSuppress = StampToSuppress.highlightAttendance();
-//		assertThat(stampToSuppress.isGoingToWork()).isFalse();
-//		assertThat(stampToSuppress.isDeparture()).isTrue();
-//		assertThat(stampToSuppress.isGoOut()).isTrue();
-//		assertThat(stampToSuppress.isTurnBack()).isTrue();
-//	}
+	@Test
+	public void testStampToSuppress_C2() {
+		StampToSuppress stampToSuppress = StampToSuppress.highlightAttendance();
+		assertThat(stampToSuppress.isGoingToWork()).isFalse();
+		assertThat(stampToSuppress.isDeparture()).isTrue();
+		assertThat(stampToSuppress.isGoOut()).isTrue();
+		assertThat(stampToSuppress.isTurnBack()).isTrue();
+	}
 
 }
