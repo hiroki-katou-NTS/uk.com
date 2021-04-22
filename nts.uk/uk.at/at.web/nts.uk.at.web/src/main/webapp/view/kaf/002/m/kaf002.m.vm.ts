@@ -586,10 +586,17 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
             let end = _.isNull(self.endTimeActual) ? '--:--' : parseTime.create(self.endTimeActual).shortText;
             let idGetList = typeStamp == STAMPTYPE.EXTRAORDINARY ? self.id - 3 : self.id - 1;
             let param = 'dataSource[' + String(self.index) +']';
+			const frameNo = dataObject.frameNo;
             if ( typeStamp == STAMPTYPE.ATTENDENCE ) {
-                this.text1 = nts.uk.resource.getText( 'KAF002_65', [dataObject.frameNo] );
-				this.nameStart = nts.uk.resource.getText('KAF002_87', [dataObject.frameNo]);
-				this.nameEnd = nts.uk.resource.getText('KAF002_88', [dataObject.frameNo]);
+				if (frameNo == 1) {
+	                this.text1 = nts.uk.resource.getText( 'KAF002_103', [dataObject.frameNo]);	
+					this.nameStart = nts.uk.resource.getText('KAF002_101', [dataObject.frameNo]);
+					this.nameEnd = nts.uk.resource.getText('KAF002_102', [dataObject.frameNo]);				
+				} else {
+					this.text1 = nts.uk.resource.getText( 'KAF002_65', [dataObject.frameNo]);
+					this.nameStart = nts.uk.resource.getText('KAF002_87', [dataObject.frameNo]);
+					this.nameEnd = nts.uk.resource.getText('KAF002_88', [dataObject.frameNo]);		
+				}
                 param = param + 1;
             } else if ( typeStamp == STAMPTYPE.GOOUT_RETURNING ) {
                 this.text1 = nts.uk.resource.getText( 'KAF002_67', [dataObject.frameNo] );
