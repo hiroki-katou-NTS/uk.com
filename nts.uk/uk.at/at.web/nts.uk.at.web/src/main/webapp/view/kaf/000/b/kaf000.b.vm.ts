@@ -385,7 +385,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
 			const vm = this;
             let command = {
             	appIDLst: [vm.currentApp()],
-				isAgentMode: false,
+				isMultiMode: false,
 				appDispInfoStartupOutput: vm.appDispInfoStartupOutput()
             };
             nts.uk.ui.windows.setShared("KDL030_PARAM", command);

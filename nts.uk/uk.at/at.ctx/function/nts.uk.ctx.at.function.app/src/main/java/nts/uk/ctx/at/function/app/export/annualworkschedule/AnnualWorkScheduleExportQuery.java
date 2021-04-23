@@ -16,7 +16,7 @@ public class AnnualWorkScheduleExportQuery {
 	/** A3_4 期間: 終了年月 */
 	private String endYearMonth;
 	/** A4_2 定型選択 */
-	private String setItemsOutputCd;
+	private String setItemsOutputLayoutId;
 	/** A6_2 改頁選択 */
 	private int breakPage;
 	/** A10_2 36協定対象外者選択肢 */

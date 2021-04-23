@@ -11,13 +11,13 @@ import lombok.AllArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
-import nts.uk.ctx.at.aggregation.dom.schedulecounter.PersonalCounter;
-import nts.uk.ctx.at.aggregation.dom.schedulecounter.PersonalCounterCategory;
-import nts.uk.ctx.at.aggregation.dom.schedulecounter.PersonalCounterRegister;
-import nts.uk.ctx.at.aggregation.dom.schedulecounter.PersonalCounterRegisterResult;
-import nts.uk.ctx.at.aggregation.dom.schedulecounter.PersonalCounterRepo;
-import nts.uk.ctx.at.aggregation.dom.schedulecounter.timescounting.TimesNumberCounterSelectionRepo;
-import nts.uk.ctx.at.aggregation.dom.schedulecounter.timescounting.TimesNumberCounterType;
+import nts.uk.ctx.at.aggregation.dom.schedulecounter.tally.PersonalCounter;
+import nts.uk.ctx.at.aggregation.dom.schedulecounter.tally.PersonalCounterCategory;
+import nts.uk.ctx.at.aggregation.dom.schedulecounter.tally.PersonalCounterRegister;
+import nts.uk.ctx.at.aggregation.dom.schedulecounter.tally.PersonalCounterRegisterResult;
+import nts.uk.ctx.at.aggregation.dom.schedulecounter.tally.PersonalCounterRepo;
+import nts.uk.ctx.at.aggregation.dom.schedulecounter.tally.timescounting.TimesNumberCounterSelectionRepo;
+import nts.uk.ctx.at.aggregation.dom.schedulecounter.tally.timescounting.TimesNumberCounterType;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
