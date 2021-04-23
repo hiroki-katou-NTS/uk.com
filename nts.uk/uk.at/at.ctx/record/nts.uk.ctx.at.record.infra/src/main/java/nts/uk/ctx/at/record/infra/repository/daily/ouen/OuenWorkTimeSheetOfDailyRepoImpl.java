@@ -105,6 +105,7 @@ public class OuenWorkTimeSheetOfDailyRepoImpl extends JpaRepository implements O
 
 	@Override
 	public void update(List<OuenWorkTimeSheetOfDaily> domain) {
+		if(domain.isEmpty()) return;
 		this.insert(domain);
 	}
 
@@ -114,7 +115,20 @@ public class OuenWorkTimeSheetOfDailyRepoImpl extends JpaRepository implements O
 		domain.stream().map(c -> KrcdtDayOuenTimeSheet.convert(c)).forEach(e -> {
 			lstEntity.addAll(e);
 		});
+		
+		OuenWorkTimeSheetOfDaily lstDomainOld = this.find(domain.get(0).getEmpId(), domain.get(0).getYmd());
 		lstEntity.forEach(i -> {
+			
+			List<OuenWorkTimeSheetOfDailyAttendance> dataOld = lstDomainOld.getOuenTimeSheet().stream().filter(x -> {
+				return x.getWorkNo() != i.pk.ouenNo;
+			}).collect(Collectors.toList());
+			
+			if(!dataOld.isEmpty()) {
+				for (OuenWorkTimeSheetOfDailyAttendance atd : dataOld) {
+					this.removePK(i.pk.sid, i.pk.ymd, atd.getWorkNo());
+				}
+			}
+			
 			Optional<KrcdtDayOuenTimeSheet> entityOld = getEntity(i.pk.sid, i.pk.ymd, i.pk.ouenNo);
 			if(!entityOld.isPresent()){
 				commandProxy().insert(i);
@@ -173,6 +187,17 @@ public class OuenWorkTimeSheetOfDailyRepoImpl extends JpaRepository implements O
 				+ " and o.pk.ymd = :ymd ";
 		this.getEntityManager().createQuery(delete).setParameter("sid", sid)
 												   .setParameter("ymd", ymd)
+												   .executeUpdate();
+	}
+	
+	@Override
+	public void removePK(String sid, GeneralDate ymd, int ouenNo) {
+		String delete = "delete from KrcdtDayOuenTimeSheet o " + " where o.pk.sid = :sid "
+				+ " and o.pk.ymd = :ymd "
+				+ " and o.pk.ouenNo = :ouenNo ";
+		this.getEntityManager().createQuery(delete).setParameter("sid", sid)
+												   .setParameter("ymd", ymd)
+												   .setParameter("ouenNo", ouenNo)
 												   .executeUpdate();
 	}
 

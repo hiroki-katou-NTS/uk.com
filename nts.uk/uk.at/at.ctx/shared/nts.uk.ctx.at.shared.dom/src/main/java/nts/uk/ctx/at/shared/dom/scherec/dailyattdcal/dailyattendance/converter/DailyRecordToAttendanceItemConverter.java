@@ -23,6 +23,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.paytime.Spe
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.remarks.RemarksOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.snapshot.SnapShot;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenWorkTimeSheetOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
 //move at record -> at shared
@@ -121,5 +122,7 @@ public interface DailyRecordToAttendanceItemConverter extends AttendanceItemConv
 	List<RemarksOfDailyAttd> remarks();
 	
 	Optional<SnapShot> snapshot();
+	
+	List<OuenWorkTimeSheetOfDailyAttendance> ouenSheet();
 
 }

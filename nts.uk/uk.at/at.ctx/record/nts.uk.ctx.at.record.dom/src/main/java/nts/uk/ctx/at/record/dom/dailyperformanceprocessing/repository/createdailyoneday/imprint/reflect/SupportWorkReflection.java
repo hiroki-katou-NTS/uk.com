@@ -405,14 +405,14 @@ public class SupportWorkReflection {
 			JudgmentCriteriaSameStampOfSupport judgmentSupport, OuenWorkTimeSheetOfDailyAttendance ouenStamp) {
 
 		// 最初の出勤と最後の退勤を検出する
-		WorkTemporary detectAttendance = this.detectAttendance(attendanceLeave);
+		WorkTemporary workTemporary = this.detectAttendance(attendanceLeave);
 
 		// 最初の出勤の応援データと最後の退勤の応援データを取得する
 		SupportAttendanceDepartureTempo suportDataFirtAndLast = this.getSupportFataFirstAttendanceLastDeparture(
-				lstOuenWorkTime, detectAttendance, judgmentSupport, ouenStamp, informationWork);
+				lstOuenWorkTime, workTemporary, judgmentSupport, ouenStamp, informationWork);
 
 		// ほかの出退勤を補正する
-		this.correctOtherAttendance(informationWork, detectAttendance, lstOuenWorkTime, judgmentSupport);
+		this.correctOtherAttendance(informationWork, workTemporary, lstOuenWorkTime, judgmentSupport);
 
 		// 応援データを並びかえる （時刻の昇順） - ソート済み応援データ
 		List<OuenWorkTimeSheetOfDailyAttendance> lstOuenSort = this.rearrangeSupportData(lstOuenWorkTime);
@@ -422,7 +422,7 @@ public class SupportWorkReflection {
 				suportDataFirtAndLast);
 
 		// 補正済みの応援データ一覧を返す
-		CorrectSupportData data = new CorrectSupportData(lstCompensate, detectAttendance);
+		CorrectSupportData data = new CorrectSupportData(lstCompensate, workTemporary);
 		return data;
 	}
 
@@ -1115,7 +1115,8 @@ public class SupportWorkReflection {
 //			}
 			
 			WorkContent workContent = lstOuenWorkTime.get(lstOuenWorkTime.size() - 1).getWorkContent();
-			WorkTimeInformation ouenSpNew = WorkTimeInformation.createByAutomaticSet(lstOuenWorkTime.get(lstOuenWorkTime.size() - 1).getTimeSheet().getEnd().get().getTimeWithDay().get());
+			WorkTimeInformation ouenSpNew = WorkTimeInformation.createByAutomaticSet(lstOuenWorkTime.get(lstOuenWorkTime.size() - 1).getTimeSheet().getEnd().get().getTimeWithDay().isPresent() ?
+					lstOuenWorkTime.get(lstOuenWorkTime.size() - 1).getTimeSheet().getEnd().get().getTimeWithDay().get() : null);
 			TimeSheetOfAttendanceEachOuenSheet timeSheet = TimeSheetOfAttendanceEachOuenSheet.create(new WorkNo(0),
 					Optional.ofNullable(ouenSpNew), Optional.empty());
 			// 取得した応援データをベースして終了の応援データ作る

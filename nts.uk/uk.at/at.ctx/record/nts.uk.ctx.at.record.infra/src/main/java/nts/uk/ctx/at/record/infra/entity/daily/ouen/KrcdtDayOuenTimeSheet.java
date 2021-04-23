@@ -104,7 +104,7 @@ public class KrcdtDayOuenTimeSheet extends ContractCompanyUkJpaEntity implements
 					: oTimeSheetAtt.getWorkContent().getWorkplace().getWorkLocationCD().get().v();
 			
 			oTimeSheetAtt.getWorkContent().getWork().ifPresent(work -> {
-				entity.workCd1 = work.getWorkCD1().v();
+				entity.workCd1 = work.getWorkCD1().v() == "" ? null : work.getWorkCD1().v();
 				entity.workCd2 = work.getWorkCD2().map(w -> w.v()).orElse(null);
 				entity.workCd3 = work.getWorkCD3().map(w -> w.v()).orElse(null); 
 				entity.workCd4 = work.getWorkCD4().map(w -> w.v()).orElse(null);
