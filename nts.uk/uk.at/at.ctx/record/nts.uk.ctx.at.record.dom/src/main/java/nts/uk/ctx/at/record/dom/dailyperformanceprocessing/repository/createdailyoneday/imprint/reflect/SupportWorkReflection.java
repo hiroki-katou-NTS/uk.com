@@ -612,9 +612,7 @@ public class SupportWorkReflection {
 			// パラメータ。応援データ一覧の先頭の応援データを取得する
 			OuenWorkTimeSheetOfDailyAttendance firstData = dataAutoSet.get(0);
 			// 最大応援回数で補正する
-			dataAutoSetNew = this.correctWithMaxNumberCheers(
-					judgmentSupport.getSupportMaxFrame() != null ? judgmentSupport.getSupportMaxFrame().v() - 1 : null,
-					dataAutoSet);
+			dataAutoSetNew = this.correctWithMaxNumberCheers(judgmentSupport.getSupportMaxFrame().v() - 1, dataAutoSet);
 			if (judgmentSupport.getSupportMaxFrame().v() == 1) {
 				// 最後の退勤の応援データを補正する
 				if(lastData.getTimeSheet().getStart().isPresent() && lastData.getTimeSheet().getEnd().isPresent()) {
@@ -654,7 +652,7 @@ public class SupportWorkReflection {
 				Optional<OuenWorkTimeSheetOfDailyAttendance> ouenTime = dataAutoSet.stream().filter(x -> {
 					val start = x.getTimeSheet().getStart().flatMap(c -> c.getTimeWithDay()).map(c -> c.v()).orElse(null);
 					if (start == null || !endOuenLast.get().getTimeWithDay().isPresent()) return false;
-					return start == endOuenLast.get().getTimeWithDay().get().v();
+					return start.equals(endOuenLast.get().getTimeWithDay().get().v());
 				}).findFirst();
 				
 				if(ouenTime.isPresent()) {
@@ -667,7 +665,7 @@ public class SupportWorkReflection {
 				Optional<OuenWorkTimeSheetOfDailyAttendance> ouenTime = dataAutoSet.stream().filter(x -> {
 					val end = x.getTimeSheet().getEnd().flatMap(c -> c.getTimeWithDay()).map(c -> c.v()).orElse(null);
 					if (end == null || !endOuenLast.get().getTimeWithDay().isPresent()) return false;
-					return end == endOuenLast.get().getTimeWithDay().get().v();
+					return end.equals(endOuenLast.get().getTimeWithDay().get().v());
 				}).findFirst();
 				
 				if(ouenTime.isPresent()) {
@@ -798,11 +796,11 @@ public class SupportWorkReflection {
 			// 反映前の応援時刻を取得する
 			Optional<WorkTimeInformation> end = ouenBeforeNew.get().getTimeSheet().getEnd();
 
-			correctMaximumNew = lstCorrectMaximum.stream().filter(x -> x.getTimeSheet().getEnd().get() == end.get())
+			correctMaximumNew = lstCorrectMaximum.stream().filter(x -> x.getTimeSheet().getEnd().get().equals(end.get()))
 					.findFirst();
 		} else {
 			Optional<WorkTimeInformation> start = ouenBeforeNew.get().getTimeSheet().getStart();
-			correctMaximumNew = lstCorrectMaximum.stream().filter(x -> x.getTimeSheet().getStart().get() == start.get())
+			correctMaximumNew = lstCorrectMaximum.stream().filter(x -> x.getTimeSheet().getStart().get().equals(start.get()))
 					.findFirst();
 		}
 
@@ -883,9 +881,9 @@ public class SupportWorkReflection {
 		Optional<TimeLeavingWork> leavingWork = Optional.empty();
 		Optional<TimeLeavingWork> leavingWork2 = Optional.empty();
 		if (attendanceLeave.isPresent()) {
-			leavingWork = attendanceLeave.get().getTimeLeavingWorks().stream().filter(x -> x.getWorkNo().v() == 1)
+			leavingWork = attendanceLeave.get().getTimeLeavingWorks().stream().filter(x -> x.getWorkNo().v().equals(1))
 					.findFirst();
-			leavingWork2 = attendanceLeave.get().getTimeLeavingWorks().stream().filter(x -> x.getWorkNo().v() == 2)
+			leavingWork2 = attendanceLeave.get().getTimeLeavingWorks().stream().filter(x -> x.getWorkNo().v().equals(2))
 					.findFirst();
 		}
 
@@ -951,7 +949,7 @@ public class SupportWorkReflection {
 					if(time1 == null)
 						return false;
 					
-					return time1 - time2 <= time &&  time <= time1 + time2;}).findFirst();
+					return time1.intValue() - time2.intValue() <= time.intValue() &&  time.intValue() <= time1.intValue() + time2.intValue();}).findFirst();
 				
 				if (ouenWorkTimeAfter.isPresent()) {
 					lstOuenWorkTime.remove(ouenWorkTimeAfter.get());
@@ -996,7 +994,7 @@ public class SupportWorkReflection {
 						if(time1 == null)
 							return false;
 						
-						return time1 - time2 <= time &&  time <= time1 + time2;}).findFirst();
+						return time1.intValue() - time2.intValue() <= time.intValue() &&  time.intValue() <= time1.intValue() + time2.intValue();}).findFirst();
 				if (ouenWorkTimeAfter.isPresent()) {
 					
 					lstOuenWorkTime.remove(ouenWorkTimeAfter.get());
@@ -1147,10 +1145,10 @@ public class SupportWorkReflection {
 			if(workTemporary.getOneHourLeavingWork().get().getStamp().isPresent()) {
 				lstOuenFilter = lstOuenWorkTime.stream()
 				.filter(x -> {
-					val end = x.getTimeSheet().getEnd().flatMap(c -> c.getTimeWithDay()).map(c -> c.v()).orElse(null);
+					Integer end = x.getTimeSheet().getEnd().flatMap(c -> c.getTimeWithDay()).map(c -> c.v()).orElse(null);
 					if (end == null) return false;
-					
-					return end == workTemporary.getOneHourLeavingWork().get().getStamp().get().getTimeDay().getTimeWithDay().get().v();
+					Integer timeStamp = workTemporary.getOneHourLeavingWork().get().getStamp().get().getTimeDay().getTimeWithDay().get().v();
+					return end.equals(timeStamp);
 				}).collect(Collectors.toList());
 			}
 
@@ -1171,10 +1169,11 @@ public class SupportWorkReflection {
 			if (workTemporary.getTwoHoursWork().isPresent()) {
 				List<OuenWorkTimeSheetOfDailyAttendance> lstOuenFilter = lstOuenWorkTime.stream()
 				.filter(x -> {
-					val start = x.getTimeSheet().getStart().flatMap(c -> c.getTimeWithDay()).map(c -> c.v()).orElse(null);
+					Integer start = x.getTimeSheet().getStart().flatMap(c -> c.getTimeWithDay()).map(c -> c.v()).orElse(null);
 					if (start == null) return false;
+					Integer timeStamp = workTemporary.getTwoHoursWork().get().getStamp().get().getTimeDay().getTimeWithDay().get().v();
 					
-					return start == workTemporary.getTwoHoursWork().get().getStamp().get().getTimeDay().getTimeWithDay().get().v();
+					return start.equals(timeStamp);
 				}).collect(Collectors.toList());
 
 				// if 検索できない
@@ -1237,7 +1236,7 @@ public class SupportWorkReflection {
 					if (start2.get().v() != end1.get().v())
 						return end1.get().v().compareTo(start2.get().v());
 					else
-						return 1;
+						return -1;
 				}
 				
 				return 0;
