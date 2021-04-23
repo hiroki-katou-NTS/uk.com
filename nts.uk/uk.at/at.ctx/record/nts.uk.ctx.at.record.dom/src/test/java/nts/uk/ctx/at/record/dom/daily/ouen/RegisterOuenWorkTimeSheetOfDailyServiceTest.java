@@ -17,6 +17,7 @@ import nts.arc.task.tran.AtomTask;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.editstate.EditStateOfDailyPerformance;
+import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateSetting;
@@ -52,7 +53,7 @@ public class RegisterOuenWorkTimeSheetOfDailyServiceTest {
 			{
 				require.find(empId, ymd);
 
-				require.get(empId, ymd);
+				require.getEditStateOfDailyPerformance(empId, ymd);
 				result = editStateOfDailyPerformance;
 			}
 		};
@@ -90,7 +91,7 @@ public class RegisterOuenWorkTimeSheetOfDailyServiceTest {
 			{
 				require.find(empId, ymd);
 
-				require.get(empId, ymd);
+				require.getEditStateOfDailyPerformance(empId, ymd);
 				result = editStateOfDailyPerformance;
 			}
 		};
@@ -126,7 +127,7 @@ public class RegisterOuenWorkTimeSheetOfDailyServiceTest {
 			{
 				require.find(empId, ymd);
 
-				require.get(empId, ymd);
+				require.getEditStateOfDailyPerformance(empId, ymd);
 				result = editStateOfDailyPerformance;
 			}
 		};
@@ -168,7 +169,7 @@ public class RegisterOuenWorkTimeSheetOfDailyServiceTest {
 				require.find(empId, ymd);
 				result = Optional.of(ouenWorkTime);
 
-				require.get(empId, ymd);
+				require.getEditStateOfDailyPerformance(empId, ymd);
 				result = editStateOfDailyPerformance;
 			}
 		};
@@ -194,8 +195,10 @@ public class RegisterOuenWorkTimeSheetOfDailyServiceTest {
 	@Test
 	public void test5() {
 
-		OuenWorkTimeSheetOfDailyAttendance attendance = OuenWorkTimeSheetOfDailyAttendance.create(1, WorkContent.create(
-				"DUMMY", WorkplaceOfWorkEachOuen.create("DUMMY", new WorkLocationCD("1")), Optional.empty()), null);
+		OuenWorkTimeSheetOfDailyAttendance attendance = OuenWorkTimeSheetOfDailyAttendance.create(1,
+				WorkContent.create(WorkplaceOfWorkEachOuen.create(new WorkplaceId("DUMMY"), new WorkLocationCD("1")),
+						Optional.empty(), Optional.empty()),
+				null);
 
 		this.editStateOfDailyPerformance.add(editStateOfDaily);
 		this.editStateOfDailyPerformance.add(editStateOfDaily);
@@ -215,7 +218,7 @@ public class RegisterOuenWorkTimeSheetOfDailyServiceTest {
 				require.find(empId, ymd);
 				result = Optional.of(ouenWorkTime);
 
-				require.get(empId, ymd);
+				require.getEditStateOfDailyPerformance(empId, ymd);
 				result = editStateOfDailyPerformance;
 			}
 		};
