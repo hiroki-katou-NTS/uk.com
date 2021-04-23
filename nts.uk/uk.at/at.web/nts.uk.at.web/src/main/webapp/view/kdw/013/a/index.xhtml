@@ -26,15 +26,16 @@
 		</ui:define>
 		<ui:define name="content">
 			<div id="functions-area">
-				<button data-bind="click: $vm.changeVisible, i18n: 'KDW013_1', click: $vm.saveData, enable: true" class="proceed"></button>
-				<button data-bind="click: $vm.changeVisible, i18n: 'KDW013_2', click: $vm.checkData, enable: true"></button>
-				<button data-bind="click: $vm.changeVisible, i18n: 'KDW013_3', click: $vm.confirmData, enable: false"></button>
-				<button data-bind="click: $vm.changeVisible, i18n: 'Switch mode', click: function() { $vm.editable(!$vm.editable()); }, timeClick: -1"></button>
+				<button data-bind="i18n: 'KDW013_1', click: $vm.saveData, mutable: $vm.$toggle.save" class="proceed"></button>
+				<button data-bind="i18n: 'KDW013_2', click: $vm.confirm, kdw-toggle: $vm.$toggle.confirm"></button>
+				<button data-bind="i18n: 'KDW013_3', click: $vm.removeConfirm, kdw-toggle: $vm.$toggle.remove"></button>
+				<button data-bind="i18n: 'Switch mode', click: function() { $vm.editable(!$vm.editable()); }, timeClick: -1"></button>
 			</div>
 			<div id="contents-area">
 				<div data-bind="
 					fullcalendar: $vm.events,
 					employees: $vm.employees,
+					confirmers: $vm.confirmers,
 					editable: $vm.editable,
 					firstDay: $vm.firstDay,
 					scrollTime: $vm.scrollTime,

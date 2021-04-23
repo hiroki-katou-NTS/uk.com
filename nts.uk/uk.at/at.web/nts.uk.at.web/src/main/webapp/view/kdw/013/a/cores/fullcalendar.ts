@@ -8,7 +8,7 @@ module nts.uk.ui.components.fullcalendar {
     const { version } = nts.uk.util.browser;
 
     type Calendar = FullCalendar.Calendar;
-    type EventApi = Partial<FullCalendar.EventApi>;
+    export type EventApi = Partial<FullCalendar.EventApi>;
     type EventContentArg = FullCalendar.EventContentArg;
     type CustomButtonInput = FullCalendar.CustomButtonInput;
 
@@ -38,7 +38,7 @@ module nts.uk.ui.components.fullcalendar {
 
     type EventStatus = 'new' | 'add' | 'update' | 'delete' | 'normal';
 
-    type EventRaw = EventSlim & {
+    export type EventRaw = EventSlim & {
         title: string;
         backgroundColor: string;
         textColor: string;
@@ -47,6 +47,7 @@ module nts.uk.ui.components.fullcalendar {
             status: EventStatus;
             relateId: string;
             description: string;
+            employeeId: string;
         };
     };
 
@@ -406,25 +407,32 @@ module nts.uk.ui.components.fullcalendar {
         SAT = 6
     }
 
-    type BussinessTime = {
+    export type BussinessTime = {
         startTime: number;
         endTime: number;
     };
 
-    type BreakTime = BussinessTime & {
+    export type BreakTime = BussinessTime & {
         backgroundColor: string;
     };
 
-    type BussinessHour = BussinessTime & {
+    export type BussinessHour = BussinessTime & {
         daysOfWeek: DayOfWeek[];
     };
 
-    type AttendanceTime = {
+    export type AttendanceTime = {
         date: Date;
         events: string[];
     };
 
-    type InitialView = 'oneDay' | 'fiveDay' | 'listWeek' | 'fullWeek' | 'fullMonth';
+    export type Employee = {
+        id: string;
+        code: string;
+        name: string;
+        selected: boolean;
+    };
+
+    export type InitialView = 'oneDay' | 'fiveDay' | 'listWeek' | 'fullWeek' | 'fullMonth';
     type ButtonView = 'one-day' | 'five-day' | 'list-week' | 'full-week' | 'full-month';
 
     type ButtonSet = { [name: string]: CustomButtonInput; };
@@ -432,7 +440,8 @@ module nts.uk.ui.components.fullcalendar {
     type ComponentParameters = {
         viewModel: any;
         events: EventRaw[] | KnockoutObservableArray<EventRaw>;
-        employee: KnockoutObservable<string>;
+        employees: KnockoutObservableArray<Employee>;
+        confirmers: KnockoutObservableArray<Employee>;
         locale: CalendarLocale | KnockoutObservable<CalendarLocale>;
         initialView: InitialView | KnockoutObservable<InitialView>;
         availableView: InitialView[] | KnockoutObservableArray<InitialView>;
@@ -466,7 +475,7 @@ module nts.uk.ui.components.fullcalendar {
         slotDuration: KnockoutObservable<SlotDuration>;
     };
 
-    type DatesSet = {
+    export type DatesSet = {
         start: Date;
         end: Date;
     };
@@ -571,12 +580,14 @@ module nts.uk.ui.components.fullcalendar {
             <div class="fc-employees" data-bind="
                     kdw013-department: 'kdw013-department',
                     mode: $component.params.editable,
-                    employee: $component.params.employee
+                    employees: $component.params.employees,
+                    initialDate: $component.params.initialDate
                 "></div>
-            <div class="fc-employees" data-bind="
+            <div class="fc-employees confirmer" data-bind="
                     kdw013-approveds: 'kdw013-approveds',
                     mode: $component.params.editable,
-                    employee: $component.params.employee
+                    confirmers: $component.params.confirmers,
+                    initialDate: $component.params.initialDate
                 "></div>
             <div class="fc-events" data-bind="
                     kdw013-events: 'kdw013-events',
@@ -635,7 +646,8 @@ module nts.uk.ui.components.fullcalendar {
                     availableView: ko.observableArray([]),
                     initialDate: ko.observable(new Date()),
                     events: ko.observableArray([]),
-                    employee: ko.observable(''),
+                    employees: ko.observableArray([]),
+                    confirmers: ko.observableArray([]),
                     attendanceTimes: ko.observableArray([]),
                     breakTime: ko.observable(null),
                     businessHours: ko.observableArray([]),
@@ -657,7 +669,8 @@ module nts.uk.ui.components.fullcalendar {
                 event,
                 components,
                 events,
-                employee,
+                employees,
+                confirmers,
                 scrollTime,
                 initialDate,
                 initialView,
@@ -706,8 +719,12 @@ module nts.uk.ui.components.fullcalendar {
                 this.params.events = ko.observableArray([]);
             }
 
-            if (employee === undefined) {
-                this.params.employee = ko.observable('');
+            if (employees === undefined) {
+                this.params.employees = ko.observableArray([]);
+            }
+
+            if (confirmers === undefined) {
+                this.params.confirmers = ko.observableArray([]);
             }
 
             if (attendanceTimes === undefined) {
@@ -1386,7 +1403,8 @@ module nts.uk.ui.components.fullcalendar {
                                 extendedProps: {
                                     ...extendedProps,
                                     id: randomId(),
-                                    status: 'new'
+                                    status: 'new',
+                                    employeeId: vm.$user.employeeId
                                 }
                             };
                         }
@@ -3015,9 +3033,8 @@ module nts.uk.ui.components.fullcalendar {
         export class Kdw013DepartmentBindingHandler implements KnockoutBindingHandler {
             init = (element: HTMLElement, componentName: () => string, allBindingsAccessor: KnockoutAllBindingsAccessor, __: any, bindingContext: KnockoutBindingContext): { controlsDescendantBindings: boolean; } => {
                 const name = componentName();
-                const mode: KnockoutComputed<boolean> = allBindingsAccessor.get('mode');
-                const employee = allBindingsAccessor.get('employee');
-                const params = { mode, employee };
+                const mode: KnockoutObservable<boolean> = allBindingsAccessor.get('mode');
+                const params = { ...allBindingsAccessor() };
                 const subscribe = (mode: boolean) => {
 
                     if (mode) {
@@ -3045,9 +3062,7 @@ module nts.uk.ui.components.fullcalendar {
         export class Kdw013ApprovedBindingHandler implements KnockoutBindingHandler {
             init = (element: HTMLElement, componentName: () => string, allBindingsAccessor: KnockoutAllBindingsAccessor, __: any, bindingContext: KnockoutBindingContext): { controlsDescendantBindings: boolean; } => {
                 const name = componentName();
-                const mode = allBindingsAccessor.get('mode');
-                const employee = allBindingsAccessor.get('employee');
-                const params = { mode, employee };
+                const params = { ...allBindingsAccessor() };
 
                 ko.applyBindingsToNode(element, { component: { name, params } });
 

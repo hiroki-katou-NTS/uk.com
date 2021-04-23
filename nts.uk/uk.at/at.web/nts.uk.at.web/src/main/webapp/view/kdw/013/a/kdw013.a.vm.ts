@@ -1,6 +1,6 @@
 module nts.uk.ui.at.kdp013.a {
-    const mm = new ko.ViewModel();
     const { randomId } = nts.uk.util;
+    import calendar = nts.uk.ui.components.fullcalendar;
 
     interface API {
         readonly ADD: string;
@@ -14,28 +14,53 @@ module nts.uk.ui.at.kdp013.a {
         DELETE: '/screen/at/kdw013/a/delete'
     };
 
+    @handler({
+        bindingName: 'kdw-toggle',
+        validatable: true,
+        virtual: false
+    })
+    export class KDWToggleBindingHandler implements KnockoutBindingHandler {
+        init(element: HTMLButtonElement, valueAccessor: () => KnockoutComputed<boolean>) {
+            const toggler = valueAccessor();
+            const visible = ko.computed({
+                read: () => {
+                    const visible = ko.unwrap(toggler);
+
+                    return visible;
+                },
+                disposeWhenNodeIsRemoved: element
+            });
+            const disable = ko.computed({
+                read: () => {
+                    const enable = ko.unwrap(toggler);
+
+                    return !enable;
+                },
+                disposeWhenNodeIsRemoved: element
+            });
+
+            ko.applyBindingsToNode(element, { visible, disable });
+
+            element.removeAttribute('data-bind');
+        }
+    }
+
     @bean()
     export class ViewModel extends ko.ViewModel {
-        events: KnockoutObservableArray<any> = ko.observableArray([]);
+        $toggle!: {
+            save: KnockoutComputed<boolean>;
+            remove: KnockoutComputed<boolean>;
+            confirm: KnockoutComputed<boolean>;
+        };
 
-        employees: KnockoutObservableArray<any> = ko.observableArray([]);
+        events: KnockoutObservableArray<calendar.EventApi> = ko.observableArray([]);
 
-        breakTime: KnockoutObservable<any> = ko.observable({
-            startTime: 60 * 12,
-            endTime: 60 * 13,
-            backgroundColor: '#ddd'
-        });
+        employees: KnockoutObservableArray<calendar.Employee> = ko.observableArray([]);
+        confirmers: KnockoutObservableArray<calendar.Employee> = ko.observableArray([]);
 
-        businessHours: KnockoutObservableArray<any> = ko.observableArray([{
-            // days of week. an array of zero-based day of week integers (0=Sunday)
-            daysOfWeek: [1, 2, 3, 4, 5], // Monday - Thursday
-            startTime: 60 * 8 + 30, // '08:30:00'
-            endTime: 60 * 17 + 30 // '17:30:00'
-        }, {
-            daysOfWeek: [0, 6],
-            startTime: 0,
-            endTime: 0
-        }]);
+        breakTime: KnockoutObservable<calendar.BreakTime> = ko.observable();
+
+        businessHours: KnockoutObservableArray<calendar.BussinessHour> = ko.observableArray([]);
 
         weekends: KnockoutObservable<boolean> = ko.observable(true);
         editable: KnockoutObservable<boolean> = ko.observable(true);
@@ -44,14 +69,38 @@ module nts.uk.ui.at.kdp013.a {
         slotDuration: KnockoutObservable<number> = ko.observable(30);
         initialDate: KnockoutObservable<Date> = ko.observable(new Date());
         initialView: KnockoutObservable<string> = ko.observable('fullWeek');
-        availableView: KnockoutObservableArray<string> = ko.observableArray(['oneDay', 'fullWeek']);
-        validRange: KnockoutObservable<{ start: Date; end: Date; }> = ko.observable({ start: moment('2021-02-12', DATE_FORMAT).toDate(), end: moment('2021-10-21', DATE_FORMAT).toDate() });
+        availableView: KnockoutObservableArray<calendar.InitialView> = ko.observableArray(['oneDay', 'fullWeek']);
+        validRange: KnockoutObservable<Partial<calendar.DatesSet>> = ko.observable({});
 
         // need map with [KDW013_21, KDW013_22, KDW013_23, KDW013_24] resource
-        attendanceTimes: KnockoutObservableArray<any> = ko.observableArray([]);
+        attendanceTimes: KnockoutObservableArray<calendar.AttendanceTime> = ko.observableArray([]);
 
-        datesSet(start: Date, end: Date) {
-            console.log(start, end);
+        constructor() {
+            super();
+
+            const vm = this;
+
+            vm.$toggle = {
+                save: ko.computed({
+                    read: () => {
+                        return true;
+                    }
+                }),
+                remove: ko.computed({
+                    read: () => {
+                        const editable = ko.unwrap(vm.editable);
+
+                        return !editable;
+                    }
+                }),
+                confirm: ko.computed({
+                    read: () => {
+                        const editable = ko.unwrap(vm.editable);
+
+                        return !editable;
+                    }
+                }),
+            };
         }
 
         mounted() {
@@ -65,7 +114,11 @@ module nts.uk.ui.at.kdp013.a {
 
         }
 
-        checkData() {
+        datesSet(start: Date, end: Date) {
+            console.log(start, end);
+        }
+
+        confirm() {
             const vm = this;
             const data: d.DataContent[] = [{
                 id: '01',
@@ -96,9 +149,34 @@ module nts.uk.ui.at.kdp013.a {
                 });
         }
 
-        confirmData() {
+        // 作業実績の確認を解除する
+        removeConfirm() {
             const vm = this;
+            const { $user, employees, initialDate } = vm;
+            const date = ko.unwrap(initialDate);
+            const selected = _.find(ko.unwrap(employees), (e) => e.selected);
 
+            if (selected) {
+                const command = {
+                    //対象者
+                    // get from A2_5 control
+                    employeeId: selected.id,
+                    //対象日
+                    // get from initialDate
+                    date: moment(date).toISOString(),
+                    //確認者
+                    // 作業詳細.作業グループ
+                    confirmerId: $user.employeeId
+                };
+
+                vm
+                    .$ajax('at', API.DELETE, command)
+                    .then(() => {
+
+                    })
+                    // trigger reload event on child component
+                    .then(() => vm.editable.valueHasMutated());
+            }
         }
     }
 
@@ -118,7 +196,7 @@ module nts.uk.ui.at.kdp013.a {
                     { prop: 'name', length: 10 }
                 ]
             }"></div>
-            <ul data-bind="foreach: { data: $component.employees, as: 'item' }">
+            <ul data-bind="foreach: { data: $component.params.employees, as: 'item' }">
                 <li class="item" data-bind="
                     click: function() { $component.selectEmployee(item) },
                     timeClick: -1,
@@ -131,21 +209,70 @@ module nts.uk.ui.at.kdp013.a {
             </ul>`
         })
         export class EmployeeDepartmentComponent extends ko.ViewModel {
-            employees: KnockoutObservableArray<Employee> = ko.observableArray([]);
             departments: KnockoutObservableArray<any> = ko.observableArray([]);
 
-            constructor(private params: {}) {
+            constructor(private params: { mode: KnockoutObservable<boolean>; employees: KnockoutObservableArray<calendar.Employee> }) {
                 super();
-
-                this.employees([]);
             }
 
-            public selectEmployee(item: Employee) {
+            mounted() {
                 const vm = this;
-                const { employees } = vm;
+                const { params } = vm;
+                const { mode, employees } = params;
+                const subscribe = (mode: boolean) => {
+                    if (mode === false) {
+                        // reload data
+                        $.Deferred()
+                            .resolve([{
+                                id: '000001',
+                                code: '000001',
+                                name: '日通　太郎',
+                                selected: true
+                            }, {
+                                id: '000002',
+                                code: '000002',
+                                name: '日通　一郎',
+                                selected: false
+                            }, {
+                                id: '000003',
+                                code: '000003',
+                                name: '鈴木　太郎',
+                                selected: false
+                            }, {
+                                id: '000004',
+                                code: '000004',
+                                name: '加藤　良太郎',
+                                selected: false
+                            }, {
+                                id: '000005',
+                                code: '000005',
+                                name: '佐藤　花子',
+                                selected: false
+                            }, {
+                                id: '000006',
+                                code: '000006',
+                                name: '佐藤　龍馬',
+                                selected: false
+                            }, {
+                                id: '000007',
+                                code: '000007',
+                                name: '日通　二郎',
+                                selected: false
+                            }])
+                            .then((data: any) => employees(data));
+                    }
+                };
+
+                subscribe(mode());
+                mode.subscribe(subscribe);
+            }
+
+            public selectEmployee(item: calendar.Employee) {
+                const vm = this;
+                const { employees } = vm.params;
                 const unwraped = ko.toJS(employees);
 
-                _.each(unwraped, (emp: Employee) => {
+                _.each(unwraped, (emp: calendar.Employee) => {
                     if (emp.code === item.code) {
                         emp.selected = true;
                     } else {
@@ -164,7 +291,7 @@ module nts.uk.ui.at.kdp013.a {
         @component({
             name: 'kdw013-approveds',
             template: `<h3 data-bind="i18n: 'KDW013_6'"></h3>
-            <ul data-bind="foreach: { data: $component.employees, as: 'item' }">
+            <ul data-bind="foreach: { data: $component.params.confirmers, as: 'item' }">
                 <li class="item">
                     <div data-bind="text: item.code"></div>
                     <div data-bind="text: item.name"></div>
@@ -172,12 +299,58 @@ module nts.uk.ui.at.kdp013.a {
             </ul>`
         })
         export class Kdw013ApprovedComponent extends ko.ViewModel {
-            employees: KnockoutObservableArray<Employee> = ko.observableArray([]);
-
-            constructor(public params: any) {
+            constructor(public params: { mode: KnockoutObservable<boolean>; confirmers: KnockoutObservableArray<calendar.Employee> }) {
                 super();
+            }
 
-                this.employees([]);
+            mounted() {
+                const vm = this;
+                const { params } = vm;
+                const { mode, confirmers } = params;
+                const subscribe = (mode: boolean) => {
+                    // reload data
+                    $.Deferred()
+                        .resolve([{
+                            id: '000001',
+                            code: '000001',
+                            name: '日通　太郎',
+                            selected: true
+                        }, {
+                            id: '000002',
+                            code: '000002',
+                            name: '日通　一郎',
+                            selected: false
+                        }, {
+                            id: '000003',
+                            code: '000003',
+                            name: '鈴木　太郎',
+                            selected: false
+                        }, {
+                            id: '000004',
+                            code: '000004',
+                            name: '加藤　良太郎',
+                            selected: false
+                        }, {
+                            id: '000005',
+                            code: '000005',
+                            name: '佐藤　花子',
+                            selected: false
+                        }, {
+                            id: '000006',
+                            code: '000006',
+                            name: '佐藤　龍馬',
+                            selected: false
+                        }, {
+                            id: '000007',
+                            code: '000007',
+                            name: '日通　二郎',
+                            selected: false
+                        }])
+                        .then((data: any) => confirmers(data));
+                };
+
+                subscribe(mode());
+                mode.subscribe(subscribe);
             }
         }
     }
@@ -219,63 +392,4 @@ module nts.uk.ui.at.kdp013.a {
             mode: KnockoutComputed<boolean>;
         };
     }
-
-    type Employee = {
-        code: string;
-        name: string;
-        selected: boolean;
-    };
 }
-
-/*
-copyDay(from: Date, to: Date) {
-    const vm = this;
-    const events = ko.unwrap(vm.events);
-
-    const exists = events.filter(({ start }) => moment(start).isSame(to, 'date'));
-
-    const processCopy = () => {
-        // change date to destination
-        const updateTime = (date: Date) => moment(to).set('hour', date.getHours()).set('minute', date.getMinutes()).toDate();
-
-        const source = ko.unwrap(events)
-            .filter((e: any) => moment(e.start).isSame(from, 'date'))
-            .map(({
-                start,
-                end,
-                title,
-                backgroundColor,
-                extendedProps
-            }) => ({
-                start: updateTime(start),
-                end: updateTime(end),
-                title,
-                backgroundColor,
-                extendedProps: {
-                    ...extendedProps,
-                    id: randomId(),
-                    status: 'new'
-                }
-            }));
-
-        vm.events.push(...source);
-    };
-
-    if (exists.length) {
-        // exist data
-        vm.$dialog
-            .confirm({ messageId: 'OVERWRITE_CONFIRM' })
-            .then((v: 'yes' | 'no') => {
-                if (v === 'yes') {
-                    // remove events of destionation day
-                    vm.events.remove((e: any) => moment(e.start).isSame(to, 'date'));
-
-                    processCopy();
-                }
-            });
-    } else {
-        // no overwrite data
-        processCopy();
-    }
-}
-*/

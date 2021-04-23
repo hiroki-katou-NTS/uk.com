@@ -1,5 +1,6 @@
 module nts.uk.ui.at.kdp013.c {
     const COMPONENT_NAME = 'kdp013c';
+    import calendar = nts.uk.ui.components.fullcalendar;
 
     const style = `.edit-event {
         width: 350px;
@@ -96,7 +97,120 @@ module nts.uk.ui.at.kdp013.c {
 
     type EventModel = {
         timeRange: KnockoutObservable<share.TimeRange>;
+
+        task1: KnockoutObservable<string>;
+        task2: KnockoutObservable<string>;
+        task3: KnockoutObservable<string>;
+        task4: KnockoutObservable<string>;
+        task5: KnockoutObservable<string>;
+
+        workplace: KnockoutObservable<string>;
         descriptions: KnockoutObservable<string>;
+    }
+
+    type TaskDto = {
+        code: string;
+        taskFrameNo: number | null;
+        childTaskList: string[];
+        expirationStartDate: string;
+        expirationEndDate: string;
+        displayInfo: TaskDisplayInfoDto;
+        cooperationInfo: ExternalCooperationInfoDto;
+    };
+
+    type ExternalCooperationInfoDto = {
+        /**
+         * 外部コード1
+         */
+        externalCode1: string;
+
+        /**
+         * 外部コード2
+         */
+        externalCode2: string;
+
+        /**
+         * 外部コード3
+         */
+        externalCode3: string;
+
+        /**
+         * 外部コード4
+         */
+        externalCode4: string;
+
+        /**
+         * 外部コード5
+         */
+        externalCode5: string;
+    };
+
+    type TaskDisplayInfoDto = {
+        /**
+         * 名称
+         */
+        taskName: string;
+
+        /**
+         * 略名
+         */
+        taskAbName: string;
+
+        /**
+         * 作業色
+         */
+        color: string;
+
+        /**
+         * 備考
+         */
+        taskNote: string;
+
+    };
+
+    type StartWorkInputParam = {
+        // 社員ID
+        sId: string;
+
+        // 基準日
+        refDate: string;
+
+        // 作業グループ
+        workGroupDto: WorkGroupDto;
+    }
+
+    type WorkGroupDto = {
+        /** 作業CD1 */
+        workCD1: string;
+
+        /** 作業CD2 */
+        workCD2: string;
+
+        /** 作業CD3 */
+        workCD3: string;
+
+        /** 作業CD4 */
+        workCD4: string;
+
+        /** 作業CD5 */
+        workCD5: string;
+    };
+
+    type StartWorkInputPanelDto = {
+        /** 利用可能作業1リスト */
+        taskListDto1: TaskDto[];
+
+        /** 利用可能作業2リスト */
+        taskListDto2: TaskDto[];
+
+        /** 利用可能作業3リスト */
+        taskListDto3: TaskDto[];
+
+        /** 利用可能作業4リスト */
+        taskListDto4: TaskDto[];
+
+        /** 利用可能作業5リスト */
+        taskListDto5: TaskDto[];
     }
 
     const defaultModelValue = (): EventModel => ({
@@ -104,7 +218,13 @@ module nts.uk.ui.at.kdp013.c {
         timeRange: ko.observable({
             start: null,
             end: null
-        })
+        }),
+        workplace: ko.observable(''),
+        task1: ko.observable(''),
+        task2: ko.observable(''),
+        task3: ko.observable(''),
+        task4: ko.observable(''),
+        task5: ko.observable('')
     });
 
     @handler({
@@ -153,7 +273,7 @@ module nts.uk.ui.at.kdp013.c {
                     <tr>
                         <td data-bind="i18n: 'C1_10'"></td>
                         <td><div data-bind="
-                                dropdown: ko.observable(''),
+                                dropdown: $component.model.task1,
                                 items: $component.items,
                                 required: true,
                                 name: 'GET_FROM_DOMAIN',
@@ -162,24 +282,36 @@ module nts.uk.ui.at.kdp013.c {
                     </tr>
                     <tr>
                         <td data-bind="i18n: 'C1_13'"></td>
-                        <td><div data-bind="dropdown: ko.observable(''), items: $component.items"></div></td>
+                        <td><div data-bind="
+                                dropdown: $component.model.task2,
+                                items: $component.items
+                            "></div></td>
                     </tr>
                     <tr>
                         <td data-bind="i18n: 'C1_16'"></td>
-                        <td><div data-bind="dropdown: ko.observable(''), items: $component.items"></div></td>
+                        <td><div data-bind="
+                                dropdown: $component.model.task3,
+                                items: $component.items
+                            "></div></td>
                     </tr>
                     <tr>
                         <td data-bind="i18n: 'C1_19'"></td>
-                        <td><div data-bind="dropdown: ko.observable(''), items: $component.items"></div></td>
+                        <td><div data-bind="
+                                dropdown: $component.model.task4,
+                                items: $component.items
+                            "></div></td>
                     </tr>
                     <tr>
                         <td data-bind="i18n: 'C1_22'"></td>
-                        <td><div data-bind="dropdown: ko.observable(''), items: $component.items"></div></td>
+                        <td><div data-bind="
+                                dropdown: $component.model.task5,
+                                items: $component.items
+                            "></div></td>
                     </tr>
                     <tr class="workplace">
                         <td data-bind="i18n: 'KDW013_28'"></td>
                         <td><div data-bind="
-                                dropdown: ko.observable(''),
+                                dropdown: $component.model.workplace,
                                 items: $component.items,
                                 required: true,
                                 name: 'WORKPLACE',
@@ -263,18 +395,42 @@ module nts.uk.ui.at.kdp013.c {
                     .resolve(true)
                     .then(() => {
                         if (event) {
-                            const { extendedProps, start, end } = event;
-                            const { descriptions } = extendedProps;
+                            const { extendedProps, start, end } = event as any as calendar.EventRaw;
+                            const { descriptions, employeeId } = extendedProps;
                             const startTime = getTimeOfDate(start);
                             const endTime = getTimeOfDate(end);
 
                             model.descriptions(descriptions);
 
                             model.timeRange({ start: startTime, end: endTime });
+
+                            const params: StartWorkInputParam = {
+                                refDate: moment(start).toISOString(),
+                                sId: employeeId || vm.$user.employeeId,
+                                workGroupDto: {
+                                    workCD1: '',
+                                    workCD2: '',
+                                    workCD3: '',
+                                    workCD4: '',
+                                    workCD5: ''
+                                }
+                            };
+
+                            return params;
                         } else {
                             model.descriptions('');
                             model.timeRange({ start: null, end: null });
                         }
+
+                        return null;
+                    })
+                    .then((params: StartWorkInputParam | null) => !!params ? vm.$ajax('at', API.START, params) : null)
+                    .then((response: StartWorkInputPanelDto | null) => {
+                        if (response) {
+                            const { taskListDto1, taskListDto2, taskListDto3, taskListDto4, taskListDto5 } = response;
+                        }
+
+                        return true;
                     })
                     // clear error
                     .then(() => hasError(false));
@@ -360,8 +516,13 @@ module nts.uk.ui.at.kdp013.c {
                             event.setStart(setTimeOfDate(start, tr.start));
                             event.setEnd(setTimeOfDate(start, tr.end));
 
-                            event.setExtendedProp('id', randomId());
-                            event.setExtendedProp('status', 'update');
+                            const { status } = event.extendedProps;
+
+                            if (['new', 'add'].indexOf(status) === -1) {
+                                event.setExtendedProp('status', 'add');
+                            } else {
+                                event.setExtendedProp('status', 'update');
+                            }
                             event.setExtendedProp('descriptions', descriptions());
                         }
 
