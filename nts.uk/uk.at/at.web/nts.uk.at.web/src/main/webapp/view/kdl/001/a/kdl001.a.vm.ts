@@ -307,7 +307,7 @@ module nts.uk.at.view.kdl001.a {
 
             searchByTime() {
                 var self = this;
-                if (nts.uk.util.isNullOrEmpty(self.startTime()) && nts.uk.util.isNullOrEmpty(self.endTime())) {
+                if ((nts.uk.util.isNullOrEmpty(self.startTime()) && nts.uk.util.isNullOrEmpty(self.endTime())) || self.startTime() > self.endTime()) {
                     nts.uk.ui.dialog.alertError({ messageId: 'Msg_307' }).then(() => {
                         $('#inputStartTime').focus();
                         nts.uk.ui.block.clear();
