@@ -2,6 +2,9 @@ package nts.uk.ctx.sys.gateway.app.command.tenantlogin;
 
 import java.util.Optional;
 
+import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import lombok.RequiredArgsConstructor;
@@ -18,6 +21,13 @@ import nts.uk.ctx.sys.gateway.dom.tenantlogin.TenantAuthenticateFailureLogReposi
 import nts.uk.ctx.sys.gateway.dom.tenantlogin.TenantAuthenticateRepository;
 import nts.uk.shr.com.net.Ipv4Address;
 
+/**
+ * 
+ * @author hiroki_katou
+ *
+ */
+@Stateless
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class TenantCheckCommandHandler extends CommandHandlerWithResult<TenantAuthenticateCommand, CheckContractDto> {
 
 	@Inject

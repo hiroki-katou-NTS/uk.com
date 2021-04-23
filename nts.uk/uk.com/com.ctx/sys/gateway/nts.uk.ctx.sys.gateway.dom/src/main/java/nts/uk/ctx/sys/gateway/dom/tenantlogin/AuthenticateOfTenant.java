@@ -17,8 +17,11 @@ public class AuthenticateOfTenant {
 	public static TenantAuthenticateResult authenticate(Require require, String tenantCode, String password, LoginClient loginClient) {
 		
 		// テナントロケータに接続できている以上取得できるはず
-		val tenant = require.getTenantAuthentication(tenantCode).get();
-		
+		val optTenant = require.getTenantAuthentication(tenantCode);
+		if(!optTenant.isPresent()) {
+			return TenantAuthenticateResult.failedToIdentifyTenant(createFailreLog(require, tenantCode, password, loginClient));
+		}
+		val tenant = optTenant.get();
 		// パスワード検証
 		if(!tenant.verifyPassword(password)) {
 			// テナントのパスワード検証に失敗
