@@ -40,7 +40,7 @@ public class RegisterOuenWorkTimeOfDailyServiceTest {
 
 		new Expectations() {
 			{
-				require.get(empId, ymd);
+				require.getOuenWorkTimeOfDaily(empId, ymd);
 			}
 		};
 
@@ -57,7 +57,7 @@ public class RegisterOuenWorkTimeOfDailyServiceTest {
 
 		new Expectations() {
 			{
-				require.get(empId, ymd);
+				require.getOuenWorkTimeOfDaily(empId, ymd);
 				result = Optional.of(ouenWorkTimeOfDailyNew);
 			}
 		};
@@ -77,7 +77,7 @@ public class RegisterOuenWorkTimeOfDailyServiceTest {
 
 			new Expectations() {
 				{
-					require.get(empId, ymd);
+					require.getOuenWorkTimeOfDaily(empId, ymd);
 					result = Optional.of(ouenWorkTimeOfDailyNew);
 				}
 			};

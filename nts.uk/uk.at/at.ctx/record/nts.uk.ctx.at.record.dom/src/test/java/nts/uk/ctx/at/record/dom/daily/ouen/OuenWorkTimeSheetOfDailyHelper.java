@@ -41,9 +41,9 @@ public class OuenWorkTimeSheetOfDailyHelper {
 	public static List<OuenWorkTimeSheetOfDailyAttendance> getListOuenWorkTime() {
 		
 		OuenWorkTimeSheetOfDailyAttendance attendance = OuenWorkTimeSheetOfDailyAttendance.create(1,
-				WorkContent.create("DUMMY",
-						WorkplaceOfWorkEachOuen.create("DUMMY",new WorkLocationCD("1")),
-						Optional.empty()),
+				WorkContent.create(
+						WorkplaceOfWorkEachOuen.create(new WorkplaceId("DUMMY"),new WorkLocationCD("1")),
+						Optional.empty(), Optional.empty()),
 				null);
 		
 		ouenTimeSheets.add(attendance);
