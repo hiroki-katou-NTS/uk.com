@@ -1,6 +1,6 @@
 package nts.uk.ctx.sys.gateway.dom.login.password.authenticate;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.*;
 
 import java.util.Optional;
 
@@ -11,84 +11,153 @@ import mockit.Expectations;
 import mockit.Injectable;
 import mockit.Mock;
 import mockit.MockUp;
+import mockit.Mocked;
+import nts.arc.error.BusinessException;
 import nts.uk.ctx.sys.gateway.dom.login.IdentifiedEmployeeInfo;
 import nts.uk.ctx.sys.gateway.dom.login.password.authenticate.FailedPasswordAuthenticate.Require;
+import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.AccountLockPolicy;
+import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.LockOutMessage;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.PasswordPolicy;
-import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.PasswordPolicy.ValidateOnLoginRequire;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.validate.ValidationResultOnLogin;
-import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.validate.ValidationResultOnLogin.Status;
 import nts.uk.ctx.sys.shared.dom.user.User;
 import nts.uk.ctx.sys.shared.dom.user.password.PassStatus;
 
 public class PasswordAuthenticateWithEmployeeCodeTest {
+	@Mocked IdentifiedEmployeeInfo idenEmpInfo;
+	@Mocked AccountLockPolicy accountLockPolicy;
+	@Mocked User user;
+	@Mocked FailedAuthenticateTask failedAuthenticateTask;
+	@Mocked PasswordPolicy passwordPolicy;
+	@Mocked PassStatus passStatus;
+	@Mocked ValidationResultOnLogin validationResultOnLogin;
+	
+	@Injectable PasswordAuthenticateWithEmployeeCode.Require require;
+	
+	private static class Dummy {
+		private static String tenantCd = "tenten";
+		private static String userId = "useruser";
+		private static String password = "passpass";
+		private static LockOutMessage message = new LockOutMessage("messemesse");
+	}
+	
 
-	@Injectable
-	private PasswordAuthenticateWithEmployeeCode.Require passwordAuthRequire;
-	
-	@Injectable
-	private PasswordPolicy.ValidateOnLoginRequire  passwordPolicyRequire;
-	
+	@Test
+	public void accountLocked() {
+		
+		new Expectations() {{
+			idenEmpInfo.getTenantCode();
+			result = Dummy.tenantCd;
+			
+			idenEmpInfo.getUserId();
+			result = Dummy.userId;
+			
+			require.getAccountLockPolicy(Dummy.tenantCd);
+			result = Optional.of(accountLockPolicy);
+			
+			accountLockPolicy.isLocked(require, Dummy.userId);
+			result = true;
+			
+			accountLockPolicy.getLockOutMessage();
+			result = Dummy.message;
+		}};
+		
+		new MockUp<FailedPasswordAuthenticate>() {
+			@Mock
+			public FailedAuthenticateTask failed(Require require, IdentifiedEmployeeInfo identifiedEmployee, String password) {
+				return failedAuthenticateTask;
+			}
+		};
+		
+		assertThatThrownBy(() -> PasswordAuthenticateWithEmployeeCode.authenticate(require, idenEmpInfo, Dummy.password))
+		.isInstanceOfSatisfying(BusinessException.class, e -> {
+			assertThat(e.getMessage()).isEqualTo(Dummy.message.v());
+		});
+	}
+
 	@Test
 	public void fail_authenticate() {
 		
-		new MockUp<FailedPasswordAuthenticate>() {
-			@Mock
-			public FailedAuthenticateTask failed(Require require, IdentifiedEmployeeInfo identifiedEmployee, String password) {
-				return PasswordAuthenticateWithEmployeeCodeTestHelper.DUMMY.FAILED_TASKS;
-			}
-		};
-		new MockUp<User>() {
-			@Mock
-			public boolean isCorrectPassword(String password) {
-				return false;
-			}
-		};
+		new Expectations() {{
+			idenEmpInfo.getTenantCode();
+			result = Dummy.tenantCd;
+			
+			idenEmpInfo.getUserId();
+			result = Dummy.userId;
+			
+			require.getAccountLockPolicy(Dummy.tenantCd);
+			result = Optional.of(accountLockPolicy);
+			
+			accountLockPolicy.isLocked(require, Dummy.userId);
+			result = false;
+			
+			idenEmpInfo.getUser();
+			result = user;
+			
+			user.isCorrectPassword(Dummy.password);
+			result = false;
+		}};
 		
-		val result = PasswordAuthenticateWithEmployeeCode.authenticate(
-				passwordAuthRequire, 
-				PasswordAuthenticateWithEmployeeCodeTestHelper.DUMMY.EMP_INFO, 
-				PasswordAuthenticateWithEmployeeCodeTestHelper.DUMMY.PASSWORD);
+		val result = PasswordAuthenticateWithEmployeeCode.authenticate(require, idenEmpInfo, Dummy.password);
 		assertThat(result.isFailed()).isTrue();
 	}
-
+	
 	@Test
 	public void success_authenticate() {
 		
-		
-		new MockUp<FailedPasswordAuthenticate>() {
-			@Mock
-			public FailedAuthenticateTask failed(Require require, IdentifiedEmployeeInfo identifiedEmployee, String password) {
-				return PasswordAuthenticateWithEmployeeCodeTestHelper.DUMMY.FAILED_TASKS;
-			}
-		};
-		
-		new MockUp<User>() {
-			@Mock
-			public boolean isCorrectPassword(String password) {
-				return true;
-			}
-		};
-		
-		new MockUp<PasswordPolicy>(){
-			@Mock
-			public ValidationResultOnLogin validateOnLogin(ValidateOnLoginRequire require,
-					String userId,
-					String password,
-					PassStatus passwordStatus) {
-				return new ValidationResultOnLogin(Status.INITIAL, null, null);
-			}
-		};
-		
 		new Expectations() {{
-			passwordAuthRequire.getPasswordPolicy(PasswordAuthenticateWithEmployeeCodeTestHelper.DUMMY.CONTRACT_CD);
-			result = Optional.of(PasswordAuthenticateWithEmployeeCodeTestHelper.DUMMY.PASSWORD_POLICY);
+			idenEmpInfo.getTenantCode();
+			result = Dummy.tenantCd;
+			
+			idenEmpInfo.getUserId();
+			result = Dummy.userId;
+			
+			require.getAccountLockPolicy(Dummy.tenantCd);
+			result = Optional.of(accountLockPolicy);
+			
+			accountLockPolicy.isLocked(require, Dummy.userId);
+			result = false;
+			
+			idenEmpInfo.getUser();
+			result = user;
+			
+			user.isCorrectPassword(Dummy.password);
+			result = true;
+			
+			require.getPasswordPolicy(Dummy.tenantCd);
+			result = Optional.of(passwordPolicy);
 		}};
 		
-		val result = PasswordAuthenticateWithEmployeeCode.authenticate(
-				passwordAuthRequire, 
-				PasswordAuthenticateWithEmployeeCodeTestHelper.DUMMY.EMP_INFO,
-				PasswordAuthenticateWithEmployeeCodeTestHelper.DUMMY.PASSWORD);
-		assertThat(result.isSuccess()).isTrue().as("処理が正常終了した");
+		val result = PasswordAuthenticateWithEmployeeCode.authenticate(require, idenEmpInfo, Dummy.password);
+		assertThat(result.isSuccess()).isTrue();
 	}
 	
+	@Test
+	public void success_authenticate_Not_PasswordPolicy() {
+		
+		new Expectations() {{
+			idenEmpInfo.getTenantCode();
+			result = Dummy.tenantCd;
+			
+			idenEmpInfo.getUserId();
+			result = Dummy.userId;
+			
+			require.getAccountLockPolicy(Dummy.tenantCd);
+			result = Optional.of(accountLockPolicy);
+			
+			accountLockPolicy.isLocked(require, Dummy.userId);
+			result = false;
+			
+			idenEmpInfo.getUser();
+			result = user;
+			
+			user.isCorrectPassword(Dummy.password);
+			result = true;
+			
+			require.getPasswordPolicy(Dummy.tenantCd);
+			result = Optional.empty();
+		}};
+		
+		val result = PasswordAuthenticateWithEmployeeCode.authenticate(require, idenEmpInfo, Dummy.password);
+		assertThat(result.isSuccess()).isTrue();
+	}
 }

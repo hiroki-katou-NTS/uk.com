@@ -17,11 +17,11 @@ import nts.arc.time.GeneralDateTime;
  * @author hiroki_katou
  *
  */
+@Embeddable
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
-@Embeddable
 public class SgwdtFailLogIdenPasswordPK implements Serializable {
 	private static final long serialVersionUID = 1L;
 

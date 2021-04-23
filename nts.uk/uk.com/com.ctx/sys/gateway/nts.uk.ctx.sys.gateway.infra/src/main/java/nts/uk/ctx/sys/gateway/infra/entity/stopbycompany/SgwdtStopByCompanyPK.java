@@ -20,7 +20,6 @@ import lombok.Setter;
 @Getter
 @Setter
 @Embeddable
-
 public class SgwdtStopByCompanyPK implements Serializable {
 	private static final long serialVersionUID = 1L;
 

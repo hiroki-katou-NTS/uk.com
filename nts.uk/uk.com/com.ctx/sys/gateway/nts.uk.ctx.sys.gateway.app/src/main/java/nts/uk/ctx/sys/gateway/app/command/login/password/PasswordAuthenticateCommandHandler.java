@@ -65,7 +65,7 @@ public class PasswordAuthenticateCommandHandler extends LoginCommandHandlerBase<
 		IdentificationResult idenResult = EmployeeIdentify.identifyByEmployeeCode(require, companyId, employeeCode);
 		
 		if(idenResult.isFailed()) {
-			transaction.execute(idenResult.getAtomTask());
+			transaction.execute(idenResult.getFailureLog().get());
 			return AuthenticateResult.identificationFailure(idenResult);
 		}
 		

@@ -1,5 +1,7 @@
 package nts.uk.ctx.sys.gateway.infra.entity.login.identification;
 
+import java.io.Serializable;
+
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -16,11 +18,13 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
  * @author hiroki_katou
  *
  */
-@AllArgsConstructor
-@NoArgsConstructor
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name="SGWDT_FAIL_LOG_IDEN_PASSWORD")
-public class SgwdtFailLogIdenPassword extends UkJpaEntity {
+public class SgwdtFailLogIdenPassword extends UkJpaEntity  implements Serializable {
+
+	private static final long serialVersionUID = 1L;
 	
 	@EmbeddedId
 	public SgwdtFailLogIdenPasswordPK pk;

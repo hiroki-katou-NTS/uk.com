@@ -62,6 +62,7 @@ public class EmployeeIdentify {
 		private Optional<IdentifiedEmployeeInfo> employeeInfo;
 		
 		// 識別失敗記録の永続化処理
+		@Getter
 		private Optional<AtomTask> failureLog;
 		
 		public boolean isSuccess() {
@@ -75,7 +76,7 @@ public class EmployeeIdentify {
 		public AtomTask getAtomTask() {
 			AtomTask atomTasks = AtomTask.none();
 			if(failureLog.isPresent()) {
-				atomTasks.then(failureLog.get());
+				atomTasks = atomTasks.then(failureLog.get());
 			}
 			return atomTasks;
 		}

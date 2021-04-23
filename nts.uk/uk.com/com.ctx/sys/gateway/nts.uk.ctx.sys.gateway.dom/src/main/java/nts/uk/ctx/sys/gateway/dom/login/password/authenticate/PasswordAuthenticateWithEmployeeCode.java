@@ -3,8 +3,11 @@ package nts.uk.ctx.sys.gateway.dom.login.password.authenticate;
 import java.util.Optional;
 
 import lombok.val;
+import nts.arc.error.BusinessException;
+import nts.arc.error.RawErrorMessage;
 import nts.uk.ctx.sys.gateway.dom.login.IdentifiedEmployeeInfo;
 import nts.uk.ctx.sys.gateway.dom.login.password.identification.EmployeeIdentify;
+import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.AccountLockPolicy;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.PasswordPolicy;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.validate.ValidationResultOnLogin;
 
@@ -17,6 +20,14 @@ public class PasswordAuthenticateWithEmployeeCode {
 			Require require,
 			IdentifiedEmployeeInfo identified,
 			String password) {
+		
+		// ロックアウトされている社員は認証させてはいけない
+		require.getAccountLockPolicy(identified.getTenantCode())
+				.ifPresent(policy -> {
+					if (policy.isLocked(require, identified.getUserId())) {
+						throw new BusinessException(new RawErrorMessage(policy.getLockOutMessage().v()));
+					}
+				});
 		
 		// パスワード認証
 		val user = identified.getUser();
@@ -37,6 +48,8 @@ public class PasswordAuthenticateWithEmployeeCode {
 			FailedPasswordAuthenticate.Require,
 			PasswordPolicy.ValidateOnLoginRequire, 
 			EmployeeIdentify.Require{
+
+		Optional<AccountLockPolicy> getAccountLockPolicy(String tenantCode);
 		
 		Optional<PasswordPolicy> getPasswordPolicy(String tenantCode);
 	}

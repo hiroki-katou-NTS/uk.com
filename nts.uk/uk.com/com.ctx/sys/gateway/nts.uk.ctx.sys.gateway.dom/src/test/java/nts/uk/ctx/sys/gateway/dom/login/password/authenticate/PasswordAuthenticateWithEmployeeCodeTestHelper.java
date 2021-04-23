@@ -6,7 +6,6 @@ import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.sys.gateway.dom.login.IdentifiedEmployeeInfo;
-import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.AccountLockPolicy;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.PasswordPolicy;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.PasswordPolicyTestHelper;
 import nts.uk.ctx.sys.shared.dom.employee.EmployeeDataMngInfoImport;
@@ -65,7 +64,7 @@ public class PasswordAuthenticateWithEmployeeCodeTestHelper {
 		public static FailedAuthenticateTask FAILED_TASKS = new FailedAuthenticateTask(Optional.of(AtomTask.none()),Optional.of(AtomTask.none()));
 		static EmployeeDataMngInfoImport IMPORTED = FailedPasswordHelper.IMPORTED;
 		static IdentifiedEmployeeInfo EMP_INFO = new IdentifiedEmployeeInfo(PasswordAuthenticateWithEmployeeCodeTestHelper.IMPORTED, PasswordAuthenticateWithEmployeeCodeTestHelper.USER);
-		static AccountLockPolicy ACCOUNT_LOCK_POLICY = AccountLockPolicy.createFromJavaType("", 0, 0, "", true);
+		//static AccountLockPolicy ACCOUNT_LOCK_POLICY = AccountLockPolicy.createFromJavaType("", 0, 0, "", true);
 		static PasswordPolicy PASSWORD_POLICY = 	PasswordPolicyTestHelper.DUMMY.PASSWORD_POLICY;
 	}
 }

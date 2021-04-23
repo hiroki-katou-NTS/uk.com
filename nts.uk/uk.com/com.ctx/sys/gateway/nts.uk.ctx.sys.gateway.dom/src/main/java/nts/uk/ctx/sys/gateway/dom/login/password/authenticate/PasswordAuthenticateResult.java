@@ -38,10 +38,10 @@ public class PasswordAuthenticateResult {
 	public AtomTask getAtomTask() {
 		AtomTask atomTasks = AtomTask.none();
 		if(failureLog.isPresent()) {
-			atomTasks.then(failureLog.get());
+			atomTasks = atomTasks.then(failureLog.get());
 		}
 		if(lockoutData.isPresent()) {
-			atomTasks.then(lockoutData.get());
+			atomTasks = atomTasks.then(lockoutData.get());
 		}
 		return atomTasks;
 	}

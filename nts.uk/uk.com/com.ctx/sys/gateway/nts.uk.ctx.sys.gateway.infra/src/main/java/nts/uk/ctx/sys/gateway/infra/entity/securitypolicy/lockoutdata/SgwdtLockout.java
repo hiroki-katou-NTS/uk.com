@@ -16,7 +16,7 @@ import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.locked.LockType;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.locked.LockoutData;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.locked.LoginMethod;
 import nts.uk.ctx.sys.shared.dom.user.ContractCode;
-import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
  * The Class SgwdtLockout.
@@ -27,7 +27,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Setter
 @Entity
 @Table(name="SGWDT_LOCKOUT")
-public class SgwdtLockout extends ContractUkJpaEntity implements Serializable {
+public class SgwdtLockout extends UkJpaEntity implements Serializable {
 	
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
