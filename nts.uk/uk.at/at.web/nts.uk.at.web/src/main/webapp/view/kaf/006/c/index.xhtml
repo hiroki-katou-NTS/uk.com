@@ -7,17 +7,19 @@
 <body>
     <ui:composition template="../../../../master/dialog.xhtml">
         <ui:define name="htmlHead">
-            <script>var dialogSize = { width: 520, height: 585 };</script>
+            <script>var dialogSize = { width: 650, height: 585 };</script>
             <com:scriptfile set="IGNITE" />
             <com:ValidatorScript>
                 nts.uk.ctx.at.request.dom.application.AppReason
             </com:ValidatorScript>
             <com:scriptfile path="/view/kaf/000/a/component6/kaf000.a.component6.js" />
             <com:scriptfile path="/view/kaf/000/shr/kaf000.shr.vm.js" />
+            <com:scriptfile path="/view/kaf/006/shr/component3/kaf006.a.component3.js" />
             <com:scriptfile path="kaf006.c.service.js" />
             <com:scriptfile path="kaf006.c.vm.js" />
             <com:stylefile path="kaf006.c.css" />
             <com:stylefile path="/view/kaf/000/a/component6/kaf000.a.component6.css" />
+            <com:stylefile path="/view/kaf/006/shr/component3/kaf006.a.component3.css" />
         </ui:define>
         
         <ui:define name="content">
@@ -86,7 +88,7 @@
                                 option: { width: '350' } }" ></textarea>
                         </div>
                     </div>
-                    <div  style="margin: 5px 0" data-bind="component: { name: 'kaf000-a-component6', 
+                    <div  style="margin: 5px 0" data-bind="component: { name: 'kaf006-c-component3', 
                                                                         params: {
                                                                             appType: appType,
                                                                             application: application,
