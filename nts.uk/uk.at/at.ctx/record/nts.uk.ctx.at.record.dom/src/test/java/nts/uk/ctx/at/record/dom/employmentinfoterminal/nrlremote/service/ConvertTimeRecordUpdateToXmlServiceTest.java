@@ -33,6 +33,7 @@ import nts.uk.ctx.at.record.dom.employmentinfoterminal.nrlremote.TimeRecordSetUp
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.nrlremote.VariableName;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.nrlremote.xml.NRLRemoteDataXml;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
+import nts.uk.shr.com.net.Ipv4Address;
 
 @RunWith(JMockit.class)
 public class ConvertTimeRecordUpdateToXmlServiceTest {
@@ -56,8 +57,7 @@ public class ConvertTimeRecordUpdateToXmlServiceTest {
 			{
 				require.getEmpInfoTerWithMac(new MacAddress("00-14-22-01-23-45"), (ContractCode) any);
 				result = Optional.of(
-						new EmpInfoTerminalBuilder(Optional.of(new FullIpAddress(
-								new PartialIpAddress(192), new PartialIpAddress(168), new PartialIpAddress(1), new PartialIpAddress(1))), new MacAddress("00-14-22-01-23-45"),
+						new EmpInfoTerminalBuilder(Optional.of(Ipv4Address.parse("192.168.1.1")), new MacAddress("00-14-22-01-23-45"),
 								new EmpInfoTerminalCode("1234"), Optional.of(new EmpInfoTerSerialNo("1111")),
 								new EmpInfoTerminalName("AT"), new ContractCode("0000000000000"))
 										.modelEmpInfoTer(ModelEmpInfoTer.NRL_1).build());
