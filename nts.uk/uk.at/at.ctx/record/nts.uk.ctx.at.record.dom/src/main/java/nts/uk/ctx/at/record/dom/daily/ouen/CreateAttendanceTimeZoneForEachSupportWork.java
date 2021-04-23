@@ -1,6 +1,8 @@
 package nts.uk.ctx.at.record.dom.daily.ouen;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
@@ -24,28 +26,41 @@ public class CreateAttendanceTimeZoneForEachSupportWork {
 	 * @input require
 	 * @input empId 社員ID	
 	 * @input ymd 年月日
-	 * @input workDetailsParam 作業詳細	
+	 * @input workDetailsParams 作業詳細	
 	 * @output 	日別勤怠の応援作業時間帯 	OuenWorkTimeSheetOfDailyAttendance
 	 */
-	public static OuenWorkTimeSheetOfDailyAttendance create(Require require, String empId, GeneralDate ymd,  WorkDetailsParam workDetailsParam) {
-		//作業詳細.作業グループ.作業内容の有効期限を確認する(require,年月日)
-		//chỗ này đang xác nhận lại với anh tuấn: Anh tuấn Trả lời: khi naof co thi no moi goi, nen chac ko can dau
-		workDetailsParam.getWorkGroup().get().checkExpirationDate(require, ymd);
-		//$旧の作業時間帯 = require.応援作業別勤怠時間帯を取得する(社員ID,年月日,作業詳細.応援勤務枠No)	
-		Optional<OuenWorkTimeSheetOfDaily> ouenWorkTimeOfDaily = require.find(empId, ymd, workDetailsParam.getSupportFrameNo().v());
-		//if $旧の作業時間帯.isPresent
-		if(ouenWorkTimeOfDaily.isPresent()) {
-			//return [prv-1] 既存の応援作業時間帯をセットする($旧の作業時間帯.応援時間帯,作業詳細)
-			//chỗ này đang xác nhận lại với anh tuấn
-			return setExistingSupportWorkTimeZone(ouenWorkTimeOfDaily.get().getOuenTimeSheet().get(0), workDetailsParam);
-		}
-		//return [prv-2] 新規の応援作業時間帯を作成する(require,社員ID,年月日,作業詳細)
-		return createNewOuenWorkTimeSheetOfDailyAttendance(require, empId, ymd, workDetailsParam);
+	public static List<OuenWorkTimeSheetOfDailyAttendance> create(Require require, String empId, GeneralDate ymd, List<WorkDetailsParam> workDetailsParams) {
+		return workDetailsParams.stream().map(c-> createSupportWorkTimeZone(require, empId, ymd, c)).collect(Collectors.toList());
 	}
 	
 //■Private
+	
 	/**
-	 * @name [prv-1] 既存の応援作業時間帯をセットする
+	 * @name [prv-1] 応援作業時間帯を作成する
+	 * @input empId 社員ID
+	 * @input ymd 年月日
+	 * @input workDetailsParam  作業詳細	
+	 * @output 	日別勤怠の応援作業時間帯
+	 */
+	private static OuenWorkTimeSheetOfDailyAttendance createSupportWorkTimeZone(Require require, String empId, GeneralDate ymd, WorkDetailsParam workDetailsParam) {
+		//作業詳細.作業グループ.作業内容の有効期限を確認する(require,年月日) anh tuấn trả lời: khi naof co thi no moi goi, nen chac ko can dau
+		workDetailsParam.getWorkGroup().get().checkExpirationDate(require, ymd);
+		
+		//$旧の作業時間帯 = require.応援作業別勤怠時間帯を取得する(社員ID,年月日,作業詳細.応援勤務枠No)
+		Optional<OuenWorkTimeSheetOfDaily> ouenWorkTimeOfDaily = require.find(empId, ymd, workDetailsParam.getSupportFrameNo().v());
+		
+		//if $旧の作業時間帯.isPresent
+		if(ouenWorkTimeOfDaily.isPresent()) {
+			//		return [prv-2] 既存の応援作業時間帯をセットする($旧の作業時間帯.応援時間帯,作業詳細)
+			//chỗ này đang xác nhận lại với anh tuấn: http://192.168.50.4:3000/issues/115993
+			return setExistingSupportWorkTimeZone(ouenWorkTimeOfDaily.get().getOuenTimeSheet().get(0), workDetailsParam);
+		}
+		//	return [prv-3] 新規の応援作業時間帯を作成する(require,社員ID,年月日,作業詳細)
+		return createNewOuenWorkTimeSheetOfDailyAttendance(require, empId, ymd, workDetailsParam);
+	}
+	
+	/**
+	 * @name 	[prv-2] 既存の応援作業時間帯をセットする
 	 * @input oldOuenWorkTimeSheetOfDailyAttendance 	旧の作業時間帯
 	 * @input workDetailsParam		作業詳細
 	 * @output 	日別勤怠の応援作業時間帯 OuenWorkTimeSheetOfDailyAttendance
@@ -61,7 +76,7 @@ public class CreateAttendanceTimeZoneForEachSupportWork {
 	}
 	
 	/**
-	 * @name	[prv-2] 退勤時刻をセットする
+	 * @name [prv-3] 新規の応援作業時間帯を作成する
 	 * @input empId 社員ID
 	 * @input ymd 年月日
 	 * @input workDetailsParam  作業詳細	
