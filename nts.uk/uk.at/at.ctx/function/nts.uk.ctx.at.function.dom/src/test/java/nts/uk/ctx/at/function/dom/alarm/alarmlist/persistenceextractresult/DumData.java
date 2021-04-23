@@ -31,7 +31,7 @@ public class DumData {
                                             AlarmCategory.DAILY,
                                             AlarmListCheckType.FixCheck,
                                             Arrays.asList(
-                                                    new ExtractionResultDetail(
+                                                    new ExtractResultDetail(
                                                             new ExtractionAlarmPeriodDate(Optional.of(GeneralDate.today()), Optional.of(GeneralDate.today().addDays(2))),
                                                             "alarmName1",
                                                             "alarmContent1",
@@ -40,7 +40,7 @@ public class DumData {
                                                             Optional.of("comment1"),
                                                             Optional.of("checkValue1")
                                                     ),
-                                                    new ExtractionResultDetail(
+                                                    new ExtractResultDetail(
                                                             new ExtractionAlarmPeriodDate(Optional.of(GeneralDate.today()), Optional.of(GeneralDate.today().addDays(1))),
                                                             "alarmName2",
                                                             "alarmContent2",
@@ -57,7 +57,7 @@ public class DumData {
                                             AlarmCategory.SCHEDULE_DAILY,
                                             AlarmListCheckType.FreeCheck,
                                             Arrays.asList(
-                                                    new ExtractionResultDetail(
+                                                    new ExtractResultDetail(
                                                             new ExtractionAlarmPeriodDate(Optional.of(GeneralDate.today()), Optional.of(GeneralDate.today().addDays(2))),
                                                             "alarmName3",
                                                             "alarmContent3",
@@ -66,7 +66,7 @@ public class DumData {
                                                             Optional.of("comment"),
                                                             Optional.of("checkValue3")
                                                     ),
-                                                    new ExtractionResultDetail(
+                                                    new ExtractResultDetail(
                                                             new ExtractionAlarmPeriodDate(Optional.of(GeneralDate.today()), Optional.of(GeneralDate.today().addDays(1))),
                                                             "alarmName4",
                                                             "alarmContent4",
@@ -88,7 +88,7 @@ public class DumData {
                                             AlarmCategory.DAILY,
                                             AlarmListCheckType.FixCheck,
                                             Arrays.asList(
-                                                    new ExtractionResultDetail(
+                                                    new ExtractResultDetail(
                                                             new ExtractionAlarmPeriodDate(Optional.of(GeneralDate.today()), Optional.of(GeneralDate.today().addDays(2))),
                                                             "alarmName1",
                                                             "alarmContent1",
@@ -97,7 +97,7 @@ public class DumData {
                                                             Optional.of("comment1"),
                                                             Optional.of("checkValue1")
                                                     ),
-                                                    new ExtractionResultDetail(
+                                                    new ExtractResultDetail(
                                                             new ExtractionAlarmPeriodDate(Optional.of(GeneralDate.today()), Optional.of(GeneralDate.today().addDays(1))),
                                                             "alarmName2",
                                                             "alarmContent2",
@@ -114,7 +114,7 @@ public class DumData {
                                             AlarmCategory.SCHEDULE_DAILY,
                                             AlarmListCheckType.FreeCheck,
                                             Arrays.asList(
-                                                    new ExtractionResultDetail(
+                                                    new ExtractResultDetail(
                                                             new ExtractionAlarmPeriodDate(Optional.of(GeneralDate.today()), Optional.of(GeneralDate.today().addDays(1))),
                                                             "alarmName3",
                                                             "alarmContent3",
@@ -123,7 +123,7 @@ public class DumData {
                                                             Optional.of("comment"),
                                                             Optional.of("checkValue3")
                                                     ),
-                                                    new ExtractionResultDetail(
+                                                    new ExtractResultDetail(
                                                             new ExtractionAlarmPeriodDate(Optional.of(GeneralDate.today()), Optional.of(GeneralDate.today().addDays(2))),
                                                             "alarmName4",
                                                             "alarmContent4",

@@ -412,7 +412,7 @@ public class AppApprovalAggregationProcessService {
 			}
 		}
 		ExtractionResultDetail detail = new ExtractionResultDetail(
-//				sid, //TODO #110598
+				sid,
 				pDate,
 				item.getName(),
 				alarmContent,

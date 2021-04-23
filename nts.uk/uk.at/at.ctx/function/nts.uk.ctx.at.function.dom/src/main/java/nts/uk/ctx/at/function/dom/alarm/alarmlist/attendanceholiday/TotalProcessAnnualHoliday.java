@@ -307,7 +307,7 @@ public class TotalProcessAnnualHoliday {
 			ExtractionAlarmPeriodDate pDate = new ExtractionAlarmPeriodDate(Optional.ofNullable(ligedUseOutput.getPeriod().get().start()),
 					Optional.ofNullable(ligedUseOutput.getPeriod().get().end()));
 			ExtractionResultDetail detail = new ExtractionResultDetail(
-//					sid,  //TODO #110598
+					sid,
 					pDate,
 					TextResource.localize("KAL010_401"),
 					TextResource.localize("KAL010_402",

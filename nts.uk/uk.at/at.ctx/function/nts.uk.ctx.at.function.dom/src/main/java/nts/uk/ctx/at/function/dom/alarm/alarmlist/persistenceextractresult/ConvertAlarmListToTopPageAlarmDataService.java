@@ -115,11 +115,11 @@ public class ConvertAlarmListToTopPageAlarmDataService {
         Map<String, GeneralDateTime> alarmAggregateResultMap = new HashMap<>();
         for (val item : extractResultMap.keySet()) {
             List<AlarmEmployeeList> alarmEmps = extractResultMap.get(item);
-            List<ExtractionResultDetail> extractResultDetails = alarmEmps.stream()
+            List<ExtractResultDetail> extractResultDetails = alarmEmps.stream()
                     .flatMap(x -> x.getAlarmExtractInfoResults().stream().flatMap(m -> m.getExtractionResultDetails()
-                            .stream())).sorted(Comparator.comparing(ExtractionResultDetail::getRunTime)).collect(Collectors.toList());
+                            .stream())).sorted(Comparator.comparing(ExtractResultDetail::getRunTime)).collect(Collectors.toList());
 
-            Optional<GeneralDateTime> date = extractResultDetails.stream().map(ExtractionResultDetail::getRunTime).findFirst();
+            Optional<GeneralDateTime> date = extractResultDetails.stream().map(ExtractResultDetail::getRunTime).findFirst();
 
             alarmAggregateResultMap.put(item, date.orElse(null));
         }

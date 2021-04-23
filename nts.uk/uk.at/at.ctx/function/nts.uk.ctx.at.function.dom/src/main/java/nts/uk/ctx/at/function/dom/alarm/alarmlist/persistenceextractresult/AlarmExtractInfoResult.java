@@ -29,5 +29,5 @@ public class AlarmExtractInfoResult {
     private AlarmListCheckType alarmListCheckType;
 
     /** 抽出結果 */
-    private List<ExtractionResultDetail> extractionResultDetails;
+    private List<ExtractResultDetail> extractionResultDetails;
 }
