@@ -274,7 +274,7 @@ module nts.uk.ui.at.kdp013.c {
                         <td data-bind="i18n: 'C1_10'"></td>
                         <td><div data-bind="
                                 dropdown: $component.model.task1,
-                                items: $component.items,
+                                items: $component.combobox.taskList1,
                                 required: true,
                                 name: 'GET_FROM_DOMAIN',
                                 hasError: $component.errors.dropdown
@@ -284,28 +284,28 @@ module nts.uk.ui.at.kdp013.c {
                         <td data-bind="i18n: 'C1_13'"></td>
                         <td><div data-bind="
                                 dropdown: $component.model.task2,
-                                items: $component.items
+                                items: $component.combobox.taskList2
                             "></div></td>
                     </tr>
                     <tr>
                         <td data-bind="i18n: 'C1_16'"></td>
                         <td><div data-bind="
                                 dropdown: $component.model.task3,
-                                items: $component.items
+                                items: $component.combobox.taskList3
                             "></div></td>
                     </tr>
                     <tr>
                         <td data-bind="i18n: 'C1_19'"></td>
                         <td><div data-bind="
                                 dropdown: $component.model.task4,
-                                items: $component.items
+                                items: $component.combobox.taskList4
                             "></div></td>
                     </tr>
                     <tr>
                         <td data-bind="i18n: 'C1_22'"></td>
                         <td><div data-bind="
                                 dropdown: $component.model.task5,
-                                items: $component.items
+                                items: $component.combobox.taskList5
                             "></div></td>
                     </tr>
                     <tr class="workplace">
@@ -356,14 +356,22 @@ module nts.uk.ui.at.kdp013.c {
 
         model: EventModel = defaultModelValue();
 
-        items: KnockoutObservableArray<any> = ko.observableArray([]);
+        combobox: {
+            taskList1: KnockoutObservableArray<DropdownItem>;
+            taskList2: KnockoutObservableArray<DropdownItem>;
+            taskList3: KnockoutObservableArray<DropdownItem>;
+            taskList4: KnockoutObservableArray<DropdownItem>;
+            taskList5: KnockoutObservableArray<DropdownItem>;
+        } = {
+                taskList1: ko.observableArray([]),
+                taskList2: ko.observableArray([]),
+                taskList3: ko.observableArray([]),
+                taskList4: ko.observableArray([]),
+                taskList5: ko.observableArray([])
+            };
 
         constructor(public params: Params) {
             super();
-
-            const items = _.range(0, 10).map((v: number) => ({ selected: false, id: randomId(), name: `Option ${v}`, code: `0000${v}` }));
-
-            this.items(items);
 
             this.hasError = ko.computed({
                 read: () => {
@@ -389,6 +397,17 @@ module nts.uk.ui.at.kdp013.c {
             const cache = {
                 view: ko.unwrap(view),
                 position: ko.unwrap(position)
+            };
+            const mapper = ($raw: TaskDto): DropdownItem => {
+                const { code, displayInfo } = $raw;
+                const { taskName } = displayInfo;
+
+                return {
+                    code,
+                    name: taskName,
+                    selected: false,
+                    $raw
+                };
             };
             const subscribe = (event: FullCalendar.EventApi | null) => {
                 $.Deferred()
@@ -427,7 +446,14 @@ module nts.uk.ui.at.kdp013.c {
                     .then((params: StartWorkInputParam | null) => !!params ? vm.$ajax('at', API.START, params) : null)
                     .then((response: StartWorkInputPanelDto | null) => {
                         if (response) {
+                            const { taskList1, taskList2, taskList3, taskList4, taskList5 } = vm.combobox;
                             const { taskListDto1, taskListDto2, taskListDto3, taskListDto4, taskListDto5 } = response;
+
+                            taskList1(taskListDto1.map(mapper));
+                            taskList2(taskListDto2.map(mapper));
+                            taskList3(taskListDto3.map(mapper));
+                            taskList4(taskListDto4.map(mapper));
+                            taskList5(taskListDto5.map(mapper));
                         }
 
                         return true;
@@ -542,4 +568,11 @@ module nts.uk.ui.at.kdp013.c {
         position: KnockoutObservable<null | any>;
         excludeTimes: KnockoutObservableArray<share.BussinessTime>;
     }
+
+    type DropdownItem = {
+        code: string;
+        name: string;
+        selected: boolean;
+        $raw: TaskDto;
+    };
 }
