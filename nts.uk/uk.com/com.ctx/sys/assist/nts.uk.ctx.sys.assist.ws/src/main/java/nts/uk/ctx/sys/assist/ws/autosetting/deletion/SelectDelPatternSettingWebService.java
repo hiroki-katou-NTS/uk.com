@@ -7,6 +7,7 @@ import javax.ws.rs.Produces;
 
 import nts.uk.ctx.sys.assist.app.command.autosetting.deletion.SelectDelCategoryCommand;
 import nts.uk.ctx.sys.assist.app.find.autosetting.deletion.DataDeletionPatternSettingDto;
+import nts.uk.ctx.sys.assist.app.find.autosetting.deletion.DelSelectionCategoryNameDto;
 import nts.uk.ctx.sys.assist.app.find.autosetting.deletion.ScreenDelDisplayProcessingDto;
 import nts.uk.ctx.sys.assist.app.find.autosetting.deletion.ScreenDelDisplayProcessingFinder;
 import nts.uk.ctx.sys.assist.app.find.autosetting.deletion.SelectDelCategoryFinder;
@@ -29,7 +30,7 @@ public class SelectDelPatternSettingWebService {
 	
 	@POST
 	@Path("delPatternSettingSelect")
-	public DataDeletionPatternSettingDto findSelectionCategoryName(SelectDelCategoryCommand command) {
+	public DataDeletionPatternSettingDto<DelSelectionCategoryNameDto> findSelectionCategoryName(SelectDelCategoryCommand command) {
 		return selectCategoryFinder.findSelectCategoryInfo(command);
 	}
 }
