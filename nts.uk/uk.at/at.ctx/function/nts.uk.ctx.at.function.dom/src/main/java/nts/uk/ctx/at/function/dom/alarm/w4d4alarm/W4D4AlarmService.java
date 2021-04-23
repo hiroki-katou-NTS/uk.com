@@ -356,7 +356,8 @@ public class W4D4AlarmService {
 				
 				if(holidays < holidayNumberMana.getHolidayDays().v()) {
 					ExtractionAlarmPeriodDate alarmDate = new ExtractionAlarmPeriodDate(Optional.ofNullable(dPeriod.start()), Optional.ofNullable(dPeriod.end()));
-					ExtractionResultDetail alarmDetail = new ExtractionResultDetail(sid,
+					ExtractionResultDetail alarmDetail = new ExtractionResultDetail(
+//							sid, //TODO #110598
 							alarmDate, 
 							w4dCheckCond.nameId,
 							TextResource.localize("KAL010_64"), 

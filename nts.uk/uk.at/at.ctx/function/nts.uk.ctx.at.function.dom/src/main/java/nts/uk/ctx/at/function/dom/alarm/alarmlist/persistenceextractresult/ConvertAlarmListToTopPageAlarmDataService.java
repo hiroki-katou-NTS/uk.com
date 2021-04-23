@@ -41,7 +41,7 @@ public class ConvertAlarmListToTopPageAlarmDataService {
         Optional<PersistenceAlarmListExtractResult> extractResult = require.getAlarmListExtractionResult(companyId, patternCode.v(), executionCode.v());
 
         //$アラームリストの集約結果　＝　Empty：
-        List<AlarmExtractInfoResult> alarmListAggregateResults = new ArrayList<>();
+        List<AlarmEmployeeList> alarmListAggregateResults = new ArrayList<>();
         //$パターン名　＝　Empty
         String patternName = null;
         Map<String, GeneralDateTime> alarmListAggreRsMap = null;
@@ -49,17 +49,13 @@ public class ConvertAlarmListToTopPageAlarmDataService {
             patternName = extractResult.get().getAlarmPatternName().v();
             //$アラームリストの集約結果Map = [prv-1]  アラームリストを集約する(会社ID, $アラームリストパターンの抽出結果)
             alarmListAggreRsMap = aggregateAlarmList(extractResult.get());
-            //$アラームリストの集約結果 = $抽出結果.アラームリスト抽出結果;
-            alarmListAggregateResults = extractResult.get().getAlarmListExtractResults().stream()
-                    .flatMap(x -> x.getAlarmExtractInfoResults().stream())
-                    .collect(Collectors.toList());
+
+            alarmListAggregateResults = extractResult.get().getAlarmListExtractResults();
         }
 
         //$エラーがある社員IDList　＝　$アラームリストの集約結果　：　map　＄.社員ID
         List<String> employeeIdListError = alarmListAggregateResults.stream()
-                .flatMap(x -> x.getExtractionResultDetails().stream())
-                .map(ExtractionResultDetail::getSID)
-                .collect(Collectors.toList());
+                .map(AlarmEmployeeList::getEmployeeID).collect(Collectors.toList());
         //$エラーがなくなった社員IDList　＝　社員IDList　：　except　$エラーがある社員IDList
         List<String> empIdListNoErrors = employeeIDs.stream()
                 .filter(x -> !employeeIdListError.contains(x))
@@ -110,26 +106,22 @@ public class ConvertAlarmListToTopPageAlarmDataService {
      */
     private static Map<String, GeneralDateTime> aggregateAlarmList(PersistenceAlarmListExtractResult alarmPatternExtractResult) {
         // List<チェック条件結果>
-        List<AlarmExtractInfoResult> checkConditionResults = alarmPatternExtractResult.getAlarmListExtractResults()
-                .stream().flatMap(mapper -> mapper.getAlarmExtractInfoResults().stream()).collect(Collectors.toList());
-        // List<抽出結果詳細>
-        List<ExtractionResultDetail> extractResultDetails = checkConditionResults.stream().flatMap(x -> x.getExtractionResultDetails().stream())
-                .collect(Collectors.toList());
-
         //create $map＜社員ID, List＜抽出結果詳細＞＞
-        Map<String, List<ExtractionResultDetail>> extractResultMap = extractResultDetails.stream()
-                .filter(x -> x.getSID() != null)
-                .collect(Collectors.groupingBy(ExtractionResultDetail::getSID));
+        Map<String, List<AlarmEmployeeList>> extractResultMap = alarmPatternExtractResult.getAlarmListExtractResults().stream()
+                .filter(x -> x.getEmployeeID() != null)
+                .collect(Collectors.groupingBy(AlarmEmployeeList::getEmployeeID));
 
         //$社員リスト　＝　$map＜社員ID, List＜抽出結果詳細＞＞　：　map　$.key()
         Map<String, GeneralDateTime> alarmAggregateResultMap = new HashMap<>();
-        for (val item : extractResultMap.entrySet()) {
-            String emp = item.getKey();
-            List<ExtractionResultDetail> extractRs = item.getValue();
-            extractRs.sort(Comparator.comparing(ExtractionResultDetail::getRunTime).reversed());
-            Optional<GeneralDateTime> date = extractRs.stream().map(ExtractionResultDetail::getRunTime).findFirst();
+        for (val item : extractResultMap.keySet()) {
+            List<AlarmEmployeeList> alarmEmps = extractResultMap.get(item);
+            List<ExtractionResultDetail> extractResultDetails = alarmEmps.stream()
+                    .flatMap(x -> x.getAlarmExtractInfoResults().stream().flatMap(m -> m.getExtractionResultDetails()
+                            .stream())).sorted(Comparator.comparing(ExtractionResultDetail::getRunTime)).collect(Collectors.toList());
 
-            alarmAggregateResultMap.put(emp, date.orElse(null));
+            Optional<GeneralDateTime> date = extractResultDetails.stream().map(ExtractionResultDetail::getRunTime).findFirst();
+
+            alarmAggregateResultMap.put(item, date.orElse(null));
         }
 
         return alarmAggregateResultMap;

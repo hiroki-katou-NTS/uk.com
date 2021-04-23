@@ -185,8 +185,8 @@ public class ExtractAlarmListService {
 					for (int j = 0; j < lstResultDetail.size(); j++) {
 						ExtractionResultDetail z = lstResultDetail.get(j);
 						AlarmExtraValueWkReDto alarmValue = new AlarmExtraValueWkReDto();
-						EmployeeBasicInfoFnImport empInfo = findBySIds.stream().filter(e -> e.getEmployeeId().equals(z.getSID()))
-								.collect(Collectors.toList()).get(0);
+//						EmployeeBasicInfoFnImport empInfo = findBySIds.stream().filter(e -> e.getEmployeeId().equals(z.getSID())) //TODO #110598
+//								.collect(Collectors.toList()).get(0);
 						
 						if(z.getWpID().isPresent()) {
 							List<WorkPlaceInforExport> lstWplInfo = getWorkplaceInforByWkpIds.stream().filter(d -> d.getWorkplaceId().equals(z.getWpID().get()))
@@ -200,14 +200,14 @@ public class ExtractAlarmListService {
 						}
 						alarmValue.setAlarmItem(z.getAlarmName());
 						alarmValue.setAlarmValueDate(z.getPeriodDate().getStartDate().isPresent() ? z.getPeriodDate().getStartDate().get().toString() : GeneralDate.today().toString());
-						alarmValue.setComment(z.getComment().isPresent() ? z.getComment().get() : "");
+						alarmValue.setComment(z.getMessage().isPresent() ? z.getMessage().get() : "");
 						alarmValue.setAlarmValueMessage(z.getAlarmContent());
 						alarmValue.setCategory(x.getCategory().value);
 						alarmValue.setCategoryName(x.getCategory().nameId);
 						alarmValue.setCheckedValue(z.getCheckValue().isPresent() ? z.getCheckValue().get() : "");
-						alarmValue.setEmployeeCode(empInfo.getEmployeeCode());
-						alarmValue.setEmployeeID(empInfo.getEmployeeId());
-						alarmValue.setEmployeeName(empInfo.getPName());
+//						alarmValue.setEmployeeCode(empInfo.getEmployeeCode());  //TODO #110598
+//						alarmValue.setEmployeeID(empInfo.getEmployeeId());
+//						alarmValue.setEmployeeName(empInfo.getPName());
 						alarmValue.setEndDate(z.getPeriodDate().getEndDate().isPresent() ? z.getPeriodDate().getEndDate().get().toString() : "");
 						lstExtractedAlarmData.add(alarmValue);
 						alarmValue.setGuid(IdentifierUtil.randomUniqueId());

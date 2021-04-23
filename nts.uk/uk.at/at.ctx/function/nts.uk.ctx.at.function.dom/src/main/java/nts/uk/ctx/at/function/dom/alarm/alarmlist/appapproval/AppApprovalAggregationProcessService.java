@@ -360,12 +360,16 @@ public class AppApprovalAggregationProcessService {
 			});
 		}); 
 	}
-	
+
 	/**
 	 * 未承認
-	 * @param empId
+	 * @param empIds
 	 * @param period
-	 * @param approvalPhaseNo
+	 * @param fixedExtractCond
+	 * @param lstWplHist
+	 * @param lstResultCondition
+	 * @param data
+	 * @param cid
 	 */
 	private void checkUnapprove(List<String> empIds, DatePeriod period, AppApprovalFixedExtractCondition fixedExtractCond,
 			 List<WorkPlaceHistImport> lstWplHist,
@@ -407,7 +411,8 @@ public class AppApprovalAggregationProcessService {
 				wpId = optWorkPlaceIdAndPeriodImport.get().getWorkplaceId();
 			}
 		}
-		ExtractionResultDetail detail = new ExtractionResultDetail(sid,
+		ExtractionResultDetail detail = new ExtractionResultDetail(
+//				sid, //TODO #110598
 				pDate,
 				item.getName(),
 				alarmContent,

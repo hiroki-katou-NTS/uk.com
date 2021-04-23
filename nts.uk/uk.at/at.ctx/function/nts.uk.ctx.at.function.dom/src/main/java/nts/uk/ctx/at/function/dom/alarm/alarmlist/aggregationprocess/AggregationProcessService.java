@@ -524,27 +524,27 @@ public class AggregationProcessService {
 						} else if (!lstCondResultNew.isEmpty() && !lstCondResultDB.isEmpty()) {
 							List<ExtractionResultDetail> lstResultDetailDB = new ArrayList<>();
 							List<ExtractionResultDetail> lstResultDetailNew = new ArrayList<>();
-							//社員ID、日付から絞り込む
-							for (int k = 0; k < lstCondResultDB.size(); k++) {
-								ResultOfEachCondition de = lstCondResultDB.get(k);
-								List<ExtractionResultDetail> lstResultDetailDBT = de.getLstResultDetail().stream()
-										.filter(dt -> lstSid.contains(dt.getSID())
-												&& (!period.isEmpty() && period.get(0).getStartDate() != null && period.get(0).getEndDate() != null
-														&& dt.getPeriodDate().getStartDate().get().afterOrEquals(period.get(0).getStartDate())
-														&& dt.getPeriodDate().getStartDate().get().beforeOrEquals(period.get(0).getEndDate())))
-										.collect(Collectors.toList());
-								lstResultDetailDB.addAll(lstResultDetailDBT);
-							}
-							for (int k = 0; k < lstCondResultNew.size(); k++) {
-								ResultOfEachCondition de = lstCondResultNew.get(k);
-								List<ExtractionResultDetail> lstResultDetailNewT = de.getLstResultDetail().stream()
-										.filter(dt -> lstSid.contains(dt.getSID())
-												&& (!period.isEmpty() && period.get(0).getStartDate() != null && period.get(0).getEndDate() != null													
-														&& dt.getPeriodDate().getStartDate().get().beforeOrEquals(period.get(0).getStartDate())
-														&& dt.getPeriodDate().getStartDate().get().after(period.get(0).getEndDate())))
-										.collect(Collectors.toList());
-								lstResultDetailNew.addAll(lstResultDetailNewT);
-							}
+							//社員ID、日付から絞り込む //TODO #110598
+//							for (int k = 0; k < lstCondResultDB.size(); k++) {
+//								ResultOfEachCondition de = lstCondResultDB.get(k);
+//								List<ExtractionResultDetail> lstResultDetailDBT = de.getLstResultDetail().stream()
+//										.filter(dt -> lstSid.contains(dt.getSID())
+//												&& (!period.isEmpty() && period.get(0).getStartDate() != null && period.get(0).getEndDate() != null
+//														&& dt.getPeriodDate().getStartDate().get().afterOrEquals(period.get(0).getStartDate())
+//														&& dt.getPeriodDate().getStartDate().get().beforeOrEquals(period.get(0).getEndDate())))
+//										.collect(Collectors.toList());
+//								lstResultDetailDB.addAll(lstResultDetailDBT);
+//							}
+//							for (int k = 0; k < lstCondResultNew.size(); k++) {
+//								ResultOfEachCondition de = lstCondResultNew.get(k);
+//								List<ExtractionResultDetail> lstResultDetailNewT = de.getLstResultDetail().stream()
+//										.filter(dt -> lstSid.contains(dt.getSID())
+//												&& (!period.isEmpty() && period.get(0).getStartDate() != null && period.get(0).getEndDate() != null
+//														&& dt.getPeriodDate().getStartDate().get().beforeOrEquals(period.get(0).getStartDate())
+//														&& dt.getPeriodDate().getStartDate().get().after(period.get(0).getEndDate())))
+//										.collect(Collectors.toList());
+//								lstResultDetailNew.addAll(lstResultDetailNewT);
+//							}
 							
 							
 							//追加
@@ -561,32 +561,32 @@ public class AggregationProcessService {
 							} else if (!lstResultDetailDB.isEmpty() && !lstResultDetailNew.isEmpty()){
 								List<ExtractionResultDetail> lstDetailIns = new ArrayList<>();
 								List<ExtractionResultDetail> lstDetailDel = new ArrayList<>();
-								//データベースがあるが抽出した結果がない　-> 削除
-								lstResultDetailDB.stream().forEach(db -> {
-									List<ExtractionResultDetail> lstDel = lstResultDetailNew.stream()
-											.filter(news -> db.getSID().equals(news.getSID())
-													&& db.getPeriodDate().getStartDate().equals(news.getPeriodDate().getStartDate()))
-											.collect(Collectors.toList());
-									if(lstDel.isEmpty()) {
-										lstDetailDel.add(db);
-									}					
-								});
+								//データベースがあるが抽出した結果がない　-> 削除  //TODO #110598
+//								lstResultDetailDB.stream().forEach(db -> {
+//									List<ExtractionResultDetail> lstDel = lstResultDetailNew.stream()
+//											.filter(news -> db.getSID().equals(news.getSID())
+//													&& db.getPeriodDate().getStartDate().equals(news.getPeriodDate().getStartDate()))
+//											.collect(Collectors.toList());
+//									if(lstDel.isEmpty()) {
+//										lstDetailDel.add(db);
+//									}
+//								});
 								if(!lstDetailDel.isEmpty()) {
 									ResultOfEachCondition eachCondDel = new ResultOfEachCondition(y.getChekType(), y.getNo(), lstDetailDel);
 									AlarmExtracResult extracResultDel = new AlarmExtracResult(x.getCondCode(), x.getCategory(), Arrays.asList(eachCondDel));
 									lstExResultDelete.add(extracResultDel);	
 								}
 								
-								//データベースがないが抽出した結果がある ->　追加
-								lstResultDetailNew.stream().forEach(news -> {
-									List<ExtractionResultDetail> lstnew = lstResultDetailDB.stream()
-											.filter(db -> db.getSID().equals(db.getSID())
-													&& db.getPeriodDate().getStartDate().equals(db.getPeriodDate().getStartDate()))
-											.collect(Collectors.toList());
-									if(lstnew.isEmpty()) {
-										lstDetailIns.add(news);
-									}					
-								});
+								//データベースがないが抽出した結果がある ->　追加 //TODO #110598
+//								lstResultDetailNew.stream().forEach(news -> {
+//									List<ExtractionResultDetail> lstnew = lstResultDetailDB.stream()
+//											.filter(db -> db.getSID().equals(db.getSID())
+//													&& db.getPeriodDate().getStartDate().equals(db.getPeriodDate().getStartDate()))
+//											.collect(Collectors.toList());
+//									if(lstnew.isEmpty()) {
+//										lstDetailIns.add(news);
+//									}
+//								});
 								if(!lstDetailIns.isEmpty()) {
 									ResultOfEachCondition eachCondIns = new ResultOfEachCondition(y.getChekType(), y.getNo(), lstDetailIns);
 									AlarmExtracResult extracResultIns = new AlarmExtracResult(x.getCondCode(), x.getCategory(), Arrays.asList(eachCondIns));
