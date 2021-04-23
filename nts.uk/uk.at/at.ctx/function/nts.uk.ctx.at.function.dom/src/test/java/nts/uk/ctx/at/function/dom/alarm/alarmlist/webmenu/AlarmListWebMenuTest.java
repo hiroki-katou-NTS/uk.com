@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.function.dom.alarmlist.webmenu;
+package nts.uk.ctx.at.function.dom.alarm.alarmlist.webmenu;
 
 import mockit.integration.junit4.JMockit;
 import nts.arc.testing.assertion.NtsAssert;

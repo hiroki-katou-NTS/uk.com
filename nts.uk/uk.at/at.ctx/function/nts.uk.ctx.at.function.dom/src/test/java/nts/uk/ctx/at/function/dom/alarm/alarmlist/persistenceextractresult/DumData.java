@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.function.dom.alarmlist.extractionresult;
+package nts.uk.ctx.at.function.dom.alarm.alarmlist.persistenceextractresult;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
@@ -21,17 +21,6 @@ import java.util.List;
 import java.util.Optional;
 
 public class DumData {
-//    public static PersistenceAlarmListExtractResult dumDomain(AlarmPatternCode alarmPatternCode, AlarmPatternName alarmPatternName,
-//                                                              List<AlarmEmployeeList> alarmListExtractResults, String companyID, String autoRunCode) {
-//        return new PersistenceAlarmListExtractResult(
-//                alarmPatternCode,
-//                alarmPatternName,
-//                alarmListExtractResults,
-//                companyID,
-//                autoRunCode
-//        );
-//    }
-
     public static final List<AlarmEmployeeList> alarmListExtractResults =
             Arrays.asList(
                     new AlarmEmployeeList(

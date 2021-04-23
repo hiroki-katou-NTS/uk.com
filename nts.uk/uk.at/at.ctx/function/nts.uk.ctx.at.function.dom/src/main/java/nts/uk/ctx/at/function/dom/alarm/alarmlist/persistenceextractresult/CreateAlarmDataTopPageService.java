@@ -72,10 +72,10 @@ public class CreateAlarmDataTopPageService {
                 .collect(Collectors.groupingBy(WorkplaceHistoryTopAlarmParamMerged::getWorkplaceId));
 
         //$チェックの職場IDList　＝　$所属職場履歴情報リスト　：　map　$.職場ID
-        List<String> checkWkplId = wkplHistoryInfos.stream().map(AffAtWorkplaceExport::getWorkplaceId).distinct().collect(Collectors.toList()); // 1,2,3,4
+        List<String> checkWkplId = wkplHistoryInfos.stream().map(AffAtWorkplaceExport::getWorkplaceId).distinct().collect(Collectors.toList());
 
         //$エラーがある職場IDList　＝　$エラーがある社員IDList　：　map　$社員IDMap.get($)
-        List<String> wkplIdListErrors = empIdErrors.stream().map(empIdMap::get).filter(Objects::nonNull).distinct().collect(Collectors.toList()); // 1,2
+        List<String> wkplIdListErrors = empIdErrors.stream().map(empIdMap::get).filter(Objects::nonNull).distinct().collect(Collectors.toList());
         //$エラーがなくなった職場IDList　＝　$チェックの職場IDList　：　except　$エラーがある職場IDList
         List<String> wkplIdListNotErrors = checkWkplId.stream()
                 .filter(x -> !wkplIdListErrors.contains(x))
@@ -155,7 +155,7 @@ public class CreateAlarmDataTopPageService {
         List<AffAtWorkplaceExport> getWorkplaceId(List<String> sIds, GeneralDate baseDate);
 
         /**
-         * [R-2] 職場、基準日からアラーム通知先の社員を取得する : using EmployeeWorkplaceIdAdapter
+         * [R-2] 職場、基準日からアラーム通知先の社員を取得する : using EmployeeAlarmListAdapter
          *
          * @param workplaceId
          * @param referenceDate

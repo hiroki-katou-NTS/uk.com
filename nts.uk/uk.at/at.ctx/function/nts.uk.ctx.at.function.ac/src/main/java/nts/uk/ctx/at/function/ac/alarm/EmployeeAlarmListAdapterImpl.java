@@ -10,6 +10,9 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import java.util.List;
 
+/**
+ * <<Adapter>> 職場、基準日からアラーム通知先の社員を取得する
+ */
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class EmployeeAlarmListAdapterImpl implements EmployeeAlarmListAdapter {

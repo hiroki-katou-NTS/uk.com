@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.function.dom.alarmlist.extractionresult;
+package nts.uk.ctx.at.function.dom.alarm.alarmlist.persistenceextractresult;
 
 import mockit.Expectations;
 import mockit.Injectable;
@@ -8,7 +8,6 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.function.dom.adapter.alarm.AffAtWorkplaceExport;
 import nts.uk.ctx.at.function.dom.adapter.toppagealarmpub.DeleteInfoAlarmImport;
 import nts.uk.ctx.at.function.dom.adapter.toppagealarmpub.TopPageAlarmImport;
-import nts.uk.ctx.at.function.dom.alarm.alarmlist.persistenceextractresult.CreateAlarmDataTopPageService;
 import nts.uk.shr.com.context.AppContexts;
 import org.junit.Test;
 import org.junit.runner.RunWith;

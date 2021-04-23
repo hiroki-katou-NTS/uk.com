@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.function.dom.alarmlist.extractionresult.num;
+package nts.uk.ctx.at.function.dom.alarm.alarmlist.persistenceextractresult.enums;
 
 import nts.arc.i18n.I18NText;
 

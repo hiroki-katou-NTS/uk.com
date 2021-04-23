@@ -1,12 +1,10 @@
-package nts.uk.ctx.at.function.dom.alarmlist.extractionresult;
+package nts.uk.ctx.at.function.dom.alarm.alarmlist.persistenceextractresult;
 
 import lombok.val;
 import mockit.Expectations;
 import mockit.Injectable;
 import mockit.integration.junit4.JMockit;
 import nts.uk.ctx.at.function.dom.alarm.AlarmPatternCode;
-import nts.uk.ctx.at.function.dom.alarm.alarmlist.persistenceextractresult.ConvertAlarmListToTopPageAlarmDataService;
-import nts.uk.ctx.at.function.dom.alarm.alarmlist.persistenceextractresult.PersistenceAlarmListExtractResult;
 import nts.uk.ctx.at.function.dom.processexecution.ExecutionCode;
 import nts.uk.shr.com.context.AppContexts;
 import org.junit.Test;

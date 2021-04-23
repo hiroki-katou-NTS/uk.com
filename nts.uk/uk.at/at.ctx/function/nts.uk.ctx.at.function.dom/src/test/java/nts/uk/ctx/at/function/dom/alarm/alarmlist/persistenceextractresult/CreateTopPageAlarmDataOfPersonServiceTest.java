@@ -1,11 +1,10 @@
-package nts.uk.ctx.at.function.dom.alarmlist.extractionresult;
+package nts.uk.ctx.at.function.dom.alarm.alarmlist.persistenceextractresult;
 
 import mockit.Injectable;
 import mockit.integration.junit4.JMockit;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.uk.ctx.at.function.dom.adapter.toppagealarmpub.DeleteInfoAlarmImport;
 import nts.uk.ctx.at.function.dom.adapter.toppagealarmpub.TopPageAlarmImport;
-import nts.uk.ctx.at.function.dom.alarm.alarmlist.persistenceextractresult.CreateTopPageAlarmDataOfPersonService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
