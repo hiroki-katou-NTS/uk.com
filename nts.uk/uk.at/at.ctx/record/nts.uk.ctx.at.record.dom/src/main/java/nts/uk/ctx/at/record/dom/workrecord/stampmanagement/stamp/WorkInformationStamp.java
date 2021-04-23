@@ -106,7 +106,9 @@ public class WorkInformationStamp implements DomainValue {
 		}
 		// 勤務場所と職場を返す
 		CreateStampInfo createStampInfo = empInfoTerminal.get().getCreateStampInfo();
-		return new WorkInformationTemporary(createStampInfo.getWorkPlaceId(), createStampInfo.getWorkLocationCd());
+		return new WorkInformationTemporary(
+				createStampInfo.getWorkPlaceId().isPresent() ?  Optional.of(createStampInfo.getWorkPlaceId().get().toString()) : Optional.empty(), 
+				createStampInfo.getWorkLocationCd());
 	}
 	
 	// 応援カード情報で職場IDを補正する

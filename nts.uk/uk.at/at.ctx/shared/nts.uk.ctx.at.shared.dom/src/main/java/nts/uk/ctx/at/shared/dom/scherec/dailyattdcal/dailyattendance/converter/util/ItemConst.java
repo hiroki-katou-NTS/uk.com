@@ -328,6 +328,7 @@ public interface ItemConst extends Cloneable {
 	public final String WORKLOCATIONCD = "場所";
 	public final String WORKGROUP = "作業グループ";
 	public final String WORKCODE = "作業CD";
+	public final String WORKREMARKS = "作業入力備考";
 	
 	
 }

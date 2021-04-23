@@ -14,6 +14,7 @@ import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.find.dailyperform.customjson.CustomGeneralDateSerializer;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
+import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.EngravingMethod;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.ReasonTimeChange;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
@@ -26,6 +27,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.u
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenWorkTimeSheetOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.TimeSheetOfAttendanceEachOuenSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.WorkContent;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.WorkinputRemarks;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.record.WorkplaceOfWorkEachOuen;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.work.WorkGroup;
 import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
@@ -65,9 +67,9 @@ public class OuenWorkTimeSheetOfDailyAttendanceDto extends AttendanceItemCommon{
 			dto.setEmployeeId(sid);
 			dto.setDate(ymd);
 			dto.setNo(domain.getWorkNo());
-			dto.setWorkContent(new WorkContentDto(domain.getWorkContent().getCompanyId(), 
+			dto.setWorkContent(new WorkContentDto( 
 					new WorkplaceOfWorkEachOuenDto(
-							domain.getWorkContent().getWorkplace().getWorkplaceId(),
+							domain.getWorkContent().getWorkplace().getWorkplaceId() == null ? null : domain.getWorkContent().getWorkplace().getWorkplaceId().v(),
 							!domain.getWorkContent().getWorkplace().getWorkLocationCD().isPresent() ? null :
 							domain.getWorkContent().getWorkplace().getWorkLocationCD().get().v()), 
 					new WorkGroupDto(
@@ -75,7 +77,8 @@ public class OuenWorkTimeSheetOfDailyAttendanceDto extends AttendanceItemCommon{
 							(domain.getWorkContent().getWork().isPresent() && domain.getWorkContent().getWork().get().getWorkCD2().isPresent()) ? domain.getWorkContent().getWork().get().getWorkCD2().get().v() : null, 
 							(domain.getWorkContent().getWork().isPresent() && domain.getWorkContent().getWork().get().getWorkCD3().isPresent()) ? domain.getWorkContent().getWork().get().getWorkCD3().get().v() : null, 
 							(domain.getWorkContent().getWork().isPresent() && domain.getWorkContent().getWork().get().getWorkCD4().isPresent()) ? domain.getWorkContent().getWork().get().getWorkCD4().get().v() : null, 
-							(domain.getWorkContent().getWork().isPresent() && domain.getWorkContent().getWork().get().getWorkCD5().isPresent()) ? domain.getWorkContent().getWork().get().getWorkCD5().get().v() : null)));
+							(domain.getWorkContent().getWork().isPresent() && domain.getWorkContent().getWork().get().getWorkCD5().isPresent()) ? domain.getWorkContent().getWork().get().getWorkCD5().get().v() : null),
+					(domain.getWorkContent().getWorkRemarks().isPresent() ? domain.getWorkContent().getWorkRemarks().get().v() : null)));
 			dto.setTimeSheet(new TimeSheetOfAttendanceEachOuenSheetDto(domain.getTimeSheet().getWorkNo().v(), 
 					new WorkTimeInformationDto(new ReasonTimeChangeDto(
 							(domain.getTimeSheet().getStart().isPresent() && domain.getTimeSheet().getStart().get().getReasonTimeChange() != null && domain.getTimeSheet().getStart().get().getReasonTimeChange().getTimeChangeMeans() != null) ? domain.getTimeSheet().getStart().get().getReasonTimeChange().getTimeChangeMeans().value : null, 
@@ -167,16 +170,17 @@ public class OuenWorkTimeSheetOfDailyAttendanceDto extends AttendanceItemCommon{
 	@Override
 	public OuenWorkTimeSheetOfDailyAttendance toDomain(String employeeId, GeneralDate date) {
 		
-		WorkContent workContent = WorkContent.create(this.workContent.getCompanyId(), 
+		WorkContent workContent = WorkContent.create( 
 				WorkplaceOfWorkEachOuen.create(
-						this.workContent.getWorkplace() == null ? null : this.workContent.getWorkplace().getWorkplaceId(), 
+						new WorkplaceId(this.workContent.getWorkplace() == null ? null : this.workContent.getWorkplace().getWorkplaceId()), 
 						new WorkLocationCD(this.workContent.getWorkplace() == null ? null : this.workContent.getWorkplace().getWorkLocationCD())), 
 				Optional.ofNullable(WorkGroup.create(
 						this.workContent.getWork() == null ? null : this.workContent.getWork().getWorkCD1(), 
 						this.workContent.getWork() == null ? null : this.workContent.getWork().getWorkCD2(), 
 						this.workContent.getWork() == null ? null : this.workContent.getWork().getWorkCD3(), 
 						this.workContent.getWork() == null ? null : this.workContent.getWork().getWorkCD4(), 
-						this.workContent.getWork() == null ? null : this.workContent.getWork().getWorkCD5())));
+						this.workContent.getWork() == null ? null : this.workContent.getWork().getWorkCD5())), 
+				this.workContent.getWorkRemarks() == null ? Optional.empty() : Optional.of(new WorkinputRemarks(this.workContent.getWorkRemarks())));
 		
 		ReasonTimeChange reasonTimeChangeStart = new ReasonTimeChange(TimeChangeMeans.valueOf(this.timeSheet.getStart().getReasonTimeChange().getTimeChangeMeans()), 
 																 Optional.ofNullable(EngravingMethod.valueOf(this.timeSheet.getStart().getReasonTimeChange().getEngravingMethod())));
