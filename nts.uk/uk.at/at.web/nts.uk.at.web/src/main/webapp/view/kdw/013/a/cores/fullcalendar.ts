@@ -36,7 +36,7 @@ module nts.uk.ui.components.fullcalendar {
 
     type Style = 'breaktime' | 'selectday';
 
-    type EventStatus = 'new' | 'delete' | 'normal';
+    type EventStatus = 'new' | 'add' | 'update' | 'delete' | 'normal';
 
     type EventRaw = EventSlim & {
         title: string;
@@ -315,6 +315,13 @@ module nts.uk.ui.components.fullcalendar {
         }
         .fc-container .fc-popup-editor .toolbar svg:not(:last-child) {
             margin-right: 10px;
+        }
+        .fc-container .fc-one-day-button,
+        .fc-container .fc-five-day-button,
+        .fc-container .fc-full-week-button,
+        .fc-container .fc-full-month-button,
+        .fc-container .fc-list-week-button {
+            min-width: 60px !important;
         }
         .fc-container .fc-one-day-button.active,
         .fc-container .fc-five-day-button.active,
@@ -2043,7 +2050,7 @@ module nts.uk.ui.components.fullcalendar {
                     vm.calendar.gotoDate(formatDate(id));
 
                     // update selected header color
-                    vm.updateStyle('selectday', `.fc-container .fc-timegrid.fc-timeGridWeek-view .fc-day[data-date='${formatDate(id, 'YYYY-MM-DD')}'] { background-color: #ffffcc; }`);
+                    vm.updateStyle('selectday', `.fc-container .fc-timegrid.fc-timeGridWeek-view th.fc-day[data-date='${formatDate(id, 'YYYY-MM-DD')}'] { background-color: #ffffcc; }`);
                 },
                 disposeWhenNodeIsRemoved: vm.$el
             });
@@ -2175,7 +2182,6 @@ module nts.uk.ui.components.fullcalendar {
                 .removeAttr('data-bind')
                 .find('[data-bind]')
                 .removeAttr('data-bind');
-
 
             // update datasource when event change
             subscribeEvent
@@ -2517,6 +2523,7 @@ module nts.uk.ui.components.fullcalendar {
                         // change status for subscribe & rebind
                         event.setExtendedProp('status', 'delete');
 
+                        // remove???
                         event.remove();
 
                         // trigger update from parent view
@@ -2553,8 +2560,11 @@ module nts.uk.ui.components.fullcalendar {
                             event.remove()
                         } else if (cf === 'cancel') {
                             event.setExtendedProp('id', randomId());
-                            event.setExtendedProp('status', 'update');
+                            event.setExtendedProp('status', 'add');
                         }
+
+                        // trigger update from parent view
+                        mutated.valueHasMutated();
                     })
                     .then(() => {
                         // trigger update from parent view

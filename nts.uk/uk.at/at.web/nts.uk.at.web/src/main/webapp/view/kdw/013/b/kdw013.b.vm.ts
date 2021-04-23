@@ -3,6 +3,8 @@ module nts.uk.ui.at.kdp013.b {
 
     const { getTimeOfDate, number2String } = share;
 
+    const API_REMOVE = '/screen/at/kdw013/delete';
+
     @handler({
         bindingName: 'content',
         validatable: true,
@@ -20,7 +22,6 @@ module nts.uk.ui.at.kdp013.b {
         }
     }
 
-
     @handler({
         bindingName: COMPONENT_NAME,
         validatable: true,
@@ -35,7 +36,6 @@ module nts.uk.ui.at.kdp013.b {
 
             return { controlsDescendantBindings: true };
         }
-
     }
 
     @component({
@@ -47,7 +47,7 @@ module nts.uk.ui.at.kdp013.b {
                 <div class="actions">
                     <!-- ko if: $component.params.mode -->
                     <button data-bind="click: $component.params.update, icon: 204, size: 12"></button>
-                    <button data-bind="click: $component.params.remove, icon: 203, size: 12"></button>
+                    <button data-bind="click: $component.remove, icon: 203, size: 12"></button>
                     <!-- /ko -->
                     <button data-bind="click: $component.params.close, icon: 202, size: 12"></button>
                 </div>
@@ -164,6 +164,20 @@ module nts.uk.ui.at.kdp013.b {
                 .removeAttr('data-bind')
                 .find('[data-bind]')
                 .removeAttr('data-bind');
+        }
+
+        remove() {
+            const vm = this;
+            const { data } = vm.params;
+            const { extendedProps } = ko.unwrap(data);
+            const { employeeId, confirmerId, date } = extendedProps;
+            const params = { employeeId, date, confirmerId };
+
+            vm
+                .$ajax('at', API_REMOVE, params)
+                .then(() => {
+                    vm.params.remove();
+                });
         }
     }
 

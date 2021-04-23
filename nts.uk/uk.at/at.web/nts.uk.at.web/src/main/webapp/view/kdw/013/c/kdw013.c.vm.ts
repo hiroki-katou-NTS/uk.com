@@ -84,6 +84,16 @@ module nts.uk.ui.at.kdp013.c {
     const { randomId } = nts.uk.util;
     const { number2String, string2Number, validateNumb, getTimeOfDate, setTimeOfDate } = share;
 
+    type API = {
+        readonly START: string;
+        readonly SELECT: string;
+    };
+
+    const API: API = {
+        START: '/screen/at/kdw013/c/start',
+        SELECT: '/screen/at/kdw013/c/select'
+    };
+
     type EventModel = {
         timeRange: KnockoutObservable<share.TimeRange>;
         descriptions: KnockoutObservable<string>;
