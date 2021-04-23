@@ -21,6 +21,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.OverTimeOfTimeZoneSetPolicy;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.policy.FixedWorkTimezoneSetPolicy;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimedisplay.DisplayMode;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.HalfDayWorkSet;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -49,15 +50,15 @@ public class FixedWorkTimezoneSetPolicyImpl implements FixedWorkTimezoneSetPolic
 	 */
 	@Override
 	public void validateFixedAndDiff(BundledBusinessException be, PredetemineTimeSetting predTime,
-			FixedWorkTimezoneSet worktimeSet, DisplayMode displayMode, AmPmAtr dayAtr, boolean useHalfDayShift) {
+			FixedWorkTimezoneSet worktimeSet, DisplayMode displayMode, AmPmAtr dayAtr) {
 		// Validate list working timezone
 		worktimeSet.getLstWorkingTimezone().forEach(workingTimezone -> {
-			this.emTzPolicy.validateFixedAndDiff(be, predTime, workingTimezone, displayMode, dayAtr, useHalfDayShift);
+			this.emTzPolicy.validateFixedAndDiff(be, predTime, workingTimezone, displayMode, dayAtr);
 		});
 
 		// Validate list OT timezone
 		worktimeSet.getLstOTTimezone().forEach(workingTimezone -> {
-			this.otPolicy.validate(be, predTime, workingTimezone, displayMode, dayAtr, useHalfDayShift);
+			this.otPolicy.validate(be, predTime, workingTimezone, displayMode, dayAtr);
 		});
 	}
 
@@ -74,15 +75,15 @@ public class FixedWorkTimezoneSetPolicyImpl implements FixedWorkTimezoneSetPolic
 	 */
 	@Override
 	public void validateFlex(BundledBusinessException be, PredetemineTimeSetting predTime,
-			FixedWorkTimezoneSet worktimeSet, DisplayMode displayMode, AmPmAtr dayAtr, boolean useHalfDayShift) {
+			FixedWorkTimezoneSet worktimeSet, DisplayMode displayMode, AmPmAtr dayAtr) {
 		// Validate list working timezone
 		worktimeSet.getLstWorkingTimezone().forEach(workingTimezone -> {
-			this.emTzPolicy.validateFlex(be, predTime, workingTimezone, displayMode, dayAtr, useHalfDayShift);
+			this.emTzPolicy.validateFlex(be, predTime, workingTimezone, displayMode, dayAtr);
 		});
 
 		// Validate list OT timezone
 		worktimeSet.getLstOTTimezone().forEach(workingTimezone -> {
-			this.otPolicy.validate(be, predTime, workingTimezone, displayMode, dayAtr, useHalfDayShift);
+			this.otPolicy.validate(be, predTime, workingTimezone, displayMode, dayAtr);
 		});
 	}
 
@@ -98,12 +99,12 @@ public class FixedWorkTimezoneSetPolicyImpl implements FixedWorkTimezoneSetPolic
 	 */
 	@Override
 	public void filterTimezone(PredetemineTimeSetting predTime, FixedWorkTimezoneSet origin, DisplayMode displayMode,
-			AmPmAtr dayAtr, boolean useHalfDayShift) {
+			AmPmAtr dayAtr) {
 		TimeWithDayAttr morningEndTime = predTime.getPrescribedTimezoneSetting().getMorningEndTime();
 		TimeWithDayAttr afternoonStartTime = predTime.getPrescribedTimezoneSetting().getAfternoonStartTime();
 
 		// Filter AM timezone
-		if ((AmPmAtr.AM.equals(dayAtr) && DisplayMode.DETAIL.equals(displayMode) && !useHalfDayShift)
+		if ((AmPmAtr.AM.equals(dayAtr) && DisplayMode.DETAIL.equals(displayMode))
 				|| (AmPmAtr.AM.equals(dayAtr) && DisplayMode.SIMPLE.equals(displayMode))) {
 
 			// Filter work timezone
@@ -141,7 +142,7 @@ public class FixedWorkTimezoneSetPolicyImpl implements FixedWorkTimezoneSetPolic
 		}
 
 		// Filter PM timezone
-		if ((AmPmAtr.PM.equals(dayAtr) && DisplayMode.DETAIL.equals(displayMode) && !useHalfDayShift)
+		if ((AmPmAtr.PM.equals(dayAtr) && DisplayMode.DETAIL.equals(displayMode))
 				|| (AmPmAtr.PM.equals(dayAtr) && DisplayMode.SIMPLE.equals(displayMode))) {
 
 			// Filter work timezone

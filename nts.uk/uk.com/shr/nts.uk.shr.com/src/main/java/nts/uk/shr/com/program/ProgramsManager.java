@@ -3823,6 +3823,12 @@ public class ProgramsManager {
 
 
 
+    /** KWR008C */
+    public static final Program KWR008C = new Program(WebAppId.AT
+										    		, ProgramIdConsts.KWR008C
+										    		, "KWR008_100"
+										    		, "/view/kwr/008/c/index.xhtml");
+
     /**
      * All programs map.
      */

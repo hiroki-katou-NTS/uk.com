@@ -9,6 +9,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.FixedWorkTimezoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimedisplay.DisplayMode;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.HalfDayWorkSet;
 
 /**
  * The Interface FixedWorkTimezoneSetPolicy.
@@ -25,7 +26,7 @@ public interface FixedWorkTimezoneSetPolicy {
 	 * @param dayAtr the day atr
 	 * @param useHalfDayShift the use half day shift
 	 */
-	void validateFixedAndDiff(BundledBusinessException be, PredetemineTimeSetting predTime, FixedWorkTimezoneSet worktimeSet, DisplayMode displayMode, AmPmAtr dayAtr, boolean useHalfDayShift);
+	void validateFixedAndDiff(BundledBusinessException be, PredetemineTimeSetting predTime, FixedWorkTimezoneSet worktimeSet, DisplayMode displayMode, AmPmAtr dayAtr);
 
 	/**
 	 * Validate flex.
@@ -37,7 +38,7 @@ public interface FixedWorkTimezoneSetPolicy {
 	 * @param dayAtr the day atr
 	 * @param useHalfDayShift the use half day shift
 	 */
-	void validateFlex(BundledBusinessException be, PredetemineTimeSetting predTime, FixedWorkTimezoneSet worktimeSet, DisplayMode displayMode, AmPmAtr dayAtr, boolean useHalfDayShift);
+	void validateFlex(BundledBusinessException be, PredetemineTimeSetting predTime, FixedWorkTimezoneSet worktimeSet, DisplayMode displayMode, AmPmAtr dayAtr);
 
 	/**
 	 * Filter timezone.
@@ -48,5 +49,5 @@ public interface FixedWorkTimezoneSetPolicy {
 	 * @param dayAtr the day atr
 	 * @param useHalfDayShift the use half day shift
 	 */
-	void filterTimezone(PredetemineTimeSetting predTime, FixedWorkTimezoneSet origin, DisplayMode displayMode, AmPmAtr dayAtr, boolean useHalfDayShift);
+	void filterTimezone(PredetemineTimeSetting predTime, FixedWorkTimezoneSet origin, DisplayMode displayMode, AmPmAtr dayAtr);
 }
