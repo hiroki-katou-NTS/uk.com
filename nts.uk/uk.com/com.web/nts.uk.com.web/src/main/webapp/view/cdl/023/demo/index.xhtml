@@ -100,6 +100,31 @@
 								</td>
 							</tr>
 						</com:ko>
+						<com:ko tag="if" bind="selectedTarget() == 10">
+							<tr>
+								<td>作業枠NO</td>
+								<td>
+									<div data-bind="ntsComboBox: {
+														name: '#[KMT009_7]',
+														options: [
+															{code: 1, name: 'Task frame 1'},
+															{code: 2, name: 'Task frame 2'},
+															{code: 3, name: 'Task frame 3'},
+															{code: 4, name: 'Task frame 4'},
+															{code: 5, name: 'Task frame 5'}
+														],
+														optionsValue: 'code',
+														visibleItemsCount: 5,
+														value: workFrameNoSelection,
+														optionsText: 'name',
+														editable: false,
+														enable: true,
+														required: true,
+														selectFirstIfNull: true
+													}"></div>
+								</td>
+							</tr>
+						</com:ko>
 						<tr>
 							<td>設定済項目リスト</td>
 							<td><input

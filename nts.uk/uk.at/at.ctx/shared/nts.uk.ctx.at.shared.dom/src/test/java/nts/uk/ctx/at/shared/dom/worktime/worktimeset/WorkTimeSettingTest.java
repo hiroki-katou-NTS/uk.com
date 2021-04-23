@@ -133,8 +133,8 @@ public class WorkTimeSettingTest {
 
 		public static WorkTimeSetting getDummyWorkSetting(String code, WorkTimeDailyAtr workForm, WorkTimeMethodSet method) {
 			return new WorkTimeSetting("0000001-001", new WorkTimeCode(code), new WorkTimeDivision(workForm, method)
-					, AbolishAtr.NOT_ABOLISH, new ColorCode("#ffffff")
-					, new WorkTimeDisplayName(new WorkTimeName("表示名#"), new WorkTimeAbName("略名"), new WorkTimeSymbol("記"))
+					, AbolishAtr.NOT_ABOLISH
+					, new WorkTimeDisplayName(new WorkTimeName("表示名#"), new WorkTimeAbName("略名"))
 					, new Memo(""), new WorkTimeNote(""));
 		}
 		
