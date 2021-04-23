@@ -4,18 +4,16 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.find.worktime.common.dto;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import lombok.Getter;
 import lombok.Setter;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.shared.app.command.worktime.common.dto.RoundingTimeDto;
 import nts.uk.ctx.at.shared.dom.worktime.common.PrioritySetting;
-import nts.uk.ctx.at.shared.dom.worktime.common.RoundingSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.RoundingTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneStampSetSetMemento;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * The Class WorkTimezoneStampSetDto.

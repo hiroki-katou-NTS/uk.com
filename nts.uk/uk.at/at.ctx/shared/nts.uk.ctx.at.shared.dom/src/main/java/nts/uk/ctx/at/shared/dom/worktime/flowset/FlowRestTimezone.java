@@ -133,7 +133,7 @@ public class FlowRestTimezone extends WorkTimeDomainObject implements Cloneable{
 	 * @param oldDomain
 	 *            the old domain
 	 */
-	public void correctData(ScreenMode screenMode, FlowRestTimezone oldDomain) {
+	public void correctData(FlowRestTimezone oldDomain) {
 		if (!this.useHereAfterRestSet) {
 			this.hereAfterRestSet = oldDomain.getHereAfterRestSet();
 		}

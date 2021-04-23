@@ -131,6 +131,21 @@ public class JpaNarrowingByWorkplaceRepository extends JpaRepository implements 
 
     }
 
+    @Override
+    public List<NarrowingDownTaskByWorkplace> getListWorkByCidAndFrameNo(String cid, TaskFrameNo taskFrameNo) {
+        EntityManager entityManager = this.getEntityManager();
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<KsrmtTaskAssignWkp> criteriaQuery = criteriaBuilder.createQuery(KsrmtTaskAssignWkp.class);
+        Root<KsrmtTaskAssignWkp> root = criteriaQuery.from(KsrmtTaskAssignWkp.class);
+        criteriaQuery.select(root);
+        List<Predicate> conditions = new ArrayList<>();
+        conditions.add(criteriaBuilder.equal(root.get(KsrmtTaskAssignWkp_.pk).get(KsrmtTaskAssignWkpPk_.FRAMENO), taskFrameNo.v()));
+        conditions.add(criteriaBuilder.equal(root.get(KsrmtTaskAssignWkp_.companyId), cid));
+        criteriaQuery.where(conditions.toArray(new Predicate[]{}));
+        TypedQuery<KsrmtTaskAssignWkp> query = entityManager.createQuery(criteriaQuery);
+        return this.toDomains(query.getResultList());
+    }
+
     private List<NarrowingDownTaskByWorkplace> toDomains(List<KsrmtTaskAssignWkp> entitys) {
         List<KsrmtTaskAssignWkpPk> listPk = entitys.stream().map(KsrmtTaskAssignWkp::getPk).collect(Collectors.toList());
         List<NarrowingDownTaskByWorkplace> rs = new ArrayList<>();

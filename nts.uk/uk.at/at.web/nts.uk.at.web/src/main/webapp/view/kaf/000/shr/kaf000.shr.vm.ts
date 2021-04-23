@@ -275,7 +275,8 @@ module nts.uk.at.view.kaf000.shr.viewmodel {
                 useDivision = appDispInfoStartupOutput.appDispInfoWithDateOutput.approvalFunctionSet.appUseSetLst[0].useDivision,
                 recordDate = appDispInfoStartupOutput.appDispInfoNoDateOutput.applicationSetting.recordDate,
                 empHistImport = appDispInfoStartupOutput.appDispInfoWithDateOutput.empHistImport,
-                opErrorFlag = appDispInfoStartupOutput.appDispInfoWithDateOutput.opErrorFlag,
+                opErrorFlag = 3,
+               // opErrorFlag = appDispInfoStartupOutput.appDispInfoWithDateOutput.opErrorFlag,
                 msgID = "";
             if(mode && useDivision == 0) {
 				if(recordDate == 0) {
@@ -358,13 +359,17 @@ module nts.uk.at.view.kaf000.shr.viewmodel {
 			});
 		}
 		
-		public static handleAfterRegister(result: any, isSendMail: boolean, vm: any, isAgentMode: boolean) {
+		public static handleAfterRegister(result: any, isSendMail: boolean, vm: any, isMultiEmp: boolean, employeeInfoLst?: any) {
 			if(result.autoSendMail) {
 				CommonProcess.handleMailResult(result, vm).then(() => {
 					location.reload();		
 				});
 			} else if(isSendMail) {
-				let command = { appIDLst: result.appIDLst, isAgentMode: isAgentMode };
+				let command = {
+					appIDLst: result.appIDLst,
+					isMultiEmp: isMultiEmp,
+					employeeInfoLst: employeeInfoLst
+				};
                 nts.uk.ui.windows.setShared("KDL030_PARAM", command);
                 nts.uk.ui.windows.sub.modal("/view/kdl/030/a/index.xhtml").onClosed(() => {
                     location.reload();

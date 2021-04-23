@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.request.dom.application.common.service.application;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,6 +11,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.apache.logging.log4j.util.Strings;
+
 import nts.arc.i18n.I18NText;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
@@ -18,9 +21,12 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.PesionInforIm
 import nts.uk.ctx.at.request.dom.application.common.adapter.sys.EnvAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.sys.dto.MailDestinationImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootStateAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalBehaviorAtrImport_New;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalFrameImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseStateImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootContentImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootStateImport_New;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverStateImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ErrorFlagImport;
 import nts.uk.ctx.at.request.dom.application.common.service.application.output.AppSendMailByEmp;
 import nts.uk.ctx.at.request.dom.application.common.service.application.output.ApplicationForSendOutput;
@@ -51,9 +57,13 @@ public class ApplicationForSendServiceImpl implements IApplicationForSendService
 	 * ダイアログを開く kdl030
 	 */
 	@Override
-	public ApplicationForSendOutput getApplicationForSend(List<String> appIDLst) {
+	public ApplicationForSendOutput getApplicationForSend(SendMailDialogParam param) {
 		String companyID = AppContexts.user().companyId();
 		List<AppSendMailByEmp> appSendMailByEmpLst = new ArrayList<>();
+		List<String> appIDLst = param.getAppIDLst();
+		if(!param.isMultiEmp()) {
+			appIDLst = Arrays.asList(appIDLst.get(0));
+		}
 		// ドメインモデル「申請メール設定」を取得する(get domain model 「」)
 		AppEmailSet appEmailSet = appEmailSetRepository.findByDivision(Division.APPLICATION_APPROVAL);
 		// ドメイン「申請」より各種情報を取得する
@@ -86,6 +96,7 @@ public class ApplicationForSendServiceImpl implements IApplicationForSendService
 							application.getAppDate().getApplicationDate()), 
 					ErrorFlagImport.NO_ERROR);
 			ApprovalRootOutput approvalRoot = ApprovalRootOutput.fromApprovalRootImportToOutput(approvalRootContentImport);
+			flatApprover(approvalRoot);
 			String applicantName = applicantNameMap.get(application.getEmployeeID());
 			/**
 			 * 申請者のメールアドレス
@@ -97,5 +108,61 @@ public class ApplicationForSendServiceImpl implements IApplicationForSendService
 		}
 		
 		return new ApplicationForSendOutput(mailTemplate, appEmailSet, appSendMailByEmpLst);
+	}
+	
+	private void flatApprover(ApprovalRootOutput approvalRoot) {
+		for(ApprovalPhaseStateImport_New phase : approvalRoot.getListApprovalPhaseState()) {
+			for(ApprovalFrameImport_New frame : phase.getListApprovalFrame()) {
+				List<ApproverStateImport_New> listApprover = new ArrayList<>();
+				for(ApproverStateImport_New approver : frame.getListApprover()) {
+					if(approver.getApprovalAtr()==ApprovalBehaviorAtrImport_New.UNAPPROVED && Strings.isNotBlank(approver.getRepresenterID())) {
+						listApprover.add(new ApproverStateImport_New(
+								approver.getApproverID(), 
+								approver.getApprovalAtr(), 
+								approver.getAgentID(), 
+								approver.getApproverName(), 
+								approver.getAgentName(), 
+								"", 
+								"", 
+								approver.getApprovalDate(), 
+								approver.getApprovalReason(), 
+								approver.getApproverEmail(), 
+								approver.getAgentMail(), 
+								"", 
+								approver.getApproverInListOrder()));
+						listApprover.add(new ApproverStateImport_New(
+								approver.getRepresenterID(), 
+								approver.getApprovalAtr(), 
+								approver.getAgentID(), 
+								approver.getRepresenterName(), 
+								approver.getAgentName(), 
+								"", 
+								"", 
+								approver.getApprovalDate(), 
+								approver.getApprovalReason(), 
+								approver.getRepresenterEmail(), 
+								approver.getAgentMail(), 
+								"", 
+								approver.getApproverInListOrder()));
+					} else {
+						listApprover.add(new ApproverStateImport_New(
+								approver.getApproverID(), 
+								approver.getApprovalAtr(), 
+								approver.getAgentID(), 
+								approver.getApproverName(), 
+								approver.getAgentName(), 
+								approver.getRepresenterID(), 
+								approver.getRepresenterName(), 
+								approver.getApprovalDate(), 
+								approver.getApprovalReason(), 
+								approver.getApproverEmail(), 
+								approver.getAgentMail(), 
+								approver.getRepresenterEmail(), 
+								approver.getApproverInListOrder()));
+					}
+				}
+				frame.setListApprover(listApprover);
+			}
+		}
 	}
 }

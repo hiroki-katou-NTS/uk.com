@@ -52,7 +52,7 @@ public class PredetemineTimeSetting extends WorkTimeAggregateRoot implements Clo
 
 	/** The night shift. */
 	// 夜勤区分
-	private boolean nightShift;
+//	private boolean nightShift;
 
 	/** The prescribed timezone setting. */
 	// 所定時間帯
@@ -76,7 +76,7 @@ public class PredetemineTimeSetting extends WorkTimeAggregateRoot implements Clo
 		this.rangeTimeDay = memento.getRangeTimeDay();
 		this.workTimeCode = memento.getWorkTimeCode();
 		this.predTime = memento.getPredTime();
-		this.nightShift = memento.isNightShift();
+//		this.nightShift = memento.isNightShift();
 		this.prescribedTimezoneSetting = memento.getPrescribedTimezoneSetting();
 		this.startDateClock = memento.getStartDateClock();
 		this.predetermine = memento.isPredetermine();
@@ -92,7 +92,7 @@ public class PredetemineTimeSetting extends WorkTimeAggregateRoot implements Clo
 		memento.setRangeTimeDay(this.rangeTimeDay);
 		memento.setWorkTimeCode(this.workTimeCode);
 		memento.setPredTime(this.predTime);
-		memento.setNightShift(this.nightShift);
+//		memento.setNightShift(this.nightShift);
 		memento.setPrescribedTimezoneSetting(this.prescribedTimezoneSetting);
 		memento.setStartDateClock(this.startDateClock);
 		memento.setPredetermine(this.predetermine);
@@ -102,14 +102,14 @@ public class PredetemineTimeSetting extends WorkTimeAggregateRoot implements Clo
 	 * Constructor
 	 */
 	public PredetemineTimeSetting(String companyId, AttendanceTime rangeTimeDay, WorkTimeCode workTimeCode,
-			PredetermineTime predTime, boolean nightShift, PrescribedTimezoneSetting prescribedTimezoneSetting,
+			PredetermineTime predTime, PrescribedTimezoneSetting prescribedTimezoneSetting,
 			TimeWithDayAttr startDateClock, boolean predetermine) {
 		super();
 		this.companyId = companyId;
 		this.rangeTimeDay = rangeTimeDay;
 		this.workTimeCode = workTimeCode;
 		this.predTime = predTime;
-		this.nightShift = nightShift;
+//		this.nightShift = nightShift;
 		this.prescribedTimezoneSetting = prescribedTimezoneSetting;
 		this.startDateClock = startDateClock;
 		this.predetermine = predetermine;
@@ -378,7 +378,7 @@ public class PredetemineTimeSetting extends WorkTimeAggregateRoot implements Clo
 		if (screenMode == ScreenMode.SIMPLE) {
 			// Simple mode
 			this.rangeTimeDay = oldDomain.getRangeTimeDay();
-			this.nightShift = oldDomain.isNightShift();
+//			this.nightShift = oldDomain.isNightShift();
 			this.predetermine = oldDomain.isPredetermine();
 		}
 	}
@@ -395,7 +395,7 @@ public class PredetemineTimeSetting extends WorkTimeAggregateRoot implements Clo
 		if (screenMode == ScreenMode.SIMPLE) {
 			// Simple mode
 			this.rangeTimeDay = new AttendanceTime(TimeWithDayAttr.MINUTES_OF_DAY);
-			this.nightShift = false;
+//			this.nightShift = false;
 			this.predetermine = false;
 		}
 	}
@@ -412,7 +412,7 @@ public class PredetemineTimeSetting extends WorkTimeAggregateRoot implements Clo
 			cloned.rangeTimeDay = new AttendanceTime(this.rangeTimeDay.v());
 			cloned.workTimeCode = new WorkTimeCode(this.workTimeCode.v());
 			cloned.predTime = this.predTime.clone();
-			cloned.nightShift = this.nightShift ? true : false ;
+//			cloned.nightShift = this.nightShift ? true : false ;
 			cloned.prescribedTimezoneSetting = this.prescribedTimezoneSetting.clone();
 			cloned.startDateClock = new TimeWithDayAttr(this.startDateClock.valueAsMinutes());
 			cloned.predetermine = this.predetermine ? true : false ;

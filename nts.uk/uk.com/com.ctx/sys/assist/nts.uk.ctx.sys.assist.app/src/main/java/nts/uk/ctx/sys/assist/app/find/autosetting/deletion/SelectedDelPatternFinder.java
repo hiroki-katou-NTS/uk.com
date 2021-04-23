@@ -38,7 +38,8 @@ public class SelectedDelPatternFinder {
 		List<DataDeletionSelectionCategory> selectCategories = dataDeletionSelectionCategoryRepository
 				.findByPatternCdAndPatternAtrAndSystemTypes(command.getPatternCode(),
 						command.getPatternClassification(), command.getCategories().stream()
-								.map(DeleteCategoryDto::getSystemType).collect(Collectors.toList()));
+								.map(DeleteCategoryDto::getSystemType).collect(Collectors.toList()),
+						AppContexts.user().contractCode());
 		// ドメインモデル「カテゴリ」を取得する
 		List<CategoryForDelete> categories = categoryForDeleteRepository.getCategoryByListId(
 				selectCategories.stream().map(c -> c.getCategoryId().v()).collect(Collectors.toList()));
@@ -46,25 +47,26 @@ public class SelectedDelPatternFinder {
 				AppContexts.user().contractCode(), command.getPatternCode(), command.getPatternClassification());
 
 		// List<選択カテゴリ名称＞を作成
-		dto.setSelectedCategories(selectCategories.stream().map(sc -> {
-			SelectionDelCategoryNameDto obj = new SelectionDelCategoryNameDto();
-			obj.setCategoryId(sc.getCategoryId().v());
-			obj.setCategoryName(
-					command.getCategories().stream().filter(u -> u.getCategoryId().equals(sc.getCategoryId().v()))
-							.filter(u -> u.getSystemType() == sc.getSystemType().value).findFirst()
-							.map(DeleteCategoryDto::getCategoryName).orElse(null));
-			obj.setPatternClassification(sc.getPatternClassification().value);
-			obj.setPatternCode(sc.getPatternCode().v());
-			obj.setRetentionPeriod(categories.stream().filter(u -> u.getCategoryId().v().equals(sc.getCategoryId().v()))
-					.findFirst().map(c -> c.getTimeStore().nameId).orElse(null));
-			obj.setSystemType(sc.getSystemType().value);
-			op.ifPresent(pattern -> {
-				DataDeletionPatternSettingDto patternDto = new DataDeletionPatternSettingDto();
-				pattern.setMemento(patternDto);
-				obj.setPattern(patternDto);
-			});
-			return obj;
-		}).sorted(Comparator.comparing(SelectionDelCategoryNameDto::getCategoryId)).collect(Collectors.toList()));
+		dto.setSelectedCategories(selectCategories.stream()
+				.map(sc -> SelectionDelCategoryNameDto.builder()
+						.categoryId(sc.getCategoryId().v())
+						.categoryName(command.getCategories().stream()
+								.filter(u -> u.getCategoryId().equals(sc.getCategoryId().v())
+										&& u.getSystemType() == sc.getSystemType().value)
+								.findFirst()
+								.map(DeleteCategoryDto::getCategoryName)
+								.orElse(null))
+						.pattern(op.map(DataDeletionPatternSettingDto::createFromDomain).orElse(null))
+						.patternClassification(sc.getPatternClassification().value)
+						.patternCode(sc.getPatternCode().v())
+						.retentionPeriod(categories.stream()
+								.filter(u -> u.getCategoryId().equals(sc.getCategoryId()))
+								.findFirst()
+								.map(c -> c.getTimeStore().nameId)
+								.orElse(null))
+						.systemType(sc.getSystemType().value)
+						.build())
+				.sorted(Comparator.comparing(SelectionDelCategoryNameDto::getCategoryId)).collect(Collectors.toList()));
 
 		// List<選択可能カテゴリ＞を作成
 		dto.setSelectableCategories(getSelectable(dto.getSelectedCategories(), command.getCategories()));

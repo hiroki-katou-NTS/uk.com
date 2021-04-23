@@ -46,7 +46,12 @@ public class SendMailCommandHandler extends CommandHandlerWithResult<SendMailCom
 		for(SendMailAppInfoParam sendMailAppInfoParam : sendMailParam.getAppInfoLst()) {
 			// 「メール送信する」の承認者全員に対してメールを送信する
 			// アルゴリズム「送信・送信後チェック」を実行する
-			successList.addAll(checkTranmission.doCheckTranmission(sendMailAppInfoParam, sendMailParam.getOpSendMailApplicant().orElse(false), sendMailParam.getMailTemplate()).getSuccessList());
+			successList.addAll(checkTranmission.doCheckTranmission(
+					sendMailAppInfoParam, 
+					sendMailParam.getOpSendMailApplicant().orElse(false), 
+					sendMailParam.getMailTemplate(),
+					sendMailParam.getAppEmailSet())
+					.getSuccessList());
 		}
 
 		return new MailSenderResult(successList, new ArrayList<>());

@@ -281,6 +281,8 @@ module nts.uk.at.view.ksm007.b {
           vm.isEnableSave(vm.historyListItems().length > 0);
           //load detail
           vm.loadData();
+          if (vm.historyListItems().length == 0)
+              vm.openDialogScreenC();
           vm.$blockui('hide');
         }
 

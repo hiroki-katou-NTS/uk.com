@@ -280,7 +280,7 @@ public class IntegrationOfWorkTime {
 	 */
 	public Optional<FixedRestCalculateMethod> getFixedRestCalculateMethod() {
 		switch(this.workTimeSetting.getWorkTimeDivision().getWorkTimeForm()) {
-			case FIXED:				return Optional.of(this.fixedWorkSetting.get().getFixedWorkRestSetting().getCalculateMethod());
+			case FIXED:				return Optional.empty();
 			case FLEX:				return Optional.empty();
 			case FLOW:				return Optional.empty();
 			case TIMEDIFFERENCE:	throw new RuntimeException("Unimplemented");/*時差勤務はまだ実装しない。2020/5/19 渡邉*/
@@ -294,7 +294,7 @@ public class IntegrationOfWorkTime {
 	 */
 	public CommonRestSetting getCommonRestSetting() {
 		switch(this.workTimeSetting.getWorkTimeDivision().getWorkTimeForm()) {
-			case FIXED:				return this.fixedWorkSetting.get().getFixedWorkRestSetting().getCommonRestSet();
+			case FIXED:				return this.fixedWorkSetting.get().getCommonRestSet();
 			case FLEX:				return this.flexWorkSetting.get().getRestSetting().getCommonRestSetting();
 			case FLOW:				return this.flowWorkSetting.get().getRestSetting().getCommonRestSetting();
 			case TIMEDIFFERENCE:	throw new RuntimeException("Unimplemented");/*時差勤務はまだ実装しない。2020/5/19 渡邉*/

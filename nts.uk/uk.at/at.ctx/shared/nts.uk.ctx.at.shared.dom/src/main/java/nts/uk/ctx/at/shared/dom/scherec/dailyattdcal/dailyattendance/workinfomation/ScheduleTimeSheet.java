@@ -2,6 +2,7 @@ package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfoma
 
 import java.io.Serializable;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -18,6 +19,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  */
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
 public class ScheduleTimeSheet extends DomainObject implements Serializable{
 	
 	/**

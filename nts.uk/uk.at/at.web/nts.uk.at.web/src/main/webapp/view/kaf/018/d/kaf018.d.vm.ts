@@ -112,6 +112,20 @@ module nts.uk.at.view.kaf018.d.viewmodel {
 			$("#dGrid").css('visibility','hidden');
 			vm.createIggrid();
 			vm.refreshDataSource();
+			$(window).resize(() => {
+				let topRange = document.getElementById('dGrid').getBoundingClientRect().top,
+					bottomRange = document.getElementById('functions-area-bottom').getBoundingClientRect().height,
+					height = window.innerHeight - topRange - bottomRange - 10;
+				$("#dGrid").igGrid("option", "height", height + "px");
+				$("#dGrid").igGrid("option", "width", window.innerWidth - 40 + "px");
+			});
+		}
+		
+		mounted() {
+			let topRange = document.getElementById('dGrid').getBoundingClientRect().top,
+				bottomRange = document.getElementById('functions-area-bottom').getBoundingClientRect().height,
+				height = window.innerHeight - topRange - bottomRange - 10;
+			$("#dGrid").igGrid("option", "height", height + "px");
 		}
 		
 		getDispEmpName(value: string) {

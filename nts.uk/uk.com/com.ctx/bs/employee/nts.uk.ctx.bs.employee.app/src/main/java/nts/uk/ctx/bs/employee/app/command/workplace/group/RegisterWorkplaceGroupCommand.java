@@ -33,7 +33,7 @@ public class RegisterWorkplaceGroupCommand {
 	private List<String> lstWKPID;
 	
 	public WorkplaceGroup toDomain(String CID) {
-		return WorkplaceGroup.getWpg(
+		return WorkplaceGroup.create(
 				CID, 
 				new WorkplaceGroupCode(wkpGrCD), 
 				new WorkplaceGroupName(wkpGrName), 
