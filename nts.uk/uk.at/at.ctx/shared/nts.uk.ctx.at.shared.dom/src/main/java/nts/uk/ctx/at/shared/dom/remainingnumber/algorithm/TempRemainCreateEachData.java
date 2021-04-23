@@ -822,6 +822,15 @@ public class TempRemainCreateEachData {
 		return cares;
 	}
 
+	/**
+	 * 残数作成元情報から暫定子の看護管理データを作成する
+	 * 
+	 * @param inforData
+	 * @param care
+	 * @param workTypeClass
+	 * @param mngData
+	 * @return
+	 */
 	public static DailyInterimRemainMngData createInterimChildNursing(InforFormerRemainData inforData, CareUseDetail care,
 			WorkTypeClassification workTypeClass, DailyInterimRemainMngData mngData) {
 		//残数作成元情報を取得
@@ -833,7 +842,7 @@ public class TempRemainCreateEachData {
 				inforData.getYmd(),
 				inforData.getWorkTypeRemainInfor(workTypeClass).get().getCreateData(),
 				ChildCareNurseUsedNumber.of(new DayNumberOfUse(care.getDays()), Optional.empty()),
-				Optional.ofNullable(DigestionHourlyTimeType.of(true, Optional.empty())));
+				Optional.ofNullable(DigestionHourlyTimeType.of(false, Optional.empty())));
 
 		mngData.getRecAbsData().add(childData);
 		return mngData;
@@ -841,6 +850,14 @@ public class TempRemainCreateEachData {
 
 	}
 
+	/**
+	 * 残数作成元情報から暫定介護管理データを作成する
+	 * @param inforData
+	 * @param care
+	 * @param workTypeClass
+	 * @param mngData
+	 * @return
+	 */
 	public static DailyInterimRemainMngData createInterimNursing(InforFormerRemainData inforData, CareUseDetail care,
 			WorkTypeClassification workTypeClass, DailyInterimRemainMngData mngData) {
 		// 残数作成元情報を取得
@@ -851,7 +868,7 @@ public class TempRemainCreateEachData {
 				inforData.getYmd(),
 				inforData.getWorkTypeRemainInfor(workTypeClass).get().getCreateData(),
 				ChildCareNurseUsedNumber.of(new DayNumberOfUse(care.getDays()), Optional.empty()),
-				Optional.ofNullable(DigestionHourlyTimeType.of(true, Optional.empty())));
+				Optional.ofNullable(DigestionHourlyTimeType.of(false, Optional.empty())));
 
 		mngData.getRecAbsData().add(careData);
 		return mngData;
