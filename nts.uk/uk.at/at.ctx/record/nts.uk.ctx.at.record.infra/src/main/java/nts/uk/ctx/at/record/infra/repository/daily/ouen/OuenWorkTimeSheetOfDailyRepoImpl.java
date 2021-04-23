@@ -133,6 +133,8 @@ public class OuenWorkTimeSheetOfDailyRepoImpl extends JpaRepository implements O
 		entityOld.workCd3 = dataUpdate.workCd3;
 		entityOld.workCd4 = dataUpdate.workCd4;
 		entityOld.workCd5 = dataUpdate.workCd5;
+		entityOld.workLocationCode = dataUpdate.workLocationCode;
+		entityOld.workplaceId      = dataUpdate.workplaceId;
 	}
 
 	@Override

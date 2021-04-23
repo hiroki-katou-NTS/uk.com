@@ -35,7 +35,6 @@ public class WorkContentDto implements  ItemConst, AttendanceItemDataGate {
 	
 	/** 備考: 作業入力備考 */
 	@AttendanceItemLayout(layout = LAYOUT_E, jpPropertyName = WORKREMARKS)
-	@AttendanceItemValue(type = ValueType.ATTR)
 	private String workRemarks;
 	
 	
