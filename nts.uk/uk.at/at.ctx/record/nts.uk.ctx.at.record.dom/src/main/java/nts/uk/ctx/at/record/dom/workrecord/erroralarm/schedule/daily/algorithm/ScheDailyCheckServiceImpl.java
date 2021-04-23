@@ -12,9 +12,10 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.daily.algorithm.OutputCheckResult;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.util.Strings;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.time.GeneralDate;
@@ -707,9 +708,6 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 		for(int day = 0; day < listDate.size(); day++) {
 			GeneralDate exDate = listDate.get(day);
 			
-			String alarmMessage = new String();
-			String alarmTarget = new String();
-			
 			// ・職場ID　＝　Input．List＜職場ID＞をループ中の年月日から探す
 			String wplId = getWorkplaceId(sid, exDate, wplByListSidAndPeriod);			
 			
@@ -723,10 +721,12 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 			
 			// 勤務予定(Work)を探す
 			Optional<WorkScheduleWorkInforImport> workScheduleWorks = workScheduleWorkInfos.stream()
-					.filter(x -> x.getEmployeeId().equals(sid) && x.getYmd().equals(exDate)).findFirst();
+					.filter(x -> x.getEmployeeId().equals(sid) && x.getYmd().equals(exDate)).findFirst();			
 			
 			// Input．List＜スケジュール日次の固有抽出条件＞をループする
 			for (FixedExtractionSDailyCon fixScheCondItem: fixedScheCondItems) {
+				AlarmMsgOutput alarmMsgOutput = null;
+				
 				// ループ中のスケジュール日次の固有抽出条件をチェック
 				FixedCheckSDailyItems fixedAtr = fixScheCondItem.getFixedCheckDayItems();
 				
@@ -738,8 +738,9 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 						// 取得できない場合
 						//・アラーム表示値　＝　#KAL010_1004
 						//・チェック対象値　＝　#KAL010_1018
-						alarmMessage = TextResource.localize("KAL010_1004");
-						alarmTarget = TextResource.localize("KAL010_1018");
+						String alarmMessage = TextResource.localize("KAL010_1004");
+						String alarmTarget = TextResource.localize("KAL010_1018");
+						alarmMsgOutput = new AlarmMsgOutput(alarmMessage, alarmTarget);
 					}
 					break;
 				case WORKTYPE_NOTREGISTED:
@@ -755,8 +756,9 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 					Optional<WorkType> listWk = listWorkType.stream()
 							.filter(x -> x.getWorkTypeCode().v().equals(wkType)).findFirst();
 					if(!listWk.isPresent()) {
-						alarmMessage = TextResource.localize("KAL010_7", wkType);
-						alarmTarget = TextResource.localize("KAL010_1020", wkType);
+						String alarmMessage = TextResource.localize("KAL010_7", wkType);
+						String alarmTarget = TextResource.localize("KAL010_1020", wkType);
+						alarmMsgOutput = new AlarmMsgOutput(alarmMessage, alarmTarget);
 					}
 					break;
 				case WORKTIME_NOTREGISTED:
@@ -771,13 +773,14 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 					Optional<WorkTimeSetting> optWtime = listWorktime.stream()
 							.filter(x -> x.getWorktimeCode().v().equals(wkTime)).findFirst();
 					if(!optWtime.isPresent()) {
-						alarmMessage = TextResource.localize("KAL010_9", wkTime);
-						alarmTarget = TextResource.localize("KAL010_77", wkTime);
+						String alarmMessage = TextResource.localize("KAL010_9", wkTime);
+						String alarmTarget = TextResource.localize("KAL010_77", wkTime);
+						alarmMsgOutput = new AlarmMsgOutput(alarmMessage, alarmTarget);
 					}
 					break;
 				case OVERLAP_TIMEZONE:
 					// NO4 = ：時間帯の重複
-					getNo4(companyId, sid, exDate, listIntegrationDai, workScheduleWorkInfos, listWorkType, listWorktime, alarmMessage, alarmTarget);
+					alarmMsgOutput = getNo4(companyId, sid, exDate, listIntegrationDai, workScheduleWorkInfos, listWorkType, listWorktime);
 					break;
 				case WORK_MULTI_TIME:
 					if (!workScheduleWorks.isPresent()) {
@@ -786,7 +789,7 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 					WorkScheduleWorkInforImport workScheWorkMultiTime = workScheduleWorks.get();
 					
 					// NO5 = ：複数回勤務
-					getNo5(workScheWorkMultiTime.getWorkTyle(), workScheWorkMultiTime.getWorkTime(), workScheWorkMultiTime.getTimeLeaving(), listWorkType, listWorktime, alarmMessage, alarmTarget);
+					alarmMsgOutput = getNo5(workScheWorkMultiTime.getWorkTyle(), workScheWorkMultiTime.getWorkTime(), workScheWorkMultiTime.getTimeLeaving(), listWorkType, listWorktime);
 					break;
 				case WORK_ON_SCHEDULEDAY:
 					if (!workScheduleWorks.isPresent()) {
@@ -797,7 +800,7 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 					// NO6 = ：特定日出勤
 					String wtCode = workScheWorkOn.getWorkTyle();
 					WorkType workType = listWorkType.stream().filter(x -> x.getWorkTypeCode().v().equals(wtCode)).findFirst().get();
-					getNo6(companyId, wplId, exDate, workType, alarmMessage, alarmTarget);
+					alarmMsgOutput = getNo6(companyId, wplId, exDate, workType);
 					break;
 				case SCHEDULE_UNDECIDED:
 					if (!workScheduleWorks.isPresent()) {
@@ -808,14 +811,21 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 					// NO7 = ：スケジュール未確定
 					// Input　・確定区分　＝　探した勤務予定．確定区分
 					int confirmedATR = workScheUndecided.getConfirmedATR();
-					getNo7(confirmedATR, alarmMessage, alarmTarget);
+					alarmMsgOutput = getNo7(confirmedATR);
 					break;
 				default:
 					break;
 				}
 				
+				String alarmMessage = null;
+				String alarmTarget = null;
+				if (alarmMsgOutput != null) {
+					alarmMessage = alarmMsgOutput.getAlarmMessage();
+					alarmTarget = alarmMsgOutput.getAlarmTarget();
+				}
+				
 				// 取得した「アラーム表示値」をチェック
-				if (StringUtils.isEmpty(alarmMessage)) {
+				if (alarmMessage == null) {
 					continue;
 				}
 				
@@ -862,16 +872,14 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 	 * @param alarmMessage アラーム表示値
 	 * @param alarmTarget チェック対象値
 	 */
-	private void getNo4(
+	private AlarmMsgOutput getNo4(
 			String cid,
 			String sid,
 			GeneralDate exDate,
 			List<IntegrationOfDaily> listIntegrationDai,
 			List<WorkScheduleWorkInforImport> workScheduleWorkInfos,
 			List<WorkType> listWorkType,
-			List<WorkTimeSetting> listWorktime,
-			String alarmMessage,
-			String alarmTarget) {
+			List<WorkTimeSetting> listWorktime) {
 		// Input．List＜勤務予定＞から前日の勤務予定を探す
 		// 条件： 年月日　＝　Input．年月日．Add（－１）
 		// Output: 前日の勤務予定
@@ -889,7 +897,7 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 					.findFirst();
 			// 取得した前日の勤務予定をチェック
 			if (!workScheInDayOpt.isPresent()) {
-				return;
+				return null;
 			}
 		}
 		
@@ -901,7 +909,7 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 		// Output: 前日の勤務予定
 		Optional<WorkScheduleWorkInforImport> workScheInDayBeforeOpt = workScheduleWorkInfos.stream().filter(x -> x.getYmd().equals(exDate)).findFirst();
 		if (!workScheInDayBeforeOpt.isPresent()) {
-			return;
+			return null;
 		}
 		
 		// 前日の勤務予定
@@ -916,7 +924,7 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 		if (workScheInDay.getWorkTime() == null
 				|| workScheInDayBefore.getWorkTime() == null
 				|| workScheInDay.getWorkTime().equals(workScheInDayBefore.getWorkTime())) {
-			return;
+			return null;
 		}
 		
 		// Input．List＜就業時間帯＞から当日の就業時間帯を探す
@@ -957,14 +965,18 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 			if ((prescribedTimezoneSettingInDayBefore.getAfternoonStartTime().getDayDivision().equals(prescribedTimezoneSettingInDay.getMorningEndTime().getDayDivision()) 
 					&& prescribedTimezoneSettingInDayBefore.getAfternoonStartTime().getDayTime() == prescribedTimezoneSettingInDay.getMorningEndTime().getDayTime())
 					|| prescribedTimezoneSettingInDayBefore.getAfternoonStartTime().getDayDivision().hours > prescribedTimezoneSettingInDay.getMorningEndTime().getDayDivision().hours) {
-				alarmMessage = TextResource.localize("KAL010_1005", exDate.addDays(-1).toString(), exDate.toString());
+				String alarmMessage = TextResource.localize("KAL010_1005", exDate.addDays(-1).toString(), exDate.toString());
 				
 				String param1 = prescribedTimezoneSettingInDayBefore.getMorningEndTime().getRawTimeWithFormat() + ErrorAlarmConstant.PERIOD_SEPERATOR + prescribedTimezoneSettingInDayBefore.getAfternoonStartTime().getRawTimeWithFormat();
 				String param2 = exDate.toString();
 				String param3 = prescribedTimezoneSettingInDay.getMorningEndTime().getRawTimeWithFormat() + ErrorAlarmConstant.PERIOD_SEPERATOR + prescribedTimezoneSettingInDay.getAfternoonStartTime().getRawTimeWithFormat();
-				alarmTarget = TextResource.localize("KAL010_1021", exDate.addDays(-1).toString(), param1, param2, param3);
+				String alarmTarget = TextResource.localize("KAL010_1021", exDate.addDays(-1).toString(), param1, param2, param3);
+				
+				return new AlarmMsgOutput(alarmMessage, alarmTarget);
 			}
 		}
+		
+		return null;
 	}
 	
 	/**
@@ -976,18 +988,16 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 	 * @param alarmMessage アラーム表示値
 	 * @param alarmTarget チェック対象値
 	 */
-	private void getNo5(
+	private AlarmMsgOutput getNo5(
 			String workTypeCode, 
 			String workTimeCode,
 			Optional<TimeLeavingOfDailyAttdImport> attendanceLeaveOpt,
 			List<WorkType> listWorkType,
-			List<WorkTimeSetting> listWorktime,
-			String alarmMessage,
-			String alarmTarget) {
+			List<WorkTimeSetting> listWorktime) {
 		// Input．日別勤怠の出退勤が存在するかチェックする
 		// 存在しない場合
 		if (!attendanceLeaveOpt.isPresent() || workTimeCode == null) {
-			return;
+			return null;
 		}
 		
 		TimeLeavingOfDailyAttdImport attendanceLeave = attendanceLeaveOpt.get();
@@ -996,7 +1006,7 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 		int workTime = attendanceLeave.getWorkTimes();
 		// Input．日別勤怠の出退勤．勤務回数　＞＝２
 		if (workTime < 2) {
-			return;			
+			return null;			
 		}
 		
 		WorkType workType = listWorkType.stream().filter(x -> x.getWorkTypeCode().equals(workTypeCode)).findFirst().get();
@@ -1005,7 +1015,7 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 		String msgParam0 = workTypeCode + "　" + workType.getName().v();
 		// Input．日別勤怠の勤務情報．勤務情報．就業時間帯コード+’　’+List<就業時間帯＞にInput．日別勤怠の勤務情報．勤務情報．就業時間帯コード　の名称
 		String msgParam1 = workTypeCode + "　" + workTimeSetting.getWorkTimeDisplayName().getWorkTimeName().v();
-		alarmMessage = TextResource.localize("KAL010_1307", msgParam0, msgParam1);
+		String alarmMessage = TextResource.localize("KAL010_1307", msgParam0, msgParam1);
 		
 		// Input．日別勤怠の出退勤．勤務NO．実打刻　＝＝　1
 		Optional<TimeLeavingWorkImport> timeLeavingWorkImport1 = attendanceLeave.getTimeLeavingWorks().stream()
@@ -1015,7 +1025,7 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 				.filter(x -> x.getWorkNo() == 2).findFirst();
 		if (timeLeavingWorkImport1.isPresent() && timeLeavingWorkImport2.isPresent()) {
 			if (!timeLeavingWorkImport1.get().getAttendanceStamp().isPresent() && !timeLeavingWorkImport2.get().getLeaveStamp().isPresent()) {
-				return;
+				return null;
 			}
 			
 			// QA#115444
@@ -1030,8 +1040,12 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 			String targetParam0 = formatTimeWithDay(attendanceStamp1.getTimeDay().getTimeWithDay()) + ErrorAlarmConstant.PERIOD_SEPERATOR + formatTimeWithDay(leaveStamp1.getTimeDay().getTimeWithDay());
 			// Input．日別勤怠の出退勤．出退勤．出勤．実打刻.時刻　+　’～’　+　Input．日別勤怠の出退勤．出退勤．退勤．実打刻.時刻
 			String targetParam1 = formatTimeWithDay(attendanceStamp2.getTimeDay().getTimeWithDay()) + ErrorAlarmConstant.PERIOD_SEPERATOR + formatTimeWithDay(leaveStamp2.getTimeDay().getTimeWithDay());
-			alarmTarget = TextResource.localize("KAL010_1022", targetParam0, targetParam1);
+			String alarmTarget = TextResource.localize("KAL010_1022", targetParam0, targetParam1);
+			
+			return new AlarmMsgOutput(alarmMessage, alarmTarget);
 		}
+		
+		return null;
 	}
 	
 	/**
@@ -1053,10 +1067,10 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 	 * @param alarmMessage アラーム表示値
 	 * @param alarmTarget チェック対象値
 	 */
-	private void getNo6(String companyId, String wplId, GeneralDate exDate, WorkType workType, String alarmMessage, String alarmTarget) {
+	private AlarmMsgOutput getNo6(String companyId, String wplId, GeneralDate exDate, WorkType workType) {
 		// Input．勤務種類の出勤休日区分をチェック
 		if (workType.chechAttendanceDay().isHoliday()) {
-			return;
+			return null;
 		}
 		
 		// 1日休日じゃないの場合
@@ -1065,7 +1079,7 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 		
 		// 取得した「特定日」．特定日項目をチェック
 		if (specificDateSetting.getDate() == null) {
-			return;
+			return null;
 		}
 		
 		// 特定日項目NO（List）から特定日を取得
@@ -1076,8 +1090,10 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 				.map(x -> x.getSpecificName()).collect(Collectors.joining("、"));
 		String msgParam1 = workType.getWorkTypeCode().v() + "　" + workType.getName().v();
 		
-		alarmMessage = TextResource.localize("KAL010_1006", msgParam0, msgParam1);
-		alarmTarget = TextResource.localize("KAL010_1023", msgParam1);
+		String alarmMessage = TextResource.localize("KAL010_1006", msgParam0, msgParam1);
+		String alarmTarget = TextResource.localize("KAL010_1023", msgParam1);
+		
+		return new AlarmMsgOutput(alarmMessage, alarmTarget);
 	}
 	
 	/**
@@ -1086,16 +1102,18 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 	 * @param alarmMessage アラーム表示値
 	 * @param alarmTarget チェック対象値
 	 */
-	private void getNo7(int confirmedATR, String alarmMessage, String alarmTarget) {
+	private AlarmMsgOutput getNo7(int confirmedATR) {
 		if (confirmedATR != 0) {
-			return;
+			return null;
 		}
 		
 		// 未確定の場合
 		// ・アラーム表示値　＝　#KAL010_1007　
-		alarmMessage = TextResource.localize("KAL010_1007");
+		String alarmMessage = TextResource.localize("KAL010_1007");
 		// ・チェック対象値　＝　#KAL010_1024
-		alarmTarget = TextResource.localize("KAL010_1024");
+		String alarmTarget = TextResource.localize("KAL010_1024");
+		
+		return new AlarmMsgOutput(alarmMessage, alarmTarget);
 	}
 	
 	private String getWorkplaceId(String sid, GeneralDate exDate, List<WorkPlaceHistImportAl> wplByListSidAndPeriod) {
@@ -1123,5 +1141,12 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 		int minute = Math.abs(value) % 60;
 		
 		return hours + ":" + (minute < 10 ? "0" + minute : minute); 
+	}
+	
+	@Data
+	@AllArgsConstructor
+	private class AlarmMsgOutput {
+		private String alarmMessage;
+		private String alarmTarget;
 	}
 }
