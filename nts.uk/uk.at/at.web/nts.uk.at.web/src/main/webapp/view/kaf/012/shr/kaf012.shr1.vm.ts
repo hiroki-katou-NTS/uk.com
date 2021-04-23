@@ -239,7 +239,7 @@ module nts.uk.at.view.kaf012.shr.viewmodel1 {
             let vm = this;
             const data = {
                 employeeIds: vm.application().employeeIDLst().length == 0 ? [vm.$user.employeeId] : vm.application().employeeIDLst(),
-                baseDate: new Date(vm.timeLeaveRemaining().remainingStart).toISOString()
+                baseDate: new Date(vm.timeLeaveRemaining().remainingStart)
             };
             setShared('KDL051A_PARAM', data);
             if(data.employeeIds.length > 1 ) {

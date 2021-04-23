@@ -2,11 +2,16 @@
 	width: auto;
 	margin-top: 20px;
 	margin-left: 15px;
+	margin-right: 15px;
 }
 
 #remaining-table, #kaf012-input-table, #kaf012-calc-table {
 	display: inline-block;
 	color: black;
+}
+
+#kaf012-calc-table {
+	width: 580px;
 }
 
 #remaining-table td {
@@ -144,7 +149,7 @@
 .end-line {
 	margin-top: 40px;
 	border-bottom: 2px solid #B1B1B1;
-	width: 96%;
+	width: 325px;
 }
 
 
