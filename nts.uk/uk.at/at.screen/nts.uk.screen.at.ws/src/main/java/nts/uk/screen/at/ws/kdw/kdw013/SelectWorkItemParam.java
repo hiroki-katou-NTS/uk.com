@@ -9,7 +9,7 @@ import nts.arc.time.GeneralDate;
  *
  */
 @Getter
-public class selectWorkItemDto {
+public class SelectWorkItemParam {
 	
 	//社員ID
 	String sId;
