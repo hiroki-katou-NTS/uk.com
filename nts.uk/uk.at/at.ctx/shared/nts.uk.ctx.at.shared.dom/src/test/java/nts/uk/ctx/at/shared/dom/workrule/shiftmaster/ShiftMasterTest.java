@@ -117,8 +117,8 @@ public class ShiftMasterTest {
 		val workInfoAfter = new WorkInformation("WorkType02", "WorkTime02");
 		
 		//表示情報
-		val displayInforBefore = Helper.createDisplayInfo("Name_01", "000", "000", "Note_01");
-		val displayInforAfter = Helper.createDisplayInfo("Name_02", "fff", "fff", "Note_02");
+		val displayInfoBefore = Helper.createDisplayInfo("Name_01", "fff", "ccc", "Note_01");
+		val displayInfoAfter = Helper.createDisplayInfo("Name_02", "000", "999", "Note_02");
 		
 		//取込コード
 		val impCdBefore = new ShiftMasterImportCode("ImportBefore");
@@ -127,15 +127,15 @@ public class ShiftMasterTest {
 		/** 作成  */
 		val shiftMater = new ShiftMaster("cid"
 				,	new ShiftMasterCode("shiftMaster01")
-				,	displayInforBefore
+				,	displayInfoBefore
 				,	workInfoBefore.getWorkTypeCode().v()
 				,	workInfoBefore.getWorkTimeCode().v()
 				,	impCdBefore);
 		//表示情報
-		assertThat(shiftMater.getDisplayInfor().getName()).isEqualTo(displayInforBefore.getName());
-		assertThat(shiftMater.getDisplayInfor().getColor()).isEqualTo(displayInforBefore.getColor());
-		assertThat(shiftMater.getDisplayInfor().getColorSmartPhone()).isEqualTo(displayInforBefore.getColorSmartPhone());
-		assertThat(shiftMater.getDisplayInfor().getRemarks()).isEqualTo(displayInforBefore.getRemarks());
+		assertThat(shiftMater.getDisplayInfor().getName()).isEqualTo(displayInfoBefore.getName());
+		assertThat(shiftMater.getDisplayInfor().getColor()).isEqualTo(displayInfoBefore.getColor());
+		assertThat(shiftMater.getDisplayInfor().getColorSmartPhone()).isEqualTo(displayInfoBefore.getColorSmartPhone());
+		assertThat(shiftMater.getDisplayInfor().getRemarks()).isEqualTo(displayInfoBefore.getRemarks());
 		
 		//勤務情報
 		assertThat(shiftMater.getWorkTypeCode()).isEqualTo(workInfoBefore.getWorkTypeCode());
@@ -146,13 +146,13 @@ public class ShiftMasterTest {
 		
 		
 		/** 変更  */
-		shiftMater.change(displayInforAfter, impCdAfter, workInfoAfter);
+		shiftMater.change(displayInfoAfter, impCdAfter, workInfoAfter);
 		
 		//表示情報
-		assertThat(shiftMater.getDisplayInfor().getName()).isEqualTo(displayInforAfter.getName());
-		assertThat(shiftMater.getDisplayInfor().getColor()).isEqualTo(displayInforAfter.getColor());
-		assertThat(shiftMater.getDisplayInfor().getColorSmartPhone()).isEqualTo(displayInforAfter.getColorSmartPhone());
-		assertThat(shiftMater.getDisplayInfor().getRemarks()).isEqualTo(displayInforAfter.getRemarks());
+		assertThat(shiftMater.getDisplayInfor().getName()).isEqualTo(displayInfoAfter.getName());
+		assertThat(shiftMater.getDisplayInfor().getColor()).isEqualTo(displayInfoAfter.getColor());
+		assertThat(shiftMater.getDisplayInfor().getColorSmartPhone()).isEqualTo(displayInfoAfter.getColorSmartPhone());
+		assertThat(shiftMater.getDisplayInfor().getRemarks()).isEqualTo(displayInfoAfter.getRemarks());
 		
 		//勤務情報
 		assertThat(shiftMater.getWorkTypeCode()).isEqualTo(workInfoAfter.getWorkTypeCode());
@@ -164,8 +164,14 @@ public class ShiftMasterTest {
 	}
 	
 	public static class Helper{
-		public static ShiftMasterDisInfor createDisplayInfo(String shiftMasterName, String colorPC, String colorSP, String remark) {
-			return new ShiftMasterDisInfor(new ShiftMasterName("shiftMasterName"),new ColorCodeChar6("colorPC"), new ColorCodeChar6("colorSP"), new Remarks(remark));
+		public static ShiftMasterDisInfor createDisplayInfo(String shiftMasterName
+				,	String colorPC
+				,	String colorSP
+				,	String remark) {
+			return new ShiftMasterDisInfor(new ShiftMasterName(shiftMasterName)
+					,	new ColorCodeChar6(colorPC)
+					,	new ColorCodeChar6(colorSP)
+					,	new Remarks(remark));
 		}
 		
 	}

@@ -27,8 +27,7 @@ public class UpdateShiftMasterService {
 			, String shiftMaterCode, ShiftMasterDisInfor displayInfor
 			, WorkInformation workInformation, ShiftMasterImportCode importCode) {
 		// 1:get(会社ID, コード):Optional<シフトマスタ>
-		val shiftMaterOpt = require.getByShiftMaterCd(shiftMaterCode); //truyen cid tư app
-		val shiftMaster = shiftMaterOpt.get();
+		val shiftMaster = require.getByShiftMaterCd(shiftMaterCode).get(); //truyen cid tư app
 		
 		if(!shiftMaster.getImportCode().equals(importCode) && require.checkDuplicateImportCode(importCode)) {
 			throw new BusinessException("Msg_2163");
