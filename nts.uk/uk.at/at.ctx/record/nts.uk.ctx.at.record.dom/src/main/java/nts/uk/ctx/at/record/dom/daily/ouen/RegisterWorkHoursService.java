@@ -42,10 +42,12 @@ public class RegisterWorkHoursService {
 		//List<AtomTask> $登録対象	
 		//$登録対象.add(応援作業別勤怠時間帯を登録する#登録する(require,社員ID,年月日,$作業時間帯,編集状態)
 		atomTasks.add(RegisterOuenWorkTimeSheetOfDailyService.register(require, empId, ymd, ouenWorkTimeSheetOfDailyAttendance, editStateSetting));
-		//	$登録対象.add(応援作業別勤怠時間を登録する#登録する(require,社員ID,年月日,$計算結果.応援時間)
-		// QA: http://192.168.50.4:3000/issues/115995 check null
-		atomTasks.add(RegisterOuenWorkTimeOfDailyService.register(require, empId, ymd, integrationOfDaily.get().getOuenTime()));
+		//	if $計算結果.isPresent
+		if(integrationOfDaily.isPresent())
+			//	$登録対象.add(応援作業別勤怠時間を登録する#登録する(require,社員ID,年月日,$計算結果.応援時間)
+			atomTasks.add(RegisterOuenWorkTimeOfDailyService.register(require, empId, ymd, integrationOfDaily.get().getOuenTime()));
 
+		//	return 工数入力結果#工数入力結果(AtomTask.bundle($登録対象),$計算結果)	
 		return new ManHourInputResult(AtomTask.bundle(atomTasks), integrationOfDaily);
 	}
 	

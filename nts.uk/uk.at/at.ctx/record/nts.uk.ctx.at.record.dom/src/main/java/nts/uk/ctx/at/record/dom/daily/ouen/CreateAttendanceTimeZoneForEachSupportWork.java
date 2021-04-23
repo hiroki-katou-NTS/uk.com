@@ -11,6 +11,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.o
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.WorkContent;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.record.WorkplaceOfWorkEachOuen;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.work.WorkGroup;
+import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
 
 /**
  * DS: 	応援作業別勤怠時間帯を作成する	
@@ -30,6 +31,7 @@ public class CreateAttendanceTimeZoneForEachSupportWork {
 	 * @output 	日別勤怠の応援作業時間帯 	OuenWorkTimeSheetOfDailyAttendance
 	 */
 	public static List<OuenWorkTimeSheetOfDailyAttendance> create(Require require, String empId, GeneralDate ymd, List<WorkDetailsParam> workDetailsParams) {
+		
 		return workDetailsParams.stream().map(c-> createSupportWorkTimeZone(require, empId, ymd, c)).collect(Collectors.toList());
 	}
 	
@@ -87,15 +89,15 @@ public class CreateAttendanceTimeZoneForEachSupportWork {
 		String workplateID = require.getAffWkpHistItemByEmpDate(empId, ymd);
 		return OuenWorkTimeSheetOfDailyAttendance.create(workDetailsParam.getSupportFrameNo().v(), 
 				WorkContent.create(WorkplaceOfWorkEachOuen.create(new WorkplaceId(workplateID), workDetailsParam.getWorkLocationCD().orElse(null)), workDetailsParam.getWorkGroup(), workDetailsParam.getRemarks()), 
-				//đang xác nhận QA: http://192.168.50.4:3000/issues/115977
-				TimeSheetOfAttendanceEachOuenSheet.create(null, Optional.ofNullable(workDetailsParam.getTimeZone().getStart()), Optional.ofNullable(workDetailsParam.getTimeZone().getEnd())));
+				//đã xác nhận QA: http://192.168.50.4:3000/issues/115977
+				TimeSheetOfAttendanceEachOuenSheet.create(new WorkNo(1), Optional.ofNullable(workDetailsParam.getTimeZone().getStart()), Optional.ofNullable(workDetailsParam.getTimeZone().getEnd())));
 	}
 	
 //■Require
 	public static interface Require extends WorkGroup.Require {
 		//[R-1] 応援作業別勤怠時間帯を取得する
-		//日別実績の応援作業別勤怠時間帯Repository.取得する(社員ID,年月日,作業詳細.応援勤務枠No)	
-		Optional<OuenWorkTimeSheetOfDaily> find(String empId, GeneralDate ymd, int workNo);
+		//日別実績の応援作業別勤怠時間帯Repository.取得する(社員ID,年月日)	
+		OuenWorkTimeSheetOfDaily find(String empId, GeneralDate ymd);
 		//[R-2] 所属職場を取得する
 		//所属職場履歴Adapter.取得する(社員ID,年月日)	
 		String getAffWkpHistItemByEmpDate(String employeeID, GeneralDate date);
