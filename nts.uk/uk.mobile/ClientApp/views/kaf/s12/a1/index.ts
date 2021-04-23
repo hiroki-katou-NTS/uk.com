@@ -87,6 +87,9 @@ export class KafS12A1Component extends Vue {
                     }
                 }
             });
+            vm.$watch('application.appDate', () => {
+                vm.updateTime(vm.application.prePostAtr, vm.appDispInfoStartupOutput.appDispInfoWithDateOutput.opActualContentDisplayLst);
+            });
         }
     }
 

@@ -408,7 +408,6 @@ export class KafS04AComponent extends KafS00ShrComponent {
                 }
             );
         }
-
         if (vm.time.leaveTime != null) {
             vm.infoOutPut.arrivedLateLeaveEarly.lateOrLeaveEarlies.push(
                 {
@@ -419,26 +418,25 @@ export class KafS04AComponent extends KafS00ShrComponent {
             );
         }
 
-
-        if (vm.time.attendanceTime2 != null) {
-            vm.infoOutPut.arrivedLateLeaveEarly.lateOrLeaveEarlies.push(
-                {
-                    lateOrEarlyClassification: 0,
-                    timeWithDayAttr: vm.time.attendanceTime2,
-                    workNo: 2,
-                }
-            );
-        }
-
-
-        if (vm.time.leaveTime2 != null) {
-            vm.infoOutPut.arrivedLateLeaveEarly.lateOrLeaveEarlies.push(
-                {
-                    lateOrEarlyClassification: 1,
-                    timeWithDayAttr: vm.time.leaveTime2,
-                    workNo: 2,
-                }
-            );
+        if (vm.conditionLateEarlyLeave2Show) {
+            if (vm.time.attendanceTime2 != null) {
+                vm.infoOutPut.arrivedLateLeaveEarly.lateOrLeaveEarlies.push(
+                    {
+                        lateOrEarlyClassification: 0,
+                        timeWithDayAttr: vm.time.attendanceTime2,
+                        workNo: 2,
+                    }
+                );
+            }
+            if (vm.time.leaveTime2 != null) {
+                vm.infoOutPut.arrivedLateLeaveEarly.lateOrLeaveEarlies.push(
+                    {
+                        lateOrEarlyClassification: 1,
+                        timeWithDayAttr: vm.time.leaveTime2,
+                        workNo: 2,
+                    }
+                );
+            }
         }
 
         //neu checkbox được check
@@ -451,7 +449,6 @@ export class KafS04AComponent extends KafS00ShrComponent {
                     }
                 );
             }
-
             if (vm.check.cbCancelEarlyLeave.value) {
                 vm.infoOutPut.arrivedLateLeaveEarly.lateCancelation.push(
                     {
@@ -460,25 +457,24 @@ export class KafS04AComponent extends KafS00ShrComponent {
                     }
                 );
             }
-
-            if (vm.check.cbCancelLate2.value) {
-                vm.infoOutPut.arrivedLateLeaveEarly.lateCancelation.push(
-                    {
-                        workNo: 2,
-                        lateOrEarlyClassification: 0,
-                    }
-                );
+            if (vm.conditionLateEarlyLeave2Show) {
+                if (vm.check.cbCancelLate2.value) {
+                    vm.infoOutPut.arrivedLateLeaveEarly.lateCancelation.push(
+                        {
+                            workNo: 2,
+                            lateOrEarlyClassification: 0,
+                        }
+                    );
+                }
+                if (vm.check.cbCancelEarlyLeave2.value) {
+                    vm.infoOutPut.arrivedLateLeaveEarly.lateCancelation.push(
+                        {
+                            workNo: 2,
+                            lateOrEarlyClassification: 1,
+                        }
+                    );
+                }
             }
-
-            if (vm.check.cbCancelEarlyLeave2.value) {
-                vm.infoOutPut.arrivedLateLeaveEarly.lateCancelation.push(
-                    {
-                        workNo: 2,
-                        lateOrEarlyClassification: 1,
-                    }
-                );
-            }
-
         }
 
         vm.$mask('show');
