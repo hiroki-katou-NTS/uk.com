@@ -119,13 +119,15 @@ public class OuenWorkTimeSheetOfDailyRepoImpl extends JpaRepository implements O
 		OuenWorkTimeSheetOfDaily lstDomainOld = this.find(domain.get(0).getEmpId(), domain.get(0).getYmd());
 		lstEntity.forEach(i -> {
 			
-			List<OuenWorkTimeSheetOfDailyAttendance> dataOld = lstDomainOld.getOuenTimeSheet().stream().filter(x -> {
-				return x.getWorkNo() != i.pk.ouenNo;
-			}).collect(Collectors.toList());
-			
-			if(!dataOld.isEmpty()) {
-				for (OuenWorkTimeSheetOfDailyAttendance atd : dataOld) {
-					this.removePK(i.pk.sid, i.pk.ymd, atd.getWorkNo());
+			if(lstDomainOld != null) {
+				List<OuenWorkTimeSheetOfDailyAttendance> dataOld = lstDomainOld.getOuenTimeSheet().stream().filter(x -> {
+					return x.getWorkNo() != i.pk.ouenNo;
+				}).collect(Collectors.toList());
+				
+				if(!dataOld.isEmpty()) {
+					for (OuenWorkTimeSheetOfDailyAttendance atd : dataOld) {
+						this.removePK(i.pk.sid, i.pk.ymd, atd.getWorkNo());
+					}
 				}
 			}
 			
