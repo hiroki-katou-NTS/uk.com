@@ -59,10 +59,10 @@ public class GetSelectedTerminalInfo {
 		dto.setModelEmpInfoTer(empInfoTerValue.getModelEmpInfoTer().value);
 		dto.setMacAddress(empInfoTerValue.getMacAddress().v());
 //		dto.setIpAddress(empInfoTerValue.getIpAddress().isPresent() ? empInfoTerValue.getIpAddress().get().v() : "");
-		dto.setIpAddress1(empInfoTerValue.getIpAddress().isPresent() ? empInfoTerValue.getIpAddress().get().getIpAddress1().toString() : "");
-		dto.setIpAddress2(empInfoTerValue.getIpAddress().isPresent() ? empInfoTerValue.getIpAddress().get().getIpAddress2().toString() : "");
-		dto.setIpAddress3(empInfoTerValue.getIpAddress().isPresent() ? empInfoTerValue.getIpAddress().get().getIpAddress3().toString() : "");
-		dto.setIpAddress4(empInfoTerValue.getIpAddress().isPresent() ? empInfoTerValue.getIpAddress().get().getIpAddress4().toString() : "");
+		dto.setIpAddress1(empInfoTerValue.getIpAddress().isPresent() ? String.valueOf(empInfoTerValue.getIpAddress().get().getNet1()) : "");
+		dto.setIpAddress2(empInfoTerValue.getIpAddress().isPresent() ? String.valueOf(empInfoTerValue.getIpAddress().get().getNet2()) : "");
+		dto.setIpAddress3(empInfoTerValue.getIpAddress().isPresent() ? String.valueOf(empInfoTerValue.getIpAddress().get().getHost1()) : "");
+		dto.setIpAddress4(empInfoTerValue.getIpAddress().isPresent() ? String.valueOf(empInfoTerValue.getIpAddress().get().getHost2()) : "");
 		dto.setTerSerialNo(
 				empInfoTerValue.getTerSerialNo().isPresent() ? empInfoTerValue.getTerSerialNo().get().v() : "");
 		dto.setWorkLocationName(workLocation.isPresent() ? workLocation.get().getWorkLocationName().v() : "");
