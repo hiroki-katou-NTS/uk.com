@@ -790,6 +790,7 @@ public class SupportWorkReflection {
 				.filter(x -> x.getWorkNo() == workFrameNo).findFirst();
 		Optional<OuenWorkTimeSheetOfDailyAttendance> correctMaximumNew = Optional.empty();
 		// 取得できる応援データの開始データが自動セットかどうか確認する
+		if( !ouenBeforeNew.isPresent()) return -1;
 		if (ouenBeforeNew.get().getTimeSheet().getStart().get().getReasonTimeChange()
 				.getTimeChangeMeans() == TimeChangeMeans.AUTOMATIC_SET) {
 			// 自動セットの場合
