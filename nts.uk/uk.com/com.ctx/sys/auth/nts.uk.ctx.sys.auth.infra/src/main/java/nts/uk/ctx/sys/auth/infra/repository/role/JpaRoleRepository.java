@@ -29,11 +29,12 @@ import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.sys.auth.dom.role.Role;
+import nts.uk.ctx.sys.auth.dom.role.RoleAtr;
+import nts.uk.ctx.sys.auth.dom.role.RoleCode;
 import nts.uk.ctx.sys.auth.dom.role.RoleRepository;
+import nts.uk.ctx.sys.auth.dom.role.RoleType;
 import nts.uk.ctx.sys.auth.infra.entity.role.SacmtRole;
 import nts.uk.ctx.sys.auth.infra.entity.role.SacmtRole_;
-
-
 /**
  * The Class JpaRoleRepository.
  */
@@ -247,6 +248,12 @@ public class JpaRoleRepository extends JpaRepository implements RoleRepository {
 			}
 		});
 		return result;
+	}
+
+	@Override
+	public boolean exists(String cid, RoleType roleType, RoleAtr assignAtr, RoleCode roleCode) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }
