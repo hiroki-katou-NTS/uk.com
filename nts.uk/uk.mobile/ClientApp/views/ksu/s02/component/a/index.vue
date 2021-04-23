@@ -448,7 +448,7 @@
               </div>
             </h6>
             <div class="card-body" style="background-color: #f4fbfd">
-              <div class="accordion">
+              <div class="accordion" id="scroll_area">
                 <!-- 既に開きたいならshowを追加してください。 -->
                 <div class="card1 card" > 
                   <div class="card-header uk-bg-accordion">

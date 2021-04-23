@@ -70,4 +70,11 @@ public interface MonthlyAttendanceItemGetMemento {
 	 * @return the the primitiveValue
 	 */
 	Optional<PrimitiveValueOfAttendanceItem> getPrimitiveValue();
+
+	/**
+	 * Gets the display method.
+	 *
+	 * @return the display method
+	 */
+	DisplayMonthResultsMethod getTwoMonthlyDisplay();
 }
