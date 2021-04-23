@@ -18,11 +18,11 @@ import java.util.stream.IntStream;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.val;
+import nts.arc.error.BusinessException;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanDuplication;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.workrule.BreakTimeZone;
@@ -31,17 +31,19 @@ import nts.uk.ctx.at.shared.dom.worktime.ChangeableWorkingTimeZone;
 import nts.uk.ctx.at.shared.dom.worktime.ChangeableWorkingTimeZonePerNo;
 import nts.uk.ctx.at.shared.dom.worktime.WorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
+import nts.uk.ctx.at.shared.dom.worktime.common.CommonRestSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeZoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.EmTimezoneNo;
-import nts.uk.ctx.at.shared.dom.worktime.common.FixedWorkRestSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.GoLeavingWorkAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.LegalOTSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.OverTimeOfTimeZoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.StampReflectTimezone;
+import nts.uk.ctx.at.shared.dom.worktime.common.TimezoneOfFixedRestTimeSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeAggregateRoot;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.HalfDayWorkSet;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDivision;
 import nts.uk.ctx.at.shared.dom.worktype.AttendanceHolidayAttr;
@@ -55,7 +57,6 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkType;
  */
 @Getter
 @NoArgsConstructor
-@AllArgsConstructor
 public class FixedWorkSetting extends WorkTimeAggregateRoot implements Cloneable, WorkSetting {
 
 	/** The company id. */
@@ -77,11 +78,15 @@ public class FixedWorkSetting extends WorkTimeAggregateRoot implements Cloneable
 
 	/** The use half day shift. */
 	// 半日用シフトを使用する
-	private Boolean useHalfDayShift;
+	private HalfDayWorkSet useHalfDayShift;
+	
+	/** The common rest set. */
+    //共通の休憩設定
+    private CommonRestSetting commonRestSet; 
 
-	/** The fixed work rest setting. */
-	// 固定勤務の休憩設定
-	private FixedWorkRestSet fixedWorkRestSetting;
+//	/** The fixed work rest setting. *
+//	// 固定勤務の休憩設定
+//	private FixedWorkRestSet fixedWorkRestSetting;
 
 	/** The lst half day work timezone. */
 	// 平日勤務時間帯
@@ -111,11 +116,16 @@ public class FixedWorkSetting extends WorkTimeAggregateRoot implements Cloneable
 		this.offdayWorkTimezone = memento.getOffdayWorkTimezone();
 		this.commonSetting = memento.getCommonSetting();
 		this.useHalfDayShift = memento.getUseHalfDayShift();
-		this.fixedWorkRestSetting = memento.getFixedWorkRestSetting();
-		this.lstHalfDayWorkTimezone = memento.getLstHalfDayWorkTimezone();
+		this.commonRestSet = memento.getCommonRestSet();
+//		this.fixedWorkRestSetting = memento.getFixedWorkRestSetting();
 		this.lstStampReflectTimezone = memento.getLstStampReflectTimezone();
 		this.legalOTSetting = memento.getLegalOTSetting();
 		this.calculationSetting = memento.getCalculationSetting();
+		
+		if (!this.validateHalfDayWorkTime(memento.getLstHalfDayWorkTimezone())) {
+            throw new BusinessException("Msg_2143");
+        }
+		this.lstHalfDayWorkTimezone = memento.getLstHalfDayWorkTimezone();
 	}
 
 	/**
@@ -130,11 +140,16 @@ public class FixedWorkSetting extends WorkTimeAggregateRoot implements Cloneable
 		memento.setOffdayWorkTimezone(this.offdayWorkTimezone);
 		memento.setCommonSetting(this.commonSetting);
 		memento.setUseHalfDayShift(this.useHalfDayShift);
-		memento.setFixedWorkRestSetting(this.fixedWorkRestSetting);
-		memento.setLstHalfDayWorkTimezone(this.lstHalfDayWorkTimezone);
+		memento.setCommonRestSet(this.commonRestSet);
+//		memento.setFixedWorkRestSetting(this.fixedWorkRestSetting);
 		memento.setLstStampReflectTimezone(this.lstStampReflectTimezone);
 		memento.setLegalOTSetting(this.legalOTSetting);
 		memento.setCalculationSetting(this.calculationSetting);
+		
+		if (!this.validateHalfDayWorkTime(lstHalfDayWorkTimezone)) {
+		    throw new BusinessException("Msg_2143");
+		}
+		memento.setLstHalfDayWorkTimezone(this.lstHalfDayWorkTimezone);
 	}
 
 	/*
@@ -253,8 +268,9 @@ public class FixedWorkSetting extends WorkTimeAggregateRoot implements Cloneable
 			cloned.workTimeCode = new WorkTimeCode(this.workTimeCode.v());
 			cloned.offdayWorkTimezone = this.offdayWorkTimezone.clone();
 			cloned.commonSetting = this.commonSetting.clone();
-			cloned.useHalfDayShift = this.useHalfDayShift ? true : false;
-			cloned.fixedWorkRestSetting = this.fixedWorkRestSetting.clone();
+			cloned.useHalfDayShift = this.useHalfDayShift;
+			cloned.commonRestSet = this.commonRestSet;
+//			cloned.fixedWorkRestSetting = this.fixedWorkRestSetting.clone();
 			cloned.lstHalfDayWorkTimezone = this.lstHalfDayWorkTimezone.stream().map(c -> c.clone()).collect(Collectors.toList());
 			cloned.lstStampReflectTimezone = this.lstStampReflectTimezone.stream().map(c -> c.clone()).collect(Collectors.toList());
 			cloned.legalOTSetting = LegalOTSetting.valueOf(this.legalOTSetting.value);
@@ -391,15 +407,11 @@ public class FixedWorkSetting extends WorkTimeAggregateRoot implements Cloneable
 	 * @return 残業時間帯リスト(午前午後区分指定)
 	 */
 	public List<TimeSpanForCalc> getTimeZoneOfOvertimeWorkByAmPmAtr(AmPmAtr atr) {
-
 		// 勤務時間帯設定を取得する
-		// ※半日用シフトを使用しない場合は1日を利用する
-		val timezoneSetting = this.lstHalfDayWorkTimezone.stream()
-								.filter( e -> e.getDayAtr() == ((this.useHalfDayShift) ? atr : AmPmAtr.ONE_DAY) )
-								.findFirst().get();
-
-		return timezoneSetting.getWorkTimezone().getOvertimeWorkingTimezonesForCalc();
-
+		val timeZoneSetting = lstHalfDayWorkTimezone.stream()
+				.filter(timeZone -> timeZone.getDayAtr() == atr)
+				.findFirst().get();
+		return timeZoneSetting.getRestTimezone().getRestTimezonesForCalc();
 	}
 
 	/**
@@ -505,7 +517,7 @@ public class FixedWorkSetting extends WorkTimeAggregateRoot implements Cloneable
 	public BreakTimeZone getBreakTimeZone(boolean isWorkingOnDayOff, AmPmAtr amPmAtr) {
 
 		// 固定勤務の休憩時間帯を取得する
-		FixRestTimezoneSet fixedRestTimezone;
+	    TimezoneOfFixedRestTimeSet fixedRestTimezone;
 		if (isWorkingOnDayOff) {
 			// 休出
 			fixedRestTimezone = this.offdayWorkTimezone.getRestTimezone();
@@ -517,6 +529,25 @@ public class FixedWorkSetting extends WorkTimeAggregateRoot implements Cloneable
 
 		return BreakTimeZone.createAsFixed(fixedRestTimezone.getRestTimezonesForCalc());
 
+	}
+
+	/**
+	 * inv-1
+	 */
+	private boolean validateHalfDayWorkTime(List<FixHalfDayWorkTimezone> lstHalfDayWorkTimezone){
+		val onlyOneAllDay = lstHalfDayWorkTimezone
+				.stream()
+				.filter(tz -> tz.getDayAtr() == AmPmAtr.ONE_DAY)
+				.count() == 1;
+		val onlyOneAM = lstHalfDayWorkTimezone
+				.stream()
+				.filter(tz -> tz.getDayAtr() == AmPmAtr.AM)
+				.count() == 1;
+		val onlyOnePM = lstHalfDayWorkTimezone
+				.stream()
+				.filter(tz -> tz.getDayAtr() == AmPmAtr.PM)
+				.count() == 1;
+		return onlyOneAllDay && onlyOneAM && onlyOnePM;
 	}
 
 

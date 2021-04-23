@@ -15,12 +15,14 @@ module nts.uk.at.view.kdl030.a.viewmodel {
         mailContent: KnockoutObservable<String> = ko.observable(null);
         appEmailSet: any = null;
         isOpEmployee: boolean = false;
+		isMultiEmp: boolean = false;
 
         created() {
             const vm = this;
             let param = getShared("KDL030_PARAM");
             vm.appIDLst = param.appIDLst;
             vm.isAgentMode = param.isAgentMode;
+			vm.isMultiEmp = param.isMultiEmp;
             //recheck agentMode
             if (vm.isAgentMode && param.employeeInfoLst.length == 1) {
                 if (param.employeeInfoLst[0].scd == __viewContext.user.employeeCode) {
@@ -35,7 +37,7 @@ module nts.uk.at.view.kdl030.a.viewmodel {
             }
 
             if (!_.isEmpty(vm.appIDLst)) {
-                vm.$ajax(API.applicationForSendByAppID, vm.appIDLst).done((result) => {
+                vm.$ajax(API.applicationForSendByAppID, { appIDLst: vm.appIDLst, isMultiMode: vm.isMultiEmp }).done((result) => {
                     vm.mailContent(result.mailTemplate);
                     vm.appEmailSet = result.appEmailSet;
                     let appSendMails = [];

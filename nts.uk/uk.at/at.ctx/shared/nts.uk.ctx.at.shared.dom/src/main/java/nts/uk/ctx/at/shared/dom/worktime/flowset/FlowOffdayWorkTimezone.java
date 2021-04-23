@@ -58,8 +58,8 @@ public class FlowOffdayWorkTimezone extends WorkTimeDomainObject implements Clon
 	 * @param oldDomain
 	 *            the old domain
 	 */
-	public void correctData(ScreenMode screenMode, FlowOffdayWorkTimezone oldDomain) {
-		this.restTimeZone.correctData(screenMode, oldDomain.getRestTimeZone());
+	public void correctData(FlowOffdayWorkTimezone oldDomain) {
+		this.restTimeZone.correctData(oldDomain.getRestTimeZone());
 	}
 
 	/**

@@ -72,9 +72,9 @@ public class JpaFlowRestSetSetMemento implements FlowRestSetSetMemento {
 	 * setCalculateMethod(nts.uk.ctx.at.shared.dom.worktime.common.
 	 * FlowRestCalcMethod)
 	 */
-	@Override
-	public void setCalculateMethod(FlowRestCalcMethod method) {
-		this.entity.setFixedCalculateMethod(method.value);
-	}
+//	@Override
+//	public void setCalculateMethod(FlowRestCalcMethod method) {
+//		this.entity.setFixedCalculateMethod(method.value);
+//	}
 
 }

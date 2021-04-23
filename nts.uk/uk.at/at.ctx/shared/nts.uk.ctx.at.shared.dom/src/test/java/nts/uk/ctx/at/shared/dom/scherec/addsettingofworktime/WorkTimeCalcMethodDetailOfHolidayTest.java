@@ -98,7 +98,6 @@ public class WorkTimeCalcMethodDetailOfHolidayTest {
 		public static WorkTimezoneCommonSet getCommonSetForLate(boolean delFromEmTime){
 			return new WorkTimezoneCommonSet(
 					false,
-					null,
 					new ArrayList<>(),
 					new ArrayList<>(),
 					null,
