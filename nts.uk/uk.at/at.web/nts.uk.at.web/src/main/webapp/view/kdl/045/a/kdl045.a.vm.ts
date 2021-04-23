@@ -1107,7 +1107,7 @@ module nts.uk.at.view.kdl045.a {
                 let self = this;
                 let checkError = false;
                 if(self.isShowTimeRange2){
-                    if(self.isEnableA5_9() && self.timeRange2Value().startTime <= self.timeRange1Value().endTime && self.timeRange2Value().endTime > self.timeRange1Value().startTime ){
+                    if(self.isEnableA5_9() && self.timeRange2Value().startTime < self.timeRange1Value().endTime && self.timeRange2Value().endTime > self.timeRange1Value().startTime ){
                         $('#a5-5').ntsError('set',{ messageId: 'Msg_515', messageParams: [getText('KDL045_12')] });
                         checkError =  true;
                     }

@@ -82,7 +82,7 @@ public class PredTimeStgTestHelper {
 		 */
 		public static PredetemineTimeSetting create(String code, TimeWithDayAttr startClock, AttendanceTime rangeOfDay, PrescribedTimezoneSetting prscTzStg) {
 			return new PredetemineTimeSetting("CID", rangeOfDay, new WorkTimeCode(code)
-						, PredTimeStg.createDummyPredTime(), false, prscTzStg, startClock, false
+						, PredTimeStg.createDummyPredTime(), prscTzStg, startClock, false
 					);
 		}
 

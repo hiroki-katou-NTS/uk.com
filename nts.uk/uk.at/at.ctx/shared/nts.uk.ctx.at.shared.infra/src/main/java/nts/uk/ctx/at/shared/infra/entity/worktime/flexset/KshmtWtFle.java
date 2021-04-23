@@ -74,6 +74,12 @@ public class KshmtWtFle extends ContractUkJpaEntity implements Serializable {
 	/** The use halfday shift. */
 	@Column(name = "USE_HALFDAY_SHIFT")
 	private int useHalfdayShift;
+    
+    @Column(name = "USE_HALFDAY_SHIFT_OVERTIME")
+    private int useHalfDayOverTime;
+    
+    @Column(name = "USE_HALFDAY_SHIFT_BREAKTIME")
+    private int useHalfDayBreakTime;
 	
 	
 	/** The kshmt working cond item. */

@@ -22,6 +22,7 @@ import nts.gul.collection.CollectionUtil;
 import nts.gul.mail.send.MailContents;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.request.dom.application.Application;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
@@ -32,7 +33,9 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.schedule.ba
 import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.schedule.basicschedule.ScBasicScheduleImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.sys.EnvAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.sys.dto.MailDestinationImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootStateAdapter;
 import nts.uk.ctx.at.request.dom.application.common.service.application.IApplicationContentService;
+import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.User;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementDetail;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ActualContentDisplay;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AppCompltLeaveSyncOutput;
@@ -122,6 +125,12 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 	
 	@Inject
 	private CollectAchievement collectAchievement;
+	
+	@Inject
+	private ApprovalRootStateAdapter approvalRootStateAdapter;
+	
+	@Inject
+	private ApplicationRepository applicationRepository;
 	
 	public PeriodCurrentMonth employeePeriodCurrentMonthCalculate(String companyID, String employeeID, GeneralDate date){
 		/*
@@ -591,5 +600,31 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 				return workTypeRepository.findByPK(companyId, workTypeCd);
 			}
 		};
+	}
+	@Override
+	public User userJudgment(String companyID, String appID, String employeeID) {
+		// ドメインモデル「申請」を取得する (Lấy domain「申請」 )
+		Application application = applicationRepository.findByID(appID).get();
+		// アルゴリズム「指定した社員が承認者であるかの判断」を実行する
+		Boolean isApprover = approvalRootStateAdapter.judgmentTargetPersonIsApprover(companyID, application.getAppID(), employeeID);
+		if(isApprover){
+			// ログイン者が申請本人かチェックする(Check xem login có phải là applicant không)
+			if(application.getEmployeeID().equals(employeeID) || application.getEnteredPersonID().equals(employeeID)){
+				// 利用者 = 申請本人&承認者
+				return User.APPLICANT_APPROVER;
+			} else {
+				// 利用者 = 承認者
+				return User.APPROVER;
+			}
+		} else {
+			// ログイン者が申請本人かチェックする(Check xem login có phải là applicant không)
+			if(application.getEmployeeID().equals(employeeID) || application.getEnteredPersonID().equals(employeeID)){
+				// 利用者 = 申請本人
+				return User.APPLICANT;
+			} else {
+				// 利用者 = その他
+				return User.OTHER;
+			}
+		}
 	}
 }
