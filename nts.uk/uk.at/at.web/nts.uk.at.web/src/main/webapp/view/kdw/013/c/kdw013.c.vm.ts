@@ -168,9 +168,13 @@ module nts.uk.ui.at.kdp013.c {
                     </tr>
                     <tr class="workplace">
                         <td data-bind="i18n: 'KDW013_28'"></td>
-                        <td>
-                            <input type="text" data-bind="ntsTextEditor: { value: ko.observable('') }" />
-                        </td>
+                        <td><div data-bind="
+                                dropdown: ko.observable(''),
+                                items: $component.items,
+                                required: true,
+                                name: 'WORKPLACE',
+                                hasError: $component.errors.workplace
+                            "></div></td>
                     </tr>
                     <tr class="note">
                         <td data-bind="i18n: 'KDW013_29'"></td>
@@ -200,9 +204,11 @@ module nts.uk.ui.at.kdp013.c {
             time: KnockoutObservable<boolean>;
             dropdown: KnockoutObservable<boolean>;
             description: KnockoutObservable<boolean>;
+            workplace: KnockoutObservable<boolean>;
         } = {
                 time: ko.observable(false),
                 dropdown: ko.observable(false),
+                workplace: ko.observable(false),
                 description: ko.observable(false)
             };
 
@@ -221,11 +227,12 @@ module nts.uk.ui.at.kdp013.c {
                 read: () => {
                     const errors = ko.toJS(this.errors);
 
-                    return !!errors.time || !!errors.description || !!errors.dropdown;
+                    return !!errors.time || !!errors.description || !!errors.dropdown || !!errors.workplace;
                 },
                 write: (value: boolean) => {
                     this.errors.time(value);
                     this.errors.dropdown(value);
+                    this.errors.workplace(value);
                     this.errors.description(value);
                 }
             });
