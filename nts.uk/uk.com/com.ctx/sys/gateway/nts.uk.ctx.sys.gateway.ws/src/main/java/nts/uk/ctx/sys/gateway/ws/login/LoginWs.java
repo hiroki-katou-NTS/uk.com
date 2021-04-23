@@ -26,6 +26,7 @@ import nts.uk.ctx.sys.gateway.app.command.login.password.PasswordAuthenticateCom
 import nts.uk.ctx.sys.gateway.app.command.login.password.PasswordAuthenticateCommandHandler;
 import nts.uk.ctx.sys.gateway.app.command.tenantlogin.TenantAuthenticateCommand;
 import nts.uk.ctx.sys.gateway.app.command.tenantlogin.TenantAuthenticateCommandHandler;
+import nts.uk.ctx.sys.gateway.app.command.tenantlogin.TenantCheckCommandHandler;
 import nts.uk.ctx.sys.gateway.app.find.login.CompanyInformationFinder;
 import nts.uk.ctx.sys.gateway.app.find.login.EmployeeLoginSettingFinder;
 import nts.uk.ctx.sys.gateway.app.find.login.dto.CheckContractDto;
@@ -44,6 +45,9 @@ public class LoginWs extends WebService {
 	/** The company information finder. */
 	@Inject
 	private CompanyInformationFinder companyInformationFinder;
+	
+	@Inject
+	private TenantCheckCommandHandler tenantCheckCommandHandler;
 	
 	@Inject
 	private TenantAuthenticateCommandHandler tenantAuthenticateCommandHandler;
@@ -92,7 +96,7 @@ public class LoginWs extends WebService {
 	@Path("checkcontract")
 	public CheckContractDto checkContractForm1(@Context HttpServletRequest request, TenantAuthenticateCommand command) {
 		command.setRequest(request);
-		return this.tenantAuthenticateCommandHandler.handle(command);
+		return this.tenantCheckCommandHandler.handle(command);
 	}
 	
 
@@ -117,7 +121,6 @@ public class LoginWs extends WebService {
 	 */
 	@POST
 	@Path("password")
-//	@Path("submit/form3")
 	public CheckChangePassDto loginOnPasswordAuthenticate(@Context HttpServletRequest request, PasswordAuthenticateCommand command) {
 		command.setRequest(request);
 		return passwordAuthenticateCommandHandler.handle(command);

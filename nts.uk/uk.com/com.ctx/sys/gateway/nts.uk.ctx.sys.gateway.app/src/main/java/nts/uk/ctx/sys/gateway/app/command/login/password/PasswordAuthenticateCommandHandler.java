@@ -95,11 +95,11 @@ public class PasswordAuthenticateCommandHandler extends LoginCommandHandlerBase<
 					authen.getTenantCodeForBuiltInUser(),
 					authen.getCompanyIdForBuiltInUser());
 		}
-
+		
 		// 通常はsuper側に任せる
 		super.authorize(require, authen);
 	}
-
+	
 	/**
 	 * 認証失敗時の処理
 	 */

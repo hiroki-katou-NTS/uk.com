@@ -9,7 +9,6 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.task.tran.TransactionService;
 import nts.gul.web.HttpClientIpAddress;
-import nts.uk.ctx.sys.gateway.app.command.tenantlogin.ConnectDataSourceOfTenant;
 import nts.uk.ctx.sys.gateway.dom.login.CheckIfCanLogin;
 import nts.uk.ctx.sys.gateway.dom.login.IdentifiedEmployeeInfo;
 import nts.uk.ctx.sys.gateway.dom.login.LoginClient;
@@ -49,15 +48,15 @@ public abstract class LoginCommandHandlerBase<
 				request.getHeader("user-agent"));
 		
 		// テナント認証
-		val tenantAuthResult = ConnectDataSourceOfTenant.connect(
-				require, loginClient, command.getTenantCode(), command.getTenantPasswordPlainText());
-		if(tenantAuthResult.isFailure()) {
-			// テナント認証失敗記録の永続化
-			transaction.execute(() -> {
-				tenantAuthResult.getAtomTask().get().run();
-			});
-			return tenantAuthencationFailed();
-		}
+//		val tenantAuthResult = ConnectDataSourceOfTenant.connect(
+//				require, loginClient, command.getTenantCode(), command.getTenantPasswordPlainText());
+//		if(tenantAuthResult.isFailure()) {
+//			// テナント認証失敗記録の永続化
+//			transaction.execute(() -> {
+//				tenantAuthResult.getAtomTask().get().run();
+//			});
+//			return tenantAuthencationFailed();
+//		}
 		
 		// 認証
 		Authen authen = authenticate(require, command);

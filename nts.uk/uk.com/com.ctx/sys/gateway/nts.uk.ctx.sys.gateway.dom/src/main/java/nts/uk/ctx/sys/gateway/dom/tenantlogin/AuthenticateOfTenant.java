@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import lombok.val;
 import nts.arc.task.tran.AtomTask;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.sys.gateway.dom.login.LoginClient;
 
 /**
@@ -18,20 +19,35 @@ public class AuthenticateOfTenant {
 		// テナントロケータに接続できている以上取得できるはず
 		val tenant = require.getTenantAuthentication(tenantCode).get();
 		
-		// 認証処理
-		if(tenant.authentication(password)) {
-			// テナント認証成功
-			return TenantAuthenticateResult.success();
+		// パスワード検証
+		if(!tenant.verifyPassword(password)) {
+			// テナントのパスワード検証に失敗
+			return TenantAuthenticateResult.failedToAuthPassword(createFailreLog(require, tenantCode, password, loginClient));
 		} 
-		else {
-			// テナント認証失敗
-			val failureLog = TenantAuthenticateFailureLog.failedNow(loginClient, tenantCode, password);
-			val atomTask = AtomTask.of(() -> {
-				require.insert(failureLog);
-			});
-			
-			return TenantAuthenticateResult.failed(atomTask);
+		
+		// 有効期限チェック
+		if(!tenant.isAvailableAt(GeneralDate.today())) {
+			// テナントの有効期限切れ
+			return TenantAuthenticateResult.failedToExpired(createFailreLog(require, tenantCode, password, loginClient));
 		}
+		
+		// 認証成功
+		return TenantAuthenticateResult.success();
+	}
+	
+	/**
+	 * 失敗時の失敗記録生成
+	 * @param require
+	 * @param tenantCode
+	 * @param password
+	 * @param triedLoginClient
+	 * @return
+	 */
+	private static AtomTask createFailreLog(Require require, String tenantCode, String password, LoginClient triedLoginClient) {
+		val failureLog = TenantAuthenticateFailureLog.failedNow(triedLoginClient, tenantCode, password);
+		return AtomTask.of(() -> {
+			require.insert(failureLog);
+		});
 	}
 	
 	public static interface Require {

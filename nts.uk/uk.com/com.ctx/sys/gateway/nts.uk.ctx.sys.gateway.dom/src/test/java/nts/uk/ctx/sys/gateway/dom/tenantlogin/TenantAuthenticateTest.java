@@ -30,7 +30,7 @@ public class TenantAuthenticateTest {
 				hashedPassword, 
 				Dummy.period);
 		
-		val result = ta.verify("123");
+		val result = ta.verifyPassword("123");
 		assertThat(result).isEqualTo(true);
 	}
 	
@@ -44,7 +44,7 @@ public class TenantAuthenticateTest {
 				hashedPassword, 
 				Dummy.period);
 		
-		val result = ta.verify("456");
+		val result = ta.verifyPassword("456");
 		assertThat(result).isEqualTo(false);
 	}
 	

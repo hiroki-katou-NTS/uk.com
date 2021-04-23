@@ -44,22 +44,12 @@ public class TenantAuthenticate {
 	}
 	
 	/**
-	 * 認証する
-	 * @param passwordPlainText
-	 * @return
-	 */
-	public boolean authentication(String passwordPlainText) {
-		return PasswordHash.verifyThat(passwordPlainText, tenantCode).isEqualTo(hashedPassword) 
-				&& availablePeriod.contains(GeneralDate.today());
-	}
-	
-	/**
-	 * パスワードを照合する
+	 * パスワードを検証する
 	 * @param String password
 	 * @return
 	 */
-	public boolean verify(String passwordToBeVerified) {
-		return PasswordHash.verifyThat(passwordToBeVerified, tenantCode)
+	public boolean verifyPassword(String passwordPlainText) {
+		return PasswordHash.verifyThat(passwordPlainText, tenantCode)
 				.isEqualTo(hashedPassword);
 	}
 	
