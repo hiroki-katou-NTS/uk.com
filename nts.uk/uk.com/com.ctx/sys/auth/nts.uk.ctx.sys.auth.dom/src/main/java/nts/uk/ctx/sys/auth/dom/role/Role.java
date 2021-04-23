@@ -130,4 +130,45 @@ public class Role extends AggregateRoot {
 		this.companyId = companyId;
 	}
 	
+	/**
+	 * 一般ロールを作る
+	 * @param roleId ロールID
+	 * @param roleCode ロールコード
+	 * @param roleType ロール種類
+	 * @param employeeReferenceRange 参照範囲
+	 * @param roleName ロール名称
+	 * @param contractCode 契約コード
+	 * @param companyId 会社ID
+	 * @return
+	 */
+	public static Role createGeneralRoll(String roleId,	RoleCode roleCode
+			,	RoleType roleType,	EmployeeReferenceRange employeeReferenceRange
+			,	RoleName roleName,	ContractCode contractCode,	String companyId) {
+		
+		return new Role(	roleId,	roleCode
+						,	roleType,	employeeReferenceRange
+						,	roleName, contractCode
+						,	RoleAtr.GENERAL, companyId);
+	}
+	
+	/**
+	 * 担当ロールを作る
+	 * @param roleId ロールID
+	 * @param roleCode ロールコード
+	 * @param roleType ロール種類
+	 * @param roleName ロール名称
+	 * @param contractCode 契約コード
+	 * @param companyId 会社ID
+	 * @return
+	 */
+	public static Role createInChargeRoll(String roleId,	RoleCode roleCode
+			,	RoleType roleType,	RoleName roleName
+			,	ContractCode contractCode,	String companyId) {
+		
+		return new Role(	roleId,	roleCode
+						,	roleType
+						,	EmployeeReferenceRange.ALL_EMPLOYEE
+						,	roleName, contractCode
+						,	RoleAtr.INCHARGE, companyId);
+	}
 }
