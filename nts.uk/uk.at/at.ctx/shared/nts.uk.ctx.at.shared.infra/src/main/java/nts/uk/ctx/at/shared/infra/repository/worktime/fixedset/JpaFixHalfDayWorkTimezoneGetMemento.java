@@ -11,12 +11,12 @@ import java.util.stream.Collectors;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.FixedWorkTimezoneSet;
+import nts.uk.ctx.at.shared.dom.worktime.common.TimezoneOfFixedRestTimeSet;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixHalfDayWorkTimezoneGetMemento;
-import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixRestTimezoneSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedWorkSetPK;
+import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtWtFix;
 import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtWtFixBrWekTs;
 import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtWtFixOverTs;
-import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtWtFix;
-import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedWorkSetPK;
 import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtWtFixWorkTs;
 
 /**
@@ -54,7 +54,7 @@ public class JpaFixHalfDayWorkTimezoneGetMemento implements FixHalfDayWorkTimezo
 	 * FixHalfDayWorkTimezoneGetMemento#getRestTimezone()
 	 */
 	@Override
-	public FixRestTimezoneSet getRestTimezone() {
+	public TimezoneOfFixedRestTimeSet getRestTimezone() {
 		// KSHMT_WT_FIX_BR_WEK_TS
 		if (CollectionUtil.isEmpty(this.entity.getKshmtFixedHalfRestSets())) {
 			this.entity.setKshmtFixedHalfRestSets(new ArrayList<>());
@@ -63,7 +63,7 @@ public class JpaFixHalfDayWorkTimezoneGetMemento implements FixHalfDayWorkTimezo
 				.sorted((item1, item2) -> item1.getStartTime() - item2.getEndTime())
 				.filter(entity -> entity.getKshmtFixedHalfRestSetPK().getAmPmAtr() == this.type.value)
 				.collect(Collectors.toList());
-		return new FixRestTimezoneSet(new JpaFixRestHalfdayTzGetMemento(kshmtFixedHalfRestSets));
+		return new TimezoneOfFixedRestTimeSet(new JpaFixRestHalfdayTzGetMemento(kshmtFixedHalfRestSets));
 	}
 
 	/*

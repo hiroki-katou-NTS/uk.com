@@ -15,6 +15,7 @@ import nts.uk.ctx.at.shared.dom.worktime.fixedset.policy.FixedWorkTimezoneSetPol
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimedisplay.DisplayMode;
 import nts.uk.ctx.at.shared.dom.worktime.worktimedisplay.WorkTimeDisplayMode;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.HalfDayWorkSet;
 
 /**
  * The Class FixHalfDayWorkTimezonePolicyImpl.
@@ -39,12 +40,12 @@ public class FixHalfDayWorkTimezonePolicyImpl implements FixHalfDayWorkTimezoneP
 	 */
 	@Override
 	public void validateFixedAndDiff(BundledBusinessException be, PredetemineTimeSetting predTime,
-			WorkTimeDisplayMode displayMode, FixHalfDayWorkTimezone halfDayWork, boolean isUseHalfDayShift) {
+			WorkTimeDisplayMode displayMode, FixHalfDayWorkTimezone halfDayWork, HalfDayWorkSet isUseHalfDayShift) {
 		this.fixedWtzPolicy.validateFixedAndDiff(be, predTime, halfDayWork.getWorkTimezone(),
-				displayMode.getDisplayMode(), halfDayWork.getDayAtr(), isUseHalfDayShift);
+				displayMode.getDisplayMode(), halfDayWork.getDayAtr());
 				
-		if (!((AmPmAtr.AM.equals(halfDayWork.getDayAtr()) && DisplayMode.DETAIL.equals(displayMode.getDisplayMode()) && !isUseHalfDayShift)
-				|| (AmPmAtr.PM.equals(halfDayWork.getDayAtr()) && DisplayMode.DETAIL.equals(displayMode.getDisplayMode()) && !isUseHalfDayShift)
+		if (!((AmPmAtr.AM.equals(halfDayWork.getDayAtr()) && DisplayMode.DETAIL.equals(displayMode.getDisplayMode()))
+				|| (AmPmAtr.PM.equals(halfDayWork.getDayAtr()) && DisplayMode.DETAIL.equals(displayMode.getDisplayMode()))
 				|| ((AmPmAtr.AM.equals(halfDayWork.getDayAtr()) || AmPmAtr.PM.equals(halfDayWork.getDayAtr())) && DisplayMode.SIMPLE.equals(displayMode.getDisplayMode())))) {
 			
 			// Msg_755
@@ -72,12 +73,12 @@ public class FixHalfDayWorkTimezonePolicyImpl implements FixHalfDayWorkTimezoneP
 	 */
 	@Override
 	public void validateFlex(BundledBusinessException be, PredetemineTimeSetting predTime,
-			WorkTimeDisplayMode displayMode, FixHalfDayWorkTimezone halfDayWork, boolean isUseHalfDayShift) {
+			WorkTimeDisplayMode displayMode, FixHalfDayWorkTimezone halfDayWork, HalfDayWorkSet isUseHalfDayShift) {
 		this.fixedWtzPolicy.validateFlex(be, predTime, halfDayWork.getWorkTimezone(), displayMode.getDisplayMode(),
-				halfDayWork.getDayAtr(), isUseHalfDayShift);
+				halfDayWork.getDayAtr());
 		
-		if (!((AmPmAtr.AM.equals(halfDayWork.getDayAtr()) && DisplayMode.DETAIL.equals(displayMode.getDisplayMode()) && !isUseHalfDayShift)
-				|| (AmPmAtr.PM.equals(halfDayWork.getDayAtr()) && DisplayMode.DETAIL.equals(displayMode.getDisplayMode()) && !isUseHalfDayShift)
+		if (!((AmPmAtr.AM.equals(halfDayWork.getDayAtr()) && DisplayMode.DETAIL.equals(displayMode.getDisplayMode()))
+				|| (AmPmAtr.PM.equals(halfDayWork.getDayAtr()) && DisplayMode.DETAIL.equals(displayMode.getDisplayMode()))
 				|| ((AmPmAtr.AM.equals(halfDayWork.getDayAtr()) || AmPmAtr.PM.equals(halfDayWork.getDayAtr())) && DisplayMode.SIMPLE.equals(displayMode.getDisplayMode())))) {
 			
 			// Msg_755
@@ -104,8 +105,7 @@ public class FixHalfDayWorkTimezonePolicyImpl implements FixHalfDayWorkTimezoneP
 	 */
 	@Override
 	public void filterTimezone(PredetemineTimeSetting predTime, FixHalfDayWorkTimezone origin, DisplayMode displayMode,
-			boolean useHalfDayShift) {
-		this.fixedWtzPolicy.filterTimezone(predTime, origin.getWorkTimezone(), displayMode, origin.getDayAtr(),
-				useHalfDayShift);
+			HalfDayWorkSet useHalfDayShift) {
+		this.fixedWtzPolicy.filterTimezone(predTime, origin.getWorkTimezone(), displayMode, origin.getDayAtr());
 	}
 }

@@ -252,7 +252,7 @@ module nts.uk.at.view.kaf002_ref.b.viewmodel {
                 }
             }).then((result) => {
 				if(result) {
-					CommonProcess.handleAfterRegister(result, self.isSendMail(), self, self.isAgentMode());
+					CommonProcess.handleAfterRegister(result, self.isSendMail(), self, false, self.appDispInfoStartupOutput().appDispInfoNoDateOutput.employeeInfoLst);
 				}
 			}).fail(res => {
                 self.showError(res);

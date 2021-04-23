@@ -139,11 +139,11 @@
 }
 
 .min-774 {
-	min-width: 774px;
+	min-width: 774px !important;
 }
 
 .min-671 {
-	min-width: 671px;
+	min-width: 671px !important;
 }
 
 .break-all {
