@@ -18,8 +18,8 @@ import nts.arc.time.GeneralDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ExtractionResultDetail extends DomainObject {
-//	/**社員ID	 */
-//	private String SID;
+	/**社員ID	 */
+	private String SID;
 	/**アラーム値日付	 */
 	private ExtractionAlarmPeriodDate periodDate;
 	/**アラーム項目	 */
@@ -31,7 +31,7 @@ public class ExtractionResultDetail extends DomainObject {
 	/**職場ID	 */
 	private Optional<String> wpID;
 	/**	コメント */
-    private Optional<String> message;
+    private Optional<String> comment;
     /**  チェック対象値   */
     private Optional<String> checkValue;
 }
