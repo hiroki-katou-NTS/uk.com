@@ -33,7 +33,7 @@ public class RegisterOuenWorkTimeSheetOfDailyService {
 		//List<AtomTask> $登録対象	
 		List<AtomTask> atomTasks = new ArrayList<>();
 		//	$実績の作業時間帯 = require.作業時間帯を取得するを取得する(社員ID,年月日)
-		Optional<OuenWorkTimeSheetOfDaily> ouenWorkTimeSheetOfDaily = require.find(empId, ymd);
+		Optional<OuenWorkTimeSheetOfDaily> ouenWorkTimeSheetOfDaily = require.findOuenWorkTimeSheetOfDaily(empId, ymd);
 		//	$実績の編集状態 = require.編集状態を取得するを取得する(社員ID,年月日)																
 		List<EditStateOfDailyPerformance> editStateOfDailyPerformance = require.getEditStateOfDailyPerformance(empId, ymd);
 		//	if $実績の作業時間帯.isPresent
@@ -107,7 +107,7 @@ public class RegisterOuenWorkTimeSheetOfDailyService {
 	public static interface Require {
 		//[R-1] 作業時間帯を取得する
 		//日別実績の応援作業別勤怠時間帯Repository.Get(社員ID,年月日)			
-		Optional<OuenWorkTimeSheetOfDaily> find(String empId, GeneralDate ymd);
+		Optional<OuenWorkTimeSheetOfDaily> findOuenWorkTimeSheetOfDaily(String empId, GeneralDate ymd);
 		//[R-2] 編集状態を取得する
 		//日別実績の編集状態Repository.Get(社員ID,年月日)		
 		List<EditStateOfDailyPerformance> getEditStateOfDailyPerformance(String empId, GeneralDate ymd);

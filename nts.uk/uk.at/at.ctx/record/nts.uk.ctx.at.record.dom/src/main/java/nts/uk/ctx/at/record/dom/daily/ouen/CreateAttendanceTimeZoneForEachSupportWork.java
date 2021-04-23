@@ -32,7 +32,14 @@ public class CreateAttendanceTimeZoneForEachSupportWork {
 	 */
 	public static List<OuenWorkTimeSheetOfDailyAttendance> create(Require require, String empId, GeneralDate ymd, List<WorkDetailsParam> workDetailsParams) {
 		
-		return workDetailsParams.stream().map(c-> createSupportWorkTimeZone(require, empId, ymd, c)).collect(Collectors.toList());
+		OuenWorkTimeSheetOfDaily ouenWorkTimeSheetOfDaily = require.find(empId, ymd);
+		
+		return workDetailsParams.stream().map(c-> {
+			//$旧の作業時間帯 = $旧の応援作業.応援時間帯：filter 応援勤務枠No == $.応援勤務枠No
+			Optional<OuenWorkTimeSheetOfDailyAttendance> o = ouenWorkTimeSheetOfDaily.getOuenTimeSheet().stream().filter(e -> e.getWorkNo() == c.getSupportFrameNo().v()).findAny();
+			//[prv-1] 応援作業時間帯を作成する(require,社員ID,年月日,$,$旧の作業時間帯)
+			return createSupportWorkTimeZone(require, empId, ymd, c, o);
+		}).collect(Collectors.toList());
 	}
 	
 //■Private
@@ -42,20 +49,18 @@ public class CreateAttendanceTimeZoneForEachSupportWork {
 	 * @input empId 社員ID
 	 * @input ymd 年月日
 	 * @input workDetailsParam  作業詳細	
+	 * @input ouenWorkTimeOfDaily 旧の作業時間帯
 	 * @output 	日別勤怠の応援作業時間帯
 	 */
-	private static OuenWorkTimeSheetOfDailyAttendance createSupportWorkTimeZone(Require require, String empId, GeneralDate ymd, WorkDetailsParam workDetailsParam) {
+	private static OuenWorkTimeSheetOfDailyAttendance createSupportWorkTimeZone(Require require, String empId, GeneralDate ymd, WorkDetailsParam workDetailsParam, Optional<OuenWorkTimeSheetOfDailyAttendance> ouenWorkTimeSheetOfDailyAttendance) {
 		//作業詳細.作業グループ.作業内容の有効期限を確認する(require,年月日) anh tuấn trả lời: khi naof co thi no moi goi, nen chac ko can dau
 		workDetailsParam.getWorkGroup().get().checkExpirationDate(require, ymd);
 		
-		//$旧の作業時間帯 = require.応援作業別勤怠時間帯を取得する(社員ID,年月日,作業詳細.応援勤務枠No)
-		Optional<OuenWorkTimeSheetOfDaily> ouenWorkTimeOfDaily = require.find(empId, ymd, workDetailsParam.getSupportFrameNo().v());
-		
 		//if $旧の作業時間帯.isPresent
-		if(ouenWorkTimeOfDaily.isPresent()) {
+		if(ouenWorkTimeSheetOfDailyAttendance.isPresent()) {
 			//		return [prv-2] 既存の応援作業時間帯をセットする($旧の作業時間帯.応援時間帯,作業詳細)
-			//chỗ này đang xác nhận lại với anh tuấn: http://192.168.50.4:3000/issues/115993
-			return setExistingSupportWorkTimeZone(ouenWorkTimeOfDaily.get().getOuenTimeSheet().get(0), workDetailsParam);
+			//đã xác nhận lại với anh tuấn: http://192.168.50.4:3000/issues/115993
+			return setExistingSupportWorkTimeZone(ouenWorkTimeSheetOfDailyAttendance.get(), workDetailsParam);
 		}
 		//	return [prv-3] 新規の応援作業時間帯を作成する(require,社員ID,年月日,作業詳細)
 		return createNewOuenWorkTimeSheetOfDailyAttendance(require, empId, ymd, workDetailsParam);
