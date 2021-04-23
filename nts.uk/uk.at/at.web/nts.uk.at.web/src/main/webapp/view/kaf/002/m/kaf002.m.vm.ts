@@ -212,6 +212,16 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
             }
             const index = s[0].index;
             self.isLinkList[index] = false;
+			_.forEach(s, (item: GridItem) => {
+				const start = (Number)(item.startTimeRequest());
+				const end = (Number)(item.endTimeRequest());
+				if (_.isNaN(start) || start >= 7200 || start <= -1200) {
+					item.startTimeRequest(null);
+				}
+				if (_.isNaN(end) || end >= 7200 || end <= -1200) {
+					item.endTimeRequest(null);
+				} 
+			})
             self.loadGrid(ko.toJS(self.nameGrids)[index], s, s[0].typeStamp);
             self.binding();
             self.disableControl();                
