@@ -11,7 +11,7 @@ import nts.gul.text.IdentifierUtil;
 
 /**
  * ロール
- * The Class Role.
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.システム.権限管理.ロール.ロール
  */
 @Getter
 public class Role extends AggregateRoot {

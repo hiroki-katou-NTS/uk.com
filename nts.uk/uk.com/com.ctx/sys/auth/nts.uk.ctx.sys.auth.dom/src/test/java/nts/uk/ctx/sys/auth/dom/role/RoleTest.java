@@ -2,30 +2,45 @@ package nts.uk.ctx.sys.auth.dom.role;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import org.junit.Before;
 import org.junit.Test;
-
 import lombok.val;
-
+/**
+ * ロールのUTコード
+ * @author lan_lt
+ *
+ */
 public class RoleTest {
+	
+	private String roleId;
+	private String companyId;
+	private RoleCode roleCode;
+	private RoleName roleName;
+	private ContractCode contractCode;
+	
+	@Before
+	public void initData() {
+		this.roleId = "roleId";
+		this.companyId = "companyId";
+		this.roleCode = new RoleCode("roleCode");
+		this.roleName = new RoleName("roleName");
+		this.contractCode = new ContractCode("contractCode");
+	}
 	
 	@Test
 	public void createGeneralRole() {
-		val roleId = "roleId";
-		val roleCode = new RoleCode("roleCode");
-		val roleName = new RoleName("roleName");
 		val roleType = RoleType.PERSONAL_INFO;
 		val employeeReferenceRange = EmployeeReferenceRange.DEPARTMENT_AND_CHILD;
-		val companyId = "companyId";
-		val contractCode = new ContractCode("contractCode");
 		
 		val generalRole = Role.createGeneralRoll(
-					roleId, roleCode
+					this.roleId, this.roleCode
 				,	roleType, employeeReferenceRange
-				,	roleName, contractCode, companyId);
+				,	this.roleName, this.contractCode, this.companyId);
 		
-		assertThat(generalRole.getContractCode()).isEqualTo(contractCode);
-		assertThat(generalRole.getCompanyId()).isEqualTo(companyId);
-		assertThat(generalRole.getRoleId()).isEqualTo(roleId);
+		assertThat(generalRole.getContractCode()).isEqualTo(this.contractCode);
+		assertThat(generalRole.getCompanyId()).isEqualTo(this.companyId);
+		
+		assertThat(generalRole.getRoleId()).isEqualTo(this.roleId);
 		assertThat(generalRole.getRoleCode()).isEqualTo(roleCode);
 		assertThat(generalRole.getName()).isEqualTo(roleName);
 		assertThat(generalRole.getRoleType()).isEqualTo(roleType);
@@ -38,23 +53,19 @@ public class RoleTest {
 	
 	@Test
 	public void createInChargeRole() {
-		val roleId = "roleId";
-		val roleCode = new RoleCode("roleCode");
-		val roleName = new RoleName("roleName");
 		val roleType = RoleType.EMPLOYMENT;
-		val companyId = "companyId";
-		val contractCode = new ContractCode("contractCode");
 		
 		val inchargelRole = Role.createInChargeRoll(
-					roleId, roleCode
-				,	roleType, roleName
-				,	contractCode, companyId);
+					this.roleId, this.roleCode
+				,	roleType, this.roleName
+				,	this.contractCode, this.companyId);
 		
-		assertThat(inchargelRole.getContractCode()).isEqualTo(contractCode);
-		assertThat(inchargelRole.getCompanyId()).isEqualTo(companyId);
-		assertThat(inchargelRole.getRoleId()).isEqualTo(roleId);
-		assertThat(inchargelRole.getRoleCode()).isEqualTo(roleCode);
-		assertThat(inchargelRole.getName()).isEqualTo(roleName);
+		assertThat(inchargelRole.getContractCode()).isEqualTo(this.contractCode);
+		assertThat(inchargelRole.getCompanyId()).isEqualTo(this.companyId);
+		
+		assertThat(inchargelRole.getRoleId()).isEqualTo(this.roleId);
+		assertThat(inchargelRole.getRoleCode()).isEqualTo(this.roleCode);
+		assertThat(inchargelRole.getName()).isEqualTo(this.roleName);
 		assertThat(inchargelRole.getRoleType()).isEqualTo(roleType);
 		
 		/** 担当区分　＝　担当　**/
@@ -62,6 +73,5 @@ public class RoleTest {
 		assertThat(inchargelRole.getEmployeeReferenceRange()).isEqualTo(EmployeeReferenceRange.ALL_EMPLOYEE);
 
 	}
-
 
 }
