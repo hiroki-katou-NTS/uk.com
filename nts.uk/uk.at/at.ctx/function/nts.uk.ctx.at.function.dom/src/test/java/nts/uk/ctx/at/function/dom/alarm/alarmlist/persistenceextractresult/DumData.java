@@ -310,4 +310,19 @@ public class DumData {
                     Optional.of("displayMessage")
             )
     );
+
+    public static List<AffAtWorkplaceExport> affAtWorkplaceExports2 = Arrays.asList(
+            new AffAtWorkplaceExport(
+                    "sya004",
+                    "S002",
+                    "H04",
+                    "n04"
+            ),
+            new AffAtWorkplaceExport(
+                    "sya005",
+                    "S002",
+                    "H05",
+                    "n05"
+            )
+    );
 }

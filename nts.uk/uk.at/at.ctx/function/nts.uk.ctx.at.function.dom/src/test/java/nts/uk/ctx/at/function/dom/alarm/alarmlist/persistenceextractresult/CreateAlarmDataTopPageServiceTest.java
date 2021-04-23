@@ -13,6 +13,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -139,6 +140,36 @@ public class CreateAlarmDataTopPageServiceTest {
 
                 require.getListEmployeeId("S001", GeneralDate.today());
                 result = Arrays.asList("sya001", "sya002", "sya003");
+            }
+        };
+
+        NtsAssert.atomTask(() -> CreateAlarmDataTopPageService.create(require, Optional.of(deleteInfoAlarmImport), alarmListInfo),
+                any -> require.create(companyId, any.get(), any.get())
+        );
+    }
+
+    /**
+     * alarmListInfo_Empty
+     */
+    @Test
+    public void testCreateAlarmTopPage_alarmListInfo_Empty() {
+        List<TopPageAlarmImport> alarmListInfo = Collections.emptyList();
+        DeleteInfoAlarmImport deleteInfoAlarmImport = DumData.deleteInfoAlarmImport2;
+        List<AffAtWorkplaceExport> affAtWorkplaceExports = DumData.affAtWorkplaceExports2;
+        List<String> employeeIds = Arrays.asList("sya004", "sya005");
+
+        String companyId = "companyId";
+
+        new Expectations(AppContexts.class) {
+            {
+                AppContexts.user().companyId();
+                result = companyId;
+
+                require.getWorkplaceId(employeeIds, GeneralDate.today());
+                result = affAtWorkplaceExports;
+
+                require.getListEmployeeId("S002", GeneralDate.today());
+                result = Arrays.asList("sya004", "sya005");
             }
         };
 
