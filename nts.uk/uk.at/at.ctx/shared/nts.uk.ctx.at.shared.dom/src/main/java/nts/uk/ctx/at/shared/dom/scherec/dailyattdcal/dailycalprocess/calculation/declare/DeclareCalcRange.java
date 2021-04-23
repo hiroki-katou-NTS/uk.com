@@ -119,7 +119,7 @@ public class DeclareCalcRange {
 		{
 			// 休憩設定を変更する　（休憩時間を退勤で区切らず、1日全て計上に変更）
 			if (itgOfWorkTime.getFixedWorkSetting().isPresent()){
-				itgOfWorkTime.getFixedWorkSetting().get().getFixedWorkRestSetting().getCommonRestSet().setCalculateMethod(
+				itgOfWorkTime.getFixedWorkSetting().get().getCommonRestSet().setCalculateMethod(
 						RestTimeOfficeWorkCalcMethod.APPROP_ALL);
 			}
 			if (itgOfWorkTime.getFlowWorkSetting().isPresent()){

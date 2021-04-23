@@ -9,6 +9,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimezoneSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimedisplay.DisplayMode;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.HalfDayWorkSet;
 
 /**
  * The Interface DiffTimezoneSettingPolicy.
@@ -25,7 +26,7 @@ public interface DiffTimezoneSettingPolicy {
 	 * @param dayAtr the day atr
 	 * @param useHalfDayShift the use half day shift
 	 */
-	void validate(BundledBusinessException be, PredetemineTimeSetting predTime, DiffTimezoneSetting diffTzSet, DisplayMode displayMode, AmPmAtr dayAtr, boolean useHalfDayShift);
+	void validate(BundledBusinessException be, PredetemineTimeSetting predTime, DiffTimezoneSetting diffTzSet, DisplayMode displayMode, AmPmAtr dayAtr);
 
 	/**
 	 * Filter timezone.
@@ -37,5 +38,5 @@ public interface DiffTimezoneSettingPolicy {
 	 * @param useHalfDayShift the use half day shift
 	 */
 	void filterTimezone(PredetemineTimeSetting predTime, DiffTimezoneSetting origin, DisplayMode displayMode,
-			AmPmAtr dayAtr, boolean useHalfDayShift);
+			AmPmAtr dayAtr);
 }

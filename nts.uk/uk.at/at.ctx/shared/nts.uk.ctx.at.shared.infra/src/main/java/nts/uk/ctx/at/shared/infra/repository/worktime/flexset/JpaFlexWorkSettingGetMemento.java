@@ -4,26 +4,26 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.worktime.flexset;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.worktime.common.BooleanGetAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.StampReflectTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.CoreTimeSetting;
-import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexCalcSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexHalfDayWorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexOffdayWorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSettingGetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestSetting;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.HalfDayWorkSet;
 import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWtCom;
 import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtWtFle;
 import nts.uk.ctx.at.shared.infra.repository.worktime.common.JpaFlexFlowWorkRestSettingGetMemento;
 import nts.uk.ctx.at.shared.infra.repository.worktime.common.JpaFlexStampReflectTZGetMemento;
 import nts.uk.ctx.at.shared.infra.repository.worktime.common.JpaWorkTimezoneCommonSetGetMemento;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * The Class JpaFlexWorkSettingGetMemento.
@@ -122,8 +122,12 @@ public class JpaFlexWorkSettingGetMemento implements FlexWorkSettingGetMemento{
 	 * getUseHalfDayShift()
 	 */
 	@Override
-	public boolean getUseHalfDayShift() {
-		return BooleanGetAtr.getAtrByInteger(this.entity.getUseHalfdayShift());
+	public HalfDayWorkSet getUseHalfDayShift() {
+//		return BooleanGetAtr.getAtrByInteger(this.entity.getUseHalfdayShift());
+	    return new HalfDayWorkSet(
+	            BooleanGetAtr.getAtrByInteger(this.entity.getUseHalfdayShift()), 
+	            BooleanGetAtr.getAtrByInteger(this.entity.getUseHalfDayOverTime()), 
+	            BooleanGetAtr.getAtrByInteger(this.entity.getUseHalfDayBreakTime()));
 	}
 
 	/*
@@ -156,17 +160,6 @@ public class JpaFlexWorkSettingGetMemento implements FlexWorkSettingGetMemento{
 		return this.entity.getKshmtFlexStampReflects().stream()
 				.map(entity -> new StampReflectTimezone(new JpaFlexStampReflectTZGetMemento(entity)))
 				.collect(Collectors.toList());
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSettingGetMemento#
-	 * getCalculateSetting()
-	 */
-	@Override
-	public FlexCalcSetting getCalculateSetting() {
-		return new FlexCalcSetting(new JpaFlexCalcSettingGetMemento(this.entity));
 	}
 
 }

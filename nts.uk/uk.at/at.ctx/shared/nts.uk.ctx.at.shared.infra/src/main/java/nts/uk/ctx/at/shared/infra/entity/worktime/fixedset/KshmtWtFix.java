@@ -50,22 +50,28 @@ public class KshmtWtFix extends ContractUkJpaEntity implements Serializable {
 	/** The use half day. */
 	@Column(name = "USE_HALF_DAY")
 	private int useHalfDay;
+	
+	@Column(name = "USE_HALF_DAY_OVERTIME")
+	private int useHalfDayOverTime;
+	
+	@Column(name = "USE_HALF_DAY_BREAKTIME")
+	private int useHalfDayBreakTime;
 
 	/** The legal ot set. */
 	@Column(name = "LEGAL_OT_SET")
 	private int legalOtSet;
 
 	/** The calc method. */
-	@Column(name = "CALC_METHOD")
-	private int calcMethod;
+//	@Column(name = "CALC_METHOD")
+//	private int calcMethod;
 
 	/** The lev rest calc type. */
 	@Column(name = "LEV_REST_CALC_TYPE")
 	private int levRestCalcType;
 	
 	/** The is plan actual not match master refe. */
-	@Column(name = "PLAN_NOT_MATCH")
-	private int isPlanActualNotMatchMasterRefe;
+//	@Column(name = "PLAN_NOT_MATCH")
+//	private int isPlanActualNotMatchMasterRefe;
 	
 	/** The ot calc method. */
 	@Column(name = "OT_CALC_METHOD")

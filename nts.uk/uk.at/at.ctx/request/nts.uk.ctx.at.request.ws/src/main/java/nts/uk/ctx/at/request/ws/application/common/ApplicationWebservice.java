@@ -51,6 +51,7 @@ import nts.uk.ctx.at.request.app.find.application.requestofearch.GetDataAppCfDet
 import nts.uk.ctx.at.request.app.find.setting.request.application.ApplicationDeadlineDto;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.appabsence.HolidayAppType;
+import nts.uk.ctx.at.request.dom.application.common.service.application.SendMailDialogParam;
 import nts.uk.ctx.at.request.dom.application.common.service.application.output.ApplicationForRemandOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.InputGetDetailCheck;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.RemandCommand;
@@ -189,8 +190,8 @@ public class ApplicationWebservice extends WebService {
 	}
 	@POST
 	@Path("getApplicationForSendByAppID")
-	public ApplicationSendDto getApplicationForSendByAppID(List<String> appIDLst){
-		return finderApp.getAppByIdForSend(appIDLst);
+	public ApplicationSendDto getApplicationForSendByAppID(SendMailDialogParam param){
+		return finderApp.getAppByIdForSend(param);
 	}
 	
 	@POST
