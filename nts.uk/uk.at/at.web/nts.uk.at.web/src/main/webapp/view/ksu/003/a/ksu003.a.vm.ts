@@ -3165,7 +3165,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 									},
 									canSlide: canSlideFix,
 									fixed: fixedFix,
-									bePassedThrough: false
+									bePassedThrough: false,
+									pruneOnSlide: true
 								});
 								fixedGc.push(self.addChartWithType045(fixedGc, datafilter, datafilter[0].empId, "Changeable", `rgc${i}`, { startTime: timeChart2.startTime - dispStart, endTime: timeChart2.endTime - dispStart }, i, null, 
 								limitStartMin - dispStart, limitStartMax - dispStart, limitEndMin - dispStart, limitEndMax - dispStart));
@@ -3228,7 +3229,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 										return;
 								},
 								canSlide: canSlideFix,
-								fixed: fixedFix
+								fixed: fixedFix,
+								pruneOnSlide: true
 							});
 							fixedGc.push(self.addChartWithType045(fixedGc, datafilter, datafilter[0].empId, "Flex", `lgc${i}`, { startTime: timeStart, endTime: timeEnd }, i, null, 
 							limitStartMin, limitStartMax, limitEndMin, limitEndMax));
@@ -3343,6 +3345,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 								canSlide: slide,
 								fixed: "Both",
 								followParent: follow,
+								pruneOnSlide: true,
 								dropFinished: (b: any, e: any) => {
 									self.dropBreakTime(i, indexBrks, b, e, slide, fixedString, `lgc${i}_` + indexBrks);
 								}
@@ -3384,7 +3387,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 										self.dropBreakTime(i, indexBrks, b, e, slide, fixedString, `rgc${i}_` + indexBrkr);
 									},
 									canSlide: slide,
-									fixed: "Both"
+									fixed: "Both",
+									pruneOnSlide: true
 								});
 								
 								lstBreakTime.push({
@@ -3599,13 +3603,21 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 						ruler.gcChart[i][lstBrCoreStart[0].options.id].start = Math.floor(coreTime[0].options.start - self.dispStart * 12);
 					}
 					
-					if(indexBrStart == -1 && checkCore == 0 && lstBrCoreStart.length > 0){
+					if((indexBrStart == -1 || indexBrStart == 0) && checkCore == 0 && lstBrCoreStart.length > 0){
 						indexAllBr = _.findIndex(self.allTimeBrk, (x : any) => { return x.options.id === lstBrCoreStart[0].options.id});
 						let indexNew = _.findIndex(self.dataScreen003A().employeeInfo[i].workScheduleDto.listBreakTimeZoneDto, 
 										(x : any) => { return self.allTimeBrk[indexAllBr].options.end === x.end / 5}); // làm tiếp
 						self.allTimeBrk[indexAllBr].options.start = self.breakChangeCore[indexAllBr].options.start;
 						self.dataScreen003A().employeeInfo[i].workScheduleDto.listBreakTimeZoneDto[indexNew].start = self.breakChangeCore[indexAllBr].options.start * 5;
-                        ruler.extend(i, lstBrCoreStart[0].options.id,Math.floor(self.allTimeBrk[indexAllBr].options.start - self.dispStart * 12));
+						let pixelBrk = 0;
+						if(param[0] * 5 < self.dataScreen003A().employeeInfo[i].fixedWorkInforDto.coreStartTime){
+							if(param[0] > self.breakChangeCore[indexAllBr].options.start){
+								pixelBrk = param[0];
+							} else {
+								pixelBrk = self.allTimeBrk[indexAllBr].options.start;
+							}
+						}
+                        ruler.extend(i, lstBrCoreStart[0].options.id,Math.floor(pixelBrk - self.dispStart * 12));
 					}
 				} else {
 					
@@ -3726,6 +3738,9 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 
 				lstTime = self.calcChartTypeTime(dataFixed, dataFixInfo[0].fixedWorkInforDto == null ? [] : dataFixInfo[0].fixedWorkInforDto.overtimeHours, timeRangeLimit, lstTime, "OT", index);
 				let totalTimes = self.calcAllTime(dataFixed, lstTime, timeRangeLimit);
+				let totalBreaktime = self.calcAllBrk(lstTime);
+				totalBreaktime = totalBreaktime != 0 ? formatById("Clock_Short_HM", totalBreaktime * 5) : "0:00";
+				$("#extable-ksu003").exTable("cellValue", "middle", self.dataScreen003A().employeeInfo[i].empId, "breaktime", totalBreaktime );
 				$("#extable-ksu003").exTable("cellValue", "middle", self.dataScreen003A().employeeInfo[i].empId, "totalTime", totalTimes);
 				let cssTotalTime: string = self.dataScreen003A().targetInfor == 1 ? "#extable-ksu003 > .ex-body-middle > table > tbody tr:nth-child" + "(" + (i + 2).toString() + ")" + " > td:nth-child(9)" : 
 				"#extable-ksu003 > .ex-body-middle > table > tbody tr:nth-child" + "(" + (i + 2).toString() + ")" + " > td:nth-child(7)";
@@ -3908,7 +3923,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			limitStartMin?: any, limitStartMax?: any, limitEndMin?: any, limitEndMax?: any, zIndex?: any) {
 			let self = this, timeEnd = self.convertTimePixel(self.timeRange === 24 ? "24:00" : "48:00");
 			let fixed = "None", canSlide = false, pin =false, followParent = false, rollup = false, roundEdge = false, bePassedThrough = true,
-			isConfirmed = self.dataScreen003A().employeeInfo[lineNo].workInfoDto.isConfirmed;
+			isConfirmed = self.dataScreen003A().employeeInfo[lineNo].workInfoDto.isConfirmed, pruneOnSlide = false;
 			let lstType = self.dataScreen003A().scheCorrection; // 確定済みか
 			let fixCheck = _.filter(lstType, (x: any) => { return x === 0 }),
 				flexCheck = _.filter(lstType, (x: any) => { return x === 1 }),
@@ -3946,6 +3961,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			
 			if(type == "BreakTime"){
 				followParent = true;
+				pruneOnSlide = true;
 				canSlide = true;
 				if(self.dataScreen003A().employeeInfo[lineNo].fixedWorkInforDto != null && self.dataScreen003A().employeeInfo[lineNo].fixedWorkInforDto.fixBreakTime == 1){
 					if (self.dataScreen003A().employeeInfo[lineNo].fixedWorkInforDto.workType == WorkTimeForm.FLOW || self.dataScreen003A().employeeInfo[lineNo].fixedWorkInforDto.workType == WorkTimeForm.FLEX)
@@ -3991,6 +4007,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					rollup : rollup,
 					roundEdge: roundEdge,
 					bePassedThrough: bePassedThrough,
+					pruneOnSlide: pruneOnSlide,
 					resizeFinished: (b: any, e: any, p: any) => {
 						if (self.checkDisByDate == false || self.dataScreen003A().employeeInfo[lineNo].workInfoDto.isConfirmed == 1) return;
 						self.enableSave(true);
@@ -4008,6 +4025,11 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					},
 					// kéo lại chart
 					dropFinished: (b: any, e: any) => {
+						if (_.includes(id, '_')) {
+							let indexBrks = 0;
+							self.dropBreakTime(lineNo, id, b, e, null, fixed, id);
+							return;
+						};
 						let dataDrop : any = [];
 						dataDrop.push(b);
 						dataDrop.push(e);
