@@ -462,7 +462,7 @@
                       <div
                         id="only-shift"
                         style="
-                          height: 200px;
+                          height: 31vh;
                           top: 60px;
                           overflow: scroll;
                         "
@@ -523,15 +523,15 @@
                 <div class="card2 card">
                   <div class="card-header uk-bg-accordion">
                     <button
+                      v-click="showMemo"
                       class="btn btn-link"
                       type="button"
                     >
-                      <i class="far fa-sticky-note" ></i
+                      <i class="far fa-sticky-note"></i
                       ><span class="small-header" style="margin-left: 9px"
                         >{{'KSUS02_11' | i18n}}</span
                       >
                       <i
-                        v-click="showMemo"
                         id="plus-minus"
                         class="fas fa-plus-circle"
                         style="float: right; margin-top: 4px"
