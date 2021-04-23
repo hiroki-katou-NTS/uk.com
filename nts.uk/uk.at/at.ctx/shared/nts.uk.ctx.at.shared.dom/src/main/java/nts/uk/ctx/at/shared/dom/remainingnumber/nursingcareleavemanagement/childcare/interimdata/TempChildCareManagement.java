@@ -26,6 +26,11 @@ public class TempChildCareManagement  extends TempChildCareNurseManagement {
 			ChildCareNurseUsedNumber usedNumber, Optional<DigestionHourlyTimeType> appTimeType){
 		super(remainManaID, sID, ymd, creatorAtr, RemainType.CHILDCARE, remainAtr, usedNumber, appTimeType);
 	}
+
+	public TempChildCareManagement(TempChildCareNurseManagement domain) {
+		super(domain);
+	}
+
 	/**
 	 * ファクトリー
 	 * @param remainManaID 残数管理データID

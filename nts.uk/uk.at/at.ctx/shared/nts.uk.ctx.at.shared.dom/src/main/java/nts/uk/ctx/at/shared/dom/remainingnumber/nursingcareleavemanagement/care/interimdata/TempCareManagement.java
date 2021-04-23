@@ -28,6 +28,10 @@ public class TempCareManagement  extends TempChildCareNurseManagement {
 		super(remainManaID, sID, ymd, creatorAtr, RemainType.CARE, remainAtr, usedNumber, appTimeType);
 	}
 
+	public TempCareManagement(TempChildCareNurseManagement domain) {
+		super(domain);
+	}
+
 	/**
 	 * ファクトリー
 	 * @param remainManaID 残数管理データID

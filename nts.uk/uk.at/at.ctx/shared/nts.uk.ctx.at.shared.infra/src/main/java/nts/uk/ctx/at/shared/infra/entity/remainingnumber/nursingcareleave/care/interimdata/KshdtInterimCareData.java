@@ -29,8 +29,8 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table( name = "KRCDT_INTERIM_CARE_DATA")
-public class KrcdtInterimCareData  extends UkJpaEntity implements Serializable {
+@Table( name = "KSHDT_INTERIM_CARE_DATA")
+public class KshdtInterimCareData  extends UkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

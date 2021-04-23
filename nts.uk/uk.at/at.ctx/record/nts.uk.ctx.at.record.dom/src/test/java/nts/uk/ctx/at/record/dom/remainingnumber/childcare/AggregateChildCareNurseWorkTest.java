@@ -59,6 +59,9 @@ public class AggregateChildCareNurseWorkTest {
 
 	@Injectable
 	private AggregateChildCareNurseWork.Require require;
+
+	private NursingCategory category = NursingCategory.ChildNursing;
+
 	/**
 	 *  1.エラーチェック
 	 */
@@ -74,7 +77,7 @@ public class AggregateChildCareNurseWorkTest {
 		ChildCareNurseUsedNumber startUsed = usedNumber(0.0, 0);
 
 		val childCare = createChildCare11(0, 0, 0, null, 0, true); // 終了日の翌日の期間 = true;
-		val nextPeriodEndAtr = childCare.errorInfo(companyId, employeeId, period, criteriaDate, startUsed, require);
+		val nextPeriodEndAtr = childCare.errorInfo(companyId, employeeId, period, criteriaDate, startUsed, category, require);
 
 		assertThat(nextPeriodEndAtr).isEmpty();
 	}
@@ -92,7 +95,7 @@ public class AggregateChildCareNurseWorkTest {
 
 		new Expectations() {
 			{
-				require.employeeInfo(employeeId); // 子の看護・介護休暇基本情報を取得する
+				require.employeeInfo(employeeId, category); // 子の看護・介護休暇基本情報を取得する
 				result = childCareLeave(NursingCategory.ChildNursing, 5, 10); //本年度上限日数5日、翌年度上限日数10日
 
 				require.nursingLeaveSetting(companyId, NursingCategory.ChildNursing); // 介護看護休暇設定を取得する（会社ID、介護看護区分）
@@ -102,7 +105,7 @@ public class AggregateChildCareNurseWorkTest {
 		};
 
 		val childCare = createChildCare11(0, 0, 0, null, 0, false); // 終了日の翌日の期間 = false;
-		val nextPeriodEndAtr = childCare.errorInfo(companyId, employeeId, period, criteriaDate, startUsed, require);
+		val nextPeriodEndAtr = childCare.errorInfo(companyId, employeeId, period, criteriaDate, startUsed, category, require);
 
 		val expect = createError(ymd(2020,10, 18), 10.0, 180, 5);	//	期待値：基準日、使用日数0日、使用時間3:00(=180)、上限日数5日
 		assertThat(nextPeriodEndAtr.get(0).getUsedNumber().getUsedDay()).isEqualTo(expect.get(0).getUsedNumber().getUsedDay());
@@ -124,7 +127,7 @@ public class AggregateChildCareNurseWorkTest {
 
 		new Expectations() {
 			{
-				require.employeeInfo(employeeId); // 子の看護・介護休暇基本情報を取得する
+				require.employeeInfo(employeeId, NursingCategory.ChildNursing); // 子の看護・介護休暇基本情報を取得する
 				result = childCareLeave(NursingCategory.ChildNursing, 5, 10); //本年度上限日数5日、翌年度上限日数10日
 
 				require.nursingLeaveSetting(companyId, NursingCategory.ChildNursing); // 介護看護休暇設定を取得する（会社ID、介護看護区分）
@@ -134,7 +137,7 @@ public class AggregateChildCareNurseWorkTest {
 		};
 
 		val childCare = createChildCare11(0, 0, 0, null, 0, false); // 終了日の翌日の期間 = false;
-		val nextPeriodEndAtr = childCare.errorInfo(companyId, employeeId, period, criteriaDate, startUsed, require);
+		val nextPeriodEndAtr = childCare.errorInfo(companyId, employeeId, period, criteriaDate, startUsed, NursingCategory.ChildNursing, require);
 
 		val expect = createError(ymd(2020,10, 18), 10.0, 180, 5);	//	期待値：基準日、使用日数0日、使用時間3:00(=180)、上限日数5日
 		assertThat(nextPeriodEndAtr.get(0).getUsedNumber().getUsedDay()).isEqualTo(expect.get(0).getUsedNumber().getUsedDay());
@@ -179,6 +182,7 @@ public class AggregateChildCareNurseWorkTest {
 												ymd(2020,10, 16),
 												usedNumber(0.0, 0),	// 起算日からの使用数（使用日数、使用時間）
 												calcUsedNumber(0.0 ,0 ,0 ,0 , 0.0, 0),// 子の看護介護計算使用数
+												category,
 												require);
 
 		val expect = calcRemaining(0.0, null, 0);//期待値：計算残数（残日数、残時間、上限日数）
@@ -196,7 +200,7 @@ public class AggregateChildCareNurseWorkTest {
 		val childCare = createChildCare11(0, 0, 0, null, 0, false);	// 終了日の翌日の期間 = false
 		new Expectations() {
 			{
-				require.employeeInfo(employeeId); // 子の看護・介護休暇基本情報を取得する
+				require.employeeInfo(employeeId, NursingCategory.ChildNursing); // 子の看護・介護休暇基本情報を取得する
 				result = childCareLeave(NursingCategory.ChildNursing, 5, 10); //本年度上限日数5日、翌年度上限日数10日
 
 				require.nursingLeaveSetting(companyId, NursingCategory.ChildNursing); // 介護看護休暇設定を取得する（会社ID、介護看護区分）
@@ -210,6 +214,7 @@ public class AggregateChildCareNurseWorkTest {
 				ymd(2021,1, 10),
 				usedNumber(0.5, 0),	// 起算日からの使用数
 				calcUsedNumber(1.0 ,0 ,0 ,0 , 0.0 , 0), // 子の看護介護計算使用数
+				category,
 				require);
 		assertThat(calcRemaining.getRemainNumber().getUsedDays()).isEqualTo(expect.getRemainNumber().getUsedDays());
 		assertThat(calcRemaining.getRemainNumber().getUsedTime()).isEqualTo(expect.getRemainNumber().getUsedTime());
