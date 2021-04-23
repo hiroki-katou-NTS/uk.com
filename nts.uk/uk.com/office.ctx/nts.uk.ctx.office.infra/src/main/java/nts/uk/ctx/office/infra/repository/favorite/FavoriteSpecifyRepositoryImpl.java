@@ -34,8 +34,7 @@ public class FavoriteSpecifyRepositoryImpl extends JpaRepository implements Favo
 	@Override
 	public void insert(FavoriteSpecify domain) {
 		OfimtFavorite entity = FavoriteSpecifyRepositoryImpl.toEntity(domain);
-		entity.setVersion(0);
-		entity.setContractCd(AppContexts.user().contractCode());
+		entity.setCid(AppContexts.user().companyId());
 		this.commandProxy().insert(entity);
 	}
 
@@ -43,8 +42,7 @@ public class FavoriteSpecifyRepositoryImpl extends JpaRepository implements Favo
 	public void insertAll(List<FavoriteSpecify> domains) {
 		List<OfimtFavorite> entities = domains.stream().map(domain -> {
 			OfimtFavorite entity = FavoriteSpecifyRepositoryImpl.toEntity(domain);
-			entity.setVersion(0);
-			entity.setContractCd(AppContexts.user().contractCode());
+			entity.setCid(AppContexts.user().companyId());
 			return entity;
 		}).collect(Collectors.toList());
 		this.commandProxy().insertAll(entities);
