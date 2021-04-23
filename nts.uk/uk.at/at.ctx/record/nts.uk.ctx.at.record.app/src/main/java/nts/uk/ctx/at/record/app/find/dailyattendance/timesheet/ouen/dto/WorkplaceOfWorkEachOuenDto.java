@@ -27,12 +27,10 @@ public class WorkplaceOfWorkEachOuenDto implements ItemConst, AttendanceItemData
 	
 	/** 職場: 職場ID */
 	@AttendanceItemLayout(layout = LAYOUT_E, jpPropertyName = WORKPLACEID)
-	@AttendanceItemValue(type = ValueType.ATTR)
 	private String workplaceId;
 	
 	/** 場所: 勤務場所コード */
 	@AttendanceItemLayout(layout = LAYOUT_F, jpPropertyName = WORKLOCATIONCD)
-	@AttendanceItemValue(type = ValueType.ATTR)
 	private String workLocationCD;
 	
 	@Override
