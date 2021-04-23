@@ -17,7 +17,7 @@ import * as $ from 'jquery';
         }
     },
     constraints: [
-        'nts.uk.ctx.at.schedule.dom.shift.management.workavailability.WorkAvailabilityMemo'  
+        'nts.uk.ctx.at.schedule.dom.shift.management.workavailability.WorkAvailabilityMemo'
     ]
 })
 export class CalendarAComponent extends Vue {
@@ -102,14 +102,14 @@ export class CalendarAComponent extends Vue {
         self.closePopup();
         let year = parseInt((yearMonth / 100).toString());
         let month = yearMonth % 100;
-        if (year > parseInt(self.startWork.substring(0, 4)) || year == parseInt(self.startWork.substring(0, 4)) && month >= parseInt(self.startWork.substring(5, 7)) ) {
+        if (year > parseInt(self.startWork.substring(0, 4)) || year == parseInt(self.startWork.substring(0, 4)) && month >= parseInt(self.startWork.substring(5, 7))) {
             self.isCurrentMonth = true;
         } else {
             self.isCurrentMonth = false;
         }
         let yearChange = year - parseInt(self.startDate.substring(0, 4));
         let monthChange = month - parseInt(self.startDate.substring(5, 7)) + yearChange * 12;
-        let data = self.getDatePeriodDto(self.startDate,self.endDate, monthChange,self.dataStartPage.shiftWorkUnit);
+        let data = self.getDatePeriodDto(self.startDate, self.endDate, monthChange, self.dataStartPage.shiftWorkUnit);
         self.startDate = data.startDate;
         self.endDate = data.endDate;
         this.$emit('changeMonth', { startDate: self.startDate, endDate: self.endDate });
@@ -144,7 +144,7 @@ export class CalendarAComponent extends Vue {
         container.addEventListener('touchmove', this.moveTouch, false);
         self.loadData();
     }
-    
+
 
     public cellFocus(el) {
         let self = this;
@@ -229,7 +229,7 @@ export class CalendarAComponent extends Vue {
                 if (self.listDataDisplay[i].workAvailabilityOfOneDayDto != null
                     && moment(date).format('YYYY/MM/DD') == self.listDataDisplay[i].workAvailabilityOfOneDayDto.workAvailabilityDate
                     && self.listDataDisplay[i].workAvailabilityOfOneDayDto.workAvaiByHolidayDto.assignmentMethod == 1) { // enum AssignmentMethod == SHIFT(1), // シフト
-                    
+
                     let listShift = self.listDataDisplay[i].workAvailabilityOfOneDayDto.workAvaiByHolidayDto.nameList;
                     let temp: DataOneDateScreenKsuS02 = {
                         date: self.listDataDisplay[i].workAvailabilityOfOneDayDto.workAvailabilityDate,
@@ -294,7 +294,7 @@ export class CalendarAComponent extends Vue {
                 d.prop('checked', true);
             }
         }
-        
+
         let items = $($(document.body)[0]).find('input.form-check-input');
         if (items.length == 0) { return; }
 
@@ -323,7 +323,7 @@ export class CalendarAComponent extends Vue {
         }
         self.checked2s = listShiftResult;
         dataClick.workAvailabilityOfOneDayDto.workAvaiByHolidayDto.nameList = self.checked2s;
-        
+
         if (self.checked2s.length >= 0) {
             let nameListInforData = [];
             for (let i = 0; i < self.checked2s.length; i++) {
@@ -458,16 +458,32 @@ export class CalendarAComponent extends Vue {
         $($(document.body)[0]).find('span#monthday')[0].innerHTML = text;
     }
 
-    private checkEndTouch = true;
+    // private checkEndTouch = true;
     public getNextBackWeek(el) {
         let id = +$($($(document.body)[0]).find('td.cell-focus')[0]).attr('id').slice(1) + el;
-        //let id = + event.target.id.slice(1) + el;
+        let curent = +$($($(document.body)[0]).find('td.cell-focus')[0]).attr('id').slice(1);
 
-        if (id <= -1 || id > (this.maxDataID + 7)) { 
-            this.checkEndTouch = true;
-            
-            return;
-         }
+        // if (id <= -1 || id > (this.maxDataID + 7)) { 
+        //     this.checkEndTouch = true;
+
+        //     return;
+        // }
+        if (this.dataStartPage.shiftWorkUnit == 0) {
+            if (el > 0) {
+                if (curent > 6) {
+                    id = curent;
+                } else {
+                    id = this.endModeWeek - 1;
+                }
+            } else {
+                if (curent < 6) {
+                    id = curent;
+                } else {
+                    id = this.idFirst;
+                }
+
+            }
+        }
 
         let newTr, newFocusCell = null;
         if (id < this.idFirst) {
@@ -479,7 +495,7 @@ export class CalendarAComponent extends Vue {
             if (newTrs.length == 0) {
                 newFocusCell = $($(document.body)[0]).find('#d' + (this.maxDataID - 1))[0];
             } else {
-                this.checkEndTouch = true;
+                // this.checkEndTouch = true;
 
                 return;
             }
@@ -591,9 +607,9 @@ export class CalendarAComponent extends Vue {
     public initialY = null;
 
     public startTouch(e) {
-        if (this.dataStartPage.shiftWorkUnit == 0) {
-            return;
-        }
+        // if (this.dataStartPage.shiftWorkUnit == 0) {
+        //     return;
+        // }
         this.initialX = e.touches[0].clientX;
         this.initialY = e.touches[0].clientY;
 
@@ -601,19 +617,19 @@ export class CalendarAComponent extends Vue {
 
     public endTouch(e) {
         let self = this;
-        if (self.checkEndTouch) {
-            self.checkEndTouch = false;
+        // if (self.checkEndTouch) {
+        //     self.checkEndTouch = false;
 
-            return;
-        }
+        //     return;
+        // }
         this.initialX = e.changedTouches[0].clientX;
         this.initialY = e.changedTouches[0].clientY;
         // let classList = e.target.id != '' ? e.target.classList : $(e.currentTarget).find('td.cell-focus')[0].classList;
-        if (e.changedTouches[0].target.classList.contains('uk-bg-white-smoke') 
-        || e.changedTouches[0].target.closest('td').classList.contains('uk-bg-silver')) { return; }
+        if (e.changedTouches[0].target.classList.contains('uk-bg-white-smoke')
+            || e.changedTouches[0].target.closest('td').classList.contains('uk-bg-silver')) { return; }
         //clear and set color focus
         $($(document.body)[0]).find('td.cell-focus').removeClass('cell-focus');
-        let id = e.changedTouches[0].target.id != '' && e.changedTouches[0].target.id != 'memo-area' ? e.changedTouches[0].target.id : e.changedTouches[0].target.closest('td').id;
+        let id = e.changedTouches[0].target.id != '' && e.changedTouches[0].target.id != 'memo-area' && e.changedTouches[0].target.id != 'header' ? e.changedTouches[0].target.id : e.changedTouches[0].target.closest('td').id;
         let tdAddFocusLst = $($(document.body)[0]).find('td#' + id);
         for (let i = 0; i < tdAddFocusLst.length; i++) {
             tdAddFocusLst[i].classList.add('cell-focus');
@@ -679,6 +695,8 @@ export class CalendarAComponent extends Vue {
         e.preventDefault();
     }
 
+    private endModeWeek = 0;
+
     public getData() {
         let self = this;
         if (self.dataStartPage == null || self.dataStartPage.startWork == undefined) {
@@ -736,7 +754,7 @@ export class CalendarAComponent extends Vue {
                 classDisplayToDay = 'class=\"uk-bg-schedule-that-day\"';
                 // console.log(moment().format('YYYY/MM/DD'));
             }
-            let dateDisplayD = date.getDate() == 1  ?
+            let dateDisplayD = date.getDate() == 1 ?
                 (date.getMonth() + 1).toString() + '/' +
                 date.getDate().toString() : date.getDate().toString();
             let isHoliday = _.find(self.dataStartPage.listDateIsHoliday, function (o) { return o == moment(date).format('YYYY/MM/DD'); });
@@ -783,6 +801,7 @@ export class CalendarAComponent extends Vue {
         }
         //shiftWorkUnit 1：一ヶ月間	　　　0：一週間"
         if (self.dataStartPage.shiftWorkUnit == 0) {
+            self.endModeWeek = listData.length;
             let startD = new Date(endDate.getTime());
             let endD = new Date(endDate.getTime());
             startD.setDate(startD.getDate() + 1);
@@ -817,7 +836,7 @@ export class CalendarAComponent extends Vue {
                     dateDisplay: dateDisplayD,
                     workAvailabilityOfOneDayDto: null,
                     showMemo: false,
-                    nameListInfor: [], 
+                    nameListInfor: [],
                     canUpdateCell: false
                 };
                 listData.push(dataDisplay);
@@ -891,7 +910,7 @@ export class CalendarAComponent extends Vue {
      * @param monthChange number month change
      * @param shiftWorkUnit mode month(1) or mode week(0)
      */
-    public getDatePeriodDto(startDate: string, endDate: string, monthChange: number,shiftWorkUnit: number) {
+    public getDatePeriodDto(startDate: string, endDate: string, monthChange: number, shiftWorkUnit: number) {
         let startD = '';
         let startE = '';
         let yearMonth = startD.substring(0, 4) + startD.substring(5, 7);
@@ -914,9 +933,9 @@ export class CalendarAComponent extends Vue {
         } else { //mode week
             startD = moment(startDate).add(monthChange, 'M').format('YYYY/MM/DD').toString();
             startE = moment(startD).add(6, 'days').format('YYYY/MM/DD').toString();
-            
+
         }
-        
+
         let dataResult = {
             startDate: startD,
             endDate: startE
@@ -927,7 +946,7 @@ export class CalendarAComponent extends Vue {
 }
 export interface SubmitWorkRequestCmd {
     listData: Array<DataOneDateScreenKsuS02>;
-    startPeriod: string;    
+    startPeriod: string;
     endPeriod: string;
 }
 export interface DataOneDateScreenKsuS02 {

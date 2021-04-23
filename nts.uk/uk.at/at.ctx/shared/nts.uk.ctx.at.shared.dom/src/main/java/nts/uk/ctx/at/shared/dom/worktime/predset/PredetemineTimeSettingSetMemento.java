@@ -46,7 +46,7 @@ public interface PredetemineTimeSettingSetMemento {
 	 *
 	 * @param nightShift the new night shift
 	 */
-	public void setNightShift(boolean nightShift);
+//	public void setNightShift(boolean nightShift);
 
 	/**
 	 * Sets the prescribed timezone setting.

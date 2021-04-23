@@ -486,9 +486,9 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 				// 前日と翌日の勤務
 				PreviousAndNextDaily previousAndNextDailyForFix = new PreviousAndNextDaily(yesterDayForFixed, tomorrowForFixed, yesterInfo, tommorowInfo);
 				
-				if (timeSheetAtr.isSchedule()) {
-					integrationOfWorkTime.get().getFixedWorkSetting().get().getFixedWorkRestSetting().changeCalcMethodToSche();
-				}
+//				if (timeSheetAtr.isSchedule()) {
+//					integrationOfWorkTime.get().getFixedWorkSetting().get().getFixedWorkRestSetting().changeCalcMethodToSche();
+//				}
 				
 				// 固定勤務の時間帯作成
 				oneRange.createWithinWorkTimeSheet(
@@ -709,7 +709,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 					new PredetermineTime(
 							new BreakDownTimeDay(new AttendanceTime(0), new AttendanceTime(0), new AttendanceTime(0)),
 							new BreakDownTimeDay(new AttendanceTime(0), new AttendanceTime(0), new AttendanceTime(0))),
-					false, new PrescribedTimezoneSetting(new TimeWithDayAttr(0), new TimeWithDayAttr(0),
+					new PrescribedTimezoneSetting(new TimeWithDayAttr(0), new TimeWithDayAttr(0),
 							Collections.emptyList()),
 					new TimeWithDayAttr(0), false));
 
@@ -1347,7 +1347,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 					new PredetermineTime(
 							new BreakDownTimeDay(new AttendanceTime(0), new AttendanceTime(0), new AttendanceTime(0)),
 							new BreakDownTimeDay(new AttendanceTime(0), new AttendanceTime(0), new AttendanceTime(0))),
-					false, new PrescribedTimezoneSetting(new TimeWithDayAttr(0), new TimeWithDayAttr(0),
+					new PrescribedTimezoneSetting(new TimeWithDayAttr(0), new TimeWithDayAttr(0),
 							Collections.emptyList()),
 					new TimeWithDayAttr(0), false));
 

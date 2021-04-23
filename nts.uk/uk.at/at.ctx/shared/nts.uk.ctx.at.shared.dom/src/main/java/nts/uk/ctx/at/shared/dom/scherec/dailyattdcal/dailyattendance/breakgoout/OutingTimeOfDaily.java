@@ -1,13 +1,8 @@
 package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
-//import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkTimes;
 import nts.uk.ctx.at.shared.dom.PremiumAtr;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.AdditionAtr;
@@ -18,12 +13,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.OutingTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.DeductionTotalTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeWithCalculation;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.FlexWithinWorkTimeSheet;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.HolidayWorkFrameTimeSheetForCalc;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManageReGetClass;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.OutsideWorkTimeSheet;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.TimeSheetRoundingAtr;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.WithinOutingTotalTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.*;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.CalculationRangeOfOneDay;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.DeductionAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.TimeSheetOfDeductionItem;
@@ -33,7 +23,13 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation
 import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.StatutoryAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
-import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexCalcSetting;
+import nts.uk.ctx.at.shared.dom.worktime.flexset.OutingCalcWithinCoreTime;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+//import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkTimes;
 
 /**
  * 日別実績の外出時間
@@ -86,7 +82,7 @@ public class OutingTimeOfDaily {
 						outingOfDaily,
 						recordClass.getCalculationRangeOfOneDay(),
 						recordClass.getCalculatable(),
-						recordClass.getFlexCalcSetting(),
+						recordClass.getGoOutCalc(),
 						PremiumAtr.RegularWork,
 						recordClass.getHolidayCalcMethodSet(),
 						recordClass.getWorkTimezoneCommonSet(),
@@ -113,7 +109,7 @@ public class OutingTimeOfDaily {
 			OutingTimeSheet outingOfDaily,
 			CalculationRangeOfOneDay oneDay,
 			boolean isCalculatable,
-			Optional<FlexCalcSetting> flexCalcSet,
+			Optional<OutingCalcWithinCoreTime> flexCalcSet,
 			PremiumAtr premiumAtr,
 			HolidayCalcMethodSet holidayCalcMethodSet,
 			Optional<WorkTimezoneCommonSet> commonSetting,
@@ -230,20 +226,26 @@ public class OutingTimeOfDaily {
 			CalculationRangeOfOneDay oneDay,
 			DeductionAtr dedAtr,
 			OutingTimeSheet outingOfDaily,
-			Optional<FlexCalcSetting> flexCalcSet,
+			Optional<OutingCalcWithinCoreTime> flexCalcSet,
 			PremiumAtr premiumAtr,
 			HolidayCalcMethodSet holidayCalcMethodSet,
 			Optional<WorkTimezoneCommonSet> commonSetting) {
 		//外出合計時間の計算
 		DeductionTotalTime outingTotal = calculationDedBreakTime(dedAtr, oneDay,outingOfDaily,premiumAtr,holidayCalcMethodSet,commonSetting);
+		//所定内
+		TimeWithCalculation withinDedTime = oneDay.calcWithinTotalTime(
+				ConditionAtr.convertFromGoOutReason(outingOfDaily.getReasonForGoOut()),
+				dedAtr,
+				StatutoryAtr.Statutory,
+				TimeSheetRoundingAtr.PerTimeSheet,
+				premiumAtr,
+				holidayCalcMethodSet,
+				commonSetting);
 		//コア内と外を分けて計算するかどうか判定
 		//YES 所定内外出をコア内と外で分けて計算
-		TimeWithCalculation withinDedTime = TimeWithCalculation.sameTime(new AttendanceTime(0));
 		AttendanceTime withinFlex = new AttendanceTime(0);
 		AttendanceTime excessFlex = new AttendanceTime(0);
 		if(flexCalcSet.isPresent()) {
-			//所定内
-			withinDedTime = oneDay.calcWithinTotalTime(ConditionAtr.convertFromGoOutReason(outingOfDaily.getReasonForGoOut()),dedAtr,StatutoryAtr.Statutory,TimeSheetRoundingAtr.PerTimeSheet,premiumAtr,holidayCalcMethodSet,commonSetting);
 			FlexWithinWorkTimeSheet changedFlexTimeSheet = (FlexWithinWorkTimeSheet)oneDay.getWithinWorkingTimeSheet().get();
 			withinFlex = changedFlexTimeSheet.calcOutingTimeInFlex(true);
 			excessFlex = changedFlexTimeSheet.calcOutingTimeInFlex(false);
