@@ -3,11 +3,11 @@ module nts.uk.at.view.kaf006.shr.component1.viewmodel {
     @component({
         name: 'kaf006-shr-component1',
         template: `
-        <div id="kaf006-shr-component1" data-bind="visible: $parent.selectedType() !== 6">
+        <div id="kaf006-shr-component1" data-bind="visible: $parent.selectedType() !== 6" style="border-top: 2px solid #B1B1B1; padding-top: 20px;">
             <div class="table" style="padding-bottom: 10px;">
                 <div class="cell" data-bind="text: $i18n('KAF006_97')" style="font-weight: bold"></div>
             </div>
-            <div class="panel panel-frame">
+            <div class="panel panel-frame" style="margin: 0 10px">
                 <div class="table" style="width: 100%;">
                     <!-- A14_2 -->
                     <div class="text-left label cell" data-bind="text: $i18n('KAF006_70'), visible: $parent.condition22"></div>
@@ -45,11 +45,11 @@ module nts.uk.at.view.kaf006.shr.component1.viewmodel {
                 </div>
             </div>
         </div>
-        <div id="kaf006-shr-component1" data-bind="visible: $parent.selectedType() === 6">
+        <div id="kaf006-shr-component1" data-bind="visible: $parent.selectedType() === 6" style="border-top: 2px solid #B1B1B1; padding-top: 20px;">
             <div class="table" style="padding-bottom: 10px;">
                 <div class="cell" data-bind="text: $i18n('KAF006_97')" style="font-weight: bold"></div>
             </div>
-            <div class="panel panel-frame">
+            <div class="panel panel-frame" style="margin: 0 10px">
                 <div class="table" style="width: 100%;">
                     <!-- A9_18 -->
                     <div class="text-left label cell" data-bind="text: $i18n('Com_ExsessHoliday')"></div>
