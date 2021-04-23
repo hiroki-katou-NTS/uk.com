@@ -47,6 +47,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.paytime.Spe
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.remarks.RemarksOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.snapshot.SnapShot;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenWorkTimeSheetOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItem;
@@ -69,10 +70,15 @@ public class DailyRecordToAttendanceItemConverterImpl extends AttendanceItemConv
 	
 	@Override
 	public IntegrationOfDaily toDomain() {
-		return new IntegrationOfDaily(this.employeeId, this.ymd, workInfo(), calcAttr(), affiliationInfo(), pcLogInfo(),
+		IntegrationOfDaily rs =  new IntegrationOfDaily(this.employeeId, this.ymd, workInfo(), calcAttr(), affiliationInfo(), pcLogInfo(),
 				this.errors, outingTime(), breakTime(), attendanceTime(), timeLeaving(),
 				shortTime(), specificDateAttr(), attendanceLeavingGate(), anyItems(), editStates(), temporaryTime(),
 				remarks(), snapshot());
+		
+		if(!ouenSheet().isEmpty())
+		rs.setOuenTimeSheet(ouenSheet());
+		
+		return rs;
 	}
 
 	@Override
@@ -374,6 +380,12 @@ public class DailyRecordToAttendanceItemConverterImpl extends AttendanceItemConv
 	public Optional<SnapShot> snapshot() {
 
 		return Optional.ofNullable((SnapShot) getDomain(ItemConst.DAILY_SNAPSHOT_NAME));
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<OuenWorkTimeSheetOfDailyAttendance> ouenSheet() {
+		return (List<OuenWorkTimeSheetOfDailyAttendance>) getDomains(ItemConst.DAILY_SUPPORT_TIMESHEET_NAME);
 	}
 
 	@Override
