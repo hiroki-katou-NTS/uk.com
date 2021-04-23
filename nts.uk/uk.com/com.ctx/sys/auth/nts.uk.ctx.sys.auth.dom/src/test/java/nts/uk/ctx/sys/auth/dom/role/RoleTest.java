@@ -11,7 +11,6 @@ import lombok.val;
  *
  */
 public class RoleTest {
-	
 	private String roleId;
 	private String companyId;
 	private RoleCode roleCode;
@@ -49,6 +48,21 @@ public class RoleTest {
 		assertThat(generalRole.getAssignAtr()).isEqualTo(RoleAtr.GENERAL);
 		assertThat(generalRole.getEmployeeReferenceRange()).isEqualTo(employeeReferenceRange);
 		
+	}
+	
+	/**
+	 * 担当区分　＝　一般
+	 * 照範囲　＝　全員
+	 * 期待： runtime エラー
+	 * 	 */
+	@Test
+	public void createGeneralRole_ReferenceRange_ALL_EMPLOYEE() {
+		NtsAssert.systemError(() -> {
+				Role.createGeneralRoll(
+					this.roleId, this.contractCode, this.companyId
+				,	this.roleCode,	this.roleName
+				,	RoleType.PERSONAL_INFO, EmployeeReferenceRange.ALL_EMPLOYEE);	
+		});
 	}
 	
 	@Test
