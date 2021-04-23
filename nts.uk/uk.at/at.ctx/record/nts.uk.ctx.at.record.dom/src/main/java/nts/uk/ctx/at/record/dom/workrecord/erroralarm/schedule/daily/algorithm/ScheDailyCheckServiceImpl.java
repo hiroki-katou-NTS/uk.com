@@ -789,7 +789,12 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 					WorkScheduleWorkInforImport workScheWorkMultiTime = workScheduleWorks.get();
 					
 					// NO5 = ：複数回勤務
-					alarmMsgOutput = getNo5(workScheWorkMultiTime.getWorkTyle(), workScheWorkMultiTime.getWorkTime(), workScheWorkMultiTime.getTimeLeaving(), listWorkType, listWorktime);
+					alarmMsgOutput = getNo5(
+							workScheWorkMultiTime.getWorkTyle(), 
+							workScheWorkMultiTime.getWorkTime(), 
+							workScheWorkMultiTime.getTimeLeaving(),
+							workScheWorkMultiTime.getOptAttendanceTime(),
+							listWorkType, listWorktime);
 					break;
 				case WORK_ON_SCHEDULEDAY:
 					if (!workScheduleWorks.isPresent()) {
@@ -992,18 +997,20 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 			String workTypeCode, 
 			String workTimeCode,
 			Optional<TimeLeavingOfDailyAttdImport> attendanceLeaveOpt,
+			Optional<AttendanceTimeOfDailyAttendanceImport> optAttendanceTime,
 			List<WorkType> listWorkType,
 			List<WorkTimeSetting> listWorktime) {
 		// Input．日別勤怠の出退勤が存在するかチェックする
 		// 存在しない場合
-		if (!attendanceLeaveOpt.isPresent() || workTimeCode == null) {
+		if (!attendanceLeaveOpt.isPresent() || workTimeCode == null || !optAttendanceTime.isPresent()) {
 			return null;
 		}
 		
 		TimeLeavingOfDailyAttdImport attendanceLeave = attendanceLeaveOpt.get();
 		
 		// 勤務回数を取得する
-		int workTime = attendanceLeave.getWorkTimes();
+		// QA#115985
+		int workTime = optAttendanceTime.get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getWorkTimes();
 		// Input．日別勤怠の出退勤．勤務回数　＞＝２
 		if (workTime < 2) {
 			return null;			

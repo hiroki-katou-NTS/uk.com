@@ -96,7 +96,13 @@ public class CalculateVacationDayService {
 			
 			Optional<WorkType> workTypeOpt = lstWorkType.stream().filter(x -> x.getWorkTypeCode().v().equals(monWorkTypeWorkTime.getWorkTypeCode())).findFirst();
 			Optional<IntegrationOfDaily> dailyOpt = lstDaily.stream().filter(x -> x.getYmd().equals(exDate)).findFirst();
-			WorkingConditionItem workingCondtionItem = workingConditionItemMap.get(new DatePeriod(exDate, exDate));
+			WorkingConditionItem workingCondtionItem = null;
+			Optional<DatePeriod> condExDatePeriod = workingConditionItemMap.keySet().stream().filter(x -> x.start().beforeOrEquals(exDate) && x.end().afterOrEquals(exDate)).findFirst();
+			if (!condExDatePeriod.isPresent()) {
+				continue;
+			}
+			
+			workingCondtionItem = workingConditionItemMap.get(condExDatePeriod.get());
 			Optional<PredetemineTimeSetting> predTimeSetInDayOpt = this.predTimeSetRepo.findByWorkTimeCode(cid, monWorkTypeWorkTime.getWorkTimeCode().get());
 			
 			// Input．日数の種類をチェック

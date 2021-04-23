@@ -88,6 +88,7 @@ public class WorkSchedulePubImpl implements WorkSchedulePub {
 			ActualWorkingTimeOfDailyExport actualWorkingTimeOfDaily = ActualWorkingTimeOfDailyExport.builder()
 					.totalWorkingTime(TotalWorkingTimeExport.builder()
 							.actualTime(data.getOptAttendanceTime().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getActualTime().v())
+							.workTimes(data.getOptAttendanceTime().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getWorkTimes().v())
 							.build())
 					.build();
 			AttendanceTimeOfDailyAttendanceExport attendanceExport = AttendanceTimeOfDailyAttendanceExport.builder()
