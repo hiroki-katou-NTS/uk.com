@@ -491,7 +491,7 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 				.closingPeriods(closingPeriods)
 				.closureDateOfEmps(closureDateOfEmps)
 				.publicHdSettingOpt(publicHdSettingOpt)
-				.publicHolidayManagementUsageUnit(publicHolidayManagementUsageUnit)
+				.publicHolidayManagementUsageUnitOpt(publicHolidayManagementUsageUnit)
 				.employmentMonthDaySetting(optEmploymentMonthDaySetting)
 				.employeeMonthDaySetting(optEmployeeMonthDaySetting)
 				.workplaceMonthDaySetting(optWorkplaceMonthDaySetting)
