@@ -15,6 +15,7 @@ import nts.uk.ctx.at.record.app.command.stamp.management.StampPageLayoutCommand;
 import nts.uk.ctx.at.record.app.find.stamp.management.NoticeSetAndAupUseArtDto;
 import nts.uk.ctx.at.record.dom.stamp.application.CommonSettingsStampInput;
 import nts.uk.ctx.at.record.dom.stamp.application.CommonSettingsStampInputRepository;
+import nts.uk.ctx.at.record.dom.stamp.application.MapAddress;
 import nts.uk.ctx.at.record.dom.stamp.application.SettingsUsingEmbossingRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.PortalStampSettingsRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSetCommunal;
@@ -92,7 +93,7 @@ public class TimeStampInputSettingsCommandHandler {
 			commonDomain.get().setGooglemap(command.getGoogleMap() == 1);
 			commonSettingsStampInputRepo.update(commonDomain.get());
 		} else {
-			commonSettingsStampInputRepo.insert(new CommonSettingsStampInput(companyId, command.getGoogleMap() == 1, Optional.empty(), NotUseAtr.NOT_USE));
+			commonSettingsStampInputRepo.insert(new CommonSettingsStampInput(companyId, command.getGoogleMap() == 1, Optional.of(new MapAddress("https://www.google.co.jp/maps/place/")), NotUseAtr.NOT_USE));
 		}
 	}
 	
@@ -154,7 +155,7 @@ public class TimeStampInputSettingsCommandHandler {
 			c.get().setSupportUseArt(NotUseAtr.valueOf(command.getSupportUseArt()));
 			commonSettingsStampInputRepo.update(c.get());
 		}else {
-			commonSettingsStampInputRepo.insert(new CommonSettingsStampInput(cid, false, Optional.empty(), NotUseAtr.valueOf(command.getSupportUseArt())));
+			commonSettingsStampInputRepo.insert(new CommonSettingsStampInput(cid, false, Optional.of(new MapAddress("https://www.google.co.jp/maps/place/")), NotUseAtr.valueOf(command.getSupportUseArt())));
 		}
 	}
 	
