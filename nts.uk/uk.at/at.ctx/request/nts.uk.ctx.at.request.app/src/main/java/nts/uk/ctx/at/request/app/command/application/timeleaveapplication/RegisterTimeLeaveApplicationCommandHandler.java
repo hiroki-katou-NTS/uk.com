@@ -13,6 +13,7 @@ import javax.transaction.Transactional;
 import nts.uk.shr.com.context.AppContexts;
 import org.apache.logging.log4j.util.Strings;
 
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.uk.ctx.at.request.app.find.application.timeleaveapplication.dto.TimeLeaveAppDisplayInfoDto;
@@ -28,6 +29,7 @@ import nts.uk.ctx.at.request.dom.application.timeleaveapplication.TimeLeaveAppli
 import nts.uk.ctx.at.request.dom.application.timeleaveapplication.output.TimeLeaveApplicationOutput;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.AppTypeSetting;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
+import nts.uk.ctx.at.shared.dom.remainingnumber.work.AppTimeType;
 
 /**
  * 時間休暇申請を登録する
@@ -71,6 +73,12 @@ public class RegisterTimeLeaveApplicationCommandHandler extends CommandHandlerWi
                 application,
                 command.getDetails().stream().map(TimeLeaveAppDetailCommand::toDomain).collect(Collectors.toList())
         );
+        
+        //tạm sửa cập nhật AppTime Type
+		timeLeaveApplication.getLeaveApplicationDetails().stream().forEach(x -> {
+			x.setAppTimeType(EnumAdaptor.valueOf(x.getAppTimeType().value + 1, AppTimeType.class));
+		});
+        
         this.timeLeaveApplicationRepository.add(timeLeaveApplication);
 
         //2-2.新規画面登録時承認反映情報の整理
