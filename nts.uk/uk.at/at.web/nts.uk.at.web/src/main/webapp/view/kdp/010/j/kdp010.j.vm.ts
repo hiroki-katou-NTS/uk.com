@@ -98,6 +98,10 @@ module nts.uk.at.view.kdp010.j {
 			popupSelected(selected: any){
 				let self = this;
 				self.stampPageLayout.setTemplate(selected.code);
+				$(".popup-area").ntsPopup("hide");
+				setTimeout(() => {
+                	$('#pageComment').focus();
+            	}, 100);
 			}
 			
 			checkNotUseBtnSupport(buttonType: any): boolean{

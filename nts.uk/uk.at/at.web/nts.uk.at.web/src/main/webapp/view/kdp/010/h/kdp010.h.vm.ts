@@ -41,7 +41,7 @@ module nts.uk.at.view.kdp010.h {
 			// G5_2
 			commentDaily: KnockoutObservable<string> = ko.observable("");
 			// G6_2
-			letterColors: KnockoutObservable<string> = ko.observable("#000000");
+			letterColors: KnockoutObservable<string> = ko.observable("#7F7F7F");
 			dataKdpH: any;
 			dataShare: any = null;
 			isDel: KnockoutObservable<boolean> = ko.observable(false);
@@ -154,7 +154,7 @@ module nts.uk.at.view.kdp010.h {
 							if (self.checkLayout() == false) {
 								self.pageName("");
 								self.commentDaily("");
-								self.letterColors("#000000");
+								self.letterColors("#7F7F7F");
 							}
 						}
 	
@@ -198,6 +198,11 @@ module nts.uk.at.view.kdp010.h {
 				};
 				self.dataShare = data;
 				self.getInfoButton(self.dataShare.lstButtonSet);
+				$(".popup-area").ntsPopup("hide");
+				setTimeout(() => {
+                	$('#correc-text').focus();
+            	}, 100);
+				
 			}
 			
 			registration() {
