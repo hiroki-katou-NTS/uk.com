@@ -68,7 +68,7 @@ module nts.uk.ui.kdp001.a {
         name: 'kdp-001-a',
         template: `
             <div class="kdp-001-a widget-title">
-                <span class="text-time" data-bind="i18n: 'KDP001_5'"></span>
+                <div class="text-time" data-bind="i18n: 'KDP001_5'"></div>
                 <div class="date" data-bind="date: $component.time.now, format: 'YYYY/MM/DD(ddd)', attr: { style: $component.time.style }"></div>
                 <div>
                     <span class="hours-minutes" data-bind="date: $component.time.now, format: 'HH:mm',attr: { style: $component.time.style }"></span>
@@ -206,11 +206,10 @@ module nts.uk.ui.kdp001.a {
             </div>
             <!-- /ko -->
             <style rel="stylesheet">
-                .kdp-001-a.widget-title {
-                    margin: 1px;
-                    border-radius: 2px;
-                    border-left-width: 0px;
-                    border-bottom-width: 0px;
+                .widget-title {
+                    position: relative;
+                    width: 450px;
+                    margin: auto;
                     text-align: center;
                 }
                 .kdp-001-a .text-left {
@@ -328,8 +327,8 @@ module nts.uk.ui.kdp001.a {
                     position: absolute;
                     font-size: 70px;
                     color: #E5F7F9;
-                    top: -10px;
-                    left: calc(100% /2 + 35px);
+                    top: -23px;
+                    right: 22px;
                 }
                 .kdp-001-a.widget-title .date {
                     margin-right: 83px;
@@ -620,7 +619,7 @@ module nts.uk.ui.kdp001.a {
                         case 4:
                             return openDialogB();
                         case 2:
-                            if (notUseAttr !== 0) {
+                            if (notUseAttr !== 1) {
                                 return openDialogB();
                             }
 
@@ -633,7 +632,7 @@ module nts.uk.ui.kdp001.a {
                     stampMeans: STAMP_MEANS_PORTAL
                 }))
                 .then((response: any) => {
-                    
+
                     if (response) {
                         const { dailyAttdErrorInfos } = response;
 

@@ -86,6 +86,10 @@ module nts.uk.at.view.kdp.share {
 				background-color: transparent;
 				box-shadow: none;
 			}
+
+			.time-container .button-group .btn-link {
+				color: #0000EE;
+			}
 		</style>
 	`;
 	const COMPONENT_NAME = 'stamp-clock';
@@ -152,7 +156,7 @@ module nts.uk.at.view.kdp.share {
 			}
 
 			if (company) {
-				const button = $('<a>', { href: '#' }).get(0);
+				const button = $('<a>', { href: '#', class: 'btn-link' }).get(0);
 
 				ko.applyBindingsToNode(button, { i18n: 'KDP003_2', click: company.click });
 
