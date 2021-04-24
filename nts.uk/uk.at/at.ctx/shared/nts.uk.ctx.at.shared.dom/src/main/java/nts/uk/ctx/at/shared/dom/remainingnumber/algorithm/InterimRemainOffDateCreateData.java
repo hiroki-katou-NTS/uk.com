@@ -673,7 +673,7 @@ public class InterimRemainOffDateCreateData {
 			// 特休使用明細を追加する
 			List<SpecialHolidayUseDetail> lstSpeUseDetail = new ArrayList<>(result.getSpeHolidayDetailData());
 
-			workTypeSetList.stream().filter(x -> x.getWorkAtr().equals(WorkAtr.OneDay)).findFirst().ifPresent(x -> {
+			workTypeSetList.stream().filter(x -> x.getWorkAtr().equals(workAtr)).findFirst().ifPresent(x -> {
 				// アルゴリズム「特別休暇枠NOから特別休暇を取得する」を実行する
 				List<Integer> holidaySpecialCd = require.getSpecialHolidayNumber(cid, x.getSumSpHodidayNo());
 				if (!holidaySpecialCd.isEmpty()) {
