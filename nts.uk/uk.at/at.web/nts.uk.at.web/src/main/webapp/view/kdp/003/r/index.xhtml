@@ -28,32 +28,30 @@ xmlns:h="http://xmlns.jcp.org/jsf/html">
                 <!-- R1 本部見内容 -->
                 <div>
                     <com:ko-foreach bind="headOfficeNoticeList">
-                        <div class= "notice-label headOfficeNotice" data-bind="style: { 'color': $parent.noticeSetting.comMsgColor.textColor, 
-                        'background-color': $parent.noticeSetting.comMsgColor.backGroundColor }">
+                        <div class= "notice-label headOfficeNotice" data-bind="style: { 'background-color': $parent.noticeSetting.comMsgColor.backGroundColor }">
                         	<div>
-                                <span data-bind="text: $parent.noticeSetting.companyTitle"></span>
-                                <span data-bind="i18n: 'KDP003_51'"></span>
-                                <span data-bind="text: $data.displayMessageNotice.startDate"></span>
-                                <span data-bind="i18n: 'KDP003_67'"></span>
-                                <span data-bind="text: $data.displayMessageNotice.endDate"></span>
+                                <span data-bind="text: $parent.noticeSetting.companyTitle, style: { 'color': $parent.noticeSetting.comMsgColor.textColor }"></span>
+                                <span data-bind="i18n: 'KDP003_51', style: { 'color': $parent.noticeSetting.comMsgColor.textColor }"></span>
+                                <span data-bind="text: $data.displayMessageNotice.startDate, style: { 'color': $parent.noticeSetting.comMsgColor.textColor }"></span>
+                                <span data-bind="i18n: 'KDP003_67', style: { 'color': $parent.noticeSetting.comMsgColor.textColor }"></span>
+                                <span data-bind="text: $data.displayMessageNotice.endDate, style: { 'color': $parent.noticeSetting.comMsgColor.textColor }"></span>
                             </div>
-                        	<div data-bind="text: $data.displayMessageNotice.notificationMessage"></div>
+                        	<div data-bind="text: $data.displayMessageNotice.notificationMessage, style: { 'color': $parent.noticeSetting.comMsgColor.textColor }"></div>
                         </div>
                     </com:ko-foreach>
                 </div>
                 <!-- R2 職場メッセージ -->
                 <div>
                     <com:ko-foreach bind="workplaceNoticeList">
-                        <div class= "notice-label workplaceNotice" data-bind="style: { 'color': $parent.noticeSetting.wkpMsgColor.textColor, 
-                        'background-color': $parent.noticeSetting.wkpMsgColor.backGroundColor }">
+                        <div class= "notice-label workplaceNotice" data-bind="style: {'background-color': $parent.noticeSetting.wkpMsgColor.backGroundColor }">
                         	<div>
-                                <span data-bind="text: $parent.noticeSetting.wkpTitle"></span>
-                                <span data-bind="i18n: 'KDP003_52', params: [$data.scd + ' ' + $data.bussinessName]"></span>
-                                <span data-bind="text: $data.displayMessageNotice.startDate"></span>
-                                <span data-bind="i18n: 'KDP003_67'"></span>
-                                <span data-bind="text: $data.displayMessageNotice.endDate"></span>
+                                <span data-bind="text: $parent.noticeSetting.wkpTitle, style: { 'color': $parent.noticeSetting.wkpMsgColor.textColor }"></span>
+                                <span data-bind="i18n: 'KDP003_52', params: [$data.scd + ' ' + $data.bussinessName], style: { 'color': $parent.noticeSetting.wkpMsgColor.textColor }"></span>
+                                <span data-bind="text: $data.displayMessageNotice.startDate, style: { 'color': $parent.noticeSetting.wkpMsgColor.textColor }"></span>
+                                <span data-bind="i18n: 'KDP003_67', style: { 'color': $parent.noticeSetting.wkpMsgColor.textColor }"></span>
+                                <span data-bind="text: $data.displayMessageNotice.endDate, style: { 'color': $parent.noticeSetting.wkpMsgColor.textColor }"></span>
                             </div>
-                            <div data-bind="text: $data.displayMessageNotice.notificationMessage"></div>
+                            <div data-bind="text: $data.displayMessageNotice.notificationMessage, style: { 'color': $parent.noticeSetting.wkpMsgColor.textColor }"></div>
                         </div>
                     </com:ko-foreach>
                 </div>
