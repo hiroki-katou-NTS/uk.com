@@ -75,3 +75,11 @@ td[aria-describedby="single-list_name"] {
 .btn-close {
 	margin-left: 100px;
 }
+
+#functions-area-bottom .has-info {
+	margin-left: -100px;
+}
+
+#functions-area-bottom .has-info1{
+	margin-left: 70px;
+}

@@ -88,7 +88,7 @@
 									multiple: false,
 									value: currentCode
 								}"></table> -->
-						<div id="text-b20">
+						<div>
 							<div data-bind="if: $vm.showBtnNoti">
 								<button data-bind="click: openDialogU" class="large" style="width: 130px;">
 									<i style="float: left;" data-bind="ntsIcon: { no: 164, width: 28, height: 28 }">
@@ -100,32 +100,30 @@
 										data-bind="ntsIcon: { no: 165, width: 8, height: 8 }"></i>
 								</div>
 							</div>
-							<div style="margin-bottom: 10px; margin-top: 10px;">
+							<div id="text-b20">
 								<!-- C21_1 -->
-								<span id="text-b20-1">#{i18n.getText('KDP002_61')}</span>
+								<span id="text-b20-1"
+									data-bind="visible : permissionCheck() &amp;&amp; displayButton &amp;&amp; !isNoData()">#{i18n.getText('KDP002_61')}</span>
 								<!-- C21_2 -->
 								<span id="text-b20-2"
 									data-bind="visible : (!permissionCheck() &amp;&amp; displayButton) 	&#124;&#124; (isNoData() &amp;&amp; displayButton) ">
 									#{i18n.getText('KDP002_99')}</span>
 							</div>
 						</div>
-
 					</div>
 				</div>
 			</div>
 			<div id="functions-area-bottom">
-				<div data-bind="if: displayButton">
-					<!-- C30_1 -->
-					<button style="margin-left: -70px;" class="proceed x-large" tabindex="9" id="close-button"
-						data-bind="click: registerDailyIdentify, disable : (!permissionCheck() &#124;&#124; isNoData() )">#{i18n.getText('KDP002_62')}</button>
+				<!-- C30_1 -->
+				<button class="proceed x-large" tabindex="9" id="close-button"
+					data-bind="click: registerDailyIdentify,
+						disable : (!permissionCheck() &#124;&#124; isNoData() ),
+						visible: displayButton,
+						css: { 'has-info': $vm.displayButton} ">#{i18n.getText('KDP002_62')}</button>
 
-					<button class="btn-close" tabindex="9" id="close-button"
-						data-bind="click: closeDialog">#{i18n.getText('KDP002_63')}</button>
-				</div>
-				<div data-bind="ifnot: displayButton">
-					<button tabindex="9" id="close-button"
-						data-bind="click: closeDialog">#{i18n.getText('KDP002_63')}</button>
-				</div>
+				<button tabindex="9" id="close-button"
+					data-bind="click: closeDialog, 
+					css: { 'has-info1': $vm.displayButton}">#{i18n.getText('KDP002_63')}</button>
 			</div>
 		</ui:define>
 	</ui:composition>
