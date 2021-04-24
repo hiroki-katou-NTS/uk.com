@@ -261,6 +261,7 @@ export module model {
         workLocationName: string;
         workLocationCd: string;
         empInfo: IEmployeeRecordImport;
+        workplaceName: string;
     }
 
     interface IEmployeeRecordImport {
@@ -360,6 +361,8 @@ export module model {
         workTimeName: string;
 
         empInfo: IEmployeeRecordImport;
+
+        workplaceName: string;
 
     }
 

@@ -65,7 +65,7 @@ export class KdpS01BComponent extends Vue {
                 vm.$modal.error('Not Found Stamp Data');
             }
 
-            vm.screenData.localtion = data.workLocationName;
+            vm.screenData.localtion = data.workplaceName;
             vm.$auth.user.then((user) => {
                 vm.screenData.employeeCode = user.employeeCode;
                 vm.screenData.employeeName = data.empInfo.pname;

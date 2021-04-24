@@ -28,9 +28,8 @@
         >{{ screenData.stampAtr }}</label
       >
     </div>
-    <div class="col-12 value" style="padding-top: 20px;">
+    <div class="col-12 value" style="padding-top: 20px; text-align: left;">
       <label>{{ screenData.employeeCode }} {{ screenData.employeeName }}</label>
-      <div>{{ screenData.localtion }}</div>
     </div>
 
     <div class="col-12 value">
