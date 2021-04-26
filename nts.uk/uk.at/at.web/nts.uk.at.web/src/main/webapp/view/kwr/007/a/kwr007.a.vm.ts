@@ -68,7 +68,7 @@ module nts.uk.at.view.kwr007.a {
     periodDateList: KnockoutObservableArray<PeriodItem> = ko.observableArray([]);
     aggregateListCode: KnockoutObservable<string> = ko.observable(null);
     workplaceHierarchyList: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
-    workplaceHierarchyId: KnockoutObservable<number> = ko.observable(null);
+    workplaceHierarchyId: KnockoutObservable<any> = ko.observable(null);
 
     detailsOutputSettings: KnockoutObservableArray<CheckBoxItem> = ko.observableArray([]);
     detailsOutputSelectedIds: KnockoutObservableArray<string> = ko.observableArray([]);
@@ -410,7 +410,7 @@ module nts.uk.at.view.kwr007.a {
         }
         return;
       }
-
+      let hierarchyId = vm.pageBreakSpecification();
       //save conditions 
       let multiSelectedCode: Array<string> = vm.multiSelectedCode();
       let lstEmployeeIds: Array<string> = [];
@@ -454,7 +454,7 @@ module nts.uk.at.view.kwr007.a {
           settingId: findObj.id, //定型選択リスト || 自由設定リスト 7             
           isZeroDisplay: vm.zeroDisplayClassification() ? true : false,//ゼロ表示区分選択肢 7         
           isPageBreakByWpl: vm.pageBreakSpecification() ? true : false, //改ページ指定選択肢,    
-          pageBreakWplHierarchy: vm.workplaceHierarchyId(),//改ページの選択肢      
+          pageBreakWplHierarchy: hierarchyId == 1? null : hierarchyId,//改ページの選択肢
           isDetail: vm.detailsOutputSettings()[0].checked(), //明細チェック
           isWorkplaceTotal: vm.detailsOutputSettings()[1].checked(),//職場計チェック
           isTotal: vm.detailsOutputSettings()[2].checked(), //総合計チェック
@@ -488,14 +488,14 @@ module nts.uk.at.view.kwr007.a {
       _.forEach(vm.specifyWorkplaceHierarchy(), (x: CheckBoxItem) => {
         levels.push(x.toSave());
       });
-
+       let hierarchyId = vm.pageBreakSpecification();
       let data: WorkScheduleOutputConditions = {
         itemSelection: vm.rdgSelectedId(), //項目選択の選択肢
         standardSelectedCode: vm.standardSelectedCode(), //定型選択リスト
         freeSelectedCode: vm.freeSelectedCode(), //自由設定リスト
         zeroDisplayClassification: vm.zeroDisplayClassification(), //ゼロ表示区分選択肢
         pageBreakSpecification: vm.pageBreakSpecification(), //改ページの選択肢
-        workplaceHierarchyId: vm.workplaceHierarchyId(), //			職場階層リスト		
+        workplaceHierarchyId: hierarchyId == 1 ? null: vm.workplaceHierarchyId(), //			職場階層リスト
         detailsOutputSettings: detailsOutput,//明細	+ 職場計 + /総合計 + 職場累計      	
         levels: levels,//1階層 -> 9階層
       };
@@ -619,7 +619,7 @@ module nts.uk.at.view.kwr007.a {
     freeSelectedCode?: string, //自由設定
     zeroDisplayClassification?: number, //自由の選択済みコード
     pageBreakSpecification?: number //改ページ指定
-    workplaceHierarchyId?: number, //			職場階層リスト		
+    workplaceHierarchyId?: any, //			職場階層リスト
     detailsOutputSettings?: Array<any>,//明細	+ 職場計 + /総合計 + 職場累計      	
     levels?: Array<any>,//1階層 -> 9階層
   }

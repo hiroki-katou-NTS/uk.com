@@ -88,6 +88,7 @@ public class AposeArbitraryPeriodSummaryTableGenerator extends AsposeCellsReport
     }
 
     private void printContents(Worksheet worksheetTemplate, Worksheet worksheet, ArbitraryPeriodSummaryDto dataSource) {
+        System.out.println("EOEOEOE:___________" +dataSource.getQuery().getPageBreakWplHierarchy());
         try {
             HorizontalPageBreakCollection pageBreaks = worksheet.getHorizontalPageBreaks();
             DetailOfArbitrarySchedule data = dataSource.getContent();
@@ -109,33 +110,36 @@ public class AposeArbitraryPeriodSummaryTableGenerator extends AsposeCellsReport
                 Cells cellsTemplate = worksheetTemplate.getCells();
                 Cells cells = worksheet.getCells();
                 int itemOnePage = 0;
-                boolean isPageBreakByWpl = query.isPageBreakByWpl();
-                    // C1_1
+                // C1_1
                 printInfo(worksheetTemplate, worksheet, contentsList, period);
                 count += 5;
                 itemOnePage += 5;
                 for (int i = 0; i < detailDisplayContents.size(); i++) {
                     boolean isBreaked = false;
                     val content = detailDisplayContents.get(i);
-                    if(query.isDetail()){
+                    if (query.isDetail()) {
                         int wplHierarchy = content.getHierarchyCode().length() / 3;
-                        int pageBreakWplHierarchy = query.getPageBreakWplHierarchy();
-                        if ((isPageBreakByWpl && i >= 1 ) ) {
-                            if (wplHierarchy < pageBreakWplHierarchy) {
-                                pageBreaks.add(count);
-                                cells.copyRows(cells, 0, count, 5);
-                                count += 5;
-                                itemOnePage = 5;
-                                isBreaked = true;
-                                isPageBreakByWpl = false;
-                            }
+                        Integer pageBreakWplHierarchy = query.getPageBreakWplHierarchy();
+                        if (i!=0 && query.isPageBreakByWpl() && pageBreakWplHierarchy == null) {
+                            pageBreaks.add(count);
+                            cells.copyRows(cells, 0, count, 5);
+                            count += 5;
+                            itemOnePage = 5;
+                            isBreaked = true;
+                        }
+                        if (i!=0 && pageBreakWplHierarchy != null && wplHierarchy <= pageBreakWplHierarchy) {
+                            pageBreaks.add(count);
+                            cells.copyRows(cells, 0, count, 5);
+                            count += 5;
+                            itemOnePage = 5;
+                            isBreaked = true;
                         }
                         val listDisplaySid = content.getListDisplayedEmployees();
                         val tComparator = Comparator
                                 .comparing(DisplayedEmployee::getEmployeeId);
                         val listDisplayedEmployees = listDisplaySid.stream()
                                 .sorted(tComparator).collect(Collectors.toList());
-                        if (!isBreaked && listDisplaySid.size()>0 && (MAX_LINE_IN_PAGE - count) <= 5 ) {
+                        if (!isBreaked && listDisplaySid.size() > 0 && (MAX_LINE_IN_PAGE - count) <= 5) {
                             pageBreaks.add(count);
                             cells.copyRows(cells, 0, count, 5);
                             count += 5;
@@ -175,11 +179,13 @@ public class AposeArbitraryPeriodSummaryTableGenerator extends AsposeCellsReport
                                 if (k < 20) {
                                     val itemLine1 = contents.get(k);
                                     cells.get(count, 1 + k).setValue(formatValue(itemLine1.getValue()
-                                            , mapIdAnAttribute.getOrDefault(itemLine1.getAttendanceItemId(), null), query.isZeroDisplay()));
+                                            , mapIdAnAttribute.getOrDefault(itemLine1.getAttendanceItemId(), null),
+                                            query.isZeroDisplay()));
                                 } else if (k >= 20 && k < 40) {
                                     val itemLine2 = contents.get(k);
                                     cells.get(count + 1, 1 + k - 20).setValue(formatValue(itemLine2.getValue()
-                                            , mapIdAnAttribute.getOrDefault(itemLine2.getAttendanceItemId(), null), query.isZeroDisplay()));
+                                            , mapIdAnAttribute.getOrDefault(itemLine2.getAttendanceItemId(), null),
+                                            query.isZeroDisplay()));
                                 }
 
                             }
@@ -188,7 +194,7 @@ public class AposeArbitraryPeriodSummaryTableGenerator extends AsposeCellsReport
                     }
 
                     if (query.isWorkplaceTotal()) {
-                        if(!query.isDetail()){
+                        if (!query.isDetail()) {
                             cells.copyRow(cellsTemplate, 5, count);
                             itemOnePage += 1;
                             //D1_1
@@ -243,7 +249,7 @@ public class AposeArbitraryPeriodSummaryTableGenerator extends AsposeCellsReport
                             count += 5;
                         }
                         cells.copyRows(cellsTemplate, 10, count, 2);
-                        cells.get(count, 0).setValue(TextResource.localize("KWR007_305"," " +String.valueOf(item.getHierarchy())));
+                        cells.get(count, 0).setValue(TextResource.localize("KWR007_305", " " + String.valueOf(item.getHierarchy())));
                         int k = 0;
                         itemOnePage += 2;
                         while (k < listValue.size()) {
@@ -255,7 +261,7 @@ public class AposeArbitraryPeriodSummaryTableGenerator extends AsposeCellsReport
                                         , mapIdAnAttribute.getOrDefault(itemLine1.getAttendanceItemId(), null), query.isZeroDisplay()));
                             } else if (k >= 20 && k < 40) {
                                 val itemLine2 = listValue.get(k);
-                                cells.get(count + 1, 1 + k -20).setValue(formatValue(itemLine2.getValue()
+                                cells.get(count + 1, 1 + k - 20).setValue(formatValue(itemLine2.getValue()
                                         , mapIdAnAttribute.getOrDefault(itemLine2.getAttendanceItemId(), null), query.isZeroDisplay()));
                             }
 
@@ -281,7 +287,7 @@ public class AposeArbitraryPeriodSummaryTableGenerator extends AsposeCellsReport
                                     , mapIdAnAttribute.getOrDefault(itemLine1.getAttendanceItemId(), null), query.isZeroDisplay()));
                         } else if (k >= 20 && k < 40) {
                             val itemLine2 = totalAll.get(k);
-                            cells.get(count + 1, 1 + k -20).setValue(formatValue(itemLine2.getValue()
+                            cells.get(count + 1, 1 + k - 20).setValue(formatValue(itemLine2.getValue()
                                     , mapIdAnAttribute.getOrDefault(itemLine2.getAttendanceItemId(), null), query.isZeroDisplay()));
                         }
 
