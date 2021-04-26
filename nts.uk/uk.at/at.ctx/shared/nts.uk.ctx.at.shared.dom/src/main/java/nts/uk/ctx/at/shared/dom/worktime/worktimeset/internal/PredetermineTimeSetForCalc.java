@@ -35,7 +35,7 @@ public class PredetermineTimeSetForCalc extends DomainObject {
 	private TimeWithDayAttr afternoonStartTime;
 
 	// 夜勤区分
-	private boolean nightShift;
+//	private boolean nightShift;
 
 	// 残業を含めた所定時間を設定する
 	private boolean predTimeIncludeOvertime;

@@ -24,3 +24,12 @@
 .tab-5-table-width {
 	width: 486px;
 }
+
+.inline-flex {
+	display: flex;
+	justify-content: space-between;
+}
+
+.mb-20 {
+	margin-bottom: 20px;
+}

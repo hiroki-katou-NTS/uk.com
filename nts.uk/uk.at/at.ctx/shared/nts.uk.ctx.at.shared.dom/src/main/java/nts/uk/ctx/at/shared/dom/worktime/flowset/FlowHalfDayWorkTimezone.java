@@ -56,8 +56,8 @@ public class FlowHalfDayWorkTimezone extends WorkTimeDomainObject implements Clo
 	 * @param oldDomain
 	 *            the old domain
 	 */
-	public void correctData(ScreenMode screenMode, FlowHalfDayWorkTimezone oldDomain) {
-		this.restTimezone.correctData(screenMode, oldDomain.getRestTimezone());
+	public void correctData(FlowHalfDayWorkTimezone oldDomain) {
+		this.restTimezone.correctData(oldDomain.getRestTimezone());
 	}
 
 	/**

@@ -174,6 +174,14 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 			// 申請の矛盾チェック
 			commonAlgorith.appConflictCheck(companyId, employeeInfo, dateLst, workTypeLst, actualContentDisplayLst);
 			
+			String workTypeCode = goBackDirectly.getDataWork().flatMap(x -> Optional.ofNullable(x.getWorkTypeCode())).map(x -> x.v()).orElse(null);
+			String workTimeCode = goBackDirectly.getDataWork().flatMap(x -> x.getWorkTimeCodeNotNull()).map(x -> x.v()).orElse(null);
+			
+			if (inforGoBackCommonDirectOutput.getWorkInfo().isPresent()) {
+				workTypeCode = workTypeCode.equals(inforGoBackCommonDirectOutput.getWorkInfo().get().getWorkType()) ? workTypeCode : null;
+				workTimeCode = workTimeCode.equals(inforGoBackCommonDirectOutput.getWorkInfo().get().getWorkTime()) ? workTimeCode : null;			
+			}
+			
 			// アルゴリズム「4-1.詳細画面登録前の処理」を実行する
 			detailBeforeUpdate.processBeforeDetailScreenRegistration(
 				companyId,
@@ -183,8 +191,8 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 				application.getAppID(),
 				application.getPrePostAtr(),
 				application.getVersion(),
-				goBackDirectly.getDataWork().isPresent() ? goBackDirectly.getDataWork().get().getWorkTypeCode().v() : null,
-				goBackDirectly.getDataWork().isPresent() ? (goBackDirectly.getDataWork().get().getWorkTimeCode() != null ? goBackDirectly.getDataWork().get().getWorkTimeCode().v() : null) : null,
+				workTypeCode,
+				workTimeCode,
 				inforGoBackCommonDirectOutput.getAppDispInfoStartup());
 	}
 	/**

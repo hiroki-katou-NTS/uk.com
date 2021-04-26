@@ -112,17 +112,19 @@ public class FixedWorkSettingPolicyImpl implements FixedWorkSettingPolicy {
 		});
 
 		// Check #Msg_516 domain FixRestTimezoneSet
-		fixedWorkSetting.getOffdayWorkTimezone().getRestTimezone().getLstTimezone().forEach(setting -> {
+		fixedWorkSetting.getOffdayWorkTimezone().getRestTimezone().getTimezones().forEach(setting -> {
 			if (this.predService.validateOneDay(predetemineTimeSet, setting.getStart(), setting.getEnd())) {
 				be.addMessage("Msg_516", "KMK003_21");
 			}
 		});
 
 		// check use half day
-		if (fixedWorkSetting.getUseHalfDayShift()) {
-			// validate Msg_516 PredetemineTimeSetting
-			predService.validatePredetemineTime(be, predetemineTimeSet);
-		}
+//		if (fixedWorkSetting.getUseHalfDayShift()) {
+//			// validate Msg_516 PredetemineTimeSetting
+//			predService.validatePredetemineTime(be, predetemineTimeSet);
+//		}
+		// validate Msg_516 PredetemineTimeSetting
+		predService.validatePredetemineTime(be, predetemineTimeSet);
 
 		// validate WorkTimezoneCommonSet
 		this.wtzCommonSetPolicy.validate(be, predetemineTimeSet, fixedWorkSetting.getCommonSetting());
@@ -180,10 +182,8 @@ public class FixedWorkSettingPolicyImpl implements FixedWorkSettingPolicy {
 			WorkTimeDisplayMode displayMode, FixedWorkSetting fixedWorkSetting) {
 		List<AmPmAtr> lstAmPm = new ArrayList<AmPmAtr>();
 		lstAmPm.add(AmPmAtr.ONE_DAY);
-		if (fixedWorkSetting.getUseHalfDayShift()) {
-			lstAmPm.add(AmPmAtr.AM);
-			lstAmPm.add(AmPmAtr.PM);
-		}
+		lstAmPm.add(AmPmAtr.AM);
+		lstAmPm.add(AmPmAtr.PM);
 
 		List<FixHalfDayWorkTimezone> lstFixHalfWork = fixedWorkSetting.getLstHalfDayWorkTimezone().stream()
 				.filter(fixHalfWork -> lstAmPm.contains(fixHalfWork.getDayAtr())).collect(Collectors.toList());

@@ -31,7 +31,7 @@ public class PredetemineTimeSettingDto implements PredetemineTimeSettingGetMemen
 	public PredetermineTimeDto predTime;
 
 	/** The night shift. */
-	public boolean nightShift;
+//	public boolean nightShift;
 
 	/** The prescribed timezone setting. */
 	public PrescribedTimezoneSettingDto prescribedTimezoneSetting;
@@ -92,10 +92,10 @@ public class PredetemineTimeSettingDto implements PredetemineTimeSettingGetMemen
 	 * @see nts.uk.ctx.at.shared.dom.worktime.predset.
 	 * PredetemineTimeSettingGetMemento#isNightShift()
 	 */
-	@Override
-	public boolean isNightShift() {
-		return this.nightShift;
-	}
+//	@Override
+//	public boolean isNightShift() {
+//		return this.nightShift;
+//	}
 
 	/*
 	 * (non-Javadoc)

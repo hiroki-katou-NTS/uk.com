@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.InforGoBackCommonDirectOutput;
+import nts.uk.ctx.at.request.dom.application.gobackdirectly.WorkInfo;
 import nts.uk.ctx.at.shared.app.find.worktype.WorkTypeDto;
 import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
 @Data
@@ -33,6 +34,8 @@ public class InforGoBackCommonDirectDto {
 	
 	private List<TimeZoneUseDto> timezones;
 	
+	private WorkInfo workInfo;
+	
 	public static InforGoBackCommonDirectDto fromDomain(InforGoBackCommonDirectOutput value) {
 		List<TimeZoneUseDto> timezones = value.getTimezones().stream().map(x -> TimeZoneUseDto.fromDomain(x)).collect(Collectors.toList());
 		return new InforGoBackCommonDirectDto(
@@ -42,7 +45,9 @@ public class InforGoBackCommonDirectDto {
 				GoBackReflectDto.fromDomain(value.getGoBackReflect()),
 				value.getLstWorkType().stream().map(item -> WorkTypeDto.fromDomain(item)).collect(Collectors.toList()),
 				value.getGoBackDirectly().isPresent() ? GoBackDirectlyDto.convertDto(value.getGoBackDirectly().get()) : null,
-				timezones);
+				timezones,
+				value.getWorkInfo().orElse(null)
+				);
 	}
 	
 	public InforGoBackCommonDirectOutput toDomain() {
@@ -62,6 +67,7 @@ public class InforGoBackCommonDirectDto {
 			timezones = this.timezones.stream().map(x -> x.toDomain()).collect(Collectors.toList());			
 		}
 		info.setTimezones(timezones);
+		info.setWorkInfo(Optional.ofNullable(workInfo));
 		return info;
 	}
 	

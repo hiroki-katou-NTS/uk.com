@@ -199,7 +199,6 @@ module nts.uk.at.view.kmk003.a {
                 rangeTimeDayInHours: KnockoutObservable<number>; // in hours
                 workTimeCode: KnockoutObservable<string>;
                 predTime: PredetermineTimeModel;
-                nightShift: KnockoutObservable<number>;
                 prescribedTimezoneSetting: PrescribedTimezoneSettingModel;
                 startDateClock: KnockoutObservable<number>;
                 predetermine: KnockoutObservable<boolean>;
@@ -211,7 +210,6 @@ module nts.uk.at.view.kmk003.a {
                     this.rangeTimeDay = ko.computed(() => this.rangeTimeDayInHours() * PredetemineTimeSettingModel.TIME_UNIT);
                     this.workTimeCode = ko.observable('');
                     this.predTime = new PredetermineTimeModel();
-                    this.nightShift = ko.observable(0);
                     this.prescribedTimezoneSetting = new PrescribedTimezoneSettingModel();
                     this.startDateClock = ko.observable(0);
                     this.predetermine = ko.observable(false);
@@ -221,7 +219,6 @@ module nts.uk.at.view.kmk003.a {
                     this.rangeTimeDayInHours(data.rangeTimeDay / PredetemineTimeSettingModel.TIME_UNIT); // minutes to hours
                     this.workTimeCode(data.workTimeCode);
                     this.predTime.updateData(data.predTime);
-                    this.nightShift(data.nightShift);
                     this.prescribedTimezoneSetting.updateData(data.prescribedTimezoneSetting);
                     this.startDateClock(data.startDateClock);
                     this.predetermine(data.predetermine);
@@ -232,7 +229,6 @@ module nts.uk.at.view.kmk003.a {
                         rangeTimeDay: this.rangeTimeDay(),
                         workTimeCode: this.workTimeCode(),
                         predTime: this.predTime.toDto(),
-                        nightShift: this.nightShift(),
                         prescribedTimezoneSetting: this.prescribedTimezoneSetting.toDto(),
                         startDateClock: this.startDateClock(),
                         predetermine: this.predetermine()
@@ -243,7 +239,6 @@ module nts.uk.at.view.kmk003.a {
                 resetData() {
                     this.rangeTimeDayInHours(PredetemineTimeSettingModel.ONE_DAY);
                     this.predTime.resetData();
-                    this.nightShift(0);  
                     this.prescribedTimezoneSetting.resetData();
                     this.startDateClock(0);
                     this.predetermine(false);
