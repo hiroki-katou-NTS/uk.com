@@ -5,7 +5,7 @@ import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.ExecutionType;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeActualStamp;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.ReasonTimeChange;
@@ -14,6 +14,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.time
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkTimeInformation;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenWorkTimeSheetOfDailyAttendance;
+import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -35,7 +36,7 @@ public class CalculateAttendanceTimeBySupportWorkService {
 	 */
 	public static Optional<IntegrationOfDaily> calculate(Require require, String empId, GeneralDate ymd, List<OuenWorkTimeSheetOfDailyAttendance> ouenWorkTimeSheetOfDailyAttendance) {
 		//	$日別勤怠 = require.日別勤怠(Work)を取得する(社員ID,年月日)	
-		Optional<IntegrationOfDaily> integrationOfDaily = require.get(empId, ymd);
+		Optional<IntegrationOfDaily> integrationOfDaily = require.get(empId, new DatePeriod(ymd, ymd));
 		//	if $日別勤怠.isPresent
 		if(integrationOfDaily.isPresent()){
 			// $新日別勤怠 = [prv-1] 退勤時刻をセットする($日別勤怠)
@@ -43,7 +44,7 @@ public class CalculateAttendanceTimeBySupportWorkService {
 			//$新日別勤怠.応援時刻 = 作業時間帯
 			integrationOfDailyNew.setOuenTimeSheet(ouenWorkTimeSheetOfDailyAttendance);
 			//$計算結果 = require.計算する($新日別勤怠, 実行区分.通常実行)
-			IntegrationOfDaily calculationResult = require.calculationIntegrationOfDaily(integrationOfDailyNew, ExecutionType.EXCECUTION);
+			IntegrationOfDaily calculationResult = require.calculationIntegrationOfDaily(integrationOfDailyNew, ExecutionType.NORMAL_EXECUTION);
 			//	return $計算結果	
 			return Optional.of(calculationResult);
 		}
@@ -105,7 +106,7 @@ public class CalculateAttendanceTimeBySupportWorkService {
 	public static interface Require {
 		//[R-2] 日別勤怠(Work)を取得する		
 		//日別勤怠(Work)を取得する(社員ID,期間)
-		Optional<IntegrationOfDaily> get(String employeeId, GeneralDate date);
+		Optional<IntegrationOfDaily> get(String employeeId, DatePeriod date);
 		//	[R-1] 日別勤怠(Work)を取得する		
 		//アルゴリズム.日別実績の修正からの計算(日別実績(Work),実行種別)	
 		IntegrationOfDaily calculationIntegrationOfDaily(IntegrationOfDaily integrationOfDaily, ExecutionType executionType);
