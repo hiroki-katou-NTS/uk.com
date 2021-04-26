@@ -100,7 +100,7 @@ module nts.uk.at.view.ksm007.a {
                     $("#workplace-group-pannel").height(458);
                 }
             });
-
+            self.registerForm().selectedWkpType.valueHasMutated();
         }
 
         startPage(): JQueryPromise<any> {
@@ -301,25 +301,6 @@ module nts.uk.at.view.ksm007.a {
             }).always(() => {
                 block.clear();
             });
-        }
-
-        public reCalGridWidth() {
-            // let panelWidthResize = window.innerWidth;
-            // let totalColWidth = 500;            
-            // panelWidthResize = panelWidthResize > totalColWidth ? totalColWidth : panelWidthResize;
-            // console.log(panelWidthResize);
-            // $('#workplace-list').igGrid("option", "width", panelWidthResize);
-            // if(panelWidthResize == 500) {
-            //     $('#workplace-list_displayContainer').css("width", panelWidthResize);
-            //     $('#workplace-list_headers_v').css("width", panelWidthResize);
-            // }
-
-            // Internet Explorer 6-11
-            let isIE = /*@cc_on!@*/false || !!document.documentMode;
-            if (isIE) {
-                $('#workplace-list').igGrid("option", "height", 289);
-                // $('#multi-list').igGrid("option", "height", 372);
-            }
         }
 
         public openDialogScreenB() {
