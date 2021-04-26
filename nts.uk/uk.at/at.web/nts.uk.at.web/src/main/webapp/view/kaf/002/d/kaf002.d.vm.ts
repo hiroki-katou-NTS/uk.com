@@ -12,7 +12,7 @@ module nts.uk.at.view.kaf002_ref.d.viewmodel {
 
 <div id="kaf002-d">
 	<div id="contents-area"
-		style="background-color: inherit; height: calc(100vh - 165px);">
+		style="background-color: inherit; height: calc(100vh - 137px);">
 		<div class="two-panel" style="height: 100%; width: 1260px">
 			<div class="left-panel"
 				style="width: calc(1260px - 388px); height: inherit;">

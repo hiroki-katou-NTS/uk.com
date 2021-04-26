@@ -16,7 +16,7 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 	const template= `
 		<div id="kaf005-b">
 			<div id="contents-area"
-				style="background-color: inherit; height: calc(100vh - 165px);">
+				style="background-color: inherit; height: calc(100vh - 137px);">
 				<div class="two-panel" style="height: 100%; width: 1260px">
 					<div class="left-panel"
 						style="width: calc(1260px - 388px); height: inherit">
