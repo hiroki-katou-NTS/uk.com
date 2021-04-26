@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.request.infra.repository.application;
 
-import java.nio.charset.Charset;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
@@ -46,8 +45,8 @@ import nts.uk.ctx.at.request.infra.repository.application.lateleaveearly.AsposeL
 import nts.uk.ctx.at.request.infra.repository.application.optional.AposeOptionalItem;
 import nts.uk.ctx.at.request.infra.repository.application.overtime.AsposeAppOverTime;
 import nts.uk.ctx.at.request.infra.repository.application.stamp.AsposeAppStamp;
-import nts.uk.ctx.at.request.infra.repository.application.workchange.AsposeWorkChange;
 import nts.uk.ctx.at.request.infra.repository.application.timeleaveapplication.AsposeTimeLeaveApplication;
+import nts.uk.ctx.at.request.infra.repository.application.workchange.AsposeWorkChange;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportContext;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 
@@ -543,6 +542,7 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 	private void setColorTextBox(TextBox textBox) {
 	    Font textFont = textBox.getFont();
 	    textFont.setColor(Color.fromArgb(255, 0, 0));
+	    textFont.setName("源ノ角ゴシック JP Normal");
 	    textBox.setFont(textFont);
 	}
 	
