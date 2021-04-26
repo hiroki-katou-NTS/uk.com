@@ -83,3 +83,7 @@ td[aria-describedby="single-list_name"] {
 #functions-area-bottom .has-info1{
 	margin-left: 70px;
 }
+
+.table-content td {
+	min-width: 200px;
+}
