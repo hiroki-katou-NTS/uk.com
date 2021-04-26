@@ -17,6 +17,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementDetail;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ActualContentDisplay;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgorithm;
+import nts.uk.ctx.at.request.dom.application.common.service.setting.WorkInfoListOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoWithDateOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.InitWkTypeWkTimeOutput;
@@ -24,6 +25,7 @@ import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectlyRepository;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.InforGoBackCommonDirectOutput;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.InforWorkGoBackDirectOutput;
+import nts.uk.ctx.at.request.dom.application.gobackdirectly.WorkInfo;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSet;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.TargetWorkTypeByApp;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.directgoback.GoBackReflect;
@@ -268,6 +270,18 @@ public class GoBackDirectServiceImp implements GoBackDirectService {
 		List<WorkType> lstWorkType = this.getWorkTypes(companyId, appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpEmploymentSet().isPresent() ? appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpEmploymentSet().get() : null);
 		output.setLstWorkType(lstWorkType);
 		
+		// 申請中の勤務種類・就業時間帯を取得する
+		String workType = goBackDirectly.flatMap(x -> x.getDataWork()).flatMap(x -> Optional.ofNullable(x.getWorkTypeCode())).map(x -> x.v()).orElse(null);
+		Optional<String> workTimeOp = goBackDirectly.flatMap(x -> x.getDataWork()).flatMap(x -> x.getWorkTimeCodeNotNull()).map(x -> x.v());
+		WorkInfoListOutput result = commonAlgorithm.getWorkInfoList(
+				companyId,
+				workType,
+				workTimeOp,
+				lstWorkType,
+				appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpWorkTimeLst().orElse(Collections.emptyList()));
+		output.setWorkInfo(Optional.of(new WorkInfo(workType, workTimeOp.orElse(null))));
+		
+		// 申請中の勤務種類・就業時間帯を取得する
 		if (goBackDirectly.isPresent()) {
 			Optional<WorkInformation> dataWork = goBackDirectly.get().getDataWork();
 			if (dataWork.isPresent()) {
@@ -280,6 +294,19 @@ public class GoBackDirectServiceImp implements GoBackDirectService {
 			}
 		}
 		output.setAppDispInfoStartup(appDispInfoStartupOutput);
+		output.setLstWorkType(result.getWorkTypes());
+		output.getAppDispInfoStartup().getAppDispInfoWithDateOutput().setOpWorkTimeLst(Optional.of(result.getWorkTimes()));
+		
+		// 所定時間帯を取得する
+		
+		Boolean isUseTimeZone = StringUtils.isBlank(output.getWorkType()) || StringUtils.isBlank(output.getWorkTime());
+		if (!isUseTimeZone) {
+			PredetermineTimeSetForCalc predetermineTimeSetForCalc = workTimeSettingService.getPredeterminedTimezone(companyId, output.getWorkTime(), output.getWorkType(), null);
+			List<TimezoneUse> timezones = predetermineTimeSetForCalc.getTimezones();
+			output.setTimezones(timezones);
+		}
+		
+		
 		return output;
 	}
 	
