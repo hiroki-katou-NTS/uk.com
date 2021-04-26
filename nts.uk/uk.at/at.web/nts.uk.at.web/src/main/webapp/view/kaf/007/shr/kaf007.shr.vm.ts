@@ -7,22 +7,22 @@ module nts.uk.at.view.kaf007_ref.shr.viewmodel {
             <div class="table" style="margin-bottom: 5px;">
                 <div class="cell valign-center col-1">
                     <!--A6_1 勤務種類-->
-                    <div class="valign-center col-1" style="margin: 3px 0;" data-bind="ntsFormLabel:{required:true}, text: $i18n('KAF007_22')">
+                    <div class="valign-center col-1" data-bind="ntsFormLabel:{required:true}, text: $i18n('KAF007_22')">
                     </div>
 
                     <!--A6_3 就業時間帯-->
-                    <div class="valign-center col-1" style="margin: 3px 0;" data-bind="ntsFormLabel:{required:true}, text: $i18n('KAF007_23')">
+                    <div class="valign-center col-1" style="padding-top: 10px" data-bind="ntsFormLabel:{required:true}, text: $i18n('KAF007_23')">
                     </div>
                 </div>
-                <div class="cell" style="margin-top: 4px;">
+                <div class="cell" style="padding-top: 5px;">
                     <!--A6_5 勤務就業選択-->
-                    <button style="width: 45px; height: 70px;" id="workSelect-kaf007" data-bind="text: $i18n('KAF007_24'),
+                    <button style="width: 45px; height: 60px;" id="workSelect-kaf007" data-bind="text: $i18n('KAF007_24'),
                                 click: openKDL003Click, 
                                 enable: isEdit">
                     </button>
                 </div>
-                <div class="cell valign-center" style="padding-left: 15px; padding-bottom: 5px">
-                    <div class="valign-center" style="margin: 0px 5px; height: 32px">
+                <div class="cell valign-center" style="padding-left: 15px;">
+                    <div class="valign-center" style="margin: 0 5px;">
                         <!--A6_2 勤務種類名-->
                         <div class="cell valign-center">
                             <span data-bind="text: appWorkChange.workTypeCode"></span>
@@ -30,9 +30,9 @@ module nts.uk.at.view.kaf007_ref.shr.viewmodel {
                             <span data-bind="text: appWorkChange.workTypeName"></span>
                         </div>
                     </div>
-                    <div class="valign-center" style="margin: 3px 5px; height: 32px">
+                    <div class="valign-center" style="margin: 0 5px; padding-top: 18px">
                         <!--A6_4 就業時間帯名-->
-                        <div class="cell valign-center" style="padding-top: 15px">
+                        <div class="cell valign-center"">
                             <span data-bind="text: appWorkChange.workTimeCode"></span>
                             <span data-bind="text: ' '"></span>
                             <span data-bind="text: appWorkChange.workTimeName"></span>

@@ -16,7 +16,7 @@ module nts.uk.at.view.kaf009_ref.shr.viewmodel {
 	</div>
 
 	<!--Work Change-->
-	<div style="margin-top: 12px 12px"
+	<div style="margin-top: 12px"
 		data-bind="if: dataFetch().goBackReflect()"
 		class="valign-center control-group">
 		<div
@@ -46,7 +46,7 @@ module nts.uk.at.view.kaf009_ref.shr.viewmodel {
 				<div class="valign-center control-group"
 					data-bind="ntsFormLabel:{ required: true, text: $i18n('KAF009_22') }"></div>
 				<BR />
-				<div class="valign-center control-group" style="margin-top: 16px"
+				<div class="valign-center control-group" style="padding-top: 5px"
 					data-bind="ntsFormLabel:{ required: true, text: $i18n('KAF009_23')}"></div>
 			</div>
 			<div class="cell valign-center">
@@ -56,12 +56,12 @@ module nts.uk.at.view.kaf009_ref.shr.viewmodel {
 			<div class="cell valign-center">
 				<label class="lblWorkTypeCd required"
 					data-bind="text: model.workTypeCode"></label> <label
-					data-bind="text: model.workTypeName"></label> <br /> 
-					<div style="margin-top: 12px">
+					data-bind="text: model.workTypeName"></label>
+					<div>
 						<label
 						class="lblSiftCd"
 						data-bind="text: model.workTimeCode, required: true"></label> <label
-						style="margin-top: 12px" data-bind="text: model.workTimeName "></label>
+						 data-bind="text: model.workTimeName "></label>
 					
 					</div>
 			</div>

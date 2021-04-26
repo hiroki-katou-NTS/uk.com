@@ -6,11 +6,11 @@ module nts.uk.at.view.kaf005.shr.work_info.viewmodel {
 	<div class="table" data-bind="if : visibleModel.c7()">
 		<div class="cell valign-center" style="width: 120px;">
 			<!--A4_1 勤務種類ラベル-->
-			<div class="valign-center control-group"
+			<div class="valign-center"
 				data-bind="text: $i18n('KAF005_34'), ntsFormLabel:{required: true}"></div>
 			<BR />
 			<!--A4_4 就業時間ラベル-->
-			<div class="valign-center control-group"
+			<div style="padding-top: 10px" class="valign-center"
 				data-bind="text: $i18n('KAF005_35'), ntsFormLabel:{required: true}"></div>
 		</div>
 		<div class="cell valign-top" data-bind="if: visibleModel.c7()" style="width: 45px;">
@@ -19,13 +19,13 @@ module nts.uk.at.view.kaf005.shr.work_info.viewmodel {
 				data-bind="enable: !visibleModel.c31() && outputMode(), click : openDialogKdl003, text: $i18n('KAF005_36')"></button>
 		</div>
 		<div class="cell valign-center">
-			<div class="valign-center control-group">
+			<div class="valign-center">
 				<!--A4_2 勤務種類コード-->
 				<label class="lblWorkTypeCd" data-bind="text: ko.toJS(workInfo).workType.code"></label>
 				<!--A4_3 勤務種類名称-->
 				<LABEL data-bind="text: ko.toJS(workInfo).workType.name"></LABEL>
 			</div>
-			<div class="valign-center control-group">
+			<div class="valign-center">
 				<!--A4_5 就業時間コード-->
 				<label class="lblSiftCd" data-bind="text: ko.toJS(workInfo).workTime.code"></label>
 				<!--A4_6 就業時間名称-->
