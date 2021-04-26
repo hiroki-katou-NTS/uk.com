@@ -29,6 +29,16 @@ public class OuenWorkTimeSheetOfDailyDto extends AttendanceItemCommon {
 	@AttendanceItemLayout(layout = LAYOUT_U, jpPropertyName = FAKED, indexField = DEFAULT_INDEX_FIELD_NAME)
 	private List<OuenWorkTimeSheetOfDailyAttendanceDto> ouenTimeSheet;
 	
+	@Override
+	public AttendanceItemDataGate newInstanceOf(String path) {
+		switch (path) {
+		case FAKED:
+			return new OuenWorkTimeSheetOfDailyAttendanceDto();
+		default:
+			return null;
+		}
+	}
+	
 	
 	@Override
 	public int size(String path) {
