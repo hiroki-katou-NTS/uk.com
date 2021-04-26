@@ -1944,6 +1944,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
     @Override
     public AppAbsenceStartInfoOutput getChangeHolidayDates(String companyID, List<GeneralDate> holidayDates,
             AppAbsenceStartInfoOutput appAbsenceStartInfoDto) {
+        holidayDates = holidayDates.size() > 1 ? new DatePeriod(holidayDates.get(0), holidayDates.get(1)).datesBetween() : holidayDates;
         // 基準日として扱う日の取得
         GeneralDate refDate = appAbsenceStartInfoDto.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput()
             .getApplicationSetting().getBaseDate(holidayDates.size() > 0 ? Optional.of(holidayDates.get(0)) : Optional.empty());
