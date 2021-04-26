@@ -129,7 +129,6 @@ module nts.uk.at.view.kdp004.a {
 									self.stampTab().bindData(res.stampSetting.pageLayouts);
 									self.stampResultDisplay(res.stampResultDisplay);
 									self.fingerStampSetting(res);
-									console.log(res.noticeSetDto);
 									dfd.resolve();
 								}).fail((res) => {
 									dialog.alertError({ messageId: res.messageId }).then(() => {
