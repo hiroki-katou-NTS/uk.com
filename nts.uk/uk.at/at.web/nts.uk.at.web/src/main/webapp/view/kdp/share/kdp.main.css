@@ -129,11 +129,14 @@
 
 #stamp-desc {
 	height: 73px;
-	width: 73vmin;
+	width: 56vmin;
 	font-size: 1.5vmin;
 	padding: 0 0 0 0.5vmin;
 	word-break: break-word;
 	word-wrap: break-word;
+	max-height: 73px;
+    text-overflow: ellipsis;
+    overflow: hidden;
 }
 
 #stamp-header {

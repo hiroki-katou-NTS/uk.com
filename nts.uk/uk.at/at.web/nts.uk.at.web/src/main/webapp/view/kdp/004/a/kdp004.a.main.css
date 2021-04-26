@@ -5,7 +5,7 @@ html{
   overflow-y: scroll;
 }
 #kdp002a {
-	width: 65vmin;
+	width: 55.8vmin;
 	margin-left: auto;
 	margin-right: auto;
 }
@@ -25,14 +25,6 @@ html{
 
 #stamp-info {
   min-width: 37vmin;
-}
-#stamp-desc{
-  height: 73px;
-  width: 73vmin;
-  font-size: 1.5vmin;
-  padding: 0 0 0 0.5vmin;
-  word-break: break-word;
-  word-wrap: break-word;
 }
 
 #stamp-date {
