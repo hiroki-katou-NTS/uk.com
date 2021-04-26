@@ -215,7 +215,7 @@ public class AggregateChildCareNurseWork {
 		// 期間ごとの上限日数を求める
 		List<ChildCareNurseUpperLimitPeriod> childCareNurseUpperLimitPeriod = new ArrayList<>();
 		if(employeeInfo.isPresent())
-			employeeInfo.get().childCareNurseUpperLimitPeriod(companyId, employeeId, period, criteriaDate, require);
+			childCareNurseUpperLimitPeriod = employeeInfo.get().childCareNurseUpperLimitPeriod(companyId, employeeId, period, criteriaDate, require);
 
 		// 期間終了日時点の上限日数を確認
 		// ===上限日数期間．期間．開始日 <= パラメータ「期間．終了日」<= 上限日数期間．期間．終了日
