@@ -23,11 +23,11 @@
 
 .kdp-003-a .control-panel {
 	margin: 0 auto;
-	width: 720px;
+	width: 542px;
 }
 
 .kdp-003-a .control-panel.has-time-sheet {
-	width: 990px;
+	width: 810px;
 }
 
 .kdp-003-a .control-panel:not(.has-time-sheet) .time-sheet {
