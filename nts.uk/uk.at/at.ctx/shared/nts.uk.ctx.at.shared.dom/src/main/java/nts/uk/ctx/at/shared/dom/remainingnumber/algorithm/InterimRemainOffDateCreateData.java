@@ -694,6 +694,7 @@ public class InterimRemainOffDateCreateData {
 				// 勤務種類の分類に対応する残数発生使用明細を設定する
 				setData(result, day, result.getWorkTypeClass());
 			}
+			break;
 		case Holiday:
 		case Pause:
 		case Shooting:
