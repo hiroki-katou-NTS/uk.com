@@ -180,7 +180,7 @@ module nts.uk.at.view.ksm007.a {
                     if (bundledErrors.length > 0) {
                         nts.uk.ui.dialog.bundledErrors({ errors: bundledErrors });
                     } else {
-                        self.openDialogScreenB();
+                        if (mgsId == "Msg_2097") self.openDialogScreenB();
                     }
                 });
             } else {
