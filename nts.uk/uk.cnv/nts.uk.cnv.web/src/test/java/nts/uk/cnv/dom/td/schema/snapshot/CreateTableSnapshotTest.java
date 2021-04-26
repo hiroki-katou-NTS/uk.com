@@ -37,7 +37,7 @@ public class CreateTableSnapshotTest {
 		val result = CreateTableSnapshot.create(require,alters);
 		
 		TableDesign expect = Healper.TableSnapshot.BASE.apply(alters).get();
-		assertThat(result.stream().findFirst().get()).isEqualTo(expect);
+		assertThat(result.get(0)).isEqualTo(expect);
 	}
 	
 	@Test
