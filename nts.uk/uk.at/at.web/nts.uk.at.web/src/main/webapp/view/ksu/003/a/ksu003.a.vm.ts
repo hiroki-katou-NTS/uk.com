@@ -2954,7 +2954,6 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			if(self.dataScreen003A().employeeInfo[i].fixedWorkInforDto != null && self.dataScreen003A().employeeInfo[i].fixedWorkInforDto.fixBreakTime == 1){
 				if(datafilter[0].typeOfTime === "Changeable" || datafilter[0].typeOfTime === "Flex"){
 					follow = false;
-					sliceBrk = false;
 				}
 			}
 
@@ -3742,7 +3741,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				lstTime = self.calcChartTypeTime(dataFixed, dataFixInfo[0].fixedWorkInforDto == null ? [] : dataFixInfo[0].fixedWorkInforDto.overtimeHours, timeRangeLimit, lstTime, "OT", index);
 				let totalTimes = self.calcAllTime(dataFixed, lstTime, timeRangeLimit);
 				let totalBreaktime = self.calcAllBrk(lstTime);
-				totalBreaktime = totalBreaktime != 0 ? formatById("Clock_Short_HM", totalBreaktime * 5) : "0:00";
+				totalBreaktime = totalBreaktime != 0 ? formatById("Clock_Short_HM", Math.round(totalBreaktime * 5)) : "0:00";
 				$("#extable-ksu003").exTable("cellValue", "middle", self.dataScreen003A().employeeInfo[i].empId, "breaktime", totalBreaktime );
 				$("#extable-ksu003").exTable("cellValue", "middle", self.dataScreen003A().employeeInfo[i].empId, "totalTime", totalTimes);
 				let cssTotalTime: string = self.dataScreen003A().targetInfor == 1 ? "#extable-ksu003 > .ex-body-middle > table > tbody tr:nth-child" + "(" + (i + 2).toString() + ")" + " > td:nth-child(9)" : 
