@@ -213,6 +213,11 @@ module nts.uk.ui.at.kdp013.c {
         taskListDto5: TaskDto[];
     }
 
+    type ConfirmContent = {
+        messageId: string;
+        messageParams?: string[];
+    };
+
     const defaultModelValue = (): EventModel => ({
         descriptions: ko.observable(''),
         timeRange: ko.observable({
@@ -226,6 +231,55 @@ module nts.uk.ui.at.kdp013.c {
         task4: ko.observable(''),
         task5: ko.observable('')
     });
+
+    @handler({
+        bindingName: 'kdw-confirm',
+        validatable: true,
+        virtual: false
+    })
+    export class ConfirmBindingHandler implements KnockoutBindingHandler {
+        init(element: HTMLElement, valueAccessor: () => KnockoutObservable<ConfirmContent | null>, allBindingsAccessor: KnockoutAllBindingsAccessor, viewModel: any, bindingContext: KnockoutBindingContext): { controlsDescendantBindings: boolean; } {
+            const resource = valueAccessor();
+            const msgid = $('<div>', { 'class': '' }).appendTo(element).get(0);
+            const content = $('<div>', { 'class': 'content' }).prependTo(element).get(0);
+
+            ko.applyBindingsToNode(msgid, {
+                text: ko.computed({
+                    read: () => {
+                        const msg = ko.unwrap(resource);
+
+                        if (msg) {
+                            return msg.messageId;
+                        }
+
+                        return '';
+                    },
+                    disposeWhenNodeIsRemoved: element
+                })
+            }, bindingContext);
+
+            ko.applyBindingsToNode(content, {
+                text: ko.computed({
+                    read: () => {
+                        const msg = ko.unwrap(resource);
+
+                        if (msg) {
+                            const { messageId, messageParams } = msg;
+
+                            return nts.uk.resource.getMessage(messageId, messageParams);
+                        }
+
+                        return '';
+                    },
+                    disposeWhenNodeIsRemoved: element
+                })
+            }, bindingContext);
+
+            element.removeAttribute('data-bind');
+
+            return { controlsDescendantBindings: true };
+        }
+    }
 
     @handler({
         bindingName: COMPONENT_NAME,
@@ -251,7 +305,7 @@ module nts.uk.ui.at.kdp013.c {
             <div class="header">
                 <div data-bind="i18n: 'KDW013_26'"></div>
                 <div class="actions">
-                    <button class="close" tabindex="-1" data-bind="click: $component.params.close, icon: 202, size: 12"></button>
+                    <button class="close" tabindex="-1" data-bind="click: $component.close, icon: 202, size: 12"></button>
                 </div>
             </div>
             <table>
@@ -341,6 +395,61 @@ module nts.uk.ui.at.kdp013.c {
                 </tbody>
             </table>
         </div>
+        <div class="message overlay" data-bind="css: { show: !!$component.confirm() }">
+            <div class="container" data-bind="draggable: ko.computed(function() { return !!$component.confirm(); })">
+                <div class="title" data-bind="i18n: '確認'"></div>
+                <div class="body" data-bind="kdw-confirm: $component.confirm"></div>
+                <div class="foot">
+                    <button class="yes large danger" data-bind="click: $component.yes, i18n: 'はい'"></button>
+                    <button class="cancel large" data-bind="click: $component.cancel, i18n: 'キャンセル'"></button>
+                </div>
+            </div>
+        </div>
+        <style>
+            .message.overlay {
+                position: fixed;
+                display: none;
+                top: 0;
+                left:0;
+                right: 0;
+                bottom: 0;
+                background-color: #aaaaaa4d;
+            }
+            .message.overlay.show {
+                display: block;
+            }
+            .message.overlay .container {
+                border: 1px solid #767171;
+                width: 310px;
+                box-sizing: border-box;
+                background-color: #fff;
+                position: fixed;
+                top: calc(50% - 67.5px);
+                left: calc(50% - 65px);
+            }
+            .message.overlay .container .title {
+                background-color: #F2F2F2;
+                border-bottom: 1px solid #767171;
+                padding: 5px 12px;
+                box-sizing: border-box;
+                font-size: 1rem;
+                font-weight: 600;
+            }
+            .message.overlay .container .body {
+                padding: 5px 10px;
+                border-bottom: 1px solid #767171;
+                box-sizing: border-box;
+            }
+            .message.overlay .container .body>div:last-child {
+                text-align: right;
+                box-sizing: border-box;
+            }
+            .message.overlay .container .foot {
+                text-align: center;
+                padding: 5px 0;
+                box-sizing: border-box;
+            }
+        </style>
         `
     })
     export class ViewModel extends ko.ViewModel {
@@ -373,6 +482,8 @@ module nts.uk.ui.at.kdp013.c {
                 taskList4: ko.observableArray([]),
                 taskList5: ko.observableArray([])
             };
+
+        confirm: KnockoutObservable<ConfirmContent | null> = ko.observable(null);
 
         constructor(public params: Params) {
             super();
@@ -534,6 +645,62 @@ module nts.uk.ui.at.kdp013.c {
             if (!$(`style#${COMPONENT_NAME}`).length) {
                 $('<style>', { id: COMPONENT_NAME, html: style }).appendTo('head');
             }
+
+            _.extend(window, { pp: vm });
+        }
+
+        yes() {
+            const vm = this;
+            const { params } = vm;
+
+            vm.confirm(null);
+            params.close('yes');
+        }
+
+        cancel() {
+            const vm = this;
+            const { params } = vm;
+
+            vm.confirm(null);
+
+            if (!vm.hasError()) {
+                vm.save();
+                params.close('cancel');
+            }
+        }
+
+        close() {
+            const vm = this;
+            const { params } = vm;
+            const { data } = params;
+            const event = ko.unwrap(data);
+
+            $.Deferred()
+                .resolve(true)
+                .then(() => $(vm.$el).find('input, textarea').trigger('blur'))
+                .then(() => {
+                    const { title, extendedProps } = ko.unwrap(data);
+
+                    return _.isEmpty(extendedProps) || (!title && extendedProps.status === 'new');
+                })
+                .then((isNew: boolean | null) => {
+                    if (isNew) {
+                        vm.confirm({ messageId: 'Msg_2094' });
+                    } else {
+                        params.close();
+                    }
+                });
+
+            /*
+            .then((cf: 'yes' | 'cancel' | null) => {
+                if (cf === 'yes') {
+                    event.remove();
+
+                    params.close(cf);
+                } else if (cf === 'cancel') {
+                    vm.save();
+                }
+            })*/
         }
 
         save() {
@@ -575,7 +742,7 @@ module nts.uk.ui.at.kdp013.c {
     }
 
     type Params = {
-        close: () => void;
+        close: (result?: 'yes' | 'cancel' | null) => void;
         remove: () => void;
         mode: KnockoutObservable<boolean>;
         view: KnockoutObservable<'view' | 'edit'>;

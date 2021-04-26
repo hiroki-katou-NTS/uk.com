@@ -2461,7 +2461,7 @@ module nts.uk.ui.components.fullcalendar {
                 });
 
                 if (components) {
-                    const close = () => vm.close();
+                    const close = (result?: 'yes' | 'cancel' | null) => vm.close(result);
                     const remove = () => vm.remove();
                     const update = () => {
                         if (view() !== 'edit') {
@@ -2552,38 +2552,13 @@ module nts.uk.ui.components.fullcalendar {
                     .then(() => view('view'));
             }
 
-            close() {
+            close(result?: 'yes' | 'cancel' | null) {
                 const vm = this;
                 const { params } = vm;
                 const { data, position, view, mutated } = params;
-                const event = ko.unwrap(data);
 
                 $.Deferred()
                     .resolve(true)
-                    .then(() => {
-                        const { title, extendedProps } = event;
-
-                        return $.Deferred()
-                            .resolve(_.isEmpty(extendedProps) || (!title && extendedProps.status === 'new'));
-                    })
-                    .then((isNew: boolean) => {
-                        if (isNew) {
-                            return vm.$dialog.confirm.yesCancel({ messageId: 'Msg_2094' });
-                        }
-
-                        return null;
-                    })
-                    .then((cf: 'yes' | 'cancel' | null) => {
-                        if (cf === 'yes') {
-                            event.remove()
-                        } else if (cf === 'cancel') {
-                            event.setExtendedProp('id', randomId());
-                            event.setExtendedProp('status', 'add');
-                        }
-
-                        // trigger update from parent view
-                        mutated.valueHasMutated();
-                    })
                     .then(() => {
                         // trigger update from parent view
                         mutated.valueHasMutated();
