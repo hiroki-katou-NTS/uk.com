@@ -129,7 +129,7 @@ module nts.uk.at.view.ccg005.d.screenModel {
             const favoriteSpecify = new FavoriteSpecifyData({
               favoriteName: vm.favoriteName(),
               creatorId: __viewContext.user.employeeId,
-              inputDate: moment.utc().toISOString(),
+              inputDate: moment().format(),
               targetSelection: vm.selectedRuleCode(),
               workplaceId: vm.selectedRuleCode() === TargetSelection.WORKPLACE ? vm.workPlaceIdList() : [],
               order: vm.getNewOrder(),
