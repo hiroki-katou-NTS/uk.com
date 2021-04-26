@@ -4,10 +4,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
-import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.Task;
+import nts.uk.screen.at.app.kdw013.a.TaskDto;
 import nts.uk.screen.at.app.kdw013.c.StartWorkInputPanelResult;
-import nts.uk.screen.at.app.kdw013.c.TaskDisplayInfoDto;
 
 /**
  * 
@@ -42,17 +41,7 @@ public class StartWorkInputPanelDto {
 	}
 
 	public static List<TaskDto> setTaskListDto(List<Task> taskList) {
-		return taskList.stream().map(m -> new TaskDto(m.getCode().v(), m.getTaskFrameNo().v(),
-				new ExternalCooperationInfoDto(m.getCooperationInfo().getExternalCode1().orElse(null).toString(),
-						m.getCooperationInfo().getExternalCode2().orElse(null).v(),
-						m.getCooperationInfo().getExternalCode3().orElse(null).v(),
-						m.getCooperationInfo().getExternalCode4().orElse(null).v(),
-						m.getCooperationInfo().getExternalCode5().orElse(null).v()),
-				m.getChildTaskList().stream().map(n -> n.v()).collect(Collectors.toList()),
-				m.getExpirationDate().start(), m.getExpirationDate().end(),
-				new TaskDisplayInfoDto(m.getDisplayInfo().getTaskName().v(), m.getDisplayInfo().getTaskAbName().v(),
-						m.getDisplayInfo().getColor().orElse(null).v(),
-						m.getDisplayInfo().getTaskNote().orElse(null).v())))
+		return taskList.stream().map(m -> TaskDto.toDto(m))
 				.collect(Collectors.toList());
 	}
 }

@@ -3,6 +3,11 @@ package nts.uk.screen.at.app.kdw013.c;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+/**
+ * 
+ * @author tutt
+ *
+ */
 @AllArgsConstructor
 @Getter
 public class TaskDisplayInfoDto {

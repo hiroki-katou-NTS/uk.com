@@ -11,12 +11,15 @@ import javax.ws.rs.Produces;
 import nts.uk.ctx.at.record.app.command.workrecord.workmanagement.AddWorkRecodConfirmationCommand;
 import nts.uk.ctx.at.record.app.command.workrecord.workmanagement.DeleteWorkResultConfirmationCommand;
 import nts.uk.ctx.at.record.app.command.workrecord.workmanagement.DeleteWorkResultConfirmationCommandHandler;
+import nts.uk.ctx.at.record.app.command.workrecord.workrecord.AddAttendanceTimeZoneCommandHandler;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.work.WorkGroup;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskframe.TaskFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.TaskCode;
 import nts.uk.screen.at.app.kdw013.a.AddWorkRecordConfirmation;
 import nts.uk.screen.at.app.kdw013.a.ConfirmerDto;
 import nts.uk.screen.at.app.kdw013.a.DeleteWorkRecordConfirmation;
+import nts.uk.screen.at.app.kdw013.a.TaskDto;
 import nts.uk.screen.at.app.kdw013.c.SelectWorkItem;
 import nts.uk.screen.at.app.kdw013.c.StartWorkInputPanel;
 
@@ -44,6 +47,23 @@ public class KDW013WebService {
 	@Inject
 	private SelectWorkItem selectWorkItem;
 
+	@Inject
+	private AddAttendanceTimeZoneCommandHandler timeZoneCommandHandler;
+
+	// 作業工数を登録する
+	@POST
+	@Path("registerWorkTime")
+	public List<IntegrationOfDaily> registerWorkTime(AddAttendanceTimeZoneParam param) {
+		/*
+		 * return timeZoneCommandHandler.handle(param.getEmployeeId(),
+		 * EditStateSetting.valueOf(String.valueOf(param.getEditStateSetting())),
+		 * 
+		 * 
+		 * );
+		 */
+		return null;
+	}
+
 	// 応援作業別勤怠時間帯を登録する.作業実績の確認を解除する
 	@POST
 	@Path("delete")
@@ -51,9 +71,16 @@ public class KDW013WebService {
 		deleteHandler.handle(param);
 	}
 
+	// A:工数入力.メニュー別OCD
 	// 作業内容を登録する
+	@POST
+	@Path("a/register")
+	public RegisterWorkContentDto registerWorkContent(RegisterWorkContentParam param) {
 
-	// A:工数入力.メニュー別OCD.作業実績の確認を解除するL
+		return null;
+	}
+
+	// 作業実績の確認を解除する
 	@POST
 	@Path("a/delete")
 	public List<ConfirmerDto> deleteConfirmation(DeleteWorkResultConfirmationCommand param) {
@@ -68,8 +95,30 @@ public class KDW013WebService {
 	}
 
 	// 初期起動処理
+	@POST
+	@Path("a/start")
+	public ProcessInitialStartDto startProcess() {
+		ProcessInitialStartDto processStartDto = new ProcessInitialStartDto();
+
+		return processStartDto;
+	}
 
 	// 対象社員を選択する
+	@POST
+	@Path("a/select")
+	public SelectTargetEmployeeDto selectTargetEmployee(SelectTargetEmployeeParam param) {
+
+		return null;
+	}
+
+	// 日付を変更する
+	@POST
+	@Path("a/changeDate")
+	public ChangeDateDto changeDate(ChangeDateParam param) {
+		ChangeDateDto changeDateDto = new ChangeDateDto();
+
+		return changeDateDto;
+	}
 
 	// C:作業入力パネル.メニュー別OCD.作業入力パネルを起動する
 	@POST
