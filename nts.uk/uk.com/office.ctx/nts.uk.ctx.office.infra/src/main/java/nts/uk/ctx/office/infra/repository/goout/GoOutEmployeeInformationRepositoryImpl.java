@@ -33,8 +33,7 @@ public class GoOutEmployeeInformationRepositoryImpl extends JpaRepository
 	@Override
 	public void insert(GoOutEmployeeInformation domain) {
 		OfidtGoOutInfoSya entity = GoOutEmployeeInformationRepositoryImpl.toEntity(domain);
-		entity.setVersion(0);
-		entity.setContractCd(AppContexts.user().contractCode());
+		entity.setCid(AppContexts.user().companyId());
 		this.commandProxy().insert(entity);
 	}
 
