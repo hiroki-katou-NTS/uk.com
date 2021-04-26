@@ -23,4 +23,17 @@ public class AttendanceDetailDisplayContents {
     private String hierarchyCode;
     // 表示社員一覧
     private List<DisplayedEmployee> listDisplayedEmployees;
+
+    private Integer level;
+
+    public AttendanceDetailDisplayContents (String workplaceId,String workplaceCd,String workplaceName,
+                                            String hierarchyCode,List<DisplayedEmployee> listDisplayedEmployees){
+        this.workplaceCd = workplaceCd;
+        this.workplaceId = workplaceId;
+        this.workplaceName = workplaceName;
+        this.hierarchyCode = hierarchyCode;
+        this.listDisplayedEmployees = listDisplayedEmployees;
+        this.level =   hierarchyCode != null ? hierarchyCode.length() / 3 : 0;
+    }
+
 }
