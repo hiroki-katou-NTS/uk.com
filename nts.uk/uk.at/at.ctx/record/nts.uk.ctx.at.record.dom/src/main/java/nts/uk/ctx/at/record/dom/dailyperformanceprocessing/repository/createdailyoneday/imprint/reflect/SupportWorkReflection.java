@@ -797,12 +797,17 @@ public class SupportWorkReflection {
 			// 反映前の応援時刻を取得する
 			Optional<WorkTimeInformation> end = ouenBeforeNew.get().getTimeSheet().getEnd();
 
-			correctMaximumNew = lstCorrectMaximum.stream().filter(x -> x.getTimeSheet().getEnd().get().equals(end.get()))
-					.findFirst();
+			correctMaximumNew = lstCorrectMaximum.stream().filter(x -> {
+				if(!x.getTimeSheet().getEnd().isPresent()) return false;
+				return x.getTimeSheet().getEnd().get().equals(end.get());
+			}).findFirst();
 		} else {
 			Optional<WorkTimeInformation> start = ouenBeforeNew.get().getTimeSheet().getStart();
-			correctMaximumNew = lstCorrectMaximum.stream().filter(x -> x.getTimeSheet().getStart().get().equals(start.get()))
-					.findFirst();
+			correctMaximumNew = lstCorrectMaximum.stream().filter(x -> {
+				if(!x.getTimeSheet().getStart().isPresent()) return false;
+				
+				return x.getTimeSheet().getStart().get().equals(start.get());				
+			}).findFirst();
 		}
 
 		if (correctMaximumNew.isPresent()) {
