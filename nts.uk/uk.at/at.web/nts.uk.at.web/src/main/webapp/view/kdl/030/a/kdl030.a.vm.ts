@@ -22,11 +22,13 @@ module nts.uk.at.view.kdl030.a.viewmodel {
             vm.appIDLst = param.appIDLst;
 			vm.isMultiEmp = param.isMultiEmp;
             //from screen A
-            if (vm.isMultiEmp) {
-                vm.isExpandMode = true;
-            }
-            if (param.employeeInfoLst.length == 1 ) {
-                vm.isExpandMode = !(param.employeeInfoLst[0].scd == __viewContext.user.employeeCode);
+            if (!_.isNil(param.employeeInfoLst)) {
+                if (vm.isMultiEmp) {
+                    vm.isExpandMode = true;
+                }
+                if (param.employeeInfoLst.length == 1) {
+                    vm.isExpandMode = !(param.employeeInfoLst[0].scd == __viewContext.user.employeeCode);
+                }
             }
             //from screenB
             if (!_.isNil(param.appDispInfoStartupOutput)) {
