@@ -16,13 +16,13 @@ module nts.uk.at.view.kaf007_ref.shr.viewmodel {
                 </div>
                 <div class="cell" style="margin-top: 4px;">
                     <!--A6_5 勤務就業選択-->
-                    <button style="height: 70px;" id="workSelect-kaf007" data-bind="text: $i18n('KAF007_24'),
+                    <button style="width: 45px; height: 70px;" id="workSelect-kaf007" data-bind="text: $i18n('KAF007_24'),
                                 click: openKDL003Click, 
                                 enable: isEdit">
                     </button>
                 </div>
-                <div class="cell valign-center">
-                    <div class="valign-center" style="margin: 3px 5px; height: 32px">
+                <div class="cell valign-center" style="padding-left: 15px; padding-bottom: 5px">
+                    <div class="valign-center" style="margin: 0px 5px; height: 32px">
                         <!--A6_2 勤務種類名-->
                         <div class="cell valign-center">
                             <span data-bind="text: appWorkChange.workTypeCode"></span>
@@ -32,7 +32,7 @@ module nts.uk.at.view.kaf007_ref.shr.viewmodel {
                     </div>
                     <div class="valign-center" style="margin: 3px 5px; height: 32px">
                         <!--A6_4 就業時間帯名-->
-                        <div class="cell valign-center">
+                        <div class="cell valign-center" style="padding-top: 15px">
                             <span data-bind="text: appWorkChange.workTimeCode"></span>
                             <span data-bind="text: ' '"></span>
                             <span data-bind="text: appWorkChange.workTimeName"></span>

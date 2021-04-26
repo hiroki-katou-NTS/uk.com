@@ -12,7 +12,7 @@ module nts.uk.at.view.kaf010.shr.work_info.viewmodel {
 				<div class="valign-center control-group"
 					data-bind="text: $i18n('KAF010_35'), ntsFormLabel:{required: true}"></div>
 			</div>
-			<div class="cell valign-top" data-bind="if: true" style="width: 40px;">
+			<div class="cell valign-top" data-bind="if: true" style="width: 45px;">
 				<!--A4_7 選択ボタン-->
 				<button tabindex="7" class="workSelectKAF010"
 				data-bind="enable: mode() != 3, click : openDialogKdl003, text: $i18n('KAF010_36')"></button>
