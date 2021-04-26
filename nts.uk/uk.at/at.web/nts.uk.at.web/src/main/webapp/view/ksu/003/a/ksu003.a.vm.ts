@@ -2295,9 +2295,9 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			}
 			
 			if(detailColumns.length < 24 ){
-				self.addColumn(1, detailContent, width);
+				self.addColumn(1, startHours, detailColumns,detailHeaderDs,detailHeaders, width);
 				if(self.timeRange > 24){
-					self.addColumn(25, detailContent, width);
+					self.addColumn(25, startHours + 24, detailColumns,detailHeaderDs,detailHeaders, width);
 				}
 			}
 
@@ -5709,32 +5709,32 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					$(".xcell").removeClass("x-error");
 		}
 		
-		addColumn(index : any, detailContent : any, width : any){
+		addColumn(index : any, sh : any, detailColumns : any,detailHeaderDs : any,detailHeaders : any, width : any){
 			let self =this, y = self.dispStartHours;
-			detailContent.columns[index] = { key: (y).toString() + "_", width: width, headerText: "", visible: true  };
-			detailContent.columns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
-			detailContent.columns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
-			detailContent.columns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
-			detailContent.columns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
-			detailContent.columns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
-			detailContent.columns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
-			detailContent.columns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
-			detailContent.columns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
-			detailContent.columns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
-			detailContent.columns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
-			detailContent.columns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
-			detailContent.columns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
-			detailContent.columns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
-			detailContent.columns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
-			detailContent.columns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
-			detailContent.columns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
-			detailContent.columns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
-			detailContent.columns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
-			detailContent.columns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
-			detailContent.columns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
-			detailContent.columns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
-			detailContent.columns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
-			detailContent.columns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
+			detailColumns[index] = { key: (y).toString() + "_", width: width, headerText: "", visible: true  };
+			detailColumns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
+			detailColumns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
+			detailColumns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
+			detailColumns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
+			detailColumns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
+			detailColumns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
+			detailColumns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
+			detailColumns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
+			detailColumns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
+			detailColumns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
+			detailColumns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
+			detailColumns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
+			detailColumns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
+			detailColumns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
+			detailColumns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
+			detailColumns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
+			detailColumns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
+			detailColumns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
+			detailColumns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
+			detailColumns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
+			detailColumns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
+			detailColumns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
+			detailColumns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
 		}
 
 		/** A1_4 - Close modal */
