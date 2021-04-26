@@ -561,7 +561,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
         $('.legend-item-symbol').first().css('border', '1px groove').height(16).width(16);
         $('.legend-item').css('margin-bottom', '5px');
       });
-      vm.selectedDate(moment().format('YYYYMMDD'));
+      vm.selectedDate(moment.utc().format('YYYYMMDD'));
       vm.toStartScreen();
       vm.initResizeable(vm);
       vm.initPopupArea();
@@ -1115,7 +1115,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
       vm.searchValue('');
 
       //reset selected date to today
-      vm.selectedDate(moment().format('YYYYMMDD'));
+      vm.selectedDate(moment.utc().format('YYYYMMDD'));
 
       //reset pagination
       vm.currentPage(0);
