@@ -1,4 +1,5 @@
 module nts.uk.ui.at.kdp013.share {
+    const { countHalf } = nts.uk.text;
 
     @handler({
         bindingName: 'description'
@@ -20,9 +21,11 @@ module nts.uk.ui.at.kdp013.share {
             const subscribe = ($value: string) => {
                 const $name = ko.unwrap(name);
                 // get from constraint
-                const maxLength = 10;
+                const { primitiveValueConstraints } = __viewContext;
+                const primitive = primitiveValueConstraints[constraint];
+                const maxLength = (primitive || { maxLength: 9999 }).maxLength || 9999;
 
-                if (!$value || $value.length > maxLength) {
+                if (!$value || countHalf($value) > maxLength) {
                     if (ko.isObservable(hasError)) {
                         hasError(true);
                     }
@@ -43,6 +46,13 @@ module nts.uk.ui.at.kdp013.share {
                     raw($value);
                 }
             };
+
+            viewModel
+                .$validate
+                .constraint(constraint)
+                .then((value: vm.Constraint) => {
+                    console.log(value);
+                });
 
             value
                 .subscribe(subscribe);

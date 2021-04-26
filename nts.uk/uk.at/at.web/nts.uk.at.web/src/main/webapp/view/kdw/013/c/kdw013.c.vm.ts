@@ -284,6 +284,7 @@ module nts.uk.ui.at.kdp013.c {
                         <td data-bind="i18n: 'C1_13'"></td>
                         <td><div data-bind="
                                 dropdown: $component.model.task2,
+                                name: 'GET_FROM_DOMAIN',
                                 items: $component.combobox.taskList2
                             "></div></td>
                     </tr>
@@ -291,6 +292,7 @@ module nts.uk.ui.at.kdp013.c {
                         <td data-bind="i18n: 'C1_16'"></td>
                         <td><div data-bind="
                                 dropdown: $component.model.task3,
+                                name: 'GET_FROM_DOMAIN',
                                 items: $component.combobox.taskList3
                             "></div></td>
                     </tr>
@@ -298,6 +300,7 @@ module nts.uk.ui.at.kdp013.c {
                         <td data-bind="i18n: 'C1_19'"></td>
                         <td><div data-bind="
                                 dropdown: $component.model.task4,
+                                name: 'GET_FROM_DOMAIN',
                                 items: $component.combobox.taskList4
                             "></div></td>
                     </tr>
@@ -305,6 +308,7 @@ module nts.uk.ui.at.kdp013.c {
                         <td data-bind="i18n: 'C1_22'"></td>
                         <td><div data-bind="
                                 dropdown: $component.model.task5,
+                                name: 'GET_FROM_DOMAIN',
                                 items: $component.combobox.taskList5
                             "></div></td>
                     </tr>
@@ -324,7 +328,7 @@ module nts.uk.ui.at.kdp013.c {
                             <div data-bind="
                                     description: $component.model.descriptions,
                                     name: 'KDW013_29', 
-                                    constraint: '',
+                                    constraint: 'TaskNote',
                                     hasError: $component.errors.description
                                 "></div>
                         </td>
@@ -373,21 +377,23 @@ module nts.uk.ui.at.kdp013.c {
         constructor(public params: Params) {
             super();
 
-            this.hasError = ko.computed({
-                read: () => {
-                    const errors = ko.toJS(this.errors);
+            this.hasError = ko
+                .computed({
+                    read: () => {
+                        const errors = ko.toJS(this.errors);
 
-                    return !!errors.time || !!errors.description || !!errors.dropdown || !!errors.workplace;
-                },
-                write: (value: boolean) => {
-                    this.errors.time(value);
-                    this.errors.dropdown(value);
-                    this.errors.workplace(value);
-                    this.errors.description(value);
-                }
-            });
+                        return !!errors.time || !!errors.description || !!errors.dropdown || !!errors.workplace;
+                    },
+                    write: (value: boolean) => {
+                        this.errors.time(value);
+                        this.errors.dropdown(value);
+                        this.errors.workplace(value);
+                        this.errors.description(value);
+                    }
+                })
+                .extend({ rateLimit: 250 });
 
-            this.model.timeRange.subscribe(({ start, end }) => { console.log(start, end) });
+            // this.model.timeRange.subscribe(({ start, end }) => { console.log(start, end) });
         }
 
         mounted() {
@@ -443,7 +449,7 @@ module nts.uk.ui.at.kdp013.c {
 
                         return null;
                     })
-                    .then((params: StartWorkInputParam | null) => !!params ? vm.$ajax('at', API.START, params) : null)
+                    .then((params: StartWorkInputParam | null) => !!params ? null : null) //vm.$ajax('at', API.START, params) : null)
                     .then((response: StartWorkInputPanelDto | null) => {
                         if (response) {
                             const { taskList1, taskList2, taskList3, taskList4, taskList5 } = vm.combobox;
@@ -480,9 +486,18 @@ module nts.uk.ui.at.kdp013.c {
                 disposeWhenNodeIsRemoved: $el
             });
 
+            // update popup size
+            hasError
+                .subscribe((has) => {
+                    setTimeout(() => {
+                        position.valueHasMutated();
+                    }, 200);
+                });
+
             position
                 .subscribe((p: any) => {
                     if (!p) {
+                        hasError(false);
                         cache.view = 'view';
                     }
 
