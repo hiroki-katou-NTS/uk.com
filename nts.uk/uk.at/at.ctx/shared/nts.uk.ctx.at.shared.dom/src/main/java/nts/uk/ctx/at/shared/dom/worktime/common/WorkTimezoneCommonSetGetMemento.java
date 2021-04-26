@@ -26,7 +26,7 @@ public interface WorkTimezoneCommonSetGetMemento {
 	 *
 	 * @return the interval set
 	 */
-	 IntervalTimeSetting getIntervalSet();
+//	 IntervalTimeSetting getIntervalSet();
 
 	/**
 	 * Gets the sub hol time set.

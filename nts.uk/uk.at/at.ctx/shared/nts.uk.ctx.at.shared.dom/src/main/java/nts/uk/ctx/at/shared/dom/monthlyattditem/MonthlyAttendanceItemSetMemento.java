@@ -70,4 +70,11 @@ public interface MonthlyAttendanceItemSetMemento {
 	 * @param nameLine the new primitiveValue
 	 */
 	void setPrimitiveValue(Optional<PrimitiveValueOfAttendanceItem> primitiveValue);
+	
+	/**
+	 * Sets the display method.
+	 *
+	 * @param displayMonthResultsMethod the new display method
+	 */
+	void setTwoMonthlyDisplay(DisplayMonthResultsMethod twoMonthlyDisplay);
 }

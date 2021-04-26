@@ -20,6 +20,7 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ApproveRootStatusForEmpImport;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.enums.ApprovalStatusForEmployee;
+import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.AttendanceLeavingGateOfDaily;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.finddata.IFindDataDCRecord;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.errorcheck.DailyRecordCreateErrorAlermService;
 import nts.uk.ctx.at.record.dom.divergence.time.service.DivTimeSysFixedCheckService;
@@ -53,12 +54,14 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.TypeCheckWorkRecord;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.algorithm.StatusOfEmployeeAdapterAl;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.algorithm.WorkPlaceHistImportAl;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.algorithm.WorkPlaceIdAndPeriodImportAl;
+import nts.uk.ctx.at.record.dom.workrecord.errorsetting.algorithm.ExitStampIncorrectOrderCheck;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.Identification;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.repository.IdentificationRepository;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.ApprovalProcess;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.ApprovalProcessRepository;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.IdentityProcess;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.IdentityProcessRepository;
+import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.adapter.attendanceitemname.AttendanceItemNameAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.attendanceitemname.MonthlyAttendanceItemNameDto;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.AlarmListCheckInfor;
@@ -67,9 +70,14 @@ import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.ExtractionAlarmPeriod
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.ExtractionResultDetail;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.ResultOfEachCondition;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.converter.DailyRecordShareFinder;
+import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrame;
+import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeDivergenceWithCalculation;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeDivergenceWithCalculationMinusExist;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.service.AttendanceItemConvertFactory;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
@@ -79,9 +87,14 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.E
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateSetting;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.SystemFixedErrorAlarm;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.holidayworktime.HolidayWorkFrameTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.overtimehours.clearovertime.FlexTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.CalculationState;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.outsideworktime.OverTimeFrameTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.deviationtime.deviationtimeframe.CheckExcessAtr;
+import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrame;
+import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.LaborContractTime;
 import nts.uk.ctx.at.shared.dom.workingcondition.PersonalWorkCategory;
 import nts.uk.ctx.at.shared.dom.workingcondition.SingleDaySchedule;
@@ -99,6 +112,7 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
@@ -165,6 +179,14 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 	private WorkingConditionItemRepository workConditionItemRepo;
 	@Inject
 	private DivTimeSysFixedCheckService divTimeCheckService;
+	@Inject
+	private ExitStampIncorrectOrderCheck exitStampIncorrectOrderCheck;
+	@Inject
+	private OvertimeWorkFrameRepository overtimeWorkFrameRepository;
+	@Inject
+	private WorkdayoffFrameRepository workDayOffFrameRepo;
+
+	
 	@Override
 	public void extractDailyCheck(String cid, List<String> lstSid, DatePeriod dPeriod, 
 			String errorDailyCheckId, List<String> extractConditionWorkRecord,
@@ -983,6 +1005,7 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 		List<WorkType> listWorkType = prepareData.getListWorkType();
 		List<WorkTimeSetting> listWorktime = prepareData.getListWorktime();
 		List<MonthlyAttendanceItemNameDto> lstItemDay = prepareData.getLstItemDay();
+		
 		String alarmMessage = new String();
 		String alarmTarget = new String();
 		
@@ -1095,14 +1118,28 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 					break;
 				// NO =8： 打刻順序不正
 				case MISS_ORDER_STAMP:
-				case GATE_MISS_ORDER_STAMP:
 					lstDailyError = dailyAlermService.stampIncorrectOrderAlgorithm(integra);
-					if(lstDailyError.isEmpty()) break;				
+					if(lstDailyError.isEmpty()) break;
 					itemName = getItemNameWithValue(lstDailyError, integra, lstItemDay);
 					if(itemName.isEmpty()) break;
 					alarmMessage = TextResource.localize("KAL010_81", itemName);
-					
-					alarmTarget = TextResource.localize("KAL010_611");
+					alarmTarget = TextResource.localize(itemName);
+				case GATE_MISS_ORDER_STAMP:
+					String companyId = AppContexts.user().companyId();
+					AttendanceLeavingGateOfDaily attendanceLeavingGateOfDaily = integra.getAttendanceLeavingGate()
+							.isPresent()
+									? new AttendanceLeavingGateOfDaily(sid,
+											baseDate, integra.getAttendanceLeavingGate().get())
+									: null;
+					TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance = new TimeLeavingOfDailyPerformance(sid,
+							baseDate, integra.getAttendanceLeave().orElse(null));
+					lstDailyError = exitStampIncorrectOrderCheck.exitStampIncorrectOrderCheck(companyId, sid, baseDate,
+							attendanceLeavingGateOfDaily, timeLeavingOfDailyPerformance);
+					if(lstDailyError.isEmpty()) break;				
+					itemName = getItemNameWithValue(lstDailyError, integra, lstItemDay);
+					if(itemName.isEmpty()) break;
+					alarmMessage = TextResource.localize("KAL010_82", itemName);
+					alarmTarget = TextResource.localize(itemName);
 					break;
 					
 				case MISS_HOLIDAY_STAMP:
@@ -1279,16 +1316,40 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 					break;
 					
 				case OVER_APP_INPUT:
-					
-					List<EmployeeDailyPerError> lstOtError = new ArrayList<>();
+					List<ErrorInfo> lstErrorInfo = new ArrayList<>();
 					//残業時間実績超過
-					lstOtError = integra.getErrorList(sid, 
-							baseDate,
-							SystemFixedErrorAlarm.OVER_TIME_EXCESS,
-							CheckExcessAtr.OVER_TIME_EXCESS);
-					if(!lstOtError.isEmpty()) {
-						
+					ErrorInfo errorOt = this.checkOtTimeOver(integra, lstItemDay);
+					if(!errorOt.str1.isEmpty()) {
+						lstErrorInfo.add(errorOt);
 					}
+					//休出時間実績超過
+					ErrorInfo errorHw = this.checkHolidayWorkTimeOver(integra);
+					if(!errorHw.str1.isEmpty()) {
+						lstErrorInfo.add(errorHw);
+					}
+					//深夜時間実績超過
+					ErrorInfo errorMidNight = this.checkMidnight(integra, lstItemDay);
+					if(!errorMidNight.str1.isEmpty()) {
+						lstErrorInfo.add(errorMidNight);
+					}					
+					//フレックス時間超過チェック
+					ErrorInfo errorFlex = this.checkFlex(integra, lstItemDay);
+					if(!errorFlex.str1.isEmpty()) {
+						lstErrorInfo.add(errorFlex);
+					}
+					lstErrorInfo.stream().forEach(x -> {
+						this.createExtractAlarm(sid,
+								baseDate,
+								listResultCond,
+								itemData.getFixConWorkRecordName().v(),
+								x.str1,
+								Optional.ofNullable(item.getMessage().v()),
+								x.str2,
+								String.valueOf(item.getFixConWorkRecordNo().value),
+								AlarmListCheckType.FixCheck,
+								getWplByListSidAndPeriod);
+					});
+					
 					break;
 					
 				case MULTI_WORK_TIMES:
@@ -1334,6 +1395,300 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 			}
 		}
 		return new OutputCheckResult(listResultCond, listAlarmChk);
+	}
+	
+	private ErrorInfo checkFlex(IntegrationOfDaily integra,
+			List<MonthlyAttendanceItemNameDto> lstItemDay) {
+		String alarmMessage = "";
+		String alarmTarget = "";
+		List<EmployeeDailyPerError>  lstFlexError =  integra.getErrorList(integra.getEmployeeId(), 
+				integra.getYmd(),
+				SystemFixedErrorAlarm.FLEX_OVER_TIME,
+				CheckExcessAtr.FLEX_OVER_TIME);
+		
+		if(lstFlexError.isEmpty()) return new ErrorInfo(alarmMessage, alarmTarget);
+		
+		TimeDivergenceWithCalculationMinusExist flexTimeData = integra.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily()
+				.getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().getFlexTime().getFlexTime();
+		String strNameItem = "";
+		for(EmployeeDailyPerError flexError : lstFlexError) {
+			strNameItem = lstItemDay.stream().filter(x -> flexError.getAttendanceItemList().get(0) == x.getAttendanceItemId()).findFirst().isPresent() ?
+					lstItemDay.stream().filter(x -> flexError.getAttendanceItemList().get(0) == x.getAttendanceItemId()).findFirst().get().getAttendanceItemName() : "未登録";					
+		}
+		AttendanceTimeOfExistMinus flexTime = flexTimeData.getTime();
+		String strFlectTime = flexTime.hour() + ":" + (flexTime.minute() < 10 ? "0" + flexTime.minute() : flexTime.minute());
+		AttendanceTimeOfExistMinus calFlexTime = flexTimeData.getCalcTime();
+		String strCalFlexTime = calFlexTime.hour() + ":" + (calFlexTime.minute() < 10 ? "0" + calFlexTime.minute() : calFlexTime.minute());
+		
+		alarmMessage = TextResource.localize("KAL010_603", strNameItem, strCalFlexTime, strFlectTime);
+		alarmTarget = TextResource.localize("KAL010_620", strNameItem, strFlectTime);
+				
+		 return new ErrorInfo(alarmMessage, alarmTarget);
+	}
+	
+	/**
+	 * 深夜時間実績超過
+	 * @param integra
+	 * @param lstItemDay
+	 * @return
+	 */
+	private ErrorInfo checkMidnight(IntegrationOfDaily integra,
+			List<MonthlyAttendanceItemNameDto> lstItemDay) {
+		String alarmMessage = "";
+		String alarmTarget = "";
+		List<EmployeeDailyPerError> lstMidnightError = integra.getErrorList(integra.getEmployeeId(), 
+				integra.getYmd(),
+				SystemFixedErrorAlarm.MIDNIGHT_EXCESS,
+				CheckExcessAtr.MIDNIGHT_EXCESS);
+		if(lstMidnightError.isEmpty()) return new ErrorInfo(alarmMessage, alarmTarget);
+		
+		for(EmployeeDailyPerError midnighError : lstMidnightError) {
+			for(int midnighItemID : midnighError.getAttendanceItemList()) {
+				AttendanceTime midnighData = null; 
+				AttendanceTime calMidnighData  = null;
+				
+				//外深夜時間
+				if(midnighItemID == 563) {
+					midnighData = integra.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily()
+							.getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getExcessOfStatutoryMidNightTime().getTime().getTime();
+					calMidnighData =  integra.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily()
+							.getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getExcessOfStatutoryMidNightTime().getTime().getCalcTime();
+					
+				} else if (midnighItemID == 561) { //内深夜時間
+					midnighData = integra.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily()
+							.getTotalWorkingTime().getWithinStatutoryTimeOfDaily().getWithinStatutoryMidNightTime().getTime().getTime();
+					calMidnighData =  integra.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily()
+							.getTotalWorkingTime().getWithinStatutoryTimeOfDaily().getWithinStatutoryMidNightTime().getTime().getCalcTime();
+					
+				}				
+				String strMidnighData = midnighData.hour() + ":" + (midnighData.minute() < 10 ? "" : "0") + midnighData.minute();
+				String strCalMidnighData = calMidnighData.hour() + ":" + (calMidnighData.minute() < 10 ? "" : "0") + calMidnighData.minute();
+				String itemName = lstItemDay.stream().filter(x -> x.getAttendanceItemId() == midnighItemID).findFirst().isPresent() ?
+						lstItemDay.stream().filter(x -> x.getAttendanceItemId() == midnighItemID).findFirst().get().getAttendanceItemName() : "未登録";
+				
+				alarmMessage += "\n" + TextResource.localize("KAL010_603", itemName, strCalMidnighData, strMidnighData);
+				alarmTarget += "\n" +  TextResource.localize("KAL010_620", itemName, strCalMidnighData);
+			}
+		}
+		
+		return new ErrorInfo(alarmMessage, alarmTarget);
+	}
+	
+	/**
+	 * 休出時間実績超過
+	 * @param integra
+	 * @param lstItemDay
+	 * @return
+	 */
+	private ErrorInfo checkHolidayWorkTimeOver(IntegrationOfDaily integra) {
+		String alarmMessage = "";
+		String alarmTarget = "";
+		List<EmployeeDailyPerError> lstHwError =  integra.getErrorList(integra.getEmployeeId(), 
+				integra.getYmd(),
+				SystemFixedErrorAlarm.REST_TIME_EXCESS,
+				CheckExcessAtr.REST_TIME_EXCESS);
+		if(lstHwError.isEmpty()) return new ErrorInfo(alarmMessage, alarmTarget);
+		
+		List<HolidayWorkFrameTime> lstHolidayWorkTimeData = integra.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily()
+				.getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getWorkHolidayTime().get().getHolidayWorkFrameTime();
+		List<WorkdayoffFrame> lstHWtimeFrameName = workDayOffFrameRepo.findByUseAtr(AppContexts.user().companyId(), NotUseAtr.USE.value);
+		List<Integer> lstHolidayWorkItemId = Arrays.asList(266, 271, 276, 281, 286, 291, 296, 301, 306, 311);
+		List<Integer> lstTranferTimeItemId = Arrays.asList(267, 272, 277, 282, 287, 292, 297, 302, 307, 312);
+		for(EmployeeDailyPerError hwError: lstHwError) {
+			for(int itemId : hwError.getAttendanceItemList()) {
+				HolidayWorkFrameTime hwFrameData = null;
+				String strHwFrameName = "";
+				switch (itemId) {
+				case 266:
+					hwFrameData = lstHolidayWorkTimeData.stream().filter(x -> x.getHolidayFrameNo().v() == 1).findFirst().get();
+					strHwFrameName = lstHWtimeFrameName.stream().filter(x -> x.getWorkdayoffFrNo().v().intValue() == 1).findFirst().isPresent() ?
+							lstHWtimeFrameName.stream().filter(x -> x.getWorkdayoffFrNo().v().intValue() == 1).findFirst().get().getWorkdayoffFrName().v() : "未登録";
+					break;
+				case 271:
+					hwFrameData = lstHolidayWorkTimeData.stream().filter(x -> x.getHolidayFrameNo().v() == 2).findFirst().get();
+					strHwFrameName = lstHWtimeFrameName.stream().filter(x -> x.getWorkdayoffFrNo().v().intValue() == 2).findFirst().isPresent() ?
+							lstHWtimeFrameName.stream().filter(x -> x.getWorkdayoffFrNo().v().intValue() == 2).findFirst().get().getWorkdayoffFrName().v() : "未登録";
+					break;
+				case 276:
+					hwFrameData = lstHolidayWorkTimeData.stream().filter(x -> x.getHolidayFrameNo().v() == 3).findFirst().get();
+					strHwFrameName = lstHWtimeFrameName.stream().filter(x -> x.getWorkdayoffFrNo().v().intValue() == 3).findFirst().isPresent() ?
+							lstHWtimeFrameName.stream().filter(x -> x.getWorkdayoffFrNo().v().intValue() == 3).findFirst().get().getWorkdayoffFrName().v() : "未登録";
+					break;
+				case 281:
+					hwFrameData = lstHolidayWorkTimeData.stream().filter(x -> x.getHolidayFrameNo().v() == 4).findFirst().get();
+					strHwFrameName = lstHWtimeFrameName.stream().filter(x -> x.getWorkdayoffFrNo().v().intValue() == 4).findFirst().isPresent() ?
+							lstHWtimeFrameName.stream().filter(x -> x.getWorkdayoffFrNo().v().intValue() == 4).findFirst().get().getWorkdayoffFrName().v() : "未登録";
+					break;
+				case 286:
+					hwFrameData = lstHolidayWorkTimeData.stream().filter(x -> x.getHolidayFrameNo().v() == 5).findFirst().get();
+					strHwFrameName = lstHWtimeFrameName.stream().filter(x -> x.getWorkdayoffFrNo().v().intValue() == 5).findFirst().isPresent() ?
+							lstHWtimeFrameName.stream().filter(x -> x.getWorkdayoffFrNo().v().intValue() == 5).findFirst().get().getWorkdayoffFrName().v() : "未登録";
+					break;
+				case 291:
+					hwFrameData = lstHolidayWorkTimeData.stream().filter(x -> x.getHolidayFrameNo().v() == 6).findFirst().get();
+					strHwFrameName = lstHWtimeFrameName.stream().filter(x -> x.getWorkdayoffFrNo().v().intValue() == 6).findFirst().isPresent() ?
+							lstHWtimeFrameName.stream().filter(x -> x.getWorkdayoffFrNo().v().intValue() == 6).findFirst().get().getWorkdayoffFrName().v() : "未登録";
+					break;
+				case 296:
+					hwFrameData = lstHolidayWorkTimeData.stream().filter(x -> x.getHolidayFrameNo().v() == 7).findFirst().get();
+					strHwFrameName = lstHWtimeFrameName.stream().filter(x -> x.getWorkdayoffFrNo().v().intValue() == 7).findFirst().isPresent() ?
+							lstHWtimeFrameName.stream().filter(x -> x.getWorkdayoffFrNo().v().intValue() == 7).findFirst().get().getWorkdayoffFrName().v() : "未登録";
+					break;
+				case 301:
+					hwFrameData = lstHolidayWorkTimeData.stream().filter(x -> x.getHolidayFrameNo().v() == 8).findFirst().get();
+					strHwFrameName = lstHWtimeFrameName.stream().filter(x -> x.getWorkdayoffFrNo().v().intValue() == 8).findFirst().isPresent() ?
+							lstHWtimeFrameName.stream().filter(x -> x.getWorkdayoffFrNo().v().intValue() == 8).findFirst().get().getWorkdayoffFrName().v() : "未登録";
+					break;
+				case 306:
+					hwFrameData = lstHolidayWorkTimeData.stream().filter(x -> x.getHolidayFrameNo().v() == 9).findFirst().get();
+					strHwFrameName = lstHWtimeFrameName.stream().filter(x -> x.getWorkdayoffFrNo().v().intValue() == 9).findFirst().isPresent() ?
+							lstHWtimeFrameName.stream().filter(x -> x.getWorkdayoffFrNo().v().intValue() == 9).findFirst().get().getWorkdayoffFrName().v() : "未登録";
+					break;
+				case 311:
+					hwFrameData = lstHolidayWorkTimeData.stream().filter(x -> x.getHolidayFrameNo().v() == 10).findFirst().get();
+					strHwFrameName = lstHWtimeFrameName.stream().filter(x -> x.getWorkdayoffFrNo().v().intValue() == 10).findFirst().isPresent() ?
+							lstHWtimeFrameName.stream().filter(x -> x.getWorkdayoffFrNo().v().intValue() == 10).findFirst().get().getWorkdayoffFrName().v() : "未登録";
+					break;
+				default:
+					break;
+				}
+				//休出枠時間．休出時間．時間
+				AttendanceTime hwTime = hwFrameData.getHolidayWorkTime().get().getTime();
+				String strHwTime = hwTime.hour() + ":" + (hwTime.minute() < 10 ? "" : "0") + hwTime.minute();
+				//休出枠時間．休出時間．計算時間
+				AttendanceTime calHwtime = hwFrameData.getHolidayWorkTime().get().getCalcTime();
+				String strCalHwTime =  calHwtime.hour() + ":" + (calHwtime.minute() < 10 ? "" : "0") + calHwtime.minute();
+				//休出枠時間．振替時間．時間
+				AttendanceTime tranferTime = hwFrameData.getTransferTime().get().getTime();
+				String strTranferTime = tranferTime.hour() + ":" + (tranferTime.minute() < 10 ? "" : "0") + tranferTime.minute();
+				//休出枠時間．振替時間．計算時間
+				AttendanceTime calTranferTime = hwFrameData.getTransferTime().get().getCalcTime();
+				String strCalTranferTime = calTranferTime.hour() + ":" + (calTranferTime.minute() < 10 ? "" : "0") + calTranferTime.minute();
+				alarmMessage += "\n" + TextResource.localize("KAL010_602", 
+						strHwFrameName,
+						strCalHwTime,
+						strCalTranferTime,
+						strHwTime,
+						strTranferTime);
+				alarmTarget +=  "\n" + TextResource.localize("KAL010_619",
+						strHwFrameName,
+						strHwTime,
+						strTranferTime);
+			}
+		}
+		
+		return new ErrorInfo(alarmMessage, alarmTarget);
+	}
+	
+	/**
+	 * 残業時間実績超過
+	 * @param integra
+	 * @param lstItemDay
+	 * @return
+	 */
+	private ErrorInfo checkOtTimeOver(IntegrationOfDaily integra,
+			List<MonthlyAttendanceItemNameDto> lstItemDay) {
+		String alarmMessage = "";
+		String alarmTarget = "";
+		List<EmployeeDailyPerError> lstOtError = integra.getErrorList(integra.getEmployeeId(), 
+				integra.getYmd(),
+				SystemFixedErrorAlarm.OVER_TIME_EXCESS,
+				CheckExcessAtr.OVER_TIME_EXCESS);
+		if(lstOtError.isEmpty()) return new ErrorInfo(alarmMessage, alarmTarget);
+		
+		List<OverTimeFrameTime> lstOtTime = integra.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily()
+				.getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().getOverTimeWorkFrameTime();
+		List<Integer> lstOvetTimeID = Arrays.asList(216, 221, 226, 231, 236, 241, 246, 251, 256, 261);
+		List<Integer> lstTranferID = Arrays.asList(217, 222, 227, 232, 237, 242, 247, 252, 257, 262);
+		List<OvertimeWorkFrame> lstOtNameFrame = overtimeWorkFrameRepository.getOvertimeWorkFrameByFrameByCom(AppContexts.user().companyId(), NotUseAtr.USE.value);
+		
+		for(EmployeeDailyPerError otError : lstOtError) {
+			List<MonthlyAttendanceItemNameDto> lstOtItem = lstItemDay.stream()
+					.filter(x -> otError.getAttendanceItemList().contains(x.getAttendanceItemId())).collect(Collectors.toList());
+			if(lstOtItem.isEmpty()) continue;
+			for(MonthlyAttendanceItemNameDto otItem : lstOtItem) {
+				OverTimeFrameTime otFrameTime = null;
+				String otNameFrame = "";
+				switch (otItem.getAttendanceItemId()) {
+				case 216:
+					otFrameTime = lstOtTime.stream().filter(x -> x.getOverWorkFrameNo().v() == 1).findFirst().get();									
+					otNameFrame = lstOtNameFrame.stream().filter(x -> x.getOvertimeWorkFrNo().v().intValue() == 1).findFirst().isPresent() ? 
+							 lstOtNameFrame.stream().filter(x -> x.getOvertimeWorkFrNo().v().intValue() == 1).findFirst().get().getOvertimeWorkFrName().v() : "未登録";
+										 
+					break;
+				case 221:
+					otFrameTime =  lstOtTime.stream().filter(x -> x.getOverWorkFrameNo().v() == 2).findFirst().get();
+					otNameFrame = lstOtNameFrame.stream().filter(x -> x.getOvertimeWorkFrNo().v().intValue() == 2).findFirst().isPresent() ? 
+							 lstOtNameFrame.stream().filter(x -> x.getOvertimeWorkFrNo().v().intValue() == 2).findFirst().get().getOvertimeWorkFrName().v() : "未登録";
+					break;
+				case 226:
+					otFrameTime = lstOtTime.stream().filter(x -> x.getOverWorkFrameNo().v() == 3).findFirst().get();
+					otNameFrame = lstOtNameFrame.stream().filter(x -> x.getOvertimeWorkFrNo().v().intValue() == 3).findFirst().isPresent() ? 
+							 lstOtNameFrame.stream().filter(x -> x.getOvertimeWorkFrNo().v().intValue() == 3).findFirst().get().getOvertimeWorkFrName().v() : "未登録";
+					break;
+				case 231:
+					otFrameTime = lstOtTime.stream().filter(x -> x.getOverWorkFrameNo().v() == 4).findFirst().get();
+					otNameFrame = lstOtNameFrame.stream().filter(x -> x.getOvertimeWorkFrNo().v().intValue() == 4).findFirst().isPresent() ? 
+							 lstOtNameFrame.stream().filter(x -> x.getOvertimeWorkFrNo().v().intValue() == 4).findFirst().get().getOvertimeWorkFrName().v() : "未登録";
+					break;
+				case 236:
+					otFrameTime = lstOtTime.stream().filter(x -> x.getOverWorkFrameNo().v() == 5).findFirst().get();
+					otNameFrame = lstOtNameFrame.stream().filter(x -> x.getOvertimeWorkFrNo().v().intValue() == 5).findFirst().isPresent() ? 
+							 lstOtNameFrame.stream().filter(x -> x.getOvertimeWorkFrNo().v().intValue() == 5).findFirst().get().getOvertimeWorkFrName().v() : "未登録";
+					break;
+				case 241:
+					otFrameTime = lstOtTime.stream().filter(x -> x.getOverWorkFrameNo().v() == 6).findFirst().get();
+					otNameFrame = lstOtNameFrame.stream().filter(x -> x.getOvertimeWorkFrNo().v().intValue() == 6).findFirst().isPresent() ? 
+							 lstOtNameFrame.stream().filter(x -> x.getOvertimeWorkFrNo().v().intValue() == 6).findFirst().get().getOvertimeWorkFrName().v() : "未登録";
+					break;
+				case 246:
+					otFrameTime = lstOtTime.stream().filter(x -> x.getOverWorkFrameNo().v() == 7).findFirst().get();
+					otNameFrame = lstOtNameFrame.stream().filter(x -> x.getOvertimeWorkFrNo().v().intValue() == 7).findFirst().isPresent() ? 
+							 lstOtNameFrame.stream().filter(x -> x.getOvertimeWorkFrNo().v().intValue() == 7).findFirst().get().getOvertimeWorkFrName().v() : "未登録";
+					break;
+				case 251:
+					otFrameTime =  lstOtTime.stream().filter(x -> x.getOverWorkFrameNo().v() == 8).findFirst().get();
+					otNameFrame = lstOtNameFrame.stream().filter(x -> x.getOvertimeWorkFrNo().v().intValue() == 8).findFirst().isPresent() ? 
+							 lstOtNameFrame.stream().filter(x -> x.getOvertimeWorkFrNo().v().intValue() == 8).findFirst().get().getOvertimeWorkFrName().v() : "未登録";
+					break;
+				case 256:
+					otFrameTime = lstOtTime.stream().filter(x -> x.getOverWorkFrameNo().v() == 9).findFirst().get();
+					otNameFrame = lstOtNameFrame.stream().filter(x -> x.getOvertimeWorkFrNo().v().intValue() == 9).findFirst().isPresent() ? 
+							 lstOtNameFrame.stream().filter(x -> x.getOvertimeWorkFrNo().v().intValue() == 9).findFirst().get().getOvertimeWorkFrName().v() : "未登録";
+					break;
+				case 261:
+					otFrameTime = lstOtTime.stream().filter(x -> x.getOverWorkFrameNo().v() == 10).findFirst().get();
+					otNameFrame = lstOtNameFrame.stream().filter(x -> x.getOvertimeWorkFrNo().v().intValue() == 10).findFirst().isPresent() ? 
+							 lstOtNameFrame.stream().filter(x -> x.getOvertimeWorkFrNo().v().intValue() == 10).findFirst().get().getOvertimeWorkFrName().v() : "未登録";
+					break;
+				default:
+					break;
+				}
+				//残業枠時間．残業時間．時間
+				AttendanceTime otAtTime =  otFrameTime.getOverTimeWork().getTime();
+				String strOtAtTime = otAtTime.hour() + ":" + (otAtTime.minute() < 10 ? "" : "0") + otAtTime.minute();
+				//残業枠時間．残業時間．計算時間
+				AttendanceTime calOtTime = otFrameTime.getOverTimeWork().getCalcTime();
+				String strCalOtTime = calOtTime.hour() + ":" + (calOtTime.minute() < 10 ? "" : "0") + calOtTime.minute();
+				//残業枠時間．振替時間．時間
+				AttendanceTime transferTime = otFrameTime.getTransferTime().getTime();
+				String strTransferTime = transferTime.hour() + ":" + (transferTime.minute() < 10 ? "" : "0") + transferTime.minute();
+				//残業枠時間．振替時間．計算時間
+				AttendanceTime calTransferTime = otFrameTime.getTransferTime().getCalcTime();
+				String strCalTransferTime = calTransferTime.hour() + ":" + (calTransferTime.minute() < 10 ? "" : "0") + calTransferTime.minute();
+				alarmMessage += "\n" + TextResource.localize("KAL010_602", 
+						otNameFrame,
+						strCalOtTime,
+						strCalTransferTime,
+						strOtAtTime,
+						strTransferTime);
+				alarmTarget +=  "\n" + TextResource.localize("KAL010_619",
+						otNameFrame,
+						strOtAtTime,
+						strTransferTime);
+			}
+		}
+		return new ErrorInfo(alarmMessage, alarmTarget);
 	}
 	/**
 	 * 16.曜日別の就業時間帯不正チェック

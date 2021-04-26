@@ -28,6 +28,8 @@ public class ExportData {
 	 */
 	List<String> employeeIdsError;
 	List<String> employeeError;
+	
+	String reportName;
 
 	public boolean hasDataItemOutput() {
 		if (this.employeeIds.isEmpty() || this.employees == null || this.employees.isEmpty()) {
