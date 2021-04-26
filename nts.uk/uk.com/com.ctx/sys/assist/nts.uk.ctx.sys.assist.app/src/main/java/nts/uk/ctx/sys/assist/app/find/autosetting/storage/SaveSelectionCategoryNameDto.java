@@ -1,21 +1,16 @@
 package nts.uk.ctx.sys.assist.app.find.autosetting.storage;
 
+import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import nts.uk.ctx.sys.assist.app.find.autosetting.AbstractCategoryDto;
 
 /**
  * 選択カテゴリ名称保存 DTO
  */
 @Data
-public class SaveSelectionCategoryNameDto {
-	/**
-	 * カテゴリ名称
-	 */
-	private String categoryName;
-	
-	/**
-	 * カテゴリID
-	 */
-	private String categoryId;
+@EqualsAndHashCode(callSuper = true)
+public class SaveSelectionCategoryNameDto extends AbstractCategoryDto {
 	
 	/**
 	 * 方法指定可能
@@ -38,9 +33,21 @@ public class SaveSelectionCategoryNameDto {
 	private int separateCompClassification;
 	
 	/**
-	 * システム種類
+	 * 保存期間
 	 */
-	private int systemType;
+	private String retentionPeriod;
 	
 	private TextResourceHolderDto holder;
+
+	@Builder
+	public SaveSelectionCategoryNameDto(String categoryId, String categoryName, int systemType, int specifiedMethod,
+			int storeRange, int periodDivision, int separateCompClassification, String retentionPeriod, TextResourceHolderDto holder) {
+		super(categoryId, categoryName, systemType);
+		this.specifiedMethod = specifiedMethod;
+		this.storeRange = storeRange;
+		this.periodDivision = periodDivision;
+		this.separateCompClassification = separateCompClassification;
+		this.retentionPeriod = retentionPeriod;
+		this.holder = holder;
+	}
 }

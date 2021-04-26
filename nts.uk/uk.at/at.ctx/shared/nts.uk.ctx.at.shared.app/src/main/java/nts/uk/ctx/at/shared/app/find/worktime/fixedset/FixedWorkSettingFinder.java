@@ -81,7 +81,7 @@ public class FixedWorkSettingFinder {
 			List<FixHalfDayWorkTimezone> lstHalfDayWorkTimezone = opFixedWorkSetting.get().getLstHalfDayWorkTimezone();
 			for(FixHalfDayWorkTimezone lst : lstHalfDayWorkTimezone){
 				Integer count = 1;
-				for (DeductionTime timezone : lst.getRestTimezone().getLstTimezone()){
+				for (DeductionTime timezone : lst.getRestTimezone().getTimezones()){
 					breakDto.add(new BreakTimeDto(count, createBreakTimeField(timezone.getStart(), timezone.getEnd())));
 					count++;
 				}
@@ -89,7 +89,7 @@ public class FixedWorkSettingFinder {
 			
 			if(opFixedWorkSetting.get().getOffdayWorkTimezone() != null){
 				Integer count = 1;
-				for (DeductionTime timezone : opFixedWorkSetting.get().getOffdayWorkTimezone().getRestTimezone().getLstTimezone()){
+				for (DeductionTime timezone : opFixedWorkSetting.get().getOffdayWorkTimezone().getRestTimezone().getTimezones()){
 					breakBreakDto.add(new BreakBeakTimeDto(count, createBreakTimeField(timezone.getStart(), timezone.getEnd())));
 					count++;
 				}

@@ -35,7 +35,7 @@ public class DeletionPatternSettingWebService {
 	
 	@POST
 	@Path("/deletionPattern/initialDisplay")
-	public StartupParameterDto<DeleteCategoryDto, DataDeletionPatternSettingDto> initDisplay() {
+	public StartupParameterDto<DeleteCategoryDto, DataDeletionPatternSettingDto<?>> initDisplay() {
 		return categoryInitDisplayFinder.initDisplay();
 	}
 	

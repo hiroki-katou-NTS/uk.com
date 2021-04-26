@@ -51,6 +51,10 @@ public class MonthlyAttendanceItem extends AggregateRoot {
 
 	@Setter
 	Optional<PrimitiveValueOfAttendanceItem> primitiveValue;
+	
+	// 2件存在した場合の表示方法【追加予定】
+	private DisplayMonthResultsMethod twoMonthlyDisplay;
+
 	/**
 	 * Instantiates a new monthly attendance item.
 	 *
@@ -65,6 +69,7 @@ public class MonthlyAttendanceItem extends AggregateRoot {
 		this.monthlyAttendanceAtr = memento.getMonthlyAttendanceAtr();
 		this.nameLineFeedPosition = memento.getNameLineFeedPosition();
 		this.primitiveValue = memento.getPrimitiveValue();
+		this.twoMonthlyDisplay = memento.getTwoMonthlyDisplay();
 	}
 
 	/**
@@ -81,6 +86,7 @@ public class MonthlyAttendanceItem extends AggregateRoot {
 		memento.setMonthlyAttendanceAtr(this.monthlyAttendanceAtr);
 		memento.setNameLineFeedPosition(this.nameLineFeedPosition);
 		memento.setPrimitiveValue(this.primitiveValue);
+		memento.setTwoMonthlyDisplay(this.twoMonthlyDisplay);
 	}
 
 	/* (non-Javadoc)
