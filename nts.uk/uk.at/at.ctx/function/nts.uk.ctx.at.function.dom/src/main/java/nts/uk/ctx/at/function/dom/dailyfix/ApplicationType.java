@@ -24,25 +24,17 @@ public enum ApplicationType {
 	GO_RETURN_DIRECTLY_APPLICATION(6),
 	/** 休出時間申請 */
 	LEAVE_TIME_APPLICATION(7),
-	/** 打刻申請（外出許可） */
+	/** 打刻申請 */
 	STAMP_APPLICATION(8),
-	/** 打刻申請（出退勤漏れ） */
-	STAMP_NR_APPLICATION(9),
-	/** 打刻申請（打刻取消） */
-	REGISTER_TIME_CARD_DELETE(10),
 	/** 打刻申請（レコーダイメージ） */
-	REGISTER_TIME_CARD_IMAGE(11),
-	/** 打刻申請（その他） */
-	REGISTER_TIME_CARD_OTHER(12),
-	/** 時間年休申請 */
-	ANNUAL_HD_APPLICATION(13),
+	REGISTER_TIME_CARD_IMAGE(9),
+	/** 時間休暇申請 */
+	ANNUAL_HD_APPLICATION(10),
 	/** 遅刻早退取消申請 */
-	EARLY_LEAVE_CANCEL_APPLICATION(14),
+	EARLY_LEAVE_CANCEL_APPLICATION(11),
 	/** 振休振出申請 */
-	COMPLEMENT_LEAVE_APPLICATION(15),
-	/** 連続出張申請 */
-	LONG_BUSINESS_TRIP_APPLICATION(16),
-	/** ３６協定時間申請 */
-	APPLICATION36(17);
+	COMPLEMENT_LEAVE_APPLICATION(12),
+	/** 任意申請 */
+	OPTIONAL_APPLICATION(13);
 	public final int value;
 }

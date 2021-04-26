@@ -118,6 +118,7 @@ module nts.uk.at.view.kdw006.c.viewmodel {
             let self = this;
             let dfd = $.Deferred();
 
+            dfd.resolve();
             service.getAppType().done(function(data: IAppTypeDto) {
                 if (data) {
                     self.appTypeDto(new AppTypeDto(data));

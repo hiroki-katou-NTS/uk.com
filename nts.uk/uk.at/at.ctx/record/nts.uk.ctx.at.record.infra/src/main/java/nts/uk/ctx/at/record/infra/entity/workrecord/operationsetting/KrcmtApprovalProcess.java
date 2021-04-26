@@ -35,12 +35,12 @@ public class KrcmtApprovalProcess extends ContractUkJpaEntity implements Seriali
     @EmbeddedId
     public KrcmtApprovalProcessPk approvalProcessPk;
     
-    /**
-    * 職位ID
-    */
-    @Basic(optional = true)
-    @Column(name = "JOB_TITLE_NOT_BOSS_CHECK")
-    public String jobTitleId;
+//    /**
+//    * 職位ID
+//    */
+//    @Basic(optional = true)
+//    @Column(name = "JOB_TITLE_NOT_BOSS_CHECK")
+//    public String jobTitleId;
     
     /**
     * 日の承認者確認を利用する
@@ -70,12 +70,12 @@ public class KrcmtApprovalProcess extends ContractUkJpaEntity implements Seriali
     }
 
     public ApprovalProcess toDomain() {
-        return new ApprovalProcess(this.approvalProcessPk.cid, this.jobTitleId, 
+        return new ApprovalProcess(this.approvalProcessPk.cid, 
 					        		this.useDailyBossChk, this.useMonthBossChk, 
 					        		supervisorConfirmError == null ? null : EnumAdaptor.valueOf(this.supervisorConfirmError, YourselfConfirmError.class));
     }
     public static KrcmtApprovalProcess toEntity(ApprovalProcess domain) {
-        return new KrcmtApprovalProcess(new KrcmtApprovalProcessPk(domain.getCid()), domain.getJobTitleId(), 
+        return new KrcmtApprovalProcess(new KrcmtApprovalProcessPk(domain.getCid()),
 							        		domain.getUseDailyBossChk(), 
 							        		domain.getUseMonthBossChk(), 
 							        		domain.getSupervisorConfirmError() == null ? null : domain.getSupervisorConfirmError().value);

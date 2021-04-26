@@ -53,6 +53,9 @@ public class KrcmtDaiPerformEdFun extends ContractUkJpaEntity implements Seriali
     @Column(name = "FLEX_DISP_ATR")
     public int flexDispAtr;
     
+    /**
+     * 抽出時にエラーがある場合はエラー参照ダイアログを表示する
+     */
     @Basic(optional = false)
     @Column(name = "CHECK_ERR_REF_DISP")
     public int checkErrRefDisp;

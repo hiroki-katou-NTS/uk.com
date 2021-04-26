@@ -41,6 +41,7 @@ public class JpaMonPerformanceFunRepository extends JpaRepository implements Mon
         KrcmtMonPerformanceFun newMonPerformanceFun = KrcmtMonPerformanceFun.toEntity(domain);
         KrcmtMonPerformanceFun updateMonPerformanceFun = this.queryProxy().find(newMonPerformanceFun.monPerformanceFunPk, KrcmtMonPerformanceFun.class).get();
         if (null == updateMonPerformanceFun) {
+        	this.add(domain);
             return;
         }
         updateMonPerformanceFun.comment = newMonPerformanceFun.comment;

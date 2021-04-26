@@ -11,6 +11,10 @@ module nts.uk.at.view.kdw006.c.service {
 
         getAppType: 'at/function/dailyfix/find',
 
+        getApplicationName: 'at/record/workrecord/operationsetting/getApplicationName',
+
+        getRestrictConfirmEmp: 'at/record/workrecord/operationsetting/getRestrictConfirmEmp',
+
         updateIdentity: 'at/record/workrecord/operationsetting/updateIdentity',
 
         updateApproval: 'at/record/workrecord/operationsetting/updateApproval',
@@ -20,6 +24,10 @@ module nts.uk.at.view.kdw006.c.service {
         updateMonthly: 'at/record/workrecord/operationsetting/updateMonthly',
 
         updateAppType: 'at/function/dailyfix/update',
+
+        updateRestrictConfirmEmp: 'at/record/workrecord/operationsetting/updateRestrictConfirmEmp',
+
+        updateDaiFuncControl: 'at/record/workrecord/operationsetting/updateDaiFuncControl',
         
         getApplicationType: 'at/record/workrecord/operationsetting/findApplicationType',
     };
@@ -44,6 +52,14 @@ module nts.uk.at.view.kdw006.c.service {
         return nts.uk.request.ajax(servicePath.updateMonthly, dispRestric);
     }
 
+    export function updateRestrictConfirmEmp(cm: any): JQueryPromise<any> {
+        return nts.uk.request.ajax(servicePath.updateRestrictConfirmEmp, cm);
+    }
+
+    export function updateDaiFuncControl(cm: any): JQueryPromise<any> {
+        return nts.uk.request.ajax(servicePath.updateDaiFuncControl, cm);
+    }
+
     export function getAppType(): JQueryPromise<any> {
         return nts.uk.request.ajax(servicePath.getAppType);
     }
@@ -63,6 +79,14 @@ module nts.uk.at.view.kdw006.c.service {
 
     export function getMonthly(): JQueryPromise<any> {
         return nts.uk.request.ajax(servicePath.getMonthly);
+    }
+
+    export function getApplicationName(): JQueryPromise<any> {
+        return nts.uk.request.ajax(servicePath.getApplicationName);
+    }
+
+    export function getRestrictConfirmEmp(): JQueryPromise<any> {
+        return nts.uk.request.ajax(servicePath.getRestrictConfirmEmp);
     }
         
     export function getApplicationType(): JQueryPromise<any> {
