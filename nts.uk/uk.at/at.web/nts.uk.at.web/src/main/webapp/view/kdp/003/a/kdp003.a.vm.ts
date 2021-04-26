@@ -100,6 +100,7 @@ module nts.uk.at.kdp003.a {
 				vm.$window.storage(KDP003_SAVE_DATA)
 					.then((data: undefined | StorageData) => {
 						if (data) {
+							
 							// vm.loadEmployees(data);
 
 						}
@@ -371,20 +372,20 @@ module nts.uk.at.kdp003.a {
 			const vm = this;
 			const { baseDate } = ko.toJS(vm.employeeData) as EmployeeListData;
 
-			// if (!baseDate) {
-			// 	return;
-			// }
+			if (!baseDate) {
+				return;
+			}
 
-			// const params = {
-			// 	baseDate: moment(baseDate).toISOString(),
-			// 	companyId: (storage || {}).CID || '',
-			// 	workplaceIds: (storage || {}).WKPID || []
-			// };
+			const params = {
+				baseDate: moment(baseDate).toISOString(),
+				companyId: (storage || {}).CID || '',
+				workplaceIds: (storage || {}).WKPID || []
+			};
 
-			// return vm.$ajax('at', API.EMPLOYEE_LIST, params)
-			// 	.then((data: Employee[]) => {
-			// 		vm.employeeData.employees(data);
-			// 	}) as JQueryPromise<any>;
+			return vm.$ajax('at', API.EMPLOYEE_LIST, params)
+				.then((data: Employee[]) => {
+					vm.employeeData.employees(data);
+				}) as JQueryPromise<any>;
 		}
 
 		setting() {
