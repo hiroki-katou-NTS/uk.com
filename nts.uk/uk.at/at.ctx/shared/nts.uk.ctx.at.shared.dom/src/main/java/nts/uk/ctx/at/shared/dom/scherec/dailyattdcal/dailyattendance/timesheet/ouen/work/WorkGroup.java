@@ -55,6 +55,24 @@ public class WorkGroup implements DomainObject {
 		return workCd2 == null ? null : new WorkCode(workCd2);
 	}
 	
+	public boolean compare(WorkGroup workGroup) {
+		if(this.workCD1.v() != workGroup.getWorkCD1().v())
+			return false;
+		if(this.workCD2.isPresent() != workGroup.workCD2.isPresent() || 
+				this.workCD2.isPresent() ? this.workCD2.get().v() != workGroup.getWorkCD2().get().v() : false)
+			return false;
+		if(this.workCD3.isPresent() != workGroup.workCD3.isPresent() || 
+				this.workCD3.isPresent() ? this.workCD3.get().v() != workGroup.getWorkCD3().get().v() : false)
+			return false;
+		if(this.workCD4.isPresent() != workGroup.workCD4.isPresent() || 
+				this.workCD4.isPresent() ? this.workCD4.get().v() != workGroup.getWorkCD4().get().v() : false)
+			return false;
+		if(this.workCD5.isPresent() != workGroup.workCD5.isPresent() || 
+				this.workCD5.isPresent() ? this.workCD5.get().v() != workGroup.getWorkCD5().get().v() : false)
+			return false;
+		return true;
+	}
+	
 //■Public
 	/**
 	 * @name [1] 作業内容を確認する										
