@@ -60,7 +60,7 @@ public class GetTheWorkYouUseMostRecentlyService {
 			}
 		}
 		
-		workUsageFrequency.sort(Comparator.comparingInt(WorkUsageFrequency::getNumber));
+		workUsageFrequency.sort(Comparator.comparingInt(WorkUsageFrequency::getNumber).reversed());
 		
 		return workUsageFrequency.stream().limit(10).map(c->c.getWorkGroup()).collect(Collectors.toList());
 		
