@@ -36,7 +36,7 @@ public class CreateTableSnapshotTest {
 		
 		val result = CreateTableSnapshot.create(require,alters);
 		
-		val expect = new TableDesign(Healper.TableSnapshot.BASE.apply(alters).get());
+		TableDesign expect = Healper.TableSnapshot.BASE.apply(alters).get();
 		assertThat(result.stream().findFirst().get()).isEqualTo(expect);
 	}
 	
@@ -59,8 +59,8 @@ public class CreateTableSnapshotTest {
 		
 		val result = CreateTableSnapshot.create(require,alters);
 		
-		val applyAlter = new TableDesign(tSnapshot.apply(alters).get());
-		val notApplyAlter = new TableDesign(nottSnapshot);
+		val applyAlter = tSnapshot.apply(alters).get();
+		val notApplyAlter = nottSnapshot;
 		result.forEach(snapshot ->{
 			TableDesign expect;
 			if(snapshot.getId() == "table") {
@@ -97,7 +97,7 @@ public class CreateTableSnapshotTest {
 		
 		val result = CreateTableSnapshot.create(require,alters);
 		
-		val expect = new TableDesign(Healper.TableSnapshot.BASE.apply(alters).get());
+		TableDesign expect = Healper.TableSnapshot.BASE.apply(alters).get();
 		assertThat(result.stream().findFirst().get()).isEqualTo(expect);
 	}
 	
@@ -106,16 +106,14 @@ public class CreateTableSnapshotTest {
 	public void notApply(){
 		List<Alteration> alters = Arrays.asList(Healper.Alteration.builder().changeAlterId("アルターID").build());
 		List<TableSnapshot> snap = Arrays.asList(Healper.TableSnapshot.BASE);
-		new Expectations() {
-			{
+		new Expectations() {{
 				require.getTablesLatest();
 				result = snap;
-			}
-		};
+		}};
 		
 		val result = CreateTableSnapshot.create(require,alters);
 		
-		val expect = new TableDesign(Healper.TableSnapshot.BASE.apply(alters).get());
+		TableDesign expect = Healper.TableSnapshot.BASE.apply(alters).get();
 		assertThat(result.stream().findFirst().get()).isEqualTo(expect);
 	}
 
