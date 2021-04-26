@@ -44,7 +44,7 @@ public class EmpInfoTerminalExportDataSource {
 		
 		return new EmpInfoTerminalExportDataSource(empInfoTerminal.getEmpInfoTerCode().v().toString(), empInfoTerminal.getEmpInfoTerName().v(),
 				empInfoTerminal.getModelEmpInfoTer().name(), empInfoTerminal.getMacAddress().v(), 
-				empInfoTerminal.getIpAddress().isPresent() ? empInfoTerminal.getIpAddress().get().getFullIpAddress() : "",
+				empInfoTerminal.getIpAddress().isPresent() ? empInfoTerminal.getIpAddress().get().toString() : "",
 				empInfoTerminal.getTerSerialNo().isPresent() ? empInfoTerminal.getTerSerialNo().get().v() : "", 
 				workLocation != null ? empInfoTerminal.getCreateStampInfo().getWorkLocationCd().get().v() : "", 
 				workLocation != null ? workLocation.getWorkLocationName().v() : "",

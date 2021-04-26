@@ -11,7 +11,7 @@
 
 .setting_rows {
 	margin-top: 10px;
-	width: 105%;
+	width: 100%;
 }
 
 .setting_time {
@@ -19,11 +19,31 @@
 }
 
 .label_time_tab1 {
-	margin-left: 160px;
+	margin-left: 25px;
 }
 .pad_top_15 {
 	padding-top: 15px;
 }
 .height-30 {
 	height: 30px;
+}
+
+.pl-30 {
+	padding-left: 30px;
+}
+
+.fr-13 {
+	float: right;
+	margin-right: 13px;
+}
+
+.mt-10 {
+	margin-top: 10px !important;
+}
+
+.mt-25 {
+	margin-top: 25px !important;
+}
+.mt-35 {
+	margin-top: 35px !important;
 }

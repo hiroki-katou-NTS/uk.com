@@ -1,15 +1,13 @@
 module nts.uk.at.view.kmk003.a {
-    
-    import EmTimeZoneSetDto = service.model.common.EmTimeZoneSetDto;
+
     import HDWorkTimeSheetSettingDto = service.model.common.HDWorkTimeSheetSettingDto;
     import StampReflectTimezoneDto = service.model.common.StampReflectTimezoneDto;
-    import FixedWorkCalcSettingDto = service.model.common.FixedWorkCalcSettingDto;
     
     import FixOffdayWorkTimezoneDto = service.model.fixedset.FixOffdayWorkTimezoneDto;
     import FixHalfDayWorkTimezoneDto = service.model.fixedset.FixHalfDayWorkTimezoneDto;
     
     import WorkTimezoneCommonSetModel = nts.uk.at.view.kmk003.a.viewmodel.common.WorkTimezoneCommonSetModel;
-    import FixedWorkRestSetModel = nts.uk.at.view.kmk003.a.viewmodel.common.FixedWorkRestSetModel;
+    import CommonRestSettingModel = nts.uk.at.view.kmk003.a.viewmodel.common.CommonRestSettingModel;
     import HDWorkTimeSheetSettingModel = nts.uk.at.view.kmk003.a.viewmodel.common.HDWorkTimeSheetSettingModel;
     import StampReflectTimezoneModel = nts.uk.at.view.kmk003.a.viewmodel.common.StampReflectTimezoneModel;
     import FixedWorkTimezoneSetModel = nts.uk.at.view.kmk003.a.viewmodel.common.FixedWorkTimezoneSetModel;
@@ -23,6 +21,8 @@ module nts.uk.at.view.kmk003.a {
     export module viewmodel {
         export module fixedset {
             
+            import HalfDayWorkSetModel = nts.uk.at.view.kmk003.a.viewmodel.common.HalfDayWorkSetModel;
+
             export class FixOffdayWorkTimezoneModel extends OffdayWorkTimeConverter {
                 restTimezone: FixRestTimezoneSetModel;
                 lstWorkTimezone: KnockoutObservableArray<HDWorkTimeSheetSettingModel>;
@@ -130,8 +130,9 @@ module nts.uk.at.view.kmk003.a {
                 workTimeCode: KnockoutObservable<string>;
                 offdayWorkTimezone: FixOffdayWorkTimezoneModel;
                 commonSetting: WorkTimezoneCommonSetModel;
-                useHalfDayShift: KnockoutObservable<boolean>;
-                fixedWorkRestSetting: FixedWorkRestSetModel;
+                halfDayWorkSet: HalfDayWorkSetModel;
+                commonRestSet: CommonRestSettingModel;
+                // fixedWorkRestSetting: FixedWorkRestSetModel;
                 lstHalfDayWorkTimezone: Array<FixHalfDayWorkTimezoneModel>;
                 lstStampReflectTimezone: Array<StampReflectTimezoneModel>;
                 legalOTSetting: KnockoutObservable<number>;
@@ -144,8 +145,9 @@ module nts.uk.at.view.kmk003.a {
                     self.workTimeCode = ko.observable('');
                     self.offdayWorkTimezone = new FixOffdayWorkTimezoneModel();
                     self.commonSetting = new WorkTimezoneCommonSetModel();
-                    self.useHalfDayShift = ko.observable(false);
-                    self.fixedWorkRestSetting = new FixedWorkRestSetModel();
+                    self.halfDayWorkSet = new HalfDayWorkSetModel();
+                    self.commonRestSet = new CommonRestSettingModel();
+                    // self.fixedWorkRestSetting = new FixedWorkRestSetModel();
                     self.lstHalfDayWorkTimezone = FixHalfDayWorkTimezoneModel.getDefaultData(self.displayMode);
                     self.lstStampReflectTimezone = [];
                     self.legalOTSetting = ko.observable(0);
@@ -198,8 +200,9 @@ module nts.uk.at.view.kmk003.a {
                     this.workTimeCode(data.workTimeCode);                                        
                     this.offdayWorkTimezone.updateData(data.offdayWorkTimezone);
                     this.commonSetting.updateData(data.commonSetting);
-                    this.useHalfDayShift(data.useHalfDayShift);                    
-                    this.fixedWorkRestSetting.updateData(data.fixedWorkRestSetting);                                       
+                    this.halfDayWorkSet.update(data.useHalfDayShift);
+                    this.commonRestSet.updateData(data.commonRestSet);            
+                    // this.fixedWorkRestSetting.updateData(data.fixedWorkRestSetting);                                       
                     this.updateListHalfDay(data.lstHalfDayWorkTimezone);
                     this.updateListStamp(data.lstStampReflectTimezone);
                     this.legalOTSetting(data.legalOTSetting);
@@ -244,11 +247,7 @@ module nts.uk.at.view.kmk003.a {
                 
                 toDto(commonSetting: WorkTimezoneCommonSetModel): FixedWorkSettingDto {
                     let lstHalfDayWorkTimezone: Array<FixHalfDayWorkTimezoneDto>;
-                    if (this.displayMode() == TabMode.DETAIL && this.useHalfDayShift()) {
-                        lstHalfDayWorkTimezone = _.map(this.lstHalfDayWorkTimezone, item => item.toDto());
-                    } else {
-                        lstHalfDayWorkTimezone = this.getHDWtzOneday().toListDto();
-                    }
+                    lstHalfDayWorkTimezone = _.map(this.lstHalfDayWorkTimezone, item => item.toDto());
 
                     let lstStampReflectTimezone: Array<StampReflectTimezoneDto> = _.chain(this.lstStampReflectTimezone).filter((dataModel) => dataModel.startTime() != null && dataModel.endTime() != null).map((dataModel) => dataModel.toDto()).value();
                     
@@ -256,8 +255,9 @@ module nts.uk.at.view.kmk003.a {
                         workTimeCode: this.workTimeCode(),                       
                         offdayWorkTimezone: this.offdayWorkTimezone.toDto(),
                         commonSetting: commonSetting.toDto(),
-                        useHalfDayShift: this.useHalfDayShift(),
-                        fixedWorkRestSetting: this.fixedWorkRestSetting.toDto(),
+                        useHalfDayShift: this.halfDayWorkSet.toDto(),
+                        commonRestSet: this.commonRestSet.toDto(),
+                        // fixedWorkRestSetting: this.fixedWorkRestSetting.toDto(),
                         lstHalfDayWorkTimezone: lstHalfDayWorkTimezone,
                         lstStampReflectTimezone: lstStampReflectTimezone,
                         legalOTSetting: this.legalOTSetting(),
@@ -270,8 +270,9 @@ module nts.uk.at.view.kmk003.a {
                 resetData(isNewMode?:boolean){
                     this.offdayWorkTimezone.resetData();
                     this.commonSetting.resetData();
-                    this.useHalfDayShift(false);
-                    this.fixedWorkRestSetting.resetData();
+                    this.halfDayWorkSet.reset();
+                    this.commonRestSet.resetData();
+                    // this.fixedWorkRestSetting.resetData();
                     this.getHDWtzOneday().resetData();
                     this.getHDWtzMorning().resetData();
                     this.getHDWtzAfternoon().resetData();

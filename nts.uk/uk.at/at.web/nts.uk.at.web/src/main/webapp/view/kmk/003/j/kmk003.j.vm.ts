@@ -10,10 +10,11 @@ module nts.uk.at.view.kmk003.j {
             
             // Screen data 
             dataObject: any;
-            
+
             // Is flow mode
             isManageEntryExit: KnockoutObservable<boolean>;
             isFlow: KnockoutObservable<boolean>;
+            isFlex: KnockoutObservable<boolean>;
             isUseTime2: KnockoutObservable<boolean>;
             isFixedAndUseTime2: KnockoutObservable<boolean>;
             
@@ -21,6 +22,9 @@ module nts.uk.at.view.kmk003.j {
             listPriorityClassification: KnockoutObservableArray<any>;
             listRoundingTimeUnit: KnockoutObservableArray<EnumConstantDto>;
             listFontRearSection: KnockoutObservableArray<any>;
+            // 16.8 from I -> J
+            lateStampExactlyTimeIsLateEarly: KnockoutObservable<boolean>;
+            leaveEarlyStampExactlyTimeIsLateEarly: KnockoutObservable<boolean>;
             
             stampGoWork1Start: KnockoutObservable<number>;
             stampGoWork1End: KnockoutObservable<number>;
@@ -56,8 +60,12 @@ module nts.uk.at.view.kmk003.j {
                 _self.dataObject = null;
                 _self.isManageEntryExit = ko.observable(null);
                 _self.isFlow = ko.observable(null);
+                _self.isFlex = ko.observable(null);
                 _self.isUseTime2 = ko.observable(null);
                 _self.isFixedAndUseTime2 = ko.observable(null);
+
+                _self.lateStampExactlyTimeIsLateEarly = ko.observable(false);
+                _self.leaveEarlyStampExactlyTimeIsLateEarly = ko.observable(false);
                 
                 _self.listPriorityClassification = ko.observableArray([
                     {value: 0, localizedName: nts.uk.resource.getText("KMK003_69")},
@@ -131,6 +139,9 @@ module nts.uk.at.view.kmk003.j {
                     return;
                 }
                 _self.dataObject = dataObject;
+
+                _self.lateStampExactlyTimeIsLateEarly(dataObject.lateStampExactlyTimeIsLateEarly);
+                _self.leaveEarlyStampExactlyTimeIsLateEarly(dataObject.leaveEarlyStampExactlyTimeIsLateEarly);
                 
                 if (dataObject.isManageEntryExit === 1) {
                     _self.isManageEntryExit(true);
@@ -139,6 +150,7 @@ module nts.uk.at.view.kmk003.j {
                 }                
                 _self.isFlow(dataObject.isFlow);
                 _self.isUseTime2(dataObject.isUseTime2);
+                _self.isFlex(dataObject.isFlex);
                 _self.isFixedAndUseTime2(dataObject.isFixedAndUseTime2);
                 
                 _self.listRoundingTimeUnit(dataObject.listRoundingTimeUnit);
@@ -199,7 +211,9 @@ module nts.uk.at.view.kmk003.j {
                     goOutRoundingUnit: _self.goOutRoundingUnit(),
                     goOutFontRearSection: _self.goOutFontRearSection(),
                     turnBackRoundingUnit: _self.turnBackRoundingUnit(),
-                    turnBackFontRearSection: _self.turnBackFontRearSection()
+                    turnBackFontRearSection: _self.turnBackFontRearSection(),
+                    lateStampExactlyTimeIsLateEarly: _self.lateStampExactlyTimeIsLateEarly(),
+                    leaveEarlyStampExactlyTimeIsLateEarly: _self.leaveEarlyStampExactlyTimeIsLateEarly()
                 };
                 // Add worktime mode param 
                 if (_self.isFlow()) {

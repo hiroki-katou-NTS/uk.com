@@ -113,17 +113,21 @@ export class Ccg008AComponent extends Vue {
     public loadData() {
         let self = this;
         // display notif
-        self.$http.post('at', servicePath.getDisplayNotify).then((res: any) => {
-            let data = res.data;
-            console.log(data);
-            if (data && data.visible) {
-                self.checkDisplayNotifi(data);
-            }
-        }).catch((err: any) => {
-
-        });
+        if (self.displayNotifisVissible) {
+            self.$http.post('at', servicePath.getDisplayNotify).then((res: any) => {
+                let data = res.data;
+                console.log(data);
+                if (data && data.visible) {
+                    self.checkDisplayNotifi(data);
+                }
+            }).catch((err: any) => {
+    
+            });   
+        }
         // overtime
-        self.loadOverTimeInfo();
+        if (self.overtime.visible) {
+            self.loadOverTimeInfo();
+        }
         // ktg029
         if (self.timeStatus.visible) {
             self.timeStatus.tableConfigs.loading = true;

@@ -9,7 +9,7 @@ public class ScreenDelDisplayProcessingDto {
 	/**
 	 * List <パターン設定>
 	 */
-	private List<DataDeletionPatternSettingDto> patterns;
+	private List<DataDeletionPatternSettingDto<?>> patterns;
 	
 	/**
 	 * List<システム種類>

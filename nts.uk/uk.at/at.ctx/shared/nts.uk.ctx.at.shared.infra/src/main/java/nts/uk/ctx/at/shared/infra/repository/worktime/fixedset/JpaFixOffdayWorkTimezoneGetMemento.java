@@ -10,8 +10,8 @@ import java.util.stream.Collectors;
 
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.worktime.common.HDWorkTimeSheetSetting;
+import nts.uk.ctx.at.shared.dom.worktime.common.TimezoneOfFixedRestTimeSet;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixOffdayWorkTimezoneGetMemento;
-import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixRestTimezoneSet;
 import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtWtFix;
 
 /**
@@ -36,8 +36,8 @@ public class JpaFixOffdayWorkTimezoneGetMemento implements FixOffdayWorkTimezone
 	 * @see nts.uk.ctx.at.shared.dom.worktime.fixedset.FixOffdayWorkTimezoneGetMemento#getRestTimezone()
 	 */
 	@Override
-	public FixRestTimezoneSet getRestTimezone() {
-		return new FixRestTimezoneSet(new JpaFixedOffDayRestTimeGetMemento(this.entity.getLstKshmtFixedHolRestSet()));
+	public TimezoneOfFixedRestTimeSet getRestTimezone() {
+		return new TimezoneOfFixedRestTimeSet(new JpaFixedOffDayRestTimeGetMemento(this.entity.getLstKshmtFixedHolRestSet()));
 	}
 
 	/* (non-Javadoc)
