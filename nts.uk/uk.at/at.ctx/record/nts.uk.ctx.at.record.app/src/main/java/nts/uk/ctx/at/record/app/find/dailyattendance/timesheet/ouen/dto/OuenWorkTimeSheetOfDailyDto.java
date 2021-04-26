@@ -28,16 +28,6 @@ public class OuenWorkTimeSheetOfDailyDto extends AttendanceItemCommon {
 	
 	@AttendanceItemLayout(layout = LAYOUT_U, jpPropertyName = FAKED, indexField = DEFAULT_INDEX_FIELD_NAME)
 	private List<OuenWorkTimeSheetOfDailyAttendanceDto> ouenTimeSheet;
-
-	@Override
-	public AttendanceItemDataGate newInstanceOf(String path) {
-		switch (path) {
-		case FAKED:
-			return new OuenWorkTimeSheetOfDailyAttendanceDto();
-		default:
-			return null;
-		}
-	}
 	
 	
 	@Override
@@ -102,26 +92,28 @@ public class OuenWorkTimeSheetOfDailyDto extends AttendanceItemCommon {
 	
 	public static OuenWorkTimeSheetOfDailyDto getDto(String employeeId, GeneralDate date, OuenWorkTimeSheetOfDaily domainDaily) {
 		OuenWorkTimeSheetOfDailyDto dto = new OuenWorkTimeSheetOfDailyDto();
-		List<OuenWorkTimeSheetOfDailyAttendance> domain = domainDaily.getOuenTimeSheet();
-		if(domain != null && !domain.isEmpty()){
-			dto.setEmpId(employeeId);
-			dto.setYmd(date);
-			dto.setOuenTimeSheet(domain.stream().map(c -> OuenWorkTimeSheetOfDailyAttendanceDto.from(employeeId, date, c))
-											.collect(Collectors.toList()));
-			dto.exsistData();
+		if (domainDaily != null) {
+			List<OuenWorkTimeSheetOfDailyAttendance> domain = domainDaily.getOuenTimeSheet();
+			if (!domain.isEmpty()) {
+				dto.setEmpId(employeeId);
+				dto.setYmd(date);
+				dto.setOuenTimeSheet(domain.stream().map(c -> OuenWorkTimeSheetOfDailyAttendanceDto.from(employeeId, date, c)).collect(Collectors.toList()));
+				dto.exsistData();
+			}
 		}
 		return dto;
 	}
 	
 	public static OuenWorkTimeSheetOfDailyDto getDto(OuenWorkTimeSheetOfDaily domainDaily) {
 		OuenWorkTimeSheetOfDailyDto dto = new OuenWorkTimeSheetOfDailyDto();
-		List<OuenWorkTimeSheetOfDailyAttendance> domain = domainDaily.getOuenTimeSheet();
-		if(domain != null && !domain.isEmpty()){
-			dto.setEmpId(domainDaily.getEmpId());
-			dto.setYmd(domainDaily.getYmd());
-			dto.setOuenTimeSheet(domain.stream().map(c -> OuenWorkTimeSheetOfDailyAttendanceDto.from(domainDaily.getEmpId(), domainDaily.getYmd(), c))
-											.collect(Collectors.toList()));
-			dto.exsistData();
+		if (domainDaily != null) {
+			List<OuenWorkTimeSheetOfDailyAttendance> domain = domainDaily.getOuenTimeSheet();
+			if (!domain.isEmpty()) {
+				dto.setEmpId(domainDaily.getEmpId());
+				dto.setYmd(domainDaily.getYmd());
+				dto.setOuenTimeSheet(domain.stream().map(c -> OuenWorkTimeSheetOfDailyAttendanceDto.from(domainDaily.getEmpId(), domainDaily.getYmd(), c)).collect(Collectors.toList()));
+				dto.exsistData();
+			}
 		}
 		return dto;
 	}
