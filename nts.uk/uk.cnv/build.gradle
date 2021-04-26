@@ -178,6 +178,7 @@ project (':nts.uk.cnv.web') {
 	}
 
 	dependencies {
+        compile group: 'nemunoki', name: 'nemunoki.oruta.shr', version: version
 	}
 
 	task tsc(type: de.richsource.gradle.plugins.typescript.CompileTypeScript) {
