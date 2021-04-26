@@ -4,6 +4,7 @@ import static java.util.stream.Collectors.*;
 import static org.assertj.core.api.Assertions.*;
 
 import java.util.Arrays;
+import java.util.Optional;
 
 import org.junit.Test;
 import org.junit.experimental.runners.Enclosed;
@@ -26,8 +27,10 @@ import nts.uk.cnv.dom.td.alteration.content.column.ChangeColumnType;
 import nts.uk.cnv.dom.td.alteration.content.column.RemoveColumn;
 import nts.uk.cnv.dom.td.alteration.content.constraint.ChangePK;
 import nts.uk.cnv.dom.td.alteration.content.constraint.ChangeUnique;
+import nts.uk.cnv.dom.td.schema.tabledesign.TableDesign;
 import nts.uk.cnv.dom.td.schema.tabledesign.TableName;
 import nts.uk.cnv.dom.td.schema.tabledesign.column.ColumnDesign;
+import nts.uk.cnv.dom.td.schema.tabledesign.constraint.TableConstraints;
 
 @RunWith(Enclosed.class)
 public class AlterationTest {
@@ -45,8 +48,7 @@ public class AlterationTest {
 
 		@Test
 		public void 変更が無いのでempty() {
-
-			val actual = Alter.test(Table.BASE, Table.BASE);
+			Optional<Alteration> actual = Alter.test(Table.BASE, Table.BASE);
 			assertThat(actual.isPresent()).isFalse();
 		}
 
@@ -195,7 +197,7 @@ public class AlterationTest {
 		@Test
 		public void changePK() {
 
-			val altered = Table.create(
+			TableDesign altered = Table.create(
 					Table.BASE.getName(),
 					Table.BASE.getJpName(),
 					Table.BASE.getColumns(),
@@ -210,8 +212,8 @@ public class AlterationTest {
 
 		@Test
 		public void removeUk() {
-			val baseConstraints = Table.BASE.getConstraints();
-			val altered = Table.create(
+			TableConstraints baseConstraints = Table.BASE.getConstraints();
+			TableDesign altered = Table.create(
 					Table.BASE.getName(),
 					Table.BASE.getJpName(),
 					Table.BASE.getColumns(),
@@ -226,7 +228,7 @@ public class AlterationTest {
 		@Test
 		public void 色々変更した() {
 
-			val altered = Table.create(
+			TableDesign altered = Table.create(
 					new TableName("NEW_NAME"),
 					"新しい名前",
 					Table.BASE.getColumns().stream().skip(1).collect(toList()),
@@ -236,7 +238,7 @@ public class AlterationTest {
 					new ChangeTableName("NEW_NAME"),
 					new ChangeTableJpName("新しい名前"),
 					new RemoveColumn("id1"));
-			val expectedAlter = Alter.create(contents);
+			Alteration expectedAlter = Alter.create(contents);
 
 			assertEquals(
 					Alter.test(Table.BASE, altered).get(),
