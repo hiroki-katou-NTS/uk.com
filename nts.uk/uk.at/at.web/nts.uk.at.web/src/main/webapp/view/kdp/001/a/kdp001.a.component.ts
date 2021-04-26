@@ -54,6 +54,7 @@ module nts.uk.ui.kdp001.a {
     const DEFAULT_PAGE_NO = 1;
     const STAMP_MEANS_PORTAL = 4;
     const DEFAULT_GRAY = '#E8E9EB';
+    const DEFAULT_COLOR_TIME = '#7F7F7F';
     const D_FORMAT = 'YYYY/MM/DD HH:mm:ss';
 
     @component({
@@ -495,7 +496,7 @@ module nts.uk.ui.kdp001.a {
 
                         vm.time.displayTime(resultDisplayTime || 0);
 
-                        vm.time.style(`color: ${textColor || '#000'};`);
+                        vm.time.style(`color: ${textColor || DEFAULT_COLOR_TIME};`);
 
                         const btns = _
                             .chain(buttonSettings)
