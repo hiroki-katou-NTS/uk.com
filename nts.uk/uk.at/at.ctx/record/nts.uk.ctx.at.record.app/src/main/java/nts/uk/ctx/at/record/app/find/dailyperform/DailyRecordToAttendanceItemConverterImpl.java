@@ -61,7 +61,6 @@ public class DailyRecordToAttendanceItemConverterImpl extends AttendanceItemConv
 	
 	private List<EmployeeDailyPerError> errors;
 	private List<EditStateOfDailyAttd> editStates;
-	private List<OuenWorkTimeSheetOfDailyAttendance> ouenSheets;
 
 	private DailyRecordToAttendanceItemConverterImpl(Map<Integer, OptionalItem> optionalItems,
 			OptionalItemRepository optionalItem) {
@@ -394,9 +393,10 @@ public class DailyRecordToAttendanceItemConverterImpl extends AttendanceItemConv
 		return Optional.ofNullable((SnapShot) getDomain(ItemConst.DAILY_SNAPSHOT_NAME));
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<OuenWorkTimeSheetOfDailyAttendance> ouenSheet() {
-		return this.ouenSheets;
+		return (List<OuenWorkTimeSheetOfDailyAttendance>) getDomains(ItemConst.DAILY_SUPPORT_TIMESHEET_NAME);
 	}
 
 	@Override
