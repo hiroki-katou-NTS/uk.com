@@ -43,24 +43,25 @@
                 <div class="panel"
                      data-bind="ntsPanel:{width: '260px', height: '420px', direction: 'right', showIcon: true, visible: true}">
                     <div data-bind="ntsSearchBox: {
-                    targetKey: 'displayCd',
+                    targetKey: 'layoutId',
                     comId: 'multi-list',
 					items: lstHolidays,
-					selected: currentCode,
-					selectedKey: 'displayCd',
+					selected: layoutId,
+					selectedKey: 'layoutId',
 					fields: ['displayName', 'displayCd'], mode: 'igGrid'}"/>
                     <table id="multi-list" tabindex="5"
                            data-bind="ntsGridList: {
 							    multiple: false,
 								options: lstHolidays,
-								optionsValue: 'displayCd',
+								optionsValue: 'layoutId',
 								rows: 15,
 								columns: [
+										{ headerText: 'layoutId', key: 'layoutId', hidden: true },
 										{ headerText: '#{i18n.getText('KDR001_40')}', key: 'displayCd', width: 60, formatter: _.escape, columnCssClass: 'halign-left', headerCssClass: 'center-align' },
 										{ headerText: '#{i18n.getText('KDR001_41')}', key: 'displayName', width: 180, formatter: _.escape, columnCssClass: 'halign-left', headerCssClass: 'center-align'  }
-										], 
-								
-								value: currentCode
+										],
+
+								value: layoutId
 					}"></table>
                 </div>
             </div>

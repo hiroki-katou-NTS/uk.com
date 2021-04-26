@@ -24,7 +24,7 @@
         <div id="functions-area">
             <!-- A1_1 -->
             <button id="A1_1" tabindex="1" class="proceed"
-                    data-bind="click: exportButton, enable: (!nts.uk.ui.errors.hasError()) &amp;&amp; (holidayRemainingSelectedCd())">#{i18n.getText('KDR001_25')}</button>
+                    data-bind="click: exportButton, enable: (!nts.uk.ui.errors.hasError()) ">#{i18n.getText('KDR001_25')}</button>
         </div>
 
         <div class="cf" id="contents-area">
@@ -88,20 +88,21 @@
                             <div style="display: inline-block;" tabindex="6"
                                  data-bind="ntsComboBox: {
 						    name:'#[KDR001_30]',
-							options: lstHolidayRemaining,
-							optionsValue: 'cd',
-							value: holidayRemainingSelectedCd,
+							options:listStandard ,
+							optionsValue: 'layoutId',
+							value: standardCode,
 							optionsText: 'name',
 							editable: false,
 							enable: enable(),
 							columns: [
 								{ prop: 'cd', length: 1 },
-								{ prop: 'name', length: 14 }
+								{ prop: 'name', length: 14}
+
 							]}">
                             </div>
                             <!-- A4_3  -->
                             <div style="display: inline-block">
-                                <button data-bind="click: openKDR001b, enable: enable()"
+                                <button data-bind="click: function(){ return openKDR001b(0)},enable: enable();"
                                         tabindex="7"
                                         style="margin-left: 20px; position: relative; top: -12px;">#{i18n.getText('KDR001_31')}</button>
                             </div>
@@ -111,9 +112,9 @@
                             <div style="display: inline-block;" tabindex="8"
                                  data-bind="ntsComboBox: {
 						    name:'#[KDR001_60]',
-							options: lstHolidayRemaining,
-							optionsValue: 'cd',
-							value: holidayRemainingSelectedCd,
+							options: listFreeSetting,
+							optionsValue: 'layoutId',
+							value: freeCode,
 							optionsText: 'name',
 							editable: false,
 							enable: !enable(),
@@ -124,7 +125,7 @@
                             </div>
                             <!-- A4_6  -->
                             <div style="display: inline-block">
-                                <button data-bind="click: openKDR001b, enable: !enable()"
+                                <button data-bind="click: function(){return openKDR001b(1) } , enable: !enable()"
                                         tabindex="9"
                                         style="margin-left: 20px; position: relative; top: -12px;">#{i18n.getText('KDR001_61')}</button>
                             </div>

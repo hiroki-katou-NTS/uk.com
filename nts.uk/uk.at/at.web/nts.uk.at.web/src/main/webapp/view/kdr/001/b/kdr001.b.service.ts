@@ -2,6 +2,8 @@ module nts.uk.at.view.kdr001.b {
     export module service {
         var paths: any = {
             findAll: "at/function/holidaysremaining/findAll",
+            //findBySettingId: "at/function/holidaysremaining/getInfor/{setting}",
+            findBySettingId: "at/function/holidaysremaining/getInfor/{0}",
             findByLayOutId: "at/function/holidaysremaining/findByLayOutId/{0}",
             addHoliday: "at/function/holidaysremaining/add",
             updateHoliday: "at/function/holidaysremaining/update",
@@ -18,8 +20,12 @@ module nts.uk.at.view.kdr001.b {
             return nts.uk.request.ajax("at", paths.findAll);
         }
 
-        export function findByLayOutId(code: string) : JQueryPromise<any> {
-            let _path = nts.uk.text.format(paths.findByLayOutId, code);
+        export function findBySettingId(settingId: number) : JQueryPromise<any> {
+            let _path = nts.uk.text.format(paths.findBySettingId, settingId);
+            return nts.uk.request.ajax("at", _path);
+        }
+        export function findByLayOutId(id: string) : JQueryPromise<any> {
+            let _path = nts.uk.text.format(paths.findByLayOutId, id);
             return nts.uk.request.ajax("at", _path);
         }
         //insert

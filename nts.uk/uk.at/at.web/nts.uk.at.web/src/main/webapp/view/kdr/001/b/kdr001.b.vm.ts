@@ -10,6 +10,7 @@ module nts.uk.at.view.kdr001.b.viewmodel {
     export class ScreenModel {
         lstHolidays: KnockoutObservableArray<HolidayRemaining> = ko.observableArray([]);
         currentCode: KnockoutObservable<string>;
+        layoutId: KnockoutObservable<string>;
         currentHoliday: KnockoutObservable<HolidayRemaining> = ko.observable(new HolidayRemaining(null));
         switchOptions: KnockoutObservableArray<any>;
         isNewMode: KnockoutObservable<boolean> = ko.observable(true);
@@ -22,7 +23,8 @@ module nts.uk.at.view.kdr001.b.viewmodel {
             let self = this;
             let params = getShared("KDR001Params");
             self.currentCode = ko.observable(params || '');
-            self.currentCode.subscribe((code) => {
+            self.layoutId = ko.observable(params.layOutId || '');
+            self.layoutId.subscribe((code) => {
                 if (code) {
                     block.invisible();
                     service.findByLayOutId(code).done(function (data: HolidayRemaining) {
@@ -49,18 +51,22 @@ module nts.uk.at.view.kdr001.b.viewmodel {
             });
         }
 
+
         /**
          * 開始
          **/
         start(): JQueryPromise<any> {
+            let params = getShared("KDR001Params");
             let self = this,
                 dfd = $.Deferred();
             block.invisible();
-
+            let settingId = params.settingId;
+            let layOutId =  params.layOutId;
             $.when(service.getVariousVacationControl(),
-                service.findAll()
+                service.findBySettingId(settingId)
             ).done((vacationControl: IVariousVacationControl,
-                    holidayRemainings: Array<HolidayRemaining>) => {
+                    holidayRemainings: Array<HolidayRemaining>,
+                    ) => {
                 self.vacationControl = vacationControl;
                 if (!vacationControl || vacationControl.annualHolidaySetting == false) {
                     $('#rowYearlyHoliday').addClass("hidden");
@@ -120,8 +126,12 @@ module nts.uk.at.view.kdr001.b.viewmodel {
                     });
 
                     self.lstHolidays(_rsList);
-                    if (!self.currentCode()) {
-                        self.currentCode(_rsList[0].cd());
+                    if (!nts.uk.util.isNullOrEmpty(layOutId)) {
+                        let item = _.find(_rsList,function (o) {return o.layoutId == layOutId });
+                        if(!nts.uk.util.isNullOrUndefined(item)){
+                            self.currentHoliday(item);
+                        }
+                       // self.currentCode(_rsList[0].cd());
                     }
                     else {
                         self.currentCode.valueHasMutated();
@@ -378,7 +388,10 @@ module nts.uk.at.view.kdr001.b.viewmodel {
         name: KnockoutObservable<string>;
 
         displayCd: string;
+
         displayName: string;
+
+        layoutId: string;
         /**
          * 介護休暇の項目を出力する
          */
@@ -469,6 +482,7 @@ module nts.uk.at.view.kdr001.b.viewmodel {
             self.name = ko.observable(param ? param.name || '' : '');
             self.displayCd = param ? param.cd || '' : '';
             self.displayName = param ? param.name || '' : '';
+            self.layoutId = param ? param.layoutId || '' : '';
             self.nursingLeave = ko.observable(param ? param.nursingLeave || false : false);
             self.remainingChargeSubstitute = ko.observable(param ? param.remainingChargeSubstitute || false : false);
             self.representSubstitute = ko.observable(param ? param.representSubstitute || false : false);
@@ -488,7 +502,6 @@ module nts.uk.at.view.kdr001.b.viewmodel {
             self.hD60HRemain = ko.observable(param ? param.hD60HRemain || false : false);
             self.yearlyReserved = ko.observable(param ? param.yearlyReserved || false : false);
             self.listSpecialHoliday = ko.observableArray(param ? param.listSpecialHoliday || [] : []);
-
             self.outputItemSubstitute.subscribe((isCheck) => {
                 if (isCheck === false) {
                     self.representSubstitute(false);
