@@ -75,16 +75,15 @@ public class AggregateChildCareNurse {
 		ChildCareNurseUsedNumber result;
 
 		// 終了日の期間の子の看護介護集計期間WORKを取得する
-		Optional<AggregateChildCareNurseWork> periodEndWorkOpt = period.stream().filter(c -> c.getNextDayAfterPeriodEnd().isPeriodEndAtr()).findFirst();
+		AggregateChildCareNurseWork periodEndWork = period.stream().filter(c -> c.getNextDayAfterPeriodEnd().isPeriodEndAtr()).findFirst().get();
 
 		// 終了日の翌日の期間の子の看護介護集計期間WORKを取得する
-		Optional<AggregateChildCareNurseWork> nextPeriodEndWorkOpt = period.stream().filter(c -> c.getNextDayAfterPeriodEnd().isNextPeriodEndAtr()).findFirst();
+		AggregateChildCareNurseWork nextPeriodEndWork = period.stream().filter(c -> c.getNextDayAfterPeriodEnd().isNextPeriodEndAtr()).findFirst().get();
 
 		// 終了期間の集計期間と終了日の翌日時点を比較
 		//(終了日の期間の「本年か翌年か」と終了日の翌日の期間の「本年か翌年か」を比較
-		if (periodEndWorkOpt.isPresent() && nextPeriodEndWorkOpt.isPresent()
-				&& periodEndWorkOpt.get().getYearAtr() == nextPeriodEndWorkOpt.get().getYearAtr()){
-			result = periodEndWorkOpt.get().getAggrResultOfChildCareNurse().get().getStartdateInfo().getUsedDays();
+		if (periodEndWork.getYearAtr() == nextPeriodEndWork.getYearAtr()){
+			result = periodEndWork.getAggrResultOfChildCareNurse().get().getStartdateInfo().getUsedDays();
 		}else {
 			// 期間終了日の翌日時点の使用数=0　
 			result = ChildCareNurseUsedNumber.of(new DayNumberOfUse(0d),  Optional.of(new TimeOfUse(0)));
@@ -246,8 +245,11 @@ public class AggregateChildCareNurse {
 				// 一番年月日が大きい分割日を取得
 				dividedDayEachProcess.sort((c1, c2) -> c2.getYmd().compareTo(c1.getYmd()));
 				DividedDayEachProcess largest = dividedDayEachProcess.get(0);
-				// 取得した分割日の終了日の翌日の期間かどうか ←true
-				largest.setEndDate(NextDayAfterPeriodEndWork.of(largest.getEndDate().isPeriodEndAtr(), true));
+				// 取得した分割日の終了日の期間かどうか ←true
+				largest.setEndDate(NextDayAfterPeriodEndWork.of(true, largest.getEndDate().isNextPeriodEndAtr()));
+			} else {
+				// 終了日の期間かどうか　←true
+				splitEnd.stream().forEach(action->action.setEndDate(NextDayAfterPeriodEndWork.of(true, false)));
 			}
 	}
 

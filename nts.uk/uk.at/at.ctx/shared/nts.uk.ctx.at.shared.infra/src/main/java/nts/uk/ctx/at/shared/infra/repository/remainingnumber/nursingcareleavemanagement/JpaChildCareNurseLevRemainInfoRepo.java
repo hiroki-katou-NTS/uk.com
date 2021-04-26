@@ -74,7 +74,7 @@ public class JpaChildCareNurseLevRemainInfoRepo extends JpaRepository {
 								rec.getInt("USE_ATR"), rec.getInt("UPPER_LIM_SET_ART"),
 								rec.getInt("MAX_DAY_THIS_FISCAL_YEAR"), rec.getInt("MAX_DAY_NEXT_FISCAL_YEAR"));
 					} else {
-						return null;
+						throw new RuntimeException();
 					}
 				});
 				result.addAll(data);
