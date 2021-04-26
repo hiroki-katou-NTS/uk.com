@@ -116,10 +116,18 @@ module nts.uk.at.view.kdp010.d {
             googleMap: KnockoutObservable<number> = ko.observable(0);
 			locationInfoUse: KnockoutObservable<number> = ko.observable(0);
 			areaLimitAtr: KnockoutObservable<number> = ko.observable(0);
+			mapAddres: string;
 			areaLimitAtrEnable: KnockoutObservable<boolean> = ko.computed(():boolean => {
 				return this.locationInfoUse() == 1;
 			});
-            constructor(){}
+            constructor(){
+				let self = this;
+				self.locationInfoUse.subscribe((value: number) => {
+					if(value == 0){
+						self.areaLimitAtr(0); 	
+					}
+				});	
+			}
             update(data?:any){
                 let self = this;
                 if(data){
@@ -131,6 +139,7 @@ module nts.uk.at.view.kdp010.d {
                     if(data.googleMap != undefined && data.googleMap != null){
                         self.googleMap(data.googleMap);
                     }
+					self.mapAddres = data.mapAddres || "https://www.google.co.jp/maps/place/";
                 }
             }
         }   

@@ -13,7 +13,9 @@ module nts.uk.at.view.kdp010.k {
 	    }
         export class ScreenModel {
             stampSettingOfRICOHCopier = new StampSettingOfRICOHCopier();
-            constructor(){}
+            constructor(){
+				__viewContext.primitiveValueConstraints.PasswordForRICOH.charType = "Numeric";	
+			}
             
             start(): JQueryPromise<any> {
                 let self = this;

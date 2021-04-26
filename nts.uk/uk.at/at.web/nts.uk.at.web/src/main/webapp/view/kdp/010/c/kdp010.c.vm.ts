@@ -59,7 +59,7 @@ module nts.uk.at.view.kdp010.c {
 	                }
 	                
 	            }).fail(function(err: any) {
-	                error(err.message);
+	                error({ messageId: err.messageId });
 	            }).always(function () {
 	                dfd.resolve();
 	            });
@@ -74,7 +74,7 @@ module nts.uk.at.view.kdp010.c {
 	                else
 	                    self.checkInUp(false);
 	            }).fail(function(err: any) {
-	                error(err.message);
+	                error({ messageId: err.messageId });
 	            }).always(function () {
 	                dfd.resolve();
 	            });
@@ -102,7 +102,7 @@ module nts.uk.at.view.kdp010.c {
 	            ajax(paths.saveStampSetting, data).done(function() {
 	                nts.uk.ui.dialog.info({ messageId: "Msg_15" });
 	            }).fail(function(res: any) {
-	                error(res.message);
+	                error({ messageId: res.messageId });
 	            }).always(() => {
 	                block.clear();
 	            });

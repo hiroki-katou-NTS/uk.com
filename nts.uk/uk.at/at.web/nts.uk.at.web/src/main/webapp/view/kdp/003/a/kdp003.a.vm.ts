@@ -614,7 +614,7 @@ module nts.uk.at.kdp003.a {
 										buttonPositionNo: btn.btnPositionNo
 									},
 									refActualResult: {
-										cardNumberSupport: '',
+										cardNumberSupport: null,
 										workLocationCD: '',
 										workTimeCode: '',
 										overtimeDeclaration: {

@@ -112,10 +112,10 @@ module nts.uk.at.view.kdp010.e {
             buttonPositionNo: number;
             buttonDisSet: any;
             buttonType: any;
-            usrArt: number = 1;
+            usrArt: KnockoutObservable<number> = ko.observable(1);
             audioType: number = 0;
             goOutArt: KnockoutObservable<number> = ko.observable(null);
-            constructor(buttonPositionNo: number){
+            constructor(buttonPositionNo: number, goOutUseAtr: KnockoutObservable<number>){
                 let self = this;
                 self.buttonPositionNo = buttonPositionNo;
                 self.buttonDisSet = new ButtonDisSet(self.buttonPositionNo);
@@ -130,6 +130,7 @@ module nts.uk.at.view.kdp010.e {
                         reservationArt: 0
                     }
                 }else if(self.buttonPositionNo == 3){
+					self.usrArt = goOutUseAtr;
                     self.buttonType = {
                         stampType: { changeClockArt: 4, changeCalArt: 0, setPreClockArt: 0, changeHalfDay: false, goOutArt: 0},
                         reservationArt: 0
@@ -139,6 +140,7 @@ module nts.uk.at.view.kdp010.e {
                         self.buttonType.stampType.goOutArt = newValue;
                     });
                 }else if(self.buttonPositionNo == 4){
+					self.usrArt = goOutUseAtr;
                     self.buttonType = {
                         stampType: { changeClockArt: 5, changeCalArt: 0, setPreClockArt: 0, changeHalfDay: false, goOutArt: null },
                         reservationArt: 0
@@ -196,7 +198,7 @@ module nts.uk.at.view.kdp010.e {
                 let self = this;
                 let buttonSettingsArray = [];
                 for(let i = 1; i <= 4; i++){
-                    buttonSettingsArray.push(new ButtonSettings(i));
+                    buttonSettingsArray.push(new ButtonSettings(i, self.goOutUseAtr));
                 }
                 self.buttonSettings = buttonSettingsArray;
             }
