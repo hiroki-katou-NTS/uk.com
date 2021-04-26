@@ -3968,13 +3968,11 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				if(self.dataScreen003A().employeeInfo[lineNo].fixedWorkInforDto != null && self.dataScreen003A().employeeInfo[lineNo].fixedWorkInforDto.fixBreakTime == 1){
 					if (self.dataScreen003A().employeeInfo[lineNo].fixedWorkInforDto.workType == WorkTimeForm.FLOW || self.dataScreen003A().employeeInfo[lineNo].fixedWorkInforDto.workType == WorkTimeForm.FLEX){
 						followParent = false;
-						canSlide = false;
 					}
 				}
 				if(self.dataScreen003A().employeeInfo[lineNo].fixedWorkInforDto != null && self.dataScreen003A().employeeInfo[lineNo].fixedWorkInforDto.fixBreakTime == 0){
 					if (self.dataScreen003A().employeeInfo[lineNo].fixedWorkInforDto.workType == WorkTimeForm.FLOW || self.dataScreen003A().employeeInfo[lineNo].fixedWorkInforDto.workType == WorkTimeForm.FLEX){
 						followParent = true;
-						canSlide = true;
 					}
 				}
 				bePassedThrough = false;
