@@ -21,7 +21,7 @@ module nts.uk.at.view.kaf000.a.component5.viewmodel {
 		            </div>
 		        </div>
 		    </div>
-		    <div class="table" style="margin-top: 13px;" data-bind="if: appReasonDisp">
+		    <div class="table" data-bind="if: appReasonDisp">
 		        <div class="cell col-1">
 		            <div class="cell valign-center" data-bind="ntsFormLabel: {
 		                                    required: appReasonRequired,
