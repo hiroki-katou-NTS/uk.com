@@ -3,6 +3,8 @@
  */
 package nts.uk.ctx.at.record.app.find.dailyattendance.timesheet.ouen.dto;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -91,6 +93,14 @@ public class OuenWorkTimeSheetOfDailyAttendanceDto extends AttendanceItemCommon{
 			dto.exsistData();
 		}
 		return dto;
+	}
+	
+	public static List<OuenWorkTimeSheetOfDailyAttendanceDto> froms(String sid, GeneralDate ymd, List<OuenWorkTimeSheetOfDailyAttendance> domains){
+		List<OuenWorkTimeSheetOfDailyAttendanceDto> rs = new ArrayList<>();
+		for (OuenWorkTimeSheetOfDailyAttendance ouen : domains) {
+			rs.add(from(sid, ymd, ouen));
+		}
+		return rs;
 	}
 	
 	@Override

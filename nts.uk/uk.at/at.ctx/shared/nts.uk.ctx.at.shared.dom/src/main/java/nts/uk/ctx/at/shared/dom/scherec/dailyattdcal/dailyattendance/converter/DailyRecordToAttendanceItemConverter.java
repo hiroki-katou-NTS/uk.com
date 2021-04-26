@@ -80,6 +80,8 @@ public interface DailyRecordToAttendanceItemConverter extends AttendanceItemConv
 	DailyRecordToAttendanceItemConverter withRemarks(List<RemarksOfDailyAttd> domain);
 	
 	DailyRecordToAttendanceItemConverter withSnapshot(SnapShot domain);
+	
+	DailyRecordToAttendanceItemConverter withOuenSheet(List<OuenWorkTimeSheetOfDailyAttendance> ouenSheet);
 
 	DailyRecordToAttendanceItemConverter employeeId(String employeeId);
 
@@ -122,7 +124,7 @@ public interface DailyRecordToAttendanceItemConverter extends AttendanceItemConv
 	List<RemarksOfDailyAttd> remarks();
 	
 	Optional<SnapShot> snapshot();
-	
+
 	List<OuenWorkTimeSheetOfDailyAttendance> ouenSheet();
 
 }

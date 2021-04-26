@@ -13,6 +13,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.find.dailyattendance.timesheet.ouen.dto.OuenWorkTimeSheetOfDailyAttendanceDto;
+import nts.uk.ctx.at.record.app.find.dailyattendance.timesheet.ouen.dto.OuenWorkTimeSheetOfDailyDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.affiliationInfor.dto.AffiliationInforOfDailyPerforDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.attendanceleavinggate.dto.AttendanceLeavingGateOfDailyDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.calculationattribute.dto.CalcAttrOfDailyPerformanceDto;
@@ -34,6 +35,7 @@ import nts.uk.ctx.at.record.app.find.dailyperform.temporarytime.dto.TemporaryTim
 import nts.uk.ctx.at.record.app.find.dailyperform.workinfo.dto.WorkInformationOfDailyDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.workrecord.dto.AttendanceTimeByWorkOfDailyDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.workrecord.dto.TimeLeavingOfDailyPerformanceDto;
+import nts.uk.ctx.at.record.dom.daily.ouen.OuenWorkTimeSheetOfDaily;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
@@ -155,24 +157,8 @@ public class DailyRecordDto extends AttendanceItemCommon {
 	/**応援時刻: 日別勤怠の応援作業時間帯 */
 	@AttendanceItemLayout( layout = DAILY_SUPPORT_TIMESHEET_CODE, jpPropertyName = DAILY_SUPPORT_TIMESHEET_NAME, 
 						   indexField = DEFAULT_INDEX_FIELD_NAME)
-	private List<OuenWorkTimeSheetOfDailyAttendanceDto> ouenTimeSheet = new ArrayList<>();
+	private OuenWorkTimeSheetOfDailyDto ouenTimeSheet;
 
-	@Override
-	public int size(String path) {
-		if (path.equals(DAILY_SUPPORT_TIMESHEET_NAME)) {
-			return 20;
-		} else {
-			return super.size(path);
-		}
-	}
-	
-	@Override
-	public PropType typeOf(String path) {
-		if (path.equals(DAILY_SUPPORT_TIMESHEET_NAME)) {
-			return PropType.IDX_LIST;
-		}
-		return super.typeOf(path);
-	}
 	
 	public static DailyRecordDto from(IntegrationOfDaily domain){
 		DailyRecordDto dto = new DailyRecordDto();
@@ -202,7 +188,8 @@ public class DailyRecordDto extends AttendanceItemCommon {
 			dto.setPcLogInfo(domain.getPcLogOnInfo().map(pc -> PCLogOnInforOfDailyPerformDto.from(employeeId,ymd,pc)));
 			dto.setRemarks(RemarksOfDailyDto.getDto(employeeId,ymd,domain.getRemarks()));
 			dto.setSnapshot(domain.getSnapshot().map(c -> SnapshotDto.from(employeeId, ymd, c)));
-			dto.setOuenTimeSheet(domain.getOuenTimeSheet().stream().map(ouen -> OuenWorkTimeSheetOfDailyAttendanceDto.from(employeeId, ymd, ouen)).collect(Collectors.toList()));
+			OuenWorkTimeSheetOfDaily ouenSheetOfDaily = OuenWorkTimeSheetOfDaily.create(employeeId, ymd, domain.getOuenTimeSheet()); 
+			dto.setOuenTimeSheet(OuenWorkTimeSheetOfDailyDto.getDto(employeeId, ymd, ouenSheetOfDaily));
 			dto.exsistData();
 		}
 		return dto;
@@ -236,7 +223,8 @@ public class DailyRecordDto extends AttendanceItemCommon {
 			dto.setPcLogInfo(domain.getPcLogOnInfo().map(pc -> PCLogOnInforOfDailyPerformDto.from(employeeId,ymd,pc)));
 			dto.setRemarks(RemarksOfDailyDto.getDto(employeeId,ymd,domain.getRemarks()));
 			dto.setSnapshot(domain.getSnapshot().map(c -> SnapshotDto.from(employeeId, ymd, c)));
-			dto.setOuenTimeSheet(domain.getOuenTimeSheet().stream().map(ouen -> OuenWorkTimeSheetOfDailyAttendanceDto.from(employeeId, ymd,ouen)).collect(Collectors.toList()));
+			OuenWorkTimeSheetOfDaily ouenSheetOfDaily = OuenWorkTimeSheetOfDaily.create(employeeId, ymd, domain.getOuenTimeSheet()); 
+			dto.setOuenTimeSheet(OuenWorkTimeSheetOfDailyDto.getDto(employeeId, ymd, ouenSheetOfDaily));
 			dto.exsistData();
 		}
 		return dto;
@@ -271,7 +259,7 @@ public class DailyRecordDto extends AttendanceItemCommon {
 		return this;
 	}
 	
-	public DailyRecordDto withOuenSheet(List<OuenWorkTimeSheetOfDailyAttendanceDto> ouenSheet) {
+	public DailyRecordDto withOuenSheet(OuenWorkTimeSheetOfDailyDto ouenSheet) {
 		this.ouenTimeSheet = ouenSheet;
 		return this;
 	}
@@ -413,6 +401,11 @@ public class DailyRecordDto extends AttendanceItemCommon {
 		return this;
 	}
 	
+	public DailyRecordDto ouenTimeSheet(OuenWorkTimeSheetOfDailyDto ouenTimeSheet) {
+		this.ouenTimeSheet = ouenTimeSheet;
+		return this;
+	}
+	
 	public DailyRecordDto workingDate(GeneralDate workingDate) {
 		this.date = workingDate;
 		return this;
@@ -461,7 +454,7 @@ public class DailyRecordDto extends AttendanceItemCommon {
 				this.snapshot.map(c -> c.toDomain(employeeId, date))
 				);
 		// set support time
-		integrationOfDaily.setOuenTimeSheet(this.ouenTimeSheet.stream().map(ouen -> ouen.toDomain(employeeId, date)).collect(Collectors.toList()));
+		integrationOfDaily.setOuenTimeSheet(this.ouenTimeSheet.toDomain(employeeId, date));
 		
 		return integrationOfDaily;
 	}
@@ -495,7 +488,7 @@ public class DailyRecordDto extends AttendanceItemCommon {
 		dto.setPcLogInfo(pcLogInfo.map(pc -> pc.clone()));
 		dto.setRemarks(remarks == null ? null : remarks.clone());
 		dto.setSnapshot(snapshot.map(ss -> ss.clone()));
-		dto.setOuenTimeSheet(ouenTimeSheet.stream().map(p -> p.clone()).collect(Collectors.toList()));
+		dto.setOuenTimeSheet(ouenTimeSheet.clone());
 		if(isHaveData()){
 			dto.exsistData();
 		}
@@ -537,20 +530,13 @@ public class DailyRecordDto extends AttendanceItemCommon {
 			return Optional.ofNullable(this.remarks);
 		case DAILY_SNAPSHOT_NAME:
 			return Optional.ofNullable(this.snapshot.orElse(null));
+		case DAILY_SUPPORT_TIMESHEET_NAME:
+			return Optional.ofNullable(this.ouenTimeSheet);
 		default:
 			return Optional.empty();
 		}
 	}
 	
-	@Override
-	@SuppressWarnings("unchecked")
-	public <T extends AttendanceItemDataGate> List<T> gets(String path) {
-		if (DAILY_SUPPORT_TIMESHEET_NAME.equals(path)) {
-			return (List<T>) this.ouenTimeSheet;
-		}
-		return new ArrayList<>();
-	}
-
 	@Override
 	public void set(String path, AttendanceItemDataGate value) {
 		switch (path) {
@@ -602,16 +588,11 @@ public class DailyRecordDto extends AttendanceItemCommon {
 		case DAILY_SNAPSHOT_NAME:
 			this.snapshot = Optional.ofNullable((SnapshotDto) value);
 			break;
+		case DAILY_SUPPORT_TIMESHEET_NAME:
+			this.ouenTimeSheet = (OuenWorkTimeSheetOfDailyDto) value;
+			break;
 		default:
 			break;
-		}
-	}
-
-	@Override
-	@SuppressWarnings("unchecked")
-	public <T extends AttendanceItemDataGate> void set(String path, List<T> value) {
-		if (DAILY_SUPPORT_TIMESHEET_NAME.equals(path)) {
-			this.ouenTimeSheet = (List<OuenWorkTimeSheetOfDailyAttendanceDto>) value;
 		}
 	}
 
@@ -651,7 +632,7 @@ public class DailyRecordDto extends AttendanceItemCommon {
 		case DAILY_SNAPSHOT_NAME:
 			return new SnapshotDto();
 		case DAILY_SUPPORT_TIMESHEET_NAME:
-			return new OuenWorkTimeSheetOfDailyAttendanceDto();
+			return new OuenWorkTimeSheetOfDailyDto();
 		default:
 			return null;
 		}
@@ -662,5 +643,22 @@ public class DailyRecordDto extends AttendanceItemCommon {
 	
 	@Override
 	public boolean isContainer() { return true; }
+	
+//	@Override
+//	@SuppressWarnings("unchecked")
+//	public <T extends AttendanceItemDataGate> void set(String path, List<T> value) {
+//		if (DAILY_SUPPORT_TIMESHEET_NAME.equals(path)) {
+//			this.ouenTimeSheet = (OuenWorkTimeSheetOfDailyDto) value;
+//		}
+//	}	
+	
+//	@Override
+//	@SuppressWarnings("unchecked")
+//	public <T extends AttendanceItemDataGate> List<T> gets(String path) {
+//		if (DAILY_SUPPORT_TIMESHEET_NAME.equals(path)) {
+//			return (List<T>) this.ouenTimeSheet;
+//		}
+//		return new ArrayList<>();
+//	}
 }
 

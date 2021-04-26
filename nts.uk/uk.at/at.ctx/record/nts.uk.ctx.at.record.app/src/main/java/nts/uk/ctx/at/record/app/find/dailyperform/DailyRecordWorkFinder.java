@@ -14,6 +14,7 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.app.find.dailyattendance.timesheet.ouen.dto.OuenWorkTimeSheetOfDailyAttendanceDto;
+import nts.uk.ctx.at.record.app.find.dailyattendance.timesheet.ouen.dto.OuenWorkTimeSheetOfDailyDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.affiliationInfor.AffiliationInforOfDailyPerforFinder;
 import nts.uk.ctx.at.record.app.find.dailyperform.affiliationInfor.dto.AffiliationInforOfDailyPerforDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.attendanceleavinggate.AttendanceLeavingGateOfDailyFinder;
@@ -189,7 +190,7 @@ public class DailyRecordWorkFinder extends FinderFacade {
 				.pcLogInfo(pcLogOnInfoFinder.find(employeeId, baseDate))
 				.remarks(remarkFinder.find(employeeId, baseDate))
 				.withSnapshot(snapshotFinder.find(employeeId, baseDate))
-				.withOuenSheet(supportTimeFinder.finds(employeeId, baseDate))
+				.withOuenSheet(supportTimeFinder.find(employeeId, baseDate))
 				.complete();
 	}
 
@@ -233,7 +234,7 @@ public class DailyRecordWorkFinder extends FinderFacade {
 				pcLogOnInfoFinder.find(employeeId, baseDate));
 		Map<String, Map<GeneralDate, RemarksOfDailyDto>> remarks = toMap(
 				remarkFinder.find(employeeId, baseDate));
-		Map<String, Map<GeneralDate, List<OuenWorkTimeSheetOfDailyAttendanceDto>>> supportTimes = toMapList(
+		Map<String, Map<GeneralDate, OuenWorkTimeSheetOfDailyDto>> supportTimes = toMap(
 				supportTimeFinder.find(employeeId, baseDate));
 		
         System.out.print("thoi gian lay data DB: " +(System.currentTimeMillis() - startTime));
@@ -261,7 +262,7 @@ public class DailyRecordWorkFinder extends FinderFacade {
 							.temporaryTime(getValue(temporaryTime.get(em), start))
 							.pcLogInfo(getValue(pcLogInfo.get(em), start))
 							.remarks(getValue(remarks.get(em), start))
-							.withOuenSheet(getListValue(supportTimes.get(em), start))
+							.withOuenSheet(getValue(supportTimes.get(em), start))
 							.complete();
 					dtoByDates.add(current);
 				}
@@ -293,7 +294,7 @@ public class DailyRecordWorkFinder extends FinderFacade {
 		Map<String, Map<GeneralDate, TemporaryTimeOfDailyPerformanceDto>> temporaryTime = toMap(temporaryTimeFinder.find(param));
 		Map<String, Map<GeneralDate, PCLogOnInforOfDailyPerformDto>> pcLogInfo = toMap(pcLogOnInfoFinder.find(param));
 		Map<String, Map<GeneralDate, RemarksOfDailyDto>> remarks = toMap(remarkFinder.find(param));
-		Map<String, Map<GeneralDate, List<OuenWorkTimeSheetOfDailyAttendanceDto>>> supportTimes = toMapList(supportTimeFinder.find(param));
+		Map<String, Map<GeneralDate, OuenWorkTimeSheetOfDailyDto>> supportTimes = toMap(supportTimeFinder.find(param));
 		System.out.print("thoi gian lay data DB: " +(System.currentTimeMillis() - startTime));
 
 		return (List<T>) param.entrySet().stream().map(p -> {
@@ -317,7 +318,7 @@ public class DailyRecordWorkFinder extends FinderFacade {
 						.temporaryTime(getValue(temporaryTime.get(p.getKey()), d))
 						.pcLogInfo(getValue(pcLogInfo.get(p.getKey()), d))
 						.remarks(getValue(remarks.get(p.getKey()), d))
-						.withOuenSheet(getListValue(supportTimes.get(p.getKey()), d))
+						.withOuenSheet(getValue(supportTimes.get(p.getKey()), d))
 						.complete();
 			}).collect(Collectors.toList());
 		}).flatMap(List::stream).collect(Collectors.toList());

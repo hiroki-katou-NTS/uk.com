@@ -17,6 +17,7 @@ import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.app.find.dailyattendance.timesheet.ouen.dto.OuenWorkTimeSheetOfDailyAttendanceDto;
+import nts.uk.ctx.at.record.app.find.dailyattendance.timesheet.ouen.dto.OuenWorkTimeSheetOfDailyDto;
 import nts.uk.ctx.at.record.dom.daily.ouen.OuenWorkTimeSheetOfDaily;
 import nts.uk.ctx.at.record.dom.daily.ouen.OuenWorkTimeSheetOfDailyRepo;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.FinderFacade;
@@ -101,12 +102,14 @@ public class SupportTimeFinder extends FinderFacade{
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	public OuenWorkTimeSheetOfDailyAttendanceDto find(String employeeId, GeneralDate baseDate) {
+	public OuenWorkTimeSheetOfDailyDto find(String employeeId, GeneralDate baseDate) {
 		
 		OuenWorkTimeSheetOfDaily ouenWorkTimeSheetOfDaily = repo.find(employeeId, baseDate);
 		if(ouenWorkTimeSheetOfDaily == null || ouenWorkTimeSheetOfDaily.getOuenTimeSheet().isEmpty())
 			return null;
-		OuenWorkTimeSheetOfDailyAttendanceDto rs = OuenWorkTimeSheetOfDailyAttendanceDto.from(employeeId, baseDate, ouenWorkTimeSheetOfDaily.getOuenTimeSheet().get(0));
+		OuenWorkTimeSheetOfDaily dailyDto = new OuenWorkTimeSheetOfDaily(employeeId, baseDate, ouenWorkTimeSheetOfDaily.getOuenTimeSheet());
+		OuenWorkTimeSheetOfDailyDto rs = OuenWorkTimeSheetOfDailyDto.getDto(employeeId, baseDate, dailyDto);
+		
 		return rs;
 	}
 	

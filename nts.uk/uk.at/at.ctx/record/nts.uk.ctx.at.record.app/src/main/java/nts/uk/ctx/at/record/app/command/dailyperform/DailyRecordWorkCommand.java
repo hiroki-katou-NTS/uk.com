@@ -198,7 +198,7 @@ public class DailyRecordWorkCommand extends DailyWorkCommonCommand {
 		this.pcLogInfo.setRecords(fullDto.getPcLogInfo().orElse(null));
 		this.remarks.setRecords(fullDto.getRemarks());
 		this.snapshot.setRecords(fullDto.getSnapshot().orElse(null));
-		fullDto.getOuenTimeSheet().stream().forEach(c -> this.ouenSheet.setRecords(c));
+		this.ouenSheet.setRecords(fullDto.getOuenTimeSheet());
 	}
 
 	@Override
