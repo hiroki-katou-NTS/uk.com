@@ -138,14 +138,10 @@ module nts.uk.ui.at.kdp013.share {
                         if (ko.isObservable(hasError)) {
                             hasError(true);
                         }
-                        $(msg).appendTo(element);
-                        element.classList.add('error');
                     } else {
                         if (ko.isObservable(hasError)) {
                             hasError(false);
                         }
-                        msg.remove();
-                        element.classList.remove('error');
                     }
                 };
 
@@ -155,6 +151,18 @@ module nts.uk.ui.at.kdp013.share {
                 selected
                     .subscribe(subscribe);
 
+                if (ko.isObservable(hasError)) {
+                    hasError
+                        .subscribe((has: boolean) => {
+                            if (!has) {
+                                msg.remove();
+                                element.classList.remove('error');
+                            } else {
+                                $(msg).appendTo(element);
+                                element.classList.add('error');
+                            }
+                        });
+                }
 
                 const text = ko.computed({
                     read: () => {
@@ -177,6 +185,14 @@ module nts.uk.ui.at.kdp013.share {
                 element.removeAttribute('data-bind');
 
                 element.setAttribute('role', randomId());
+
+                $(element)
+                    .on('mouseover', () => {
+                        element.classList.add('active');
+                    })
+                    .on('mouseleave', () => {
+                        element.classList.remove('active');
+                    });
             }
         }
 

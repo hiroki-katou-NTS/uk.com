@@ -184,6 +184,14 @@ module nts.uk.ui.at.kdp013.share {
             value
                 .subscribe(subscribe);
 
+            hasError
+                .subscribe((has: boolean) => {
+                    if (!has) {
+                        errorId('');
+                        errorParams([]);
+                    }
+                });
+
             //  update for first binding
             subscribe(value());
 
