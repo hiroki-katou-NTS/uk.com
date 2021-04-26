@@ -46,11 +46,9 @@ public class ScreenDisplayProcessingFinder {
 		// 取得したList＜パターン設定>をチェックする。
 		if (!patterns.isEmpty()) {
 			ScreenDisplayProcessingDto dto = new ScreenDisplayProcessingDto();
-			dto.setPatterns(patterns.stream().map(p -> {
-				DataStoragePatternSettingDto res = new DataStoragePatternSettingDto();
-				p.setMemento(res);
-				return res;
-			}).sorted(Comparator.comparing(DataStoragePatternSettingDto::getPatternCode)).collect(Collectors.toList()));
+			dto.setPatterns(patterns.stream()
+					.map(DataStoragePatternSettingDto::createFromDomain)
+					.sorted(Comparator.comparing(DataStoragePatternSettingDto::getPatternCode)).collect(Collectors.toList()));
 			dto.setSystemTypes(systemTypes.stream().map(t -> t.value).collect(Collectors.toList()));
 			return dto;
 		} else {

@@ -13,6 +13,7 @@ import javax.persistence.Table;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
+import nts.uk.ctx.sys.assist.dom.deletedata.ErrorContent;
 import nts.uk.ctx.sys.assist.dom.deletedata.ResultLogDeletion;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
@@ -78,8 +79,8 @@ public class SspdtDeletionResultLog extends ContractUkJpaEntity implements Seria
 
 	public static SspdtDeletionResultLog toEntity(ResultLogDeletion resultLog) {
 		SspdtDeletionResultLog e = new SspdtDeletionResultLog(new SspdtResultLogDeletionPK(resultLog.getDelId(), resultLog.getSeqId()), 
-				resultLog.getCompanyId(), resultLog.getLogTime(), resultLog.getProcessingContent().v(), resultLog.getErrorContent().v(),
-				resultLog.getErrorEmployeeId(), resultLog.getErrorDate());
+				resultLog.getCompanyId(), resultLog.getLogTime(), resultLog.getProcessingContent().v(), resultLog.getErrorContent().map(ErrorContent::v).orElse(null),
+				resultLog.getErrorEmployeeId().orElse(null), resultLog.getErrorDate().orElse(null));
 		System.out.println();
 		return e;
 	}
