@@ -18,8 +18,6 @@ import { TimeDuration } from '@app/utils/time';
 export class CmmS45ShrComponentsApp8Component extends Vue {
     @Prop({default: () => ({}) })
     public readonly params: InitParam;
-
-    public user: any = null;
     public calculatedData: any = null;
 
     public created() {
@@ -29,8 +27,6 @@ export class CmmS45ShrComponentsApp8Component extends Vue {
     public mounted() {
         const vm = this;
         vm.$auth.user.then((usr: any) => {
-            vm.user = usr;
-        }).then((res: any) => {
             this.fetchData(vm.params.appDispInfoStartupOutput);
         });
     }
