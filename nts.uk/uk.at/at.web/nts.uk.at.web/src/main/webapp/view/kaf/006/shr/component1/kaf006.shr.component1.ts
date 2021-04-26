@@ -3,7 +3,7 @@ module nts.uk.at.view.kaf006.shr.component1.viewmodel {
     @component({
         name: 'kaf006-shr-component1',
         template: `
-        <div id="kaf006-shr-component1" data-bind="visible: $parent.selectedType() !== 6" style="border-top: 2px solid #B1B1B1; padding-top: 20px;">
+        <div id="kaf006-shr-component1" data-bind="visible: $parent.selectedType() !== 6" style="border-bottom: 2px solid #B1B1B1; padding-bottom: 25px;">
             <div class="table" style="padding-bottom: 10px;">
                 <div class="cell" data-bind="text: $i18n('KAF006_97')" style="font-weight: bold"></div>
             </div>
@@ -45,7 +45,7 @@ module nts.uk.at.view.kaf006.shr.component1.viewmodel {
                 </div>
             </div>
         </div>
-        <div id="kaf006-shr-component1" data-bind="visible: $parent.selectedType() === 6" style="border-top: 2px solid #B1B1B1; padding-top: 20px;">
+        <div id="kaf006-shr-component1" data-bind="visible: $parent.selectedType() === 6" style="border-bottom: 2px solid #B1B1B1; padding-bottom: 25px;">
             <div class="table" style="padding-bottom: 10px;">
                 <div class="cell" data-bind="text: $i18n('KAF006_97')" style="font-weight: bold"></div>
             </div>
