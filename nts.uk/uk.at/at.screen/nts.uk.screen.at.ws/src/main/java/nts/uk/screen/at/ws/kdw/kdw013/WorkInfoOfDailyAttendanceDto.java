@@ -4,7 +4,6 @@ import java.util.List;
 
 import nts.uk.ctx.at.record.app.find.dailyperform.workinfo.dto.NumberOfDaySuspensionDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.WorkInformationDto;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.ScheduleTimeSheet;
 
 /**
  * 
@@ -29,7 +28,7 @@ public class WorkInfoOfDailyAttendanceDto {
 	private int dayOfWeek;
 	
 	// 始業終業時間帯
-	private List<ScheduleTimeSheet> scheduleTimeSheets;
+	private List<ScheduleTimeSheetDto> scheduleTimeSheets;
 	
 	// 振休振出として扱う日数
 	private NumberOfDaySuspensionDto numberDaySuspension;
