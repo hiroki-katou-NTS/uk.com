@@ -47,17 +47,6 @@ public abstract class LoginCommandHandlerBase<
 				Ipv4Address.parse(HttpClientIpAddress.get(request)), 
 				request.getHeader("user-agent"));
 		
-		// テナント認証
-//		val tenantAuthResult = ConnectDataSourceOfTenant.connect(
-//				require, loginClient, command.getTenantCode(), command.getTenantPasswordPlainText());
-//		if(tenantAuthResult.isFailure()) {
-//			// テナント認証失敗記録の永続化
-//			transaction.execute(() -> {
-//				tenantAuthResult.getAtomTask().get().run();
-//			});
-//			return tenantAuthencationFailed();
-//		}
-		
 		// 認証
 		Authen authen = authenticate(require, command);
 		if (!authen.isSuccess()) {
