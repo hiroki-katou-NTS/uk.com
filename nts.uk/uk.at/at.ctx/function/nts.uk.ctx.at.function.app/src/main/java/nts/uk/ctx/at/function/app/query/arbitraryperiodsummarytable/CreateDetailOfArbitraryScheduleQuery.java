@@ -207,126 +207,109 @@ public class CreateDetailOfArbitraryScheduleQuery {
 
                 }
         );
-        if (isDetail || isWorkplaceTotal) {
 
-            listWplDistinct.forEach(e -> {
-                // 7.1 [4] == TRUE
-                if (isDetail) {
-                    val epls = employeeBasicInfoImportList.stream()
-                            .filter(j -> j.getWorkPlaceId().equals(e.getWorkplaceId())).collect(Collectors.toList());
-                    detailDisplayContents.add(new AttendanceDetailDisplayContents(
+        listWplDistinct.forEach(e -> {
+            val epls = employeeBasicInfoImportList.stream()
+                    .filter(j -> j.getWorkPlaceId().equals(e.getWorkplaceId())).collect(Collectors.toList());
+            detailDisplayContents.add(new AttendanceDetailDisplayContents(
+                    e.getWorkplaceId(),
+                    e.getWorkplaceCode(),
+                    e.getWorkplaceName(),
+                    e.getHierarchyCode(),
+                    epls.stream().map(i -> new DisplayedEmployee(
+                            getListContent(mapEplIdAndDisplayContent.getOrDefault(i.getEmployeeId(), Collections.emptyList()),
+                                    outputItemList, getAggregableMonthlyAttId),
+                            i.getEmployeeId(),
+                            i.getEmployeeCode(),
+                            i.getEmployeeName()
+                    )).collect(Collectors.toList())
+            ));
+            totalDisplayContents.add(new WorkplaceTotalDisplayContent(
                             e.getWorkplaceId(),
                             e.getWorkplaceCode(),
                             e.getWorkplaceName(),
                             e.getHierarchyCode(),
-                            epls.stream().map(i -> new DisplayedEmployee(
-                                    getListContent(mapEplIdAndDisplayContent.getOrDefault(i.getEmployeeId(), Collections.emptyList()),
-                                            outputItemList, getAggregableMonthlyAttId),
-                                    i.getEmployeeId(),
-                                    i.getEmployeeCode(),
-                                    i.getEmployeeName()
-                            )).collect(Collectors.toList())
-                    ));
+                            mapWplIdAndDisplayContent.getOrDefault(e.getWorkplaceId(), Collections.emptyList())
+                    )
+            );
+        });
+
+        if (!values.values().isEmpty()) {
+            // SUM THEO ATTID
+            val listValues = values.values().stream().flatMap(x -> x.getItemValues().stream())
+                    .filter(x -> checkAttId(getAggregableMonthlyAttId, x.getItemId()))
+                    .collect(Collectors.toList());
+            for (Integer h : listAttId) {
+                val its = listValues.stream().filter(q -> q.getItemId() == h && q.getValue() != null).collect(Collectors.toList());
+                val itemPrint = outputItemList.stream().filter(x -> x.getAttendanceId() == h).findFirst();
+                Double vl;
+                if (its != null && its.size() != 0) {
+                    vl = its.stream().filter(q -> checkNumber(q.getValue())).mapToDouble(x ->
+                            Double.parseDouble(x.getValue())).sum();
+                } else {
+                    vl = null;
                 }
-                // 7.2 [5] == TRUE
-                if (isWorkplaceTotal) {
-                    totalDisplayContents.add(new WorkplaceTotalDisplayContent(
-                                    e.getWorkplaceId(),
-                                    e.getWorkplaceCode(),
-                                    e.getWorkplaceName(),
-                                    e.getHierarchyCode(),
-                                    mapWplIdAndDisplayContent.getOrDefault(e.getWorkplaceId(), Collections.emptyList())
-                            )
+                itemPrint.ifPresent(j -> {
+                    val item = new DisplayContent(
+                            vl,
+                            j.getAttendanceId(),
+                            j.getRanking()
                     );
-                }
-            });
-            //7.3 「６」 == TRUE
-            if (isTotal) {
-                if (!values.values().isEmpty()) {
-                    // SUM THEO ATTID
-                    val listValues = values.values().stream().flatMap(x -> x.getItemValues().stream())
-                            .filter(x -> checkAttId(getAggregableMonthlyAttId, x.getItemId()))
-                            .collect(Collectors.toList());
-
-                    for (Integer h : listAttId) {
-                        val its = listValues.stream().filter(q -> q.getItemId() == h && q.getValue() != null).collect(Collectors.toList());
-
-                        val itemPrint = outputItemList.stream().filter(x -> x.getAttendanceId() == h).findFirst();
-                        Double vl;
-                        if (its != null && its.size() != 0) {
-                            vl = its.stream().filter(q -> checkNumber(q.getValue())).mapToDouble(x ->
-                                    Double.parseDouble(x.getValue())).sum();
-                        } else {
-                            vl = null;
-                        }
-                        itemPrint.ifPresent(j -> {
-                            val item = new DisplayContent(
-                                    vl,
-                                    j.getAttendanceId(),
-                                    j.getRanking()
-                            );
-                            totalAll.add(item);
-                        });
-                    }
-                }
-
+                    totalAll.add(item);
+                });
             }
-            /* 7.4 「７」 == TRUE */
-            if (isCumulativeWorkplace) {
-                val listWPL = workplacePrintTargetList.stream().sorted().collect(Collectors.toList());
-                Collections.reverse(listWPL);
-                listWPL.forEach(i -> {
-                            val item = totalDisplayContents.stream().filter(e ->
-                                    e.getLevel() >= i).collect(Collectors.toList());
 
-                            List<DisplayContent> listOfWorkplaces = new ArrayList<>();
-                            item.forEach(
-                                    k -> listOfWorkplaces.addAll(k.getListOfWorkplaces())
-                            );
-                            if (!item.isEmpty()) {
-                                val m = item.get(0);
-                                cumulativeWorkplaceDisplayContents.add(new CumulativeWorkplaceDisplayContent(
-                                        m.getWorkplaceId(),
-                                        m.getWorkplaceCode(),
-                                        m.getWorkplaceName(),
-                                        m.getHierarchyCode(),
-                                        outputItemList.stream().map(e -> {
-                                                    val its = listOfWorkplaces.stream().filter(q -> q.getAttendanceItemId() == e.getAttendanceId()
-                                                            && q.getValue() != null).collect(Collectors.toList());
-                                                    Double vl;
-                                                    if (its != null && its.size() != 0) {
-                                                        vl = its.stream().filter(q -> checkNumber(q.getValue().toString())).mapToDouble(x ->
-                                                                Double.parseDouble(x.getValue().toString())).sum();
-                                                    } else {
-                                                        vl = null;
-                                                    }
-                                                    return new DisplayContent(
-                                                            vl,
-                                                            e.getAttendanceId(),
-                                                            e.getRanking()
-                                                    );
+            val listWPL = workplacePrintTargetList.stream().sorted().collect(Collectors.toList());
+            Collections.reverse(listWPL);
+            listWPL.forEach(i -> {
+                        val item = totalDisplayContents.stream().filter(e ->
+                                e.getLevel() >= i).collect(Collectors.toList());
+
+                        List<DisplayContent> listOfWorkplaces = new ArrayList<>();
+                        item.forEach(
+                                k -> listOfWorkplaces.addAll(k.getListOfWorkplaces())
+                        );
+                        if (!item.isEmpty()) {
+                            val m = item.get(0);
+                            cumulativeWorkplaceDisplayContents.add(new CumulativeWorkplaceDisplayContent(
+                                    m.getWorkplaceId(),
+                                    m.getWorkplaceCode(),
+                                    m.getWorkplaceName(),
+                                    m.getHierarchyCode(),
+                                    outputItemList.stream().map(e -> {
+                                                val its = listOfWorkplaces.stream().filter(q -> q.getAttendanceItemId() == e.getAttendanceId()
+                                                        && q.getValue() != null).collect(Collectors.toList());
+                                                Double vl;
+                                                if (its != null && its.size() != 0) {
+                                                    vl = its.stream().filter(q -> checkNumber(q.getValue().toString())).mapToDouble(x ->
+                                                            Double.parseDouble(x.getValue().toString())).sum();
+                                                } else {
+                                                    vl = null;
                                                 }
+                                                return new DisplayContent(
+                                                        vl,
+                                                        e.getAttendanceId(),
+                                                        e.getRanking()
+                                                );
+                                            }
 
-                                        ).collect(Collectors.toList()),
-                                        i
-                                ));
-                            } else {
-                                cumulativeWorkplaceDisplayContents.add(new CumulativeWorkplaceDisplayContent(
-                                        "",
-                                        "",
-                                        "",
-                                        "",
-                                        Collections.emptyList(),
-                                        i
-                                ));
-                            }
-
+                                    ).collect(Collectors.toList()),
+                                    i
+                            ));
+                        } else {
+                            cumulativeWorkplaceDisplayContents.add(new CumulativeWorkplaceDisplayContent(
+                                    "",
+                                    "",
+                                    "",
+                                    "",
+                                    Collections.emptyList(),
+                                    i
+                            ));
                         }
-
-                );
-            }
-
+                    }
+            );
         }
+
         val compareWplc = Comparator.comparing(AttendanceDetailDisplayContents::getWorkplaceCd);
         val totalDisplayContentComparator = Comparator.comparing(WorkplaceTotalDisplayContent::getHierarchyCode);
 
