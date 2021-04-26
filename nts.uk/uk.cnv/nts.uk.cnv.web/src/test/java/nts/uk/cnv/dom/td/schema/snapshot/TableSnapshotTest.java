@@ -29,6 +29,7 @@ import nts.uk.cnv.dom.td.schema.snapshot.Healper.Alter;
 import nts.uk.cnv.dom.td.schema.snapshot.Healper.Column;
 import nts.uk.cnv.dom.td.schema.snapshot.Healper.Table;
 import nts.uk.cnv.dom.td.schema.tabledesign.TableDesign;
+import nts.uk.cnv.dom.td.schema.tabledesign.column.ColumnDesign;
 import nts.uk.cnv.dom.td.schema.tabledesign.constraint.PrimaryKey;
 import nts.uk.cnv.dom.td.schema.tabledesign.constraint.TableConstraints;
 
@@ -91,8 +92,8 @@ public class TableSnapshotTest {
 		@Test
 		public void addColumn() {
 			val newColumn = Column.create("id3", "COL3", "列3", Column.Type.varchar(20), "come", 2);
-			val actual = createApplied(new AddColumn(newColumn));
-			val expected = Table.builder()
+			TableDesign actual = createApplied(new AddColumn(newColumn));
+			TableDesign expected = Table.builder()
 					.columns(Arrays.asList(
 							Table.BASE.getColumns().get(0),
 							Table.BASE.getColumns().get(1),
@@ -103,8 +104,8 @@ public class TableSnapshotTest {
 		
 		@Test
 		public void removeColumn() {
-			val actual = createApplied(new RemoveColumn("id2"));
-			val expected = Table.builder()
+			TableDesign actual = createApplied(new RemoveColumn("id2"));
+			TableDesign expected = Table.builder()
 					.columns(Arrays.asList(
 							Table.BASE.getColumns().get(0)))
 					.build();
@@ -133,9 +134,9 @@ public class TableSnapshotTest {
 		
 		@Test
 		public void changeColumnName() {
-			val base = Table.BASE.getColumns().get(1);
-			val actual = createApplied(new ChangeColumnName(base.getId(), "NEW_NAME"));
-			val expected = Table.builder()
+			ColumnDesign base = Table.BASE.getColumns().get(1);
+			TableDesign actual = createApplied(new ChangeColumnName(base.getId(), "NEW_NAME"));
+			TableDesign expected = Table.builder()
 					.columns(Arrays.asList(
 							Table.BASE.getColumns().get(0),
 							Column.builder(base).columnName("NEW_NAME").build()))
@@ -152,9 +153,9 @@ public class TableSnapshotTest {
 		
 		@Test
 		public void changeColumnJpName() {
-			val base = Table.BASE.getColumns().get(1);
-			val actual = createApplied(new ChangeColumnJpName(base.getId(), "新しい名前"));
-			val expected = Table.builder()
+			ColumnDesign base = Table.BASE.getColumns().get(1);
+			TableDesign actual = createApplied(new ChangeColumnJpName(base.getId(), "新しい名前"));
+			TableDesign expected = Table.builder()
 					.columns(Arrays.asList(
 							Table.BASE.getColumns().get(0),
 							Column.builder(base).columnJpName("新しい名前").build()))
@@ -171,9 +172,9 @@ public class TableSnapshotTest {
 		
 		@Test
 		public void changeColumnComment() {
-			val base = Table.BASE.getColumns().get(1);
-			val actual = createApplied(new ChangeColumnComment(base.getId(), "新しいコメント"));
-			val expected = Table.builder()
+			ColumnDesign base = Table.BASE.getColumns().get(1);
+			TableDesign actual = createApplied(new ChangeColumnComment(base.getId(), "新しいコメント"));
+			TableDesign expected = Table.builder()
 					.columns(Arrays.asList(
 							Table.BASE.getColumns().get(0),
 							Column.builder(base).comment("新しいコメント").build()))
@@ -190,9 +191,9 @@ public class TableSnapshotTest {
 		
 		@Test
 		public void changeColumnType() {
-			val base = Table.BASE.getColumns().get(1);
-			val actual = createApplied(new ChangeColumnType(base.getId(), Column.Type.varchar(25)));
-			val expected = Table.builder()
+			ColumnDesign base = Table.BASE.getColumns().get(1);
+			TableDesign actual = createApplied(new ChangeColumnType(base.getId(), Column.Type.varchar(25)));
+			TableDesign expected = Table.builder()
 					.columns(Arrays.asList(
 							Table.BASE.getColumns().get(0),
 							Column.builder(base).type(Column.Type.varchar(25)).build()))
@@ -228,12 +229,12 @@ public class TableSnapshotTest {
 		
 		@Test
 		public void テーブル名変更して列追加して追加した列の名前変更() {
-			val actual = createApplied(Arrays.asList(
+			TableDesign actual = createApplied(Arrays.asList(
 					new ChangeTableName("NEW_NAME"),
 					new AddColumn(Column.create("id3", "COL3", "列3", Column.Type.varchar(5), "comment", 3)),
 					new ChangeColumnName("id3", "COL3_NEW")
 					));
-			val expected = Table.builder()
+			TableDesign expected = Table.builder()
 					.tableName("NEW_NAME")
 					.columns(Arrays.asList(
 							Table.BASE.getColumns().get(0),
