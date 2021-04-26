@@ -177,33 +177,35 @@ module nts.uk.ui.kdp001.a {
                 </button>
             </div>
             <!-- ko if: $component.modeDisplayStampList -->
-            <div class="kdp-001-a" data-bind="
-                    widget-content: 143,
-                    ">
-                <div>
-                    <table>
-                        <colgroup>
-                            <col width="25%" />
-                            <col width="25%" />
-                            <col width="50%" />
-                        </colgroup>
-                        <tbody data-bind="foreach: { data: $component.stamps, as: 'stm' }">
-                            <tr>
-                                <td data-bind="css: stm.forceColor">
-                                    <span data-bind="date: stm.date, format: 'MM/DD(ddd)'"></span>
-                                </td>
-                                <td>
-                                    <span class="left-content" data-bind="text: stm.stampHow"></span>
-                                    <span data-bind="date: stm.date, format: 'HH:mm'"></span>
-                                </td>
-                                <td data-bind="css: stm.textAlign">
-                                    <span data-bind="text: stm.stampArt"></span>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <!-- ko if: !$component.message.display() -->
+                <div class="kdp-001-a" data-bind="
+                        widget-content: 143,
+                        ">
+                    <div>
+                        <table>
+                            <colgroup>
+                                <col width="25%" />
+                                <col width="25%" />
+                                <col width="50%" />
+                            </colgroup>
+                            <tbody data-bind="foreach: { data: $component.stamps, as: 'stm' }">
+                                <tr>
+                                    <td data-bind="css: stm.forceColor">
+                                        <span data-bind="date: stm.date, format: 'MM/DD(ddd)'"></span>
+                                    </td>
+                                    <td>
+                                        <span class="left-content" data-bind="text: stm.stampHow"></span>
+                                        <span data-bind="date: stm.date, format: 'HH:mm'"></span>
+                                    </td>
+                                    <td data-bind="css: stm.textAlign">
+                                        <span data-bind="text: stm.stampArt"></span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
-            </div>
+                <!-- /ko -->
             <!-- /ko -->
             <style rel="stylesheet">
                 .widget-title {
@@ -226,7 +228,9 @@ module nts.uk.ui.kdp001.a {
                     font-size: 16px;
                 }
                 .kdp-001-a.kdp-001-a-msg {
-                    padding: 10px;
+                    padding: 10px 0px;
+                    width: 450px;
+                    margin: auto;
                 }
                 .kdp-001-a.kdp-001-a-btn{
                     width: 450px;
