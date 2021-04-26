@@ -489,9 +489,9 @@ module nts.uk.ui.at.kdp013.c {
             // update popup size
             hasError
                 .subscribe((has) => {
-                    if (has) {
+                    setTimeout(() => {
                         position.valueHasMutated();
-                    }
+                    }, 200);
                 });
 
             position

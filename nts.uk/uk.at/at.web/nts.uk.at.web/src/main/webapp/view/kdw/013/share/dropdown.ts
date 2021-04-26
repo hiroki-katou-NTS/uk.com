@@ -111,7 +111,6 @@ module nts.uk.ui.at.kdp013.share {
         const COMPONENT_NAME = 'dropdown';
 
         interface DropdownItem {
-            id: string;
             name: string;
             code: string;
         }
@@ -341,11 +340,10 @@ module nts.uk.ui.at.kdp013.share {
 
                         return _.chain(items)
                             .filter(({ name, code }) => name.indexOf(filter) > -1 || code.indexOf(filter) > -1)
-                            .map(({ name, id, code }, index) => ({
-                                id,
+                            .map(({ name, code }, index) => ({
                                 code,
                                 name,
-                                selected: selected === id,
+                                selected: selected === code,
                                 highlight: highlight === index
                             }))
                             .value();
@@ -357,16 +355,16 @@ module nts.uk.ui.at.kdp013.share {
                         const items = ko.unwrap(params.items);
                         const highlight = ko.unwrap(vm.highlight);
                         const selected = ko.unwrap(params.selected);
-                        const exist = _.find(items, ({ id }, index) => highlight === index || id === selected);
+                        const exist = _.find(items, ({ code }, index) => highlight === index || code === selected);
 
 
                         if (exist) {
-                            const { code, id, name } = exist;
+                            const { code, name } = exist;
 
-                            return { code, id, name };
+                            return { code, name };
                         }
 
-                        return { code: '', id: '', name: '' };
+                        return { code: '', name: '' };
                     }
                 });
             }
@@ -385,7 +383,7 @@ module nts.uk.ui.at.kdp013.share {
                         vm.filter('');
                         vm.highlight(-1);
                     } else {
-                        const items = ko.unwrap(vm.items).map(({ id }) => id);
+                        const items = ko.unwrap(vm.items).map(({ code }) => code);
                         const selected = ko.unwrap(vm.params.selected);
                         const index = _.indexOf(items, selected);
 
@@ -467,7 +465,7 @@ module nts.uk.ui.at.kdp013.share {
                                     const exist = _.find(items, ({ }, index) => index === highlight);
 
                                     if (exist) {
-                                        vm.params.selected(exist.id);
+                                        vm.params.selected(exist.code);
                                     }
 
                                     vm.show(false);
@@ -515,7 +513,7 @@ module nts.uk.ui.at.kdp013.share {
                 const { params } = vm;
 
                 // emit selected id to parent component
-                params.selected(item.id);
+                params.selected(item.code);
 
                 vm.show(false);
 
