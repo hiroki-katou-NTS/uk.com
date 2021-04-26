@@ -5,7 +5,7 @@ import nts.arc.time.GeneralDate;
 import java.util.List;
 import java.util.Map;
 
-public interface EmployeeWorkplaceIdAdapter {
+public interface EmployeeWorkplaceAdapter {
     /**
      * [1]職場IDを取得する
      *

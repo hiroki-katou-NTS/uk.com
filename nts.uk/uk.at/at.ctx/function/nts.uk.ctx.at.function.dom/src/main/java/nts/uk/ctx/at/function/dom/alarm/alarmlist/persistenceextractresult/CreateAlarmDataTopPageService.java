@@ -146,7 +146,7 @@ public class CreateAlarmDataTopPageService {
 
     public interface Require {
         /**
-         * [R-1] 社員ID（List）と基準日から所属職場IDを取得 : using EmployeeWorkplaceIdAdapter
+         * [R-1] 社員ID（List）と基準日から所属職場IDを取得 : using EmployeeWorkplaceAdapter
          *
          * @param sIds
          * @param baseDate

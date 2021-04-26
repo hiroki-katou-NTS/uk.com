@@ -2,7 +2,7 @@ package nts.uk.ctx.at.function.ac.alarm;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.function.dom.adapter.alarm.AffAtWorkplaceExport;
-import nts.uk.ctx.at.function.dom.adapter.alarm.EmployeeWorkplaceIdAdapter;
+import nts.uk.ctx.at.function.dom.adapter.alarm.EmployeeWorkplaceAdapter;
 import nts.uk.ctx.bs.employee.pub.workplace.master.WorkplacePub;
 
 import javax.ejb.Stateless;
@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
  */
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-public class EmployeeWorkplaceIdAdapterImpl implements EmployeeWorkplaceIdAdapter {
+public class EmployeeWorkplaceAdapterImpl implements EmployeeWorkplaceAdapter {
     @Inject
     private WorkplacePub workplacePub;
 
