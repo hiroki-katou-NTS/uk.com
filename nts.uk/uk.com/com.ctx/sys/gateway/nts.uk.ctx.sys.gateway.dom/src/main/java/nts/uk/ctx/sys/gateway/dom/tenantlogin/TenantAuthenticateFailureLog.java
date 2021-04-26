@@ -1,32 +1,33 @@
 package nts.uk.ctx.sys.gateway.dom.tenantlogin;
 
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
 import nts.arc.time.GeneralDateTime;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.sys.gateway.dom.login.LoginClient;
 /**
  * テナント認証失敗記録
  * @author hiroki_katou
  *
  */
-@RequiredArgsConstructor
+@Getter
 public class TenantAuthenticateFailureLog implements DomainAggregate {
 	/** 日時 */
-	@Getter
 	private final GeneralDateTime failureTimestamps;
-
 	/** ログインクライアント */
-	@Getter
 	private final LoginClient loginClient;
-
 	/** 試行したテナントコード */
-	@Getter
 	private final String triedTenantCode;
-
 	/** 試行したパスワード */
-	@Getter
 	private final String triedPassword;
+	
+	public TenantAuthenticateFailureLog(GeneralDateTime dateTime, LoginClient loginClient, String triedTenantCode, String triedPassword) {
+		this.failureTimestamps = dateTime;
+		this.loginClient = loginClient;
+		// ユーザー入力の値は適当な長さでカットして保持する
+		this.triedTenantCode = StringUtil.cutOffAsLengthHalf(triedTenantCode, 100);
+		this.triedPassword = StringUtil.cutOffAsLengthHalf(triedPassword, 100);
+	}
 	
 	/**
 	 * いま失敗した
@@ -36,6 +37,10 @@ public class TenantAuthenticateFailureLog implements DomainAggregate {
 	 * @return
 	 */
 	public static TenantAuthenticateFailureLog failedNow(LoginClient loginClient, String triedTenantCode, String triedPassword) {
-		return new TenantAuthenticateFailureLog(GeneralDateTime.now(), loginClient, triedTenantCode, triedPassword);
+		return new TenantAuthenticateFailureLog(
+				GeneralDateTime.now(), 
+				loginClient, 
+				triedTenantCode, 
+				triedPassword);
 	}
 }

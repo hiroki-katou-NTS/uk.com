@@ -24,6 +24,6 @@ public class LoginClientTest {
 		
 		val result = new LoginClient(Dummy.ipAddress, longUserAgent);
 		
-		assertThat(result.getUserAgent().length() == 100).isTrue();
+		assertThat(result.getUserAgent().length() <= 100).isTrue();
 	}
 }
