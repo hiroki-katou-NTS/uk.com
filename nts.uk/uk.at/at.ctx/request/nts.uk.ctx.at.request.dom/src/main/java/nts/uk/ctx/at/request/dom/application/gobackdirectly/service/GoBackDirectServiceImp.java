@@ -297,6 +297,16 @@ public class GoBackDirectServiceImp implements GoBackDirectService {
 		output.setLstWorkType(result.getWorkTypes());
 		output.getAppDispInfoStartup().getAppDispInfoWithDateOutput().setOpWorkTimeLst(Optional.of(result.getWorkTimes()));
 		
+		// 所定時間帯を取得する
+		
+		Boolean isUseTimeZone = StringUtils.isBlank(output.getWorkType()) || StringUtils.isBlank(output.getWorkTime());
+		if (!isUseTimeZone) {
+			PredetermineTimeSetForCalc predetermineTimeSetForCalc = workTimeSettingService.getPredeterminedTimezone(companyId, output.getWorkTime(), output.getWorkType(), null);
+			List<TimezoneUse> timezones = predetermineTimeSetForCalc.getTimezones();
+			output.setTimezones(timezones);
+		}
+		
+		
 		return output;
 	}
 	
