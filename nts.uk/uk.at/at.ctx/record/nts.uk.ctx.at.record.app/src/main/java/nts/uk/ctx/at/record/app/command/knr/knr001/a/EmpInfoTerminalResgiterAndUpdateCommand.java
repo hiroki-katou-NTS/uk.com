@@ -49,4 +49,8 @@ public class EmpInfoTerminalResgiterAndUpdateCommand {
 	 */
 	private int entranceExit;
 	
+	public String getIpAddress() {
+		return this.ipAddress1 + '.' + this.ipAddress2 + '.' + this.ipAddress3 + '.' + this.ipAddress4;
+	}
+	
 }

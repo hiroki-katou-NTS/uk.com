@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.request.dom.application.common.service.application;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -56,9 +57,13 @@ public class ApplicationForSendServiceImpl implements IApplicationForSendService
 	 * ダイアログを開く kdl030
 	 */
 	@Override
-	public ApplicationForSendOutput getApplicationForSend(List<String> appIDLst) {
+	public ApplicationForSendOutput getApplicationForSend(SendMailDialogParam param) {
 		String companyID = AppContexts.user().companyId();
 		List<AppSendMailByEmp> appSendMailByEmpLst = new ArrayList<>();
+		List<String> appIDLst = param.getAppIDLst();
+		if(!param.isMultiEmp()) {
+			appIDLst = Arrays.asList(appIDLst.get(0));
+		}
 		// ドメインモデル「申請メール設定」を取得する(get domain model 「」)
 		AppEmailSet appEmailSet = appEmailSetRepository.findByDivision(Division.APPLICATION_APPROVAL);
 		// ドメイン「申請」より各種情報を取得する

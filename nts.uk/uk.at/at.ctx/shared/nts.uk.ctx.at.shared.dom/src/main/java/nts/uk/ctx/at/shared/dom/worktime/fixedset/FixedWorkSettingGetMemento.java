@@ -7,11 +7,12 @@ package nts.uk.ctx.at.shared.dom.worktime.fixedset;
 import java.util.List;
 import java.util.Optional;
 
-import nts.uk.ctx.at.shared.dom.worktime.common.FixedWorkRestSet;
+import nts.uk.ctx.at.shared.dom.worktime.common.CommonRestSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.LegalOTSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.StampReflectTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.HalfDayWorkSet;
 
 /**
  * The Interface FixedWorkSettingGetMemento.
@@ -51,14 +52,21 @@ public interface FixedWorkSettingGetMemento {
 	 *
 	 * @return the use half day shift
 	 */
-	Boolean getUseHalfDayShift();
+	HalfDayWorkSet getUseHalfDayShift();
+	
+	/**
+     * Gets the fixed common rest setting.
+     *
+     * @return the fixed common rest setting
+     */
+	CommonRestSetting getCommonRestSet();
 
 	/**
 	 * Gets the fixed work rest setting.
 	 *
 	 * @return the fixed work rest setting
 	 */
-	FixedWorkRestSet getFixedWorkRestSetting();
+//	FixedWorkRestSet getFixedWorkRestSetting();
 
 	/**
 	 * Gets the lst half day work timezone.

@@ -9,33 +9,36 @@ module nts.uk.at.view.kdl030.a.viewmodel {
     @bean()
     export class Kdl030AViewModel extends ko.ViewModel {
         appIDLst: Array<string> = [];
-        isAgentMode: boolean = false;
         appSendMailByEmpLst: KnockoutObservableArray<any> = ko.observableArray([]);
         isSendApplicant: KnockoutObservable<boolean> = ko.observable(false);
         mailContent: KnockoutObservable<String> = ko.observable(null);
         appEmailSet: any = null;
-        isOpEmployee: boolean = false;
+		isMultiEmp: boolean = false;
+		isExpandMode: boolean = false;
 
         created() {
             const vm = this;
             let param = getShared("KDL030_PARAM");
             vm.appIDLst = param.appIDLst;
-            vm.isAgentMode = param.isAgentMode;
-            //recheck agentMode
-            if (vm.isAgentMode && param.employeeInfoLst.length == 1) {
-                if (param.employeeInfoLst[0].scd == __viewContext.user.employeeCode) {
-                    vm.isAgentMode = false;
-                }
+			vm.isMultiEmp = param.isMultiEmp;
+            //from screen A
+            if (vm.isMultiEmp) {
+                vm.isExpandMode = true;
             }
+            if (param.employeeInfoLst.length == 1 ) {
+                vm.isExpandMode = !(param.employeeInfoLst[0].scd == __viewContext.user.employeeCode);
+            }
+            //from screenB
             if (!_.isNil(param.appDispInfoStartupOutput)) {
-                vm.isOpEmployee = param.appDispInfoStartupOutput.appDispInfoNoDateOutput.opEmployeeInfo != null;
                 if (param.appDispInfoStartupOutput.appDispInfoNoDateOutput.employeeInfoLst[0].scd != __viewContext.user.employeeCode) {
-                    vm.isAgentMode = true;
+                    vm.isExpandMode = true;
                 }
+                if(param.appDispInfoStartupOutput.appDispInfoNoDateOutput.opEmployeeInfo != null)
+                    vm.isExpandMode = true;
             }
 
             if (!_.isEmpty(vm.appIDLst)) {
-                vm.$ajax(API.applicationForSendByAppID, vm.appIDLst).done((result) => {
+                vm.$ajax(API.applicationForSendByAppID, { appIDLst: vm.appIDLst, isMultiMode: vm.isMultiEmp }).done((result) => {
                     vm.mailContent(result.mailTemplate);
                     vm.appEmailSet = result.appEmailSet;
                     let appSendMails = [];
@@ -59,7 +62,7 @@ module nts.uk.at.view.kdl030.a.viewmodel {
 
                     vm.appSendMailByEmpLst(ko.mapping.fromJS(appSendMails)());
 
-                    if (vm.isAgentMode || vm.isOpEmployee) {
+                    if (vm.isExpandMode) {
                         vm.isSendApplicant(true);
                     }
 
@@ -182,7 +185,7 @@ module nts.uk.at.view.kdl030.a.viewmodel {
                 })
             })
             if (count > 5) {
-                return (self.isAgentMode || self.isOpEmployee) ? 'min-774' : 'min-671';
+                return self.isExpandMode ? 'min-774' : 'min-671';
             }
             return "";
         }, this)

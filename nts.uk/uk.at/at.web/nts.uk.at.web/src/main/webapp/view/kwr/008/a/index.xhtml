@@ -29,135 +29,247 @@
 		<ui:define name="content">
 			<div id="functions-area">
 				<!-- A1_1 -->
-				<button tabindex="1" id="A1_1" class="proceed"
-				data-bind="click: exportReport,
-							enable: $root.errors.isEmpty">#{i18n.getText('KWR008_3')}</button>
+				<button
+					tabindex="1"
+					id="A1_1"
+					class="proceed"
+					data-bind="click: exportReport, enable: $root.errors.isEmpty">
+					#{i18n.getText('KWR008_3')}
+				</button>
 			</div>
 			<div id="contents-area" class="fixed-flex-layout">
 				<!-- A2_1  CCG001-->
 				<div class = "ccg001searchkcp005">
 					<div id="ccgcomponent" ></div>
 				</div>
-				
-				<div class="panel panel-frame" style="margin-left:75px; height: 466px; width: 592px; min-width: 592px;">
-					<div class="employeeInfoSearch">
-						<div class="selectionEmployee" tabindex="2">
-							<div id="employeeSearch" tabindex="-1"></div>
-						</div>
-					</div>
-				</div>
-				<div class="panel panel-frame inline-table" style="padding: 20px; width: 500px; min-width: 500px;">
-					<div style="width: 450px;">
-					
-						<!-- A8 -->
-	                    <div class="valign-center control-group ntsControl">
-	                    	<div data-bind="ntsFormLabel: {required:true}">#{i18n.getText('KWR008_51')}</div>
-	                    	<div tabindex="3" class="listSheetPrintingForm" data-bind="ntsSwitchButton: {
-								name: '#[KWR008_51]',
-								options: listSheetPrintingForm,
-								optionsValue: 'code',
-								optionsText: 'name',
-								value: printFormat,
-								required: true,
-								enable: true }"></div>
-	                    </div>
-	                    
-	                    <!-- A9 -->
-	                    <div data-bind="visible: printFormat() == 1" class="valign-center control-group ntsControl">
-	                    	<div data-bind="ntsFormLabel: {required:true}">#{i18n.getText('KWR008_52')}</div>
-	                    	<div id = "A9_2" tabindex="4" data-bind="ntsDatePicker: { 
-	                    		value: fiscalYear, 
-	                    		dateFormat: 'YYYY',
-	                    		valueFormat: 'YYYY',
-	                    		defaultClass: 'round-orange',
-	                    		required: true,
-	                    		name: '#{i18n.getText('KWR008_52')}',
-	                    		showJumpButtons: true}"></div>
-	                    </div>
-	                    
-	                    <!-- A11 -->
-						<div class="standardMonth" data-bind="visible: selectAverage() &amp;&amp; printFormat() == 1">
-							<span class="label">#{i18n.getText('KWR008_67')}</span>
-							<div data-bind="with: standardMonth" class="date-range-picker">
-								<input id="" tabindex="5" data-bind="ntsNumberEditor: {
-									name:'#{i18n.getText('KWR008_67')}',
-									value: $parent.curentMonth,
-	            					option: option,
-	            					required: required,
-									constraint: 'Month'
-									}" />
-								<span class="label">#{i18n.getText('KWR008_68')}</span>
-							</div>
-						</div>
-
+				<div>
+					<div class="panel panel-frame stage-frame">
 						<!-- A3 -->
 						<div data-bind="visible: printFormat() == 0" id="range-date" class="valign-center control-group ntsControl">
 							<!-- A3_1 -->
-							<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KWR008_4')}</div>
+							<div class="custom-form-label-w50" data-bind="ntsFormLabel: {required:false}">#{i18n.getText('KWR008_4')}</div>
 							<!-- A3_2 -->
-							<div tabindex="4" id="period" class="date-range-picker" data-bind="ntsDateRangePicker: { required: true,
-							enable: true,
-							showNextPrevious: true,
-							value: dateValue,
-							type: 'yearmonth',
-							jumpUnit: 'year'}"></div>
+							<div
+								tabindex="4"
+								id="period"
+								class="date-range-picker"
+								data-bind="ntsDateRangePicker: {
+									required: true,
+									enable: true,
+									showNextPrevious: true,
+									value: dateValue,
+									type: 'yearmonth',
+									jumpUnit: 'year'
+								}">
+							</div>
 						</div>
+	
+						<!-- A9 -->
+						<div data-bind="visible: printFormat() == 1" class="valign-center control-group ntsControl">
+							<div class="custom-form-label-w50" data-bind="ntsFormLabel: {required:false}">#{i18n.getText('KWR008_52')}</div>
+							<div id = "A9_2" tabindex="4" data-bind="ntsDatePicker: { 
+								value: fiscalYear, 
+								dateFormat: 'YYYY',
+								valueFormat: 'YYYY',
+								defaultClass: 'round-orange',
+								required: true,
+								name: '#{i18n.getText('KWR008_52')}',
+								showJumpButtons: true}"></div>
+						</div>
+					</div>
+					<div class="panel panel-frame" style="margin-left:75px; height: 466px; width: 592px; min-width: 592px;">
+						<div class="employeeInfoSearch">
+							<div class="selectionEmployee" tabindex="2">
+								<div id="employeeSearch" tabindex="-1"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="panel panel-frame inline-table" style="padding: 20px; width: 550px; min-width: 550px;height: 500px;">
+					<div>
+						<!-- A8 -->
+						<div class="valign-center control-group ntsControl">
+							<div data-bind="ntsFormLabel: {required:false}">#{i18n.getText('KWR008_51')}</div>
+								<div tabindex="3" class="listSheetPrintingForm" data-bind="ntsSwitchButton: {
+									name: '#[KWR008_51]',
+									options: listSheetPrintingForm,
+									optionsValue: 'code',
+									optionsText: 'name',
+									value: printFormat,
+									required: true,
+									enable: true }"></div>
+						</div>
+
 						<!-- A4 -->
-						<div class="valign-center control-group">
-							<!-- A4_1 -->
-							<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KWR008_11')}</div>
-							<!-- A4_2 -->
-							<div id="outputItem" tabindex="5" data-bind="ntsComboBox: {
-								name: '#{i18n.getText('KWR008_12')}',
-								options: outputItem,
-								optionsValue: 'code',
-								visibleItemsCount: 5,
-								value: selectedOutputItem,
-								optionsText: 'name',
-								selectFirstIfNull: true,
-								required:true,
-								editable: false,
-								width : '220px',
-								columns: [
-									{ prop: 'code', length: 2 },
-									{ prop: 'name', length: 20},
-								]}"></div>
-							<!-- A4_3 -->
-							<button
-								data-bind="click: openKWR008B,
-									enable: isEmployeeCharge()"
-								tabindex="6" class="small">#{i18n.getText('KWR008_13')}</button>
+						<div>
+							<table>
+								<colgroup>
+									<col width="157px" />
+									<col width="120px" />
+									<col width="230px" />
+									<col width="50px" />
+								</colgroup>
+								<tr>
+									<td>
+											<!-- A4_1 -->
+											<div data-bind="ntsFormLabel: {required:false}">#{i18n.getText('KWR008_11')}</div>
+									</td>
+									<td>
+										<span class="ntsControl">
+											<label class="ntsRadioBox" tabindex="5">
+												<input
+													type="radio"
+													name="radio-button-A45"
+													data-bind="checkedValue: 0,
+															checked: selectionType,
+															enable: true,
+															attr: { tabindex:5 }" />
+												<span class="box"></span>
+												<span class="label">#{i18n.getText('KWR008_72')}</span>
+											</label>
+										</span>
+									</td>
+									<td class="pt-7">
+											<!-- A4_2 -->
+											<div
+												id="outputItem"
+												tabindex="5"
+												data-bind="ntsComboBox: {
+													name: '#{i18n.getText('KWR008_12')}',
+													options: outputItem,
+													optionsValue: 'layoutId',
+													visibleItemsCount: 5,
+													value: selectedOutputItem,
+													optionsText: 'name',
+													selectFirstIfNull: true,
+													required:true,
+													editable: false,
+													enable: enabledStandardMode,
+													width : '220px',
+													columns: [
+														{ prop: 'cd', length: 2 },
+														{ prop: 'name', length: 20},
+													]}">
+											</div>
+									</td>
+									<td class="pt-7">
+										<!-- A4_3 -->
+										<button
+											data-bind="click: openKWR008B, enable: isEmployeeCharge() &amp;&amp; enabledStandardMode()"
+											tabindex="6">
+											#{i18n.getText('KWR008_13')}
+										</button>
+									</td>
+								</tr>
+
+								<tr>
+									<td></td>
+									<td>
+										<span class="ntsControl">
+											<label class="ntsRadioBox" tabindex="5">
+												<input
+													type="radio"
+													name="radio-button-A45"
+													data-bind="checkedValue: 1,
+															checked: selectionType,
+															enable: enableAuthority,
+															attr: { tabindex:5 }" />
+												<span class="box"></span>
+												<span class="label">#{i18n.getText('KWR008_73')}</span>
+											</label>
+										</span>
+									</td>
+									<td class="pt-7">
+											<!-- A4_2 -->
+											<div
+												id="outputItemFreeSetting"
+												tabindex="5"
+												data-bind="ntsComboBox: {
+													name: '#{i18n.getText('KWR008_73')}',
+													options: outputItemsFreeSetting,
+													optionsValue: 'layoutId',
+													visibleItemsCount: 5,
+													value: selectedOutputItemFree,
+													optionsText: 'name',
+													selectFirstIfNull: true,
+													required:true,
+													editable: false,
+													enable: enabledFreeMode,
+													width : '220px',
+													columns: [
+														{ prop: 'cd', length: 2 },
+														{ prop: 'name', length: 20},
+													]}">
+											</div>
+									</td>
+									<td class="pt-7">
+										<!-- A4_8 -->
+										<button
+											data-bind="click: openKWR008B, enable: enabledFreeMode()"
+											tabindex="6">
+											#{i18n.getText('KWR008_13')}
+										</button>
+									</td>
+								</tr>
+							</table>
 						</div>
+
 						<!-- A6 -->
 						<div class="valign-center control-group">
-							<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KWR008_17')}</div>
-							<div tabindex="7" id="A6_2"
-								data-bind="ntsComboBox: {
-								options: breakPage,
-								optionsValue: 'code',
-								visibleItemsCount: 2,
-								value: selectedBreakPage,
-								optionsText: 'name',
-								width : '90px',
-								required: true,
-								columns: [
-									{ prop: 'name' }
-								]}"></div>
+							<div data-bind="ntsFormLabel: {required:false}">#{i18n.getText('KWR008_17')}</div>
+							<div
+								tabindex="7"
+								id="A6_2"
+								class="switch-btn-custom"
+								data-bind="ntsSwitchButton: {
+									name: '#[KWR008_59]',
+									options: breakPage,
+									optionsValue: 'code',
+									optionsText: 'name',
+									value: selectedBreakPage,
+									required: true,
+									enable: true }">
+							</div>
 						</div>
 
 						<!-- A10 -->
-	                    <div data-bind="visible: printFormat() == 1" class="valign-center control-group ntsControl">
-	                    	<div data-bind="ntsFormLabel: {required:true}">#{i18n.getText('KWR008_59')}</div>
-	                    	<div tabindex="8" data-bind="ntsSwitchButton: {
-								name: '#[KWR008_59]',
-								options: listSheetExcludedEmp,
-								optionsValue: 'code',
-								optionsText: 'name',
-								value: excludeEmp,
-								required: true,
-								enable: true }"></div>
-	                    </div>
+						<div data-bind="visible: printFormat() == 1" class="valign-center control-group ntsControl">
+							<div data-bind="ntsFormLabel: {required:false}">#{i18n.getText('KWR008_59')}</div>
+							<div
+								class="switch-btn-custom"
+								tabindex="8"
+								data-bind="ntsSwitchButton: {
+									name: '#[KWR008_59]',
+									options: listSheetExcludedEmp,
+									optionsValue: 'code',
+									optionsText: 'name',
+									value: excludeEmp,
+									required: true,
+									enable: true }">
+							</div>
+						</div>
 
+						<!-- A11 -->
+						<div
+							data-bind="visible: selectAverage() &amp;&amp; printFormat() == 1"
+							class="valign-center">
+							<div data-bind="ntsFormLabel: { required:selectAverage }">#{i18n.getText('KWR008_67')}</div>
+							<div data-bind="with: standardMonth" class="date-range-picker">
+								<input
+									id="C11_2"
+									tabindex="12"
+									data-bind="ntsNumberEditor:{
+										name: '#{i18n.getText('KWR008_67')}',
+										required: required,
+										value: $parent.curentMonth,
+										option: option,
+										constraint: 'Month'
+									}"
+									style="width: 35px;"/>
+								<span class="label">#{i18n.getText('KWR008_68')}</span>
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>

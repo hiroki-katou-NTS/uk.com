@@ -133,7 +133,7 @@ public class JpaWorkTimeSettingRepository extends JpaRepository implements WorkT
 			KshmtWt wkTime;
 			if (results.isEmpty()) {
 				wkTime = new KshmtWt(new KshmtWorkTimeSetPK(companyID, code), 0,
-						TextResource.localize("KAL003_120"), TextResource.localize("KAL003_120"), "", 0, 0, 0, "", "",
+						TextResource.localize("KAL003_120"), TextResource.localize("KAL003_120"), 0, 0, 0, "",
 						"");
 			} else {
 				wkTime = results.get(0);
@@ -317,11 +317,11 @@ public class JpaWorkTimeSettingRepository extends JpaRepository implements WorkT
 				entity.setKshmtWorkTimeSetPK(pk);
 				entity.setName(rec.getString("NAME"));
 				entity.setAbname(rec.getString("ABNAME"));
-				entity.setSymbol(rec.getString("SYMBOL"));
+//				entity.setSymbol(rec.getString("SYMBOL"));
 				entity.setDailyWorkAtr(rec.getInt("DAILY_WORK_ATR"));
 				entity.setWorktimeSetMethod(rec.getInt("WORKTIME_SET_METHOD"));
 				entity.setAbolitionAtr(rec.getInt("ABOLITION_ATR"));
-				entity.setColor(rec.getString("COLOR"));
+//				entity.setColor(rec.getString("COLOR"));
 				entity.setMemo(rec.getString("MEMO"));
 				entity.setNote(rec.getString("NOTE"));
 				
@@ -425,6 +425,43 @@ public class JpaWorkTimeSettingRepository extends JpaRepository implements WorkT
 				.query(FIND_BY_CID, KshmtWt.class)
 				.setParameter("companyId", companyId)
 				.getList(c -> new WorkTimeSetting(new JpaWorkTimeSettingGetMemento(c)));
+	}
+
+	@Override
+	public List<WorkTimeSetting> getListWorkTime(String companyId, List<String> workTimeCodes) {
+		if(workTimeCodes.isEmpty()){
+			return this.findWithCondition(companyId, new WorkTimeSettingCondition(null, null, null));
+		}
+		// get entity manager
+		EntityManager em = this.getEntityManager();
+		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+
+		CriteriaQuery<KshmtWt> cq = criteriaBuilder.createQuery(KshmtWt.class);
+		Root<KshmtWt> root = cq.from(KshmtWt.class);
+
+		// select root
+		cq.select(root);
+		
+		List<KshmtWt> resultList = new ArrayList<>();
+
+		CollectionUtil.split(workTimeCodes, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, splitData -> {
+			// add where
+			List<Predicate> lstpredicateWhere = new ArrayList<>();
+
+			lstpredicateWhere.add(criteriaBuilder.equal(
+					root.get(KshmtWorkTimeSet_.kshmtWorkTimeSetPK).get(KshmtWorkTimeSetPK_.cid),
+					companyId));
+			lstpredicateWhere.add(root.get(KshmtWorkTimeSet_.kshmtWorkTimeSetPK)
+					.get(KshmtWorkTimeSetPK_.worktimeCd).in(splitData));
+			
+			cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+
+			resultList.addAll(em.createQuery(cq).getResultList());
+		});
+		
+		return resultList.stream()
+				.map(item -> new WorkTimeSetting(new JpaWorkTimeSettingGetMemento(item)))
+				.collect(Collectors.toList());
 	}
 	
 }
