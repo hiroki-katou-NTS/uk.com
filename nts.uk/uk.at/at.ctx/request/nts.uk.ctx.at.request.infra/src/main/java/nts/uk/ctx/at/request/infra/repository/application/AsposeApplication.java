@@ -511,27 +511,10 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 		remarkLabel.setValue(I18NText.getText("KAF000_59"));
 		String appReasonStandard = Strings.EMPTY;
 		
-		if (appType.equals(ApplicationType.ABSENCE_APPLICATION)) {		  
-		    Optional<AppStandardReasonCode> reasonCD = printContentOfApp.getOpPrintContentApplyForLeave().get()
-                    .getAppAbsenceStartInfoOutput().getAppDispInfoStartupOutput().getAppDetailScreenInfo()
-                    .get().getApplication().getOpAppStandardReasonCD();
-		    
-		    if (reasonCD.isPresent()) {
-		        appReasonStandard = printContentOfApp.getOpPrintContentApplyForLeave().get()
-		                .getAppAbsenceStartInfoOutput().getAppDispInfoStartupOutput()
-		                .getAppDispInfoNoDateOutput().getReasonTypeItemLst().stream().filter(x -> x.getAppStandardReasonCD().equals(reasonCD.get()))
-		                .findFirst().map(x -> x.getReasonForFixedForm().v()).orElse(Strings.EMPTY);
-		    }
-		} else {
-		    if(printContentOfApp.getAppReasonStandard() != null) {
-	            appReasonStandard = printContentOfApp.getAppReasonStandard().getReasonTypeItemLst().stream().findFirst()
-	                .map(x -> x.getReasonForFixedForm().v()).orElse(Strings.EMPTY);
-	        }
+		if(printContentOfApp.getAppReasonStandard() != null) {
+			appReasonStandard = printContentOfApp.getAppReasonStandard().getReasonTypeItemLst().stream().findFirst()
+				.map(x -> x.getReasonForFixedForm().v()).orElse(null);
 		}
-//		if(printContentOfApp.getAppReasonStandard() != null) {
-//			appReasonStandard = printContentOfApp.getAppReasonStandard().getReasonTypeItemLst().stream().findFirst()
-//				.map(x -> x.getReasonForFixedForm().v()).orElse(null);
-//		}
 		String appReason = Strings.EMPTY;
 		if(printContentOfApp.getOpAppReason() != null) {
 			appReason = printContentOfApp.getOpAppReason().v();
