@@ -3758,6 +3758,9 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			let cssbreakTime: string = self.dataScreen003A().targetInfor == 1 ? "#extable-ksu003 > .ex-body-middle > table > tbody tr:nth-child" + "(" + (i + 2).toString() + ")" + " > td:nth-child(10)" :
 				"#extable-ksu003 > .ex-body-middle > table > tbody tr:nth-child" + "(" + (i + 2).toString() + ")" + " > td:nth-child(8)";
 			breakChange = _.sortBy(breakChange, [function(o: any) { return o.options.start; }]);
+			breakChange = _.uniqWith(breakChange, function(arrVal: any, othVal: any) {
+				return (arrVal.options.id == othVal.options.id);
+			});
 			let indexBrk = _.findIndex(breakChange, (x: any) => { return x.options.id === (idNew) });
 			if (self.dataScreen003A().employeeInfo[i].empId === self.employeeIdLogin) {
 					color = "#94b7fe";
@@ -4598,6 +4601,9 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 									// xs > tcs & xe > tce
 									else if (x.start >= startCalc && x.end >= endCalc && _.inRange(endCalc, x.start, x.end)) {
 										x.start = startCalc;
+									}
+									else if (startCalc == x.end) {
+										x.end = endCalc;
 									}
 									else if (!_.inRange(x.start, startCalc, timeChartBrk.endTime) && !_.inRange(x.end, startCalc, endCalc)) {
 										let lstTimeFilter2 = _.filter(lstTime, (x: any) => { return (x.start == startCalc) && (x.end == endCalc) })
