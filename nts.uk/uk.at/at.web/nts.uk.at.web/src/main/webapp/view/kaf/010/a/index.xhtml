@@ -183,6 +183,12 @@
 															appDispInfoStartupOutput: appDispInfoStartupOutput
 														} }"></div>
 							<div
+							data-bind="component: { name: 'kaf010-share-header',
+																params: {
+																	overTimeWork: overTimeWork
+																}
+																}, visible: overTimeWorkVisible"></div>      							
+							<div
 								data-bind="component: { name: 'kaf000-a-component8',
 														params: {
 															appType: appType,
