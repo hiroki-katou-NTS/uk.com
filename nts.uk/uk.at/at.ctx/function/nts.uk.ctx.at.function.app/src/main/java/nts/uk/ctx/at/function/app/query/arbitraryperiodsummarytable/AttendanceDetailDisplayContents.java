@@ -42,7 +42,7 @@ public class AttendanceDetailDisplayContents {
     public static AttendanceDetailDisplayContents toTreeDto(AttendanceDetailDisplayContents dto) {
         return new AttendanceDetailDisplayContents(
                 dto.getWorkplaceId(),
-                dto.getHierarchyCode(),
+                dto.getWorkplaceCd(),
                 dto.getWorkplaceName(),
                 dto.getHierarchyCode(),
                 dto.getListDisplayedEmployees(),
