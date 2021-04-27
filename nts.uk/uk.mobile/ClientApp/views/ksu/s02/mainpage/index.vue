@@ -10,7 +10,7 @@
           <div
             role="alert"
             class="border border-warning rounded p-1 mt-2 alarm-message"
-            style="display: block; margin-top: 0px !important ;height: 40px;"
+            style="display: block; margin-top: 0px !important ;height: 40px;margin-left: -1rem; margin-right: -1rem;"
           >
             <div style="display: flex;font-size: 3.5vw">
               <i class="text-danger m-2 fas fa-exclamation-triangle fa-"></i

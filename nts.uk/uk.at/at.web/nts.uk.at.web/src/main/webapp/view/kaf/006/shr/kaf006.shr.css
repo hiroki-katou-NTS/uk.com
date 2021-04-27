@@ -57,5 +57,5 @@ button.nts-switch-button {
 .text-left {
     float: left;
     width: fit-content !important;
-    margin: 5px 10px;
+    margin: 0 10px;
 }
