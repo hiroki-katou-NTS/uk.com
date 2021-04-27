@@ -105,8 +105,20 @@ public class OuenWorkTimeSheetOfDailyRepoImpl extends JpaRepository implements O
 
 	@Override
 	public void update(List<OuenWorkTimeSheetOfDaily> domain) {
-		if(domain.isEmpty()) return;
-		this.insert(domain);
+		List<KrcdtDayOuenTimeSheet> lstEntity = new ArrayList<>();
+		domain.stream().map(c -> KrcdtDayOuenTimeSheet.convert(c)).forEach(e -> {
+			lstEntity.addAll(e);
+		});
+		
+		lstEntity.forEach(i -> {
+			Optional<KrcdtDayOuenTimeSheet> entityOld = getEntity(i.pk.sid, i.pk.ymd, i.pk.ouenNo);
+			if(!entityOld.isPresent()){
+				commandProxy().insert(i);
+			} else{
+				updateData(entityOld.get(), i);
+				commandProxy().update(entityOld.get());
+			}
+		});
 	}
 
 	@Override
@@ -116,30 +128,21 @@ public class OuenWorkTimeSheetOfDailyRepoImpl extends JpaRepository implements O
 		domain.stream().map(c -> KrcdtDayOuenTimeSheet.convert(c)).forEach(e -> {
 			lstEntity.addAll(e);
 		});
-		
-		OuenWorkTimeSheetOfDaily lstDomainOld = this.find(domain.get(0).getEmpId(), domain.get(0).getYmd());
 		lstEntity.forEach(i -> {
+		OuenWorkTimeSheetOfDaily lstDomainOld = this.find(domain.get(0).getEmpId(), domain.get(0).getYmd());
+		if(lstDomainOld != null) {
+			List<OuenWorkTimeSheetOfDailyAttendance> dataOld = lstDomainOld.getOuenTimeSheet().stream().filter(x -> {
+				return x.getWorkNo() != i.pk.ouenNo;
+			}).collect(Collectors.toList());
 			
-			if(lstDomainOld != null) {
-				List<OuenWorkTimeSheetOfDailyAttendance> dataOld = lstDomainOld.getOuenTimeSheet().stream().filter(x -> {
-					return x.getWorkNo() != i.pk.ouenNo;
-				}).collect(Collectors.toList());
-				
-				if(!dataOld.isEmpty()) {
-					for (OuenWorkTimeSheetOfDailyAttendance atd : dataOld) {
-						this.removePK(i.pk.sid, i.pk.ymd, atd.getWorkNo());
-					}
+			if(!dataOld.isEmpty()) {
+				for (OuenWorkTimeSheetOfDailyAttendance atd : dataOld) {
+					this.removePK(i.pk.sid, i.pk.ymd, atd.getWorkNo());
 				}
 			}
-			
-			Optional<KrcdtDayOuenTimeSheet> entityOld = getEntity(i.pk.sid, i.pk.ymd, i.pk.ouenNo);
-			if(!entityOld.isPresent()){
-				commandProxy().insert(i);
-			} else{
-				updateData(entityOld.get(), i);
-				commandProxy().update(entityOld.get());
-			}
+		}
 		});
+		this.update(domain);
 	}
 
 	private void updateData(KrcdtDayOuenTimeSheet entityOld, KrcdtDayOuenTimeSheet dataUpdate) {
