@@ -42,16 +42,12 @@ public class OuenWorkTimeSheetOfDailyDto extends AttendanceItemCommon {
 	
 	@Override
 	public int size(String path) {
-		if (path.equals(DAILY_SUPPORT_TIMESHEET_NAME)) {
-			return 20;
-		} else {
-			return super.size(path);
-		}
+		return 20;
 	}
 	
 	@Override
 	public PropType typeOf(String path) {
-		if (path.equals(DAILY_SUPPORT_TIMESHEET_NAME)) {
+		if (path.equals(FAKED)) {
 			return PropType.IDX_LIST;
 		}
 		return super.typeOf(path);
@@ -133,13 +129,16 @@ public class OuenWorkTimeSheetOfDailyDto extends AttendanceItemCommon {
 		OuenWorkTimeSheetOfDailyDto dto = new OuenWorkTimeSheetOfDailyDto();
 		dto.setEmpId(employeeId());
 		dto.setYmd(workingDate());
-		dto.setOuenTimeSheet(ouenTimeSheet.stream().map(c -> new OuenWorkTimeSheetOfDailyAttendanceDto(c.getEmployeeId(), c.getDate(), c.getNo(), 
-				new WorkContentDto(
-						new WorkplaceOfWorkEachOuenDto(c.getWorkContent().getWorkplace().getWorkplaceId(), c.getWorkContent().getWorkplace().getWorkLocationCD()), 
-						new WorkGroupDto(c.getWorkContent().getWork().getWorkCD1(), c.getWorkContent().getWork().getWorkCD1(), 
-								c.getWorkContent().getWork().getWorkCD2(), c.getWorkContent().getWork().getWorkCD3(), c.getWorkContent().getWork().getWorkCD4()), 
-						c.getWorkContent().getWorkRemarks()),
-				new TimeSheetOfAttendanceEachOuenSheetDto(c.getTimeSheet().getNo(), new WorkTimeInformationDto(), new WorkTimeInformationDto()))).collect(Collectors.toList()));
+		dto.setOuenTimeSheet(ouenTimeSheet.stream().map(c -> {
+			OuenWorkTimeSheetOfDailyAttendanceDto sp = new OuenWorkTimeSheetOfDailyAttendanceDto();
+			sp.setEmployeeId(employeeId());
+			sp.setDate(workingDate());
+			sp.setNo(sp.getNo());
+			sp.setWorkContent(sp.getWorkContent() == null ? null : sp.getWorkContent().clone());
+			sp.setTimeSheet(sp.getTimeSheet() == null ? null : sp.getTimeSheet().clone());
+			sp.exsistData();
+			return sp;
+		}).collect(Collectors.toList()));
 		if(isHaveData()){
 			dto.exsistData();
 		}
