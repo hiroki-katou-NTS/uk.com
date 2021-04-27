@@ -251,7 +251,8 @@ public class ChildCareCheckOverUsedNumberWork {
 		// 期間ごとの上限日数を求める
 		List<ChildCareNurseUpperLimitPeriod> childCareNurseUpperLimitPeriod = new ArrayList<>();
 		if(employeeInfo.isPresent()) {
-			employeeInfo.get().childCareNurseUpperLimitPeriod(companyId,employeeId, period, criteriaDate, require);
+			childCareNurseUpperLimitPeriod =
+					employeeInfo.get().childCareNurseUpperLimitPeriod(companyId,employeeId, period, criteriaDate, require);
 		}
 
 		// 対象日の上限日数を確認

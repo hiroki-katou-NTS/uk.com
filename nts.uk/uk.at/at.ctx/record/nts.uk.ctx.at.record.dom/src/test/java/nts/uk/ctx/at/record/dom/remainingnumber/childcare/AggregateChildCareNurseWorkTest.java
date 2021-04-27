@@ -35,6 +35,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainTy
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.ChildCareNurseUsedNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.interimdata.TempChildCareNurseManagement;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.ChildCareLeaveRemainingInfo;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.NursingCareLeaveRemainingInfo;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.UpperLimitSetting;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.usenumber.DayNumberOfUse;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.usenumber.TimeOfUse;
@@ -328,14 +329,16 @@ public class AggregateChildCareNurseWorkTest {
 	}
 
 	// 子の看護休暇基本情報
-	private ChildCareLeaveRemainingInfo childCareLeave(NursingCategory leaveType, Integer maxDayForThisFiscalYear , Integer maxDayForNextFiscalYear) {
-		return ChildCareLeaveRemainingInfo.of(
+	private Optional<NursingCareLeaveRemainingInfo> childCareLeave(NursingCategory leaveType, Integer maxDayForThisFiscalYear , Integer maxDayForNextFiscalYear) {
+		ChildCareLeaveRemainingInfo obj =ChildCareLeaveRemainingInfo.of(
 				"000001",
 				leaveType,
 				true, // useClassification:使用区分
 				UpperLimitSetting.PER_INFO_EVERY_YEAR,
 				maxDayForThisFiscalYear == null ? Optional.empty() : Optional.of(new ChildCareNurseUpperLimit(maxDayForThisFiscalYear)),
 				maxDayForNextFiscalYear == null ? Optional.empty() : Optional.of(new ChildCareNurseUpperLimit(maxDayForNextFiscalYear)));
+
+		return Optional.of((NursingCareLeaveRemainingInfo)obj);
 	}
 
 	// 介護看護休暇上限人数設定

@@ -174,7 +174,10 @@ public class GetRemainingNumberChildCareService {
 	 * @param closureStartDate 締め開始日
 	 * @return ChildCareNurseUsedNumber 子の看護介護使用数
 	 */
-	public ChildCareNurseUsedNumber childCareEmployeeUsedNumber(String companyId, String employeeId,DatePeriod period,
+	public ChildCareNurseUsedNumber childCareEmployeeUsedNumber(
+			String companyId,
+			String employeeId,
+			DatePeriod period,
 			InterimRemainMngMode performReferenceAtr,
 			GeneralDate criteriaDate,
 			Optional<Boolean> isOverWrite,
@@ -192,18 +195,24 @@ public class GetRemainingNumberChildCareService {
 		// 取得した締め開始日とパラメータ「集計開始日」を比較
 		// ===締め開始日<パラメータ「集計開始日」
 		if(closureStartDate.before(period.start())) {
+
+			DatePeriod forGetStartRemPeriod = new DatePeriod(closureStartDate, period.start().addDays(-1));
+
 			// 開始日までの子の看護休暇使用数を計算
 			AggrResultOfChildCareNurse getChildCareRemNumWithinPeriod
-				= getChildCareRemNumWithinPeriod(companyId, employeeId,period,
-					performReferenceAtr,
-					criteriaDate,
-					isOverWrite,
-					tempChildCareDataforOverWriteList,
-					prevChildCareLeave,
-					createAtr,
-					periodOverWrite,
-					cacheCarrier,
-					require);
+				= getChildCareRemNumWithinPeriod(
+						companyId,
+						employeeId,
+						forGetStartRemPeriod,
+						performReferenceAtr,
+						criteriaDate,
+						isOverWrite,
+						tempChildCareDataforOverWriteList,
+						prevChildCareLeave,
+						createAtr,
+						periodOverWrite,
+						cacheCarrier,
+						require);
 
 			// 期間終了日の翌日時点の使用数を返す
 			return getChildCareRemNumWithinPeriod.getAsOfPeriodEnd();
