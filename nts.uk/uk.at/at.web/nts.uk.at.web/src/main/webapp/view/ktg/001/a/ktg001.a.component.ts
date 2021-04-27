@@ -164,6 +164,9 @@ module nts.uk.ui.ktg001.a {
                 </div>
             </div>
             <style rel="stylesheet">
+                .ktg-001-a table tr {
+                    height: 30px !important;
+                }
                 .ktg-001-a .text-center {
                     text-align: center;
                 }

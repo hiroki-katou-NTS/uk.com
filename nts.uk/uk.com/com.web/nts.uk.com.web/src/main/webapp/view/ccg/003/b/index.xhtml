@@ -7,8 +7,8 @@
 <body>
   <ui:composition template="../../../../master/dialog.xhtml">
     <ui:define name="htmlHead">
+      <script>var dialogSize = { width: 515, height: 360 };</script>
       <com:scriptfile set="IGNITE" />
-      <script>var dialogSize = { width: 515, height: 370 };</script>
       <com:stylefile path="ccg003.b.style.css" />
       <com:scriptfile path="ccg003.b.vm.js" />
     </ui:define>
@@ -67,15 +67,14 @@
             </tr>
           </tbody>
         </table>
-      </div>
-      <div id="functions-area-bottom" style="border: none !important;">
-        <div style="width: 480px; padding-left: 10px;">
+        <div style="width: 465px; margin: 10px 10px 10px 15px;">
           <!-- B20_1 新規 -->
           <button tabindex="4" id="B20_1" class="pl-15 pr-15 left" data-bind="click: openScreenCInNewMode">#{i18n.getText('CCG003_13')}</button>
           <!-- B20_3 閉じる -->
           <button tabindex="5" id="B20_3" class="right" style="min-width: 50px !important;" data-bind="click: closeDialog">#{i18n.getText('CCG003_14')}</button>
         </div>
       </div>
+      <div id="functions-area-bottom" style="border: none !important;"></div>
     </ui:define>
   </ui:composition>
 </body>

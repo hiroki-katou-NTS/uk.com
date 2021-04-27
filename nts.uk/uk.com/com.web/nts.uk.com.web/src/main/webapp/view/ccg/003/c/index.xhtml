@@ -16,7 +16,7 @@
     </ui:define>
 
     <ui:define name="content">
-      <div id="contents-area">
+      <div id="contents-area" style="padding: 5px 10px 0px 10px;">
         <table class="content-table">
           <colgroup>
             <col width="auto" />
@@ -30,7 +30,7 @@
                   #{i18n.getText('CCG003_20')}</div>
               </td>
               <td>
-                <textarea id="C1_2" tabindex="1" rows="11" data-bind="ntsTextEditor: {
+                <textarea id="C1_2" style="font-size: 1rem;" tabindex="1" rows="11" data-bind="ntsTextEditor: {
                   name:'#[CCG003_20]',
                   value: messageText,
                   constraint: 'NotificationMessage',

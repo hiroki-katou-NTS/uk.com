@@ -139,21 +139,23 @@ module nts.uk.at.view.ccg005.a.screenModel {
                 </td>
                 <td class="ccg005-w100 ccg005-pl-5 ccg005-border-groove ccg005-right-unset">
                   <!-- A4_8 -->
-                  <label class="limited-label ccg005-w100" style="display: inline-block;"
-                    data-bind="text: businessName" />
+                  <div style="height: 20px">
+                    <label class="limited-label ccg005-w100" style="display: inline-block;"
+                      data-bind="text: businessName" />
+                  </div>
                   <!-- A4_5 -->
                   <div style="height: 20px;">
                     <i tabindex=13 data-bind="ntsIcon: {no: emojiIconNo, width: 20, height: 15}, visible: emojiVisitable"></i>
                   </div>
                 </td>
                 <td class="ccg005-w105 ccg005-pl-5 ccg005-border-groove ccg005-right-unset ccg005-left-unset">
-                  <div class="ccg005-w100">
+                  <div class="ccg005-w100" style="position: relative; height: 20px">
                     <!-- A4_2 -->
                     <label
                       data-bind="text: attendanceDetailDto.workName, attr:{ class: 'limited-label '+ attendanceDetailDto.workColorClass }"
                       style="max-width: 100px; width: auto !important;" />
                     <!-- A4_4 -->
-                    <i tabindex=14
+                    <i tabindex=14 style="position: absolute; top: 3px; right: 0;"
                       data-bind="visible: displayAppIcon, click: $component.initPopupA4_4InList.bind($component, $index, sid), attr:{ class: 'A4-4-application-icon-'+sid }, ntsIcon: {no: 190, width: 13, height: 13}"></i>
                   </div>
                   <div style="height: 20px;">
@@ -1008,7 +1010,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
     }
 
     private onResizeable(vm: any) {
-      const lineHeight = 54;
+      const lineHeight = 50;
       const paddingInContent = 10;
       const subHeight = $('#ccg005-content').height()
         - $('.grade-header-center').height()
@@ -1018,7 +1020,6 @@ module nts.uk.at.view.ccg005.a.screenModel {
       if (subHeight >= lineHeight) {
         vm.perPage(_.floor(subHeight / lineHeight));
       }
-      console.log(_.floor(subHeight / lineHeight))
       $('.grade-body-bottom').height(subHeight);
     }
 

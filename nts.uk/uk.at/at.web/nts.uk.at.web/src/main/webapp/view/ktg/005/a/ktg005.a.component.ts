@@ -60,6 +60,9 @@ module nts.uk.ui.ktg005.a {
 			</div>
 		</div>
 		<style rel="stylesheet">
+			.ktg-005-a table tr {
+				height: 30px !important;
+			}
 			.ktg-005-a .text-right {
 				text-align: right;
 			}
