@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.request.dom.service;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -10,7 +9,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.RequiredArgsConstructor;
-import lombok.val;
 
 /*import com.fasterxml.jackson.databind.ser.std.StdKeySerializers.Default;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.compltleavesimmng.CompltLeaveSimMng;*/
@@ -105,14 +103,14 @@ public class RemainCreateInforByApplicationDataImpl implements RemainCreateInfor
 	private List<Integer> lstAppType(){
 		List<Integer> lstAppType = new ArrayList<>();
 		//反映する時、エラーが発生してるので、とりあえずコメントする（暫定データ処理は申請の新ドメインをまだ対応しない）
-		lstAppType.add(ApplicationType.ABSENCE_APPLICATION.value);
 		lstAppType.add(ApplicationType.WORK_CHANGE_APPLICATION.value);
-		lstAppType.add(ApplicationType.ANNUAL_HOLIDAY_APPLICATION.value);
-		lstAppType.add(ApplicationType.COMPLEMENT_LEAVE_APPLICATION.value);
 		lstAppType.add(ApplicationType.GO_RETURN_DIRECTLY_APPLICATION.value);
-		lstAppType.add(ApplicationType.LONG_BUSINESS_TRIP_APPLICATION.value);
+		lstAppType.add(ApplicationType.ABSENCE_APPLICATION.value);
+		lstAppType.add(ApplicationType.COMPLEMENT_LEAVE_APPLICATION.value);
 		lstAppType.add(ApplicationType.OVER_TIME_APPLICATION.value);
 		lstAppType.add(ApplicationType.BREAK_TIME_APPLICATION.value);
+		lstAppType.add(ApplicationType.BUSINESS_TRIP_APPLICATION.value);
+		lstAppType.add(ApplicationType.ANNUAL_HOLIDAY_APPLICATION.value);
 		return lstAppType;
 	}
 	private List<AppRemainCreateInfor> lstResult(String cid, String sid, List<Application> lstAppData){
