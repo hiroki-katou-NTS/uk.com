@@ -10,11 +10,12 @@
           <div
             role="alert"
             class="border border-warning rounded p-1 mt-2 alarm-message"
-            style="display: block; margin-top: 0px !important ;height: 40px;margin-left: -1rem; margin-right: -1rem;"
+            style="display: block; margin-top: 0px !important ;height: 40px;margin-left: -0.65rem; margin-right: -0.65rem ;"
+          
           >
-            <div style="display: flex;font-size: 3.5vw">
+            <div style="display: flex;font-size: 12px">
               <i class="text-danger m-2 fas fa-exclamation-triangle fa-"></i
-              ><span style="align-self: center;width: 80vw;"
+              ><span style="align-self: center;width: 85vw;"
                 >{{alarmMsg}}</span
               >
             </div>
