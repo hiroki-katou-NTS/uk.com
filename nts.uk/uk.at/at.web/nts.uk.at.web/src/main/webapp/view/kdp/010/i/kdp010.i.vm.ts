@@ -23,10 +23,10 @@ module nts.uk.at.view.kdp010.i {
 			selectedDayOld: KnockoutObservable<number> = ko.observable(1);
 			
 			supportWplSetOption: KnockoutObservableArray<any> = ko.observableArray([
-				{ id: 1, name: nts.uk.resource.getText("KDP010_341") },
-				{ id: 0, name: nts.uk.resource.getText("KDP010_342") }
+				{ id: 0, name: nts.uk.resource.getText("KDP010_341") },
+				{ id: 1, name: nts.uk.resource.getText("KDP010_342") }
 			]);
-			supportWplSet: KnockoutObservable<number> = ko.observable(1);
+			supportWplSet: KnockoutObservable<number> = ko.observable(0);
 			supportWplSetEnable: KnockoutObservable<boolean> = ko.computed(():boolean => {
 				return this.selectedHighlight() == 1 && (this.selectedDay() == 14 || this.selectedDay() == 16 || this.selectedDay() == 17 || this.selectedDay() == 18);
 			});
@@ -142,7 +142,7 @@ module nts.uk.at.view.kdp010.i {
 						self.selectedAudio(data.audioType);
 						self.selectedHighlight(data.usrArt);
 						self.getTypeButton(data);
-						self.supportWplSet((data.supportWplSet == null || data.supportWplSet == undefined) ? 1 : data.supportWplSet);
+						self.supportWplSet((data.supportWplSet == null || data.supportWplSet == undefined) ? 0 : data.supportWplSet);
 					} else {
 						let name = _.find(self.lstContents(), function(itemEmp) { return itemEmp.value == 1; });
 						self.simpleValue(name.name);

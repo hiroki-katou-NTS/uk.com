@@ -96,7 +96,7 @@ module nts.uk.at.view.kdp010 {
 							changeCalArt: 0, 
 							setPreClockArt: 0, 
 							changeHalfDay: false, 
-							goOutArt: 3},
+							goOutArt: 0},
 						reservationArt: 0},
 					supportWplSet: null,
 					buttonDisSet: {
@@ -172,7 +172,7 @@ module nts.uk.at.view.kdp010 {
 							changeCalArt: 0, 
 							setPreClockArt: 0, 
 							changeHalfDay: false, 
-							goOutArt: 3},
+							goOutArt: 0},
 						reservationArt: 0},
 					supportWplSet: null,
 					buttonDisSet: {
