@@ -51,7 +51,7 @@ module nts.uk.at.view.kdp002.a {
 
                 service.getWorkManagementMultiple()
                     .done((result: boolean) => {
-                        self.workManagementMultiple(result);
+                        self.workManagementMultiple(!result);
                     });
 
                 service.startPage()
