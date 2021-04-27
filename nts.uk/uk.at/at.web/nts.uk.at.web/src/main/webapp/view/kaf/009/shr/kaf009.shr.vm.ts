@@ -42,7 +42,7 @@ module nts.uk.at.view.kaf009_ref.shr.viewmodel {
 			data-bind="if: dataFetch().goBackReflect().reflectApplication == 3 
             || dataFetch().goBackReflect().reflectApplication == 2 
             || dataFetch().goBackReflect().reflectApplication == 1">
-			<div class="cell valign-center ">
+			<div class="cell valign-center" style="padding-left: 5px">
 				<div class="valign-center control-group"
 					data-bind="ntsFormLabel:{ required: true, text: $i18n('KAF009_22') }"></div>
 				<BR />
