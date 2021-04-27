@@ -198,7 +198,7 @@ public class InterimRemainOffDateCreateData {
 		
 		// 時間休暇申請の申請を抽出
 		appData.stream().filter(x -> x.getSid().equals(sid) && x.getAppDate().equals(baseDate)
-				&& x.getAppType().equals(ApplicationType.ANNUAL_HOLIDAY_APPLICATION)).forEach(x -> {
+				&& x.getAppType().equals(ApplicationType.ANNUAL_HOLIDAY_APPLICATION)).sorted((a, b) -> a.getInputDate().compareTo(b.getInputDate())).forEach(x -> {
 
 					CreateAtr createAtr = x.getPrePosAtr().equals(PrePostAtr.PREDICT) ? CreateAtr.APPBEFORE
 							: CreateAtr.APPAFTER;
