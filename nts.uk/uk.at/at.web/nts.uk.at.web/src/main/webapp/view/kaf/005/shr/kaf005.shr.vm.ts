@@ -1,6 +1,6 @@
 module nts.uk.at.view.kaf005.shr.viewmodel {
 	const template = `
-<div class="container cf" data-bind="with: $parent">
+<div class="container cf" style="margin-top: -2px" data-bind="with: $parent">
 	<div class="cf valign-top control-group"
 		data-bind="visible: visibleModel.c7()">
 		<!--A5_1 休憩時間ラベル-->
@@ -8,7 +8,7 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 			<div class="lblTitle pull-left"
 				data-bind="text: $i18n('KAF005_40'), ntsFormLabel: {}"></div>
 		</div>
-		<div class="table-time">
+		<div class="table-time" style="margin-left: 16px">
 			<table id="fixed-table">
 				<colgroup>
 					<col width="25px" />
@@ -66,13 +66,13 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 
 
 	<!-- over time hours -->
-	<div class="cf valign-top control-group" data-bind="visible: true">
+	<div class="cf valign-top control-group" data-bind="visible: true" style="margin-bottom: 2px;">
 		<!--A6_1 残業時間ラベル-->
 		<div class="cm-column" style="display: inline-block; width: 100px">
 			<div class="lblTitle pull-left"
 				data-bind="text: $i18n('KAF005_50'), ntsFormLabel: {required: true}"></div>
 		</div>
-		<div class="table-time overTime1">
+		<div class="table-time overTime1" style="margin-left: 16px">
 			<table id="fixed-overtime-hour-table">
 				<colgroup>
 					<col width="109px" />
@@ -127,7 +127,7 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 
 
 
-		<div class="table-time overTime2">
+		<div class="table-time overTime2" style="margin-left: 16px; margin-bottom: 0px;">
 			<table id="fixed-overtime-hour-table-1">
 				<colgroup>
 					<col width="109px" />
@@ -175,14 +175,14 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 
 	<!-- holiday time -->
 	<div class="cf valign-top control-group"
-		data-bind="visible: visibleModel.c30()">
+		data-bind="visible: visibleModel.c30()" style="margin-top: 13px; margin-bottom: 2px">
 		<!--A5_1 休憩時間ラベル-->
 		<div class="cm-column" style="display: inline-block; width: 100px">
 			<div class="lblTitle pull-left"
 				data-bind="text: $i18n('KAF005_70'), ntsFormLabel: {required: true}"></div>
 		</div>
 
-		<div class="table-time holidayTime1">
+		<div class="table-time holidayTime1" style="margin-left: 16px; margin-bottom: 0px;">
 			<table id="fixed-table-holiday">
 				<colgroup>
 					<col width="109px" />
@@ -232,7 +232,7 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 			</table>
 		</div>
 
-		<div class="table-time holidayTime2">
+		<div class="table-time holidayTime2" style="margin-left: 16px; margin-bottom: 0px;">
 			<table id="fixed-table-holiday-1">
 				<colgroup>
 					<col width="109px" />

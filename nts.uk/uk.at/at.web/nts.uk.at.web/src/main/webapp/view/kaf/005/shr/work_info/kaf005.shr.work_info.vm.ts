@@ -1,7 +1,7 @@
 module nts.uk.at.view.kaf005.shr.work_info.viewmodel {
 	const template = `
 	<div data-bind="with: $parent">
-<div data-bind="if: workInfo">
+<div style="margin-top: -2px" data-bind="if: workInfo">
 
 	<div class="table" data-bind="if : visibleModel.c7()">
 		<div class="cell valign-center" style="width: 120px;">
@@ -36,8 +36,8 @@ module nts.uk.at.view.kaf005.shr.work_info.viewmodel {
 
 
 	<!--勤務時間 1-->
-	<div class="valign-center control-group">
-		<div class="table" data-bind="if: visibleModel.c7()">
+	<div style="margin-bottom: 10px">
+		<div class="table" style="margin-top: -2px" data-bind="if: visibleModel.c7()">
 			<div style="width: 120px" class="cell valign-top cm-column2">
 				<!--A4_8 勤務時間ラベル-->
 				<div class="lblTitle"
@@ -78,7 +78,7 @@ module nts.uk.at.view.kaf005.shr.work_info.viewmodel {
 		</div>
 		
 		
-		<div class="table" data-bind="if: visibleModel.c29()">
+		<div class="table" style="margin-top: 2px" data-bind="if: visibleModel.c29()">
 			<div style="width: 120px" class="cell valign-top cm-column2">
 				<div class="lblTitle"
 					
