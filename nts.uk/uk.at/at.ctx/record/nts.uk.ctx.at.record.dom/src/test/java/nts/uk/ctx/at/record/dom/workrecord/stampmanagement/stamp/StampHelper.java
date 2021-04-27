@@ -66,18 +66,15 @@ public class StampHelper {
 						ChangeClockArt.valueOf(0),
 						ChangeCalArt.valueOf(0)),
 				new RefectActualResult(
-						"cardNumberSupport", 
-						new WorkLocationCD("workLocationCD"), 
+						new WorkInformationStamp(Optional.empty(), Optional.empty(),
+								Optional.of(new WorkLocationCD("workLocationCD")), 
+										Optional.of(new SupportCardNumber(9999))), 
 						new WorkTimeCode("workTimeCode"), 
 						new OvertimeDeclaration(
-								new AttendanceTime(0),
-								new AttendanceTime(0))),
-				true
-				,Optional.ofNullable(new StampLocationInfor(
-						getGeoCoordinateDefault(),false))
-				,
-				Optional.empty()
-				);
+								new AttendanceTime(1),
+								new AttendanceTime(2))),
+				true,Optional.ofNullable(getGeoCoordinateDefault()),
+				Optional.empty());
 	}
 	
 	public static Stamp getStampByChangeClockArt(String stampNumber,ChangeClockArt changeClockArt,GeneralDateTime dateTime) {
