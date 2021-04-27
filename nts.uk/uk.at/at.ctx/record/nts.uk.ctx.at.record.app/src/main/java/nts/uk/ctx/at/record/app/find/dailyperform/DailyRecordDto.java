@@ -154,8 +154,7 @@ public class DailyRecordDto extends AttendanceItemCommon {
 	private Optional<SnapshotDto> snapshot = Optional.empty();
 	
 	/**応援時刻: 日別勤怠の応援作業時間帯 */
-	@AttendanceItemLayout( layout = DAILY_SUPPORT_TIMESHEET_CODE, jpPropertyName = DAILY_SUPPORT_TIMESHEET_NAME, 
-						   indexField = DEFAULT_INDEX_FIELD_NAME)
+	@AttendanceItemLayout( layout = DAILY_SUPPORT_TIMESHEET_CODE, jpPropertyName = DAILY_SUPPORT_TIMESHEET_NAME)
 	private OuenWorkTimeSheetOfDailyDto ouenTimeSheet;
 
 	
@@ -487,7 +486,7 @@ public class DailyRecordDto extends AttendanceItemCommon {
 		dto.setPcLogInfo(pcLogInfo.map(pc -> pc.clone()));
 		dto.setRemarks(remarks == null ? null : remarks.clone());
 		dto.setSnapshot(snapshot.map(ss -> ss.clone()));
-		dto.setOuenTimeSheet(ouenTimeSheet.clone());
+		dto.setOuenTimeSheet(ouenTimeSheet == null ? null : ouenTimeSheet.clone());
 		if(isHaveData()){
 			dto.exsistData();
 		}
