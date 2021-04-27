@@ -1,6 +1,6 @@
 module nts.uk.at.view.kaf005.shr.footer.viewmodel {
 	const template = `
-<div id="kaf005-footer" data-bind="with: $parent">
+<div id="kaf005-footer" data-bind="with: $parent, visible: $parent.visibleModel.c11_1() || $parent.visibleModel.c11_2() || $parent.visibleModel.c12_1() || $parent.visibleModel.c12_2()">
 	<div class="table" style="margin-bottom: 12px;" data-bind="if: visibleModel.c11_1()">
 		
 		<div style="width: 120px" class="cell valign-top cm-column2">
@@ -87,7 +87,6 @@ module nts.uk.at.view.kaf005.shr.footer.viewmodel {
 	
 	
 </div>
-
 
 
 	`
