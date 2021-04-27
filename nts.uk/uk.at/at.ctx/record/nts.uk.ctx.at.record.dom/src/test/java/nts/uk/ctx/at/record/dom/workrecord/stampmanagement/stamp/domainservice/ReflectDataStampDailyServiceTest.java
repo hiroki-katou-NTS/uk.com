@@ -20,7 +20,7 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampHelper;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.ReflectDataStampDailyService.Require;
 import nts.uk.ctx.at.shared.dom.adapter.generalinfo.dtoimport.EmployeeGeneralInfoImport;
-import nts.uk.ctx.at.shared.dom.application.reflectprocess.ScheduleRecordClassifi;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.ScheduleRecordClassifi;
 import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.ErrMessageResource;
 import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.output.PeriodInMasterList;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeOfDailyAttd;
