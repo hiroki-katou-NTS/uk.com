@@ -133,9 +133,9 @@ public class OuenWorkTimeSheetOfDailyDto extends AttendanceItemCommon {
 			OuenWorkTimeSheetOfDailyAttendanceDto sp = new OuenWorkTimeSheetOfDailyAttendanceDto();
 			sp.setEmployeeId(employeeId());
 			sp.setDate(workingDate());
-			sp.setNo(sp.getNo());
-			sp.setWorkContent(sp.getWorkContent() == null ? null : sp.getWorkContent().clone());
-			sp.setTimeSheet(sp.getTimeSheet() == null ? null : sp.getTimeSheet().clone());
+			sp.setNo(c.getNo());
+			sp.setWorkContent(c.getWorkContent() == null ? null : c.getWorkContent().clone());
+			sp.setTimeSheet(c.getTimeSheet() == null ? null : c.getTimeSheet().clone());
 			sp.exsistData();
 			return sp;
 		}).collect(Collectors.toList()));

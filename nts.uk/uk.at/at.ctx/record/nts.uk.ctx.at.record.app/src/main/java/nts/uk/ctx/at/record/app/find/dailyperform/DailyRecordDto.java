@@ -452,7 +452,7 @@ public class DailyRecordDto extends AttendanceItemCommon {
 				this.snapshot.map(c -> c.toDomain(employeeId, date))
 				);
 		// set support time
-		integrationOfDaily.setOuenTimeSheet(this.ouenTimeSheet.toDomain(employeeId, date));
+		integrationOfDaily.setOuenTimeSheet(this.ouenTimeSheet == null ? new ArrayList<>() : this.ouenTimeSheet.toDomain(employeeId, date));
 		
 		return integrationOfDaily;
 	}

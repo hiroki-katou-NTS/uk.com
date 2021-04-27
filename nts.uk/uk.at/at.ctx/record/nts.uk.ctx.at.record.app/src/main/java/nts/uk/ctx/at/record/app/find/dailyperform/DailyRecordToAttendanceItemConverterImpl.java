@@ -6,8 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import lombok.val;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.app.find.dailyattendance.timesheet.ouen.dto.OuenWorkTimeSheetOfDailyAttendanceDto;
 import nts.uk.ctx.at.record.app.find.dailyattendance.timesheet.ouen.dto.OuenWorkTimeSheetOfDailyDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.affiliationInfor.dto.AffiliationInforOfDailyPerforDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.attendanceleavinggate.dto.AttendanceLeavingGateOfDailyDto;
@@ -396,7 +396,12 @@ public class DailyRecordToAttendanceItemConverterImpl extends AttendanceItemConv
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<OuenWorkTimeSheetOfDailyAttendance> ouenSheet() {
-		return (List<OuenWorkTimeSheetOfDailyAttendance>) getDomains(ItemConst.DAILY_SUPPORT_TIMESHEET_NAME);
+		val rs = getDomains(ItemConst.DAILY_SUPPORT_TIMESHEET_NAME);
+		if(rs instanceof OuenWorkTimeSheetOfDaily){
+			return ((OuenWorkTimeSheetOfDaily) rs).getOuenTimeSheet();
+		} else {
+			return (List<OuenWorkTimeSheetOfDailyAttendance>) rs;
+		}
 	}
 
 	@Override

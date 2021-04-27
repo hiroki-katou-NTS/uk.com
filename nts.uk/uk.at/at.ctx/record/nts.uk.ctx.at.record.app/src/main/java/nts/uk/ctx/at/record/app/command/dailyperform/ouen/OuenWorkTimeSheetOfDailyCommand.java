@@ -5,7 +5,6 @@ import java.util.List;
 
 import lombok.Getter;
 import lombok.val;
-import nts.uk.ctx.at.record.app.find.dailyattendance.timesheet.ouen.dto.OuenWorkTimeSheetOfDailyAttendanceDto;
 import nts.uk.ctx.at.record.app.find.dailyattendance.timesheet.ouen.dto.OuenWorkTimeSheetOfDailyDto;
 import nts.uk.ctx.at.record.dom.daily.ouen.OuenWorkTimeSheetOfDaily;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.DailyWorkCommonCommand;
@@ -19,8 +18,8 @@ public class OuenWorkTimeSheetOfDailyCommand extends DailyWorkCommonCommand {
 	@Override
 	public void setRecords(ConvertibleAttendanceItem item) {
 		if(item != null && item.isHaveData()){
-			val value = ((OuenWorkTimeSheetOfDailyAttendanceDto) item).toDomain(getEmployeeId(), getWorkDate());
-			updateData(value);
+			val value = ((OuenWorkTimeSheetOfDailyDto) item).toDomain(getEmployeeId(), getWorkDate());
+			updateDatas(value);
 		}
 	}
 	
