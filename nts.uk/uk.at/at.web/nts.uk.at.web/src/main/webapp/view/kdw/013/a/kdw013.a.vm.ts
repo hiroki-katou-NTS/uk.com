@@ -10,8 +10,6 @@ module nts.uk.ui.at.kdp013.a {
         DELETE: '/screen/at/kdw013/a/delete'
     };
 
-    const model: StartProcessDto = {};
-
     @handler({
         bindingName: 'kdw-toggle',
         validatable: true,
