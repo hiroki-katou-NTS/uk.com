@@ -10,10 +10,6 @@
 	color: black;
 }
 
-#kaf012-calc-table {
-	width: 580px;
-}
-
 #remaining-table td {
 	height: 50px;
 	background-color: white;
@@ -45,13 +41,17 @@
 	width: 42px;
 }
 
+#kaf012-share-component2 th {
+	text-align: center;
+}
+
 #kaf012-input-table th, #kaf012-input-table td, #kaf012-calc-table th, #kaf012-calc-table td {
 	border: solid 1px #000;
 	padding: 5px;
 }
 
 #kaf012-calc-table th, #kaf012-calc-table td {
-	width: 95px;
+	width: 85px;
 }
 
 #kaf012-input-table th, #kaf012-calc-table th {
