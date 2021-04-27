@@ -9,12 +9,16 @@ import nts.uk.ctx.at.function.app.query.arbitraryperiodsummarytable.*;
 import nts.uk.ctx.at.function.dom.arbitraryperiodsummarytable.OutputSettingOfArbitrary;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.CommonAttributesOfForms;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.PrimitiveValueOfAttendanceItem;
+import nts.uk.ctx.bs.employee.app.find.wkpdep.DepWkpInfoFindObject;
+import nts.uk.ctx.bs.employee.app.find.wkpdep.InformationDto;
+import nts.uk.ctx.bs.employee.app.find.wkpdep.WkpDepTreeDto;
 import nts.uk.ctx.sys.gateway.dom.adapter.company.CompanyBsImport;
 import nts.uk.file.at.app.export.arbitraryperiodsummarytable.ArbitraryPeriodSummaryDto;
 import nts.uk.file.at.app.export.arbitraryperiodsummarytable.ArbitraryPeriodSummaryTableGenerator;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportContext;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
+import org.apache.logging.log4j.util.Strings;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -38,7 +42,10 @@ public class AposeArbitraryPeriodSummaryTableGenerator extends AsposeCellsReport
     private static final int MAX_ITEM_ONE_LINE = 20;
     private static final String FORMAT_DATE = "yyyy/MM/dd";
     private static final int MAX_LINE_IN_PAGE = 24;
-
+    private static final int WORKPLACE_MODE = 0;
+    private static final int DEPARTMENT_MODE = 1;
+    private static final Integer HIERARCHY_LENGTH = 3;
+    private static final int MAX_WKP_DEP_NUMBER = 9999;
 
     @Override
     public void generate(FileGeneratorContext generatorContext, ArbitraryPeriodSummaryDto dataSource) {
@@ -100,6 +107,7 @@ public class AposeArbitraryPeriodSummaryTableGenerator extends AsposeCellsReport
                                 .filter(distinctByKey(AttendanceItemDisplayContents::getAttendanceItemId))
                                 .collect(Collectors.toMap(AttendanceItemDisplayContents::getAttendanceItemId, AttendanceItemDisplayContents::getCommonAttributesOfForms));
                 List<AttendanceDetailDisplayContents> detailDisplayContents = data.getDetailDisplayContents();
+                List<AttendanceDetailDisplayContents> listTree = getDepWkpInfoTree(detailDisplayContents);
                 List<WorkplaceTotalDisplayContent> totalDisplayContents = data.getTotalDisplayContents()
                         .stream().sorted(Comparator.comparing(WorkplaceTotalDisplayContent::getHierarchyCode)).collect(Collectors.toList());
                 List<DisplayContent> totalAll = data.getTotalAll();
@@ -114,13 +122,14 @@ public class AposeArbitraryPeriodSummaryTableGenerator extends AsposeCellsReport
                 printInfo(worksheetTemplate, worksheet, contentsList, period);
                 count += 5;
                 itemOnePage += 5;
-                boolean isFist = true;
-                for (int i = 0; i < detailDisplayContents.size(); i++) {
-                    val content = detailDisplayContents.get(i);
+
+                for (int i = 0; i < listTree.size(); i++) {
+                    boolean isFist = true;
+                    val content = listTree.get(i);
+                    List<AttendanceDetailDisplayContents> child = new ArrayList<>();
                     if (query.isDetail()) {
                         int wplHierarchy = content.getLevel();
                         Integer pageBreakWplHierarchy = query.getPageBreakWplHierarchy();
-
                         if (i!=0 && query.isPageBreakByWpl() && pageBreakWplHierarchy == null) {
                             pageBreaks.add(count);
                             cells.copyRows(cells, 0, count, 5);
@@ -294,7 +303,6 @@ public class AposeArbitraryPeriodSummaryTableGenerator extends AsposeCellsReport
                                     , mapIdAnAttribute.getOrDefault(itemLine2.getAttendanceItemId(), null), query.isZeroDisplay()));
                         }
 
-
                 }
                 PageSetup pageSetup = worksheet.getPageSetup();
                 pageSetup.setPrintArea(PRINT_AREA + count);
@@ -304,7 +312,11 @@ public class AposeArbitraryPeriodSummaryTableGenerator extends AsposeCellsReport
         }
 
     }
-
+    private void toListChild(AttendanceDetailDisplayContents parent, List<AttendanceDetailDisplayContents> rs){
+        if(parent.getChildren() == null || parent.getChildren().size()==0) return;
+        rs.addAll(parent.getChildren());
+        toListChild(parent,rs);
+    }
     private void printInfo(Worksheet worksheetTemplate, Worksheet worksheet,
                            List<AttendanceItemDisplayContents> contentsList, DatePeriod datePeriod) throws Exception {
         Cells cellsTemplate = worksheetTemplate.getCells();
@@ -403,5 +415,79 @@ public class AposeArbitraryPeriodSummaryTableGenerator extends AsposeCellsReport
     private boolean checkLine(int count, int maxItem) {
         return (maxItem - count) >= 2;
     }
+    private List<AttendanceDetailDisplayContents> createTree(List<AttendanceDetailDisplayContents> lstHWkpInfo) {
+        List<AttendanceDetailDisplayContents> lstReturn = new ArrayList<>();
+        if (lstHWkpInfo.isEmpty())
+            return lstReturn;
+        // Higher hierarchyCode has shorter length
+        int highestHierarchy = lstHWkpInfo.stream()
+                .min((a, b) -> a.getHierarchyCode().length() - b.getHierarchyCode().length()).get().getHierarchyCode()
+                .length();
+        Iterator<AttendanceDetailDisplayContents> iteratorWkpHierarchy = lstHWkpInfo.iterator();
+        // while have workplace
+        while (iteratorWkpHierarchy.hasNext()) {
+            // pop 1 item
+            AttendanceDetailDisplayContents wkpHierarchy = iteratorWkpHierarchy.next();
+            // convert
+            AttendanceDetailDisplayContents dto = new AttendanceDetailDisplayContents(
+                    wkpHierarchy.getWorkplaceId(),
+                    wkpHierarchy.getHierarchyCode(),
+                    wkpHierarchy.getWorkplaceName(),
+                    wkpHierarchy.getHierarchyCode(),
+                    wkpHierarchy.getListDisplayedEmployees(),
+                    wkpHierarchy.getLevel(),
+                    new ArrayList<>());
+            // build List
+            this.pushToList(lstReturn, dto, wkpHierarchy.getHierarchyCode(), Strings.EMPTY, highestHierarchy);
+        }
+        return lstReturn;
+    }
+
+    private void pushToList(List<AttendanceDetailDisplayContents> lstReturn, AttendanceDetailDisplayContents dto, String hierarchyCode, String preCode,
+                            int highestHierarchy) {
+        if (hierarchyCode.length() == highestHierarchy) {
+            // check duplicate code
+            if (lstReturn.isEmpty()) {
+                lstReturn.add(dto);
+                return;
+            }
+            for (AttendanceDetailDisplayContents item : lstReturn) {
+                if (!item.getWorkplaceId().equals(dto.getWorkplaceId())) {
+                    lstReturn.add(dto);
+                    break;
+                }
+            }
+        } else {
+            String searchCode = preCode.isEmpty() ? preCode + hierarchyCode.substring(0, highestHierarchy)
+                    : preCode + hierarchyCode.substring(0, HIERARCHY_LENGTH);
+            Optional<AttendanceDetailDisplayContents> optWorkplaceFindDto = lstReturn.stream()
+                    .filter(item -> item.getHierarchyCode().equals(searchCode)).findFirst();
+            if (!optWorkplaceFindDto.isPresent()) {
+                return;
+            }
+            List<AttendanceDetailDisplayContents> currentItemChilds = optWorkplaceFindDto.get().getChildren();
+            pushToList(currentItemChilds, dto, hierarchyCode.substring(HIERARCHY_LENGTH, hierarchyCode.length()),
+                    searchCode, highestHierarchy);
+        }
+    }
+    public List<AttendanceDetailDisplayContents> getDepWkpInfoTree(List<AttendanceDetailDisplayContents> listInfo) {
+        List<AttendanceDetailDisplayContents> listInfoHasHierarchyCode = new ArrayList<>();
+        List<AttendanceDetailDisplayContents> listInfoHasNoHierarchyCode = new ArrayList<>();
+        listInfo.forEach(e -> {
+            if (e.getHierarchyCode().isEmpty()) {
+                listInfoHasNoHierarchyCode.add(e);
+            } else {
+                listInfoHasHierarchyCode.add(e);
+            }
+        });
+        List<AttendanceDetailDisplayContents> result = this.createTree(listInfoHasHierarchyCode);
+        // convert list no hierarchy code to tree
+        List<AttendanceDetailDisplayContents> noHierarchyCodeTree =
+                listInfoHasNoHierarchyCode.stream().map(AttendanceDetailDisplayContents::toTreeDto).collect(Collectors.toList());
+        // add list no hierarchy code to the end of the tree list
+        result.addAll(noHierarchyCodeTree);
+        return result;
+    }
+
 
 }

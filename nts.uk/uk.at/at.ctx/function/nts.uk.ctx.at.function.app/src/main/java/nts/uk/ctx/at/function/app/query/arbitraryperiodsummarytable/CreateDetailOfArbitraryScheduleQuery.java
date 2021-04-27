@@ -313,7 +313,7 @@ public class CreateDetailOfArbitraryScheduleQuery {
         val compareWplc = Comparator.comparing(AttendanceDetailDisplayContents::getWorkplaceCd);
         val totalDisplayContentComparator = Comparator.comparing(WorkplaceTotalDisplayContent::getHierarchyCode);
         detailDisplayContents.sort(Comparator.comparing(AttendanceDetailDisplayContents::getWorkplaceCd)
-                .thenComparing(AttendanceDetailDisplayContents::getLevel));
+                .thenComparing(AttendanceDetailDisplayContents::getHierarchyCode));
         return new DetailOfArbitrarySchedule(
                 contentsList,
                 detailDisplayContents.stream().sorted(compareWplc).collect(Collectors.toList()),
