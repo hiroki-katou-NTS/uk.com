@@ -1,10 +1,11 @@
-<div data-bind="with: $parent">
-	<div data-bind="if: workInfo">
+ <div data-bind="with: $parent">
+	<div style="margin-top: -3px" data-bind="if: workInfo">
 		<div class="table" data-bind="visible : true">
 			<div class="cell valign-center" style="width: 120px;">
 				<!--A4_1 勤務種類ラベル-->
 				<div class="valign-center"
 					data-bind="text: $i18n('KAF010_34'), ntsFormLabel:{required: true}"></div>
+				<BR />
 				<!--A4_4 就業時間ラベル-->
 				<div class="valign-center" style="padding-top: 10px"
 					data-bind="text: $i18n('KAF010_35'), ntsFormLabel:{required: true}"></div>
