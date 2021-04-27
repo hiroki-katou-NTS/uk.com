@@ -88,9 +88,6 @@ module nts.uk.at.view.kwr007.a {
         vm.getSettingListWorkStatus(1)).done(() => {
           vm.getWorkScheduleOutputConditions();
       });
-      vm.workplaceHierarchyId.subscribe(()=>{
-        console.log("aa"+vm.workplaceHierarchyId())
-      });
       vm.rdgSelectedId.subscribe((value) => {
         vm.isEnableSelectedCode(value === common.StandardOrFree.Standard);
         vm.isEnableStdBtn(!nts.uk.util.isNullOrEmpty(vm.standardSelectedCode()));
