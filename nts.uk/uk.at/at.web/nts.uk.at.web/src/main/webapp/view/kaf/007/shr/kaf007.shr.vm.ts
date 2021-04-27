@@ -22,7 +22,7 @@ module nts.uk.at.view.kaf007_ref.shr.viewmodel {
                     </button>
                 </div>
                 <div class="cell valign-center" style="padding-left: 15px;">
-                    <div class="valign-center" style="margin: 0 5px;">
+                    <div class="valign-center" style="margin: 0 5px; height: 43px">
                         <!--A6_2 勤務種類名-->
                         <div class="cell valign-center">
                             <span data-bind="text: appWorkChange.workTypeCode"></span>
@@ -30,7 +30,7 @@ module nts.uk.at.view.kaf007_ref.shr.viewmodel {
                             <span data-bind="text: appWorkChange.workTypeName"></span>
                         </div>
                     </div>
-                    <div class="valign-center" style="margin: 0 5px; padding-top: 18px">
+                    <div class="valign-center" style="margin: 0 5px; height: 23px" >
                         <!--A6_4 就業時間帯名-->
                         <div class="cell valign-center"">
                             <span data-bind="text: appWorkChange.workTimeCode"></span>
