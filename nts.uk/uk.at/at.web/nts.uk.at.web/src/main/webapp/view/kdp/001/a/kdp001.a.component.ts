@@ -39,6 +39,8 @@ module nts.uk.ui.kdp001.a {
         }
     };
 
+    type LENGTH = 'long' | 'short';
+
     const REST_API = {
         getEmployeeStampData: '/at/record/stamp/employment_system/get_employee_stamp_data',
         confirmUseOfStampInput: '/at/record/stamp/employment_system/confirm_use_of_stamp_input',
@@ -181,8 +183,9 @@ module nts.uk.ui.kdp001.a {
                 <!-- ko if: !$component.message.display() -->
                 <div class="kdp-001-a" data-bind="
                         widget-content: 143,
+                        css: {  'has-info-long': $component.lengthStamps() === 'long' ,
+                                'has-info-short': $component.lengthStamps() === 'short'}
                         ">
-                    <div>
                         <table>
                             <colgroup>
                                 <col width="25%" />
@@ -294,7 +297,6 @@ module nts.uk.ui.kdp001.a {
                 .kdp-001-a.widget-content {
                     border: 1px solid #b1b1b1;
                     max-height: 143px;
-                    overflow-y: scroll;
                     width: 448px;
                     margin: 5px auto;
                     border-radius: 3px;
@@ -361,6 +363,12 @@ module nts.uk.ui.kdp001.a {
                 .kdp-001-a .left-content{
                     margin-right: 10px;
                 }
+                .has-info-long {
+                    overflow-y: scroll;
+                }
+                .has-info-short {
+                    overflow-y: hidden;
+                }
             </style>
         `
     })
@@ -392,6 +400,8 @@ module nts.uk.ui.kdp001.a {
                 display: null
             };
 
+        lengthStamps!: KnockoutComputed<LENGTH>;
+
         constructor(private mode: 'a' | 'b' | 'c' | 'd' | KnockoutObservable<'a' | 'b' | 'c' | 'd'> = 'a') {
             super();
             const vm = this;
@@ -400,8 +410,18 @@ module nts.uk.ui.kdp001.a {
                 vm.modeA(true);
             }
 
-            // console.log(mode);
-            // console.log(ko.unwrap(vm.m));
+            vm.lengthStamps = ko.computed({
+
+                read: () => {
+                    const stamps = ko.unwrap(vm.stamps);
+
+                    if (stamps.length < 5) {
+                        return 'short';
+                    }
+
+                    return 'long';
+                }
+            });
 
             vm.basyo();
 
