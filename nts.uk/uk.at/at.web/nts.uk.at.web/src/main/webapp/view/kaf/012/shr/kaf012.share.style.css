@@ -82,11 +82,6 @@
 	width: auto;
 }
 
-#kaf012-share-component2 .control-group {
-	margin-bottom: 10px;
-	margin-top: 0px;
-}
-
 #cal-button-wrapper {
 	width: 100px;
 	text-align: center;
@@ -150,6 +145,10 @@
 	margin-top: 40px;
 	border-bottom: 2px solid #B1B1B1;
 	width: 342px;
+}
+
+.w120 {
+	width: 120px;
 }
 
 

@@ -12,8 +12,8 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
 
     const template = `
     <div id="kaf012-share-component2">
-        <div class="control-group table">
-            <div class="cell valign-center" style="padding-right: 3px" data-bind="ntsFormLabel: {required:true , text: $i18n('KAF012_46')}"></div>
+        <div class="table" style="margin-bottom: 13px">
+            <div class="cell valign-center w120" style="padding-right: 0px" data-bind="ntsFormLabel: {required:true , text: $i18n('KAF012_46')}"></div>
             <div class="cell valign-center" id="leave-type-switch"
                 data-bind="ntsSwitchButton: {
 						name: $i18n('KAF012_5'),
@@ -25,7 +25,7 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
 						required: true }">
 			</div>
         </div>
-        <div class="control-group valign-center" data-bind="if: displaySpecialLeaveFrames">
+        <div class="valign-center" data-bind="if: displaySpecialLeaveFrames">
             <div style="padding-right: 0" data-bind="ntsFormLabel: {required:true , text: $i18n('KAF012_47')}"/>
             <div data-bind="ntsComboBox: {
                     name: $i18n('KAF012_47'),
@@ -38,8 +38,8 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
                     enable: !viewMode()}">  
             </div>
         </div>
-        <div class="control-group table">
-            <div class="cell" style="padding-right: 3px; vertical-align: top" data-bind="ntsFormLabel: {required:true , text: $i18n('KAF012_6')}"></div>
+        <div class="table">
+            <div class="cell w120" style="padding-right: 0px; vertical-align: top" data-bind="ntsFormLabel: {required:true , text: $i18n('KAF012_6')}"></div>
             <div class="cell valign-center" style="display: inline-flex;" data-bind="css: {hidden: appDispInfoStartupOutput().appDispInfoWithDateOutput.opErrorFlag > 0}">
                 <div class="pull-left">
                     <table id="kaf012-input-table">
@@ -72,6 +72,7 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
                                                                             inputFormat: 'time', 
                                                                             mode: 'time',
                                                                             enable: !$parents[1].viewMode()
+                                                                        }"/>
                                                                         }"/>
                                                     <span data-bind="text: $parent.attendLeaveLabel"/>
                                                     <span data-bind="text: $parent.lateTimeLabel"/>
