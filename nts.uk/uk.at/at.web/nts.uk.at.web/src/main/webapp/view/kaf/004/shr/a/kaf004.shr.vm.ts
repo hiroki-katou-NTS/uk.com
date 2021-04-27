@@ -13,7 +13,7 @@ module nts.uk.at.view.kaf004_ref.shr.a.viewmodel {
                         <tr>
                             <td class="time-padding" style="width: 110px">
                                 <!-- A6_2 -->
-                                <span class="label" data-bind="text: $i18n('KAF004_21')"></span>
+                                <span class="label" data-bind="text: $i18n('KAF004_69')"></span>
 
                                 <!-- A6_3 -->
                                 <span class="label" id="label-A6_3" data-bind="text: $vm.workManagement.scheAttendanceTime"></span>
@@ -47,7 +47,7 @@ module nts.uk.at.view.kaf004_ref.shr.a.viewmodel {
                         <tr>
                             <td class="time-padding" style="width: 110px">
                                 <!-- A6_8 -->
-                                <span class="label" data-bind="text: $i18n('KAF004_21')"></span>
+                                <span class="label" data-bind="text: $i18n('KAF004_70')"></span>
 
                                 <!-- A6_9 -->
                                 <span class="label" id="label-A6_9" data-bind="text: $vm.workManagement.scheWorkTime"></span>
@@ -81,7 +81,7 @@ module nts.uk.at.view.kaf004_ref.shr.a.viewmodel {
                         <tr data-bind="visible: $vm.condition2()" style="width: 110px">
                             <td class="time-padding">
                                 <!-- A6_14 -->
-                                <span class="label" data-bind="text: $i18n('KAF004_68')"></span>
+                                <span class="label" data-bind="text: $i18n('KAF004_71')"></span>
 
                                 <!-- A6_15 -->
                                 <span class="label" id="label-A6_15" data-bind="text: $vm.workManagement.scheAttendanceTime2"></span>
@@ -115,7 +115,7 @@ module nts.uk.at.view.kaf004_ref.shr.a.viewmodel {
                         <tr data-bind="visible: $vm.condition2()" style="width: 110px">
                             <td class="time-padding">
                                 <!-- A6_20 -->
-                                <span class="label" data-bind="text: $i18n('KAF004_68')"></span>
+                                <span class="label" data-bind="text: $i18n('KAF004_72')"></span>
 
                                 <!-- A6_21 -->
                                 <span class="label" id="label-A6_21" data-bind="text: $vm.workManagement.scheWorkTime2"></span>
