@@ -193,9 +193,6 @@ module nts.uk.at.view.kaf012.b.viewmodel {
                 appDispInfoStartupOutput: vm.appDispInfoStartupOutput()
             }).done(res => {
                 if (res) {
-                    vm.reflectSetting(res.reflectSetting);
-                    vm.timeLeaveRemaining(res.timeLeaveRemaining);
-                    vm.timeLeaveManagement(res.timeLeaveManagement);
                     let totalAppTime: Array<number> = [0, 0, 0, 0, 0, 0], specialFrame: number = null;
                     res.details.forEach((detail: TimeLeaveAppDetail) => {
                         detail.timeZones.forEach(z => {
@@ -245,6 +242,9 @@ module nts.uk.at.view.kaf012.b.viewmodel {
                     } else {
                         vm.leaveType(_.findIndex(totalAppTime, i => i > 0));
                     }
+                    vm.reflectSetting(res.reflectSetting);
+                    vm.timeLeaveRemaining(res.timeLeaveRemaining);
+                    vm.timeLeaveManagement(res.timeLeaveManagement);
                     if (specialFrame != null) vm.specialLeaveFrame(specialFrame);
                     vm.printContentOfEachAppDto().opPrintContentOfTimeLeave = res.details;
 
