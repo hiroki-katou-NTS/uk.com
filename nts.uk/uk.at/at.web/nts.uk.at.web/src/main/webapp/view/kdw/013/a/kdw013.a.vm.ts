@@ -108,6 +108,21 @@ module nts.uk.ui.at.kdp013.a {
                 // URLの値元に画面モードを判定する
                 vm.editable(mode === '0');
             }
+
+            vm.$ajax('at', API.START)
+                .then((data: ProcessInitialStartDto) => {
+                    const { startManHourInputDto, refWorkplaceAndEmployeeDto } = data;
+
+                    if (!startManHourInputDto) {
+                        return;
+                    }
+
+                    const { taskFrameUsageSetting, tasks, workLocations } = startManHourInputDto;
+                    const { employeeInfos, lstEmployeeInfo, workplaceInfos } = refWorkplaceAndEmployeeDto;
+
+                    const employees = _.map(employeeInfos, ({  }) => ({}));
+
+                });
         }
 
         mounted() {
@@ -194,7 +209,7 @@ module nts.uk.ui.at.kdp013.a {
             <div data-bind="ntsComboBox: {
                 name: $component.$i18n('KDW013_5'),
                 options: $component.departments,
-                visibleItemsCount: 5,
+                visibleItemsCount: 20,
                 value: ko.observable(),
                 editable: true,
                 selectFirstIfNull: true,

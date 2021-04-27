@@ -43,6 +43,10 @@ module nts.uk.ui.at.kdp013.a {
         workplaceInfos: WorkplaceInfo[];
     };
 
+    export type EmployeInfo = {
+        
+    };
+
     export type EmployeeBasicInfoImport = {
 
     };
