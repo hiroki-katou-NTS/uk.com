@@ -4,12 +4,12 @@ module nts.uk.at.view.kaf000.b.component7.viewmodel {
         name: 'kaf000-b-component7',
         template: `
             <div id="kaf000-b-component7">
-				<div class="table" style="margin-bottom: 13px;" data-bind="if: appReasonCDDisp">
+				<div class="table" style="margin-bottom: 8px;" data-bind="if: appReasonCDDisp">
 			    	<div class="cell col-1">
 			        	<div class="cell valign-center" data-bind="ntsFormLabel: {required: appReasonCDRequired}, text: $i18n('KAF000_51')"></div>
 					</div>
 					<div class="cell valign-center">
-						<div id="combo-box" style="width: 470px"
+						<div id="combo-box" style="width: 472px"
 							data-bind="ntsComboBox: {
 			        						name: $i18n('KAF000_51'),
 			                                options: reasonTypeItemLst,
@@ -22,7 +22,7 @@ module nts.uk.at.view.kaf000.b.component7.viewmodel {
 			             </div>
 			         </div>
 				</div>
-				<div class="table" style="margin-top: 13px;" data-bind="if: appReasonDisp">
+				<div class="table" data-bind="if: appReasonDisp">
 					<div class="cell col-1">
 						<div class="cell valign-center" data-bind="ntsFormLabel: {
 											required: appReasonRequired,
