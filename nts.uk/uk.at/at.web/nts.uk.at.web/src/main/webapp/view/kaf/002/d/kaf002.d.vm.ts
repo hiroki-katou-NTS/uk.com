@@ -60,7 +60,7 @@ module nts.uk.at.view.kaf002_ref.d.viewmodel {
 
 
 
-						<div class="label"
+						<div class="label marginCustome1"
 							data-bind="text: comment1().content, style: {color: comment1().color , margin:'10px', fontWeight: comment1().isBold ? 'bold' : 'normal'}"
 							style="margin: 10px"></div>
 
@@ -96,7 +96,7 @@ module nts.uk.at.view.kaf002_ref.d.viewmodel {
 
 						<div
 							data-bind="text: comment2().content, style: {color: comment2().color , margin:'10px', fontWeight: comment2().isBold ? 'bold' : 'normal'}"
-							class="label" style="margin: 10px"></div>
+							class="label marginCustome2" style="margin: 10px"></div>
 
 
 					</div>
@@ -104,7 +104,7 @@ module nts.uk.at.view.kaf002_ref.d.viewmodel {
 
 
 
-					<divstyle="margin-top: 12px"
+					<divstyle="margin-top: -8px"
 						data-bind="component: { name: 'kaf000-b-component7', 
                                                 params: {
                                                     appType: appType,
