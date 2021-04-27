@@ -4,14 +4,14 @@ module nts.uk.at.view.kaf007_ref.shr.viewmodel {
         name: 'kaf007-share',
         template: `
         <div id="kaf007-share">
-            <div class="table" style="margin-bottom: 5px;">
+            <div class="table" style="margin-bottom: 7px;">
                 <div class="cell valign-center col-1">
                     <!--A6_1 勤務種類-->
                     <div class="valign-center col-1" data-bind="ntsFormLabel:{required:true}, text: $i18n('KAF007_22')">
                     </div>
 
                     <!--A6_3 就業時間帯-->
-                    <div class="valign-center col-1" style="padding-top: 10px" data-bind="ntsFormLabel:{required:true}, text: $i18n('KAF007_23')">
+                    <div class="valign-center col-1" style="padding-top: 10px; padding-right: 10px" data-bind="ntsFormLabel:{required:true}, text: $i18n('KAF007_23')">
                     </div>
                 </div>
                 <div class="cell" style="padding-top: 5px;">
@@ -40,9 +40,9 @@ module nts.uk.at.view.kaf007_ref.shr.viewmodel {
                     </div>
                 </div>
             </div>
-            <div class="table" style="margin-top: 5px;"
+            <div class="table mv-13" style="margin-top: 5px;"
                 data-bind="visible: reflectWorkChange.whetherReflectAttendance() == 1">
-                <div class="cell col-1">
+                <div class="cell col-1" style="width: 120px">
                     <!-- A7 -->
                     <div class="cell valign-center" data-bind="ntsFormLabel: {required:true}, text: $i18n('KAF007_13')"></div>
                 </div>
@@ -71,8 +71,8 @@ module nts.uk.at.view.kaf007_ref.shr.viewmodel {
                     <span class="label comment2" data-bind="text: $vm.comment2"></span>
                 </div>
             </div>
-            <div class="table" style="margin-top: 5px;" data-bind="visible: $vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.managementMultipleWorkCycles && reflectWorkChange.whetherReflectAttendance() == 1">
-                <div class="cell col-1">
+            <div class="table mv-13" style="margin-top: 5px;" data-bind="visible: $vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.managementMultipleWorkCycles && reflectWorkChange.whetherReflectAttendance() == 1">
+                <div class="cell col-1" style="width: 120px">
                     <!-- A8 -->
                     <div class="cell valign-center" data-bind="ntsFormLabel: {required:false}, text: $i18n('KAF007_20')"></div>
                 </div>
@@ -105,7 +105,7 @@ module nts.uk.at.view.kaf007_ref.shr.viewmodel {
             <div class="table" style="margin-top: 5px;">
                 <div class="cell col-1" style="width: 120px"></div>
                 <!-- A8_4 -->
-                <div class="cell valign-center col-2-5" style="display: block;" data-bind="ntsCheckBox: {
+                <div class="cell valign-center col-2-5" style="display: block; margin-left: -3px" data-bind="ntsCheckBox: {
                     text: $i18n('KAF007_16'),
                     checked: isStraightGo, 
                     enable: (model() !== null && model().setupType() === 0 && isEdit)
