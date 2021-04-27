@@ -1,11 +1,7 @@
 module nts.uk.ui.at.kdp013.a {
     const { randomId } = nts.uk.util;
+    const { parseQuery } = nts.uk.ui.at.kdp013.share;
     import calendar = nts.uk.ui.components.fullcalendar;
-
-    interface API {
-        readonly ADD: string;
-        readonly DELETE: string;
-    }
 
     const DATE_FORMAT = 'YYYY-MM-DD';
 
@@ -13,6 +9,8 @@ module nts.uk.ui.at.kdp013.a {
         ADD: '/screen/at/kdw013/a/add',
         DELETE: '/screen/at/kdw013/a/delete'
     };
+
+    const model: StartProcessDto = {};
 
     @handler({
         bindingName: 'kdw-toggle',
@@ -79,6 +77,7 @@ module nts.uk.ui.at.kdp013.a {
             super();
 
             const vm = this;
+            const { mode } = parseQuery();
 
             vm.$toggle = {
                 save: ko.computed({
@@ -101,6 +100,11 @@ module nts.uk.ui.at.kdp013.a {
                     }
                 }),
             };
+
+            if (mode) {
+                // URLの値元に画面モードを判定する
+                vm.editable(mode === '0');
+            }
         }
 
         mounted() {
