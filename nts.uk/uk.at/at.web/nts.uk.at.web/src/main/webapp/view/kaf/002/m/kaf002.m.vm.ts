@@ -8,7 +8,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
 		<div
 			data-bind="text: comment1().content,
 					   style: {color: comment1().color,
-					   margin:'10px',
+					   marginBottom:'10px',
 					   fontWeight: comment1().isBold ? 'bold' : 'normal'}"
 			class="label"
 			style="white-space: break-spaces; width: auto !important">
@@ -27,7 +27,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
 		<div
 			data-bind="text: comment2().content,
 					   style: {color: comment2().color,
-					   margin:'10px',
+					   marginTop:'10px',
 					   fontWeight: comment2().isBold ? 'bold' : 'normal'}"
 			class="label"
 			style="white-space: break-spaces; width: auto !important">

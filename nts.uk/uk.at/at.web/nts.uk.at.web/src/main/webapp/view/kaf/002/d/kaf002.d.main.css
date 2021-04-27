@@ -26,4 +26,11 @@ input {
 	height: 30px; 
 	margin-left: 25px;
 	width: 100px;
+}.marginCustome1 {
+	margin-top: 5px !important;
+	margin-bottom: 10px !important;
+}
+.marginCustome2 {
+	margin-top: 2px !important;
+	margin-bottom: 10px !important;
 }
