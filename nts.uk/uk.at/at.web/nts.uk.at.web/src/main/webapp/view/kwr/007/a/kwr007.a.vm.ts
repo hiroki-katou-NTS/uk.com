@@ -87,8 +87,10 @@ module nts.uk.at.view.kwr007.a {
         vm.getSettingListWorkStatus(0),
         vm.getSettingListWorkStatus(1)).done(() => {
           vm.getWorkScheduleOutputConditions();
-      });     
-
+      });
+      vm.workplaceHierarchyId.subscribe(()=>{
+        console.log("aa"+vm.workplaceHierarchyId())
+      });
       vm.rdgSelectedId.subscribe((value) => {
         vm.isEnableSelectedCode(value === common.StandardOrFree.Standard);
         vm.isEnableStdBtn(!nts.uk.util.isNullOrEmpty(vm.standardSelectedCode()));
@@ -410,8 +412,8 @@ module nts.uk.at.view.kwr007.a {
         }
         return;
       }
-      let hierarchyId = vm.pageBreakSpecification();
-      if(hierarchyId !=2){
+      let hierarchyId = vm.workplaceHierarchyId();
+      if(vm.pageBreakSpecification() !=2){
           hierarchyId = null;
       }
       //save conditions
@@ -491,8 +493,8 @@ module nts.uk.at.view.kwr007.a {
       _.forEach(vm.specifyWorkplaceHierarchy(), (x: CheckBoxItem) => {
         levels.push(x.toSave());
       });
-        let hierarchyId = vm.pageBreakSpecification();
-        if(hierarchyId !=2){
+        let hierarchyId = vm.workplaceHierarchyId();
+        if(vm.pageBreakSpecification() !=2){
             hierarchyId = null;
         }
       let data: WorkScheduleOutputConditions = {
