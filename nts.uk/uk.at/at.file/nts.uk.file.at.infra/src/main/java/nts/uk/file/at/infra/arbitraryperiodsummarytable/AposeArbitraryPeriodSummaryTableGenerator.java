@@ -368,7 +368,7 @@ public class AposeArbitraryPeriodSummaryTableGenerator extends AsposeCellsReport
             // convert
             AttendanceDetailDisplayContents dto = new AttendanceDetailDisplayContents(
                     wkpHierarchy.getWorkplaceId(),
-                    wkpHierarchy.getHierarchyCode(),
+                    wkpHierarchy.getWorkplaceCd(),
                     wkpHierarchy.getWorkplaceName(),
                     wkpHierarchy.getHierarchyCode(),
                     wkpHierarchy.getListDisplayedEmployees(),
