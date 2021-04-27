@@ -1,7 +1,7 @@
 package nts.uk.ctx.sys.assist.app.find.autosetting.deletion;
 
-import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -47,29 +47,24 @@ public class SelectedDelPatternFinder {
 				AppContexts.user().contractCode(), command.getPatternCode(), command.getPatternClassification());
 
 		// List<選択カテゴリ名称＞を作成
-		dto.setSelectedCategories(selectCategories.stream()
-				.map(sc -> SelectionDelCategoryNameDto.builder()
-						.categoryId(sc.getCategoryId().v())
-						.categoryName(command.getCategories().stream()
-								.filter(u -> u.getCategoryId().equals(sc.getCategoryId().v())
-										&& u.getSystemType() == sc.getSystemType().value)
-								.findFirst()
-								.map(DeleteCategoryDto::getCategoryName)
-								.orElse(null))
-						.pattern(op.map(DataDeletionPatternSettingDto::createFromDomain).orElse(null))
-						.patternClassification(sc.getPatternClassification().value)
-						.patternCode(sc.getPatternCode().v())
-						.retentionPeriod(categories.stream()
-								.filter(u -> u.getCategoryId().equals(sc.getCategoryId()))
-								.findFirst()
-								.map(c -> c.getTimeStore().nameId)
-								.orElse(null))
-						.systemType(sc.getSystemType().value)
-						.build())
-				.sorted(Comparator.comparing(SelectionDelCategoryNameDto::getCategoryId)).collect(Collectors.toList()));
+		if (op.isPresent()) {
+			DataDeletionPatternSetting pattern = op.get();
+			dto.setPattern(DataDeletionPatternSettingDto.createFromDomain(pattern));
+			dto.getPattern().setSelectCategories(selectCategories.stream().map(sc -> 
+				categories.stream().filter(u -> u.getCategoryId().equals(sc.getCategoryId()))
+						.findFirst()
+						.map(category -> SelectionDelCategoryNameDto.builder()
+							.categoryId(sc.getCategoryId().v())
+							.categoryName(category.getCategoryName().v())
+							.retentionPeriod(category.getTimeStore().nameId)
+							.systemType(sc.getSystemType().value)
+							.build())
+						.orElse(null)
+			).filter(Objects::nonNull).collect(Collectors.toList()));
+		}
 
 		// List<選択可能カテゴリ＞を作成
-		dto.setSelectableCategories(getSelectable(dto.getSelectedCategories(), command.getCategories()));
+		dto.setSelectableCategories(getSelectable(dto.getPattern().getSelectCategories(), command.getCategories()));
 		// オブジェクト「選択パターンパラメータ」を返す。
 		return dto;
 	}

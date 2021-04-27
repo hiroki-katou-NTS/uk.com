@@ -1,13 +1,16 @@
-package nts.uk.ctx.sys.assist.app.find.autosetting.deletion;
+package nts.uk.ctx.sys.assist.app.find.autosetting.storage;
 
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import nts.uk.ctx.sys.assist.app.find.autosetting.AbstractCategoryDto;
 
+/**
+ * 選択カテゴリ名称DTO
+ */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class SelectionDelCategoryNameDto extends AbstractCategoryDto {
+public class SelectionCategoryNameDto extends AbstractCategoryDto {
 	
 	/**
 	 * 保存期間
@@ -15,7 +18,7 @@ public class SelectionDelCategoryNameDto extends AbstractCategoryDto {
 	private String retentionPeriod;
 
 	@Builder
-	public SelectionDelCategoryNameDto(String categoryId, String categoryName, int systemType, String retentionPeriod) {
+	public SelectionCategoryNameDto(String categoryId, String categoryName, int systemType, String retentionPeriod) {
 		super(categoryId, categoryName, systemType);
 		this.retentionPeriod = retentionPeriod;
 	}

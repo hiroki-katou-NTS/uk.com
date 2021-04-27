@@ -120,6 +120,19 @@ module nts.uk.at.view.kaf012.a.viewmodel {
                     vm.updateInputTime(vm.appDispInfoStartupOutput());
                 }
             });
+            vm.leaveType.subscribe(value => {
+                vm.applyTimeData().forEach((row : DataModel) => {
+                    row.applyTime.forEach(apply => {
+                        apply.substituteAppTime(0);
+                        apply.annualAppTime(0);
+                        apply.careAppTime(0);
+                        apply.childCareAppTime(0);
+                        apply.super60AppTime(0);
+                        apply.specialAppTime(0);
+                        apply.calculatedTime(0);
+                    });
+                });
+            });
         }
 
         updateInputTime(value: any) {

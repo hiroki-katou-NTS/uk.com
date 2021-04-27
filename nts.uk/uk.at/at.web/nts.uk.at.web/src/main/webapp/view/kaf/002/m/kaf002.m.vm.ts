@@ -402,8 +402,38 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
                         });
                     }
 
+					_.forEach(self.dataSource[index], i => {
+                        if (ko.toJS(i.flagEnable)) {
+                            i.flagObservable.subscribe((value) => {
+								if (value) {
+									const list = _.filter(self.dataSource[index], itemDetail => {
+										return !itemDetail.flagObservable() && itemDetail.flagEnable();
+									});	
+									if (index == items[0].index && !item() && !list.length) {
+										item(true);
+									}								
+								} else {
+									const list = _.filter(self.dataSource[index], itemDetail => {
+										return itemDetail.flagObservable() && itemDetail.flagEnable();
+									});
+									if (index == items[0].index && item() && !list.length) {
+										item(false);
+									}
+									
+								}
+								
+							})
+                        }
+                    });
+
                 });
+
+
             }
+
+	
+
+
 //
             let headerFlagContent = '';
             let dataSource;
