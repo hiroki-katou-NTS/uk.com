@@ -2946,11 +2946,12 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				flowCheck = _.filter(lstType, (x: any) => { return x === 2 });
 			
 			
-			if (self.checkDisByDate == false || isConfirmed == 1 || _.isEmpty(fixCheck) || _.isEmpty(flexCheck) || _.isEmpty(flowCheck)) {
+			if (self.checkDisByDate == false || isConfirmed == 1) {
 				fixedString = "Both";
 				slide = false;
 				sliceBrk = false;
 			}
+			
 			if(self.dataScreen003A().employeeInfo[i].fixedWorkInforDto != null && self.dataScreen003A().employeeInfo[i].fixedWorkInforDto.fixBreakTime == 1){
 				if(datafilter[0].typeOfTime === "Changeable" || datafilter[0].typeOfTime === "Flex"){
 					follow = false;
@@ -2959,6 +2960,25 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 
 			if (datafilter != null) {
 				if (datafilter[0].typeOfTime != "" && datafilter[0].typeOfTime != null) {
+					
+						if(datafilter[0].typeOfTime === "Fixed" && _.isEmpty(fixCheck)){
+							fixedString = "Both";
+							slide = false;
+							sliceBrk = false;
+						}
+						
+						if(datafilter[0].typeOfTime === "Changeable" && _.isEmpty(flowCheck)){
+							fixedString = "Both";
+							slide = false;
+							sliceBrk = false;
+						}
+						
+						if(datafilter[0].typeOfTime === "Flex" && _.isEmpty(flexCheck)){
+							fixedString = "Both";
+							slide = false;
+							sliceBrk = false;
+						}
+					
 					// add chart for FIXED-TIME - thời gian cố định
 					if (datafilter[0].typeOfTime === "Fixed" || datafilter[0].gcFixedWorkTime.length > 0) {
 						
@@ -3950,7 +3970,20 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					bePassedThrough = false;
 				} 
 				
-				if (self.checkDisByDate == false || isConfirmed == 1 || _.isEmpty(fixCheck) || _.isEmpty(flexCheck) || _.isEmpty(flowCheck)) {
+				if (self.checkDisByDate == false || isConfirmed == 1) {
+					fixed = "Both"
+					canSlide = false;
+				}
+				
+				if(self.dataScreen003A().employeeInfo[lineNo].fixedWorkInforDto.workType == WorkTimeForm.FIXED && _.isEmpty(fixCheck)){
+					fixed = "Both"
+					canSlide = false;
+				}
+				if(self.dataScreen003A().employeeInfo[lineNo].fixedWorkInforDto.workType == WorkTimeForm.FLOW && _.isEmpty(flowCheck)){
+					fixed = "Both"
+					canSlide = false;
+				}
+				if(self.dataScreen003A().employeeInfo[lineNo].fixedWorkInforDto.workType == WorkTimeForm.FLEX && _.isEmpty(flexCheck)){
 					fixed = "Both"
 					canSlide = false;
 				}
@@ -3983,7 +4016,17 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				fixed = "Both";
 				rollup = true;
 				pin = true;
-				if (self.checkDisByDate == false || isConfirmed == 1 || _.isEmpty(fixCheck) || _.isEmpty(flexCheck) || _.isEmpty(flowCheck)) {
+				if (self.checkDisByDate == false || isConfirmed == 1) {
+					canSlide = false;
+				}
+				
+				if(self.dataScreen003A().employeeInfo[lineNo].fixedWorkInforDto.workType == WorkTimeForm.FIXED && _.isEmpty(fixCheck)){
+					canSlide = false;
+				}
+				if(self.dataScreen003A().employeeInfo[lineNo].fixedWorkInforDto.workType == WorkTimeForm.FLOW && _.isEmpty(flowCheck)){
+					canSlide = false;
+				}
+				if(self.dataScreen003A().employeeInfo[lineNo].fixedWorkInforDto.workType == WorkTimeForm.FLEX && _.isEmpty(flexCheck)){
 					canSlide = false;
 				}
 			} 
