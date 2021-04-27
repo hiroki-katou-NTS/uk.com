@@ -16,7 +16,7 @@ var ajaxOption = {
 $(function () {
 	$("#export").click(function () {
 		$('#result').val('');
-		$.ajax(ajaxOption.build("/nts.uk.cnv.web/webapi/td/ddl/exporttofile", {
+		$.ajax(ajaxOption.build("/nemunoki.oruta.web/webapi/ddl/exporttofile", {
 			path: $('#folderpath_export').val(),
 			type: $('[name="ddl_type_export"]:checked').val(),
 			withComment:
