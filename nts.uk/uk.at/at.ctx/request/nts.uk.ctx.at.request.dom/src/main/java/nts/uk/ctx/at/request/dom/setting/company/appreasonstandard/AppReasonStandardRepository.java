@@ -17,7 +17,9 @@ public interface AppReasonStandardRepository {
 	
 	Optional<AppReasonStandard> findByHolidayAppType(String companyID, HolidayAppType holidayAppType);
 	
-	Optional<AppReasonStandard> findByCD(ApplicationType appType, AppStandardReasonCode appStandardReasonCode);
+	Optional<AppReasonStandard> findByHolAndAppType(String companyID, ApplicationType appType, HolidayAppType holidayAppType);
+	
+	Optional<AppReasonStandard> findByCD(String CID, ApplicationType appType, Optional<HolidayAppType> holidayAppType, AppStandardReasonCode appStandardReasonCode);
 
 	List<AppReasonStandard> findByCompanyId(String companyID);
 
