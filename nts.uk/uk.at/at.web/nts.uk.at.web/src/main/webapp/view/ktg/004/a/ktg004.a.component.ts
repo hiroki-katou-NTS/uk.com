@@ -51,7 +51,7 @@ module nts.uk.ui.ktg004.a {
                 </table>
             </div>
             <div class="ktg-004-a ktg004-fontsize ktg004-border" data-bind="widget-content: 100">
-                <div>
+                <div style="padding: 0px 20px 0px 15px;">
                     <table class="widget-table" style="width: 100%;">
                         <colgroup>
                             <col width="auto" />
@@ -100,7 +100,7 @@ module nts.uk.ui.ktg004.a {
                 }
                 .ktg004-fontsize div.form-label>span.text {
                     font-size: 1rem !important;
-                    padding-left: 8px;
+                    padding-left: 5px;
                 }
                 .ktg004-fontsize-larger div.form-label>span.text {
                     font-size: 1.2rem !important;

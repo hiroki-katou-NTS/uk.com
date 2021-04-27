@@ -148,12 +148,12 @@ module nts.uk.at.view.ccg005.a.screenModel {
                     <i tabindex=13 data-bind="ntsIcon: {no: emojiIconNo, width: 20, height: 15}, visible: emojiVisitable"></i>
                   </div>
                 </td>
-                <td class="ccg005-w105 ccg005-pl-5 ccg005-border-groove ccg005-right-unset ccg005-left-unset">
+                <td class="ccg005-w100 ccg005-pl-5 ccg005-border-groove ccg005-right-unset ccg005-left-unset">
                   <div class="ccg005-w100" style="position: relative; height: 20px">
                     <!-- A4_2 -->
                     <label
                       data-bind="text: attendanceDetailDto.workName, attr:{ class: 'limited-label '+ attendanceDetailDto.workColorClass }"
-                      style="max-width: 100px; width: auto !important;" />
+                      style="max-width: 85px; width: auto !important;" />
                     <!-- A4_4 -->
                     <i tabindex=14 style="position: absolute; top: 3px; right: 0;"
                       data-bind="visible: displayAppIcon, click: $component.initPopupA4_4InList.bind($component, $index, sid), attr:{ class: 'A4-4-application-icon-'+sid }, ntsIcon: {no: 190, width: 13, height: 13}"></i>
@@ -349,10 +349,6 @@ module nts.uk.at.view.ccg005.a.screenModel {
 
     .ccg005-w100 {
       width: 100px;
-    }
-
-    .ccg005-w105 {
-      width: 105px;
     }
 
     .ccg005-bold {

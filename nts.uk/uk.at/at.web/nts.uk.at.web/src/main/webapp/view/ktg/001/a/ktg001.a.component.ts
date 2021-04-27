@@ -85,7 +85,7 @@ module nts.uk.ui.ktg001.a {
                 </table>
             </div>
             <div class="ktg-001-a ktg001-fontsize" data-bind="widget-content: 100">
-                <div class="ktg001-border">
+                <div class="ktg001-border" style="padding: 0px 20px 0px 15px;">
                     <table style="width: 100%;">
                         <colgroup>
                             <col width="1%" />
@@ -103,7 +103,7 @@ module nts.uk.ui.ktg001.a {
                                     <i style="position: absolute; bottom: 5px; left: 15px;"
                                         data-bind="visible: $component.appIconVisible, ntsIcon: { no: 165, width: 13, height: 13 }"></i>
                                 </td>
-                                <td style="padding-left: 10px;">
+                                <td style="padding-left: 5px;">
                                     <!-- A2_1 -->
                                     <div data-bind="ntsFormLabel: { required: false, text: $i18n('KTG001_1') }"></div>
                                 </td>
@@ -120,7 +120,7 @@ module nts.uk.ui.ktg001.a {
                                     <i style="position: absolute; bottom: 5px; left: 15px;"
                                         data-bind="visible: $component.dayIconVisible, ntsIcon: { no: 165, width: 13, height: 13 }"></i>
                                 </td>
-                                <td style="padding-left: 10px;">
+                                <td style="padding-left: 5px;">
                                     <!-- A3_1 -->
                                     <div data-bind="ntsFormLabel: { required: false, text: $i18n('KTG001_2') }"></div>
                                 </td>
@@ -137,7 +137,7 @@ module nts.uk.ui.ktg001.a {
                                     <i style="position: absolute; bottom: 5px; left: 15px;"
                                         data-bind="visible: monIconVisible, ntsIcon: { no: 165, width: 13, height: 13 }"></i>
                                 </td>
-                                <td style="padding-left: 10px;">
+                                <td style="padding-left: 5px;">
                                     <!-- A4_1 -->
                                     <div data-bind="ntsFormLabel: { required: false, text: $i18n('KTG001_3') }"></div>
                                 </td>
@@ -154,7 +154,7 @@ module nts.uk.ui.ktg001.a {
                                     <i style="position: absolute; bottom: 5px; left: 15px;"
                                         data-bind="visible: $component.aggrIconVisible, ntsIcon: { no: 165, width: 13, height: 13 }"></i>
                                 </td>
-                                <td style="padding-left: 10px;">
+                                <td style="padding-left: 5px;">
                                     <!-- A5_1 -->
                                     <div data-bind="ntsFormLabel: { required: false, text: $i18n('KTG001_4') }"></div>
                                 </td>
