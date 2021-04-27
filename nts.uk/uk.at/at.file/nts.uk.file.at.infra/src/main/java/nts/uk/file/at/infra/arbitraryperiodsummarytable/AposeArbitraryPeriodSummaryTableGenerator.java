@@ -114,37 +114,40 @@ public class AposeArbitraryPeriodSummaryTableGenerator extends AsposeCellsReport
                 printInfo(worksheetTemplate, worksheet, contentsList, period);
                 count += 5;
                 itemOnePage += 5;
+                boolean isFist = true;
                 for (int i = 0; i < detailDisplayContents.size(); i++) {
-                    boolean isBreaked = false;
                     val content = detailDisplayContents.get(i);
                     if (query.isDetail()) {
-                        int wplHierarchy = content.getHierarchyCode().length() / 3;
+                        int wplHierarchy = content.getLevel();
                         Integer pageBreakWplHierarchy = query.getPageBreakWplHierarchy();
+
                         if (i!=0 && query.isPageBreakByWpl() && pageBreakWplHierarchy == null) {
                             pageBreaks.add(count);
                             cells.copyRows(cells, 0, count, 5);
                             count += 5;
                             itemOnePage = 5;
-                            isBreaked = true;
                         }
-                        if (i!=0 && pageBreakWplHierarchy != null && wplHierarchy <= pageBreakWplHierarchy) {
+                        if (i!=0 &&  query.isPageBreakByWpl() && pageBreakWplHierarchy != null && (
+                                wplHierarchy <= pageBreakWplHierarchy) ) {
                             pageBreaks.add(count);
                             cells.copyRows(cells, 0, count, 5);
                             count += 5;
                             itemOnePage = 5;
-                            isBreaked = true;
+                            isFist = true;
+                        }
+                        if (i!=0 &&  query.isPageBreakByWpl() && pageBreakWplHierarchy != null && (
+                                wplHierarchy > pageBreakWplHierarchy && isFist) ) {
+                            pageBreaks.add(count);
+                            cells.copyRows(cells, 0, count, 5);
+                            count += 5;
+                            itemOnePage = 5;
+                            isFist = false;
                         }
                         val listDisplaySid = content.getListDisplayedEmployees();
                         val tComparator = Comparator
                                 .comparing(DisplayedEmployee::getEmployeeId);
                         val listDisplayedEmployees = listDisplaySid.stream()
                                 .sorted(tComparator).collect(Collectors.toList());
-                        if (!isBreaked && listDisplaySid.size() > 0 && (MAX_LINE_IN_PAGE - count) <= 5) {
-                            pageBreaks.add(count);
-                            cells.copyRows(cells, 0, count, 5);
-                            count += 5;
-                            itemOnePage = 5;
-                        }
                         cells.copyRow(cellsTemplate, 5, count);
                         itemOnePage += 1;
                         //D1_1
