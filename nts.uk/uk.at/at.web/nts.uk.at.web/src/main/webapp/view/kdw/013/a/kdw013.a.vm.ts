@@ -7,7 +7,12 @@ module nts.uk.ui.at.kdp013.a {
 
     const API: API = {
         ADD: '/screen/at/kdw013/a/add',
-        DELETE: '/screen/at/kdw013/a/delete'
+        DELETE: '/screen/at/kdw013/a/delete',
+        CHANGE_DATE: '/screen/at/kdw013/a/changeDate',
+        REGISTER: '/screen/at/kdw013/a/register',
+        REG_WORKTIME: '/screen/at/kdw013/registerWorkTime',
+        SELECT: '/screen/at/kdw013/a/select',
+        START: '/screen/at/kdw013/a/start'
     };
 
     @handler({
@@ -224,44 +229,19 @@ module nts.uk.ui.at.kdp013.a {
                 const subscribe = (mode: boolean) => {
                     if (mode === false) {
                         // reload data
-                        $.Deferred()
-                            .resolve([{
-                                id: '000001',
-                                code: '000001',
-                                name: '日通　太郎',
-                                selected: true
-                            }, {
-                                id: '000002',
-                                code: '000002',
-                                name: '日通　一郎',
-                                selected: false
-                            }, {
-                                id: '000003',
-                                code: '000003',
-                                name: '鈴木　太郎',
-                                selected: false
-                            }, {
-                                id: '000004',
-                                code: '000004',
-                                name: '加藤　良太郎',
-                                selected: false
-                            }, {
-                                id: '000005',
-                                code: '000005',
-                                name: '佐藤　花子',
-                                selected: false
-                            }, {
-                                id: '000006',
-                                code: '000006',
-                                name: '佐藤　龍馬',
-                                selected: false
-                            }, {
-                                id: '000007',
-                                code: '000007',
-                                name: '日通　二郎',
-                                selected: false
-                            }])
-                            .then((data: any) => employees(data));
+
+                        const command: SelectTargetEmployeeParam = {
+                            displayPeriod: {
+                                end: '',
+                                start: ''
+                            },
+                            employeeId: '',
+                            refDate: ''
+                        };
+
+                        vm
+                            .$ajax('at', API.SELECT, command)
+                            .then((data: SelectTargetEmployeeDto) => employees([]));
                     }
                 };
 
