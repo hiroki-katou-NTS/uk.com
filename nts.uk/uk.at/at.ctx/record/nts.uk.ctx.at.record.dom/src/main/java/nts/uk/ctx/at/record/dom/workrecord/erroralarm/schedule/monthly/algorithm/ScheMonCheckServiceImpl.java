@@ -796,6 +796,10 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 			// 所定公休日数比の場合
 			// Input．公休設定．公休を管理するかをチェック
 			if (prepareData.getPublicHdSettingOpt().isPresent()) {
+				if (prepareData.getPublicHdSettingOpt().get().getIsManagePublicHoliday() != 1) {
+					return null;
+				}
+				
 				// 所定公休日数比をチェック				
 				
 				// 公休使用数を計算する
@@ -829,7 +833,7 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 				// 比率を計算
 				Double ratio = 0.0;
 				if (numberOfHoliday != 0) {
-					ratio = totalNumberOfHoliday/numberOfHoliday;
+					ratio = (totalNumberOfHoliday/numberOfHoliday) * 100;
 				}
 				
 				// 条件をチェックする
