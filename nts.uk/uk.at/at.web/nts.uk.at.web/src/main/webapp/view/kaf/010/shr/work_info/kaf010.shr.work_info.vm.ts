@@ -1,7 +1,7 @@
 module nts.uk.at.view.kaf010.shr.work_info.viewmodel {
     const template = `
-  <div data-bind="with: $parent">
-	<div data-bind="if: workInfo">
+   <div data-bind="with: $parent">
+	<div style="margin-top: -3px" data-bind="if: workInfo">
 		<div class="table" data-bind="visible : true">
 			<div class="cell valign-center" style="width: 120px;">
 				<!--A4_1 勤務種類ラベル-->

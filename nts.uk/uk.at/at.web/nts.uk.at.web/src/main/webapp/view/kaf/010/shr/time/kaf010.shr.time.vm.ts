@@ -10,7 +10,7 @@ module nts.uk.at.view.kaf010.shr.time.viewmodel {
 			<div class="lblTitle pull-left"
 				data-bind="text: $i18n('KAF010_40'), ntsFormLabel: {}"></div>
 		</div>
-		<div class="table-time1">
+		<div class="table-time1" style="margin-left: 16px">
 			<table id="fixed-table">
 				<colgroup>
 					<col width="25px" />
@@ -62,14 +62,14 @@ module nts.uk.at.view.kaf010.shr.time.viewmodel {
 	</div>
 
 	<!-- holiday time -->
-	<div class="cf valign-top control-group" data-bind="if: true">
+	<div class="cf valign-top control-group" data-bind="if: true" style="margin-bottom: 2px">
 		<!--A6_1 -->
 		<div class="cm-column" style="display: inline-block; width: 100px">
 			<div class="lblTitle pull-left"
 				data-bind="text: $i18n('KAF010_50'), ntsFormLabel: {required: true}"></div>
 		</div>
 		
-		<div class="table-time2">
+		<div class="table-time2" style="margin-left: 16px">
 			<table id="fixed-table-holiday">
 				<colgroup>
 					<col width="109px" />
@@ -124,7 +124,7 @@ module nts.uk.at.view.kaf010.shr.time.viewmodel {
 			<div class="lblTitle pull-left"
 				data-bind="text: $i18n('KAF005_50'), ntsFormLabel: {}"></div>
 		</div>
-		<div class="table-time3">
+		<div class="table-time3" style="margin-left: 16px">
 			<table id="fixed-overtime-hour-table">
 				<colgroup>
 					<col width="109px" />
