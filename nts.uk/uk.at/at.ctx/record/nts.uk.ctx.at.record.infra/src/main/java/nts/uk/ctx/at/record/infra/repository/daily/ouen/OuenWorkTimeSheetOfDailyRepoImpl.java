@@ -111,6 +111,7 @@ public class OuenWorkTimeSheetOfDailyRepoImpl extends JpaRepository implements O
 
 	@Override
 	public void insert(List<OuenWorkTimeSheetOfDaily> domain) {
+		if(domain.isEmpty()) return;
 		List<KrcdtDayOuenTimeSheet> lstEntity = new ArrayList<>();
 		domain.stream().map(c -> KrcdtDayOuenTimeSheet.convert(c)).forEach(e -> {
 			lstEntity.addAll(e);
