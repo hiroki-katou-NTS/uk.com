@@ -17,3 +17,8 @@
 .kaf011 .dailogC .row>div:nth-child(1){min-width:100px; vertical-align: top;}
 .kaf011 .ntsLabelCustome {padding-right: 0px !important; width: 120px}
 .kaf011 .marginNag {margin-left: -4px}
+
+#switchButton label.radio-wrapper span {
+	width: 97px;
+    text-align: center;
+}
