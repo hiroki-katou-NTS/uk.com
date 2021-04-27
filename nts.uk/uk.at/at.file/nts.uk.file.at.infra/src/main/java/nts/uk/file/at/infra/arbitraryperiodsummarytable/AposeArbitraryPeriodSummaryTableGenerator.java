@@ -114,17 +114,22 @@ public class AposeArbitraryPeriodSummaryTableGenerator extends AsposeCellsReport
                 printInfo(worksheetTemplate, worksheet, contentsList, period);
                 count += 5;
                 itemOnePage += 5;
+                Integer pageBreakWplHierarchy = query.getPageBreakWplHierarchy();
                 for (int q = 0; q < listTree.size(); q++) {
                     boolean isFist = true;
                     val subContent = listTree.get(q);
                     List<AttendanceDetailDisplayContents> contentsArrayList = new ArrayList<>();
                     toListChild(subContent, contentsArrayList);
                     List<AttendanceDetailDisplayContents> child = contentsArrayList.stream().sorted(Comparator.comparing(AttendanceDetailDisplayContents::getLevel)).collect(Collectors.toList());
+                    if (q != 0 && query.isPageBreakByWpl()) {
+                        pageBreak(pageBreaks,count,cells);
+                        count += 5;
+                        itemOnePage = 5;
+                    }
                     for (int i = 0; i < child.size(); i++) {
                         val content = child.get(i);
                         if (query.isDetail()) {
                             int wplHierarchy = content.getLevel();
-                            Integer pageBreakWplHierarchy = query.getPageBreakWplHierarchy();
                             if (i != 0 && query.isPageBreakByWpl() && pageBreakWplHierarchy == null) {
                                 pageBreak(pageBreaks,count,cells);
                                 count += 5;
