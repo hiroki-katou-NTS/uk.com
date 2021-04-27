@@ -149,7 +149,7 @@ module nts.uk.com.view.cmf004.j {
       }
       vm.dataGrid = new (nts.uk.ui as any).mgrid.MGrid($("#J6")[0], {
         height: 800,
-        subHeight: 300,
+        subHeight: 575,
         headerHeight: "40px",
         autoFitWindow: true,
         dataSource: vm.resultItems(),
@@ -167,7 +167,7 @@ module nts.uk.com.view.cmf004.j {
         features: [
           {
             name: 'Paging',
-            pageSize: 100,
+            pageSize: 20,
             currentPageIndex: 0,
             loaded: () => { }
           },

@@ -143,16 +143,17 @@ body {
         top: 2px;
         position: relative;
         .img-notice {
-            width: 40px;
+            width: 18px;
         }
         .img-red-circle {
-            position: relative;
-            bottom: 10px;
-            left: 5px;
+            width: 8px;
+            height: 8px;
+            position: absolute;
+            bottom: 0;
+            right: 0;
         }
     }
     .left-style {
-        left: 17px;
         position: relative;
     }
 }

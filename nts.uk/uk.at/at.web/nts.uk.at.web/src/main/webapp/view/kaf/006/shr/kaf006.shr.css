@@ -15,16 +15,16 @@ button.nts-switch-button {
 }
 
 #kaf006component2 .col-1 {
-    width: 125px;
+    width: 120px;
 }
 
 #kaf006tab1 .col-1, #kaf006tab2 .col-1, #kaf006tab3 .col-1, #kaf006tab4 .col-1, #work-type-div .col-1 {
-    width: 125px;
+    width: 120px;
 }
 
-#kaf006tab1, #kaf006tab2, #kaf006tab3, #kaf006tab4 {
+/* #kaf006tab1, #kaf006tab2, #kaf006tab3, #kaf006tab4 {
     margin-top: 5px;
-}
+} */
 
 .py-10 {
     padding: 5px 10px;
@@ -37,4 +37,9 @@ button.nts-switch-button {
 #kaf006-b tr> th, #kaf006-b tr> td {
     text-align: center !important;
     border: 1px solid black !important;
+}
+
+#kaf006component2 label.radio-wrapper span {
+    width: 72px;
+    text-align: center;
 }

@@ -3,7 +3,7 @@ package nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
-import lombok.Value;
+import lombok.Getter;
 import nts.arc.time.GeneralDate;
 /**
  * 
@@ -11,7 +11,7 @@ import nts.arc.time.GeneralDate;
  *
  */
 @AllArgsConstructor
-@Value
+@Getter
 public class ApprovalFrameImport_New {
 	
 	private Integer frameOrder;
@@ -21,4 +21,8 @@ public class ApprovalFrameImport_New {
 	private int confirmAtr;
 	
 	private GeneralDate appDate;
+	
+	public void setListApprover(List<ApproverStateImport_New> listApprover) {
+		this.listApprover = listApprover;
+	}
 }

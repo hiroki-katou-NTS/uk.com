@@ -22,8 +22,8 @@ module nts.uk.at.view.kaf011.b.viewmodel {
         printContentOfEachAppDto: KnockoutObservable<PrintContentOfEachAppDto>;
 		time: KnockoutObservable<number> = ko.observable(1);
 		appCombinaSelected = ko.observable(0);
-		recruitmentApp = new RecruitmentApp(0, false);
-		absenceLeaveApp = new AbsenceLeaveApp(1, false);
+		recruitmentApp = new RecruitmentApp(0, ko.observable(true), false);
+		absenceLeaveApp = new AbsenceLeaveApp(1, ko.observable(true), false);
 		comment = new Comment();
 		displayInforWhenStarting: KnockoutObservable<DisplayInforWhenStarting> = ko.observable(null);
 		remainDays = ko.observable('');
@@ -48,7 +48,7 @@ module nts.uk.at.view.kaf011.b.viewmodel {
 				vm.appDispInfoStartupOutput = params.appDispInfoStartupOutput;
 	            params.eventUpdate(vm.update.bind(vm));
 	            params.eventReload(vm.reload.bind(vm));
-				vm.loadData();
+				// vm.loadData();
 			}			
         }
 		
@@ -77,6 +77,8 @@ module nts.uk.at.view.kaf011.b.viewmodel {
 				}).fail((fail: any) => {
 					dialog.error({ messageId: fail.messageId, messageParams: fail.parameterIds });
 				}).always(() => {
+					vm.recruitmentApp.isInit(false);
+					vm.absenceLeaveApp.isInit(false);
                     block.clear();
                 });
 		}

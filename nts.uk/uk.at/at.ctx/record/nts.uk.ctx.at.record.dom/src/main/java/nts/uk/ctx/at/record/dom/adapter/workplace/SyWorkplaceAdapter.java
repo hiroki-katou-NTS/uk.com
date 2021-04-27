@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import nts.arc.time.calendar.period.DatePeriod;
 import org.apache.commons.lang3.tuple.Pair;
 
 import nts.arc.time.GeneralDate;
@@ -21,7 +22,21 @@ public interface SyWorkplaceAdapter {
 	Optional<SWkpHistRcImported> findBySid(String employeeId, GeneralDate baseDate);
 	
 	List<SWkpHistRcImported> findBySid(List<String>employeeIds, GeneralDate baseDate);
+
 	
 	List<WorkplaceInforImport> getWorkplaceInforByWkpIds(String companyId, List<String> listWorkplaceId,
 			GeneralDate baseDate);
+
+	/**
+	 * [No.597]職場の所属社員を取得する
+	 */
+	List<EmployeeInfoImported> getLstEmpByWorkplaceIdsAndPeriod(List<String> workplaceIds, DatePeriod period);
+
+	/**
+	 * 期間から職場情報を取得
+	 * @param companyId
+	 * @param datePeriod
+	 * @return
+	 */
+	List<WorkplaceInformationImport> getByCidAndPeriod(String companyId, DatePeriod datePeriod);
 }

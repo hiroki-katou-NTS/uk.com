@@ -176,10 +176,6 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
             }).always(() => {
                 vm.$blockui("hide");
             });
-        }
-
-        mounted() {
-            const vm = this;
 
             vm.maxNumberOfDay = ko.computed(() => {
                 let data = vm.$i18n("KAF006_44").concat("\n");
@@ -557,6 +553,11 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
             });
         }
 
+        mounted() {
+            const vm = this;
+
+        }
+
         fetchData(data: any) {
             const vm = this;
             let workTypeLstOutput = data.workTypeLst;
@@ -758,7 +759,7 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
 				if (result) {
 					return vm.$dialog.info({ messageId: "Msg_15"}).then(() => {
 						nts.uk.request.ajax("at", API.reflectApp, result.reflectAppIdLst);
-						return CommonProcess.handleAfterRegister(result, vm.isSendMail(), vm);
+						return CommonProcess.handleAfterRegister(result, vm.isSendMail(), vm, false, vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.employeeInfoLst);
 					});	
 				}
 			}).fail((failData) => {
@@ -776,7 +777,7 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
 
         validate() {
             const vm = this;
-            if (vm.condition11()) {
+            if (vm.condition11() && vm.condition30()) {
                 if (vm.isChangeWorkHour() && vm.selectedWorkTimeCD()) {
                     if (!vm.checkTimeValid(vm.startTime1) && !vm.checkTimeValid(vm.endTime1)) {
                         vm.$dialog.error({messageId: "Msg_307"});

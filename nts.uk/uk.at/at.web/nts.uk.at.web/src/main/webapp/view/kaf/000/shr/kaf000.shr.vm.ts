@@ -262,7 +262,7 @@ module nts.uk.at.view.kaf000.shr.viewmodel {
 			if(appDeadlineUseCategory) {
 				deadlinePart = vm.$i18n('KAF000_40', [value.appDispInfoWithDateOutput.opAppDeadline]);	
 			}
-            vm.deadline(prePart + postPart + deadlinePart);    
+            vm.deadline(_.chain([prePart, postPart, deadlinePart]).filter(o => o).join('<br/>').value());
         }
         
         public static checkUsage(
@@ -275,7 +275,7 @@ module nts.uk.at.view.kaf000.shr.viewmodel {
                 useDivision = appDispInfoStartupOutput.appDispInfoWithDateOutput.approvalFunctionSet.appUseSetLst[0].useDivision,
                 recordDate = appDispInfoStartupOutput.appDispInfoNoDateOutput.applicationSetting.recordDate,
                 empHistImport = appDispInfoStartupOutput.appDispInfoWithDateOutput.empHistImport,
-                opErrorFlag = appDispInfoStartupOutput.appDispInfoWithDateOutput.opErrorFlag,
+           		opErrorFlag = appDispInfoStartupOutput.appDispInfoWithDateOutput.opErrorFlag,
                 msgID = "";
             if(mode && useDivision == 0) {
 				if(recordDate == 0) {
@@ -358,13 +358,17 @@ module nts.uk.at.view.kaf000.shr.viewmodel {
 			});
 		}
 		
-		public static handleAfterRegister(result: any, isSendMail: boolean, vm: any) {
+		public static handleAfterRegister(result: any, isSendMail: boolean, vm: any, isMultiEmp: boolean, employeeInfoLst?: any) {
 			if(result.autoSendMail) {
 				CommonProcess.handleMailResult(result, vm).then(() => {
 					location.reload();		
 				});
 			} else if(isSendMail) {
-				let command = {appID: result.appIDLst[0]};
+				let command = {
+					appIDLst: result.appIDLst,
+					isMultiEmp: isMultiEmp,
+					employeeInfoLst: employeeInfoLst
+				};
                 nts.uk.ui.windows.setShared("KDL030_PARAM", command);
                 nts.uk.ui.windows.sub.modal("/view/kdl/030/a/index.xhtml").onClosed(() => {
                     location.reload();

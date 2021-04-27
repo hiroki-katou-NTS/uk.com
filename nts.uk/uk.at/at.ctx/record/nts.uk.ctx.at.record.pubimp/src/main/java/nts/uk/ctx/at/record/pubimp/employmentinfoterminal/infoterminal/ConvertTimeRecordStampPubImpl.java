@@ -9,19 +9,18 @@ import javax.inject.Inject;
 import org.apache.commons.lang3.tuple.Pair;
 
 import lombok.AllArgsConstructor;
-import nts.arc.layer.app.command.AsyncCommandHandlerContext;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.adapter.employeemanage.EmployeeManageRCAdapter;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.ExecutionAttr;
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.CreateDailyResultDomainService;
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.CreateDailyResultDomainServiceImpl.ProcessState;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.ExecutionTypeDaily;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyoneday.EmbossingExecutionFlag;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyoneday.createdailyresults.CreateDailyResults;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyresults.CreateDailyResultDomainServiceNew;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyresults.OutputCreateDailyOneDay;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyresults.OutputCreateDailyResult;
 import nts.uk.ctx.at.record.dom.dailyresultcreationprocess.creationprocess.creationclass.dailywork.TemporarilyReflectStampDailyAttd;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminal;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminalCode;
@@ -42,7 +41,7 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampDakokuRepo
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecord;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecordRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.StampDataReflectResult;
-import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ExecutionLog;
+import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.EmpCalAndSumExeLog;
 import nts.uk.ctx.at.record.pub.employmentinfoterminal.infoterminal.ConvertTimeRecordStampPub;
 import nts.uk.ctx.at.record.pub.employmentinfoterminal.infoterminal.StampDataReflectResultExport;
 import nts.uk.ctx.at.record.pub.employmentinfoterminal.infoterminal.StampReceptionDataExport;
@@ -73,7 +72,7 @@ public class ConvertTimeRecordStampPubImpl implements ConvertTimeRecordStampPub 
 	private StampDakokuRepository stampDakokuRepository;
 
 	@Inject
-	private CreateDailyResultDomainService createDailyResultDomainSv;
+	private CreateDailyResultDomainServiceNew createDailyResultDomainServiceNew;
 
 	@Inject
 	private StampRecordRepository stampRecordRepository;
@@ -101,7 +100,7 @@ public class ConvertTimeRecordStampPubImpl implements ConvertTimeRecordStampPub 
 			String contractCode, StampReceptionDataExport stampReceptData) {
 
 		RequireImpl require = new RequireImpl(empInfoTerminalRepository, timeRecordReqSettingRepository,
-				stampDakokuRepository, createDailyResultDomainSv, stampRecordRepository, stampCardRepository,
+				stampDakokuRepository, createDailyResultDomainServiceNew, stampRecordRepository, stampCardRepository,
 				employeeManageRCAdapter, executionLog, createDailyResults, timeReflectFromWorkinfo, temporarilyReflectStampDailyAttd);
 
 		Pair<Optional<AtomTask>, Optional<StampDataReflectResult>> convertData = ConvertTimeRecordStampService
@@ -129,7 +128,7 @@ public class ConvertTimeRecordStampPubImpl implements ConvertTimeRecordStampPub 
 
 		private final StampDakokuRepository stampDakokuRepository;
 
-		private final CreateDailyResultDomainService createDailyResultDomainSv;
+		private CreateDailyResultDomainServiceNew createDailyResultDomainServiceNew;
 
 		private final StampRecordRepository stampRecordRepository;
 
@@ -182,11 +181,11 @@ public class ConvertTimeRecordStampPubImpl implements ConvertTimeRecordStampPub 
 		}
 
 		@Override
-		public ProcessState createDailyResult(@SuppressWarnings("rawtypes") AsyncCommandHandlerContext asyncContext,
-				List<String> emloyeeIds, DatePeriod periodTime, ExecutionAttr executionAttr, String companyId,
-				String empCalAndSumExecLogID, Optional<ExecutionLog> executionLog) {
-			return createDailyResultDomainSv.createDailyResult(asyncContext, emloyeeIds, periodTime, executionAttr,
-					companyId, empCalAndSumExecLogID, executionLog);
+		public OutputCreateDailyResult createDataNewNotAsync(String employeeId, DatePeriod periodTime,
+				ExecutionAttr executionAttr, String companyId, ExecutionTypeDaily executionType,
+				Optional<EmpCalAndSumExeLog> empCalAndSumExeLog, Optional<Boolean> checkLock) {
+			return createDailyResultDomainServiceNew.createDataNewNotAsync(employeeId, periodTime, executionAttr,
+					companyId, executionType, empCalAndSumExeLog, checkLock);
 		}
 
 		@Override

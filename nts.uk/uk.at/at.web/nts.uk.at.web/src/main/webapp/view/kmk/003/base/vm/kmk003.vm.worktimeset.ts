@@ -39,25 +39,21 @@ module nts.uk.at.view.kmk003.a {
             export class WorkTimeDisplayNameModel {
                 workTimeName: KnockoutObservable<string>;
                 workTimeAbName: KnockoutObservable<string>;
-                workTimeSymbol: KnockoutObservable<string>;
 
                 constructor() {
                     this.workTimeName = ko.observable('');
                     this.workTimeAbName = ko.observable('');
-                    this.workTimeSymbol = ko.observable('');
                 }
 
                 updateData(data: WorkTimeDisplayNameDto) {
                     this.workTimeName(data.workTimeName);
                     this.workTimeAbName(data.workTimeAbName);
-                    this.workTimeSymbol(data.workTimeSymbol);
                 }
 
                 toDto(): WorkTimeDisplayNameDto {
                     var dataDTO: WorkTimeDisplayNameDto = {
                         workTimeName: this.workTimeName(),
                         workTimeAbName: this.workTimeAbName(),
-                        workTimeSymbol: this.workTimeSymbol()
                     };
                     return dataDTO;
                 }
@@ -65,7 +61,6 @@ module nts.uk.at.view.kmk003.a {
                 resetData(){
                     this.workTimeName('');
                     this.workTimeAbName('');
-                    this.workTimeSymbol('');    
                 }
             }
             

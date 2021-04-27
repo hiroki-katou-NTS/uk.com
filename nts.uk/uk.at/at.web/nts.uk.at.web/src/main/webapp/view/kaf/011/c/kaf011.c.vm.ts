@@ -3,7 +3,6 @@ module nts.uk.at.view.kaf011.c.viewmodel {
    	import ajax = nts.uk.request.ajax;
 	import block = nts.uk.ui.block;
 	import dialog = nts.uk.ui.dialog;
-	import CommonProcess = nts.uk.at.view.kaf000.shr.viewmodel.CommonProcess;
 	
 	export class KAF011C {
 		displayInforWhenStarting: any;
@@ -36,6 +35,35 @@ module nts.uk.at.view.kaf011.c.viewmodel {
 			$('.nts-input').trigger("validate");
 			$('input').trigger("validate");
 			return !nts.uk.ui.errors.hasError();
+		}
+		public handleMailResult(result: any, vm: any): any {
+			let dfd = $.Deferred();
+			if(_.isEmpty(result.autoFailServer)) {
+				if(_.isEmpty(result.autoSuccessMail)) {
+					if(_.isEmpty(result.autoFailMail)) {
+						dfd.resolve(true);
+					} else {
+						vm.$dialog.error({ messageId: 'Msg_768', messageParams: [_.join(result.autoFailMail, ',')] }).then(() => {
+				        	dfd.resolve(true);
+				        });	
+					}
+				} else {
+					vm.$dialog.info({ messageId: 'Msg_392', messageParams: [_.join(result.autoSuccessMail, ',')] }).then(() => {
+						if(_.isEmpty(result.autoFailMail)) {
+							dfd.resolve(true);	
+						} else {
+							vm.$dialog.error({ messageId: 'Msg_768', messageParams: [_.join(result.autoFailMail, ',')] }).then(() => {
+					        	dfd.resolve(true);
+					        });	
+						}
+			        });	
+				}	
+			} else {
+				vm.$dialog.error({ messageId: 'Msg_1057' }).then(() => {
+		        	dfd.resolve(true);
+		        });
+			}
+			return dfd.promise();
 		}
 		
 		save(){

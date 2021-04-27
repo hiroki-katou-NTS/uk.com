@@ -6,6 +6,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.Getter;
+import lombok.Setter;
 import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
@@ -57,6 +58,9 @@ public class LeaveEarlyTimeOfDaily {
 	private TimevacationUseTimeOfDaily timePaidUseTime;
 	//インターバル時間
 	private IntervalExemptionTime intervalTime;
+	// 早退報告したのでアラームにしない
+	@Setter
+	private boolean doNotSetAlarm;
 	
 	
 	public LeaveEarlyTimeOfDaily(TimeWithCalculation leaveEarlyTime, TimeWithCalculation lateDeductionTime, WorkNo workNo,
@@ -66,6 +70,7 @@ public class LeaveEarlyTimeOfDaily {
 		this.workNo = workNo;
 		this.timePaidUseTime = timePaidUseTime;
 		this.intervalTime = exemptionTime;
+		this.doNotSetAlarm = false;
 	}
 	
 	/**

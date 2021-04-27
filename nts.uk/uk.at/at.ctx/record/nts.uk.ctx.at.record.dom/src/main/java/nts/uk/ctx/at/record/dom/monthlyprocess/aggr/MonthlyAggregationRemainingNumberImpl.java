@@ -506,7 +506,7 @@ public class MonthlyAggregationRemainingNumberImpl implements MonthlyAggregation
 			//特別休暇暫定データに、親ドメインの情報を更新する。　※暫定データの作成処理がまだ対応中のため、親ドメインと子ドメインが別々になっているので。
 			for(InterimSpecialHolidayMng specialData : interimSpecialData) {
 				InterimRemain remain
-					= interimMng.stream().filter(c->c.getRemainManaID()==specialData.getSpecialHolidayId()).findFirst().get();
+					= interimMng.stream().filter(c->c.getRemainManaID().equals(specialData.getSpecialHolidayId())).findFirst().get();
 				specialData.setParentValue(remain);
 			}
 
@@ -569,6 +569,9 @@ public class MonthlyAggregationRemainingNumberImpl implements MonthlyAggregation
 		proc.setEmployeeId(employeeId);
 		proc.setCompanySets(comSetting);
 		proc.setMonthlyCalculatingDailys(dailys);
+		// Tạm fix bug NullPointerException (a Tín sửa)
+		proc.aggregateResult = new AggregateMonthlyRecordValue();
+		proc.aggregateResult.setAttendanceTime(Optional.empty());
 		proc.createDailyInterimRemainMngs(require,cacheCarrier,period);
 		return proc.getDailyInterimRemainMngs();
 	}

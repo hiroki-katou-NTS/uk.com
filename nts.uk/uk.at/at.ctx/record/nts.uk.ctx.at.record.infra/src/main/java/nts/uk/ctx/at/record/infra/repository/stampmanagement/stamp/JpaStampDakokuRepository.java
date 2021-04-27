@@ -74,8 +74,8 @@ public class JpaStampDakokuRepository extends JpaRepository implements StampDako
 			+ " AND s.pk.contractCode = :contractCode "
 			+ " order by s.pk.cardNumber asc, s.pk.stampDateTime asc";
 	
-	private static final String GET_STAMP_BY_DATEPERIOD_AND_CARDS = "select  e.sid, d.workLocationName, from KrcdtStamp s "
-			+ " LEFT JOIN KrcmtWorkLocation d ON c.workLocationCd = d.kwlmtWorkLocationPK.workLocationCD"
+	private static final String GET_STAMP_BY_DATEPERIOD_AND_CARDS = "select  e.sid, d.workLocationName from KrcdtStamp s "
+			+ " LEFT JOIN KrcmtWorkLocation d ON s.workLocationCd = d.kwlmtWorkLocationPK.workLocationCD"
 			+ " AND d.kwlmtWorkLocationPK.companyID = :cid"
 			+ " INNER JOIN KrcmtStampCard e ON e.cardNo = s.pk.cardNumber AND e.contractCd = s.pk.contractCode"
 			+ " where s.pk.stampDateTime >= :startStampDate "

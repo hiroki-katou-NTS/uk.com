@@ -1,18 +1,16 @@
 package nts.uk.ctx.at.request.app.find.application.common;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.request.app.find.application.ApplicationDto;
 import nts.uk.ctx.at.request.app.find.application.common.dto.ApplicationMetaDto;
 import nts.uk.ctx.at.request.app.find.application.common.dto.ApplicationSendDto;
-import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.common.service.application.IApplicationForRemandService;
 import nts.uk.ctx.at.request.dom.application.common.service.application.IApplicationForSendService;
+import nts.uk.ctx.at.request.dom.application.common.service.application.SendMailDialogParam;
 import nts.uk.ctx.at.request.dom.application.common.service.application.output.ApplicationForRemandOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.application.output.ApplicationForSendOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.init.DetailAppCommonSetService;
@@ -43,14 +41,9 @@ public class ApplicationFinder {
 		return appForRemandService.getApplicationForRemand(lstAppID);
 	}
 
-	public ApplicationSendDto getAppByIdForSend(String appID){
-		ApplicationForSendOutput appOutput = appForSendService.getApplicationForSend(appID);
-		if (!Objects.isNull(appOutput)){
-			return ApplicationSendDto.fromDomain(ApplicationDto.fromDomain(appOutput.
-					getApplication()), appOutput.getMailTemplate(), appOutput.getApprovalRoot(),
-					appOutput.getApplicantMail(), appOutput.getEmpName());
-		}
-		return null;
+	public ApplicationSendDto getAppByIdForSend(SendMailDialogParam param){
+		ApplicationForSendOutput appOutput = appForSendService.getApplicationForSend(param);
+		return ApplicationSendDto.fromDomain(appOutput);
 	}
 
 	public ApplicationMetaDto getAppByID(String appID){

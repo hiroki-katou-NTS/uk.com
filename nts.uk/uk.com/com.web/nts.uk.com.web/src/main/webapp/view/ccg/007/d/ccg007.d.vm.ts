@@ -261,6 +261,7 @@
             
             private doSuccessLogin(messError){
                 var self = this;
+                self.$window.storage('notification', '');
                 if (messError.showContract) {
                     self.openContractAuthDialog();
                 }

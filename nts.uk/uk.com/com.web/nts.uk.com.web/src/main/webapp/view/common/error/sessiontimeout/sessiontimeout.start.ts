@@ -1,4 +1,4 @@
-module common.error.system {
+﻿module common.error.system {
     @bean()
     export class ScreenModel extends ko.ViewModel {
         constructor() {
@@ -7,6 +7,16 @@ module common.error.system {
             const vm = this;
 
             vm.$window.header(false);
+        }
+
+        public contractEntered() {
+            var contract: ContractInfo = {
+                tenantCode: $("#tenantCode").val(),
+                tenantPassword: $("#tenantPass").val(),
+                issueUrl: location.href,
+                requestUrl: this.getParam("requestUrl", location.href)
+            }
+            this.contractAuthentication(contract);
         }
 
         gotoLogin() {

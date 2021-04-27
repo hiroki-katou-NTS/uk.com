@@ -3,15 +3,15 @@ module nts.uk.at.view.kaf020.shr.viewmodel {
         name: 'kaf020-share',
         template: `<!--B2_3-->
             <div id="kaf020-component">
-             <div class="label m1" data-bind="text: name"></div>
+            <div class="label m1" data-bind="ntsFormLabel : { text: name } "></div>
             <!--B2_4-->
             <div id="ruredLine"></div>
             <table id="kaf020-fixed-table">
                 <colgroup>
                     <col width="200px"/>
-                    <col width="150px"/>
+                    <col width="120px"/>
                     <col width="40px"/>
-                    <col width="350px"/>
+                    <col width="300px"/>
                 </colgroup>
                 <thead>
                 <tr>

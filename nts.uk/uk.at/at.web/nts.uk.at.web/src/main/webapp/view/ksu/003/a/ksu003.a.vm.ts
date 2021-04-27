@@ -438,6 +438,10 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				}
 				
 				if((dataCell.originalEvent.detail.columnKey === "worktypeCode" && dataMid.worktypeCode == "") /*|| (dataCell.originalEvent.detail.columnKey === "worktimeCode" && dataMid.worktimeCode == "")*/){
+						if(dataMid.worktypeName == "" && dataMid.worktimeCode == ""){
+							$(cssWorkType).removeClass("x-error");
+							return;
+						}
 						let errors = [];
 						errors.push({
 							message: nts.uk.resource.getMessage('Msg_1780', [dataCell.originalEvent.detail.columnKey === "worktypeCode" ? nts.uk.resource.getText("KSU003_24") : nts.uk.resource.getText("KSU003_26")]),
@@ -448,8 +452,10 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 							if(dataMid.worktypeCode == "" && dataCell.originalEvent.detail.columnKey === "worktypeCode"){
 								block.invisible();
 								bundledErrors({ errors: errors }).then(() => {
+									if(dataMid.worktypeName != "" && dataMid.worktimeCode != ""){
 									$(cssWorkType).click();
 									$(cssWorkType).click();
+									}
 									block.clear();
 								});
 							}
@@ -2289,9 +2295,9 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			}
 			
 			if(detailColumns.length < 24 ){
-				self.addColumn(1, detailContent, width);
+				self.addColumn(1, startHours, detailColumns,detailHeaderDs,detailHeaders, width);
 				if(self.timeRange > 24){
-					self.addColumn(25, detailContent, width);
+					self.addColumn(25, startHours + 24, detailColumns,detailHeaderDs,detailHeaders, width);
 				}
 			}
 
@@ -2686,6 +2692,11 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				}
 				
 				if((dataCell.originalEvent.detail.columnKey === "worktypeCode" && dataMid.worktypeCode == "") /*|| (dataCell.originalEvent.detail.columnKey === "worktimeCode" && dataMid.worktimeCode == "")*/){
+						if(dataMid.worktypeName == "" && dataMid.worktimeCode == ""){
+							$(cssWorkType).removeClass("x-error");
+							return;
+						}
+						
 						let errors = [];
 						errors.push({
 							message: nts.uk.resource.getMessage('Msg_1780', [dataCell.originalEvent.detail.columnKey === "worktypeCode" ? nts.uk.resource.getText("KSU003_24") : nts.uk.resource.getText("KSU003_26")]),
@@ -2696,8 +2707,10 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 							if(dataMid.worktypeCode == "" && dataCell.originalEvent.detail.columnKey === "worktypeCode"){
 								block.invisible();
 								bundledErrors({ errors: errors }).then(() => {
+									if(dataMid.worktypeName != "" && dataMid.worktimeCode != ""){
 									$(cssWorkType).click();
 									$(cssWorkType).click();
+								}	
 									block.clear();
 								});
 							}
@@ -2924,7 +2937,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			let timeChart: any = null, timeChart2: any = null, lgc = null, rgc = null, timeChartOver: any = null, timeChartCore: any = null,
 				timeChartBrk: any = null, timeChartHoliday: any = null, timeChartShort: any = null, indexLeft = 0, indexRight = 0;
 			let timeMinus: any = [], timeMinus2: any = [], start1 = null, start2 = null, end1 = null, end2 = null, dispStart = (self.dispStartHours * 60) / 5;
-			let fixedString = "None", slide = true, follow = true, isConfirmed = self.dataScreen003A().employeeInfo[i].workInfoDto.isConfirmed, isFixBr = 0;
+			let fixedString = "None", slide = true, follow = true, isConfirmed = self.dataScreen003A().employeeInfo[i].workInfoDto.isConfirmed, isFixBr = 0, sliceBrk = true;
 			
 			
 			let lstType = self.dataScreen003A().scheCorrection; // 確定済みか
@@ -2936,10 +2949,12 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			if (self.checkDisByDate == false || isConfirmed == 1 || _.isEmpty(fixCheck) || _.isEmpty(flexCheck) || _.isEmpty(flowCheck)) {
 				fixedString = "Both";
 				slide = false;
+				sliceBrk = false;
 			}
 			if(self.dataScreen003A().employeeInfo[i].fixedWorkInforDto != null && self.dataScreen003A().employeeInfo[i].fixedWorkInforDto.fixBreakTime == 1){
-				if(datafilter[0].typeOfTime === "Changeable" || datafilter[0].typeOfTime === "Flex")
-				follow = false;
+				if(datafilter[0].typeOfTime === "Changeable" || datafilter[0].typeOfTime === "Flex"){
+					follow = false;
+				}
 			}
 
 			if (datafilter != null) {
@@ -3152,7 +3167,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 									},
 									canSlide: canSlideFix,
 									fixed: fixedFix,
-									bePassedThrough: false
+									bePassedThrough: false,
+									pruneOnSlide: true
 								});
 								fixedGc.push(self.addChartWithType045(fixedGc, datafilter, datafilter[0].empId, "Changeable", `rgc${i}`, { startTime: timeChart2.startTime - dispStart, endTime: timeChart2.endTime - dispStart }, i, null, 
 								limitStartMin - dispStart, limitStartMax - dispStart, limitEndMin - dispStart, limitEndMax - dispStart));
@@ -3215,7 +3231,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 										return;
 								},
 								canSlide: canSlideFix,
-								fixed: fixedFix
+								fixed: fixedFix,
+								pruneOnSlide: true
 							});
 							fixedGc.push(self.addChartWithType045(fixedGc, datafilter, datafilter[0].empId, "Flex", `lgc${i}`, { startTime: timeStart, endTime: timeEnd }, i, null, 
 							limitStartMin, limitStartMax, limitEndMin, limitEndMax));
@@ -3327,9 +3344,10 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 								limitEndMin: isConfirmed == 1 ? endTime1 - dispStart : timeRange.start - dispStart,
 								limitEndMax: isConfirmed == 1 ? endTime1 - dispStart : timeRange.end - dispStart,
 								zIndex: 1001,
-								canSlide: slide,
+								canSlide: sliceBrk,
 								fixed: "Both",
 								followParent: follow,
+								pruneOnSlide: true,
 								dropFinished: (b: any, e: any) => {
 									self.dropBreakTime(i, indexBrks, b, e, slide, fixedString, `lgc${i}_` + indexBrks);
 								}
@@ -3370,8 +3388,9 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 									dropFinished: (b: any, e: any) => {
 										self.dropBreakTime(i, indexBrks, b, e, slide, fixedString, `rgc${i}_` + indexBrkr);
 									},
-									canSlide: slide,
-									fixed: "Both"
+									canSlide: sliceBrk,
+									fixed: "Both",
+									pruneOnSlide: true
 								});
 								
 								lstBreakTime.push({
@@ -3530,11 +3549,11 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				let coreTimes = _.filter(fixedGc, (x : any) => {return x.type == "CoreTime"}), coreTime : any = [],
 				breakTimes = _.filter(self.breakChangeCore, (x : any) => {return x.type == "BreakTime"}), breakT : any = [];
 				if(coreTimes.length > 0){
-					coreTime = _.filter(coreTimes, (x : any) => {return _.includes(e.target.id, x.options.parent)});
+					coreTime = _.filter(coreTimes, (x : any) => {return _.includes(_.isNil(e.target) ? type + i : e.target.id, x.options.parent)});
 				}
 				
 				if(breakTimes.length > 0){
-					breakT = _.filter(breakTimes, (x : any) => {return _.includes(e.target.id, x.options.parent)});
+					breakT = _.filter(breakTimes, (x : any) => {return _.includes(_.isNil(e.target) ? type + i : e.target.id, x.options.parent)});
 				}
 				let indexBrStart = -1, indexBrEnd = -1, checkCore = 0, checkCore2 = 0;
 				let lstBrCoreStart : any = [], lstBrCoreEnd : any = [];
@@ -3597,13 +3616,21 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 						ruler.gcChart[i][lstBrCoreStart[0].options.id].start = Math.floor(coreTime[0].options.start - self.dispStart * 12);
 					}
 					
-					if(indexBrStart == -1 && checkCore == 0 && lstBrCoreStart.length > 0){
+					if((indexBrStart == -1 || indexBrStart == 0) && checkCore == 0 && lstBrCoreStart.length > 0){
 						indexAllBr = _.findIndex(self.allTimeBrk, (x : any) => { return x.options.id === lstBrCoreStart[0].options.id});
 						let indexNew = _.findIndex(self.dataScreen003A().employeeInfo[i].workScheduleDto.listBreakTimeZoneDto, 
 										(x : any) => { return self.allTimeBrk[indexAllBr].options.end === x.end / 5}); // làm tiếp
 						self.allTimeBrk[indexAllBr].options.start = self.breakChangeCore[indexAllBr].options.start;
 						self.dataScreen003A().employeeInfo[i].workScheduleDto.listBreakTimeZoneDto[indexNew].start = self.breakChangeCore[indexAllBr].options.start * 5;
-                        ruler.extend(i, lstBrCoreStart[0].options.id,Math.floor(self.allTimeBrk[indexAllBr].options.start - self.dispStart * 12));
+						let pixelBrk = 0;
+						if(param[0] * 5 < self.dataScreen003A().employeeInfo[i].fixedWorkInforDto.coreStartTime){
+							if(param[0] > self.breakChangeCore[indexAllBr].options.start){
+								pixelBrk = param[0];
+							} else {
+								pixelBrk = self.allTimeBrk[indexAllBr].options.start;
+							}
+						}
+                        ruler.extend(i, lstBrCoreStart[0].options.id,Math.floor(pixelBrk - self.dispStart * 12));
 					}
 				} else {
 					
@@ -3726,6 +3753,9 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 
 				lstTime = self.calcChartTypeTime(dataFixed, dataFixInfo[0].fixedWorkInforDto == null ? [] : dataFixInfo[0].fixedWorkInforDto.overtimeHours, timeRangeLimit, lstTime, "OT", index);
 				let totalTimes = self.calcAllTime(dataFixed, lstTime, timeRangeLimit);
+				let totalBreaktime = self.calcAllBrk(lstTime);
+				totalBreaktime = totalBreaktime != 0 ? formatById("Clock_Short_HM", Math.round(totalBreaktime * 5)) : "0:00";
+				$("#extable-ksu003").exTable("cellValue", "middle", self.dataScreen003A().employeeInfo[i].empId, "breaktime", totalBreaktime );
 				$("#extable-ksu003").exTable("cellValue", "middle", self.dataScreen003A().employeeInfo[i].empId, "totalTime", totalTimes);
 				let cssTotalTime: string = self.dataScreen003A().targetInfor == 1 ? "#extable-ksu003 > .ex-body-middle > table > tbody tr:nth-child" + "(" + (i + 2).toString() + ")" + " > td:nth-child(9)" : 
 				"#extable-ksu003 > .ex-body-middle > table > tbody tr:nth-child" + "(" + (i + 2).toString() + ")" + " > td:nth-child(7)";
@@ -3908,7 +3938,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			limitStartMin?: any, limitStartMax?: any, limitEndMin?: any, limitEndMax?: any, zIndex?: any) {
 			let self = this, timeEnd = self.convertTimePixel(self.timeRange === 24 ? "24:00" : "48:00");
 			let fixed = "None", canSlide = false, pin =false, followParent = false, rollup = false, roundEdge = false, bePassedThrough = true,
-			isConfirmed = self.dataScreen003A().employeeInfo[lineNo].workInfoDto.isConfirmed;
+			isConfirmed = self.dataScreen003A().employeeInfo[lineNo].workInfoDto.isConfirmed, pruneOnSlide = false;
 			let lstType = self.dataScreen003A().scheCorrection; // 確定済みか
 			let fixCheck = _.filter(lstType, (x: any) => { return x === 0 }),
 				flexCheck = _.filter(lstType, (x: any) => { return x === 1 }),
@@ -3946,14 +3976,17 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			
 			if(type == "BreakTime"){
 				followParent = true;
+				pruneOnSlide = true;
 				canSlide = true;
 				if(self.dataScreen003A().employeeInfo[lineNo].fixedWorkInforDto != null && self.dataScreen003A().employeeInfo[lineNo].fixedWorkInforDto.fixBreakTime == 1){
-					if (self.dataScreen003A().employeeInfo[lineNo].fixedWorkInforDto.workType == WorkTimeForm.FLOW || self.dataScreen003A().employeeInfo[lineNo].fixedWorkInforDto.workType == WorkTimeForm.FLEX)
-					followParent = false;
+					if (self.dataScreen003A().employeeInfo[lineNo].fixedWorkInforDto.workType == WorkTimeForm.FLOW || self.dataScreen003A().employeeInfo[lineNo].fixedWorkInforDto.workType == WorkTimeForm.FLEX){
+						followParent = false;
+					}
 				}
 				if(self.dataScreen003A().employeeInfo[lineNo].fixedWorkInforDto != null && self.dataScreen003A().employeeInfo[lineNo].fixedWorkInforDto.fixBreakTime == 0){
-					if (self.dataScreen003A().employeeInfo[lineNo].fixedWorkInforDto.workType == WorkTimeForm.FLOW || self.dataScreen003A().employeeInfo[lineNo].fixedWorkInforDto.workType == WorkTimeForm.FLEX)
-					followParent = true;
+					if (self.dataScreen003A().employeeInfo[lineNo].fixedWorkInforDto.workType == WorkTimeForm.FLOW || self.dataScreen003A().employeeInfo[lineNo].fixedWorkInforDto.workType == WorkTimeForm.FLEX){
+						followParent = true;
+					}
 				}
 				bePassedThrough = false;
 				roundEdge = true;
@@ -3994,19 +4027,29 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					rollup : rollup,
 					roundEdge: roundEdge,
 					bePassedThrough: bePassedThrough,
+					pruneOnSlide: pruneOnSlide,
 					resizeFinished: (b: any, e: any, p: any) => {
 						if (self.checkDisByDate == false || self.dataScreen003A().employeeInfo[lineNo].workInfoDto.isConfirmed == 1) return;
 						self.enableSave(true);
 						self.checkDragDrog = false;
+						let param : any = [];
+						param.push(b);
+						param.push(e);
+						param.push(p);
 						if (!_.isNil(id) && _.includes(id, 'lgc')) {
-							self.gcResize(fixedGc, e, datafilter, lineNo, "lgc", 0);
+							self.gcResize(fixedGc, param, datafilter, lineNo, "lgc", 1);
 						} else {
-							self.gcResize(fixedGc, e, datafilter, lineNo, "rgc", 0);
+							self.gcResize(fixedGc, param, datafilter, lineNo, "rgc", 1);
 						}
 						self.checkTypeChange = [];
 					},
 					// kéo lại chart
 					dropFinished: (b: any, e: any) => {
+						if (_.includes(id, '_')) {
+							let indexBrks = 0;
+							self.dropBreakTime(lineNo, id, b, e, null, fixed, id);
+							return;
+						};
 						let dataDrop : any = [];
 						dataDrop.push(b);
 						dataDrop.push(e);
@@ -4820,6 +4863,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			}
 			self.hoverEvent(self.targetDate());
 			self.destroyAndCreateGrid(self.lstEmpId, 0);
+			self.enableSave(false);
 		}
 
 		public nextAllDay() {
@@ -4859,6 +4903,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			}
 			self.hoverEvent(self.targetDate());
 			self.destroyAndCreateGrid(self.lstEmpId, 0);
+			self.enableSave(false);
 		}
 
 		public prevDay() {
@@ -4891,6 +4936,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			}
 			self.hoverEvent(self.targetDate());
 			self.destroyAndCreateGrid(self.lstEmpId, 0);
+			self.enableSave(false);
 		}
 
 		public prevAllDay() {
@@ -4927,6 +4973,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			}
 			self.hoverEvent(self.targetDate());
 			self.destroyAndCreateGrid(self.lstEmpId, 0);
+			self.enableSave(false);
 		}
 
 		public changeTargetDate(nextOrprev: number, index: number) {
@@ -5273,8 +5320,10 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					
 					if(lstCheckFalse.length > 0 && lstCheckTrue.length == 0)
 					self.colorBreak45 = false;
-					else if(lstCheckTrue.length > 0 )
+					else if(lstCheckTrue.length > 0 && lstCheckFalse.length != lstBrkTime.length && lstBrkTime.length == self.dataScreen003A().employeeInfo[lineNo].workScheduleDto.listBreakTimeZoneDto.length)
 					self.colorBreak45 = true;
+					else if(lstCheckTrue.length > 0 && lstCheckFalse.length == lstBrkTime.length && lstBrkTime.length == self.dataScreen003A().employeeInfo[lineNo].workScheduleDto.listBreakTimeZoneDto.length)
+					self.colorBreak45 = false;
 					
 					let checkColorTime = {
 						workTypeCode :self.dataScreen003A().employeeInfo[lineNo].workScheduleDto.workTypeCode == schedule.workTypeCode,
@@ -5783,32 +5832,32 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					$(".xcell").removeClass("x-error");
 		}
 		
-		addColumn(index : any, detailContent : any, width : any){
+		addColumn(index : any, sh : any, detailColumns : any,detailHeaderDs : any,detailHeaders : any, width : any){
 			let self =this, y = self.dispStartHours;
-			detailContent.columns[index] = { key: (y).toString() + "_", width: width, headerText: "", visible: true  };
-			detailContent.columns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
-			detailContent.columns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
-			detailContent.columns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
-			detailContent.columns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
-			detailContent.columns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
-			detailContent.columns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
-			detailContent.columns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
-			detailContent.columns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
-			detailContent.columns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
-			detailContent.columns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
-			detailContent.columns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
-			detailContent.columns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
-			detailContent.columns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
-			detailContent.columns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
-			detailContent.columns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
-			detailContent.columns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
-			detailContent.columns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
-			detailContent.columns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
-			detailContent.columns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
-			detailContent.columns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
-			detailContent.columns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
-			detailContent.columns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
-			detailContent.columns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
+			detailColumns[index] = { key: (y).toString() + "_", width: width, headerText: "", visible: true  };
+			detailColumns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
+			detailColumns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
+			detailColumns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
+			detailColumns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
+			detailColumns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
+			detailColumns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
+			detailColumns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
+			detailColumns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
+			detailColumns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
+			detailColumns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
+			detailColumns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
+			detailColumns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
+			detailColumns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
+			detailColumns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
+			detailColumns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
+			detailColumns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
+			detailColumns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
+			detailColumns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
+			detailColumns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
+			detailColumns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
+			detailColumns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
+			detailColumns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
+			detailColumns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
 		}
 
 		/** A1_4 - Close modal */

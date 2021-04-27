@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.request.infra.repository.setting.company.emailset;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -18,9 +17,9 @@ import nts.uk.ctx.at.request.dom.setting.company.emailset.Division;
 import nts.uk.ctx.at.request.dom.setting.company.emailset.EmailContent;
 import nts.uk.ctx.at.request.dom.setting.company.emailset.EmailSubject;
 import nts.uk.ctx.at.request.dom.setting.company.emailset.EmailText;
+import nts.uk.ctx.at.request.infra.entity.setting.company.emailset.KrqmtAppMail;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
-import nts.uk.ctx.at.request.infra.entity.setting.company.emailset.KrqmtAppMail;
 
 /**
  * refactor 4

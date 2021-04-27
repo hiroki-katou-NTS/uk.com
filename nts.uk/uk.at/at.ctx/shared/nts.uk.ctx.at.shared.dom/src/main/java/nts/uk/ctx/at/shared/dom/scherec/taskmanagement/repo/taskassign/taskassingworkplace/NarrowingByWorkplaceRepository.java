@@ -72,5 +72,15 @@ public interface NarrowingByWorkplaceRepository {
      */
     List<NarrowingDownTaskByWorkplace> getListWorkByWpl(String cid,String workPlaceId);
 
+    /**
+     *作業枠NOを指定して会社で登録されている職場別作業の絞込を取得する
+     *
+     * @param cid
+     * @param taskFrameNo
+     * @return
+     */
+
+    List<NarrowingDownTaskByWorkplace> getListWorkByCidAndFrameNo(String cid,TaskFrameNo taskFrameNo);
+
 
 }

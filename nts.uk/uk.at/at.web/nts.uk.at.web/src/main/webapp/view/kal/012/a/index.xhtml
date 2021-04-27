@@ -1,0 +1,38 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+	<body>
+		<ui:composition template="../../../../master/base.xhtml">
+			<ui:define name="htmlHead">
+        <com:scriptfile set="IGNITE" />			
+				<com:stylefile path="kal012.a.css" />
+				<com:scriptfile path="kal012.a.vm.js" />
+			</ui:define>
+			
+			<ui:define name="content">			
+				<div id="contents-area" class="kal012a">
+          <table>
+            <tr>
+              <td>
+                <button id="KAL013" class="x-large w-100" tabindex="1" data-bind="click: goToScreenKAL013, text: 'アラームチェック条件の登録（職場別）'"/><span class="caret-right caret-inline"></span>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <button id="KAL014" class="x-large w-100" tabindex="2" data-bind="click: goToScreenKAL014, text: 'パターン設定（職場別）'"/><span class="caret-right caret-inline"></span>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <button id="KAL002B" class="x-large w-100" tabindex="3" data-bind="click: goToScreenKAL002B, text: 'メール設定（職場別）' "/><span class="caret-right caret-inline"></span>
+              </td>
+            </tr>
+          </table>
+				</div>
+			</ui:define>
+		</ui:composition>
+   	</body>
+</html>

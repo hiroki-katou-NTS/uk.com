@@ -29,9 +29,13 @@ module nts.uk.at.view.kaf012.a.viewmodel {
 
         applyTimeData: KnockoutObservableArray<DataModel>;
         specialLeaveFrame: KnockoutObservable<number>;
+        isFromOther: boolean = false;
 
         created(params: AppInitParam) {
             const vm = this;
+            if(!_.isNil(__viewContext.transferred.value)) {
+				vm.isFromOther = true;
+			}
 			let empLst: Array<string> = [],
 				dateLst: Array<string> = [];
             vm.isSendMail = ko.observable(false);
@@ -92,6 +96,7 @@ module nts.uk.at.view.kaf012.a.viewmodel {
                 vm.$blockui("hide");
                 $(vm.$el).find('#kaf000-a-component4-singleDate').focus();
             });
+
         }
 
         mounted() {
@@ -106,6 +111,7 @@ module nts.uk.at.view.kaf012.a.viewmodel {
                         apply.childCareAppTime(0);
                         apply.super60AppTime(0);
                         apply.specialAppTime(0);
+                        apply.calculatedTime(0);
                     });
                 });
             });
@@ -118,6 +124,19 @@ module nts.uk.at.view.kaf012.a.viewmodel {
                 if (value == 1 && vm.appDispInfoStartupOutput()) {
                     vm.updateInputTime(vm.appDispInfoStartupOutput());
                 }
+            });
+            vm.leaveType.subscribe(value => {
+                vm.applyTimeData().forEach((row : DataModel) => {
+                    row.applyTime.forEach(apply => {
+                        apply.substituteAppTime(0);
+                        apply.annualAppTime(0);
+                        apply.careAppTime(0);
+                        apply.childCareAppTime(0);
+                        apply.super60AppTime(0);
+                        apply.specialAppTime(0);
+                        apply.calculatedTime(0);
+                    });
+                });
             });
         }
 
@@ -317,7 +336,7 @@ module nts.uk.at.view.kaf012.a.viewmodel {
                         if (result != undefined) {
                             vm.$dialog.info({messageId: "Msg_15"}).then(() => {
 								nts.uk.request.ajax("at", API.reflectApp, result.reflectAppIdLst);
-                            	CommonProcess.handleAfterRegister(result, vm.isSendMail(), vm);
+                            	CommonProcess.handleAfterRegister(result, vm.isSendMail(), vm, false, vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.employeeInfoLst);
                             });
                         }
                     }).fail(err => {

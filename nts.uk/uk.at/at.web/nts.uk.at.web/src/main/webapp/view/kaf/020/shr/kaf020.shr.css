@@ -15,10 +15,18 @@
     text-align: right !important;
 }
 
+#kaf020-component {
+    margin-left: 120px;
+}
+
 #kaf020-component .nts-fixed-body-wrapper {
     height: auto !important;
 }
 
+#kaf020-component #kaf020-fixed-table .nts-input {
+    width: 87px;
+}
+
 #kaf020-component .nts-fixed-table .nts-fixed-body-container {
-    border-bottom-width:0px;
+    border-bottom-width:0;
 }

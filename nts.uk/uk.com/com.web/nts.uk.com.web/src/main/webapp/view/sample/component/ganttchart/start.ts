@@ -426,6 +426,9 @@ __viewContext.ready(function() {
                     this.ruler.addChartWithType("BreakTime", {
                         id: `lgc${i}_0`,
                         parent: `lgc${i}`,
+                        followParent: false,
+                        pruneOnSlide: true,
+                        zIndex: 1001,
                         lineNo: i,
                         start: 24,
                         end: 36,
@@ -507,10 +510,10 @@ __viewContext.ready(function() {
                         start: 102,
                         end: 210,
                         lineNo: i,
-                        limitStartMin: 84,
-                        limitStartMax: 144,
-                        limitEndMin: 168,
-                        limitEndMax: 264,
+//                        limitStartMin: 84,
+//                        limitStartMax: 144,
+//                        limitEndMin: 168,
+//                        limitEndMax: 264,
                         title: "フレックス勤務"
                     });
                     

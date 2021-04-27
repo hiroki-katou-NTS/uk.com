@@ -19,6 +19,7 @@ import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.OutPlaceConv
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.PartialIpAddress;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
+import nts.uk.shr.com.net.Ipv4Address;
 
 /**
  * 
@@ -28,8 +29,7 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 public class DeleteEmpInfoTerminalServiceTestHelper {
 
 	public static Optional<EmpInfoTerminal> createEmpInfoTerminal() {
-		return Optional.of(new EmpInfoTerminalBuilder(Optional.of(new FullIpAddress(
-				new PartialIpAddress(192), new PartialIpAddress(168), new PartialIpAddress(1), new PartialIpAddress(1))),
+		return Optional.of(new EmpInfoTerminalBuilder(Optional.of(Ipv4Address.parse("192.168.1.1")),
 				new MacAddress("AABBCCDD"),
 				new EmpInfoTerminalCode("1"), Optional.of(new EmpInfoTerSerialNo("1")), new EmpInfoTerminalName(""),
 				new ContractCode("1"))

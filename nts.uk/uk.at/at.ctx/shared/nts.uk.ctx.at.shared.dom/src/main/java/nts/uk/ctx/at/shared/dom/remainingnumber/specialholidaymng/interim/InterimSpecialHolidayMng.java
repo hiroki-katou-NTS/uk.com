@@ -4,14 +4,8 @@ import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.arc.layer.dom.AggregateRoot;
-import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainAtr;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UseDay;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UseTime;
 
@@ -53,7 +47,6 @@ public class InterimSpecialHolidayMng extends InterimRemain{
 	 * @param interimRemain
 	 */
 	public void setParentValue(InterimRemain interimRemain){
-		this.specialHolidayId="";
 		this.setRemainManaID(interimRemain.getRemainManaID());
 		this.setSID(interimRemain.getSID());
 		this.setYmd(interimRemain.getYmd());

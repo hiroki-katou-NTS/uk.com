@@ -8,9 +8,9 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.at.aggregation.dom.schedulecounter.timezonepeople.WorkplaceCounterStartTime;
-import nts.uk.ctx.at.aggregation.dom.schedulecounter.timezonepeople.WorkplaceCounterTimeZonePeopleNumber;
-import nts.uk.ctx.at.aggregation.dom.schedulecounter.timezonepeople.WorkplaceCounterTimeZonePeopleNumberRepo;
+import nts.uk.ctx.at.aggregation.dom.schedulecounter.tally.timezonepeople.WorkplaceCounterStartTime;
+import nts.uk.ctx.at.aggregation.dom.schedulecounter.tally.timezonepeople.WorkplaceCounterTimeZonePeopleNumber;
+import nts.uk.ctx.at.aggregation.dom.schedulecounter.tally.timezonepeople.WorkplaceCounterTimeZonePeopleNumberRepo;
 import nts.uk.shr.com.context.AppContexts;
 
 /**

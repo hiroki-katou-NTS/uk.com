@@ -5,6 +5,7 @@ import java.util.Optional;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.PreviousClassification;
+
 /**
  * 抽出期間（月単位）
  * @author phongtq
@@ -21,7 +22,7 @@ public class EndMonth {
 	
 	/** 月数指定 */
 	private Optional<MonthNo> endMonthNo = Optional.empty();
-	
+
 
 	
 	public EndMonth(int specifyEndMonth, int extractFromStartMonth) {
