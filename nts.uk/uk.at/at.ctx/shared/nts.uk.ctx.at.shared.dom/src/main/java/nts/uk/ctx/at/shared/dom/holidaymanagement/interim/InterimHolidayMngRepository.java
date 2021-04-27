@@ -36,4 +36,6 @@ public interface InterimHolidayMngRepository {
 
 	public void deleteBySidAndYmd(String sid, GeneralDate ymd);
 
+	public void persistAndUpdate(InterimHolidayMng holidayMng);
+
 }

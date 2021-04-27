@@ -71,16 +71,17 @@ public class JpaTempChildCareManagementRepository extends JpaRepository implemen
 				domain.getAppTimeType().map(x -> x.getAppTimeType().map(time -> time.value).orElse(0)).orElse(0));
 
 		// 登録・更新
-		KshdtInterimChildCare entity = this.getEntityManager().find(KshdtInterimChildCare.class, pk);
-		if (entity == null){
-			entity = new KshdtInterimChildCare();
-			entity.pk = pk;
-			entity.fromDomainForPersist(domain);
-			this.getEntityManager().persist(entity);
-		}
-		else {
+		this.queryProxy().find(pk, KshdtInterimChildCare.class).ifPresent(entity -> {
 			entity.fromDomainForUpdate(domain);
-		}
+			this.commandProxy().insert(entity);
+			this.getEntityManager().flush();
+			return;
+		});
+		
+		KshdtInterimChildCare entity = new KshdtInterimChildCare();
+		entity.pk = pk;
+		entity.fromDomainForPersist(domain);
+		this.getEntityManager().persist(entity);
 	}
 
 	/** 削除 */

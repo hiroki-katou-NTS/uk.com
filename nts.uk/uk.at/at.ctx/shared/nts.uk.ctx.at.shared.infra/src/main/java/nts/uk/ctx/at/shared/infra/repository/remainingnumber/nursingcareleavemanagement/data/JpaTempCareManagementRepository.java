@@ -71,16 +71,17 @@ public class JpaTempCareManagementRepository extends JpaRepository implements Te
 				domain.getAppTimeType().flatMap(c -> c.getAppTimeType()).map(c -> c.value).orElse(0));
 
 		// 登録・更新
-		KshdtInterimCareData entity = this.getEntityManager().find(KshdtInterimCareData.class, pk);
-		if (entity == null){
-			entity = new KshdtInterimCareData();
-			entity.pk = pk;
-			entity.fromDomainForPersist(domain);
-			this.getEntityManager().persist(entity);
-		}
-		else {
+		this.queryProxy().find(pk, KshdtInterimCareData.class).ifPresent(entity -> {
 			entity.fromDomainForUpdate(domain);
-		}
+			this.getEntityManager().flush();
+			return;
+		});
+		
+		KshdtInterimCareData entity = new KshdtInterimCareData();
+		entity.pk = pk;
+		entity.fromDomainForPersist(domain);
+		this.getEntityManager().persist(entity);
+		this.getEntityManager().flush();
 	}
 
 
