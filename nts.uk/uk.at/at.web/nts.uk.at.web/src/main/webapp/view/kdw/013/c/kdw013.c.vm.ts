@@ -436,7 +436,7 @@ module nts.uk.ui.at.kdp013.c {
                 font-weight: 600;
             }
             .message.overlay .container .body {
-                padding: 5px 10px;
+                padding: 20px 10px 10px 10px;
                 border-bottom: 1px solid #767171;
                 box-sizing: border-box;
             }
@@ -446,8 +446,11 @@ module nts.uk.ui.at.kdp013.c {
             }
             .message.overlay .container .foot {
                 text-align: center;
-                padding: 5px 0;
+                padding: 10px 0;
                 box-sizing: border-box;
+            }
+            .message.overlay .container .foot button:first-child {
+                margin-right: 10px;
             }
         </style>
         `
@@ -609,6 +612,7 @@ module nts.uk.ui.at.kdp013.c {
                 .subscribe((p: any) => {
                     if (!p) {
                         hasError(false);
+                        vm.confirm(null);
                         cache.view = 'view';
                     }
 
@@ -659,13 +663,11 @@ module nts.uk.ui.at.kdp013.c {
 
         cancel() {
             const vm = this;
-            const { params } = vm;
 
             vm.confirm(null);
 
             if (!vm.hasError()) {
-                vm.save();
-                params.close('cancel');
+                vm.save('cancel');
             }
         }
 
@@ -690,20 +692,9 @@ module nts.uk.ui.at.kdp013.c {
                         params.close();
                     }
                 });
-
-            /*
-            .then((cf: 'yes' | 'cancel' | null) => {
-                if (cf === 'yes') {
-                    event.remove();
-
-                    params.close(cf);
-                } else if (cf === 'cancel') {
-                    vm.save();
-                }
-            })*/
         }
 
-        save() {
+        save(result?: 'yes' | 'cancel' | null) {
             const vm = this;
             const { params, model } = vm;
             const { data } = params;
@@ -735,7 +726,7 @@ module nts.uk.ui.at.kdp013.c {
                         }
 
                         // close popup
-                        params.close();
+                        params.close(result);
                     }
                 });
         }
