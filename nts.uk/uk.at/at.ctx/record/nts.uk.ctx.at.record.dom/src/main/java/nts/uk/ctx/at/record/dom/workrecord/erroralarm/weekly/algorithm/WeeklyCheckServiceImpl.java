@@ -34,6 +34,7 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.weekly.ExtractionCondSched
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.weekly.WeeklyCheckItemType;
 import nts.uk.ctx.at.record.dom.workrecord.errorsetting.ContinuousCount;
 import nts.uk.ctx.at.record.dom.workrecord.errorsetting.algorithm.CalCountForConsecutivePeriodChecking;
+import nts.uk.ctx.at.record.dom.workrecord.errorsetting.algorithm.CalCountForConsecutivePeriodOutput;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.AlarmListCheckInfor;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.AlarmListCheckType;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.ExtractionAlarmPeriodDate;
@@ -315,16 +316,15 @@ public class WeeklyCheckServiceImpl implements WeeklyCheckService {
 		if (weeklyCond.getContinuousPeriod().isPresent()) {
 			continuousPeriod = weeklyCond.getContinuousPeriod().get().v();
 		}
-		Optional<ContinuousCount> optContinuousCount = Optional.empty();
-		calCountForConsecutivePeriodChecking.getContinuousCount(
-				optContinuousCount, 
+		
+		CalCountForConsecutivePeriodOutput calCountForConsecutivePeriodOutput = calCountForConsecutivePeriodChecking.getContinuousCount(
 				count, 
 				continuousPeriod, 
 				errorAtr, 
 				null);
 		ouput.check = errorAtr;
-		ouput.continuousCountOpt = optContinuousCount;
-		ouput.count = count;
+		ouput.continuousCountOpt = calCountForConsecutivePeriodOutput.getOptContinuousCount();
+		ouput.count = calCountForConsecutivePeriodOutput.getCount();
 		
 		return ouput;
 	}

@@ -56,6 +56,7 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.daily.ScheDailyCh
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.daily.TimeZoneTargetRange;
 import nts.uk.ctx.at.record.dom.workrecord.errorsetting.ContinuousCount;
 import nts.uk.ctx.at.record.dom.workrecord.errorsetting.algorithm.CalCountForConsecutivePeriodChecking;
+import nts.uk.ctx.at.record.dom.workrecord.errorsetting.algorithm.CalCountForConsecutivePeriodOutput;
 import nts.uk.ctx.at.record.dom.workrecord.errorsetting.algorithm.CompareValueRangeChecking;
 import nts.uk.ctx.at.shared.dom.adapter.attendanceitemname.AttendanceItemNameAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.specificdatesetting.RecSpecificDateSettingImport;
@@ -262,7 +263,6 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 				boolean applicableAtr = false;
 				List<String> lstWorkTypeCode = new ArrayList<>();
 				CheckedCondition checkedCondition = null;
-				Optional<ContinuousCount> optContinuousCount = Optional.empty();
 				
 				// 勤務種類の条件
 				RangeToCheck targetWorkType = scheCondItem.getTargetWrkType();
@@ -321,6 +321,7 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 					applicableAtr = checkWorkType(condContinuousWrkType.getWrkTypeCds(), targetWorkType, workTypeCode);
 				}
 				
+				CalCountForConsecutivePeriodOutput calCountForConsecutivePeriodOutput = new CalCountForConsecutivePeriodOutput(Optional.empty(), count);
 				if (DaiCheckItemType.TIME != scheCondItem.getCheckItemType()) {
 					// 連続期間のカウントを計算
 					//【Input】
@@ -331,8 +332,11 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 					//　・カウント
 					//　・Optional<連続カウント＞
 					boolean errorAtr = applicableAtr;
-					calcCountForConsecutivePeriodChecking.getContinuousCount(optContinuousCount, count, continuousPeriod, errorAtr, exDate);
+					calCountForConsecutivePeriodOutput = calcCountForConsecutivePeriodChecking.getContinuousCount(count, continuousPeriod, errorAtr, exDate);
+					count = calCountForConsecutivePeriodOutput.getCount();
 				}
+				
+				Optional<ContinuousCount> optContinuousCount = calCountForConsecutivePeriodOutput.getOptContinuousCount();
 				
 				//・該当区分　＝＝　True　AND　ループ中のスケジュール日次の任意抽出条件．チェック項目種類　＝＝　「時間」
 				//OR
