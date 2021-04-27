@@ -18,8 +18,6 @@ import { TimeDuration } from '@app/utils/time';
 export class CmmS45ShrComponentsApp8Component extends Vue {
     @Prop({default: () => ({}) })
     public readonly params: InitParam;
-
-    public user: any = null;
     public calculatedData: any = null;
 
     public created() {
@@ -29,8 +27,6 @@ export class CmmS45ShrComponentsApp8Component extends Vue {
     public mounted() {
         const vm = this;
         vm.$auth.user.then((usr: any) => {
-            vm.user = usr;
-        }).then((res: any) => {
             this.fetchData(vm.params.appDispInfoStartupOutput);
         });
     }
@@ -50,6 +46,9 @@ export class CmmS45ShrComponentsApp8Component extends Vue {
         vm.$http.post('at', API.init, initParams).then((res: any) => {
             if (res) {
                 vm.params.appDetail = res.data;
+                vm.params.appDetail.details.forEach((data) => {
+                    data.timeZones = _.sortBy(data.timeZones, ['workNo']);
+                });
                 const timeZones = [
                     {workNo: 1, startTime: null, endTime: null},
                     {workNo: 2, startTime: null, endTime: null}
@@ -58,13 +57,13 @@ export class CmmS45ShrComponentsApp8Component extends Vue {
                 res.data.details.forEach((i) => {
                     if (i.appTimeType < 4) {
                         if (i.appTimeType == 0) {
-                            timeZones[0].startTime = i.timeZones[0].startTime;
+                            timeZones[0].startTime = i.timeZones[0].endTime;
                         } else if (i.appTimeType == 1) {
-                            timeZones[0].endTime = i.timeZones[0].endTime;
+                            timeZones[0].endTime = i.timeZones[0].startTime;
                         } else if (i.appTimeType == 2) {
-                            timeZones[1].startTime = i.timeZones[0].startTime;
+                            timeZones[1].startTime = i.timeZones[0].endTime;
                         } else if (i.appTimeType == 3) {
-                            timeZones[1].endTime = i.timeZones[0].endTime;
+                            timeZones[1].endTime = i.timeZones[0].startTime;
                         }
                     } else {
                         i.timeZones.forEach((j) => {

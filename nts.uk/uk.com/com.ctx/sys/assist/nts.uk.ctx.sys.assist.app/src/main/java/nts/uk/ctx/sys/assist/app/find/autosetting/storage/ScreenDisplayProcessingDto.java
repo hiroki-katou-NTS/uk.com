@@ -9,7 +9,7 @@ public class ScreenDisplayProcessingDto {
 	/**
 	 * List <パターン設定>
 	 */
-	private List<DataStoragePatternSettingDto> patterns;
+	private List<DataStoragePatternSettingDto<?>> patterns;
 	
 	/**
 	 * List<システム種類>

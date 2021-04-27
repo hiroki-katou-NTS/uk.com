@@ -1,8 +1,8 @@
 <template>
   <div class="kafs04a">
     <kaf-s00-a class="mx-n2"
-    v-if="kafS00AParams" 
-    v-bind:params="kafS00AParams" />
+    v-if="kaf000_A_Params"
+    v-bind:params="kaf000_A_Params" />
     <!-- error message -->
     <div
       v-if="!$valid || !isValidateAll"
@@ -14,10 +14,10 @@
     </div>
     <div v-else></div>
     <kaf-s00-b 
-    v-if="kafS00BParams"
+    v-if="kaf000_B_Params"
     @kaf000BChangeDate="handleChangeDate"
     @kaf000BChangePrePost="handleChangePrePost"
-    v-bind:params="kafS00BParams" />
+    v-bind:params="kaf000_B_Params" />
     <!-- A3 -->
       <div class="position-relative">
         <div class="card card-label py-3">
@@ -35,6 +35,7 @@
         v-model="time.attendanceTime"
         :name="'KAFS04_3'"
         time-input-type="time-with-day"
+        v-bind:disabled="application.prePostAtr == 1 && check.cbCancelLate.value"
       />
       <!-- A3_3 -->
       <nts-checkbox
@@ -52,6 +53,7 @@
           v-model="time.leaveTime"
           :name="'KAFS04_6'"
           time-input-type="time-with-day"
+          v-bind:disabled="application.prePostAtr == 1 && check.cbCancelEarlyLeave.value"
         />
         <!-- A3_6 -->
         <nts-checkbox
@@ -79,6 +81,7 @@
         v-model="time.attendanceTime2"
         :name="'KAFS04_9'"
         time-input-type="time-with-day"
+        v-bind:disabled="application.prePostAtr == 1 && check.cbCancelLate2.value"
       />
       <!-- A4_3 -->
       <nts-checkbox
@@ -102,6 +105,7 @@
           v-model="time.leaveTime2"
           :name="'KAFS04_11'"
           time-input-type="time-with-day"
+          v-bind:disabled="application.prePostAtr == 1 && check.cbCancelEarlyLeave2.value"
         />
         <!-- A4_6 -->
         <nts-checkbox
@@ -113,14 +117,13 @@
       </div>
     </div>
     <kaf-s00-c class="py-3"
-    v-if="kafS00CParams != null"
+    v-if="kaf000_C_Params != null"
     @kaf000CChangeAppReason="handleChangeAppReason"
     @kaf000CChangeReasonCD="handleChangeReasonCD"
-    v-bind:params="kafS00CParams" />
+    v-bind:params="kaf000_C_Params" />
    <button
         v-if="mode"
         type="button"
-        :disabled="isDisabled"
         class="btn btn-primary btn-block"
         v-on:click="checkValidAll()"
       >{{'KAFS04_13' | i18n}}</button>
