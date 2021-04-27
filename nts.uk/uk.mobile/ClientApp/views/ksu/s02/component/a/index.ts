@@ -47,6 +47,9 @@ export class CalendarAComponent extends Vue {
         this.dataStartPage = data.data;
         self.getData();
         self.updateDataRegister();
+        if (data.checkRegister) {
+            self.closePopup();
+        }
 
     }
 
