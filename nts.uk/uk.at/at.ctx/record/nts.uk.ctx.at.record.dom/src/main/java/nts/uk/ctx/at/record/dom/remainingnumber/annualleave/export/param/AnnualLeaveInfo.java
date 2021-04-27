@@ -472,9 +472,6 @@ public class AnnualLeaveInfo implements Cloneable {
 			return aggrResult;
 		}
 
-		// ダミーデータリスト
-		List<LeaveGrantRemainingData> dummyDataList = new ArrayList<LeaveGrantRemainingData>();
-
 		// 「暫定年休管理データリスト」を取得する
 		tempAnnualLeaveMngs.sort((a, b) -> a.getYmd().compareTo(b.getYmd()));
 
@@ -529,15 +526,23 @@ public class AnnualLeaveInfo implements Cloneable {
 				RemNumShiftListWork remNumShiftListWork = new RemNumShiftListWork();
 
 				// 休暇残数を指定使用数消化する
-				LeaveGrantRemainingData.digest(
+				Optional<LeaveGrantRemainingData> dummyData
+					= LeaveGrantRemainingData.digest(
 						require,
 						targetRemainingDatas,
 						remNumShiftListWork,
 						leaveUsedNumber,
 						companyId,
 						employeeId,
-						aggregatePeriodWork.getPeriod().start(),
-						Optional.of(dummyDataList));
+						aggregatePeriodWork.getPeriod().start());
+
+				// 付与残数データにダミーデータリストを追加
+				if(dummyData.isPresent()) {
+					AnnualLeaveGrantRemainingData addData = new AnnualLeaveGrantRemainingData();
+					addData.setAllValue(dummyData.get());
+					this.grantRemainingDataList.add(addData);
+				}
+
 
 				// 時間年休消化数を求める
 
@@ -575,17 +580,6 @@ public class AnnualLeaveInfo implements Cloneable {
 				}
 		}
 
-		// 型変換
-		List<AnnualLeaveGrantRemainingData> dummyGrantRemainingDataList
-			= new ArrayList<AnnualLeaveGrantRemainingData>();
-		dummyDataList.forEach(c->{
-			AnnualLeaveGrantRemainingData s = new AnnualLeaveGrantRemainingData();
-			s.setAllValue(c);
-			dummyGrantRemainingDataList.add(s);
-		});
-
-		// 付与残数データにダミーデータリストを追加
-		this.grantRemainingDataList.addAll(dummyGrantRemainingDataList);
 
 		// 時間年休使用数を求める
 		calcAnnualUsedTimes(tempAnnualLeaveMngs, digestDateList);
