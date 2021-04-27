@@ -18,7 +18,10 @@ import * as $ from 'jquery';
     },
     constraints: [
         'nts.uk.ctx.at.schedule.dom.shift.management.workavailability.WorkAvailabilityMemo'
-    ]
+    ],
+    beforeDestroy() {
+        document.body.style.removeProperty('position');
+    }
 })
 export class CalendarAComponent extends Vue {
 
@@ -163,6 +166,7 @@ export class CalendarAComponent extends Vue {
 
         // first time to show popup
         if (self.showPopup && !self.slide) {
+            window.scrollTo(0, 0);
             let offset = $('#' + el.currentTarget.id).offset();
             let wi = $('.container-fluid').width();
             let offset1 = $('#d0').offset();
@@ -176,6 +180,13 @@ export class CalendarAComponent extends Vue {
             }
 
             this.showMemo();
+            if (self.isCurrentMonth && screen.height < 700) {
+                $('#scroll_area').css('height', '29vh');
+            } else {
+                $('#scroll_area').css('height', '45vh');
+            }
+            $('#scroll_area').css('overflow-y', 'scroll');
+            setTimeout(() => { $('body').css('position', 'fixed'); }, 200);
         }
         self.checked2s = [];
         self.memoCurent = '';
@@ -218,6 +229,8 @@ export class CalendarAComponent extends Vue {
         this.showMemoArea = false;
         el3.removeClass('fa-minus-circle');
         el3.addClass('fa-plus-circle');
+        $('body').css('overflow', 'auto');
+        $('body').css('position', '');
     }
     public createDataSubmitWorkRequestCmd() {
         let self = this;
@@ -626,7 +639,7 @@ export class CalendarAComponent extends Vue {
         this.initialY = e.changedTouches[0].clientY;
         // let classList = e.target.id != '' ? e.target.classList : $(e.currentTarget).find('td.cell-focus')[0].classList;
         if (e.changedTouches[0].target.classList.contains('uk-bg-white-smoke')
-            || e.changedTouches[0].target.closest('td').classList.contains('uk-bg-silver')) { return; }
+            || (self.isCurrentMonth && e.changedTouches[0].target.closest('td').classList.contains('uk-bg-silver'))) { return; }
         //clear and set color focus
         $($(document.body)[0]).find('td.cell-focus').removeClass('cell-focus');
         let id = e.changedTouches[0].target.id != '' && e.changedTouches[0].target.id != 'memo-area' && e.changedTouches[0].target.id != 'header' ? e.changedTouches[0].target.id : e.changedTouches[0].target.closest('td').id;

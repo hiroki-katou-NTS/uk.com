@@ -7,12 +7,12 @@ public enum PageBreakIndicator {
 	/**
 	 * なし
 	 */
-	NONE(0, "なし"),
+	NONE(0, "KWR008_56"),
 
 	/**
 	 * 職場
 	 */
-	WORK_PLACE(1, "職場");
+	WORK_PLACE(1, "KWR008_55");
 
 	/** The value. */
 	public final int value;

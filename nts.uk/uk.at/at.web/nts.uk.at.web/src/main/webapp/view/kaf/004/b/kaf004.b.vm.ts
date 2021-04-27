@@ -64,7 +64,7 @@ module nts.uk.at.view.kaf004_ref.b.viewmodel {
                                     params: {
                                         appType: appType,
                                         application: application,
-                                        appDispInfoStartupOutput: $vm.appDispInfoStartupOutput
+                                        appDispInfoStartupOutput: appDispInfoStartupOutput
                                     } }"></div>
                         </div>
                     </div>

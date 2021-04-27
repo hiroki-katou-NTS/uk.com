@@ -5,9 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
 import javax.ejb.Stateless;
-
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
@@ -42,8 +40,7 @@ public class EmployeeCommentInformationRepositoryImpl extends JpaRepository
 	@Override
 	public void insert(EmployeeCommentInformation domain) {
 		OfiDtCommentSya entity = EmployeeCommentInformationRepositoryImpl.toEntity(domain);
-		entity.setVersion(0);
-		entity.setContractCd(AppContexts.user().contractCode());
+		entity.setCid(AppContexts.user().companyId());
 		this.commandProxy().insert(entity);
 	}
 

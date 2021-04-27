@@ -39,9 +39,7 @@ public class AnnualWorkScheduleExportGenerator extends AsposeCellsReportGenerato
 
 	private static final String TEMPLATE_FILE = "report/年間勤務表.xlsx";
 
-	private static final String REPORT_FILE_NAME = "年間勤務表.xlsx";
-
-	private static final int MAX_EXPORT_ITEM = 10;
+	private static final int MAX_EXPORT_ITEM = 11;
 	private static final int ROW_PER_PAGE = 26;
 	private static final int MAX_PAGE_PER_SHEET = 1000;
 
@@ -112,9 +110,12 @@ public class AnnualWorkScheduleExportGenerator extends AsposeCellsReportGenerato
 
 			// focus first sheet
 			wsc.setActiveSheetIndex(0);
+			// Get current date and format it
+			DateTimeFormatter jpFormatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss", Locale.JAPAN);
+			String currentFormattedDate = LocalDateTime.now().format(jpFormatter);
 
 			reportContext.processDesigner();
-			reportContext.saveAsExcel(this.createNewFile(fileContext, this.getReportName(REPORT_FILE_NAME)));
+			reportContext.saveAsExcel(this.createNewFile(fileContext, dataSource.getReportName() + "_" + currentFormattedDate + ".xlsx"));
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -216,19 +217,32 @@ public class AnnualWorkScheduleExportGenerator extends AsposeCellsReportGenerato
 	private void print(RangeCustom range, EmployeeData emp, boolean isPrintWorkplace,
 			List<ExportItem> itemBooks, boolean isOutNumExceedTime36Agr) {
 		if (isPrintWorkplace) {
-			String workplace = emp.getEmployeeInfo().getWorkplaceName();
+			String workplace = TextResource.localize("KWR008_50") + " " // D1_1
+							 + emp.getEmployeeInfo().getWorkplaceCode() // D1_3
+						   	 + "　"
+						   	 + emp.getEmployeeInfo().getWorkplaceName(); // D1_2
 			range.cell("workplace").putValue(workplace);
 		}
 		// print employee info
 		if (itemBooks.size() >= 1) {
-			range.cell("empName")
-					.setValue(emp.getEmployeeInfo().getEmployeeCode() + " " + emp.getEmployeeInfo().getEmployeeName());
+			range.cell("empName").setValue(
+					emp.getEmployeeInfo().getEmployeeCode()		// D2_1
+					+ " "
+					+ emp.getEmployeeInfo().getEmployeeName()); // D2_2
 		}
 		if (itemBooks.size() >= 2) {
-			range.cell("employmentName").setValue(emp.getEmployeeInfo().getEmploymentName());
+			range.cell("employmentName").setValue(
+					emp.getEmployeeInfo().getEmploymentCode() 	// D2_6
+					+ " "
+					+ emp.getEmployeeInfo().getEmploymentName() // D2_3
+			);
 		}
 		if (itemBooks.size() >= 3) {
-			range.cell("jobTitle").setValue(emp.getEmployeeInfo().getJobTitle());
+			range.cell("jobTitle").setValue(
+					emp.getEmployeeInfo().getJobTitleCode()		// D2_7
+					+ " "
+					+ emp.getEmployeeInfo().getJobTitle()		// D2_4
+			);
 		}
 
 		int rowOffset = 0;
