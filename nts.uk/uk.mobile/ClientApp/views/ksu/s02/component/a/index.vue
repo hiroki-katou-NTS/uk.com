@@ -79,9 +79,9 @@
                       :class="item.disable ? 'uk-bg-white-smoke w-51' : !item.canUpdateCell || !isCurrentMonth ? 'uk-bg-silver w-51': 'w-51'"
                     >
                       <div v-if="item.disable == true" >
-                        <div class="uk-bg-white-smoke" style="height: 14vh;font-size: 10.5px; float: left; width: 100%;" ></div>
+                        <div class="uk-bg-white-smoke" style="height: 14vh;font-size: 10.5px; float: left; width: 115%;" ></div>
                       </div>
-                      <div v-else style="height: 14vh;font-size: 10.5px; float: left; width: 100%;"  class="table-block-day">
+                      <div v-else style="height: 14vh;font-size: 10.5px; float: left; width: 115%;margin-left: -1vw;"  class="table-block-day">
                           <div id="header">
                             <span v-html="item.dateDisplay"></span> 
                             <span id = "memo-area" v-if="item.showMemo == true" ><i class="far fa-sticky-note memo-css"></i></span>
@@ -94,12 +94,12 @@
                                   style="
                                     border-radius: 0.25rem;
                                     font-size: 3vw;
-                                    padding: 0.0vw;
+                                    padding: 0.7vw;
                                     font-weight: bold;
                                     border: 1px solid #ced4da;
                                     text-align: center;
                                     margin-top: 2px;
-                                    height: 3vh;
+                                    height: 3.5vh;
                                   "
                                   >{{shift.shiftMasterName}}</span>
                               </div>
@@ -110,12 +110,12 @@
                                   style="
                                     border-radius: 0.25rem;
                                     font-size: 3vw;
-                                    padding: 0.0vw;
+                                    padding: 0.7vw;
                                     font-weight: bold;
                                     border: 1px solid #ced4da;
                                     text-align: center;
                                     margin-top: 2px;
-                                    height: 3vh;
+                                    height: 3.5vh;
                                   "
                                   >{{shift.shiftMasterName}}</span>
                               <span class="font-size-8px">{{'KSUS02_24' | i18n}}</span>
@@ -131,7 +131,7 @@
                     >
                       <div v-if="item.disable == true" class="uk-bg-white-smoke" style="height: 14vh;font-size: 10.5px; float: left;" ></div>
                     
-                      <div v-else class="table-block-day" style="height: 14vh;font-size: 10.5px; float: left;">
+                      <div v-else class="table-block-day" style="height: 14vh;font-size: 10.5px; float: left;width: 115%;margin-left: -1vw;">
                         <div id="header">
                           <span v-html="item.dateDisplay"></span>
                           <span id = "memo-area" v-if="item.showMemo == true" ><i class="far fa-sticky-note memo-css"></i></span>
@@ -149,7 +149,7 @@
                                   border: 1px solid #ced4da;
                                   text-align: center;
                                   margin-top: 2px;
-                                  height: 3vh;
+                                  height: 3.5vh;
                                 "
                                 >{{shift.shiftMasterName}}</span>
                             </div>
@@ -165,7 +165,7 @@
                                   border: 1px solid #ced4da;
                                   text-align: center;
                                   margin-top: 2px;
-                                  height: 3vh;
+                                  height: 3.5vh;
                                 "
                                 >{{shift.shiftMasterName}}</span>
                             <span class="font-size-8px">{{'KSUS02_24' | i18n}}</span>
@@ -181,7 +181,7 @@
                     >
                         <div v-if="item.disable == true" class="uk-bg-white-smoke" style="height: 14vh;font-size: 10.5px; float: left;" ></div>
                      
-                        <div v-else class="table-block-day" style="height: 14vh;font-size: 10.5px; float: left;">
+                        <div v-else class="table-block-day" style="height: 14vh;font-size: 10.5px; float: left;width: 115%;margin-left: -1vw;">
                           <div id="header">
                             <span v-html="item.dateDisplay"></span>
                             <span id = "memo-area" v-if="item.showMemo == true" ><i class="far fa-sticky-note memo-css"></i></span>
@@ -199,7 +199,7 @@
                                     border: 1px solid #ced4da;
                                     text-align: center;
                                     margin-top: 2px;
-                                    height: 3vh;
+                                    height: 3.5vh;
                                   "
                                   >{{shift.shiftMasterName}}</span>
                               </div>
@@ -215,7 +215,7 @@
                                     border: 1px solid #ced4da;
                                     text-align: center;
                                     margin-top: 2px;
-                                    height: 3vh;
+                                    height: 3.5vh;
                                   "
                                   >{{shift.shiftMasterName}}</span>
                               <span class="font-size-8px">{{'KSUS02_24' | i18n}}</span>
@@ -229,7 +229,7 @@
                       :id="item.id"
                       :class="item.disable ? 'uk-bg-white-smoke w-51' : !item.canUpdateCell || !isCurrentMonth ? 'uk-bg-silver w-51': 'w-51'"
                     >
-                      <div v-if="item.disable == true" class="uk-bg-white-smoke " style="height: 14vh;font-size: 10.5px; float: left;" ></div>
+                      <div v-if="item.disable == true" class="uk-bg-white-smoke " style="height: 14vh;font-size: 10.5px; float: left;width: 115%;margin-left: -1vw;" ></div>
 
                       <div v-else class="table-block-day" style="height: 14vh;font-size: 10.5px; float: left;">
                         <div id="header">
@@ -249,7 +249,7 @@
                                   border: 1px solid #ced4da;
                                   text-align: center;
                                   margin-top: 2px;
-                                  height: 3vh;
+                                  height: 3.5vh;
                                 "
                                 >{{shift.shiftMasterName}}</span>
                             </div>
@@ -265,7 +265,7 @@
                                   border: 1px solid #ced4da;
                                   text-align: center;
                                   margin-top: 2px;
-                                  height: 3vh;
+                                  height: 3.5vh;
                                 "
                                 >{{shift.shiftMasterName}}</span>
                             <span class="font-size-8px">{{'KSUS02_24' | i18n}}</span>
@@ -282,7 +282,7 @@
                       <div v-if="item.disable == true" >
                         <div class="uk-bg-white-smoke" style="height: 14vh;font-size: 10.5px; float: left;" ></div>
                       </div>
-                      <div v-else class="table-block-day" style="height: 14vh;font-size: 10.5px; float: left;">
+                      <div v-else class="table-block-day" style="height: 14vh;font-size: 10.5px; float: left;width: 115%;margin-left: -1vw;">
                         <div id="header">
                           <span v-html="item.dateDisplay"></span>
                           <span id = "memo-area" v-if="item.showMemo == true" ><i class="far fa-sticky-note memo-css"></i></span>
@@ -300,7 +300,7 @@
                                   border: 1px solid #ced4da;
                                   text-align: center;
                                   margin-top: 2px;
-                                  height: 3vh;
+                                  height: 3.5vh;
                                 "
                                 >{{shift.shiftMasterName}}</span>
                             </div>
@@ -316,7 +316,7 @@
                                   border: 1px solid #ced4da;
                                   text-align: center;
                                   margin-top: 2px;
-                                  height: 3vh;
+                                  height: 3.5vh;
                                 "
                                 >{{shift.shiftMasterName}}</span>
                             <span class="font-size-8px">{{'KSUS02_24' | i18n}}</span>
@@ -333,7 +333,7 @@
                       <div v-if="item.disable == true" >
                         <div class="uk-bg-white-smoke" style="height: 14vh;font-size: 10.5px; float: left;" ></div>
                       </div>
-                        <div v-else class="table-block-day" style="height: 14vh;font-size: 10.5px; float: left;">
+                        <div v-else class="table-block-day" style="height: 14vh;font-size: 10.5px; float: left;width: 115%;margin-left: -1vw;">
                           <div id="header">
                             <span v-html="item.dateDisplay"></span>
                             <span id = "memo-area" v-if="item.showMemo == true" ><i class="far fa-sticky-note memo-css"></i></span>
@@ -351,7 +351,7 @@
                                     border: 1px solid #ced4da;
                                     text-align: center;
                                     margin-top: 2px;
-                                    height: 3vh;
+                                    height: 3.5vh;
                                   "
                                   >{{shift.shiftMasterName}}</span>
                               </div>
@@ -367,7 +367,7 @@
                                     border: 1px solid #ced4da;
                                     text-align: center;
                                     margin-top: 2px;
-                                    height: 3vh;
+                                    height: 3.5vh;
                                   "
                                   >{{shift.shiftMasterName}}</span>
                               <span class="font-size-8px">{{'KSUS02_24' | i18n}}</span>
