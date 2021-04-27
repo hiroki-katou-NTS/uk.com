@@ -411,7 +411,10 @@ module nts.uk.at.view.kwr007.a {
         return;
       }
       let hierarchyId = vm.pageBreakSpecification();
-      //save conditions 
+      if(hierarchyId !=2){
+          hierarchyId = null;
+      }
+      //save conditions
       let multiSelectedCode: Array<string> = vm.multiSelectedCode();
       let lstEmployeeIds: Array<string> = [];
       _.forEach(multiSelectedCode, (employeeCode) => {
@@ -454,7 +457,7 @@ module nts.uk.at.view.kwr007.a {
           settingId: findObj.id, //定型選択リスト || 自由設定リスト 7             
           isZeroDisplay: vm.zeroDisplayClassification() ? true : false,//ゼロ表示区分選択肢 7         
           isPageBreakByWpl: vm.pageBreakSpecification() ? true : false, //改ページ指定選択肢,    
-          pageBreakWplHierarchy: hierarchyId == 1? null : hierarchyId,//改ページの選択肢
+          pageBreakWplHierarchy: hierarchyId,//改ページの選択肢
           isDetail: vm.detailsOutputSettings()[0].checked(), //明細チェック
           isWorkplaceTotal: vm.detailsOutputSettings()[1].checked(),//職場計チェック
           isTotal: vm.detailsOutputSettings()[2].checked(), //総合計チェック
@@ -488,14 +491,17 @@ module nts.uk.at.view.kwr007.a {
       _.forEach(vm.specifyWorkplaceHierarchy(), (x: CheckBoxItem) => {
         levels.push(x.toSave());
       });
-       let hierarchyId = vm.pageBreakSpecification();
+        let hierarchyId = vm.pageBreakSpecification();
+        if(hierarchyId !=2){
+            hierarchyId = null;
+        }
       let data: WorkScheduleOutputConditions = {
         itemSelection: vm.rdgSelectedId(), //項目選択の選択肢
         standardSelectedCode: vm.standardSelectedCode(), //定型選択リスト
         freeSelectedCode: vm.freeSelectedCode(), //自由設定リスト
         zeroDisplayClassification: vm.zeroDisplayClassification(), //ゼロ表示区分選択肢
         pageBreakSpecification: vm.pageBreakSpecification(), //改ページの選択肢
-        workplaceHierarchyId: hierarchyId == 1 ? null: vm.workplaceHierarchyId(), //			職場階層リスト
+        workplaceHierarchyId: hierarchyId, //			職場階層リスト
         detailsOutputSettings: detailsOutput,//明細	+ 職場計 + /総合計 + 職場累計      	
         levels: levels,//1階層 -> 9階層
       };
