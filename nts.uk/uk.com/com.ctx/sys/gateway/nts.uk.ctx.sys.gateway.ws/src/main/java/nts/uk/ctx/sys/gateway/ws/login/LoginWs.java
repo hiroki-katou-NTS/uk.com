@@ -18,10 +18,12 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 
+import lombok.val;
 import nts.arc.layer.ws.WebService;
 import nts.arc.security.csrf.CsrfToken;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.sys.gateway.app.command.login.password.CheckChangePassDto;
+import nts.uk.ctx.sys.gateway.app.command.login.password.MobileLoginCommand;
 import nts.uk.ctx.sys.gateway.app.command.login.password.PasswordAuthenticateCommand;
 import nts.uk.ctx.sys.gateway.app.command.login.password.PasswordAuthenticateCommandHandler;
 import nts.uk.ctx.sys.gateway.app.command.tenantlogin.TenantAuthenticateCommand;
@@ -87,7 +89,7 @@ public class LoginWs extends WebService {
 	}
 	
 	/**
-	 * Check contract form 1.
+	 * テナント情報の確認
 	 *
 	 * @param command the command
 	 * @return the check contract dto
@@ -99,7 +101,6 @@ public class LoginWs extends WebService {
 		return this.tenantCheckCommandHandler.handle(command);
 	}
 	
-
 	/**
 	 * テナント認証
 	 *
@@ -112,7 +113,6 @@ public class LoginWs extends WebService {
 		this.tenantAuthenticateCommandHandler.handle(command);
 	}
 	
-
 	/**
 	 * パスワード認証によるログイン
 	 * @param request
@@ -122,6 +122,33 @@ public class LoginWs extends WebService {
 	@POST
 	@Path("password")
 	public CheckChangePassDto loginOnPasswordAuthenticate(@Context HttpServletRequest request, PasswordAuthenticateCommand command) {
+		command.setRequest(request);
+		return passwordAuthenticateCommandHandler.handle(command);
+	}
+	
+	/**
+	 * モバイル版ログイン（パスワード認証）
+	 * @param request
+	 * @param command
+	 * @return
+	 */
+	@POST
+	@Path("submit/mobile")
+	public CheckChangePassDto submitLoginMobile(@Context HttpServletRequest request, MobileLoginCommand command) {
+		command.setRequest(request);
+		val result = passwordAuthenticateCommandHandler.handle(command);
+		return result;
+	}
+	
+	/**
+	 * なんやこいつ↑と同じやんけ存在価値あるんか
+	 * @param request
+	 * @param command
+	 * @return
+	 */
+	@POST
+	@Path("submit/mobile/nochangepass")
+	public CheckChangePassDto submitLoginWithNoChangePassMobile(@Context HttpServletRequest request, MobileLoginCommand command) {
 		command.setRequest(request);
 		return passwordAuthenticateCommandHandler.handle(command);
 	}
@@ -158,13 +185,10 @@ public class LoginWs extends WebService {
 	@POST
 	@Path("build_info_time")
 	public VerDto getBuildTime(@Context ServletContext context) {
-
 		File file = new File(context.getRealPath("/view/ccg/007/a/ccg007.a.start.js"));
-
 		if (!file.exists()) {
 			return VerDto.builder().ver("Please build js file!").build();
 		}
-
 		return VerDto.builder().ver(GeneralDateTime.legacyDateTime(new Date(file.lastModified()))
 				.toString("yyyy/MM/dd HH:mm")).build();
 	}
@@ -180,23 +204,4 @@ public class LoginWs extends WebService {
 	public EmployeeLoginSettingDto getEmployeeLoginSettingForm3(@PathParam("contractCode") String contractCode) {
 		return this.employeeLoginSettingFinder.findByContractCodeForm3(contractCode);
 	}
-	
-	
-//	こいつらちゃんと作らなアカンよ	（テナントロケータ込みで）
-//	
-//	@POST
-//	@Path("submit/mobile")
-//	public CheckChangePassDto submitLoginMobile(@Context HttpServletRequest request, MobileLoginCommand command) {
-//		command.setSignOn(false);
-//		command.setRequest(request);
-//		return this.mobileLoginHandler.handle(command);
-//	}
-//	
-//	@POST
-//	@Path("submit/mobile/nochangepass")
-//	public CheckChangePassDto submitLoginWithNoChangePassMobile(@Context HttpServletRequest request, MobileLoginCommand command) {
-//		command.setSignOn(false);
-//		command.setRequest(request);
-//		return this.mobileLoginNoChangePassHandler.handle(command);
-//	}
 }
