@@ -122,134 +122,139 @@ public class AposeArbitraryPeriodSummaryTableGenerator extends AsposeCellsReport
                 printInfo(worksheetTemplate, worksheet, contentsList, period);
                 count += 5;
                 itemOnePage += 5;
-
-                for (int i = 0; i < listTree.size(); i++) {
+                for (int  q = 0; q <listTree.size() ; q++) {
                     boolean isFist = true;
-                    val content = listTree.get(i);
-                    List<AttendanceDetailDisplayContents> child = new ArrayList<>();
-                    if (query.isDetail()) {
-                        int wplHierarchy = content.getLevel();
-                        Integer pageBreakWplHierarchy = query.getPageBreakWplHierarchy();
-                        if (i!=0 && query.isPageBreakByWpl() && pageBreakWplHierarchy == null) {
-                            pageBreaks.add(count);
-                            cells.copyRows(cells, 0, count, 5);
-                            count += 5;
-                            itemOnePage = 5;
-                        }
-                        if (i!=0 &&  query.isPageBreakByWpl() && pageBreakWplHierarchy != null && (
-                                wplHierarchy <= pageBreakWplHierarchy) ) {
-                            pageBreaks.add(count);
-                            cells.copyRows(cells, 0, count, 5);
-                            count += 5;
-                            itemOnePage = 5;
-                            isFist = true;
-                        }
-                        if (i!=0 &&  query.isPageBreakByWpl() && pageBreakWplHierarchy != null && (
-                                wplHierarchy > pageBreakWplHierarchy && isFist) ) {
-                            pageBreaks.add(count);
-                            cells.copyRows(cells, 0, count, 5);
-                            count += 5;
-                            itemOnePage = 5;
-                            isFist = false;
-                        }
-                        val listDisplaySid = content.getListDisplayedEmployees();
-                        val tComparator = Comparator
-                                .comparing(DisplayedEmployee::getEmployeeId);
-                        val listDisplayedEmployees = listDisplaySid.stream()
-                                .sorted(tComparator).collect(Collectors.toList());
-                        cells.copyRow(cellsTemplate, 5, count);
-                        itemOnePage += 1;
-                        //D1_1
-                        cells.get(count, 0).setValue(TextResource.localize("KWR007_303")
-                                + " " + content.getWorkplaceCd() + " " + content.getWorkplaceName());
-                        count += 1;
-                        for (int j = 0; j < listDisplayedEmployees.size(); j++) {
-                            val item = listDisplayedEmployees.get(j);
-                            if (j % 2 == 0) {
-                                if (!checkLine(itemOnePage, MAX_LINE_IN_PAGE)) {
-                                    pageBreaks.add(count);
-                                    cells.copyRows(cells, 0, count, 5);
-                                    count += 5;
-                                    itemOnePage = 5;
-                                }
-                                cells.copyRows(cellsTemplate, 6, count, 2);
-
-                            } else {
-                                if (!checkLine(itemOnePage, MAX_LINE_IN_PAGE)) {
-                                    pageBreaks.add(count);
-                                    cells.copyRows(cells, 0, count, 5);
-                                    itemOnePage = 5;
-                                    count += 5;
-                                }
-                                cells.copyRows(cellsTemplate, 8, count, 2);
+                    val subContent = listTree.get(q);
+                    List<AttendanceDetailDisplayContents> contentsArrayList = new ArrayList<>();
+                    toListChild(subContent,contentsArrayList);
+                    List<AttendanceDetailDisplayContents> child = contentsArrayList.stream().sorted(Comparator.comparing(AttendanceDetailDisplayContents::getLevel)).collect(Collectors.toList());
+                    for (int i = 0; i < child.size(); i++) {
+                        val content = child.get(i);
+                        if (query.isDetail()) {
+                            int wplHierarchy = content.getLevel();
+                            Integer pageBreakWplHierarchy = query.getPageBreakWplHierarchy();
+                            if (i!=0 && query.isPageBreakByWpl() && pageBreakWplHierarchy == null) {
+                                pageBreaks.add(count);
+                                cells.copyRows(cells, 0, count, 5);
+                                count += 5;
+                                itemOnePage = 5;
                             }
-                            cells.get(count, 0).setValue(
-                                    item.getEmployeeCode() + " " + item.getEmployeeName());
-                            itemOnePage += 2;
-                            val contents = item.getContentList();
-                            for (int k = 0; k < contents.size(); k++) {
-                                if (k < 20) {
-                                    val itemLine1 = contents.get(k);
-                                    cells.get(count, 1 + k).setValue(formatValue(itemLine1.getValue()
-                                            , mapIdAnAttribute.getOrDefault(itemLine1.getAttendanceItemId(), null),
-                                            query.isZeroDisplay()));
-                                } else if (k >= 20 && k < 40) {
-                                    val itemLine2 = contents.get(k);
-                                    cells.get(count + 1, 1 + k - 20).setValue(formatValue(itemLine2.getValue()
-                                            , mapIdAnAttribute.getOrDefault(itemLine2.getAttendanceItemId(), null),
-                                            query.isZeroDisplay()));
-                                }
-
+                            if (i!=0 &&  query.isPageBreakByWpl() && pageBreakWplHierarchy != null && (
+                                    wplHierarchy <= pageBreakWplHierarchy) ) {
+                                pageBreaks.add(count);
+                                cells.copyRows(cells, 0, count, 5);
+                                count += 5;
+                                itemOnePage = 5;
+                                isFist = true;
                             }
-                            count += 2;
-                        }
-                    }
-
-                    if (query.isWorkplaceTotal()) {
-                        if (!query.isDetail()) {
+                            if (i!=0 &&  query.isPageBreakByWpl() && pageBreakWplHierarchy != null && (
+                                    wplHierarchy > pageBreakWplHierarchy && isFist) ) {
+                                pageBreaks.add(count);
+                                cells.copyRows(cells, 0, count, 5);
+                                count += 5;
+                                itemOnePage = 5;
+                                isFist = false;
+                            }
+                            val listDisplaySid = content.getListDisplayedEmployees();
+                            val tComparator = Comparator
+                                    .comparing(DisplayedEmployee::getEmployeeId);
+                            val listDisplayedEmployees = listDisplaySid.stream()
+                                    .sorted(tComparator).collect(Collectors.toList());
                             cells.copyRow(cellsTemplate, 5, count);
                             itemOnePage += 1;
                             //D1_1
                             cells.get(count, 0).setValue(TextResource.localize("KWR007_303")
                                     + " " + content.getWorkplaceCd() + " " + content.getWorkplaceName());
                             count += 1;
-                        }
-                        val sumByWplOpt = totalDisplayContents
-                                .stream().filter(e -> e.getWorkplaceId().equals(content.getWorkplaceId())).findFirst();
-                        if (sumByWplOpt.isPresent()) {
-                            val sumByWpl = sumByWplOpt.get();
-                            if (!checkLine(itemOnePage, MAX_LINE_IN_PAGE)) {
-                                pageBreaks.add(count);
-                                itemOnePage = 5;
-                                cells.copyRows(cells, 0, count, 5);
-                                count += 5;
-                            }
-                            cells.copyRows(cellsTemplate, 10, count, 2);
-                            itemOnePage += 2;
-                            // cells.clearContents(10, count, cells.getMaxRow(), cells.getMaxColumn());
-                            cells.get(count, 0).setValue(TextResource.localize("KWR007_304"));
-                            val listSum = sumByWpl.getListOfWorkplaces();
-                            if (listSum != null) {
-                                int k = 0;
-                                while (k < listSum.size()) {
-                                    // Line 01:
+                            for (int j = 0; j < listDisplayedEmployees.size(); j++) {
+                                val item = listDisplayedEmployees.get(j);
+                                if (j % 2 == 0) {
+                                    if (!checkLine(itemOnePage, MAX_LINE_IN_PAGE)) {
+                                        pageBreaks.add(count);
+                                        cells.copyRows(cells, 0, count, 5);
+                                        count += 5;
+                                        itemOnePage = 5;
+                                    }
+                                    cells.copyRows(cellsTemplate, 6, count, 2);
+
+                                } else {
+                                    if (!checkLine(itemOnePage, MAX_LINE_IN_PAGE)) {
+                                        pageBreaks.add(count);
+                                        cells.copyRows(cells, 0, count, 5);
+                                        itemOnePage = 5;
+                                        count += 5;
+                                    }
+                                    cells.copyRows(cellsTemplate, 8, count, 2);
+                                }
+                                cells.get(count, 0).setValue(
+                                        item.getEmployeeCode() + " " + item.getEmployeeName());
+                                itemOnePage += 2;
+                                val contents = item.getContentList();
+                                for (int k = 0; k < contents.size(); k++) {
                                     if (k < 20) {
-                                        val itemline1 = listSum.get(k);
-                                        cells.get(count, 1 + k).setValue(formatValue(itemline1.getValue()
-                                                , mapIdAnAttribute.getOrDefault(itemline1.getAttendanceItemId(), null), query.isZeroDisplay()));
+                                        val itemLine1 = contents.get(k);
+                                        cells.get(count, 1 + k).setValue(formatValue(itemLine1.getValue()
+                                                , mapIdAnAttribute.getOrDefault(itemLine1.getAttendanceItemId(), null),
+                                                query.isZeroDisplay()));
                                     } else if (k >= 20 && k < 40) {
-                                        val itemline2 = listSum.get(k);
-                                        cells.get(count + 1, 1 + k - 20).setValue(formatValue(itemline2.getValue()
-                                                , mapIdAnAttribute.getOrDefault(itemline2.getAttendanceItemId(), null), query.isZeroDisplay()));
+                                        val itemLine2 = contents.get(k);
+                                        cells.get(count + 1, 1 + k - 20).setValue(formatValue(itemLine2.getValue()
+                                                , mapIdAnAttribute.getOrDefault(itemLine2.getAttendanceItemId(), null),
+                                                query.isZeroDisplay()));
                                     }
 
-                                    k++;
                                 }
+                                count += 2;
                             }
-                            count += 2;
+                        }
+
+                        if (query.isWorkplaceTotal()) {
+                            if (!query.isDetail()) {
+                                cells.copyRow(cellsTemplate, 5, count);
+                                itemOnePage += 1;
+                                //D1_1
+                                cells.get(count, 0).setValue(TextResource.localize("KWR007_303")
+                                        + " " + content.getWorkplaceCd() + " " + content.getWorkplaceName());
+                                count += 1;
+                            }
+                            val sumByWplOpt = totalDisplayContents
+                                    .stream().filter(e -> e.getWorkplaceId().equals(content.getWorkplaceId())).findFirst();
+                            if (sumByWplOpt.isPresent()) {
+                                val sumByWpl = sumByWplOpt.get();
+                                if (!checkLine(itemOnePage, MAX_LINE_IN_PAGE)) {
+                                    pageBreaks.add(count);
+                                    itemOnePage = 5;
+                                    cells.copyRows(cells, 0, count, 5);
+                                    count += 5;
+                                }
+                                cells.copyRows(cellsTemplate, 10, count, 2);
+                                itemOnePage += 2;
+                                // cells.clearContents(10, count, cells.getMaxRow(), cells.getMaxColumn());
+                                cells.get(count, 0).setValue(TextResource.localize("KWR007_304"));
+                                val listSum = sumByWpl.getListOfWorkplaces();
+                                if (listSum != null) {
+                                    int k = 0;
+                                    while (k < listSum.size()) {
+                                        // Line 01:
+                                        if (k < 20) {
+                                            val itemline1 = listSum.get(k);
+                                            cells.get(count, 1 + k).setValue(formatValue(itemline1.getValue()
+                                                    , mapIdAnAttribute.getOrDefault(itemline1.getAttendanceItemId(), null), query.isZeroDisplay()));
+                                        } else if (k >= 20 && k < 40) {
+                                            val itemline2 = listSum.get(k);
+                                            cells.get(count + 1, 1 + k - 20).setValue(formatValue(itemline2.getValue()
+                                                    , mapIdAnAttribute.getOrDefault(itemline2.getAttendanceItemId(), null), query.isZeroDisplay()));
+                                        }
+
+                                        k++;
+                                    }
+                                }
+                                count += 2;
+                            }
                         }
                     }
                 }
+
 
                 if (query.isCumulativeWorkplace()) {
                     for (CumulativeWorkplaceDisplayContent item : cumulativeWorkplaceDisplayContents) {
@@ -313,9 +318,13 @@ public class AposeArbitraryPeriodSummaryTableGenerator extends AsposeCellsReport
 
     }
     private void toListChild(AttendanceDetailDisplayContents parent, List<AttendanceDetailDisplayContents> rs){
+        rs.add(parent);
         if(parent.getChildren() == null || parent.getChildren().size()==0) return;
-        rs.addAll(parent.getChildren());
-        toListChild(parent,rs);
+        val sub = parent.getChildren();
+        for (int i = 0; i < sub.size() ; i++) {
+            toListChild(sub.get(i),rs);
+        }
+
     }
     private void printInfo(Worksheet worksheetTemplate, Worksheet worksheet,
                            List<AttendanceItemDisplayContents> contentsList, DatePeriod datePeriod) throws Exception {
