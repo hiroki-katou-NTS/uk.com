@@ -119,11 +119,8 @@ public class KrcmtTimeRecorder extends UkJpaEntity implements Serializable {
 		return pk;
 	}
 	
-//	public String getIpAddress() {
-//		if (this.ipAddress1 == null) {
-//			return null;
-//		}
-//		return this.ipAddress1 + '.' + this.ipAddress2 + '.' + this.ipAddress3 + '.' + this.ipAddress4;
-//	}
+	public String getIpAddress() {
+		return this.ipAddress1 + '.' + this.ipAddress2 + '.' + this.ipAddress3 + '.' + this.ipAddress4;
+	}
 
 }

@@ -33,7 +33,7 @@ public class GetSelectedTerminalInfo {
 		
 		ContractCode contractCode = new ContractCode(AppContexts.user().contractCode());
 		
-		String companyID = AppContexts.user().companyId();
+		//	String companyID = AppContexts.user().companyId();
 		
 		GetSelectedTerminalInfoDto dto = new GetSelectedTerminalInfoDto();
 		
@@ -51,7 +51,7 @@ public class GetSelectedTerminalInfo {
 				? empInfoTerValue.getCreateStampInfo().getWorkLocationCd().get().v()
 				: "";
 		
-		Optional<WorkLocation> workLocation = this.workPlaceRepository.findByCode(companyID, workLocationCD);
+		Optional<WorkLocation> workLocation = this.workPlaceRepository.findByCode(contractCode.toString(), workLocationCD);
 		
 		dto.setWorkLocationCode(workLocationCD);
 		dto.setEmpInfoTerCode(empInfoTerValue.getEmpInfoTerCode().v());
@@ -59,10 +59,10 @@ public class GetSelectedTerminalInfo {
 		dto.setModelEmpInfoTer(empInfoTerValue.getModelEmpInfoTer().value);
 		dto.setMacAddress(empInfoTerValue.getMacAddress().v());
 //		dto.setIpAddress(empInfoTerValue.getIpAddress().isPresent() ? empInfoTerValue.getIpAddress().get().v() : "");
-		dto.setIpAddress1(empInfoTerValue.getIpAddress().isPresent() ? empInfoTerValue.getIpAddress().get().getIpAddress1().toString() : "");
-		dto.setIpAddress2(empInfoTerValue.getIpAddress().isPresent() ? empInfoTerValue.getIpAddress().get().getIpAddress2().toString() : "");
-		dto.setIpAddress3(empInfoTerValue.getIpAddress().isPresent() ? empInfoTerValue.getIpAddress().get().getIpAddress3().toString() : "");
-		dto.setIpAddress4(empInfoTerValue.getIpAddress().isPresent() ? empInfoTerValue.getIpAddress().get().getIpAddress4().toString() : "");
+		dto.setIpAddress1(empInfoTerValue.getIpAddress().isPresent() ? String.valueOf(empInfoTerValue.getIpAddress().get().getNet1()) : "");
+		dto.setIpAddress2(empInfoTerValue.getIpAddress().isPresent() ? String.valueOf(empInfoTerValue.getIpAddress().get().getNet2()) : "");
+		dto.setIpAddress3(empInfoTerValue.getIpAddress().isPresent() ? String.valueOf(empInfoTerValue.getIpAddress().get().getHost1()) : "");
+		dto.setIpAddress4(empInfoTerValue.getIpAddress().isPresent() ? String.valueOf(empInfoTerValue.getIpAddress().get().getHost2()) : "");
 		dto.setTerSerialNo(
 				empInfoTerValue.getTerSerialNo().isPresent() ? empInfoTerValue.getTerSerialNo().get().v() : "");
 		dto.setWorkLocationName(workLocation.isPresent() ? workLocation.get().getWorkLocationName().v() : "");
@@ -80,10 +80,12 @@ public class GetSelectedTerminalInfo {
 	}
 
 	public GetWorkLocationNameDto getWorkLocationName(String workLocationCD) {
-		String companyID = AppContexts.user().companyId();
+		//	String companyID = AppContexts.user().companyId();
+		if(workLocationCD.isEmpty())
+			return new GetWorkLocationNameDto("");
 		
-		Optional<WorkLocation> workLocation = this.workPlaceRepository.findByCode(companyID, workLocationCD);
-		
+		String contractCode = AppContexts.user().contractCode();
+		Optional<WorkLocation> workLocation = this.workPlaceRepository.findByCode(contractCode, workLocationCD);	
 		return new GetWorkLocationNameDto(workLocation.isPresent() ? workLocation.get().getWorkLocationName().v() : "");
 	}
 }

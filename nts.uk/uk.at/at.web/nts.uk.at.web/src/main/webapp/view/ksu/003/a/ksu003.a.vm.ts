@@ -2295,9 +2295,9 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			}
 			
 			if(detailColumns.length < 24 ){
-				self.addColumn(1, detailContent, width);
+				self.addColumn(1, startHours, detailColumns,detailHeaderDs,detailHeaders, width);
 				if(self.timeRange > 24){
-					self.addColumn(25, detailContent, width);
+					self.addColumn(25, startHours + 24, detailColumns,detailHeaderDs,detailHeaders, width);
 				}
 			}
 
@@ -2937,7 +2937,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			let timeChart: any = null, timeChart2: any = null, lgc = null, rgc = null, timeChartOver: any = null, timeChartCore: any = null,
 				timeChartBrk: any = null, timeChartHoliday: any = null, timeChartShort: any = null, indexLeft = 0, indexRight = 0;
 			let timeMinus: any = [], timeMinus2: any = [], start1 = null, start2 = null, end1 = null, end2 = null, dispStart = (self.dispStartHours * 60) / 5;
-			let fixedString = "None", slide = true, follow = true, isConfirmed = self.dataScreen003A().employeeInfo[i].workInfoDto.isConfirmed, isFixBr = 0;
+			let fixedString = "None", slide = true, follow = true, isConfirmed = self.dataScreen003A().employeeInfo[i].workInfoDto.isConfirmed, isFixBr = 0, sliceBrk = true;
 			
 			
 			let lstType = self.dataScreen003A().scheCorrection; // 確定済みか
@@ -2949,10 +2949,12 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			if (self.checkDisByDate == false || isConfirmed == 1 || _.isEmpty(fixCheck) || _.isEmpty(flexCheck) || _.isEmpty(flowCheck)) {
 				fixedString = "Both";
 				slide = false;
+				sliceBrk = false;
 			}
 			if(self.dataScreen003A().employeeInfo[i].fixedWorkInforDto != null && self.dataScreen003A().employeeInfo[i].fixedWorkInforDto.fixBreakTime == 1){
-				if(datafilter[0].typeOfTime === "Changeable" || datafilter[0].typeOfTime === "Flex")
-				follow = false;
+				if(datafilter[0].typeOfTime === "Changeable" || datafilter[0].typeOfTime === "Flex"){
+					follow = false;
+				}
 			}
 
 			if (datafilter != null) {
@@ -3342,7 +3344,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 								limitEndMin: isConfirmed == 1 ? endTime1 - dispStart : timeRange.start - dispStart,
 								limitEndMax: isConfirmed == 1 ? endTime1 - dispStart : timeRange.end - dispStart,
 								zIndex: 1001,
-								canSlide: slide,
+								canSlide: sliceBrk,
 								fixed: "Both",
 								followParent: follow,
 								pruneOnSlide: true,
@@ -3386,7 +3388,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 									dropFinished: (b: any, e: any) => {
 										self.dropBreakTime(i, indexBrks, b, e, slide, fixedString, `rgc${i}_` + indexBrkr);
 									},
-									canSlide: slide,
+									canSlide: sliceBrk,
 									fixed: "Both",
 									pruneOnSlide: true
 								});
@@ -3739,7 +3741,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				lstTime = self.calcChartTypeTime(dataFixed, dataFixInfo[0].fixedWorkInforDto == null ? [] : dataFixInfo[0].fixedWorkInforDto.overtimeHours, timeRangeLimit, lstTime, "OT", index);
 				let totalTimes = self.calcAllTime(dataFixed, lstTime, timeRangeLimit);
 				let totalBreaktime = self.calcAllBrk(lstTime);
-				totalBreaktime = totalBreaktime != 0 ? formatById("Clock_Short_HM", totalBreaktime * 5) : "0:00";
+				totalBreaktime = totalBreaktime != 0 ? formatById("Clock_Short_HM", Math.round(totalBreaktime * 5)) : "0:00";
 				$("#extable-ksu003").exTable("cellValue", "middle", self.dataScreen003A().employeeInfo[i].empId, "breaktime", totalBreaktime );
 				$("#extable-ksu003").exTable("cellValue", "middle", self.dataScreen003A().employeeInfo[i].empId, "totalTime", totalTimes);
 				let cssTotalTime: string = self.dataScreen003A().targetInfor == 1 ? "#extable-ksu003 > .ex-body-middle > table > tbody tr:nth-child" + "(" + (i + 2).toString() + ")" + " > td:nth-child(9)" : 
@@ -3964,12 +3966,14 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				pruneOnSlide = true;
 				canSlide = true;
 				if(self.dataScreen003A().employeeInfo[lineNo].fixedWorkInforDto != null && self.dataScreen003A().employeeInfo[lineNo].fixedWorkInforDto.fixBreakTime == 1){
-					if (self.dataScreen003A().employeeInfo[lineNo].fixedWorkInforDto.workType == WorkTimeForm.FLOW || self.dataScreen003A().employeeInfo[lineNo].fixedWorkInforDto.workType == WorkTimeForm.FLEX)
-					followParent = false;
+					if (self.dataScreen003A().employeeInfo[lineNo].fixedWorkInforDto.workType == WorkTimeForm.FLOW || self.dataScreen003A().employeeInfo[lineNo].fixedWorkInforDto.workType == WorkTimeForm.FLEX){
+						followParent = false;
+					}
 				}
 				if(self.dataScreen003A().employeeInfo[lineNo].fixedWorkInforDto != null && self.dataScreen003A().employeeInfo[lineNo].fixedWorkInforDto.fixBreakTime == 0){
-					if (self.dataScreen003A().employeeInfo[lineNo].fixedWorkInforDto.workType == WorkTimeForm.FLOW || self.dataScreen003A().employeeInfo[lineNo].fixedWorkInforDto.workType == WorkTimeForm.FLEX)
-					followParent = true;
+					if (self.dataScreen003A().employeeInfo[lineNo].fixedWorkInforDto.workType == WorkTimeForm.FLOW || self.dataScreen003A().employeeInfo[lineNo].fixedWorkInforDto.workType == WorkTimeForm.FLEX){
+						followParent = true;
+					}
 				}
 				bePassedThrough = false;
 				roundEdge = true;
@@ -5705,32 +5709,32 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					$(".xcell").removeClass("x-error");
 		}
 		
-		addColumn(index : any, detailContent : any, width : any){
+		addColumn(index : any, sh : any, detailColumns : any,detailHeaderDs : any,detailHeaders : any, width : any){
 			let self =this, y = self.dispStartHours;
-			detailContent.columns[index] = { key: (y).toString() + "_", width: width, headerText: "", visible: true  };
-			detailContent.columns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
-			detailContent.columns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
-			detailContent.columns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
-			detailContent.columns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
-			detailContent.columns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
-			detailContent.columns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
-			detailContent.columns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
-			detailContent.columns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
-			detailContent.columns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
-			detailContent.columns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
-			detailContent.columns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
-			detailContent.columns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
-			detailContent.columns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
-			detailContent.columns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
-			detailContent.columns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
-			detailContent.columns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
-			detailContent.columns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
-			detailContent.columns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
-			detailContent.columns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
-			detailContent.columns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
-			detailContent.columns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
-			detailContent.columns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
-			detailContent.columns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
+			detailColumns[index] = { key: (y).toString() + "_", width: width, headerText: "", visible: true  };
+			detailColumns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
+			detailColumns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
+			detailColumns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
+			detailColumns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
+			detailColumns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
+			detailColumns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
+			detailColumns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
+			detailColumns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
+			detailColumns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
+			detailColumns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
+			detailColumns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
+			detailColumns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
+			detailColumns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
+			detailColumns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
+			detailColumns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
+			detailColumns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
+			detailColumns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
+			detailColumns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
+			detailColumns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
+			detailColumns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
+			detailColumns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
+			detailColumns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
+			detailColumns[index += 1] = { key: (y += 1).toString() + "_", width: width, headerText: "", visible: true  };
 		}
 
 		/** A1_4 - Close modal */

@@ -2,7 +2,8 @@ import { _, Vue } from '@app/provider';
 import { component, Prop } from '@app/core/component';
 import { KafS00CComponent } from 'views/kaf/s00/c';
 import { KafS12AComponent } from 'views/kaf/s12/a';
-import { ReflectSetting, TimeLeaveManagement, TimeLeaveRemaining, KafS12ApplyTimeComponent, TimeLeaveAppDetail } from '../shr';
+import { ReflectSetting, TimeLeaveManagement, TimeLeaveRemaining, KafS12ApplyTimeComponent, TimeLeaveAppDetail, LeaveType, AppTimeType } from '../shr';
+import {Watch} from 'vue-property-decorator';
 
 @component({
     name: 'kafs12a2',
@@ -74,6 +75,62 @@ export class KafS12A2Component extends Vue {
         const self = this;
 
         return self.$parent as KafS12AComponent;
+    }
+
+    @Watch('$appContext.calculatedData')
+    public calculatedDataWatcher(value: any) {
+        const vm = this;
+        if (vm.$appContext.timeLeaveType != LeaveType.COMBINATION) {
+            vm.applyTimeData.forEach((applyTime) => {
+                switch (applyTime.appTimeType) {
+                    case AppTimeType.ATWORK:
+                        vm.setCalculatedData(vm.$appContext.timeLeaveType, value.timeBeforeWork1, applyTime);
+                        break;
+                    case AppTimeType.OFFWORK:
+                        vm.setCalculatedData(vm.$appContext.timeLeaveType, value.timeAfterWork1, applyTime);
+                        break;
+                    case AppTimeType.ATWORK2:
+                        vm.setCalculatedData(vm.$appContext.timeLeaveType, value.timeBeforeWork2, applyTime);
+                        break;
+                    case AppTimeType.OFFWORK2:
+                        vm.setCalculatedData(vm.$appContext.timeLeaveType, value.timeAfterWork2, applyTime);
+                        break;
+                    case AppTimeType.PRIVATE:
+                        vm.setCalculatedData(vm.$appContext.timeLeaveType, value.privateOutingTime, applyTime);
+                        break;
+                    case AppTimeType.UNION:
+                        vm.setCalculatedData(vm.$appContext.timeLeaveType, value.unionOutingTime, applyTime);
+                        break;
+                    default:
+                        break;
+                }
+            });
+        }
+    }
+
+    private setCalculatedData(timeLeaveType: number, calculatedValue: number, applyTime: any) {
+        switch (timeLeaveType) {
+            case LeaveType.SUBSTITUTE:
+                applyTime.substituteAppTime = calculatedValue;
+                break;
+            case LeaveType.ANNUAL:
+                applyTime.annualAppTime = calculatedValue;
+                break;
+            case LeaveType.CHILD_NURSING:
+                applyTime.childNursingAppTime = calculatedValue;
+                break;
+            case LeaveType.NURSING:
+                applyTime.nursingAppTime = calculatedValue;
+                break;
+            case LeaveType.SUPER_60H:
+                applyTime.super60AppTime = calculatedValue;
+                break;
+            case LeaveType.SPECIAL:
+                applyTime.specialAppTime = calculatedValue;
+                break;
+            default:
+                break;
+        }
     }
 
     public handleChangeSpecialLeaveFrame(value: number) {

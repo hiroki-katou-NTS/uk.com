@@ -93,7 +93,7 @@
                                   class="form-control select-el"
                                   style="
                                     border-radius: 0.25rem;
-                                    font-size: 3.5vw;
+                                    font-size: 3vw;
                                     padding: 0.0vw;
                                     font-weight: bold;
                                     border: 1px solid #ced4da;
@@ -109,7 +109,7 @@
                                   class="form-control select-el"
                                   style="
                                     border-radius: 0.25rem;
-                                    font-size: 3.5vw;
+                                    font-size: 3vw;
                                     padding: 0.0vw;
                                     font-weight: bold;
                                     border: 1px solid #ced4da;
@@ -143,7 +143,7 @@
                                 class="form-control select-el"
                                 style="
                                   border-radius: 0.25rem;
-                                  font-size: 3.5vw;
+                                  font-size: 3vw;
                                   padding: 0.0vw;
                                   font-weight: bold;
                                   border: 1px solid #ced4da;
@@ -159,7 +159,7 @@
                                 class="form-control select-el"
                                 style="
                                   border-radius: 0.25rem;
-                                  font-size: 3.5vw;
+                                  font-size: 3vw;
                                   padding: 0.0vw;
                                   font-weight: bold;
                                   border: 1px solid #ced4da;
@@ -193,7 +193,7 @@
                                   class="form-control select-el"
                                   style="
                                     border-radius: 0.25rem;
-                                    font-size: 3.5vw;
+                                    font-size: 3vw;
                                     padding: 0.0vw;
                                     font-weight: bold;
                                     border: 1px solid #ced4da;
@@ -209,7 +209,7 @@
                                   class="form-control select-el"
                                   style="
                                     border-radius: 0.25rem;
-                                    font-size: 3.5vw;
+                                    font-size: 3vw;
                                     padding: 0.0vw;
                                     font-weight: bold;
                                     border: 1px solid #ced4da;
@@ -243,7 +243,7 @@
                                 class="form-control select-el"
                                 style="
                                   border-radius: 0.25rem;
-                                  font-size: 3.5vw;
+                                  font-size: 3vw;
                                   padding: 0.0vw;
                                   font-weight: bold;
                                   border: 1px solid #ced4da;
@@ -259,7 +259,7 @@
                                 class="form-control select-el"
                                 style="
                                   border-radius: 0.25rem;
-                                  font-size: 3.5vw;
+                                  font-size: 3vw;
                                   padding: 0.0vw;
                                   font-weight: bold;
                                   border: 1px solid #ced4da;
@@ -294,7 +294,7 @@
                                 class="form-control select-el"
                                 style="
                                   border-radius: 0.25rem;
-                                  font-size: 3.5vw;
+                                  font-size: 3vw;
                                   padding: 0.0vw;
                                   font-weight: bold;
                                   border: 1px solid #ced4da;
@@ -310,7 +310,7 @@
                                 class="form-control select-el"
                                 style="
                                   border-radius: 0.25rem;
-                                  font-size: 3.5vw;
+                                  font-size: 3vw;
                                   padding: 0.0vw;
                                   font-weight: bold;
                                   border: 1px solid #ced4da;
@@ -345,7 +345,7 @@
                                   class="form-control select-el"
                                   style="
                                     border-radius: 0.25rem;
-                                    font-size: 3.5vw;
+                                    font-size: 3vw;
                                     padding: 0.0vw;
                                     font-weight: bold;
                                     border: 1px solid #ced4da;
@@ -361,7 +361,7 @@
                                   class="form-control select-el"
                                   style="
                                     border-radius: 0.25rem;
-                                    font-size: 3.5vw;
+                                    font-size: 3vw;
                                     padding: 0.0vw;
                                     font-weight: bold;
                                     border: 1px solid #ced4da;
@@ -421,7 +421,7 @@
             <h6
               v-click="closePopup"
               class="card-header uk-bg-choice-row"
-              style="margin-top: 1px; padding: 0px; z-index: 1 ; display: flex;align-items: center; justify-content: space-between;"
+              style="margin-top: 1px; padding: 0px; z-index: 1 ; display: flex;align-items: center; justify-content: space-between;height: 5.3vh;"
             >
               <div style="    width: 52vw;display: flex;justify-content: space-between;">
                 <span
@@ -448,7 +448,7 @@
               </div>
             </h6>
             <div class="card-body" style="background-color: #f4fbfd">
-              <div class="accordion">
+              <div class="accordion" id="scroll_area">
                 <!-- 既に開きたいならshowを追加してください。 -->
                 <div class="card1 card" > 
                   <div class="card-header uk-bg-accordion">
@@ -481,14 +481,14 @@
                                   font-size: 2vh;
                                   width: 42px;
                                   height: 3.5vh;
-                                  padding: 0;
+                                  padding: 0.5px;
                                   float: left;
                                   margin-left: 10px;
                                   font-weight: bold;
                                   border: 1px solid #ced4da;
                                   text-align: center;
                                 "
-                                >{{option.shiftMaster.shiftMasterName}}</span> &nbsp;&nbsp;  <span style="font-weight: bold;font-size: 3.5vw;">{{option.shiftMaster.workTime1}} &nbsp;&nbsp; {{option.shiftMaster.workTime2}}</span></div>
+                                >{{option.shiftMaster.shiftMasterName}}</span> &nbsp;&nbsp;  <span style="font-weight: bold;font-size: 3vw;">{{option.shiftMaster.workTime1}} &nbsp;&nbsp; {{option.shiftMaster.workTime2}}</span></div>
                           </nts-checkbox>
                         </div>
                         <div v-else>
@@ -504,7 +504,7 @@
                                     font-size: 2vh;
                                     width: 42px;
                                     height: 3.5vh;
-                                    padding: 0;
+                                    padding: 0.5px;
                                     float: left;
                                     margin-left: 10px;
                                     font-weight: bold;
@@ -512,7 +512,7 @@
                                     text-align: center;
                                   "
                                   >{{option.shiftMaster.shiftMasterName}}</span>
-                                  <span style="float: left;margin-top: 6px;font-weight: bold;font-size: 3.5vw;"> &nbsp;&nbsp;  {{option.shiftMaster.workTime1}} &nbsp;&nbsp; {{option.shiftMaster.workTime2}}</span>
+                                  <span style="float: left;margin-top: 6px;font-weight: bold;font-size: 3vw;"> &nbsp;&nbsp;  {{option.shiftMaster.workTime1}} &nbsp;&nbsp; {{option.shiftMaster.workTime2}}</span>
                                   
                             </div>
                           </div>

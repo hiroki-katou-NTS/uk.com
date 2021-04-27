@@ -12,7 +12,7 @@ module nts.uk.at.view.ksm007.c {
   class ViewModel extends ko.ViewModel {
 
     startFromDate: KnockoutObservable<string> = ko.observable(moment().add(+1, 'days').format(FORMAT_DAY));
-    beginStartDate: KnockoutObservable<string> = ko.observable(moment().add(+1, 'days').format(FORMAT_DAY));
+    beginStartDate: KnockoutObservable<string> = ko.observable("1900/01/01");
     inputScreenC: KnockoutObservable<any> = ko.observable(null);
 
     constructor(params: any) {
@@ -74,13 +74,13 @@ module nts.uk.at.view.ksm007.c {
 
       vm.inputScreenC(params);
 
-      let beginStartDate = moment().format(FORMAT_DAY);        
       if (params && !_.isNil(params.lastItem) && !_.isNil(params.lastItem.startDate)) {
-        beginStartDate = moment(params.lastItem.startDate).add(+1, 'days').format(FORMAT_DAY);        
+          let beginStartDate = moment(params.lastItem.startDate).add(+1, 'days').format(FORMAT_DAY);
+          vm.beginStartDate(beginStartDate);
       }
       //vm.startFromDate(beginStartDate);
       vm.startFromDate(null);
-      vm.beginStartDate(beginStartDate);
+
     }
   }
 }
