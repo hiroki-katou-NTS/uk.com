@@ -31,6 +31,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdat
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveNumberInfo;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveRemainingNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveUndigestDayNumber;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveUndigestNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveUndigestTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveUsedDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveUsedNumber;
@@ -328,29 +329,27 @@ public class AnnualLeaveInfo implements Cloneable {
 	//年休を消滅させる
 	public void extinguishAnnualLeave(AggregatePeriodWork aggregatePeriodWork) {
 		// 「付与残数データ」を取得
-				val itrGrantRemainingNumber = this.grantRemainingDataList.listIterator();
-				while (itrGrantRemainingNumber.hasNext()){
-					val grantRemainingNumber = itrGrantRemainingNumber.next();
+		val itrGrantRemainingNumber = this.grantRemainingDataList.listIterator();
+		while (itrGrantRemainingNumber.hasNext()){
+			val grantRemainingNumber = itrGrantRemainingNumber.next();
 
-					// 期限日が年休集計期間WORK.期間.開始日の前日でなければ、消滅処理しない
-					if (!grantRemainingNumber.getDeadline().equals(aggregatePeriodWork.getPeriod().start().addDays(-1))){
-						continue;
-					}
+			// 期限日が年休集計期間WORK.期間.開始日の前日でなければ、消滅処理しない
+			if (!grantRemainingNumber.getDeadline().equals(aggregatePeriodWork.getPeriod().start().addDays(-1))){
+				continue;
+			}
 
-					// 年休不足ダミーフラグがtrueなら、消滅処理しない
-					if (grantRemainingNumber.isShortageRemain() == true) continue;
+			// 年休不足ダミーフラグがtrueなら、消滅処理しない
+			if (grantRemainingNumber.isShortageRemain() == true) continue;
 
-					// 処理中の付与残数データを期限切れにする
-					grantRemainingNumber.setExpirationStatus(LeaveExpirationStatus.EXPIRED);
+			// 処理中の付与残数データを期限切れにする
+			grantRemainingNumber.setExpirationStatus(LeaveExpirationStatus.EXPIRED);
 
-					// 未消化数を更新
-			this.remainingNumber.getAnnualLeaveUndigestNumber().ifPresent(x -> {
-				x.setDays(new LeaveUndigestDayNumber(
-						x.getDays().v() + grantRemainingNumber.getDetails().getUsedNumber().getDays().v()));
-				x.setMinutes(Optional.of(new LeaveUndigestTime(x.getMinutes().map(y -> y.v()).orElse(0)
-						+ grantRemainingNumber.getDetails().getUsedNumber().getMinutes().map(y -> y.v()).orElse(0))));
-			});
-				}
+			// 未消化数を更新
+			LeaveUndigestNumber remainNumber = new LeaveUndigestNumber(
+					grantRemainingNumber.getDetails().getRemainingNumber().getDays().v(),
+					grantRemainingNumber.getDetails().getRemainingNumber().getMinutes().map(y -> y.v()).orElse(0));
+			this.remainingNumber.addUndigestNumber(remainNumber);
+		}
 	}
 
 	/**
