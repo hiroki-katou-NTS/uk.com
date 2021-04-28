@@ -116,11 +116,10 @@
 }
 
 .space-between-table {
-	width: 290px;
 	margin: 10px 5px;
 	padding: 5px 20px;
 	border: 2px #B1B1B1 solid;
-	border-radius: 2px;
+	border-radius: 7px;
 }
 
 .space-between-table .row-underline {
@@ -144,7 +143,7 @@
 .end-line {
 	margin-top: 40px;
 	border-bottom: 2px solid #B1B1B1;
-	width: 342px;
+	width: 100%;
 }
 
 .w120 {
