@@ -103,7 +103,7 @@
 									<tr>
 										<td><div data-bind="ntsFormLabel: { constraint: ['LocationSearch']}">#{i18n.getText('CMM040_17')}</div></td>
 										<td><input id = "A5_2" class="inputRequired"
-											data-bind="ntsTextEditor: {name : '#[CMM040_17]',value: valueA5_2,constraint: ['LocationSearch']}" /></td>
+											data-bind="ntsTextEditor: {name : '#[CMM040_17]',value: valueA5_2,constraint: ['LocationSearch']} , textInput: valueA5_2" /></td>
 										<td><button id="A5_3" data-bind = "click : buttonA5_3 , enable : enableA53()">#{i18n.getText('CMM040_18')}</button></td>
 										<td><button data-bind = "click: buttonA5_16, enable : enableA53()">#{i18n.getText('CMM040_40')}</button></td>
 									</tr>
