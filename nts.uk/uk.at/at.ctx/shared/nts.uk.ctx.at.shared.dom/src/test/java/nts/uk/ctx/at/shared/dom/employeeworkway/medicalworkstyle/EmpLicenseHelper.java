@@ -2,55 +2,36 @@ package nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
-import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.EmpMedicalWorkFormHisItem;
-import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.FulltimeRemarks;
-import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.LicenseClassification;
-import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.MedicalCareWorkStyle;
-import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.MedicalWorkFormInfor;
-import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.NightShiftRemarks;
-import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.NurseClassifiCode;
-import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.NurseClassifiName;
-import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.NurseClassification;
-import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.NursingWorkFormInfor;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 public class EmpLicenseHelper {
 	 public static List<EmpMedicalWorkFormHisItem> getLstEmpMedical() {
 		 
 		 EmpMedicalWorkFormHisItem result = new EmpMedicalWorkFormHisItem(
 					"empID1", 
-					"historyID1", true,
-					Optional.ofNullable(new MedicalWorkFormInfor(MedicalCareWorkStyle.FULLTIME,
-							new NurseClassifiCode("1"), true)),
-					Optional.ofNullable(new NursingWorkFormInfor(
-							MedicalCareWorkStyle.FULLTIME,
-							true,
-							new FulltimeRemarks("FulltimeRemarks"),
-							new NightShiftRemarks("NightShiftRemarks"))));
+					"historyID1",
+					new NurseClassifiCode("1"),
+					NotUseAtr.USE,
+					MedicalCareWorkStyle.FULLTIME,
+					NotUseAtr.USE);
 			
 			EmpMedicalWorkFormHisItem results = new EmpMedicalWorkFormHisItem(
 					"003", 
-					"historyID2", true,
-					Optional.ofNullable(new MedicalWorkFormInfor(MedicalCareWorkStyle.FULLTIME,
-							new NurseClassifiCode("2"), true)),
-					Optional.ofNullable(new NursingWorkFormInfor(
-							MedicalCareWorkStyle.FULLTIME,
-							true,
-							new FulltimeRemarks("FulltimeRemarks"),
-							new NightShiftRemarks("NightShiftRemarks"))));
+					"historyID2",
+					new NurseClassifiCode("2"),
+					NotUseAtr.USE,
+					MedicalCareWorkStyle.FULLTIME,
+					NotUseAtr.USE);
 			
 			EmpMedicalWorkFormHisItem result2 = new EmpMedicalWorkFormHisItem(
 					"002", 
-					"historyID4", true,
-					Optional.ofNullable(new MedicalWorkFormInfor(MedicalCareWorkStyle.FULLTIME,
-							new NurseClassifiCode("3"), true)),
-					Optional.ofNullable(new NursingWorkFormInfor(
-							MedicalCareWorkStyle.FULLTIME,
-							true,
-							new FulltimeRemarks("FulltimeRemarks"),
-							new NightShiftRemarks("NightShiftRemarks"))));
+					"historyID4",
+					new NurseClassifiCode("3"),
+					NotUseAtr.USE,
+					MedicalCareWorkStyle.FULLTIME,
+					NotUseAtr.USE);
 			
 			List<EmpMedicalWorkFormHisItem> listEmpMedicalWorkFormHisItem = new ArrayList<>();
 			listEmpMedicalWorkFormHisItem.add(result);
@@ -98,36 +79,27 @@ public static List<EmpMedicalWorkFormHisItem> getLstEmpMedical_null() {
 		 
 		 EmpMedicalWorkFormHisItem result = new EmpMedicalWorkFormHisItem(
 					"empID1", 
-					"historyID1", true,
-					Optional.ofNullable(new MedicalWorkFormInfor(MedicalCareWorkStyle.FULLTIME,
-							new NurseClassifiCode("1"), true)),
-					Optional.ofNullable(new NursingWorkFormInfor(
-							MedicalCareWorkStyle.FULLTIME,
-							true,
-							new FulltimeRemarks("FulltimeRemarks"),
-							new NightShiftRemarks("NightShiftRemarks"))));
+					"historyID1", 
+					new NurseClassifiCode("1"),
+					NotUseAtr.USE,
+					MedicalCareWorkStyle.FULLTIME,
+					NotUseAtr.USE);
 			
 			EmpMedicalWorkFormHisItem results = new EmpMedicalWorkFormHisItem(
 					"009", 
-					"historyID2", true,
-					Optional.ofNullable(new MedicalWorkFormInfor(MedicalCareWorkStyle.FULLTIME,
-							new NurseClassifiCode("2"), true)),
-					Optional.ofNullable(new NursingWorkFormInfor(
-							MedicalCareWorkStyle.FULLTIME,
-							true,
-							new FulltimeRemarks("FulltimeRemarks"),
-							new NightShiftRemarks("NightShiftRemarks"))));
+					"historyID2",
+					new NurseClassifiCode("2"),
+					NotUseAtr.USE,
+					MedicalCareWorkStyle.FULLTIME,
+					NotUseAtr.USE);
 			
 			EmpMedicalWorkFormHisItem result2 = new EmpMedicalWorkFormHisItem(
 					"008", 
-					"historyID4", true,
-					Optional.ofNullable(new MedicalWorkFormInfor(MedicalCareWorkStyle.FULLTIME,
-							new NurseClassifiCode("3"), true)),
-					Optional.ofNullable(new NursingWorkFormInfor(
-							MedicalCareWorkStyle.FULLTIME,
-							true,
-							new FulltimeRemarks("FulltimeRemarks"),
-							new NightShiftRemarks("NightShiftRemarks"))));
+					"historyID4",
+					new NurseClassifiCode("3"),
+					NotUseAtr.USE,
+					MedicalCareWorkStyle.FULLTIME,
+					NotUseAtr.USE);
 			
 			List<EmpMedicalWorkFormHisItem> listEmpMedicalWorkFormHisItem = new ArrayList<>();
 			listEmpMedicalWorkFormHisItem.add(result);
@@ -143,36 +115,28 @@ public static List<EmpMedicalWorkFormHisItem> getnurseClass_null() {
 		 
 		 EmpMedicalWorkFormHisItem result = new EmpMedicalWorkFormHisItem(
 					"003", 
-					"historyID1", true,
-					Optional.ofNullable(new MedicalWorkFormInfor(MedicalCareWorkStyle.FULLTIME,
-							new NurseClassifiCode("5"), true)),
-					Optional.ofNullable(new NursingWorkFormInfor(
-							MedicalCareWorkStyle.FULLTIME,
-							true,
-							new FulltimeRemarks("FulltimeRemarks"),
-							new NightShiftRemarks("NightShiftRemarks"))));
+					"historyID1",
+					new NurseClassifiCode("5"),
+					NotUseAtr.USE,
+					MedicalCareWorkStyle.FULLTIME,
+					NotUseAtr.USE);
 			
 			EmpMedicalWorkFormHisItem results = new EmpMedicalWorkFormHisItem(
 					"002", 
-					"historyID2", true,
-					Optional.ofNullable(new MedicalWorkFormInfor(MedicalCareWorkStyle.FULLTIME,
-							new NurseClassifiCode("7"), true)),
-					Optional.ofNullable(new NursingWorkFormInfor(
-							MedicalCareWorkStyle.FULLTIME,
-							true,
-							new FulltimeRemarks("FulltimeRemarks"),
-							new NightShiftRemarks("NightShiftRemarks"))));
+					"historyID2",
+					new NurseClassifiCode("7"),
+					NotUseAtr.USE,
+					MedicalCareWorkStyle.FULLTIME,
+					NotUseAtr.USE);
+			
 			
 			EmpMedicalWorkFormHisItem resultss = new EmpMedicalWorkFormHisItem(
 					"008", 
-					"historyID2", true,
-					Optional.ofNullable(new MedicalWorkFormInfor(MedicalCareWorkStyle.FULLTIME,
-							new NurseClassifiCode("2"), true)),
-					Optional.ofNullable(new NursingWorkFormInfor(
-							MedicalCareWorkStyle.FULLTIME,
-							true,
-							new FulltimeRemarks("FulltimeRemarks"),
-							new NightShiftRemarks("NightShiftRemarks"))));
+					"historyID2", 
+					new NurseClassifiCode("2"),
+					NotUseAtr.USE,
+					MedicalCareWorkStyle.FULLTIME,
+					NotUseAtr.USE);
 			
 
 			

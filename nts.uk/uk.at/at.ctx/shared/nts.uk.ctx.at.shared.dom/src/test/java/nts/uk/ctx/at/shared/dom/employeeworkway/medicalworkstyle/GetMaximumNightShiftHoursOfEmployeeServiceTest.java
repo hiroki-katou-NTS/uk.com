@@ -13,6 +13,7 @@ import mockit.Injectable;
 import mockit.Mocked;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 /**
  * UTコード：社員の夜勤上限時間を取得する
  * @author lan_lt
@@ -67,8 +68,8 @@ public class GetMaximumNightShiftHoursOfEmployeeServiceTest {
 				require.getNightShiftUpperLimitTime();
 				result = maxNightShiftHours;
 				
-				empMedicalHisItem.isNightShiftFullTime();
-				result = true;
+				empMedicalHisItem.getNightShiftFullTime();
+				result = NotUseAtr.USE;
 			}
 		};
 		
@@ -96,8 +97,8 @@ public class GetMaximumNightShiftHoursOfEmployeeServiceTest {
 				require.getNightShiftUpperLimitTime();
 				result = maxNightShiftHours;
 				
-				empMedicalHisItem.isNightShiftFullTime();
-				result = false;
+				empMedicalHisItem.getNightShiftFullTime();
+				result = NotUseAtr.NOT_USE;
 			}
 		};
 		
