@@ -81,18 +81,29 @@
                                 appType: appType,
                                 appDispInfoStartupOutput: appDispInfoStartupOutput	
                             } }"></div>
-					
-					<div style="padding-top: 20px; padding-left: 15px; padding-right: 15px;" data-bind="foreach: remainDayList">
-						<div style="padding-bottom: 20px; border-bottom: 2px solid #B1B1B1; display: block;">
-							<div style="display: block; font-weight: bold" data-bind="text: label"></div>
-							<div class="panel panel-frame" style="border: 2px solid #B1B1B1; display: block; padding: 8px 16px; margin-top: 12px;">
+
+					<div class="remainDay" style="margin: 0 15px; padding-top: 20px; padding-bottom: 10px; border-bottom: 2px solid #B1B1B1; min-height: 100px">
+						<div data-bind="foreach: remainDayList">
+							<div
+								style="padding-bottom: 10px; display: block;">
+								<div style="display: block; font-weight: bold" data-bind="text: label"></div>
+								<div class="panel panel-frame"
+									 style="display: block; padding: 8px 16px; margin-top: 12px;">
 									<div style="display: inline;" data-bind="text: name"></div>
-									
-									<div style="display: inline; float: right;"><a class="hyperlink" data-bind="click: $parent.openKDL009, text: content"></a></div>
-							</div>	
+
+									<div style="display: inline; float: right;"><a class="hyperlink"
+																				   data-bind="click: $parent.openKDL009, text: content"></a>
+									</div>
+								</div>
+							</div>
+
 						</div>
-						
-					</div>			
+
+						<com:ko-if
+							bind="displayInforWhenStarting() != null &amp;&amp; displayInforWhenStarting().remainingHolidayInfor.closestDueDate">
+									<span style="margin-left: -8px" data-bind="text: nts.uk.resource.getText('KAF011_82', [displayInforWhenStarting().remainingHolidayInfor.closestDueDate])"></span>
+						</com:ko-if>
+					</div>
 
 
 					<div
