@@ -393,11 +393,12 @@ public class InterimRemainOffDateCreateData {
 	}
 
 	/**
+	 * 特別休暇枠NOから特別休暇を取得する
 	 * 
-	 * @param require 
+	 * @param require
 	 * @param cid 会社ID
 	 * @param specialNo 特別休暇枠NO
-	 * @return 
+	 * @return
 	 */
 	private static Integer getSpecialByNo(RequireM8 require, String cid, Optional<SpecialHdFrameNo> specialNo) {
 		if(!specialNo.isPresent()){
@@ -521,7 +522,8 @@ public class InterimRemainOffDateCreateData {
 			
 			if (morningType.isPresent() && afterNoonType.isPresent()) {
 				morningType.get().setDays(1);
-				after.setOccurrenceDetailData(new ArrayList<>());
+				afterNoonType.get().setDays(0);
+				afterNoonType.get().setUseAtr(false);
 			}
 		});
 	}
