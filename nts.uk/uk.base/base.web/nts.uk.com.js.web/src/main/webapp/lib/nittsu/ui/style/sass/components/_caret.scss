@@ -5,6 +5,7 @@
 .caret-top,
 .caret-left,
 .caret-right {
+	color: inherit;
 	position: relative;
 
 	&:after {
@@ -140,6 +141,7 @@ button {
 	&.caret-top,
 	&.caret-left,
 	&.caret-right {
+		overflow: visible;
 		&:after {
 			position: absolute;
 			color: $button-disabled-base-color;
