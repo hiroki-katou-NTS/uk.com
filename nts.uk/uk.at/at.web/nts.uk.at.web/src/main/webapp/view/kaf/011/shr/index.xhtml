@@ -218,9 +218,9 @@
 								<div class="row tableRelase">
 									<div class="ntsLabelCustome" data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KAF011_44')}</div>
 									<div class="ntsControl marginNag">
-										<div>
-											<button class="" data-bind="click: openKDL035, enable: outputMode() == 1 ">#{i18n.getText('KAF011_5')}</button>
-											#{i18n.getText('KAF011_47')}
+										<div class="table">
+											<button class="cell valign-center" data-bind="click: openKDL035, enable: outputMode() == 1 ">#{i18n.getText('KAF011_5')}</button>
+											<span style="padding-left: 16px;" class="cell valign-center	">#{i18n.getText('KAF011_47')}</span>
 										</div>
 										<com:ko-if bind="payoutSubofHDManagements().length > 0">
 											<div>
