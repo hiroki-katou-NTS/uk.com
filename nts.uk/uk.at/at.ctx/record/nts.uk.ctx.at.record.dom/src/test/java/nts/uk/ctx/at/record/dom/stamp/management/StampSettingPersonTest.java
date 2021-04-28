@@ -143,7 +143,7 @@ public class StampSettingPersonTest {
 		StampSettingPerson settingPerson = StampSettingPersonHelper.settingPerson();
 		StampPageLayout pageLayout = StampSettingPersonHelper.crePageLayout(2, 3);
 
-		settingPerson.insert(pageLayout);
+		settingPerson.addPage(pageLayout);
 		assertThat(settingPerson.getLstStampPageLayout().stream().filter(x -> x.getPageNo().v() == 3)).isNotEmpty();
 	}
 	
@@ -153,7 +153,7 @@ public class StampSettingPersonTest {
 		StampSettingPerson settingPerson = StampSettingPersonHelper.settingPerson();
 		StampPageLayout pageLayout = StampSettingPersonHelper.crePageLayout(1, 1);
 
-		settingPerson.update(pageLayout);
+		settingPerson.updatePage(pageLayout);
 		assertThat(settingPerson.getLstStampPageLayout().stream().filter(x -> x.getStampPageName().v().equals("NEW_DUMMY2"))).isNotEmpty();
 	}
 
