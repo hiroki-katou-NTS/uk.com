@@ -47,16 +47,12 @@ module nts.uk.ui.header {
                         'hover': bar.hover() && bar.canHover() && $component.click()
                     },
                     style: {
-                        'display': bar.display(),
-                        'background-color': bar.backgroundColor
+                        'display': bar.display()
                     },
                     attr: {
                         'data-column': (bar.titleMenu || []).length
                     }">
-                <span class="bar-item-title" data-bind="
-                    text: bar.menuBarName,
-                    click: function() { $component.selectBar(bar) },
-                    style: { 'color': bar.textColor }"></span>
+                    <span class="bar-item-title" data-bind="text: bar.menuBarName, click: function() { $component.selectBar(bar) }"></span>
                 <div class="menu-dropdown menu-item" data-bind="css: { hidden: !bar.hover() || !bar.titleMenu.length }, foreach: { data: bar.titleMenu, as: 'title' }">
                     <div class="menu-column">
                         <div class="menu-header" data-bind="
