@@ -35,44 +35,11 @@ public class CreateDailyResultsStampsTest {
 	@Injectable
 	private Require require;
 	
-	private String employeeId = "DUMMY";
-	private String companyId = "DUMMY";
-	
-	private DatePeriod datePeriod = new DatePeriod(GeneralDate.today(), GeneralDate.today());
-	
-	private List<ErrorMessageInfo> infos = new ArrayList<>();
-	
-	ErrorMessageInfo info1 = new ErrorMessageInfo(companyId,
-			employeeId,
-			GeneralDate.today(),
-			ExecutionContent.DAILY_CREATION,
-			new ErrMessageResource("DUMMY"),
-			new ErrMessageContent("This is Message"));
-	
-	private OutputCreateDailyResult dailyResult = new OutputCreateDailyResult(ProcessState.SUCCESS, infos);
-	
 	/**
 	 * !date.isPresent()
 	 */
 	@Test
 	public void test_date_null() {
-		
-		infos.add(info1);
-		
-		new Expectations() {
-		{
-			require.createDataNewNotAsync(employeeId,
-					datePeriod,
-					ExecutionAttr.MANUAL,
-					companyId, 
-					ExecutionTypeDaily.IMPRINT, 
-					Optional.empty(), 
-					Optional.empty());
-			
-			result = dailyResult;
-			
-		}
-	};
 		
 		List<ErrorMessageInfo> errors = CreateDailyResultsStamps.create(require, "DUMMY", "DUMMY", Optional.empty());
 		assertThat(errors).isEmpty();
@@ -83,6 +50,19 @@ public class CreateDailyResultsStampsTest {
 	 */
 	@Test
 	public void test_lstEmpId_empty() {
+		String employeeId = "DUMMY";
+		String companyId = "DUMMY";
+		
+		DatePeriod datePeriod = new DatePeriod(GeneralDate.today(), GeneralDate.today());
+		
+		List<ErrorMessageInfo> infos = new ArrayList<>();
+		
+		ErrorMessageInfo info1 = new ErrorMessageInfo(companyId,
+				employeeId,
+				GeneralDate.today(),
+				ExecutionContent.DAILY_CREATION,
+				new ErrMessageResource("DUMMY"),
+				new ErrMessageContent("This is Message"));
 		
 		infos.add(info1);
 		
