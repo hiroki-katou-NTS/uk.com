@@ -48990,6 +48990,89 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+var nts;
+(function (nts) {
+    var uk;
+    (function (uk) {
+        var ui;
+        (function (ui) {
+            var koExtentions;
+            (function (koExtentions) {
+                /**
+                 * Wrapper by ko binding for JqueryUI.Draggable
+                 * Use: data-bind="draggable: true, enable: true, disable: false"
+                 * Or use by full options: data-bind="draggable: JQueryUI.DraggableOptions"
+                 */
+                var DraggableBindingHandler = /** @class */ (function () {
+                    function DraggableBindingHandler() {
+                        this.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                            var $element = $(element);
+                            var accessor = valueAccessor();
+                            var enable = allBindingsAccessor.get('enable');
+                            var disable = allBindingsAccessor.get('disable');
+                            ko.computed({
+                                read: function () {
+                                    var options = ko.unwrap(accessor);
+                                    $element
+                                        .css({
+                                        top: '',
+                                        left: '',
+                                        right: '',
+                                        bottom: ''
+                                    });
+                                    if ($element.data('draggable')) {
+                                        $element.draggable('destroy');
+                                    }
+                                    if (options) {
+                                        if (!_.isObject) {
+                                            // if empty binding (draggable: true)
+                                            $element.draggable();
+                                        }
+                                        else {
+                                            // if has options
+                                            $element.draggable(options);
+                                        }
+                                    }
+                                },
+                                disposeWhenNodeIsRemoved: element
+                            });
+                            ko.computed({
+                                read: function () {
+                                    // toggle enable
+                                    var $ena = ko.unwrap(enable) !== false;
+                                    if ($ena && $element.data('draggable')) {
+                                        $element.draggable('enable');
+                                    }
+                                },
+                                disposeWhenNodeIsRemoved: element
+                            });
+                            ko.computed({
+                                read: function () {
+                                    // toggle disble
+                                    var $dis = ko.unwrap(disable) === true;
+                                    if ($dis && $element.data('draggable')) {
+                                        $element.draggable('disable');
+                                    }
+                                },
+                                disposeWhenNodeIsRemoved: element
+                            });
+                            $element.removeAttr('data-bind');
+                        };
+                    }
+                    DraggableBindingHandler = __decorate([
+                        handler({
+                            bindingName: 'draggable',
+                            validatable: true,
+                            virtual: false
+                        })
+                    ], DraggableBindingHandler);
+                    return DraggableBindingHandler;
+                }());
+                koExtentions.DraggableBindingHandler = DraggableBindingHandler;
+            })(koExtentions = ui.koExtentions || (ui.koExtentions = {}));
+        })(ui = uk.ui || (uk.ui = {}));
+    })(uk = nts.uk || (nts.uk = {}));
+})(nts || (nts = {}));
 /// <reference path="../../reference.ts"/>
 var nts;
 (function (nts) {
@@ -51316,9 +51399,14 @@ var nts;
                                 var popper = $("<div class=\"constraint\"><span>" + html + "</span></div>")
                                     .appendTo(document.body);
                                 var pbound = popper.get(0).getBoundingClientRect();
+                                var top = bound.top - pbound.height - 8;
+                                var bottom = bound.top + bound.height + 8;
+                                if (top < 0) {
+                                    popper.addClass('below');
+                                }
                                 popper
                                     .css({
-                                    'top': bound.top - pbound.height - 8 + "px",
+                                    'top': (top >= 0 ? top : bottom) + "px",
                                     'left': (bound.left + (bound.width / 2)) - (pbound.width / 2) + 4 + "px"
                                 });
                                 $element.data('__popper__', popper);

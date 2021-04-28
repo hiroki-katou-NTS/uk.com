@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -59,18 +58,19 @@ public class DetailAfterReleaseImpl implements DetailAfterRelease {
 			// 4.解除する
 			Boolean releaseFlg = approvalRootStateAdapter.doRelease(companyID, appLoop.getAppID(), loginID);
 			isProcessDone = isProcessDone && releaseFlg;
+			if(releaseFlg) {
+				// 「反映情報」．実績反映状態を「未反映」にする(chuyển trạng thái 「反映情報」．実績反映状態 thành 「未反映」)
+				for(ReflectionStatusOfDay reflectionStatusOfDay : appLoop.getReflectionStatus().getListReflectionStatusOfDay()) {
+					reflectionStatusOfDay.setActualReflectStatus(ReflectedState.NOTREFLECTED);
+				}
+				// アルゴリズム「反映状態の更新」を実行する ( Thực hiện thuật toán 「Update trạng thái phản ánh」
+				applicationRepository.update(appLoop);
+			}
 		}
 		if(!isProcessDone) {
 			return processResult;
 		}
 		processResult.setProcessDone(true);
-		// 「反映情報」．実績反映状態を「未反映」にする(chuyển trạng thái 「反映情報」．実績反映状態 thành 「未反映」)
-		for(ReflectionStatusOfDay reflectionStatusOfDay : application.getReflectionStatus().getListReflectionStatusOfDay()) {
-			reflectionStatusOfDay.setActualReflectStatus(ReflectedState.NOTREFLECTED);
-		}
-		// アルゴリズム「反映状態の更新」を実行する ( Thực hiện thuật toán 「Update trạng thái phản ánh」
-		applicationRepository.update(application);
-		processResult.setAppIDLst(Arrays.asList(appID));
 		return processResult;
 	}
 }

@@ -39,7 +39,7 @@ module nts.uk.ui.formlabel {
             vm.html.dispose();
         }
     }
-        
+
     export module constraint {
         @handler({
             bindingName: 'label-constraint',
@@ -67,9 +67,16 @@ module nts.uk.ui.formlabel {
 
                         const pbound = popper.get(0).getBoundingClientRect();
 
+                        const top = bound.top - pbound.height - 8;
+                        const bottom = bound.top + bound.height + 8;
+
+                        if (top < 0) {
+                            popper.addClass('below');
+                        }
+
                         popper
                             .css({
-                                'top': `${bound.top - pbound.height - 8}px`,
+                                'top': `${top >= 0 ? top : bottom}px`,
                                 'left': `${(bound.left + (bound.width / 2)) - (pbound.width / 2) + 4}px`
                             });
 

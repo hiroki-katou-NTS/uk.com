@@ -641,8 +641,8 @@ module nts.uk.at.view.ccg005.a.screenModel {
           return;
         }
 
-        const selectedDate = moment.utc(moment.utc(vm.selectedDate()).format('YYYY/MM/DD'));
-        const baseDate = moment.utc(moment.utc().format('YYYY/MM/DD'));
+        const selectedDate = moment.utc(vm.selectedDate()).startOf("day");
+        const baseDate = moment.utc().startOf("day");
         vm.isSameOrBeforeBaseDate(selectedDate.isSameOrBefore(baseDate));
         vm.isAfter(selectedDate.isAfter(baseDate));
         vm.isBaseDate(selectedDate.isSame(baseDate));
