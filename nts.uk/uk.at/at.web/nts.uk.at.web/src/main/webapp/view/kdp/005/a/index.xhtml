@@ -62,6 +62,7 @@
 						click: function(btn, layout) { $vm.clickBtn1.apply($vm, [btn, layout]); },
 						marginBottom: 0
 					  }"></div>
+					<com:ko-if bind="ko.toJS($vm.fingerStampSetting).noticeSetDto.displayAtr == 1">
 					<div class= "kdp-message-error" data-bind="component: {
 							name: 'kdp-message-error',
 							params:{
@@ -77,6 +78,7 @@
 								messageNoti: messageNoti
 							}
 						}"></div>
+					</com:ko-if>
 					<div style="padding: 0 10px 10px 80px; min-width: 66vmin;" data-bind="ifnot:isUsed">
 						<span class=" not_used_label label " data-bind="text:errorMessage"></span>
 					</div>
