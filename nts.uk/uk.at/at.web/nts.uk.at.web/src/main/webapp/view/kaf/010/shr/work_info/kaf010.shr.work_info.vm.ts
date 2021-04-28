@@ -1,6 +1,6 @@
 module nts.uk.at.view.kaf010.shr.work_info.viewmodel {
     const template = `
-   <div data-bind="with: $parent">
+    <div data-bind="with: $parent">
 	<div style="margin-top: -3px" data-bind="if: workInfo">
 		<div class="table" data-bind="visible : true">
 			<div class="cell valign-center" style="width: 120px;">
@@ -34,7 +34,7 @@ module nts.uk.at.view.kaf010.shr.work_info.viewmodel {
 		</div>
 
 		<!--勤務時間 1-->
-		<div class="valign-center control-group">
+		<div style="margin-top: 3px">
 			<div class="table">
 				<div style="width: 120px; margin-right: 0px !important" class="cell valign-top cm-column2">
 					<!--A4_8 勤務時間ラベル-->

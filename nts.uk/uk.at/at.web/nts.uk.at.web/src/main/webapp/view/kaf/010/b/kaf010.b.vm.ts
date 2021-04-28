@@ -13,14 +13,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 	import formatTime = nts.uk.time.format.byId;
 	import CommonProcess = nts.uk.at.view.kaf000.shr.viewmodel.CommonProcess;
 	const template= `
-		
-
-
-
-
-
-
-<div id="kaf010-b">
+	<div id="kaf010-b">
 	<div id="contents-area" style="background-color: inherit; height: calc(100vh - 137px);">
 		<div class="two-panel" style="height: 100%; width: 1260px">
             <div class="left-panel" style="width: calc(1260px - 388px); height: inherit">
@@ -53,7 +46,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
                                                     appType: appType,
                                                     application: application,
                                                     appDispInfoStartupOutput: appDispInfoStartupOutput
-                                                } }" style="width: fit-content; display: inline-block; vertical-align: middle; margin-top: 12px"></div>
+                                                } }" style="width: fit-content; display: inline-block; vertical-align: middle; margin-top: -16px"></div>
                                                 
                      <div>
 
@@ -63,7 +56,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 	<div class="table"></div>
 
 
-	<div
+	<div style="margin-top: -9px"
 		data-bind="component: { name: 'kaf010-share-work-info', 
 								params: {
 									workInfo: workInfo
