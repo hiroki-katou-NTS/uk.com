@@ -193,7 +193,6 @@ public class SupportWorkReflection {
 	public OuenWorkTimeSheetOfDailyAttendance convertStampingSupportData(WorkInformationWork informationWork,
 			WorkTimeInformation information, StartAtr startAtr) {
 		// 新しい「日別実績の応援作業別勤怠時間帯」を作成する
-		String companyId = AppContexts.user().companyId();
 		OuenWorkTimeSheetOfDailyAttendance sheetOfDaily = null;
 
 		// 作業Temporarｙから「日別実績の応援作業別勤怠時間帯」にデータ入れる
@@ -297,26 +296,29 @@ public class SupportWorkReflection {
 			StartAtr startAtr) {
 		GetSupportDataJudgedSameDS.Required required = new GetSupportDataJudgedSameImpl(ofSupportRepo);
 		// 同一と判断された応援データを取得する - 応援データ
-		Optional<OuenWorkTimeSheetOfDailyAttendance> ouenStampNew = GetSupportDataJudgedSameDS
+		Optional<OuenWorkTimeSheetOfDailyAttendance> ouenStampDS = GetSupportDataJudgedSameDS
 				.getSupportDataJudgedSame(required, lstClearOuen, ouenStamp, startAtr.value == 0 ? true : false);
-		if (!ouenStampNew.isPresent()) {
+		if (!ouenStampDS.isPresent()) {
 			// 打刻応援データを応援データ一覧に入れる
 			lstClearOuen.add(ouenStamp);
 			return lstClearOuen;
 		}
+		
+		int index = lstClearOuen.indexOf(ouenStampDS.get());
+		OuenWorkTimeSheetOfDailyAttendance ouenStampNew = lstClearOuen.get(index);
 		// 上書き対象の時刻を取得する - 勤怠時刻
-		Optional<TimeWithDayAttr> timeOverWritten = this.getTimeOverwritten(timePriorityFlag, ouenStampNew.get(), startAtr,
+		Optional<TimeWithDayAttr> timeOverWritten = this.getTimeOverwritten(timePriorityFlag, ouenStampNew, startAtr,
 				ouenStamp);
 		if (timeOverWritten.isPresent()) {
 			// 取得した勤怠打刻＜＞Empty
 			// 時刻上書きする
-			this.overwriteTime(ouenStampNew.get(), startAtr, timeOverWritten);
+			this.overwriteTime(ouenStampNew, startAtr, timeOverWritten);
 		} else {
-			if (ouenStampNew.get().getWorkContent().getWorkplace().getWorkplaceId() != null)
+			if (ouenStampNew.getWorkContent().getWorkplace().getWorkplaceId() != null)
 				return lstClearOuen;
 		}
 		// 応援・作業を補正する
-		this.correctSupportWork(ouenStamp, ouenStampNew.get());
+		this.correctSupportWork(ouenStamp, ouenStampNew);
 		return lstClearOuen;
 	}
 
@@ -371,10 +373,10 @@ public class SupportWorkReflection {
 			// 「打刻応援データ。開始。時刻 ＞ 応援データ。開始。時刻」 OR 時刻優先フラグ＝True
 			if ((ouenStamp.getTimeSheet().getStart().get().getTimeWithDay().isPresent()
 					&& ouenStampNew.getTimeSheet().getStart().get().getTimeWithDay().isPresent()
-					&& ouenStamp.getTimeSheet().getStart().get().getTimeWithDay().get().v() > ouenStampNew.getTimeSheet()
+					&& ouenStamp.getTimeSheet().getStart().get().getTimeWithDay().get().v() < ouenStampNew.getTimeSheet()
 							.getStart().get().getTimeWithDay().get().v())
 					|| timePriorityFlag == true) {
-				return ouenStampNew.getTimeSheet().getStart().get().getTimeWithDay();
+				return ouenStamp.getTimeSheet().getStart().get().getTimeWithDay();
 			}
 		}
 		if (startAtr == StartAtr.END_OF_SUPPORT) {
@@ -385,7 +387,7 @@ public class SupportWorkReflection {
 					&& ouenStamp.getTimeSheet().getEnd().get().getTimeWithDay().get().v() > ouenStampNew.getTimeSheet()
 							.getEnd().get().getTimeWithDay().get().v())
 					|| timePriorityFlag == true) {
-				return ouenStampNew.getTimeSheet().getEnd().get().getTimeWithDay();
+				return ouenStamp.getTimeSheet().getEnd().get().getTimeWithDay();
 			}
 		}
 		return Optional.empty();
@@ -407,15 +409,16 @@ public class SupportWorkReflection {
 		// 最初の出勤と最後の退勤を検出する
 		WorkTemporary workTemporary = this.detectAttendance(attendanceLeave);
 
-		// 最初の出勤の応援データと最後の退勤の応援データを取得する
-		SupportAttendanceDepartureTempo suportDataFirtAndLast = this.getSupportFataFirstAttendanceLastDeparture(
-				lstOuenWorkTime, workTemporary, judgmentSupport, ouenStamp, informationWork);
 
 		// ほかの出退勤を補正する
 		this.correctOtherAttendance(informationWork, workTemporary, lstOuenWorkTime, judgmentSupport);
 
 		// 応援データを並びかえる （時刻の昇順） - ソート済み応援データ
 		List<OuenWorkTimeSheetOfDailyAttendance> lstOuenSort = this.rearrangeSupportData(lstOuenWorkTime);
+		
+		// 最初の出勤の応援データと最後の退勤の応援データを取得する
+		SupportAttendanceDepartureTempo suportDataFirtAndLast = this.getSupportFataFirstAttendanceLastDeparture(
+				lstOuenWorkTime, workTemporary, judgmentSupport, ouenStamp, informationWork);
 
 		// 最初の出勤と最後の退勤の応援データを応援データに入れる
 		List<OuenWorkTimeSheetOfDailyAttendance> lstCompensate = this.compensateFirstLastAttendance(lstOuenSort,
@@ -1042,8 +1045,6 @@ public class SupportWorkReflection {
 	public OuenWorkTimeSheetOfDailyAttendance convertStampingSupport(WorkInformationWork informationWork,
 			WorkTimeInformation timeDay, StartAtr startAtr) {
 		// 新しい「日別実績の応援作業別勤怠時間帯」を作成する
-		String cid = AppContexts.user().companyId();
-
 		OuenWorkTimeSheetOfDailyAttendance attendance = null;
 		WorkplaceOfWorkEachOuen eachOuen = WorkplaceOfWorkEachOuen.create(new WorkplaceId(informationWork.getWorkplaceId().v()),
 				informationWork.getLocationCD() == null ? null
