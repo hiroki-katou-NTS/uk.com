@@ -300,8 +300,8 @@ module nts.uk.at.view.ktg026.a {
                     <table>
                         <colgroup>
                             <col width="25%" />
-                            <col width="25%" />
-                            <col width="50%" />
+                            <col width="17%" />
+                            <col width="58%" />
                         </colgroup>
                         <head>
                             <tr>
@@ -311,9 +311,9 @@ module nts.uk.at.view.ktg026.a {
                                 </th>
                                 <th class="text-center">
                                     <!-- A2_2 -->
-                                    <div data-bind="ntsFormLabel: { required: false, text: $component.$i18n('KTG026_4') }"></div>
+                                    <div style="padding-right: 0px;" data-bind="ntsFormLabel: { required: false, text: $component.$i18n('KTG026_4') }"></div>
                                 </th>
-                                <td rowspan="1">
+                                <td rowspan="1"style="padding-left: 10px;">
                                     <canvas data-bind="ktg-026-chart: $component.dataTable, type: 'head'"></canvas>
                                 </td>
                             </tr>
@@ -325,30 +325,27 @@ module nts.uk.at.view.ktg026.a {
                 <div>
                     <table>
                         <colgroup>
-                            <col width="25%" />
-                            <col width="25%" />
-                            <col width="50%" />
+                            <col width="42%" />
+                            <col width="58%" />
                         </colgroup>
                         <tbody data-bind="foreach: { data: $component.dataTable, as: 'row' }">
                             <tr style="height: 35px;">
-                                <td data-bind="text: row.date"></td>
-                                <td class="text-right">
-                                    <div data-bind="time: row.time.tt, css: row.state"></div>
+                                <td>
+                                    <div>
+                                        <div class="text-center" data-bind="text: row.date" style="float:left; width: 60%;"></div>
+                                        <div class="text-right" data-bind="time: row.time.tt, css: row.state" style="height: 25px; padding-right: 5px;"></div>
+                                    </div>
                                 </td>
-                                <td data-bind="ktg-chart: $component.dataTable"></td>
+                                <td style="padding-left: 10px;" data-bind="ktg-chart: $component.dataTable"></td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
             </div>
             <style>
+                }
                 .ktg026-border-top {
                     border-top: none !important;
-                }
-                .ktg-026-a table tr td.text-right div {
-                    line-height: 25px;
-                    width: 60px;
-                    float: right;
                 }
                 .ktg026-border-top::before {
                     width: 100%;
@@ -406,34 +403,34 @@ module nts.uk.at.view.ktg026.a {
                     margin-top: -1px;
                 }
                 .widget-container.has-scroll .ktg-026-a.scroll-padding {
-                    padding-right: 17px;
+                    padding-right: 17px !important;
                 }
                 /* 限度アラーム時間超過 */
-                .ktg-026-a.widget-content.ui-resizable .exceeding-limit-alarm {
+                .ktg-026-a.widget-content.ui-resizable table tr td div.exceeding-limit-alarm {
                     background-color: #FFFF99; /* 36協定アラーム */
                     color: #FF9900; /* 36協定アラーム文字 */
                 }
                 /* 限度エラー時間超過 */
-                .ktg-026-a.widget-content.ui-resizable .exceeding-limit-error {
-                    background-color: #FD4D4D; /* 36協定エラー */
+                .ktg-026-a.widget-content.ui-resizable table tr td div.exceeding-limit-error {
+                    background-color: #FF99CC; /* 36協定エラー */
                     color: #ffffff; /* 36協定エラー文字 */
                 }
                 /* 限度アラーム時間超過（特例あり） */
-                .ktg-026-a.widget-content.ui-resizable .special-exceeding-limit {
+                .ktg-026-a.widget-content.ui-resizable table tr td div.special-exceeding-limit {
                     background-color: #eb9152; /* 36協定特例 */
                 }
                 /* 限度エラー時間超過（特例あり） */
-                .ktg-026-a.widget-content.ui-resizable .special-exceeding-limit-error {
+                .ktg-026-a.widget-content.ui-resizable table tr td div.special-exceeding-limit-error {
                     background-color: #eb9152; /* 36協定特例 */
                 }
                 /* 特例限度アラーム時間超過 */
-                .ktg-026-a.widget-content.ui-resizable .special-exceeded-limit-alarm  {
+                .ktg-026-a.widget-content.ui-resizable table tr td div.special-exceeded-limit-alarm  {
                     background-color: #FFFF99; /* 36協定アラーム */
                     color: #FF9900; /* 36協定アラーム文字 */
                 }
                 /* 特例限度エラー時間超過 */
-                .ktg-026-a.widget-content.ui-resizable .special-exceeded-limit-error {
-                    background-color: #FD4D4D; /* 36協定エラー */
+                .ktg-026-a.widget-content.ui-resizable table tr td div.special-exceeded-limit-error {
+                    background-color: #FF99CC; /* 36協定エラー */
                     color: #ffffff; /* 36協定エラー文字 */
                 }
             </style>
