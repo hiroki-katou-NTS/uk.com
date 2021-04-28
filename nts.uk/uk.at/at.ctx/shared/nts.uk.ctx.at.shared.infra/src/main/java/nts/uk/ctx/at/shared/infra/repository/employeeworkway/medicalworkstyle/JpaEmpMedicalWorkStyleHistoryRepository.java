@@ -101,13 +101,14 @@ public class JpaEmpMedicalWorkStyleHistoryRepository extends JpaRepository imple
 
 		 Optional<KscmtMedicalWorkStyle> entity = this.queryProxy().find(new KscmtMedicalWorkStylePk(hisItem.getEmpID(), hisItem.getHistoryID()), KscmtMedicalWorkStyle.class);
 		if(entity.isPresent()){
-			entity.get().setOnlyNightShift(hisItem.isNightShiftFullTime());
+			//TODO
+			/*entity.get().setOnlyNightShift(hisItem.isNightShiftFullTime());
 			entity.get().setMedicalCareWorkStyle(hisItem.getOptMedicalWorkFormInfor().isPresent() ? hisItem.getOptMedicalWorkFormInfor().get().getMedicalCareWorkStyle().value : hisItem.getOpyNursingWorkFormInfor().get().getMedicalCareWorkStyle().value );
 			entity.get().setNurseLicenseCd(hisItem.getOptMedicalWorkFormInfor().isPresent() ? hisItem.getOptMedicalWorkFormInfor().get().getNurseClassifiCode().v() : null );
 			entity.get().setMedicalConcurrentPost(hisItem.getOptMedicalWorkFormInfor().isPresent() ? hisItem.getOptMedicalWorkFormInfor().get().isOtherDepartmentConcurrently() : null );
 			entity.get().setCareConcurrentPost(hisItem.getOpyNursingWorkFormInfor().isPresent() ? hisItem.getOpyNursingWorkFormInfor().get().isAsNursingCare() : null);
 			entity.get().setCareRptNote(hisItem.getOpyNursingWorkFormInfor().isPresent() ? hisItem.getOpyNursingWorkFormInfor().get().getFulltimeRemarks().v() :  null);	
-			entity.get().setCareNightRptNote(hisItem.getOpyNursingWorkFormInfor().isPresent() ? hisItem.getOpyNursingWorkFormInfor().get().getNightShiftRemarks().v() : null);
+			entity.get().setCareNightRptNote(hisItem.getOpyNursingWorkFormInfor().isPresent() ? hisItem.getOpyNursingWorkFormInfor().get().getNightShiftRemarks().v() : null);*/
 			this.commandProxy().update(entity);
 		}
 	}
