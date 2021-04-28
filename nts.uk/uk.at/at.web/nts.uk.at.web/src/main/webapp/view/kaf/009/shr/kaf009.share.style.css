@@ -3,7 +3,7 @@
 }
 #workSelectKAF009{
 	height: 60px;
-    margin-left: 32px;
+    margin-left: 27px;
     width: 45px !important;
 }
 
@@ -126,6 +126,7 @@ div.form-label.broken {
 }
 .clsWorkTypeKAF009{
 	margin-left: 25px !important;
+	margin-top: -3px;	
 }
 
 .overlay-reason {
@@ -160,7 +161,7 @@ div.form-label.broken {
 }
 .centerCheckBox .firstCheckBoxKAF009 {
 	display: inline-block;
-	margin-left: -8px !important;
+	margin-left: -7px !important;
 }
 .centerCheckBox .secondCheckBoxKAF009 {
 	display: inline-block; 

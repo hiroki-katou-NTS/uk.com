@@ -16,7 +16,7 @@ module nts.uk.at.view.kaf009_ref.shr.viewmodel {
 	</div>
 
 	<!--Work Change-->
-	<div style="margin-top: 12px"
+	<div style="margin-top: 0px"
 		data-bind="if: dataFetch().goBackReflect()"
 		class="valign-center control-group">
 		<div

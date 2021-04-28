@@ -38,14 +38,14 @@ module nts.uk.at.view.kaf009_ref.b.viewmodel {
                                                             appType: appType,
                                                             application: application,
                                                             appDispInfoStartupOutput: appDispInfoStartupOutput
-                                                        } }" style="width: fit-content; display: inline-block; vertical-align: middle; margin-top: 12px"></div>
+                                                        } }" style="width: fit-content; display: inline-block; vertical-align: middle; margin-top: -16px"></div>
                                                         
                                                         
-                        <div
+                        <div style="margin-top: -16px"
                                 data-bind="component: { name: 'kaf009-share', params: {dataFetch: dataFetch, model:model, mode: mode } }"></div>                             
                                                         
                                                         
-                            <div style="margin-top: 12px" data-bind="component: { name: 'kaf000-b-component7', 
+                            <div style="margin-top: 5px" data-bind="component: { name: 'kaf000-b-component7', 
                                                         params: {
                                                             appType: appType,
                                                             application: application,

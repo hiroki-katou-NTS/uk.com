@@ -1,4 +1,3 @@
-
 <div data-bind="if: dataFetch()">
 	<!--A7-->
 
@@ -12,7 +11,7 @@
 	</div>
 
 	<!--Work Change-->
-	<div style="margin-top: 12px 12px"
+	<div style="margin-top: 0px"
 		data-bind="if: dataFetch().goBackReflect()"
 		class="valign-center control-group">
 		<div
@@ -52,12 +51,12 @@
 			<div class="cell valign-center">
 				<label class="lblWorkTypeCd required"
 					data-bind="text: model.workTypeCode"></label> <label
-					data-bind="text: model.workTypeName"></label> <br /> 
+					data-bind="text: model.workTypeName"></label>
 					<div>
 						<label
 						class="lblSiftCd"
 						data-bind="text: model.workTimeCode, required: true"></label> <label
-						style="margin-top: 12px" data-bind="text: model.workTimeName "></label>
+						 data-bind="text: model.workTimeName "></label>
 					
 					</div>
 			</div>
