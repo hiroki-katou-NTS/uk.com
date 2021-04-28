@@ -2,8 +2,8 @@
 .kaf011 .remainInfor .remainLable{display:inline-block;vertical-align:top;color:red;min-width:115px}
 .kaf011 .remainInfor .remainNumber{display:inline-block}
 .kaf011 table.table td, table.table th{border:1px solid #000;text-align:center;height:25px;padding:0 10px}
-.kaf011 .application{margin-top:13px;max-width:800px}
-.kaf011 .application2{margin-top:-16px;max-width:800px}
+.kaf011 .application{margin-top:13px;max-width:800px; margin-bottom: -16px;}
+.kaf011 .application2{margin-top:13px;max-width:800px}
 .kaf011 .application .name{margin-left:10px}
 .kaf011 .application .ruleLine{border-bottom:1px solid #999;margin:10px 0; margin-bottom: 12px}
 .kaf011 .application2 .name{margin-left:10px}
