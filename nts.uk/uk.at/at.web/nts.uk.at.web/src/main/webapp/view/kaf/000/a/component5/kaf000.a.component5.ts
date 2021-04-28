@@ -4,12 +4,12 @@ module nts.uk.at.view.kaf000.a.component5.viewmodel {
         name: 'kaf000-a-component5',
         template: `
         <div id="kaf000-a-component5">
-			<div class="table" style="margin-bottom: 7px;" data-bind="if: appReasonCDDisp">
+			<div class="table" data-bind="if: appReasonCDDisp">
 		        <div class="cell col-1">
 		            <div class="cell valign-center" data-bind="ntsFormLabel: {required: appReasonCDRequired}, text: $i18n('KAF000_51')"></div>
 		        </div>
 		        <div class="cell valign-center">
-		            <div id="kaf000-a-component5-comboReason" style="width: 472px"
+		            <div id="kaf000-a-component5-comboReason" style="width: 472px; margin-bottom: 13px;"
 		                data-bind="ntsComboBox: {
 		            					name: $i18n('KAF000_51'),
 		                                options: reasonTypeItemLst,
