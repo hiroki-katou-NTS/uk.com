@@ -11,7 +11,6 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdail
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecord;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.EmpCalAndSumExeLog;
-import nts.uk.shr.com.context.AppContexts;
 
 /**
  * @author ThanhNX
@@ -76,7 +75,7 @@ public class StampDataReflectProcessService {
 		// if 打刻.isEmpty
 		if (!employeeId.isPresent() || !stamp.isPresent())
 			return Optional.empty();
-		return ReflectDataStampDailyService.getJudgment(require, AppContexts.user().companyId(), employeeId.get(), stamp.get());
+		return ReflectDataStampDailyService.getJudgment(require, employeeId.get(), stamp.get());
 	}
 
 	public static interface Require extends ReflectDataStampDailyService.Require {

@@ -220,17 +220,17 @@ extends CommandHandlerWithResult<ConfirmUseOfStampInputCommandWithEmployeeId, Co
 		}
 
 		@Override
-		public OutputCreateDailyOneDay createDailyResult(String companyId, String employeeId, GeneralDate ymd,
+		public OutputCreateDailyOneDay createDailyResult(String employeeId, GeneralDate ymd,
 				ExecutionTypeDaily executionType, EmbossingExecutionFlag flag,
 				EmployeeGeneralInfoImport employeeGeneralInfoImport, PeriodInMasterList periodInMasterList,
 				IntegrationOfDaily integrationOfDaily) {
-			return this.createDailyResults.createDailyResult(companyId, employeeId, ymd, executionType, flag, employeeGeneralInfoImport, periodInMasterList, integrationOfDaily);
+			return this.createDailyResults.createDailyResult(AppContexts.user().companyId(), employeeId, ymd, executionType, flag, employeeGeneralInfoImport, periodInMasterList, integrationOfDaily);
 		}
 
 		@Override
-		public OutputTimeReflectForWorkinfo get(String companyId, String employeeId, GeneralDate ymd,
+		public OutputTimeReflectForWorkinfo get(String employeeId, GeneralDate ymd,
 				WorkInfoOfDailyAttendance workInformation) {
-			return this.timeReflectFromWorkinfo.get(companyId, employeeId, ymd, workInformation);
+			return this.timeReflectFromWorkinfo.get(AppContexts.user().companyId(), employeeId, ymd, workInformation);
 		}
 
 		@Override

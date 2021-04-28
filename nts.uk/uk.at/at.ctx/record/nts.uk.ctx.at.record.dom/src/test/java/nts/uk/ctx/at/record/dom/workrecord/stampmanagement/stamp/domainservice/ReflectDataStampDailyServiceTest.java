@@ -65,7 +65,7 @@ public class ReflectDataStampDailyServiceTest {
 		
 		new Expectations() {
 			{
-				require.createDailyResult(cid,
+				require.createDailyResult(
 						employeeId,
 						(GeneralDate)any,
 						ExecutionTypeDaily.CREATE,
@@ -98,7 +98,7 @@ public class ReflectDataStampDailyServiceTest {
 			}
 		};
 		
-		Optional<GeneralDate> optional = ReflectDataStampDailyService.getJudgment(require, cid, employeeId, stamp);
+		Optional<GeneralDate> optional = ReflectDataStampDailyService.getJudgment(require,employeeId, stamp);
 		
 		assertThat(optional.isPresent()).isFalse();
 
@@ -115,7 +115,7 @@ public class ReflectDataStampDailyServiceTest {
 		OutputCreateDailyOneDay resultData = helper.getErrorsNull(stamp);
 		new Expectations() {
 			{
-				require.createDailyResult(cid,
+				require.createDailyResult(
 						employeeId,
 						(GeneralDate)any,
 						ExecutionTypeDaily.CREATE,
@@ -145,24 +145,24 @@ public class ReflectDataStampDailyServiceTest {
 				
 				result = resultData;
 				
-				require.get(cid,
-						employeeId,
-						date,
-						resultData.getIntegrationOfDaily().getWorkInformation());
-				
-				result = info;
-				
-				require.reflectStamp(stamp,
-						info.getStampReflectRangeOutput(),
-						resultData.getIntegrationOfDaily(),
-						changeDailyAtt);
-				
-				result = errorMessageInfos;
+//				require.get(
+//						employeeId,
+//						date,
+//						resultData.getIntegrationOfDaily().getWorkInformation());
+//				
+//				result = info;
+//				
+//				require.reflectStamp(stamp,
+//						info.getStampReflectRangeOutput(),
+//						resultData.getIntegrationOfDaily(),
+//						changeDailyAtt);
+//				
+//				result = errorMessageInfos;
 				
 			}
 		};
 		
-		Optional<GeneralDate> optional = ReflectDataStampDailyService.getJudgment(require, cid, employeeId, stamp);
+		Optional<GeneralDate> optional = ReflectDataStampDailyService.getJudgment(require, employeeId, stamp);
 		
 		assertThat(optional.isPresent()).isFalse();
 	}
@@ -176,7 +176,7 @@ public class ReflectDataStampDailyServiceTest {
 		OutputCreateDailyOneDay resultData = helper.getErrorsNull(stamp);
 		new Expectations() {
 			{
-				require.createDailyResult(cid,
+				require.createDailyResult(
 						employeeId,
 						(GeneralDate)any,
 						ExecutionTypeDaily.CREATE,
@@ -206,24 +206,24 @@ public class ReflectDataStampDailyServiceTest {
 				
 				result = resultData;
 				
-				require.get(cid,
-						employeeId,
-						date,
-						resultData.getIntegrationOfDaily().getWorkInformation());
-				
-				result = info;
-				
-				require.reflectStamp(stamp,
-						info.getStampReflectRangeOutput(),
-						resultData.getIntegrationOfDaily(),
-						changeDailyAtt);
-				
-				result = errorMessageInfos;
+//				require.get(
+//						employeeId,
+//						date,
+//						resultData.getIntegrationOfDaily().getWorkInformation());
+//				
+//				result = info;
+//				
+//				require.reflectStamp(stamp,
+//						info.getStampReflectRangeOutput(),
+//						resultData.getIntegrationOfDaily(),
+//						changeDailyAtt);
+//				
+//				result = errorMessageInfos;
 				
 			}
 		};
 		
-		Optional<GeneralDate> optional = ReflectDataStampDailyService.getJudgment(require, cid, employeeId, stamp);
+		Optional<GeneralDate> optional = ReflectDataStampDailyService.getJudgment(require, employeeId, stamp);
 		
 		assertThat(optional.isPresent()).isTrue();
 		GeneralDate date = GeneralDate.today().addDays(-2);
