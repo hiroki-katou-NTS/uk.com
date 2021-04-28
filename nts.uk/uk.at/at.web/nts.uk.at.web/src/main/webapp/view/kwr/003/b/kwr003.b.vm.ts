@@ -243,7 +243,7 @@ module nts.uk.at.view.kwr003.b {
           let outputItemDetails: Array<Attribute> = [];
           _.forEach(item.selectedTimeList(), (o) => {
             outputItemDetails.push({
-              operator: (o.operator) ? (o.operator == '+' ? 1 : 2) : null,
+              operator: (o.operator) ? (o.operator == '+' || o.operator ==1 ? 1 : 2) : null,
               attendanceItemId: o.itemId
             });
           });
