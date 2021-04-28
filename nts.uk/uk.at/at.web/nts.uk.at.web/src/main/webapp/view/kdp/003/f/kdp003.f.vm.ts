@@ -31,7 +31,13 @@ module nts.uk.at.kdp003.f {
 		employee?: CodeNameData;
 	}
 
-	export type MODE = null | 'admin' | 'employee' | 'fingerVein';
+	export interface NotiModeParam {
+		mode: 'notification';
+		companyId: string;
+		companyDesignation?: boolean;
+	}
+
+	export type MODE = null | 'admin' | 'employee' | 'fingerVein' | 'notification';
 	export type SCREEN_NAME = 'KDP001' | 'KDP002' | 'KDP003' | 'KDP004' | 'KDP005';
 
 	export const LOGINDATA = 'KDP003F_LOGINDATA';
@@ -56,7 +62,7 @@ module nts.uk.at.kdp003.f {
 
 		parentName: KnockoutObservable<SCREEN_NAME> = ko.observable('KDP003');
 
-		constructor(private params?: AdminModeParam | EmployeeModeParam | FingerVeinModeParam) {
+		constructor(private params?: AdminModeParam | EmployeeModeParam | FingerVeinModeParam | NotiModeParam) {
 			super();
 		}
 
@@ -319,6 +325,13 @@ module nts.uk.at.kdp003.f {
 
 					vm.loginAdmin(LOGIN_EMPLOYEE);
 					break;
+				case 'notification':
+					vm.model.passwordInvalid = false;
+					vm.model.isAdminMode = true;
+					vm.model.runtimeEnvironmentCreate = true;
+
+					vm.loginNoti(LOGIN_ADMIN);
+					break;
 			}
 		}
 
@@ -395,11 +408,106 @@ module nts.uk.at.kdp003.f {
 								password,
 								companyCode
 							});
-
 							setTimeout(() => {
 								if (roleEmployee) {
 									if (roleEmployee.employeeReferenceRange != 3) {
 										vm.$window.close(dataResultLogin);
+									}
+								}
+							}, 100);
+						})
+
+						.fail((response: any) => {
+							const { message, messageId } = response;
+
+							if (!messageId) {
+								vm.$dialog.error(message);
+							} else {
+								vm.$dialog.error({ messageId });
+							}
+						})
+						.always(() => vm.$blockui('clear'));
+
+				});
+		}
+
+		loginNoti(api: string) {
+			const vm = this;
+			const { passwordRequired } = vm.params as EmployeeModeParam;
+			const model: ModelData = ko.toJS(vm.model);
+			const { password, companyCode } = model;
+			const companies: CompanyItem[] = ko.unwrap(vm.listCompany);
+
+			const message = ko.unwrap(vm.message);
+
+			var dataResultLogin: TimeStampLoginData;
+
+			var roleEmployee: RoleEmployee;
+
+			if (message) {
+				return vm.$dialog.error(message);
+			}
+
+			if (passwordRequired === false) {
+				_.omit(model, ['password']);
+				// note: メニュー別OCD内の記述を移送表に追加する
+				model.passwordInvalid = true;
+			}
+
+			vm.$validate()
+				.then((valid: boolean) => {
+					if (!valid) {
+						return;
+					}
+					vm.$blockui('show')
+						.then(() => vm.$ajax(api, model))
+						.fail((response: any) => {
+							const { message, messageId } = response;
+
+							if (!messageId) {
+								vm.$dialog.error(message);
+							} else {
+								vm.$dialog.error({ messageId });
+							}
+						})
+						.then((response: TimeStampLoginData) => {
+							dataResultLogin = response;
+						})
+						.then(() => {
+							vm.$ajax(API.ROLE)
+								.done((data: RoleEmployee) => {
+									if (data) {
+										roleEmployee = data;
+										if (roleEmployee.employeeReferenceRange == 3) {
+											vm.$dialog.error('Msg_1887');
+										}
+									}
+								})
+						})
+						.then(() => {
+							const { successMsg } = dataResultLogin;
+							if (!!successMsg) {
+								return vm.$dialog
+									.info({ messageId: successMsg })
+									.then(() => dataResultLogin);
+							}
+
+							return dataResultLogin;
+						})
+						.then(() => {
+							_.extend(dataResultLogin, {
+								companies
+							});
+
+							_.extend(dataResultLogin.em, {
+								password,
+								companyCode
+							});
+							setTimeout(() => {
+								if (roleEmployee) {
+									if (roleEmployee.employeeReferenceRange != 3) {
+										vm.$window.modal('at', '/view/kdp/003/p/index.xhtml');
+										vm.$window.close();
 									}
 								}
 							}, 100);
