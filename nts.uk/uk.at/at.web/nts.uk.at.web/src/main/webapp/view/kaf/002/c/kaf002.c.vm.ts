@@ -58,7 +58,7 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
                                                             application: application,
                                                             appDispInfoStartupOutput: appDispInfoStartupOutput
                                                         } }"
-                                style="width: fit-content; display: inline-block; vertical-align: middle; margin-top: 12px"></div>
+                                style="width: fit-content; display: inline-block; vertical-align: middle; margin-top: -16px"></div>
 
 
 
@@ -67,7 +67,7 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
 
                                 <!-- C5 -->
 
-                                <div style="display: block">
+                                <div style="display: block; margin-top: -13px">
                                     <!-- C6_1 -->
                                     <div id="labelM"
                                         data-bind="ntsFormLabel: {}, text: $i18n('KAF002_17')"></div>

@@ -5,11 +5,6 @@ module nts.uk.at.view.kaf002_ref.d.viewmodel {
 	import CommonProcess = nts.uk.at.view.kaf000.shr.viewmodel.CommonProcess;
     
     const template = `
-	
-
-
-
-
 <div id="kaf002-d">
 	<div id="contents-area"
 		style="background-color: inherit; height: calc(100vh - 137px);">
@@ -55,7 +50,7 @@ module nts.uk.at.view.kaf002_ref.d.viewmodel {
 						style="width: fit-content; display: inline-block; vertical-align: middle; margin-top: 12px"></div>
 
 
-					<div>
+					<div style="margin-top: -10px">
 
 
 
@@ -104,7 +99,7 @@ module nts.uk.at.view.kaf002_ref.d.viewmodel {
 
 
 
-					<divstyle="margin-top: -8px"
+					<div style="margin-top: -8px"
 						data-bind="component: { name: 'kaf000-b-component7', 
                                                 params: {
                                                     appType: appType,
@@ -138,12 +133,6 @@ module nts.uk.at.view.kaf002_ref.d.viewmodel {
 		</div>
 	</div>
 </div>
-
-
-
-
-
-
 `
     
     @component({
