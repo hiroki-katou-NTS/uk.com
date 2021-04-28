@@ -105,6 +105,10 @@ public class CalculateVacationDayService {
 			workingCondtionItem = workingConditionItemMap.get(condExDatePeriod.get());
 			Optional<PredetemineTimeSetting> predTimeSetInDayOpt = this.predTimeSetRepo.findByWorkTimeCode(cid, monWorkTypeWorkTime.getWorkTimeCode().get());
 			
+			if (!workTypeOpt.isPresent() || !dailyOpt.isPresent() || !predTimeSetInDayOpt.isPresent() || workingCondtionItem == null) {
+				continue;
+			}
+			
 			// Input．日数の種類をチェック
 			totalTime += getNumberOfDays(typeOfDay, workTypeOpt.get(), dailyOpt.get(), workingCondtionItem, predTimeSetInDayOpt.get());
 		}
