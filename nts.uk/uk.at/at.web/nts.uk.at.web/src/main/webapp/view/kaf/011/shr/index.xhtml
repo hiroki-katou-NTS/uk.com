@@ -35,7 +35,7 @@
 						<div class="row">
 							<div class="ntsLabelCustome" data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KAF011_30')}</div>
 							<div class="ntsControl marginNag">
-								<button class="" data-bind="click: openKDL003, enable: outputMode() == 1" tabindex="">#{i18n.getText('KAF011_5')}</button>
+								<button data-bind="click: openKDL003, enable: outputMode() == 1" tabindex="">#{i18n.getText('KAF011_5')}</button>
 								<div style="margin: 5px 5px" class="ntsControl" data-bind="text: workTimeDisplay"></div>
 							</div>
 						</div>
@@ -102,7 +102,7 @@
 								</div>
 							</div>
 						</com:ko-if>
-						<div class="comment" data-bind="text: $parent.comment.subWorkComment, style: {color: $parent.comment.subWorkColor, 'font-weight': $parent.comment.subWorkBold()? 'bold': ''}"></div>
+						<div class="comment" data-bind="text: $parent.comment.subWorkComment, style: {color: $parent.comment.subWorkColor, 'font-weight': $parent.comment.subWorkBold()? 'bold': 'normal'}"></div>
 					</div>
 				</com:ko-if>
 				<com:ko-if bind="appCombinaSelected() != 1 &amp;&amp; displayInforWhenStarting">
@@ -144,7 +144,7 @@
 								<div class="row">
 									<div data-bind="ntsFormLabel: {}">#{i18n.getText('KAF011_30')}</div>
 									<div class="ntsControl marginNag" >
-										<button class="" data-bind="click: openKDL003, enable: workChangeUse() &amp;&amp; outputMode() == 1 " tabindex="">#{i18n.getText('KAF011_5')}</button>
+										<button style="margin-left: -3px" data-bind="click: openKDL003, enable: workChangeUse() &amp;&amp; outputMode() == 1 " tabindex="">#{i18n.getText('KAF011_5')}</button>
 										<span data-bind="text: workTimeDisplay"></span>
 									</div>
 								</div>
@@ -189,9 +189,9 @@
 								<div class="row tableRelase">
 									<div class="ntsLabelCustome" data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KAF011_46')}</div>
 									<div class="ntsControl marginNag">
-										<div>
+										<div class="table">
 											<button class="" data-bind="click: openKDL036, enable: outputMode() == 1 ">#{i18n.getText('KAF011_5')}</button>
-											#{i18n.getText('KAF011_48')}
+											<span style="padding-left: 4px" class="cell valign-center">#{i18n.getText('KAF011_48')}</span>
 										</div>
 										<com:ko-if bind="leaveComDayOffMana().length > 0">
 											<div>
@@ -220,7 +220,7 @@
 									<div class="ntsControl marginNag">
 										<div class="table">
 											<button class="cell valign-center" data-bind="click: openKDL035, enable: outputMode() == 1 ">#{i18n.getText('KAF011_5')}</button>
-											<span style="padding-left: 16px;" class="cell valign-center	">#{i18n.getText('KAF011_47')}</span>
+											<span style="padding-left: 4px;" class="cell valign-center	">#{i18n.getText('KAF011_47')}</span>
 										</div>
 										<com:ko-if bind="payoutSubofHDManagements().length > 0">
 											<div>
@@ -244,7 +244,7 @@
 								</div>
 							</com:ko-if>
 						</div>
-						<div class="comment" data-bind="text: $parent.comment.subHolidayComment, style: {color: $parent.comment.subHolidayColor, 'font-weight': $parent.comment.subHolidayBold()? 'bold': ''}"></div>
+						<div class="comment" data-bind="text: $parent.comment.subHolidayComment, style: {color: $parent.comment.subHolidayColor, 'font-weight': $parent.comment.subHolidayBold()? 'bold': 'normal'}"></div>
 					</div>
 				</com:ko-if>
 			</div>
