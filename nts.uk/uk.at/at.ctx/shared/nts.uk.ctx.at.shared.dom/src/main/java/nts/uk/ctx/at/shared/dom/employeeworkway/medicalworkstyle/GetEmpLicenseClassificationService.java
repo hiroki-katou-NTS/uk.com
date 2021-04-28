@@ -24,8 +24,9 @@ public class GetEmpLicenseClassificationService {
 		// $社員の看護区分Map = require.社員の医療勤務形態履歴項目を取得する(基準日, 社員リスト)
 		List<EmpMedicalWorkFormHisItem> listEmpMedicalWorkFormHisItem  = require.getEmpClassifications(listEmp, referenceDate);
 		
-		mapNurseClassifiCode = listEmpMedicalWorkFormHisItem.stream().filter(x-> x.getOptMedicalWorkFormInfor().isPresent()).collect(Collectors
-				.toMap(EmpMedicalWorkFormHisItem::getEmpID, item -> item.getOptMedicalWorkFormInfor().get().getNurseClassifiCode()));
+		mapNurseClassifiCode = listEmpMedicalWorkFormHisItem.stream()
+				.collect(Collectors
+				.toMap(EmpMedicalWorkFormHisItem::getEmpID, EmpMedicalWorkFormHisItem::getNurseClassifiCode));
 		
 		// $看護区分Map = require.会社の看護区分リストを取得する()
 		List<NurseClassification>  listNurseClassification = require.getListCompanyNurseCategory();

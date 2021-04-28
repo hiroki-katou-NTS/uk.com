@@ -5,47 +5,77 @@ import static org.assertj.core.api.Assertions.tuple;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import lombok.val;
 import mockit.Expectations;
 import mockit.Injectable;
 import mockit.integration.junit4.JMockit;
 import nts.arc.time.GeneralDate;
+import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
-import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.EmpLicenseClassification;
-import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.EmpMedicalWorkFormHisItem;
-import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.GetEmpLicenseClassificationService;
-import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.LicenseClassification;
-import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.MedicalCareWorkStyle;
-import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.MedicalWorkFormInfor;
-import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.NurseClassifiCode;
-import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.NurseClassifiName;
-import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.NurseClassification;
 import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.GetEmpLicenseClassificationService.Require;
-
+import nts.uk.shr.com.enumcommon.NotUseAtr;
+@SuppressWarnings("serial")
 @RunWith(JMockit.class)
 public class GetEmpLicenseClassificationServiceTest {
 	
 	@Injectable
 	private Require require;
 	
+	/**
+	 * input: 	社員IDリスト　＝「"003","004"」
+	 * 			社員の医療勤務形態履歴項目リスト　＝　empty
+	 * 			会社の看護区分リスト = empty
+	 * output: 	　[ {"003", empty}, {"004", empty} ]
+	 * 
+	 *
+	 */
+	@Test
+	public void test_getEmpMedicalWorkFormHisItem_empty() {
+		val listEmp = Arrays.asList("sid_1","sid_2"); // dummy
+		
+		new Expectations() {
+			{
+				require.getEmpClassifications(listEmp, (GeneralDate) any);
+				
+				require.getListCompanyNurseCategory(); 
+			}
+		};
+		
+		val result = GetEmpLicenseClassificationService.get(require, GeneralDate.today(), listEmp);
+		
+		assertThat(result)
+				.extracting(emp -> emp.getEmpID(),	emp -> emp.getOptLicenseClassification())
+				.containsExactly(
+								tuple(	"sid_1",	Optional.empty()) , 
+								tuple(	"sid_2",	Optional.empty()));
+		
+	}
+	
+	/**
+	 * input  
+	 * 		社員IDリスト　＝　「"sid_1","sid_2"」
+	 * 		社員の医療勤務形態履歴項目リスト　=	 「	{ 社員ID = sid_1, 看護区分コード = "2"}	」
+	 * 		看護リスト　= 					「 	｛看護区分コード = "2"、　免許区分　＝　NURSE_ASSIST｝　」
+	 * output:
+	 * 		 「	{ 社員ID = sid_1, NURSE_ASSIST}	
+	 * 			{ 社員ID = sid_1, empty}
+	 * 		」
+	 */
 	@Test
 	public void test_classifiCode_nurseClassifi_NotNull() {
-		List<String> listEmp = Arrays.asList("003","004"); // dummy
+		val listEmp = Arrays.asList("sid_1","sid_2"); // dummy
 		
-		EmpMedicalWorkFormHisItem results = new EmpMedicalWorkFormHisItem(
-				"003", 
-				"historyID2", true,// dummy
-				Optional.ofNullable(new MedicalWorkFormInfor(MedicalCareWorkStyle.FULLTIME,// dummy
-						new NurseClassifiCode("2"), true)),// dummy
-				Optional.ofNullable(null));// dummy
+		val listEmpMedicalWorkFormHisItem = new ArrayList<EmpMedicalWorkFormHisItem>() {
+			{
+				add(Helper.createEmpMedicalWorkFormHisItem("sid_1", new NurseClassifiCode("2")));
+			}
+		};
 		
-		List<EmpMedicalWorkFormHisItem> listEmpMedicalWorkFormHisItem = new ArrayList<EmpMedicalWorkFormHisItem>();
-		listEmpMedicalWorkFormHisItem.add(results);
 		new Expectations() {
 			{
 				require.getEmpClassifications(listEmp, GeneralDate.today());// dummy
@@ -53,9 +83,11 @@ public class GetEmpLicenseClassificationServiceTest {
 			}
 		};
 		
-		List<NurseClassification>  listNurseClassification = new ArrayList<NurseClassification>();
-		listNurseClassification.add(new NurseClassification(new CompanyId("CID"), 
-				 new NurseClassifiCode("2"), new NurseClassifiName("NAME1"), LicenseClassification.valueOf(LicenseClassification.NURSE_ASSIST.value), true));
+		val  listNurseClassification = new ArrayList<NurseClassification>() {
+			{
+				add(Helper.createNurseClassification( new NurseClassifiCode("2"), LicenseClassification.NURSE_ASSIST));
+			}
+		};
 		
 		new Expectations() {
 			{
@@ -64,61 +96,37 @@ public class GetEmpLicenseClassificationServiceTest {
 			}
 		};
 		
-		List<EmpLicenseClassification> classifications = GetEmpLicenseClassificationService.get(require, GeneralDate.today(), listEmp);
+		val classifications = GetEmpLicenseClassificationService.get(require, GeneralDate.today(), listEmp);
 		
-		assertThat(classifications).extracting(x-> x.getEmpID(),
-				x-> x.getOptLicenseClassification().isPresent() ? x.getOptLicenseClassification().get().name() : Optional.empty())
-		.containsExactly(tuple("003","NURSE_ASSIST") , 
-						tuple("004",Optional.empty()));
+		assertThat(classifications)
+			.extracting(	emp -> emp.getEmpID()
+						,	emp -> emp.getOptLicenseClassification().isPresent() ? emp.getOptLicenseClassification().get() : Optional.empty())
+			.containsExactly(
+						tuple("sid_1",	LicenseClassification.NURSE_ASSIST) , 
+						tuple("sid_2",	Optional.empty()));
 	}
 	
-	@Test
-	public void test_ClassifiCode_Null() {
-		List<String> listEmp = Arrays.asList("003","004"); // dummy
-		
-		EmpMedicalWorkFormHisItem result2 = new EmpMedicalWorkFormHisItem(
-				"008", 
-				"historyID4", true,// dummy
-				Optional.ofNullable(null),// dummy
-				Optional.ofNullable(null));// dummy
-		
-		List<EmpMedicalWorkFormHisItem> listEmpMedicalWorkFormHisItem = new ArrayList<>();
-		listEmpMedicalWorkFormHisItem.add(result2);
-		
-		new Expectations() {
-			{
-				require.getEmpClassifications(listEmp, GeneralDate.today());// dummy
-				result = listEmpMedicalWorkFormHisItem;
-			}
-		};
-		
-		List<EmpLicenseClassification> classifications = GetEmpLicenseClassificationService.get(require, GeneralDate.today(), listEmp);
-		assertThat(classifications).extracting(x-> x.getEmpID(),
-				x-> x.getOptLicenseClassification())
-		.containsExactly(tuple("003",Optional.empty()),tuple("004",Optional.empty()));
-	}
-	
+	/**
+	 * input  
+	 * 		社員IDリスト　＝　「"sid_1","sid_2"」
+	 * 		社員の医療勤務形態履歴項目リスト　=	 「		{ 社員ID = sid_1, 看護区分コード = "9"}	
+	 * 										, 	{ 社員ID = sid_2, 看護区分コード = "7"}」
+	 * 		看護リスト　= 					「 	｛看護区分コード = "3"、　免許区分　＝　NURSE_ASSIST｝　」
+	 * output:
+	 * 		 「	{ 社員ID = sid_1, empty}	
+	 * 			{ 社員ID = sid_1, empty}」
+	 */
 	@Test
 	public void test_nurseClassification_null() {
-		List<String> listEmp = Arrays.asList("003","002"); // dummy
+		val listEmp = Arrays.asList("sid_1","sid_2"); // dummy
 		
-		List<EmpMedicalWorkFormHisItem> listEmpMedicalWorkFormHisItem = new ArrayList<EmpMedicalWorkFormHisItem>();
-		listEmpMedicalWorkFormHisItem.add(
-				new EmpMedicalWorkFormHisItem(
-				"003", 
-				"historyID1", true,// dummy
-				Optional.ofNullable(new MedicalWorkFormInfor(MedicalCareWorkStyle.FULLTIME,
-						new NurseClassifiCode("9"), true)),
-				Optional.ofNullable(null)));// dummy
-		
-		listEmpMedicalWorkFormHisItem.add(new EmpMedicalWorkFormHisItem(
-				"002", 
-				"historyID2", true,
-				Optional.ofNullable(new MedicalWorkFormInfor(MedicalCareWorkStyle.FULLTIME,
-						new NurseClassifiCode("7"), true)),
-				Optional.ofNullable(null)));// dummy
+		val listEmpMedicalWorkFormHisItem = new ArrayList<EmpMedicalWorkFormHisItem>() {
+			{
+				add(Helper.createEmpMedicalWorkFormHisItem("sid_1", new NurseClassifiCode("9")));
+				add(Helper.createEmpMedicalWorkFormHisItem("sid_2", new NurseClassifiCode("7")));
+			}
+		};
 
-		
 		new Expectations() {
 			{
 				require.getEmpClassifications(listEmp, GeneralDate.today());// dummy
@@ -126,11 +134,12 @@ public class GetEmpLicenseClassificationServiceTest {
 			}
 		};
 		
-		List<NurseClassification>  listNurseClassification = new ArrayList<NurseClassification>();
-		listNurseClassification.add(new NurseClassification(new CompanyId("CID"), 
-				 new NurseClassifiCode("3"), // dummy
-				 new NurseClassifiName("NAME1"), // dummy
-				 LicenseClassification.valueOf(LicenseClassification.NURSE_ASSIST.value), true));// dummy
+		val  listNurseClassification = new ArrayList<NurseClassification>() {
+			{
+				add(Helper.createNurseClassification(new NurseClassifiCode("3"),	LicenseClassification.NURSE_ASSIST));
+			}
+		};
+		
 		new Expectations() {
 			{
 				require.getListCompanyNurseCategory(); // dummy
@@ -138,9 +147,45 @@ public class GetEmpLicenseClassificationServiceTest {
 			}
 		};
 		
-		List<EmpLicenseClassification> classifications = GetEmpLicenseClassificationService.get(require, GeneralDate.today(), listEmp);
-		assertThat(classifications).extracting(x-> x.getEmpID(),
-				x-> x.getOptLicenseClassification())
-		.containsExactly(tuple("003",Optional.empty()),tuple("002",Optional.empty()));
+		val result = GetEmpLicenseClassificationService.get(require, GeneralDate.today(), listEmp);
+		
+		assertThat(result)
+				.extracting(
+								emp-> emp.getEmpID(),	emp-> emp.getOptLicenseClassification())
+				.containsExactly(
+								tuple("sid_1",	Optional.empty())
+							,	tuple("sid_2",	Optional.empty()));
+	}
+	
+	public static class Helper{
+		/**
+		 * 社員の医療勤務形態履歴項目を作る
+		 * @param sid 社員ID
+		 * @param historyId 履歴ID
+		 * @param nurseClassifiCode 看護区分コード
+		 * @return
+		 */
+		public static EmpMedicalWorkFormHisItem createEmpMedicalWorkFormHisItem(String sid, NurseClassifiCode nurseClassifiCode) {
+				return new EmpMedicalWorkFormHisItem(
+						sid, 
+						IdentifierUtil.randomUniqueId(), // dummy
+						nurseClassifiCode,
+						NotUseAtr.USE,// dummy
+						MedicalCareWorkStyle.FULLTIME,// dummy
+						NotUseAtr.USE);// dummy
+		}
+		
+		/**
+		 * 看護区分を作る
+		 * @param nurseClassifiCode　看護区分コード
+		 * @return
+		 */
+		public static NurseClassification createNurseClassification(NurseClassifiCode nurseClassifiCode, LicenseClassification licenseClss) {
+			return new NurseClassification(new CompanyId("CID") // dummy
+						,	nurseClassifiCode
+						,	 new NurseClassifiName("NAME1") // dummy
+						,	licenseClss, true);// dummy
+		}
+		
 	}
 }
