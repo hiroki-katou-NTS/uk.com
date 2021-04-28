@@ -4,18 +4,18 @@
 @import "../base/_clearfix.scss";
 
 $button-border-color: #999999;
-$button-boxshadow-base-color: rgba(0,0,0,0.4);
+$button-boxshadow-base-color: rgba(0, 0, 0, 0.4);
 
 $button-normal-base-color: #fff;
-$button-proceed-base-color: #A4EEB0;
-$button-danger-base-color: #FED3C6;
+$button-proceed-base-color: #a4eeb0;
+$button-danger-base-color: #fed3c6;
 $button-disabled-base-color: #888888;
 
 %btn-default {
     outline: none;
     cursor: pointer;
     background-color: #fff;
-    border-color: #EAE8F2;
+    border-color: #eae8f2;
     border-style: solid;
     border-width: 1px;
     border-radius: 2px;
@@ -31,24 +31,30 @@ button,
 span.button {
     @extend %btn-default;
 
-    &>span {
+    & > span {
         vertical-align: top;
     }
 
-    &>svg {
+    &:disabled {
+        color: #ccc;
+        border-color: #eae8f2e0;
+        cursor: not-allowed;
+    }
+
+    & > svg {
         width: 18px;
         height: 18px;
         vertical-align: top;
     }
 
-    &>svg:first-child {
-        &+span:last-child {
+    & > svg:first-child {
+        & + span:last-child {
             margin-left: 10px;
         }
     }
 
-    &>span:first-child {
-        &+svg:last-child {
+    & > span:first-child {
+        & + svg:last-child {
             margin-left: 10px;
         }
     }
@@ -58,14 +64,14 @@ span.button {
         display: block;
         position: relative;
 
-        &>svg:first-child {
-            &+span:last-child {
+        & > svg:first-child {
+            & + span:last-child {
                 margin-left: 10px;
             }
         }
-    
-        &>span:first-child {
-            &+svg:last-child {
+
+        & > span:first-child {
+            & + svg:last-child {
                 margin-left: 10px;
             }
         }
@@ -75,11 +81,11 @@ span.button {
         height: 25px;
         font-size: 12px;
         padding: 0 4px;
-        &>span {
+        & > span {
             font-size: 12px;
         }
 
-        &>svg {
+        & > svg {
             width: 16px;
             height: 16px;
         }
@@ -89,11 +95,11 @@ span.button {
         height: 34px;
         font-size: 15px;
         padding: 0 10px;
-        &>span {
+        & > span {
             font-size: 15px;
         }
 
-        &>svg {
+        & > svg {
             width: 19px;
             height: 19px;
         }
@@ -103,11 +109,11 @@ span.button {
         height: 45px;
         font-size: 22px;
         padding: 0 20px;
-        &>span {
+        & > span {
             font-size: 22px;
         }
 
-        &>svg {
+        & > svg {
             width: 28px;
             height: 28px;
         }
@@ -119,16 +125,18 @@ span.button {
         padding-bottom: 3px;
     }
 
-    &:focus,
-    &:hover {
-        background-color: #FBFCFF;
+    &:not(:disabled) {
+        &:focus,
+        &:hover {
+            background-color: #fbfcff;
+        }
     }
 
     &:active {
-        border-color: #EAE8F2;
-        background-color: #EAE8F2;
+        border-color: #eae8f2;
+        background-color: #eae8f2;
     }
-        
+
     &:focus,
     &:active {
         border-color: $focused_color;
@@ -145,42 +153,57 @@ span.button {
         border-color: transparent;
         background-color: transparent;
     }
- 
+
     &.red,
     &.danger {
-        color: #DA0D4F;
-        border-color: #DA0D4F;
+        color: #da0d4f;
+        border-color: #da0d4f;
+
+        &:disabled {
+            color: lighten($color: #da0d4f, $amount: 35);
+            border-color: lighten($color: #da0d4f, $amount: 35);
+        }
 
         &:not(.outline) {
-            background-color: #FCECF1;
+            background-color: #fcecf1;
         }
 
-        &:focus,
-        &:hover {
-            background-color: #FCD8DD;
+        &:not(:disabled) {
+            &:focus,
+            &:hover {
+                background-color: #fcd8dd;
+            }
         }
 
         &:active {
-            background-color: #FCA6AB;
+            background-color: #fca6ab;
         }
-        
+
         &:focus,
         &:active {
-            box-shadow: 0 0 0 2px lighten($color: #DA0D4F, $amount: 30);
+            box-shadow: 0 0 0 2px lighten($color: #da0d4f, $amount: 30);
         }
     }
 
     &.green,
     &.proceed {
-        color: #30CC40;
-        border-color: #30CC40;
+        color: #30cc40;
+        border-color: #30cc40;
+
+        &:disabled {
+            color: lighten($color: #30cc40, $amount: 25);
+            border-color: lighten($color: #30cc40, $amount: 30);
+        }
+
         &:not(.outline) {
             background-color: rgba(68, 224, 140, 0.1);
         }
 
-        &:focus,
-        &:hover {
-            background-color: rgba(68, 224, 140, 0.2);
+        &:not(:disabled) {
+            &:focus,
+            &:hover {
+                background-color: rgba(68, 224, 140, 0.2);
+            }
         }
 
         &:active {
@@ -188,28 +211,30 @@ span.button {
                 background-color: rgba(68, 224, 140, 0.6);
             }
         }
-        
+
         &:focus,
         &:active {
-            box-shadow: 0 0 0 2px lighten($color: #30CC40, $amount: 30);
+            box-shadow: 0 0 0 2px lighten($color: #30cc40, $amount: 30);
         }
 
         &.solid {
             color: #fff;
-            background-color: #30CC40;
+            background-color: #30cc40;
 
-            &:focus,
-            &:hover {
-                background-color: #30B82C;
+            &:not(:disabled) {
+                &:focus,
+                &:hover {
+                    background-color: #30b82c;
+                }
             }
 
             &:active {
-                background: #169A1C;
+                background: #169a1c;
             }
-        
+
             &:focus,
             &:active {
-                box-shadow: 0 0 0 2px lighten($color: #169A1C, $amount: 30);
+                box-shadow: 0 0 0 2px lighten($color: #169a1c, $amount: 30);
             }
         }
 
@@ -220,27 +245,29 @@ span.button {
             text-align: left;
             background-color: #fff;
 
-            &>span {
+            & > span {
                 margin-top: 5px;
                 display: block;
                 font-size: 10px;
                 font-weight: 500;
             }
 
-            &:focus, 
-            &:hover {
-                background-color: #F1FDFB;
+            &:not(:disabled) {
+                &:focus,
+                &:hover {
+                    background-color: #f1fdfb;
+                }
             }
 
             &:active,
             &.selected {
                 color: #fff;
-                background-color: #30CC40;                
+                background-color: #30cc40;
             }
-        
+
             &:focus,
             &:active {
-                box-shadow: 0 0 0 2px lighten($color: #30CC40, $amount: 25);
+                box-shadow: 0 0 0 2px lighten($color: #30cc40, $amount: 25);
             }
 
             &.icon {
@@ -262,7 +289,7 @@ span.button {
                     margin-top: 5px;
                 }
 
-                &>span {
+                & > span {
                     display: none;
                 }
             }
@@ -276,18 +303,18 @@ span.button {
         padding: 0 15px;
         position: relative;
 
-        &>span {
+        & > span {
             display: block;
             font-size: 12px;
             font-weight: 500;
-            &+svg {
+            & + svg {
                 position: absolute;
                 top: 13px;
                 right: 15px;
             }
         }
 
-        &:not(.large){
+        &:not(.large) {
             .svg {
                 display: none;
             }
@@ -303,7 +330,7 @@ span.button {
                     &:active,
                     &.selected {
                         color: #fff;
-                        background-color: #30CC40;
+                        background-color: #30cc40;
                     }
                 }
             }
@@ -313,10 +340,10 @@ span.button {
                 width: 40px;
                 height: 32px;
             }
-            
-            &>span {
+
+            & > span {
                 margin-top: 5px;
-                &+svg { 
+                & + svg {
                     top: 68px;
                 }
             }
@@ -333,27 +360,27 @@ span.button {
                 top: 0;
                 width: 108px;
                 height: 108px;
-                border-right: 1px solid #EAE8F2;
+                border-right: 1px solid #eae8f2;
                 padding: 35px;
                 box-sizing: border-box;
-                background-color: #F2FFCF;
+                background-color: #f2ffcf;
             }
 
             &:active {
                 .svg {
                     background-color: transparent;
-                }                
+                }
             }
-            
-            &>span {
+
+            & > span {
                 margin-left: 125px;
                 font-size: 18px;
                 font-weight: 500;
-                color: #30CC40;
-                &+svg { 
+                color: #30cc40;
+                & + svg {
                     top: 50px;
                 }
-            }            
+            }
         }
     }
 }
