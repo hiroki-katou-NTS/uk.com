@@ -257,10 +257,18 @@ public class DefaultExtractionRangeService implements ExtractionRangeService {
 		YearMonth endMonthly = yearMonth;
 		ExtractionPeriodMonth extractionPeriodMonth =  (ExtractionPeriodMonth) c.getExtractPeriodList().get(0);
 		if(extractionPeriodMonth.getStartMonth().getSpecifyStartMonth().value == SpecifyStartMonth.DESIGNATE_CLOSE_START_MONTH.value) {
-			startMonthly = yearMonth.addMonths((-1)*extractionPeriodMonth.getStartMonth().getStrMonthNo().get().getMonthNo());
+			if (c.isScheduleMonthly()) {
+				startMonthly = yearMonth.addMonths(extractionPeriodMonth.getStartMonth().getStrMonthNo().get().getMonthNo());
+			} else {
+				startMonthly = yearMonth.addMonths((-1)*extractionPeriodMonth.getStartMonth().getStrMonthNo().get().getMonthNo());
+			}
 		}
 		if(extractionPeriodMonth.getEndMonth().getSpecifyEndMonth().value == SpecifyEndMonth.SPECIFY_CLOSE_END_MONTH.value ) {
-			endMonthly = yearMonth.addMonths((-1)*extractionPeriodMonth.getEndMonth().getEndMonthNo().get().getMonthNo());
+			if (c.isScheduleMonthly()) {
+				endMonthly = yearMonth.addMonths(extractionPeriodMonth.getEndMonth().getEndMonthNo().get().getMonthNo());
+			} else {
+				endMonthly = yearMonth.addMonths((-1)*extractionPeriodMonth.getEndMonth().getEndMonthNo().get().getMonthNo());
+			}
 		}
 		
 		return new CheckConditionTimeDto(c.getAlarmCategory().value,
