@@ -62,7 +62,7 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
 
 
 
-                            <div>
+                            <div style="margin-top: -1px">
                                 <div class="table"></div>
 
                                 <!-- C5 -->
@@ -99,7 +99,7 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
                             </div>
 
 
-                            <div style="margin-top: 12px"
+                            <div style="margin-top: 13px"
                                 data-bind="component: { name: 'kaf000-b-component7', 
                                                         params: {
                                                             appType: appType,
