@@ -240,12 +240,15 @@ class KDP002BViewModel extends ko.ViewModel {
 
     getNotification() {
         const vm = this;
-
+        let startDate = vm.$date.now();
+        startDate.setDate(startDate.getDate()-3);
         const param = {
-            startDate: vm.$date.now(),
+            startDate: startDate,
             endDate: vm.$date.now(),
             sid: vm.infoEmpFromScreenA.employeeId
         }
+
+        console.log(param);
 
         vm.$blockui('invisible')
             .then(() => {
