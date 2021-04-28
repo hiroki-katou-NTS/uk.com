@@ -26,7 +26,7 @@ public class CopyRoleCas005CommandHandler extends CommandHandler<CopyRoleCas005C
 	@Override
 	protected void handle(CommandHandlerContext<CopyRoleCas005Command> context) {
 		CopyRoleCas005Command data = context.getCommand();
-		Optional<Role> role =  repo.findRoleByRoleCode(AppContexts.user().companyId(),data.getRoleCas005Command().getRoleCode(), data.getRoleCas005Command().getRoleType());
+		Optional<Role> role =  repo.findRoleByRoleCode(AppContexts.user().companyId(),data.getRoleCas005Command().getRoleCode(), data.getRoleCas005Command().getRoleType());//TODO 削除予定です
 		
 		//nếu có dữ liệu
 		if(role.isPresent()) {

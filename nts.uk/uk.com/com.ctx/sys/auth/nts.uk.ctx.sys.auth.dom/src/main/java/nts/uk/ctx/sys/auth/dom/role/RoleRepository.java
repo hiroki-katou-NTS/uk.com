@@ -34,6 +34,7 @@ public interface RoleRepository {
 	 * @param RoleType
 	 * @return
 	 */
+	//TODO 削除予定です
 	Optional<Role> findRoleByRoleCode(String companyId,String roleCode, int roleType);
 	
 

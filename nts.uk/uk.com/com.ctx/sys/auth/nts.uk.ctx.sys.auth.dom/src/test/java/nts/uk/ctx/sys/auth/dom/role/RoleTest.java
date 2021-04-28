@@ -33,9 +33,9 @@ public class RoleTest {
 		val employeeReferenceRange = EmployeeReferenceRange.DEPARTMENT_AND_CHILD;
 		
 		val generalRole = Role.createGeneralRoll(
-					this.roleId, this.roleCode
-				,	roleType, employeeReferenceRange
-				,	this.roleName, this.contractCode, this.companyId);
+					this.roleId, this.contractCode, this.companyId
+				,	this.roleCode,	this.roleName
+				,	roleType, employeeReferenceRange);
 		
 		assertThat(generalRole.getContractCode()).isEqualTo(this.contractCode);
 		assertThat(generalRole.getCompanyId()).isEqualTo(this.companyId);
@@ -56,9 +56,9 @@ public class RoleTest {
 		val roleType = RoleType.EMPLOYMENT;
 		
 		val inchargelRole = Role.createInChargeRoll(
-					this.roleId, this.roleCode
-				,	roleType, this.roleName
-				,	this.contractCode, this.companyId);
+					this.roleId,	this.contractCode
+				,	this.companyId,	this.roleCode
+				,	this.roleName,	roleType);
 		
 		assertThat(inchargelRole.getContractCode()).isEqualTo(this.contractCode);
 		assertThat(inchargelRole.getCompanyId()).isEqualTo(this.companyId);

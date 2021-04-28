@@ -19,34 +19,34 @@ public class Role extends AggregateRoot {
 	/** The role id. */
 	// Id
 	private String roleId;
+	
+	/** The contract code. */
+	// 契約コード
+	private ContractCode contractCode;
+	
+	/** The company id. */
+	// 会社ID
+	private String companyId;
 
 	/** The role code. */
 	// コード
 	private RoleCode roleCode;
+	
+	/** The name. */
+	// ロール名称
+	private RoleName name;
 
 	/** The role type. */
 	// ロール種類
 	private RoleType roleType;
 
-	/** The employee reference range. */
-	// 参照範囲
-	private EmployeeReferenceRange employeeReferenceRange;
-
-	/** The name. */
-	// ロール名称
-	private RoleName name;
-
-	/** The contract code. */
-	// 契約コード
-	private ContractCode contractCode;
-
 	/** The assign atr. */
 	// 担当区分
 	private RoleAtr assignAtr;
 
-	/** The company id. */
-	// 会社ID
-	private String companyId;
+	/** The employee reference range. */
+	// 参照範囲
+	private EmployeeReferenceRange employeeReferenceRange;
 
 	/**
 	 * Instantiates a new role.
@@ -66,6 +66,66 @@ public class Role extends AggregateRoot {
 		this.contractCode = memento.getContractCode();
 		this.assignAtr = memento.getAssignAtr();
 		this.companyId = memento.getCompanyId();
+	}
+	
+	public Role(String roleId,RoleCode roleCode, RoleType roleType, EmployeeReferenceRange employeeReferenceRange,
+			RoleName name, ContractCode contractCode, RoleAtr assignAtr, String companyId) {
+		super();
+		this.roleId = roleId;
+		this.roleCode = roleCode;
+		this.roleType = roleType;
+		this.employeeReferenceRange = employeeReferenceRange;
+		this.name = name;
+		this.contractCode = contractCode;
+		this.assignAtr = assignAtr;
+		this.companyId = companyId;
+	}
+	
+	/**
+	 * 一般ロールを作る
+	 * @param roleId ロールID
+	 * @param contractCode 契約コード
+	 * @param companyId 会社ID
+	 * @param roleCode ロールコード
+	 * @param roleName ロール名称	 
+	 * @param roleType ロール種類
+	 * @param employeeReferenceRange 参照範囲
+	 * @return
+	 */
+	public static Role createGeneralRoll(String roleId
+			,	ContractCode contractCode,	String companyId
+			,	RoleCode roleCode,	RoleName roleName
+			,	RoleType roleType,	EmployeeReferenceRange employeeReferenceRange) {
+		
+		if(employeeReferenceRange == EmployeeReferenceRange.ALL_EMPLOYEE) {
+			throw new RuntimeException("担当区分が一般だった、参照範囲が全社員場合ダメです！");
+		}
+		
+		return new Role(	roleId,	roleCode
+						,	roleType,	employeeReferenceRange
+						,	roleName, contractCode
+						,	RoleAtr.GENERAL, companyId);
+	}
+	
+	/**
+	 * 担当ロールを作る
+	 * @param roleId ロールID
+	 * @param contractCode 契約コード
+	 * @param companyId 会社ID
+	 * @param roleCode ロールコード
+	 * @param roleName ロール名称
+	 * @param roleType ロール種類
+	 * @return
+	 */
+	public static Role createInChargeRoll(String roleId,	ContractCode contractCode
+			,	String companyId,	RoleCode roleCode
+			,	RoleName roleName,	RoleType roleType) {
+		
+		return new Role(	roleId,	roleCode
+						,	roleType
+						,	EmployeeReferenceRange.ALL_EMPLOYEE
+						,	roleName, contractCode
+						,	RoleAtr.INCHARGE, companyId);
 	}
 	
 	/**
@@ -117,58 +177,5 @@ public class Role extends AggregateRoot {
 		return true;
 	}
 
-	public Role(String roleId,RoleCode roleCode, RoleType roleType, EmployeeReferenceRange employeeReferenceRange,
-			RoleName name, ContractCode contractCode, RoleAtr assignAtr, String companyId) {
-		super();
-		this.roleId = roleId;
-		this.roleCode = roleCode;
-		this.roleType = roleType;
-		this.employeeReferenceRange = employeeReferenceRange;
-		this.name = name;
-		this.contractCode = contractCode;
-		this.assignAtr = assignAtr;
-		this.companyId = companyId;
-	}
-	
-	/**
-	 * 一般ロールを作る
-	 * @param roleId ロールID
-	 * @param roleCode ロールコード
-	 * @param roleType ロール種類
-	 * @param employeeReferenceRange 参照範囲
-	 * @param roleName ロール名称
-	 * @param contractCode 契約コード
-	 * @param companyId 会社ID
-	 * @return
-	 */
-	public static Role createGeneralRoll(String roleId,	RoleCode roleCode
-			,	RoleType roleType,	EmployeeReferenceRange employeeReferenceRange
-			,	RoleName roleName,	ContractCode contractCode,	String companyId) {
-		
-		return new Role(	roleId,	roleCode
-						,	roleType,	employeeReferenceRange
-						,	roleName, contractCode
-						,	RoleAtr.GENERAL, companyId);
-	}
-	
-	/**
-	 * 担当ロールを作る
-	 * @param roleId ロールID
-	 * @param roleCode ロールコード
-	 * @param roleType ロール種類
-	 * @param roleName ロール名称
-	 * @param contractCode 契約コード
-	 * @param companyId 会社ID
-	 * @return
-	 */
-	public static Role createInChargeRoll(String roleId,	RoleCode roleCode
-			,	RoleType roleType,	RoleName roleName
-			,	ContractCode contractCode,	String companyId) {
-		
-		return new Role(	roleId,	roleCode
-						,	roleType
-						,	EmployeeReferenceRange.ALL_EMPLOYEE
-						,	roleName, contractCode
-						,	RoleAtr.INCHARGE, companyId);
-	}
+
 }
