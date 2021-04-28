@@ -1,5 +1,7 @@
 /// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
 
+import { data } from "jquery";
+
 module nts.uk.at.view.kdp002.c {
 
 	interface TimeClock {
@@ -221,23 +223,44 @@ module nts.uk.at.view.kdp002.c {
 					sid: vm.infoEmpFromScreenA.employeeId
 				}
 
-				service.getNotification(param)
-					.done((data: IMsgNotices[]) => {
+				service.getNotificationSetting()
+					.done((data: boolean) => {
+						if (data) {
+							service.getNotification(param)
+								.done((data: IMsgNotices[]) => {
 
-						vm.notificationStamp(data);
+									vm.notificationStamp(data);
 
-						var isShow = 0;
-						_.forEach(data, ((value) => {
-							_.forEach(value, ((value1) => {
-								if (value1.flag) {
-									isShow++;
-								}
-							}));
-						}));
-						vm.notificationStamp(data);
+									var isShow = 0;
+									_.forEach(data, ((value) => {
+										_.forEach(value, ((value1) => {
+											if (value1.flag) {
+												isShow++;
+											}
+										}));
+									}));
+									vm.notificationStamp(data);
 
-						if (isShow > 0) {
-							vm.modeShowPointNoti(true);
+									if (isShow > 0) {
+										vm.showBtnNoti(true);
+
+										var isShowPoint = 0;
+										_.forEach(data, ((value) => {
+											_.forEach(value, ((value1) => {
+												console.log(value1.message.employeeIdSeen.length() == 0);
+												isShowPoint++;
+											}));
+										}));
+
+										if (isShowPoint > 0) {
+											vm.modeShowPointNoti(true);
+										}
+										mockvm.$window.size(630, 450);
+									}
+								});
+						}
+						else {
+							vm.showBtnNoti(false);
 						}
 					});
 			}

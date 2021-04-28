@@ -11,6 +11,7 @@ import nts.uk.screen.at.app.query.kdp.kdp002.a.SettingsStampCommonDto;
 import nts.uk.screen.at.app.query.kdp.kdp002.b.ContentOfNotificationByStamp;
 import nts.uk.screen.at.app.query.kdp.kdp002.b.ContentOfNotificationByStampDto;
 import nts.uk.screen.at.app.query.kdp.kdp002.b.ContentOfNotificationByStampInput;
+import nts.uk.screen.at.app.query.kdp.kdp002.b.GetSettingNoti;
 import nts.uk.screen.at.app.query.kdp.kdp002.b.RegisterEmotionalStateCommand;
 import nts.uk.screen.at.app.query.kdp.kdp002.b.RegisterEmotionalStateCommandhandler;
 import nts.uk.screen.at.app.query.kdp.kdp002.b.SettingEmojiByStamp;
@@ -38,6 +39,9 @@ public class Kdp002BWebService {
 	
 	@Inject
 	private RegisterEmotionalStateCommandhandler registerEmotionalStateCommandhandler;
+	
+	@Inject
+	private GetSettingNoti settingNoti;
 	
 	@POST 
 	@Path("notification_by_stamp")
@@ -69,5 +73,11 @@ public class Kdp002BWebService {
 	@Path("regis_emotional_state")
 	public void registerEmotionalState(RegisterEmotionalStateCommand param) {
 		this.registerEmotionalStateCommandhandler.handle(param);
+	}
+	
+	@POST
+	@Path("settingNoti")
+	public boolean settingNoti() {
+		return this.settingNoti.getSetting();
 	}
 }

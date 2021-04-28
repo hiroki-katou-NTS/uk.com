@@ -640,7 +640,7 @@ module nts.uk.at.kdp003.a {
 									if (notUseAttr === USE && [share.ChangeClockArt.WORKING_OUT].indexOf(btn.changeClockArt) > -1) {
 										return storage('KDP010_2C', displayItemId)
 											.then(() => storage('infoEmpToScreenC', employeeInfo))
-											.then(() => storage('screenC', { screen: "KDP002" }))
+											.then(() => storage('screenC', { screen: "KDP003" }))
 											.then(() => modal('at', DIALOG.KDP002_C)) as JQueryPromise<any>;
 									} else {
 										const { stampSetting } = fingerStampSetting;

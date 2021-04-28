@@ -6,7 +6,8 @@ const kDP002RequestUrl = {
     getInfo: 'ctx/sys/auth/grant/rolesetperson/getempinfo/',
     NOTIFICATION_STAMP: 'at/record/stamp/notification_by_stamp',
     SETTING_NIKONIKO: 'at/record/stamp/setting_emoji_stamp',
-    SEND_EMOJI: 'at/record/stamp/regis_emotional_state'
+    SEND_EMOJI: 'at/record/stamp/regis_emotional_state',
+    GET_SETTING: 'at/record/stamp/settingNoti'
 }
 
 interface TimeClock {
@@ -93,7 +94,7 @@ class KDP002BViewModel extends ko.ViewModel {
                     case 'KDP003':
                     case 'KDP004':
                     case 'KDP005':
-                        vm.showBtnNoti(true);
+                        vm.getNotification();
                         break
                 }
             });
@@ -108,12 +109,17 @@ class KDP002BViewModel extends ko.ViewModel {
     mounted() {
         const vm = this;
 
+        vm.settingSizeView();
+    }
+
+    settingSizeView() {
+        const vm = this;
         if (!ko.unwrap(vm.showBtnNoti)) {
 
             if (!ko.unwrap(vm.modeNikoNiko)) {
                 vm.$window.size(630, 470);
             } else {
-                vm.$window.size(630, 470);
+                vm.$window.size(660, 470);
             }
 
         } else {
@@ -130,7 +136,6 @@ class KDP002BViewModel extends ko.ViewModel {
             dfd = $.Deferred();
         let dfdGetAllStampingResult = vm.getAllStampingResult();
         let dfdGetEmpInfo = vm.getEmpInfo();
-        vm.getNotification();
         $.when(dfdGetAllStampingResult, dfdGetEmpInfo).done((dfdGetAllStampingResultData, dfdGetEmpInfoData) => {
             if (vm.resultDisplayTime() > 0) {
                 if (!ko.unwrap(vm.modeNikoNiko)) {
@@ -241,40 +246,62 @@ class KDP002BViewModel extends ko.ViewModel {
     getNotification() {
         const vm = this;
         let startDate = vm.$date.now();
-        startDate.setDate(startDate.getDate()-3);
+        startDate.setDate(startDate.getDate() - 3);
         const param = {
             startDate: startDate,
             endDate: vm.$date.now(),
             sid: vm.infoEmpFromScreenA.employeeId
         }
 
-        console.log(param);
-
         vm.$blockui('invisible')
             .then(() => {
-                vm.$ajax(kDP002RequestUrl.NOTIFICATION_STAMP, param)
-                    .done((data: IMsgNotices[]) => {
+                vm.$ajax(kDP002RequestUrl.GET_SETTING)
+                    .then((data: boolean) => {
+                        console.log(data);
 
-                        vm.notificationStamp(data);
+                        if (data) {
+                            vm.$ajax(kDP002RequestUrl.NOTIFICATION_STAMP, param)
+                                .done((data: IMsgNotices[]) => {
 
-                        var isShow = 0;
-                        _.forEach(data, ((value) => {
-                            _.forEach(value, ((value1) => {
-                                if (value1.flag) {
-                                    isShow++;
-                                }
-                            }));
-                        }));
-                        vm.notificationStamp(data);
+                                    vm.notificationStamp(data);
 
-                        if (isShow > 0) {
-                            vm.modeShowPointNoti(true);
+                                    var isShow = 0;
+                                    _.forEach(data, ((value) => {
+                                        _.forEach(value, ((value1) => {
+                                            if (value1.flag) {
+                                                isShow++;
+                                            }
+                                        }));
+                                    }));
+
+                                    if (isShow > 0) {
+                                        // vm.modeShowPointNoti(true);
+                                        vm.showBtnNoti(true);
+
+                                        var isShowPoint = 0;
+                                        _.forEach(data, ((value) => {
+                                            _.forEach(value, ((value1) => {
+                                                console.log(value1.message.employeeIdSeen.length() == 0);
+                                                isShowPoint++;
+                                            }));
+                                        }));
+                                        
+                                        if (isShowPoint > 0) {
+                                            vm.modeShowPointNoti(true)
+                                        }
+                                    }
+                                });
+                        } else {
+                            vm.showBtnNoti(false);
                         }
+                    })
+                    .then(() => {
+                        vm.settingSizeView();
                     });
             })
             .always(() => {
                 vm.$blockui('clear');
-            });
+            })
     }
 
     getEmpInfo(): JQueryPromise<any> {
@@ -374,6 +401,7 @@ interface IEmployeeIdSeen {
     notificationMessage: string
     startDate: Date
     targetInformation: ITargetInformation
+    employeeIdSeen: string[];
 }
 
 interface ITargetInformation {
