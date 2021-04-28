@@ -4,7 +4,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.Before;
 import org.junit.Test;
+
 import lombok.val;
+import nts.arc.testing.assertion.NtsAssert;
 /**
  * ロールのUTコード
  * @author lan_lt
