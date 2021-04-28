@@ -41,7 +41,8 @@ module nts.uk.at.kdp003.f {
 		LOGIN_EMPLOYEE: '/ctx/sys/gateway/kdp/login/employeemode',
 		COMPANIES: '/ctx/sys/gateway/kdp/login/getLogginSetting',
 		FINGER_STAMP_SETTING: 'at/record/stamp/finger/get-finger-stamp-setting',
-		CONFIRM_STAMP_INPUT: '/at/record/stamp/employment/system/confirm-use-of-stamp-input'
+		CONFIRM_STAMP_INPUT: '/at/record/stamp/employment/system/confirm-use-of-stamp-input',
+		ROLE: '/ctx/sys/gateway/kdp/login/employeeRoleStamping'
 	};
 
 	@bean()
@@ -282,13 +283,11 @@ module nts.uk.at.kdp003.f {
 				});
 
 			$(vm.$el)
-				.on('keyup', '#password-input, #employee-code-inp-2', evt => {					
+				.on('keyup', '#password-input, #employee-code-inp-2', evt => {
 					if (evt.keyCode === 13) {
 						// hook blur for update value from input to model
 						$(evt.target).trigger('blur');
 						const { employeeCode, password } = vm.model;
-
-						console.log(ko.unwrap(employeeCode), ko.unwrap(password));
 
 						if (!!ko.unwrap(employeeCode) && !!ko.unwrap(password)) {
 							vm.submitLogin();
@@ -332,6 +331,10 @@ module nts.uk.at.kdp003.f {
 
 			const message = ko.unwrap(vm.message);
 
+			var dataResultLogin: TimeStampLoginData;
+
+			var roleEmployee: RoleEmployee;
+
 			if (message) {
 				return vm.$dialog.error(message);
 			}
@@ -347,32 +350,61 @@ module nts.uk.at.kdp003.f {
 					if (!valid) {
 						return;
 					}
-
 					vm.$blockui('show')
 						.then(() => vm.$ajax(api, model))
-						.then((response: TimeStampLoginData) => {
-							const { successMsg } = response;
+						.fail((response: any) => {
+							const { message, messageId } = response;
 
+							if (!messageId) {
+								vm.$dialog.error(message);
+							} else {
+								vm.$dialog.error({ messageId });
+							}
+						})
+						.then((response: TimeStampLoginData) => {
+							dataResultLogin = response;
+						})
+						.then(() => {
+							vm.$ajax(API.ROLE)
+								.done((data: RoleEmployee) => {
+									if (data) {
+										roleEmployee = data;
+										if (roleEmployee.employeeReferenceRange == 3) {
+											vm.$dialog.error('Msg_1887');
+										}
+									}
+								})
+						})
+						.then(() => {
+							const { successMsg } = dataResultLogin;
 							if (!!successMsg) {
 								return vm.$dialog
 									.info({ messageId: successMsg })
-									.then(() => response);
+									.then(() => dataResultLogin);
 							}
 
-							return response;
+							return dataResultLogin;
 						})
-						.then((response: TimeStampLoginData) => {
-							_.extend(response, {
+						.then(() => {
+
+							_.extend(dataResultLogin, {
 								companies
 							});
 
-							_.extend(response.em, {
+							_.extend(dataResultLogin.em, {
 								password,
 								companyCode
 							});
 
-							vm.$window.close(response);
+							setTimeout(() => {
+								if (roleEmployee) {
+									if (roleEmployee.employeeReferenceRange != 3) {
+										vm.$window.close(dataResultLogin);
+									}
+								}
+							}, 100);
 						})
+
 						.fail((response: any) => {
 							const { message, messageId } = response;
 
@@ -476,6 +508,17 @@ module nts.uk.at.kdp003.f {
 		passwordInvalid: boolean;
 		isAdminMode: boolean;
 		runtimeEnvironmentCreate: boolean;
+	}
+
+	export interface RoleEmployee {
+		roleId: string;
+		roleCode: string;
+		roleType: number;
+		employeeReferenceRange: number;
+		name: string;
+		rolcontractCodeeId: string;
+		assignAtr: number;
+		companyId: string
 	}
 
 	export class Model {
