@@ -335,7 +335,7 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 				TextBox textBoxName1 = textBoxCollection.get("NAME1");
 				textBoxName1.setText(this.get6BytesString(approverPrintDetails1.getEmployeeInfoImport().getBussinessName(), 6).trim());
 				TextBox textBoxDate1 = textBoxCollection.get("DATE1");
-				textBoxDate1.setText(approverPrintDetails1.getOpApprovalDate().map(x -> x.toString()).orElse(null));
+				textBoxDate1.setText(approverPrintDetails1.getOpApprovalDate().map(x -> x.toString("yyyy/MM/dd")).orElse(null));
 				TextBox textBoxStatus1 = textBoxCollection.get("STATUS1");
 				if(approverPrintDetails1.getApprovalBehaviorAtr() == ApprovalBehaviorAtrImport_New.APPROVED) {
 					textBoxStatus1.setText(I18NText.getText("KAF000_15"));
@@ -362,7 +362,7 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 				TextBox textBoxName2 = textBoxCollection.get("NAME2");
 				textBoxName2.setText(this.get6BytesString(approverPrintDetails2.getEmployeeInfoImport().getBussinessName(), 6).trim());
 				TextBox textBoxDate2 = textBoxCollection.get("DATE2");
-				textBoxDate2.setText(approverPrintDetails2.getOpApprovalDate().map(x -> x.toString()).orElse(null));
+				textBoxDate2.setText(approverPrintDetails2.getOpApprovalDate().map(x -> x.toString("yyyy/MM/dd")).orElse(null));
 				TextBox textBoxStatus2 = textBoxCollection.get("STATUS2");
 				if(approverPrintDetails2.getApprovalBehaviorAtr() == ApprovalBehaviorAtrImport_New.APPROVED) {
 					textBoxStatus2.setText(I18NText.getText("KAF000_15"));
@@ -388,7 +388,7 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 				TextBox textBoxName3 = textBoxCollection.get("NAME3");
 				textBoxName3.setText(this.get6BytesString(approverPrintDetails3.getEmployeeInfoImport().getBussinessName(), 6).trim());
 				TextBox textBoxDate3 = textBoxCollection.get("DATE3");
-				textBoxDate3.setText(approverPrintDetails3.getOpApprovalDate().map(x -> x.toString()).orElse(null));
+				textBoxDate3.setText(approverPrintDetails3.getOpApprovalDate().map(x -> x.toString("yyyy/MM/dd")).orElse(null));
 				TextBox textBoxStatus3 = textBoxCollection.get("STATUS3");
 				if(approverPrintDetails3.getApprovalBehaviorAtr() == ApprovalBehaviorAtrImport_New.APPROVED) {
 					textBoxStatus3.setText(I18NText.getText("KAF000_15"));
@@ -414,7 +414,7 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 				TextBox textBoxName4 = textBoxCollection.get("NAME4");
 				textBoxName4.setText(this.get6BytesString(approverPrintDetails4.getEmployeeInfoImport().getBussinessName(), 6).trim());
 				TextBox textBoxDate4 = textBoxCollection.get("DATE4");
-				textBoxDate4.setText(approverPrintDetails4.getOpApprovalDate().map(x -> x.toString()).orElse(null));
+				textBoxDate4.setText(approverPrintDetails4.getOpApprovalDate().map(x -> x.toString("yyyy/MM/dd")).orElse(null));
 				TextBox textBoxStatus4 = textBoxCollection.get("STATUS4");
 				if(approverPrintDetails4.getApprovalBehaviorAtr() == ApprovalBehaviorAtrImport_New.APPROVED) {
 					textBoxStatus4.setText(I18NText.getText("KAF000_15"));
@@ -440,7 +440,7 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 				TextBox textBoxName5 = textBoxCollection.get("NAME5");
 				textBoxName5.setText(this.get6BytesString(approverPrintDetails5.getEmployeeInfoImport().getBussinessName(), 6).trim());
 				TextBox textBoxDate5 = textBoxCollection.get("DATE5");
-				textBoxDate5.setText(approverPrintDetails5.getOpApprovalDate().map(x -> x.toString()).orElse(null));
+				textBoxDate5.setText(approverPrintDetails5.getOpApprovalDate().map(x -> x.toString("yyyy/MM/dd")).orElse(null));
 				TextBox textBoxStatus5 = textBoxCollection.get("STATUS5");
 				if(approverPrintDetails5.getApprovalBehaviorAtr() == ApprovalBehaviorAtrImport_New.APPROVED) {
 					textBoxStatus5.setText(I18NText.getText("KAF000_15"));
@@ -511,27 +511,10 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 		remarkLabel.setValue(I18NText.getText("KAF000_59"));
 		String appReasonStandard = Strings.EMPTY;
 		
-		if (appType.equals(ApplicationType.ABSENCE_APPLICATION)) {		  
-		    Optional<AppStandardReasonCode> reasonCD = printContentOfApp.getOpPrintContentApplyForLeave().get()
-                    .getAppAbsenceStartInfoOutput().getAppDispInfoStartupOutput().getAppDetailScreenInfo()
-                    .get().getApplication().getOpAppStandardReasonCD();
-		    
-		    if (reasonCD.isPresent()) {
-		        appReasonStandard = printContentOfApp.getOpPrintContentApplyForLeave().get()
-		                .getAppAbsenceStartInfoOutput().getAppDispInfoStartupOutput()
-		                .getAppDispInfoNoDateOutput().getReasonTypeItemLst().stream().filter(x -> x.getAppStandardReasonCD().equals(reasonCD.get()))
-		                .findFirst().map(x -> x.getReasonForFixedForm().v()).orElse(Strings.EMPTY);
-		    }
-		} else {
-		    if(printContentOfApp.getAppReasonStandard() != null) {
-	            appReasonStandard = printContentOfApp.getAppReasonStandard().getReasonTypeItemLst().stream().findFirst()
-	                .map(x -> x.getReasonForFixedForm().v()).orElse(Strings.EMPTY);
-	        }
+		if(printContentOfApp.getAppReasonStandard() != null) {
+			appReasonStandard = printContentOfApp.getAppReasonStandard().getReasonTypeItemLst().stream().findFirst()
+				.map(x -> x.getReasonForFixedForm().v()).orElse(null);
 		}
-//		if(printContentOfApp.getAppReasonStandard() != null) {
-//			appReasonStandard = printContentOfApp.getAppReasonStandard().getReasonTypeItemLst().stream().findFirst()
-//				.map(x -> x.getReasonForFixedForm().v()).orElse(null);
-//		}
 		String appReason = Strings.EMPTY;
 		if(printContentOfApp.getOpAppReason() != null) {
 			appReason = printContentOfApp.getOpAppReason().v();
@@ -541,8 +524,8 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 
 	private void setColorTextBox(TextBox textBox) {
 	    Font textFont = textBox.getFont();
+	    textBox.getTextOptions().setName("源ノ角ゴシック JP Normal");
 	    textFont.setColor(Color.fromArgb(255, 0, 0));
-	    textFont.setName("源ノ角ゴシック JP Normal");
 	    textBox.setFont(textFont);
 	}
 	

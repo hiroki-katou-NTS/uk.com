@@ -159,10 +159,12 @@ module nts.uk.com.view.cmm040.a.viewmodel {
                 let datas = _.orderBy(self.items, ['companyCode'], ['asc']);
                 $("#grid2").ntsGrid({
                     height: '317px',
+                    width: '635px',
                     dataSource: datas,
                     primaryKey: 'companyCode',
                     virtualization: true,
                     virtualizationMode: 'continuous',
+                   // virtualizationMode: "fixed",
                     columns: [
                         { headerText: nts.uk.resource.getText('CMM040_25'), key: 'companyCode', dataType: 'string', width: '90px' },
                         { headerText: nts.uk.resource.getText('CMM040_26'), key: 'companyName', dataType: 'string', width: '140px' },
@@ -170,7 +172,7 @@ module nts.uk.com.view.cmm040.a.viewmodel {
                         { headerText: nts.uk.resource.getText('CMM040_28'), key: 'workplaceCode', dataType: 'string', width: '160px' },
                         { headerText: nts.uk.resource.getText('CMM040_29'), key: 'workplaceName', dataType: 'string', width: '160px' }
                     ],
-                    features: [{ name: 'Sorting', type: 'local' }],
+                    features: [{ name: 'Resizing', type: 'local' }],
                     ntsControls: [
 
                         { name: 'Button', text: nts.uk.resource.getText('CMM040_30'), click: function() { self.openDialogCDL008(); }, controlType: 'Button' }
@@ -385,10 +387,12 @@ module nts.uk.com.view.cmm040.a.viewmodel {
                                 let datas = _.orderBy(self.items, ['companyCode'], ['asc']);
                                 $("#grid2").ntsGrid({
                                     height: '317px',
+                                     width: '635px',
                                     dataSource: datas,
                                     primaryKey: 'companyCode',
                                     virtualization: true,
                                     virtualizationMode: 'continuous',
+                                    // virtualizationMode: "fixed",
                                     columns: [
                                         { headerText: nts.uk.resource.getText('CMM040_25'), key: 'companyCode', dataType: 'string', width: '90px' },
                                         { headerText: nts.uk.resource.getText('CMM040_26'), key: 'companyName', dataType: 'string', width: '140px' },
@@ -396,7 +400,7 @@ module nts.uk.com.view.cmm040.a.viewmodel {
                                         { headerText: nts.uk.resource.getText('CMM040_28'), key: 'workplaceCode', dataType: 'string', width: '160px' },
                                         { headerText: nts.uk.resource.getText('CMM040_29'), key: 'workplaceName', dataType: 'string', width: '160px' }
                                     ],
-                                    features: [{ name: 'Sorting', type: 'local' }],
+                                    features: [{ name: 'Resizing', type: 'local' }],
                                     ntsControls: [
 
                                         { name: 'Button', text: nts.uk.resource.getText('CMM040_30'), click: function() { self.openDialogCDL008(); }, controlType: 'Button' }
@@ -410,10 +414,13 @@ module nts.uk.com.view.cmm040.a.viewmodel {
                             let datas = _.orderBy(self.items, ['companyCode'], ['asc']);
                             $("#grid2").ntsGrid({
                                 height: '317px',
+                                 width: '635px',
                                 dataSource: datas,
                                 primaryKey: 'companyCode',
                                 virtualization: true,
                                 virtualizationMode: 'continuous',
+                                // virtualizationMode: "fixed",
+                                 
                                 columns: [
                                     { headerText: nts.uk.resource.getText('CMM040_25'), key: 'companyCode', dataType: 'string', width: '90px' },
                                     { headerText: nts.uk.resource.getText('CMM040_26'), key: 'companyName', dataType: 'string', width: '140px' },
@@ -421,7 +428,7 @@ module nts.uk.com.view.cmm040.a.viewmodel {
                                     { headerText: nts.uk.resource.getText('CMM040_28'), key: 'workplaceCode', dataType: 'string', width: '160px' },
                                     { headerText: nts.uk.resource.getText('CMM040_29'), key: 'workplaceName', dataType: 'string', width: '160px' }
                                 ],
-                                features: [{ name: 'Sorting', type: 'local' }],
+                                features: [{ name: 'Resizing', type: 'local' }],
                                 ntsControls: [
 
                                     { name: 'Button', text: nts.uk.resource.getText('CMM040_30'), click: function() { self.openDialogCDL008(); }, controlType: 'Button' }
@@ -502,10 +509,12 @@ module nts.uk.com.view.cmm040.a.viewmodel {
                     self.items.push(new GridItem(data.listCompany[0].companyCode, data.listCompany[0].companyName, '', ''));
                     $("#grid2").ntsGrid({
                         height: '317px',
+                         width: '635px',
                         dataSource: self.items,
                         primaryKey: 'companyCode',
                         virtualization: true,
                         virtualizationMode: 'continuous',
+                     //    virtualizationMode: "fixed",
                         columns: [
                             { headerText: nts.uk.resource.getText('CMM040_25'), key: 'companyCode', dataType: 'string', width: '90px' },
                             { headerText: nts.uk.resource.getText('CMM040_26'), key: 'companyName', dataType: 'string', width: '140px' },
@@ -513,7 +522,7 @@ module nts.uk.com.view.cmm040.a.viewmodel {
                             { headerText: nts.uk.resource.getText('CMM040_28'), key: 'workplaceCode', dataType: 'string', width: '160px' },
                             { headerText: nts.uk.resource.getText('CMM040_29'), key: 'workplaceName', dataType: 'string', width: '160px' }
                         ],
-                        features: [{ name: 'Sorting', type: 'local' }],
+                        features: [{ name: 'Resizing', type: 'local' }],
                         ntsControls: [
 
                             { name: 'Button', text: nts.uk.resource.getText('CMM040_30'), click: function() { self.openDialogCDL008(); }, controlType: 'Button' }
@@ -528,10 +537,12 @@ module nts.uk.com.view.cmm040.a.viewmodel {
                 self.items.push(new GridItem(list1[0].companyCode, list1[0].companyName, '', ''));
                 $("#grid2").ntsGrid({
                     height: '317px',
+                     width: '635px',
                     dataSource: self.items,
                     primaryKey: 'companyCode',
                     virtualization: true,
                     virtualizationMode: 'continuous',
+                   //  virtualizationMode: "fixed",
                     columns: [
                         { headerText: nts.uk.resource.getText('CMM040_25'), key: 'companyCode', dataType: 'string', width: '90px' },
                         { headerText: nts.uk.resource.getText('CMM040_26'), key: 'companyName', dataType: 'string', width: '140px' },
@@ -539,7 +550,7 @@ module nts.uk.com.view.cmm040.a.viewmodel {
                         { headerText: nts.uk.resource.getText('CMM040_28'), key: 'workplaceCode', dataType: 'string', width: '160px' },
                         { headerText: nts.uk.resource.getText('CMM040_29'), key: 'workplaceName', dataType: 'string', width: '160px' }
                     ],
-                    features: [{ name: 'Sorting', type: 'local' }],
+                    features: [{ name: 'Resizing', type: 'local' }],
                     ntsControls: [
 
                         { name: 'Button', text: nts.uk.resource.getText('CMM040_30'), click: function() { self.openDialogCDL008(); }, controlType: 'Button' }
@@ -576,13 +587,14 @@ module nts.uk.com.view.cmm040.a.viewmodel {
                         });
                         $("#focusName").focus();
                     }).fail((res: any) => {
-                        nts.uk.ui.dialog.alert({ messageId: res.messageId }).then(() => {
-                            self.startPage();
-                            if (self.workPlacesList().length > 0) {
-                                self.findByIndex(0);
-                            }
-                        });
-
+//                        nts.uk.ui.dialog.alert({ messageId: res.messageId }).then(() => {
+//                            self.startPage();
+//                            if (self.workPlacesList().length > 0) {
+//                                self.findByIndex(0);
+//                            }
+//                        });
+                        nts.uk.ui.dialog.alert({ messageId: res.messageId });
+                           $("#focusName").focus();
                     }).always(() => {
                         block.clear();
                     });
@@ -626,6 +638,7 @@ module nts.uk.com.view.cmm040.a.viewmodel {
                                 self.selectedWorkLocation(null);
                                 self.workPlacesList([]);
                                 errors.clearAll();
+                                self.newMode();
                             }
                             else {
                                 self.findByIndex(index);
@@ -648,6 +661,7 @@ module nts.uk.com.view.cmm040.a.viewmodel {
             });
         }
         buttonA5_16(): any {
+           
             let self = this;
             $.ajax({
                 url: "http://geoapi.heartrails.com/api/json?method=suggest&matching=like&keyword=" + self.valueA5_2(),
@@ -656,10 +670,15 @@ module nts.uk.com.view.cmm040.a.viewmodel {
                 }
             })
                 .done(function(data) {
-                    if (JSON.parse(data).response.location == undefined) return;
+                    if (JSON.parse(data).response.location == undefined) {
+                        self.latitude('');
+                        self.longitude('');
+                        return;
+                    }
                     let result = JSON.parse(data).response.location[0];
                     self.latitude(result.y);
                     self.longitude(result.x);
+                     errors.clearAll();
                 });
         }
         private loadRadiusEnums(): JQueryPromise<Array<Enum>> {
