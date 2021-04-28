@@ -1722,9 +1722,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 //				if (totalOutput.isPersonalTotal())  usedRow++;
 //				if (totalOutput.isDetails() && !employeeReportData.getLstDetailedMonthlyPerformance().isEmpty()) usedRow += countPeriodMonth*dataRowCount;
 				if (totalOutput.isDetails() && !employeeReportData.getLstDetailedMonthlyPerformance().isEmpty()) {
-//					int countItem = employeeReportData.countItem(chunkSize);
-//					usedRow += (countItem % chunkSize) != 0 ? countItem / chunkSize + 1 : countItem / chunkSize;
-                    usedRow += employeeReportData.countItem(chunkSize);
+					usedRow += rowPageTracker.getUseRowCanSetData(employeeReportData.countItem(chunkSize), dataRowCount);
 				}
 				if (rowPageTracker.checkRemainingRowSufficient(usedRow) <= 0) {
 					sheetInfo.getSheet().getHorizontalPageBreaks().add(currentRow);
