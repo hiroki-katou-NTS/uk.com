@@ -4582,8 +4582,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			if (type == "BREAK" && self.dataScreen003A().employeeInfo[index].fixedWorkInforDto.fixBreakTime == 0) return lstTime;
 			for (let o = 0; o < typeChart.length; o++) {
 				let brkT: any = typeChart[o];
-				let timeChartBrk = self.convertTimeToChart(_.isNil(brkT.startTime) ? brkT.start : (_.isNil(brkT.startTime.time) ? brkT.startTime : brkT.startTime.time),
-					_.isNil(brkT.endTime) ? brkT.end : (_.isNil(brkT.endTime.time) ? brkT.endTime : brkT.endTime.time)),
+				let timeChartBrk = self.convertTimeToChart(_.isNil(brkT.startTime) ? Math.round(brkT.start) : (_.isNil(brkT.startTime.time) ? Math.round(brkT.startTime) : Math.round(brkT.startTime.time)),
+					_.isNil(brkT.endTime) ? Math.round(brkT.end) : (_.isNil(brkT.endTime.time) ? Math.round(brkT.endTime) : Math.round(brkT.endTime.time))),
 					timeChart = self.convertTimeToChart(schedule.workScheduleDto.startTime1, schedule.workScheduleDto.endTime1), timeChart2: any = null;
 
 
