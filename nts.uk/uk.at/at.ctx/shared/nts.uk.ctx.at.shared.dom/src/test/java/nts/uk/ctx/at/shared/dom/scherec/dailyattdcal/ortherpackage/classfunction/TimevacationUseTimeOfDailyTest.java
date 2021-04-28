@@ -2,6 +2,7 @@ package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.ortherpackage.classfunctio
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 import org.junit.Test;
@@ -157,10 +158,7 @@ public class TimevacationUseTimeOfDailyTest {
 	
 	
 	private Optional<HolidayAddtionSet> createHASet(NotUseAtr annualHoliday,NotUseAtr specialHoliday){
-		return Optional.of(new HolidayAddtionSet(
-				null, null, NotUseAtr.NOT_USE, null, 
-				new LeaveSetAdded(annualHoliday, null, specialHoliday),
-				null));
+		return Optional.of(new HolidayAddtionSet(null, null, new LeaveSetAdded(annualHoliday, null, specialHoliday),new ArrayList<>()));
 	}
 	
 }
