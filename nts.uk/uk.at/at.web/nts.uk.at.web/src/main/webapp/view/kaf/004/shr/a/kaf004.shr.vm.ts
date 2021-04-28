@@ -11,7 +11,7 @@ module nts.uk.at.view.kaf004_ref.shr.a.viewmodel {
                 <div class="cell">
                     <table class="table_content">
                         <tr>
-                            <td class="time-padding" style="width: 110px">
+                            <td class="time-padding" style="width: 125px">
                                 <!-- A6_2 -->
                                 <span class="label" data-bind="text: $i18n('KAF004_69')"></span>
 
@@ -45,7 +45,7 @@ module nts.uk.at.view.kaf004_ref.shr.a.viewmodel {
                             </td>
                         </tr>
                         <tr>
-                            <td class="time-padding" style="width: 110px">
+                            <td class="time-padding" style="width: 125px">
                                 <!-- A6_8 -->
                                 <span class="label" data-bind="text: $i18n('KAF004_70')"></span>
 
@@ -78,8 +78,8 @@ module nts.uk.at.view.kaf004_ref.shr.a.viewmodel {
                                     }, visible: $vm.condition8()"></span>
                             </td>
                         </tr>
-                        <tr data-bind="visible: $vm.condition2()" style="width: 110px">
-                            <td class="time-padding">
+                        <tr data-bind="visible: $vm.condition2()">
+                            <td class="time-padding" style="width: 125px">
                                 <!-- A6_14 -->
                                 <span class="label" data-bind="text: $i18n('KAF004_71')"></span>
 
@@ -112,8 +112,8 @@ module nts.uk.at.view.kaf004_ref.shr.a.viewmodel {
                                     }, visible: $vm.condition2() && $vm.condition8()"></span>
                             </td>
                         </tr>
-                        <tr data-bind="visible: $vm.condition2()" style="width: 110px">
-                            <td class="time-padding">
+                        <tr data-bind="visible: $vm.condition2()">
+                            <td class="time-padding" style="width: 125px">
                                 <!-- A6_20 -->
                                 <span class="label" data-bind="text: $i18n('KAF004_72')"></span>
 

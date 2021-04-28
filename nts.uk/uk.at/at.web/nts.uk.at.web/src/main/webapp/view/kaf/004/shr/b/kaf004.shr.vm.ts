@@ -16,7 +16,7 @@ module nts.uk.at.view.kaf004_ref.shr.b.viewmodel {
                 <table class="table_content">
                     <tbody>
                         <tr>
-                            <td class="time-padding" style="width: 110px">
+                            <td class="time-padding" style="width: 125px">
                                 <!-- A6_2 -->
                                 <span class="label" data-bind="text: $i18n('KAF004_69')"></span>
 
@@ -52,7 +52,7 @@ module nts.uk.at.view.kaf004_ref.shr.b.viewmodel {
                             </td>
                         </tr>
                         <tr>
-                            <td class="time-padding" style="width: 110px">
+                            <td class="time-padding" style="width: 125px">
                                 <!-- A6_8 -->
                                 <span class="label" data-bind="text: $i18n('KAF004_70')"></span>
 
@@ -87,8 +87,8 @@ module nts.uk.at.view.kaf004_ref.shr.b.viewmodel {
                                 }, visible: $parent.condition9()"></span>
                             </td>
                         </tr>
-                        <tr data-bind="visible: ko.toJS($parent.condition2())" style="width: 110px">
-                            <td class="time-padding">
+                        <tr data-bind="visible: ko.toJS($parent.condition2())">
+                            <td class="time-padding" style="width: 125px">
                                 <!-- A6_14 -->
                                 <span class="label" data-bind="text: $i18n('KAF004_71')"></span>
 
@@ -124,8 +124,8 @@ module nts.uk.at.view.kaf004_ref.shr.b.viewmodel {
                                 }, visible: $parent.condition2() && $parent.condition9()"></span>
                             </td>
                         </tr>
-                        <tr data-bind="visible: ko.toJS($parent.condition2())" style="width: 110px">
-                            <td class="time-padding">
+                        <tr data-bind="visible: ko.toJS($parent.condition2())">
+                            <td class="time-padding" style="width: 125px">
                                 <!-- A6_20 -->
                                 <span class="label" data-bind="text: $i18n('KAF004_72')"></span>
 
