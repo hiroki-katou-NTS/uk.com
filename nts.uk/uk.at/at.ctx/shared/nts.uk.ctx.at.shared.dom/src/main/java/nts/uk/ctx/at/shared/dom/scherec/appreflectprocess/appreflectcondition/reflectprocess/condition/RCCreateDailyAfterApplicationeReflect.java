@@ -43,7 +43,7 @@ public class RCCreateDailyAfterApplicationeReflect {
 		switch (application.getAppType()) {
 		case OVER_TIME_APPLICATION:
 			//0：残業申請を反映する（勤務予定）
-			itemIds.addAll(((AppReflectOtHdWork) domainSetReflect).processOverRc(require, companyId, (AppOverTimeShare) application, dailyApp));
+			itemIds.addAll(((AppReflectOtHdWork) domainSetReflect).processOverRc(require, (AppOverTimeShare) application, dailyApp));
 			break;
 		case ABSENCE_APPLICATION:
 			// 1：休暇申請を反映する(勤務予定）
@@ -64,7 +64,7 @@ public class RCCreateDailyAfterApplicationeReflect {
 			break;
 		case HOLIDAY_WORK_APPLICATION:
 			// 6：休日出勤申請を反映する（勤務予定）
-			itemIds.addAll(((AppReflectOtHdWork) domainSetReflect).process(require, companyId, (AppHolidayWorkShare) application,
+			itemIds.addAll(((AppReflectOtHdWork) domainSetReflect).process(require, (AppHolidayWorkShare) application,
 					dailyApp).getLstItemId());
 			break;
 		case STAMP_APPLICATION:

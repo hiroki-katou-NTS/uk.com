@@ -18,9 +18,9 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 public class TransferResultAllFrame {
 	
 	//残りの振替可能時間
-	private AttendanceTime time;
+	private AttendanceTime timeRemain;
 	
 	//振替をした後の時間
-	private List<MaximumTime> maximumTime;
+	private List<OvertimeHourTransfer> timeAfterTransfer;
 
 }

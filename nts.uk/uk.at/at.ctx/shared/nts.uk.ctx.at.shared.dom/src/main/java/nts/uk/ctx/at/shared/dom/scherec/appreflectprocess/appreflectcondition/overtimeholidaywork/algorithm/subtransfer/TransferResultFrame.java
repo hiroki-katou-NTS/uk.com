@@ -19,6 +19,6 @@ public class TransferResultFrame {
 	private AttendanceTime time;
 	
 	//振替をした後の時間
-	private MaximumTime maximumTime;
+	private OvertimeHourTransfer maximumTime;
 
 }

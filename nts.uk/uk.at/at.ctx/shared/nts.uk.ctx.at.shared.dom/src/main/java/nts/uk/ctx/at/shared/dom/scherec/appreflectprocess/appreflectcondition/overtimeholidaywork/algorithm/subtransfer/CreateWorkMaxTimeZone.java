@@ -8,13 +8,13 @@ import java.util.Optional;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.WorkTimes;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeActualStamp;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.DailyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManagePerCompanySet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyprocess.calc.CalculateOption;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
-import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
  * @author thanh_nx
@@ -54,19 +54,12 @@ public class CreateWorkMaxTimeZone {
 
 		// 取得した時間帯を計算日別勤怠(work）の出退勤にセットする
 		dailyCalc.getAttendanceLeave().get().getAttendanceLeavingWork(1).ifPresent(x -> {
-
-			x.getStampOfAttendance().ifPresent(start -> {
-				start.getTimeDay().setTimeWithDay(Optional.of(predeteminate.get().getStartDateClock()));
-			});
-
-			x.getStampOfLeave().ifPresent(end -> {
-				end.getTimeDay().setTimeWithDay(Optional.of(new TimeWithDayAttr(
-						predeteminate.get().getStartDateClock().v() + predeteminate.get().getRangeTimeDay().v())));
-			});
+			x.setAttendanceStamp(
+					Optional.of(TimeActualStamp.createByAutomaticSet(predeteminate.get().getStartDateClock())));
+			x.setLeaveStamp(Optional.of(TimeActualStamp.createByAutomaticSet(predeteminate.get().getEndDateClock())));
 		});
 
 		// 日別実績計算
-
 		return require.calculateForRecord(CalculateOption.asDefault(),
 				Arrays.asList(dailyCalc), Optional.empty(), ExecutionType.NORMAL_EXECUTION).get(0);
 

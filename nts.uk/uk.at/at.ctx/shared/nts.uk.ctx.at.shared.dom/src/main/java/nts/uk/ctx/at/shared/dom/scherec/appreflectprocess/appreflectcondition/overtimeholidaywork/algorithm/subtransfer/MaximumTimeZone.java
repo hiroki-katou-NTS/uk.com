@@ -1,12 +1,15 @@
 package nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.algorithm.subtransfer;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.commons.lang3.tuple.Pair;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.TimeSpanForDailyCalc;
+import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 
 /**
  * @author thanh_nx
@@ -19,10 +22,10 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation
 public class MaximumTimeZone {
 
 	// Map<int,計算時間帯>
-	Map<Integer, TimeSpanForDailyCalc> timeSpan;
+	 private List<Pair<OverTimeFrameNo, TimeSpanForDailyCalc>> timeSpan;
 
 	public MaximumTimeZone() {
-		this.timeSpan = new HashMap<>();
+		this.timeSpan = new ArrayList<>();
 	}
 
 }

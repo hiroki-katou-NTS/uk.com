@@ -9,7 +9,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.deviationti
 /**
  * @author thanhnx
  *
- *         申請乖離理由
+ *         申請乖離理由(反映用)
  */
 @AllArgsConstructor
 @NoArgsConstructor

@@ -9,14 +9,14 @@ import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 
 /**
- * Refactor5
- * @author hoangnd
+ * @author thanh_nx
+ * 
+ *         申請就業外深夜時間
  *
  */
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-//申請就業外深夜時間
 public class OverTimeShiftNightShare {
 	// 休出深夜時間
 	private List<HolidayMidNightTimeShare> midNightHolidayTimes = Collections.emptyList();

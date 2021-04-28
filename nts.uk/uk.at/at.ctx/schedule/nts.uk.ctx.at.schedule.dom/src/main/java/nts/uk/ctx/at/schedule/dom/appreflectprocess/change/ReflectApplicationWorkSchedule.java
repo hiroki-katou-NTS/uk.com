@@ -11,13 +11,13 @@ import lombok.val;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.adapter.appreflect.SCAppReflectionSetting;
+import nts.uk.ctx.at.schedule.dom.appreflectprocess.change.state.SCReflectStatusResult;
+import nts.uk.ctx.at.schedule.dom.appreflectprocess.change.state.SCReflectedState;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ConfirmedATR;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.snapshot.DailySnapshotWork;
 import nts.uk.ctx.at.shared.dom.scherec.application.common.ApplicationShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.common.ApplicationTypeShare;
-import nts.uk.ctx.at.shared.dom.scherec.application.common.ReflectedStateShare;
-import nts.uk.ctx.at.shared.dom.scherec.application.reflect.ReflectStatusResultShare;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.DailyRecordOfApplication;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.ScheduleRecordClassifi;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.cancellation.CreateApplicationReflectionHist;
@@ -40,8 +40,8 @@ import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enu
  */
 public class ReflectApplicationWorkSchedule {
 
-	public static Pair<ReflectStatusResultShare, AtomTask> process(Require require, String companyId,  ApplicationShare application,
-			GeneralDate date, ReflectStatusResultShare reflectStatus, int preAppWorkScheReflectAttr) {
+	public static Pair<SCReflectStatusResult, AtomTask> process(Require require, String companyId,  ApplicationShare application,
+			GeneralDate date, SCReflectStatusResult reflectStatus, int preAppWorkScheReflectAttr) {
 		// 勤務予定から日別実績(work）を取得する
 		WorkSchedule workSchedule = require.get(application.getEmployeeID(), date).orElse(null);
 		if (workSchedule == null)
@@ -116,7 +116,7 @@ public class ReflectApplicationWorkSchedule {
 					dailyRecordApp, domainBeforeReflect);
 		});
 
-		reflectStatus.setReflectStatus(ReflectedStateShare.REFLECTED);
+		reflectStatus.setReflectStatus(SCReflectedState.REFLECTED);
 
 		return Pair.of(reflectStatus, atomTask);
 

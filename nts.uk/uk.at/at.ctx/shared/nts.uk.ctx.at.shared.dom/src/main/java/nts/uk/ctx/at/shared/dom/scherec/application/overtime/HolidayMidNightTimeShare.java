@@ -8,7 +8,7 @@ import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.StaturoryAt
 /**
  * @author thanh_nx
  *
- *         申請休出深夜時間
+ *         申請休出深夜時間(反映用)
  */
 @AllArgsConstructor
 @Data

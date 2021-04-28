@@ -59,12 +59,12 @@ public class AppReflectOtHdWork extends AggregateRoot {
 	 *         残業申請を反映する（勤務実績）
 	 */
 
-	public List<Integer> processOverRc(RequireRC require, String cid, AppOverTimeShare overTimeApp,
+	public List<Integer> processOverRc(RequireRC require, AppOverTimeShare overTimeApp,
 			DailyRecordOfApplication dailyApp) {
 
 		List<Integer> lstId = new ArrayList<Integer>();
 		// 残業申請の反映
-		lstId.addAll(this.getOvertimeWorkAppReflect().process(require, cid, overTimeApp, dailyApp));
+		lstId.addAll(this.getOvertimeWorkAppReflect().process(require, companyId, overTimeApp, dailyApp));
 
 		// [時間外深夜時間を反映する]をチェック
 		if (this.getNightOvertimeReflectAtr() == NotUseAtr.USE) {
@@ -117,12 +117,12 @@ public class AppReflectOtHdWork extends AggregateRoot {
 	 *
 	 *         休日出勤申請を反映する（勤務実績）
 	 */
-	public DailyAfterAppReflectResult process(Require require, String cid, AppHolidayWorkShare holidayApp,
+	public DailyAfterAppReflectResult process(Require require, AppHolidayWorkShare holidayApp,
 			DailyRecordOfApplication dailyApp) {
 		List<Integer> lstId = new ArrayList<Integer>();
 		// 休日出勤申請の反映
 		lstId.addAll(
-				this.getHolidayWorkAppReflect().process(require, cid, holidayApp, dailyApp).getLstItemId());
+				this.getHolidayWorkAppReflect().process(require, companyId, holidayApp, dailyApp).getLstItemId());
 
 		// [時間外深夜時間を反映する]をチェック
 		if (this.getNightOvertimeReflectAtr() == NotUseAtr.USE) {

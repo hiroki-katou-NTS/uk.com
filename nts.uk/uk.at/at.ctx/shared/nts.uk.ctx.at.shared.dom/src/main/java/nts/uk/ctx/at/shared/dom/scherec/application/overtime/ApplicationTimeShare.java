@@ -11,9 +11,10 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.optionalitemvalue.AnyItemValue;
 
 /**
- * UKDesign.ドメインモデル."NittsuSystem.UniversalK".就業.contexts.申請承認.申請.残業休出申請
- * 
  * @author thanhnx
+ * 
+ * 申請時間(反映用)
+ * 
  *
  */
 @AllArgsConstructor

@@ -8,8 +8,8 @@ import nts.uk.ctx.at.shared.dom.scherec.application.common.ApplicationShare;
 /**
  * 
  * @author thanhnx
- *         UKDesign.ドメインモデル."NittsuSystem.UniversalK".就業.contexts.申請承認.申請.休暇申請.休暇申請
- *         休暇申請
+ * 
+ *         休暇申請(反映用)
  * 
  */
 
@@ -34,12 +34,7 @@ public class ApplyForLeaveShare extends ApplicationShare implements DomainAggreg
 		this.setAppDate(application.getAppDate());
 		this.setEnteredPersonID(application.getEnteredPersonID());
 		this.setInputDate(application.getInputDate());
-		this.setReflectionStatus(application.getReflectionStatus());
 		this.setOpStampRequestMode(application.getOpStampRequestMode());
-		this.setOpReversionReason(application.getOpReversionReason());
-		this.setOpAppStartDate(application.getOpAppStartDate());
 		this.setOpAppEndDate(application.getOpAppEndDate());
-		this.setOpAppReason(application.getOpAppReason());
-		this.setOpAppStandardReasonCD(application.getOpAppStandardReasonCD());
 	}
 }

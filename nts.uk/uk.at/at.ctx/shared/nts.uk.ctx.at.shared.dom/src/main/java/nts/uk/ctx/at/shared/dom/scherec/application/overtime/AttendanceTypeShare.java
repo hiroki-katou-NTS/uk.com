@@ -3,7 +3,7 @@ package nts.uk.ctx.at.shared.dom.scherec.application.overtime;
  * @author thanh_nx
  *
  */
-// 勤怠種類
+// 勤怠種類(反映用)
 public enum AttendanceTypeShare {
 
 	/**

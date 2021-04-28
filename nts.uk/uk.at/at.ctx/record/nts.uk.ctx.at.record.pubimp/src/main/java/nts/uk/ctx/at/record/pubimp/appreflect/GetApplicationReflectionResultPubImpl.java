@@ -20,7 +20,6 @@ import nts.uk.ctx.at.shared.dom.adapter.application.reflect.SHPriorityTimeReflec
 import nts.uk.ctx.at.shared.dom.calculationsetting.StampReflectionManagement;
 import nts.uk.ctx.at.shared.dom.calculationsetting.repository.StampReflectionManagementRepository;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.converter.DailyRecordShareFinder;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailywork.worktime.empwork.EmployeeWorkDataSetting;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
 import nts.uk.ctx.at.shared.dom.scherec.application.common.ApplicationShare;
@@ -47,6 +46,8 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.al
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.ICorrectionAttendanceRule;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManagePerCompanySet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyprocess.calc.CalculateOption;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveComSetRepository;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
@@ -128,6 +129,9 @@ public class GetApplicationReflectionResultPubImpl implements GetApplicationRefl
 	
 	@Inject
 	private VacationApplicationReflectRepository vacationApplicationReflectRepository;
+	
+	@Inject
+	private CompensLeaveComSetRepository compensLeaveComSetRepository;
 
 	@Override
 	public Optional<IntegrationOfDaily> getApp(String companyId, Object application, GeneralDate baseDate,
@@ -138,8 +142,8 @@ public class GetApplicationReflectionResultPubImpl implements GetApplicationRefl
 				flowWorkSettingRepository, goBackReflectRepository, stampAppReflectRepository,
 				lateEarlyCancelReflectRepository, reflectWorkChangeAppRepository, correctionAfterTimeChange,
 				timeLeaveAppReflectRepository, dailyRecordConverter, appReflectOtHdWorkRepository,
-				vacationApplicationReflectRepository, timePriorityRepository);
-		return GetApplicationReflectionResult.getApp(impl, companyId, (ApplicationShare) application, baseDate,
+				vacationApplicationReflectRepository, timePriorityRepository, compensLeaveComSetRepository);
+		return GetApplicationReflectionResult.getReflectResult(impl, companyId, (ApplicationShare) application, baseDate,
 				dailyData);
 	}
 
@@ -189,6 +193,8 @@ public class GetApplicationReflectionResultPubImpl implements GetApplicationRefl
 		private final VacationApplicationReflectRepository vacationApplicationReflectRepository;
 
 		private final StampReflectionManagementRepository timePriorityRepository;
+		
+		private final CompensLeaveComSetRepository compensLeaveComSetRepository;
 
 		@Override
 		public SetupType checkNeededOfWorkTimeSetting(String workTypeCode) {
@@ -316,11 +322,6 @@ public class GetApplicationReflectionResultPubImpl implements GetApplicationRefl
 		}
 
 		@Override
-		public Optional<EmployeeWorkDataSetting> getEmpWorkDataSetting(String employeeId) {
-			return Optional.empty();
-		}
-
-		@Override
 		public Optional<PredetemineTimeSetting> findByWorkTimeCode(String companyId, String workTimeCode) {
 			return predetemineTimeSettingRepository.findByWorkTimeCode(companyId, workTimeCode);
 		}
@@ -328,6 +329,16 @@ public class GetApplicationReflectionResultPubImpl implements GetApplicationRefl
 		@Override
 		public DailyRecordToAttendanceItemConverter createDailyConverter() {
 			return dailyRecordConverter.createDailyConverter();
+		}
+
+		@Override
+		public Optional<FlowWorkSetting> findFlowWorkSetting(String companyId, String workTimeCode) {
+			return flowWorkSettingRepository.find(companyId, workTimeCode);
+		}
+
+		@Override
+		public CompensatoryLeaveComSetting findCompensatoryLeaveComSet(String companyId) {
+			return compensLeaveComSetRepository.find(companyId);
 		}
 
 	}

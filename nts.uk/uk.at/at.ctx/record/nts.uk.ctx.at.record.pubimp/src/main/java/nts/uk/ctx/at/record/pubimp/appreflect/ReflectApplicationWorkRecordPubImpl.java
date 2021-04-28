@@ -9,10 +9,15 @@ import javax.inject.Inject;
 import org.apache.commons.lang3.tuple.Pair;
 
 import lombok.AllArgsConstructor;
+import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.adapter.application.reflect.RCRequestSettingAdapter;
+import nts.uk.ctx.at.record.dom.adapter.request.application.state.RCReasonNotReflect;
+import nts.uk.ctx.at.record.dom.adapter.request.application.state.RCReasonNotReflectDaily;
+import nts.uk.ctx.at.record.dom.adapter.request.application.state.RCReflectStatusResult;
+import nts.uk.ctx.at.record.dom.adapter.request.application.state.RCReflectedState;
 import nts.uk.ctx.at.record.dom.applicationcancel.ReflectApplicationWorkRecord;
 import nts.uk.ctx.at.record.dom.daily.DailyRecordAdUpService;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculateDailyRecordServiceCenter;
@@ -24,6 +29,10 @@ import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.record.pub.appreflect.ReflectApplicationWorkRecordPub;
+import nts.uk.ctx.at.record.pub.appreflect.export.RCReasonNotReflectDailyExport;
+import nts.uk.ctx.at.record.pub.appreflect.export.RCReasonNotReflectExport;
+import nts.uk.ctx.at.record.pub.appreflect.export.RCReflectStatusResultExport;
+import nts.uk.ctx.at.record.pub.appreflect.export.RCReflectedStateExport;
 import nts.uk.ctx.at.shared.dom.adapter.application.reflect.SHAppReflectionSetting;
 import nts.uk.ctx.at.shared.dom.adapter.application.reflect.SHApplyTimeSchedulePriority;
 import nts.uk.ctx.at.shared.dom.adapter.application.reflect.SHClassifyScheAchieveAtr;
@@ -36,7 +45,6 @@ import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
 import nts.uk.ctx.at.shared.dom.scherec.application.common.ApplicationShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.common.ApplicationTypeShare;
-import nts.uk.ctx.at.shared.dom.scherec.application.reflect.ReflectStatusResultShare;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.businesstrip.ReflectBusinessTripApp;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.directgoback.GoBackReflect;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.directgoback.GoBackReflectRepository;
@@ -64,6 +72,8 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomat
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.algorithmdailyper.TimeReflectFromWorkinfo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManagePerCompanySet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyprocess.calc.CalculateOption;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveComSetRepository;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.ErrorMessageInfo;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
@@ -165,10 +175,13 @@ public class ReflectApplicationWorkRecordPubImpl implements ReflectApplicationWo
 
 	@Inject
 	private StampReflectionManagementRepository timePriorityRepository;
+	
+	@Inject
+	private CompensLeaveComSetRepository compensLeaveComSetRepository;
 
 	@Override
-	public Pair<ReflectStatusResultShare, Optional<AtomTask>> process(Object application, GeneralDate date,
-			ReflectStatusResultShare reflectStatus) {
+	public Pair<RCReflectStatusResultExport, Optional<AtomTask>> process(Object application, GeneralDate date,
+			RCReflectStatusResultExport reflectStatus) {
 		RequireImpl impl = new RequireImpl(AppContexts.user().companyId(), AppContexts.user().contractCode(),
 				stampCardRepository, correctionAttendanceRule, workTypeRepo, workTimeSettingRepository,
 				workTimeSettingService, basicScheduleService, timeReflectFromWorkinfo, checkRangeReflectAttd,
@@ -177,10 +190,33 @@ public class ReflectApplicationWorkRecordPubImpl implements ReflectApplicationWo
 				requestSettingAdapter, flexWorkSettingRepository, predetemineTimeSettingRepository,
 				fixedWorkSettingRepository, flowWorkSettingRepository, goBackReflectRepository,
 				stampAppReflectRepository, lateEarlyCancelReflectRepository, reflectWorkChangeAppRepository,
-				timeLeaveAppReflectRepository, appReflectOtHdWorkRepository, vacationApplicationReflectRepository, timePriorityRepository);
-		return ReflectApplicationWorkRecord.process(impl ,(ApplicationShare) application, date, reflectStatus);
+				timeLeaveAppReflectRepository, appReflectOtHdWorkRepository, vacationApplicationReflectRepository, timePriorityRepository,
+				compensLeaveComSetRepository);
+		val result = ReflectApplicationWorkRecord.process(impl ,(ApplicationShare) application, date, convertToDom(reflectStatus));
+		return Pair.of(convertToExport(result.getLeft()), result.getRight());
 	}
 
+	private RCReflectStatusResult convertToDom(RCReflectStatusResultExport export) {
+		return new RCReflectStatusResult(EnumAdaptor.valueOf(export.getReflectStatus().value, RCReflectedState.class),
+				export.getReasonNotReflectWorkRecord() == null ? null
+						: EnumAdaptor.valueOf(export.getReasonNotReflectWorkRecord().value,
+								RCReasonNotReflectDaily.class),
+				export.getReasonNotReflectWorkSchedule() == null ? null
+						: EnumAdaptor.valueOf(export.getReasonNotReflectWorkSchedule().value,
+								RCReasonNotReflect.class));
+	}
+
+	private RCReflectStatusResultExport convertToExport(RCReflectStatusResult dom) {
+		return new RCReflectStatusResultExport(
+				EnumAdaptor.valueOf(dom.getReflectStatus().value, RCReflectedStateExport.class),
+				dom.getReasonNotReflectWorkRecord() == null ? null
+						: EnumAdaptor.valueOf(dom.getReasonNotReflectWorkRecord().value,
+								RCReasonNotReflectDailyExport.class),
+				dom.getReasonNotReflectWorkSchedule() == null ? null
+						: EnumAdaptor.valueOf(dom.getReasonNotReflectWorkSchedule().value,
+								RCReasonNotReflectExport.class));
+	}
+	
 	@AllArgsConstructor
 	public class RequireImpl implements ReflectApplicationWorkRecord.Require {
 
@@ -241,6 +277,8 @@ public class ReflectApplicationWorkRecordPubImpl implements ReflectApplicationWo
     	private final VacationApplicationReflectRepository vacationApplicationReflectRepository;
 
         private final StampReflectionManagementRepository timePriorityRepository;
+        
+    	private final CompensLeaveComSetRepository compensLeaveComSetRepository;
 
 		@Override
 		public List<StampCard> getLstStampCardBySidAndContractCd(String sid) {
@@ -427,6 +465,16 @@ public class ReflectApplicationWorkRecordPubImpl implements ReflectApplicationWo
 				List<IntegrationOfDaily> integrationOfDaily, Optional<ManagePerCompanySet> companySet,
 				ExecutionType reCalcAtr) {
 			return calculateForSchedule(calcOption, integrationOfDaily, companySet, reCalcAtr);
+		}
+
+		@Override
+		public Optional<FlowWorkSetting> findFlowWorkSetting(String companyId, String workTimeCode) {
+			return flowWorkSettingRepository.find(companyId, workTimeCode);
+		}
+
+		@Override
+		public CompensatoryLeaveComSetting findCompensatoryLeaveComSet(String companyId) {
+			return compensLeaveComSetRepository.find(companyId);
 		}
 
 	}

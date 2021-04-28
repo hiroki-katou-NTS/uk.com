@@ -12,15 +12,14 @@ import nts.uk.ctx.at.shared.dom.common.TimeZoneWithWorkNo;
 import nts.uk.ctx.at.shared.dom.scherec.application.common.ApplicationShare;
 
 /**
- * 残業休出申請
- * 
  * @author thanhnx
- *
+ * 
+ * 残業申請(反映用)
+ * 
  */
 @AllArgsConstructor
 @Getter
 @Setter
-// 残業申請
 public class AppOverTimeShare extends ApplicationShare {
 
 	// 申請時間
@@ -44,12 +43,8 @@ public class AppOverTimeShare extends ApplicationShare {
 		this.setAppDate(application.getAppDate());
 		this.setEnteredPersonID(application.getEnteredPersonID());
 		this.setInputDate(application.getInputDate());
-		this.setReflectionStatus(application.getReflectionStatus());
 		this.setOpStampRequestMode(application.getOpStampRequestMode());
-		this.setOpReversionReason(application.getOpReversionReason());
 		this.setOpAppStartDate(application.getOpAppStartDate());
 		this.setOpAppEndDate(application.getOpAppEndDate());
-		this.setOpAppReason(application.getOpAppReason());
-		this.setOpAppStandardReasonCD(application.getOpAppStandardReasonCD());
 	}
 }

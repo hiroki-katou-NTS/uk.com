@@ -24,7 +24,7 @@ import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enu
  */
 public class GetApplicationReflectionResult {
 
-	public static Optional<IntegrationOfDaily> getApp(Require require, String companyId, ApplicationShare application,
+	public static Optional<IntegrationOfDaily> getReflectResult(Require require, String companyId, ApplicationShare application,
 			GeneralDate baseDate, Optional<IntegrationOfDaily> dailyData) {
 
 		// input.実績=emptyの場合は、実績を取得

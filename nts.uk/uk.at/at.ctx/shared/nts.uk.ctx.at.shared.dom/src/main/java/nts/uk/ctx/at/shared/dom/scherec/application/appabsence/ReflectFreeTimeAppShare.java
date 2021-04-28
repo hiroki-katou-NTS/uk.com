@@ -12,8 +12,8 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 /**
  * 
  * @author thanhnx
- *         UKDesign.ドメインモデル."NittsuSystem.UniversalK".就業.contexts.申請承認.申請.休暇申請.休暇申請反映情報
- *         休暇申請反映情報
+ * 
+ *         休暇申請反映情報(反映用)
  *
  */
 @Data

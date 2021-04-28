@@ -105,10 +105,10 @@ public class ReflectApplicationTime {
 
 		// 該当の枠NOをキーにした[残業枠時間]を作成する
 		Optional<OverTimeFrameTime> overTimeFrame = overTimeWorkFrameTime.stream()
-				.filter(x -> x.getOverWorkFrameNo().v() == applicationTime.getFrameNo().v()).findFirst();
+				.filter(x -> x.getOverWorkFrameNo().v() == applicationTime.getFrameNo()).findFirst();
 
 		if (!overTimeFrame.isPresent()) {
-			OverTimeFrameTime overtimeTemp = OverTimeFrameTime.createDefaultWithNo(applicationTime.getFrameNo().v());
+			OverTimeFrameTime overtimeTemp = OverTimeFrameTime.createDefaultWithNo(applicationTime.getFrameNo());
 			consumerOverTime.accept(overtimeTemp);
 			overTimeWorkFrameTime.add(overtimeTemp);
 		} else {
@@ -159,11 +159,11 @@ public class ReflectApplicationTime {
 				.getWorkHolidayTime().get().getHolidayWorkFrameTime();
 
 		Optional<HolidayWorkFrameTime> overTimeFrame = holidayTimeWorkFrameTime.stream()
-				.filter(x -> x.getHolidayFrameNo().v() == applicationTime.getFrameNo().v()).findFirst();
+				.filter(x -> x.getHolidayFrameNo().v() == applicationTime.getFrameNo()).findFirst();
 
 		if (!overTimeFrame.isPresent()) {
 			HolidayWorkFrameTime holidaytimeTemp = HolidayWorkFrameTime
-					.createDefaultWithNo(applicationTime.getFrameNo().v());
+					.createDefaultWithNo(applicationTime.getFrameNo());
 			holidayOverTime.accept(holidaytimeTemp);
 			holidayTimeWorkFrameTime.add(holidaytimeTemp);
 		} else {
@@ -197,17 +197,17 @@ public class ReflectApplicationTime {
 				.getRaisingSalaryTimes();
 		// 該当の枠NOをキーにした[加給時間]を作成する
 		Optional<BonusPayTime> salaryTimeOpt = salaryTime.stream()
-				.filter(x -> x.getBonusPayTimeItemNo() == applicationTime.getFrameNo().v()).findFirst();
+				.filter(x -> x.getBonusPayTimeItemNo() == applicationTime.getFrameNo()).findFirst();
 
 		// 加給NOをキーにして加給時間をセットする
 		if (salaryTimeOpt.isPresent()) {
 			salaryTimeOpt.get().setBonusPayTime(applicationTime.getApplicationTime());
 		} else {
-			BonusPayTime bt = BonusPayTime.createDefaultWithNo(applicationTime.getFrameNo().v());
+			BonusPayTime bt = BonusPayTime.createDefaultWithNo(applicationTime.getFrameNo());
 			bt.setBonusPayTime(applicationTime.getApplicationTime());
 			salaryTime.add(bt);
 		}
-		lstId.add(CancelAppStamp.createItemId(316, applicationTime.getFrameNo().v(), 1));
+		lstId.add(CancelAppStamp.createItemId(316, applicationTime.getFrameNo(), 1));
 		return lstId;
 	}
 	
@@ -230,17 +230,17 @@ public class ReflectApplicationTime {
 				.getAutoCalRaisingSalarySettings();
 		// // 該当の枠NOをキーにした[特定日加給時間]を作成する
 		Optional<BonusPayTime> salaryTimeOpt = salaryTime.stream()
-				.filter(x -> x.getBonusPayTimeItemNo() == applicationTime.getFrameNo().v()).findFirst();
+				.filter(x -> x.getBonusPayTimeItemNo() == applicationTime.getFrameNo()).findFirst();
 
 		// 加給NOをキーにして特定日加給時間をセットする
 		if (salaryTimeOpt.isPresent()) {
 			salaryTimeOpt.get().setBonusPayTime(applicationTime.getApplicationTime());
 		} else {
-			BonusPayTime bt = BonusPayTime.createDefaultWithNo(applicationTime.getFrameNo().v());
+			BonusPayTime bt = BonusPayTime.createDefaultWithNo(applicationTime.getFrameNo());
 			bt.setBonusPayTime(applicationTime.getApplicationTime());
 			salaryTime.add(bt);
 		}
-		lstId.add(CancelAppStamp.createItemId(366, applicationTime.getFrameNo().v(), 1));
+		lstId.add(CancelAppStamp.createItemId(366, applicationTime.getFrameNo(), 1));
 		return lstId;
 
 	}

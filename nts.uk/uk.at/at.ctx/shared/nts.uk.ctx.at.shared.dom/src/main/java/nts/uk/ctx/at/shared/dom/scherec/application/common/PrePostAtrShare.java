@@ -5,16 +5,16 @@ import lombok.AllArgsConstructor;
 /**
  * @author thanh_nx
  *
- *         事前事後区分
+ *         事前事後区分(反映用)
  */
 @AllArgsConstructor
 public enum PrePostAtrShare {
 	/**
-	 * 0: 事前の受付制限
+	 * 0: 事前
 	 */
 	PREDICT(0),
 	/**
-	 * 1: 事後の受付制限
+	 * 1: 事後
 	 */
 	POSTERIOR(1);
 
