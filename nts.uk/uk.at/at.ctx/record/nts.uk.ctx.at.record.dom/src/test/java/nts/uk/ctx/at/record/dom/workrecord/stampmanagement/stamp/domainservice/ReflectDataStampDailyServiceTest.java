@@ -20,17 +20,13 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampHelper;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.ReflectDataStampDailyService.Require;
 import nts.uk.ctx.at.shared.dom.adapter.generalinfo.dtoimport.EmployeeGeneralInfoImport;
-import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.ScheduleRecordClassifi;
-import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.ErrMessageResource;
 import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.output.PeriodInMasterList;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.ScheduleRecordClassifi;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.ChangeDailyAttendance;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.algorithmdailyper.OutputTimeReflectForWorkinfo;
-import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageContent;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.ErrorMessageInfo;
-import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionContent;
 /**
  * 
  * @author tutk
@@ -44,63 +40,13 @@ public class ReflectDataStampDailyServiceTest {
 	String cid = "cid";
 	GeneralDate date = GeneralDate.today();
 	List<ErrorMessageInfo> errorMessageInfos = new ArrayList<>();
+	ReflectDataStampDailyServiceHelper helper = new ReflectDataStampDailyServiceHelper();
 	
 	ChangeDailyAttendance changeDailyAtt = new  ChangeDailyAttendance(true,
 			true, 
 			true,
 			true,
 			ScheduleRecordClassifi.RECORD);
-	
-	OutputCreateDailyOneDay outputCreateDailyOneDay1 = new OutputCreateDailyOneDay(new ArrayList<>(),
-			new IntegrationOfDaily(employeeId,
-					date,
-					new WorkInfoOfDailyAttendance(),
-					null,
-					null,
-					null,
-					null,
-					null,
-					null,
-					null,
-					null,
-					null,
-					null,
-					null,
-					null,
-					null,
-					null,
-					null,
-					null),
-			new ArrayList<>());
-	
-	OutputCreateDailyOneDay outputCreateDailyOneDay2 = new OutputCreateDailyOneDay(errorMessageInfos,
-			new IntegrationOfDaily(employeeId,
-					date,
-					new WorkInfoOfDailyAttendance(),
-					null,
-					null,
-					null,
-					null,
-					null,
-					null,
-					null,
-					null,
-					null,
-					null,
-					null,
-					null,
-					null,
-					null,
-					null,
-					null),
-			new ArrayList<>());
-	
-	ErrorMessageInfo error = new ErrorMessageInfo(cid,
-			employeeId,
-			date,
-			ExecutionContent.DAILY_CALCULATION,
-			new ErrMessageResource(cid),
-			new ErrMessageContent("This is Message"));
 	
 	OutputTimeReflectForWorkinfo info = new OutputTimeReflectForWorkinfo();
 
@@ -112,31 +58,11 @@ public class ReflectDataStampDailyServiceTest {
 	@Test
 	public void test_all_date_is_error() {
 		
-		this.errorMessageInfos.add(this.error);
 	
 		Stamp stamp = StampHelper.getStampDefault();
 		
-		OutputCreateDailyOneDay resultData = new OutputCreateDailyOneDay(errorMessageInfos,
-				new IntegrationOfDaily(employeeId,
-						stamp.getStampDateTime().toDate(),
-						new WorkInfoOfDailyAttendance(),
-						null,
-						null,
-						null,
-						null,
-						null,
-						null,
-						null,
-						null,
-						null,
-						null,
-						null,
-						null,
-						null,
-						null,
-						null,
-						null),
-				new ArrayList<>());
+		OutputCreateDailyOneDay resultData = helper.getErrorsNotNull(stamp);
+		
 		new Expectations() {
 			{
 				require.createDailyResult(cid,
@@ -183,31 +109,10 @@ public class ReflectDataStampDailyServiceTest {
 	@Test
 	public void test2() {
 		
-		this.errorMessageInfos.add(this.error);
 	
 		Stamp stamp = StampHelper.getStampDefault();
 		
-		OutputCreateDailyOneDay resultData = new OutputCreateDailyOneDay(new ArrayList<>(),
-				new IntegrationOfDaily(employeeId,
-						stamp.getStampDateTime().toDate(),
-						new WorkInfoOfDailyAttendance(),
-						null,
-						null,
-						null,
-						null,
-						null,
-						null,
-						null,
-						null,
-						null,
-						null,
-						null,
-						null,
-						null,
-						null,
-						null,
-						null),
-				new ArrayList<>());
+		OutputCreateDailyOneDay resultData = helper.getErrorsNull(stamp);
 		new Expectations() {
 			{
 				require.createDailyResult(cid,
@@ -243,13 +148,13 @@ public class ReflectDataStampDailyServiceTest {
 				require.get(cid,
 						employeeId,
 						date,
-						outputCreateDailyOneDay1.getIntegrationOfDaily().getWorkInformation());
+						resultData.getIntegrationOfDaily().getWorkInformation());
 				
 				result = info;
 				
 				require.reflectStamp(stamp,
 						info.getStampReflectRangeOutput(),
-						outputCreateDailyOneDay1.getIntegrationOfDaily(),
+						resultData.getIntegrationOfDaily(),
 						changeDailyAtt);
 				
 				result = errorMessageInfos;
@@ -265,32 +170,10 @@ public class ReflectDataStampDailyServiceTest {
 	// Test date is not error and not date is true
 	@Test
 	public void test3() {
-		
-		this.errorMessageInfos.add(this.error);
 	
 		Stamp stamp = StampHelper.getStampDefaultIsTrue();
 		
-		OutputCreateDailyOneDay resultData = new OutputCreateDailyOneDay(new ArrayList<>(),
-				new IntegrationOfDaily(employeeId,
-						stamp.getStampDateTime().toDate(),
-						new WorkInfoOfDailyAttendance(),
-						null,
-						null,
-						null,
-						null,
-						null,
-						null,
-						null,
-						null,
-						null,
-						null,
-						null,
-						null,
-						null,
-						null,
-						null,
-						null),
-				new ArrayList<>());
+		OutputCreateDailyOneDay resultData = helper.getErrorsNull(stamp);
 		new Expectations() {
 			{
 				require.createDailyResult(cid,
@@ -326,13 +209,13 @@ public class ReflectDataStampDailyServiceTest {
 				require.get(cid,
 						employeeId,
 						date,
-						outputCreateDailyOneDay1.getIntegrationOfDaily().getWorkInformation());
+						resultData.getIntegrationOfDaily().getWorkInformation());
 				
 				result = info;
 				
 				require.reflectStamp(stamp,
 						info.getStampReflectRangeOutput(),
-						outputCreateDailyOneDay1.getIntegrationOfDaily(),
+						resultData.getIntegrationOfDaily(),
 						changeDailyAtt);
 				
 				result = errorMessageInfos;
