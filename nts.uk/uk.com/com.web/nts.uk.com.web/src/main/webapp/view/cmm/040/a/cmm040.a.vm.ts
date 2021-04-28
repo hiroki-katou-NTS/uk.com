@@ -159,7 +159,7 @@ module nts.uk.com.view.cmm040.a.viewmodel {
                 let datas = _.orderBy(self.items, ['companyCode'], ['asc']);
                 $("#grid2").ntsGrid({
                     height: '317px',
-                    width: '635px',
+                    width: '655px',
                     dataSource: datas,
                     primaryKey: 'companyCode',
                     virtualization: true,
@@ -387,7 +387,7 @@ module nts.uk.com.view.cmm040.a.viewmodel {
                                 let datas = _.orderBy(self.items, ['companyCode'], ['asc']);
                                 $("#grid2").ntsGrid({
                                     height: '317px',
-                                     width: '635px',
+                                     width: '655px',
                                     dataSource: datas,
                                     primaryKey: 'companyCode',
                                     virtualization: true,
@@ -414,7 +414,7 @@ module nts.uk.com.view.cmm040.a.viewmodel {
                             let datas = _.orderBy(self.items, ['companyCode'], ['asc']);
                             $("#grid2").ntsGrid({
                                 height: '317px',
-                                 width: '635px',
+                                 width: '655px',
                                 dataSource: datas,
                                 primaryKey: 'companyCode',
                                 virtualization: true,
@@ -509,7 +509,7 @@ module nts.uk.com.view.cmm040.a.viewmodel {
                     self.items.push(new GridItem(data.listCompany[0].companyCode, data.listCompany[0].companyName, '', ''));
                     $("#grid2").ntsGrid({
                         height: '317px',
-                         width: '635px',
+                         width: '655px',
                         dataSource: self.items,
                         primaryKey: 'companyCode',
                         virtualization: true,
@@ -537,7 +537,7 @@ module nts.uk.com.view.cmm040.a.viewmodel {
                 self.items.push(new GridItem(list1[0].companyCode, list1[0].companyName, '', ''));
                 $("#grid2").ntsGrid({
                     height: '317px',
-                     width: '635px',
+                     width: '655px',
                     dataSource: self.items,
                     primaryKey: 'companyCode',
                     virtualization: true,
