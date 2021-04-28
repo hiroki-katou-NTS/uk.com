@@ -23,7 +23,7 @@ module nts.uk.ui.header {
                     <div class="menu-item" data-bind="foreach: $component.menuSet.items">
                         <div class="item" data-bind="
                             i18n: $data.webMenuName,
-                            click: function() { $component.selectSet($data, true) },                        
+                            click: function() { $component.selectSet($data, true) },
                             css: { 
                                 selected: $component.menuSet.items() && $data.selected
                             }"></div>
@@ -47,12 +47,16 @@ module nts.uk.ui.header {
                         'hover': bar.hover() && bar.canHover() && $component.click()
                     },
                     style: {
-                        'display': bar.display()
+                        'display': bar.display(),
+                        'background-color': bar.backgroundColor
                     },
                     attr: {
                         'data-column': (bar.titleMenu || []).length
                     }">
-                <span class="bar-item-title" data-bind="text: bar.menuBarName, click: function() { $component.selectBar(bar) }"></span>
+                <span class="bar-item-title" data-bind="
+                    text: bar.menuBarName,
+                    click: function() { $component.selectBar(bar) },
+                    style: { 'color': bar.textColor }"></span>
                 <div class="menu-dropdown menu-item" data-bind="css: { hidden: !bar.hover() || !bar.titleMenu.length }, foreach: { data: bar.titleMenu, as: 'title' }">
                     <div class="menu-column">
                         <div class="menu-header" data-bind="

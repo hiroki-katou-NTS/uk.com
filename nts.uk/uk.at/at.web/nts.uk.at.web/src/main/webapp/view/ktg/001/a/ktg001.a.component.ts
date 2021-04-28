@@ -74,7 +74,6 @@ module nts.uk.ui.ktg001.a {
                                 <!-- A1_2 -->
                                 <button class="icon ktg001-no-border" data-bind="
                                         click : $component.setting,
-                                        timeClick: -1,
                                         visible: $component.settingIconVisible
                                     ">
                                     <i data-bind="ntsIcon: { no: 5, width: 25, height: 25 }"></i>
@@ -85,7 +84,7 @@ module nts.uk.ui.ktg001.a {
                 </table>
             </div>
             <div class="ktg-001-a ktg001-fontsize" data-bind="widget-content: 100">
-                <div class="ktg001-border" style="padding: 0px 20px 0px 15px;">
+                <div class="ktg001-border" style="padding: 0px 40px 0px 30px;">
                     <table style="width: 100%;">
                         <colgroup>
                             <col width="1%" />
