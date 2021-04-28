@@ -57,7 +57,7 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 
 
 	<!-- calculate button A5_8-->
-	<div data-bind="if: visibleModel.c7()" style="margin-bottom: 20px">
+	<div data-bind="if: visibleModel.c7()" style="margin-bottom: 20px; margin-top: 12px;">
 		<button style="width: 100px; margin-left: 200px"
 			data-bind="text: $i18n('KAF005_43'), click: calculate, enable: outputMode()"
 			class="caret-bottom caret-inline"></button>
@@ -66,7 +66,7 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 
 
 	<!-- over time hours -->
-	<div class="cf valign-top control-group" data-bind="visible: true" style="margin-bottom: 2px;">
+	<div class="cf valign-top control-group" data-bind="visible: true" style="margin-bottom: 2px; margin-top: 22px;">
 		<!--A6_1 残業時間ラベル-->
 		<div class="cm-column" style="display: inline-block; width: 100px">
 			<div class="lblTitle pull-left"

@@ -56,7 +56,7 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 															application: application,
 															appDispInfoStartupOutput: appDispInfoStartupOutput
 														} }"
-								style="width: fit-content; display: inline-block; vertical-align: middle; margin-top: -16px"></div>
+								style="width: fit-content; display: inline-block; vertical-align: middle; margin-top: -15px"></div>
 
 
 
@@ -96,7 +96,7 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 
 
 
-							<div style="margin-top: 12px"
+							<div style="margin-top: 11px"
 								data-bind="component: { name: 'kaf000-b-component7', 
 														params: {
 															appType: appType,
