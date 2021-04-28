@@ -335,7 +335,7 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 				TextBox textBoxName1 = textBoxCollection.get("NAME1");
 				textBoxName1.setText(this.get6BytesString(approverPrintDetails1.getEmployeeInfoImport().getBussinessName(), 6).trim());
 				TextBox textBoxDate1 = textBoxCollection.get("DATE1");
-				textBoxDate1.setText(approverPrintDetails1.getOpApprovalDate().map(x -> x.toString()).orElse(null));
+				textBoxDate1.setText(approverPrintDetails1.getOpApprovalDate().map(x -> x.toString("yyyy/MM/dd")).orElse(null));
 				TextBox textBoxStatus1 = textBoxCollection.get("STATUS1");
 				if(approverPrintDetails1.getApprovalBehaviorAtr() == ApprovalBehaviorAtrImport_New.APPROVED) {
 					textBoxStatus1.setText(I18NText.getText("KAF000_15"));
@@ -362,7 +362,7 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 				TextBox textBoxName2 = textBoxCollection.get("NAME2");
 				textBoxName2.setText(this.get6BytesString(approverPrintDetails2.getEmployeeInfoImport().getBussinessName(), 6).trim());
 				TextBox textBoxDate2 = textBoxCollection.get("DATE2");
-				textBoxDate2.setText(approverPrintDetails2.getOpApprovalDate().map(x -> x.toString()).orElse(null));
+				textBoxDate2.setText(approverPrintDetails2.getOpApprovalDate().map(x -> x.toString("yyyy/MM/dd")).orElse(null));
 				TextBox textBoxStatus2 = textBoxCollection.get("STATUS2");
 				if(approverPrintDetails2.getApprovalBehaviorAtr() == ApprovalBehaviorAtrImport_New.APPROVED) {
 					textBoxStatus2.setText(I18NText.getText("KAF000_15"));
@@ -388,7 +388,7 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 				TextBox textBoxName3 = textBoxCollection.get("NAME3");
 				textBoxName3.setText(this.get6BytesString(approverPrintDetails3.getEmployeeInfoImport().getBussinessName(), 6).trim());
 				TextBox textBoxDate3 = textBoxCollection.get("DATE3");
-				textBoxDate3.setText(approverPrintDetails3.getOpApprovalDate().map(x -> x.toString()).orElse(null));
+				textBoxDate3.setText(approverPrintDetails3.getOpApprovalDate().map(x -> x.toString("yyyy/MM/dd")).orElse(null));
 				TextBox textBoxStatus3 = textBoxCollection.get("STATUS3");
 				if(approverPrintDetails3.getApprovalBehaviorAtr() == ApprovalBehaviorAtrImport_New.APPROVED) {
 					textBoxStatus3.setText(I18NText.getText("KAF000_15"));
@@ -414,7 +414,7 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 				TextBox textBoxName4 = textBoxCollection.get("NAME4");
 				textBoxName4.setText(this.get6BytesString(approverPrintDetails4.getEmployeeInfoImport().getBussinessName(), 6).trim());
 				TextBox textBoxDate4 = textBoxCollection.get("DATE4");
-				textBoxDate4.setText(approverPrintDetails4.getOpApprovalDate().map(x -> x.toString()).orElse(null));
+				textBoxDate4.setText(approverPrintDetails4.getOpApprovalDate().map(x -> x.toString("yyyy/MM/dd")).orElse(null));
 				TextBox textBoxStatus4 = textBoxCollection.get("STATUS4");
 				if(approverPrintDetails4.getApprovalBehaviorAtr() == ApprovalBehaviorAtrImport_New.APPROVED) {
 					textBoxStatus4.setText(I18NText.getText("KAF000_15"));
@@ -440,7 +440,7 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 				TextBox textBoxName5 = textBoxCollection.get("NAME5");
 				textBoxName5.setText(this.get6BytesString(approverPrintDetails5.getEmployeeInfoImport().getBussinessName(), 6).trim());
 				TextBox textBoxDate5 = textBoxCollection.get("DATE5");
-				textBoxDate5.setText(approverPrintDetails5.getOpApprovalDate().map(x -> x.toString()).orElse(null));
+				textBoxDate5.setText(approverPrintDetails5.getOpApprovalDate().map(x -> x.toString("yyyy/MM/dd")).orElse(null));
 				TextBox textBoxStatus5 = textBoxCollection.get("STATUS5");
 				if(approverPrintDetails5.getApprovalBehaviorAtr() == ApprovalBehaviorAtrImport_New.APPROVED) {
 					textBoxStatus5.setText(I18NText.getText("KAF000_15"));
