@@ -15,6 +15,8 @@ import org.apache.logging.log4j.util.Strings;
 
 import com.aspose.cells.Cell;
 import com.aspose.cells.Cells;
+import com.aspose.cells.Color;
+import com.aspose.cells.Font;
 import com.aspose.cells.PageSetup;
 import com.aspose.cells.ShapeCollection;
 import com.aspose.cells.TextBox;
@@ -43,8 +45,8 @@ import nts.uk.ctx.at.request.infra.repository.application.lateleaveearly.AsposeL
 import nts.uk.ctx.at.request.infra.repository.application.optional.AposeOptionalItem;
 import nts.uk.ctx.at.request.infra.repository.application.overtime.AsposeAppOverTime;
 import nts.uk.ctx.at.request.infra.repository.application.stamp.AsposeAppStamp;
-import nts.uk.ctx.at.request.infra.repository.application.workchange.AsposeWorkChange;
 import nts.uk.ctx.at.request.infra.repository.application.timeleaveapplication.AsposeTimeLeaveApplication;
+import nts.uk.ctx.at.request.infra.repository.application.workchange.AsposeWorkChange;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportContext;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 
@@ -166,7 +168,7 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 			StampRequestMode mode) {
 		Cell reasonLabel;
 		Cell remarkLabel;
-		Cell reasonContent;
+		Cell reasonContent = null;
 
 		switch (appType) {
 		case OVER_TIME_APPLICATION:
@@ -257,6 +259,15 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 		default:
 			break;
 		}
+		
+		if (reasonContent != null) {
+		    int rowIndex = reasonContent.getRow();
+		    try {
+		        worksheet.autoFitRow(rowIndex);
+		    } catch (Exception e) {
+		        e.printStackTrace();
+		    }
+		}
 	}
 
 	private String getFileTemplate(ApplicationType appType) {
@@ -316,13 +327,13 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 		ShapeCollection sc = worksheet.getShapes();
 		if(printContentOfApp.getApproverColumnContents().getApproverPrintDetailsLst().size() > 0) {
 			ApproverPrintDetails approverPrintDetails1 = printContentOfApp.getApproverColumnContents().getApproverPrintDetailsLst().get(0);
+			Cell cellG1 = cells.get("G1");
+			cellG1.setValue(approverPrintDetails1.getAffJobTitleHistoryImport().getJobTitleName());
 			if (approverPrintDetails1.getApprovalBehaviorAtr() == ApprovalBehaviorAtrImport_New.APPROVED ||
 					approverPrintDetails1.getApprovalBehaviorAtr() == ApprovalBehaviorAtrImport_New.DENIAL) {
 				sc.get("APPORVAL1").setPrintable(true);
-				Cell cellG1 = cells.get("G1");
-				cellG1.setValue(approverPrintDetails1.getAffJobTitleHistoryImport().getJobTitleName());
 				TextBox textBoxName1 = textBoxCollection.get("NAME1");
-				textBoxName1.setText(approverPrintDetails1.getEmployeeInfoImport().getBussinessName().substring(0, 3));
+				textBoxName1.setText(this.get6BytesString(approverPrintDetails1.getEmployeeInfoImport().getBussinessName(), 6).trim());
 				TextBox textBoxDate1 = textBoxCollection.get("DATE1");
 				textBoxDate1.setText(approverPrintDetails1.getOpApprovalDate().map(x -> x.toString()).orElse(null));
 				TextBox textBoxStatus1 = textBoxCollection.get("STATUS1");
@@ -331,6 +342,9 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 				} else {
 					textBoxStatus1.setText(I18NText.getText("KAF000_16"));
 				}
+				this.setColorTextBox(textBoxName1);
+				this.setColorTextBox(textBoxDate1);
+				this.setColorTextBox(textBoxStatus1);
 			} else {
 				sc.get("APPORVAL1").setPrintable(false);
 
@@ -340,13 +354,13 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 		}
 		if(printContentOfApp.getApproverColumnContents().getApproverPrintDetailsLst().size() > 1) {
 			ApproverPrintDetails approverPrintDetails2 = printContentOfApp.getApproverColumnContents().getApproverPrintDetailsLst().get(1);
+			Cell cellH1 = cells.get("H1");
+			cellH1.setValue(approverPrintDetails2.getAffJobTitleHistoryImport().getJobTitleName());
 			if (approverPrintDetails2.getApprovalBehaviorAtr() == ApprovalBehaviorAtrImport_New.APPROVED ||
 					approverPrintDetails2.getApprovalBehaviorAtr() == ApprovalBehaviorAtrImport_New.DENIAL) {
 				sc.get("APPORVAL2").setPrintable(true);
-				Cell cellH1 = cells.get("H1");
-				cellH1.setValue(approverPrintDetails2.getAffJobTitleHistoryImport().getJobTitleName());
 				TextBox textBoxName2 = textBoxCollection.get("NAME2");
-				textBoxName2.setText(approverPrintDetails2.getEmployeeInfoImport().getBussinessName().substring(0, 3));
+				textBoxName2.setText(this.get6BytesString(approverPrintDetails2.getEmployeeInfoImport().getBussinessName(), 6).trim());
 				TextBox textBoxDate2 = textBoxCollection.get("DATE2");
 				textBoxDate2.setText(approverPrintDetails2.getOpApprovalDate().map(x -> x.toString()).orElse(null));
 				TextBox textBoxStatus2 = textBoxCollection.get("STATUS2");
@@ -355,6 +369,9 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 				} else {
 					textBoxStatus2.setText(I18NText.getText("KAF000_16"));
 				}
+				this.setColorTextBox(textBoxName2);
+				this.setColorTextBox(textBoxDate2);
+				this.setColorTextBox(textBoxStatus2);
 			} else {
 				sc.get("APPORVAL2").setPrintable(false);
 			}
@@ -363,13 +380,13 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 		}
 		if(printContentOfApp.getApproverColumnContents().getApproverPrintDetailsLst().size() > 2) {
 			ApproverPrintDetails approverPrintDetails3 = printContentOfApp.getApproverColumnContents().getApproverPrintDetailsLst().get(2);
+			Cell cellI1 = cells.get("I1");
+			cellI1.setValue(approverPrintDetails3.getAffJobTitleHistoryImport().getJobTitleName());
 			if (approverPrintDetails3.getApprovalBehaviorAtr() == ApprovalBehaviorAtrImport_New.APPROVED ||
 					approverPrintDetails3.getApprovalBehaviorAtr() == ApprovalBehaviorAtrImport_New.DENIAL) {
 				sc.get("APPORVAL3").setPrintable(true);
-				Cell cellI1 = cells.get("I1");
-				cellI1.setValue(approverPrintDetails3.getAffJobTitleHistoryImport().getJobTitleName());
 				TextBox textBoxName3 = textBoxCollection.get("NAME3");
-				textBoxName3.setText(approverPrintDetails3.getEmployeeInfoImport().getBussinessName().substring(0, 3));
+				textBoxName3.setText(this.get6BytesString(approverPrintDetails3.getEmployeeInfoImport().getBussinessName(), 6).trim());
 				TextBox textBoxDate3 = textBoxCollection.get("DATE3");
 				textBoxDate3.setText(approverPrintDetails3.getOpApprovalDate().map(x -> x.toString()).orElse(null));
 				TextBox textBoxStatus3 = textBoxCollection.get("STATUS3");
@@ -378,6 +395,9 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 				} else {
 					textBoxStatus3.setText(I18NText.getText("KAF000_16"));
 				}
+				this.setColorTextBox(textBoxName3);
+				this.setColorTextBox(textBoxDate3);
+				this.setColorTextBox(textBoxStatus3);
 			} else {
 				sc.get("APPORVAL3").setPrintable(false);
 			}
@@ -386,13 +406,13 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 		}
 		if(printContentOfApp.getApproverColumnContents().getApproverPrintDetailsLst().size() > 3) {
 			ApproverPrintDetails approverPrintDetails4 = printContentOfApp.getApproverColumnContents().getApproverPrintDetailsLst().get(3);
+			Cell cellJ1 = cells.get("J1");
+			cellJ1.setValue(approverPrintDetails4.getAffJobTitleHistoryImport().getJobTitleName());
 			if (approverPrintDetails4.getApprovalBehaviorAtr() == ApprovalBehaviorAtrImport_New.APPROVED ||
 					approverPrintDetails4.getApprovalBehaviorAtr() == ApprovalBehaviorAtrImport_New.DENIAL) {
 				sc.get("APPORVAL4").setPrintable(true);
-				Cell cellJ1 = cells.get("J1");
-				cellJ1.setValue(approverPrintDetails4.getAffJobTitleHistoryImport().getJobTitleName());
 				TextBox textBoxName4 = textBoxCollection.get("NAME4");
-				textBoxName4.setText(approverPrintDetails4.getEmployeeInfoImport().getBussinessName().substring(0, 3));
+				textBoxName4.setText(this.get6BytesString(approverPrintDetails4.getEmployeeInfoImport().getBussinessName(), 6).trim());
 				TextBox textBoxDate4 = textBoxCollection.get("DATE4");
 				textBoxDate4.setText(approverPrintDetails4.getOpApprovalDate().map(x -> x.toString()).orElse(null));
 				TextBox textBoxStatus4 = textBoxCollection.get("STATUS4");
@@ -401,6 +421,9 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 				} else {
 					textBoxStatus4.setText(I18NText.getText("KAF000_16"));
 				}
+				this.setColorTextBox(textBoxName4);
+				this.setColorTextBox(textBoxDate4);
+				this.setColorTextBox(textBoxStatus4);
 			} else {
 				sc.get("APPORVAL4").setPrintable(false);
 			}
@@ -409,13 +432,13 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 		}
 		if(printContentOfApp.getApproverColumnContents().getApproverPrintDetailsLst().size() > 4) {
 			ApproverPrintDetails approverPrintDetails5 = printContentOfApp.getApproverColumnContents().getApproverPrintDetailsLst().get(4);
+			Cell cellK1 = cells.get("K1");
+			cellK1.setValue(approverPrintDetails5.getAffJobTitleHistoryImport().getJobTitleName());
 			if (approverPrintDetails5.getApprovalBehaviorAtr() == ApprovalBehaviorAtrImport_New.APPROVED ||
 					approverPrintDetails5.getApprovalBehaviorAtr() == ApprovalBehaviorAtrImport_New.DENIAL) {
 				sc.get("APPORVAL5").setPrintable(true);
-				Cell cellK1 = cells.get("K1");
-				cellK1.setValue(approverPrintDetails5.getAffJobTitleHistoryImport().getJobTitleName());
 				TextBox textBoxName5 = textBoxCollection.get("NAME5");
-				textBoxName5.setText(approverPrintDetails5.getEmployeeInfoImport().getBussinessName().substring(0, 3));
+				textBoxName5.setText(this.get6BytesString(approverPrintDetails5.getEmployeeInfoImport().getBussinessName(), 6).trim());
 				TextBox textBoxDate5 = textBoxCollection.get("DATE5");
 				textBoxDate5.setText(approverPrintDetails5.getOpApprovalDate().map(x -> x.toString()).orElse(null));
 				TextBox textBoxStatus5 = textBoxCollection.get("STATUS5");
@@ -424,6 +447,9 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 				} else {
 					textBoxStatus5.setText(I18NText.getText("KAF000_16"));
 				}
+				this.setColorTextBox(textBoxName5);
+				this.setColorTextBox(textBoxDate5);
+				this.setColorTextBox(textBoxStatus5);
 			} else {
 				sc.get("APPORVAL5").setPrintable(false);
 			}
@@ -485,27 +511,10 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 		remarkLabel.setValue(I18NText.getText("KAF000_59"));
 		String appReasonStandard = Strings.EMPTY;
 		
-		if (appType.equals(ApplicationType.ABSENCE_APPLICATION)) {		  
-		    Optional<AppStandardReasonCode> reasonCD = printContentOfApp.getOpPrintContentApplyForLeave().get()
-                    .getAppAbsenceStartInfoOutput().getAppDispInfoStartupOutput().getAppDetailScreenInfo()
-                    .get().getApplication().getOpAppStandardReasonCD();
-		    
-		    if (reasonCD.isPresent()) {
-		        appReasonStandard = printContentOfApp.getOpPrintContentApplyForLeave().get()
-		                .getAppAbsenceStartInfoOutput().getAppDispInfoStartupOutput()
-		                .getAppDispInfoNoDateOutput().getReasonTypeItemLst().stream().filter(x -> x.getAppStandardReasonCD().equals(reasonCD.get()))
-		                .findFirst().map(x -> x.getReasonForFixedForm().v()).orElse(Strings.EMPTY);
-		    }
-		} else {
-		    if(printContentOfApp.getAppReasonStandard() != null) {
-	            appReasonStandard = printContentOfApp.getAppReasonStandard().getReasonTypeItemLst().stream().findFirst()
-	                .map(x -> x.getReasonForFixedForm().v()).orElse(Strings.EMPTY);
-	        }
+		if(printContentOfApp.getAppReasonStandard() != null) {
+			appReasonStandard = printContentOfApp.getAppReasonStandard().getReasonTypeItemLst().stream().findFirst()
+				.map(x -> x.getReasonForFixedForm().v()).orElse(null);
 		}
-//		if(printContentOfApp.getAppReasonStandard() != null) {
-//			appReasonStandard = printContentOfApp.getAppReasonStandard().getReasonTypeItemLst().stream().findFirst()
-//				.map(x -> x.getReasonForFixedForm().v()).orElse(null);
-//		}
 		String appReason = Strings.EMPTY;
 		if(printContentOfApp.getOpAppReason() != null) {
 			appReason = printContentOfApp.getOpAppReason().v();
@@ -513,4 +522,35 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 		reasonContent.setValue(appReasonStandard + (StringUtils.isEmpty(appReasonStandard) ? Strings.EMPTY : "\n") + appReason);
 	}
 
+	private void setColorTextBox(TextBox textBox) {
+	    Font textFont = textBox.getFont();
+	    textBox.getTextOptions().setName("源ノ角ゴシック JP Normal");
+	    textFont.setColor(Color.fromArgb(255, 0, 0));
+	    textBox.setFont(textFont);
+	}
+	
+	private String get6BytesString(String text, int n) {
+        int lengthCut = this.findIdxFullHafl(text, n);
+        return text.substring(0, lengthCut);
+    }
+	
+	private int findIdxFullHafl(String text, int max) {
+        int count = 0;
+        for (int i = 0; i < text.length(); i++) {
+            int c = text.charAt(i);
+            int charLength = 2;
+            // 0x20 ～ 0x80: 半角記号と半角英数字
+            // 0xff61 ～ 0xff9f: 半角カタカナ
+            if ((0x20 <= c && c <= 0x7e) || (0xff61 <= c && c <= 0xff9f)) {
+                charLength = 1;
+            }
+            
+            if (charLength + count <= max) {
+                count += charLength;
+            } else {
+                return i;    
+            }
+        }
+        return text.length();
+    }
 }

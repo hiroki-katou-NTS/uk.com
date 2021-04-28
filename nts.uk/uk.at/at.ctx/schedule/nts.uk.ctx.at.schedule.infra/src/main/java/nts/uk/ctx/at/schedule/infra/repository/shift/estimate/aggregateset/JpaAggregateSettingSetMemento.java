@@ -10,13 +10,15 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.aggregateset.AggregateSettingSetMemento;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.aggregateset.ExtraTimeItemNo;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.aggregateset.MonthlyWorkingDaySetting;
+import nts.uk.ctx.at.schedule.infra.entity.budget.premium.KmnmpPremiumItemPK;
+import nts.uk.ctx.at.schedule.infra.entity.budget.premium.KscmtPremiumItem;
 import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.aggregateset.KscmtEstAggregate;
-import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.aggregateset.KscstPerCostExtraItemPK;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 
 /**
@@ -33,9 +35,9 @@ public class JpaAggregateSettingSetMemento extends JpaRepository implements Aggr
 	 * @param entity the entity
 	 */
 	public JpaAggregateSettingSetMemento(KscmtEstAggregate entity) {
-//		if (CollectionUtil.isEmpty(entity.getKscstPerCostExtraItem())) {
-//			entity.setKscstPerCostExtraItem(new ArrayList<>());
-//		}
+		if (CollectionUtil.isEmpty(entity.getKscstPerCostExtraItem())) {
+			entity.setKscstPerCostExtraItem(new ArrayList<>());
+		}
 		this.kscstEstAggregateSet = entity;
 	}
 
@@ -74,6 +76,23 @@ public class JpaAggregateSettingSetMemento extends JpaRepository implements Aggr
 //			}
 //			return new KscmtPerCostExtraItem(pk);
 //		}).collect(Collectors.toList()));
+		// convert map entity
+		Map<KmnmpPremiumItemPK, KscmtPremiumItem> mapEntity = this.kscstEstAggregateSet
+				.getKscstPerCostExtraItem().stream().collect(Collectors.toMap(
+						item -> ((KscmtPremiumItem) item).getKmnmpPremiumItemPK(), Function.identity()));
+
+		// set item list
+		this.kscstEstAggregateSet.setKscstPerCostExtraItem(premiumNo.stream().map(item -> {
+			KmnmpPremiumItemPK pk = new KmnmpPremiumItemPK(companyId, item.v());
+			if (mapEntity.containsKey(pk)) {
+				return mapEntity.get(pk);
+			}
+			val entity = new KscmtPremiumItem();
+			entity.setKmnmpPremiumItemPK(pk);
+			entity.setName("");
+			entity.setUseAtr(1);
+			return entity;
+		}).collect(Collectors.toList()));
 	}
 
 	/*

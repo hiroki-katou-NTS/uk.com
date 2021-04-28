@@ -28,6 +28,12 @@ import { KSUS01BComponent } from '../b/index';
     created() {
         window.addEventListener('resize', this.resize);
     },
+    beforeDestroy() {
+        document.body.style.removeProperty('overflowY');
+        document.body.style.removeProperty('position');
+        document.body.style.removeProperty('top');
+        document.body.style.removeProperty('width');
+    },
     watch: {
         isDetailShow() {
             let scrollPos = 0;

@@ -4,8 +4,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import nts.uk.ctx.at.aggregation.dom.schedulecounter.PersonalCounterCategory;
-import nts.uk.ctx.at.aggregation.dom.schedulecounter.WorkplaceCounterCategory;
+import nts.uk.ctx.at.aggregation.dom.schedulecounter.tally.PersonalCounterCategory;
+import nts.uk.ctx.at.aggregation.dom.schedulecounter.tally.WorkplaceCounterCategory;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 public class ScheduleTableOutputSettingHelper {

@@ -13,8 +13,8 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.enums.EnumConstant;
-import nts.uk.ctx.at.aggregation.dom.schedulecounter.PersonalCounter;
-import nts.uk.ctx.at.aggregation.dom.schedulecounter.PersonalCounterCategory;
+import nts.uk.ctx.at.aggregation.dom.schedulecounter.tally.PersonalCounter;
+import nts.uk.ctx.at.aggregation.dom.schedulecounter.tally.PersonalCounterCategory;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 

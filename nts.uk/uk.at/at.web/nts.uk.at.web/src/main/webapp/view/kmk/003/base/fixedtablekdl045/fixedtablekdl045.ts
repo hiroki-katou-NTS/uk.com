@@ -793,7 +793,7 @@ class FixTableBindingHandler implements KnockoutBindingHandler {
                         var error = false;
                         for (let i = 0; i < source.length - 1; i++) {
                             if (source[i].range1().breakFrameNo < workNo) {
-                                if (source[i].range1().endTime >= currentRowData.range1().startTime && source[i].range1().startTime <= currentRowData.range1().startTime) {
+                                if (source[i].range1().endTime > currentRowData.range1().startTime && source[i].range1().startTime < currentRowData.range1().startTime) {
                                     error = true;
                                     break;
                                 }

@@ -12,7 +12,7 @@ import nts.uk.ctx.at.aggregation.app.command.schedulecounter.personalcounter.Reg
 import nts.uk.ctx.at.aggregation.app.command.schedulecounter.personalcounter.RegisterPersonalCounterCommandHandler;
 import nts.uk.ctx.at.aggregation.app.find.schedulecounter.personal.PersonalCounterCategoryDto;
 import nts.uk.ctx.at.aggregation.app.find.schedulecounter.personal.PersonalCounterFinder;
-import nts.uk.ctx.at.aggregation.dom.schedulecounter.PersonalCounterCategory;
+import nts.uk.ctx.at.aggregation.dom.schedulecounter.tally.PersonalCounterCategory;
 
 /**
  * KML002 Screen C

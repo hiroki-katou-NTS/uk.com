@@ -6,7 +6,6 @@ package nts.uk.ctx.at.shared.app.find.worktime.worktimeset.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.shared.dom.common.color.ColorCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.AbolishAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDisplayName;
@@ -36,7 +35,7 @@ public class WorkTimeSettingDto implements WorkTimeSettingSetMemento {
 	public Boolean isAbolish;
 
 	/** The color code. */
-	public String colorCode;
+//	public String colorCode;
 
 	/** The work time display name. */
 	public WorkTimeDisplayNameDto workTimeDisplayName;
@@ -105,10 +104,10 @@ public class WorkTimeSettingDto implements WorkTimeSettingSetMemento {
 	 * nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingSetMemento#
 	 * setColorCode(nts.uk.ctx.at.shared.dom.common.color.ColorCode)
 	 */
-	@Override
-	public void setColorCode(ColorCode colorCode) {
-		this.colorCode = colorCode.v();
-	}
+//	@Override
+//	public void setColorCode(ColorCode colorCode) {
+//		this.colorCode = colorCode.v();
+//	}
 
 	/*
 	 * (non-Javadoc)
@@ -122,8 +121,7 @@ public class WorkTimeSettingDto implements WorkTimeSettingSetMemento {
 	public void setWorkTimeDisplayName(WorkTimeDisplayName workTimeDisplayName) {
 		this.workTimeDisplayName = WorkTimeDisplayNameDto.builder()
 				.workTimeName(workTimeDisplayName.getWorkTimeName().v())
-				.workTimeAbName(workTimeDisplayName.getWorkTimeAbName().v())
-				.workTimeSymbol(workTimeDisplayName.getWorkTimeSymbol().v()).build();
+				.workTimeAbName(workTimeDisplayName.getWorkTimeAbName().v()).build();
 	}
 
 	/*
@@ -157,7 +155,6 @@ public class WorkTimeSettingDto implements WorkTimeSettingSetMemento {
 	            domain.getWorktimeCode().v(), 
 	            WorkTimeDivisionDto.fromDomain(domain.getWorkTimeDivision()), 
 	            domain.getAbolishAtr().value == 1, 
-	            domain.getColorCode() == null ? null : domain.getColorCode().v(), 
 	            WorkTimeDisplayNameDto.fromDomain(domain.getWorkTimeDisplayName()), 
 	            domain.getMemo() == null ? null : domain.getMemo().v(), 
 	            domain.getNote() == null ? null : domain.getNote().v());

@@ -6,10 +6,10 @@ package nts.uk.ctx.at.shared.infra.repository.worktime.fixedset;
 
 import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.FixedWorkTimezoneSet;
+import nts.uk.ctx.at.shared.dom.worktime.common.TimezoneOfFixedRestTimeSet;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixHalfDayWorkTimezoneSetMemento;
-import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixRestTimezoneSet;
-import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtWtFix;
 import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedWorkSetPK;
+import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtWtFix;
 
 /**
  * The Class JpaFixHalfDayWorkTimezoneSetMemento.
@@ -47,7 +47,7 @@ public class JpaFixHalfDayWorkTimezoneSetMemento implements FixHalfDayWorkTimezo
 	 * .worktime.fixedset.FixRestTimezoneSet)
 	 */
 	@Override
-	public void setRestTimezone(FixRestTimezoneSet restTimezone) {
+	public void setRestTimezone(TimezoneOfFixedRestTimeSet restTimezone) {
 		restTimezone.saveToMemento(new JpaFixRestHalfdayTzSetMemento(this.entity,
 				this.entity.getKshmtFixedWorkSetPK().getCid(), this.entity.getKshmtFixedWorkSetPK().getWorktimeCd(),
 				this.type));
