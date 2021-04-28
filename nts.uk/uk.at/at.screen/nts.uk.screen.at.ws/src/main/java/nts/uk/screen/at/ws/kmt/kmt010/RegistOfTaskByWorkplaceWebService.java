@@ -1,8 +1,11 @@
 package nts.uk.screen.at.ws.kmt.kmt010;
 
 
+import lombok.val;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.shared.app.query.task.GetAllTaskRefinementsByWorkplaceQuery;
+import nts.uk.ctx.at.shared.app.query.task.GetTaskFrameUsageSettingQuery;
+import nts.uk.ctx.at.shared.dom.personallaborcondition.UseAtr;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskassign.taskassignworkplace.NarrowingDownTaskByWorkplace;
 import nts.uk.screen.at.app.kmt009.TaskDto;
 import nts.uk.screen.at.app.kmt010.GetTaskInfoRegistSelectedTargetWplScreenQuery;
@@ -30,6 +33,9 @@ public class RegistOfTaskByWorkplaceWebService extends WebService {
     @Inject
     private GetAllTaskRefinementsByWorkplaceQuery getAllQuery;
 
+    @Inject
+    private GetTaskFrameUsageSettingQuery frameUsageSettingQuery;
+
     @POST
     @Path("init")
     public List<TaskFrameSettingDto> getData() {
@@ -39,10 +45,14 @@ public class RegistOfTaskByWorkplaceWebService extends WebService {
     @POST
     @Path("getAlreadySetWkps")
     public List<String> getAll() {
-        List<NarrowingDownTaskByWorkplace> data = getAllQuery.getListWorkByCid(AppContexts.user().companyId());
-        return data.stream().map(s -> s.getWorkPlaceId()).collect(Collectors.toList());
+        val cid = AppContexts.user().companyId();
+        val frameSetting = frameUsageSettingQuery.getWorkFrameUsageSetting(cid);
+        val listFrameNo = frameSetting.getFrameSettingList().stream()
+                .filter(e -> e.getUseAtr().value == UseAtr.USE.value)
+                .map(e -> e.getTaskFrameNo().v()).collect(Collectors.toList());
+        List<NarrowingDownTaskByWorkplace> data = getAllQuery.getListWorkByCid(cid,listFrameNo);
+        return data.stream().map(NarrowingDownTaskByWorkplace::getWorkPlaceId).collect(Collectors.toList());
     }
-
     @POST
     @Path("getlistbywpl")
     public Map<Integer, List<TaskDto>> getData(PramsByWpl prams) {

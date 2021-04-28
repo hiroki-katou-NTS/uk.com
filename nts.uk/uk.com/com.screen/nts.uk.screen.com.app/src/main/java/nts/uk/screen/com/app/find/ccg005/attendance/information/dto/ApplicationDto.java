@@ -1,14 +1,11 @@
 package nts.uk.screen.com.app.find.ccg005.attendance.information.dto;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-
 import lombok.Builder;
 import lombok.Data;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
-import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 
 @Builder
 @Data

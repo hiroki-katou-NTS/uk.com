@@ -327,7 +327,7 @@ module nts.uk.at.view.kaf007_ref.a.viewmodel {
 						if (_.isEmpty(holidayDateLst)) {
 							return vm.$dialog.info({ messageId: "Msg_15" }).then(() => {
 								nts.uk.request.ajax("at", API.reflectApp, result.reflectAppIdLst);
-								CommonProcess.handleAfterRegister(result, vm.isSendMail(), vm);
+								CommonProcess.handleAfterRegister(result, vm.isSendMail(), vm, false, vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.employeeInfoLst);
 							});
 						} else {
 							let dispMsg = nts.uk.resource.getMessage('Msg_15') + "\n";
@@ -335,7 +335,7 @@ module nts.uk.at.view.kaf007_ref.a.viewmodel {
 							dispMsg += x;
 							return vm.$dialog.info(dispMsg).then(() => {
 								nts.uk.request.ajax("at", API.reflectApp, result.reflectAppIdLst);
-								CommonProcess.handleAfterRegister(result, vm.isSendMail(), vm);
+								CommonProcess.handleAfterRegister(result, vm.isSendMail(), vm, false, vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.employeeInfoLst);
 							})
 						}
 					}

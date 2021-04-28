@@ -11,8 +11,8 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.schedule.app.find.budget.external.actualresult.error.dto.ExternalBudgetErrorDto;
-import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.error.ExternalBudgetError;
-import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.error.ExternalBudgetErrorRepository;
+import nts.uk.ctx.at.schedule.dom.budget.external.acceptance.error.ExternalBudgetError;
+import nts.uk.ctx.at.schedule.dom.budget.external.acceptance.error.ExternalBudgetErrorRepository;
 
 /**
  * The Class ExtBudgetErrorFinder.

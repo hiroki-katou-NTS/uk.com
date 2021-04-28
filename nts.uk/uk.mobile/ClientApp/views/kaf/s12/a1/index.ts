@@ -116,23 +116,21 @@ export class KafS12A1Component extends Vue {
                     || (i.appTimeType === 1 && self.condition3)
                     || (i.appTimeType === 2 && self.condition9)
                     || (i.appTimeType === 3 && self.condition12)) {
-                    if (i.timeValue == null) {
-                        switch (i.appTimeType) {
-                            case AppTimeType.ATWORK:
-                                i.timeValue = opActualContentDisplayLst[0].opAchievementDetail.opWorkTime;
-                                break;
-                            case AppTimeType.OFFWORK:
-                                i.timeValue = opActualContentDisplayLst[0].opAchievementDetail.opLeaveTime;
-                                break;
-                            case AppTimeType.ATWORK2:
-                                i.timeValue = opActualContentDisplayLst[0].opAchievementDetail.opWorkTime2;
-                                break;
-                            case AppTimeType.OFFWORK2:
-                                i.timeValue = opActualContentDisplayLst[0].opAchievementDetail.opDepartureTime2;
-                                break;
-                            default:
-                                break;
-                        }
+                    switch (i.appTimeType) {
+                        case AppTimeType.ATWORK:
+                            i.timeValue = opActualContentDisplayLst[0].opAchievementDetail.opWorkTime;
+                            break;
+                        case AppTimeType.OFFWORK:
+                            i.timeValue = opActualContentDisplayLst[0].opAchievementDetail.opLeaveTime;
+                            break;
+                        case AppTimeType.ATWORK2:
+                            i.timeValue = opActualContentDisplayLst[0].opAchievementDetail.opWorkTime2;
+                            break;
+                        case AppTimeType.OFFWORK2:
+                            i.timeValue = opActualContentDisplayLst[0].opAchievementDetail.opDepartureTime2;
+                            break;
+                        default:
+                            break;
                     }
                 }
             });
@@ -140,7 +138,7 @@ export class KafS12A1Component extends Vue {
             const outingTimes = opActualContentDisplayLst[0].opAchievementDetail.stampRecordOutput.outingTime || [];
             self.outingTimeZones.forEach((i: OutingTimeZone) => {
                 outingTimes.forEach((time: any) => {
-                    if (time.frameNo == i.workNo && i.timeZone.start == null && i.timeZone.end == null) {
+                    if (time.frameNo == i.workNo) {
                         i.timeZone.start = time.opStartTime;
                         i.timeZone.end = time.opEndTime;
                         i.appTimeType = time.opGoOutReasonAtr == 3 ? AppTimeType.UNION : AppTimeType.PRIVATE;

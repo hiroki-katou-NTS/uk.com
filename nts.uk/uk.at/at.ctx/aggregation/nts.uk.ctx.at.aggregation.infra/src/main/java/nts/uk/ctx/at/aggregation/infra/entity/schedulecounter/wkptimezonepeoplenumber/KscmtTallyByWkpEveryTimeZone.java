@@ -10,8 +10,8 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.aggregation.dom.schedulecounter.timezonepeople.WorkplaceCounterStartTime;
-import nts.uk.ctx.at.aggregation.dom.schedulecounter.timezonepeople.WorkplaceCounterTimeZonePeopleNumber;
+import nts.uk.ctx.at.aggregation.dom.schedulecounter.tally.timezonepeople.WorkplaceCounterStartTime;
+import nts.uk.ctx.at.aggregation.dom.schedulecounter.tally.timezonepeople.WorkplaceCounterTimeZonePeopleNumber;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 

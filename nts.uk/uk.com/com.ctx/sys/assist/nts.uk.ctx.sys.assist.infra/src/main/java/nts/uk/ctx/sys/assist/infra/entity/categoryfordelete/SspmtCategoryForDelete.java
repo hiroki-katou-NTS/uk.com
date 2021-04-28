@@ -20,7 +20,7 @@ import nts.uk.ctx.sys.assist.dom.categoryfordelete.StorageRangeSaved;
 import nts.uk.ctx.sys.assist.dom.categoryfordelete.StoredProcedureSpecified;
 import nts.uk.ctx.sys.assist.dom.categoryfordelete.SystemUsability;
 import nts.uk.ctx.sys.assist.dom.categoryfordelete.TimeStore;
-import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
  * データ削除カテゴリ
@@ -28,8 +28,8 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "SSPMT_CTG_FORDEL")
-public class SspmtCategoryForDelete extends ContractUkJpaEntity implements Serializable {
+@Table(name = "SSPCT_CTG_FORDEL")
+public class SspmtCategoryForDelete extends UkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/**

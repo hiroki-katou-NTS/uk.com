@@ -1,7 +1,6 @@
 package nts.uk.ctx.office.infra.entity.comment;
 
 import java.io.Serializable;
-import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
@@ -11,7 +10,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.office.dom.comment.EmployeeCommentInformation;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /*
  * UKDesign.データベース.ER図.オフィス支援.在席照会.コメント.OFIDT_COMMENT_SYA
@@ -21,26 +20,22 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @EqualsAndHashCode(callSuper = true)
 @Table(name = "OFIDT_COMMENT_SYA")
-public class OfiDtCommentSya extends UkJpaEntity
+public class OfiDtCommentSya extends ContractUkJpaEntity
 		implements EmployeeCommentInformation.MementoGetter, EmployeeCommentInformation.MementoSetter, Serializable {
+
 	/**
-	* 
-	*/
+	 * 
+	 */
 	private static final long serialVersionUID = 1L;
-
-	// column 排他バージョン
-	@Column(name = "EXCLUS_VER")
-	private long version;
-
-	// column 契約コード
-	@Basic(optional = false)
-	@Column(name = "CONTRACT_CD")
-	private String contractCd;
-
+	
+	// column　会社ID
+	@Column(name = "CID")
+	private String cid;
+	
 	// Embedded primary key 社員ID and 年月日
 	@EmbeddedId
 	private OfiDtCommentSyaPK pk;
-
+	
 	// column コメント
 	@NotNull
 	@Column(name = "COMMENT")

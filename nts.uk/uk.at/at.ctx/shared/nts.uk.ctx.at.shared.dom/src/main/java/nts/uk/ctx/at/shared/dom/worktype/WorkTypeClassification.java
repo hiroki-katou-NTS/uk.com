@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 /**
  * The Enum WorkTypeClassification
  * 勤務種類の分類
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.shared.就業規則.勤務種類.勤務種類の分類
  */
 @AllArgsConstructor
 public enum WorkTypeClassification {

@@ -43,10 +43,8 @@ public class AlarmDisplayDataDto {
 	 */
 	private Integer displayAtr;
 	
-	/**
-	 * 識別キー
-	 */
-	private String identificationKey;
+	//パターンコード
+	private String patternCode;
 	
 	/**
 	 * リンクURL
@@ -57,5 +55,8 @@ public class AlarmDisplayDataDto {
 	 * 既読日時
 	 */
 	private GeneralDateTime alreadyDatetime;
+	
+	//通知ID
+	private String notificationId;
 	
 }

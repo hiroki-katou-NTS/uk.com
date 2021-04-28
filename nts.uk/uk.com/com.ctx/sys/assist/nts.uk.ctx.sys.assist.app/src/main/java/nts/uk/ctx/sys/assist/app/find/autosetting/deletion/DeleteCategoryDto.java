@@ -2,29 +2,17 @@ package nts.uk.ctx.sys.assist.app.find.autosetting.deletion;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.sys.assist.app.find.autosetting.AbstractCategoryDto;
 import nts.uk.ctx.sys.assist.dom.categoryfordelete.CategoryForDelete;
 import nts.uk.ctx.sys.assist.dom.deletedata.DataDeletionSelectionCategory;
 
 @Data
+@EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor
 @NoArgsConstructor
-public class DeleteCategoryDto implements DataDeletionSelectionCategory.MementoGetter {
-	
-	/**
-	 * カテゴリID
-	 */
-	private String categoryId;
-	
-	/**
-	 * カテゴリ名称
-	 */
-	private String categoryName;
-	
-	/**
-	 * システム種類
-	 */
-	private int systemType;
+public class DeleteCategoryDto extends AbstractCategoryDto implements DataDeletionSelectionCategory.MementoGetter {
 	
 	/**
 	 * パータンコード

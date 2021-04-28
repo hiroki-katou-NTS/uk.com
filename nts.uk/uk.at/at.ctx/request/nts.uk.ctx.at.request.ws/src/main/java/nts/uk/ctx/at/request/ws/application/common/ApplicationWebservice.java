@@ -45,13 +45,13 @@ import nts.uk.ctx.at.request.app.find.application.common.ObjApprovalRootInput;
 import nts.uk.ctx.at.request.app.find.application.common.OutputDetailCheckDto;
 import nts.uk.ctx.at.request.app.find.application.common.dto.AppDateParamCommon;
 import nts.uk.ctx.at.request.app.find.application.common.dto.ApplicationMetaDto;
-import nts.uk.ctx.at.request.app.find.application.common.dto.ApplicationPeriodDto;
 import nts.uk.ctx.at.request.app.find.application.common.dto.ApplicationSendDto;
 import nts.uk.ctx.at.request.app.find.application.common.dto.ClosureParam;
 import nts.uk.ctx.at.request.app.find.application.requestofearch.GetDataAppCfDetailFinder;
 import nts.uk.ctx.at.request.app.find.setting.request.application.ApplicationDeadlineDto;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.appabsence.HolidayAppType;
+import nts.uk.ctx.at.request.dom.application.common.service.application.SendMailDialogParam;
 import nts.uk.ctx.at.request.dom.application.common.service.application.output.ApplicationForRemandOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.InputGetDetailCheck;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.RemandCommand;
@@ -190,8 +190,8 @@ public class ApplicationWebservice extends WebService {
 	}
 	@POST
 	@Path("getApplicationForSendByAppID")
-	public ApplicationSendDto getApplicationForSendByAppID(String appID){
-		return finderApp.getAppByIdForSend(appID);
+	public ApplicationSendDto getApplicationForSendByAppID(SendMailDialogParam param){
+		return finderApp.getAppByIdForSend(param);
 	}
 	
 	@POST

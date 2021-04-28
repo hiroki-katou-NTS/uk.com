@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+
 /**
  * 
  * @author tutk
@@ -12,6 +13,11 @@ import nts.arc.time.calendar.period.DatePeriod;
  */
 public interface WorkSchedulePub {
 	public Optional<WorkScheduleExport> get(String employeeID , GeneralDate ymd);
+
+	/**
+	 * 社員ID(List)、期間を設定して勤務予定を取得する
+	 */
+	public List<WorkScheduleExport> getList(List<String> sids, DatePeriod period);
 	
 	public List<WorkScheduleBasicInforExport> get(List<String> lstSid , DatePeriod ymdPeriod);
 	

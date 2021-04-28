@@ -6,7 +6,7 @@ package nts.uk.ctx.at.schedule.app.find.budget.external.actualresult.dto;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.LineStart;
+import nts.uk.ctx.at.schedule.dom.budget.external.acceptance.LineStart;
 
 /**
  * The Class ExtBudgetExtractCondition.

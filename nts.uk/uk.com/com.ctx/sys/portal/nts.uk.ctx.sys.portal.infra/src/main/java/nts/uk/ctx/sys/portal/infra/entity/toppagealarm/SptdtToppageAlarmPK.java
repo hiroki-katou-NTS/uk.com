@@ -4,7 +4,6 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -23,34 +22,31 @@ public class SptdtToppageAlarmPK implements Serializable {
 
 	@NonNull
 	@Column(name = "CID")
-	public String cId;
+	private String cId;
 
 	/**
 	 * アラーム分類
 	 */
 	@NonNull
 	@Column(name = "ALARM_CLS")
-	public String alarmCls;
-
-	/**
-	 * 識別キー
-	 */
-	@NonNull
-	@Column(name = "IDEN_KEY")
-	public String idenKey;
+	private Integer alarmCls;
 
 	/**
 	 * 表示社員ID
 	 */
 	@NonNull
 	@Column(name = "DISP_SID")
-	public String dispSid;
+	private String dispSid;
 
 	/**
 	 * 表示社員区分
 	 */
 	@NonNull
 	@Column(name = "DISP_ATR")
-	public String dispAtr;
+	private Integer dispAtr;
+
+	@NonNull
+	@Column(name = "INDEX_NO")
+	private Integer indexNo;
 	
 }

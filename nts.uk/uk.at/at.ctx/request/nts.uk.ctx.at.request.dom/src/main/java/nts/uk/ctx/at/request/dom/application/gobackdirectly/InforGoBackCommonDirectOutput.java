@@ -28,7 +28,9 @@ public class InforGoBackCommonDirectOutput {
 //	勤務種類リスト
 	private List<WorkType> lstWorkType;
 //	直行直帰申請
-	private Optional<GoBackDirectly> goBackDirectly = Optional.ofNullable(null);
+	private Optional<GoBackDirectly> goBackDirectly = Optional.empty();
 //	時間帯(使用区分付き)
 	private List<TimezoneUse> timezones = Collections.emptyList();
+//	申請中の勤務情報
+	private Optional<WorkInfo> workInfo = Optional.empty(); 
 }

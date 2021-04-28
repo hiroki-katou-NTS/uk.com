@@ -20,6 +20,7 @@ import nts.uk.ctx.sys.assist.dom.category.StorageRangeSaved;
 import nts.uk.ctx.sys.assist.dom.category.StoredProcedureSpecified;
 import nts.uk.ctx.sys.assist.dom.category.SystemUsability;
 import nts.uk.ctx.sys.assist.dom.category.TimeStore;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
  * カテゴリ
@@ -28,7 +29,7 @@ import nts.uk.ctx.sys.assist.dom.category.TimeStore;
 @NoArgsConstructor
 @Entity
 @Table(name = "SSPCT_SAVE_CATEGORY")
-public class SspctSaveCategory implements Serializable {
+public class SspctSaveCategory extends UkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/**
@@ -131,8 +132,8 @@ public class SspctSaveCategory implements Serializable {
 				domain.getStorageRangeSaved().value);
 	}
 
-//	@Override
-//	protected Object getKey() {
-//		return categoryId;
-//	}
+	@Override
+	protected Object getKey() {
+		return categoryId;
+	}
 }

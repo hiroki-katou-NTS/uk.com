@@ -352,12 +352,12 @@ public class MonthlyAggregationRemainingNumberImpl implements MonthlyAggregation
 		// 期間内の振休振出残数を取得する
 		val inputParam = new AbsRecMngInPeriodRefactParamInput(this.companyId, this.employeeId,
 				period,
-				period.end(), (interimRemainMngMode == InterimRemainMngMode.MONTHLY), 
+				period.end(), (interimRemainMngMode == InterimRemainMngMode.MONTHLY),
 				this.isOverWriteRemain,
 				useAbsMng, interimMng, useRecMng,
-				Optional.empty(), 
-				Optional.empty(), 
-				Optional.empty(), 
+				Optional.empty(),
+				Optional.empty(),
+				Optional.empty(),
 				new FixedManagementDataMonth());
 		val aggrResult = NumberCompensatoryLeavePeriodQuery.process(require, inputParam);
 		if (aggrResult != null) {
@@ -412,17 +412,17 @@ public class MonthlyAggregationRemainingNumberImpl implements MonthlyAggregation
 		}
 
 		// 期間内の休出代休残数を取得する
-		
+
 		BreakDayOffRemainMngRefactParam inputRefactor = new BreakDayOffRemainMngRefactParam(
 				this.companyId, this.employeeId,
 				period,
-				(interimRemainMngMode == InterimRemainMngMode.MONTHLY), 
-				period.end(), 
+				(interimRemainMngMode == InterimRemainMngMode.MONTHLY),
+				period.end(),
 				this.isOverWriteRemain,
-				interimMng, 
-				Optional.empty(), 
-				Optional.empty(), 
-				breakMng, 
+				interimMng,
+				Optional.empty(),
+				Optional.empty(),
+				breakMng,
 				dayOffMng,
 				Optional.empty(), new FixedManagementDataMonth());
 		//代休残数 ← 残日数　（アルゴリズム「期間内の代休残数を取得する」のoutput）
@@ -543,9 +543,9 @@ public class MonthlyAggregationRemainingNumberImpl implements MonthlyAggregation
 		// this.dailyInterimRemainMngs =
 		// this.interimRemOffMonth.monthInterimRemainData(
 		// this.companyId, this.employeeId, period);
-		
+
 		/** Workを考慮した月次処理用の暫定残数管理データを作成する */
-		this.dailyInterimRemainMngs = CreateDailyInterimRemainMngs.createDailyInterimRemainMngs(require, cacheCarrier, 
+		this.dailyInterimRemainMngs = CreateDailyInterimRemainMngs.createDailyInterimRemainMngs(require, cacheCarrier,
 				this.companyId, this.employeeId, period, this.monthlyCalculatingDailys.getDailyWorks(this.employeeId),
 				this.companySets.getAbsSettingOpt(), this.companySets.getDayOffSetting(), this.aggregateResult.getAttendanceTime());
 
@@ -568,6 +568,9 @@ public class MonthlyAggregationRemainingNumberImpl implements MonthlyAggregation
 		proc.setEmployeeId(employeeId);
 		proc.setCompanySets(comSetting);
 		proc.setMonthlyCalculatingDailys(dailys);
+		// Tạm fix bug NullPointerException (a Tín sửa)
+		proc.aggregateResult = new AggregateMonthlyRecordValue();
+		proc.aggregateResult.setAttendanceTime(Optional.empty());
 		proc.createDailyInterimRemainMngs(require,cacheCarrier,period);
 		return proc.getDailyInterimRemainMngs();
 	}

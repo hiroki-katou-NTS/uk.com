@@ -383,6 +383,7 @@ module nts.uk.com.view.cmf003.c {
             pattern.patternName = param.patternName;
             pattern.displayCode = pattern.patternClassification + pattern.code;
             vm.patternList.push(pattern);
+            vm.patternList(_.orderBy(vm.patternList(), ['patternClassification', 'code'], ['desc', 'asc']));
             vm.selectPattern(pattern.code, pattern.patternClassification);
 
             if (vm.selectedPatternCode() === '') {
@@ -469,8 +470,8 @@ module nts.uk.com.view.cmf003.c {
       service.selectPattern(param).then((res) => {
         vm.screenMode(ScreenMode.UPDATE);
         vm.screenMode.valueHasMutated();
-        if (res.selectedCategories && res.selectedCategories.length > 0) {
-          const pattern: any = res.selectedCategories[0].pattern;
+        if (res.pattern) {
+          const pattern: any = res.pattern;
           vm.codeValue(pattern.patternCode);
           vm.nameValue(pattern.patternName);
           vm.categoriesFiltered([]);
@@ -482,7 +483,7 @@ module nts.uk.com.view.cmf003.c {
           vm.categoriesFiltered(arr);
           arr = [];
           vm.currentCateSelected([]);
-          _.forEach(res.selectedCategories, c => {
+          _.forEach(res.pattern.selectCategories, c => {
             let category = vm.convertToCategory(c);
             arr.push(category);
           });

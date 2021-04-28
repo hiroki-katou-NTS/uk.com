@@ -6,6 +6,7 @@ package nts.uk.ctx.at.shared.dom.worktime.flexset;
 
 import java.util.Optional;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.val;
@@ -21,6 +22,7 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
 //フレックス勤務の平日出勤用勤務時間帯
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
 public class FlexHalfDayWorkTime extends WorkTimeDomainObject implements Cloneable{
 
 	/** The rest timezone. */
@@ -156,11 +158,11 @@ public class FlexHalfDayWorkTime extends WorkTimeDomainObject implements Cloneab
 	 */
 	private void restoreDetailMode(ScreenMode screenMode,FlexWorkSetting flexWorkSet, FlexHalfDayWorkTime oldDomain) {
 		// restore worktime data of dayAtr = AM, PM
-		if (!flexWorkSet.isUseHalfDayShift() && oldDomain.getAmpmAtr() != AmPmAtr.ONE_DAY) {
+		if (oldDomain.getAmpmAtr() != AmPmAtr.ONE_DAY) {
 			this.workTimezone.restoreData(oldDomain.getWorkTimezone());
 		}
 		// restore rest time data of dayAtr = AM, PM
-		if (!flexWorkSet.isUseHalfDayShift() && oldDomain.getAmpmAtr() != AmPmAtr.ONE_DAY) {
+		if (oldDomain.getAmpmAtr() != AmPmAtr.ONE_DAY) {
 			this.restTimezone = oldDomain.getRestTimezone();
 			Optional<FlexHalfDayWorkTime> oneDay = flexWorkSet.getLstHalfDayWorkTimezone().stream()
 					.filter(half -> half.ampmAtr.equals(AmPmAtr.ONE_DAY)).findFirst();
@@ -168,7 +170,7 @@ public class FlexHalfDayWorkTime extends WorkTimeDomainObject implements Cloneab
 				this.restTimezone.restoreFixRestTime(oneDay.get().getRestTimezone().isFixRestTime());
 			}
 		} else {
-			this.restTimezone.correctData(screenMode, oldDomain.getRestTimezone());
+			this.restTimezone.correctData(oldDomain.getRestTimezone());
 		}
 	}
 	

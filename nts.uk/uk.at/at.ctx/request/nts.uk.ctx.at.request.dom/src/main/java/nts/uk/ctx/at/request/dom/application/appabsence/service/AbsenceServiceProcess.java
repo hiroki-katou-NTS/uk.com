@@ -206,7 +206,7 @@ public interface AbsenceServiceProcess {
 	 * @param appAbsenceStartInfoOutput 休暇申請起動時の表示情報
 	 */
 	public List<ConfirmMsgOutput> holidayCommonCheck(String companyID, GeneralDate closureStartDate, ApplyForLeave appAbsence,
-			AppAbsenceStartInfoOutput appAbsenceStartInfoOutput);
+			AppAbsenceStartInfoOutput appAbsenceStartInfoOutput, List<GeneralDate> lstHolidayDate);
 
 	/**
 	 * 年休のチェック処理

@@ -1,7 +1,6 @@
 package nts.uk.ctx.office.infra.entity.goout;
 
 import java.io.Serializable;
-import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
@@ -11,7 +10,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.office.dom.goout.GoOutEmployeeInformation;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /*
  * UKDesign.データベース.ER図.オフィス支援.在席照会.外出.OFIDT_GO_OUT_INFO_SYA
@@ -21,21 +20,16 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @EqualsAndHashCode(callSuper = true)
 @Table(name = "OFIDT_GO_OUT_INFO_SYA")
-public class OfidtGoOutInfoSya extends UkJpaEntity
+public class OfidtGoOutInfoSya extends ContractUkJpaEntity
 		implements GoOutEmployeeInformation.MementoGetter, GoOutEmployeeInformation.MementoSetter, Serializable {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
-	// column 排他バージョン
-	@Column(name = "EXCLUS_VER")
-	private long version;
-
-	// column 契約コード
-	@Basic(optional = false)
-	@Column(name = "CONTRACT_CD")
-	private String contractCd;
+	// column　会社ID
+	@Column(name = "CID")
+	private String cid;
 
 	// Embedded primary key 社員ID and 年月日
 	@EmbeddedId

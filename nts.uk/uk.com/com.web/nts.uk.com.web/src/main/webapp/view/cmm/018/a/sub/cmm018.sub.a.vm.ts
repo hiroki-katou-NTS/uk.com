@@ -14,6 +14,7 @@ module nts.uk.com.view.cmm018.a.sub {
             lstData: KnockoutObservableArray<vmbase.CompanyAppRootADto> = ko.observableArray([]);
             intervalDetectResolution: any;
             gridName: any;
+
             constructor() {  
             }
             // fix bug 109950
@@ -315,21 +316,16 @@ module nts.uk.com.view.cmm018.a.sub {
                             columnKey: 'deleteRoot', allowResizing: false
                         }],
                         columnResized: function(event, ui) {
-                            if (ui.columnKey === "appName") {
+                            
+                            if (rootType == vmbase.RootType.COMPANY) {
+                                uk.localStorage.setItem(ui.columnKey + "_CMM018_A", ui.newWidth);
+                            } else if (rootType == vmbase.RootType.WORKPLACE) {
+                                uk.localStorage.setItem(ui.columnKey + "_CMM018_B", ui.newWidth);
                                 
-                                if (rootType == vmbase.RootType.COMPANY) {
-//                                    company
-                                    uk.localStorage.setItem("AppName_CMM018_A", ui.newWidth);
-                                }
-                                else if (rootType == vmbase.RootType.WORKPLACE) {
-//                                    workplace
-                                    uk.localStorage.setItem("AppName_CMM018_B", ui.newWidth);
-                                    
-                                }else {
-//                                    person
-                                    uk.localStorage.setItem("AppName_CMM018_C", ui.newWidth);
-                                } 
-                            }
+                            } else {
+                                uk.localStorage.setItem(ui.columnKey + "_CMM018_C", ui.newWidth);
+                            } 
+                       
                            
                         }
                     },
@@ -349,41 +345,160 @@ module nts.uk.com.view.cmm018.a.sub {
                 
             setTimeout(() => {
                 let width;
+				let widthPhase1;
+				let widthPhase2;
+				let widthPhase3;
+				let widthPhase4;
+				let widthPhase5;
+				let widthDeleteRoot;
                 
                 if (rootType == vmbase.RootType.COMPANY) {
-    //                  company
-                   width = uk.localStorage.getItem("AppName_CMM018_A");
+                  	width = uk.localStorage.getItem("appName_CMM018_A");
+				   	widthPhase1 = uk.localStorage.getItem("phase1_CMM018_A");
+					widthPhase2 = uk.localStorage.getItem("phase2_CMM018_A");
+					widthPhase3 = uk.localStorage.getItem("phase3_CMM018_A");
+					widthPhase4 = uk.localStorage.getItem("phase4_CMM018_A");
+					widthPhase5 = uk.localStorage.getItem("phase5_CMM018_A");
+					widthDeleteRoot = uk.localStorage.getItem("deleteRoot_CMM018_A");
+
                 }
                 else if (rootType == vmbase.RootType.WORKPLACE) {
-                   width = uk.localStorage.getItem("AppName_CMM018_B");
-                      
-                }else {
-                   width = uk.localStorage.getItem("AppName_CMM018_C");
+                   	width = uk.localStorage.getItem("appName_CMM018_B");
+                   	widthPhase1 = uk.localStorage.getItem("phase1_CMM018_B");
+					widthPhase2 = uk.localStorage.getItem("phase2_CMM018_B");
+					widthPhase3 = uk.localStorage.getItem("phase3_CMM018_B");
+					widthPhase4 = uk.localStorage.getItem("phase4_CMM018_B");
+					widthPhase5 = uk.localStorage.getItem("phase5_CMM018_B");   
+					widthDeleteRoot = uk.localStorage.getItem("deleteRoot_CMM018_B");
+                } else {
+                   	width = uk.localStorage.getItem("appName_CMM018_C");
+
+					widthPhase1 = uk.localStorage.getItem("phase1_CMM018_C");
+					widthPhase2 = uk.localStorage.getItem("phase2_CMM018_C");
+					widthPhase3 = uk.localStorage.getItem("phase3_CMM018_C");
+					widthPhase4 = uk.localStorage.getItem("phase4_CMM018_C");
+					widthPhase5 = uk.localStorage.getItem("phase5_CMM018_C");
+					widthDeleteRoot = uk.localStorage.getItem("deleteRoot_CMM018_C");
                 } 
-                // set width column クリア #110014
-                $(self.gridName).igGridResizing("resize", "deleteRoot", 75);
+                
                 if (width.isPresent()) {
-                    $(self.gridName).igGridResizing("resize", "appName", Number(width.get()));
-                }else {
-                    // calculate width's appName that equals character number of text , 1 character = 15 px
-                    let numberText = 0;
+					width = Number(width.get());
+					/*
+						const widthPhase1 = self.calWidthPhase(widthStandardPhase, '.openK_Phase1 span');
+						const widthPhase2 = self.calWidthPhase(widthStandardPhase, '.openK_Phase2 span');
+						const widthPhase3 = self.calWidthPhase(widthStandardPhase, '.openK_Phase3 span');
+						const widthPhase4 = self.calWidthPhase(widthStandardPhase, '.openK_Phase4 span');
+						const widthPhase5 = self.calWidthPhase(widthStandardPhase, '.openK_Phase5 span');
+					
+					 */
+					if (widthPhase1.isPresent()) {
+						widthPhase1 = Number(widthPhase1.get());						
+					} else {
+						$(self.gridName).igGridResizing("resize", "phase1");
+					}
+					if (widthPhase2.isPresent()) {
+						widthPhase2 = Number(widthPhase2.get());						
+					} else {
+						$(self.gridName).igGridResizing("resize", "phase2");
+					}
+					if (widthPhase3.isPresent()) {
+						widthPhase3 = Number(widthPhase3.get());						
+					} else {
+						$(self.gridName).igGridResizing("resize", "phase3");
+					}
+					if (widthPhase4.isPresent()) {
+						widthPhase4 = Number(widthPhase4.get());						
+					} else {
+						$(self.gridName).igGridResizing("resize", "phase4");
+					}
+					if (widthPhase5.isPresent()) {
+						widthPhase5 = Number(widthPhase5.get());						
+					} else {
+						$(self.gridName).igGridResizing("resize", "phase5");
+					}
+					
+					widthDeleteRoot = Number(widthDeleteRoot.get());	
+					
+					
+                } else {
+                    let widthAppName = 130 as number;
+					
                     _.forEach(self.lstData(), (item, index) => {
-                        if(item.appTypeName) {
-                            numberText = item.appTypeName.length >= numberText ? (index == 0 ? item.appTypeName.length + 1 : item.appTypeName.length) : numberText;
-                        }
+						const realWidth = (index == 0 ? self.cal(item.appTypeName) + 10 : self.cal(item.appTypeName));
+                        widthAppName = realWidth > widthAppName ? realWidth : widthAppName;
                         
                     })
-                    if(numberText == 0) {
-                        $(self.gridName).igGridResizing("resize", "appName", 130);
-                    }else if(numberText <= 20) {
-                        $(self.gridName).igGridResizing("resize", "appName", 15*numberText);
-                    }
+					width = widthAppName;
+					const widthGrid = $(self.gridName).igGrid('option', 'width');
+					const widthStandardPhase = (widthGrid - width - 75) / 5 - 4;
+					widthPhase1 = widthStandardPhase;
+					widthPhase2 = widthStandardPhase;
+					widthPhase3 = widthStandardPhase;
+					widthPhase4 = widthStandardPhase;
+					widthPhase5 = widthStandardPhase;
+					widthDeleteRoot = 75;
+					
+					
+					if (rootType == vmbase.RootType.COMPANY) {
+	                  	uk.localStorage.setItem("appName_CMM018_A", width);
+					   	uk.localStorage.setItem("phase1_CMM018_A", widthPhase1);
+						uk.localStorage.setItem("phase2_CMM018_A", widthPhase2);
+						uk.localStorage.setItem("phase3_CMM018_A", widthPhase3);
+						uk.localStorage.setItem("phase4_CMM018_A", widthPhase4);
+						uk.localStorage.setItem("phase5_CMM018_A", widthPhase5);
+						uk.localStorage.setItem("deleteRoot_CMM018_A", widthDeleteRoot);
+
+                	}
+                	else if (rootType == vmbase.RootType.WORKPLACE) {
+	                   	uk.localStorage.setItem("appName_CMM018_B", width);
+					   	uk.localStorage.setItem("phase1_CMM018_B", widthPhase1);
+						uk.localStorage.setItem("phase2_CMM018_B", widthPhase2);
+						uk.localStorage.setItem("phase3_CMM018_B", widthPhase3);
+						uk.localStorage.setItem("phase4_CMM018_B", widthPhase4);
+						uk.localStorage.setItem("phase5_CMM018_B", widthPhase5); 
+						uk.localStorage.setItem("deleteRoot_CMM018_B", widthDeleteRoot);
+               		 } else {
+	                   	uk.localStorage.setItem("appName_CMM018_C", width);
+					   	uk.localStorage.setItem("phase1_CMM018_C", widthPhase1);
+						uk.localStorage.setItem("phase2_CMM018_C", widthPhase2);
+						uk.localStorage.setItem("phase3_CMM018_C", widthPhase3);
+						uk.localStorage.setItem("phase4_CMM018_C", widthPhase4);
+						uk.localStorage.setItem("phase5_CMM018_C", widthPhase5);
+						uk.localStorage.setItem("deleteRoot_CMM018_C", widthDeleteRoot);
+                	} 
+					
+
+					
                 }
+
+				
+
+
+				if ($(self.gridName).length) {
+					$(self.gridName).igGridResizing("resize", "appName", width);						
+					$(self.gridName).igGridResizing("resize", "phase1", widthPhase1);	
+					$(self.gridName).igGridResizing("resize", "phase2", widthPhase2);	
+					$(self.gridName).igGridResizing("resize", "phase3", widthPhase3);	
+					$(self.gridName).igGridResizing("resize", "phase4", widthPhase4);	
+					$(self.gridName).igGridResizing("resize", "phase5", widthPhase5);
+					// set width column クリア #110014
+                	$(self.gridName).igGridResizing("resize", "deleteRoot", widthDeleteRoot);	
+				}
+				
+				
+
+				
+				
+				
                 
+				
+				 
                 _.forEach(["grid_matome", "grid_matomeA", "grid_matomeB", "grid_matomeC", "grid_matomeD", "grid_matomeE", "grid_matomeF"], gridName => { 
                     uk.localStorage.removeItem(request.location.current.rawUrl + "/" + gridName );
-                });
-            }, 0);
+            	});
+
+
+        	}, 0);
                 
             $(self.gridName).on("click", ".button-delete", function(evt, ui) {
                 let _this = $(this);
@@ -705,6 +820,16 @@ module nts.uk.com.view.cmm018.a.sub {
             dfd.resolve();
             return dfd.promise();
         }
+
+		public calWidthPhase(widthStandardPhase: number, nameDomByJquery: string): number {
+			let widthPhase = widthStandardPhase;
+			_.forEach($(nameDomByJquery), (el: any) => {
+				const widthReal = (el.offsetWidth) + 10;
+				widthPhase = widthReal > widthPhase ? widthReal : widthPhase;
+			});
+			
+			return widthPhase;
+		}
         resize1(){
             let self = this;
             let a = __viewContext.viewModel.viewmodelSubA.items();
@@ -732,18 +857,14 @@ module nts.uk.com.view.cmm018.a.sub {
             let width = self.cal(a[0].phase1);
             alert(width);
         }
-        cal(inputText) {
-            let font = "14px DroidSansMono, Meiryo"; 
-            let canvas = document.createElement("canvas"); 
+        cal(inputText: string) {
+            const font = "14px DroidSansMono, Meiryo"; 
+            const canvas = document.createElement("canvas"); 
             let context = canvas.getContext("2d"); 
             context.font = font; 
-            let width = context.measureText(inputText).width; 
-            let textPixel = Math.ceil(width); 
-            let halfPixel = nts.uk.text.countHalf(inputText)* 8
-            console.log(inputText);
-            console.log(textPixel);
-            console.log(halfPixel);
-            console.log((textPixel + halfPixel)/2);
+            const width = context.measureText(inputText).width; 
+            const textPixel = Math.ceil(width); 
+            const halfPixel = nts.uk.text.countHalf(inputText)* 8;
             return (textPixel + halfPixel)/2 + 5; 
         }  
         convertlistRoot(root: vmbase.CompanyAppRootADto): vmbase.Root{
@@ -849,6 +970,50 @@ module nts.uk.com.view.cmm018.a.sub {
                 if(_.isEmpty(root)) return;
                 __viewContext.viewModel.viewmodelA.deleteRow(root.approvalId, empRType);
             }
+
+			setWidthCloseDialog(rootType: vmbase.RootType, phaseOrder: number) {
+				if (rootType == vmbase.RootType.COMPANY) {
+					uk.localStorage.setItem("phase" + phaseOrder + "_CMM018_A", null);
+						   	
+        		} else if (rootType == vmbase.RootType.WORKPLACE) {
+					uk.localStorage.setItem("phase" + phaseOrder + "_CMM018_B", null);	   
+           		} else {
+					uk.localStorage.setItem("phase" + phaseOrder + "_CMM018_C", null);	 
+            	} 
+				/*
+					const widthPhase1 = $('#grid_matome_phase1').width();
+					const widthPhase2 = $('#grid_matome_phase2').width();
+					const widthPhase3 = $('#grid_matome_phase3').width();
+					const widthPhase4 = $('#grid_matome_phase4').width();
+					const widthPhase5 = $('#grid_matome_phase5').width();
+					
+					if (rootType == vmbase.RootType.COMPANY) {
+						   	uk.localStorage.setItem("phase1_CMM018_A", widthPhase1);
+							uk.localStorage.setItem("phase2_CMM018_A", widthPhase2);
+							uk.localStorage.setItem("phase3_CMM018_A", widthPhase3);
+							uk.localStorage.setItem("phase4_CMM018_A", widthPhase4);
+							uk.localStorage.setItem("phase5_CMM018_A", widthPhase5);
+	
+	        		} else if (rootType == vmbase.RootType.WORKPLACE) {
+						   	uk.localStorage.setItem("phase1_CMM018_B", widthPhase1);
+							uk.localStorage.setItem("phase2_CMM018_B", widthPhase2);
+							uk.localStorage.setItem("phase3_CMM018_B", widthPhase3);
+							uk.localStorage.setItem("phase4_CMM018_B", widthPhase4);
+							uk.localStorage.setItem("phase5_CMM018_B", widthPhase5); 
+	           		 } else {
+						   	uk.localStorage.setItem("phase1_CMM018_C", widthPhase1);
+							uk.localStorage.setItem("phase2_CMM018_C", widthPhase2);
+							uk.localStorage.setItem("phase3_CMM018_C", widthPhase3);
+							uk.localStorage.setItem("phase4_CMM018_C", widthPhase4);
+							uk.localStorage.setItem("phase5_CMM018_C", widthPhase5);
+	            	} 
+				
+				 */
+			}
+
+
+			
+
         }
     }
 }

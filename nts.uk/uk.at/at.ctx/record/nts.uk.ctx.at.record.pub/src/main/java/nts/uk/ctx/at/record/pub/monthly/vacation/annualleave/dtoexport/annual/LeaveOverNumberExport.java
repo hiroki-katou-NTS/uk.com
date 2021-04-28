@@ -24,4 +24,20 @@ public class LeaveOverNumberExport {
 	 */
 	public Optional<Integer> timeOver;
 
+	/**
+	 * コンストラクタ
+	 * @param c
+	 */
+	public LeaveOverNumberExport(LeaveOverNumberExport c) {
+		numberOverDays = c.getNumberOverDays();
+		timeOver = c.getTimeOver().map(mapper->mapper);
+	}
+
+	/**
+	 * クローン
+	 */
+	public LeaveOverNumberExport clone() {
+		return new LeaveOverNumberExport(this);
+	}
+
 }

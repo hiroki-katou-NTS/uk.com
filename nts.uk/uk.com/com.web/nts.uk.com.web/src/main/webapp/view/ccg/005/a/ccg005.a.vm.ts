@@ -561,7 +561,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
         $('.legend-item-symbol').first().css('border', '1px groove').height(16).width(16);
         $('.legend-item').css('margin-bottom', '5px');
       });
-      vm.selectedDate(moment.utc().format('YYYYMMDD'));
+      vm.selectedDate(moment().format('YYYYMMDD'));
       vm.toStartScreen();
       vm.initResizeable(vm);
       vm.initPopupArea();
@@ -572,9 +572,13 @@ module nts.uk.at.view.ccg005.a.screenModel {
       vm.perPage.subscribe(() => vm.resetPagination());
       vm.paginationText.subscribe(() => {
         vm.attendanceInformationDtosDisplay(_.slice(vm.attendanceInformationDtosDisplayClone(), vm.startPage() - 1, vm.endPage()));
+      });
+
+      vm.attendanceInformationDtosDisplay.subscribe(() => {
         clearTimeout(reloadAvatar);
         reloadAvatar = setTimeout(() => { vm.bindingLoopData(); }, 1);
       });
+
       (ko.bindingHandlers.ntsIcon as any).init($('.ccg005-status-img-A1_7'), () => ({ no: vm.activityStatusIcon(), width: 20, height: 20 }));
 
       //focus
@@ -626,11 +630,12 @@ module nts.uk.at.view.ccg005.a.screenModel {
           return;
         }
 
-        const selectedDate = moment.utc(moment.utc(vm.selectedDate()).format('YYYY/MM/DD'));
-        const baseDate = moment.utc(moment.utc().format('YYYY/MM/DD'));
+        const selectedDate = moment(vm.selectedDate()).startOf("day");
+        const baseDate = moment().startOf("day");
         vm.isSameOrBeforeBaseDate(selectedDate.isSameOrBefore(baseDate));
         vm.isAfter(selectedDate.isAfter(baseDate));
         vm.isBaseDate(selectedDate.isSame(baseDate));
+
         // パラメータ「在席情報を取得」
         const empIds = _.map(vm.attendanceInformationDtos(), atd => {
           if (_.find(vm.listPersonalInfo(), item => item.employeeId === atd.sid)) {
@@ -783,7 +788,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
         vm.goOutParams(new GoOutParam({
           sid: vm.loginSid,
           businessName: vm.businessName(),
-          goOutDate: moment.utc().format("YYYY/MM/DD")
+          goOutDate: moment().format("YYYY/MM/DD")
         }));
         vm.activatedStatus(vm.activityStatus());
         $('#ccg005-status-popup').ntsPopup({
@@ -818,7 +823,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
       vm.goOutParams(new GoOutParam({
         sid: sid,
         businessName: businessName,
-        goOutDate: moment.utc().format("YYYY/MM/DD")
+        goOutDate: moment().format("YYYY/MM/DD")
       }));
 
       //update current status
@@ -972,7 +977,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
       const vm = this;
 
       //fix bug #115227
-      if(moment.utc(vm.selectedDate()).format('YYYYMMDD') !== moment.utc().format('YYYYMMDD')) {
+      if(!vm.isBaseDate()) {
         return "background-color-default";
       }
 
@@ -1111,7 +1116,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
       vm.searchValue('');
 
       //reset selected date to today
-      vm.selectedDate(moment.utc().format('YYYYMMDD'));
+      vm.selectedDate(moment().format('YYYYMMDD'));
 
       //reset pagination
       vm.currentPage(0);
@@ -1210,10 +1215,6 @@ module nts.uk.at.view.ccg005.a.screenModel {
       if (_.isEmpty(vm.comment())) {
         return;
       }
-      // //set input value to comment in db
-      // if(!vm.originalComment().match(vm.comment())) {
-      //   return vm.comment(vm.originalComment());
-      // }
       vm.comment('');
       const command = {
         date: moment.utc(vm.commentDate()).toISOString(),
@@ -1268,6 +1269,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
      */
     public onSearchEmployee() {
       const vm = this;
+      let reloadAvatar: any;
       if (vm.searchValue().trim().length > 0) {
         const param = {
           keyWorks: vm.searchValue(),
