@@ -21,7 +21,7 @@
 						items: items, selected: currentCodeList, selectedKey: 'code', fields: ['taskName', 'code'], mode: 'igGrid'}"/>
             <div data-bind="if: !!ko.unwrap(items).length">
                 <table id="multi-list" data-bind="ntsGridList: {
-								height: 265,
+								height: listHeight(),
 								options: items,
 								optionsValue: 'code',
 								columns: header,
