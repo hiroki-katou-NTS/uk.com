@@ -56,11 +56,11 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 															application: application,
 															appDispInfoStartupOutput: appDispInfoStartupOutput
 														} }"
-								style="width: fit-content; display: inline-block; vertical-align: middle; margin-top: 12px"></div>
+								style="width: fit-content; display: inline-block; vertical-align: middle; margin-top: -16px"></div>
 
 
 
-							<div>
+							<div style="margin-top: -10px">
 
 
 								
