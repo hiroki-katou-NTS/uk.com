@@ -3,10 +3,9 @@ package nts.uk.screen.at.app.kdw013.a;
 import java.util.List;
 import java.util.Map;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeBasicInfoImport;
-import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfo;
 
 /**
  * 
@@ -14,8 +13,8 @@ import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfo;
  *
  */
 @Getter
-@Setter
-public class GetRefWorkplaceAndEmployeeDto {
+@AllArgsConstructor
+public class GetRefWorkplaceAndEmployeeResultDto {
 	
 	/** 社員の所属情報(Map<社員ID,職場ID>)*/
 	private Map<String, String> employeeInfos;
@@ -24,5 +23,5 @@ public class GetRefWorkplaceAndEmployeeDto {
 	private List<EmployeeBasicInfoImport> lstEmployeeInfo;
 	 
 	/** List＜職場情報一覧＞ */
-	private List<WorkplaceInfo> workplaceInfos;
+	private List<WorkplaceInfoDto> workplaceInfos;
 }

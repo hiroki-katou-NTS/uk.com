@@ -17,4 +17,7 @@ public class RegisterWorkContentDto {
 	// List<残業休出時間>
 	private List<OvertimeLeaveTime> lstOvertimeLeaveTime;
 	
+	// アラームメッセージ
+	private String errorAlarmMessage;
+	
 }

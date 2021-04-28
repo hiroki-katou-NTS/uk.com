@@ -9,8 +9,10 @@ import lombok.Setter;
  */
 @Setter
 public class StartProcessDto {
+	
 	// 工数入力を起動する
+	private StartManHourInputResultDto startManHourInputResultDto;
 	
 	// 参照可能職場・社員を取得する
-	
+	private GetRefWorkplaceAndEmployeeResultDto refWorkplaceAndEmployeeDto;
 }

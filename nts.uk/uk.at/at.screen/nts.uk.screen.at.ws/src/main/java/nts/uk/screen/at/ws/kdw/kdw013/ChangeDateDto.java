@@ -13,18 +13,17 @@ import nts.uk.screen.at.app.kdw013.a.ConfirmerDto;
  */
 @Setter
 public class ChangeDateDto {
-	//1
-	private List<WorkGroupDto> WorkGroupDtos;
 	
-	//2
-	private List<IntegrationOfDailyDto> lstIntegrationOfDailyDto;
-	 
-	//3
+	// List<作業グループ>
+	private List<WorkGroupDto> workGroupDtos;
+
+	// 修正可能開始日付
 	private GeneralDate workCorrectionStartDate;
-	
-	//4
+
+	// List＜確認者>
 	private List<ConfirmerDto> lstComfirmerDto;
-	
-	//5
+
+	// List<作業実績詳細>
 	private List<WorkRecordDetailDto> lstWorkRecordDetailDto;
+	
 }

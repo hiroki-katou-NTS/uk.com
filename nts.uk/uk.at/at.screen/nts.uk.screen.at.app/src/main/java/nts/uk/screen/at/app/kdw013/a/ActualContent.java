@@ -3,6 +3,7 @@ package nts.uk.screen.at.app.kdw013.a;
 import java.util.List;
 import java.util.Optional;
 
+import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeSheet;
@@ -14,6 +15,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.time
  *
  */
 @Setter
+@Getter
 public class ActualContent {
 	
 	//休憩リスト

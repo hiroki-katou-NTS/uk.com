@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.app.command.workrecord.workrecord;
 import java.util.List;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateSetting;
 
 /**
@@ -11,6 +12,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.E
  *
  */
 @Getter
+@Setter
 public class AddAttendanceTimeZoneCommand {
 	
 	/** 対象者 */

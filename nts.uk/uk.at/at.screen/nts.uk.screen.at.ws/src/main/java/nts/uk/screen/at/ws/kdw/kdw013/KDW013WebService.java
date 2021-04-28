@@ -1,7 +1,9 @@
 package nts.uk.screen.at.ws.kdw.kdw013;
 
 import java.util.List;
+import nts.arc.enums.EnumAdaptor;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
@@ -11,14 +13,20 @@ import javax.ws.rs.Produces;
 import nts.uk.ctx.at.record.app.command.workrecord.workmanagement.AddWorkRecodConfirmationCommand;
 import nts.uk.ctx.at.record.app.command.workrecord.workmanagement.DeleteWorkResultConfirmationCommand;
 import nts.uk.ctx.at.record.app.command.workrecord.workmanagement.DeleteWorkResultConfirmationCommandHandler;
+import nts.uk.ctx.at.record.app.command.workrecord.workrecord.AddAttendanceTimeZoneCommand;
 import nts.uk.ctx.at.record.app.command.workrecord.workrecord.AddAttendanceTimeZoneCommandHandler;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateSetting;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.work.WorkGroup;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskframe.TaskFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.TaskCode;
 import nts.uk.screen.at.app.kdw013.a.AddWorkRecordConfirmation;
 import nts.uk.screen.at.app.kdw013.a.ConfirmerDto;
 import nts.uk.screen.at.app.kdw013.a.DeleteWorkRecordConfirmation;
+import nts.uk.screen.at.app.kdw013.a.RegisterWorkContent;
+import nts.uk.screen.at.app.kdw013.a.RegisterWorkContentCommand;
+import nts.uk.screen.at.app.kdw013.a.StartProcess;
+import nts.uk.screen.at.app.kdw013.a.StartProcessDto;
 import nts.uk.screen.at.app.kdw013.a.TaskDto;
 import nts.uk.screen.at.app.kdw013.c.SelectWorkItem;
 import nts.uk.screen.at.app.kdw013.c.StartWorkInputPanel;
@@ -48,20 +56,33 @@ public class KDW013WebService {
 	private SelectWorkItem selectWorkItem;
 
 	@Inject
-	private AddAttendanceTimeZoneCommandHandler timeZoneCommandHandler;
+	private ChangeDate changeDate;
+
+	@Inject
+	private SelectTargetEmployee selectTargetEmployee;
+
+	@Inject
+	private StartProcess startProcess;
+
+	@Inject
+	private AddAttendanceTimeZoneCommandHandler addAttendanceCommandHandler;
+	
+	@Inject
+	private RegisterWorkContent registerWorkContent;
 
 	// 作業工数を登録する
 	@POST
 	@Path("registerWorkTime")
-	public List<IntegrationOfDaily> registerWorkTime(AddAttendanceTimeZoneParam param) {
-		/*
-		 * return timeZoneCommandHandler.handle(param.getEmployeeId(),
-		 * EditStateSetting.valueOf(String.valueOf(param.getEditStateSetting())),
-		 * 
-		 * 
-		 * );
-		 */
-		return null;
+	public List<IntegrationOfDailyDto> registerWorkTime(AddAttendanceTimeZoneParam param) {
+		AddAttendanceTimeZoneCommand command = new AddAttendanceTimeZoneCommand();
+
+		command.setEmployeeId(param.getEmployeeId());
+		command.setEditStateSetting(EnumAdaptor.valueOf(param.getEditStateSetting(), EditStateSetting.class));
+
+		List<IntegrationOfDailyDto> result = addAttendanceCommandHandler.handle(command).stream()
+				.map(m -> IntegrationOfDailyDto.toDto(m)).collect(Collectors.toList());
+
+		return result;
 	}
 
 	// 応援作業別勤怠時間帯を登録する.作業実績の確認を解除する
@@ -75,9 +96,11 @@ public class KDW013WebService {
 	// 作業内容を登録する
 	@POST
 	@Path("a/register")
-	public RegisterWorkContentDto registerWorkContent(RegisterWorkContentParam param) {
-
-		return null;
+	public RegisterWorkContentDto registerWorkContent(RegisterWorkContentCommand command) {
+		RegisterWorkContentDto registerWorkContentDto = new RegisterWorkContentDto();
+		registerWorkContent.registerWorkContent(command);
+		
+		return registerWorkContentDto;
 	}
 
 	// 作業実績の確認を解除する
@@ -97,27 +120,22 @@ public class KDW013WebService {
 	// 初期起動処理
 	@POST
 	@Path("a/start")
-	public ProcessInitialStartDto startProcess() {
-		ProcessInitialStartDto processStartDto = new ProcessInitialStartDto();
-
-		return processStartDto;
+	public StartProcessDto startProcess() {
+		return startProcess.startProcess();
 	}
 
 	// 対象社員を選択する
 	@POST
 	@Path("a/select")
 	public SelectTargetEmployeeDto selectTargetEmployee(SelectTargetEmployeeParam param) {
-
-		return null;
+		return selectTargetEmployee.select(param);
 	}
 
 	// 日付を変更する
 	@POST
 	@Path("a/changeDate")
 	public ChangeDateDto changeDate(ChangeDateParam param) {
-		ChangeDateDto changeDateDto = new ChangeDateDto();
-
-		return changeDateDto;
+		return changeDate.changeDate(param.getEmployeeId(), param.getRefDate(), param.getDisplayPeriod().toDomain());
 	}
 
 	// C:作業入力パネル.メニュー別OCD.作業入力パネルを起動する
