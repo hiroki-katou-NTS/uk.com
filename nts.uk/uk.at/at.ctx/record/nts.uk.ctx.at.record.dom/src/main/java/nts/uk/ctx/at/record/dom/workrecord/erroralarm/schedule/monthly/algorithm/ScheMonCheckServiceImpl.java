@@ -54,8 +54,8 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.monthly.FixedExtr
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.monthly.FixedExtractionSMonItemsRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.monthly.PublicHolidayCheckCond;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.monthly.ScheMonCheckService;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.monthly.TimeCheckCond;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.monthly.TypeOfDays;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.monthly.TypeOfTime;
 import nts.uk.ctx.at.record.dom.workrecord.errorsetting.algorithm.CompareValueRangeChecking;
 import nts.uk.ctx.at.shared.dom.adapter.attendanceitemname.AttendanceItemNameAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
@@ -537,6 +537,10 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 		
 		// Input．スケジュール月次の任意抽出条件をループする
 		for (ExtractionCondScheduleMonth scheCondMon: prepareData.getScheCondMonths()) {
+			if (scheCondMon.getCheckConditions() == null) {
+				continue;
+			}
+			
 			// チェック項目をチェック
 			switch (scheCondMon.getCheckItemType()) {
 			case CONTRAST:
@@ -616,7 +620,7 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 				break;
 			case TIME:
 				// 時間の場合
-				ExtractionResultDetail extractDetailItemTime =conditionTab2ItemTime(
+				ExtractionResultDetail extractDetailItemTime = conditionTab2ItemTime(
 						cid, sid, wkpId, ym, 
 						attendanceTimeOfMon, workSchedules, integrationOfDailys, 
 						scheCondMon, presentClosingPeriod);
@@ -1181,6 +1185,8 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 		int totalTime = scheTimeAndTotalWorkingService.getScheTimeAndTotalWorkingTime(
 				ym, attendanceTimeOfMonthly, presentClosingPeriod, integrationDailys, workSchedules);
 		
+		TimeCheckCond timeCheckCond = (TimeCheckCond)scheCondMon.getScheCheckConditions();
+		
 		// 条件をチェックする
 		boolean checkCompareValue = false;
 		if (scheCondMon.getCheckConditions() instanceof CompareRange) {
@@ -1201,7 +1207,7 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 						? scheCondMon.getErrorAlarmMessage().get().v()
 						: Strings.EMPTY;
 		// アラーム内容
-		String param = getCompareOperatorText(scheCondMon.getCheckConditions(), TypeOfTime.SCHETIME_WORKING_HOURS.nameId);
+		String param = getCompareOperatorText(scheCondMon.getCheckConditions(), timeCheckCond.getTypeOfTime().nameId);
 		String alarmContent = TextResource.localize("KAL010_1118", param, String.valueOf(totalTime));
 		// チェック対象値
 		String checkValue = TextResource.localize("KAL010_1121", String.valueOf(totalTime));
@@ -1297,7 +1303,7 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 						? scheCondMon.getErrorAlarmMessage().get().v()
 						: Strings.EMPTY;
 		// アラーム内容
-		String param = getCompareOperatorText(scheCondMon.getCheckConditions(), TypeOfTime.SCHETIME_WORKING_HOURS.nameId);
+		String param = getCompareOperatorText(scheCondMon.getCheckConditions(), dayCheckCond.getTypeOfDays().nameId);
 		String alarmContent = TextResource.localize("KAL010_1119", param, String.valueOf(totalTime));
 		// チェック対象値
 		String checkValue = TextResource.localize("KAL010_1120", String.valueOf(totalTime));
