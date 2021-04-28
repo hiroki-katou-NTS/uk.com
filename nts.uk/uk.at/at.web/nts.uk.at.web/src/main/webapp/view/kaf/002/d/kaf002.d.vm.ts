@@ -50,7 +50,7 @@ module nts.uk.at.view.kaf002_ref.d.viewmodel {
 						style="width: fit-content; display: inline-block; vertical-align: middle; margin-top: 12px"></div>
 
 
-					<div style="margin-top: -10px">
+					<div style="margin-top: -8px">
 
 
 
@@ -99,7 +99,7 @@ module nts.uk.at.view.kaf002_ref.d.viewmodel {
 
 
 
-					<div style="margin-top: -8px"
+					<div style="margin-top: -20px"
 						data-bind="component: { name: 'kaf000-b-component7', 
                                                 params: {
                                                     appType: appType,

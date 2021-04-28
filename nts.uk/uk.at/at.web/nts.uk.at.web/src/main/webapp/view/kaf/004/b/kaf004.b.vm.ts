@@ -37,13 +37,13 @@ module nts.uk.at.view.kaf004_ref.b.viewmodel {
                                                             appType: appType,
                                                             application: application,
                                                             appDispInfoStartupOutput: appDispInfoStartupOutput
-                                                        } }"></div>
+                                                        } }" style="margin-bottom: -15px"></div>
                             <div data-bind="component: { name: 'kaf000-b-component6', 
                                                         params: {
                                                             appType: appType,
                                                             application: application,
                                                             appDispInfoStartupOutput: appDispInfoStartupOutput
-                                                        } }" style="width: fit-content; display: inline-block; vertical-align: middle;"></div>
+                                                        } }" style="width: fit-content; display: inline-block; vertical-align: middle; margin-bottom: -10px"></div>
                             <div data-bind="component: {name: 'kaf004_share'}" style="margin: 7px 0"></div>
                             <div class="mv-13" data-bind="component: { name: 'kaf000-b-component7', 
                                                         params: {
