@@ -268,7 +268,11 @@ module nts.uk.ui.at.kdp013.c {
             </table>
         </div>
         <div class="message overlay" data-bind="css: { show: !!$component.confirm() }">
-            <div class="container" data-bind="draggable: ko.computed(function() { return !!$component.confirm(); })">
+            <div class="container" data-bind="
+                    draggable: { 
+                        handle: '.title',
+                        disabled: ko.computed(function() { return !$component.confirm(); })
+                    }">
                 <div class="title" data-bind="i18n: '確認'"></div>
                 <div class="body" data-bind="kdw-confirm: $component.confirm"></div>
                 <div class="foot">
