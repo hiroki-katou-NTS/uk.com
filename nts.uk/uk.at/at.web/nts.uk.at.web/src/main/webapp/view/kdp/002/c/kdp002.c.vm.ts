@@ -247,7 +247,6 @@ module nts.uk.at.view.kdp002.c {
 										var isShowPoint = 0;
 										_.forEach(data, ((value) => {
 											_.forEach(value, ((value1) => {
-												console.log(value1.message.employeeIdSeen.length() == 0);
 												isShowPoint++;
 											}));
 										}));

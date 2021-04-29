@@ -257,7 +257,6 @@ class KDP002BViewModel extends ko.ViewModel {
             .then(() => {
                 vm.$ajax(kDP002RequestUrl.GET_SETTING)
                     .then((data: boolean) => {
-                        console.log(data);
 
                         if (data) {
                             vm.$ajax(kDP002RequestUrl.NOTIFICATION_STAMP, param)
@@ -281,7 +280,6 @@ class KDP002BViewModel extends ko.ViewModel {
                                         var isShowPoint = 0;
                                         _.forEach(data, ((value) => {
                                             _.forEach(value, ((value1) => {
-                                                console.log(value1.message.employeeIdSeen.length() == 0);
                                                 isShowPoint++;
                                             }));
                                         }));
