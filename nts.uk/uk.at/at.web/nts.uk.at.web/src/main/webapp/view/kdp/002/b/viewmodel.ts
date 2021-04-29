@@ -27,7 +27,7 @@ const initTime = (): TimeClock => ({
 @bean()
 class KDP002BViewModel extends ko.ViewModel {
 
-    modeNikoNiko: KnockoutObservable<boolean| null> = ko.observable(null);
+    modeNikoNiko: KnockoutObservable<boolean | null> = ko.observable(null);
     // B2_2
     employeeCodeName: KnockoutObservable<string> = ko.observable("基本給");
     // B3_2
@@ -73,7 +73,6 @@ class KDP002BViewModel extends ko.ViewModel {
     }
 
     created(params: any) {
-
         const vm = this;
         vm.$window.shared("resultDisplayTime").done(displayTime => {
             vm.resultDisplayTime(displayTime);
@@ -90,6 +89,7 @@ class KDP002BViewModel extends ko.ViewModel {
                     case 'KDP001':
                     case 'KDP002':
                         vm.showBtnNoti(false);
+                        vm.settingSizeView();
                         break
                     case 'KDP003':
                     case 'KDP004':
@@ -103,13 +103,12 @@ class KDP002BViewModel extends ko.ViewModel {
         vm.$ajax(kDP002RequestUrl.SETTING_NIKONIKO)
             .then((data: boolean) => {
                 vm.modeNikoNiko(data);
+                vm.settingSizeView();
             });
     }
 
     mounted() {
         const vm = this;
-
-        vm.settingSizeView();
 
         setTimeout(() => {
             if (ko.unwrap(vm.modeNikoNiko)) {
@@ -127,9 +126,8 @@ class KDP002BViewModel extends ko.ViewModel {
     settingSizeView() {
         const vm = this;
         if (!ko.unwrap(vm.showBtnNoti)) {
-
             if (!ko.unwrap(vm.modeNikoNiko)) {
-                vm.$window.size(630, 470);
+                vm.$window.size(600, 470);
             } else {
                 vm.$window.size(660, 470);
             }

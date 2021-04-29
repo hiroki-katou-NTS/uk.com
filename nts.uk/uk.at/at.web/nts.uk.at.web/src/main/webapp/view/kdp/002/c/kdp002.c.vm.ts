@@ -1,7 +1,5 @@
 /// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
 
-import { data } from "jquery";
-
 module nts.uk.at.view.kdp002.c {
 
 	interface TimeClock {
