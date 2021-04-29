@@ -38119,6 +38119,13 @@ var nts;
                     }
                 });
                 BaseViewModel.prototype.$validate = $validate;
+                BaseViewModel.prototype.$query = (function () {
+                    var query = location.search.substring(1);
+                    if (!query || !query.match(/=/)) {
+                        return {};
+                    }
+                    return JSON.parse('{"' + decodeURI(query).replace(/"/g, '\\"').replace(/&/g, '","').replace(/=/g, '":"') + '"}');
+                })();
                 Object.defineProperty(ko, 'ViewModel', { value: BaseViewModel });
             })(viewmodel = ui_21.viewmodel || (ui_21.viewmodel = {}));
         })(ui = uk.ui || (uk.ui = {}));
