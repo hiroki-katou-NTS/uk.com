@@ -133,7 +133,7 @@ public class JpaWorkTimeSettingRepository extends JpaRepository implements WorkT
 			KshmtWt wkTime;
 			if (results.isEmpty()) {
 				wkTime = new KshmtWt(new KshmtWorkTimeSetPK(companyID, code), 0,
-						TextResource.localize("KAL003_120"), TextResource.localize("KAL003_120"), "", 0, 0, 0, "", "",
+						TextResource.localize("KAL003_120"), TextResource.localize("KAL003_120"), 0, 0, 0, "",
 						"");
 			} else {
 				wkTime = results.get(0);
@@ -317,11 +317,11 @@ public class JpaWorkTimeSettingRepository extends JpaRepository implements WorkT
 				entity.setKshmtWorkTimeSetPK(pk);
 				entity.setName(rec.getString("NAME"));
 				entity.setAbname(rec.getString("ABNAME"));
-				entity.setSymbol(rec.getString("SYMBOL"));
+//				entity.setSymbol(rec.getString("SYMBOL"));
 				entity.setDailyWorkAtr(rec.getInt("DAILY_WORK_ATR"));
 				entity.setWorktimeSetMethod(rec.getInt("WORKTIME_SET_METHOD"));
 				entity.setAbolitionAtr(rec.getInt("ABOLITION_ATR"));
-				entity.setColor(rec.getString("COLOR"));
+//				entity.setColor(rec.getString("COLOR"));
 				entity.setMemo(rec.getString("MEMO"));
 				entity.setNote(rec.getString("NOTE"));
 				

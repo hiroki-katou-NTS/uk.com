@@ -9,10 +9,10 @@ import java.time.ZoneId;
 import java.util.Date;
 
 import nts.uk.ctx.at.schedule.dom.budget.external.ExternalBudgetCd;
-import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.log.CompletionState;
-import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.log.ExecutionTime;
-import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.log.ExtBudgetFileName;
-import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.log.ExternalBudgetLogSetMemento;
+import nts.uk.ctx.at.schedule.dom.budget.external.acceptance.log.CompletionState;
+import nts.uk.ctx.at.schedule.dom.budget.external.acceptance.log.ExecutionTime;
+import nts.uk.ctx.at.schedule.dom.budget.external.acceptance.log.ExtBudgetFileName;
+import nts.uk.ctx.at.schedule.dom.budget.external.acceptance.log.ExternalBudgetLogSetMemento;
 
 /**
  * The Class ExternalBudgetLogDto.

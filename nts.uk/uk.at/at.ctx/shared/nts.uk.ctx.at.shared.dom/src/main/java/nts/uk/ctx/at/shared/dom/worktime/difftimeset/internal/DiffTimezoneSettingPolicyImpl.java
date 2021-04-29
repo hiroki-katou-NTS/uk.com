@@ -21,6 +21,7 @@ import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimezoneSetting;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.policy.DiffTimezoneSettingPolicy;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimedisplay.DisplayMode;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.HalfDayWorkSet;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -50,16 +51,16 @@ public class DiffTimezoneSettingPolicyImpl implements DiffTimezoneSettingPolicy 
 	 */
 	@Override
 	public void validate(BundledBusinessException be, PredetemineTimeSetting predTime, DiffTimezoneSetting diffTzSet,
-			DisplayMode displayMode, AmPmAtr dayAtr, boolean useHalfDayShift) {
+			DisplayMode displayMode, AmPmAtr dayAtr) {
 
 		// Validate list working timezone
 		diffTzSet.getEmploymentTimezones().forEach(workingTimezone -> {
-			this.emTzPolicy.validateFixedAndDiff(be, predTime, workingTimezone, displayMode, dayAtr, useHalfDayShift);
+			this.emTzPolicy.validateFixedAndDiff(be, predTime, workingTimezone, displayMode, dayAtr);
 		});
 
 		// Validate list OT timezone
 		diffTzSet.getOTTimezones().forEach(workingTimezone -> {
-			this.otSetPolicy.validate(be, predTime, workingTimezone, displayMode, dayAtr, useHalfDayShift);
+			this.otSetPolicy.validate(be, predTime, workingTimezone, displayMode, dayAtr);
 		});
 	}
 
@@ -73,14 +74,15 @@ public class DiffTimezoneSettingPolicyImpl implements DiffTimezoneSettingPolicy 
 	 * nts.uk.ctx.at.shared.dom.worktime.worktimedisplay.DisplayMode,
 	 * nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr, boolean)
 	 */
+	@Override
 	public void filterTimezone(PredetemineTimeSetting predTime, DiffTimezoneSetting origin, DisplayMode displayMode,
-			AmPmAtr dayAtr, boolean useHalfDayShift) {
+			AmPmAtr dayAtr) {
 
 		TimeWithDayAttr morningEndTime = predTime.getPrescribedTimezoneSetting().getMorningEndTime();
 		TimeWithDayAttr afternoonStartTime = predTime.getPrescribedTimezoneSetting().getAfternoonStartTime();
 
 		// Filter AM timezone
-		if ((AmPmAtr.AM.equals(dayAtr) && DisplayMode.DETAIL.equals(displayMode) && !useHalfDayShift)
+		if ((AmPmAtr.AM.equals(dayAtr) && DisplayMode.DETAIL.equals(displayMode))
 				|| (AmPmAtr.AM.equals(dayAtr) && DisplayMode.SIMPLE.equals(displayMode))) {
 
 			// Filter work timezone
@@ -118,7 +120,7 @@ public class DiffTimezoneSettingPolicyImpl implements DiffTimezoneSettingPolicy 
 		}
 
 		// Filter PM timezone
-		if ((AmPmAtr.PM.equals(dayAtr) && DisplayMode.DETAIL.equals(displayMode) && !useHalfDayShift)
+		if ((AmPmAtr.PM.equals(dayAtr) && DisplayMode.DETAIL.equals(displayMode))
 				|| (AmPmAtr.PM.equals(dayAtr) && DisplayMode.SIMPLE.equals(displayMode))) {
 
 			// Filter work timezone

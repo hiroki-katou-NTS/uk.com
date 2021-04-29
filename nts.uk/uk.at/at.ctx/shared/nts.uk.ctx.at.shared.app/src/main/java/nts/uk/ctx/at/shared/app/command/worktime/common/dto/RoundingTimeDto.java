@@ -1,20 +1,23 @@
 package nts.uk.ctx.at.shared.app.command.worktime.common.dto;
 
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.shared.dom.worktime.common.RoundingSet;
+import nts.uk.ctx.at.shared.dom.worktime.common.RoundingTimeGetMemento;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
-import nts.uk.ctx.at.shared.dom.worktime.common.RoundingSet;
-import nts.uk.ctx.at.shared.dom.worktime.common.RoundingTimeGetMemento;
-import nts.uk.ctx.at.shared.dom.worktime.common.RoundingTimeSetMemento;
-import nts.uk.shr.com.enumcommon.NotUseAtr;
+@AllArgsConstructor
+@NoArgsConstructor
+public class RoundingTimeDto implements RoundingTimeGetMemento{
 
-public class RoundingTimeDto implements RoundingTimeGetMemento, RoundingTimeSetMemento {
-
-	private Integer attendanceMinuteLaterCalculate;
+	public Integer attendanceMinuteLaterCalculate;
 	
-	private Integer leaveWorkMinuteAgoCalculate;
+	public Integer leaveWorkMinuteAgoCalculate;
 	
-	private List<RoundingSetDto> roundingSets;
+	public List<RoundingSetDto> roundingSets;
 	
 	
 	@Override
@@ -31,26 +34,5 @@ public class RoundingTimeDto implements RoundingTimeGetMemento, RoundingTimeSetM
 	@Override
 	public List<RoundingSet> getRoundingSets() {
 		return this.roundingSets.stream().map(item -> new RoundingSet(item)).collect(Collectors.toList());
-	}
-
-	@Override
-	public void setAttendanceMinuteLaterCalculate(NotUseAtr attendanceMinutelater) {
-		this.attendanceMinuteLaterCalculate = attendanceMinutelater.value;
-	}
-
-	@Override
-	public void setLeaveWorkMinuteAgoCalculate(NotUseAtr leaveMinutelater) {
-		this.leaveWorkMinuteAgoCalculate = leaveMinutelater.value;
-	}
-
-	@Override
-	public void getRoundingSets(List<RoundingSet> roundingSets) {
-		this.roundingSets = roundingSets.stream().map(i ->
-			new RoundingSetDto(
-				new InstantRoundingDto(
-						i.getRoundingSet().getFontRearSection().value, 
-						i.getRoundingSet().getRoundingTimeUnit().value), 
-				i.getSection().value)).collect(Collectors.toList());
-		
 	}
 }

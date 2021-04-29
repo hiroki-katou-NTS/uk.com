@@ -167,7 +167,7 @@ export class KdlS35Component extends Vue {
                         ...m,
                         index: -1,
                         checked: !!_.find(vm.managementData, (i) => i.outbreakDay == m.substituteWorkDate),
-                        enable: new Date(m.expirationDate).getTime() > new Date(vm.startDate).getTime(),
+                        enable: new Date(m.expirationDate).getTime() >= new Date(vm.startDate).getTime(),
                         get icon() {
                             const { dataType, expiringThisMonth } = m;
 

@@ -5,6 +5,7 @@ module nts.uk.at.view.kmk003.g {
         var screenModel = new viewmodel.ScreenModel();
         screenModel.startPage().done(function() {
             __viewContext.bind(screenModel);
+
             if ((screenModel.dataObject().workForm == EnumWorkForm.FLEX) || ((screenModel.dataObject().workForm == EnumWorkForm.REGULAR) && (screenModel.dataObject().settingMethod == SettingMethod.FLOW)))//case flow or flex
             {
                 _.defer(() => $('#switch-btn').focus());

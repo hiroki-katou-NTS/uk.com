@@ -1,7 +1,6 @@
 package nts.uk.ctx.office.infra.entity.favorite;
 
 import java.io.Serializable;
-import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
@@ -16,7 +15,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /*
  * UKDesign.データベース.ER図.オフィス支援.在席照会.お気に入り.OFIMT_FAVORITE_DETAIL
@@ -29,20 +28,15 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 @Table(name = "OFIMT_FAVORITE_DETAIL")
-public class OfimtFavoriteDetail extends UkJpaEntity implements Serializable {
+public class OfimtFavoriteDetail extends ContractUkJpaEntity implements Serializable {
 	/**
 	* 
 	*/
 	private static final long serialVersionUID = 1L;
 
-	// column 排他バージョン
-	@Column(name = "EXCLUS_VER")
-	private long version;
-
-	// column 契約コード
-	@Basic(optional = false)
-	@Column(name = "CONTRACT_CD")
-	private String contractCd;
+	// column　会社ID
+	@Column(name = "CID")
+	private String cid;
 
 	// Embedded primary key 作成者ID and 入力日 and 対象情報ID
 	@EmbeddedId
@@ -65,7 +59,6 @@ public class OfimtFavoriteDetail extends UkJpaEntity implements Serializable {
 		this.pk.setCreatorId(creatorId);
 		this.pk.setInputDate(inputDate);
 		this.pk.setTargetSelection(targetSelection);
-		this.setVersion(0);
-		this.setContractCd(AppContexts.user().contractCode());
+		this.setCid(AppContexts.user().companyId());
 	}
 }
