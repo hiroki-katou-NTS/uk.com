@@ -266,7 +266,7 @@ declare module nts.uk.ui.vm {
 				yesCancel: {
 					(message: string): JQueryDeferred<void>;
 					(options: { messageId: string; }): JQueryDeferred<'cancel' | 'yes'>;
-					(options: { messageId: string; messageParams: string[]; }): JQueryDeferred<'cancel' | 'yes'>;					
+					(options: { messageId: string; messageParams: string[]; }): JQueryDeferred<'cancel' | 'yes'>;
 				};
 			};
 		}
@@ -304,5 +304,9 @@ declare module nts.uk.ui.vm {
 		readonly $nextTick: {
 			(cb: () => void): number;
 		};
+		/**
+		 * Query Object binding search query in URL.
+		 */
+		readonly $query: { readonly [key: string]: string };
 	}
 }
