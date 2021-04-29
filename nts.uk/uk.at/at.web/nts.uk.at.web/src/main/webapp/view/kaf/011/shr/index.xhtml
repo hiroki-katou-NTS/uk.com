@@ -109,21 +109,26 @@
 					<div class="application2 holiday" data-bind="with: absenceLeaveApp">
 						<div class="name">#{i18n.getText('KAF011_2')}</div>
 						<div class="ruleLine"></div>
-						<div class="row">
-							<div class="ntsLabelCustome" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAF011_22')}</div>
-							<com:ko-if bind="isAScreen">
+						<com:ko-if bind="isAScreen()">
+							<div class="row">
+								<div class="ntsLabelCustome" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAF011_22')}</div>
 								<div id="absAppDate" class="marginNag" data-bind="ntsDatePicker: {name: '#{i18n.getText('KAF011_22')}', value: application.appDate, dateFormat: 'YYYY/MM/DD', required: true }"></div>
-							</com:ko-if>
-							<com:ko-if bind="!isAScreen()">
-								<div class="ntsControl marginNag" style="padding-top: 10px;" data-bind="text: application.appDate"></div>
-								<com:ko-if bind="displayInforWhenStarting.appDispInfoStartup.appDetailScreenInfo.application.prePostAtr == 0 &amp;&amp; _.find(displayInforWhenStarting.appDispInfoStartup.appDetailScreenInfo.application.reflectionStatus.listReflectionStatusOfDay, function(i) {return i.actualReflectStatus == 3 || i.scheReflectStatus == 3;}) == undefined ">
-									<button style="margin-left: 100px;" data-bind="enable: outputMode() == 1, click: openKAF011C">#{i18n.getText('KAF011_26')}</button>
-								</com:ko-if>
-								<com:ko-if bind="changeSourceHoliday">
-									<div class="ntsControl marginNag" style="padding-top: 10px;" data-bind="text: nts.uk.resource.getText('KAF011_87', [changeSourceHoliday()])"></div>
-								</com:ko-if>
-							</com:ko-if>
-						</div>
+							</div>
+						</com:ko-if>
+						<com:ko-if bind="!isAScreen()">
+							<div class="row" style="margin-top: -2px;
+    							margin-bottom: -1px;">
+								<div class="ntsLabelCustome" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAF011_22')}</div>
+									<div class="ntsControl marginNag" style="margin-top: 6px;" data-bind="text: application.appDate"></div>
+									<com:ko-if bind="displayInforWhenStarting.appDispInfoStartup.appDetailScreenInfo.application.prePostAtr == 0 &amp;&amp; _.find(displayInforWhenStarting.appDispInfoStartup.appDetailScreenInfo.application.reflectionStatus.listReflectionStatusOfDay, function(i) {return i.actualReflectStatus == 3 || i.scheReflectStatus == 3;}) == undefined ">
+										<button style="margin-left: 100px;" data-bind="enable: outputMode() == 1, click: openKAF011C">#{i18n.getText('KAF011_26')}</button>
+									</com:ko-if>
+									<com:ko-if bind="changeSourceHoliday">
+										<div class="ntsControl marginNag" style="padding-top: 10px;" data-bind="text: nts.uk.resource.getText('KAF011_87', [changeSourceHoliday()])"></div>
+									</com:ko-if>
+							</div>
+						</com:ko-if>
+						
 						<div class="row">
 							<div class="ntsLabelCustome" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAF011_28')}</div>
 							<div class="marginNag" data-bind="ntsComboBox: {
@@ -140,7 +145,7 @@
 						<div class="holidaySetting">
 							<com:ko-if bind="dk2">	
 								<div data-bind="ntsCheckBox: { checked: workChangeUse, enable: outputMode() == 1 }">#{i18n.getText('KAF011_29')}</div>
-								<div class="ruleLine"></div>
+								<div class="ruleLineHoliday"></div>
 								<div class="row">
 									<div data-bind="ntsFormLabel: {}">#{i18n.getText('KAF011_30')}</div>
 									<div class="ntsControl marginNag" >
@@ -186,7 +191,7 @@
 								</com:ko-if>
 							</com:ko-if>
 							<com:ko-if bind="dk1">
-								<div class="row tableRelase">
+								<div class="row tableRelase" style="margin-top: -1px !important">
 									<div class="ntsLabelCustome" data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KAF011_46')}</div>
 									<div class="ntsControl marginNag">
 										<div class="table">
@@ -215,7 +220,7 @@
 								</div>
 							</com:ko-if>
 							<com:ko-if bind="$parent.appCombinaSelected() == 2 &amp;&amp; ($parent.displayInforWhenStarting() == null ? false : $parent.displayInforWhenStarting().holidayManage == 1)">
-								<div class="row tableRelase">
+								<div class="row tableRelase" style="margin-top: -1px !important">
 									<div class="ntsLabelCustome" data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KAF011_44')}</div>
 									<div class="ntsControl marginNag">
 										<div class="table">

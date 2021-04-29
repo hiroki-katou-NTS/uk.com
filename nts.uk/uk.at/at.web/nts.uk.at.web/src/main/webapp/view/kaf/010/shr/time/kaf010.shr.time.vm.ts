@@ -57,12 +57,12 @@ module nts.uk.at.view.kaf010.shr.time.viewmodel {
 	</div>
 
 	<!-- calculate button A5_8-->
-	<div style="margin-bottom: 20px" data-bind="visible: restTimeTableVisible2()">
+	<div style="margin-bottom: 20px; margin-top: 13px;" data-bind="visible: restTimeTableVisible2()">
 		<button style="width: 100px; margin-left: 200px" data-bind="text: $i18n('KAF010_43'), click: calculate, enable: mode() != 3" class="caret-bottom caret-inline" ></button>
 	</div>
 
 	<!-- holiday time -->
-	<div class="cf valign-top control-group" data-bind="if: true" style="margin-bottom: 2px">
+	<div class="cf valign-top control-group" data-bind="if: true" style="margin-bottom: 2px; margin-top: 23px;">
 		<!--A6_1 -->
 		<div class="cm-column" style="display: inline-block; width: 100px">
 			<div class="lblTitle pull-left"
@@ -118,7 +118,8 @@ module nts.uk.at.view.kaf010.shr.time.viewmodel {
 	</div>
 
 	<!-- over time hours -->
-	<div class="cf valign-top control-group" data-bind="visible: overTimeTableVisible()">
+	<div style="margin-top: 13px;
+    margin-bottom: 1px;" class="cf valign-top control-group" data-bind="visible: overTimeTableVisible()">
 		<!--A7_1 残業時間ラベル-->
 		<div class="cm-column" style="display: inline-block; width: 100px">
 			<div class="lblTitle pull-left"
@@ -195,7 +196,7 @@ module nts.uk.at.view.kaf010.shr.time.viewmodel {
 
         mounted() {
 			const self = this;
-            $("#fixed-table").ntsFixedTable({ height: 120 });
+            $("#fixed-table").ntsFixedTable({ height: 100 });
 			$("#fixed-overtime-hour-table").ntsFixedTable({ height: 120 });
 			$("#fixed-table-holiday").ntsFixedTable({ height: 120 });
 			$("#fixed-table-holiday-test").ntsFixedTable({ height: 216 });

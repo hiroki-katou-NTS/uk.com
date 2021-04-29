@@ -115,7 +115,7 @@
 												appDispInfoStartupOutput: appDispInfoStartupOutput
 											} }"></div>
 							<com:ko-if bind="appCombinaDipslay">
-								<div id="switchButton" style="margin-top: 10px; display: flex">
+								<div id="switchButton" style="margin-top: 13px; display: flex">
 									<div style="padding-right: 0px !important; width: 120px"
 										data-bind="ntsFormLabel: {}">#{i18n.getText('KAF011_18')}</div>
 									<div class="cf"
@@ -188,8 +188,7 @@
 
 								<com:ko-if
 									bind="displayInforWhenStarting() != null &amp;&amp; displayInforWhenStarting().remainingHolidayInfor.closestDueDate">
-									<span
-										data-bind="text: nts.uk.resource.getText('KAF011_82', [displayInforWhenStarting().remainingHolidayInfor.closestDueDate])"></span>
+									<span style="margin-left: -8px" data-bind="text: nts.uk.resource.getText('KAF011_82', [displayInforWhenStarting().remainingHolidayInfor.closestDueDate])"></span>
 								</com:ko-if>
 							</div>
 							<div
