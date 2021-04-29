@@ -30,6 +30,7 @@ import nts.uk.screen.at.app.kdw013.a.StartProcessDto;
 import nts.uk.screen.at.app.kdw013.a.TaskDto;
 import nts.uk.screen.at.app.kdw013.c.SelectWorkItem;
 import nts.uk.screen.at.app.kdw013.c.StartWorkInputPanel;
+import nts.uk.screen.at.app.kdw013.a.RegisterWorkContentDto;
 
 /**
  * 
@@ -97,10 +98,7 @@ public class KDW013WebService {
 	@POST
 	@Path("a/register")
 	public RegisterWorkContentDto registerWorkContent(RegisterWorkContentCommand command) {
-		RegisterWorkContentDto registerWorkContentDto = new RegisterWorkContentDto();
-		registerWorkContent.registerWorkContent(command);
-		
-		return registerWorkContentDto;
+		return registerWorkContent.registerWorkContent(command);
 	}
 
 	// 作業実績の確認を解除する

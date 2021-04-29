@@ -3,6 +3,7 @@ package nts.uk.screen.at.app.kdw013.a;
 import java.util.List;
 
 import lombok.Getter;
+import nts.arc.time.GeneralDate;
 
 /**
  * 
@@ -22,5 +23,8 @@ public class RegisterWorkContentCommand {
 	private List<WorkDetailCommand> workDetails;
 	
 	private int mode;
+	
+	/** 変更対象日 */
+	private GeneralDate changedDate;
 	
 }

@@ -2,8 +2,10 @@ package nts.uk.screen.at.app.kdw013.a;
 
 import java.util.List;
 
+import lombok.Getter;
 import nts.arc.time.GeneralDate;
 
+@Getter
 public class WorkDetailCommand {
 	
 	/** 年月日 */

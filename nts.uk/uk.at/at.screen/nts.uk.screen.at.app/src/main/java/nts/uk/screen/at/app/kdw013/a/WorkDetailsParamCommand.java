@@ -1,5 +1,7 @@
 package nts.uk.screen.at.app.kdw013.a;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import nts.uk.ctx.at.record.app.find.dailyattendance.timesheet.ouen.dto.WorkGroupDto;
 
 /**
@@ -7,6 +9,8 @@ import nts.uk.ctx.at.record.app.find.dailyattendance.timesheet.ouen.dto.WorkGrou
  * @author tutt
  *
  */
+@AllArgsConstructor
+@Getter
 public class WorkDetailsParamCommand {
 	// 応援勤務枠No: 応援勤務枠No
 	private int supportFrameNo;
