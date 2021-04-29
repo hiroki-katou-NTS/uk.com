@@ -157,6 +157,19 @@ module knr002.h {
                         blockUI.clear();
                     });
                 }else {
+                	   let registDto: any = {};
+		               registDto.terminalCode = self.empInfoTerCode;
+		               registDto.selectedEmpIds = self.employeesListVal().map(e => e.employeeId);
+		               blockUI.invisible();
+			           service.registSpecifiedEmps(registDto).done(() => {
+                           dialog.info({ messageId: "Msg_15" }).then(() => {
+                        	   setShared('KNR002H_isRegisted', true); 
+                           });                      
+                       }).fail(() => {
+                           // do something
+                       }).always(() => {
+                           blockUI.clear();
+                       }); 
                     setShared('KNR002H_selectedList', self.employeesListVal().map(e => e.employeeId));
                     nts.uk.ui.windows.close();
                 } 

@@ -174,7 +174,7 @@ module knr002.g {
                         } else {
                             let command: any = {};
                             command.terminalCode = self.empInfoTerCode();
-                            command.selectedEmployeesID = self.selectableEmployees();
+                            command.selectedEmpIds = self.selectableEmployees();
                             service.makeSelectedEmployees(command).done(() => {
                                 blockUI.invisible();
                                 dialog.info({ messageId: "Msg_15" }).then(() => {
