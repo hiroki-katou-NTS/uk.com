@@ -214,7 +214,20 @@ module nts.uk.ui.at.kdp013.a {
     };
 
     export type WorkGroupDto = {
+        /** 作業CD1 */
+        workCD1: string;
 
+        /** 作業CD2 */
+        workCD2: string;
+
+        /** 作業CD3 */
+        workCD3: string;
+
+        /** 作業CD4 */
+        workCD4: string;
+
+        /** 作業CD5 */
+        workCD5: string;
     };
 
     export type WorkTimeInformationDto = {
@@ -325,5 +338,70 @@ module nts.uk.ui.at.kdp013.a {
 
         //振休振出区分
         classifiction: number;
+    };
+
+    export type RegisterWorkContentCommand = {
+        /** 対象者 */
+        employeeId: string;
+
+        /** 編集状態<Enum.日別勤怠の編集状態> */
+        editStateSetting: number;
+
+        /** List<年月日,List<作業詳細>> */
+        workDetails: WorkDetailCommand[];
+
+        /// ????
+        mode: number;
+    };
+
+    export type WorkDetailCommand = {
+        /** 年月日 */
+        date: string;
+
+        /** List<作業詳細> */
+        lstWorkDetailsParamCommand: WorkDetailsParamCommand[];
+    };
+
+    export type WorkDetailsParamCommand = {
+        // 応援勤務枠No: 応援勤務枠No
+        supportFrameNo: number;
+
+        // 時間帯: 時間帯
+
+        // 作業グループ
+        workGroup: WorkGroupDto;
+
+        // 備考: 作業入力備考
+        remarks: string;
+
+        // 勤務場所: 勤務場所コード
+        workLocationCD: string;
+    };
+
+    export type DeleteWorkResultConfirmationCommand = {
+        //対象者
+        employeeId: string;
+
+        //対象日
+        date: string;
+
+        //確認者
+        confirmerId: string;
+    };
+
+    export type ChangeDateParam = {
+
+        // 社員ID
+        employeeId: string;
+
+        // 基準日
+        refDate: string;
+
+        // 表示期間
+        displayPeriod: DatePeriodDto;
+    };
+
+    export type DatePeriodDto = {
+
     };
 }

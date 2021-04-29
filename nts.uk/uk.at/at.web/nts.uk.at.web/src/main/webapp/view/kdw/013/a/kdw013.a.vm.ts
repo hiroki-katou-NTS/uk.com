@@ -6,10 +6,16 @@ module nts.uk.ui.at.kdp013.a {
 
     const API: API = {
         ADD: '/screen/at/kdw013/a/add',
+        // DeleteWorkResultConfirmationCommand
         DELETE: '/screen/at/kdw013/a/delete',
+        // 日付を変更する
+        // Chọn ngày ở [画面イメージ]A6_1/[固有部品]A1_1
         CHANGE_DATE: '/screen/at/kdw013/a/changeDate',
+        // RegisterWorkContentCommand
         REGISTER: '/screen/at/kdw013/a/register',
         REG_WORKTIME: '/screen/at/kdw013/registerWorkTime',
+        // 対象社員を選択する
+        // Chọn nhân viên ở A2_4
         SELECT: '/screen/at/kdw013/a/select',
         START: '/screen/at/kdw013/a/start'
     };
@@ -143,7 +149,7 @@ module nts.uk.ui.at.kdp013.a {
             const { employeeId } = $user;
             const refDate = ko.unwrap(initialDate);
 
-            const params = {
+            const params: ChangeDateParam = {
                 employeeId,
                 refDate: moment(refDate).toISOString(),
                 displayPeriod: {
@@ -261,7 +267,7 @@ module nts.uk.ui.at.kdp013.a {
                     if (mode === false) {
                         // reload data
 
-                        const command: SelectTargetEmployeeParam = {
+                        const command: ChangeDateParam = {
                             displayPeriod: {
                                 end: '',
                                 start: ''
