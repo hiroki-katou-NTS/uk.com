@@ -1,14 +1,4 @@
 module nts.uk.ui.at.kdp013.share {
-    export const parseQuery = (): { [key: string]: string; } => {
-        const query = location.search.substring(1);
-
-        if (!query || !query.match(/=/)) {
-            return {};
-        }
-
-        return JSON.parse('{"' + decodeURI(query).replace(/"/g, '\\"').replace(/&/g, '","').replace(/=/g, '":"') + '"}');
-    };
-
     // get time as minute in date
     export const getTimeOfDate = (date: Date) => {
         if (!_.isDate(date)) {

@@ -10,7 +10,11 @@ module nts.uk.ui.at.kdp013.a {
     };
 
     export type StartProcessDto = {
+        // 工数入力を起動する
+        startManHourInputResultDto: StartManHourInputResultDto;
 
+        // 参照可能職場・社員を取得する
+        refWorkplaceAndEmployeeDto: GetRefWorkplaceAndEmployeeResultDto;
     };
 
     export type ProcessInitialStartDto = {
@@ -32,6 +36,40 @@ module nts.uk.ui.at.kdp013.a {
         workLocations: WorkLocationDto[];
     };
 
+    export type GetRefWorkplaceAndEmployeeResultDto = {
+
+        /** 社員の所属情報(Map<社員ID,職場ID>)*/
+        employeeInfos: EmployeInfo[];
+
+        /** List＜社員ID（List）から社員コードと表示名を取得＞*/
+        lstEmployeeInfo: EmployeeBasicInfoImport[];
+
+        /** List＜職場情報一覧＞ */
+        workplaceInfos: WorkplaceInfoDto[];
+
+    }
+
+    export type WorkplaceInfoDto = {
+        /** The history id. */
+        historyId: string;
+
+        /** The workplace code. */
+        workplaceCode: string;
+
+        /** The workplace name. */
+        workplaceName: string;
+
+        /** The wkp generic name. */
+        wkpGenericName: string;
+
+        /** The wkp display name. */
+        wkpDisplayName: string;
+
+        /** The outside wkp code. */
+        outsideWkpCode: string;
+    }
+
+
     export type GetRefWorkplaceAndEmployeeDto = {
         /** 社員の所属情報(Map<社員ID,職場ID>)*/
         employeeInfos: [];
@@ -44,11 +82,13 @@ module nts.uk.ui.at.kdp013.a {
     };
 
     export type EmployeInfo = {
-        
+
     };
 
     export type EmployeeBasicInfoImport = {
-
+        sid: string;
+        employeeCode: string;
+        employeeName: string;
     };
 
     export type WorkplaceInfo = {
@@ -56,7 +96,15 @@ module nts.uk.ui.at.kdp013.a {
     };
 
     export type TaskFrameUsageSettingDto = {
+        frameSettingList: TaskFrameSettingDto[];
+    };
 
+    export type TaskFrameSettingDto = {
+        frameNo: number;
+
+        frameName: string | null;
+
+        useAtr: number;
     };
 
     export type WorkLocationDto = {

@@ -1,6 +1,5 @@
 module nts.uk.ui.at.kdp013.a {
     const { randomId } = nts.uk.util;
-    const { parseQuery } = nts.uk.ui.at.kdp013.share;
     import calendar = nts.uk.ui.components.fullcalendar;
 
     const DATE_FORMAT = 'YYYY-MM-DD';
@@ -80,7 +79,7 @@ module nts.uk.ui.at.kdp013.a {
             super();
 
             const vm = this;
-            const { mode } = parseQuery();
+            const { mode } = vm.$query;
 
             vm.$toggle = {
                 save: ko.computed({
@@ -120,7 +119,7 @@ module nts.uk.ui.at.kdp013.a {
                     const { taskFrameUsageSetting, tasks, workLocations } = startManHourInputDto;
                     const { employeeInfos, lstEmployeeInfo, workplaceInfos } = refWorkplaceAndEmployeeDto;
 
-                    const employees = _.map(employeeInfos, ({  }) => ({}));
+                    const employees = _.map(employeeInfos, ({ }) => ({}));
 
                 });
         }
@@ -218,7 +217,7 @@ module nts.uk.ui.at.kdp013.a {
                     { prop: 'name', length: 10 }
                 ]
             }"></div>
-            <ul data-bind="foreach: { data: $component.params.employees, as: 'item' }">
+            <ul class="list-employee" data-bind="foreach: { data: $component.params.employees, as: 'item' }">
                 <li class="item" data-bind="
                     click: function() { $component.selectEmployee(item) },
                     timeClick: -1,
@@ -239,7 +238,7 @@ module nts.uk.ui.at.kdp013.a {
 
             mounted() {
                 const vm = this;
-                const { params } = vm;
+                const { $el, params } = vm;
                 const { mode, employees } = params;
                 const subscribe = (mode: boolean) => {
                     if (mode === false) {
@@ -262,6 +261,11 @@ module nts.uk.ui.at.kdp013.a {
 
                 subscribe(mode());
                 mode.subscribe(subscribe);
+
+                $($el)
+                    .removeAttr('data-bind')
+                    .find('[data-bind]')
+                    .removeAttr('data-bind');
             }
 
             public selectEmployee(item: calendar.Employee) {

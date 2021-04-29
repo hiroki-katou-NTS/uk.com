@@ -141,6 +141,9 @@ module nts.uk.ui.components.fullcalendar {
             border-radius: 3px;
             height: 112px;
         }
+        .fc-container .fc-sidebar .fc-employees>ul.list-employee {
+            height: 224px;
+        }
         .fc-container .fc-sidebar .fc-events>ul {
             max-height: 112px;
         }
