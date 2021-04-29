@@ -333,7 +333,7 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 					approverPrintDetails1.getApprovalBehaviorAtr() == ApprovalBehaviorAtrImport_New.DENIAL) {
 				sc.get("APPORVAL1").setPrintable(true);
 				TextBox textBoxName1 = textBoxCollection.get("NAME1");
-				textBoxName1.setText(this.get6BytesString(approverPrintDetails1.getEmployeeInfoImport().getBussinessName(), 6).trim());
+				textBoxName1.setText(this.get6BytesString(approverPrintDetails1.getEmployeeInfoImport().getBussinessName().trim(), 6).trim());
 				TextBox textBoxDate1 = textBoxCollection.get("DATE1");
 				textBoxDate1.setText(approverPrintDetails1.getOpApprovalDate().map(x -> x.toString()).orElse(null));
 				TextBox textBoxStatus1 = textBoxCollection.get("STATUS1");
@@ -360,7 +360,7 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 					approverPrintDetails2.getApprovalBehaviorAtr() == ApprovalBehaviorAtrImport_New.DENIAL) {
 				sc.get("APPORVAL2").setPrintable(true);
 				TextBox textBoxName2 = textBoxCollection.get("NAME2");
-				textBoxName2.setText(this.get6BytesString(approverPrintDetails2.getEmployeeInfoImport().getBussinessName(), 6).trim());
+				textBoxName2.setText(this.get6BytesString(approverPrintDetails2.getEmployeeInfoImport().getBussinessName().trim(), 6).trim());
 				TextBox textBoxDate2 = textBoxCollection.get("DATE2");
 				textBoxDate2.setText(approverPrintDetails2.getOpApprovalDate().map(x -> x.toString()).orElse(null));
 				TextBox textBoxStatus2 = textBoxCollection.get("STATUS2");
@@ -386,7 +386,7 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 					approverPrintDetails3.getApprovalBehaviorAtr() == ApprovalBehaviorAtrImport_New.DENIAL) {
 				sc.get("APPORVAL3").setPrintable(true);
 				TextBox textBoxName3 = textBoxCollection.get("NAME3");
-				textBoxName3.setText(this.get6BytesString(approverPrintDetails3.getEmployeeInfoImport().getBussinessName(), 6).trim());
+				textBoxName3.setText(this.get6BytesString(approverPrintDetails3.getEmployeeInfoImport().getBussinessName().trim(), 6).trim());
 				TextBox textBoxDate3 = textBoxCollection.get("DATE3");
 				textBoxDate3.setText(approverPrintDetails3.getOpApprovalDate().map(x -> x.toString()).orElse(null));
 				TextBox textBoxStatus3 = textBoxCollection.get("STATUS3");
@@ -412,7 +412,7 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 					approverPrintDetails4.getApprovalBehaviorAtr() == ApprovalBehaviorAtrImport_New.DENIAL) {
 				sc.get("APPORVAL4").setPrintable(true);
 				TextBox textBoxName4 = textBoxCollection.get("NAME4");
-				textBoxName4.setText(this.get6BytesString(approverPrintDetails4.getEmployeeInfoImport().getBussinessName(), 6).trim());
+				textBoxName4.setText(this.get6BytesString(approverPrintDetails4.getEmployeeInfoImport().getBussinessName().trim(), 6).trim());
 				TextBox textBoxDate4 = textBoxCollection.get("DATE4");
 				textBoxDate4.setText(approverPrintDetails4.getOpApprovalDate().map(x -> x.toString()).orElse(null));
 				TextBox textBoxStatus4 = textBoxCollection.get("STATUS4");
@@ -547,7 +547,9 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 	}
 	
 	private String get6BytesString(String text, int n) {
-        int lengthCut = this.findIdxFullHafl(text, n);
+	    String strimHalfSpaceText = text.split(" ")[0];
+	    String strimFullSpaceText = strimHalfSpaceText.split("　")[0];
+        int lengthCut = this.findIdxFullHafl(strimFullSpaceText, n);
         return text.substring(0, lengthCut);
     }
 	

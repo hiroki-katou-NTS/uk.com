@@ -48,7 +48,7 @@ module nts.uk.at.view.kaf000.a.component3.viewmodel {
 						vm.application().prePostAtr(1);
 						vm.prePostAtrDisp(false);
 					} else {
-						if(value.appDispInfoWithDateOutput.prePostAtr && _.includes([0, 1], value.appDispInfoWithDateOutput.prePostAtr)) {
+						if(_.includes([0, 1], value.appDispInfoWithDateOutput.prePostAtr)) {
 							vm.prePostAtr(value.appDispInfoWithDateOutput.prePostAtr);		
 						} else {
 							vm.prePostAtr(null);	

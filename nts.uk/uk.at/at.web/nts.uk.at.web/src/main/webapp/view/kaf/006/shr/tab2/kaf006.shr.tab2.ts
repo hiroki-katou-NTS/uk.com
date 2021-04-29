@@ -92,7 +92,7 @@ module nts.uk.at.view.kaf006.shr.tab2.viewmodel {
                     checked: isChangeWorkHour,
                     text: $i18n('KAF006_18'),
                     enable: $parent.updateMode
-                }"></div>
+                }" style="margin-top: -5px"></div>
                 <div style="width: 700px;">
                     <hr data-bind="visible: $parent.condition11" />
                 </div>
