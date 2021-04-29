@@ -49361,7 +49361,7 @@ var nts;
                             var disable = allBindingsAccessor.get('disable');
                             ko.computed({
                                 read: function () {
-                                    var options = ko.unwrap(accessor);
+                                    var options = ko.toJS(accessor);
                                     $element
                                         .css({
                                         top: '',
