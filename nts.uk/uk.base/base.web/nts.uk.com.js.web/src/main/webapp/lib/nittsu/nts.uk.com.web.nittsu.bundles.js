@@ -6297,34 +6297,66 @@ var nts;
                 // ボタンの上部分をクリックすると、ボタンの範囲からマウスカーソルが外れてしまい、
                 // clickイベントが発生しなくなる不具合がある。
                 // ダミーのdivを生成し、そこでmouseupイベントを拾うことで不具合を回避。
+                // Emulate click event by cache & trigger
                 $(function () {
-                    $("body").on("mousedown", "button", function (e) {
-                        var $button = $(e.target);
-                        var $dammy = $("<div>")
-                            .css({
-                            background: "transparent",
-                            position: "absolute",
-                            width: $button.outerWidth(),
-                            height: parseInt($button.css("top"), 10),
-                            cursor: "pointer",
-                            opacity: 100
-                        })
-                            .appendTo("body")
-                            .position({
-                            my: "left bottom",
-                            at: "left top",
-                            of: e.target
-                        })
-                            .on("mouseup", function (eup) {
-                            $dammy.remove();
-                            $button.click();
-                        });
-                        $(window).on("mouseup.dammyevent", function () {
-                            $dammy.remove();
-                            $(window).off("mouseup.dammyevent");
-                        });
+                    var cache = {
+                        button: null,
+                        position: null
+                    };
+                    $(document)
+                        .on('mouseup', function (evt) {
+                        var button = cache.button, position = cache.position;
+                        var target = evt.target, pageX = evt.pageX, pageY = evt.pageY;
+                        if (target.tagName !== 'BUTTON') {
+                            if (button && position) {
+                                var x = position.x, y = position.y;
+                                if (x === pageX && y === pageY) {
+                                    // trigger click event of button if mouseup outside
+                                    $(button).trigger('click');
+                                }
+                            }
+                        }
+                        cache.button = null;
+                        cache.position = null;
+                    })
+                        .on('mousedown', 'button', function (evt) {
+                        cache.button = evt.target;
+                        cache.position = {
+                            x: evt.pageX,
+                            y: evt.pageY
+                        };
                     });
                 });
+                /*$(() => {
+                    $("body")
+                        .on("mousedown", "button", e => {
+                            var $button = $(e.target);
+                            var $dammy = $("<div>")
+                                .css({
+                                    background: "transparent",
+                                    position: "absolute",
+                                    width: $button.outerWidth(),
+                                    height: parseInt($button.css("top"), 10),
+                                    cursor: "pointer",
+                                    opacity: 100
+                                })
+                                .appendTo("body")
+                                .position({
+                                    my: "left bottom",
+                                    at: "left top",
+                                    of: e.target
+                                })
+                                .on("mouseup", eup => {
+                                    $dammy.remove();
+                                    $button.click();
+                                });
+        
+                            $(window).on("mouseup.dammyevent", () => {
+                                $dammy.remove();
+                                $(window).off("mouseup.dammyevent");
+                            });
+                        });
+                });*/
             })(buttonExtension || (buttonExtension = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
