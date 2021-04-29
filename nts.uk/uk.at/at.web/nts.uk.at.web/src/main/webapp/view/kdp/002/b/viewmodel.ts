@@ -27,7 +27,7 @@ const initTime = (): TimeClock => ({
 @bean()
 class KDP002BViewModel extends ko.ViewModel {
 
-    modeNikoNiko: KnockoutObservable<boolean> = ko.observable(true);
+    modeNikoNiko: KnockoutObservable<boolean| null> = ko.observable(null);
     // B2_2
     employeeCodeName: KnockoutObservable<string> = ko.observable("基本給");
     // B3_2
