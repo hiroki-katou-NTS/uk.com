@@ -746,5 +746,15 @@ module nts.uk.ui.viewmodel {
 
 	BaseViewModel.prototype.$validate = $validate;
 
+	BaseViewModel.prototype.$query = ((): { [key: string]: string; } => {
+		const query = location.search.substring(1);
+
+		if (!query || !query.match(/=/)) {
+			return {};
+		}
+
+		return JSON.parse('{"' + decodeURI(query).replace(/"/g, '\\"').replace(/&/g, '","').replace(/=/g, '":"') + '"}');
+	})();
+
 	Object.defineProperty(ko, 'ViewModel', { value: BaseViewModel });
 }
