@@ -64,7 +64,7 @@ public class JpaInterimSpecialHolidayMngRepo extends JpaRepository implements In
 			entity = new KrcdtInterimHdSpMng();
 			entity.createAtr = domain.getCreatorAtr().value;
 			entity.mngAtr = domain.getMngAtr().value;
-			entity.usedDays = domain.getUseDays().map(x -> x.v().equals(0d) ? null : x.v()).orElse(null);
+			entity.usedDays = domain.getUseDays().map(x -> x.v()).orElse(0d);
 			entity.usedTime = domain.getUseTimes().map(x -> x.v() == 0 ? null : x.v()).orElse(null);
 			entity.remainMngId = domain.getRemainManaID();
 			entity.pk = key;
@@ -72,7 +72,7 @@ public class JpaInterimSpecialHolidayMngRepo extends JpaRepository implements In
 		} else {
 			entity.createAtr = domain.getCreatorAtr().value;
 			entity.mngAtr = domain.getMngAtr().value;
-			entity.usedDays = domain.getUseDays().map(x -> x.v().equals(0d) ? null : x.v()).orElse(null);
+			entity.usedDays = domain.getUseDays().map(x -> x.v()).orElse(0d);
 			entity.usedTime = domain.getUseTimes().map(x -> x.v() == 0 ? null : x.v()).orElse(null);
 			this.commandProxy().update(entity);
 		}
