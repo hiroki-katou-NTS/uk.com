@@ -9,8 +9,6 @@ import lombok.SneakyThrows;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.ApprovalProcess;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.ApprovalProcessRepository;
-import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtApprovalProcess;
-import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtApprovalProcessPk;
 import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtDaiFuncControl;
 
 @Stateless
@@ -44,29 +42,4 @@ public class JpaApprovalProcessRepository extends JpaRepository implements Appro
 //			});
 //    	}
     }
-
-    @Override
-    public void add(ApprovalProcess domain){
-        this.commandProxy().insert(KrcmtApprovalProcess.toEntity(domain));
-    }
-
-    @Override
-    public void update(ApprovalProcess domain){
-        KrcmtApprovalProcess newApprovalProcess = KrcmtApprovalProcess.toEntity(domain);
-        KrcmtApprovalProcess updateApprovalProcess = this.queryProxy().find(newApprovalProcess.approvalProcessPk, KrcmtApprovalProcess.class).get();
-        if (null == updateApprovalProcess) {
-        	this.add(domain);
-            return;
-        }
-        updateApprovalProcess.useDailyBossChk = newApprovalProcess.useDailyBossChk;
-        updateApprovalProcess.useMonthBossChk = newApprovalProcess.useMonthBossChk;
-        updateApprovalProcess.supervisorConfirmError = newApprovalProcess.supervisorConfirmError;
-        this.commandProxy().update(updateApprovalProcess);
-    }
-
-    @Override
-    public void remove(String cid){
-        this.commandProxy().remove(KrcmtApprovalProcess.class, new KrcmtApprovalProcessPk(cid)); 
-    }
-
 }

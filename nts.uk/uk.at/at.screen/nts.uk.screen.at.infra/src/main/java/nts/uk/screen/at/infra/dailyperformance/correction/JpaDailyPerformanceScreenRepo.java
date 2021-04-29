@@ -62,15 +62,11 @@ import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.KrcdtErSuAtd;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.KrcdtOtkErAl;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.KrcmtEralApplication;
 import nts.uk.ctx.at.record.infra.entity.workrecord.identificationstatus.KrcdtIdentificationStatus;
-import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtApprovalProcess;
-import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtApprovalProcessPk;
 import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtAttendanceAut;
-import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtDaiPerformEdFun;
-import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtDaiPerformEdFunPk;
+import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtDaiFuncControl;
+import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtDaiFuncControlPk;
 import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtFormatPerformance;
 import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtFormatPerformancePk;
-import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtIdentityProcess;
-import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtIdentityProcessPk;
 import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtWorktypeChangeable;
 import nts.uk.ctx.at.record.infra.entity.workrecord.workfixed.KrcstWorkFixed;
 import nts.uk.ctx.at.record.infra.entity.workrecord.workfixed.KrcstWorkFixedPK;
@@ -1387,12 +1383,12 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		OperationOfDailyPerformanceDto dto = new OperationOfDailyPerformanceDto();
 		Optional<KrcmtFormatPerformance> format = this.queryProxy().find(new KrcmtFormatPerformancePk(companyId),
 				KrcmtFormatPerformance.class);
-		Optional<KrcmtDaiPerformEdFun> edFunc = this.queryProxy().find(new KrcmtDaiPerformEdFunPk(companyId),
-				KrcmtDaiPerformEdFun.class);
-		dto.setComment(edFunc.isPresent() ? edFunc.get().comment : "");
+		Optional<KrcmtDaiFuncControl> daiFunc = this.queryProxy().find(new KrcmtDaiFuncControlPk(companyId),
+				KrcmtDaiFuncControl.class);
+		dto.setComment(daiFunc.isPresent() ? daiFunc.get().comment : "");
 		dto.setSettingUnit(
 				EnumAdaptor.valueOf(format.isPresent() ? format.get().settingUnitType : 1, SettingUnitType.class));
-		dto.setShowError(edFunc.isPresent() ? edFunc.get().checkErrRefDisp == 1 : false);
+		dto.setShowError(daiFunc.isPresent() ? daiFunc.get().checkErrRefDisp == 1 : false);
 		return dto;
 	}
 
@@ -1636,10 +1632,10 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 
 	@Override
 	public Optional<IdentityProcessUseSetDto> findIdentityProcessUseSet(String comapnyId) {
-		return this.queryProxy().find(new KrcmtIdentityProcessPk(comapnyId), KrcmtIdentityProcess.class)
-				.map(x -> new IdentityProcessUseSetDto(x.useDailySelfCk == 1 ? true : false,
-						x.useMonthSelfCK == 1 ? true : false,
-						x.yourselfConfirmError != null ? x.yourselfConfirmError : null));
+		return this.queryProxy().find(new KrcmtDaiFuncControlPk(comapnyId), KrcmtDaiFuncControl.class)
+				.map(x -> new IdentityProcessUseSetDto(x.daySelfChk == 1 ? true : false,
+						x.monSelfChk == 1 ? true : false,
+						x.daySelfChkError != null ? x.daySelfChkError : null));
 	}
 
 	@Override
@@ -1662,10 +1658,10 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 
 	@Override
 	public Optional<ApprovalUseSettingDto> findApprovalUseSettingDto(String comapnyId) {
-		return this.queryProxy().find(new KrcmtApprovalProcessPk(comapnyId), KrcmtApprovalProcess.class)
-				.map(x -> new ApprovalUseSettingDto(x.useDailyBossChk == 1 ? true : false,
-						x.useMonthBossChk == 1 ? true : false,
-						x.supervisorConfirmError != null ? x.supervisorConfirmError : null));
+		return this.queryProxy().find(new KrcmtDaiFuncControlPk(comapnyId), KrcmtDaiFuncControl.class)
+				.map(x -> new ApprovalUseSettingDto(x.dayBossChk == 1 ? true : false,
+						x.monBossChk == 1 ? true : false,
+						x.dayBossChkError != null ? x.dayBossChkError : null));
 	}
 
 	@Override

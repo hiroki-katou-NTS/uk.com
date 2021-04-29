@@ -10,8 +10,6 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.IdentityProcess;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.IdentityProcessRepository;
 import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtDaiFuncControl;
-import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtIdentityProcess;
-import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtIdentityProcessPk;
 
 @Stateless
 public class JpaIdentityProcessRepository extends JpaRepository implements IdentityProcessRepository
@@ -41,29 +39,5 @@ public class JpaIdentityProcessRepository extends JpaRepository implements Ident
 //		        		rec.getInt("DAY_SELF_CHK_ERROR") == null ? null : EnumAdaptor.valueOf(rec.getInt("DAY_SELF_CHK_ERROR"), YourselfConfirmError.class));
 //			});
 //    	}
-    }
-
-    @Override
-    public void add(IdentityProcess domain){
-        this.commandProxy().insert(KrcmtIdentityProcess.toEntity(domain));
-    }
-
-    @Override
-    public void update(IdentityProcess domain){
-        KrcmtIdentityProcess newIdentityProcess = KrcmtIdentityProcess.toEntity(domain);
-        KrcmtIdentityProcess updateIdentityProcess = this.queryProxy().find(newIdentityProcess.identityProcessPk, KrcmtIdentityProcess.class).get();
-        if (null == updateIdentityProcess) {
-        	this.add(domain);
-            return;
-        }
-        updateIdentityProcess.useDailySelfCk = newIdentityProcess.useDailySelfCk;
-        updateIdentityProcess.useMonthSelfCK = newIdentityProcess.useMonthSelfCK;
-        updateIdentityProcess.yourselfConfirmError = newIdentityProcess.yourselfConfirmError;
-        this.commandProxy().update(updateIdentityProcess);
-    }
-
-    @Override
-    public void remove(String cid){
-        this.commandProxy().remove(KrcmtIdentityProcess.class, new KrcmtIdentityProcessPk(cid)); 
     }
 }

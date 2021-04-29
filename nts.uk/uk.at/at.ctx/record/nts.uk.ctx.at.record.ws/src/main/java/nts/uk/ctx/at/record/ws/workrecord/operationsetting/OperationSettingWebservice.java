@@ -12,18 +12,12 @@ import javax.ws.rs.Produces;
 
 import nts.arc.enums.EnumConstant;
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.at.record.app.command.workrecord.operationsetting.ApprovalProcessCommand;
 import nts.uk.ctx.at.record.app.command.workrecord.operationsetting.DaiFuncControlCommand;
-import nts.uk.ctx.at.record.app.command.workrecord.operationsetting.DaiPerformanceFunCommand;
 import nts.uk.ctx.at.record.app.command.workrecord.operationsetting.FormatPerformanceCommand;
-import nts.uk.ctx.at.record.app.command.workrecord.operationsetting.IdentityProcessCommand;
 import nts.uk.ctx.at.record.app.command.workrecord.operationsetting.MonPerformanceFunCommand;
 import nts.uk.ctx.at.record.app.command.workrecord.operationsetting.RestrictConfirmEmploymentCommand;
-import nts.uk.ctx.at.record.app.command.workrecord.operationsetting.UpdateApprovalProcessCommandHandler;
 import nts.uk.ctx.at.record.app.command.workrecord.operationsetting.UpdateDaiFuncControlCommandHandler;
-import nts.uk.ctx.at.record.app.command.workrecord.operationsetting.UpdateDaiPerformanceFunCommandHandler;
 import nts.uk.ctx.at.record.app.command.workrecord.operationsetting.UpdateFormatPerformanceCommandHandler;
-import nts.uk.ctx.at.record.app.command.workrecord.operationsetting.UpdateIdentityProcessCommandHandler;
 import nts.uk.ctx.at.record.app.command.workrecord.operationsetting.UpdateMonPerformanceFunCommandHandler;
 import nts.uk.ctx.at.record.app.command.workrecord.operationsetting.UpdateRestrictConfirmEmploymentCommandHandler;
 import nts.uk.ctx.at.record.app.find.workrecord.operationsetting.ApplicationTypeFinder;
@@ -63,20 +57,11 @@ public class OperationSettingWebservice extends WebService {
 	@Inject 
 	private UpdateMonPerformanceFunCommandHandler updateMonPerformanceFunCommandHandler;
 	
-//	@Inject
-//	private UpdateDaiPerformanceFunCommandHandler updateDaiPerformanceFunCommandHandler;
-	
 	@Inject
 	private ApprovalProcessFinder approvalProcessFinder;
 	
 	@Inject
 	private IdentityProcessFinder identityProcessFinder;
-	
-//	@Inject
-//	private UpdateApprovalProcessCommandHandler updateApprovalProcessCommandHandler;
-	
-//	@Inject
-//	private UpdateIdentityProcessCommandHandler updateIdentityProcessCommandHandler;
 	
 	@Inject
 	private RestrictConfirmEmploymentFinder restrictConfirmEmploymentFinder;
@@ -99,7 +84,6 @@ public class OperationSettingWebservice extends WebService {
 		return dto;
 	}
 	
-	//huytodo remove attr, entity
 	@POST
 	@Path("getdaily")
 	public DaiPerformanceFunDto getDaiPerformanceFunById() {
@@ -117,7 +101,6 @@ public class OperationSettingWebservice extends WebService {
 		return dto;
 	}
 	
-	//huytodo remove entity
 	@POST
 	@Path("getIdentity")
 	public IdentityProcessDto getIdentityProcessById() {
@@ -127,7 +110,6 @@ public class OperationSettingWebservice extends WebService {
 		return dto;
 	}
 	
-	//huytodo remove entity
 	@POST
 	@Path("getApproval")
 	public ApprovalProcessDto getApprovalProcessById() {
@@ -170,24 +152,6 @@ public class OperationSettingWebservice extends WebService {
 	public void updateDaiFuncControl(DaiFuncControlCommand command){
 		updateDaiFuncControlCommandHandler.handle(command);
 	}
-	
-//	@POST
-//	@Path("updateDaily")
-//	public void updateDaiPerformanceFun(DaiPerformanceFunCommand command){
-//		updateDaiPerformanceFunCommandHandler.handle(command);
-//	}
-//	
-//	@POST
-//	@Path("updateApproval")
-//	public void updateApprovalProcess(ApprovalProcessCommand command){
-//		updateApprovalProcessCommandHandler.handle(command);
-//	}
-//	
-//	@POST
-//	@Path("updateIdentity")
-//	public void updateIdentityProcess(IdentityProcessCommand command){
-//		updateIdentityProcessCommandHandler.handle(command);
-//	}
 	
 	@POST
 	@Path("updateRestrictConfirmEmp")
