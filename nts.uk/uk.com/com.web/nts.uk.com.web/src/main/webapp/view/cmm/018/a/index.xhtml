@@ -78,8 +78,8 @@
 							<!-- SHYUUGYO -->
 							<div data-bind="if:systemAtr()==0">
 								<!-- A2: List gridList -->
-								<div id = "left-contents" style="float: left;margin-left: 20px;">
-									<div style="width: 280px;padding-bottom: 1px;" class="caret-right caret-background bg-green">
+								<div id = "left-contents" style="float: left;margin-left: 20px; ">
+									<div style="margin-top: -5px; width: 280px;padding-bottom: 1px;" class="caret-right caret-background bg-green">
 										<div style="margin: 10px 20px 20px 20px">
 											<button class="dateControlBtn" data-bind="click: $data.openDialogI,enable: enableCreatNew">#{i18n.getText('CMM018_20')}</button>
 											<button class="danger dateControlBtn" data-bind="click: openDialogJ, enable: enableDelete">#{i18n.getText('CMM018_21')}</button>
@@ -100,8 +100,8 @@
 									</div>
 								</div>
 								<!-- A3: List -->
-								<div id = "right-contents" style="margin-top: 10px; margin-bottom: 20px; margin-left: 305px;">
-									<div style="padding-top: 10px">
+								<div id = "right-contents" style="margin-top: 20px; margin-bottom: 20px; margin-left: 305px;">
+									<div style="">
 										<!-- A3_1: Label 有効期間 -->
 										<div style = "width: 100px; margin-left: 20px;display: inline-block;" data-bind ="ntsFormLabel: { required: false }">#{i18n.getText('CMM018_23')}</div>
 										<!-- A3_2: 選択する期間 -->
@@ -171,7 +171,7 @@
 							</div>
 						</div>
 						<!-- SCREEN B -->
-						<div class="mode_Private" data-bind="visible: selectedModeCode" style="margin-top: 10px;">
+						<div class="mode_Private" data-bind="visible: selectedModeCode">
 							<div style="">
 							<!-- B2: List gridList -->
 							<div id = "left-contents" style="float: left;margin-left: 20px;" data-bind="with: $parent.viewmodelSubB">
@@ -268,7 +268,7 @@
 						<div data-bind="if:systemAtr()==0">
 							<!-- C2: List gridList -->
 							<div id = "left-contents" style="float: left;margin-left: 20px;">
-								<div style="width: 280px; height: 340px;" class="caret-right caret-background bg-green">
+								<div style="margin-top: -5px; width: 280px; height: 340px;" class="caret-right caret-background bg-green">
 									<div style="margin: 10px 20px 20px 20px">
 										<button class="dateControlBtn" data-bind="click: $data.openDialogI,enable: enableCreatNew">#{i18n.getText('CMM018_20')}</button>
 										<button class="danger dateControlBtn" data-bind="click: openDialogJ, enable: enableDelete">#{i18n.getText('CMM018_21')}</button>
@@ -289,8 +289,8 @@
 								</div>
 							</div>
 							<!-- C3: List -->
-							<div id = "right-contents" style="margin-top: 10px; margin-bottom: 20px; margin-left: 305px;">
-								<div style="padding-top: 10px;">
+							<div id = "right-contents" style="margin-top: 20px; margin-bottom: 20px; margin-left: 305px;">
+								<div>
 									<!-- C3_1: Label 有効期間 -->
 									<div style = "width: 100px; margin-left: 20px;display: inline-block;" data-bind ="ntsFormLabel: { required: false }">#{i18n.getText('CMM018_23')}</div>
 									<!-- C3_2: 選択する期間 -->
