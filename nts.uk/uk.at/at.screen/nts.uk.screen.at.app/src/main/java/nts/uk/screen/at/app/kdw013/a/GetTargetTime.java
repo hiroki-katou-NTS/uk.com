@@ -3,6 +3,8 @@ package nts.uk.screen.at.app.kdw013.a;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.ejb.Stateless;
+
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.OvertimeLeaveTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.holidayworktime.HolidayWorkTimeOfDaily;
@@ -14,6 +16,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.overtimehou
  * @author tutt
  *
  */
+@Stateless
 public class GetTargetTime {
 	/**
 	 * 
