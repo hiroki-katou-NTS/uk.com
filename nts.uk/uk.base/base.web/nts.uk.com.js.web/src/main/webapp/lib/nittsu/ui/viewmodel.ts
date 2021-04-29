@@ -49,15 +49,33 @@ function bean(dialogOption?: DialogOption): any {
 	};
 }
 
-function component(options: { name: string; template: string; }): any {
+function component(options: nts.uk.ui.vm.ViewModelOption): any {
 	return function (ctor: any): any {
-		return $.Deferred().resolve(options.template.match(/\.html$/))
+		const { name, template, alternalBinding } = options;
+
+		if (alternalBinding) {
+			ko.bindingHandlers[name] = {
+				init(element: HTMLElement, __: () => any, allBindingsAccessor: KnockoutAllBindingsAccessor, ___: any, bindingContext: KnockoutBindingContext) {
+					const allBinding = { ...allBindingsAccessor() };
+					const params = _.mapKeys(allBinding, (_v: any, key: string) => _.camelCase(key));
+
+					ko.applyBindingsToNode(element, { component: { name, params } }, bindingContext);
+
+					element.removeAttribute('data-bind');
+
+					return { controlsDescendantBindings: true };
+				}
+			};
+		}
+
+		return $.Deferred()
+			.resolve(template.match(/\.html$/))
 			.then((url: boolean) => {
-				return url ? $.get(options.template) : options.template;
+				return url ? $.get(template) : template;
 			})
 			.then((template: string) => {
-				if (!ko.components.isRegistered(options.name)) {
-					ko.components.register(options.name, {
+				if (!ko.components.isRegistered(name)) {
+					ko.components.register(name, {
 						template,
 						viewModel: {
 							createViewModel($params: any, $el: any) {
