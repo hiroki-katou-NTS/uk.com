@@ -37485,6 +37485,17 @@ var nts;
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
 /// <reference path="./viewcontext.d.ts" />
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 var __spreadArray = (this && this.__spreadArray) || function (to, from) {
     for (var i = 0, il = from.length, j = to.length; i < il; i++, j++)
         to[j] = from[i];
@@ -37526,13 +37537,26 @@ function bean(dialogOption) {
 }
 function component(options) {
     return function (ctor) {
-        return $.Deferred().resolve(options.template.match(/\.html$/))
+        var name = options.name, template = options.template, alternalBinding = options.alternalBinding;
+        if (alternalBinding) {
+            ko.bindingHandlers[name] = {
+                init: function (element, __, allBindingsAccessor, ___, bindingContext) {
+                    var allBinding = __assign({}, allBindingsAccessor());
+                    var params = _.mapKeys(allBinding, function (_v, key) { return _.camelCase(key); });
+                    ko.applyBindingsToNode(element, { component: { name: name, params: params } }, bindingContext);
+                    element.removeAttribute('data-bind');
+                    return { controlsDescendantBindings: true };
+                }
+            };
+        }
+        return $.Deferred()
+            .resolve(template.match(/\.html$/))
             .then(function (url) {
-            return url ? $.get(options.template) : options.template;
+            return url ? $.get(template) : template;
         })
             .then(function (template) {
-            if (!ko.components.isRegistered(options.name)) {
-                ko.components.register(options.name, {
+            if (!ko.components.isRegistered(name)) {
+                ko.components.register(name, {
                     template: template,
                     viewModel: {
                         createViewModel: function ($params, $el) {
