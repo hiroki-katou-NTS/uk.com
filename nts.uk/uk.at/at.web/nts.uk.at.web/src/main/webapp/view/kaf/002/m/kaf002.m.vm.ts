@@ -139,14 +139,14 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
                 
 				if (self.isPreAtr()) {
 					if (self.selectedTab() == 'tab-2') {
-							$('#kaf002TabPanel').width(600)							
+							$('#kaf002TabPanel').width(580)							
 					} else {
 							$('#kaf002TabPanel').width(450)							
 					}
 				
 				} else {
 					if (self.selectedTab() == 'tab-2') {
-							$('#kaf002TabPanel').width(700)							
+							$('#kaf002TabPanel').width(680)							
 					} else {
 							$('#kaf002TabPanel').width(550)							
 					}
@@ -258,14 +258,14 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
             const self = this;
             if (self.isPreAtr()) {
 				if (self.selectedTab() == 'tab-2') {
-						$('#kaf002TabPanel').width(600)							
+						$('#kaf002TabPanel').width(580)							
 				} else {
 						$('#kaf002TabPanel').width(450)							
 				}
 				
 			} else {
 				if (self.selectedTab() == 'tab-2') {
-						$('#kaf002TabPanel').width(700)							
+						$('#kaf002TabPanel').width(680)							
 				} else {
 						$('#kaf002TabPanel').width(550)							
 				}
