@@ -134,7 +134,7 @@ module nts.uk.ui.components.fullcalendar {
         }
         .fc-container .fc-sidebar .fc-events>ul,
         .fc-container .fc-sidebar .fc-employees>ul {
-            overflow: hidden auto;
+            overflow-x: hidden;
         }
         .fc-container .fc-sidebar .fc-employees>ul {
             border: 1px solid #ccc;
@@ -298,7 +298,6 @@ module nts.uk.ui.components.fullcalendar {
             box-sizing: border-box;
         }
         .fc-container .fc-popup-editor.show {
-            overflow: hidden;
             visibility: visible;
             width: 250px;
             height: 270px;

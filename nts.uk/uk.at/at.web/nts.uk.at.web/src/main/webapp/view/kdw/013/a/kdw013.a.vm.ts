@@ -135,8 +135,25 @@ module nts.uk.ui.at.kdp013.a {
 
         }
 
+        // 日付を変更する
+        // UKDesign.UniversalK.就業.KDW_日別実績.KDW013_工数入力.A:工数入力.メニュー別OCD.日付を変更する
         datesSet(start: Date, end: Date) {
-            console.log(start, end);
+            const vm = this;
+            const { initialDate, $user } = vm;
+            const { employeeId } = $user;
+            const refDate = ko.unwrap(initialDate);
+
+            const params = {
+                employeeId,
+                refDate: moment(refDate).toISOString(),
+                displayPeriod: {
+                    start: moment(start).toISOString(),
+                    end: moment(end).toISOString()
+                }
+            };
+
+            vm.$ajax('at', API.CHANGE_DATE, params)
+                .then(() => { });
         }
 
         confirm() {
