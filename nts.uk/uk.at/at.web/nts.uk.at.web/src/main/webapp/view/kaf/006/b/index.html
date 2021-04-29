@@ -26,16 +26,18 @@
                                                     application: application,
                                                     appDispInfoStartupOutput: appDispInfoStartupOutput
                                                 } }" style="margin-bottom: -18px;"></div>
-                    <div data-bind="component: { name: 'kaf000-b-component6', 
-                                                params: {
-                                                    appType: appType,
-                                                    application: application,
-                                                    appDispInfoStartupOutput: appDispInfoStartupOutput
-                                                } }" style="width: fit-content; display: inline-block; vertical-align: middle; margin-bottom: -15px;"></div>
-                    <div style="width: fit-content; display: inline-block; vertical-align: middle;">
-                        <button data-bind="visible: condition31() && updateMode(), text: $i18n('KAF006_86'), click: openKAF006C"></button>
+                    <div style="width: fit-content; display: inline-block; vertical-align: middle; margin-bottom: -6px; margin-top: 10px;">
+                        <div data-bind="component: { name: 'kaf000-b-component6', 
+                            params: {
+                                appType: appType,
+                                application: application,
+                                appDispInfoStartupOutput: appDispInfoStartupOutput
+                            } }" style="width: fit-content; display: inline-block; vertical-align: middle;"></div>
+                        <div style="width: fit-content; display: inline-block; vertical-align: middle;">
+                            <button data-bind="visible: condition31() && updateMode(), text: $i18n('KAF006_86'), click: openKAF006C"></button>
+                        </div>
+                        <span style="vertical-align: middle;" data-bind="visible: condition32, text: dateBeforeChange"></span>
                     </div>
-                    <span style="vertical-align: middle;" data-bind="visible: condition32, text: dateBeforeChange"></span>
                     <div>
                         <div class="mv-13" data-bind="component: { name: 'kaf006-shr-component2', 
                                                     params: {
