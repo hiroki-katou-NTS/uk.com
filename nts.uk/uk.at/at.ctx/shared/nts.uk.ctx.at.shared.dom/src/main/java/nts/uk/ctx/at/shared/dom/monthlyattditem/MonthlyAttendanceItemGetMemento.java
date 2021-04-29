@@ -70,4 +70,10 @@ public interface MonthlyAttendanceItemGetMemento {
 	 * @return the the primitiveValue
 	 */
 	Optional<PrimitiveValueOfAttendanceItem> getPrimitiveValue();
+	
+	/**
+	 * 表示名称 を取得する
+	 * @return 表示名称 
+	 */
+	Optional<AttendanceName> getDisplayName();
 }

@@ -129,7 +129,8 @@ public class JpaDailyAttendanceItemRepository extends JpaRepository implements D
 				krcmtDailyAttendanceItem.dailyAttendanceAtr,
 				krcmtDailyAttendanceItem.nameLineFeedPosition,
 				krcmtDailyAttendanceItem.typeOfMaster,
-				krcmtDailyAttendanceItem.primitiveValue);
+				krcmtDailyAttendanceItem.primitiveValue,
+				krcmtDailyAttendanceItem.displayName);
 		return dailyAttendanceItem;
 	}
 
