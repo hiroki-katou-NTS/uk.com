@@ -83,6 +83,7 @@ module nts.uk.at.view.ksm011.d {
           vm.alarmConditionList(data.listItemsSelected.map((i: any) => i.code));
           vm.alarmConditionListText(_.join(conditionListText, '、'));
           vm.$blockui('hide');
+            $('#KSM011_D6_14').ntsError('clear');
         } else 
           vm.$blockui('hide');
       });
@@ -128,6 +129,11 @@ module nts.uk.at.view.ksm011.d {
         return;
       }
 
+      if (vm.alarmCheck() == 1 && _.isEmpty(vm.alarmConditionList())) {
+          $('#KSM011_D6_14').ntsError('set', {messageId:'Msg_1690', messageParams:[vm.$i18n("KSM011_87")]});
+          return;
+      }
+
       let params = {
           initDispMonth: vm.targetDate(),
           endDay: vm.deadline(),
@@ -148,11 +154,11 @@ module nts.uk.at.view.ksm011.d {
        vm.$ajax(PATH.register, params).done(() => {
            vm.$dialog.info({ messageId: 'Msg_15'});
       }).fail(error => {
-        vm.$dialog.info(error).then(() => {
-            if (error.messageId == "Msg_1690") {
-                $('#KSM011_D6_14').focus();
-            }
-        });
+           if (error.messageId == "Msg_1690" && error.parameterIds && error.parameterIds.indexOf(vm.$i18n("KSM011_87")) >= 0) {
+               $('#KSM011_D6_14').ntsError('set', {messageId:'Msg_1690', messageParams:[vm.$i18n("KSM011_87")]});
+           } else {
+               vm.$dialog.info(error);
+           }
       }).always(() => {
            vm.$blockui('hide');
        });

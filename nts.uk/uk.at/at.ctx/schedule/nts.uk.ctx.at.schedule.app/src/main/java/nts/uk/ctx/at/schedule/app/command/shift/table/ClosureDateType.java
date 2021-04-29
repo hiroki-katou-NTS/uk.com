@@ -66,8 +66,8 @@ public enum ClosureDateType {
     THIRTIETH(30),
     // 31: 31日
     THIRTY_FIRST(31),
-    // 32: 末日
-    LASTDAY(32);
+    // 0: 末日
+    LASTDAY(0);
 
     public final int value;
 

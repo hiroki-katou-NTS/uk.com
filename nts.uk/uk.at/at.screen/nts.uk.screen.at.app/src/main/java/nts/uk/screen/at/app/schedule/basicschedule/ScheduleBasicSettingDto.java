@@ -25,12 +25,12 @@ public class ScheduleBasicSettingDto {
     /**
      * 流動勤務の利用区分
      */
-    public int changeableFluid;
+    public int changeableFluid = 1;
 
     /**
      * フレックス勤務の利用区分
      */
-    public int changeableFlex;
+    public int changeableFlex = 1;
 
     /**
      * 勤務種類制御の利用区分
@@ -50,7 +50,11 @@ public class ScheduleBasicSettingDto {
     private List<WorkTypeNameDto> displayableWorkTypeList;
 
     public static ScheduleBasicSettingDto fromDomain(ScheFunctionControl domain, List<WorkTypeNameDto> workTypeNameList) {
-        if (domain == null) return null;
+        if (domain == null) {
+            ScheduleBasicSettingDto dto = new ScheduleBasicSettingDto();
+            dto.setDisplayableWorkTypeList(workTypeNameList);
+            return dto;
+        }
 
         return new ScheduleBasicSettingDto(
                 BooleanUtils.toInteger(domain.isChangeableForm(WorkTimeForm.FIXED)),

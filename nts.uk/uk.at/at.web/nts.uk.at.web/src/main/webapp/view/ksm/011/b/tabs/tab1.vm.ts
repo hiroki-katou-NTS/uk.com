@@ -16,9 +16,9 @@ module nts.uk.at.view.ksm011.b.tabs.tab1 {
 
     daysList: KnockoutObservableArray<any>;
     workRequestInput: KnockoutObservableArray<any>;
-    workRequestInputSelected: KnockoutObservable<number> = ko.observable(0);
-    deadlineSelected: KnockoutObservable<number> = ko.observable(32);
-    deadlineWorkSelected: KnockoutObservable<number> = ko.observable(32);
+    workRequestInputSelected: KnockoutObservable<number> = ko.observable(1);
+    deadlineSelected: KnockoutObservable<number> = ko.observable(0);
+    deadlineWorkSelected: KnockoutObservable<number> = ko.observable(0);
 
     constructor(params: any) {
       super();
@@ -29,8 +29,8 @@ module nts.uk.at.view.ksm011.b.tabs.tab1 {
       ]);
 
       vm.workRequestInput = ko.observableArray([
-        { code: 1, name: vm.$i18n('KSM011_21') },
-        { code: 0, name: vm.$i18n('KSM011_22') }
+        { code: 1, name: vm.$i18n('KSM011_31') },
+        { code: 0, name: vm.$i18n('KSM011_32') }
       ]);
 
       vm.daysList = ko.observableArray([]);
@@ -38,7 +38,7 @@ module nts.uk.at.view.ksm011.b.tabs.tab1 {
       for( let day = 1; day <= 31; day++) {
         days.push( { day: day, name: day + vm.$i18n('KSM011_105')});
       }
-      days.push( { day: 32, name: vm.$i18n('KSM011_106')});
+      days.push( { day: 0, name: vm.$i18n('KSM011_106')});
       vm.daysList(days);
 
       vm.initialLoadPage();

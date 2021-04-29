@@ -109,7 +109,7 @@ public class KscmtFuncCtr extends ContractUkJpaEntity implements Serializable {
 		return new ScheFunctionControl (
 				lstWork, 
 				(this.displayActual == 1),
-				NotUseAtr.valueOf(this.displayActual),
+				NotUseAtr.valueOf(this.controlUseWktp),
 				displayableWorkTypeCodeList );
 	}
 }

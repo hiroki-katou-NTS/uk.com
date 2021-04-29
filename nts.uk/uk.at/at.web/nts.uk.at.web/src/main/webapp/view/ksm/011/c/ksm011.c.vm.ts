@@ -11,11 +11,11 @@ module nts.uk.at.view.ksm011.c {
 
     switchItems: KnockoutObservableArray<any>;
     switchItems1: KnockoutObservableArray<any>;
-    regularWork: KnockoutObservable<number> = ko.observable(1);
-    fluidWork: KnockoutObservable<number> = ko.observable(0);
-    flexTime: KnockoutObservable<number> = ko.observable(0);
-    workTypeControl: KnockoutObservable<number> = ko.observable(1);
-    achievementDisplay: KnockoutObservable<number> = ko.observable(1);
+    regularWork: KnockoutObservable<number> = ko.observable(0);
+    fluidWork: KnockoutObservable<number> = ko.observable(1);
+    flexTime: KnockoutObservable<number> = ko.observable(1);
+    workTypeControl: KnockoutObservable<number> = ko.observable(0);
+    achievementDisplay: KnockoutObservable<number> = ko.observable(0);
     workTypeList: KnockoutObservableArray<string> = ko.observableArray([]);
     workTypeListText: KnockoutObservable<string>;
 
@@ -38,7 +38,7 @@ module nts.uk.at.view.ksm011.c {
       vm.workTypeListText = ko.computed(() => {
         return vm.selectableWorkTypes()
             .filter((i: any) => vm.workTypeList().indexOf(i.code) >= 0)
-            .map((i: any) => i.name).join(" + ");
+            .map((i: any) => i.name).join("、");
       });
 
       vm.getSetting();
@@ -62,6 +62,7 @@ module nts.uk.at.view.ksm011.c {
         var lst = nts.uk.ui.windows.getShared('KDL002_SelectedNewItem');
         if (lst) {
           vm.workTypeList(lst.map((i: any) => i.code));
+          $('#KSM011_C3_6').ntsError('clear');
         }
       });
     }
@@ -90,10 +91,8 @@ module nts.uk.at.view.ksm011.c {
     saveData() {
       const vm = this;
 
-      if( vm.workTypeList().length <= 0 && vm.workTypeControl() === 1) {
-        vm.$dialog.error({ messageId: 'Msg_1690', messageParams: [vm.$i18n('KSM011_47')]}).then(() => {
-          $('#KSM011_C3_6').focus();
-        });
+      if(vm.workTypeControl() === 1 && _.isEmpty(vm.workTypeList())) {
+        $('#KSM011_C3_6').ntsError('set', {messageId:'Msg_1690', messageParams:[vm.$i18n("KSM011_47")]});
         return;
       }
 

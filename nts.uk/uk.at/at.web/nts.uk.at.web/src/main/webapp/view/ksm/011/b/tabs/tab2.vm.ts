@@ -15,9 +15,10 @@ module nts.uk.at.view.ksm011.b.tabs.tab2 {
     maxDesiredHolidays: KnockoutObservable<number> = ko.observable(0);
 
     daysList: KnockoutObservableArray<any>;
-    workRequestInputSelected: KnockoutObservable<number> = ko.observable(0);
-    deadlineSelected: KnockoutObservable<number> = ko.observable(32);
-    deadlineWorkSelected: KnockoutObservable<number> = ko.observable(32);
+      workRequestInput: KnockoutObservableArray<any>;
+    workRequestInputSelected: KnockoutObservable<number> = ko.observable(1);
+    deadlineSelected: KnockoutObservable<number> = ko.observable(0);
+    deadlineWorkSelected: KnockoutObservable<number> = ko.observable(0);
 
     selectedWkpId: KnockoutObservable<any>;
     selectedWkpGroupId: KnockoutObservable<any>;
@@ -42,6 +43,11 @@ module nts.uk.at.view.ksm011.b.tabs.tab2 {
         { code: 0, name: vm.$i18n('KSM011_22') }
       ]);
 
+        vm.workRequestInput = ko.observableArray([
+            { code: 1, name: vm.$i18n('KSM011_31') },
+            { code: 0, name: vm.$i18n('KSM011_32') }
+        ]);
+
       vm.replaceThisVar.subscribe( code => {
         vm.replaceThisName(code == 0 ? vm.$i18n('Com_Workplace') : vm.$i18n('Com_WorkplaceGroup'));
         if (vm.replaceThisVar() == 0) vm.selectedWkpId.valueHasMutated();
@@ -53,7 +59,7 @@ module nts.uk.at.view.ksm011.b.tabs.tab2 {
       for (let day = 1; day <= 31; day++) {
           days.push({ day: day, name: day + vm.$i18n('KSM011_105') });
       }
-      days.push({ day: 32, name: vm.$i18n('KSM011_106') });
+      days.push({ day: 0, name: vm.$i18n('KSM011_106') });
       vm.daysList(days);
       vm.baseDate = ko.observable(new Date());
       vm.selectedWkpId = ko.observable(null);
@@ -139,11 +145,11 @@ module nts.uk.at.view.ksm011.b.tabs.tab2 {
           vm.deadlineWorkSelected(data.availabilityDeadLine); //Ba4_11				締切日
           vm.workRequestInputSelected(data.availabilityAssignMethod); //Ba4_13				入力方法の利用区分
         } else {
-          vm.publicMethod(1);//Ba3_2	 公開機能の利用区分
-          vm.workRequest(1);//Ba4_2 勤務希望の利用区分
-          vm.maxDesiredHolidays(1); //Ba4_6				希望休日の上限日数入力
-          vm.deadlineSelected(1); //Ba4_9				締め日
-          vm.deadlineWorkSelected(1); //Ba4_11				締切日
+          vm.publicMethod(0);//Ba3_2	 公開機能の利用区分
+          vm.workRequest(0);//Ba4_2 勤務希望の利用区分
+          vm.maxDesiredHolidays(0); //Ba4_6				希望休日の上限日数入力
+          vm.deadlineSelected(0); //Ba4_9				締め日
+          vm.deadlineWorkSelected(0); //Ba4_11				締切日
           vm.workRequestInputSelected(1); //Ba4_13				入力方法の利用区分
         }
         $(".switchButton-wrapper")[4].focus();

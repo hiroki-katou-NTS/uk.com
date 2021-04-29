@@ -30,18 +30,14 @@ public class ScheduleBasicSettingScreenQuery {
         String companyId = AppContexts.user().companyId();
         // <<Public>> 廃止されていない勤務種類をすべて取得する
         List<WorkType> lstWorkType = basicScheduleService.getAllWorkTypeNotAbolished(companyId);
-
-        Optional<ScheFunctionControl> scheduleFuncCtrl = scheFuncCtrlFinder.getData(companyId);
-        if (!scheduleFuncCtrl.isPresent()) {
-            return new ScheduleBasicSettingDto();
-        }
-
         List<WorkTypeNameDto> workTypeNameList = lstWorkType.stream().map(x -> new WorkTypeNameDto(
                 x.getWorkTypeCode().v()
                 , x.getName().v()
                 , x.getAbbreviationName() != null ? x.getAbbreviationName().v() : ""
         )).collect(Collectors.toList());
 
-        return ScheduleBasicSettingDto.fromDomain(scheduleFuncCtrl.get(), workTypeNameList);
+        Optional<ScheFunctionControl> scheduleFuncCtrl = scheFuncCtrlFinder.getData(companyId);
+
+        return ScheduleBasicSettingDto.fromDomain(scheduleFuncCtrl.orElse(null), workTypeNameList);
     }
 }
