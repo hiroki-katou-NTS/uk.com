@@ -20,7 +20,7 @@ module nts.uk.at.view.kdp.share {
                         <div style:"box-sizing: border-box" data-bind="i18n: workplaceNotice.title"></div>
                     </div>
                     <div class="btn-title">
-                        <button class="icon" data-bind="ntsIcon: { no: 160, width: 30, height: 30 }, click: events.shoNoti.click">
+                        <button class="icon" data-bind="ntsIcon: { no: 160, width: 30, height: 30 }, click: events.registerNoti.click">
                         </button>
                     </div>
                 </div>

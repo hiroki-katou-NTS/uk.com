@@ -118,6 +118,14 @@ module nts.uk.at.kdp003.a {
 		shoNoti() {
 			const vm = this;
 
+			const param = {setting: ko.unwrap(vm.fingerStampSetting).noticeSetDto, screen: 'KDP003'};
+			
+			vm.$window.modal(DIALOG.R, param);
+		}
+
+		settingNoti() {
+			const vm = this;
+
 			vm.$window.storage(KDP003_SAVE_DATA)
 				.then((data: undefined | StorageData) => {
 					if (data) {
