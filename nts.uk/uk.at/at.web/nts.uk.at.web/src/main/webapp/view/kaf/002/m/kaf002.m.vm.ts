@@ -151,6 +151,26 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
 							$('#kaf002TabPanel').width(550)							
 					}
 				}
+				if (value) {
+					
+					if (value == 'tab-1') {
+	                        self.selectedTemp(0);
+	                   
+	                } else if (value == 'tab-2') {
+	                    self.selectedTemp(1);
+	                   
+	                } else if (value == 'tab-3') {
+	                    self.selectedTemp(5);
+	                   
+	                } else if (value == 'tab-4') {
+	                    self.selectedTemp(2);
+	                   
+	                } else if (value == 'tab-5') {
+	                    self.selectedTemp(4);
+	                    
+	                }
+				}
+				
 
                 
             })
