@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting;
 
 import java.io.Serializable;
-import java.util.Optional;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -12,6 +11,7 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.ApprovalProcess;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.Comment;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.DaiPerformanceFun;
@@ -29,6 +29,8 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 public class KrcmtDaiFuncControl extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
+	
+	public static final JpaEntityMapper<KrcmtDaiFuncControl> MAPPER = new JpaEntityMapper<>(KrcmtDaiFuncControl.class);
 	
 	/**
 	* ID
@@ -76,7 +78,7 @@ public class KrcmtDaiFuncControl extends ContractUkJpaEntity implements Serializ
     */
     @Basic(optional = false)
     @Column(name = "MON_SELF_CHK")
-    public int monSelfChK;
+    public int monSelfChk;
      
     /**
     * エラーがある場合の日の本人確認
@@ -116,7 +118,7 @@ public class KrcmtDaiFuncControl extends ContractUkJpaEntity implements Serializ
 			ApprovalProcess approvalProcess) {
 		
 		return new KrcmtDaiFuncControl(new KrcmtDaiFuncControlPk(daiPerformanceFun.getCid()), 
-						daiPerformanceFun.getComment().isPresent() ? daiPerformanceFun.getComment().get().toString() : null,
+						daiPerformanceFun.getComment().toString(),
 						daiPerformanceFun.getDisp36Atr(), 
 						daiPerformanceFun.getFlexDispAtr(), 
 						daiPerformanceFun.getCheckErrRefDisp(),
@@ -130,7 +132,7 @@ public class KrcmtDaiFuncControl extends ContractUkJpaEntity implements Serializ
 	
 	public DaiPerformanceFun toDomainDaiPerformanceFun() {
 		return new DaiPerformanceFun(this.daiFuncControlPk.cid, 
-				Optional.ofNullable(this.comment == null ? null : new Comment(this.comment)),
+				new Comment(this.comment),
         		this.disp36Atr, 
         		this.flexDispAtr, 
         		this.checkErrRefDisp);
@@ -138,7 +140,7 @@ public class KrcmtDaiFuncControl extends ContractUkJpaEntity implements Serializ
 	
 	public IdentityProcess toDomainIdentityProcess() {
 		return new IdentityProcess(this.daiFuncControlPk.cid, 
-				this.daySelfChk, this.monSelfChK, 
+				this.daySelfChk, this.monSelfChk, 
         		this.daySelfChkError == null ? null : EnumAdaptor.valueOf(this.daySelfChkError, YourselfConfirmError.class));
 	}
 	

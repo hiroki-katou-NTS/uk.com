@@ -1,13 +1,50 @@
-#label11 {
-	padding-left: 40px;
+.header {
+	display: inline-block;
+	margin: 5px 1%;
 }
 
-
-#screen-d .check-box-atr {
-	display:block;
-	padding-top: 9px;
-	margin-left: 60px;
+.left-content {
+	display: inline-block;
+	width: 35%;
+    margin: 5px 0 5px 2%;
 }
+.right-content {
+	display: inline-block;
+	width: 60%;
+}
+
+.nts-switch-button {
+	width: 100px;
+}
+
+.ntsCheckBox  {
+	margin: 5px 0;
+}
+
+.grayout {
+	width: 40px;
+}
+
+#contents {
+	width: 1250px;
+}
+
+#C4_4 {
+	margin: 5px 0 5px 2%;
+	width: 1000px;
+}
+
+#C4_4 th {
+    height: 50px;
+}
+
+#C4_4, #C4_4 th, #C4_4 td {
+	border: 1px solid black;
+	border-collapse: collapse;
+	text-align: center;
+}
+
+/* --------------------------------------------------- */
 
 .ntsRadioBox span.label{
 	padding-left: 3px !important;
@@ -74,9 +111,7 @@ width: 500px;
     height: 25px;
     width: 830px;
 }
-#screen-d {
-	width: 1250px;
-}
+
 html {
     overflow: hidden;
 }

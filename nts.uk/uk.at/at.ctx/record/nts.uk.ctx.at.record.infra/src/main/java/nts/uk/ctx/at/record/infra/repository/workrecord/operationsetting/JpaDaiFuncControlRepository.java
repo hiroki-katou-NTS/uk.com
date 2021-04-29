@@ -23,7 +23,7 @@ public class JpaDaiFuncControlRepository extends JpaRepository implements DaiFun
 	public void update(DaiPerformanceFun daiPerformanceFun,
 			IdentityProcess identityProcess, ApprovalProcess approvalProcess) {
 		KrcmtDaiFuncControl newEntity = KrcmtDaiFuncControl.toEntity(daiPerformanceFun, identityProcess, approvalProcess);
-		KrcmtDaiFuncControl updateEntity = this.queryProxy().find(newEntity.daiFuncControlPk, KrcmtDaiFuncControl.class).get();
+		KrcmtDaiFuncControl updateEntity = this.queryProxy().find(newEntity.daiFuncControlPk, KrcmtDaiFuncControl.class).orElse(null);
         if (null == updateEntity) {
         	this.add(daiPerformanceFun, identityProcess, approvalProcess);
             return;
@@ -33,7 +33,7 @@ public class JpaDaiFuncControlRepository extends JpaRepository implements DaiFun
         updateEntity.flexDispAtr = newEntity.flexDispAtr;
         updateEntity.checkErrRefDisp = newEntity.checkErrRefDisp;
         updateEntity.daySelfChk = newEntity.daySelfChk;
-        updateEntity.monSelfChK = newEntity.monSelfChK;
+        updateEntity.monSelfChk = newEntity.monSelfChk;
         updateEntity.daySelfChkError = newEntity.daySelfChkError;
         updateEntity.dayBossChk = newEntity.dayBossChk;
         updateEntity.monBossChk = newEntity.monBossChk;

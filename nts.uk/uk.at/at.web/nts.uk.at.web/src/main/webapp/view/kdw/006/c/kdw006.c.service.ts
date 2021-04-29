@@ -15,11 +15,11 @@ module nts.uk.at.view.kdw006.c.service {
 
         getRestrictConfirmEmp: 'at/record/workrecord/operationsetting/getRestrictConfirmEmp',
 
-        updateIdentity: 'at/record/workrecord/operationsetting/updateIdentity',
+        // updateIdentity: 'at/record/workrecord/operationsetting/updateIdentity',
 
-        updateApproval: 'at/record/workrecord/operationsetting/updateApproval',
+        // updateApproval: 'at/record/workrecord/operationsetting/updateApproval',
 
-        updateDaily: 'at/record/workrecord/operationsetting/updateDaily',
+        // updateDaily: 'at/record/workrecord/operationsetting/updateDaily',
 
         updateMonthly: 'at/record/workrecord/operationsetting/updateMonthly',
 
@@ -36,17 +36,17 @@ module nts.uk.at.view.kdw006.c.service {
         return nts.uk.request.ajax(servicePath.updateAppType, cm);
     }
 
-    export function updateIdentity(dispRestric: any): JQueryPromise<any> {
-        return nts.uk.request.ajax(servicePath.updateIdentity, dispRestric);
-    }
+    // export function updateIdentity(dispRestric: any): JQueryPromise<any> {
+    //     return nts.uk.request.ajax(servicePath.updateIdentity, dispRestric);
+    // }
 
-    export function updateApproval(dispRestric: any): JQueryPromise<any> {
-        return nts.uk.request.ajax(servicePath.updateApproval, dispRestric);
-    }
+    // export function updateApproval(dispRestric: any): JQueryPromise<any> {
+    //     return nts.uk.request.ajax(servicePath.updateApproval, dispRestric);
+    // }
 
-    export function updateDaily(dispRestric: any): JQueryPromise<any> {
-        return nts.uk.request.ajax(servicePath.updateDaily, dispRestric);
-    }
+    // export function updateDaily(dispRestric: any): JQueryPromise<any> {
+    //     return nts.uk.request.ajax(servicePath.updateDaily, dispRestric);
+    // }
 
     export function updateMonthly(dispRestric: any): JQueryPromise<any> {
         return nts.uk.request.ajax(servicePath.updateMonthly, dispRestric);

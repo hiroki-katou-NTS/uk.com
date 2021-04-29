@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.record.dom.workrecord.operationsetting;
 
-import java.util.Optional;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 //import lombok.Setter;
@@ -26,7 +24,7 @@ public class DaiPerformanceFun extends AggregateRoot
     /**
      * コメント Y0
      */
-    private Optional<Comment> comment = Optional.empty();
+    private Comment comment;
     
     /**
     * 36協定情報を表示する Y
@@ -88,7 +86,7 @@ public class DaiPerformanceFun extends AggregateRoot
     		int isDisplayAgreementThirtySix, int isDisplayFlexWorker, int checkErrRefDisp) {
         DaiPerformanceFun  daiPerformanceFun = 
         		new DaiPerformanceFun(cid, 
-        				Optional.ofNullable(comment == null ? null : new Comment(comment)),
+        				new Comment(comment),
         				isDisplayAgreementThirtySix, 
         				isDisplayFlexWorker, 
         				checkErrRefDisp);

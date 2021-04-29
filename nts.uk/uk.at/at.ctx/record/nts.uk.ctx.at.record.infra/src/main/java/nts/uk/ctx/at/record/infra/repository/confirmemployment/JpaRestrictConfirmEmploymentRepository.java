@@ -40,7 +40,7 @@ public class JpaRestrictConfirmEmploymentRepository extends JpaRepository implem
 	public void update(RestrictConfirmEmployment domain) {
 		KrcmtRestrictConfirmEmployment newRestrictConfirmEmployment = KrcmtRestrictConfirmEmployment.toEntity(domain);
 		KrcmtRestrictConfirmEmployment updateRestrictConfirmEmployment = 
-				this.queryProxy().find(newRestrictConfirmEmployment.restrictConfirmEmploymentPk, KrcmtRestrictConfirmEmployment.class).get();
+				this.queryProxy().find(newRestrictConfirmEmployment.restrictConfirmEmploymentPk, KrcmtRestrictConfirmEmployment.class).orElse(null);
         if (null == updateRestrictConfirmEmployment) {
         	this.add(domain);
             return;
