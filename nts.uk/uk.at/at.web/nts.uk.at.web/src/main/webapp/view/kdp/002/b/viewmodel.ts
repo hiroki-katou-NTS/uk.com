@@ -110,6 +110,18 @@ class KDP002BViewModel extends ko.ViewModel {
         const vm = this;
 
         vm.settingSizeView();
+
+        setTimeout(() => {
+            if (ko.unwrap(vm.modeNikoNiko)) {
+                $(document).ready(function () {
+                    $('#btn-happy').focus();
+                });
+            } else {
+                $(document).ready(function () {
+                    $('#close-button').focus();
+                });
+            }
+        }, 300);
     }
 
     settingSizeView() {
@@ -283,7 +295,7 @@ class KDP002BViewModel extends ko.ViewModel {
                                                 isShowPoint++;
                                             }));
                                         }));
-                                        
+
                                         if (isShowPoint > 0) {
                                             vm.modeShowPointNoti(true)
                                         }
