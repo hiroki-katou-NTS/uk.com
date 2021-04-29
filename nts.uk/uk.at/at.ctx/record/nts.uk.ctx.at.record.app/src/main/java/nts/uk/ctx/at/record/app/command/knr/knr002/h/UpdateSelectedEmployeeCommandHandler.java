@@ -45,7 +45,7 @@ public class UpdateSelectedEmployeeCommandHandler extends CommandHandler<UpdateS
 			return;
 		TimeRecordReqSetting timeRecordSettingValue = timeRecordSetting.get();
 		List<EmployeeId> otherCompanyEmps = timeRecordSettingValue.getEmployeeIds();
-		if(!otherCompanyEmps.isEmpty())
+		if(null != otherCompanyEmps && !otherCompanyEmps.isEmpty())
 			employeeID.addAll(otherCompanyEmps);
 		// 2. set(契約コード、就業情報端末コード、画面で指定した社員<List>)
 		TimeRecordReqSetting timeRecordSettingUpdate = new TimeRecordReqSetting.ReqSettingBuilder(
