@@ -121,4 +121,10 @@ public class JpaMonthlyAttendanceItemGetMemento implements MonthlyAttendanceItem
 						EnumAdaptor.valueOf(this.entity.getPrimitiveValue(), PrimitiveValueOfAttendanceItem.class));
 	}
 
+	@Override
+	public Optional<AttendanceName> getDisplayName() {
+		return this.entity.getDisplayName() == null ?  Optional.empty()
+				: Optional.of(new AttendanceName(entity.getDisplayName()));
+	}
+
 }
