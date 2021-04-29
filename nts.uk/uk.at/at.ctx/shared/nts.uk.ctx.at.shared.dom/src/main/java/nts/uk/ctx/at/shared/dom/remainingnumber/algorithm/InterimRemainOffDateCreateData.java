@@ -1120,7 +1120,7 @@ public class InterimRemainOffDateCreateData {
 			}
 			
 			if (!workTypeInfor.getSpeHolidayDetailData().isEmpty()) {
-				TempRemainCreateEachData.createInterimSpecialHoliday(inforData, wkCls, outputData);
+				TempRemainCreateEachData.createInterimSpecialHoliday(inforData, wkCls, outputData, workTypeInfor);
 			} 
 		}
 		

@@ -286,21 +286,22 @@ public class TempRemainCreateEachData {
 	 * @param inforData
 	 * @param workTypeClass
 	 * @param mngData
+	 * @param workTypeInfor 
 	 * @return
 	 */
 	public static DailyInterimRemainMngData createInterimSpecialHoliday(InforFormerRemainData inforData,
-			WorkTypeClassification workTypeClass, DailyInterimRemainMngData mngData) {
+			WorkTypeClassification workTypeClass, DailyInterimRemainMngData mngData, WorkTypeRemainInfor workTypeInfor) {
 		List<InterimSpecialHolidayMng> specialHolidayData = new ArrayList<>(mngData.getSpecialHolidayData());
-		if(inforData.getWorkTypeRemainInfor(workTypeClass).get().getSpeHolidayDetailData().isEmpty()) {
+		if(workTypeInfor.getSpeHolidayDetailData().isEmpty()) {
 			return mngData;
 		}
 		String mngId = IdentifierUtil.randomUniqueId();
 
-		for (SpecialHolidayUseDetail speHolidayDetail : inforData.getWorkTypeRemainInfor(workTypeClass).get().getSpeHolidayDetailData()) {
+		for (SpecialHolidayUseDetail speHolidayDetail : workTypeInfor.getSpeHolidayDetailData()) {
 			InterimSpecialHolidayMng holidayMng = new InterimSpecialHolidayMng(mngId,
 					inforData.getSid(),
 					inforData.getYmd(),
-					inforData.getWorkTypeRemainInfor(workTypeClass).get().getCreateData(),
+					workTypeInfor.getCreateData(),
 					RemainType.SPECIAL,
 					speHolidayDetail.getSpecialHolidayCode(),
 					ManagermentAtr.DAYS, Optional.empty(),
@@ -310,7 +311,7 @@ public class TempRemainCreateEachData {
 			specialHolidayData.add(holidayMng);
 		}
 		if (!specialHolidayData.isEmpty()) {
-			mngData.getRecAbsData().add(specialHolidayData.get(0));
+			mngData.getRecAbsData().addAll(specialHolidayData);
 		}
 		mngData.setSpecialHolidayData(specialHolidayData);
 		return mngData;
