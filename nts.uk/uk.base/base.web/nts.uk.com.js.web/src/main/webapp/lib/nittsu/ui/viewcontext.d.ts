@@ -160,6 +160,7 @@ declare module nts.uk.ui.vm {
 	export interface ViewModelOption {
 		readonly name: string;
 		readonly template: string;
+		readonly alternalBinding?: boolean;
 	}
 
 	interface ModalMethods {
