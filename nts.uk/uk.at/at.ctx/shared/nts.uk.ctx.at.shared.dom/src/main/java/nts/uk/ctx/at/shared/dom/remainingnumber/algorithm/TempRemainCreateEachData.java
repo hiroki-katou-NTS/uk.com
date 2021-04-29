@@ -305,7 +305,7 @@ public class TempRemainCreateEachData {
 					speHolidayDetail.getSpecialHolidayCode(),
 					ManagermentAtr.DAYS, Optional.empty(),
 					Optional.of(new UseDay(speHolidayDetail.getDays())),
-					Optional.ofNullable(DigestionHourlyTimeType.of(true, Optional.empty()))
+					Optional.ofNullable(DigestionHourlyTimeType.of(false, Optional.empty()))
 					);
 			specialHolidayData.add(holidayMng);
 		}
