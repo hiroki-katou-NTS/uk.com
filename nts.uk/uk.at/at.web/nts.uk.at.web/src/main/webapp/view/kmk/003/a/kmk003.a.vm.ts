@@ -571,7 +571,17 @@ module nts.uk.at.view.kmk003.a {
                         dfd.resolve();
                     }).fail((error) => {
                         if (error) {
-                            nts.uk.ui.dialog.info({ messageId: error.messageId });
+                            if (error.messageId == 'Msg_2182') {
+                                if (self.workTimeSettings()[0].worktimeCode == worktimeCode) {
+                                    nts.uk.ui.dialog.info({ messageId: error.messageId }).then(() => self.enterNewMode());
+                                    // self.screenMode(ScreenMode.NEW);
+                                } else {
+                                    nts.uk.ui.dialog.info({ messageId: error.messageId }).then(() => location.reload());
+                                    // location.reload();
+                                }
+                            } else {
+                                nts.uk.ui.dialog.info({ messageId: error.messageId });
+                            }
                         }
                     })
                     .always(() => _.defer(() => nts.uk.ui.block.clear()));
