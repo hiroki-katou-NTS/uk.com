@@ -2428,16 +2428,16 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					timeChart = lstTimeChart[lstTimeChart.length - 1].timeChart;
 					timeChart2 = lstTimeChart[lstTimeChart.length - 1].timeChart2;
 					if (detail.columnKey === "startTime1") {
-						ruler.extend(detail.rowIndex, `lgc${detail.rowIndex}`, Math.floor((time / 5 - self.dispStart) > timeRangeLimit ? timeRangeLimit : Math.floor((time / 5 - self.dispStart))));
+						ruler.extend(detail.rowIndex, `lgc${detail.rowIndex}`, ((time / 5 - self.dispStart) > timeRangeLimit ? timeRangeLimit : ((time / 5 - self.dispStart))));
 						if (time == "") return;
 					} else if (detail.columnKey === "endTime1") {
-						ruler.extend(detail.rowIndex, `lgc${detail.rowIndex}`, null, Math.floor((time / 5 - self.dispStart) > timeRangeLimit ? timeRangeLimit : Math.floor((time / 5 - self.dispStart))));
+						ruler.extend(detail.rowIndex, `lgc${detail.rowIndex}`, null, ((time / 5 - self.dispStart) > timeRangeLimit ? timeRangeLimit : ((time / 5 - self.dispStart))));
 						if (time == "") return;
 					} else if (detail.columnKey === "startTime2" && timeChart2 != null) {
-						ruler.extend(detail.rowIndex, `rgc${detail.rowIndex}`, Math.floor((time / 5 - self.dispStart) > timeRangeLimit ? timeRangeLimit : Math.floor((time / 5 - self.dispStart))));
+						ruler.extend(detail.rowIndex, `rgc${detail.rowIndex}`, ((time / 5 - self.dispStart) > timeRangeLimit ? timeRangeLimit : ((time / 5 - self.dispStart))));
 						if (time == "") return;
 					} else if (detail.columnKey === "endTime2" && timeChart2 != null) {
-						ruler.extend(detail.rowIndex, `rgc${detail.rowIndex}`, null, Math.floor((time / 5 - self.dispStart) > timeRangeLimit ? timeRangeLimit : Math.floor((time / 5 - self.dispStart))));
+						ruler.extend(detail.rowIndex, `rgc${detail.rowIndex}`, null, ((time / 5 - self.dispStart) > timeRangeLimit ? timeRangeLimit : ((time / 5 - self.dispStart))));
 						if (time == "") return;
 					}
 					
@@ -3734,24 +3734,6 @@ module nts.uk.at.view.ksu003.a.viewmodel {
                 allBrk = _.filter(allBrk, (x : any) => {return x.start >= param[0]  && x.start <= param[1] });
                 let totalBrk = $("#extable-ksu003").exTable('dataSource', 'middle').body[i].breaktime;
                 
-                if(allBrk.length > 0){
-				
-				let color = "", colorBr = "";
-				if (self.dataScreen003A().employeeInfo[i].empId === self.employeeIdLogin) {
-					color = "rgb(148, 183, 254)";
-					colorBr = "#94b7fe";
-				} else {
-					color = "rgb(206, 230, 255)";
-					colorBr = "#cee6ff";
-				}
-				if($(cssbreakTime).css("background-color") != color && datafilter[0].typeOfTime != "Changeable" && 
-				self.dataScreen003A().employeeInfo[i].fixedWorkInforDto.fixBreakTime != 1){
-					totalBrk = _.trim($("#extable-ksu003").exTable('dataSource', 'middle').body[i].breaktime) + " ";
-				}
-                    $("#extable-ksu003").exTable("cellValue", "middle", self.dataScreen003A().employeeInfo[i].empId, "breaktime", totalBrk);
-               	$(cssbreakTime).css("background-color", colorBr);
-				}
-				
 				let dataFixed = self.dataScreen003A().employeeInfo[i];
 				let dataFixInfo = _.filter(self.fixedWorkInformationDto, x => { return x.empId === self.dataScreen003A().employeeInfo[i].empId });
 				let lstTime: any = [], timeRangeLimit = ((self.timeRange * 60) / 5);
@@ -3769,6 +3751,15 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				let totalTimes = self.calcAllTime(dataFixed, lstTime, timeRangeLimit);
 				let totalBreaktime = self.calcAllBrk(lstTime);
 				totalBreaktime = totalBreaktime != 0 ? formatById("Clock_Short_HM", Math.round(totalBreaktime * 5)) : "0:00";
+				let colorBr = "";
+				if (self.dataScreen003A().employeeInfo[i].empId === self.employeeIdLogin) {
+					colorBr = "#94b7fe";
+				} else {
+					colorBr = "#cee6ff";
+				}
+				if(totalBrk != totalBreaktime)
+				$(cssbreakTime).css("background-color", colorBr);
+				
 				$("#extable-ksu003").exTable("cellValue", "middle", self.dataScreen003A().employeeInfo[i].empId, "breaktime", totalBreaktime );
 				$("#extable-ksu003").exTable("cellValue", "middle", self.dataScreen003A().employeeInfo[i].empId, "totalTime", totalTimes);
 				let cssTotalTime: string = self.dataScreen003A().targetInfor == 1 ? "#extable-ksu003 > .ex-body-middle > table > tbody tr:nth-child" + "(" + (i + 2).toString() + ")" + " > td:nth-child(9)" : 
