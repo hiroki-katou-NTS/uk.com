@@ -4,9 +4,9 @@ module nts.uk.at.view.kaf000.b.component8.viewmodel {
         name: 'kaf000-b-component8',
         template: `
             <div id="kaf000-b-component8" data-bind="click: openApproverDetail">
-				<div style="display: inline-block; width: calc(100% - 22px);" data-bind="if: approvalRootStateShort().length != 0">
+				<div style="display: inline-block;" data-bind="if: approvalRootStateShort().length != 0">
 					<div data-bind="foreach: approvalRootStateShort" style="padding-top: 5px;">
-						<div class="approver-block" data-bind="style: { 'max-width': $component.getMaxWidth() }">
+						<div class="approver-block" style="width: 112px;">
 							<div style="height: 24px;">
 								<div class="limited-label" style="vertical-align: middle;" data-bind="ntsFormLabel:{}, text: $component.getApproverLabel($index())"></div>
 							</div>
@@ -25,7 +25,7 @@ module nts.uk.at.view.kaf000.b.component8.viewmodel {
 						</div>
 					</div>
 				</div>
-				<div style="display: inline-block; vertical-align: top; width: 16px;">
+				<div style="display: inline-block; width: 8px;">
 					<div data-bind="if: numberApprover() > 5">
 						<div data-bind="text: $i18n('KAF000_62')"></div>
 					</div>
