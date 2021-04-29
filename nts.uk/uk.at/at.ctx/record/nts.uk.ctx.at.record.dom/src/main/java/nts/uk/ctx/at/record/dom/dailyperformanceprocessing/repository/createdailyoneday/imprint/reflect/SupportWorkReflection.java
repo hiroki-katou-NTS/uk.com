@@ -692,7 +692,9 @@ public class SupportWorkReflection {
 		// 応援データ一覧のsizeは最大応援回数まで守って、残りの応援データは消す
 		List<OuenWorkTimeSheetOfDailyAttendance> dataAutoSetNew = new ArrayList<>();
 		if (dataAutoSet.size() > support) {
-			dataAutoSetNew = dataAutoSet.subList(0, support);
+			for (int i = 0; i < support; i++) {
+				dataAutoSetNew.add(dataAutoSet.get(i));
+			}
 			return dataAutoSetNew;
 		}
 		return dataAutoSet;
