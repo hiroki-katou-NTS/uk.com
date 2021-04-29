@@ -40,6 +40,10 @@
 	margin-top: 7px;
 }
 
+.btn-icon {
+	text-align: center;
+}
+
 .btn-unit-setting {
 	width: 225px;
 	margin-bottom: 10px;
@@ -48,6 +52,10 @@
 
 .caret-right:after {
 	color: #97D155;
+}
+
+.caret-inline {
+	margin-left: -5px;
 }
 
 .caret-right-large:after {

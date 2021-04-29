@@ -69,9 +69,9 @@ module nts.uk.at.view.kdw006.d.viewmodel {
             nts.uk.ui.block.clear();
         }
         
-        jumpTo(sidebar) {
+        jumpTo() {
                 let self = this;
-                nts.uk.request.jump("/view/kdw/006/a/index.xhtml", { ShareObject: sidebar() });
+                nts.uk.request.jump("/view/kdw/006/a/index.xhtml");
             }
 
 
