@@ -150,14 +150,14 @@ public class ChildCareCheckOverUsedNumberWorkTest {
 	}
 
 	// 子の看護・介護休暇基本情報
-	private ChildCareLeaveRemainingInfo nursingInfo(NursingCategory leaveType, UpperLimitSetting upperlimitSetting) {
-		return ChildCareLeaveRemainingInfo.of(
+	private Optional<ChildCareLeaveRemainingInfo> nursingInfo(NursingCategory leaveType, UpperLimitSetting upperlimitSetting) {
+		return Optional.of(ChildCareLeaveRemainingInfo.of(
 				"000001",
 				leaveType, // 介護看護区分
 				true,  // 使用区分
 				upperlimitSetting, // 上限設定
 				Optional.of(new ChildCareNurseUpperLimit(5)),  // 本年度上限日数
-				Optional.of(new ChildCareNurseUpperLimit(10))); // 次年度上限日数
+				Optional.of(new ChildCareNurseUpperLimit(10)))); // 次年度上限日数
 	}
 
 	// 介護看護休暇上限人数設定
