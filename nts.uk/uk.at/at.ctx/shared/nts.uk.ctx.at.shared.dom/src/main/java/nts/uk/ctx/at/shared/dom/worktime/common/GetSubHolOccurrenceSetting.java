@@ -22,11 +22,13 @@ public class GetSubHolOccurrenceSetting {
 		if (flowSetting.isPresent() && flowSetting.get().getCommonSetting().getSubHolTimeSet().stream()
 				.filter(x -> x.getOriginAtr() == originAtr).findFirst().map(x -> x.getSubHolTimeSet().isUseDivision())
 				.orElse(false)) {
-			return Optional.of(flowSetting.get().getCommonSetting().getSubHolTimeSet().get(0).getSubHolTimeSet());
+			return flowSetting.get().getCommonSetting().getSubHolTimeSet().stream()
+					.filter(x -> x.getOriginAtr() == originAtr).map(x -> x.getSubHolTimeSet()).findFirst();
 		}
-		SubHolTransferSet result =  require.findCompensatoryLeaveComSet(cid).getCompensatoryOccurrenceSetting().stream()
-				.filter(x -> x.getOccurrenceType().value == originAtr.value).findFirst().get().getTransferSetting();
-		return result.isUseDivision() ? Optional.of(result) : Optional.empty();
+		SubHolTransferSet result = require.findCompensatoryLeaveComSet(cid).getCompensatoryOccurrenceSetting().stream()
+				.filter(x -> x.getOccurrenceType().value == originAtr.value).map(x -> x.getTransferSetting())
+				.findFirst().orElse(null);
+		return (result != null && result.isUseDivision()) ? Optional.of(result) : Optional.empty();
 	}
 
 	public static interface Require {
