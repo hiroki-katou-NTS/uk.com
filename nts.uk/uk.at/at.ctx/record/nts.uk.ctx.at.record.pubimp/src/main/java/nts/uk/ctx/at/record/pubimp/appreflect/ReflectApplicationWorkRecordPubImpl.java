@@ -477,5 +477,10 @@ public class ReflectApplicationWorkRecordPubImpl implements ReflectApplicationWo
 			return compensLeaveComSetRepository.find(companyId);
 		}
 
+		@Override
+		public void removeConfirmApproval(List<IntegrationOfDaily> domainDaily) {
+			dailyRecordAdUpService.removeConfirmApproval(domainDaily, Optional.empty(), Optional.empty());
+		}
+
 	}
 }

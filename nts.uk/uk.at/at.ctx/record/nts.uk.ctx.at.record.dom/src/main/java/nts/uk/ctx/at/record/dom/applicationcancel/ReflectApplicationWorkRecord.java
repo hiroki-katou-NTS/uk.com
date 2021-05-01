@@ -12,6 +12,8 @@ import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.adapter.request.application.state.RCReflectStatusResult;
 import nts.uk.ctx.at.record.dom.adapter.request.application.state.RCReflectedState;
+import nts.uk.ctx.at.record.dom.approvalmanagement.ApprovalProcessingUseSetting;
+import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.IdentityProcessUseSet;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailywork.worktime.empwork.EmployeeWorkDataSetting;
 import nts.uk.ctx.at.shared.dom.scherec.application.common.ApplicationShare;
@@ -99,6 +101,9 @@ public class ReflectApplicationWorkRecord {
 		}
 
 		AtomTask task = AtomTask.of(() -> {
+			//エラーで本人確認と上司承認を解除する
+			require.removeConfirmApproval(Arrays.asList(dailyRecordApp.getDomain().getDomain()));
+			
 			// 勤務実績の更新
 			require.addAllDomain(dailyRecordApp.getDomain());
 
@@ -151,5 +156,8 @@ public class ReflectApplicationWorkRecord {
 
 		// DailyRecordAdUpService
 		public void addAllDomain(IntegrationOfDaily domain);
+		
+		//DailyRecordAdUpService
+		public void removeConfirmApproval(List<IntegrationOfDaily> domainDaily);
 	}
 }
