@@ -385,19 +385,15 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 		return this.lateDecisionClock.stream().filter(tc -> tc.getWorkNo() == workNo).findFirst();
 	}
 	
-//	/**
-//	 * 引数のNoと一致する早退判断時刻を取得する
-//	 * @param workNo
-//	 * @return　早退判断時刻
-//	 */
-//	public LeaveEarlyDecisionClock getleaveEarlyDecisionClock(int workNo) {
-//		List<LeaveEarlyDecisionClock> clockList = this.leaveEarlyDecisionClock.stream().filter(tc -> tc.getWorkNo()==workNo).collect(Collectors.toList());
-//		if(clockList.size()>1) {
-//			throw new RuntimeException("Exist duplicate workNo : " + workNo);
-//		}
-//		return clockList.get(0);
-//	}
-//	
+	/**
+	 * 早退判断時刻を取得する
+	 * @param workNo
+	 * @return 早退判断時刻
+	 */
+	public Optional<LeaveEarlyDecisionClock> getLeaveEarlyDecisionClock(int workNo) {
+		return this.leaveEarlyDecisionClock.stream().filter(tc -> tc.getWorkNo() == workNo).findFirst();
+	}
+	
 	/**
 	 * コアタイムのセット
 	 * @param coreTimeSetting コアタイム時間設定

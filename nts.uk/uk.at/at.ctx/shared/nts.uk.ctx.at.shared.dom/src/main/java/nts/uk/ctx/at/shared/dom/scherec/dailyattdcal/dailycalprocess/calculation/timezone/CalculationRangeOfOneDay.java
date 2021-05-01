@@ -51,7 +51,9 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.TimeSheetOfDeductionItem;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.WorkingBreakTimeAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.outsideworktime.OverTimeFrameTimeSheetForCalc;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.withinworkinghours.LateDecisionClock;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.withinworkinghours.LateTimeSheet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.withinworkinghours.LeaveEarlyDecisionClock;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.withinworkinghours.WithinWorkTimeFrame;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.withinworkinghours.WithinWorkTimeSheet;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalRaisingSalarySetting;
@@ -970,10 +972,17 @@ public class CalculationRangeOfOneDay {
 		if(!timeLeavingWork.getAttendanceTime().isPresent())
 			return timeLeavingWork;
 		
+		//遅刻判断時刻を取得する
+		Optional<LateDecisionClock> lateDecision = creatingWithinWorkTimeSheet.getLateDecisionClock(newTimeLeavingWork.getWorkNo().v());
+		if(!lateDecision.isPresent()) {
+			return newTimeLeavingWork;
+		}
+		
 		//時間帯.出勤←流動勤務用出退勤.出勤
 		creatingWithinWorkTimeSheet.getWithinWorkTimeFrame().stream()
-			.filter(c -> c.getWorkingHoursTimeNo().v() == newTimeLeavingWork.getWorkNo().v())
-			.findFirst().ifPresent(c -> c.shiftStart(newTimeLeavingWork.getAttendanceTime().get()));
+				.filter(c -> c.getWorkingHoursTimeNo().v() == newTimeLeavingWork.getWorkNo().v()
+						&& lateDecision.get().isLate(c.getTimeSheet().getStart()))
+				.findFirst().ifPresent(c -> c.shiftStart(newTimeLeavingWork.getAttendanceTime().get()));
 		
 		return newTimeLeavingWork;
 	}
@@ -1014,10 +1023,18 @@ public class CalculationRangeOfOneDay {
 		if(!timeLeavingWork.getLeaveTime().isPresent())
 			return timeLeavingWork;
 		
+		//早退判断時刻を取得する
+		Optional<LeaveEarlyDecisionClock> LeaveEarlyDecision = 
+				creatingWithinWorkTimeSheet.getLeaveEarlyDecisionClock(newTimeLeavingWork.getWorkNo().v());
+		if(!LeaveEarlyDecision.isPresent()) {
+			return newTimeLeavingWork;
+		}
+		
 		//時間帯.退勤←流動勤務用出退勤.退勤
 		creatingWithinWorkTimeSheet.getWithinWorkTimeFrame().stream()
-			.filter(c -> c.getWorkingHoursTimeNo().v() == newTimeLeavingWork.getWorkNo().v())
-			.findFirst().ifPresent(c -> c.shiftEnd(newTimeLeavingWork.getLeaveTime().get()));
+				.filter(c -> c.getWorkingHoursTimeNo().v() == newTimeLeavingWork.getWorkNo().v()
+						&& LeaveEarlyDecision.get().isLeaveEarly(c.getTimeSheet().getEnd()))
+				.findFirst().ifPresent(c -> c.shiftEnd(newTimeLeavingWork.getLeaveTime().get()));
 		
 		return newTimeLeavingWork;
 	}
