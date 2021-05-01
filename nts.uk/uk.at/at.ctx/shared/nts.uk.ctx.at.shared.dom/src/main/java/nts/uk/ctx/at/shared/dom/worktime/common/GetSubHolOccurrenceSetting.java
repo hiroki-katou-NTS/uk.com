@@ -2,6 +2,7 @@ package nts.uk.ctx.at.shared.dom.worktime.common;
 
 import java.util.Optional;
 
+import lombok.val;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSetting;
 
@@ -25,7 +26,10 @@ public class GetSubHolOccurrenceSetting {
 			return flowSetting.get().getCommonSetting().getSubHolTimeSet().stream()
 					.filter(x -> x.getOriginAtr() == originAtr).map(x -> x.getSubHolTimeSet()).findFirst();
 		}
-		SubHolTransferSet result = require.findCompensatoryLeaveComSet(cid).getCompensatoryOccurrenceSetting().stream()
+		val comLeavSet = require.findCompensatoryLeaveComSet(cid);
+		if (comLeavSet == null)
+			return Optional.empty();
+		SubHolTransferSet result = comLeavSet.getCompensatoryOccurrenceSetting().stream()
 				.filter(x -> x.getOccurrenceType().value == originAtr.value).map(x -> x.getTransferSetting())
 				.findFirst().orElse(null);
 		return (result != null && result.isUseDivision()) ? Optional.of(result) : Optional.empty();
