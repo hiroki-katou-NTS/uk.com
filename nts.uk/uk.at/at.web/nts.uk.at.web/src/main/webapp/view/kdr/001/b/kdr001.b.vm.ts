@@ -195,7 +195,10 @@ module nts.uk.at.view.kdr001.b.viewmodel {
                 dfd = $.Deferred();
             block.invisible();
             self.lstHolidays.removeAll();
-            service.findAll().done(function (data: Array<HolidayRemaining>) {
+            let params = getShared("KDR001Params");
+            let settingId = params.settingId;
+            let layOutId =  params.layOutId;
+            service.findBySettingId(settingId).done(function (data: Array<HolidayRemaining>) {
                 if (data && data.length) {
                     data = _.sortBy(data, ['cd']);
                     let _rsList: Array<HolidayRemaining> = _.map(data, result => {
@@ -218,6 +221,7 @@ module nts.uk.at.view.kdr001.b.viewmodel {
                     self.currentHoliday(new HolidayRemaining(null));
                     self.isNewMode(true);
                 }
+
                 block.clear();
                 dfd.resolve(self);
             }).fail(function (res) {
@@ -326,7 +330,7 @@ module nts.uk.at.view.kdr001.b.viewmodel {
                     let index: number = _.findIndex(lstHolidays(), function (x) {
                         return x.cd() == currentHoliday.cd()
                     });
-                    service.removeHolidayRemaining(ko.toJS(currentHoliday)).done(function () {
+                    service.removeHolidayRemaining(new HdDeleteRemainManageCommand(currentHoliday.layoutId)).done(function () {
                         self.getAllData(self.currentCode()).done(() => {
                             self.setSpecialHolidayStyle();
                             dialog.info({messageId: "Msg_16"}).then(() => {
@@ -336,11 +340,23 @@ module nts.uk.at.view.kdr001.b.viewmodel {
                                     self.setFocus();
                                     nts.uk.ui.errors.clearAll();
                                 } else {
+                                    let sub : any;
                                     if (index == self.lstHolidays().length) {
-                                        self.currentCode(self.lstHolidays()[index - 1].cd());
+                                        let code = self.lstHolidays()[index - 1].cd();
+                                        sub = self.lstHolidays()[index - 1];
+                                        self.currentCode(code);
                                     } else {
-                                        self.currentCode(self.lstHolidays()[index].cd());
+                                        let code = self.lstHolidays()[index].cd();
+                                        sub  = self.lstHolidays()[index];
+
+                                        self.currentCode(code);
                                     }
+
+                                    let item = new HolidayRemaining(sub);
+                                    self.currentHoliday(item);
+                                    self.setData();
+                                    self.isNewMode(false);
+                                    self.setFocus();
                                 }
                             });
                         });
@@ -561,5 +577,13 @@ module nts.uk.at.view.kdr001.b.viewmodel {
         childNursingSetting: boolean;
         nursingCareSetting: boolean;
         listSpecialHoliday: Array<ISpecialHoliday>;
+    }
+    export class HdDeleteRemainManageCommand {
+        layOutId :string;
+
+        constructor(layOutId: string) {
+            this.layOutId = layOutId;
+
+        }
     }
 }
