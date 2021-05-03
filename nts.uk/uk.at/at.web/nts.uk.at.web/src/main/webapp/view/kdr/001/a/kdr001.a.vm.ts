@@ -680,7 +680,7 @@ module nts.uk.at.view.kdr001.a.viewmodel {
                     baseDate: string, closureId: number, title: string) {
             this.startMonth = startMonth;
             this.endMonth = endMonth;
-            this.layOutId = layOutId,
+            this.layOutId = layOutId;
             this.pageBreak = pageBreak;
             this.baseDate = baseDate;
             this.closureId = closureId;
