@@ -141,7 +141,7 @@ module nts.uk.at.view.kdr001.a.viewmodel {
             });
 
             //radio test
-            // self.selectedId = ko.observable(0);
+             self.selectedId = ko.observable(0);
             // self.enable = ko.observable(true);
             self.selectedId.subscribe((value) => {
                 self.enable(value === StandardOrFree.Standard);
@@ -419,11 +419,11 @@ module nts.uk.at.view.kdr001.a.viewmodel {
                 self.selectedCode()
             );
             nts.uk.characteristics.save("UserSpecific_" + user.employeeId, userSpecificInformation);
-
+            let layOutId = self.selectedId() == 0? self.standardCode(): self.freeCode();
             let holidayRemainingOutputCondition = new HolidayRemainingOutputCondition(
                 startMonth.format("YYYY/MM/DD"),
                 endMonth.endOf('month').format("YYYY/MM/DD"),
-                self.freeCode(),
+                layOutId,
                 self.selectedCode(),
                 self.baseDate().format("YYYY/MM/DD"),
                 self.closureId(),
@@ -670,17 +670,17 @@ module nts.uk.at.view.kdr001.a.viewmodel {
     export class HolidayRemainingOutputCondition {
         startMonth: string;
         endMonth: string;
-        outputItemSettingCode: string;
+        layOutId: string;
         pageBreak: string;
         baseDate: string;
         closureId: number;
         title: string;
 
-        constructor(startMonth: string, endMonth: string, outputItemSettingCode: string, pageBreak: string,
+        constructor(startMonth: string, endMonth: string,layOutId: string, pageBreak: string,
                     baseDate: string, closureId: number, title: string) {
             this.startMonth = startMonth;
             this.endMonth = endMonth;
-            this.outputItemSettingCode = outputItemSettingCode;
+            this.layOutId = layOutId,
             this.pageBreak = pageBreak;
             this.baseDate = baseDate;
             this.closureId = closureId;

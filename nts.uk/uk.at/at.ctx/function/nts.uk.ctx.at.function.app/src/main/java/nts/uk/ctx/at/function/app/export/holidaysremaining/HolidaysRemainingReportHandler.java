@@ -148,7 +148,7 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
         val startDate = GeneralDate.fromString(hdRemainCond.getStartMonth(), "yyyy/MM/dd");
         val endDate = GeneralDate.fromString(hdRemainCond.getEndMonth(), "yyyy/MM/dd");
         // ドメインモデル「休暇残数管理表の出力項目設定」を取得する
-        val _hdManagement = hdFinder.findByCode(hdRemainCond.getOutputItemSettingCode());
+        val _hdManagement = hdFinder.findByLayOutId(hdRemainCond.getLayOutId());
         _hdManagement.ifPresent(hdManagement -> {
             int closureId = hdRemainCond.getClosureId();
             // ※該当の締めIDが「0：全締め」のときは、「1締め（締めID＝1）」とする

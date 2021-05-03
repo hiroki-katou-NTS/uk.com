@@ -104,6 +104,10 @@ public class HdRemainManageFinder {
 
         return this.hdRemainingManagementRepo.getHolidayManagerByCidAndExecCd(AppContexts.user().companyId(), code);
     }
+    public Optional<HolidaysRemainingManagement> findByLayOutId(String layOutId) {
+
+        return this.hdRemainingManagementRepo.getHolidayManagerByLayOutId(layOutId);
+    }
 
     public HdRemainManageDto findDtoByCode(String code) {
         Optional<HolidaysRemainingManagement> hdManagement = this.hdRemainingManagementRepo
