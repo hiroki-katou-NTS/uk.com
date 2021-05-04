@@ -1353,18 +1353,20 @@ public class InterimRemainOffDateCreateData {
 	public static List<DayoffTranferInfor> tranferInforFromHolidayWork(RequireM5 require, String cid, 
 			boolean dayOffTimeIsUse, AppRemainCreateInfor appInfor,
 			List<WorkTypeRemainInfor> remainInfor, CreateAtr createAtr) {
-		Integer breakTime = 0;
+		Integer overTime  = appInfor.getAppOvertimeTimeTotal().isPresent() ? appInfor.getAppOvertimeTimeTotal().get() : 0;
+		Integer breakTime = appInfor.getAppBreakTimeTotal().isPresent() ? appInfor.getAppBreakTimeTotal().get() : 0;
+		Integer appTime = 0;
 		//時間代休利用をチェックする
-		if(dayOffTimeIsUse) {
-			breakTime = appInfor.getAppOvertimeTimeTotal().isPresent() ? appInfor.getAppOvertimeTimeTotal().get() : 0;
+		if (dayOffTimeIsUse) {
+			appTime = overTime + breakTime;
 		} else {
-			breakTime = appInfor.getAppBreakTimeTotal().isPresent() ? appInfor.getAppBreakTimeTotal().get() : 0;
+			appTime = breakTime;
 		}
 		//アルゴリズム「就業時間帯から代休振替情報を作成する」を実行する
 		String workTimeCode = appInfor.getWorkTimeCode().isPresent() ? appInfor.getWorkTimeCode().get() : "";
 		
 		
-		return createDayoffFromWorkTime(require, cid, remainInfor, workTimeCode, breakTime, createAtr, 0, dayOffTimeIsUse);
+		return createDayoffFromWorkTime(require, cid, remainInfor, workTimeCode, appTime, createAtr, 0, dayOffTimeIsUse);
 	}
 
 	/**
