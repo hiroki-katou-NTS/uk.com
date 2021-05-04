@@ -11,8 +11,8 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.record.dom.jobmanagement.workchangeableperiodsetting.WorkChangeablePeriodSetting;
-import nts.uk.ctx.at.record.dom.jobmanagement.workchangeableperiodsetting.WorkChangeablePeriodSettingRepository;
+import nts.uk.ctx.at.record.dom.jobmanagement.manhourrecordreferencesetting.ManHourRecordReferenceSetting;
+import nts.uk.ctx.at.record.dom.jobmanagement.manhourrecordreferencesetting.ManHourRecordReferenceSettingRepository;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeBasicInfoImport;
 import nts.uk.ctx.bs.employee.dom.workplace.info.OutsideWorkplaceCode;
@@ -33,7 +33,7 @@ import nts.uk.shr.com.context.AppContexts;
 public class GetRefWorkplaceAndEmployee {
 
 	@Inject
-	private WorkChangeablePeriodSettingRepository workChangeablePeriodSettingRepo;
+	private ManHourRecordReferenceSettingRepository workChangeablePeriodSettingRepo;
 
 	@Inject
 	private WorkplaceExportServiceAdapter serviceAdapter;
@@ -46,7 +46,7 @@ public class GetRefWorkplaceAndEmployee {
 		GetRefWorkplaceAndEmployeeDto result = new GetRefWorkplaceAndEmployeeDto();
 
 		// 1: get(ログイン会社ID)
-		Optional<WorkChangeablePeriodSetting> optWorkChangeablePeriodSetting = workChangeablePeriodSettingRepo
+		Optional<ManHourRecordReferenceSetting> optWorkChangeablePeriodSetting = workChangeablePeriodSettingRepo
 				.get(companyId);
 
 		// 2: 参照可能範囲を取得する(ログイン会社ID, ログインユーザID, ログイン社員ID, 基準日): Map<社員ID,職場ID>

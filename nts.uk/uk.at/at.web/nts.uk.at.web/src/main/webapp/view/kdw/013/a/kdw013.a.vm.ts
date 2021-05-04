@@ -3,6 +3,7 @@ module nts.uk.ui.at.kdp013.a {
     import calendar = nts.uk.ui.components.fullcalendar;
 
     const DATE_FORMAT = 'YYYY-MM-DD';
+    const DATE_TIME_FORMAT = 'YYYY-MM-DD HH:mm';
 
     const API: API = {
         ADD: '/screen/at/kdw013/a/add',
@@ -416,4 +417,51 @@ module nts.uk.ui.at.kdp013.a {
             mode: KnockoutComputed<boolean>;
         };
     }
+
+
+    const initData = () => {
+        const vm = new ko.ViewModel();
+        const commands: AddAttendanceTimeZoneParam = {
+            employeeId: vm.$user.employeeId,
+            editStateSetting: 1,
+            workDetails: [{
+                date: moment().toISOString(),
+                lstWorkDetailsParam: [{
+                    remarks: '',
+                    supportFrameNo: 1,
+                    timeZone: {
+                        end: {
+                            reasonTimeChange: {
+                                engravingMethod: 0,
+                                timeChangeMeans: 0
+                            },
+                            timeWithDay: 0
+                        },
+                        start: {
+                            reasonTimeChange: {
+                                engravingMethod: 0,
+                                timeChangeMeans: 0
+                            },
+                            timeWithDay: 0
+                        },
+                        workingHours: 1
+                    },
+                    workGroup: {
+                        workCD1: '',
+                        workCD2: '',
+                        workCD3: '',
+                        workCD4: '',
+                        workCD5: ''
+                    },
+                    workLocationCD: ''
+                }]
+            }]
+        };
+
+        vm
+            .$ajax('at', API.REG_WORKTIME, commands)
+            .then(function () { });
+    }
+
+    _.extend(window, { initData });
 }

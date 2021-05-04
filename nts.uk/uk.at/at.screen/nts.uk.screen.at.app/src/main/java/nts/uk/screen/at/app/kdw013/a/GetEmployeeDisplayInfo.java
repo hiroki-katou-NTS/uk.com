@@ -12,8 +12,8 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.daily.ouen.GetTheWorkYouUseMostRecentlyService;
 import nts.uk.ctx.at.record.dom.daily.ouen.OuenWorkTimeSheetOfDaily;
 import nts.uk.ctx.at.record.dom.daily.ouen.OuenWorkTimeSheetOfDailyRepo;
-import nts.uk.ctx.at.record.dom.jobmanagement.workchangeableperiodsetting.WorkChangeablePeriodSetting;
-import nts.uk.ctx.at.record.dom.jobmanagement.workchangeableperiodsetting.WorkChangeablePeriodSettingRepository;
+import nts.uk.ctx.at.record.dom.jobmanagement.manhourrecordreferencesetting.ManHourRecordReferenceSetting;
+import nts.uk.ctx.at.record.dom.jobmanagement.manhourrecordreferencesetting.ManHourRecordReferenceSettingRepository;
 import nts.uk.ctx.at.record.dom.workrecord.actualsituation.CheckShortageFlex;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.work.WorkCode;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.work.WorkGroup;
@@ -35,7 +35,7 @@ import nts.uk.shr.com.context.AppContexts;
 public class GetEmployeeDisplayInfo {
 
 	@Inject
-	private WorkChangeablePeriodSettingRepository workChangeablePeriodSettingRepo;
+	private ManHourRecordReferenceSettingRepository workChangeablePeriodSettingRepo;
 
 	@Inject
 	private GetWorkConfirmationStatus getWorkConfirmationStatus;
@@ -73,7 +73,7 @@ public class GetEmployeeDisplayInfo {
 		employeeDisplayInfo.setWorkGroups(workGroups);
 
 		// 2: get(ログイン会社ID)
-		Optional<WorkChangeablePeriodSetting> OptWorkChangeablePeriodSetting = workChangeablePeriodSettingRepo
+		Optional<ManHourRecordReferenceSetting> OptWorkChangeablePeriodSetting = workChangeablePeriodSettingRepo
 				.get(AppContexts.user().companyId());
 
 		// 3: [作業変更可能期間設定.isPresent]:作業修正可能開始日付を取得する(@Require, 社員ID):年月日
@@ -119,14 +119,14 @@ public class GetEmployeeDisplayInfo {
 	}
 
 	@AllArgsConstructor
-	public class RequireImpl1 implements WorkChangeablePeriodSetting.Require {
+	public class RequireImpl1 implements ManHourRecordReferenceSetting.Require {
 
-		private WorkChangeablePeriodSettingRepository workChangeablePeriodSettingRepo;
+		private ManHourRecordReferenceSettingRepository workChangeablePeriodSettingRepo;
 
 		private CheckShortageFlex checkShortageFlex;
 
 		@Override
-		public WorkChangeablePeriodSetting get() {
+		public ManHourRecordReferenceSetting get() {
 			return workChangeablePeriodSettingRepo.get(AppContexts.user().companyId()).orElse(null);
 		}
 

@@ -5,30 +5,30 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.record.dom.jobmanagement.workchangeableperiodsetting.WorkChangeablePeriodSetting;
-import nts.uk.ctx.at.record.dom.jobmanagement.workchangeableperiodsetting.WorkChangeablePeriodSettingRepository;
+import nts.uk.ctx.at.record.dom.jobmanagement.manhourrecordreferencesetting.ManHourRecordReferenceSetting;
+import nts.uk.ctx.at.record.dom.jobmanagement.manhourrecordreferencesetting.ManHourRecordReferenceSettingRepository;
 import nts.uk.ctx.at.record.infra.entity.jobmanagement.workchangeableperiodsetting.KrcmtTaskPastPeriod;
 
 @Stateless
-public class JpaWorkChangeablePeriodSettingRepository extends JpaRepository implements WorkChangeablePeriodSettingRepository{
+public class JpaManHourRecordReferenceSettingRepository extends JpaRepository implements ManHourRecordReferenceSettingRepository{
 
 	@Override
-	public void insert(WorkChangeablePeriodSetting domain) {
+	public void insert(ManHourRecordReferenceSetting domain) {
 		this.commandProxy().insert(new KrcmtTaskPastPeriod(domain));
 	}
 
 	@Override
-	public void delete(WorkChangeablePeriodSetting domain) {
+	public void delete(ManHourRecordReferenceSetting domain) {
 		this.commandProxy().remove(new KrcmtTaskPastPeriod(domain));
 	}
 
 	@Override
-	public void update(WorkChangeablePeriodSetting domain) {
+	public void update(ManHourRecordReferenceSetting domain) {
 		this.commandProxy().update(new KrcmtTaskPastPeriod(domain));
 	}
 
 	@Override
-	public Optional<WorkChangeablePeriodSetting> get(String companyId) {
+	public Optional<ManHourRecordReferenceSetting> get(String companyId) {
 		return this.queryProxy().find(companyId, KrcmtTaskPastPeriod.class).map(c->c.toDomain());
 	}
 

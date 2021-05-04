@@ -231,7 +231,19 @@ module nts.uk.ui.at.kdp013.a {
     };
 
     export type WorkTimeInformationDto = {
+        // 時刻変更理由
+        reasonTimeChange: ReasonTimeChangeDto;
 
+        // 時刻  
+        timeWithDay: number | null;
+    };
+
+    export type ReasonTimeChangeDto = {
+        //時刻変更手段
+        timeChangeMeans: number | null;
+
+        //打刻方法
+        engravingMethod: number | null;
     };
 
     export type SelectTargetEmployeeParam = {
@@ -403,5 +415,16 @@ module nts.uk.ui.at.kdp013.a {
 
     export type DatePeriodDto = {
 
+    };
+
+    export type AddAttendanceTimeZoneParam = {
+        /** 対象者 */
+        employeeId: string;
+
+        /** 編集状態<Enum.日別勤怠の編集状態> */
+        editStateSetting: number;
+
+        /** List<年月日,List<作業詳細>> */
+        workDetails: WorkDetailDto[];
     };
 }
