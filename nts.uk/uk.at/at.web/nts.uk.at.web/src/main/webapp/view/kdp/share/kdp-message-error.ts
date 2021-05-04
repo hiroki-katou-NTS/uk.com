@@ -2,6 +2,13 @@
 
 module nts.uk.at.view.kdp.share {
 
+    export interface MessageParam {
+        events?: ClickEvent;
+        notiSet: KnockoutObservable<FingerStampSetting>;
+        messageNoti: KnockoutObservable<IMessage>;
+        viewShow: String;
+    }
+
     const API = {
     };
 
@@ -110,10 +117,6 @@ module nts.uk.at.view.kdp.share {
 
     class BoxYear extends ko.ViewModel {
 
-        // headOfficeNoticeList: KnockoutObservable<IDisplayResult> = ko.observable();
-
-        // workplaceNoticeList: KnockoutObservable<DisplayResult> = ko.observable();
-
         // R1 本部見内容
         headOfficeNotice: Model = new Model(DestinationClassification.ALL);
 
@@ -122,20 +125,22 @@ module nts.uk.at.view.kdp.share {
 
 
         messageNoti: KnockoutObservable<IMessage> = ko.observable();
-        notiSet: KnockoutObservable<INoticeSet> = ko.observable();
+        notiSet: KnockoutObservable<FingerStampSetting> = ko.observable();
 
         events!: ClickEvent;
+        
 
         created(params?: MessageParam) {
             const vm = this;
 
             if (params) {
-                if (params.messageNoti) {
-                    vm.messageNoti(params.messageNoti);
-                }
+                
+                vm.messageNoti = params.messageNoti;
 
                 if(ko.unwrap(params.notiSet)) {
-                    vm.notiSet(ko.unwrap(params.notiSet).noticeSetDto);
+                    vm.notiSet = params.notiSet;
+                    
+                    vm.reload();
                 }
                 const { events } = params;
 
@@ -175,6 +180,12 @@ module nts.uk.at.view.kdp.share {
         mounted() {
             const vm = this;
 
+            vm.reload();
+        }
+
+        reload() {
+            const vm = this;
+
             vm.$blockui('invisible')
                 .then(() => {
 
@@ -190,7 +201,7 @@ module nts.uk.at.view.kdp.share {
                         if (ko.unwrap(vm.notiSet)) {
                             vm.headOfficeNotice.update(DestinationClassification.ALL,
                                 headOfficeNoticeList[0].notificationMessage,
-                                ko.unwrap(vm.notiSet));
+                                ko.unwrap(vm.notiSet).noticeSetDto);
                         } else {
                             vm.headOfficeNotice.update(DestinationClassification.ALL,
                                 headOfficeNoticeList[0].notificationMessage);
@@ -201,7 +212,7 @@ module nts.uk.at.view.kdp.share {
                         if (ko.unwrap(vm.notiSet)) {
                             vm.headOfficeNotice.update(DestinationClassification.ALL,
                                 '',
-                                ko.unwrap(vm.notiSet));
+                                ko.unwrap(vm.notiSet).noticeSetDto);
                         } else {
                             vm.headOfficeNotice.update(DestinationClassification.ALL,
                                 '');
@@ -213,7 +224,7 @@ module nts.uk.at.view.kdp.share {
                         if (ko.unwrap(vm.notiSet)) {
                             vm.workplaceNotice.update(DestinationClassification.WORKPLACE,
                                 workplaceNoticeList[0].notificationMessage,
-                                ko.unwrap(vm.notiSet));
+                                ko.unwrap(vm.notiSet).noticeSetDto);
                         } else {
                             vm.workplaceNotice.update(DestinationClassification.WORKPLACE,
                                 workplaceNoticeList[0].notificationMessage);
@@ -225,14 +236,14 @@ module nts.uk.at.view.kdp.share {
                         if (ko.unwrap(vm.notiSet)) {
                             vm.workplaceNotice.update(DestinationClassification.WORKPLACE,
                                 '',
-                                ko.unwrap(vm.notiSet));
+                                ko.unwrap(vm.notiSet).noticeSetDto);
                         } else {
                             vm.workplaceNotice.update(DestinationClassification.WORKPLACE,
                                 '');
                         }
                     }
                 })
-                .always(() => {
+                .then(() => {
                     vm.$blockui('clear');
                 });
         }
@@ -255,6 +266,7 @@ module nts.uk.at.view.kdp.share {
 
             if (type == DestinationClassification.ALL) {
                 if (setting) {
+                    
                     vm.title(setting.companyTitle + ':');
                     vm.textColor(setting.comMsgColor.textColor);
                     vm.backGroudColor(setting.comMsgColor.backGroundColor);
@@ -263,6 +275,7 @@ module nts.uk.at.view.kdp.share {
 
             if (type == DestinationClassification.WORKPLACE) {
                 if (setting) {
+
                     vm.title(setting.wkpTitle + ':');
                     vm.textColor(setting.wkpMsgColor.textColor);
                     vm.backGroudColor(setting.wkpMsgColor.backGroundColor);
@@ -273,13 +286,6 @@ module nts.uk.at.view.kdp.share {
                 vm.contentMessager(content);
             }
         }
-    }
-
-    export interface MessageParam {
-        events?: ClickEvent;
-        notiSet: any;
-        messageNoti: IMessage;
-        viewShow: String;
     }
 
     export interface ClickEvent {
@@ -334,4 +340,10 @@ module nts.uk.at.view.kdp.share {
         // 2 社員選択
         EMPLOYEE = 2
     }
+
+    interface FingerStampSetting {
+		stampResultDisplay: any;
+		stampSetting: any;
+		noticeSetDto: INoticeSet;
+	}
 }
