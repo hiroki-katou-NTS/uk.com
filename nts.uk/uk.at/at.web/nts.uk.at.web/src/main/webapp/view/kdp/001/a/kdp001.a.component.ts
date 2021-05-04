@@ -338,7 +338,8 @@ module nts.uk.ui.kdp001.a {
                     right: 22px;
                 }
                 .kdp-001-a.widget-title .date {
-                    margin-right: 83px;
+                    text-align: left;
+                    padding-left: 130px;
                     color: #7F7F7F;
                     font-size: 15px;
                 }
