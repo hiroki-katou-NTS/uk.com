@@ -531,6 +531,7 @@ module nts.uk.at.view.kal003.b.viewmodel {
         private getEnumSchedule(): JQueryPromise<any> {
             let self = this,
                 dfd = $.Deferred();
+            self.listTypeCheckWorkRecords([]);
             $.when(service.getEnumDaiCheckItemType(), service.getCheckTimeType(), service.getTimeZoneTargetRange()).done((
                         listDaiCheckItemType: Array<model.EnumModel>, listCheckTimeType: Array<model.EnumModel>, listTimeZoneTargetRange: Array<model.EnumModel>) => {
                 self.listTypeCheckWorkRecords(self.getLocalizedNameForEnum(listDaiCheckItemType));
