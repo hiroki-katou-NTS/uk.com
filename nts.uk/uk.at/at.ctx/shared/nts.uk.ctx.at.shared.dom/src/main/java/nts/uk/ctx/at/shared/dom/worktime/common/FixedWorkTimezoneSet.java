@@ -71,9 +71,9 @@ public class FixedWorkTimezoneSet extends WorkTimeDomainObject implements Clonea
 	public FixedWorkTimezoneSet(List<EmTimeZoneSet> lstWorkingTimezone, List<OverTimeOfTimeZoneSet> lstOTTimezone, boolean useShiftTwo){
 		this.lstWorkingTimezone = lstWorkingTimezone;
 		this.lstOTTimezone = lstOTTimezone;
-		if (this.lstWorkingTimezone.size() == 0) {
-            throw new BusinessException("Msg_2182");
-        }
+//		if (this.lstWorkingTimezone.size() == 0) {
+//            throw new BusinessException("Msg_2182");
+//        }
 		if (!checkWorkingTimezoneContinue(useShiftTwo))
 			this.bundledBusinessExceptions.addMessage("Msg_1919");
 		if (!checkOTTimeZoneContinue(useShiftTwo))
@@ -275,7 +275,7 @@ public class FixedWorkTimezoneSet extends WorkTimeDomainObject implements Clonea
 	 * Restore default data.
 	 */
 	public void restoreDefaultData() {
-		this.lstWorkingTimezone = new ArrayList<>();
+//		this.lstWorkingTimezone = new ArrayList<>();
 		this.lstOTTimezone = new ArrayList<>();
 	}
 
