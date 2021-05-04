@@ -343,7 +343,6 @@ module nts.uk.at.view.ktg026.a {
                 </div>
             </div>
             <style>
-                }
                 .ktg026-border-top {
                     border-top: none !important;
                 }
