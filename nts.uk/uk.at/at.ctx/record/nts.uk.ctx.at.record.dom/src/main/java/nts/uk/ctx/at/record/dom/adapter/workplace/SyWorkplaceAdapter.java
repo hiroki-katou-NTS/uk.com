@@ -43,4 +43,20 @@ public interface SyWorkplaceAdapter {
 	 * @return
 	 */
 	String getAffWkpHistItemByEmpDate(String employeeID, GeneralDate date);
+	
+	/**
+	 * @name 参照可能社員の所属職場を取得するAdapter
+	 * @param userID ユーザID
+	 * @param employeeID 社員ID
+	 * @param date 基準日
+	 */
+	Map<String, String> getWorkPlace(String userID, String employeeID, GeneralDate date);
+	
+	/**
+	 * @name 全ての職場の所属社員を取得するAdapter
+	 * @param companyId 会社ID	会社ID
+	 * @param baseDate 	基準日	年月日
+	 * @return 	所属職場リスト	List＜所属職場履歴項目＞
+	 */
+	Map<String, String> getByCID(String companyId, GeneralDate baseDate);
 }

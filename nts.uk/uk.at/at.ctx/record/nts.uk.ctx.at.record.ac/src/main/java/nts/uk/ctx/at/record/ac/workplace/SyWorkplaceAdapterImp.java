@@ -16,7 +16,10 @@ import nts.uk.ctx.at.record.dom.adapter.workplace.EmployeeInfoImported;
 import nts.uk.ctx.at.record.dom.adapter.workplace.SWkpHistRcImported;
 import nts.uk.ctx.at.record.dom.adapter.workplace.SyWorkplaceAdapter;
 import nts.uk.ctx.at.record.dom.adapter.workplace.WorkplaceInformationImport;
+import nts.uk.ctx.bs.employee.pub.employee.workplace.export.WorkplaceExportPub;
+import nts.uk.ctx.bs.employee.pub.workplace.AffWorkplaceHistoryItemExport3;
 import nts.uk.ctx.bs.employee.pub.workplace.master.WorkplacePub;
+import nts.uk.ctx.sys.auth.pub.workplace.WorkplaceListPub;
 
 /**
  *
@@ -31,6 +34,12 @@ public class SyWorkplaceAdapterImp implements SyWorkplaceAdapter {
 
 	@Inject
 	private WorkplacePub workplacePub;
+	
+	@Inject
+	private WorkplaceListPub workplaceListPub;
+	
+	@Inject
+	private WorkplaceExportPub workplaceExportPub;
 
 	@Override
 	public Map<String, Pair<String, String>> getWorkplaceMapCodeBaseDateName(String companyId,
@@ -82,6 +91,18 @@ public class SyWorkplaceAdapterImp implements SyWorkplaceAdapter {
 	public String getAffWkpHistItemByEmpDate(String employeeID, GeneralDate date) {
 		// TODO Auto-generated method stub
 		return this.workplacePub.getAffWkpHistItemByEmpDate(employeeID, date).getWorkplaceId();
+	}
+
+	@Override
+	public Map<String, String> getWorkPlace(String userID, String employeeID, GeneralDate date) {
+		// TODO Auto-generated method stub
+		return this.workplaceListPub.getWorkPlace(userID, employeeID, date);
+	}
+
+	@Override
+	public Map<String, String> getByCID(String companyId, GeneralDate baseDate) {
+		// TODO Auto-generated method stub
+		return this.workplaceExportPub.getByCID(companyId, baseDate).stream().collect(Collectors.toMap(AffWorkplaceHistoryItemExport3::getEmployeeId, AffWorkplaceHistoryItemExport3::getWorkplaceId));
 	}
 
 }

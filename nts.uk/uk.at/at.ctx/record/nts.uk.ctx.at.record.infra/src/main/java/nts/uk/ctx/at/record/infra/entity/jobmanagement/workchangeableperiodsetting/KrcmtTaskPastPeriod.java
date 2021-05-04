@@ -10,8 +10,8 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.at.record.dom.jobmanagement.workchangeableperiodsetting.MonthsAgo;
-import nts.uk.ctx.at.record.dom.jobmanagement.workchangeableperiodsetting.WorkChangeablePeriodSetting;
+import nts.uk.ctx.at.record.dom.jobmanagement.manhourrecordreferencesetting.ManHourRecordReferenceSetting;
+import nts.uk.ctx.at.record.dom.jobmanagement.manhourrecordreferencesetting.ElapsedMonths;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
@@ -39,12 +39,12 @@ public class KrcmtTaskPastPeriod extends ContractUkJpaEntity implements Serializ
 		return this.cid;
 	}
 	
-	public KrcmtTaskPastPeriod(WorkChangeablePeriodSetting domain) {
+	public KrcmtTaskPastPeriod(ManHourRecordReferenceSetting domain) {
 		this.cid = AppContexts.user().companyId();
 		this.monthsAgo = domain.getMonthsAgo().value;
 	}
 
-	public WorkChangeablePeriodSetting toDomain() {
-		return new WorkChangeablePeriodSetting(EnumAdaptor.valueOf(this.monthsAgo, MonthsAgo.class));
+	public ManHourRecordReferenceSetting toDomain() {
+		return new ManHourRecordReferenceSetting(EnumAdaptor.valueOf(this.monthsAgo, ElapsedMonths.class));
 	}
 }

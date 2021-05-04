@@ -1,13 +1,13 @@
-package nts.uk.ctx.at.record.dom.jobmanagement.workchangeableperiodsetting;
+package nts.uk.ctx.at.record.dom.jobmanagement.manhourrecordreferencesetting;
 
 import lombok.AllArgsConstructor;
 /**
  * @author thanhpv
  * @name 経過月数
- * @path UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.勤務実績.作業管理.作業変更可能期間設定.経過月数
+ * @path UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.勤務実績.作業管理.工数実績参照設定.経過月数
  */
 @AllArgsConstructor
-public enum MonthsAgo {
+public enum ElapsedMonths {
 	
 	CURRENT_MONTH(0, "当月"),
 

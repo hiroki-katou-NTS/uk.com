@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.dom.jobmanagement.workchangeableperiodsetting;
+package nts.uk.ctx.at.record.dom.jobmanagement.manhourrecordreferencesetting;
 
 import java.util.Optional;
 
@@ -6,22 +6,22 @@ import java.util.Optional;
  * @author thanhpv
  * @name 作業変更可能期間設定Repository
  */
-public interface WorkChangeablePeriodSettingRepository {
+public interface ManHourRecordReferenceSettingRepository {
 
 	/**
 	 * @name [1] Insert(作業変更可能期間設定)
 	 */
-	void insert(WorkChangeablePeriodSetting domain);
+	void insert(ManHourRecordReferenceSetting domain);
 	
 	/**
 	 * @name [2] Delete(作業変更可能期間設定)
 	 */
-	void delete(WorkChangeablePeriodSetting domain);
+	void delete(ManHourRecordReferenceSetting domain);
 	
 	/**
 	 * @name [3] Update(作業変更可能期間設定)
 	 */
-	void update(WorkChangeablePeriodSetting domain);
+	void update(ManHourRecordReferenceSetting domain);
 	
 	/**
 	 * @name [4] Get
@@ -29,5 +29,5 @@ public interface WorkChangeablePeriodSettingRepository {
 	 * @input companyId 会社ID
 	 * @output Optional<作業変更可能期間設定>
 	 */
-	Optional<WorkChangeablePeriodSetting> get(String companyId);
+	Optional<ManHourRecordReferenceSetting> get(String companyId);
 }
