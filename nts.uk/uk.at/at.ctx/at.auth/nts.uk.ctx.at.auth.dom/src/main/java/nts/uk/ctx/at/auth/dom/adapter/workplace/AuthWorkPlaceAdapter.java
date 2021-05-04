@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.auth.dom.adapter.workplace;
 
 import java.util.List;
-import java.util.Map;
 
 import nts.arc.time.GeneralDate;
 
@@ -37,21 +36,5 @@ public interface AuthWorkPlaceAdapter {
 	//[No.559]運用している職場の情報をすべて取得する	
 	List<WorkplaceInforImport2> getAllActiveWorkplaceInfor(String companyId, GeneralDate baseDate);
 	
-	/**
-	 * @name 参照可能社員の所属職場を取得するAdapter
-	 * @param userID ユーザID
-	 * @param employeeID 社員ID
-	 * @param date 基準日
-	 * @return 	社員一覧	Map<社員ID,職場ID>
-	 */
-	public Map<String, String> getReferenceableEmployees(String userID, String employeeID, GeneralDate date);
-	
-	/**
-	 * @name 全ての職場の所属社員を取得するAdapter
-	 * @param 会社ID		
-	 * @param date 年月日
-	 * @return 	社員一覧	Map<社員ID,職場ID>
-	 */
-	public Map<String, String> getemployeesAllWorkplaces(String employeeID, GeneralDate baseDate);
 }
 

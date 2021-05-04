@@ -45,12 +45,9 @@ public class UpdateEmploymentRoleCmd {
 	 * 未来日参照許可 FUTURE_DATE_REF_PERMIT
 	 */
 	private int futureDateRefPermit;
-	/**
-	 * 実績工数社員参照
-	 */
-	private int atdTaskEmployeeRef;
+	
 	public UpdateEmploymentRoleCmd(String companyId, String roleId, int scheduleEmployeeRef, int bookEmployeeRef,
-			int employeeRefSpecAgent, int presentInqEmployeeRef, int futureDateRefPermit, int atdTaskEmployeeRef) {
+			int employeeRefSpecAgent, int presentInqEmployeeRef, int futureDateRefPermit) {
 		super();
 		this.companyId = companyId;
 		this.roleId = roleId;
@@ -59,7 +56,6 @@ public class UpdateEmploymentRoleCmd {
 		this.employeeRefSpecAgent = employeeRefSpecAgent;
 		this.presentInqEmployeeRef = presentInqEmployeeRef;
 		this.futureDateRefPermit = futureDateRefPermit;
-		this.atdTaskEmployeeRef = atdTaskEmployeeRef;
 	}
 	
 	public EmploymentRole toDomain() {
@@ -70,8 +66,7 @@ public class UpdateEmploymentRoleCmd {
 				EnumAdaptor.valueOf(this.bookEmployeeRef,EmployeeRefRange.class),
 				EnumAdaptor.valueOf(this.employeeRefSpecAgent,EmployeeRefRange.class),
 				EnumAdaptor.valueOf(this.presentInqEmployeeRef,EmployeeReferenceRange.class),
-				EnumAdaptor.valueOf(this.futureDateRefPermit,DisabledSegment.class),
-				EnumAdaptor.valueOf(this.atdTaskEmployeeRef,EmployeeRefRange.class)
+				EnumAdaptor.valueOf(this.futureDateRefPermit,DisabledSegment.class)
 				);
 	}
 }

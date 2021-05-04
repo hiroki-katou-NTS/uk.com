@@ -6,6 +6,7 @@ import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
@@ -41,9 +42,6 @@ public class KacmtRoleAttendance extends ContractUkJpaEntity implements Serializ
 	
 	@Column(name = "FUTURE_DATE_REF_PERMIT")
 	public int futureDateRefPermit;
-	
-	@Column(name = "ATD_TASK_EMPLOYEE_REF")
-	public int atdTaskEmployeeRef;
 
 	@Override
 	protected Object getKey() {
@@ -59,8 +57,7 @@ public class KacmtRoleAttendance extends ContractUkJpaEntity implements Serializ
 			EnumAdaptor.valueOf(this.bookEmployeeRef,EmployeeRefRange.class),
 			EnumAdaptor.valueOf(this.employeeRefSpecAgent,EmployeeRefRange.class),
 			EnumAdaptor.valueOf(this.presentInqEmployeeRef,EmployeeReferenceRange.class),
-			EnumAdaptor.valueOf(this.futureDateRefPermit,DisabledSegment.class),
-			EnumAdaptor.valueOf(this.atdTaskEmployeeRef,EmployeeRefRange.class)
+			EnumAdaptor.valueOf(this.futureDateRefPermit,DisabledSegment.class)
 		);
 	}
 
@@ -71,7 +68,7 @@ public class KacmtRoleAttendance extends ContractUkJpaEntity implements Serializ
 
 
 	public KacmtRoleAttendance(KacmtEmploymentRolePK kacmtEmploymentRolePK, int scheduleEmployeeRef,
-			int bookEmployeeRef, int employeeRefSpecAgent, int presentInqEmployeeRef, int futureDateRefPermit, int atdTaskEmployeeRef) {
+			int bookEmployeeRef, int employeeRefSpecAgent, int presentInqEmployeeRef, int futureDateRefPermit) {
 		super();
 		this.kacmtEmploymentRolePK = kacmtEmploymentRolePK;
 		this.scheduleEmployeeRef = scheduleEmployeeRef;
@@ -79,7 +76,6 @@ public class KacmtRoleAttendance extends ContractUkJpaEntity implements Serializ
 		this.employeeRefSpecAgent = employeeRefSpecAgent;
 		this.presentInqEmployeeRef = presentInqEmployeeRef;
 		this.futureDateRefPermit = futureDateRefPermit;
-		this.atdTaskEmployeeRef = atdTaskEmployeeRef;
 	}
 	
 	public static KacmtRoleAttendance toEntity(EmploymentRole domain) {
@@ -89,8 +85,7 @@ public class KacmtRoleAttendance extends ContractUkJpaEntity implements Serializ
 				domain.getBookEmployeeRef().value,
 				domain.getEmployeeRefSpecAgent().value,
 				domain.getPresentInqEmployeeRef().value,
-				domain.getFutureDateRefPermit().value,
-				domain.getAtdTaskEmployeeRef().value
+				domain.getFutureDateRefPermit().value
 				);
 	}
 

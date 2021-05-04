@@ -39,10 +39,6 @@ public class EmploymentRoleDataDto {
 	 * 未来日参照許可 FUTURE_DATE_REF_PERMIT
 	 */
 	private int futureDateRefPermit;
-	/**
-	 * 実績工数社員参照
-	 */
-	private int atdTaskEmployeeRef;
 	
 	/**
 	 * ロール
@@ -58,7 +54,6 @@ public class EmploymentRoleDataDto {
 				domain.getEmployeeRefSpecAgent().value,
 				domain.getPresentInqEmployeeRef().value,
 				domain.getFutureDateRefPermit().value,
-				domain.getAtdTaskEmployeeRef().value,
 				null);
 	}
 }
