@@ -161,7 +161,8 @@ module nts.uk.at.view.kaf012.a.viewmodel {
                             appDate: new Date(value).toISOString(),
                             appDisplayInfo: {
                                 appDispInfoStartupOutput: vm.appDispInfoStartupOutput(),
-                                timeLeaveManagement: vm.timeLeaveManagement()
+                                timeLeaveManagement: vm.timeLeaveManagement(),
+                                reflectSetting: vm.reflectSetting()
                             }
                         };
                         vm.$blockui("show").then(() => {
@@ -300,7 +301,9 @@ module nts.uk.at.view.kaf012.a.viewmodel {
                         return vm.$ajax(API.changeAppDate, {
                             appDate: new Date(vm.application().appDate()).toISOString(),
                             appDisplayInfo: {
-                                appDispInfoStartupOutput: vm.appDispInfoStartupOutput()
+                                appDispInfoStartupOutput: vm.appDispInfoStartupOutput(),
+                                timeLeaveManagement: vm.timeLeaveManagement(),
+                                reflectSetting: vm.reflectSetting()
                             }
                         });
                     }).then(() => {
