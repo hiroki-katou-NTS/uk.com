@@ -11,19 +11,20 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.record.dom.jobmanagement.manhourrecordreferencesetting.ManHourRecordReferenceSetting;
+import nts.uk.ctx.at.record.dom.jobmanagement.manhourrecordreferencesetting.ReferenceRange;
 import nts.uk.ctx.at.record.dom.jobmanagement.manhourrecordreferencesetting.ElapsedMonths;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * @author thanhpv
- * @name 作業変更可能期間設定 WorkChangeablePeriodSetting
+ * @name 工数実績参照設定 ManHourRecordReferenceSetting
  */
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCMT_TASK_PAST_PERIOD")
-public class KrcmtTaskPastPeriod extends ContractUkJpaEntity implements Serializable {
+@Table(name = "KRCMT_TASK_REFERENCE")
+public class KrcmtTaskReference extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -33,18 +34,22 @@ public class KrcmtTaskPastPeriod extends ContractUkJpaEntity implements Serializ
 
 	@Column(name = "MONTHS_AGO")
 	public int monthsAgo;
+	
+	@Column(name = "EMPLOYEE_REF")
+	public int employeeRef;
 
 	@Override
 	protected Object getKey() {
 		return this.cid;
 	}
 	
-	public KrcmtTaskPastPeriod(ManHourRecordReferenceSetting domain) {
+	public KrcmtTaskReference(ManHourRecordReferenceSetting domain) {
 		this.cid = AppContexts.user().companyId();
-		this.monthsAgo = domain.getMonthsAgo().value;
+		this.monthsAgo = domain.getElapsedMonths().value;
+		this.employeeRef = domain.getReferenceRange().value;
 	}
 
 	public ManHourRecordReferenceSetting toDomain() {
-		return new ManHourRecordReferenceSetting(EnumAdaptor.valueOf(this.monthsAgo, ElapsedMonths.class));
+		return new ManHourRecordReferenceSetting(EnumAdaptor.valueOf(this.monthsAgo, ElapsedMonths.class), EnumAdaptor.valueOf(this.employeeRef, ReferenceRange.class));
 	}
 }
