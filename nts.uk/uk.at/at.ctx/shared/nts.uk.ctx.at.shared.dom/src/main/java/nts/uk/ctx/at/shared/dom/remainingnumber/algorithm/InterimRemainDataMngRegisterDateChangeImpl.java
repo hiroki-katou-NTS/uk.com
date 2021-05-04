@@ -40,7 +40,9 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.work.CompanyHolidayMngSetting;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.service.RemainCreateInforByApplicationData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.service.RemainCreateInforByRecordData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.service.RemainCreateInforByScheData;
+import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveComSetRepository;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacationRepository;
 
 @Stateless
@@ -79,6 +81,9 @@ public class InterimRemainDataMngRegisterDateChangeImpl implements InterimRemain
 
 	@Override
 	public void registerDateChange(String cid, String sid, List<GeneralDate> lstDate) {
+		
+		//代休設定を取得
+		CompensatoryLeaveComSetting comSubset =  leaveSetRepos.find(cid);
 
 		//暫定データを作成する為の勤務予定を取得する
 		List<ScheRemainCreateInfor> lstScheData = this.remainScheData.createRemainInforNew(sid, lstDate);
@@ -104,9 +109,9 @@ public class InterimRemainDataMngRegisterDateChangeImpl implements InterimRemain
 					lstRecordData,
 					lstScheData,
 					lstAppData,
-					false);
+					comSubset.getCompensatoryDigestiveTimeUnit().getIsManageByTime().equals(ManageDistinct.YES));
 
-				Map<GeneralDate, DailyInterimRemainMngData> dailyMap = InterimRemainOffPeriodCreateData.createInterimRemainDataMng(requireService.createRequire(), new CacheCarrier(), inputParam, new CompanyHolidayMngSetting(cid , subRepos.findById(cid), leaveSetRepos.find(cid)));
+				Map<GeneralDate, DailyInterimRemainMngData> dailyMap = InterimRemainOffPeriodCreateData.createInterimRemainDataMng(requireService.createRequire(), new CacheCarrier(), inputParam, new CompanyHolidayMngSetting(cid , subRepos.findById(cid), comSubset));
 
 			// もらった暫定残数管理データを受け取る
 
