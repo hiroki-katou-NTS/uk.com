@@ -12,14 +12,14 @@ import nts.arc.time.GeneralDate;
 public class SelectWorkItemParam {
 	
 	//社員ID
-	String sId;
+	private String sId;
 	
 	//基準日
-	GeneralDate refDate;
+	private GeneralDate refDate;
 	
 	//作業枠NO
-	int taskFrameNo;
+	private int taskFrameNo;
 	
 	//上位枠作業コード
-	String taskCode;
+	private String taskCode;
 }

@@ -83,12 +83,10 @@ public class GetEmployeeDisplayInfo {
 		}
 
 		// 4: <call>(社員ID,基準日)
-		List<ConfirmerDto> listConfirmDto = getWorkConfirmationStatus.get(sid, refDate);
-		employeeDisplayInfo.setLstComfirmerDto(listConfirmDto);
+		employeeDisplayInfo.setLstComfirmerDto(getWorkConfirmationStatus.get(sid, refDate));
 
 		// 5: <call>(社員ID,表示期間)
-		List<WorkRecordDetail> workRecordDetails = getDailyPerformanceData.get(sid, period);
-		employeeDisplayInfo.setWorkRecordDetails(workRecordDetails);
+		employeeDisplayInfo.setWorkRecordDetails(getDailyPerformanceData.get(sid, period));
 
 		return employeeDisplayInfo;
 	}

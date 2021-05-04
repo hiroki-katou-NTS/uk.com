@@ -12,12 +12,12 @@ import nts.arc.time.GeneralDate;
 public class StartWorkInputPanelParam {
 
 	// 社員ID
-	String sId;
+	private String sId;
 
 	// 基準日
-	GeneralDate refDate;
+	private GeneralDate refDate;
 
 	// 作業グループ
-	WorkGroupDto workGroupDto;
+	private WorkGroupDto workGroupDto;
 
 }

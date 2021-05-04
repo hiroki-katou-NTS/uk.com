@@ -53,7 +53,7 @@ public class StartProcess {
 		startManHourInputResultDto.setWorkLocations(lstWorkLocationDto);
 
 		startProcessDto.setStartManHourInputResultDto(startManHourInputResultDto);
-
+		
 		// 2: [画面モード = 確認モード]: <call>()
 		GetRefWorkplaceAndEmployeeDto refWorkplaceAndEmployeeDto = getRefWorkplaceAndEmployee.get(GeneralDate.today());
 		startProcessDto.setRefWorkplaceAndEmployeeDto(new GetRefWorkplaceAndEmployeeResultDto(

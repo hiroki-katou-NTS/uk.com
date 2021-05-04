@@ -2,6 +2,7 @@ package nts.uk.screen.at.ws.kdw.kdw013;
 
 import java.util.List;
 
+import lombok.Setter;
 import nts.uk.screen.at.app.kdw013.a.OvertimeLeaveTime;
 
 /**
@@ -9,6 +10,7 @@ import nts.uk.screen.at.app.kdw013.a.OvertimeLeaveTime;
  * @author tutt
  *
  */
+@Setter
 public class RegisterWorkContentDto {
 
 	// エラー一覧
