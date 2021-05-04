@@ -215,6 +215,7 @@ module nts.uk.at.view.kdr001.b.viewmodel {
                             self.layoutId(sub.layoutId);
                             self.currentHoliday(sub)
                         }
+
                     }
                     else {
                         self.currentCode(_rsList[0].cd());
@@ -479,15 +480,15 @@ module nts.uk.at.view.kdr001.b.viewmodel {
         /**
          * 時間外超過項目を出力する
          */
-        hD60HItem: KnockoutObservable<boolean>;
+        hd60HItem: KnockoutObservable<boolean>;
         /**
          * 時間外超過項目を出力する
          */
-        hD60HUndigested: KnockoutObservable<boolean>;
+        hd60HUndigested: KnockoutObservable<boolean>;
         /**
          * 時間外超過項目を出力する
          */
-        hD60HRemain: KnockoutObservable<boolean>;
+        hd60HRemain: KnockoutObservable<boolean>;
 
         /**
          * 積立年休の項目を出力する
@@ -518,9 +519,9 @@ module nts.uk.at.view.kdr001.b.viewmodel {
             self.numberRemainingPause = ko.observable(param ? param.numberRemainingPause || false : false);
             self.unDigestedPause = ko.observable(param ? param.unDigestedPause || false : false);
             self.pauseItem = ko.observable(param ? param.pauseItem || false : false);
-            self.hD60HItem = ko.observable(param ? param.hD60HItem || false : false);
-            self.hD60HUndigested = ko.observable(param ? param.hD60HUndigested || false : false);
-            self.hD60HRemain = ko.observable(param ? param.hD60HRemain || false : false);
+            self.hd60HItem = ko.observable(param ? param.hd60HItem || false : false);
+            self.hd60HUndigested = ko.observable(param ? param.hd60HUndigested || false : false);
+            self.hd60HRemain = ko.observable(param ? param.hd60HRemain || false : false);
             self.yearlyReserved = ko.observable(param ? param.yearlyReserved || false : false);
             self.listSpecialHoliday = ko.observableArray(param ? param.listSpecialHoliday || [] : []);
             self.outputItemSubstitute.subscribe((isCheck) => {
@@ -537,10 +538,10 @@ module nts.uk.at.view.kdr001.b.viewmodel {
                 }
             });
 
-            self.hD60HItem.subscribe((isCheck) => {
+            self.hd60HItem.subscribe((isCheck) => {
                 if (isCheck === false) {
-                    self.hD60HUndigested(false);
-                    self.hD60HRemain(false);
+                    self.hd60HUndigested(false);
+                    self.hd60HRemain(false);
                 }
             });
         }

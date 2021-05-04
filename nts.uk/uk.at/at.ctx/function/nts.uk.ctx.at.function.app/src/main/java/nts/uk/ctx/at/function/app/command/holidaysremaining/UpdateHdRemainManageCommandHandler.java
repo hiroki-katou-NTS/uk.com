@@ -4,14 +4,12 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
-import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.function.dom.holidaysremaining.HolidaysRemainingManagement;
 import nts.uk.ctx.at.function.dom.holidaysremaining.ItemOutputForm;
-import nts.uk.ctx.at.function.dom.holidaysremaining.Overtime;
 import nts.uk.ctx.at.function.dom.holidaysremaining.repository.HolidaysRemainingManagementRepository;
 import nts.uk.ctx.at.function.dom.monthlyworkschedule.ItemSelectionEnum;
 import nts.uk.shr.com.context.AppContexts;
@@ -37,9 +35,9 @@ public class UpdateHdRemainManageCommandHandler extends CommandHandler<HdRemainM
                 command.isOutputItemsHolidays(), command.isChildNursingLeave(), command.isYearlyHoliday(),
                 command.isInsideHours(), command.isInsideHalfDay(), command.isNumberRemainingPause(),
                 command.isUnDigestedPause(), command.isPauseItem(),
-                command.isHD60HItem(),
-                command.isHD60HRemain(),
-                command.isHD60HUndigested(),
+                command.isHd60HItem(),
+                command.isHd60HRemain(),
+                command.isHd60HUndigested(),
                 command.isYearlyReserved(),
                 command.getListSpecialHoliday());
         ;

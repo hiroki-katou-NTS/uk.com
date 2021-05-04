@@ -12,12 +12,10 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.function.dom.holidaysremaining.HolidaysRemainingManagement;
 import nts.uk.ctx.at.function.dom.holidaysremaining.ItemOutputForm;
-import nts.uk.ctx.at.function.dom.holidaysremaining.Overtime;
 import nts.uk.ctx.at.function.dom.holidaysremaining.repository.HolidaysRemainingManagementRepository;
 import nts.uk.ctx.at.function.dom.monthlyworkschedule.ItemSelectionEnum;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
-import org.apache.commons.lang3.RandomStringUtils;
 
 import java.util.Optional;
 
@@ -46,9 +44,9 @@ public class AddHdRemainManageCommandHandler extends CommandHandler<HdRemainMana
 				command.isChildNursingLeave(),
 				command.isYearlyHoliday(), command.isInsideHours(), command.isInsideHalfDay(),
 				command.isNumberRemainingPause(), command.isUnDigestedPause(), command.isPauseItem(),
-				command.isHD60HItem(),
-				command.isHD60HRemain(),
-				command.isHD60HUndigested(),
+				command.isHd60HItem(),
+				command.isHd60HRemain(),
+				command.isHd60HUndigested(),
 				command.isYearlyReserved(), command.getListSpecialHoliday());
 
 		if (!itemOutputForm.hasOutput()) {

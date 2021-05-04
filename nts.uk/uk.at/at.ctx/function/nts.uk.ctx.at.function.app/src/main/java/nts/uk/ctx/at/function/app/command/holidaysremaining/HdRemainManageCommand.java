@@ -103,17 +103,17 @@ public class HdRemainManageCommand {
 	/**
 	 * 時間外超過項目を出力する
 	 */
-	private boolean hD60HItem;
+	private boolean hd60HItem;
 
 	/**
 	 * 時間外超過項目を出力する
 	 */
-	private boolean hD60HUndigested;
+	private boolean hd60HUndigested;
 
 	/**
 	 * 時間外超過項目を出力する
 	 */
-	private boolean hD60HRemain;
+	private boolean hd60HRemain;
 	/**
 	 * 振休未消化を出力する
 	 */

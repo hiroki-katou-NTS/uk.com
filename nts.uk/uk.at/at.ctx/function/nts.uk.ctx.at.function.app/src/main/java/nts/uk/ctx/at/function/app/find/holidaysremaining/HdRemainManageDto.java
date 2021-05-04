@@ -93,17 +93,17 @@ public class HdRemainManageDto {
     /**
      * 時間外超過項目を出力する
      */
-    private boolean hD60HItem;
+    private boolean hd60HItem;
 
     /**
      * 時間外超過項目を出力する
      */
-    private boolean hD60HUndigested;
+    private boolean hd60HUndigested;
 
     /**
      * 時間外超過項目を出力する
      */
-    private boolean hD60HRemain;
+    private boolean hd60HRemain;
 
     /**
      * 公休の項目を出力する
@@ -166,7 +166,7 @@ public class HdRemainManageDto {
             String cid, String cd, String name, boolean yearlyHoliday, boolean insideHalfDay,
             boolean insideHours, boolean yearlyReserved, boolean outItemSub, boolean representSub,
             boolean remainChargeSub, boolean pauseItem, boolean undigestedPause, boolean numRemainPause,
-            boolean hD60HItem, boolean hD60HUndigested, boolean hD60HRemain, boolean outputItemsHolidays,
+            boolean hd60HItem, boolean hd60HUndigested, boolean hd60HRemain, boolean outputItemsHolidays,
             boolean outputHolidayForward, boolean monthlyPublic, boolean childCareLeave,
             boolean nursingCareLeave, List<Integer> specHolidays) {
         super();
@@ -175,9 +175,9 @@ public class HdRemainManageDto {
         this.layoutId = layoutId;
         this.itemSelType = itemSelType;
         this.sid = sid;
-        this.hD60HItem = hD60HItem;
-        this.hD60HUndigested = hD60HUndigested;
-        this.hD60HRemain = hD60HRemain;
+        this.hd60HItem = hd60HItem;
+        this.hd60HUndigested = hd60HUndigested;
+        this.hd60HRemain = hd60HRemain;
         this.name = name;
         this.yearlyHoliday = yearlyHoliday;
         this.insideHalfDay = insideHalfDay;
