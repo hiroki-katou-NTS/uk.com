@@ -3,7 +3,7 @@ module nts.uk.at.view.ksu001.r {
         var paths = {
             findExtBudget: "ctx/at/schedule/budget/laborcost/getData",
             findBudgetDaily: "at/schedule/budget/external/infor/findBudgetDaily",
-            register: "at/schedule/budget/external/infor/register"
+            register: "ctx/at/schedule/budget/laborcost/insert"
         }
 
         export function findExtBudget(param: any): JQueryPromise<any> {
@@ -14,7 +14,7 @@ module nts.uk.at.view.ksu001.r {
             return nts.uk.request.ajax("at", paths.findBudgetDaily, param);
         }
 
-        export function register(param: any): JQueryPromise<any> {
+        export function register(param: any): JQueryPromise<any> {   
             return nts.uk.request.ajax("at", paths.register, param);
         }
 

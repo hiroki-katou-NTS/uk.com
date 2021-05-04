@@ -10,6 +10,7 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.aggregation.dom.schedulecounter.budget.laborcost.LaborCostBudget;
 import nts.uk.ctx.at.aggregation.dom.schedulecounter.budget.laborcost.LaborCostBudgetRepository;
 import nts.uk.ctx.at.aggregation.infra.entity.schedulecounter.budget.laborcost.KagdtLaborCostBudgetDaily;
+import nts.uk.ctx.at.aggregation.infra.entity.schedulecounter.budget.laborcost.KagdtLaborCostBudgetDailyPk;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrganizationUnit;
 import nts.uk.shr.com.context.AppContexts;
@@ -22,13 +23,11 @@ import nts.uk.shr.com.context.AppContexts;
  */
 public class JpaLaborCostBudgetRepository extends JpaRepository implements LaborCostBudgetRepository   {
 	
-	private static final String DELETE_BY_WORKPLACE = "";
+	private static final String DELETE = "";
 	
-	private static final String DELETE_BY_WORKPLACE_GROUP = "";
 	
 	private static final String SELECT_BY_WORKPLACE = " SELECT c FROM KagdtLaborCostBudgetDaily c WHERE c.pk.targetUnit = :targetUnit AND c.companyId = :companyId AND c.pk.ymd >= :startDate AND c.pk.ymd <= :endDate";
 	
-	private static final String SELECT_BY_WORKPLACE_GROUP = " SELECT c FROM KagdtLaborCostBudgetDaily c WHERE c.pk.targetUnit = :targetUnit AND c.companyId = :companyId AND c.pk.ymd >= :startDate AND c.pk.ymd <= :endDate";
 	
 	
 	@Override
@@ -40,22 +39,23 @@ public class JpaLaborCostBudgetRepository extends JpaRepository implements Labor
 	@Override
 	public void delete(String companyId, TargetOrgIdenInfor targetOrg, GeneralDate ymd) {
 		String workplaceId = "";
+		
 		if(targetOrg.getUnit().value == TargetOrganizationUnit.WORKPLACE.value){
-			this.getEntityManager().createQuery(DELETE_BY_WORKPLACE, KagdtLaborCostBudgetDaily.class)
+
+			/*this.getEntityManager().createQuery(DELETE, KagdtLaborCostBudgetDaily.class)
 			.setParameter("companyId", companyId)
-			.setParameter("unit", targetOrg.getUnit().value)
+			.setParameter("targetUnit", targetUnit)
 			.setParameter("workplaceId", workplaceId)
 			.setParameter("ymd", ymd)
-			.executeUpdate();
+			.executeUpdate();*/
+			this.commandProxy().remove(KagdtLaborCostBudgetDaily.class,
+					new KagdtLaborCostBudgetDailyPk(0, targetOrg.getTargetId(), ymd)  );
 		}else{
+			this.commandProxy().remove(KagdtLaborCostBudgetDaily.class,
+					new KagdtLaborCostBudgetDailyPk(1, targetOrg.getTargetId(), ymd)  );
 			
 		}
-		this.getEntityManager().createQuery(DELETE_BY_WORKPLACE_GROUP, KagdtLaborCostBudgetDaily.class)
-		.setParameter("companyId", companyId)
-		.setParameter("unit", targetOrg.getUnit().value)
-		.setParameter("workplaceId", workplaceId)
-		.setParameter("ymd", ymd)
-		.executeUpdate();
+	
 		
 	}
 

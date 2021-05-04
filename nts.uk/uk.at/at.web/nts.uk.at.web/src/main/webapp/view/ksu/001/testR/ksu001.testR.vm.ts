@@ -25,6 +25,7 @@ module nts.uk.at.view.ksu001.testR {
             isWorkPlaceGroup: KnockoutObservable<boolean> = ko.observable(true);
             check: KnockoutObservable<boolean> = ko.observable(true);
             check1: KnockoutObservable<boolean> = ko.observable(true);
+            name: KnockoutObservable<string> = ko.observable('');
             constructor() {
                 var self = this;
                 self.enable = ko.observable(true);
@@ -92,6 +93,7 @@ module nts.uk.at.view.ksu001.testR {
 
                 let target: any = {};
                 let period: any = {};
+                
 
                 if (self.workPlace()) {
                     self.unit = '0';
@@ -119,6 +121,7 @@ module nts.uk.at.view.ksu001.testR {
                 }
                 setShare('targetR', target);
                 setShare('periodR', period);
+                setShare('name', self.name());
 
                 self.currentScreen = nts.uk.ui.windows.sub.modeless("/view/ksu/001/r/index.xhtml");
             }

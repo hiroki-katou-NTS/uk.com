@@ -2,8 +2,10 @@ package nts.uk.ctx.at.aggregation.app.command.schedulecounter.budget.laborcost;
 
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 
 import lombok.AllArgsConstructor;
 import nts.arc.layer.app.command.CommandHandler;
@@ -25,7 +27,8 @@ import nts.uk.shr.com.context.AppContexts;
  */
 @Stateless
 public class InsertLaborCostBudgetCommandHandler extends CommandHandler<InsertLaborCostBudgetCommand> {
-
+	
+	@Inject
 	private LaborCostBudgetRepository repo;
 
 	@Override
@@ -45,10 +48,10 @@ public class InsertLaborCostBudgetCommandHandler extends CommandHandler<InsertLa
 		// 2
 		RequireImpl require = new RequireImpl(repo);
 		Map<GeneralDate, String> map = cmd.getLstmap();
+		//
 		for (Map.Entry<GeneralDate, String> entry : map.entrySet()) {
-
-			AtomTask atomTask = LaborCostBudgetRegisterService.register(require, targetOrg, cmd.getYmd(),
-					Optional.ofNullable(new LaborCostBudgetAmount(Integer.parseInt(entry.getValue()))));
+			AtomTask atomTask = LaborCostBudgetRegisterService.register(require, targetOrg, entry.getKey(),
+					Optional.ofNullable(entry.getValue() != "" ? new LaborCostBudgetAmount(Integer.parseInt(entry.getValue())) : null));
 			transaction.execute(() -> {
 				atomTask.run();
 			});
@@ -58,7 +61,7 @@ public class InsertLaborCostBudgetCommandHandler extends CommandHandler<InsertLa
 
 	@AllArgsConstructor
 	private class RequireImpl implements LaborCostBudgetRegisterService.Require {
-
+		@Inject
 		private LaborCostBudgetRepository laborCostBudgetRepository;
 
 		@Override
@@ -70,7 +73,8 @@ public class InsertLaborCostBudgetCommandHandler extends CommandHandler<InsertLa
 
 		@Override
 		public void delete(TargetOrgIdenInfor targetOrg, GeneralDate ymd) {
-			String companyID = AppContexts.user().companyId();
+ 			String companyID = AppContexts.user().companyId(); 
+
 			laborCostBudgetRepository.delete(companyID, targetOrg, ymd);
 
 		}

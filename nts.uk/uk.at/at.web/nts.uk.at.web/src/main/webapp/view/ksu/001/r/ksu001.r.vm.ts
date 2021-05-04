@@ -35,6 +35,7 @@ module nts.uk.at.view.ksu001.r {
                 self.externalBudgetModel = ko.observable(new ExternalBudgetModel());
                 let target = getShared("targetR");
                 let period = getShared("periodR");
+                let name = getShared("name");
                 self.targetData.unit = Number(target.unit);
                 self.targetData.targetID = target.id;
                 //self.targetData.endDate = period.endDate;
@@ -49,93 +50,58 @@ module nts.uk.at.view.ksu001.r {
                 self.check1 = ko.observable(false);
                 self.check2 = ko.observable(false);
                 self.check3 = ko.observable(false);
+                self.organizationName(name);
+                
 //                self.selectItemCode.subscribe(function(codeEB) {
 //                    if (codeEB) {
 //                        self.budgetData.itemCode = codeEB;
-//                        self.listperiodsTemp = [];                      
-//                        self.arrayDate.forEach((x) => {
-//                            self.listperiodsTemp.push(new ItemModel(x, ''));                            
-//                        });     
-//                        let size = self.arrayDate.length ;
-//                        while (size < 10){
-//                            self.listperiodsTemp.push(new ItemModel('', ''));
-//                            size++;
-//                        }           
+                        self.listperiodsTemp = [];   
+
+                        self.getDaysArray = function(start, end) {                  
+                            let arr = [];
+                            // let datePlus = new Date(end);        
+                            for (let dt = new Date(start); dt <= end; dt.setDate(dt.getDate() + 1)) {
+                                arr.push(new Date(dt));
+                            }                   
+                            return arr;
+                        };
+                        self.daylist = self.getDaysArray(new Date(period.startDate), new Date(period.endDate));
+                        self.arrayDate = self.daylist.map((v) => {
+                            return moment(v).format("YYYY/MM/DD") + '  (' + moment(v).format('dd') + ')';
+                        });                   
+                        self.arrayDate.forEach((x) => {
+                            self.listperiodsTemp.push(new ItemModel(x, ''));                            
+                        });     
+                        let size = self.arrayDate.length ;
+                        while (size < 10){
+                            self.listperiodsTemp.push(new ItemModel('', ''));
+                            size++;
+                        }           
 //                        self.listperiods.removeAll();
 //                        blockUI.invisible();
-//                        self.loadFindBudgetDaily(self.budgetData).done(() => {      
-//                            nts.uk.ui.errors.clearAll();            
-//                            self.listperiods(self.listperiodsTemp);
-//                            var externalBudget = self.externalBudgetModel().externalBudgetItems().filter(x => { return x.code === codeEB })[0].attribute;
-//                            switch (externalBudget) {
-//                                case "時間":
-//                                    self.labelQ32(nts.uk.resource.getText('KSU001_3707'));
-//                                    self.check(true);
-//                                    self.check1(false);
-//                                    self.check2(false);
-//                                    self.check3(false);
-//                                    break;
-//                                case "金額":
-//                                    self.labelQ32(nts.uk.resource.getText('KSU001_3708'));
-//                                    self.check(false);
-//                                    self.check1(true);
-//                                    self.check2(false);
-//                                    self.check3(false);
-//                                    break;
-//                                case "人数":
-//                                    self.labelQ32(nts.uk.resource.getText('KSU001_3709'));
-//                                    self.check(false);
-//                                    self.check1(false);
-//                                    self.check2(true);
-//                                    self.check3(false);
-//                                    break;
-//                                case "数値":
-//                                    self.labelQ32(nts.uk.resource.getText('KSU001_3710'));
-//                                    self.check(false);
-//                                    self.check1(false);
-//                                    self.check2(false);
-//                                    self.check3(true);
-//                                    break;
-//                            };
-//                            
-//                            // $("table tbody tr td:nth-child(1)").css("background-color", "#D9D9D9");
+                        self.loadFindBudgetDaily(self.budgetData).done(() => {      
+                            nts.uk.ui.errors.clearAll();            
+                            self.listperiods(self.listperiodsTemp);
+                            
+                                    self.labelQ32(nts.uk.resource.getText('KSU001_3708'));
+                                    self.check(false);
+                                    self.check1(true);
+                                    self.check2(false);
+                                    self.check3(false);
+                            
+                            // $("table tbody tr td:nth-child(1)").css("background-color", "#D9D9D9");
 //                            $("table tbody tr td:nth-child(1):contains(土)").css("background-color", "#8bd8ff");
 //                            $("table tbody tr td:nth-child(1):contains(日)").css("background-color", "#fabf8f");
 //                            $("table tbody tr td:nth-child(1)").css("color", "#404040");
 //                            $("table tbody tr td:nth-child(1):contains(土)").css("color", "#0000ff");
 //                            $("table tbody tr td:nth-child(1):contains(日)").css("color", "#ff0000");
-//                        }).always(function(){
-//                            blockUI.clear();
-//                            nts.uk.ui.errors.clearAll();
-//                        });
+                        }).always(function(){
+                            blockUI.clear();
+                            nts.uk.ui.errors.clearAll();
+                        });
 //                    }
 //                });
                     
-                self.getDaysArray = function(start, end) {                  
-                    let arr = [];
-                    // let datePlus = new Date(end);        
-                    for (let dt = new Date(start); dt <= end; dt.setDate(dt.getDate() + 1)) {
-                        arr.push(new Date(dt));
-                    }                   
-                    return arr;
-                };
-
-                self.daylist = self.getDaysArray(new Date(period.startDate), new Date(period.endDate));
-                self.arrayDate = self.daylist.map((v) => {
-                    return moment(v).format("YYYY/MM/DD") + '  (' + moment(v).format('dd') + ')';
-                });
-
-                self.numbereditor = {
-                    option: new nts.uk.ui.option.NumberEditorOption({
-                        grouplength: 3,
-                        decimallength: 0
-                    }),
-                }
-                self.yearmontheditor = {
-                    option: ko.mapping.fromJS(new nts.uk.ui.option.TimeEditorOption({
-                        inputFormat: 'time'
-                    })),
-                };
                 self.currencyeditor = {
                     option: new nts.uk.ui.option.CurrencyEditorOption({
                         grouplength: 3,
@@ -153,7 +119,7 @@ module nts.uk.at.view.ksu001.r {
                     if (items) {                        
                         self.listBudgetDaily = items;
                         items.forEach(item => {
-                            // self.listperiods.push(item);
+                            self.listperiods.push(item);
                             self.listperiodsTemp.map((x) => {
                                 if (x.date().slice(0, 10) == item.date) {
                                     return x.value(item.value.toString());
@@ -173,7 +139,7 @@ module nts.uk.at.view.ksu001.r {
                 let self = this;
                 var dfd = $.Deferred();     
                 blockUI.invisible();        
-                service.findExtBudget(self.targetData).done(function(ExtBudget: any) {
+                service.findExtBudget(self.targetData).done(function(extBudget: any) {
 //                    if (ExtBudget.externalBudgetItems.length == 0) {
 //                        nts.uk.ui.dialog.error({ messageId: "Msg_1917" }).then(function(){
 //                            self.closeDialog();
@@ -183,6 +149,12 @@ module nts.uk.at.view.ksu001.r {
 //                        self.organizationName(ExtBudget.orgName);
 //                        self.selectItemCode(self.externalBudgetModel().externalBudgetItems()[0].code);
 //                    }
+//
+//                        for (i = 0, i < extBudget.length, i++){
+//
+//                             self.listperiodsTemp.push(new ItemModel(extBudget[i].ymd, extBudget[i].amount));         
+//                        }
+                    
                     console.log('aaa');
                     blockUI.clear();
                     dfd.resolve();
@@ -205,11 +177,11 @@ module nts.uk.at.view.ksu001.r {
                     return;
                 }   
                 command.unit = self.targetData.unit;
-                command.id = self.targetData.id;
+                command.targetID = self.targetData.targetID;
                 //command.itemCode = self.selectItemCode();
                 var dateValues = [];                
                 self.listperiods().forEach((x) => {
-                    if(x.date() != ''){
+                    if(x.date() != '' && x.value() !=''){
                         dateValues.push({
                             date: x.date().slice(0, 10),
                             value: x.value()
@@ -237,10 +209,10 @@ module nts.uk.at.view.ksu001.r {
             }
 
             private validateAll(): boolean {
-                $('#extBudgetTime').ntsEditor('validate');
+//                $('#extBudgetTime').ntsEditor('validate');
                 $('#extBudgetMoney').ntsEditor('validate');
-                $('#extBudgetNumberPerson').ntsEditor('validate');
-                $('#extBudgetNumericalVal').ntsEditor('validate');
+//                $('#extBudgetNumberPerson').ntsEditor('validate');
+//                $('#extBudgetNumericalVal').ntsEditor('validate');
                 if (nts.uk.ui.errors.hasError()) {                    
                     return true;
                 }
@@ -248,10 +220,10 @@ module nts.uk.at.view.ksu001.r {
             }
 
             private clearError(): void {
-                $('#extBudgetTime').ntsError('clear');
+//                $('#extBudgetTime').ntsError('clear');
                 $('#extBudgetMoney').ntsError('clear');
-                $('#extBudgetNumberPerson').ntsError('clear');
-                $('#extBudgetNumericalVal').ntsError('clear');
+//                $('#extBudgetNumberPerson').ntsError('clear');
+//                $('#extBudgetNumericalVal').ntsError('clear');
                 $(".nts-input").ntsError("clear");
             }
         }
