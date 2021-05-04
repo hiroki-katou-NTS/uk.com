@@ -29,7 +29,7 @@ public class MakeSelectedEmployeesCommandHandler extends CommandHandler<MakeSele
 		MakeSelectedEmployeesCommand command = context.getCommand();
 		EmpInfoTerminalCode terminalCode =command.getTerminalCode();
 		List<EmployeeId> selectedEmployeesID = command.getSelectedEmployeesID();
-		List<EmployeeId> loginCompanyEmpIds = command.getSelectedEmployeesID();
+		List<EmployeeId> loginCompanyEmpIds = command.getLoginCompanyEmployeesID();
 		//	1. ログイン社員の社員IDを削除(契約コード、就業情報端末コード、ログイン会社の社員ID(List))
 		this.deleteEmpsOfLoginCompanyCommandHandler.handle(new DeleteEmpsOfLoginCompanyCommand(terminalCode, loginCompanyEmpIds));
 		//	2. 送信データを選択した社員IDにUpdate(契約コード、就業情報端末コード、選択した社員ID(List))

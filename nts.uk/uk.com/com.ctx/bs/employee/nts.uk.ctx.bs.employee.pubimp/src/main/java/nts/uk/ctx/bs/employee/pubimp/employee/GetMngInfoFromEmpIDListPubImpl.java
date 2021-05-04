@@ -34,7 +34,7 @@ public class GetMngInfoFromEmpIDListPubImpl implements GetMngInfoFromEmpIDListPu
 																			   e.getPersonId(),
 																			   e.getEmployeeId(),
 																			   e.getEmployeeCode().v(),
-																			   e.getExternalCode() == null ? null : Optional.ofNullable(e.getExternalCode().v())))
+																			   e.getExternalCode() == null ? Optional.empty() : Optional.ofNullable(e.getExternalCode().v())))
 													.collect(Collectors.toList());
 		return empDataList;
 	}

@@ -166,26 +166,26 @@ module knr002.g {
                     let isCancel = getShared("KNR002H_isCancel");
                     if(isCancel !== undefined && isCancel === false){
                         self.selectEmployee(true);
+                        self.sendEmployeeId(true);
                         self.selectableEmployees(selectable !== undefined? selectable : []);
                         if(self.selectableEmployees().length <= 0){
                             dialog.error({ messageId: "Msg_2023" }).then(() => {
                                 //  do something
                             });
                         } else {
-                            let command: any = {};
-                            command.terminalCode = self.empInfoTerCode();
-                            command.selectedEmpIds = self.selectableEmployees();
-                            service.makeSelectedEmployees(command).done(() => {
-                                blockUI.invisible();
-                                dialog.info({ messageId: "Msg_15" }).then(() => {
-                                    self.sendEmployeeId(true);
-                                });                      
-                            }).fail(() => {
+                          //  let command: any = {};
+                          //  command.terminalCode = self.empInfoTerCode();
+                          //  command.selectedEmpIds = self.selectableEmployees();
+                          //  service.makeSelectedEmployees(command).done(() => {
+                          //      blockUI.invisible();
+                          //      dialog.info({ messageId: "Msg_15" }).then(() => {
+                          //          self.sendEmployeeId(true);
+                          //      });                      
+                          //  }).fail(() => {
                                 // do something
-                            }).always(() => {
-                                blockUI.clear();
-                            });              
-                        }
+                          //  }).always(() => {
+                          //      blockUI.clear();
+                          //  }); 
                     } else self.selectEmployee(false);
                 });
             }

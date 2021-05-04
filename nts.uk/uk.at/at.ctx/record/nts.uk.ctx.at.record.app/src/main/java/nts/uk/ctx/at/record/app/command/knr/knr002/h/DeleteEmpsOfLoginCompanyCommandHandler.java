@@ -43,22 +43,19 @@ public class DeleteEmpsOfLoginCompanyCommandHandler extends CommandHandler<Delet
 		if (!timeRecordSetting.isPresent())
 			return;
 		TimeRecordReqSetting timeRecordSettingValue = timeRecordSetting.get();
-		List<EmployeeId> registedEmpList = timeRecordSettingValue.getEmployeeIds();
-		if(registedEmpList.isEmpty() || null == loginCompanyEmpList || loginCompanyEmpList.isEmpty())
+		if(null == loginCompanyEmpList || loginCompanyEmpList.isEmpty())
 			return;
-		registedEmpList.removeAll(loginCompanyEmpList);
-		this.timeRecordReqSettingSendEmployeeRepository.delete(timeRecordSettingValue);
 		// 2. set(契約コード、就業情報端末コード、画面で指定した社員<List>)
 		TimeRecordReqSetting timeRecordSettingUpdate = new TimeRecordReqSetting.ReqSettingBuilder(
 															timeRecordSettingValue.getTerminalCode(),
 															timeRecordSettingValue.getContractCode(),
 															timeRecordSettingValue.getCompanyId(),
 															timeRecordSettingValue.getCompanyCode(),
-															registedEmpList,
+															loginCompanyEmpList,
 															Collections.emptyList(),
 															Collections.emptyList())
 														.build();
 		// 3. persist()
-		this.timeRecordReqSettingSendEmployeeRepository.insert(timeRecordSettingUpdate);
+		this.timeRecordReqSettingSendEmployeeRepository.delete(timeRecordSettingUpdate);
 	}
 }
