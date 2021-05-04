@@ -872,6 +872,10 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 			// 基準時間比（通常）の場合
 			// Input．労働条件項目．労働制をチェック			
 			WorkingConditionItem workingConditionItemHoliday = getWorkingConditionItem(sid, ym, prepareData);
+			if (workingConditionItemHoliday == null) {
+				return null;
+			}
+			
 			if (WorkingSystem.REGULAR_WORK != workingConditionItemHoliday.getLaborSystem()) {
 				return null;
 			}
@@ -903,7 +907,7 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 			// ※取得した比較対象基準時間　＝　０　の場合
 			// 比率　＝　0
 			Double ratio = 0.0;
-			if (totalComparsion == 0) {
+			if (totalComparsion != 0.0) {
 				ratio = (totalWorkingTime / totalComparsion) * 100;
 			}
 			
@@ -935,6 +939,10 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 			// 基準時間比（変形労働）の場合
 			// Input．労働条件項目．労働制をチェック
 			WorkingConditionItem workingConditionItemDayOff = getWorkingConditionItem(sid, ym, prepareData);
+			if (workingConditionItemDayOff == null) {
+				return null;
+			}
+			
 			if (WorkingSystem.REGULAR_WORK != workingConditionItemDayOff.getLaborSystem()) {
 				return null;
 			}
@@ -998,6 +1006,10 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 			// 基準時間比（フレックス）の場合
 			// Input．労働条件項目．労働制をチェック
 			WorkingConditionItem workingConditionItemPubHoliday = getWorkingConditionItem(sid, ym, prepareData);
+			if (workingConditionItemPubHoliday == null) {
+				return null;
+			}
+			
 			if (WorkingSystem.REGULAR_WORK != workingConditionItemPubHoliday.getLaborSystem()) {
 				return null;
 			}
@@ -1109,14 +1121,14 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 	}
 	
 	private WorkingConditionItem getWorkingConditionItem(String sid, YearMonth ym, ScheMonPrepareData prepareData) {
-		DatePeriod dPeriod = new DatePeriod(ym.firstGeneralDate(), ym.lastGeneralDate());
 		Map<DatePeriod, WorkingConditionItem> empWorkingCondItem = prepareData.getEmpWorkingCondItem().get(sid);
 		if (empWorkingCondItem.isEmpty()) {
 			return null;
 		}
 		
-		WorkingConditionItem workingConditionItem = empWorkingCondItem.get(dPeriod);		
-		return workingConditionItem;
+		boolean dateInRange = empWorkingCondItem.keySet().stream()
+				.anyMatch(x -> x.start().beforeOrEquals(ym.firstGeneralDate()) && x.end().afterOrEquals(ym.lastGeneralDate()));		
+		return dateInRange ? empWorkingCondItem.values().stream().findFirst().get() : null;
 	}
 	
 	/**
