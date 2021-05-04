@@ -63,11 +63,11 @@ import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.KrcdtOtkErAl;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.KrcmtEralApplication;
 import nts.uk.ctx.at.record.infra.entity.workrecord.identificationstatus.KrcdtIdentificationStatus;
 import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtAttendanceAut;
+import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtChangeableWktpGrpDetail;
 import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtDaiFuncControl;
 import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtDaiFuncControlPk;
 import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtFormatPerformance;
 import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtFormatPerformancePk;
-import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtWorktypeChangeable;
 import nts.uk.ctx.at.record.infra.entity.workrecord.workfixed.KrcstWorkFixed;
 import nts.uk.ctx.at.record.infra.entity.workrecord.workfixed.KrcstWorkFixedPK;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemAtr;
@@ -238,8 +238,8 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 
 	private final static String FIND_WORK_TIME_ZONE_JDBC = "SELECT WORKTIME_CD, NAME FROM KSHMT_WT WHERE CID = ?";
 
-	private final static String GET_ALL_WORK_TYPE_CHANGED = "SELECT wtc FROM KrcmtWorktypeChangeable wtc"
-			+ " WHERE wtc.pk.cid = :companyId AND wtc.pk.empCode = :employeeCode";
+	private final static String GET_ALL_WORK_TYPE_CHANGED = "SELECT wtc FROM KrcmtChangeableWktpGrpDetail wtc"
+			+ " WHERE wtc.pk.cid = :companyId AND wtc.pk.empCd = :employeeCode";
 
 //	private final static String SELECT_WORKTYPE = " SELECT c FROM KshmtWorkType c WHERE c.kshmtWorkTypePK.companyId = :companyId";
 
@@ -1510,9 +1510,9 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 	@Override
 	public List<WorkTypeChangedDto> findWorkTypeChanged(String employmentCode, String typeCode, String companyId) {
 		List<WorkTypeChangedDto> dtos = this.queryProxy()
-				.query(GET_ALL_WORK_TYPE_CHANGED, KrcmtWorktypeChangeable.class).setParameter("companyId", companyId)
+				.query(GET_ALL_WORK_TYPE_CHANGED, KrcmtChangeableWktpGrpDetail.class).setParameter("companyId", companyId)
 				.setParameter("employeeCode", employmentCode)
-				.getList(x -> new WorkTypeChangedDto(String.valueOf(x.pk.workTypeGroupNo), x.pk.workTypeCode));
+				.getList(x -> new WorkTypeChangedDto(String.valueOf(x.pk.workTypeGroupNo), x.pk.workTypeCd));
 		if (!dtos.isEmpty()) {
 			Map<String, List<WorkTypeChangedDto>> mapGroupNo = dtos.stream().filter(x -> x.getTypeCode() != "")
 					.collect(Collectors.groupingBy(WorkTypeChangedDto::getGroupNo));

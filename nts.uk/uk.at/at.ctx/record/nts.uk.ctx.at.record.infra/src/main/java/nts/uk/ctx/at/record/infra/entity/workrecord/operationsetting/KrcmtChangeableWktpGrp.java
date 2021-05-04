@@ -1,6 +1,3 @@
-/**
- * 
- */
 package nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting;
 
 import javax.persistence.Column;
@@ -11,24 +8,24 @@ import javax.persistence.Table;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
- * @author danpv
+ * @author huylq
  *
  */
 @Entity
-@Table(name = "KRCMT_WORKTYPE_CHANGEABLE")
-public class KrcmtWorktypeChangeable extends ContractUkJpaEntity {
+@Table(name = "KRCMT_CHANGEABLE_WKTP_GRP")
+public class KrcmtChangeableWktpGrp extends ContractUkJpaEntity {
 
 	@EmbeddedId
-	public KrcmtWorktypeChangeablePk pk;
+	public KrcmtChangeableWktpGrpPk pk;
 
 	@Column(name = "WORKTYPE_GROUP_NAME")
 	public String workTypeGroupName;
 
-	public KrcmtWorktypeChangeable() {
+	public KrcmtChangeableWktpGrp() {
 		super();
 	}
 
-	public KrcmtWorktypeChangeable(KrcmtWorktypeChangeablePk pk, String workTypeGroupName) {
+	public KrcmtChangeableWktpGrp(KrcmtChangeableWktpGrpPk pk, String workTypeGroupName) {
 		super();
 		this.pk = pk;
 		this.workTypeGroupName = workTypeGroupName;
@@ -38,5 +35,4 @@ public class KrcmtWorktypeChangeable extends ContractUkJpaEntity {
 	protected Object getKey() {
 		return pk;
 	}
-
 }
