@@ -1,9 +1,7 @@
 package nts.uk.ctx.at.auth.ac;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -15,7 +13,6 @@ import nts.uk.ctx.at.auth.dom.adapter.workplace.AuthWorkPlaceAdapter;
 import nts.uk.ctx.at.auth.dom.adapter.workplace.WorkplaceInfoImport;
 import nts.uk.ctx.at.auth.dom.adapter.workplace.WorkplaceInforImport2;
 import nts.uk.ctx.at.auth.dom.adapter.workplace.WorkplaceManagerImport;
-import nts.uk.ctx.bs.employee.pub.employee.workplace.export.WorkplaceExportPub;
 import nts.uk.ctx.bs.employee.pub.workplace.AffWorkplaceHistoryItemExport;
 import nts.uk.ctx.bs.employee.pub.workplace.AffWorkplaceHistoryItemExport2;
 import nts.uk.ctx.bs.employee.pub.workplace.AffWorkplaceHistoryItemExport3;
@@ -37,9 +34,6 @@ public class AuthWorkPlaceAdapterImpl implements AuthWorkPlaceAdapter{
 	
 	@Inject
 	private WorkplacePub  workplacePub;
-	
-	@Inject
-	private WorkplaceExportPub workplaceExportPub;
 	
 	@Override
 	public List<String> getListWorkPlaceID(String employeeID, GeneralDate referenceDate) {
@@ -131,25 +125,6 @@ public class AuthWorkPlaceAdapterImpl implements AuthWorkPlaceAdapter{
 							c.getWorkplaceGenericName(), 
 							c.getWorkplaceExternalCode())
 			).collect(Collectors.toList());
-	}
-
-	@Override
-	public Map<String, String> getReferenceableEmployees(String userID, String employeeID, GeneralDate date) {
-		// return 参照可能社員の所属職場を取得するPublish.取得する(ユーザID,社員ID,基準日)
-		return workplaceListPub.getWorkPlace(userID, employeeID, date);
-	}
-
-	@Override
-	public Map<String, String> getemployeesAllWorkplaces(String companyId, GeneralDate baseDate) {
-		// 	$所属職場 = 全ての職場の所属社員を取得するPublish.取得する(会社ID,基準日)
-		List<AffWorkplaceHistoryItemExport3> list = workplaceExportPub.getByCID(companyId, baseDate);
-		
-		Map<String, String> result = new HashMap<String, String>();
-		for (AffWorkplaceHistoryItemExport3 i : list) {
-			result.put(i.getEmployeeId(), i.getWorkplaceId());
-		}
-		//return $所属職場： map <$.社員ID,$.職場ID>
-		return result;
 	}
 
 }

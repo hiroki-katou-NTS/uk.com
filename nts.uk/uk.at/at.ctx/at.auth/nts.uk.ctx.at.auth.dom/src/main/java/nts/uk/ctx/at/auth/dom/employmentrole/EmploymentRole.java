@@ -36,10 +36,6 @@ public class EmploymentRole extends AggregateRoot {
 	 * 未来日参照許可 FUTURE_DATE_REF_PERMIT
 	 */
 	private DisabledSegment futureDateRefPermit;
-	/**
-	 * 実績工数社員参照
-	 */
-	private EmployeeRefRange atdTaskEmployeeRef;
 	
 	public static EmploymentRole createFromJavaType(String companyID, String roleId) {
 		return new EmploymentRole(companyID, roleId);
@@ -53,7 +49,7 @@ public class EmploymentRole extends AggregateRoot {
 
 	public EmploymentRole(String companyId, String roleId, ScheduleEmployeeRef scheduleEmployeeRef,
 			EmployeeRefRange bookEmployeeRef, EmployeeRefRange employeeRefSpecAgent,
-			EmployeeReferenceRange presentInqEmployeeRef, DisabledSegment futureDateRefPermit, EmployeeRefRange atdTaskEmployeeRef) {
+			EmployeeReferenceRange presentInqEmployeeRef, DisabledSegment futureDateRefPermit) {
 		super();
 		this.companyId = companyId;
 		this.roleId = roleId;
@@ -62,7 +58,6 @@ public class EmploymentRole extends AggregateRoot {
 		this.employeeRefSpecAgent = employeeRefSpecAgent;
 		this.presentInqEmployeeRef = presentInqEmployeeRef;
 		this.futureDateRefPermit = futureDateRefPermit;
-		this.atdTaskEmployeeRef = atdTaskEmployeeRef;
 	}
 
 }
