@@ -209,6 +209,12 @@ module nts.uk.at.view.kdr001.b.viewmodel {
                             self.currentCode.valueHasMutated();
                         else
                             self.currentCode(code);
+
+                        let sub = _.find(_rsList,x=>x.cd() == code);
+                        if(!nts.uk.util.isNullOrUndefined(sub)){
+                            self.layoutId(sub.layoutId);
+                            self.currentHoliday(sub)
+                        }
                     }
                     else {
                         self.currentCode(_rsList[0].cd());
@@ -340,20 +346,19 @@ module nts.uk.at.view.kdr001.b.viewmodel {
                                     self.setFocus();
                                     nts.uk.ui.errors.clearAll();
                                 } else {
-                                    let sub : any;
+                                    let sub : HolidayRemaining;
                                     if (index == self.lstHolidays().length) {
                                         let code = self.lstHolidays()[index - 1].cd();
                                         sub = self.lstHolidays()[index - 1];
                                         self.currentCode(code);
+
                                     } else {
                                         let code = self.lstHolidays()[index].cd();
                                         sub  = self.lstHolidays()[index];
-
                                         self.currentCode(code);
                                     }
-
-                                    let item = new HolidayRemaining(sub);
-                                    self.currentHoliday(item);
+                                    self.layoutId(sub.layoutId)
+                                    self.currentHoliday(sub);
                                     self.setData();
                                     self.isNewMode(false);
                                     self.setFocus();

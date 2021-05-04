@@ -30,13 +30,7 @@ public class UpdateHdRemainManageCommandHandler extends CommandHandler<HdRemainM
     protected void handle(CommandHandlerContext<HdRemainManageCommand> context) {
         LoginUserContext login = AppContexts.user();
         String companyId = login.companyId();
-        val oldItem = holidaysRemainingManagementRepository.getHolidayManagerLogByCompanyId(companyId);
         HdRemainManageCommand command = context.getCommand();
-        boolean duplicate = oldItem.stream().anyMatch(x->x.getCode().v()
-                .equals(command.getCd())&&x.getItemSelectionCategory().value.equals(command.getItemSelType()));
-        if(duplicate){
-            throw new BusinessException("Msg_3");
-        }
         ItemOutputForm itemOutputForm = new ItemOutputForm(command.isNursingLeave(),
                 command.isRemainingChargeSubstitute(), command.isRepresentSubstitute(),
                 command.isOutputItemSubstitute(), command.isOutputHolidayForward(), command.isMonthlyPublic(),
