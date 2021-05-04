@@ -181,34 +181,66 @@ module nts.uk.ui.kdp001.a {
             </div>
             <!-- ko if: $component.modeDisplayStampList -->
                 <!-- ko if: !$component.message.display() -->
-                <div class="kdp-001-a" data-bind="
-                        widget-content: 143,
-                        css: {  'has-info-long': $component.lengthStamps() === 'long' ,
-                                'has-info-short': $component.lengthStamps() === 'short'}
-                        ">
-                        <table>
-                            <colgroup>
-                                <col width="25%" />
-                                <col width="25%" />
-                                <col width="50%" />
-                            </colgroup>
-                            <tbody data-bind="foreach: { data: $component.stamps, as: 'stm' }">
-                                <tr>
-                                    <td data-bind="css: stm.forceColor">
-                                        <span data-bind="date: stm.date, format: 'MM/DD(ddd)'"></span>
-                                    </td>
-                                    <td>
-                                        <span class="left-content" data-bind="text: stm.stampHow"></span>
-                                        <span data-bind="date: stm.date, format: 'HH:mm'"></span>
-                                    </td>
-                                    <td data-bind="css: stm.textAlign">
-                                        <span data-bind="text: stm.stampArt"></span>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+                    <!-- ko if: $component.poral -->
+                        <div class="kdp-001-a-potal" data-bind="
+                                widget-content: 168,
+                                css: {  'has-info-long': $component.lengthStamps() === 'long' ,
+                                        'has-info-short': $component.lengthStamps() === 'short'}
+                                ">
+                                <table>
+                                    <colgroup>
+                                        <col width="25%" />
+                                        <col width="25%" />
+                                        <col width="50%" />
+                                    </colgroup>
+                                    <tbody data-bind="foreach: { data: $component.stamps, as: 'stm' }">
+                                        <tr>
+                                            <td data-bind="css: stm.forceColor">
+                                                <span data-bind="date: stm.date, format: 'MM/DD(ddd)'"></span>
+                                            </td>
+                                            <td>
+                                                <span class="left-content" data-bind="text: stm.stampHow"></span>
+                                                <span data-bind="date: stm.date, format: 'HH:mm'"></span>
+                                            </td>
+                                            <td data-bind="css: stm.textAlign">
+                                                <span data-bind="text: stm.stampArt"></span>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    <!-- /ko -->
+                    <!-- ko ifnot: $component.poral -->
+                        <div class="kdp-001-a" data-bind="
+                                widget-content: 143,
+                                css: {  'has-info-long': $component.lengthStamps() === 'long' ,
+                                        'has-info-short': $component.lengthStamps() === 'short'}
+                                ">
+                                <table>
+                                    <colgroup>
+                                        <col width="25%" />
+                                        <col width="25%" />
+                                        <col width="50%" />
+                                    </colgroup>
+                                    <tbody data-bind="foreach: { data: $component.stamps, as: 'stm' }">
+                                        <tr>
+                                            <td data-bind="css: stm.forceColor">
+                                                <span data-bind="date: stm.date, format: 'MM/DD(ddd)'"></span>
+                                            </td>
+                                            <td>
+                                                <span class="left-content" data-bind="text: stm.stampHow"></span>
+                                                <span data-bind="date: stm.date, format: 'HH:mm'"></span>
+                                            </td>
+                                            <td data-bind="css: stm.textAlign">
+                                                <span data-bind="text: stm.stampArt"></span>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    <!-- /ko -->
                 <!-- /ko -->
             <!-- /ko -->
             <style rel="stylesheet">
@@ -329,7 +361,43 @@ module nts.uk.ui.kdp001.a {
                 }
                 .kdp-001-a.widget-content table td:not(:last-child) {
                     text-align: center;
-                }                
+                }
+                .kdp-001-a-potal.widget-content {
+                    border: 1px solid #b1b1b1;
+                    max-height: 168px;
+                    width: 448px;
+                    margin: 5px auto;
+                    border-radius: 3px;
+                }
+                .kdp-001-a-potal.widget-content table {
+                    width: 100%;
+                }
+                .kdp-001-a-potal.widget-content table td {
+                    overflow: hidden;
+                    position: relative;
+                }
+                .kdp-001-a-potal.widget-content table td.sunday {
+                    color: #FF0000;
+                }
+                .kdp-001-a-potal.widget-content table td.saturday {
+                    color: #0000FF;
+                }
+                .kdp-001-a-potal.widget-content table td:not(:first-child):before {
+                    content: '';
+                    display: block;
+                    width: 1px;
+                    height: 16px;
+                    border-left: 1px solid #ccc;
+                    position: absolute;
+                    top: calc(50% - 8px);
+                    left: 0;
+                }
+                .kdp-001-a-potal.widget-content table td {
+                    padding: 7px 10px;
+                }
+                .kdp-001-a-potal.widget-content table td:not(:last-child) {
+                    text-align: center;
+                }
                 .kdp-001-a.widget-title .text-time {
                     position: absolute;
                     font-size: 70px;
@@ -365,7 +433,7 @@ module nts.uk.ui.kdp001.a {
                     margin-right: 10px;
                 }
                 .has-info-long {
-                    overflow-y: scroll;
+                    overflow-y: scroll !important;
                 }
                 .has-info-short {
                     overflow-y: hidden;
@@ -402,6 +470,7 @@ module nts.uk.ui.kdp001.a {
             };
 
         lengthStamps!: KnockoutComputed<LENGTH>;
+        poral!: KnockoutComputed<boolean>;
 
         constructor(private mode: 'a' | 'b' | 'c' | 'd' | KnockoutObservable<'a' | 'b' | 'c' | 'd'> = 'a') {
             super();
@@ -436,6 +505,15 @@ module nts.uk.ui.kdp001.a {
                         case 'd':
                             return false;
                     }
+                }
+            });
+
+            vm.poral = ko.computed({
+                read: () => {
+                    const url = document.URL.toString();
+                    const result = url.endsWith("view/ccg/008/a/index.xhtml");
+
+                    return result;
                 }
             });
 
