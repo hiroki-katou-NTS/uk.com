@@ -33,37 +33,39 @@
 			                    </tr>
 			                </tbody>
 	                	</table>
-	                	<div style="margin-top: -1px; overflow: auto; height: 131px;">
+	                	<div style="margin-top: -1px; overflow: auto; height: 131px; width: 838px;">
 				            <table class="table-phase">
 				                <tbody data-bind="foreach: { data: approvalRootState, as: 'loopPhase' }">
 				                    <com:ko-foreach bind="{data: loopPhase.listApprovalFrame, as: 'loopFrame'}">
 				                        <com:ko-foreach bind="{data: loopFrame.listApprover, as: 'loopApprover'}">
 				                        <tr>
 				                            <com:ko bind="$vm.isFirstIndexFrame(loopPhase, loopFrame, loopApprover)" tag="if">
-				                                <td data-bind="attr: {rowspan: ko.pureComputed(function() { return $vm.frameCount(loopPhase.listApprovalFrame())}) },
-				                                text: $vm.getPhaseLabel(loopPhase.phaseOrder())" style="width: 81px;" class="bg-green"></td>
+				                                <td data-bind="attr: {rowspan: ko.pureComputed(function() { return $vm.frameCount(loopPhase.listApprovalFrame())}) }" 
+				                                style="width: 81px;" class="bg-green">
+				                                	<p style="height: 25px;" data-bind="text: $vm.getPhaseLabel(loopPhase.phaseOrder())"></p>
+				                                </td>
 				                            </com:ko>
-				                            <td style="width: 73px;" data-bind="text: $vm.getApproverLabel(loopPhase, loopFrame, loopApprover)">
-				                                <span style="text-align: left;" class="bg-green"></span>
+				                            <td style="width: 73px;" class="bg-green">
+				                                <p style="height: 25px;" data-bind="text: $vm.getApproverLabel(loopPhase, loopFrame, loopApprover)"></p>
 				                           	</td>
 				                            <td style="width: 275px;">
-				                                <span class="limited-label" style="width: 270px; text-align: left; padding-left: 5px; vertical-align: middle;"
+				                                <p class="limited-label" style="width: 270px; text-align: left; padding-left: 5px; vertical-align: middle; height: 25px;"
 				                                    data-bind="text: ko.pureComputed(function() { return $vm.getApproverAtr(loopApprover)})">
-				                                </span>
+				                                </p>
 				                            </td>
 				                            <td >
-				                                <span class="limited-label"
-				                                style="width: 85px; vertical-align: middle;"
-				                                data-bind="style: { 'color': $vm.getApprovalColor(loopApprover.approvalAtrValue()) }, text: loopApprover.approvalAtrName"></span>
+				                                <p class="limited-label"
+				                                style="width: 85px; vertical-align: middle; height: 25px;"
+				                                data-bind="style: { 'color': $vm.getApprovalColor(loopApprover.approvalAtrValue()) }, text: loopApprover.approvalAtrName"></p>
 				                            </td>
 				                            <td >
-				                                <span class="limited-label"
-				                                style="width: 130px; text-align: left; padding-left: 5px; vertical-align: middle;"
-				                                data-bind="text: $vm.getApprovalDateFormat(loopApprover)"></span>
+				                                <p class="limited-label"
+				                                style="width: 130px; text-align: left; padding-left: 5px; vertical-align: middle; height: 25px;"
+				                                data-bind="text: $vm.getApprovalDateFormat(loopApprover)"></p>
 				                            </td>
 				                            <td style="width: 165px;">
-				                                <p style="text-align: left; padding-left: 5px; vertical-align: middle;"
-				                                data-bind="html: $vm.getApprovalReason(loopApprover.approvalReason())"></p>
+			                            		<p style="text-align: left; padding-left: 5px; vertical-align: middle; word-break: break-all; word-wrap: break-word;"
+			                                		data-bind="html: $vm.getApprovalReason(loopApprover.approvalReason())"></p>
 				                            </td>
 				                        </tr>
 				                        </com:ko-foreach>

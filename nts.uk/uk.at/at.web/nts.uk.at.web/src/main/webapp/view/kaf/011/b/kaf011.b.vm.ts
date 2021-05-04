@@ -11,6 +11,9 @@ module nts.uk.at.view.kaf011.b.viewmodel {
 	import dialog = nts.uk.ui.dialog;
 	import DisplayInforWhenStarting = nts.uk.at.view.kaf011.DisplayInforWhenStarting;
 	import CommonProcess = nts.uk.at.view.kaf000.shr.viewmodel.CommonProcess;
+	import RemainDays = nts.uk.at.view.kaf011.a.viewmodel.RemainDays;
+	import getText = nts.uk.resource.getText;
+
 
     export class Kaf011BViewModel{
 
@@ -27,7 +30,23 @@ module nts.uk.at.view.kaf011.b.viewmodel {
 		comment = new Comment();
 		displayInforWhenStarting: KnockoutObservable<DisplayInforWhenStarting> = ko.observable(null);
 		remainDays = ko.observable('');
+		remainDayList: KnockoutObservableArray<RemainDays> = ko.observableArray([]);
 		
+		bindRemainDays() {
+			const vm = this;
+
+			const remainDayList = [] as RemainDays[];
+			
+			const item = {
+				label: getText('KAF011_64'),
+				name: getText('KAF011_65'),
+				content: vm.remainDays()
+			} as RemainDays;
+
+			remainDayList.push(item);
+			vm.remainDayList(remainDayList);
+			
+		}
         constructor(
             params: {
                 appType: any,
@@ -59,6 +78,7 @@ module nts.uk.at.view.kaf011.b.viewmodel {
 					console.log(data);
 					vm.printContentOfEachAppDto().optHolidayShipment = data;
 					vm.remainDays(data.remainingHolidayInfor.remainDays + '日');
+					vm.bindRemainDays();
 					if(data.rec && data.abs){
 						vm.recruitmentApp.bindingScreenB(data.rec, data.applicationForWorkingDay.workTypeList, data);
 						vm.absenceLeaveApp.bindingScreenBAbs(data.abs, data.applicationForHoliday.workTypeList, data);	
@@ -94,6 +114,18 @@ module nts.uk.at.view.kaf011.b.viewmodel {
 			$('.nts-input').trigger("validate");
 			$('input').trigger("validate");
 			return nts.uk.ui.errors.hasError();
+		}
+
+		openKDL009() {
+			let self = this;
+			nts.uk.ui.windows.setShared('KDL009_DATA', {
+				employeeIds: [__viewContext.user.employeeId],
+				baseDate: moment(new Date()).format("YYYYMMDD")
+			});
+			
+			nts.uk.ui.windows.sub.modal( '/view/kdl/009/a/single.xhtml');
+			
+			
 		}
 
         // event update cần gọi lại ở button của view cha

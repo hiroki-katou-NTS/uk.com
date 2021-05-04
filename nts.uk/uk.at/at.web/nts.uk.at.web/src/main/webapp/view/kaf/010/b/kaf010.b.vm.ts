@@ -12,31 +12,11 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 	import HolidayTime = nts.uk.at.view.kaf010.shr.time.viewmodel.HolidayTime;
 	import formatTime = nts.uk.time.format.byId;
 	import CommonProcess = nts.uk.at.view.kaf000.shr.viewmodel.CommonProcess;
-	// import ItemModel = nts.uk.at.view.kaf010.shr.footer.viewmodel.ItemModel;
-	// import MessageInfo = nts.uk.at.view.kaf010.shr.footer.viewmodel.MessageInfo;
-	// import OverTime = nts.uk.at.view.kaf010.shr.time.viewmodel.OverTime;
-	// import HolidayTime = nts.uk.at.view.kaf010.shr.time.viewmodel.HolidayTime;
-	// import RestTime = nts.uk.at.view.kaf010.shr.time.viewmodel.RestTime;
-	// import WorkHours = nts.uk.at.view.kaf010.shr.work_info.viewmodel.WorkHours;
-	// import Work = nts.uk.at.view.kaf010.shr.work_info.viewmodel.Work;
-	// import WorkInfo = nts.uk.at.view.kaf010.shr.work_info.viewmodel.WorkInfo;
-	// import OvertimeWork = nts.uk.at.view.kaf010.shr.header.viewmodel.OvertimeWork;
-    // import Application = nts.uk.at.view.kaf000.shr.viewmodel.Application;
-    // import PrintContentOfEachAppDto = nts.uk.at.view.kaf000.shr.viewmodel.PrintContentOfEachAppDto;
-    // import AppType = nts.uk.at.view.kaf000.shr.viewmodel.model.AppType;
-	// import formatTime = nts.uk.time.format.byId;
 	const template= `
-	
-
-
-
-
-
-
-<div id="kaf010-b">
-	<div id="contents-area" style="background-color: inherit; height: calc(100vh - 165px); min-width: 1230px">
-		<div class="two-panel" style="height: 100%;">
-            <div class="left-panel" style="width: calc(100% - 410px); height: inherit">
+	<div id="kaf010-b">
+	<div id="contents-area" style="background-color: inherit; height: calc(100vh - 137px);">
+		<div class="two-panel" style="height: 100%; width: 1260px">
+            <div class="left-panel" style="width: calc(1260px - 388px); height: inherit">
                 <div style="height: inherit; overflow-y: auto; background-color: #fff; padding: 0 10px; overflow-x: hidden">
                     <div class="table" style="border-bottom: 2px solid #B1B1B1; padding-bottom: 30px; margin-bottom: 30px; width: 100%;">
                         <div class="cell" style="vertical-align: middle;">
@@ -66,7 +46,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
                                                     appType: appType,
                                                     application: application,
                                                     appDispInfoStartupOutput: appDispInfoStartupOutput
-                                                } }" style="width: fit-content; display: inline-block; vertical-align: middle; margin-top: 12px"></div>
+                                                } }" style="width: fit-content; display: inline-block; vertical-align: middle; margin-top: -16px"></div>
                                                 
                      <div>
 
@@ -76,7 +56,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 	<div class="table"></div>
 
 
-	<div
+	<div style="margin-top: -9px"
 		data-bind="component: { name: 'kaf010-share-work-info', 
 								params: {
 									workInfo: workInfo
@@ -111,7 +91,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
                                             
                 </div>
             </div>
-            <div class="right-panel" style="width: 410px; height: inherit;">
+            <div class="right-panel" style="width: 388px; height: inherit; padding-right: 0px">
                 <div style="height: auto; min-height: 700px; background-color: #fff; overflow-x: hidden; overflow-y: auto">
                     <div style="padding-top: 10px" data-bind="component: { name: 'kaf000-b-component1', 
                             params: {

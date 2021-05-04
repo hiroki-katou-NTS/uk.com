@@ -76,11 +76,11 @@
 											} }"
 					style="display: inline-block; margin-left: 15px"></div>
 			</div>
-			<div style="display: inline-block; position: absolute; z-index: 1000; margin-left: 70px;" data-bind="component: { name: 'kaf000-a-component9', params: isFromOther }"></div>
-			<div id="contents-area" style="background-color: inherit; min-width: 1230px">
-				<div class="two-panel" style="height: 100%;">
+			<div style="display: inline-block; position: absolute; z-index: 10; margin-left: 70px;" data-bind="component: { name: 'kaf000-a-component9', params: isFromOther }"></div>
+			<div id="contents-area" style="background-color: inherit;">
+				<div class="two-panel" style="height: 100%; width: 1260px">
 					<div class="left-panel"
-						style="width: calc(100% - 410px); height: inherit; ">
+						style="width: calc(1260px - 410px); height: inherit; ">
 						<div
 						style="height: inherit; overflow-y: auto; background-color: #fff; padding:0 10px; overflow-x: hidden;">
 							<div style="height: fit-content;">
@@ -144,7 +144,7 @@
 	
 								<!-- -->
 	
-								<div style="margin-top: 12px"
+								<div style="margin-top: 10px"
 									data-bind="component: { name: 'kaf000-a-component5', 
 															params: {
 																appType: appType,
@@ -184,6 +184,13 @@
 																	appType: appType,
 																	appDispInfoStartupOutput: appDispInfoStartupOutput
 																} }"></div>
+																
+							<div
+									data-bind="component: { name: 'kaf005-share-header',
+													params: {
+														overTimeWork: overTimeWork
+													}
+													}"></div>    													
 							<div
 								data-bind="component: { name: 'kaf000-a-component8',
 																params: {

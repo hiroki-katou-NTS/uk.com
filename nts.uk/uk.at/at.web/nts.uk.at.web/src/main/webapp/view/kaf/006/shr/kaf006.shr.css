@@ -40,6 +40,22 @@ button.nts-switch-button {
 }
 
 #kaf006component2 label.radio-wrapper span {
-    width: 72px;
+    width: 92px;
     text-align: center;
+}
+
+.conponent1-container {
+    border: solid 1px;
+}
+
+.text-right {
+    float: right;
+    width: fit-content !important;
+    margin: 5px 10px;
+}
+
+.text-left {
+    float: left;
+    width: fit-content !important;
+    margin: 0 10px;
 }

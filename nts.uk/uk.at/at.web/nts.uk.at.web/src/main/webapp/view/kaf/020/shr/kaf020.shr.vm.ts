@@ -3,7 +3,7 @@ module nts.uk.at.view.kaf020.shr.viewmodel {
         name: 'kaf020-share',
         template: `<!--B2_3-->
             <div id="kaf020-component">
-            <div class="label m1" data-bind="ntsFormLabel : { text: name } "></div>
+            <div class="label m1 table-name" data-bind="ntsFormLabel : { text: name } "></div>
             <!--B2_4-->
             <div id="ruredLine"></div>
             <table id="kaf020-fixed-table">
