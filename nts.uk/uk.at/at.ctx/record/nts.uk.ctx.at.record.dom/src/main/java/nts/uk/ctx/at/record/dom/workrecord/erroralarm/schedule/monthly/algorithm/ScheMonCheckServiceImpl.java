@@ -827,12 +827,15 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 						.findFirst();
 				Optional<CompanyMonthDaySetting> optCompanyMonthDaySettingOpt = prepareData.getCompanyMonthDaySetting();
 				
-				Double numberOfHoliday = numberOfDayHolidayService.getNumberOfHoliday(
-						prepareData.getPublicHolidayManagementUsageUnitOpt().get(),
-						employmentMonthDaySettingOpt,
-						employeeMonthDaySettingOpt, 
-						workplaceMonthDaySettingOpt, 
-						optCompanyMonthDaySettingOpt);
+				Double numberOfHoliday = 0.0;
+				if (prepareData.getPublicHolidayManagementUsageUnitOpt().isPresent()) {
+					numberOfHoliday = numberOfDayHolidayService.getNumberOfHoliday(
+							prepareData.getPublicHolidayManagementUsageUnitOpt().get(),
+							employmentMonthDaySettingOpt,
+							employeeMonthDaySettingOpt, 
+							workplaceMonthDaySettingOpt, 
+							optCompanyMonthDaySettingOpt);
+				}
 				
 				// 比率を計算
 				Double ratio = 0.0;
