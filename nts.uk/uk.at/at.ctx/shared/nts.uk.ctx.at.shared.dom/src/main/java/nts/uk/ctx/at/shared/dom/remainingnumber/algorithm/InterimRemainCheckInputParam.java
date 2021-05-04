@@ -2,6 +2,7 @@ package nts.uk.ctx.at.shared.dom.remainingnumber.algorithm;
 
 import java.util.List;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -11,6 +12,7 @@ import nts.arc.time.calendar.period.DatePeriod;
 @NoArgsConstructor
 @Setter
 @Getter
+@Builder
 public class InterimRemainCheckInputParam {
 	/**	会社ID */
 	private String cid;
