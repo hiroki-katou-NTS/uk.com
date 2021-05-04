@@ -18,7 +18,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * @author thanhpv
- * @name 作業変更可能期間設定 WorkChangeablePeriodSetting
+ * @name 工数実績参照設定 ManHourRecordReferenceSetting
  */
 @AllArgsConstructor
 @NoArgsConstructor
