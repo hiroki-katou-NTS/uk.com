@@ -267,14 +267,19 @@ module nts.uk.ui.at.kdp013.c {
                 </tbody>
             </table>
         </div>
-        <div class="message overlay" data-bind="css: { show: !!$component.confirm() }">
-            <div class="container" data-bind="draggable: ko.computed(function() { return !!$component.confirm(); })">
-                <div class="title" data-bind="i18n: '確認'"></div>
-                <div class="body" data-bind="kdw-confirm: $component.confirm"></div>
-                <div class="foot">
-                    <button class="yes large danger" data-bind="click: $component.yes, i18n: 'はい'"></button>
-                    <button class="cancel large" data-bind="click: $component.cancel, i18n: 'キャンセル'"></button>
-                </div>
+        <div class="message overlay" data-bind="css: { show: !!$component.confirm() }"></div>
+        <div class="message container" data-bind="
+                css: { show: !!$component.confirm() },
+                draggable: { 
+                    handle: '.title',
+                    containment: 'body',
+                    disabled: ko.computed(function() { return !$component.confirm(); })
+                }">
+            <div class="title" data-bind="i18n: '確認'"></div>
+            <div class="body" data-bind="kdw-confirm: $component.confirm"></div>
+            <div class="foot">
+                <button class="yes large danger" data-bind="click: $component.yes, i18n: 'はい'"></button>
+                <button class="cancel large" data-bind="click: $component.cancel, i18n: 'キャンセル'"></button>
             </div>
         </div>
         <style>
@@ -285,12 +290,12 @@ module nts.uk.ui.at.kdp013.c {
                 left:0;
                 right: 0;
                 bottom: 0;
-                background-color: #aaaaaa4d;
+                background-color: #aaaaaa;
+                opacity: 0.3;
             }
-            .message.overlay.show {
-                display: block;
-            }
-            .message.overlay .container {
+            .message.container {
+                position: fixed;
+                display: none;
                 border: 1px solid #767171;
                 width: 310px;
                 box-sizing: border-box;
@@ -299,7 +304,11 @@ module nts.uk.ui.at.kdp013.c {
                 top: calc(50% - 67.5px);
                 left: calc(50% - 65px);
             }
-            .message.overlay .container .title {
+            .message.overlay.show,
+            .message.container.show {
+                display: block;
+            }
+            .message.overlay+.container .title {
                 background-color: #F2F2F2;
                 border-bottom: 1px solid #767171;
                 padding: 5px 12px;
@@ -307,21 +316,21 @@ module nts.uk.ui.at.kdp013.c {
                 font-size: 1rem;
                 font-weight: 600;
             }
-            .message.overlay .container .body {
+            .message.overlay+.container .body {
                 padding: 20px 10px 10px 10px;
                 border-bottom: 1px solid #767171;
                 box-sizing: border-box;
             }
-            .message.overlay .container .body>div:last-child {
+            .message.overlay+.container .body>div:last-child {
                 text-align: right;
                 box-sizing: border-box;
             }
-            .message.overlay .container .foot {
+            .message.overlay+.container .foot {
                 text-align: center;
                 padding: 10px 0;
                 box-sizing: border-box;
             }
-            .message.overlay .container .foot button:first-child {
+            .message.overlay+.container .foot button:first-child {
                 margin-right: 10px;
             }
         </style>
@@ -521,6 +530,17 @@ module nts.uk.ui.at.kdp013.c {
             if (!$(`style#${COMPONENT_NAME}`).length) {
                 $('<style>', { id: COMPONENT_NAME, html: style }).appendTo('head');
             }
+
+            vm.confirm
+                .subscribe((cf) => {
+                    if (!cf) {
+                        $('#master-wrapper>#header')
+                            .css({ 'position': '', 'z-index': '' });
+                    } else {
+                        $('#master-wrapper>#header')
+                            .css({ 'position': 'relative', 'z-index': '0' });
+                    }
+                });
 
             _.extend(window, { pp: vm });
         }

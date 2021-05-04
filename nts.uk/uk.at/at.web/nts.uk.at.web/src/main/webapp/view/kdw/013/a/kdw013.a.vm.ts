@@ -1,16 +1,21 @@
 module nts.uk.ui.at.kdp013.a {
     const { randomId } = nts.uk.util;
-    const { parseQuery } = nts.uk.ui.at.kdp013.share;
     import calendar = nts.uk.ui.components.fullcalendar;
 
     const DATE_FORMAT = 'YYYY-MM-DD';
 
     const API: API = {
         ADD: '/screen/at/kdw013/a/add',
+        // DeleteWorkResultConfirmationCommand
         DELETE: '/screen/at/kdw013/a/delete',
+        // 日付を変更する
+        // Chọn ngày ở [画面イメージ]A6_1/[固有部品]A1_1
         CHANGE_DATE: '/screen/at/kdw013/a/changeDate',
+        // RegisterWorkContentCommand
         REGISTER: '/screen/at/kdw013/a/register',
         REG_WORKTIME: '/screen/at/kdw013/registerWorkTime',
+        // 対象社員を選択する
+        // Chọn nhân viên ở A2_4
         SELECT: '/screen/at/kdw013/a/select',
         START: '/screen/at/kdw013/a/start'
     };
@@ -80,7 +85,7 @@ module nts.uk.ui.at.kdp013.a {
             super();
 
             const vm = this;
-            const { mode } = parseQuery();
+            const { mode } = vm.$query;
 
             vm.$toggle = {
                 save: ko.computed({
@@ -120,7 +125,7 @@ module nts.uk.ui.at.kdp013.a {
                     const { taskFrameUsageSetting, tasks, workLocations } = startManHourInputDto;
                     const { employeeInfos, lstEmployeeInfo, workplaceInfos } = refWorkplaceAndEmployeeDto;
 
-                    const employees = _.map(employeeInfos, ({  }) => ({}));
+                    const employees = _.map(employeeInfos, ({ }) => ({}));
 
                 });
         }
@@ -136,8 +141,25 @@ module nts.uk.ui.at.kdp013.a {
 
         }
 
+        // 日付を変更する
+        // UKDesign.UniversalK.就業.KDW_日別実績.KDW013_工数入力.A:工数入力.メニュー別OCD.日付を変更する
         datesSet(start: Date, end: Date) {
-            console.log(start, end);
+            const vm = this;
+            const { initialDate, $user } = vm;
+            const { employeeId } = $user;
+            const refDate = ko.unwrap(initialDate);
+
+            const params: ChangeDateParam = {
+                employeeId,
+                refDate: moment(refDate).toISOString(),
+                displayPeriod: {
+                    start: moment(start).toISOString(),
+                    end: moment(end).toISOString()
+                }
+            };
+
+            vm.$ajax('at', API.CHANGE_DATE, params)
+                .then(() => { });
         }
 
         confirm() {
@@ -218,7 +240,7 @@ module nts.uk.ui.at.kdp013.a {
                     { prop: 'name', length: 10 }
                 ]
             }"></div>
-            <ul data-bind="foreach: { data: $component.params.employees, as: 'item' }">
+            <ul class="list-employee" data-bind="foreach: { data: $component.params.employees, as: 'item' }">
                 <li class="item" data-bind="
                     click: function() { $component.selectEmployee(item) },
                     timeClick: -1,
@@ -239,13 +261,13 @@ module nts.uk.ui.at.kdp013.a {
 
             mounted() {
                 const vm = this;
-                const { params } = vm;
+                const { $el, params } = vm;
                 const { mode, employees } = params;
                 const subscribe = (mode: boolean) => {
                     if (mode === false) {
                         // reload data
 
-                        const command: SelectTargetEmployeeParam = {
+                        const command: ChangeDateParam = {
                             displayPeriod: {
                                 end: '',
                                 start: ''
@@ -262,6 +284,11 @@ module nts.uk.ui.at.kdp013.a {
 
                 subscribe(mode());
                 mode.subscribe(subscribe);
+
+                $($el)
+                    .removeAttr('data-bind')
+                    .find('[data-bind]')
+                    .removeAttr('data-bind');
             }
 
             public selectEmployee(item: calendar.Employee) {

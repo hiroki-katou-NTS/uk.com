@@ -134,12 +134,15 @@ module nts.uk.ui.components.fullcalendar {
         }
         .fc-container .fc-sidebar .fc-events>ul,
         .fc-container .fc-sidebar .fc-employees>ul {
-            overflow: hidden auto;
+            overflow-x: hidden;
         }
         .fc-container .fc-sidebar .fc-employees>ul {
             border: 1px solid #ccc;
             border-radius: 3px;
             height: 112px;
+        }
+        .fc-container .fc-sidebar .fc-employees>ul.list-employee {
+            height: 224px;
         }
         .fc-container .fc-sidebar .fc-events>ul {
             max-height: 112px;
@@ -295,7 +298,6 @@ module nts.uk.ui.components.fullcalendar {
             box-sizing: border-box;
         }
         .fc-container .fc-popup-editor.show {
-            overflow: hidden;
             visibility: visible;
             width: 250px;
             height: 270px;
