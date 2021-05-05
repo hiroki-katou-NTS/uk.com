@@ -15,16 +15,16 @@ module nts.uk.at.view.kdp004.a {
 		import getMessage = nts.uk.resource.getMessage;
 		import f = nts.uk.at.kdp003.f;
 		import FingerStampSetting = nts.uk.at.kdp003.a.FingerStampSetting;
-		
+
 		const DIALOG = {
 			R: '/view/kdp/003/r/index.xhtml'
-			};
-			
+		};
+
 		const API = {
 			NOTICE: 'at/record/stamp/notice/getStampInputSetting',
 			GET_LOCATION: 'at/record/stamp/employment_system/get_location_stamp_input'
-			};
-			
+		};
+
 		export class ScreenModel {
 			stampSetting: KnockoutObservable<StampSetting> = ko.observable({} as StampSetting);
 			stampTab: KnockoutObservable<StampTab> = ko.observable(new StampTab());
@@ -46,7 +46,7 @@ module nts.uk.at.view.kdp004.a {
 			listCompany: KnockoutObservableArray<any> = ko.observableArray([]);
 			messageNoti: KnockoutObservable<IMessage> = ko.observable();
 			fingerStampSetting: KnockoutObservable<FingerStampSetting> = ko.observable(DEFAULT_SETTING);
-			
+
 			constructor() {
 				let self = this;
 
@@ -55,7 +55,7 @@ module nts.uk.at.view.kdp004.a {
 			public startPage(): JQueryPromise<void> {
 				let self = this;
 				let dfd = $.Deferred<void>();
-				nts.uk.characteristics.restore("loginKDP004").done(function(loginInfo: ILoginInfo) {
+				nts.uk.characteristics.restore("loginKDP004").done(function (loginInfo: ILoginInfo) {
 					if (!loginInfo) {
 						self.setLoginInfo().done((loginResult) => {
 							if (!loginResult) {
@@ -177,16 +177,16 @@ module nts.uk.at.view.kdp004.a {
 					var params = new URLSearchParams(window.location.search);
 					var locationCd = params.get('basyo');
 					let vm = new ko.ViewModel();
-					
+
 					if (locationCd) {
 						//打刻入力の場所を取得する
-						nts.uk.characteristics.restore("contractInfo").done(function(contractInfo: IContractInfo) {
+						nts.uk.characteristics.restore("contractInfo").done(function (contractInfo: IContractInfo) {
 							const param = {
 								contractCode: contractInfo.contractCode,
 								workLocationCode: locationCd
 							}
 							vm.$ajax(API.GET_LOCATION, param)
-								.done((data: ILocationStampInput ) => {
+								.done((data: ILocationStampInput) => {
 									//※職場IDを取得しなかった場合
 									if (data.workpalceId === null || data.workpalceId.length == 0) {
 										self.openScreenK().done((result) => {
@@ -198,7 +198,7 @@ module nts.uk.at.view.kdp004.a {
 											self.loginInfo.selectedWP = result;
 										});
 
-									//※職場IDを取得した場合
+										//※職場IDを取得した場合
 									} else {
 										self.loginInfo.selectedWP = data.workpalceId;
 									}
@@ -234,7 +234,7 @@ module nts.uk.at.view.kdp004.a {
 							self.stampTab().bindData(res.stampSetting.pageLayouts);
 							self.stampResultDisplay(res.stampResultDisplay);
 							self.fingerStampSetting(res);
-							
+
 
 						}).fail((res) => {
 							dialog.alertError({ messageId: res.messageId }).then(() => {
@@ -261,7 +261,7 @@ module nts.uk.at.view.kdp004.a {
 				let vm = new ko.ViewModel();
 				let dfd = $.Deferred<f.TimeStampLoginData>();
 
-				vm.$window.modal('at', '/view/kdp/003/f/index.xhtml', param).then(function(loginResult: f.TimeStampLoginData): any {
+				vm.$window.modal('at', '/view/kdp/003/f/index.xhtml', param).then(function (loginResult: f.TimeStampLoginData): any {
 
 					dfd.resolve(loginResult);
 				});
@@ -359,7 +359,7 @@ module nts.uk.at.view.kdp004.a {
 
 			public clickBtn1(btn: any, layout: any) {
 				const vm = this;
-				
+
 				vm.doAuthent().done((res: IAuthResult) => {
 					if (res.isSuccess) {
 						vm.registerData(btn, layout, res);
@@ -480,12 +480,12 @@ module nts.uk.at.view.kdp004.a {
 					//phat nhac
 					self.playAudio(button.audioType);
 
-					if (self.stampResultDisplay().notUseAttr == 1 && button.changeClockArt == 1 ) {
+					if (self.stampResultDisplay().notUseAttr == 1 && button.changeClockArt == 1) {
 						self.openScreenC(button, layout, loginInfo.em);
 					} else {
 						self.openScreenB(button, layout, loginInfo.em);
 					}
-					
+
 				}).fail((res) => {
 					dialog.alertError({ messageId: res.messageId });
 				}).always(() => {
@@ -529,7 +529,7 @@ module nts.uk.at.view.kdp004.a {
 					screen: "KDP004"
 				});
 
-				modal('/view/kdp/002/c/index.xhtml').onClosed(function(): any {
+				modal('/view/kdp/002/c/index.xhtml').onClosed(function (): any {
 				});
 			}
 
@@ -539,25 +539,28 @@ module nts.uk.at.view.kdp004.a {
 				$('#time-card-list').igGrid("option", "height", windowHeight);
 				$('#content-area').css('height', windowHeight + 109);
 			}
-			
+
 			shoNoti() {
 				const self = this;
 				let vm = new ko.ViewModel();
-				const param = {setting: ko.unwrap(self.fingerStampSetting).noticeSetDto, screen: 'KDP004'};
+				const param = { setting: ko.unwrap(self.fingerStampSetting).noticeSetDto, screen: 'KDP004' };
 				vm.$window.modal(DIALOG.R, param);
 			}
 
 			loadNotice(storage: StorageData) {
 				let vm = new ko.ViewModel();
 				const self = this;
+				let startDate = vm.$date.now();
+				startDate.setDate(startDate.getDate() - 3);
+
 				const param = {
 					periodDto: {
-						startDate: vm.$date.now(),
+						startDate: startDate,
 						endDate: vm.$date.now()
 					},
 					wkpIds: storage.WKPID
 				}
-	
+
 				vm.$blockui('invisible')
 					.then(() => {
 						vm.$ajax(API.NOTICE, param)
@@ -582,12 +585,12 @@ module nts.uk.at.view.kdp004.a {
 		Personal = 1, // 個人
 		Shared = 2  // 共有 
 	}
-	
+
 	const DEFAULT_SETTING: any = {
 		stampSetting: null,
 		stampResultDisplay: null,
 	}
-	
+
 	export interface StorageData {
 		CID: string;
 		CCD: string;

@@ -118,8 +118,8 @@ module nts.uk.at.kdp003.a {
 		shoNoti() {
 			const vm = this;
 
-			const param = {setting: ko.unwrap(vm.fingerStampSetting).noticeSetDto, screen: 'KDP003'};
-			
+			const param = { setting: ko.unwrap(vm.fingerStampSetting).noticeSetDto, screen: 'KDP003' };
+
 			vm.$window.modal(DIALOG.R, param);
 		}
 
@@ -139,9 +139,12 @@ module nts.uk.at.kdp003.a {
 
 		loadNotice(storage: StorageData) {
 			const vm = this;
+			let startDate = vm.$date.now();
+			startDate.setDate(startDate.getDate() - 3);
+
 			const param = {
 				periodDto: {
-					startDate: vm.$date.now(),
+					startDate: startDate,
 					endDate: vm.$date.now()
 				},
 				wkpIds: storage.WKPID

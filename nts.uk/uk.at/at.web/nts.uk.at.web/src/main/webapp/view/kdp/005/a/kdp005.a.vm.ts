@@ -554,9 +554,11 @@ module nts.uk.at.view.kdp005.a {
 			loadNotice(storage: StorageData) {
 				let vm = new ko.ViewModel();
 				const self = this;
+				let startDate = vm.$date.now();
+				startDate.setDate(startDate.getDate() - 3);
 				const param = {
 					periodDto: {
-						startDate: vm.$date.now(),
+						startDate: startDate,
 						endDate: vm.$date.now()
 					},
 					wkpIds: storage.WKPID

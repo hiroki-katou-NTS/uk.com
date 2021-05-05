@@ -14,17 +14,17 @@ module nts.uk.at.view.kdp.share {
 
     const template = `
     <div class="kdp-message-error">
-        <div class="company" data-bind="style: { 'color': headOfficeNotice.textColor, 
-                                'background-color': headOfficeNotice.backGroudColor }">
-            <span data-bind="i18n: headOfficeNotice.title"></span>
-            <span class="text-company" data-bind:"i18n: headOfficeNotice.contentMessager"></span>
+        <div class="company" data-bind="style: { 'color': $component.headOfficeNotice.textColor, 
+                                'background-color': $component.headOfficeNotice.backGroudColor }">
+            <span data-bind="i18n: $component.headOfficeNotice.title"></span>
+            <span class="text-company" data-bind="i18n: $component.headOfficeNotice.contentMessager"></span>
         </div>
-        <div data-bind="style: { 'color': workplaceNotice.textColor, 
-                                    'background-color': workplaceNotice.backGroudColor }">
+        <div data-bind="style: { 'color': $component.workplaceNotice.textColor, 
+                                    'background-color': $component.workplaceNotice.backGroudColor }">
             <div class="workPlace">
                 <div class="title">
                     <div class="name-title">
-                        <div style:"box-sizing: border-box" data-bind="i18n: workplaceNotice.title"></div>
+                        <div style:"box-sizing: border-box" data-bind="i18n: $component.workplaceNotice.title"></div>
                     </div>
                     <div class="btn-title">
                         <button style="background-color: transparent;" 
@@ -34,7 +34,7 @@ module nts.uk.at.view.kdp.share {
                     </div>
                 </div>
                 <div class="content">
-                    <div class="text-content" data-bind="i18n: workplaceNotice.contentMessager"></div>
+                    <div class="text-content" data-bind="i18n: $component.workplaceNotice.contentMessager"></div>
                         <button class="btn-content" data-bind="ntsIcon: { no: 161, width: 30, height: 30 }, click: events.shoNoti.click">
                         </button>
                 <div>
@@ -62,7 +62,7 @@ module nts.uk.at.view.kdp.share {
 
         .kdp-message-error .workPlace .title {
             box-sizing: border-box;
-            width: 64px;
+            width: auto;
             height: 100px;
             float: left;
         }
@@ -134,7 +134,6 @@ module nts.uk.at.view.kdp.share {
             const vm = this;
 
             if (params) {
-                
                 vm.messageNoti = params.messageNoti;
 
                 if(ko.unwrap(params.notiSet)) {
@@ -217,6 +216,7 @@ module nts.uk.at.view.kdp.share {
                             vm.headOfficeNotice.update(DestinationClassification.ALL,
                                 '');
                         }
+                        console.log(ko.unwrap(ko.unwrap(vm.headOfficeNotice).contentMessager));
                     }
 
                     if (workplaceNoticeList.length > 0) {

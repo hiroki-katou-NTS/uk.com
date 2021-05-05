@@ -27,6 +27,12 @@ module nts.uk.at.kdp002.u {
 			vm.$window.close();
 		}
 
+		mounted() {
+			$(document).ready(function () {
+				$('.x-large').focus();
+			});
+		}
+
 	}
 
 	interface IModel {
