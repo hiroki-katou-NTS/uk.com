@@ -1118,6 +1118,9 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 		
 		// 特定日項目NO（List）から特定日を取得
 		List<Integer> listSpecificDayItemNo = specificDateSetting.getNumberList();
+		if (listSpecificDayItemNo.isEmpty()) {
+			return null;
+		}
 		
 		// アラーム表示値を生成する
 		String msgParam0 = specificDateSettingAdapter.getSpecifiDateItem(companyId, listSpecificDayItemNo).stream()
