@@ -154,7 +154,6 @@ module nts.uk.at.kdp003.a {
 				.then(() => {
 					vm.$ajax(API.NOTICE, param)
 						.done((data: IMessage) => {
-							console.log(data);
 							vm.messageNoti(data);
 						});
 				})
