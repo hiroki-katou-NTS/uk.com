@@ -1020,12 +1020,13 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 			return null;			
 		}
 		
-		WorkType workType = listWorkType.stream().filter(x -> x.getWorkTypeCode().equals(workTypeCode)).findFirst().get();
-		WorkTimeSetting workTimeSetting = listWorktime.stream().filter(x -> x.getWorktimeCode().equals(workTimeCode)).findFirst().get();
+		Optional<WorkType> workTypeOpt = listWorkType.stream().filter(x -> x.getWorkTypeCode().equals(workTypeCode)).findFirst();
+		Optional<WorkTimeSetting> workTimeSettingOpt = listWorktime.stream().filter(x -> x.getWorktimeCode().equals(workTimeCode)).findFirst();
+		
 		// Input．日別勤怠の勤務情報．勤務情報．勤務種類コード+’　’+List<勤務種類＞にInput．日別勤怠の勤務情報．勤務情報．勤務種類コード　の名称
-		String msgParam0 = workTypeCode + "　" + workType.getName().v();
+		String msgParam0 = workTypeCode + "　" + (workTypeOpt.isPresent() ? workTypeOpt.get().getName().v() : "");
 		// Input．日別勤怠の勤務情報．勤務情報．就業時間帯コード+’　’+List<就業時間帯＞にInput．日別勤怠の勤務情報．勤務情報．就業時間帯コード　の名称
-		String msgParam1 = workTypeCode + "　" + workTimeSetting.getWorkTimeDisplayName().getWorkTimeName().v();
+		String msgParam1 = workTypeCode + "　" + (workTimeSettingOpt.isPresent() ? workTimeSettingOpt.get().getWorkTimeDisplayName().getWorkTimeName().v() : "");
 		String alarmMessage = TextResource.localize("KAL010_1307", msgParam0, msgParam1);
 		
 		// Input．日別勤怠の出退勤．勤務NO．実打刻　＝＝　1
@@ -1035,7 +1036,13 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 		Optional<TimeLeavingWorkImport> timeLeavingWorkImport2 = attendanceLeave.getTimeLeavingWorks().stream()
 				.filter(x -> x.getWorkNo() == 2).findFirst();
 		if (timeLeavingWorkImport1.isPresent() && timeLeavingWorkImport2.isPresent()) {
-			if (!timeLeavingWorkImport1.get().getAttendanceStamp().isPresent() && !timeLeavingWorkImport2.get().getLeaveStamp().isPresent()) {
+			if (!timeLeavingWorkImport1.get().getAttendanceStamp().isPresent() 
+					|| !timeLeavingWorkImport2.get().getLeaveStamp().isPresent()) {
+				return null;
+			}
+			
+			if (!timeLeavingWorkImport1.get().getAttendanceStamp().get().getActualStamp().isPresent() 
+					|| !timeLeavingWorkImport2.get().getAttendanceStamp().get().getActualStamp().isPresent()) {
 				return null;
 			}
 			
