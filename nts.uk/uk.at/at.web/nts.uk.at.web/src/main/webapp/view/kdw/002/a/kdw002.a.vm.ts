@@ -7,6 +7,7 @@ module nts.uk.at.view.kdw002.a {
             headerColorValue: KnockoutObservable<string>;
             unitRoundings: KnockoutObservableArray<any>;
             selectedOption: KnockoutObservable<any>;
+            // A2_3
             attendanceItems: KnockoutObservableArray<any>;
             aICurrentCode: KnockoutObservable<any>;
             attendanceItemColumn: KnockoutObservableArray<any>;
@@ -22,11 +23,68 @@ module nts.uk.at.view.kdw002.a {
             isDaily: boolean;
             isSave: KnockoutObservable<boolean>;
             sideBar: KnockoutObservable<number>;
+            // ver 8 A5_4, A5_5
+            amountUnits: KnockoutObservableArray<any>;
+            amountUnit: KnockoutObservable<number> = ko.observable(0);
+            // ver 8 A5_6, A5_7
+            numberOfTimesUnits: KnockoutObservableArray<any>;
+            numberOfTimesUnit: KnockoutObservable<number> = ko.observable(0);
+            // ver 8 A5_8, A5_9
+            timeUnits: KnockoutObservableArray<any>;
+            timeUnit: KnockoutObservable<number> = ko.observable(0);
+            // ver 8 A8_2, A8_3
+            lineBreakPositions: KnockoutObservableArray<any>;
+            lineBreakPosition: KnockoutObservable<number> = ko.observable(0);
+            
             constructor(dataShare: any) {
                 var self = this;
+                // ver 8
+                self.amountUnits = ko.observableArray([
+                    new Items(0, nts.uk.resource.getText('KDW002_49')),
+                    new Items(1, nts.uk.resource.getText('KDW002_50')),
+                    new Items(2, nts.uk.resource.getText('KDW002_51')),
+                    new Items(3, nts.uk.resource.getText('KDW002_52')),
+                    new Items(4, nts.uk.resource.getText('KDW002_53'))
+                ]);
+                self.numberOfTimesUnits = ko.observableArray([
+                    new Items(0, nts.uk.resource.getText('KDW002_54')),
+                    new Items(1, nts.uk.resource.getText('KDW002_55')),
+                    new Items(2, nts.uk.resource.getText('KDW002_56')),
+                    new Items(3, nts.uk.resource.getText('KDW002_57'))
+                ]);
+                self.timeUnits = ko.observableArray([
+                    new Items(0, nts.uk.resource.getText('KDW002_58')),
+                    new Items(1, nts.uk.resource.getText('KDW002_59')),
+                    new Items(2, nts.uk.resource.getText('KDW002_60')),
+                    new Items(3, nts.uk.resource.getText('KDW002_61')),
+                    new Items(4, nts.uk.resource.getText('KDW002_62')),
+                    new Items(5, nts.uk.resource.getText('KDW002_63'))
+                ]);
+                self.amountUnits = ko.observableArray([
+                    new Items(0, nts.uk.resource.getText('KDW002_49')),
+                    new Items(1, nts.uk.resource.getText('KDW002_50')),
+                    new Items(2, nts.uk.resource.getText('KDW002_51')),
+                    new Items(3, nts.uk.resource.getText('KDW002_52')),
+                    new Items(4, nts.uk.resource.getText('KDW002_53'))
+                ]);
+                self.lineBreakPositions = ko.observableArray([
+                    new Items(0, nts.uk.resource.getText('KDW002_68')),
+                    new Items(1, nts.uk.resource.getText('KDW002_69', '2')),
+                    new Items(2, nts.uk.resource.getText('KDW002_69', '3')),
+                    new Items(3, nts.uk.resource.getText('KDW002_69', '4')),
+                    new Items(4, nts.uk.resource.getText('KDW002_69', '5')),
+                    new Items(5, nts.uk.resource.getText('KDW002_69', '6')),
+                    new Items(6, nts.uk.resource.getText('KDW002_69', '7')),
+                    new Items(7, nts.uk.resource.getText('KDW002_69', '8')),
+                    new Items(8, nts.uk.resource.getText('KDW002_69', '9')),
+                    new Items(9, nts.uk.resource.getText('KDW002_69', '10'))
+                ]);
+
+                // --
+
                 //
                 self.isSave = ko.observable(true);
-                self.isDaily = dataShare.ShareObject;
+                self.isDaily = dataShare === undefined ? false : dataShare.ShareObject;
                 self.sideBar = ko.observable(1);
                 if (!self.isDaily) {
                     self.sideBar(2);
@@ -306,6 +364,15 @@ module nts.uk.at.view.kdw002.a {
             //                    self.attendanceItemName = params.attendanceItemName;
             //                }
             //            }
+        }
+        class Items {
+            code: number;
+            name: string;
+    
+            constructor(code: number, name: string) {
+                this.code = code;
+                this.name = name;
+            }
         }
     }
 }

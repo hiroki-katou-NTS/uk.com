@@ -5,20 +5,22 @@ module nts.uk.at.view.kdw002.c {
         import getText = nts.uk.resource.getText;
         import infor = nts.uk.ui.dialog.info;
         export class ScreenModel {
+            // A4_1
             listAttdItem: Array<any>;
             dailyServiceTypeControl: KnockoutObservable<DailyAttendanceItemAuth>;
-            columns: Array<any>;
+            columns: KnockoutObservableArray<any>;;
             //monthly
             listAttdMonthlyItem: Array<any>;
-
+            // A2_1
             bussinessCodeItems: KnockoutObservableArray<BusinessType>;
             bussinessColumn: KnockoutObservableArray<any>;
             currentRoleId: KnockoutObservable<any>;
+            // ?
             txtSearch: KnockoutObservable<string>;
             //isDaily
             isDaily :boolean;
             sideBar :  KnockoutObservable<number>;
-            //datasource
+            // A3_1
             datasources :KnockoutObservableArray<any>;
             selectedList: any;
             
@@ -30,7 +32,7 @@ module nts.uk.at.view.kdw002.c {
                 self.bussinessCodeItems = ko.observableArray([]);
                 self.listAttdItem = [];
                 self.dailyServiceTypeControl = ko.observable(null);
-                self.isDaily = dataShare.ShareObject;
+                self.isDaily = dataShare === undefined ? false : dataShare.ShareObject;
                 self.sideBar =  ko.observable(1);
                 if(!self.isDaily){
                     self.sideBar(2);
@@ -62,6 +64,7 @@ module nts.uk.at.view.kdw002.c {
                     var useHeader = "<input  tabindex='-1' type='checkbox' id = 'useCheckAll' onclick='useHeaderChanged(this)'/> ";
                     var youCanChangeItHeader =  "<input  tabindex='-1' type='checkbox' id = 'youCanCheckAll' onclick='youCanChangeItHeaderChanged(this)'/> ";
                     var canBeChangedByOthersHeader = "<input  tabindex='-1'  type='checkbox' id = 'otherCheckAll' onclick='canBeChangedByOthersHeaderChanged(this)'/> ";
+                    // A4_2, A4_3, A4_4, A4_41, A4_8, A4_8.1, A4_9, A4_10, A4_11, A4_16, A4_18
                     self.columns = ko.observableArray([
                         { headerText: '', key: 'itemDailyID', width: 1, hidden: true },
                         { headerText: getText('KDW002_3'), key: 'displayNumber', width: 70  , formatter: _.escape },
@@ -70,7 +73,6 @@ module nts.uk.at.view.kdw002.c {
                         { headerText: youCanChangeItHeader + getText('KDW002_6'), key: 'youCanChangeIt', width: 120, template: youCanChangeItTemplate },
                         { headerText: canBeChangedByOthersHeader + getText('KDW002_7'), key: 'canBeChangedByOthers', width: 165, template: canBeChangedByOthersTemplate },
                         { headerText: '', key: 'userCanUpdateAtr', width: 1, hidden: true },
-
                     ]);
 
 

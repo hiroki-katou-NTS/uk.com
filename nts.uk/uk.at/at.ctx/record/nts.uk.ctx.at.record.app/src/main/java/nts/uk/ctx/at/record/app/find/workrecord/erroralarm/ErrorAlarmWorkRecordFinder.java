@@ -23,7 +23,8 @@ public class ErrorAlarmWorkRecordFinder {
 
 	@Inject
 	private ErrorAlarmWorkRecordRepository repository;
-
+	
+	
 	/**
 	 * 
 	 * @param type = 0 => user setting, type = 1 => system setting
@@ -54,4 +55,11 @@ public class ErrorAlarmWorkRecordFinder {
 		}).collect(Collectors.toList());
 		return lstDto;
 	}
+	
+	/** UKDesign.UniversalK.就業.KDW_日別実績.KDW007_勤務実績のエラーアラーム設定.エラー/アラームの条件設定.ユースケース.日別.起動する  (khởi động).起動する..大塚オプション情報を取得する */
+	
+	public boolean getOtsukaOptionInfo() {
+		return AppContexts.optionLicense().customize().ootsuka();
+	}
+
 }
