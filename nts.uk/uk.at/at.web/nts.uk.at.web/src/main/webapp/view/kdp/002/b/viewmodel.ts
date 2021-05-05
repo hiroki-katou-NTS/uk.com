@@ -109,7 +109,6 @@ class KDP002BViewModel extends ko.ViewModel {
 
     mounted() {
         const vm = this;
-
         setTimeout(() => {
             if (ko.unwrap(vm.modeNikoNiko)) {
                 $(document).ready(function () {
@@ -121,13 +120,15 @@ class KDP002BViewModel extends ko.ViewModel {
                 });
             }
         }, 300);
+
+        vm.settingSizeView();
     }
 
     settingSizeView() {
         const vm = this;
         if (!ko.unwrap(vm.showBtnNoti)) {
             if (!ko.unwrap(vm.modeNikoNiko)) {
-                vm.$window.size(600, 470);
+                vm.$window.size(630, 470);
             } else {
                 vm.$window.size(660, 470);
             }
@@ -136,7 +137,7 @@ class KDP002BViewModel extends ko.ViewModel {
             if (!ko.unwrap(vm.modeNikoNiko)) {
                 vm.$window.size(630, 470);
             } else {
-                vm.$window.size(630, 470);
+                vm.$window.size(660, 470);
             }
         }
     }
