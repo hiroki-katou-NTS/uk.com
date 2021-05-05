@@ -356,13 +356,15 @@ public class DefaultExtractionRangeService implements ExtractionRangeService {
 				startDate = calendar.getTime();
 
 		} else {
-			YearMonth extractStartMon = startMonthly.addMonths((-1)*extraction.getStartDate().getStrMonth().get().getMonth());
+			YearMonth extractStartMon = null;
 			// QA#115836
 			if (c.isScheduleDaily()) {
-				extractStartMon = extractStartMon.addMonths(extraction.getStartDate().getStrMonth().get().getMonth());
+				extractStartMon = startMonthly.addMonths(extraction.getStartDate().getStrMonth().get().getMonth());
+			} else {
+				extractStartMon = startMonthly.addMonths((-1)*extraction.getStartDate().getStrMonth().get().getMonth());
 			}
 			
-			DatePeriod datePeriod = ClosureService.getClosurePeriod(require, closureId, yearMonth);
+			DatePeriod datePeriod = ClosureService.getClosurePeriod(require, closureId, extractStartMon);
 			if(datePeriod == null) {
 				return new CheckConditionPeriod(GeneralDate.ymd(startMonthly, 1).date(), GeneralDate.ymd(endMonthly.addMonths(1), 1).addDays(-1).date());
 			}
@@ -380,9 +382,11 @@ public class DefaultExtractionRangeService implements ExtractionRangeService {
 
 			endDate = calendar.getTime();
 		} else {
-			YearMonth extractEndMon = endMonthly.addMonths((-1)*extraction.getEndDate().getEndMonth().get().getMonth());
+			YearMonth extractEndMon = null;
 			if (c.isScheduleDaily()) {
 				extractEndMon = endMonthly.addMonths(extraction.getEndDate().getEndMonth().get().getMonth());
+			} else {
+				extractEndMon = endMonthly.addMonths((-1)*extraction.getEndDate().getEndMonth().get().getMonth());
 			}
 			
 			DatePeriod datePeriod = ClosureService.getClosurePeriod(require, closureId, extractEndMon);
