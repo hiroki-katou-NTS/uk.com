@@ -389,14 +389,20 @@
                 <div
                   id="swap-list" tabindex="17"
                   data-bind="ntsSwapList: {
-									name: '#[KSM011_92]',
+									name: '#[KSM011_90]',
+									leftName: '#[KSM011_92]',
+									rightName: '#[KSM011_94]',
 									showSearchBox: { showLeft : false, showRight: false},
 									height: 170,
 									dataSource: conditionWorkSchedule,								
 									primaryKey: 'code',
-									columns: ko.observableArray([
+									leftColumns: ko.observableArray([
 										{ headerText: 'コード', key: 'code', width: 100, hidden: true },
 										{ headerText: $vm.$i18n('KSM011_93'), key: 'name', width: 150 }
+									]),
+									rightColumns: ko.observableArray([
+										{ headerText: 'コード', key: 'code', width: 100, hidden: true },
+										{ headerText: $vm.$i18n('KSM011_95'), key: 'name', width: 150 }
 									]),
 									value: personalInforDisplay
 								}"

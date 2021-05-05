@@ -15,7 +15,7 @@ module nts.uk.at.view.ksm011.d {
     conditionWorkSchedule: KnockoutObservableArray<any>;
 
     targetDate: KnockoutObservable<number> = ko.observable(1);
-    deadline: KnockoutObservable<number> = ko.observable(32);
+    deadline: KnockoutObservable<number> = ko.observable(0);
     completionFunction: KnockoutObservable<number> = ko.observable(0);
     alarmCheck: KnockoutObservable<number> = ko.observable(0);
     confirm: KnockoutObservable<number> = ko.observable(0);
@@ -171,7 +171,7 @@ module nts.uk.at.view.ksm011.d {
       for( let day = 1; day <= 31; day++) {
         days.push( { day: day, name: day + vm.$i18n('KSM011_105')});
       }
-      days.push( { day: 32, name: vm.$i18n('KSM011_106')});
+      days.push( { day: 0, name: vm.$i18n('KSM011_106')});
       vm.daysList(days);
     }
   }
