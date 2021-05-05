@@ -70,6 +70,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PrescribedTimezoneSetting;
+import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
@@ -960,9 +961,11 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 		if (predTimeSetInDayOpt.isPresent() && predTimeSetInDayBeforeOpt.isPresent()) {
 			PredetemineTimeSetting predetemineTimeSettingInDay  = predTimeSetInDayOpt.get();
 			PrescribedTimezoneSetting prescribedTimezoneSettingInDay = predetemineTimeSettingInDay.getPrescribedTimezoneSetting();
+			TimezoneUse timezoneUseInDay = prescribedTimezoneSettingInDay.getLstTimezone().stream().filter(x -> x.getWorkNo() == TimezoneUse.SHIFT_ONE).findFirst().get();
 			
 			PredetemineTimeSetting predetemineTimeSettingInDayBefore  = predTimeSetInDayBeforeOpt.get();
 			PrescribedTimezoneSetting prescribedTimezoneSettingInDayBefore = predetemineTimeSettingInDayBefore.getPrescribedTimezoneSetting();
+			TimezoneUse timezoneUseInDayBefore = prescribedTimezoneSettingInDayBefore.getLstTimezone().stream().filter(x -> x.getWorkNo() == TimezoneUse.SHIFT_ONE).findFirst().get();
 			
 			//（
 			//・前日の就業時間帯．終了．日区分　＝＝　当日の就業時間帯．開始．日区分
@@ -971,18 +974,31 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 			//）
 			//OR
 			//・前日の就業時間帯．終了．日区分　＞　当日の就業時間帯．開始．日区分
-			if ((prescribedTimezoneSettingInDayBefore.getAfternoonStartTime().getDayDivision().equals(prescribedTimezoneSettingInDay.getMorningEndTime().getDayDivision()) 
-					&& prescribedTimezoneSettingInDayBefore.getAfternoonStartTime().getDayTime() == prescribedTimezoneSettingInDay.getMorningEndTime().getDayTime())
-					|| prescribedTimezoneSettingInDayBefore.getAfternoonStartTime().getDayDivision().hours > prescribedTimezoneSettingInDay.getMorningEndTime().getDayDivision().hours) {
+			if ((timezoneUseInDayBefore.getEnd().getDayDivision().equals(timezoneUseInDay.getStart().getDayDivision()) 
+					&& timezoneUseInDayBefore.getEnd().getDayTime() == timezoneUseInDay.getStart().getDayTime())
+					|| timezoneUseInDayBefore.getEnd().getDayDivision().hours > timezoneUseInDay.getStart().getDayDivision().hours) {
 				String alarmMessage = TextResource.localize("KAL010_1005", exDate.addDays(-1).toString(), exDate.toString());
 				
-				String param1 = prescribedTimezoneSettingInDayBefore.getMorningEndTime().getRawTimeWithFormat() + ErrorAlarmConstant.PERIOD_SEPERATOR + prescribedTimezoneSettingInDayBefore.getAfternoonStartTime().getRawTimeWithFormat();
+				String param1 = timezoneUseInDayBefore.getStart().getRawTimeWithFormat() + ErrorAlarmConstant.PERIOD_SEPERATOR + timezoneUseInDayBefore.getEnd().getRawTimeWithFormat();
 				String param2 = exDate.toString();
-				String param3 = prescribedTimezoneSettingInDay.getMorningEndTime().getRawTimeWithFormat() + ErrorAlarmConstant.PERIOD_SEPERATOR + prescribedTimezoneSettingInDay.getAfternoonStartTime().getRawTimeWithFormat();
+				String param3 = timezoneUseInDay.getStart().getRawTimeWithFormat() + ErrorAlarmConstant.PERIOD_SEPERATOR + timezoneUseInDay.getEnd().getRawTimeWithFormat();
 				String alarmTarget = TextResource.localize("KAL010_1021", exDate.addDays(-1).toString(), param1, param2, param3);
 				
 				return new AlarmMsgOutput(alarmMessage, alarmTarget);
 			}
+			
+//			if ((prescribedTimezoneSettingInDayBefore.getAfternoonStartTime().getDayDivision().equals(prescribedTimezoneSettingInDay.getMorningEndTime().getDayDivision()) 
+//					&& prescribedTimezoneSettingInDayBefore.getAfternoonStartTime().getDayTime() == prescribedTimezoneSettingInDay.getMorningEndTime().getDayTime())
+//					|| prescribedTimezoneSettingInDayBefore.getAfternoonStartTime().getDayDivision().hours > prescribedTimezoneSettingInDay.getMorningEndTime().getDayDivision().hours) {
+//				String alarmMessage = TextResource.localize("KAL010_1005", exDate.addDays(-1).toString(), exDate.toString());
+//				
+//				String param1 = prescribedTimezoneSettingInDayBefore.getMorningEndTime().getRawTimeWithFormat() + ErrorAlarmConstant.PERIOD_SEPERATOR + prescribedTimezoneSettingInDayBefore.getAfternoonStartTime().getRawTimeWithFormat();
+//				String param2 = exDate.toString();
+//				String param3 = prescribedTimezoneSettingInDay.getMorningEndTime().getRawTimeWithFormat() + ErrorAlarmConstant.PERIOD_SEPERATOR + prescribedTimezoneSettingInDay.getAfternoonStartTime().getRawTimeWithFormat();
+//				String alarmTarget = TextResource.localize("KAL010_1021", exDate.addDays(-1).toString(), param1, param2, param3);
+//				
+//				return new AlarmMsgOutput(alarmMessage, alarmTarget);
+//			}
 		}
 		
 		return null;
