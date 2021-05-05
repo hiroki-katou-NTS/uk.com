@@ -30,7 +30,8 @@ public class ErrorAlarmWorkRecordFinder {
 	 * @param type = 0 => user setting, type = 1 => system setting
 	 * @return
 	 */
-	public List<ErrorAlarmWorkRecordDto> getListErrorAlarmWorkRecord(int type) {
+	public ErrorAlarmDto getListErrorAlarmWorkRecord(int type) {
+		ErrorAlarmDto errorAlarmDto = new ErrorAlarmDto();
 		List<ErrorAlarmWorkRecord> lstErrorAlarm = repository
 				.getListErrorAlarmWorkRecord(AppContexts.user().companyId(), type);
 		if (type == 1) {
@@ -39,7 +40,9 @@ public class ErrorAlarmWorkRecordFinder {
 		List<ErrorAlarmWorkRecordDto> lstDto = lstErrorAlarm.stream()
 				.map(eral -> ErrorAlarmWorkRecordDto.fromDomain(eral, eral.getErrorAlarmCondition()))
 				.collect(Collectors.toList());
-		return lstDto;
+		errorAlarmDto.setErrorAlarmWorkRecordList(lstDto);
+		errorAlarmDto.setOotsukaOption(getOotsukaOptionInfo());
+		return errorAlarmDto;
 	}
 
 	public List<ErrorAlarmWorkRecordDto> findByListErrorAlamCheckId(List<String> listEralCheckId) {
@@ -58,7 +61,7 @@ public class ErrorAlarmWorkRecordFinder {
 	
 	/** UKDesign.UniversalK.就業.KDW_日別実績.KDW007_勤務実績のエラーアラーム設定.エラー/アラームの条件設定.ユースケース.日別.起動する  (khởi động).起動する..大塚オプション情報を取得する */
 	
-	public boolean getOtsukaOptionInfo() {
+	public boolean getOotsukaOptionInfo() {
 		return AppContexts.optionLicense().customize().ootsuka();
 	}
 

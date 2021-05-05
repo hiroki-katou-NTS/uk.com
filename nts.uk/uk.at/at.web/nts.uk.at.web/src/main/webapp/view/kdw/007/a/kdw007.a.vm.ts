@@ -89,6 +89,8 @@ module nts.uk.at.view.kdw007.a.viewmodel {
 
         sideBar: KnockoutObservable<number>;
         codeToSelect: KnockoutObservable<string> = ko.observable(null);
+        //  ver22: ◆大塚オプション
+        ootsukaOption: KnockoutObservable<boolean> = ko.observable(false);
         
         constructor(isMonthly) {
             let self = this;
@@ -99,7 +101,9 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             self.selectedErrorAlarm = ko.observable(new ErrorAlarmWorkRecord(self.screenMode()));
             self.showTypeAtr.subscribe((val) => {
                 nts.uk.ui.block.invisible();
-                service.getAll(val).done((lstData: Array<any>) => {
+                service.getAll(val).done((data: any) => {
+                    let lstData: Array<any> = data ? data.errorAlarmWorkRecordList : [];
+                    self.ootsukaOption(data ? data.ootsukaOption : false);
                     if (lstData && lstData.length > 0) {
                         let sortedData: Array<any> = _.orderBy(lstData, ['code'], ['asc']);
                         self.lstFilteredData(sortedData);
@@ -224,7 +228,9 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                         self.listRemarkColumnNo(lstItemCode);
                     }
                 });
-                service.getAll(self.showTypeAtr()).done((lstData: Array<any>) => {
+                service.getAll(self.showTypeAtr()).done((data: any) => {
+                    let lstData: Array<any> = data ? data.errorAlarmWorkRecordList : [];
+                    self.ootsukaOption(data ? data.ootsukaOption : false);
                     if (lstData && lstData.length > 0) {
                         let sortedData: Array<any> = _.orderBy(lstData, ['code'], ['asc']);
                         self.lstFilteredData(sortedData);
@@ -422,8 +428,8 @@ module nts.uk.at.view.kdw007.a.viewmodel {
 
         updateTab() {
             let self = this;
-            self.tabs()[0].visible(false);
-            self.tabs()[1].visible(false);
+            self.tabs()[0].visible(true);
+            self.tabs()[1].visible(true);
             self.tabs()[2].visible(false);
             self.tabs()[3].visible(false);
             if (self.screenMode() == ScreenMode.Daily && self.selectedErrorAlarm().typeAtr == 2) {
