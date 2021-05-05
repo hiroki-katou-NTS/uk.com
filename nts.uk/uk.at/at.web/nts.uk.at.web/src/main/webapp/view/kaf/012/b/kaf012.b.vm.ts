@@ -146,6 +146,23 @@ module nts.uk.at.view.kaf012.b.viewmodel {
 			vm.eventCalc = function(a: any) { vm.getChildCalcEvent.apply(vm, [a]) };
         }
 
+        mounted() {
+            const vm = this;
+            vm.leaveType.subscribe(value => {
+                vm.applyTimeData().forEach((row : DataModel) => {
+                    row.applyTime.forEach(apply => {
+                        apply.substituteAppTime(0);
+                        apply.annualAppTime(0);
+                        apply.careAppTime(0);
+                        apply.childCareAppTime(0);
+                        apply.super60AppTime(0);
+                        apply.specialAppTime(0);
+                        apply.calculatedTime(0);
+                    });
+                });
+            });
+        }
+
 		reload() {
 			const vm = this;
 			if(vm.appType() === AppType.ANNUAL_HOLIDAY_APPLICATION) {
@@ -176,9 +193,6 @@ module nts.uk.at.view.kaf012.b.viewmodel {
                 appDispInfoStartupOutput: vm.appDispInfoStartupOutput()
             }).done(res => {
                 if (res) {
-                    vm.reflectSetting(res.reflectSetting);
-                    vm.timeLeaveRemaining(res.timeLeaveRemaining);
-                    vm.timeLeaveManagement(res.timeLeaveManagement);
                     let totalAppTime: Array<number> = [0, 0, 0, 0, 0, 0], specialFrame: number = null;
                     res.details.forEach((detail: TimeLeaveAppDetail) => {
                         detail.timeZones.forEach(z => {
@@ -228,6 +242,9 @@ module nts.uk.at.view.kaf012.b.viewmodel {
                     } else {
                         vm.leaveType(_.findIndex(totalAppTime, i => i > 0));
                     }
+                    vm.reflectSetting(res.reflectSetting);
+                    vm.timeLeaveRemaining(res.timeLeaveRemaining);
+                    vm.timeLeaveManagement(res.timeLeaveManagement);
                     if (specialFrame != null) vm.specialLeaveFrame(specialFrame);
                     vm.printContentOfEachAppDto().opPrintContentOfTimeLeave = res.details;
 
