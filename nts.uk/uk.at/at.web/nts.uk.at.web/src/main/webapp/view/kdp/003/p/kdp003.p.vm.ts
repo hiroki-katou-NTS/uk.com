@@ -35,7 +35,9 @@ module nts.uk.at.kdp003.p {
 		}
 
 		mounted() {
-			$('#P20_1').focus();
+			$(document).ready(() => {
+				$('#P2_2 .start').focus();
+			});
 		}
 
 		searchMessage(param: DatePeriod) {

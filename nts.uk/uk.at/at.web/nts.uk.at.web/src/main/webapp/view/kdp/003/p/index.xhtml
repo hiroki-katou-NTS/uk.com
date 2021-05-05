@@ -8,7 +8,7 @@
     <ui:composition template="/master/base.xhtml">
         <ui:define name="htmlHead">
             <com:scriptfile set="IGNITE" />
-            <script>var dialogSize = { width: 445, height: 350 };</script>
+            <script>var dialogSize = { width: 463, height: 350 };</script>
             
             <com:stylefile path="./kdp003.p.style.css" />
             <com:scriptfile path="./kdp003.p.vm.js" />
@@ -19,7 +19,7 @@
                 <table id="expand-example">
                     <thead>
                       <!-- P1 お知らせ内容 -->
-                      <tr class="bg-green border">
+                      <tr class="header-green border">
                         <td class="align-center w-percent-20">
                             <!-- P2_1 表示期間(ラベル) -->
                             <span id="P2_1" class="auto-margin" data-bind="text: $i18n('KDP003_55')"></span>
@@ -32,7 +32,7 @@
                               enable: true,
                               showNextPrevious: false,
                               value: dateValue,
-                              name: '#[KDP003_55]',
+                              name: $i18n('KDP003_55'),
                               maxRange: 'oneYear'}"
                             ></div>
                             <!-- P3 検索 -->
@@ -45,7 +45,7 @@
                       <tr class="border-groove">
                         <td colspan="2">
                           <div class="table-overflow">
-                            <table class="wp-100">
+                            <table class="wp-100" tabindex="3">
                               <tbody>
                                 <!-- P4 メッセージ一覧 -->
                                 <com:ko-foreach bind="itemList">

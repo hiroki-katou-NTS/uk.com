@@ -63,15 +63,16 @@ module nts.uk.at.kdp003.q {
 		mounted() {
 			const vm = this;
 			$(document).ready(() => {
-				$('#message').focus();
+				$('#area-notice').focus();
 			});
+
 			vm.destination.subscribe(() => {
 				//if (vm.employeeReferenceRange() === EmployeeReferenceRange.DEPARTMENT_ONLY) {
-					if (!_.isNull(vm.notificationCreated().workplaceInfo)) {
-						const workplaceInfo = this.notificationCreated().workplaceInfo;
-						vm.workPlaceIdList([workplaceInfo.workplaceId]);
-						vm.workPlaceTxtRefer(`${workplaceInfo.workplaceCode} ${workplaceInfo.workplaceName}`);
-					}
+				if (!_.isNull(vm.notificationCreated().workplaceInfo)) {
+					const workplaceInfo = this.notificationCreated().workplaceInfo;
+					vm.workPlaceIdList([workplaceInfo.workplaceId]);
+					vm.workPlaceTxtRefer(`${workplaceInfo.workplaceCode} ${workplaceInfo.workplaceName}`);
+				}
 				//}
 			});
 		}
@@ -202,13 +203,23 @@ module nts.uk.at.kdp003.q {
 				messageNotice: message
 			}
 			vm.$blockui('show');
-			vm.$ajax('com', API.REGISTER_NOTICE, command)
-				.then(() => {
-					vm.$dialog.info({ messageId: 'Msg_15' })
-						.then(() => this.$window.close({ isClose: false }))
-				})
-				.fail(error => vm.$dialog.error(error))
-				.always(() => vm.$blockui('hide'));
+			vm.$validate().then((valid: boolean) => {
+				if (valid) {
+					vm.$ajax('com', API.REGISTER_NOTICE, command)
+						.done(() => {
+							vm.$dialog.info({ messageId: 'Msg_15' })
+								.then(() => this.$window.close({ isClose: false }))
+						})
+						.fail((error: any) => {
+							vm.$dialog.error(error);
+						}).always(() => {
+							vm.$blockui("hide");
+						});
+				} else {
+					vm.$blockui("clear");
+				}
+			});
+
 		}
 
         /**
@@ -238,13 +249,20 @@ module nts.uk.at.kdp003.q {
 				messageNotice: message
 			}
 			vm.$blockui('show');
-			vm.$ajax('com', API.UPDATE_NOTICE, command)
-				.then(() => {
-					vm.$dialog.info({ messageId: 'Msg_15' })
-						.then(() => this.$window.close({ isClose: true }))
-				})
-				.fail(error => vm.$dialog.error(error))
-				.always(() => vm.$blockui('hide'));
+			vm.$validate().then((valid: boolean) => {
+				if (valid) {
+					vm.$ajax('com', API.UPDATE_NOTICE, command)
+						.then(() => {
+							vm.$dialog.info({ messageId: 'Msg_15' })
+								.then(() => this.$window.close({ isClose: true }))
+						})
+						.fail(error => vm.$dialog.error(error))
+						.always(() => vm.$blockui('hide'));
+				} else {
+					vm.$blockui('clear');
+				}
+
+			});
 
 		}
 
@@ -268,6 +286,10 @@ module nts.uk.at.kdp003.q {
 						vm.$dialog.info({ messageId: 'Msg_16' })
 							.then(() => this.$window.close({ isClose: false }))
 					})
+					.fail(error => {
+							vm.$dialog.error(error)
+							.then(() => this.$window.close())
+					 })
 					.always(() => vm.$blockui('hide'));
 			});
 		}

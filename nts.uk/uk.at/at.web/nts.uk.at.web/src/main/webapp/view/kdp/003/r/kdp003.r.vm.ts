@@ -47,6 +47,10 @@ module nts.uk.at.kdp003.r {
         mounted() {
             const vm = this;
 
+			$(document).ready(() => {
+				$('#closeBtn').focus();
+			});
+
             if (vm.screen === 'KDP003') {
                 vm.displayNotice('loginKDP003');
             }

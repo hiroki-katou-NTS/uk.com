@@ -1,6 +1,6 @@
 #expand-example {
 	margin: auto;
-  	width: 425px;
+  	width: 443px;
   }
   .row-inline {
 	display: inline-flex;
@@ -43,8 +43,7 @@
   }
   
   .footer-content {
-	width: 424px;
-	margin-top: 10px;
+	margin-top: 10px !important;
   }
   .pl-15 {
 	padding-left: 15px;
@@ -83,4 +82,7 @@
   .blue-link:hover {
 	cursor: pointer;
 	color: rgb(0, 0, 255) !important;
+  }
+  .header-green {
+  	background-color: #BFEA60;
   }
