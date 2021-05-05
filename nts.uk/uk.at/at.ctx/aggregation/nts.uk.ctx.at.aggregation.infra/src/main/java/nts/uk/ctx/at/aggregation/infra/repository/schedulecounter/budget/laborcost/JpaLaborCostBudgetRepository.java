@@ -23,7 +23,11 @@ import nts.uk.shr.com.context.AppContexts;
  */
 public class JpaLaborCostBudgetRepository extends JpaRepository implements LaborCostBudgetRepository   {
 	
-	private static final String DELETE = "";
+	private static final String DELETE = "DELETE FROM KagdtLaborCostBudgetDaily c "
+									   + "WHERE c.companyId = :companyId "
+									   + "AND c.pk.targetUnit = :targetUnit "	
+									   + "AND c.pk.targetID = :targetID "
+									   + "AND c.pk.ymd = :ymd ";
 	
 	
 	private static final String SELECT_BY_WORKPLACE = " SELECT c FROM KagdtLaborCostBudgetDaily c WHERE c.pk.targetUnit = :targetUnit AND c.companyId = :companyId AND c.pk.ymd >= :startDate AND c.pk.ymd <= :endDate";
@@ -38,24 +42,22 @@ public class JpaLaborCostBudgetRepository extends JpaRepository implements Labor
 
 	@Override
 	public void delete(String companyId, TargetOrgIdenInfor targetOrg, GeneralDate ymd) {
-		String workplaceId = "";
-		
-		if(targetOrg.getUnit().value == TargetOrganizationUnit.WORKPLACE.value){
 
-			/*this.getEntityManager().createQuery(DELETE, KagdtLaborCostBudgetDaily.class)
-			.setParameter("companyId", companyId)
-			.setParameter("targetUnit", targetUnit)
-			.setParameter("workplaceId", workplaceId)
-			.setParameter("ymd", ymd)
-			.executeUpdate();*/
+		
+	/*	if(targetOrg.getUnit().value == TargetOrganizationUnit.WORKPLACE.value){
 			this.commandProxy().remove(KagdtLaborCostBudgetDaily.class,
 					new KagdtLaborCostBudgetDailyPk(0, targetOrg.getTargetId(), ymd)  );
 		}else{
 			this.commandProxy().remove(KagdtLaborCostBudgetDaily.class,
 					new KagdtLaborCostBudgetDailyPk(1, targetOrg.getTargetId(), ymd)  );
 			
-		}
-	
+		}*/
+		this.getEntityManager().createQuery(DELETE, KagdtLaborCostBudgetDaily.class)
+		.setParameter("companyId", companyId)
+		.setParameter("targetUnit", targetOrg.getUnit().value)
+		.setParameter("targetID", targetOrg.getTargetId())
+		.setParameter("ymd", ymd)
+		.executeUpdate();
 		
 	}
 

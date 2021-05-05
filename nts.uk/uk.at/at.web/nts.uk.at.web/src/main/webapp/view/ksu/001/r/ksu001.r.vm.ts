@@ -154,7 +154,18 @@ module nts.uk.at.view.ksu001.r {
 //
 //                             self.listperiodsTemp.push(new ItemModel(extBudget[i].ymd, extBudget[i].amount));         
 //                        }
-                    
+                        if (extBudget) {                        
+                        self.listBudgetDaily = extBudget;
+                        extBudget.forEach(item => {
+                            // self.listperiods.push(item);
+                            self.listperiodsTemp.map((x) => {
+                                if (x.date().slice(0, 10) == item.ymd) {
+                                    return x.value(item.amount);
+                                }
+                            })
+                        });
+                    }
+
                     console.log('aaa');
                     blockUI.clear();
                     dfd.resolve();
