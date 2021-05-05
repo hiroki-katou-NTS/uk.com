@@ -35,6 +35,7 @@ public class RegisterWorkHoursServiceTest {
 	
 	private String empId = "empId";
 	private GeneralDate ymd = GeneralDate.today();
+	private String cid = "cid";
 	private EditStateSetting editStateSetting = EnumAdaptor.valueOf(0, EditStateSetting.class);
 	
 	//if 作業詳細一覧.isNotPresent
@@ -50,7 +51,7 @@ public class RegisterWorkHoursServiceTest {
 			}
 		};
 		
-		ManHourInputResult result = RegisterWorkHoursService.register(require, empId, ymd, editStateSetting, workDetailsParams);
+		ManHourInputResult result = RegisterWorkHoursService.register(require, cid, empId, ymd, editStateSetting, workDetailsParams);
 		
 		assertThat(result.getIntegrationOfDaily().isPresent()).isFalse();
 		
@@ -69,7 +70,7 @@ public class RegisterWorkHoursServiceTest {
 			}
 		};
 		
-		ManHourInputResult result = RegisterWorkHoursService.register(require, empId, ymd, editStateSetting, workDetailsParams);
+		ManHourInputResult result = RegisterWorkHoursService.register(require, cid, empId, ymd, editStateSetting, workDetailsParams);
 		
 		assertThat(result.getIntegrationOfDaily().isPresent()).isFalse();
 		

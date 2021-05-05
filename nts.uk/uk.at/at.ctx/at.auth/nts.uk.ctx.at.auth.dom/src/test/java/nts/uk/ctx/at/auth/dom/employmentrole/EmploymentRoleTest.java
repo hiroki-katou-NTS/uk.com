@@ -37,8 +37,7 @@ public class EmploymentRoleTest {
 				EnumAdaptor.valueOf(0, EmployeeRefRange.class),
 				EnumAdaptor.valueOf(0, EmployeeRefRange.class),
 				EnumAdaptor.valueOf(0, EmployeeReferenceRange.class),
-				EnumAdaptor.valueOf(0, DisabledSegment.class),
-				EnumAdaptor.valueOf(0, EmployeeRefRange.class));
+				EnumAdaptor.valueOf(0, DisabledSegment.class));
 		NtsAssert.invokeGetters(role);
 		assertThat(role.getCompanyId()).isEqualTo("Cid");
 		assertThat(role.getRoleId()).isEqualTo("RoleId");
@@ -47,7 +46,6 @@ public class EmploymentRoleTest {
 		assertThat(role.getEmployeeRefSpecAgent().value).isEqualTo(0);
 		assertThat(role.getPresentInqEmployeeRef().value).isEqualTo(0);
 		assertThat(role.getFutureDateRefPermit().value).isEqualTo(0);
-		assertThat(role.getAtdTaskEmployeeRef().value).isEqualTo(0);
 	}
 	
 	// Test all createFromJavaType

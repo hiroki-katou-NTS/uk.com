@@ -14,7 +14,8 @@ import mockit.Injectable;
 import mockit.integration.junit4.JMockit;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.ExecutionType;
+import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenWorkTimeSheetOfDailyAttendance;
 
@@ -43,7 +44,7 @@ public class CalculateAttendanceTimeBySupportWorkServiceTest {
 
 		new Expectations() {
 			{
-				require.get(empId, ymd);
+				require.get(empId, new DatePeriod(ymd, ymd));
 			}
 		};
 
@@ -60,7 +61,7 @@ public class CalculateAttendanceTimeBySupportWorkServiceTest {
 
 		new Expectations() {
 			{
-				require.get(empId, ymd);
+				require.get(empId, new DatePeriod(ymd, ymd));
 				result = Optional.of(integrationOfDaily);
 				
 				require.calculationIntegrationOfDaily(integrationOfDaily, EnumAdaptor.valueOf(0, ExecutionType.class));

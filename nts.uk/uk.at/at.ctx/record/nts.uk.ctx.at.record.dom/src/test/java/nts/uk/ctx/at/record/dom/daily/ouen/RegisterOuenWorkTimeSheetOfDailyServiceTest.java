@@ -51,7 +51,7 @@ public class RegisterOuenWorkTimeSheetOfDailyServiceTest {
 
 		new Expectations() {
 			{
-				require.find(empId, ymd);
+				require.findOuenWorkTimeSheetOfDaily(empId, ymd);
 
 				require.getEditStateOfDailyPerformance(empId, ymd);
 				result = editStateOfDailyPerformance;
@@ -89,7 +89,7 @@ public class RegisterOuenWorkTimeSheetOfDailyServiceTest {
 
 		new Expectations() {
 			{
-				require.find(empId, ymd);
+				require.findOuenWorkTimeSheetOfDaily(empId, ymd);
 
 				require.getEditStateOfDailyPerformance(empId, ymd);
 				result = editStateOfDailyPerformance;
@@ -125,7 +125,7 @@ public class RegisterOuenWorkTimeSheetOfDailyServiceTest {
 
 		new Expectations() {
 			{
-				require.find(empId, ymd);
+				require.findOuenWorkTimeSheetOfDaily(empId, ymd);
 
 				require.getEditStateOfDailyPerformance(empId, ymd);
 				result = editStateOfDailyPerformance;
@@ -166,7 +166,7 @@ public class RegisterOuenWorkTimeSheetOfDailyServiceTest {
 
 		new Expectations() {
 			{
-				require.find(empId, ymd);
+				require.findOuenWorkTimeSheetOfDaily(empId, ymd);
 				result = Optional.of(ouenWorkTime);
 
 				require.getEditStateOfDailyPerformance(empId, ymd);
@@ -215,7 +215,7 @@ public class RegisterOuenWorkTimeSheetOfDailyServiceTest {
 
 		new Expectations() {
 			{
-				require.find(empId, ymd);
+				require.findOuenWorkTimeSheetOfDaily(empId, ymd);
 				result = Optional.of(ouenWorkTime);
 
 				require.getEditStateOfDailyPerformance(empId, ymd);
