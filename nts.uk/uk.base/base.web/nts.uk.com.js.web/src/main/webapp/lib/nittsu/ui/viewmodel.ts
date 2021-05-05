@@ -7,44 +7,47 @@ type KibanViewModel = {
 };
 
 /** Create new ViewModel and automatic binding to __viewContext */
-function bean(dialogOption?: DialogOption): any {
+function bean(dialogOption?: nts.uk.ui.vm.DialogOption): any {
 	return function (ctor: any): any {
 		__viewContext.ready(() => {
-			nts.uk.ui.viewmodel.$storage().then(($params: any) => {
-				const $viewModel = new ctor($params)
-					, $created = $viewModel['created'];
+			const { localShared } = nts.uk.ui.windows.container;
 
-				_.extend($viewModel, { $el: undefined });
+			nts.uk.ui.viewmodel.$storage()
+				.then(($params: any) => {
+					const $viewModel = new ctor($params || localShared)
+						, $created = $viewModel['created'];
 
-				// hook to created function
-				if ($created && _.isFunction($created)) {
-					$created.apply($viewModel, [$params]);
-				}
+					_.extend($viewModel, { $el: undefined });
 
-				// hook to mounted function
-				$viewModel.$nextTick(() => {
-					const $mounted = $viewModel['mounted'];
-					const kvm: KibanViewModel = nts.uk.ui._viewModel.kiban;
-
-					_.extend($viewModel, { $el: document.querySelector('#master-wrapper') });
-
-					if (kvm) {
-						ko.computed({
-							read: () => {
-								$viewModel.$validate.valid(!kvm.errorDialogViewModel.errors().length);
-							},
-							owner: $viewModel,
-							disposeWhenNodeIsRemoved: $viewModel.$el
-						});
+					// hook to created function
+					if ($created && _.isFunction($created)) {
+						$created.apply($viewModel, [$params || localShared]);
 					}
 
-					if ($mounted && _.isFunction($mounted)) {
-						$mounted.apply($viewModel, []);
-					}
+					// hook to mounted function
+					$viewModel.$nextTick(() => {
+						const $mounted = $viewModel['mounted'];
+						const kvm: KibanViewModel = nts.uk.ui._viewModel.kiban;
+
+						_.extend($viewModel, { $el: document.querySelector('#master-wrapper') });
+
+						if (kvm) {
+							ko.computed({
+								read: () => {
+									$viewModel.$validate.valid(!kvm.errorDialogViewModel.errors().length);
+								},
+								owner: $viewModel,
+								disposeWhenNodeIsRemoved: $viewModel.$el
+							});
+						}
+
+						if ($mounted && _.isFunction($mounted)) {
+							$mounted.apply($viewModel, []);
+						}
+					});
+
+					__viewContext.bind($viewModel, dialogOption);
 				});
-
-				__viewContext.bind($viewModel, dialogOption);
-			});
 		});
 	};
 }

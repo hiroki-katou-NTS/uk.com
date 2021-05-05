@@ -12,6 +12,7 @@ import nts.uk.ctx.at.shared.infra.entity.scherec.taskmanagement.taskassign.taska
 import nts.uk.ctx.at.shared.infra.entity.scherec.taskmanagement.taskassign.taskassignworkplace.KsrmtTaskAssignWkpPk;
 import nts.uk.ctx.at.shared.infra.entity.scherec.taskmanagement.taskassign.taskassignworkplace.metamodel.KsrmtTaskAssignWkpPk_;
 import nts.uk.ctx.at.shared.infra.entity.scherec.taskmanagement.taskassign.taskassignworkplace.metamodel.KsrmtTaskAssignWkp_;
+import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -30,9 +31,9 @@ public class JpaNarrowingByWorkplaceRepository extends JpaRepository implements 
 
     @Override
     public void update(NarrowingDownTaskByWorkplace narrowing) {
+        this.delete(AppContexts.user().companyId(), narrowing.getWorkPlaceId(), narrowing.getTaskFrameNo());
         val listEntity = KsrmtTaskAssignWkp.toEntitys(narrowing);
-        this.commandProxy().updateAll(listEntity);
-
+        this.commandProxy().insertAll(listEntity);
     }
 
     @Override
