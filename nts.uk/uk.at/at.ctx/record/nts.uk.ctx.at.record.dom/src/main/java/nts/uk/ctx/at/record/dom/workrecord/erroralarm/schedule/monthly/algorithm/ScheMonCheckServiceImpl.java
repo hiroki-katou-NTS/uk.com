@@ -1273,6 +1273,9 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
                     false, false, Optional.of(false),
                     Optional.empty(), Optional.empty(), Optional.empty(),
                     Optional.empty(), Optional.empty(), Optional.empty());
+			if (!aggResult.getAnnualLeave().isPresent()) {
+				break;
+			}
 			
 			// 休暇日数を計算
 			if (dayCheckCond.getTypeOfDays() == TypeOfDays.ANNUAL_LEAVE_NUMBER) {
