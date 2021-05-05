@@ -66,18 +66,19 @@ public class DetailAfterDenyImpl implements DetailAfterDeny {
 			// 3.否認する(DenyService)
 			Boolean releaseFlg = approvalRootStateAdapter.doDeny(appLoop.getAppID(), loginID, memo);
 			isProcessDone = isProcessDone && releaseFlg;
+			if(releaseFlg) {
+				// 「反映情報」．実績反映状態を「否認」にする(chuyển trạng thái 「反映情報」．実績反映状態 thành 「否認」)
+				for(ReflectionStatusOfDay reflectionStatusOfDay : appLoop.getReflectionStatus().getListReflectionStatusOfDay()) {
+					reflectionStatusOfDay.setActualReflectStatus(ReflectedState.DENIAL);
+				}
+				// アルゴリズム「反映状態の更新」を実行する
+				applicationRepository.update(appLoop);
+			}
 		}
 		if(!isProcessDone) {
 			return processResult;
 		}
 		processResult.setProcessDone(true);
-		// 「反映情報」．実績反映状態を「否認」にする(chuyển trạng thái 「反映情報」．実績反映状態 thành 「否認」)
-		for(ReflectionStatusOfDay reflectionStatusOfDay : application.getReflectionStatus().getListReflectionStatusOfDay()) {
-			reflectionStatusOfDay.setActualReflectStatus(ReflectedState.DENIAL);
-		}
-		// アルゴリズム「反映状態の更新」を実行する
-		applicationRepository.update(application);
-		
 		// 暫定データの登録
 		List<GeneralDate> dateLst = new ArrayList<>();
 		if(application.getAppType()==ApplicationType.COMPLEMENT_LEAVE_APPLICATION) {

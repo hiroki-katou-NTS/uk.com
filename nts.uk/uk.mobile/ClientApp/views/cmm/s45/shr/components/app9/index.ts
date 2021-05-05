@@ -1,12 +1,12 @@
-import { _, Vue } from '@app/provider';
-import { component, Prop } from '@app/core/component';
+import { Vue } from '@app/provider';
+import { component, Prop, Watch } from '@app/core/component';
 import {
     IAppDispInfoStartupOutput,
     IArrivedLateLeaveEarly,
     IEarlyInfos,
     ITime
 } from '../../../../../kaf/s04/a/define';
-import { KafS00SubP1Component, KAFS00P1Params } from '../../../../../kaf/s00/sub/p1';
+import { KafS00SubP1Component, KAFS00P1Params, ExcessTimeStatus } from '../../../../../kaf/s00/sub/p1';
 
 @component({
     name: 'cmms45componentsapp9',
@@ -19,7 +19,7 @@ import { KafS00SubP1Component, KAFS00P1Params } from '../../../../../kaf/s00/sub
 })
 export class CmmS45ComponentsApp9Component extends Vue {
 
-    public appDispInfoStartupOutput!: IAppDispInfoStartupOutput;
+    public appDispInfoStartupOutput: IAppDispInfoStartupOutput;
     public time: ITime = {
         attendanceTime: null,
         leaveTime: null,
@@ -80,15 +80,30 @@ export class CmmS45ComponentsApp9Component extends Vue {
             appDetail: null,
         })
 
-    }) public readonly params!: {
+    }) public readonly params: {
         appDispInfoStartupOutput: IAppDispInfoStartupOutput,
         appDetail: IAppDetail,
 
     };
 
-
-
     public created() {
+        const vm = this;
+    }
+
+    public mounted() {
+        const vm = this;
+        vm.$auth.user.then((usr: any) => {
+            this.fetchData(vm.params.appDispInfoStartupOutput);
+        });
+    }
+
+    @Watch('params.appDispInfoStartupOutput')
+    public appDispInfoWatcher(value: any) {
+        const vm = this;
+        vm.fetchData(value);
+    }
+
+    public fetchData(appDispInfoStartupOutput: any) {
         const vm = this;
 
         vm.kafS00P1Params1 = {
@@ -136,17 +151,75 @@ export class CmmS45ComponentsApp9Component extends Vue {
             scheduleTime: null
         };
         let paramsStartB = {
-            appId: vm.params.appDispInfoStartupOutput.appDetailScreenInfo.application.appID,
-            infoStartup: vm.params.appDispInfoStartupOutput,
+            appId: appDispInfoStartupOutput.appDetailScreenInfo.application.appID,
+            infoStartup: appDispInfoStartupOutput,
         };
 
-        vm.$auth.user.then((user: any) => {
-            vm.$mask('show');
-            vm.$http.post('at', API.startDetailBScreen, paramsStartB).then((res: any) => {
-                vm.$mask('hide');
-                vm.params.appDetail = res.data;
-                vm.$emit('loading-complete');
+        vm.$http.post('at', API.startDetailBScreen, paramsStartB).then((res: any) => {
+            vm.params.appDetail = res.data;
 
+            vm.params.appDetail.arrivedLateLeaveEarly.lateOrLeaveEarlies.forEach((item) => {
+                if (item.workNo == 1 && item.lateOrEarlyClassification == 0) {
+                    vm.time.attendanceTime = item.timeWithDayAttr;
+                }
+                if (item.workNo == 1 && item.lateOrEarlyClassification == 1) {
+                    vm.time.leaveTime = item.timeWithDayAttr;
+                }
+                if (item.workNo == 2 && item.lateOrEarlyClassification == 0) {
+                    vm.time.attendanceTime2 = item.timeWithDayAttr;
+                }
+                if (item.workNo == 2 && item.lateOrEarlyClassification == 1) {
+                    vm.time.leaveTime2 = item.timeWithDayAttr;
+                }
+            });
+
+            // const condition5 = !(_.isEmpty(vm.params.appDetail.arrivedLateLeaveEarly.lateOrLeaveEarlies[2]));
+            //const condition6 = !(_.isEmpty(vm.params.appDetail.arrivedLateLeaveEarly.lateCancelation[2]));
+            const condition7 = appDispInfoStartupOutput.appDispInfoNoDateOutput.managementMultipleWorkCycles;
+
+            // 「遅刻早退取消申請起動時の表示情報.遅刻早退取消申請」に、時刻報告（勤怠No＝２）がEmpty　AND　取消（勤怠No＝２）がEmpty 勤務NO  [ ※4	&& ※1 ]
+            if (condition7 == true) {
+                vm.showData = true;
+            } else {
+                vm.showData = false;
+            }
+
+            //update component S00 P1
+            appDispInfoStartupOutput.appDispInfoWithDateOutput.opActualContentDisplayLst.forEach((item) => {
+                if (item.opAchievementDetail != null) {
+                    vm.kafS00P1Params1.scheduleTime = item.opAchievementDetail.achievementEarly.scheAttendanceTime1;
+                    vm.kafS00P1Params2.scheduleTime = item.opAchievementDetail.achievementEarly.scheDepartureTime1;
+                    vm.kafS00P1Params3.scheduleTime = item.opAchievementDetail.achievementEarly.scheAttendanceTime2;
+                    vm.kafS00P1Params4.scheduleTime = item.opAchievementDetail.achievementEarly.scheDepartureTime2;
+                    if (item.opAchievementDetail.opWorkTime != null) {
+                        if (item.opAchievementDetail.achievementEarly.scheAttendanceTime1 < item.opAchievementDetail.opWorkTime) {
+                            vm.kafS00P1Params1.scheduleExcess = ExcessTimeStatus.ALARM;
+                        }
+                    }
+                    if (item.opAchievementDetail.opLeaveTime != null) {
+                        if (item.opAchievementDetail.achievementEarly.scheDepartureTime1 > item.opAchievementDetail.opLeaveTime) {
+                            vm.kafS00P1Params2.scheduleExcess = ExcessTimeStatus.ALARM;
+                        }
+                    }
+                    if (item.opAchievementDetail.opWorkTime2 != null) {
+                        if (item.opAchievementDetail.achievementEarly.scheAttendanceTime2 < item.opAchievementDetail.opWorkTime2) {
+                            vm.kafS00P1Params3.scheduleExcess = ExcessTimeStatus.ALARM;
+                        }
+                    }
+                    if (item.opAchievementDetail.opDepartureTime2 != null) {
+                        if (item.opAchievementDetail.achievementEarly.scheDepartureTime2 > item.opAchievementDetail.opDepartureTime2) {
+                            vm.kafS00P1Params4.scheduleExcess = ExcessTimeStatus.ALARM;
+                        }
+                    }
+                } else {
+                    vm.kafS00P1Params1.scheduleTime = null;
+                    vm.kafS00P1Params2.scheduleTime = null;
+                    vm.kafS00P1Params3.scheduleTime = null;
+                    vm.kafS00P1Params4.scheduleTime = null;
+                }
+            });
+
+            if (vm.params.appDetail.arrivedLateLeaveEarly.lateOrLeaveEarlies.length != 0) {
                 vm.params.appDetail.arrivedLateLeaveEarly.lateOrLeaveEarlies.forEach((item) => {
                     if (item.workNo == 1 && item.lateOrEarlyClassification == 0) {
                         vm.time.attendanceTime = item.timeWithDayAttr;
@@ -161,72 +234,16 @@ export class CmmS45ComponentsApp9Component extends Vue {
                         vm.time.leaveTime2 = item.timeWithDayAttr;
                     }
                 });
-
-                // const condition5 = !(_.isEmpty(vm.params.appDetail.arrivedLateLeaveEarly.lateOrLeaveEarlies[2]));
-                //const condition6 = !(_.isEmpty(vm.params.appDetail.arrivedLateLeaveEarly.lateCancelation[2]));
-                const condition7 = vm.params.appDispInfoStartupOutput.appDispInfoNoDateOutput.managementMultipleWorkCycles;
-
-                // 「遅刻早退取消申請起動時の表示情報.遅刻早退取消申請」に、時刻報告（勤怠No＝２）がEmpty　AND　取消（勤怠No＝２）がEmpty 勤務NO  [ ※4	&& ※1 ]
-                if (condition7 == true) {
-                    vm.showData = true;
-                } else {
-                    vm.showData = false;
-                }
-
-                //update component S00 P1
-                vm.params.appDispInfoStartupOutput.appDispInfoWithDateOutput.opActualContentDisplayLst.forEach((i) => {
-                    vm.kafS00P1Params1.scheduleTime = i.opAchievementDetail.achievementEarly.scheAttendanceTime1;
-                    vm.kafS00P1Params2.scheduleTime = i.opAchievementDetail.achievementEarly.scheDepartureTime1;
-                    vm.kafS00P1Params3.scheduleTime = i.opAchievementDetail.achievementEarly.scheAttendanceTime2;
-                    vm.kafS00P1Params4.scheduleTime = i.opAchievementDetail.achievementEarly.scheDepartureTime2;
-                });
-
-                if (vm.params.appDetail.arrivedLateLeaveEarly.lateOrLeaveEarlies.length != 0) {
-
-                    vm.params.appDetail.arrivedLateLeaveEarly.lateOrLeaveEarlies.forEach((item) => {
-                        if (item.workNo == 1 && item.lateOrEarlyClassification == 0) {
-                            vm.time.attendanceTime = item.timeWithDayAttr;
-                        }
-                        if (item.workNo == 1 && item.lateOrEarlyClassification == 1) {
-                            vm.time.leaveTime = item.timeWithDayAttr;
-                        }
-                        if (item.workNo == 2 && item.lateOrEarlyClassification == 0) {
-                            vm.time.attendanceTime2 = item.timeWithDayAttr;
-                        }
-                        if (item.workNo == 2 && item.lateOrEarlyClassification == 1) {
-                            vm.time.leaveTime2 = item.timeWithDayAttr;
-                        }
-                    });
-                } else {
-                    vm.appDispInfoStartupOutput.appDispInfoWithDateOutput.opActualContentDisplayLst.forEach((item, index) => {
-                        if (index == 0) {
-                            vm.time.attendanceTime = item.opAchievementDetail.opWorkTime;
-                        }
-                        if (index == 1) {
-                            vm.time.leaveTime = item.opAchievementDetail.opLeaveTime;
-                        }
-                        if (index == 2) {
-                            vm.time.attendanceTime2 = item.opAchievementDetail.opWorkTime2;
-                        }
-                        if (index == 3) {
-                            vm.time.leaveTime2 = item.opAchievementDetail.opDepartureTime2;
-                        }
-                    });
-                }
-            }).catch(() => {
-                vm.$emit('loading-complete');
-            });
-        });
-        vm.$watch('params.appDispInfoStartupOutput', (newV, oldV) => {
+            } else {
+                vm.time.attendanceTime = null;
+                vm.time.leaveTime = null;
+                vm.time.attendanceTime2 = null;
+                vm.time.leaveTime2 = null;
+            }
             vm.$emit('loading-complete');
+        }).catch((error) => {
+            vm.$modal.error(error);
         });
-    }
-
-
-
-    public mounted() {
-        const vm = this;
-
     }
 
     get cond1() {

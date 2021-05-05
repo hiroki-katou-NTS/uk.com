@@ -138,6 +138,8 @@ module nts.uk.ui.chart {
                         }
                     });
                     
+                    pDec.initStart = pDec.start;
+                    pDec.initEnd = pDec.end;
                     chart.reposition(pDec);
                 } else if (self.slideTrigger.holdPos === HOLD_POS.START) {
                     if (chart.fixed === CHART_FIXED.START || chart.fixed === CHART_FIXED.BOTH) return;
@@ -814,6 +816,14 @@ module nts.uk.ui.chart {
             
             if (_.has(style, "end")) {
                 self.end = style.end;
+            }
+            
+            if (_.has(style, "initStart")) {
+                self.initStart = style.initStart;
+            }
+            
+            if (_.has(style, "initEnd")) {
+                self.initEnd = style.initEnd;
             }
             
             if (_.has(style, "top")) {

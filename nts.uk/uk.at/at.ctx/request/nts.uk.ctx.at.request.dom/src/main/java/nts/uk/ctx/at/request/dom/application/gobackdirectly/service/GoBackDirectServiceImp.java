@@ -297,6 +297,7 @@ public class GoBackDirectServiceImp implements GoBackDirectService {
 		output.setLstWorkType(result.getWorkTypes());
 		output.getAppDispInfoStartup().getAppDispInfoWithDateOutput().setOpWorkTimeLst(Optional.of(result.getWorkTimes()));
 		
+		
 		return output;
 	}
 	
