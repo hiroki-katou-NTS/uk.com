@@ -26,9 +26,9 @@
 		<ui:define name="content">
 			<div id="functions-area">
 				<button class="proceed" tabindex="1"
-					data-bind="click: register, enable: $root.errors.isEmpty">#{i18n.getText('KSU001_3702')}</button>
+					data-bind="click: register, enable: $root.errors.isEmpty">#{i18n.getText('KSU001_3801')}</button>
 				<button id="close" tabindex="3"
-					data-bind="click: closeDialog">#{i18n.getText('KSU001_3703')}</button>
+					data-bind="click: closeDialog">#{i18n.getText('KSU001_3802')}</button>
 			</div>
 			<div id="content-area" style="width: 430px">
 				<div id="left-content">
@@ -63,7 +63,7 @@
 												data-bind="visible: $parent.check1, with: $parent.currencyeditor"><input id = "extBudgetMoney"
 												style="text-align: right; border: 0px solid #999999; width: 121px; height: 24px; border-radius: 0px;"
 												data-bind="ntsNumberEditor: {
-													name: '#[KSU001_3708]',
+													name: '#[KSU001_3804]',
 													value: $parent.value,
 													constraint: 'LaborCostBudgetAmount',
 													option: option,
@@ -72,6 +72,7 @@
 													readonly: $parent.date() == '' }" /></td>													
 
 										</tr>
+										
 										<tr data-bind="if: date() == ''" >
 											<td style="border: 1.2px solid; border-color: #F1F1F1 #F1F1F1 #F1F1F1 #A9A9A9;  background-color: #F1F1F1 !important;" colspan="2"></td>
 											<!-- <td style="border: none; background-color: #F1F1F1;"></td> -->

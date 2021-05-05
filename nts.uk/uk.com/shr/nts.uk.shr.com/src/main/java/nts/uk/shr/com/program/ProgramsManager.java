@@ -983,7 +983,7 @@ public class ProgramsManager {
     /**
      * KSU001R
      */
-    public static final Program KSU001R = new Program(WebAppId.AT, ProgramIdConsts.KSU001R, "",
+    public static final Program KSU001R = new Program(WebAppId.AT, ProgramIdConsts.KSU001R, "KSU001_3800",
             "/view/ksu/001/r/index.xhtml");
     /**
      * KSU001O1
