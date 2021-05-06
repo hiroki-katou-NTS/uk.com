@@ -255,9 +255,16 @@ module nts.uk.pr.view.kmf001.c {
                 command.roundProcessClassific = self.enableTimeMaxNumberCompany() ? self.selectedroundProcessClassific() : dataBackup.roundProcessClassific;
                 //http://localhost:8080/nts.uk.at.web/view/ksm/007/a/index.xhtml
                 command.timeOfDayReference =  self.selectC531();
-                command.uniformTime =  self.uniformTime() ;
+                //
+//                var mTime = self.uniformTime().split(':');
+//                var convertTime = (+mTime[0]) * 60 + (+mTime[1]) ; 
+//                command.uniformTime =  convertTime ;
+                if (self.uniformTime() == '0:00') {
+                    command.uniformTime = 0;
+                } else {
+                    command.uniformTime = self.uniformTime();
+                }
                 command.contractTimeRound =  self.selectC535() ;
-                
                 return command;
             }
             
@@ -292,7 +299,7 @@ module nts.uk.pr.view.kmf001.c {
                 self.timeMaxNumberCompany(res.maxTimeDay);
                 self.selectedroundProcessClassific(res.roundProcessClassific);
                 self.selectC531(res.timeOfDayReference);
-                self.uniformTime(res.unifromTime ==  null ? '0:00' :  res.unifromTime);
+                self.uniformTime(res.unifromTime ==  null ? 0 :  res.unifromTime);
                 self.selectC535(res.contractTimeRound);
                 
             }
