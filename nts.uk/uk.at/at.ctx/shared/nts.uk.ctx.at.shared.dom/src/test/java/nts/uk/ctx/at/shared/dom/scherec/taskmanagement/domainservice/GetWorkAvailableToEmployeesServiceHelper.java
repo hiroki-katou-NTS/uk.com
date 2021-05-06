@@ -8,6 +8,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.UseAtr;
+import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskassign.taskassignworkplace.NarrowingDownTaskByWorkplace;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskframe.TaskFrameName;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskframe.TaskFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskframe.TaskFrameSetting;
@@ -71,6 +72,22 @@ public class GetWorkAvailableToEmployeesServiceHelper {
 						Optional.empty(),
 						Optional.empty()));
 		return task;
+	}
+	
+	public static NarrowingDownTaskByWorkplace getNarrowingDown() {
+		
+		List<TaskCode> taskCodeList = new ArrayList<>();
+		
+		taskCodeList.add(new TaskCode("DUMMY"));
+		taskCodeList.add(new TaskCode("DUMMY"));
+		taskCodeList.add(new TaskCode("DUMMY"));
+		
+		NarrowingDownTaskByWorkplace result = new NarrowingDownTaskByWorkplace(
+				"workPlaceId",
+				new TaskFrameNo(2),
+				taskCodeList);
+		
+		return result;
 	}
 
 }
