@@ -14,7 +14,7 @@ public interface AppOverTimeRepository {
 	
 	public void remove(String companyID, String appID);
 	
-	public List<AppOverTime> getByListAppId(String companyId, List<String> appIds);
+	public Map<String, Integer> getByAppIdAndOTAttr(String companyId, List<String> appIds);
 	
 	public Map<String, AppOverTime> getHashMapByID(String companyId, List<String> appIds);
 }

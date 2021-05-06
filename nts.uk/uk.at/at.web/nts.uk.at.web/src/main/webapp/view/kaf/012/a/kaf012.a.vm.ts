@@ -106,6 +106,7 @@ module nts.uk.at.view.kaf012.a.viewmodel {
                         apply.childCareAppTime(0);
                         apply.super60AppTime(0);
                         apply.specialAppTime(0);
+                        apply.calculatedTime(0);
                     });
                 });
             });
@@ -118,6 +119,19 @@ module nts.uk.at.view.kaf012.a.viewmodel {
                 if (value == 1 && vm.appDispInfoStartupOutput()) {
                     vm.updateInputTime(vm.appDispInfoStartupOutput());
                 }
+            });
+            vm.leaveType.subscribe(value => {
+                vm.applyTimeData().forEach((row : DataModel) => {
+                    row.applyTime.forEach(apply => {
+                        apply.substituteAppTime(0);
+                        apply.annualAppTime(0);
+                        apply.careAppTime(0);
+                        apply.childCareAppTime(0);
+                        apply.super60AppTime(0);
+                        apply.specialAppTime(0);
+                        apply.calculatedTime(0);
+                    });
+                });
             });
         }
 
@@ -147,7 +161,8 @@ module nts.uk.at.view.kaf012.a.viewmodel {
                             appDate: new Date(value).toISOString(),
                             appDisplayInfo: {
                                 appDispInfoStartupOutput: vm.appDispInfoStartupOutput(),
-                                timeLeaveManagement: vm.timeLeaveManagement()
+                                timeLeaveManagement: vm.timeLeaveManagement(),
+                                reflectSetting: vm.reflectSetting()
                             }
                         };
                         vm.$blockui("show").then(() => {
@@ -286,7 +301,9 @@ module nts.uk.at.view.kaf012.a.viewmodel {
                         return vm.$ajax(API.changeAppDate, {
                             appDate: new Date(vm.application().appDate()).toISOString(),
                             appDisplayInfo: {
-                                appDispInfoStartupOutput: vm.appDispInfoStartupOutput()
+                                appDispInfoStartupOutput: vm.appDispInfoStartupOutput(),
+                                timeLeaveManagement: vm.timeLeaveManagement(),
+                                reflectSetting: vm.reflectSetting()
                             }
                         });
                     }).then(() => {
@@ -317,7 +334,7 @@ module nts.uk.at.view.kaf012.a.viewmodel {
                         if (result != undefined) {
                             vm.$dialog.info({messageId: "Msg_15"}).then(() => {
 								nts.uk.request.ajax("at", API.reflectApp, result.reflectAppIdLst);
-                            	CommonProcess.handleAfterRegister(result, vm.isSendMail(), vm);
+                            	CommonProcess.handleAfterRegister(result, vm.isSendMail(), vm, false, vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.employeeInfoLst);
                             });
                         }
                     }).fail(err => {

@@ -37,5 +37,5 @@ public interface FlowRestSetGetMemento {
 	 *
 	 * @return the calculate method
 	 */
-	 FlowRestCalcMethod getCalculateMethod();
+//	 FlowRestCalcMethod getCalculateMethod();
 }

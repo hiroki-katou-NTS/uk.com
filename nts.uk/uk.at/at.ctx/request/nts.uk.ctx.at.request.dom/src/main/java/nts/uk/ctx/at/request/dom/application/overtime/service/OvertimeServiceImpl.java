@@ -85,7 +85,7 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appo
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.OverrideSet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeLeaveAppCommonSet;
 import nts.uk.ctx.at.request.dom.workrecord.dailyrecordprocess.dailycreationwork.BreakTimeZoneSetting;
-import nts.uk.ctx.at.shared.dom.application.common.ApplicationShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.common.ApplicationShare;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.BreakFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
@@ -749,8 +749,8 @@ public class OvertimeServiceImpl implements OvertimeService {
 		String workTimeCode = appOverTime.getWorkInfoOp().flatMap(x -> x.getWorkTimeCodeNotNull()).map(x -> x.v()).orElse(null);
 		
 		if (displayInfoOverTime.getWorkInfo().isPresent()) {
-			workTypeCode = workTypeCode.equals(displayInfoOverTime.getWorkInfo().get().getWorkType()) ? workTypeCode : null;
-			workTimeCode = workTimeCode.equals(displayInfoOverTime.getWorkInfo().get().getWorkTime()) ? workTimeCode : null;			
+			workTypeCode = !workTypeCode.equals(displayInfoOverTime.getWorkInfo().get().getWorkType()) ? workTypeCode : null;
+			workTimeCode = !workTimeCode.equals(displayInfoOverTime.getWorkInfo().get().getWorkTime()) ? workTimeCode : null;			
 		}
 		
 		// 4-1.詳細画面登録前の処理

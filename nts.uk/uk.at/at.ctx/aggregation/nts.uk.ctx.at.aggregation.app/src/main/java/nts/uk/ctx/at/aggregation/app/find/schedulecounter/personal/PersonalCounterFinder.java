@@ -8,12 +8,12 @@ import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.enums.EnumConstant;
-import nts.uk.ctx.at.aggregation.dom.schedulecounter.PersonalCounter;
-import nts.uk.ctx.at.aggregation.dom.schedulecounter.PersonalCounterCategory;
-import nts.uk.ctx.at.aggregation.dom.schedulecounter.PersonalCounterRepo;
-import nts.uk.ctx.at.aggregation.dom.schedulecounter.timescounting.TimesNumberCounterSelection;
-import nts.uk.ctx.at.aggregation.dom.schedulecounter.timescounting.TimesNumberCounterSelectionRepo;
-import nts.uk.ctx.at.aggregation.dom.schedulecounter.timescounting.TimesNumberCounterType;
+import nts.uk.ctx.at.aggregation.dom.schedulecounter.tally.PersonalCounter;
+import nts.uk.ctx.at.aggregation.dom.schedulecounter.tally.PersonalCounterCategory;
+import nts.uk.ctx.at.aggregation.dom.schedulecounter.tally.PersonalCounterRepo;
+import nts.uk.ctx.at.aggregation.dom.schedulecounter.tally.timescounting.TimesNumberCounterSelection;
+import nts.uk.ctx.at.aggregation.dom.schedulecounter.tally.timescounting.TimesNumberCounterSelectionRepo;
+import nts.uk.ctx.at.aggregation.dom.schedulecounter.tally.timescounting.TimesNumberCounterType;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.i18n.resource.I18NResourcesForUK;
 

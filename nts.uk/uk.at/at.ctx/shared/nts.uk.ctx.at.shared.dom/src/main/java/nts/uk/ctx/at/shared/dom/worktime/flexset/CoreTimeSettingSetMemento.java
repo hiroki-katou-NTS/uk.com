@@ -34,4 +34,11 @@ public interface CoreTimeSettingSetMemento {
 	 * @param minWorkTime the new min work time
 	 */
 	void setMinWorkTime(AttendanceTime minWorkTime);
+
+	/**
+	 * Sets the go out calc
+	 *
+	 * @param goOutCalc the go out calc
+	 */
+	void setGoOutCalc(OutingCalcWithinCoreTime goOutCalc);
 }

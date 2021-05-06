@@ -19,7 +19,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
   @component({
     name: 'ccg005-component',
     template: 
-    `<div data-bind="widget-content: 290, default: 510" id="ccg005-watching">
+    `<div data-bind="widget-content: 290, default: 510">
     <div id="ccg005-content">
       <div>
         <div class="grade-header-top">
@@ -54,6 +54,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
                       style="border: none !important; padding-right: 30px; background: none !important;" 
                       data-bind="ntsTextEditor: {
                           enterkey: $component.registerComment,
+                          name: '#[CCG005_37]',
                           value: $component.comment,
                           constraint: 'DailyContactComment',
                           enable: $component.isBaseDate,
@@ -80,9 +81,10 @@ module nts.uk.at.view.ccg005.a.screenModel {
         </div>
         <div class="grade-header-bottom ccg005-flex" style="position: relative;">
           <!-- A2_3 -->
-          <div tabindex=6 data-bind="ntsDatePicker: {
+          <div tabindex=6 id="ccg005-selected-date" data-bind="ntsDatePicker: {
                 name: '#[CCG005_36]',
                 value: selectedDate,
+                required: true,
                 dateFormat: 'YYYY/MM/DD',
                 fiscalMonthsMode: true,
                 showJumpButtons: true
@@ -135,7 +137,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
                 <td style="padding-right: 5px; width: 30px; background-color: white;"
                   class="ccg005-apply-binding-avatar ccg005-bottom-unset">
                   <!-- A4_1 -->
-                  <div tabindex=10
+                  <div tabindex=12
                     data-bind="attr:{ id: 'ccg005-avatar-change-'+sid }, click: $component.onClickAvatar.bind($component, sid)" />
                 </td>
                 <td class="ccg005-w100 ccg005-pl-5 ccg005-border-groove ccg005-right-unset">
@@ -201,7 +203,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
                   <i tabindex=16 class="ccg005-pagination-btn"
                     data-bind="ntsIcon: {no: 193, width: 15, height: 20}, click: $component.previousPage"></i>
                   <!-- A5_2 -->
-                  <span style="white-space: nowrap; width: 70px; text-align: center;"
+                  <span style="white-space: nowrap; width: auto; text-align: center;"
                     data-bind="text: $component.paginationText()"></span>
                   <!-- A5_3 -->
                   <i tabindex=17 class="ccg005-pagination-btn"
@@ -323,12 +325,6 @@ module nts.uk.at.view.ccg005.a.screenModel {
   </div>
   <!--------------------------------------- CSS --------------------------------------->
   <style>
-
-    .widget-container > #ccg005-watching > #ccg005-content table tr td {
-      border-width: 1px !important;
-      // border-bottom: none !important;
-    } 
-
     .ccg005-border-groove {
       border: 1px groove !important;
     }
@@ -497,7 +493,6 @@ module nts.uk.at.view.ccg005.a.screenModel {
     commentDisplay: KnockoutObservable<boolean> = ko.computed(() => this.contentSelected() === 0);
     goOutDisplay: KnockoutObservable<boolean> = ko.computed(() => this.contentSelected() === 1);
     favoriteInputDate: KnockoutObservable<any> = ko.observable(null);
-    favoriteInputDateCharacter: KnockoutObservable<any> = ko.observable(null);
     searchValue: KnockoutObservable<string> = ko.observable('');
     workplaceNameFromCDL008: KnockoutObservable<string> = ko.observable('');
 
@@ -566,7 +561,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
         $('.legend-item-symbol').first().css('border', '1px groove').height(16).width(16);
         $('.legend-item').css('margin-bottom', '5px');
       });
-      vm.selectedDate(moment.utc().format('YYYYMMDD'));
+      vm.selectedDate(moment().format('YYYYMMDD'));
       vm.toStartScreen();
       vm.initResizeable(vm);
       vm.initPopupArea();
@@ -577,55 +572,70 @@ module nts.uk.at.view.ccg005.a.screenModel {
       vm.perPage.subscribe(() => vm.resetPagination());
       vm.paginationText.subscribe(() => {
         vm.attendanceInformationDtosDisplay(_.slice(vm.attendanceInformationDtosDisplayClone(), vm.startPage() - 1, vm.endPage()));
+      });
+
+      vm.attendanceInformationDtosDisplay.subscribe(() => {
         clearTimeout(reloadAvatar);
         reloadAvatar = setTimeout(() => { vm.bindingLoopData(); }, 1);
       });
+
       (ko.bindingHandlers.ntsIcon as any).init($('.ccg005-status-img-A1_7'), () => ({ no: vm.activityStatusIcon(), width: 20, height: 20 }));
+
+      //focus
+      $("#ccg005-selected-date").focus();
     }
 
     private toStartScreen() {
       const vm = this;
       //set characteristic
       vm.restoreCharacteristic().then((inputDate: any) => {
-        vm.favoriteInputDateCharacter(inputDate);
-      });
-      vm.$blockui('show');
-      vm.$ajax('com', API.getDisplayAttendanceData).then((response: object.DisplayAttendanceDataDto) => {
-        vm.emojiUsage(!!response.emojiUsage);
-        // A1_2 表示初期の在席データDTO.自分のビジネスネーム
-        vm.businessName(response.bussinessName);
-        vm.favoriteSpecifyData(response.favoriteSpecifyDto);
-        vm.inCharge(response.inCharge);
-        if (response && response.attendanceInformationDtos) {
-          vm.updateLoginData(response.attendanceInformationDtos);
-
-          if (_.isEmpty(vm.favoriteSpecifyData())) {
-            vm.createdDefaultFavorite();
+        vm.$blockui('show');
+        vm.$ajax('com', API.getDisplayAttendanceData).then((response: object.DisplayAttendanceDataDto) => {
+          vm.emojiUsage(!!response.emojiUsage);
+          // A1_2 表示初期の在席データDTO.自分のビジネスネーム
+          vm.businessName(response.bussinessName);
+          vm.favoriteSpecifyData(response.favoriteSpecifyDto);
+          vm.inCharge(response.inCharge);
+          if (response && response.attendanceInformationDtos) {
+            vm.updateLoginData(response.attendanceInformationDtos);
+  
+            if (_.isEmpty(vm.favoriteSpecifyData())) {
+              vm.createdDefaultFavorite();
+            }
           }
-        }
-        vm.currentPage(1);
-        //get application name info
-        vm.applicationNameInfo(response.applicationNameDtos);
-        //set characteristic
-        if (vm.favoriteInputDateCharacter()) {
-          vm.favoriteInputDate(vm.favoriteInputDateCharacter());
-        } else {
-          vm.favoriteInputDate(vm.favoriteSpecifyData()[0].inputDate);
-        }
-      }).always(() => vm.$blockui('clear'));
+          vm.currentPage(1);
+          //get application name info
+          vm.applicationNameInfo(response.applicationNameDtos);
+          //set characteristic
+          if (inputDate) {
+            vm.favoriteInputDate(inputDate);
+          } else {
+            vm.favoriteInputDate(vm.favoriteSpecifyData()[0].inputDate);
+          }
+        }).always(() => vm.$blockui('clear'));
+      });
     }
 
     /**
      * 日付を更新する時
      */
     private initChangeSelectedDate() {
+
       const vm = this;
+
       vm.selectedDate.subscribe(() => {
-        const selectedDate = moment.utc(moment.utc(vm.selectedDate()).format('YYYY/MM/DD'));
-        const baseDate = moment.utc(moment.utc().format('YYYY/MM/DD'));
+
+        //fix bug #115338 
+        if ((nts.uk.ui.errors as any).getErrorByElement($("#ccg005-selected-date")).length != 0) {
+          return;
+        }
+
+        const selectedDate = moment(vm.selectedDate()).startOf("day");
+        const baseDate = moment().startOf("day");
         vm.isSameOrBeforeBaseDate(selectedDate.isSameOrBefore(baseDate));
         vm.isAfter(selectedDate.isAfter(baseDate));
         vm.isBaseDate(selectedDate.isSame(baseDate));
+
         // パラメータ「在席情報を取得」
         const empIds = _.map(vm.attendanceInformationDtos(), atd => {
           if (_.find(vm.listPersonalInfo(), item => item.employeeId === atd.sid)) {
@@ -778,7 +788,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
         vm.goOutParams(new GoOutParam({
           sid: vm.loginSid,
           businessName: vm.businessName(),
-          goOutDate: moment.utc().format("YYYY/MM/DD")
+          goOutDate: moment().format("YYYY/MM/DD")
         }));
         vm.activatedStatus(vm.activityStatus());
         $('#ccg005-status-popup').ntsPopup({
@@ -813,7 +823,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
       vm.goOutParams(new GoOutParam({
         sid: sid,
         businessName: businessName,
-        goOutDate: moment.utc().format("YYYY/MM/DD")
+        goOutDate: moment().format("YYYY/MM/DD")
       }));
 
       //update current status
@@ -882,7 +892,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
     //handle attendance data for all employee in loop
     private getAttendanceInformationDtosDisplay(res: object.DisplayInformationDto): AttendanceInformationViewModel[] {
       const vm = this;
-      return _.map(res.attendanceInformationDtos, (item => {
+      const listModel = _.map(res.attendanceInformationDtos, (item => {
         let businessName = "";
         const personalInfo = _.find(res.listPersonalInfo, (emp => emp.employeeId === item.sid));
         if (personalInfo) {
@@ -905,6 +915,8 @@ module nts.uk.at.view.ccg005.a.screenModel {
           backgroundColor: vm.getBackgroundColorClass(item.activityStatusDto)
         });
       }));
+      const sortedByNameList = _.orderBy(listModel, ["businessName"]);
+      return sortedByNameList;
     }
 
     //handle check-in check-out display
@@ -965,7 +977,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
       const vm = this;
 
       //fix bug #115227
-      if(vm.selectedDate() !== moment.utc().format('YYYYMMDD')) {
+      if(!vm.isBaseDate()) {
         return "background-color-default";
       }
 
@@ -1104,17 +1116,14 @@ module nts.uk.at.view.ccg005.a.screenModel {
       vm.searchValue('');
 
       //reset selected date to today
-      vm.selectedDate(moment.utc().format('YYYYMMDD'));
+      vm.selectedDate(moment().format('YYYYMMDD'));
 
       //reset pagination
       vm.currentPage(0);
       vm.totalElement(0);
 
-      //re-start screen (binding again)
-      vm.toStartScreen();
-
       //re-subscribe favorite (with characteristics)
-      vm.subscribeFavorite();
+      setTimeout(() => vm.subscribeFavorite(), 1);
     }
 
     private updateLoginData(atds: any) {
@@ -1206,10 +1215,6 @@ module nts.uk.at.view.ccg005.a.screenModel {
       if (_.isEmpty(vm.comment())) {
         return;
       }
-      // //set input value to comment in db
-      // if(!vm.originalComment().match(vm.comment())) {
-      //   return vm.comment(vm.originalComment());
-      // }
       vm.comment('');
       const command = {
         date: moment.utc(vm.commentDate()).toISOString(),
@@ -1264,6 +1269,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
      */
     public onSearchEmployee() {
       const vm = this;
+      let reloadAvatar: any;
       if (vm.searchValue().trim().length > 0) {
         const param = {
           keyWorks: vm.searchValue(),

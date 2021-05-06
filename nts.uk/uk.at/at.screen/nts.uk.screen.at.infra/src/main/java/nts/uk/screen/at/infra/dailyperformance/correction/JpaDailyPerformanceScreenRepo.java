@@ -249,7 +249,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 
 	private final static String SELECT_WORKTYPE_JDBC = " SELECT CD, NAME FROM KSHMT_WKTP WHERE CID = ?";
 
-	private final static String SEL_FIND_WORKPLACE_LOCATION_JDBC = "SELECT WORK_LOCATION_CD, WORK_LOCATION_NAME FROM KRCMT_WORK_LOCATION WHERE CID = ?";
+	private final static String SEL_FIND_WORKPLACE_LOCATION_JDBC = "SELECT WK_LOCATION_CD, WK_LOCATION_NAME FROM KRCMT_WORK_LOCATION WHERE CONTRACT_CD = ?";
 
 	private final static String SEL_EMPLOYMENT_BY_CLOSURE_JDBC = "SELECT CODE, NAME FROM BSYMT_EMPLOYMENT WHERE CID = ?";
 
@@ -1263,11 +1263,12 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 
 	@Override
 	public List<CodeName> findWorkplaceLocation(String companyId) {
+		String contractCode = AppContexts.user().contractCode();
 		String sql = SEL_FIND_WORKPLACE_LOCATION_JDBC;
 		try (PreparedStatement statement = this.connection().prepareStatement(sql)) {
-			statement.setString(1, companyId);
+			statement.setString(1, contractCode);
 			return new NtsResultSet(statement.executeQuery()).getList(rs -> {
-				return new CodeName(rs.getString("WORK_LOCATION_CD"), rs.getString("WORK_LOCATION_NAME"), "");
+				return new CodeName(rs.getString("WK_LOCATION_CD"), rs.getString("WK_LOCATION_NAME"), "");
 			});
 
 		} catch (SQLException e) {

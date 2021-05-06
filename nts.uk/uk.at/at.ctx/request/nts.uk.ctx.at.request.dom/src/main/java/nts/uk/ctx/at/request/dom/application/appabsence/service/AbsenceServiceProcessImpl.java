@@ -65,22 +65,17 @@ import nts.uk.ctx.at.request.dom.application.common.service.other.output.Process
 import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.WorkInfoListOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
-import nts.uk.ctx.at.request.dom.application.common.service.setting.output.ApplyWorkTypeOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.smartphone.CommonAlgorithmMobile;
 import nts.uk.ctx.at.request.dom.application.common.service.smartphone.output.AppReasonOutput;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.DisplayReasonRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.AppTypeSetting;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.AppliedDate;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HolidayApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HolidayApplicationSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.UseAtr;
-import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.HolidayType;
-import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.WorkTypeObjAppHoliday;
 import nts.uk.ctx.at.request.dom.vacation.history.service.PlanVacationRuleError;
 import nts.uk.ctx.at.request.dom.vacation.history.service.PlanVacationRuleExport;
 import nts.uk.ctx.at.shared.dom.WorkInfoAndTimeZone;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
-import nts.uk.ctx.at.shared.dom.application.timeleaveapplication.TimeDigestApplicationShare;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.NumberCompensatoryLeavePeriodQuery;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.param.AbsRecMngInPeriodRefactParamInput;
@@ -96,6 +91,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveComDayOffManageme
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
+import nts.uk.ctx.at.shared.dom.scherec.application.timeleaveapplication.TimeDigestApplicationShare;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.vacationapplication.leaveapplication.VacationApplicationReflect;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.vacationapplication.leaveapplication.VacationApplicationReflectRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
@@ -1181,7 +1177,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
 
 	@Override
 	public List<ConfirmMsgOutput> holidayCommonCheck(String companyID, GeneralDate closureStartDate, ApplyForLeave appAbsence, 
-			AppAbsenceStartInfoOutput appAbsenceStartInfoOutput) {
+			AppAbsenceStartInfoOutput appAbsenceStartInfoOutput, List<GeneralDate> lstHolidayDate) {
 		List<ConfirmMsgOutput> result = new ArrayList<>();
 		
 		// 申請日の矛盾チェック
@@ -1192,6 +1188,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
 			dateLst.add(currentDate);
 			currentDate = currentDate.addDays(1);
 		}
+		dateLst = dateLst.stream().filter(x -> !lstHolidayDate.contains(x)).collect(Collectors.toList());
 		// 勤務種類リスト作成
 		List<String> lstWorkType = new ArrayList<String>();
 		lstWorkType.add(appAbsence.getReflectFreeTimeApp().getWorkInfo().getWorkTypeCode().v());
@@ -1399,6 +1396,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
 			dateLst.add(currentDate);
 			currentDate = currentDate.addDays(1);
 		}
+		dateLst = dateLst.stream().filter(x -> !lstDates.contains(x)).collect(Collectors.toList());
 		// 勤務種類リスト作成
 		List<String> lstWorkType = new ArrayList<String>();
 		// KAF006: -PhuongDV domain fix pending- confirm input -> ・申請する勤務種類リスト = INPUT．「休暇申請．反映情報．勤務情報．勤務種類コード」 -> ko co trong input EAP
@@ -1462,7 +1460,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
 		// 4.社員の当月の期間を算出する
 		PeriodCurrentMonth periodCurrentMonth = otherCommonAlgorithm.employeePeriodCurrentMonthCalculate(companyID,appAbscene.getEmployeeID(),GeneralDate.today());
 		// 休暇種類共通エラーチェック
-		lstConfirmMsg.addAll(this.holidayCommonCheck(companyID, periodCurrentMonth.getStartDate(), appAbscene, appAbsenceStartInfoOutput));
+		lstConfirmMsg.addAll(this.holidayCommonCheck(companyID, periodCurrentMonth.getStartDate(), appAbscene, appAbsenceStartInfoOutput, lstHolidayDate));
 		// 休暇種類別エラーチェック
 		lstConfirmMsg.addAll(this.errorCheckByHolidayType(mode, companyID, appAbscene, lstHolidayDate, appAbsenceStartInfoOutput));
 		// 「確認メッセージリスト」を返す
@@ -1946,6 +1944,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
     @Override
     public AppAbsenceStartInfoOutput getChangeHolidayDates(String companyID, List<GeneralDate> holidayDates,
             AppAbsenceStartInfoOutput appAbsenceStartInfoDto) {
+        holidayDates = holidayDates.size() > 1 ? new DatePeriod(holidayDates.get(0), holidayDates.get(1)).datesBetween() : holidayDates;
         // 基準日として扱う日の取得
         GeneralDate refDate = appAbsenceStartInfoDto.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput()
             .getApplicationSetting().getBaseDate(holidayDates.size() > 0 ? Optional.of(holidayDates.get(0)) : Optional.empty());

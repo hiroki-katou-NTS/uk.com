@@ -62,6 +62,7 @@ module nts.uk.ui.at.kcp015.shared {
     })
     export class ViewModel extends ko.ViewModel {
         
+        // các model này có cần không khi đã có model data khai báo trong constructor???
         visibleA1: KnockoutObservable<boolean> = ko.observable(true);
         visibleA31Com: KnockoutObservable<boolean> = ko.observable(true);
         visibleA32Com: KnockoutObservable<boolean> = ko.observable(true);
@@ -70,11 +71,13 @@ module nts.uk.ui.at.kcp015.shared {
         visibleA35Com: KnockoutObservable<boolean> = ko.observable(true);
         visibleA36Com: KnockoutObservable<boolean> = ko.observable(true);
 
+        // Nếu đã khai báo model data ở đây thì các model từ dòng 65 đến dòng 71 để làm gì???
         constructor(private data: Parameters) {
             super();
 
             let vm = this;
 
+            // component đã mount đâu mà binding???
             $('#A1').ntsPopup({
                 position: {
                     my: 'left top',
@@ -83,15 +86,18 @@ module nts.uk.ui.at.kcp015.shared {
                 }
             });
 
+            // câu lệnh này có chắc chạy được???
             $('#showPopup').click(function() {
                 $('#A1').ntsPopup("toggle");
             });
             
+            // Không thấy sử dụng gì với các biến này???
             const { visibleA31, visibleA32, visibleA33, visibleA34, visibleA35, visibleA36, sids, baseDate } = vm.data;
             
             vm.getSetting();
         }
 
+        // ????? hook này không dùng để làm gì cả???
         created() {
             const vm = this;
             const { data } = vm;
@@ -99,8 +105,14 @@ module nts.uk.ui.at.kcp015.shared {
 
         public getSetting(): JQueryPromise<void> {
             let vm = this;
+            // Sao lại phải dùng Promise ở đây?
             let dfd = $.Deferred<void>();
+
+
+            // thử thay bằng vm.$blockui('grayout');
             nts.uk.ui.block.grayout();
+
+            // thử thay bằng vm.$ajax('at', 'screen/at/kcp015/get').then(() => {});
             nts.uk.request.ajax("at", "screen/at/kcp015/get").done((data: IData) => {
 
                 if (vm.data.visibleA31() == false) {
@@ -149,14 +161,17 @@ module nts.uk.ui.at.kcp015.shared {
                     vm.visibleA36Com(true);
                 }
                 
+                // Đoạn này thử chuyển sang computed xem có hợp lý hơn không???
                 if (!vm.visibleA31Com() && !vm.visibleA33Com() && !vm.visibleA35Com() && !vm.visibleA32Com() && !vm.visibleA34Com() && !vm.visibleA36Com()) {
                     vm.visibleA1(false);
                 }
 
+                // Thay vì xử lý ui ở viewmodel thế này, hãy đưa nó vào 1 custom binding xem?
                 if (!vm.visibleA31Com() && !vm.visibleA33Com() && !vm.visibleA35Com()) {
                     $('#button-bot').css("margin-top", "0px");
                 }
 
+                // Thay vì xử lý ui ở viewmodel thế này, hãy đưa nó vào 1 custom binding xem?
                 if (!vm.visibleA32Com() && !vm.visibleA34Com() && !vm.visibleA36Com()) {
                     $('#button-bot').css("margin-top", "0px");
                 }
@@ -201,6 +216,22 @@ module nts.uk.ui.at.kcp015.shared {
                 baseDate: baseDate
             };
 
+            /**
+             * thử thay bằng đoạn code sau
+             * vm.$window
+             *    .shared('KDL009_DATA', param)
+             *    .then(() => $('#A1_10_1').ntsPopup('hide'))
+             *    .then(() => {
+             *        const { employeeIds } = param;
+             * 
+             *        if(employeeIds.length > 1){
+             *            vm.$window.modal('/view/kdl/009/a/multi.xhtml');
+             *        } else {
+             *            vm.$window.modal('/view/kdl/009/a/single.xhtml');
+             *        }
+             *    });
+             * Những đoạn code dùng cấu trúc cũ thay tương tự.
+             */
             nts.uk.ui.windows.setShared('KDL009_DATA', param);
             $('#A1_10_1').ntsPopup('hide');
             if (param.employeeIds.length > 1) {
