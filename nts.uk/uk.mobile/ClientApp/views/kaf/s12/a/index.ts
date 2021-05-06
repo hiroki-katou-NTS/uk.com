@@ -200,7 +200,8 @@ export class KafS12AComponent extends KafS00ShrComponent {
             appDate: new Date(date).toISOString(),
             appDisplayInfo: {
                 appDispInfoStartupOutput: vm.appDispInfoStartupOutput,
-                timeLeaveManagement: vm.timeLeaveManagement
+                timeLeaveManagement: vm.timeLeaveManagement,
+                reflectSetting: vm.reflectSetting
             }
         };
 

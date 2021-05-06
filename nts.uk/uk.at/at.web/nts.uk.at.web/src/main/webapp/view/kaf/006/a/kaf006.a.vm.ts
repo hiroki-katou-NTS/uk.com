@@ -758,7 +758,7 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
 				if (result) {
 					return vm.$dialog.info({ messageId: "Msg_15"}).then(() => {
 						nts.uk.request.ajax("at", API.reflectApp, result.reflectAppIdLst);
-						return CommonProcess.handleAfterRegister(result, vm.isSendMail(), vm, vm.isAgentMode(), vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.employeeInfoLst);
+						return CommonProcess.handleAfterRegister(result, vm.isSendMail(), vm, false, vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.employeeInfoLst);
 					});	
 				}
 			}).fail((failData) => {
@@ -1065,6 +1065,8 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
             }).done((res: any) => {
                 if (res) {
                     vm.fetchData(res);
+                    vm.payoutSubofHDManagements([]);
+                    vm.leaveComDayOffManas([]);
                 }
             }).fail(err => {
                 if (err.messageId === "Msg_43") {

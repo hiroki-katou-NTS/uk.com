@@ -136,8 +136,9 @@
 										readonly: false,
 										immediate: false }" />
 							</div>		
-						</div>					
-						<div class="dialog-rows">
+						</div>
+						<com:ko tag="ifnot" bind="isFlex()">
+							<div class="dialog-rows">
 							<div style="width: 150px;"></div>	
 							<div>
 								<span class="label">#{i18n.getText('KMK003_37')}</span>		
@@ -166,6 +167,7 @@
 										immediate: false }" />
 							</div>			
 						</div>
+						</com:ko>
 						<div class="dialog-rows">
 							<div data-bind="ntsFormLabel: { required: true }" style="width: 150px;">#{i18n.getText('KMK003_273')}</div>		
 							<div>
@@ -194,8 +196,9 @@
 										readonly: false,
 										immediate: false }" />
 							</div>			
-						</div>					
-						<div class="dialog-rows">
+						</div>
+						<com:ko tag="ifnot" bind="isFlex()">
+							<div class="dialog-rows">
 							<div style="width: 150px;"></div>	
 							<div>
 								<span class="label">#{i18n.getText('KMK003_37')}</span>		
@@ -224,6 +227,7 @@
 										immediate: false }" />
 							</div>		
 						</div>
+						</com:ko>
 					</com:ko>			
 					
 					<!-- ====================================================================================== -->
@@ -327,12 +331,33 @@
 						</div>	
 					</div>				
 					<!-- END setting items -  -->
+					<!-- START form label - stampExactlyTimeIsLateEarly -->
+					<div class="dialog-rows" style="margin-top: 40px;">
+						<div data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KMK003_265')}</div>
+					</div>
+					<div><hr/></div>
+					<!-- END form label - stampExactlyTimeIsLateEarly -->
+
+					<!-- START setting items - stampExactlyTimeIsLateEarly -->
+					<div class="dialog-block">
+						<div class="dialog-rows">
+							<div tabindex="23" id="lateStampExactlyTimeIsLateEarly" data-bind="ntsCheckBox: {
+									name: '#[KMK003_263]',
+									checked: lateStampExactlyTimeIsLateEarly }">#{i18n.getText('KMK003_263')}</div>
+						</div>
+						<div class="dialog-rows">
+							<div tabindex="24" data-bind="ntsCheckBox: {
+									name: '#[KMK003_264]',
+									checked: leaveEarlyStampExactlyTimeIsLateEarly }">#{i18n.getText('KMK003_264')}</div>
+						</div>
+					</div>
+					<!-- END setting items - stampExactlyTimeIsLateEarly -->
 				</div>
 			</div>
 		
 			<div id="functions-area-bottom">
-				<button tabindex="23" data-bind="click: save" class="x-large proceed">#{i18n.getText('KMK003_229')}</button>
-				<button tabindex="24" data-bind="click: close" class="large">#{i18n.getText('KMK003_180')}</button>
+				<button tabindex="25" data-bind="click: save" class="x-large proceed">#{i18n.getText('KMK003_229')}</button>
+				<button tabindex="26" data-bind="click: close" class="large">#{i18n.getText('KMK003_180')}</button>
 			</div>
 		</ui:define>
 	</ui:composition>

@@ -256,7 +256,7 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
                     if (result != undefined) {
                         vm.$dialog.info( { messageId: "Msg_15" } ).then(() => {
 							nts.uk.request.ajax("at", API.reflectApp, result.reflectAppIdLst);
-                       		CommonProcess.handleAfterRegister(result, vm.isSendMail(), vm, vm.isAgentMode(), vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.employeeInfoLst);
+                       		CommonProcess.handleAfterRegister(result, vm.isSendMail(), vm, false, vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.employeeInfoLst);
                         });                
                     }
                 })

@@ -78,7 +78,7 @@ module nts.uk.com.view.kwr002.f {
             vm.$ajax('at', API.executeCopy, dataCopy).then(() => {
                 vm.$dialog.info({ messageId: 'Msg_15' }).then(() => {
                     // Set shared param to share with screen B
-                    setShared('duplicateItem', {
+                    setShared('annualAttendance', {
                         code: vm.duplicateCode(),
                         name: vm.duplicateName(),
                         layoutId: vm.layoutId

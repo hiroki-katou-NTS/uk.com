@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.FixedWorkTimezoneSet;
+import nts.uk.ctx.at.shared.dom.worktime.common.TimezoneOfFixedRestTimeSet;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
 
@@ -21,7 +22,7 @@ public class FixHalfDayWorkTimezone extends WorkTimeDomainObject implements Clon
 
 	/** The rest timezone. */
 	// 休憩時間帯
-	private FixRestTimezoneSet restTimezone;
+	private TimezoneOfFixedRestTimeSet restTimezone;
 
 	/** The work timezone. */
 	// 勤務時間帯
@@ -94,7 +95,7 @@ public class FixHalfDayWorkTimezone extends WorkTimeDomainObject implements Clon
 	 */
 	private void restoreDetailMode(FixedWorkSetting fixedWorkSet, FixHalfDayWorkTimezone other) {
 		// restore data of dayAtr = AM, PM
-		if (!fixedWorkSet.getUseHalfDayShift() && other.getDayAtr() != AmPmAtr.ONE_DAY) {
+		if (other.getDayAtr() != AmPmAtr.ONE_DAY) {
 			this.restTimezone.restoreData(other.getRestTimezone());
 			this.workTimezone.restoreData(other.getWorkTimezone());
 		}
@@ -137,7 +138,7 @@ public class FixHalfDayWorkTimezone extends WorkTimeDomainObject implements Clon
 		});
 		
 		// validate Msg_770 for rest time
-		this.restTimezone.getLstTimezone().stream().forEach(item -> {
+		this.restTimezone.getTimezones().stream().forEach(item -> {
 			item.validateRange("KMK003_20");
 		});
 
@@ -153,7 +154,7 @@ public class FixHalfDayWorkTimezone extends WorkTimeDomainObject implements Clon
 	 * @return true, if is in fixed work
 	 */
 	public boolean isInFixedWork() {
-		return this.restTimezone.getLstTimezone().stream().allMatch(
+		return this.restTimezone.getTimezones().stream().allMatch(
 				dedTime -> this.workTimezone.isInEmTimezone(dedTime) || this.workTimezone.isInOverTimezone(dedTime));
 	}
 	

@@ -1,0 +1,99 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:com="http://xmlns.jcp.org/jsf/component"
+    xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+  <ui:composition template="../../../../master/dialog.xhtml">
+    <ui:define name="htmlHead">
+      <com:scriptfile set="IGNITE" />
+      <script>
+        var dialogSize = {
+          width: 600,
+          height: 250
+        };
+      </script>
+      <com:ValidatorScript>
+        nts.uk.ctx.at.function.dom.annualworkschedule.primitivevalue.OutItemsWoScCode
+        nts.uk.ctx.at.function.dom.annualworkschedule.primitivevalue.OutItemsWoScName
+      </com:ValidatorScript>
+      <com:stylefile path="kwr008.c.style.css" />
+      <com:scriptfile path="kwr008.c.vm.js" />
+    </ui:define>
+
+    <ui:define name="content">
+      <!-- main content -->
+      <div id="contents-area">
+        <div class="group-item">
+          <!-- C1_1 -->
+          <div class="item-inline">
+            <span>#{i18n.getText('KWR008_101')}</span>
+          </div>
+          <!-- C1_2 -->
+          <div class="item-inline" data-bind="ntsFormLabel: {}">#{i18n.getText('KWR008_102')}</div>
+          <!-- C1_3 -->
+          <div class="item-inline select-code"><span data-bind="text: selectedCode"></span></div>
+          <!-- C1_4 -->
+          <div class="item-inline"><span data-bind="text: selectedName"></span></div>
+        </div>
+
+        <div class="group-item mt-20">
+          <!-- C2_1 -->
+          <div class="item-inline">
+            <span>#{i18n.getText('KWR008_103')}</span>
+          </div>
+          <!-- C1_2 -->
+          <div
+            class="item-inline"
+            data-bind="ntsFormLabel: {
+              required: true,
+              constraint: ['OutItemsWoScCode', 'OutItemsWoScName']
+            }">
+            #{i18n.getText('KWR008_102')}
+          </div>
+          <!-- C2_3 -->
+          <div class="item-inline">
+            <input
+              id="C2_3"
+              tabindex="1"
+              class="save-error"
+              data-bind="ntsTextEditor:{
+                name: '#[KWR008_102]',
+                value: duplicateCode,
+                required: true,
+                constraint: 'OutItemsWoScCode'}" />
+          </div>
+          <!-- C2_4 -->
+          <div class="item-inline">
+            <input
+              id="C2_4"
+              tabindex="2"
+              class="save-error"
+              data-bind="ntsTextEditor:{
+                name: '#[KWR008_102]',
+                value: duplicateName,
+                required: true,
+                constraint: 'OutItemsWoScName'}" />
+          </div>
+        </div>
+      </div>
+
+      <!-- footer content -->
+      <div id="functions-area-bottom" class="mt-20">
+        <div class="confirm">
+          <!-- C4_1 -->
+          <button
+            data-bind="enable: $root.errors.isEmpty, click: executeCopy"
+            tabindex="3"
+            class="proceed">
+            #{i18n.getText('KWR008_104')}
+          </button>
+          <!-- C4_2 -->
+          <button data-bind="click: closeDialog" tabindex="4">#{i18n.getText('KWR008_105')}</button>
+        </div>
+      </div>
+    </ui:define>
+  </ui:composition>
+</body>
+</html>

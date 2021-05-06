@@ -28,6 +28,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.time
 import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
+import nts.uk.shr.com.net.Ipv4Address;
 
 /**
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.勤務実績.就業情報端末.端末情報.APP.就業情報端末の更新をする.就業情報端末の更新をする
@@ -50,10 +51,7 @@ public class EmpInfoTerminalUpdateCommandHandler extends CommandHandler<EmpInfoT
 		// 5: set()
 		EmpInfoTerminal empInfoTerminal = new EmpInfoTerminal.EmpInfoTerminalBuilder(
 				Optional.ofNullable(command.getIpAddress1() == null ? null 
-						: new FullIpAddress(new PartialIpAddress(Integer.parseInt(command.getIpAddress1())),
-								new PartialIpAddress(Integer.parseInt(command.getIpAddress2())),
-								new PartialIpAddress(Integer.parseInt(command.getIpAddress3())),
-								new PartialIpAddress(Integer.parseInt(command.getIpAddress4())))),
+						: Ipv4Address.parse(command.getIpAddress())),
 				new MacAddress(command.getMacAddress()),
 				new EmpInfoTerminalCode(command.getEmpInfoTerCode()), Optional.ofNullable(command.getTerSerialNo()).map(e -> new EmpInfoTerSerialNo(e)),
 				new EmpInfoTerminalName(command.getEmpInfoTerName()), new ContractCode(contractCode))

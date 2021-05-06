@@ -3,11 +3,12 @@ package nts.uk.ctx.sys.assist.app.find.autosetting.storage;
 import java.util.List;
 
 import lombok.Data;
+import nts.uk.ctx.sys.assist.app.find.autosetting.AbstractCategoryDto;
 import nts.uk.ctx.sys.assist.dom.storage.DataStoragePatternSetting;
 import nts.uk.ctx.sys.assist.dom.storage.DataStorageSelectionCategory;
 
 @Data
-public class DataStoragePatternSettingDto implements DataStoragePatternSetting.MementoSetter {
+public class DataStoragePatternSettingDto<X extends AbstractCategoryDto> implements DataStoragePatternSetting.MementoSetter {
 	
 	/**
 	 * パターンコード
@@ -32,7 +33,7 @@ public class DataStoragePatternSettingDto implements DataStoragePatternSetting.M
 	/**
 	 *List<選択カテゴリ名称> 
 	 */
-	private List<SaveSelectionCategoryNameDto> selectCategories;
+	private List<X> selectCategories;
 
 	/**
 	 * 調査用保存可否
@@ -90,13 +91,13 @@ public class DataStoragePatternSettingDto implements DataStoragePatternSetting.M
 	 * @param domain the domain
 	 * @return the Data storage pattern setting dto
 	 */
-	public static DataStoragePatternSettingDto createFromDomain(DataStoragePatternSetting domain) {
+	public static <X extends AbstractCategoryDto> DataStoragePatternSettingDto<X> createFromDomain(
+			DataStoragePatternSetting domain) {
 		if (domain == null) {
 			return null;
 		}
-		DataStoragePatternSettingDto dto = new DataStoragePatternSettingDto();
+		DataStoragePatternSettingDto<X> dto = new DataStoragePatternSettingDto<>();
 		domain.setMemento(dto);
 		return dto;
 	}
-
 }
