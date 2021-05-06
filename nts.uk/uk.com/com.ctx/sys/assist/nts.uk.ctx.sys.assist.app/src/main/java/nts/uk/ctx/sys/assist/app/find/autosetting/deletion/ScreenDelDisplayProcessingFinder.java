@@ -47,11 +47,9 @@ public class ScreenDelDisplayProcessingFinder {
 		// 取得したList＜パターン設定>をチェックする。
 		if (!patterns.isEmpty()) {
 			ScreenDelDisplayProcessingDto dto = new ScreenDelDisplayProcessingDto();
-			dto.setPatterns(patterns.stream().map(p -> {
-				DataDeletionPatternSettingDto res = new DataDeletionPatternSettingDto();
-				p.setMemento(res);
-				return res;
-			}).sorted(Comparator.comparing(DataDeletionPatternSettingDto::getPatternCode)).collect(Collectors.toList()));
+			dto.setPatterns(patterns.stream().map(DataDeletionPatternSettingDto::createFromDomain)
+					.sorted(Comparator.comparing(DataDeletionPatternSettingDto::getPatternCode))
+					.collect(Collectors.toList()));
 			dto.setSystemTypes(systemTypes.stream().map(t -> t.value).collect(Collectors.toList()));
 			return dto;
 		} else {

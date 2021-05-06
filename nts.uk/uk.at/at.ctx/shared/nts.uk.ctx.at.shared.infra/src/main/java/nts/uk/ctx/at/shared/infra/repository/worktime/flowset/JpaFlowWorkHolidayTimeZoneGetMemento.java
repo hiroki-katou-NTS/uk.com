@@ -51,7 +51,7 @@ public class JpaFlowWorkHolidayTimeZoneGetMemento implements FlWorkHdTzGetMement
 	 */
 	@Override
 	public BreakFrameNo getInLegalBreakFrameNo() {
-		return new BreakFrameNo(BigDecimal.valueOf(this.entity.getInlegalBreakRestTime()));
+		return new BreakFrameNo(BigDecimal.valueOf(this.entity.getInlegalBreakRestTime() + 1));
 	}
 
 	/* (non-Javadoc)
@@ -67,7 +67,7 @@ public class JpaFlowWorkHolidayTimeZoneGetMemento implements FlWorkHdTzGetMement
 	 */
 	@Override
 	public BreakFrameNo getOutLegalBreakFrameNo() {
-		return new BreakFrameNo(BigDecimal.valueOf(this.entity.getOutLegalbReakRestTime()));
+		return new BreakFrameNo(BigDecimal.valueOf(this.entity.getOutLegalbReakRestTime() + 1));
 	}
 
 	/* (non-Javadoc)
@@ -83,7 +83,7 @@ public class JpaFlowWorkHolidayTimeZoneGetMemento implements FlWorkHdTzGetMement
 	 */
 	@Override
 	public BreakFrameNo getOutLegalPubHolFrameNo() {
-		return new BreakFrameNo(BigDecimal.valueOf(this.entity.getOutLegalPubholRestTime()));
+		return new BreakFrameNo(BigDecimal.valueOf(this.entity.getOutLegalPubholRestTime() + 1));
 	}
 
 	/* (non-Javadoc)

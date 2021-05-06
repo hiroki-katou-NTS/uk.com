@@ -80,10 +80,10 @@ public class PredetemineTimeSettingDto implements PredetemineTimeSettingSetMemen
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.at.shared.dom.predset.PredetemineTimeSetMemento#setNightShift(boolean)
 	 */
-	@Override
-	public void setNightShift(boolean nightShift) {
-		this.nightShift = nightShift;
-	}
+//	@Override
+//	public void setNightShift(boolean nightShift) {
+//		this.nightShift = nightShift;
+//	}
 
 	/*
 	 * (non-Javadoc)

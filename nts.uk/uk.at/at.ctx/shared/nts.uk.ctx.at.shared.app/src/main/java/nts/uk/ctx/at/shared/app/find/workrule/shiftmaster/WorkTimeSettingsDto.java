@@ -20,7 +20,7 @@ public class WorkTimeSettingsDto {
 	public int isAbolish;
 
 	/** The color code. */
-	public String colorCode;
+//	public String colorCode;
 
 	/** The work time display name. */
 	public WorkTimeDisplayNameDto workTimeDisplayName;

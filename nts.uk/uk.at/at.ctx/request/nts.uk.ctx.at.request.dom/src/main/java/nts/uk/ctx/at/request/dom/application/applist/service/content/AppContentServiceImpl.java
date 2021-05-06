@@ -687,19 +687,6 @@ public class AppContentServiceImpl implements AppContentService {
 			}
 			return result;
 		}
-		// 反映状態(trạng thái phản ánh)　＝　PC：#CMM045_63スマホ：#CMMS45_8
-		boolean condition1 = 
-				(reflectedState==ReflectedState.WAITREFLECTION) ||
-				(phaseAtr==ApprovalBehaviorAtrImport_New.APPROVED) ||
-				(frameAtr==ApprovalBehaviorAtrImport_New.APPROVED);
-		if(condition1) {
-			if(device==ApprovalDevice.PC.value) {
-				result = "CMM045_63";
-			} else {
-				result = "CMMS45_8";
-			}
-			return result;
-		}
 		// 反映状態　＝　PC：#CMM045_65スマホ：#CMMS45_11
 		if(reflectedState==ReflectedState.DENIAL) {
 			if(device==ApprovalDevice.PC.value) {
@@ -724,6 +711,19 @@ public class AppContentServiceImpl implements AppContentService {
 				result = "CMM045_67";
 			} else {
 				result = "CMMS45_10";
+			}
+			return result;
+		}
+		// 反映状態(trạng thái phản ánh)　＝　PC：#CMM045_63スマホ：#CMMS45_8
+		boolean condition1 = 
+				(reflectedState==ReflectedState.WAITREFLECTION) ||
+				(phaseAtr==ApprovalBehaviorAtrImport_New.APPROVED) ||
+				(frameAtr==ApprovalBehaviorAtrImport_New.APPROVED);
+		if(condition1) {
+			if(device==ApprovalDevice.PC.value) {
+				result = "CMM045_63";
+			} else {
+				result = "CMMS45_8";
 			}
 			return result;
 		}
@@ -997,12 +997,18 @@ public class AppContentServiceImpl implements AppContentService {
 		// 実績内容　+＝　事後申請の実績データ．開始時間 (Nội dung thực tế +＝ Data thực tế của đơn xin sau . StartTime)
 		String startTime = postAppData.getStartTime()==null ? "" : new TimeWithDayAttr(postAppData.getStartTime()).getFullText();
 		result += startTime;
+		if(Strings.isNotBlank(result)) {
+			result += " ";
+		}
 		// 実績内容　+＝　#CMM045_100　+　事後申請の実績データ．終了時間 (Nội dung thực tế +＝ 　#CMM045_100　+　Data thực tế của đơn xin sau . EndTime)
 		String endTime = postAppData.getEndTime()==null ? "" : new TimeWithDayAttr(postAppData.getEndTime()).getFullText();
 		if(Strings.isNotBlank(startTime) && Strings.isNotBlank(endTime)) {
 			result += I18NText.getText("CMM045_100");
 		}
-		result += endTime + " ";
+		result += endTime;
+		if(Strings.isNotBlank(result)) {
+			result += " ";
+		}
 		return result;
 	}
 
@@ -1382,16 +1388,16 @@ public class AppContentServiceImpl implements AppContentService {
 			// 申請内容＋＝<List>項目名
 			switch (x.getAppTimeType()) {
 			case ATWORK:
-				resultLoop += I18NText.getText("CMM045_294");
+				resultLoop += I18NText.getText("CMM045_294") + "1";
 				break;
 			case OFFWORK:
-				resultLoop += I18NText.getText("CMM045_295");
+				resultLoop += I18NText.getText("CMM045_295") + "1";
 				break;
 			case ATWORK2:
-				resultLoop += I18NText.getText("CMM045_294");
+				resultLoop += I18NText.getText("CMM045_294") + "2";
 				break;
 			case OFFWORK2:
-				resultLoop += I18NText.getText("CMM045_295");
+				resultLoop += I18NText.getText("CMM045_295") + "2";
 				break;
 			case PRIVATE:
 				resultLoop += I18NText.getText("CMM045_296");

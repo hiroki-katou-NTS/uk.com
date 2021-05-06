@@ -99,7 +99,7 @@ public class ApproveAppHandler extends CommandHandlerWithResult<AppDetailBehavio
             if(Strings.isNotBlank(processApprovalOutput.getReflectAppId())) {
             	approveProcessResult.getReflectAppIdLst().add(processApprovalOutput.getReflectAppId());
             }
-            if(CollectionUtil.isEmpty(processApprovalOutput.getApproverLst())) {
+            if(!CollectionUtil.isEmpty(processApprovalOutput.getApproverLst())) {
             	approverLst.addAll(processApprovalOutput.getApproverLst());
             }
             if(Strings.isNotBlank(processApprovalOutput.getApplicant())) {

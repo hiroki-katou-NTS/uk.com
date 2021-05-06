@@ -8,6 +8,7 @@ import java.util.Optional;
 
 import nts.uk.ctx.at.shared.dom.attendance.AttendanceName;
 import nts.uk.ctx.at.shared.dom.attendance.UseSetting;
+import nts.uk.ctx.at.shared.dom.monthlyattditem.DisplayMonthResultsMethod;
 import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItemAtr;
 import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItemSetMemento;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.PrimitiveValueOfAttendanceItem;
@@ -121,6 +122,16 @@ public class JpaMonthlyAttendanceItemSetMemento implements MonthlyAttendanceItem
 	@Override
 	public void setDisplayName(Optional<AttendanceName> displayName) {
 		this.entity.setDisplayName(displayName.isPresent() ? displayName.get().v() : null);
+	}
+
+	/**
+	 * Sets the two monthly display.
+	 *
+	 * @param twoMonthlyDisplay the new two monthly display
+	 */
+	@Override
+	public void setTwoMonthlyDisplay(DisplayMonthResultsMethod twoMonthlyDisplay) {
+		this.entity.setTwoMonthlyDisplay(twoMonthlyDisplay.value);
 	}
 
 }

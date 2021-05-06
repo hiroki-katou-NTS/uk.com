@@ -66,7 +66,7 @@ public class ReflectActualStampAndStamp {
 			TimeActualStamp timeStampCopy = new TimeActualStamp(timeActualStamp.getActualStamp(), timeActualStamp.getStamp(), timeActualStamp.getNumberOfReflectionStamp(), timeActualStamp.getOvertimeDeclaration(), timeActualStamp.getTimeVacation());
 			//打刻方法を打刻元情報に変換する
 			WorkTimeInformation timeDay = new WorkTimeInformation(new ReasonTimeChange(TimeChangeMeans.REAL_STAMP, Optional.of(EngravingMethod.TIME_RECORD_ID_INPUT)), timeWithDayAttr);
-			WorkStamp workStamp = new WorkStamp(timeDay, stamp.getRefActualResults().getWorkLocationCD());
+			WorkStamp workStamp = new WorkStamp(timeDay, stamp.getRefActualResults().getWorkInforStamp().isPresent() ? stamp.getRefActualResults().getWorkInforStamp().get().getWorkLocationCD() : null);
 			timeStampCopy.setActualStamp(Optional.of(workStamp));
 			//時間帯枠（Temporary）。理由←外出理由
 			timeFrame.setGoOutReason(stamp.getType().getGoOutArt());

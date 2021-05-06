@@ -209,6 +209,9 @@ public class ProgramIdConsts {
 	
 	public static final String KDW010A = "KDW010A";
 
+	public static final String KDW013A = "KDW013A";
+	public static final String KDW013D = "KDW013D";
+
 	public static final String KSM002A = "KSM002A";
 
 	public static final String KSM002B = "KSM002B";
@@ -1639,4 +1642,6 @@ public class ProgramIdConsts {
 	public static final String KSM007D = "KSM007D";
 
 
+	/** KWR008C */
+	public static final String KWR008C = "KWR008C";
 }

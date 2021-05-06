@@ -30,3 +30,13 @@
   height: 22px;
   padding-top: 1px;
 }
+
+#grid-list_displayContainer, #grid-list_scrollContainer {
+  max-height: calc(100vh - 357px);
+  min-height: 300px;
+}
+
+#grid-list_container {
+  max-height: calc(100vh - 357px);
+  min-height: 324px;
+}

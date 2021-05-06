@@ -24,6 +24,7 @@ module nts.uk.at.view.kdl012 {
         selectionCodeList: KnockoutObservableArray<string> = ko.observableArray([]);
         referenceDate: KnockoutObservable<string> = ko.observable();
         workFrameNoSelection: KnockoutObservable<number> = ko.observable(null);
+        listHeight: KnockoutComputed<number>;
 
         constructor(params: ParamModel) {
             super();
@@ -80,6 +81,13 @@ module nts.uk.at.view.kdl012 {
                 ]);
             }
 
+            vm.listHeight = ko.computed(() => {
+                const isIE = !!document.documentMode;
+                if (vm.isMultiple && isIE) {
+                    return 244 + 25 + 1;
+                }
+                return 240 + 25 + 1;
+            });
             //get data from api
             vm.getWorkFrameSetting();
         }

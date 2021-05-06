@@ -33,7 +33,7 @@ public class GetSelectedTerminalInfo {
 		
 		ContractCode contractCode = new ContractCode(AppContexts.user().contractCode());
 		
-		String companyID = AppContexts.user().companyId();
+		//	String companyID = AppContexts.user().companyId();
 		
 		GetSelectedTerminalInfoDto dto = new GetSelectedTerminalInfoDto();
 		
@@ -51,7 +51,7 @@ public class GetSelectedTerminalInfo {
 				? empInfoTerValue.getCreateStampInfo().getWorkLocationCd().get().v()
 				: "";
 		
-		Optional<WorkLocation> workLocation = this.workPlaceRepository.findByCode(companyID, workLocationCD);
+		Optional<WorkLocation> workLocation = this.workPlaceRepository.findByCode(contractCode.toString(), workLocationCD);
 		
 		dto.setWorkLocationCode(workLocationCD);
 		dto.setEmpInfoTerCode(empInfoTerValue.getEmpInfoTerCode().v());
@@ -80,10 +80,12 @@ public class GetSelectedTerminalInfo {
 	}
 
 	public GetWorkLocationNameDto getWorkLocationName(String workLocationCD) {
-		String companyID = AppContexts.user().companyId();
+		//	String companyID = AppContexts.user().companyId();
+		if(workLocationCD.isEmpty())
+			return new GetWorkLocationNameDto("");
 		
-		Optional<WorkLocation> workLocation = this.workPlaceRepository.findByCode(companyID, workLocationCD);
-		
+		String contractCode = AppContexts.user().contractCode();
+		Optional<WorkLocation> workLocation = this.workPlaceRepository.findByCode(contractCode, workLocationCD);	
 		return new GetWorkLocationNameDto(workLocation.isPresent() ? workLocation.get().getWorkLocationName().v() : "");
 	}
 }

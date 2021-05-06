@@ -58,7 +58,7 @@ module nts.uk.at.view.kaf018.f.viewmodel {
 			vm.apprSttComfirmSet = params.apprSttComfirmSet;
 			vm.apprSttExeDtoLst = params.apprSttExeDtoLst;
 			vm.currentApprSttExeDto(_.find(params.apprSttExeDtoLst, o => o.wkpID == params.currentWkpID));
-			let empNameColumnWidth = window.innerWidth - 1000 < 400 ? 400 : window.innerWidth - 1000;
+			let empNameColumnWidth = 500;
 			vm.columns.push(
 				{ 
 					headerText: '', 
@@ -116,7 +116,7 @@ module nts.uk.at.view.kaf018.f.viewmodel {
 					{
 						headerText: vm.$i18n('KAF018_408'),
 						key: 'sttUnConfirmMonth',
-						width: 40,
+						width: 45,
 						headerCssClass: 'kaf018-f-header-stt',
 						columnCssClass: 'kaf018-f-column-stt',
 					}
@@ -127,7 +127,7 @@ module nts.uk.at.view.kaf018.f.viewmodel {
 					{ 
 						headerText: vm.$i18n('KAF018_409'),
 						key: 'sttUnApprMonth',
-						width: 40,
+						width: 45,
 						headerCssClass: 'kaf018-f-header-stt',
 						columnCssClass: 'kaf018-f-column-stt',
 					}
@@ -138,7 +138,7 @@ module nts.uk.at.view.kaf018.f.viewmodel {
 					{ 
 						headerText: vm.$i18n('KAF018_410'),
 						key: 'sttUnConfirmDay',
-						width: 40,
+						width: 45,
 						headerCssClass: 'kaf018-f-header-stt',
 						columnCssClass: 'kaf018-f-column-stt',
 					}
@@ -149,7 +149,7 @@ module nts.uk.at.view.kaf018.f.viewmodel {
 					{ 
 						headerText: vm.$i18n('KAF018_411'),
 						key: 'sttUnApprDay',
-						width: 40,
+						width: 45,
 						headerCssClass: 'kaf018-f-header-stt',
 						columnCssClass: 'kaf018-f-column-stt',
 					}
@@ -168,7 +168,7 @@ module nts.uk.at.view.kaf018.f.viewmodel {
 									{ 
 										headerText: moment(moment(vm.startDate,'YYYY/MM/DD').add(i, 'd')).format('ddd'),
 										key: 'dateInfoLst',
-										width: '30px',
+										width: '40px',
 										headerCssClass: vm.getHeaderCss(i),
 										columnCssClass: 'kaf018-f-column-date',
 										formatter: (value: any) => vm.getStatusByDay(value, i)
@@ -185,7 +185,7 @@ module nts.uk.at.view.kaf018.f.viewmodel {
 									{ 
 										headerText: moment(moment(vm.startDate,'YYYY/MM/DD').add(i, 'd')).format('ddd'),
 										key: 'dateInfoLst',
-										width: '47px',
+										width: '57px',
 										headerCssClass: vm.getHeaderCss(i),
 										columnCssClass: 'kaf018-f-column-date',
 										formatter: (value: any) => vm.getStatusByDay(value, i)
@@ -208,6 +208,22 @@ module nts.uk.at.view.kaf018.f.viewmodel {
 			$('#kaf018-f-dynamic-header').css('visibility','hidden');
 			vm.createIggrid();
 			vm.refreshDataSource();
+			$(window).resize(() => {
+				let topRange = document.getElementById('fGrid').getBoundingClientRect().top,
+					bottomRange = document.getElementById('functions-area-bottom').getBoundingClientRect().height,
+					height = window.innerHeight - topRange - bottomRange - 10;
+				$("#fGrid").igGrid("option", "height", height + "px");
+				$("#fGrid").igGrid("option", "width", window.innerWidth - 40 + "px");
+				let dynamicWidth = $('#fGrid_table_headers_v').width();
+				$('#kaf018-f-dynamic-header').css('margin-right', (dynamicWidth/2 - 50) < 0 ? 0 : (dynamicWidth/2 - 50) + 'px');
+			});
+		}
+		
+		mounted() {
+			let topRange = document.getElementById('fGrid').getBoundingClientRect().top,
+				bottomRange = document.getElementById('functions-area-bottom').getBoundingClientRect().height,
+				height = window.innerHeight - topRange - bottomRange - 10;
+			$("#fGrid").igGrid("option", "height", height + "px");
 		}
 		
 		getDispEmpName(value: string) {

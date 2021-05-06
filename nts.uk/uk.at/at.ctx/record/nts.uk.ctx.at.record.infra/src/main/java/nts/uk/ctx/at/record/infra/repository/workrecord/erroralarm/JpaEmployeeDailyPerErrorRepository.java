@@ -731,4 +731,20 @@ public class JpaEmployeeDailyPerErrorRepository extends JpaRepository implements
 		});
 		return result;
 	}
+
+	@Override
+	public void deleteByErrorCode(String sid, GeneralDate date, String errorCode) {
+		StringBuilder query = new StringBuilder("DELETE FROM KrcdtDaySyaError a ");
+		query.append("WHERE a.processingDate = :processingDate ");
+		query.append("AND a.employeeId = :employeeId ");
+		query.append("AND a.errorCode = :errorCode ");
+		
+		String DELETE_BY_ERRORCODE = query.toString();
+		
+		this.getEntityManager().createQuery(DELETE_BY_ERRORCODE)
+			.setParameter("employeeId", sid)
+			.setParameter("processingDate", date)
+			.setParameter("errorCode", errorCode).executeUpdate();
+		this.getEntityManager().flush();
+	}
 }

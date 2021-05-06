@@ -14,6 +14,7 @@ import mockit.integration.junit4.JMockit;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
+import nts.gul.location.GeoCoordinate;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.RefectActualResult;
@@ -48,7 +49,7 @@ public class CreateStampDataForEmployeesServiceTest {
 		Relieve relieve = StampHelper.getRelieveDefault();//dummy
 		ButtonType buttonType = DomainServiceHeplper.getButtonTypeDefault();//dummy
 		RefectActualResult refActualResults = StampHelper.getRefectActualResultDefault();//dummy
-		Optional<StampLocationInfor> stampLocationInfor = Optional.ofNullable(new StampLocationInfor(StampHelper.getGeoCoordinateDefault(), false));//dummy
+		Optional<GeoCoordinate> stampLocationInfor = Optional.ofNullable(StampHelper.getGeoCoordinateDefault());//dummy
 		
 		new Expectations() {
 			{
@@ -77,7 +78,7 @@ public class CreateStampDataForEmployeesServiceTest {
 		Relieve relieve = StampHelper.getRelieveDefault();//dummy
 		ButtonType buttonType = DomainServiceHeplper.getButtonTypeDefault();//dummy
 		RefectActualResult refActualResults = StampHelper.getRefectActualResultDefault();//dummy
-		Optional<StampLocationInfor> stampLocationInfor = Optional.ofNullable(new StampLocationInfor(StampHelper.getGeoCoordinateDefault(), false));//dummy
+		Optional<GeoCoordinate> stampLocationInfor = Optional.ofNullable(StampHelper.getGeoCoordinateDefault());//dummy
 		
 		
 		new Expectations() {
@@ -121,7 +122,7 @@ public class CreateStampDataForEmployeesServiceTest {
 		Relieve relieve = StampHelper.getRelieveDefault();//dummy
 		ButtonType buttonType = DomainServiceHeplper.getButtonTypeDefault();//dummy
 		RefectActualResult refActualResults = StampHelper.getRefectActualResultDefault();//dummy
-		Optional<StampLocationInfor> stampLocationInfor = Optional.ofNullable(new StampLocationInfor(null, false));//dummy
+		Optional<GeoCoordinate> stampLocationInfor = Optional.ofNullable(null);//dummy
 		
 		new Expectations() {
 			{
@@ -164,7 +165,7 @@ public class CreateStampDataForEmployeesServiceTest {
 		Relieve relieve = StampHelper.getRelieveDefault();//dummy
 		ButtonType buttonType = DomainServiceHeplper.getButtonTypeDefault();//dummy
 		RefectActualResult refActualResults = StampHelper.getRefectActualResultDefault();//dummy
-		Optional<StampLocationInfor> stampLocationInfor = Optional.ofNullable(new StampLocationInfor(StampHelper.getGeoCoordinateDefault(), false));//dummy
+		Optional<GeoCoordinate> stampLocationInfor = Optional.ofNullable(StampHelper.getGeoCoordinateDefault());//dummy
 		
 		new Expectations() {
 			{

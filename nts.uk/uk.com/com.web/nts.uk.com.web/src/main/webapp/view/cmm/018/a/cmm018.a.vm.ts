@@ -8,6 +8,7 @@ module nts.uk.com.view.cmm018.a {
     import block = nts.uk.ui.block;
     import dialog = nts.uk.ui.dialog;
 	import mode_system = nts.uk.com.view.cmm018.x.viewmodel.MODE_SYSTEM;
+	import ScreenModelSubA = nts.uk.com.view.cmm018.a.sub.viewmodelSubA.ScreenModel;
     //=========Mode A: まとめて登録モード==============
     export module viewmodelA {
         export class ScreenModel{
@@ -1505,6 +1506,8 @@ module nts.uk.com.view.cmm018.a {
                                         });
                 modal("/view/cmm/018/k/index.xhtml").onClosed(() => {
                     block.clear();
+					const subA = __viewContext.viewModel.viewmodelSubA as ScreenModelSubA;
+					subA.setWidthCloseDialog(tabSel, phaseOrder);
                     let modeA = __viewContext.viewModel.viewmodelA.selectedModeCode();
                     self.approverInfor([]);
                     let data: vmbase.KData = getShared('CMM018K_DATA');
