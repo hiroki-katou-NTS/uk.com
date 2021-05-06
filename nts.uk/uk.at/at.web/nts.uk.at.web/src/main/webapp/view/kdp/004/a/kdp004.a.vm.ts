@@ -57,6 +57,7 @@ module nts.uk.at.view.kdp004.a {
 				let dfd = $.Deferred<void>();
 				nts.uk.characteristics.restore("loginKDP004").done(function (loginInfo: ILoginInfo) {
 					if (!loginInfo) {
+						console.log(self.loginInfo);
 						self.setLoginInfo().done((loginResult) => {
 							if (!loginResult) {
 								self.isUsed(false);
@@ -73,6 +74,8 @@ module nts.uk.at.view.kdp004.a {
 						self.doFirstLoad().done(() => {
 							dfd.resolve();
 						});
+						console.log(self.loginInfo);
+						self.loadNotice(self.loginInfo);
 					}
 				}).always(() => {
 					service.getLogginSetting().done((res) => {
@@ -208,6 +211,7 @@ module nts.uk.at.view.kdp004.a {
 					} else {
 						self.openScreenK().done((result) => {
 							if (result) {
+								
 								self.loginInfo.selectedWP = result;
 								nts.uk.characteristics.save("loginKDP004", self.loginInfo).done(() => {
 									location.reload();
@@ -220,6 +224,8 @@ module nts.uk.at.view.kdp004.a {
 					}
 					nts.uk.characteristics.save("loginKDP004", self.loginInfo);
 					dfd.resolve(self.loginInfo);
+					console.log(self.loginInfo);
+					
 
 				}).always(() => {
 					block.grayout();
@@ -440,6 +446,7 @@ module nts.uk.at.view.kdp004.a {
 								self.loginInfo.selectedWP = result;
 								nts.uk.characteristics.save("loginKDP004", self.loginInfo).done(() => {
 									location.reload();
+									console.log(self.loginInfo);
 								});
 							} else {
 								location.reload();
@@ -547,7 +554,7 @@ module nts.uk.at.view.kdp004.a {
 				vm.$window.modal(DIALOG.R, param);
 			}
 
-			loadNotice(storage: StorageData) {
+			loadNotice(loginInfo: any) {
 				let vm = new ko.ViewModel();
 				const self = this;
 				let startDate = vm.$date.now();
@@ -558,7 +565,7 @@ module nts.uk.at.view.kdp004.a {
 						startDate: startDate,
 						endDate: vm.$date.now()
 					},
-					wkpIds: storage.WKPID
+					wkpIds: loginInfo.selectedWP
 				}
 
 				vm.$blockui('invisible')
@@ -566,13 +573,13 @@ module nts.uk.at.view.kdp004.a {
 						vm.$ajax(API.NOTICE, param)
 							.done((data: IMessage) => {
 								self.messageNoti(data);
+								console.log(data);
 							});
 					})
 					.always(() => {
 						vm.$blockui('clear');
 					});
 			}
-
 		}
 
 	}
