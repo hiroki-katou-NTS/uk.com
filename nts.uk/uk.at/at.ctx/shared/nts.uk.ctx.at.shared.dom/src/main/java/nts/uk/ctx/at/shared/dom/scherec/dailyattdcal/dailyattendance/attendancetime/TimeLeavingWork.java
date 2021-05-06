@@ -59,10 +59,6 @@ public class TimeLeavingWork extends DomainObject{
 		//this.timespan = this.craeteTimeSpan();
 	}
 	
-	public static TimeLeavingWork createDefaultWithNo(int workNo) {
-		return new TimeLeavingWork(new WorkNo(workNo), TimeActualStamp.createByAutomaticSet(new TimeWithDayAttr(0)),
-				TimeActualStamp.createByAutomaticSet(new TimeWithDayAttr(0)));
-	}
 	/**
 	 * 時間帯から作る
 	 * @param workNo 勤務NO

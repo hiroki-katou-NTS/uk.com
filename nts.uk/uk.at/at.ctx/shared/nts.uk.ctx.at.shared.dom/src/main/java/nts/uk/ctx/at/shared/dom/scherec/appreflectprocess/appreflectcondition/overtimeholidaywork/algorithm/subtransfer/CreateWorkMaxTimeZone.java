@@ -9,6 +9,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancet
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.WorkTimes;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeActualStamp;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.DailyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManagePerCompanySet;
@@ -46,10 +47,10 @@ public class CreateWorkMaxTimeZone {
 		/// 新規作成する
 		if (!dailyCalc.getAttendanceLeave().isPresent()) {
 			List<TimeLeavingWork> lstWork = new ArrayList<>();
-			lstWork.add(TimeLeavingWork.createDefaultWithNo(1));
+			lstWork.add(TimeLeavingWork.createDefaultWithNo(1, TimeChangeMeans.APPLICATION));
 			dailyCalc.setAttendanceLeave(Optional.of(new TimeLeavingOfDailyAttd(lstWork, new WorkTimes(1))));
 		} else {
-			dailyCalc.getAttendanceLeave().get().getTimeLeavingWorks().add(TimeLeavingWork.createDefaultWithNo(1));
+			dailyCalc.getAttendanceLeave().get().getTimeLeavingWorks().add(TimeLeavingWork.createDefaultWithNo(1, TimeChangeMeans.APPLICATION));
 		}
 
 		// 取得した時間帯を計算日別勤怠(work）の出退勤にセットする
