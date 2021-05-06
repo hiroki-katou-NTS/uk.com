@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class InitInfoDto {
+public class InitCompanyInfoDto {
 	
 	private EsimatedInfoDto esimatedInfoDto;
 	

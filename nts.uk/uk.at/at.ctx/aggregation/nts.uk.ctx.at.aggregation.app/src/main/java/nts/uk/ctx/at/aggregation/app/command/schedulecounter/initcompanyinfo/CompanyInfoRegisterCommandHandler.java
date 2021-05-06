@@ -10,7 +10,6 @@ import javax.transaction.Transactional;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.aggregation.dom.schedulecounter.criterion.CriterionAmount;
-import nts.uk.ctx.at.aggregation.dom.schedulecounter.criterion.CriterionAmountByNo;
 import nts.uk.ctx.at.aggregation.dom.schedulecounter.criterion.CriterionAmountForCompany;
 import nts.uk.ctx.at.aggregation.dom.schedulecounter.criterion.CriterionAmountForCompanyRepository;
 import nts.uk.ctx.at.aggregation.dom.schedulecounter.criterion.CriterionAmountList;

@@ -25,7 +25,7 @@ import nts.uk.shr.com.context.AppContexts;
 public class CompanyInfoFinder {
 
 	@Inject
-	private EstimatedInfoFinder estimatedInfoFinder;
+	private EstimatedCompanyInfoFinder estimatedInfoFinder;
 	
 	@Inject
 	private CriterionAmountUsageSettingRepository criterionAmountUsageSettingRepository;
@@ -34,7 +34,7 @@ public class CompanyInfoFinder {
 	/**
 	 * 初期情報を取得する
 	 */
-	public InitInfoDto getInitInfo() {
+	public InitCompanyInfoDto getInitInfo() {
 		String cid = AppContexts.user().companyId();
 		// 1: call
 		Optional<CriterionAmountUsageSetting> criOptional = criterionAmountUsageSettingRepository.get(cid);
@@ -42,7 +42,7 @@ public class CompanyInfoFinder {
 		// 2: call
 		EsimatedInfoDto esimatedInfoDto = estimatedInfoFinder.getEstimatedInfo();
 		
-		return new InitInfoDto(
+		return new InitCompanyInfoDto(
 				esimatedInfoDto,
 				criOptional.map(x -> BooleanUtils.toBoolean(x.getEmploymentUse().value)).orElse(null));
 	}

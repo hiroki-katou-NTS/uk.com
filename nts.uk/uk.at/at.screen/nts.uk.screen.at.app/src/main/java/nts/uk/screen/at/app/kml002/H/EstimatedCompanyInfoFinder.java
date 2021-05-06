@@ -12,8 +12,9 @@ import nts.uk.ctx.at.aggregation.dom.schedulecounter.criterion.HandlingOfCriteri
 import nts.uk.ctx.at.aggregation.dom.schedulecounter.criterion.HandlingOfCriterionAmountRepository;
 import nts.uk.shr.com.context.AppContexts;
 
+// 
 @Stateless
-public class EstimatedInfoFinder {
+public class EstimatedCompanyInfoFinder {
 	
 	@Inject
 	private CriterionAmountForCompanyRepository criterionAmountForCompanyRepository;

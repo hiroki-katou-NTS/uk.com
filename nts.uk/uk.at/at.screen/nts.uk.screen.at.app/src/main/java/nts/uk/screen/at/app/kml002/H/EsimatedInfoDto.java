@@ -20,7 +20,7 @@ public class EsimatedInfoDto {
 	private List<CriterionAmountByNoDto> months;
 	
 	// 会社の目安金額.目安金額詳細.年間目安金額.目安金額目安金額リスト
-	private List<CriterionAmountByNoDto> annuals;
+	private List<CriterionAmountByNoDto> years;
 	
 	// 目安金額の扱い.枠別の扱いリスト
 	private List<Integer> frameNos;

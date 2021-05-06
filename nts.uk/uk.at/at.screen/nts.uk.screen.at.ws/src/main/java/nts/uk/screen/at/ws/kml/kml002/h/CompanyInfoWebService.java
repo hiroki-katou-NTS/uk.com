@@ -9,8 +9,8 @@ import javax.ws.rs.Produces;
 import nts.arc.layer.ws.WebService;
 import nts.uk.screen.at.app.kml002.H.CompanyInfoFinder;
 import nts.uk.screen.at.app.kml002.H.EsimatedInfoDto;
-import nts.uk.screen.at.app.kml002.H.EstimatedInfoFinder;
-import nts.uk.screen.at.app.kml002.H.InitInfoDto;
+import nts.uk.screen.at.app.kml002.H.EstimatedCompanyInfoFinder;
+import nts.uk.screen.at.app.kml002.H.InitCompanyInfoDto;
 
 /**
  * KML002 H
@@ -18,7 +18,7 @@ import nts.uk.screen.at.app.kml002.H.InitInfoDto;
  *
  */
 
-@Path("ctx/at/schedule/budget/initCompanyInfo")
+@Path("screen/at/kml002/h")
 @Produces("application/json")
 public class CompanyInfoWebService extends WebService {
 	
@@ -26,11 +26,11 @@ public class CompanyInfoWebService extends WebService {
 	private CompanyInfoFinder companyInfoFinder;
 	
 	@Inject
-	private EstimatedInfoFinder estimatedInfoFinder;
+	private EstimatedCompanyInfoFinder estimatedInfoFinder;
 	
 	@Path("init")
 	@POST
-	public InitInfoDto init() {
+	public InitCompanyInfoDto init() {
 		
 		return companyInfoFinder.getInitInfo();
 	}
