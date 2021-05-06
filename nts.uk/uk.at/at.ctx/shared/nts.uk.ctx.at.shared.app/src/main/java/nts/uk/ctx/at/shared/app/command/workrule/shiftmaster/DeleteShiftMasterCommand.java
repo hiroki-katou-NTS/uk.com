@@ -8,6 +8,7 @@ import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.Remarks;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMaster;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterCode;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterDisInfor;
+import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterImportCode;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterName;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -33,6 +34,8 @@ public class DeleteShiftMasterCommand {
 		ColorCodeChar6 colorSmartphone  = new ColorCodeChar6(color);
 		Remarks remarks = !StringUtils.isEmpty(remark) ? new Remarks(remark) : null;
 		ShiftMasterDisInfor display = new ShiftMasterDisInfor(name, colorP,colorSmartphone, remarks);
-		return new ShiftMaster(companyId, code, display, workTypeCd, workTimeSetCd);
+		return new ShiftMaster(companyId, code, display, workTypeCd, workTimeSetCd
+				//TODO
+				, new ShiftMasterImportCode("importCode"));
 	}
 }

@@ -2,23 +2,41 @@ package nts.uk.ctx.at.shared.dom.workrule.shiftmaster;
 
 import java.util.Optional;
 
+import lombok.val;
 import nts.arc.error.BusinessException;
 import nts.arc.task.tran.AtomTask;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 /**
  * DS: シフトマスタを更新する
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.shared.就業規則.シフトマスタ.シフトマスタを更新する
  * @author tutk
  *
  */
 public class UpdateShiftMasterService {
-	public static AtomTask updateShiftMater(WorkInformation.Require requireWorkInfo, Require require,
-			String shiftMaterCode, ShiftMasterDisInfor displayInfor, WorkInformation workInformation) {
+	/**
+	 * 更新する
+	 * @param requireWorkInfo
+	 * @param require
+	 * @param shiftMaterCode コード
+	 * @param displayInfor 表示情報
+	 * @param workInformation 勤務情報
+	 * @param importCode 取り込みコード
+	 * @return
+	 */
+	public static AtomTask updateShiftMater(Require require
+			, String shiftMaterCode, ShiftMasterDisInfor displayInfor
+			, WorkInformation workInformation, ShiftMasterImportCode importCode) {
 		// 1:get(会社ID, コード):Optional<シフトマスタ>
-		Optional<ShiftMaster> shiftMaterOpt = require.getByShiftMaterCd(shiftMaterCode); //truyen cid tư app
+		val shiftMaster = require.getByShiftMaterCd(shiftMaterCode).get(); //truyen cid tư app
+		
+		if(!shiftMaster.getImportCode().equals(importCode) && require.checkDuplicateImportCode(importCode)) {
+			throw new BusinessException("Msg_2163");
+		}
+		
 		// 2: 変更する(シフトマスタの表示情報, 勤務情報)
-		shiftMaterOpt.get().change(displayInfor, workInformation);
+		shiftMaster.change(displayInfor, importCode, workInformation);
 		// エラーチェックする
-		shiftMaterOpt.get().checkError(requireWorkInfo);
+		shiftMaster.checkError(require);
 		Optional<ShiftMaster> shiftMaterByWorkTypeAndWorkTime = require.getByWorkTypeAndWorkTime(//truyen cid tư app
 				workInformation.getWorkTypeCode().v(),
 				workInformation.getWorkTimeCodeNotNull().map(m -> m.v()).orElse(null));
@@ -28,16 +46,37 @@ public class UpdateShiftMasterService {
 		}
 		// 3:persist
 		return AtomTask.of(() -> {
-			require.update(shiftMaterOpt.get());
+			require.update(shiftMaster);
 		});
 	}
 
-	public static interface Require {
+	public static interface Require extends ShiftMaster.Require {
+		/**
+		 * 取得する
+		 * @param shiftMaterCode シフトマスタコード
+		 * @return
+		 */
+		Optional<ShiftMaster> getByShiftMaterCd(String shiftMaterCode);
+		
+		/**
+		 * 勤務情報で取得する
+		 * @param workTypeCd 勤務種類コード
+		 * @param workTimeCd 就業時間帯コード
+		 * @return
+		 */
+		Optional<ShiftMaster> getByWorkTypeAndWorkTime(String workTypeCd, String workTimeCd);
 
+		/**
+		 * 登録する
+		 * @param shiftMater シフトマスタ
+		 */
 		void update(ShiftMaster shiftMater);
-
-		public Optional<ShiftMaster> getByShiftMaterCd(String shiftMaterCode);
-
-		public Optional<ShiftMaster> getByWorkTypeAndWorkTime(String workTypeCd, String workTimeCd);
+		
+		/**
+		 * 取り込みコードが重複しているか
+		 * @param importCode
+		 * @return
+		 */
+		boolean checkDuplicateImportCode(ShiftMasterImportCode importCode);
 	}
 }

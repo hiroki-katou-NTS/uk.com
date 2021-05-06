@@ -13,6 +13,7 @@ import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.Remarks;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMaster;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterCode;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterDisInfor;
+import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterImportCode;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterName;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
@@ -20,7 +21,6 @@ import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
-import nts.uk.ctx.at.shared.dom.worktime.worktimeset.internal.PredetermineTimeSetForCalc;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -35,7 +35,8 @@ public class WorkStyleScreenQuery {
 	public Integer getWorkStyle(WorkStyleDto dto) {
 		String companyId = AppContexts.user().companyId();
 		ShiftMasterDisInfor shiftMasterDisInfor = new ShiftMasterDisInfor(new ShiftMasterName(dto.getShiftMasterName()), new ColorCodeChar6(dto.getColor()),new ColorCodeChar6(dto.getColor()), new Remarks(dto.getRemarks()));
-		ShiftMaster shiftMaster = new ShiftMaster(companyId, new ShiftMasterCode(dto.getShiftMasterCode()), shiftMasterDisInfor, dto.getWorkTypeCode(), dto.getWorkTimeCode());
+		//TODO 取込コードを追加。
+		ShiftMaster shiftMaster = new ShiftMaster(companyId, new ShiftMasterCode(dto.getShiftMasterCode()), shiftMasterDisInfor, dto.getWorkTypeCode(), dto.getWorkTimeCode(), new ShiftMasterImportCode("importCode"));
 		WorkInformation.Require require = new WorkStyleScreenQueryImpl(workTypeRepository);
 		Integer workStyle = shiftMaster.getWorkStyle(require).get().value;
 		return workStyle;

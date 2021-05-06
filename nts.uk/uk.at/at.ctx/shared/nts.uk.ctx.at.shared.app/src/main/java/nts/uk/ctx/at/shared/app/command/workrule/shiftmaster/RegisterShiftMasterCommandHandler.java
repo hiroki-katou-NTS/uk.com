@@ -16,6 +16,7 @@ import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.MakeShiftMasterService;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMaster;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterCode;
+import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterImportCode;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterRepository;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.UpdateShiftMasterService;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
@@ -25,8 +26,6 @@ import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
-import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingService;
-import nts.uk.ctx.at.shared.dom.worktime.worktimeset.internal.PredetermineTimeSetForCalc;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -49,8 +48,8 @@ public class RegisterShiftMasterCommandHandler extends CommandHandler<RegisterSh
 	@Inject
 	private WorkTimeSettingRepository workTimeSettingRepository;
 
-	@Inject
-	private WorkTimeSettingService workTimeSettingService;
+//	@Inject
+//	private WorkTimeSettingService workTimeSettingService;
 
 
 
@@ -64,21 +63,28 @@ public class RegisterShiftMasterCommandHandler extends CommandHandler<RegisterSh
 		if (cmd.getNewMode() && existed.isPresent()) {
 			throw new BusinessException("Msg_3");
 		}
-
-		WorkInformation.Require workRequired = new WorkInfoRequireImpl(basicScheduleService, workTypeRepo,workTimeSettingRepository,workTimeSettingService);
+		//TODO 取込コードを追加
+		MakeShiftMasterService.Require createRequired = new MakeShiftMasterRequireImpl(shiftMasterRepo, basicScheduleService, workTypeRepo, workTimeSettingRepository);
+		UpdateShiftMasterService.Require updateRequired = new UpdateShiftMasterRequireImpl(shiftMasterRepo, basicScheduleService, workTypeRepo, workTimeSettingRepository);
+		//TODO 取込コードを追加
+		//WorkInformation.Require workRequired = new WorkInfoRequireImpl(basicScheduleService, workTypeRepo,workTimeSettingRepository,workTimeSettingService);　
 		ShiftMaster dom = cmd.toDomain();
-		dom.checkError(workRequired);
-
-		MakeShiftMasterService.Require createRequired = new MakeShiftMasterRequireImpl(shiftMasterRepo);
-		UpdateShiftMasterService.Require updateRequired = new UpdateShiftMasterRequireImpl(shiftMasterRepo);
+		dom.checkError(createRequired);
+		
 		AtomTask persist;
+		
 		if (cmd.getNewMode()) {
-			persist = MakeShiftMasterService.makeShiftMater(workRequired, createRequired, companyId,
+			persist = MakeShiftMasterService.makeShiftMater(createRequired, companyId,
 					cmd.getShiftMasterCode(), cmd.getWorkTypeCd(), Optional.ofNullable(cmd.getWorkTimeSetCd()),
-					dom.getDisplayInfor());
+					dom.getDisplayInfor(),
+					//TODO
+					new ShiftMasterImportCode("importCode"));
 		} else {
-			persist = UpdateShiftMasterService.updateShiftMater(workRequired, updateRequired, cmd.getShiftMasterCode(),
-					dom.getDisplayInfor(), new WorkInformation(cmd.getWorkTypeCd(), cmd.getWorkTimeSetCd()));
+			persist = UpdateShiftMasterService.updateShiftMater(updateRequired, cmd.getShiftMasterCode(),
+					dom.getDisplayInfor(), new WorkInformation(cmd.getWorkTypeCd(), cmd.getWorkTimeSetCd()),
+					//TODO
+					new ShiftMasterImportCode("importCode")
+					);
 		}
 
 		transaction.execute(() -> {
@@ -87,6 +93,7 @@ public class RegisterShiftMasterCommandHandler extends CommandHandler<RegisterSh
 
 	}
 
+	//TODO 取込コードを追加
 	@AllArgsConstructor
 	private static class WorkInfoRequireImpl implements WorkInformation.Require {
 
@@ -101,8 +108,8 @@ public class RegisterShiftMasterCommandHandler extends CommandHandler<RegisterSh
 		@Inject
 		private WorkTimeSettingRepository workTimeSettingRepository;
 
-		@Inject
-		private WorkTimeSettingService workTimeSettingService;
+//		@Inject
+//		private WorkTimeSettingService workTimeSettingService;
 
 		@Override
 		public SetupType checkNeededOfWorkTimeSetting(String workTypeCode) {
@@ -154,6 +161,17 @@ public class RegisterShiftMasterCommandHandler extends CommandHandler<RegisterSh
 
 		@Inject
 		private ShiftMasterRepository shiftMasterRepo;
+		
+		private final String companyId = AppContexts.user().companyId();
+
+		@Inject
+		private BasicScheduleService service;
+
+		@Inject
+		private WorkTypeRepository workTypeRepo;
+
+		@Inject
+		private WorkTimeSettingRepository workTimeSettingRepository;
 
 		@Override
 		public boolean checkExists(String companyId, String workTypeCd, String workTimeCd) {
@@ -170,6 +188,52 @@ public class RegisterShiftMasterCommandHandler extends CommandHandler<RegisterSh
 		public void insert(ShiftMaster shiftMater, String workTypeCd, String workTimeCd) {
 			shiftMasterRepo.insert(shiftMater);
 		}
+		
+		@Override
+		public boolean checkDuplicateImportCode(String companyId, ShiftMasterImportCode importCode) {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		public Optional<WorkType> getWorkType(String workTypeCd) {
+			return workTypeRepo.findByPK(companyId, workTypeCd);
+		}
+
+		@Override
+		public Optional<WorkTimeSetting> getWorkTime(String workTimeCode) {
+			return workTimeSettingRepository.findByCode(companyId, workTimeCode);
+		}
+
+
+		@Override
+		public SetupType checkNeededOfWorkTimeSetting(String workTypeCode) {
+			 return service.checkNeededOfWorkTimeSetting(workTypeCode);
+		}
+
+		@Override
+		public FixedWorkSetting getWorkSettingForFixedWork(WorkTimeCode code) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public FlowWorkSetting getWorkSettingForFlowWork(WorkTimeCode code) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public FlexWorkSetting getWorkSettingForFlexWork(WorkTimeCode code) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public PredetemineTimeSetting getPredetermineTimeSetting(WorkTimeCode wktmCd) {
+			// TODO Auto-generated method stub
+			return null;
+		}
 
 	}
 
@@ -180,6 +244,15 @@ public class RegisterShiftMasterCommandHandler extends CommandHandler<RegisterSh
 
 		@Inject
 		private ShiftMasterRepository shiftMasterRepo;
+
+		@Inject
+		private BasicScheduleService service;
+
+		@Inject
+		private WorkTypeRepository workTypeRepo;
+
+		@Inject
+		private WorkTimeSettingRepository workTimeSettingRepository;
 
 		@Override
 		public void update(ShiftMaster shiftMater) {
@@ -194,6 +267,52 @@ public class RegisterShiftMasterCommandHandler extends CommandHandler<RegisterSh
 		@Override
 		public Optional<ShiftMaster> getByWorkTypeAndWorkTime(String workTypeCd, String workTimeCd) {
 			return shiftMasterRepo.getByWorkTypeAndWorkTime(companyId, workTypeCd, workTimeCd);
+		}
+
+		@Override
+		public boolean checkDuplicateImportCode(ShiftMasterImportCode importCode) {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		public Optional<WorkType> getWorkType(String workTypeCd) {
+			return workTypeRepo.findByPK(companyId, workTypeCd);
+		}
+
+		@Override
+		public Optional<WorkTimeSetting> getWorkTime(String workTimeCode) {
+			return workTimeSettingRepository.findByCode(companyId, workTimeCode);
+		}
+
+
+		@Override
+		public SetupType checkNeededOfWorkTimeSetting(String workTypeCode) {
+			 return service.checkNeededOfWorkTimeSetting(workTypeCode);
+		}
+
+		@Override
+		public FixedWorkSetting getWorkSettingForFixedWork(WorkTimeCode code) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public FlowWorkSetting getWorkSettingForFlowWork(WorkTimeCode code) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public FlexWorkSetting getWorkSettingForFlexWork(WorkTimeCode code) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public PredetemineTimeSetting getPredetermineTimeSetting(WorkTimeCode wktmCd) {
+			// TODO Auto-generated method stub
+			return null;
 		}
 
 	}

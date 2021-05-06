@@ -6,12 +6,12 @@ public class ShiftMasterInstanceHelper {
 	public static ShiftMaster getShiftMaterEmpty() {
 		return new ShiftMaster("companyId", new ShiftMasterCode("smc"), 
 				new ShiftMasterDisInfor(new ShiftMasterName("name"),new ColorCodeChar6("color"),new ColorCodeChar6("color"), null), 
-				"workTypeCode", "workTimeCode");
+				"workTypeCode", "workTimeCode", new ShiftMasterImportCode("importCode"));
 	}
 	
 	public static ShiftMaster getShiftMater(String companyId, String shiftMaterCode, ShiftMasterDisInfor displayInfor,
 			String workTypeCode, String workTimeCode) {
-		return new ShiftMaster(companyId, new ShiftMasterCode("smc"), displayInfor, workTypeCode, workTimeCode);
+		return new ShiftMaster(companyId, new ShiftMasterCode(shiftMaterCode), displayInfor, workTypeCode, workTimeCode, new ShiftMasterImportCode("importCode"));
 	}
 	
 	public static ShiftMasterDisInfor getShiftMasterDisInforEmpty() {
@@ -25,11 +25,17 @@ public class ShiftMasterInstanceHelper {
 	public static ShiftMaster getShiftMaterWorkTimeIsNull() {
 		return new ShiftMaster("companyId", new ShiftMasterCode("smc"), 
 				new ShiftMasterDisInfor(new ShiftMasterName("name"),new ColorCodeChar6("color"),new ColorCodeChar6("color"), null), 
-				"workTypeCode", null);
+				"workTypeCode", null, new ShiftMasterImportCode("importCode"));
 	}
 	
 	public static WorkInformation getWorkInformationWorkTimeIsNull() {
 		return new WorkInformation( "workTypeCode", null);
+	}
+	
+	public static ShiftMaster createShiftMasterByImportCode(ShiftMasterImportCode importCode) {
+		return new ShiftMaster("companyId", new ShiftMasterCode("smc"), 
+				new ShiftMasterDisInfor(new ShiftMasterName("name"),new ColorCodeChar6("color"),new ColorCodeChar6("color"), null), 
+				"workTypeCode", "workTimeCode", importCode);
 	}
 
 

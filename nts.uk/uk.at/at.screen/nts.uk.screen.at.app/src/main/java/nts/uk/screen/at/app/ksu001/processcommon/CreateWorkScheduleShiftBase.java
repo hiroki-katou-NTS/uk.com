@@ -30,6 +30,7 @@ import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.Remarks;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMaster;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterCode;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterDisInfor;
+import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterImportCode;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterName;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterRepository;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
@@ -168,7 +169,8 @@ public class CreateWorkScheduleShiftBase {
 		String companyId = AppContexts.user().companyId();
 		for (ShiftMasterMapWithWorkStyle obj : listShiftMaster) {
 			ShiftMasterDisInfor displayInfor = new ShiftMasterDisInfor(new ShiftMasterName(obj.shiftMasterName),new ColorCodeChar6(obj.color),new ColorCodeChar6(obj.color), new Remarks(obj.remark));
-			ShiftMaster ShiftMaster = new ShiftMaster(companyId, new ShiftMasterCode(obj.shiftMasterCode), displayInfor,obj.workTypeCode, obj.workTimeCode);
+			//TODO 取込コードを追加
+			ShiftMaster ShiftMaster = new ShiftMaster(companyId, new ShiftMasterCode(obj.shiftMasterCode), displayInfor,obj.workTypeCode, obj.workTimeCode, new ShiftMasterImportCode("importCode"));
 			mapShiftMasterWithWorkStyle2.put(ShiftMaster, obj.workStyle == null ? Optional.empty(): Optional.of(EnumAdaptor.valueOf(Integer.valueOf(obj.workStyle), WorkStyle.class)));
 		}
 		return new WorkScheduleShiftBaseResult(listWorkScheduleShift, mapShiftMasterWithWorkStyle2);

@@ -9,6 +9,7 @@ import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.Remarks;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMaster;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterCode;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterDisInfor;
+import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterImportCode;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterName;
 
 public class WorkAvailabilityByShiftMasterTestHelper {
@@ -39,7 +40,8 @@ public class WorkAvailabilityByShiftMasterTestHelper {
     					new ColorCodeChar6("000000"),
     					new Remarks(shiftMasterCode + "-r")), 
     			"001", 
-    			"001");
+    			"001",
+    			new ShiftMasterImportCode("importCode"));
 		
 	}
 	
@@ -53,7 +55,8 @@ public class WorkAvailabilityByShiftMasterTestHelper {
     					new ColorCodeChar6("000000"),
     					new Remarks(shiftMasterCode + "-r")), 
     			"001", 
-    			"001");
+    			"001",
+    			new ShiftMasterImportCode("importCode"));
 		
 	}
 
