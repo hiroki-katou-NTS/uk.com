@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.aggregation.app.find.schedulecounter.initcompanyinfo;
+package nts.uk.screen.at.app.kml002.H;
 
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -25,13 +25,11 @@ import nts.uk.shr.com.context.AppContexts;
 public class CompanyInfoFinder {
 
 	@Inject
-	private CriterionAmountForCompanyRepository criterionAmountForCompanyRepository;
-	
-	@Inject
-	private HandlingOfCriterionAmountRepository handlingOfCriterionAmountRepository;
+	private EstimatedInfoFinder estimatedInfoFinder;
 	
 	@Inject
 	private CriterionAmountUsageSettingRepository criterionAmountUsageSettingRepository;
+	
 	
 	/**
 	 * 初期情報を取得する
@@ -42,7 +40,7 @@ public class CompanyInfoFinder {
 		Optional<CriterionAmountUsageSetting> criOptional = criterionAmountUsageSettingRepository.get(cid);
 		
 		// 2: call
-		EsimatedInfoDto esimatedInfoDto = this.getEstimatedInfo();
+		EsimatedInfoDto esimatedInfoDto = estimatedInfoFinder.getEstimatedInfo();
 		
 		return new InitInfoDto(
 				esimatedInfoDto,
@@ -51,38 +49,7 @@ public class CompanyInfoFinder {
 	
 	
 	
-	/**
-	 * 目安金額情報を取得する
-	 */
-	public EsimatedInfoDto getEstimatedInfo() {
-		String cid = AppContexts.user().companyId();
-		// 会社の目安金額を取得する
-		Optional<CriterionAmountForCompany> criOptional = criterionAmountForCompanyRepository.get(cid);
-		
-		// 目安金額の扱いを取得する
-		Optional<HandlingOfCriterionAmount> hanOptional = handlingOfCriterionAmountRepository.get(cid);
-		
-		return new EsimatedInfoDto(
-				criOptional.get()
-					.getCriterionAmount()
-					.getMonthly()
-					.getList()
-					.stream()
-					.map(CriterionAmountByNoDto::setData)
-					.collect(Collectors.toList()),
-				criOptional.get()
-					.getCriterionAmount()
-					.getYearly()
-					.getList()
-					.stream()
-					.map(CriterionAmountByNoDto::setData)
-					.collect(Collectors.toList()),
-				hanOptional.get()
-					.getList()
-					.stream()
-					.map(x -> x.getFrameNo().v())
-					.collect(Collectors.toList()));
-	}
+	
 	
 	
 }
