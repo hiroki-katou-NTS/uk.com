@@ -942,6 +942,8 @@ module cmm045.a.viewmodel {
 			let obj = self.appListExtractConditionDto,
 				date: vmbase.Date = { startDate: obj.periodStartDate, endDate: obj.periodEndDate }
             self.dateValue(date);
+			self.isBeforeCheck(obj.preOutput ? true : false);	
+			self.isAfterCheck(obj.postOutput ? true : false);
             let arraySelectedIds = [];
             if (obj.opUnapprovalStatus) {//未承認
                 arraySelectedIds.push(1);
