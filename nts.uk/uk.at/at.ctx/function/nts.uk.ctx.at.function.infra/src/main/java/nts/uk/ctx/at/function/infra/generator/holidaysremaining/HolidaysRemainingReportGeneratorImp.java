@@ -41,6 +41,9 @@ import nts.uk.ctx.at.function.dom.adapter.reserveleave.RsvLeaUsedCurrentMonImpor
 import nts.uk.ctx.at.function.dom.adapter.vacation.CurrentHolidayImported;
 import nts.uk.ctx.at.function.dom.adapter.vacation.StatusHolidayImported;
 import nts.uk.ctx.at.function.dom.holidaysremaining.BreakSelection;
+import nts.uk.ctx.at.function.dom.holidaysremaining.HolidaysRemainingManagement;
+import nts.uk.ctx.at.function.dom.holidaysremaining.VariousVacationControl;
+import nts.uk.ctx.at.function.dom.holidaysremaining.VariousVacationControlService;
 import nts.uk.ctx.at.function.dom.holidaysremaining.report.HolidayRemainingDataSource;
 import nts.uk.ctx.at.function.dom.holidaysremaining.report.HolidaysRemainingEmployee;
 import nts.uk.ctx.at.function.dom.holidaysremaining.report.HolidaysRemainingReportGenerator;
@@ -49,6 +52,10 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRemainingData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRepository;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHoliday;
+import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSettingRepository;
+import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.EmploymentSettingRepository;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 
@@ -60,7 +67,16 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
     private SpecialLeaveGrantRepository specialLeaveGrantRepository;
 
     @Inject
+    private AnnualPaidLeaveSettingRepository annualPaidLeaveSettingRepository;
+
+    @Inject
+    private VariousVacationControlService variousVacationControlService;
+
+    @Inject
     private AnnLeaMaxDataRepository annLeaMaxDataRepository;
+
+    @Inject
+    private EmploymentSettingRepository employmentSettingRepository;
 
     private static final String TEMPLATE_FILE = "report/休暇残数管理表_テンプレート.xlsx";
     private static final String REPORT_FILE_NAME = "休暇残数管理表.xlsx";
@@ -110,7 +126,8 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
         YearMonth endMonth = dataSource.getEndMonth().yearMonth();
 
         // B1_1, B1_2 // Update ~ -> KDR001_73
-        cells.get(1, 0).setValue(TextResource.localize("KDR001_2") + dataSource.getStartMonth().toString("yyyy/MM")
+        cells.get(1, 0).setValue(TextResource.localize("KDR001_2") +
+                dataSource.getStartMonth().toString("yyyy/MM")
                 + TextResource.localize("KDR001_73") + dataSource.getEndMonth().toString("yyyy/MM"));
         // B1_3
         //cells.get(2, 0).setValue(TextResource.localize("KDR001_3"));// Ver: 15 : delete
@@ -391,19 +408,25 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
             }
             // Update Export KDR 001- TODO CHINH.HM
             // E1_13;
-            cells.get(firstRow + 1, 5).setValue(annLeave.getFirstMonthRemNumMinutes());
+            Integer  leave_Hours = checkShowAreaAnnualBreak(dataSource.getHolidaysRemainingManagement())?
+                    annLeave.getFirstMonthRemNumMinutes(): null;
+            cells.get(firstRow + 1, 5).setValue(leave_Hours);
             if (annLeave.getFirstMonthRemNumMinutes() < 0) {
                 setForegroundRed(cells.get(firstRow + 1, 5));
             }
             // E1_14
             val useMinutes = annLeave.getUsedMinutes().isPresent() ? annLeave.getUsedMinutes().get() : null;
-            cells.get(firstRow + 1, 6).setValue(useMinutes);
+            val  uses_Hours = checkShowAreaAnnualBreak(dataSource.getHolidaysRemainingManagement())?useMinutes: null;
+
+            cells.get(firstRow + 1, 6).setValue(uses_Hours);
             if (useMinutes != null && useMinutes.doubleValue() < 0) {
                 setForegroundRed(cells.get(firstRow + 1, 6));
             }
             // E1_15
             val remainMinutes = annLeave.getRemainMinutes().isPresent() ? annLeave.getRemainMinutes().get() : null;
-            cells.get(firstRow + 1, 7).setValue(remainMinutes);
+            val remaining_Hours = checkShowAreaAnnualBreak(dataSource.getHolidaysRemainingManagement())?remainMinutes: null;
+
+            cells.get(firstRow + 1, 7).setValue(remaining_Hours);
             if (remainMinutes != null && remainMinutes.doubleValue() < 0) {
                 setForegroundRed(cells.get(firstRow + 1, 7));
             }
@@ -429,7 +452,10 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                 // E2_3 当月より前, set lại giá trị cho cột này nếu bằng 0 thì không hiển thị ra
                 cells.get(firstRow, 10 + totalMonth).setValue(item.getUsedDays() != null && item.getUsedDays() != 0 ? item.getUsedDays() : null);
                 // E2_4:月度使用時間 Update KDR ver 15
-                cells.get(firstRow + 1, 10 + totalMonth).setValue(item.getUsedTime() != null && item.getUsedTime() != 0 ? item.getUsedTime() : null);
+
+                val use_Time = checkShowAreaAnnualBreak(dataSource.getHolidaysRemainingManagement()) ?
+                        item.getUsedTime():null;
+                cells.get(firstRow + 1, 10 + totalMonth).setValue(use_Time != null && use_Time != 0 ? use_Time : null);
                 // E3_3 当月より前
                 cells.get(firstRow + 2, 10 + totalMonth).setValue(item.getRemainingDays());
                 cells.get(firstRow + 3, 10 + totalMonth).setValue(item.getRemainingTime());
@@ -496,11 +522,8 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
     // NOT UPDATE IN VER 15
     private int printYearlyReserved(Cells cells, int firstRow, HolidaysRemainingEmployee employee,
                                     HolidayRemainingDataSource dataSource) throws Exception {
-        // 積立年休
-        if (!dataSource.getVariousVacationControl().isYearlyReservedSetting()) {
-            return firstRow;
-        }
-        if (!dataSource.getHolidaysRemainingManagement().getListItemsOutput().getYearlyReserved().isYearlyReserved()) {
+        if(!checkYearlyLeave(dataSource.getHolidaysRemainingManagement(),employee.getEmployeeCode(),
+                dataSource.getVariousVacationControl())){
             return firstRow;
         }
 
@@ -511,7 +534,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 
         cells.copyRows(cells, NUMBER_ROW_OF_HEADER + 11, firstRow, 2);
         // H1_1
-        cells.get(firstRow, 2).setValue(TextResource.localize("Com_FundedPaidHoliday"));
+        cells.get(firstRow, 2).setValue(TextResource.localize("KDR001_76"));
         // H2_1
         cells.get(firstRow, 9).setValue(TextResource.localize("KDR001_14"));
         // H2_2
@@ -807,6 +830,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 //			//	}
 //			}
 //		}
+
         //I1_2 TODO
         cells.get(firstRow, 4).setValue("TODO QA");
         //I1_3 使用数
@@ -1095,106 +1119,6 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
             return firstRow + totalRows;
         }
         YearMonth currentMonth = employee.getCurrentMonth().get();
-        // Set value for 振休 K
-        // Result RequestList 677
-        val data = hdRemainingInfor.getAggrResultOfHolidayOver60h();
-
-
-        int maxRange = totalMonths(dataSource.getStartMonth().yearMonth(), dataSource.getEndMonth().yearMonth());
-//        if (StatusOfHolidayList != null) {
-//            for (StatusOfHolidayImported statusOfHDItem : StatusOfHolidayList) {
-//                // Before this month
-//                if (currentMonth.compareTo(statusOfHDItem.getYm()) <= 0) {
-//                    continue;
-//                }
-//                int totalMonth = totalMonths(dataSource.getStartMonth().yearMonth(), statusOfHDItem.getYm());
-//                if (maxRange < totalMonth || totalMonth < 0) {
-//                    continue;
-//                }
-//                // J2_5 振休_発生, set lại giá trị cho cột này nếu bằng 0 thì không hiển thị ra
-//                cells.get(firstRow, 10 + totalMonth).setValue(statusOfHDItem.getOccurredDay() != null && statusOfHDItem.getOccurredDay() == 0 ? null : statusOfHDItem.getOccurredDay());
-//                // J2_6 振休_使用, set lại giá trị cho cột này nếu bằng 0 thì không hiển thị ra
-//                cells.get(firstRow + 1, 10 + totalMonth).setValue(statusOfHDItem.getUsedDays() != null && statusOfHDItem.getUsedDays() == 0 ? null : statusOfHDItem.getUsedDays());
-//                if (isUndigestedPause) {
-//                    // J2_7 振休_未消化, set lại giá trị cho cột này nếu bằng 0 thì không hiển thị ra
-//                    cells.get(rowIndexUndigestedPause, 10 + totalMonth).setValue(statusOfHDItem.getUnUsedDays() != null && statusOfHDItem.getUnUsedDays() == 0 ? null : statusOfHDItem.getUnUsedDays());
-//                    if (statusOfHDItem.getUnUsedDays() != null && statusOfHDItem.getUnUsedDays() > 0) {
-//                        setForegroundRed(cells.get(rowIndexUndigestedPause, 10 + totalMonth));
-//                    }
-//                }
-//                if (isNumberRemainingPause) {
-//                    // J2_8 振休_残数
-//                    cells.get(rowIndexNumberRemainingPause, 10 + totalMonth)
-//                            .setValue(statusOfHDItem.getRemainingDays());
-//                    if (statusOfHDItem.getRemainingDays() < 0) {
-//                        setForegroundRed(cells.get(rowIndexNumberRemainingPause, 10 + totalMonth));
-//                    }
-//                }
-//            }
-//        }
-//
-//        if (currentHolidayList != null) {
-//            for (CurrentHolidayRemainImported holidayRemainItem : currentHolidayList) {
-//                if (currentMonth.compareTo(holidayRemainItem.getYm()) <= 0) {
-//                    int totalMonth = totalMonths(dataSource.getStartMonth().yearMonth(), holidayRemainItem.getYm());
-//                    if (maxRange >= totalMonth && totalMonth >= 0) {
-//                        // J2_5 振休_発生, set lại giá trị cho cột này nếu bằng 0 thì không hiển thị ra
-//                        cells.get(firstRow, 10 + totalMonth).setValue(holidayRemainItem.getMonthOccurrence() != null
-//                                && holidayRemainItem.getMonthOccurrence() == 0 ? null : holidayRemainItem.getMonthOccurrence());
-//                        // J2_6 振休_使用, set lại giá trị cho cột này nếu bằng 0 thì không hiển thị ra
-//                        cells.get(firstRow + 1, 10 + totalMonth).setValue(holidayRemainItem.getMonthUse() != null
-//                                && holidayRemainItem.getMonthUse() == 0 ? null : holidayRemainItem.getMonthUse());
-//                        if (currentMonth.compareTo(holidayRemainItem.getYm()) == 0) {
-//                            if (isUndigestedPause) {
-//                                // J2_7 振休_未消化, set lại giá trị cho cột này nếu bằng 0 thì không hiển thị ra
-//                                cells.get(rowIndexUndigestedPause, 10 + totalMonth).setValue(holidayRemainItem.getMonthExtinction() != null
-//                                        && holidayRemainItem.getMonthExtinction() == 0 ? null : holidayRemainItem.getMonthExtinction());
-//                                if (holidayRemainItem.getMonthExtinction() != null
-//                                        && holidayRemainItem.getMonthExtinction() > 0) {
-//                                    setForegroundRed(cells.get(rowIndexUndigestedPause, 10 + totalMonth));
-//                                }
-//                            }
-//                            if (isNumberRemainingPause) {
-//                                // J2_8 振休_残数
-//                                cells.get(rowIndexNumberRemainingPause, 10 + totalMonth)
-//                                        .setValue(holidayRemainItem.getMonthEndRemain());
-//                                if (holidayRemainItem.getMonthEndRemain() < 0) {
-//                                    setForegroundRed(cells.get(rowIndexNumberRemainingPause, 10 + totalMonth));
-//                                }
-//                            }
-//                        }
-//                    }
-//                }
-//
-//                //}
-//            }
-//        }
-//
-//        // Current month
-//        //if (currentMonth.compareTo(holidayRemainItem.getYm()) == 0) {
-//        // J1_2 振休_月初残
-//        cells.get(firstRow, 5).setValue(currentHolidayRemainLeft.getMonthStartRemain());
-//        if (currentHolidayRemainLeft.getMonthStartRemain() < 0) {
-//            setForegroundRed(cells.get(firstRow, 5));
-//        }
-//        // J1_3 振休_使用数
-//        cells.get(firstRow, 6).setValue(currentHolidayRemainLeft.getMonthUse());
-//        if (isPauseItem) {
-//            // J1_4 振休_残数
-//            cells.get(firstRow, 7).setValue(currentHolidayRemainLeft.getMonthEndRemain());
-//            if (currentHolidayRemainLeft.getMonthEndRemain() < 0) {
-//                setForegroundRed(cells.get(firstRow, 7));
-//            }
-//        }
-//        if (isUndigestedPause) {
-//            // J1_5 振休_未消化
-//            cells.get(firstRow, 8).setValue(currentHolidayRemainLeft.getMonthExtinction());
-//            if (currentHolidayRemainLeft.getMonthExtinction() != null
-//                    && currentHolidayRemainLeft.getMonthExtinction() > 0) {
-//                setForegroundRed(cells.get(firstRow, 8));
-//            }
-//        }
-
         // Set background
         for (int i = 0; i <= totalMonths(dataSource.getStartMonth().yearMonth(),
                 dataSource.getEndMonth().yearMonth()); i++) {
@@ -1226,12 +1150,14 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
     //F
     private int printLimitForHalfHolidays(Cells cells, int firstRow, HolidaysRemainingEmployee employee,
                                           HolidayRemainingDataSource dataSource) throws Exception {
-        val dataOptional = annLeaMaxDataRepository.get(employee.getEmployeeId());
 
-        YearMonth currentMonth = employee.getCurrentMonth().get();
-        ;
+        if(!checkLimitHoliday(dataSource.getHolidaysRemainingManagement())){
+            return firstRow ;
+        }
         cells.copyRows(cells, NUMBER_ROW_OF_HEADER + 11, firstRow, 2);
-
+        val dataOptional = annLeaMaxDataRepository.get(employee.getEmployeeId());
+        YearMonth currentMonth = employee.getCurrentMonth().get();
+        cells.get(firstRow, 2).setValue(TextResource.localize("KDR001_49"));
         if (dataOptional.isPresent()) {
             val data = dataOptional.get();
             // 半日年休付与数.付与数　　　←半日年休上限．上限回数 : F 1_2
@@ -1284,7 +1210,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                 }
                 // F2_3 月度使用回数, set lại giá trị cho cột này nếu bằng 0 thì không hiển thị ra
                 cells.get(firstRow, 10 + totalMonth).setValue(item.getUsedTime() != null && item.getUsedTime() != 0 ? item.getUsedDays() : null);
-                // E2_4:月度残回数 Update KDR ver 15
+                // F2_4:月度残回数 Update KDR ver 15
                 cells.get(firstRow + 1, 10 + totalMonth).setValue(item.getRemainingTime() != null && item.getRemainingTime() != 0 ? item.getRemainingTime() : null);
 
                 if (item.getUsedTime() < 0) {
@@ -1332,6 +1258,8 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
         if (hdRemainingInfor == null) {
             return firstRow;
         }
+        if(!checkLimitHourlyHoliday(dataSource.getHolidaysRemainingManagement()))
+            return firstRow ;
         cells.copyRows(cells, NUMBER_ROW_OF_HEADER + 11, firstRow, 1);
         setBackgroundGray(cells.get(firstRow, 8));
 
@@ -1417,12 +1345,13 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 
         for (Integer specialHolidayCode : listSphdCode) {
             Optional<SpecialHoliday> specialHolidayOpt = specialHolidays.stream()
-                    .filter(c -> c.getSpecialHolidayCode().v() == specialHolidayCode).findFirst();
+                    .filter(c -> c.getSpecialHolidayCode().v() == specialHolidayCode ).findFirst();
             if (!specialHolidayOpt.isPresent()) {
                 continue;
             }
 
             cells.copyRows(cells, NUMBER_ROW_OF_HEADER + 21, firstRow, 2);
+            cells.copyRows(cells, NUMBER_ROW_OF_HEADER + 21, firstRow+2, 2);
             // M1_1 特別休暇
             cells.get(firstRow, 2).setValue(specialHolidayOpt.get().getSpecialHolidayName().v());
             // M2_1
@@ -1452,18 +1381,37 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                 if (specialVacationImported != null) {
                     // M1_2 特別休暇１_付与数日数
                     cells.get(firstRow, 4).setValue(specialVacationImported.getGrantDays());
+                    // M 1_6
+                    cells.get(firstRow + 1, 4).setValue(specialVacationImported.getGrantHours());
+
                     // M1_3 特別休暇１_月初残日数
                     cells.get(firstRow, 5).setValue(dayNumbers);
                     if (dayNumbers < 0) {
                         setForegroundRed(cells.get(firstRow, 5));
                     }
+                    // M1_7
+                    cells.get(firstRow+1, 5).setValue("?????????????????????");
+//                    if (dayNumbers < 0) {
+//                        setForegroundRed(cells.get(firstRow, 5));
+//                    }
                     // M1_4 特別休暇１_使用数日数
                     cells.get(firstRow, 6).setValue(specialVacationImported.getUsedDate());
+
+                    // M1_8
+                    cells.get(firstRow, 6).setValue(specialVacationImported.getUsedHours());
                     // M1_5 特別休暇１_残数日数
                     cells.get(firstRow, 7).setValue(specialVacationImported.getRemainDate());
+
                     if (specialVacationImported.getRemainDate() < 0) {
                         setForegroundRed(cells.get(firstRow, 7));
                     }
+                    // M1_9
+                    cells.get(firstRow +1, 7).setValue(specialVacationImported.getRemainHours());
+                    if (specialVacationImported.getRemainHours() < 0) {
+                        setForegroundRed(cells.get(firstRow+1, 7));
+                    }
+
+
                 }
 
                 if (specialHolidayList != null) {
@@ -1475,10 +1423,16 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                             if (maxRange >= totalMonth && totalMonth >= 0) {
                                 // M2_5 特別休暇１_使用日数, set lại giá trị cho cột này nếu bằng 0 thì không hiển thị ra
                                 cells.get(firstRow, 10 + totalMonth).setValue(item.getUseDays() != null && item.getUseDays() == 0 ? null : item.getUseDays());
+                               //M2_6
+                                cells.get(firstRow+1, 10 + totalMonth).setValue(item.getUseTimes() != null && item.getUseTimes() == 0 ? null : item.getUseTimes());
                                 // M2_7 特別休暇１_残数日数
-                                cells.get(firstRow + 1, 10 + totalMonth).setValue(item.getRemainDays());
+                                cells.get(firstRow + 2, 10 + totalMonth).setValue(item.getRemainDays());
+                                //M2_8
+                                cells.get(firstRow + 3, 10 + totalMonth).setValue(item.getRemainTimes());
                                 if (item.getRemainDays() < 0) {
-                                    setForegroundRed(cells.get(firstRow + 1, 10 + totalMonth));
+                                    setForegroundRed(cells.get(firstRow + 2, 10 + totalMonth));
+                                } if (item.getRemainTimes() < 0) {
+                                    setForegroundRed(cells.get(firstRow + 3, 10 + totalMonth));
                                 }
                             }
                         }
@@ -1514,11 +1468,19 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                             // M2_5 特別休暇１_使用日数
                             cells.get(firstRow, 10 + totalMonth).setValue(spVaCrurrentMonthImported.getUsedDate() != null
                                     && spVaCrurrentMonthImported.getUsedDate() == 0 ? null : spVaCrurrentMonthImported.getUsedDate());
-                            // M2_7 特別休暇１_残数日数
-//							cells.get(firstRow + 1, 10 + totalMonth).setValue(spVaCrurrentMonthImported.getRemainDate());
+                            // M2_6 特別休暇１_残数日数
+							cells.get(firstRow + 1, 10 + totalMonth).setValue(spVaCrurrentMonthImported.getUsedHours());
                             if (spVaCrurrentMonthImported.getRemainDate() < 0) {
                                 setForegroundRed(cells.get(firstRow + 1, 10 + totalMonth));
                             }
+
+                            // M2_7 特別休暇１_使用日数
+                            cells.get(firstRow +2, 10 + totalMonth).setValue("");
+                            setBackgroundGray(cells.get(firstRow +2, 10 + totalMonth));
+                            // M2_8 特別休暇１_残数日数
+							cells.get(firstRow + 3, 10 + totalMonth).setValue("");
+                            setBackgroundGray(cells.get(firstRow +3, 10 + totalMonth));
+
                         }
                     }
                     totalMonth++;
@@ -1541,7 +1503,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                 }
             }
 
-            firstRow += 2;
+            firstRow += 4;
         }
 
         return firstRow;
@@ -1801,4 +1763,75 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
         DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm", Locale.JAPAN);
         pageSetup.setHeader(2, "&9&\"MS ゴシック\"" + LocalDateTime.now().format(fullDateTimeFormatter) + "\npage &P");
     }
+    //E-
+    private boolean checkShowAreaAnnualBreak(HolidaysRemainingManagement holidaysRemainingManagement){
+        String cid = AppContexts.user().companyId();
+        val checkLeave = annualPaidLeaveSettingRepository.findByCompanyId(cid);
+        if(!holidaysRemainingManagement.getListItemsOutput().getAnnualHoliday().isYearlyHoliday()){
+            return false;
+        }else if((checkLeave == null && checkLeave.getYearManageType() == ManageDistinct.NO)){
+            return false;
+        }else if(checkLeave.getYearManageType()== ManageDistinct.NO){
+            return false;
+        }else {
+            return true;
+        }
+    }
+    // F
+    private boolean checkLimitHoliday(HolidaysRemainingManagement holidaysRemainingManagement){
+        String cid = AppContexts.user().companyId();
+        val checkLeave = annualPaidLeaveSettingRepository.findByCompanyId(cid);
+        if(!holidaysRemainingManagement.getListItemsOutput().getAnnualHoliday().isInsideHalfDay()){
+            return false;
+        }else if((checkLeave == null || checkLeave.getYearManageType() == ManageDistinct.NO)){
+            return false;
+        }else if(checkLeave.getManageAnnualSetting().getHalfDayManage().getManageType()
+                == ManageDistinct.NO){
+            return false;
+        }else {
+            return true;
+        }
+    }
+    // G
+    private boolean checkLimitHourlyHoliday(HolidaysRemainingManagement holidaysRemainingManagement){
+        String cid = AppContexts.user().companyId();
+        val checkLeave = annualPaidLeaveSettingRepository.findByCompanyId(cid);
+        if(!holidaysRemainingManagement.getListItemsOutput().getAnnualHoliday().isInsideHalfDay()){
+            return false;
+        }else if((checkLeave == null || checkLeave.getYearManageType() == ManageDistinct.NO)){
+            return false;
+        }else if(checkLeave.getTimeSetting().getTimeManageType() == ManageDistinct.NO){
+            return false;
+        }else if(checkLeave.getTimeSetting().getMaxYearDayLeave().manageType == ManageDistinct.NO){
+            return false;
+        } else  {
+            return true;
+        }
+    }
+
+    // H
+    private boolean checkYearlyLeave(HolidaysRemainingManagement holidaysRemainingManagement, String employmentCode,VariousVacationControl vacationControl){
+        String cid = AppContexts.user().companyId();
+        val checkLeave = annualPaidLeaveSettingRepository.findByCompanyId(cid);
+        val checkByScd = employmentSettingRepository.find(cid,employmentCode);
+        if(!holidaysRemainingManagement.getListItemsOutput().getYearlyReserved().isYearlyReserved()){
+            return false;
+        } else if((checkLeave == null || checkLeave.getYearManageType() == ManageDistinct.NO)){
+            return false;
+        }else if(!checkByScd.isPresent()||checkByScd.get().getManagementCategory()==ManageDistinct.NO){
+            if(vacationControl.isYearlyReservedSetting()){
+                return true;
+            }else {
+                return false;
+            }
+        }else {
+            if(vacationControl.isYearlyReservedSetting()){
+                return true;
+            }else {
+                return false;
+            }
+        }
+
+    }
+
 }
