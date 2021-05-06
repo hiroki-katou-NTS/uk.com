@@ -120,7 +120,9 @@ public class AposeArbitraryPeriodSummaryTableGenerator extends AsposeCellsReport
                     val subContent = listTree.get(q);
                     List<AttendanceDetailDisplayContents> contentsArrayList = new ArrayList<>();
                     toListChild(subContent, contentsArrayList);
-                    List<AttendanceDetailDisplayContents> child = contentsArrayList.stream().sorted(Comparator.comparing(AttendanceDetailDisplayContents::getLevel)).collect(Collectors.toList());
+                    List<AttendanceDetailDisplayContents> child = contentsArrayList
+                            .stream().sorted(Comparator.comparing(AttendanceDetailDisplayContents::getLevel)).collect(Collectors.toList());
+
                     if (q != 0 && query.isPageBreakByWpl()) {
                         pageBreak(pageBreaks,count,cells);
                         count += 5;
@@ -255,6 +257,7 @@ public class AposeArbitraryPeriodSummaryTableGenerator extends AsposeCellsReport
     }
 
     private void toListChild(AttendanceDetailDisplayContents parent, List<AttendanceDetailDisplayContents> rs) {
+        if(parent.getWorkplaceId()!=null)
         rs.add(parent);
         if (parent.getChildren() == null || parent.getChildren().size() == 0) return;
         val sub = parent.getChildren();
@@ -360,6 +363,8 @@ public class AposeArbitraryPeriodSummaryTableGenerator extends AsposeCellsReport
         int highestHierarchy = lstHWkpInfo.stream()
                 .min((a, b) -> a.getHierarchyCode().length() - b.getHierarchyCode().length()).get().getHierarchyCode()
                 .length();
+        val totalDisplayContentComparator = Comparator.comparing(AttendanceDetailDisplayContents::getHierarchyCode);
+        lstHWkpInfo = lstHWkpInfo.stream().sorted(totalDisplayContentComparator).collect(Collectors.toList());
         Iterator<AttendanceDetailDisplayContents> iteratorWkpHierarchy = lstHWkpInfo.iterator();
         // while have workplace
         while (iteratorWkpHierarchy.hasNext()) {
@@ -409,6 +414,35 @@ public class AposeArbitraryPeriodSummaryTableGenerator extends AsposeCellsReport
     }
 
     public List<AttendanceDetailDisplayContents> getDepWkpInfoTree(List<AttendanceDetailDisplayContents> listInfo) {
+            List<String> listBase = new ArrayList<>();
+            val listBase_1 = listInfo.stream().map(e->e.getHierarchyCode().substring(0, HIERARCHY_LENGTH)).distinct().collect(Collectors.toList());
+            val listBase_2 = listInfo.stream().filter(x->x.getHierarchyCode().length()>=6).map(e->e.getHierarchyCode().substring(0,6)).collect(Collectors.toList());
+            val listBase_3 = listInfo.stream().filter(x->x.getHierarchyCode().length()>6).map(AttendanceDetailDisplayContents::getHierarchyCode).collect(Collectors.toList());
+
+            listBase.addAll(listBase_1);
+            listBase.addAll(listBase_2);
+            listBase.addAll(listBase_3);
+            listBase = listBase.stream().distinct().collect(Collectors.toList());
+
+            for (int i = 0; i < listBase.size() ; i++) {
+                val hCode = listBase.get(i);
+                val listSub = listInfo.stream().filter(e->e.getHierarchyCode()
+                        .equals(hCode)).findFirst();
+                if(!listSub.isPresent()){
+                    listInfo.add(new AttendanceDetailDisplayContents(
+                            null,
+                            null,
+                            null,
+                            hCode
+                            ,
+                            Collections.emptyList(),
+                            hCode.length()/3,
+                            Collections.emptyList()
+                    ));
+                }
+
+            }
+
         List<AttendanceDetailDisplayContents> listInfoHasHierarchyCode = new ArrayList<>();
         List<AttendanceDetailDisplayContents> listInfoHasNoHierarchyCode = new ArrayList<>();
         listInfo.forEach(e -> {
