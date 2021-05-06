@@ -102,6 +102,10 @@ public class CalculateVacationDayService {
 				continue;
 			}
 			
+			if (!monWorkTypeWorkTime.getWorkTimeCode().isPresent()) {
+				continue;
+			}
+			
 			workingCondtionItem = workingConditionItemMap.get(condExDatePeriod.get());
 			Optional<PredetemineTimeSetting> predTimeSetInDayOpt = this.predTimeSetRepo.findByWorkTimeCode(cid, monWorkTypeWorkTime.getWorkTimeCode().get());
 			
