@@ -23,8 +23,10 @@ import nts.uk.ctx.at.record.dom.daily.ouen.RegisterWorkHoursService;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculateDailyRecordServiceCenter;
 import nts.uk.ctx.at.record.dom.editstate.EditStateOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.editstate.repository.EditStateOfDailyPerformanceRepository;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerErrorRepository;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.IntegrationOfDailyGetter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.work.WorkCode;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.repo.taskframe.TaskFrameUsageSettingRepository;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.repo.taskmaster.TaskingRepository;
@@ -68,6 +70,9 @@ public class AddAttendanceTimeZoneCommandHandler
 	
 	@Inject
 	private IntegrationOfDailyGetter getter;
+	
+	@Inject
+	private EmployeeDailyPerErrorRepository empDailyPerErrorRepo;
 
 	@Override
 	protected List<IntegrationOfDaily> handle(CommandHandlerContext<AddAttendanceTimeZoneCommand> context) {
@@ -79,10 +84,10 @@ public class AddAttendanceTimeZoneCommandHandler
 
 		// 1: *登録する(対象者,年月日,編集状態,List<作業詳細>): 工数入力結果
 		RequireImpl require = new RequireImpl(ouenWorkTimeSheetOfDailyRepo, ouenWorkTimeOfDailyRepo,
-				editStateOfDailyPerformanceRepo, syWorkplaceAdapter, taskingRepo, taskFrameUsageSettingRepo, getter);
+				editStateOfDailyPerformanceRepo, syWorkplaceAdapter, taskingRepo, taskFrameUsageSettingRepo, getter, empDailyPerErrorRepo);
 		
 		for (WorkDetail w : workDetails) {
-			ManHourInputResult manHourInputResult = RegisterWorkHoursService.register(require, command.getEmployeeId(),
+			ManHourInputResult manHourInputResult = RegisterWorkHoursService.register(require, AppContexts.user().companyId(), command.getEmployeeId(),
 					w.getDate(), command.getEditStateSetting(), w.getLstWorkDetailsParam());
 			
 			if(manHourInputResult.getIntegrationOfDaily().isPresent()) {
@@ -109,6 +114,8 @@ public class AddAttendanceTimeZoneCommandHandler
 		private TaskFrameUsageSettingRepository taskFrameUsageSettingRepo;
 		
 		private IntegrationOfDailyGetter getter;
+		
+		private EmployeeDailyPerErrorRepository empDailyPerErrorRepo;
 
 		@Override
 		public OuenWorkTimeSheetOfDaily find(String empId, GeneralDate ymd) {
@@ -203,6 +210,16 @@ public class AddAttendanceTimeZoneCommandHandler
 		@Override
 		public Optional<OuenWorkTimeSheetOfDaily> findOuenWorkTimeSheetOfDaily(String empId, GeneralDate ymd) {
 			return Optional.of(ouenWorkTimeSheetOfDailyRepo.find(empId, ymd));
+		}
+
+		@Override
+		public void delete(String sid, GeneralDate date, String code) {
+			empDailyPerErrorRepo.deleteByErrorCode(sid, date, code);
+		}
+
+		@Override
+		public void insert(EmployeeDailyPerError employeeDailyPerformanceError) {
+			empDailyPerErrorRepo.insert(employeeDailyPerformanceError);
 		}
 
 	}

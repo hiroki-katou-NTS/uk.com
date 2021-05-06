@@ -1,6 +1,7 @@
 package nts.uk.screen.at.app.kdw013.a;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -9,6 +10,7 @@ import javax.inject.Inject;
 import lombok.AllArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.record.dom.adapter.workplace.SyWorkplaceAdapter;
 import nts.uk.ctx.at.record.dom.daily.ouen.GetTheWorkYouUseMostRecentlyService;
 import nts.uk.ctx.at.record.dom.daily.ouen.OuenWorkTimeSheetOfDaily;
 import nts.uk.ctx.at.record.dom.daily.ouen.OuenWorkTimeSheetOfDailyRepo;
@@ -54,6 +56,9 @@ public class GetEmployeeDisplayInfo {
 
 	@Inject
 	private GetDailyPerformanceData getDailyPerformanceData;
+	
+	@Inject
+	private SyWorkplaceAdapter syWorkplaceAdapter;
 
 	/**
 	 * 
@@ -67,7 +72,7 @@ public class GetEmployeeDisplayInfo {
 
 		// 1: 取得する(@Require, 社員ID, 年月日):List<作業グループ>
 		RequireImpl require = new RequireImpl(ouenRepo, taskRepo, taskFrameUsageSettingRepo);
-		RequireImpl1 require1 = new RequireImpl1(workChangeablePeriodSettingRepo, checkShortageFlex);
+		RequireImpl1 require1 = new RequireImpl1(workChangeablePeriodSettingRepo, checkShortageFlex, syWorkplaceAdapter);
 
 		List<WorkGroup> workGroups = GetTheWorkYouUseMostRecentlyService.get(require, sid, refDate);
 		employeeDisplayInfo.setWorkGroups(workGroups);
@@ -122,6 +127,8 @@ public class GetEmployeeDisplayInfo {
 		private ManHourRecordReferenceSettingRepository workChangeablePeriodSettingRepo;
 
 		private CheckShortageFlex checkShortageFlex;
+		
+		private SyWorkplaceAdapter syWorkplaceAdapter;
 
 		@Override
 		public ManHourRecordReferenceSetting get() {
@@ -131,6 +138,16 @@ public class GetEmployeeDisplayInfo {
 		@Override
 		public DatePeriod getPeriod(String employeeId, GeneralDate date) {
 			return checkShortageFlex.findClosurePeriod(employeeId, date);
+		}
+
+		@Override
+		public Map<String, String> getWorkPlace(String userID, String employeeID, GeneralDate date) {
+			return syWorkplaceAdapter.getWorkPlace(userID, employeeID, date);
+		}
+
+		@Override
+		public Map<String, String> getByCID(String companyId, GeneralDate baseDate) {
+			return syWorkplaceAdapter.getByCID(companyId, baseDate);
 		}
 
 	}
