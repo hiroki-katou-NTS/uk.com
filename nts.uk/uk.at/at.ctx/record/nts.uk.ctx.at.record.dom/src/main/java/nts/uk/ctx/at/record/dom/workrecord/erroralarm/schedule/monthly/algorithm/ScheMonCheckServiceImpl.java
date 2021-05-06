@@ -299,21 +299,22 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 			DatePeriod dPeriod, String errorCheckId, String listFixedItem, String listOptionalItem) {
 		YearMonth ym = dPeriod.yearMonthsBetween().get(0);
 		Year year = new Year(ym.year());
+		DatePeriod dateInMonths = new DatePeriod(dPeriod.start().yearMonth().firstGeneralDate(), dPeriod.end().yearMonth().lastGeneralDate());
 		
 		// スケジュールの勤怠項目を取得する
 		Map<Integer, String> attendanceItems = attendanceItemNameAdapter.getAttendanceItemNameAsMapName(cid, 0);
 		
 		// 社員ID(List)、期間を設定して勤務予定を取得する
-		List<WorkScheduleWorkInforImport> workScheduleWorkInfos = workScheduleWorkInforAdapter.getBy(lstSid, dPeriod);
+		List<WorkScheduleWorkInforImport> workScheduleWorkInfos = workScheduleWorkInforAdapter.getBy(lstSid, dateInMonths);
 		
 		// 社員と期間を条件に日別実績を取得する
-		List<IntegrationOfDaily> empDailyPerformance = dailyRecordShareFinder.findByListEmployeeId(lstSid, dPeriod);
+		List<IntegrationOfDaily> empDailyPerformance = dailyRecordShareFinder.findByListEmployeeId(lstSid, dateInMonths);
 		
 		// 社員ID（List）、期間を設定して月別実績を取得する
 		List<AttendanceTimeOfMonthly> attendanceTimeOfMonthlies = attendanceTimeOfMonthlyRepo.findBySidsAndYearMonths(lstSid, dPeriod.yearMonthsBetween());
 				
 		// アルゴリズム「社員IDと基準日から社員の雇用コードを取得」を実行する。
-		Map<String, List<SyEmploymentImport>> employeeHistoryMap = this.syEmploymentAdapter.finds(lstSid, dPeriod);
+		Map<String, List<SyEmploymentImport>> employeeHistoryMap = this.syEmploymentAdapter.finds(lstSid, dateInMonths);
         
 		Map<String, Map<DatePeriod, WorkingConditionItem>> empWorkingCondItem = new HashMap<>();
 		List<FixedExtractionSMonCon> fixedScheConds = new ArrayList<>();
@@ -444,10 +445,10 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 			// (チェック項目の種類　＝　対比　AND　チェックする対比　!＝　所定公休日数比)　OR　チェック項目の種類　＝　日数
 			if (isNotPublicHolidayWorkingDay || scheCondMonth.isNumberDay()) {
 				List<WorkingCondition> listWorkingCondition = workingConditionRepository
-						.getBySidsAndDatePeriod(lstSid, dPeriod);
+						.getBySidsAndDatePeriod(lstSid, dateInMonths);
 				
 				// 社員ID（List）と期間から労働条件を取得する
-				List<WorkingConditionItem> workingConditionItems = workingConditionItemRepository.getBySidsAndDatePeriod(lstSid, dPeriod);
+				List<WorkingConditionItem> workingConditionItems = workingConditionItemRepository.getBySidsAndDatePeriod(lstSid, dateInMonths);
 				
 				// ドメインモデル「労働条件項目」を取得
 				Map<String, WorkingConditionItem> mapWorkingCondtionItem = workingConditionItems.stream()
@@ -466,7 +467,7 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 		}		
 		
 		// 社員ID（List）と指定期間から社員の雇用履歴を取得
-		List<SharedSidPeriodDateEmploymentImport> lstEmploymentHis = this.shareEmploymentAdapter.getEmpHistBySidAndPeriodRequire(new CacheCarrier(), lstSid, dPeriod);
+		List<SharedSidPeriodDateEmploymentImport> lstEmploymentHis = this.shareEmploymentAdapter.getEmpHistBySidAndPeriodRequire(new CacheCarrier(), lstSid, dateInMonths);
 		
 		// [NO.642]指定した会社の雇用毎の締め日を取得する
 		List<ClosureDateOfEmploymentImport> closureDateOfEmps = workDayAdapter.getClosureDate(cid);
