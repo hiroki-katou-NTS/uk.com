@@ -8,6 +8,8 @@ public class EmployeeInfo {
 	String workplaceName;
 	String employeeCode;
 	String employeeName;
+	String employmentCode;
 	String employmentName;
+	String jobTitleCode;
 	String jobTitle;
 }

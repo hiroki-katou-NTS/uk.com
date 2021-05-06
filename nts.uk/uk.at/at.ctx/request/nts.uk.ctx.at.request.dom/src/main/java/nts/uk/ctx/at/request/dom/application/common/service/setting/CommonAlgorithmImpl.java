@@ -1004,6 +1004,11 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 				workTypesOutput.add(workTypeOp.get());
 			}
 		}
+		workTypes.sort(new Comparator<WorkType>() {
+		    public int compare(WorkType o1, WorkType o2) {
+		        return o1.getWorkTypeCode().v().compareTo(o2.getWorkTypeCode().v());
+		    };
+        });
 		// INPUT「申請中の就業時間帯」を確認する
 		if (workTimeCode.isPresent()) {
 			// INPUT「申請中の就業時間帯」がINPUT「就業時間帯リスト」に含まれているかチェックする

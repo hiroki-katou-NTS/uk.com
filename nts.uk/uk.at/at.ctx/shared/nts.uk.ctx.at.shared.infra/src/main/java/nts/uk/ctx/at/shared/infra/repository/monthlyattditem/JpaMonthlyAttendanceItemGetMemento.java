@@ -9,6 +9,7 @@ import java.util.Optional;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.shared.dom.attendance.AttendanceName;
 import nts.uk.ctx.at.shared.dom.attendance.UseSetting;
+import nts.uk.ctx.at.shared.dom.monthlyattditem.DisplayMonthResultsMethod;
 import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItemAtr;
 import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItemGetMemento;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.PrimitiveValueOfAttendanceItem;
@@ -125,6 +126,11 @@ public class JpaMonthlyAttendanceItemGetMemento implements MonthlyAttendanceItem
 	public Optional<AttendanceName> getDisplayName() {
 		return this.entity.getDisplayName() == null ?  Optional.empty()
 				: Optional.of(new AttendanceName(entity.getDisplayName()));
+	}
+
+	@Override
+	public DisplayMonthResultsMethod getTwoMonthlyDisplay() {
+		return EnumAdaptor.valueOf(this.entity.getTwoMonthlyDisplay(), DisplayMonthResultsMethod.class) ;
 	}
 
 }

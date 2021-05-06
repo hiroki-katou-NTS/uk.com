@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
@@ -47,6 +48,18 @@ public class TreatmentHoliday implements DomainAggregate {
 		// return 休日取得数管理#作成する($休日取得の管理期間,@法定外休日を休日取得数に加える)
 		return HolidayNumberManagement.create(holidayAcqManaPeriod, this.addNonstatutoryHolidays);
 	}
+	
+	/**
+	 * 28日間を取得する
+	 * @param require
+	 * @param ymd 年月日
+	 * @return
+	 */
+	public DatePeriod get28Days(Require require, GeneralDate ymd) {
+		return this.holidayManagement.get28Days(require, ymd);
+	}
+	
+	
 
 	public static interface Require extends HolidayAcquisitionManagement.Require {
 

@@ -76,4 +76,11 @@ public interface MonthlyAttendanceItemGetMemento {
 	 * @return 表示名称 
 	 */
 	Optional<AttendanceName> getDisplayName();
+
+	/**
+	 * Gets the display method.
+	 *
+	 * @return the display method
+	 */
+	DisplayMonthResultsMethod getTwoMonthlyDisplay();
 }

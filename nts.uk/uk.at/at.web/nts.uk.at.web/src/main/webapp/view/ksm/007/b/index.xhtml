@@ -11,7 +11,7 @@
       <ui:define name="htmlHead">      
 				<com:scriptfile set="IGNITE" />
 				<script>
-          var dialogSize = { width: 720, height: 500 };
+          var dialogSize = { width: 750, height: 500 };
         </script>
         <com:stylefile path="ksm007.b.main.css" />
         <com:scriptfile path="ksm007.b.vm.js" />
@@ -29,9 +29,9 @@
         <div id="contents-area" class="ksm-007">
           <div class="wrapper cf">
             <div class="pull-left">
-              <div class="table workplace-group">
-                <div class="cell" data-bind="text: workplaceGroupCode"></div>
-                <div class="cell" data-bind="text: workplaceGroupName"></div>
+              <div class="control-group valign-center">
+                <span data-bind="text: workplaceGroupCode" style="padding-right: 10px;"/>
+                <span data-bind="text: workplaceGroupName"/>
               </div>
               <div
                 data-bind="ntsPanel:{ width: '250px', height: '278px', direction: 'right', showIcon: false, visible: true}"
@@ -67,71 +67,51 @@
               </div>
             </div>
             <div class="pull-left">
-              <div class="table table-row">
-                <div
-                  class="cell valign-center"
-                  data-bind="ntsFormLabel: { required: true}, text: $i18n('KSM007_27')"
-                ></div>
-                <div class="cell valign-center" data-bind="text: startDate"></div>
+              <div class="control-group valign-center" style="margin-top: 30px;">
+                <div data-bind="ntsFormLabel: { required: true, text: $i18n('KSM007_27')}"/>
+                <span class="cell valign-center" data-bind="text: startDate"/>
               </div>
-              <div class="table table-row">
-                <div
-                  class="cell valign-center"
-                  data-bind="ntsFormLabel: { required: true}, text: $i18n('KSM007_28')"
-                ></div>
-                <!-- B5_2 -->
-                <div class="cell valign-center">
-                  <div
-                    class="cf" tabindex="6"
-                    data-bind="ntsSwitchButton: {
-										name: '#[KSM007_28]',
-										options: ko.observableArray([
-											{ code: 1, name: $i18n('KSM007_29') },
-											{ code: 0, name: $i18n('KSM007_30') },
-										]),
-										optionsValue: 'code',
-										optionsText: 'name',
-										value: nightShiftOperation,
-										required: true,
-										enable: historyListItems().length > 0
-                  }"
-                  ></div>
-                </div>
+              <div class="control-group valign-center">
+                <div data-bind="ntsFormLabel: { required: true, text: $i18n('KSM007_28')}"/>
+                <div tabindex="6"
+                     data-bind="ntsSwitchButton: {
+                          name: '#[KSM007_28]',
+                          options: ko.observableArray([
+                              { code: 1, name: $i18n('KSM007_29') },
+                              { code: 0, name: $i18n('KSM007_30') },
+                          ]),
+                          optionsValue: 'code',
+                          optionsText: 'name',
+                          value: nightShiftOperation,
+                          required: true,
+                          enable: historyListItems().length > 0
+                     }"/>
               </div>
-              <div class="table">
-                <div
-                  class="cell valign-center"
-                  data-bind="ntsFormLabel: { required: true}, text: $i18n('KSM007_31')"
-                ></div>
-                <div class="cell time-editor">
-                  <div class="table">
-                    <div class="cell valign-center"><!-- B6_2 -->
-                      <input id="nightShiftHours1" class="nightShiftHours" tabindex="7"
-                        data-bind="ntsTimeWithDayEditor: {
-													value: nightShiftHours1, 
-													inputFormat: 'time', 
-													mode: 'time',
+              <div class="control-group valign-center">
+                <div data-bind="ntsFormLabel: { required: true, text: $i18n('KSM007_31')}"/>
+                <input id="nightShiftHours1"
+                       class="nightShiftHours"
+                       tabindex="7"
+                       data-bind="ntsTimeWithDayEditor: {
+                          value: nightShiftHours1,
+                          inputFormat: 'time',
+                          mode: 'time',
                           name: '#[KSM007_32]',
                           required: $vm.requiredNightShiftTime,
                           enable: parseInt(nightShiftOperation()) === 1 &amp;&amp; historyListItems().length > 0
-												}"
-                      />
-                    </div>
-                    <div class="cell valign-center" data-bind="text:$i18n('KSM007_33')"></div>
-                    <div class="cell valign-center"><!-- B6_4 -->
-                      <input id="nightShiftHours2" class="nightShiftHours" tabindex="8"
-                        data-bind="ntsTimeWithDayEditor: {
-													value: nightShiftHours2, 
-													inputFormat: 'time', 
-													mode: 'time',
+                        }"/>
+                <span data-bind="text:$i18n('KSM007_33')" style="padding-left: 5px; padding-right: 5px;"/>
+                <input id="nightShiftHours2"
+                       class="nightShiftHours"
+                       tabindex="8"
+                       data-bind="ntsTimeWithDayEditor: {
+                          value: nightShiftHours2,
+                          inputFormat: 'time',
+                          mode: 'time',
                           name: '#[KSM007_34]',
                           required: $vm.requiredNightShiftTime,
                           enable: parseInt(nightShiftOperation()) === 1 &amp;&amp; historyListItems().length > 0
-												}"
-                      />
-                    </div>
-                  </div>
-                </div>
+                        }"/>
               </div>
             </div>
           </div>

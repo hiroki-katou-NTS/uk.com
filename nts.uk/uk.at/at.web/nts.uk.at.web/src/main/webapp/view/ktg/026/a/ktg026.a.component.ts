@@ -467,8 +467,6 @@ module nts.uk.at.view.ktg026.a {
                         vm.employeesOvertime = response;
                         const { yearIncludeThisMonth, yearIncludeNextMonth } = response;
 
-                        vm.excessTimes(response.agreeInfo.excessTimes);
-
                         // ???
                         vm.employeeName(response.empInfo.businessName);
 
@@ -479,9 +477,7 @@ module nts.uk.at.view.ktg026.a {
                         vm.displayDataTable(response);
                     }
                 })
-                .fail((error: { messageId: string }) => {
-                    vm.$dialog.alert(error).then(() => vm.dataTable([]));
-                })
+                .fail(() => vm.dataTable([]))
                 .always(() => vm.$blockui('clearView'))
                 .always(() => {
                     vm.$nextTick(() => {
@@ -527,11 +523,10 @@ module nts.uk.at.view.ktg026.a {
                 .then((response: EmployeesOvertimeDisplay) => {
                     if (!!response) {
                         vm.displayDataTable(response);
+                        vm.excessTimes(response.agreeInfo.excessTimes);
                     }
                 })
-                .fail((error: { messageId: string }) => {
-                    vm.$dialog.alert(error).then(() => vm.dataTable([]));
-                })
+                .fail(() => vm.dataTable([]))
                 .always(() => vm.$blockui('clearView'))
                 .always(() => {
                     vm.$nextTick(() => {

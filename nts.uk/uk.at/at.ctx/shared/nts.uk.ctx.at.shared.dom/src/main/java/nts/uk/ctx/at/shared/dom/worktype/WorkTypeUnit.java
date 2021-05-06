@@ -5,10 +5,11 @@
 package nts.uk.ctx.at.shared.dom.worktype;
 
 import lombok.AllArgsConstructor;
-import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
 
 /**
  * The Enum WorkTypeUnit.
+ * 勤務の単位
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.shared.就業規則.勤務種類.勤務の単位
  */
 @AllArgsConstructor
 // 勤務の単位

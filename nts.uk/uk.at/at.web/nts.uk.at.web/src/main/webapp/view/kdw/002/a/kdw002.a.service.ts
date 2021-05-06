@@ -2,19 +2,26 @@ module nts.uk.at.view.kdw002.a {
     export module service {
         var paths: any = {
             // getAttendanceItems: "at/share/attendanceitem/getAttendanceItems",
+            //  
             getAttendanceItems: "at/record/businesstype/attendanceItem/getAttendanceItems",
             getListDailyAttdItem: "at/shared/scherec/dailyattditem/getalldailyattd",
             getListMonthlyAttdItem: "at/record/attendanceitem/monthly/findall",
+            //  ControlOfDailyWS
             getControlOfDailyItem: "at/shared/scherec/daily/findById/",
+            //  ControlOfMonthlyWs
             getControlOfMonthlyItem: "at/shared/scherec/monthly/findById/",
+            //  ControlOfDailyWS
             updateDaily: "at/shared/scherec/daily/update",
+            //  ControlOfMonthlyWs
             updateMonthly: "at/shared/scherec/monthly/update",
             
             //name
             getNameDaily  :"screen/at/correctionofdailyperformance/getNamedailyAttItem",
             getNameMonthly  :"screen/at/correctionofdailyperformance/getNameMonthlyAttItem",
             
+            //  AttItemWS
             getDailyAttItem: "at/shared/scherec/attitem/getDailyAttItemUsed",
+            //  AttItemWS
             getMontlyAttItem: "at/shared/scherec/attitem/getMonthlyAttItemUsed"
         }
         export function getListDailyAttdItem(): JQueryPromise<any> {

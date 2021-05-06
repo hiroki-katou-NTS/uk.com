@@ -28,19 +28,17 @@ public class RegistOfNightShiftInforCommandHandler extends CommandHandler<Regist
     protected void handle(CommandHandlerContext<RegistOfNightShiftInforCommand> commandHandlerContext) {
         val command = commandHandlerContext.getCommand();
         NotUseAtr nightShiftOperationAtr = EnumAdaptor.valueOf(command.getNightShiftOperationAtr(), NotUseAtr.class);
-        Optional<ClockHourMinuteSpan> shiftTime = Optional.empty();
         Optional<NursingCareEstablishmentInfo> nursingCareEstInfo = Optional.empty();
-        if (command.getClockHourMinuteStart() != null && command.getClockHourMinuteEnd() != null) {
+
+        NightShiftOperationRule nightShiftOperationRule;
+        if (nightShiftOperationAtr == NotUseAtr.USE) {
             ClockHourMinute clockHourMinuteStart = new ClockHourMinute(command.getClockHourMinuteStart());
             ClockHourMinute clockHourMinuteEnd = new ClockHourMinute(command.getClockHourMinuteEnd());
             ClockHourMinuteSpan clockHourMinuteSpan = ClockHourMinuteSpan.create(clockHourMinuteStart, clockHourMinuteEnd);
-            shiftTime = Optional.of(clockHourMinuteSpan);
-
+            nightShiftOperationRule = NightShiftOperationRule.createByNightShiftUse(clockHourMinuteSpan);
+        } else {
+            nightShiftOperationRule = NightShiftOperationRule.createByNightShiftNotUse();
         }
-        NightShiftOperationRule nightShiftOperationRule = new NightShiftOperationRule(
-                nightShiftOperationAtr,
-                shiftTime
-        );
         HospitalBusinessOfficeInfo hospitalBusinessOfficeInfo = new HospitalBusinessOfficeInfo(
                 command.getWorkplaceGroupId(),
                 command.getHistoryId(),

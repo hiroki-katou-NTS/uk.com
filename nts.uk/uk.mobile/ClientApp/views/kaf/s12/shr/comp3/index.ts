@@ -53,6 +53,7 @@ export class KafS12ApplyTimeComponent extends Vue {
 
     public created() {
         const self = this;
+        self.comboBoxValue = self.specialLeaveFrame;
     }
 
     get comboBoxOptions() {

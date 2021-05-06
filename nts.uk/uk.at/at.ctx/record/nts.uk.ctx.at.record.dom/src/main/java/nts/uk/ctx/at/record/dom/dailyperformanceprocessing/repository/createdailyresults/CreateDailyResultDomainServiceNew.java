@@ -83,7 +83,7 @@ import nts.uk.shr.com.i18n.TextResource;
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 @Stateless
 public class CreateDailyResultDomainServiceNew {
-
+ 
 	@Inject
 	private TargetPersonRepository targetPersonRepository;
 

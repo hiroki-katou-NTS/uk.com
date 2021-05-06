@@ -7,6 +7,7 @@ import java.util.Optional;
 import org.apache.commons.lang3.tuple.Pair;
 
 import lombok.val;
+import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailywork.worktime.empwork.EmployeeWorkDataSetting;
 import nts.uk.ctx.at.shared.dom.scherec.application.stamp.StartEndClassificationShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.stamp.TimeStampAppShare;
@@ -81,12 +82,12 @@ public class ReflectSupportStartEnd {
 
 		WorkplaceOfWorkEachOuen workplace = null;
 		if (empSetOpt.isPresent()) {
-			workplace = WorkplaceOfWorkEachOuen.create(empSetOpt.get().getWorkplaceId(),
+			workplace = WorkplaceOfWorkEachOuen.create(new WorkplaceId(empSetOpt.get().getWorkplaceId()),
 					empSetOpt.get().getWorkLocationCD());
 			lstItemId.add(CancelAppStamp.createItemId(921, data.getDestinationTimeApp().getEngraveFrameNo(), 10));
 		}
 
-		WorkContent workContent = WorkContent.create(require.getCId(), workplace, Optional.empty());
+		WorkContent workContent = WorkContent.create(workplace, Optional.empty(), Optional.empty());
 		return Pair.of(
 				OuenWorkTimeSheetOfDailyAttendance.create(
 						data.getDestinationTimeApp().getSupportWork().orElse(Integer.MAX_VALUE), workContent, sheet),
@@ -126,8 +127,7 @@ public class ReflectSupportStartEnd {
 			workplace = old.getWorkContent().getWorkplace();
 		}
 
-		WorkContent workContent = WorkContent.create(require.getCId(), workplace,
-				old.getWorkContent().getWork());
+		WorkContent workContent = WorkContent.create(workplace, old.getWorkContent().getWork(), Optional.empty());
 		return Pair.of(OuenWorkTimeSheetOfDailyAttendance.create(old.getWorkNo(), workContent, sheet), lstItemId);
 
 	}

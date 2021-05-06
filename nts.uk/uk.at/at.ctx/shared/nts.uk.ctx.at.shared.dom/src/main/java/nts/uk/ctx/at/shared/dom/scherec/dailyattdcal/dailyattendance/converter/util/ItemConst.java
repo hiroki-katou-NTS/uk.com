@@ -132,6 +132,12 @@ public interface ItemConst extends Cloneable {
 
 	public final String DAILY_SNAPSHOT_CODE = LAYOUT_S;
 	public final String DAILY_SNAPSHOT_NAME = "日別勤怠のスナップショット";
+	
+	public final String DAILY_SUPPORT_TIME_CODE = LAYOUT_T;
+	public final String DAILY_SUPPORT_TIME_NAME = "日別勤怠の応援作業時間";
+	
+	public final String DAILY_SUPPORT_TIMESHEET_CODE = LAYOUT_U;
+	public final String DAILY_SUPPORT_TIMESHEET_NAME = "日別勤怠の応援作業時間帯";
 
 	public final String MONTHLY_AFFILIATION_INFO_CODE = LAYOUT_A;
 	public final String MONTHLY_AFFILIATION_INFO_NAME = "月別実績の所属情報";
@@ -316,4 +322,12 @@ public interface ItemConst extends Cloneable {
 	public final String CUR_MONTH = "当月";
 	public final String NO = "不可";
 	public final String STANDARD = "基準";
+	public final String WORK_CONTENT = "作業内容";
+	public final String WORKPLACE_BYSUPPORT = "勤務先";
+	public final String WORKPLACEID = "職場";
+	public final String WORKLOCATIONCD = "場所";
+	public final String WORKGROUP = "作業グループ";
+	public final String WORKCODE = "作業CD";
+	
+	
 }

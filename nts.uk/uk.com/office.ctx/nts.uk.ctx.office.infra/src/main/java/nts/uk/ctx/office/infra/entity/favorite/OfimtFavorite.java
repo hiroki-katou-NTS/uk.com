@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
-import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -19,7 +18,7 @@ import lombok.EqualsAndHashCode;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.office.dom.favorite.FavoriteSpecify;
 import nts.uk.ctx.office.dom.favorite.TargetSelection;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /*
  * UKDesign.データベース.ER図.オフィス支援.在席照会.お気に入り.OFIMT_FAVORITE
@@ -29,21 +28,16 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @EqualsAndHashCode(callSuper = true, exclude = { "listFavoriteSpecifyEntityDetail" })
 @Table(name = "OFIMT_FAVORITE")
-public class OfimtFavorite extends UkJpaEntity
+public class OfimtFavorite extends ContractUkJpaEntity
 		implements FavoriteSpecify.MementoGetter, FavoriteSpecify.MementoSetter, Serializable {
 	/**
 	* 
 	*/
 	private static final long serialVersionUID = 1L;
 
-	// column 排他バージョン
-	@Column(name = "EXCLUS_VER")
-	private long version;
-
-	// column 契約コード
-	@Basic(optional = false)
-	@Column(name = "CONTRACT_CD")
-	private String contractCd;
+	// column　会社ID
+	@Column(name = "CID")
+	private String cid;
 
 	// Embedded primary key 作成者ID and 入力日
 	@EmbeddedId

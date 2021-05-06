@@ -64,13 +64,15 @@ public class DisplayScreenStampingResultFinder {
 				val listStamp = stamp.getListStampInfoDisp();
 				for (val item : listStamp) {
 					if (!item.getStamp().isEmpty()) {
-						val workLocationCD = item.getStamp().get(0).getRefActualResults().getWorkLocationCD();
-						if (workLocationCD.isPresent()) {
-							listWorkLocationCode.add(workLocationCD.get().v());
+						if (item.getStamp().get(0).getRefActualResults().getWorkInforStamp().isPresent()) {
+							val workLocationCD = item.getStamp().get(0).getRefActualResults().getWorkInforStamp().get()
+									.getWorkLocationCD();
+							if (workLocationCD.isPresent()) {
+								listWorkLocationCode.add(workLocationCD.get().v());
+							}
 						}
 					}
 				}
-
 			}
 		}
 		// List<StampDataOfEmployeesDto> listDtoStamp =
@@ -82,19 +84,17 @@ public class DisplayScreenStampingResultFinder {
 
 		for (EmployeeStampInfo stampDataOfEmployees : listStampDataOfEmployees) {
 			String workLocationName = ""; 
-			if(!stampDataOfEmployees.getListStampInfoDisp().isEmpty()){
-				StampInfoDisp info = stampDataOfEmployees.getListStampInfoDisp()
-						.get(0);
-				if(!info.getStamp().isEmpty()) {
-					val workLocationCD = info.getStamp().get(0).getRefActualResults().getWorkLocationCD();
-					if(workLocationCD.isPresent()) {
-						val workLocationCode = workLocationCD.get();
+			if (!stampDataOfEmployees.getListStampInfoDisp().isEmpty()) {
+				StampInfoDisp info = stampDataOfEmployees.getListStampInfoDisp().get(0);
+				if (!info.getStamp().isEmpty()) {
+					if (info.getStamp().get(0).getRefActualResults().getWorkInforStamp().isPresent()) {
+						val workLocationCD = info.getStamp().get(0).getRefActualResults().getWorkInforStamp().get().getWorkLocationCD();
+						if (workLocationCD.isPresent()) {
+							val workLocationCode = workLocationCD.get();
 
-						val optWorkLocation = listWorkLocation.stream()
-								.filter(c -> c.getWorkLocationCD().v().equals(workLocationCode.v())).findFirst();
-						workLocationName = (optWorkLocation.isPresent())
-								? optWorkLocation.get().getWorkLocationName().v()
-								: "";
+							val optWorkLocation = listWorkLocation.stream().filter(c -> c.getWorkLocationCD().v().equals(workLocationCode.v())).findFirst();
+							workLocationName = (optWorkLocation.isPresent()) ? optWorkLocation.get().getWorkLocationName().v() : "";
+						}
 					}
 				}
 			}
