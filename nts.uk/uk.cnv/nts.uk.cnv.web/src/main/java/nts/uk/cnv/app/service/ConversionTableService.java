@@ -60,7 +60,7 @@ public class ConversionTableService {
 	public OneColumnConversion find(ConversionInfo info, FindConversionTableDto dto) {
 		ConversionRecord record = recordRepo.getRecord(dto.getCategory(), dto.getTable(), dto.getRecordNo());
 
-		ConversionSource source = conversionSourceRepo.get(record.getSourceId());
+		ConversionSource source = conversionSourceRepo.get(record.getSourceId()).get();
 		return repo.findColumnConversion(info, dto.getCategory(), dto.getTable(), dto.getRecordNo(), dto.getUkColumn(), source.getJoin(info)).orElse(null);
 	}
 
@@ -84,7 +84,7 @@ public class ConversionTableService {
 		List<WhereSentence> whereList = new ArrayList<>();
 		List<OneColumnConversion> conversionMap = new ArrayList<>();
 
-		ConversionSource source = conversionSourceRepo.get(record.getSourceId());
+		ConversionSource source = conversionSourceRepo.get(record.getSourceId()).get();
 		Optional<OneColumnConversion> onColumn = repo.findColumnConversion(info, dto.getCategory(), dto.getTable(), dto.getRecordNo(), dto.getUkColumn(), source.getJoin(info));
 
 		if(!onColumn.isPresent()) {
@@ -99,6 +99,9 @@ public class ConversionTableService {
 
 		ConversionTable conversonTable = new ConversionTable(
 				new TableFullName(info.getTargetDatabaseName(), info.getSourceSchema(), dto.getTable(), ""),
+				source.getDateColumnName(),
+				source.getStartDateColumnName(),
+				source.getEndDateColumnName(),
 				whereList,
 				conversionMap
 			);

@@ -16,7 +16,13 @@ import nts.uk.cnv.dom.service.ConversionInfo;
 public class ConversionPatternFactory {
 
 	public static ConversionPattern create(ConversionPatternValue param) {
-		ConversionInfo info = new ConversionInfo(DatabaseType.sqlserver, "KINJIROU_ERP", "dbo", "KINJIROU_UK", "dbo", "UK_CNV", "dbo", "000000000000");
+		ConversionInfo info = new ConversionInfo(
+				DatabaseType.sqlserver,
+				"KINJIROU_ERP", "dbo",
+				"KINJIROU_UK", "dbo",
+				"UK_CNV", "dbo",
+				"000000000000"
+			);
 		Join join = new Join(
 				new TableFullName("KINJIROU_ERP", "dbo", param.getSourceTable(), "base"),
 				JoinAtr.Main, new ArrayList<>());

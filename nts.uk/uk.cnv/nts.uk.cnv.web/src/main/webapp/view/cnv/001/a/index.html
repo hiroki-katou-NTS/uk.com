@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Table Mapping Designer</title>
+<title>CNV001A コンバート表の登録</title>
 <link rel="stylesheet" type="text/css" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
 <link rel="stylesheet" type="text/css" href="../../../../lib/nittsu/ui/style/stylesheets/base.css">
 <link rel="stylesheet" type="text/css" href="cnv001.a.css">
@@ -91,18 +91,18 @@
 								<div class="bg-green" style="width:880px">
 									<table>
 										<tr>
-											<td rowspan=3>
+											<td rowspan=6>
 												<fieldset>
-												<select id="selSources" style="width:300px;" size=4>
+												<select id="selSources" style="width:300px;" size=8>
 												</select>
 												</fieldset>
 											</td>
-											<td rowspan=3 style="vertical-align:middle; width:100px;">
+											<td rowspan=6 style="vertical-align:middle; width:100px;">
 											<button id="btnAddSource" class="proceed" style="margin-bottom: 10px;">追加</button>
 											<button id="btnDelSource" class="danger">削除</button>
 											</td>
 											<td>
-												<div class="form-label broken">
+												<div class="form-label broken required">
 													<label>ERPテーブル名：</label>
 													<i>全角25文字</i>
 												</div>
@@ -114,7 +114,9 @@
 													</select>
 												</span>
 											</td>
-											<td></td>
+											<td rowspan=6>
+												<button id="btnClear">クリア</button>
+											</td>
 										</tr>
 										<tr>
 											<td>
@@ -128,8 +130,41 @@
 													<input type="text" id="txtWhereCondition" style="width:280px;" class="nts-editor nts-input reset-element">
 												</span>
 											</td>
-											<td rowspan=2>
-												<button id="btnClear">クリア</button>
+										</tr>
+										<tr>
+											<td>
+												<div class="form-label">
+													<label title="※コンバート対象を期間指定する際の条件に使用します">日付列名：</label>
+												</div>
+											</td>
+											<td>
+												<span class="nts-editor-wrapped ntsControl">
+													<input type="text" id="txtDateColumnName" style="width:200px;" class="nts-editor nts-input reset-element">
+												</span>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<div class="form-label">
+													<label title="※コンバート対象を期間指定する際の条件に使用します">開始日列名：</label>
+												</div>
+											</td>
+											<td>
+												<span class="nts-editor-wrapped ntsControl">
+													<input type="text" id="txtStartDateColumnName" style="width:200px;" class="nts-editor nts-input reset-element">
+												</span>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<div class="form-label">
+													<label title="※コンバート対象を期間指定する際の条件に使用します">終了日列名：</label>
+												</div>
+											</td>
+											<td>
+												<span class="nts-editor-wrapped ntsControl">
+													<input type="text" id="txtEndDateColumnName" style="width:200px;" class="nts-editor nts-input reset-element">
+												</span>
 											</td>
 										</tr>
 										<tr>

@@ -33,7 +33,11 @@ public class Cnv001AService {
 						s.getCategory(),
 						s.getSourceTableName(),
 						s.getCondition(),
-						s.getMemo()))
+						s.getMemo(),
+						s.getDateColumnName().orElse(""),
+						s.getStartDateColumnName().orElse(""),
+						s.getEndDateColumnName().orElse("")
+						))
 				.collect(Collectors.toList());
 
 		List<RecordDto> records = conversionTableRepo.getRecords(categoryName, tableName).stream()

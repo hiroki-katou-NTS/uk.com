@@ -11,4 +11,8 @@ public class RegistConversionSourceCommand {
 	String sourceTableName;
 	String condition;
 	String memo;
+
+	String dateColumnName;
+	String startDateColumnName;
+	String endDateColumnName;
 }

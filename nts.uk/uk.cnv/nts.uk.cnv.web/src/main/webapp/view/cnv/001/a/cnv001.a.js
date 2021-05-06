@@ -38,11 +38,14 @@ class record {
 }
 
 class source {
-	constructor(sourceId, erpTableName, whereCondition, memo) {
+	constructor(sourceId, erpTableName, whereCondition, memo, dateColumnName, startDateColumnName, endDateColumnName) {
 		this.sourceId = sourceId;
 		this.erpTableName = erpTableName;
 		this.whereCondition = whereCondition;
 		this.memo = memo;
+		this.dateColumnName = dateColumnName;
+		this.startDateColumnName = startDateColumnName;
+		this.endDateColumnName = endDateColumnName;
 	}
 }
 
@@ -158,7 +161,10 @@ $(function(){
 						value.sourceId,
 						value.erpTableName,
 						value.whereCondition,
-						value.memo);
+						value.memo,
+						value.dateColumnName,
+						value.startDateColumnName,
+						value.endDateColumnName);
 			});
 
 			var recordOptions = $.map(res.records, function (value, index) {
@@ -193,11 +199,16 @@ $(function(){
 		var selectedSource = sources.find(s => s.sourceId === selectedRecord.sourceId);
 
 		$("#selSources").val(selectedRecord.sourceId);
+
+		$("#selErpTables").val(selectedSource.erpTableName);
 		$("#txtWhereCondition").val(selectedSource.whereCondition);
 		$("#txtMemo").val(selectedSource.memo);
 
-		$("#txtRecordName").val(selectedRecord.explanation);
+		$("#txtDateColumnName").val(selectedSource.dateColumnName);
+		$("#txtStartDateColumnName").val(selectedSource.startDateColumnName);
+		$("#txtEndDateColumnName").val(selectedSource.endDateColumnName);
 
+		$("#txtRecordName").val(selectedRecord.explanation);
 	});
 
 	$("#btnAddSource").click(function() {
@@ -205,19 +216,34 @@ $(function(){
 		var erpTable = $("#selErpTables option:selected").text();
 		var condition = $("#txtWhereCondition").val();
 		var memo = $("#txtMemo").val();
+		var dateColumnName = $("#txtDateColumnName").val();
+		var startDateColumnName = $("#txtStartDateColumnName").val();
+		var endDateColumnName = $("#txtEndDateColumnName").val();
+
+
+		var sourceId = ($("#selCategory option:selected").val() === -1)
+			? ''
+			: $("#selSources").val();
 
 		$.ajax(ajaxOption.build(servicePath.addSource, {
-			sourceId: '',
+			sourceId: sourceId,
 			category: category,
 			sourceTableName: erpTable,
 			condition: condition,
-			memo: memo
+			memo: memo,
+			dateColumnName: dateColumnName,
+			startDateColumnName: startDateColumnName,
+			endDateColumnName: endDateColumnName
 		})).done(function (res) {
 			sources.push(new source(
 					res.sourceId,
 					erpTable,
 					condition,
-					memo));
+					memo,
+					dateColumnName,
+					startDateColumnName,
+					endDateColumnName
+				));
 			$("#selSources").append($('<option>', { value: res.sourceId, text: erpTable + ' : ' + memo }));
 		});
 	});
@@ -236,9 +262,14 @@ $(function(){
 		var sourceId = $("#selSources").val();
 		var selectedSource = sources.find(s => s.sourceId === sourceId);
 
+
+		$("#selErpTables").val(selectedSource.erpTableName);
 		$("#txtWhereCondition").val(selectedSource.whereCondition);
 		$("#txtMemo").val(selectedSource.memo);
-		$("#selErpTables").val(selectedSource.erpTableName);
+
+		$("#txtDateColumnName").val(selectedSource.dateColumnName);
+		$("#txtStartDateColumnName").val(selectedSource.startDateColumnName);
+		$("#txtEndDateColumnName").val(selectedSource.endDateColumnName);
 
 	});
 
@@ -246,6 +277,10 @@ $(function(){
 		$("#selSources").val('');
 		$("#txtWhereCondition").val('');
 		$("#txtMemo").val('');
+
+		$("#txtDateColumnName").val('');
+		$("#txtStartDateColumnName").val('');
+		$("#txtEndDateColumnName").val('');
 
 	});
 

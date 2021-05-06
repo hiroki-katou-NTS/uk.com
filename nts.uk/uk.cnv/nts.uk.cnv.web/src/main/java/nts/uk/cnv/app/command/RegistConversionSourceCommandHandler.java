@@ -1,8 +1,11 @@
 package nts.uk.cnv.app.command;
 
+import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import lombok.val;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.uk.cnv.app.dto.AddSourceResult;
@@ -18,16 +21,32 @@ public class RegistConversionSourceCommandHandler extends CommandHandlerWithResu
 	@Override
 	protected AddSourceResult handle(CommandHandlerContext<RegistConversionSourceCommand> context) {
 		RegistConversionSourceCommand command = context.getCommand();
-
-		String sourceId = repository.insert(new ConversionSource(
+		val entity = new ConversionSource(
 				command.getSourceId(),
 				command.getCategory(),
 				command.getSourceTableName(),
 				command.getCondition(),
-				command.getMemo()
-			));
+				command.getMemo(),
+				wrapOptional(command.getDateColumnName()),
+				wrapOptional(command.getStartDateColumnName()),
+				wrapOptional(command.getEndDateColumnName())
+			);
+
+		if(command.getSourceId() != null && !command.getSourceId().isEmpty()) {
+			val source = repository.get(command.getSourceId());
+			if(source.isPresent()) {
+				repository.update(entity);
+				return new AddSourceResult(command.getSourceId());
+			}
+		}
+
+		String sourceId = repository.insert(entity);
 
 		return new AddSourceResult(sourceId);
+	}
+
+	private Optional<String> wrapOptional(String value){
+		return (value == null || value.isEmpty()) ? Optional.empty() : Optional.of(value);
 	}
 
 }

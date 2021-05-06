@@ -33,7 +33,6 @@ public class ConversionInfo {
 	/** 契約コード (オンプレの場合、オール0) **/
 	private String ContractCode;
 
-
 	public static ConversionInfo createDummry() {
 		return new ConversionInfo(
 				DatabaseType.sqlserver,

@@ -8,6 +8,10 @@ public final class Constants {
 	/** 契約コード **/
     public static final String ContractCodeParamName = "CONTRACT_CD";
 
+    /** 期間指定パラメータ名 **/
+    public static final String StartDateParamName = "START_DATE";
+    public static final String EndDateParamName = "END_DATE";
+
     /** CID変換テーブル名（WorkDB） **/
     public static final String CidMappingTableName = "SCVMT_MAPPING_CODE_TO_CID";
 

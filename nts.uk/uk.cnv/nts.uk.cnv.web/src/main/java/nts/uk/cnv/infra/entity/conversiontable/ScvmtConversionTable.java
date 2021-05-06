@@ -17,17 +17,19 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.infra.data.entity.JpaEntity;
+import nts.uk.cnv.dom.constants.Constants;
 import nts.uk.cnv.dom.conversionsql.ColumnExpression;
 import nts.uk.cnv.dom.conversionsql.ColumnName;
 import nts.uk.cnv.dom.conversionsql.Join;
 import nts.uk.cnv.dom.conversionsql.RelationalOperator;
 import nts.uk.cnv.dom.conversionsql.TableFullName;
 import nts.uk.cnv.dom.conversionsql.WhereSentence;
+import nts.uk.cnv.dom.conversiontable.ConversionSource;
 import nts.uk.cnv.dom.conversiontable.ConversionTable;
 import nts.uk.cnv.dom.conversiontable.OneColumnConversion;
 import nts.uk.cnv.dom.conversiontable.pattern.ConversionPattern;
 import nts.uk.cnv.dom.conversiontable.pattern.ConversionType;
-import nts.uk.cnv.dom.constants.Constants;
+import nts.uk.cnv.dom.service.ConversionInfo;
 import nts.uk.cnv.infra.entity.conversiontable.pattern.ScvmtConversionTypeCodeToCode;
 import nts.uk.cnv.infra.entity.conversiontable.pattern.ScvmtConversionTypeCodeToId;
 import nts.uk.cnv.infra.entity.conversiontable.pattern.ScvmtConversionTypeDateTimeMerge;
@@ -40,7 +42,6 @@ import nts.uk.cnv.infra.entity.conversiontable.pattern.ScvmtConversionTypeParent
 import nts.uk.cnv.infra.entity.conversiontable.pattern.ScvmtConversionTypePassword;
 import nts.uk.cnv.infra.entity.conversiontable.pattern.ScvmtConversionTypeStringConcat;
 import nts.uk.cnv.infra.entity.conversiontable.pattern.ScvmtConversionTypeTimeWithDayAttr;
-import nts.uk.cnv.dom.service.ConversionInfo;
 
 /**
  * コンバート表
@@ -105,11 +106,14 @@ public class ScvmtConversionTable extends JpaEntity implements Serializable  {
 		return pk;
 	}
 
-	public ConversionTable toDomain(ConversionInfo info, List<OneColumnConversion> columns, String sourceCondition) {
-		List<WhereSentence> where = createWhereSentence(info, sourceCondition);
+	public ConversionTable toDomain(ConversionInfo info, List<OneColumnConversion> columns, ConversionSource source) {
+		List<WhereSentence> where = createWhereSentence(info, source.getCondition());
 
 		return new ConversionTable(
 					new TableFullName(info.getTargetDatabaseName(), info.getTargetSchema(), pk.getTargetTableName(), "base"),
+					source.getDateColumnName(),
+					source.getStartDateColumnName(),
+					source.getEndDateColumnName(),
 					where,
 					columns
 				);

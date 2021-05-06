@@ -111,7 +111,7 @@ public class CodeGenerator {
 
 		@Override
 		public ConversionSource getSource(String sourceId) {
-			return conversionSourceRepository.get(sourceId);
+			return conversionSourceRepository.get(sourceId).get();
 		}
 
 		@Override

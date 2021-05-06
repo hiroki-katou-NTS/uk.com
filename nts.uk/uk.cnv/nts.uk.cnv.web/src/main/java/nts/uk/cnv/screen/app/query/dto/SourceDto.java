@@ -11,4 +11,7 @@ public class SourceDto {
 	String erpTableName;
 	String whereCondition;
 	String memo;
+	String dateColumnName;
+	String startDateColumnName;
+	String endDateColumnName;
 }

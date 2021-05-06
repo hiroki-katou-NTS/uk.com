@@ -40,7 +40,7 @@ public class JpaConversionTableRepository extends JpaRepository implements Conve
 				.collect(Collectors.toList());
 
 		return entities.stream()
-			.map(entity -> entity.toDomain(info, columns, source.getCondition()))
+			.map(entity -> entity.toDomain(info, columns, source))
 			.findFirst();
 	}
 

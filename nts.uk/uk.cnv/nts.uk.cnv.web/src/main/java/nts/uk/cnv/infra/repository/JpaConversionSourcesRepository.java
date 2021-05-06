@@ -15,10 +15,10 @@ import nts.uk.cnv.infra.entity.conversiontable.ScvmtConversionSources;
 public class JpaConversionSourcesRepository extends JpaRepository implements ConversionSourcesRepository {
 
 	@Override
-	public ConversionSource get(String sourceId) {
+	public Optional<ConversionSource> get(String sourceId) {
 		Optional<ScvmtConversionSources> entity = this.queryProxy().find(sourceId, ScvmtConversionSources.class);
 
-		return entity.get().toDomain();
+		return entity.map(e -> e.toDomain());
 	}
 
 	@Override
@@ -39,7 +39,10 @@ public class JpaConversionSourcesRepository extends JpaRepository implements Con
 				source.getCategory(),
 				source.getSourceTableName(),
 				source.getCondition(),
-				source.getMemo()
+				source.getMemo(),
+				source.getDateColumnName().orElse(""),
+				source.getStartDateColumnName().orElse(""),
+				source.getEndDateColumnName().orElse("")
 			);
 
 		this.commandProxy().insert(entity);
@@ -48,9 +51,12 @@ public class JpaConversionSourcesRepository extends JpaRepository implements Con
 	}
 
 	@Override
+	public void update(ConversionSource source) {
+		this.commandProxy().update(source);
+	}
+
+	@Override
 	public void delete(String sourceId) {
 		this.commandProxy().remove(ScvmtConversionSources.class, sourceId);
 	}
-
-
 }

@@ -1,6 +1,7 @@
 package nts.uk.cnv.dom.conversiontable;
 
 import java.util.ArrayList;
+import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -19,6 +20,10 @@ public class ConversionSource {
 	String sourceTableName;
 	String condition;
 	String memo;
+
+	Optional<String> dateColumnName;
+	Optional<String> startDateColumnName;
+	Optional<String> endDateColumnName;
 
 	public Join getJoin(ConversionInfo info) {
 		return new Join(

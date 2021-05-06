@@ -9,7 +9,9 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import lombok.val;
 import nemunoki.oruta.shr.tabledefinetype.DataType;
+import nts.arc.time.GeneralDate;
 import nts.uk.cnv.dom.constants.Constants;
 import nts.uk.cnv.dom.conversionsql.TableFullName;
 import nts.uk.cnv.dom.conversiontable.ConversionRecord;
@@ -117,6 +119,9 @@ public class CreateConversionCodeService {
 					.collect(Collectors.toList());
 				return new ConversionTable(
 						ct.getTargetTableName(),
+						ct.getDateColumnName(),
+						ct.getStartDateColumnName(),
+						ct.getEndDateColumnName(),
 						ct.getWhereList(),
 						newConversionMap);
 			})
@@ -151,11 +156,22 @@ public class CreateConversionCodeService {
 	 */
 	private String preprocessing(Require require, ConversionInfo info) {
 		StringBuilder sb = new StringBuilder();
+		val dbspec = info.getDatebaseType().spec();
 
 		// 契約コードのパラメータ定義
-		sb.append(info.getDatebaseType().spec().declaration(Constants.ContractCodeParamName, DataType.CHAR, 12));
+		sb.append(dbspec.declaration(Constants.ContractCodeParamName, DataType.CHAR, 12));
 		sb.append("\r\n");
-		sb.append(info.getDatebaseType().spec().initialization(Constants.ContractCodeParamName, info.getContractCode()));
+		sb.append(dbspec.initialization(Constants.ContractCodeParamName, info.getContractCode()));
+		sb.append("\r\n");
+
+		// 期間指定のパラメータ定義
+		sb.append(dbspec.declaration(Constants.StartDateParamName, DataType.DATE));
+		sb.append("\r\n");
+		sb.append(dbspec.declaration(Constants.EndDateParamName, DataType.DATE));
+		sb.append("\r\n");
+		sb.append(dbspec.initialization(Constants.StartDateParamName, GeneralDate.min().toString()));
+		sb.append("\r\n");
+		sb.append(dbspec.initialization(Constants.EndDateParamName, GeneralDate.max().toString()));
 		sb.append("\r\n");
 
 		// 会社ID変換テーブルInsert
@@ -163,10 +179,10 @@ public class CreateConversionCodeService {
 				info.getWorkDatabaseName(), info.getWorkSchema(), Constants.CidMappingTableName, "");
 		TableFullName source = new TableFullName(
 				info.getSourceDatabaseName(), info.getSourceSchema(), Constants.kyotukaisya_m, "");
-		String ccd = info.getDatebaseType().spec().right(
-				info.getDatebaseType().spec().concat("'0000'", "会社CD"),
+		String ccd = dbspec.right(
+				dbspec.concat("'0000'", "会社CD"),
 				4);
-		String cid = info.getDatebaseType().spec().concat("'" + info.getContractCode() + "-'", ccd);
+		String cid = dbspec.concat("'" + info.getContractCode() + "-'", ccd);
 		sb.append("TRUNCATE TABLE " + mappingTable.fullName() + ";\r\n");
 		sb.append("INSERT INTO ");
 		sb.append(mappingTable.fullName());
