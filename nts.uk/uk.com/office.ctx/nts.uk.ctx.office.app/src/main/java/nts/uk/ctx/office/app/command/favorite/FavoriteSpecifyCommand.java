@@ -14,13 +14,13 @@ public class FavoriteSpecifyCommand implements FavoriteSpecify.MementoGetter, Fa
 	// お気に入り名
 	private String favoriteName;
 
-	// 作��D
+	// 作成者ID
 	private String creatorId;
 
 	// 入力日
 	private GeneralDateTime inputDate;
 
-	// 対象選�
+	// 対象選択
 	private Integer targetSelection;
 
 	// 職場ID

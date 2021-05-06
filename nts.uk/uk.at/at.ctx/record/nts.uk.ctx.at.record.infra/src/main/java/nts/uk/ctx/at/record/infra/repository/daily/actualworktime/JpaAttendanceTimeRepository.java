@@ -239,18 +239,20 @@ public class JpaAttendanceTimeRepository extends JpaRepository implements Attend
 						this.commandProxy().remove(otherAtrkrcdtDayShorttime);
 					}
 					
+					//外出時間
+					try (val statement = this.connection().prepareStatement(
+							"delete from KRCDT_DAY_TIME_GOOUT where SID = ? and YMD = ?")) {
+						statement.setString(1, attendanceTime.getEmployeeId());
+						statement.setDate(2, Date.valueOf(attendanceTime.getYmd().toLocalDate()));
+						statement.execute();
+						this.getEntityManager().flush();
+					} catch (SQLException e) {
+						throw new RuntimeException(e);
+					}
 					for(OutingTimeOfDaily outing : attendanceTime.getTime().getActualWorkingTimeOfDaily().getTotalWorkingTime().getOutingTimeOfDailyPerformance()) {
 						//外出時間
-						KrcdtDayTimeGoout krcdtDayOutingTime = this.queryProxy().find(new KrcdtDayOutingTimePK(attendanceTime.getEmployeeId(),attendanceTime.getYmd(),outing.getReason().value), 
-																				   KrcdtDayTimeGoout.class).orElse(null);
-						if(krcdtDayOutingTime != null) {
-							krcdtDayOutingTime.setData(outing);
-							this.commandProxy().update(krcdtDayOutingTime);
-						}
-						else {
-							this.commandProxy().insert(KrcdtDayTimeGoout.toEntity(attendanceTime.getEmployeeId(),
-									attendanceTime.getYmd(), outing));
-						}
+						this.commandProxy().insert(KrcdtDayTimeGoout.toEntity(attendanceTime.getEmployeeId(),
+								attendanceTime.getYmd(), outing));
 					}
 				}
 			}
@@ -329,14 +331,9 @@ public class JpaAttendanceTimeRepository extends JpaRepository implements Attend
 
 	@Override
 	public void deleteByEmployeeIdAndDate(String employeeId, GeneralDate ymd) {
-		
-		Connection con = this.connection();
-		String sqlQuery = "Delete From KRCDT_DAY_TIME_ATD Where SID = " + "'" + employeeId + "'" + " and YMD = " + "'" + ymd + "'" ;
-		try {
-			con.createStatement().executeUpdate(sqlQuery);
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
-		}
+		this.queryProxy().find(new KrcdtDayTimePK(employeeId, ymd), KrcdtDayTimeAtd.class).ifPresent(c -> {
+			this.commandProxy().remove(c);
+		});
 		
 	}
 

@@ -91,10 +91,10 @@ public class WorkTimeSettingDto implements WorkTimeSettingGetMemento {
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingGetMemento#getColorCode()
 	 */
-	@Override
-	public ColorCode getColorCode() {
-		return new ColorCode(this.colorCode);
-	}
+//	@Override
+//	public ColorCode getColorCode() {
+//		return new ColorCode(this.colorCode);
+//	}
 
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingGetMemento#getWorkTimeDisplayName()
@@ -102,8 +102,7 @@ public class WorkTimeSettingDto implements WorkTimeSettingGetMemento {
 	@Override
 	public WorkTimeDisplayName getWorkTimeDisplayName() {
 		return WorkTimeDisplayName.builder().workTimeName(new WorkTimeName(this.workTimeDisplayName.getWorkTimeName()))
-				.workTimeAbName(new WorkTimeAbName(this.workTimeDisplayName.getWorkTimeAbName()))
-				.workTimeSymbol(new WorkTimeSymbol(this.workTimeDisplayName.getWorkTimeSymbol())).build();
+				.workTimeAbName(new WorkTimeAbName(this.workTimeDisplayName.getWorkTimeAbName())).build();
 	}
 
 	/* (non-Javadoc)

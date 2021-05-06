@@ -7,6 +7,7 @@ import javax.ws.rs.Produces;
 
 import nts.uk.ctx.sys.assist.app.command.autosetting.storage.SelectCategoryCommand;
 import nts.uk.ctx.sys.assist.app.find.autosetting.storage.DataStoragePatternSettingDto;
+import nts.uk.ctx.sys.assist.app.find.autosetting.storage.SaveSelectionCategoryNameDto;
 import nts.uk.ctx.sys.assist.app.find.autosetting.storage.ScreenDisplayProcessingDto;
 import nts.uk.ctx.sys.assist.app.find.autosetting.storage.ScreenDisplayProcessingFinder;
 import nts.uk.ctx.sys.assist.app.find.autosetting.storage.SelectCategoryFinder;
@@ -29,7 +30,7 @@ public class SelectPatternSettingWebService {
 	
 	@POST
 	@Path("patternSettingSelect")
-	public DataStoragePatternSettingDto findSelectionCategoryName(SelectCategoryCommand command) {
+	public DataStoragePatternSettingDto<SaveSelectionCategoryNameDto> findSelectionCategoryName(SelectCategoryCommand command) {
 		return selectCategoryFinder.findSelectCategoryInfo(command);
 	}
 }

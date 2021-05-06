@@ -749,8 +749,8 @@ public class OvertimeServiceImpl implements OvertimeService {
 		String workTimeCode = appOverTime.getWorkInfoOp().flatMap(x -> x.getWorkTimeCodeNotNull()).map(x -> x.v()).orElse(null);
 		
 		if (displayInfoOverTime.getWorkInfo().isPresent()) {
-			workTypeCode = workTypeCode.equals(displayInfoOverTime.getWorkInfo().get().getWorkType()) ? workTypeCode : null;
-			workTimeCode = workTimeCode.equals(displayInfoOverTime.getWorkInfo().get().getWorkTime()) ? workTimeCode : null;			
+			workTypeCode = !workTypeCode.equals(displayInfoOverTime.getWorkInfo().get().getWorkType()) ? workTypeCode : null;
+			workTimeCode = !workTimeCode.equals(displayInfoOverTime.getWorkInfo().get().getWorkTime()) ? workTimeCode : null;			
 		}
 		
 		// 4-1.詳細画面登録前の処理

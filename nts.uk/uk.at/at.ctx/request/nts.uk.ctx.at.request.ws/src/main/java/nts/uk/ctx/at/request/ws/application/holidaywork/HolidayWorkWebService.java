@@ -122,12 +122,6 @@ public class HolidayWorkWebService extends WebService{
 		return updateCommandHandler.handle(param);
 	}
 	
-	@POST
-	@Path("deleteHdChange")
-	public void deleteHdChange(ParamDeleteHdChange param) {
-		appHolidayWorkFinder.deleteHdChange(param);
-	}
-	
 }
 
 

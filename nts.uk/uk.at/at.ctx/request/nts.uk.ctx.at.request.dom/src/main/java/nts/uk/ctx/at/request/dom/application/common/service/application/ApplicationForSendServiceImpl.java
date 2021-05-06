@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.request.dom.application.common.service.application;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -56,9 +57,13 @@ public class ApplicationForSendServiceImpl implements IApplicationForSendService
 	 * ダイアログを開く kdl030
 	 */
 	@Override
-	public ApplicationForSendOutput getApplicationForSend(List<String> appIDLst) {
+	public ApplicationForSendOutput getApplicationForSend(SendMailDialogParam param) {
 		String companyID = AppContexts.user().companyId();
 		List<AppSendMailByEmp> appSendMailByEmpLst = new ArrayList<>();
+		List<String> appIDLst = param.getAppIDLst();
+		if(!param.isMultiEmp()) {
+			appIDLst = Arrays.asList(appIDLst.get(0));
+		}
 		// ドメインモデル「申請メール設定」を取得する(get domain model 「」)
 		AppEmailSet appEmailSet = appEmailSetRepository.findByDivision(Division.APPLICATION_APPROVAL);
 		// ドメイン「申請」より各種情報を取得する
@@ -107,12 +112,10 @@ public class ApplicationForSendServiceImpl implements IApplicationForSendService
 	
 	private void flatApprover(ApprovalRootOutput approvalRoot) {
 		for(ApprovalPhaseStateImport_New phase : approvalRoot.getListApprovalPhaseState()) {
-			int index = 0;
 			for(ApprovalFrameImport_New frame : phase.getListApprovalFrame()) {
 				List<ApproverStateImport_New> listApprover = new ArrayList<>();
 				for(ApproverStateImport_New approver : frame.getListApprover()) {
 					if(approver.getApprovalAtr()==ApprovalBehaviorAtrImport_New.UNAPPROVED && Strings.isNotBlank(approver.getRepresenterID())) {
-						index += 1;
 						listApprover.add(new ApproverStateImport_New(
 								approver.getApproverID(), 
 								approver.getApprovalAtr(), 
@@ -126,8 +129,7 @@ public class ApplicationForSendServiceImpl implements IApplicationForSendService
 								approver.getApproverEmail(), 
 								approver.getAgentMail(), 
 								"", 
-								index));
-						index += 1;
+								approver.getApproverInListOrder()));
 						listApprover.add(new ApproverStateImport_New(
 								approver.getRepresenterID(), 
 								approver.getApprovalAtr(), 
@@ -141,9 +143,8 @@ public class ApplicationForSendServiceImpl implements IApplicationForSendService
 								approver.getRepresenterEmail(), 
 								approver.getAgentMail(), 
 								"", 
-								index));
+								approver.getApproverInListOrder()));
 					} else {
-						index += 1;
 						listApprover.add(new ApproverStateImport_New(
 								approver.getApproverID(), 
 								approver.getApprovalAtr(), 
@@ -157,7 +158,7 @@ public class ApplicationForSendServiceImpl implements IApplicationForSendService
 								approver.getApproverEmail(), 
 								approver.getAgentMail(), 
 								approver.getRepresenterEmail(), 
-								index));
+								approver.getApproverInListOrder()));
 					}
 				}
 				frame.setListApprover(listApprover);

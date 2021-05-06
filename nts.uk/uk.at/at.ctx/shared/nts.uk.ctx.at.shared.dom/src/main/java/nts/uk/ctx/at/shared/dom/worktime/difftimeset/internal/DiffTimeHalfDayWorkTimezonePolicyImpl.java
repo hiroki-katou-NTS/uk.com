@@ -15,6 +15,7 @@ import nts.uk.ctx.at.shared.dom.worktime.difftimeset.policy.DiffTimezoneSettingP
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimedisplay.DisplayMode;
 import nts.uk.ctx.at.shared.dom.worktime.worktimedisplay.WorkTimeDisplayMode;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.HalfDayWorkSet;
 
 /**
  * The Class DiffTimeHalfDayWorkTimezonePolicyImpl.
@@ -39,12 +40,12 @@ public class DiffTimeHalfDayWorkTimezonePolicyImpl implements DiffTimeHalfDayWor
 	 */
 	@Override
 	public void validate(BundledBusinessException be, PredetemineTimeSetting predTime, WorkTimeDisplayMode displayMode,
-			DiffTimeHalfDayWorkTimezone halfDayWork, boolean isUseHalfDayShift) {
+			DiffTimeHalfDayWorkTimezone halfDayWork) {
 		this.diffTimezonePolicy.validate(be, predTime, halfDayWork.getWorkTimezone(), displayMode.getDisplayMode(),
-				halfDayWork.getAmPmAtr(), isUseHalfDayShift);
+				halfDayWork.getAmPmAtr());
 			
-		if (!((AmPmAtr.AM.equals(halfDayWork.getAmPmAtr()) && DisplayMode.DETAIL.equals(displayMode.getDisplayMode()) && !isUseHalfDayShift)
-				|| (AmPmAtr.PM.equals(halfDayWork.getAmPmAtr()) && DisplayMode.DETAIL.equals(displayMode.getDisplayMode()) && !isUseHalfDayShift)
+		if (!((AmPmAtr.AM.equals(halfDayWork.getAmPmAtr()) && DisplayMode.DETAIL.equals(displayMode.getDisplayMode()))
+				|| (AmPmAtr.PM.equals(halfDayWork.getAmPmAtr()) && DisplayMode.DETAIL.equals(displayMode.getDisplayMode()))
 				|| ((AmPmAtr.AM.equals(halfDayWork.getAmPmAtr()) || AmPmAtr.PM.equals(halfDayWork.getAmPmAtr())) && DisplayMode.SIMPLE.equals(displayMode.getDisplayMode())))) {
 			
 			// Msg_755
@@ -87,9 +88,8 @@ public class DiffTimeHalfDayWorkTimezonePolicyImpl implements DiffTimeHalfDayWor
 	 */
 	@Override
 	public void filterTimezone(PredetemineTimeSetting predTime, DiffTimeHalfDayWorkTimezone origin,
-			DisplayMode displayMode, boolean useHalfDayShift) {
-		this.diffTimezonePolicy.filterTimezone(predTime, origin.getWorkTimezone(), displayMode, origin.getAmPmAtr(),
-				useHalfDayShift);
+			DisplayMode displayMode) {
+		this.diffTimezonePolicy.filterTimezone(predTime, origin.getWorkTimezone(), displayMode, origin.getAmPmAtr());
 	}
 
 }

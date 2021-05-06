@@ -92,13 +92,13 @@ public class SubHolTransferSet extends WorkTimeDomainObject implements Cloneable
 		if (screenMode == ScreenMode.SIMPLE) {
 			// Only designatedTime not get restore
 			this.certainTime = oldDomain.getCertainTime();
-			this.designatedTime = oldDomain.getDesignatedTime();
+			//this.designatedTime = oldDomain.getDesignatedTime();
 			if (originAtr.equals(CompensatoryOccurrenceDivision.FromOverTime)) {
 				this.useDivision = false;
 			} else {
 				this.useDivision = true;
 			}
-			this.subHolTransferSetAtr = SubHolTransferSetAtr.SPECIFIED_TIME_SUB_HOL;
+			//this.subHolTransferSetAtr = SubHolTransferSetAtr.SPECIFIED_TIME_SUB_HOL;
 			return;
 		}
 
