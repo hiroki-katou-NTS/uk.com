@@ -128,7 +128,7 @@ module nts.uk.at.view.kdp.share {
         notiSet: KnockoutObservable<FingerStampSetting> = ko.observable();
 
         events!: ClickEvent;
-        
+
 
         created(params?: MessageParam) {
             const vm = this;
@@ -136,10 +136,8 @@ module nts.uk.at.view.kdp.share {
             if (params) {
                 vm.messageNoti = params.messageNoti;
 
-                if(ko.unwrap(params.notiSet)) {
+                if (ko.unwrap(params.notiSet)) {
                     vm.notiSet = params.notiSet;
-                    
-                    vm.reload();
                 }
                 const { events } = params;
 
@@ -174,12 +172,18 @@ module nts.uk.at.view.kdp.share {
                     };
                 }
             }
+
+            vm.messageNoti.subscribe(() => {
+                vm.reload();
+            });
         }
 
         mounted() {
             const vm = this;
 
-            vm.reload();
+            if (ko.unwrap(vm.messageNoti)) {
+                vm.reload();
+            }
         }
 
         reload() {
@@ -216,7 +220,6 @@ module nts.uk.at.view.kdp.share {
                             vm.headOfficeNotice.update(DestinationClassification.ALL,
                                 '');
                         }
-                        console.log(ko.unwrap(ko.unwrap(vm.headOfficeNotice).contentMessager));
                     }
 
                     if (workplaceNoticeList.length > 0) {
@@ -266,7 +269,7 @@ module nts.uk.at.view.kdp.share {
 
             if (type == DestinationClassification.ALL) {
                 if (setting) {
-                    
+
                     vm.title(setting.companyTitle + ':');
                     vm.textColor(setting.comMsgColor.textColor);
                     vm.backGroudColor(setting.comMsgColor.backGroundColor);
@@ -342,8 +345,8 @@ module nts.uk.at.view.kdp.share {
     }
 
     interface FingerStampSetting {
-		stampResultDisplay: any;
-		stampSetting: any;
-		noticeSetDto: INoticeSet;
-	}
+        stampResultDisplay: any;
+        stampSetting: any;
+        noticeSetDto: INoticeSet;
+    }
 }

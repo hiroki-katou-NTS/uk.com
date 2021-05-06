@@ -106,13 +106,6 @@ module nts.uk.at.kdp003.a {
 						}
 					});
 			});
-
-			vm.$window.storage(KDP003_SAVE_DATA)
-				.then((data: undefined | StorageData) => {
-					if (data) {
-						vm.loadNotice(data);
-					}
-				});
 		}
 
 		shoNoti() {
@@ -149,6 +142,8 @@ module nts.uk.at.kdp003.a {
 				},
 				wkpIds: storage.WKPID
 			}
+
+			console.log(param);
 
 			vm.$blockui('invisible')
 				.then(() => {
@@ -300,6 +295,7 @@ module nts.uk.at.kdp003.a {
 				.then((data: false | StorageData) => {
 					// if login and storage data success
 					if (data) {
+						vm.loadNotice(data);
 						return vm.loadData(data);
 					}
 				})
