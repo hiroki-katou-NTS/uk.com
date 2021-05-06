@@ -13,7 +13,7 @@
 
 			<script type='text/javascript'>
 				var dialogSize = {
-					width : 432,
+					width : 448,
 					height : 380
 				};
 			</script>
@@ -57,10 +57,14 @@
 				<div id="update-date">
 					<label id="lbl-update-date" data-bind="text: updateDate"></label>
 				</div>
-				<!-- Q4_1 対象職場(タイトル) -->
-				<label id="lbl-wkp" data-bind="text: $i18n('KDP003_62')"></label>
-				<!-- Q4_2 対象職場 -->
-				<span data-bind="text: workPlaceTxtRefer"></span>
+
+				<div id="wkp-area">
+					<!-- Q4_1 対象職場(タイトル) -->
+					<label id="lbl-wkp" data-bind="text: $i18n('KDP003_62')"></label>
+					<!-- Q4_2 対象職場 -->
+					<span data-bind="text: workPlaceTxtRefer"></span>
+				</div>
+				
 			</div>
 			<div id="functions-area-bottom">
 				<!-- Q20_1 登録 -->

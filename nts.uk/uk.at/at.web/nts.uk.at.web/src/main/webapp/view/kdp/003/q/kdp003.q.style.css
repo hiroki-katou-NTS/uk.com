@@ -17,15 +17,11 @@
 }
 
 #lbl-update-date {
-	padding-left: 264px;
+	padding-left: 250px;
 }
 
 #master-wrapper div#contents-area{
 	padding: 0 !important;
-}
-
-#lbl-wkp{
-	padding-left: 20px;
 }
 
 .btn-footer{
@@ -57,4 +53,8 @@
   	background-color: #BFEA60;
 }
 
+#wkp-area {
+	padding-left: 20px;
+    max-width: 100%;
+}
  
