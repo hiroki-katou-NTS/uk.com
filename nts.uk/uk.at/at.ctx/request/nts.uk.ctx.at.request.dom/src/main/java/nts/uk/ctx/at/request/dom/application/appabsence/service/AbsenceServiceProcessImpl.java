@@ -21,6 +21,11 @@ import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.request.dom.adapter.monthly.vacation.childcarenurse.ChildCareNursePeriodImport;
+import nts.uk.ctx.at.request.dom.adapter.monthly.vacation.childcarenurse.care.GetRemainingNumberCareAdapter;
+import nts.uk.ctx.at.request.dom.adapter.monthly.vacation.childcarenurse.childcare.GetRemainingNumberChildCareNurseAdapter;
+import nts.uk.ctx.at.request.dom.adapter.record.remainingnumber.holidayover60h.AggrResultOfHolidayOver60hImport;
+import nts.uk.ctx.at.request.dom.adapter.record.remainingnumber.holidayover60h.GetHolidayOver60hRemNumWithinPeriodAdapter;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
@@ -80,7 +85,12 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.NumberCompensatoryLeavePeriodQuery;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.param.AbsRecMngInPeriodRefactParamInput;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.param.CompenLeaveAggrResult;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.AppRemainCreateInfor;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.EarchInterimRemainCheck;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainCheckInputParam;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngCheckRegister;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.require.RemainNumberTempRequireService;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.TargetSelectionAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.NumberRemainVacationLeaveRangeQuery;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.BreakDayOffRemainMngRefactParam;
@@ -141,7 +151,6 @@ import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
 import nts.uk.ctx.at.shared.dom.worktime.predset.UseSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
-import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingService;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
@@ -194,9 +203,6 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
 	
 	@Inject
 	private CommonAlgorithm commonAlgorithm;
-	
-	@Inject 
-	private WorkTimeSettingService weorkTimeSettingService;
 	
 	@Inject
 	private VacationApplicationReflectRepository vacationAppReflectRepository;
@@ -272,6 +278,18 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
     
     @Inject
     private FlexWorkSettingRepository flexWorkSet;
+    
+    @Inject
+    private GetHolidayOver60hRemNumWithinPeriodAdapter getHolidayOver60hRemNumWithinPeriodAdapter;
+    
+    @Inject
+    private GetRemainingNumberChildCareNurseAdapter getRemainingNumberChildCareNurseAdapter;
+    
+    @Inject
+    private GetRemainingNumberCareAdapter getRemainingNumberCareAdapter;
+    
+    @Inject
+    private InterimRemainDataMngCheckRegister remainDataCheckRegister;
     
 	private final String FORMAT_DATE = "yyyy/MM/dd";
 	
@@ -570,14 +588,29 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
 		if(!closure.isPresent()){
 			return new NumberOfRemainOutput(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 		}
+		
 		//年休残数
-		Double yearRemain = null;
-		//代休残数
-		Double subHdRemain = null;
-		//振休残数
-		Double subVacaRemain = null;
-		//ストック休暇残数
-		Double stockRemain = null;
+		Double yearDayRemain = 0d;
+		// 年休残時間
+		int yearHourRemain = 0;
+		// 積休残数
+	    Double lastYearRemain = 0d;
+	    // 代休残数
+	    Double subDayRemain = 0d;
+	    // 代休残時間
+	    int subHdHourRemain = 0;
+	    // 振休残数
+	    Double vacaRemain = 0d; 
+		// 60H超休残時間
+		int over60HHourRemain = 0;
+		// 子看護残数
+		Double childNursingDayRemain = 0d;
+		// 子看護残時間
+		int childNursingHourRemain = 0;
+		// 介護残数
+		Double nursingRemain = 0d;
+		// 介護残時間
+		int nursingHourRemain = 0;
 		GeneralDate closureDate = closure.get();
 		
 		//1
@@ -596,7 +629,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
 			CompenLeaveAggrResult subVaca = NumberCompensatoryLeavePeriodQuery
 					.process(require, mngParam);
 			//振休残数 ← 残日数　（アルゴリズム「期間内の振出振休残数を取得する」のoutput）
-			subVacaRemain = subVaca.getRemainDay().v();//残日数
+			vacaRemain = subVaca.getRemainDay().v();//残日数
 		}
 		
 		//2
@@ -622,7 +655,8 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
 					Collections.emptyList(),
 					Optional.empty(), new FixedManagementDataMonth());
 			//代休残数 ← 残日数　（アルゴリズム「期間内の代休残数を取得する」のoutput）
-			subHdRemain = 	NumberRemainVacationLeaveRangeQuery.getBreakDayOffMngInPeriod(require, inputRefactor).getRemainDay().v();
+			subDayRemain = NumberRemainVacationLeaveRangeQuery.getBreakDayOffMngInPeriod(require, inputRefactor).getRemainDay().v();
+			subHdHourRemain = NumberRemainVacationLeaveRangeQuery.getBreakDayOffMngInPeriod(require, inputRefactor).getRemainTime().v();
 		}
 		
 		//3
@@ -633,9 +667,9 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
 				//積休残数 ←  積立年休情報.残数.積立年休（マイナスあり）.残数.合計残日数 
 				//reserveLeaveInfo.remainingNumber.reserveLeaveWithMinus.remainingNumber.totalRemainingDays
 				if(stock.get().getGrantRemainingList().size() > 0){
-					stockRemain = new Double(0L);
+					lastYearRemain = new Double(0L);
 					for (RsvLeaGrantRemainingImport rsv : stock.get().getGrantRemainingList()) {
-						stockRemain = stockRemain + rsv.getRemainingNumber();
+					    lastYearRemain = lastYearRemain + rsv.getRemainingNumber();
 					}
 				}
 			}
@@ -646,23 +680,78 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
 			//基準日時点の年休残数を取得する - RQ198
 			ReNumAnnLeaReferenceDateImport year = annLeaRemNumberAdapter.getReferDateAnnualLeaveRemainNumber(employeeID, baseDate);
 			//年休残数 ← 年休残数.年休残数（付与前）日数 annualLeaveRemainNumberExport.annualLeaveGrantPreDay
-			yearRemain = year.getAnnualLeaveRemainNumberExport() == null ? null : 
+			yearDayRemain = year.getAnnualLeaveRemainNumberExport() == null ? null : 
 				year.getAnnualLeaveRemainNumberExport().getAnnualLeaveGrantDay();
+			for (int i = 0; i < year.getAnnualLeaveGrantExports().size(); i++) {
+			    yearHourRemain += year.getAnnualLeaveGrantExports().get(i).getRemainMinutes();
+			}
 		}
 		
-		if (overrest60HManagement.equals(ManageDistinct.YES)) {
+		if (overrest60HManagement.equals(ManageDistinct.YES)) {//output.60H超休管理区分管理する
+		     // [RQ677]期間中の60H超休残数を取得する
+		    AggrResultOfHolidayOver60hImport over60hImport = getHolidayOver60hRemNumWithinPeriodAdapter.algorithm(
+		            companyID, 
+		            employeeID, 
+		            new DatePeriod(closureDate, closureDate.addYears(1).addDays(-1)), 
+		            InterimRemainMngMode.OTHER, 
+		            baseDate, 
+		            Optional.of(false), 
+		            Optional.empty(), 
+		            Optional.empty());
 		    
+		    over60HHourRemain = over60hImport.getAsOfPeriodEnd().getRemainingNumber().getRemainingTimeWithMinus().v();
 		}
 		
 		if (childNursingManagement.equals(ManageDistinct.YES)) {
+		    // [NO.206]期間中の子の看護休暇残数を取得
+		    ChildCareNursePeriodImport childNursePeriod = getRemainingNumberChildCareNurseAdapter.getChildCareNurseRemNumWithinPeriod(
+		            employeeID, 
+		            new DatePeriod(closureDate, closureDate.addYears(1).addDays(-1)), 
+		            InterimRemainMngMode.OTHER, 
+		            baseDate, 
+		            Optional.of(false), 
+		            Optional.empty(), 
+		            Optional.empty(), 
+		            Optional.empty(), 
+		            Optional.empty());
 		    
+		    childNursingDayRemain = childNursePeriod.getStartdateDays().getThisYear().getRemainingNumber().getUsedDays();
+		    if (childNursePeriod.getStartdateDays().getThisYear().getRemainingNumber().getUsedTime().isPresent()) {
+		        childNursingHourRemain = childNursePeriod.getStartdateDays().getThisYear().getRemainingNumber().getUsedTime().get();
+		    }
 		}
 		
 		if (longTermCareManagement.equals(ManageDistinct.YES)) {
+		    // [NO.207]期間中の介護休暇残数を取得
+		    ChildCareNursePeriodImport longtermCarePeriod = getRemainingNumberCareAdapter.getCareRemNumWithinPeriod(
+		            employeeID, 
+		            new DatePeriod(closureDate, closureDate.addYears(1).addDays(-1)), 
+		            InterimRemainMngMode.OTHER, 
+		            baseDate, 
+		            Optional.of(false), 
+		            Optional.empty(), 
+                    Optional.empty(), 
+                    Optional.empty(), 
+                    Optional.empty());
 		    
+		    nursingRemain = longtermCarePeriod.getStartdateDays().getThisYear().getRemainingNumber().getUsedDays();
+		    if (longtermCarePeriod.getStartdateDays().getThisYear().getRemainingNumber().getUsedTime().isPresent()) {
+		        nursingHourRemain = longtermCarePeriod.getStartdateDays().getThisYear().getRemainingNumber().getUsedTime().get();
+		    }
 		}
 //        return NumberOfRemainOutput.init(yearRemain, subHdRemain, subVacaRemain, stockRemain, yearManage, subHdManage, subVacaManage, retentionManage);
-		return new NumberOfRemainOutput(1, 1, 1, 1, 60, 1, 60, 1, 1, 1, 1);
+		return new NumberOfRemainOutput(
+		        yearDayRemain.intValue(), 
+		        yearHourRemain, 
+		        lastYearRemain.intValue(), 
+		        subDayRemain.intValue(), 
+		        subHdHourRemain, 
+		        vacaRemain.intValue(), 
+		        over60HHourRemain, 
+		        childNursingDayRemain.intValue(), 
+		        childNursingHourRemain, 
+		        nursingRemain.intValue(), 
+		        nursingHourRemain);
 	}
 
 	@Override
@@ -703,14 +792,14 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
                 checkDispHolidayType.getHolidayManagement(), 
                 checkDispHolidayType.getOvertime60hManagement(), 
                 checkDispHolidayType.getNursingCareLeaveManagement(), 
-                Optional.ofNullable(numberOfRemainOutput.getYearRemain()), 
+                Optional.ofNullable(numberOfRemainOutput.getYearDayRemain()), 
                 Optional.ofNullable(numberOfRemainOutput.getYearHourRemain()), 
-                Optional.ofNullable(numberOfRemainOutput.getSubHdRemain()), 
-                Optional.ofNullable(numberOfRemainOutput.getSubVacaRemain()), 
-                Optional.ofNullable(numberOfRemainOutput.getSubVacaHourRemain()), 
+                Optional.ofNullable(numberOfRemainOutput.getSubDayRemain()), 
+                Optional.ofNullable(numberOfRemainOutput.getVacaRemain()), 
                 Optional.ofNullable(numberOfRemainOutput.getSubHdHourRemain()), 
+                Optional.ofNullable(numberOfRemainOutput.getLastYearRemain()), 
                 Optional.ofNullable(numberOfRemainOutput.getOver60HHourRemain()), 
-                Optional.ofNullable(numberOfRemainOutput.getChildNursingRemain()), 
+                Optional.ofNullable(numberOfRemainOutput.getChildNursingDayRemain()), 
                 Optional.ofNullable(numberOfRemainOutput.getChildNursingHourRemain()), 
                 Optional.ofNullable(numberOfRemainOutput.getNursingRemain()), 
                 Optional.ofNullable(numberOfRemainOutput.getNursingHourRemain()));
@@ -1199,13 +1288,11 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
 				, appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getOpActualContentDisplayLst().get());
 		
 		// 休暇残数チェック
-		// KAF006: -PhuongDV domain fix pending- Chờ phần của bên JP cuối tháng 12
-		/*this.checkRemainVacation(
+		this.checkRemainVacation(
 				companyID, 
 				appAbsence,
 				closureStartDate, 
-				hdAppSet, 
-				holidayType);*/
+				appAbsence.getVacationInfo().getHolidayApplicationType());
 		// 返ってきた確認メッセージリストを返す
 		return result;
 	}
@@ -2175,5 +2262,44 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
             
         }
 
+    }
+
+    @Override
+    public void checkRemainVacation(String companyID, ApplyForLeave application, GeneralDate date,
+            HolidayAppType vacationType) {
+        InterimRemainCheckInputParam param = new InterimRemainCheckInputParam(
+                companyID, 
+                application.getEmployeeID(), 
+                new DatePeriod(date, date.addYears(1).addDays(-1)), 
+                false, 
+                application.getAppDate().getApplicationDate(), 
+                new DatePeriod(application.getOpAppStartDate().get().getApplicationDate(), application.getOpAppEndDate().get().getApplicationDate()), 
+                true, 
+                Collections.emptyList(), 
+                Collections.emptyList(), 
+                Collections.emptyList(), 
+                vacationType.equals(HolidayAppType.SUBSTITUTE_HOLIDAY), 
+                false, 
+                vacationType.equals(HolidayAppType.ANNUAL_PAID_LEAVE), 
+                vacationType.equals(HolidayAppType.YEARLY_RESERVE), 
+                true, 
+                false, 
+                true);
+        // 登録時の残数チェック
+        EarchInterimRemainCheck earchInterimRemainCheck = remainDataCheckRegister.checkRegister(param);
+        
+        // 代休不足区分 or 振休不足区分 or 年休不足区分 or 積休不足区分 or 特休不足区分 = true（残数不足）
+        if (earchInterimRemainCheck.isChkSubHoliday() 
+                || earchInterimRemainCheck.isChkPause() 
+                || earchInterimRemainCheck.isChkAnnual() 
+                || earchInterimRemainCheck.isChkFundingAnnual() 
+                || earchInterimRemainCheck.isChkSpecial()) {
+            throw new BusinessException("Msg_1409", vacationType.name);
+        }
+    }
+    
+    public List<AppRemainCreateInfor> createAppRemain(ApplyForLeave aplication) {
+        
+        return null;
     }
 }

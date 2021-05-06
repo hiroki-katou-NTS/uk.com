@@ -316,10 +316,10 @@ public class KTG004Finder {
 				childNursingManagement ? ManageDistinct.YES : ManageDistinct.NO, 
 				longTermCareManagement ? ManageDistinct.YES : ManageDistinct.NO);
 		if(numberOfRemain != null) {
-			result.setNumberOfAnnualLeaveRemain(new RemainingDaysAndTimeDto(numberOfRemain.getYearRemain(), new AttendanceTime(0)));
-			result.setNumberOfSubstituteHoliday(new RemainingDaysAndTimeDto(numberOfRemain.getSubHdRemain(), new AttendanceTime(0)));
-			result.setNumberAccumulatedAnnualLeave(numberOfRemain.getSubVacaRemain());
-			result.setRemainingHolidays(numberOfRemain.getSubVacaRemain());
+			result.setNumberOfAnnualLeaveRemain(new RemainingDaysAndTimeDto(numberOfRemain.getYearDayRemain(), new AttendanceTime(0)));
+			result.setNumberOfSubstituteHoliday(new RemainingDaysAndTimeDto(numberOfRemain.getSubDayRemain(), new AttendanceTime(0)));
+			result.setNumberAccumulatedAnnualLeave(numberOfRemain.getLastYearRemain());
+			result.setRemainingHolidays(numberOfRemain.getVacaRemain());
 		}
 		
 		//アルゴリズム「23.特休残数表示」を実行する(Thực thi xử lý [23:hiển thị số phép đặc biệt còn lại])

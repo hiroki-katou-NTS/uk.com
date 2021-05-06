@@ -854,12 +854,16 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 			// set over60HHourRemain
 			if (remainVacationInfo.over60HHourRemain) {
 				vm.over60HHourRemain(nts.uk.time.format.byId("Clock_Short_HM", remainVacationInfo.over60HHourRemain));
-			}
+			} else {
+                vm.over60HHourRemain(nts.uk.time.format.byId("Clock_Short_HM", 0));
+            }
 
 			// set subVacaHourRemain
 			if (remainVacationInfo.subVacaHourRemain) {
 				vm.subVacaHourRemain(nts.uk.time.format.byId("Clock_Short_HM", remainVacationInfo.subVacaHourRemain));
-			}
+			} else {
+                vm.subVacaHourRemain(nts.uk.time.format.byId("Clock_Short_HM", 0));
+            }
 
 			// set yearRemain
 			if (remainVacationInfo.yearRemain && remainVacationInfo.yearRemain > 0) {
