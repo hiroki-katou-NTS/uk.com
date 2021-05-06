@@ -1913,6 +1913,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
             if (nts.uk.ui.errors.hasError() || self.mode() === 'confirm')
                 return;
+            
+            // close dialog kdl053 nếu nó đang open
+            $('div > iframe').contents().find('#btnClose').trigger('click');
+            
             nts.uk.ui.block.grayout();
             let itemLocal = uk.localStorage.getItem(self.KEY);
             let userInfor = JSON.parse(itemLocal.get());
@@ -2175,11 +2179,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             nts.uk.ui.block.clear();
         }
         
-        bindDataAfterSave() {
-            let self = this;
-
-        }
-
         /**
         * Create exTable
         */
