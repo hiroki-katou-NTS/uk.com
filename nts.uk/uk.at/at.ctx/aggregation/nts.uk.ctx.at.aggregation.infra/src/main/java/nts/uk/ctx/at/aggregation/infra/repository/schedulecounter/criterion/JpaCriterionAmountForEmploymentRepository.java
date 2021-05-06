@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.aggregation.infra.entity.schedulecounter.criterion;
+package nts.uk.ctx.at.aggregation.infra.repository.schedulecounter.criterion;
 
 import java.util.List;
 import java.util.Optional;
