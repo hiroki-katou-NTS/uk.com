@@ -536,8 +536,7 @@ public class ReserveLeaveInfo implements Cloneable {
 						leaveUsedNumber,
 						companyId,
 						employeeId,
-						aggrPeriodWork.getPeriod().start(),
-						Optional.of(dummyDataList));
+						aggrPeriodWork.getPeriod().start());
 
 				// 残数（現在）を消化後の状態にする
 				{
