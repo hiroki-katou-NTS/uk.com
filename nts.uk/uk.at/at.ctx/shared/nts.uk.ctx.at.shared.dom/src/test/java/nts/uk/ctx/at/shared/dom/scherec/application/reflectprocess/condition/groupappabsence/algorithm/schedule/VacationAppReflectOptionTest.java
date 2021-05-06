@@ -83,7 +83,7 @@ public class VacationAppReflectOptionTest {
 		String workTimeBefore = dailyApp.getWorkInformation().getRecordInfo().getWorkTimeCode().v();// 前就業時間帯コード
 
 		VacationAppReflectOption option = new VacationAppReflectOption(NotUseAtr.NOT_USE, NotUseAtr.NOT_USE,
-				ReflectWorkHourCondition.NOT_REFLECT);// 出退勤を反映する=反映する
+				ReflectWorkHourCondition.NOT_REFLECT);// 出退勤を反映する=反映しない
 
 		DailyAfterAppReflectResult resultActual = option.processSC(require, "", workInfo,
 				new ArrayList<>(), NotUseAtr.USE, dailyApp);
