@@ -43,7 +43,7 @@ public class JpaBentoMenuScreenRepository extends JpaRepository implements Bento
                         " c.unitName, c.price1, c.price2, c.reservationAtr1, c.reservationAtr2, c.workLocationCode, d.workLocationName)");
         builderString.append(" FROM KrcmtBentoMenu a JOIN KrcmtBentoMenuHist b ON a.pk.histID = b.pk.histID AND a.pk.companyID = b.pk.companyID ");
         builderString.append(" LEFT JOIN KrcmtBento c ON a.pk.histID = c.pk.histID AND a.pk.companyID = c.pk.companyID ");
-        builderString.append(" LEFT JOIN KrcmtWorkLocation d ON c.pk.companyID = d.kwlmtWorkLocationPK.companyID AND c.workLocationCode = d.kwlmtWorkLocationPK.workLocationCD ");
+        builderString.append(" LEFT JOIN KrcmtWorkLocation d ON c.contractCd = d.kwlmtWorkLocationPK.contractCode AND c.workLocationCode = d.kwlmtWorkLocationPK.workLocationCD ");
         SELECTBENTO = builderString.toString();
 
         builderString = new StringBuilder();
@@ -61,7 +61,7 @@ public class JpaBentoMenuScreenRepository extends JpaRepository implements Bento
         builderString.append(
                 "( a.kwlmtWorkLocationPK.workLocationCD, a.workLocationName )");
         builderString.append(" FROM KrcmtWorkLocation a ");
-        builderString.append(" WHERE a.kwlmtWorkLocationPK.companyID = :companyID ");
+        builderString.append(" WHERE a.kwlmtWorkLocationPK.contractCode = :contractCode ");
         SELECT_WORKLOCATION = builderString.toString();
     }
 
@@ -82,8 +82,8 @@ public class JpaBentoMenuScreenRepository extends JpaRepository implements Bento
     }
 
     @Override
-    public List<WorkLocationDto> findDataWorkLocation(String companyId) {
+    public List<WorkLocationDto> findDataWorkLocation(String contractCode) {
         return this.queryProxy().query(SELECT_WORKLOCATION, WorkLocationDto.class)
-                .setParameter("companyID", companyId).getList();
+                .setParameter("contractCode", contractCode).getList();
     }
 }

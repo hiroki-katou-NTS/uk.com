@@ -12,6 +12,7 @@ import nts.uk.ctx.at.shared.infra.entity.scherec.taskmanagement.taskassign.taska
 import nts.uk.ctx.at.shared.infra.entity.scherec.taskmanagement.taskassign.taskassignworkplace.KsrmtTaskAssignWkpPk;
 import nts.uk.ctx.at.shared.infra.entity.scherec.taskmanagement.taskassign.taskassignworkplace.metamodel.KsrmtTaskAssignWkpPk_;
 import nts.uk.ctx.at.shared.infra.entity.scherec.taskmanagement.taskassign.taskassignworkplace.metamodel.KsrmtTaskAssignWkp_;
+import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -30,9 +31,9 @@ public class JpaNarrowingByWorkplaceRepository extends JpaRepository implements 
 
     @Override
     public void update(NarrowingDownTaskByWorkplace narrowing) {
+        this.delete(AppContexts.user().companyId(), narrowing.getWorkPlaceId(), narrowing.getTaskFrameNo());
         val listEntity = KsrmtTaskAssignWkp.toEntitys(narrowing);
-        this.commandProxy().updateAll(listEntity);
-
+        this.commandProxy().insertAll(listEntity);
     }
 
     @Override
@@ -139,7 +140,7 @@ public class JpaNarrowingByWorkplaceRepository extends JpaRepository implements 
         Root<KsrmtTaskAssignWkp> root = criteriaQuery.from(KsrmtTaskAssignWkp.class);
         criteriaQuery.select(root);
         List<Predicate> conditions = new ArrayList<>();
-        conditions.add(criteriaBuilder.equal(root.get(KsrmtTaskAssignWkp_.pk).get(KsrmtTaskAssignWkpPk_.FRAMENO), taskFrameNo));
+        conditions.add(criteriaBuilder.equal(root.get(KsrmtTaskAssignWkp_.pk).get(KsrmtTaskAssignWkpPk_.FRAMENO), taskFrameNo.v()));
         conditions.add(criteriaBuilder.equal(root.get(KsrmtTaskAssignWkp_.companyId), cid));
         criteriaQuery.where(conditions.toArray(new Predicate[]{}));
         TypedQuery<KsrmtTaskAssignWkp> query = entityManager.createQuery(criteriaQuery);

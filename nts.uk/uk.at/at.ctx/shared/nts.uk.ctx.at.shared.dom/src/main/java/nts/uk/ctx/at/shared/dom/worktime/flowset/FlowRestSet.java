@@ -31,7 +31,7 @@ public class FlowRestSet extends WorkTimeDomainObject implements Cloneable{
 	
 	/** The calculate method. */
 	//計算方法
-	private FlowRestCalcMethod calculateMethod;
+//	private FlowRestCalcMethod calculateMethod;
 
 	/**
 	 * Instantiates a new flow rest set.
@@ -42,7 +42,7 @@ public class FlowRestSet extends WorkTimeDomainObject implements Cloneable{
 		this.useStamp = memento.getUseStamp();
 		this.useStampCalcMethod = memento.getUseStampCalcMethod();
 		this.timeManagerSetAtr = memento.getTimeManagerSetAtr();
-		this.calculateMethod = memento.getCalculateMethod();
+//		this.calculateMethod = memento.getCalculateMethod();
 	}
 
 	/**
@@ -54,7 +54,7 @@ public class FlowRestSet extends WorkTimeDomainObject implements Cloneable{
 		memento.setUseStamp(this.useStamp);
 		memento.setUseStampCalcMethod(this.useStampCalcMethod);
 		memento.setTimeManagerSetAtr(this.timeManagerSetAtr);
-		memento.setCalculateMethod(this.calculateMethod);
+//		memento.setCalculateMethod(this.calculateMethod);
 	}
 	
 	@Override
@@ -64,7 +64,7 @@ public class FlowRestSet extends WorkTimeDomainObject implements Cloneable{
 			cloned.useStamp = this.useStamp ? true : false;
 			cloned.useStampCalcMethod = FlowRestClockCalcMethod.valueOf(this.useStampCalcMethod.value);
 			cloned.timeManagerSetAtr = RestClockManageAtr.valueOf(this.timeManagerSetAtr.value);
-			cloned.calculateMethod = FlowRestCalcMethod.valueOf(this.calculateMethod.value);
+//			cloned.calculateMethod = FlowRestCalcMethod.valueOf(this.calculateMethod.value);
 		}
 		catch (Exception e){
 			throw new RuntimeException("FlowRestSet clone error.");

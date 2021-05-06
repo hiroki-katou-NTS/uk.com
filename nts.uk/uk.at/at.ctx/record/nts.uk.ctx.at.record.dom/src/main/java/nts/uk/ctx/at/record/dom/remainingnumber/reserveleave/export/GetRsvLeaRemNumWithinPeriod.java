@@ -120,7 +120,7 @@ public class GetRsvLeaRemNumWithinPeriod {
 				param, retentionYearlySet, emptYearlyRetentionSetMap);
 
 		// 積立年休付与を計算
-		List<GrantWork> calcGrant = calcGrant(param.getLapsedAnnualLeaveInfos(), annualLeaveSet, maxSetPeriods);
+		List<GrantWork> calcGrant = calcGrant(param.getLapsedAnnualLeaveInfos(), annualLeaveSet, param.getAggrPeriod(), maxSetPeriods);
 
 		// 積立年休集計期間の作成
 		List<RsvLeaAggrPeriodWork> aggrPeriodWorks = createAggregatePeriod(param.getAggrPeriod(), calcGrant,
@@ -385,7 +385,10 @@ public class GetRsvLeaRemNumWithinPeriod {
 	 * @param maxSetPeriods 積立年休上限設定期間WORKリスト
 	 * @return 積立年休付与WORKリスト
 	 */
-	private static List<GrantWork> calcGrant(List<AnnualLeaveInfo> lapsedAnnualLeaveInfos, AnnualPaidLeaveSetting annualLeaveSet,
+	private static List<GrantWork> calcGrant(
+			List<AnnualLeaveInfo> lapsedAnnualLeaveInfos,
+			AnnualPaidLeaveSetting annualLeaveSet,
+			DatePeriod period,
 			List<MaxSettingPeriodWork> maxSetPeriods){
 
 		List<GrantWork> results = new ArrayList<>();
@@ -411,7 +414,7 @@ public class GetRsvLeaRemNumWithinPeriod {
 
 				// 付与残数データを取得
 				for (val grantRemaining : annualLeaveInfo.getGrantRemainingDataList()){
-					if (grantRemaining.getDeadline().compareTo(annualLeaveInfo.getYmd().addDays(-1)) != 0) continue;
+					if (!period.contains(grantRemaining.getDeadline())) continue;
 					if (grantRemaining.getExpirationStatus() != LeaveExpirationStatus.EXPIRED) continue;
 
 					// 付与日数に年休情報の残日数を加算

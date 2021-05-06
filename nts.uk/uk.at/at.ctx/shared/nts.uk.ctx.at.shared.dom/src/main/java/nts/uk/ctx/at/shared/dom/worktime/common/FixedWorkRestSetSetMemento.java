@@ -21,12 +21,12 @@ public interface FixedWorkRestSetSetMemento {
  	 *
  	 * @param isPlanActualNotMatchMasterRefer the new checks if is plan actual not match master refer
  	 */
- 	void setIsPlanActualNotMatchMasterRefer(boolean isPlanActualNotMatchMasterRefer);
+// 	void setIsPlanActualNotMatchMasterRefer(boolean isPlanActualNotMatchMasterRefer);
 
 	/**
 	 * Sets the calculate method.
 	 *
 	 * @param method the new calculate method
 	 */
-	 void setCalculateMethod(FixedRestCalculateMethod method);
+//	 void setCalculateMethod(FixedRestCalculateMethod method);
 }

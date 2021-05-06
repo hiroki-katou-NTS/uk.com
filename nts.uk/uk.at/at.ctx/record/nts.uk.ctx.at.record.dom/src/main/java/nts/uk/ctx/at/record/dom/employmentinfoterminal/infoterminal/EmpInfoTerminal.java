@@ -33,6 +33,7 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.pref
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.OvertimeDeclaration;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
+import nts.uk.shr.com.net.Ipv4Address;
 
 /**
  * @author ThanhNX
@@ -44,7 +45,7 @@ public class EmpInfoTerminal implements DomainAggregate {
 	 * IPアドレス
 	 */
 	@Getter
-	private Optional<FullIpAddress> ipAddress;
+	private Optional<Ipv4Address> ipAddress;
 
 	/**
 	 * MACアドレス
@@ -182,7 +183,7 @@ public class EmpInfoTerminal implements DomainAggregate {
 		/**
 		 * IPアドレス
 		 */
-		private Optional<FullIpAddress> ipAddress;
+		private Optional<Ipv4Address> ipAddress;
 
 		/**
 		 * MACアドレス
@@ -229,7 +230,7 @@ public class EmpInfoTerminal implements DomainAggregate {
 		 */
 		private Optional<EmpInfoTerMemo> empInfoTerMemo;
 
-		public EmpInfoTerminalBuilder(Optional<FullIpAddress> ipAddress, MacAddress macAddress,
+		public EmpInfoTerminalBuilder(Optional<Ipv4Address> ipAddress, MacAddress macAddress,
 				EmpInfoTerminalCode empInfoTerCode, Optional<EmpInfoTerSerialNo> terSerialNo,
 				EmpInfoTerminalName empInfoTerName, ContractCode contractCode) {
 			this.ipAddress = ipAddress;

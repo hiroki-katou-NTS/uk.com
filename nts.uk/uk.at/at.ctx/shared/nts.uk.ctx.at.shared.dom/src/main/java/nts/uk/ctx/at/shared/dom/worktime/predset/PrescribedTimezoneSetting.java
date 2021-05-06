@@ -329,7 +329,7 @@ public class PrescribedTimezoneSetting extends WorkTimeDomainObject implements C
 		if (this.getTimezoneShiftTwo().isUsed()) {
 			TimezoneUse tzWorkNo1 = this.getTimezoneShiftOne();
 			TimezoneUse tzWorkNo2 = this.getTimezoneShiftTwo();
-			if (tzWorkNo2.getStart().lessThan(tzWorkNo1.getEnd())) {
+			if (tzWorkNo2.getStart().lessThanOrEqualTo(tzWorkNo1.getEnd())) {
 				this.bundledBusinessExceptions.addMessage("Msg_772");
 			}
 		}
