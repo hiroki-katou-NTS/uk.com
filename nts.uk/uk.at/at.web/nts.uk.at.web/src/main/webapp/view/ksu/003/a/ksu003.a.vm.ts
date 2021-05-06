@@ -89,8 +89,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 		checkTypeChange: any = [];
 		sumBreaks: any = [];
 
-		checkDragDrog: boolean = false; // phân biệt resize = false vs drop = true
-		checkDragDrogAgain: boolean = false; // phân biệt resize = false vs drop = true khi tạo chart
+		checkDragDrop: boolean = false; // phân biệt resize = false vs drop = true
+		checkDragDropAgain: boolean = false; // phân biệt resize = false vs drop = true khi tạo chart
 		bindTypeTime: any = [];
 		holidayShort: any = [];
 		checkMes: number = 0;
@@ -257,6 +257,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					// kiểm tra startTime > endTime và time = null
 					if((columnKey === "startTime1" || columnKey === "endTime1") && 
 						(dataMid.startTime1 == "" || duration.parseString(dataMid.startTime1).toValue() > duration.parseString(dataMid.endTime1).toValue())){
+							if(self.checkDragDrop == true) return;
+							if(self.checkCloseKsu003 == true) return;
 						block.invisible();
 						errorDialog({ messageId: "Msg_54"}).then(() => {
 							self.checkOpenDialog = false;
@@ -282,6 +284,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					// kiểm tra startTime > endTime và time = null
 					if((columnKey === "startTime2" || columnKey === "endTime2") && 
 					(dataMid.startTime2 == "" || duration.parseString(dataMid.startTime2).toValue() > duration.parseString(dataMid.endTime2).toValue())){
+						if(self.checkDragDrop == true) return;
+						if(self.checkCloseKsu003 == true) return;
 						block.invisible();
 						errorDialog({ messageId: "Msg_54"}).then(() => {
 							self.checkOpenDialog = false;
@@ -387,7 +391,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 
 							lstTime = self.calcChartTypeTime(dataFixed[0], dataFixInfo[0].fixedWorkInforDto == null ? [] : dataFixInfo[0].fixedWorkInforDto.overtimeHours, timeRangeLimit, lstTime, "OT", index);
 							let totalTime = self.calcAllTime(dataFixed[0], lstTime, timeRangeLimit);
-							if (self.checkDragDrog != true) {
+							if (self.checkDragDrop != true) {
 								totalBrkTime = self.calcAllBrk(lstTime);
 								totalBrkTime = totalBrkTime != null ? formatById("Clock_Short_HM", Math.round(totalBrkTime * 5)) : "";
 								
@@ -2428,16 +2432,16 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					timeChart = lstTimeChart[lstTimeChart.length - 1].timeChart;
 					timeChart2 = lstTimeChart[lstTimeChart.length - 1].timeChart2;
 					if (detail.columnKey === "startTime1") {
-						ruler.extend(detail.rowIndex, `lgc${detail.rowIndex}`, Math.floor((time / 5 - self.dispStart) > timeRangeLimit ? timeRangeLimit : Math.floor((time / 5 - self.dispStart))));
+						ruler.extend(detail.rowIndex, `lgc${detail.rowIndex}`, ((time / 5 - self.dispStart) > timeRangeLimit ? timeRangeLimit : ((time / 5 - self.dispStart))));
 						if (time == "") return;
 					} else if (detail.columnKey === "endTime1") {
-						ruler.extend(detail.rowIndex, `lgc${detail.rowIndex}`, null, Math.floor((time / 5 - self.dispStart) > timeRangeLimit ? timeRangeLimit : Math.floor((time / 5 - self.dispStart))));
+						ruler.extend(detail.rowIndex, `lgc${detail.rowIndex}`, null, ((time / 5 - self.dispStart) > timeRangeLimit ? timeRangeLimit : ((time / 5 - self.dispStart))));
 						if (time == "") return;
 					} else if (detail.columnKey === "startTime2" && timeChart2 != null) {
-						ruler.extend(detail.rowIndex, `rgc${detail.rowIndex}`, Math.floor((time / 5 - self.dispStart) > timeRangeLimit ? timeRangeLimit : Math.floor((time / 5 - self.dispStart))));
+						ruler.extend(detail.rowIndex, `rgc${detail.rowIndex}`, ((time / 5 - self.dispStart) > timeRangeLimit ? timeRangeLimit : ((time / 5 - self.dispStart))));
 						if (time == "") return;
 					} else if (detail.columnKey === "endTime2" && timeChart2 != null) {
-						ruler.extend(detail.rowIndex, `rgc${detail.rowIndex}`, null, Math.floor((time / 5 - self.dispStart) > timeRangeLimit ? timeRangeLimit : Math.floor((time / 5 - self.dispStart))));
+						ruler.extend(detail.rowIndex, `rgc${detail.rowIndex}`, null, ((time / 5 - self.dispStart) > timeRangeLimit ? timeRangeLimit : ((time / 5 - self.dispStart))));
 						if (time == "") return;
 					}
 					
@@ -2523,6 +2527,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					// kiểm tra startTime > endTime và time = null
 					if((columnKey === "startTime1" || columnKey === "endTime1") && 
 						(dataMid.startTime1 == "" || duration.parseString(dataMid.startTime1).toValue() > duration.parseString(dataMid.endTime1).toValue())){
+						if(self.checkDragDrop == true) return;
+						if(self.checkCloseKsu003 == true) return;
 						block.invisible();
 						errorDialog({ messageId: "Msg_54"}).then(() => {
 							self.checkOpenDialog = false;
@@ -2548,6 +2554,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					// kiểm tra startTime > endTime và time = null
 					if((columnKey === "startTime2" || columnKey === "endTime2") && 
 					(dataMid.startTime2 == "" || duration.parseString(dataMid.startTime2).toValue() > duration.parseString(dataMid.endTime2).toValue())){
+						if(self.checkDragDrop == true) return;
+						if(self.checkCloseKsu003 == true) return;
 						block.invisible();
 						errorDialog({ messageId: "Msg_54"}).then(() => {
 							self.checkOpenDialog = false;
@@ -3579,7 +3587,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				}
 				
 				let startMinute = 0, endMinute = 0, startTime = 0, endTime = 0;
-				self.checkDragDrog = false;
+				self.checkDragDrop = false;
 				
 				startMinute = duration.create(param[0] * 5 + self.dispStart * 5).text;
 				endMinute = duration.create(param[1] * 5 + self.dispStart * 5).text;
@@ -3703,7 +3711,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				
 				startMinute = duration.create(param[0] * 5 + self.dispStart * 5).text;
 				endMinute = duration.create(param[1] * 5 + self.dispStart * 5).text;
-				self.checkDragDrog = true;
+				self.checkDragDrop = true;
 				
 				let index = checkType == 0 ? e.currentTarget.id.split("-")[0] : param[2], lstGcShow = _.filter(self.lstAllChildShow, (x: any) => { return x.index === parseInt(index) });
 				
@@ -3734,24 +3742,6 @@ module nts.uk.at.view.ksu003.a.viewmodel {
                 allBrk = _.filter(allBrk, (x : any) => {return x.start >= param[0]  && x.start <= param[1] });
                 let totalBrk = $("#extable-ksu003").exTable('dataSource', 'middle').body[i].breaktime;
                 
-                if(allBrk.length > 0){
-				
-				let color = "", colorBr = "";
-				if (self.dataScreen003A().employeeInfo[i].empId === self.employeeIdLogin) {
-					color = "rgb(148, 183, 254)";
-					colorBr = "#94b7fe";
-				} else {
-					color = "rgb(206, 230, 255)";
-					colorBr = "#cee6ff";
-				}
-				if($(cssbreakTime).css("background-color") != color && datafilter[0].typeOfTime != "Changeable" && 
-				self.dataScreen003A().employeeInfo[i].fixedWorkInforDto.fixBreakTime != 1){
-					totalBrk = _.trim($("#extable-ksu003").exTable('dataSource', 'middle').body[i].breaktime) + " ";
-				}
-                    $("#extable-ksu003").exTable("cellValue", "middle", self.dataScreen003A().employeeInfo[i].empId, "breaktime", totalBrk);
-               	$(cssbreakTime).css("background-color", colorBr);
-				}
-				
 				let dataFixed = self.dataScreen003A().employeeInfo[i];
 				let dataFixInfo = _.filter(self.fixedWorkInformationDto, x => { return x.empId === self.dataScreen003A().employeeInfo[i].empId });
 				let lstTime: any = [], timeRangeLimit = ((self.timeRange * 60) / 5);
@@ -3769,12 +3759,22 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				let totalTimes = self.calcAllTime(dataFixed, lstTime, timeRangeLimit);
 				let totalBreaktime = self.calcAllBrk(lstTime);
 				totalBreaktime = totalBreaktime != 0 ? formatById("Clock_Short_HM", Math.round(totalBreaktime * 5)) : "0:00";
+				let colorBr = "";
+				if (self.dataScreen003A().employeeInfo[i].empId === self.employeeIdLogin) {
+					colorBr = "#94b7fe";
+				} else {
+					colorBr = "#cee6ff";
+				}
+				if(totalBrk != totalBreaktime)
+				$(cssbreakTime).css("background-color", colorBr);
+				
 				$("#extable-ksu003").exTable("cellValue", "middle", self.dataScreen003A().employeeInfo[i].empId, "breaktime", totalBreaktime );
 				$("#extable-ksu003").exTable("cellValue", "middle", self.dataScreen003A().employeeInfo[i].empId, "totalTime", totalTimes);
 				let cssTotalTime: string = self.dataScreen003A().targetInfor == 1 ? "#extable-ksu003 > .ex-body-middle > table > tbody tr:nth-child" + "(" + (i + 2).toString() + ")" + " > td:nth-child(9)" : 
 				"#extable-ksu003 > .ex-body-middle > table > tbody tr:nth-child" + "(" + (i + 2).toString() + ")" + " > td:nth-child(7)";
 				$(cssTotalTime).css("background-color", "#ffffff");
 				self.checkTypeChange = [];
+				self.checkDragDrop = false;
 		}
 		
 		dropBreakTime(i : any, indexBrks : any, b : any, e : any, slide : any, fixed : any,id : any){
@@ -4068,7 +4068,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					resizeFinished: (b: any, e: any, p: any) => {
 						if (self.checkDisByDate == false || self.dataScreen003A().employeeInfo[lineNo].workInfoDto.isConfirmed == 1) return;
 						self.enableSave(true);
-						self.checkDragDrog = false;
+						self.checkDragDrop = false;
 						let param : any = [];
 						param.push(b);
 						param.push(e);
@@ -4582,8 +4582,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			if (type == "BREAK" && self.dataScreen003A().employeeInfo[index].fixedWorkInforDto.fixBreakTime == 0) return lstTime;
 			for (let o = 0; o < typeChart.length; o++) {
 				let brkT: any = typeChart[o];
-				let timeChartBrk = self.convertTimeToChart(_.isNil(brkT.startTime) ? brkT.start : (_.isNil(brkT.startTime.time) ? brkT.startTime : brkT.startTime.time),
-					_.isNil(brkT.endTime) ? brkT.end : (_.isNil(brkT.endTime.time) ? brkT.endTime : brkT.endTime.time)),
+				let timeChartBrk = self.convertTimeToChart(_.isNil(brkT.startTime) ? Math.round(brkT.start) : (_.isNil(brkT.startTime.time) ? Math.round(brkT.startTime) : Math.round(brkT.startTime.time)),
+					_.isNil(brkT.endTime) ? Math.round(brkT.end) : (_.isNil(brkT.endTime.time) ? Math.round(brkT.endTime) : Math.round(brkT.endTime.time))),
 					timeChart = self.convertTimeToChart(schedule.workScheduleDto.startTime1, schedule.workScheduleDto.endTime1), timeChart2: any = null;
 
 

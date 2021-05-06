@@ -26,7 +26,7 @@
         <div style="padding-top: 10px;" >
           <calendar v-bind:params="{datas: dataCalendar}"  @dataChangeMonth="dataChange($event)" @dataFromComponent="dataFromChild($event)"></calendar>
         </div>
-        <div  v-if="smallDevice == false"
+        <div  v-if="smallDevice == false && isCurrentMonth == true"
           style="
             position: fixed;
             width: -webkit-fill-available;
@@ -46,7 +46,7 @@
             {{'KSUS02_2' | i18n}}
           </button>
         </div>
-        <div v-if="smallDevice == true"
+        <div v-if="smallDevice == true && isCurrentMonth == true"
           style="
             position: fixed;
             width: -webkit-fill-available;

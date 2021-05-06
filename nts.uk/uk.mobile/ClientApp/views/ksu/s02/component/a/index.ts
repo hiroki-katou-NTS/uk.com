@@ -183,10 +183,10 @@ export class CalendarAComponent extends Vue {
             }
 
             this.showMemo();
-            if (self.isCurrentMonth && screen.height < 700) {
+            if (self.isCurrentMonth && screen.height < 650) {
                 $('#scroll_area').css('height', '29vh');
             } else {
-                $('#scroll_area').css('height', '45vh');
+                $('#scroll_area').css('height', '35vh');
             }
             $('#scroll_area').css('overflow-y', 'scroll');
             setTimeout(() => { $('body').css('position', 'fixed'); }, 200);
