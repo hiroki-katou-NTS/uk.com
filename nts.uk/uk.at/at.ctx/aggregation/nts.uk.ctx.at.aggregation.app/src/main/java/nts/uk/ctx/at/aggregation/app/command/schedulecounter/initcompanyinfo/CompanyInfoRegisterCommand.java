@@ -12,7 +12,7 @@ public class CompanyInfoRegisterCommand {
 	
 	private List<CriterionAmountByNoCommand> months = Collections.emptyList();
 	
-	private List<CriterionAmountByNoCommand> annuals = Collections.emptyList();
+	private List<CriterionAmountByNoCommand> years = Collections.emptyList();
 	
 	private List<Integer> framNos = Collections.emptyList();
 }

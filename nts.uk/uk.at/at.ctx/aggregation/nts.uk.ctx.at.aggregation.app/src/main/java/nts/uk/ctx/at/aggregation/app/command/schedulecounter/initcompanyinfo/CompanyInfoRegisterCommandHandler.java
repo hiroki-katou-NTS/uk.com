@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.aggregation.app.command.schedulecounter.initcompanyinfo;
 
 import java.util.Optional;
+
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -15,9 +16,11 @@ import nts.uk.ctx.at.aggregation.dom.schedulecounter.criterion.CriterionAmountFo
 import nts.uk.ctx.at.aggregation.dom.schedulecounter.criterion.CriterionAmountList;
 import nts.uk.shr.com.context.AppContexts;
 
+
+// 会社の目安金額を登録する
 @Stateless
 @Transactional
-public class CompanyInfoRegisterCommandHandler extends CommandHandler<CompanyInfoRegisterCommand>{
+public class CompanyInfoRegisterCommandHandler extends CommandHandler<CompanyInfoRegisterCommand> {
 
 	@Inject
 	private CriterionAmountForCompanyRepository criterionAmountForCompanyRepository;
@@ -30,19 +33,22 @@ public class CompanyInfoRegisterCommandHandler extends CommandHandler<CompanyInf
 		
 		CriterionAmount criterionAmount = new CriterionAmount(
 				CriterionAmountList.create(
-						command.getAnnuals().stream().map(CriterionAmountByNoCommand::toDomain).collect(Collectors.toList())),
+						command.getYears().stream().map(CriterionAmountByNoCommand::toDomain).collect(Collectors.toList())),
 				CriterionAmountList.create(
 						command.getMonths().stream().map(CriterionAmountByNoCommand::toDomain).collect(Collectors.toList()))
 				);
-		CriterionAmountForCompany domainInsert = new CriterionAmountForCompany(criterionAmount);
+		CriterionAmountForCompany domain;
 		// get
 		Optional<CriterionAmountForCompany> criOptional = criterionAmountForCompanyRepository.get(cid);
 		
 		if (criOptional.isPresent()) {
+			domain = criOptional.get();
+			domain.update(criterionAmount);
 			// 変更する(目安金額)
-			criterionAmountForCompanyRepository.update(cid, domainInsert);
+			criterionAmountForCompanyRepository.update(cid, domain);
 		} else {
-			criterionAmountForCompanyRepository.insert(cid, domainInsert);
+			domain = new CriterionAmountForCompany(criterionAmount);
+			criterionAmountForCompanyRepository.insert(cid, domain);
 		}
 		
 		
