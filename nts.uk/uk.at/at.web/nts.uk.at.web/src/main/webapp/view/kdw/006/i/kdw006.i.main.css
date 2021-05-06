@@ -1,0 +1,44 @@
+.left-content {
+	display: inline-block;
+	width: 20%;
+    margin: 5px 0 5px 2%;
+}
+
+.right-content {
+	display: inline-block;
+	width: 75%;
+}
+
+.nts-switch-button {
+	width: 125px;
+}
+
+.ntsHelpButton {
+	margin-left: 10px;
+}
+
+.I4-spacing{
+	margin: 10px 0;
+}
+
+.mid-line-spacing{
+	margin: 0 10px;
+}
+
+.inline{
+	display: inline-block;
+}
+
+#contents {
+	width: 1250px;
+}
+
+#I3_2 {
+	position: relative;
+	top: 12px;
+	width: 125px;
+}
+
+#I3_4 {
+	margin-left: 10px;
+}

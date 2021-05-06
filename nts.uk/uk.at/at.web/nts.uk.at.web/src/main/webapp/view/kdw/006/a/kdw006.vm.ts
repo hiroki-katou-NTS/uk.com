@@ -1,10 +1,12 @@
 module nts.uk.at.view.kdw006 {
     export module viewmodel {
-        export class ScreenModel {
+        export class ScreenModel extends ko.ViewModel {
 
             ootsuka: KnockoutObservable<boolean>;
 
             constructor(dataShare: any) {
+                super();
+
                 var self = this;
                 self.ootsuka = ko.observable(false);
                 service.start().done(function(data) {
@@ -83,7 +85,7 @@ module nts.uk.at.view.kdw006 {
             }
 
             openI() {
-                //nts.uk.request.jump("/view/kdw/006/i/index.xhtml"); huytodo
+                nts.uk.request.jump("/view/kdw/006/i/index.xhtml");
             }
 
             //---monthly---
@@ -133,13 +135,13 @@ module nts.uk.at.view.kdw006 {
 
             exportExcel(): void {
                 var self = this;
-                nts.uk.ui.block.grayout();
+                self.$blockui('grayout');
                 let langId = "ja";
                 service.saveAsExcelCommon(langId).done(function() {
                 }).fail(function(error) {
-                    nts.uk.ui.dialog.alertError({ messageId: error.messageId });
+                    self.$dialog.alert({ messageId: error.messageId });
                 }).always(function() {
-                    nts.uk.ui.block.clear();
+                    self.$blockui('hide');
                 });
             }
         }
