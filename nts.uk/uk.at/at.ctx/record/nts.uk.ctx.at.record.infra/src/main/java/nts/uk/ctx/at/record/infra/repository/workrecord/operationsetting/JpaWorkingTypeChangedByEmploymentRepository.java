@@ -12,7 +12,6 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
-import nts.arc.error.BusinessException;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
@@ -34,9 +33,9 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class JpaWorkingTypeChangedByEmploymentRepository extends JpaRepository implements WorkingTypeChangedByEmpRepo {
 
-	private static final String GET_ALL_OF_EMPLOYEE = "SELECT wtc FROM KrcmtWorktypeChangeable wtc"
-			+ " WHERE wtc.pk.cid = :companyId AND wtc.pk.empCode = :employeeCode";
-	
+//	private static final String GET_ALL_OF_EMPLOYEE = "SELECT wtc FROM KrcmtWorktypeChangeable wtc"
+//			+ " WHERE wtc.pk.cid = :companyId AND wtc.pk.empCode = :employeeCode";
+//	
 	private static final String GET_ALL_OF_EMPLOYEE_FOR_GRP = "SELECT wtc FROM KrcmtChangeableWktpGrp wtc"
 			+ " WHERE wtc.pk.cid = :companyId AND wtc.pk.empCd = :employeeCode";
 	
@@ -113,9 +112,11 @@ public class JpaWorkingTypeChangedByEmploymentRepository extends JpaRepository i
 		// create and insert new results
 		workingType.getChangeableWorkTypeGroups().forEach(group -> {
 			
-			KrcmtChangeableWktpGrpPk grpPk = new KrcmtChangeableWktpGrpPk(cid, empCode, new BigDecimal(group.getNo()));
-			KrcmtChangeableWktpGrp grpEntity = new KrcmtChangeableWktpGrp(grpPk, group.getName() == null ? null : group.getName().v());
-			this.commandProxy().insert(grpEntity);
+			if (group.getNo() >= 5 && group.getNo() <= 10) {
+				KrcmtChangeableWktpGrpPk grpPk = new KrcmtChangeableWktpGrpPk(cid, empCode, new BigDecimal(group.getNo()));
+				KrcmtChangeableWktpGrp grpEntity = new KrcmtChangeableWktpGrp(grpPk, group.getName() == null ? null : group.getName().v());
+				this.commandProxy().insert(grpEntity);
+			}
 			
 			if (group.getWorkTypeList().isEmpty()) {
 				KrcmtChangeableWktpGrpDetailPk grpDetailPk = new KrcmtChangeableWktpGrpDetailPk(cid, empCode, new BigDecimal(group.getNo()), "");
@@ -152,30 +153,23 @@ public class JpaWorkingTypeChangedByEmploymentRepository extends JpaRepository i
 
 	@Override
 	public void copyEmployment(String companyId, WorkingTypeChangedByEmployment sourceData,
-			List<String> targetEmploymentCodes, boolean isOveride) {
+			List<String> targetEmploymentCodes) {
+		//INPUT．「複写先リスト」をループする
 		for (String target : targetEmploymentCodes) {
-			// 上書き確認処理
-			if (isOveride) {
-				List<KrcmtChangeableWktpGrp> deleteEntitiesGrp = this.queryProxy()
-						.query(GET_ALL_OF_EMPLOYEE_FOR_GRP, KrcmtChangeableWktpGrp.class).setParameter("companyId", companyId)
-						.setParameter("employeeCode", target).getList();
-				this.commandProxy().removeAll(deleteEntitiesGrp);
-				this.getEntityManager().flush();
-				
-				List<KrcmtChangeableWktpGrpDetail> deleteEntitiesGrpDetail = this.queryProxy()
-						.query(GET_ALL_OF_EMPLOYEE_FOR_GRP_DETAIL, KrcmtChangeableWktpGrpDetail.class).setParameter("companyId", companyId)
-						.setParameter("employeeCode", target).getList();
-				this.commandProxy().removeAll(deleteEntitiesGrpDetail);
-				this.getEntityManager().flush();
-			} else {
-				//複写先に前準備設定が存在するかどうかチェック
-				 WorkingTypeChangedByEmployment testData = this.get(new CompanyId(companyId), new EmploymentCode(target));
-				 if(!testData.getChangeableWorkTypeGroups().isEmpty()){
-					 //エラーメッセージ（Msg_888）を表示する
-					 throw new BusinessException("Msg_888");
-				 }					 
-			}
-			// 複写先の前準備設定を追加する (Add)
+			//複写先のドメインモデル「雇用別の変更可能な勤務種類」を削除する
+			List<KrcmtChangeableWktpGrp> deleteEntitiesGrp = this.queryProxy()
+					.query(GET_ALL_OF_EMPLOYEE_FOR_GRP, KrcmtChangeableWktpGrp.class).setParameter("companyId", companyId)
+					.setParameter("employeeCode", target).getList();
+			this.commandProxy().removeAll(deleteEntitiesGrp);
+			this.getEntityManager().flush();
+			
+			List<KrcmtChangeableWktpGrpDetail> deleteEntitiesGrpDetail = this.queryProxy()
+					.query(GET_ALL_OF_EMPLOYEE_FOR_GRP_DETAIL, KrcmtChangeableWktpGrpDetail.class).setParameter("companyId", companyId)
+					.setParameter("employeeCode", target).getList();
+			this.commandProxy().removeAll(deleteEntitiesGrpDetail);
+			this.getEntityManager().flush();
+			
+			//ドメインモデル「雇用別の変更可能な勤務種類」を新規登録する
 			addEmploymentSet(sourceData, target);
 		}
 		
