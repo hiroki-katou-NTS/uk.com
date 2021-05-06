@@ -1,10 +1,9 @@
-package nts.uk.ctx.at.function.dom.alarm.alarmlist.persistenceextractresult;
+package nts.uk.ctx.at.shared.dom.alarmList.persistenceextractresult;
 
 import mockit.integration.junit4.JMockit;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.uk.ctx.at.shared.dom.alarmList.AlarmPatternCode;
 import nts.uk.ctx.at.shared.dom.alarmList.AlarmPatternName;
-import nts.uk.ctx.at.shared.dom.alarmList.persistenceextractresult.PersistenceAlarmListExtractResult;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
