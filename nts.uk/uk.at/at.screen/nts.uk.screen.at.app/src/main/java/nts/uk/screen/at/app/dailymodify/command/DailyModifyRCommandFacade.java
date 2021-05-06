@@ -935,7 +935,7 @@ public class DailyModifyRCommandFacade {
 			List<ItemValue> niv = ProcessCommonCalc.getFrom(news, o.getKey());
 			if (!CollectionUtil.isEmpty(niv)) {
 				if (niv.stream().anyMatch(c -> o.getValue().stream()
-						.filter(oi -> c.valueAsObjet() != null && c.equals(oi)).findFirst().isPresent())) {
+						.filter(oi -> c.valueAsObjet() != null && !c.equals(oi)).findFirst().isPresent())) {
 					editedDate.add(o.getKey());
 				}
 			}
