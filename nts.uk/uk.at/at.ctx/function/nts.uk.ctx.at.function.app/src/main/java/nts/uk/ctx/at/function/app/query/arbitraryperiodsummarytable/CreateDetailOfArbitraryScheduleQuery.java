@@ -9,10 +9,7 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.arc.time.calendar.period.YearMonthPeriod;
 import nts.uk.ctx.at.function.dom.adapter.actualmultiplemonth.ActualMultipleMonthAdapter;
 import nts.uk.ctx.at.function.dom.adapter.actualmultiplemonth.MonthlyRecordValueImport;
-import nts.uk.ctx.at.function.dom.adapter.outputitemsofworkstatustable.AffComHistAdapter;
-import nts.uk.ctx.at.function.dom.adapter.outputitemsofworkstatustable.AttendanceItemDtoValue;
-import nts.uk.ctx.at.function.dom.adapter.outputitemsofworkstatustable.AttendanceItemServiceAdapter;
-import nts.uk.ctx.at.function.dom.adapter.outputitemsofworkstatustable.AttendanceResultDto;
+import nts.uk.ctx.at.function.dom.adapter.outputitemsofworkstatustable.*;
 import nts.uk.ctx.at.function.dom.arbitraryperiodsummarytable.OutputSettingOfArbitrary;
 import nts.uk.ctx.at.function.dom.commonform.AttendanceItemToPrint;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.dto.EmployeeInfor;
@@ -108,7 +105,7 @@ public class CreateDetailOfArbitraryScheduleQuery {
         Map<String, List<DisplayContent>> mapEplIdAndDisplayContent = new HashMap<>();
 
         for (StatusOfEmployee employee : employees) {
-            val listValue = values.getOrDefault(employee.getEmployeeId(), null);
+            val listValue = values.getOrDefault(employee.getEmployeeId(), new AnyPeriodRecordValuesExportDto(aggrFrameCode,Collections.emptyList()));
             if (listValue == null || listValue.getItemValues() == null) continue;
             val listItemSids = listValue.getItemValues();
             val listAtt = listItemSids.stream()
