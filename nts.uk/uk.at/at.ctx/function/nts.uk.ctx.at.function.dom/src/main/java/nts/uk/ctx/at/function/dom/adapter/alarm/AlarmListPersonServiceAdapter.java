@@ -15,8 +15,7 @@ import nts.uk.ctx.at.function.dom.alarm.alarmlist.weekly.WeeklyAlarmCheckCond;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.daily.DailyAlarmCondition;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.AlarmListCheckInfor;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.ResultOfEachCondition;
-import nts.uk.ctx.at.function.dom.alarm.alarmlist.persistenceextractresult.AlarmEmployeeList;
-import nts.uk.ctx.at.function.dom.alarm.alarmlist.persistenceextractresult.AlarmExtractionCondition;
+import nts.uk.ctx.at.shared.dom.alarmList.persistenceextractresult.*;
 
 public interface AlarmListPersonServiceAdapter {
 	/**
@@ -48,10 +47,10 @@ public interface AlarmListPersonServiceAdapter {
 	 * @param lstResultCondition
 	 * @param lstCheckType
 	 */
-	void extractDailyCheckResult(String cid, List<String> lstSid, DatePeriod dPeriod, 
+	void extractDailyCheckResult(String cid, List<String> lstSid, DatePeriod dPeriod,
 			String errorDailyCheckId, DailyAlarmCondition dailyAlarmCondition,
-			List<WorkPlaceHistImport> getWplByListSidAndPeriod, 
-			List<StatusOfEmployeeAdapter> lstStatusEmp, 
+			List<WorkPlaceHistImport> getWplByListSidAndPeriod,
+			List<StatusOfEmployeeAdapter> lstStatusEmp,
 			List<ResultOfEachCondition> lstResultCondition, List<AlarmListCheckInfor> lstCheckType, Consumer<Integer> counter,
 			Supplier<Boolean> shouldStop, List<AlarmEmployeeList> alarmEmployeeList,
 			List<AlarmExtractionCondition> alarmExtractConditions, String alarmCheckConditionCode);

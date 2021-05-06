@@ -7,8 +7,8 @@ import java.util.function.Supplier;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.AlarmListCheckInfor;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.ResultOfEachCondition;
-import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.toppage.AlarmEmployeeList;
-import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.toppage.AlarmExtractionCondition;
+import nts.uk.ctx.at.shared.dom.alarmList.persistenceextractresult.AlarmEmployeeList;
+import nts.uk.ctx.at.shared.dom.alarmList.persistenceextractresult.AlarmExtractionCondition;
 
 public interface MasterCheckService {
 	/**

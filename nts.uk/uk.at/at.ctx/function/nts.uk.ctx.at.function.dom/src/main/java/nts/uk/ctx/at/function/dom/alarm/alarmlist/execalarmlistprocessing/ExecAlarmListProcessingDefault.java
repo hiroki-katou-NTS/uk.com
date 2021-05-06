@@ -27,6 +27,7 @@ import nts.uk.ctx.at.function.dom.alarm.alarmlist.ExtractAlarmListService;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.ExtractedAlarmDto;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.PeriodByAlarmCategory;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.persistenceextractresult.AlarmTopPageProcessingService;
+import nts.uk.ctx.at.function.dom.alarm.alarmlist.persistenceextractresult.AlarmTopPageProcessingServiceImpl;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.sendautoexeemail.OutputSendAutoExe;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.sendautoexeemail.SendAutoExeEmailService;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.CheckConditionTimeDto;
@@ -76,8 +77,8 @@ public class ExecAlarmListProcessingDefault implements ExecAlarmListProcessingSe
 	@Inject
 	private DailyMonthlyprocessAdapterFn dailyMonthlyprocessAdapterFn;
 
-    @Inject
-    private AlarmTopPageProcessingService alarmTopPageProcessing;
+	@Inject
+	private AlarmTopPageProcessingService alarmTopPageProcessingService;
 
 	@Override
 	public OutputExecAlarmListPro execAlarmListProcessing(String extraProcessStatusID, String companyId,
@@ -222,7 +223,7 @@ public class ExecAlarmListProcessingDefault implements ExecAlarmListProcessingSe
 
 				// アラーム（トップページ）永続化の処理
                 List<String> lstSid = listEmployeeSearch.stream().map(EmployeeSearchDto::getId).collect(Collectors.toList());
-                this.alarmTopPageProcessing.PersisTopPageProcessing(runCode, patternCode, lstSid, listPeriodByCategory, extractedAlarmDto.getPersisAlarmExtractResult(),
+				alarmTopPageProcessingService.persisTopPageProcessing(runCode, patternCode, lstSid, listPeriodByCategory, extractedAlarmDto.getPersisAlarmExtractResult(),
 						extractedAlarmDto.getAlarmExtractConditions(), isDisplayAdmin, isDisplayPerson);
 
 				//ドメインモデル「更新処理自動実行ログ」を取得しチェックする（中断されている場合は更新されているため、最新の情報を取得する）

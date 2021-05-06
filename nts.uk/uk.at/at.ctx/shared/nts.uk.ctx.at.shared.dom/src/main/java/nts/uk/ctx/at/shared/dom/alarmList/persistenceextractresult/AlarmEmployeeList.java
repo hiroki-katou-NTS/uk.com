@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.dom.alarmList.extractionResult.toppage;
+package nts.uk.ctx.at.shared.dom.alarmList.persistenceextractresult;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

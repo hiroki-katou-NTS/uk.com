@@ -28,7 +28,6 @@ import nts.uk.ctx.at.function.dom.adapter.workplace.WorkPlaceInforExport;
 import nts.uk.ctx.at.function.dom.adapter.workplace.WorkplaceAdapter;
 import nts.uk.ctx.at.function.dom.adapter.workrecord.erroralarm.recordcheck.ErAlWorkRecordCheckAdapter;
 import nts.uk.ctx.at.function.dom.adapter.workrecord.erroralarm.recordcheck.RegulationInfoEmployeeResult;
-import nts.uk.ctx.at.function.dom.alarm.AlarmPatternCode;
 import nts.uk.ctx.at.function.dom.alarm.AlarmPatternSetting;
 import nts.uk.ctx.at.function.dom.alarm.AlarmPatternSettingRepository;
 import nts.uk.ctx.at.function.dom.alarm.alarmdata.ValueExtractAlarm;
@@ -39,7 +38,6 @@ import nts.uk.ctx.at.function.dom.alarm.alarmlist.aggregationprocess.agreementpr
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.annual.ScheduleAnnualAlarmCheckCond;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.appapproval.AppApprovalAggregationProcessService;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.attendanceholiday.TotalProcessAnnualHoliday;
-import nts.uk.ctx.at.function.dom.alarm.alarmlist.persistenceextractresult.*;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.schedaily.ScheduleDailyAlarmCheckCond;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.schemonthly.ScheduleMonthlyAlarmCheckCond;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.weekly.WeeklyAlarmCheckCond;
@@ -56,8 +54,14 @@ import nts.uk.ctx.at.function.dom.alarm.checkcondition.master.MasterCheckAlarmCh
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.monthly.MonAlarmCheckCon;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.multimonth.MulMonAlarmCond;
 import nts.uk.ctx.at.shared.dom.alarmList.AlarmCategory;
+import nts.uk.ctx.at.shared.dom.alarmList.AlarmPatternCode;
+import nts.uk.ctx.at.shared.dom.alarmList.AlarmPatternName;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.*;
+import nts.uk.ctx.at.shared.dom.alarmList.persistenceextractresult.AlarmEmployeeList;
+import nts.uk.ctx.at.shared.dom.alarmList.persistenceextractresult.AlarmExtractionCondition;
+import nts.uk.ctx.at.shared.dom.alarmList.persistenceextractresult.PersistenceAlarmListExtractResult;
 import nts.uk.shr.com.i18n.TextResource;
+import org.apache.commons.lang3.StringUtils;
 
 @Stateless
 public class AggregationProcessService {
@@ -86,8 +90,6 @@ public class AggregationProcessService {
 	private AgreementCheckService check36Alarm;
 	@Inject
 	private TotalProcessAnnualHoliday annualHolidayService;
-	@Inject
-	private AlarmTopPageProcessingService alarmTopPageProcessing;
 	
 	/**
 	 * アラーム: 集計処理
@@ -461,7 +463,7 @@ public class AggregationProcessService {
 		// 「永続化のアラームリスト抽出結果」を作成
 		PersistenceAlarmListExtractResult persisExtractResult = new PersistenceAlarmListExtractResult(
 				new AlarmPatternCode(pattentCd),
-                alarmPattern.getAlarmPatternName(),
+				StringUtils.isEmpty(alarmPattern.getAlarmPatternName().v()) ? new AlarmPatternName(alarmPattern.getAlarmPatternName().v()) : null,
 				alarmEmployeeList,
 				cid,
 				runCode

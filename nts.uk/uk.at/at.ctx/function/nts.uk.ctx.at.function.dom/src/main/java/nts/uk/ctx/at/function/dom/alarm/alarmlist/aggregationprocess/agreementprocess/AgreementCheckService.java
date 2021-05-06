@@ -16,7 +16,7 @@ import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.AlarmChkCondAgree
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.AlarmListCheckInfor;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.ResultOfEachCondition;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
-import nts.uk.ctx.at.function.dom.alarm.alarmlist.persistenceextractresult.*;
+import nts.uk.ctx.at.shared.dom.alarmList.persistenceextractresult.*;
 
 public interface AgreementCheckService {
 

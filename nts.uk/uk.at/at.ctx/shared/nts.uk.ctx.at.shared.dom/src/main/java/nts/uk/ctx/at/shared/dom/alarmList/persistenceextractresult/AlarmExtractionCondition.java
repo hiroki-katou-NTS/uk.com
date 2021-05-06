@@ -1,10 +1,10 @@
-package nts.uk.ctx.at.function.dom.alarm.alarmlist.persistenceextractresult;
+package nts.uk.ctx.at.shared.dom.alarmList.persistenceextractresult;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionCode;
 import nts.uk.ctx.at.shared.dom.alarmList.AlarmCategory;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.AlarmListCheckType;
+import nts.uk.ctx.at.shared.dom.alarmList.persistenceextractresult.AlarmCheckConditionCode;
 
 /**
  * アラーム抽出条件

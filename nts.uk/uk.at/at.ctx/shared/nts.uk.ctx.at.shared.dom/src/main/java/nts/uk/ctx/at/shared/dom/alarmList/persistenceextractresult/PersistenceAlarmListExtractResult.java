@@ -1,10 +1,10 @@
-package nts.uk.ctx.at.function.dom.alarm.alarmlist.persistenceextractresult;
+package nts.uk.ctx.at.shared.dom.alarmList.persistenceextractresult;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.at.function.dom.alarm.AlarmPatternCode;
-import nts.uk.ctx.at.function.dom.alarm.AlarmPatternName;
+import nts.uk.ctx.at.shared.dom.alarmList.AlarmPatternCode;
+import nts.uk.ctx.at.shared.dom.alarmList.AlarmPatternName;
 
 import java.util.List;
 
