@@ -6,6 +6,8 @@ import nts.arc.time.calendar.period.YearMonthPeriod;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.algorithm.WorkPlaceHistImportAl;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.AlarmListCheckInfor;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.ResultOfEachCondition;
+import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.toppage.AlarmEmployeeList;
+import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.toppage.AlarmExtractionCondition;
 
 public interface MultiMonthlyExtractCheckService {
 	/**
@@ -20,6 +22,8 @@ public interface MultiMonthlyExtractCheckService {
 	 */
 	void extractMultiMonthlyAlarm(String cid, List<String> lstSid, YearMonthPeriod mPeriod,
 			List<String> lstAnyConID,
-			List<WorkPlaceHistImportAl> getWplByListSidAndPeriod, 
-			List<ResultOfEachCondition> lstResultCondition, List<AlarmListCheckInfor> lstCheckType);
+			List<WorkPlaceHistImportAl> getWplByListSidAndPeriod,
+			List<ResultOfEachCondition> lstResultCondition, List<AlarmListCheckInfor> lstCheckType,
+			List<AlarmEmployeeList> alarmEmployeeList, List<AlarmExtractionCondition> alarmExtractConditions,
+			String alarmCheckConditionCode);
 }

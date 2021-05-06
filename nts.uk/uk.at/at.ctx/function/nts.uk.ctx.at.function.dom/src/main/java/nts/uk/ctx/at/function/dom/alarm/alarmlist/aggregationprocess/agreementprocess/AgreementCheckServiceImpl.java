@@ -1,28 +1,11 @@
 package nts.uk.ctx.at.function.dom.alarm.alarmlist.aggregationprocess.agreementprocess;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
-import java.util.stream.Collectors;
-
-import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
-import javax.ejb.SessionContext;
-import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
-import javax.inject.Inject;
-
 import lombok.val;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.function.dom.adapter.WorkPlaceHistImport;
 import nts.uk.ctx.at.function.dom.adapter.agreement.CheckRecordAgreementAdapter;
@@ -30,19 +13,14 @@ import nts.uk.ctx.at.function.dom.adapter.agreement.CheckedAgreementResult;
 import nts.uk.ctx.at.function.dom.adapter.agreement.CheckedOvertimeImport;
 import nts.uk.ctx.at.function.dom.adapter.standardtime.AgreementOperationSettingAdapter;
 import nts.uk.ctx.at.function.dom.adapter.standardtime.AgreementOperationSettingImport;
-import nts.uk.ctx.at.function.dom.adapter.standardtime.StartingMonthTypeImport;
 import nts.uk.ctx.at.function.dom.alarm.alarmdata.ValueExtractAlarm;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.EmployeeSearchDto;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.PeriodByAlarmCategory;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.aggregationprocess.ErAlConstant;
+import nts.uk.ctx.at.function.dom.alarm.alarmlist.persistenceextractresult.AlarmExtractionCondition;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategory;
-import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.AgreeConditionError;
-import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.AgreeNameError;
-import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.AlarmChkCondAgree36;
-import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.ErrorAlarm;
-import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.IAgreeNameErrorRepository;
-import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.Period;
-import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.UseClassification;
+import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.*;
+import nts.uk.ctx.at.function.dom.alarm.alarmlist.persistenceextractresult.*;
 import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.AlarmListCheckInfor;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.AlarmListCheckType;
@@ -53,8 +31,20 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
-import nts.arc.time.calendar.period.DatePeriod;
-import nts.arc.time.calendar.period.YearMonthPeriod;
+
+import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
+import javax.ejb.SessionContext;
+import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
+import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 @Stateless
 public class AgreementCheckServiceImpl implements AgreementCheckService{
@@ -260,7 +250,9 @@ public class AgreementCheckServiceImpl implements AgreementCheckService{
 			List<PeriodByAlarmCategory> periodAlarms,
 			Consumer<Integer> counter, Supplier<Boolean> shouldStop,
 			List<WorkPlaceHistImport> getWplByListSidAndPeriod, List<String> employeeIds,
-			List<ResultOfEachCondition> lstResultCondition, List<AlarmListCheckInfor> lstCheckInfor) {
+			List<ResultOfEachCondition> lstResultCondition, List<AlarmListCheckInfor> lstCheckInfor,
+			List<AlarmEmployeeList> alarmEmployeeList, List<AlarmExtractionCondition> alarmExtractConditions,
+			String alarmCheckConditionCode) {
 		//３６協定運用設定
 		Optional<AgreementOperationSettingImport> aggreementSetting = agreementOperationSettingAdapter.findForAlarm(cid);
 		if(!aggreementSetting.isPresent()) {

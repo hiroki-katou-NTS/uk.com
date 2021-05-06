@@ -10,7 +10,6 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.auth.dom.employmentrole.EmployeeReferenceRange;
@@ -27,6 +26,7 @@ import nts.uk.ctx.at.function.dom.alarm.alarmlist.EmployeeSearchDto;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.ExtractAlarmListService;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.ExtractedAlarmDto;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.PeriodByAlarmCategory;
+import nts.uk.ctx.at.function.dom.alarm.alarmlist.persistenceextractresult.AlarmTopPageProcessingService;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.sendautoexeemail.OutputSendAutoExe;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.sendautoexeemail.SendAutoExeEmailService;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.CheckConditionTimeDto;
@@ -76,10 +76,14 @@ public class ExecAlarmListProcessingDefault implements ExecAlarmListProcessingSe
 	@Inject
 	private DailyMonthlyprocessAdapterFn dailyMonthlyprocessAdapterFn;
 
+    @Inject
+    private AlarmTopPageProcessingService alarmTopPageProcessing;
+
 	@Override
 	public OutputExecAlarmListPro execAlarmListProcessing(String extraProcessStatusID, String companyId,
 	                                                      List<String> workplaceIdList, List<String> listPatternCode, GeneralDateTime dateTime,
-	                                                      boolean sendMailPerson, boolean sendMailAdmin, String alarmCode, String empCalAndSumExecLogID) {
+	                                                      boolean sendMailPerson, boolean sendMailAdmin, String alarmCode, String empCalAndSumExecLogID,
+														  String runCode, boolean isDisplayAdmin, boolean isDisplayPerson) {
 		String errorMessage = "";
 		// ドメインモデル「アラームリスト抽出処理状況」を取得する
 		// TODO : ・状態＝処理中???
@@ -213,8 +217,13 @@ public class ExecAlarmListProcessingDefault implements ExecAlarmListProcessingSe
 
 				// 集計処理を実行する
 				ExtractedAlarmDto extractedAlarmDto = extractAlarmListService.extractAlarm(listEmployeeSearch,
-						patternCode, listPeriodByCategory);
+						patternCode, listPeriodByCategory, runCode);
 				listExtractedAlarmDto.add(extractedAlarmDto);
+
+				// アラーム（トップページ）永続化の処理
+                List<String> lstSid = listEmployeeSearch.stream().map(EmployeeSearchDto::getId).collect(Collectors.toList());
+                this.alarmTopPageProcessing.PersisTopPageProcessing(runCode, patternCode, lstSid, listPeriodByCategory, extractedAlarmDto.getPersisAlarmExtractResult(),
+						extractedAlarmDto.getAlarmExtractConditions(), isDisplayAdmin, isDisplayPerson);
 
 				//ドメインモデル「更新処理自動実行ログ」を取得しチェックする（中断されている場合は更新されているため、最新の情報を取得する）
 				Optional<ExeStateOfCalAndSumImportFn> exeStateOfCalAndSumImportFn = dailyMonthlyprocessAdapterFn.executionStatus(empCalAndSumExecLogID);

@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.AlarmExtraValueWkReDto;
+import nts.uk.ctx.at.function.dom.alarm.alarmlist.persistenceextractresult.AlarmExtractionCondition;
+import nts.uk.ctx.at.function.dom.alarm.alarmlist.persistenceextractresult.PersistenceAlarmListExtractResult;
 
 @Data
 @AllArgsConstructor
@@ -18,5 +20,9 @@ public class ExtractedAlarmDto {
 	/**
 	 * True: データなし
 	 */
-	private boolean nullData;	
+	private boolean nullData;
+
+	private PersistenceAlarmListExtractResult persisAlarmExtractResult;
+
+	private List<AlarmExtractionCondition> alarmExtractConditions;
 }

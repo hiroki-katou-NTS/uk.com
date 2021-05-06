@@ -33,7 +33,11 @@ import nts.uk.ctx.at.function.dom.alarm.alarmlist.attendanceholiday.TotalProcess
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.mastercheck.MasterCheckAggregationProcessService;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.monthly.MonthlyAggregateProcessService;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.multiplemonth.MultipleMonthAggregateProcessService;
+import nts.uk.ctx.at.function.dom.alarm.alarmlist.persistenceextractresult.AlarmEmployeeList;
+import nts.uk.ctx.at.function.dom.alarm.alarmlist.persistenceextractresult.AlarmExtractionCondition;
+import nts.uk.ctx.at.function.dom.alarm.alarmlist.persistenceextractresult.ExtractResultDetail;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategory;
+import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionCode;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.CheckCondition;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.fourweekfourdayoff.FourW4DCheckCond;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.master.MasterCheckAlarmCheckCondition;
@@ -410,30 +414,47 @@ public class ExtractAlarmForEmployeeService {
 		return new ArrayList<>();
 	}
 	
-	public ResultOfEachCondition lstRunW4d4CheckErAl(String cid, List<String> lstSid, DatePeriod dPeriod,
+	public void lstRunW4d4CheckErAl(String cid, List<String> lstSid, DatePeriod dPeriod,
 			FourW4DCheckCond w4dCheckCond,
 			List<WorkPlaceHistImport> getWplByListSidAndPeriod,
 			List<StatusOfEmployeeAdapter> lstStatusEmp, Consumer<Integer> counter,
-			Supplier<Boolean> shouldStop){
+			Supplier<Boolean> shouldStop, List<AlarmEmployeeList> alarmEmployeeList,
+			String alarmCheckConditionCode, List<AlarmExtractionCondition> alarmExtractConditions){
 		
-		List<ExtractionResultDetail>  lstDetail = w4D4AlarmService.extractCheck4W4d(cid,
+//		List<ExtractResultDetail>  lstDetail = w4D4AlarmService.extractCheck4W4d(cid,
+		w4D4AlarmService.extractCheck4W4d(cid,
 				lstSid,
 				dPeriod,
 				w4dCheckCond,
 				getWplByListSidAndPeriod,
 				lstStatusEmp,
 				counter,
-				shouldStop);
-		if(lstDetail.isEmpty()) {
-			return null;
+				shouldStop,
+				alarmEmployeeList,
+				alarmCheckConditionCode);
+//		if(lstDetail.isEmpty()) {
+//			return null;
+//		}
+//
+//		ResultOfEachCondition result = new ResultOfEachCondition();
+//		result.setCheckType(AlarmListCheckType.FixCheck);
+//		result.setNo(String.valueOf(w4dCheckCond.value));
+//		result.setLstResultDetail(lstDetail);
+//		return result;
+
+		// 「アラーム抽出条件」を作成してInput．List＜アラーム抽出条件＞に追加
+		List<AlarmExtractionCondition> extractionConditions = alarmExtractConditions.stream()
+				.filter(x -> x.getAlarmListCheckType() == AlarmListCheckType.FixCheck
+						&& x.getAlarmCheckConditionNo().equals(String.valueOf(w4dCheckCond.value)))
+				.collect(Collectors.toList());
+		if (extractionConditions.isEmpty()) {
+			alarmExtractConditions.add(new AlarmExtractionCondition(
+					String.valueOf(w4dCheckCond.value),
+					new AlarmCheckConditionCode(alarmCheckConditionCode),
+					AlarmCategory.SCHEDULE_4WEEK,
+					AlarmListCheckType.FixCheck
+			));
 		}
-		
-		ResultOfEachCondition result = new ResultOfEachCondition();
-		result.setCheckType(AlarmListCheckType.FixCheck);
-		result.setNo(String.valueOf(w4dCheckCond.value));
-		result.setLstResultDetail(lstDetail);
-		return result;
-		
 	}
 	
 	
@@ -526,7 +547,6 @@ public class ExtractAlarmForEmployeeService {
 	 * @param cid
 	 * @param lstSid
 	 * @param dPeriod
-	 * @param w4dCheckCond
 	 * @param getWplByListSidAndPeriod
 	 * @param lstStatusEmp
 	 * @param lstResultCondition

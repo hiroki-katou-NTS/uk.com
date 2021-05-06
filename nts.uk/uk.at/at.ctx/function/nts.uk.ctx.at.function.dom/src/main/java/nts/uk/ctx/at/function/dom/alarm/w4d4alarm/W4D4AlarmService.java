@@ -40,15 +40,17 @@ import nts.uk.ctx.at.function.dom.adapter.workschedule.WorkScheduleBasicInforFun
 import nts.uk.ctx.at.function.dom.adapter.workschedule.WorkScheduleFunctionAdapter;
 import nts.uk.ctx.at.function.dom.alarm.alarmdata.ValueExtractAlarm;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.EmployeeSearchDto;
+import nts.uk.ctx.at.function.dom.alarm.alarmlist.persistenceextractresult.*;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategory;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategoryRepository;
+import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionCode;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckTargetCondition;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.fourweekfourdayoff.AlarmCheckCondition4W4D;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.fourweekfourdayoff.FourW4DCheckCond;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.alarmList.AlarmCategory;
+import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.AlarmListCheckType;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.ExtractionAlarmPeriodDate;
-import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.ExtractionResultDetail;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.treatmentholiday.HolidayNumberManagement;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.treatmentholiday.TreatmentHoliday;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.treatmentholiday.TreatmentHolidayRepository;
@@ -264,14 +266,14 @@ public class W4D4AlarmService {
 	 * @param lstStatusEmp
 	 * @return
 	 */
-	public List<ExtractionResultDetail> extractCheck4W4d(String cid, List<String> lstSid,
-			DatePeriod dPeriod, 
+	public List<ExtractResultDetail> extractCheck4W4d(String cid, List<String> lstSid,
+			DatePeriod dPeriod,
 			FourW4DCheckCond w4dCheckCond,
 			List<WorkPlaceHistImport> getWplByListSidAndPeriod,
 			List<StatusOfEmployeeAdapter> lstStatusEmp, Consumer<Integer> counter,
-			Supplier<Boolean> shouldStop){
-		List<ExtractionResultDetail> lstResult = new ArrayList<>();
-	
+			Supplier<Boolean> shouldStop,
+			List<AlarmEmployeeList> alarmEmployeeList, String alarmCheckConditionCode){
+		List<ExtractResultDetail> lstResult = new ArrayList<>();
 		//ドメインモデル「休日の扱い」を取得
 		Optional<TreatmentHoliday> optTreatHolidaySet = treatHolidayRepos.get(cid);
 		if(!optTreatHolidaySet.isPresent()) return lstResult;
@@ -353,11 +355,9 @@ public class W4D4AlarmService {
 				if(mapWorkInfor.isEmpty()) continue;
 				
 				int holidays = holidayNumberMana.countNumberHolidays(require, mapWorkInfor);
-				
 				if(holidays < holidayNumberMana.getHolidayDays().v()) {
 					ExtractionAlarmPeriodDate alarmDate = new ExtractionAlarmPeriodDate(Optional.ofNullable(dPeriod.start()), Optional.ofNullable(dPeriod.end()));
-					ExtractionResultDetail alarmDetail = new ExtractionResultDetail(
-							sid,
+					ExtractResultDetail alarmDetail = new ExtractResultDetail(
 							alarmDate, 
 							w4dCheckCond.nameId,
 							TextResource.localize("KAL010_64"), 
@@ -367,12 +367,39 @@ public class W4D4AlarmService {
 							Optional.ofNullable(TextResource.localize("KAL010_63", String.valueOf(holidays))));
 					lstResult.add(alarmDetail);
 				}
+
+				List<AlarmExtractInfoResult> alarmExtractInfoResults = new ArrayList<>();
+				alarmExtractInfoResults.add(new AlarmExtractInfoResult(
+						String.valueOf(w4dCheckCond.value),
+						new AlarmCheckConditionCode(alarmCheckConditionCode),
+						AlarmCategory.SCHEDULE_4WEEK,
+						AlarmListCheckType.FixCheck,
+						lstResult
+				));
+
+				List<String> empIds = alarmEmployeeList.stream().map(AlarmEmployeeList::getEmployeeID).collect(Collectors.toList());
+				if (empIds.isEmpty()) {
+					alarmEmployeeList.add(new AlarmEmployeeList(
+							alarmExtractInfoResults,
+							sid
+					));
+				} else {
+					alarmEmployeeList.forEach(x -> {
+						if (x.getEmployeeID().equals(sid)) {
+							x.getAlarmExtractInfoResults().addAll(alarmExtractInfoResults);
+						} else {
+							alarmEmployeeList.add(new AlarmEmployeeList(
+									alarmExtractInfoResults,
+									sid
+							));
+						}
+					});
+				}
 			}
 			synchronized (this) {
 				counter.accept(emps.size());
 			}
 		});
-		
 		return lstResult;
 	}
 	/**

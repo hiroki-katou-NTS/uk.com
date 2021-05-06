@@ -15,6 +15,8 @@ import nts.uk.ctx.at.function.dom.alarm.alarmlist.weekly.WeeklyAlarmCheckCond;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.daily.DailyAlarmCondition;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.AlarmListCheckInfor;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.ResultOfEachCondition;
+import nts.uk.ctx.at.function.dom.alarm.alarmlist.persistenceextractresult.AlarmEmployeeList;
+import nts.uk.ctx.at.function.dom.alarm.alarmlist.persistenceextractresult.AlarmExtractionCondition;
 
 public interface AlarmListPersonServiceAdapter {
 	/**
@@ -32,25 +34,27 @@ public interface AlarmListPersonServiceAdapter {
 			String errorMasterCheckId, List<WorkPlaceHistImport> lstWplHist,
 			List<StatusOfEmployeeAdapter> lstStatusEmp,List<ResultOfEachCondition> lstResultCondition,
 			List<AlarmListCheckInfor> lstCheckInfor, Consumer<Integer> counter,
-			Supplier<Boolean> shouldStop);
+			Supplier<Boolean> shouldStop, List<AlarmEmployeeList> alarmEmployeeList,
+			List<AlarmExtractionCondition> alarmExtractConditions, String alarmCheckConditionCode);
 	
 	/**
 	 * 日次チェック
 	 * @param cid
 	 * @param lstSid
 	 * @param dPeriod
-	 * @param errorMasterCheckId
-	 * @param lstWplHist
+	 * @param errorDailyCheckId
+	 * @param dailyAlarmCondition
 	 * @param lstStatusEmp
 	 * @param lstResultCondition
-	 * @param lstCheckInfor
+	 * @param lstCheckType
 	 */
 	void extractDailyCheckResult(String cid, List<String> lstSid, DatePeriod dPeriod, 
 			String errorDailyCheckId, DailyAlarmCondition dailyAlarmCondition,
 			List<WorkPlaceHistImport> getWplByListSidAndPeriod, 
 			List<StatusOfEmployeeAdapter> lstStatusEmp, 
 			List<ResultOfEachCondition> lstResultCondition, List<AlarmListCheckInfor> lstCheckType, Consumer<Integer> counter,
-			Supplier<Boolean> shouldStop);
+			Supplier<Boolean> shouldStop, List<AlarmEmployeeList> alarmEmployeeList,
+			List<AlarmExtractionCondition> alarmExtractConditions, String alarmCheckConditionCode);
 	/**
 	 * 月次
 	 * @param cid
@@ -59,7 +63,6 @@ public interface AlarmListPersonServiceAdapter {
 	 * @param fixConId
 	 * @param lstAnyConID
 	 * @param lstWplHist
-	 * @param lstStatusEmp
 	 * @param lstResultCondition
 	 * @param lstCheckInfor
 	 */
@@ -67,7 +70,8 @@ public interface AlarmListPersonServiceAdapter {
 			List<String> lstAnyConID, List<WorkPlaceHistImport> lstWplHist,
 			List<ResultOfEachCondition> lstResultCondition,
 			List<AlarmListCheckInfor> lstCheckInfor, Consumer<Integer> counter,
-			Supplier<Boolean> shouldStop);
+			Supplier<Boolean> shouldStop, List<AlarmEmployeeList> alarmEmployeeList,
+			List<AlarmExtractionCondition> alarmExtractConditions, String alarmCheckConditionCode);
 	/**
 	 * 複数月次
 	 * @param cid
@@ -82,7 +86,8 @@ public interface AlarmListPersonServiceAdapter {
 			List<String> lstAnyConID, 
 			List<WorkPlaceHistImport> lstWplHist,
 			List<ResultOfEachCondition> lstResultCondition,
-			List<AlarmListCheckInfor> lstCheckInfor);
+			List<AlarmListCheckInfor> lstCheckInfor, List<AlarmEmployeeList> alarmEmployeeList,
+			 List<AlarmExtractionCondition> alarmExtractConditions, String alarmCheckConditionCode);
 	
 	/**
 	 * スケジュール日

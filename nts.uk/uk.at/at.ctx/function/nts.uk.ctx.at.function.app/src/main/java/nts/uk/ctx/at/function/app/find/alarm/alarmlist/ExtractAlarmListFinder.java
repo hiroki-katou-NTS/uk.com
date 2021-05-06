@@ -13,6 +13,6 @@ public class ExtractAlarmListFinder {
 	private ExtractAlarmListService extractAlarmListService;
 
 	public ExtractedAlarmDto extractAlarm(ExtractAlarmQuery query) {
-		return this.extractAlarmListService.extractAlarm(query.getListEmployee(), query.getAlarmCode(), query.getListPeriodByCategory());
+		return this.extractAlarmListService.extractAlarm(query.getListEmployee(), query.getAlarmCode(), query.getListPeriodByCategory(), "");
 	}
 }

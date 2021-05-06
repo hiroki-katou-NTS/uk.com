@@ -1,12 +1,14 @@
 package nts.uk.ctx.at.function.dom.alarm.alarmlist.aggregationprocess;
 
-import java.util.List;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nts.uk.ctx.at.function.dom.alarm.alarmlist.persistenceextractresult.AlarmExtractionCondition;
+import nts.uk.ctx.at.function.dom.alarm.alarmlist.persistenceextractresult.PersistenceAlarmListExtractResult;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.AlarmExtracResult;
+
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -19,4 +21,8 @@ public class AlarmListResultDto {
 	 * 終了状態 True:正常終了、False：中断
 	 */
 	private boolean extracting;
+
+	private PersistenceAlarmListExtractResult persisAlarmExtractResult;
+
+	private List<AlarmExtractionCondition> alarmExtractConditions;
 }

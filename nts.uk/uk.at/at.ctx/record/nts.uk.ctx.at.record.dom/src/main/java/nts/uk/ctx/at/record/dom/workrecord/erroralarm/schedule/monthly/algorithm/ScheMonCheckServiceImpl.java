@@ -520,7 +520,7 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 			List<IntegrationOfDaily> integrationOfDailys,
 			List<WorkScheduleWorkInforImport> workSchedules,
 			AttendanceTimeOfMonthly attendanceTimeOfMon) {
-		OutputCheckResult result = new OutputCheckResult(new ArrayList<>(), new ArrayList<>());
+		OutputCheckResult result = new OutputCheckResult(new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
 		
 		// 社員に対応する処理締めを取得する
 		val require = requireService.createRequire();
@@ -649,7 +649,7 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 			List<IntegrationOfDaily> integrationOfDailys,
 			List<WorkScheduleWorkInforImport> workSchedules,
 			AttendanceTimeOfMonthly attendanceTimeOfMon) {
-		OutputCheckResult result = new OutputCheckResult(new ArrayList<>(), new ArrayList<>());
+		OutputCheckResult result = new OutputCheckResult(new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
 		
 		// 対比の場合
 		// 対比のチェック条件をチェック
@@ -1087,7 +1087,7 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 						: Strings.EMPTY;		
 		ExtractionAlarmPeriodDate extractionAlarmPeriodDate = new ExtractionAlarmPeriodDate(Optional.of(ym.firstGeneralDate()), Optional.empty());
 		return new ExtractionResultDetail(
-				sid, 
+				sid,
 				extractionAlarmPeriodDate, 
 				alarmName, 
 				alarmContent, 

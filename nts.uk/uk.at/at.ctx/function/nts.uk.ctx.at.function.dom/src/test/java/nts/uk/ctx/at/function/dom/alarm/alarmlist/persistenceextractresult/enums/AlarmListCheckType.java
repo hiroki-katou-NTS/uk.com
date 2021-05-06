@@ -3,7 +3,7 @@ package nts.uk.ctx.at.function.dom.alarm.alarmlist.persistenceextractresult.enum
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
-public enum AlarmListCheckType {
+ enum AlarmListCheckType {
     /**固定チェック	 */
     FixCheck(0),
     /**自由チェック	 */

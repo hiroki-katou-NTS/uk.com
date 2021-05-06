@@ -23,6 +23,10 @@ import nts.uk.ctx.at.function.dom.adapter.workplace.WorkplaceAdapter;
 import nts.uk.ctx.at.function.dom.alarm.AlarmPatternSetting;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.aggregationprocess.AggregationProcessService;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.aggregationprocess.AlarmListResultDto;
+import nts.uk.ctx.at.function.dom.alarm.alarmlist.persistenceextractresult.AlarmEmployeeList;
+import nts.uk.ctx.at.function.dom.alarm.alarmlist.persistenceextractresult.AlarmExtractInfoResult;
+import nts.uk.ctx.at.function.dom.alarm.alarmlist.persistenceextractresult.ExtractResultDetail;
+import nts.uk.ctx.at.function.dom.alarm.alarmlist.persistenceextractresult.PersistenceAlarmListExtractResult;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategory;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.CheckCondition;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.AlarmExtracResult;
@@ -41,7 +45,7 @@ public class ExtractAlarmListService {
 	private AggregationProcessService aggregationProcessService;
 	
 	public ExtractedAlarmDto extractAlarm(List<EmployeeSearchDto> listEmployee, String checkPatternCode,
-			List<PeriodByAlarmCategory> periodByCategory) {		
+			List<PeriodByAlarmCategory> periodByCategory, String runCode) {
 		String companyID = AppContexts.user().companyId();
 		// チェック条件に当てはまらない場合(When it does not fit the check condition)
 		// 条件を満たしていない
@@ -52,26 +56,29 @@ public class ExtractAlarmListService {
 		List<String> lstSid = listEmployee.stream().map(x -> x.getId()).collect(Collectors.toList());
 		AtomicInteger counter = new AtomicInteger(lstSid.size());
 		// 勤務実績のアラームリストの集計処理を行う
-		List<AlarmExtraValueWkReDto> listAlarmExtraValueWR = this.extractResultAlarm(companyID,
+		ExtractedAlarmDto extractData = this.extractResultAlarm(companyID,
 				checkPatternCode,
 				periodByCategory,
 				lstSid,
-				"abc", //TODO 渡すパラメータが必要
+                runCode,
 				null,
 				null, finished -> {
 					counter.set(counter.get() + finished);
 				},
 				() -> {
 					return true;
-				}).getExtractedAlarmData();
+				});
 		// 集計データが無い場合
+		List<AlarmExtraValueWkReDto> listAlarmExtraValueWR = extractData.getExtractedAlarmData();
 		if (listAlarmExtraValueWR.isEmpty()) {
 			// 情報メッセージ(#Msg_835) を表示する
-			return  new ExtractedAlarmDto(new ArrayList<>(), false, true);
+			return  new ExtractedAlarmDto(new ArrayList<>(), false, true, extractData.getPersisAlarmExtractResult(),
+					extractData.getAlarmExtractConditions());
 		}
 		// 集計データがある場合
 		// B画面 ダイアログ「アラームリスト」を起動する
-		return new ExtractedAlarmDto(listAlarmExtraValueWR, false, false);		
+		return new ExtractedAlarmDto(listAlarmExtraValueWR, false, false, extractData.getPersisAlarmExtractResult(),
+				extractData.getAlarmExtractConditions());
 
 	}
 	/**
@@ -116,18 +123,17 @@ public class ExtractAlarmListService {
 		// 集計データが無い場合
 		if (listAlarmExtraValueWR.isEmpty()) {
 			// 情報メッセージ(#Msg_835) を表示する
-			return  new ExtractedAlarmDto(new ArrayList<>(), false, true);
+			return  new ExtractedAlarmDto(new ArrayList<>(), false, true, null, new ArrayList<>());
 		}
 		// 集計データがある場合
 		// B画面 ダイアログ「アラームリスト」を起動する
-		return new ExtractedAlarmDto(sortedAlarmExtraValue, false, false);		
+		return new ExtractedAlarmDto(sortedAlarmExtraValue, false, false, null, new ArrayList<>());
 
 	}
 	/**
 	 * アラームリストを出力する
 	 * @param cid 会社ID
 	 * @param pattentCd　パターンコード
-	 * @param pattentName　パターン名称
 	 * @param lstCategoryPeriod　List<カテゴリ別期間>
 	 * @param lstSid　List<従業員>
 	 * @param runCode　自動実行コード　（Default：　”Z”）
@@ -135,7 +141,7 @@ public class ExtractAlarmListService {
 	 * @return
 	 */
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
-	public ExtractedAlarmDto extractResultAlarm(String cid, String pattentCd, 
+	public ExtractedAlarmDto extractResultAlarm(String cid, String pattentCd,
 			List<PeriodByAlarmCategory> lstCategoryPeriod,List<String> lstSid, String runCode,
 			AlarmPatternSetting alarmPattern, List<AlarmCheckConditionByCategory> lstCondCate,
 			Consumer<Integer> counter, Supplier<Boolean> shouldStop) {
@@ -159,35 +165,40 @@ public class ExtractAlarmListService {
 		//個人情報を取得
 		List<EmployeeBasicInfoFnImport> findBySIds = empAdapter.findBySIds(lstSid);
 		List<String> lstWpl = new ArrayList<>();
-		alarmResult.getLstAlarmResult().stream().forEach(x -> {
-			x.getLstResult().stream().forEach(y -> {
-				y.getLstResultDetail().stream().forEach(z -> {
-					if(z.getWpID().isPresent()) {
+		PersistenceAlarmListExtractResult persisExtractResult = alarmResult.getPersisAlarmExtractResult();
+		result.setPersisAlarmExtractResult(persisExtractResult);
+		result.setAlarmExtractConditions(alarmResult.getAlarmExtractConditions());
+		persisExtractResult.getAlarmListExtractResults().stream().forEach(x -> {
+			x.getAlarmExtractInfoResults().stream().forEach(y -> {
+				y.getExtractionResultDetails().stream().forEach(z -> {
+					if (z.getWpID().isPresent()) {
 						lstWpl.add(z.getWpID().get());
 					}
 				});
 			});
 		});
+
 		//職場情報を取得
 		List<WorkPlaceInforExport> getWorkplaceInforByWkpIds = wplAdapter.getWorkplaceInforByWkpIds(cid, lstWpl, GeneralDate.today());
-		if(alarmResult.getLstAlarmResult().isEmpty()) {
+		if(persisExtractResult.getAlarmListExtractResults().isEmpty()) {
 			result.setNullData(false);
 		}
-		if(!alarmResult.getLstAlarmResult().isEmpty()) {
-			for (int a = 0; a < alarmResult.getLstAlarmResult().size(); a++) {
-				AlarmExtracResult x = alarmResult.getLstAlarmResult().get(a);
-				if(x.getLstResult().isEmpty()) {
+
+		if (!persisExtractResult.getAlarmListExtractResults().isEmpty()) {
+			for (int a = 0; a < persisExtractResult.getAlarmListExtractResults().size(); a++) {
+				AlarmEmployeeList x = persisExtractResult.getAlarmListExtractResults().get(a);
+				if (x.getAlarmExtractInfoResults().isEmpty()) {
 					continue;
-				} 
-				for (int i = 0; i < x.getLstResult().size(); i++) {
-					ResultOfEachCondition y = x.getLstResult().get(i);
-					List<ExtractionResultDetail> lstResultDetail = y.getLstResultDetail();
+				}
+				for (int i = 0; i < x.getAlarmExtractInfoResults().size(); i++) {
+					AlarmExtractInfoResult y = x.getAlarmExtractInfoResults().get(i);
+					List<ExtractResultDetail> lstResultDetail = y.getExtractionResultDetails();
 					for (int j = 0; j < lstResultDetail.size(); j++) {
-						ExtractionResultDetail z = lstResultDetail.get(j);
+						ExtractResultDetail z = lstResultDetail.get(j);
 						AlarmExtraValueWkReDto alarmValue = new AlarmExtraValueWkReDto();
-						EmployeeBasicInfoFnImport empInfo = findBySIds.stream().filter(e -> e.getEmployeeId().equals(z.getSID()))
+						EmployeeBasicInfoFnImport empInfo = findBySIds.stream().filter(e -> e.getEmployeeId().equals(x.getEmployeeID()))
 								.collect(Collectors.toList()).get(0);
-						
+
 						if(z.getWpID().isPresent()) {
 							List<WorkPlaceInforExport> lstWplInfo = getWorkplaceInforByWkpIds.stream().filter(d -> d.getWorkplaceId().equals(z.getWpID().get()))
 									.collect(Collectors.toList());
@@ -200,10 +211,10 @@ public class ExtractAlarmListService {
 						}
 						alarmValue.setAlarmItem(z.getAlarmName());
 						alarmValue.setAlarmValueDate(z.getPeriodDate().getStartDate().isPresent() ? z.getPeriodDate().getStartDate().get().toString() : GeneralDate.today().toString());
-						alarmValue.setComment(z.getComment().isPresent() ? z.getComment().get() : "");
+						alarmValue.setComment(z.getMessage().isPresent() ? z.getMessage().get() : "");
 						alarmValue.setAlarmValueMessage(z.getAlarmContent());
-						alarmValue.setCategory(x.getCategory().value);
-						alarmValue.setCategoryName(x.getCategory().nameId);
+						alarmValue.setCategory(y.getAlarmCategory().value);
+						alarmValue.setCategoryName(y.getAlarmCategory().nameId);
 						alarmValue.setCheckedValue(z.getCheckValue().isPresent() ? z.getCheckValue().get() : "");
 						alarmValue.setEmployeeCode(empInfo.getEmployeeCode());
 						alarmValue.setEmployeeID(empInfo.getEmployeeId());
@@ -213,7 +224,7 @@ public class ExtractAlarmListService {
 						alarmValue.setGuid(IdentifierUtil.randomUniqueId());
 					}
 				}
-			}			
+			}
 		}
 		Comparator<AlarmExtraValueWkReDto> comparator = Comparator.comparing(AlarmExtraValueWkReDto::getHierarchyCd)
 				.thenComparing(Comparator.comparing(AlarmExtraValueWkReDto::getEmployeeCode))

@@ -228,7 +228,7 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 			List<WorkPlaceHistImportAl> getWplByListSidAndPeriod,
 			List<WorkType> listWorkType,
 			List<IntegrationOfDaily> listIntegrationDai) {
-		OutputCheckResult result = new OutputCheckResult(new ArrayList<>(), new ArrayList<>());
+		OutputCheckResult result = new OutputCheckResult(new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
 		
 		// Input．List＜スケジュール日次の任意抽出条件＞をループ
 		for (ExtractionCondScheduleDay scheCondItem: scheCondItems) {
@@ -604,7 +604,7 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 	
 	/**
 	 * 予定時間をチェック
-	 * @param scheCondDay
+	 * @param -scheCondDay
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private boolean checkTime(CheckedCondition checkedCondition, WorkScheduleWorkInforImport workSchedule) {
@@ -703,7 +703,7 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 			List<WorkScheduleWorkInforImport> workScheduleWorkInfos,
 			List<StatusOfEmployeeAdapterAl> lstStatusEmp,
 			List<IntegrationOfDaily> listIntegrationDai) {
-		OutputCheckResult result = new OutputCheckResult(new ArrayList<>(), new ArrayList<>());
+		OutputCheckResult result = new OutputCheckResult(new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
 		String alarmMessage = new String();
 		String alarmTarget = new String();
 		

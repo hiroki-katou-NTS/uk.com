@@ -9,7 +9,6 @@ import nts.uk.ctx.at.function.dom.adapter.toppagealarmpub.TopPageAlarmImport;
 import nts.uk.ctx.at.function.dom.alarm.AlarmPatternCode;
 import nts.uk.ctx.at.function.dom.processexecution.ExecutionCode;
 import nts.uk.ctx.at.function.dom.processexecution.UpdateProcessAutoExecution;
-import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.ExtractionResultDetail;
 
 import javax.ejb.Stateless;
 import java.util.*;
@@ -30,12 +29,12 @@ public class ConvertAlarmListToTopPageAlarmDataService {
      * @param patternCode      パターンコード
      * @param executionCode    自動実行コード
      * @param isDisplayByAdmin トップページに表示(管理者)
-     * @param isDisplayByUser  トップページに表示(本人)
+     * @param isDisplayByPerson  トップページに表示(本人)
      * @return AtomTask
      */
     public static List<AtomTask> convert(Require require, String companyId, List<String> employeeIDs, AlarmPatternCode patternCode,
-                                         ExecutionCode executionCode, boolean isDisplayByAdmin, boolean isDisplayByUser) {
-        if (!isDisplayByAdmin && !isDisplayByUser) return Collections.emptyList();
+                                         ExecutionCode executionCode, boolean isDisplayByAdmin, boolean isDisplayByPerson) {
+        if (!isDisplayByAdmin && !isDisplayByPerson) return Collections.emptyList();
 
         //永続化のアラームリスト抽出結果を取得する
         Optional<PersistenceAlarmListExtractResult> extractResult = require.getAlarmListExtractionResult(companyId, patternCode.v(), executionCode.v());
@@ -86,7 +85,7 @@ public class ConvertAlarmListToTopPageAlarmDataService {
         )).collect(Collectors.toList());
 
         List<AtomTask> atomTask = new ArrayList<>();
-        if (isDisplayByUser) {
+        if (isDisplayByPerson) {
             //$AtomTask = 本人のトップページアラームデータを作成する#作成する（require,会社ID、$トップアラーム、$削除の情報）
             atomTask.add(CreateTopPageAlarmDataOfPersonService.create(require, companyId,
                     topAlarmList, deleteInfo));

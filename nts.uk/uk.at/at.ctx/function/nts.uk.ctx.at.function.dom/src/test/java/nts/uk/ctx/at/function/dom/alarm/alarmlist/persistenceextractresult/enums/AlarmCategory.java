@@ -2,7 +2,7 @@ package nts.uk.ctx.at.function.dom.alarm.alarmlist.persistenceextractresult.enum
 
 import nts.arc.i18n.I18NText;
 
-public enum AlarmCategory {
+ enum AlarmCategory {
     /**
      * スケジュール日次
      */
