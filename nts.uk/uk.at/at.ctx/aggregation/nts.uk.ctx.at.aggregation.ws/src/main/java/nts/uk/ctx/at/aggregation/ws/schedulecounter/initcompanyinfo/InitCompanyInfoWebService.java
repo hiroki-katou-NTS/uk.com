@@ -9,6 +9,7 @@ import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.aggregation.app.find.schedulecounter.initcompanyinfo.CompanyInfoFinder;
+import nts.uk.ctx.at.aggregation.app.find.schedulecounter.initcompanyinfo.EsimatedInfoDto;
 import nts.uk.ctx.at.aggregation.app.find.schedulecounter.initcompanyinfo.InitInfoDto;
 
 /**
@@ -28,5 +29,11 @@ public class InitCompanyInfoWebService extends WebService {
 	@POST
 	public InitInfoDto init() {
 		return companyInfoFinder.getInitInfo();
+	}
+	
+	@Path("selectedTab")
+	@POST
+	public EsimatedInfoDto selectedTab() {
+		return companyInfoFinder.getEstimatedInfo();
 	}
 }
