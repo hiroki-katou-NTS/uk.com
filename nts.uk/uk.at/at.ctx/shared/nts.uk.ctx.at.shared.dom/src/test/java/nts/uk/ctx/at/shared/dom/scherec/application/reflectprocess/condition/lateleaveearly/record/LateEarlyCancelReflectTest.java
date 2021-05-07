@@ -10,6 +10,7 @@ import org.assertj.core.groups.Tuple;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import lombok.val;
 import mockit.integration.junit4.JMockit;
 import nts.uk.ctx.at.shared.dom.scherec.application.common.ApplicationTypeShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.common.PrePostAtrShare;
@@ -55,6 +56,9 @@ public class LateEarlyCancelReflectTest {
 		ArrivedLateLeaveEarlyShare appWorkChange = appWorkChange(1, LateOrEarlyAtrShare.LATE);
 		DailyRecordOfApplication dailyApp = ReflectApplicationHelper
 				.createRCWithTimeLeavFull(ScheduleRecordClassifi.RECORD, 1);// no = 1
+		val dailyAppBefore = ReflectApplicationHelper
+				.createRCWithTimeLeavFull(ScheduleRecordClassifi.RECORD, 1).getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily()
+				.getTotalWorkingTime().getLateTimeOfDaily().get(0);
 		LateEarlyCancelReflect reflectApp = new LateEarlyCancelReflect("", false);
 
 		DailyAfterAppReflectResult actualResult = reflectApp.reflectCancel(appWorkChange, dailyApp);
@@ -64,7 +68,10 @@ public class LateEarlyCancelReflectTest {
 		// すべての値が０
 		// 遅刻時間をクリア
 		assertAriveLateEmpty(dailyApp.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily()
-				.getTotalWorkingTime().getLateTimeOfDaily().get(0));
+				.getTotalWorkingTime().getLateTimeOfDaily().get(0), dailyAppBefore.getLateTime().getCalcTime().v());
+		// 遅刻控除時間
+		timeWithCalculationDeduct(dailyApp.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily()
+				.getTotalWorkingTime().getLateTimeOfDaily().get(0).getLateDeductionTime(), dailyAppBefore.getLateDeductionTime());
 		assertThat(dailyApp.getAttendanceLeave().get().getTimeLeavingWorks().get(0).isCanceledLate()).isTrue();
 	}
 
@@ -88,6 +95,10 @@ public class LateEarlyCancelReflectTest {
 		ArrivedLateLeaveEarlyShare appWorkChange = appWorkChange(1, LateOrEarlyAtrShare.EARLY);
 		DailyRecordOfApplication dailyApp = ReflectApplicationHelper
 				.createRCWithTimeLeavFull(ScheduleRecordClassifi.RECORD, 1);// no = 1
+		val dailyAppBefore = ReflectApplicationHelper.createRCWithTimeLeavFull(ScheduleRecordClassifi.RECORD, 1)
+				.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime()
+				.getLeaveEarlyTimeNo(1).get();
+		
 		LateEarlyCancelReflect reflectApp = new LateEarlyCancelReflect("", false);
 
 		DailyAfterAppReflectResult actualResult = reflectApp.reflectCancel(appWorkChange, dailyApp);
@@ -97,8 +108,10 @@ public class LateEarlyCancelReflectTest {
 		// すべての値が０
 		// 早退時間をクリア
 		assertLeavEarlyEmpty(dailyApp.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily()
-				.getTotalWorkingTime().getLeaveEarlyTimeNo(1).get());
+				.getTotalWorkingTime().getLeaveEarlyTimeNo(1).get(), dailyAppBefore.getLeaveEarlyTime().getCalcTime().v());
 
+		timeWithCalculationDeduct(dailyApp.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily()
+				.getTotalWorkingTime().getLeaveEarlyTimeNo(1).get().getLeaveEarlyDeductionTime(), dailyAppBefore.getLeaveEarlyDeductionTime());
 		// 出退勤の遅刻取消
 		assertThat(dailyApp.getAttendanceLeave().get().getTimeLeavingWorks().get(0).isCanceledEarlyLeave()).isTrue();
 	}
@@ -208,12 +221,9 @@ public class LateEarlyCancelReflectTest {
 						.containsExactly(Tuple.tuple(1, true));
 	}
 
-	private void assertAriveLateEmpty(LateTimeOfDaily lateDaily) {
+	private void assertAriveLateEmpty(LateTimeOfDaily lateDaily, int timeBefore) {
 		// 遅刻時間
-		timeWithCalculation(lateDaily.getLateTime());
-
-		// 遅刻控除時間
-		timeWithCalculation(lateDaily.getLateDeductionTime());
+		timeWithCalculation(lateDaily.getLateTime(), timeBefore);
 
 		// 休暇使用時間
 		timePaidUseTime(lateDaily.getTimePaidUseTime());
@@ -223,12 +233,9 @@ public class LateEarlyCancelReflectTest {
 
 	}
 
-	private void assertLeavEarlyEmpty(LeaveEarlyTimeOfDaily leavEarly) {
+	private void assertLeavEarlyEmpty(LeaveEarlyTimeOfDaily leavEarly, int timeBefore) {
 		// 早退時間
-		timeWithCalculation(leavEarly.getLeaveEarlyTime());
-
-		// 早退控除時間
-		timeWithCalculation(leavEarly.getLeaveEarlyDeductionTime());
+		timeWithCalculation(leavEarly.getLeaveEarlyTime(), timeBefore);
 
 		// 休暇使用時間
 		timePaidUseTime(leavEarly.getTimePaidUseTime());
@@ -237,9 +244,14 @@ public class LateEarlyCancelReflectTest {
 		exemptionTime(leavEarly.getIntervalTime());
 	}
 
-	private void timeWithCalculation(TimeWithCalculation time) {
-		assertThat(time.getCalcTime().v()).isEqualTo(0);
+	private void timeWithCalculation(TimeWithCalculation time, int timeBefore) {
+		assertThat(time.getCalcTime().v()).isEqualTo(timeBefore);
 		assertThat(time.getTime().v()).isEqualTo(0);
+	}
+	
+	private void timeWithCalculationDeduct(TimeWithCalculation time, TimeWithCalculation timeBefore) {
+		assertThat(time.getCalcTime().v()).isEqualTo(timeBefore.getCalcTime().v());
+		assertThat(time.getTime().v()).isEqualTo(timeBefore.getTime().v());
 	}
 
 	private void timePaidUseTime(TimevacationUseTimeOfDaily time) {
