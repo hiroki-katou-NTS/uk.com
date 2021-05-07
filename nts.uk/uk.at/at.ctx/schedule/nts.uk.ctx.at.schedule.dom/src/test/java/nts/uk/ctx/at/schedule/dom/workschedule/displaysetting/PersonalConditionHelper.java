@@ -3,7 +3,7 @@ package nts.uk.ctx.at.schedule.dom.workschedule.displaysetting;
 import java.util.Optional;
 
 import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.LicenseClassification;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.LicenseClassification;
 
 public class PersonalConditionHelper {
 	
