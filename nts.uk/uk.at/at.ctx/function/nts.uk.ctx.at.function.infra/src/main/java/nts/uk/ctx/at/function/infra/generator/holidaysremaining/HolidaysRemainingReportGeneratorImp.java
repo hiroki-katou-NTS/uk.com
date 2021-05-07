@@ -1100,7 +1100,8 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
     private int printLimitForHalfHolidays(Cells cells, int firstRow, HolidaysRemainingEmployee employee,
                                           HolidayRemainingDataSource dataSource) throws Exception {
 
-        if (!checkLimitHoliday(dataSource.getHolidaysRemainingManagement())) {
+        if (!checkLimitHoliday(dataSource.getHolidaysRemainingManagement())
+                ||!employee.getCurrentMonth().isPresent()) {
             return firstRow;
         }
         cells.copyRows(cells, NUMBER_ROW_OF_HEADER + 11, firstRow, 2);
@@ -1125,9 +1126,8 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                 usedTimes = numberOfGrantesOpt.get().getUsedTimes().v();
                 //残回数
                 remainingTimes = numberOfGrantesOpt.get().getRemainingTimes().v();
+                numOfMonRemaining = usedTimes + remainingTimes;
             }
-            // todo
-            numOfMonRemaining = usedTimes + remainingTimes;
             cells.get(firstRow, 4).setValue(numOfMonRemaining != null ? numOfMonRemaining.toString() : "");
 
             cells.get(firstRow, 5).setValue(usedTimes);
