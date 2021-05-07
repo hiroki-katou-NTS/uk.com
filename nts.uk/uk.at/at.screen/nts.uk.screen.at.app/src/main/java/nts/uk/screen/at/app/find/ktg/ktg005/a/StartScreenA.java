@@ -136,21 +136,14 @@ public class StartScreenA {
 			// => 項目＝! 今月の申請締め切り日
 			
 			List<ApplicationStatusDetailedSetting> usedList = standardWidget.getAppStatusDetailedSettingList().stream()
-					.filter(x -> !x.getItem().equals(ApplicationStatusWidgetItem.MONTH_APP_DEADLINE))
+					.filter(x -> !x.getItem().equals(ApplicationStatusWidgetItem.MONTH_APP_DEADLINE) && x.getDisplayType().equals(NotUseAtr.USE))
 					.collect(Collectors.toList());
 
-			for (int i = 0; i < usedList.size(); i++) {
-				// いずれが表示する
-				ApplicationStatusDetailedSetting detailSetting = usedList.get(i);
-				if (detailSetting.getDisplayType().equals(NotUseAtr.USE)) {
-					// アルゴリズム「申請件数取得」を実行する
-					number = GetNumberOfApps.getNumberOfApps(GetNumberOfApps.createRequire(appRepo), companyId, period,
-							employeeId);
-				}
+			if(!usedList.isEmpty()) {
+				// アルゴリズム「申請件数取得」を実行する
+				number = GetNumberOfApps.getNumberOfApps(GetNumberOfApps.createRequire(appRepo), companyId, period,employeeId);
 			}
 		
-	
-
 		return new ExecutionResultNumberOfApplicationDto(applicationStatusDetailedSettings, deadLine, number,
 				topPagePartName, isEmployeeCharge);
 	}
