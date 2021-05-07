@@ -12,10 +12,7 @@ import nts.uk.shr.com.context.AppContexts;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @RunWith(JMockit.class)
 public class CreateAlarmDataTopPageServiceTest {
@@ -28,10 +25,14 @@ public class CreateAlarmDataTopPageServiceTest {
      */
     @Test
     public void testCreateAlarmTopPage_WorkplaceIdListNotError_Empty() {
-        DeleteInfoAlarmImport deleteInfoAlarmImport = DumData.deleteInfoAlarmImport;
+        DeleteInfoAlarmImport deleteInfoAlarmImport = new DeleteInfoAlarmImport(
+                1,
+                Arrays.asList("del001", "del002"),
+                0,
+                Optional.of("patternCode1"));
         List<TopPageAlarmImport> alarmListInfo = DumData.alarmListInfos;
-        List<AffAtWorkplaceExport> affAtWorkplaceExports = DumData.affAtWorkplaceExports;
-        List<String> employeeIds = DumData.employeeIds;
+        List<AffAtWorkplaceExport> affAtWorkplaceExports = DumData.affAtWorkplaceExports01;
+        List<String> employeeIds = Arrays.asList("sya001", "sya002", "sya003", "sya004", "sya005", "del001", "del002");
 
         String companyId = "companyId";
 
@@ -44,10 +45,10 @@ public class CreateAlarmDataTopPageServiceTest {
                 result = affAtWorkplaceExports;
 
                 require.getListEmployeeId("S001", GeneralDate.today());
-                result = Arrays.asList("sya001", "sya002", "sya003");
+                result = Arrays.asList("sya001", "sya002", "sya003","sya004", "sya005");
 
                 require.getListEmployeeId("S002", GeneralDate.today());
-                result = Arrays.asList("sya004", "sya005");
+                result = Arrays.asList("del001", "del002");
             }
         };
 
@@ -97,9 +98,9 @@ public class CreateAlarmDataTopPageServiceTest {
     @Test
     public void testCreateAlarmTopPage_wkplIdListErrors_Empty() {
         DeleteInfoAlarmImport deleteInfoAlarmImport = DumData.deleteInfoAlarmImport;
-        List<TopPageAlarmImport> alarmListInfo = DumData.alarmListInfos3;
+        List<TopPageAlarmImport> alarmListInfo = new ArrayList<>();
         List<AffAtWorkplaceExport> affAtWorkplaceExports = DumData.affAtWorkplaceExports;
-        List<String> employeeIds = Arrays.asList("sya006", "sya001", "sya002", "sya003", "sya004", "sya005");
+        List<String> employeeIds = Arrays.asList("sya001", "sya002", "sya003", "sya004", "sya005");
 
         String companyId = "companyId";
 

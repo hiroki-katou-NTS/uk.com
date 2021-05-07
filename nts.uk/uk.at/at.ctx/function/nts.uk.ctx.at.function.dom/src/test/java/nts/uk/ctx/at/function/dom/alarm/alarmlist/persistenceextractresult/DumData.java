@@ -210,6 +210,51 @@ public class DumData {
             Optional.of("patternCode1")
     );
 
+    public static List<AffAtWorkplaceExport> affAtWorkplaceExports01 = Arrays.asList(
+            new AffAtWorkplaceExport(
+                    "sya001",
+                    "S001",
+                    "H01",
+                    "n01"
+            ),
+            new AffAtWorkplaceExport(
+                    "sya002",
+                    "S001",
+                    "H02",
+                    "n02"
+            ),
+            new AffAtWorkplaceExport(
+                    "sya003",
+                    "S001",
+                    "H03",
+                    "n03"
+            ),
+            new AffAtWorkplaceExport(
+                    "sya004",
+                    "S002",
+                    "H04",
+                    "n04"
+            ),
+            new AffAtWorkplaceExport(
+                    "sya005",
+                    "S002",
+                    "H05",
+                    "n05"
+            ),
+            new AffAtWorkplaceExport(
+                    "del001",
+                    "S002",
+                    "H01",
+                    "n05"
+            ),
+            new AffAtWorkplaceExport(
+                    "del002",
+                    "S002",
+                    "H02",
+                    "n02"
+            )
+    );
+
     public static List<AffAtWorkplaceExport> affAtWorkplaceExports = Arrays.asList(
             new AffAtWorkplaceExport(
                     "sya001",

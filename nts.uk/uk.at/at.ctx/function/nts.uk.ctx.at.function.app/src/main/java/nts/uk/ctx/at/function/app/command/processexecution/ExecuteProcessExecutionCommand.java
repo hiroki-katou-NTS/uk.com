@@ -17,5 +17,4 @@ public class ExecuteProcessExecutionCommand {
     private String execId;
     private int execType;
     private Optional<GeneralDateTime> nextFireTime;
-    private String runCode;
 }

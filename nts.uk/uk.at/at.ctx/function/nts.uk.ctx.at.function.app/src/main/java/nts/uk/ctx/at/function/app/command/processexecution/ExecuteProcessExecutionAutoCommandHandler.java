@@ -2686,7 +2686,7 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 						sendMailPerson, sendMailAdmin,
 						!processExecution.getExecSetting().getAlarmExtraction().getAlarmCode().isPresent() ? ""
 								: processExecution.getExecSetting().getAlarmExtraction().getAlarmCode().get().v(),
-						execId, context.getCommand().getRunCode(), isDisplayAdmin, isDisplayPerson);
+						execId, execItemCd, isDisplayAdmin, isDisplayPerson);
 				log.info("更新処理自動実行_アラーム抽出_END_" + processExecution.getExecItemCode() + "_" + GeneralDateTime.now());
 				if (outputExecAlarmListPro.isCheckStop()) {
 					checkStopExec = true;

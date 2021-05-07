@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -21,8 +22,8 @@ public class AlarmEmployeeList {
     private String employeeID;
 
     public static void createAlarmEmployeeListBy(List<AlarmEmployeeList> alarmEmployeeList, List<AlarmExtractInfoResult> alarmExtractInfoResults, String sid){
-        List<String> empIds = alarmEmployeeList.stream().map(AlarmEmployeeList::getEmployeeID).collect(Collectors.toList());
-        if (empIds.isEmpty()) {
+        List<AlarmEmployeeList> alarmEmps = alarmEmployeeList.stream().filter(x -> x.employeeID.equals(sid)).collect(Collectors.toList());
+        if (alarmEmps.isEmpty()) {
             alarmEmployeeList.add(new AlarmEmployeeList(
                     alarmExtractInfoResults,
                     sid
@@ -31,11 +32,6 @@ public class AlarmEmployeeList {
             alarmEmployeeList.forEach(x -> {
                 if (x.getEmployeeID().equals(sid)) {
                     x.getAlarmExtractInfoResults().addAll(alarmExtractInfoResults);
-                } else {
-                    alarmEmployeeList.add(new AlarmEmployeeList(
-                            alarmExtractInfoResults,
-                            sid
-                    ));
                 }
             });
         }

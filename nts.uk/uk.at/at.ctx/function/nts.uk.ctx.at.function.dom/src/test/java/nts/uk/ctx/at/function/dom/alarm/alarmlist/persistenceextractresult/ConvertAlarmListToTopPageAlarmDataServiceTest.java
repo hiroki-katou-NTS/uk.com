@@ -293,7 +293,7 @@ public class ConvertAlarmListToTopPageAlarmDataServiceTest {
     @Test
     public void testConvert_empIdListNoErrors_Empty(){
         String companyId = "companyId";
-        List<String> employeeIds = Arrays.asList("sya001", "sya002");
+        List<String> employeeIds = Arrays.asList("00001", "00002");
         AlarmPatternCode patternCode = new AlarmPatternCode("patternCode1");
         ExecutionCode executionCode = new ExecutionCode("Z");
         boolean isDisplayByAdmin = true;
@@ -323,7 +323,7 @@ public class ConvertAlarmListToTopPageAlarmDataServiceTest {
     @Test
     public void testConvert_empIdListNoErrors_Empty_DispAdmin(){
         String companyId = "companyId";
-        List<String> employeeIds = Arrays.asList("sya001", "sya002");
+        List<String> employeeIds = Arrays.asList("00001", "00002");
         AlarmPatternCode patternCode = new AlarmPatternCode("patternCode1");
         ExecutionCode executionCode = new ExecutionCode("Z");
         boolean isDisplayByAdmin = true;
@@ -353,18 +353,15 @@ public class ConvertAlarmListToTopPageAlarmDataServiceTest {
     @Test
     public void testConvert_empIdListNoErrors_Empty_DispUser(){
         String companyId = "companyId";
-        List<String> employeeIds = Arrays.asList("sya001", "sya002");
+        List<String> employeeIds = Arrays.asList("00001", "00002");
         AlarmPatternCode patternCode = new AlarmPatternCode("patternCode1");
         ExecutionCode executionCode = new ExecutionCode("Z");
-        boolean isDisplayByAdmin = true;
-        boolean isDisplayByUser = false;
+        boolean isDisplayByAdmin = false;
+        boolean isDisplayByUser = true;
         PersistenceAlarmListExtractResult extractResult = DumData.dumDomain;
 
         new Expectations(AppContexts.class){
             {
-                AppContexts.user().companyId();
-                result = companyId;
-
                 require.getAlarmListExtractionResult(companyId, patternCode.v(), executionCode.v());
                 result = Optional.of(extractResult);
             }

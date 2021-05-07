@@ -2650,7 +2650,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
                                 GeneralDateTime.now(), sendMailPerson, sendMailAdmin,
                                 !processExecution.getExecSetting().getAlarmExtraction().getAlarmCode().isPresent() ? ""
                                         : processExecution.getExecSetting().getAlarmExtraction().getAlarmCode().get().v(),
-                                execId, context.getCommand().getRunCode(), isDisplayAdmin, isDisplayPerson); //TODO: Input．実行コード ???
+                                execId, execItemCd, isDisplayAdmin, isDisplayPerson);
 				log.info("更新処理自動実行_アラーム抽出_END_" + processExecution.getExecItemCode() + "_" + GeneralDateTime.now());
                 if (outputExecAlarmListPro.isCheckStop()) {
                     checkStopExec = true;
