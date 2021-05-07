@@ -310,10 +310,26 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
     		ApplyForLeave appAbsence, boolean agentAtr) {
     	AbsenceCheckRegisterOutput result = new AbsenceCheckRegisterOutput();
     	// 申請期間から休日の申請日を取得する
-    	List<GeneralDate> lstDates = otherCommonAlgorithm.lstDateIsHoliday(appAbsence.getEmployeeID()
+    	List<GeneralDate> holidayDates = otherCommonAlgorithm.lstDateIsHoliday(appAbsence.getEmployeeID()
 				, new DatePeriod(appAbsence.getOpAppStartDate().get().getApplicationDate(),appAbsence.getOpAppEndDate().get().getApplicationDate())
 				, appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getOpActualContentDisplayLst().get());
-    	result.setHolidayDateLst(lstDates);
+    	result.setHolidayDateLst(holidayDates);
+    	
+    	// 取得した「休日の申請日<List>」をチェックする
+        List<GeneralDate> listDates = new DatePeriod(appAbsence.getApplication().getOpAppStartDate().get().getApplicationDate(), 
+                appAbsence.getApplication().getOpAppEndDate().get().getApplicationDate()).datesBetween();
+        if (holidayDates.size() > 0 && listDates.size() == holidayDates.size()) {
+            String dateParam = "";
+            for (int i = 0; i < holidayDates.size(); i++) {
+                if (i != holidayDates.size() - 1) {
+                    dateParam += (holidayDates.get(i).toString("yyyy/MM/dd") + "、");
+                } else {
+                    dateParam += holidayDates.get(i).toString("yyyy/MM/dd");
+                }
+            }
+            throw new BusinessException("Msg_1459", dateParam);
+        }
+        
     	// 勤務種類・就業時間帯のマスタチェックする
     	detailBeforeUpdate.displayWorkingHourCheck(companyID
     			, appAbsence.getReflectFreeTimeApp().getWorkInfo().getWorkTypeCode().v()
@@ -325,10 +341,10 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
     			, appAbsence
     			, null
     			, appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getOpErrorFlag().get()
-    			, lstDates
+    			, holidayDates
     			, appAbsenceStartInfoOutput.getAppDispInfoStartupOutput()));
     	// 休暇申請登録時チェック処理
-    	result.getConfirmMsgLst().addAll(this.checkAbsenceWhenRegister(true, companyID, appAbsence, appAbsenceStartInfoOutput, lstDates));
+    	result.getConfirmMsgLst().addAll(this.checkAbsenceWhenRegister(true, companyID, appAbsence, appAbsenceStartInfoOutput, holidayDates));
     	// 「確認メッセージリスト」を全てと取得した「休日の申請日<List>」を返す
     	return result;
     }
@@ -1376,9 +1392,23 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
 		// 変更後の申請期間をチェックする
 		this.changeAbScenePeriodCheck(appBeforeChange, newAbsence, periodCurrentMonth.getStartDate());
 		// 申請期間から休日の申請日を取得する
-		List<GeneralDate> lstDates = otherCommonAlgorithm.lstDateIsHoliday(newAbsence.getApplication().getEmployeeID()
+		List<GeneralDate> holidayDates = otherCommonAlgorithm.lstDateIsHoliday(newAbsence.getApplication().getEmployeeID()
 				, new DatePeriod(newAbsence.getOpAppStartDate().get().getApplicationDate(),newAbsence.getOpAppEndDate().get().getApplicationDate())
 				, appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getOpActualContentDisplayLst().get());
+		// 取得した「休日の申請日<List>」をチェックする
+        List<GeneralDate> listDates = new DatePeriod(newAbsence.getApplication().getOpAppStartDate().get().getApplicationDate(), 
+                newAbsence.getApplication().getOpAppEndDate().get().getApplicationDate()).datesBetween();
+        if (holidayDates.size() > 0 && listDates.size() == holidayDates.size()) {
+            String dateParam = "";
+            for (int i = 0; i < holidayDates.size(); i++) {
+                if (i != holidayDates.size() - 1) {
+                    dateParam += (holidayDates.get(i).toString("yyyy/MM/dd") + "、");
+                } else {
+                    dateParam += holidayDates.get(i).toString("yyyy/MM/dd");
+                }
+            }
+            throw new BusinessException("Msg_1459", dateParam);
+        }
 		// 2-1.新規画面登録前の処理
 		List<ConfirmMsgOutput> lstConfirmMsg = newBeforeRegister.processBeforeRegister_New(companyID
 				, EmploymentRootAtr.APPLICATION
@@ -1386,7 +1416,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
 				, newAbsence.getApplication()
 				, null
 				, appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getOpErrorFlag().orElse(ErrorFlagImport.NO_ERROR) // KAF006: -PhuongDV domain fix pending- confirm input
-				, lstDates
+				, holidayDates
 				, appAbsenceStartInfoOutput.getAppDispInfoStartupOutput());
 		result.setConfirmMsgLst(lstConfirmMsg);
 		// 申請の矛盾チェック
@@ -1396,7 +1426,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
 			dateLst.add(currentDate);
 			currentDate = currentDate.addDays(1);
 		}
-		dateLst = dateLst.stream().filter(x -> !lstDates.contains(x)).collect(Collectors.toList());
+		dateLst = dateLst.stream().filter(x -> !holidayDates.contains(x)).collect(Collectors.toList());
 		// 勤務種類リスト作成
 		List<String> lstWorkType = new ArrayList<String>();
 		// KAF006: -PhuongDV domain fix pending- confirm input -> ・申請する勤務種類リスト = INPUT．「休暇申請．反映情報．勤務情報．勤務種類コード」 -> ko co trong input EAP
@@ -1847,10 +1877,25 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
             AppAbsenceStartInfoOutput appAbsenceStartInfoOutput, ApplyForLeave appAbsence, boolean agentAtr) {
         AbsenceCheckRegisterOutput result = new AbsenceCheckRegisterOutput();
         // 申請期間から休日の申請日を取得する
-        List<GeneralDate> lstDates = otherCommonAlgorithm.lstDateIsHoliday(appAbsence.getEmployeeID()
+        List<GeneralDate> holidayDates = otherCommonAlgorithm.lstDateIsHoliday(appAbsence.getEmployeeID()
                 , new DatePeriod(appAbsence.getOpAppStartDate().get().getApplicationDate(),appAbsence.getOpAppEndDate().get().getApplicationDate())
                 , appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getOpActualContentDisplayLst().get());
-        result.setHolidayDateLst(lstDates);
+        result.setHolidayDateLst(holidayDates);
+        
+        // 取得した「休日の申請日<List>」をチェックする
+        List<GeneralDate> listDates = new DatePeriod(appAbsence.getApplication().getOpAppStartDate().get().getApplicationDate(), 
+                appAbsence.getApplication().getOpAppEndDate().get().getApplicationDate()).datesBetween();
+        if (holidayDates.size() > 0 && listDates.size() == holidayDates.size()) {
+            String dateParam = "";
+            for (int i = 0; i < holidayDates.size(); i++) {
+                if (i != holidayDates.size() - 1) {
+                    dateParam += (holidayDates.get(i).toString("yyyy/MM/dd") + "、");
+                } else {
+                    dateParam += holidayDates.get(i).toString("yyyy/MM/dd");
+                }
+            }
+            throw new BusinessException("Msg_1459", dateParam);
+        }
         
         // 4-1.詳細画面登録前の処理
         detailBeforeUpdate.processBeforeDetailScreenRegistration(
@@ -1866,7 +1911,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
                 appAbsenceStartInfoOutput.getAppDispInfoStartupOutput());
         
         // 休暇申請登録時チェック処理
-        List<ConfirmMsgOutput> listConfirmMsg = this.checkAbsenceWhenRegister(true, companyID, appAbsence, appAbsenceStartInfoOutput, lstDates);
+        List<ConfirmMsgOutput> listConfirmMsg = this.checkAbsenceWhenRegister(true, companyID, appAbsence, appAbsenceStartInfoOutput, holidayDates);
         result.setConfirmMsgLst(listConfirmMsg);
         return result;
     }
