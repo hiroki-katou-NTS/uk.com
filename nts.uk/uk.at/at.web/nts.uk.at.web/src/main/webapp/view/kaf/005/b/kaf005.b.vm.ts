@@ -79,7 +79,8 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 												restTime: restTime,
 												holidayTime: holidayTime,
 												overTime: overTime,
-												visibleModel: visibleModel
+												visibleModel: visibleModel,
+												agent: agentForTable
 											}
 							
 										}"></div>
@@ -142,6 +143,7 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 		restTemp: Array<any>;
 	
 		justSelectWork: boolean = false;
+		agentForTable: KnockoutObservable<Boolean> = ko.observable(false);
         created(
             params: {
                 appType: any,
