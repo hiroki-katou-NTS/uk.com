@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare;
+package nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle;
 
 import java.util.ArrayList;
 import java.util.List;

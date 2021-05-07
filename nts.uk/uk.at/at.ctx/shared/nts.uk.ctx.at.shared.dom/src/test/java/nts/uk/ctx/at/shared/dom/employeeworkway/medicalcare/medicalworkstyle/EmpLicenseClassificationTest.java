@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare;
+package nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;

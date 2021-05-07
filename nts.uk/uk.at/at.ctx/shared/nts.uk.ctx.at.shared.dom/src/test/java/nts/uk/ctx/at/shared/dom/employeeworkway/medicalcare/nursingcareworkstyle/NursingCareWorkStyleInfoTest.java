@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.nursingworkform;
+package nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.nursingcareworkstyle;
 
 import org.junit.Test;
 
@@ -8,7 +8,7 @@ import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.nursingcareworkstyle
 import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.nursingcareworkstyle.NightShiftRemarks;
 import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.nursingcareworkstyle.NursingCareWorkStyleInfo;
 
-public class NursingWorkFormInforTest {
+public class NursingCareWorkStyleInfoTest {
 
 	@Test
 	public void getter() {
