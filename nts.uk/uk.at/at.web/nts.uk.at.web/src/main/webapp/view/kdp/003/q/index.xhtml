@@ -62,7 +62,12 @@
 					<!-- Q4_1 対象職場(タイトル) -->
 					<label id="lbl-wkp" data-bind="text: $i18n('KDP003_62')"></label>
 					<!-- Q4_2 対象職場 -->
-					<span data-bind="text: workPlaceTxtRefer"></span>
+					<com:ko-if bind="isStartUpdateMode">
+						<span data-bind="text: workPlaceTxtRefer"></span>
+					</com:ko-if>
+					<com:ko-if bind="!isStartUpdateMode">
+						<span data-bind="text: workPlaceText"></span>
+					</com:ko-if>
 				</div>
 				
 			</div>

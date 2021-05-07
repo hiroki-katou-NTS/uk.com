@@ -18,7 +18,11 @@ module nts.uk.at.kdp003.q {
 		DELETE_NOTICE: 'sys/portal/notice/deleteMessageNotice',
 
 		//打刻入力のお知らせの職場を取得する
-		GET_WKP_BY_STAMP_NOTICE: 'at/record/stamp/notice/getWkpByStampNotice'
+		GET_WKP_BY_STAMP_NOTICE: 'at/record/stamp/notice/getWkpByStampNotice',
+		
+		//お知らせ宛先の職場の名称を取得する
+		GET_NAME_OF_DESTINATION_WKP: 'sys/portal/notice/getNameOfDestinationWkp'
+		
 	};
 
 	const COMMA = '、';
@@ -302,8 +306,20 @@ module nts.uk.at.kdp003.q {
 			vm.$window.modal('at', '/view/kdp/003/k/index.xhtml', { multiSelect: true })
 				.then((selectedWP) => {
 					vm.workPlaceIdList(selectedWP.selectedId);
+					console.log(vm.workPlaceIdList());
+
+			vm.$ajax('com', API.GET_NAME_OF_DESTINATION_WKP, vm.workPlaceIdList()).then((response: WorkplaceInfo[]) => {
+				if (response) {
+					const workPlaceIdList = _.map(response, x => x.workplaceId);
+					const workPlaceName = _.map(response, x => x.workplaceName);
+					vm.workPlaceIdList(workPlaceIdList);
+					vm.workPlaceName(workPlaceName);
+				}
 				});
-		}
+				});
+
+				
+	}
 
         /**
          * Q20_4: 戻る
