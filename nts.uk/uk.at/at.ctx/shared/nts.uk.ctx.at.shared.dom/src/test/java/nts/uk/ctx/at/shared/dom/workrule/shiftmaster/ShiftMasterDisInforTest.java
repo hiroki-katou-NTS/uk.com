@@ -15,7 +15,7 @@ public class ShiftMasterDisInforTest {
 
 	@Test
 	public void getters() {
-		ShiftMasterDisInfor shiftMasterDisInfor = ShiftMasterInstanceHelper.getShiftMasterDisInforEmpty();
+		ShiftMasterDisInfor shiftMasterDisInfor = ShiftMasterHelper.DispInfo.createDummy();
 		NtsAssert.invokeGetters(shiftMasterDisInfor);
 	}
 

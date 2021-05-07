@@ -6,49 +6,64 @@ import lombok.val;
 import nts.arc.error.BusinessException;
 import nts.arc.task.tran.AtomTask;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
+
 /**
- * DS: シフトマスタを更新する
+ * シフトマスタを更新する
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.shared.就業規則.シフトマスタ.シフトマスタを更新する
  * @author tutk
  *
  */
 public class UpdateShiftMasterService {
+
 	/**
 	 * 更新する
-	 * @param requireWorkInfo
-	 * @param require
-	 * @param shiftMaterCode コード
+	 * @param require Require
+	 * @param shiftMasterCode コード
 	 * @param displayInfor 表示情報
 	 * @param workInformation 勤務情報
 	 * @param importCode 取り込みコード
 	 * @return
 	 */
-	public static AtomTask updateShiftMater(Require require
-			, String shiftMaterCode, ShiftMasterDisInfor displayInfor
-			, WorkInformation workInformation, ShiftMasterImportCode importCode) {
-		// 1:get(会社ID, コード):Optional<シフトマスタ>
-		val shiftMaster = require.getByShiftMaterCd(shiftMaterCode).get(); //truyen cid tư app
-		
-		if(!shiftMaster.getImportCode().equals(importCode) && require.checkDuplicateImportCode(importCode)) {
+	public static AtomTask update(Require require
+			, ShiftMasterCode shiftMasterCode, ShiftMasterDisInfor displayInfor
+			, WorkInformation workInformation, ShiftMasterImportCode importCode
+	) {
+
+		// シフトマスタを取得する
+		val shiftMaster = require.getByShiftMaterCd(shiftMasterCode).get();
+
+
+		// 重複チェック：取り込みコード
+		if ( !shiftMaster.getImportCode().equals(importCode) && require.checkDuplicateImportCode(importCode) ) {
 			throw new BusinessException("Msg_2163");
 		}
-		
-		// 2: 変更する(シフトマスタの表示情報, 勤務情報)
+
+
+		// 変更→エラーチェック
 		shiftMaster.change(displayInfor, importCode, workInformation);
-		// エラーチェックする
 		shiftMaster.checkError(require);
-		Optional<ShiftMaster> shiftMaterByWorkTypeAndWorkTime = require.getByWorkTypeAndWorkTime(//truyen cid tư app
-				workInformation.getWorkTypeCode().v(),
-				workInformation.getWorkTimeCodeNotNull().map(m -> m.v()).orElse(null));
-		if (shiftMaterByWorkTypeAndWorkTime.isPresent()
-				&& !shiftMaterByWorkTypeAndWorkTime.get().getShiftMasterCode().v().equals(shiftMaterCode)) {
+
+
+		// 重複チェック：勤務種類＋就業時間帯
+		val shiftMasterByWorkInfo = require.getByWorkTypeAndWorkTime(
+						workInformation.getWorkTypeCode()
+					,	workInformation.getWorkTimeCodeNotNull()
+				);
+		if ( shiftMasterByWorkInfo.isPresent()
+				&& !shiftMasterByWorkInfo.get().getShiftMasterCode().equals( shiftMasterCode ) ) {
 			throw new BusinessException("Msg_1610");
 		}
-		// 3:persist
+
+		// AtomTaskを返す
 		return AtomTask.of(() -> {
 			require.update(shiftMaster);
 		});
+
 	}
+
+
 
 	public static interface Require extends ShiftMaster.Require {
 		/**
@@ -56,22 +71,19 @@ public class UpdateShiftMasterService {
 		 * @param shiftMaterCode シフトマスタコード
 		 * @return
 		 */
-		Optional<ShiftMaster> getByShiftMaterCd(String shiftMaterCode);
-		
+		Optional<ShiftMaster> getByShiftMaterCd(ShiftMasterCode shiftMaterCode);
 		/**
 		 * 勤務情報で取得する
 		 * @param workTypeCd 勤務種類コード
 		 * @param workTimeCd 就業時間帯コード
 		 * @return
 		 */
-		Optional<ShiftMaster> getByWorkTypeAndWorkTime(String workTypeCd, String workTimeCd);
-
+		Optional<ShiftMaster> getByWorkTypeAndWorkTime(WorkTypeCode workTypeCd, Optional<WorkTimeCode> workTimeCd);
 		/**
 		 * 登録する
 		 * @param shiftMater シフトマスタ
 		 */
 		void update(ShiftMaster shiftMater);
-		
 		/**
 		 * 取り込みコードが重複しているか
 		 * @param importCode
@@ -79,4 +91,5 @@ public class UpdateShiftMasterService {
 		 */
 		boolean checkDuplicateImportCode(ShiftMasterImportCode importCode);
 	}
+
 }

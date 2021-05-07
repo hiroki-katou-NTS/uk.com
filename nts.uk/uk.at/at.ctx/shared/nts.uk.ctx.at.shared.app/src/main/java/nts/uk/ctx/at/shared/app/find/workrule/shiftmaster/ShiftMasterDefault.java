@@ -10,6 +10,7 @@ import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.Target
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.CopyShiftMasterByOrgService;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.MakeShiftMasterService;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMaster;
+import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterCode;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterImportCode;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterOrganization;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.UpdateShiftMasterService;
@@ -20,9 +21,10 @@ import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 
 /**
- * 
+ *
  * @author tutk
  *
  */
@@ -62,25 +64,25 @@ public class ShiftMasterDefault {
 	private static class RequireImpl_1 implements MakeShiftMasterService.Require {
 
 		@Override
-		public boolean checkExists(String companyId, String workTypeCd, String workTimeCd) {
-			// TODO Auto-generated method stub
-			return false;
-		}
-		
-		@Override
-		public boolean checkExistsByCode(String companyId, String shiftMasterCd) {
+		public boolean checkExists(WorkTypeCode workTypeCd, Optional<WorkTimeCode> workTimeCd) {
 			// TODO Auto-generated method stub
 			return false;
 		}
 
 		@Override
-		public void insert(ShiftMaster shiftMater, String workTypeCd, String workTimeCd) {
+		public boolean checkExistsByCode(ShiftMasterCode shiftMasterCd) {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		public void insert(ShiftMaster shiftMater) {
 			// TODO Auto-generated method stub
 
 		}
 
 		@Override
-		public boolean checkDuplicateImportCode(String companyId, ShiftMasterImportCode importCode) {
+		public boolean checkDuplicateImportCode(ShiftMasterImportCode importCode) {
 			// TODO Auto-generated method stub
 			return false;
 		}
@@ -130,9 +132,9 @@ public class ShiftMasterDefault {
 
 	@AllArgsConstructor
 	private static class RequireImpl_2 implements UpdateShiftMasterService.Require {
-		
+
 //		private final String companyId = AppContexts.user().companyId();
-		
+
 		@Override
 		public void update(ShiftMaster shiftMater) {
 			// TODO Auto-generated method stub
@@ -140,13 +142,13 @@ public class ShiftMasterDefault {
 		}
 
 		@Override
-		public Optional<ShiftMaster> getByShiftMaterCd(String shiftMaterCode) {
+		public Optional<ShiftMaster> getByShiftMaterCd(ShiftMasterCode shiftMasterCode) {
 			// TODO Auto-generated method stub
 			return Optional.empty();
 		}
 
 		@Override
-		public Optional<ShiftMaster> getByWorkTypeAndWorkTime(String workTypeCd, String workTimeCd) {
+		public Optional<ShiftMaster> getByWorkTypeAndWorkTime(WorkTypeCode workTypeCd, Optional<WorkTimeCode> workTimeCd) {
 			// TODO Auto-generated method stub
 			return Optional.empty();
 		}
@@ -200,5 +202,5 @@ public class ShiftMasterDefault {
 		}
 
 	}
-	
+
 }

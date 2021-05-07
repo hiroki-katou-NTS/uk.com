@@ -5,255 +5,214 @@ import java.util.Optional;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import lombok.val;
 import mockit.Expectations;
 import mockit.Injectable;
+import mockit.Mock;
+import mockit.MockUp;
 import mockit.integration.junit4.JMockit;
-import nts.arc.task.tran.AtomTask;
+import nts.arc.error.BusinessException;
 import nts.arc.testing.assertion.NtsAssert;
-import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.MakeShiftMasterService.Require;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 
 @RunWith(JMockit.class)
 public class MakeShiftMasterServiceTest {
 
-	@Injectable
-	private Require require;
+	@Injectable private Require require;
 
+
+
+	/**
+	 * Target	: makeShiftMaster
+	 * Pattern	: 同じコードが既に存在する
+	 * Expect	: throw Msg_3
+	 */
 	@Test
-	public void testMakeShiftMater_throw_Msg_1610() {
-		String companyId = "companyId";
-		String shiftMasterCode = "shiftMasterCode";
-		String workTypeCode = "workTypeCode";
-		Optional<String> workTimeCode = Optional.empty();
-		ShiftMasterImportCode importCode = new ShiftMasterImportCode("importCode");
-		ShiftMasterDisInfor shiftMasterDisInfor =  new ShiftMasterDisInfor(new ShiftMasterName("name"),new ColorCodeChar6("color"),new ColorCodeChar6("color"), Optional.empty());
-		new Expectations() {
-			{
-				require.getWorkType(workTypeCode);
-				result = Optional.of(new WorkType());
+	public void testMakeShiftMaster_throw_Msg_3() {
 
-				require.checkNeededOfWorkTimeSetting(workTypeCode);
-				result = SetupType.OPTIONAL;
+		new Expectations() {{
 
-				require.checkExists(companyId, // dummy
-						workTypeCode, // dummy
-						null);// dummy;
-				result = true;
-			}
-		};
+			// 重複チェック：コード
+			require.checkExistsByCode((ShiftMasterCode)any);
+			result = true;
 
+		}};
 
-		NtsAssert.businessException("Msg_1610", () -> {
-			AtomTask persist = MakeShiftMasterService.makeShiftMater(require, companyId,
-					shiftMasterCode, workTypeCode,
-					workTimeCode,//worktime = null
-					shiftMasterDisInfor,
-					importCode);
-			persist.run();
-		});
-	}
+		NtsAssert.businessException("Msg_3"
+				, () -> MakeShiftMasterService.makeShiftMaster(require
+							, "companyId"
+							, new ShiftMasterCode("shiftMasterCode")
+							, new WorkTypeCode("workTypeCode")
+							, Optional.of(new WorkTimeCode("workTimeCode"))
+							, ShiftMasterHelper.DispInfo.createDummy()
+							, new ShiftMasterImportCode("importCode")
+						)
+		);
 
-	@Test
-	public void testMakeShiftMater_throw_Msg_1608() {
-		String companyId = "companyId";
-		String shiftMasterCode = "shiftMasterCode";
-		String workTypeCode = "workTypeCode";
-		Optional<String> workTimeCode = Optional.of("workTypeCode");
-		ShiftMasterImportCode importCode = new ShiftMasterImportCode("importCode");
-		ShiftMasterDisInfor shiftMasterDisInfor =  new ShiftMasterDisInfor(new ShiftMasterName("name"),new ColorCodeChar6("color"),new ColorCodeChar6("color"), Optional.empty());
-		new Expectations() {
-			{
-				require.getWorkType(anyString);
-			}
-		};
-		NtsAssert.businessException("Msg_1608", () -> {
-			AtomTask persist = MakeShiftMasterService.makeShiftMater(
-					require,
-					companyId,//dummy
-					shiftMasterCode, //dummy
-					workTypeCode, //dummy
-					workTimeCode, shiftMasterDisInfor, importCode);//dummy
-			persist.run();
-		});
-	}
-
-	@Test
-	public void testMakeShiftMater_throw_Msg_1609() {
-		String companyId = "companyId";
-		String shiftMasterCode = "shiftMasterCode";
-		String workTypeCode = "workTypeCode";
-		Optional<String> workTimeCode = Optional.of("workTypeCode");
-		ShiftMasterImportCode importCode = new ShiftMasterImportCode("importCode");
-		ShiftMasterDisInfor shiftMasterDisInfor =  new ShiftMasterDisInfor(new ShiftMasterName("name"),new ColorCodeChar6("color"),new ColorCodeChar6("color"), Optional.empty());
-		new Expectations() {
-			{
-				require.getWorkType(workTypeCode);
-				result = Optional.of(new WorkType());
-
-				require.checkNeededOfWorkTimeSetting(workTypeCode);
-				result = SetupType.REQUIRED;
-
-				require.getWorkTime(workTimeCode.get());
-			}
-		};
-		NtsAssert.businessException("Msg_1609", () -> {
-			AtomTask persist = MakeShiftMasterService.makeShiftMater(
-					require,
-					companyId,//dummy
-					shiftMasterCode, //dummy
-					workTypeCode, //dummy
-					workTimeCode, shiftMasterDisInfor, importCode);//dummy
-			persist.run();
-		});
-	}
-
-	@Test
-	public void testMakeShiftMater_throw_Msg_435() {
-		String companyId = "companyId";
-		String shiftMasterCode = "shiftMasterCode";
-		String workTypeCode = "workTypeCode";
-		Optional<String> workTimeCode = Optional.empty();
-		ShiftMasterImportCode importCode = new ShiftMasterImportCode("importCode");
-		ShiftMasterDisInfor shiftMasterDisInfor =  new ShiftMasterDisInfor(new ShiftMasterName("name"),new ColorCodeChar6("color"),new ColorCodeChar6("color"), Optional.empty());
-		new Expectations() {
-			{
-				require.getWorkType(workTypeCode);
-				result = Optional.of(new WorkType());
-
-				require.checkNeededOfWorkTimeSetting(workTypeCode);
-				result = SetupType.REQUIRED;
-			}
-		};
-
-		NtsAssert.businessException("Msg_435", () -> {
-			AtomTask persist = MakeShiftMasterService.makeShiftMater(
-					require,
-					companyId,//dummy
-					shiftMasterCode, //dummy
-					workTypeCode, //dummy
-					workTimeCode, shiftMasterDisInfor, importCode);//dummy
-			persist.run();
-		});
-	}
-
-	@Test
-	public void testMakeShiftMater_throw_Msg_434() {
-		String companyId = "companyId";
-		String shiftMasterCode = "shiftMasterCode";
-		String workTypeCode = "workTypeCode";
-		Optional<String> workTimeCode = Optional.of("workTypeCode");
-		ShiftMasterImportCode importCode = new ShiftMasterImportCode("importCode");
-		ShiftMasterDisInfor shiftMasterDisInfor =  new ShiftMasterDisInfor(new ShiftMasterName("name"),new ColorCodeChar6("color"),new ColorCodeChar6("color"), Optional.empty());
-
-		new Expectations() {
-			{
-				require.getWorkType(workTypeCode);
-				result = Optional.of(new WorkType());
-
-				require.checkNeededOfWorkTimeSetting(workTypeCode);
-				result = SetupType.NOT_REQUIRED;
-			}
-		};
-
-		NtsAssert.businessException("Msg_434", () -> {
-			AtomTask persist = MakeShiftMasterService.makeShiftMater(
-					require,
-					companyId,//dummy
-					shiftMasterCode, //dummy
-					workTypeCode, //dummy
-					workTimeCode, shiftMasterDisInfor, importCode);//dummy
-			persist.run();
-		});
-	}
-
-
-	@Test
-	public void testMakeShiftMater_throw_Msg_3() {
-		String companyId = "companyId";
-		String shiftMasterCode = "shiftMasterCode";
-		String workTypeCode = "workTypeCode";
-		String workTimeCode = "workTypeCode";
-		ShiftMasterImportCode importCode = new ShiftMasterImportCode("importCode");
-		ShiftMasterDisInfor shiftMasterDisInfor =  new ShiftMasterDisInfor(new ShiftMasterName("name"),new ColorCodeChar6("color"),new ColorCodeChar6("color"), Optional.empty());
-
-		new Expectations() {
-			{
-				require.checkExistsByCode(companyId, shiftMasterCode);
-				result = true;
-
-			}
-		};
-
-		NtsAssert.businessException("Msg_3", () -> {
-			AtomTask persist = MakeShiftMasterService.makeShiftMater(
-					require,
-					companyId,//dummy
-					shiftMasterCode, //dummy
-					workTypeCode, //dummy
-					Optional.of(workTimeCode), shiftMasterDisInfor, importCode);//dummy
-			persist.run();
-		});
 	}
 
 	/**
-	 * 取り込みコードが重複している
-	 * 期待：　Msg_2163
+	 * Target	: makeShiftMaster
+	 * Pattern	: 同じ勤務情報が既に存在する
+	 * Expect	: throw Msg_2163
 	 */
 	@Test
-	public void testMakeShiftMater_throw_Msg_2163() {
-		String companyId = "companyId";
-		String shiftMasterCode = "shiftMasterCode";
-		String workTypeCode = "workTypeCode";
-		String workTimeCode = "workTypeCode";
-		ShiftMasterImportCode importCode = new ShiftMasterImportCode("importCode");
-		ShiftMasterDisInfor shiftMasterDisInfor =  new ShiftMasterDisInfor(new ShiftMasterName("name"),new ColorCodeChar6("color"),new ColorCodeChar6("color"), Optional.empty());
+	public void test_makeShiftMaster_throw_Msg_2163() {
 
-		new Expectations() {
-			{
-				require.checkDuplicateImportCode(companyId, importCode);
-				result = true;
+		new Expectations() {{
 
-			}
-		};
+			// 重複チェック：コード
+			require.checkExistsByCode((ShiftMasterCode)any);
+			result = false;
 
-		NtsAssert.businessException("Msg_2163", () ->
-			MakeShiftMasterService.makeShiftMater(
-					require,
-					companyId,//dummy
-					shiftMasterCode, //dummy
-					workTypeCode, //dummy
-					Optional.of(workTimeCode), shiftMasterDisInfor, importCode)//dummy
+			// 重複チェック：取り込みコード
+			require.checkDuplicateImportCode((ShiftMasterImportCode)any);
+			result = true;
+
+		}};
+
+		NtsAssert.businessException("Msg_2163"
+				, () -> MakeShiftMasterService.makeShiftMaster(require
+							, "companyId"
+							, new ShiftMasterCode("shiftMasterCode")
+							, new WorkTypeCode("workTypeCode")
+							, Optional.empty()
+							, ShiftMasterHelper.DispInfo.createDummy()
+							, new ShiftMasterImportCode("importCode")
+						)
 		);
+
 	}
 
+	/**
+	 * Target	: makeShiftMaster
+	 * Pattern	: 同じ勤務情報が既に存在する
+	 * Expect	: throw Msg_1610
+	 */
 	@Test
-	public void testMakeShiftMater() {
-		String shiftMasterCode = "shiftMasterCode";
-		String workTypeCode = "workTypeCode";
-		ShiftMasterImportCode importCode = new ShiftMasterImportCode("importCode");
-		ShiftMasterDisInfor displayInfor =  new ShiftMasterDisInfor(new ShiftMasterName("name"),new ColorCodeChar6("color"),new ColorCodeChar6("color"), Optional.empty());
-		ShiftMaster shiftMater = new ShiftMaster("companyId",new ShiftMasterCode(shiftMasterCode), displayInfor, workTypeCode, null, importCode);
-		new Expectations() {
-			{
-				require.getWorkType(shiftMater.getWorkTypeCode().v());
-				result = Optional.of(new WorkType());
+	public void test_makeShiftMaster_throw_Msg_1610(@Injectable WorkType workType) {
 
-				require.checkNeededOfWorkTimeSetting(shiftMater.getWorkTypeCode().v());
-				result = SetupType.OPTIONAL;
+		new Expectations() {{
 
-				require.checkExists(shiftMater.getCompanyId(), // dummy
-						shiftMater.getWorkTypeCode().v(), // dummy
-						null);// dummy;
-				result = false;
+			// 重複チェック：コード
+			require.checkExistsByCode((ShiftMasterCode)any);
+			result = false;
+			// 重複チェック：取り込みコード
+			require.checkDuplicateImportCode((ShiftMasterImportCode)any);
+			result = false;
+
+			// 重複チェック：勤務種類コード＋就業時間帯コード
+			require.checkExists((WorkTypeCode)any, Optional.empty());
+			result = true;
+
+		}};
+		new MockUp<ShiftMaster>() {
+			/** [Mock] エラーチェックする **/
+			@Mock public void checkError(@SuppressWarnings("unused") ShiftMaster.Require require) {
+				// エラーなし
 			}
 		};
 
+		NtsAssert.businessException("Msg_1610"
+				, () -> MakeShiftMasterService.makeShiftMaster(require
+							, "companyId"
+							, new ShiftMasterCode("shiftMasterCode")
+							, new WorkTypeCode("workTypeCode")
+							, Optional.empty()
+							, ShiftMasterHelper.DispInfo.createDummy()
+							, new ShiftMasterImportCode("importCode")
+						)
+		);
 
-		NtsAssert.atomTask(() -> MakeShiftMasterService.makeShiftMater(require, shiftMater.getCompanyId(),
-				shiftMater.getShiftMasterCode().v(), shiftMater.getWorkTypeCode().v(),
-				Optional.empty(), shiftMater.getDisplayInfor(), importCode),
-				any -> require.insert(shiftMater, shiftMater.getWorkTypeCode().v(), null));
+	}
+
+	/**
+	 * Target	: makeShiftMsater
+	 * Pattern	: シフトマスタがエラー
+	 * Expect	: throw シフトマスタ.エラーチェックする(Require)で発生したException
+	 */
+	@Test
+	public void test_makeShiftMsater_shiftMasterIsError() {
+
+		new Expectations() {{
+
+			// 重複チェック：コード
+			require.checkExistsByCode((ShiftMasterCode)any);
+			result = false;
+			// 重複チェック：取り込みコード
+			require.checkDuplicateImportCode((ShiftMasterImportCode)any);
+			result = false;
+
+		}};
+		new MockUp<ShiftMaster>() {
+			/** [Mock] エラーチェックする **/
+			@Mock public void checkError(@SuppressWarnings("unused") ShiftMaster.Require require) {
+				throw new BusinessException("Msg_434");
+			}
+		};
+
+		NtsAssert.businessException("Msg_434"
+				, () -> MakeShiftMasterService.makeShiftMaster(require
+							, "companyId"
+							, new ShiftMasterCode("shiftMasterCode")
+							, new WorkTypeCode("workTypeCode")
+							, Optional.empty()
+							, ShiftMasterHelper.DispInfo.createDummy()
+							, new ShiftMasterImportCode("importCode")
+						)
+		);
+
+	}
+
+
+
+	/**
+	 * Target	: makeShiftMaster
+	 * Pattern	: エラーなし
+	 * Expect	: No exception
+	 */
+	@Test
+	public void test_makeShiftMsater_complete(@Injectable WorkType workType) {
+
+		val shiftMaster = ShiftMasterHelper.create("code", "name", workType.getWorkTypeCode().v(), Optional.empty(), "importCode");
+
+		new Expectations() {{
+
+			// 重複チェック：コード
+			require.checkExistsByCode((ShiftMasterCode)any);
+			result = false;
+
+			// 重複チェック：取り込みコード
+			require.checkDuplicateImportCode((ShiftMasterImportCode)any);
+			result = false;
+
+			// 重複チェック：勤務種類コード＋就業時間帯コード
+			require.checkExists((WorkTypeCode)any, Optional.empty());
+			result = false;
+
+		}};
+		new MockUp<ShiftMaster>() {
+			/** [Mock] エラーチェックする **/
+			@Mock public void checkError(@SuppressWarnings("unused") ShiftMaster.Require require) {
+				// エラーなし
+			}
+		};
+
+		NtsAssert.atomTask(
+				() -> MakeShiftMasterService.makeShiftMaster(require
+							, shiftMaster.getCompanyId()
+							, shiftMaster.getShiftMasterCode()
+							, shiftMaster.getWorkTypeCode()
+							, shiftMaster.getWorkTimeCodeNotNull()
+							, shiftMaster.getDisplayInfor()
+							, shiftMaster.getImportCode()
+						)
+			,	any -> require.insert(shiftMaster)
+		);
+
 	}
 
 }

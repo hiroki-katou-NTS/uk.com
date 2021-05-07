@@ -15,9 +15,7 @@ import nts.arc.testing.assertion.NtsAssert;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMaster.Require;
-import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
-import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 
 @RunWith(JMockit.class)
 public class ShiftMasterTest {
@@ -27,7 +25,7 @@ public class ShiftMasterTest {
 
 	@Test
 	public void test_getters() {
-		val instance = Helper.createShfitMaster("code", "name", "workTypeCode", Optional.of("workTimeCode"), "importCode");
+		val instance = ShiftMasterHelper.createDummy();
 		NtsAssert.invokeGetters(instance);
 	}
 
@@ -49,8 +47,8 @@ public class ShiftMasterTest {
 		val workInfoAfter = new WorkInformation("WorkType02", "WorkTime02");
 
 		//表示情報
-		val displayInfoBefore = Helper.createDisplayInfo("Name_01", "fff", "ccc", "Note_01");
-		val displayInfoAfter = Helper.createDisplayInfo("Name_02", "000", "999", "Note_02");
+		val displayInfoBefore = ShiftMasterHelper.DispInfo.create("Name_01", "fff", "ccc", Optional.of("Note_01"));
+		val displayInfoAfter = ShiftMasterHelper.DispInfo.create("Name_02", "000", "999", Optional.of("Note_02"));
 
 		//取込コード
 		val impCdBefore = new ShiftMasterImportCode("ImportBefore");
@@ -106,7 +104,7 @@ public class ShiftMasterTest {
 	@Test
 	public void test_checkError_throw_Msg_1608() {
 
-		val shiftMater = Helper.createShfitMaster("code", "name", "workTypeCode", Optional.of("workTimeCode"), "importCode");
+		val shiftMater = ShiftMasterHelper.create("code", "name", "workTypeCode", Optional.of("workTimeCode"), "importCode");
 
 		new Expectations() {{
 			// 勤務種類を取得する
@@ -128,7 +126,7 @@ public class ShiftMasterTest {
 	@Test
 	public void test_checkError_throw_Msg_1609(@Injectable WorkType workType) {
 
-		val shiftMater = Helper.createShfitMaster("code", "name", "workTypeCode", Optional.of("workTimeCode"), "importCode");
+		val shiftMater = ShiftMasterHelper.create("code", "name", "workTypeCode", Optional.of("workTimeCode"), "importCode");
 
 		new Expectations() {{
 			// 勤務種類を取得する
@@ -155,7 +153,7 @@ public class ShiftMasterTest {
 	@Test
 	public void test_checkError_throw_Msg_435(@Injectable WorkType workType) {
 
-		val shiftMater = Helper.createShfitMaster("code", "name", "workTypeCode", Optional.empty(), "importCode");
+		val shiftMater = ShiftMasterHelper.create("code", "name", "workTypeCode", Optional.empty(), "importCode");
 
 		new Expectations() {{
 			// 勤務種類を取得する
@@ -180,7 +178,7 @@ public class ShiftMasterTest {
 	@Test
 	public void test_checkError_throw_Msg_434(@Injectable WorkType workType) {
 
-		val shiftMater = Helper.createShfitMaster("code", "name", "workTypeCode", Optional.of("workTimeCode"), "importCode");
+		val shiftMater = ShiftMasterHelper.create("code", "name", "workTypeCode", Optional.of("workTimeCode"), "importCode");
 
 		new Expectations() {{
 			// 勤務種類を取得する
@@ -192,44 +190,6 @@ public class ShiftMasterTest {
 		}};
 
 		NtsAssert.businessException("Msg_434", () -> shiftMater.checkError(require));
-
-	}
-
-
-
-	public static class Helper{
-
-		public static ShiftMaster createShfitMaster(String code, String name
-				, String workTypeCode, Optional<String> workTimeCode
-				, String importCode
-		) {
-
-			return new ShiftMaster(
-						"companyId", new ShiftMasterCode(code)
-					,	Helper.createDisplayInfo(name, "ffffff", "000000", "remarks")
-					,	new WorkTypeCode(workTypeCode), workTimeCode.map(WorkTimeCode::new)
-					,	new ShiftMasterImportCode(importCode)
-				);
-		}
-
-		/**
-		 * 表示情報を作成する
-		 * @param shiftMasterName 名称
-		 * @param colorPC カラーコード(PC)
-		 * @param colorSP カラーコード(スマホ)
-		 * @param remark 備考
-		 * @return
-		 */
-		public static ShiftMasterDisInfor createDisplayInfo(
-				String shiftMasterName, String colorPC, String colorSP, String remark
-		) {
-			return new ShiftMasterDisInfor(
-						new ShiftMasterName(shiftMasterName)
-					,	new ColorCodeChar6(colorPC)
-					,	new ColorCodeChar6(colorSP)
-					,	Optional.of(new Remarks(remark))
-				);
-		}
 
 	}
 
