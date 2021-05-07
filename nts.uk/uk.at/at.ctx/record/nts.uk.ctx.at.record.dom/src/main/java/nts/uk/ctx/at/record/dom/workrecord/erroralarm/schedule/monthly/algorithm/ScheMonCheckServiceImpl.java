@@ -45,6 +45,7 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.ConvertCompareTypeTo
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.algorithm.StatusOfEmployeeAdapterAl;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.algorithm.WorkPlaceHistImportAl;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.algorithm.WorkPlaceIdAndPeriodImportAl;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedTimeDuration;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.monthly.DayCheckCond;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.monthly.ExtractionCondScheduleMonth;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.monthly.ExtractionCondScheduleMonthRepository;
@@ -52,6 +53,7 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.monthly.FixedExtr
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.monthly.FixedExtractionSMonConRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.monthly.FixedExtractionSMonItems;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.monthly.FixedExtractionSMonItemsRepository;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.monthly.MonCheckItemType;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.monthly.PublicHolidayCheckCond;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.monthly.ScheMonCheckService;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.monthly.TimeCheckCond;
@@ -860,7 +862,7 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 				}
 				
 				// 比較条件
-				String param0 = getCompareOperatorText(scheCondMon.getCheckConditions(), publicHoliday.getTypeOfContrast().nameId);
+				String param0 = getCompareOperatorText(scheCondMon.getCheckConditions(), publicHoliday.getTypeOfContrast().nameId, scheCondMon.getCheckItemType());
 				// 所定公休日数
 				String param1 = String.valueOf(numberOfHoliday);
 				// 合計公休使用数
@@ -928,7 +930,7 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 			}
 			
 			// アラーム内容
-			String param0 = getCompareOperatorText(scheCondMon.getCheckConditions(), publicHoliday.getTypeOfContrast().nameId);
+			String param0 = getCompareOperatorText(scheCondMon.getCheckConditions(), publicHoliday.getTypeOfContrast().nameId, scheCondMon.getCheckItemType());
 			String param1 = String.valueOf(totalComparsion);
 			String param2 = String.valueOf(totalWorkingTime);
 			alarmContent = TextResource.localize("KAL010_1117", param0, param1, param2);
@@ -995,7 +997,7 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 			}
 			
 			// アラーム内容
-			String paramDayOff0 = getCompareOperatorText(scheCondMon.getCheckConditions(), publicHoliday.getTypeOfContrast().nameId);
+			String paramDayOff0 = getCompareOperatorText(scheCondMon.getCheckConditions(), publicHoliday.getTypeOfContrast().nameId, scheCondMon.getCheckItemType());
 			String paramDayOff1 = String.valueOf(totalComparsionDayOff);
 			String paramDayOff2 = String.valueOf(totalWorkingTimeDayOff);
 			alarmContent = TextResource.localize("KAL010_1117", paramDayOff0, paramDayOff1, paramDayOff2);
@@ -1089,7 +1091,7 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 			}
 			
 			// アラーム内容
-			String paramPub0 = getCompareOperatorText(scheCondMon.getCheckConditions(), publicHoliday.getTypeOfContrast().nameId);
+			String paramPub0 = getCompareOperatorText(scheCondMon.getCheckConditions(), publicHoliday.getTypeOfContrast().nameId, scheCondMon.getCheckItemType());
 			String paramPub1 = String.valueOf(totalComparsionPubHoliday);
 			String paramPub2 = String.valueOf(totalWorkingTimePubHoliday);
 			alarmContent = TextResource.localize("KAL010_1117", paramPub0, paramPub1, paramPub2);
@@ -1223,7 +1225,7 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 						? scheCondMon.getErrorAlarmMessage().get().v()
 						: Strings.EMPTY;
 		// アラーム内容
-		String param = getCompareOperatorText(scheCondMon.getCheckConditions(), timeCheckCond.getTypeOfTime().nameId);
+		String param = getCompareOperatorText(scheCondMon.getCheckConditions(), timeCheckCond.getTypeOfTime().nameId, scheCondMon.getCheckItemType());
 		String alarmContent = TextResource.localize("KAL010_1118", param, String.valueOf(totalTime));
 		// チェック対象値
 		String checkValue = TextResource.localize("KAL010_1121", String.valueOf(totalTime));
@@ -1322,7 +1324,7 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 						? scheCondMon.getErrorAlarmMessage().get().v()
 						: Strings.EMPTY;
 		// アラーム内容
-		String param = getCompareOperatorText(scheCondMon.getCheckConditions(), dayCheckCond.getTypeOfDays().nameId);
+		String param = getCompareOperatorText(scheCondMon.getCheckConditions(), dayCheckCond.getTypeOfDays().nameId, scheCondMon.getCheckItemType());
 		String alarmContent = TextResource.localize("KAL010_1119", param, String.valueOf(totalTime));
 		// チェック対象値
 		String checkValue = TextResource.localize("KAL010_1120", String.valueOf(totalTime));
@@ -1459,7 +1461,7 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 	 * Get parameter 0 for alarm content 
 	 */
 	@SuppressWarnings({ "rawtypes" })
-	public String getCompareOperatorText(CheckedCondition checkCondition, String checkCondTypeName) {
+	public String getCompareOperatorText(CheckedCondition checkCondition, String checkCondTypeName, MonCheckItemType monCheckType) {
 		if (checkCondition == null) {
 			return checkCondTypeName;		
 		}
@@ -1470,22 +1472,48 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 				
 		CompareOperatorText compareOperatorText = convertComparaToText.convertCompareType(compare);
 		
-		String startValue = checkCondition instanceof CompareSingleValue 
-						? ((CompareSingleValue) checkCondition).getValue().toString()
-						: ((CompareRange) checkCondition).getStartValue().toString();
-		String endValue = checkCondition instanceof CompareRange  
-				? ((CompareRange) checkCondition).getEndValue().toString() : null;
+		String startValueStr = Strings.EMPTY;
+		String endValueStr = Strings.EMPTY;
+		Double startValue = checkCondition instanceof CompareSingleValue 
+						? (Double)((CompareSingleValue) checkCondition).getValue()
+						: (Double)((CompareRange) checkCondition).getStartValue();
+		Double endValue = checkCondition instanceof CompareRange  
+				? (Double)((CompareRange) checkCondition).getEndValue() : null;
+				
+		switch (monCheckType) {
+		case CONTRAST:
+			startValueStr = String.valueOf(startValue.intValue());
+			if (endValue != null) {
+				endValueStr = String.valueOf(endValue.intValue());
+			}
+			break;
+		case TIME:
+			CheckedTimeDuration startTime = new CheckedTimeDuration(startValue.intValue());
+			startValueStr = startTime.getTimeWithFormat();
+			if (endValue != null) {
+				CheckedTimeDuration endTime = new CheckedTimeDuration(endValue.intValue());
+				endValueStr = endTime.getTimeWithFormat();
+			}
+		case NUMBER_DAYS:
+		case REMAIN_NUMBER:
+			startValueStr = startValue.toString();
+			if (endValue != null) {
+				endValueStr = endValue.toString();
+			}
+		default:
+			break;
+		}
 		
 		String variable0 = "";
 		if(compare <= 5) {
-			variable0 = checkCondTypeName + compareOperatorText.getCompareLeft() + startValue;
+			variable0 = checkCondTypeName + compareOperatorText.getCompareLeft() + startValueStr;
 		} else {
 			if (compare == 6 || compare == 7) {
-				variable0 = startValue + compareOperatorText.getCompareLeft() + checkCondTypeName
-						+ compareOperatorText.getCompareright() + endValue;
+				variable0 = startValueStr + compareOperatorText.getCompareLeft() + checkCondTypeName
+						+ compareOperatorText.getCompareright() + endValueStr;
 			} else {
-				variable0 = checkCondTypeName + compareOperatorText.getCompareLeft() + startValue
-						+ ", " + checkCondTypeName + compareOperatorText.getCompareright() + endValue;
+				variable0 = checkCondTypeName + compareOperatorText.getCompareLeft() + startValueStr
+						+ ", " + checkCondTypeName + compareOperatorText.getCompareright() + endValueStr;
 			}
 		}
 		
