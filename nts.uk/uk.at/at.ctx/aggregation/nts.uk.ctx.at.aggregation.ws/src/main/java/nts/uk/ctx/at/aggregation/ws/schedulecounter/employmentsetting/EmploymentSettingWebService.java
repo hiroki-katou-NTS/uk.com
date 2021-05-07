@@ -14,7 +14,7 @@ import nts.uk.ctx.at.aggregation.app.find.schedulecounter.employmentsetting.Crit
  * @author hoangnd
  *
  */
-import nts.uk.ctx.at.aggregation.app.find.schedulecounter.employmentsetting.EmploymentSettingFinder;
+import nts.uk.ctx.at.aggregation.app.find.schedulecounter.employmentsetting.EmploymentSettingsFinder;
 import nts.uk.shr.com.context.AppContexts;
 
 @Path("ctx/at/schedule/budget/employmentsetting")
@@ -22,7 +22,7 @@ import nts.uk.shr.com.context.AppContexts;
 public class EmploymentSettingWebService extends WebService {
 	
 	@Inject
-	private EmploymentSettingFinder employmentSettingFinder;
+	private EmploymentSettingsFinder employmentSettingFinder;
 	
 	@Inject
 	private CriterionAmountUsageSettingCommandHandler criterionAmountUsageSettingCommandHandler;

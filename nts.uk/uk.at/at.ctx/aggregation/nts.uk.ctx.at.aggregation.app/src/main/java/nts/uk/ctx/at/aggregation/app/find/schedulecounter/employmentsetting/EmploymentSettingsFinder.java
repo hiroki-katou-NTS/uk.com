@@ -7,7 +7,7 @@ import nts.uk.ctx.at.aggregation.dom.schedulecounter.criterion.CriterionAmountUs
 
 // 利用単位の設定を取得する
 @Stateless
-public class EmploymentSettingFinder {
+public class EmploymentSettingsFinder {
 
 	@Inject
 	private CriterionAmountUsageSettingRepository criterionAmountUsageSettingRepository;
