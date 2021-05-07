@@ -1898,6 +1898,20 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
         }
         
         // 4-1.詳細画面登録前の処理
+        String workType = null;
+        String workTime = null;
+        if (appAbsenceStartInfoOutput.getWorkInformationForApplication().isPresent()) {
+            if (!appAbsence.getReflectFreeTimeApp().getWorkInfo().getWorkTypeCode().v()
+                    .equals(appAbsenceStartInfoOutput.getWorkInformationForApplication().get().getWorkTypeCode().v())) {
+                workType = appAbsence.getReflectFreeTimeApp().getWorkInfo().getWorkTypeCode().v();
+            }
+            if (appAbsence.getReflectFreeTimeApp().getWorkInfo().getWorkTimeCodeNotNull().isPresent() 
+                    && appAbsenceStartInfoOutput.getWorkInformationForApplication().get().getWorkTimeCode() != null 
+                    && !appAbsence.getReflectFreeTimeApp().getWorkInfo().getWorkTimeCodeNotNull().get().v()
+                    .equals(appAbsenceStartInfoOutput.getWorkInformationForApplication().get().getWorkTimeCode().v())) {
+                workTime = appAbsence.getReflectFreeTimeApp().getWorkInfo().getWorkTimeCode().v();
+            }
+        }
         detailBeforeUpdate.processBeforeDetailScreenRegistration(
                 companyID,
                 appAbsence.getApplication().getEmployeeID(),
@@ -1906,8 +1920,8 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
                 appAbsence.getApplication().getAppID(),
                 appAbsence.getApplication().getPrePostAtr(),
                 appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDetailScreenInfo().get().getApplication().getVersion(),
-                appAbsence.getReflectFreeTimeApp().getWorkInfo().getWorkTypeCode() == null ? null : appAbsence.getReflectFreeTimeApp().getWorkInfo().getWorkTypeCode().v(),
-                appAbsence.getReflectFreeTimeApp().getWorkInfo().getWorkTimeCode() == null ? null : appAbsence.getReflectFreeTimeApp().getWorkInfo().getWorkTimeCode().v(),
+                workType,
+                workTime,
                 appAbsenceStartInfoOutput.getAppDispInfoStartupOutput());
         
         // 休暇申請登録時チェック処理
