@@ -51,7 +51,7 @@
               </div>
               <div class="collapse">
                 <div class="card-body">
-                  <span>{{item.description}}</span><br>
+                  <span style="display: block;">{{item.description}}</span>
                   <span v-if="item.lowerCheck || item.upperCheck || item.unit || item.optionalItemAtr == 0">
                     {{ 'KAF020_25' | i18n }}
                   </span>
@@ -107,7 +107,7 @@
           </div>
           <!-- A2_6_4_1 -->
           <div class="position-relative mt-2">
-            <label class="pl-4" v-if="item.time != null">{{item.time | timewd}}{{'KAF020_32' | i18n}}</label>
+            <label class="pl-4" v-if="item.time != null">{{item.time | timewd}}{{item.unit}}</label>
             <label class="pl-4" v-if="item.number != null">{{ item.number }}{{item.unit}}</label>
             <label class="pl-4" v-if="item.amount != null">{{ item.amount }}{{item.unit}}</label>
           </div>

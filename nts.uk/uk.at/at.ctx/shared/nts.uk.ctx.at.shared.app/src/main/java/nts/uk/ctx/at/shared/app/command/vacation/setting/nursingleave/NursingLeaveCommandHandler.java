@@ -47,7 +47,7 @@ public class NursingLeaveCommandHandler extends CommandHandler<NursingLeaveComma
         List<NursingLeaveSetting> result = this.nursingLeaveRepo.findByCompanyId(companyId);
 
         // Check fields enable/disable.
-        this.validateField(command, result);
+//        this.validateField(command, result);
 
         NursingLeaveSetting nursingSetting = command.getNursingSetting().toDomain(companyId);
         NursingLeaveSetting childNursingSetting = command.getChildNursingSetting().toDomain(companyId);
@@ -116,7 +116,7 @@ public class NursingLeaveCommandHandler extends CommandHandler<NursingLeaveComma
 //         一時対応
 //        command.setStartMonthDay(settingDb.getStartMonthDay());
 //        command.setNursingNumberLeaveDay(settingDb.getMaxPersonSetting().getNursingNumberLeaveDay().v());
-//        command.setNursingNumberPerson(settingDb.getMaxPersonSetting().getNursingNumberLeaveDay2().v());
+//        command.setNursingNumberPerson(settingDb.getMaxPersonSetting().getNursingNumberPerson().v());
     }
 
     /**

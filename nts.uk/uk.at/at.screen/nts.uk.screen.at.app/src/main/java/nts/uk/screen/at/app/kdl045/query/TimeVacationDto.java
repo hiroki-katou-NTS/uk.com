@@ -19,9 +19,9 @@ import nts.uk.ctx.at.shared.app.workrule.workinghours.TimeZoneDto;
 public class TimeVacationDto {
 	private List<TimeZoneDto> timeZone = new ArrayList<>();
 	
-	private List<DailyAttdTimeVacationDto> usageTime = new ArrayList<>();
+	private DailyAttdTimeVacationDto usageTime;
 
-	public TimeVacationDto(List<TimeZoneDto> timeZone, List<DailyAttdTimeVacationDto> usageTime) {
+	public TimeVacationDto(List<TimeZoneDto> timeZone, DailyAttdTimeVacationDto usageTime) {
 		super();
 		this.timeZone = timeZone;
 		this.usageTime = usageTime;

@@ -18,10 +18,10 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.u
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemRoot;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.AttendanceItemCommon;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ChildCareAttribute;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortWorkTimFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortWorkingTimeSheet;
+import nts.uk.ctx.at.shared.dom.shortworktime.ChildCareAtr;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 @Data
@@ -121,8 +121,7 @@ public class ShortTimeOfDailyDto extends AttendanceItemCommon {
 		
 		return shortWorkingTimeSheets.stream().filter(c -> c.getStartTime() != null && c.getEndTime() != null)
 									.map(c -> new ShortWorkingTimeSheet(new ShortWorkTimFrameNo(c.getNo()),
-												c.getAttr() == ChildCareAttribute.CHILD_CARE.value 
-														? ChildCareAttribute.CHILD_CARE : ChildCareAttribute.CARE,
+												c.getAttr() == ChildCareAtr.CHILD_CARE.value ? ChildCareAtr.CHILD_CARE : ChildCareAtr.CARE,
 												createTimeWithDayAttr(c.getStartTime()), createTimeWithDayAttr(c.getEndTime())))
 									.collect(Collectors.toList());
 						

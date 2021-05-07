@@ -4,19 +4,19 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.command.vacation.setting.nursingleave.dto;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.TimeDigestiveUnit;
-import nts.arc.enums.EnumAdaptor;
+import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.ChildCareNurseUpperLimit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.MaxPersonSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.MaxPersonSettingGetMemento;
-import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NumberDayNursing;
+import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NumberOfCaregivers;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingCategory;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingLeaveSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingLeaveSettingGetMemento;
@@ -45,15 +45,21 @@ public class NursingLeaveSettingDto {
 
     /** The nursing number person. */
     private Integer nursingNumberPerson;
+    
+    /** The nursing number leave day 2. */
+    private Integer nursingNumberLeaveDay2;
+
+    /** The nursing number person 2. */
+    private Integer nursingNumberPerson2;
 
     /** The special holiday frame. */
     private Integer specialHolidayFrame;
 
     /** The absence work. */
     private Integer absenceWork;
-    
+
     private Integer timeDigestiveUnit;
-    
+
     private Integer manageDistinct;
 
     /**
@@ -146,8 +152,10 @@ public class NursingLeaveSettingDto {
 		}
 
 		@Override
-		public Integer getStartMonthDay() {
-			return this.setting.startMonthDay;
+		public MonthDay getStartMonthDay() {
+	    	int month = this.setting.startMonthDay / 100;
+        	int day = this.setting.startMonthDay % 100;
+        	return new MonthDay(month, day);
 		}
 
 		@Override
@@ -158,8 +166,8 @@ public class NursingLeaveSettingDto {
 		}
 
 		@Override
-		public MaxPersonSetting getMaxPersonSetting() {
-			 return new MaxPersonSetting(new JpaMaxPersonSettingGetMemento(this.setting.nursingNumberLeaveDay,
+		public List<MaxPersonSetting> getMaxPersonSetting() {
+			 return MaxPersonSetting.getList(new JpaMaxPersonSettingGetMemento(this.setting.nursingNumberLeaveDay,
 	                    this.setting.nursingNumberPerson));
 		}
 
@@ -174,7 +182,14 @@ public class NursingLeaveSettingDto {
         private Integer nursingNumberLeaveDay;
 
         /** The nursing number person. */
+        private Integer nursingNumberPerson;
+        
+        /** The nursing number leave day. */
         private Integer nursingNumberLeaveDay2;
+
+        /** The nursing number person. */
+        private Integer nursingNumberPerson2;
+
 
         /**
          * Instantiates a new jpa max person setting get memento.
@@ -188,14 +203,23 @@ public class NursingLeaveSettingDto {
         }
 
 		@Override
-		public NumberDayNursing getNursingNumberLeaveDay() {
-			 return this.nursingNumberLeaveDay != null ? new NumberDayNursing(this.nursingNumberLeaveDay) : null;
+		public ChildCareNurseUpperLimit getNursingNumberLeaveDay() {
+			 return this.nursingNumberLeaveDay != null ? new ChildCareNurseUpperLimit(this.nursingNumberLeaveDay) : null;
 		}
 
 		@Override
-		public NumberDayNursing getNursingNumberLeaveDay2() {
-			 return this.nursingNumberLeaveDay2 != null ? new NumberDayNursing(this.nursingNumberLeaveDay2) : null;
+		public ChildCareNurseUpperLimit getNursingNumberLeaveDay2() {
+			 return this.nursingNumberLeaveDay2 != null ? new ChildCareNurseUpperLimit(this.nursingNumberLeaveDay2) : null;
 		}
 
+		@Override
+		public NumberOfCaregivers getNursingNumberPerson() {			
+			return this.nursingNumberPerson != null ? new NumberOfCaregivers(this.nursingNumberPerson) : null;
+		}
+
+		@Override
+		public NumberOfCaregivers getNursingNumberPerson2() {
+			return this.nursingNumberPerson2 != null ? new NumberOfCaregivers(this.nursingNumberPerson2) : null;
+		}
     }
 }

@@ -39,6 +39,7 @@ public class EmployeeEmojiStateRepositoryImpl extends JpaRepository implements E
 	public void insert(EmployeeEmojiState domain) {
 		HhldtMoodSya entity = EmployeeEmojiStateRepositoryImpl.toEntity(domain);
 		entity.setVersion(0);
+		entity.setCid(AppContexts.user().companyId());
 		entity.setContractCd(AppContexts.user().contractCode());
 		this.commandProxy().insert(entity);
 	}
@@ -49,7 +50,6 @@ public class EmployeeEmojiStateRepositoryImpl extends JpaRepository implements E
 		Optional<HhldtMoodSya> oldEntity = this.queryProxy().find(entity.getPk(),
 				HhldtMoodSya.class);
 		oldEntity.ifPresent(updateEntity -> {
-			updateEntity.setVersion(updateEntity.getVersion() + 1);
 			updateEntity.setEmojiType(entity.getEmojiType());
 			this.commandProxy().update(updateEntity);
 		});

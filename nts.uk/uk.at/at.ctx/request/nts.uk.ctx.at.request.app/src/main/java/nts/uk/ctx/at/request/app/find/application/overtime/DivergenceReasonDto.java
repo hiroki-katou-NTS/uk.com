@@ -3,7 +3,6 @@ package nts.uk.ctx.at.request.app.find.application.overtime;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.request.app.find.setting.company.appreasonstandard.ReasonTypeItemDto;
-import nts.uk.ctx.at.request.dom.setting.company.divergencereason.DivergenceReason;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -24,7 +23,7 @@ public class DivergenceReasonDto {
 	 */
 	public ReasonTypeItemDto reasonTypeItem;
 	
-	public static DivergenceReasonDto fromDomain(DivergenceReason divergenceReason) {
-		return null;
-	}
+//	public static DivergenceReasonDto fromDomain(DivergenceReason divergenceReason) {
+//		return null;
+//	}
 }

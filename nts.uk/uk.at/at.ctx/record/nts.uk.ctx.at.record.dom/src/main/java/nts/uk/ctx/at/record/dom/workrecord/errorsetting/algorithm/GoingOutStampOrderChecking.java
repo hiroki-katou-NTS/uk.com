@@ -48,7 +48,7 @@ public class GoingOutStampOrderChecking {
 		List<EmployeeDailyPerError> employeeDailyPerErrorList = new ArrayList<>();
 
 		if (outingTimeOfDailyPerformance != null && !outingTimeOfDailyPerformance.getOutingTime().getOutingTimeSheets().isEmpty()) {
-
+			//ドメインモデル「日別実績の外出時間帯」を取得する
 			List<OutingTimeSheet> outingTimeSheets = outingTimeOfDailyPerformance.getOutingTime().getOutingTimeSheets();
 
 			// List<OutingTimeSheet> newOutingTimeSheets2 =
@@ -60,17 +60,17 @@ public class GoingOutStampOrderChecking {
 			// && item.getGoOut().get().getStamp().get().getTimeWithDay() !=
 			// null)
 			// .collect(Collectors.toList());
-
+			//
 			List<OutingTimeSheet> newOutingTimeSheets = outingTimeSheets.stream()
 					.filter(item -> (item.getComeBack().isPresent() 
 							&& item.getComeBack().get().getTimeDay().getTimeWithDay().isPresent())
 							&& (item.getGoOut().isPresent() 
 									&& item.getGoOut().get().getTimeDay().getTimeWithDay().isPresent()))
 					.collect(Collectors.toList());
-
+			//時間帯をソートする (Sắp xếp list)
 			newOutingTimeSheets.sort((e1, e2) -> (e1.getGoOut().get().getTimeDay().getTimeWithDay().get().v()
 					.compareTo(e2.getGoOut().get().getTimeDay().getTimeWithDay().get().v())));
-
+			//外出枠NOに番号付けする (Đánh số vào 外出枠NO)
 			int outingFrameNo = 1;
 			for (OutingTimeSheet item : newOutingTimeSheets) {
 				Optional<WorkStamp> goOut = item.getGoOut();
@@ -152,7 +152,7 @@ public class GoingOutStampOrderChecking {
 						newList.add(duplicationStatusOfTimeZone);
 					}
 
-					if (newList.stream().allMatch(item -> item == DuplicationStatusOfTimeZone.NON_OVERLAPPING)) {
+					if (!newList.stream().allMatch(item -> item == DuplicationStatusOfTimeZone.NON_OVERLAPPING)) {
 						// if (!attendanceItemIDList.isEmpty()) {
 						// createEmployeeDailyPerError.createEmployeeDailyPerError(companyId,
 						// employeeId,
@@ -201,7 +201,8 @@ public class GoingOutStampOrderChecking {
 			timeSpanFirstTime = new TimeSpanForCalc(stampStartTimeFirstTime, endStartTimeFirstTime);
 		}
 
-		if (timeLeavingOfDailyPerformance != null && !timeLeavingOfDailyPerformance.getAttendance().getTimeLeavingWorks().isEmpty()
+		if (timeLeavingOfDailyPerformance != null && timeLeavingOfDailyPerformance.getAttendance() !=null &&
+				!timeLeavingOfDailyPerformance.getAttendance().getTimeLeavingWorks().isEmpty()
 				&& timeSpanFirstTime != null) {
 			List<TimeLeavingWork> timeLeavingWorks = timeLeavingOfDailyPerformance.getAttendance().getTimeLeavingWorks();
 			for (TimeLeavingWork timeLeavingWork : timeLeavingWorks) {

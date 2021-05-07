@@ -6,8 +6,8 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveRemainHistRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveRemainingHistory;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
@@ -15,7 +15,6 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.infra.entity.remainingnumber.annlea.KrcdtAnnLeaRemainHist;
 import nts.uk.ctx.at.shared.infra.entity.remainingnumber.annlea.KrcdtAnnLeaRemainHistPK;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
-import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * 
@@ -33,7 +32,7 @@ public class JpaAnnualLeaveRemainHistRepository extends JpaRepository implements
 				KrcdtAnnLeaRemainHist.class);
 		if (opt.isPresent()) {
 			KrcdtAnnLeaRemainHist entity = opt.get();
-			entity.cid = domain.getCid();
+//			entity.cid = domain.getCid();
 			entity.deadline = domain.getDeadline();
 			entity.expStatus = domain.getExpirationStatus().value;
 			entity.registerType = domain.getRegisterType().value;
@@ -97,7 +96,7 @@ public class JpaAnnualLeaveRemainHistRepository extends JpaRepository implements
 				.setParameter("yearMonth", ym)
 				.setParameter("closureID", closureID.value)
 				.setParameter("closeDay", closureDate.getClosureDay().v())
-				.setParameter("isLastDay", Boolean.hashCode(closureDate.getLastDayOfMonth()))
+				.setParameter("isLastDay", closureDate.getLastDayOfMonth() ? 1 : 0)
 				.setParameter("expStatus", expStatus.value)
 				.setParameter("startDate", datePeriod.start())
 				.setParameter("endDate", datePeriod.end())

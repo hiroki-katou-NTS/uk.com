@@ -88,9 +88,9 @@
         </com:ko>
         <com:ko tag="if" bind="isNewMode">
            <!-- C5_3 複製ボタン -->
-          <button data-bind="visible: false" tabindex="3">#{i18n.getText('CMF003_203')}</button>
+          <button class="large functional-button" data-bind="enable: false" tabindex="3">#{i18n.getText('CMF003_203')}</button>
           <!-- C5_4 削除ボタン -->
-          <button data-bind="visible: false" tabindex="4">#{i18n.getText('CMF003_204')}</button>
+          <button class="large functional-button danger" data-bind="enable: false" tabindex="4">#{i18n.getText('CMF003_204')}</button>
         </com:ko>
       </div>
       <div id="contents-area">
@@ -184,7 +184,7 @@
                 leftColumns: leftColumns,
                 rightColumns: rightColumns,
 								value: currentCateSelected,
-								searchCriterion: ['categoryId'],
+								searchCriterion: ['categoryId', 'displayName'],
 								draggable: true,
 								multipleDrag: { left: true, right: false },
 								innerDrag: { left: false, right: true },
@@ -309,7 +309,7 @@
                   <input id="C9_3" class="password-input form-B div-column-2" data-bind="ntsTextEditor: { 
                     name: '#[CMF003_238]',
                     value: password, 
-                    enable: true,
+                    enable: usePasswordChecked,
                     required: usePasswordChecked,
                     constraint: 'FileCompressionPassword',
                     option: { textmode: 'password' } }" tabindex="15" />
@@ -321,7 +321,7 @@
                   <input id="C9_6" class="password-input form-B div-column-2" data-bind="ntsTextEditor: { 
                     name: '#[CMF003_286]',
                     value: confirmPassword, 
-                    enable: true,
+                    enable: usePasswordChecked,
                     required: usePasswordChecked,
                     constraint: 'FileCompressionPassword',
                     option: { textmode: 'password' } }" tabindex="16" />
@@ -337,7 +337,10 @@
                 value: explanation,
                 enable: true,
                 required: false,
-                constraint: 'Explanation'
+                constraint: 'Explanation',
+                option: {
+                  width: '307px'
+                }
               }" tabindex="10" />
             </div>
           </div>

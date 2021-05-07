@@ -50,7 +50,7 @@ public class GetReserveLeaveNumbersImpl implements GetReserveLeaveNumbers {
 		ReserveLeaveNowExport result = new ReserveLeaveNowExport();
 
 		// 「積立年休付与残数データ」を取得
-		val grantRemDatas = this.rsvLeaGrantRemDataRepo.findNotExp(employeeId, AppContexts.user().companyId());
+		val grantRemDatas = this.rsvLeaGrantRemDataRepo.findNotExp(employeeId);
 
 		// 年休残数を集計
 		double totalDays = 0.0;
@@ -83,6 +83,7 @@ public class GetReserveLeaveNumbersImpl implements GetReserveLeaveNumbers {
 				closurePeriod.end(),
 				false,
 				false,
+				Optional.empty(),
 				Optional.empty(),
 				Optional.empty(),
 				Optional.empty(),
@@ -127,7 +128,7 @@ public class GetReserveLeaveNumbersImpl implements GetReserveLeaveNumbers {
 		}
 
 		// 「積立年休付与残数データ」を取得
-		val grantRemDatas = this.rsvLeaGrantRemDataRepo.findNotExp(employeeId, AppContexts.user().companyId());
+		val grantRemDatas = this.rsvLeaGrantRemDataRepo.findNotExp(employeeId);
 
 		// 年休残数を集計
 		double totalDays = 0.0;

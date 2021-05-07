@@ -27,6 +27,10 @@ public class JpaExecutionTaskSettingRepository extends JpaRepository
 			+ " AND ets.kfnmtExecTaskSettingPK.execItemCd IN :execItemCds"
 			+ " ORDER BY ets.kfnmtExecTaskSettingPK.execItemCd ASC";
 	
+	private static final String SELECT_All_BY_CID = SELECT_ALL
+			+ " WHERE ets.kfnmtExecTaskSettingPK.companyId = :cid"
+			+ " ORDER BY ets.kfnmtExecTaskSettingPK.execItemCd ASC";
+	
 	/**
 	 * get by key
 	 */
@@ -42,6 +46,13 @@ public class JpaExecutionTaskSettingRepository extends JpaRepository
 		return this.queryProxy().query(SELECT_All_BY_CID_AND_EXEC, KfnmtExecutionTaskSetting.class)
 				.setParameter("companyId", companyId)
 				.setParameter("execItemCds", execItemCds)
+				.getList(c -> c.toDomain());
+	}
+	
+	@Override
+	public List<ExecutionTaskSetting> getByCid(String cid) {
+		return this.queryProxy().query(SELECT_All_BY_CID, KfnmtExecutionTaskSetting.class)
+				.setParameter("cid", cid)
 				.getList(c -> c.toDomain());
 	}
 

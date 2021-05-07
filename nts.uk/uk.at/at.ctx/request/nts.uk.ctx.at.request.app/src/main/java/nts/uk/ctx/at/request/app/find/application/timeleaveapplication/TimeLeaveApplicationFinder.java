@@ -95,7 +95,7 @@ public class TimeLeaveApplicationFinder {
         TimeLeaveApplicationReflect reflectSetting = timeLeaveApplicationService.getTimeLeaveAppReflectSetting(companyId);
 
         // 休暇残数情報を取得する
-        TimeVacationManagementOutput timeVacationManagement = timeLeaveApplicationService.getTimeLeaveManagement(companyId, employeeId, baseDate);
+        TimeVacationManagementOutput timeVacationManagement = timeLeaveApplicationService.getTimeLeaveManagement(companyId, employeeId, baseDate, reflectSetting.getCondition());
         TimeVacationRemainingOutput timeVacationRemaining = timeLeaveApplicationService.getTimeLeaveRemaining(companyId, employeeId, baseDate, timeVacationManagement);
 
         // 社員の労働条件を取得する
@@ -165,7 +165,8 @@ public class TimeLeaveApplicationFinder {
         TimeVacationManagementOutput timeVacationManagement = timeLeaveApplicationService.getTimeLeaveManagement(
                 companyId,
                 params.getAppDisplayInfo().getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().getEmployeeInfoLst().get(0).getSid(),
-                params.getAppDate()
+                params.getAppDate(),
+                TimeLeaveAppReflectDto.toDomain(params.getAppDisplayInfo().getReflectSetting()).getCondition()
         );
 
         params.getAppDisplayInfo().setTimeLeaveManagement(TimeLeaveManagement.fromOutput(timeVacationManagement));
@@ -193,14 +194,13 @@ public class TimeLeaveApplicationFinder {
      */
     public CalculationResultDto calculateApplicationTime(Integer timeLeaveType, GeneralDate baseDate, TimeLeaveAppDisplayInfoDto info, List<TimeZoneDto> lstTimeZone, List<OutingTimeZoneDto> lstOutingTimeZone) {
         String employeeId = info.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().getEmployeeInfoLst().get(0).getSid();
-        AchievementDetailDto achievementDetailDto = info.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().
-                getOpActualContentDisplayLst().get(0).getOpAchievementDetail();
+        AchievementDetailDto achievementDetailDto = CollectionUtil.isEmpty(info.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getOpActualContentDisplayLst())
+                ? null
+                : info.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getOpActualContentDisplayLst().get(0).getOpAchievementDetail();
         Map<Integer, TimeZone> mapTimeZone = lstTimeZone.stream()
                 .filter(i -> i.getStartTime() != null && i.getEndTime() != null)
                 .collect(Collectors.toMap(TimeZoneDto::getWorkNo, i -> new TimeZone(new TimeWithDayAttr(i.getStartTime()), new TimeWithDayAttr(i.getEndTime()))));
-        if (!CollectionUtil.isEmpty(info.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getOpActualContentDisplayLst())
-                && info.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getOpActualContentDisplayLst().get(0).getOpAchievementDetail() != null
-                && info.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getOpActualContentDisplayLst().get(0).getOpAchievementDetail().getWorkTimeCD() != null) {
+        if (achievementDetailDto != null && achievementDetailDto.getWorkTimeCD() != null) {
             // 2回勤務かどうかの判断処理
             Optional<PredetemineTimeSetting> timeSetting = predetemineTimeSettingRepo.findByWorkTimeCode(
                     AppContexts.user().companyId(),
@@ -216,8 +216,8 @@ public class TimeLeaveApplicationFinder {
         DailyAttendanceTimeCaculationImport calcImport = dailyAttendanceTimeCaculation.getCalculation(
                 employeeId,
                 baseDate,
-                achievementDetailDto.getWorkTypeCD(),
-                achievementDetailDto.getWorkTimeCD(),
+                achievementDetailDto == null ? null : achievementDetailDto.getWorkTypeCD(),
+                achievementDetailDto == null ? null : achievementDetailDto.getWorkTimeCD(),
                 mapTimeZone,
                 Collections.emptyList(),
                 Collections.emptyList(),
@@ -226,7 +226,7 @@ public class TimeLeaveApplicationFinder {
                         i.getStartTime(),
                         i.getEndTime()
                 )).collect(Collectors.toList()),
-                achievementDetailDto.getShortWorkTimeLst().stream().map(i -> new ChildCareTimeZoneExport(
+                achievementDetailDto == null ? Collections.emptyList() : achievementDetailDto.getShortWorkTimeLst().stream().map(i -> new ChildCareTimeZoneExport(
                         i.getChildCareAttr(),
                         i.getStartTime(),
                         i.getEndTime()

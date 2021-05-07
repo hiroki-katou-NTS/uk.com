@@ -60,6 +60,11 @@ public class SpecialHolidayUtils {
     public static final String KMF004_152 = "喪主時加算日数";
     public static final String KMF004_161 = "メモ";
     public static final String KMF004_162 = "続柄入力を利用する";
+    public static final String KMF004_187 = "自動で付与する";
+    public static final String KMF004_188 = "指定日";
+    public static final String KMF004_189 = "付与周期（年）";
+    public static final String KMF004_190 = "付与周期（月）";
+    public static final String KMF004_191 = "連続で取得する";
     public static final String MONTH = "MONTH";
     public static final String DAY = "DAY";
     

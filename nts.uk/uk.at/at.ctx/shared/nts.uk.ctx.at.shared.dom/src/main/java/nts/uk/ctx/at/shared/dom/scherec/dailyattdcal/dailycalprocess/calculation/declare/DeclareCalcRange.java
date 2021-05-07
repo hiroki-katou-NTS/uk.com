@@ -14,6 +14,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancet
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.DeductionTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManagePerCompanySet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManagePerPersonDailySet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.TimeSpanForDailyCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.CalculationRangeOfOneDay;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.DeductionAtr;
@@ -89,6 +90,7 @@ public class DeclareCalcRange {
 	 * @param declareSet 申告設定
 	 * @param predTimeSet 所定時間設定
 	 * @param companyCommonSetting 会社別設定管理
+	 * @param personCommonSetting 社員設定管理
 	 * @return 申告計算範囲
 	 */
 	public static DeclareCalcRange create(
@@ -99,7 +101,8 @@ public class DeclareCalcRange {
 			CalculationRangeOfOneDay calcRangeRecord,
 			DeclareSet declareSet,
 			Optional<PredetemineTimeSetting> predTimeSet,
-			ManagePerCompanySet companyCommonSetting){
+			ManagePerCompanySet companyCommonSetting,
+			ManagePerPersonDailySet personCommonSetting){
 		
 		DeclareCalcRange domain = new DeclareCalcRange(companyId);
 		
@@ -116,7 +119,7 @@ public class DeclareCalcRange {
 		{
 			// 休憩設定を変更する　（休憩時間を退勤で区切らず、1日全て計上に変更）
 			if (itgOfWorkTime.getFixedWorkSetting().isPresent()){
-				itgOfWorkTime.getFixedWorkSetting().get().getFixedWorkRestSetting().getCommonRestSet().setCalculateMethod(
+				itgOfWorkTime.getFixedWorkSetting().get().getCommonRestSet().setCalculateMethod(
 						RestTimeOfficeWorkCalcMethod.APPROP_ALL);
 			}
 			if (itgOfWorkTime.getFlowWorkSetting().isPresent()){
@@ -132,7 +135,9 @@ public class DeclareCalcRange {
 						itgOfDaily,
 						calcRangeRecord.getOneDayOfRange(),
 						itgOfDaily.getAttendanceLeave().get(),
-						calcRangeRecord.getPredetermineTimeSetForCalc());
+						calcRangeRecord.getPredetermineTimeSetForCalc(),
+						companyCommonSetting,
+						personCommonSetting);
 			}
 		}
 		// 1日の範囲を確認する

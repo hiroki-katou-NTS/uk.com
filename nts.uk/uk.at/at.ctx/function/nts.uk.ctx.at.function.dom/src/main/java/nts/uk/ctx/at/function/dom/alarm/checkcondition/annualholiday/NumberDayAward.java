@@ -7,7 +7,7 @@ import nts.arc.primitive.constraint.IntegerRange;
  * @author thanhnx
  * 前回年休付与日数
  */
-@IntegerRange(min = 1, max = 99)
+@IntegerRange(min = 0, max = 99)
 public class NumberDayAward extends IntegerPrimitiveValue<NumberDayAward>{
 	/**
 	 * 

@@ -152,7 +152,7 @@ public class WorkTimeCalcMethodDetailOfHoliday extends DomainObject implements S
 		//計算設定の設定のみ見る
 		else {
 			//遅刻・早退をマイナスしない□(チェック無し = 控除する)の場合、ここはfalseが来る
-			if (!this.notDeductLateLeaveEarly.isDeduct()) {
+			if (!this.notDeductLateLeaveEarly.getDeduct().isDeduct()) {
 				return true;
 			}
 			//遅刻・早退をマイナスしない☑(チェック有り = 控除しない)の場合、ここはtrueが来る

@@ -19,6 +19,7 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 @Getter
 @Setter
 public class TempAnnualLeaveMngs extends InterimRemain{
+
 	/** 勤務種類 */
 	private WorkTypeCode workTypeCode;
 	/** 年休使用数 */

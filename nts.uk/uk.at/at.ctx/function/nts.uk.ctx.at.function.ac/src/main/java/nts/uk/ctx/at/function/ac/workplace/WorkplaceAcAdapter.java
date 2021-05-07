@@ -8,10 +8,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.function.dom.adapter.workplace.WorkPlaceInforExport;
-import nts.uk.ctx.at.function.dom.adapter.workplace.WorkplaceAdapter;
-import nts.uk.ctx.at.function.dom.adapter.workplace.WorkplaceIdName;
-import nts.uk.ctx.at.function.dom.adapter.workplace.WorkplaceImport;
+import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.function.dom.adapter.workplace.*;
 import nts.uk.ctx.bs.employee.pub.workplace.SWkpHistExport;
 import nts.uk.ctx.bs.employee.pub.workplace.master.WorkplaceInforExport;
 import nts.uk.ctx.bs.employee.pub.workplace.master.WorkplacePub;
@@ -79,6 +77,13 @@ public class WorkplaceAcAdapter implements WorkplaceAdapter {
 				e.getWorkplaceGenericName(), e.getWorkplaceExternalCode()
 				)).collect(Collectors.toList());
 	}
-	
+
+	@Override
+	public List<EmployeeInfoImported> getLstEmpByWorkplaceIdsAndPeriod(List<String> workplaceIds, DatePeriod period) {
+		return workplacePub.getLstEmpByWorkplaceIdsAndPeriod(workplaceIds, period).stream()
+				.map(x -> new EmployeeInfoImported(x.getSid(), x.getEmployeeCode(), x.getEmployeeName()))
+				.collect(Collectors.toList());
+	}
+
 
 }

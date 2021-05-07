@@ -11,6 +11,7 @@ import nts.uk.ctx.at.request.app.command.application.common.AppDispInfoStartupCm
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.CalculatedFlag;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeAppAtr;
 import nts.uk.ctx.at.request.dom.application.overtime.service.DisplayInfoOverTime;
+import nts.uk.ctx.at.request.dom.application.overtime.service.WorkInfo;
 
 public class DisplayInfoOverTimeCommand {
 	// 基準日に関する情報
@@ -30,6 +31,8 @@ public class DisplayInfoOverTimeCommand {
 	// 計算済フラグ
 	public Integer calculatedFlag;
 	
+	public WorkInfo workInfo;
+	
 	public DisplayInfoOverTime toDomain() {
 		
 		return new DisplayInfoOverTime(
@@ -44,6 +47,8 @@ public class DisplayInfoOverTimeCommand {
 				appDispInfoStartup.toDomain(),
 				calculationResultOp == null ? Optional.empty() : Optional.of(calculationResultOp.toDomain()),
 				infoWithDateApplicationOp == null ? Optional.empty() : Optional.of(infoWithDateApplicationOp.toDomain()),
-				EnumAdaptor.valueOf(calculatedFlag, CalculatedFlag.class)		);
+				EnumAdaptor.valueOf(calculatedFlag, CalculatedFlag.class),
+				Optional.ofNullable(workInfo)
+				);
 	}
 }

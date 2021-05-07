@@ -54,13 +54,13 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.An
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.NumberRemainVacationLeaveRangeQuery;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.BreakDayOffRemainMngRefactParam;
-import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.FixedManagementDataMonth;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.SubstituteHolidayAggrResult;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemainRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.InterimSpecialHolidayMngRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.basicinfo.SpecialLeaveBasicInfoRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.VacationTimeInfor;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.timeleaveapplication.TimeLeaveAppReflectCondition;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHoliday;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayRepository;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.GrantDateTblRepository;
@@ -79,6 +79,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.sixtyhours.Com60HourVacation;
 import nts.uk.ctx.at.shared.dom.vacation.setting.sixtyhours.Com60HourVacationRepository;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.timeleaveapplication.TimeLeaveAppReflectRepository;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.timeleaveapplication.TimeLeaveApplicationReflect;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.breakinfo.FixedManagementDataMonth;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
@@ -194,10 +195,11 @@ public class TimeLeaveApplicationServiceImpl implements TimeLeaveApplicationServ
      * @param companyId
      * @param employeeId
      * @param baseDate
+     * @param condition
      * @return
      */
     @Override
-    public TimeVacationManagementOutput getTimeLeaveManagement(String companyId, String employeeId, GeneralDate baseDate) {
+    public TimeVacationManagementOutput getTimeLeaveManagement(String companyId, String employeeId, GeneralDate baseDate, TimeLeaveAppReflectCondition condition) {
         RemainNumberTempRequireService.Require require = requireService.createRequire();
         CacheCarrier cache = new CacheCarrier();
 
@@ -248,6 +250,15 @@ public class TimeLeaveApplicationServiceImpl implements TimeLeaveApplicationServ
                     .sorted(Comparator.comparing(SpecialHolidayFrame::getSpecialHdFrameNo))
                     .collect(Collectors.toList());
             timeSpecialLeaveMng.getListSpecialFrame().addAll(listSpecialFrame);
+        }
+
+        if (!(condition.getAnnualVacationTime() == NotUseAtr.USE && timeAnnualLeaveMng.isTimeAnnualManagement())
+                && !(condition.getSubstituteLeaveTime() == NotUseAtr.USE && timeSubstituteLeaveMng.isTimeBaseManagementClass())
+                && !(condition.getChildNursing() == NotUseAtr.USE && nursingLeaveMng.isTimeChildManagementClass())
+                && !(condition.getNursing() == NotUseAtr.USE && nursingLeaveMng.isTimeManagementClass())
+                && !(condition.getSuperHoliday60H() == NotUseAtr.USE && super60HLeaveMng.isOverrest60HManagement())
+                && !(condition.getSpecialVacationTime() == NotUseAtr.USE && timeSpecialLeaveMng.isTimeSpecialLeaveManagement())) {
+            throw new BusinessException("Msg_474");
         }
 
         return  new TimeVacationManagementOutput(
@@ -301,17 +312,17 @@ public class TimeLeaveApplicationServiceImpl implements TimeLeaveApplicationServ
         if (timeLeaveManagement.getTimeAllowanceManagement().isTimeBaseManagementClass()) {
             // 期間内の休出代休残数を取得する
             BreakDayOffRemainMngRefactParam inputParam = new BreakDayOffRemainMngRefactParam(
-    				companyId, 
+    				companyId,
     				employeeId,
     				new DatePeriod(closingPeriod.start(), closingPeriod.start().addYears(1).addDays(-1)),
-    				false, 
-    				baseDate, 
-    				false, 
+    				false,
+    				baseDate,
+    				false,
     				Collections.emptyList(),
-    				Optional.empty(), 
-    				Optional.empty(), 
-    				Collections.emptyList(), 
-    				Collections.emptyList(), 
+    				Optional.empty(),
+    				Optional.empty(),
+    				Collections.emptyList(),
+    				Collections.emptyList(),
     				Optional.empty(),
     				new FixedManagementDataMonth(Collections.emptyList(), Collections.emptyList()));
     		SubstituteHolidayAggrResult dataCheck = NumberRemainVacationLeaveRangeQuery
@@ -360,12 +371,13 @@ public class TimeLeaveApplicationServiceImpl implements TimeLeaveApplicationServ
         if (timeLeaveManagement.getChildNursingManagement().isTimeManagementClass()) {
             // [NO.207]期間中の介護休暇残数を取得
             ChildCareNursePeriodImport childCareNursePeriodImport = getRemainingNumberCareAdapter.getCareRemNumWithinPeriod(
-                    employeeId,
+            		companyId,
+            		employeeId,
                     new DatePeriod(closingPeriod.start(), closingPeriod.start().addYears(1).addDays(-1)),
                     InterimRemainMngMode.OTHER,
                     baseDate,
                     Optional.of(false),
-                    Optional.empty(),
+                    new ArrayList<>(),
                     Optional.empty(),
                     Optional.empty(),
                     Optional.empty()

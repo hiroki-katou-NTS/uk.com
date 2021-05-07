@@ -13,8 +13,8 @@ import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.repo.EmpInfo
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.nrlremote.TimeRecordSetFormatList;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.nrlremote.repo.TimeRecordSetFormatListRepository;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
-import nts.uk.ctx.at.record.dom.worklocation.WorkLocation;
-import nts.uk.ctx.at.record.dom.worklocation.WorkLocationRepository;
+import nts.uk.ctx.at.record.dom.stampmanagement.workplace.WorkLocation;
+import nts.uk.ctx.at.record.dom.stampmanagement.workplace.WorkLocationRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -67,7 +67,7 @@ public class GetDestinationCopy {
 			dto.setModelEmpInfoTer(e.getModelEmpInfoTer().value);
 			dto.setMacAddress(e.getMacAddress().v());
 			dto.setIpAddress(e.getIpAddress().isPresent()?
-							 e.getIpAddress().get().getFullIpAddress() : "");
+							 e.getIpAddress().get().toString() : "");
 			dto.setTerSerialNo(e.getTerSerialNo().isPresent()?
 							   e.getTerSerialNo().get().v() : "");
 			dto.setWorkLocationName(workLocation.isPresent()?

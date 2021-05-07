@@ -27,7 +27,7 @@ public class AppCommonSettingDto {
 		if(output == null) return null;
 		AppCommonSettingDto appCommonSettingDto = new AppCommonSettingDto();
 		appCommonSettingDto.generalDate = output.generalDate.toString();
-		appCommonSettingDto.applicationSettingDto = ApplicationSettingDto.convertToDto(output.applicationSetting);
+//		appCommonSettingDto.applicationSettingDto = ApplicationSettingDto.convertToDto(output.applicationSetting);
 		// appCommonSettingDto.approvalFunctionSettingDto = ApprovalFunctionSettingDto.convertToDto(output.approvalFunctionSetting);
 //		if(output.appTypeDiscreteSettings==null || output.appTypeDiscreteSettings.isEmpty()) {
 //			appCommonSettingDto.appTypeDiscreteSettingDtos = null;

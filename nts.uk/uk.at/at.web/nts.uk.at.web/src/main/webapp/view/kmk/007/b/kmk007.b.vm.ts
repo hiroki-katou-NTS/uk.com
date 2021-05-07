@@ -24,8 +24,8 @@ module nts.uk.at.view.kmk007.b.viewmodel {
             
             self.timeMngAtr =  ko.observable(0);
              self.itemListB41 = ko.observableArray([
-                { code: '1', frameValue: nts.uk.resource.getText("KMF004_114") },
-                { code: '0', frameValue: nts.uk.resource.getText("KMF004_115") }
+                { code: '1', frameValue: nts.uk.resource.getText("KMK007_114") },
+                { code: '0', frameValue: nts.uk.resource.getText("KMK007_115") }
             ]);
             
             self.frameId = ko.observable(nts.uk.ui.windows.getShared("KMK007_ITEM_ID"));
@@ -171,7 +171,7 @@ module nts.uk.at.view.kmk007.b.viewmodel {
             this.frameNo = frameNo;
             this.name = name;
             this.abolition = abolition;
-             if (abolition == 1) {
+             if (abolition == 0) {
                 this.icon = "";
             } else {
                 this.icon = '<i class="icon icon-dot"></i>';

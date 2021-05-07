@@ -10,6 +10,6 @@ public interface DataStoragePatternSettingRepository {
 	Optional<DataStoragePatternSetting> findByContractCdAndPatternCd(String contractCd, String patternCd);
 	
 	void add(DataStoragePatternSetting domain);
-	void update(DataStoragePatternSetting domain);
+	void update(DataStoragePatternSetting domain, String contractCd);
 	void delete(String contractCd, String patternCd, int patternAtr);
 }

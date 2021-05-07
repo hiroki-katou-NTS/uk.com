@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.MaxDaysRetention;
+import nts.uk.ctx.at.shared.dom.yearholidaygrant.export.NextAnnualLeaveGrant;
 import nts.arc.time.calendar.period.DatePeriod;
 
 /**
@@ -18,33 +19,35 @@ public class RsvLeaAggrPeriodWork {
 
 	/** 期間 */
 	private DatePeriod period;
-	/** 期間終了後翌日 */
-	private boolean nextDayAfterPeriodEnd;
-	/** 付与フラグ */
+	/** 終了日 */
+	private RsvLeaNextDayAfterPeriodEndWork endWork;
+	/** 期間の開始日に付与があるか */
 	private boolean grantAtr;
+	/** 付与回数 */
+	private int grantNumber = 0;
 	/** 付与後 */
 	private boolean afterGrant;
-	/** 消滅フラグ */
+	/** 期間の開始日に消滅するかどうか */
 	private boolean lapsedAtr;
 	/** 上限日数 */
 	private MaxDaysRetention maxDays;
 	/** 積立年休付与 */
 	private Optional<NextReserveLeaveGrant> reserveLeaveGrant;
-	
+
 	/**
 	 * コンストラクタ
 	 */
 	public RsvLeaAggrPeriodWork(){
-		
+
 		this.period = new DatePeriod(GeneralDate.today(), GeneralDate.today());
-		this.nextDayAfterPeriodEnd = false;
+		this.endWork = new RsvLeaNextDayAfterPeriodEndWork();
 		this.grantAtr = false;
 		this.afterGrant = false;
 		this.lapsedAtr = false;
 		this.maxDays = new MaxDaysRetention(0);
 		this.reserveLeaveGrant = Optional.empty();
 	}
-	
+
 	/**
 	 * ファクトリー
 	 * @param period 期間
@@ -58,16 +61,16 @@ public class RsvLeaAggrPeriodWork {
 	 */
 	public static RsvLeaAggrPeriodWork of(
 			DatePeriod period,
-			boolean nextDayAfterPeriodEnd,
+			RsvLeaNextDayAfterPeriodEndWork endWork,
 			boolean grantAtr,
 			boolean afterGrant,
 			boolean lapsedAtr,
 			MaxDaysRetention maxDays,
 			Optional<NextReserveLeaveGrant> reserveLeaveGrant){
-		
+
 		RsvLeaAggrPeriodWork domain = new RsvLeaAggrPeriodWork();
 		domain.period = period;
-		domain.nextDayAfterPeriodEnd = nextDayAfterPeriodEnd;
+		domain.endWork = endWork;
 		domain.grantAtr = grantAtr;
 		domain.afterGrant = afterGrant;
 		domain.lapsedAtr = lapsedAtr;

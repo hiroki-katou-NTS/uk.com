@@ -5,6 +5,7 @@ import java.util.Optional;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.scherec.application.timeleaveapplication.TimeDigestApplicationShare;
 
 /**
  * @author anhnm
@@ -64,5 +65,16 @@ public class TimeDigestApplication {
         this.timeSpecialVacation = timeSpecialVacation;
         this.timeAnnualLeave = timeAnnualLeave;
         this.specialVacationFrameNO = specialVacationFrameNO == null ? Optional.empty() : specialVacationFrameNO;
+    }
+    
+    public TimeDigestApplicationShare convertToShare() {
+        return new TimeDigestApplicationShare(
+                this.overtime60H, 
+                this.nursingTime, 
+                this.childTime, 
+                this.timeOff, 
+                this.timeSpecialVacation, 
+                this.timeAnnualLeave, 
+                this.specialVacationFrameNO);
     }
 }

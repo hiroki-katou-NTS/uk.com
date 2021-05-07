@@ -10,10 +10,14 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.AddSetManageWorkHour;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.AddSetManageWorkHourRepository;
 import nts.uk.ctx.at.shared.infra.entity.calculation.holiday.KshstAddSetManWKHour;
+import nts.uk.ctx.at.shared.infra.entity.calculation.holiday.KshstAddSetManWKHourPK;
+
+import javax.ejb.Stateless;
 
 /**
  * The Class JpaAddSetManageWorkHourRepository.
  */
+@Stateless
 public class JpaAddSetManageWorkHourRepository extends JpaRepository implements AddSetManageWorkHourRepository{
 
 	/* (non-Javadoc)
@@ -21,7 +25,7 @@ public class JpaAddSetManageWorkHourRepository extends JpaRepository implements 
 	 */
 	@Override
 	public Optional<AddSetManageWorkHour> findByCid(String companyId) {
-		Optional<KshstAddSetManWKHour> optEntity = this.queryProxy().find(companyId, KshstAddSetManWKHour.class);
+		Optional<KshstAddSetManWKHour> optEntity = this.queryProxy().find(new KshstAddSetManWKHourPK(companyId), KshstAddSetManWKHour.class);
 		if (optEntity.isPresent()) {
 			JpaHolidayAddtionRepository holidayAddtionRepository = new JpaHolidayAddtionRepository();
 			AddSetManageWorkHour domain = holidayAddtionRepository.convertToDomainAddSetManageWorkHour(optEntity.get());

@@ -33,7 +33,7 @@ public class MailDestinationPubImpl implements IMailDestinationPub {
 	@Override
 	public List<MailDestination> getEmpEmailAddress(String cID, List<String> sIDs, Integer functionID) {
 
-		List<MailDestination> emailAddress = new ArrayList<MailDestination>();
+		List<MailDestination> emailAddress = new ArrayList<>();
 		/**
 		 * パラメータ.社員ID(List)をメール送信一覧に追加する
 		 */
@@ -68,21 +68,25 @@ public class MailDestinationPubImpl implements IMailDestinationPub {
 		if (!userInformationUseMethod.getEmailDestinationFunctions().isEmpty()) {
 			for (EmailDestinationFunction e : userInformationUseMethod.getEmailDestinationFunctions()) {
 				if (e.getEmailClassification() == EmailClassification.COMPANY_EMAIL_ADDRESS
+						&& e.getFunctionIds().stream().anyMatch(id -> id.v() == functionID) //#115050
 						&& userInformationUseMethod.getSettingContactInformation().get().getCompanyEmailAddress()
 								.getContactUsageSetting().value != 0) {
 					companyEmailAddressFlag = true;
 				}
 				if (e.getEmailClassification() == EmailClassification.PERSONAL_EMAIL_ADDRESS
+						&& e.getFunctionIds().stream().anyMatch(id -> id.v() == functionID) //#115050
 						&& userInformationUseMethod.getSettingContactInformation().get().getPersonalEmailAddress()
 								.getContactUsageSetting().value != 0) {
 					personalEmailAddressFlag = true;
 				}
 				if (e.getEmailClassification() == EmailClassification.COMPANY_MOBILE_EMAIL_ADDRESS
+						&& e.getFunctionIds().stream().anyMatch(id -> id.v() == functionID) //#115050
 						&& userInformationUseMethod.getSettingContactInformation().get().getCompanyMobileEmailAddress()
 								.getContactUsageSetting().value != 0) {
 					companyMobileEmailAddressFlag = true;
 				}
 				if (e.getEmailClassification() == EmailClassification.PERSONAL_MOBILE_EMAIL_ADDRESS
+						&& e.getFunctionIds().stream().anyMatch(id -> id.v() == functionID) //#115050
 						&& userInformationUseMethod.getSettingContactInformation().get().getPersonalMobileEmailAddress()
 								.getContactUsageSetting().value != 0) {
 					personalMobileEmailAddressFlag = true;
@@ -102,14 +106,13 @@ public class MailDestinationPubImpl implements IMailDestinationPub {
 				 * パラメータ.社員ID(List)をメール送信一覧を渡す
 				 */
 				return emailAddress;
-			} else {
+			}
 				/**
 				 * その他 Imported(環境)「個人連絡先」を取得する RequestList 420
 				 */
 				List<PersonContactObjectOfEmployeeImport> personContacts = empContactAdapter.getListOfEmployees(sIDs);
 
-				if (personalEmailAddressFlag && userInformationUseMethod.getSettingContactInformation().get()
-						.getPersonalEmailAddress().getContactUsageSetting().value != 0) {
+				if (personalEmailAddressFlag) { //#115050
 					sIDs.forEach(sID -> {
 						Optional<MailDestination> mailDestinationOpt = emailAddress.stream()
 								.filter(mailDestination -> mailDestination.getEmployeeID().equals(sID)).findFirst();
@@ -119,16 +122,13 @@ public class MailDestinationPubImpl implements IMailDestinationPub {
 									.filter(perContact -> perContact.getPersonId().equals(sID)).findFirst();
 
 							perContactOpt.ifPresent(item -> {
-								if (item.isMailAddressDisplay()) {
-									mailDestination.addOutGoingMails(item.getMailAdress());
-								}
+								mailDestination.addOutGoingMails(item.getMailAdress());
 							});
 						});
 					});
 				}
 				
-				if (personalMobileEmailAddressFlag && userInformationUseMethod.getSettingContactInformation().get()
-						.getPersonalMobileEmailAddress().getContactUsageSetting().value != 0) {
+				if (personalMobileEmailAddressFlag) { //#115050
 					sIDs.forEach(sID -> {
 						Optional<MailDestination> mailDestinationOpt = emailAddress.stream()
 								.filter(mailDestination -> mailDestination.getEmployeeID().equals(sID)).findFirst();
@@ -138,22 +138,19 @@ public class MailDestinationPubImpl implements IMailDestinationPub {
 									.filter(perContact -> perContact.getPersonId().equals(sID)).findFirst();
 
 							perContactOpt.ifPresent(item -> {
-								if (item.isMobileEmailAddressDisplay()) {
-									mailDestination.addOutGoingMails(item.getMobileMailAdress());
-								}
+								mailDestination.addOutGoingMails(item.getMobileMailAdress());
 							});
 						});
 					});
 				}
-			}
+			
 		} else {
 			/**
 			 * その他 Imported(環境)「社員連絡先」を取得する RequestList 378
 			 */
 			List<EmployeeContactObjectImport> empContacts = empContactAdapter.getList(sIDs);
 
-			if (companyEmailAddressFlag && userInformationUseMethod.getSettingContactInformation().get()
-					.getCompanyEmailAddress().getContactUsageSetting().value != 0) {
+			if (companyEmailAddressFlag) { //#115050
 				sIDs.forEach(sID -> {
 					Optional<MailDestination> mailDestinationOpt = emailAddress.stream()
 							.filter(mailDestination -> mailDestination.getEmployeeID().equals(sID)).findFirst();
@@ -162,17 +159,12 @@ public class MailDestinationPubImpl implements IMailDestinationPub {
 						Optional<EmployeeContactObjectImport> empContactOpt = empContacts.stream()
 								.filter(empContact -> empContact.getSid().equals(sID)).findFirst();
 
-						empContactOpt.ifPresent(item -> {
-							if (item.isMailAddressDisplay()) {
-								mailDestination.addOutGoingMails(item.getMailAddress());
-							}
-						});
+						empContactOpt.ifPresent(item -> mailDestination.addOutGoingMails(item.getMailAddress()));
 					});
 				});
 			}
 
-			if (companyMobileEmailAddressFlag && userInformationUseMethod.getSettingContactInformation().get()
-					.getCompanyMobileEmailAddress().getContactUsageSetting().value != 0) {
+			if (companyMobileEmailAddressFlag) { //#115050
 				sIDs.forEach(sID -> {
 					Optional<MailDestination> mailDestinationOpt = emailAddress.stream()
 							.filter(mailDestination -> mailDestination.getEmployeeID().equals(sID)).findFirst();
@@ -182,9 +174,7 @@ public class MailDestinationPubImpl implements IMailDestinationPub {
 								.filter(empContact -> empContact.getSid().equals(sID)).findFirst();
 
 						empContactOpt.ifPresent(item -> {
-							if (item.isMobileMailAddressDisplay()) {
-								mailDestination.addOutGoingMails(item.getPhoneMailAddress());
-							}
+							mailDestination.addOutGoingMails(item.getPhoneMailAddress());
 						});
 					});
 				});

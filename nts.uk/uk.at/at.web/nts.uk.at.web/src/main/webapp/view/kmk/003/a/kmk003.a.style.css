@@ -123,3 +123,7 @@ html {
 	pointer-events: none;
     opacity: 0.35;
 }
+
+.nts-fixed-body-wrapper {
+	height: auto !important;
+}

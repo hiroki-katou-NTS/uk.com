@@ -29,6 +29,7 @@ import nts.uk.ctx.at.function.dom.adapter.widgetKtg.NextAnnualLeaveGrantImport;
 import nts.uk.ctx.at.function.dom.adapter.widgetKtg.NumAnnLeaReferenceDateImport;
 import nts.uk.ctx.at.function.dom.adapter.widgetKtg.OptionalWidgetAdapter;
 import nts.uk.ctx.at.function.dom.employmentfunction.checksdailyerror.ChecksDailyPerformanceErrorRepository;
+import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.ComplileInPeriodOfSpecialLeaveParam;
 import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.InPeriodOfSpecialLeaveResultInfor;
 import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.export.SpecialLeaveManagementService;
 import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
@@ -37,17 +38,12 @@ import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.ReflectedState;
-import nts.uk.ctx.at.shared.app.query.workrule.closure.ClosureResultModel;
-import nts.uk.ctx.at.shared.app.query.workrule.closure.WorkClosureQueryProcessor;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
 import nts.uk.ctx.at.shared.dom.common.Year;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsenceReruitmentMngInPeriodQuery;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffMngInPeriodQuery;
-import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRemainingData;
-import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.ComplileInPeriodOfSpecialLeaveParam;
-import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.SpecialLeaveGrantDetails;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.setting.AgreementOperationSetting;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHoliday;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayRepository;
@@ -55,7 +51,9 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
+import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureResultModel;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
+import nts.uk.ctx.at.shared.dom.workrule.closure.service.WorkClosureQueryProcessor;
 import nts.uk.ctx.at.shared.pub.workrule.closure.PresentClosingPeriodExport;
 import nts.uk.ctx.at.shared.pub.workrule.closure.ShClosurePub;
 import nts.uk.ctx.sys.portal.dom.smartphonetoppageset.NotificationDetailSet;
@@ -158,8 +156,14 @@ public class ToppageStartupProcessMobFinder {
 				ClosureService.createRequireM3(closureRepo, closureEmploymentRepo, shareEmploymentAdapter),
 				new CacheCarrier(),
 				AppContexts.user().employeeId(), GeneralDate.today());
-		toppageStartupDto.closureID = closure.getClosureId().value;
-		toppageStartupDto.closureYearMonth = closure.getClosureMonth().getProcessingYm().v();
+		if(closure!=null) {
+			toppageStartupDto.closureID = closure.getClosureId().value;
+			toppageStartupDto.closureYearMonth = closure.getClosureMonth().getProcessingYm().v();
+		} else {
+			toppageStartupDto.displayNotifiDto.visible = false;
+			toppageStartupDto.ktg029.setVisible(false);
+			toppageStartupDto.overtimeHoursDto.setVisible(false);
+		}
 
 		return toppageStartupDto;
 
@@ -469,7 +473,8 @@ public class ToppageStartupProcessMobFinder {
 							new DatePeriod(datePeriodDto.getStrCurrentMonth(),
 									datePeriodDto.getStrCurrentMonth().addYears(1).addDays(-1)),
 							false, systemDate, specialHoliday.getSpecialHolidayCode().v(), false, false,
-							new ArrayList<>());
+							new ArrayList<>(),
+							Optional.empty());
 					InPeriodOfSpecialLeaveResultInfor inPeriodOfSpecialLeave = SpecialLeaveManagementService
 							.complileInPeriodOfSpecialLeave(
 									requireService.createRequire(), new CacheCarrier(), param);

@@ -3,9 +3,9 @@ package nts.uk.ctx.at.shared.app.find.dailyattdcal.dailyattendance.shortworktime
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ChildCareAttribute;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortWorkTimFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortWorkingTimeSheet;
+import nts.uk.ctx.at.shared.dom.shortworktime.ChildCareAtr;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -45,7 +45,7 @@ public class ShortWorkingTimeSheetDto {
 	public ShortWorkingTimeSheet toDomain() {
 		return new ShortWorkingTimeSheet(
 				new ShortWorkTimFrameNo(shortWorkTimeFrameNo), 
-				EnumAdaptor.valueOf(childCareAttr, ChildCareAttribute.class), 
+				EnumAdaptor.valueOf(childCareAttr, ChildCareAtr.class), 
 				new TimeWithDayAttr(startTime), 
 				new TimeWithDayAttr(endTime));
 	}

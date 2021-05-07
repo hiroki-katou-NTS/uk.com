@@ -28,7 +28,7 @@ public class FlowRestSetDto implements FlowRestSetSetMemento {
 	private Integer timeManagerSetAtr;
 
 	/** The calculate method. */
-	private Integer calculateMethod;
+//	private Integer calculateMethod;
 
 	/**
 	 * Instantiates a new flow rest set dto.
@@ -77,8 +77,8 @@ public class FlowRestSetDto implements FlowRestSetSetMemento {
 	 * setCalculateMethod(nts.uk.ctx.at.shared.dom.worktime.common.
 	 * FlowRestCalcMethod)
 	 */
-	@Override
-	public void setCalculateMethod(FlowRestCalcMethod method) {
-		this.calculateMethod = method.value;
-	}
+//	@Override
+//	public void setCalculateMethod(FlowRestCalcMethod method) {
+//		this.calculateMethod = method.value;
+//	}
 }

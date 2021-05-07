@@ -76,10 +76,12 @@ public class FlexWorkSettingPolicyImpl implements FlexWorkSettingPolicy {
 		// validate core time setting
 		this.coreTimeSettingPolicy.validate(be, flexWork.getCoreTimeSetting(), predTime);
 
-		if (flexWork.isUseHalfDayShift()) {
-			// validate Msg_516 PredetemineTime
-			predeteminePolicyService.validatePredetemineTime(be, predTime);
-		}
+//		if (flexWork.isUseHalfDayShift()) {
+//			// validate Msg_516 PredetemineTime
+//			predeteminePolicyService.validatePredetemineTime(be, predTime);
+//		}
+		// validate Msg_516 PredetemineTime
+		predeteminePolicyService.validatePredetemineTime(be, predTime);
 
 		// validate FlexOffdayWorkTime
 		this.flexOffdayPolicy.validate(be, predTime, flexWork.getOffdayWorkTime());
@@ -94,8 +96,7 @@ public class FlexWorkSettingPolicyImpl implements FlexWorkSettingPolicy {
 		
 		// Filter AM PM
 		flexWork.getLstHalfDayWorkTimezone().forEach(flexTime -> {
-			this.flexHalfDayPolicy.filterTimezone(predTime, flexTime, displayMode.getDisplayMode(),
-					flexWork.isUseHalfDayShift());
+			this.flexHalfDayPolicy.filterTimezone(predTime, flexTime, displayMode.getDisplayMode());
 		});
 	}
 
@@ -115,17 +116,14 @@ public class FlexWorkSettingPolicyImpl implements FlexWorkSettingPolicy {
 			WorkTimeDisplayMode displayMode, FlexWorkSetting flexWorkSetting) {
 		List<AmPmAtr> lstAmPm = new ArrayList<AmPmAtr>();
 		lstAmPm.add(AmPmAtr.ONE_DAY);
-		if (flexWorkSetting.isUseHalfDayShift()) {
-			lstAmPm.add(AmPmAtr.AM);
-			lstAmPm.add(AmPmAtr.PM);
-		}
+		lstAmPm.add(AmPmAtr.AM);
+		lstAmPm.add(AmPmAtr.PM);
 
 		List<FlexHalfDayWorkTime> lstFlexHalfWork = flexWorkSetting.getLstHalfDayWorkTimezone().stream()
 				.filter(flexHalfWork -> lstAmPm.contains(flexHalfWork.getAmpmAtr())).collect(Collectors.toList());
 
 		lstFlexHalfWork.forEach(flexHalfWork -> {
-			this.flexHalfDayPolicy.validate(be, predetemineTimeSet, displayMode, flexHalfWork,
-					flexWorkSetting.isUseHalfDayShift());
+			this.flexHalfDayPolicy.validate(be, predetemineTimeSet, displayMode, flexHalfWork);
 		});
 	}
 }
