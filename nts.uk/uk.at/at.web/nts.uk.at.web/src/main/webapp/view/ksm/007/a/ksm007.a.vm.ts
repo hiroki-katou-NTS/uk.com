@@ -91,13 +91,13 @@ module nts.uk.at.view.ksm007.a {
 
             self.registerForm().selectedWkpType.subscribe(value => {
                 if (value == 0) {
-                    $("#multi-list_displayContainer").height(346);
-                    $("#multi-list_scrollContainer").height(346);
-                    $("#workplace-group-pannel").height(420);
+                    $("#multi-list_displayContainer").height(316);
+                    $("#multi-list_scrollContainer").height(316);
+                    $("#workplace-group-pannel").height(390);
                 } else {
-                    $("#multi-list_displayContainer").height(384);
-                    $("#multi-list_scrollContainer").height(384);
-                    $("#workplace-group-pannel").height(458);
+                    $("#multi-list_displayContainer").height(354);
+                    $("#multi-list_scrollContainer").height(354);
+                    $("#workplace-group-pannel").height(428);
                 }
             });
             self.registerForm().selectedWkpType.valueHasMutated();
