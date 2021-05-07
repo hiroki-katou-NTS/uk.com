@@ -4,20 +4,19 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.command.vacation.setting.nursingleave.dto;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.TimeDigestiveUnit;
-import nts.arc.enums.EnumAdaptor;
+import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.ChildCareNurseUpperLimit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.MaxPersonSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.MaxPersonSettingGetMemento;
-import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingNumberLeaveDay;
-import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingNumberPerson;
+import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NumberOfCaregivers;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingCategory;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingLeaveSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingLeaveSettingGetMemento;
@@ -58,9 +57,9 @@ public class NursingLeaveSettingDto {
 
     /** The absence work. */
     private Integer absenceWork;
-    
+
     private Integer timeDigestiveUnit;
-    
+
     private Integer manageDistinct;
 
     /**
@@ -153,8 +152,10 @@ public class NursingLeaveSettingDto {
 		}
 
 		@Override
-		public Integer getStartMonthDay() {
-			return this.setting.startMonthDay;
+		public MonthDay getStartMonthDay() {
+	    	int month = this.setting.startMonthDay / 100;
+        	int day = this.setting.startMonthDay % 100;
+        	return new MonthDay(month, day);
 		}
 
 		@Override
@@ -202,23 +203,23 @@ public class NursingLeaveSettingDto {
         }
 
 		@Override
-		public NursingNumberLeaveDay getNursingNumberLeaveDay() {
-			 return this.nursingNumberLeaveDay != null ? new NursingNumberLeaveDay(this.nursingNumberLeaveDay) : null;
+		public ChildCareNurseUpperLimit getNursingNumberLeaveDay() {
+			 return this.nursingNumberLeaveDay != null ? new ChildCareNurseUpperLimit(this.nursingNumberLeaveDay) : null;
 		}
 
 		@Override
-		public NursingNumberLeaveDay getNursingNumberLeaveDay2() {
-			 return this.nursingNumberLeaveDay2 != null ? new NursingNumberLeaveDay(this.nursingNumberLeaveDay2) : null;
+		public ChildCareNurseUpperLimit getNursingNumberLeaveDay2() {
+			 return this.nursingNumberLeaveDay2 != null ? new ChildCareNurseUpperLimit(this.nursingNumberLeaveDay2) : null;
 		}
 
 		@Override
-		public NursingNumberPerson getNursingNumberPerson() {			
-			return this.nursingNumberPerson != null ? new NursingNumberPerson(this.nursingNumberPerson) : null;
+		public NumberOfCaregivers getNursingNumberPerson() {			
+			return this.nursingNumberPerson != null ? new NumberOfCaregivers(this.nursingNumberPerson) : null;
 		}
 
 		@Override
-		public NursingNumberPerson getNursingNumberPerson2() {
-			return this.nursingNumberPerson2 != null ? new NursingNumberPerson(this.nursingNumberPerson2) : null;
+		public NumberOfCaregivers getNursingNumberPerson2() {
+			return this.nursingNumberPerson2 != null ? new NumberOfCaregivers(this.nursingNumberPerson2) : null;
 		}
     }
 }

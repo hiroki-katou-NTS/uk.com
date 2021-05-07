@@ -6,6 +6,8 @@ package nts.uk.ctx.at.shared.infra.repository.vacation.setting.nursingleave;
 
 import java.util.List;
 import java.util.Optional;
+
+//import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.MaxPersonSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingCategory;
@@ -13,6 +15,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingLeaveSettin
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.TimeCareNursingSet;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.nursingleave.KnlmtNursingLeaveSetPK;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.nursingleave.KshmtHdnursingLeave;
+import nts.uk.shr.com.time.calendar.MonthDay;
 
 /**
  * The Class JpaNursingVacationSettingSetMemento.
@@ -84,8 +87,9 @@ public class JpaNursingLeaveSettingSetMemento implements NursingLeaveSettingSetM
      * NursingVacationSettingSetMemento#setStartMonthDay(java.lang.Integer)
      */
     @Override
-    public void setStartMonthDay(Integer startMonthDay) {
-    	this.entityNursing.setStartMonthDay(startMonthDay);
+    public void setStartMonthDay(MonthDay  startMonthDay) {
+    	int monthday = startMonthDay.getMonth() * 100 + startMonthDay.getDay();
+    	this.entityNursing.setStartMonthDay(monthday);
     }
 
     @Override
@@ -135,7 +139,7 @@ public class JpaNursingLeaveSettingSetMemento implements NursingLeaveSettingSetM
 	public void setTimeCareNursingSet(TimeCareNursingSet timeCareNursingSet) {
 		this.entityNursing.setDigestiveUnit(timeCareNursingSet.getTimeDigestiveUnit().value);
 		this.entityNursing.setTimeManageAtr(timeCareNursingSet.getManageDistinct().value);
-		
+
 	}
 
 	@Override
@@ -145,7 +149,7 @@ public class JpaNursingLeaveSettingSetMemento implements NursingLeaveSettingSetM
 
 	@Override
 	public void setNumPer2(Integer numPer2) {
-		this.entityNursing.setNursingNumPerson2(2);	
+		this.entityNursing.setNursingNumPerson2(2);
 	}
 	
     /*
