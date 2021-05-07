@@ -129,13 +129,65 @@ public class UpdateShiftMasterServiceTest {
 							, original.getShiftMasterCode()
 							, ShiftMasterHelper.DispInfo.createDummy()
 							, new WorkInformation(original.getWorkTypeCode(), original.getWorkTimeCodeNotNull().orElse(null))
-							, original.getImportCode()
+							, Optional.empty()
 						)
 		);
 
 	}
 
 
+
+	/**
+	 * Target	: update
+	 * Pattern	: エラーなし
+	 * 				・新しい取り込みコードがEmpty
+	 * 				・勤務情報変更あり
+	 * 				・勤務情報での重複なし
+	 * Expect	: No exception
+	 */
+	@Test
+	public void test_update_complete_newImportCodeIsEmpty_workInfoIsNotDuplicated() {
+
+		val original = ShiftMasterHelper.create(
+						"codeOrg", "name is original"
+					,	"workTypeCodeOrg", Optional.of("workTimeCode")
+					,	Optional.of("importCodeOrg")
+				);
+		val changed = ShiftMasterHelper.create(
+						original.getShiftMasterCode().v(), "name is changed"
+					,	"workTypeCodeChg", Optional.empty()
+					,	Optional.empty()
+				);
+
+		new Expectations() {{
+
+			// シフトマスタを取得する
+			require.getByShiftMaterCd((ShiftMasterCode)any);
+			result = Optional.of(original);
+
+			// 重複チェック：勤務種類コード＋就業時間帯コード
+			@SuppressWarnings("unchecked") val workTimeCode = (Optional<WorkTimeCode>)any;
+			require.getByWorkTypeAndWorkTime((WorkTypeCode)any, workTimeCode);
+
+		}};
+		new MockUp<ShiftMaster>() {
+			/** [Mock] エラーチェックする **/
+			@Mock public void checkError(@SuppressWarnings("unused") ShiftMaster.Require require) {
+				// エラーなし
+			}
+		};
+
+		NtsAssert.atomTask(
+				() -> UpdateShiftMasterService.update(require
+							, changed.getShiftMasterCode()
+							, changed.getDisplayInfor()
+							, new WorkInformation(changed.getWorkTypeCode(), changed.getWorkTimeCodeNotNull().orElse(null))
+							, changed.getImportCode()
+						)
+			,	any -> require.update(changed)
+		);
+
+	}
 
 	/**
 	 * Target	: update
@@ -182,7 +234,7 @@ public class UpdateShiftMasterServiceTest {
 							, changed.getShiftMasterCode()
 							, changed.getDisplayInfor()
 							, new WorkInformation(changed.getWorkTypeCode(), changed.getWorkTimeCodeNotNull().orElse(null))
-							, changed.getImportCode()
+							, changed.getImportCode().map( e -> new ShiftMasterImportCode(e.v()) )
 						)
 			,	any -> require.update(changed)
 		);
@@ -203,7 +255,7 @@ public class UpdateShiftMasterServiceTest {
 		val original = ShiftMasterHelper.create(
 						"codeOrg", "name is original"
 					,	"workTypeCodeOrg", Optional.empty()
-					,	Optional.of("importCodeOrg")
+					,	Optional.empty()
 				);
 		val changed = ShiftMasterHelper.create(
 						original.getShiftMasterCode().v(), "name is changed"

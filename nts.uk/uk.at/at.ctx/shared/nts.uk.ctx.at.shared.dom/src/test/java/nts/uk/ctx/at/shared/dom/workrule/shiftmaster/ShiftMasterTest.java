@@ -15,6 +15,7 @@ import nts.arc.testing.assertion.NtsAssert;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMaster.Require;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 
 @RunWith(JMockit.class)
@@ -54,7 +55,7 @@ public class ShiftMasterTest {
 		val impCdBefore = new ShiftMasterImportCode("ImportBefore");
 		val impCdAfter = new ShiftMasterImportCode("ImportAfter");
 
-		/** 作成  */
+		/* 作成  */
 		val shiftMaster = new ShiftMaster("cid"
 								,	new ShiftMasterCode("shiftMaster01")
 								,	displayInfoBefore
@@ -77,7 +78,7 @@ public class ShiftMasterTest {
 				.get().isEqualTo(impCdBefore);
 
 
-		/** 変更  */
+		/* 変更  */
 		shiftMaster.change(displayInfoAfter, Optional.of(impCdAfter), workInfoAfter);
 
 		//表示情報
@@ -93,6 +94,67 @@ public class ShiftMasterTest {
 		//取込コード
 		assertThat(shiftMaster.getImportCode()).isPresent()
 				.get().isEqualTo(impCdAfter);
+
+	}
+
+
+	/**
+	 * Target	: change
+	 * Pattern	: Optional項目の値変更
+	 * 				・就業時間帯コード	： "workTimeCd"→empty
+	 * 				・取り込みコード	： empty→"importCode"
+	 * Expect	: インスタンスの内容が正しく変更されること
+	 */
+	@Test
+	public void test_change_optionalItems_1() {
+
+		val shiftMaster = ShiftMasterHelper.create("code", "name", "workTypeCd", Optional.of("workTimeCd"), Optional.empty());
+
+		/* 変更前 */
+		// 検証
+		assertThat( shiftMaster.getWorkTimeCodeNotNull() ).isPresent().get().isEqualTo(new WorkTimeCode("workTimeCd"));
+		assertThat( shiftMaster.getImportCode() ).isEmpty();
+
+		/* 変更後 */
+		// 変更
+		shiftMaster.change(
+					shiftMaster.getDisplayInfor()
+				,	Optional.of(new ShiftMasterImportCode("importCode"))
+				,	new WorkInformation(shiftMaster.getWorkTypeCode().v(), null)
+			);
+		// 検証
+		assertThat( shiftMaster.getWorkTimeCodeNotNull() ).isEmpty();
+		assertThat( shiftMaster.getImportCode() ).isPresent().get().isEqualTo(new ShiftMasterImportCode("importCode"));
+
+	}
+
+	/**
+	 * Target	: change
+	 * Pattern	: Optional項目の値変更
+	 * 				・就業時間帯コード	： empty→"workTimeCd"
+	 * 				・取り込みコード	： "importCode"→empty
+	 * Expect	: インスタンスの内容が正しく変更されること
+	 */
+	@Test
+	public void test_change_optionalItems_2() {
+
+		val shiftMaster = ShiftMasterHelper.create("code", "name", "workTypeCd", Optional.empty(), Optional.of("importCode"));
+
+		/* 変更前 */
+		// 検証
+		assertThat( shiftMaster.getWorkTimeCodeNotNull() ).isEmpty();
+		assertThat( shiftMaster.getImportCode() ).isPresent().get().isEqualTo(new ShiftMasterImportCode("importCode"));
+
+		/* 変更後 */
+		// 変更
+		shiftMaster.change(
+					shiftMaster.getDisplayInfor()
+				,	Optional.empty()
+				,	new WorkInformation(shiftMaster.getWorkTypeCode().v(), "workTimeCd")
+			);
+		// 検証
+		assertThat( shiftMaster.getWorkTimeCodeNotNull() ).isPresent().get().isEqualTo(new WorkTimeCode("workTimeCd"));
+		assertThat( shiftMaster.getImportCode() ).isEmpty();
 
 	}
 

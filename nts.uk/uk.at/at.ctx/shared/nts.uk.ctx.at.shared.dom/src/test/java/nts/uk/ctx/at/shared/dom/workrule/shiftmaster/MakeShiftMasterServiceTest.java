@@ -56,7 +56,7 @@ public class MakeShiftMasterServiceTest {
 
 	/**
 	 * Target	: makeShiftMaster
-	 * Pattern	: 同じ勤務情報が既に存在する
+	 * Pattern	: 同じ取り込みコードが既に存在する
 	 * Expect	: throw Msg_2163
 	 */
 	@Test
@@ -142,9 +142,6 @@ public class MakeShiftMasterServiceTest {
 			// 重複チェック：コード
 			require.checkExistsByCode((ShiftMasterCode)any);
 			result = false;
-			// 重複チェック：取り込みコード
-			require.checkDuplicateImportCode((ShiftMasterImportCode)any);
-			result = false;
 
 		}};
 		new MockUp<ShiftMaster>() {
@@ -161,7 +158,7 @@ public class MakeShiftMasterServiceTest {
 							, new WorkTypeCode("workTypeCode")
 							, Optional.empty()
 							, ShiftMasterHelper.DispInfo.createDummy()
-							, Optional.of(new ShiftMasterImportCode("importCode"))
+							, Optional.empty()
 						)
 		);
 
@@ -171,13 +168,56 @@ public class MakeShiftMasterServiceTest {
 
 	/**
 	 * Target	: makeShiftMaster
-	 * Pattern	: エラーなし
+	 * Pattern	: エラーなし※取り込みコード指定なし
 	 * Expect	: No exception
 	 */
 	@Test
-	public void test_makeShiftMsater_complete(@Injectable WorkType workType) {
+	public void test_makeShiftMsater_complete_importCodeIsEmpty() {
 
-		val shiftMaster = ShiftMasterHelper.create("code", "name", workType.getWorkTypeCode().v(), Optional.empty(), Optional.of("importCode"));
+		val shiftMaster = ShiftMasterHelper.create("code", "name", "workTypeCd", Optional.of("workTimeCd"), Optional.empty());
+
+		new Expectations() {{
+
+			// 重複チェック：コード
+			require.checkExistsByCode((ShiftMasterCode)any);
+			result = false;
+
+			// 重複チェック：勤務種類コード＋就業時間帯コード
+			@SuppressWarnings("unchecked") val workTimeCode = (Optional<WorkTimeCode>)any;
+			require.checkExists((WorkTypeCode)any, workTimeCode);
+			result = false;
+
+		}};
+		new MockUp<ShiftMaster>() {
+			/** [Mock] エラーチェックする **/
+			@Mock public void checkError(@SuppressWarnings("unused") ShiftMaster.Require require) {
+				// エラーなし
+			}
+		};
+
+		NtsAssert.atomTask(
+				() -> MakeShiftMasterService.makeShiftMaster(require
+							, shiftMaster.getCompanyId()
+							, shiftMaster.getShiftMasterCode()
+							, shiftMaster.getWorkTypeCode()
+							, shiftMaster.getWorkTimeCodeNotNull()
+							, shiftMaster.getDisplayInfor()
+							, shiftMaster.getImportCode()
+						)
+			,	any -> require.insert(shiftMaster)
+		);
+
+	}
+
+	/**
+	 * Target	: makeShiftMaster
+	 * Pattern	: エラーなし※取り込みコード指定あり
+	 * Expect	: No exception
+	 */
+	@Test
+	public void test_makeShiftMsater_complete_importCodeIsNotEmpty() {
+
+		val shiftMaster = ShiftMasterHelper.create("code", "name", "workTypeCd", Optional.empty(), Optional.of("importCode"));
 
 		new Expectations() {{
 
@@ -190,7 +230,8 @@ public class MakeShiftMasterServiceTest {
 			result = false;
 
 			// 重複チェック：勤務種類コード＋就業時間帯コード
-			require.checkExists((WorkTypeCode)any, Optional.empty());
+			@SuppressWarnings("unchecked") val workTimeCode = (Optional<WorkTimeCode>)any;
+			require.checkExists((WorkTypeCode)any, workTimeCode);
 			result = false;
 
 		}};
