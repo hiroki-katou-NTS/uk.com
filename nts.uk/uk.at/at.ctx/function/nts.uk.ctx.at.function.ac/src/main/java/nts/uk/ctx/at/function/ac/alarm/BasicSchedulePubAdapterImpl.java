@@ -12,6 +12,7 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.function.dom.adapter.alarm.BasicScheduleAdapter;
 import nts.uk.ctx.at.function.dom.adapter.alarm.BasicScheduleImport;
 import nts.uk.ctx.at.schedule.pub.schedule.basicschedule.ScBasicSchedulePub;
+import nts.uk.ctx.at.schedule.pub.schedule.workschedule.WorkSchedulePub;
 
 @Stateless
 public class BasicSchedulePubAdapterImpl implements BasicScheduleAdapter {
@@ -19,6 +20,8 @@ public class BasicSchedulePubAdapterImpl implements BasicScheduleAdapter {
 	@Inject
 	private ScBasicSchedulePub pub;
 	
+	@Inject
+	private WorkSchedulePub workSchedulePub;
 
 	@Override
 	public List<BasicScheduleImport> getByEmpIdsAndPeriod(List<String> empIds, DatePeriod period) {
@@ -33,7 +36,7 @@ public class BasicSchedulePubAdapterImpl implements BasicScheduleAdapter {
 
 	@Override
 	public Optional<GeneralDate> acquireMaxDateBasicSchedule(List<String> empIds) {
-		Optional<GeneralDate> data = pub.acquireMaxDateBasicSchedule(empIds);
+		Optional<GeneralDate> data = workSchedulePub.acquireMaxDateBasicSchedule(empIds);
 		return data;
 	}
 	
