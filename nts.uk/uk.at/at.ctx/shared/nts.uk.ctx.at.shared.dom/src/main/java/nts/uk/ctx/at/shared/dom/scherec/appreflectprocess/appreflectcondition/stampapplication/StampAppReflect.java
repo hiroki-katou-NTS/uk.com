@@ -106,7 +106,6 @@ public class StampAppReflect extends AggregateRoot {
 			// 事後
 			// 打刻申請の反映
 			lstItemId.addAll(reflectStampApp(application, dailyApp));
-
 			// 応援の反映
 			lstItemId.addAll(reflectSupport(require, application, dailyApp));
 		} else {
@@ -139,7 +138,6 @@ public class StampAppReflect extends AggregateRoot {
 	 */
 
 	public Collection<Integer> reflectStampApp(AppStampShare application, DailyRecordOfApplication dailyApp) {
-
 		Set<Integer> lstItemId = new HashSet<>();
 		// [出退勤を反映する]をチェック
 

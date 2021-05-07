@@ -7,8 +7,10 @@ import nts.uk.ctx.at.shared.dom.scherec.application.common.ApplicationTypeShare;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.businesstrip.ReflectBusinessTripApp;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.directgoback.GoBackReflect;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.lateearlycancellation.LateEarlyCancelReflect;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.AppReflectOtHdWork;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.stampapplication.StampAppReflect;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.timeleaveapplication.TimeLeaveApplicationReflect;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.vacationapplication.leaveapplication.VacationApplicationReflect;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.workchangeapp.ReflectWorkChangeApp;
 
 /**
@@ -24,11 +26,11 @@ public class GetDomainReflectModelApp {
 		// 反映する申請の申請種類をもとに、反映条件のドメインモデルを取得する
 		switch (appType) {
 		case OVER_TIME_APPLICATION:
-			// TODO: 0：残業申請の反映
-			return null;
+			// 0：残業申請の反映
+			return require.findOvertime(companyId).orElse(null);
 		case ABSENCE_APPLICATION:
-			// TODO: 1：休暇申請の反映
-			return null;
+			// 1：休暇申請の反映
+			return require.findVacationApp(companyId).orElse(null);
 		case WORK_CHANGE_APPLICATION:
 			// 2：勤務変更申請の反映
 			return require.findReflectWorkCg(companyId).orElse(null);
@@ -39,8 +41,8 @@ public class GetDomainReflectModelApp {
 			// 4：直行直帰申請の反映
 			return require.findReflectGoBack(companyId).orElse(null);
 		case HOLIDAY_WORK_APPLICATION:
-			// TODO: 6：休日出勤申請の反映
-			return null;
+			// 休日出勤申請の反映
+			return require.findOvertime(companyId).orElse(null);
 		case STAMP_APPLICATION:
 			// 7：打刻申請の反映
 			return require.findReflectAppStamp(companyId).orElse(null);
@@ -83,5 +85,9 @@ public class GetDomainReflectModelApp {
 		public Optional<ReflectBusinessTripApp> findReflectBusinessTripApp(String companyId);
 		
 		public Optional<TimeLeaveApplicationReflect> findReflectTimeLeav(String companyId);
+		
+		public Optional<AppReflectOtHdWork> findOvertime(String companyId);
+		
+		public Optional<VacationApplicationReflect> findVacationApp(String companyId);
 	}
 }

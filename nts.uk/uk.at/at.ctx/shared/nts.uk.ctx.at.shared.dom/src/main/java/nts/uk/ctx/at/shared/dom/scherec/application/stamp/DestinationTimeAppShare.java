@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 /**
  * @author thanh_nx
  *
- *         時刻申請の反映先情報
+ *         時刻申請の反映先情報(反映用)
  */
 @AllArgsConstructor
 @NoArgsConstructor

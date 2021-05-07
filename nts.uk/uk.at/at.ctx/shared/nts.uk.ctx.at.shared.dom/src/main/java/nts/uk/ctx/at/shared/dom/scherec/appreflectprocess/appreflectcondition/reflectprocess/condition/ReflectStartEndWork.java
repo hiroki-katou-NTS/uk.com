@@ -30,7 +30,7 @@ public class ReflectStartEndWork {
 		return itemIds;
 	}
 
-	public static interface Require  extends ReflectAttendance.Require{
+	public static interface Require extends ReflectAttendance.Require {
 		
 	}
 }

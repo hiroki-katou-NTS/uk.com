@@ -5,20 +5,25 @@ import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.scherec.application.appabsence.ApplyForLeaveShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.bussinesstrip.BusinessTripShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.common.ApplicationShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.common.StampRequestModeShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.gobackdirectly.GoBackDirectlyShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.holidayworktime.AppHolidayWorkShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.lateleaveearly.ArrivedLateLeaveEarlyShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.overtime.AppOverTimeShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.stamp.AppStampShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.timeleaveapplication.TimeLeaveApplicationShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.workchange.AppWorkChangeShare;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.businesstrip.ReflectBusinessTripApp;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.directgoback.GoBackReflect;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.lateearlycancellation.LateEarlyCancelReflect;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.AppReflectOtHdWork;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.DailyRecordOfApplication;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.stampapplication.StampAppReflect;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.timeleaveapplication.TimeLeaveApplicationReflect;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.vacationapplication.leaveapplication.VacationApplicationReflect;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.workchangeapp.ReflectWorkChangeApp;
 
 /**
@@ -37,11 +42,12 @@ public class RCCreateDailyAfterApplicationeReflect {
 		List<Integer> itemIds = new ArrayList<Integer>();
 		switch (application.getAppType()) {
 		case OVER_TIME_APPLICATION:
-			// TODO: 0：残業申請を反映する（勤務実績）
+			//0：残業申請を反映する（勤務予定）
+			itemIds.addAll(((AppReflectOtHdWork) domainSetReflect).processOverRc(require, (AppOverTimeShare) application, dailyApp));
 			break;
 		case ABSENCE_APPLICATION:
-			// TODO: 1：休暇申請を反映する(勤務実績）
-			break;
+			// 1：休暇申請を反映する(勤務予定）
+			return ((VacationApplicationReflect) domainSetReflect).process(require, (ApplyForLeaveShare) application, dailyApp);
 		case WORK_CHANGE_APPLICATION:
 			// 2：勤務変更申請を反映する(勤務実績）
 			itemIds.addAll(((ReflectWorkChangeApp) domainSetReflect).reflectRecord(require, (AppWorkChangeShare) application, dailyApp));
@@ -53,11 +59,13 @@ public class RCCreateDailyAfterApplicationeReflect {
 			break;
 		case GO_RETURN_DIRECTLY_APPLICATION:
 			// 4：直行直帰申請を反映する(勤務実績）
-			itemIds.addAll(((GoBackReflect) domainSetReflect).reflect(require, (GoBackDirectlyShare) application,
-					dailyApp));
+		itemIds.addAll(((GoBackReflect) domainSetReflect).reflect(require, (GoBackDirectlyShare) application,
+		dailyApp));
 			break;
 		case HOLIDAY_WORK_APPLICATION:
-			// TODO: 6：休日出勤申請を反映する（勤務実績）
+			// 6：休日出勤申請を反映する（勤務予定）
+			itemIds.addAll(((AppReflectOtHdWork) domainSetReflect).process(require, (AppHolidayWorkShare) application,
+					dailyApp).getLstItemId());
 			break;
 		case STAMP_APPLICATION:
 			// 7：打刻申請を反映する（勤務実績）
@@ -93,7 +101,8 @@ public class RCCreateDailyAfterApplicationeReflect {
 	}
 
 	public static interface Require extends GetDomainReflectModelApp.Require, ReflectWorkChangeApp.Require,
-	GoBackReflect.Require, StampAppReflect.Require, ReflectBusinessTripApp.Require {
+			GoBackReflect.Require, StampAppReflect.Require, ReflectBusinessTripApp.Require,
+			AppReflectOtHdWork.RequireRC, VacationApplicationReflect.Require, AppReflectOtHdWork.Require {
 
 	}
 }

@@ -15,8 +15,9 @@ import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.va
 @AllArgsConstructor
 @Getter
 public class SubstituteLeaveAppReflect {
-    /**
-     * 勤務情報、出退勤を反映する
-     */
-    private VacationAppReflectOption workInfoAttendanceReflect;
+	/**
+	 * 勤務情報、出退勤を反映する
+	 */
+	private VacationAppReflectOption workInfoAttendanceReflect;
+
 }
