@@ -26,5 +26,5 @@ public class AddAppWorkChangeCommandCheck {
 	// add param to handle 登録時チェック処理（全申請共通） 
 	private AppDispInfoStartupDto appDispInfoStartupDto;
 	
-	private AppWorkChangeDispInfoDto appWorkChangeDispInfo;
+	private AppWorkChangeDispInfoCmd appWorkChangeDispInfo;
 }
