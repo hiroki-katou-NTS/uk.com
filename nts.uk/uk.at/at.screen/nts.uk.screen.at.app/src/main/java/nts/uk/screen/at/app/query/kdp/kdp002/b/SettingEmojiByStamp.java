@@ -25,14 +25,22 @@ public class SettingEmojiByStamp {
 
 	public boolean getSettingEmoji() {
 		
+		boolean result = false;
+		
 		String cid = AppContexts.user().companyId();
 		
 		Optional<EmojiStateMng> emojiStateMng = this.emojiStateMngRepository.getByCid(cid);
 		
 		if (!emojiStateMng.isPresent()) {
-			return false;
+			return result;
 		}
 		
-		return emojiStateMng.get().getManageEmojiState().value == 0 ? false : true;
+		result = emojiStateMng.get().getManageEmojiState().value == 0 ? false : true;
+		
+		if (emojiStateMng.get().getEmojiStateSetting().getEmijiName().v().equals("")){
+			result = false;
+		}
+		
+		return result;
 	}
 }
