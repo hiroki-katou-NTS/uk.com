@@ -460,6 +460,7 @@ module nts.uk.ui.kdp001.a {
         workLocationName: KnockoutObservable<string | null> = ko.observable(null);
         workpalceId: KnockoutObservable<string | null> = ko.observable(null);
         modeA: KnockoutObservable<boolean> = ko.observable(false);
+        workpalceCD: KnockoutObservable<string | null> = ko.observable(null);
 
         message: {
             data: KnockoutObservable<MessageData>;
@@ -679,7 +680,9 @@ module nts.uk.ui.kdp001.a {
                         vm.$window.shared('infoEmpToScreenB', {
                             employeeId,
                             employeeCode,
-                            mode: MODE_PERSON
+                            mode: MODE_PERSON,
+                            workLocationName: ko.unwrap(vm.workLocationName),
+                            workpalceId: ko.unwrap(vm.workpalceId)
                         }),
                         vm.$window.shared('screenB', { screen: "KDP001" }),
                     )
@@ -708,7 +711,7 @@ module nts.uk.ui.kdp001.a {
                 buttonPositionNo,
                 refActualResults: {
                     cardNumberSupport,
-                    workLocationCD,
+                    workLocationCD: ko.unwrap(vm.workpalceCD),
                     workTimeCode,
                     overtimeDeclaration
                 }
@@ -780,6 +783,7 @@ module nts.uk.ui.kdp001.a {
                         vm.$ajax(REST_API.getLocation, param)
                             .done((data: IBasyo) => {
                                 if (data) {
+                                    vm.workpalceCD(locationCd);
                                     vm.workLocationName(data.workLocationName);
                                     vm.workpalceId(data.workpalceId);
                                 }
