@@ -31,7 +31,7 @@ public class MakeShiftMasterService {
 			,	String companyId, ShiftMasterCode shiftMasterCode
 			,	WorkTypeCode workTypeCd, Optional<WorkTimeCode> workTimeCd
 			,	ShiftMasterDisInfor displayInfor
-			,	ShiftMasterImportCode importCode
+			,	Optional<ShiftMasterImportCode> importCode
 	) {
 
 		// 重複チェック：コード
@@ -40,7 +40,7 @@ public class MakeShiftMasterService {
 		}
 
 		// 重複チェック：取り込みコード
-		if ( require.checkDuplicateImportCode(importCode) ) {
+		if ( importCode.isPresent() && require.checkDuplicateImportCode(importCode.get()) ) {
 			throw new BusinessException("Msg_2163");
 		}
 

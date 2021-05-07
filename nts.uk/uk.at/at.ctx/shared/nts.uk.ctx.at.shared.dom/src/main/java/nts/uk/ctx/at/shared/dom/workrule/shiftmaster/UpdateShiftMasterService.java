@@ -28,7 +28,7 @@ public class UpdateShiftMasterService {
 	 */
 	public static AtomTask update(Require require
 			, ShiftMasterCode shiftMasterCode, ShiftMasterDisInfor displayInfor
-			, WorkInformation workInformation, ShiftMasterImportCode importCode
+			, WorkInformation workInformation, Optional<ShiftMasterImportCode> importCode
 	) {
 
 		// シフトマスタを取得する
@@ -36,7 +36,9 @@ public class UpdateShiftMasterService {
 
 
 		// 重複チェック：取り込みコード
-		if ( !shiftMaster.getImportCode().equals(importCode) && require.checkDuplicateImportCode(importCode) ) {
+		if ( importCode.isPresent()
+				&& !shiftMaster.getImportCode().equals(importCode)
+				&& require.checkDuplicateImportCode(importCode.get()) ) {
 			throw new BusinessException("Msg_2163");
 		}
 

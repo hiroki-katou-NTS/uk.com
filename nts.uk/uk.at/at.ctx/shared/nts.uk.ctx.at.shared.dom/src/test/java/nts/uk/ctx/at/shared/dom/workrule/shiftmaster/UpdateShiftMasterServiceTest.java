@@ -53,7 +53,7 @@ public class UpdateShiftMasterServiceTest {
 							, new ShiftMasterCode("shiftMasterCode")
 							, ShiftMasterHelper.DispInfo.createDummy()
 							, new WorkInformation("workTypeCode", null)
-							, newImportCode
+							, Optional.of(newImportCode)
 						)
 		);
 
@@ -151,12 +151,12 @@ public class UpdateShiftMasterServiceTest {
 		val original = ShiftMasterHelper.create(
 						"codeOrg", "name is original"
 					,	"workTypeCodeOrg", Optional.of("workTimeCode")
-					,	"importCodeOrg"
+					,	Optional.of("importCodeOrg")
 				);
 		val changed = ShiftMasterHelper.create(
 						original.getShiftMasterCode().v(), "name is changed"
 					,	"workTypeCodeChg", Optional.empty()
-					,	original.getImportCode().v()
+					,	original.getImportCode().map(ShiftMasterImportCode::v)
 				);
 
 		new Expectations() {{
@@ -203,12 +203,12 @@ public class UpdateShiftMasterServiceTest {
 		val original = ShiftMasterHelper.create(
 						"codeOrg", "name is original"
 					,	"workTypeCodeOrg", Optional.empty()
-					,	"importCodeOrg"
+					,	Optional.of("importCodeOrg")
 				);
 		val changed = ShiftMasterHelper.create(
 						original.getShiftMasterCode().v(), "name is changed"
 					,	original.getWorkTypeCode().v(), original.getWorkTimeCodeNotNull().map(WorkTimeCode::v)
-					,	"importCodeChg"
+					,	Optional.of("importCodeChg")
 				);
 
 		new Expectations() {{

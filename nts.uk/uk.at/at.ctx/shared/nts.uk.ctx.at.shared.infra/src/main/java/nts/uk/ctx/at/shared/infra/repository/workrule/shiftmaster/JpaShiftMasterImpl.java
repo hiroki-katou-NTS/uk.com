@@ -109,7 +109,7 @@ public class JpaShiftMasterImpl extends JpaRepository implements ShiftMasterRepo
 												Optional.ofNullable( rec.getString("NOTE") == null ? null : new Remarks(rec.getString("NOTE")) )),
 							rec.getString("WORKTYPE_CD"),
 							rec.getString("WORKTIME_CD"),
-							new ShiftMasterImportCode("importCode")//TODO
+							Optional.empty()	//TODO 取り込みコード追加
 						);
 			});
 

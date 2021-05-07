@@ -60,7 +60,7 @@ public class ShiftMasterTest {
 								,	displayInfoBefore
 								,	workInfoBefore.getWorkTypeCode().v()
 								,	workInfoBefore.getWorkTimeCode().v()
-								,	impCdBefore
+								,	Optional.of(impCdBefore)
 							);
 		//表示情報
 		assertThat(shiftMaster.getDisplayInfor().getName()).isEqualTo(displayInfoBefore.getName());
@@ -73,11 +73,12 @@ public class ShiftMasterTest {
 		assertThat(shiftMaster.getWorkTimeCode()).isEqualTo(workInfoBefore.getWorkTimeCode());
 
 		//取込コード
-		assertThat(shiftMaster.getImportCode()).isEqualTo(impCdBefore);
+		assertThat(shiftMaster.getImportCode()).isPresent()
+				.get().isEqualTo(impCdBefore);
 
 
 		/** 変更  */
-		shiftMaster.change(displayInfoAfter, impCdAfter, workInfoAfter);
+		shiftMaster.change(displayInfoAfter, Optional.of(impCdAfter), workInfoAfter);
 
 		//表示情報
 		assertThat(shiftMaster.getDisplayInfor().getName()).isEqualTo(displayInfoAfter.getName());
@@ -90,7 +91,8 @@ public class ShiftMasterTest {
 		assertThat(shiftMaster.getWorkTimeCode()).isEqualTo(workInfoAfter.getWorkTimeCode());
 
 		//取込コード
-		assertThat(shiftMaster.getImportCode()).isEqualTo(impCdAfter);
+		assertThat(shiftMaster.getImportCode()).isPresent()
+				.get().isEqualTo(impCdAfter);
 
 	}
 
@@ -105,7 +107,7 @@ public class ShiftMasterTest {
 	@Test
 	public void test_checkError_throw_Msg_1608() {
 
-		val shiftMaster = ShiftMasterHelper.create("code", "name", "workTypeCode", Optional.of("workTimeCode"), "importCode");
+		val shiftMaster = ShiftMasterHelper.create("code", "name", "workTypeCode", Optional.empty(), Optional.empty());
 
 		new Expectations() {{
 			// 勤務種類を取得する
@@ -127,7 +129,7 @@ public class ShiftMasterTest {
 	@Test
 	public void test_checkError_throw_Msg_1609(@Injectable WorkType workType) {
 
-		val shiftMaster = ShiftMasterHelper.create("code", "name", "workTypeCode", Optional.of("workTimeCode"), "importCode");
+		val shiftMaster = ShiftMasterHelper.create("code", "name", "workTypeCode", Optional.of("workTimeCode"), Optional.empty());
 
 		new Expectations() {{
 			// 勤務種類を取得する
@@ -154,7 +156,7 @@ public class ShiftMasterTest {
 	@Test
 	public void test_checkError_throw_Msg_435(@Injectable WorkType workType) {
 
-		val shiftMaster = ShiftMasterHelper.create("code", "name", "workTypeCode", Optional.empty(), "importCode");
+		val shiftMaster = ShiftMasterHelper.create("code", "name", "workTypeCode", Optional.empty(), Optional.empty());
 
 		new Expectations() {{
 			// 勤務種類を取得する
@@ -179,7 +181,7 @@ public class ShiftMasterTest {
 	@Test
 	public void test_checkError_throw_Msg_434(@Injectable WorkType workType) {
 
-		val shiftMaster = ShiftMasterHelper.create("code", "name", "workTypeCode", Optional.of("workTimeCode"), "importCode");
+		val shiftMaster = ShiftMasterHelper.create("code", "name", "workTypeCode", Optional.of("workTimeCode"), Optional.empty());
 
 		new Expectations() {{
 			// 勤務種類を取得する

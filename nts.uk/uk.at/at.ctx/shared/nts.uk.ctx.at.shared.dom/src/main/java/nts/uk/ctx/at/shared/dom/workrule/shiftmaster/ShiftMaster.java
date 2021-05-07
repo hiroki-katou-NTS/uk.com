@@ -27,7 +27,7 @@ public class ShiftMaster extends WorkInformation implements DomainAggregate {
 	/** 表示情報 **/
 	private ShiftMasterDisInfor displayInfor;
 	/** 取り込みコード **/
-	private ShiftMasterImportCode importCode;
+	private Optional<ShiftMasterImportCode> importCode;
 
 
 
@@ -42,7 +42,7 @@ public class ShiftMaster extends WorkInformation implements DomainAggregate {
 	 */
 	public ShiftMaster(
 			String companyId, ShiftMasterCode shiftMaterCode, ShiftMasterDisInfor displayInfor
-		,	String workTypeCode, String workTimeCode, ShiftMasterImportCode importCode
+		,	String workTypeCode, String workTimeCode, Optional<ShiftMasterImportCode> importCode
 	) {
 
 		super( workTypeCode, workTimeCode );
@@ -65,7 +65,8 @@ public class ShiftMaster extends WorkInformation implements DomainAggregate {
 	 */
 	public ShiftMaster(
 			String companyId, ShiftMasterCode shiftMaterCode, ShiftMasterDisInfor displayInfor
-		,	WorkTypeCode workTypeCode, Optional<WorkTimeCode> workTimeCode, ShiftMasterImportCode importCode
+		,	WorkTypeCode workTypeCode, Optional<WorkTimeCode> workTimeCode
+		,	Optional<ShiftMasterImportCode> importCode
 	) {
 		this(
 				companyId, shiftMaterCode, displayInfor
@@ -103,7 +104,7 @@ public class ShiftMaster extends WorkInformation implements DomainAggregate {
 	 * @param importCode 取り込みコード
 	 * @param workInformation 勤務情報
 	 */
-	public void change(ShiftMasterDisInfor displayInfor, ShiftMasterImportCode importCode, WorkInformation workInformation) {
+	public void change(ShiftMasterDisInfor displayInfor, Optional<ShiftMasterImportCode> importCode, WorkInformation workInformation) {
 
 		this.displayInfor = displayInfor;
 		this.importCode = importCode;

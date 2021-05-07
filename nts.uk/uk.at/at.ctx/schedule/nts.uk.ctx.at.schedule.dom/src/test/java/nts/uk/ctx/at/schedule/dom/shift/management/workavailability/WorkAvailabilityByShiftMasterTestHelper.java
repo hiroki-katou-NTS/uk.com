@@ -10,7 +10,6 @@ import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.Remarks;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMaster;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterCode;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterDisInfor;
-import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterImportCode;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterName;
 
 public class WorkAvailabilityByShiftMasterTestHelper {
@@ -42,7 +41,8 @@ public class WorkAvailabilityByShiftMasterTestHelper {
     					Optional.of(new Remarks(shiftMasterCode + "-r"))),
     			"001",
     			"001",
-    			new ShiftMasterImportCode("importCode"));
+    			Optional.empty()
+    			);
 
 	}
 
@@ -57,7 +57,8 @@ public class WorkAvailabilityByShiftMasterTestHelper {
     					Optional.of(new Remarks(shiftMasterCode + "-r"))),
     			"001",
     			"001",
-    			new ShiftMasterImportCode("importCode"));
+    			Optional.empty()
+    			);
 
 	}
 

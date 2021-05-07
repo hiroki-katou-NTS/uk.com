@@ -9,7 +9,7 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 public class ShiftMasterHelper {
 
 	/** シフトマスタ(Dummy) **/
-	private static final ShiftMaster dummy = ShiftMasterHelper.create("code", "name", "workTypeCode", Optional.of("workTimeCode"), "importCode");
+	private static final ShiftMaster dummy = ShiftMasterHelper.create("code", "name", "workTypeCode", Optional.of("workTimeCode"), Optional.of("importCode"));
 
 	/**
 	 * シフトマスタを作成する
@@ -22,14 +22,14 @@ public class ShiftMasterHelper {
 	 */
 	public static ShiftMaster create(String code, String name
 			, String workTypeCode, Optional<String> workTimeCode
-			, String importCode
+			, Optional<String> importCode
 	) {
 
 		return new ShiftMaster(
 					"companyId", new ShiftMasterCode(code)
 				,	DispInfo.create(name, "ffffff", "000000", Optional.of("remarks"))
 				,	new WorkTypeCode(workTypeCode), workTimeCode.map(WorkTimeCode::new)
-				,	new ShiftMasterImportCode(importCode)
+				,	importCode.map(ShiftMasterImportCode::new)
 			);
 	}
 
@@ -52,7 +52,7 @@ public class ShiftMasterHelper {
 			,	ShiftMasterHelper.dummy.getDisplayInfor().getName().v()
 			,	ShiftMasterHelper.dummy.getWorkTypeCode().v()
 			,	ShiftMasterHelper.dummy.getWorkTimeCodeNotNull().map(WorkTimeCode::v)
-			,	ShiftMasterHelper.dummy.getImportCode().v()
+			,	ShiftMasterHelper.dummy.getImportCode().map(ShiftMasterImportCode::v)
 		);
 	}
 
@@ -67,7 +67,7 @@ public class ShiftMasterHelper {
 					,	ShiftMasterHelper.dummy.getDisplayInfor().getName().v()
 					,	ShiftMasterHelper.dummy.getWorkTypeCode().v()
 					,	ShiftMasterHelper.dummy.getWorkTimeCodeNotNull().map(WorkTimeCode::v)
-					,	importCode
+					,	Optional.of(importCode)
 				);
 	}
 

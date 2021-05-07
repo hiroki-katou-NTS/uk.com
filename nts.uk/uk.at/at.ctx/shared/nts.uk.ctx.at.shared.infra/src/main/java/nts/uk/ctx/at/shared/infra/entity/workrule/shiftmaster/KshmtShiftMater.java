@@ -14,7 +14,6 @@ import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.Remarks;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMaster;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterCode;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterDisInfor;
-import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterImportCode;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterName;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
@@ -65,10 +64,7 @@ public class KshmtShiftMater extends ContractUkJpaEntity {
 		return new ShiftMaster(kshmtShiftMaterPK.companyId, new ShiftMasterCode(kshmtShiftMaterPK.shiftMaterCode),
 				new ShiftMasterDisInfor(new ShiftMasterName(this.name), new ColorCodeChar6(this.color),new ColorCodeChar6(this.colorMobile),
 						Optional.ofNullable( this.remarks == null ? null : new Remarks(this.remarks) )),
-				this.workTypeCd, this.workTimeCd,
-				//TODO
-				new ShiftMasterImportCode("importCode")
-
+				this.workTypeCd, this.workTimeCd, Optional.empty()	//TODO 取り込みコード追加
 				);
 	}
 

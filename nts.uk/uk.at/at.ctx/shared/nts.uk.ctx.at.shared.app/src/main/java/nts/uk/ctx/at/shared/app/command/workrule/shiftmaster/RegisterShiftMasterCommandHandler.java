@@ -76,14 +76,14 @@ public class RegisterShiftMasterCommandHandler extends CommandHandler<RegisterSh
 							, new WorkTypeCode(cmd.getWorkTypeCd())
 							, Optional.ofNullable( cmd.getWorkTimeSetCd() == null ? null : new WorkTimeCode(cmd.getWorkTimeSetCd()) )
 							, dom.getDisplayInfor()
-							, new ShiftMasterImportCode("importCode")	//TODO
+							, Optional.empty()	//TODO 取り込みコード追加
 						);
 		} else {
 			persist = UpdateShiftMasterService.update(updateRequired
 							, new ShiftMasterCode(cmd.getShiftMasterCode())
 							, dom.getDisplayInfor()
 							, new WorkInformation(cmd.getWorkTypeCd(), cmd.getWorkTimeSetCd())
-							, new ShiftMasterImportCode("importCode")	//TODO
+							, Optional.empty()	//TODO 取り込みコード追加
 						);
 		}
 

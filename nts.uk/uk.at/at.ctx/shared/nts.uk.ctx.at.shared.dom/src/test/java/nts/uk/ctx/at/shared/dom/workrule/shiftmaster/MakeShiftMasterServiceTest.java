@@ -48,7 +48,7 @@ public class MakeShiftMasterServiceTest {
 							, new WorkTypeCode("workTypeCode")
 							, Optional.of(new WorkTimeCode("workTimeCode"))
 							, ShiftMasterHelper.DispInfo.createDummy()
-							, new ShiftMasterImportCode("importCode")
+							, Optional.of(new ShiftMasterImportCode("importCode"))
 						)
 		);
 
@@ -81,7 +81,7 @@ public class MakeShiftMasterServiceTest {
 							, new WorkTypeCode("workTypeCode")
 							, Optional.empty()
 							, ShiftMasterHelper.DispInfo.createDummy()
-							, new ShiftMasterImportCode("importCode")
+							, Optional.of(new ShiftMasterImportCode("importCode"))
 						)
 		);
 
@@ -123,7 +123,7 @@ public class MakeShiftMasterServiceTest {
 							, new WorkTypeCode("workTypeCode")
 							, Optional.empty()
 							, ShiftMasterHelper.DispInfo.createDummy()
-							, new ShiftMasterImportCode("importCode")
+							, Optional.of(new ShiftMasterImportCode("importCode"))
 						)
 		);
 
@@ -161,7 +161,7 @@ public class MakeShiftMasterServiceTest {
 							, new WorkTypeCode("workTypeCode")
 							, Optional.empty()
 							, ShiftMasterHelper.DispInfo.createDummy()
-							, new ShiftMasterImportCode("importCode")
+							, Optional.of(new ShiftMasterImportCode("importCode"))
 						)
 		);
 
@@ -177,7 +177,7 @@ public class MakeShiftMasterServiceTest {
 	@Test
 	public void test_makeShiftMsater_complete(@Injectable WorkType workType) {
 
-		val shiftMaster = ShiftMasterHelper.create("code", "name", workType.getWorkTypeCode().v(), Optional.empty(), "importCode");
+		val shiftMaster = ShiftMasterHelper.create("code", "name", workType.getWorkTypeCode().v(), Optional.empty(), Optional.of("importCode"));
 
 		new Expectations() {{
 
