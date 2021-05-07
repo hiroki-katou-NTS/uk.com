@@ -5819,7 +5819,7 @@ var nts;
                         .on('mouseup', function (evt) {
                         var button = cache.button, position = cache.position;
                         var target = evt.target, pageX = evt.pageX, pageY = evt.pageY;
-                        if (target.tagName !== 'BUTTON') {
+                        if (target.tagName !== 'BUTTON' && !$(target).closest('button').is(button)) {
                             if (button && position) {
                                 var x = position.x, y = position.y;
                                 if (x === pageX && y === pageY) {
@@ -5832,7 +5832,8 @@ var nts;
                         cache.position = null;
                     })
                         .on('mousedown', 'button', function (evt) {
-                        cache.button = evt.target;
+                        var target = evt.target;
+                        cache.button = target.tagName === 'BUTTON' ? target : $(target).closest('button').get(0);
                         cache.position = {
                             x: evt.pageX,
                             y: evt.pageY
@@ -15269,6 +15270,18 @@ var nts;
                             if (disables[i].length === 0)
                                 delete disables[i];
                             helper.stripCellWith(style.SEAL_CLS, $cell, innerIdx);
+                        }
+                        else {
+                            var cellStyles = $.data($table, internal.CELLS_STYLE);
+                            var removed = _.remove(cellStyles, function (s) {
+                                return s.rowId === rowId && s.columnKey === columnKey
+                                    && ((_.isNil(innerIdx) && _.isNil(s.innerIdx)) ? true : innerIdx === s.innerIdx)
+                                    && s.clazz === style.SEAL_CLS;
+                            });
+                            if (removed.length > 0) {
+                                var $cell = selection.cellAt($table, i, columnKey);
+                                helper.stripCellWith(style.SEAL_CLS, $cell, innerIdx);
+                            }
                         }
                     }
                     /**
@@ -36250,6 +36263,8 @@ var nts;
                                             child.reposition({ width: 0 });
                                     }
                                 });
+                                pDec_1.initStart = pDec_1.start;
+                                pDec_1.initEnd = pDec_1.end;
                                 chart.reposition(pDec_1);
                             }
                             else if (self.slideTrigger.holdPos === HOLD_POS.START) {
@@ -36867,6 +36882,12 @@ var nts;
                         if (_.has(style, "end")) {
                             self.end = style.end;
                         }
+                        if (_.has(style, "initStart")) {
+                            self.initStart = style.initStart;
+                        }
+                        if (_.has(style, "initEnd")) {
+                            self.initEnd = style.initEnd;
+                        }
                         if (_.has(style, "top")) {
                             self.html.style.top = style.top + "px";
                         }
@@ -37094,12 +37115,14 @@ var nts;
 function bean(dialogOption) {
     return function (ctor) {
         __viewContext.ready(function () {
-            nts.uk.ui.viewmodel.$storage().then(function ($params) {
-                var $viewModel = new ctor($params), $created = $viewModel['created'];
+            var localShared = nts.uk.ui.windows.container.localShared;
+            nts.uk.ui.viewmodel.$storage()
+                .then(function ($params) {
+                var $viewModel = new ctor($params || localShared), $created = $viewModel['created'];
                 _.extend($viewModel, { $el: undefined });
                 // hook to created function
                 if ($created && _.isFunction($created)) {
-                    $created.apply($viewModel, [$params]);
+                    $created.apply($viewModel, [$params || localShared]);
                 }
                 __viewContext.bind($viewModel, dialogOption);
                 var $window = $viewModel.$window;
@@ -49012,7 +49035,7 @@ var nts;
                             var disable = allBindingsAccessor.get('disable');
                             ko.computed({
                                 read: function () {
-                                    var options = ko.unwrap(accessor);
+                                    var options = ko.toJS(accessor);
                                     $element
                                         .css({
                                         top: '',
