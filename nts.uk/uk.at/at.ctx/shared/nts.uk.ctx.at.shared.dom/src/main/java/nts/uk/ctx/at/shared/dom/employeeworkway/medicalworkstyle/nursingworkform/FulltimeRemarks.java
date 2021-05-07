@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle;
+package nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.nursingworkform;
 
 import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.CharType;

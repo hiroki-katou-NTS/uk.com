@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle;
+package nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.medicalworkstyle;
 
 import java.util.Optional;
 
@@ -6,7 +6,6 @@ import javax.ejb.Stateless;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
-import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
  * 社員の夜勤上限時間を取得する
@@ -24,14 +23,14 @@ public class GetMaximumNightShiftHoursOfEmployeeService {
 	 * @return
 	 */
 	public static Optional<AttendanceTimeMonth> get(Require require, String sid, GeneralDate baseDate) {
-		Optional<EmpMedicalWorkFormHisItem> medicalWorkHisItem = require.getEmpMedicalWorkFormHisItem(sid, baseDate);
+		Optional<EmpMedicalWorkStyleHistoryItem> medicalWorkHisItem = require.getEmpMedicalWorkFormHisItem(sid, baseDate);
 
 		if (!medicalWorkHisItem.isPresent())
 			return Optional.empty();
 
 		NightShiftUpperLimitTime maxNightShiftHours = require.getNightShiftUpperLimitTime();
 
-		if (medicalWorkHisItem.get().getNightShiftFullTime() == NotUseAtr.USE)
+		if (medicalWorkHisItem.get().isOnlyNightShift())
 			return Optional.of(maxNightShiftHours.getNightShiftWorker());
 
 		return Optional.of(maxNightShiftHours.getRegularWorker());
@@ -50,6 +49,6 @@ public class GetMaximumNightShiftHoursOfEmployeeService {
 		 * @param baseDate 基準日
 		 * @return
 		 */
-		Optional<EmpMedicalWorkFormHisItem> getEmpMedicalWorkFormHisItem(String sid, GeneralDate baseDate);
+		Optional<EmpMedicalWorkStyleHistoryItem> getEmpMedicalWorkFormHisItem(String sid, GeneralDate baseDate);
 	}
 }

@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle;
+package nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.medicalworkstyle;
 
 import java.util.HashMap;
 import java.util.List;
@@ -7,6 +7,10 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.EmpLicenseClassification;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.LicenseClassification;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.NurseClassifiCode;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.NurseClassification;
 
 /**
  * 社員の免許区分を取得する
@@ -22,11 +26,10 @@ public class GetEmpLicenseClassificationService {
 		Map<NurseClassifiCode ,NurseClassification> map = new HashMap<>();
 
 		// $社員の看護区分Map = require.社員の医療勤務形態履歴項目を取得する(基準日, 社員リスト)
-		List<EmpMedicalWorkFormHisItem> listEmpMedicalWorkFormHisItem  = require.getEmpClassifications(listEmp, referenceDate);
+		List<EmpMedicalWorkStyleHistoryItem> listEmpMedicalWorkFormHisItem  = require.getEmpMedicalWorkStyleHistoryItem(listEmp, referenceDate);
 		
 		mapNurseClassifiCode = listEmpMedicalWorkFormHisItem.stream()
-				.collect(Collectors
-				.toMap(EmpMedicalWorkFormHisItem::getEmpID, EmpMedicalWorkFormHisItem::getNurseClassifiCode));
+				.collect(Collectors.toMap(EmpMedicalWorkStyleHistoryItem::getEmpID, EmpMedicalWorkStyleHistoryItem::getNurseClassifiCode));
 		
 		// $看護区分Map = require.会社の看護区分リストを取得する()
 		List<NurseClassification>  listNurseClassification = require.getListCompanyNurseCategory();
@@ -66,7 +69,7 @@ public class GetEmpLicenseClassificationService {
 		 * @param referenceDate
 		 * @return
 		 */
-		List<EmpMedicalWorkFormHisItem> getEmpClassifications(List<String> listEmp , GeneralDate referenceDate);
+		List<EmpMedicalWorkStyleHistoryItem> getEmpMedicalWorkStyleHistoryItem(List<String> listEmp , GeneralDate referenceDate);
 		//		看護区分Repository.会社の看護区分リストを取得する(会社ID)		
 		/**
 		 * [R-1] 会社の看護区分リストを取得する

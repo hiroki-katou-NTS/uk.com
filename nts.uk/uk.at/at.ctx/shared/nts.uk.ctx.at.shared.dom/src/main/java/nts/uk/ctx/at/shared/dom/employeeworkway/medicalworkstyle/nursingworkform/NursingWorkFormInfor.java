@@ -1,7 +1,8 @@
-package nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle;
+package nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.nursingworkform;
 
 import lombok.Value;
 import nts.arc.layer.dom.objecttype.DomainValue;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.MedicalCareWorkStyle;
 
 /**
  * 介護勤務形態情報
