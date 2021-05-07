@@ -17,13 +17,14 @@ import nts.uk.ctx.at.record.pub.monthly.vacation.annualleave.dtoexport.temp.Rema
 import nts.uk.ctx.at.record.pub.monthly.vacation.annualleave.dtoexport.temp.TempAnnualLeaveMngsExport;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TempAnnualLeaveMngs;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveUsedNumber;
+import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
 
 @Stateless
 public class GetTempAnnualLeaveMngsFromUsedNumberPubImpl implements GetTempAnnualLeaveMngsFromUsedNumberPub {
 
 	/**
 	 * 使用数を暫定年休管理データに変換する
-	 * 
+	 *
 	 * @param employeeId 社員ID
 	 * @param usedNumber 使用数
 	 * @return 暫定年休管理データ(List)
@@ -41,7 +42,7 @@ public class GetTempAnnualLeaveMngsFromUsedNumberPubImpl implements GetTempAnnua
 
 		return new TempAnnualLeaveMngsExport(domain.getRemainManaID(), domain.getSID(), domain.getYmd(),
 				EnumAdaptor.valueOf(domain.getCreatorAtr().value, CreateAtrExport.class),
-				EnumAdaptor.valueOf(domain.getRemainType().value, RemainTypeExport.class),
+				EnumAdaptor.valueOf(domain.getRemainType().value, RemainType.class),
 				domain.getWorkTypeCode().v(),
 				new LeaveUsedNumberExport(domain.getUsedNumber().getDays().v(),
 						domain.getUsedNumber().getMinutes().map(x -> x.v()),
