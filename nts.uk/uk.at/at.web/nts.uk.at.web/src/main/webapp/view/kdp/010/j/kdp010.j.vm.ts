@@ -111,11 +111,11 @@ module nts.uk.at.view.kdp010.j {
 								buttonType.stampType ? buttonType.stampType.setPreClockArt: null, 
 								buttonType.stampType ? buttonType.stampType.changeHalfDay: null, 
 								buttonType.reservationArt);
-				if(!self.settingsStampUse.supportUse){
-					return value == 14 || value == 15 || value == 16 || value == 17 || value == 18;
+				if(value == 14 || value == 15 || value == 16 || value == 17 || value == 18){
+					return !self.settingsStampUse.supportUse;
 				}
-				if(!self.settingsStampUse.temporaryUse){
-					return value == 12 || value == 13;
+				if(value == 12 || value == 13){
+					return !self.settingsStampUse.temporaryUse;
 				}
 				return false;
 			}
