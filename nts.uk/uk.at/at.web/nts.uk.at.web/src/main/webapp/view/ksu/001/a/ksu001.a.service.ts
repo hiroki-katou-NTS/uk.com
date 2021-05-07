@@ -1,19 +1,5 @@
 module nts.uk.at.view.ksu001.a.service {
     let paths: any = {
-        getDataBasicSchedule: "screen/at/schedule/basicschedule/getBasicScheduleWithJDBC",
-        getDataWorkScheduleState: "screen/at/schedule/basicschedule/getDataWorkScheduleState",
-        registerData: "at/schedule/basicschedule/register",
-        getShiftCondition: "at/schedule/shift/shiftCondition/shiftCondition/getAllShiftCondition",
-        getShiftConditionCategory: "at/schedule/shift/shiftCondition/shiftCondition/getAllShiftConCategory",
-        buildTreeShiftCondition: "at/schedule/shift/shiftCondition/shiftCondition/buildTreeShiftCondition",
-        getDataScheduleDisplayControl: "screen/at/schedule/basicschedule/getScheduleDisplayControl",
-        getDataWorkEmpCombine: "screen/at/schedule/basicschedule/getWorkEmpCombine",
-        getDataSpecDateAndHoliday: "screen/at/schedule/basicschedule/getDataSpecDateAndHoliday",
-        findWorkPlaceById: "bs/employee/workplace/info/findDetail",
-        getDataComPattern: "at/schedule/shift/management/getListShijtPalletsByCom",
-        getDataWkpPattern: "at/schedule/shift/management/shiftpalletorg/getbyWorkplaceId",
-
-        // lai start
         getSendingPeriod: "screen/at/schedule/schedule/start/getSendingPeriod",
         getDataStartScreen: "screen/at/schedule/start",
         getDataOfShiftMode: "screen/at/schedule/shift",
