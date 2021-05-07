@@ -59,10 +59,13 @@ public interface ScBasicSchedulePub {
 	 * 
 	 * RequestList439
 	 * 
+	 * 異動者、勤務種別変更者の作成期間の計算
+	 * 社員ID（List）を条件に、存在するスケジュール期間の中で最も大きい年月日を取得する
+	 * 
 	 * @param sIds
 	 * @return GeneralDate
 	 */
-	public GeneralDate acquireMaxDateBasicSchedule(List<String> sIds);
+	public Optional<GeneralDate> acquireMaxDateBasicSchedule(List<String> sIds);
 	
 	/**
 	 * 
