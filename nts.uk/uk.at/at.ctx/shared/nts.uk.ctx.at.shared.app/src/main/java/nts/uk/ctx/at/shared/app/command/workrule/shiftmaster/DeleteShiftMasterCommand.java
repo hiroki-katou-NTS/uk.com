@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.shared.app.command.workrule.shiftmaster;
 
+import java.util.Optional;
+
 import org.apache.commons.lang3.StringUtils;
 
 import lombok.Data;
@@ -25,14 +27,14 @@ public class DeleteShiftMasterCommand {
 	private String remark;
 	private String workTypeCd;
 	private String workTimeSetCd;
-	
+
 	public ShiftMaster toDomain() {
 		String companyId = AppContexts.user().companyId();
 		ShiftMasterCode code = new ShiftMasterCode(shiftMasterCode);
 		ShiftMasterName name = new ShiftMasterName(shiftMasterName);
 		ColorCodeChar6 colorP = new ColorCodeChar6(color);
 		ColorCodeChar6 colorSmartphone  = new ColorCodeChar6(color);
-		Remarks remarks = !StringUtils.isEmpty(remark) ? new Remarks(remark) : null;
+		Optional<Remarks> remarks = Optional.ofNullable( StringUtils.isEmpty(remark) ? null : new Remarks(remark) );
 		ShiftMasterDisInfor display = new ShiftMasterDisInfor(name, colorP,colorSmartphone, remarks);
 		return new ShiftMaster(companyId, code, display, workTypeCd, workTimeSetCd
 				//TODO

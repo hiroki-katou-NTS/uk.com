@@ -225,7 +225,7 @@ public class CreateWorkScheduleShift {
 		Map<ShiftMaster,Optional<WorkStyle>> mapShiftMasterWithWorkStyle2 = new HashMap<>();
 		String companyId = AppContexts.user().companyId();
 		for (ShiftMasterMapWithWorkStyle obj : listShiftMaster) {
-			ShiftMasterDisInfor displayInfor = new ShiftMasterDisInfor(new ShiftMasterName(obj.shiftMasterName), new ColorCodeChar6(obj.color),new ColorCodeChar6(obj.color), new Remarks(obj.remark));
+			ShiftMasterDisInfor displayInfor = new ShiftMasterDisInfor(new ShiftMasterName(obj.shiftMasterName), new ColorCodeChar6(obj.color),new ColorCodeChar6(obj.color), Optional.of(new Remarks(obj.remark)));
 			//TODO　取込コードを追加
 			ShiftMaster ShiftMaster = new ShiftMaster(companyId, new ShiftMasterCode(obj.shiftMasterCode), displayInfor, obj.workTypeCode, obj.workTimeCode, new ShiftMasterImportCode("importCode"));
 			mapShiftMasterWithWorkStyle2.put(ShiftMaster, obj.workStyle == null ? Optional.empty() : Optional.of(EnumAdaptor.valueOf(Integer.valueOf(obj.workStyle), WorkStyle.class)));
@@ -255,7 +255,7 @@ public class CreateWorkScheduleShift {
 		private FlexWorkSettingRepository flexWorkSet;
 		@Inject
 		private PredetemineTimeSettingRepository predetemineTimeSet;
-		
+
 		@Override
 		public SetupType checkNeededOfWorkTimeSetting(String workTypeCode) {
 			 return basicScheduleService.checkNeededOfWorkTimeSetting(workTypeCode);
@@ -348,7 +348,7 @@ public class CreateWorkScheduleShift {
 			return workTimeSettingRepository.findByCode(companyId, workTimeCode);
 		}
 
-// fix bug 113211		
+// fix bug 113211
 //		@Override
 //		public PredetermineTimeSetForCalc getPredeterminedTimezone(String workTypeCd, String workTimeCd, Integer workNo) {
 //			return workTimeSettingService .getPredeterminedTimezone(companyId, workTimeCd, workTypeCd, workNo);

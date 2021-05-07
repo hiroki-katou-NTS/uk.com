@@ -34,7 +34,7 @@ public class WorkStyleScreenQuery {
 	// 出勤・休日系を判定する
 	public Integer getWorkStyle(WorkStyleDto dto) {
 		String companyId = AppContexts.user().companyId();
-		ShiftMasterDisInfor shiftMasterDisInfor = new ShiftMasterDisInfor(new ShiftMasterName(dto.getShiftMasterName()), new ColorCodeChar6(dto.getColor()),new ColorCodeChar6(dto.getColor()), new Remarks(dto.getRemarks()));
+		ShiftMasterDisInfor shiftMasterDisInfor = new ShiftMasterDisInfor(new ShiftMasterName(dto.getShiftMasterName()), new ColorCodeChar6(dto.getColor()),new ColorCodeChar6(dto.getColor()), Optional.of(new Remarks(dto.getRemarks())));
 		//TODO 取込コードを追加。
 		ShiftMaster shiftMaster = new ShiftMaster(companyId, new ShiftMasterCode(dto.getShiftMasterCode()), shiftMasterDisInfor, dto.getWorkTypeCode(), dto.getWorkTimeCode(), new ShiftMasterImportCode("importCode"));
 		WorkInformation.Require require = new WorkStyleScreenQueryImpl(workTypeRepository);
@@ -65,7 +65,7 @@ public class WorkStyleScreenQuery {
 			return null;
 		}
 
-// fix bug 113211		
+// fix bug 113211
 //		@Override
 //		public PredetermineTimeSetForCalc getPredeterminedTimezone(String workTypeCd, String workTimeCd, Integer workNo) {
 //			return null;

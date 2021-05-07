@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.shared.infra.entity.workrule.shiftmaster;
 
+import java.util.Optional;
+
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
@@ -30,7 +32,7 @@ public class KshmtShiftMater extends ContractUkJpaEntity {
 
 	@Column(name = "COLOR")
 	public String color;
-	
+
 	@Column(name = "COLOR_MOBILE")
 	public String colorMobile;
 
@@ -62,16 +64,16 @@ public class KshmtShiftMater extends ContractUkJpaEntity {
 	public ShiftMaster toDomain() {
 		return new ShiftMaster(kshmtShiftMaterPK.companyId, new ShiftMasterCode(kshmtShiftMaterPK.shiftMaterCode),
 				new ShiftMasterDisInfor(new ShiftMasterName(this.name), new ColorCodeChar6(this.color),new ColorCodeChar6(this.colorMobile),
-						this.remarks == null ? null : new Remarks(this.remarks)),
+						Optional.ofNullable( this.remarks == null ? null : new Remarks(this.remarks) )),
 				this.workTypeCd, this.workTimeCd,
 				//TODO
 				new ShiftMasterImportCode("importCode")
-				
+
 				);
 	}
 
 	public static KshmtShiftMater toEntity(ShiftMaster domain) {
-		
+
 		KshmtShiftMater entity = KshmtShiftMater.builder()
 								.kshmtShiftMaterPK(new KshmtShiftMaterPK(domain.getCompanyId(), domain.getShiftMasterCode().v()))
 								.name(domain.getDisplayInfor().getName().v())
@@ -81,7 +83,7 @@ public class KshmtShiftMater extends ContractUkJpaEntity {
 								.workTypeCd(domain.getWorkTypeCode().v())
 								.workTimeCd(domain.getWorkTimeCode() == null ? null:domain.getWorkTimeCode().v())
 								.build();
-								
+
 		return entity;
 	}
 }

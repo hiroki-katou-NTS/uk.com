@@ -25,16 +25,16 @@ public class UpdateShiftMasterServiceTest {
 	private static WorkInformation workInformation;
 	private static ShiftMasterDisInfor displayInfor;
 	private static ShiftMasterImportCode importCode;
-	
+
 	@Before
 	public void initData() {
 		workTypeCode = "workTypeCode";
 		shiftMasterCode = "shiftMasterCode";
 		importCode = new ShiftMasterImportCode("importCode");
 		workInformation =ShiftMasterInstanceHelper.getWorkInformationWorkTimeIsNull();
-		displayInfor =  new ShiftMasterDisInfor(new ShiftMasterName("name"),new ColorCodeChar6("color"),new ColorCodeChar6("color"), null);
+		displayInfor =  new ShiftMasterDisInfor(new ShiftMasterName("name"),new ColorCodeChar6("color"),new ColorCodeChar6("color"), Optional.empty());
 	}
-	
+
 	@Test
 	public void testUpdateShiftMater_throw_Msg_1610() {
 		new Expectations() {
@@ -44,10 +44,10 @@ public class UpdateShiftMasterServiceTest {
 
 				require.getWorkType(anyString);
 				result = Optional.of(new WorkType());
-				
+
 				require.checkNeededOfWorkTimeSetting(anyString);
 				result = SetupType.OPTIONAL;
-				
+
 				require.getByWorkTypeAndWorkTime(anyString, anyString);
 				result = Optional.of(ShiftMasterInstanceHelper.getShiftMaterEmpty());
 			}
@@ -60,7 +60,7 @@ public class UpdateShiftMasterServiceTest {
 	@Test
 	public void testUpdateShiftMater_throw_Msg_1608() {
 		workInformation = new WorkInformation("workTypeCode", "workTimeCode");
-		
+
 		new Expectations() {
 			{
 				require.getByShiftMaterCd(anyString);
@@ -82,13 +82,13 @@ public class UpdateShiftMasterServiceTest {
 			{
 				require.getByShiftMaterCd(shiftMasterCode);
 				result = Optional.of(ShiftMasterInstanceHelper.getShiftMaterEmpty());
-				
+
 				require.getWorkType(workTypeCode);
 				result = Optional.of(new WorkType());
-				
+
 				require.checkNeededOfWorkTimeSetting(workTypeCode);
 				result = SetupType.REQUIRED;
-				
+
 				require.getWorkTime(workInformation.getWorkTimeCode().v());
 			}
 		};
@@ -100,12 +100,12 @@ public class UpdateShiftMasterServiceTest {
 	@Test
 	public void testUpdateShiftMater_throw_Msg_435() {
 		workInformation = new WorkInformation("workTypeCode", null);
-		
+
 		new Expectations() {
 			{
 				require.getByShiftMaterCd(shiftMasterCode);
 				result = Optional.of(ShiftMasterInstanceHelper.getShiftMaterEmpty());
-				
+
 				require.getWorkType(workTypeCode);
 				result = Optional.of(new WorkType());
 
@@ -126,10 +126,10 @@ public class UpdateShiftMasterServiceTest {
 			{
 				require.getByShiftMaterCd(shiftMasterCode);
 				result = Optional.of(ShiftMasterInstanceHelper.getShiftMaterEmpty());
-				
+
 				require.getWorkType(workTypeCode);
 				result = Optional.of(new WorkType());
-				
+
 				require.checkNeededOfWorkTimeSetting(workTypeCode);
 				result = SetupType.NOT_REQUIRED;
 
@@ -139,7 +139,7 @@ public class UpdateShiftMasterServiceTest {
 		NtsAssert.businessException("Msg_434"
 				, () -> UpdateShiftMasterService.updateShiftMater(require, shiftMasterCode, displayInfor, workInformation, importCode));
 	}
-	
+
 	@Test
 	public void testUpdateShiftMater_throw_Msg_2163() {
 		ShiftMaster shiftMaster = ShiftMasterInstanceHelper.createShiftMasterByImportCode(new ShiftMasterImportCode("old"));
@@ -148,7 +148,7 @@ public class UpdateShiftMasterServiceTest {
 			{
 				require.getByShiftMaterCd(shiftMasterCode);
 				result = Optional.of(shiftMaster);
-				
+
 				require.checkDuplicateImportCode(newInportCode);
 				result = true;
 
@@ -167,18 +167,18 @@ public class UpdateShiftMasterServiceTest {
 				, displayInfor
 				, workTypeCode
 				, null, importCode);
-		
+
 		new Expectations() {
 			{
 				require.getByShiftMaterCd(anyString);
 				result = Optional.of(ShiftMasterInstanceHelper.getShiftMaterEmpty());
-				
+
 				require.getWorkType(anyString);
 				result = Optional.of(new WorkType());
-				
+
 				require.checkNeededOfWorkTimeSetting(anyString);
 				result = SetupType.OPTIONAL;
-				
+
 				require.getByWorkTypeAndWorkTime(anyString, anyString);
 				result = Optional.of(ShiftMasterInstanceHelper.getShiftMaterEmpty());
 

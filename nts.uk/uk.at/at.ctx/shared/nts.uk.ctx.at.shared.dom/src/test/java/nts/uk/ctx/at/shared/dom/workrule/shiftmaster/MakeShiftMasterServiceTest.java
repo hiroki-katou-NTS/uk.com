@@ -27,15 +27,15 @@ public class MakeShiftMasterServiceTest {
 		String workTypeCode = "workTypeCode";
 		Optional<String> workTimeCode = Optional.empty();
 		ShiftMasterImportCode importCode = new ShiftMasterImportCode("importCode");
-		ShiftMasterDisInfor shiftMasterDisInfor =  new ShiftMasterDisInfor(new ShiftMasterName("name"),new ColorCodeChar6("color"),new ColorCodeChar6("color"), null);
+		ShiftMasterDisInfor shiftMasterDisInfor =  new ShiftMasterDisInfor(new ShiftMasterName("name"),new ColorCodeChar6("color"),new ColorCodeChar6("color"), Optional.empty());
 		new Expectations() {
 			{
 				require.getWorkType(workTypeCode);
 				result = Optional.of(new WorkType());
-				
+
 				require.checkNeededOfWorkTimeSetting(workTypeCode);
 				result = SetupType.OPTIONAL;
-				
+
 				require.checkExists(companyId, // dummy
 						workTypeCode, // dummy
 						null);// dummy;
@@ -47,7 +47,7 @@ public class MakeShiftMasterServiceTest {
 		NtsAssert.businessException("Msg_1610", () -> {
 			AtomTask persist = MakeShiftMasterService.makeShiftMater(require, companyId,
 					shiftMasterCode, workTypeCode,
-					workTimeCode,//worktime = null 
+					workTimeCode,//worktime = null
 					shiftMasterDisInfor,
 					importCode);
 			persist.run();
@@ -61,7 +61,7 @@ public class MakeShiftMasterServiceTest {
 		String workTypeCode = "workTypeCode";
 		Optional<String> workTimeCode = Optional.of("workTypeCode");
 		ShiftMasterImportCode importCode = new ShiftMasterImportCode("importCode");
-		ShiftMasterDisInfor shiftMasterDisInfor =  new ShiftMasterDisInfor(new ShiftMasterName("name"),new ColorCodeChar6("color"),new ColorCodeChar6("color"), null);
+		ShiftMasterDisInfor shiftMasterDisInfor =  new ShiftMasterDisInfor(new ShiftMasterName("name"),new ColorCodeChar6("color"),new ColorCodeChar6("color"), Optional.empty());
 		new Expectations() {
 			{
 				require.getWorkType(anyString);
@@ -69,7 +69,7 @@ public class MakeShiftMasterServiceTest {
 		};
 		NtsAssert.businessException("Msg_1608", () -> {
 			AtomTask persist = MakeShiftMasterService.makeShiftMater(
-					require, 
+					require,
 					companyId,//dummy
 					shiftMasterCode, //dummy
 					workTypeCode, //dummy
@@ -85,21 +85,21 @@ public class MakeShiftMasterServiceTest {
 		String workTypeCode = "workTypeCode";
 		Optional<String> workTimeCode = Optional.of("workTypeCode");
 		ShiftMasterImportCode importCode = new ShiftMasterImportCode("importCode");
-		ShiftMasterDisInfor shiftMasterDisInfor =  new ShiftMasterDisInfor(new ShiftMasterName("name"),new ColorCodeChar6("color"),new ColorCodeChar6("color"), null);
+		ShiftMasterDisInfor shiftMasterDisInfor =  new ShiftMasterDisInfor(new ShiftMasterName("name"),new ColorCodeChar6("color"),new ColorCodeChar6("color"), Optional.empty());
 		new Expectations() {
 			{
 				require.getWorkType(workTypeCode);
 				result = Optional.of(new WorkType());
-				
+
 				require.checkNeededOfWorkTimeSetting(workTypeCode);
 				result = SetupType.REQUIRED;
-				
+
 				require.getWorkTime(workTimeCode.get());
 			}
 		};
 		NtsAssert.businessException("Msg_1609", () -> {
 			AtomTask persist = MakeShiftMasterService.makeShiftMater(
-					require, 
+					require,
 					companyId,//dummy
 					shiftMasterCode, //dummy
 					workTypeCode, //dummy
@@ -115,12 +115,12 @@ public class MakeShiftMasterServiceTest {
 		String workTypeCode = "workTypeCode";
 		Optional<String> workTimeCode = Optional.empty();
 		ShiftMasterImportCode importCode = new ShiftMasterImportCode("importCode");
-		ShiftMasterDisInfor shiftMasterDisInfor =  new ShiftMasterDisInfor(new ShiftMasterName("name"),new ColorCodeChar6("color"),new ColorCodeChar6("color"), null);
+		ShiftMasterDisInfor shiftMasterDisInfor =  new ShiftMasterDisInfor(new ShiftMasterName("name"),new ColorCodeChar6("color"),new ColorCodeChar6("color"), Optional.empty());
 		new Expectations() {
 			{
 				require.getWorkType(workTypeCode);
 				result = Optional.of(new WorkType());
-				
+
 				require.checkNeededOfWorkTimeSetting(workTypeCode);
 				result = SetupType.REQUIRED;
 			}
@@ -128,7 +128,7 @@ public class MakeShiftMasterServiceTest {
 
 		NtsAssert.businessException("Msg_435", () -> {
 			AtomTask persist = MakeShiftMasterService.makeShiftMater(
-					require, 
+					require,
 					companyId,//dummy
 					shiftMasterCode, //dummy
 					workTypeCode, //dummy
@@ -141,16 +141,16 @@ public class MakeShiftMasterServiceTest {
 	public void testMakeShiftMater_throw_Msg_434() {
 		String companyId = "companyId";
 		String shiftMasterCode = "shiftMasterCode";
-		String workTypeCode = "workTypeCode";	
+		String workTypeCode = "workTypeCode";
 		Optional<String> workTimeCode = Optional.of("workTypeCode");
 		ShiftMasterImportCode importCode = new ShiftMasterImportCode("importCode");
-		ShiftMasterDisInfor shiftMasterDisInfor =  new ShiftMasterDisInfor(new ShiftMasterName("name"),new ColorCodeChar6("color"),new ColorCodeChar6("color"), null);
+		ShiftMasterDisInfor shiftMasterDisInfor =  new ShiftMasterDisInfor(new ShiftMasterName("name"),new ColorCodeChar6("color"),new ColorCodeChar6("color"), Optional.empty());
 
 		new Expectations() {
 			{
 				require.getWorkType(workTypeCode);
 				result = Optional.of(new WorkType());
-				
+
 				require.checkNeededOfWorkTimeSetting(workTypeCode);
 				result = SetupType.NOT_REQUIRED;
 			}
@@ -158,7 +158,7 @@ public class MakeShiftMasterServiceTest {
 
 		NtsAssert.businessException("Msg_434", () -> {
 			AtomTask persist = MakeShiftMasterService.makeShiftMater(
-					require, 
+					require,
 					companyId,//dummy
 					shiftMasterCode, //dummy
 					workTypeCode, //dummy
@@ -166,28 +166,28 @@ public class MakeShiftMasterServiceTest {
 			persist.run();
 		});
 	}
-	
-	
+
+
 	@Test
 	public void testMakeShiftMater_throw_Msg_3() {
 		String companyId = "companyId";
 		String shiftMasterCode = "shiftMasterCode";
-		String workTypeCode = "workTypeCode";	
+		String workTypeCode = "workTypeCode";
 		String workTimeCode = "workTypeCode";
 		ShiftMasterImportCode importCode = new ShiftMasterImportCode("importCode");
-		ShiftMasterDisInfor shiftMasterDisInfor =  new ShiftMasterDisInfor(new ShiftMasterName("name"),new ColorCodeChar6("color"),new ColorCodeChar6("color"), null);
+		ShiftMasterDisInfor shiftMasterDisInfor =  new ShiftMasterDisInfor(new ShiftMasterName("name"),new ColorCodeChar6("color"),new ColorCodeChar6("color"), Optional.empty());
 
 		new Expectations() {
 			{
 				require.checkExistsByCode(companyId, shiftMasterCode);
 				result = true;
-				
+
 			}
 		};
 
 		NtsAssert.businessException("Msg_3", () -> {
 			AtomTask persist = MakeShiftMasterService.makeShiftMater(
-					require, 
+					require,
 					companyId,//dummy
 					shiftMasterCode, //dummy
 					workTypeCode, //dummy
@@ -195,7 +195,7 @@ public class MakeShiftMasterServiceTest {
 			persist.run();
 		});
 	}
-	
+
 	/**
 	 * 取り込みコードが重複している
 	 * 期待：　Msg_2163
@@ -204,22 +204,22 @@ public class MakeShiftMasterServiceTest {
 	public void testMakeShiftMater_throw_Msg_2163() {
 		String companyId = "companyId";
 		String shiftMasterCode = "shiftMasterCode";
-		String workTypeCode = "workTypeCode";	
+		String workTypeCode = "workTypeCode";
 		String workTimeCode = "workTypeCode";
 		ShiftMasterImportCode importCode = new ShiftMasterImportCode("importCode");
-		ShiftMasterDisInfor shiftMasterDisInfor =  new ShiftMasterDisInfor(new ShiftMasterName("name"),new ColorCodeChar6("color"),new ColorCodeChar6("color"), null);
+		ShiftMasterDisInfor shiftMasterDisInfor =  new ShiftMasterDisInfor(new ShiftMasterName("name"),new ColorCodeChar6("color"),new ColorCodeChar6("color"), Optional.empty());
 
 		new Expectations() {
 			{
 				require.checkDuplicateImportCode(companyId, importCode);
 				result = true;
-				
+
 			}
 		};
 
-		NtsAssert.businessException("Msg_2163", () -> 
+		NtsAssert.businessException("Msg_2163", () ->
 			MakeShiftMasterService.makeShiftMater(
-					require, 
+					require,
 					companyId,//dummy
 					shiftMasterCode, //dummy
 					workTypeCode, //dummy
@@ -232,13 +232,13 @@ public class MakeShiftMasterServiceTest {
 		String shiftMasterCode = "shiftMasterCode";
 		String workTypeCode = "workTypeCode";
 		ShiftMasterImportCode importCode = new ShiftMasterImportCode("importCode");
-		ShiftMasterDisInfor displayInfor =  new ShiftMasterDisInfor(new ShiftMasterName("name"),new ColorCodeChar6("color"),new ColorCodeChar6("color"), null);
+		ShiftMasterDisInfor displayInfor =  new ShiftMasterDisInfor(new ShiftMasterName("name"),new ColorCodeChar6("color"),new ColorCodeChar6("color"), Optional.empty());
 		ShiftMaster shiftMater = new ShiftMaster("companyId",new ShiftMasterCode(shiftMasterCode), displayInfor, workTypeCode, null, importCode);
 		new Expectations() {
 			{
 				require.getWorkType(shiftMater.getWorkTypeCode().v());
 				result = Optional.of(new WorkType());
-				
+
 				require.checkNeededOfWorkTimeSetting(shiftMater.getWorkTypeCode().v());
 				result = SetupType.OPTIONAL;
 
@@ -248,7 +248,7 @@ public class MakeShiftMasterServiceTest {
 				result = false;
 			}
 		};
-		
+
 
 		NtsAssert.atomTask(() -> MakeShiftMasterService.makeShiftMater(require, shiftMater.getCompanyId(),
 				shiftMater.getShiftMasterCode().v(), shiftMater.getWorkTypeCode().v(),

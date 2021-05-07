@@ -32,7 +32,7 @@ import nts.uk.ctx.at.shared.infra.entity.workrule.shiftmaster.KshmtShiftMaterPK;
 public class JpaShiftMasterImpl extends JpaRepository implements ShiftMasterRepository {
 	private static final String SELECT_ALL = "SELECT c FROM KshmtShiftMater c ";
 
-	private static final String SELECT_ALL_DTO = " SELECT " 
+	private static final String SELECT_ALL_DTO = " SELECT "
 			+ " new nts.uk.ctx.at.shared.dom.workrule.shiftmaster.dto.ShiftMasterDto(c.kshmtShiftMaterPK.companyId, c.name, c.kshmtShiftMaterPK.shiftMaterCode, c.color, c.remarks, c.workTypeCd, wt.name, wt.kshmtWorkTypePK.companyId, c.workTimeCd, wts.name, wts.kshmtWorkTimeSetPK.cid,c.colorMobile ) "
 			+ " FROM KshmtShiftMater c "
 			+ " LEFT JOIN KshmtWorkType wt on c.workTypeCd = wt.kshmtWorkTypePK.workTypeCode and c.kshmtShiftMaterPK.companyId = wt.kshmtWorkTypePK.companyId "
@@ -44,7 +44,7 @@ public class JpaShiftMasterImpl extends JpaRepository implements ShiftMasterRepo
 
 	private static final String SELECT_BY_CD_AND_CID = SELECT_BY_CID
 			+ " AND c.kshmtShiftMaterPK.shiftMaterCode = :shiftMaterCode";
-	
+
 	private static final String SELECT_BY_LISTCD_AND_CID = SELECT_BY_CID
 			+ " AND c.kshmtShiftMaterPK.shiftMaterCode IN :shiftMaterCodes";
 
@@ -80,7 +80,7 @@ public class JpaShiftMasterImpl extends JpaRepository implements ShiftMasterRepo
 				.getSingle(c -> c.toDomain());
 		return data;
 	}
-	
+
 	@Override
 	public List<ShiftMaster> getByListShiftMaterCd2(String companyId, List<String> shiftMaterCodes) {
 		List<ShiftMaster> data = this.queryProxy().query(SELECT_BY_LISTCD_AND_CID, KshmtShiftMater.class)
@@ -92,13 +92,13 @@ public class JpaShiftMasterImpl extends JpaRepository implements ShiftMasterRepo
 
 	@Override
 	public Optional<ShiftMaster> getByWorkTypeAndWorkTime(String companyId, String workTypeCd, String workTimeCd) {
-		String sql = " SELECT * FROM KSHMT_SHIFT_MASTER WHERE  CID = ?  AND WORKTYPE_CD = ? AND WORKTIME_CD ";  
+		String sql = " SELECT * FROM KSHMT_SHIFT_MASTER WHERE  CID = ?  AND WORKTYPE_CD = ? AND WORKTIME_CD ";
 		sql = workTimeCd == null ? sql + " IS NULL ": sql + "= ?";
 		try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
 			stmt.setString(1, companyId);
 			stmt.setString(2, workTypeCd);
 			if(workTimeCd != null) {
-				stmt.setString(3, workTimeCd);				
+				stmt.setString(3, workTimeCd);
 			}
 			return new NtsResultSet(stmt.executeQuery()).getSingle(rec -> {
 				return new ShiftMaster(rec.getString("CID"),
@@ -106,30 +106,29 @@ public class JpaShiftMasterImpl extends JpaRepository implements ShiftMasterRepo
 						new ShiftMasterDisInfor(new ShiftMasterName(rec.getString("NAME")),
 												new ColorCodeChar6(rec.getString("COLOR")),
 												new ColorCodeChar6(rec.getString("COLOR_MOBILE")),
-													rec.getString("NOTE") == null ? null : new Remarks(rec.getString("NOTE"))),
-													rec.getString("WORKTYPE_CD"),
-													rec.getString("WORKTIME_CD")
-					    
-						, new ShiftMasterImportCode("importCode")//TODO
+												Optional.ofNullable( rec.getString("NOTE") == null ? null : new Remarks(rec.getString("NOTE")) )),
+							rec.getString("WORKTYPE_CD"),
+							rec.getString("WORKTIME_CD"),
+							new ShiftMasterImportCode("importCode")//TODO
 						);
 			});
 
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
-	
-	
+
+
 	}
 
 	@Override
 	public boolean checkExists(String companyId, String workTypeCd, String workTimeCd) {
-		String sql = " SELECT count(*) FROM KSHMT_SHIFT_MASTER WHERE  CID = ?  AND WORKTYPE_CD = ? AND WORKTIME_CD ";  
+		String sql = " SELECT count(*) FROM KSHMT_SHIFT_MASTER WHERE  CID = ?  AND WORKTYPE_CD = ? AND WORKTIME_CD ";
 		sql = workTimeCd.equals("") ? sql + " IS NULL ": sql + "= ?";
 		try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
 			stmt.setString(1, companyId);
 			stmt.setString(2, workTypeCd);
 			if(!workTimeCd.equals("")) {
-				stmt.setString(3, workTimeCd);				
+				stmt.setString(3, workTimeCd);
 			}
 			ResultSet result = stmt.executeQuery();
 			while (result.next()) {
@@ -192,7 +191,7 @@ public class JpaShiftMasterImpl extends JpaRepository implements ShiftMasterRepo
 	public List<ShiftMaster> get(String companyID, List<WorkInformation> lstWorkInformation) {
 		List<ShiftMaster> listData = new ArrayList<>();
 		for(WorkInformation wi :lstWorkInformation ) {
-			Optional<ShiftMaster> optSm =  getByWorkTypeAndWorkTime(companyID, wi.getWorkTypeCode()!=null?wi.getWorkTypeCode().v():null, 
+			Optional<ShiftMaster> optSm =  getByWorkTypeAndWorkTime(companyID, wi.getWorkTypeCode()!=null?wi.getWorkTypeCode().v():null,
 					wi.getWorkTimeCode()!=null?wi.getWorkTimeCode().v():null);
 			if(optSm.isPresent()) {
 				listData.add(optSm.get());

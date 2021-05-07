@@ -2,6 +2,7 @@ package nts.uk.ctx.at.shared.dom.workrule.shiftmaster;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 
@@ -13,13 +14,13 @@ public class ShiftMasterHelper {
 			String workTypeCode = "workTypeCode"+i;
 			String workTimeCode = "workTimeCode"+i;
 			String importCode = "00"+i;
-			ShiftMasterDisInfor displayInfor =  new ShiftMasterDisInfor(new ShiftMasterName("name"+i),new ColorCodeChar6("color"+i),new ColorCodeChar6("colorsp"+i), null);
+			ShiftMasterDisInfor displayInfor =  new ShiftMasterDisInfor(new ShiftMasterName("name"+i),new ColorCodeChar6("color"+i),new ColorCodeChar6("colorsp"+i), Optional.empty());
 			ShiftMaster shiftMater = new ShiftMaster("companyId",new ShiftMasterCode(shiftMasterCode), displayInfor, workTypeCode, workTimeCode, new ShiftMasterImportCode(importCode));
 			data.add(shiftMater);
 		}
-		
+
 		return data;
-		
+
 	}
 	public static List<WorkInformation> getListWorkInformationByNumber(int number) {
 		List<WorkInformation> data = new ArrayList<>();
@@ -28,20 +29,20 @@ public class ShiftMasterHelper {
 			data.add(workInformation);
 		}
 		return data;
-		
-	}
-	
-    public static ShiftMaster createShiftMasterWithCode (String shiftMasterCode) {
-        ShiftMasterDisInfor displayInfor =  new ShiftMasterDisInfor(
-                new ShiftMasterName( shiftMasterCode + "-name"),
-                new ColorCodeChar6(shiftMasterCode + "-color"),
-                new ColorCodeChar6(shiftMasterCode + "-colorsp"),
-                null);
-        
-        return new ShiftMaster("companyId",
-                new ShiftMasterCode(shiftMasterCode), 
-                displayInfor, 
-                "1","1", new ShiftMasterImportCode(shiftMasterCode));
 
-    }
+	}
+
+	public static ShiftMaster createShiftMasterWithCode (String shiftMasterCode) {
+		ShiftMasterDisInfor displayInfor =  new ShiftMasterDisInfor(
+				new ShiftMasterName( shiftMasterCode + "-name"),
+				new ColorCodeChar6(shiftMasterCode + "-color"),
+				new ColorCodeChar6(shiftMasterCode + "-colorsp"),
+				Optional.empty());
+
+		return new ShiftMaster("companyId",
+				new ShiftMasterCode(shiftMasterCode),
+				displayInfor,
+				"1","1", new ShiftMasterImportCode(shiftMasterCode));
+
+	}
 }
