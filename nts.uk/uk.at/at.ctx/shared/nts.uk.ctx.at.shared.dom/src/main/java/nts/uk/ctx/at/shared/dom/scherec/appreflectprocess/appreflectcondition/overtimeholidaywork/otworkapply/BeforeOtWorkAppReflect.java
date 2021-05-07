@@ -72,7 +72,7 @@ public class BeforeOtWorkAppReflect {
 					Optional.of(true)));
 
 			// 予定出退勤の反映
-			lstId.addAll(ReflectAttendance.reflect(require, cid, overTimeApp.getWorkHoursOp(), ScheduleRecordClassifi.RECORD,
+			lstId.addAll(ReflectAttendance.reflect(require, cid, overTimeApp.getWorkHoursOp(), ScheduleRecordClassifi.SCHEDULE,
 					dailyApp, Optional.of(true), Optional.of(true), Optional.of(TimeChangeMeans.APPLICATION)));
 
 		}

@@ -51,8 +51,8 @@ public class BeforeOtWorkAppReflectTest {
 		reflectOvertimeBeforeSet.processRC(require, "", overTimeApp, dailyApp);
 		assertThat(dailyApp.getWorkInformation().getRecordInfo().getWorkTimeCode().v()).isEqualTo("003");// 就業時間帯コード
 		assertThat(dailyApp.getWorkInformation().getRecordInfo().getWorkTypeCode().v()).isEqualTo("003");// 勤務種類コード
-		assertThat(dailyApp.getAttendanceLeave().get().getTimeLeavingWorks()).extracting(x -> x.getWorkNo().v(),
-				x -> x.getAttendanceTime().get().v(), x -> x.getLeaveTime().get().v())
+		assertThat(dailyApp.getWorkInformation().getScheduleTimeSheets()).extracting(x -> x.getWorkNo().v(),
+				x -> x.getAttendance().v(), x -> x.getLeaveWork().v())
 				.containsExactly(Tuple.tuple(1, 600, 800));
 	}
 
@@ -75,15 +75,12 @@ public class BeforeOtWorkAppReflectTest {
 		// "003")
 		DailyRecordOfApplication dailyApp = ReflectApplicationHelper
 				.createRCWithTimeLeavFull(ScheduleRecordClassifi.RECORD, 1);// 勤務情報 = ("001", "001")
-		int startBefore = dailyApp.getAttendanceLeave().get().getTimeLeavingWorks().get(0).getAttendanceTime().get().v();
-		int endBefore = dailyApp.getAttendanceLeave().get().getTimeLeavingWorks().get(0).getLeaveTime().get().v();
+		assertThat(dailyApp.getWorkInformation().getScheduleTimeSheets()).isEmpty();
 		val reflectOvertimeBeforeSet = BeforeOtWorkAppReflect.create(0, 0, 0);
 		reflectOvertimeBeforeSet.processRC(require, "", overTimeApp, dailyApp);
 		assertThat(dailyApp.getWorkInformation().getRecordInfo().getWorkTimeCode().v()).isEqualTo("001");// 就業時間帯コード
 		assertThat(dailyApp.getWorkInformation().getRecordInfo().getWorkTypeCode().v()).isEqualTo("001");// 勤務種類コード
-		assertThat(dailyApp.getAttendanceLeave().get().getTimeLeavingWorks()).extracting(x -> x.getWorkNo().v(),
-				x -> x.getAttendanceTime().get().v(), x -> x.getLeaveTime().get().v())
-				.containsExactly(Tuple.tuple(1, startBefore, endBefore));
+		assertThat(dailyApp.getWorkInformation().getScheduleTimeSheets()).isEmpty();
 
 	}
 
