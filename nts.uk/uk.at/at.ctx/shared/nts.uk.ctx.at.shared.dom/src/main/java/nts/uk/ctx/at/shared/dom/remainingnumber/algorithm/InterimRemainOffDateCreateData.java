@@ -894,9 +894,10 @@ public class InterimRemainOffDateCreateData {
 			// 勤務種類が休日出勤か
 			if (workClass.isHolidayWork()) {
 				dataOutput.getOccurrenceDetailData().forEach(x -> {
-					x.setWorkTypeAtr(WorkTypeClassification.Pause);
-					x.setUseAtr(true);
-					x.setDays(usedDays);
+					if (x.getWorkTypeAtr().equals(WorkTypeClassification.Pause)) {
+						x.setUseAtr(true);
+						x.setDays(usedDays);
+					}
 				});
 			}
 		}
@@ -908,9 +909,10 @@ public class InterimRemainOffDateCreateData {
 				// 勤務種類が休日か
 				if (isHasWorkClass(workClass, workType, workAtr)) {
 					dataOutput.getOccurrenceDetailData().forEach(x -> {
-						x.setWorkTypeAtr(WorkTypeClassification.Shooting);
-						x.setUseAtr(true);
-						x.setDays(usedDays);
+						if (x.getWorkTypeAtr().equals(WorkTypeClassification.Shooting)) {
+							x.setUseAtr(true);
+							x.setDays(usedDays);
+						}
 					});
 				}
 			}
