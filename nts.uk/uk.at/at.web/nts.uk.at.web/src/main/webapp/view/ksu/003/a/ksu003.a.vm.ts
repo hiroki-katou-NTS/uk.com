@@ -2741,10 +2741,10 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 
 		// đăng ký màn hình ksu003
 		saveData(type: any): JQueryPromise<any> {
+			if(!_.isNil(window.parent) && window.parent.length > 1)
+			$(window.parent[1].$('body').contents().find('#btnClose')).click()
 			let self = this, dfd = $.Deferred(), updatedCells = $("#extable-ksu003").exTable("updatedCells"), params = [];
-			$('div > iframe').contents().find('#btnClose').trigger('click');
 			block.grayout();
-
 			let dataReg = self.buidDataReg(updatedCells);
 			service.regWorkSchedule(dataReg).done((rs: any) => {
 				block.clear();
@@ -2767,6 +2767,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				} else {
 					self.openKDL053(rs);
 					block.clear();
+					$($('div > iframe')[1]).contents().find('#btnClose').trigger('click');
 				}
 			}).fail(function(error: any) {
 				block.clear();
@@ -5046,6 +5047,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 		// open dialog kdl053
 		openKDL053(dataReg: any) {
 			let self = this;
+			self.enableSave(false);
 			let param = {
 				employeeIds: _.map(self.lstEmpId, (x: IEmpidName) => { return x.empId }),// 社員の並び順
 				isRegistered: dataReg.isRegistered == true ? 1 : 0,           // 登録されたか
