@@ -141,7 +141,7 @@ public class SpecialLeaveInfo implements Cloneable {
 		/** 消化処理 */
 		aggrResult = this.digestProcess(
 				require, companyId, employeeId,
-				specialLeaveAggregatePeriodWork, specialHolidayInterimMngData, aggrResult);
+				specialLeaveAggregatePeriodWork, specialHolidayInterimMngData, aggrResult, specialLeaveCode);
 
 		/** 残数不足エラーをチェックする */
 		aggrResult = this.checkError(aggrResult, specialLeaveAggregatePeriodWork);
@@ -216,14 +216,14 @@ public class SpecialLeaveInfo implements Cloneable {
 
 	/** 初回付与か判断する */
 	private boolean isFirstTimeGrant(SpecialLeaveAggregatePeriodWork aggregatePeriodWork) {
-		int grantTimes = aggregatePeriodWork.getGrantWork().getSpecialLeaveGrant()
-											.map(c -> c.getTimes().v()).orElse(0);
 
-		if ( grantTimes == 1 ){
-			return true;
+		//期間開始日に付与があるか
+		if(!aggregatePeriodWork.getGrantWork().isGrantAtr()) {
+			return false;
 		}
 
-		return false;
+		//初回付与か
+		return aggregatePeriodWork.getGrantWork().getGrantNumber() == 1;
 	}
 
 	/**
@@ -450,7 +450,9 @@ public class SpecialLeaveInfo implements Cloneable {
 			String employeeId,
 			SpecialLeaveAggregatePeriodWork aggregatePeriodWork,
 			SpecialHolidayInterimMngData specialHolidayInterimMngData,
-			InPeriodOfSpecialLeaveResultInfor aggrResult){
+			InPeriodOfSpecialLeaveResultInfor aggrResult,
+			int specialLeaveCode
+			){
 
 		// 集計期間の翌日を集計する時は、消化処理は行わない
 		if ( aggregatePeriodWork.getEndDay().isNextPeriodEndAtr() ){
@@ -461,9 +463,6 @@ public class SpecialLeaveInfo implements Cloneable {
 		List<GeneralDate> digestDateList = new ArrayList<GeneralDate>();
 
 		val listInterimSpecialHolidayMng = getRemainData(specialHolidayInterimMngData);
-
-		// ダミーデータリスト
-		List<LeaveGrantRemainingData> dummyDataList = new ArrayList<LeaveGrantRemainingData>();
 
 		for (val interimSpecialHolidayMng : listInterimSpecialHolidayMng) {
 			if (!aggregatePeriodWork.getPeriod().contains(interimSpecialHolidayMng.getYmd())) continue;
@@ -497,15 +496,22 @@ public class SpecialLeaveInfo implements Cloneable {
 				leaveUsedNumber.setMinutes(Optional.of(new LeaveUsedTime(minutes)));
 
 				// 休暇残数を指定使用数消化する
-				LeaveGrantRemainingData.digest(
+				Optional<LeaveGrantRemainingData> dummyData
+					= LeaveGrantRemainingData.digest(
 						require,
 						targetRemainingDatas,
 						remNumShiftListWork,
 						leaveUsedNumber,
 						companyId,
 						employeeId,
-						aggregatePeriodWork.getPeriod().start(),
-						Optional.of(dummyDataList));
+						aggregatePeriodWork.getPeriod().start()
+						);
+
+				// 付与残数データにダミーデータリストを追加
+				if(dummyData.isPresent()) {
+					SpecialLeaveGrantRemainingData addData = SpecialLeaveGrantRemainingData.of(dummyData.get(), specialLeaveCode);
+					this.grantRemainingDataList.add(addData);
+				}
 
 				// 時間休暇消化数を求める
 				int unDigestTime = 0;
@@ -537,17 +543,6 @@ public class SpecialLeaveInfo implements Cloneable {
 
 			}
 		}
-
-		// 型変換
-		List<SpecialLeaveGrantRemainingData> dummyGrantRemainingDataList
-			= new ArrayList<SpecialLeaveGrantRemainingData>();
-		dummyDataList.forEach(c->{
-			SpecialLeaveGrantRemainingData s = SpecialLeaveGrantRemainingData.of(c, -1);
-			dummyGrantRemainingDataList.add(s);
-		});
-
-		// 付与残数データにダミーデータリストを追加
-		this.grantRemainingDataList.addAll(dummyGrantRemainingDataList);
 
 		// 「特休の集計結果」を返す
 		return aggrResult;

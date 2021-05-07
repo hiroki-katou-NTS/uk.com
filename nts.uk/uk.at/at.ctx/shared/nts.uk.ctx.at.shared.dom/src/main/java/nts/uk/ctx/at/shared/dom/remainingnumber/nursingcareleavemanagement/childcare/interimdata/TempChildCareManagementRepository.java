@@ -49,7 +49,4 @@ public interface TempChildCareManagementRepository{
 	 */
 	 // RequestList685
 	public List<TempChildCareManagement> findBySidPeriod(String employeeId, DatePeriod period);
-
-
-
 }

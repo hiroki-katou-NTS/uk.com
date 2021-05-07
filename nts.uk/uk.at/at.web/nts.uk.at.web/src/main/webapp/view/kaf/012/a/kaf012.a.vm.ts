@@ -120,6 +120,19 @@ module nts.uk.at.view.kaf012.a.viewmodel {
                     vm.updateInputTime(vm.appDispInfoStartupOutput());
                 }
             });
+            vm.leaveType.subscribe(value => {
+                vm.applyTimeData().forEach((row : DataModel) => {
+                    row.applyTime.forEach(apply => {
+                        apply.substituteAppTime(0);
+                        apply.annualAppTime(0);
+                        apply.careAppTime(0);
+                        apply.childCareAppTime(0);
+                        apply.super60AppTime(0);
+                        apply.specialAppTime(0);
+                        apply.calculatedTime(0);
+                    });
+                });
+            });
         }
 
         updateInputTime(value: any) {
@@ -129,6 +142,11 @@ module nts.uk.at.view.kaf012.a.viewmodel {
                 vm.applyTimeData()[AppTimeType.OFFWORK].timeZones[0].startTime(value.appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.opLeaveTime);
                 vm.applyTimeData()[AppTimeType.ATWORK2].timeZones[0].startTime(value.appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.opWorkTime2);
                 vm.applyTimeData()[AppTimeType.OFFWORK2].timeZones[0].startTime(value.appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.opDepartureTime2);
+                vm.applyTimeData()[4].timeZones.forEach(tz => {
+                    tz.startTime(null);
+                    tz.endTime(null);
+                    tz.appTimeType(AppTimeType.PRIVATE);
+                });
                 const outingTimes = value.appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.stampRecordOutput.outingTime || [];
                 outingTimes.filter((time: any) => time.opGoOutReasonAtr == 0 || time.opGoOutReasonAtr == 3)
                     .forEach((time: any) => {
@@ -148,7 +166,8 @@ module nts.uk.at.view.kaf012.a.viewmodel {
                             appDate: new Date(value).toISOString(),
                             appDisplayInfo: {
                                 appDispInfoStartupOutput: vm.appDispInfoStartupOutput(),
-                                timeLeaveManagement: vm.timeLeaveManagement()
+                                timeLeaveManagement: vm.timeLeaveManagement(),
+                                reflectSetting: vm.reflectSetting()
                             }
                         };
                         vm.$blockui("show").then(() => {
@@ -287,7 +306,9 @@ module nts.uk.at.view.kaf012.a.viewmodel {
                         return vm.$ajax(API.changeAppDate, {
                             appDate: new Date(vm.application().appDate()).toISOString(),
                             appDisplayInfo: {
-                                appDispInfoStartupOutput: vm.appDispInfoStartupOutput()
+                                appDispInfoStartupOutput: vm.appDispInfoStartupOutput(),
+                                timeLeaveManagement: vm.timeLeaveManagement(),
+                                reflectSetting: vm.reflectSetting()
                             }
                         });
                     }).then(() => {

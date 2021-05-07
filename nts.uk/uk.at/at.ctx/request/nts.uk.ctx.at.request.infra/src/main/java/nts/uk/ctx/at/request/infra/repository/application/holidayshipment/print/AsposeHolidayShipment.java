@@ -82,7 +82,7 @@ public class AsposeHolidayShipment {
          */
         if (holidayShipment.getRec().isPresent()) {
             // A1_1
-            cellB6.setValue(I18NText.getText("KAF011_83"));
+            cellB6.setValue(I18NText.getText("KAF011_84"));
             
             // A1_2
             LocalDate localDateRec = holidayShipment.getRec().get().getAppDate().getApplicationDate().localDate();
@@ -184,7 +184,7 @@ public class AsposeHolidayShipment {
          */
         if (holidayShipment.getAbs().isPresent()) {
             // B1_1
-            cellB12.setValue(I18NText.getText("KAF011_84"));
+            cellB12.setValue(I18NText.getText("KAF011_83"));
             
             // B1_2
             LocalDate localDateAbs = holidayShipment.getAbs().get().getAppDate().getApplicationDate().localDate();
@@ -280,9 +280,9 @@ public class AsposeHolidayShipment {
             cellF16.setValue(time2StringAbs);
             
             if (!holidayShipment.getRec().isPresent()) {
-                cellB6.setValue(I18NText.getText("KAF011_84"));
+                cellB6.setValue(I18NText.getText("KAF011_83"));
                 cellD6.setValue(dateTimeFormatter.format(localDateAbs));
-                cellB8.setValue(I18NText.getText("KAF011_86"));
+                cellB8.setValue(I18NText.getText("KAF011_85"));
                 cellD8.setValue(I18NText.getText("KAF011_28"));
                 cellD9.setValue(I18NText.getText("KAF011_30"));
                 cellD10.setValue(I18NText.getText("KAF011_31"));
@@ -310,7 +310,7 @@ public class AsposeHolidayShipment {
                 deleteCnt++;
             }
             
-            cellB8.setValue(I18NText.getText("KAF011_85"));
+            cellB8.setValue(I18NText.getText("KAF011_86"));
         } else {
             if (!manageMultipleTime) {
                 cells.deleteRow(15);
@@ -322,11 +322,11 @@ public class AsposeHolidayShipment {
                     cells.deleteRow(10);
                     deleteCnt++;
                 }
-                cells.get("B8").setValue(I18NText.getText("KAF011_85"));
+                cells.get("B8").setValue(I18NText.getText("KAF011_86"));
                 if (manageMultipleTime) {
-                    cells.get("B13").setValue(I18NText.getText("KAF011_86"));
+                    cells.get("B13").setValue(I18NText.getText("KAF011_85"));
                 } else {
-                    cells.get("B12").setValue(I18NText.getText("KAF011_86"));
+                    cells.get("B12").setValue(I18NText.getText("KAF011_85"));
                 }
             } else {
                 cells.deleteRow(15);
@@ -341,11 +341,11 @@ public class AsposeHolidayShipment {
                   deleteCnt++;
               }
                 
-                cells.get("B8").setValue(I18NText.getText("KAF011_86"));
+                cells.get("B8").setValue(I18NText.getText("KAF011_85"));
                 if (manageMultipleTime) {
-                    cells.get("B13").setValue(I18NText.getText("KAF011_86"));
+                    cells.get("B13").setValue(I18NText.getText("KAF011_85"));
                 } else {
-                    cells.get("B12").setValue(I18NText.getText("KAF011_86"));
+                    cells.get("B12").setValue(I18NText.getText("KAF011_85"));
                 }
             }
         }

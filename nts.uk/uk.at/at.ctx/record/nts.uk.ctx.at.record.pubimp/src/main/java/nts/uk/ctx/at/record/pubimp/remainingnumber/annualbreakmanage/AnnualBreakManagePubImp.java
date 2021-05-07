@@ -133,6 +133,7 @@ public class AnnualBreakManagePubImp implements AnnualBreakManagePub {
 						Optional.empty(),
 						Optional.empty(),
 						Optional.empty(),
+						Optional.empty(),
 						Optional.empty());
 
 		if (aggrResultOfAnnualLeave.isPresent()){
