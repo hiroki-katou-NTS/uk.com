@@ -27,8 +27,8 @@ import nts.uk.ctx.at.schedule.dom.employeeinfo.rank.RankPriority;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.scheduleteam.BelongScheduleTeam;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.scheduleteam.ScheduleTeamCd;
 import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.EmpLicenseClassification;
-import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.GetEmpLicenseClassificationService;
 import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.LicenseClassification;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.medicalworkstyle.GetEmpLicenseClassificationService;
 @RunWith(JMockit.class)
 public class SortSettingTest {
 	@Injectable
