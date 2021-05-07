@@ -4,36 +4,36 @@ import java.util.ArrayList;
 import java.util.List;
 
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
-import nts.uk.shr.com.enumcommon.NotUseAtr;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.medicalworkstyle.EmpMedicalWorkStyleHistoryItem;
 
 public class EmpLicenseHelper {
-	 public static List<EmpMedicalWorkFormHisItem> getLstEmpMedical() {
+	 public static List<EmpMedicalWorkStyleHistoryItem> getLstEmpMedical() {
 		 
-		 EmpMedicalWorkFormHisItem result = new EmpMedicalWorkFormHisItem(
+		 EmpMedicalWorkStyleHistoryItem result = new EmpMedicalWorkStyleHistoryItem(
 					"empID1", 
 					"historyID1",
 					new NurseClassifiCode("1"),
-					NotUseAtr.USE,
+					true,
 					MedicalCareWorkStyle.FULLTIME,
-					NotUseAtr.USE);
+					true);
 			
-			EmpMedicalWorkFormHisItem results = new EmpMedicalWorkFormHisItem(
+			EmpMedicalWorkStyleHistoryItem results = new EmpMedicalWorkStyleHistoryItem(
 					"003", 
 					"historyID2",
 					new NurseClassifiCode("2"),
-					NotUseAtr.USE,
+					true,
 					MedicalCareWorkStyle.FULLTIME,
-					NotUseAtr.USE);
+					true);
 			
-			EmpMedicalWorkFormHisItem result2 = new EmpMedicalWorkFormHisItem(
+			EmpMedicalWorkStyleHistoryItem result2 = new EmpMedicalWorkStyleHistoryItem(
 					"002", 
 					"historyID4",
 					new NurseClassifiCode("3"),
-					NotUseAtr.USE,
+					true,
 					MedicalCareWorkStyle.FULLTIME,
-					NotUseAtr.USE);
+					true);
 			
-			List<EmpMedicalWorkFormHisItem> listEmpMedicalWorkFormHisItem = new ArrayList<>();
+			List<EmpMedicalWorkStyleHistoryItem> listEmpMedicalWorkFormHisItem = new ArrayList<>();
 			listEmpMedicalWorkFormHisItem.add(result);
 			listEmpMedicalWorkFormHisItem.add(results);
 			listEmpMedicalWorkFormHisItem.add(result2);
@@ -75,33 +75,33 @@ public class EmpLicenseHelper {
 		 return list;
 	 }
 	 
-public static List<EmpMedicalWorkFormHisItem> getLstEmpMedical_null() {
+public static List<EmpMedicalWorkStyleHistoryItem> getLstEmpMedical_null() {
 		 
-		 EmpMedicalWorkFormHisItem result = new EmpMedicalWorkFormHisItem(
+		 EmpMedicalWorkStyleHistoryItem result = new EmpMedicalWorkStyleHistoryItem(
 					"empID1", 
 					"historyID1", 
 					new NurseClassifiCode("1"),
-					NotUseAtr.USE,
+					true,
 					MedicalCareWorkStyle.FULLTIME,
-					NotUseAtr.USE);
+					true);
 			
-			EmpMedicalWorkFormHisItem results = new EmpMedicalWorkFormHisItem(
+			EmpMedicalWorkStyleHistoryItem results = new EmpMedicalWorkStyleHistoryItem(
 					"009", 
 					"historyID2",
 					new NurseClassifiCode("2"),
-					NotUseAtr.USE,
+					true,
 					MedicalCareWorkStyle.FULLTIME,
-					NotUseAtr.USE);
+					true);
 			
-			EmpMedicalWorkFormHisItem result2 = new EmpMedicalWorkFormHisItem(
+			EmpMedicalWorkStyleHistoryItem result2 = new EmpMedicalWorkStyleHistoryItem(
 					"008", 
 					"historyID4",
 					new NurseClassifiCode("3"),
-					NotUseAtr.USE,
+					true,
 					MedicalCareWorkStyle.FULLTIME,
-					NotUseAtr.USE);
+					true);
 			
-			List<EmpMedicalWorkFormHisItem> listEmpMedicalWorkFormHisItem = new ArrayList<>();
+			List<EmpMedicalWorkStyleHistoryItem> listEmpMedicalWorkFormHisItem = new ArrayList<>();
 			listEmpMedicalWorkFormHisItem.add(result);
 			listEmpMedicalWorkFormHisItem.add(results);
 			listEmpMedicalWorkFormHisItem.add(result2);
@@ -111,36 +111,36 @@ public static List<EmpMedicalWorkFormHisItem> getLstEmpMedical_null() {
 	 
 	
 	 
-public static List<EmpMedicalWorkFormHisItem> getnurseClass_null() {
+public static List<EmpMedicalWorkStyleHistoryItem> getnurseClass_null() {
 		 
-		 EmpMedicalWorkFormHisItem result = new EmpMedicalWorkFormHisItem(
+		 EmpMedicalWorkStyleHistoryItem result = new EmpMedicalWorkStyleHistoryItem(
 					"003", 
 					"historyID1",
 					new NurseClassifiCode("5"),
-					NotUseAtr.USE,
+					true,
 					MedicalCareWorkStyle.FULLTIME,
-					NotUseAtr.USE);
+					true);
 			
-			EmpMedicalWorkFormHisItem results = new EmpMedicalWorkFormHisItem(
+			EmpMedicalWorkStyleHistoryItem results = new EmpMedicalWorkStyleHistoryItem(
 					"002", 
 					"historyID2",
 					new NurseClassifiCode("7"),
-					NotUseAtr.USE,
+					true,
 					MedicalCareWorkStyle.FULLTIME,
-					NotUseAtr.USE);
+					true);
 			
 			
-			EmpMedicalWorkFormHisItem resultss = new EmpMedicalWorkFormHisItem(
+			EmpMedicalWorkStyleHistoryItem resultss = new EmpMedicalWorkStyleHistoryItem(
 					"008", 
 					"historyID2", 
 					new NurseClassifiCode("2"),
-					NotUseAtr.USE,
+					true,
 					MedicalCareWorkStyle.FULLTIME,
-					NotUseAtr.USE);
+					true);
 			
 
 			
-			List<EmpMedicalWorkFormHisItem> listEmpMedicalWorkFormHisItem = new ArrayList<>();
+			List<EmpMedicalWorkStyleHistoryItem> listEmpMedicalWorkFormHisItem = new ArrayList<>();
 			listEmpMedicalWorkFormHisItem.add(result);
 			listEmpMedicalWorkFormHisItem.add(results);
 			listEmpMedicalWorkFormHisItem.add(resultss);

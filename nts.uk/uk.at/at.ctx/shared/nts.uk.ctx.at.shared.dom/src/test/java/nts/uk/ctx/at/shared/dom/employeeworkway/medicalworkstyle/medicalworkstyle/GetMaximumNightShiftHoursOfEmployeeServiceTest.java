@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle;
+package nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.medicalworkstyle;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -13,7 +13,9 @@ import mockit.Injectable;
 import mockit.Mocked;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
-import nts.uk.shr.com.enumcommon.NotUseAtr;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.medicalworkstyle.EmpMedicalWorkStyleHistoryItem;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.medicalworkstyle.GetMaximumNightShiftHoursOfEmployeeService;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.medicalworkstyle.NightShiftUpperLimitTime;
 /**
  * UTコード：社員の夜勤上限時間を取得する
  * @author lan_lt
@@ -57,7 +59,7 @@ public class GetMaximumNightShiftHoursOfEmployeeServiceTest {
 	 * output: 夜勤専従者
 	 */
 	@Test
-	public void getNightShiftWorkerHours(@Mocked EmpMedicalWorkFormHisItem empMedicalHisItem) {
+	public void getNightShiftWorkerHours(@Mocked EmpMedicalWorkStyleHistoryItem empMedicalHisItem) {
 		val maxNightShiftHours = new NightShiftUpperLimitTime("contractCode", new AttendanceTimeMonth(720), new AttendanceTimeMonth(360));
 		
 		new Expectations() {
@@ -68,8 +70,8 @@ public class GetMaximumNightShiftHoursOfEmployeeServiceTest {
 				require.getNightShiftUpperLimitTime();
 				result = maxNightShiftHours;
 				
-				empMedicalHisItem.getNightShiftFullTime();
-				result = NotUseAtr.USE;
+				empMedicalHisItem.isOnlyNightShift();
+				result = true;
 			}
 		};
 		
@@ -86,7 +88,7 @@ public class GetMaximumNightShiftHoursOfEmployeeServiceTest {
 	 * output: 夜勤専従者以外
 	 */
 	@Test
-	public void getRegularWorkerHours(@Mocked EmpMedicalWorkFormHisItem empMedicalHisItem) {
+	public void getRegularWorkerHours(@Mocked EmpMedicalWorkStyleHistoryItem empMedicalHisItem) {
 		val maxNightShiftHours = new NightShiftUpperLimitTime("contractCode", new AttendanceTimeMonth(720), new AttendanceTimeMonth(360));
 		
 		new Expectations() {
@@ -97,8 +99,8 @@ public class GetMaximumNightShiftHoursOfEmployeeServiceTest {
 				require.getNightShiftUpperLimitTime();
 				result = maxNightShiftHours;
 				
-				empMedicalHisItem.getNightShiftFullTime();
-				result = NotUseAtr.NOT_USE;
+				empMedicalHisItem.isOnlyNightShift();
+				result = false;
 			}
 		};
 		

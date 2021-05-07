@@ -1,9 +1,8 @@
-package nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle;
+package nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.medicalworkstyle;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Optional;
 
@@ -17,9 +16,12 @@ import mockit.integration.junit4.JMockit;
 import nts.arc.time.GeneralDate;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
-import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.GetEmpLicenseClassificationService.Require;
-import nts.uk.shr.com.enumcommon.NotUseAtr;
-@SuppressWarnings("serial")
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.LicenseClassification;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.MedicalCareWorkStyle;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.NurseClassifiCode;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.NurseClassifiName;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.NurseClassification;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.medicalworkstyle.GetEmpLicenseClassificationService.Require;
 @RunWith(JMockit.class)
 public class GetEmpLicenseClassificationServiceTest {
 	
@@ -27,10 +29,10 @@ public class GetEmpLicenseClassificationServiceTest {
 	private Require require;
 	
 	/**
-	 * input: 	社員IDリスト　＝「"003","004"」
+	 * input: 	社員IDリスト　＝「"sid_1","sid_2"」
 	 * 			社員の医療勤務形態履歴項目リスト　＝　empty
 	 * 			会社の看護区分リスト = empty
-	 * output: 	　[ {"003", empty}, {"004", empty} ]
+	 * output: 	　[ {"sid_1", empty}, {"sid_2", empty} ]
 	 * 
 	 *
 	 */
@@ -40,7 +42,7 @@ public class GetEmpLicenseClassificationServiceTest {
 		
 		new Expectations() {
 			{
-				require.getEmpClassifications(listEmp, (GeneralDate) any);
+				require.getEmpMedicalWorkStyleHistoryItem(listEmp, (GeneralDate) any);
 				
 				require.getListCompanyNurseCategory(); 
 			}
@@ -60,7 +62,7 @@ public class GetEmpLicenseClassificationServiceTest {
 	 * input  
 	 * 		社員IDリスト　＝　「"sid_1","sid_2"」
 	 * 		社員の医療勤務形態履歴項目リスト　=	 「	{ 社員ID = sid_1, 看護区分コード = "2"}	」
-	 * 		看護リスト　= 					「 	｛看護区分コード = "2"、　免許区分　＝　NURSE_ASSIST｝　」
+	 * 		看護リスト　= 					「 	｛看護区分コード = "2"、　免許区分　＝　NURSE_ASSIST｝	」
 	 * output:
 	 * 		 「	{ 社員ID = sid_1, NURSE_ASSIST}	
 	 * 			{ 社員ID = sid_1, empty}
@@ -70,29 +72,19 @@ public class GetEmpLicenseClassificationServiceTest {
 	public void test_classifiCode_nurseClassifi_NotNull() {
 		val listEmp = Arrays.asList("sid_1","sid_2"); // dummy
 		
-		val listEmpMedicalWorkFormHisItem = new ArrayList<EmpMedicalWorkFormHisItem>() {
-			{
-				add(Helper.createEmpMedicalWorkFormHisItem("sid_1", new NurseClassifiCode("2")));
-			}
-		};
+		val histItems = Arrays.asList(
+				Helper.createEmpMedicalWorkFormHisItem("sid_1", new NurseClassifiCode("2")));
+		
+		val  nurseClassifications = Arrays.asList(
+				Helper.createNurseClassification( new NurseClassifiCode("2"), LicenseClassification.NURSE_ASSIST));
 		
 		new Expectations() {
 			{
-				require.getEmpClassifications(listEmp, GeneralDate.today());// dummy
-				result = listEmpMedicalWorkFormHisItem;
-			}
-		};
-		
-		val  listNurseClassification = new ArrayList<NurseClassification>() {
-			{
-				add(Helper.createNurseClassification( new NurseClassifiCode("2"), LicenseClassification.NURSE_ASSIST));
-			}
-		};
-		
-		new Expectations() {
-			{
+				require.getEmpMedicalWorkStyleHistoryItem(listEmp, GeneralDate.today());// dummy
+				result = histItems;
+				
 				require.getListCompanyNurseCategory(); // dummy
-				result = listNurseClassification;
+				result = nurseClassifications;
 			}
 		};
 		
@@ -120,30 +112,21 @@ public class GetEmpLicenseClassificationServiceTest {
 	public void test_nurseClassification_null() {
 		val listEmp = Arrays.asList("sid_1","sid_2"); // dummy
 		
-		val listEmpMedicalWorkFormHisItem = new ArrayList<EmpMedicalWorkFormHisItem>() {
-			{
-				add(Helper.createEmpMedicalWorkFormHisItem("sid_1", new NurseClassifiCode("9")));
-				add(Helper.createEmpMedicalWorkFormHisItem("sid_2", new NurseClassifiCode("7")));
-			}
-		};
-
-		new Expectations() {
-			{
-				require.getEmpClassifications(listEmp, GeneralDate.today());// dummy
-				result = listEmpMedicalWorkFormHisItem;
-			}
-		};
+		val histItems = Arrays.asList(
+					Helper.createEmpMedicalWorkFormHisItem("sid_1", new NurseClassifiCode("9"))
+				,	Helper.createEmpMedicalWorkFormHisItem("sid_2", new NurseClassifiCode("7"))
+			);
 		
-		val  listNurseClassification = new ArrayList<NurseClassification>() {
-			{
-				add(Helper.createNurseClassification(new NurseClassifiCode("3"),	LicenseClassification.NURSE_ASSIST));
-			}
-		};
+		val  nurseClassifications = Arrays.asList(
+				Helper.createNurseClassification(new NurseClassifiCode("3"),	LicenseClassification.NURSE_ASSIST));
 		
 		new Expectations() {
 			{
+				require.getEmpMedicalWorkStyleHistoryItem(listEmp, GeneralDate.today());// dummy
+				result = histItems;
+				
 				require.getListCompanyNurseCategory(); // dummy
-				result = listNurseClassification;
+				result = nurseClassifications;
 			}
 		};
 		
@@ -165,14 +148,14 @@ public class GetEmpLicenseClassificationServiceTest {
 		 * @param nurseClassifiCode 看護区分コード
 		 * @return
 		 */
-		public static EmpMedicalWorkFormHisItem createEmpMedicalWorkFormHisItem(String sid, NurseClassifiCode nurseClassifiCode) {
-				return new EmpMedicalWorkFormHisItem(
+		public static EmpMedicalWorkStyleHistoryItem createEmpMedicalWorkFormHisItem(String sid, NurseClassifiCode nurseClassifiCode) {
+				return new EmpMedicalWorkStyleHistoryItem(
 						sid, 
 						IdentifierUtil.randomUniqueId(), // dummy
 						nurseClassifiCode,
-						NotUseAtr.USE,// dummy
+						true,// dummy
 						MedicalCareWorkStyle.FULLTIME,// dummy
-						NotUseAtr.USE);// dummy
+						true);// dummy
 		}
 		
 		/**

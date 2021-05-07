@@ -1,12 +1,12 @@
-package nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle;
+package nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.nursingworkform;
 
 import org.junit.Test;
 
 import nts.arc.testing.assertion.NtsAssert;
-import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.FulltimeRemarks;
 import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.MedicalCareWorkStyle;
-import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.NightShiftRemarks;
-import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.NursingWorkFormInfor;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.nursingworkform.FulltimeRemarks;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.nursingworkform.NightShiftRemarks;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.nursingworkform.NursingWorkFormInfor;
 
 public class NursingWorkFormInforTest {
 
