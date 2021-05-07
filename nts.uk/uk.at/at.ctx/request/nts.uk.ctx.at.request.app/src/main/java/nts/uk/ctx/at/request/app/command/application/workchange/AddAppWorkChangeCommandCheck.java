@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.request.app.find.application.ApplicationDto;
 import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto;
 import nts.uk.ctx.at.request.app.find.application.workchange.AppWorkChangeDto;
+import nts.uk.ctx.at.request.app.find.application.workchange.dto.AppWorkChangeDispInfoDto;
+import nts.uk.ctx.at.request.dom.application.workchange.output.AppWorkChangeDispInfo;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
@@ -23,4 +25,6 @@ public class AddAppWorkChangeCommandCheck {
 	private int isError;
 	// add param to handle 登録時チェック処理（全申請共通） 
 	private AppDispInfoStartupDto appDispInfoStartupDto;
+	
+	private AppWorkChangeDispInfoDto appWorkChangeDispInfo;
 }
