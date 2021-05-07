@@ -6297,34 +6297,67 @@ var nts;
                 // ボタンの上部分をクリックすると、ボタンの範囲からマウスカーソルが外れてしまい、
                 // clickイベントが発生しなくなる不具合がある。
                 // ダミーのdivを生成し、そこでmouseupイベントを拾うことで不具合を回避。
+                // Emulate click event by cache & trigger
                 $(function () {
-                    $("body").on("mousedown", "button", function (e) {
-                        var $button = $(e.target);
-                        var $dammy = $("<div>")
-                            .css({
-                            background: "transparent",
-                            position: "absolute",
-                            width: $button.outerWidth(),
-                            height: parseInt($button.css("top"), 10),
-                            cursor: "pointer",
-                            opacity: 100
-                        })
-                            .appendTo("body")
-                            .position({
-                            my: "left bottom",
-                            at: "left top",
-                            of: e.target
-                        })
-                            .on("mouseup", function (eup) {
-                            $dammy.remove();
-                            $button.click();
-                        });
-                        $(window).on("mouseup.dammyevent", function () {
-                            $dammy.remove();
-                            $(window).off("mouseup.dammyevent");
-                        });
+                    var cache = {
+                        button: null,
+                        position: null
+                    };
+                    $(document)
+                        .on('mouseup', function (evt) {
+                        var button = cache.button, position = cache.position;
+                        var target = evt.target, pageX = evt.pageX, pageY = evt.pageY;
+                        if (target.tagName !== 'BUTTON' && !$(target).closest('button').is(button)) {
+                            if (button && position) {
+                                var x = position.x, y = position.y;
+                                if (x === pageX && y === pageY) {
+                                    // trigger click event of button if mouseup outside
+                                    $(button).trigger('click');
+                                }
+                            }
+                        }
+                        cache.button = null;
+                        cache.position = null;
+                    })
+                        .on('mousedown', 'button', function (evt) {
+                        var target = evt.target;
+                        cache.button = target.tagName === 'BUTTON' ? target : $(target).closest('button').get(0);
+                        cache.position = {
+                            x: evt.pageX,
+                            y: evt.pageY
+                        };
                     });
                 });
+                /*$(() => {
+                    $("body")
+                        .on("mousedown", "button", e => {
+                            var $button = $(e.target);
+                            var $dammy = $("<div>")
+                                .css({
+                                    background: "transparent",
+                                    position: "absolute",
+                                    width: $button.outerWidth(),
+                                    height: parseInt($button.css("top"), 10),
+                                    cursor: "pointer",
+                                    opacity: 100
+                                })
+                                .appendTo("body")
+                                .position({
+                                    my: "left bottom",
+                                    at: "left top",
+                                    of: e.target
+                                })
+                                .on("mouseup", eup => {
+                                    $dammy.remove();
+                                    $button.click();
+                                });
+        
+                            $(window).on("mouseup.dammyevent", () => {
+                                $dammy.remove();
+                                $(window).off("mouseup.dammyevent");
+                            });
+                        });
+                });*/
             })(buttonExtension || (buttonExtension = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
@@ -15718,6 +15751,18 @@ var nts;
                             if (disables[i].length === 0)
                                 delete disables[i];
                             helper.stripCellWith(style.SEAL_CLS, $cell, innerIdx);
+                        }
+                        else {
+                            var cellStyles = $.data($table, internal.CELLS_STYLE);
+                            var removed = _.remove(cellStyles, function (s) {
+                                return s.rowId === rowId && s.columnKey === columnKey
+                                    && ((_.isNil(innerIdx) && _.isNil(s.innerIdx)) ? true : innerIdx === s.innerIdx)
+                                    && s.clazz === style.SEAL_CLS;
+                            });
+                            if (removed.length > 0) {
+                                var $cell = selection.cellAt($table, i, columnKey);
+                                helper.stripCellWith(style.SEAL_CLS, $cell, innerIdx);
+                            }
                         }
                     }
                     /**
@@ -36645,6 +36690,8 @@ var nts;
                                             child.reposition({ width: 0 });
                                     }
                                 });
+                                pDec_1.initStart = pDec_1.start;
+                                pDec_1.initEnd = pDec_1.end;
                                 chart.reposition(pDec_1);
                             }
                             else if (self.slideTrigger.holdPos === HOLD_POS.START) {
@@ -37262,6 +37309,12 @@ var nts;
                         if (_.has(style, "end")) {
                             self.end = style.end;
                         }
+                        if (_.has(style, "initStart")) {
+                            self.initStart = style.initStart;
+                        }
+                        if (_.has(style, "initEnd")) {
+                            self.initEnd = style.initEnd;
+                        }
                         if (_.has(style, "top")) {
                             self.html.style.top = style.top + "px";
                         }
@@ -37485,6 +37538,17 @@ var nts;
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
 /// <reference path="./viewcontext.d.ts" />
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 var __spreadArray = (this && this.__spreadArray) || function (to, from) {
     for (var i = 0, il = from.length, j = to.length; i < il; i++, j++)
         to[j] = from[i];
@@ -37494,12 +37558,14 @@ var __spreadArray = (this && this.__spreadArray) || function (to, from) {
 function bean(dialogOption) {
     return function (ctor) {
         __viewContext.ready(function () {
-            nts.uk.ui.viewmodel.$storage().then(function ($params) {
-                var $viewModel = new ctor($params), $created = $viewModel['created'];
+            var localShared = nts.uk.ui.windows.container.localShared;
+            nts.uk.ui.viewmodel.$storage()
+                .then(function ($params) {
+                var $viewModel = new ctor($params || localShared), $created = $viewModel['created'];
                 _.extend($viewModel, { $el: undefined });
                 // hook to created function
                 if ($created && _.isFunction($created)) {
-                    $created.apply($viewModel, [$params]);
+                    $created.apply($viewModel, [$params || localShared]);
                 }
                 // hook to mounted function
                 $viewModel.$nextTick(function () {
@@ -37526,13 +37592,26 @@ function bean(dialogOption) {
 }
 function component(options) {
     return function (ctor) {
-        return $.Deferred().resolve(options.template.match(/\.html$/))
+        var name = options.name, template = options.template, alternalBinding = options.alternalBinding;
+        if (alternalBinding) {
+            ko.bindingHandlers[name] = {
+                init: function (element, __, allBindingsAccessor, ___, bindingContext) {
+                    var allBinding = __assign({}, allBindingsAccessor());
+                    var params = _.mapKeys(allBinding, function (_v, key) { return _.camelCase(key); });
+                    ko.applyBindingsToNode(element, { component: { name: name, params: params } }, bindingContext);
+                    element.removeAttribute('data-bind');
+                    return { controlsDescendantBindings: true };
+                }
+            };
+        }
+        return $.Deferred()
+            .resolve(template.match(/\.html$/))
             .then(function (url) {
-            return url ? $.get(options.template) : options.template;
+            return url ? $.get(template) : template;
         })
             .then(function (template) {
-            if (!ko.components.isRegistered(options.name)) {
-                ko.components.register(options.name, {
+            if (!ko.components.isRegistered(name)) {
+                ko.components.register(name, {
                     template: template,
                     viewModel: {
                         createViewModel: function ($params, $el) {
@@ -38119,6 +38198,13 @@ var nts;
                     }
                 });
                 BaseViewModel.prototype.$validate = $validate;
+                BaseViewModel.prototype.$query = (function () {
+                    var query = location.search.substring(1);
+                    if (!query || !query.match(/=/)) {
+                        return {};
+                    }
+                    return JSON.parse('{"' + decodeURI(query).replace(/"/g, '\\"').replace(/&/g, '","').replace(/=/g, '":"') + '"}');
+                })();
                 Object.defineProperty(ko, 'ViewModel', { value: BaseViewModel });
             })(viewmodel = ui_21.viewmodel || (ui_21.viewmodel = {}));
         })(ui = uk.ui || (uk.ui = {}));
@@ -49330,7 +49416,7 @@ var nts;
                             var disable = allBindingsAccessor.get('disable');
                             ko.computed({
                                 read: function () {
-                                    var options = ko.unwrap(accessor);
+                                    var options = ko.toJS(accessor);
                                     $element
                                         .css({
                                         top: '',

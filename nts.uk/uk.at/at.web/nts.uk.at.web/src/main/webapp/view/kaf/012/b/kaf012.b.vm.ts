@@ -108,6 +108,7 @@ module nts.uk.at.view.kaf012.b.viewmodel {
         timeLeaveManagement: KnockoutObservable<any> = ko.observable(null);
         timeLeaveRemaining: KnockoutObservable<any> = ko.observable(null);
         leaveType: KnockoutObservable<number> = ko.observable(null);
+        isReload: boolean = true;
 
         applyTimeData: KnockoutObservableArray<DataModel> = ko.observableArray([]);
         specialLeaveFrame: KnockoutObservable<number> = ko.observable(null);
@@ -149,17 +150,19 @@ module nts.uk.at.view.kaf012.b.viewmodel {
         mounted() {
             const vm = this;
             vm.leaveType.subscribe(value => {
-                vm.applyTimeData().forEach((row : DataModel) => {
-                    row.applyTime.forEach(apply => {
-                        apply.substituteAppTime(0);
-                        apply.annualAppTime(0);
-                        apply.careAppTime(0);
-                        apply.childCareAppTime(0);
-                        apply.super60AppTime(0);
-                        apply.specialAppTime(0);
-                        apply.calculatedTime(0);
+                if (!vm.isReload) {
+                    vm.applyTimeData().forEach((row : DataModel) => {
+                        row.applyTime.forEach(apply => {
+                            apply.substituteAppTime(0);
+                            apply.annualAppTime(0);
+                            apply.careAppTime(0);
+                            apply.childCareAppTime(0);
+                            apply.super60AppTime(0);
+                            apply.specialAppTime(0);
+                            apply.calculatedTime(0);
+                        });
                     });
-                });
+                }
             });
         }
 
@@ -181,6 +184,11 @@ module nts.uk.at.view.kaf012.b.viewmodel {
                         i.specialAppTime(0);
                     })
                 });
+                vm.applyTimeData()[4].timeZones.forEach(i => {
+                    i.display(i.workNo < 4);
+                });
+                vm.applyTimeData()[4].displayShowMore(true);
+                vm.isReload = true;
 				vm.getAppData();
 			}
 		}
@@ -193,10 +201,7 @@ module nts.uk.at.view.kaf012.b.viewmodel {
                 appDispInfoStartupOutput: vm.appDispInfoStartupOutput()
             }).done(res => {
                 if (res) {
-                    vm.reflectSetting(res.reflectSetting);
-                    vm.timeLeaveRemaining(res.timeLeaveRemaining);
-                    vm.timeLeaveManagement(res.timeLeaveManagement);
-                    let totalAppTime: Array<number> = [0, 0, 0, 0, 0, 0], specialFrame: number = null;
+                    let totalAppTime: Array<number> = [0, 0, 0, 0, 0, 0], specialFrame: number = null, maxWorkNoHasData = 3;
                     res.details.forEach((detail: TimeLeaveAppDetail) => {
                         detail.timeZones.forEach(z => {
                             const index = detail.appTimeType < 4 ? 0 : z.workNo - 1;
@@ -208,6 +213,7 @@ module nts.uk.at.view.kaf012.b.viewmodel {
                                 if (vm.applyTimeData()[4].timeZones[index].displayCombobox())
                                     vm.applyTimeData()[4].timeZones[index].appTimeType(detail.appTimeType);
                                 if (vm.applyTimeData()[4].timeZones[index].appTimeType() == detail.appTimeType) {
+                                    maxWorkNoHasData = Math.max(maxWorkNoHasData, index + 1);
                                     vm.applyTimeData()[4].timeZones[index].startTime(startTime);
                                     vm.applyTimeData()[4].timeZones[index].endTime(endTime);
                                 }
@@ -245,11 +251,21 @@ module nts.uk.at.view.kaf012.b.viewmodel {
                     } else {
                         vm.leaveType(_.findIndex(totalAppTime, i => i > 0));
                     }
+                    vm.reflectSetting(res.reflectSetting);
+                    vm.timeLeaveRemaining(res.timeLeaveRemaining);
+                    vm.timeLeaveManagement(res.timeLeaveManagement);
                     if (specialFrame != null) vm.specialLeaveFrame(specialFrame);
                     vm.printContentOfEachAppDto().opPrintContentOfTimeLeave = res.details;
 
                     if(vm.leaveType() == LeaveType.COMBINATION && _.isFunction(vm.childCalcEvent)) {
                         vm.childCalcEvent();
+                    }
+
+                    if (maxWorkNoHasData > 3) {
+                        vm.applyTimeData()[4].timeZones.forEach(i => {
+                            i.display(true);
+                        });
+                        vm.applyTimeData()[4].displayShowMore(false);
                     }
 
                     vm.$nextTick(() => {
@@ -262,11 +278,10 @@ module nts.uk.at.view.kaf012.b.viewmodel {
                         nts.uk.request.jumpToTopPage();
                     }
                 });
-            }).always(() => vm.$blockui('hide'));
-        }
-
-        mounted() {
-            const vm = this;
+            }).always(() => {
+                vm.isReload = false;
+                vm.$blockui('hide')
+            });
         }
 
         // event update cần gọi lại ở button của view cha

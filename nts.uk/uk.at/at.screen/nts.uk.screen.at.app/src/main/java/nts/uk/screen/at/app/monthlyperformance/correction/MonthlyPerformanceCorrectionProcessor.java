@@ -263,6 +263,8 @@ public class MonthlyPerformanceCorrectionProcessor {
 				param.setYearMonth(yearMonth);
 				// 処理年月
 				screenDto.setProcessDate(yearMonth);
+			}else {
+				throw new BusinessException("Msg_1143");
 			}
 		} else {
 			yearMonth = param.getYearMonth();

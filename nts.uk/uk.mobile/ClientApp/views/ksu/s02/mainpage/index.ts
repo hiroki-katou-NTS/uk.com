@@ -29,7 +29,7 @@ export class Ksus02Component extends Vue {
     public params!: any;
     public clnLst = [];
     public datas = [];
-    public dataCalendar = { data: null };
+    public dataCalendar = { data: null,checkRegister : false };
     public paramRegister = null;
     public isCurrentMonth: any = true;
 
@@ -107,10 +107,12 @@ export class Ksus02Component extends Vue {
         });
     }
 
+    public checkRegister = false;
     public loadData() {
         let self = this;
         self.dataCalendar = {
-            data: self.dataStartPage
+            data: self.dataStartPage,
+            checkRegister : self.checkRegister
         };
     }
     public register() {
@@ -125,11 +127,13 @@ export class Ksus02Component extends Vue {
         self.$http.post('at', servicePath.saveWorkRequest, self.paramRegister).then((result: any) => {
             self.$modal.info('Msg_15').then(() => {
                 self.$mask('hide');
+                
                 let data = {
                     startDate: self.paramRegister.startPeriod,
                     endDate: self.paramRegister.endPeriod
                 };
                 self.dataChange(data);
+                self.checkRegister = true;
             });
         }).catch((res: any) => {
             self.showError(res);

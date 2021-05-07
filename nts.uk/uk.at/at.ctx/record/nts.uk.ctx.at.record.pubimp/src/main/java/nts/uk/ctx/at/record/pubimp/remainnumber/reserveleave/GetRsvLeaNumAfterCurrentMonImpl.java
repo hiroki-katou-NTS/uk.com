@@ -108,7 +108,8 @@ public class GetRsvLeaNumAfterCurrentMonImpl implements GetRsvLeaNumAfterCurrent
 					Optional.empty(),
 					Optional.empty(),
 					prevAnnualLeave.optional(),
-					prevReserveLeave.optional());
+					prevReserveLeave.optional(),
+					Optional.empty());
 			prevAnnualLeave.set(aggrResult.getAnnualLeave().isPresent() ? aggrResult.getAnnualLeave().get() : null);
 			prevReserveLeave.set(aggrResult.getReserveLeave().isPresent() ? aggrResult.getReserveLeave().get() : null);
 
