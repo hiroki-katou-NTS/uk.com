@@ -142,19 +142,16 @@ export class KafS12A1Component extends Vue {
                 }
             });
 
+			self.outingTimeZones.forEach((i: OutingTimeZone) => {
+                i.timeZone.start = null;
+                i.timeZone.end = null;
+                i.appTimeType = AppTimeType.PRIVATE;
+            });
             const outingTimes = opActualContentDisplayLst[0].opAchievementDetail.stampRecordOutput.outingTime || [];
-            self.outingTimeZones.forEach((i: OutingTimeZone) => {
-                outingTimes.filter((time: any) => time.opGoOutReasonAtr == 0 || time.opGoOutReasonAtr == 3).forEach((time: any) => {
-                    if (time.frameNo == i.workNo) {
-                        i.timeZone.start = time.opStartTime;
-                        i.timeZone.end = time.opEndTime;
-                        i.appTimeType = time.opGoOutReasonAtr == 3 ? AppTimeType.UNION : AppTimeType.PRIVATE;
-                    } else {
-                        i.timeZone.start = null;
-                        i.timeZone.end = null;
-                        i.appTimeType = AppTimeType.PRIVATE;
-                    }
-                });
+            outingTimes.filter((time: any) => time.opGoOutReasonAtr == 0 || time.opGoOutReasonAtr == 3).forEach((time: any) => {
+                self.outingTimeZones[time.frameNo - 1].timeZone.start = time.opStartTime;
+                self.outingTimeZones[time.frameNo - 1].timeZone.end = time.opEndTime;
+                self.outingTimeZones[time.frameNo - 1].appTimeType = time.opGoOutReasonAtr == 3 ? AppTimeType.UNION : AppTimeType.PRIVATE;
             });
         } else if (self.newMode && prePostAtr == 0) {
             self.lateEarlyTimeZones.forEach((i: LateEarlyTimeZone) => {
