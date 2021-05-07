@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare;
+package nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.childcarenurse;
 
 import java.util.List;
 import java.util.Optional;

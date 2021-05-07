@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare;
+package nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.childcarenurse;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -6,7 +6,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.Used
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.ChildCareNurseUsedNumber;
 
 /**
- * 子の看護介護使用情報
+ * 子の看護介護残数
  * @author yuri_tamakoshi
  */
 @Getter
