@@ -273,7 +273,7 @@ public class AnnualLeaveInfo implements Cloneable {
 		if (!aggregatePeriodWork.getGrantWork().isGrantAtr()) return;
 
 		// 初回付与かチェックする
-		if (!check(aggregatePeriodWork)){
+		if (!isFirstTimeGrant(aggregatePeriodWork)){
 			return;
 		}
 
@@ -287,7 +287,7 @@ public class AnnualLeaveInfo implements Cloneable {
 	}
 
 	//初回付与かチェックする
-	public boolean check(AggregatePeriodWork aggregatePeriodWork) {
+	public boolean isFirstTimeGrant(AggregatePeriodWork aggregatePeriodWork) {
 
 		//期間開始日に付与があるか
 		if(!aggregatePeriodWork.getGrantWork().isGrantAtr()) {
@@ -512,8 +512,7 @@ public class AnnualLeaveInfo implements Cloneable {
 				// 使用数変数作成
 				LeaveUsedNumber leaveUsedNumber = new LeaveUsedNumber();
 				leaveUsedNumber.setDays(new LeaveUsedDayNumber(tempAnnualLeaveMng.getUsedNumber().getDays().v()));
-				// 要修正　tempAnnualLeaveMng.getUseDays()
-				// leaveUsedNumber.setMinutes(minutes);
+				leaveUsedNumber.setMinutes(Optional.of(tempAnnualLeaveMng.getUsedNumber().getMinutesOrZero().clone()));
 
 				//使用数に加算する
 				Optional<AnnualLeaveUsedDayNumber> days = Optional.of(new AnnualLeaveUsedDayNumber(leaveUsedNumber.getDays().v()));
@@ -642,14 +641,6 @@ public class AnnualLeaveInfo implements Cloneable {
 				annualLeaveErrors.add(AnnualLeaveError.SHORTAGE_AL_OF_UNIT_DAY_BFR_GRANT);
 			}
 		}
-
-
-
-
-
-
-
-
 
 		return annualLeaveErrors;
 	}

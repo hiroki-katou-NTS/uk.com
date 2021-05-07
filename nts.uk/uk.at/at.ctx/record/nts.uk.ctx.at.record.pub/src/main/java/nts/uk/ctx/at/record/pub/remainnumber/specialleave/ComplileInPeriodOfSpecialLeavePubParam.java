@@ -1,6 +1,8 @@
 package nts.uk.ctx.at.record.pub.remainnumber.specialleave;
 
 import java.util.List;
+import java.util.Optional;
+
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
@@ -41,5 +43,9 @@ public class ComplileInPeriodOfSpecialLeavePubParam {
 	private boolean overwriteFlg;
 	/**	上書き用の暫定管理データ */
 	private List<InterimSpecialHolidayMngPubParam> interimSpecialData;
+	/**
+	 * 上書き対象期間　
+	 */
+	private Optional<DatePeriod> isOverWritePeriod;
 
 }

@@ -11,7 +11,7 @@
       <ui:define name="htmlHead">
         <com:scriptfile set="IGNITE" />
         <script>
-          var dialogSize = { width: 380, height: 210 };
+          var dialogSize = { width: 380, height: 400 };
         </script>
         <com:stylefile path="ksm007.c.main.css" />
         <com:scriptfile path="ksm007.c.vm.js" />
@@ -19,22 +19,22 @@
 
       <ui:define name="content">
         <div id="contents-area" class="ksm-007c">
-          <div class="table">
-						<div class="cell valign-center" data-bind="text: $i18n('KSM007_36')"></div>
-					</div>
-					<div class="table">
-						<div
-							class="cell valign-center"
-							data-bind="ntsFormLabel: {required: true},text: $i18n('KSM007_37')"
-						></div>
-						<div class="cell valign-center">
-							<div id="startDate" tabindex="1"
-								data-bind="ntsDatePicker: { name: '#[KSM007_38]', value: startFromDate, required: true, startDate: beginStartDate }"
-							></div>
-						</div>
-						<div class="cell valign-center cell-3" data-bind="text: $i18n('KSM007_39')"></div>
-						<div class="cell valign-center" data-bind="text: $i18n('KSM007_40')"></div>
-					</div>
+            <div class="control-group valign-center">
+                <div class="label" data-bind="text: $i18n('KSM007_36')"/>
+            </div>
+            <div class="control-group valign-center">
+                <div data-bind="ntsFormLabel: {required: true, text: $i18n('KSM007_37')}"/>
+                <div id="startDate"
+                     tabindex="1"
+                     data-bind="ntsDatePicker: {
+                                    name: '#[KSM007_38]',
+                                    value: startFromDate,
+                                    required: true,
+                                    startDate: beginStartDate
+                            }"/>
+                <span data-bind="text: $i18n('KSM007_39')"/>
+                <span data-bind="text: $i18n('KSM007_40')"/>
+            </div>
         </div>
         <div id="functions-area-bottom">
           <button

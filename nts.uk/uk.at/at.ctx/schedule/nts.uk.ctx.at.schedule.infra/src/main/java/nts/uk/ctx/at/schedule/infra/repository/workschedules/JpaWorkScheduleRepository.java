@@ -1,8 +1,8 @@
 package nts.uk.ctx.at.schedule.infra.repository.workschedules;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -33,8 +33,6 @@ import nts.uk.ctx.at.schedule.infra.entity.schedule.workschedule.KscdtSchShortTi
 import nts.uk.ctx.at.schedule.infra.entity.schedule.workschedule.KscdtSchShortTimeTs;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.workschedule.KscdtSchShortTimeTsPK;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.earlyleavetime.LeaveEarlyTimeOfDaily;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.latetime.LateTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortWorkingTimeSheet;
 import nts.uk.shr.com.context.AppContexts;
@@ -51,6 +49,10 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 	private static final String WHERE_PK = "WHERE a.pk.sid = :sid AND a.pk.ymd >= :ymdStart AND a.pk.ymd <= :ymdEnd";
 	
 	private static final String DELETE_BY_LIST_DATE = "WHERE a.pk.sid = :sid AND a.pk.ymd IN :ymds";
+	
+//	private static final String GET_MAX_DATE_WORK_SCHE_BY_LIST_EMP = "SELECT c.pk.ymd FROM KscdtSchBasicInfo c "
+//			+ " WHERE c.pk.sid IN :listEmp"
+//			+ " ORDER BY c.pk.ymd desc ";
 
 	private static final List<String> DELETE_TABLES = Arrays.asList(
 			"DELETE FROM KscdtSchTime a ",
@@ -724,5 +726,19 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 	public boolean checkExitsShortTime(String employeeID, GeneralDate ymd) {
 		return this.queryProxy().query(SELECT_ALL_SHORTTIME_TS, Long.class).setParameter("employeeID", employeeID)
 				.setParameter("ymd", ymd).getSingle().get() > 0;
+	}
+
+	private static final String GET_MAX_DATE_WORK_SCHE_BY_LIST_EMP = "SELECT c.pk.ymd FROM KscdtSchBasicInfo c "
+			+ " WHERE c.pk.sid IN :listEmp"
+			+ " ORDER BY c.pk.ymd desc ";
+	@Override
+	public Optional<GeneralDate> getMaxDateWorkSche(List<String> listEmp) {
+		List<GeneralDate> data = this.getEntityManager()
+				.createQuery(GET_MAX_DATE_WORK_SCHE_BY_LIST_EMP, GeneralDate.class)
+				.setParameter("listEmp", listEmp)
+				.setMaxResults(1).getResultList();
+		if (data.isEmpty())
+			return Optional.empty();
+		return Optional.of(data.get(0));
 	}
 }

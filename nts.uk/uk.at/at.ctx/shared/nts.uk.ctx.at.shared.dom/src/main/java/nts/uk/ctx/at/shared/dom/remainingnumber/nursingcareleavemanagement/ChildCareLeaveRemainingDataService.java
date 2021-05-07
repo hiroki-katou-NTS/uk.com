@@ -6,33 +6,33 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
-import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.data.ChildCareLeaveRemaiDataRepo;
-import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.data.ChildCareLeaveRemainingData;
-import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.data.LeaveForCareData;
-import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.data.LeaveForCareDataRepo;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.care.CareUsedNumberData;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.care.CareUsedNumberRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.ChildCareUsedNumberData;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.ChildCareUsedNumberRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.ChildCareLeaveRemInfoRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.ChildCareLeaveRemainingInfo;
-import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.LeaveForCareInfo;
-import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.LeaveForCareInfoRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.CareLeaveRemainingInfo;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.CareLeaveRemainingInfoRepository;
 
 @Stateless
 @Transactional
 public class ChildCareLeaveRemainingDataService {
 	@Inject
-	private LeaveForCareInfoRepository careInfoRepo;
+	private CareLeaveRemainingInfoRepository careInfoRepo;/*介護　基本情報*/
 
 	@Inject
-	private ChildCareLeaveRemInfoRepository childCareInfoRepo;
+	private ChildCareLeaveRemInfoRepository childCareInfoRepo;/*看護　基本情報*/
 
 	@Inject
-	private ChildCareLeaveRemaiDataRepo childCareDataRepo;
-	
+	private CareUsedNumberRepository careDataRepo;
+
 	@Inject
-	private LeaveForCareDataRepo careDataRepo;
-	
-	public void addData(String cid, List<ChildCareLeaveRemainingData> childCareDataInsert,
-			List<LeaveForCareData> leaveCareDataInsert, List<ChildCareLeaveRemainingInfo> childCareLeaveInfoInsert,
-			List<LeaveForCareInfo> leaveCareInfoInsert) {
+	private ChildCareUsedNumberRepository childCareDataRepo;
+
+	public void addData(String cid, List<ChildCareUsedNumberData> childCareDataInsert,
+			List<CareUsedNumberData> leaveCareDataInsert, List<ChildCareLeaveRemainingInfo> childCareLeaveInfoInsert,
+			List<CareLeaveRemainingInfo> leaveCareInfoInsert) {
 		// data
 		if (!childCareDataInsert.isEmpty()) {
 			childCareDataRepo.addAll(cid, childCareDataInsert);
@@ -52,11 +52,11 @@ public class ChildCareLeaveRemainingDataService {
 		}
 	}
 
-	
-	
-	public void updateData(String cid, List<ChildCareLeaveRemainingData> childCareDataUpdate,
-			List<LeaveForCareData> leaveCareDataUpdate, List<ChildCareLeaveRemainingInfo> childCareLeaveInfoUpdate,
-			List<LeaveForCareInfo> leaveCareInfoUpdate) {
+	public void updateData(String cid,
+			List<ChildCareUsedNumberData> childCareDataUpdate,
+			List<CareUsedNumberData> leaveCareDataUpdate,
+			List<ChildCareLeaveRemainingInfo> childCareLeaveInfoUpdate,
+			List<CareLeaveRemainingInfo> leaveCareInfoUpdate) {
 		// data
 		if (!childCareDataUpdate.isEmpty()) {
 			childCareDataRepo.updateAll(cid, childCareDataUpdate);

@@ -216,14 +216,14 @@ public class SpecialLeaveInfo implements Cloneable {
 
 	/** 初回付与か判断する */
 	private boolean isFirstTimeGrant(SpecialLeaveAggregatePeriodWork aggregatePeriodWork) {
-		int grantTimes = aggregatePeriodWork.getGrantWork().getSpecialLeaveGrant()
-											.map(c -> c.getTimes().v()).orElse(0);
 
-		if ( grantTimes == 1 ){
-			return true;
+		//期間開始日に付与があるか
+		if(!aggregatePeriodWork.getGrantWork().isGrantAtr()) {
+			return false;
 		}
 
-		return false;
+		//初回付与か
+		return aggregatePeriodWork.getGrantWork().getGrantNumber() == 1;
 	}
 
 	/**
