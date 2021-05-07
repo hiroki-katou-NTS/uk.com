@@ -7,11 +7,11 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.shared.app.command.vacation.setting.nursingleave.dto.NursingLeaveSettingDto;
 import nts.uk.ctx.at.shared.app.find.holidaysetting.employee.ManagementClassificationByEmployeeDto;
 import nts.uk.ctx.at.shared.app.find.remainingnumber.subhdmana.dto.EmployeeBasicInfoDto;
 import nts.uk.ctx.at.shared.app.find.vacation.setting.managementclassification.lstemployee.childnursing.nextstartdate.EmployeeInfoBasic;
 import nts.uk.ctx.at.shared.app.find.vacation.setting.managementclassification.lstemployee.childnursing.nextstartdate.ManagementClassificationLstEmployeeDto;
+import nts.uk.ctx.at.shared.app.find.vacation.setting.nursingleave.dto.NursingLeaveSettingDto;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingCategory;
@@ -21,13 +21,13 @@ import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class ChildNursingLeaveFinder {
-	
+
 	@Inject
 	private EmpEmployeeAdapter empEmployeeAdapter;
-	
+
 	@Inject
 	private NursingLeaveSettingRepository nursingLeaveRepo;
-	
+
 	/**
 	 * UKDesign.UniversalK.就業.KDL_ダイアログ.KDL051_子の看護休暇ダイアログ.アルゴリズム.子の看護休暇ダイアログ起動.子の看護休暇ダイアログ起動
 	 * @param sIDs
@@ -57,15 +57,7 @@ public class ChildNursingLeaveFinder {
 					.build();
 		}
 		// Convert data to Dto
-		NursingLeaveSettingDto childNursingLeaveDt = NursingLeaveSettingDto.builder()
-				.manageType(childNursingLeave.getManageType().value)
-				.nursingCategory(childNursingLeave.getNursingCategory().value)
-				.startMonthDay(childNursingLeave.getStartMonthDay() !=null ? childNursingLeave.getStartMonthDay() : null)
-				.nursingNumberLeaveDay(childNursingLeave.getMaxPersonSetting().get(1).getNursingNumberLeaveDay().v())
-				.nursingNumberPerson(childNursingLeave.getMaxPersonSetting().get(1).getNursingNumberPerson().v())
-				.specialHolidayFrame(childNursingLeave.getSpecialHolidayFrame().orElse(0))
-				.absenceWork(childNursingLeave.getWorkAbsence().orElse(0))
-				.build();
+		NursingLeaveSettingDto childNursingLeaveDt = this.createDto(childNursingLeave);
 		//	/取得したデータを返す。
 		// fix open dialog KDL051
 		String nextStartMonthDay = childNursingLeave.getNextStartMonthDay(baseDate) == null ? "" : childNursingLeave.getNextStartMonthDay(baseDate).toString();
@@ -75,7 +67,7 @@ public class ChildNursingLeaveFinder {
 		.nextStartMonthDay(nextStartMonthDay)
 		.build();
 	}
-	
+
 	/**
 	 * UKDesign.UniversalK.就業.KDL_ダイアログ.KDL052_介護休暇ダイアログ.アルゴリズム.起動する.起動する
 	 * @param sIDs
@@ -92,7 +84,7 @@ public class ChildNursingLeaveFinder {
                  .employeeId(item.getEmployeeId())
                  .employeeName(item.getEmployeeName())
                  .build()).collect(Collectors.toList());
-		 
+
 		// ドメインモデル「介護看護休暇設定」の「管理区分」を取得する。
 		NursingLeaveSetting nursingLeave = this.nursingLeaveRepo.findManageDistinctByCompanyIdAndNusingCategory(cId, NursingCategory.Nursing.value);
 		if (nursingLeave == null) {
@@ -102,26 +94,53 @@ public class ChildNursingLeaveFinder {
 					.nextStartDate(null)
 					.build();
 		}
-		NursingLeaveSettingDto data = NursingLeaveSettingDto.builder()
-				.manageType(nursingLeave.getManageType().value)
-				.nursingCategory(NursingCategory.Nursing.value)
-				.startMonthDay(nursingLeave.getStartMonthDay())
-				.nursingNumberLeaveDay(nursingLeave.getMaxPersonSetting().get(0).getNursingNumberLeaveDay().v())
-				.nursingNumberPerson(nursingLeave.getMaxPersonSetting().get(0).getNursingNumberPerson().v())
-				.specialHolidayFrame(nursingLeave.getSpecialHolidayFrame().orElse(0))
-				.absenceWork(nursingLeave.getWorkAbsence().orElse(0))
-				.build();
+		NursingLeaveSettingDto data = this.createDto(nursingLeave);
 		// アルゴリズム「次回起算日を求める」を呼び出す。
 		GeneralDate nextStartDate = nursingLeave.getNextStartMonthDay(baseDate);
-		
+
 		// 取得したデータを返す。
 		ManagementClassificationLstEmployeeDto resultDto =  ManagementClassificationLstEmployeeDto.builder()
 				.managementClassification(data)
 				.lstEmployee(lstEmpRs)
 				.nextStartDate(nextStartDate == null ? null : nextStartDate.toString())
 				.build();
-					
+
 		return resultDto;
 	}
+
+	private NursingLeaveSettingDto createDto(NursingLeaveSetting domain) {
+		return NursingLeaveSettingDto.builder()
+				.manageType(domain.getManageType().value)
+				.nursingCategory(NursingCategory.Nursing.value)
+				.startMonthDay(domain.getStartMonthDay().getMonth()*100+domain.getStartMonthDay().getDay())
+				.nursingNumberLeaveDay(
+						domain.getMaxPersonSetting()
+						.stream()
+						.filter(c->c.getNursingNumberPerson().equals(1))
+						.findFirst()
+						.map(c->c.getNursingNumberLeaveDay().v()).orElse(0))
+				.nursingNumberPerson(
+						domain.getMaxPersonSetting()
+						.stream()
+						.filter(c->c.getNursingNumberPerson().equals(1))
+						.findFirst()
+						.map(c->c.getNursingNumberPerson().v()).orElse(0))
+				.nursingNumberLeaveDay2(
+						domain.getMaxPersonSetting()
+						.stream()
+						.filter(c->c.getNursingNumberPerson().equals(2))
+						.findFirst()
+						.map(c->c.getNursingNumberLeaveDay().v()).orElse(0))
+				.nursingNumberPerson2(
+						domain.getMaxPersonSetting()
+						.stream()
+						.filter(c->c.getNursingNumberPerson().equals(2))
+						.findFirst()
+						.map(c->c.getNursingNumberPerson().v()).orElse(0))
+				.specialHolidayFrame(domain.getSpecialHolidayFrame().orElse(0))
+				.absenceWorkDay(domain.getWorkAbsence().orElse(0))
+				.build();
+	}
+
 }
 

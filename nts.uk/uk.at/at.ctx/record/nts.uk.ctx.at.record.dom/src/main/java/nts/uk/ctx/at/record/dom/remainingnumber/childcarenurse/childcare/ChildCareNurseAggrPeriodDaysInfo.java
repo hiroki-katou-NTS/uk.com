@@ -5,7 +5,6 @@ import java.util.Optional;
 import lombok.Getter;
 import lombok.Setter;
 
-
 /**
  * 集計期間の休暇情報
   * @author yuri_tamakoshi
@@ -22,10 +21,8 @@ public class ChildCareNurseAggrPeriodDaysInfo {
 	 * コンストラクタ
 	 */
 	public ChildCareNurseAggrPeriodDaysInfo(){
-
 		this.thisYear = new ChildCareNurseAggrPeriodInfo();
 		this.nextYear =  Optional.empty();
-
 	}
 
 	/**
@@ -35,13 +32,12 @@ public class ChildCareNurseAggrPeriodDaysInfo {
 	 * @return 集計期間の休暇情報
 	 */
 	public static ChildCareNurseAggrPeriodDaysInfo of(
-		ChildCareNurseAggrPeriodInfo thisYear,
-		Optional<ChildCareNurseAggrPeriodInfo> nextYear){
+			ChildCareNurseAggrPeriodInfo thisYear,
+			Optional<ChildCareNurseAggrPeriodInfo> nextYear){
 
-	ChildCareNurseAggrPeriodDaysInfo domain = new ChildCareNurseAggrPeriodDaysInfo();
-	domain.thisYear = thisYear;
-	domain.nextYear = nextYear;
-	return domain;
+		ChildCareNurseAggrPeriodDaysInfo domain = new ChildCareNurseAggrPeriodDaysInfo();
+		domain.thisYear = thisYear;
+		domain.nextYear = nextYear;
+		return domain;
 	}
-
 }
