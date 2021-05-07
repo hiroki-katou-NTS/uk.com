@@ -70,23 +70,23 @@ public class SubstituteTransferProcessTest {
 	@Test
 	public void test2() {
 		MaximumTimeZone maxTimeZone = new MaximumTimeZone();
-		maxTimeZone.getTimeSpan().add(Pair.of(new OverTimeFrameNo(1), new TimeSpanForDailyCalc(new TimeWithDayAttr(600), new TimeWithDayAttr(800))));// 最大時間帯(List）：最大時間帯
-		maxTimeZone.getTimeSpan().add(Pair.of(new OverTimeFrameNo(2),  new TimeSpanForDailyCalc(new TimeWithDayAttr(900), new TimeWithDayAttr(1200))));
+		maxTimeZone.getTimeSpan().add(Pair.of(new OverTimeFrameNo(1), new TimeSpanForDailyCalc(new TimeWithDayAttr(0), new TimeWithDayAttr(900))));// 最大時間帯(List）：最大時間帯
+		maxTimeZone.getTimeSpan().add(Pair.of(new OverTimeFrameNo(2),  new TimeSpanForDailyCalc(new TimeWithDayAttr(900), new TimeWithDayAttr(1440))));
 
 		List<OvertimeHourTransfer> timeAfterReflectApp = Arrays
-				.asList(new OvertimeHourTransfer(1, new AttendanceTime(666), new AttendanceTime(444)),
-						 new OvertimeHourTransfer(2, new AttendanceTime(777), new AttendanceTime(111)));// 最大の時間(List)：時間外労働時間（振替用）
+				.asList(new OvertimeHourTransfer(1, new AttendanceTime(360), new AttendanceTime(0)),
+						 new OvertimeHourTransfer(2, new AttendanceTime(480), new AttendanceTime(0)));// 最大の時間(List)：時間外労働時間（振替用）
 
-		List<OvertimeHourTransfer> maxTime = Arrays.asList(new OvertimeHourTransfer(1, new AttendanceTime(0), new AttendanceTime(444)),
-																						  new OvertimeHourTransfer(2, new AttendanceTime(555), new AttendanceTime(777)));// 振替をした後の時間(List）：時間外労働時間（振替用）
+		List<OvertimeHourTransfer> maxTime = Arrays.asList(new OvertimeHourTransfer(0, new AttendanceTime(780), new AttendanceTime(120)),
+																						  new OvertimeHourTransfer(1, new AttendanceTime(180), new AttendanceTime(360)));// 振替をした後の時間(List）：時間外労働時間（振替用）
 
 		TransferResultAllFrame result = NtsAssert.Invoke.staticMethod(SubstituteTransferProcess.class,
-				"processTransferFromTransTimeZone", new AttendanceTime(100), maxTimeZone, maxTime, timeAfterReflectApp);
+				"processTransferFromTransTimeZone", new AttendanceTime(480), maxTimeZone, maxTime, timeAfterReflectApp);
 
 		assertThat(result.getTimeRemain().v()).isEqualTo(0);
 		assertThat(result.getTimeAfterTransfer())
 				.extracting(x -> x.getNo(), x -> x.getTime().v(), x -> x.getTransferTime().v())
-				.contains(Tuple.tuple(1, 666, 444), Tuple.tuple(2, 677, 211));
+				.contains(Tuple.tuple(1, 240, 120), Tuple.tuple(2, 120, 360));
 	}
 
 	/*
