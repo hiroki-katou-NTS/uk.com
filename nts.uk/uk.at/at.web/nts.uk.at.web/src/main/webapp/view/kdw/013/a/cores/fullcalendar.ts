@@ -486,7 +486,7 @@ module nts.uk.ui.components.fullcalendar {
         firstDay: DayOfWeek;
         scrollTime: number;
         slotDuration: SlotDuration;
-    }
+    };
 
     const DATE_FORMAT = 'YYYY-MM-DD';
     const ISO_DATE_FORMAT = 'YYYY-MM-DDTHH:mm:00';
