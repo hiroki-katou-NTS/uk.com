@@ -16,8 +16,8 @@ public class KagmtCriterionMoneyCmpPk {
 	public String companyId;
 	
 	@Column(name = "YEAR_MONTH_ATR")
-	public String yearMonthAtr;
+	public int yearMonthAtr;
 	
 	@Column(name = "FRAME_NO")
-	public String frameNo;
+	public int frameNo;
 }
