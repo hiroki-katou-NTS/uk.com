@@ -114,12 +114,6 @@ public class ScBasicSchedulePubImpl implements ScBasicSchedulePub {
 	}
 
 	@Override
-	public Optional<GeneralDate> acquireMaxDateBasicSchedule(List<String> sIds) {
-		return this.workScheduleRepository.getMaxDateWorkSche(sIds);
-	}
-
-
-	@Override
 	public Optional<ScWorkScheduleExport> findByIdNew(String employeeId, GeneralDate baseDate) {
 		Optional<WorkSchedule> workSchedule =  workScheduleRepository.get(employeeId, baseDate);
 		if(workSchedule.isPresent()){

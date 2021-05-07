@@ -15,8 +15,8 @@ public enum WorkRecordFixedCheckItem {
 	DATA_CHECK(4,"管理者未確認"),
 	/**5: データのチェック	 */
 	ADMINISTRATOR_NOT_CONFIRMED(5,"データのチェック"),
-	/**6: 連続休暇チェック	 */
-	CONTINUOUS_VATATION_CHECK(6,"連続休暇チェック"),
+	/**6: 打刻漏れ	 */
+	CONTINUOUS_VATATION_CHECK(6,"打刻漏れ"),
 	/**7: 打刻漏れ(入退門)	 */
 	GATE_MISS_STAMP(7, "打刻漏れ(入退門)"),
 	/**8: 打刻順序不正	 */
