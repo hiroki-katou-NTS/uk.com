@@ -5052,7 +5052,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				errorRegistrationList: dataReg.listErrorInfo, // エラー内容リスト 
 			}
 			setShared('dataShareDialogKDL053', param);
-			nts.uk.ui.windows.sub.modal('/view/kdl/053/a/index.xhtml').onClosed(function(): any {
+			nts.uk.ui.windows.sub.modeless('/view/kdl/053/a/index.xhtml').onClosed(function(): any {
 				console.log('closed');
 			});
 			block.clear();
