@@ -1065,6 +1065,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     bundledErrors({ errors: errorsInfo }).then(() => {
                         nts.uk.ui.block.clear();
                     });
+                    self.enableBtnReg(false);
                 } else {
                     nts.uk.ui.block.clear();
                 }

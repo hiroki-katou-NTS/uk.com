@@ -89,8 +89,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 		checkTypeChange: any = [];
 		sumBreaks: any = [];
 
-		checkDragDrog: boolean = false; // phân biệt resize = false vs drop = true
-		checkDragDrogAgain: boolean = false; // phân biệt resize = false vs drop = true khi tạo chart
+		checkDragDrop: boolean = false; // phân biệt resize = false vs drop = true
+		checkDragDropAgain: boolean = false; // phân biệt resize = false vs drop = true khi tạo chart
 		bindTypeTime: any = [];
 		holidayShort: any = [];
 		checkMes: number = 0;
@@ -257,6 +257,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					// kiểm tra startTime > endTime và time = null
 					if((columnKey === "startTime1" || columnKey === "endTime1") && 
 						(dataMid.startTime1 == "" || duration.parseString(dataMid.startTime1).toValue() > duration.parseString(dataMid.endTime1).toValue())){
+							if(self.checkDragDrop == true) return;
+							if(self.checkCloseKsu003 == true) return;
 						block.invisible();
 						errorDialog({ messageId: "Msg_54"}).then(() => {
 							self.checkOpenDialog = false;
@@ -282,6 +284,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					// kiểm tra startTime > endTime và time = null
 					if((columnKey === "startTime2" || columnKey === "endTime2") && 
 					(dataMid.startTime2 == "" || duration.parseString(dataMid.startTime2).toValue() > duration.parseString(dataMid.endTime2).toValue())){
+						if(self.checkDragDrop == true) return;
+						if(self.checkCloseKsu003 == true) return;
 						block.invisible();
 						errorDialog({ messageId: "Msg_54"}).then(() => {
 							self.checkOpenDialog = false;
@@ -387,7 +391,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 
 							lstTime = self.calcChartTypeTime(dataFixed[0], dataFixInfo[0].fixedWorkInforDto == null ? [] : dataFixInfo[0].fixedWorkInforDto.overtimeHours, timeRangeLimit, lstTime, "OT", index);
 							let totalTime = self.calcAllTime(dataFixed[0], lstTime, timeRangeLimit);
-							if (self.checkDragDrog != true) {
+							if (self.checkDragDrop != true) {
 								totalBrkTime = self.calcAllBrk(lstTime);
 								totalBrkTime = totalBrkTime != null ? formatById("Clock_Short_HM", Math.round(totalBrkTime * 5)) : "";
 								
@@ -2523,6 +2527,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					// kiểm tra startTime > endTime và time = null
 					if((columnKey === "startTime1" || columnKey === "endTime1") && 
 						(dataMid.startTime1 == "" || duration.parseString(dataMid.startTime1).toValue() > duration.parseString(dataMid.endTime1).toValue())){
+						if(self.checkDragDrop == true) return;
+						if(self.checkCloseKsu003 == true) return;
 						block.invisible();
 						errorDialog({ messageId: "Msg_54"}).then(() => {
 							self.checkOpenDialog = false;
@@ -2548,6 +2554,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					// kiểm tra startTime > endTime và time = null
 					if((columnKey === "startTime2" || columnKey === "endTime2") && 
 					(dataMid.startTime2 == "" || duration.parseString(dataMid.startTime2).toValue() > duration.parseString(dataMid.endTime2).toValue())){
+						if(self.checkDragDrop == true) return;
+						if(self.checkCloseKsu003 == true) return;
 						block.invisible();
 						errorDialog({ messageId: "Msg_54"}).then(() => {
 							self.checkOpenDialog = false;
@@ -3579,7 +3587,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				}
 				
 				let startMinute = 0, endMinute = 0, startTime = 0, endTime = 0;
-				self.checkDragDrog = false;
+				self.checkDragDrop = false;
 				
 				startMinute = duration.create(param[0] * 5 + self.dispStart * 5).text;
 				endMinute = duration.create(param[1] * 5 + self.dispStart * 5).text;
@@ -3703,7 +3711,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				
 				startMinute = duration.create(param[0] * 5 + self.dispStart * 5).text;
 				endMinute = duration.create(param[1] * 5 + self.dispStart * 5).text;
-				self.checkDragDrog = true;
+				self.checkDragDrop = true;
 				
 				let index = checkType == 0 ? e.currentTarget.id.split("-")[0] : param[2], lstGcShow = _.filter(self.lstAllChildShow, (x: any) => { return x.index === parseInt(index) });
 				
@@ -3766,6 +3774,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				"#extable-ksu003 > .ex-body-middle > table > tbody tr:nth-child" + "(" + (i + 2).toString() + ")" + " > td:nth-child(7)";
 				$(cssTotalTime).css("background-color", "#ffffff");
 				self.checkTypeChange = [];
+				self.checkDragDrop = false;
 		}
 		
 		dropBreakTime(i : any, indexBrks : any, b : any, e : any, slide : any, fixed : any,id : any){
@@ -4059,7 +4068,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					resizeFinished: (b: any, e: any, p: any) => {
 						if (self.checkDisByDate == false || self.dataScreen003A().employeeInfo[lineNo].workInfoDto.isConfirmed == 1) return;
 						self.enableSave(true);
-						self.checkDragDrog = false;
+						self.checkDragDrop = false;
 						let param : any = [];
 						param.push(b);
 						param.push(e);
