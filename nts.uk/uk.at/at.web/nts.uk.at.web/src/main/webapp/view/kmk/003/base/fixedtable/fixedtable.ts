@@ -54,6 +54,8 @@ module nts.fixedtable {
         width?: number;
         
         helpImageUrl?: string;
+
+        helpTextId?: string;
     }
 
     /**
@@ -177,6 +179,7 @@ module nts.fixedtable {
         isSelectSpecialUnit: KnockoutObservable<boolean>;
         specialRoudingDataSource: KnockoutObservableArray<any>;
         helpImageUrl: string;
+        helpTextId: string;
         isMultipleSelect: boolean;
         tableId: string;
         
@@ -198,6 +201,7 @@ module nts.fixedtable {
                 self.tabindex = -1;
             }
             self.helpImageUrl = data.helpImageUrl;
+            self.helpTextId = data.helpTextId;
             self.itemList = data.dataSource;
             self.isEnableAllControl = ko.observable(isDisableAll ? isDisableAll() : true);
             self.roudingDataSource = ko.observableArray([

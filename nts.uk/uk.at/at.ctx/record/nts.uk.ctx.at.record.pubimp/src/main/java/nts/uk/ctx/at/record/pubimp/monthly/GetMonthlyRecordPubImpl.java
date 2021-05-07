@@ -18,7 +18,11 @@ import nts.uk.ctx.at.record.dom.monthly.TimeOfMonthlyRepository;
 import nts.uk.ctx.at.record.pub.monthly.GetMonthlyRecordPub;
 import nts.uk.ctx.at.record.pub.monthly.MonthlyRecordValuesExport;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
+import nts.uk.ctx.at.shared.dom.monthlyattditem.DisplayMonthResultsMethod;
+import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItem;
+import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItemRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.service.AttendanceItemConvertFactory;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceTimeOfMonthlyRepository;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.affiliation.AffiliationInfoOfMonthly;
@@ -36,6 +40,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.reservel
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.reserveleave.RsvLeaRemNumEachMonthRepository;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialHolidayRemainData;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialHolidayRemainDataRepository;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * 実装：月別実績データを取得する
@@ -77,6 +82,9 @@ public class GetMonthlyRecordPubImpl implements GetMonthlyRecordPub {
 	
 	@Inject
 	private RemainMergeRepository remainRepo;
+	
+	@Inject
+	private MonthlyAttendanceItemRepository monthAtdRepo;
 	
 	/** 月別実績データを取得する */
 	@Override
@@ -187,33 +195,24 @@ public class GetMonthlyRecordPubImpl implements GetMonthlyRecordPub {
 		
 		// 月別実績の勤怠時間を取得する
 		val attendanceTimes = this.attendanceTimeRepo.findBySidsAndYearMonths(employeeIds, yearMonths);
-		Map<String, Map<YearMonth, AttendanceTimeOfMonthly>> attendanceTimeMap = new HashMap<>();
-		for (val attendanceTime : attendanceTimes){
+		Map<String, Map<YearMonth, List<AttendanceTimeOfMonthly>>> attendanceTimeMap = new HashMap<>();
+		for (val attendanceTime : attendanceTimes) {
 			val employeeId = attendanceTime.getEmployeeId();
 			val yearMonth = attendanceTime.getYearMonth();
 			attendanceTimeMap.putIfAbsent(employeeId, new HashMap<>());
-			if (attendanceTimeMap.get(employeeId).containsKey(yearMonth)){
-				attendanceTime.sum(attendanceTimeMap.get(employeeId).get(yearMonth));
-				attendanceTimeMap.get(employeeId).put(yearMonth, attendanceTime);
+			if (attendanceTimeMap.get(employeeId).containsKey(yearMonth)) {
+				attendanceTimeMap.get(employeeId).get(yearMonth).add(attendanceTime);
 				continue;
 			}
-			attendanceTimeMap.get(employeeId).putIfAbsent(yearMonth, attendanceTime);
+			List<AttendanceTimeOfMonthly> lstAttendanceTimeOfMonthlies = new ArrayList<>();
+			lstAttendanceTimeOfMonthlies.add(attendanceTime);
+			attendanceTimeMap.get(employeeId).putIfAbsent(yearMonth, lstAttendanceTimeOfMonthlies);
 		}
-		
-		// 月別実績の所属情報を取得する
-		val affiliationInfos = this.affiliationInfoRepo.findBySidsAndYearMonths(employeeIds, yearMonths);
-		Map<String, Map<YearMonth, AffiliationInfoOfMonthly>> affiliationInfoMap = new HashMap<>();
-		for (val affiliationInfo : affiliationInfos){
-			val employeeId = affiliationInfo.getEmployeeId();
-			val yearMonth = affiliationInfo.getYearMonth();
-			affiliationInfoMap.putIfAbsent(employeeId, new HashMap<>());
-			affiliationInfoMap.get(employeeId).putIfAbsent(yearMonth, affiliationInfo);
-		}
-		
+
 		// 月別実績の任意項目を取得する
 		val anyItems = this.anyItemRepo.findBySidsAndMonths(employeeIds, yearMonths);
 		Map<String, Map<YearMonth, List<AnyItemOfMonthly>>> anyItemMap = new HashMap<>();
-		for (val anyItem : anyItems){
+		for (val anyItem : anyItems) {
 			val employeeId = anyItem.getEmployeeId();
 			val yearMonth = anyItem.getYearMonth();
 			anyItemMap.putIfAbsent(employeeId, new HashMap<>());
@@ -231,7 +230,18 @@ public class GetMonthlyRecordPubImpl implements GetMonthlyRecordPub {
 			}
 			if (!isSum) anyItemMap.get(employeeId).get(yearMonth).add(anyItem);
 		}
-		
+	
+		// 期間.開始日が早い方の値を使う
+		// 月別実績の所属情報を取得する 
+		val affiliationInfos = this.affiliationInfoRepo.findBySidsAndYearMonths(employeeIds, yearMonths);
+		Map<String, Map<YearMonth, AffiliationInfoOfMonthly>> affiliationInfoMap = new HashMap<>();
+		for (val affiliationInfo : affiliationInfos){
+			val employeeId = affiliationInfo.getEmployeeId();
+			val yearMonth = affiliationInfo.getYearMonth();
+			affiliationInfoMap.putIfAbsent(employeeId, new HashMap<>());
+			affiliationInfoMap.get(employeeId).putIfAbsent(yearMonth, affiliationInfo);
+		}
+
 		// 年休月別残数データを取得する
 		val annualLeaves = this.annualLeaveRepo.findBySidsAndYearMonths(employeeIds, yearMonths);
 		Map<String, Map<YearMonth, AnnLeaRemNumEachMonth>> annualLeaveMap = new HashMap<>();
@@ -293,26 +303,43 @@ public class GetMonthlyRecordPubImpl implements GetMonthlyRecordPub {
 			}
 			if (!isNotExist) specialLeaveMap.get(employeeId).get(yearMonth).add(specialLeave);
 		}
+
+		// ドメインモデル「月次の勤怠項目」を取得
+		List<MonthlyAttendanceItem> lstAttendanceItems = this.monthAtdRepo.findByAttendanceItemId(AppContexts.user().companyId(), itemIds);
 		
-		for (val employeeId : employeeIds){
-			for (val yearMonth : yearMonths){
+		Map<Integer, DisplayMonthResultsMethod> mapAtdCalMethod = lstAttendanceItems.stream()
+																					.collect(Collectors.toMap(
+																							MonthlyAttendanceItem::getAttendanceItemId,
+																							MonthlyAttendanceItem::getTwoMonthlyDisplay));
+
+		for (val employeeId : employeeIds) {
+			for (val yearMonth : yearMonths) {
 				if (!attendanceTimeMap.containsKey(employeeId)) continue;
 				if (!attendanceTimeMap.get(employeeId).containsKey(yearMonth)) continue;
+				if (attendanceTimeMap.get(employeeId).get(yearMonth).isEmpty()) continue;
 				val attendanceTime = attendanceTimeMap.get(employeeId).get(yearMonth);
 
 				// 勤怠項目値リストに変換する準備をする
 				val monthlyConverter = this.attendanceItemConverterFact.createMonthlyConverter();
-				monthlyConverter.withAttendanceTime(attendanceTime);
-				if (affiliationInfoMap.containsKey(employeeId)){
-					if (affiliationInfoMap.get(employeeId).containsKey(yearMonth)){
-						monthlyConverter.withAffiliation(affiliationInfoMap.get(employeeId).get(yearMonth));
-					}
+				val monthlyConverter2nd = this.attendanceItemConverterFact.createMonthlyConverter();
+				monthlyConverter.withAttendanceTime(attendanceTime.get(0));
+
+				if (attendanceTime.size() >= 2) {
+					monthlyConverter2nd.withAttendanceTime(attendanceTime.get(1));
 				}
+
 				if (anyItemMap.containsKey(employeeId)){
 					if (anyItemMap.get(employeeId).containsKey(yearMonth)){
 						monthlyConverter.withAnyItem(anyItemMap.get(employeeId).get(yearMonth));
 					}
 				}
+
+				if (affiliationInfoMap.containsKey(employeeId)){
+					if (affiliationInfoMap.get(employeeId).containsKey(yearMonth)){
+						monthlyConverter.withAffiliation(affiliationInfoMap.get(employeeId).get(yearMonth));
+					}
+				}
+
 				if (annualLeaveMap.containsKey(employeeId)){
 					if (annualLeaveMap.get(employeeId).containsKey(yearMonth)){
 						monthlyConverter.withAnnLeave(annualLeaveMap.get(employeeId).get(yearMonth));
@@ -343,12 +370,85 @@ public class GetMonthlyRecordPubImpl implements GetMonthlyRecordPub {
 				results.putIfAbsent(employeeId, new ArrayList<>());
 				results.get(employeeId).add(MonthlyRecordValuesExport.of(
 						yearMonth,
-						attendanceTime.getClosureId(),
-						attendanceTime.getClosureDate(),
-						monthlyConverter.convert(itemIds)));
+						attendanceTime.get(0).getClosureId(),
+						attendanceTime.get(0).getClosureDate(),
+						this.convertByDisplayMonthResult(
+								monthlyConverter.convert(itemIds),
+								monthlyConverter2nd.convert(itemIds),
+								mapAtdCalMethod,
+								itemIds)
+						)
+				);
 			}
 		}
 		
 		return results;
+	}
+	
+	
+	/**
+	 * converterから値を取得
+	 * 
+	 * @param month1stResult: 1件目の月別実績
+	 * @param month2ndResult: 2件目の月別実績
+	 * @param mapAtdCalMethod 
+	 * @param itemIds
+	 * @return
+	 */
+	private List<ItemValue> convertByDisplayMonthResult(List<ItemValue> month1stResult
+													  , List<ItemValue> month2ndResult
+													  , Map<Integer, DisplayMonthResultsMethod> mapAtdCalMethod
+													  , List<Integer> itemIds) {
+		List<ItemValue> result = new ArrayList<>();
+
+		for (Integer atdId : itemIds) {
+			DisplayMonthResultsMethod displayMonthResultsMethod = mapAtdCalMethod.get(atdId);
+			if (displayMonthResultsMethod != null) {
+				switch (displayMonthResultsMethod) {
+					// 1件目を表示する
+					case DISPLAY_FIRST_ITEM:
+						// 月別実績の値一覧.値　←　1件目の月別実績から値を取得（ループ中の勤怠小目ID）;
+						Optional<ItemValue> actualValue = month1stResult.stream().filter(t -> t.getItemId() == atdId).findFirst();
+						if (actualValue.isPresent()) result.add(actualValue.get());
+						break;
+
+					// 2件目を表示する
+					case DISPLAY_SECOND_ITEM:
+						// 月別実績の値一覧.値　←　2件目の月別実績から値を取得（ループ中の勤怠小目ID）;
+						Optional<ItemValue> actualValue2nd = month2ndResult.stream().filter(t -> t.getItemId() == atdId).findFirst();
+						if (actualValue2nd.isPresent()) result.add(actualValue2nd.get());		
+						break;
+					
+					// 合計した値を表示する
+					case DISPLAY_TOTAL_VALUE:
+						// 1件目の値　←　1件目の月別実績から値を取得（ループ中の勤怠小目ID）;
+						Optional<ItemValue> actualValue1 = month1stResult.stream().filter(t -> t.getItemId() == atdId).findFirst();
+						// 2件目の値　←　2件目の月別実績から値を取得（ループ中の勤怠小目ID）;
+						Optional<ItemValue> actualValue2 = month2ndResult.stream().filter(t -> t.getItemId() == atdId).findFirst();
+						if (actualValue1.isPresent() && actualValue2.isPresent()) {
+							String value;
+							if (actualValue1.get().getValueType().isDouble() || actualValue1.get().getValueType().isDoubleCountable()) {
+								Double doubleValue = (actualValue1.get().getValue() != null ? Double.parseDouble(actualValue1.get().getValue()) : 0d)
+												   + (actualValue2.get().getValue() != null ? Double.parseDouble(actualValue2.get().getValue()) : 0d);
+								value = doubleValue.toString();
+							} else if (actualValue1.get().getValueType().isInteger() || actualValue1.get().getValueType().isIntegerCountable()) {
+								Integer integerValue = (actualValue1.get().getValue() != null ? Integer.parseInt(actualValue1.get().getValue()) : 0)
+													 + (actualValue2.get().getValue() != null ? Integer.parseInt(actualValue2.get().getValue()) : 0);
+								value = integerValue.toString();
+							} else {
+								value = actualValue1.get().getValue();
+							}
+							
+							// 月別実績の値一覧.値　←　1件目の値 + 2件目の値;
+							result.add(new ItemValue(value, actualValue1.get().getValueType(), actualValue1.get().getLayoutCode(), actualValue1.get().getItemId()));
+						}
+						break;
+					default:
+						break;
+				}
+			}
+		}
+		
+		return result;
 	}
 }

@@ -140,9 +140,9 @@ public class FlowWorkSetting extends WorkTimeAggregateRoot implements Cloneable,
 			// Tab 2: restore 平日勤務時間帯
 			this.flowSetting.correctData(screenMode, other.getFlowSetting());
 			// Tab 5
-			this.halfDayWorkTimezone.correctData(screenMode, other.getHalfDayWorkTimezone());
+			this.halfDayWorkTimezone.correctData(other.getHalfDayWorkTimezone());
 			// Tab 7
-			this.offdayWorkTimezone.correctData(screenMode, other.getOffdayWorkTimezone());
+			this.offdayWorkTimezone.correctData(other.getOffdayWorkTimezone());
 
 			this.restSetting.correctData(screenMode,other.getRestSetting(),other.getHalfDayWorkTimezone().getRestTimezone().isFixRestTime());
 		} else {

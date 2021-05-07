@@ -93,7 +93,7 @@ public class CreateWorkScheduleWorkInfor {
 		// step 4
 		List<WorkTimeCode> workTimeCodes   = wTypeWTimeUseDailyAttendRecord.getLstWorkTimeCode().stream().filter(wt -> wt != null).collect(Collectors.toList());
 		List<String> lstWorkTimeCode       = workTimeCodes.stream().map(i -> i.toString()).collect(Collectors.toList());
-		List<WorkTimeSetting> lstWorkTimeSetting =  workTimeSettingRepo.getListWorkTimeSetByListCode(companyId, lstWorkTimeCode);
+		List<WorkTimeSetting> lstWorkTimeSetting =  workTimeSettingRepo.getListWorkTime(companyId, lstWorkTimeCode);
 
 		// step 5
 		List<WorkScheduleWorkInforDto> listWorkScheduleWorkInfor = new ArrayList<>();

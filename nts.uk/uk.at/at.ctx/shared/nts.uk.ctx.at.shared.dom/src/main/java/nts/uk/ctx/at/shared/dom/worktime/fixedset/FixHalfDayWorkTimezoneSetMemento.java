@@ -6,6 +6,7 @@ package nts.uk.ctx.at.shared.dom.worktime.fixedset;
 
 import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.FixedWorkTimezoneSet;
+import nts.uk.ctx.at.shared.dom.worktime.common.TimezoneOfFixedRestTimeSet;
 
 /**
  * The Interface FixHalfDayWorkTimezoneGetMemento.
@@ -17,7 +18,7 @@ public interface FixHalfDayWorkTimezoneSetMemento {
 	 *
 	 * @param restTimeZone the new rest time zone
 	 */
-	void setRestTimezone(FixRestTimezoneSet restTimezone);
+	void setRestTimezone(TimezoneOfFixedRestTimeSet restTimezone);
 
 	/**
 	 * Sets the work timezone.

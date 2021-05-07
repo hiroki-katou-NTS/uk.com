@@ -141,11 +141,10 @@ public class AppDispInfoWithDateCmd {
 						EnumAdaptor.valueOf(workTimeSetting.workTimeDivision.workTimeDailyAtr, WorkTimeDailyAtr.class), 
 						EnumAdaptor.valueOf(workTimeSetting.workTimeDivision.workTimeMethodSet, WorkTimeMethodSet.class)),
 				AbolishAtr.valueOf(workTimeSetting.isAbolish ? 0 : 1),
-				new ColorCode(workTimeSetting.colorCode), 
+//				new ColorCode(workTimeSetting.colorCode), 
 				new WorkTimeDisplayName(
 						new WorkTimeName(workTimeSetting.workTimeDisplayName.workTimeName), 
-						new WorkTimeAbName(workTimeSetting.workTimeDisplayName.workTimeAbName), 
-						new WorkTimeSymbol(workTimeSetting.workTimeDisplayName.workTimeSymbol)), 
+						new WorkTimeAbName(workTimeSetting.workTimeDisplayName.workTimeAbName)), 
 				new Memo(workTimeSetting.memo), 
 				new WorkTimeNote(workTimeSetting.note));
 	}

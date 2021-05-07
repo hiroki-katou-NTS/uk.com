@@ -10,6 +10,7 @@ import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.TimeRecordRe
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
+import nts.uk.shr.com.net.Ipv4Address;
 
 public class DeterminingReqStatusTerminalTestHelper {
 
@@ -18,8 +19,7 @@ public class DeterminingReqStatusTerminalTestHelper {
 	
 	public static List<EmpInfoTerminal> createEmpInfoTerminalList() {
 		
-		EmpInfoTerminal empInfoTerminal = new EmpInfoTerminalBuilder(Optional.of(new FullIpAddress(
-				new PartialIpAddress(192), new PartialIpAddress(168), new PartialIpAddress(1), new PartialIpAddress(1))), new MacAddress("AABBCCDD"),
+		EmpInfoTerminal empInfoTerminal = new EmpInfoTerminalBuilder(Optional.of(Ipv4Address.parse("192.168.1.1")), new MacAddress("AABBCCDD"),
 				empInfoTerminalCode, Optional.of(new EmpInfoTerSerialNo("1")), new EmpInfoTerminalName(""),
 				contractCode)
 						.createStampInfo(new CreateStampInfo(new OutPlaceConvert(NotUseAtr.NOT_USE, Optional.empty()),

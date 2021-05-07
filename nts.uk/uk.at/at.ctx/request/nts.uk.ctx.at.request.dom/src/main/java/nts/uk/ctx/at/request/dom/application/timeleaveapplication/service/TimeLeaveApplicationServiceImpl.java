@@ -60,6 +60,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.Interi
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.basicinfo.SpecialLeaveBasicInfoRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.VacationTimeInfor;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.timeleaveapplication.TimeLeaveAppReflectCondition;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHoliday;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayRepository;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.GrantDateTblRepository;
@@ -194,10 +195,11 @@ public class TimeLeaveApplicationServiceImpl implements TimeLeaveApplicationServ
      * @param companyId
      * @param employeeId
      * @param baseDate
+     * @param condition
      * @return
      */
     @Override
-    public TimeVacationManagementOutput getTimeLeaveManagement(String companyId, String employeeId, GeneralDate baseDate) {
+    public TimeVacationManagementOutput getTimeLeaveManagement(String companyId, String employeeId, GeneralDate baseDate, TimeLeaveAppReflectCondition condition) {
         RemainNumberTempRequireService.Require require = requireService.createRequire();
         CacheCarrier cache = new CacheCarrier();
 
@@ -248,6 +250,15 @@ public class TimeLeaveApplicationServiceImpl implements TimeLeaveApplicationServ
                     .sorted(Comparator.comparing(SpecialHolidayFrame::getSpecialHdFrameNo))
                     .collect(Collectors.toList());
             timeSpecialLeaveMng.getListSpecialFrame().addAll(listSpecialFrame);
+        }
+
+        if (!(condition.getAnnualVacationTime() == NotUseAtr.USE && timeAnnualLeaveMng.isTimeAnnualManagement())
+                && !(condition.getSubstituteLeaveTime() == NotUseAtr.USE && timeSubstituteLeaveMng.isTimeBaseManagementClass())
+                && !(condition.getChildNursing() == NotUseAtr.USE && nursingLeaveMng.isTimeChildManagementClass())
+                && !(condition.getNursing() == NotUseAtr.USE && nursingLeaveMng.isTimeManagementClass())
+                && !(condition.getSuperHoliday60H() == NotUseAtr.USE && super60HLeaveMng.isOverrest60HManagement())
+                && !(condition.getSpecialVacationTime() == NotUseAtr.USE && timeSpecialLeaveMng.isTimeSpecialLeaveManagement())) {
+            throw new BusinessException("Msg_474");
         }
 
         return  new TimeVacationManagementOutput(

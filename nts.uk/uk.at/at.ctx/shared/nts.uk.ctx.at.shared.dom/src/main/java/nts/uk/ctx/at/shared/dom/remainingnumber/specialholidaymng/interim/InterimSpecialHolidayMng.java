@@ -47,7 +47,6 @@ public class InterimSpecialHolidayMng extends InterimRemain{
 	 * @param interimRemain
 	 */
 	public void setParentValue(InterimRemain interimRemain){
-		this.specialHolidayId="";
 		this.setRemainManaID(interimRemain.getRemainManaID());
 		this.setSID(interimRemain.getSID());
 		this.setYmd(interimRemain.getYmd());
