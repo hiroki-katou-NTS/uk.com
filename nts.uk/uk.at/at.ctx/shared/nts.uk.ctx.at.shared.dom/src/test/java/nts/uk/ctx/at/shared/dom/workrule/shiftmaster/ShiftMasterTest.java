@@ -55,41 +55,42 @@ public class ShiftMasterTest {
 		val impCdAfter = new ShiftMasterImportCode("ImportAfter");
 
 		/** 作成  */
-		val shiftMater = new ShiftMaster("cid"
-				,	new ShiftMasterCode("shiftMaster01")
-				,	displayInfoBefore
-				,	workInfoBefore.getWorkTypeCode().v()
-				,	workInfoBefore.getWorkTimeCode().v()
-				,	impCdBefore);
+		val shiftMaster = new ShiftMaster("cid"
+								,	new ShiftMasterCode("shiftMaster01")
+								,	displayInfoBefore
+								,	workInfoBefore.getWorkTypeCode().v()
+								,	workInfoBefore.getWorkTimeCode().v()
+								,	impCdBefore
+							);
 		//表示情報
-		assertThat(shiftMater.getDisplayInfor().getName()).isEqualTo(displayInfoBefore.getName());
-		assertThat(shiftMater.getDisplayInfor().getColor()).isEqualTo(displayInfoBefore.getColor());
-		assertThat(shiftMater.getDisplayInfor().getColorSmartPhone()).isEqualTo(displayInfoBefore.getColorSmartPhone());
-		assertThat(shiftMater.getDisplayInfor().getRemarks()).isEqualTo(displayInfoBefore.getRemarks());
+		assertThat(shiftMaster.getDisplayInfor().getName()).isEqualTo(displayInfoBefore.getName());
+		assertThat(shiftMaster.getDisplayInfor().getColor()).isEqualTo(displayInfoBefore.getColor());
+		assertThat(shiftMaster.getDisplayInfor().getColorSmartPhone()).isEqualTo(displayInfoBefore.getColorSmartPhone());
+		assertThat(shiftMaster.getDisplayInfor().getRemarks()).isEqualTo(displayInfoBefore.getRemarks());
 
 		//勤務情報
-		assertThat(shiftMater.getWorkTypeCode()).isEqualTo(workInfoBefore.getWorkTypeCode());
-		assertThat(shiftMater.getWorkTimeCode()).isEqualTo(workInfoBefore.getWorkTimeCode());
+		assertThat(shiftMaster.getWorkTypeCode()).isEqualTo(workInfoBefore.getWorkTypeCode());
+		assertThat(shiftMaster.getWorkTimeCode()).isEqualTo(workInfoBefore.getWorkTimeCode());
 
 		//取込コード
-		assertThat(shiftMater.getImportCode()).isEqualTo(impCdBefore);
+		assertThat(shiftMaster.getImportCode()).isEqualTo(impCdBefore);
 
 
 		/** 変更  */
-		shiftMater.change(displayInfoAfter, impCdAfter, workInfoAfter);
+		shiftMaster.change(displayInfoAfter, impCdAfter, workInfoAfter);
 
 		//表示情報
-		assertThat(shiftMater.getDisplayInfor().getName()).isEqualTo(displayInfoAfter.getName());
-		assertThat(shiftMater.getDisplayInfor().getColor()).isEqualTo(displayInfoAfter.getColor());
-		assertThat(shiftMater.getDisplayInfor().getColorSmartPhone()).isEqualTo(displayInfoAfter.getColorSmartPhone());
-		assertThat(shiftMater.getDisplayInfor().getRemarks()).isEqualTo(displayInfoAfter.getRemarks());
+		assertThat(shiftMaster.getDisplayInfor().getName()).isEqualTo(displayInfoAfter.getName());
+		assertThat(shiftMaster.getDisplayInfor().getColor()).isEqualTo(displayInfoAfter.getColor());
+		assertThat(shiftMaster.getDisplayInfor().getColorSmartPhone()).isEqualTo(displayInfoAfter.getColorSmartPhone());
+		assertThat(shiftMaster.getDisplayInfor().getRemarks()).isEqualTo(displayInfoAfter.getRemarks());
 
 		//勤務情報
-		assertThat(shiftMater.getWorkTypeCode()).isEqualTo(workInfoAfter.getWorkTypeCode());
-		assertThat(shiftMater.getWorkTimeCode()).isEqualTo(workInfoAfter.getWorkTimeCode());
+		assertThat(shiftMaster.getWorkTypeCode()).isEqualTo(workInfoAfter.getWorkTypeCode());
+		assertThat(shiftMaster.getWorkTimeCode()).isEqualTo(workInfoAfter.getWorkTimeCode());
 
 		//取込コード
-		assertThat(shiftMater.getImportCode()).isEqualTo(impCdAfter);
+		assertThat(shiftMaster.getImportCode()).isEqualTo(impCdAfter);
 
 	}
 
@@ -104,14 +105,14 @@ public class ShiftMasterTest {
 	@Test
 	public void test_checkError_throw_Msg_1608() {
 
-		val shiftMater = ShiftMasterHelper.create("code", "name", "workTypeCode", Optional.of("workTimeCode"), "importCode");
+		val shiftMaster = ShiftMasterHelper.create("code", "name", "workTypeCode", Optional.of("workTimeCode"), "importCode");
 
 		new Expectations() {{
 			// 勤務種類を取得する
 			require.getWorkType(anyString);
 		}};
 
-		NtsAssert.businessException("Msg_1608", () -> shiftMater.checkError(require));
+		NtsAssert.businessException("Msg_1608", () -> shiftMaster.checkError(require));
 
 	}
 
@@ -126,7 +127,7 @@ public class ShiftMasterTest {
 	@Test
 	public void test_checkError_throw_Msg_1609(@Injectable WorkType workType) {
 
-		val shiftMater = ShiftMasterHelper.create("code", "name", "workTypeCode", Optional.of("workTimeCode"), "importCode");
+		val shiftMaster = ShiftMasterHelper.create("code", "name", "workTypeCode", Optional.of("workTimeCode"), "importCode");
 
 		new Expectations() {{
 			// 勤務種類を取得する
@@ -139,7 +140,7 @@ public class ShiftMasterTest {
 			require.getWorkTime(anyString);
 		}};
 
-		NtsAssert.businessException("Msg_1609", () -> shiftMater.checkError(require));
+		NtsAssert.businessException("Msg_1609", () -> shiftMaster.checkError(require));
 
 	}
 
@@ -153,7 +154,7 @@ public class ShiftMasterTest {
 	@Test
 	public void test_checkError_throw_Msg_435(@Injectable WorkType workType) {
 
-		val shiftMater = ShiftMasterHelper.create("code", "name", "workTypeCode", Optional.empty(), "importCode");
+		val shiftMaster = ShiftMasterHelper.create("code", "name", "workTypeCode", Optional.empty(), "importCode");
 
 		new Expectations() {{
 			// 勤務種類を取得する
@@ -164,7 +165,7 @@ public class ShiftMasterTest {
 			result = SetupType.REQUIRED;
 		}};
 
-		NtsAssert.businessException("Msg_435", () -> shiftMater.checkError(require));
+		NtsAssert.businessException("Msg_435", () -> shiftMaster.checkError(require));
 
 	}
 
@@ -178,7 +179,7 @@ public class ShiftMasterTest {
 	@Test
 	public void test_checkError_throw_Msg_434(@Injectable WorkType workType) {
 
-		val shiftMater = ShiftMasterHelper.create("code", "name", "workTypeCode", Optional.of("workTimeCode"), "importCode");
+		val shiftMaster = ShiftMasterHelper.create("code", "name", "workTypeCode", Optional.of("workTimeCode"), "importCode");
 
 		new Expectations() {{
 			// 勤務種類を取得する
@@ -189,7 +190,7 @@ public class ShiftMasterTest {
 			result = SetupType.NOT_REQUIRED;
 		}};
 
-		NtsAssert.businessException("Msg_434", () -> shiftMater.checkError(require));
+		NtsAssert.businessException("Msg_434", () -> shiftMaster.checkError(require));
 
 	}
 
