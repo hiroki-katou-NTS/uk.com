@@ -310,9 +310,7 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 		created(params: any) {
 			const self = this;
 			self.visibleModel = params.visibleModel;
-			if (!_.isNil(params.agent)) {
-				self.isAgentMode(params.agent());
-			}
+			self.isAgentMode = params.agent;
 			// self.restTime = params.restTime;
 			// self.holidayTime = params.holidayTime;
 			// self.overTime = params.overTime;

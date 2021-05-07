@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.val;
+import nts.arc.error.BusinessException;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
@@ -55,6 +56,10 @@ public class FixedWorkTimezoneSet extends WorkTimeDomainObject implements Clonea
 	public FixedWorkTimezoneSet(FixedWorkTimezoneSetGetMemento memento) {
 		this.lstWorkingTimezone = memento.getLstWorkingTimezone();
 		this.lstOTTimezone = memento.getLstOTTimezone();
+		
+		if (this.lstWorkingTimezone.size() == 0) {
+		    throw new BusinessException("Msg_2182");
+		}
 	}
 
 	/**
@@ -66,10 +71,14 @@ public class FixedWorkTimezoneSet extends WorkTimeDomainObject implements Clonea
 	public FixedWorkTimezoneSet(List<EmTimeZoneSet> lstWorkingTimezone, List<OverTimeOfTimeZoneSet> lstOTTimezone, boolean useShiftTwo){
 		this.lstWorkingTimezone = lstWorkingTimezone;
 		this.lstOTTimezone = lstOTTimezone;
+//		if (this.lstWorkingTimezone.size() == 0) {
+//            throw new BusinessException("Msg_2182");
+//        }
 		if (!checkWorkingTimezoneContinue(useShiftTwo))
 			this.bundledBusinessExceptions.addMessage("Msg_1919");
 		if (!checkOTTimeZoneContinue(useShiftTwo))
 			this.bundledBusinessExceptions.addMessage("Msg_1920");
+		
 	}
 
 	/**
@@ -266,7 +275,7 @@ public class FixedWorkTimezoneSet extends WorkTimeDomainObject implements Clonea
 	 * Restore default data.
 	 */
 	public void restoreDefaultData() {
-		this.lstWorkingTimezone = new ArrayList<>();
+//		this.lstWorkingTimezone = new ArrayList<>();
 		this.lstOTTimezone = new ArrayList<>();
 	}
 

@@ -205,6 +205,49 @@
 
 				</div>
 
+				<div data-bind="component: { name: 'kaf000-a-component3',
+											params: {
+												appType: appType,
+												application: application,
+												appDispInfoStartupOutput: appDispInfoStartupOutput
+											} }"></div>
+				<div data-bind="component: { name: 'kaf000-a-component4',
+											params: {
+												appType: appType,
+												application: application,
+												appDispInfoStartupOutput: appDispInfoStartupOutput
+											} }"></div>
+				<div data-bind="component: { name: 'kaf005-share-work-info',
+											params: {
+												workInfo: workInfo
+											}
+											}"></div>
+				<div data-bind="component: { name: 'kaf005-share',
+											params: {
+												restTime: restTime,
+												holidayTime: holidayTime,
+												overTime: overTime,
+												visibleModel: visibleModel,
+												agent: agentForTable
+											}
+							
+										}"></div>
+				
+				<div data-bind="component: { name: 'kaf000-a-component5',
+											params: {
+												appType: appType,
+												application: application,
+												appDispInfoStartupOutput: appDispInfoStartupOutput
+											} }"></div>
+				
+				<div data-bind="component: { name: 'kaf005-share-footer'}"></div>
+				
+				<div data-bind="component: { name: 'kaf000-a-component6',
+											params: {
+												appType: appType,
+												appDispInfoStartupOutput: appDispInfoStartupOutput,
+												isAgentMode: isAgentMode
+											} }"></div>
 			</div>
 		</ui:define>
 	</ui:composition>

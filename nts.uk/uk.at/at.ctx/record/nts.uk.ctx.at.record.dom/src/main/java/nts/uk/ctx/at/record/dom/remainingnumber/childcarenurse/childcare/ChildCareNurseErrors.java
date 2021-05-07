@@ -4,7 +4,8 @@ package nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.ChildCareNurseUsedNumber;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.ChildCareNurseUsedNumber;
+import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.ChildCareNurseUpperLimit;
 
 /**
  * 子の看護介護エラー情報
@@ -13,11 +14,11 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.Child
 @Getter
 @Setter
 public class ChildCareNurseErrors {
-	/** 子の看護介護使用数 */
+	/** 使用数 */
 	private  ChildCareNurseUsedNumber usedNumber;
-	/** 子の看護介護上限日数 */
+	/** 上限日数 */
 	private ChildCareNurseUpperLimit limitDays;
-	/** 子の看護介護エラー対象年月日 */
+	/** 年月日 */
 	private GeneralDate ymd;
 
 	/**
@@ -26,14 +27,14 @@ public class ChildCareNurseErrors {
 	public ChildCareNurseErrors(){
 
 		this.usedNumber = new ChildCareNurseUsedNumber();
-		this.limitDays =  new ChildCareNurseUpperLimit(0.0);
+		this.limitDays =  new ChildCareNurseUpperLimit(0);
 		this.ymd =  GeneralDate.today();
 	}
 	/**
 	 * ファクトリー
-	 * @param usedNumber 子の看護介護使用数
-	 * @param limitDays 子の看護介護上限日数
-	 * @param ymd 子の看護介護エラー対象年月日
+	 * @param usedNumber 使用数
+	 * @param limitDays 限日数
+	 * @param ymd 年月日
 	 * @return 子の看護介護エラー情報
 	 */
 	public static ChildCareNurseErrors of(

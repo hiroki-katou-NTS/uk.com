@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -125,6 +126,7 @@ public class CompanyDailyItemServiceImpl implements CompanyDailyItemService {
 			return new ArrayList<>();
 		}
 		
+		// アルゴリズム「会社の日次を取得する」を実行する.collect(Collectors.toList());
 		List<AttItemName> attItemNames = this.getDailyItems(companyId, Optional.of(authorityId), attendanceItems, null);
 
 		// 取得したドメインモデル「日次の勤怠項目」（日次勤怠項目の属性、日次の勤怠項目に関連するマスタの種類、表示番号）と取得したList＜勤怠項目ID、名称＞を結合する
@@ -132,14 +134,17 @@ public class CompanyDailyItemServiceImpl implements CompanyDailyItemService {
 								.map(t -> {
 									Optional<AttItemName> attItemName = attItemNames.stream()
 											.filter(item -> item.getAttendanceItemId() == t.getAttendanceItemId()).findFirst();
-									return DailyItemDto.builder()
-											.displayNumber(t.getDisplayNumber())
-											.masterType(t.getMasterType().map(r -> r.value).orElse(null))
-											.attribute(t.getDailyAttendanceAtr().value)
-											.timeId(attItemName.map(at -> at.getAttendanceItemId()).orElse(null))
-											.name(attItemName.map(at -> at.getAttendanceItemName()).orElse(null))
-											.build();
+									return attItemName.isPresent() 
+											? DailyItemDto.builder()
+													.displayNumber(t.getDisplayNumber())
+													.masterType(t.getMasterType().map(r -> r.value).orElse(null))
+													.attribute(t.getDailyAttendanceAtr().value)
+													.timeId(attItemName.map(at -> at.getAttendanceItemId()).orElse(null))
+													.name(attItemName.map(at -> at.getAttendanceItemName()).orElse(null))
+													.build()
+											: null;
 								})
+								.filter(Objects::nonNull)
 								.collect(Collectors.toList());
 
 		// List＜勤怠項目ID、名称、属性、マスタの種類。表示番号＞を渡す Trả về List <...>

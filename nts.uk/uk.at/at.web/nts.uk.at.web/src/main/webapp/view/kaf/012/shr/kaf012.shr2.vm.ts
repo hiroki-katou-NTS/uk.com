@@ -385,42 +385,32 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
                         {
                             code: 0,
                             name: vm.$i18n('KAF012_3'),
-                            display: value.timeSubstituteLeaveMng.timeSubstituteLeaveMngAtr
-                                    && !!vm.reflectSetting()
-                                    && vm.reflectSetting().condition.substituteLeaveTime == 1
+                            display: (value.timeSubstituteLeaveMng.timeSubstituteLeaveMngAtr && !!vm.reflectSetting() && vm.reflectSetting().condition.substituteLeaveTime == 1) || vm.leaveType() == 0
                         },
                         {
                             code: 1,
                             name: vm.$i18n('KAF012_4'),
-                            display: value.timeAnnualLeaveMng.timeAnnualLeaveMngAtr
-                                    && !!vm.reflectSetting()
-                                    && vm.reflectSetting().condition.annualVacationTime == 1
+                            display: (value.timeAnnualLeaveMng.timeAnnualLeaveMngAtr && !!vm.reflectSetting() && vm.reflectSetting().condition.annualVacationTime == 1) || vm.leaveType() == 1
                         },
                         {
                             code: 2,
                             name: vm.$i18n('Com_ChildNurseHoliday'),
-                            display: !!vm.reflectSetting()
-                                    && vm.reflectSetting().condition.childNursing == 1
+                            display: (!!vm.reflectSetting() && vm.reflectSetting().condition.childNursing == 1) || vm.leaveType() == 2
                         },
                         {
                             code: 3,
                             name: vm.$i18n('Com_CareHoliday'),
-                            display: !!vm.reflectSetting()
-                                    && vm.reflectSetting().condition.nursing == 1
+                            display: (!!vm.reflectSetting() && vm.reflectSetting().condition.nursing == 1) || vm.leaveType() == 3
                         },
                         {
                             code: 4,
                             name: vm.$i18n('Com_ExsessHoliday'),
-                            display: value.super60HLeaveMng.super60HLeaveMngAtr
-                                    && !!vm.reflectSetting()
-                                    && vm.reflectSetting().condition.superHoliday60H == 1
+                            display: (value.super60HLeaveMng.super60HLeaveMngAtr && !!vm.reflectSetting() && vm.reflectSetting().condition.superHoliday60H == 1) || vm.leaveType() == 4
                         },
                         {
                             code: 5,
                             name: vm.$i18n('KAF012_46'),
-                            display: value.timeSpecialLeaveMng.timeSpecialLeaveMngAtr
-                                    && !!vm.reflectSetting()
-                                    && vm.reflectSetting().condition.specialVacationTime == 1
+                            display: (value.timeSpecialLeaveMng.timeSpecialLeaveMngAtr && !!vm.reflectSetting() && vm.reflectSetting().condition.specialVacationTime == 1) || vm.leaveType() == 5
                         }
                     ];
                     const result = switchOptions.filter(i => i.display);
