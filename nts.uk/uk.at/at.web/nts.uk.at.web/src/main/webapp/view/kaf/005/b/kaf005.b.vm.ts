@@ -192,6 +192,21 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 							vm.getBreakTimes();
 						}
 				})
+				document.getElementById('inpStartTime2').addEventListener('focusout', () => {
+					if (_.isNumber(vm.workInfo().workHours2.start()) && _.isNumber(vm.workInfo().workHours2.end())) {
+							
+							
+							vm.dataSource.calculatedFlag = CalculatedFlag.UNCALCULATED;
+						}
+				})
+				
+				document.getElementById('inpEndTime2').addEventListener('focusout', () => {
+					if (_.isNumber(vm.workInfo().workHours2.start()) && _.isNumber(vm.workInfo().workHours2.end())) {
+							
+							
+							vm.dataSource.calculatedFlag = CalculatedFlag.UNCALCULATED;
+						}
+				})
 				
 			})
 		}
