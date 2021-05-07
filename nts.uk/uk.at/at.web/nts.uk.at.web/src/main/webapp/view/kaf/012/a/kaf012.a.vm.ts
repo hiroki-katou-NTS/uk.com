@@ -142,6 +142,11 @@ module nts.uk.at.view.kaf012.a.viewmodel {
                 vm.applyTimeData()[AppTimeType.OFFWORK].timeZones[0].startTime(value.appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.opLeaveTime);
                 vm.applyTimeData()[AppTimeType.ATWORK2].timeZones[0].startTime(value.appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.opWorkTime2);
                 vm.applyTimeData()[AppTimeType.OFFWORK2].timeZones[0].startTime(value.appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.opDepartureTime2);
+                vm.applyTimeData()[4].timeZones.forEach(tz => {
+                    tz.startTime(null);
+                    tz.endTime(null);
+                    tz.appTimeType(AppTimeType.PRIVATE);
+                });
                 const outingTimes = value.appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.stampRecordOutput.outingTime || [];
                 outingTimes.filter((time: any) => time.opGoOutReasonAtr == 0 || time.opGoOutReasonAtr == 3)
                     .forEach((time: any) => {

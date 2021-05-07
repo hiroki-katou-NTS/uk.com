@@ -1065,6 +1065,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     bundledErrors({ errors: errorsInfo }).then(() => {
                         nts.uk.ui.block.clear();
                     });
+                    self.enableBtnReg(false);
                 } else {
                     nts.uk.ui.block.clear();
                 }
@@ -1913,6 +1914,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
             if (nts.uk.ui.errors.hasError() || self.mode() === 'confirm')
                 return;
+            
+            $('div > iframe').contents().find('#btnClose').trigger('click');
+
             nts.uk.ui.block.grayout();
             let itemLocal = uk.localStorage.getItem(self.KEY);
             let userInfor = JSON.parse(itemLocal.get());

@@ -1,21 +1,23 @@
 package nts.uk.ctx.at.record.pub.monthly.vacation.childcarenurse.childcare;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.ChildCareNurseUsedNumber;
 
 
 /**
  * 子の看護介護エラー情報
  * @author yuri_tamakoshi
  */
-@Data
+@Getter
+@Setter
 public class ChildCareNurseErrorsExport {
-	/** 子の看護介護使用数 */
-	private  ChildCareNurseUsedNumber usedNumber;
-	/** 子の看護介護上限日数 */
-	private Double limitDays;
-	/** 子の看護介護エラー対象年月日 */
+
+	/** 使用数 */
+	private  ChildCareNurseUsedNumberExport usedNumber;
+	/** 上限日数 */
+	private Integer limitDays;
+	/** 年月日 */
 	private GeneralDate ymd;
 
 	/**
@@ -23,10 +25,11 @@ public class ChildCareNurseErrorsExport {
 	 */
 	public ChildCareNurseErrorsExport(){
 
-		this.usedNumber = new ChildCareNurseUsedNumber();
-		this.limitDays = new Double(0.0);
+		this.usedNumber = new ChildCareNurseUsedNumberExport();
+		this.limitDays = new Integer(0);
 		this.ymd = GeneralDate.today();
 	}
+
 	/**
 	 * ファクトリー
 	 * @param usedNumber 子の看護介護使用数
@@ -35,14 +38,14 @@ public class ChildCareNurseErrorsExport {
 	 * @return 子の看護介護エラー情報
 	 */
 	public static ChildCareNurseErrorsExport of(
-			ChildCareNurseUsedNumber usedNumber,
-			Double limitDays,
+			ChildCareNurseUsedNumberExport usedNumber,
+			Integer limitDays,
 			GeneralDate ymd) {
 
-		ChildCareNurseErrorsExport domain = new ChildCareNurseErrorsExport();
-		domain.usedNumber = usedNumber;
-		domain.limitDays = limitDays;
-		domain.ymd = ymd;
-		return domain;
+		ChildCareNurseErrorsExport exp = new ChildCareNurseErrorsExport();
+		exp.usedNumber = usedNumber;
+		exp.limitDays = limitDays;
+		exp.ymd = ymd;
+		return exp;
 	}
 }

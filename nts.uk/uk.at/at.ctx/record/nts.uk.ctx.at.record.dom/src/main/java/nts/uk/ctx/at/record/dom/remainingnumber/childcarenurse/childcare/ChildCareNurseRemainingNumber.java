@@ -1,7 +1,7 @@
 package nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare;
 
-
 import java.util.Optional;
+
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.usenumber.DayNumberOfUse;
@@ -16,9 +16,9 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremain
 @Setter
 public class ChildCareNurseRemainingNumber  implements Cloneable{
 
-	/** 子の看護休暇使用日数 */
+	/** 日数 */
 	private  DayNumberOfUse usedDays;
-	/** 子の看護休暇使用時間 */
+	/** 時間 */
 	private Optional<TimeOfUse> usedTime;
 
 	/**
@@ -32,8 +32,8 @@ public class ChildCareNurseRemainingNumber  implements Cloneable{
 
 	/**
 	 * ファクトリー
-	 * @param usedDay　子の看護休暇使用日数
-	 * @param usedTimes　子の看護休暇使用時間
+	 * @param usedDay　日数
+	 * @param usedTimes　時間
 	 * @return 子の看護介護残数
 	*/
 	public static ChildCareNurseRemainingNumber of (
@@ -44,5 +44,29 @@ public class ChildCareNurseRemainingNumber  implements Cloneable{
 		domain.usedDays = usedDays;
 		domain.usedTime = usedTime;
 		return domain;
+	}
+
+	/**
+	 * 残数を使い過ぎていないか
+	 * @return 残数を使い過ぎていないか（ture or false）
+	 */
+	public boolean checkOverUpperLimit() {
+		// 残数を使い過ぎていないか
+		// ===子の看護介護残数．日 >=0 and 子の看護介護残数．時間 >= 0
+		if(usedDays.v() >= 0 && getUsedTime().map(x -> x.v()).orElse(0) >= 0) {
+			return true;
+		}else {
+			return false;
+		}
+	}
+
+	/** 子の看護介護残数を引算 */
+	public void sub(ChildCareNurseRemainingNumber usedNumber) {
+		usedDays = new DayNumberOfUse(usedDays.v() - usedNumber.getUsedDays().v());
+		if (usedTime.isPresent()) {
+			usedTime = usedTime.map(c -> c.minusMinutes(usedNumber.getUsedTime().map(x -> x.v()).orElse(0)));
+		} else {
+			usedTime = usedNumber.getUsedTime();
+		}
 	}
 }
