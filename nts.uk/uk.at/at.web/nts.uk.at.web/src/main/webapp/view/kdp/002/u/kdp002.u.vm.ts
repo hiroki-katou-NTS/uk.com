@@ -22,6 +22,8 @@ module nts.uk.at.kdp002.u {
 			const vm = this
 
 			vm.model(param.data.msgNotices);
+			console.log(param.data.msgNotices);
+			
 			vm.sid = param.sid;
 		}
 
