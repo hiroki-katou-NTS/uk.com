@@ -17,13 +17,16 @@ module nts.uk.at.view.kdp004.a {
 		import FingerStampSetting = nts.uk.at.kdp003.a.FingerStampSetting;
 
 		const DIALOG = {
-			R: '/view/kdp/003/r/index.xhtml'
+			R: '/view/kdp/003/r/index.xhtml',
+			F: '/view/kdp/003/f/index.xhtml'
 		};
 
 		const API = {
 			NOTICE: 'at/record/stamp/notice/getStampInputSetting',
 			GET_LOCATION: 'at/record/stamp/employment_system/get_location_stamp_input'
 		};
+
+		const KDP004_SAVE_DATA = 'loginKDP004';
 
 		export class ScreenModel {
 			stampSetting: KnockoutObservable<StampSetting> = ko.observable({} as StampSetting);
@@ -552,6 +555,19 @@ module nts.uk.at.view.kdp004.a {
 				let vm = new ko.ViewModel();
 				const param = { setting: ko.unwrap(self.fingerStampSetting).noticeSetDto, screen: 'KDP004' };
 				vm.$window.modal(DIALOG.R, param);
+			}
+
+			settingNoti() {
+				let vm = new ko.ViewModel();
+				vm.$window.storage(KDP004_SAVE_DATA)
+					.then((data: any) => {
+						if (data) {
+							const mode = 'notification';
+							const companyId = (data || {}).companyId;
+	
+							vm.$window.modal('at', DIALOG.F, { mode, companyId });
+						}
+					});
 			}
 
 			loadNotice(loginInfo: any) {

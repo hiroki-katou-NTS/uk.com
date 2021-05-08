@@ -16,8 +16,11 @@ module nts.uk.at.view.kdp005.a {
 		import StorageData = nts.uk.at.view.kdp004.a.StorageData;
 
 		const DIALOG = {
-			R: '/view/kdp/003/r/index.xhtml'
+			R: '/view/kdp/003/r/index.xhtml',
+			F: '/view/kdp/003/f/index.xhtml'
 		};
+
+		const KDP005_SAVE_DATA = 'loginKDP005';
 
 		const API = {
 			NOTICE: 'at/record/stamp/notice/getStampInputSetting',
@@ -550,6 +553,19 @@ module nts.uk.at.view.kdp005.a {
 				let vm = new ko.ViewModel();
 				const param = { setting: ko.unwrap(self.fingerStampSetting).noticeSetDto, screen: 'KDP005' };
 				vm.$window.modal(DIALOG.R, param);
+			}
+
+			settingNoti() {
+				let vm = new ko.ViewModel();
+				vm.$window.storage(KDP005_SAVE_DATA)
+					.then((data: any) => {
+						if (data) {
+							const mode = 'notification';
+							const companyId = (data || {}).companyId;
+	
+							vm.$window.modal('at', DIALOG.F, { mode, companyId });
+						}
+					});
 			}
 
 			loadNotice(loginInfo: any) {
