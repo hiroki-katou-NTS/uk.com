@@ -24,14 +24,11 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         key: string;
         rowIndexOfEmpLogin : number;
 
-        empItems: KnockoutObservableArray<PersonModel> = ko.observableArray([]);
-        
         enableBtnReg : KnockoutObservable<boolean> = ko.observable(false);
         visibleShiftPalette: KnockoutObservable<boolean> = ko.observable(true);
         mode: KnockoutObservable<string> = ko.observable('edit'); // edit || confirm 
         showA9: boolean;
 
-        // A4 popup-area6 
         // A4_4
         selectedModeDisplayInBody: KnockoutObservable<number> = ko.observable(undefined);
 
@@ -41,8 +38,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         // A4_12
         backgroundColorSelected: KnockoutObservable<string> = ko.observable(undefined);  // 0 || 1
         showComboboxA4_12: KnockoutObservable<boolean> = ko.observable(true);
-
-        isEnableCompareMonth: KnockoutObservable<boolean> = ko.observable(true);
 
         popupVal: KnockoutObservable<string> = ko.observable('');
         selectedDate: KnockoutObservable<string> = ko.observable('');
@@ -85,28 +80,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         listSid: KnockoutObservableArray<string> = ko.observableArray([]);
         listEmpData = [];
 
-        affiliationId: any = null;
-        affiliationName: KnockoutObservable<string> = ko.observable('');
-        dataWScheduleState: KnockoutObservableArray<WorkScheduleState> = ko.observableArray([]);
-        listStateWorkTypeCode: KnockoutObservableArray<any> = ko.observableArray([]);
-        listCheckNeededOfWorkTime: KnockoutObservableArray<any> = ko.observableArray([]);
-        dataWkpSpecificDate: KnockoutObservableArray<any> = ko.observableArray([]);
-        dataComSpecificDate: KnockoutObservableArray<any> = ko.observableArray([]);
-        dataPublicHoliday: KnockoutObservableArray<any> = ko.observableArray([]);
-        dataWorkEmpCombine: KnockoutObservableArray<any> = ko.observableArray([]);
-        dataScheduleDisplayControl: KnockoutObservable<any> = ko.observableArray([]);
-        isInsuranceStatus: boolean = false;
-
         flag: boolean = true;
-        arrLockCellInit: KnockoutObservableArray<Cell> = ko.observableArray([]);
-        // 表示形式 ＝ 日付別(固定) = 0
-        displayFormat: KnockoutObservable<number> = ko.observable(0);
-        hasEmployee: KnockoutObservable<boolean> = ko.observable(false);
         KEY: string = 'nts.uk.characteristics.ksu001Data';
         dataCell: any; // data để paste vào grid
-        listPageInfo : any;
-        targetShiftPalette : any;
-        workPlaceId : any;
         
         // data grid
         arrListCellLock = [];
@@ -130,7 +106,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         showRankCol = false;
         showQualificCol = false;
         widthMid : number = 0;
-        numberCellsUpdatedAfterUndo = 0;
         pathToLeft = '';
         pathToRight = '';
         pathToDown = '';
@@ -211,12 +186,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 if(self.flag == true)
                     return;
                 
-                if (newValue == 1) {
-                    self.isEnableCompareMonth(true);
-                    
-                } else {
-                    self.isEnableCompareMonth(false);
-                }
                 uk.localStorage.getItem(self.KEY).ifPresent((data) => {
                     let userInfor = JSON.parse(data);
                     userInfor.achievementDisplaySelected = (newValue == 1) ? true : false;
