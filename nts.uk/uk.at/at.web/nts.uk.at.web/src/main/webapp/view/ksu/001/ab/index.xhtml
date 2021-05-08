@@ -28,12 +28,12 @@
                             kcp013: selected,
                             workplace-id: workplaceIdKCP013,
                             dataSources: dataSources,
-                            filter: filter,
+                            filter: ko.observable(true),
                             disabled: disabled,
                             show-mode: showMode,
                             tabindex: 43,
                             width: width,
-                            check: check
+                            check: ko.observable(false)
                         "></div>
 				</div>
 			</td>
