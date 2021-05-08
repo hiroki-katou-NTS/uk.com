@@ -64,7 +64,7 @@ class KDP002BViewModel extends ko.ViewModel {
     infoEmpFromScreenA: any;
     notificationStamp: KnockoutObservableArray<IMsgNotices> = ko.observableArray([]);
     modeShowPointNoti: KnockoutObservable<boolean> = ko.observable(false);
-    showBtnNoti: KnockoutObservable<boolean> = ko.observable(true);
+    showBtnNoti: KnockoutObservable<boolean> = ko.observable(false);
     activeViewU: KnockoutObservable<boolean> = ko.observable(false);
 
 
