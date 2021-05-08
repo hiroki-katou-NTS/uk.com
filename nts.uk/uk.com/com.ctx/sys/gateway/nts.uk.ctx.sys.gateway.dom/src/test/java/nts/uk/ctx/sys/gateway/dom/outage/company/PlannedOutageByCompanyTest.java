@@ -1,10 +1,10 @@
-package nts.uk.ctx.sys.gateway.dom.outage;
+package nts.uk.ctx.sys.gateway.dom.outage.company;
 
 import org.junit.Test;
 
 import mockit.Mocked;
 import nts.arc.testing.assertion.NtsAssert;
-import nts.uk.ctx.sys.gateway.dom.outage.company.PlannedOutageByCompany;
+import nts.uk.ctx.sys.gateway.dom.outage.PlannedOutageState;
 
 public class PlannedOutageByCompanyTest {
 
