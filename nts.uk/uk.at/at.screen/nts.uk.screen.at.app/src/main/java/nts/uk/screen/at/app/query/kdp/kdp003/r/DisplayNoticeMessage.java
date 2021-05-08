@@ -70,7 +70,7 @@ public class DisplayNoticeMessage {
 					.scd(listCodeMap.get(m.getCreatorID()))
 					.bussinessName(listNameMap.get(m.getCreatorID()))
 					.message(MessageNoticeDto.toDto(m))
-					.build())
+					.build()).distinct()
 					.collect(Collectors.toList());
 		}
 
