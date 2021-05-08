@@ -64,7 +64,7 @@ class KDP002BViewModel extends ko.ViewModel {
     infoEmpFromScreenA: any;
     notificationStamp: KnockoutObservableArray<IMsgNotices> = ko.observableArray([]);
     modeShowPointNoti: KnockoutObservable<boolean> = ko.observable(false);
-    showBtnNoti: KnockoutObservable<boolean> = ko.observable(false);
+    showBtnNoti: KnockoutObservable<boolean> = ko.observable(true);
     activeViewU: KnockoutObservable<boolean> = ko.observable(false);
 
 
@@ -83,12 +83,13 @@ class KDP002BViewModel extends ko.ViewModel {
                 vm.disableResultDisplayTime(vm.resultDisplayTime() > 0 ? true : false);
 
                 vm.startPage();
+
             });
             vm.$window.shared("screenB").done((nameScreen: any) => {
                 switch (nameScreen.screen) {
                     case 'KDP001':
                     case 'KDP002':
-                        vm.showBtnNoti(false);
+                        // vm.showBtnNoti(false);
                         vm.settingSizeView();
                         break
                     case 'KDP003':
@@ -105,6 +106,14 @@ class KDP002BViewModel extends ko.ViewModel {
                 vm.modeNikoNiko(data);
                 vm.settingSizeView();
             });
+
+        vm.resultDisplayTime.subscribe(() => {
+            if (!ko.unwrap(vm.modeNikoNiko)) {
+                if (ko.unwrap(vm.resultDisplayTime) < 0) {
+                    vm.closeDialog();
+                }
+            }
+        });
     }
 
     mounted() {
@@ -149,10 +158,6 @@ class KDP002BViewModel extends ko.ViewModel {
         let dfdGetEmpInfo = vm.getEmpInfo();
         $.when(dfdGetAllStampingResult, dfdGetEmpInfo).done((dfdGetAllStampingResultData, dfdGetEmpInfoData) => {
             if (vm.resultDisplayTime() > 0) {
-                if (!ko.unwrap(vm.modeNikoNiko)) {
-
-                    setInterval(vm.closeDialog, vm.resultDisplayTime() * 1000);
-                }
                 setInterval(() => {
                     if (!ko.unwrap(vm.activeViewU)) {
                         vm.resultDisplayTime(vm.resultDisplayTime() - 1);
@@ -186,8 +191,9 @@ class KDP002BViewModel extends ko.ViewModel {
         let sid = vm.infoEmpFromScreenA.employeeId;
 
         vm.$ajax("at", kDP002RequestUrl.getAllStampingResult + sid).then(function (data) {
+
             if (data && data.length > 0) {
-                vm.workPlace(data[0].workplaceCd + ' ' + data[0].workPlaceName);
+                vm.workPlace(data[0].workPlaceName);
             }
 
             _.forEach(data, (a) => {
