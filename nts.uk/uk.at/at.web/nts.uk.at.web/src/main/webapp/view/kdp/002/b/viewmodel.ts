@@ -177,6 +177,9 @@ class KDP002BViewModel extends ko.ViewModel {
                 for (let i = 0; i < _.size(self.listStampRecord()); i++) {
                     if (self.listStampRecord()[i].stampDate == self.items()[j].date && self.listStampRecord()[i].stampTime == self.items()[j].time) {
                         self.currentStampData(self.listStampRecord()[i]);
+                        if (ko.unwrap(self.modeNikoNiko)) {
+                            self.setModeNikoNikoByStampType(ko.unwrap(self.currentStampData).correctTimeStampValue);
+                        }
                         break;
                     }
                 }
@@ -258,6 +261,30 @@ class KDP002BViewModel extends ko.ViewModel {
 
         return sr.stampArtName ? `<div class='full-width' style='text-align: center'>` + sr.stampArtName + '</div>' : '';
 
+    }
+
+    setModeNikoNikoByStampType(param: number) {
+        const vm = this;
+        switch (param) {
+            case 1:
+                vm.modeNikoNiko(true);
+                break
+            case 2:
+                vm.modeNikoNiko(true);
+                break
+            case 3:
+                vm.modeNikoNiko(true);
+                break
+            case 4:
+                vm.modeNikoNiko(true);
+                break
+            case 16:
+                vm.modeNikoNiko(true);
+                break
+            default:
+                vm.modeNikoNiko(false);
+                break;
+        }
     }
 
     getNotification() {
