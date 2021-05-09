@@ -17,7 +17,7 @@
         <ui:define name="content">
             <div id="contents-area">
                 <div class="view-u">
-                    <div class="colum-1">
+                    <div data-bind="if: $vm.modeNew" class="colum-1">
                         <i data-bind="ntsIcon: { no: 175, width: 30, height: 30 }"></i>
                     </div>
                     <div class="colum-2" data-bind="foreach: $vm.model">
