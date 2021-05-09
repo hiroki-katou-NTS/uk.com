@@ -8,11 +8,12 @@ package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculatio
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeDivergenceWithCalculation;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 
 @Getter
-public class OverTimeFrameTime {
+public class OverTimeFrameTime implements Cloneable{
 	/** 残業枠NO: 残業枠NO */
 	private OverTimeFrameNo OverWorkFrameNo;
 	/** 残業時間: 計算付き時間 */
@@ -202,4 +203,20 @@ public class OverTimeFrameTime {
 		return new OverTimeFrameTime(new OverTimeFrameNo(no), TimeDivergenceWithCalculation.defaultValue(),
 				TimeDivergenceWithCalculation.defaultValue(), new AttendanceTime(0), new AttendanceTime(0));
 	}
+
+
+	@Override
+	protected OverTimeFrameTime clone() {
+		return new OverTimeFrameTime(new OverTimeFrameNo(this.getOverWorkFrameNo().v()), 
+				new TimeDivergenceWithCalculation(new AttendanceTime(this.OverTimeWork.getTime().v()),
+						new AttendanceTime(this.OverTimeWork.getCalcTime().v()),
+						new AttendanceTimeOfExistMinus(this.OverTimeWork.getDivergenceTime().v())),
+				new TimeDivergenceWithCalculation(new AttendanceTime(this.OverTimeWork.getTime().v()),
+						new AttendanceTime(this.OverTimeWork.getCalcTime().v()),
+						new AttendanceTimeOfExistMinus(this.OverTimeWork.getDivergenceTime().v())), 
+				new AttendanceTime(this.BeforeApplicationTime.v()), 
+				new AttendanceTime(this.orderTime.v()));
+	}
+	
+	
 }

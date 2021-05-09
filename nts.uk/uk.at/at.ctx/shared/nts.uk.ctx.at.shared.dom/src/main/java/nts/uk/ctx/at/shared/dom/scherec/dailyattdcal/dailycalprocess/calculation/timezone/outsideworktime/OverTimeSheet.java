@@ -12,6 +12,7 @@ import lombok.Getter;
 import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.PremiumAtr;
+import nts.uk.ctx.at.shared.dom.calculation.holiday.time.OverTimeFrame;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.ot.frame.NotUseAtr;
@@ -21,7 +22,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.ActualWorkTi
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalOvertimeSetting;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalSetting;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.BonusPayAutoCalcSet;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.TimeLimitUpperLimitSetting;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.BonusPayAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.ConditionAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.calcategory.CalAttrOfDailyAttd;
@@ -93,6 +93,198 @@ public class OverTimeSheet {
 		originList.remove(nowNumber);
 		originList.addAll(insertList);
 		return originList;
+	}
+	
+	// 2021/05/01 update 残業時間の計算
+	/**
+	 * 残業時間の計算
+	 * 
+	 * @param declareTimezoneResult 申告時間帯作成結果
+	 * @param upperControl 事前申請上限制御(boolean)　true＝する
+	 */
+	public void calculateOvertime(DeclareTimezoneResult declareTimezoneResult, boolean upperControl) {
+		// TODO: 時間帯毎に残業時間を計算する(補正、制御含む)
+
+		// TODO: 時間帯毎の時間から残業枠毎の時間を集計
+
+		// 残業枠時間を合計する
+
+		{
+			// ○ループ処理
+
+			// TODO: ○申告残業反映後リストの取得
+		}
+
+		// TODO: ○大塚モードの確認
+
+		{
+			// ○マイナスの乖離時間を０にする
+		}
+	}
+	
+	/**
+	 * 時間帯毎に残業時間を計算する(補正、制御含む)
+	 * 
+	 * @param cid 会社ID
+	 * @param sid 社員ID
+	 * @param date 年月日
+	 * @param workTimeCode 就業時間帯コード：Optional<就業時間帯コード>
+	 * @param autoCalcSetting 自動計算設定：残業時間の自動計算設定
+	 *  @param statutoryFrameNoList 法定内残業の残業枠NO：List<残業枠NO>
+	 * @param overTimeOfDaily 日別勤怠の残業時間
+	 */
+	public void calculateOvertimeEachTimeZone(String cid, String sid, GeneralDate date, Optional<String> workTimeCode,
+			AutoCalOvertimeSetting autoCalcSetting, List<OverTimeFrameNo> statutoryFrameNoList, OverTimeOfDaily overTimeOfDaily, boolean upperControl) {
+		//時間帯毎に残業時間を計算する
+		this.calculateProcess(autoCalcSetting);
+		if(upperControl){
+			// 事前申請上限制御
+			this.advanceAppUpperLimitControl(overTimeOfDaily, autoCalcSetting, statutoryFrameNoList);
+		}
+
+		// TODO: 代休への振替処理
+	}
+
+	/**
+	 * 時間帯毎に残業時間を計算する
+	 * @param autoCalcSetting 自動計算設定：残業時間の自動計算設定
+	 */
+	public void calculateProcess(AutoCalOvertimeSetting autoCalcSetting) {
+		//残業時間帯の時間枠を取得
+		this.frameTimeSheets.forEach(frameTime ->{
+			//残業時間帯の計算
+			frameTime.correctCalculationTime(Optional.of(false), autoCalcSetting);
+		});
+		return;
+	}
+	
+	/**
+	 * 事前申請上限制御
+	 * @param overTimeOfDaily 日別勤怠の残業時間
+	 * 	@param autoCalcSet 残業時間の自動計算設定
+	 *  @param statutoryFrameNoList 法定内残業の残業枠NO：List<残業枠NO>
+	 */
+	private void advanceAppUpperLimitControl(OverTimeOfDaily overTimeOfDaily, AutoCalOvertimeSetting autoCalcSet,
+			List<OverTimeFrameNo> statutoryFrameNoList) {
+		//各時間ごとの制御する時間を計算
+		List<TimeDeductByPriorAppOutput> lstTimeDeductOut = calculateTimeToControlEachTime(overTimeOfDaily, autoCalcSet,
+				statutoryFrameNoList);
+
+		//残業枠時間帯(WORK)を時系列の逆順に取得
+		// TODO: ????? sort time 
+		frameTimeSheets.sort((x, y) -> y.getFrameTime().getOrderTime().v() - x.getFrameTime().getOrderTime().v());
+		
+		//loop
+		lstTimeDeductOut.forEach(timeDeduct -> {
+			// 控除する時間を計算
+			Optional<OverTimeFrameTimeSheetForCalc> frameSheetOpt = frameTimeSheets.stream()
+					.filter(frame -> frame.getOverTimeWorkSheetNo().v() == timeDeduct.getOverTimeNo().v()).findFirst();
+					
+			val frameSheet = frameSheetOpt.map(x -> x.getFrameTime().getOverTimeWork().getTime().v()).orElse(0);
+			AttendanceTime timeDeductCalc = new AttendanceTime(Math.min(timeDeduct.getTimeDeduct().v(), frameSheet));
+			// 時間帯から控除
+			frameSheetOpt.ifPresent(x -> {
+				x.getFrameTime().getOverTimeWork().setTime(new AttendanceTime(
+						x.getFrameTime().getOverTimeWork().getTime().v() - timeDeductCalc.v()));
+			});
+			// 控除する時間を減算
+			timeDeduct.setTimeDeduct(new AttendanceTime(timeDeduct.getTimeDeduct().v() - timeDeductCalc.v()));
+		});
+		
+		return;
+	}
+	
+	/**
+	 * 各時間ごとの制御する時間を計算
+	 * @param overTimeOfDaily 日別勤怠の残業時間
+	 * @param autoCalcSet 残業時間の自動計算設定
+	 * @param statutoryFrameNoList 法定内残業の残業枠NO：List<残業枠NO>
+	 * @return
+	 */
+	private List<TimeDeductByPriorAppOutput> calculateTimeToControlEachTime(OverTimeOfDaily overTimeOfDaily,
+			AutoCalOvertimeSetting autoCalcSet, List<OverTimeFrameNo> statutoryFrameNoList) {
+		
+		//時間帯毎の時間から残業枠毎の時間を集計
+		 List<OverTimeFrameTime> lstOverTimeFrame = aggregateTimeForOvertime(overTimeOfDaily);
+		 //後で比較する為の時間create
+		 List<OverTimeFrameTime> lstOverTimeFrameForAfter = lstOverTimeFrame.stream().map(x -> {
+			 return x.clone();
+		 }).collect(Collectors.toList());
+		
+		// 事前残業時間をセットする
+		lstOverTimeFrame.forEach(overTime -> {
+			val beforeApp = overTimeOfDaily.getOverTimeWorkFrameTime().stream()
+					.filter(x -> x.getOverWorkFrameNo().v() == overTime.getOverWorkFrameNo().v()).findFirst()
+					.map(x -> x.getBeforeApplicationTime());
+			beforeApp.ifPresent(before -> {
+				overTime.addBeforeTime(before);
+			});
+		});
+		
+		//補正処理を実行する為に、日別勤怠の残業時間のインスタンスを作成
+		//事前申請上限制御処理
+		List<OverTimeFrameTime> afterUpperControl = new OverTimeFrameTimeList(lstOverTimeFrame)
+				.afterUpperControl(autoCalcSet, statutoryFrameNoList);
+
+		//制御する前の時間と比較して制御する時間を計算
+		return lstOverTimeFrameForAfter.stream().map(x -> {
+			val afterUpperCon = afterUpperControl.stream()
+					.filter(aftUp -> aftUp.getOverWorkFrameNo().v() == x.getOverWorkFrameNo().v()).findFirst()
+					.map(aftUp -> aftUp.getOverTimeWork().getTime()).orElse(new AttendanceTime(0));
+			return new TimeDeductByPriorAppOutput(x.getOverWorkFrameNo(),
+					new AttendanceTime(x.getOverTimeWork().getTime().v() - afterUpperCon.v()));
+		}).collect(Collectors.toList());
+	}
+	
+	//時間帯毎の時間から残業枠毎の時間を集計
+	public  List<OverTimeFrameTime> aggregateTimeForOvertime(OverTimeOfDaily overTimeOfDaily) {
+		//残業時間帯でループ
+		this.frameTimeSheets.forEach(frameTime -> {
+			// 残業時間へ加算
+			val overTime = overTimeOfDaily.getOverTimeWorkFrameTime().stream()
+					.filter(x -> x.getOverWorkFrameNo().v() == frameTime.getOverTimeWorkSheetNo().v()).findFirst();
+			overTime.ifPresent(data -> {
+				//B.残業時間+=A.残業時間
+				data.getOverTimeWork().setTime(new AttendanceTime(data.getOverTimeWork().getTime().v()
+						+ frameTime.getFrameTime().getOverTimeWork().getTime().v()));
+				data.getOverTimeWork().calcDiverGenceTime();
+				//B.振替時間+=B.振替時間
+				data.getTransferTime().setTime(new AttendanceTime(data.getTransferTime().getTime().v()
+						+ frameTime.getFrameTime().getTransferTime().getTime().v()));
+				data.getTransferTime().calcDiverGenceTime();
+				
+			});
+		});
+	
+		//残業枠時間を返す
+		
+		return overTimeOfDaily.getOverTimeWorkFrameTime();
+	}
+	
+	/**
+	 * 代休への振替処理
+	 * @param cid 会社ID
+	 * @param sid 社員ID
+	 * @param date 年月日
+	 * @param workTimeCode 就業時間帯コード:Optional<就業時間帯コード>
+	 * @param overTimeFrame 残業枠：List<残業枠>
+	 */
+	public void transferProcSubHol(String cid, String sid, GeneralDate date, Optional<String> workTimeCode,
+			List<OverTimeFrame> overTimeFrame) {
+
+		//TODO: ○平日かどうか判断
+		
+		//○当日が代休管理する日かどうかを判断する
+		
+		//代休発生設定を取得する
+		
+		{
+			//△一定時間の振替処理
+		}
+		
+		{
+			//△指定時間の振替処理
+		}
 	}
 	
 	/**
@@ -174,7 +366,7 @@ public class OverTimeSheet {
 		List<OverTimeFrameTime> afterCalcUpperTimeList = calcOverTimeWorkTimeList;
 		if (upperControl){
 			//事前申請を上限とする制御
-			afterCalcUpperTimeList = afterUpperControl(calcOverTimeWorkTimeList,autoCalcSet,statutoryFrameNoList);
+			afterCalcUpperTimeList = new OverTimeFrameTimeList(calcOverTimeWorkTimeList).afterUpperControl(autoCalcSet,statutoryFrameNoList);
 		}
 		//振替処理
 		List<OverTimeFrameTime> aftertransTimeList = transProcess(
@@ -233,52 +425,7 @@ public class OverTimeSheet {
 			return frameTimeSheets.stream().sorted((first,second) -> second.getTimeSheet().getStart().compareTo(first.getTimeSheet().getStart())).collect(Collectors.toList());
 		}
 	}
-
-
-	/**
-	 * 事前申請上限制御処理
-	 * @param calcOverTimeWorkTimeList 残業時間枠リスト
-	 * @param autoCalcSet 残業時間の自動計算設定
-	 */
-	private List<OverTimeFrameTime> afterUpperControl(List<OverTimeFrameTime> calcOverTimeWorkTimeList,AutoCalOvertimeSetting autoCalcSet,List<OverTimeFrameNo> statutoryFrameNoList) {
-		List<OverTimeFrameTime> returnList = new ArrayList<>();
-		for(OverTimeFrameTime loopOverTimeFrame:calcOverTimeWorkTimeList) {
-			
-			TimeLimitUpperLimitSetting autoSet = autoCalcSet.getNormalOtTime().getUpLimitORtSet();
-			if(statutoryFrameNoList != null && statutoryFrameNoList.contains(loopOverTimeFrame.getOverWorkFrameNo()))
-					autoSet =  autoCalcSet.getLegalOtTime().getUpLimitORtSet();
-													 
-													
-			//時間の上限時間算出
-			AttendanceTime upperTime = desictionUseUppserTime(autoSet,loopOverTimeFrame, loopOverTimeFrame.getOverTimeWork().getTime());
-			//計算時間の上限算出
-//			AttendanceTime upperCalcTime = desictionUseUppserTime(autoSet,loopOverTimeFrame,  loopOverTimeFrame.getOverTimeWork().getCalcTime());
-			//振替処理
-			loopOverTimeFrame = loopOverTimeFrame.changeOverTime(TimeDivergenceWithCalculation.createTimeWithCalculation(upperTime.greaterThan(loopOverTimeFrame.getOverTimeWork().getTime())?loopOverTimeFrame.getOverTimeWork().getTime():upperTime,
-//																														 upperCalcTime.greaterThan(loopOverTimeFrame.getOverTimeWork().getCalcTime())?loopOverTimeFrame.getOverTimeWork().getCalcTime():upperCalcTime)
-																														 loopOverTimeFrame.getOverTimeWork().getCalcTime()));
-			returnList.add(loopOverTimeFrame);
-		}
-		return returnList;
-	}
 	
-	
-	public AttendanceTime desictionUseUppserTime(TimeLimitUpperLimitSetting autoSet, OverTimeFrameTime loopOverTimeFrame, AttendanceTime attendanceTime) {
-		switch(autoSet) {
-		//上限なし
-		case NOUPPERLIMIT:
-			return attendanceTime;
-		//指示時間を上限とする
-		case INDICATEDYIMEUPPERLIMIT:
-			return loopOverTimeFrame.getOrderTime();
-		//事前申請を上限とする
-		case LIMITNUMBERAPPLICATION:
-			return loopOverTimeFrame.getBeforeApplicationTime();
-		default:
-			throw new RuntimeException("uknown AutoCalcAtr Over Time When Ot After Upper Control");
-		}
-	}
-
 	/**
 	 * 控除時間を取得
 	 * @param conditionAtr 控除種別区分
