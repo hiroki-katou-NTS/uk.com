@@ -91,10 +91,13 @@ public class HdRemainManageFinder {
                 .map(HdRemainManageDto::fromDomain).collect(Collectors.toList());
 
         List<HdRemainManageDto> listFreeSetting = data.stream()
-                .filter(s -> s.getItemSelType() == ItemSelectionEnum.FREE_SETTING.value && s.getSid().equals(sid))
+                .filter(s -> s.getItemSelType() == ItemSelectionEnum.FREE_SETTING.value
+                        && s.getSid().equals(sid))
+                .sorted(Comparator.comparing(HdRemainManageDto::getCd))
                 .collect(Collectors.toList());
         List<HdRemainManageDto> listStandard = data.stream()
                 .filter(s -> s.getItemSelType() == ItemSelectionEnum.STANDARD_SELECTION.value)
+                .sorted(Comparator.comparing(HdRemainManageDto::getCd))
                 .collect(Collectors.toList());
         return new HDDto(listFreeSetting, listStandard);
 
