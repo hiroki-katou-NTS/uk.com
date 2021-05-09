@@ -7,7 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 480, height: 625 };</script>
+			<script>var dialogSize = { width: 480, height: 620 };</script>
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web"/>
 			<com:scriptfile path="/view/kcp/011/kcp.011.vm.js" of="/nts.uk.com.web"/>
@@ -25,13 +25,15 @@
                     name: 'kcp017-component',
                     params: {
                         unit: target,
-                        baseDate: baseDate(),
-                        selectType: 1,
-                        multiple: false,
+                        baseDate: baseDate,
+                        selectType: selectType,
+                        multiple: isMultiple,
+                        multipleUsage: multipleUsage,
+        				isShowSelectButton: false,
                         onDialog: true,
                         showAlreadySetting: false,
                         rows: 12,
-                        selectedWorkplaces: workplaceID,
+                        selectedWorkplaces: workplaceId,
                         selectedWorkplaceGroups: workplaceGroupId
                     }
                 }"/>

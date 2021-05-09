@@ -51,10 +51,15 @@ module nts.uk.com.view.kcp017.a.viewmodel {
         multiple: KnockoutObservable<boolean>;
         rows: KnockoutObservable<number>;
         showAlreadySetting: KnockoutObservable<boolean>;
+        multipleUsage?: KnockoutObservable<boolean>; // KCP004, default: false
+        isShowSelectButton?: KnockoutObservable<boolean>; // KCP004, default: true
+        showEmptyItem?: KnockoutObservable<boolean>;
+
         alreadySettingWorkplaces: KnockoutObservableArray<any>;
         alreadySettingWorkplaceGroups: KnockoutObservableArray<any>;
         selectedIds: KnockoutObservable<any> | KnockoutObservableArray<any>;
         selectedGroupIds: KnockoutObservable<any> | KnockoutObservableArray<any>;
+
         kcp011Options: any;
         kcp004Options: any;
 
@@ -68,10 +73,13 @@ module nts.uk.com.view.kcp017.a.viewmodel {
                 vm.selectedIds = params.selectedWorkplaces;
                 vm.selectedGroupIds = params.selectedWorkplaceGroups;
                 vm.selectType = ko.observable(params.selectType || SelectType.SELECT_FIRST_ITEM);
-                vm.onDialog = ko.observable(!!params.onDialog);
-                vm.multiple = ko.observable(!!params.multiple);
-                vm.showAlreadySetting = ko.observable(!!params.showAlreadySetting);
+                vm.onDialog = ko.observable(_.isNil(params.onDialog) ? false : params.onDialog);
+                vm.multiple = ko.observable(_.isNil(params.multiple) ? false : params.multiple);
+                vm.showAlreadySetting = ko.observable(_.isNil(params.showAlreadySetting) ? false : params.showAlreadySetting);
                 vm.rows = ko.observable(params.rows || 10);
+                vm.multipleUsage = ko.observable(_.isNil(params.multipleUsage) ? false : params.multipleUsage);
+                vm.isShowSelectButton = ko.observable(_.isNil(params.isShowSelectButton) ? true : params.isShowSelectButton);
+                vm.showEmptyItem = ko.observable(_.isNil(params.showEmptyItem) ? false : params.showEmptyItem);
             } else {
                 vm.selectedUnit = ko.observable(0);
                 vm.baseDate = ko.observable(new Date());
@@ -84,6 +92,9 @@ module nts.uk.com.view.kcp017.a.viewmodel {
                 vm.multiple = ko.observable(false);
                 vm.showAlreadySetting = ko.observable(false);
                 vm.rows = ko.observable(10);
+                vm.multipleUsage = ko.observable(false);
+                vm.isShowSelectButton = ko.observable(true);
+                vm.showEmptyItem = ko.observable(false);
             }
             vm.selectMode = ko.computed(() => {
                 if (vm.selectType() == SelectType.SELECT_FIRST_ITEM) return SELECTED_MODE.FIRST;
@@ -94,13 +105,13 @@ module nts.uk.com.view.kcp017.a.viewmodel {
 
             vm.kcp004Options = {
                 isShowAlreadySet: vm.showAlreadySetting(),
-                isMultipleUse: false,
+                isMultipleUse: vm.multipleUsage(),
                 isMultiSelect: vm.multiple(),
                 startMode: 0, // WORKPLACE
                 baseDate: vm.baseDate,
                 selectType: vm.selectType(), // SELECT_FIRST_ITEM
                 systemType: 2, // EMPLOYMENT
-                isShowSelectButton: true,
+                isShowSelectButton: vm.isShowSelectButton(),
                 isDialog: true,
                 hasPadding: false,
                 maxRows: vm.rows(),
@@ -113,7 +124,7 @@ module nts.uk.com.view.kcp017.a.viewmodel {
                 multiple: vm.multiple(),
                 isAlreadySetting: vm.showAlreadySetting(),
                 showPanel: false,
-                showEmptyItem: false,
+                showEmptyItem: vm.showEmptyItem(),
                 reloadData: ko.observable(''),
                 selectedMode: vm.selectMode(), // SELECT FIRST ITEM
                 rows: vm.rows()
@@ -139,6 +150,9 @@ module nts.uk.com.view.kcp017.a.viewmodel {
         rows?: number; // default: 10
         selectType?: SelectType; // default: 3 (SELECT FIRST ITEM)
         baseDate?: string | Date; // default: today
+        multipleUsage?: boolean; // KCP004, default: false
+        isShowSelectButton?: boolean; // KCP004, default: true
+        showEmptyItem?: boolean; // KCP011, default: false
         alreadySettingWorkplaces?: KnockoutObservableArray<{workplaceId: string, isAlreadySetting: boolean}>;
         alreadySettingWorkplaceGroups?: KnockoutObservableArray<string>;
         selectedWorkplaces: KnockoutObservableArray<any> | KnockoutObservable<any>;

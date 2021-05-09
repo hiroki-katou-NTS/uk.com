@@ -1,126 +1,97 @@
-module nts.uk.at.view.ksu001.u.test {
+module nts.uk.at.view.kdl046.u.test {
 	import setShare = nts.uk.ui.windows.setShared;
 	// Import
 	export module viewmodel {
 		export class ScreenModel {
-			options: Option;
-			currentScreen: any = null;
-			enable: KnockoutObservable<boolean>;
-			required: KnockoutObservable<boolean>;
-			date: KnockoutObservable<string>;			
-			workplaceGroupList: KnockoutObservable<any> = ko.observable([]);
-			currentIds: KnockoutObservable<any> = ko.observable(null);
-			currentCodes: KnockoutObservable<any> = ko.observable([]);
-			currentNames: KnockoutObservable<any> = ko.observable([]);
-			treeGrid: TreeComponentOption;
-			selectedWorkplaceId: KnockoutObservable<string>;
-			baseDate: KnockoutObservable<Date>;
-			unit: string = '';
-			workPlace: KnockoutObservable<boolean> = ko.observable(false);
-			workPlaceGroup: KnockoutObservable<boolean> = ko.observable(false);
-			isWorkPlace: KnockoutObservable<boolean> = ko.observable(true);
-			isWorkPlaceGroup: KnockoutObservable<boolean> = ko.observable(true);
-			check: KnockoutObservable<boolean> = ko.observable(true);
-			check1: KnockoutObservable<boolean> = ko.observable(true);
-            enableDate: KnockoutObservable<boolean> = ko.observable(true);
+            options: any;
+            treeGrid: any;
+            componentName: KnockoutObservable<string> = ko.observable('workplace-group');
+
+			multiple: KnockoutObservable<boolean> = ko.observable(false);
+            showBaseDate: KnockoutObservable<boolean> = ko.observable(false);
+			date: KnockoutObservable<string> = ko.observable(new Date().toISOString());
+            unit: KnockoutObservable<number> = ko.observable(0);
+
+            selectedWkpId: KnockoutObservable<string> = ko.observable(null);
+			selectedWkpGroupId: KnockoutObservable<string> = ko.observable(null);
+
+            selectedWkpIds: KnockoutObservableArray<string> = ko.observableArray([]);
+            selectedWkpGroupIds: KnockoutObservableArray<string> = ko.observableArray([]);
+
             result: KnockoutObservable<string> = ko.observable('');
+
 			constructor() {
 				var self = this;
-				self.enable = ko.observable(true);
-				self.required = ko.observable(true);
-				self.baseDate = ko.observable(new Date());
-				self.selectedWorkplaceId = ko.observable('');				
-				self.date = ko.observable('2020/01/01');
-				self.workPlace.subscribe((x) => {
-					self.isWorkPlaceGroup(!x);
-					self.check1(!x)
-				})
-				self.workPlaceGroup.subscribe((x) => {
-					self.isWorkPlace(!x);
-					self.check(!x)
-				})
-			
-				self.treeGrid = {
-					isMultipleUse: true,
-					isMultiSelect: false,
-					treeType: 1,
-					selectedId: self.selectedWorkplaceId,
-					baseDate: self.baseDate,
-					selectType: 4,
-					isShowSelectButton: false,
-					isDialog: false,
-					maxRows: 15,
-					tabindex: 1,
-					systemType: 2
+				self.initKCP004();
+                self.initKCP011();
 
-				};
-
-				$('#tree-grid').ntsTreeComponent(self.treeGrid);
-				self.options = {
-					itemList: self.workplaceGroupList,
-					currentCodes: self.currentCodes,
-					currentNames: self.currentNames,
-					currentIds: self.currentIds,
-					multiple: false,
-					tabindex: 2,
-					isAlreadySetting: false,
-					showEmptyItem: false,
-					reloadData: ko.observable(''),
-					height: 373,
-					selectedMode: 1
-				};			
-			}
-			openDialog(): void {
-				let self = this;
-				let request: any = {};			
-				if (self.workPlace()) {
-					self.unit = '0';
-				}
-				if (self.workPlaceGroup()) {
-					self.unit = '1';
-				}
-
-				request.unit = self.unit;
-				if (self.unit === '1') {
-					request.workplaceGroupId = self.currentIds();
-                    request.showBaseDate = self.enableDate();
-				} else {
-					request.workplaceId = self.selectedWorkplaceId();
-                    request.showBaseDate = self.enableDate();
-                    request.date = self.date();
-                    
-				}
-
-                if (self.unit == '' || self.unit == undefined ) {
-                    alert('Please choose target is WorkPlace or WorkPlaceGroup ?');
-                    
-                    if (request.workplaceId == '' || request.workplaceId == undefined ) {
-                        alert('Please choose WorkPlace');                        
-                    }
-                    if (request.workplaceGroupId == ''|| request.workplaceGroupId == undefined) {
-                            alert('Please choose WorkPlaceGroup');                            
-                    }
-                    return;
-                }
-				
-				request.baseDate = moment(self.date());	
-				setShare('dataShareDialog046', request);		
-                self.currentScreen = nts.uk.ui.windows.sub.modal("/view/kdl/046/a/index.xhtml").onClosed(() => {
-                    let result = nts.uk.ui.windows.getShared('dataShareKDL046');
-                    let show = '';
-                    for (const property in result) {
-                       show = show + '  ' +`${property}: ${result[property]}`;
-                    }
-                    self.result(show);
-
+				self.multiple.subscribe(value => {
+                    self.initKCP004();
+					self.initKCP011();
+				    self.componentName.valueHasMutated();
+                });
+                self.unit.subscribe(value => {
+                    if (value == 1 && $("#workplace-group-pannel input.ntsSearchBox").width() == 0)
+                        $("#workplace-group-pannel input.ntsSearchBox").css("width", "auto");
                 });
 			}
-			public startPage(): JQueryPromise<any> {
-				let self = this,
-					dfd = $.Deferred();
 
-				dfd.resolve();
-				return dfd.promise();
+			initKCP004() {
+			    const self = this;
+                self.treeGrid = {
+                    isMultipleUse: true,
+                    isMultiSelect: self.multiple(),
+                    treeType: 1,
+                    selectedId: self.multiple() ? self.selectedWkpIds : self.selectedWkpId,
+                    baseDate: self.date,
+                    selectType: 4,
+                    isShowSelectButton: false,
+                    isDialog: false,
+                    maxRows: 15,
+                    tabindex: 1,
+                    systemType: 2
+                };
+
+                $('#tree-grid').ntsTreeComponent(self.treeGrid);
+            }
+
+            initKCP011() {
+				const self = this;
+                self.options = {
+                    currentIds: self.multiple() ? self.selectedWkpGroupIds : self.selectedWkpGroupId,
+                    multiple: self.multiple(),
+                    tabindex: 2,
+                    isAlreadySetting: false,
+                    showEmptyItem: false,
+                    reloadData: ko.observable(''),
+                    height: 373,
+                    selectedMode: 0
+                };
+			}
+
+			openDialog(): void {
+				let self = this;
+				let request: any = {
+					unit: self.unit(),
+                    baseDate: self.date(),
+                    showBaseDate: self.showBaseDate(),
+                    isMultiple: self.multiple(),
+                    workplaceId: self.multiple() ? self.selectedWkpIds() : self.selectedWkpId(),
+                    workplaceGroupId: self.multiple() ? self.selectedWkpGroupIds() : self.selectedWkpGroupId(),
+				};
+				
+				console.log(request);
+
+                setShare('dataShareDialog046', request);
+                nts.uk.ui.windows.sub.modal("/view/kdl/046/a/index.xhtml").onClosed(() => {
+                    let result = nts.uk.ui.windows.getShared('dataShareKDL046');
+                    console.log(result);
+                    // let show = '';
+                    // for (const property in result) {
+                    //    show = show + '  ' +`${property}: ${result[property]}`;
+                    // }
+                    // self.result(show);
+                });
 			}
 		}
 	}

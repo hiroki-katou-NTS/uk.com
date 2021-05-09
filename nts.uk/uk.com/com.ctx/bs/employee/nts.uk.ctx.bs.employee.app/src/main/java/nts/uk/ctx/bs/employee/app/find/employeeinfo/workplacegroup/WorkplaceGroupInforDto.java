@@ -1,4 +1,4 @@
-package nts.uk.ctx.bs.employee.ws.workplace;
+package nts.uk.ctx.bs.employee.app.find.employeeinfo.workplacegroup;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -7,7 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter	
 @AllArgsConstructor
-public class WorkplaceInforDto {
+public class WorkplaceGroupInforDto {
 	
 	private String workplaceGroupID;
 	
