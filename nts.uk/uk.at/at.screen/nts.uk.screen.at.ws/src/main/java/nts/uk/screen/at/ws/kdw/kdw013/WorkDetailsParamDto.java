@@ -2,6 +2,7 @@ package nts.uk.screen.at.ws.kdw.kdw013;
 
 import java.util.Optional;
 
+
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.record.dom.daily.ouen.SupportFrameNo;
@@ -9,7 +10,11 @@ import nts.uk.ctx.at.record.dom.daily.ouen.WorkDetailsParam;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.WorkinputRemarks;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.work.WorkGroup;
-
+/**
+ * 
+ * @author tutt
+ *
+ */
 @Setter
 @Getter
 public class WorkDetailsParamDto {
@@ -41,10 +46,10 @@ public class WorkDetailsParamDto {
 		return result;
 	}
 
-	public WorkDetailsParam toDomain() {
-		return new WorkDetailsParam(new SupportFrameNo(this.supportFrameNo), new TimeZoneDto().toDomain(),
-				Optional.of(WorkGroup.create(workGroup.getWorkCD1(), workGroup.getWorkCD2(), workGroup.getWorkCD3(),
-						workGroup.getWorkCD4(), workGroup.getWorkCD5())),
-				Optional.of(new WorkinputRemarks(this.remarks)), Optional.of(new WorkLocationCD(this.workLocationCD)));
+	public static WorkDetailsParam toDomain(WorkDetailsParamDto dto) {
+		return new WorkDetailsParam(new SupportFrameNo(dto.getSupportFrameNo()), TimeZoneDto.toDomain(dto.getTimeZone()),
+				Optional.of(WorkGroup.create(dto.getWorkGroup().getWorkCD1(), dto.getWorkGroup().getWorkCD2(), dto.getWorkGroup().getWorkCD3(),
+						dto.getWorkGroup().getWorkCD4(), dto.getWorkGroup().getWorkCD5())),
+				Optional.of(new WorkinputRemarks(dto.getRemarks())), Optional.of(new WorkLocationCD(dto.getWorkLocationCD())));
 	}
 }

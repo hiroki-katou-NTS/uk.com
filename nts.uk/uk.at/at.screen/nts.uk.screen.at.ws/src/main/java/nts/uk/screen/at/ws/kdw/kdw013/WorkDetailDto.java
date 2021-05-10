@@ -24,6 +24,6 @@ public class WorkDetailDto {
 
 	public static WorkDetail toDomain(WorkDetailDto dto) {
 		return new WorkDetail(dto.getDate(), dto.getLstWorkDetailsParam().stream()
-				.map(m -> new WorkDetailsParamDto().toDomain()).collect(Collectors.toList()));
+				.map(m -> WorkDetailsParamDto.toDomain(m)).collect(Collectors.toList()));
 	}
 }

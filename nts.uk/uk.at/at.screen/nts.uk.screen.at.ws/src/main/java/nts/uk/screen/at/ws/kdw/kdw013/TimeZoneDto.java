@@ -54,21 +54,21 @@ public class TimeZoneDto {
 		return timeZoneDto;
 	}
 
-	public TimeZone toDomain() {
+	public static TimeZone toDomain(TimeZoneDto dto) {
 
 		return new TimeZone(
 				new WorkTimeInformation(
 						new ReasonTimeChange(
-								TimeChangeMeans.valueOf(this.start.getReasonTimeChange().getTimeChangeMeans()),
+								TimeChangeMeans.valueOf(dto.getStart().getReasonTimeChange().getTimeChangeMeans()),
 								Optional.of(EngravingMethod
-										.valueOf(this.start.getReasonTimeChange().getEngravingMethod()))),
-						new TimeWithDayAttr(this.start.getTimeWithDay())),
+										.valueOf(dto.getStart().getReasonTimeChange().getEngravingMethod()))),
+						new TimeWithDayAttr(dto.getStart().getTimeWithDay())),
 				new WorkTimeInformation(
 						new ReasonTimeChange(
-								TimeChangeMeans.valueOf(this.end.getReasonTimeChange().getTimeChangeMeans()),
+								TimeChangeMeans.valueOf(dto.getEnd().getReasonTimeChange().getTimeChangeMeans()),
 								Optional.of(EngravingMethod
-										.valueOf(this.end.getReasonTimeChange().getEngravingMethod()))),
-						new TimeWithDayAttr(this.end.getTimeWithDay())),
-				Optional.of(new AttendanceTime(this.workingHours)));
+										.valueOf(dto.getEnd().getReasonTimeChange().getEngravingMethod()))),
+						new TimeWithDayAttr(dto.getEnd().getTimeWithDay())),
+				Optional.of(new AttendanceTime(dto.getWorkingHours())));
 	}
 }
