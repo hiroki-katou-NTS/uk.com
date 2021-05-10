@@ -13,15 +13,17 @@ module nts.uk.at.view.ksu001.a.viewmodel {
     import getText = nts.uk.resource.getText;
     import util = nts.uk.util;
     import bundledErrors = nts.uk.ui.dialog.bundledErrors;
+    import characteristics = nts.uk.characteristics;
 
     /**
      * load screen O->Q->A
      * reference file a.start.ts
      */
     export class ScreenModel {
-
+        
+        userInfor: IUserInfor = {};
         employeeIdLogin: string = __viewContext.user.employeeId;
-        key: string;
+        keyGrid: string;
         rowIndexOfEmpLogin : number;
 
         enableBtnReg : KnockoutObservable<boolean> = ko.observable(false);
@@ -79,9 +81,11 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         arrDay: Time[] = [];
         listSid: KnockoutObservableArray<string> = ko.observableArray([]);
         listEmpData = [];
+        
+        listCheckNeededOfWorkTime: KnockoutObservableArray<any> = ko.observableArray([]);
 
         flag: boolean = true;
-        KEY: string = 'nts.uk.characteristics.ksu001Data';
+        KEY: string = 'ksu001Data';
         dataCell: any; // data để paste vào grid
         
         // data grid
@@ -134,9 +138,11 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         
         listCellRetained = [];
         
-        constructor() {
+        constructor(dataLocalStorage) {
             let self = this;
-
+            
+            self.userInfor =  dataLocalStorage;
+            
             //Date time
             self.dateTimeAfter = ko.observable(moment(self.dtAft()).format('YYYY/MM/DD'));
             self.dateTimePrev = ko.observable(moment(self.dtPrev()).format('YYYY/MM/DD'));
@@ -186,11 +192,16 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 if(self.flag == true)
                     return;
                 
-                uk.localStorage.getItem(self.KEY).ifPresent((data) => {
-                    let userInfor = JSON.parse(data);
-                    userInfor.achievementDisplaySelected = (newValue == 1) ? true : false;
-                    uk.localStorage.setItemAsJson(self.KEY, userInfor);
-                });
+//                uk.localStorage.getItem(self.KEY).ifPresent((data) => {
+//                    let userInfor = JSON.parse(data);
+//                    userInfor.achievementDisplaySelected = (newValue == 1) ? true : false;
+//                    uk.localStorage.setItemAsJson(self.KEY, userInfor);
+//                });
+                if (self.userInfor) {
+                    self.userInfor.achievementDisplaySelected = (newValue == 1) ? true : false;
+                    characteristics.save(self.KEY, self.userInfor);
+                }
+                
                 nts.uk.ui.block.grayout();
                 let viewMode = self.selectedModeDisplayInBody();
                 self.getNewData(viewMode).done(() => {
@@ -217,24 +228,41 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     nts.uk.ui.block.clear();
                 });
             });
-
-            uk.localStorage.getItem(self.KEY).ifPresent((data) => {
-                let userInfor: IUserInfor = JSON.parse(data);
+            
+            if (dataLocalStorage) {
                 // A4_4 表示形式の初期選択と画面モード (Chọn default của các hình thức hiển thị và mode màn hình)
-                if (userInfor.disPlayFormat == 'shift') {
+                if (self.userInfor.disPlayFormat == 'shift') {
                     self.selectedModeDisplayInBody('shift');
                     self.visibleShiftPalette(true);
-                } else if (userInfor.disPlayFormat == 'shortName') {
+                } else if (self.userInfor.disPlayFormat == 'shortName') {
                     self.selectedModeDisplayInBody('shortName');
                     self.visibleShiftPalette(false);
-                } else if (userInfor.disPlayFormat == 'time') {
+                } else if (self.userInfor.disPlayFormat == 'time') {
                     self.selectedModeDisplayInBody('time');
                     self.visibleShiftPalette(false);
                 }
-            }).ifEmpty((data) => {
+            } else {
                 self.selectedModeDisplayInBody('time');
                 self.visibleShiftPalette(false);
-            });
+            }
+
+//            uk.localStorage.getItem(self.KEY).ifPresent((data) => {
+//                let userInfor: IUserInfor = JSON.parse(data);
+//                // A4_4 表示形式の初期選択と画面モード (Chọn default của các hình thức hiển thị và mode màn hình)
+//                if (userInfor.disPlayFormat == 'shift') {
+//                    self.selectedModeDisplayInBody('shift');
+//                    self.visibleShiftPalette(true);
+//                } else if (userInfor.disPlayFormat == 'shortName') {
+//                    self.selectedModeDisplayInBody('shortName');
+//                    self.visibleShiftPalette(false);
+//                } else if (userInfor.disPlayFormat == 'time') {
+//                    self.selectedModeDisplayInBody('time');
+//                    self.visibleShiftPalette(false);
+//                }
+//            }).ifEmpty((data) => {
+//                self.selectedModeDisplayInBody('time');
+//                self.visibleShiftPalette(false);
+//            });
 
             self.selectedModeDisplayInBody.subscribe(function(viewMode) {
                 if (viewMode == null)
@@ -300,13 +328,19 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         }
                     });
                 }
+                
+                if (self.userInfor) {
+                    self.userInfor.backgroundColor = value;
+                    shiftMasterWithWorkStyleLst = self.userInfor.shiftMasterWithWorkStyleLst;
+                    characteristics.save(self.KEY, self.userInfor);
+                }
 
-                uk.localStorage.getItem(self.KEY).ifPresent((data) => {
-                    let userInfor: IUserInfor = JSON.parse(data);
-                    userInfor.backgroundColor = value;
-                    shiftMasterWithWorkStyleLst = userInfor.shiftMasterWithWorkStyleLst;
-                    uk.localStorage.setItemAsJson(self.KEY, userInfor);
-                });
+//                uk.localStorage.getItem(self.KEY).ifPresent((data) => {
+//                    let userInfor: IUserInfor = JSON.parse(data);
+//                    userInfor.backgroundColor = value;
+//                    shiftMasterWithWorkStyleLst = userInfor.shiftMasterWithWorkStyleLst;
+//                    uk.localStorage.setItemAsJson(self.KEY, userInfor);
+//                });
                 
                 if (value == 0) {
                     detailContentDeco = self.listBgOfCellSelfOther;
@@ -332,9 +366,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     objDetailContentDs['employeeId'] = emp.employeeId;
                     let listWorkScheduleShiftByEmpSort = _.orderBy(listWorkScheduleShiftByEmp, ['date'], ['asc']);
 
-                    let item = uk.localStorage.getItem(self.KEY);
-                    let userInfor: IUserInfor = JSON.parse(item.get());
-                    let shiftMasterWithWorkStyleLst = userInfor.shiftMasterWithWorkStyleLst;
+                    let shiftMasterWithWorkStyleLst = self.userInfor.shiftMasterWithWorkStyleLst;
 
                     for (let j = 0; j < listWorkScheduleShiftByEmpSort.length; j++) {
                         let cell: IWorkScheduleShiftInforDto = listWorkScheduleShiftByEmpSort[j];
@@ -346,7 +378,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
                         // set Deco background
                         if (value == 1) {
-                            let shiftMasterWithWorkStyleLst = userInfor.shiftMasterWithWorkStyleLst;
                             if (dataCellOnGrid.shiftCode != null) {
                                 let objShiftMasterWithWorkStyle = _.filter(shiftMasterWithWorkStyleLst, function(o) { return o.shiftMasterCode == dataCellOnGrid.shiftCode; });
                                 if (objShiftMasterWithWorkStyle.length > 0) {
@@ -398,9 +429,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     self.bindingEventClickFlower();    
                 }
 
-                let item = uk.localStorage.getItem(self.KEY);
-                let userInfor: IUserInfor = JSON.parse(item.get());
-                if (userInfor.updateMode == 'copyPaste') {
+                if (self.userInfor.updateMode == 'copyPaste') {
                     self.coppyData();
                 }
                 nts.uk.ui.block.clear();
@@ -423,26 +452,21 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         
         startPage(): JQueryPromise<any> {
             let self = this, dfd = $.Deferred();
-            let item = uk.localStorage.getItem(self.KEY);
-            let userInfor: IUserInfor = {};
-            if (item.isPresent()) {
-                userInfor = JSON.parse(item.get());
-            }
-            let viewMode = item.isPresent() ? userInfor.disPlayFormat : 'time';
-            let updateMode = item.isPresent() ? userInfor.updateMode : 'stick';
+            let viewMode   = _.isNil(self.userInfor) ? 'time' : self.userInfor.disPlayFormat ;
+            let updateMode = _.isNil(self.userInfor) ? 'stick': self.userInfor.updateMode;
             
             let param = {
                 viewMode: viewMode,
                 startDate: null,
-                endDate  : null,
-                shiftPalletUnit: item.isPresent() ? userInfor.shiftPalletUnit : 1, // 1: company , 2 : workPlace 
-                pageNumberCom: item.isPresent() ? userInfor.shiftPalettePageNumberCom : 1,
-                pageNumberOrg: item.isPresent() ? userInfor.shiftPalettePageNumberOrg : 1,
+                endDate: null,
+                shiftPalletUnit: !_.isNil(self.userInfor) ? self.userInfor.shiftPalletUnit : 1, // 1: company , 2 : workPlace 
+                pageNumberCom:   !_.isNil(self.userInfor) ? self.userInfor.shiftPalettePageNumberCom : 1,
+                pageNumberOrg:   !_.isNil(self.userInfor) ? self.userInfor.shiftPalettePageNumberOrg : 1,
                 getActualData: false,
-                listShiftMasterNotNeedGetNew: item.isPresent() ? userInfor.shiftMasterWithWorkStyleLst : [], // List of shifts không cần lấy mới
+                listShiftMasterNotNeedGetNew: !_.isNil(self.userInfor) ? self.userInfor.shiftMasterWithWorkStyleLst : [], // List of shifts không cần lấy mới
                 listSid: self.listSid(),
-                unit: item.isPresent() ? userInfor.unit : 0,
-                workplaceId     : null,
+                unit: !_.isNil(self.userInfor) ? self.userInfor.unit : 0,
+                workplaceId: null,
                 workplaceGroupId: null,
             }
 
@@ -512,23 +536,21 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let self = this;
             let viewMode = self.selectedModeDisplayInBody();
             nts.uk.ui.block.grayout();
-            let item = uk.localStorage.getItem(self.KEY);
-            let userInfor: IUserInfor = JSON.parse(item.get());
 
             let param = {
                 viewMode: self.selectedModeDisplayInBody(), // time | shortName | shift
                 startDate: startDate,
                 endDate: endDate,
-                workplaceId: userInfor.workplaceId,
-                workplaceGroupId: userInfor.workplaceGroupId,
-                unit: userInfor.unit,
-                getActualData: item.isPresent() ? userInfor.achievementDisplaySelected : false,
-                listShiftMasterNotNeedGetNew: userInfor.shiftMasterWithWorkStyleLst,
+                workplaceId: self.userInfor.workplaceId,
+                workplaceGroupId: self.userInfor.workplaceGroupId,
+                unit: self.userInfor.unit,
+                getActualData: !_.isNil(self.userInfor) ? self.userInfor.achievementDisplaySelected : false,
+                listShiftMasterNotNeedGetNew: self.userInfor.shiftMasterWithWorkStyleLst,
                 listSid: self.listSid()
             };
 
             service.getDataWhenChangeModePeriod(param).done((data: any) => {
-                if (userInfor.disPlayFormat == 'shift') {
+                if (self.userInfor.disPlayFormat == 'shift') {
                     self.saveShiftMasterToLocalStorage(data.shiftMasterWithWorkStyleLst);
                 }
                 
@@ -559,7 +581,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 self.setPositionButonToRightToLeft();
                 
                 // fix bug khong coppyPaste dc 
-                if (userInfor.updateMode == 'copyPaste') {
+                if (self.userInfor.updateMode == 'copyPaste') {
                     $("#extable").exTable("updateMode", "stick");
                     $("#extable").exTable("updateMode", "copyPaste");
                 }
@@ -600,45 +622,37 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
         creatDataLocalStorege(dataBasic: IDataBasicDto) {
             let self = this;
-            let item = uk.localStorage.getItem(self.KEY);
-            if (!item.isPresent()) {
-                let userInfor: IUserInfor = {};
-                userInfor.disPlayFormat = self.selectedModeDisplayInBody();
-                userInfor.backgroundColor = 0; // 0 : 通常; 1: シフト   // mau nền default của shiftMode
-                userInfor.achievementDisplaySelected = false;
-                userInfor.shiftPalletUnit = 1;
-                userInfor.shiftPalettePageNumberCom = 1;
-                userInfor.shiftPalletPositionNumberCom = { column : 0 , row : 0 };
-                userInfor.shiftPalettePageNumberOrg = 1;
-                userInfor.shiftPalletPositionNumberOrg = { column : 0 , row : 0 };
-                userInfor.gridHeightSelection = 1;
-                userInfor.heightGridSetting = '';
-                userInfor.unit = dataBasic.unit;
-                userInfor.workplaceId= dataBasic.workplaceId;
-                userInfor.workplaceGroupId = dataBasic.workplaceGroupId;
-                userInfor.workPlaceName = dataBasic.targetOrganizationName;
-                userInfor.code = dataBasic.code;
-                userInfor.workType = {};
-                userInfor.workTime = {};
-                userInfor.shiftMasterWithWorkStyleLst = [];
-                uk.localStorage.setItemAsJson(self.KEY, userInfor);
+            if (_.isNil(self.userInfor)) {
+                let data : IUserInfor = {};
+                data.disPlayFormat = self.selectedModeDisplayInBody();
+                data.backgroundColor = 0; // 0 : 通常; 1: シフト   // mau nền default của shiftMode
+                data.achievementDisplaySelected = false;
+                data.shiftPalletUnit = 1;
+                data.shiftPalettePageNumberCom = 1;
+                data.shiftPalletPositionNumberCom = { column : 0 , row : 0 };
+                data.shiftPalettePageNumberOrg = 1;
+                data.shiftPalletPositionNumberOrg = { column : 0 , row : 0 };
+                data.gridHeightSelection = 1;
+                data.heightGridSetting = '';
+                data.unit = dataBasic.unit;
+                data.workplaceId= dataBasic.workplaceId;
+                data.workplaceGroupId = dataBasic.workplaceGroupId;
+                data.workPlaceName = dataBasic.targetOrganizationName;
+                data.code = dataBasic.code;
+                data.workType = {};
+                data.workTime = {};
+                data.shiftMasterWithWorkStyleLst = [];
+                self.userInfor = data;
+                characteristics.save(self.KEY, self.userInfor);
             } else {
-                uk.localStorage.getItem(self.KEY).ifPresent((data) => {
-                    let userInfor: IUserInfor = JSON.parse(data);
-                    userInfor.achievementDisplaySelected = false;
-                    uk.localStorage.setItemAsJson(self.KEY, userInfor);
-                });
+                self.userInfor.achievementDisplaySelected = false;
+                characteristics.save(self.KEY, self.userInfor);
             }
         }
         
         setUpdateMode() {
             let self = this;
-            let item = uk.localStorage.getItem(self.KEY);
-            let userInfor: IUserInfor = {};
-            if (item.isPresent()) {
-                userInfor = JSON.parse(item.get());
-            }
-            let updateMode = item.isPresent() ? (userInfor.updateMode == undefined ? 'stick' : userInfor.updateMode) : 'stick';
+            let updateMode = !_.isNil(self.userInfor) ? (self.userInfor.updateMode == undefined ? 'stick' : self.userInfor.updateMode) : 'stick';
 
             if (updateMode == 'stick') {
                 self.pasteData();
@@ -651,21 +665,19 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
         shiftModeStart(): JQueryPromise<any> {
             let self = this, dfd = $.Deferred();
-            let item = uk.localStorage.getItem(self.KEY);
-            let userInfor: IUserInfor = JSON.parse(item.get());
             let param = {
                 viewMode : 'shift',
                 startDate: self.dateTimePrev() ,
                 endDate  : self.dateTimeAfter(),
-                shiftPalletUnit : userInfor.shiftPalletUnit, // 1: company , 2 : workPlace 
-                pageNumberCom   : userInfor.shiftPalettePageNumberCom,
-                pageNumberOrg   : userInfor.shiftPalettePageNumberOrg,
-                getActualData   : item.isPresent() ? userInfor.achievementDisplaySelected : false, 
-                listShiftMasterNotNeedGetNew: userInfor.shiftMasterWithWorkStyleLst, // List of shifts không cần lấy mới
+                shiftPalletUnit : self.userInfor.shiftPalletUnit, // 1: company , 2 : workPlace 
+                pageNumberCom   : self.userInfor.shiftPalettePageNumberCom,
+                pageNumberOrg   : self.userInfor.shiftPalettePageNumberOrg,
+                getActualData   : !_.isNil(self.userInfor) ? self.userInfor.achievementDisplaySelected : false, 
+                listShiftMasterNotNeedGetNew: self.userInfor.shiftMasterWithWorkStyleLst, // List of shifts không cần lấy mới
                 listSid: self.listSid(),
-                unit: item.isPresent() ? userInfor.unit : 0,
-                workplaceId     : userInfor.workplaceId,
-                workplaceGroupId: userInfor.workplaceGroupId
+                unit: !_.isNil(self.userInfor) ? self.userInfor.unit : 0,
+                workplaceId     : self.userInfor.workplaceId,
+                workplaceGroupId: self.userInfor.workplaceGroupId
             };
             self.saveModeGridToLocalStorege('shift');
             self.visibleShiftPalette(true);
@@ -683,11 +695,11 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 // set data shiftPallet
                 __viewContext.viewModel.viewAC.flag = false;
                 
-                __viewContext.viewModel.viewAC.selectedpalletUnit(userInfor.shiftPalletUnit);
-                if(userInfor.shiftPalletUnit == 1){
-                    __viewContext.viewModel.viewAC.handleInitCom(data.listPageInfo,data.targetShiftPalette.shiftPalletCom,userInfor.shiftPalettePageNumberCom);
+                __viewContext.viewModel.viewAC.selectedpalletUnit(self.userInfor.shiftPalletUnit);
+                if(self.userInfor.shiftPalletUnit == 1){
+                    __viewContext.viewModel.viewAC.handleInitCom(data.listPageInfo,data.targetShiftPalette.shiftPalletCom,self.userInfor.shiftPalettePageNumberCom);
                 }else{
-                    __viewContext.viewModel.viewAC.handleInitWkp(data.listPageInfo,data.targetShiftPalette.shiftPalletWorkPlace,userInfor.shiftPalettePageNumberOrg);
+                    __viewContext.viewModel.viewAC.handleInitWkp(data.listPageInfo,data.targetShiftPalette.shiftPalletWorkPlace,self.userInfor.shiftPalettePageNumberOrg);
                 }
                 __viewContext.viewModel.viewAC.flag = true;
 
@@ -723,17 +735,15 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
         shortNameModeStart(): JQueryPromise<any> {
             let self = this, dfd = $.Deferred();
-            let item = uk.localStorage.getItem(self.KEY);
-            let userInfor: IUserInfor = JSON.parse(item.get());
-            let setWorkTypeTime = userInfor.disPlayFormat == 'shift' ? true : false;
+            let setWorkTypeTime = self.userInfor.disPlayFormat == 'shift' ? true : false;
             let param = {
                 viewMode: 'shortName',
                 startDate: self.dateTimePrev(),
                 endDate:   self.dateTimeAfter() ,
-                getActualData: item.isPresent() ? userInfor.achievementDisplaySelected : false,
-                unit: item.isPresent() ? userInfor.unit : 0,
-                workplaceId     : userInfor.workplaceId,
-                workplaceGroupId: userInfor.workplaceGroupId
+                getActualData: !_.isNil(self.userInfor) ? self.userInfor.achievementDisplaySelected : false,
+                unit: !_.isNil(self.userInfor) ? self.userInfor.unit : 0,
+                workplaceId     : self.userInfor.workplaceId,
+                workplaceGroupId: self.userInfor.workplaceGroupId
             };
             
             self.visibleShiftPalette(false);
@@ -742,7 +752,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             
             service.getDataOfShortNameMode(param).done((data: IDataStartScreen) => {
                 if (setWorkTypeTime) {
-                    self.setWorkTypeTime(data.listWorkTypeInfo, userInfor);
+                    self.setWorkTypeTime(data.listWorkTypeInfo, self.userInfor);
                 }
                 
                 self.saveDataGrid(data);
@@ -768,17 +778,15 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
         timeModeStart(): JQueryPromise<any> {
             let self = this, dfd = $.Deferred();
-            let item = uk.localStorage.getItem(self.KEY);
-            let userInfor: IUserInfor = JSON.parse(item.get());
-            let setWorkTypeTime = userInfor.disPlayFormat == 'shift' ? true : false;
+            let setWorkTypeTime = self.userInfor.disPlayFormat == 'shift' ? true : false;
             let param = {
                 viewMode: 'time',
                 startDate: self.dateTimePrev(),
                 endDate: self.dateTimeAfter(),
-                getActualData: item.isPresent() ? userInfor.achievementDisplaySelected : false,
-                unit: item.isPresent() ? userInfor.unit : 0,
-                workplaceId     : userInfor.workplaceId,
-                workplaceGroupId: userInfor.workplaceGroupId
+                getActualData: !_.isNil(self.userInfor) ? self.userInfor.achievementDisplaySelected : false,
+                unit: !_.isNil(self.userInfor) ? self.userInfor.unit : 0,
+                workplaceId     : self.userInfor.workplaceId,
+                workplaceGroupId: self.userInfor.workplaceGroupId
             };
 
             self.visibleShiftPalette(false);
@@ -787,7 +795,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             self.saveModeGridToLocalStorege('time');
             service.getDataOfTimeMode(param).done((data: IDataStartScreen) => {
                 if (setWorkTypeTime) {
-                    self.setWorkTypeTime(data.listWorkTypeInfo, userInfor);
+                    self.setWorkTypeTime(data.listWorkTypeInfo, self.userInfor);
                 }
                 
                 self.saveDataGrid(data);
@@ -819,16 +827,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
             }
             
-            let item = uk.localStorage.getItem(self.KEY);
-            let userInfor: IUserInfor = {};
-            if (item.isPresent()) {
-                userInfor = JSON.parse(item.get());
-            }
+            let workTypeCodeSave = !_.isNil(self.userInfor)  ? self.userInfor.workTypeCodeSelected : '';
+            let workTimeCodeSave = !_.isNil(self.userInfor)  ? self.userInfor.workTimeCodeSelected : '';
             
-            let workTypeCodeSave = item.isPresent() ? userInfor.workTypeCodeSelected : '';
-            let workTimeCodeSave = item.isPresent() ? userInfor.workTimeCodeSelected : '';
-            
-            let workTimeCode = '';
+            let workTimeCode = ''; 
             if (workTimeCodeSave != '') {
                 if (workTimeCodeSave === 'none') {
                     workTimeCode = '';
@@ -841,21 +843,16 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             self.setDataWorkType(listWorkTypeInfo);
             __viewContext.viewModel.viewAB.selectedWorkTypeCode(workTypeCodeSave);
             __viewContext.viewModel.viewAB.selected(workTimeCode);
-            __viewContext.viewModel.viewAB.workplaceIdKCP013(userInfor.unit == 0 ? userInfor.workplaceId : userInfor.workplaceGroupId);
-            __viewContext.viewModel.viewAB.filter(userInfor.unit == 0 ? true : false);
+            __viewContext.viewModel.viewAB.workplaceIdKCP013(self.userInfor.unit == 0 ? self.userInfor.workplaceId : self.userInfor.workplaceGroupId);
+            __viewContext.viewModel.viewAB.filter(self.userInfor.unit == 0 ? true : false);
         }
         
         checkEnableCombWTime() {
             let self = this;
             if (self.selectedModeDisplayInBody() == 'shift')
                 return;
-            let item = uk.localStorage.getItem(self.KEY);
-            let userInfor = {};
-            if (item.isPresent()) {
-                userInfor = JSON.parse(item.get());
-            }
             
-            let workTypeCodeSave = item.isPresent() ? userInfor.workTypeCodeSelected : '';
+            let workTypeCodeSave = !_.isNil(self.userInfor) ? self.userInfor.workTypeCodeSelected : '';
             if (workTypeCodeSave == '') {
                 if (__viewContext.viewModel.viewAB.listWorkType()[0].workTimeSetting == 2) {
                     __viewContext.viewModel.viewAB.disabled(true);
@@ -885,21 +882,17 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         bindingEventCellUpdatedGrid() {
             let self = this;
             $("#extable").on("extablecellupdated", (dataCell) => {
-                let itemLocal = uk.localStorage.getItem(self.KEY);
-                let userInfor: IUserInfor = JSON.parse(itemLocal.get());
-                if (userInfor.disPlayFormat == 'time' && userInfor.updateMode == 'edit') {
-                    self.validTimeInEditMode(dataCell, userInfor, false);
+                if (self.userInfor.disPlayFormat == 'time' && self.userInfor.updateMode == 'edit') {
+                    self.validTimeInEditMode(dataCell, self.userInfor, false);
                 } else {
                     self.checkExitCellUpdated();
                 }
             });
 
             $("#extable").on("extablecellretained", (dataCell) => {
-                let itemLocal = uk.localStorage.getItem(self.KEY);
-                let userInfor: IUserInfor = JSON.parse(itemLocal.get());
-                if (userInfor.disPlayFormat == 'time' && userInfor.updateMode == 'edit') {
+                if (self.userInfor.disPlayFormat == 'time' && self.userInfor.updateMode == 'edit') {
                     self.addCellRetaine(dataCell);
-                    self.validTimeInEditMode(dataCell, userInfor, true);
+                    self.validTimeInEditMode(dataCell, self.userInfor, true);
                 }
             });
 
@@ -1065,31 +1058,22 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             self.targetOrganizationName(dataBasic.targetOrganizationName);
             
             // save data to local Storage
-            uk.localStorage.getItem(self.KEY).ifPresent((data) => {
-                let userInfor: IUserInfor  = JSON.parse(data);
-                userInfor.unit             = dataBasic.unit;
-                userInfor.workplaceId      = dataBasic.workplaceId;
-                userInfor.workplaceGroupId = dataBasic.workplaceGroupId;
-                userInfor.workPlaceName    = dataBasic.targetOrganizationName;
-                uk.localStorage.setItemAsJson(self.KEY, userInfor);
-            });
+            self.userInfor.unit = dataBasic.unit;
+            self.userInfor.workplaceId = dataBasic.workplaceId;
+            self.userInfor.workplaceGroupId = dataBasic.workplaceGroupId;
+            self.userInfor.workPlaceName = dataBasic.targetOrganizationName;
+            characteristics.save(self.KEY, self.userInfor);
         }
         
         saveShiftMasterToLocalStorage(shiftMasterWithWorkStyleLst: Array<IShiftMasterMapWithWorkStyle>) {
             let self = this;
             // save data to local Storage
-            uk.localStorage.getItem(self.KEY).ifPresent((data) => {
-                let userInfor: IUserInfor = JSON.parse(data);
-                userInfor.shiftMasterWithWorkStyleLst = shiftMasterWithWorkStyleLst;
-                uk.localStorage.setItemAsJson(self.KEY, userInfor);
-            });
+            self.userInfor.shiftMasterWithWorkStyleLst = shiftMasterWithWorkStyleLst;
+            characteristics.save(self.KEY, self.userInfor);
         }
         
         bingdingToShiftPallet(data: any) {
             let self = this;
-            let item = uk.localStorage.getItem(self.KEY);
-            let userInfor: IUserInfor = JSON.parse(item.get());
-
             // set data shiftPallet
             __viewContext.viewModel.viewAC.flag = false;
             __viewContext.viewModel.viewAC.workplaceModeName(data.dataBasicDto.designation);
@@ -1098,17 +1082,17 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 { code: 2, name: data.dataBasicDto.designation }
             ]);
             
-            __viewContext.viewModel.viewAC.selectedpalletUnit(userInfor.shiftPalletUnit);
-            if (userInfor.shiftPalletUnit == 1) {
+            __viewContext.viewModel.viewAC.selectedpalletUnit(self.userInfor.shiftPalletUnit);
+            if (self.userInfor.shiftPalletUnit == 1) {
                 __viewContext.viewModel.viewAC.handleInitCom(
                     data.listPageInfo,
                     data.targetShiftPalette.shiftPalletCom,
-                    userInfor.shiftPalettePageNumberCom);
+                    self.userInfor.shiftPalettePageNumberCom);
             } else {
                 __viewContext.viewModel.viewAC.handleInitWkp(
                     data.listPageInfo,
                     data.targetShiftPalette.shiftPalletWorkPlace,
-                    userInfor.shiftPalettePageNumberOrg);
+                    self.userInfor.shiftPalettePageNumberOrg);
             }
             __viewContext.viewModel.viewAC.flag = true;
         }
@@ -1153,8 +1137,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let listCellNotEditColor = [];
             let arrListCellLock = [];
             let scheduleModifyStartDate = self.scheduleModifyStartDate;
-            let item = uk.localStorage.getItem(self.KEY);
-            let userInfor: IUserInfor = JSON.parse(item.get());
             self.listEmpData = [];
             self.listSid([]);
             self.arrListCellLock = [];
@@ -1200,8 +1182,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     objDetailContentDs['sid'] = i.toString();
                     objDetailContentDs['employeeId'] = emp.employeeId;
                     let listWorkScheduleShiftByEmpSort = _.orderBy(listWorkScheduleShiftByEmp, ['date'],['asc']);
-                    let item = uk.localStorage.getItem(self.KEY);
-                    let userInfor: IUserInfor = JSON.parse(item.get());
+                    let userInfor: IUserInfor = self.userInfor;
                     let shiftMasterWithWorkStyleLst = userInfor.shiftMasterWithWorkStyleLst;
                     
                     for (let j = 0; j < listWorkScheduleShiftByEmpSort.length; j++) {
@@ -1763,11 +1744,11 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             
             let empLogin = _.filter(detailContentDs, function(o) { return o.employeeId == self.employeeIdLogin; });
             if (empLogin.length > 0) {
-                self.key = empLogin[0].sid;
+                self.keyGrid = empLogin[0].sid;
                 self.rowIndexOfEmpLogin = _.indexOf(detailContentDs, empLogin[0]);
             } else {
-                self.key = 0;
-                self.rowIndexOfEmpLogin = -1;
+                self.keyGrid = '0';
+                self.rowIndexOfEmpLogin = 0;
             }
             
             return result;
@@ -1817,11 +1798,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             
         saveModeGridToLocalStorege(mode) {
             let self = this;
-            uk.localStorage.getItem(self.KEY).ifPresent((data) => {
-                let userInfor = JSON.parse(data);
-                userInfor.disPlayFormat = mode;
-                uk.localStorage.setItemAsJson(self.KEY, userInfor);
-            });
+            self.userInfor.disPlayFormat = mode;
+            characteristics.save(self.KEY, self.userInfor);
         }
 
         /**
@@ -1829,33 +1807,31 @@ module nts.uk.at.view.ksu001.a.viewmodel {
          */
         getSettingDisplayWhenStart(viewMode, isStart) {
             let self = this;
-            
+
             $(".editMode").addClass("A6_hover").removeClass("A6_not_hover");
             $(".confirmMode").addClass("A6_not_hover").removeClass("A6_hover");
 
-            uk.localStorage.getItem(self.KEY).ifPresent((data) => {
-                let userInfor: IUserInfor = JSON.parse(data);
-
+            if (!_.isNil(self.userInfor)) {
                 // A4_7
-                if(isStart){
+                if (isStart) {
                     self.achievementDisplaySelected(2);
-                }else{
-                    self.achievementDisplaySelected(userInfor.achievementDisplaySelected == false ? 2 : 1);
+                } else {
+                    self.achievementDisplaySelected(self.userInfor.achievementDisplaySelected == false ? 2 : 1);
                 }
-                
+
                 // A4_12 背景色の初期選択   (Chọn default màu nền)
-                self.backgroundColorSelected(userInfor.backgroundColor);
+                self.backgroundColorSelected(self.userInfor.backgroundColor);
 
                 // get setting height grid
-                if (userInfor.gridHeightSelection == 1) {
+                if (self.userInfor.gridHeightSelection == 1) {
                     self.selectedTypeHeightExTable(1);
                     self.isEnableInputHeight(false);
                 } else {
-                    self.heightGridSetting(userInfor.heightGridSetting);
+                    self.heightGridSetting(self.userInfor.heightGridSetting);
                     self.selectedTypeHeightExTable(2);
                     self.isEnableInputHeight(true);
                 }
-                
+
                 if (viewMode == 'time') {
                     self.visibleBtnInput(true);
                 } else {
@@ -1864,7 +1840,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
                 self.enableBtnRedo(false);
                 self.enableBtnUndo(false);
-                
+
                 // enable| disable combobox workTime
                 let workType = _.filter(__viewContext.viewModel.viewAB.listWorkType(), function(o) { return o.workTypeCode == __viewContext.viewModel.viewAB.selectedWorkTypeCode(); });
                 if (workType.length > 0) {
@@ -1875,8 +1851,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         __viewContext.viewModel.viewAB.disabled(false);
                     }
                 }
-            });
+            }
         }
+
         // 9999 dangky
         saveData(): JQueryPromise<any> {
             let self = this, dfd = $.Deferred();
@@ -1888,13 +1865,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             $('div > iframe').contents().find('#btnClose').trigger('click');
             
             nts.uk.ui.block.grayout();
-            let itemLocal = uk.localStorage.getItem(self.KEY);
-            let userInfor = JSON.parse(itemLocal.get());
             let updatedCells = $("#extable").exTable("updatedCells");
-            let viewMode = userInfor.disPlayFormat;
             let params = [];
             let cellsGroup;
-            if (userInfor.disPlayFormat == 'shift' && self.hasChangeModeBg == true) {
+            if (self.userInfor.disPlayFormat == 'shift' && self.hasChangeModeBg == true) {
                 // cập nhật lại list cells change.
                 let updatedCells2 = $("#extable").exTable("updatedCells");
                 _.forEach(updatedCells2, function(cell: any) {
@@ -1920,14 +1894,14 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
             console.log(cellsGroup);
 
-            let data = self.buidDataReg(userInfor.disPlayFormat, cellsGroup);
+            let data = self.buidDataReg(self.userInfor.disPlayFormat, cellsGroup);
             
-            if (viewMode == 'time') {
+            if (self.userInfor.disPlayFormat == 'time') {
                 self.checkCellRetained(data);    
             }
             
             // check trường hợp starttime|end == ''  thì return luôn. 
-            let validData = self.validData(data, userInfor.disPlayFormat);
+            let validData = self.validData(data, self.userInfor.disPlayFormat);
             if (validData  == false) {
                 nts.uk.ui.block.clear();
                 return;
@@ -2158,9 +2132,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 currentDay = new Date(),
                 windowXOccupation = 65,
                 windowYOccupation = 328;
-            let itemLocal = uk.localStorage.getItem(self.KEY);
-            let userInfor = JSON.parse(itemLocal.get());
-            let bodyHeightMode = userInfor.gridHeightSelection == 1 ? "dynamic" : "fixed";
+            let bodyHeightMode = self.userInfor.gridHeightSelection == 1 ? "dynamic" : "fixed";
             // phần leftMost
             let leftmostColumns = [];
             let leftmostHeader = {};
@@ -2296,10 +2268,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     let dayEdit = new Date();
                     let param = {
                         detailContentDs: detailContentData,
-                        unit: userInfor.unit,
-                        workplaceId: userInfor.workplaceId,
-                        workplaceGroupId: userInfor.workplaceGroupId,
-                        workplaceName: userInfor.workPlaceName,
+                        unit: self.userInfor.unit,
+                        workplaceId: self.userInfor.workplaceId,
+                        workplaceGroupId: self.userInfor.workplaceGroupId,
+                        workplaceName: self.userInfor.workPlaceName,
                         listEmp: self.listEmpData,
                         daySelect: moment(ui.columnKey.slice(1)).format('YYYY/MM/DD'),
                         startDate: self.dateTimePrev(),
@@ -2387,7 +2359,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     bodyHeightMode: bodyHeightMode,
                     windowXOccupation: windowXOccupation,
                     windowYOccupation: windowYOccupation,
-                    manipulatorId: self.key,
+                    manipulatorId: self.keyGridGrid,
                     manipulatorKey: "sid",
                     updateMode: updateMode,
                     pasteOverWrite: true,
@@ -2423,7 +2395,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     bodyHeightMode: bodyHeightMode,
                     windowXOccupation: windowXOccupation,
                     windowYOccupation: windowYOccupation,
-                    manipulatorId: self.key,
+                    manipulatorId: self.keyGrid,
                     manipulatorKey: "sid",
                     updateMode: updateMode,
                     pasteOverWrite: true,
@@ -2459,15 +2431,13 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let self = this;
             $('.extable-header-detail a').css('width', '30px');
             $('.extable-header-detail img').css('margin-top', '2px');
-            let itemLocal = uk.localStorage.getItem(self.KEY);
-            let userInfor = JSON.parse(itemLocal.get());
             $(".header-image-no-event, .header-image-event").on("click", function(event) {
                 let index = $(event.target).parent().index();
                 let columnKey = self.detailColumns[index].key;
                 let param = {
                     dateSelected: moment(columnKey.slice(1)).format('YYYY/MM/DD'),
                     workplace: {
-                        workPlaceID: userInfor.workplaceId == null ? userInfor.workplaceGroupId : userInfor.workplaceId,
+                        workPlaceID: self.userInfor.workplaceId == null ? self.userInfor.workplaceGroupId : self.userInfor.workplaceId,
                         targetOrgWorkplaceName: self.targetOrganizationName()
                     }
                 }
@@ -2492,10 +2462,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         updateHeader(): JQueryPromise<any> {
             let self = this, dfd = $.Deferred();
             nts.uk.ui.block.grayout();
-            let item = uk.localStorage.getItem(self.KEY);
-            let userInfor: IUserInfor = JSON.parse(item.get());
             
-            //
             let objDetailHeaderDs = {};
             let detailHeaderDeco  = [];
             let htmlToolTip       = [];
@@ -2503,8 +2470,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let param = {
                 startDate: self.dateTimePrev(),
                 endDate  : self.dateTimeAfter(),
-                wkpId  : userInfor.workplaceId,
-                wkpGrId: userInfor.workplaceGroupId
+                wkpId  : self.userInfor.workplaceId,
+                wkpGrId: self.userInfor.workplaceGroupId
             };
 
             service.getEvent(param).done((listDateInfo: any) => {
@@ -2822,13 +2789,11 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         setStyler() {
             let self = this;
             // get listShiftMaster luu trong localStorage
-            let itemLocal = uk.localStorage.getItem(self.KEY);
-            let userInfor = JSON.parse(itemLocal.get());
-            let listShiftMasterSaveLocal = userInfor.shiftMasterWithWorkStyleLst;
+            let listShiftMasterSaveLocal = self.userInfor.shiftMasterWithWorkStyleLst;
 
             // set color for cell
             $("#extable").exTable("stickStyler", function(rowIdx, key, innerIdx, data, stickOrigData) {
-                if (userInfor.disPlayFormat == 'shift') {
+                if (self.userInfor.disPlayFormat == 'shift') {
                     let modeBackGround = self.backgroundColorSelected(); // 0||1
                     let shiftCode;
                     if (_.isNil(stickOrigData)) {
@@ -2876,7 +2841,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                             }
                         }
                     }
-                } else if (userInfor.disPlayFormat == 'time') {
+                } else if (self.userInfor.disPlayFormat == 'time') {
                     let workStyle = data.workHolidayCls;
                     if (!_.isNil(data)) {
                         // case coppy từ cell là ngày lễ, ngày nghỉ nên phải disable cell starttime, endtime đi.
@@ -2907,7 +2872,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                             else if (innerIdx === 2 || innerIdx === 3) return { textColor: "#000000" };
                         }
                     }
-                } else if (userInfor.disPlayFormat == 'shortName') {
+                } else if (self.userInfor.disPlayFormat == 'shortName') {
                     if (!_.isNil(data)) {
                         let workStyle = data.workHolidayCls;
                         if (workStyle == AttendanceHolidayAttr.FULL_TIME) {
@@ -2982,16 +2947,15 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             if (nts.uk.ui.errors.hasError())
                 return;
 
-            uk.localStorage.getItem(self.KEY).ifPresent((data) => {
-                let userInfor = JSON.parse(data);
-                userInfor.gridHeightSelection = self.selectedTypeHeightExTable();
+            if (!_.isNil(self.userInfor)) {
+                self.userInfor.gridHeightSelection = self.selectedTypeHeightExTable();
                 if (self.selectedTypeHeightExTable() == TypeHeightExTable.DEFAULT) {
-                    userInfor.heightGridSetting = '';
+                    self.userInfor.heightGridSetting = '';
                 } else if (self.selectedTypeHeightExTable() == TypeHeightExTable.SETTING) {
-                    userInfor.heightGridSetting = self.heightGridSetting();
+                    self.userInfor.heightGridSetting = self.heightGridSetting();
                 }
-                uk.localStorage.setItemAsJson(self.KEY, userInfor);
-            });
+                characteristics.save(self.KEY, self.userInfor);
+            };
 
             $('#A16').ntsPopup('hide');
         }
@@ -3064,15 +3028,13 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         
         setHeightScreen() {
             let self = this;
-            let itemLocal = uk.localStorage.getItem(self.KEY);
-            let userInfor = JSON.parse(itemLocal.get());
-            if (userInfor.gridHeightSelection == 1) {
+            if (self.userInfor.gridHeightSelection == 1) {
                 $("#content-main").css('height', 'auto');
             } else {
-                let heightGrid: number = parseInt(userInfor.heightGridSetting);
+                let heightGrid: number = parseInt(self.userInfor.heightGridSetting);
                 $("#main-area").css('height', window.innerHeight - 92 + 'px');
                 $("#main-area").css('overflow-y', 'scroll');
-                if(window.innerHeight - 92 > heightGrid + 295){
+                if (window.innerHeight - 92 > heightGrid + 295) {
                     $("#main-area").css('overflow-y', 'hidden');
                 }
             }
@@ -3098,11 +3060,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         
         setPositionButonDownAndHeightGrid() {
             let self = this;
-            if (uk.localStorage.getItem(self.KEY).isPresent()) {
-                let userInfor = JSON.parse(uk.localStorage.getItem(self.KEY).get());
-                if (userInfor.gridHeightSelection == 2) {
-                    $("#extable").exTable("setHeight", userInfor.heightGridSetting);
-                    let heightBodySetting: number = + userInfor.heightGridSetting;
+            if (!_.isNil(self.userInfor)) {
+                if (self.userInfor.gridHeightSelection == 2) {
+                    $("#extable").exTable("setHeight", self.userInfor.heightGridSetting);
+                    let heightBodySetting: number = + self.userInfor.heightGridSetting;
                     let heightBody = heightBodySetting + 60 - 25 - 16; // 60 chieu cao header, 25 chieu cao button
                     $(".toDown").css({ "margin-top": heightBody + 'px' });
                 } else {
@@ -3159,8 +3120,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 return;
             
             nts.uk.ui.block.grayout();
-            let item = uk.localStorage.getItem(self.KEY);
-            let userInfor: IUserInfor = JSON.parse(item.get());
             
             let param = {
                 viewMode : self.selectedModeDisplayInBody(), // time | shortName | shift
@@ -3168,17 +3127,17 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 endDate  : self.dateTimeAfter(),
                 isNextMonth : true,
                 cycle28Day : self. selectedDisplayPeriod() == 2 ? true : false,
-                workplaceId     : userInfor.workplaceId,
-                workplaceGroupId: userInfor.workplaceGroupId,
-                unit:             userInfor.unit,
-                getActualData   : item.isPresent() ? userInfor.achievementDisplaySelected : false, 
-                listShiftMasterNotNeedGetNew: userInfor.shiftMasterWithWorkStyleLst, 
+                workplaceId     : self.userInfor.workplaceId,
+                workplaceGroupId: self.userInfor.workplaceGroupId,
+                unit:             self.userInfor.unit,
+                getActualData   : !_.isNil(self.userInfor) ? self.userInfor.achievementDisplaySelected : false, 
+                listShiftMasterNotNeedGetNew: self.userInfor.shiftMasterWithWorkStyleLst, 
                 listSid: self.listSid(),
                 modePeriod : self. selectedDisplayPeriod()
             };
             
             service.getDataChangeMonth(param).done((data: any) => {
-                if (userInfor.disPlayFormat == 'shift') {
+                if (self.userInfor.disPlayFormat == 'shift') {
                     self.saveShiftMasterToLocalStorage(data.shiftMasterWithWorkStyleLst);
                 }
                 self.saveDataGrid(data);
@@ -3208,7 +3167,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 
                 self.mode() === 'edit' ? self.editMode() : self.confirmMode();
 
-                if (userInfor.disPlayFormat == 'time') {
+                if (self.userInfor.disPlayFormat == 'time') {
                     self.diseableCellsTime();
                 }
 
@@ -3228,8 +3187,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 return;
 
             nts.uk.ui.block.grayout();
-            let item = uk.localStorage.getItem(self.KEY);
-            let userInfor: IUserInfor = JSON.parse(item.get());
 
             let param = {
                 viewMode: self.selectedModeDisplayInBody(), // time | shortName | shift
@@ -3237,17 +3194,17 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 endDate: self.dateTimeAfter(),
                 isNextMonth: false,
                 cycle28Day: self. selectedDisplayPeriod() == 2 ? true : false,
-                workplaceId: userInfor.workplaceId,
-                workplaceGroupId: userInfor.workplaceGroupId,
-                unit: userInfor.unit,
-                getActualData: item.isPresent() ? userInfor.achievementDisplaySelected : false,
-                listShiftMasterNotNeedGetNew: userInfor.shiftMasterWithWorkStyleLst,
+                workplaceId: self.userInfor.workplaceId,
+                workplaceGroupId: self.userInfor.workplaceGroupId,
+                unit: self.userInfor.unit,
+                getActualData: !_.isNil(self.userInfor) ? self.userInfor.achievementDisplaySelected : false,
+                listShiftMasterNotNeedGetNew: self.userInfor.shiftMasterWithWorkStyleLst,
                 listSid: self.listSid(),
                 modePeriod : self. selectedDisplayPeriod()
             };
 
             service.getDataChangeMonth(param).done((data: any) => {
-                if (userInfor.disPlayFormat == 'shift') {
+                if (self.userInfor.disPlayFormat == 'shift') {
                     self.saveShiftMasterToLocalStorage(data.shiftMasterWithWorkStyleLst);
                 }
                 
@@ -3278,7 +3235,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 
                 self.mode() === 'edit' ? self.editMode() : self.confirmMode();
 
-                if (userInfor.disPlayFormat == 'time') {
+                if (self.userInfor.disPlayFormat == 'time') {
                     self.diseableCellsTime();
                 }
 
@@ -3297,11 +3254,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             
             if (lockCells.length > 0 || arrCellUpdated.length > 0) {
                 nts.uk.ui.dialog.confirm({ messageId: "Msg_1732" }).ifYes(() => {
-                    let item = uk.localStorage.getItem(self.KEY);
-                    let userInfor: IUserInfor = JSON.parse(item.get());
-                    let updateMode = userInfor.updateMode;
                     self.convertDataToGrid(self.dataSource, self.selectedModeDisplayInBody());
-                    self.updateExTableWhenChangeMode(self.selectedModeDisplayInBody(), updateMode);
+                    self.updateExTableWhenChangeMode(self.selectedModeDisplayInBody(), self.userInfor.updateMode);
                     self.editModeAct();
                     self.setUpdateMode();
                     self.diseableCellsTime();
@@ -3525,12 +3479,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             $("#extable").exTable("updateMode", "stick");
             self.enableBtnUndo(false);
             self.enableBtnRedo(false);
-            uk.localStorage.getItem(self.KEY).ifPresent((data) => {
-                let userInfor : IUserInfor = JSON.parse(data);
-                userInfor.updateMode = 'stick';
-                uk.localStorage.setItemAsJson(self.KEY, userInfor);
-            });
-            
+            self.userInfor.updateMode = 'stick';
+            characteristics.save(self.KEY, self.userInfor);
+
             if (self.selectedModeDisplayInBody() == 'time' || self.selectedModeDisplayInBody() == 'shortName') {
                 $("#extable").exTable("stickMode", "single");
                 if (self.selectedModeDisplayInBody() == 'time'){
@@ -3565,9 +3516,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
             $("#extable").exTable("stickValidate", function(rowIdx, key, data) {
                 let dfd = $.Deferred();
-                let item = uk.localStorage.getItem(self.KEY);
-                let userInfor: IUserInfor = JSON.parse(item.get());
-
+                let userInfor: IUserInfor = self.userInfor;
                 if (userInfor.disPlayFormat == 'time' || userInfor.disPlayFormat == 'shortName') {
                     let resolve = false;
                     let obj = _.find(self.arrListCellLock, function(o) { return o.rowId == rowIdx + '' && o.columnId == key; });
@@ -3923,25 +3872,21 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             $("#input").addClass("btnControlUnSelected A6_not_hover").removeClass("btnControlSelected A6_hover");
             self.enableBtnUndo(false);
             self.enableBtnRedo(false);
-            uk.localStorage.getItem(self.KEY).ifPresent((data) => {
-                let userInfor : IUserInfor = JSON.parse(data);
-                userInfor.updateMode =  'copyPaste';
-                uk.localStorage.setItemAsJson(self.KEY, userInfor);
-            });
+            
+            self.userInfor.updateMode =  'copyPaste';
+            characteristics.save(self.KEY, self.userInfor);
             
             self.setStyler();
             
             $("#extable").exTable("pasteValidate", function(rowIdx, key, data) {
                 let dfd = $.Deferred();
-                let item = uk.localStorage.getItem(self.KEY);
-                let userInfor: IUserInfor = JSON.parse(item.get());
                 let param = [];
                 nts.uk.ui.block.grayout();
                 if (_.isNil(data))
                     data = rowIdx;
                 _.forEach(data, d => {
                     let shiftCode = d.shiftCode;
-                    let shiftMasterWithWorkStyleLst = userInfor.shiftMasterWithWorkStyleLst;
+                    let shiftMasterWithWorkStyleLst = self.userInfor.shiftMasterWithWorkStyleLst;
                     let objShiftMaster = _.filter(shiftMasterWithWorkStyleLst, function(o) { return o.shiftMasterCode == shiftCode; });
                     if (objShiftMaster.length > 0) {
                         let x = {
@@ -3971,9 +3916,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             });
 
             $("#extable").exTable("afterPaste", function(rowIdx, key, data) {
-                let item = uk.localStorage.getItem(self.KEY);
-                let userInfor: IUserInfor = JSON.parse(item.get());
-                if (userInfor.disPlayFormat == 'time') {
+                if (self.userInfor.disPlayFormat == 'time') {
                     if (data.workHolidayCls == 0) {
                         self.diseableCellStartEndTime(rowIdx + '', key);
                     } else {
@@ -3997,12 +3940,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             $("#extable").exTable("updateMode", "edit");
             self.enableBtnUndo(false);
             self.enableBtnRedo(false);
-            uk.localStorage.getItem(self.KEY).ifPresent((data) => {
-                let userInfor: IUserInfor = JSON.parse(data);
-                userInfor.updateMode = 'edit';
-                uk.localStorage.setItemAsJson(self.KEY, userInfor);
-            });
-            
+            self.userInfor.updateMode = 'edit';
+            characteristics.save(self.KEY, self.userInfor);
+
             nts.uk.ui.block.clear();
         }
         
@@ -4025,11 +3965,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         
         undoData(): void {
             let self = this;
-            let item = uk.localStorage.getItem(self.KEY);
-            let userInfor = JSON.parse(item.get());
-            if (userInfor.updateMode == 'stick') {
+            if (self.userInfor.updateMode == 'stick') {
                 $("#extable").exTable("stickUndo", function(rowIdx, columnKey, innerIdx, cellData) {
-                    if (userInfor.disPlayFormat == 'time') {
+                    if (self.userInfor.disPlayFormat == 'time') {
                         if ((cellData.workHolidayCls === 0) || (cellData.workTimeCode == null && cellData.workTimeName == null && cellData.workTypeCode == null && cellData.workTypeName == null)) {
                             self.diseableCellStartEndTime(rowIdx+ '', columnKey);
                         } else {
@@ -4037,9 +3975,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         }
                     }
                 });
-            } else if (userInfor.updateMode == 'copyPaste') {
+            } else if (self.userInfor.updateMode == 'copyPaste') {
                 $("#extable").exTable("copyUndo", function(rowIdx, columnKey, cellData) {
-                    if (userInfor.disPlayFormat == 'time') {
+                    if (self.userInfor.disPlayFormat == 'time') {
                         if ((cellData.workHolidayCls === 0) || (cellData.workTimeCode == null && cellData.workTimeName == null && cellData.workTypeCode == null && cellData.workTypeName == null)) {
                             self.diseableCellStartEndTime(rowIdx + '', columnKey);
                         } else {
@@ -4047,7 +3985,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         }
                     }
                 });
-            } else if (userInfor.updateMode == 'edit') {
+            } else if (self.userInfor.updateMode == 'edit') {
                 $("#extable").exTable("editUndo");
             }
             self.checkExitCellUpdated();
@@ -4056,8 +3994,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
         redoData(): void {
             let self = this;
-            let item = uk.localStorage.getItem(self.KEY);
-            let userInfor = JSON.parse(item.get());
+            let userInfor = self.userInfor;
             if (userInfor.updateMode == 'stick') {
                 $("#extable").exTable("stickRedo", function(rowIdx, columnKey, innerIdx, cellData) {
                     if (userInfor.disPlayFormat == 'time') {
@@ -4086,8 +4023,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         
         checkExitCellUpdated(isRetaine? : boolean) {
             let self = this;
-            let item = uk.localStorage.getItem(self.KEY);
-            let userInfor = JSON.parse(item.get());
+            let userInfor = self.userInfor;
             setTimeout(() => {
                 
                 let updatedCells = $("#extable").exTable("updatedCells");
@@ -4160,8 +4096,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
          */
         openDialogU(): void {
             let self = this;
-            let item = uk.localStorage.getItem(self.KEY);
-            let userInfor : IUserInfor = JSON.parse(item.get());
+            let userInfor : IUserInfor = self.userInfor;
 
              setShared('dataShareDialogU', {                
                 startDate: moment(self.dtPrev()).format('YYYY/MM/DD'),
@@ -4183,8 +4118,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
          */
         openDialogG(): void {
             let self = this;
-            let item = uk.localStorage.getItem(self.KEY);
-            let userInfor: IUserInfor = JSON.parse(item.get());
 
             // listEmpData : {id : '' , code : '', name : ''}
             setShared('dataShareDialogG', {
@@ -4201,8 +4134,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         // A2_1
         openKDL046() {
             let self = this;
-            let item = uk.localStorage.getItem(self.KEY);
-            let userInfor: IUserInfor = JSON.parse(item.get());
+            let userInfor: IUserInfor = self.userInfor;
 
             let param = {
                 unit: userInfor.unit == 0 ? '0' : '1',
@@ -4225,8 +4157,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         updateScreen(input: any): JQueryPromise<any> {
             let self = this, dfd = $.Deferred();
             nts.uk.ui.block.grayout();
-            let item = uk.localStorage.getItem(self.KEY);
-            let userInfor: IUserInfor = JSON.parse(item.get());
+            let userInfor: IUserInfor = self.userInfor;
             let param = {
                 viewMode: userInfor.disPlayFormat,
                 startDate: self.dateTimePrev(),
@@ -4408,8 +4339,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
         getListEmpIdSorted(): JQueryPromise<any> {
             let self = this, dfd = $.Deferred();
-            let item = uk.localStorage.getItem(self.KEY);
-            let userInfor: IUserInfor = JSON.parse(item.get());
             
             let param = {
                 endDate: self.dateTimeAfter(),
@@ -4431,7 +4360,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
                     let dataBindGrid = self.convertDataToGrid(dataGrid, self.selectedModeDisplayInBody());
 
-                    self.updateExTableAfterSortEmp(dataBindGrid, self.selectedModeDisplayInBody(), userInfor.updateMode, true, true, true);
+                    self.updateExTableAfterSortEmp(dataBindGrid, self.selectedModeDisplayInBody(), self.userInfor.updateMode, true, true, true);
 
                     nts.uk.ui.block.clear();
                 }
@@ -4440,10 +4369,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 dfd.reject();
             });
             return dfd.promise();
-        }
-
-        compareArrByRowIndexAndColumnKey(a: any, b: any): any {
-            return a.rowIndex == b.rowIndex && a.comlumnKey == b.comlumnKey;
         }
 
         setTextResourceA173() {
@@ -4757,7 +4682,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         shiftPalettePageNumberOrg: number;
         shiftPalletPositionNumberOrg: {};
         gridHeightSelection: number;
-        heightGridSetting: number;
+        heightGridSetting: any;
         unit: number;
         workplaceId: string;
         workplaceGroupId: string;
@@ -4769,6 +4694,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         endDate : string;
         code: string;
         shiftMasterWithWorkStyleLst : Array<IShiftMasterMapWithWorkStyle>;
+        workTypeCodeSelected: any;
+        workTimeCodeSelected: any;
     }
     
     interface IShiftMasterMapWithWorkStyle {
