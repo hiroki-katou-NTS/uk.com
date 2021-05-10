@@ -943,6 +943,9 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 		// Output:　・当日の就業時間帯
 		Optional<WorkTimeSetting> worktimeInDayOpt = listWorktime.stream()
 				.filter(x -> x.getWorktimeCode().equals(workScheInDay.getWorkTime())).findFirst();
+		if (!worktimeInDayOpt.isPresent()) {
+			return null;
+		}
 		WorkTimeSetting worktimeInDay = worktimeInDayOpt.get();
 		
 		// Input．List＜就業時間帯＞から前日の就業時間帯を探す
@@ -951,6 +954,9 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 		// Output: ・前日の就業時間帯
 		Optional<WorkTimeSetting> worktimeBeforeDayOpt = listWorktime.stream()
 				.filter(x -> x.getWorktimeCode().v().equals(workScheInDayBefore.getWorkTime())).findFirst();
+		if (!worktimeBeforeDayOpt.isPresent()) {
+			return null;
+		}
 		WorkTimeSetting worktimeBeforeDay = worktimeBeforeDayOpt.get();
 		
 		// 所定時間設定
@@ -986,19 +992,6 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 				
 				return new AlarmMsgOutput(alarmMessage, alarmTarget);
 			}
-			
-//			if ((prescribedTimezoneSettingInDayBefore.getAfternoonStartTime().getDayDivision().equals(prescribedTimezoneSettingInDay.getMorningEndTime().getDayDivision()) 
-//					&& prescribedTimezoneSettingInDayBefore.getAfternoonStartTime().getDayTime() == prescribedTimezoneSettingInDay.getMorningEndTime().getDayTime())
-//					|| prescribedTimezoneSettingInDayBefore.getAfternoonStartTime().getDayDivision().hours > prescribedTimezoneSettingInDay.getMorningEndTime().getDayDivision().hours) {
-//				String alarmMessage = TextResource.localize("KAL010_1005", exDate.addDays(-1).toString(), exDate.toString());
-//				
-//				String param1 = prescribedTimezoneSettingInDayBefore.getMorningEndTime().getRawTimeWithFormat() + ErrorAlarmConstant.PERIOD_SEPERATOR + prescribedTimezoneSettingInDayBefore.getAfternoonStartTime().getRawTimeWithFormat();
-//				String param2 = exDate.toString();
-//				String param3 = prescribedTimezoneSettingInDay.getMorningEndTime().getRawTimeWithFormat() + ErrorAlarmConstant.PERIOD_SEPERATOR + prescribedTimezoneSettingInDay.getAfternoonStartTime().getRawTimeWithFormat();
-//				String alarmTarget = TextResource.localize("KAL010_1021", exDate.addDays(-1).toString(), param1, param2, param3);
-//				
-//				return new AlarmMsgOutput(alarmMessage, alarmTarget);
-//			}
 		}
 		
 		return null;
