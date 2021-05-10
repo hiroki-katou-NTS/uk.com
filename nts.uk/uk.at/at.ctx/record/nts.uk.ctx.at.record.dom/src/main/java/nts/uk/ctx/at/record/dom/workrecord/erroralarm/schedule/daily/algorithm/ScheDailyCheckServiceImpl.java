@@ -1050,23 +1050,61 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 				return null;
 			}
 			
-			if (!timeLeavingWorkImport1.get().getAttendanceStamp().get().getActualStamp().isPresent() 
-					|| !timeLeavingWorkImport2.get().getAttendanceStamp().get().getActualStamp().isPresent()) {
-				return null;
-			}
+			WorkStampImport attendanceStamp1 = null;
+			WorkStampImport attendanceStamp2 = null;
 			
 			// QA#115444
 			// 日別勤怠の出退勤．出退勤．出勤
-			WorkStampImport attendanceStamp1 = timeLeavingWorkImport1.get().getAttendanceStamp().get().getActualStamp().get();
-			WorkStampImport attendanceStamp2 = timeLeavingWorkImport2.get().getAttendanceStamp().get().getActualStamp().get();
-			// 日別勤怠の出退勤．出退勤．退勤
-			WorkStampImport leaveStamp1 = timeLeavingWorkImport1.get().getLeaveStamp().get().getActualStamp().get();
-			WorkStampImport leaveStamp2 = timeLeavingWorkImport2.get().getLeaveStamp().get().getActualStamp().get();
+			if (!timeLeavingWorkImport1.get().getAttendanceStamp().get().getActualStamp().isPresent()) {
+				if (timeLeavingWorkImport1.get().getAttendanceStamp().get().getStamp().isPresent()) {
+					attendanceStamp1 = timeLeavingWorkImport1.get().getAttendanceStamp().get().getStamp().get();
+				}
+			} else {
+				attendanceStamp1 = timeLeavingWorkImport1.get().getAttendanceStamp().get().getActualStamp().get();
+			}
 			
-			// Input．日別勤怠の出退勤．出退勤．出勤．実打刻.時刻　+　’～’　+　Input．日別勤怠の出退勤．出退勤．退勤．実打刻.時刻
-			String targetParam0 = formatTimeWithDay(attendanceStamp1.getTimeDay().getTimeWithDay()) + ErrorAlarmConstant.PERIOD_SEPERATOR + formatTimeWithDay(leaveStamp1.getTimeDay().getTimeWithDay());
-			// Input．日別勤怠の出退勤．出退勤．出勤．実打刻.時刻　+　’～’　+　Input．日別勤怠の出退勤．出退勤．退勤．実打刻.時刻
-			String targetParam1 = formatTimeWithDay(attendanceStamp2.getTimeDay().getTimeWithDay()) + ErrorAlarmConstant.PERIOD_SEPERATOR + formatTimeWithDay(leaveStamp2.getTimeDay().getTimeWithDay());
+			if (!timeLeavingWorkImport2.get().getAttendanceStamp().get().getActualStamp().isPresent()) {
+				if (timeLeavingWorkImport2.get().getAttendanceStamp().get().getStamp().isPresent()) {
+					attendanceStamp2 = timeLeavingWorkImport2.get().getAttendanceStamp().get().getStamp().get();
+				}
+			} else {
+				attendanceStamp2 = timeLeavingWorkImport2.get().getAttendanceStamp().get().getActualStamp().get();
+			}
+			
+			// 日別勤怠の出退勤．出退勤．退勤
+			WorkStampImport leaveStamp1 = null;
+			WorkStampImport leaveStamp2 = null;
+			if (timeLeavingWorkImport1.get().getLeaveStamp().get().getActualStamp().isPresent()) {
+				leaveStamp1 = timeLeavingWorkImport1.get().getLeaveStamp().get().getActualStamp().get();
+			} else {
+				if (timeLeavingWorkImport1.get().getLeaveStamp().get().getStamp().isPresent()) {
+					leaveStamp1 = timeLeavingWorkImport1.get().getLeaveStamp().get().getStamp().get();
+				}
+			}
+			
+			if (timeLeavingWorkImport2.get().getLeaveStamp().get().getActualStamp().isPresent()) {
+				leaveStamp2 = timeLeavingWorkImport2.get().getLeaveStamp().get().getActualStamp().get();
+			} else {
+				if (timeLeavingWorkImport2.get().getLeaveStamp().get().getStamp().isPresent()) {
+					leaveStamp2 = timeLeavingWorkImport2.get().getLeaveStamp().get().getStamp().get();
+				}
+			}
+			
+			String targetParam0 = Strings.EMPTY;
+			String targetParam1 = Strings.EMPTY;
+			if (attendanceStamp1 != null && leaveStamp1 != null) {
+				// Input．日別勤怠の出退勤．出退勤．出勤．実打刻.時刻　+　’～’　+　Input．日別勤怠の出退勤．出退勤．退勤．実打刻.時刻
+				targetParam0 = formatTimeWithDay(attendanceStamp1.getTimeDay().getTimeWithDay()) + ErrorAlarmConstant.PERIOD_SEPERATOR + formatTimeWithDay(leaveStamp1.getTimeDay().getTimeWithDay());
+			} else {
+				targetParam0 = TextResource.localize("KAL010_1027");
+			}
+			if (attendanceStamp2 != null && leaveStamp2 != null) {
+				// Input．日別勤怠の出退勤．出退勤．出勤．実打刻.時刻　+　’～’　+　Input．日別勤怠の出退勤．出退勤．退勤．実打刻.時刻
+				targetParam1 = formatTimeWithDay(attendanceStamp2.getTimeDay().getTimeWithDay()) + ErrorAlarmConstant.PERIOD_SEPERATOR + formatTimeWithDay(leaveStamp2.getTimeDay().getTimeWithDay());
+			} else {
+				targetParam1 = TextResource.localize("KAL010_1027");
+			}
+			
 			String alarmTarget = TextResource.localize("KAL010_1022", targetParam0, targetParam1);
 			
 			return new AlarmMsgOutput(alarmMessage, alarmTarget);
