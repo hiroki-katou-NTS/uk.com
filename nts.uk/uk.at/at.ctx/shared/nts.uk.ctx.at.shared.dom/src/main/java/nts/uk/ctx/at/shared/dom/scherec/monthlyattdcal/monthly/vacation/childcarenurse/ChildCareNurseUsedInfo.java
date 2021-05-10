@@ -12,6 +12,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.child
 @Getter
 @Setter
 public class ChildCareNurseUsedInfo {
+
 	/** 使用数 */
 	private ChildCareNurseUsedNumber usedNumber;
 	/** 時間休暇使用回数 */
@@ -26,6 +27,22 @@ public class ChildCareNurseUsedInfo {
 		this.usedNumber = new ChildCareNurseUsedNumber();
 		this.usedTimes = new UsedTimes(0);
 		this.usedDays = new UsedTimes(0);
+	}
+
+	/**
+	 * コンストラクタ　ChildCareNurseUsedNumber
+	 */
+	public ChildCareNurseUsedInfo(ChildCareNurseUsedInfo c){
+		this.usedNumber = c.usedNumber.clone();
+		this.usedTimes = c.usedTimes.clone();
+		this.usedDays = c.usedDays.clone();
+	}
+
+	/**
+	 * クローン
+	 */
+	public ChildCareNurseUsedInfo clone() {
+		return new ChildCareNurseUsedInfo(this);
 	}
 
 	/**

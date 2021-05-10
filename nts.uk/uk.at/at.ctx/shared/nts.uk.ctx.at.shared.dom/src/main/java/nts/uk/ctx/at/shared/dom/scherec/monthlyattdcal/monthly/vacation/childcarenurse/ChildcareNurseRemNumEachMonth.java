@@ -5,85 +5,72 @@ import java.util.Optional;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.arc.time.YearMonth;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.ClosureStatus;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
-import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
 /**
- *　子の看護休暇月別残数データ
-  * @author yuri_tamakoshi
+ * 子の看護休暇月別残数データ
+ * @author masaaki_jinno
+ *
  */
 @Getter
 @Setter
 public class ChildcareNurseRemNumEachMonth extends AggregateRoot {
 
-	/** 社員ID */
-	private  String employeeId;
-	/** 年月 */
-	private  YearMonth yearMonth;
-	/** 締めID */
-	private  ClosureId closureId;
-	/** 締め日付 */
-	private  ClosureDate closureDate;
-
-	/** 締め処理状態 */
-	private ClosureStatus closureStatus;
 	/** 本年使用数 */
-	private ChildCareNurseUsedInfo thisYearUsedNumber;
-	/** 翌年使用数 */
-	private Optional<ChildCareNurseUsedInfo> nextYearUsedNumber;
+	private ChildCareNurseUsedInfo thisYearUsedInfo;
 	/** 合計使用数 */
-	private ChildCareNurseUsedInfo usedNumber;
+	private ChildCareNurseUsedInfo usedInfo;
+	/** 本年残数 */
+	private ChildCareNurseRemainNumber thisYearRemainNumber;
+	/** 翌年使用数 */
+	private Optional<ChildCareNurseUsedInfo> nextYearUsedInfo;
+	/** 翌年残数 */
+	private Optional<ChildCareNurseRemainNumber> nextYearRemainNumber;
 
 	/**
 	 * コンストラクタ
 	 */
-	public ChildcareNurseRemNumEachMonth(
-			String employeeId,
-			YearMonth yearMonth,
-			ClosureId closureId,
-			ClosureDate closureDate){
-
-		super();
-		this.employeeId = employeeId;
-		this.yearMonth = yearMonth;
-		this.closureId = closureId;
-		this.closureDate = closureDate;
-		this.closureStatus = ClosureStatus.UNTREATED;
-		this.thisYearUsedNumber = new ChildCareNurseUsedInfo();
-		this.nextYearUsedNumber = Optional.empty();
-		this.usedNumber = new ChildCareNurseUsedInfo();
+	public ChildcareNurseRemNumEachMonth() {
+		thisYearUsedInfo = new ChildCareNurseUsedInfo();
+		usedInfo = new ChildCareNurseUsedInfo();
+		thisYearRemainNumber = new ChildCareNurseRemainNumber();
+		nextYearUsedInfo = Optional.empty();
+		nextYearRemainNumber = Optional.empty();
 	}
 
 	/**
-	 * ファクトリー
-	 * @param employeeId 社員ID
-	 * @param yearMonth 年月
-	 * @param closureId 締めID
-	 * @param closureDate 締め日付
-	 * @param closureStatus 締め処理状態
-	 * @param ThisYearUsedNumber 本年使用数
-	 * @param NextYearUsedNumber  翌年使用数
-	 * @param usedNumber 合計使用数
+	 * コンストラクタ
+	 */
+	public ChildcareNurseRemNumEachMonth(ChildcareNurseRemNumEachMonth c) {
+		thisYearUsedInfo = c.thisYearUsedInfo;
+		usedInfo = c.usedInfo.clone();
+		thisYearRemainNumber = c.thisYearRemainNumber.clone();
+		nextYearUsedInfo = Optional.empty();
+		nextYearRemainNumber = Optional.empty();
+	}
+
+	/**
+	 * @param thisYearUsedInfo 本年使用数
+	 * @param usedInfo 合計使用数
+	 * @param thisYearRemainNumber 本年残数
+	 * @param nextYearUsedInfo 翌年使用数
+	 * @param nextYearRemainNumber 翌年残数
 	 * @return 子の看護休暇月別残数データ
 	 */
 	public static ChildcareNurseRemNumEachMonth of(
-			String employeeId,
-			YearMonth yearMonth,
-			ClosureId closureId,
-			ClosureDate closureDate,
-			ClosureStatus closureStatus,
-			ChildCareNurseUsedInfo ThisYearUsedNumber,
-			Optional<ChildCareNurseUsedInfo> NextYearUsedNumber,
-			ChildCareNurseUsedInfo usedNumber){
+			ChildCareNurseUsedInfo thisYearUsedInfo,
+			ChildCareNurseUsedInfo usedInfo,
+			ChildCareNurseRemainNumber thisYearRemainNumber,
+			Optional<ChildCareNurseUsedInfo> nextYearUsedInfo,
+			Optional<ChildCareNurseRemainNumber> nextYearRemainNumber
+			){
 
-		ChildcareNurseRemNumEachMonth domain = new ChildcareNurseRemNumEachMonth(
-				employeeId, yearMonth, closureId, closureDate);
-		domain.closureStatus = closureStatus;
-		domain.thisYearUsedNumber = ThisYearUsedNumber;
-		domain.nextYearUsedNumber = NextYearUsedNumber;
-		domain.usedNumber = usedNumber;
+		ChildcareNurseRemNumEachMonth domain = new ChildcareNurseRemNumEachMonth();
+		domain.thisYearUsedInfo = thisYearUsedInfo;
+		domain.usedInfo = usedInfo;
+		domain.thisYearRemainNumber = thisYearRemainNumber;
+		domain.nextYearUsedInfo = nextYearUsedInfo;
+		domain.nextYearRemainNumber = nextYearRemainNumber;
+
 		return domain;
 	}
 }

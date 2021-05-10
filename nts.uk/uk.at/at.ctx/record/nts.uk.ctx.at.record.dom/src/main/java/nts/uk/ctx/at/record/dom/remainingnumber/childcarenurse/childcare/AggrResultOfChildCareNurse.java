@@ -10,6 +10,7 @@ import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.ChildCareNurseUsedNumber;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.ClosureStatus;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.childcarenurse.ChildCareNurseUsedInfo;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.childcarenurse.ChildcareNurseRemNumEachMonth;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialHolidayRemainData;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialLeaveGrantUseDay;
@@ -22,7 +23,6 @@ import nts.uk.shr.com.time.calendar.date.ClosureDate;
  * 子の看護介護休暇集計結果
   * @author yuri_tamakoshi
  */
-
 @Getter
 @Setter
 public class AggrResultOfChildCareNurse {
@@ -112,6 +112,22 @@ public class AggrResultOfChildCareNurse {
 		// 締め処理状態 ← ”未締め”
 		domain.setClosureStatus(ClosureStatus.UNTREATED); // 未締め
 
+		//	本年使用数←output.集計期間の休暇情報.本年
+		domain.setThisYearUsedInfo(
+				ChildCareNurseUsedInfo.of(
+						childCareNurseResult.getAggrperiodinfo().getThisYear().getAggrPeriodUsedNumber().clone(),
+						childCareNurseResult.getAggrperiodinfo().getThisYear().getUsedCount().clone(),
+						childCareNurseResult.getAggrperiodinfo().getThisYear().getUsedDays().clone())
+						);
+
+
+
+
+//	翌年使用数←output.集計期間の休暇情報.翌年
+//	合計使用数←output.集計期間の休暇情報の本年と翌年の合計
+//
+//	本年残数←output.起算日からの休暇情報.本年.残数
+//	翌年残数←output.起算日からの休暇情報.翌年.残数
 
 
 

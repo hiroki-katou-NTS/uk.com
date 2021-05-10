@@ -12,6 +12,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.child
 @Getter
 @Setter
 public class ChildCareNurseAggrPeriodInfo {
+
 	/** 時間休暇使用回数 */
 	private UsedTimes usedCount;
 	/** 時間休暇使用日数 */
