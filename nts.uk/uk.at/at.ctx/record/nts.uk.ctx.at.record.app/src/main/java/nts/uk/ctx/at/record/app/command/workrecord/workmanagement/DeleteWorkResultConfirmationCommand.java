@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.app.command.workrecord.workmanagement;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.time.GeneralDate;
 
 /**
@@ -9,6 +10,7 @@ import nts.arc.time.GeneralDate;
  *
  */
 @Getter
+@Setter
 public class DeleteWorkResultConfirmationCommand {
 	
 	//対象者

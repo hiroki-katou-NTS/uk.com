@@ -1,7 +1,6 @@
 package nts.uk.screen.at.ws.kdw.kdw013;
 
 import java.util.List;
-import nts.arc.enums.EnumAdaptor;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -10,12 +9,12 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
+import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.record.app.command.workrecord.workmanagement.AddWorkRecodConfirmationCommand;
 import nts.uk.ctx.at.record.app.command.workrecord.workmanagement.DeleteWorkResultConfirmationCommand;
 import nts.uk.ctx.at.record.app.command.workrecord.workmanagement.DeleteWorkResultConfirmationCommandHandler;
 import nts.uk.ctx.at.record.app.command.workrecord.workrecord.AddAttendanceTimeZoneCommand;
 import nts.uk.ctx.at.record.app.command.workrecord.workrecord.AddAttendanceTimeZoneCommandHandler;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateSetting;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.work.WorkGroup;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskframe.TaskFrameNo;
@@ -25,12 +24,12 @@ import nts.uk.screen.at.app.kdw013.a.ConfirmerDto;
 import nts.uk.screen.at.app.kdw013.a.DeleteWorkRecordConfirmation;
 import nts.uk.screen.at.app.kdw013.a.RegisterWorkContent;
 import nts.uk.screen.at.app.kdw013.a.RegisterWorkContentCommand;
+import nts.uk.screen.at.app.kdw013.a.RegisterWorkContentDto;
 import nts.uk.screen.at.app.kdw013.a.StartProcess;
 import nts.uk.screen.at.app.kdw013.a.StartProcessDto;
 import nts.uk.screen.at.app.kdw013.a.TaskDto;
 import nts.uk.screen.at.app.kdw013.c.SelectWorkItem;
 import nts.uk.screen.at.app.kdw013.c.StartWorkInputPanel;
-import nts.uk.screen.at.app.kdw013.a.RegisterWorkContentDto;
 
 /**
  * 
@@ -79,6 +78,7 @@ public class KDW013WebService {
 
 		command.setEmployeeId(param.getEmployeeId());
 		command.setEditStateSetting(EnumAdaptor.valueOf(param.getEditStateSetting(), EditStateSetting.class));
+		command.setWorkDetails(param.getWorkDetails().stream().map(m -> WorkDetailDto.toDomain(m)).collect(Collectors.toList()));
 
 		List<IntegrationOfDailyDto> result = addAttendanceCommandHandler.handle(command).stream()
 				.map(m -> IntegrationOfDailyDto.toDto(m)).collect(Collectors.toList());

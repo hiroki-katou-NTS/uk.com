@@ -3,6 +3,7 @@ package nts.uk.screen.at.ws.kdw.kdw013;
 import java.util.List;
 
 import lombok.Getter;
+import lombok.Setter;
 
 /**
  * 
@@ -10,6 +11,7 @@ import lombok.Getter;
  *
  */
 @Getter
+@Setter
 public class AddAttendanceTimeZoneParam {
 	/** 対象者 */
 	private String employeeId;

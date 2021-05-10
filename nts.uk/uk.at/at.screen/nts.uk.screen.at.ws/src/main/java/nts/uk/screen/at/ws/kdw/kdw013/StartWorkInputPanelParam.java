@@ -1,6 +1,7 @@
 package nts.uk.screen.at.ws.kdw.kdw013;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.time.GeneralDate;
 
 /**
@@ -9,6 +10,7 @@ import nts.arc.time.GeneralDate;
  *
  */
 @Getter
+@Setter
 public class StartWorkInputPanelParam {
 
 	// 社員ID
