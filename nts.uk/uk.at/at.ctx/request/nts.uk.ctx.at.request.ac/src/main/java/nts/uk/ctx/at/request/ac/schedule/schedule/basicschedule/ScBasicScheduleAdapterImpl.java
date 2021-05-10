@@ -32,12 +32,6 @@ public class ScBasicScheduleAdapterImpl implements ScBasicScheduleAdapter {
 	
 	@Inject
 	private ScBasicSchedulePub scBasicSchedulePub;
-	
-	@Override
-	public Optional<ScBasicScheduleImport_Old> findByID(String employeeID, GeneralDate date) {
-		return scBasicSchedulePub.findById(employeeID, date)
-				.map(x -> convertTo(x));
-	}
 
 	private ScBasicScheduleImport_Old convertTo(ScBasicScheduleExport x) {
 		return new ScBasicScheduleImport_Old(
@@ -51,12 +45,6 @@ public class ScBasicScheduleAdapterImpl implements ScBasicScheduleAdapter {
 						y.getScheduleEndClock(), 
 						y.getBounceAtr()))
 				.collect(Collectors.toList()));
-	}
-
-	@Override
-	public List<ScBasicScheduleImport_Old> findByID(List<String> employeeID, DatePeriod date) {
-		
-		return scBasicSchedulePub.findById(employeeID, date).stream().map(x -> convertTo(x)).collect(Collectors.toList());
 	}
 
 	@Override
