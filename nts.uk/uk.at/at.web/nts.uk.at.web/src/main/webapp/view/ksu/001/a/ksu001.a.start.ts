@@ -25,7 +25,7 @@ module nts.uk.at.view.ksu001.a {
             let userInfor = JSON.parse(item.get());
             if (userInfor.updateMode == 'copyPaste') {
                 setTimeout(() => {
-                    __viewContext.viewModel.viewA.setCoppyStyler();
+                    __viewContext.viewModel.viewA.setStyler();
                 }, 800);
             }
             
