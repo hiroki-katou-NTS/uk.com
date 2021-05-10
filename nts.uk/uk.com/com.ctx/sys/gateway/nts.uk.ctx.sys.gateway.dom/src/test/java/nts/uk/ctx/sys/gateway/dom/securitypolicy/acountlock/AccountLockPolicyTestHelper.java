@@ -11,8 +11,8 @@ import nts.uk.ctx.sys.shared.dom.user.ContractCode;
 public class AccountLockPolicyTestHelper {
 	static LockoutData lockoutData =  
 			new LockoutData(
-					new ContractCode("0"), 
-					"", 
+					DUMMY.CONTRACT_CD, 
+					DUMMY.USER_ID, 
 					GeneralDateTime.now(), 
 					LockType.AUTO_LOCK, 
 					LoginMethod.NORMAL_LOGIN);
@@ -46,12 +46,21 @@ public class AccountLockPolicyTestHelper {
 	}
 	
 	static class DUMMY{
-		static ContractCode CONTRACT_CD = new ContractCode("contractCd");
-		static String USER_ID = "userId";
-		static ErrorCount ERROR_COUNT = new ErrorCount(BigDecimal.ZERO);
-		static LockInterval LOCK_INTERVAL = new LockInterval(0);
-		static LockOutMessage LOCKOUT_MESSAGE = new LockOutMessage("message");
-		static boolean IS_USE = true;
-		static LockoutData LOCKOUT_DATA = AccountLockPolicyTestHelper.lockoutData;
+		static final ContractCode CONTRACT_CD = new ContractCode("contractCd");
+		static final String USER_ID = "userId";
+		static final ErrorCount ERROR_COUNT = new ErrorCount(BigDecimal.valueOf(999999999));
+		static final LockInterval LOCK_INTERVAL = new LockInterval(9999);
+		static final GeneralDateTime LOCKOUT_DATETIME = GeneralDateTime.min();
+		static final LockOutMessage LOCKOUT_MESSAGE = new LockOutMessage("message");
+		static final LockType LOG_TYPE = LockType.AUTO_LOCK;
+		static final LoginMethod LOGING_METHOD = LoginMethod.NORMAL_LOGIN;
+		static final boolean IS_USE = true;
+		 
+		static final LockoutData LOCKOUT_DATA = new LockoutData(
+				DUMMY.CONTRACT_CD, 
+				DUMMY.USER_ID, 
+				DUMMY.LOCKOUT_DATETIME, 
+				DUMMY.LOG_TYPE, 
+				DUMMY.LOGING_METHOD);
 	}
 }

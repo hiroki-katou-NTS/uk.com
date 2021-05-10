@@ -50,26 +50,26 @@ public class FailedPasswordHelper {
 					DUMMY.EXTERNAL_CODE);
 	
 	static class DUMMY{
-		static String CONTRACT_CODE = "contractCode";
-		static String COMPANY_ID = "companyId";
-		static String USER_ID = "user";
-		static boolean IS_DEFAULT = true;
-		static String PERSON_ID = "personId";
-		static String LOGIN_ID = "employeeId";
-		static String EMPLOYEE_ID = "employeeId";
-		static String EMPLOYEE_CODE = "employeeCode";
-		static String PASSWORD = "password";
-		static SDelAtr DELETE_STATUS = SDelAtr.DELETED;
-		static GeneralDateTime DATETIME = GeneralDateTime.now();
-		static GeneralDate DATE = GeneralDate.today();
-		static String REMOVE_REASON = "reason";
-		static String EXTERNAL_CODE = "externalCode";
-		static User USER = FailedPasswordHelper.USER;
-		static EmployeeDataMngInfoImport IMPORTED = FailedPasswordHelper.IMPORTED;
-		static IdentifiedEmployeeInfo EMP_INFO = new IdentifiedEmployeeInfo(FailedPasswordHelper.DUMMY.IMPORTED, FailedPasswordHelper.DUMMY.USER);
-		static AccountLockPolicy ACCOUNT_LOCK_POLICY = AccountLockPolicy.createFromJavaType("", 0, 0, "", true);
-		static LockoutData LOCKOUT_DATA = LockoutData.autoLock(new ContractCode(""),"",LoginMethod.NORMAL_LOGIN);
-		static FailedAuthenticateTask FAILED_TASKS = new FailedAuthenticateTask(Optional.of(AtomTask.none()),Optional.of(AtomTask.none()));
+		static final String CONTRACT_CODE = "contractCode";
+		static final String COMPANY_ID = "companyId";
+		static final String USER_ID = "user";
+		static final boolean IS_DEFAULT = true;
+		static final String PERSON_ID = "personId";
+		static final String LOGIN_ID = "employeeId";
+		static final String EMPLOYEE_ID = "employeeId";
+		static final String EMPLOYEE_CODE = "employeeCode";
+		static final String PASSWORD = "password";
+		static final SDelAtr DELETE_STATUS = SDelAtr.DELETED;
+		static final GeneralDateTime DATETIME = GeneralDateTime.now();
+		static final GeneralDate DATE = GeneralDate.today();
+		static final String REMOVE_REASON = "reason";
+		static final String EXTERNAL_CODE = "externalCode";
+		static final User USER = FailedPasswordHelper.USER;
+		static final EmployeeDataMngInfoImport IMPORTED = FailedPasswordHelper.IMPORTED;
+		static final IdentifiedEmployeeInfo EMP_INFO = new IdentifiedEmployeeInfo(FailedPasswordHelper.DUMMY.IMPORTED, FailedPasswordHelper.DUMMY.USER);
+		static final AccountLockPolicy ACCOUNT_LOCK_POLICY = AccountLockPolicy.createFromJavaType("", 0, 0, "", true);
+		static final LockoutData LOCKOUT_DATA = LockoutData.autoLock(new ContractCode(""),"",LoginMethod.NORMAL_LOGIN);
+		static final FailedAuthenticateTask FAILED_TASKS = new FailedAuthenticateTask(Optional.of(AtomTask.none()),Optional.of(AtomTask.none()));
 	}
 		
 }

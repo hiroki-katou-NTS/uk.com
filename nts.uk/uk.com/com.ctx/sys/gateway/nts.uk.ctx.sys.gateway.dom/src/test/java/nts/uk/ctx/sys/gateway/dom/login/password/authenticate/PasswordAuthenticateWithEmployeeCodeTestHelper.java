@@ -47,24 +47,23 @@ public class PasswordAuthenticateWithEmployeeCodeTestHelper {
 					);
 	
 	public static class DUMMY{
-		static String CONTRACT_CD = "contractCode";
-		static String COMPANY_ID = "companyId";
-		static String USER_ID = "user";
-		static boolean IS_DEFAULT = true;
-		static String PERSON_ID = "personId";
-		static String LOGIN_ID = "employeeId";
-		static String EMPLOYEE_ID = "employeeId";
-		static String EMPLOYEE_CODE = "employeeCode";
-		static String PASSWORD = "password";
-		static SDelAtr DELETE_STATUS = SDelAtr.DELETED;
-		static GeneralDateTime DATETIME = GeneralDateTime.now();
-		static GeneralDate DATE = GeneralDate.today();
-		static String REMOVE_REASON = "reason";
-		static String EXTERNAL_CODE = "externalCode";
-		public static FailedAuthenticateTask FAILED_TASKS = new FailedAuthenticateTask(Optional.of(AtomTask.none()),Optional.of(AtomTask.none()));
-		static EmployeeDataMngInfoImport IMPORTED = FailedPasswordHelper.IMPORTED;
-		static IdentifiedEmployeeInfo EMP_INFO = new IdentifiedEmployeeInfo(PasswordAuthenticateWithEmployeeCodeTestHelper.IMPORTED, PasswordAuthenticateWithEmployeeCodeTestHelper.USER);
-		//static AccountLockPolicy ACCOUNT_LOCK_POLICY = AccountLockPolicy.createFromJavaType("", 0, 0, "", true);
-		static PasswordPolicy PASSWORD_POLICY = 	PasswordPolicyTestHelper.DUMMY.PASSWORD_POLICY;
+		static final String CONTRACT_CD = "contractCode";
+		static final String COMPANY_ID = "companyId";
+		static final String USER_ID = "user";
+		static final boolean IS_DEFAULT = true;
+		static final String PERSON_ID = "personId";
+		static final String LOGIN_ID = "employeeId";
+		static final String EMPLOYEE_ID = "employeeId";
+		static final String EMPLOYEE_CODE = "employeeCode";
+		static final String PASSWORD = "password";
+		static final SDelAtr DELETE_STATUS = SDelAtr.DELETED;
+		static final GeneralDateTime DATETIME = GeneralDateTime.now();
+		static final GeneralDate DATE = GeneralDate.today();
+		static final String REMOVE_REASON = "reason";
+		static final String EXTERNAL_CODE = "externalCode";
+		static final FailedAuthenticateTask FAILED_TASKS = new FailedAuthenticateTask(Optional.of(AtomTask.none()),Optional.of(AtomTask.none()));
+		static final EmployeeDataMngInfoImport IMPORTED = FailedPasswordHelper.IMPORTED;
+		static final IdentifiedEmployeeInfo EMP_INFO = new IdentifiedEmployeeInfo(PasswordAuthenticateWithEmployeeCodeTestHelper.IMPORTED, PasswordAuthenticateWithEmployeeCodeTestHelper.USER);
+		static final PasswordPolicy PASSWORD_POLICY = 	PasswordPolicyTestHelper.DUMMY.PASSWORD_POLICY;
 	}
 }

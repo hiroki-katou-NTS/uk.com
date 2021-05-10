@@ -78,10 +78,10 @@ public class Helper {
 		}
 	}
 	public static class DUMMY{
-		public static String COMPANY_ID = "companyId"; 
-		public static String USER_ID = "userId"; 
-		public static String PERSON_ID = "personId";
-		public static String EMPLOYEE_ID = "employeeId";
-		public static String EMPLOYEE_CD = "employeeCode";
+		public final static String COMPANY_ID = "companyId"; 
+		public final static String USER_ID = "userId"; 
+		public final static String PERSON_ID = "personId";
+		public final static String EMPLOYEE_ID = "employeeId";
+		public final static String EMPLOYEE_CD = "employeeCode";
 	}
 }
