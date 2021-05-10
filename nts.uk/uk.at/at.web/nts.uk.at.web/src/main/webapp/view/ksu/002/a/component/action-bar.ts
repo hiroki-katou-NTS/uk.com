@@ -98,7 +98,7 @@ module nts.uk.ui.at.ksu002.a {
 					tabindex: $$tabindex,
 					width: 520,
 					workplace-id: $component.data.workplaceId,
-					check: ko.observable(true)
+					check: ko.observable(false)
 				"></div>
 		</div>
 	</div>

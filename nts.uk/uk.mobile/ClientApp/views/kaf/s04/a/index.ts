@@ -449,6 +449,7 @@ export class KafS04AComponent extends KafS00ShrComponent {
                 mode: vm.mode,
                 res: null,
             };
+            vm.$http.post('at', API.reflectApp, res.data.reflectAppIdLst);
             vm.$goto('kafs04a1', vm.paramsAComponent);
             vm.$mask('hide');
         });
@@ -590,6 +591,7 @@ const API = {
     register: 'at/request/application/lateorleaveearly/register',
     getMsgList: 'at/request/application/lateorleaveearly/getMsgList',
     updateApp: 'at/request/application/lateorleaveearly/updateInfoApp',
+    reflectApp: 'at/request/application/reflect-app'
 };
 
 const initInfoOutput = (): IInfoOutput => ({
