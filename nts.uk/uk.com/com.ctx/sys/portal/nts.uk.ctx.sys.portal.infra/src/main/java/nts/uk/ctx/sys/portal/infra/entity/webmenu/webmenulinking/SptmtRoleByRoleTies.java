@@ -26,6 +26,7 @@ public class SptmtRoleByRoleTies extends ContractUkJpaEntity implements Serializ
 	@Column(name = "WEB_MENU_CD")
 	public String webMenuCd;
 	
+	//TODO 元々ROLE_IDがprimaryKeyですが、今回はprimaryKey 「ROLE_ID」と「CID」 になりました。
 	@Column(name = "CID")
 	public String companyId;
 	
