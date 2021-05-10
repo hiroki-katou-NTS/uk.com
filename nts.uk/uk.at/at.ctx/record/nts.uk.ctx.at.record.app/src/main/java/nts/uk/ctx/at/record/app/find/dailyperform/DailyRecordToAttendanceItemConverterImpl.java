@@ -494,4 +494,9 @@ public class DailyRecordToAttendanceItemConverterImpl extends AttendanceItemConv
 	protected boolean isMonthly() {
 		return false;
 	}
+
+    @Override
+    protected boolean isAnyPeriod() {
+        return false;
+    }
 }

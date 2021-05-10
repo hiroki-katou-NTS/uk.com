@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.pub.monthly.vacation.annualleave.dtoexport.annual.LeaveUsedNumberExport;
+import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
 
 /**
  * 暫定年休管理データ
@@ -23,7 +24,7 @@ public class TempAnnualLeaveMngsExport {
 	/** 作成元区分 */
 	private CreateAtrExport creatorAtr;
 	/** 残数種類 */
-	private RemainTypeExport remainType;
+	private RemainType remainType;
 	/** 勤務種類 */
 	private String workTypeCode;
 	/** 年休使用数 */

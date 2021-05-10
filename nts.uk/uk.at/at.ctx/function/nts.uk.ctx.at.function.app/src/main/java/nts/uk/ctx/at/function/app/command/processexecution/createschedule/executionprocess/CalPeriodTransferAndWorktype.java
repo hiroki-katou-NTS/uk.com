@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -14,10 +15,10 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.function.app.command.processexecution.ApprovalPeriodByEmp;
+import nts.uk.ctx.at.function.dom.adapter.alarm.BasicScheduleAdapter;
 import nts.uk.ctx.at.function.dom.statement.EmployeeGeneralInfoAdapter;
 import nts.uk.ctx.at.function.dom.statement.dtoimport.EmployeeGeneralInfoImport;
 import nts.uk.ctx.at.schedule.dom.adapter.generalinfo.workplace.ExWorkplaceHistItemImported;
-import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicScheduleRepository;
 import nts.uk.ctx.at.schedule.dom.schedule.schedulemaster.requestperiodchange.RequestPeriodChangeService;
 import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee.BusinessTypeOfEmployeeHis;
 import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee.BusinessTypeOfEmployeeService;
@@ -38,8 +39,8 @@ public class CalPeriodTransferAndWorktype {
 	@Inject
 	private BusinessTypeOfEmployeeService businessTypeOfEmpHisService;
 
-	@Inject
-	private BasicScheduleRepository basicScheRepo;
+	 @Inject
+    private BasicScheduleAdapter basicScheduleAdapter;
 
 	@Inject
 	private RequestPeriodChangeService requestPeriodChangeService;
@@ -87,14 +88,14 @@ public class CalPeriodTransferAndWorktype {
 		for (String empId : listEmp) {
 
 			// ドメインモデル「勤務予定基本情報」を取得する - 年月日が最も大きいレコードを取得する
-			GeneralDate basicScheduleDateHighest = basicScheRepo.findMaxDateByListSid(Arrays.asList(empId));
+			Optional<GeneralDate> basicScheduleDateHighest = basicScheduleAdapter.acquireMaxDateBasicSchedule(Arrays.asList(empId));
 
 			// 「勤務予定基本情報」を取得できない場合次の社員へ
-			if (basicScheduleDateHighest == null)
+			if (!basicScheduleDateHighest.isPresent())
 				continue;
 
 			// INPUT「開始日」と取得したデータの年月日から「対象期間」を求める
-			DatePeriod newPeriod = new DatePeriod(period.start(), basicScheduleDateHighest);
+			DatePeriod newPeriod = new DatePeriod(period.start(), basicScheduleDateHighest.get());
 
 			// INPUT．「異動時に再作成」をチェックする
 			List<DatePeriod> dataWorkplace = new ArrayList<>();

@@ -4,8 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.vacation.setting.nursingleave;
 
-import java.util.ArrayList;
 import java.util.List;
+
 //import java.util.List;
 import java.util.Optional;
 //import java.util.stream.Collectors;
@@ -18,6 +18,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingCategory;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingLeaveSettingGetMemento;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.TimeCareNursingSet;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.nursingleave.KshmtHdnursingLeave;
+import nts.uk.shr.com.time.calendar.MonthDay;
 
 /**
  * The Class JpaNursingVacationSettingGetMemento.
@@ -77,12 +78,10 @@ public class JpaNursingLeaveSettingGetMemento implements NursingLeaveSettingGetM
      * NursingVacationSettingGetMemento#getStartMonthDay()
      */
     @Override
-    public Integer getStartMonthDay() {
-       return this.entityNursing.getStartMonthDay();
-
-//    	int month = this.entityNursing.getStartMonthDay() / 100;
-//    	int day = this.entityNursing.getStartMonthDay() % 100;
-//    	return new MonthDay(month, day);
+    public MonthDay getStartMonthDay() {
+    	int month = this.entityNursing.getStartMonthDay() / 100;
+    	int day = this.entityNursing.getStartMonthDay() % 100;
+    	return new MonthDay(month, day);
     }
 
     /*
@@ -111,9 +110,10 @@ public class JpaNursingLeaveSettingGetMemento implements NursingLeaveSettingGetM
 		return new TimeCareNursingSet(
 				EnumAdaptor.valueOf(this.entityNursing.getDigestiveUnit() != null ? this.entityNursing.getDigestiveUnit() : 0, TimeDigestiveUnit.class),
 				EnumAdaptor.valueOf(this.entityNursing.getTimeManageAtr() != null ? this.entityNursing.getTimeManageAtr(): 0, ManageDistinct.class ));
-		
-		
+
+
 	}
+
 
     /*
      * (non-Javadoc)

@@ -11,6 +11,7 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.sys.assist.dom.categoryfieldmt.CategoryFieldMt;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
  * カテゴリ項目マスタ
@@ -19,7 +20,7 @@ import nts.uk.ctx.sys.assist.dom.categoryfieldmt.CategoryFieldMt;
 @NoArgsConstructor
 @Entity
 @Table(name = "SSPCT_SAVE_CATEGORY_FIELD")
-public class SspctSaveCategoryField implements Serializable {
+public class SspctSaveCategoryField extends UkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/**
@@ -679,10 +680,10 @@ public class SspctSaveCategoryField implements Serializable {
 	@Column(name = "FIELD_ACQ_START_DATE")
 	public String fieldAcqStartDate;
 
-//	@Override
-//	protected Object getKey() {
-//		return categoryFieldMtPk;
-//	}
+	@Override
+	protected Object getKey() {
+		return categoryFieldMtPk;
+	}
 
 	public CategoryFieldMt toDomain() {
 		return new CategoryFieldMt(this.categoryFieldMtPk.categoryId, this.categoryFieldMtPk.systemType,
