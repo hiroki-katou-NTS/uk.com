@@ -374,8 +374,8 @@ export interface IRes {
         autoSuccessMail: [];
         autoFailMail: [];
         autoFailServer: [];
-        appIDLst: "";
-        reflectAppId: "";
+        appIDLst: Array<string>;
+        reflectAppIdLst: Array<string>;
         processDone: boolean;
         autoSendMail: boolean;
     }

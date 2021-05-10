@@ -634,6 +634,7 @@ export class KafS07AComponent extends KafS00ShrComponent {
             //         self.fetchStart();
             //         self.$forceUpdate();
             //     });
+            self.$http.post('at', API.reflectApp, res.data.reflectAppIdLst);
             self.$goto('kafs07a1', { mode: self.mode ? ScreenMode.NEW : ScreenMode.DETAIL, appID: res.data.appIDLst[0] });
         }).catch((res: any) => {
             self.$mask('hide');
@@ -1033,5 +1034,6 @@ const API = {
     checkBeforRegister: 'at/request/application/workchange/mobile/checkBeforeRegister_New',
     registerAppWorkChange: 'at/request/application/workchange/mobile/addWorkChange_New',
     updateAppWorkChange: 'at/request/application/workchange/mobile/changeDateKAFS07',
-    checkWorkTime: 'at/request/application/workchange/mobile/checkWorkTime'
+    checkWorkTime: 'at/request/application/workchange/mobile/checkWorkTime',
+    reflectApp: 'at/request/application/reflect-app'
 };

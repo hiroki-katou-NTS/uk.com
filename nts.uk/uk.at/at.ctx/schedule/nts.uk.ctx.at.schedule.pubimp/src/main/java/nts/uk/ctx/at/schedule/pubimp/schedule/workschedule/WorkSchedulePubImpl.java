@@ -142,4 +142,9 @@ public class WorkSchedulePubImpl implements WorkSchedulePub {
 	public Optional<String> getWorkTypeCode(String sid, GeneralDate baseDate) {
 		return Optional.ofNullable(workScheduleRepository.get(sid, baseDate).map(i -> i.getWorkInfo().getRecordInfo().getWorkTypeCode().v()).orElse(null));
 	}
+
+	@Override
+	public Optional<GeneralDate> acquireMaxDateBasicSchedule(List<String> sIds) {
+		return this.workScheduleRepository.getMaxDateWorkSche(sIds);
+	}
 }

@@ -15,7 +15,6 @@ public class ChildCareNurseAggrPeriodDaysInfoImport {
 	/** 子の看護休暇情報（翌年） */
 	private Optional<ChildCareNurseAggrPeriodInfoImport> nextYear;
 
-
 	/**
 	 * コンストラクタ
 	 */
