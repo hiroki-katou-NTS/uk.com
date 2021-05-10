@@ -19,7 +19,7 @@ module nts.uk.ui.at.kdp013.a {
 
     export type ProcessInitialStartDto = {
         // 工数入力を起動する
-        startManHourInputDto: StartManHourInputResultDto;
+        startManHourInputResultDto: StartManHourInputResultDto;
 
         // 参照可能職場・社員を取得する
         refWorkplaceAndEmployeeDto: GetRefWorkplaceAndEmployeeDto;
@@ -72,7 +72,9 @@ module nts.uk.ui.at.kdp013.a {
 
     export type GetRefWorkplaceAndEmployeeDto = {
         /** 社員の所属情報(Map<社員ID,職場ID>)*/
-        employeeInfos: [];
+        employeeInfos: {
+            [key: string]: string;
+        };
 
         /** List＜社員ID（List）から社員コードと表示名を取得＞*/
         lstEmployeeInfo: EmployeeBasicInfoImport[];

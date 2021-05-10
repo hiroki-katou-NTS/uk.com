@@ -463,6 +463,7 @@ module nts.uk.ui.components.fullcalendar {
             view: string;
             editor: string;
         }
+        $settings: KnockoutObservable<any | null>;
     };
 
     type PopupData = {
@@ -569,7 +570,8 @@ module nts.uk.ui.components.fullcalendar {
                 position: $component.popupPosition.event,
                 components: $component.params.components,
                 exclude-times: $component.popupData.excludeTimes,
-                mouse-pointer: $component.dataEvent.pointer
+                mouse-pointer: $component.dataEvent.pointer,
+                $settings: $component.params.$settings
             "></div>
         <div data-bind="
                 fc-setting: $component.popupData.setting,
@@ -660,7 +662,8 @@ module nts.uk.ui.components.fullcalendar {
                     components: {
                         view: 'kdp013b',
                         editor: 'kdp013c'
-                    }
+                    },
+                    $settings: ko.observable(null)
                 };
             }
 
@@ -2388,6 +2391,7 @@ module nts.uk.ui.components.fullcalendar {
             mutated: KnockoutObservable<null>;
             excludeTimes: KnockoutObservableArray<BussinessTime>;
             mousePointer: KnockoutObservable<{ screenX: number; screenY: number; }>;
+            $settings: KnockoutObservable<any | null>;
         };
 
         @handler({
@@ -2406,8 +2410,9 @@ module nts.uk.ui.components.fullcalendar {
                 const components = allBindingsAccessor.get('components');
                 const excludeTimes = allBindingsAccessor.get('exclude-times');
                 const mousePointer = allBindingsAccessor.get('mouse-pointer');
+                const $settings = allBindingsAccessor.get('$settings');
 
-                const component = { name, params: { data, position, components, mode, view, mutated, excludeTimes, mousePointer } };
+                const component = { name, params: { data, position, components, mode, view, mutated, excludeTimes, mousePointer, $settings } };
 
                 element.removeAttribute('data-bind');
                 element.classList.add('fc-popup-editor');
@@ -2434,7 +2439,7 @@ module nts.uk.ui.components.fullcalendar {
             mounted() {
                 const vm = this;
                 const { $el, params } = vm;
-                const { components, data, position, mode, view, excludeTimes, mousePointer } = params;
+                const { components, data, position, mode, view, excludeTimes, mousePointer, $settings } = params;
                 const $ctn = $('<div>');
                 const $view = document.createElement('div');
                 const $edit = document.createElement('div');
@@ -2476,8 +2481,8 @@ module nts.uk.ui.components.fullcalendar {
                         position.valueHasMutated();
                     };
 
-                    ko.applyBindingsToNode($view, { component: { name: components.view, params: { update, remove, close, data, mode } } });
-                    ko.applyBindingsToNode($edit, { component: { name: components.editor, params: { remove, close, data, mode, view, position, excludeTimes } } });
+                    ko.applyBindingsToNode($view, { component: { name: components.view, params: { update, remove, close, data, mode, $settings } } });
+                    ko.applyBindingsToNode($edit, { component: { name: components.editor, params: { remove, close, data, mode, view, position, excludeTimes, $settings } } });
                 }
 
                 ko.computed({

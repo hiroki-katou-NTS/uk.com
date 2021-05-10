@@ -154,6 +154,37 @@ module nts.uk.ui.at.kdp013.c {
     }
 
     @handler({
+        bindingName: 'kdw-ttg',
+        validatable: true,
+        virtual: false
+    })
+    export class KdwToggleBindingHandler implements KnockoutBindingHandler {
+        init(element: HTMLElement, valueAccessor: () => KnockoutObservable<boolean>, allBindingsAccessor: KnockoutAllBindingsAccessor, viewModel: any, bindingContext: KnockoutBindingContext): { controlsDescendantBindings: boolean; } {
+            const accessor = valueAccessor();
+
+            const $if = ko.computed({
+                read: () => {
+                    return ko.unwrap(accessor);
+                },
+                disposeWhenNodeIsRemoved: element
+            });
+
+            const hidden = ko.computed({
+                read: () => {
+                    return !ko.unwrap(accessor);
+                },
+                disposeWhenNodeIsRemoved: element
+            });
+
+            ko.applyBindingsToNode(element, { if: $if, css: { hidden } }, bindingContext);
+
+            element.removeAttribute('data-bind');
+
+            return { controlsDescendantBindings: true };
+        }
+    }
+
+    @handler({
         bindingName: COMPONENT_NAME,
         validatable: true,
         virtual: false
@@ -196,7 +227,7 @@ module nts.uk.ui.at.kdp013.c {
                                 "></div>
                         </td>
                     </tr>
-                    <tr>
+                    <tr data-bind="kdw-ttg: $component.usages.taskUse1">
                         <td data-bind="i18n: $component.labels.taskLbl1"></td>
                         <td><div data-bind="
                                 dropdown: $component.model.task1,
@@ -206,7 +237,7 @@ module nts.uk.ui.at.kdp013.c {
                                 hasError: $component.errors.dropdown
                             "></div></td>
                     </tr>
-                    <tr>
+                    <tr data-bind="kdw-ttg: $component.usages.taskUse2">
                         <td data-bind="i18n: $component.labels.taskLbl2"></td>
                         <td><div data-bind="
                                 dropdown: $component.model.task2,
@@ -214,7 +245,7 @@ module nts.uk.ui.at.kdp013.c {
                                 items: $component.combobox.taskList2
                             "></div></td>
                     </tr>
-                    <tr>
+                    <tr data-bind="kdw-ttg: $component.usages.taskUse3">
                         <td data-bind="i18n: $component.labels.taskLbl3"></td>
                         <td><div data-bind="
                                 dropdown: $component.model.task3,
@@ -222,7 +253,7 @@ module nts.uk.ui.at.kdp013.c {
                                 items: $component.combobox.taskList3
                             "></div></td>
                     </tr>
-                    <tr>
+                    <tr data-bind="kdw-ttg: $component.usages.taskUse4">
                         <td data-bind="i18n: $component.labels.taskLbl4"></td>
                         <td><div data-bind="
                                 dropdown: $component.model.task4,
@@ -230,7 +261,7 @@ module nts.uk.ui.at.kdp013.c {
                                 items: $component.combobox.taskList4
                             "></div></td>
                     </tr>
-                    <tr>
+                    <tr data-bind="kdw-ttg: $component.usages.taskUse5">
                         <td data-bind="i18n: $component.labels.taskLbl5"></td>
                         <td><div data-bind="
                                 dropdown: $component.model.task5,
@@ -381,10 +412,75 @@ module nts.uk.ui.at.kdp013.c {
                 taskLbl5: ko.observable('C1_22'),
             };
 
+        usages: {
+            taskUse1: KnockoutObservable<boolean>;
+            taskUse2: KnockoutObservable<boolean>;
+            taskUse3: KnockoutObservable<boolean>;
+            taskUse4: KnockoutObservable<boolean>;
+            taskUse5: KnockoutObservable<boolean>;
+        } = {
+                taskUse1: ko.observable(false),
+                taskUse2: ko.observable(false),
+                taskUse3: ko.observable(false),
+                taskUse4: ko.observable(false),
+                taskUse5: ko.observable(false)
+            };
+
         confirm: KnockoutObservable<ConfirmContent | null> = ko.observable(null);
+
+        taskFrameSettings: KnockoutObservableArray<a.TaskFrameSettingDto> = ko.observableArray([]);
 
         constructor(public params: Params) {
             super();
+
+            const vm = this;
+            const { labels, usages } = vm;
+            const { $settings } = params;
+
+            this.taskFrameSettings
+                .subscribe((t: a.TaskFrameSettingDto[]) => {
+                    const [first, second, thirt, four, five] = t;
+
+                    if (first) {
+                        labels.taskLbl1(first.frameName);
+                        usages.taskUse1(first.useAtr === 1);
+                    }
+
+                    if (second) {
+                        labels.taskLbl2(second.frameName);
+                        usages.taskUse2(second.useAtr === 1);
+                    }
+
+                    if (thirt) {
+                        labels.taskLbl3(thirt.frameName);
+                        usages.taskUse3(thirt.useAtr === 1);
+                    }
+
+                    if (four) {
+                        labels.taskLbl4(four.frameName);
+                        usages.taskUse4(four.useAtr === 1);
+                    }
+
+                    if (five) {
+                        labels.taskLbl5(five.frameName);
+                        usages.taskUse5(five.useAtr === 1);
+                    }
+                });
+
+            ko.computed({
+                read: () => {
+                    const settings = ko.unwrap($settings);
+
+                    if (settings) {
+                        const { startManHourInputResultDto } = settings;
+
+                        const { taskFrameUsageSetting } = startManHourInputResultDto;
+                        const { frameSettingList } = taskFrameUsageSetting;
+
+                        vm.taskFrameSettings(frameSettingList);
+                    }
+                }
+            });
 
             this.hasError = ko
                 .computed({
@@ -771,6 +867,7 @@ module nts.uk.ui.at.kdp013.c {
         data: KnockoutObservable<FullCalendar.EventApi>;
         position: KnockoutObservable<null | any>;
         excludeTimes: KnockoutObservableArray<share.BussinessTime>;
+        $settings: KnockoutObservable<a.ProcessInitialStartDto | null>;
     }
 
     type DropdownItem = {

@@ -82,6 +82,8 @@ module nts.uk.ui.at.kdp013.a {
         // need map with [KDW013_21, KDW013_22, KDW013_23, KDW013_24] resource
         attendanceTimes: KnockoutObservableArray<calendar.AttendanceTime> = ko.observableArray([]);
 
+        $settings: KnockoutObservable<ProcessInitialStartDto | null> = ko.observable(null);
+
         constructor() {
             super();
 
@@ -117,13 +119,15 @@ module nts.uk.ui.at.kdp013.a {
 
             vm.$ajax('at', API.START)
                 .then((data: ProcessInitialStartDto) => {
-                    const { startManHourInputDto, refWorkplaceAndEmployeeDto } = data;
+                    vm.$settings(data);
 
-                    if (!startManHourInputDto) {
+                    const { startManHourInputResultDto, refWorkplaceAndEmployeeDto } = data;
+
+                    if (!startManHourInputResultDto) {
                         return;
                     }
 
-                    const { taskFrameUsageSetting, tasks, workLocations } = startManHourInputDto;
+                    const { taskFrameUsageSetting, tasks, workLocations } = startManHourInputResultDto;
                     const { employeeInfos, lstEmployeeInfo, workplaceInfos } = refWorkplaceAndEmployeeDto;
 
                     const employees = _.map(employeeInfos, ({ }) => ({}));

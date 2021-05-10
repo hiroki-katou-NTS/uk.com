@@ -108,19 +108,43 @@ module nts.uk.ui.at.kdp013.b {
     export class ViewModel extends ko.ViewModel {
         dataSources: KnockoutObservableArray<KeyValue> = ko.observableArray([]);
 
+        taskFrameSettings: KnockoutObservableArray<a.TaskFrameSettingDto> = ko.observableArray([]);
+
         constructor(public params: Params) {
             super();
+
+            const vm = this;
+            const { $settings } = params;
+
+            ko.computed({
+                read: () => {
+                    const settings = ko.unwrap($settings);
+
+
+                    if (settings) {
+                        const { startManHourInputResultDto } = settings;
+
+                        const { taskFrameUsageSetting } = startManHourInputResultDto;
+                        const { frameSettingList } = taskFrameUsageSetting;
+
+                        vm.taskFrameSettings(frameSettingList);;
+                    }
+                }
+            });
         }
 
         mounted() {
             const vm = this;
-            const { params } = vm;
+            const { params, taskFrameSettings } = vm;
             const { data } = params;
 
             ko.computed({
                 read: () => {
                     const model: KeyValue[] = [];
                     const event = ko.unwrap(data);
+                    const settings = ko.unwrap(taskFrameSettings);
+
+                    const [first, second, thirt, four, five] = settings;
 
                     if (event) {
                         const { extendedProps, start, end } = event;
@@ -133,11 +157,25 @@ module nts.uk.ui.at.kdp013.b {
                         model.push({ key: 'KDW013_27', value: `${number2String(startTime)}${vm.$i18n('KDW013_30')}${number2String(endTime)}` });
                         model.push({ key: 'KDW013_25', value: number2String(endTime - startTime) });
 
-                        model.push({ key: 'C1_10', value: '' });
-                        model.push({ key: 'C1_13', value: '' });
-                        model.push({ key: 'C1_16', value: '' });
-                        model.push({ key: 'C1_19', value: '' });
-                        model.push({ key: 'C1_22', value: '' });
+                        if (first && first.useAtr === 1) {
+                            model.push({ key: first.frameName, value: '' });
+                        }
+
+                        if (second && second.useAtr === 1) {
+                            model.push({ key: second.frameName, value: '' });
+                        }
+
+                        if (thirt && thirt.useAtr === 1) {
+                            model.push({ key: thirt.frameName, value: '' });
+                        }
+
+                        if (four && four.useAtr === 1) {
+                            model.push({ key: four.frameName, value: '' });
+                        }
+
+                        if (five && five.useAtr === 1) {
+                            model.push({ key: five.frameName, value: '' });
+                        }
 
                         model.push({ key: 'KDW013_28', value: '' });
                         model.push({ key: 'KDW013_29', value: descriptions });
@@ -145,11 +183,25 @@ module nts.uk.ui.at.kdp013.b {
                         model.push({ key: 'KDW013_27', value: '' });
                         model.push({ key: 'KDW013_25', value: '' });
 
-                        model.push({ key: 'C1_10', value: '' });
-                        model.push({ key: 'C1_13', value: '' });
-                        model.push({ key: 'C1_16', value: '' });
-                        model.push({ key: 'C1_19', value: '' });
-                        model.push({ key: 'C1_22', value: '' });
+                        if (first && first.useAtr === 1) {
+                            model.push({ key: first.frameName, value: '' });
+                        }
+
+                        if (second && second.useAtr === 1) {
+                            model.push({ key: second.frameName, value: '' });
+                        }
+
+                        if (thirt && thirt.useAtr === 1) {
+                            model.push({ key: thirt.frameName, value: '' });
+                        }
+
+                        if (four && four.useAtr === 1) {
+                            model.push({ key: four.frameName, value: '' });
+                        }
+
+                        if (five && five.useAtr === 1) {
+                            model.push({ key: five.frameName, value: '' });
+                        }
 
                         model.push({ key: 'KDW013_28', value: '' });
                         model.push({ key: 'KDW013_29', value: '' });
@@ -192,5 +244,6 @@ module nts.uk.ui.at.kdp013.b {
         remove: () => void;
         mode: KnockoutObservable<boolean>;
         data: KnockoutObservable<FullCalendar.EventApi>;
+        $settings: KnockoutObservable<a.ProcessInitialStartDto | null>;
     }
 }
