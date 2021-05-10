@@ -2,7 +2,7 @@ package nts.uk.ctx.sys.tenant.dom.service;
 
 import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.sys.gateway.dom.tenantlogin.TenantAuthenticate;
+import nts.uk.ctx.sys.gateway.dom.tenantlogin.TenantAuthentication;
 import nts.uk.shr.com.tenant.event.CreatedTenantEvent;
 
 /**
@@ -17,7 +17,7 @@ public class CreateTenantService{
 		//イベント発行
 		AtomTask eventTask = event.publish();
 		
-		TenantAuthenticate tenantAuthentication = TenantAuthenticate.create(contractCode, plainTextPassword, GeneralDate.today());
+		TenantAuthentication tenantAuthentication = TenantAuthentication.create(contractCode, plainTextPassword, GeneralDate.today());
 		return AtomTask.of(()->{
 			//テナント認証作成
 			require.save(tenantAuthentication);
@@ -25,6 +25,6 @@ public class CreateTenantService{
 	}
 	
 	public static interface Require{
-		void save(TenantAuthenticate tenantAuthentication);
+		void save(TenantAuthentication tenantAuthentication);
 	}
 }

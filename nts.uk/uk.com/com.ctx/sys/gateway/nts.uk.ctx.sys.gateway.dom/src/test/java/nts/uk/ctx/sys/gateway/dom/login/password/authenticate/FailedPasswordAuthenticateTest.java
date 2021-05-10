@@ -82,5 +82,42 @@ public class FailedPasswordAuthenticateTest {
 			times = 1;
 		}};
 	}
-
+	
+	
+	@Test
+	public void called_LockoutData_PolicyEmpty() {
+		
+		new MockUp<PasswordAuthenticateFailureLog>(){
+			@Mock
+			public PasswordAuthenticateFailureLog failedNow(String userId, String password) {
+				return new PasswordAuthenticateFailureLog(
+						FailedPasswordHelper.DUMMY.DATETIME, 
+						FailedPasswordHelper.DUMMY.USER_ID, 
+						FailedPasswordHelper.DUMMY.PASSWORD); 
+			}
+		};
+		
+		new MockUp<AccountLockPolicy>(){
+			@Mock
+			public Optional<LockoutData> validateAuthenticate(AccountLockPolicy.Require require, String userId) {
+				return Optional.of(FailedPasswordHelper.DUMMY.LOCKOUT_DATA);
+			}
+		};
+		
+		new Expectations() {{
+			faildPassAuthRequire.getAccountLockPolicy(FailedPasswordHelper.DUMMY.EMP_INFO.getTenantCode());
+			result = Optional.empty();
+		}};
+		
+		FailedAuthenticateTask result = FailedPasswordAuthenticate.failed(faildPassAuthRequire, FailedPasswordHelper.DUMMY.EMP_INFO, FailedPasswordHelper.DUMMY.PASSWORD);
+		new Verifications() {{
+			faildPassAuthRequire.save((LockoutData) any);
+			times = 0;
+		}};
+		result.getLockoutData().get().run();
+		new Verifications() {{
+			faildPassAuthRequire.save((LockoutData) any);
+			times = 1;
+		}};
+	}
 }

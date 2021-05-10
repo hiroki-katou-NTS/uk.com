@@ -13,7 +13,7 @@ import nts.uk.ctx.sys.gateway.app.command.tenantlogin.ConnectDataSourceOfTenant;
 import nts.uk.ctx.sys.gateway.dom.login.CheckIfCanLogin;
 import nts.uk.ctx.sys.gateway.dom.login.IdentifiedEmployeeInfo;
 import nts.uk.ctx.sys.gateway.dom.login.LoginClient;
-import nts.uk.ctx.sys.gateway.dom.tenantlogin.AuthenticateOfTenant;
+import nts.uk.ctx.sys.gateway.dom.tenantlogin.AuthenticateTenant;
 import nts.uk.shr.com.net.Ipv4Address;
 
 /**
@@ -141,7 +141,7 @@ public abstract class LoginCommandHandlerBase<
 	protected abstract Req getRequire(Command command);
 	
 	public static interface Require extends CheckIfCanLogin.Require, 
-											AuthenticateOfTenant.Require{
+											AuthenticateTenant.Require{
 		
 		void authorizeLoginSession(IdentifiedEmployeeInfo identified);
 	}	

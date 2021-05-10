@@ -14,11 +14,11 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.gul.web.HttpClientIpAddress;
 import nts.uk.ctx.sys.gateway.dom.login.LoginClient;
-import nts.uk.ctx.sys.gateway.dom.tenantlogin.AuthenticateOfTenant;
-import nts.uk.ctx.sys.gateway.dom.tenantlogin.TenantAuthenticate;
-import nts.uk.ctx.sys.gateway.dom.tenantlogin.TenantAuthenticateFailureLog;
-import nts.uk.ctx.sys.gateway.dom.tenantlogin.TenantAuthenticateFailureLogRepository;
-import nts.uk.ctx.sys.gateway.dom.tenantlogin.TenantAuthenticateRepository;
+import nts.uk.ctx.sys.gateway.dom.tenantlogin.AuthenticateTenant;
+import nts.uk.ctx.sys.gateway.dom.tenantlogin.TenantAuthentication;
+import nts.uk.ctx.sys.gateway.dom.tenantlogin.TenantAuthenticationFailureLog;
+import nts.uk.ctx.sys.gateway.dom.tenantlogin.TenantAuthenticationFailureLogRepository;
+import nts.uk.ctx.sys.gateway.dom.tenantlogin.TenantAuthenticationRepository;
 import nts.uk.shr.com.net.Ipv4Address;
 
 /**
@@ -31,10 +31,10 @@ import nts.uk.shr.com.net.Ipv4Address;
 public class TenantAuthenticateCommandHandler extends CommandHandler<TenantAuthenticateCommand> {
 	
 	@Inject
-    private TenantAuthenticateRepository tenantAuthenticationRepo;
+    private TenantAuthenticationRepository tenantAuthenticationRepo;
 	
 	@Inject
-	private TenantAuthenticateFailureLogRepository tenantAuthenticationFailureLogRepo;
+	private TenantAuthenticationFailureLogRepository tenantAuthenticationFailureLogRepo;
 
 	@Override
 	protected void handle(CommandHandlerContext<TenantAuthenticateCommand> context) {
@@ -63,14 +63,14 @@ public class TenantAuthenticateCommandHandler extends CommandHandler<TenantAuthe
 	}
 	
 	@RequiredArgsConstructor
-	private class RequireImpl implements AuthenticateOfTenant.Require{
+	private class RequireImpl implements AuthenticateTenant.Require{
 		@Override
-		public Optional<TenantAuthenticate> getTenantAuthentication(String tenantCode) {
+		public Optional<TenantAuthentication> getTenantAuthentication(String tenantCode) {
 			return tenantAuthenticationRepo.find(tenantCode);
 		}
 		
 		@Override
-		public void insert(TenantAuthenticateFailureLog failureLog) {
+		public void insert(TenantAuthenticationFailureLog failureLog) {
 			tenantAuthenticationFailureLogRepo.insert(failureLog);
 		}
 	}

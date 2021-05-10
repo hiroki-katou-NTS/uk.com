@@ -11,7 +11,7 @@ import nts.uk.ctx.sys.gateway.dom.login.LoginClient;
  *
  */
 @Getter
-public class TenantAuthenticateFailureLog implements DomainAggregate {
+public class TenantAuthenticationFailureLog implements DomainAggregate {
 	/** 日時 */
 	private final GeneralDateTime failureTimestamps;
 	/** ログインクライアント */
@@ -21,7 +21,7 @@ public class TenantAuthenticateFailureLog implements DomainAggregate {
 	/** 試行したパスワード */
 	private final String triedPassword;
 	
-	public TenantAuthenticateFailureLog(GeneralDateTime dateTime, LoginClient loginClient, String triedTenantCode, String triedPassword) {
+	public TenantAuthenticationFailureLog(GeneralDateTime dateTime, LoginClient loginClient, String triedTenantCode, String triedPassword) {
 		this.failureTimestamps = dateTime;
 		this.loginClient = loginClient;
 		// ユーザー入力の値は適当な長さでカットして保持する
@@ -36,8 +36,8 @@ public class TenantAuthenticateFailureLog implements DomainAggregate {
 	 * @param triedPassword
 	 * @return
 	 */
-	public static TenantAuthenticateFailureLog failedNow(LoginClient loginClient, String triedTenantCode, String triedPassword) {
-		return new TenantAuthenticateFailureLog(
+	public static TenantAuthenticationFailureLog failedNow(LoginClient loginClient, String triedTenantCode, String triedPassword) {
+		return new TenantAuthenticationFailureLog(
 				GeneralDateTime.now(), 
 				loginClient, 
 				triedTenantCode, 

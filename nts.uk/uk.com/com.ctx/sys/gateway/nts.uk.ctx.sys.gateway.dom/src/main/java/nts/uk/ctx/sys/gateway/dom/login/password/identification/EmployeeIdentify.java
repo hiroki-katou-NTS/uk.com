@@ -70,7 +70,7 @@ public class EmployeeIdentify {
 		}
 
 		public boolean isFailed() {
-			return !this.identificationSuccess;
+			return !this.isSuccess();
 		}
 		
 		public AtomTask getAtomTask() {

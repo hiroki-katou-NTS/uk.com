@@ -32,7 +32,7 @@ public class PasswordAuthenticateResult {
 	}
 
 	public boolean isFailed() {
-		return !this.success;
+		return !this.isSuccess();
 	}
 	
 	public AtomTask getAtomTask() {

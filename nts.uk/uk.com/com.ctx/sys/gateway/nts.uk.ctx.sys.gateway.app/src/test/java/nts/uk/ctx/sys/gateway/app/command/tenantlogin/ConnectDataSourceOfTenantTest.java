@@ -12,19 +12,19 @@ import mockit.Verifications;
 import nts.arc.task.tran.AtomTask;
 import nts.gul.util.value.MutableValue;
 import nts.uk.ctx.sys.gateway.dom.login.LoginClient;
-import nts.uk.ctx.sys.gateway.dom.tenantlogin.AuthenticateOfTenant;
-import nts.uk.ctx.sys.gateway.dom.tenantlogin.TenantAuthenticateFailureLog;
-import nts.uk.ctx.sys.gateway.dom.tenantlogin.TenantAuthenticateResult;
+import nts.uk.ctx.sys.gateway.dom.tenantlogin.AuthenticateTenant;
+import nts.uk.ctx.sys.gateway.dom.tenantlogin.TenantAuthenticationFailureLog;
+import nts.uk.ctx.sys.gateway.dom.tenantlogin.TenantAuthenticationResult;
 import nts.uk.shr.com.net.Ipv4Address;
 import nts.uk.shr.com.system.property.UKServerSystemProperties;
 import nts.uk.shr.infra.data.TenantLocatorService;
 
 public class ConnectDataSourceOfTenantTest {
 	@Injectable
-	private TenantAuthenticateResult tenantAuthenticateResult;
+	private TenantAuthenticationResult tenantAuthenticateResult;
 	
 	@Injectable
-	private AuthenticateOfTenant.Require require;
+	private AuthenticateTenant.Require require;
 	
 	private static class Dummy{
 		static LoginClient loginClient = new LoginClient(Ipv4Address.parse("255.255.255.255"), "");
@@ -57,10 +57,10 @@ public class ConnectDataSourceOfTenantTest {
 			}
 		};
 		
-		new MockUp<AuthenticateOfTenant>() {
+		new MockUp<AuthenticateTenant>() {
 			@Mock
-			public TenantAuthenticateResult authenticate(AuthenticateOfTenant.Require require, String tenantCode, String password, LoginClient loginClient) {
-				return TenantAuthenticateResult.success();
+			public TenantAuthenticationResult authenticate(AuthenticateTenant.Require require, String tenantCode, String password, LoginClient loginClient) {
+				return TenantAuthenticationResult.success();
 			}
 		};
 		
@@ -101,12 +101,12 @@ public class ConnectDataSourceOfTenantTest {
 		val result = ConnectDataSourceOfTenant.connect(require, Dummy.loginClient, Dummy.tenantCode, Dummy.password);
 
 		new Verifications() {{
-			require.insert((TenantAuthenticateFailureLog)any);
+			require.insert((TenantAuthenticationFailureLog)any);
 			times = 0;
 		}};
 		result.getAtomTask().get().run();
 		new Verifications() {{
-			require.insert((TenantAuthenticateFailureLog)any);
+			require.insert((TenantAuthenticationFailureLog)any);
 			times = 1;
 		}};
 		
@@ -142,10 +142,10 @@ public class ConnectDataSourceOfTenantTest {
 			}
 		};
 		
-		new MockUp<AuthenticateOfTenant>() {
+		new MockUp<AuthenticateTenant>() {
 			@Mock
-			public TenantAuthenticateResult authenticate(AuthenticateOfTenant.Require require, String tenantCode, String password, LoginClient loginClient) {
-				return TenantAuthenticateResult.failedToAuthPassword(Dummy.atomTask);
+			public TenantAuthenticationResult authenticate(AuthenticateTenant.Require require, String tenantCode, String password, LoginClient loginClient) {
+				return TenantAuthenticationResult.failedToAuthPassword(Dummy.atomTask);
 			}
 		};
 		
@@ -184,10 +184,10 @@ public class ConnectDataSourceOfTenantTest {
 			}
 		};
 		
-		new MockUp<AuthenticateOfTenant>() {
+		new MockUp<AuthenticateTenant>() {
 			@Mock
-			public TenantAuthenticateResult authenticate(AuthenticateOfTenant.Require require, String tenantCode, String password, LoginClient loginClient) {
-				return TenantAuthenticateResult.success();
+			public TenantAuthenticationResult authenticate(AuthenticateTenant.Require require, String tenantCode, String password, LoginClient loginClient) {
+				return TenantAuthenticationResult.success();
 			}
 		};
 		
