@@ -169,10 +169,27 @@ module nts.uk.ui.at.kdp013.a {
         employeeId: string;
 
         /** 編集状態<Enum.日別勤怠の編集状態> */
-        editStateSetting: number;
+        editStateSetting: EditStateSetting;
 
         /** List<年月日,List<作業詳細>> */
         workDetails: WorkDetailDto[];
+    };
+
+    /**
+     * 日別勤怠の編集状態
+     */
+    export enum EditStateSetting {
+        /** 手修正（本人） */
+        HAND_CORRECTION_MYSELF = 0,
+        /** 手修正（他人） */
+        HAND_CORRECTION_OTHER = 1,
+        /** 申請反映 */
+        REFLECT_APPLICATION = 2,
+        /** 打刻反映 */
+        IMPRINT = 3,
+        /** 申告反映 */
+        DECLARE_APPLICATION = 4
+
     };
 
     export type WorkDetailDto = {
@@ -256,14 +273,6 @@ module nts.uk.ui.at.kdp013.a {
 
         //表示期間
         displayPeriod: DatePeriodDto;
-    };
-
-    export type DatePeriodDto = {
-        /** 開始日 */
-        start: string;
-
-        /** 終了日 */
-        end: string;
     };
 
     export type SelectTargetEmployeeDto = {
@@ -357,7 +366,7 @@ module nts.uk.ui.at.kdp013.a {
         employeeId: string;
 
         /** 編集状態<Enum.日別勤怠の編集状態> */
-        editStateSetting: number;
+        editStateSetting: EditStateSetting;
 
         /** List<年月日,List<作業詳細>> */
         workDetails: WorkDetailCommand[];
@@ -414,7 +423,11 @@ module nts.uk.ui.at.kdp013.a {
     };
 
     export type DatePeriodDto = {
+        /** 開始日 */
+        start: string;
 
+        /** 終了日 */
+        end: string;
     };
 
     export type AddAttendanceTimeZoneParam = {
@@ -422,7 +435,7 @@ module nts.uk.ui.at.kdp013.a {
         employeeId: string;
 
         /** 編集状態<Enum.日別勤怠の編集状態> */
-        editStateSetting: number;
+        editStateSetting: EditStateSetting;
 
         /** List<年月日,List<作業詳細>> */
         workDetails: WorkDetailDto[];
