@@ -75,7 +75,7 @@ public class WeeklyCheckServiceImpl implements WeeklyCheckService {
 			List<WorkPlaceHistImportAl> wplByListSidAndPeriods, String listOptionalItem,
 			List<ResultOfEachCondition> lstResultCondition, List<AlarmListCheckInfor> lstCheckType,
 			Consumer<Integer> counter, Supplier<Boolean> shouldStop) {
-		String contractCode = AppContexts.user().companyCode();
+		String contractCode = AppContexts.user().contractCode();
 		
 		parallelManager.forEach(CollectionUtil.partitionBySize(lstSid, 100), emps -> {
 			synchronized (this) {
