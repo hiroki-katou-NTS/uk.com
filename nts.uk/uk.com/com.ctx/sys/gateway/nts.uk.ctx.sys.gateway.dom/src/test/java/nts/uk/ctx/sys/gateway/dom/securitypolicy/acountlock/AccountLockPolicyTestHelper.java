@@ -2,8 +2,6 @@ package nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock;
 
 import java.math.BigDecimal;
 
-import com.google.common.base.Optional;
-
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.locked.LockType;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.locked.LockoutData;

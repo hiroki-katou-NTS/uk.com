@@ -6,12 +6,9 @@ import java.util.Optional;
 
 import org.junit.Test;
 
-import lombok.SneakyThrows;
 import lombok.val;
 import mockit.Expectations;
 import mockit.Injectable;
-import mockit.MockUp;
-import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.AccountLockPolicy.Require;
 
 public class AccountLockPolicyTest {
 
