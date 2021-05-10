@@ -57,11 +57,14 @@ public class InterimRemainOffDateCreateData {
 		InforFormerRemainData formerRemainData = createInforFormerRemainData(require, cid, sid, baseDate, detailData, dayOffTimeIsUse,
 				comHolidaySetting, employmentHolidaySetting, callFunction);
 		
+		if (formerRemainData == null) {
+			return null;
+		}
+		
 		//時間休暇使用時間を作成
 		formerRemainData = createUsageHolidayTimes(require, cid, sid, baseDate, detailData, formerRemainData);
 		
-		if(formerRemainData == null 
-				|| formerRemainData.getWorkTypeRemain().isEmpty()) {
+		if (formerRemainData.getWorkTypeRemain().isEmpty()) {
 			return null;
 		}
 		
@@ -650,6 +653,7 @@ public class InterimRemainOffDateCreateData {
 			wkClasssifi = workType.getDailyWork().getAfternoon();
 		}
 		
+		if (wkClasssifi != null) {
 				
 		result.setWorkTypeClass(wkClasssifi);
 		//アルゴリズム「残数発生使用対象の勤務種類の分類かを判定」を実行する
@@ -725,6 +729,7 @@ public class InterimRemainOffDateCreateData {
 			// 勤務種類の分類に対応する残数発生使用明細を設定する
 			setData(result, day, result.getWorkTypeClass());
 			break;
+			}
 		}
 
 		return result;
@@ -1316,7 +1321,7 @@ public class InterimRemainOffDateCreateData {
 		String workTypeCode = appInfor.getWorkTypeCode().map(x -> x).orElse("");
 		
 		Optional<NumberOfDaySuspension> numberDaySuspension = createInfo.getRecordData()
-				.map(x -> x.getNumberDaySuspension()).orElse(createInfo.getScheData().get().getNumberDaySuspension());
+				.map(x -> x.getNumberDaySuspension()).orElse(createInfo.getScheData().map(x-> x.getNumberDaySuspension()).orElse(Optional.empty()));
 				
 		//アルゴリズム「勤務種類別残数情報を作成する」を実行する
 		List<WorkTypeRemainInfor> remainInfor = createWorkTypeRemainInfor(require, cid, createAtr, workTypeCode,
@@ -1355,8 +1360,8 @@ public class InterimRemainOffDateCreateData {
 	public static List<DayoffTranferInfor> tranferInforFromHolidayWork(RequireM5 require, String cid, 
 			boolean dayOffTimeIsUse, AppRemainCreateInfor appInfor,
 			List<WorkTypeRemainInfor> remainInfor, CreateAtr createAtr) {
-		Integer overTime  = appInfor.getAppOvertimeTimeTotal().isPresent() ? appInfor.getAppOvertimeTimeTotal().get() : 0;
-		Integer breakTime = appInfor.getAppBreakTimeTotal().isPresent() ? appInfor.getAppBreakTimeTotal().get() : 0;
+		Integer overTime  = appInfor.getAppOvertimeTimeTotal().map(x-> x).orElse(0);
+		Integer breakTime = appInfor.getAppBreakTimeTotal().map(x-> x).orElse(0);
 		Integer appTime = 0;
 		//時間代休利用をチェックする
 		if (dayOffTimeIsUse) {

@@ -47,7 +47,7 @@ public class CreateInterimAnnualMngData {
 				RemainType.ANNUAL,
 				new WorkTypeCode("000"),
 				LeaveUsedNumber.of(new LeaveUsedDayNumber(deductDays),
-				Optional.ofNullable(new LeaveUsedTime(Double.valueOf(deductTimes).intValue())),Optional.empty(),Optional.empty()),
+				Optional.ofNullable(new LeaveUsedTime((int) deductTimes)),Optional.empty(),Optional.empty()),
 				Optional.ofNullable(DigestionHourlyTimeType.of(false, Optional.empty()))
 				);
 

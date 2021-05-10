@@ -12,7 +12,6 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.care.interimdata.TempCareManagement;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.ChildCareNurseUsedNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.usenumber.DayNumberOfUse;
@@ -44,10 +43,6 @@ public class KshdtInterimCareData  extends ContractUkJpaEntity implements Serial
 	@Column(name = "CREATOR_ATR")
 	public int createAtr;
 
-	/**	残数分類 */
-	@Column(name = "REMAIN_ATR")
-	public int remainAtr;
-
 	/** 使用日数 */
 	@Column(name = "USED_DAYS")
 	public double usedDays;
@@ -63,7 +58,6 @@ public class KshdtInterimCareData  extends ContractUkJpaEntity implements Serial
 	public TempCareManagement toDomain() {
 		return TempCareManagement.of(remainMngID, pk.sid, pk.ymd,
 					EnumAdaptor.valueOf(createAtr, CreateAtr.class),
-					EnumAdaptor.valueOf(remainAtr, RemainAtr.class),
 					ChildCareNurseUsedNumber.of(
 								new DayNumberOfUse(usedDays),
 								Optional.ofNullable(usedTime == null ? null : new TimeOfUse(usedTime))),
@@ -96,7 +90,6 @@ public class KshdtInterimCareData  extends ContractUkJpaEntity implements Serial
 
 		this.createAtr  = domain.getCreatorAtr().value;
 		this.remainMngID = domain.getRemainManaID();
-		this.remainAtr = domain.getRemainType().value;
 		this.usedDays = domain.getUsedNumber().getUsedDay().v();
 		this.usedTime = domain.getUsedNumber().getUsedTimes().map(c -> c.v()).orElse(null);
 		this.pk.timeDigestiveAtr = domain.getAppTimeType().map(c -> c.isHourlyTimeType() ? 1 : 0).orElse(0);
