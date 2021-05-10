@@ -91,9 +91,9 @@ public class CreateWorkMaxTimeZoneTest {
 	private PredetemineTimeSetting create(int startDateClock, int rangeTimeDay) {
 
 		return new PredetemineTimeSetting(cid, new AttendanceTime(rangeTimeDay), new WorkTimeCode("001"),
-				new PredetermineTime(), true, new PrescribedTimezoneSetting(), new TimeWithDayAttr(startDateClock),
+				new PredetermineTime(), new PrescribedTimezoneSetting(), new TimeWithDayAttr(startDateClock),
 				true);
-
+		
 	}
 
 }

@@ -11,8 +11,12 @@ import nts.uk.ctx.at.request.dom.application.appabsence.ApplyForLeave;
 import nts.uk.ctx.at.request.dom.application.appabsence.apptimedigest.TimeDigestApplication;
 import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTrip;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.ApplicationForHolidays;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveApp;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentApp;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
 import nts.uk.ctx.at.request.dom.application.lateleaveearly.ArrivedLateLeaveEarly;
+import nts.uk.ctx.at.request.dom.application.optional.OptionalItemApplication;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.ApplicationTime;
 import nts.uk.ctx.at.request.dom.application.stamp.AppRecordImage;
@@ -30,12 +34,16 @@ import nts.uk.ctx.at.shared.dom.scherec.application.common.ApplicationShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.common.ApplicationTypeShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.common.PrePostAtrShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.common.StampRequestModeShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.furiapp.AbsenceLeaveAppShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.furiapp.RecruitmentAppShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.furiapp.TypeApplicationHolidaysShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.gobackdirectly.GoBackDirectlyShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.holidayworktime.AppHolidayWorkShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.lateleaveearly.ArrivedLateLeaveEarlyShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.lateleaveearly.LateCancelationShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.lateleaveearly.LateOrEarlyAtrShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.lateleaveearly.TimeReportShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.optional.OptionalItemApplicationShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.overtime.AppOverTimeShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.overtime.ApplicationTimeShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.overtime.AttendanceTypeShare;
@@ -197,12 +205,24 @@ public class ConvertApplicationToShare {
 					appShare);
 
 		case COMPLEMENT_LEAVE_APPLICATION:
-			// TODO: wait new domain
-			return appShare;
+			TypeApplicationHolidaysShare typeAppHolidayShare = EnumAdaptor.valueOf(
+					((ApplicationForHolidays) application).getTypeApplicationHolidays().value,
+					TypeApplicationHolidaysShare.class);
+			if (typeAppHolidayShare == TypeApplicationHolidaysShare.Abs) {
+				// 振休申請
+				AbsenceLeaveApp absence = (AbsenceLeaveApp) application;
+				return new AbsenceLeaveAppShare(absence.getWorkingHours(), absence.getWorkInformation(),
+						absence.getWorkChangeUse(), absence.getChangeSourceHoliday(), typeAppHolidayShare, appShare);
+			} else {
+				// 振出申請
+				RecruitmentApp recruit = (RecruitmentApp) application;
+				return new RecruitmentAppShare(recruit.getWorkInformation(), recruit.getWorkingHours(),
+						typeAppHolidayShare, appShare);
+			}
 
 		case OPTIONAL_ITEM_APPLICATION:
-			// TODO: wait new domain
-			return appShare;
+			OptionalItemApplication optionalApp = (OptionalItemApplication) application;
+			return new OptionalItemApplicationShare(optionalApp.getOptionalItems(), appShare);
 
 		default:
 			return null;
