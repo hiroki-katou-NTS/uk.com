@@ -391,20 +391,21 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
 		// 代休の紐付け管理区分を取得する
 		CompensatoryLeaveComSetting compensatoryLeaveComSetting = compensLeaveComSetRepo.find(companyID);
 
-		// 10-2.代休の設定を取得する
-		SubstituteLeaveManagement substituteLeaveManagement = new SubstituteLeaveManagement(TimeDigestiveUnit.OneMinute,
-				ManageDistinct.NO,
-				ManageDistinct.NO,
-				ManageDistinct.NO);
-		try {
-			SubstitutionHolidayOutput substituationHoliday = AbsenceTenProcess.getSettingForSubstituteHoliday(require, cache, companyID, sID, baseDate);
-			substituteLeaveManagement = new SubstituteLeaveManagement(
-					EnumAdaptor.valueOf(substituationHoliday.getDigestiveUnit(), TimeDigestiveUnit.class),
-					EnumAdaptor.valueOf(substituationHoliday.isTimeOfPeriodFlg() ? 1 : 0, ManageDistinct.class),
-					substituationHoliday.isSubstitutionFlg() ? compensatoryLeaveComSetting.getLinkingManagementATR() : ManageDistinct.NO,
-					EnumAdaptor.valueOf(substituationHoliday.isSubstitutionFlg() ? 1 : 0, ManageDistinct.class));
-		}catch (Exception ignored){}
-
+		if (compensatoryLeaveComSetting != null) {
+			// 10-2.代休の設定を取得する
+			SubstituteLeaveManagement substituteLeaveManagement = new SubstituteLeaveManagement(TimeDigestiveUnit.OneMinute,
+					ManageDistinct.NO,
+					ManageDistinct.NO,
+					ManageDistinct.NO);
+			try {
+				SubstitutionHolidayOutput substituationHoliday = AbsenceTenProcess.getSettingForSubstituteHoliday(require, cache, companyID, sID, baseDate);
+				substituteLeaveManagement = new SubstituteLeaveManagement(
+						EnumAdaptor.valueOf(substituationHoliday.getDigestiveUnit(), TimeDigestiveUnit.class),
+						EnumAdaptor.valueOf(substituationHoliday.isTimeOfPeriodFlg() ? 1 : 0, ManageDistinct.class),
+						substituationHoliday.isSubstitutionFlg() ? compensatoryLeaveComSetting.getLinkingManagementATR() : ManageDistinct.NO,
+						EnumAdaptor.valueOf(substituationHoliday.isSubstitutionFlg() ? 1 : 0, ManageDistinct.class));
+			}catch (Exception ignored){}
+		}
 		// 振休の紐付け管理区分を取得する
 		ComSubstVacation comSubstVacation = this.getComSubstVacation(companyID);
 

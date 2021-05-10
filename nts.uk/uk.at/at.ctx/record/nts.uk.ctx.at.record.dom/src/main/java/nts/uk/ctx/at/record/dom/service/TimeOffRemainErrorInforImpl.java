@@ -102,7 +102,7 @@ public class TimeOffRemainErrorInforImpl implements TimeOffRemainErrorInfor{
 		List<InterimRemain> annualMng = eachData.getAnnualMng();
 		if(optDaily.isPresent()
 				&& optDaily.get().getAnnualHolidayData().isPresent()) {
-			TempAnnualLeaveMngs flexAnnual = optDaily.get().getAnnualHolidayData().get();
+			TempAnnualLeaveMngs flexAnnual = optDaily.get().getAnnualHolidayData().map(x-> x).orElse(null);
 			List<InterimRemain> lstAnnualMng = optDaily.get().getRecAbsData().stream()
 					.filter(x -> x.getRemainManaID().equals(flexAnnual.getRemainManaID()))
 					.collect(Collectors.toList());

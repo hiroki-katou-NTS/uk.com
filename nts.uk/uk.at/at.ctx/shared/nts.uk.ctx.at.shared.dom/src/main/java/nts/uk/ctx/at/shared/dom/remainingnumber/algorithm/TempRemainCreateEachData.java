@@ -19,6 +19,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimDa
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveUsedNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.holidayover60h.interim.TmpHolidayOver60hMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
+import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.OccurrenceDay;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.OccurrenceTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
@@ -404,7 +405,7 @@ public class TempRemainCreateEachData {
 				IdentifierUtil.randomUniqueId(),
 				inforData.getSid(),
 				inforData.getYmd(),
-				inforData.getWorkTypeRemainInfor(workTypeClass).get().getCreateData(),
+				inforData.getWorkTypeRemainInfor(workTypeClass).map(x-> x.getCreateData()).orElse(CreateAtr.SCHEDULE),
 				RemainType.SUBHOLIDAY,
 				new RequiredTime(times),
 				new RequiredDay(0d) ,
@@ -427,6 +428,9 @@ public class TempRemainCreateEachData {
 		WorkTypeRemainInfor WorkTypeRemainInfor = inforData.getWorkTypeRemainInfor(workTypeClass).map(x -> x)
 				.orElse(null);
 
+		if (WorkTypeRemainInfor == null) {
+			return null;
+		}
 		return new TempAnnualLeaveMngs(IdentifierUtil.randomUniqueId(),
 				inforData.getSid(),
 				inforData.getYmd(),
@@ -841,7 +845,7 @@ public class TempRemainCreateEachData {
 				mngId,
 				inforData.getSid(),
 				inforData.getYmd(),
-				inforData.getWorkTypeRemainInfor(workTypeClass).get().getCreateData(),
+				inforData.getWorkTypeRemainInfor(workTypeClass).map(x-> x.getCreateData()).orElse(CreateAtr.SCHEDULE),
 				ChildCareNurseUsedNumber.of(new DayNumberOfUse(care.getDays()), Optional.empty()),
 				Optional.ofNullable(DigestionHourlyTimeType.of(false, Optional.empty())));
 
@@ -867,7 +871,7 @@ public class TempRemainCreateEachData {
 		TempCareManagement careData = new TempCareManagement(mngId,
 				inforData.getSid(),
 				inforData.getYmd(),
-				inforData.getWorkTypeRemainInfor(workTypeClass).get().getCreateData(),
+				inforData.getWorkTypeRemainInfor(workTypeClass).map(x-> x.getCreateData()).orElse(CreateAtr.SCHEDULE),
 				ChildCareNurseUsedNumber.of(new DayNumberOfUse(care.getDays()), Optional.empty()),
 				Optional.ofNullable(DigestionHourlyTimeType.of(false, Optional.empty())));
 

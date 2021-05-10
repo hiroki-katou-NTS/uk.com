@@ -256,7 +256,7 @@ public class AbsenceReruitmentMngInPeriodQuery {
 			for (InterimAbsMng absMng : paramInput.getUseAbsMng()) {
 				//INPUT．上書き用の暫定管理データをドメインモデル「暫定振休管理データ」に追加する
 				List<InterimRemain> lstInputData = paramInput.getInterimMng().stream().
-						filter(x -> x.getRemainManaID() == absMng.getRemainManaID())
+						filter(x -> x.getRemainManaID().equals(absMng.getRemainManaID()))
 						.collect(Collectors.toList());			
 				if(!lstInputData.isEmpty()) {
 					InterimRemain inputData = lstInputData.get(0);
@@ -706,7 +706,7 @@ public class AbsenceReruitmentMngInPeriodQuery {
 			for (InterimAbsMng absMng : paramInput.getUseAbsMng()) {
 				//INPUT．上書き用の暫定管理データをドメインモデル「暫定振休管理データ」に追加する
 				List<InterimRemain> lstInputData = paramInput.getInterimMng().stream().
-						filter(x -> x.getRemainManaID() == absMng.getRemainManaID())
+						filter(x -> x.getRemainManaID().equals( absMng.getRemainManaID()))
 						.collect(Collectors.toList());			
 				if(!lstInputData.isEmpty()) {
 					InterimRemain inputData = lstInputData.get(0);
@@ -752,7 +752,7 @@ public class AbsenceReruitmentMngInPeriodQuery {
 			List<InterimRemain> lstInterimMngTmp = new ArrayList<>(lstInterimMngOfRec);
 			for (InterimRecMng recMng : paramInput.getUseRecMng()) {
 				List<InterimRemain> lstInputData = paramInput.getInterimMng().stream()
-						.filter(x -> x.getRemainManaID() == recMng.getRemainManaID())
+						.filter(x -> x.getRemainManaID().equals(recMng.getRemainManaID()))
 						.collect(Collectors.toList());
 				if(!lstInputData.isEmpty()) {
 					InterimRemain inputRemainData = lstInputData.get(0);
@@ -763,7 +763,7 @@ public class AbsenceReruitmentMngInPeriodQuery {
 					if(!lstRemainTmp.isEmpty()) {
 						InterimRemain remainTmp = lstRemainTmp.get(0);
 						lstInterimMngOfRec.remove(remainTmp);
-						List<InterimRecMng> lstRecTmp = lstRecMngTmp.stream().filter(y -> y.getRemainManaID() == remainTmp.getRemainManaID())
+						List<InterimRecMng> lstRecTmp = lstRecMngTmp.stream().filter(y -> y.getRemainManaID().equals(remainTmp.getRemainManaID()))
 								.collect(Collectors.toList());
 						if(!lstRecTmp.isEmpty()) {
 							InterimRecMng recMngTmp = lstRecTmp.get(0);
