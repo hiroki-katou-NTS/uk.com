@@ -412,12 +412,10 @@ public class JpaInterimBreakDayOffMngRepository extends JpaRepository implements
 	@SneakyThrows
 	@Override
 	public List<InterimDayOffMng> getDayOffBySidPeriod(String sid, DatePeriod period) {
-		try (PreparedStatement sql = this.connection().prepareStatement("SELECT * FROM KRCDT_INTERIM_HD_COM_MNG a1"
-				+ " INNER JOIN KRCDT_INTERIM_REMAIN_MNG a2 ON a1.DAYOFF_MNG_ID = a2.REMAIN_MNG_ID"
-				+ " WHERE a2.SID = ?"
-				+ " AND a2.REMAIN_TYPE = " + RemainType.SUBHOLIDAY.value
-				+ " AND a2.YMD >= ? and a2.YMD <= ?"
-				+ " ORDER BY a2.YMD");
+		try (PreparedStatement sql = this.connection().prepareStatement("SELECT * FROM KSHDT_INTERIM_HDCOM a1"
+				+ " WHERE a1.SID = ?"
+				+ " AND a1.YMD >= ? and a1.YMD <= ?"
+				+ " ORDER BY a1.YMD");
 				)
 		{
 			sql.setString(1, sid);
@@ -436,7 +434,7 @@ public class JpaInterimBreakDayOffMngRepository extends JpaRepository implements
 				EnumAdaptor.valueOf(x.getInt("CREATOR_ATR"), CreateAtr.class),
 				RemainType.SUBHOLIDAY,
 				new RequiredTime(x.getInt("REQUIRED_TIMES")),
-				new RequiredDay(x.getDouble("REQUEIRED_DAYS")),
+				new RequiredDay(x.getDouble("REQUIRED_DAYS")),
 				new UnOffsetTime(x.getInt("UNOFFSET_TIMES")),
 				new UnOffsetDay(x.getDouble("UNOFFSET_DAYS")),
 				Optional.ofNullable(DigestionHourlyTimeType.of(x.getInt("TIME_DIGESTIVE_ATR") == 1,
