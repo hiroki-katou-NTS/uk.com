@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainAtr;
+import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.ChildCareNurseUsedNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.interimdata.TempChildCareManagement;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.interimdata.TempChildCareNurseManagement;
@@ -65,7 +66,7 @@ public class KshdtInterimChildCare  extends ContractUkJpaEntity implements Seria
 	public TempChildCareManagement toDomain() {
 		return TempChildCareManagement.of(remainMngID, pk.sID, pk.ymd,
 					EnumAdaptor.valueOf(createAtr, CreateAtr.class),
-					EnumAdaptor.valueOf(remainAtr, RemainAtr.class),
+					EnumAdaptor.valueOf(remainAtr, RemainType.class),
 					ChildCareNurseUsedNumber.of(
 								new DayNumberOfUse(usedDays),
 								Optional.ofNullable(usedTime == null ? null : new TimeOfUse(usedTime))),

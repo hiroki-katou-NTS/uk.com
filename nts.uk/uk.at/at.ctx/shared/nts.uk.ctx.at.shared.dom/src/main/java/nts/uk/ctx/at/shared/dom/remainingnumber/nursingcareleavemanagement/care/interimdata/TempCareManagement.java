@@ -23,9 +23,9 @@ public class TempCareManagement  extends TempChildCareNurseManagement {
 	/**
 	 * コンストラクタ
 	 */
-	public TempCareManagement(String remainManaID, String sID, GeneralDate ymd, CreateAtr creatorAtr, RemainAtr remainAtr,
+	public TempCareManagement(String remainManaID, String sID, GeneralDate ymd, CreateAtr creatorAtr,
 			ChildCareNurseUsedNumber usedNumber, Optional<DigestionHourlyTimeType> appTimeType){
-		super(remainManaID, sID, ymd, creatorAtr, RemainType.CARE, remainAtr, usedNumber, appTimeType);
+		super(remainManaID, sID, ymd, creatorAtr, RemainType.CARE, usedNumber, appTimeType);
 	}
 
 	public TempCareManagement(TempChildCareNurseManagement domain) {
@@ -48,7 +48,7 @@ public class TempCareManagement  extends TempChildCareNurseManagement {
 			ChildCareNurseUsedNumber usedNumber,
 			Optional<DigestionHourlyTimeType>  appTimeType) {
 
-		return new TempCareManagement(remainManaID, sID, ymd, creatorAtr, remainAtr, usedNumber, appTimeType);
+		return new TempCareManagement(remainManaID, sID, ymd, creatorAtr, usedNumber, appTimeType);
 	}
 
 }
