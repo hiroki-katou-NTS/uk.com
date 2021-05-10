@@ -80,6 +80,7 @@ public class JpaTempChildCareManagementRepository extends JpaRepository implemen
 		entity.pk = pk;
 		entity.fromDomainForUpdate(domain);
 		this.getEntityManager().persist(entity);
+		this.getEntityManager().flush();
 	}
 
 	/** 削除 */
