@@ -21,15 +21,15 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class JpaTempCareManagementRepository extends JpaRepository implements TempCareManagementRepository {
 
-	private static final String SELECT_BY_PERIOD = "SELECT a FROM KshdtInterimCareData a "
-			+ "WHERE a.pk.sid = :employeeId "
-			+ "AND a.pk.ymd >= :startYmd "
-			+ "AND a.pk.ymd <= :endYmd "
+	private static final String SELECT_BY_PERIOD = "SELECT a FROM KrcdtInterimCareData a "
+			+ "WHERE a.sId = :employeeId "
+			+ "AND a.ymd >= :startYmd "
+			+ "AND a.ymd <= :endYmd "
 			+ "ORDER BY a.ymd ";
 
-	private static final String SELECT_BY_EMPLOYEEID_YMD = "SELECT a FROM KshdtInterimCareData a"
-			+ " WHERE a.pk.sid = :employeeID"
-			+ "	AND a.pk.ymd =  :ymd "
+	private static final String SELECT_BY_EMPLOYEEID_YMD = "SELECT a FROM KrcdtInterimCareData a"
+			+ " WHERE a.sId = :employeeID"
+			+ "AND a.ymd =  : ymd "
 			+ " ORDER BY a.ymd ASC";
 	
 	private static final String DELETE_BY_SID_YMD = "DELETE FROM KshdtInterimCareData a"
@@ -95,7 +95,7 @@ public class JpaTempCareManagementRepository extends JpaRepository implements Te
 	}
 
 	/**
-	 * 暫定子の看護管理データの取得
+	 * 暫定介護管理データの取得
 	 * @param 社員ID employeeId
 	 * @param 期間 period
 	 */

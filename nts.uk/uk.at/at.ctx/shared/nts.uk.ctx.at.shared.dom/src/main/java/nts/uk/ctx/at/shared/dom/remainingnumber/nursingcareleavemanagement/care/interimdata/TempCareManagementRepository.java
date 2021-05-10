@@ -37,6 +37,7 @@ public interface TempCareManagementRepository {
 	 * 削除
 	 * @param employeeId 社員ID
 	 * @param ymd 年月日
+	 * @param tempCareManagement 暫定介護データ
 	 */
 	void remove(String employeeId,  GeneralDate ymd, TempCareManagement tempCareManagement);
 

@@ -7,7 +7,7 @@ import lombok.Setter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
-import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.ChildCareNurseUsedNumber;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.ChildCareNurseUsedNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.interimdata.TempChildCareNurseManagement;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.DigestionHourlyTimeType;
 
@@ -22,9 +22,13 @@ public class TempCareManagement  extends TempChildCareNurseManagement {
 	/**
 	 * コンストラクタ
 	 */
-	public TempCareManagement(String remainManaID, String sID, GeneralDate ymd, CreateAtr creatorAtr,
+	public TempCareManagement(String remainManaID, String sID, GeneralDate ymd, CreateAtr creatorAtr, RemainAtr remainAtr,
 			ChildCareNurseUsedNumber usedNumber, Optional<DigestionHourlyTimeType> appTimeType){
-		super(remainManaID, sID, ymd, creatorAtr, RemainType.CARE, usedNumber, appTimeType);
+		super(remainManaID, sID, ymd, creatorAtr, RemainType.CARE, remainAtr, usedNumber, appTimeType);
+	}
+
+	public TempCareManagement(TempChildCareNurseManagement domain) {
+		super(domain);
 	}
 
 	/**
@@ -39,11 +43,11 @@ public class TempCareManagement  extends TempChildCareNurseManagement {
 	 * @return 暫定介護管理データ
 	 */
 	public static TempCareManagement of(
-			String remainManaID, String sID, GeneralDate ymd, CreateAtr creatorAtr,
+			String remainManaID, String sID, GeneralDate ymd, CreateAtr creatorAtr, RemainAtr remainAtr,
 			ChildCareNurseUsedNumber usedNumber,
 			Optional<DigestionHourlyTimeType>  appTimeType) {
 
-		return new TempCareManagement(remainManaID, sID, ymd, creatorAtr, usedNumber, appTimeType);
+		return new TempCareManagement(remainManaID, sID, ymd, creatorAtr, remainAtr, usedNumber, appTimeType);
 	}
 
 }

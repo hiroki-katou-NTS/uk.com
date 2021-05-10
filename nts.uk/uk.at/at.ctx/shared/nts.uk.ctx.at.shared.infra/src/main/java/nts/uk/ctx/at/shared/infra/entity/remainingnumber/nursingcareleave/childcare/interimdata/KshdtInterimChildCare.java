@@ -12,7 +12,8 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
-import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.ChildCareNurseUsedNumber;
+import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainAtr;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.ChildCareNurseUsedNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.interimdata.TempChildCareManagement;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.interimdata.TempChildCareNurseManagement;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.usenumber.DayNumberOfUse;
@@ -25,7 +26,6 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
  * 暫定子の看護管理データ
  * @author yuri_tamakoshi
  */
-
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -33,7 +33,8 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 public class KshdtInterimChildCare  extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-	
+
+	/** プライマリキー */
 	@EmbeddedId
 	public KshdtInterimChildCarePK pk;
 
@@ -44,6 +45,10 @@ public class KshdtInterimChildCare  extends ContractUkJpaEntity implements Seria
 	/**	作成元区分 */
 	@Column(name = "CREATOR_ATR")
 	public int createAtr;
+
+	/**	残数分類 */
+	@Column(name = "REMAIN_ATR")
+	public int remainAtr;
 
 	/** 使用日数 */
 	@Column(name = "USED_DAYS")
@@ -58,8 +63,9 @@ public class KshdtInterimChildCare  extends ContractUkJpaEntity implements Seria
 	}
 
 	public TempChildCareManagement toDomain() {
-		return TempChildCareManagement.of(remainMngID, pk.sid, pk.ymd,
+		return TempChildCareManagement.of(remainMngID, pk.sID, pk.ymd,
 					EnumAdaptor.valueOf(createAtr, CreateAtr.class),
+					EnumAdaptor.valueOf(remainAtr, RemainAtr.class),
 					ChildCareNurseUsedNumber.of(
 								new DayNumberOfUse(usedDays),
 								Optional.ofNullable(usedTime == null ? null : new TimeOfUse(usedTime))),
@@ -72,31 +78,29 @@ public class KshdtInterimChildCare  extends ContractUkJpaEntity implements Seria
 		}
 
 		return Optional.of(DigestionHourlyTimeType.of(
-												pk.timeDigestiveAtr == 1,
-												Optional.ofNullable(EnumAdaptor.valueOf(pk.timeHdType, AppTimeType.class))));
+				pk.timeDigestiveAtr == 1 ? true : false,
+					Optional.ofNullable(pk.timeHdType == null ? null : EnumAdaptor.valueOf(pk.timeHdType, AppTimeType.class))));
 	}
-
-
-	/**
-	 * ドメインから変換　（for Insert）
-	 * @param domain 暫定子の看護管理データ
-	 */
-	public void fromDomainForPersist(TempChildCareManagement domain) {
-		this.fromDomainForUpdate(domain);
+	public void fromDomain(TempChildCareManagement domain) {
+		remainMngID = domain.getRemainManaID();
+		createAtr = domain.getCreatorAtr().value;
+		remainAtr = domain.getRemainType().value;
+		usedDays = domain.getUsedNumber().getUsedDay().v();
+		usedTime = domain.getUsedNumber().getUsedTimes().map(mapper->mapper.v()).orElse(null);
 	}
-
 	/**
 	 * ドメインから変換　(for Update)
 	 * @param domain 暫定子の看護管理データ
 	 */
 	public void fromDomainForUpdate(TempChildCareNurseManagement domain){
 
+		this.pk.sID = domain.getSID();
+		this.pk.ymd = domain.getYmd();
 		this.remainMngID = domain.getRemainManaID();
 		this.createAtr  = domain.getCreatorAtr().value;
+		this.remainAtr = domain.getRemainType().value;
 		this.usedDays = domain.getUsedNumber().getUsedDay().v();
 		this.usedTime = domain.getUsedNumber().getUsedTimes().map(c -> c.v()).orElse(null);
-		this.pk.timeDigestiveAtr = domain.getAppTimeType().map(c -> c.isHourlyTimeType() ? 1 : 0).orElse(0);
-		this.pk.timeHdType = domain.getAppTimeType().flatMap(c -> c.getAppTimeType()).map(c -> c.value).orElse(0);
 
 	}
 }

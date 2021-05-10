@@ -1,30 +1,31 @@
 package nts.uk.ctx.at.shared.infra.entity.remainingnumber.nursingcareleave.childcare.interimdata;
 
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 
-import java.io.Serializable;
-
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
-
+/**
+ * プライマリキー：子の看護介護休暇暫定データ
+ * @author yuri_tamakoshi
+ */
 @Embeddable
-@AllArgsConstructor
+@EqualsAndHashCode
 @NoArgsConstructor
-public class KshdtInterimChildCarePK implements Serializable {
+@AllArgsConstructor
+public class KshdtInterimChildCarePK {
 
-	private static final long serialVersionUID = 1L;
-	
-	/** 会社ID */
+	/**会社ID	 */
 	@Column(name = "CID")
-	public String companyID;
+	public String cID;
 
-	/** 社員ID */
+	/**社員ID	 */
 	@Column(name = "SID")
-	public String sid;
+	public String sID;
 
-	/** 対象日 */
+	/**	対象日 */
 	@Column(name = "YMD")
 	public GeneralDate ymd;
 
@@ -32,7 +33,7 @@ public class KshdtInterimChildCarePK implements Serializable {
 	@Column(name = "TIME_DIGESTIVE_ATR")
 	public Integer timeDigestiveAtr;
 
-	/** 時間休暇種類 */
+	/**時間休暇種類 */
 	@Column(name = "TIME_HD_TYPE")
 	public Integer timeHdType;
 

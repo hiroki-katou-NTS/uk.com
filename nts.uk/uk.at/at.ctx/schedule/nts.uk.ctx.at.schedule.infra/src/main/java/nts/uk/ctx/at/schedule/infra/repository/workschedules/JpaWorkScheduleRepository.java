@@ -49,6 +49,10 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 	private static final String WHERE_PK = "WHERE a.pk.sid = :sid AND a.pk.ymd >= :ymdStart AND a.pk.ymd <= :ymdEnd";
 	
 	private static final String DELETE_BY_LIST_DATE = "WHERE a.pk.sid = :sid AND a.pk.ymd IN :ymds";
+	
+//	private static final String GET_MAX_DATE_WORK_SCHE_BY_LIST_EMP = "SELECT c.pk.ymd FROM KscdtSchBasicInfo c "
+//			+ " WHERE c.pk.sid IN :listEmp"
+//			+ " ORDER BY c.pk.ymd desc ";
 
 	private static final List<String> DELETE_TABLES = Arrays.asList(
 			"DELETE FROM KscdtSchTime a ",
@@ -723,7 +727,6 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 		return this.queryProxy().query(SELECT_ALL_SHORTTIME_TS, Long.class).setParameter("employeeID", employeeID)
 				.setParameter("ymd", ymd).getSingle().get() > 0;
 	}
-
 	@Override
 	public List<WorkSchedule> getListBySid(String sid, DatePeriod period) {
 		
@@ -735,5 +738,18 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 				.getList(c -> c.toDomain(c.pk.sid, c.pk.ymd));
 		 
 		 return result;
+	}
+	private static final String GET_MAX_DATE_WORK_SCHE_BY_LIST_EMP = "SELECT c.pk.ymd FROM KscdtSchBasicInfo c "
+			+ " WHERE c.pk.sid IN :listEmp"
+			+ " ORDER BY c.pk.ymd desc ";
+	@Override
+	public Optional<GeneralDate> getMaxDateWorkSche(List<String> listEmp) {
+		List<GeneralDate> data = this.getEntityManager()
+				.createQuery(GET_MAX_DATE_WORK_SCHE_BY_LIST_EMP, GeneralDate.class)
+				.setParameter("listEmp", listEmp)
+				.setMaxResults(1).getResultList();
+		if (data.isEmpty())
+			return Optional.empty();
+		return Optional.of(data.get(0));
 	}
 }

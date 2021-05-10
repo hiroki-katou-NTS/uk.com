@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.val;
@@ -174,7 +175,7 @@ public class SpecialHolidayProcess {
 
 		/** 「期間内の特別休暇残を集計する」を実行する */
 		ComplileInPeriodOfSpecialLeaveParam param = new ComplileInPeriodOfSpecialLeaveParam(
-				cid, empId, period.getPeriod(), true, period.getPeriod().end(), specialLeaveCode, true, true, interimSpecialData);
+				cid, empId, period.getPeriod(), true, period.getPeriod().end(), specialLeaveCode, true, true, interimSpecialData,Optional.of(period.getPeriod()));
 
 		return SpecialLeaveManagementService.complileInPeriodOfSpecialLeave(require, cacheCarrier, param);
 	}

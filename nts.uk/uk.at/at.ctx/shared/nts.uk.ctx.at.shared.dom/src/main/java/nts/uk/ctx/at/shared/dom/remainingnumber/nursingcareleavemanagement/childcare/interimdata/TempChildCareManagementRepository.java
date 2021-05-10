@@ -51,7 +51,4 @@ public interface TempChildCareManagementRepository{
 	public List<TempChildCareManagement> findBySidPeriod(String employeeId, DatePeriod period);
 
 	public void removeBySidAndYmd(String sid, GeneralDate ymd);
-
-
-
 }

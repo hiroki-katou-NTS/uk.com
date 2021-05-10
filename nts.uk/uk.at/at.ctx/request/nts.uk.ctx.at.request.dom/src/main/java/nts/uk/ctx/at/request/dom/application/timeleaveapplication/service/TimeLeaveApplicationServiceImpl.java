@@ -312,17 +312,17 @@ public class TimeLeaveApplicationServiceImpl implements TimeLeaveApplicationServ
         if (timeLeaveManagement.getTimeAllowanceManagement().isTimeBaseManagementClass()) {
             // 期間内の休出代休残数を取得する
             BreakDayOffRemainMngRefactParam inputParam = new BreakDayOffRemainMngRefactParam(
-    				companyId, 
+    				companyId,
     				employeeId,
     				new DatePeriod(closingPeriod.start(), closingPeriod.start().addYears(1).addDays(-1)),
-    				false, 
-    				baseDate, 
-    				false, 
+    				false,
+    				baseDate,
+    				false,
     				Collections.emptyList(),
-    				Optional.empty(), 
-    				Optional.empty(), 
-    				Collections.emptyList(), 
-    				Collections.emptyList(), 
+    				Optional.empty(),
+    				Optional.empty(),
+    				Collections.emptyList(),
+    				Collections.emptyList(),
     				Optional.empty(),
     				new FixedManagementDataMonth(Collections.emptyList(), Collections.emptyList()));
     		SubstituteHolidayAggrResult dataCheck = NumberRemainVacationLeaveRangeQuery
@@ -371,12 +371,13 @@ public class TimeLeaveApplicationServiceImpl implements TimeLeaveApplicationServ
         if (timeLeaveManagement.getChildNursingManagement().isTimeManagementClass()) {
             // [NO.207]期間中の介護休暇残数を取得
             ChildCareNursePeriodImport childCareNursePeriodImport = getRemainingNumberCareAdapter.getCareRemNumWithinPeriod(
-                    employeeId,
+            		companyId,
+            		employeeId,
                     new DatePeriod(closingPeriod.start(), closingPeriod.start().addYears(1).addDays(-1)),
                     InterimRemainMngMode.OTHER,
                     baseDate,
                     Optional.of(false),
-                    Optional.empty(),
+                    new ArrayList<>(),
                     Optional.empty(),
                     Optional.empty(),
                     Optional.empty()

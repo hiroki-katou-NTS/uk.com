@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.pubimp.remainnumber.specialleave;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -11,7 +12,6 @@ import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
-import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.ComplileInPeriodOfSpecialLeaveParam;
 import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.InPeriodOfSpecialLeaveResultInfor;
 import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveInfo;
@@ -350,7 +350,8 @@ public class SpecialLeaveManagementServicePubImpl implements SpecialLeaveManagem
 					param.getSpecialLeaveCode(),
 					param.isMngAtr(),
 					param.isOverwriteFlg(),
-					param.getInterimSpecialData().stream().map(action->toDomain(param.getSid(),param.getBaseDate(),action)).collect(Collectors.toList())
+					param.getInterimSpecialData().stream().map(action->toDomain(param.getSid(),param.getBaseDate(),action)).collect(Collectors.toList()),
+					param.getIsOverWritePeriod()
 					);
 	}
 

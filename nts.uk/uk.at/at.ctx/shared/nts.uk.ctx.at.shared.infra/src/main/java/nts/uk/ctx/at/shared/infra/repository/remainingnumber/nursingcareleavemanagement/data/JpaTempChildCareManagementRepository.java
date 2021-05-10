@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.shared.infra.repository.remainingnumber.nursingcareleavemanagement.data;
 
 import java.util.List;
-
 import javax.ejb.Stateless;
 
 import lombok.val;
@@ -21,15 +20,15 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class JpaTempChildCareManagementRepository extends JpaRepository implements TempChildCareManagementRepository{
 
-	private static final String SELECT_BY_PERIOD = "SELECT a FROM KshdtInterimChildCare a "
-			+ "WHERE a.pk.sid = :employeeId "
-			+ "AND a.pk.ymd >= :startYmd "
-			+ "AND a.pk.ymd <= :endYmd "
-			+ "ORDER BY a.pk.ymd ";
+	private static final String SELECT_BY_PERIOD = "SELECT a FROM KrcdtInterimChildCare a "
+			+ "WHERE a.sId = :employeeId "
+			+ "AND a.ymd >= :startYmd "
+			+ "AND a.ymd <= :endYmd "
+			+ "ORDER BY a.ymd ";
 
-	private static final String SELECT_BY_EMPLOYEEID_YMD = "SELECT a FROM KshdtInterimChildCare a"
-			+ " WHERE a.pk.sid = :employeeID"
-			+ " AND a.pk.ymd =  :ymd"
+	private static final String SELECT_BY_EMPLOYEEID_YMD = "SELECT a FROM KrcdtInterimChildCare a"
+			+ " WHERE a.sId = :employeeID"
+			+ "AND a.ymd =  : ymd "
 			+ " ORDER BY a.ymd ASC";
 	
 	private static final String REMOVE_BY_SID_YMD = "DELETE FROM KshdtInterimChildCare a"
@@ -58,7 +57,6 @@ public class JpaTempChildCareManagementRepository extends JpaRepository implemen
 				.getList(c -> c.toDomain());
 	}
 
-
 	/** 登録および更新 */
 	@Override
 	public void persistAndUpdate(TempChildCareManagement domain) {
@@ -80,7 +78,7 @@ public class JpaTempChildCareManagementRepository extends JpaRepository implemen
 		
 		KshdtInterimChildCare entity = new KshdtInterimChildCare();
 		entity.pk = pk;
-		entity.fromDomainForPersist(domain);
+		entity.fromDomainForUpdate(domain);
 		this.getEntityManager().persist(entity);
 	}
 

@@ -113,7 +113,7 @@ public class AnnLeaveRemainNumberPubImpl implements AnnLeaveRemainNumberPub {
 			Optional<AggrResultOfAnnualLeave> aggrResult = GetAnnLeaRemNumWithinPeriodProc.algorithm(
 					require, cacheCarrier, companyId, employeeId,
 					datePeriod, InterimRemainMngMode.OTHER, datePeriod.end(), false, Optional.empty(),
-					Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty());
+					Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty());
 
 			if (!aggrResult.isPresent())
 				return null;
@@ -204,7 +204,7 @@ public class AnnLeaveRemainNumberPubImpl implements AnnLeaveRemainNumberPub {
                 aggrResultOfAnnualLeave = GetAnnLeaRemNumWithinPeriodProc.algorithm(
                 		require, cacheCarrier, companyId, employeeId,
 						item.getDatePeriod(), InterimRemainMngMode.OTHER, item.getDatePeriod().end(), false, Optional.of(false),
-                        Optional.empty(), aggrResultOfAnnualLeave, Optional.of(false),Optional.empty());
+                        Optional.empty(), aggrResultOfAnnualLeave, Optional.of(false),Optional.empty(), Optional.empty());
 				// 結果をListに追加
                 if (aggrResultOfAnnualLeave.isPresent()) {
                     result.add(new AggrResultOfAnnualLeaveEachMonth(item.getYearMonth(), aggrResultOfAnnualLeave.get()));
@@ -272,7 +272,7 @@ public class AnnLeaveRemainNumberPubImpl implements AnnLeaveRemainNumberPub {
 		DatePeriod datePeriod = new DatePeriod(startDate.get(), aggrEnd);
 		Optional<AggrResultOfAnnualLeave> aggrResult = GetAnnLeaRemNumWithinPeriodProc.algorithm(require,cacheCarrier, companyId, employeeID,
 				datePeriod, InterimRemainMngMode.OTHER, adjustDate, false, Optional.of(false), Optional.empty(),
-				Optional.empty(), Optional.empty(), Optional.empty());
+				Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty());
 		if(aggrResult.isPresent()){
 			AnnualLeaveInfo asOfPeriodEnd = aggrResult.get().getAsOfPeriodEnd();
 			if(asOfPeriodEnd != null){
@@ -519,7 +519,7 @@ public class AnnLeaveRemainNumberPubImpl implements AnnLeaveRemainNumberPub {
 				// 期間中の年休残数を取得
                 aggrResultOfAnnualLeave = GetAnnLeaRemNumWithinPeriodProc.algorithm(require, cacheCarrier, companyId, employeeId,
 						item.getDatePeriod(), InterimRemainMngMode.OTHER, item.getDatePeriod().end(), false, Optional.of(false),
-                        Optional.empty(), aggrResultOfAnnualLeave, Optional.of(false),Optional.empty());
+                        Optional.empty(), aggrResultOfAnnualLeave, Optional.of(false),Optional.empty(), Optional.empty());
 				// 結果をListに追加
                 if (aggrResultOfAnnualLeave.isPresent()) {
                     result.add(new AggrResultOfAnnualLeaveEachMonth(item.getYearMonth(), aggrResultOfAnnualLeave.get()));
@@ -567,7 +567,7 @@ public class AnnLeaveRemainNumberPubImpl implements AnnLeaveRemainNumberPub {
 			Optional<AggrResultOfAnnualLeave> aggrResult = GetAnnLeaRemNumWithinPeriodProc.algorithm(
 					require, cacheCarrier, companyId, employeeId,
 					datePeriod, InterimRemainMngMode.OTHER, datePeriod.end(), false, Optional.of(false), Optional.empty(),
-					Optional.empty(), Optional.empty(), Optional.empty());
+					Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty());
 
 			if (!aggrResult.isPresent()){
 				return null;

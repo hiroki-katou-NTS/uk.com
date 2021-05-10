@@ -12,6 +12,8 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.sys.portal.dom.toppagealarm.AlarmClassification;
 import nts.uk.ctx.sys.portal.dom.toppagealarm.AlarmListPatternCode;
 import nts.uk.ctx.sys.portal.dom.toppagealarm.DisplayAtr;
+import nts.uk.ctx.sys.portal.dom.toppagealarm.LinkURL;
+import nts.uk.ctx.sys.portal.dom.toppagealarm.NotificationId;
 import nts.uk.ctx.sys.portal.dom.toppagealarm.ToppageAlarmData;
 import nts.uk.ctx.sys.portal.dom.toppagealarm.ToppageAlarmDataRepository;
 import nts.uk.ctx.sys.portal.infra.entity.toppagealarm.SptdtToppageAlarm;
@@ -79,6 +81,19 @@ public class JpaToppageAlarmDataRepository extends JpaRepository implements Topp
 				+ " OR (m.pk.alarmCls = 0 AND m.patternCode = :patternCode) "
 			+ " ) ";
 	
+	private static final String QUERY_SELECT_SINGLE_FOR_UPDATE = QUERY_SELECT_ALL
+			+ " WHERE m.pk.cId = :cid "
+			+ " AND m.pk.dispSid = :dispSid "
+			+ " AND m.pk.dispAtr = :dispAtr "
+			+ " AND m.pk.alarmCls = :alarmCls "
+			+ " AND m.resolved = 0 " //解消済みである = false
+			+ " AND ( "
+				+ " m.pk.alarmCls = 1 " //更新処理自動実行内部エラー
+				+ " OR m.pk.alarmCls = 2 " //更新処理自動実行動作異常
+				+ " OR (m.pk.alarmCls = 3 AND m.notificationId = :notificationId) "
+				+ " OR (m.pk.alarmCls = 0 AND m.patternCode = :patternCode) "
+			+ " ) ";
+	
 	public SptdtToppageAlarm toEntityWithIndexNo(ToppageAlarmData domain) {
 		//get all by PK
 		List<SptdtToppageAlarm> entities = this.queryProxy()
@@ -112,18 +127,24 @@ public class JpaToppageAlarmDataRepository extends JpaRepository implements Topp
 
 	@Override
 	public void update(ToppageAlarmData domain) {
-		// Convert data to entity
-		SptdtToppageAlarm entity = this.toEntityWithIndexNo(domain);
 
-		Optional<SptdtToppageAlarm> oldEntity = this.queryProxy().find(entity.getPk(), SptdtToppageAlarm.class);
+		Optional<SptdtToppageAlarm> oldEntity = this.queryProxy().query(QUERY_SELECT_SINGLE_FOR_UPDATE, SptdtToppageAlarm.class)
+				.setParameter("cid", domain.getCid())
+				.setParameter("dispSid", domain.getDisplaySId())
+				.setParameter("dispAtr", domain.getDisplayAtr().value)
+				.setParameter("alarmCls", domain.getAlarmClassification().value)
+				.setParameter("patternCode", domain.getPatternCode().map(AlarmListPatternCode::v).orElse(""))
+				.setParameter("notificationId", domain.getNotificationId().map(NotificationId::v).orElse(""))
+				.getSingle();
+
 		oldEntity.ifPresent(updateEntity -> {
-			updateEntity.setPatternCode(entity.getPatternCode());
-			updateEntity.setNotificationId(entity.getNotificationId());
-			updateEntity.setCrtDatetime(entity.getCrtDatetime());
-			updateEntity.setMessege(entity.getMessege());
-			updateEntity.setLinkUrl(entity.getLinkUrl());
-			updateEntity.setReadDateTime(entity.getReadDateTime());
-			updateEntity.setResolved(entity.getResolved());
+			updateEntity.setPatternCode(domain.getPatternCode().map(AlarmListPatternCode::v).orElse(null));
+			updateEntity.setNotificationId(domain.getNotificationId().map(NotificationId::v).orElse(null));
+			updateEntity.setCrtDatetime(domain.getOccurrenceDateTime());
+			updateEntity.setMessege(domain.getDisplayMessage().v());
+			updateEntity.setLinkUrl(domain.getLinkUrl().map(LinkURL::v).orElse(null));
+			updateEntity.setReadDateTime(domain.getReadDateTime().orElse(null));
+			updateEntity.setResolved(domain.getIsResolved() ? 1 : 0);
 			// Update entity
 			this.commandProxy().update(updateEntity);
 		});

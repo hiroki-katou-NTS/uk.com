@@ -354,6 +354,7 @@ export class KafS12AComponent extends KafS00ShrComponent {
         if (vm.newMode) {
             vm.$http.post('at', API.register, data).then((res: any) => {
                 if (res) {
+                    vm.$http.post('at', API.reflectApp, res.data.reflectAppIdLst);
                     vm.appID = res.data.appIDLst[0];
                     vm.step = 'KAFS12_3';
                 }
@@ -407,9 +408,9 @@ export class KafS12AComponent extends KafS00ShrComponent {
             vm.details.push({
                 appTimeType: i.appTimeType,
                 timeZones: [{
-                    workNo: i.workNo,
-                    startTime: i.appTimeType == AppTimeType.ATWORK || i.appTimeType == AppTimeType.ATWORK2 ? this.getScheduledTime(i.appTimeType) : i.timeValue,
-                    endTime: i.appTimeType == AppTimeType.ATWORK || i.appTimeType == AppTimeType.ATWORK2 ? i.timeValue : this.getScheduledTime(i.appTimeType),
+                    workNo: i.appTimeType == AppTimeType.ATWORK || i.appTimeType == AppTimeType.OFFWORK ? 1 : 2,
+                    startTime: i.appTimeType == AppTimeType.ATWORK || i.appTimeType == AppTimeType.ATWORK2 ? vm.getScheduledTime(i.appTimeType) : i.timeValue,
+                    endTime: i.appTimeType == AppTimeType.ATWORK || i.appTimeType == AppTimeType.ATWORK2 ? i.timeValue : vm.getScheduledTime(i.appTimeType),
                 }],
                 applyTime: {
                     substituteAppTime: 0,
@@ -494,4 +495,5 @@ const API = {
     checkBeforeRegister: 'at/request/application/timeLeave/checkBeforeRegister',
     register: 'at/request/application/timeLeave/register',
     update: 'at/request/application/timeLeave/update',
+    reflectApp: 'at/request/application/reflect-app'
 };
