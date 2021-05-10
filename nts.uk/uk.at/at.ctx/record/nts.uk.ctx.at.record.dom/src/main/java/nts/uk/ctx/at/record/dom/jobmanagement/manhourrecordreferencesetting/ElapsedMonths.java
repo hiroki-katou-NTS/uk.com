@@ -19,7 +19,9 @@ public enum ElapsedMonths {
 	
 	FOUR_MONTH_AGO(4, "4ヶ月前"),
 	
-	FIVE_MONTH_AGO(5, "5ヶ月前");
+	FIVE_MONTH_AGO(5, "5ヶ月前"),
+	
+	SIX_MONTH_AGO(6, "6ヶ月前");
 
 	public final int value;
 	public final String nameId;

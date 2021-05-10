@@ -45,6 +45,8 @@ public class ManHourRecordReferenceSetting extends AggregateRoot {
 				return period.start().addMonths(-4);
 			case FIVE_MONTH_AGO:
 				return period.start().addMonths(-5);
+			case SIX_MONTH_AGO:
+				return period.start().addMonths(-6);
 			default:
 				return period.start();
 		}
