@@ -12,10 +12,13 @@ import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.validate.ValidationRes
 import nts.uk.ctx.sys.shared.dom.user.password.PassStatus;
 
 @Getter
+/**
+ * パスワードポリシー
+ */
 public class PasswordPolicy extends AggregateRoot {
 	
 	// テナントコード
-	private ContractCode contractCode;
+	private final ContractCode contractCode;
 	
 	// 利用する
 	private boolean isUse;
