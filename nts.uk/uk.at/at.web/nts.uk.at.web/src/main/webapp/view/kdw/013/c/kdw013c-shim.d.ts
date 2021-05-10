@@ -65,7 +65,7 @@ module nts.uk.ui.at.kdp013.c {
 
     };
 
-    export type StartWorkInputParam = {
+    export type StartWorkInputPanelParam = {
         // 社員ID
         sId: string;
 
@@ -127,5 +127,19 @@ module nts.uk.ui.at.kdp013.c {
     export type ConfirmContent = {
         messageId: string;
         messageParams?: string[];
+    };
+
+    export type SelectWorkItemParam = {
+        //社員ID
+        sId: string;
+
+        //基準日
+        refDate: string;
+
+        //作業枠NO
+        taskFrameNo: number;
+
+        //上位枠作業コード
+        taskCode: string;
     };
 }
