@@ -130,7 +130,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
         <div class="grade-body-bottom" style="min-height: 55px; height: 55px">
           <table style="width: 100%; border-collapse: separate; border-spacing: 0 5px">
             <tbody data-bind="foreach: attendanceInformationDtosDisplay">
-              <tr style="height: 45px;" class="ccg005-tr-background" data-bind="attr:{ id: backgroundColor }">
+              <tr style="height: 46px;" class="ccg005-tr-background" data-bind="attr:{ id: backgroundColor }">
                 <td style="padding-right: 5px; width: 30px; background-color: white;"
                   class="ccg005-apply-binding-avatar ccg005-bottom-unset">
                   <!-- A4_1 -->
