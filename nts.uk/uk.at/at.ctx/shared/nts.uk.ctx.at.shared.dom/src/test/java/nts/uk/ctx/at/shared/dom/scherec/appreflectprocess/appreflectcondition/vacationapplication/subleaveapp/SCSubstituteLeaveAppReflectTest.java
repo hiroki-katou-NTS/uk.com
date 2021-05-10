@@ -13,12 +13,12 @@ import lombok.val;
 import mockit.Injectable;
 import mockit.integration.junit4.JMockit;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
-import nts.uk.ctx.at.shared.dom.application.reflectprocess.common.ReflectApplicationHelper;
 import nts.uk.ctx.at.shared.dom.common.TimeZoneWithWorkNo;
 import nts.uk.ctx.at.shared.dom.scherec.application.common.ApplicationTypeShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.common.PrePostAtrShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.furiapp.AbsenceLeaveAppShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.furiapp.TypeApplicationHolidaysShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.reflectprocess.common.ReflectApplicationHelper;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.DailyRecordOfApplication;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.ScheduleRecordClassifi;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.vacationapplication.VacationAppReflectOption;
@@ -64,7 +64,7 @@ public class SCSubstituteLeaveAppReflectTest {
 				TypeApplicationHolidaysShare.Abs, //
 				ReflectApplicationHelper.createAppShare(ApplicationTypeShare.COMPLEMENT_LEAVE_APPLICATION,
 						PrePostAtrShare.PREDICT));
-		new SubstituteLeaveAppReflect(workInfoAttendanceReflect).processSC(require, absenceLeavApp, dailyApp);
+		new SubstituteLeaveAppReflect("", workInfoAttendanceReflect).processSC(require, absenceLeavApp, dailyApp);
 
 		// ①勤務情報の反映
 		assertThat(dailyApp.getWorkInformation().getRecordInfo().getWorkTypeCode().v()).isEqualTo("003");

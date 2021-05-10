@@ -11,11 +11,12 @@ import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.shared.dom.scherec.application.furiapp.RecruitmentAppShare;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.DailyRecordOfApplication;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.ScheduleRecordClassifi;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.condition.DailyAfterAppReflectResult;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.condition.ReflectAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.condition.ReflectStartEndWork;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.condition.ReflectWorkInformation;
-import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.condition.SCCreateDailyAfterApplicationeReflect.DailyAfterAppReflectResult;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.workchangeapp.ReflectWorkChangeApp.WorkInfoDto;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
@@ -28,6 +29,11 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 @AllArgsConstructor
 @Getter
 public class SubstituteWorkAppReflect extends AggregateRoot {
+	
+	/**
+	 * 会社ID
+	 */
+	private String cid;
 
 	// 出退勤を反映する
 	private NotUseAtr reflectAttendanceAtr;
@@ -48,21 +54,21 @@ public class SubstituteWorkAppReflect extends AggregateRoot {
 				recruitApp.getWorkInformation().getWorkTimeCodeNotNull());
 
 		// 勤務情報の反映
-		lstItemId.addAll(ReflectWorkInformation.reflectInfo(require, workInfoDto, dailyApp, Optional.of(true),
+		lstItemId.addAll(ReflectWorkInformation.reflectInfo(require, cid, workInfoDto, dailyApp, Optional.of(true),
 				Optional.of(true)));
 
 		// [出退勤を反映する]をチェック
 		if (this.reflectAttendanceAtr == NotUseAtr.USE) {
 			// 出退勤の反映
-			lstItemId.addAll(ReflectAttendance.reflect(recruitApp.getWorkingHours(), ScheduleRecordClassifi.RECORD,
-					dailyApp, Optional.of(true), Optional.of(true)));
+			lstItemId.addAll(ReflectAttendance.reflect(require, cid, recruitApp.getWorkingHours(), ScheduleRecordClassifi.RECORD,
+					dailyApp, Optional.of(true), Optional.of(true), Optional.of(TimeChangeMeans.APPLICATION)));
 		}
 
 		return new DailyAfterAppReflectResult(dailyApp, lstItemId);
 
 	}
 
-	public static interface RequireSC extends ReflectWorkInformation.Require {
+	public static interface RequireSC extends ReflectWorkInformation.Require, ReflectAttendance.Require {
 
 	}
 
@@ -81,23 +87,23 @@ public class SubstituteWorkAppReflect extends AggregateRoot {
 				recruitApp.getWorkInformation().getWorkTimeCodeNotNull());
 
 		// 勤務情報の反映
-		lstItemId.addAll(ReflectWorkInformation.reflectInfo(require, workInfoDto, dailyApp, Optional.of(true),
+		lstItemId.addAll(ReflectWorkInformation.reflectInfo(require, cid, workInfoDto, dailyApp, Optional.of(true),
 				Optional.of(true)));
 
 		// 始業終業の反映
 		lstItemId.addAll(
-				ReflectStartEndWork.reflect(dailyApp, recruitApp.getWorkingHours(), recruitApp.getPrePostAtr()));
+				ReflectStartEndWork.reflect(require, cid, dailyApp, recruitApp.getWorkingHours(), recruitApp.getPrePostAtr()));
 
 		// [出退勤を反映する]をチェック
 		if (this.reflectAttendanceAtr == NotUseAtr.USE) {
 			// 出退勤の反映
-			lstItemId.addAll(ReflectAttendance.reflect(recruitApp.getWorkingHours(), ScheduleRecordClassifi.RECORD,
-					dailyApp, Optional.of(true), Optional.of(true)));
+			lstItemId.addAll(ReflectAttendance.reflect(require, cid, recruitApp.getWorkingHours(), ScheduleRecordClassifi.RECORD,
+					dailyApp, Optional.of(true), Optional.of(true), Optional.of(TimeChangeMeans.APPLICATION)));
 		}
 		return new DailyAfterAppReflectResult(dailyApp, lstItemId);
 	}
 
-	public static interface RequireRC extends ReflectWorkInformation.Require {
+	public static interface RequireRC extends ReflectWorkInformation.Require, ReflectStartEndWork.Require {
 
 	}
 }

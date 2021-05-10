@@ -89,7 +89,7 @@ public class KrqmtAppHdsubRec extends ContractUkJpaEntity {
     }
 
     public SubstituteWorkAppReflect toSubstituteWorkAppReflect() {
-        return new SubstituteWorkAppReflect(EnumAdaptor.valueOf(recWorkTimeReflectAtr, NotUseAtr.class));
+        return new SubstituteWorkAppReflect(companyId, EnumAdaptor.valueOf(recWorkTimeReflectAtr, NotUseAtr.class));
     }
 
     public SubstituteHdWorkAppSet toSetting() {
