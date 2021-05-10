@@ -5,6 +5,7 @@ import java.util.List;
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.DailyResult;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.RecordRemainCreateInfor;
 
 public interface RemainCreateInforByRecordData {
@@ -24,5 +25,14 @@ public interface RemainCreateInforByRecordData {
 	 * @return
 	 */
 	public List<RecordRemainCreateInfor> lstRecordRemainData(CacheCarrier cacheCarrier, String cid, String sid, List<GeneralDate> dateData);
+	
+	/**
+	 * 暫定データを作成する為の日別実績を取得する
+	 * @param cid
+	 * @param sid
+	 * @param dateData リスト
+	 * @return
+	 */
+	public List<RecordRemainCreateInfor> lstRecordRemainData(String sid, List<GeneralDate> dateData);
 	
 }

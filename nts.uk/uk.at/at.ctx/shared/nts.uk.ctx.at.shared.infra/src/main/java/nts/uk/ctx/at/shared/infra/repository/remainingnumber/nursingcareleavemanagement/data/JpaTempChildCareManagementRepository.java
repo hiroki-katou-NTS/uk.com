@@ -21,15 +21,19 @@ import nts.uk.shr.com.context.AppContexts;
 public class JpaTempChildCareManagementRepository extends JpaRepository implements TempChildCareManagementRepository{
 
 	private static final String SELECT_BY_PERIOD = "SELECT a FROM KrcdtInterimChildCare a "
-			+ "WHERE a.sId = :employeeId "
+			+ "WHERE a.sID = :employeeId "
 			+ "AND a.ymd >= :startYmd "
 			+ "AND a.ymd <= :endYmd "
 			+ "ORDER BY a.ymd ";
 
 	private static final String SELECT_BY_EMPLOYEEID_YMD = "SELECT a FROM KrcdtInterimChildCare a"
-			+ " WHERE a.sId = :employeeID"
+			+ " WHERE a.sID = :employeeID"
 			+ "AND a.ymd =  : ymd "
 			+ " ORDER BY a.ymd ASC";
+	
+	private static final String REMOVE_BY_SID_YMD = "DELETE FROM KshdtInterimChildCare a"
+			+ " WHERE a.pk.sID = :sid"
+			+ " AND a.pk.ymd =  :ymd";
 
 
 	/** 検索 */
@@ -57,24 +61,26 @@ public class JpaTempChildCareManagementRepository extends JpaRepository implemen
 	@Override
 	public void persistAndUpdate(TempChildCareManagement domain) {
 
-		val key = new KshdtInterimChildCarePK(
-				AppContexts.user().companyId(),
+		KshdtInterimChildCarePK pk = new KshdtInterimChildCarePK(
+				AppContexts.user().companyId(), 
 				domain.getSID(),
-				domain.getYmd(),
-				domain.getAppTimeType().map(mapper->mapper.isHourlyTimeType()?1:0).orElse(0),
-				domain.getAppTimeType().map(mapper->mapper.getAppTimeType().map(c->c.value).orElse(0)).orElse(0)
-				);
+				domain.getYmd(), 
+				domain.getAppTimeType().map(x -> x.isHourlyTimeType() ? 1 : 0).orElse(0),
+				domain.getAppTimeType().map(x -> x.getAppTimeType().map(time -> time.value).orElse(0)).orElse(0));
 
 		// 登録・更新
-		KshdtInterimChildCare entity = this.getEntityManager().find(KshdtInterimChildCare.class, key);
-		if (entity == null){
-			entity = new KshdtInterimChildCare();
-			entity.fromDomain(domain);
-			this.getEntityManager().persist(entity);
-		}
-		else {
-			entity.fromDomain(domain);
-		}
+		this.queryProxy().find(pk, KshdtInterimChildCare.class).ifPresent(entity -> {
+			entity.fromDomainForUpdate(domain);
+			this.commandProxy().insert(entity);
+			this.getEntityManager().flush();
+			return;
+		});
+		
+		KshdtInterimChildCare entity = new KshdtInterimChildCare();
+		entity.pk = pk;
+		entity.fromDomainForUpdate(domain);
+		this.getEntityManager().persist(entity);
+		this.getEntityManager().flush();
 	}
 
 	/** 削除 */
@@ -99,5 +105,13 @@ public class JpaTempChildCareManagementRepository extends JpaRepository implemen
 				.setParameter("startYmd", period.start())
 				.setParameter("endYmd", period.end())
 				.getList(c -> c.toDomain());
+	}
+
+	@Override
+	public void removeBySidAndYmd(String sid, GeneralDate ymd) {
+		this.getEntityManager().createQuery(REMOVE_BY_SID_YMD)
+		.setParameter("sid", sid)
+		.setParameter("ymd", ymd)
+		.executeUpdate();
 	}
 }

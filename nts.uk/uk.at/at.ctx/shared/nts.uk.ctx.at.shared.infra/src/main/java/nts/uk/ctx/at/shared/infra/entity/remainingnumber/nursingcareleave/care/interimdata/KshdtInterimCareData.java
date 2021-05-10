@@ -4,14 +4,13 @@ import java.io.Serializable;
 import java.util.Optional;
 
 import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.Id;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
-import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.care.interimdata.TempCareManagement;
@@ -20,7 +19,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremain
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.usenumber.TimeOfUse;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.AppTimeType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.DigestionHourlyTimeType;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * 暫定介護管理データ
@@ -30,22 +29,16 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @Entity
 @Table( name = "KSHDT_INTERIM_CARE_DATA")
-public class KshdtInterimCareData  extends UkJpaEntity implements Serializable {
+public class KshdtInterimCareData  extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
+	
+	@EmbeddedId
+	public KshdtInterimCareDataPK pk;
 
 	/**残数管理データID	 */
-	@Id
 	@Column(name = "REMAIN_MNG_ID")
 	public String remainMngID;
-
-	/**社員ID	 */
-	@Column(name = "SID")
-	public String sID;
-
-	/**	対象日 */
-	@Column(name = "YMD")
-	public GeneralDate ymd;
 
 	/**	作成元区分 */
 	@Column(name = "CREATOR_ATR")
@@ -63,20 +56,12 @@ public class KshdtInterimCareData  extends UkJpaEntity implements Serializable {
 	@Column(name = "USED_TIME")
 	public Integer usedTime;
 
-	/** 時間消化休暇かどうか */
-	@Column(name = "TIME_DIGESTIVE_ATR")
-	public Integer timeDigestiveAtr;
-
-	/**時間休暇種類 */
-	@Column(name = "TIME_HD_TYPE")
-	public Integer timeHdType;
-
 	protected Object getKey() {
 		return remainMngID;
 	}
 
 	public TempCareManagement toDomain() {
-		return TempCareManagement.of(remainMngID, sID, ymd,
+		return TempCareManagement.of(remainMngID, pk.sid, pk.ymd,
 					EnumAdaptor.valueOf(createAtr, CreateAtr.class),
 					EnumAdaptor.valueOf(remainAtr, RemainAtr.class),
 					ChildCareNurseUsedNumber.of(
@@ -86,13 +71,13 @@ public class KshdtInterimCareData  extends UkJpaEntity implements Serializable {
 	}
 
 	private Optional<DigestionHourlyTimeType> createHourlyTime() {
-		if (timeDigestiveAtr == null) {
+		if (pk.timeDigestiveAtr == null) {
 			return Optional.empty();
 		}
 
 		return Optional.of(DigestionHourlyTimeType.of(
-												timeDigestiveAtr == 1 ? true : false,
-												Optional.ofNullable(timeHdType == null ? null : EnumAdaptor.valueOf(timeHdType, AppTimeType.class))));
+												pk.timeDigestiveAtr == 1 ? true : false,
+												Optional.ofNullable(pk.timeHdType == null ? null : EnumAdaptor.valueOf(pk.timeHdType, AppTimeType.class))));
 	}
 
 	/**
@@ -100,7 +85,6 @@ public class KshdtInterimCareData  extends UkJpaEntity implements Serializable {
 	 * @param domain 暫定介護管理データ
 	 */
 	public void fromDomainForPersist(TempCareManagement domain) {
-		this.remainMngID = domain.getRemainManaID();
 		this.fromDomainForUpdate(domain);
 	}
 
@@ -110,14 +94,13 @@ public class KshdtInterimCareData  extends UkJpaEntity implements Serializable {
 	 */
 	public void fromDomainForUpdate(TempCareManagement domain){
 
-		this.sID = domain.getSID();
-		this.ymd = domain.getYmd();
 		this.createAtr  = domain.getCreatorAtr().value;
+		this.remainMngID = domain.getRemainManaID();
 		this.remainAtr = domain.getRemainType().value;
 		this.usedDays = domain.getUsedNumber().getUsedDay().v();
 		this.usedTime = domain.getUsedNumber().getUsedTimes().map(c -> c.v()).orElse(null);
-		this.timeDigestiveAtr = domain.getAppTimeType().map(c -> c.isHourlyTimeType() ? 1 : 0).orElse(null);
-		this.timeHdType = domain.getAppTimeType().flatMap(c -> c.getAppTimeType()).map(c -> c.value).orElse(null);
+		this.pk.timeDigestiveAtr = domain.getAppTimeType().map(c -> c.isHourlyTimeType() ? 1 : 0).orElse(0);
+		this.pk.timeHdType = domain.getAppTimeType().flatMap(c -> c.getAppTimeType()).map(c -> c.value).orElse(0);
 
 	}
 }
