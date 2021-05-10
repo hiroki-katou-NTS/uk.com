@@ -105,14 +105,14 @@
                             <td>
                                 <!-- B4_4 -->
                                 <div tabindex="10"
-                                     data-bind="ntsCheckBox: { checked: insideHalfDay, enable: true, text: '#{i18n.getText('KDR001_44')}' }"></div>
+                                     data-bind="ntsCheckBox: { checked: insideHalfDay, enable: yearlyHoliday, text: '#{i18n.getText('KDR001_44')}' }"></div>
                             </td>
                         </tr>
                         <tr id="rowInsideHours">
                             <td>
                                 <!-- B4_6 -->
                                 <div tabindex="11"
-                                     data-bind="ntsCheckBox: { checked: insideHours, enable: true, text: '#{i18n.getText('KDR001_45')}' }"></div>
+                                     data-bind="ntsCheckBox: { checked: insideHours, enable: yearlyHoliday, text: '#{i18n.getText('KDR001_45')}' }"></div>
                             </td>
                         </tr>
                         <tr id="rowYearlyReserved">
@@ -170,10 +170,10 @@
                                      data-bind="ntsCheckBox: { checked: outputItemsHolidays, enable: true, text: '#{i18n.getText('KDR001_46')}' }"></div>
                                 <!--B4_17-->
                                 <div tabindex="23"
-                                     data-bind="ntsCheckBox: { checked: outputHolidayForward, enable: true, text: '#{i18n.getText('KDR001_69')}' }"></div>
+                                     data-bind="ntsCheckBox: { checked: outputHolidayForward, enable: outputItemsHolidays, text: '#{i18n.getText('KDR001_69')}' }"></div>
                                 <!--B4_18-->
                                 <div tabindex="24"
-                                     data-bind="ntsCheckBox: { checked: monthlyPublic, enable: true, text: '#{i18n.getText('KDR001_70')}' }"></div>
+                                     data-bind="ntsCheckBox: { checked: monthlyPublic, enable: outputItemsHolidays, text: '#{i18n.getText('KDR001_70')}' }"></div>
                             </td>
                         </tr>
                         <tr id="rowSpecialHoliday">

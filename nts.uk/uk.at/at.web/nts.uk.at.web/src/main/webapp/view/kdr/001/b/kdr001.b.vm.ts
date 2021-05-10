@@ -13,7 +13,7 @@ module nts.uk.at.view.kdr001.b.viewmodel {
         layoutId: KnockoutObservable<string>;
         currentHoliday: KnockoutObservable<HolidayRemaining> = ko.observable(new HolidayRemaining(null));
         switchOptions: KnockoutObservableArray<any>;
-        isNewMode: KnockoutObservable<boolean> = ko.observable(true);
+        isNewMode: KnockoutObservable<boolean> = ko.observable(false);
         allSpecialHolidays: KnockoutObservableArray<SpecialHoliday> = ko.observableArray([]);
         listSpecialHoliday: KnockoutObservableArray<any> = ko.observableArray([]);
         listSpecialHolidayEnable: KnockoutObservableArray<any> = ko.observableArray([]);
@@ -23,8 +23,8 @@ module nts.uk.at.view.kdr001.b.viewmodel {
             let self = this;
             let params = getShared("KDR001Params");
             self.currentCode = ko.observable(params || '');
-            self.isNewMode(false);
             self.layoutId = ko.observable(params.layOutId || '');
+            self.isNewMode(false);
             self.layoutId.subscribe((code) => {
                 if (code) {
                     block.invisible();
@@ -91,9 +91,16 @@ module nts.uk.at.view.kdr001.b.viewmodel {
                 if (!vacationControl || vacationControl.nursingCareSetting == false) {
                     $('#rowNursingCareHoliday').addClass("hidden");
                 }
-
                 if (!vacationControl || vacationControl.listSpecialHoliday.length == 0) {
-                    $('#rowSpecialHoliday').addClass("hidden");
+                    //$('#rowSpecialHoliday').addClass("hidden");
+                    for (let i = 1; i < 21; i++) {
+                        self.allSpecialHolidays.push(new SpecialHoliday({
+                            specialHolidayCode: i,
+                            specialHolidayName: "",
+                            enable: false
+                        }));
+                    }
+                    self.currentHoliday().listSpecialHoliday([]);
                 }
                 else {
                     for (let i = 1; i < 21; i++) {
@@ -107,13 +114,6 @@ module nts.uk.at.view.kdr001.b.viewmodel {
                                 enable: true
                             }));
                             self.listSpecialHolidayEnable.push(i);
-                        }
-                        else {
-                            self.allSpecialHolidays.push(new SpecialHoliday({
-                                specialHolidayCode: i,
-                                specialHolidayName: "",
-                                enable: false
-                            }));
                         }
                     }
                 }
@@ -176,8 +176,7 @@ module nts.uk.at.view.kdr001.b.viewmodel {
             }
 
             if (!vacationControl || vacationControl.listSpecialHoliday.length == 0) {
-
-                self.currentHoliday().listSpecialHoliday([]);
+               self.currentHoliday().listSpecialHoliday([]);
             }
             else {
                 let listSpecialHoliday: Array<number> = [];
@@ -246,12 +245,41 @@ module nts.uk.at.view.kdr001.b.viewmodel {
          */
         settingCreateMode() {
             let self = this;
+            let vacationControl = self.vacationControl;
             // clear selected holiday set
             self.currentCode('');
             // clear holiday setting
             self.currentHoliday(new HolidayRemaining(null));
+
+            self.allSpecialHolidays([]);
+            let check = vacationControl && vacationControl.listSpecialHoliday.length >0;
             // Set new mode
             self.isNewMode(true);
+            //$('#rowSpecialHoliday').addClass("hidden");
+            if(check){
+                for (let i = 1; i < 21; i++) {
+                    let item = _.find(vacationControl.listSpecialHoliday, x => {
+                        return x.specialHolidayCode == i;
+                    });
+                    if (item) {
+                        self.allSpecialHolidays.push(new SpecialHoliday({
+                            specialHolidayCode: i,
+                            specialHolidayName: item.specialHolidayName,
+                            enable: true
+                        }));
+                        self.listSpecialHolidayEnable.push(i);
+                    }
+                }
+            }else {
+                for (let i = 1; i < 21; i++) {
+                    self.allSpecialHolidays.push(new SpecialHoliday({
+                        specialHolidayCode: i,
+                        specialHolidayName: "",
+                        enable:  false
+                    }));
+                }
+            }
+            self.currentHoliday().listSpecialHoliday([]);
             //focus
             self.setFocus();
             self.setSpecialHolidayStyle();
