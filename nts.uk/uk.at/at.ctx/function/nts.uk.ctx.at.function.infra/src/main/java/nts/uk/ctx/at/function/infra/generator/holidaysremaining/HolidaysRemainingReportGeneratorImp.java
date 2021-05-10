@@ -1330,6 +1330,10 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                 Double dayNumbers = listSpecialLeaveGrant.stream()
 //						.mapToDouble(item -> item.getDetails().getRemainingNumber().getDayNumberOfRemain().v()).sum();
                         .mapToDouble(item -> item.getDetails().getRemainingNumber().getMinutes().isPresent() ?
+                                item.getDetails().getRemainingNumber().getDays().v() : 0).sum();
+                Double timeNumbers = listSpecialLeaveGrant.stream()
+//						.mapToDouble(item -> item.getDetails().getRemainingNumber().getDayNumberOfRemain().v()).sum();
+                        .mapToDouble(item -> item.getDetails().getRemainingNumber().getMinutes().isPresent() ?
                                 item.getDetails().getRemainingNumber().getMinutes().get().v() : 0).sum();
 
                 if (specialVacationImported != null) {
@@ -1344,7 +1348,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                         setForegroundRed(cells.get(firstRow, 5));
                     }
                     // M1_7
-                    cells.get(firstRow + 1, 5).setValue("?????????????????????");
+                    cells.get(firstRow + 1, 5).setValue(timeNumbers);
 //                    if (dayNumbers < 0) {
 //                        setForegroundRed(cells.get(firstRow, 5));
 //                    }

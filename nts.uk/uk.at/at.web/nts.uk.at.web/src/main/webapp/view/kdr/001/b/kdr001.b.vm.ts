@@ -23,6 +23,7 @@ module nts.uk.at.view.kdr001.b.viewmodel {
             let self = this;
             let params = getShared("KDR001Params");
             self.currentCode = ko.observable(params || '');
+            self.isNewMode(false);
             self.layoutId = ko.observable(params.layOutId || '');
             self.layoutId.subscribe((code) => {
                 if (code) {
@@ -32,7 +33,6 @@ module nts.uk.at.view.kdr001.b.viewmodel {
                             let item = new HolidayRemaining(data);
                             self.currentHoliday(item);
                             self.setData();
-                            self.isNewMode(false);
                             self.setFocus();
                             self.setSpecialHolidayStyle();
                         }
@@ -176,6 +176,7 @@ module nts.uk.at.view.kdr001.b.viewmodel {
             }
 
             if (!vacationControl || vacationControl.listSpecialHoliday.length == 0) {
+
                 self.currentHoliday().listSpecialHoliday([]);
             }
             else {
