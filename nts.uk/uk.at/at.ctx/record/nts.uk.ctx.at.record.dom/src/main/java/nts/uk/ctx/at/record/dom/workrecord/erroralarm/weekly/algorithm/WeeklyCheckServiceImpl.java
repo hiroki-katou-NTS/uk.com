@@ -88,7 +88,7 @@ public class WeeklyCheckServiceImpl implements WeeklyCheckService {
 			Map<Integer, String> attendanceItemMap = weeklyAttendanceItemService.getAttendanceItem(cid);
 			
 			// 週別実績の値を取得
-			// TODO QA not found function code
+			// QA#116337
 			List<AttendanceTimeOfWeekly> attendanceTimeOfWeeklys = getWeeklyPerformanceService.getValues(lstSid, period);
 			
 			// ドメインモデル「週別実績の抽出条件」を取得する
