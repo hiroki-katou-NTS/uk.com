@@ -2,6 +2,7 @@ package nts.uk.ctx.sys.assist.app.find.autosetting.storage;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -33,19 +34,18 @@ public class SelectCategoryFinder {
 	@Inject
 	private DataStoragePatternSettingRepository dataStoragePatternSettingRepository;
 
-	public DataStoragePatternSettingDto findSelectCategoryInfo(SelectCategoryCommand command) {
+	public DataStoragePatternSettingDto<SaveSelectionCategoryNameDto> findSelectCategoryInfo(
+			SelectCategoryCommand command) {
 
 		List<SaveSelectionCategoryNameDto> categoryNames = findSelectionCategoryName(command);
 
 		// 設定初期表示処理
 		return dataStoragePatternSettingRepository
-				.findByContractCdAndPatternCdAndPatternAtr(
-						AppContexts.user().contractCode(), 
-						command.getPatternCode(),
+				.findByContractCdAndPatternCdAndPatternAtr(AppContexts.user().contractCode(), command.getPatternCode(),
 						command.getPatternClassification())
 				.map(pattern -> {
-					DataStoragePatternSettingDto dto = new DataStoragePatternSettingDto();
-					pattern.setMemento(dto);
+					DataStoragePatternSettingDto<SaveSelectionCategoryNameDto> dto = DataStoragePatternSettingDto
+							.createFromDomain(pattern);
 					dto.setSelectCategories(categoryNames);
 					return dto;
 				}).orElse(null);
@@ -64,19 +64,18 @@ public class SelectCategoryFinder {
 
 		// 1. オブジェクト「選択カテゴリ名称」を作成する
 		// 2. 作成したList<選択カテゴリ名称>を返す。
-		return selectCategories.stream().map(sc -> {
-			Category master = categories.stream().filter(c -> c.getCategoryId().v().equals(sc.getCategoryId().v()))
-					.findAny().get();
-			SaveSelectionCategoryNameDto dto = new SaveSelectionCategoryNameDto();
-			dto.setCategoryId(sc.getCategoryId().v());
-			dto.setCategoryName(master.getCategoryName().v());
-			dto.setSystemType(sc.getSystemType().value);
-			dto.setPeriodDivision(master.getTimeStore().value);
-			dto.setSeparateCompClassification(master.getOtherCompanyCls().value);
-			dto.setSpecifiedMethod(master.getStoredProcedureSpecified().value);
-			dto.setStoreRange(master.getStorageRangeSaved().value);
-			dto.setHolder(new TextResourceHolderDto("CMF003_634", sc.getSystemType().nameId));
-			return dto;
-		}).sorted(Comparator.comparing(SaveSelectionCategoryNameDto::getCategoryId)).collect(Collectors.toList());
+		return selectCategories.stream()
+				.map(sc -> categories.stream().filter(c -> c.getCategoryId().v().equals(sc.getCategoryId().v()))
+						.findAny()
+						.map(master -> SaveSelectionCategoryNameDto.builder().categoryId(sc.getCategoryId().v())
+								.categoryName(master.getCategoryName().v()).systemType(sc.getSystemType().value)
+								.periodDivision(master.getTimeStore().value)
+								.separateCompClassification(master.getOtherCompanyCls().value)
+								.specifiedMethod(master.getStoredProcedureSpecified().value)
+								.storeRange(master.getStorageRangeSaved().value)
+								.holder(new TextResourceHolderDto("CMF003_634", sc.getSystemType().nameId)).build())
+						.orElse(null))
+				.filter(Objects::nonNull).sorted(Comparator.comparing(SaveSelectionCategoryNameDto::getCategoryId))
+				.collect(Collectors.toList());
 	}
 }

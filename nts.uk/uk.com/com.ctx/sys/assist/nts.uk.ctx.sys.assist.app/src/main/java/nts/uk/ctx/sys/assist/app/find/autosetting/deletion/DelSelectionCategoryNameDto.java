@@ -1,22 +1,16 @@
 package nts.uk.ctx.sys.assist.app.find.autosetting.deletion;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import nts.uk.ctx.sys.assist.app.find.autosetting.AbstractCategoryDto;
 import nts.uk.ctx.sys.assist.app.find.autosetting.storage.TextResourceHolderDto;
 
 /**
  * 選択カテゴリ名称保存 DTO
  */
 @Data
-public class DelSelectionCategoryNameDto {
-	/**
-	 * カテゴリ名称
-	 */
-	private String categoryName;
-
-	/**
-	 * カテゴリID
-	 */
-	private String categoryId;
+@EqualsAndHashCode(callSuper = true)
+public class DelSelectionCategoryNameDto extends AbstractCategoryDto {
 
 	/**
 	 * 削除禁止期間
@@ -42,11 +36,6 @@ public class DelSelectionCategoryNameDto {
 	 * 別会社区分
 	 */
 	private int separateCompClassification;
-
-	/**
-	 * システム種類
-	 */
-	private int systemType;
 
 	private TextResourceHolderDto holder;
 

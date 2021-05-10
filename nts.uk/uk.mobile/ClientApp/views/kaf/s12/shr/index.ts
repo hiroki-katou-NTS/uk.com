@@ -143,7 +143,7 @@ export class LateEarlyTimeZone {
                 break;
         }
         if (params) {
-            self.timeValue = type == AppTimeType.ATWORK || AppTimeType.ATWORK ? params.timeZones[0].startTime : params.timeZones[0].endTime;
+            self.timeValue = type == AppTimeType.ATWORK || AppTimeType.ATWORK ? params.timeZones[0].endTime : params.timeZones[0].startTime;
         } else {
             self.timeValue = null;
         }
