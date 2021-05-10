@@ -26,6 +26,7 @@ module nts.uk.at.kdp003.a {
 		K: '/view/kdp/003/k/index.xhtml',
 		S: '/view/kdp/003/s/index.xhtml',
 		R: '/view/kdp/003/r/index.xhtml',
+		M: '/view/kdp/003/m/index.xhtml',
 		KDP002_B: '/view/kdp/002/b/index.xhtml',
 		KDP002_C: '/view/kdp/002/c/index.xhtml',
 		KDP002_T: '/view/kdp/002/t/index.xhtml'
@@ -670,48 +671,102 @@ module nts.uk.at.kdp003.a {
 							const { modal, storage } = vm.$window;
 
 							if (fingerStampSetting) {
-								vm.$ajax(API.REGISTER, {
-									employeeId,
-									dateTime: moment(vm.$date.now()).format(),
-									stampButton: {
-										pageNo: layout.pageNo,
-										buttonPositionNo: btn.btnPositionNo
-									},
-									refActualResult: {
-										cardNumberSupport: null,
-										workLocationCD: '',
-										workTimeCode: '',
-										overtimeDeclaration: {
-											overTime: 0,
-											overLateNightTime: 0
+								vm.$window.storage(KDP003_SAVE_DATA)
+									.then((dataStorage: StorageData) => {
+										if (dataStorage.WKPID.length > 1) {
+
+											vm.$window.modal('at', DIALOG.M, { screen: 'KDP003' })
+												.then((data: any) => {
+													vm.$ajax(API.REGISTER, {
+														employeeId,
+														dateTime: moment(vm.$date.now()).format(),
+														stampButton: {
+															pageNo: layout.pageNo,
+															buttonPositionNo: btn.btnPositionNo
+														},
+														refActualResult: {
+															cardNumberSupport: null,
+															workLocationCD: '',
+															workTimeCode: '',
+															overtimeDeclaration: {
+																overTime: 0,
+																overLateNightTime: 0
+															}
+														}
+													}).then(() => {
+														const { stampResultDisplay } = fingerStampSetting;
+														const { displayItemId, notUseAttr } = stampResultDisplay || { displayItemId: [], notUseAttr: 0 } as StampResultDisplay;
+														const { USE } = NotUseAtr;
+
+														vm.playAudio(btn.audioType);
+
+														if (notUseAttr === USE && [share.ChangeClockArt.WORKING_OUT].indexOf(btn.changeClockArt) > -1) {
+															return storage('KDP010_2C', displayItemId)
+																.then(() => storage('infoEmpToScreenC', employeeInfo))
+																.then(() => storage('screenC', { screen: "KDP003" }))
+																.then(() => modal('at', DIALOG.KDP002_C)) as JQueryPromise<any>;
+														} else {
+															const { stampSetting } = fingerStampSetting;
+															const { resultDisplayTime } = stampSetting;
+
+															return storage('resultDisplayTime', resultDisplayTime)
+																.then(() => storage('infoEmpToScreenB', employeeInfo))
+																.then(() => storage('screenB', { screen: "KDP003" }))
+																.then(() => modal('at', DIALOG.KDP002_B)) as JQueryPromise<any>;
+														}
+													})
+														.fail((message: BussinessException) => {
+															const { messageId, parameterIds } = message;
+
+															vm.$dialog.error({ messageId, messageParams: parameterIds });
+														});
+												});
+
+										} else {
+											vm.$ajax(API.REGISTER, {
+												employeeId,
+												dateTime: moment(vm.$date.now()).format(),
+												stampButton: {
+													pageNo: layout.pageNo,
+													buttonPositionNo: btn.btnPositionNo
+												},
+												refActualResult: {
+													cardNumberSupport: null,
+													workLocationCD: '',
+													workTimeCode: '',
+													overtimeDeclaration: {
+														overTime: 0,
+														overLateNightTime: 0
+													}
+												}
+											}).then(() => {
+												const { stampResultDisplay } = fingerStampSetting;
+												const { displayItemId, notUseAttr } = stampResultDisplay || { displayItemId: [], notUseAttr: 0 } as StampResultDisplay;
+												const { USE } = NotUseAtr;
+
+												vm.playAudio(btn.audioType);
+
+												if (notUseAttr === USE && [share.ChangeClockArt.WORKING_OUT].indexOf(btn.changeClockArt) > -1) {
+													return storage('KDP010_2C', displayItemId)
+														.then(() => storage('infoEmpToScreenC', employeeInfo))
+														.then(() => storage('screenC', { screen: "KDP003" }))
+														.then(() => modal('at', DIALOG.KDP002_C)) as JQueryPromise<any>;
+												} else {
+													const { stampSetting } = fingerStampSetting;
+													const { resultDisplayTime } = stampSetting;
+
+													return storage('resultDisplayTime', resultDisplayTime)
+														.then(() => storage('infoEmpToScreenB', employeeInfo))
+														.then(() => storage('screenB', { screen: "KDP003" }))
+														.then(() => modal('at', DIALOG.KDP002_B)) as JQueryPromise<any>;
+												}
+											})
+												.fail((message: BussinessException) => {
+													const { messageId, parameterIds } = message;
+
+													vm.$dialog.error({ messageId, messageParams: parameterIds });
+												});
 										}
-									}
-								}).then(() => {
-									const { stampResultDisplay } = fingerStampSetting;
-									const { displayItemId, notUseAttr } = stampResultDisplay || { displayItemId: [], notUseAttr: 0 } as StampResultDisplay;
-									const { USE } = NotUseAtr;
-
-									vm.playAudio(btn.audioType);
-
-									if (notUseAttr === USE && [share.ChangeClockArt.WORKING_OUT].indexOf(btn.changeClockArt) > -1) {
-										return storage('KDP010_2C', displayItemId)
-											.then(() => storage('infoEmpToScreenC', employeeInfo))
-											.then(() => storage('screenC', { screen: "KDP003" }))
-											.then(() => modal('at', DIALOG.KDP002_C)) as JQueryPromise<any>;
-									} else {
-										const { stampSetting } = fingerStampSetting;
-										const { resultDisplayTime } = stampSetting;
-
-										return storage('resultDisplayTime', resultDisplayTime)
-											.then(() => storage('infoEmpToScreenB', employeeInfo))
-											.then(() => storage('screenB', { screen: "KDP003" }))
-											.then(() => modal('at', DIALOG.KDP002_B)) as JQueryPromise<any>;
-									}
-								})
-									.fail((message: BussinessException) => {
-										const { messageId, parameterIds } = message;
-
-										vm.$dialog.error({ messageId, messageParams: parameterIds });
 									});
 							}
 						}
