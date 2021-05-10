@@ -14,6 +14,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAt
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
 import nts.uk.ctx.at.shared.infra.entity.holidaymanagement.interim.KshdtInterimHolidayMng;
 import nts.uk.ctx.at.shared.infra.entity.holidaymanagement.interim.KshdtInterimHolidayMngPK;
+import nts.uk.ctx.at.shared.infra.entity.remainingnumber.breakdayoff.interim.KrcmtInterimBreakDayOff;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -79,24 +80,26 @@ public class JpaInterimHolidayMngRepository extends JpaRepository implements Int
 		KshdtInterimHolidayMngPK pk = new KshdtInterimHolidayMngPK(AppContexts.user().companyId(), domain.getSID(),
 				domain.getYmd());
 
-		this.queryProxy().find(pk, KshdtInterimHolidayMng.class).ifPresent(entity -> {
+		KshdtInterimHolidayMng entity = this.getEntityManager().find(KshdtInterimHolidayMng.class, pk);
+
+		if (entity == null) {
+			entity = new KshdtInterimHolidayMng();
+			entity.pk = pk;
+			entity.creatorAtr = domain.getCreatorAtr().value;
+			entity.useDays = domain.getDays();
+			entity.remainMngID = domain.getRemainManaID();
+
+			this.getEntityManager().persist(entity);
+
+		} else {
 			entity.remainMngID = domain.getRemainManaID();
 			entity.creatorAtr = domain.getCreatorAtr().value;
 			entity.useDays = domain.getDays();
 			this.commandProxy().update(entity);
-			this.getEntityManager().flush();
-			return;
-		});
+		}
 
-		KshdtInterimHolidayMng entity = new KshdtInterimHolidayMng();
-		entity.pk = pk;
-		entity.creatorAtr = domain.getCreatorAtr().value;
-		entity.useDays = domain.getDays();
-		entity.remainMngID = domain.getRemainManaID();
-		
-		this.getEntityManager().persist(entity);
 		this.getEntityManager().flush();
-		
+
 	}
 
 }
