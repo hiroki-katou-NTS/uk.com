@@ -5,11 +5,11 @@
 package nts.uk.ctx.at.shared.dom.worktype;
 
 import lombok.AllArgsConstructor;
-import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
 
 /**
  * The Enum WorkTypeClassification
  * 勤務種類の分類
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.shared.就業規則.勤務種類.勤務種類の分類
  */
 @AllArgsConstructor
 public enum WorkTypeClassification {

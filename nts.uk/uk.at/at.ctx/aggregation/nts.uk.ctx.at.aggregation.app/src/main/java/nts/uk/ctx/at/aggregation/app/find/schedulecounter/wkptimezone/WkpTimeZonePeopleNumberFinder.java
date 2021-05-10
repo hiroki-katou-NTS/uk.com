@@ -8,8 +8,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.aggregation.dom.schedulecounter.timezonepeople.WorkplaceCounterTimeZonePeopleNumber;
-import nts.uk.ctx.at.aggregation.dom.schedulecounter.timezonepeople.WorkplaceCounterTimeZonePeopleNumberRepo;
+import nts.uk.ctx.at.aggregation.dom.schedulecounter.tally.timezonepeople.WorkplaceCounterTimeZonePeopleNumber;
+import nts.uk.ctx.at.aggregation.dom.schedulecounter.tally.timezonepeople.WorkplaceCounterTimeZonePeopleNumberRepo;
 import nts.uk.shr.com.context.AppContexts;
 
 /**

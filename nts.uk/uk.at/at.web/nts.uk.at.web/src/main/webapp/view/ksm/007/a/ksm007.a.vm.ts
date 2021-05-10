@@ -7,13 +7,14 @@ module nts.uk.at.view.ksm007.a {
     import resource = nts.uk.resource;
 
     export class ScreenModel {
-        options: Option;
+        options: any;
         currentIds: KnockoutObservable<any> = ko.observable(null);
         currentCodes: KnockoutObservable<any> = ko.observable([]);
         currentNames: KnockoutObservable<any> = ko.observable([]);
         workplaceGroupList: KnockoutObservable<any> = ko.observable([]);
-        registerForm: RegisterForm = ko.observable(new RegisterForm());
+        registerForm: KnockoutObservable<RegisterForm> = ko.observable(new RegisterForm());
         isModeNew: KnockoutObservable<boolean> = ko.observable(false);
+        nightShiftOperationAtr: KnockoutObservable<number> = ko.observable(0);
 
         constructor() {
 
@@ -28,7 +29,7 @@ module nts.uk.at.view.ksm007.a {
                 isAlreadySetting: false,
                 showEmptyItem: false,
                 reloadData: ko.observable(''),
-                height: 373,
+                height: 408,
                 selectedMode: 1
             };
 
@@ -39,6 +40,7 @@ module nts.uk.at.view.ksm007.a {
 
                     service.getNightShiftInfor({ workplaceGroupId: val }).done((data) => {
                         if( data) {
+                            self.nightShiftOperationAtr(data.nightShiftOperationAtr || 0);
                             if (data.clockHourMinuteStart) {
                                 let time = _.split(data.clockHourMinuteStart, ':');
                                 let timeFormat: any = nts.uk.time.format.byId("ClockDay_Short_HM", parseInt(time[0]) * 60 + parseInt(time[1]));
@@ -55,6 +57,7 @@ module nts.uk.at.view.ksm007.a {
                         } else {
                             self.registerForm().startTime(null);
                             self.registerForm().endTime(null);
+                            self.nightShiftOperationAtr(0);
                         }
                     });
 
@@ -69,6 +72,8 @@ module nts.uk.at.view.ksm007.a {
                         });
                     });
                     $('#requiredName').focus();
+                } else {
+                    self.nightShiftOperationAtr(0);
                 }
                 nts.uk.ui.errors.clearAll();
             });
@@ -84,6 +89,18 @@ module nts.uk.at.view.ksm007.a {
                 self.createNew();                
             }
 
+            self.registerForm().selectedWkpType.subscribe(value => {
+                if (value == 0) {
+                    $("#multi-list_displayContainer").height(316);
+                    $("#multi-list_scrollContainer").height(316);
+                    $("#workplace-group-pannel").height(390);
+                } else {
+                    $("#multi-list_displayContainer").height(354);
+                    $("#multi-list_scrollContainer").height(354);
+                    $("#workplace-group-pannel").height(428);
+                }
+            });
+            self.registerForm().selectedWkpType.valueHasMutated();
         }
 
         startPage(): JQueryPromise<any> {
@@ -111,11 +128,7 @@ module nts.uk.at.view.ksm007.a {
             if (self.registerForm().newMode()) {
                 service.registerWorkplaceGroup(self.registerForm().convertToCommand(null))
                     .done((res) => {
-                        self.checkWorkplaceGroupRegisterResult(res, wpType)
-                            .done(() => {
-                                self.options.reloadData.valueHasMutated();
-                                self.options.currentIds(res.wkpgrpid);
-                            });
+                        self.checkWorkplaceGroupRegisterResult(res, wpType);
                     }).fail((res) => {
                         nts.uk.ui.dialog.alertError({ messageId: res.messageId });
                     }).always(function () {
@@ -124,12 +137,7 @@ module nts.uk.at.view.ksm007.a {
             } else {
                 service.updateWorkplaceGroup(self.registerForm().convertToCommand(self.currentIds()))
                     .done((res) => {
-                        self.checkWorkplaceGroupRegisterResult(res, -1)
-                            .done(() => {
-                                self.options.reloadData.valueHasMutated();
-                                // self.options.currentIds(res.wkpGrId);
-                                self.options.currentIds.valueHasMutated();
-                            });
+                        self.checkWorkplaceGroupRegisterResult(res, -1);
                     }).fail((res) => {
                         nts.uk.ui.dialog.alertError({ messageId: res.messageId });
                     }).always(function () {
@@ -139,13 +147,11 @@ module nts.uk.at.view.ksm007.a {
         }
 
         checkWorkplaceGroupRegisterResult(res: any, wpType: number = 0) {
-            const vm = this;
-
-            let dfd = $.Deferred();
+            const self = this;
             let resultProcess = res.replaceResult;
             let listWorkplaceInfo = res.listWorkplaceInfo;
             let listWorkplaceGroupInfo = res.workplaceGroupResult;
-            let bundledErrors = [];
+            let bundledErrors: Array<any> = [];
             for (let idx in resultProcess) {
                 let result = resultProcess[idx];
                 if (resultProcess[idx].workplaceReplacement == 3) {
@@ -160,22 +166,28 @@ module nts.uk.at.view.ksm007.a {
                     }
                 }
             }
+            if (self.registerForm().newMode()) {
+                self.options.reloadData.valueHasMutated();
+                self.options.currentIds(res.wkpgrpid);
+            } else {
+                self.options.reloadData.valueHasMutated();
+                // self.options.currentIds(res.wkpGrId);
+                self.options.currentIds.valueHasMutated();
+            }
             if (res.resProcessResult) {
                 let mgsId = ( wpType > 0 ) ? "Msg_2097" :  'Msg_15';
                 nts.uk.ui.dialog.info({ messageId: mgsId }).then(() => {
                     if (bundledErrors.length > 0) {
                         nts.uk.ui.dialog.bundledErrors({ errors: bundledErrors });
+                    } else {
+                        if (mgsId == "Msg_2097") self.openDialogScreenB();
                     }
-                    dfd.resolve();
                 });
             } else {
                 if (bundledErrors.length > 0) {
                     nts.uk.ui.dialog.bundledErrors({ errors: bundledErrors });
                 }
-                dfd.resolve();
             }
-
-            return dfd.promise();
         }
 
         deleteWkpGroup() {
@@ -289,25 +301,6 @@ module nts.uk.at.view.ksm007.a {
             }).always(() => {
                 block.clear();
             });
-        }
-
-        public reCalGridWidth() {
-            // let panelWidthResize = window.innerWidth;
-            // let totalColWidth = 500;            
-            // panelWidthResize = panelWidthResize > totalColWidth ? totalColWidth : panelWidthResize;
-            // console.log(panelWidthResize);
-            // $('#workplace-list').igGrid("option", "width", panelWidthResize);
-            // if(panelWidthResize == 500) {
-            //     $('#workplace-list_displayContainer').css("width", panelWidthResize);
-            //     $('#workplace-list_headers_v').css("width", panelWidthResize);
-            // }
-
-            // Internet Explorer 6-11
-            let isIE = /*@cc_on!@*/false || !!document.documentMode;
-            if (isIE) {
-                $('#workplace-list').igGrid("option", "height", 289);
-                // $('#multi-list').igGrid("option", "height", 372);
-            }
         }
 
         public openDialogScreenB() {

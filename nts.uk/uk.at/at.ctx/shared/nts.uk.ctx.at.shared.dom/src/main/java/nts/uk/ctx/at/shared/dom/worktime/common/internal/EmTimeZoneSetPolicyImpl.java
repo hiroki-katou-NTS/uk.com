@@ -16,6 +16,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRoundingPolicy;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PrescribedTimezoneSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimedisplay.DisplayMode;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.HalfDayWorkSet;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -38,7 +39,7 @@ public class EmTimeZoneSetPolicyImpl implements EmTimeZoneSetPolicy {
 	 */
 	@Override
 	public void validateFixedAndDiff(BundledBusinessException be, PredetemineTimeSetting predTime, EmTimeZoneSet etzSet,
-			DisplayMode displayMode, AmPmAtr dayAtr, boolean useHalfDayShift) {
+			DisplayMode displayMode, AmPmAtr dayAtr) {
 		TimeZoneRounding emTimezone = etzSet.getTimezone();
 		PrescribedTimezoneSetting presTz = predTime.getPrescribedTimezoneSetting();
 
@@ -54,11 +55,11 @@ public class EmTimeZoneSetPolicyImpl implements EmTimeZoneSetPolicy {
 				if (!this.isBetweenOneDayTimezone(presTz, emTimezone)) {
 					be.addMessage("Msg_774", "KMK003_86");
 				}
-			} else if (AmPmAtr.AM.equals(dayAtr) && DisplayMode.DETAIL.equals(displayMode) && useHalfDayShift) {
+			} else if (AmPmAtr.AM.equals(dayAtr) && DisplayMode.DETAIL.equals(displayMode)) {
 				if (!isBetweenMorningTimezone(presTz, emTimezone)) {
 					be.addMessage("Msg_774", "KMK003_295");
 				}
-			} else if (AmPmAtr.PM.equals(dayAtr) && DisplayMode.DETAIL.equals(displayMode) && useHalfDayShift) {
+			} else if (AmPmAtr.PM.equals(dayAtr) && DisplayMode.DETAIL.equals(displayMode)) {
 				if (!isBetweenAfternoonTimezone(presTz, emTimezone)) {
 					be.addMessage("Msg_774", "KMK003_296");
 				}
@@ -69,12 +70,12 @@ public class EmTimeZoneSetPolicyImpl implements EmTimeZoneSetPolicy {
 				if (this.isTimezoneNotValid(presTz, emTimezone)) {
 					be.addMessage("Msg_773", "KMK003_86");
 				}
-			} else if (AmPmAtr.AM.equals(dayAtr) && DisplayMode.DETAIL.equals(displayMode) && useHalfDayShift) {
+			} else if (AmPmAtr.AM.equals(dayAtr) && DisplayMode.DETAIL.equals(displayMode)) {
 				// Msg_1054 (Fixed and Diff)
 				if (!isBetweenMorningTimezone(presTz, emTimezone)) {
 					be.addMessage("Msg_1054", "KMK003_295");
 				}
-			} else if (AmPmAtr.PM.equals(dayAtr) && DisplayMode.DETAIL.equals(displayMode) && useHalfDayShift) {
+			} else if (AmPmAtr.PM.equals(dayAtr) && DisplayMode.DETAIL.equals(displayMode)) {
 				// Msg_1055 (Fixed and Diff)
 				if (!isBetweenAfternoonTimezone(presTz, emTimezone)) {
 					be.addMessage("Msg_1055", "KMK003_296");
@@ -95,7 +96,7 @@ public class EmTimeZoneSetPolicyImpl implements EmTimeZoneSetPolicy {
 	 */
 	@Override
 	public void validateFlex(BundledBusinessException be, PredetemineTimeSetting predTime, EmTimeZoneSet etzSet,
-			DisplayMode displayMode, AmPmAtr dayAtr, boolean useHalfDayShift) {
+			DisplayMode displayMode, AmPmAtr dayAtr) {
 		TimeZoneRounding emTimezone = etzSet.getTimezone();
 		PrescribedTimezoneSetting presTz = predTime.getPrescribedTimezoneSetting();
 

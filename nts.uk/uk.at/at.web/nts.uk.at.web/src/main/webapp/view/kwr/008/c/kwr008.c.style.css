@@ -1,0 +1,21 @@
+.group-item {
+  vertical-align: middle;
+  margin-top: 15px;
+  margin-left: 35px;
+}
+
+.item-inline {
+  display: inline-block;
+}
+
+.item-inline.form-label {
+  width: 182px;
+}
+
+.mt-20 {
+  margin-top: 20px;
+}
+
+.select-code {
+  width: 50px;
+}

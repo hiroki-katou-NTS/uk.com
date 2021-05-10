@@ -4,7 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.worktimeset;
 
-import nts.uk.ctx.at.shared.dom.common.color.ColorCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.AbolishAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.shr.com.primitive.Memo;
@@ -47,7 +46,7 @@ public interface WorkTimeSettingGetMemento {
 	 *
 	 * @return the color code
 	 */
-	public ColorCode getColorCode();
+//	public ColorCode getColorCode();
 
 	/**
 	 * Gets the work time display name.

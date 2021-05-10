@@ -4,17 +4,19 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.fixedset;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.val;
+import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
+import nts.uk.ctx.at.shared.dom.worktime.common.HDWorkTimeSheetSetting;
+import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRounding;
+import nts.uk.ctx.at.shared.dom.worktime.common.TimezoneOfFixedRestTimeSet;
+import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
+
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
-import nts.uk.ctx.at.shared.dom.worktime.common.HDWorkTimeSheetSetting;
-import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRounding;
-import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 
 /**
  * 固定勤務の休日出勤用勤務時間帯
@@ -28,7 +30,7 @@ public class FixOffdayWorkTimezone extends WorkTimeDomainObject implements Clone
 
 	/** The rest timezone. */
 	// 休憩時間帯
-	private FixRestTimezoneSet restTimezone;
+	private TimezoneOfFixedRestTimeSet restTimezone;
 
 	/** The lst work timezone. */
 	// 勤務時間帯
@@ -42,6 +44,18 @@ public class FixOffdayWorkTimezone extends WorkTimeDomainObject implements Clone
 	public FixOffdayWorkTimezone(FixOffdayWorkTimezoneGetMemento memento) {
 		this.restTimezone = memento.getRestTimezone();
 		this.lstWorkTimezone = memento.getLstWorkTimezone();
+	}
+
+	/**
+	 * 新規作成する
+	 * @param memento Memento
+	 * @param useShiftTwo 2回勤務を使用するか?
+	 */
+	public FixOffdayWorkTimezone(TimezoneOfFixedRestTimeSet restTimezoneSet, List<HDWorkTimeSheetSetting> lstWorkTimezone, boolean useShiftTwo){
+		this.restTimezone = restTimezoneSet;
+		this.lstWorkTimezone = lstWorkTimezone;
+		if (!checkLstWorkTimezoneContinue(useShiftTwo))
+			this.bundledBusinessExceptions.addMessage("Msg_1918");
 	}
 
 	/**
@@ -72,7 +86,7 @@ public class FixOffdayWorkTimezone extends WorkTimeDomainObject implements Clone
 		});
 
 		// validate 770 for rest
-		this.restTimezone.getLstTimezone().stream().forEach(item -> {
+		this.restTimezone.getTimezones().stream().forEach(item -> {
 			item.validateRange("KMK003_21");
 		});
 
@@ -109,7 +123,7 @@ public class FixOffdayWorkTimezone extends WorkTimeDomainObject implements Clone
 	 * Check rest timezone.
 	 */
 	private void validateRestTimezone() {
-		this.restTimezone.getLstTimezone().forEach((timezone) -> {
+		this.restTimezone.getTimezones().forEach((timezone) -> {
 			// Is timezone in WorkTimezone -  休出時間帯.時間帯
 			boolean isHasWorkTime = this.lstWorkTimezone.stream()
 					.map(item -> item.getTimezone())
@@ -157,4 +171,29 @@ public class FixOffdayWorkTimezone extends WorkTimeDomainObject implements Clone
 		return TimeSpanForCalc.join( this.getOffdayWorkTimezonesForCalc() ).get();
 	}
 
+	/**
+	 * 時間帯の連続性を確認
+	 * Check the continuity of working timezone
+	 *
+	 * @param useShiftTwo is use double work?
+	 * @return status
+	 */
+	private boolean checkLstWorkTimezoneContinue(boolean useShiftTwo){
+		val discontinueTimes = this.lstWorkTimezone
+				.stream()
+				.sorted(Comparator.comparing(HDWorkTimeSheetSetting::getWorkTimeNo))
+				.filter(wt -> {
+					int nextIndex = this.lstWorkTimezone.indexOf(wt) + 1;
+					if (nextIndex < this.lstWorkTimezone.size()){
+						val nextWt = this.lstWorkTimezone.get(nextIndex);
+						return !wt.getTimezone().getEnd().equals(nextWt.getTimezone().getStart());
+					}
+					else return false;
+				}).count();
+		if (!useShiftTwo && discontinueTimes >= 1)
+			return false;
+		if (useShiftTwo && discontinueTimes > 1)
+			return false;
+		return true;
+	}
 }

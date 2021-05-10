@@ -6,8 +6,9 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
+import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
-import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.ChildCareNurseUsedNumber;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.ChildCareNurseUsedNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.DigestionHourlyTimeType;
 
 /**
@@ -21,10 +22,15 @@ public class TempChildCareManagement  extends TempChildCareNurseManagement {
 	/**
 	 * コンストラクタ
 	 */
-	public TempChildCareManagement(String remainManaID, String sID, GeneralDate ymd, CreateAtr creatorAtr,
+	public TempChildCareManagement(String remainManaID, String sID, GeneralDate ymd, CreateAtr creatorAtr, RemainAtr remainAtr,
 			ChildCareNurseUsedNumber usedNumber, Optional<DigestionHourlyTimeType> appTimeType){
-		super(remainManaID, sID, ymd, creatorAtr, RemainType.CHILDCARE, usedNumber, appTimeType);
+		super(remainManaID, sID, ymd, creatorAtr, RemainType.CHILDCARE, remainAtr, usedNumber, appTimeType);
 	}
+
+	public TempChildCareManagement(TempChildCareNurseManagement domain) {
+		super(domain);
+	}
+
 	/**
 	 * ファクトリー
 	 * @param remainManaID 残数管理データID
@@ -37,10 +43,10 @@ public class TempChildCareManagement  extends TempChildCareNurseManagement {
 	 * @return 暫定子の看護管理データ
 	 */
 	public static TempChildCareManagement of(
-			String remainManaID, String sID, GeneralDate ymd, CreateAtr creatorAtr,
+			String remainManaID, String sID, GeneralDate ymd, CreateAtr creatorAtr, RemainAtr remainAtr,
 			ChildCareNurseUsedNumber usedNumber,
 			Optional<DigestionHourlyTimeType>  appTimeType) {
 
-		return new TempChildCareManagement(remainManaID, sID, ymd, creatorAtr, usedNumber, appTimeType);
+		return new TempChildCareManagement(remainManaID, sID, ymd, creatorAtr, remainAtr, usedNumber, appTimeType);
 	}
 }

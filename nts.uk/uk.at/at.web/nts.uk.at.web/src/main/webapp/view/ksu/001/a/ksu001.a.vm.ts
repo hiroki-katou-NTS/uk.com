@@ -1065,6 +1065,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     bundledErrors({ errors: errorsInfo }).then(() => {
                         nts.uk.ui.block.clear();
                     });
+                    self.enableBtnReg(false);
                 } else {
                     nts.uk.ui.block.clear();
                 }
@@ -1913,6 +1914,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
             if (nts.uk.ui.errors.hasError() || self.mode() === 'confirm')
                 return;
+            
+            $('div > iframe').contents().find('#btnClose').trigger('click');
+
             nts.uk.ui.block.grayout();
             let itemLocal = uk.localStorage.getItem(self.KEY);
             let userInfor = JSON.parse(itemLocal.get());
@@ -2847,10 +2851,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
             $("#extable").exTable("updateTable", "detail", {}, detailContentUpdate);
 
-            self.setCoppyStyler();
+            self.setStyler();
         }
         
-        setCoppyStyler() {
+        setStyler() {
             let self = this;
             // get listShiftMaster luu trong localStorage
             let itemLocal = uk.localStorage.getItem(self.KEY);
@@ -2908,16 +2912,14 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         }
                     }
                 } else if (userInfor.disPlayFormat == 'time') {
-
-                    // case coppy từ cell là ngày lễ, ngày nghỉ nên phải disable cell starttime, endtime đi.
-                    if (data.workHolidayCls == AttendanceHolidayAttr.HOLIDAY) {
-                        self.diseableCellStartEndTime(rowIdx + '', key);
-                    } else {
-                        self.enableCellStartEndTime(rowIdx + '', key);
-                    }
-
+                    let workStyle = data.workHolidayCls;
                     if (!_.isNil(data)) {
-                        let workStyle = data.workHolidayCls;
+                        // case coppy từ cell là ngày lễ, ngày nghỉ nên phải disable cell starttime, endtime đi.
+                        if (workStyle == AttendanceHolidayAttr.HOLIDAY) {
+                            self.diseableCellStartEndTime(rowIdx + '', key);
+                        } else {
+                            self.enableCellStartEndTime(rowIdx + '', key);
+                        }
                         if (workStyle == AttendanceHolidayAttr.FULL_TIME) {
                             if (innerIdx === 0 || innerIdx === 1) return { textColor: "#0000ff" }; // color-attendance
                             else if (innerIdx === 2 || innerIdx === 3) return { textColor: "black" };
@@ -3744,7 +3746,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     achievements: data.achievements,
                     workHolidayCls: data.workHolidayCls
                 });
-                __viewContext.viewModel.viewAB.isRedColor = false;
 
                 // trường hợp cell này nằm trong list cell bị disable starttime, endtime 
                 // thì enable cell đó lên, xóa cell đó khỏi danh sach cell bị disable starttime, endtime .
@@ -3804,7 +3805,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                                     self.enableCellStartEndTime(rowIdx + '', key);
                                 }
 
-                                __viewContext.viewModel.viewAB.isRedColor = false;
                                 dfd.resolve(true);
                             } else if (data.workHolidayCls == 1 || data.workHolidayCls == 2) { // làm nủa ngay
                                 nts.uk.ui.block.grayout();
@@ -3829,7 +3829,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                                         achievements: false,
                                         workHolidayCls: data.workHolidayCls
                                     });
-                                    __viewContext.viewModel.viewAB.isRedColor = false;
 
                                     // trường hợp cell này nằm trong list cell bị disable starttime, endtime 
                                     // thì enable cell đó lên, xóa cell đó khỏi danh sach cell bị disable starttime, endtime .
@@ -3859,7 +3858,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                                 achievements: false,
                                 workHolidayCls: data.workHolidayCls
                             });
-                            __viewContext.viewModel.viewAB.isRedColor = false;
                             dfd.resolve(true);
                         }
                     } else { // truong hop worktime không tồn tại trong list worktime => lấy trong datasource
@@ -3883,7 +3881,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                                     self.enableCellStartEndTime(rowIdx + '', key);
                                 }
 
-                                __viewContext.viewModel.viewAB.isRedColor = false;
                                 dfd.resolve(true);
                             } else if (data.workHolidayCls == 1 || data.workHolidayCls == 2) { // làm nủa ngay
                                 nts.uk.ui.block.grayout();
@@ -3908,7 +3905,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                                         achievements: false,
                                         workHolidayCls: data.workHolidayCls
                                     });
-                                    __viewContext.viewModel.viewAB.isRedColor = false;
 
                                     // trường hợp cell này nằm trong list cell bị disable starttime, endtime 
                                     // thì enable cell đó lên, xóa cell đó khỏi danh sach cell bị disable starttime, endtime .
@@ -3938,7 +3934,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                                 achievements: false,
                                 workHolidayCls: data.workHolidayCls
                             });
-                            __viewContext.viewModel.viewAB.isRedColor = false;
                             dfd.resolve(true);
                         }
                     }
@@ -3969,7 +3964,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 uk.localStorage.setItemAsJson(self.KEY, userInfor);
             });
             
-            self.setCoppyStyler();
+            self.setStyler();
             
             $("#extable").exTable("pasteValidate", function(rowIdx, key, data) {
                 let dfd = $.Deferred();

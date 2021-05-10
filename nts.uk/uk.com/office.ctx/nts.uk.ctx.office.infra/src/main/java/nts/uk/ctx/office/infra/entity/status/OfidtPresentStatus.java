@@ -1,8 +1,6 @@
 package nts.uk.ctx.office.infra.entity.status;
 
 import java.io.Serializable;
-
-import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
@@ -12,7 +10,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.office.dom.status.ActivityStatus;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /*
  * UKDesign.データベース.ER図.オフィス支援.在席照会.ステータス.OFIDT_PRESENT_STATUS
@@ -22,21 +20,16 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @EqualsAndHashCode(callSuper = true)
 @Table(name = "OFIDT_PRESENT_STATUS")
-public class OfidtPresentStatus extends UkJpaEntity
+public class OfidtPresentStatus extends ContractUkJpaEntity
 		implements ActivityStatus.MementoGetter, ActivityStatus.MementoSetter, Serializable {
 	/**
 	* 
 	*/
 	private static final long serialVersionUID = 1L;
 
-	// column 排他バージョン
-	@Column(name = "EXCLUS_VER")
-	private long version;
-
-	// column 契約コード
-	@Basic(optional = false)
-	@Column(name = "CONTRACT_CD")
-	private String contractCd;
+	// column　会社ID
+	@Column(name = "CID")
+	private String cid;
 
 	// Embedded primary key 社員ID
 	@EmbeddedId

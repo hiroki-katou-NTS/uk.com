@@ -128,18 +128,6 @@ public class KTG026QueryProcessor {
 			displayYear = yearIncludeNextMonth;
 		}
 
-		// 指定する年と指定する社員の時間外時間と超過回数の取得
-		YearAndEmpOtHoursDto otHours = this.getYearAndEmployeeOTHours(employeeId, closure.getClosureId().value,
-				new Year(displayYear), YearMonth.of(closingPeriod.getProcessingYm()));
-		// 上長用の時間外時間表示．対象社員の各月の時間外時間＝取得した「年月ごとの時間外時間」
-		List<YearMonthOvertime> ymOvertimes = otHours.getOvertimeHours();
-
-		// 上長用の時間外時間表示．対象社員の年間超過回数＝取得した「36協定超過情報」
-		AgreementExcessInfoDto agreeInfo = AgreementExcessInfoDto.builder()
-				.excessTimes(otHours.getAgreeInfo())
-				.yearMonths(otHours.getOvertimeHours().stream().map(x -> x.getYearMonth()).collect(Collectors.toList()))
-				.build();
-
 		// 社員ID(List)から個人社員基本情報を取得
 		List<EmpBasicInfoImport> empInfoLst = this.empInfoAdapter.getListPersonInfo(Arrays.asList(employeeId));
 
@@ -161,8 +149,6 @@ public class KTG026QueryProcessor {
 		return EmployeesOvertimeDisplayDto.builder()
 				.closureID(closureID)
 				.empInfo(empInfo)
-				.ymOvertimes(ymOvertimes)
-				.agreeInfo(agreeInfo)
 				.closingPeriod(closingPeriod)
 				.yearIncludeThisMonth(yearIncludeThisMonth)
 				.yearIncludeNextMonth(yearIncludeNextMonth)

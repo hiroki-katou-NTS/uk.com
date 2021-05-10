@@ -5,8 +5,9 @@ import javax.inject.Inject;
 import lombok.val;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
+import nts.uk.ctx.bs.employee.app.command.employee.data.management.EmployeeContactDto;
+import nts.uk.ctx.bs.employee.dom.employee.data.management.contact.EmployeeContact;
 import nts.uk.ctx.bs.employee.dom.employee.data.management.contact.EmployeeContactRepository;
-import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.pereg.app.command.PeregAddCommandHandler;
 import nts.uk.shr.pereg.app.command.PeregAddCommandResult;
 
@@ -30,13 +31,16 @@ public class AddEmployeeInfoContactCommandHandler extends CommandHandlerWithResu
 	@Override
 	protected PeregAddCommandResult handle(CommandHandlerContext<AddEmployeeInfoContactCommand> context) {
 		val command = context.getCommand();
-		String cid = AppContexts.user().companyId();
-		
-		//TODO
-//		EmployeeContact domain = new EmployeeInfoContact(cid, command.getSid(), command.getMailAddress(),
-//				command.getSeatDialIn(), command.getSeatExtensionNo(), command.getPhoneMailAddress(),
-//				command.getCellPhoneNo());
-//		employeeInfoContactRepository.insert(domain);
+		EmployeeContactDto dto = EmployeeContactDto.builder()
+				.employeeId(command.getSid())
+				.mailAddress(command.getMailAddress())
+				.seatDialIn(command.getSeatDialIn())
+				.seatExtensionNumber(command.getSeatExtensionNo())
+				.mobileMailAddress(command.getPhoneMailAddress())
+				.cellPhoneNumber(command.getCellPhoneNo())
+				.build();
+		EmployeeContact domain = EmployeeContact.createFromMemento(dto);
+		employeeInfoContactRepository.insert(domain);
 		
 		return new PeregAddCommandResult(command.getSid());
 	}

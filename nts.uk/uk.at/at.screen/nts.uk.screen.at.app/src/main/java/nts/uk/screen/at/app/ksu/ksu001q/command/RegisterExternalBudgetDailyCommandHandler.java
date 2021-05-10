@@ -16,20 +16,20 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExtBudgetMoney;
-import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExtBudgetNumberPerson;
-import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExtBudgetNumericalVal;
-import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.timeunit.ExtBudgetTime;
-import nts.uk.ctx.at.schedule.dom.budget.performance.domainservice.RegisterExtBudgetDailyService;
-import nts.uk.ctx.at.schedule.dom.workschedule.budgetcontrol.budgetperformance.ExtBudgetActItemCode;
-import nts.uk.ctx.at.schedule.dom.workschedule.budgetcontrol.budgetperformance.ExtBudgetDaily;
-import nts.uk.ctx.at.schedule.dom.workschedule.budgetcontrol.budgetperformance.ExtBudgetDailyRepository;
+import nts.uk.ctx.at.schedule.dom.budget.external.ExternalBudgetCd;
+import nts.uk.ctx.at.schedule.dom.budget.external.acceptance.ExtBudgetNumberPerson;
+import nts.uk.ctx.at.schedule.dom.budget.external.acceptance.ExtBudgetNumericalVal;
+import nts.uk.ctx.at.schedule.dom.budget.external.actualresults.ExternalBudgetActualResult;
+import nts.uk.ctx.at.schedule.dom.budget.external.actualresults.ExternalBudgetActualResultRepository;
+import nts.uk.ctx.at.schedule.dom.budget.external.actualresults.ExternalBudgetMoneyValue;
+import nts.uk.ctx.at.schedule.dom.budget.external.actualresults.ExternalBudgetTimeValue;
+import nts.uk.ctx.at.schedule.dom.budget.external.actualresults.RegisterExternalBudgetActualResultService;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 
 /**
  * 外部予算日次を登録するHandler
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.勤務予定.勤務予定.予算管理.App.
- * 
+ *
  * @author thanhlv
  *
  */
@@ -39,7 +39,7 @@ public class RegisterExternalBudgetDailyCommandHandler extends CommandHandler<Re
 
 	/** The ext budget daily repository. */
 	@Inject
-	private ExtBudgetDailyRepository extBudgetDailyRepository;
+	private ExternalBudgetActualResultRepository extBudgetDailyRepository;
 
 	/**
 	 * 外部予算日次を登録するHandler
@@ -66,10 +66,10 @@ public class RegisterExternalBudgetDailyCommandHandler extends CommandHandler<Re
 		case "時間":
 			for (DateAndValueMap item : dateAndValueMap) {
 				Long valueTime = this.convertVal(item.getValue());
-				AtomTask atomTask = RegisterExtBudgetDailyService.signUp(require, targetOrg,
-						new ExtBudgetActItemCode(command.getItemCode()),
+				AtomTask atomTask = RegisterExternalBudgetActualResultService.signUp(require, targetOrg,
+						new ExternalBudgetCd(command.getItemCode()),
 						GeneralDate.fromString(item.getDate(), "yyyy/MM/dd"),
-						Optional.ofNullable(valueTime != null ? new ExtBudgetTime(valueTime.intValue()) : null));
+						Optional.ofNullable(valueTime != null ? new ExternalBudgetTimeValue(valueTime.intValue()) : null));
 				transaction.execute(() -> {
 					atomTask.run();
 				});
@@ -77,10 +77,10 @@ public class RegisterExternalBudgetDailyCommandHandler extends CommandHandler<Re
 			break;
 		case "金額":
 			for (DateAndValueMap item : dateAndValueMap) {
-				AtomTask atomTask = RegisterExtBudgetDailyService.signUp(require, targetOrg,
-						new ExtBudgetActItemCode(command.getItemCode()),
+				AtomTask atomTask = RegisterExternalBudgetActualResultService.signUp(require, targetOrg,
+						new ExternalBudgetCd(command.getItemCode()),
 						GeneralDate.fromString(item.getDate(), "yyyy/MM/dd"), Optional.ofNullable(
-								item.getValue() != "" ? new ExtBudgetMoney(Integer.parseInt(item.getValue())) : null));
+								item.getValue() != "" ? new ExternalBudgetMoneyValue(Integer.parseInt(item.getValue())) : null));
 				transaction.execute(() -> {
 					atomTask.run();
 				});
@@ -88,8 +88,8 @@ public class RegisterExternalBudgetDailyCommandHandler extends CommandHandler<Re
 			break;
 		case "人数":
 			for (DateAndValueMap item : dateAndValueMap) {
-				AtomTask atomTask = RegisterExtBudgetDailyService
-						.signUp(require, targetOrg, new ExtBudgetActItemCode(command.getItemCode()),
+				AtomTask atomTask = RegisterExternalBudgetActualResultService
+						.signUp(require, targetOrg, new ExternalBudgetCd(command.getItemCode()),
 								GeneralDate.fromString(item.getDate(), "yyyy/MM/dd"),
 								Optional.ofNullable(item.getValue() != ""
 										? new ExtBudgetNumberPerson(Integer.parseInt(item.getValue()))
@@ -101,8 +101,8 @@ public class RegisterExternalBudgetDailyCommandHandler extends CommandHandler<Re
 			break;
 		case "数値":
 			for (DateAndValueMap item : dateAndValueMap) {
-				AtomTask atomTask = RegisterExtBudgetDailyService
-						.signUp(require, targetOrg, new ExtBudgetActItemCode(command.getItemCode()),
+				AtomTask atomTask = RegisterExternalBudgetActualResultService
+						.signUp(require, targetOrg, new ExternalBudgetCd(command.getItemCode()),
 								GeneralDate.fromString(item.getDate(), "yyyy/MM/dd"),
 								Optional.ofNullable(item.getValue() != ""
 										? new ExtBudgetNumericalVal(Integer.parseInt(item.getValue()))
@@ -123,20 +123,20 @@ public class RegisterExternalBudgetDailyCommandHandler extends CommandHandler<Re
 	 * @param extBudgetDailyRepository the ext budget daily repository
 	 */
 	@AllArgsConstructor
-	private class RequireImpl implements RegisterExtBudgetDailyService.Require {
+	private class RequireImpl implements RegisterExternalBudgetActualResultService.Require {
 
 		/** The ext budget daily repository. */
 		@Inject
-		private ExtBudgetDailyRepository extBudgetDailyRepository;
+		private ExternalBudgetActualResultRepository extBudgetDailyRepository;
 
 		/**
 		 * Insert.
 		 *
-		 * @param extBudgetDaily the ext budget daily
+		 * @param actualResult the ext budget daily
 		 */
 		@Override
-		public void insert(ExtBudgetDaily extBudgetDaily) {
-			extBudgetDailyRepository.insert(extBudgetDaily);
+		public void insert(ExternalBudgetActualResult actualResult) {
+			extBudgetDailyRepository.insert(actualResult);
 		}
 
 		/**
@@ -147,7 +147,7 @@ public class RegisterExternalBudgetDailyCommandHandler extends CommandHandler<Re
 		 * @param ymd the ymd
 		 */
 		@Override
-		public void delete(TargetOrgIdenInfor targetOrg, ExtBudgetActItemCode itemCode, GeneralDate ymd) {
+		public void delete(TargetOrgIdenInfor targetOrg, ExternalBudgetCd itemCode, GeneralDate ymd) {
 			extBudgetDailyRepository.delete(targetOrg, itemCode, ymd);
 		}
 

@@ -32,6 +32,6 @@ public class BentoMenuWebService extends WebService{
     @POST
     @Path("getworklocation")
     public List<WorkLocationDto> getWorklocation() {
-        return this.bentoMenuSetScreenProcessor.getWorkLocationByCid();
+        return this.bentoMenuSetScreenProcessor.getWorkLocationByContr();
     }
 }
