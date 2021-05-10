@@ -29,7 +29,7 @@ module nts.uk.at.view.ksm007.a {
                 isAlreadySetting: false,
                 showEmptyItem: false,
                 reloadData: ko.observable(''),
-                height: 408,
+                height: 378,
                 selectedMode: 1
             };
 
