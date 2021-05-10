@@ -21,18 +21,18 @@ import nts.uk.shr.com.context.AppContexts;
 public class JpaTempChildCareManagementRepository extends JpaRepository implements TempChildCareManagementRepository{
 
 	private static final String SELECT_BY_PERIOD = "SELECT a FROM KrcdtInterimChildCare a "
-			+ "WHERE a.sId = :employeeId "
+			+ "WHERE a.sID = :employeeId "
 			+ "AND a.ymd >= :startYmd "
 			+ "AND a.ymd <= :endYmd "
 			+ "ORDER BY a.ymd ";
 
 	private static final String SELECT_BY_EMPLOYEEID_YMD = "SELECT a FROM KrcdtInterimChildCare a"
-			+ " WHERE a.sId = :employeeID"
+			+ " WHERE a.sID = :employeeID"
 			+ "AND a.ymd =  : ymd "
 			+ " ORDER BY a.ymd ASC";
 	
 	private static final String REMOVE_BY_SID_YMD = "DELETE FROM KshdtInterimChildCare a"
-			+ " WHERE a.pk.sid = :sid"
+			+ " WHERE a.pk.sID = :sid"
 			+ " AND a.pk.ymd =  :ymd";
 
 
