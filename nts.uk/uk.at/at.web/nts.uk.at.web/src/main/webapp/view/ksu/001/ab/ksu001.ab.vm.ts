@@ -20,7 +20,7 @@ module nts.uk.at.view.ksu001.ab.viewmodel {
         KEY: string = 'nts.uk.characteristics.ksu001Data';
         width: KnockoutObservable<number>;
         tabIndex: KnockoutObservable<number | string>;
-        filter: KnockoutObservable<boolean> = ko.observable(true);
+        filter: KnockoutObservable<boolean> = ko.observable(false);
         disabled: KnockoutObservable<boolean>;
         workplaceIdKCP013: KnockoutObservable<string> = ko.observable('');
         selected: KnockoutObservable<string> | KnockoutObservableArray<string>;
