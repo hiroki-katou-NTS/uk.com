@@ -34,5 +34,9 @@ public class UsedTimes extends IntegerPrimitiveValue<UsedTimes> implements Seria
 		return super.reviseRawValue(rawValue);
 	}
 
+	public UsedTimes add(UsedTimes target) {
+		return new UsedTimes(this.v() + target.v());
+	}
+
 }
 

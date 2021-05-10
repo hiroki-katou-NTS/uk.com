@@ -13,7 +13,7 @@ import nts.arc.layer.dom.AggregateRoot;
  */
 @Getter
 @Setter
-public class ChildcareNurseRemNumEachMonth extends AggregateRoot {
+public class ChildcareNurseRemNumEachMonth  {
 
 	/** 本年使用数 */
 	private ChildCareNurseUsedInfo thisYearUsedInfo;
@@ -25,6 +25,16 @@ public class ChildcareNurseRemNumEachMonth extends AggregateRoot {
 	private Optional<ChildCareNurseUsedInfo> nextYearUsedInfo;
 	/** 翌年残数 */
 	private Optional<ChildCareNurseRemainNumber> nextYearRemainNumber;
+
+	public void calcUsedInfo() {
+		if ( !nextYearUsedInfo.isPresent() ) {
+			usedInfo = thisYearUsedInfo.clone();
+			return;
+		}
+
+		usedInfo = new ChildCareNurseUsedInfo( )
+
+	}
 
 	/**
 	 * コンストラクタ

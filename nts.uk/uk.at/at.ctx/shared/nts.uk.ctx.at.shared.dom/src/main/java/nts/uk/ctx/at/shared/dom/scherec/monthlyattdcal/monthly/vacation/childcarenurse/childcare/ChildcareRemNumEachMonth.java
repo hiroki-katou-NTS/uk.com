@@ -2,6 +2,7 @@ package nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.childca
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.ClosureStatus;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.childcarenurse.ChildcareNurseRemNumEachMonth;
@@ -15,7 +16,7 @@ import nts.uk.shr.com.time.calendar.date.ClosureDate;
  */
 @Getter
 @Setter
-public class ChildcareRemNumEachMonth {
+public class ChildcareRemNumEachMonth extends AggregateRoot {
 
 	/** 社員ID */
 	private  String employeeId;
@@ -37,7 +38,8 @@ public class ChildcareRemNumEachMonth {
 			String employeeId,
 			YearMonth yearMonth,
 			ClosureId closureId,
-			ClosureDate closureDate){
+			ClosureDate closureDate,
+			ChildcareNurseRemNumEachMonth rem){
 
 		super();
 		this.employeeId = employeeId;
@@ -45,7 +47,7 @@ public class ChildcareRemNumEachMonth {
 		this.closureId = closureId;
 		this.closureDate = closureDate;
 		this.closureStatus = ClosureStatus.UNTREATED;
-		this.remNumEachMonth = new ChildcareNurseRemNumEachMonth();
+		this.remNumEachMonth = rem;
 	}
 
 }

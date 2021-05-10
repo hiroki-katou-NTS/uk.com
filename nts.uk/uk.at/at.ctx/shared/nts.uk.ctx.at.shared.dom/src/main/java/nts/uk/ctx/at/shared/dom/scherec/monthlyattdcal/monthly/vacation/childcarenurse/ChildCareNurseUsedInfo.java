@@ -63,4 +63,14 @@ public class ChildCareNurseUsedInfo {
 		domain.usedDays = usedDays;
 		return domain;
 	}
+
+	public ChildCareNurseUsedInfo add(ChildCareNurseUsedInfo target) {
+		ChildCareNurseUsedInfo domain = this.clone();
+
+		domain.getUsedNumber().add(target.getUsedNumber());
+		domain.getUsedDays().add(target.getUsedDays());
+		domain.getUsedTimes().add(target.getUsedTimes());
+
+		return domain;
+	}
 }
