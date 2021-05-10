@@ -370,6 +370,23 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 						}
 				})
 				
+				document.getElementById('inpStartTime2').addEventListener('focusout', () => {
+					if (_.isNumber(self.workInfo().workHours2.start()) && _.isNumber(self.workInfo().workHours2.end())) {
+							
+							
+							self.dataSource.calculatedFlag = CalculatedFlag.UNCALCULATED;
+						}
+				})
+				
+				document.getElementById('inpEndTime2').addEventListener('focusout', () => {
+					if (_.isNumber(self.workInfo().workHours2.start()) && _.isNumber(self.workInfo().workHours2.end())) {
+							
+							
+							self.dataSource.calculatedFlag = CalculatedFlag.UNCALCULATED;
+						}
+				})
+				
+				
 			})
 			
 			
