@@ -1,14 +1,20 @@
 package nts.uk.ctx.at.shared.ac.jobtitle.affiliate;
 
-import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.shared.dom.adapter.jobtitle.affiliate.*;
-import nts.uk.ctx.bs.employee.pub.jobtitle.SyJobTitlePub;
-import nts.uk.ctx.bs.employee.pub.jobtitle.affiliate.JobTitleHistoryExport;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import java.util.List;
-import java.util.stream.Collectors;
+
+import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.shared.dom.adapter.jobtitle.affiliate.AffJobTitleHistoryImport;
+import nts.uk.ctx.at.shared.dom.adapter.jobtitle.affiliate.AffJobTitleHistoryItemImport;
+import nts.uk.ctx.at.shared.dom.adapter.jobtitle.affiliate.DateHistoryItemImport;
+import nts.uk.ctx.at.shared.dom.adapter.jobtitle.affiliate.JobTitleHistoryImport;
+import nts.uk.ctx.at.shared.dom.adapter.jobtitle.affiliate.JobTitleInfoImport;
+import nts.uk.ctx.at.shared.dom.adapter.jobtitle.affiliate.SharedAffJobTitleAdapter;
+import nts.uk.ctx.bs.employee.pub.jobtitle.SyJobTitlePub;
+import nts.uk.ctx.bs.employee.pub.jobtitle.affiliate.JobTitleHistoryExport;
 
 @Stateless
 public class SharedAffJobTitleAdapterImpl implements SharedAffJobTitleAdapter {
@@ -31,7 +37,7 @@ public class SharedAffJobTitleAdapterImpl implements SharedAffJobTitleAdapter {
 
     @Override
     public JobTitleHistoryImport getJobTitleHist(List<String> employeeIds, DatePeriod period) {
-        JobTitleHistoryExport data = syJobTitlePub.getJobTitleHist(employeeIds, period);
+    	JobTitleHistoryExport data = syJobTitlePub.getJobTitleHist(employeeIds, period);
         return new JobTitleHistoryImport(
                 data.getHistories().stream().map(x -> new AffJobTitleHistoryImport(
                         x.getCompanyId(), x.getEmployeeId(), x.getHistoryItems().stream().map(c ->

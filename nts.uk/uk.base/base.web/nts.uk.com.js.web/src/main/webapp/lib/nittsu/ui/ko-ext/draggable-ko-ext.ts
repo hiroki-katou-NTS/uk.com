@@ -19,7 +19,7 @@ module nts.uk.ui.koExtentions {
 
             ko.computed({
                 read: () => {
-                    const options = ko.unwrap(accessor);
+                    const options = ko.toJS(accessor);
 
                     $element
                         .css({

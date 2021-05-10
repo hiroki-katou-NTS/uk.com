@@ -139,21 +139,23 @@ module nts.uk.at.view.ccg005.a.screenModel {
                 </td>
                 <td class="ccg005-w100 ccg005-pl-5 ccg005-border-groove ccg005-right-unset">
                   <!-- A4_8 -->
-                  <label class="limited-label ccg005-w100" style="display: inline-block;"
-                    data-bind="text: businessName" />
+                  <div style="height: 20px">
+                    <label class="limited-label ccg005-w100" style="display: inline-block;"
+                      data-bind="text: businessName" />
+                  </div>
                   <!-- A4_5 -->
                   <div style="height: 20px;">
                     <i tabindex=13 data-bind="ntsIcon: {no: emojiIconNo, width: 20, height: 15}, visible: emojiVisitable"></i>
                   </div>
                 </td>
-                <td class="ccg005-w105 ccg005-pl-5 ccg005-border-groove ccg005-right-unset ccg005-left-unset">
-                  <div class="ccg005-w100">
+                <td class="ccg005-w100 ccg005-pl-5 ccg005-border-groove ccg005-right-unset ccg005-left-unset">
+                  <div class="ccg005-w100" style="position: relative; height: 20px">
                     <!-- A4_2 -->
                     <label
                       data-bind="text: attendanceDetailDto.workName, attr:{ class: 'limited-label '+ attendanceDetailDto.workColorClass }"
-                      style="max-width: 100px; width: auto !important;" />
+                      style="max-width: 85px; width: auto !important;" />
                     <!-- A4_4 -->
-                    <i tabindex=14
+                    <i tabindex=14 style="position: absolute; top: 3px; right: 0;"
                       data-bind="visible: displayAppIcon, click: $component.initPopupA4_4InList.bind($component, $index, sid), attr:{ class: 'A4-4-application-icon-'+sid }, ntsIcon: {no: 190, width: 13, height: 13}"></i>
                   </div>
                   <div style="height: 20px;">
@@ -180,10 +182,10 @@ module nts.uk.at.view.ccg005.a.screenModel {
                   <p style="max-width: 125px;"
                     data-bind="text: goOutDto.goOutPeriod, visible: $component.goOutDisplay()" />
                   <!-- A4_6 text go out reason -->
-                  <p style="max-width: 125px;" class="limited-label"
+                  <p style="max-width: 125px;" class="limited-label ccg005-block"
                     data-bind="text: goOutDto.goOutReason, visible: $component.goOutDisplay()" />
                   <!-- A4_6 text comment -->
-                  <p style="max-width: 125px;" class="limited-label"
+                  <p style="max-width: 125px;" class="limited-label ccg005-block"
                     data-bind="text: comment, visible: $component.commentDisplay()" />
                 </td>
               </tr>
@@ -322,6 +324,9 @@ module nts.uk.at.view.ccg005.a.screenModel {
   </div>
   <!--------------------------------------- CSS --------------------------------------->
   <style>
+    .ccg005-block {
+      display: block;
+    }
     .ccg005-fs-biger div.form-label>span.text {
       font-size: 1.2rem;
     }
@@ -347,10 +352,6 @@ module nts.uk.at.view.ccg005.a.screenModel {
 
     .ccg005-w100 {
       width: 100px;
-    }
-
-    .ccg005-w105 {
-      width: 105px;
     }
 
     .ccg005-bold {
@@ -574,7 +575,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
         $('.legend-item-symbol').first().css('border', '1px groove').height(16).width(16);
         $('.legend-item').css('margin-bottom', '5px');
       });
-      vm.selectedDate(moment.utc().format('YYYYMMDD'));
+      vm.selectedDate(moment().format('YYYYMMDD'));
       vm.toStartScreen();
       vm.initResizeable(vm);
       vm.initPopupArea();
@@ -643,11 +644,12 @@ module nts.uk.at.view.ccg005.a.screenModel {
           return;
         }
 
-        const selectedDate = moment.utc(vm.selectedDate()).startOf("day");
-        const baseDate = moment.utc().startOf("day");
+        const selectedDate = moment(vm.selectedDate()).startOf("day");
+        const baseDate = moment().startOf("day");
         vm.isSameOrBeforeBaseDate(selectedDate.isSameOrBefore(baseDate));
         vm.isAfter(selectedDate.isAfter(baseDate));
         vm.isBaseDate(selectedDate.isSame(baseDate));
+
         // パラメータ「在席情報を取得」
         const empIds = _.map(vm.attendanceInformationDtos(), atd => {
           if (_.find(vm.listPersonalInfo(), item => item.employeeId === atd.sid)) {
@@ -800,7 +802,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
         vm.goOutParams(new GoOutParam({
           sid: vm.loginSid,
           businessName: vm.businessName(),
-          goOutDate: moment.utc().format("YYYY/MM/DD")
+          goOutDate: moment().format("YYYY/MM/DD")
         }));
         vm.activatedStatus(vm.activityStatus());
         $('#ccg005-status-popup').ntsPopup({
@@ -835,7 +837,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
       vm.goOutParams(new GoOutParam({
         sid: sid,
         businessName: businessName,
-        goOutDate: moment.utc().format("YYYY/MM/DD")
+        goOutDate: moment().format("YYYY/MM/DD")
       }));
 
       //update current status
@@ -989,7 +991,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
       const vm = this;
 
       //fix bug #115227
-      if(moment.utc(vm.selectedDate()).format('YYYYMMDD') !== moment.utc().format('YYYYMMDD')) {
+      if(!vm.isBaseDate()) {
         return "background-color-default";
       }
 
@@ -1008,7 +1010,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
     }
 
     private onResizeable(vm: any) {
-      const lineHeight = 54;
+      const lineHeight = 50;
       const paddingInContent = 10;
       const subHeight = $('#ccg005-content').height()
         - $('.grade-header-center').height()
@@ -1018,7 +1020,6 @@ module nts.uk.at.view.ccg005.a.screenModel {
       if (subHeight >= lineHeight) {
         vm.perPage(_.floor(subHeight / lineHeight));
       }
-      console.log(_.floor(subHeight / lineHeight))
       $('.grade-body-bottom').height(subHeight);
     }
 
@@ -1129,7 +1130,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
       vm.searchValue('');
 
       //reset selected date to today
-      vm.selectedDate(moment.utc().format('YYYYMMDD'));
+      vm.selectedDate(moment().format('YYYYMMDD'));
 
       //reset pagination
       vm.currentPage(0);
@@ -1228,10 +1229,6 @@ module nts.uk.at.view.ccg005.a.screenModel {
       if (_.isEmpty(vm.comment())) {
         return;
       }
-      // //set input value to comment in db
-      // if(!vm.originalComment().match(vm.comment())) {
-      //   return vm.comment(vm.originalComment());
-      // }
       vm.comment('');
       const command = {
         date: moment.utc(vm.commentDate()).toISOString(),

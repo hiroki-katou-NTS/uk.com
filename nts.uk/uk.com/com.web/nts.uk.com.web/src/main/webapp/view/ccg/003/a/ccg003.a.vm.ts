@@ -492,7 +492,7 @@ module nts.uk.com.view.ccg003.a {
      */
      openScreenCInNewMode(): void {
       const vm = this;
-      vm.$window.modal('/view/ccg/003/c/index.xhtml', {
+      vm.$window.modal('com', '/view/ccg/003/c/index.xhtml', {
         isNewMode: true,
         role: vm.role(),
         messageNotice: null

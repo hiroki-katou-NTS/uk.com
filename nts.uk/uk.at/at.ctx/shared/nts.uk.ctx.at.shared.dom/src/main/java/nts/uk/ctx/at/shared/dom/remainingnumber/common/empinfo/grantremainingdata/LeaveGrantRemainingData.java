@@ -1,7 +1,9 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -138,7 +140,6 @@ public class LeaveGrantRemainingData extends AggregateRoot {
 		return domain;
 	}
 
-
 	/**
 	 * 休暇残数を指定使用数消化する
 	 * @param require
@@ -148,17 +149,17 @@ public class LeaveGrantRemainingData extends AggregateRoot {
 	 * @param companyId 会社ID
 	 * @param employeeId 社員ID
 	 * @param date　年月日
-	 * @param dummyDataList　ダミーデータリスト
+	 * @return dummyData　ダミーデータ
 	 */
-	public static void digest(
+	public static Optional<LeaveGrantRemainingData> digest(
 			LeaveRemainingNumber.RequireM3 require,
 			List<LeaveGrantRemainingData> targetRemainingDatas,
 			RemNumShiftListWork remNumShiftListWork,
 			LeaveUsedNumber leaveUsedNumber,
 			String companyId,
 			String employeeId,
-			GeneralDate date,
-			Optional<List<LeaveGrantRemainingData>> dummyDataListOpt){
+			GeneralDate date
+			){
 
 		// 取得した「付与残数」でループ
 		for (val targetRemainingData : targetRemainingDatas){
@@ -186,7 +187,7 @@ public class LeaveGrantRemainingData extends AggregateRoot {
 			// 「年休付与残数データ」を作成する
 			val dummyRemainData = new AnnualLeaveGrantRemainingData();
 
-			dummyRemainData.setLeaveID("");
+			dummyRemainData.setLeaveID(UUID.randomUUID().toString());
 			// 社員ID←パラメータ「社員ID」
 			dummyRemainData.setEmployeeId(employeeId);
 
@@ -225,15 +226,12 @@ public class LeaveGrantRemainingData extends AggregateRoot {
 
 			dummyRemainData.setDetails(leaveNumberInfo);
 
-			// 付与残数データに追加
-//			targetRemainingDatas.add(dummyRemainData);
-			if ( dummyDataListOpt.isPresent() ) {
-				dummyDataListOpt.get().add(dummyRemainData);
-			}
-			else{
-				targetRemainingDatas.add(dummyRemainData);
-			}
+			// 呼び出し元にダミー情報を返す
+			return Optional.of(dummyRemainData);
+
 		}
+
+		return Optional.empty();
 	}
 
 	/** 残数不足のときにはtrueを返す */

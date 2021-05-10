@@ -1031,6 +1031,8 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
             }).done((res: any) => {
                 if (res) {
                     vm.fetchData(res);
+                    vm.payoutSubofHDManagements([]);
+                    vm.leaveComDayOffManas([]);
                 }
             }).fail(err => {
                 if (err.messageId === "Msg_43") {

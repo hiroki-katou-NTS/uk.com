@@ -284,7 +284,7 @@ module nts.uk.ui {
                     const { button, position } = cache;
                     const { target, pageX, pageY } = evt;
 
-                    if (target.tagName !== 'BUTTON') {
+                    if (target.tagName !== 'BUTTON' && !$(target).closest('button').is(button)) {
                         if (button && position) {
                             const { x, y } = position;
 
@@ -299,7 +299,9 @@ module nts.uk.ui {
                     cache.position = null;
                 })
                 .on('mousedown', 'button', (evt: JQueryEventObject) => {
-                    cache.button = evt.target;
+                    const { target } = evt;
+                    cache.button = target.tagName === 'BUTTON' ? target : $(target).closest('button').get(0);
+                    
                     cache.position = {
                         x: evt.pageX,
                         y: evt.pageY

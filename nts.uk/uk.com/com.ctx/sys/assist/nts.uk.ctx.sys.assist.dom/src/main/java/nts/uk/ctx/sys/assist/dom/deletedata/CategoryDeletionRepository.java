@@ -10,13 +10,13 @@ public interface CategoryDeletionRepository {
 
 	List<CategoryDeletion> getAllCategoryDeletion();
 
-	Optional<CategoryDeletion> getCategoryDeletionById(String delId, String categoryId);
+	Optional<CategoryDeletion> getCategoryDeletionById(String delId, String categoryId, int systemType);
 
 	void add(CategoryDeletion domain);
 
 	void update(CategoryDeletion domain);
 
-	void remove(String delId, String categoryId);
+	void remove(String delId, String categoryId, int systemType);
 
 	/**
 	 * @param Category

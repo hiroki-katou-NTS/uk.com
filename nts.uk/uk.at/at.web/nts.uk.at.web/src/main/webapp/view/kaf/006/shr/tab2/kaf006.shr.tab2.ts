@@ -276,8 +276,11 @@ module nts.uk.at.view.kaf006.shr.tab2.viewmodel {
             // vm.total = ko.observable(nts.uk.time.format.byId("Time_Short_HM", (vm.over60H() ? vm.over60H() : 0) + (vm.timeOff() ? vm.timeOff() : 0) 
             //     + (vm.annualTime() ? vm.annualTime() : 0) + (vm.childNursing() ? vm.childNursing() : 0) + (vm.nursing() ? vm.nursing() : 0)));
             vm.total = ko.computed(() => {
-                return nts.uk.time.format.byId("Time_Short_HM", (vm.over60H() ? vm.over60H() : 0) + (vm.timeOff() ? vm.timeOff() : 0) 
-                    + (vm.annualTime() ? vm.annualTime() : 0) + (vm.childNursing() ? vm.childNursing() : 0) + (vm.nursing() ? vm.nursing() : 0));
+                return nts.uk.time.format.byId("Time_Short_HM", ((vm.over60H() && vm.over60H() <= 2880) ? vm.over60H() : 0) 
+                    + ((vm.timeOff() && vm.timeOff() <= 2880) ? vm.timeOff() : 0) 
+                    + ((vm.annualTime() && vm.annualTime() <= 2880) ? vm.annualTime() : 0) 
+                    + ((vm.childNursing() && vm.childNursing() <= 2880) ? vm.childNursing() : 0) 
+                    + ((vm.nursing() && vm.nursing() <= 2880) ? vm.nursing() : 0));
             });
         }
 

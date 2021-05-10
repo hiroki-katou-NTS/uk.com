@@ -166,4 +166,13 @@ public class RowPageTracker {
 	public void resetRemainingRow() {
 		remainingRow = maxRowAllowed;;
 	}
+	
+	public int getUseRowCanSetData(int countItem, int dataRowCount) {
+		if (this.remainingRow < countItem) {
+			int countDataCanPrint = countItem - remainingRow;
+			// check available row by dataRowCount
+			return countDataCanPrint % dataRowCount == 0 ? countDataCanPrint : countDataCanPrint - (countDataCanPrint % dataRowCount);
+		}
+		return countItem;
+	}
 }

@@ -154,6 +154,8 @@ module nts.uk.ui.at.ksu002.a {
 		workplaceId: KnockoutObservable<string> = ko.observable('');
 		achievement: KnockoutObservable<ACHIEVEMENT> = ko.observable(ACHIEVEMENT.NO);
 		workData: KnockoutObservable<null | WorkData> = ko.observable(null);
+		
+		saveDataEnable: KnockoutObservable<boolean> = ko.observable(true);
 
 		created() {
 			const vm = this;
@@ -324,8 +326,9 @@ module nts.uk.ui.at.ksu002.a {
 			vm.enable = ko.computed({
 				read: () => {
 					const bdate = ko.unwrap(vm.baseDate);
+					const openKDL = ko.unwrap(vm.saveDataEnable);
 
-					return !!bdate && !!bdate.begin && !!bdate.finish;
+					return !!bdate && !!bdate.begin && !!bdate.finish && openKDL;
 				},
 				owner: vm
 			});
@@ -653,9 +656,11 @@ module nts.uk.ui.at.ksu002.a {
 										employeeIds: [sid],
 										isRegistered: Number(registered)
 									};
-
+									vm.saveDataEnable(false);
 									// call KDL053
-									return vm.$window.modeless('at', '/view/kdl/053/a/index.xhtml', params);
+									return vm.$window
+									.modeless('at', '/view/kdl/053/a/index.xhtml', params)
+									.then(() => vm.saveDataEnable(true));
 								}
 							})
 							// reload data

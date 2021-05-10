@@ -1717,15 +1717,13 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 				int usedRow = 0;
 				//count month for get data
 //				int countPeriodMonth = 12*(query.getEndYearMonth().year() - query.getStartYearMonth().year()) + query.getEndYearMonth().month() - query.getStartYearMonth().month() + 1;
-//				if (totalOutput.isPersonalTotal())  usedRow++;
-//				if (totalOutput.isDetails() && !employeeReportData.getLstDetailedMonthlyPerformance().isEmpty()) usedRow += countPeriodMonth*dataRowCount;
-				if(totalOutput.isDetails() && ! employeeReportData.getLstDetailedMonthlyPerformance().isEmpty()){
-//					int countItem = employeeReportData.countItem();
-//					usedRow += (countItem % CHUNK_SIZE) != 0 ? countItem / CHUNK_SIZE + 1 : countItem / CHUNK_SIZE;
-                    usedRow += employeeReportData.countItem(chunkSize);
-				}
 				if (condition.isShowWorkplace()) usedRow++;
 				if (condition.isShowPersonal()) usedRow++;
+//				if (totalOutput.isPersonalTotal())  usedRow++;
+//				if (totalOutput.isDetails() && !employeeReportData.getLstDetailedMonthlyPerformance().isEmpty()) usedRow += countPeriodMonth*dataRowCount;
+				if (totalOutput.isDetails() && !employeeReportData.getLstDetailedMonthlyPerformance().isEmpty()) {
+					usedRow += rowPageTracker.getUseRowCanSetData(employeeReportData.countItem(chunkSize), dataRowCount);
+				}
 				if (rowPageTracker.checkRemainingRowSufficient(usedRow) <= 0) {
 					sheetInfo.getSheet().getHorizontalPageBreaks().add(currentRow);
 					rowPageTracker.resetRemainingRow();

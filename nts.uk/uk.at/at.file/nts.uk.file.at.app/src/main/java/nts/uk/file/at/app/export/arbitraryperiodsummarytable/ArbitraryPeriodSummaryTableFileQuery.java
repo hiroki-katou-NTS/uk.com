@@ -29,7 +29,7 @@ public class ArbitraryPeriodSummaryTableFileQuery {
     //「７」改ページ区分
     private boolean isPageBreakByWpl;//v
     //「８」改ページ職場階層
-    private int pageBreakWplHierarchy;
+    private Integer pageBreakWplHierarchy;
     //「９」明細区分
     private boolean isDetail;
     //「１０」職場計区分

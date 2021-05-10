@@ -51,6 +51,8 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 		titleLabelInput1: KnockoutObservable<String>;
 		titleLabel2: KnockoutObservable<String>;
 		titleLabelInput2: KnockoutObservable<String>;
+
+		agentForTable: KnockoutObservable<Boolean> = ko.observable(false);
 		
 		
 		setTitleLabel() {
@@ -203,9 +205,10 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 							appDispInfoStartupDto: param1.appDispInfoStartupDto,
 							startTimeSPR: param1.startTimeSPR,
 							endTimeSPR: param1.endTimeSPR,
-							agent: vm.isAgentMode(),
+							agent: vm.isAgentNew(),
 							sids: param1.sids
 						};
+						vm.agentForTable(vm.isAgentNew());
 						// load setting đơn xins
 						return vm.$ajax(API.start, command);
 					}
@@ -251,6 +254,16 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 					vm.$blockui("hide");						
 					$('#kaf000-a-component4-singleDate').focus();
 				});
+		}
+		isAgentNew() {
+			const vm = this;
+			let isMultipleEmp = true;
+			if (_.isEmpty(vm.employeeIDLst)) {
+				isMultipleEmp = false;
+			} else {
+				isMultipleEmp = vm.employeeIDLst.length != 1;
+			}
+			return isMultipleEmp;
 		}
 		
 		assignWorkHourAndRest(isChangeDate?: boolean) {
@@ -488,7 +501,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 				prePost: prePost,
 				employeeId: self.isAgentMode() ? self.employeeIDLst[0] : self.$user.employeeId,
 				displayInfoOverTime: self.dataSource,
-				agent: self.isAgentMode()
+				agent: self.isAgentNew()
 			}
 			self.$validate(
 			'#kaf000-a-component3-prePost')
@@ -898,7 +911,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 				.then((result) => {
 					// check trước khi đăng kí
 					if (result) {
-						return vm.$ajax('at', vm.mode() != MODE.MULTiPLE_AGENT ? API.checkBefore : API.checkBeforeMultiple, commandCheck);
+						return vm.$ajax('at', !vm.isAgentNew() ? API.checkBefore : API.checkBeforeMultiple, commandCheck);
 					}
 				}).then((result: any) => {
 					if (!_.isNil(result)) {
@@ -927,7 +940,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 						// 残業申請の表示情報．申請表示情報．申請設定（基準日関係なし）．申請設定．申請種類別設定
 						commandRegister.appTypeSetting = appDispInfoStartupOutput.appDispInfoNoDateOutput.applicationSetting.appTypeSetting[0];
 						// đăng kí 
-						return vm.$ajax('at', vm.mode() != MODE.MULTiPLE_AGENT ? API.register : API.registerMultiple, commandRegister).then((successData) => {
+						return vm.$ajax('at', !vm.isAgentNew() ? API.register : API.registerMultiple, commandRegister).then((successData) => {
 							return vm.$dialog.info({ messageId: "Msg_15" }).then(() => {
 								nts.uk.request.ajax("at", API.reflectApp, successData.reflectAppIdLst);
 								CommonProcess.handleAfterRegister(successData, vm.isSendMail(), vm, vm.mode()==MODE.MULTiPLE_AGENT, vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.employeeInfoLst);
@@ -2505,7 +2518,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 						appDispInfoStartupDto: self.appDispInfoStartupOutput(),
 						overtimeAppSet: self.dataSource.infoNoBaseDate.overTimeAppSet,
 						prePost: prePost,
-						agent: self.isAgentMode()
+						agent: self.isAgentNew()
 					};
 					self.$blockui('show')
 					
@@ -2806,7 +2819,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 				prePost = self.appDispInfoStartupOutput().appDispInfoWithDateOutput.prePostAtr;
 			}
 			command.prePostInitAtr = prePost;
-			command.agent = self.isAgentMode();
+			command.agent = self.isAgentNew();
 
 			command.overtimeLeaveAppCommonSet = self.dataSource.infoNoBaseDate.overTimeAppSet.overtimeLeaveAppCommonSetting;
 			if (!_.isEmpty(self.dataSource.appDispInfoStartup.appDispInfoWithDateOutput.opPreAppContentDispDtoLst)) {

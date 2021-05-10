@@ -200,7 +200,8 @@ export class KafS12AComponent extends KafS00ShrComponent {
             appDate: new Date(date).toISOString(),
             appDisplayInfo: {
                 appDispInfoStartupOutput: vm.appDispInfoStartupOutput,
-                timeLeaveManagement: vm.timeLeaveManagement
+                timeLeaveManagement: vm.timeLeaveManagement,
+                reflectSetting: vm.reflectSetting
             }
         };
 
@@ -406,9 +407,9 @@ export class KafS12AComponent extends KafS00ShrComponent {
             vm.details.push({
                 appTimeType: i.appTimeType,
                 timeZones: [{
-                    workNo: i.workNo,
-                    startTime: i.appTimeType == AppTimeType.ATWORK || i.appTimeType == AppTimeType.ATWORK2 ? this.getScheduledTime(i.appTimeType) : i.timeValue,
-                    endTime: i.appTimeType == AppTimeType.ATWORK || i.appTimeType == AppTimeType.ATWORK2 ? i.timeValue : this.getScheduledTime(i.appTimeType),
+                    workNo: i.appTimeType == AppTimeType.ATWORK || i.appTimeType == AppTimeType.OFFWORK ? 1 : 2,
+                    startTime: i.appTimeType == AppTimeType.ATWORK || i.appTimeType == AppTimeType.ATWORK2 ? vm.getScheduledTime(i.appTimeType) : i.timeValue,
+                    endTime: i.appTimeType == AppTimeType.ATWORK || i.appTimeType == AppTimeType.ATWORK2 ? i.timeValue : vm.getScheduledTime(i.appTimeType),
                 }],
                 applyTime: {
                     substituteAppTime: 0,
