@@ -57,11 +57,14 @@ public class InterimRemainOffDateCreateData {
 		InforFormerRemainData formerRemainData = createInforFormerRemainData(require, cid, sid, baseDate, detailData, dayOffTimeIsUse,
 				comHolidaySetting, employmentHolidaySetting, callFunction);
 		
+		if (formerRemainData == null) {
+			return null;
+		}
+		
 		//時間休暇使用時間を作成
 		formerRemainData = createUsageHolidayTimes(require, cid, sid, baseDate, detailData, formerRemainData);
 		
-		if(formerRemainData == null 
-				|| formerRemainData.getWorkTypeRemain().isEmpty()) {
+		if (formerRemainData.getWorkTypeRemain().isEmpty()) {
 			return null;
 		}
 		
