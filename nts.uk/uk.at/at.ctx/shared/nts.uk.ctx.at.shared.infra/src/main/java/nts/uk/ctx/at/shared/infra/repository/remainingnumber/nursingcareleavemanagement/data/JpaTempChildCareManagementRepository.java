@@ -20,28 +20,27 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class JpaTempChildCareManagementRepository extends JpaRepository implements TempChildCareManagementRepository{
 
-	private static final String SELECT_BY_PERIOD = "SELECT a FROM KrcdtInterimChildCare a "
-			+ "WHERE a.sID = :employeeId "
-			+ "AND a.ymd >= :startYmd "
-			+ "AND a.ymd <= :endYmd "
-			+ "ORDER BY a.ymd ";
+	private static final String SELECT_BY_PERIOD = "SELECT a FROM KshdtInterimChildCare a "
+			+ "WHERE a.pk.sID = :employeeId "
+			+ "AND a.pk.ymd >= :startYmd "
+			+ "AND a.pk.ymd <= :endYmd "
+			+ "ORDER BY a.pk.ymd ";
 
-	private static final String SELECT_BY_EMPLOYEEID_YMD = "SELECT a FROM KrcdtInterimChildCare a"
-			+ " WHERE a.sID = :employeeID"
-			+ "AND a.ymd =  : ymd "
-			+ " ORDER BY a.ymd ASC";
-	
+	private static final String SELECT_BY_EMPLOYEEID_YMD = "SELECT a FROM KshdtInterimChildCare a"
+			+ " WHERE a.pk.sID = :employeeID"
+			+ "AND a.pk.ymd =  : ymd "
+			+ " ORDER BY a.pk.ymd ASC";
+
 	private static final String REMOVE_BY_SID_YMD = "DELETE FROM KshdtInterimChildCare a"
 			+ " WHERE a.pk.sID = :sid"
 			+ " AND a.pk.ymd =  :ymd";
-
 
 	/** 検索 */
 	@Override
 	public List<TempChildCareManagement> find(String employeeId, GeneralDate ymd){
 
 		return this.queryProxy().query(SELECT_BY_EMPLOYEEID_YMD, KshdtInterimChildCare.class)
-				.setParameter("employeeId", employeeId)
+				.setParameter("employeeID", employeeId)
 				.setParameter("ymd",ymd)
 				.getList(c -> c.toDomain());
 	}
@@ -62,9 +61,9 @@ public class JpaTempChildCareManagementRepository extends JpaRepository implemen
 	public void persistAndUpdate(TempChildCareManagement domain) {
 
 		KshdtInterimChildCarePK pk = new KshdtInterimChildCarePK(
-				AppContexts.user().companyId(), 
+				AppContexts.user().companyId(),
 				domain.getSID(),
-				domain.getYmd(), 
+				domain.getYmd(),
 				domain.getAppTimeType().map(x -> x.isHourlyTimeType() ? 1 : 0).orElse(0),
 				domain.getAppTimeType().map(x -> x.getAppTimeType().map(time -> time.value).orElse(0)).orElse(0));
 
@@ -75,7 +74,7 @@ public class JpaTempChildCareManagementRepository extends JpaRepository implemen
 			this.getEntityManager().flush();
 			return;
 		});
-		
+
 		KshdtInterimChildCare entity = new KshdtInterimChildCare();
 		entity.pk = pk;
 		entity.fromDomainForUpdate(domain);

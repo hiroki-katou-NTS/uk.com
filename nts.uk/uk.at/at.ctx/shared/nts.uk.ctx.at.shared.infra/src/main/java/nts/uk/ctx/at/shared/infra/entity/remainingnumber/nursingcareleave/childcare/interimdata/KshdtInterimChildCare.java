@@ -47,10 +47,6 @@ public class KshdtInterimChildCare  extends ContractUkJpaEntity implements Seria
 	@Column(name = "CREATOR_ATR")
 	public int createAtr;
 
-	/**	残数分類 */
-	@Column(name = "REMAIN_ATR")
-	public int remainAtr;
-
 	/** 使用日数 */
 	@Column(name = "USED_DAYS")
 	public Double usedDays;
@@ -66,7 +62,6 @@ public class KshdtInterimChildCare  extends ContractUkJpaEntity implements Seria
 	public TempChildCareManagement toDomain() {
 		return TempChildCareManagement.of(remainMngID, pk.sID, pk.ymd,
 					EnumAdaptor.valueOf(createAtr, CreateAtr.class),
-					EnumAdaptor.valueOf(remainAtr, RemainType.class),
 					ChildCareNurseUsedNumber.of(
 								new DayNumberOfUse(usedDays),
 								Optional.ofNullable(usedTime == null ? null : new TimeOfUse(usedTime))),
@@ -85,7 +80,6 @@ public class KshdtInterimChildCare  extends ContractUkJpaEntity implements Seria
 	public void fromDomain(TempChildCareManagement domain) {
 		remainMngID = domain.getRemainManaID();
 		createAtr = domain.getCreatorAtr().value;
-		remainAtr = domain.getRemainType().value;
 		usedDays = domain.getUsedNumber().getUsedDay().v();
 		usedTime = domain.getUsedNumber().getUsedTimes().map(mapper->mapper.v()).orElse(null);
 	}
@@ -99,7 +93,6 @@ public class KshdtInterimChildCare  extends ContractUkJpaEntity implements Seria
 		this.pk.ymd = domain.getYmd();
 		this.remainMngID = domain.getRemainManaID();
 		this.createAtr  = domain.getCreatorAtr().value;
-		this.remainAtr = domain.getRemainType().value;
 		this.usedDays = domain.getUsedNumber().getUsedDay().v();
 		this.usedTime = domain.getUsedNumber().getUsedTimes().map(c -> c.v()).orElse(null);
 
