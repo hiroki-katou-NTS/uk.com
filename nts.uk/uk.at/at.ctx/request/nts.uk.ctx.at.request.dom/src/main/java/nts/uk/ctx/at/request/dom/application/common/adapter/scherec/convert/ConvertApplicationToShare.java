@@ -44,7 +44,6 @@ import nts.uk.ctx.at.shared.dom.scherec.application.lateleaveearly.LateCancelati
 import nts.uk.ctx.at.shared.dom.scherec.application.lateleaveearly.LateOrEarlyAtrShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.lateleaveearly.TimeReportShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.optional.OptionalItemApplicationShare;
-import nts.uk.ctx.at.shared.dom.scherec.application.optional.OptionalItemApplicationTypeCodeShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.overtime.AppOverTimeShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.overtime.ApplicationTimeShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.overtime.AttendanceTypeShare;
@@ -223,8 +222,7 @@ public class ConvertApplicationToShare {
 
 		case OPTIONAL_ITEM_APPLICATION:
 			OptionalItemApplication optionalApp = (OptionalItemApplication) application;
-			return new OptionalItemApplicationShare(new OptionalItemApplicationTypeCodeShare(optionalApp.getCode().v()),
-					optionalApp.getOptionalItems(), appShare);
+			return new OptionalItemApplicationShare(optionalApp.getOptionalItems(), appShare);
 
 		default:
 			return null;

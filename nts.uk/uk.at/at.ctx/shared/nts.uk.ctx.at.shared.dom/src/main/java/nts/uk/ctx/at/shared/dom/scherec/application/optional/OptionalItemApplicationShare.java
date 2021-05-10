@@ -15,19 +15,15 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.optionalite
 @Getter
 @Setter
 public class OptionalItemApplicationShare extends ApplicationShare {
-	/**
-	 * コード
-	 */
-	private OptionalItemApplicationTypeCodeShare code;
+	
 	/**
 	 * 申請値
 	 */
 	private List<AnyItemValue> optionalItems;
 
-	public OptionalItemApplicationShare(OptionalItemApplicationTypeCodeShare code, List<AnyItemValue> optionalItems,
+	public OptionalItemApplicationShare(List<AnyItemValue> optionalItems,
 			ApplicationShare appShare) {
          super(appShare);
-         this.code = code;
          this.optionalItems = optionalItems;
 	}
 }
