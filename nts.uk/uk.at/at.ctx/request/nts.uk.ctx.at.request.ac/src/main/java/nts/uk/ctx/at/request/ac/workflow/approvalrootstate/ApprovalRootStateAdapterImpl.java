@@ -111,7 +111,7 @@ public class ApprovalRootStateAdapterImpl implements ApprovalRootStateAdapter {
 		return new ApprovalRootContentImport_New(
 					new ApprovalRootStateImport_New(
 							approvalRootContentExport.getApprovalRootState().getRootStateID(),
-							fromExport(approvalRootContentExport.getApprovalRootState().getListApprovalPhaseState(), Optional.empty()),
+							fromExport(approvalRootContentExport.getApprovalRootState().getListApprovalPhaseState(), Optional.of(mailDestCache)),
 							approvalRootContentExport.getApprovalRootState().getApprovalRecordDate()),
 					EnumAdaptor.valueOf(approvalRootContentExport.getErrorFlag().value, ErrorFlagImport.class));
 	}
