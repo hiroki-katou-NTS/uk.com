@@ -7,10 +7,13 @@ module nts.uk.at.view.kdw006.d.viewmodel {
         columns1: KnockoutObservableArray<NtsGridListColumn>;
         columns2: KnockoutObservableArray<NtsGridListColumn>;
         sideBar: KnockoutObservable<number>;
+
+        mode: KnockoutObservable<MODE>;
         constructor() {
             super();
 
             var self = this;
+            self.mode = ko.observable(MODE.NEW);
             self.roleItems = ko.observableArray([]);
             self.functionalRestriction = ko.observableArray([]);
             self.selectedItem = ko.observable();
@@ -106,6 +109,12 @@ module nts.uk.at.view.kdw006.d.viewmodel {
             let self = this;
             let dfd = $.Deferred();
             service.findFuncRest(roleId).done(function(res: Array<FuncRestItem>) {
+                if (res.every((el: FuncRestItem) => el.availability == null)) {
+                    self.mode(MODE.NEW);
+                    res.map((el: FuncRestItem) => el.availability = false);
+                } else {
+                    self.mode(MODE.UPDATE); 
+                }
                 self.functionalRestriction(res);
                 self.initGrid();
                 dfd.resolve();
@@ -184,5 +193,10 @@ module nts.uk.at.view.kdw006.d.viewmodel {
             this.availability = availability;
             this.description = description;
         }
+    }
+
+    export enum MODE {
+        NEW,
+        UPDATE
     }
 }
