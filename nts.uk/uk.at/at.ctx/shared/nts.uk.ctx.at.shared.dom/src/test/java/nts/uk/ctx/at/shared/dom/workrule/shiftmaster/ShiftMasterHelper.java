@@ -25,7 +25,7 @@ public class ShiftMasterHelper {
 			, Optional<String> importCode
 	) {
 
-		return new ShiftMaster(
+		return ShiftMaster.create(
 					"companyId", new ShiftMasterCode(code)
 				,	DispInfo.create(name, "ffffff", "000000", Optional.of("remarks"))
 				,	new WorkTypeCode(workTypeCode), workTimeCode.map(WorkTimeCode::new)

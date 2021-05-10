@@ -46,7 +46,7 @@ public class MakeShiftMasterService {
 
 
 		// 作成→エラーチェック
-		val shiftMater = new ShiftMaster(companyId, shiftMasterCode, displayInfor, workTypeCd, workTimeCd, importCode);
+		val shiftMater = ShiftMaster.create(companyId, shiftMasterCode, displayInfor, workTypeCd, workTimeCd, importCode);
 		shiftMater.checkError(require);
 
 

@@ -63,14 +63,14 @@ public class ShiftMaster extends WorkInformation implements DomainAggregate {
 	 * @param workTimeCode 就業時間帯コード
 	 * @param importCode 取り込みコード
 	 */
-	public ShiftMaster(
+	public static ShiftMaster create(
 			String companyId, ShiftMasterCode shiftMaterCode, ShiftMasterDisInfor displayInfor
 		,	WorkTypeCode workTypeCode, Optional<WorkTimeCode> workTimeCode
 		,	Optional<ShiftMasterImportCode> importCode
 	) {
-		this(
+		return new ShiftMaster(
 				companyId, shiftMaterCode, displayInfor
-			,	workTypeCode.v(), workTimeCode.isPresent() ? workTimeCode.get().v() : null
+			,	workTypeCode.v(), workTimeCode.map(WorkTimeCode::v).orElse(null)
 			,	importCode
 		);
 	}
