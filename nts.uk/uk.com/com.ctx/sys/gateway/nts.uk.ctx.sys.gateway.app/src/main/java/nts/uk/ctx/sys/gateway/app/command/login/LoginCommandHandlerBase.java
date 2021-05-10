@@ -54,7 +54,7 @@ public abstract class LoginCommandHandlerBase<
 		
 		if(tenantAuthResult.isFailure()) {
 			transaction.execute(() -> {
-				tenantAuthResult.getAtomTask().get().run();
+				tenantAuthResult.getAtomTask().run();
 			});
 			tenantAuthResult.throwBusinessException();
 		}

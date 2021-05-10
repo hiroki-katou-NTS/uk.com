@@ -29,13 +29,13 @@ public class AuthenticateTenant {
 		// パスワード検証
 		if(!tenant.verifyPassword(password)) {
 			// テナントのパスワード検証に失敗
-			return TenantAuthenticationResult.failedToAuthPassword(failureLog.get());
+			return TenantAuthenticationResult.failedDueToIncorrectPassword(failureLog.get());
 		} 
 		
 		// 有効期限チェック
 		if(!tenant.isAvailableAt(GeneralDate.today())) {
 			// テナントの有効期限切れ
-			return TenantAuthenticationResult.failedToExpired(failureLog.get());
+			return TenantAuthenticationResult.failedDueToExpiration(failureLog.get());
 		}
 		
 		// 認証成功

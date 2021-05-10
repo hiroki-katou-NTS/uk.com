@@ -2,7 +2,9 @@ package nts.uk.ctx.sys.gateway.dom.tenantlogin;
 
 import java.util.Optional;
 
-import lombok.Getter;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 import nts.arc.error.BusinessException;
 import nts.arc.task.tran.AtomTask;
 
@@ -11,20 +13,18 @@ import nts.arc.task.tran.AtomTask;
  * @author hiroki_katou
  *
  */
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+@ToString
 public class TenantAuthenticationResult {
-	private boolean success;
+	/** テナント認証成功 */
+	private final boolean success;
 	
-	private Optional<String> errorMessageID;
+	/** エラーメッセージID(認証失敗時のみ) */
+	private final Optional<String> errorMessageID;
 	
-	@Getter
-	private Optional<AtomTask> atomTask;
+	/** テナント認証失敗記録の永続化処理 */
+	private final Optional<AtomTask> failureLog;
 	
-	private TenantAuthenticationResult(boolean success, Optional<String> errorMessageID, Optional<AtomTask> atomTask) {
-		this.success = success;
-		this.errorMessageID = errorMessageID;
-		this.atomTask = atomTask;
-	}
-
 	/**
 	 * テナント認証に成功
 	 * @return
@@ -47,7 +47,7 @@ public class TenantAuthenticationResult {
 	 * @param failureLog
 	 * @return
 	 */
-	public static TenantAuthenticationResult failedToAuthPassword(AtomTask atomTask) {
+	public static TenantAuthenticationResult failedDueToIncorrectPassword(AtomTask atomTask) {
 		return new TenantAuthenticationResult(false, Optional.of("Msg_302"), Optional.of(atomTask));
 	}
 	
@@ -56,14 +56,8 @@ public class TenantAuthenticationResult {
 	 * @param failureLog
 	 * @return
 	 */
-	public static TenantAuthenticationResult failedToExpired(AtomTask atomTask) {
+	public static TenantAuthenticationResult failedDueToExpiration(AtomTask atomTask) {
 		return new TenantAuthenticationResult(false, Optional.of("Msg_315"), Optional.of(atomTask));
-	}
-	
-	public void throwBusinessException() {
-		if(this.errorMessageID.isPresent()) {
-			throw new BusinessException(errorMessageID.get());
-		}
 	}
 	
 	public boolean isSuccess() {
@@ -72,5 +66,31 @@ public class TenantAuthenticationResult {
 	
 	public boolean isFailure() {
 		return !this.isSuccess();
+	}
+	
+	/**
+	 * エラーメッセージを取得する
+	 * @return
+	 */
+	public String getErrorMessageID() {
+		// メッセージが無い時（成功時）にはそもそもこのメソッドを呼ぶべきではないのでifPresentは行わない
+		return this.errorMessageID.get();
+	}
+	
+	public AtomTask getAtomTask() {
+		AtomTask atomTasks = AtomTask.none();
+		if(failureLog.isPresent()) {
+			atomTasks = atomTasks.then(failureLog.get());
+		}
+		return atomTasks;
+	}
+	
+	/**
+	 * エラーをスローする
+	 */
+	public void throwBusinessException() {
+		if(this.errorMessageID.isPresent()) {
+			throw new BusinessException(errorMessageID.get());
+		}
 	}
 }

@@ -56,7 +56,7 @@ public class TenantCheckCommandHandler extends CommandHandlerWithResult<TenantAu
 		
 		if(tenantAuthResult.isFailure()) {
 			transaction.execute(() -> {
-				tenantAuthResult.getAtomTask().get().run();
+				tenantAuthResult.getAtomTask().run();
 			});
 			// テナント認証失敗なので、再認証必要
 			return new CheckContractDto(true);

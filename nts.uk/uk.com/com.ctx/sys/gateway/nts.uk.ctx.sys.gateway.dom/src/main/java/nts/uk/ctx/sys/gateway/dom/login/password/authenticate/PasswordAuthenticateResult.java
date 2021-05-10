@@ -2,49 +2,30 @@ package nts.uk.ctx.sys.gateway.dom.login.password.authenticate;
 
 import java.util.Optional;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 import nts.arc.task.tran.AtomTask;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.validate.ValidationResultOnLogin;
 
 /**
  * パスワード認証結果
  */
-@AllArgsConstructor
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+@ToString
 public class PasswordAuthenticateResult {
 
 	/** 認証成功 */
-	boolean success;
+	private final boolean success;
 	
 	/** パスワードポリシーの検証結果（認証成功時のみ） */
-	@Getter
-	Optional<ValidationResultOnLogin> passwordValidation;
+	private final Optional<ValidationResultOnLogin> passwordValidation;
 
 	/** 認証失敗記録の永続化処理*/
-	Optional<AtomTask> failureLog;
+	private final Optional<AtomTask> failureLog;
 	
 	/** ロックアウトデータの永続化処理*/
-	Optional<AtomTask> lockoutData;	
-
-	
-	public boolean isSuccess() {
-		return this.success;
-	}
-
-	public boolean isFailed() {
-		return !this.isSuccess();
-	}
-	
-	public AtomTask getAtomTask() {
-		AtomTask atomTasks = AtomTask.none();
-		if(failureLog.isPresent()) {
-			atomTasks = atomTasks.then(failureLog.get());
-		}
-		if(lockoutData.isPresent()) {
-			atomTasks = atomTasks.then(lockoutData.get());
-		}
-		return atomTasks;
-	}
+	private final Optional<AtomTask> lockoutData;
 	
 	/**
 	 * 認証成功
@@ -72,5 +53,30 @@ public class PasswordAuthenticateResult {
 				Optional.empty(),
 				atomTask.getFailedAuthenticate(),
 				atomTask.getLockoutData());
+	}
+	
+	public boolean isSuccess() {
+		return this.success;
+	}
+
+	public boolean isFailure() {
+		return !this.isSuccess();
+	}
+	
+	public ValidationResultOnLogin getPasswordValidation() {
+		// パスワードポリシーの検証結果が無い時（認証失敗時）にはそもそもこのメソッドを呼ぶべきではないのでifPresentは行わない
+		return this.passwordValidation.get();
+	}
+	
+	// AtomTaskが複数あるため直接ではなく合算させてから返す
+	public AtomTask getAtomTask() {
+		AtomTask atomTasks = AtomTask.none();
+		if(failureLog.isPresent()) {
+			atomTasks = atomTasks.then(failureLog.get());
+		}
+		if(lockoutData.isPresent()) {
+			atomTasks = atomTasks.then(lockoutData.get());
+		}
+		return atomTasks;
 	}
 }

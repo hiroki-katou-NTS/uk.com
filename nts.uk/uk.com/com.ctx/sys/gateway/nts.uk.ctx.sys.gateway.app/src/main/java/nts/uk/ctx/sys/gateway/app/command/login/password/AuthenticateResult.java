@@ -37,16 +37,16 @@ public class AuthenticateResult implements LoginCommandHandlerBase.Authenticatio
 	public static AuthenticateResult passAuthenticateFailure(IdentificationResult idenResult, PasswordAuthenticateResult authResult) {
 		return new AuthenticateResult(
 				false, 
-				idenResult.getEmployeeInfo(), 
-				authResult.getPasswordValidation(), 
+				Optional.of(idenResult.getEmployeeInfo()), 
+				Optional.of(authResult.getPasswordValidation()), 
 				false, null, null);
 	}
 	
 	public static AuthenticateResult success(IdentificationResult idenResult, PasswordAuthenticateResult authResult) {
 		return new AuthenticateResult(
 				true, 
-				idenResult.getEmployeeInfo(), 
-				authResult.getPasswordValidation(), 
+				Optional.of(idenResult.getEmployeeInfo()), 
+				Optional.of(authResult.getPasswordValidation()), 
 				false, null, null);
 	}
 	

@@ -26,7 +26,6 @@ public class AuthenticateTenantTest {
 		static final String TENANT_CODE = "000000000000";
 		static final String PASSWORD = "0";
 		static final GeneralDate TODAY = GeneralDate.today();
-		
 	}
 
 	@Test
@@ -63,10 +62,11 @@ public class AuthenticateTenantTest {
 		val result = AuthenticateTenant.authenticate(require, Dummy.TENANT_CODE, Dummy.PASSWORD, Dummy.LOGIN_CLIENT);
 		
 		assertThat(result.isSuccess()).isFalse();
-		assertThat(result.getErrorMessageID().get()).isEqualTo("Msg_302");
+		
+		assertThat(result.getErrorMessageID()).isEqualTo("Msg_302");
 		
 		NtsAssert.atomTask(
-				() -> AuthenticateTenant.authenticate(require, Dummy.TENANT_CODE, Dummy.PASSWORD, Dummy.LOGIN_CLIENT).getAtomTask().get(), 
+				() -> AuthenticateTenant.authenticate(require, Dummy.TENANT_CODE, Dummy.PASSWORD, Dummy.LOGIN_CLIENT).getAtomTask(), 
 				any ->require.insert(any.get()));
 	}
 
@@ -87,10 +87,10 @@ public class AuthenticateTenantTest {
 		val result = AuthenticateTenant.authenticate(require, Dummy.TENANT_CODE, Dummy.PASSWORD, Dummy.LOGIN_CLIENT);
 		
 		assertThat(result.isSuccess()).isFalse();
-		assertThat(result.getErrorMessageID().get()).isEqualTo("Msg_315");
+		assertThat(result.getErrorMessageID()).isEqualTo("Msg_315");
 		
 		NtsAssert.atomTask(
-				() -> AuthenticateTenant.authenticate(require, Dummy.TENANT_CODE, Dummy.PASSWORD, Dummy.LOGIN_CLIENT).getAtomTask().get(), 
+				() -> AuthenticateTenant.authenticate(require, Dummy.TENANT_CODE, Dummy.PASSWORD, Dummy.LOGIN_CLIENT).getAtomTask(), 
 				any ->require.insert(any.get()));
 	}
 }

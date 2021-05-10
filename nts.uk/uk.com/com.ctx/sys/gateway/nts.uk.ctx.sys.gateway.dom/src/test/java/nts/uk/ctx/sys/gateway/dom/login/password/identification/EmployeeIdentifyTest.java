@@ -45,7 +45,7 @@ public class EmployeeIdentifyTest {
 		
 		val result = EmployeeIdentify.identifyByEmployeeCode(require, Helper.DUMMY.COMPANY_ID, Helper.DUMMY.EMPLOYEE_CD);
 		
-		assertThat(result.isFailed()).isTrue();
+		assertThat(result.isFailure()).isTrue();
 		assertThat(result.getEmployeeInfo()).isEqualTo(Optional.empty());
 	}
 
@@ -61,7 +61,7 @@ public class EmployeeIdentifyTest {
 		
 		val result = EmployeeIdentify.identifyByEmployeeCode(require, Helper.DUMMY.COMPANY_ID, Helper.DUMMY.EMPLOYEE_CD);
 		
-		assertThat(result.isFailed()).isTrue();
+		assertThat(result.isFailure()).isTrue();
 		assertThat(result.getEmployeeInfo()).isEqualTo(Optional.empty());
 	}
 	
@@ -79,7 +79,7 @@ public class EmployeeIdentifyTest {
 		}};
 		
 		val result = EmployeeIdentify.identifyByEmployeeCode(require, Helper.DUMMY.COMPANY_ID, Helper.DUMMY.EMPLOYEE_CD);
-		assertThat(result.isFailed()).isTrue();
+		assertThat(result.isFailure()).isTrue();
 	}
 	
 	@Test

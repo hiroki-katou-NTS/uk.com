@@ -64,18 +64,18 @@ public class PasswordAuthenticateCommandHandler extends LoginCommandHandlerBase<
 		// ログイン社員の識別
 		IdentificationResult idenResult = EmployeeIdentify.identifyByEmployeeCode(require, companyId, employeeCode);
 		
-		if(idenResult.isFailed()) {
-			transaction.execute(idenResult.getFailureLog().get());
+		if(idenResult.isFailure()) {
+			transaction.execute(idenResult.getAtomTask());
 			return AuthenticateResult.identificationFailure(idenResult);
 		}
 		
 		// パスワード認証
 		PasswordAuthenticateResult passAuthResult = PasswordAuthenticateWithEmployeeCode.authenticate(
 				require, 
-				idenResult.getEmployeeInfo().get(), 
+				idenResult.getEmployeeInfo(), 
 				password);
 				
-		if(passAuthResult.isFailed()) {
+		if(passAuthResult.isFailure()) {
 			transaction.execute(passAuthResult.getAtomTask());
 			return AuthenticateResult.passAuthenticateFailure(idenResult, passAuthResult);
 		}

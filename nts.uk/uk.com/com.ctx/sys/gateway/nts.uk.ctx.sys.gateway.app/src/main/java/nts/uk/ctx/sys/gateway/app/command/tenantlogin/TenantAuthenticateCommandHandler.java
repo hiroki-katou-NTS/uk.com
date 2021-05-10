@@ -56,7 +56,7 @@ public class TenantAuthenticateCommandHandler extends CommandHandler<TenantAuthe
 		
 		if(tenantAuthResult.isFailure()) {
 			transaction.execute(() -> {
-				tenantAuthResult.getAtomTask().get().run();
+				tenantAuthResult.getAtomTask().run();
 			});
 			tenantAuthResult.throwBusinessException();
 		}

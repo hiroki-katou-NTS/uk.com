@@ -27,10 +27,10 @@ public class ConnectDataSourceOfTenantTest {
 	private AuthenticateTenant.Require require;
 	
 	private static class Dummy{
-		static LoginClient loginClient = new LoginClient(Ipv4Address.parse("255.255.255.255"), "");
-		static String tenantCode = "000000000000";
-		static String password = "0";
-		static AtomTask atomTask = AtomTask.of(AtomTask.none());
+		static final LoginClient LOGIN_CLIENT = new LoginClient(Ipv4Address.parse("255.255.255.255"), "");
+		static final String TENANT_CODE = "000000000000";
+		static final String PASSWORD = "0";
+		static final AtomTask ATOM_TASK= AtomTask.of(AtomTask.none());
 	}
 	
 	@Test
@@ -64,8 +64,9 @@ public class ConnectDataSourceOfTenantTest {
 			}
 		};
 		
-		ConnectDataSourceOfTenant.connect(require, Dummy.loginClient, Dummy.tenantCode, Dummy.password);
+		val result = ConnectDataSourceOfTenant.connect(require, Dummy.LOGIN_CLIENT, Dummy.TENANT_CODE, Dummy.PASSWORD);
 		
+		assertThat(result.isFailure()).isTrue();
 		assertThat(isCalledConnect.get()).isFalse();
 		assertThat(isCalledDisconnect.get()).isFalse();
 	}
@@ -98,18 +99,19 @@ public class ConnectDataSourceOfTenantTest {
 			}
 		};
 		
-		val result = ConnectDataSourceOfTenant.connect(require, Dummy.loginClient, Dummy.tenantCode, Dummy.password);
-
+		val result = ConnectDataSourceOfTenant.connect(require, Dummy.LOGIN_CLIENT, Dummy.TENANT_CODE, Dummy.PASSWORD);
+		
 		new Verifications() {{
 			require.insert((TenantAuthenticationFailureLog)any);
 			times = 0;
 		}};
-		result.getAtomTask().get().run();
+		result.getAtomTask().run();
 		new Verifications() {{
 			require.insert((TenantAuthenticationFailureLog)any);
 			times = 1;
 		}};
 		
+		assertThat(result.isFailure()).isTrue();
 		assertThat(isCalledConnect.get()).isTrue();
 		assertThat(isCalledDisconnect.get()).isFalse();
 	}
@@ -145,15 +147,15 @@ public class ConnectDataSourceOfTenantTest {
 		new MockUp<AuthenticateTenant>() {
 			@Mock
 			public TenantAuthenticationResult authenticate(AuthenticateTenant.Require require, String tenantCode, String password, LoginClient loginClient) {
-				return TenantAuthenticationResult.failedToAuthPassword(Dummy.atomTask);
+				return TenantAuthenticationResult.failedDueToIncorrectPassword(Dummy.ATOM_TASK);
 			}
 		};
 		
-		val result = ConnectDataSourceOfTenant.connect(require, Dummy.loginClient, Dummy.tenantCode, Dummy.password);
+		val result = ConnectDataSourceOfTenant.connect(require, Dummy.LOGIN_CLIENT, Dummy.TENANT_CODE, Dummy.PASSWORD);
 		
+		assertThat(result.isSuccess()).isTrue();
 		assertThat(isCalledConnect.get()).isTrue();
 		assertThat(isCalledDisconnect.get()).isTrue();
-		assertThat(result.getErrorMessageID().isPresent()).isTrue();
 	}
 	
 	@Test
@@ -191,10 +193,10 @@ public class ConnectDataSourceOfTenantTest {
 			}
 		};
 		
-		val result = ConnectDataSourceOfTenant.connect(require, Dummy.loginClient, Dummy.tenantCode, Dummy.password);
+		val result = ConnectDataSourceOfTenant.connect(require, Dummy.LOGIN_CLIENT, Dummy.TENANT_CODE, Dummy.PASSWORD);
 		
+		assertThat(result.isSuccess()).isTrue();
 		assertThat(isCalledConnect.get()).isTrue();
 		assertThat(isCalledDisconnect.get()).isFalse();
-		assertThat(result.getErrorMessageID().isPresent()).isFalse();
 	}
 }
