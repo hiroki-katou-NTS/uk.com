@@ -2767,7 +2767,6 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				} else {
 					self.openKDL053(rs);
 					block.clear();
-					$($('div > iframe')[1]).contents().find('#btnClose').trigger('click');
 				}
 			}).fail(function(error: any) {
 				block.clear();
