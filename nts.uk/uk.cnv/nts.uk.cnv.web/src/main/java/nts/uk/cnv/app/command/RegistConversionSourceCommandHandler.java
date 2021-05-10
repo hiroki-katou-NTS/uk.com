@@ -21,7 +21,7 @@ public class RegistConversionSourceCommandHandler extends CommandHandlerWithResu
 	@Override
 	protected AddSourceResult handle(CommandHandlerContext<RegistConversionSourceCommand> context) {
 		RegistConversionSourceCommand command = context.getCommand();
-		val entity = new ConversionSource(
+		val domain = new ConversionSource(
 				command.getSourceId(),
 				command.getCategory(),
 				command.getSourceTableName(),
@@ -29,18 +29,19 @@ public class RegistConversionSourceCommandHandler extends CommandHandlerWithResu
 				command.getMemo(),
 				wrapOptional(command.getDateColumnName()),
 				wrapOptional(command.getStartDateColumnName()),
-				wrapOptional(command.getEndDateColumnName())
+				wrapOptional(command.getEndDateColumnName()),
+				wrapOptional(command.getDateType())
 			);
 
 		if(command.getSourceId() != null && !command.getSourceId().isEmpty()) {
 			val source = repository.get(command.getSourceId());
 			if(source.isPresent()) {
-				repository.update(entity);
+				repository.update(domain);
 				return new AddSourceResult(command.getSourceId());
 			}
 		}
 
-		String sourceId = repository.insert(entity);
+		String sourceId = repository.insert(domain);
 
 		return new AddSourceResult(sourceId);
 	}

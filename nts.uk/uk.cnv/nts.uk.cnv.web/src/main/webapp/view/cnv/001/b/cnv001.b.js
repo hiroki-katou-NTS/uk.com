@@ -13,11 +13,13 @@ var ajaxOption = {
 		return $.extend({url:server + path, data: JSON.stringify(data)}, this);
 	}
 };
+
 var servicePath = {
 	getCategoryList: "/nts.uk.cnv.web/webapi/cnv/categorypriority/getcategories",
 	registCategoryPriority: "/nts.uk.cnv.web/webapi/cnv/categorypriority/regist",
 	registCategory: "/nts.uk.cnv.web/webapi/cnv/conversiontable/category/regist",
 	loaddata: "/nts.uk.cnv.web/webapi/cnv/cnv001b/loaddata",
+	ukTableList: "/nemunoki.oruta.web/webapi/tables/list/not-accepted",
     regist: "/nts.uk.cnv.web/webapi/cnv/category/regist"
 }
 var ukTables = [];
@@ -92,25 +94,39 @@ $(function(){
 			$("#categoryName").prop('disabled', true);
 		}
 
-		$.ajax(ajaxOption.build(servicePath.loaddata, {
-			category: category
-		})).done(function (res) {
-			var optionsSelected = $.map(res.selectedTables, function (value, index) {
-				return $('<option>', { value: index, text: value });
+		var ukTableList;
+		$.ajax(
+			$.extend({url:server + servicePath.ukTableList}, {type: "GET"})
+		).done(function (res) {
+			ukTableList = $.map(res.tables, function (value, index) {
+				return {tableId: value.tableId, name: value.name};
 			});
 
-			var optionsUnSelected = $.map(res.unselectedTables, function (value, index) {
-				return $('<option>', { value: index, text: value });
+			var optionsUnSelected;
+			$.ajax(ajaxOption.build(servicePath.loaddata, {
+				category: category
+			})).done(function (res) {
+				var optionsSelected = $.map(res.selectedTables, function (value, index) {
+					return $('<option>', { value: value.tableId, text: value.name });
+				});
+
+				var optionsUnSelected = $.map(ukTableList, function (value, index) {
+					var selected = res.selectedTables.some(t => t.tableId === value.tableId);
+					return selected ? null : $('<option>', { value: value.tableId, text: value.name });
+				});
+
+				$('#uktableSelected > option').remove();
+				$("#uktableSelected").append(optionsSelected);
+
+				$('#uktableUnSelected > option').remove();
+				$("#uktableUnSelected").append(optionsUnSelected);
+			}).fail(function(rej){
+				console.log(rej);
 			});
-
-			$('#uktableSelected > option').remove();
-			$("#uktableSelected").append(optionsSelected);
-
-			$('#uktableUnSelected > option').remove();
-			$("#uktableUnSelected").append(optionsUnSelected);
 		}).fail(function(rej){
 			console.log(rej);
 		});
+
 	}
 
 	$("#category").change(function() {
@@ -130,7 +146,10 @@ $(function(){
 		}
 
 		var tables = $('#uktableSelected option').map(function(index, element){
-			return element.text;
+			return {
+				tableId: element.value,
+				name: element.text
+			};
 		}).get();
 
 		$.ajax(ajaxOption.build(servicePath.registCategoryPriority, {

@@ -100,7 +100,7 @@ public class CodeGenerator {
 		@Override
 		public List<String> getCategoryTables(String category) {
 			return conversionCategoryTableRepository.get(category).stream()
-					.map(ct -> ct.getTablename())
+					.map(ct -> ct.getTable().getName())
 					.collect(Collectors.toList());
 		}
 

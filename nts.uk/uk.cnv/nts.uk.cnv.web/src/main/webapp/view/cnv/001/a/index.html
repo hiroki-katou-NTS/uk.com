@@ -91,15 +91,16 @@
 								<div class="bg-green" style="width:880px">
 									<table>
 										<tr>
-											<td rowspan=6>
+											<td rowspan=7>
 												<fieldset>
 												<select id="selSources" style="width:300px;" size=8>
 												</select>
 												</fieldset>
 											</td>
-											<td rowspan=6 style="vertical-align:middle; width:100px;">
-											<button id="btnAddSource" class="proceed" style="margin-bottom: 10px;">追加</button>
-											<button id="btnDelSource" class="danger">削除</button>
+											<td rowspan=7 style="vertical-align:middle; width:100px;">
+												<button id="btnAddSource" class="proceed" style="margin-bottom: 10px;">登録</button>
+												<button id="btnDelSource" class="danger" style="margin-bottom: 10px;">削除</button>
+												<button id="btnClear">クリア</button>
 											</td>
 											<td>
 												<div class="form-label broken required">
@@ -113,9 +114,6 @@
 														<option>-- 未選択 --</option>
 													</select>
 												</span>
-											</td>
-											<td rowspan=6>
-												<button id="btnClear">クリア</button>
 											</td>
 										</tr>
 										<tr>
@@ -164,6 +162,23 @@
 											<td>
 												<span class="nts-editor-wrapped ntsControl">
 													<input type="text" id="txtEndDateColumnName" style="width:200px;" class="nts-editor nts-input reset-element">
+												</span>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<div class="form-label">
+													<label title="※コンバート対象を期間指定する際の条件に使用します">日付列の型：</label>
+												</div>
+											</td>
+											<td>
+												<span class="nts-editor-wrapped ntsControl">
+													<select id="selDateType" class="nts-editor nts-input">
+														<option value="">-- 未選択 --</option>
+														<option value="DATE">日付or時刻</option>
+														<option value="DECIMAL">数値or区切りなし文字列(YYYYMMDD)</option>
+														<option value="STRING">文字列(YYYY/MM/DD)</option>
+													</select>
 												</span>
 											</td>
 										</tr>

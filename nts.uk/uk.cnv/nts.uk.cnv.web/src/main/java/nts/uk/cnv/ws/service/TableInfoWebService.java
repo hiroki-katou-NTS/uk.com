@@ -16,25 +16,8 @@ import nts.uk.cnv.dom.conversiontable.OneColumnConversion;
 @Path("cnv/tableinfo")
 @Produces("application/json")
 public class TableInfoWebService {
-//	@Inject
-//	private ErpTableDesignImportCommandHandler handler;
-
 	@Inject
 	private TableInfoService tableInfoService;
-//	@Inject
-//	private ImportDdlService importDdlService;
-
-//	@POST
-//	@Path("import")
-//	public void importTable(ErpTableDesignImportCommand command) {
-//		handler.handle(command);
-//	}
-
-//	@POST
-//	@Path("importfromfile")
-//	public ImportFromFileResult importFromFile(ImportFromFileDto param) {
-//		return importDdlService.importErpFromFile(param);
-//	}
 
 	@POST
 	@Path("getukcolumns")

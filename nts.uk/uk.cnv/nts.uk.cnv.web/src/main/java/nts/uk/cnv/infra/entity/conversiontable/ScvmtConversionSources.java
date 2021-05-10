@@ -53,6 +53,9 @@ public class ScvmtConversionSources extends JpaEntity implements Serializable  {
 	@Column(name = "END_DATE_COLUMN_NAME")
 	private String endColumnName;
 
+	@Column(name = "DATE_TYPE")
+	private String dateType;
+
 	@Override
 	protected Object getKey() {
 		return sourceId;
@@ -68,7 +71,8 @@ public class ScvmtConversionSources extends JpaEntity implements Serializable  {
 				this.memo,
 				wrapOptional(this.dateColumnName),
 				wrapOptional(this.startColumnName),
-				wrapOptional(this.endColumnName)
+				wrapOptional(this.endColumnName),
+				wrapOptional(this.dateType)
 			);
 	}
 

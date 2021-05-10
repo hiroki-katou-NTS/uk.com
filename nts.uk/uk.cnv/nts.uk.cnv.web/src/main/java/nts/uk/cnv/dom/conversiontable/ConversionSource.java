@@ -24,6 +24,7 @@ public class ConversionSource {
 	Optional<String> dateColumnName;
 	Optional<String> startDateColumnName;
 	Optional<String> endDateColumnName;
+	Optional<String> dateType;
 
 	public Join getJoin(ConversionInfo info) {
 		return new Join(

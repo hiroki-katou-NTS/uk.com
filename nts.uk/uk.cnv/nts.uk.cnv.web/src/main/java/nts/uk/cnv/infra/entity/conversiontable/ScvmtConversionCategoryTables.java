@@ -11,6 +11,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.infra.data.entity.JpaEntity;
+import nts.uk.cnv.dom.TableIdentity;
 import nts.uk.cnv.dom.conversiontable.ConversionCategoryTable;
 
 /**
@@ -39,12 +40,17 @@ public class ScvmtConversionCategoryTables extends JpaEntity implements Serializ
 	}
 
 	public ConversionCategoryTable toDomain() {
-		return new ConversionCategoryTable(this.pk.categoryName, this.pk.targetTableName, sequenceNo);
+		return new ConversionCategoryTable(
+				this.pk.categoryName,
+				new TableIdentity(
+						this.pk.targetTableName,
+						this.pk.targetTableName),
+				sequenceNo);
 	}
 
 	public static ScvmtConversionCategoryTables fromDomain(ConversionCategoryTable domain) {
 		return new ScvmtConversionCategoryTables(
-				new ScvmtConversionCategoryTablesPk(domain.getCategoryName(), domain.getTablename()),
+				new ScvmtConversionCategoryTablesPk(domain.getCategoryName(), domain.getTable().getName()),
 				domain.getSequenceNo()
 			);
 	}

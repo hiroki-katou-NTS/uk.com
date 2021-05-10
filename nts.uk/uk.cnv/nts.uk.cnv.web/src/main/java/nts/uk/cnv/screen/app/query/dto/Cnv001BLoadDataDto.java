@@ -4,12 +4,13 @@ import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import nts.uk.cnv.dom.TableIdentity;
 
 @AllArgsConstructor
 @Data
 public class Cnv001BLoadDataDto {
 
-	List<String> selectedTables;
+	List<TableIdentity> selectedTables;
 
-	List<String> unselectedTables;
+//	List<String> unselectedTables;
 }

@@ -15,4 +15,5 @@ public class RegistConversionSourceCommand {
 	String dateColumnName;
 	String startDateColumnName;
 	String endDateColumnName;
+	String dateType;
 }

@@ -64,12 +64,12 @@ public class ConversionTableService {
 		return repo.findColumnConversion(info, dto.getCategory(), dto.getTable(), dto.getRecordNo(), dto.getUkColumn(), source.getJoin(info)).orElse(null);
 	}
 
-	public GetCategoryTablesDto getCategoryTables(String category) {
-		return new GetCategoryTablesDto(
-				categoryRepo.get(category).stream()
-					.map(ct -> ct.getTablename())
-					.collect(Collectors.toList())
-			);
+	public List<GetCategoryTablesDto> getCategoryTables(String category) {
+		return categoryRepo.get(category).stream()
+					.map(ct -> new GetCategoryTablesDto(
+							ct.getTable().getTableId(),
+							ct.getTable().getName()))
+					.collect(Collectors.toList());
 	}
 
 	/**

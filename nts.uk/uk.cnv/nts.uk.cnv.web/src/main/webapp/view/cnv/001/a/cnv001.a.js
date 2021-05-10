@@ -38,7 +38,7 @@ class record {
 }
 
 class source {
-	constructor(sourceId, erpTableName, whereCondition, memo, dateColumnName, startDateColumnName, endDateColumnName) {
+	constructor(sourceId, erpTableName, whereCondition, memo, dateColumnName, startDateColumnName, endDateColumnName, dateType) {
 		this.sourceId = sourceId;
 		this.erpTableName = erpTableName;
 		this.whereCondition = whereCondition;
@@ -46,6 +46,7 @@ class source {
 		this.dateColumnName = dateColumnName;
 		this.startDateColumnName = startDateColumnName;
 		this.endDateColumnName = endDateColumnName;
+		this.dateType = dateType;
 	}
 }
 
@@ -118,6 +119,7 @@ $(function(){
 
 	$("#selCategory").change(function() {
 		clearPage();
+		sourceClear();
 
 		var category = $("#selCategory option:selected").text();
 		$("#selTable").prop('disabled', false);
@@ -125,11 +127,11 @@ $(function(){
 		$.ajax(ajaxOption.build(servicePath.getCategoryTables,
 			category
 		)).done(function (res) {
-			var options = $.map(res.tables, function (value, index) {
-				return $('<option>', { value: index, text: value });
+			var options = $.map(res, function (value, index) {
+				return $('<option>', { value: value.tableId, text: value.tableName });
 			});
 
-			options.unshift($('<option>', { value: -1, text: "-- 未選択 --" }));
+			options.unshift($('<option>', { value: "", text: "-- 未選択 --" }));
 
 			$('#selTable > option').remove();
 			$("#selTable").append(options);
@@ -143,6 +145,7 @@ $(function(){
 
 		var category = $("#selCategory option:selected").text();
 		var table = $("#selTable option:selected").text();
+		var tableId = $("#selTable option:selected").val();
 
 		$.ajax(ajaxOption.build(servicePath.loadData, {
 			categoryName: category,
@@ -164,7 +167,8 @@ $(function(){
 						value.memo,
 						value.dateColumnName,
 						value.startDateColumnName,
-						value.endDateColumnName);
+						value.endDateColumnName,
+						value.dateType);
 			});
 
 			var recordOptions = $.map(res.records, function (value, index) {
@@ -180,6 +184,7 @@ $(function(){
 			$("#selRecords > option").remove();
 			$("#selRecords").append(recordOptions);
 
+			sourceClear();
 			$("#selSources > option").remove();
 			$("#selSources").append(sourcesOptions);
 
@@ -207,6 +212,7 @@ $(function(){
 		$("#txtDateColumnName").val(selectedSource.dateColumnName);
 		$("#txtStartDateColumnName").val(selectedSource.startDateColumnName);
 		$("#txtEndDateColumnName").val(selectedSource.endDateColumnName);
+		$("#selDateType").val(selectedSource.dateType);
 
 		$("#txtRecordName").val(selectedRecord.explanation);
 	});
@@ -219,9 +225,9 @@ $(function(){
 		var dateColumnName = $("#txtDateColumnName").val();
 		var startDateColumnName = $("#txtStartDateColumnName").val();
 		var endDateColumnName = $("#txtEndDateColumnName").val();
+		var dateType = $("#selDateType").val();
 
-
-		var sourceId = ($("#selCategory option:selected").val() === -1)
+		var sourceId = ($("#selSources option:selected").val() === undefined)
 			? ''
 			: $("#selSources").val();
 
@@ -233,18 +239,35 @@ $(function(){
 			memo: memo,
 			dateColumnName: dateColumnName,
 			startDateColumnName: startDateColumnName,
-			endDateColumnName: endDateColumnName
+			endDateColumnName: endDateColumnName,
+			dateType
 		})).done(function (res) {
-			sources.push(new source(
+			var newSource = new source(
 					res.sourceId,
 					erpTable,
 					condition,
 					memo,
 					dateColumnName,
 					startDateColumnName,
-					endDateColumnName
-				));
-			$("#selSources").append($('<option>', { value: res.sourceId, text: erpTable + ' : ' + memo }));
+					endDateColumnName,
+					dateType
+				);
+
+			if(sourceId === '') {
+				sources.push(newSource);
+				$("#selSources").append($('<option>', { value: res.sourceId, text: erpTable + ' : ' + memo }));
+			}
+			else {
+				sources = sources.map(s => s['sourceId'] === newSource.sourceId ? newSource : s);
+
+				var sourcesOptions = $.map(sources, function (value, index) {
+					return $('<option>', { value: value.sourceId, text: value.erpTableName + ' : ' + value.memo });
+				});
+				$("#selSources > option").remove();
+				$("#selSources").append(sourcesOptions);
+				$("#selSources").val(newSource.sourceId);
+
+			}
 		});
 	});
 
@@ -255,6 +278,7 @@ $(function(){
 			sourceId
 		)).done(function (res) {
 			$("#selSources option:selected").remove();
+			sourceClear();
 		});
 	});
 
@@ -270,10 +294,15 @@ $(function(){
 		$("#txtDateColumnName").val(selectedSource.dateColumnName);
 		$("#txtStartDateColumnName").val(selectedSource.startDateColumnName);
 		$("#txtEndDateColumnName").val(selectedSource.endDateColumnName);
+		$("#selDateType").val(selectedSource.dateType);
 
 	});
 
 	$("#btnClear").click(function() {
+		sourceClear();
+	});
+
+	function sourceClear() {
 		$("#selSources").val('');
 		$("#txtWhereCondition").val('');
 		$("#txtMemo").val('');
@@ -281,12 +310,13 @@ $(function(){
 		$("#txtDateColumnName").val('');
 		$("#txtStartDateColumnName").val('');
 		$("#txtEndDateColumnName").val('');
-
-	});
+		$("#selDateType").val('');
+	}
 
 	$("#btnRegistRecord").click(function() {
 		var category = $("#selCategory option:selected").text();
 		var table = $("#selTable option:selected").text();
+		var tableId = $("#selTable option:selected").val();
 
 		var recordNo = ($("#selRecords").val() === null)
 			? nextRecordNo()
@@ -306,6 +336,7 @@ $(function(){
 		$.ajax(ajaxOption.build(servicePath.registRecord, {
 			category: category,
 			table: table,
+			tableId: tableId,
 			recordNo: recordNo,
 			sourceId: sourceId,
 			explanation: explanation
@@ -338,6 +369,7 @@ $(function(){
 	$("#btnDeleteRecord").click(function() {
 		var category = $("#selCategory option:selected").text();
 		var table = $("#selTable option:selected").text();
+		var tableId = $("#selTable option:selected").val();
 		var recordNo = Number($("#selRecords").val());
 
 		if( $("#selCategory option:selected").val() === -1 ||
@@ -373,6 +405,8 @@ $(function(){
 
 		var category = $("#selCategory option:selected").text();
 		var table = $("#selTable option:selected").text();
+		var tableId = $("#selTable option:selected").val();
+
 		$.ajax(ajaxOption.build(servicePath.swap, {
 			category: category,
 			table: table,
@@ -405,6 +439,8 @@ $(function(){
 
 		var category = $("#selCategory option:selected").text();
 		var table = $("#selTable option:selected").text();
+		var tableId = $("#selTable option:selected").val();
+
 		$.ajax(ajaxOption.build(servicePath.swap, {
 			category: category,
 			table: table,
@@ -428,6 +464,7 @@ $(function(){
 	$("#btnInputDetail").click(function() {
 		var category = $("#selCategory option:selected").text();
 		var table = $("#selTable option:selected").text();
+		var tableId = $("#selTable option:selected").val();
 		var recordNo = Number($("#selRecords").val());
 
 		var selectedRecord = records.find(r => r.recordNo === recordNo);
@@ -449,6 +486,7 @@ $(function(){
 		window.open("../c/index.html?"
 					+ "category=" + category
 					+ "&table=" + table
+					+ "&tableId=" + tableId
 					+ "&recordNo=" + recordNo
 					+ "&explanation=" + selectedRecord.explanation
 					+ "&erpTableName=" + selectedSource.erpTableName,

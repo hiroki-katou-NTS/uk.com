@@ -36,7 +36,8 @@ public class Cnv001AService {
 						s.getMemo(),
 						s.getDateColumnName().orElse(""),
 						s.getStartDateColumnName().orElse(""),
-						s.getEndDateColumnName().orElse("")
+						s.getEndDateColumnName().orElse(""),
+						s.getDateType().orElse("")
 						))
 				.collect(Collectors.toList());
 

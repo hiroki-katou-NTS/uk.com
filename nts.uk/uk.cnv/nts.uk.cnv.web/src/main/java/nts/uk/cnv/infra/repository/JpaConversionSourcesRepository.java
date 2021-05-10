@@ -34,16 +34,7 @@ public class JpaConversionSourcesRepository extends JpaRepository implements Con
 	public String insert(ConversionSource source) {
 		String newId = IdentifierUtil.randomUniqueId();
 
-		ScvmtConversionSources entity = new ScvmtConversionSources(
-				newId,
-				source.getCategory(),
-				source.getSourceTableName(),
-				source.getCondition(),
-				source.getMemo(),
-				source.getDateColumnName().orElse(""),
-				source.getStartDateColumnName().orElse(""),
-				source.getEndDateColumnName().orElse("")
-			);
+		ScvmtConversionSources entity = toEntity(source, newId);
 
 		this.commandProxy().insert(entity);
 
@@ -52,11 +43,26 @@ public class JpaConversionSourcesRepository extends JpaRepository implements Con
 
 	@Override
 	public void update(ConversionSource source) {
-		this.commandProxy().update(source);
+		this.commandProxy().update(toEntity(source, source.getSourceId()));
 	}
 
 	@Override
 	public void delete(String sourceId) {
 		this.commandProxy().remove(ScvmtConversionSources.class, sourceId);
+	}
+
+	private ScvmtConversionSources toEntity(ConversionSource source, String sourceId) {
+		ScvmtConversionSources entity = new ScvmtConversionSources(
+				sourceId,
+				source.getCategory(),
+				source.getSourceTableName(),
+				source.getCondition(),
+				source.getMemo(),
+				source.getDateColumnName().orElse(null),
+				source.getStartDateColumnName().orElse(null),
+				source.getEndDateColumnName().orElse(null),
+				source.getDateType().orElse(null)
+			);
+		return entity;
 	}
 }

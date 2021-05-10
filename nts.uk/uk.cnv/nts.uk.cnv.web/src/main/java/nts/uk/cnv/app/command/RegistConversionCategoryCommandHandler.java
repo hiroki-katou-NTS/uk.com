@@ -5,6 +5,7 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.uk.cnv.dom.TableIdentity;
 import nts.uk.cnv.dom.conversiontable.ConversionCategoryTable;
 import nts.uk.cnv.dom.conversiontable.ConversionCategoryTableRepository;
 
@@ -21,7 +22,7 @@ public class RegistConversionCategoryCommandHandler extends CommandHandler<Regis
 		repository.delete(command.getCategory());
 
 		int seq = 0;
-		for(String table : command.getTables()) {
+		for(TableIdentity table : command.getTables()) {
 			repository.regist(new ConversionCategoryTable(command.getCategory(), table, seq));
 			seq++;
 		}

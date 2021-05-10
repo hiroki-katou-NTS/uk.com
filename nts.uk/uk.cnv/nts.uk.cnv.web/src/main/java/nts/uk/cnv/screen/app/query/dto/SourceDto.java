@@ -14,4 +14,5 @@ public class SourceDto {
 	String dateColumnName;
 	String startDateColumnName;
 	String endDateColumnName;
+	String dateType;
 }

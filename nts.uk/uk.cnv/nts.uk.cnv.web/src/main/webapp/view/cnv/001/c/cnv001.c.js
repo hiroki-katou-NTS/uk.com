@@ -13,8 +13,19 @@ var ajaxOption = {
 		return $.extend({url:server + path, data: JSON.stringify(data)}, this);
 	}
 };
+var ajaxOptionGet = {
+		type: "GET",
+		contentType: "application/json",
+		dataType: "json",
+
+		build: function (path, data) {
+			this.dataType = "json";
+			return $.extend({url:server + path, data: JSON.stringify(data)}, this);
+		}
+	};
 var servicePath = {
-    getukcolumns: "/nts.uk.cnv.web/webapi/cnv/tableinfo/getukcolumns",
+    getukcolumns_oruta: "/nemunoki.oruta.web/webapi/tables/id",
+    getukcolumns_cnv: "/nts.uk.cnv.web/webapi/cnv/tableinfo/getukcolumns",
     geterpcolumns: "/nts.uk.cnv.web/webapi/cnv/tableinfo/geterpcolumns",
     find: "/nts.uk.cnv.web/webapi/cnv/conversiontable/find",
     regist: "/nts.uk.cnv.web/webapi/cnv/conversiontable/regist",
@@ -23,11 +34,14 @@ var servicePath = {
 
 var category;
 var ukTable;
+var tableId;
 var erpTable;
 var recordNo;
 
 var ukColumnsList;
 var erpColumnsList;
+
+var registeredColumnList;
 
 var TabMap = {
 	"NONE": "#none",
@@ -45,9 +59,12 @@ var TabMap = {
 };
 
 class columnData {
-	constructor(name, dataType) {
+	constructor(name, dataType, length, scale, nullable) {
 		this.name = name;
 		this.dataType = dataType;
+		this.length = length;
+		this.scale = scale;
+		this.nullable = nullable;
 	}
 }
 
@@ -64,6 +81,7 @@ $(function(){
 
 		category = arg["category"];
 		ukTable = arg["table"];
+		tableId = arg["tableId"];
 		recordNo = arg["recordNo"];
 		erpTable = arg["erpTableName"];
 
@@ -90,22 +108,26 @@ $(function(){
 			}
 		});
 
-		$.ajax(ajaxOption.build(servicePath.getukcolumns,{
-			category: category,
-			tableName: ukTable,
-			recordNo: recordNo
-		})).done(function (res) {
-			var options = $.map(res, function (value, index) {
-				var mark = (value.existsConvertTable) ? "●" : "　";
-				return $('<option>', { value: value.columnName, text: mark + " " + value.columnName + String.fromCharCode(160).repeat(25-getLen(value.columnName)) + " : " + value.dataType });
-			});
-
-			ukColumnsList = $.map(res, function (value, index) {
-					return new columnData(value.name, value.type);
+		$.ajax(
+			$.extend({url:server + servicePath.getukcolumns_oruta + '/' + tableId + '/not-accepted'}, {type: "GET"})
+		).done(function (res) {
+			ukColumnsList = $.map(res.columns, function (value, index) {
+					return new columnData(value.name, value.type.dataType, value.type.length, value.type.scale, value.type.nullable);
 				});
 
-			$('#selUkColumns > option').remove();
-			$("#selUkColumns").append(options);
+			$.ajax(ajaxOption.build(servicePath.getukcolumns_cnv,{
+				category: category,
+				tableName: ukTable,
+				recordNo: recordNo
+			})).done(function (res) {
+				registeredColumnList = $.map(res, function (value, index) {
+					return value.targetColumn;
+				});
+
+				viewUkColumnList();
+			}).fail(function(rej){
+				console.log(rej);
+			});
 		}).fail(function(rej){
 			console.log(rej);
 		});
@@ -132,6 +154,19 @@ $(function(){
 		});
 
 		loadPage();
+	}
+
+	function viewUkColumnList() {
+		options = $.map(ukColumnsList, function(value, index) {
+			var registered = ($.inArray(value.name, registeredColumnList) !== -1);
+			var mark = registered ? "●" : "　";
+			return $('<option>', {
+					value: value.name,
+					text: mark + " " + value.name + String.fromCharCode(160).repeat(25-getLen(value.name)) + " : " + value.dataType + "(" + value.length + "," + value.scale + ")" });
+		});
+
+		$('#selUkColumns > option').remove();
+		$("#selUkColumns").append(options);
 	}
 
 	$("#selUkColumns").change(function() {
@@ -161,6 +196,10 @@ $(function(){
 			data
 		)).done(function (res) {
 			showMsg("登録しました");
+
+			registeredColumnList.push(data.targetColumn);
+
+			viewUkColumnList();
 		}).fail(function(rej){
 			console.log(rej);
 		});

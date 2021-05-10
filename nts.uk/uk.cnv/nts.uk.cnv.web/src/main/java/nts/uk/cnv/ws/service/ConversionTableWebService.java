@@ -1,5 +1,7 @@
 package nts.uk.cnv.ws.service;
 
+import java.util.List;
+
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -79,7 +81,7 @@ public class ConversionTableWebService extends WebService {
 
 	@POST
 	@Path("getcategories")
-	public GetCategoryTablesDto getCategoryTables(String category) {
+	public List<GetCategoryTablesDto> getCategoryTables(String category) {
 		return service.getCategoryTables(category.replace("\"", ""));
 	}
 
