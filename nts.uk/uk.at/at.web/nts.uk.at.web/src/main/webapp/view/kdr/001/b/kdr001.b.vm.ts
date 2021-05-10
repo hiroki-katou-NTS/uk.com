@@ -306,6 +306,8 @@ module nts.uk.at.view.kdr001.b.viewmodel {
         saveHoliday() {
             let self = this,
                 currentHoliday: HolidayRemaining = self.currentHoliday();
+            let params = getShared("KDR001Params");
+            currentHoliday.itemSelType = params.settingId;
             $('.nts-input').trigger("validate");
             if (errors.hasError() === false) {
 
@@ -321,11 +323,12 @@ module nts.uk.at.view.kdr001.b.viewmodel {
                         });
                     }).fail(function (error) {
                         if (error.messageId == 'Msg_880') {
-                            dialog.alertError({messageId: error.messageId});
+                            $('#holidayCode').ntsError('set', error);
+                            $('#residence-code').ntsError('set', {messageId: error.messageId});
                         } else if (error.messageId == 'Msg_3') {
                             $('#holidayCode').ntsError('set', error);
                             $('#holidayName').focus();
-                            dialog.alertError({messageId: error.messageId});
+                            $('#residence-code').ntsError('set', {messageId: error.messageId});
                         }
                     }).always(function () {
                         self.setFocus();
@@ -340,11 +343,7 @@ module nts.uk.at.view.kdr001.b.viewmodel {
                             });
                         });
                     }).fail(function (error) {
-                        if (error.messageId == 'Msg_880') {
-                            dialog.alertError({messageId: error.messageId});
-                        } else {
-                            dialog.alertError({messageId: error.messageId});
-                        }
+                            $('#residence-code').ntsError('set', {messageId: error.messageId});
                     }).always(function () {
                         self.setFocus();
                         block.clear();
@@ -443,6 +442,8 @@ module nts.uk.at.view.kdr001.b.viewmodel {
         displayName: string;
 
         layoutId: string;
+
+        itemSelType:number;
         /**
          * 介護休暇の項目を出力する
          */
@@ -532,6 +533,7 @@ module nts.uk.at.view.kdr001.b.viewmodel {
             self.cd = ko.observable(param ? param.cd || '' : '');
             self.name = ko.observable(param ? param.name || '' : '');
             self.displayCd = param ? param.cd || '' : '';
+            self.itemSelType = param ? param.itemSelType : 0;
             self.displayName = param ? param.name || '' : '';
             self.layoutId = param ? param.layoutId || '' : '';
             self.nursingLeave = ko.observable(param ? param.nursingLeave || false : false);
