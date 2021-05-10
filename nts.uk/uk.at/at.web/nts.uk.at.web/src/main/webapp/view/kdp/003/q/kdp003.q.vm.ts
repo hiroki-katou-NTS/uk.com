@@ -170,7 +170,7 @@ module nts.uk.at.kdp003.q {
          */
 		checkBeforeRegister(): string {
 			const vm = this;
-			if (_.isEmpty(vm.workPlaceIdList())) {
+			if (vm.destination() === DestinationClassification.WORKPLACE && _.isEmpty(vm.workPlaceIdList())) {
 				return 'Msg_1813';
 			}
 			if (moment.utc(vm.dateValue().startDate).isBefore(moment.utc().format('YYYY/MM/DD'))) {

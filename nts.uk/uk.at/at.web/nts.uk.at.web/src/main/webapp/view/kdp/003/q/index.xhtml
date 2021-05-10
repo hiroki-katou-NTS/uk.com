@@ -14,7 +14,7 @@
 			<script type='text/javascript'>
 				var dialogSize = {
 					width : 448,
-					height : 380
+					height : 400
 				};
 			</script>
 
@@ -25,7 +25,7 @@
 		</ui:define>
 
 		<ui:define name="content">
-			<div id="contents-area">
+			<div id="contents-area" style="height: 270px !important;">
 				<div class="top-panel header-green">
 					<!-- Q2_1 表示期間(ラベル) -->
 					<div id="lbl-range" data-bind="text: $i18n('KDP003_60')"></div>
@@ -71,7 +71,7 @@
 				</div>
 				
 			</div>
-			<div id="functions-area-bottom">
+			<div id="functions-area-bottom" style="height: 60px;">
 				<!-- Q20_1 登録 -->
 				<button tabindex="3" class="btn-footer proceed normal left"
 					data-bind="click: onClickRegister, i18n: 'KDP003_63'"></button>
