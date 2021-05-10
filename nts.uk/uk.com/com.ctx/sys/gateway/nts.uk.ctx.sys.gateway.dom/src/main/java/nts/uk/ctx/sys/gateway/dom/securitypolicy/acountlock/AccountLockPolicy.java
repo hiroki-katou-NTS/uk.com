@@ -20,7 +20,7 @@ import nts.uk.ctx.sys.shared.dom.user.ContractCode;
 public class AccountLockPolicy extends AggregateRoot {
 	
 	// 契約コード
-	private ContractCode contractCode;
+	private final ContractCode contractCode;
 	
 	// 利用する
 	private boolean isUse;
@@ -75,7 +75,7 @@ public class AccountLockPolicy extends AggregateRoot {
 		}
 		return Optional.empty();
 	}
-
+		
 	/**
 	 * 過去の認証失敗回数を取得する
 	 * @param require
