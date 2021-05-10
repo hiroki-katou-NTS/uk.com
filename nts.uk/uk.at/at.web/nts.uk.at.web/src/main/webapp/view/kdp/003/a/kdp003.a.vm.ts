@@ -17,7 +17,8 @@ module nts.uk.at.kdp003.a {
 		EMPLOYEE_LIST: '/at/record/stamp/employment/in-workplace',
 		REGISTER: '/at/record/stamp/employment/system/register-stamp-input',
 		NOW: '/server/time/now',
-		NOTICE: 'at/record/stamp/notice/getStampInputSetting'
+		NOTICE: 'at/record/stamp/notice/getStampInputSetting',
+		GET_WORKPLACE_BASYO: 'at/record/stamp/employment_system/get_location_stamp_input'
 	};
 
 	const DIALOG = {
@@ -39,6 +40,11 @@ module nts.uk.at.kdp003.a {
 		// login false: has messageId
 		// login success: null
 		message: KnockoutObservable<f.Message | string | null | undefined | false> = ko.observable(undefined);
+
+		// Determined login equal basyo -> OpenView K ?
+		modeBasyo: KnockoutObservable<boolean> = ko.observable(false);
+		// workplace get in basyo;
+		workPlace: string[] | [] = [];
 
 		// Notification
 		messageNoti: KnockoutObservable<IMessage> = ko.observable();
@@ -79,6 +85,8 @@ module nts.uk.at.kdp003.a {
 		created() {
 			const vm = this;
 
+			vm.basyo();
+
 			// show or hide stampHistoryButton
 			vm.message.subscribe((value) => {
 				vm.showClockButton.company(value === null);
@@ -106,6 +114,31 @@ module nts.uk.at.kdp003.a {
 						}
 					});
 			});
+		}
+
+		// get WorkPlace from basyo -> save locastorage.
+		basyo() {
+			const vm = this,
+				params = new URLSearchParams(window.location.search),
+				locationCd = params.get('basyo');
+
+			if (locationCd) {
+				const param = {
+					contractCode: '000000000004',
+					workLocationCode: locationCd
+				}
+
+				vm.$ajax(API.GET_WORKPLACE_BASYO, param)
+					.done((data: IBasyo) => {
+						if (data) {
+							if (data.workpalceId) {
+								vm.modeBasyo(true);
+								vm.workPlace = [data.workpalceId];
+
+							}
+						}
+					});
+			}
 		}
 
 		shoNoti() {
@@ -142,8 +175,6 @@ module nts.uk.at.kdp003.a {
 				},
 				wkpIds: storage.WKPID
 			}
-
-			console.log(param);
 
 			vm.$blockui('invisible')
 				.then(() => {
@@ -239,19 +270,21 @@ module nts.uk.at.kdp003.a {
 						const { loginData } = data;
 						const params = { multiSelect: true };
 
-						return vm.$window
-							.modal('at', DIALOG.K, params)
-							.then((workplaceData: k.Return) => ({
-								loginData,
-								workplaceData
-							})) as JQueryPromise<LoginData>;
+						if (!ko.unwrap(vm.modeBasyo)) {
+							return vm.$window
+								.modal('at', DIALOG.K, params)
+								.then((workplaceData: k.Return) => ({
+									loginData,
+									workplaceData
+								})) as JQueryPromise<LoginData>;
+						}
 					}
 
 					return data;
 				})
 				.then((data: LoginData) => {
 					// if not return full data (first login)
-					if (!data.storageData && (!data.loginData || !data.workplaceData)) {
+					if (!data.storageData && (!data.loginData || !data.workplaceData && !ko.unwrap(vm.modeBasyo))) {
 						vm.setMessage({ messageId: 'Msg_1647' });
 
 						return false;
@@ -274,8 +307,7 @@ module nts.uk.at.kdp003.a {
 					// if login & select workspace success
 					const { em } = loginData;
 
-					if (workplaceData) {
-						const { selectedId } = workplaceData;
+					if (ko.unwrap(vm.modeBasyo)) {
 
 						const storeData = {
 							CCD: em.companyCode,
@@ -284,10 +316,25 @@ module nts.uk.at.kdp003.a {
 							SCD: em.employeeCode,
 							SID: em.employeeId,
 							WKLOC_CD: '',
-							WKPID: _.isString(selectedId) ? [selectedId] : selectedId
+							WKPID: vm.workPlace
 						};
-
 						return storage(KDP003_SAVE_DATA, storeData);
+					} else {
+						if (workplaceData) {
+							const { selectedId } = workplaceData;
+
+							const storeData = {
+								CCD: em.companyCode,
+								CID: em.companyId,
+								PWD: em.password,
+								SCD: em.employeeCode,
+								SID: em.employeeId,
+								WKLOC_CD: '',
+								WKPID: _.isString(selectedId) ? [selectedId] : selectedId
+							};
+
+							return storage(KDP003_SAVE_DATA, storeData);
+						}
 					}
 
 					return storageData;
@@ -424,13 +471,15 @@ module nts.uk.at.kdp003.a {
 					} else {
 						const params = { multiSelect: true };
 
-						return vm.$window.modal('at', DIALOG.K, params)
-							.then((workplaceData: undefined | k.Return) => {
-								return {
-									loginData,
-									workplaceData
-								};
-							}) as JQueryPromise<LoginData>;
+						if (!ko.unwrap(vm.modeBasyo)) {
+							return vm.$window.modal('at', DIALOG.K, params)
+								.then((workplaceData: undefined | k.Return) => {
+									return {
+										loginData,
+										workplaceData
+									};
+								}) as JQueryPromise<LoginData>;
+						}
 					}
 				})
 				.then((data: LoginData) => {
@@ -850,5 +899,10 @@ module nts.uk.at.kdp003.a {
 		targetSIDs: string[];
 		targetWpids: string[];
 		destination: number | null;
+	}
+
+	interface IBasyo {
+		workLocationName: string;
+		workpalceId: string;
 	}
 }
