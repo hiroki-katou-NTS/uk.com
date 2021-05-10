@@ -17,14 +17,27 @@ module nts.uk.at.kdp002.u {
 
 		model: KnockoutObservableArray<IMsgNotices> = ko.observableArray([]);
 		sid: string;
+		modeNew: KnockoutObservable<boolean | null> = ko.observable(true);
 
 		created(param: IParams) {
 			const vm = this
 
 			vm.model(param.data.msgNotices);
-			console.log(param.data.msgNotices);
 			
 			vm.sid = param.sid;
+
+			vm.setModeNew(param.data.msgNotices);
+		}
+
+		setModeNew(param: IMsgNotices[]) {
+			const vm = this;
+
+			_.forEach(param, ((value) => {
+				if (value.message.employeeIdSeen.length > 0) {
+					vm.modeNew(false);
+				}
+				
+			}));
 		}
 
 		closeDialog() {
@@ -48,8 +61,6 @@ module nts.uk.at.kdp002.u {
 						msgInfors: msgInfors,
 						sid: vm.sid
 					}
-
-					console.log(vm.$date.now());
 
 					vm.$ajax(API.UPDATE, params)
 						.always(() => {
@@ -83,6 +94,7 @@ module nts.uk.at.kdp002.u {
 		notificationMessage: string;
 		startDate: Date;
 		targetInformation: ITargetInformation;
+		employeeIdSeen: any;
 	}
 
 	interface ICreatorAndDate {
