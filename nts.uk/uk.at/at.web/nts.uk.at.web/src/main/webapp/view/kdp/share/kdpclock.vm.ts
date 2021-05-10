@@ -74,6 +74,7 @@ module nts.uk.at.view.kdp.share {
 			.time-container .button-group {
 				position: absolute;
 				right: 0px;
+				padding-right: 7px;
 				bottom: 0px;
 			}
 			.time-container .button-group .btn-setting {
