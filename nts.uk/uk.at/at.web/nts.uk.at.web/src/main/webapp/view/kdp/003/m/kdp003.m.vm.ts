@@ -4,8 +4,38 @@ module nts.uk.at.view.kdp003.m {
     const KDP003_SAVE_DATA = 'loginKDP003';
 
     const API = {
-        WORKPLACE_INFO: "screen/at/kdp003/workplace_info"
+        WORKPLACE_INFO: "screen/at/kdp003/workplace-info"
     };
+
+    @handler({
+        bindingName: 'firstFocus'
+    })
+    export class FocusButtonFirstBindingHandler implements KnockoutBindingHandler {
+        init(element: HTMLElement,
+            valueAccessor: () => KnockoutObservableArray<any>,
+            allBindingsAccessor: KnockoutAllBindingsAccessor,
+            viewModel: any,
+            bindingContext: KnockoutBindingContext) {
+            let focused: boolean = false;
+
+            const accessor = valueAccessor();
+
+            ko.computed({
+                read: () => {
+                    const buttons = ko.unwrap(accessor);
+
+                    if (focused === false && buttons.length) {
+                        ko.tasks
+                            .schedule(() => {
+                                focused = true;
+                                $(element).find('button:first').focus();
+                            });
+                    }
+                },
+                disposeWhenNodeIsRemoved: element
+            });
+        }
+    }
 
     @bean()
     export class ViewModel extends ko.ViewModel {
@@ -65,11 +95,11 @@ module nts.uk.at.view.kdp003.m {
                     }
                 });
 
-            setTimeout(() => {
-                $(document).ready(function () {
-                    $('.row').focus();
-                });
-            }, 100);
+        }
+
+        selectWorkPlace() {
+            const vm = this;
+            vm.$window.close();
         }
 
         // Reload data in storage when the data storage change
@@ -116,10 +146,9 @@ module nts.uk.at.view.kdp003.m {
             vm.position(ko.unwrap(vm.position) + 1);
         }
 
-        seleceted() {
+        seleceted(workplaceId: string) {
             const vm = this;
-            // console.log(param);
-            
+            vm.$window.close();
         }
 
         close() {

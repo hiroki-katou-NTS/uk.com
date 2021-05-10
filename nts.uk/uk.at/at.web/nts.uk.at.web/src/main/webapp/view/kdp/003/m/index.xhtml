@@ -21,9 +21,9 @@
                         <div class="btn-back">
                             <button data-bind="click: back, enable: check_back"><i class="icon icon-button-arrow-left"></i></button>
                         </div>
-                        <div class="workplaces cf" data-bind="foreach: { data: $vm.buttonDisplays, as: 'col'}">
+                        <div class="workplaces cf" data-bind="foreach: { data: $vm.buttonDisplays, as: 'col'}, firstFocus: $vm.buttonDisplays">
                             <div class="column" data-bind="foreach: {data: col, as: 'row' }">
-                                <button data-bind="i18n: row.workplaceName"></button>
+                                <button data-bind="i18n: row.workplaceName, click: function() { $vm.seleceted.apply($vm, [row.workplaceId]) } "></button>
                             </div>
                         </div>
                         <div class="btn-next">
