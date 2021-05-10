@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.schedule.pub.schedule.basicschedule.ScWorkScheduleExport_New;
 
 /**
  * 
@@ -43,4 +44,13 @@ public interface WorkSchedulePub {
 	 * @return GeneralDate
 	 */
 	public Optional<GeneralDate> acquireMaxDateBasicSchedule(List<String> sIds);
+	
+	/**
+     * TEAMD reqlist4 9/10/2020
+     * @param employeeId
+     * @param baseDate
+     * @return
+     */
+	// Update bug redmine: http://192.168.50.4:3000/issues/116305
+    public Optional<ScWorkScheduleExport_New> findByIdNewV2(String employeeId, GeneralDate baseDate);
 }
