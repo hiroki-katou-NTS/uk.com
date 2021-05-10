@@ -2,6 +2,7 @@ package nts.uk.screen.at.app.kdw013.a;
 
 import java.util.List;
 
+import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.record.app.find.worklocation.WorkLocationDto;
 
@@ -11,6 +12,7 @@ import nts.uk.ctx.at.record.app.find.worklocation.WorkLocationDto;
  *
  */
 @Setter
+@Getter
 public class StartManHourInputResultDto {
 	
 	/** 作業枠利用設定 */

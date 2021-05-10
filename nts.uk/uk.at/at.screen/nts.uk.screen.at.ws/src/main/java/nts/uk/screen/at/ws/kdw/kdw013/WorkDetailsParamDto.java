@@ -2,6 +2,7 @@ package nts.uk.screen.at.ws.kdw.kdw013;
 
 import java.util.Optional;
 
+import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.record.dom.daily.ouen.SupportFrameNo;
 import nts.uk.ctx.at.record.dom.daily.ouen.WorkDetailsParam;
@@ -10,6 +11,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.o
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.work.WorkGroup;
 
 @Setter
+@Getter
 public class WorkDetailsParamDto {
 
 	// 応援勤務枠No: 応援勤務枠No

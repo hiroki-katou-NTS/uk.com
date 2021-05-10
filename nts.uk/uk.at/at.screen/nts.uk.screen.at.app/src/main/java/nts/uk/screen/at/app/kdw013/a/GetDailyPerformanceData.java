@@ -60,7 +60,7 @@ public class GetDailyPerformanceData {
 				for (OuenWorkTimeSheetOfDailyAttendance a : i.getOuenTimeSheet()) {
 					for (OuenWorkTimeOfDailyAttendance b : i.getOuenTime()) {
 						WorkDetailsParam workDetailsParam = new WorkDetailsParam(
-								new SupportFrameNo(a.getTimeSheet().getStart().get().getTimeWithDay().get().v()),
+								new SupportFrameNo(a.getTimeSheet().getWorkNo().v()),
 								new TimeZone(a.getTimeSheet().getStart().get(), a.getTimeSheet().getEnd().get(),
 										Optional.ofNullable(b.getWorkTime().getTotalTime())),
 								a.getWorkContent().getWork(), a.getWorkContent().getWorkRemarks(),

@@ -1,7 +1,7 @@
 package nts.uk.screen.at.app.kdw013.a;
 
 import lombok.AllArgsConstructor;
-import lombok.Setter;
+import lombok.Getter;
 
 /**
  * 
@@ -9,6 +9,7 @@ import lombok.Setter;
  *
  */
 @AllArgsConstructor
+@Getter
 public class WorkplaceInfoDto {
 	/** The history id. */
     private String historyId;

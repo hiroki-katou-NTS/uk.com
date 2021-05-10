@@ -3,6 +3,7 @@ package nts.uk.screen.at.ws.kdw.kdw013;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
 import nts.uk.screen.at.app.kdw013.a.WorkRecordDetail;
@@ -13,6 +14,7 @@ import nts.uk.screen.at.app.kdw013.a.WorkRecordDetail;
  *
  */
 @Setter
+@Getter
 public class WorkRecordDetailDto {
 
 	// 年月日

@@ -1,5 +1,6 @@
 package nts.uk.screen.at.ws.kdw.kdw013;
 
+import lombok.Data;
 import nts.arc.time.GeneralDate;
 
 /**
@@ -7,6 +8,7 @@ import nts.arc.time.GeneralDate;
  * @author tutt
  *
  */
+@Data
 public class ErrorMessageInfoDto {
 	/**
 	 * 会社ID

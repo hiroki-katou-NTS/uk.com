@@ -32,7 +32,13 @@ public class DeleteWorkResultConfirmationCommandHandler extends CommandHandler<D
 		DeleteWorkResultConfirmationCommand command = context.getCommand();
 		
 		//1: 解除する(require, 対象者, 対象日, 確認者):AtomTask
-		CancelConfirmationWorkResultsService.check(require, command.getEmployeeId(), command.getDate(), command.getConfirmerId()).orElse((AtomTask) Optional.empty().get());
+		Optional<AtomTask> atomOpt = CancelConfirmationWorkResultsService.check(require, command.getEmployeeId(), command.getDate(), command.getConfirmerId());
+		
+		if (atomOpt.isPresent()) {
+			transaction.execute(() -> {
+				atomOpt.get().run();
+			});
+		}
 	}
 	
 	@AllArgsConstructor

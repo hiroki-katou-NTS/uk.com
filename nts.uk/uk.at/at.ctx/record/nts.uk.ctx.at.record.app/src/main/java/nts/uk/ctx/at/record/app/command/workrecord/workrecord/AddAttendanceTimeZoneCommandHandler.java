@@ -86,6 +86,10 @@ public class AddAttendanceTimeZoneCommandHandler
 		RequireImpl require = new RequireImpl(ouenWorkTimeSheetOfDailyRepo, ouenWorkTimeOfDailyRepo,
 				editStateOfDailyPerformanceRepo, syWorkplaceAdapter, taskingRepo, taskFrameUsageSettingRepo, getter, empDailyPerErrorRepo);
 		
+		if (workDetails == null || workDetails.isEmpty()) {
+			return result;
+		}
+		
 		for (WorkDetail w : workDetails) {
 			ManHourInputResult manHourInputResult = RegisterWorkHoursService.register(require, AppContexts.user().companyId(), command.getEmployeeId(),
 					w.getDate(), command.getEditStateSetting(), w.getLstWorkDetailsParam());

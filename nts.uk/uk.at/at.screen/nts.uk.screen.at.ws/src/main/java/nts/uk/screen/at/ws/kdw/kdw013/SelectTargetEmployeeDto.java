@@ -2,6 +2,8 @@ package nts.uk.screen.at.ws.kdw.kdw013;
 
 import java.util.List;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
 import nts.uk.screen.at.app.kdw013.a.ConfirmerDto;
@@ -12,6 +14,8 @@ import nts.uk.screen.at.app.kdw013.a.ConfirmerDto;
  *
  */
 @Setter
+@Getter
+@NoArgsConstructor
 public class SelectTargetEmployeeDto {
 
 	// List<作業グループ>

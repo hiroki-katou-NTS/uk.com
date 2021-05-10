@@ -3,6 +3,7 @@ package nts.uk.screen.at.ws.kdw.kdw013;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.record.app.find.dailyattendance.timesheet.ouen.dto.ReasonTimeChangeDto;
 import nts.uk.ctx.at.record.app.find.dailyattendance.timesheet.ouen.dto.WorkTimeInformationDto;
@@ -15,6 +16,7 @@ import nts.uk.screen.at.app.kdw013.a.ActualContent;
  *
  */
 @Setter
+@Getter
 public class ActualContentDto {
 
 	// 休憩リスト

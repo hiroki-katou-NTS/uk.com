@@ -1,5 +1,6 @@
 package nts.uk.screen.at.ws.kdw.kdw013;
 
+import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
@@ -10,6 +11,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattend
  *
  */
 @Setter
+@Getter
 public class IntegrationOfDailyDto {
 	// 社員ID
 	private String employeeId;
