@@ -182,10 +182,10 @@ module nts.uk.at.view.ccg005.a.screenModel {
                   <p style="max-width: 125px;"
                     data-bind="text: goOutDto.goOutPeriod, visible: $component.goOutDisplay()" />
                   <!-- A4_6 text go out reason -->
-                  <p style="max-width: 125px;" class="limited-label"
+                  <p style="max-width: 125px;" class="limited-label ccg005-block"
                     data-bind="text: goOutDto.goOutReason, visible: $component.goOutDisplay()" />
                   <!-- A4_6 text comment -->
-                  <p style="max-width: 125px;" class="limited-label"
+                  <p style="max-width: 125px;" class="limited-label ccg005-block"
                     data-bind="text: comment, visible: $component.commentDisplay()" />
                 </td>
               </tr>
@@ -324,6 +324,9 @@ module nts.uk.at.view.ccg005.a.screenModel {
   </div>
   <!--------------------------------------- CSS --------------------------------------->
   <style>
+    .ccg005-block {
+      display: block;
+    }
     .ccg005-fs-biger div.form-label>span.text {
       font-size: 1.2rem;
     }
