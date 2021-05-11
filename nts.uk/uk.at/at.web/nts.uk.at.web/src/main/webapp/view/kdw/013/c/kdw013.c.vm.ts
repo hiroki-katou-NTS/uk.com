@@ -273,7 +273,7 @@ module nts.uk.ui.at.kdp013.c {
                         <td data-bind="i18n: 'KDW013_28'"></td>
                         <td><div data-bind="
                                 dropdown: $component.model.workplace,
-                                items: $component.items,
+                                items: $component.combobox.workLocations,
                                 required: true,
                                 name: 'WORKPLACE',
                                 hasError: $component.errors.workplace
@@ -390,12 +390,14 @@ module nts.uk.ui.at.kdp013.c {
             taskList3: KnockoutObservableArray<DropdownItem>;
             taskList4: KnockoutObservableArray<DropdownItem>;
             taskList5: KnockoutObservableArray<DropdownItem>;
+            workLocations: KnockoutComputed<DropdownItem[]>;
         } = {
                 taskList1: ko.observableArray([]),
                 taskList2: ko.observableArray([]),
                 taskList3: ko.observableArray([]),
                 taskList4: ko.observableArray([]),
-                taskList5: ko.observableArray([])
+                taskList5: ko.observableArray([]),
+                workLocations: ko.computed(() => [])
             };
 
         labels: {
@@ -428,7 +430,7 @@ module nts.uk.ui.at.kdp013.c {
 
         confirm: KnockoutObservable<ConfirmContent | null> = ko.observable(null);
 
-        taskFrameSettings: KnockoutObservableArray<a.TaskFrameSettingDto> = ko.observableArray([]);
+        taskFrameSettings!: KnockoutComputed<a.TaskFrameSettingDto[]>;
 
         constructor(public params: Params) {
             super();
@@ -436,38 +438,36 @@ module nts.uk.ui.at.kdp013.c {
             const vm = this;
             const { labels, usages } = vm;
             const { $settings } = params;
+            const subscribe = (t: a.TaskFrameSettingDto[]) => {
+                const [first, second, thirt, four, five] = t;
 
-            this.taskFrameSettings
-                .subscribe((t: a.TaskFrameSettingDto[]) => {
-                    const [first, second, thirt, four, five] = t;
+                if (first) {
+                    labels.taskLbl1(first.frameName);
+                    usages.taskUse1(first.useAtr === 1);
+                }
 
-                    if (first) {
-                        labels.taskLbl1(first.frameName);
-                        usages.taskUse1(first.useAtr === 1);
-                    }
+                if (second) {
+                    labels.taskLbl2(second.frameName);
+                    usages.taskUse2(second.useAtr === 1);
+                }
 
-                    if (second) {
-                        labels.taskLbl2(second.frameName);
-                        usages.taskUse2(second.useAtr === 1);
-                    }
+                if (thirt) {
+                    labels.taskLbl3(thirt.frameName);
+                    usages.taskUse3(thirt.useAtr === 1);
+                }
 
-                    if (thirt) {
-                        labels.taskLbl3(thirt.frameName);
-                        usages.taskUse3(thirt.useAtr === 1);
-                    }
+                if (four) {
+                    labels.taskLbl4(four.frameName);
+                    usages.taskUse4(four.useAtr === 1);
+                }
 
-                    if (four) {
-                        labels.taskLbl4(four.frameName);
-                        usages.taskUse4(four.useAtr === 1);
-                    }
+                if (five) {
+                    labels.taskLbl5(five.frameName);
+                    usages.taskUse5(five.useAtr === 1);
+                }
+            };
 
-                    if (five) {
-                        labels.taskLbl5(five.frameName);
-                        usages.taskUse5(five.useAtr === 1);
-                    }
-                });
-
-            ko.computed({
+            vm.taskFrameSettings = ko.computed({
                 read: () => {
                     const settings = ko.unwrap($settings);
 
@@ -477,10 +477,44 @@ module nts.uk.ui.at.kdp013.c {
                         const { taskFrameUsageSetting } = startManHourInputResultDto;
                         const { frameSettingList } = taskFrameUsageSetting;
 
-                        vm.taskFrameSettings(frameSettingList);
+                        return frameSettingList;
                     }
+
+                    return [];
                 }
             });
+
+            vm.combobox.workLocations = ko.computed({
+                read: () => {
+                    const settings = ko.unwrap($settings);
+
+                    if (settings) {
+                        const { refWorkplaceAndEmployeeDto } = settings;
+
+                        const { workplaceInfos } = refWorkplaceAndEmployeeDto;
+
+                        console.log(workplaceInfos);
+
+                        return workplaceInfos
+                            .map((m) => ({
+                                code: m.workplaceCode,
+                                name: m.workplaceName,
+                                selected: false,
+                                $raw: m
+                            }));
+                    }
+
+                    return [];
+                },
+                write: (value: DropdownItem[]) => {
+
+                }
+            });
+
+            this.taskFrameSettings
+                .subscribe(subscribe);
+
+            subscribe(this.taskFrameSettings());
 
             this.hasError = ko
                 .computed({
@@ -867,13 +901,13 @@ module nts.uk.ui.at.kdp013.c {
         data: KnockoutObservable<FullCalendar.EventApi>;
         position: KnockoutObservable<null | any>;
         excludeTimes: KnockoutObservableArray<share.BussinessTime>;
-        $settings: KnockoutObservable<a.ProcessInitialStartDto | null>;
+        $settings: KnockoutObservable<a.StartProcessDto | null>;
     }
 
     type DropdownItem = {
         code: string;
         name: string;
         selected: boolean;
-        $raw: TaskDto;
+        $raw: any;
     };
 }

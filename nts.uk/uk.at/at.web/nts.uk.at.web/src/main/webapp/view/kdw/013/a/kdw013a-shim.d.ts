@@ -37,9 +37,10 @@ module nts.uk.ui.at.kdp013.a {
     };
 
     export type GetRefWorkplaceAndEmployeeResultDto = {
-
         /** 社員の所属情報(Map<社員ID,職場ID>)*/
-        employeeInfos: EmployeInfo[];
+        employeeInfos: {
+            [key: string]: string;
+        };
 
         /** List＜社員ID（List）から社員コードと表示名を取得＞*/
         lstEmployeeInfo: EmployeeBasicInfoImport[];
@@ -69,7 +70,6 @@ module nts.uk.ui.at.kdp013.a {
         outsideWkpCode: string;
     }
 
-
     export type GetRefWorkplaceAndEmployeeDto = {
         /** 社員の所属情報(Map<社員ID,職場ID>)*/
         employeeInfos: {
@@ -83,10 +83,6 @@ module nts.uk.ui.at.kdp013.a {
         workplaceInfos: WorkplaceInfo[];
     };
 
-    export type EmployeInfo = {
-
-    };
-
     export type EmployeeBasicInfoImport = {
         sid: string;
         employeeCode: string;
@@ -94,7 +90,23 @@ module nts.uk.ui.at.kdp013.a {
     };
 
     export type WorkplaceInfo = {
+        /** The history id. */
+        historyId: string;
 
+        /** The workplace code. */
+        workplaceCode: string;
+
+        /** The workplace name. */
+        workplaceName: string;
+
+        /** The wkp generic name. */
+        wkpGenericName: string;
+
+        /** The wkp display name. */
+        wkpDisplayName: string;
+
+        /** The outside wkp code. */
+        outsideWkpCode: string;
     };
 
     export type TaskFrameUsageSettingDto = {
@@ -266,7 +278,6 @@ module nts.uk.ui.at.kdp013.a {
     };
 
     export type SelectTargetEmployeeParam = {
-
         // 社員ID
         employeeId: string;
 
@@ -487,7 +498,7 @@ module nts.uk.ui.at.kdp013.a {
         //残業休出区分
         overtimeLeaveAtr: OverTimeLeaveAtr;
     };
-    
+
     enum OverTimeLeaveAtr {
         // 0: 残業申請
         OVER_TIME_APPLICATION = 0,

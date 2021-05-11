@@ -244,6 +244,6 @@ module nts.uk.ui.at.kdp013.b {
         remove: () => void;
         mode: KnockoutObservable<boolean>;
         data: KnockoutObservable<FullCalendar.EventApi>;
-        $settings: KnockoutObservable<a.ProcessInitialStartDto | null>;
+        $settings: KnockoutObservable<a.StartProcessDto | null>;
     }
 }

@@ -17,15 +17,16 @@ module nts.uk.ui.at.kdp013.a {
         ADD: '/screen/at/kdw013/a/add',
         // DeleteWorkResultConfirmationCommand
         DELETE: '/screen/at/kdw013/a/delete',
+        // 対象社員を選択する
+        // Chọn nhân viên ở A2_4
+        // same api: CHANGE_DATE
+        SELECT: '/screen/at/kdw013/a/select',
         // 日付を変更する
         // Chọn ngày ở [画面イメージ]A6_1/[固有部品]A1_1
         CHANGE_DATE: '/screen/at/kdw013/a/changeDate',
         // RegisterWorkContentCommand
         REGISTER: '/screen/at/kdw013/a/register',
         REG_WORKTIME: '/screen/at/kdw013/registerWorkTime',
-        // 対象社員を選択する
-        // Chọn nhân viên ở A2_4
-        SELECT: '/screen/at/kdw013/a/select',
         START: '/screen/at/kdw013/a/start'
     };
 
@@ -70,7 +71,6 @@ module nts.uk.ui.at.kdp013.a {
 
         events: KnockoutObservableArray<calendar.EventApi> = ko.observableArray([]);
 
-        employees: KnockoutObservableArray<calendar.Employee> = ko.observableArray([]);
         confirmers: KnockoutObservableArray<calendar.Employee> = ko.observableArray([]);
 
         breakTime: KnockoutObservable<calendar.BreakTime> = ko.observable();
@@ -83,6 +83,7 @@ module nts.uk.ui.at.kdp013.a {
         scrollTime: KnockoutObservable<number> = ko.observable(480);
         slotDuration: KnockoutObservable<number> = ko.observable(30);
         initialDate: KnockoutObservable<Date> = ko.observable(new Date());
+        dateRange: KnockoutObservable<Partial<calendar.DatesSet>> = ko.observable({});
         initialView: KnockoutObservable<string> = ko.observable('fullWeek');
         availableView: KnockoutObservableArray<calendar.InitialView> = ko.observableArray(['oneDay', 'fullWeek']);
         validRange: KnockoutObservable<Partial<calendar.DatesSet>> = ko.observable({});
@@ -90,13 +91,15 @@ module nts.uk.ui.at.kdp013.a {
         // need map with [KDW013_21, KDW013_22, KDW013_23, KDW013_24] resource
         attendanceTimes: KnockoutObservableArray<calendar.AttendanceTime> = ko.observableArray([]);
 
-        $settings: KnockoutObservable<ProcessInitialStartDto | null> = ko.observable(null);
+        employees: KnockoutObservableArray<calendar.Employee> = ko.observableArray([]);
+        $settings: KnockoutObservable<StartProcessDto | null> = ko.observable(null);
 
         constructor() {
             super();
 
             const vm = this;
-            const { mode } = vm.$query;
+            const { $query, employees } = vm;
+            const { mode } = $query;
 
             vm.$toggle = {
                 save: ko.computed({
@@ -125,8 +128,15 @@ module nts.uk.ui.at.kdp013.a {
                 vm.editable(mode === '0');
             }
 
+            employees.subscribe(console.log);
+        }
+
+        mounted() {
+            const vm = this;
+
             vm.$ajax('at', API.START)
-                .then((data: ProcessInitialStartDto) => {
+                .then((data: StartProcessDto) => {
+                    debugger;
                     vm.$settings(data);
 
                     const { startManHourInputResultDto, refWorkplaceAndEmployeeDto } = data;
@@ -139,12 +149,7 @@ module nts.uk.ui.at.kdp013.a {
                     const { employeeInfos, lstEmployeeInfo, workplaceInfos } = refWorkplaceAndEmployeeDto;
 
                     const employees = _.map(employeeInfos, ({ }) => ({}));
-
                 });
-        }
-
-        mounted() {
-            const vm = this;
 
             _.extend(window, { vm });
         }
@@ -169,9 +174,11 @@ module nts.uk.ui.at.kdp013.a {
         // UKDesign.UniversalK.就業.KDW_日別実績.KDW013_工数入力.A:工数入力.メニュー別OCD.日付を変更する
         datesSet(start: Date, end: Date) {
             const vm = this;
-            const { initialDate, $user } = vm;
+            const { initialDate, $user, dateRange } = vm;
             const { employeeId } = $user;
             const refDate = ko.unwrap(initialDate);
+
+            dateRange({ start, end });
 
             const params: ChangeDateParam = {
                 employeeId,
@@ -220,7 +227,6 @@ module nts.uk.ui.at.kdp013.a {
             }
         }
 
-
         private openDialogCaculationResult(data: OvertimeLeaveTime[]) {
             const vm = this;
 
@@ -230,6 +236,12 @@ module nts.uk.ui.at.kdp013.a {
     }
 
     export module department {
+        type EmployeeDepartmentParams = {
+            mode: KnockoutObservable<boolean>;
+            employees: KnockoutObservableArray<calendar.Employee>;
+            $settings: KnockoutObservable<a.StartProcessDto | null>;
+        };
+
         @component({
             name: 'kdw013-department',
             template: `<h3 data-bind="i18n: 'KDW013_4'"></h3>
@@ -258,37 +270,39 @@ module nts.uk.ui.at.kdp013.a {
             </ul>`
         })
         export class EmployeeDepartmentComponent extends ko.ViewModel {
-            departments: KnockoutObservableArray<any> = ko.observableArray([]);
+            departments!: KnockoutComputed<any[]>;
 
-            constructor(private params: { mode: KnockoutObservable<boolean>; employees: KnockoutObservableArray<calendar.Employee> }) {
+            constructor(private params: EmployeeDepartmentParams) {
                 super();
+
+                const vm = this;
+                const { $settings } = params;
+
+                vm.departments = ko.computed({
+                    read: () => {
+                        const $sets = ko.unwrap($settings);
+
+                        if ($sets) {
+                            const { refWorkplaceAndEmployeeDto } = $sets;
+
+                            if (refWorkplaceAndEmployeeDto) {
+                                const { workplaceInfos } = refWorkplaceAndEmployeeDto;
+
+                                return workplaceInfos;
+                            }
+                        }
+
+                        return [];
+                    },
+                    write: (value: any) => {
+
+                    }
+                });
             }
 
             mounted() {
                 const vm = this;
-                const { $el, params } = vm;
-                const { mode, employees } = params;
-                const subscribe = (mode: boolean) => {
-                    if (mode === false) {
-                        // reload data
-
-                        const command: ChangeDateParam = {
-                            displayPeriod: {
-                                end: '',
-                                start: ''
-                            },
-                            employeeId: '',
-                            refDate: ''
-                        };
-
-                        vm
-                            .$ajax('at', API.SELECT, command)
-                            .then((data: SelectTargetEmployeeDto) => employees([]));
-                    }
-                };
-
-                subscribe(mode());
-                mode.subscribe(subscribe);
+                const { $el } = vm;
 
                 $($el)
                     .removeAttr('data-bind')
@@ -317,6 +331,12 @@ module nts.uk.ui.at.kdp013.a {
     }
 
     export module approved {
+        type Kdw013ApprovedParams = {
+            mode: KnockoutObservable<boolean>;
+            confirmers: KnockoutObservableArray<calendar.Employee>;
+            $settings: KnockoutObservable<a.StartProcessDto | null>;
+        };
+
         @component({
             name: 'kdw013-approveds',
             template: `<h3 data-bind="i18n: 'KDW013_6'"></h3>
@@ -328,8 +348,24 @@ module nts.uk.ui.at.kdp013.a {
             </ul>`
         })
         export class Kdw013ApprovedComponent extends ko.ViewModel {
-            constructor(public params: { mode: KnockoutObservable<boolean>; confirmers: KnockoutObservableArray<calendar.Employee> }) {
+            constructor(private params: Kdw013ApprovedParams) {
                 super();
+
+                const vm = this;
+                const { $settings } = params;
+
+
+                ko.computed({
+                    read: () => {
+                        const $sets = ko.unwrap($settings);
+
+                        if ($sets) {
+                            const { refWorkplaceAndEmployeeDto } = $sets;
+                            const { workplaceInfos, lstEmployeeInfo, employeeInfos } = refWorkplaceAndEmployeeDto;
+                        }
+
+                    }
+                });
             }
 
             mounted() {

@@ -585,18 +585,21 @@ module nts.uk.ui.components.fullcalendar {
                     kdw013-department: 'kdw013-department',
                     mode: $component.params.editable,
                     employees: $component.params.employees,
-                    initialDate: $component.params.initialDate
+                    initialDate: $component.params.initialDate,
+                    $settings: $component.params.$settings
                 "></div>
             <div class="fc-employees confirmer" data-bind="
                     kdw013-approveds: 'kdw013-approveds',
                     mode: $component.params.editable,
                     confirmers: $component.params.confirmers,
-                    initialDate: $component.params.initialDate
+                    initialDate: $component.params.initialDate,
+                    $settings: $component.params.$settings
                 "></div>
             <div class="fc-events" data-bind="
                     kdw013-events: 'kdw013-events',
                     mode: $component.params.editable,
-                    items: $component.dragItems
+                    items: $component.dragItems,
+                    $settings: $component.params.$settings
                 "></div>
         </div>
         <div class="fc-calendar"></div>
