@@ -62,7 +62,7 @@ module nts.uk.at.view.kdp002.c {
 			displayButton: KnockoutObservable<boolean> = ko.observable(true);
 
 			notificationStamp: KnockoutObservableArray<IMsgNotices> = ko.observableArray([]);
-			modeShowPointNoti: KnockoutObservable<boolean> = ko.observable(false);
+			modeShowPointNoti: KnockoutObservable<boolean | null> = ko.observable(null);
 
 			infoEmpFromScreenA!: EmployeeParam;
 
@@ -77,7 +77,7 @@ module nts.uk.at.view.kdp002.c {
 			value4: KnockoutObservable<string> = ko.observable('');
 			value5: KnockoutObservable<string> = ko.observable('');
 
-			showBtnNoti: KnockoutObservable<boolean> = ko.observable(false);
+			showBtnNoti: KnockoutObservable<boolean | null> = ko.observable(null);
 
 
 			constructor() {
@@ -100,16 +100,18 @@ module nts.uk.at.view.kdp002.c {
 				let itemIds: DISPLAY_ITEM_IDS = nts.uk.ui.windows.getShared("KDP010_2C");
 				self.infoEmpFromScreenA = nts.uk.ui.windows.getShared("infoEmpToScreenC");
 
+				self.getNotification();
+
 				self.$window.shared("screenC").done((nameScreen: any) => {
 					switch (nameScreen.screen) {
 						case 'KDP001':
 						case 'KDP002':
 							self.showBtnNoti(false);
-							break
-						case 'KDP003':
-						case 'KDP004':
-						case 'KDP005':
-							self.showBtnNoti(true);
+							// 	break
+							// case 'KDP003':
+							// case 'KDP004':
+							// case 'KDP005':
+							// 	self.showBtnNoti(true);
 							break
 					}
 				});
@@ -233,6 +235,8 @@ module nts.uk.at.view.kdp002.c {
 						if (data) {
 							service.getNotification(param)
 								.done((data: IMsgNotices[]) => {
+
+									console.log(data);
 
 									vm.notificationStamp(data);
 
