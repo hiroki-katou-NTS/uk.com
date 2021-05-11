@@ -16,7 +16,7 @@ import nts.uk.ctx.sys.gateway.dom.login.password.identification.EmployeeIdentify
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class PasswordAuthenticateCommandHandler extends LoginCommandHandlerBase<
 															PasswordAuthenticateCommand, 
-															AuthenticateResult,
+															AuthenticationResult,
 															CheckChangePassDto, 
 															PasswordAuthenticateCommandHandler.Require> {
 	
@@ -46,7 +46,7 @@ public class PasswordAuthenticateCommandHandler extends LoginCommandHandlerBase<
 	 * 認証処理本体
 	 */
 	@Override
-	protected AuthenticateResult authenticate(Require require, PasswordAuthenticateCommand command) {
+	protected AuthenticationResult authenticate(Require require, PasswordAuthenticateCommand command) {
 		
 		// 入力チェック
 		command.checkInput();
@@ -58,7 +58,7 @@ public class PasswordAuthenticateCommandHandler extends LoginCommandHandlerBase<
 		
 		// ビルトインユーザはこちらへ
 		if (require.getBuiltInUser(tenantCode, companyId).authenticate(employeeCode, password)) {
-			return AuthenticateResult.asBuiltInUser(tenantCode, companyId);
+			return AuthenticationResult.asBuiltInUser(tenantCode, companyId);
 		}
 		
 		// ログイン社員の識別
@@ -66,7 +66,7 @@ public class PasswordAuthenticateCommandHandler extends LoginCommandHandlerBase<
 		
 		if(idenResult.isFailure()) {
 			transaction.execute(idenResult.getAtomTask());
-			return AuthenticateResult.identificationFailure(idenResult);
+			return AuthenticationResult.identificationFailure(idenResult);
 		}
 		
 		// パスワード認証
@@ -77,17 +77,17 @@ public class PasswordAuthenticateCommandHandler extends LoginCommandHandlerBase<
 				
 		if(passAuthResult.isFailure()) {
 			transaction.execute(passAuthResult.getAtomTask());
-			return AuthenticateResult.passAuthenticateFailure(idenResult, passAuthResult);
+			return AuthenticationResult.passAuthenticateFailure(idenResult, passAuthResult);
 		}
 			
-		return AuthenticateResult.success(idenResult, passAuthResult);
+		return AuthenticationResult.success(idenResult, passAuthResult);
 	}
 	
 	/**
 	 * ビルトインユーザのための処理を組み込むためにoverride
 	 */
 	@Override
-	protected void authorize(Require require, AuthenticateResult authen) {
+	protected void authorize(Require require, AuthenticationResult authen) {
 		
 		if (authen.isBuiltInUser()) {
 			loginBuiltInUser.login(
@@ -104,7 +104,7 @@ public class PasswordAuthenticateCommandHandler extends LoginCommandHandlerBase<
 	 * 認証失敗時の処理
 	 */
 	@Override
-	protected CheckChangePassDto authenticationFailed(Require require, AuthenticateResult authen) {
+	protected CheckChangePassDto authenticationFailed(Require require, AuthenticationResult authen) {
 		
 		if(!authen.getEmployeeInfo().isPresent()) {
 			// 識別失敗
@@ -120,7 +120,7 @@ public class PasswordAuthenticateCommandHandler extends LoginCommandHandlerBase<
 	 * ログイン成功時の処理
 	 */
 	@Override
-	protected CheckChangePassDto loginCompleted(Require require, AuthenticateResult authen) {
+	protected CheckChangePassDto loginCompleted(Require require, AuthenticationResult authen) {
 		return CheckChangePassDto.successToAuthPassword();
 	}
 

@@ -10,7 +10,7 @@ import nts.uk.ctx.sys.gateway.dom.login.password.identification.EmployeeIdentify
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.validate.ValidationResultOnLogin;
 
 @Value
-public class AuthenticateResult implements LoginCommandHandlerBase.AuthenticationResult {
+public class AuthenticationResult implements LoginCommandHandlerBase.AuthenticationResultBase {
 
 	/** 認証成功 */
 	boolean success;
@@ -26,32 +26,32 @@ public class AuthenticateResult implements LoginCommandHandlerBase.Authenticatio
 	private String tenantCodeForBuiltInUser;
 	private String companyIdForBuiltInUser;
 	
-	public static AuthenticateResult identificationFailure(IdentificationResult idenResult) {
-		return new AuthenticateResult(
+	public static AuthenticationResult identificationFailure(IdentificationResult idenResult) {
+		return new AuthenticationResult(
 				false, 
 				Optional.empty(), 
 				Optional.empty(), 
 				false, null, null);
 	}
 	
-	public static AuthenticateResult passAuthenticateFailure(IdentificationResult idenResult, PasswordAuthenticationResult authResult) {
-		return new AuthenticateResult(
+	public static AuthenticationResult passAuthenticateFailure(IdentificationResult idenResult, PasswordAuthenticationResult authResult) {
+		return new AuthenticationResult(
 				false, 
 				Optional.of(idenResult.getEmployeeInfo()), 
 				Optional.of(authResult.getPasswordValidation()), 
 				false, null, null);
 	}
 	
-	public static AuthenticateResult success(IdentificationResult idenResult, PasswordAuthenticationResult authResult) {
-		return new AuthenticateResult(
+	public static AuthenticationResult success(IdentificationResult idenResult, PasswordAuthenticationResult authResult) {
+		return new AuthenticationResult(
 				true, 
 				Optional.of(idenResult.getEmployeeInfo()), 
 				Optional.of(authResult.getPasswordValidation()), 
 				false, null, null);
 	}
 	
-	public static AuthenticateResult asBuiltInUser(String tenantCode, String companyId) {
-		return new AuthenticateResult(
+	public static AuthenticationResult asBuiltInUser(String tenantCode, String companyId) {
+		return new AuthenticationResult(
 				true, 
 				Optional.empty(), 
 				Optional.empty(), 

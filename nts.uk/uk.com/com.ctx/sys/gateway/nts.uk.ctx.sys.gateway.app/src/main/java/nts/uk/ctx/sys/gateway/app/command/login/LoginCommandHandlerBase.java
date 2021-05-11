@@ -27,7 +27,7 @@ import nts.uk.shr.com.net.Ipv4Address;
 @Stateless
 public abstract class LoginCommandHandlerBase<
 		Command extends LoginCommandHandlerBase.TenantAuth,
-		Authen extends LoginCommandHandlerBase.AuthenticationResult,
+		Authen extends LoginCommandHandlerBase.AuthenticationResultBase,
 		Result,
 		Req extends LoginCommandHandlerBase.Require>
 		extends CommandHandlerWithResult<Command, Result> {
@@ -131,7 +131,7 @@ public abstract class LoginCommandHandlerBase<
 		
 	}
 	
-	public static interface AuthenticationResult {
+	public static interface AuthenticationResultBase {
 		/** 認証成功したか */
 		boolean isSuccess();
 		/** 識別された社員 */
