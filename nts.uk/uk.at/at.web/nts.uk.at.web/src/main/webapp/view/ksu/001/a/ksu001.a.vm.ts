@@ -472,18 +472,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
             service.getDataStartScreen(param).done((data: IDataStartScreen) => {
                 console.log(data.dataBasicDto);
-                // ẩn hiển A1_7 ※1
-                if (data.dataBasicDto.useWorkAvailabilityAtr == false) {
-                    $('#A1_7').css('visibility','hidden');
-                    $('#A1_7_1').css('display','none');
-                    $('#A1_7').off('click');
-                }
                 
-                // ẩn hiện A1_5 ※27
-                if (data.dataBasicDto.usePublicAtr == false) {
-                    $('#A1_5').css('visibility','hidden');
-                    $('#A1_5').off('click');
-                }
+                self.displayButtonsHerder(data);
                 
                 self.scheduleModifyStartDate = data.dataBasicDto.scheduleModifyStartDate;
                 self.saveDataGrid(data);
@@ -530,6 +520,23 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 dfd.reject();
             });
             return dfd.promise();
+        }
+        
+        displayButtonsHerder(data) {
+            let self = this;
+            // ẩn hiển A1_7 ※1
+            if (data.dataBasicDto.useWorkAvailabilityAtr == false) {
+                $('#A1_7').css('visibility', 'hidden');
+                $('#A1_7_1').css('display', 'none');
+                $('#A1_7').off('click');
+            }
+
+            // ẩn hiện A1_5 ※27
+            if (data.dataBasicDto.usePublicAtr == false) {
+                $('#A1_5').css('visibility', 'hidden');
+                $('#A1_5').off('click');
+            }
+
         }
         
         getDataWhenChangeModePeriod(startDate, endDate) {
