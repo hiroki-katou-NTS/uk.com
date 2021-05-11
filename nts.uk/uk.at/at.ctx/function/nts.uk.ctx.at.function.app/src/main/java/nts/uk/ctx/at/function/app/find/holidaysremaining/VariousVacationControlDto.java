@@ -15,6 +15,7 @@ public class VariousVacationControlDto {
 	private boolean pauseItemHolidaySetting;
 	private boolean childNursingSetting;
 	private boolean nursingCareSetting;
+
 	private List<SpecialHolidayDto> listSpecialHoliday;
 
 	public static VariousVacationControlDto fromDomain(VariousVacationControl domain) {

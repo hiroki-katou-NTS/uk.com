@@ -70,6 +70,8 @@ module nts.uk.at.view.kdr001.b.viewmodel {
                 self.vacationControl = vacationControl;
                 if (!vacationControl || vacationControl.annualHolidaySetting == false) {
                     $('#rowYearlyHoliday').addClass("hidden");
+                    $('#rowInsideHalfDay').addClass("hidden");
+                    $('#rowInsideHours').addClass("hidden");
                 }
 
                 if (!vacationControl || vacationControl.yearlyReservedSetting == false) {
@@ -91,6 +93,13 @@ module nts.uk.at.view.kdr001.b.viewmodel {
                 if (!vacationControl || vacationControl.nursingCareSetting == false) {
                     $('#rowNursingCareHoliday').addClass("hidden");
                 }
+                if (!vacationControl || vacationControl.publicHolidaySetting == false) {
+                    $('#rowNursingCareHoliday').addClass("hidden");
+                }
+                if (!vacationControl || vacationControl.com60HourVacationSetting == false) {
+                    $('#rowHD60HItemCheck').addClass("hidden");
+                }
+
                 if (!vacationControl || vacationControl.listSpecialHoliday.length == 0) {
                     //$('#rowSpecialHoliday').addClass("hidden");
                     for (let i = 1; i < 21; i++) {
@@ -613,6 +622,8 @@ module nts.uk.at.view.kdr001.b.viewmodel {
         pauseItemHolidaySetting: boolean;
         childNursingSetting: boolean;
         nursingCareSetting: boolean;
+        com60HourVacationSetting: boolean;
+         publicHolidaySetting: boolean;
         listSpecialHoliday: Array<ISpecialHoliday>;
     }
     export class HdDeleteRemainManageCommand {
