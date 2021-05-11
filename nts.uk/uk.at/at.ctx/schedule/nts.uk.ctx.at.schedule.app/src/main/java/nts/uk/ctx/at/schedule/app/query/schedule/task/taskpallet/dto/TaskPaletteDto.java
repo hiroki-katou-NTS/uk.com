@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.app.query.schedule.task.taskpallet;
+package nts.uk.ctx.at.schedule.app.query.schedule.task.taskpallet.dto;
 
 import java.util.HashMap;
 import java.util.Map;
