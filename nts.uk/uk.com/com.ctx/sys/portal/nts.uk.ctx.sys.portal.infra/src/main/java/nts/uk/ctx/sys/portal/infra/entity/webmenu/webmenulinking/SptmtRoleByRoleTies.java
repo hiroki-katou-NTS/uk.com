@@ -46,14 +46,14 @@ public class SptmtRoleByRoleTies extends ContractUkJpaEntity implements Serializ
 	
 	public RoleByRoleTies toDomain() {
 		return new RoleByRoleTies(
-				this.companyId,
 				this.roleId,
+				this.companyId,
 				new WebMenuCode(this.webMenuCd)
 				);
 	}
 
 
-	public SptmtRoleByRoleTies(String roleId, String companyId, String webMenuCd) {
+	public SptmtRoleByRoleTies(String roleId, String webMenuCd, String companyId) {
 		super();
 		this.roleId = roleId;
 		this.webMenuCd = webMenuCd;
