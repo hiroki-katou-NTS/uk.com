@@ -21,6 +21,7 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.schedule.ba
 import nts.uk.ctx.at.schedule.pub.schedule.basicschedule.ScBasicScheduleExport;
 import nts.uk.ctx.at.schedule.pub.schedule.basicschedule.ScBasicSchedulePub;
 import nts.uk.ctx.at.schedule.pub.schedule.basicschedule.ScWorkScheduleExport_New;
+import nts.uk.ctx.at.schedule.pub.schedule.workschedule.WorkSchedulePub;
 /**
  * 
  * @author Doan Duy Hung
@@ -33,35 +34,26 @@ public class ScBasicScheduleAdapterImpl implements ScBasicScheduleAdapter {
 	@Inject
 	private ScBasicSchedulePub scBasicSchedulePub;
 	
-	@Override
-	public Optional<ScBasicScheduleImport_Old> findByID(String employeeID, GeneralDate date) {
-		return scBasicSchedulePub.findById(employeeID, date)
-				.map(x -> convertTo(x));
-	}
+	@Inject
+	private WorkSchedulePub workSchedulePub;
 
-	private ScBasicScheduleImport_Old convertTo(ScBasicScheduleExport x) {
-		return new ScBasicScheduleImport_Old(
-				x.getEmployeeId(), 
-				x.getDate(), 
-				x.getWorkTypeCode(), 
-				x.getWorkTimeCode(), 
-				x.getWorkScheduleTimeZones().stream().map(y -> new WorkScheduleTimeZoneImport(
-						y.getScheduleCnt(), 
-						y.getScheduleStartClock(), 
-						y.getScheduleEndClock(), 
-						y.getBounceAtr()))
-				.collect(Collectors.toList()));
-	}
-
-	@Override
-	public List<ScBasicScheduleImport_Old> findByID(List<String> employeeID, DatePeriod date) {
-		
-		return scBasicSchedulePub.findById(employeeID, date).stream().map(x -> convertTo(x)).collect(Collectors.toList());
-	}
+//	private ScBasicScheduleImport_Old convertTo(ScBasicScheduleExport x) {
+//		return new ScBasicScheduleImport_Old(
+//				x.getEmployeeId(), 
+//				x.getDate(), 
+//				x.getWorkTypeCode(), 
+//				x.getWorkTimeCode(), 
+//				x.getWorkScheduleTimeZones().stream().map(y -> new WorkScheduleTimeZoneImport(
+//						y.getScheduleCnt(), 
+//						y.getScheduleStartClock(), 
+//						y.getScheduleEndClock(), 
+//						y.getBounceAtr()))
+//				.collect(Collectors.toList()));
+//	}
 
 	@Override
 	public ScBasicScheduleImport findByIDRefactor(String employeeID, GeneralDate date) {
-		ScWorkScheduleExport_New scWorkScheduleExport = scBasicSchedulePub.findByIdNewV2(employeeID, date).orElse(null);
+		ScWorkScheduleExport_New scWorkScheduleExport = workSchedulePub.findByIdNewV2(employeeID, date).orElse(null);
 		return fromExport(scWorkScheduleExport);
 	}
 	
