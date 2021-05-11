@@ -4,25 +4,30 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.Value;
 
 /**
  * ログイン時の検証結果
  */
-@Value
+@Getter
 public class ValidationResultOnLogin {
 
 	/** パスワードの状態 */
-	Status status;
+	private final Status status;
 
 	/** ポリシー違反のエラーリスト */
-	List<String> PolicyErrorList;
+	private final List<String> PolicyErrorList;
 	
 	/** パスワード有効期限の残日数 */
-	Optional<Integer> remainingDays;
+	private final Optional<Integer> remainingDays;
 	
-	
+	private ValidationResultOnLogin(Status status, List<String> policyErrorList, Optional<Integer> remainingDays) {
+		this.status = status;
+		PolicyErrorList = policyErrorList;
+		this.remainingDays = remainingDays;
+	}
+
 	// 正常
 	public static ValidationResultOnLogin ok() {
 		return new ValidationResultOnLogin(Status.OK, Collections.emptyList(), Optional.empty());
