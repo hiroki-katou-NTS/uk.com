@@ -177,7 +177,7 @@ module nts.uk.at.view.kdp.share {
 			}
 			
 
-			const { supportUse } = data;
+			const { supportUse, temporaryUse } = data;
 
 			ko.applyBindingsToNode(text, { text: data.btnName });
 
@@ -189,7 +189,8 @@ module nts.uk.at.view.kdp.share {
 				.css({
 					'color': data.btnTextColor,
 					'background-color': data.btnBackGroundColor,
-					'visibility': data.btnPositionNo === -1 || data.usrArt === 0 || (supportUse === false && _.includes([14, 15, 16, 17, 18], btnType)) ? 'hidden' : 'visible'
+					'visibility': data.btnPositionNo === -1 || data.usrArt === 0 || (supportUse === false && _.includes([14, 15, 16, 17, 18], btnType)) 
+					|| (temporaryUse === false && _.includes([12, 13], btnType)) ? 'hidden' : 'visible'
 				});
 		}
 	}
@@ -227,6 +228,8 @@ module nts.uk.at.view.kdp.share {
 		buttonSize: KnockoutObservable<number> = ko.observable(0);
 
 		supportUse: KnockoutObservable<boolean> = ko.observable(false);
+
+		temporaryUse: KnockoutObservable<boolean> = ko.observable(false);
 
 		constructor(public params: StampParam) {
 			super();
@@ -322,6 +325,7 @@ module nts.uk.at.view.kdp.share {
 						turnBack: false
 					};
 					const supportUsed = ko.unwrap(vm.supportUse);
+					const temporaryUsed = ko.unwrap(vm.temporaryUse);
 
 					const filters: TabLayout[] = [];
 
@@ -367,6 +371,7 @@ module nts.uk.at.view.kdp.share {
 
 									btn.height = Math.max(buttonSize, 70) * constance + (buttonLayoutType === SMALL_8 ? 7 : 0);
 									btn.supportUse = supportUsed;
+									btn.temporaryUse = temporaryUsed;
 
 									buttons.push(btn);
 								} else {
@@ -385,7 +390,8 @@ module nts.uk.at.view.kdp.share {
 										setPreClockArt: -1,
 										usrArt: -1,
 										height: buttonSize,
-										supportUse: supportUsed
+										supportUse: supportUsed,
+										temporaryUse: temporaryUsed
 									});
 								}
 							}
@@ -411,6 +417,7 @@ module nts.uk.at.view.kdp.share {
 			vm.$ajax('at/record/stamp/settings_stamp_common')
 				.done((data: ISettingsStampCommon) => {
 					vm.supportUse(!!data.supportUse);
+					vm.temporaryUse(!!data.temporaryUse);
 				});
 		}
 
@@ -516,6 +523,7 @@ module nts.uk.at.view.kdp.share {
 		usrArt: NotUseAtr;
 		height: number;
 		supportUse: boolean;
+		temporaryUse: boolean;
 	}
 
 	export enum NotUseAtr {
