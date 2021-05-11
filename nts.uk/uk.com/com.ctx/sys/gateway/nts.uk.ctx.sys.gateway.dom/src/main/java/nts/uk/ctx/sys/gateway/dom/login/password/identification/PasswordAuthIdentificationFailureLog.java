@@ -9,7 +9,7 @@ import nts.gul.text.StringUtil;
  * パスワード認証による社員の識別失敗記録
  */
 @Getter
-public class PasswordAuthIdentificateFailureLog  implements DomainAggregate {
+public class PasswordAuthIdentificationFailureLog  implements DomainAggregate {
 	
 	/** 失敗日時 */
 	private final GeneralDateTime failureDateTime;
@@ -18,7 +18,7 @@ public class PasswordAuthIdentificateFailureLog  implements DomainAggregate {
 	/** 試行した社員コード */
 	private final String triedEmployeeCode;
 	
-	public PasswordAuthIdentificateFailureLog(GeneralDateTime dateTime, String companyId, String employeeCode) {
+	public PasswordAuthIdentificationFailureLog(GeneralDateTime dateTime, String companyId, String employeeCode) {
 		this.failureDateTime = dateTime;
 		this.triedCompanyId = companyId;
 		// ユーザー入力の値は適当な長さでカットして保持する
@@ -31,7 +31,7 @@ public class PasswordAuthIdentificateFailureLog  implements DomainAggregate {
 	 * @param password
 	 * @return
 	 */
-	public static PasswordAuthIdentificateFailureLog create(String companyId, String employeeCode) {
-		return new PasswordAuthIdentificateFailureLog(GeneralDateTime.now() , companyId, employeeCode);
+	public static PasswordAuthIdentificationFailureLog create(String companyId, String employeeCode) {
+		return new PasswordAuthIdentificationFailureLog(GeneralDateTime.now() , companyId, employeeCode);
 	}
 }

@@ -12,10 +12,10 @@ import lombok.val;
 import nts.arc.diagnose.stopwatch.embed.EmbedStopwatch;
 import nts.uk.ctx.sys.gateway.app.command.login.LoginRequire;
 import nts.uk.ctx.sys.gateway.app.command.login.password.PasswordAuthenticateCommandHandler.Require;
-import nts.uk.ctx.sys.gateway.dom.login.password.authenticate.PasswordAuthenticateFailureLog;
-import nts.uk.ctx.sys.gateway.dom.login.password.authenticate.PasswordAuthenticateFailureLogRepository;
-import nts.uk.ctx.sys.gateway.dom.login.password.identification.PasswordAuthIdentificateFailureLog;
-import nts.uk.ctx.sys.gateway.dom.login.password.identification.PasswordAuthIdentificateFailureLogRepository;
+import nts.uk.ctx.sys.gateway.dom.login.password.authenticate.PasswordAuthenticationFailureLog;
+import nts.uk.ctx.sys.gateway.dom.login.password.authenticate.PasswordAuthenticationFailureLogRepository;
+import nts.uk.ctx.sys.gateway.dom.login.password.identification.PasswordAuthIdentificationFailureLog;
+import nts.uk.ctx.sys.gateway.dom.login.password.identification.PasswordAuthIdentificationFailureLogRepository;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.AccountLockPolicy;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.AccountLockPolicyRepository;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.locked.LockOutDataRepository;
@@ -51,10 +51,10 @@ public class PasswordAuthenticateCommandRequire {
 	private PasswordPolicyRepository passwordPolicyRepo;
 	
 	@Inject
-	private PasswordAuthenticateFailureLogRepository passwordAuthenticateFailuresLogRepo;
+	private PasswordAuthenticationFailureLogRepository passwordAuthenticateFailuresLogRepo;
 	
 	@Inject
-	private PasswordAuthIdentificateFailureLogRepository passwordAuthIdentificateFailureLogRepo;
+	private PasswordAuthIdentificationFailureLogRepository passwordAuthIdentificateFailureLogRepo;
 
 	@Inject
 	private LockOutDataRepository lockOutDataRepo;
@@ -124,12 +124,12 @@ public class PasswordAuthenticateCommandRequire {
 		}
 
 		@Override
-		public void addFailureLog(PasswordAuthIdentificateFailureLog failurLog) {
+		public void addFailureLog(PasswordAuthIdentificationFailureLog failurLog) {
 			passwordAuthIdentificateFailureLogRepo.insert(failurLog);
 		}
 
 		@Override
-		public void save(PasswordAuthenticateFailureLog failuresLog) {
+		public void save(PasswordAuthenticationFailureLog failuresLog) {
 			passwordAuthenticateFailuresLogRepo.insert(failuresLog);
 		}
 	}

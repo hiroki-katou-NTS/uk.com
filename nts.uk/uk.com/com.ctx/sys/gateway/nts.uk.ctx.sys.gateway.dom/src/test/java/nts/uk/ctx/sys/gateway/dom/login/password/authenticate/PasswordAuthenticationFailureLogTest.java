@@ -7,7 +7,7 @@ import org.junit.Test;
 import lombok.val;
 import nts.arc.time.GeneralDateTime;
 
-public class PasswordAuthenticateFailureLogTest {
+public class PasswordAuthenticationFailureLogTest {
 	
 	private static class Dummy{
 		final static GeneralDateTime dateTime = GeneralDateTime.now(); 
@@ -23,7 +23,7 @@ public class PasswordAuthenticateFailureLogTest {
 							+ "12345678901234567890"
 							+ "xxxxx";
 		
-		val result = new PasswordAuthenticateFailureLog(Dummy.dateTime, Dummy.userId, longPassword);
+		val result = new PasswordAuthenticationFailureLog(Dummy.dateTime, Dummy.userId, longPassword);
 		
 		assertThat(result.getTriedPassword().length() <= 100).isTrue();
 	}

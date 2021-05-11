@@ -13,7 +13,7 @@ import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.validate.ValidationRes
  */
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 @ToString
-public class PasswordAuthenticateResult {
+public class PasswordAuthenticationResult {
 
 	/** 認証成功 */
 	private final boolean success;
@@ -32,10 +32,10 @@ public class PasswordAuthenticateResult {
 	 * @param passwordValidation
 	 * @return
 	 */
-	public static PasswordAuthenticateResult success(
+	public static PasswordAuthenticationResult success(
 			ValidationResultOnLogin passwordValidation) {
 		
-		return new PasswordAuthenticateResult(
+		return new PasswordAuthenticationResult(
 				true,
 				Optional.of(passwordValidation),
 				Optional.of(AtomTask.none()),
@@ -47,8 +47,8 @@ public class PasswordAuthenticateResult {
 	 * @param atomTask
 	 * @return
 	 */
-	public static PasswordAuthenticateResult failure(FailedAuthenticateTask atomTask) {
-		return new PasswordAuthenticateResult(
+	public static PasswordAuthenticationResult failure(FailedAuthenticateTask atomTask) {
+		return new PasswordAuthenticationResult(
 				false,
 				Optional.empty(),
 				atomTask.getFailedAuthenticate(),

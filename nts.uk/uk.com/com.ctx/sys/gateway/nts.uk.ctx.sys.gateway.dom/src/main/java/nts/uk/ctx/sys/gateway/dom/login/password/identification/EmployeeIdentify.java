@@ -44,7 +44,7 @@ public class EmployeeIdentify {
 	// 識別に失敗
 	private static IdentificationResult identifyFailure(Require require, String companyId, String employeeCode) {
 		val failureLog = AtomTask.of(() -> {
-			require.addFailureLog(PasswordAuthIdentificateFailureLog.create(companyId, employeeCode));
+			require.addFailureLog(PasswordAuthIdentificationFailureLog.create(companyId, employeeCode));
 		});
 		return IdentificationResult.failure(failureLog);
 	}
@@ -112,12 +112,12 @@ public class EmployeeIdentify {
 			return atomTasks;
 		}
 	}
-
+	
 	public static interface Require{
 		Optional<EmployeeDataMngInfoImport> getEmployeeDataMngInfoImportByEmployeeCode(String companyId, String employeeCode);
 		
 		Optional<User> getUserByPersonId(String personId);
 		
-		void addFailureLog(PasswordAuthIdentificateFailureLog failurLog);
+		void addFailureLog(PasswordAuthIdentificationFailureLog failurLog);
 	}
 }

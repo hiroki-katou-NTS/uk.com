@@ -9,7 +9,7 @@ import nts.gul.text.StringUtil;
  * パスワード認証失敗記録
  */
 @Getter
-public class PasswordAuthenticateFailureLog implements DomainAggregate {
+public class PasswordAuthenticationFailureLog implements DomainAggregate {
 
 	/** 失敗日時リスト */
 	private final GeneralDateTime failureDateTime;
@@ -18,7 +18,7 @@ public class PasswordAuthenticateFailureLog implements DomainAggregate {
 	/** 試行したパスワード*/
 	private final String triedPassword;
 	
-	public PasswordAuthenticateFailureLog(GeneralDateTime dateTime, String userId, String password) {
+	public PasswordAuthenticationFailureLog(GeneralDateTime dateTime, String userId, String password) {
 		this.failureDateTime = dateTime;
 		this.triedUserId = password;
 		// ユーザー入力の値は適当な長さでカットして保持する
@@ -31,7 +31,7 @@ public class PasswordAuthenticateFailureLog implements DomainAggregate {
 	 * @param password
 	 * @return
 	 */
-	public static PasswordAuthenticateFailureLog failedNow(String userId, String password) {
-		return new PasswordAuthenticateFailureLog(GeneralDateTime.now() , userId, password);
+	public static PasswordAuthenticationFailureLog failedNow(String userId, String password) {
+		return new PasswordAuthenticationFailureLog(GeneralDateTime.now() , userId, password);
 	}
 }

@@ -16,7 +16,7 @@ import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.validate.ValidationRes
  */
 public class PasswordAuthenticateWithEmployeeCode {
 
-	public static PasswordAuthenticateResult authenticate(
+	public static PasswordAuthenticationResult authenticate(
 			Require require,
 			IdentifiedEmployeeInfo identified,
 			String password) {
@@ -33,7 +33,7 @@ public class PasswordAuthenticateWithEmployeeCode {
 		val user = identified.getUser();
 		if (!user.isCorrectPassword(password)) {
 			val atomTask = FailedPasswordAuthenticate.failed(require, identified, password);
-			return PasswordAuthenticateResult.failure(atomTask);
+			return PasswordAuthenticationResult.failure(atomTask);
 		}
 
 		// パスワードポリシーへの準拠チェック
@@ -41,7 +41,7 @@ public class PasswordAuthenticateWithEmployeeCode {
 		val passwordPolicyResult = passwordPolicy.map(p -> p.validateOnLogin(require, user.getUserID(), password, user.getPassStatus()))
 												.orElse(ValidationResultOnLogin.ok());
 		
-		return PasswordAuthenticateResult.success(passwordPolicyResult);
+		return PasswordAuthenticationResult.success(passwordPolicyResult);
 	}
 	
 	public static interface Require extends

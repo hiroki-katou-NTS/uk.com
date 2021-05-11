@@ -6,18 +6,18 @@ import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
-import nts.uk.ctx.sys.gateway.dom.login.password.identification.PasswordAuthIdentificateFailureLog;
-import nts.uk.ctx.sys.gateway.dom.login.password.identification.PasswordAuthIdentificateFailureLogRepository;
+import nts.uk.ctx.sys.gateway.dom.login.password.identification.PasswordAuthIdentificationFailureLog;
+import nts.uk.ctx.sys.gateway.dom.login.password.identification.PasswordAuthIdentificationFailureLogRepository;
 import nts.uk.ctx.sys.gateway.infra.entity.login.identification.SgwdtFailLogIdenPassword;
 import nts.uk.ctx.sys.gateway.infra.entity.login.identification.SgwdtFailLogIdenPasswordPK;
 
 @Stateless
-public class JpaPasswordAuthIdentificationFailureLogRepository extends JpaRepository implements PasswordAuthIdentificateFailureLogRepository {
+public class JpaPasswordAuthIdentificationFailureLogRepository extends JpaRepository implements PasswordAuthIdentificationFailureLogRepository {
 	
 	private final String BASIC_SELECT 
 					= "select * from SGWDT_FAIL_LOG_IDEN_PASSWORD ";
 	
-	private SgwdtFailLogIdenPassword fromDomain(PasswordAuthIdentificateFailureLog domain) {
+	private SgwdtFailLogIdenPassword fromDomain(PasswordAuthIdentificationFailureLog domain) {
 		return new SgwdtFailLogIdenPassword(
 				new SgwdtFailLogIdenPasswordPK(
 				domain.getFailureDateTime(), 
@@ -26,12 +26,12 @@ public class JpaPasswordAuthIdentificationFailureLogRepository extends JpaReposi
 	}
 
 	@Override
-	public void insert(PasswordAuthIdentificateFailureLog domain) {
+	public void insert(PasswordAuthIdentificationFailureLog domain) {
 		this.commandProxy().insert(fromDomain(domain));
 	}
 
 	@Override
-	public List<PasswordAuthIdentificateFailureLog> find(String companyId) {
+	public List<PasswordAuthIdentificationFailureLog> find(String companyId) {
 		String query = BASIC_SELECT 
 				+ "where CID = @companyId ";
 		return new NtsStatement(query, this.jdbcProxy())

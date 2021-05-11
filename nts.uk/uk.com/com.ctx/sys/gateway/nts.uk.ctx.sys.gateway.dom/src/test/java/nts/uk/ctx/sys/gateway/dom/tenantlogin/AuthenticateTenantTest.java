@@ -22,10 +22,10 @@ public class AuthenticateTenantTest {
 	private AuthenticateTenant.Require require;
 	
 	private static class Dummy{
-		static final LoginClient LOGIN_CLIENT = new LoginClient(Ipv4Address.parse("255.255.255.255"), "");
-		static final String TENANT_CODE = "000000000000";
-		static final String PASSWORD = "0";
-		static final GeneralDate TODAY = GeneralDate.today();
+		static final LoginClient LOGIN_CLIENT = new LoginClient(Ipv4Address.parse("dummydummydummy"), "dummy");
+		static final String TENANT_CODE = "dummy";
+		static final String PASSWORD = "dummy";
+		static final GeneralDate TODAY = null;
 	}
 
 	@Test

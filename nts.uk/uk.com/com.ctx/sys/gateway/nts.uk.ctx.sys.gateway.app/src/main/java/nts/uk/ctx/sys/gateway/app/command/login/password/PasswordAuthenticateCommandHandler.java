@@ -7,7 +7,7 @@ import javax.inject.Inject;
 
 import nts.arc.task.tran.TransactionService;
 import nts.uk.ctx.sys.gateway.app.command.login.LoginCommandHandlerBase;
-import nts.uk.ctx.sys.gateway.dom.login.password.authenticate.PasswordAuthenticateResult;
+import nts.uk.ctx.sys.gateway.dom.login.password.authenticate.PasswordAuthenticationResult;
 import nts.uk.ctx.sys.gateway.dom.login.password.authenticate.PasswordAuthenticateWithEmployeeCode;
 import nts.uk.ctx.sys.gateway.dom.login.password.identification.EmployeeIdentify;
 import nts.uk.ctx.sys.gateway.dom.login.password.identification.EmployeeIdentify.IdentificationResult;
@@ -70,7 +70,7 @@ public class PasswordAuthenticateCommandHandler extends LoginCommandHandlerBase<
 		}
 		
 		// パスワード認証
-		PasswordAuthenticateResult passAuthResult = PasswordAuthenticateWithEmployeeCode.authenticate(
+		PasswordAuthenticationResult passAuthResult = PasswordAuthenticateWithEmployeeCode.authenticate(
 				require, 
 				idenResult.getEmployeeInfo(), 
 				password);

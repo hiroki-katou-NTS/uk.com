@@ -23,10 +23,10 @@ public class FailedPasswordAuthenticateTest {
 	@Test
 	public void called_FailurLog_Save() {
 		
-		new MockUp<PasswordAuthenticateFailureLog>(){
+		new MockUp<PasswordAuthenticationFailureLog>(){
 			@Mock
-			public PasswordAuthenticateFailureLog failedNow(String userId, String password) {
-				return new PasswordAuthenticateFailureLog(
+			public PasswordAuthenticationFailureLog failedNow(String userId, String password) {
+				return new PasswordAuthenticationFailureLog(
 						FailedPasswordHelper.DUMMY.DATETIME, 
 						FailedPasswordHelper.DUMMY.USER_ID, 
 						FailedPasswordHelper.DUMMY.PASSWORD); 
@@ -35,12 +35,12 @@ public class FailedPasswordAuthenticateTest {
 		
 		FailedAuthenticateTask result = FailedPasswordAuthenticate.failed(faildPassAuthRequire, FailedPasswordHelper.DUMMY.EMP_INFO, FailedPasswordHelper.DUMMY.PASSWORD);
 		new Verifications() {{
-			faildPassAuthRequire.save((PasswordAuthenticateFailureLog) any);
+			faildPassAuthRequire.save((PasswordAuthenticationFailureLog) any);
 			times = 0;
 		}};
 		result.getFailedAuthenticate().get().run();
 		new Verifications() {{
-			faildPassAuthRequire.save((PasswordAuthenticateFailureLog) any);
+			faildPassAuthRequire.save((PasswordAuthenticationFailureLog) any);
 			times = 1;
 		}};
 	}
@@ -49,10 +49,10 @@ public class FailedPasswordAuthenticateTest {
 	@Test
 	public void called_LockoutData_Save() {
 		
-		new MockUp<PasswordAuthenticateFailureLog>(){
+		new MockUp<PasswordAuthenticationFailureLog>(){
 			@Mock
-			public PasswordAuthenticateFailureLog failedNow(String userId, String password) {
-				return new PasswordAuthenticateFailureLog(
+			public PasswordAuthenticationFailureLog failedNow(String userId, String password) {
+				return new PasswordAuthenticationFailureLog(
 						FailedPasswordHelper.DUMMY.DATETIME, 
 						FailedPasswordHelper.DUMMY.USER_ID, 
 						FailedPasswordHelper.DUMMY.PASSWORD); 
@@ -87,10 +87,10 @@ public class FailedPasswordAuthenticateTest {
 	@Test
 	public void called_LockoutData_PolicyEmpty() {
 		
-		new MockUp<PasswordAuthenticateFailureLog>(){
+		new MockUp<PasswordAuthenticationFailureLog>(){
 			@Mock
-			public PasswordAuthenticateFailureLog failedNow(String userId, String password) {
-				return new PasswordAuthenticateFailureLog(
+			public PasswordAuthenticationFailureLog failedNow(String userId, String password) {
+				return new PasswordAuthenticationFailureLog(
 						FailedPasswordHelper.DUMMY.DATETIME, 
 						FailedPasswordHelper.DUMMY.USER_ID, 
 						FailedPasswordHelper.DUMMY.PASSWORD); 
