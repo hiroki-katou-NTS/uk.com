@@ -46,7 +46,6 @@ public class GetWorkScheduleInfor {
 
 	@Inject
 	private WorkScheduleRepository workScheduleRepo;
-
 	@Inject
 	private EmpComHisAdapter empComHisAdapter;
 	@Inject
@@ -57,8 +56,6 @@ public class GetWorkScheduleInfor {
 	private EmpLeaveWorkHistoryAdapter empLeaveWorkHisAdapter;
 	@Inject
 	private EmploymentHisScheduleAdapter employmentHisScheduleAdapter;
-	@Inject
-	private CreateWorkScheduleWorkInfor createWorkScheduleWorkInfor;	
 	
 	
 	

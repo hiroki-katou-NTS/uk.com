@@ -19,7 +19,6 @@ import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.Target
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrganizationUnit;
 import nts.uk.shr.com.context.AppContexts;
 
-
 /**
  * 作業パレットを取得する
  * UKDesign.ドメインモデル."NittsuSystem.UniversalK".就業.contexts.勤務予定.勤務予定.作業.作業パレット.作業パレットを取得する
@@ -53,6 +52,7 @@ public class GetTaskPalletQuery {
 		if (data.isPresent()) {
 			TaskImpl require = new TaskImpl(taskingRepository);
 			taskPalette = Optional.of(data.get().getDisplayInfo(require, date));
+			//3.1 Create()
 			taskPaletteDto = TaskPaletteDto.toDto(taskPalette.get());
 		}
 		return taskPaletteDto;
