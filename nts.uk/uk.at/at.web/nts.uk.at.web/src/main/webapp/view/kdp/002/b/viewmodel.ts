@@ -308,6 +308,8 @@ class KDP002BViewModel extends ko.ViewModel {
                 vm.$ajax(kDP002RequestUrl.GET_SETTING)
                     .then((data: boolean) => {
 
+                        console.log(data);
+
                         if (data) {
                             vm.$ajax(kDP002RequestUrl.NOTIFICATION_STAMP, param)
                                 .done((data: IMsgNotices[]) => {
@@ -349,7 +351,8 @@ class KDP002BViewModel extends ko.ViewModel {
             })
             .always(() => {
                 vm.$blockui('clear');
-            })
+            });
+
     }
 
     getEmpInfo(): JQueryPromise<any> {
@@ -371,6 +374,8 @@ class KDP002BViewModel extends ko.ViewModel {
             .modal('/view/kdp/002/u/index.xhtml', params)
             .then(() => {
                 vm.activeViewU(false);
+                vm.modeShowPointNoti(false);
+                vm.getNotification();
             });
     }
 

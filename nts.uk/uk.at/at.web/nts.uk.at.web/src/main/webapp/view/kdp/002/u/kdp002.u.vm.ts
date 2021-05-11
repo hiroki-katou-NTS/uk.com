@@ -23,7 +23,7 @@ module nts.uk.at.kdp002.u {
 			const vm = this
 
 			vm.model(param.data.msgNotices);
-			
+
 			vm.sid = param.sid;
 
 			vm.setModeNew(param.data.msgNotices);
@@ -36,7 +36,7 @@ module nts.uk.at.kdp002.u {
 				if (value.message.employeeIdSeen.length > 0) {
 					vm.modeNew(false);
 				}
-				
+
 			}));
 		}
 
@@ -49,12 +49,14 @@ module nts.uk.at.kdp002.u {
 
 					_.forEach(ko.unwrap(vm.model), (value) => {
 
-						var item: ICreatorAndDate = {
-							creatorId: value.message.creatorID,
-							inputDate: vm.$date.now()
-						}
+						if (value.flag) {
+							var item: ICreatorAndDate = {
+								creatorId: value.message.creatorID,
+								inputDate: value.message.inputDate
+							}
 
-						msgInfors.push(item);
+							msgInfors.push(item);
+						}
 					})
 
 					const params = {
@@ -63,7 +65,7 @@ module nts.uk.at.kdp002.u {
 					}
 
 					vm.$ajax(API.UPDATE, params)
-						.always(() => {
+						.done(() => {
 							vm.$blockui('clear');
 							vm.$window.close();
 						});

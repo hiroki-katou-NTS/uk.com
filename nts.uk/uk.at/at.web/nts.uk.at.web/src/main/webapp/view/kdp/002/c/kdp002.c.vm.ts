@@ -115,8 +115,8 @@ module nts.uk.at.view.kdp002.c {
 				});
 
 				if (self.infoEmpFromScreenA.workLocationName) {
-                    self.laceName(self.infoEmpFromScreenA.workLocationName);
-                }
+					self.laceName(self.infoEmpFromScreenA.workLocationName);
+				}
 
 				let data = {
 					employeeId: self.infoEmpFromScreenA.employeeId,
@@ -128,7 +128,7 @@ module nts.uk.at.view.kdp002.c {
 
 				service.startScreen(data).done((res) => {
 					let itemIds = ["TIME", "AMOUNT", "TIME_WITH_DAY", "DAYS", "COUNT", "CLOCK"];
-					
+
 					if (res) {
 						if (_.size(res.stampRecords) > 0) {
 							res.stampRecords = _.orderBy(res.stampRecords, ['stampTimeWithSec'], ['desc']);
@@ -272,7 +272,11 @@ module nts.uk.at.view.kdp002.c {
 			openDialogU() {
 				const vm = this;
 				const params = { sid: vm.infoEmpFromScreenA.employeeId, data: ko.unwrap(vm.notificationStamp) };
-				vm.$window.modal('/view/kdp/002/u/index.xhtml', params);
+				vm.$window.modal('/view/kdp/002/u/index.xhtml', params)
+					.then(() => {
+						vm.modeShowPointNoti(false);
+						vm.getNotification();
+					});
 			}
 
 			/**
