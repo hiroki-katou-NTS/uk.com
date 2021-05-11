@@ -1,12 +1,17 @@
 package nts.uk.ctx.at.schedule.pubimp.schedule.workschedule;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.tuple.Pair;
+
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
@@ -24,6 +29,8 @@ import nts.uk.ctx.at.schedule.pub.schedule.workschedule.TimeLeavingOfDailyAttdEx
 import nts.uk.ctx.at.schedule.pub.schedule.workschedule.TimeLeavingWorkExport;
 import nts.uk.ctx.at.schedule.pub.schedule.workschedule.TotalWorkingTimeExport;
 import nts.uk.ctx.at.schedule.pub.schedule.workschedule.WorkScheduleBasicInforExport;
+import nts.uk.ctx.at.schedule.pub.schedule.workschedule.WorkScheduleConfirmExport;
+import nts.uk.ctx.at.schedule.pub.schedule.workschedule.WorkScheduleConfirmExport.SCConfirmedAtrExport;
 import nts.uk.ctx.at.schedule.pub.schedule.workschedule.WorkScheduleExport;
 import nts.uk.ctx.at.schedule.pub.schedule.workschedule.WorkSchedulePub;
 import nts.uk.ctx.at.schedule.pub.schedule.workschedule.WorkStampExport;
@@ -203,4 +210,22 @@ public class WorkSchedulePubImpl implements WorkSchedulePub {
         
         return workSchedule.isPresent() ? Optional.of(result) : Optional.empty();
     }
+
+	@Override
+	public List<WorkScheduleConfirmExport> findConfirmById(List<String> employeeID, DatePeriod date) {
+		List<WorkSchedule> workSchedules = workScheduleRepository.getList(employeeID, date);
+		Map<Pair<String, GeneralDate>, WorkSchedule> mapData = workSchedules.stream()
+				.collect(Collectors.toMap(x -> Pair.of(x.getEmployeeID(), x.getYmd()), x -> x));
+
+		List<WorkScheduleConfirmExport> result = new ArrayList<>();
+		employeeID.stream().forEach(x -> {
+			date.datesBetween().forEach(dateB -> {
+				WorkSchedule data = mapData.get(Pair.of(x, dateB));
+				result.add(data == null ? new WorkScheduleConfirmExport(x, dateB, SCConfirmedAtrExport.UNSETTLED)
+						: new WorkScheduleConfirmExport(x, dateB,
+								EnumAdaptor.valueOf(data.getConfirmedATR().value, SCConfirmedAtrExport.class)));
+			});
+		});
+		return result;
+	}
 }

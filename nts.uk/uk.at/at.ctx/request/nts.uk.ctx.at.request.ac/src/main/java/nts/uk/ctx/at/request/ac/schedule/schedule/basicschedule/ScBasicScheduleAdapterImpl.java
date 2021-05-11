@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.request.ac.schedule.schedule.basicschedule;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -15,11 +14,7 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.schedule.ba
 import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.schedule.basicschedule.BasicScheduleConfirmImport.ConfirmedAtrImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.schedule.basicschedule.ScBasicScheduleAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.schedule.basicschedule.ScBasicScheduleImport;
-import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.schedule.basicschedule.ScBasicScheduleImport_Old;
 import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.schedule.basicschedule.ShortWorkingTimeSheetImport;
-import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.schedule.basicschedule.WorkScheduleTimeZoneImport;
-import nts.uk.ctx.at.schedule.pub.schedule.basicschedule.ScBasicScheduleExport;
-import nts.uk.ctx.at.schedule.pub.schedule.basicschedule.ScBasicSchedulePub;
 import nts.uk.ctx.at.schedule.pub.schedule.basicschedule.ScWorkScheduleExport_New;
 import nts.uk.ctx.at.schedule.pub.schedule.workschedule.WorkSchedulePub;
 /**
@@ -30,9 +25,6 @@ import nts.uk.ctx.at.schedule.pub.schedule.workschedule.WorkSchedulePub;
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class ScBasicScheduleAdapterImpl implements ScBasicScheduleAdapter {
-	
-	@Inject
-	private ScBasicSchedulePub scBasicSchedulePub;
 	
 	@Inject
 	private WorkSchedulePub workSchedulePub;
@@ -78,7 +70,7 @@ public class ScBasicScheduleAdapterImpl implements ScBasicScheduleAdapter {
 
 	@Override
 	public List<BasicScheduleConfirmImport> findConfirmById(List<String> employeeID, DatePeriod date) {
-		return scBasicSchedulePub
+		return workSchedulePub
 				.findConfirmById(employeeID, date).stream().map(x -> new BasicScheduleConfirmImport(x.getEmployeeId(),
 						x.getDate(), ConfirmedAtrImport.valueOf(x.getConfirmedAtr().value)))
 				.collect(Collectors.toList());
