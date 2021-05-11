@@ -53,6 +53,7 @@ module nts.uk.at.view.ksu003.a.model {
 		}
 		return workTypeColor;
 	}
+	
 	/** A6_color① - chua xong o phan login va xin bang don */
 	export function setColorWorkingInfo(empId: string, isConfirmed: number, workScheduleDto: any, isNeedWorkSchedule: any) {
 		let self = this, workTypeColor = "", workTimeColor = "", startTime1Color = "", endTime1Color = "",
