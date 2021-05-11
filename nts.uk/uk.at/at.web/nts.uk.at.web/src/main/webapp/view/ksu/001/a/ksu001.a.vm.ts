@@ -3080,26 +3080,11 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         
         setWidthButtonnInPopupA1_12(){
             let self = this;
-            let widthA1_12_4  = $('#A1_12_4').width();
-            let widthA1_12_6  = $('#A1_12_6').width();
-            let widthA1_12_8  = $('#A1_12_8').width();
-            let widthA1_12_12 = $('#A1_12_12').width();
             let widthA1_12_16 = $('#A1_12_16').width();
             let widthA1_12_18 = $('#A1_12_18').width();
             let widthA1_12_20 = $('#A1_12_20').width();
             
-            let maxWidth = widthA1_12_4;
-            if (widthA1_12_6 > maxWidth)
-                maxWidth = widthA1_12_6;
-            
-            if (widthA1_12_8 > maxWidth)
-                maxWidth = widthA1_12_8;
-            
-            if (widthA1_12_12 > maxWidth)
-                maxWidth = widthA1_12_12;
-            
-            if (widthA1_12_16 > maxWidth)
-                maxWidth = widthA1_12_16;
+            let maxWidth = widthA1_12_16;
             
             if (widthA1_12_18 > maxWidth)
                 maxWidth = widthA1_12_18;
@@ -3107,7 +3092,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             if (widthA1_12_20 > maxWidth)
                 maxWidth = widthA1_12_20;
         
-            $('#A1_12_4, #A1_12_6, #A1_12_8, #A1_12_12, #A1_12_16, #A1_12_18, #A1_12_20').width(maxWidth);
+            $('#A1_12_16, #A1_12_18, #A1_12_20').width(maxWidth);
         }
 
 
