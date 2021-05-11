@@ -111,7 +111,7 @@ public class ApprovalRootStateAdapterImpl implements ApprovalRootStateAdapter {
 		return new ApprovalRootContentImport_New(
 					new ApprovalRootStateImport_New(
 							approvalRootContentExport.getApprovalRootState().getRootStateID(),
-							fromExport(approvalRootContentExport.getApprovalRootState().getListApprovalPhaseState(), Optional.empty()),
+							fromExport(approvalRootContentExport.getApprovalRootState().getListApprovalPhaseState(), Optional.of(mailDestCache)),
 							approvalRootContentExport.getApprovalRootState().getApprovalRecordDate()),
 					EnumAdaptor.valueOf(approvalRootContentExport.getErrorFlag().value, ErrorFlagImport.class));
 	}
@@ -315,7 +315,7 @@ public class ApprovalRootStateAdapterImpl implements ApprovalRootStateAdapter {
 		String companyID = AppContexts.user().companyId();
 		List<ApprovalPhaseStateExport> listApprovalPhaseState = approvalRootStatePub.getApprovalDetail(appID);
 		MailDestinationCache mailDestCache = createMailDestinationCache(companyID);
-		return fromExport(listApprovalPhaseState, Optional.empty());
+		return fromExport(listApprovalPhaseState, Optional.of(mailDestCache));
 	}
 	
 	private List<ApprovalPhaseStateImport_New> fromExport(List<ApprovalPhaseStateExport> listApprovalPhaseState, Optional<MailDestinationCache> opMailDestCache) {

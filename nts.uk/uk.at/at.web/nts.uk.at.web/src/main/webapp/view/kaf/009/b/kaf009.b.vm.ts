@@ -27,6 +27,11 @@ module nts.uk.at.view.kaf009_ref.b.viewmodel {
                                                         } }"></div>
                                 </div>
                             </div>
+							<div data-bind="component: { name: 'kaf000-b-component2', 
+														params: {
+															appType: appType,
+															appDispInfoStartupOutput: appDispInfoStartupOutput
+														} }"></div>
                             <div data-bind="component: { name: 'kaf000-b-component5', 
                                                         params: {
                                                             appType: appType,
