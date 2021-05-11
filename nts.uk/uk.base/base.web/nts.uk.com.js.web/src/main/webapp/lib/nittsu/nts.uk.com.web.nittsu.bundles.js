@@ -6307,7 +6307,7 @@ var nts;
                         .on('mouseup', function (evt) {
                         var button = cache.button, position = cache.position;
                         var target = evt.target, pageX = evt.pageX, pageY = evt.pageY;
-                        if (target.tagName !== 'BUTTON') {
+                        if (target.tagName !== 'BUTTON' && !$(target).closest('button').is(button)) {
                             if (button && position) {
                                 var x = position.x, y = position.y;
                                 if (x === pageX && y === pageY) {
@@ -6320,7 +6320,8 @@ var nts;
                         cache.position = null;
                     })
                         .on('mousedown', 'button', function (evt) {
-                        cache.button = evt.target;
+                        var target = evt.target;
+                        cache.button = target.tagName === 'BUTTON' ? target : $(target).closest('button').get(0);
                         cache.position = {
                             x: evt.pageX,
                             y: evt.pageY

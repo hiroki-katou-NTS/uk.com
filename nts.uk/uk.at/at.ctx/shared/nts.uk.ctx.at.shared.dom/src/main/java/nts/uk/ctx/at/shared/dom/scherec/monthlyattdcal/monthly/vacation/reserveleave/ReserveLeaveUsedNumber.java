@@ -5,6 +5,7 @@ import java.util.Optional;
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveUsedDayNumber;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AnnualLeaveUsedNumber;
 
 /**
  * 積立年休使用数
@@ -20,12 +21,12 @@ public class ReserveLeaveUsedNumber implements Cloneable {
 	private ReserveLeaveUsedDayNumber usedDaysBeforeGrant;
 	/** 使用日数付与後 */
 	private Optional<ReserveLeaveUsedDayNumber> usedDaysAfterGrant;
-	
+
 	/**
 	 * コンストラクタ
 	 */
 	public ReserveLeaveUsedNumber(){
-		
+
 		this.usedDays = new ReserveLeaveUsedDayNumber(0.0);
 		this.usedDaysBeforeGrant = new ReserveLeaveUsedDayNumber(0.0);
 		this.usedDaysAfterGrant = Optional.empty();
@@ -42,14 +43,14 @@ public class ReserveLeaveUsedNumber implements Cloneable {
 			ReserveLeaveUsedDayNumber usedDays,
 			ReserveLeaveUsedDayNumber usedDaysBeforeGrant,
 			Optional<ReserveLeaveUsedDayNumber> usedDaysAfterGrant){
-		
+
 		ReserveLeaveUsedNumber domain = new ReserveLeaveUsedNumber();
 		domain.usedDays = usedDays;
 		domain.usedDaysBeforeGrant = usedDaysBeforeGrant;
 		domain.usedDaysAfterGrant = usedDaysAfterGrant;
 		return domain;
 	}
-	
+
 	@Override
 	public ReserveLeaveUsedNumber clone() {
 		ReserveLeaveUsedNumber cloned = new ReserveLeaveUsedNumber();
@@ -68,7 +69,7 @@ public class ReserveLeaveUsedNumber implements Cloneable {
 		}
 		return cloned;
 	}
-	
+
 	/**
 	 * 日数を使用日数に加算する
 	 * @param days 日数
@@ -76,7 +77,7 @@ public class ReserveLeaveUsedNumber implements Cloneable {
 	public void addUsedDays(double days){
 		this.usedDays = new ReserveLeaveUsedDayNumber(this.usedDays.v() + days);
 	}
-	
+
 	/**
 	 * 日数を使用日数付与前に加算する
 	 * @param days 日数
@@ -84,7 +85,7 @@ public class ReserveLeaveUsedNumber implements Cloneable {
 	public void addUsedDaysBeforeGrant(double days){
 		this.usedDaysBeforeGrant = new ReserveLeaveUsedDayNumber(this.usedDaysBeforeGrant.v() + days);
 	}
-	
+
 	/**
 	 * 日数を使用日数付与後に加算する
 	 * @param days 日数
@@ -96,7 +97,26 @@ public class ReserveLeaveUsedNumber implements Cloneable {
 		this.usedDaysAfterGrant = Optional.of(new ReserveLeaveUsedDayNumber(
 				this.usedDaysAfterGrant.get().v() + days));
 	}
-	
+
+	/**
+	 * 使用数を加算する
+	 * @param days 日数
+	 * @param afterGrantAtr 付与後フラグ
+	 */
+	public void addUsedDays(double days, boolean afterGrantAtr){
+
+		addUsedDays(days);
+
+		if (afterGrantAtr) {
+			addUsedDaysAfterGrant(days);
+		} else {
+			addUsedDaysBeforeGrant(days);
+		}
+
+	}
+
+
+
 	/**
 	 * 付与前退避処理
 	 */
@@ -104,7 +124,7 @@ public class ReserveLeaveUsedNumber implements Cloneable {
 		// 合計残数を付与前に退避する
 		usedDaysBeforeGrant = new ReserveLeaveUsedDayNumber(usedDays.v());
 	}
-	
+
 	/**
 	 * 付与後退避処理
 	 */
