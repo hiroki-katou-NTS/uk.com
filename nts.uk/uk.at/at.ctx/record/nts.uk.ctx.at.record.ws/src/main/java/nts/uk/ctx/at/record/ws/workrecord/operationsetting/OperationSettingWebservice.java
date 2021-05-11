@@ -120,13 +120,6 @@ public class OperationSettingWebservice extends WebService {
 	}
 	
 	@POST
-	@Path("getApplicationName")
-	public List<String> getApplicationName(){
-		//huytodo call KDW007 function, output is 使用する申請種類, not 実績で使用する申請種類 (ApplicationType)
-		return null;
-	}
-	
-	@POST
 	@Path("getRestrictConfirmEmp")
 	public RestrictConfirmEmploymentDto getRestrictConfirmEmp(){
 		String companyId = AppContexts.user().companyId();
