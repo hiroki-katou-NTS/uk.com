@@ -61,15 +61,15 @@ public class AccountLockPolicy extends AggregateRoot {
 	}
 	
 	/**
-	 * 検証する
+	 * ポリシーに違反していたらロックする
 	 * @param require
 	 * @param userId
 	 * @return
 	 */
-	public Optional<LockoutData> validateAuthenticate(Require require, String userId) {
+	public Optional<LockoutData> lockIfViolated(Require require, String userId) {
 		
 		// 前回の失敗までしかまだ永続化されていないため、今回失敗分の１回を加算する
-		int failCount = countFail(require, userId) + 1;
+		int failCount = countFailure(require, userId) + 1;
 		if(failCount >= errorCount.v().intValue()) {
 			return Optional.of(LockoutData.autoLock(contractCode, userId, LoginMethod.NORMAL_LOGIN));
 		}
@@ -82,7 +82,7 @@ public class AccountLockPolicy extends AggregateRoot {
 	 * @param userId
 	 * @return
 	 */
-	private int countFail(Require require, String userId) {
+	private int countFailure(Require require, String userId) {
 		if(lockInterval.v() != 0) {
 			val startDateTime = GeneralDateTime.now().addMinutes(-lockInterval.valueAsMinutes());
 			return require.getFailureLog(userId, startDateTime, GeneralDateTime.now()).size();
