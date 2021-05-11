@@ -11,7 +11,7 @@ module nts.uk.ui.at.kdp013.a {
     import calendar = nts.uk.ui.components.fullcalendar;
 
     const DATE_FORMAT = 'YYYY-MM-DD';
-    const DATE_TIME_FORMAT = 'YYYY-MM-DD HH:mm';
+    const DATE_TIME_FORMAT = 'YYYY-MM-DDT00:00:00.000\\Z';
 
     const API: API = {
         ADD: '/screen/at/kdw013/a/add',
@@ -29,6 +29,15 @@ module nts.uk.ui.at.kdp013.a {
         REG_WORKTIME: '/screen/at/kdw013/registerWorkTime',
         START: '/screen/at/kdw013/a/start'
     };
+
+    const initialCache = (): ChangeDateParam => ({
+        displayPeriod: {
+            end: '',
+            start: ''
+        },
+        employeeId: '',
+        refDate: ''
+    })
 
     @handler({
         bindingName: 'kdw-toggle',
@@ -100,6 +109,24 @@ module nts.uk.ui.at.kdp013.a {
             const vm = this;
             const { $query, employees } = vm;
             const { mode } = $query;
+            const cache: ChangeDateParam = initialCache();
+            const sameCache = (params: ChangeDateParam) => {
+                if (cache.refDate === params.refDate) {
+                    if (cache.displayPeriod.end === params.displayPeriod.end) {
+                        if (cache.displayPeriod.start === params.displayPeriod.start) {
+                            return true;
+                        }
+                    }
+                }
+
+                return false;
+            };
+            const updateCache = (params: ChangeDateParam) => {
+                cache.displayPeriod.end = params.displayPeriod.end;
+                cache.displayPeriod.start = params.displayPeriod.start;
+
+                cache.refDate = params.refDate;
+            };
 
             vm.$toggle = {
                 save: ko.computed({
@@ -128,28 +155,42 @@ module nts.uk.ui.at.kdp013.a {
                 vm.editable(mode === '0');
             }
 
-            employees.subscribe(console.log);
+            ko.computed({
+                read: () => {
+                    const { employeeId } = vm.$user;
+                    const date = ko.unwrap(vm.initialDate);
+                    const dateRange = ko.unwrap(vm.dateRange);
+                    const { start, end } = dateRange;
+
+                    if (!!start && !!end) {
+                        const params: ChangeDateParam = {
+                            employeeId,
+                            refDate: moment(date).format(DATE_TIME_FORMAT),
+                            displayPeriod: {
+                                start: moment(start).format(DATE_TIME_FORMAT),
+                                end: moment(end).format(DATE_TIME_FORMAT)
+                            }
+                        };
+
+                        if (!sameCache(params)) {
+                            updateCache(params);
+
+                            vm
+                                .$ajax('at', API.CHANGE_DATE, params)
+                                .then((data: ChangeDateDto) => {
+                                    console.log(data);
+                                });
+                        }
+                    }
+                }
+            }).extend({ rateLimit: 250 });
         }
 
         mounted() {
             const vm = this;
 
-            vm.$ajax('at', API.START)
-                .then((data: StartProcessDto) => {
-                    debugger;
-                    vm.$settings(data);
-
-                    const { startManHourInputResultDto, refWorkplaceAndEmployeeDto } = data;
-
-                    if (!startManHourInputResultDto) {
-                        return;
-                    }
-
-                    const { taskFrameUsageSetting, tasks, workLocations } = startManHourInputResultDto;
-                    const { employeeInfos, lstEmployeeInfo, workplaceInfos } = refWorkplaceAndEmployeeDto;
-
-                    const employees = _.map(employeeInfos, ({ }) => ({}));
-                });
+            // get settings
+            vm.$ajax('at', API.START).then(vm.$settings);
 
             _.extend(window, { vm });
         }
@@ -174,23 +215,8 @@ module nts.uk.ui.at.kdp013.a {
         // UKDesign.UniversalK.就業.KDW_日別実績.KDW013_工数入力.A:工数入力.メニュー別OCD.日付を変更する
         datesSet(start: Date, end: Date) {
             const vm = this;
-            const { initialDate, $user, dateRange } = vm;
-            const { employeeId } = $user;
-            const refDate = ko.unwrap(initialDate);
 
-            dateRange({ start, end });
-
-            const params: ChangeDateParam = {
-                employeeId,
-                refDate: moment(refDate).toISOString(),
-                displayPeriod: {
-                    start: moment(start).toISOString(),
-                    end: moment(end).toISOString()
-                }
-            };
-
-            vm.$ajax('at', API.CHANGE_DATE, params)
-                .then(() => { });
+            vm.dateRange({ start, end });
         }
 
         confirm() {
@@ -348,74 +374,8 @@ module nts.uk.ui.at.kdp013.a {
             </ul>`
         })
         export class Kdw013ApprovedComponent extends ko.ViewModel {
-            constructor(private params: Kdw013ApprovedParams) {
+            constructor(public params: Kdw013ApprovedParams) {
                 super();
-
-                const vm = this;
-                const { $settings } = params;
-
-
-                ko.computed({
-                    read: () => {
-                        const $sets = ko.unwrap($settings);
-
-                        if ($sets) {
-                            const { refWorkplaceAndEmployeeDto } = $sets;
-                            const { workplaceInfos, lstEmployeeInfo, employeeInfos } = refWorkplaceAndEmployeeDto;
-                        }
-
-                    }
-                });
-            }
-
-            mounted() {
-                const vm = this;
-                const { params } = vm;
-                const { mode, confirmers } = params;
-                const subscribe = (mode: boolean) => {
-                    // reload data
-                    $.Deferred()
-                        .resolve([{
-                            id: '000001',
-                            code: '000001',
-                            name: '日通　太郎',
-                            selected: true
-                        }, {
-                            id: '000002',
-                            code: '000002',
-                            name: '日通　一郎',
-                            selected: false
-                        }, {
-                            id: '000003',
-                            code: '000003',
-                            name: '鈴木　太郎',
-                            selected: false
-                        }, {
-                            id: '000004',
-                            code: '000004',
-                            name: '加藤　良太郎',
-                            selected: false
-                        }, {
-                            id: '000005',
-                            code: '000005',
-                            name: '佐藤　花子',
-                            selected: false
-                        }, {
-                            id: '000006',
-                            code: '000006',
-                            name: '佐藤　龍馬',
-                            selected: false
-                        }, {
-                            id: '000007',
-                            code: '000007',
-                            name: '日通　二郎',
-                            selected: false
-                        }])
-                        .then((data: any) => confirmers(data));
-                };
-
-                subscribe(mode());
-                mode.subscribe(subscribe);
             }
         }
     }
@@ -439,16 +399,6 @@ module nts.uk.ui.at.kdp013.a {
         export class Kdw013EventComponent extends ko.ViewModel {
             constructor(public params: EventParams) {
                 super();
-
-                const vm = this;
-                const { $user } = vm;
-                const { } = $user;
-                const { items } = params;
-
-                $.Deferred()
-                    // emulate ajax method
-                    .resolve([])
-                    .then((data: any[]) => items(data));
             }
         }
 
@@ -457,7 +407,6 @@ module nts.uk.ui.at.kdp013.a {
             mode: KnockoutComputed<boolean>;
         };
     }
-
 
     const initData = () => {
         const vm = new ko.ViewModel();

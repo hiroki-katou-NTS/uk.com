@@ -174,8 +174,6 @@ module nts.uk.ui.at.kdp013.a {
     };
 
     export type RegisterWorkContentParam = {
-
-
         /** 対象日 */
         date: string;
 
@@ -288,20 +286,85 @@ module nts.uk.ui.at.kdp013.a {
         displayPeriod: DatePeriodDto;
     };
 
+    export type ChangeDateDto = SelectTargetEmployeeDto;
+
     export type SelectTargetEmployeeDto = {
-        // よく利用作業一覧：List<作業グループ>
-        lstWorkGroupDto: WorkGroupDto[];
 
-        // List＜確認者> 
-        lstConfirmerDto: ConfirmerDto[];
-
-        // List<日別勤怠(Work)>
-        integrationOfDailyDto: IntegrationOfDailyDto[];
+        // List<作業グループ>
+        workGroupDtos: WorkGroupDto[];
 
         // 修正可能開始日付
-        modifyableStartDate: string;
+        workCorrectionStartDate: string;
+
+        // List＜確認者>
+        lstComfirmerDto: ConfirmerDto[];
+
+        // List<作業実績詳細>
+        lstWorkRecordDetailDto: WorkRecordDetailDto[];
     };
 
+    export type WorkRecordDetailDto = {
+
+        // 年月日
+        date: string;
+
+        // 社員ID
+        sId: string;
+
+        // 作業詳細リスト
+        lstWorkDetailsParamDto: WorkDetailsParamDto[];
+
+        // 実績内容
+        actualContent: ActualContentDto;
+
+    };
+
+    export type ActualContentDto = {
+
+        // 休憩リスト
+        breakTimeSheets: BreakTimeSheetDto[];
+
+        // 休憩時間
+        breakHours: number | null;
+
+        // 終了時刻
+        end: WorkTimeInformationDto;
+
+        // 総労働時間
+        totalWorkingHours: number | null;
+
+        // 開始時刻
+        start: WorkTimeInformationDto;
+    };
+
+    export type BreakTimeSheetDto = {
+        /** 開始: 勤怠打刻 */
+        start: number | null;
+
+        /** 終了: 勤怠打刻 */
+        end: number | null;
+
+        /** 休憩時間: 勤怠打刻 */
+        breakTime: number | null;
+
+        /** 休憩枠NO: 休憩枠NO */
+        no: number;
+    };
+
+    export type WorkTimeInformationDto = {
+        // 時刻変更理由
+        reasonTimeChange: ReasonTimeChangeDto;
+        // 時刻 
+        timeWithDay: number | null;
+    };
+
+    export type ReasonTimeChangeDto = {
+        //時刻変更手段
+        timeChangeMeans: number | null;
+
+        //打刻方法
+        engravingMethod: number | null;
+    };
 
     export type ConfirmerDto = {
         /** 社員ID */

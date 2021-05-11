@@ -5,9 +5,11 @@ module nts.uk.ui.at.kdp013.c {
         readonly SELECT: string;
     };
 
+    export type TASK_FRAME_NO = 1 | 2 | 3 | 4 | 5;
+
     export type TaskDto = {
         code: string;
-        taskFrameNo: number | null;
+        taskFrameNo: TASK_FRAME_NO | null;
         childTaskList: string[];
         expirationStartDate: string;
         expirationEndDate: string;
@@ -62,7 +64,6 @@ module nts.uk.ui.at.kdp013.c {
          * 備考
          */
         taskNote: string;
-
     };
 
     export type StartWorkInputPanelParam = {
