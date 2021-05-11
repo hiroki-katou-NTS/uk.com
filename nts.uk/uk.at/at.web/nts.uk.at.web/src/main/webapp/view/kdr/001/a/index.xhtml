@@ -78,7 +78,7 @@
 	                    optionsValue: 'id',
 	                    optionsText: 'name',
 	                    value: $vm.selectedId,
-	                    enable: true,
+	                    enable: $vm.getCheckauthor,
 	                    name: '#{i18n.getText('KDR001_59')}'
 	                    }" style="width:100px; position: relative; top: 25px;">
                     </div>
@@ -93,7 +93,7 @@
 							value: standardCode,
 							optionsText: 'name',
 							editable: false,
-							enable: enable(),
+							enable: enable()&amp;&amp; $vm.getCheckauthor,
 							columns: [
 								{ prop: 'cd', length: 1 },
 								{ prop: 'name', length: 14}
@@ -102,7 +102,7 @@
                             </div>
                             <!-- A4_3  -->
                             <div style="display: inline-block">
-                                <button data-bind="click: function(){ return openKDR001b(0)},enable: enable();"
+                                <button data-bind="click: function(){ return openKDR001b(0)},enable: enable()&amp;&amp; $vm.getCheckauthor;"
                                         tabindex="7"
                                         style="margin-left: 20px; position: relative; top: -12px;">#{i18n.getText('KDR001_31')}</button>
                             </div>
@@ -117,7 +117,7 @@
 							value: freeCode,
 							optionsText: 'name',
 							editable: false,
-							enable: !enable(),
+							enable: !enable() &amp;&amp; $vm.getCheckauthor,
 							columns: [
 								{ prop: 'cd', length: 1 },
 								{ prop: 'name', length: 14 }
@@ -125,7 +125,7 @@
                             </div>
                             <!-- A4_6  -->
                             <div style="display: inline-block">
-                                <button data-bind="click: function(){return openKDR001b(1) } , enable: !enable()"
+                                <button data-bind="click: function(){return openKDR001b(1) } , enable: !enable()&amp;&amp; $vm.getCheckauthor"
                                         tabindex="9"
                                         style="margin-left: 20px; position: relative; top: -12px;">#{i18n.getText('KDR001_61')}</button>
                             </div>

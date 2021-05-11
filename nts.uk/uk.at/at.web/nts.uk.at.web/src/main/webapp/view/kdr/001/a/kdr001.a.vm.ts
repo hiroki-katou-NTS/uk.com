@@ -84,6 +84,8 @@ module nts.uk.at.view.kdr001.a.viewmodel {
         listFreeSetting:KnockoutObservableArray<ItemNewModel> = ko.observableArray([]);
         listStandard: KnockoutObservableArray<ItemNewModel> = ko.observableArray([]);
 
+        getCheckauthor:KnockoutObservable<boolean> = ko.observable(false);
+
         //end
         constructor() {
             var self = this;
@@ -100,6 +102,7 @@ module nts.uk.at.view.kdr001.a.viewmodel {
                     self.showClosure(true);
                 }
             });
+
             self.dateValue = ko.observable("");
             self.selectedEmployeeCode = ko.observableArray([]);
             self.alreadySettingPersonal = ko.observableArray([]);
@@ -267,13 +270,15 @@ module nts.uk.at.view.kdr001.a.viewmodel {
             $.when(service.findAll(),
                 service.getDate(),
                 service.getCurrentLoginerRole(),
+                service.getCheckAuthor(),
                 nts.uk.characteristics.restore("UserSpecific_" + user.employeeId)
             ).done((holidayRemainings: any,
                     dateData: GetDate,
                     role: any,
+                    author:boolean,
                     userSpecific) => {
                 self.loadAllHolidayRemaining(holidayRemainings);
-
+                self.getCheckauthor(author);
                 let startDate = moment(dateData ? dateData.startDate || moment() : moment());
                 let endDate = moment(dateData ? dateData.endDate || moment() : moment());
                 //画面項目「A3_4：終了年月」にパラメータ「当月+１月」をセットする
@@ -304,6 +309,7 @@ module nts.uk.at.view.kdr001.a.viewmodel {
                 // Init component.
                 self.reloadCcg001();
                 dfd.resolve(self);
+
             }).fail(function (res) {
                 nts.uk.ui.dialog.alertError({messageId: res.messageId});
             }).always(() => {

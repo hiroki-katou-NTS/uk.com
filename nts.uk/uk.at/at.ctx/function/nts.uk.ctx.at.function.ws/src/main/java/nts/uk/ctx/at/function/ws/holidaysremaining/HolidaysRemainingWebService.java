@@ -8,12 +8,15 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
+import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.enums.EnumConstant;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.function.app.command.holidaysremaining.*;
 import nts.uk.ctx.at.function.app.find.holidaysremaining.*;
+import nts.uk.ctx.at.function.app.query.outputworkstatustable.CheckDailyPerformAuthorQuery;
 import nts.uk.ctx.at.function.dom.holidaysremaining.BreakSelection;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.i18n.resource.I18NResourcesForUK;
 
 @Path("at/function/holidaysremaining")
@@ -35,6 +38,10 @@ public class HolidaysRemainingWebService extends WebService {
 
 	@Inject
 	private I18NResourcesForUK i18n;
+
+	@Inject
+	private CheckDailyPerformAuthorQuery checkDailyPerformAuthor;
+
 
 	@POST
 	@Path("findAll")
@@ -111,5 +118,12 @@ public class HolidaysRemainingWebService extends WebService {
 	@Path("getVariousVacationControl")
 	public VariousVacationControlDto getVariousVacationControl() {
 		return this.hdRemainManageFinder.getVariousVacationControl();
+	}
+
+	@POST
+	@Path("getCheckAuthor")
+	public boolean getCheckAuthor() {
+		val roleID = AppContexts.user().roles().forAttendance();
+		return checkDailyPerformAuthor.checkDailyPerformAuthor(roleID);
 	}
 }
