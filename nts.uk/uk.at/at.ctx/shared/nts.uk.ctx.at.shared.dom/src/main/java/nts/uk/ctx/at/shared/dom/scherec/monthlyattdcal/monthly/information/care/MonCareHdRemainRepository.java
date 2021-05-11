@@ -17,7 +17,7 @@ public interface MonCareHdRemainRepository {
 	 * @param closureDate
 	 * @return
 	 */
-	Optional<MonCareHdRemain> find(String employeeId, YearMonth yearMonth,
+	Optional<CareRemNumEachMonth> find(String employeeId, YearMonth yearMonth,
 			ClosureId closureId, ClosureDate closureDate);
 	
 	/**
@@ -26,7 +26,7 @@ public interface MonCareHdRemainRepository {
 	 * @param yearMonth
 	 * @return
 	 */
-	List<MonCareHdRemain> findByYearMonthOrderByStartYmd(String employeeId, YearMonth yearMonth);
+	List<CareRemNumEachMonth> findByYearMonthOrderByStartYmd(String employeeId, YearMonth yearMonth);
 	
 	/**
 	 * 
@@ -35,7 +35,7 @@ public interface MonCareHdRemainRepository {
 	 * @param closureId
 	 * @return
 	 */
-	List<MonCareHdRemain> findByYMAndClosureIdOrderByStartYmd(
+	List<CareRemNumEachMonth> findByYMAndClosureIdOrderByStartYmd(
 			String employeeId, YearMonth yearMonth, ClosureId closureId);
 	
 	/**
@@ -46,7 +46,7 @@ public interface MonCareHdRemainRepository {
 	 * @param closureDate
 	 * @return
 	 */
-	List<MonCareHdRemain> findByEmployees(List<String> employeeIds, YearMonth yearMonth,
+	List<CareRemNumEachMonth> findByEmployees(List<String> employeeIds, YearMonth yearMonth,
 			ClosureId closureId, ClosureDate closureDate);
 
 	/**
@@ -55,13 +55,13 @@ public interface MonCareHdRemainRepository {
 	 * @param yearMonths
 	 * @return
 	 */
-	List<MonCareHdRemain> findBySidsAndYearMonths(List<String> employeeIds, List<YearMonth> yearMonths);
+	List<CareRemNumEachMonth> findBySidsAndYearMonths(List<String> employeeIds, List<YearMonth> yearMonths);
 
 	/**
 	 * 
 	 * @param attendanceTimeOfMonthly
 	 */
-	void persistAndUpdate(MonCareHdRemain remarksMonthlyRecord);
+	void persistAndUpdate(CareRemNumEachMonth remarksMonthlyRecord);
 
 	/**
 	 * 

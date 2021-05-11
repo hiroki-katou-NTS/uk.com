@@ -4,7 +4,7 @@ import lombok.Getter;
 import nts.uk.ctx.at.record.app.command.monthly.MonthlyWorkCommonCommand;
 import nts.uk.ctx.at.record.app.find.monthly.root.MonthlyChildCareHdRemainDto;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ConvertibleAttendanceItem;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.information.childnursing.MonChildHdRemain;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.information.childnursing.ChildcareRemNumEachMonth;
 
 public class MonthChildCareRemainCommand extends MonthlyWorkCommonCommand{
 
@@ -23,7 +23,7 @@ public class MonthChildCareRemainCommand extends MonthlyWorkCommonCommand{
 	}
 
 	@Override
-	public MonChildHdRemain toDomain() {
+	public ChildcareRemNumEachMonth toDomain() {
 		return data.toDomain(getEmployeeId(), getYearMonth(), getClosureId(), getClosureDate());
 	}
 

@@ -6,8 +6,8 @@ import java.util.Optional;
 
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.information.care.MonCareHdRemain;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.information.childnursing.MonChildHdRemain;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.information.care.CareRemNumEachMonth;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.information.childnursing.ChildcareRemNumEachMonth;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.ClosureStatus;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.absenceleave.AbsenceLeaveRemainData;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AnnLeaRemNumEachMonth;
@@ -61,9 +61,9 @@ public interface RemainMergeRepository {
 	
 	void persistAndUpdate(RemainMerge domain);
 	
-	void persistAndUpdate(MonCareHdRemain domain);
+	void persistAndUpdate(CareRemNumEachMonth domain);
 	
-	void persistAndUpdate(MonChildHdRemain domain);
+	void persistAndUpdate(ChildcareRemNumEachMonth domain);
 	
 	void persistAndUpdate(SpecialHolidayRemainData domain);
 	

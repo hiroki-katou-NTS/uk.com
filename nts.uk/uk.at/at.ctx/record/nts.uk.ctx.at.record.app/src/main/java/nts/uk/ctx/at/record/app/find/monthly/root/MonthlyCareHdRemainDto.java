@@ -22,7 +22,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.u
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.information.care.MonCareHdMinutes;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.information.care.MonCareHdNumber;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.information.care.MonCareHdRemain;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.information.care.CareRemNumEachMonth;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.ClosureStatus;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 
@@ -93,9 +93,9 @@ public class MonthlyCareHdRemainDto extends MonthlyItemCommon {
 		return employeeId;
 	}
 	@Override
-	public MonCareHdRemain toDomain(String employeeId, YearMonth ym, int closureID, ClosureDateDto closureDate) {
+	public CareRemNumEachMonth toDomain(String employeeId, YearMonth ym, int closureID, ClosureDateDto closureDate) {
 		
-		return new MonCareHdRemain(employeeId, ym, ConvertHelper.getEnum(closureID, ClosureId.class), 
+		return new CareRemNumEachMonth(employeeId, ym, ConvertHelper.getEnum(closureID, ClosureId.class), 
 				new Day(closureDate == null ? 1 : closureDate.getClosureDay()), 
 				closureDate == null ? 0 : closureDate.getLastDayOfMonth() ? 1 : 0, 
 				closureStatus, datePeriod == null ? null : datePeriod.getStart(), datePeriod == null ? null : datePeriod.getEnd(),
@@ -116,7 +116,7 @@ public class MonthlyCareHdRemainDto extends MonthlyItemCommon {
 		return ym;
 	}
 	
-	public static MonthlyCareHdRemainDto from(MonCareHdRemain domain){
+	public static MonthlyCareHdRemainDto from(CareRemNumEachMonth domain){
 		MonthlyCareHdRemainDto dto = new MonthlyCareHdRemainDto();
 		if (domain != null) {
 			dto.setEmployeeId(domain.getEmployeeId());

@@ -34,10 +34,10 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremain
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveUsedDayNumber;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.information.care.MonCareHdMinutes;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.information.care.MonCareHdNumber;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.information.care.MonCareHdRemain;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.information.care.CareRemNumEachMonth;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.information.childnursing.MonChildHdMinutes;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.information.childnursing.MonChildHdNumber;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.information.childnursing.MonChildHdRemain;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.information.childnursing.ChildcareRemNumEachMonth;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.remainmerge.MonthMergeKey;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.remainmerge.RemainMerge;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.ClosureStatus;
@@ -3063,7 +3063,7 @@ public class KrcdtMonRemain extends ContractUkJpaEntity implements Serializable 
 	}
 
 	/** KRCDT_MON_CHILD_HD_REMAIN **/
-	public void toEntityChildRemainData(MonChildHdRemain domain){
+	public void toEntityChildRemainData(ChildcareRemNumEachMonth domain){
 		this.deleteChildRemainData();
 		if (domain == null) return;
 		this.closureStatus = domain.getClosureStatus().value;
@@ -3087,7 +3087,7 @@ public class KrcdtMonRemain extends ContractUkJpaEntity implements Serializable 
 	}
 
 	/** KRCDT_MON_CARE_HD_REMAIN **/
-	public void toEntityCareRemainData(MonCareHdRemain domain){
+	public void toEntityCareRemainData(CareRemNumEachMonth domain){
 		this.deleteCareRemainData();
 		if (domain == null) return;
 		this.closureStatus = domain.getClosureStatus().value;
@@ -4357,9 +4357,9 @@ public class KrcdtMonRemain extends ContractUkJpaEntity implements Serializable 
 	 * 子の看護月別残数データ
 	 * @return MonChildHdRemain
 	 */
-	public MonChildHdRemain toDomainMonChildHdRemain(){
+	public ChildcareRemNumEachMonth toDomainMonChildHdRemain(){
 
-		return new MonChildHdRemain(
+		return new ChildcareRemNumEachMonth(
 				this.krcdtMonRemainPk.getEmployeeId(),
 				new YearMonth(this.krcdtMonRemainPk.getYearMonth()),
 				EnumAdaptor.valueOf(this.krcdtMonRemainPk.getClosureId(), ClosureId.class),
@@ -4381,9 +4381,9 @@ public class KrcdtMonRemain extends ContractUkJpaEntity implements Serializable 
 	 * 介護休暇月別残数データ
 	 * @return MonCareHdRemain
 	 */
-	public MonCareHdRemain toDomainMonCareHdRemain(){
+	public CareRemNumEachMonth toDomainMonCareHdRemain(){
 
-		return new MonCareHdRemain(
+		return new CareRemNumEachMonth(
 				this.krcdtMonRemainPk.getEmployeeId(),
 				new YearMonth(this.krcdtMonRemainPk.getYearMonth()),
 				EnumAdaptor.valueOf(this.krcdtMonRemainPk.getClosureId(), ClosureId.class),

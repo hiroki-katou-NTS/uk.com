@@ -12,8 +12,8 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceTimeOfM
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.IntegrationOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.affiliation.AffiliationInfoOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.anyitem.AnyItemOfMonthly;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.information.care.MonCareHdRemain;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.information.childnursing.MonChildHdRemain;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.information.care.CareRemNumEachMonth;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.information.childnursing.ChildcareRemNumEachMonth;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.remarks.RemarksMonthlyRecord;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.absenceleave.AbsenceLeaveRemainData;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AnnLeaRemNumEachMonth;
@@ -60,9 +60,9 @@ public interface MonthlyRecordToAttendanceItemConverter extends AttendanceItemCo
 
 	MonthlyRecordToAttendanceItemConverter withAbsenceLeave(AbsenceLeaveRemainData domain);
 
-	MonthlyRecordToAttendanceItemConverter withMonChildHd(MonChildHdRemain monChildHdRemain);
+	MonthlyRecordToAttendanceItemConverter withMonChildHd(ChildcareRemNumEachMonth monChildHdRemain);
 
-	MonthlyRecordToAttendanceItemConverter withMonCareHd(MonCareHdRemain monCareHdRemain);
+	MonthlyRecordToAttendanceItemConverter withMonCareHd(CareRemNumEachMonth monCareHdRemain);
 
 	MonthlyRecordToAttendanceItemConverter withRemarks(List<RemarksMonthlyRecord> domain);
 	
@@ -80,9 +80,9 @@ public interface MonthlyRecordToAttendanceItemConverter extends AttendanceItemCo
 	
 	Optional<AnnLeaRemNumEachMonth> toAnnLeave();
 	
-	Optional<MonCareHdRemain> toMonCareHd();
+	Optional<CareRemNumEachMonth> toMonCareHd();
 	
-	Optional<MonChildHdRemain> toMonChildHd();
+	Optional<ChildcareRemNumEachMonth> toMonChildHd();
 	
 	Optional<RsvLeaRemNumEachMonth> toRsvLeave();
 	

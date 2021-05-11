@@ -23,8 +23,8 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.monthly.TimeOfMonthlyRepository;
 import nts.uk.ctx.at.record.infra.entity.monthly.mergetable.KrcdtMonMergePk;
 import nts.uk.ctx.at.record.infra.entity.monthly.mergetable.KrcdtMonRemain;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.information.care.MonCareHdRemain;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.information.childnursing.MonChildHdRemain;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.information.care.CareRemNumEachMonth;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.information.childnursing.ChildcareRemNumEachMonth;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.remainmerge.MonthMergeKey;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.remainmerge.RemainMerge;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.remainmerge.RemainMergeRepository;
@@ -347,7 +347,7 @@ public class JpaRemainMerge extends JpaRepository implements RemainMergeReposito
 	
 	/** 登録および更新 */
 	@Override
-	public void persistAndUpdate(MonCareHdRemain domain) {
+	public void persistAndUpdate(CareRemNumEachMonth domain) {
 		
 		internalPersistAndUpdate(new KrcdtMonMergePk(	domain.getEmployeeId(),
 														domain.getYearMonth().v(),
@@ -422,7 +422,7 @@ public class JpaRemainMerge extends JpaRepository implements RemainMergeReposito
 	
 	/** 登録および更新 */
 	@Override
-	public void persistAndUpdate(MonChildHdRemain domain) {
+	public void persistAndUpdate(ChildcareRemNumEachMonth domain) {
 		
 		internalPersistAndUpdate(new KrcdtMonMergePk(	domain.getEmployeeId(),
 														domain.getYearMonth().v(),

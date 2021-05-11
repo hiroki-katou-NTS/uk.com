@@ -20,9 +20,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.u
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ValueType;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.information.childnursing.MonChildHdMinutes;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.information.childnursing.MonChildHdNumber;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.information.childnursing.MonChildHdRemain;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.information.childnursing.ChildcareRemNumEachMonth;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.ClosureStatus;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 
@@ -36,7 +34,7 @@ public class MonthlyChildCareHdRemainDto extends MonthlyItemCommon {
 
 	/***/
 	private static final long serialVersionUID = 1L;
-	
+
 	/** 社員ID: 社員ID */
 	private String employeeId;
 
@@ -51,23 +49,23 @@ public class MonthlyChildCareHdRemainDto extends MonthlyItemCommon {
 	/** 締め日: 日付 */
 	// @AttendanceItemLayout(jpPropertyName = "締め日", layout = "B")
 	private ClosureDateDto closureDate;
-	
+
 	private ClosureStatus closureStatus = ClosureStatus.UNTREATED;
 
 	/** 締め期間: 期間 */
 	@AttendanceItemLayout(jpPropertyName = PERIOD, layout = LAYOUT_A)
 	private DatePeriodDto datePeriod;
-	
+
 	/** 使用日数 */
 	@AttendanceItemLayout(jpPropertyName = USAGE + DAYS, layout = LAYOUT_B)
 	@AttendanceItemValue(type = ValueType.COUNT_WITH_DECIMAL)
 	private Double usedDays;
-	
+
 	/** 使用日数付与前 */
 	@AttendanceItemLayout(jpPropertyName = USAGE + DAYS + BEFORE, layout = LAYOUT_C)
 	@AttendanceItemValue(type = ValueType.COUNT_WITH_DECIMAL)
 	private Double usedDaysBefore;
-	
+
 	/** 使用日数付与後 */
 	@AttendanceItemLayout(jpPropertyName = USAGE + DAYS + AFTER, layout = LAYOUT_D)
 	@AttendanceItemValue(type = ValueType.COUNT_WITH_DECIMAL)
@@ -77,46 +75,46 @@ public class MonthlyChildCareHdRemainDto extends MonthlyItemCommon {
 	@AttendanceItemLayout(jpPropertyName = USAGE + TIME, layout = LAYOUT_E)
 	@AttendanceItemValue(type = ValueType.TIME)
 	private Integer usedMinutes;
-	
+
 	/** 使用時間付与前 */
 	@AttendanceItemLayout(jpPropertyName = USAGE + TIME + BEFORE, layout = LAYOUT_F)
 	@AttendanceItemValue(type = ValueType.TIME)
 	private Integer usedMinutesBefore;
-	
+
 	/** 使用時間付与後 */
 	@AttendanceItemLayout(jpPropertyName = USAGE + TIME + AFTER, layout = LAYOUT_G)
 	@AttendanceItemValue(type = ValueType.TIME)
 	private Integer usedMinutesAfter;
-	
+
 	@Override
 	public String employeeId() {
 		return employeeId;
 	}
 	@Override
-	public MonChildHdRemain toDomain(String employeeId, YearMonth ym, int closureID, ClosureDateDto closureDate) {
-		
-		return new MonChildHdRemain(employeeId, ym, ConvertHelper.getEnum(closureID, ClosureId.class), 
-				new Day(closureDate == null ? 1 : closureDate.getClosureDay()), 
-				closureDate == null ? 0 : closureDate.getLastDayOfMonth() ? 1 : 0, 
+	public ChildcareRemNumEachMonth toDomain(String employeeId, YearMonth ym, int closureID, ClosureDateDto closureDate) {
+
+		return new ChildcareRemNumEachMonth(employeeId, ym, ConvertHelper.getEnum(closureID, ClosureId.class),
+				new Day(closureDate == null ? 1 : closureDate.getClosureDay()),
+				closureDate == null ? 0 : closureDate.getLastDayOfMonth() ? 1 : 0,
 				closureStatus, datePeriod == null ? null : datePeriod.getStart(), datePeriod == null ? null : datePeriod.getEnd(),
-				toNumber(usedDays), toNumber(usedDaysBefore), toNumber(usedDaysAfter), 
+				toNumber(usedDays), toNumber(usedDaysBefore), toNumber(usedDaysAfter),
 				toMinutes(usedMinutes), toMinutes(usedMinutesBefore), toMinutes(usedMinutesAfter));
 	}
-	
+
 	private MonChildHdNumber toNumber(Double number){
 		return new MonChildHdNumber(number == null ? 0.0 : number);
 	}
-	
+
 	private MonChildHdMinutes toMinutes(Integer minutes){
 		return new MonChildHdMinutes(minutes == null ? 0 : minutes);
 	}
-	
+
 	@Override
 	public YearMonth yearMonth() {
 		return ym;
 	}
-	
-	public static MonthlyChildCareHdRemainDto from(MonChildHdRemain domain){
+
+	public static MonthlyChildCareHdRemainDto from(ChildcareRemNumEachMonth domain){
 		MonthlyChildCareHdRemainDto dto = new MonthlyChildCareHdRemainDto();
 		if (domain != null) {
 			dto.setEmployeeId(domain.getEmployeeId());
@@ -158,14 +156,14 @@ public class MonthlyChildCareHdRemainDto extends MonthlyItemCommon {
 	public AttendanceItemDataGate newInstanceOf(String path) {
 		if (PERIOD.equals(path)) {
 			return new DatePeriodDto();
-		} 
+		}
 		return super.newInstanceOf(path);
 	}
 	@Override
 	public Optional<AttendanceItemDataGate> get(String path) {
 		if (PERIOD.equals(path)) {
 			return Optional.ofNullable(datePeriod);
-		} 
+		}
 		return super.get(path);
 	}
 	@Override
@@ -206,7 +204,7 @@ public class MonthlyChildCareHdRemainDto extends MonthlyItemCommon {
 	public void set(String path, AttendanceItemDataGate value) {
 		if (PERIOD.equals(path)) {
 			datePeriod = (DatePeriodDto) value;
-		} 
+		}
 	}
 	@Override
 	public boolean isRoot() {

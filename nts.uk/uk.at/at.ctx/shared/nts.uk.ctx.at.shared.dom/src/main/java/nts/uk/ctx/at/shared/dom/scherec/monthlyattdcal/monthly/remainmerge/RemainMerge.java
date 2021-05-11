@@ -5,8 +5,8 @@ import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.information.care.MonCareHdRemain;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.information.childnursing.MonChildHdRemain;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.information.care.CareRemNumEachMonth;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.information.childnursing.ChildcareRemNumEachMonth;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.absenceleave.AbsenceLeaveRemainData;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AnnLeaRemNumEachMonth;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.dayoff.MonthlyDayoffRemainData;
@@ -26,8 +26,8 @@ public class RemainMerge {
 	List<SpecialHolidayRemainData> specialHolidayRemainData = new ArrayList<>();
 	MonthlyDayoffRemainData monthlyDayoffRemainData;
 	AbsenceLeaveRemainData absenceLeaveRemainData;
-	MonChildHdRemain monChildHdRemain;
-	MonCareHdRemain monCareHdRemain;
+	ChildcareRemNumEachMonth monChildHdRemain;
+	CareRemNumEachMonth monCareHdRemain;
 	
 	public RemainMerge(){
 	}

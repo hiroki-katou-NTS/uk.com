@@ -16,8 +16,8 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.IntegrationOfMont
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.affiliation.AffiliationInfoOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.anyitem.AnyItemOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.erroralarm.EmployeeMonthlyPerError;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.information.care.MonCareHdRemain;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.information.childnursing.MonChildHdRemain;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.information.care.CareRemNumEachMonth;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.information.childnursing.ChildcareRemNumEachMonth;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.absenceleave.AbsenceLeaveRemainData;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AnnLeaRemNumEachMonth;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.dayoff.MonthlyDayoffRemainData;
@@ -62,9 +62,9 @@ public class AggregateMonthlyRecordValue {
 	/** 特別休暇月別残数データ */
 	private List<SpecialHolidayRemainData> specialLeaveRemainList;
 	/** 介護休暇月別残数データ */
-	private Optional<MonCareHdRemain> monCareHdRemain;
+	private Optional<CareRemNumEachMonth> monCareHdRemain;
 	/** 子の看護休暇月別残数データ */
-	private Optional<MonChildHdRemain> monChildHdRemain;
+	private Optional<ChildcareRemNumEachMonth> monChildHdRemain;
 
 //	/** 年休積立年休の集計結果 */
 //	@Setter

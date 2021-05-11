@@ -12,8 +12,8 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.affiliation.Affil
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.anyitem.AnyItemOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.editstate.EditStateOfMonthlyPerformance;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.erroralarm.EmployeeMonthlyPerError;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.information.care.MonCareHdRemain;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.information.childnursing.MonChildHdRemain;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.information.care.CareRemNumEachMonth;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.information.childnursing.ChildcareRemNumEachMonth;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.remarks.RemarksMonthlyRecord;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.absenceleave.AbsenceLeaveRemainData;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AnnLeaRemNumEachMonth;
@@ -56,9 +56,9 @@ public class IntegrationOfMonthly {
 	/** 月別実績の備考 */
 	private List<RemarksMonthlyRecord> remarks;
 	/** 介護休暇月別残数データ */
-	private Optional<MonCareHdRemain> care;
+	private Optional<CareRemNumEachMonth> care;
 	/** 子の看護休暇月別残数データ*/
-	private Optional<MonChildHdRemain> childCare;
+	private Optional<ChildcareRemNumEachMonth> childCare;
 	/** 月別実績の編集状態 */
 	private List<EditStateOfMonthlyPerformance> editState;
 	
@@ -106,8 +106,8 @@ public class IntegrationOfMonthly {
 			Optional<MonthlyDayoffRemainData> monthlyDayoffRemain,
 			List<SpecialHolidayRemainData> specialLeaveRemainList,
 			List<RemarksMonthlyRecord> remarks,
-			Optional<MonCareHdRemain> care,
-			Optional<MonChildHdRemain> childCare){
+			Optional<CareRemNumEachMonth> care,
+			Optional<ChildcareRemNumEachMonth> childCare){
 	
 		this.attendanceTime = attendanceTime;
 		this.affiliationInfo = affiliationInfo;
