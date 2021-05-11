@@ -41,6 +41,7 @@ module nts.uk.at.view.ksu003.a.model {
 		}
 		return "";
 	}
+	
 	export function checkColorA6(workInfo: any) {
 		let workTypeColor = "";
 		if (workInfo === model.EditStateSetting.HAND_CORRECTION_MYSELF) {

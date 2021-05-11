@@ -14,6 +14,7 @@ module nts.uk.at.view.ksu003.a {
 			initEvent3();
 		});
 	});
+	
 	function initEvent(): void {
 		//click btnA5
 		$('#A5_1').ntsPopup({
