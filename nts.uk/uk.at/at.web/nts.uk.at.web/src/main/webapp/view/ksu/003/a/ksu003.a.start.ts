@@ -11,6 +11,7 @@ module nts.uk.at.view.ksu003.a {
 			});
 			initEvent();
 			initEvent2();
+			initEvent3();
 		});
 	});
 	function initEvent(): void {
@@ -25,6 +26,21 @@ module nts.uk.at.view.ksu003.a {
 
 		$('#note').click(function() {
 			$('#A5_1').ntsPopup("toggle");
+		});
+	}
+	
+	function initEvent3(): void {
+		//click btnA5
+		$('#A14').ntsPopup({
+			position: {
+				my: 'left top',
+				at: 'left bottom+3',
+				of: $('.settingTimeGrid')
+			}
+		});
+
+		$('.settingTimeGrid').click(function() {
+			$('#A14').ntsPopup("toggle");
 		});
 	}
 
