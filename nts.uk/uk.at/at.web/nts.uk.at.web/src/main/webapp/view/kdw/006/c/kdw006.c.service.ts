@@ -11,15 +11,7 @@ module nts.uk.at.view.kdw006.c.service {
 
         getAppType: 'at/function/dailyfix/find',
 
-        getApplicationName: 'at/record/workrecord/operationsetting/getApplicationName',
-
         getRestrictConfirmEmp: 'at/record/workrecord/operationsetting/getRestrictConfirmEmp',
-
-        // updateIdentity: 'at/record/workrecord/operationsetting/updateIdentity',
-
-        // updateApproval: 'at/record/workrecord/operationsetting/updateApproval',
-
-        // updateDaily: 'at/record/workrecord/operationsetting/updateDaily',
 
         updateMonthly: 'at/record/workrecord/operationsetting/updateMonthly',
 
@@ -35,18 +27,6 @@ module nts.uk.at.view.kdw006.c.service {
     export function updateAppType(cm: any): JQueryPromise<any> {
         return nts.uk.request.ajax(servicePath.updateAppType, cm);
     }
-
-    // export function updateIdentity(dispRestric: any): JQueryPromise<any> {
-    //     return nts.uk.request.ajax(servicePath.updateIdentity, dispRestric);
-    // }
-
-    // export function updateApproval(dispRestric: any): JQueryPromise<any> {
-    //     return nts.uk.request.ajax(servicePath.updateApproval, dispRestric);
-    // }
-
-    // export function updateDaily(dispRestric: any): JQueryPromise<any> {
-    //     return nts.uk.request.ajax(servicePath.updateDaily, dispRestric);
-    // }
 
     export function updateMonthly(dispRestric: any): JQueryPromise<any> {
         return nts.uk.request.ajax(servicePath.updateMonthly, dispRestric);
@@ -64,7 +44,6 @@ module nts.uk.at.view.kdw006.c.service {
         return nts.uk.request.ajax(servicePath.getAppType);
     }
 
-
     export function getIdentity(): JQueryPromise<any> {
         return nts.uk.request.ajax(servicePath.getIdentity);
     }
@@ -79,10 +58,6 @@ module nts.uk.at.view.kdw006.c.service {
 
     export function getMonthly(): JQueryPromise<any> {
         return nts.uk.request.ajax(servicePath.getMonthly);
-    }
-
-    export function getApplicationName(): JQueryPromise<any> {
-        return nts.uk.request.ajax(servicePath.getApplicationName);
     }
 
     export function getRestrictConfirmEmp(): JQueryPromise<any> {

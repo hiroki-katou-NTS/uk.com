@@ -22,7 +22,6 @@ module nts.uk.at.view.kdw006.c.viewmodel {
 
             let self = this;
             self.itemList = ko.observableArray([]);
-            // self.appTypeEnum = ko.observable(null);
 
             let yourSelf = __viewContext.enums.YourselfConfirmError;
             yourSelf.reverse();
@@ -64,13 +63,6 @@ module nts.uk.at.view.kdw006.c.viewmodel {
                 companyID: '',
                 confirmEmployment: false,
             }));
-            
-            // service.getApplicationType().done(function(data) {
-            //     let dfd = $.Deferred();
-            //     self.appTypeEnum(data);
-            //     dfd.resolve();
-            //     return dfd.promise();
-            // });
 
             self.appTypeEnum = ko.observableArray([]);
             
@@ -223,7 +215,6 @@ module nts.uk.at.view.kdw006.c.viewmodel {
                         service.updateAppType(ko.toJS(self.appTypeDto)).done(function() {
                             service.updateRestrictConfirmEmp(ko.toJS(self.restrictConfirmEmploymentDto)).done(function() {
                                 self.$blockui("show");
-                                //self.start();
                                 self.$dialog.info({ messageId: "Msg_15" }).then(() => {
                                     location.reload();
                                 });
