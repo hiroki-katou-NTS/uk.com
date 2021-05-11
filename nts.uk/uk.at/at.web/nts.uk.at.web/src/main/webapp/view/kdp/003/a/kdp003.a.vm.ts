@@ -50,6 +50,10 @@ module nts.uk.at.kdp003.a {
 		// Notification
 		messageNoti: KnockoutObservable<IMessage> = ko.observable();
 
+		worklocationCode: string = '';
+		workplaceId: string = null;
+		workplaceName: string = null;
+
 		// setting for button A3
 		showClockButton: {
 			setting: KnockoutObservable<boolean>;
@@ -135,7 +139,9 @@ module nts.uk.at.kdp003.a {
 							if (data.workpalceId) {
 								vm.modeBasyo(true);
 								vm.workPlace = [data.workpalceId];
-
+								vm.worklocationCode = locationCd;
+								vm.workplaceId = data.workpalceId;
+								vm.workplaceName = data.workLocationName;
 							}
 						}
 					});
@@ -666,7 +672,10 @@ module nts.uk.at.kdp003.a {
 							const mode: number = 1;
 							const { employeeId, employeeCode } = data.em;
 							const fingerStampSetting = ko.unwrap(vm.fingerStampSetting);
-							const employeeInfo = { mode, employeeId, employeeCode };
+							const workLocationName = vm.workplaceName;
+							const workpalceId = vm.workplaceId;
+							const employeeInfo = { mode, employeeId, employeeCode, workLocationName, workpalceId };
+							
 							// shorten name
 							const { modal, storage } = vm.$window;
 
@@ -675,8 +684,9 @@ module nts.uk.at.kdp003.a {
 									.then((dataStorage: StorageData) => {
 										if (dataStorage.WKPID.length > 1) {
 
-											vm.$window.modal('at', DIALOG.M, { screen: 'KDP003' })
+											vm.$window.modal('at', DIALOG.M)
 												.then((data: string) => {
+													
 													if (data) {
 														vm.$ajax(API.REGISTER, {
 															employeeId,
@@ -687,7 +697,7 @@ module nts.uk.at.kdp003.a {
 															},
 															refActualResult: {
 																cardNumberSupport: null,
-																workLocationCD: '',
+																workLocationCD: vm.worklocationCode,
 																workTimeCode: '',
 																overtimeDeclaration: {
 																	overTime: 0,
@@ -734,7 +744,7 @@ module nts.uk.at.kdp003.a {
 												},
 												refActualResult: {
 													cardNumberSupport: null,
-													workLocationCD: '',
+													workLocationCD: vm.worklocationCode,
 													workTimeCode: '',
 													overtimeDeclaration: {
 														overTime: 0,

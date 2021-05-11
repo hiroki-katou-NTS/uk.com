@@ -84,6 +84,10 @@ class KDP002BViewModel extends ko.ViewModel {
 
                 vm.startPage();
 
+                if (infoEmp.workLocationName) {
+                    vm.workPlace(infoEmp.workLocationName);
+                }
+
             });
             vm.$window.shared("screenB").done((nameScreen: any) => {
                 switch (nameScreen.screen) {
@@ -196,7 +200,9 @@ class KDP002BViewModel extends ko.ViewModel {
         vm.$ajax("at", kDP002RequestUrl.getAllStampingResult + sid).then(function (data) {
 
             if (data && data.length > 0) {
-                vm.workPlace(data[0].workPlaceName);
+                if (ko.unwrap(vm.workPlace) === '') {
+                    vm.workPlace(data[0].workplaceNm);
+                }
             }
 
             _.forEach(data, (a) => {

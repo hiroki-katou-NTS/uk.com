@@ -97,11 +97,6 @@ module nts.uk.at.view.kdp003.m {
 
         }
 
-        selectWorkPlace() {
-            const vm = this;
-            vm.$window.close();
-        }
-
         // Reload data in storage when the data storage change
         reloadData() {
             const vm = this;
@@ -148,7 +143,7 @@ module nts.uk.at.view.kdp003.m {
 
         seleceted(workplaceId: string) {
             const vm = this;
-            vm.$window.close();
+            vm.$window.close(workplaceId);
         }
 
         close() {

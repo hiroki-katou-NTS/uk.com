@@ -114,6 +114,10 @@ module nts.uk.at.view.kdp002.c {
 					}
 				});
 
+				if (self.infoEmpFromScreenA.workLocationName) {
+                    self.laceName(self.infoEmpFromScreenA.workLocationName);
+                }
+
 				let data = {
 					employeeId: self.infoEmpFromScreenA.employeeId,
 					stampDate: moment().format("YYYY/MM/DD"),
@@ -124,6 +128,7 @@ module nts.uk.at.view.kdp002.c {
 
 				service.startScreen(data).done((res) => {
 					let itemIds = ["TIME", "AMOUNT", "TIME_WITH_DAY", "DAYS", "COUNT", "CLOCK"];
+					
 					if (res) {
 						if (_.size(res.stampRecords) > 0) {
 							res.stampRecords = _.orderBy(res.stampRecords, ['stampTimeWithSec'], ['desc']);
@@ -136,7 +141,9 @@ module nts.uk.at.view.kdp002.c {
 							}
 							self.checkHandName(res.stampRecords.length > 0 ? record.stampArtName : 0);
 							self.numberName();
-							self.laceName((record.workLocationCD || '') + " " + (res.workPlaceName || ''));
+							if (ko.unwrap(self.laceName) === '') {
+								self.laceName((res.workPlaceName || ''));
+							}
 							self.dayName(dateDisplay);
 							self.timeName(record.stampTime);
 
