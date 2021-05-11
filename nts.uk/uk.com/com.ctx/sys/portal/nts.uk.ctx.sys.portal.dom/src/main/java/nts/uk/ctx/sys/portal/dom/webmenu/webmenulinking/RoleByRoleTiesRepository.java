@@ -10,7 +10,7 @@ public interface RoleByRoleTiesRepository {
 
 	void updateRoleByRoleTies(RoleByRoleTies roleByRoleTies);
 
-	void deleteRoleByRoleTies(String companyId, String roleId);
+	void deleteRoleByRoleTies(String roleId, String companyId);
 
 }
 

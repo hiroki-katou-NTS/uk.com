@@ -30,7 +30,7 @@ public class JpaRoleByRoleTiesRepository extends JpaRepository implements  RoleB
 	}
 
 	@Override
-	public void deleteRoleByRoleTies(String companyId, String roleId) {
+	public void deleteRoleByRoleTies(String roleId, String companyId) {
 		//TODO　修正お願いいたします。
 		//this.commandProxy().remove(SptmtRoleByRoleTies.class,roleId);
 	}
