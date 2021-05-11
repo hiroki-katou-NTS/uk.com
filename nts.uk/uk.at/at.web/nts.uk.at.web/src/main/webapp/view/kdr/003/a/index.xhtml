@@ -1,12 +1,134 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html
-        PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<head>
-    <title>$Title$</title>
-</head>
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html
+        xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:com="http://xmlns.jcp.org/jsf/component"
+        xmlns:h="http://xmlns.jcp.org/jsf/html"
+>
 <body>
-$END$
+<ui:composition template="../../../../master/base.xhtml">
+    <ui:define name="htmlHead">
+        <com:scriptfile set="IGNITE" />
+        <com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
+        <com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
+        <com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
+        <com:scriptfile
+                path="/view/ccg/share/ccg.service.js"
+                of="/nts.uk.com.web"
+        />
+        <com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
+
+        <com:stylefile path="kdr003.a.style.css" />
+        <com:scriptfile path="kdr003.a.common.js" />
+        <com:scriptfile path="kdr003.a.vm.js" />
+    </ui:define>
+
+    <ui:define name="content">
+        <div id="functions-area">
+            <!-- A1_1 -->
+            <button
+                    tabindex="1"
+                    id="btnExportExcel"
+                    class="proceed"
+                    data-bind="enable: $root.errors.isEmpty, text: $i18n('KDR003_1'), click: function() { exportExcelPDF(1) }"
+            />
+        </div>
+        <!-- A1_2-->
+        <div id="content-area" class="kdr-003">
+            <!-- A3_1-->
+            <div id="CCG001" tabindex="-1"></div>
+            <div class="pull-left fixed-flex-layout-left">
+                <div class="employees-list">
+                    <!-- A2_1, A2_2, A2_3 bo?-->
+
+                    <!-- A3_2-->
+                    <div tabindex="4" id="kcp005" class="panel panel-frame"></div>
+                </div>
+            </div>
+            <div class="pull-left fixed-flex-layout-right">
+                <!-- A4_1-->
+                <div class="panel panel-frame">
+                    <div class="panel-row">
+                        <div class="row-left" style="width: 300px;">
+                            <!-- A5_1-->
+                            <div
+                                    class="label"
+                                    data-bind="ntsFormLabel: {}, text: $i18n('KDR003_110')"
+                            ></div>
+                        </div>
+                        <div class="row-right">
+                            <div class="radios-group" style="width: 300px;">
+                                <!-- A5_2 -->
+                                <div tabindex="5"
+                                     data-bind="ntsMultiCheckBox: {
+                                      options: itemSelection,
+                                      optionsValue: 'id',
+                                      optionsText: 'name',
+                                      value: rdgSelectedId,
+                                      enable: true
+                                    }"
+                                ></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-row">
+                        <div class="row-left" style="width: 300px;">
+                            <!-- A6_1-->
+                            <div
+                                    class="label"
+                                    data-bind="ntsFormLabel: {}, text: $i18n('KDR003_12')"
+                            ></div>
+                        </div>
+                        <div class="row-right row-switch-button">
+                            <!-- A6_2 -->
+                            <div
+                                    tabindex="10"
+                                    class="cf"
+                                    data-bind="ntsSwitchButton: {
+                    name: '#[KDR003_12]',
+                    options: [
+                      { code: 1, name: $i18n('KDR003_13')},
+                      { code: 0, name: $i18n('KDR003_14')}
+                    ],
+                    optionsValue: 'code',
+                    optionsText: 'name',
+                    value: zeroDisplayClassification
+                  }"
+                            ></div>
+                        </div>
+                    </div>
+                    <div class="panel-row">
+                        <div class="row-left" style="width: 300px;">
+                            <!-- A7_1-->
+                            <div
+                                    class="label"
+                                    data-bind="ntsFormLabel: {}, text: $i18n('KDR003_15')"
+                            ></div>
+                        </div>
+                        <div class="row-right row-switch-button">
+                            <!-- A7_2 -->
+                            <div
+                                    tabindex="11"
+                                    class="cf"
+                                    data-bind="ntsSwitchButton: {
+                    name: '#[KDR003_15]',
+                    options: [
+                      { code: 0, name: $i18n('KDR003_16')},
+                      { code: 1, name: $i18n('KDR003_17')},
+                      { code: 2, name: $i18n('KDR003_18')}
+                    ],
+                    optionsValue: 'code',
+                    optionsText: 'name',
+                    value: pageBreakSpecification
+                  }"
+                            ></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </ui:define>
+</ui:composition>
 </body>
 </html>
