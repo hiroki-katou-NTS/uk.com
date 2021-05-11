@@ -67,14 +67,9 @@ public class PasswordPolicy extends AggregateRoot {
 	}
 
 	/**
-	 * ログイン時の検証
-	 * @param require
-	 * @param userId
-	 * @param password
-	 * @param passwordStatus
-	 * @return
+	 * ログイン時にポリシー違反してないか
 	 */
-	public ValidationResultOnLogin validateOnLogin(ValidateOnLoginRequire require,
+	public ValidationResultOnLogin violatedOnLogin(ValidateOnLoginRequire require,
 			String userId,
 			String password,
 			PassStatus passwordStatus) {
@@ -120,8 +115,7 @@ public class PasswordPolicy extends AggregateRoot {
 	
 	/**
 	 * 有効期限が切れるまでの残日数を求める
-	 * @param user
-	 * @return
+	 * @return 有効期限までの日数
 	 */
 	private int calculateRemainingDays(ValidateOnLoginRequire require, String userId) {
 		

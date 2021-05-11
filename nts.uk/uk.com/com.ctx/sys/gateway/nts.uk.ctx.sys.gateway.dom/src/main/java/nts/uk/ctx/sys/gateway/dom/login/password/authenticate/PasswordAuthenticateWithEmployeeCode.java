@@ -38,7 +38,7 @@ public class PasswordAuthenticateWithEmployeeCode {
 
 		// パスワードポリシーへの準拠チェック
 		val passwordPolicy = require.getPasswordPolicy(identified.getTenantCode());
-		val passwordPolicyResult = passwordPolicy.map(p -> p.validateOnLogin(require, user.getUserID(), password, user.getPassStatus()))
+		val passwordPolicyResult = passwordPolicy.map(p -> p.violatedOnLogin(require, user.getUserID(), password, user.getPassStatus()))
 												.orElse(ValidationResultOnLogin.ok());
 		
 		return PasswordAuthenticationResult.success(passwordPolicyResult);

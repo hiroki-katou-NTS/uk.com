@@ -83,7 +83,7 @@ public class PasswordPolicyTest {
 	}
 	
 	private ValidationResultOnLogin run(PasswordPolicy dummyInstance, PassStatus passStatus) {
-		return (ValidationResultOnLogin)dummyInstance.validateOnLogin(
+		return (ValidationResultOnLogin)dummyInstance.violatedOnLogin(
 				require, 
 				PasswordPolicyTestHelper.DUMMY.USER_ID,
 				PasswordPolicyTestHelper.DUMMY.PASSWORD,
