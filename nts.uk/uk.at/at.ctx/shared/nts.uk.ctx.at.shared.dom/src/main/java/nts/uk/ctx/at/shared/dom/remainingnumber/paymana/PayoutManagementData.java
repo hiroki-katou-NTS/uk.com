@@ -52,7 +52,7 @@ public class PayoutManagementData extends AggregateRoot {
 	private DigestionAtr stateAtr;
 	
 	// 消滅日
-	public Optional<GeneralDate> disapearDate;
+	public Optional<GeneralDate> disapearDate  = Optional.empty(); //SONNLB sửa đoạn này là lỗi của 3SI, vì làm exception chết màn KAF011 ngày 19/04
 	
 	public PayoutManagementData(String payoutId,String cid, String sid, boolean unknowDate, GeneralDate dayoffDate, GeneralDate expiredDate, int lawId,
 			Double occurredDays, Double unUsedDays, int stateAtr){

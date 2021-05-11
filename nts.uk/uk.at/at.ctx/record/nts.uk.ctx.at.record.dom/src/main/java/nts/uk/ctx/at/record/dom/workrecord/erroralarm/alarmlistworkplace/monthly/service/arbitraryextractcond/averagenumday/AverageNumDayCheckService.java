@@ -112,7 +112,7 @@ public class AverageNumDayCheckService {
                                 cid, empInfo.getSid(), period, InterimRemainMngMode.OTHER, criteriaDate,
                                 false, false, Optional.of(false),
                                 Optional.empty(), Optional.empty(), Optional.empty(),
-                                Optional.empty(), Optional.empty(), Optional.empty());
+                                Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty());
                         switch (averageNumDay.get()) {
                             case ANNUAL_REST_USE:
                                 Optional<AggrResultOfAnnualLeave> annualLeave = aggResult.getAnnualLeave();
@@ -158,6 +158,6 @@ public class AverageNumDayCheckService {
                 cid, employeeId, period, InterimRemainMngMode.OTHER, criteriaDate,
                 false, false, Optional.of(false),
                 Optional.empty(), Optional.empty(), Optional.empty(),
-                Optional.empty(), Optional.empty(), Optional.empty());
+                Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty());
     }
 }

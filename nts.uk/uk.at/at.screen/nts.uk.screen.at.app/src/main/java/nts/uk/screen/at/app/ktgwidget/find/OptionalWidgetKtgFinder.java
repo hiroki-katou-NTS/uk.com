@@ -154,7 +154,6 @@ public class OptionalWidgetKtgFinder {
 		return new OptionalWidgetDisplay(datePeriodDto, optionalWidgetImport);
 	}
 
-
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	private YearlyHoliday setYearlyHoliday(String cID, String employeeId, GeneralDate date, DatePeriod datePeriod) {
 		YearlyHoliday yearlyHoliday = new YearlyHoliday();

@@ -8,11 +8,11 @@ import javax.ejb.Stateless;
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TempAnnualLeaveManagement;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TempAnnualLeaveMngRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TempAnnualLeaveMngs;
 import nts.uk.ctx.at.shared.infra.entity.remainingnumber.annlea.KrcdtAnnleaMngTemp;
 import nts.uk.ctx.at.shared.infra.entity.remainingnumber.annlea.KrcdtAnnleaMngTempPK;
-import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * リポジトリ実装：暫定年休管理データ
@@ -49,7 +49,7 @@ public class JpaTempAnnualLeaveMngRepo extends JpaRepository implements TempAnnu
 
 	/** 検索 */
 	@Override
-	public Optional<TempAnnualLeaveManagement> find(String employeeId, GeneralDate ymd) {
+	public Optional<TempAnnualLeaveMngs> find(String employeeId, GeneralDate ymd) {
 
 		return this.queryProxy()
 				.find(new KrcdtAnnleaMngTempPK(employeeId, ymd), KrcdtAnnleaMngTemp.class)
@@ -58,7 +58,7 @@ public class JpaTempAnnualLeaveMngRepo extends JpaRepository implements TempAnnu
 
 	/** 検索　（期間） */
 	@Override
-	public List<TempAnnualLeaveManagement> findByPeriodOrderByYmd(String employeeId, DatePeriod period) {
+	public List<TempAnnualLeaveMngs> findByPeriodOrderByYmd(String employeeId, DatePeriod period) {
 
 		return this.queryProxy().query(SELECT_BY_PERIOD, KrcdtAnnleaMngTemp.class)
 				.setParameter("employeeId", employeeId)
@@ -69,10 +69,10 @@ public class JpaTempAnnualLeaveMngRepo extends JpaRepository implements TempAnnu
 
 	/** 登録および更新 */
 	@Override
-	public void persistAndUpdate(TempAnnualLeaveManagement domain) {
+	public void persistAndUpdate(TempAnnualLeaveMngs domain) {
 
 		// キー
-		val key = new KrcdtAnnleaMngTempPK(domain.getEmployeeId(), domain.getYmd());
+		val key = new KrcdtAnnleaMngTempPK(domain.getSID(), domain.getYmd());
 
 		// 登録・更新
 		KrcdtAnnleaMngTemp entity = this.getEntityManager().find(KrcdtAnnleaMngTemp.class, key);
@@ -115,7 +115,7 @@ public class JpaTempAnnualLeaveMngRepo extends JpaRepository implements TempAnnu
 	}
 
 	@Override
-	public List<TempAnnualLeaveManagement> findBySidWorkTypePeriod(String employeeId, String workTypeCode,
+	public List<TempAnnualLeaveMngs> findBySidWorkTypePeriod(String employeeId, String workTypeCode,
 			DatePeriod period) {
 		return this.queryProxy().query(SELECT_BY_WORKTYPE_PERIOD, KrcdtAnnleaMngTemp.class)
 				.setParameter("employeeId", employeeId)
@@ -126,7 +126,7 @@ public class JpaTempAnnualLeaveMngRepo extends JpaRepository implements TempAnnu
 	}
 
 	@Override
-	public List<TempAnnualLeaveManagement> findByEmployeeID(String employeeID) {
+	public List<TempAnnualLeaveMngs> findByEmployeeID(String employeeID) {
 		return this.queryProxy().query(SELECT_BY_EMPLOYEEID, KrcdtAnnleaMngTemp.class)
 				.setParameter("employeeID", employeeID)
 				.getList(c -> c.toDomain());

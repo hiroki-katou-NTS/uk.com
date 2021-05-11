@@ -26,8 +26,6 @@ import nts.uk.ctx.at.request.dom.application.common.service.other.output.Process
 @Path("at/request/application/businesstrip/mobile")
 @Produces("application/json")
 public class BusinessTripWebServiceSmartphone extends WebService {
-	@Inject
-	private AddBusinessTripCommandHandler addHandler;
 
 	@Inject
 	private BusinessTripFinder businessTripFinder;

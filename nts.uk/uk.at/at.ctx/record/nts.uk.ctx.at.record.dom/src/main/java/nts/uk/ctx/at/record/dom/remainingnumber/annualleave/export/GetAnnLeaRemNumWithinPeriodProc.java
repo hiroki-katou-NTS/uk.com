@@ -36,7 +36,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.Annu
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.CalcAnnLeaAttendanceRate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.CreateInterimAnnualMngData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualHolidayMng;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TempAnnualLeaveMngs;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualLeaveMngWork;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.GrantRemainRegisterType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
@@ -181,6 +181,7 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 	 * @param prevAnnualLeaveOpt 前回の年休の集計結果
 	 * @param aggrPastMonthModeOpt 過去月集計モード
 	 * @param yearMonthOpt 年月※過去月集計モード  = true の場合は必須
+ 	 * @param isOverWritePeriod 上書き対象期間
 	 * @return 年休の集計結果
 	 */
 	public static Optional<AggrResultOfAnnualLeave> algorithm(
@@ -196,7 +197,8 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 			Optional<List<TmpAnnualLeaveMngWork>> forOverWriteListOpt,
 			Optional<AggrResultOfAnnualLeave> prevAnnualLeaveOpt,
 			Optional<Boolean> aggrPastMonthModeOpt,
-			Optional<YearMonth> yearMonthOpt
+			Optional<YearMonth> yearMonthOpt,
+			Optional<DatePeriod> isOverWritePeriod
 			) {
 
 		// 年休の使用区分を取得する
@@ -222,8 +224,8 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 		val grantTableCode = empBasicInfo.getGrantRule().getGrantTableCode().v();
 
 		// 「休暇の集計期間から入社前、退職後を除く」を実行する
-		aggrPeriod = ConfirmLeavePeriod.sumPeriod(aggrPeriod, employee);
-		if (aggrPeriod == null) return Optional.empty();
+		Optional<DatePeriod> period = ConfirmLeavePeriod.sumPeriod(aggrPeriod, employee);
+		if (!period.isPresent()) return Optional.empty();
 
 		// 年休付与テーブル設定、勤続年数テーブル　取得
 		Optional<GrantHdTblSet> grantHdTblSetOpt = Optional.empty();
@@ -244,7 +246,7 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 		AnnualLeaveInfo annualLeaveInfo
 			= createInfoAsOfPeriodStart(require, cacheCarrier, companyId, employeeId,
 				prevAnnualLeaveOpt, aggrPastMonthModeOpt, yearMonthOpt, aggrPeriod,
-				mode, isCalcAttendanceRate, isOverWriteOpt, forOverWriteListOpt);
+				mode, isCalcAttendanceRate, isOverWriteOpt, forOverWriteListOpt,isOverWritePeriod);
 
 		// 次回年休付与日を計算
 		List<NextAnnualLeaveGrant> nextAnnualLeaveGrantList = new ArrayList<>();
@@ -252,7 +254,7 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 			// 次回年休付与を計算
 			nextAnnualLeaveGrantList = CalcNextAnnualLeaveGrantDate.algorithm(
 					require, cacheCarrier,
-					companyId, employeeId, Optional.of(aggrPeriod),
+					companyId, employeeId, Optional.of(period.get()),
 					Optional.ofNullable(employee), annualLeaveEmpBasicInfoOpt,
 					grantHdTblSetOpt, lengthServiceTblsOpt);
 
@@ -319,12 +321,12 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 
 		// 年休集計期間を作成
 		List<AggregatePeriodWork> aggregateWork = createAggregatePeriod(
-				nextAnnualLeaveGrantList, aggrPeriod, grantRemainingDatas);
+				nextAnnualLeaveGrantList, period.get(), grantRemainingDatas);
 
 		// 暫定年休管理データを取得する
 		val tempAnnualLeaveMngs = getTempAnnualLeaveMngs(
 				require, employeeId, aggrPeriod, mode,
-				isOverWriteOpt, forOverWriteListOpt);
+				isOverWriteOpt, forOverWriteListOpt,isOverWritePeriod);
 
 		for (val aggregatePeriodWork : aggregateWork){
 
@@ -370,6 +372,7 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 	 * @param isCalcAttendanceRate 出勤率計算フラグ
 	 * @param isOverWriteOpt 上書きフラグ
 	 * @param forOverWriteListOpt　上書き用の暫定管理データ
+	 * @param isOverWritePeriod 上書き対象期間
 	 * @return
 	 */
 	private static AnnualLeaveInfo createInfoAsOfPeriodStart(
@@ -384,7 +387,8 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 			InterimRemainMngMode mode,
 			boolean isCalcAttendanceRate,
 			Optional<Boolean> isOverWriteOpt,
-			Optional<List<TmpAnnualLeaveMngWork>> forOverWriteListOpt){
+			Optional<List<TmpAnnualLeaveMngWork>> forOverWriteListOpt,
+			Optional<DatePeriod> isOverWritePeriod){
 
 		AnnualLeaveInfo emptyInfo = new AnnualLeaveInfo();
 		emptyInfo.setYmd(aggrPeriod.start());
@@ -431,8 +435,8 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 					 mode,
 					 isCalcAttendanceRate,
 					 isOverWriteOpt,
-					 forOverWriteListOpt
-					 );
+					 forOverWriteListOpt,
+					 isOverWritePeriod);
 
 			// 年休付与残数データ、年休上限データをもとに年休情報を作成
 			return createInfoFromRemainingData(
@@ -487,6 +491,7 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 	 * @param isCalcAttendanceRate 出勤率計算フラグ
 	 * @param isOverWriteOpt 上書きフラグ
 	 * @param forOverWriteListOpt　上書き用の暫定管理データ
+	 * @param isOverWritePeriod 上書き対象期間
 	 * @return　年休情報
 	 */
 	private static AnnualLeaveInfo getAnnualLeaveInfo(
@@ -501,7 +506,8 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 			InterimRemainMngMode mode,
 			boolean isCalcAttendanceRate,
 			Optional<Boolean> isOverWriteOpt,
-			Optional<List<TmpAnnualLeaveMngWork>> forOverWriteListOpt
+			Optional<List<TmpAnnualLeaveMngWork>> forOverWriteListOpt,
+			Optional<DatePeriod> isOverWritePeriod
 			){
 
 			// 休暇残数を計算する締め開始日を取得する
@@ -587,7 +593,7 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 							new DatePeriod(closureStart, aggrPeriod.start().addDays(-1)),
 							mode, aggrPeriod.start().addDays(-1),
 							isCalcAttendanceRate, isOverWriteOpt, forOverWriteListOpt,
-							Optional.empty(), Optional.of(aggrPastMonthMode), yearMonthOpt);
+							Optional.empty(), Optional.of(aggrPastMonthMode), yearMonthOpt,isOverWritePeriod);
 
 					if (aggrResultOpt.isPresent()) {
 						val aggrResult = aggrResultOpt.get();
@@ -752,9 +758,7 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 		for( AggregatePeriodWork nowWork : aggregatePeriodWorks){
 			if ( nowWork.getGrantWork().isGrantAtr() ) // 付与のとき
 			{
-				nowWork.getGrantWork().getAnnualLeaveGrant().ifPresent(x -> {
-					x.setTimes(new GrantNum(grantNumber.get()));
-				});
+				nowWork.getGrantWork().setGrantNumber(grantNumber.get());
 				grantNumber.incrementAndGet();
 			}
 		}
@@ -779,7 +783,8 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 			DatePeriod aggrPeriod,
 			InterimRemainMngMode mode,
 			Optional<Boolean> isOverWriteOpt,
-			Optional<List<TmpAnnualLeaveMngWork>> forOverWriteListOpt){
+			Optional<List<TmpAnnualLeaveMngWork>> forOverWriteListOpt,
+			Optional<DatePeriod> isOverWritePeriod){
 
 		List<TmpAnnualLeaveMngWork> results = new ArrayList<>();
 
@@ -815,21 +820,18 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 		// 「上書きフラグ」をチェック
 		if (isOverWriteOpt.isPresent()){
 			if (isOverWriteOpt.get()){
-
-				// 上書き用データがある時、使用する
-				if (forOverWriteListOpt.isPresent()){
-					val overWrites = forOverWriteListOpt.get();
-					for (val overWrite : overWrites){
-						// 重複データを削除
-						ListIterator<TmpAnnualLeaveMngWork> itrResult = results.listIterator();
-						while (itrResult.hasNext()){
-							TmpAnnualLeaveMngWork target = itrResult.next();
-							if (target.equals(overWrite)) itrResult.remove();
+				if(isOverWritePeriod.isPresent()){
+				
+					//上書き対象期間内の暫定年休管理データを削除
+					results.removeIf(x -> isOverWritePeriod.get().contains(x.getYmd()));
+					
+					// 上書き用データがある時、追加する
+					if (forOverWriteListOpt.isPresent()){
+						val overWrites = forOverWriteListOpt.get();
+						for (val overWrite : overWrites){
+							// 上書き用データを追加
+							results.add(overWrite);
 						}
-					}
-					for (val overWrite : overWrites){
-						// 上書き用データを追加
-						results.add(overWrite);
 					}
 				}
 			}
@@ -964,7 +966,7 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 
 //		List<InterimRemain> interimRemains(String employeeId, DatePeriod dateData, RemainType remainType);
 
-		List<TmpAnnualHolidayMng> tmpAnnualHolidayMng(String sid, DatePeriod dateData);
+		List<TempAnnualLeaveMngs> tmpAnnualHolidayMng(String sid, DatePeriod dateData);
 
 		List<AttendanceTimeOfMonthly> attendanceTimeOfMonthly(String employeeId, DatePeriod period);
 	}

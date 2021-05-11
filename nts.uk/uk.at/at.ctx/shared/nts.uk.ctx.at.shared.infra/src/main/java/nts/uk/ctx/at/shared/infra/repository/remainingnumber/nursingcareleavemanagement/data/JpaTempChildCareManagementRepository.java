@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.shared.infra.repository.remainingnumber.nursingcareleavemanagement.data;
 
 import java.util.List;
-
 import javax.ejb.Stateless;
 
 import lombok.val;
@@ -10,7 +9,9 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.interimdata.TempChildCareManagement;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.interimdata.TempChildCareManagementRepository;
-import nts.uk.ctx.at.shared.infra.entity.remainingnumber.nursingcareleave.childcare.interimdata.KrcdtInterimChildCare;
+import nts.uk.ctx.at.shared.infra.entity.remainingnumber.nursingcareleave.childcare.interimdata.KshdtInterimChildCare;
+import nts.uk.ctx.at.shared.infra.entity.remainingnumber.nursingcareleave.childcare.interimdata.KshdtInterimChildCarePK;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * リポジトリ実装：暫定子の看護管理データ
@@ -29,13 +30,17 @@ public class JpaTempChildCareManagementRepository extends JpaRepository implemen
 			+ " WHERE a.sID = :employeeID"
 			+ "AND a.ymd =  : ymd "
 			+ " ORDER BY a.ymd ASC";
+	
+	private static final String REMOVE_BY_SID_YMD = "DELETE FROM KshdtInterimChildCare a"
+			+ " WHERE a.pk.sID = :sid"
+			+ " AND a.pk.ymd =  :ymd";
 
 
 	/** 検索 */
 	@Override
 	public List<TempChildCareManagement> find(String employeeId, GeneralDate ymd){
 
-		return this.queryProxy().query(SELECT_BY_EMPLOYEEID_YMD, KrcdtInterimChildCare.class)
+		return this.queryProxy().query(SELECT_BY_EMPLOYEEID_YMD, KshdtInterimChildCare.class)
 				.setParameter("employeeId", employeeId)
 				.setParameter("ymd",ymd)
 				.getList(c -> c.toDomain());
@@ -45,30 +50,37 @@ public class JpaTempChildCareManagementRepository extends JpaRepository implemen
 	@Override
 	public List<TempChildCareManagement> findByPeriodOrderByYmd(String employeeId, DatePeriod period) {
 
-		return this.queryProxy().query(SELECT_BY_PERIOD, KrcdtInterimChildCare.class)
+		return this.queryProxy().query(SELECT_BY_PERIOD, KshdtInterimChildCare.class)
 				.setParameter("employeeId", employeeId)
 				.setParameter("startYmd", period.start())
 				.setParameter("endYmd", period.end())
 				.getList(c -> c.toDomain());
 	}
 
-
 	/** 登録および更新 */
 	@Override
 	public void persistAndUpdate(TempChildCareManagement domain) {
 
-		val key = domain.getRemainManaID();
+		KshdtInterimChildCarePK pk = new KshdtInterimChildCarePK(
+				AppContexts.user().companyId(), 
+				domain.getSID(),
+				domain.getYmd(), 
+				domain.getAppTimeType().map(x -> x.isHourlyTimeType() ? 1 : 0).orElse(0),
+				domain.getAppTimeType().map(x -> x.getAppTimeType().map(time -> time.value).orElse(0)).orElse(0));
 
 		// 登録・更新
-		KrcdtInterimChildCare entity = this.getEntityManager().find(KrcdtInterimChildCare.class, key);
-		if (entity == null){
-			entity = new KrcdtInterimChildCare();
-			entity.fromDomainForPersist(domain);
-			this.getEntityManager().persist(entity);
-		}
-		else {
+		this.queryProxy().find(pk, KshdtInterimChildCare.class).ifPresent(entity -> {
 			entity.fromDomainForUpdate(domain);
-		}
+			this.commandProxy().insert(entity);
+			this.getEntityManager().flush();
+			return;
+		});
+		
+		KshdtInterimChildCare entity = new KshdtInterimChildCare();
+		entity.pk = pk;
+		entity.fromDomainForUpdate(domain);
+		this.getEntityManager().persist(entity);
+		this.getEntityManager().flush();
 	}
 
 	/** 削除 */
@@ -77,7 +89,7 @@ public class JpaTempChildCareManagementRepository extends JpaRepository implemen
 
 		val key = domain.getRemainManaID();
 
-		this.commandProxy().remove(KrcdtInterimChildCare.class, key);
+		this.commandProxy().remove(KshdtInterimChildCare.class, key);
 	}
 
 	/**
@@ -88,10 +100,18 @@ public class JpaTempChildCareManagementRepository extends JpaRepository implemen
 	@Override
 	public List<TempChildCareManagement> findBySidPeriod(String employeeId, DatePeriod period){
 
-		return queryProxy().query(SELECT_BY_PERIOD, KrcdtInterimChildCare.class)
+		return queryProxy().query(SELECT_BY_PERIOD, KshdtInterimChildCare.class)
 				.setParameter("employeeId", employeeId)
 				.setParameter("startYmd", period.start())
 				.setParameter("endYmd", period.end())
 				.getList(c -> c.toDomain());
+	}
+
+	@Override
+	public void removeBySidAndYmd(String sid, GeneralDate ymd) {
+		this.getEntityManager().createQuery(REMOVE_BY_SID_YMD)
+		.setParameter("sid", sid)
+		.setParameter("ymd", ymd)
+		.executeUpdate();
 	}
 }

@@ -128,7 +128,7 @@ public class HolidayWorkSubHolidayAssociationFinder {
 
         List<HolidayWorkData> result = new ArrayList<>();
         for (InterimBreakMng recMng : recData) {
-            remainData.stream().filter(d -> d.getRemainManaID().equals(recMng.getBreakMngId())).findFirst().ifPresent((InterimRemain remainMng) -> {
+            remainData.stream().filter(d -> d.getRemainManaID().equals(recMng.getRemainManaID())).findFirst().ifPresent((InterimRemain remainMng) -> {
                 HolidayWorkData data = new HolidayWorkData();
                 data.setHolidayWorkDate(remainMng.getYmd());
                 data.setRemainingNumber(recMng.getUnUsedDays().v());
@@ -187,7 +187,7 @@ public class HolidayWorkSubHolidayAssociationFinder {
             List<InterimBreakMng> recData = interimBreakDayOffMngRepo.getBreakByIds(mngIds);
 
             for (InterimBreakMng recMng : recData) {
-                remainData.stream().filter(d -> d.getRemainManaID().equals(recMng.getBreakMngId())).findFirst().ifPresent((InterimRemain remainMng) -> {
+                remainData.stream().filter(d -> d.getRemainManaID().equals(recMng.getRemainManaID())).findFirst().ifPresent((InterimRemain remainMng) -> {
                     HolidayWorkData data = new HolidayWorkData();
                     data.setHolidayWorkDate(remainMng.getYmd());
 //                    managementData.stream().filter(i -> i.getAssocialInfo().getOutbreakDay().compareTo(remainMng.getYmd()) == 0).findFirst().ifPresent(i -> {
