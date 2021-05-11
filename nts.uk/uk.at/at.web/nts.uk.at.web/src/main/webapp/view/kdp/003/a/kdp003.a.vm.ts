@@ -136,15 +136,14 @@ module nts.uk.at.kdp003.a {
 				vm.$ajax(API.GET_WORKPLACE_BASYO, param)
 					.done((data: IBasyo) => {
 						if (data) {
-							if (data.workpalceId) {
-								vm.modeBasyo(true);
-								vm.workPlace = [data.workpalceId];
-								vm.worklocationCode = locationCd;
-								vm.workplaceId = data.workpalceId;
-								vm.workplaceName = data.workLocationName;
-							}
+							vm.modeBasyo(true);
+							vm.workPlace = [data.workpalceId];
+							vm.worklocationCode = locationCd;
+							vm.workplaceId = data.workpalceId;
+							vm.workplaceName = data.workLocationName;
 						}
 					});
+
 			}
 		}
 
@@ -675,7 +674,7 @@ module nts.uk.at.kdp003.a {
 							const workLocationName = vm.workplaceName;
 							const workpalceId = vm.workplaceId;
 							const employeeInfo = { mode, employeeId, employeeCode, workLocationName, workpalceId };
-							
+
 							// shorten name
 							const { modal, storage } = vm.$window;
 
@@ -686,7 +685,7 @@ module nts.uk.at.kdp003.a {
 
 											vm.$window.modal('at', DIALOG.M)
 												.then((data: string) => {
-													
+
 													if (data) {
 														vm.$ajax(API.REGISTER, {
 															employeeId,
