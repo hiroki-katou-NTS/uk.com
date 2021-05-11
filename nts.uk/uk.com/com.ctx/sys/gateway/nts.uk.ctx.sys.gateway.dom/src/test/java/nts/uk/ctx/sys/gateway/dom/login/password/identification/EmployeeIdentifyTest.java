@@ -1,6 +1,6 @@
 package nts.uk.ctx.sys.gateway.dom.login.password.identification;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Optional;
 
@@ -12,7 +12,6 @@ import mockit.Injectable;
 import mockit.Verifications;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.arc.time.GeneralDate;
-import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.sys.gateway.dom.login.password.identification.EmployeeIdentify.IdentificationResult;
 import nts.uk.ctx.sys.gateway.dom.login.password.identification.helper.Helper;
 
