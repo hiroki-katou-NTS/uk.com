@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.record.pubimp.monthly.vacation.childcarenurse.childcare;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -25,10 +24,10 @@ import nts.uk.ctx.at.record.pub.monthly.vacation.childcarenurse.childcare.ChildC
 import nts.uk.ctx.at.record.pub.monthly.vacation.childcarenurse.childcare.ChildCareNurseUsedNumberExport;
 import nts.uk.ctx.at.record.pub.monthly.vacation.childcarenurse.childcare.GetRemainingNumberChildCareNursePub;
 import nts.uk.ctx.at.record.pub.monthly.vacation.childcarenurse.childcare.TempChildCareNurseManagementExport;
+import nts.uk.ctx.at.record.pubimp.monthly.vacation.childcarenurse.ChildCareNurseConverter;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.interimdata.TempChildCareManagement;
-import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.interimdata.TempChildCareNurseManagement;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.childcarenurse.ChildCareNurseUsedInfo;
 
 /**
@@ -74,7 +73,7 @@ public class GetRemainingNumberChildCareNursePubImpl implements GetRemainingNumb
 		val cacheCarrier = new CacheCarrier();
 
 		List<TempChildCareManagement>domChildCareNurseManagemenList =
-				tempChildCareDataforOverWriteList.stream().map(c->new TempChildCareManagement(c.toDomain())).collect(Collectors.toList());
+				tempChildCareDataforOverWriteList.stream().map(c->new TempChildCareManagement(ChildCareNurseConverter.toDomain(c))).collect(Collectors.toList());
 
 		Optional<AggrResultOfChildCareNurse> domPrevCareLeave = Optional.empty();
 
