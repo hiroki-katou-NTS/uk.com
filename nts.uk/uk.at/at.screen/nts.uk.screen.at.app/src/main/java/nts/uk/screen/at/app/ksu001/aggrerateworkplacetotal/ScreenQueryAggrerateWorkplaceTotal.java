@@ -1,0 +1,102 @@
+package nts.uk.screen.at.app.ksu001.aggrerateworkplacetotal;
+
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.Map;
+
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+
+import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.aggregation.dom.schedulecounter.tally.WorkplaceCounterCategory;
+import nts.uk.ctx.at.schedule.app.find.budget.external.ExternalBudgetDto;
+import nts.uk.ctx.at.shared.dom.common.EmployeeId;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalTimes;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
+
+/**
+ * 職場計を集計する
+ * @author hoangnd
+ *
+ */
+@Stateless
+public class ScreenQueryAggrerateWorkplaceTotal {
+	
+	@Inject
+	private ScreenQueryLaborCostAndTime screenQueryLaborCostAndTime;
+	
+	@Inject
+	private ScreenQueryAggrerateNumberTimeWp screenQueryAggrerateNumberTime;
+	
+	@Inject
+	private ScreenQueryAggrerateNumberPeople screenQueryAggrerateNumberPeople;
+	
+	@Inject
+	private ScreenQueryExternalBudgetPerformance screenQueryExternalBudgetPerformance;
+	
+	
+	/**
+	 * 
+	 * @param targetOrg 対象組織識別情報
+	 * @param workplaceCounterOp 職場計カテゴリ
+	 * @param aggrerateintegrationOfDaily List<日別勤怠(Work)>
+	 * @param datePeriod 期間
+	 */
+	public AggrerateWorkplaceDto aggrerate(
+			TargetOrgIdenInfor targetOrg,
+			WorkplaceCounterCategory workplaceCounterOp,
+			List<IntegrationOfDaily> aggrerateintegrationOfDaily,
+			DatePeriod datePeriod
+			) {
+		
+		AggrerateWorkplaceDto output = new AggrerateWorkplaceDto();
+		// 職場計カテゴリ == 人件費・時間
+		if (workplaceCounterOp == WorkplaceCounterCategory.LABOR_COSTS_AND_TIME) {
+			// 1: 集計する(対象組織識別情報, 期間, List<日別勤怠(Work)>)
+			Map<GeneralDate, Map<LaborCostAggregationUnitDto, BigDecimal>> laborCostAndTime = screenQueryLaborCostAndTime.aggrerate(
+					targetOrg,
+					aggrerateintegrationOfDaily,
+					datePeriod);
+			
+			output.laborCostAndTime = laborCostAndTime;
+			
+		}
+		// 職場計カテゴリ == 回数集計
+		else if (workplaceCounterOp == WorkplaceCounterCategory.TIMES_COUNTING) {
+			//2: 集計する(List<日別勤怠(Work)>)
+			Map<EmployeeId, Map<TotalTimes, BigDecimal>> timeCount = screenQueryAggrerateNumberTime.aggrerate(aggrerateintegrationOfDaily);
+			
+			
+		
+		}
+		// 職場計カテゴリ == 雇用人数 or 分類人数 or 職位人数
+		else if (workplaceCounterOp == WorkplaceCounterCategory.EMPLOYMENT_PEOPLE
+				|| workplaceCounterOp == WorkplaceCounterCategory.CLASSIFICATION_PEOPLE
+				|| workplaceCounterOp == WorkplaceCounterCategory.POSITION_PEOPLE) {
+			// 3: 集計する(年月日, List<日別勤怠(Work)>, 職場計カテゴリ)
+			AggrerateNumberPeopleDto aggrerateNumberPeople = screenQueryAggrerateNumberPeople.aggrerate(
+					datePeriod.end(),
+					aggrerateintegrationOfDaily,
+					workplaceCounterOp);
+			output.aggrerateNumberPeople = aggrerateNumberPeople;
+			
+		}
+		// 職場計カテゴリ == 外部予算実績
+		else if (workplaceCounterOp == WorkplaceCounterCategory.EXTERNAL_BUDGET) {
+			//4: 取得する(対象組織識別情報, 期間)
+			Map<GeneralDate, Map<ExternalBudgetDto, Integer>> externalBudget = 
+			screenQueryExternalBudgetPerformance.aggrerate(
+					targetOrg,
+					datePeriod
+					);
+			
+			output.externalBudget = externalBudget;
+		}
+		
+		return output;
+		
+	}
+
+}
