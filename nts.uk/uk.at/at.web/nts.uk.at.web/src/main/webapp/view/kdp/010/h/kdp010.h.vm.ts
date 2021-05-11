@@ -381,6 +381,9 @@ module nts.uk.at.view.kdp010.h {
 							});
 						});
 						self.getData(self.selectedLayout());
+						self.pageName("");
+						self.commentDaily("");
+						self.letterColors("#7F7F7F");
 						dfd.resolve();
 					}).fail(function(error: any) {
 						alert(error.message);
