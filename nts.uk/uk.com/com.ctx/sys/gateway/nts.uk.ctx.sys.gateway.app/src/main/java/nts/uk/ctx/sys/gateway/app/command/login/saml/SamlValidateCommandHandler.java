@@ -142,7 +142,7 @@ public class SamlValidateCommandHandler extends LoginCommandHandlerBase<
 	}
 	
 	@Value
-	static class AuthenResult implements LoginCommandHandlerBase.AuthenticationResult{
+	static class AuthenResult implements LoginCommandHandlerBase.AuthenticationResultBase{
 		
 		private boolean isSuccess;
 		private IdentifiedEmployeeInfo identified;
