@@ -7,7 +7,7 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
-import nts.uk.ctx.sys.gateway.dom.login.password.authenticate.PasswordAuthenticateFailureLog;
+import nts.uk.ctx.sys.gateway.dom.login.password.authenticate.PasswordAuthenticationFailureLog;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -32,8 +32,8 @@ public class SgwdtFailLogPasswordAuth extends UkJpaEntity{
 	
 	public static final JpaEntityMapper<SgwdtFailLogPasswordAuth> MAPPER = new JpaEntityMapper<>(SgwdtFailLogPasswordAuth.class);
 
-	public PasswordAuthenticateFailureLog toDomain() {
-		return new PasswordAuthenticateFailureLog(
+	public PasswordAuthenticationFailureLog toDomain() {
+		return new PasswordAuthenticationFailureLog(
 				pk.getFailureDateTime(), 
 				pk.getTriedUserId(), 
 				pk.getTriedPassword());

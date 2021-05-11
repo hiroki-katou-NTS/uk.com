@@ -12,8 +12,8 @@ import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.sys.gateway.app.command.login.session.LoginAuthorizeAdapter;
 import nts.uk.ctx.sys.gateway.dom.login.CheckIfCanLogin;
 import nts.uk.ctx.sys.gateway.dom.login.IdentifiedEmployeeInfo;
-import nts.uk.ctx.sys.gateway.dom.login.password.authenticate.PasswordAuthenticateFailureLog;
-import nts.uk.ctx.sys.gateway.dom.login.password.authenticate.PasswordAuthenticateFailureLogRepository;
+import nts.uk.ctx.sys.gateway.dom.login.password.authenticate.PasswordAuthenticationFailureLog;
+import nts.uk.ctx.sys.gateway.dom.login.password.authenticate.PasswordAuthenticationFailureLogRepository;
 import nts.uk.ctx.sys.gateway.dom.outage.company.PlannedOutageByCompany;
 import nts.uk.ctx.sys.gateway.dom.outage.company.PlannedOutageByCompanyRepository;
 import nts.uk.ctx.sys.gateway.dom.outage.tenant.PlannedOutageByTenant;
@@ -22,10 +22,10 @@ import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.AccountLockPolicy;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.AccountLockPolicyRepository;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.locked.LockOutDataRepository;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.locked.LockoutData;
-import nts.uk.ctx.sys.gateway.dom.tenantlogin.TenantAuthenticate;
-import nts.uk.ctx.sys.gateway.dom.tenantlogin.TenantAuthenticateFailureLog;
-import nts.uk.ctx.sys.gateway.dom.tenantlogin.TenantAuthenticateFailureLogRepository;
-import nts.uk.ctx.sys.gateway.dom.tenantlogin.TenantAuthenticateRepository;
+import nts.uk.ctx.sys.gateway.dom.tenantlogin.TenantAuthentication;
+import nts.uk.ctx.sys.gateway.dom.tenantlogin.TenantAuthenticationFailureLog;
+import nts.uk.ctx.sys.gateway.dom.tenantlogin.TenantAuthenticationFailureLogRepository;
+import nts.uk.ctx.sys.gateway.dom.tenantlogin.TenantAuthenticationRepository;
 import nts.uk.ctx.sys.shared.dom.company.CompanyInforImport;
 import nts.uk.ctx.sys.shared.dom.company.CompanyInformationAdapter;
 import nts.uk.ctx.sys.shared.dom.employee.employment.SyaEmpHistAdapter;
@@ -46,7 +46,7 @@ public class LoginRequire {
 	private CompanyInformationAdapter companyInformationAdapter;
 	
 	@Inject
-    private TenantAuthenticateRepository tenantAuthenticationRepo;
+    private TenantAuthenticationRepository tenantAuthenticationRepo;
 
 	@Inject
 	private LoginAuthorizeAdapter loginAuthorizeAdapter;
@@ -67,10 +67,10 @@ public class LoginRequire {
 	private LockOutDataRepository lockOutDataRep;
 	
 	@Inject
-	private TenantAuthenticateFailureLogRepository tenantAuthenticationFailureLogRepo;
+	private TenantAuthenticationFailureLogRepository tenantAuthenticationFailureLogRepo;
 	
 	@Inject
-	private PasswordAuthenticateFailureLogRepository passwordAuthenticateFailureLogRepo;
+	private PasswordAuthenticationFailureLogRepository passwordAuthenticateFailureLogRepo;
 	
 	@Inject
 	private SyaCompanyHistAdapter syaCompanyHistAdapter;
@@ -117,7 +117,7 @@ public class LoginRequire {
 	public static class BaseImpl implements CommonRequire {
 
 		private CompanyInformationAdapter companyInformationAdapter;
-		private TenantAuthenticateRepository tenantAuthenticationRepo;
+		private TenantAuthenticationRepository tenantAuthenticationRepo;
 		private LoginAuthorizeAdapter loginAuthorizeAdapter;
 		private LoginUserContextManager loginUserContextManager;
 		
@@ -125,8 +125,8 @@ public class LoginRequire {
 		private PlannedOutageByCompanyRepository plannedOutageByCompanyRepo;
 		private AccountLockPolicyRepository accountLockPolicyRepo;
 		private LockOutDataRepository lockOutDataRepo;
-		private TenantAuthenticateFailureLogRepository tenantAuthenticationFailureLogRepo;
-		private PasswordAuthenticateFailureLogRepository passwordAuthenticateFailureLogRepo;
+		private TenantAuthenticationFailureLogRepository tenantAuthenticationFailureLogRepo;
+		private PasswordAuthenticationFailureLogRepository passwordAuthenticateFailureLogRepo;
 		
 		private SyaCompanyHistAdapter syaCompanyHistAdapter;
 		private SyaEmpHistAdapter syaEmpHistAdapter;
@@ -136,15 +136,15 @@ public class LoginRequire {
 
 		public void setDependencies(
 				CompanyInformationAdapter companyInformationAdapter, 
-				TenantAuthenticateRepository tenantAuthenticationRepo, 
+				TenantAuthenticationRepository tenantAuthenticationRepo, 
 				LoginAuthorizeAdapter loginAuthorizeAdapter,
 				LoginUserContextManager loginUserContextManager, 
 				PlannedOutageByTenantRepository plannedOutageByTenantRepo,
 				PlannedOutageByCompanyRepository plannedOutageByCompanyRepo, 
 				AccountLockPolicyRepository accountLockPolicyRepo, 
 				LockOutDataRepository lockOutDataRepo, 
-				TenantAuthenticateFailureLogRepository tenantAuthenticationFailureLogRepo, 
-				PasswordAuthenticateFailureLogRepository passwordAuthenticateFailureLogRepo, 
+				TenantAuthenticationFailureLogRepository tenantAuthenticationFailureLogRepo, 
+				PasswordAuthenticationFailureLogRepository passwordAuthenticateFailureLogRepo, 
 				
 				SyaCompanyHistAdapter syaCompanyHistAdapter, 
 				SyaEmpHistAdapter syaEmpHistAdapter, 
@@ -193,12 +193,12 @@ public class LoginRequire {
 		}
 
 		@Override
-		public List<PasswordAuthenticateFailureLog> getFailureLog(String userId) {
+		public List<PasswordAuthenticationFailureLog> getFailureLog(String userId) {
 			return passwordAuthenticateFailureLogRepo.find(userId);
 		}
 
 		@Override
-		public List<PasswordAuthenticateFailureLog> getFailureLog(String userId, GeneralDateTime start, GeneralDateTime end) {
+		public List<PasswordAuthenticationFailureLog> getFailureLog(String userId, GeneralDateTime start, GeneralDateTime end) {
 			return passwordAuthenticateFailureLogRepo.find(userId, start, end);
 		}
 
@@ -208,12 +208,12 @@ public class LoginRequire {
 		}
 
 		@Override
-		public Optional<TenantAuthenticate> getTenantAuthentication(String tenantCode) {
+		public Optional<TenantAuthentication> getTenantAuthentication(String tenantCode) {
 			return tenantAuthenticationRepo.find(tenantCode);
 		}
 
 		@Override
-		public void insert(TenantAuthenticateFailureLog failureLog) {
+		public void insert(TenantAuthenticationFailureLog failureLog) {
 			tenantAuthenticationFailureLogRepo.insert(failureLog);
 			
 		}

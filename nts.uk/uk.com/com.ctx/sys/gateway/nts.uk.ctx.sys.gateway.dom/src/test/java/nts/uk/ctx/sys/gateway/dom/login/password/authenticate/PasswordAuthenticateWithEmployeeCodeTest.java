@@ -98,7 +98,7 @@ public class PasswordAuthenticateWithEmployeeCodeTest {
 		}};
 		
 		val result = PasswordAuthenticateWithEmployeeCode.authenticate(require, idenEmpInfo, Dummy.password);
-		assertThat(result.isFailed()).isTrue();
+		assertThat(result.isFailure()).isTrue();
 	}
 	
 	@Test

@@ -14,11 +14,11 @@ import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.gul.web.HttpClientIpAddress;
 import nts.uk.ctx.sys.gateway.app.find.login.dto.CheckContractDto;
 import nts.uk.ctx.sys.gateway.dom.login.LoginClient;
-import nts.uk.ctx.sys.gateway.dom.tenantlogin.AuthenticateOfTenant;
-import nts.uk.ctx.sys.gateway.dom.tenantlogin.TenantAuthenticate;
-import nts.uk.ctx.sys.gateway.dom.tenantlogin.TenantAuthenticateFailureLog;
-import nts.uk.ctx.sys.gateway.dom.tenantlogin.TenantAuthenticateFailureLogRepository;
-import nts.uk.ctx.sys.gateway.dom.tenantlogin.TenantAuthenticateRepository;
+import nts.uk.ctx.sys.gateway.dom.tenantlogin.AuthenticateTenant;
+import nts.uk.ctx.sys.gateway.dom.tenantlogin.TenantAuthentication;
+import nts.uk.ctx.sys.gateway.dom.tenantlogin.TenantAuthenticationFailureLog;
+import nts.uk.ctx.sys.gateway.dom.tenantlogin.TenantAuthenticationFailureLogRepository;
+import nts.uk.ctx.sys.gateway.dom.tenantlogin.TenantAuthenticationRepository;
 import nts.uk.shr.com.net.Ipv4Address;
 
 /**
@@ -31,10 +31,10 @@ import nts.uk.shr.com.net.Ipv4Address;
 public class TenantCheckCommandHandler extends CommandHandlerWithResult<TenantAuthenticateCommand, CheckContractDto> {
 
 	@Inject
-    private TenantAuthenticateRepository tenantAuthenticationRepo;
+    private TenantAuthenticationRepository tenantAuthenticationRepo;
 	
 	@Inject
-	private TenantAuthenticateFailureLogRepository tenantAuthenticationFailureLogRepo;
+	private TenantAuthenticationFailureLogRepository tenantAuthenticationFailureLogRepo;
 
 	@Override
 	protected CheckContractDto handle(CommandHandlerContext<TenantAuthenticateCommand> context) {
@@ -56,7 +56,7 @@ public class TenantCheckCommandHandler extends CommandHandlerWithResult<TenantAu
 		
 		if(tenantAuthResult.isFailure()) {
 			transaction.execute(() -> {
-				tenantAuthResult.getAtomTask().get().run();
+				tenantAuthResult.getAtomTask().run();
 			});
 			// テナント認証失敗なので、再認証必要
 			return new CheckContractDto(true);
@@ -66,14 +66,14 @@ public class TenantCheckCommandHandler extends CommandHandlerWithResult<TenantAu
 	}
 	
 	@RequiredArgsConstructor
-	private class RequireImpl implements AuthenticateOfTenant.Require{
+	private class RequireImpl implements AuthenticateTenant.Require{
 		@Override
-		public Optional<TenantAuthenticate> getTenantAuthentication(String tenantCode) {
+		public Optional<TenantAuthentication> getTenantAuthentication(String tenantCode) {
 			return tenantAuthenticationRepo.find(tenantCode);
 		}
 		
 		@Override
-		public void insert(TenantAuthenticateFailureLog failureLog) {
+		public void insert(TenantAuthenticationFailureLog failureLog) {
 			tenantAuthenticationFailureLogRepo.insert(failureLog);
 		}
 	}

@@ -9,7 +9,7 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
-import nts.uk.ctx.sys.gateway.dom.login.password.identification.PasswordAuthIdentificateFailureLog;
+import nts.uk.ctx.sys.gateway.dom.login.password.identification.PasswordAuthIdentificationFailureLog;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -36,8 +36,8 @@ public class SgwdtFailLogIdenPassword extends UkJpaEntity  implements Serializab
 	
 	public static final JpaEntityMapper<SgwdtFailLogIdenPassword> MAPPER = new JpaEntityMapper<>(SgwdtFailLogIdenPassword.class);
 	
-	public PasswordAuthIdentificateFailureLog toDomain() {
-		return new PasswordAuthIdentificateFailureLog(
+	public PasswordAuthIdentificationFailureLog toDomain() {
+		return new PasswordAuthIdentificationFailureLog(
 				pk.getFailureDateTime(), 
 				pk.getTriedCompanyId(), 
 				pk.getTriedEmployeeCode());

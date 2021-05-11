@@ -5,7 +5,7 @@ import java.util.Optional;
 import lombok.Value;
 import nts.uk.ctx.sys.gateway.app.command.login.LoginCommandHandlerBase;
 import nts.uk.ctx.sys.gateway.dom.login.IdentifiedEmployeeInfo;
-import nts.uk.ctx.sys.gateway.dom.login.password.authenticate.PasswordAuthenticateResult;
+import nts.uk.ctx.sys.gateway.dom.login.password.authenticate.PasswordAuthenticationResult;
 import nts.uk.ctx.sys.gateway.dom.login.password.identification.EmployeeIdentify.IdentificationResult;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.validate.ValidationResultOnLogin;
 
@@ -34,19 +34,19 @@ public class AuthenticateResult implements LoginCommandHandlerBase.Authenticatio
 				false, null, null);
 	}
 	
-	public static AuthenticateResult passAuthenticateFailure(IdentificationResult idenResult, PasswordAuthenticateResult authResult) {
+	public static AuthenticateResult passAuthenticateFailure(IdentificationResult idenResult, PasswordAuthenticationResult authResult) {
 		return new AuthenticateResult(
 				false, 
-				idenResult.getEmployeeInfo(), 
-				authResult.getPasswordValidation(), 
+				Optional.of(idenResult.getEmployeeInfo()), 
+				Optional.of(authResult.getPasswordValidation()), 
 				false, null, null);
 	}
 	
-	public static AuthenticateResult success(IdentificationResult idenResult, PasswordAuthenticateResult authResult) {
+	public static AuthenticateResult success(IdentificationResult idenResult, PasswordAuthenticationResult authResult) {
 		return new AuthenticateResult(
 				true, 
-				idenResult.getEmployeeInfo(), 
-				authResult.getPasswordValidation(), 
+				Optional.of(idenResult.getEmployeeInfo()), 
+				Optional.of(authResult.getPasswordValidation()), 
 				false, null, null);
 	}
 	

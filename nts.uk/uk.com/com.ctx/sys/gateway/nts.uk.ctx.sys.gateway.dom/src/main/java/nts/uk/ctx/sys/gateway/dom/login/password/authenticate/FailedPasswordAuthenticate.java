@@ -14,7 +14,7 @@ import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.locked.LockoutData;
 public class FailedPasswordAuthenticate {
 
 	public static FailedAuthenticateTask failed(Require require, IdentifiedEmployeeInfo identifiedEmployee, String password) {
-		val failuresLog = PasswordAuthenticateFailureLog.failedNow(identifiedEmployee.getEmployeeId(), password);
+		val failuresLog = PasswordAuthenticationFailureLog.failedNow(identifiedEmployee.getEmployeeId(), password);
 		return new FailedAuthenticateTask(
 				Optional.of(AtomTask.of(() -> require.save(failuresLog))),
 				
@@ -27,7 +27,7 @@ public class FailedPasswordAuthenticate {
 
 	public static interface Require extends AccountLockPolicy.Require{
 		
-		void save(PasswordAuthenticateFailureLog failuresLog);
+		void save(PasswordAuthenticationFailureLog failuresLog);
 		
 		Optional<AccountLockPolicy> getAccountLockPolicy(String contractCode);
 		

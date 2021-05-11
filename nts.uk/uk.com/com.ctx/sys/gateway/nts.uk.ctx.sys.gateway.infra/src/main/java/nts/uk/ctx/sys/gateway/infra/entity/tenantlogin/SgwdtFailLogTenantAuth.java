@@ -8,7 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
 import nts.uk.ctx.sys.gateway.dom.login.LoginClient;
-import nts.uk.ctx.sys.gateway.dom.tenantlogin.TenantAuthenticateFailureLog;
+import nts.uk.ctx.sys.gateway.dom.tenantlogin.TenantAuthenticationFailureLog;
 import nts.uk.shr.com.net.Ipv4Address;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
@@ -28,8 +28,8 @@ public class SgwdtFailLogTenantAuth extends UkJpaEntity {
 		return this.pk;
 	}
 	
-	public TenantAuthenticateFailureLog toDomain() {
-		return new TenantAuthenticateFailureLog(
+	public TenantAuthenticationFailureLog toDomain() {
+		return new TenantAuthenticationFailureLog(
 				pk.getFailureDateTime(), 
 				new LoginClient(Ipv4Address.parse(pk.getIpv4Address()), pk.getUserAgent()),
 				pk.getTriedTenantCode(), 

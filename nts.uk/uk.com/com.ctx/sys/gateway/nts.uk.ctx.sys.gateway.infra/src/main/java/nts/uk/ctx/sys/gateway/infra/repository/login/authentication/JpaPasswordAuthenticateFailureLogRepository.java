@@ -6,17 +6,17 @@ import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDateTime;
-import nts.uk.ctx.sys.gateway.dom.login.password.authenticate.PasswordAuthenticateFailureLog;
-import nts.uk.ctx.sys.gateway.dom.login.password.authenticate.PasswordAuthenticateFailureLogRepository;
+import nts.uk.ctx.sys.gateway.dom.login.password.authenticate.PasswordAuthenticationFailureLog;
+import nts.uk.ctx.sys.gateway.dom.login.password.authenticate.PasswordAuthenticationFailureLogRepository;
 import nts.uk.ctx.sys.gateway.infra.entity.login.authnticate.SgwdtFailLogPasswordAuth;
 import nts.uk.ctx.sys.gateway.infra.entity.login.authnticate.SgwdtFailLogPasswordAuthPK;
 
 @Stateless
-public class JpaPasswordAuthenticateFailureLogRepository extends JpaRepository implements PasswordAuthenticateFailureLogRepository{
+public class JpaPasswordAuthenticateFailureLogRepository extends JpaRepository implements PasswordAuthenticationFailureLogRepository{
 
 	private final String BASIC_SELECT = "select * from SGWDT_FAIL_LOG_PASSWORD_AUTH ";
 	
-	private SgwdtFailLogPasswordAuth toEntity(PasswordAuthenticateFailureLog domain) {
+	private SgwdtFailLogPasswordAuth toEntity(PasswordAuthenticationFailureLog domain) {
 		return new SgwdtFailLogPasswordAuth(
 				new SgwdtFailLogPasswordAuthPK(
 					domain.getFailureDateTime(),
@@ -24,12 +24,12 @@ public class JpaPasswordAuthenticateFailureLogRepository extends JpaRepository i
 					domain.getTriedPassword()));
 	}
 	
-	public void insert(PasswordAuthenticateFailureLog log) {
+	public void insert(PasswordAuthenticationFailureLog log) {
 		this.commandProxy().insert(toEntity(log));
 	}
 
 	@Override
-	public List<PasswordAuthenticateFailureLog> find(String userId) {
+	public List<PasswordAuthenticationFailureLog> find(String userId) {
 		String query = BASIC_SELECT 
 				+ " where TRIED_USER_ID = @userId ";
 		
@@ -39,7 +39,7 @@ public class JpaPasswordAuthenticateFailureLogRepository extends JpaRepository i
 	}
 
 	@Override
-	public List<PasswordAuthenticateFailureLog> find(String userId, GeneralDateTime startDateTime, GeneralDateTime endDateTime) {
+	public List<PasswordAuthenticationFailureLog> find(String userId, GeneralDateTime startDateTime, GeneralDateTime endDateTime) {
 		String query = BASIC_SELECT 
 				+ " where TRIED_USER_ID = @userId "
 				+ " and FAILURE_DATE_TIME >= @startDateTime"

@@ -47,7 +47,7 @@ public class EmployeeIdentifyTest {
 		
 		val result = EmployeeIdentify.identifyByEmployeeCode(require, Helper.DUMMY.COMPANY_ID, Helper.DUMMY.EMPLOYEE_CD);
 		
-		assertThat(result.isFailed()).isTrue();
+		assertThat(result.isFailure()).isTrue();
 		assertThat(result.getEmployeeInfo()).isEqualTo(Optional.empty());
 	}
 
@@ -63,7 +63,7 @@ public class EmployeeIdentifyTest {
 		
 		val result = EmployeeIdentify.identifyByEmployeeCode(require, Helper.DUMMY.COMPANY_ID, Helper.DUMMY.EMPLOYEE_CD);
 		
-		assertThat(result.isFailed()).isTrue();
+		assertThat(result.isFailure()).isTrue();
 		assertThat(result.getEmployeeInfo()).isEqualTo(Optional.empty());
 	}
 	
@@ -81,7 +81,7 @@ public class EmployeeIdentifyTest {
 		}};
 		
 		val result = EmployeeIdentify.identifyByEmployeeCode(require, Helper.DUMMY.COMPANY_ID, Helper.DUMMY.EMPLOYEE_CD);
-		assertThat(result.isFailed()).isTrue();
+		assertThat(result.isFailure()).isTrue();
 	}
 	
 	@Test
@@ -94,12 +94,12 @@ public class EmployeeIdentifyTest {
 				Helper.DUMMY.EMPLOYEE_ID
 				);
 		new Verifications() {{
-			require.addFailureLog((PasswordAuthIdentificateFailureLog)any);
+			require.addFailureLog((PasswordAuthIdentificationFailureLog)any);
 			times = 0;
 		}};
 		result.getAtomTask().run();
 		new Verifications() {{
-			require.addFailureLog((PasswordAuthIdentificateFailureLog)any);
+			require.addFailureLog((PasswordAuthIdentificationFailureLog)any);
 			times = 1;
 		}};
 	}

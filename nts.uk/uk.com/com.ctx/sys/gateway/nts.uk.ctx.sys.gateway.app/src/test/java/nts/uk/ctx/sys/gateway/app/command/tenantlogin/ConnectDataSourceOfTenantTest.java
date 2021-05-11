@@ -12,25 +12,25 @@ import mockit.Verifications;
 import nts.arc.task.tran.AtomTask;
 import nts.gul.util.value.MutableValue;
 import nts.uk.ctx.sys.gateway.dom.login.LoginClient;
-import nts.uk.ctx.sys.gateway.dom.tenantlogin.AuthenticateOfTenant;
-import nts.uk.ctx.sys.gateway.dom.tenantlogin.TenantAuthenticateFailureLog;
-import nts.uk.ctx.sys.gateway.dom.tenantlogin.TenantAuthenticateResult;
+import nts.uk.ctx.sys.gateway.dom.tenantlogin.AuthenticateTenant;
+import nts.uk.ctx.sys.gateway.dom.tenantlogin.TenantAuthenticationFailureLog;
+import nts.uk.ctx.sys.gateway.dom.tenantlogin.TenantAuthenticationResult;
 import nts.uk.shr.com.net.Ipv4Address;
 import nts.uk.shr.com.system.property.UKServerSystemProperties;
 import nts.uk.shr.infra.data.TenantLocatorService;
 
 public class ConnectDataSourceOfTenantTest {
 	@Injectable
-	private TenantAuthenticateResult tenantAuthenticateResult;
+	private TenantAuthenticationResult tenantAuthenticateResult;
 	
 	@Injectable
-	private AuthenticateOfTenant.Require require;
+	private AuthenticateTenant.Require require;
 	
 	private static class Dummy{
-		static LoginClient loginClient = new LoginClient(Ipv4Address.parse("255.255.255.255"), "");
-		static String tenantCode = "000000000000";
-		static String password = "0";
-		static AtomTask atomTask = AtomTask.of(AtomTask.none());
+		static final LoginClient LOGIN_CLIENT = new LoginClient(Ipv4Address.parse("255.255.255.255"), "");
+		static final String TENANT_CODE = "000000000000";
+		static final String PASSWORD = "0";
+		static final AtomTask ATOM_TASK= AtomTask.of(AtomTask.none());
 	}
 	
 	@Test
@@ -57,15 +57,16 @@ public class ConnectDataSourceOfTenantTest {
 			}
 		};
 		
-		new MockUp<AuthenticateOfTenant>() {
+		new MockUp<AuthenticateTenant>() {
 			@Mock
-			public TenantAuthenticateResult authenticate(AuthenticateOfTenant.Require require, String tenantCode, String password, LoginClient loginClient) {
-				return TenantAuthenticateResult.success();
+			public TenantAuthenticationResult authenticate(AuthenticateTenant.Require require, String tenantCode, String password, LoginClient loginClient) {
+				return TenantAuthenticationResult.success();
 			}
 		};
 		
-		ConnectDataSourceOfTenant.connect(require, Dummy.loginClient, Dummy.tenantCode, Dummy.password);
+		val result = ConnectDataSourceOfTenant.connect(require, Dummy.LOGIN_CLIENT, Dummy.TENANT_CODE, Dummy.PASSWORD);
 		
+		assertThat(result.isFailure()).isTrue();
 		assertThat(isCalledConnect.get()).isFalse();
 		assertThat(isCalledDisconnect.get()).isFalse();
 	}
@@ -98,18 +99,19 @@ public class ConnectDataSourceOfTenantTest {
 			}
 		};
 		
-		val result = ConnectDataSourceOfTenant.connect(require, Dummy.loginClient, Dummy.tenantCode, Dummy.password);
-
+		val result = ConnectDataSourceOfTenant.connect(require, Dummy.LOGIN_CLIENT, Dummy.TENANT_CODE, Dummy.PASSWORD);
+		
 		new Verifications() {{
-			require.insert((TenantAuthenticateFailureLog)any);
+			require.insert((TenantAuthenticationFailureLog)any);
 			times = 0;
 		}};
-		result.getAtomTask().get().run();
+		result.getAtomTask().run();
 		new Verifications() {{
-			require.insert((TenantAuthenticateFailureLog)any);
+			require.insert((TenantAuthenticationFailureLog)any);
 			times = 1;
 		}};
 		
+		assertThat(result.isFailure()).isTrue();
 		assertThat(isCalledConnect.get()).isTrue();
 		assertThat(isCalledDisconnect.get()).isFalse();
 	}
@@ -142,18 +144,18 @@ public class ConnectDataSourceOfTenantTest {
 			}
 		};
 		
-		new MockUp<AuthenticateOfTenant>() {
+		new MockUp<AuthenticateTenant>() {
 			@Mock
-			public TenantAuthenticateResult authenticate(AuthenticateOfTenant.Require require, String tenantCode, String password, LoginClient loginClient) {
-				return TenantAuthenticateResult.failedToAuthPassword(Dummy.atomTask);
+			public TenantAuthenticationResult authenticate(AuthenticateTenant.Require require, String tenantCode, String password, LoginClient loginClient) {
+				return TenantAuthenticationResult.failedDueToIncorrectPassword(Dummy.ATOM_TASK);
 			}
 		};
 		
-		val result = ConnectDataSourceOfTenant.connect(require, Dummy.loginClient, Dummy.tenantCode, Dummy.password);
+		val result = ConnectDataSourceOfTenant.connect(require, Dummy.LOGIN_CLIENT, Dummy.TENANT_CODE, Dummy.PASSWORD);
 		
+		assertThat(result.isSuccess()).isTrue();
 		assertThat(isCalledConnect.get()).isTrue();
 		assertThat(isCalledDisconnect.get()).isTrue();
-		assertThat(result.getErrorMessageID().isPresent()).isTrue();
 	}
 	
 	@Test
@@ -184,17 +186,17 @@ public class ConnectDataSourceOfTenantTest {
 			}
 		};
 		
-		new MockUp<AuthenticateOfTenant>() {
+		new MockUp<AuthenticateTenant>() {
 			@Mock
-			public TenantAuthenticateResult authenticate(AuthenticateOfTenant.Require require, String tenantCode, String password, LoginClient loginClient) {
-				return TenantAuthenticateResult.success();
+			public TenantAuthenticationResult authenticate(AuthenticateTenant.Require require, String tenantCode, String password, LoginClient loginClient) {
+				return TenantAuthenticationResult.success();
 			}
 		};
 		
-		val result = ConnectDataSourceOfTenant.connect(require, Dummy.loginClient, Dummy.tenantCode, Dummy.password);
+		val result = ConnectDataSourceOfTenant.connect(require, Dummy.LOGIN_CLIENT, Dummy.TENANT_CODE, Dummy.PASSWORD);
 		
+		assertThat(result.isSuccess()).isTrue();
 		assertThat(isCalledConnect.get()).isTrue();
 		assertThat(isCalledDisconnect.get()).isFalse();
-		assertThat(result.getErrorMessageID().isPresent()).isFalse();
 	}
 }
