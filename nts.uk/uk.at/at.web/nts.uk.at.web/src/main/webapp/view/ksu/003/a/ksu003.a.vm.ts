@@ -8,7 +8,6 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 	import block = nts.uk.ui.block;
 	import exTable = nts.uk.ui.exTable;
 	import formatById = nts.uk.time.format.byId;
-	import model = nts.uk.at.view.ksu003.a.model;
 	import duration = nts.uk.time.minutesBased.duration; // convert time 
 	import characteristics = nts.uk.characteristics;
 	import alertError = nts.uk.ui.dialog.alertError
@@ -112,7 +111,6 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				new model.ItemModel('3', getText('KSU003_16')),
 				new model.ItemModel('4', getText('KSU003_17'))
 			]);
-
 			self.sortList = ko.observableArray([
 				new model.ItemModel('0', getText('KSU003_59')),
 				new model.ItemModel('1', getText('KSU003_60'))

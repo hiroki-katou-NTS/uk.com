@@ -18,6 +18,7 @@
 			<com:scriptfile path="ksu003.a.service.js" />
 			<com:scriptfile path="ksu003.a.vm.js" />
 			<com:scriptfile path="ksu003.a.start.js" />
+			<com:scriptfile path="ksu003.a.model.js" />
 			<com:ValidatorScript>
 					nts.uk.shr.com.time.TimeWithDayAttr
 					nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode
@@ -26,7 +27,6 @@
 					nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode
 			</com:ValidatorScript>
 		</ui:define>
-
 		<!-- PAGE CONTENT -->
 		<ui:define name="content">
 			<div id="functions-area">
@@ -166,13 +166,14 @@
 							</com:ko-if>
 						</button>
 					</div>
+					
 					<div id="extable-ksu003" style="height: 400px; float: left"></div>
-					<div id="setting-time-grid">
+					<!-- <div id="setting-time-grid">
 						<button class="settingTimeGrid">
 							<i style="margin-left: -6px;"
 								data-bind="ntsIcon: { no: 3,width: 14, height: 14 }"></i>
 						</button>
-					</div>
+					</div> -->
 				</div>
 			</div>
 
@@ -187,7 +188,7 @@
 				</div>
 			</div>
 
-			<div id="A3_4" class="popup-area popup-panel">
+			<!-- <div id="A3_4" class="popup-area popup-panel">
 				<div>
 					<label id="sort-label">#{i18n.getText('KSU003_56')}</label><label
 						id="sort-label">#{i18n.getText('KSU003_57')}</label>
@@ -207,7 +208,7 @@
 				<div id="sort-label-note">
 					<label>#{i18n.getText('KSU003_61')}</label>
 				</div>
-			</div>
+			</div> -->
 
 			<div id="A5_1" class="popup-area popup-panel">
 				<!-- Support color -->
