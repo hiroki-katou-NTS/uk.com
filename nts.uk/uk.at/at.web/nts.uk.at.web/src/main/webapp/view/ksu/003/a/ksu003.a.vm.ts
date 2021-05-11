@@ -146,7 +146,6 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				new ItemModel('3', getText('KSU003_16')),
 				new ItemModel('4', getText('KSU003_17'))
 			]);
-
 			self.sortList = ko.observableArray([
 				new ItemModel('0', getText('KSU003_59')),
 				new ItemModel('1', getText('KSU003_60'))
