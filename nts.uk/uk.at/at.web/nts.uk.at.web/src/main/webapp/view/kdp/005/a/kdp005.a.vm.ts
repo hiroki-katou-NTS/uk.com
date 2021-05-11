@@ -180,60 +180,17 @@ module nts.uk.at.view.kdp005.a {
 								}
 							} else {
 								self.loginInfo = loginResult.em;
-
-								//URLOption basyoが存在している場合
-								var params = new URLSearchParams(window.location.search);
-								var locationCd = params.get('basyo');
-								let vm = new ko.ViewModel();
-
-								if (locationCd) {
-									//打刻入力の場所を取得する
-									nts.uk.characteristics.restore("contractInfo").then(function (contractInfo: IContractInfo) {
-										const param = {
-											contractCode: contractInfo.contractCode,
-											workLocationCode: locationCd
-										}
-										vm.$ajax(API.GET_LOCATION, param)
-											.done((data: ILocationStampInput) => {
-												//※職場IDを取得しなかった場合
-												if (data.workpalceId === null || data.workpalceId.length == 0) {
-													self.openDialogK().done((result) => {
-														if (!result) {
-															self.errorMessage(getMessage("Msg_1647"));
-															dfd.resolve();
-															return;
-														}
-														self.loginInfo.selectedWP = result;
-													});
-
-													//※職場IDを取得した場合
-												} else {
-													self.loginInfo.selectedWP = data.workpalceId;
-												}
-											});
-									});
-								} else {
-									self.openDialogK().done((result) => {
-										if (result) {
-											self.loginInfo.selectedWP = result;
-											nts.uk.characteristics.save("loginKDP005", self.loginInfo).done(() => {
-												location.reload();
-											});
-
-										} else {
-											location.reload();
-										}
-
-									});
-								}
-								characteristics.save("loginKDP005", self.loginInfo).done(() => {
-									if (__viewContext.user.companyId != loginResult.em.companyId || __viewContext.user.employeeCode != loginResult.em.employeeCode) {
-										location.reload();
-										dfd.resolve();
-									} else {
-										dfd.resolve(self.loginInfo);
-									}
-								});
+        						self.loginInfo.selectedWP = result;
+                                characteristics.save("loginKDP005", self.loginInfo).done(() => {
+                                    if(__viewContext.user.companyId != loginResult.em.companyId || __viewContext.user.employeeCode != loginResult.em.employeeCode){
+                                        location.reload();
+                                        dfd.resolve();
+                                    }else {
+                                        dfd.resolve(self.loginInfo);
+                                    }
+                                });
+								
+								
 							}
 						});
 					}
