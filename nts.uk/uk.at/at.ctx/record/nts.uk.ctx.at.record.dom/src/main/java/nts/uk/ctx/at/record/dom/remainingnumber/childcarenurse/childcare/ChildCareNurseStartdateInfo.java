@@ -4,7 +4,7 @@ package nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare;
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.ChildCareNurseUsedNumber;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.childcarenurse.ChildCareNurseRemainNumber;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.childcarenurse.ChildCareNurseRemainingNumber;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.ChildCareNurseUpperLimit;
 
 /**
@@ -17,7 +17,7 @@ public class ChildCareNurseStartdateInfo {
 	/** 起算日からの使用数 */
 	private ChildCareNurseUsedNumber usedDays;
 	/** 残数 */
-	private ChildCareNurseRemainNumber remainingNumber ;
+	private ChildCareNurseRemainingNumber remainingNumber ;
 	/** 上限日数 */
 	private ChildCareNurseUpperLimit limitDays;
 
@@ -26,7 +26,7 @@ public class ChildCareNurseStartdateInfo {
 	 */
 	public ChildCareNurseStartdateInfo(){
 		this.usedDays = new ChildCareNurseUsedNumber();
-		this.remainingNumber = new ChildCareNurseRemainNumber();
+		this.remainingNumber = new ChildCareNurseRemainingNumber();
 		this.limitDays = new ChildCareNurseUpperLimit(0);
 	}
 	/**
@@ -38,7 +38,7 @@ public class ChildCareNurseStartdateInfo {
 	 */
 	public static ChildCareNurseStartdateInfo of (
 			ChildCareNurseUsedNumber usedDays,
-			ChildCareNurseRemainNumber remainingNumber,
+			ChildCareNurseRemainingNumber remainingNumber,
 			ChildCareNurseUpperLimit limitDays) {
 
 		ChildCareNurseStartdateInfo domain = new ChildCareNurseStartdateInfo();

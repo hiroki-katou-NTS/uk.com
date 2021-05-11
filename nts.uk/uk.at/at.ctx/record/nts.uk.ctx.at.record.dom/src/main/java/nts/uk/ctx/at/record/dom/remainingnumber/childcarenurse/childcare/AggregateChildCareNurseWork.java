@@ -18,8 +18,12 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.child
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.interimdata.TempChildCareNurseManagement;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.data.CareManagementDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.NursingCareLeaveRemainingInfo;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.remainingnumber.DayNumberOfRemain;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.remainingnumber.TimeOfRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.usenumber.DayNumberOfUse;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.usenumber.TimeOfUse;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.childcarenurse.ChildCareNurseRemainingNumber;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.childcarenurse.ChildCareNurseUsedInfo;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.ChildCareNurseUpperLimit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.ChildCareNurseUpperLimitPeriod;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.FamilyInfo;
@@ -178,9 +182,9 @@ public class AggregateChildCareNurseWork {
 									ChildCareNurseStartdateInfo.of(calcUsed.getStartdateInfo(),
 																						calcRemaining.getRemainNumber(),
 																						calcRemaining.getUpperLimit()),
-									ChildCareNurseAggrPeriodInfo.of(calcUsed.getUsedCount(),
-																							calcUsed.getUsedDays(),
-																							calcUsed.getAggrPeriodUsedNumber()));
+									ChildCareNurseUsedInfo.of(calcUsed.getAggrPeriodUsedNumber(),
+																					calcUsed.getUsedCount(),
+																							calcUsed.getUsedDays()));
 
 		// 期間ごとの計算結果を子の看護介護集計期間WORKを入れる
 		// ===子の看護介護集計期間WORK．集計結果　＝　期間ごとの計算結果
@@ -277,8 +281,10 @@ public class AggregateChildCareNurseWork {
 		// 日と時間を残数に変換する
 		//	===	子の看護介護残数．日数　＝　日と時間．日
 		//	===	子の看護介護残数．時間　＝　日と時間．時間
-		ChildCareNurseRemainingNumber remUsedNumber =ChildCareNurseRemainingNumber.of(subDayAndTime.getDay(),
-																																							Optional.of(subDayAndTime.getTime()));
+		DayNumberOfRemain remainDay = new DayNumberOfRemain(subDayAndTime.getDay().v());
+		TimeOfRemain remainTimes = new TimeOfRemain(subDayAndTime.getTime().v());
+
+		ChildCareNurseRemainingNumber remUsedNumber =ChildCareNurseRemainingNumber.of(remainDay,Optional.of(remainTimes));
 
 		return remUsedNumber;
 	}

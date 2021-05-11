@@ -19,11 +19,9 @@ import static nts.arc.time.GeneralDate.*;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare.AggregateChildCareNurseWork;
-import nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare.ChildCareNurseAggrPeriodInfo;
 import nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare.ChildCareNurseCalcResultWithinPeriod;
 import nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare.ChildCareNurseCalcUsedNumber;
 import nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare.ChildCareNurseErrors;
-import nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare.ChildCareNurseRemainingNumber;
 import nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare.ChildCareNurseRemainingNumberCalcWork;
 import nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare.ChildCareNurseStartdateInfo;
 import nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare.NextDayAfterPeriodEndWork;
@@ -37,8 +35,12 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.child
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.ChildCareLeaveRemainingInfo;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.NursingCareLeaveRemainingInfo;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.UpperLimitSetting;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.remainingnumber.DayNumberOfRemain;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.remainingnumber.TimeOfRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.usenumber.DayNumberOfUse;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.usenumber.TimeOfUse;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.childcarenurse.ChildCareNurseRemainingNumber;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.childcarenurse.ChildCareNurseUsedInfo;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.ChildCareNurseUpperLimit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.MaxPersonSetting;
@@ -187,8 +189,8 @@ public class AggregateChildCareNurseWorkTest {
 												require);
 
 		val expect = calcRemaining(0.0, null, 0);//期待値：計算残数（残日数、残時間、上限日数）
-		assertThat(nextPeriodEndAtr.getRemainNumber().getUsedDays()).isEqualTo(expect.getRemainNumber().getUsedDays());
-		assertThat(nextPeriodEndAtr.getRemainNumber().getUsedTime()).isEqualTo(expect.getRemainNumber().getUsedTime());
+		assertThat(nextPeriodEndAtr.getRemainNumber().getRemainDay()).isEqualTo(expect.getRemainNumber().getRemainDay());
+		assertThat(nextPeriodEndAtr.getRemainNumber().getRemainTimes()).isEqualTo(expect.getRemainNumber().getRemainTimes());
 		assertThat(nextPeriodEndAtr.getUpperLimit()).isEqualTo(expect.getUpperLimit());
 	}
 
@@ -217,8 +219,8 @@ public class AggregateChildCareNurseWorkTest {
 				calcUsedNumber(1.0 ,0 ,0 ,0 , 0.0 , 0), // 子の看護介護計算使用数
 				category,
 				require);
-		assertThat(calcRemaining.getRemainNumber().getUsedDays()).isEqualTo(expect.getRemainNumber().getUsedDays());
-		assertThat(calcRemaining.getRemainNumber().getUsedTime()).isEqualTo(expect.getRemainNumber().getUsedTime());
+		assertThat(calcRemaining.getRemainNumber().getRemainDay()).isEqualTo(expect.getRemainNumber().getRemainDay());
+		assertThat(calcRemaining.getRemainNumber().getRemainTimes()).isEqualTo(expect.getRemainNumber().getRemainTimes());
 		assertThat(calcRemaining.getUpperLimit()).isEqualTo(expect.getUpperLimit());
 	}
 
@@ -252,8 +254,8 @@ public class AggregateChildCareNurseWorkTest {
 	// 子の看護介護残数
 	private ChildCareNurseRemainingNumber remNum(double usedDays, Integer usedTime) {
 		return ChildCareNurseRemainingNumber.of(
-				new DayNumberOfUse(usedDays),
-				usedTime == null ? Optional.empty() : Optional.of(new TimeOfUse(usedTime)));
+				new DayNumberOfRemain(usedDays),
+				usedTime == null ? Optional.empty() : Optional.of(new TimeOfRemain(usedTime)));
 	}
 
 	// 起算日から子の看護介護休暇情報
@@ -265,9 +267,12 @@ public class AggregateChildCareNurseWorkTest {
 	}
 
 	// 集計期間の子の看護介護休暇情報
-	private ChildCareNurseAggrPeriodInfo periodInfo(int usedCount, int usedDays, double useDay, Integer usedTimes) {
-		return ChildCareNurseAggrPeriodInfo.of(new UsedTimes(usedCount), new UsedTimes(usedDays),
-				usedNumber(useDay, usedTimes));
+	private ChildCareNurseUsedInfo periodInfo(int usedCount, int usedDays, double useDay, Integer usedTimes) {
+		return ChildCareNurseUsedInfo.of(
+				usedNumber(useDay, usedTimes),
+				new UsedTimes(usedCount),
+				new UsedTimes(usedDays)
+				);
 	}
 
 	// 子の看護介護計算残数

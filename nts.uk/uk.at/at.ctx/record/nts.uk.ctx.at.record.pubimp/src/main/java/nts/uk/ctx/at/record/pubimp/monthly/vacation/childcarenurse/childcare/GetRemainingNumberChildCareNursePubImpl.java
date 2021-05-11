@@ -29,6 +29,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.InterimRemain
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.interimdata.TempChildCareManagement;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.interimdata.TempChildCareNurseManagement;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.childcarenurse.ChildCareNurseUsedInfo;
 
 /**
  * 実装：期間中の子の看護休暇残数を取得
@@ -113,19 +114,19 @@ public class GetRemainingNumberChildCareNursePubImpl implements GetRemainingNumb
 							domain.getUsedDays().getUsedDay().v(),
 							domain.getUsedDays().getUsedTimes().map(t -> t.v())),
 						ChildCareNurseRemainingNumberExport.of(
-								domain.getRemainingNumber().getUsedDays().v(),
-								domain.getRemainingNumber().getUsedTime().map(t -> t.v())),
+								domain.getRemainingNumber().getRemainDay().v(),
+								domain.getRemainingNumber().getRemainTimes().map(t -> t.v())),
 						domain.getLimitDays().v());
 	}
 
 	// 集計期間の休暇情報
-	private ChildCareNurseAggrPeriodInfoExport mapToPubAggrPeriodInfo(nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare.ChildCareNurseAggrPeriodInfo domain) {
+	private ChildCareNurseAggrPeriodInfoExport mapToPubAggrPeriodInfo(ChildCareNurseUsedInfo domain) {
 		return ChildCareNurseAggrPeriodInfoExport.of(
-							domain.getUsedCount().v(),
+							domain.getUsedTimes().v(),
 							domain.getUsedDays().v(),
 							ChildCareNurseUsedNumberExport.of(
-									domain.getAggrPeriodUsedNumber().getUsedDay().v(),
-									domain.getAggrPeriodUsedNumber().getUsedTimes().map(t -> t.v())));
+									domain.getUsedNumber().getUsedDay().v(),
+									domain.getUsedNumber().getUsedTimes().map(t -> t.v())));
 	}
 
 	// 子の看護休暇エラー情報

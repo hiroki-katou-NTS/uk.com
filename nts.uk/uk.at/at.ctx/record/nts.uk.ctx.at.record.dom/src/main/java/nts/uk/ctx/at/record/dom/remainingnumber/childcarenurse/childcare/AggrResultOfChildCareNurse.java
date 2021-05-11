@@ -9,15 +9,10 @@ import lombok.Setter;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.ChildCareNurseUsedNumber;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.ClosureStatus;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.childcarenurse.ChildCareNurseRemainNumber;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.childcarenurse.ChildCareNurseRemainingNumber;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.childcarenurse.ChildCareNurseUsedInfo;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.childcarenurse.ChildcareNurseRemNumEachMonth;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.childcarenurse.childcare.ChildcareRemNumEachMonth;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialHolidayRemainData;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialLeaveGrantUseDay;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialLeaveRemainDay;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialLeaveUnDigestion;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
@@ -113,11 +108,11 @@ public class AggrResultOfChildCareNurse {
 		/** 本年使用数 */
 		ChildCareNurseUsedInfo thisYearUsedInfo = this.aggrperiodinfo.getThisYear().clone();
 		/** 本年残数 */
-		ChildCareNurseRemainNumber thisYearRemainNumber = this.startdateDays.getThisYear().getRemainingNumber().clone();
+		ChildCareNurseRemainingNumber thisYearRemainNumber = this.startdateDays.getThisYear().getRemainingNumber().clone();
 		/** 翌年使用数 */
 		Optional<ChildCareNurseUsedInfo> nextYearUsedInfo= this.aggrperiodinfo.getNextYear().map(c->c.clone());
 		/** 翌年残数 */
-		Optional<ChildCareNurseRemainNumber> nextYearRemainNumber=this.startdateDays.getNextYear().map(c->c.getRemainingNumber().clone());
+		Optional<ChildCareNurseRemainingNumber> nextYearRemainNumber=this.startdateDays.getNextYear().map(c->c.getRemainingNumber().clone());
 		/** 合計使用数 */
 		ChildCareNurseUsedInfo usedInfo = this.aggrperiodinfo.getThisYear().clone();
 		if(this.aggrperiodinfo.getNextYear().isPresent()) {

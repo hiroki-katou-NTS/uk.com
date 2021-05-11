@@ -1,12 +1,14 @@
 package nts.uk.ctx.at.record.pub.monthly.vacation.childcarenurse.childcare;
 
 import lombok.Data;
-import nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare.ChildCareNurseRemainingNumber;
 import nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare.ChildCareNurseStartdateDaysInfo;
 import nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare.ChildCareNurseStartdateInfo;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.ChildCareNurseUsedNumber;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.remainingnumber.DayNumberOfRemain;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.remainingnumber.TimeOfRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.usenumber.DayNumberOfUse;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.usenumber.TimeOfUse;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.childcarenurse.ChildCareNurseRemainingNumber;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.ChildCareNurseUpperLimit;
 
 import java.util.Optional;
@@ -54,8 +56,8 @@ public class ChildCareNurseStartdateDaysInfoExport {
 								new DayNumberOfUse(thisYear.getUsedDays().getUsedDays()),
 								thisYear.getUsedDays().getUsedTime().map(c->new TimeOfUse(c))),
 						ChildCareNurseRemainingNumber.of(
-								new DayNumberOfUse(thisYear.getRemainingNumber().getDays()),
-								thisYear.getRemainingNumber().getTime().map(c->new TimeOfUse(c))),
+								new DayNumberOfRemain(thisYear.getRemainingNumber().getDays()),
+								thisYear.getRemainingNumber().getTime().map(c->new TimeOfRemain(c))),
 						new ChildCareNurseUpperLimit(thisYear.getLimitDays())
 				),
 
@@ -64,8 +66,8 @@ public class ChildCareNurseStartdateDaysInfoExport {
 								new DayNumberOfUse(mapper.getUsedDays().getUsedDays()),
 								mapper.getUsedDays().getUsedTime().map(c->new TimeOfUse(c))),
 						ChildCareNurseRemainingNumber.of(
-								new DayNumberOfUse(mapper.getRemainingNumber().getDays()),
-								mapper.getRemainingNumber().getTime().map(c->new TimeOfUse(c))),
+								new DayNumberOfRemain(mapper.getRemainingNumber().getDays()),
+								mapper.getRemainingNumber().getTime().map(c->new TimeOfRemain(c))),
 						new ChildCareNurseUpperLimit(mapper.getLimitDays())
 				))
 		);

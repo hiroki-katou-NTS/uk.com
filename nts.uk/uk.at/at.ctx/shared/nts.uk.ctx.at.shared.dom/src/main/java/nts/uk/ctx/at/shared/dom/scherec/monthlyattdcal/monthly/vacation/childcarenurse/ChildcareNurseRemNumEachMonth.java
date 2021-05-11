@@ -4,7 +4,6 @@ import java.util.Optional;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.arc.layer.dom.AggregateRoot;
 
 /**
  * 子の看護休暇月別残数データ
@@ -20,21 +19,11 @@ public class ChildcareNurseRemNumEachMonth  {
 	/** 合計使用数 */
 	private ChildCareNurseUsedInfo usedInfo;
 	/** 本年残数 */
-	private ChildCareNurseRemainNumber thisYearRemainNumber;
+	private ChildCareNurseRemainingNumber thisYearRemainNumber;
 	/** 翌年使用数 */
 	private Optional<ChildCareNurseUsedInfo> nextYearUsedInfo;
 	/** 翌年残数 */
-	private Optional<ChildCareNurseRemainNumber> nextYearRemainNumber;
-
-	public void calcUsedInfo() {
-		if ( !nextYearUsedInfo.isPresent() ) {
-			usedInfo = thisYearUsedInfo.clone();
-			return;
-		}
-
-		usedInfo = new ChildCareNurseUsedInfo( )
-
-	}
+	private Optional<ChildCareNurseRemainingNumber> nextYearRemainNumber;
 
 	/**
 	 * コンストラクタ
@@ -42,7 +31,7 @@ public class ChildcareNurseRemNumEachMonth  {
 	public ChildcareNurseRemNumEachMonth() {
 		thisYearUsedInfo = new ChildCareNurseUsedInfo();
 		usedInfo = new ChildCareNurseUsedInfo();
-		thisYearRemainNumber = new ChildCareNurseRemainNumber();
+		thisYearRemainNumber = new ChildCareNurseRemainingNumber();
 		nextYearUsedInfo = Optional.empty();
 		nextYearRemainNumber = Optional.empty();
 	}
@@ -69,9 +58,9 @@ public class ChildcareNurseRemNumEachMonth  {
 	public static ChildcareNurseRemNumEachMonth of(
 			ChildCareNurseUsedInfo thisYearUsedInfo,
 			ChildCareNurseUsedInfo usedInfo,
-			ChildCareNurseRemainNumber thisYearRemainNumber,
+			ChildCareNurseRemainingNumber thisYearRemainNumber,
 			Optional<ChildCareNurseUsedInfo> nextYearUsedInfo,
-			Optional<ChildCareNurseRemainNumber> nextYearRemainNumber
+			Optional<ChildCareNurseRemainingNumber> nextYearRemainNumber
 			){
 
 		ChildcareNurseRemNumEachMonth domain = new ChildcareNurseRemNumEachMonth();

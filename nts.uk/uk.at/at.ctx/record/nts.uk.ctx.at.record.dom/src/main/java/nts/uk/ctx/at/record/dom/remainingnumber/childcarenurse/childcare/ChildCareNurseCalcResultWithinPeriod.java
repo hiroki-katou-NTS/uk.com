@@ -5,6 +5,7 @@ import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.childcarenurse.ChildCareNurseUsedInfo;
 
 /**
 * 期間ごとの計算結果
@@ -18,7 +19,7 @@ public class ChildCareNurseCalcResultWithinPeriod {
 	/** 起算日からの休暇情報 */
 	private ChildCareNurseStartdateInfo startdateInfo;
 	/** 集計期間の休暇情報 */
-	private ChildCareNurseAggrPeriodInfo aggrPeriodInfo;
+	private ChildCareNurseUsedInfo aggrPeriodInfo;
 
 	/**
 	 * コンストラクタ
@@ -27,7 +28,7 @@ public class ChildCareNurseCalcResultWithinPeriod {
 
 		this.errorsInfo = new ArrayList<>();
 		this.startdateInfo =  new ChildCareNurseStartdateInfo();
-		this.aggrPeriodInfo = new ChildCareNurseAggrPeriodInfo();
+		this.aggrPeriodInfo = new ChildCareNurseUsedInfo();
 	}
 
 	/**
@@ -40,7 +41,7 @@ public class ChildCareNurseCalcResultWithinPeriod {
 	public static ChildCareNurseCalcResultWithinPeriod of(
 			List<ChildCareNurseErrors> errorsInfo,
 			ChildCareNurseStartdateInfo startdateInfo,
-			ChildCareNurseAggrPeriodInfo aggrPeriodInfo){
+			ChildCareNurseUsedInfo aggrPeriodInfo){
 
 		ChildCareNurseCalcResultWithinPeriod domain = new ChildCareNurseCalcResultWithinPeriod();
 		domain.errorsInfo = errorsInfo;

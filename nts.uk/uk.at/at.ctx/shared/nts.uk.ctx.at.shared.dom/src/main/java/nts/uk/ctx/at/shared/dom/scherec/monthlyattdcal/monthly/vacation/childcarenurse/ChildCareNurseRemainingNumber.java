@@ -18,7 +18,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremain
  */
 @Getter
 @Setter
-public class ChildCareNurseRemainNumber {
+public class ChildCareNurseRemainingNumber {
 
 	/** 日数 */
 	private DayNumberOfRemain remainDay;
@@ -28,7 +28,7 @@ public class ChildCareNurseRemainNumber {
 	/**
 	 * コンストラクタ　ChildCareNurseUsedNumber
 	 */
-	public ChildCareNurseRemainNumber(){
+	public ChildCareNurseRemainingNumber(){
 		this.remainDay = new DayNumberOfRemain(0.0);
 		this.remainTimes = Optional.empty();
 	}
@@ -36,7 +36,7 @@ public class ChildCareNurseRemainNumber {
 	/**
 	 * コンストラクタ
 	 */
-	public ChildCareNurseRemainNumber(ChildCareNurseRemainNumber c) {
+	public ChildCareNurseRemainingNumber(ChildCareNurseRemainingNumber c) {
 		this.remainDay = new DayNumberOfRemain(c.remainDay.v());
 		this.remainTimes = c.remainTimes.map(mapper->new TimeOfRemain(mapper.v()));
 	}
@@ -44,8 +44,8 @@ public class ChildCareNurseRemainNumber {
 	/**
 	 * クローン
 	 */
-	public ChildCareNurseRemainNumber clone() {
-		return new ChildCareNurseRemainNumber(this);
+	public ChildCareNurseRemainingNumber clone() {
+		return new ChildCareNurseRemainingNumber(this);
 	}
 
 	/**
@@ -54,13 +54,37 @@ public class ChildCareNurseRemainNumber {
 	 * @param remainTimes 時間
 	 * @return 子の看護介護残数
 	*/
-	public static ChildCareNurseRemainNumber of(
+	public static ChildCareNurseRemainingNumber of(
 			DayNumberOfRemain remainDay,
 			Optional<TimeOfRemain> remainTimes){
 
-		ChildCareNurseRemainNumber domain = new ChildCareNurseRemainNumber();
+		ChildCareNurseRemainingNumber domain = new ChildCareNurseRemainingNumber();
 		domain.remainDay = remainDay;
 		domain.remainTimes = remainTimes;
 		return domain;
+	}
+
+	/**
+	 * 残数を使い過ぎていないか
+	 * @return 残数を使い過ぎていないか（ture or false）
+	 */
+	public boolean checkOverUpperLimit() {
+		// 残数を使い過ぎていないか
+		// ===子の看護介護残数．日 >=0 and 子の看護介護残数．時間 >= 0
+		if(remainDay.v() >= 0 && remainTimes.map(x -> x.v()).orElse(0) >= 0) {
+			return true;
+		}else {
+			return false;
+		}
+	}
+
+	/** 子の看護介護残数を引算 */
+	public void sub(ChildCareNurseRemainingNumber usedNumber) {
+		remainDay = new DayNumberOfRemain(remainDay.v() - usedNumber.getRemainDay().v());
+		if (remainTimes.isPresent()) {
+			remainTimes = remainTimes.map(c -> c.minusMinutes(usedNumber.getRemainTimes().map(x -> x.v()).orElse(0)));
+		} else {
+			remainTimes = usedNumber.getRemainTimes();
+		}
 	}
 }
