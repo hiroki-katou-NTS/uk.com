@@ -442,4 +442,57 @@ module nts.uk.ui.at.kdp013.a {
         /** List<年月日,List<作業詳細>> */
         workDetails: WorkDetailDto[];
     };
+
+    export type RegisterWorkContentDto = {
+        // エラー一覧
+        lstErrorMessageInfo: ErrorMessageInfoDto[];
+        // List<残業休出時間>
+        lstOvertimeLeaveTime: OvertimeLeaveTime[];
+    };
+
+    export type ErrorMessageInfoDto = {
+        /**
+         * 会社ID
+         */
+        companyID: string;
+        /**
+         * 社員ID
+         */
+        employeeID: string;
+        /**
+         * 処理日
+         */
+        processDate: string;
+        /**
+         * 実施内容
+         */
+        executionContent: number;
+        /**
+         * リソースID
+         */
+        resourceID: string;
+        /**
+         * エラーメッセージ
+         */
+        messageError: string;
+    };
+
+    export type OvertimeLeaveTime = {
+        //年月日
+        date: string;
+
+        //時間
+        time: number;
+
+        //残業休出区分
+        overtimeLeaveAtr: OverTimeLeaveAtr;
+    };
+    
+    enum OverTimeLeaveAtr {
+        // 0: 残業申請
+        OVER_TIME_APPLICATION = 0,
+
+        //1: 休日出勤申請
+        HOLIDAY_WORK_APPLICATION = 1
+    };
 }

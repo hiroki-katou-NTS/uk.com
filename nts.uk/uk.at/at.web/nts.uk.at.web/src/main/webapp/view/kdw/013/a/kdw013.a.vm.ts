@@ -1,4 +1,12 @@
 module nts.uk.ui.at.kdp013.a {
+    enum OverTimeLeaveAtr {
+        // 0: 残業申請
+        OVER_TIME_APPLICATION = 0,
+
+        //1: 休日出勤申請
+        HOLIDAY_WORK_APPLICATION = 1
+    };
+
     const { randomId } = nts.uk.util;
     import calendar = nts.uk.ui.components.fullcalendar;
 
@@ -143,7 +151,18 @@ module nts.uk.ui.at.kdp013.a {
 
         saveData() {
             const vm = this;
+            // sample data for open view d
+            const data: OvertimeLeaveTime[] = [{
+                date: '2021/01/01',
+                overtimeLeaveAtr: OverTimeLeaveAtr.HOLIDAY_WORK_APPLICATION,
+                time: 720
+            }, {
+                date: '2021/01/02',
+                overtimeLeaveAtr: OverTimeLeaveAtr.OVER_TIME_APPLICATION,
+                time: 720
+            }];
 
+            vm.openDialogCaculationResult(data);
         }
 
         // 日付を変更する
@@ -169,33 +188,6 @@ module nts.uk.ui.at.kdp013.a {
 
         confirm() {
             const vm = this;
-            const data: d.DataContent[] = [{
-                id: '01',
-                targetDate: '2021/01/01',
-                description: 'Description 01',
-                link: 'Link 01'
-            }, {
-                id: '02',
-                targetDate: '2021/01/02',
-                description: 'Description 02',
-                link: 'Link 02'
-            }, {
-                id: '03',
-                targetDate: '2021/01/03',
-                description: 'Description 03',
-                link: 'Link 03'
-            }, {
-                id: '04',
-                targetDate: '2021/01/04',
-                description: 'Description 04',
-                link: 'Link 04'
-            }];
-
-            vm.$window
-                .modal('at', '/view/kdw/013/d/index.xhtml', data)
-                .then(() => {
-
-                });
         }
 
         // 作業実績の確認を解除する
@@ -226,6 +218,14 @@ module nts.uk.ui.at.kdp013.a {
                     // trigger reload event on child component
                     .then(() => vm.editable.valueHasMutated());
             }
+        }
+
+
+        private openDialogCaculationResult(data: OvertimeLeaveTime[]) {
+            const vm = this;
+
+            vm.$window
+                .modal('at', '/view/kdw/013/d/index.xhtml', data).then(() => { });
         }
     }
 
