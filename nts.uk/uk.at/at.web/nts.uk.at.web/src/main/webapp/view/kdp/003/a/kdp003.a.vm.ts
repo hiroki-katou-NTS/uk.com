@@ -676,50 +676,52 @@ module nts.uk.at.kdp003.a {
 										if (dataStorage.WKPID.length > 1) {
 
 											vm.$window.modal('at', DIALOG.M, { screen: 'KDP003' })
-												.then((data: any) => {
-													vm.$ajax(API.REGISTER, {
-														employeeId,
-														dateTime: moment(vm.$date.now()).format(),
-														stampButton: {
-															pageNo: layout.pageNo,
-															buttonPositionNo: btn.btnPositionNo
-														},
-														refActualResult: {
-															cardNumberSupport: null,
-															workLocationCD: '',
-															workTimeCode: '',
-															overtimeDeclaration: {
-																overTime: 0,
-																overLateNightTime: 0
+												.then((data: string) => {
+													if (data) {
+														vm.$ajax(API.REGISTER, {
+															employeeId,
+															dateTime: moment(vm.$date.now()).format(),
+															stampButton: {
+																pageNo: layout.pageNo,
+																buttonPositionNo: btn.btnPositionNo
+															},
+															refActualResult: {
+																cardNumberSupport: null,
+																workLocationCD: '',
+																workTimeCode: '',
+																overtimeDeclaration: {
+																	overTime: 0,
+																	overLateNightTime: 0
+																}
 															}
-														}
-													}).then(() => {
-														const { stampResultDisplay } = fingerStampSetting;
-														const { displayItemId, notUseAttr } = stampResultDisplay || { displayItemId: [], notUseAttr: 0 } as StampResultDisplay;
-														const { USE } = NotUseAtr;
+														}).then(() => {
+															const { stampResultDisplay } = fingerStampSetting;
+															const { displayItemId, notUseAttr } = stampResultDisplay || { displayItemId: [], notUseAttr: 0 } as StampResultDisplay;
+															const { USE } = NotUseAtr;
 
-														vm.playAudio(btn.audioType);
+															vm.playAudio(btn.audioType);
 
-														if (notUseAttr === USE && [share.ChangeClockArt.WORKING_OUT].indexOf(btn.changeClockArt) > -1) {
-															return storage('KDP010_2C', displayItemId)
-																.then(() => storage('infoEmpToScreenC', employeeInfo))
-																.then(() => storage('screenC', { screen: "KDP003" }))
-																.then(() => modal('at', DIALOG.KDP002_C)) as JQueryPromise<any>;
-														} else {
-															const { stampSetting } = fingerStampSetting;
-															const { resultDisplayTime } = stampSetting;
+															if (notUseAttr === USE && [share.ChangeClockArt.WORKING_OUT].indexOf(btn.changeClockArt) > -1) {
+																return storage('KDP010_2C', displayItemId)
+																	.then(() => storage('infoEmpToScreenC', employeeInfo))
+																	.then(() => storage('screenC', { screen: "KDP003" }))
+																	.then(() => modal('at', DIALOG.KDP002_C)) as JQueryPromise<any>;
+															} else {
+																const { stampSetting } = fingerStampSetting;
+																const { resultDisplayTime } = stampSetting;
 
-															return storage('resultDisplayTime', resultDisplayTime)
-																.then(() => storage('infoEmpToScreenB', employeeInfo))
-																.then(() => storage('screenB', { screen: "KDP003" }))
-																.then(() => modal('at', DIALOG.KDP002_B)) as JQueryPromise<any>;
-														}
-													})
-														.fail((message: BussinessException) => {
-															const { messageId, parameterIds } = message;
+																return storage('resultDisplayTime', resultDisplayTime)
+																	.then(() => storage('infoEmpToScreenB', employeeInfo))
+																	.then(() => storage('screenB', { screen: "KDP003" }))
+																	.then(() => modal('at', DIALOG.KDP002_B)) as JQueryPromise<any>;
+															}
+														})
+															.fail((message: BussinessException) => {
+																const { messageId, parameterIds } = message;
 
-															vm.$dialog.error({ messageId, messageParams: parameterIds });
-														});
+																vm.$dialog.error({ messageId, messageParams: parameterIds });
+															});
+													}
 												});
 
 										} else {
@@ -918,7 +920,8 @@ module nts.uk.at.kdp003.a {
 
 	const DEFAULT_SETTING: FingerStampSetting = {
 		stampSetting: null,
-		stampResultDisplay: null
+		stampResultDisplay: null,
+		noticeSetDto: null
 	};
 
 	interface INoticeSet {
