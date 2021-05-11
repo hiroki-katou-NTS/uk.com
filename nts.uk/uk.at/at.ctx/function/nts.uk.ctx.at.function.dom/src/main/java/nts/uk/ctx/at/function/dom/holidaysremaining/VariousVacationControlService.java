@@ -53,6 +53,7 @@ public class VariousVacationControlService {
 		boolean com60HourVacationSetting = false;
 		boolean publicHolidaySetting = false;
 
+
 		String companyId = AppContexts.user().companyId();
 		// 年休設定
 		val annualPaidLeave = annualPaidLeaveSettingRepository.findByCompanyId(companyId);

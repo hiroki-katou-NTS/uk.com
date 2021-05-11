@@ -16,6 +16,7 @@ public class VariousVacationControl {
     private boolean nursingCareSetting;
     boolean com60HourVacationSetting ;
     boolean publicHolidaySetting ;
+
     private List<SpecialHoliday> listSpecialHoliday;
 
     public VariousVacationControl(boolean annualHolidaySetting, boolean yearlyReservedSetting,
