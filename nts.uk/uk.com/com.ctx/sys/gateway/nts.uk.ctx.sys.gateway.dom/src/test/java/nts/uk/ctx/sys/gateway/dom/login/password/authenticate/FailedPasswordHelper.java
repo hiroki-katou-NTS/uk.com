@@ -60,7 +60,7 @@ public class FailedPasswordHelper {
 		static final String EMPLOYEE_CODE = "employeeCode";
 		static final String PASSWORD = "password";
 		static final SDelAtr DELETE_STATUS = SDelAtr.DELETED;
-		static final GeneralDateTime DATETIME = GeneralDateTime.now();
+		static final GeneralDateTime DATETIME = GeneralDateTime.min();
 		static final GeneralDate DATE = GeneralDate.today();
 		static final String REMOVE_REASON = "reason";
 		static final String EXTERNAL_CODE = "externalCode";

@@ -22,9 +22,9 @@ public class Helper {
 					DUMMY.EMPLOYEE_ID, 
 					DUMMY.EMPLOYEE_CD, 
 					SDelAtr.NOTDELETED, 
-					GeneralDateTime.now(), 
-					"", 
-					"");
+					GeneralDateTime.min(), 
+					DUMMY.REMOVE_REASON, 
+					DUMMY.EXTERNAL_CODE);
 	public static EmployeeDataMngInfoImport setEmployeeID(String employeeID) {
 		val imported = dummyImported;
 		imported.setEmployeeId(employeeID);
@@ -34,12 +34,12 @@ public class Helper {
 
 	public static class DummyUser{
 		static final User BASE = new User(
-				"", 
+				DUMMY.USER_ID, 
 				false, 
-				new HashPassword(""), 
-				new LoginID(""),
-				new ContractCode(""), 
-				GeneralDate.today(), 
+				new HashPassword(DUMMY.HASHPASSWORD), 
+				new LoginID(DUMMY.LOGIN_ID),
+				new ContractCode(DUMMY.CONTRACT_CODE), 
+				GeneralDate.min(), 
 				DisabledSegment.False, 
 				DisabledSegment.False, 
 				Optional.empty(), 
@@ -55,6 +55,12 @@ public class Helper {
 				this.userID = userID;
 				return this;
 			}
+			
+			public Builder expirationDate(GeneralDate ymd) {
+				this.expirationDate = ymd;
+				return this;
+			}
+			
 			public Builder addDay(int afterDays) {
 				this.expirationDate = this.expirationDate.addDays(afterDays);
 				return this;
@@ -78,10 +84,15 @@ public class Helper {
 		}
 	}
 	public static class DUMMY{
+		public final static String CONTRACT_CODE = "contractCode"; 
 		public final static String COMPANY_ID = "companyId"; 
 		public final static String USER_ID = "userId"; 
 		public final static String PERSON_ID = "personId";
 		public final static String EMPLOYEE_ID = "employeeId";
+		public final static String LOGIN_ID = "loginId";
 		public final static String EMPLOYEE_CD = "employeeCode";
+		public final static String HASHPASSWORD = "dummyHashPassword";
+		public final static String REMOVE_REASON = "removeReason";
+		public final static String EXTERNAL_CODE = "externalCode";
 	}
 }

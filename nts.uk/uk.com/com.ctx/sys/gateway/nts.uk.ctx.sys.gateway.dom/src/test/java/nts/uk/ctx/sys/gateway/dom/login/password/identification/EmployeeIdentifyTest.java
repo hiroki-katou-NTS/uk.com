@@ -11,6 +11,8 @@ import mockit.Expectations;
 import mockit.Injectable;
 import mockit.Verifications;
 import nts.arc.testing.assertion.NtsAssert;
+import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.sys.gateway.dom.login.password.identification.EmployeeIdentify.IdentificationResult;
 import nts.uk.ctx.sys.gateway.dom.login.password.identification.helper.Helper;
 
@@ -22,7 +24,7 @@ public class EmployeeIdentifyTest {
 	@Test  
 	public void success() {
 		int expireDaysAfter = 3;
-		val dummyUser = new Helper.DummyUser.Builder().addDay(expireDaysAfter).build();
+		val dummyUser = new Helper.DummyUser.Builder().expirationDate(GeneralDate.today()).addDay(expireDaysAfter).build();
 		
 		new Expectations() {{
 			require.getEmployeeDataMngInfoImportByEmployeeCode(Helper.DUMMY.COMPANY_ID,Helper.DUMMY.EMPLOYEE_CD);
