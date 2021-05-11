@@ -19,7 +19,7 @@ public class FailedPasswordAuthenticate {
 				Optional.of(AtomTask.of(() -> require.save(failuresLog))),
 				
 				require.getAccountLockPolicy(identifiedEmployee.getTenantCode())
-							.flatMap(p -> p.validateAuthenticate(require, identifiedEmployee.getUserId()))
+							.flatMap(p -> p.lockIfViolated(require, identifiedEmployee.getUserId()))
 							.flatMap(lockoutData -> Optional.of(
 									AtomTask.of(() -> require.save(lockoutData))
 							)));

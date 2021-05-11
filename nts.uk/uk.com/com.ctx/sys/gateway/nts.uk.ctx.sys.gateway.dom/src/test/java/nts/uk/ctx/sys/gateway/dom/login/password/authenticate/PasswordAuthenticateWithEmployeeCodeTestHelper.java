@@ -57,8 +57,8 @@ public class PasswordAuthenticateWithEmployeeCodeTestHelper {
 		static final String EMPLOYEE_CODE = "employeeCode";
 		static final String PASSWORD = "password";
 		static final SDelAtr DELETE_STATUS = SDelAtr.DELETED;
-		static final GeneralDateTime DATETIME = GeneralDateTime.now();
-		static final GeneralDate DATE = GeneralDate.today();
+		static final GeneralDateTime DATETIME = GeneralDateTime.min();
+		static final GeneralDate DATE = GeneralDate.min();
 		static final String REMOVE_REASON = "reason";
 		static final String EXTERNAL_CODE = "externalCode";
 		static final FailedAuthenticateTask FAILED_TASKS = new FailedAuthenticateTask(Optional.of(AtomTask.none()),Optional.of(AtomTask.none()));

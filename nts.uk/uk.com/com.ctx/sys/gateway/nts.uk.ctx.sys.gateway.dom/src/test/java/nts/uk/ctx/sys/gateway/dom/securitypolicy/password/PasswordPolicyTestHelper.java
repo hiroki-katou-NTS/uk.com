@@ -41,12 +41,12 @@ public class PasswordPolicyTestHelper {
 		public final static ContractCode CONTRACT_CD = new ContractCode("contractCode");
 		public final static String USER_ID = "user";
 		public final static String PASSWORD = "passwprd";
-		public final static NotificationPasswordChange NOTICE_PASSWORD_CHANGE = new NotificationPasswordChange(BigDecimal.ZERO);
+		public final static NotificationPasswordChange NOTICE_PASSWORD_CHANGE = new NotificationPasswordChange(BigDecimal.valueOf(999999999));
 		public final static boolean IS_USE = true;
 		public final static boolean IS_LOGIN = true;
 		public final static boolean INITIAL_PASSWORD_CHANGE = true;
-		public final static PasswordHistoryCount PASSWORD_HISTORY_COUNT = new PasswordHistoryCount(BigDecimal.ZERO);
-		public final static PasswordValidityPeriod PASSWORD_VALIDATE_PERIOD = new PasswordValidityPeriod(BigDecimal.ZERO);
+		public final static PasswordHistoryCount PASSWORD_HISTORY_COUNT = new PasswordHistoryCount(BigDecimal.valueOf(999999999));
+		public final static PasswordValidityPeriod PASSWORD_VALIDATE_PERIOD = new PasswordValidityPeriod(BigDecimal.valueOf(999999999));
 		public final static PasswordComplexityRequirement PASSWORD_COMPLEX = PasswordComplexityRequirement.createFromJavaType(0, 0, 0, 0);
 		public final static PasswordPolicy PASSWORD_POLICY = new PasswordPolicy(DUMMY.CONTRACT_CD,DUMMY.NOTICE_PASSWORD_CHANGE,DUMMY.IS_LOGIN,DUMMY.INITIAL_PASSWORD_CHANGE,DUMMY.IS_USE,DUMMY.PASSWORD_HISTORY_COUNT,DUMMY.PASSWORD_VALIDATE_PERIOD,DUMMY.PASSWORD_COMPLEX);
 		public final static List<String> STRING_LIST = Arrays.asList("","");

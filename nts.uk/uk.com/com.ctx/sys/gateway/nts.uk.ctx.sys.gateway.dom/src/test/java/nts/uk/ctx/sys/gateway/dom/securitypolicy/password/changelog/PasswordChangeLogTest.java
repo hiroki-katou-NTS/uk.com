@@ -23,8 +23,8 @@ public class PasswordChangeLogTest {
 				changedAt(GeneralDate.ymd(2020, 4, 1)),
 				changedAt(GeneralDate.ymd(1998, 9, 8))));
 		
-		val actual = target.latestLog().getChangedDateTime();
-		assertThat(actual).isEqualTo(GeneralDateTime.ymdhms(2020, 4, 1, 0, 0, 0));
+		val latestDateTime = target.latestLog().getChangedDateTime();
+		assertThat(latestDateTime).isEqualTo(GeneralDateTime.ymdhms(2020, 4, 1, 0, 0, 0));
 	}
 	
 	@Test
