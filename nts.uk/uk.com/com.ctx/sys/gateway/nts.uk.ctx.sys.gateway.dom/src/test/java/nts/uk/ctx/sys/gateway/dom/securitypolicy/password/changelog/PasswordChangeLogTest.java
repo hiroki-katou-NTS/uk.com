@@ -37,19 +37,4 @@ public class PasswordChangeLogTest {
 	private static PasswordChangeLogDetail changedAt(GeneralDate date) {
 		return new PasswordChangeLogDetail(GeneralDateTime.midnightOf(date), "hash");
 	}
-	
-	@Test
-	public void getLasterLog() {
-		List<PasswordChangeLogDetail> lists = new ArrayList<>(); 
-		
-		val oldDummy     = new PasswordChangeLogDetail(GeneralDateTime.now(), "");
-		val latestDummy = new PasswordChangeLogDetail(GeneralDateTime.now().addDays(1), ""); 
-		
-		lists.add(oldDummy);
-		lists.add(latestDummy);
-		val target = new PasswordChangeLog("", lists);
-		
-		assertThat(target.latestLog()).isEqualTo(latestDummy);
-		
-	}
 }
