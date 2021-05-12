@@ -31,7 +31,7 @@ module nts.uk.ui.at.kdp013.share {
                 box-shadow: 0 0 1px 1px #0096f2;
             }
             .nts-dropdown>div.dropdown-container>table {
-                width: 100%;
+                width: 200%;
                 display: block;
             }
             .nts-dropdown>div.dropdown-container>table tr {
@@ -55,7 +55,7 @@ module nts.uk.ui.at.kdp013.share {
                 max-height: 270px;
             }
             .nts-dropdown>div.dropdown-container>table+div>table {
-                width: 100%;
+                width: 200%;
             }
             .nts-dropdown>div.dropdown-container>table+div>table tr {
                 height: 27px;
@@ -246,7 +246,7 @@ module nts.uk.ui.at.kdp013.share {
                         const { code, name } = item;
 
                         $(element)
-                            .html(`<td>${name}</td><td>${code}</td>`);
+                            .html(`<td>${code}</td><td>${name}</td>`);
                     },
                     disposeWhenNodeIsRemoved: element
                 });
@@ -306,8 +306,8 @@ module nts.uk.ui.at.kdp013.share {
                         </colgroup>
                         <tbody data-bind="foreach: { data: $component.items, as: 'item' }">
                             <tr data-bind="click: function(item, evt) { $component.selecteItem(item, evt) }, css: { selected: item.selected, highlight: item.highlight }">
-                                <td data-bind="text: item.name"></td>
                                 <td data-bind="text: item.code"></td>
+                                <td data-bind="text: item.name"></td>
                             </tr>
                         </tbody>
                     </table>

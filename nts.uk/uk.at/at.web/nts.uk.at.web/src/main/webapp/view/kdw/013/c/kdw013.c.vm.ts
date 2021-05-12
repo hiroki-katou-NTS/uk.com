@@ -292,7 +292,7 @@ module nts.uk.ui.at.kdp013.c {
                     </tr>
                     <tr class="functional">
                         <td colspan="2">
-                            <button class="proceed" data-bind="i18n: 'KDW013_43', click: $component.save, disable: $component.hasError"></button>
+                            <button class="proceed" data-bind="i18n: 'KDW013_43', click: function() { $component.save.apply($component, []) }, disable: $component.hasError"></button>
                         </td>
                     </tr>
                 </tbody>
@@ -489,16 +489,14 @@ module nts.uk.ui.at.kdp013.c {
                     const settings = ko.unwrap($settings);
 
                     if (settings) {
-                        const { refWorkplaceAndEmployeeDto } = settings;
+                        const { startManHourInputResultDto } = settings;
 
-                        const { workplaceInfos } = refWorkplaceAndEmployeeDto;
+                        const { workLocations } = startManHourInputResultDto;
 
-                        console.log(workplaceInfos);
-
-                        return workplaceInfos
+                        return workLocations
                             .map((m) => ({
-                                code: m.workplaceCode,
-                                name: m.workplaceName,
+                                code: m.workLocationCD,
+                                name: m.workLocationName,
                                 selected: false,
                                 $raw: m
                             }));
