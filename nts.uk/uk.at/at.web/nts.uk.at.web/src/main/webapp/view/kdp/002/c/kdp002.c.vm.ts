@@ -241,28 +241,28 @@ module nts.uk.at.view.kdp002.c {
 									vm.notificationStamp(data);
 
 									var isShow = 0;
+									var isShowPoint = 0;
 									_.forEach(data, ((value) => {
 										_.forEach(value, ((value1) => {
-											if (value1.flag) {
+											if (value1.message.targetInformation.destination == 2) {
 												isShow++;
+											}
+											if (value1.message.targetInformation.destination == 2 && value1.flag) {
+												isShowPoint++;
 											}
 										}));
 									}));
-									vm.notificationStamp(data);
 
 									if (isShow > 0) {
-
-										var isShowPoint = 0;
-										_.forEach(data, ((value) => {
-											_.forEach(value, ((value1) => {
-												isShowPoint++;
-											}));
-										}));
+										vm.showBtnNoti(true);
 
 										if (isShowPoint > 0) {
 											vm.modeShowPointNoti(true);
+										} else {
+											vm.modeShowPointNoti(false);
 										}
-										mockvm.$window.size(630, 450);
+									} else {
+										vm.showBtnNoti(false);
 									}
 								});
 						}

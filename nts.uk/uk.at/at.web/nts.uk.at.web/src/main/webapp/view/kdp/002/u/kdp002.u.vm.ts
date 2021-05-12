@@ -18,17 +18,14 @@ module nts.uk.at.kdp002.u {
 		modelShowView: KnockoutObservableArray<IEmployeeIdSeen> = ko.observableArray([]);
 		model: KnockoutObservableArray<IMsgNotices> = ko.observableArray([]);
 		sid: string;
-		modeNew: KnockoutObservable<boolean | null> = ko.observable(true);
+		modeNew: KnockoutObservable<boolean | null> = ko.observable(false);
 
 		created(param: IParams) {
 			const vm = this
 
-			console.log(param);
-
 			_.forEach(param.data.msgNotices, (value) => {
 				
 				if (value.message.targetInformation.destination == 2) {
-					debugger;
 					vm.modelShowView.push(value.message);
 				}
 			})
@@ -37,15 +34,16 @@ module nts.uk.at.kdp002.u {
 
 			vm.sid = param.sid;
 
-			vm.setModeNew(ko.unwrap(vm.modelShowView));
+			vm.setModeNew(ko.unwrap(vm.model));
 		}
 
-		setModeNew(param: IEmployeeIdSeen[]) {
+		setModeNew(param: IMsgNotices[]) {
 			const vm = this;
 
 			_.forEach(param, ((value) => {
-				if (value.employeeIdSeen.length > 0) {
-					vm.modeNew(false);
+				if (value.message.targetInformation.destination == 2 && value.flag) {
+					vm.modeNew(true);
+					return;
 				}
 			}));
 		}
@@ -58,8 +56,8 @@ module nts.uk.at.kdp002.u {
 					let msgInfors: Array<ICreatorAndDate> = [];
 
 					_.forEach(ko.unwrap(vm.model), (value) => {
-
-						if (value.flag) {
+						
+						if (value.flag && value.message.targetInformation.destination == 2) {
 							var item: ICreatorAndDate = {
 								creatorId: value.message.creatorID,
 								inputDate: value.message.inputDate

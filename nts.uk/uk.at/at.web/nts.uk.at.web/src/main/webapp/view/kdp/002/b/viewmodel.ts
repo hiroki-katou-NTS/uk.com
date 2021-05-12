@@ -63,8 +63,8 @@ class KDP002BViewModel extends ko.ViewModel {
     interval: KnockoutObservable<number> = ko.observable(0);
     infoEmpFromScreenA: any;
     notificationStamp: KnockoutObservableArray<IMsgNotices> = ko.observableArray([]);
-    modeShowPointNoti: KnockoutObservable<boolean| null> = ko.observable(null);
-    showBtnNoti: KnockoutObservable<boolean| null> = ko.observable(null);
+    modeShowPointNoti: KnockoutObservable<boolean | null> = ko.observable(null);
+    showBtnNoti: KnockoutObservable<boolean | null> = ko.observable(null);
     activeViewU: KnockoutObservable<boolean> = ko.observable(false);
 
 
@@ -199,9 +199,6 @@ class KDP002BViewModel extends ko.ViewModel {
 
         vm.$ajax("at", kDP002RequestUrl.getAllStampingResult + sid).then(function (data) {
 
-            console.log(data);
-            
-
             if (data && data.length > 0) {
                 if (ko.unwrap(vm.workPlace) === '') {
                     vm.workPlace(data[0].workPlaceName);
@@ -317,30 +314,29 @@ class KDP002BViewModel extends ko.ViewModel {
 
                                     vm.notificationStamp(data);
 
-                                    vm.showBtnNoti(true);
-
                                     var isShow = 0;
+                                    var isShowPoint = 0;
                                     _.forEach(data, ((value) => {
                                         _.forEach(value, ((value1) => {
-                                            if (value1.flag) {
+                                            if (value1.message.targetInformation.destination == 2) {
                                                 isShow++;
+                                            }
+                                            if (value1.message.targetInformation.destination == 2 && value1.flag) {
+                                                isShowPoint++;
                                             }
                                         }));
                                     }));
 
                                     if (isShow > 0) {
-                                        // vm.modeShowPointNoti(true);
-
-                                        var isShowPoint = 0;
-                                        _.forEach(data, ((value) => {
-                                            _.forEach(value, ((value1) => {
-                                                isShowPoint++;
-                                            }));
-                                        }));
+                                        vm.showBtnNoti(true);
 
                                         if (isShowPoint > 0) {
-                                            vm.modeShowPointNoti(true)
+                                            vm.modeShowPointNoti(true);
+                                        } else {
+                                            vm.modeShowPointNoti(false);
                                         }
+                                    } else {
+                                        vm.showBtnNoti(false);
                                     }
                                 });
                         } else {
