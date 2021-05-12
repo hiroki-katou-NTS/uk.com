@@ -1209,6 +1209,9 @@ module cmm045.a.viewmodel {
 					//}
 				}
 				nameStr += item[key];
+				if(item.application.employeeID != item.application.enteredPerson) {
+					nameStr += item.opEntererName;
+				}
 				return _.escape(nameStr).replace(/\n/g, '<br/>');
 			}
 

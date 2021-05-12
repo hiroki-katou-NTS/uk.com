@@ -16,6 +16,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.util.Strings;
 
 import nts.arc.error.BusinessException;
+import nts.arc.i18n.I18NText;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
@@ -859,7 +860,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		result.setApplicantCD(applicant.getEmployeeCode());
 		// result.setAppReason
 		result.setInputDate(application.getInputDate());
-		result.setOpEntererName(opEnteredPerson.map(x -> x.getBusinessName()));
+		result.setOpEntererName(opEnteredPerson.map(x -> I18NText.getText("CMM045_304", x.getBusinessName())));
 		result.setOpAppStartDate(application.getOpAppStartDate().map(x -> x.getApplicationDate()));
 		result.setOpAppEndDate(application.getOpAppEndDate().map(x -> x.getApplicationDate()));
 		result.setAppDate(application.getAppDate().getApplicationDate());
