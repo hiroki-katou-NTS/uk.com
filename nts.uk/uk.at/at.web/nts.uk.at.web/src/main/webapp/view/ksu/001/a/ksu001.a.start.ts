@@ -26,8 +26,6 @@ module nts.uk.at.view.ksu001.a {
                 }, 800);
             }
             
-            __viewContext.viewModel.viewA.setWidthButtonnInPopupA1_12();
-            
             $(window).resize(function() {
                 __viewContext.viewModel.viewA.setPositionButonDownAndHeightGrid();
                 __viewContext.viewModel.viewA.setPositionButonToRight();
@@ -43,8 +41,6 @@ module nts.uk.at.view.ksu001.a {
                         __viewContext.viewModel.viewA.setStyler();
                     }, 800);
                 }
-
-                __viewContext.viewModel.viewA.setWidthButtonnInPopupA1_12();
 
                 $(window).resize(function() {
                     __viewContext.viewModel.viewA.setPositionButonDownAndHeightGrid();

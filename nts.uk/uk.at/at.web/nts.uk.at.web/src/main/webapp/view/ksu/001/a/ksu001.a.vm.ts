@@ -53,6 +53,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         dateTimeAfter: KnockoutObservable<string>;
 
         //Switch  A3_2
+        disPeriodSelectionList: KnockoutObservableArray<any>;
         selectedDisplayPeriod: KnockoutObservable<number> = ko.observable(1);
 
         // A2_2
@@ -167,6 +168,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     }, 1);
                 }
             });
+            
+            self.disPeriodSelectionList = ko.observableArray([]);
             
             self.selectedDisplayPeriod.subscribe(function(value) { // value = 1 || 2 || 3
                 if (value == null || value == undefined || value == 2)
@@ -524,19 +527,152 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         
         displayButtonsHerder(data) {
             let self = this;
-            // ẩn hiển A1_7 ※1
-            if (data.dataBasicDto.useWorkAvailabilityAtr == false) {
-                $('#A1_7').css('visibility', 'hidden');
-                $('#A1_7_1').css('display', 'none');
-                $('#A1_7').off('click');
+            // các domain liên quan đến phần ẩn hiện
+            // スケジュール修正の機能制御   - ScheFunctionControl                          
+            // スケジュール修正職場別の機能制御    - ScheFunctionCtrlByWorkplace                            
+            // スケジュール修正共通の権限制御    - ScheModifyAuthCtrlCommon                         
+            // スケジュール修正職場別の権限制御  - ScheModifyAuthCtrlByWorkplace
+            
+            let scheFunctionCtrlByWorkplaceUse = true; // lấy ra từ domian ScheFunctionCtrlByWorkplace
+            let medicalOP = true; // 医療OP
+            
+            // map với data domain sau
+            // check hiển thị với Common và Authority
+            let funcNo1_Common = true; // 休暇状況参照 Vacation status reference
+            let funcNo2_Common = true; // 修正履歴参照 Refer to revision history
+            let funcNo1_WorkPlace = true; // 登録 Registration
+            let funcNo2_WorkPlace = true; // 確定 Confirm
+            let funcNo3_WorkPlace = true; // 完了 Done
+            let funcNo4_WorkPlace = true; // アラームチェック Alarm check
+            let funcNo5_WorkPlace = true; // 出力 output
+            let funcNo6_WorkPlace = true; // 取り込み Capture
+            let funcNo7_WorkPlace = true; // 勤務希望 Hope to work
+            let funcNo8_WorkPlace = true; // 公開 Release
+            let funcNo9_WorkPlace = true; // 応援登録 Support registration
+            let funcNo10_WorkPlace = true; // 並び順設定 Sort order setting
+            let funcNo11_WorkPlace = true; // チーム設定 Team settings
+            let funcNo12_WorkPlace = true; // ランク分け Ranking
+            let funcNo13_WorkPlace = true; // 行事登録 Event registration
+            let funcNo14_WorkPlace = true; // 集計欄の金額表示 Amount display in the summary column
+            let funcNo15_WorkPlace = true; // 予算実績入力 Budget actual input
+            let funcNo16_WorkPlace = true; // 計画人数入力 Enter the planned number of people
+            // button A1_1  職1
+            if (funcNo1_WorkPlace == false) {
+                $('#A1_1').css('visibility', 'hidden');
+                $('#A1_1').off('click');
             }
 
-            // ẩn hiện A1_5 ※27
-            if (data.dataBasicDto.usePublicAtr == false) {
+            // btn A1_2 職3 - ※35 
+            if (funcNo3_WorkPlace == false || scheFunctionCtrlByWorkplaceUse == false) {
+                $('#A1_2').css('visibility', 'hidden');
+                $('#A1_2').off('click');
+            }
+
+            // btn A1_3 職4
+            if (funcNo4_WorkPlace == false) {
+                $('#A1_3').css('visibility', 'hidden');
+                $('#A1_3').off('click');
+            }
+
+            // btn A1_5 職8 - ※27
+            if (funcNo8_WorkPlace == false || data.dataBasicDto.usePublicAtr == false) {
                 $('#A1_5').css('visibility', 'hidden');
                 $('#A1_5').off('click');
             }
 
+            // btn A1_6 職5
+            if (funcNo5_WorkPlace == false) {
+                $('#A1_6').css('visibility', 'hidden');
+                $('#A1_6').off('click');
+            }
+
+            // btn A1_7 職7  - ※1
+            if (funcNo7_WorkPlace == false || data.dataBasicDto.useWorkAvailabilityAtr == false) {
+                $('#A1_7').css('visibility', 'hidden');
+                $('#A1_7_1').css('display', 'none');
+                $('#A1_7').off('click');
+            }
+            
+            // btn A1_8 職9  -  ※2 (tạm thời chưa đối ứng thằng ※2 này)
+            if (funcNo9_WorkPlace == false) {
+                $('#A1_8').css('visibility', 'hidden');
+                $('#A1_8').off('click');
+            }
+            
+            // btn A1_9 職6
+            if (funcNo6_WorkPlace == false) {
+                $('#A1_9').css('visibility', 'hidden');
+                $('#A1_9').off('click');
+            }
+
+            // btn A1_10 共1
+            if (funcNo1_Common == false) {
+                $('#A1_10').css('visibility', 'hidden');
+                $('#A1_10').off('click');
+            }
+
+            // btn A1_11 共2
+            if (funcNo2_Common == false) {
+                $('#A1_11').css('visibility', 'hidden');
+                $('#A1_11').off('click');
+            }
+            
+            self.calculateDisPlayPopupA12(funcNo10_WorkPlace, funcNo11_WorkPlace, funcNo12_WorkPlace, medicalOP);
+            
+            self.calculateDisPlaySwitchA32(data);
+            
+
+
+        }
+        
+        calculateDisPlayPopupA12(funcNo10_WorkPlace, funcNo11_WorkPlace, funcNo12_WorkPlace, medicalOP) {
+            let self = this;
+            let numberItemHid = 0;
+            $('#A1_12_16, #A1_12_18, #A1_12_20').width(75);
+            // btn A1_16 職10 - ※11
+            if (funcNo10_WorkPlace == false || medicalOP == false) {
+                numberItemHid = numberItemHid+ 1;
+                $('#A1_12_1617').remove();
+            }
+
+            // btn A1_18 職11 - ※11
+            if (funcNo11_WorkPlace == false || medicalOP == false) {
+                numberItemHid = numberItemHid+ 1;
+                $('#A1_12_1819').remove();
+            }
+
+            // btn A1_20 職12 - ※11
+            if (funcNo12_WorkPlace == false || medicalOP == false) {
+                numberItemHid = numberItemHid+ 1;
+                $('#A1_12_2021').remove();
+            }
+            
+            if(numberItemHid == 3){ // ※34
+                $('#A1_12').css('visibility', 'hidden');
+                $('#A1_12').off('click');
+            }
+        }
+
+        calculateDisPlaySwitchA32(data) {
+            let self = this;
+            //lấy setting trong domain này スケジュール修正職場別の機能制御    - ScheFunctionCtrlByWorkplace
+            // code tam ghep data server sau
+            let useDisplayPeriods = [0,1];
+            if (useDisplayPeriods.length == 0) {
+
+            } else if (useDisplayPeriods.length == 1) {
+                self.disPeriodSelectionList().push({ id: 1, name: getText("KSU001_39") });
+                if (useDisplayPeriods[0] == 0){
+                    self.disPeriodSelectionList().push({ id: 2, name: getText("KSU001_40") });
+                } else if (useDisplayPeriods[0] == 1){
+                    self.disPeriodSelectionList().push({ id: 3, name: getText("KSU001_41") });
+                }
+
+            } else if (useDisplayPeriods.length == 2) {
+                self.disPeriodSelectionList().push({ id: 1, name: getText("KSU001_39") });
+                self.disPeriodSelectionList().push({ id: 2, name: getText("KSU001_40") });
+                self.disPeriodSelectionList().push({ id: 3, name: getText("KSU001_41") });
+            }
         }
         
         getDataWhenChangeModePeriod(startDate, endDate) {
@@ -3085,24 +3221,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             }
         }
         
-        setWidthButtonnInPopupA1_12(){
-            let self = this;
-            let widthA1_12_16 = $('#A1_12_16').width();
-            let widthA1_12_18 = $('#A1_12_18').width();
-            let widthA1_12_20 = $('#A1_12_20').width();
-            
-            let maxWidth = widthA1_12_16;
-            
-            if (widthA1_12_18 > maxWidth)
-                maxWidth = widthA1_12_18;
-            
-            if (widthA1_12_20 > maxWidth)
-                maxWidth = widthA1_12_20;
-        
-            $('#A1_12_16, #A1_12_18, #A1_12_20').width(maxWidth);
-        }
-
-
         /**
         * next a month
         */

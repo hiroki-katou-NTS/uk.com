@@ -133,15 +133,15 @@
 				<!-- event when click btn KSU001_12 -->
 				<div id="A1_12_1" class="popup-area popup-panel">
 					<div id="sort-order-setting">
-						<div>
+						<div id="A1_12_1617">
 							<button id="A1_12_16" tabindex="22" data-bind="click: openSDialog" >#{i18n.getText('KSU001_31')}</button>
 							<span id="A1_12_17">#{i18n.getText('KSU001_32')}</span>
 						</div>
-						<div>
+						<div id="A1_12_1819">
 							<button id="A1_12_18" tabindex="23" data-bind="click: openLDialog" >#{i18n.getText('KSU001_36')}</button>
 							<span id="A1_12_19">#{i18n.getText('KSU001_33')}</span>
 						</div>
-						<div>
+						<div id="A1_12_2021">
 							<button id="A1_12_20" tabindex="24" data-bind="click: openMDialog" >#{i18n.getText('KSU001_34')}</button>
 							<span id="A1_12_21">#{i18n.getText('KSU001_35')}</span>
 						</div>
@@ -345,7 +345,7 @@
 
 									<div id="A3_2" tabindex="28" class="cf" style="margin-left: 5px"
 										data-bind="ntsSwitchButton: {
-										options: [{id: 1, name: '#{i18n.getText('KSU001_39')}'}, {id: 2, name: '#{i18n.getText('KSU001_40')}'}, {id: 3, name: '#{i18n.getText('KSU001_41')}'}] ,
+										options: disPeriodSelectionList,
 										optionsValue: 'id',
 										optionsText: 'name',
 										value: selectedDisplayPeriod}">
