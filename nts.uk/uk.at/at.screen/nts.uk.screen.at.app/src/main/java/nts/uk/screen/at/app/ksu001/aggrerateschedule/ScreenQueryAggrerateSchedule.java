@@ -20,6 +20,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattend
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 import nts.uk.screen.at.app.ksu001.aggreratepersonaltotal.AggreratePersonalDto;
 import nts.uk.screen.at.app.ksu001.aggreratepersonaltotal.ScreenQueryAggreratePersonal;
+import nts.uk.screen.at.app.ksu001.aggrerateworkplacetotal.AggreratePeopleMethodOutput;
 import nts.uk.screen.at.app.ksu001.aggrerateworkplacetotal.AggrerateWorkplaceDto;
 import nts.uk.screen.at.app.ksu001.aggrerateworkplacetotal.ScreenQueryAggreratePeopleMethod;
 import nts.uk.screen.at.app.ksu001.aggrerateworkplacetotal.ScreenQueryAggrerateWorkplaceTotal;
