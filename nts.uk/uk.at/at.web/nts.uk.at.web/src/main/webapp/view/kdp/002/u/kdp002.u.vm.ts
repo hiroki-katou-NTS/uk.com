@@ -37,17 +37,16 @@ module nts.uk.at.kdp002.u {
 
 			vm.sid = param.sid;
 
-			vm.setModeNew(param.data.msgNotices);
+			vm.setModeNew(ko.unwrap(vm.modelShowView));
 		}
 
-		setModeNew(param: IMsgNotices[]) {
+		setModeNew(param: IEmployeeIdSeen[]) {
 			const vm = this;
 
 			_.forEach(param, ((value) => {
-				if (value.message.employeeIdSeen.length > 0) {
+				if (value.employeeIdSeen.length > 0) {
 					vm.modeNew(false);
 				}
-
 			}));
 		}
 
