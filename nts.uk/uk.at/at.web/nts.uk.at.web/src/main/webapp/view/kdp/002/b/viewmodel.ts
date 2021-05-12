@@ -63,8 +63,8 @@ class KDP002BViewModel extends ko.ViewModel {
     interval: KnockoutObservable<number> = ko.observable(0);
     infoEmpFromScreenA: any;
     notificationStamp: KnockoutObservableArray<IMsgNotices> = ko.observableArray([]);
-    modeShowPointNoti: KnockoutObservable<boolean> = ko.observable(false);
-    showBtnNoti: KnockoutObservable<boolean> = ko.observable(false);
+    modeShowPointNoti: KnockoutObservable<boolean | null> = ko.observable(null);
+    showBtnNoti: KnockoutObservable<boolean | null> = ko.observable(null);
     activeViewU: KnockoutObservable<boolean> = ko.observable(false);
 
 
@@ -125,7 +125,7 @@ class KDP002BViewModel extends ko.ViewModel {
         setTimeout(() => {
             if (ko.unwrap(vm.modeNikoNiko)) {
                 $(document).ready(function () {
-                    $('#btn-happy').focus();
+                    $('.btn-happy').focus();
                 });
             } else {
                 $(document).ready(function () {
@@ -201,7 +201,7 @@ class KDP002BViewModel extends ko.ViewModel {
 
             if (data && data.length > 0) {
                 if (ko.unwrap(vm.workPlace) === '') {
-                    vm.workPlace(data[0].workplaceNm);
+                    vm.workPlace(data[0].workPlaceName);
                 }
             }
 
@@ -308,8 +308,6 @@ class KDP002BViewModel extends ko.ViewModel {
                 vm.$ajax(kDP002RequestUrl.GET_SETTING)
                     .then((data: boolean) => {
 
-                        console.log(data);
-
                         if (data) {
                             vm.$ajax(kDP002RequestUrl.NOTIFICATION_STAMP, param)
                                 .done((data: IMsgNotices[]) => {
@@ -317,28 +315,28 @@ class KDP002BViewModel extends ko.ViewModel {
                                     vm.notificationStamp(data);
 
                                     var isShow = 0;
+                                    var isShowPoint = 0;
                                     _.forEach(data, ((value) => {
                                         _.forEach(value, ((value1) => {
-                                            if (value1.flag) {
+                                            if (value1.message.targetInformation.destination == 2) {
                                                 isShow++;
+                                            }
+                                            if (value1.message.targetInformation.destination == 2 && value1.flag) {
+                                                isShowPoint++;
                                             }
                                         }));
                                     }));
 
                                     if (isShow > 0) {
-                                        // vm.modeShowPointNoti(true);
                                         vm.showBtnNoti(true);
 
-                                        var isShowPoint = 0;
-                                        _.forEach(data, ((value) => {
-                                            _.forEach(value, ((value1) => {
-                                                isShowPoint++;
-                                            }));
-                                        }));
-
                                         if (isShowPoint > 0) {
-                                            vm.modeShowPointNoti(true)
+                                            vm.modeShowPointNoti(true);
+                                        } else {
+                                            vm.modeShowPointNoti(false);
                                         }
+                                    } else {
+                                        vm.showBtnNoti(false);
                                     }
                                 });
                         } else {

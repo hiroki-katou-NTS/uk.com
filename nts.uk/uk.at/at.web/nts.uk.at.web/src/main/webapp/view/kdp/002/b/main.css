@@ -83,3 +83,19 @@
 .btn-showNoti div {
 	margin-top: 5px;
 }
+
+.btn-emoji {
+	margin-left: 5px;
+	border: none;
+	background-color: transparent;
+	box-shadow: 0 0px rgb(0 0 0 / 40%);
+	border-radius: 50px;
+}
+
+.btn-happy {
+	margin-left: 5px;
+	border: none;
+	background-color: transparent;
+	box-shadow: 0 0px rgb(0 0 0 / 40%);
+	border-radius: 50px;
+}

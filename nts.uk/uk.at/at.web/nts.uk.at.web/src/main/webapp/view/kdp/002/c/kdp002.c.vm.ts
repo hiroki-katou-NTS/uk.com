@@ -236,34 +236,33 @@ module nts.uk.at.view.kdp002.c {
 							service.getNotification(param)
 								.done((data: IMsgNotices[]) => {
 
-									console.log(data);
+									vm.showBtnNoti(true);
 
 									vm.notificationStamp(data);
 
 									var isShow = 0;
+									var isShowPoint = 0;
 									_.forEach(data, ((value) => {
 										_.forEach(value, ((value1) => {
-											if (value1.flag) {
+											if (value1.message.targetInformation.destination == 2) {
 												isShow++;
+											}
+											if (value1.message.targetInformation.destination == 2 && value1.flag) {
+												isShowPoint++;
 											}
 										}));
 									}));
-									vm.notificationStamp(data);
 
 									if (isShow > 0) {
 										vm.showBtnNoti(true);
 
-										var isShowPoint = 0;
-										_.forEach(data, ((value) => {
-											_.forEach(value, ((value1) => {
-												isShowPoint++;
-											}));
-										}));
-
 										if (isShowPoint > 0) {
 											vm.modeShowPointNoti(true);
+										} else {
+											vm.modeShowPointNoti(false);
 										}
-										mockvm.$window.size(630, 450);
+									} else {
+										vm.showBtnNoti(false);
 									}
 								});
 						}

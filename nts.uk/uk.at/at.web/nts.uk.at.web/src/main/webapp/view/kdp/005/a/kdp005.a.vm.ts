@@ -513,14 +513,14 @@ module nts.uk.at.view.kdp005.a {
 			}
 
 			settingNoti() {
+				const self = this;
 				let vm = new ko.ViewModel();
 				vm.$window.storage(KDP005_SAVE_DATA)
 					.then((data: any) => {
 						if (data) {
 							const mode = 'notification';
 							const companyId = (data || {}).companyId;
-	
-							vm.$window.modal('at', DIALOG.F, { mode, companyId });
+							self.checkHis(self);
 						}
 					});
 			}

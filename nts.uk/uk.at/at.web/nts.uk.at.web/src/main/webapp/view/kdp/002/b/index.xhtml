@@ -29,10 +29,8 @@
 					<div id="right-area">
 						<div style="text-align: center;" class="title">
 							<div class="date" data-bind="date: $vm.time.now, format: 'YYYY/MM/DD(ddd)'"></div>
-							<div class="time"
-								data-bind="date: $vm.time.now, format: 'HH:mm'"></div>
-							<div class="commuting" 
-							data-bind="text: currentStampData().stampArtName"></div>
+							<div class="time" data-bind="date: $vm.time.now, format: 'HH:mm'"></div>
+							<div class="commuting" data-bind="text: currentStampData().stampArtName"></div>
 						</div>
 					</div>
 				</div>
@@ -40,8 +38,7 @@
 				<div class="workPlaceName" data-bind="i18n: $vm.workPlace"></div>
 				<!-- G7 -->
 				<div id="table-stamp">
-					<div class="currentDate"
-						data-bind="text: currentDate"></div>
+					<div class="currentDate" data-bind="text: currentDate"></div>
 					<table id="single-list" data-bind="ntsGridList: {								
 								height: 170,
 								width: 450,
@@ -81,15 +78,31 @@
 			</div>
 			<div id="functions-area-bottom">
 				<div data-bind="if: $vm.modeNikoNiko">
-					<i id="btn-happy" data-bind="ntsIcon: { no: 185, width: 60, height: 60 }, click: happy"></i>
-					<i style="margin-left: 5px;"
-						data-bind="ntsIcon: { no: 186, width: 60, height: 60 }, click: good"></i>
-					<i style="margin-left: 5px;"
-						data-bind="ntsIcon: { no: 187, width: 60, height: 60 }, click: average"></i>
-					<i style="margin-left: 5px;"
-						data-bind="ntsIcon: { no: 188, width: 60, height: 60 }, click: sad"></i>
-					<i style="margin-left: 5px;"
-						data-bind="ntsIcon: { no: 189, width: 60, height: 60 }, click: weary"></i>
+					<!-- <button class="btn-happy">
+						<i data-bind="ntsIcon: { no: 185, width: 60, height: 60 }, click: happy"></i>
+					</button>
+					<button class="btn-happy">
+						<i data-bind="ntsIcon: { no: 185, width: 60, height: 60 }, click: happy"></i>
+					</button>
+					<button class="btn-happy">
+						<i data-bind="ntsIcon: { no: 185, width: 60, height: 60 }, click: happy"></i>
+					</button>
+					<button class="btn-happy">
+						<i data-bind="ntsIcon: { no: 185, width: 60, height: 60 }, click: happy"></i>
+					</button>
+					<button class="btn-happy">
+						<i data-bind="ntsIcon: { no: 185, width: 60, height: 60 }, click: happy"></i>
+					</button> -->
+					<button class="btn-happy" data-bind="ntsIcon: { no: 185, width: 60, height: 60 }, click: happy">
+					</button>
+					<button class="btn-emoji" data-bind="ntsIcon: { no: 186, width: 60, height: 60 }, click: happy">
+					</button>
+					<button class="btn-emoji" data-bind="ntsIcon: { no: 187, width: 60, height: 60 }, click: happy">
+					</button>
+					<button class="btn-emoji" data-bind="ntsIcon: { no: 188, width: 60, height: 60 }, click: happy">
+					</button>
+					<button class="btn-emoji" data-bind="ntsIcon: { no: 189, width: 60, height: 60 }, click: happy">
+					</button>
 				</div>
 				<div data-bind="ifnot: $vm.modeNikoNiko">
 					<button class="large" tabindex="9" id="close-button"

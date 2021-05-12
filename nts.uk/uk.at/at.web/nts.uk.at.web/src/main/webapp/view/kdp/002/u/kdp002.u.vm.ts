@@ -15,28 +15,36 @@ module nts.uk.at.kdp002.u {
 	@bean()
 	export class ViewModel extends ko.ViewModel {
 
+		modelShowView: KnockoutObservableArray<IEmployeeIdSeen> = ko.observableArray([]);
 		model: KnockoutObservableArray<IMsgNotices> = ko.observableArray([]);
 		sid: string;
-		modeNew: KnockoutObservable<boolean | null> = ko.observable(true);
+		modeNew: KnockoutObservable<boolean | null> = ko.observable(false);
 
 		created(param: IParams) {
 			const vm = this
+
+			_.forEach(param.data.msgNotices, (value) => {
+				
+				if (value.message.targetInformation.destination == 2) {
+					vm.modelShowView.push(value.message);
+				}
+			})
 
 			vm.model(param.data.msgNotices);
 
 			vm.sid = param.sid;
 
-			vm.setModeNew(param.data.msgNotices);
+			vm.setModeNew(ko.unwrap(vm.model));
 		}
 
 		setModeNew(param: IMsgNotices[]) {
 			const vm = this;
 
 			_.forEach(param, ((value) => {
-				if (value.message.employeeIdSeen.length > 0) {
-					vm.modeNew(false);
+				if (value.message.targetInformation.destination == 2 && value.flag) {
+					vm.modeNew(true);
+					return;
 				}
-
 			}));
 		}
 
@@ -48,8 +56,8 @@ module nts.uk.at.kdp002.u {
 					let msgInfors: Array<ICreatorAndDate> = [];
 
 					_.forEach(ko.unwrap(vm.model), (value) => {
-
-						if (value.flag) {
+						
+						if (value.flag && value.message.targetInformation.destination == 2) {
 							var item: ICreatorAndDate = {
 								creatorId: value.message.creatorID,
 								inputDate: value.message.inputDate
