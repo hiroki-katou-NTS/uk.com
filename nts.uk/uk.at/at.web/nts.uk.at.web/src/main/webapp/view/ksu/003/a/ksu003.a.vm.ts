@@ -4248,11 +4248,6 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				errorRegistrationList: dataReg.listErrorInfo, // エラー内容リスト 
 			}
 			setShared('dataShareDialogKDL053', param);
-			if (!_.isNil(window.parent) && window.parent.length > 1){
-				setTimeout(function() {
-				$(window.parent[1].$('body').contents().find('#btnClose')).click()
-				}, 10);
-			}
 			nts.uk.ui.windows.sub.modeless('/view/kdl/053/a/index.xhtml').onClosed(function(): any {
 				console.log('closed');
 			});
