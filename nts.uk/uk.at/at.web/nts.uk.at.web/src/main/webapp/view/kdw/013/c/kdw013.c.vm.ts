@@ -545,7 +545,7 @@ module nts.uk.ui.at.kdp013.c {
         mounted() {
             const vm = this;
             const { $el, params, model, hasError } = vm;
-            const { task1, task2, task3, task4, task5 } = model;
+            const { task1, task2, task3, task4, task5, workplace: workLocation } = model;
             const { view, position, data, excludeTimes } = params;
             const cache = {
                 view: ko.unwrap(view),
@@ -624,8 +624,8 @@ module nts.uk.ui.at.kdp013.c {
                     .then((response: StartWorkInputPanelDto | null) => {
                         if (response) {
                             vm.params.$share(response);
-                            
-                            const { taskList1, taskList2, taskList3, taskList4, taskList5, workLocations } = vm.combobox;
+
+                            const { taskList1, taskList2, taskList3, taskList4, taskList5 } = vm.combobox;
                             const { taskListDto1, taskListDto2, taskListDto3, taskListDto4, taskListDto5 } = response;
 
                             if (taskListDto1) {
@@ -675,14 +675,14 @@ module nts.uk.ui.at.kdp013.c {
                                 task3(workCD3);
                                 task4(workCD4);
                                 task5(workCD5);
-                                workLocations(workplace);
+                                workLocation(workplace);
                             } else {
                                 task1(null);
                                 task2(null);
                                 task3(null);
                                 task4(null);
                                 task5(null);
-                                workLocations(null);
+                                workLocation(null);
                             }
                         }
 
