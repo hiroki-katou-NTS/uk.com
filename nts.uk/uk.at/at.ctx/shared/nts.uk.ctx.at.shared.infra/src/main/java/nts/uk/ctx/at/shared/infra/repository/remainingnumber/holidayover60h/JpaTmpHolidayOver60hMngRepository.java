@@ -19,10 +19,17 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.holidayover60h.interim.TmpHolida
 import nts.uk.ctx.at.shared.dom.remainingnumber.holidayover60h.interim.TmpHolidayOver60hMngRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UseTime;
+import nts.uk.ctx.at.shared.infra.entity.remainingnumber.annlea.KrcdtHdpaidTemp;
 import nts.uk.ctx.at.shared.infra.entity.remainingnumber.annlea.KshdtInterimHdpaid;
+import nts.uk.ctx.at.shared.infra.entity.remainingnumber.holidayover60h.KrcmtInterimHd60h;
+import nts.uk.ctx.at.shared.infra.entity.remainingnumber.holidayover60h.KrcmtInterimHd60hPK;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class JpaTmpHolidayOver60hMngRepository extends JpaRepository implements TmpHolidayOver60hMngRepository{
+
+	private static final String DELETE_BY_SID_YMD = "DELETE FROM KrcmtInterimHd60h c"
+			+ " WHERE c.pk.sid = :sid AND c.pk.ymd = :ymd";
 
 	@Override
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -42,25 +49,34 @@ public class JpaTmpHolidayOver60hMngRepository extends JpaRepository implements 
 		optTmpAnnualHolidayMng.ifPresent(x -> {
 			this.commandProxy().remove(x);
 		});
-		
+
 	}
 
 	@Override
 	public void persistAndUpdate(TmpHolidayOver60hMng dataMng) {
-//		Optional<KrcdtHdpaidTemp> optTmpAnnualHolidayMng = this.queryProxy().find(dataMng.getAnnualId(), KrcdtHdpaidTemp.class);
-//		if(optTmpAnnualHolidayMng.isPresent()) {
-//			KrcdtHdpaidTemp entity = optTmpAnnualHolidayMng.get();
-//			entity.useDays = dataMng.getUseDays().v();
-//			entity.workTypeCode = dataMng.getWorkTypeCode();
-//			this.commandProxy().update(entity);
-//		} else {
-//			KrcdtHdpaidTemp entity = new KrcdtHdpaidTemp();
-//			entity.annualMngId = dataMng.getAnnualId();
-//			entity.useDays = dataMng.getUseDays().v();
-//			entity.workTypeCode = dataMng.getWorkTypeCode();
-//			this.getEntityManager().persist(entity);
-//		}
-//		this.getEntityManager().flush();
+		KrcmtInterimHd60hPK pk = new KrcmtInterimHd60hPK(
+				AppContexts.user().companyId(),
+				dataMng.getSID(),
+				dataMng.getYmd(),
+				dataMng.getAppTimeType().map(x -> x.isHourlyTimeType() ? 1 : 0).orElse(0),
+				dataMng.getAppTimeType().flatMap(c -> c.getAppTimeType()).map(c -> c.value).orElse(0));
+
+		this.queryProxy().find(pk, KrcmtInterimHd60h.class).ifPresent(entity-> {
+			entity.remainMngId = dataMng.getRemainManaID();
+			entity.createAtr = dataMng.getCreatorAtr().value;
+			entity.usedTime = dataMng.getUseTime().map(x -> x.v()).orElse(null);
+			this.commandProxy().update(entity);
+			this.getEntityManager().flush();
+			return;
+		});
+
+		KrcmtInterimHd60h entity = new KrcmtInterimHd60h();
+		entity.pk = pk;
+		entity.remainMngId = dataMng.getRemainManaID();
+		entity.createAtr = dataMng.getCreatorAtr().value;
+		entity.usedTime = dataMng.getUseTime().map(x -> x.v()).orElse(null);
+		this.getEntityManager().persist(entity);
+		this.getEntityManager().flush();
 	}
 	@SneakyThrows
 	@Override
@@ -103,7 +119,7 @@ public class JpaTmpHolidayOver60hMngRepository extends JpaRepository implements 
 			+ " 	AND a2.REMAIN_TYPE = ?"
 			+ " 	AND a2.YMD >= ? and a2.YMD <= ?"
 			+ " ORDER BY a2.YMD")) {
-			
+
 			sql.setString(1, employeeId);
 			sql.setInt(2, remainType);
 			sql.setDate(3, Date.valueOf(period.start().localDate()));
@@ -159,7 +175,7 @@ public class JpaTmpHolidayOver60hMngRepository extends JpaRepository implements 
 					, "remainTypeId");
 			tmpHolidayOver60hMng6.setUseTime(Optional.of(new UseTime(60)));
 			tmpHolidayOver60hMng6.setCreatorAtr(CreateAtr.FLEXCOMPEN);
-			
+
 			TmpHolidayOver60hMng tmpHolidayOver60hMng7 = new TmpHolidayOver60hMng(
 					"ca294040-910f-4a42-8d90-2bd02772697c"
 					, GeneralDate.ymd(2020, 9, 16)
@@ -185,11 +201,12 @@ public class JpaTmpHolidayOver60hMngRepository extends JpaRepository implements 
 		 return new ArrayList<>();
 	}
 
-//	private TmpHolidayOver60hMng toDomain(NtsResultRecord x) {		
-//		return new TmpAnnualHolidayMng(x.getString("ANNUAL_MNG_ID"),
-//				x.getString("WORKTYPE_CODE"),
-//				new UseDay(x.getBigDecimal("USE_DAYS") == null ? 0 : x.getBigDecimal("USE_DAYS").doubleValue()));
-//	
-//	}
+	@Override
+	public void deleteBySidAndYmd(String sid, GeneralDate ymd) {
+		this.getEntityManager().createQuery(DELETE_BY_SID_YMD)
+		.setParameter("sid", sid)
+		.setParameter("ymd", ymd)
+		.executeUpdate();
+	}
 
 }

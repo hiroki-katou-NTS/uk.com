@@ -305,6 +305,7 @@ module nts.uk.com.view.cmm040.a.viewmodel {
             errors.clearAll();
             let self = this;
             self.isCreate(false);
+            self.valueA5_2('');
             let data = _.find(self.workPlacesList(), ['workLocationCD', workLocationCD]);
             $("#grid2").remove();
             $("#grid").append("<table id='grid2'></table>");
@@ -663,8 +664,7 @@ module nts.uk.com.view.cmm040.a.viewmodel {
                 beforeSend: function(xhr) {
                     xhr.overrideMimeType("text/plain; charset=x-user-defined");
                 }
-            })
-                .done(function(data) {
+            }).done(function(data) {
                     if (JSON.parse(data).response.location == undefined) {
                         self.latitude('');
                         self.longitude('');

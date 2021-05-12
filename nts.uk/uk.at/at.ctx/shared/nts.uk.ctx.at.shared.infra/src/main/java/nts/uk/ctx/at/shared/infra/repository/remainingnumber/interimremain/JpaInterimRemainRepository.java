@@ -13,21 +13,18 @@ import javax.ejb.TransactionAttributeType;
 
 import lombok.SneakyThrows;
 import lombok.val;
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
-import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet.NtsResultRecord;
+import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemainRepository;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
 import nts.uk.ctx.at.shared.infra.entity.remainingnumber.interimremain.KrcdtInterimRemainMng;
-import nts.arc.time.calendar.period.DatePeriod;
 
 @Stateless
 public class JpaInterimRemainRepository extends JpaRepository  implements InterimRemainRepository{
@@ -66,19 +63,19 @@ public class JpaInterimRemainRepository extends JpaRepository  implements Interi
 		}		
 	}
 	private InterimRemain toDomain(NtsResultRecord  record) {
-		return new InterimRemain(record.getString("REMAIN_MNG_ID"),
+		return null;/* InterimRemain(record.getString("REMAIN_MNG_ID"),
 				record.getString("SID"),
 				record.getGeneralDate("YMD"),
 				record.getEnum("CREATOR_ATR", CreateAtr.class),
-				record.getEnum("REMAIN_TYPE", RemainType.class));
+				record.getEnum("REMAIN_TYPE", RemainType.class));*/
 	}
 	
 	private InterimRemain convertToDomainSet(KrcdtInterimRemainMng c) {		
-		return new InterimRemain(c.remainMngId, 
+		return null;/*new InterimRemain(c.remainMngId, 
 				c.sId, 
 				c.ymd, 
 				EnumAdaptor.valueOf(c.createrAtr, CreateAtr.class), 
-				EnumAdaptor.valueOf(c.remainType, RemainType.class));
+				EnumAdaptor.valueOf(c.remainType, RemainType.class));*/
 	}
 	
 	@Override

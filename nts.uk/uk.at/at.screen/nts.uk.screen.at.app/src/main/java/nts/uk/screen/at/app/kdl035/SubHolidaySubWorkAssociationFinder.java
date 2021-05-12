@@ -126,7 +126,7 @@ public class SubHolidaySubWorkAssociationFinder {
 
         List<SubstituteWorkData> result = new ArrayList<>();
         for (InterimRecMng recMng : recData) {
-            remainData.stream().filter(d -> d.getRemainManaID().equals(recMng.getRecruitmentMngId())).findFirst().ifPresent((InterimRemain remainMng) -> {
+            remainData.stream().filter(d -> d.getRemainManaID().equals(recMng.getRemainManaID())).findFirst().ifPresent((InterimRemain remainMng) -> {
                 SubstituteWorkData data = new SubstituteWorkData();
                 data.setSubstituteWorkDate(remainMng.getYmd());
                 data.setRemainingNumber(recMng.getUnUsedDays().v());
@@ -185,7 +185,7 @@ public class SubHolidaySubWorkAssociationFinder {
             List<InterimRecMng> recData = interimRecAbasMngRepo.getRecByIds(mngIds);
 
             for (InterimRecMng recMng : recData) {
-                remainData.stream().filter(d -> d.getRemainManaID().equals(recMng.getRecruitmentMngId())).findFirst().ifPresent((InterimRemain remainMng) -> {
+                remainData.stream().filter(d -> d.getRemainManaID().equals(recMng.getRemainManaID())).findFirst().ifPresent((InterimRemain remainMng) -> {
                     SubstituteWorkData data = new SubstituteWorkData();
                     data.setSubstituteWorkDate(remainMng.getYmd());
 //                    managementData.stream().filter(i -> i.getAssocialInfo().getOutbreakDay().compareTo(remainMng.getYmd()) == 0).findFirst().ifPresent(i -> {

@@ -69,16 +69,15 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 
 
 								
-
-
-								<div class="table"></div>
-
-
-								<div
-									data-bind="component: { name: 'kaf005-share-work-info', 
-										params: {
-														workInfo: workInfo
-													} 
+	<div data-bind="component: { name: 'kaf005-share',
+											params: {
+												restTime: restTime,
+												holidayTime: holidayTime,
+												overTime: overTime,
+												visibleModel: visibleModel,
+												agent: agentForTable
+											}
+							
 										}"></div>
 
 								<div
@@ -224,6 +223,7 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 			})
 			
 		}
+		agentForTable: KnockoutObservable<Boolean> = ko.observable(false);
         created(
             params: {
                 appType: any,
@@ -274,6 +274,21 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 							
 							
 							vm.getBreakTimes();
+						}
+				})
+				document.getElementById('inpStartTime2').addEventListener('focusout', () => {
+					if (_.isNumber(vm.workInfo().workHours2.start()) && _.isNumber(vm.workInfo().workHours2.end())) {
+							
+							
+							vm.dataSource.calculatedFlag = CalculatedFlag.UNCALCULATED;
+						}
+				})
+				
+				document.getElementById('inpEndTime2').addEventListener('focusout', () => {
+					if (_.isNumber(vm.workInfo().workHours2.start()) && _.isNumber(vm.workInfo().workHours2.end())) {
+							
+							
+							vm.dataSource.calculatedFlag = CalculatedFlag.UNCALCULATED;
 						}
 				})
 				

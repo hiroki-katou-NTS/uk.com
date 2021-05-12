@@ -171,7 +171,8 @@ module nts.uk.at.view.kaf009_ref.b.viewmodel {
                         appDispInfoStartup: ko.observable(res.appDispInfoStartup),
                         goBackReflect: ko.observable(res.goBackReflect),
                         lstWorkType: ko.observable(res.lstWorkType),
-                        goBackApplication: ko.observable(res.goBackApplication)
+                        goBackApplication: ko.observable(res.goBackApplication),
+						workInfo: res.workInfo
                     });
                     vm.printContentOfEachAppDto().opInforGoBackCommonDirectOutput = ko.toJS(vm.dataFetch);
                 }
@@ -373,6 +374,8 @@ module nts.uk.at.view.kaf009_ref.b.viewmodel {
         lstWorkType: KnockoutObservable<any>;
 
         goBackApplication: KnockoutObservable<any>;
+
+		workInfo: any;
     }
     export class GoBackApplication {
         straightDistinction: number;

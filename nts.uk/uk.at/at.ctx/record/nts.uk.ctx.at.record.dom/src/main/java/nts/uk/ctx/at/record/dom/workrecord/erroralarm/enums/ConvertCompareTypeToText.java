@@ -40,12 +40,12 @@ public class ConvertCompareTypeToText {
 			compare.setCompareright("≦");
 			break;
 		case 8 :/* 範囲の外（境界値を含まない）（＞＜） */
-			compare.setCompareLeft("＜");
+			compare.setCompareLeft("＞");
 			compare.setCompareright("＜");
 			break;
 		
 		default :/* 範囲の外（境界値を含む）（≧≦） */
-			compare.setCompareLeft("≦");
+			compare.setCompareLeft("≧");
 			compare.setCompareright("≦");
 			break; 
 		}

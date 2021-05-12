@@ -1904,17 +1904,17 @@ module cmm045.a.viewmodel {
             let colorIn = a.substring(0,1);
             if (colorIn == '土') {//土
                 inputDate = '<div class = "saturdayCell ' + classApp + '" >' + '<div>' + input + '</div>';
+				inputDate += '</div>';
 				if(isSyncApp) {
 					inputDate += '<div style="margin-top: 5px;">' + input + '</div>';
 				}
-				inputDate += '</div>';
             }
             if (colorIn == '日') {//日
                 inputDate = '<div class = "sundayCell ' + classApp + '" >' + '<div>' + input + '</div>';
+				inputDate += '</div>';
 				if(isSyncApp) {
 					inputDate += '<div style="margin-top: 5px;">' + input + '</div>';
 				}
-				inputDate += '</div>';
             }
             return inputDate;
         }
@@ -1929,17 +1929,17 @@ module cmm045.a.viewmodel {
             let color = a.substring(0,1);
             if (color == '土') {//土
                 appDate = '<div class = "saturdayCell  ' + classApp + '" >' + '<div>' + date + priod + '</div>';
+				appDate += '</div>';
 				if(linkAppDate) {
 					appDate += '<div style="margin-top: 5px;">' + linkAppDate + priod + '</div>';
 				}
-				appDate += '</div>';
             }
             if (color == '日') {//日
                 appDate = '<div class = "sundayCell  ' + classApp + '" >' + '<div>' + date + priod + '</div>';
+				appDate += '</div>';
 				if(linkAppDate) {
 					appDate += '<div style="margin-top: 5px;">' + linkAppDate + priod + '</div>';
 				}
-				appDate += '</div>';
             }
             return appDate;
         }

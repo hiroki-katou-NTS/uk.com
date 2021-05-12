@@ -266,9 +266,6 @@ module nts.uk.com.view.ktg031.a {
       });
       vm.$blockui('grayoutView');
       vm.$ajax(API.changeToUnread, command)
-        .then((res) => {
-          console.log(res);
-        })
         .always(() => vm.$blockui('clearView'));
     }
 

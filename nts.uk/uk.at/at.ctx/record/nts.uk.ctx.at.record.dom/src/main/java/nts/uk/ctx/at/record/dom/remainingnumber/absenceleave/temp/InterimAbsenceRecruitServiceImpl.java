@@ -54,10 +54,10 @@ public class InterimAbsenceRecruitServiceImpl implements InterimAbsenceRecruitSe
 	/** 勤務情報の取得 */
 	@Inject
 	private WorkTypeRepository workTypeRepo;
-	
+
 	@Inject
 	private RecordDomRequireService requireService;
-	
+
 	/** 作成 */
 	@Override
 	public void create(String companyId, String employeeId, DatePeriod period,
@@ -75,7 +75,7 @@ public class InterimAbsenceRecruitServiceImpl implements InterimAbsenceRecruitSe
 					.collect(Collectors.toList());
 		}
 		if (targetWorkInfos.size() == 0) return;
-		
+
 		// 勤務情報　取得
 		val workTypes = this.workTypeRepo.findByCompanyId(companyId);
 		Map<WorkTypeCode, WorkType> workTypeMap = new HashMap<>();
@@ -86,7 +86,7 @@ public class InterimAbsenceRecruitServiceImpl implements InterimAbsenceRecruitSe
 
 		// 休暇加算設定　取得
 		VacationAddSet vacationAddSet = GetVacationAddSet.get(require, companyId);
-		
+
 		for (val targetWorkInfo : targetWorkInfos){
 
 			// 勤務種類から振出・振休の日数を取得
@@ -99,46 +99,41 @@ public class InterimAbsenceRecruitServiceImpl implements InterimAbsenceRecruitSe
 
 			double recruitDays = workTypeDaysCountTable.getTransferAttendanceDays().v();
 			if (recruitDays > 0.0){
-				
+
 				// 暫定振出管理データを作成
 				String recruitGuid = IdentifierUtil.randomUniqueId();
-				InterimRemain remain = new InterimRemain(
-						recruitGuid,
-						employeeId,
-						targetWorkInfo.getYmd(),
-						CreateAtr.RECORD,
-						RemainType.PICKINGUP);
 				InterimRecMng recMng = new InterimRecMng(
 						recruitGuid,
+						employeeId,
+						targetWorkInfo.getYmd(),
+						CreateAtr.RECORD,
+						RemainType.PICKINGUP,
 						GeneralDate.ymd(9999, 12, 31),
 						new OccurrenceDay(recruitDays),
-						HolidayAtr.NON_STATUTORYHOLIDAY,
+						//HolidayAtr.NON_STATUTORYHOLIDAY,
 						new UnUsedDay(recruitDays));
-				require.persistAndUpdateInterimRemain(remain);
 				this.interimRecAbsMngRepo.persistAndUpdateInterimRecMng(recMng);
 			}
-			
+
 			double absenceDays = workTypeDaysCountTable.getTransferHolidayUseDays().v();
 			if (absenceDays > 0.0){
-				
+
 				// 暫定振休管理データを作成
 				String absenceGuid = IdentifierUtil.randomUniqueId();
-				InterimRemain remain = new InterimRemain(
+
+				InterimAbsMng absMng = new InterimAbsMng(
 						absenceGuid,
 						employeeId,
 						targetWorkInfo.getYmd(),
 						CreateAtr.RECORD,
-						RemainType.PAUSE);
-				InterimAbsMng absMng = new InterimAbsMng(
-						absenceGuid,
+						RemainType.PAUSE,
 						new RequiredDay(absenceDays),
 						new UnOffsetDay(absenceDays));
-				require.persistAndUpdateInterimRemain(remain);
 				this.interimRecAbsMngRepo.persistAndUpdateInterimAbsMng(absMng);
 			}
 		}
 	}
-	
+
 	/** 削除 */
 	@Override
 	public void remove(String employeeId, DatePeriod period) {

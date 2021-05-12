@@ -53,16 +53,15 @@
 
 
 								
-
-
-								<div class="table"></div>
-
-
-								<div
-									data-bind="component: { name: 'kaf005-share-work-info', 
-										params: {
-														workInfo: workInfo
-													} 
+	<div data-bind="component: { name: 'kaf005-share',
+											params: {
+												restTime: restTime,
+												holidayTime: holidayTime,
+												overTime: overTime,
+												visibleModel: visibleModel,
+												agent: agentForTable
+											}
+							
 										}"></div>
 
 								<div

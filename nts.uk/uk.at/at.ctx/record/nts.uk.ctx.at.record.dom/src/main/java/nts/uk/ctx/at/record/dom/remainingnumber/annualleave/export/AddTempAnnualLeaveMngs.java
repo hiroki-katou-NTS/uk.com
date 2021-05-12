@@ -11,7 +11,6 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdat
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
-import nts.uk.ctx.at.shared.dom.remainingnumber.work.AppTimeType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 
 /**
@@ -70,7 +69,7 @@ public class AddTempAnnualLeaveMngs {
 						RemainAtr.SINGLE,			//		残数分類　←単一
 						new WorkTypeCode("1"), 	//		勤務種類 = 1
 						new LeaveUsedNumber(calcUsedNumber, null , null), 	//		年休使用数．日数　←求めた使用数
-						Optional.of(AppTimeType.OFFWORK)));	//		時間休暇種類．時間消化区分 = 1
+						Optional.empty()));	//		時間休暇種類．時間消化区分 = 1
 				});
 		}
 		return interimRemain;

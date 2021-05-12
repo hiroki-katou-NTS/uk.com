@@ -15,25 +15,25 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainTy
 
 @Stateless
 public class JpaInterimCommonRepository extends JpaRepository implements InterimCommonRepository {
-	
-	@Inject 
+
+	@Inject
 	private InterimRemainRepository interimRemainRepo;
 
 	@Override
 	public void deleteInterim(String sid, DatePeriod period, RemainType type) {
-		
+
 		/** TODO: 新テーブル対応待ち */
 		val interim = interimRemainRepo.getRemainBySidPriod(sid, period, type);
 
 		val interimIds = interim.stream().map(c -> c.getRemainManaID()).collect(Collectors.toList());
-		
+
 		internalDelete(sid, period, type, interimIds);
-		
+
 		interimRemainRepo.deleteBySidPeriodType(sid, period, type);
 	}
-	
+
 	private void internalDelete(String sid, DatePeriod period, RemainType type, List<String> interimIds) {
-		
+
 		switch (type) {
 		case ANNUAL:
 
@@ -51,7 +51,7 @@ public class JpaInterimCommonRepository extends JpaRepository implements Interim
 			if(interimIds.isEmpty()) {
 				return;
 			}
-			
+
 			this.getEntityManager().createQuery(this.createDeleteQuery(type))
 									.setParameter("ids", interimIds)
 									.executeUpdate();
@@ -60,7 +60,7 @@ public class JpaInterimCommonRepository extends JpaRepository implements Interim
 			break;
 		}
 	}
-	
+
 	private String createDeleteQuery(RemainType type) {
 
 		switch (type) {
@@ -81,8 +81,8 @@ public class JpaInterimCommonRepository extends JpaRepository implements Interim
 //			return "DELETE FROM KrcmtInterimDayOffMng d WHERE d.sid = :sid AND d.ymd >= :start AND d.ymd <= :end";
 		case PICKINGUP:
 			return "DELETE FROM xxx d WHERE d.sid = :sid AND d.ymd >= :start AND d.ymd <= :end";
-		case TIMEANNUAL:
-			return "DELETE FROM xxx d WHERE d.sid = :sid AND d.ymd >= :start AND d.ymd <= :end";
+		//case TIMEANNUAL:
+			//return "DELETE FROM xxx d WHERE d.sid = :sid AND d.ymd >= :start AND d.ymd <= :end";
 		case CARE:
 			return "DELETE FROM xxx d WHERE d.sid = :sid AND d.ymd >= :start AND d.ymd <= :end";
 		case CHILDCARE:
