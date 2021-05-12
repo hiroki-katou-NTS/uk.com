@@ -4,13 +4,18 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 
 /**
  * ログイン時の検証結果
  */
 @Getter
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@ToString
 public class ValidationResultOnLogin {
 
 	/** パスワードの状態 */
@@ -22,12 +27,6 @@ public class ValidationResultOnLogin {
 	/** パスワード有効期限の残日数 */
 	private final Optional<Integer> remainingDays;
 	
-	private ValidationResultOnLogin(Status status, List<String> policyErrorList, Optional<Integer> remainingDays) {
-		this.status = status;
-		PolicyErrorList = policyErrorList;
-		this.remainingDays = remainingDays;
-	}
-
 	// 正常
 	public static ValidationResultOnLogin ok() {
 		return new ValidationResultOnLogin(Status.OK, Collections.emptyList(), Optional.empty());
@@ -68,8 +67,6 @@ public class ValidationResultOnLogin {
 		return !this.status.equals(Status.OK);
 	}
 	
-	
-
 	/**
 	 * ログイン時のパスワード状態
 	 */

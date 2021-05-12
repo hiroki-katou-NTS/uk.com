@@ -11,7 +11,7 @@ import nts.gul.text.StringUtil;
 @Getter
 public class PasswordAuthenticationFailureLog implements DomainAggregate {
 
-	/** 失敗日時リスト */
+	/** 失敗日時 */
 	private final GeneralDateTime failureDateTime;
 	/** 試行したユーザID */
 	private final String triedUserId;

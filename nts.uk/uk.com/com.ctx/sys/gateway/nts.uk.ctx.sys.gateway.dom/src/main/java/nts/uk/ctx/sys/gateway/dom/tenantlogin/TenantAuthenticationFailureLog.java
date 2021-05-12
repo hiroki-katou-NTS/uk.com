@@ -5,15 +5,15 @@ import nts.arc.layer.dom.objecttype.DomainAggregate;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.sys.gateway.dom.login.LoginClient;
+
 /**
  * テナント認証失敗記録
- * @author hiroki_katou
- *
  */
 @Getter
 public class TenantAuthenticationFailureLog implements DomainAggregate {
-	/** 日時 */
-	private final GeneralDateTime failureTimestamps;
+	
+	/** 失敗日時 */
+	private final GeneralDateTime failureDateTime;
 	/** ログインクライアント */
 	private final LoginClient loginClient;
 	/** 試行したテナントコード */
@@ -22,7 +22,7 @@ public class TenantAuthenticationFailureLog implements DomainAggregate {
 	private final String triedPassword;
 	
 	public TenantAuthenticationFailureLog(GeneralDateTime dateTime, LoginClient loginClient, String triedTenantCode, String triedPassword) {
-		this.failureTimestamps = dateTime;
+		this.failureDateTime = dateTime;
 		this.loginClient = loginClient;
 		// ユーザー入力の値は適当な長さでカットして保持する
 		this.triedTenantCode = StringUtil.cutOffAsLengthHalf(triedTenantCode, 100);
