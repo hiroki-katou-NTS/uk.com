@@ -122,7 +122,12 @@ module nts.uk.at.view.kdr001.b.viewmodel {
                                 enable: true
                             }));
                             self.listSpecialHolidayEnable.push(i);
-                        }
+                        }else {
+                            self.allSpecialHolidays.push(new SpecialHoliday({
+                                specialHolidayCode: i,
+                                specialHolidayName: "",
+                                enable: false
+                            }));
                     }
                 }
 
@@ -278,6 +283,12 @@ module nts.uk.at.view.kdr001.b.viewmodel {
                             enable: true
                         }));
                         self.listSpecialHolidayEnable.push(i);
+                    }else {
+                        self.allSpecialHolidays.push(new SpecialHoliday({
+                            specialHolidayCode: i,
+                            specialHolidayName: "",
+                            enable: false
+                        }));
                     }
                 }
             } else {
@@ -589,7 +600,7 @@ module nts.uk.at.view.kdr001.b.viewmodel {
             self.yearlyHoliday.subscribe((isCheck) => {
                 if (isCheck === false) {
                     self.insideHours(false);
-                    self.insideHours(false);
+                    self.insideHalfDay(false);
                 }
                 nts.uk.ui.errors.clearAll();
             });

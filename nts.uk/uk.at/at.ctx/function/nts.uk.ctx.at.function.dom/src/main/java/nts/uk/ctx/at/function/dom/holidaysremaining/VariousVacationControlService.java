@@ -117,7 +117,7 @@ public class VariousVacationControlService {
 			}
 		}
 
-		val listSpecialHoliday = specialHolidayFinder.findByCompanyId(companyId);
+		val listSpecialHoliday = specialHolidayFinder.findByCompanyIdWithTargetItem(companyId);
 
 		return new VariousVacationControl(annualHolidaySetting, yearlyReservedSetting, substituteHolidaySetting,
 				pauseItemHolidaySetting, childNursingSetting, nursingCareSetting,

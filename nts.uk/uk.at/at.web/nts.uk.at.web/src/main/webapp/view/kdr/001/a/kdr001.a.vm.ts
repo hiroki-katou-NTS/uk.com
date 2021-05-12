@@ -392,7 +392,7 @@ module nts.uk.at.view.kdr001.a.viewmodel {
                 nts.uk.ui.block.clear();
                 return;
             }
-            if (totalMonths > 12) {
+            if (totalMonths > 13) {
                 nts.uk.ui.dialog.alertError({messageId: 'Msg_1173'});
                 nts.uk.ui.block.clear();
                 return;
