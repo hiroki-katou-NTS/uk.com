@@ -13,4 +13,6 @@ public interface PersisAlarmListExtractResultRepository {
     void insert(PersistenceAlarmListExtractResult domain);
 
     void delete(PersistenceAlarmListExtractResult domain);
+
+    List<PersistenceAlarmListExtractResult> getAlarmExtractResult(String companyId, List<String> employeeIds);
 }

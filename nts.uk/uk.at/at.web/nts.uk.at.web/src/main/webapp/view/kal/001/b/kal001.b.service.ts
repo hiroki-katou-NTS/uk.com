@@ -1,7 +1,7 @@
 module nts.uk.at.view.kal001.b {
     export module service {
         var paths = {
-            getExtractAlarmData : "",
+            getExtractAlarmWebMenu: "at/function/alarm/kal/001/alarmlist/webmenu",
             exportAlarmData: "at/function/alarm/kal/001/export-alarm-data/"
         }
  

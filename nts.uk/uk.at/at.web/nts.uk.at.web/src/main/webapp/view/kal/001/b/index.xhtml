@@ -26,6 +26,13 @@
 					<H3 data-bind="text: eralRecordText"></H3>
 				</div>
 				<table tabindex="4" id="grid"></table>
+				<div class="popup-area1">
+					<ul data-bind="foreach: menuItems">
+						<li>
+							<a data-bind="ntsLinkButton: { jump: $data.url }, text: $data.menuName"/>
+						</li>
+					</ul>
+				</div>
 			</div>
 		</ui:define>
 	</ui:composition>
