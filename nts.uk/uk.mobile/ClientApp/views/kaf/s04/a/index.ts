@@ -49,7 +49,7 @@ export class KafS04AComponent extends KafS00ShrComponent {
         actualExcess: null,
         scheduleDisp: true,
         scheduleTime: null,
-        scheduleExcess: null
+        scheduleExcess: ExcessTimeStatus.NONE
     };
     public kafS00P1Params2: KAFS00P1Params = {
         preAppDisp: false,
@@ -60,7 +60,7 @@ export class KafS04AComponent extends KafS00ShrComponent {
         actualExcess: null,
         scheduleDisp: true,
         scheduleTime: null,
-        scheduleExcess: null
+        scheduleExcess: ExcessTimeStatus.NONE
     };
     public kafS00P1Params3: KAFS00P1Params = {
         preAppDisp: false,
@@ -71,7 +71,7 @@ export class KafS04AComponent extends KafS00ShrComponent {
         actualExcess: null,
         scheduleDisp: true,
         scheduleTime: null,
-        scheduleExcess: null
+        scheduleExcess: ExcessTimeStatus.NONE
     };
     public kafS00P1Params4: KAFS00P1Params = {
         preAppDisp: false,
@@ -82,7 +82,7 @@ export class KafS04AComponent extends KafS00ShrComponent {
         actualExcess: null,
         scheduleDisp: true,
         scheduleTime: null,
-        scheduleExcess: null
+        scheduleExcess: ExcessTimeStatus.NONE
     };
     public time: ITime = { attendanceTime: null, leaveTime: null, attendanceTime2: null, leaveTime2: null };
     public conditionLateEarlyLeave2Show: boolean = true;
@@ -120,29 +120,34 @@ export class KafS04AComponent extends KafS00ShrComponent {
             vm.application = vm.appDispInfoStartupOutput.appDetailScreenInfo.application;
             vm.infoOutPut.lateEarlyCancelAppSet = vm.params.lateEarlyCancelAppSet;
             vm.cancelAtr = vm.params.lateEarlyCancelAppSet.cancelAtr;
+            vm.conditionLateEarlyLeave2Show = !!vm.appDispInfoStartupOutput.appDispInfoNoDateOutput.managementMultipleWorkCycles;
 
             vm.appDispInfoStartupOutput.appDispInfoWithDateOutput.opActualContentDisplayLst.forEach((item) => {
+                vm.kafS00P1Params1.scheduleExcess = ExcessTimeStatus.NONE;
+                vm.kafS00P1Params2.scheduleExcess = ExcessTimeStatus.NONE;
+                vm.kafS00P1Params3.scheduleExcess = ExcessTimeStatus.NONE;
+                vm.kafS00P1Params4.scheduleExcess = ExcessTimeStatus.NONE;
                 if (item.opAchievementDetail != null) {
                     vm.kafS00P1Params1.scheduleTime = item.opAchievementDetail.achievementEarly.scheAttendanceTime1;
                     vm.kafS00P1Params2.scheduleTime = item.opAchievementDetail.achievementEarly.scheDepartureTime1;
                     vm.kafS00P1Params3.scheduleTime = item.opAchievementDetail.achievementEarly.scheAttendanceTime2;
                     vm.kafS00P1Params4.scheduleTime = item.opAchievementDetail.achievementEarly.scheDepartureTime2;
-                    if (item.opAchievementDetail.opWorkTime != null) {
+                    if (item.opAchievementDetail.opWorkTime != null && item.opAchievementDetail.achievementEarly.scheAttendanceTime1 != null) {
                         if (item.opAchievementDetail.achievementEarly.scheAttendanceTime1 < item.opAchievementDetail.opWorkTime) {
                             vm.kafS00P1Params1.scheduleExcess = ExcessTimeStatus.ALARM;
                         }
                     }
-                    if (item.opAchievementDetail.opLeaveTime != null) {
+                    if (item.opAchievementDetail.opLeaveTime != null && item.opAchievementDetail.achievementEarly.scheDepartureTime1 != null) {
                         if (item.opAchievementDetail.achievementEarly.scheDepartureTime1 > item.opAchievementDetail.opLeaveTime) {
                             vm.kafS00P1Params2.scheduleExcess = ExcessTimeStatus.ALARM;
                         }
                     }
-                    if (item.opAchievementDetail.opWorkTime2 != null) {
+                    if (item.opAchievementDetail.opWorkTime2 != null && item.opAchievementDetail.achievementEarly.scheAttendanceTime2 != null) {
                         if (item.opAchievementDetail.achievementEarly.scheAttendanceTime2 < item.opAchievementDetail.opWorkTime2) {
                             vm.kafS00P1Params3.scheduleExcess = ExcessTimeStatus.ALARM;
                         }
                     }
-                    if (item.opAchievementDetail.opDepartureTime2 != null) {
+                    if (item.opAchievementDetail.opDepartureTime2 != null && item.opAchievementDetail.achievementEarly.scheDepartureTime2 != null) {
                         if (item.opAchievementDetail.achievementEarly.scheDepartureTime2 > item.opAchievementDetail.opDepartureTime2) {
                             vm.kafS00P1Params4.scheduleExcess = ExcessTimeStatus.ALARM;
                         }
@@ -219,11 +224,7 @@ export class KafS04AComponent extends KafS00ShrComponent {
         }).then((res: any) => {
             if (res.data) {
                 vm.infoOutPut.lateEarlyCancelAppSet = res.data.lateEarlyCancelAppSet;
-                if (!vm.appDispInfoStartupOutput.appDispInfoNoDateOutput.managementMultipleWorkCycles) {
-                    vm.conditionLateEarlyLeave2Show = false;
-                } else {
-                    vm.conditionLateEarlyLeave2Show = true;
-                }
+                vm.conditionLateEarlyLeave2Show = !!vm.appDispInfoStartupOutput.appDispInfoNoDateOutput.managementMultipleWorkCycles;
                 vm.cancelAtr = res.data.lateEarlyCancelAppSet.cancelAtr;
                 if (vm.cancelAtr == 2 && vm.mode) {
                     vm.check.cbCancelLate.value = 'Attendance';
@@ -266,7 +267,7 @@ export class KafS04AComponent extends KafS00ShrComponent {
             actualExcess: null,
             scheduleDisp: true,
             scheduleTime: null,
-            scheduleExcess: null
+            scheduleExcess: ExcessTimeStatus.NONE
         };
         vm.kafS00P1Params2 = {
             preAppDisp: false,
@@ -277,7 +278,7 @@ export class KafS04AComponent extends KafS00ShrComponent {
             actualExcess: null,
             scheduleDisp: true,
             scheduleTime: null,
-            scheduleExcess: null
+            scheduleExcess: ExcessTimeStatus.NONE
         };
         vm.kafS00P1Params3 = {
             preAppDisp: false,
@@ -288,7 +289,7 @@ export class KafS04AComponent extends KafS00ShrComponent {
             actualExcess: null,
             scheduleDisp: true,
             scheduleTime: null,
-            scheduleExcess: null
+            scheduleExcess: ExcessTimeStatus.NONE
         };
         vm.kafS00P1Params4 = {
             preAppDisp: false,
@@ -299,7 +300,7 @@ export class KafS04AComponent extends KafS00ShrComponent {
             actualExcess: null,
             scheduleDisp: true,
             scheduleTime: null,
-            scheduleExcess: null
+            scheduleExcess: ExcessTimeStatus.NONE
         };
     }
 
@@ -448,6 +449,7 @@ export class KafS04AComponent extends KafS00ShrComponent {
                 mode: vm.mode,
                 res: null,
             };
+            vm.$http.post('at', API.reflectApp, res.data.reflectAppIdLst);
             vm.$goto('kafs04a1', vm.paramsAComponent);
             vm.$mask('hide');
         });
@@ -513,31 +515,35 @@ export class KafS04AComponent extends KafS00ShrComponent {
                 }
 
                 response.data.appDispInfoWithDateOutput.opActualContentDisplayLst.forEach((item) => {
+                    vm.kafS00P1Params1.scheduleExcess = ExcessTimeStatus.NONE;
+                    vm.kafS00P1Params2.scheduleExcess = ExcessTimeStatus.NONE;
+                    vm.kafS00P1Params3.scheduleExcess = ExcessTimeStatus.NONE;
+                    vm.kafS00P1Params4.scheduleExcess = ExcessTimeStatus.NONE;
                     if (item.opAchievementDetail) {
                         vm.kafS00P1Params1.scheduleTime = item.opAchievementDetail.achievementEarly.scheAttendanceTime1;
                         vm.kafS00P1Params2.scheduleTime = item.opAchievementDetail.achievementEarly.scheDepartureTime1;
                         vm.kafS00P1Params3.scheduleTime = item.opAchievementDetail.achievementEarly.scheAttendanceTime2;
                         vm.kafS00P1Params4.scheduleTime = item.opAchievementDetail.achievementEarly.scheDepartureTime2;
 
-                        if (item.opAchievementDetail.opWorkTime != null) {
+                        if (item.opAchievementDetail.opWorkTime != null && item.opAchievementDetail.achievementEarly.scheAttendanceTime1 != null) {
                             if (item.opAchievementDetail.achievementEarly.scheAttendanceTime1 < item.opAchievementDetail.opWorkTime) {
                                 vm.kafS00P1Params1.scheduleExcess = ExcessTimeStatus.ALARM;
                             }
                             vm.time.attendanceTime = item.opAchievementDetail.opWorkTime;
                         }
-                        if (item.opAchievementDetail.opLeaveTime != null) {
+                        if (item.opAchievementDetail.opLeaveTime != null && item.opAchievementDetail.achievementEarly.scheDepartureTime1 != null) {
                             if (item.opAchievementDetail.achievementEarly.scheDepartureTime1 > item.opAchievementDetail.opLeaveTime) {
                                 vm.kafS00P1Params2.scheduleExcess = ExcessTimeStatus.ALARM;
                             }
                             vm.time.leaveTime = item.opAchievementDetail.opLeaveTime;
                         }
-                        if (item.opAchievementDetail.opWorkTime2 != null) {
+                        if (item.opAchievementDetail.opWorkTime2 != null && item.opAchievementDetail.achievementEarly.scheAttendanceTime2 != null) {
                             if (item.opAchievementDetail.achievementEarly.scheAttendanceTime2 < item.opAchievementDetail.opWorkTime2) {
                                 vm.kafS00P1Params3.scheduleExcess = ExcessTimeStatus.ALARM;
                             }
                             vm.time.attendanceTime2 = item.opAchievementDetail.opWorkTime2;
                         }
-                        if (item.opAchievementDetail.opDepartureTime2 != null) {
+                        if (item.opAchievementDetail.opDepartureTime2 != null && item.opAchievementDetail.achievementEarly.scheDepartureTime2 != null) {
                             if (item.opAchievementDetail.achievementEarly.scheDepartureTime2 > item.opAchievementDetail.opDepartureTime2) {
                                 vm.kafS00P1Params4.scheduleExcess = ExcessTimeStatus.ALARM;
                             }
@@ -585,6 +591,7 @@ const API = {
     register: 'at/request/application/lateorleaveearly/register',
     getMsgList: 'at/request/application/lateorleaveearly/getMsgList',
     updateApp: 'at/request/application/lateorleaveearly/updateInfoApp',
+    reflectApp: 'at/request/application/reflect-app'
 };
 
 const initInfoOutput = (): IInfoOutput => ({

@@ -32,7 +32,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainOffPeriod
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.RecordRemainCreateInfor;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.CreateInterimAnnualMngData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualHolidayMng;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TempAnnualLeaveMngs;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualLeaveMngWork;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.NumberRemainVacationLeaveRangeProcess;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.BreakDayOffRemainMngRefactParam;
@@ -98,11 +98,11 @@ public class TimeOffRemainErrorInforImpl implements TimeOffRemainErrorInfor{
 		List<InterimDayOffMng> dayOffMng = eachData.getDayOffMng();
 		List<InterimSpecialHolidayMng> specialHolidayData = eachData.getSpecialHolidayData();
 		List<InterimRemain> interimSpecial = eachData.getInterimSpecial();
-		List<TmpAnnualHolidayMng> annualHolidayData = eachData.getAnnualHolidayData();
+		List<TempAnnualLeaveMngs> annualHolidayData = eachData.getAnnualHolidayData();
 		List<InterimRemain> annualMng = eachData.getAnnualMng();
 		if(optDaily.isPresent()
 				&& optDaily.get().getAnnualHolidayData().isPresent()) {
-			TmpAnnualHolidayMng flexAnnual = optDaily.get().getAnnualHolidayData().get();
+			TempAnnualLeaveMngs flexAnnual = optDaily.get().getAnnualHolidayData().map(x-> x).orElse(null);
 			List<InterimRemain> lstAnnualMng = optDaily.get().getRecAbsData().stream()
 					.filter(x -> x.getRemainManaID().equals(flexAnnual.getRemainManaID()))
 					.collect(Collectors.toList());
@@ -131,7 +131,7 @@ public class TimeOffRemainErrorInforImpl implements TimeOffRemainErrorInfor{
 
 	@Override
 	public List<EmployeeMonthlyPerError> annualData(TimeOffRemainErrorInputParam param,
-			List<InterimRemain> annualMng, List<TmpAnnualHolidayMng> annualHolidayData,
+			List<InterimRemain> annualMng, List<TempAnnualLeaveMngs> annualHolidayData,
 			List<InterimRemain> resereMng,List<TmpResereLeaveMng> resereLeaveData) {
 		val require = requireService.createRequire();
 		val cacheCarrier = new CacheCarrier();
@@ -147,7 +147,7 @@ public class TimeOffRemainErrorInforImpl implements TimeOffRemainErrorInfor{
 				.map(l -> {
 					InterimRemain reserveInterim = resereMng.stream()
 							.filter(a -> a.getRemainType() == RemainType.FUNDINGANNUAL
-										&& a.getRemainManaID().equals(l.getResereId()))
+										&& a.getRemainManaID().equals(l.getRemainManaID()))
 							.collect(Collectors.toList()).get(0);
 					return TmpReserveLeaveMngWork.of(reserveInterim, l);
 				}).collect(Collectors.toList());
@@ -199,10 +199,11 @@ public class TimeOffRemainErrorInforImpl implements TimeOffRemainErrorInfor{
 		val cacheCarrier = new CacheCarrier();
 
 		//特別休暇暫定データに、親ドメインの情報を更新する。　※暫定データの作成処理がまだ対応中のため、親ドメインと子ドメインが別々になっているので。
-		for(InterimSpecialHolidayMng specialData : specialHolidayData) {
-			InterimRemain remain
-				= interimSpecial.stream().filter(c->c.getRemainManaID()==specialData.getSpecialHolidayId()).findFirst().get();
-			specialData.setParentValue(remain);
+		for (InterimSpecialHolidayMng specialData : specialHolidayData) {
+			interimSpecial.stream().filter(c -> c.getRemainManaID().equals(specialData.getRemainManaID())).findFirst()
+					.ifPresent(c -> {
+						specialData.setParentValue(c);
+					});
 		}
 
 		//○ドメインモデル「特別休暇」を取得する
@@ -249,15 +250,15 @@ public class TimeOffRemainErrorInforImpl implements TimeOffRemainErrorInfor{
 		val inputParam = new AbsRecMngInPeriodRefactParamInput(param.getCid(),
 				param.getSid(),
 				param.getAggDate(),
-				param.getObjDate().end(), 
+				param.getObjDate().end(),
 				false,
 				true,
 				useAbsMng,
-				interimMngAbsRec, 
+				interimMngAbsRec,
 				useRecMng,
-				Optional.empty(), 
+				Optional.empty(),
 				Optional.of(CreateAtr.RECORD),
-				Optional.of(param.getObjDate()), 
+				Optional.of(param.getObjDate()),
 				new FixedManagementDataMonth());
 		val absRecCheck = NumberCompensatoryLeavePeriodQuery.process(require, inputParam);
 		List<EmployeeMonthlyPerError> lstAbsRec = CreatePerErrorsFromLeaveErrors.fromPause(param.getSid(),
@@ -280,10 +281,10 @@ public class TimeOffRemainErrorInforImpl implements TimeOffRemainErrorInfor{
 				false,
 				param.getObjDate().end(),
 				true,
-				interimMngBreakDayOff, 
+				interimMngBreakDayOff,
 				Optional.of(CreateAtr.RECORD),
-				Optional.of(param.getObjDate()), 
-				breakMng, 
+				Optional.of(param.getObjDate()),
+				breakMng,
 				dayOffMng,
 				Optional.empty(), new FixedManagementDataMonth());
 		val dataCheck = numberRemainVacationLeaveRangeProcess.getBreakDayOffMngInPeriod(inputParamBreak);

@@ -781,7 +781,7 @@ public class SpecialLeaveManagementService {
 		double outputData = 0;
 		for (InterimSpecialHolidayMng interimMng : lstInterimData) {
 			List<InterimRemain> optInterimMng = lstInterimMng.stream()
-					.filter(z -> z.getRemainManaID().equals(interimMng.getSpecialHolidayId()))
+					.filter(z -> z.getRemainManaID().equals(interimMng.getRemainManaID()))
 					.collect(Collectors.toList());
 			if(!optInterimMng.isEmpty()) {
 				InterimRemain interimMngData = optInterimMng.get(0);

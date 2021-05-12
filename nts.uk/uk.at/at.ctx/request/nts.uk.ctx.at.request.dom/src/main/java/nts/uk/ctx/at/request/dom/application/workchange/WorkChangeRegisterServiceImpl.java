@@ -11,7 +11,6 @@ import javax.transaction.Transactional;
 
 import org.apache.logging.log4j.util.Strings;
 
-import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService;
@@ -21,6 +20,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewA
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.AppTypeSetting;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
 
@@ -40,10 +40,8 @@ public class WorkChangeRegisterServiceImpl implements IWorkChangeRegisterService
 	@Inject
 	private BasicScheduleService basicScheduleService;
 
-//	@Inject
-//	private InterimRemainDataMngRegisterDateChange interimRemainDataMngRegisterDateChange;
-//	@Inject
-//	private OtherCommonAlgorithm otherCommonAlg;
+	@Inject
+	private InterimRemainDataMngRegisterDateChange interimRemainDataMngRegisterDateChange;
 	
 	@Inject
 	private IWorkChangeUpdateService workChangeUpdateService;
@@ -93,10 +91,9 @@ public class WorkChangeRegisterServiceImpl implements IWorkChangeRegisterService
 		}
 
 		// 暫定データの登録
-//		interimRemainDataMngRegisterDateChange.registerDateChange(companyId, application.getEmployeeID(), listDate);
+		interimRemainDataMngRegisterDateChange.registerDateChange(companyId, application.getEmployeeID(), listDate);
 
 		// 共通アルゴリズム「2-3.新規画面登録後の処理」を実行する
-		// TODO: 申請設定 domain has changed!
 		AppTypeSetting appTypeSetting = appDispInfoStartupOutput.getAppDispInfoNoDateOutput().getApplicationSetting().getAppTypeSettings()
 				.stream().filter(x -> x.getAppType()==application.getAppType()).findAny().get();
 		ProcessResult processResult = newAfterRegister.processAfterRegister(

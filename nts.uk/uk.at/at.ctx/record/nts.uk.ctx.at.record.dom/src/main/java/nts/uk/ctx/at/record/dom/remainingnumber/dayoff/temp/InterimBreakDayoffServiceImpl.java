@@ -24,12 +24,10 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakDayOffMngRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimDayOffMng;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemainRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.OccurrenceDay;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.OccurrenceTime;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RequiredDay;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RequiredTime;
@@ -129,19 +127,18 @@ public class InterimBreakDayoffServiceImpl implements InterimBreakDayoffService 
 				
 				// 暫定代休管理データを作成
 				String dayoffGuid = IdentifierUtil.randomUniqueId();
-				InterimRemain remain = new InterimRemain(
+				InterimDayOffMng dayoffMng = new InterimDayOffMng(
 						dayoffGuid,
 						employeeId,
 						targetWorkInfo.getYmd(),
 						CreateAtr.RECORD,
-						RemainType.SUBHOLIDAY);
-				InterimDayOffMng dayoffMng = new InterimDayOffMng(
-						dayoffGuid,
+						RemainType.SUBHOLIDAY,
 						new RequiredTime(0),
 						new RequiredDay(dayoffDays),
 						new UnOffsetTime(0),
-						new UnOffsetDay(dayoffDays));
-				this.interimRemainRepo.persistAndUpdateInterimRemain(remain);
+						new UnOffsetDay(dayoffDays),
+						Optional.empty()
+						);
 				this.interimBreakDayoffMngRepo.persistAndUpdateInterimDayOffMng(dayoffMng);
 			}
 			
@@ -196,14 +193,12 @@ public class InterimBreakDayoffServiceImpl implements InterimBreakDayoffService 
 					
 					// 暫定休出管理データを作成
 					String breakGuid = IdentifierUtil.randomUniqueId();
-					InterimRemain remain = new InterimRemain(
+					InterimBreakMng breakMng = new InterimBreakMng(
 							breakGuid,
 							employeeId,
 							targetWorkInfo.getYmd(),
 							CreateAtr.RECORD,
-							RemainType.BREAK);
-					InterimBreakMng breakMng = new InterimBreakMng(
-							breakGuid,
+							RemainType.BREAK,
 							new AttendanceTime(designatedTime.getOneDayTime().v()),
 							GeneralDate.ymd(9999, 12, 31),
 							new OccurrenceTime(0),
@@ -211,7 +206,6 @@ public class InterimBreakDayoffServiceImpl implements InterimBreakDayoffService 
 							new AttendanceTime(designatedTime.getHalfDayTime().v()),
 							new UnUsedTime(0),
 							new UnUsedDay(breakDays));
-					this.interimRemainRepo.persistAndUpdateInterimRemain(remain);
 					this.interimBreakDayoffMngRepo.persistAndUpdateInterimBreakMng(breakMng);
 				}
 			}

@@ -2,7 +2,6 @@ package nts.uk.ctx.at.record.dom.monthlyprocess.aggr;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -13,7 +12,6 @@ import lombok.Setter;
 import lombok.val;
 import nts.arc.diagnose.stopwatch.concurrent.ConcurrentStopwatches;
 import nts.arc.layer.app.cache.CacheCarrier;
-import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.GetAnnAndRsvRemNumWithinPeriod;
@@ -36,7 +34,6 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.GetDaysForCalcAttdRa
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveUsedDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.RemainingMinutes;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.UsedMinutes;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.CreateInterimAnnualMngData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.param.CalYearOffWorkAttendRate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualLeaveMngWork;
@@ -517,10 +514,12 @@ public class MonthlyAggregationRemainingNumberImpl implements MonthlyAggregation
 					this.isOverWriteRemain, interimSpecialData,Optional.of(period));
 
 			//特別休暇暫定データに、親ドメインの情報を更新する。　※暫定データの作成処理がまだ対応中のため、親ドメインと子ドメインが別々になっているので。
-			for(InterimSpecialHolidayMng specialData : interimSpecialData) {
-				InterimRemain remain
-					= interimMng.stream().filter(c->c.getRemainManaID().equals(specialData.getSpecialHolidayId())).findFirst().get();
-				specialData.setParentValue(remain);
+			for (InterimSpecialHolidayMng specialData : interimSpecialData) {
+				interimMng.stream().filter(c -> c.getRemainManaID().equals(specialData.getRemainManaID())).findFirst()
+						.ifPresent(c -> {
+							specialData.setParentValue(c);
+						});
+
 			}
 
 			//残数処理

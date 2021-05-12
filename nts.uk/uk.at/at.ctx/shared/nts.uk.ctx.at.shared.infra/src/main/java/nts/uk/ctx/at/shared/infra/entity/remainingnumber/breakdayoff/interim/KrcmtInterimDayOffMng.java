@@ -3,8 +3,8 @@ package nts.uk.ctx.at.shared.infra.entity.remainingnumber.breakdayoff.interim;
 import java.io.Serializable;
 
 import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.Id;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -18,33 +18,41 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCDT_INTERIM_HD_COM_MNG")
+@Table(name = "KSHDT_INTERIM_HDCOM")
 public class KrcmtInterimDayOffMng extends ContractUkJpaEntity implements Serializable{
-	/**	暫定代休管理データID */
-	@Id
-	@Column(name = "DAYOFF_MNG_ID")	
-	public String dayOffMngId;
+	
+	@EmbeddedId
+	public KrcmtInterimDayOffMngPK pk;
+
+	/**残数管理データID	 */
+	@Column(name = "REMAIN_MNG_ID")
+	public String remainMngId;
+	
+	/** 作成元区分	 */
+	@Column(name ="CREATOR_ATR")
+	public int createAtr;
+	
+	/** 必要日数 */
+	@Column(name = "REQUIRED_DAYS")
+	public Double requiredDays;
+	
 	/**	必要時間数 */
 	@Column(name = "REQUIRED_TIMES")	
 	public int requiredTimes;
-	/**	必要日数 */
-	@Column(name = "REQUEIRED_DAYS")
-	public Double requiredDays;
-	/**	未相殺時間数 */
-	@Column(name = "UNOFFSET_TIMES")
-	public int unOffSetTimes;
+	
 	/**	未相殺日数 */
 	@Column(name = "UNOFFSET_DAYS")
 	public Double unOffsetDays;
-	/**
-	 * 
-	 */
+	
+	/**	未相殺時間数 */
+	@Column(name = "UNOFFSET_TIMES")
+	public int unOffSetTimes;
+
 	private static final long serialVersionUID = 1L;
 
 @Override
 	protected Object getKey() {
-		// TODO Auto-generated method stub
-		return dayOffMngId;
+		return pk;
 	}
 
 }
