@@ -36,12 +36,19 @@ module nts.uk.at.view.ksm011.c {
       ]);
 
       vm.workTypeListText = ko.computed(() => {
-        return vm.selectableWorkTypes()
-            .filter((i: any) => vm.workTypeList().indexOf(i.code) >= 0)
-            .map((i: any) => i.name).join("、");
+        return vm.workTypeList().map((code: string) => {
+            const tmp = _.find(vm.selectableWorkTypes(), (i: any) => code == i.code);
+            if (tmp) return tmp.name;
+            else return code + " " + vm.$i18n("KSM011_107");
+        }).join("、");
       });
 
       vm.getSetting();
+      vm.workTypeControl.subscribe(value => {
+        if (value != 1) {
+            $('#KSM011_C3_6').ntsError('clear');
+        }
+      });
     }
 
     mounted() {

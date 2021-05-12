@@ -39,6 +39,7 @@ module nts.uk.com.view.kcp016.a.viewmodel {
 
         items: KnockoutObservableArray<any> = ko.observableArray([]);
         value: KnockoutObservable<string> | KnockoutObservableArray<string>;
+        tabindex: number;
 
         created(params: Params) {
             const vm = this;
@@ -48,6 +49,7 @@ module nts.uk.com.view.kcp016.a.viewmodel {
                 vm.selectType = ko.observable(params.selectType);
                 vm.rows = ko.observable(params.rows || 10);
                 vm.value = params.selectedValue;
+                vm.tabindex = params.tabindex;
             } else {
                 vm.multiple = ko.observable(false);
                 vm.onDialog = ko.observable(false);
@@ -79,6 +81,7 @@ module nts.uk.com.view.kcp016.a.viewmodel {
                 vm.$dialog.error(error);
             }).always(() => {
                 vm.$blockui("hide");
+                if (_.isNumber(vm.tabindex)) $("#kcp016-component #single-list_container").attr('tabindex', 1);
             });
         }
     }
@@ -89,6 +92,7 @@ module nts.uk.com.view.kcp016.a.viewmodel {
         selectType?: SelectType; // default: 4 (NO_SELECT)
         rows?: number; // default: 10
         selectedValue: KnockoutObservable<string> | KnockoutObservableArray<string>;
+        tabindex?: number;
     }
 
     class SelectType {

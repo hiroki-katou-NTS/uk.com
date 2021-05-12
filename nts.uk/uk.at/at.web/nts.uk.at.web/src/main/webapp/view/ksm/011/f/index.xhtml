@@ -14,8 +14,8 @@
     </ui:define>
     <ui:define name="content">
         <div id="functions-area-bottom">
-            <button class="proceed x-large" data-bind="click: proceed">#{i18n.getText('KSM011_111')}</button>
-            <button data-bind="click: cancel">#{i18n.getText('KSM011_112')}</button>
+            <button tabindex="2" class="proceed x-large" data-bind="click: proceed">#{i18n.getText('KSM011_111')}</button>
+            <button tabindex="3" data-bind="click: cancel">#{i18n.getText('KSM011_112')}</button>
         </div>
         <div id="contents-area">
             <div style="padding-left: 10px;" data-bind="text: $i18n('KSM011_110')"/>
@@ -25,7 +25,8 @@
                         multiple: true,
                         onDialog: true,
                         selectType: 1,
-                        selectedValue: value
+                        selectedValue: value,
+                        tabindex: 1
                     }
                 }"/>
         </div>

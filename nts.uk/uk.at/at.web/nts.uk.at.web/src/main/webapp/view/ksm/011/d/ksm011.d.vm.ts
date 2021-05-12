@@ -62,6 +62,11 @@ module nts.uk.at.view.ksm011.d {
       ]);
       vm.getSetting();
       vm.getDayList();
+      vm.alarmCheck.subscribe(value => {
+        if (value != 1) {
+            $('#KSM011_D6_14').ntsError('clear');
+        }
+      });
     }
 
     created(params: any) {
@@ -124,7 +129,7 @@ module nts.uk.at.view.ksm011.d {
     saveData() {
       const vm = this;
 
-      if( vm.workDisplay() === 0 || vm.shiftDisplay() === 0 || vm.abbreviationDisplay() === 0) {
+      if( vm.workDisplay() === 0 && vm.shiftDisplay() === 0 && vm.abbreviationDisplay() === 0) {
         vm.$dialog.error({ messageId: 'Msg_2125'}).then(() => {});
         return;
       }

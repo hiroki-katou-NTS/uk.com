@@ -7,6 +7,9 @@ module nts.uk.com.view.ksm011.f.viewmodel {
         created(params: any) {
             const vm = this;
             vm.value = ko.observableArray(params || []);
+            setTimeout(() => {
+                $("#single-list_container").focus();
+            }, 200);
         }
 
         proceed() {

@@ -24,7 +24,7 @@
           <button
             class="proceed"
             tabindex="2"
-            data-bind="text: $vm.$i18n('KSM011_18'), click: saveData"
+            data-bind="text: $vm.$i18n('KSM011_18'), click: saveData, enable: $root.errors.isEmpty"
           ></button>
         </div>
         <div id="contents-area">
