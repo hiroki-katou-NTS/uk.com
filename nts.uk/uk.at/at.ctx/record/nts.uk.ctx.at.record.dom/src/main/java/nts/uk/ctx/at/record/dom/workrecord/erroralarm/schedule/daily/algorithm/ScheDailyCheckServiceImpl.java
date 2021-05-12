@@ -893,37 +893,37 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 		// Input．List＜勤務予定＞から前日の勤務予定を探す
 		// 条件： 年月日　＝　Input．年月日．Add（－１）
 		// Output: 前日の勤務予定
-		Optional<WorkScheduleWorkInforImport> workScheInDayOpt = workScheduleWorkInfos.stream()
+		Optional<WorkScheduleWorkInforImport> workScheInDayBeforeOpt = workScheduleWorkInfos.stream()
 				.filter(x -> x.getYmd().equals(exDate.addDays(-1))).findFirst();
 		// 探した前日の勤務予定をチェック
-		if (!workScheInDayOpt.isPresent()) {
+		if (!workScheInDayBeforeOpt.isPresent()) {
 			// 社員ID(List)、期間を設定して勤務予定を取得する
 			// 【条件】
 			//	・年月日　Between　Input．期間
 			//	・社員ID　＝　Input．List＜社員ID＞
 			DatePeriod periodWorkSche = new DatePeriod(exDate.addDays(-1), exDate.addDays(-1)); 
-			workScheInDayOpt = workScheduleWorkInfos.stream()
+			workScheInDayBeforeOpt = workScheduleWorkInfos.stream()
 					.filter(x -> x.getEmployeeId().equals(sid) && x.getYmd().beforeOrEquals(periodWorkSche.start()) && x.getYmd().afterOrEquals(periodWorkSche.end()))
 					.findFirst();
 			// 取得した前日の勤務予定をチェック
-			if (!workScheInDayOpt.isPresent()) {
+			if (!workScheInDayBeforeOpt.isPresent()) {
 				return null;
 			}
 		}
 		
 		// 当日の勤務予定
-		WorkScheduleWorkInforImport workScheInDay = workScheInDayOpt.get();
+		WorkScheduleWorkInforImport workScheInDayBefore = workScheInDayBeforeOpt.get();
 		
 		// Input．List＜勤務予定＞から当日の勤務予定を探す
 		// 条件： 年月日　＝　Input．年月日
 		// Output: 前日の勤務予定
-		Optional<WorkScheduleWorkInforImport> workScheInDayBeforeOpt = workScheduleWorkInfos.stream().filter(x -> x.getYmd().equals(exDate)).findFirst();
-		if (!workScheInDayBeforeOpt.isPresent()) {
+		Optional<WorkScheduleWorkInforImport> workScheInDayOpt = workScheduleWorkInfos.stream().filter(x -> x.getYmd().equals(exDate)).findFirst();
+		if (!workScheInDayOpt.isPresent()) {
 			return null;
 		}
 		
 		// 前日の勤務予定
-		WorkScheduleWorkInforImport workScheInDayBefore = workScheInDayBeforeOpt.get();
+		WorkScheduleWorkInforImport workScheInDay = workScheInDayOpt.get();
 		
 		// 就業時間帯をチェック
 		//・当日の勤務予定．勤務情報．就業時間帯コード　＝＝　Empty
