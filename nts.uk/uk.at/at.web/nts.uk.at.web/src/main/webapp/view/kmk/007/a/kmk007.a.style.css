@@ -37,7 +37,7 @@
 }
 
 #input-workTypeName {
-	width: 230px !important;
+	width: 85px !important;
 }
 
 #morning, #afternoon {
@@ -100,7 +100,7 @@
 }
 
 #abbreviation-name-input {
-	width: 100px !important;
+	width: 41px !important;
 	margin-left: 142px;
 	vertical-align: bottom;
 }
@@ -111,7 +111,7 @@
 }
 
 #memo-input {
-	width: 400px;
+	width: 280px !important;
 	margin-left: 135px;
 	vertical-align: bottom;
 }
