@@ -63,8 +63,8 @@ class KDP002BViewModel extends ko.ViewModel {
     interval: KnockoutObservable<number> = ko.observable(0);
     infoEmpFromScreenA: any;
     notificationStamp: KnockoutObservableArray<IMsgNotices> = ko.observableArray([]);
-    modeShowPointNoti: KnockoutObservable<boolean> = ko.observable(false);
-    showBtnNoti: KnockoutObservable<boolean> = ko.observable(false);
+    modeShowPointNoti: KnockoutObservable<boolean| null> = ko.observable(null);
+    showBtnNoti: KnockoutObservable<boolean| null> = ko.observable(null);
     activeViewU: KnockoutObservable<boolean> = ko.observable(false);
 
 
@@ -125,7 +125,7 @@ class KDP002BViewModel extends ko.ViewModel {
         setTimeout(() => {
             if (ko.unwrap(vm.modeNikoNiko)) {
                 $(document).ready(function () {
-                    $('#btn-happy').focus();
+                    $('.btn-happy').focus();
                 });
             } else {
                 $(document).ready(function () {
@@ -201,7 +201,7 @@ class KDP002BViewModel extends ko.ViewModel {
 
             if (data && data.length > 0) {
                 if (ko.unwrap(vm.workPlace) === '') {
-                    vm.workPlace(data[0].workplaceNm);
+                    vm.workPlace(data[0].workPlaceName);
                 }
             }
 
@@ -307,8 +307,6 @@ class KDP002BViewModel extends ko.ViewModel {
             .then(() => {
                 vm.$ajax(kDP002RequestUrl.GET_SETTING)
                     .then((data: boolean) => {
-
-                        console.log(data);
 
                         if (data) {
                             vm.$ajax(kDP002RequestUrl.NOTIFICATION_STAMP, param)
