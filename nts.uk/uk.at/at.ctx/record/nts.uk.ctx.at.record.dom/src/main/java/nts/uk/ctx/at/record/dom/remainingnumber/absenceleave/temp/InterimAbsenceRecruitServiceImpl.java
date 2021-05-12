@@ -21,9 +21,6 @@ import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimAbsMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecAbasMngRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecMng;
-import nts.uk.ctx.at.shared.dom.remainingnumber.base.HolidayAtr;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemainRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.OccurrenceDay;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
@@ -45,9 +42,6 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 @Transactional(value = TxType.REQUIRED)
 public class InterimAbsenceRecruitServiceImpl implements InterimAbsenceRecruitService {
 
-	/** 暫定残数管理データ */
-	@Inject
-	private InterimRemainRepository interimRemainRepo;
 	/** 暫定振休・振出管理データ */
 	@Inject
 	private InterimRecAbasMngRepository interimRecAbsMngRepo;
@@ -137,23 +131,13 @@ public class InterimAbsenceRecruitServiceImpl implements InterimAbsenceRecruitSe
 	/** 削除 */
 	@Override
 	public void remove(String employeeId, DatePeriod period) {
-
-		// 暫定振休管理データを削除
-		val absenceList = this.interimRemainRepo.getRemainBySidPriod(employeeId, period, RemainType.PAUSE);
-		for (val absenceData : absenceList){
-			val targetId = absenceData.getRemainManaID();
-			this.interimRecAbsMngRepo.deleteInterimAbsMng(targetId);
-			this.interimRecAbsMngRepo.deleteInterimRecAbsMng(targetId, false);
-		}
-		this.interimRemainRepo.deleteBySidPeriodType(employeeId, period, RemainType.PAUSE);
-
-		// 暫定振出管理データを削除
-		val recruitList = this.interimRemainRepo.getRemainBySidPriod(employeeId, period, RemainType.PICKINGUP);
-		for (val recruitData : recruitList){
-			val targetId = recruitData.getRemainManaID();
-			this.interimRecAbsMngRepo.deleteInterimRecMng(targetId);
-			this.interimRecAbsMngRepo.deleteInterimRecAbsMng(targetId, true);
-		}
-		this.interimRemainRepo.deleteBySidPeriodType(employeeId, period, RemainType.PICKINGUP);
+		
+		
+		period.datesBetween().stream().forEach(x -> {
+			// 暫定振休管理データを削除
+			this.interimRecAbsMngRepo.deleteInterimAbsMngBySidAndYmd(employeeId, x);
+			// 暫定振出管理データを削除
+			this.interimRecAbsMngRepo.deleteInterimRecMngBySidAndYmd(employeeId, x);
+		});
 	}
 }

@@ -53,14 +53,6 @@ public class InterimSpecialHolidayMng extends InterimRemain {
 		this.appTimeType = appTimeType;
 	}
 
-	public void setParentValue(InterimRemain interimRemain){
-		this.setRemainManaID(interimRemain.getRemainManaID());
-		this.setSID(interimRemain.getSID());
-		this.setYmd(interimRemain.getYmd());
-		this.setCreatorAtr(interimRemain.getCreatorAtr());
-		this.setRemainType(interimRemain.getRemainType());
-	}
-
 	public void set(InterimSpecialHolidayMng domain) {
 		this.appTimeType = domain.appTimeType;
 		this.specialHolidayCode=domain.specialHolidayCode;

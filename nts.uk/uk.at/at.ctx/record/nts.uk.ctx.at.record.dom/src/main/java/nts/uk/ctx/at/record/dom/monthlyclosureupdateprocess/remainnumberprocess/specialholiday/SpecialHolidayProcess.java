@@ -149,12 +149,6 @@ public class SpecialHolidayProcess {
 				.map(c -> {
 
 					/**特別休暇暫定データに、親ドメインの情報を更新する。　※暫定データの作成処理がまだ対応中のため、親ドメインと子ドメインが別々になっているので。 */
-					c.getSpecialHolidayData().stream().forEach(specialData -> {
-
-						c.getRecAbsData().stream().filter(d -> d.getRemainManaID().equals(specialData.getRemainManaID()))
-							.findFirst()
-							.ifPresent(remain -> specialData.setParentValue(remain));
-					});
 
 					return c.getSpecialHolidayData();
 				}).flatMap(List::stream).collect(Collectors.toList());

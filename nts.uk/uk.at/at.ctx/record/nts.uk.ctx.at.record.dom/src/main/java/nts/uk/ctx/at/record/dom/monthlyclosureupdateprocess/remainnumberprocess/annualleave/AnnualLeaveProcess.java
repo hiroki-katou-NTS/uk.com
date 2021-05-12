@@ -13,9 +13,9 @@ import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.GetAnnAndRsvR
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggrResultOfAnnAndRsvLeave;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.DailyInterimRemainMngData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualLeaveMngWork;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TempAnnualLeaveMngs;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
-import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.interim.TmpReserveLeaveMngWork;
+import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.interim.TmpResereLeaveMng;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceTimeOfMonthly;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -64,22 +64,26 @@ public class AnnualLeaveProcess {
 		String companyId = AppContexts.user().companyId();
 		
 		// 暫定残数データを年休・積立年休に絞り込む
-		List<TmpAnnualLeaveMngWork> tmpAnnualLeaveMngs = new ArrayList<>();
-		List<TmpReserveLeaveMngWork> tmpReserveLeaveMngs = new ArrayList<>();
+		List<TempAnnualLeaveMngs> tmpAnnualLeaveMngs = new ArrayList<>();
+		List<TmpResereLeaveMng> tmpReserveLeaveMngs = new ArrayList<>();
 		for (val interimRemainMng : interimRemainMngMap){
 			if (interimRemainMng.getRecAbsData().size() <= 0) continue;
-			val master = interimRemainMng.getRecAbsData().get(0);
 			
 			// 年休
 			if (interimRemainMng.getAnnualHolidayData().isPresent()){
 				val data = interimRemainMng.getAnnualHolidayData().get();
-				tmpAnnualLeaveMngs.add(TmpAnnualLeaveMngWork.of(data));
+				tmpAnnualLeaveMngs.add(data);
 			}
 			
 			// 積立年休
 			if (interimRemainMng.getResereData().isPresent()){
 				val data = interimRemainMng.getResereData().get();
-				tmpReserveLeaveMngs.add(TmpReserveLeaveMngWork.of(master, data));
+				tmpReserveLeaveMngs.add(new TmpResereLeaveMng(data.getRemainManaID(),
+						data.getSID(),
+						data.getYmd(),
+						data.getCreatorAtr(), 
+						data.getRemainType(),
+						data.getUseDays()));
 			}
 		}
 
@@ -95,7 +99,9 @@ public class AnnualLeaveProcess {
 //		}
 		
 		// 「期間中の年休積休残数を取得」を実行する　→　「年休積立年休の集計結果」を返す
-		return GetAnnAndRsvRemNumWithinPeriod.algorithm(require, cacheCarrier, companyId, 
+		return GetAnnAndRsvRemNumWithinPeriod.algorithm(require,
+				cacheCarrier,
+				companyId, 
 				empId, period.getPeriod(), InterimRemainMngMode.MONTHLY,
 				period.getPeriod().end(), true, true,
 				Optional.of(true),

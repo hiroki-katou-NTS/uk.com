@@ -3,6 +3,7 @@ package nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim;
 import java.util.List;
 
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 
 public interface InterimSpecialHolidayMngRepository {
 	/**
@@ -27,4 +28,11 @@ public interface InterimSpecialHolidayMngRepository {
 	 * @param specialId
 	 */
 	void deleteSpecialHolidayBySidAndYmd(String sId , GeneralDate ymd);
+	
+	/**
+	 * 検索
+	 * @param mngId　特休ID
+	 * @return
+	 */
+	List<InterimSpecialHolidayMng> findSpecialHolidayBySidAndPeriod(String sId , DatePeriod period);
 }

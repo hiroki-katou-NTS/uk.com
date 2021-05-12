@@ -16,7 +16,6 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.Ca
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffMngInPeriodQuery;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.NumberRemainVacationLeaveRangeQuery;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakDayOffMngRepository;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemainRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutManagementDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutSubofHDManaRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SubstitutionOfHDManaDataRepository;
@@ -95,8 +94,6 @@ public class RemainNumberTempRequireService {
 	protected InterimRecAbasMngRepository interimRecAbasMngRepo;
 	@Inject
 	protected EmpSubstVacationRepository empSubstVacationRepo;
-	@Inject
-	protected InterimRemainRepository interimRemainRepo;
 	@Inject
 	protected SubstitutionOfHDManaDataRepository substitutionOfHDManaDataRepo;
 	@Inject
@@ -200,7 +197,7 @@ public class RemainNumberTempRequireService {
 		return new RequireImp(comSubstVacationRepo, compensLeaveComSetRepo, specialLeaveGrantRepo,
 				empEmployeeAdapter, grantDateTblRepo, annLeaEmpBasicInfoRepo, specialHolidayRepo,
 				interimSpecialHolidayMngRepo, specialLeaveBasicInfoRepo, interimRecAbasMngRepo,
-				empSubstVacationRepo, interimRemainRepo, substitutionOfHDManaDataRepo,
+				empSubstVacationRepo, substitutionOfHDManaDataRepo,
 				payoutManagementDataRepo, interimBreakDayOffMngRepo, comDayOffManaDataRepo,
 				companyAdapter, shareEmploymentAdapter, leaveManaDataRepo, workingConditionItemRepo,
 				workingConditionRepo, workTimeSettingRepo, fixedWorkSettingRepo, flowWorkSettingRepo,

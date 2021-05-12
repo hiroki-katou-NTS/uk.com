@@ -286,11 +286,7 @@ public class BreakDayOffMngInPeriodQuery {
 			}
 		} else {
 			//ドメインモデル「暫定代休管理データ」を取得する
-			lstInterimDayoff = require.interimRemains(inputParam.getSid(), inputParam.getDateData(), RemainType.SUBHOLIDAY);
-			lstInterimDayoff.stream().forEach(x -> {
-				Optional<InterimDayOffMng> dayOffData = require.interimDayOffMng(x.getRemainManaID());
-				dayOffData.ifPresent(y -> lstDayoffMng.add(y));
-			});
+			lstDayoffMng.addAll(require.interimDayOffMng(inputParam.getSid(), inputParam.getDateData()));
 		}
 		
 		if(inputParam.isReplaceChk()
@@ -640,18 +636,10 @@ public class BreakDayOffMngInPeriodQuery {
 			});
 		} else {
 			//ドメインモデル「暫定代休管理データ」を取得する
-			lstInterimDayoff = require.interimRemains(inputParam.getSid(), inputParam.getDateData(), RemainType.SUBHOLIDAY);
-			lstInterimDayoff.stream().forEach(x -> {
-				Optional<InterimDayOffMng> dayOffData = require.interimDayOffMng(x.getRemainManaID());
-				dayOffData.ifPresent(y -> lstDayoffMng.add(y));
-			});
+			 lstDayoffMng.addAll(require.interimDayOffMng(inputParam.getSid(), inputParam.getDateData()));
 			
 			//ドメインモデル「暫定休出管理データ」を取得する
-			lstInterimBreak = require.interimRemains(inputParam.getSid(), inputParam.getDateData(), RemainType.BREAK);
-			lstInterimBreak.stream().forEach(x -> {
-				Optional<InterimBreakMng> dayOffData = require.interimBreakMng(x.getRemainManaID());
-				dayOffData.ifPresent(y -> lstBreakMng.add(y));
-			});		
+			lstBreakMng.addAll(require.interimBreakMng(inputParam.getSid(), inputParam.getDateData()));
 		}
 		//20181003 DuDT fix bug 101491 ↓
 		List<InterimRemain> lstTmpDayoff = new ArrayList<>(lstInterimDayoff);
@@ -865,7 +853,7 @@ public class BreakDayOffMngInPeriodQuery {
 
 	public static interface RequireM5 extends RequireM3, RequireM4, RequireM0 { 
 
-		Optional<InterimBreakMng> interimBreakMng(String breakManaId);
+		List<InterimBreakMng> interimBreakMng(String breakManaId, DatePeriod datePeriod);
 	}
 
 	public static interface RequireM4 extends RequireM7 { 
@@ -888,9 +876,7 @@ public class BreakDayOffMngInPeriodQuery {
 	
 	public static interface RequireM0 {
 
-		List<InterimRemain> interimRemains(String employeeId, DatePeriod dateData, RemainType remainType);
-
-		Optional<InterimDayOffMng> interimDayOffMng(String dayOffManaId);
+		List<InterimDayOffMng> interimDayOffMng(String dayOffManaId, DatePeriod datePeriod);
 	}
 	
 	public static interface RequireM8 {

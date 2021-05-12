@@ -21,7 +21,6 @@ import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.export.SpecialLeave
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnLeaEmpBasicInfoRepository;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemainRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.InterimSpecialHolidayMngRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.basicinfo.SpecialLeaveBasicInfoRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRepository;
@@ -56,9 +55,6 @@ public class ComplileInPeriodOfSpecialLeaveFinder implements ComplileInPeriodOfS
 //
 //	@Inject
 //	private InterimSpecialHolidayMngRepository interimSpecialHolidayMngRepo;
-//
-//	@Inject
-//	private InterimRemainRepository interimRemainRepo;
 //
 //	@Inject
 //	private SpecialLeaveBasicInfoRepository specialLeaveBasicInfoRepo;
