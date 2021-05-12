@@ -11,11 +11,23 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.DateInMonth;
+import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.aggregation.dom.schedulecounter.tally.PersonalCounterCategory;
+import nts.uk.ctx.at.aggregation.dom.schedulecounter.tally.WorkplaceCounterCategory;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
+import nts.uk.screen.at.app.ksu001.aggrerateschedule.AggrerateScheduleDto;
+import nts.uk.screen.at.app.ksu001.aggrerateschedule.ScreenQueryAggrerateSchedule;
+import nts.uk.screen.at.app.ksu001.displayinshift.ShiftMasterMapWithWorkStyle;
 import nts.uk.screen.at.app.ksu001.getworkactualshift.GetActualOfShift;
 import nts.uk.screen.at.app.ksu001.getworkscheduleshift.GetScheduleOfShift;
 import nts.uk.screen.at.app.ksu001.getworkscheduleshift.ScheduleOfShiftDto;
 import nts.uk.screen.at.app.ksu001.getworkscheduleshift.ScheduleOfShiftParam;
 import nts.uk.screen.at.app.ksu001.getworkscheduleshift.ScheduleOfShiftResult;
+import nts.uk.screen.at.app.ksu001.processcommon.WorkScheduleShiftBaseResult;
+import nts.uk.screen.at.app.ksu001.processcommon.nextorderdschedule.PlanAndActual;
+import nts.uk.screen.at.app.ksu001.processcommon.nextorderdschedule.ScreenQueryPlanAndActual;
+import nts.uk.screen.at.app.ksu001.processcommon.nextorderdschedule.ScreenQueryWorkScheduleShift;
 
 /**
  * @author laitv
@@ -29,6 +41,15 @@ public class GetScheduleActualOfShift {
 	private GetScheduleOfShift getWorkScheduleShift;
 	@Inject
 	private GetActualOfShift getActualOfShift;
+	
+	@Inject
+	private ScreenQueryPlanAndActual screenQueryPlanAndActual;
+	
+	@Inject
+	private ScreenQueryWorkScheduleShift screenQueryWorkScheduleShift;
+	
+	@Inject
+	private ScreenQueryAggrerateSchedule screenQueryAggrerateSchedule;
 	
 	public SchedulesbyShiftDataResult getData(SchedulesbyShiftParam param) {
 		
@@ -65,5 +86,61 @@ public class GetScheduleActualOfShift {
 			return new SchedulesbyShiftDataResult(listWorkScheduleShift , resultStep52.shiftMasterWithWorkStyleLst);
 		}
 		return new SchedulesbyShiftDataResult(listWorkScheduleShift , resultStep51.shiftMasterWithWorkStyleLst);
+	}
+	
+	
+	/**
+	 * 予定・実績をシフトで取得する（未発注）
+	 *  UKDesign.UniversalK.就業.KSU_スケジュール.KSU001_個人スケジュール修正(職場別).A：個人スケジュール修正(職場別).メニュー別OCD.Aa：シフト表示
+	 * @param listShiftMasterNotNeedGet ・新たに取得する必要のないシフト一覧
+	 * @param sids ・社員リスト　　　：List<社員ID>
+	 * @param datePeriod ・期間　　　　　　：期間
+	 * @param closeDate ・締め日　　　　　：日付
+	 * @param isAchievement ・実績も取得するか：boolean
+	 * @param targetOrg ・対象組織　　　　：対象組織識別情報
+	 * @param personalCounterOp ・個人計カテゴリ　：Optional<個人計カテゴリ>
+	 * @param workplaceCounterOp ・職場計カテゴリ　：Optional<職場計カテゴリ>
+	 */
+	public ScheduleActualOfShiftOutput getDataNew(
+			List<ShiftMasterMapWithWorkStyle> listShiftMasterNotNeedGet,
+			List<String> sids,
+			DatePeriod datePeriod,
+			DateInMonth closeDate,
+			Boolean isAchievement,
+			TargetOrgIdenInfor targetOrg,
+			Optional<PersonalCounterCategory> personalCounterOp,
+			Optional<WorkplaceCounterCategory> workplaceCounterOp
+			) {
+		// 1: 取得する(List<社員ID>, 期間, boolean)
+		PlanAndActual planAndActual = screenQueryPlanAndActual.getPlanAndActual(
+				sids,
+				datePeriod,
+				isAchievement);
+		//2 取得する()
+		WorkScheduleShiftBaseResult workScheduleShiftBaseResult = screenQueryWorkScheduleShift.create(
+				listShiftMasterNotNeedGet,
+				planAndActual.getSchedule(),
+				planAndActual.getDailySchedule(),
+				isAchievement);
+		
+		// 3 集計する(List<社員ID>, 期間, 日付, , , 対象組織識別情報, Optional<個人計カテゴリ>, Optional<職場計カテゴリ>, boolean)
+		AggrerateScheduleDto aggrerateSchedule =
+				screenQueryAggrerateSchedule.aggrerateSchedule(
+						sids,
+						datePeriod,
+						closeDate,
+						planAndActual.getSchedule(),
+						planAndActual.getDailySchedule(),
+						targetOrg,
+						personalCounterOp,
+						workplaceCounterOp,
+						true); // シフト表示か = true
+		
+		return new ScheduleActualOfShiftOutput(
+				workScheduleShiftBaseResult.getListWorkScheduleShift(),
+				workScheduleShiftBaseResult.getMapShiftMasterWithWorkStyle(),
+				aggrerateSchedule.getAggreratePersonal(),
+				aggrerateSchedule.getAggrerateWorkplace()
+				);
 	}
 }
