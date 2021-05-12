@@ -229,20 +229,22 @@
 }
 
 .tab-button-panel .grid-container.btn-layout-type-1>div>button>div {
-	font-size: 22px !important;
+	font-size: 22px;
+	color: inherit;
+    word-break: break-word;
 }
 
-.fs-30 {
+.btn-layout-type-0 .fs-30 {
 	font-size: 30px;
 	color: inherit;
 }
 
-.fs-24 {
+.btn-layout-type-0 .fs-24 {
 	font-size: 24px;
 	color: inherit;
 }
 
-.fs-20 {
+.btn-layout-type-0 .fs-20 {
 	font-size: 20px;
 	color: inherit;
 }
@@ -279,15 +281,17 @@
 }
 
 .tab-button-panel .grid-container.btn-layout-type-1>div>button>i {
-	float: left;
-	display: block;
-	margin-top: 21px;
+	display: inline-block;
+	vertical-align: middle;
 }
 
 .tab-button-panel .grid-container.btn-layout-type-1>div>button>div {
-	padding-left: 10px;
+	padding-left: 7px;
 	text-align: center;
-	line-height: 111px;
+	line-height: 25px;
+	width: 162px;
+	display: inline-block;
+	vertical-align: middle;
 }
 
 .stamp-square-btn-container {

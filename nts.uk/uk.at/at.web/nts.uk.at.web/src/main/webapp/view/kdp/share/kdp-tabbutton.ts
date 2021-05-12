@@ -175,7 +175,6 @@ module nts.uk.at.view.kdp.share {
 			} else {
 				text.className = "fs-20";
 			}
-			
 
 			const { supportUse, temporaryUse } = data;
 
