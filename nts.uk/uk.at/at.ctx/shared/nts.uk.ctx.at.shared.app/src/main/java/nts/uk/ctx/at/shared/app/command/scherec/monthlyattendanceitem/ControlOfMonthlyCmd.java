@@ -5,8 +5,6 @@ import java.math.BigDecimal;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.TimeInputUnit;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.primitivevalue.HeaderBackgroundColor;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattendanceitem.ControlOfMonthlyItems;
 
@@ -25,6 +23,8 @@ public class ControlOfMonthlyCmd {
 
 	/**時間項目の入力単位*/
 	private BigDecimal inputUnitOfTimeItem;
+	
+	private UpdateMonthlyAttendanceItemCommand updateMonthlyAttendanceItemCommand;
 	
 	public static ControlOfMonthlyItems toDomain(ControlOfMonthlyCmd command) {
 		return new ControlOfMonthlyItems(

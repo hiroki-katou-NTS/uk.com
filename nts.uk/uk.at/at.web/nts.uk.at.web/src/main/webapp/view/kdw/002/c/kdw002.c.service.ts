@@ -17,14 +17,20 @@ module nts.uk.at.view.kdw002.c {
             //getAll by type
             getNameAttItemByType  :"screen/at/correctionofdailyperformance/getnameattItembytype",
             getDailyAttItemNew: "at/shared/scherec/attitem/getdailyattitembyid",
-            getMontlyAttItemNew: "at/shared/scherec/attitem/getmonthlyattitembyid"
-            
+            getMontlyAttItemNew: "at/shared/scherec/attitem/getmonthlyattitembyid",
+
+            // ver8
+            getMonthlytRolesByCid: "at/shared/scherec/monthlyattditem/auth/getmonthlyrolesbycid",
+            copyMonthlyAttd: "at/shared/scherec/monthlyattditem/auth/copymonthlyattd",
+
+            getDailytRolesByCid: "at/shared/scherec/dailyattditem/auth/getdailyrolesbycid",
+            copyDailyAttd: "at/shared/scherec/dailyattditem/auth/copydailyattd"
         }
         //daily
         export function getEmpRole(): JQueryPromise<any> {
             return nts.uk.request.ajax(paths.getEmpRole);
         }
-        export function updateDailyAttdItem(command): JQueryPromise<any> {
+        export function updateDailyAttdItem(command: any): JQueryPromise<any> {
             return nts.uk.request.ajax(paths.updateDailyAttdItem,command);
         }
         
@@ -50,7 +56,7 @@ module nts.uk.at.view.kdw002.c {
             return nts.uk.request.ajax(paths.getMontlyAttItem, {roleId: roleID});
         }
         
-        export function updateMonthlyAttdItem(command): JQueryPromise<any> {
+        export function updateMonthlyAttdItem(command: any): JQueryPromise<any> {
             return nts.uk.request.ajax(paths.updateMonthlyAttdItem,command);
         }
         export function getNameMonthly(listID : any): JQueryPromise<any> {
@@ -68,8 +74,22 @@ module nts.uk.at.view.kdw002.c {
         export function getMontlyAttItemNew(authorityId : string): JQueryPromise<any> {
             return nts.uk.request.ajax(paths.getMontlyAttItemNew +"/" +authorityId);
         }
-        
-        
-        
+        // ver8
+        export function getMonthlytRolesByCid(): JQueryPromise<any> {
+            return nts.uk.request.ajax(paths.getMonthlytRolesByCid);
+        }
+
+        // ver8
+        export function getDailytRolesByCid(): JQueryPromise<any> {
+            return nts.uk.request.ajax(paths.getDailytRolesByCid);
+        }
+
+        export function copyMonthlyAttd(command: any): JQueryPromise<any> {
+            return nts.uk.request.ajax(paths.copyMonthlyAttd,command);
+        }
+
+        export function copyDailyAttd(command: any): JQueryPromise<any> {
+            return nts.uk.request.ajax(paths.copyDailyAttd,command);
+        }
     }
 }

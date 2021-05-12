@@ -26,7 +26,8 @@ module nts.uk.at.view.kdw002.c {
             
             listAttFullData  : any;
             listAttFullDataClone  : any;
-            
+            // ver7
+            roleItems: KnockoutObservableArray<EmployeeRoleDto> = ko.observableArray([]);
             constructor(dataShare:any) {
                 var self = this;
                 self.bussinessCodeItems = ko.observableArray([]);
@@ -194,30 +195,73 @@ module nts.uk.at.view.kdw002.c {
                 self.txtSearch = ko.observable("");
             }
             
-            jumpToHome(sidebar): void {
+            jumpToHome(): void {
                 let self = this;
-                nts.uk.request.jump("/view/kdw/006/a/index.xhtml", { ShareObject : sidebar() });
+                nts.uk.request.jump("/view/kdw/006/a/index.xhtml");
             }
             
             copy(): void {
-                var self = this;
-//                var bussinessCodeItems = self.bussinessCodeItems();
-//                var currentRoleId = self.currentRoleId();
-//                var bussinessCodeItem = _.find(self.bussinessCodeItems(), { businessTypeCode: self.currentRoleId() });
-//                var businessTypeName = bussinessCodeItem.roleName;
-//                var data = {
-//                    code: currentRoleId, name: businessTypeName, bussinessItems: bussinessCodeItems
-//                }
-//                let object: IObjectDuplication = {
-//                    code: bussinessCodeItem,
-//                    name: businessTypeName,
-//                    targetType: 1,
-//                    itemListSetting: bussinessCodeItems,
-//                    baseDate: moment(self.baseDate()).toDate()
-//                };
-//                nts.uk.ui.windows.sub.modal("com","/view/cdl/023/a/index.xhtml");
-//                
-//                nts.uk.ui.windows.setShared("KDW002_B_AUTHORITYTYPE", data);
+                let self = this
+                // ver7: get the config role
+                let empRole: EmployeeRoleDto = _.find(self.roleItems(), e => e.roleId == self.currentRoleId());
+                // isDaily
+                if(self.isDaily){
+                    service.getDailytRolesByCid().done((roleIDs: Array<any>) => {
+                        let param = {
+                            code: empRole.roleCode,
+                            name: empRole.roleName,
+                            targetType: 8,
+                            itemListSetting: roleIDs ? roleIDs : []
+                        };
+                        console.log(param, 'param');        
+                        nts.uk.ui.windows.setShared("CDL023Input", param);
+                        nts.uk.ui.windows.sub.modal("com", "/view/cdl/023/a/index.xhtml").onClosed(() => {
+                            let data: Array<string>  = nts.uk.ui.windows.getShared("CDL023Output");
+                            if(data){
+                                let command: any = {};
+                                command.roleID = self.currentRoleId();
+                                command.destinationList = data;
+                                nts.uk.ui.block.invisible();
+                                service.copyMonthlyAttd(command).done(() => {
+                                    nts.uk.ui.dialog.info({ messageId: 'Msg_15' }).then(() => {        
+                                        
+                                    });
+                                }).always(() => {
+                                    nts.uk.ui.block.clear();
+                                });
+                            }
+                            console.log(data, 'data');                                   
+                        });
+                    });
+                } else {
+                    service.getMonthlytRolesByCid().done((roleIDs: Array<any>) => {
+                        let param = {
+                            code: empRole.roleCode,
+                            name: empRole.roleName,
+                            targetType: 8,
+                            itemListSetting: roleIDs ? roleIDs : []
+                        };
+                        console.log(param, 'param');        
+                        nts.uk.ui.windows.setShared("CDL023Input", param);
+                        nts.uk.ui.windows.sub.modal("com", "/view/cdl/023/a/index.xhtml").onClosed(() => {
+                            let data: Array<string>  = nts.uk.ui.windows.getShared("CDL023Output");
+                            if(data){
+                                let command: any = {};
+                                command.roleID = self.currentRoleId();
+                                command.destinationList = data;
+                                nts.uk.ui.block.invisible();
+                                service.copyMonthlyAttd(command).done(() => {
+                                    nts.uk.ui.dialog.info({ messageId: 'Msg_15' }).then(() => {        
+
+                                    });
+                                }).always(() => {
+                                    nts.uk.ui.block.clear();
+                                });
+                            }
+                            console.log(data, 'data');                               
+                        });
+                    });
+                }
             }
             
 
@@ -233,8 +277,9 @@ module nts.uk.at.view.kdw002.c {
                 $.when(dtdGetNameAttItemByType).done(() => {
                     service.getEmpRole().done(empRoles => {
                         if (!nts.uk.util.isNullOrUndefined(empRoles) && empRoles.length > 0) {
-                            let bussinessCodeItems = [];
-                            empRoles.forEach(empRole => {
+                            self.roleItems(_.sortBy(empRoles, ['roleCode']));
+                            let bussinessCodeItems: Array<any> = [];
+                            empRoles.forEach((empRole: any)  => {
                                 bussinessCodeItems.push(new BusinessType(empRole));
                                 //   self.bussinessCodeItems.push(new BusinessType(businessType));
                             });
@@ -554,6 +599,7 @@ module nts.uk.at.view.kdw002.c {
         interface IBusinessType {
             roleId: string;
             roleName: string;
+            roleCode: string;
         }
 
         class BusinessType {
@@ -668,6 +714,17 @@ module nts.uk.at.view.kdw002.c {
 
             }
 
+        }
+            
+        class EmployeeRoleDto {
+            roleId: string;
+            roleCode: string;
+            roleName: string;
+            constructor(roleId: string, roleCode: string, roleName: string) {
+                this.roleId = roleId;
+                this.roleCode = roleCode;
+                this.roleName = roleName;
+            }
         }
 
     }
