@@ -9,7 +9,7 @@ import nts.gul.text.StringUtil;
  * パスワード認証による社員の識別失敗記録
  */
 @Getter
-public class PasswordAuthIdentificationFailureLog  implements DomainAggregate {
+public class PasswordAuthIdentificationFailureLog implements DomainAggregate {
 	
 	/** 失敗日時 */
 	private final GeneralDateTime failureDateTime;

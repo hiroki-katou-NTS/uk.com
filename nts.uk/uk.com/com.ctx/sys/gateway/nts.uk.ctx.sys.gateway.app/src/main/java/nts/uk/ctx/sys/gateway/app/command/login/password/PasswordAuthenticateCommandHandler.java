@@ -10,7 +10,7 @@ import nts.uk.ctx.sys.gateway.app.command.login.LoginCommandHandlerBase;
 import nts.uk.ctx.sys.gateway.dom.login.password.authenticate.PasswordAuthenticationResult;
 import nts.uk.ctx.sys.gateway.dom.login.password.authenticate.PasswordAuthenticateWithEmployeeCode;
 import nts.uk.ctx.sys.gateway.dom.login.password.identification.EmployeeIdentify;
-import nts.uk.ctx.sys.gateway.dom.login.password.identification.EmployeeIdentify.IdentificationResult;
+import nts.uk.ctx.sys.gateway.dom.login.password.identification.IdentificationResult;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)

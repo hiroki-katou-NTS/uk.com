@@ -2,24 +2,29 @@ package nts.uk.ctx.sys.gateway.app.command.login.password;
 
 import java.util.Optional;
 
-import lombok.Value;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.ToString;
 import nts.uk.ctx.sys.gateway.app.command.login.LoginCommandHandlerBase;
 import nts.uk.ctx.sys.gateway.dom.login.IdentifiedEmployeeInfo;
 import nts.uk.ctx.sys.gateway.dom.login.password.authenticate.PasswordAuthenticationResult;
-import nts.uk.ctx.sys.gateway.dom.login.password.identification.EmployeeIdentify.IdentificationResult;
+import nts.uk.ctx.sys.gateway.dom.login.password.identification.IdentificationResult;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.validate.ValidationResultOnLogin;
 
-@Value
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@ToString
+@Getter
 public class AuthenticationResult implements LoginCommandHandlerBase.AuthenticationResultBase {
 
 	/** 認証成功 */
-	boolean success;
+	private final boolean success;
 	
 	/** 識別された社員 */
-	Optional<IdentifiedEmployeeInfo> employeeInfo;
+	private final Optional<IdentifiedEmployeeInfo> employeeInfo;
 	
 	/** パスワードポリシーの検証結果 */
-	Optional<ValidationResultOnLogin> passwordValidation;
+	private final Optional<ValidationResultOnLogin> passwordValidation;
 	
 	/** ビルトインユーザ用 */
 	private boolean isBuiltInUser;

@@ -2,6 +2,7 @@ package nts.uk.ctx.sys.gateway.dom.tenantlogin;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.ToString;
 import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
@@ -11,6 +12,7 @@ import nts.gul.security.hash.password.PasswordHash;
  * テナント認証
  */
 @AllArgsConstructor
+@ToString
 public class TenantAuthentication {
 	
 	/** テナントコード（契約コード） */

@@ -14,13 +14,13 @@ public class JpaTenantAuthenticationFailureLogRepository extends JpaRepository i
 	private SgwdtFailLogTenantAuth toEntity(TenantAuthenticationFailureLog domain) {
 		return new SgwdtFailLogTenantAuth(
 				new SgwdtFailLogTenantAuthPK(
-					domain.getFailureTimestamps(),
+					domain.getFailureDateTime(),
 					domain.getLoginClient().getIpAddress().toString(), 
 					domain.getLoginClient().getUserAgent(),
 					domain.getTriedTenantCode(), 
 					domain.getTriedPassword()));
 	}
-
+	
 	@Override
 	public void insert(TenantAuthenticationFailureLog domain) {
 		this.commandProxy().insert(toEntity(domain));

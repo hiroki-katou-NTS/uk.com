@@ -3,7 +3,7 @@ package nts.uk.ctx.sys.gateway.dom.login.password.authenticate;
 import java.util.Optional;
 
 import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
 import lombok.ToString;
 import nts.arc.task.tran.AtomTask;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.validate.ValidationResultOnLogin;
@@ -11,7 +11,7 @@ import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.validate.ValidationRes
 /**
  * パスワード認証結果
  */
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @ToString
 public class PasswordAuthenticationResult {
 

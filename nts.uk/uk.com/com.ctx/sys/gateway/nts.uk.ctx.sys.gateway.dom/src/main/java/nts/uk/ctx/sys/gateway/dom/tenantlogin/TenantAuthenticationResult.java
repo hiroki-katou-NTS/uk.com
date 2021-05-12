@@ -3,7 +3,7 @@ package nts.uk.ctx.sys.gateway.dom.tenantlogin;
 import java.util.Optional;
 
 import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
 import lombok.ToString;
 import nts.arc.error.BusinessException;
 import nts.arc.task.tran.AtomTask;
@@ -13,7 +13,7 @@ import nts.arc.task.tran.AtomTask;
  * @author hiroki_katou
  *
  */
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @ToString
 public class TenantAuthenticationResult {
 	/** テナント認証成功 */
@@ -35,7 +35,7 @@ public class TenantAuthenticationResult {
 	
 	/**
 	 * テナントの特定に失敗
-	 * @param failureLog
+	 * @param data.failureLog
 	 * @return
 	 */
 	public static TenantAuthenticationResult failedToIdentifyTenant(AtomTask atomTask) {
@@ -44,7 +44,7 @@ public class TenantAuthenticationResult {
 	
 	/**
 	 * テナントのパスワード検証に失敗
-	 * @param failureLog
+	 * @param data.failureLog
 	 * @return
 	 */
 	public static TenantAuthenticationResult failedDueToIncorrectPassword(AtomTask atomTask) {
@@ -53,7 +53,7 @@ public class TenantAuthenticationResult {
 	
 	/**
 	 * テナントの有効期限切れ
-	 * @param failureLog
+	 * @param data.failureLog
 	 * @return
 	 */
 	public static TenantAuthenticationResult failedDueToExpiration(AtomTask atomTask) {
