@@ -199,6 +199,9 @@ class KDP002BViewModel extends ko.ViewModel {
 
         vm.$ajax("at", kDP002RequestUrl.getAllStampingResult + sid).then(function (data) {
 
+            console.log(data);
+            
+
             if (data && data.length > 0) {
                 if (ko.unwrap(vm.workPlace) === '') {
                     vm.workPlace(data[0].workPlaceName);
@@ -314,6 +317,8 @@ class KDP002BViewModel extends ko.ViewModel {
 
                                     vm.notificationStamp(data);
 
+                                    vm.showBtnNoti(true);
+
                                     var isShow = 0;
                                     _.forEach(data, ((value) => {
                                         _.forEach(value, ((value1) => {
@@ -325,7 +330,6 @@ class KDP002BViewModel extends ko.ViewModel {
 
                                     if (isShow > 0) {
                                         // vm.modeShowPointNoti(true);
-                                        vm.showBtnNoti(true);
 
                                         var isShowPoint = 0;
                                         _.forEach(data, ((value) => {

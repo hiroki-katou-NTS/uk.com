@@ -15,12 +15,23 @@ module nts.uk.at.kdp002.u {
 	@bean()
 	export class ViewModel extends ko.ViewModel {
 
+		modelShowView: KnockoutObservableArray<IEmployeeIdSeen> = ko.observableArray([]);
 		model: KnockoutObservableArray<IMsgNotices> = ko.observableArray([]);
 		sid: string;
 		modeNew: KnockoutObservable<boolean | null> = ko.observable(true);
 
 		created(param: IParams) {
 			const vm = this
+
+			console.log(param);
+
+			_.forEach(param.data.msgNotices, (value) => {
+				
+				if (value.message.targetInformation.destination == 2) {
+					debugger;
+					vm.modelShowView.push(value.message);
+				}
+			})
 
 			vm.model(param.data.msgNotices);
 

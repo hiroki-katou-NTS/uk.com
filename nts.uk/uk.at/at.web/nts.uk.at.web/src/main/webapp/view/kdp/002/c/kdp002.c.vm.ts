@@ -236,7 +236,7 @@ module nts.uk.at.view.kdp002.c {
 							service.getNotification(param)
 								.done((data: IMsgNotices[]) => {
 
-									console.log(data);
+									vm.showBtnNoti(true);
 
 									vm.notificationStamp(data);
 
@@ -251,7 +251,6 @@ module nts.uk.at.view.kdp002.c {
 									vm.notificationStamp(data);
 
 									if (isShow > 0) {
-										vm.showBtnNoti(true);
 
 										var isShowPoint = 0;
 										_.forEach(data, ((value) => {
