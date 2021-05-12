@@ -1,6 +1,7 @@
 package nts.uk.ctx.sys.gateway.dom.login.password.authenticate;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.Optional;
 
@@ -42,6 +43,9 @@ public class PasswordAuthenticateWithEmployeeCodeTest {
 	
 
 	@Test
+	//ロックされているかのチェックは面倒だがこいつを使う。
+	//private methodとして切り出したが、NtsassertでBusinessExceptionやられるとInvokeExceptionに変化しており
+	//BussinessExceptionとして捕まえることができなかった。(やりようはあるかもしれない)
 	public void accountLocked() {
 		
 		new Expectations() {{
