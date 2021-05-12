@@ -43,7 +43,6 @@ public class CreateAlarmDataTopPageService {
 
         //$所属職場履歴情報リスト　=　require.社員ID（List）と基準日から所属職場IDを取得($社員IDリスト, 年月日#今())
         List<AffAtWorkplaceExport> wkplHistoryInfos = require.getWorkplaceId(employeeIds, GeneralDate.today());
-
         //$社員IDMap　＝　$所属職場履歴情報リスト　：　map  key：$.社員ID  value：$.職場ID
         Map<String, String> empIdMap = wkplHistoryInfos.stream()
                 .collect(Collectors.toMap(AffAtWorkplaceExport::getEmployeeId, AffAtWorkplaceExport::getWorkplaceId));

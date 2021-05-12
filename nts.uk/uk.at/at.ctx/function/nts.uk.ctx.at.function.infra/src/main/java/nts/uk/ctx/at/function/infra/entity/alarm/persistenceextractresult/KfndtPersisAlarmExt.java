@@ -2,6 +2,7 @@ package nts.uk.ctx.at.function.infra.entity.alarm.persistenceextractresult;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
 import nts.arc.time.GeneralDate;
@@ -17,9 +18,8 @@ import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -53,7 +53,7 @@ public class KfndtPersisAlarmExt extends ContractUkJpaEntity implements Serializ
 
     @OneToMany(mappedBy = "persisAlarmExtract", cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinTable(name = "KFNDT_ALARM_EXTRAC_RESULT")
-    List<KfndtAlarmExtracResult> extractResults;
+    public List<KfndtAlarmExtracResult> extractResults;
 
     @Override
     protected Object getKey() {
@@ -68,8 +68,7 @@ public class KfndtPersisAlarmExt extends ContractUkJpaEntity implements Serializ
      */
     public static KfndtPersisAlarmExt of(PersistenceAlarmListExtractResult domain) {
         String cid = domain.getCompanyID();
-        String patternName = domain.getAlarmPatternName().v();
-        String processId = IdentifierUtil.randomUniqueId();  // TODO: processId == runCode ????
+        String processId = IdentifierUtil.randomUniqueId();  // TODO: processId = randomUUID ???
 
         List<KfndtAlarmExtracResult> extractResults = new ArrayList<>();
         domain.getAlarmListExtractResults().forEach(x ->
@@ -84,10 +83,10 @@ public class KfndtPersisAlarmExt extends ContractUkJpaEntity implements Serializ
                                             y.getAlarmCheckConditionCode().v(),
                                             y.getAlarmListCheckType().value,
                                             y.getAlarmCheckConditionNo(),
-                                            z.getPeriodDate().getStartDate().isPresent() ? String.valueOf(z.getPeriodDate().getStartDate()) : null
+                                            String.valueOf(z.getPeriodDate().getStartDate().get())
                                     ),
-                                    z.getPeriodDate().getEndDate().isPresent() ? String.valueOf(z.getPeriodDate().getEndDate()) : null,
-                                    patternName,
+                                    z.getPeriodDate().getEndDate().isPresent() ? String.valueOf(z.getPeriodDate().getEndDate().get()) : null,
+                                    domain.getAlarmPatternName().v(),
                                     z.getAlarmName(),
                                     z.getAlarmContent(),
                                     z.getRunTime(),
@@ -105,7 +104,8 @@ public class KfndtPersisAlarmExt extends ContractUkJpaEntity implements Serializ
                 domain.getAutoRunCode(),
                 domain.getAlarmPatternCode().v(),
                 domain.getAlarmPatternName().v(),
-                extractResults);
+                extractResults
+        );
     }
 
     /**
@@ -114,33 +114,61 @@ public class KfndtPersisAlarmExt extends ContractUkJpaEntity implements Serializ
      * @return PersistenceAlarmListExtractResult
      */
     public PersistenceAlarmListExtractResult toDomain() {
-        List<ExtractResultDetail> details = new ArrayList<>();
-        this.extractResults.forEach(e -> details.add(new ExtractResultDetail(
-                new ExtractionAlarmPeriodDate(Optional.ofNullable(StringUtils.isEmpty(e.pk.startDate) ? GeneralDate.fromString(e.pk.startDate, "yyyy/MM/dd") : null),
-                        Optional.ofNullable(StringUtils.isEmpty(e.endDate) ? GeneralDate.fromString(e.endDate, "yyyy/MM/dd") : null)),
-                e.alarmItemName,
-                e.alarmContent,
-                e.runTime,
-                Optional.ofNullable(e.workPlaceId),
-                Optional.ofNullable(e.message),
-                Optional.ofNullable(e.checkValue))));
-
-        List<AlarmExtractInfoResult> alarmExtractInfoResults = new ArrayList<>();
         List<AlarmEmployeeList> alarmListExtractResults = new ArrayList<>();
 
-        Optional<KfndtAlarmExtracResult> firstDetail = this.extractResults.stream().findFirst();
-        if (firstDetail.isPresent()) {
-            alarmExtractInfoResults.add(new AlarmExtractInfoResult(
-                    firstDetail.get().pk.alarmCheckCode,
-                    new AlarmCheckConditionCode(firstDetail.get().pk.alarmCheckCode),
-                    EnumAdaptor.valueOf(firstDetail.get().pk.category, AlarmCategory.class),
-                    EnumAdaptor.valueOf(firstDetail.get().pk.checkAtr, AlarmListCheckType.class),
-                    details));
+        Map<String, List<KfndtAlarmExtracResult>> mapEmpId = this.extractResults.stream()
+                .collect(Collectors.groupingBy(x -> x.pk.sid));
 
+        for (val item : mapEmpId.keySet()) {
+            val lstValue = mapEmpId.get(item);
+
+            List<AlarmExtractInfoResult> alarmExtractInfoResults = new ArrayList<>();
+            if (!lstValue.isEmpty()) {
+                List<ExtractResultDetail> details = new ArrayList<>();
+                lstValue.forEach(x -> {
+                    details.add(new ExtractResultDetail(
+                            new ExtractionAlarmPeriodDate(Optional.of(GeneralDate.fromString(x.pk.startDate, "yyyy/MM/dd")),
+                                    Optional.ofNullable(StringUtils.isEmpty(x.endDate) ? GeneralDate.fromString(x.endDate, "yyyy/MM/dd") : null)),
+                            x.alarmItemName,
+                            x.alarmContent,
+                            x.runTime,
+                            Optional.ofNullable(x.workPlaceId),
+                            Optional.ofNullable(x.message),
+                            Optional.ofNullable(x.checkValue)));
+
+                    alarmExtractInfoResults.add(new AlarmExtractInfoResult(
+                            x.pk.alarmCheckCode,
+                            new AlarmCheckConditionCode(x.pk.alarmCheckCode),
+                            EnumAdaptor.valueOf(x.pk.category, AlarmCategory.class),
+                            EnumAdaptor.valueOf(x.pk.checkAtr, AlarmListCheckType.class),
+                            details));
+                });
+            }
             alarmListExtractResults.add(new AlarmEmployeeList(
                     alarmExtractInfoResults,
-                    firstDetail.get().pk.sid));
+                    item));
         }
+
+//        this.extractResults.stream().forEach(x -> {
+//            List<ExtractResultDetail> details = Collections.singletonList(new ExtractResultDetail(
+//                    new ExtractionAlarmPeriodDate(Optional.ofNullable(StringUtils.isEmpty(x.pk.startDate) ? GeneralDate.fromString(x.pk.startDate, "yyyy/MM/dd") : null),
+//                            Optional.ofNullable(StringUtils.isEmpty(x.endDate) ? GeneralDate.fromString(x.endDate, "yyyy/MM/dd") : null)),
+//                    x.alarmItemName,
+//                    x.alarmContent,
+//                    x.runTime,
+//                    Optional.ofNullable(x.workPlaceId),
+//                    Optional.ofNullable(x.message),
+//                    Optional.ofNullable(x.checkValue)));
+//
+//            alarmListExtractResults.add(new AlarmEmployeeList(
+//                    Collections.singletonList(new AlarmExtractInfoResult(
+//                            x.pk.alarmCheckCode,
+//                            new AlarmCheckConditionCode(x.pk.alarmCheckCode),
+//                            EnumAdaptor.valueOf(x.pk.category, AlarmCategory.class),
+//                            EnumAdaptor.valueOf(x.pk.checkAtr, AlarmListCheckType.class),
+//                            details)),
+//                    x.pk.sid));
+//        });
 
         return new PersistenceAlarmListExtractResult(
                 new AlarmPatternCode(this.patternCode),

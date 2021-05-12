@@ -20,8 +20,6 @@ import nts.uk.ctx.at.shared.dom.alarmList.persistenceextractresult.*;
 import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;

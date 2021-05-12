@@ -463,7 +463,7 @@ public class AggregationProcessService {
 		// 「永続化のアラームリスト抽出結果」を作成
 		PersistenceAlarmListExtractResult persisExtractResult = new PersistenceAlarmListExtractResult(
 				new AlarmPatternCode(pattentCd),
-				StringUtils.isEmpty(alarmPattern.getAlarmPatternName().v()) ? new AlarmPatternName(alarmPattern.getAlarmPatternName().v()) : null,
+				alarmPattern != null && !StringUtils.isEmpty(alarmPattern.getAlarmPatternName().v()) ? new AlarmPatternName(alarmPattern.getAlarmPatternName().v()) : null,
 				alarmEmployeeList,
 				cid,
 				runCode

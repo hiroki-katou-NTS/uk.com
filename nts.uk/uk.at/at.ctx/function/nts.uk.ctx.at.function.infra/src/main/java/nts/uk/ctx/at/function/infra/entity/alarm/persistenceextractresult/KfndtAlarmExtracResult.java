@@ -3,10 +3,13 @@ package nts.uk.ctx.at.function.infra.entity.alarm.persistenceextractresult;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
 import nts.arc.time.GeneralDateTime;
+import nts.uk.ctx.at.shared.dom.alarmList.persistenceextractresult.PersistenceAlarmListExtractResult;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 @NoArgsConstructor
 @Entity
@@ -14,7 +17,7 @@ import java.io.Serializable;
 public class KfndtAlarmExtracResult extends ContractUkJpaEntity implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    public static final JpaEntityMapper<KfndtAlarmExtracResult> MAPPER = new JpaEntityMapper<>(KfndtAlarmExtracResult.class);
+//    public static final JpaEntityMapper<KfndtAlarmExtracResult> MAPPER = new JpaEntityMapper<>(KfndtAlarmExtracResult.class);
 
     @EmbeddedId
     public KfndtAlarmExtracResultPK pk;
@@ -52,9 +55,10 @@ public class KfndtAlarmExtracResult extends ContractUkJpaEntity implements Seria
     public String checkValue;
 
     @ManyToOne
-    @JoinColumns(
-            {@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
-                    @JoinColumn(name = "PROCESS_ID", referencedColumnName = "PROCESS_ID", insertable = false, updatable = false)})
+    @JoinColumns({
+            @JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
+            @JoinColumn(name = "PROCESS_ID", referencedColumnName = "PROCESS_ID", insertable = false, updatable = false)
+    })
     public KfndtPersisAlarmExt persisAlarmExtract;
 
     @Override
@@ -63,6 +67,7 @@ public class KfndtAlarmExtracResult extends ContractUkJpaEntity implements Seria
     }
 
     public KfndtAlarmExtracResult(KfndtAlarmExtracResultPK pk, String endDate, String patternName, String alarmItemName, String alarmContent, GeneralDateTime runTime, String workPlaceId, String message, String checkValue) {
+        super();
         this.pk = pk;
         this.endDate = endDate;
         this.patternName = patternName;
