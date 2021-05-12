@@ -1,12 +1,5 @@
 package nts.uk.ctx.at.shared.dom.worktime.flexset;
 
-import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -19,84 +12,30 @@ import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Unit;
 import nts.uk.ctx.at.shared.dom.common.usecls.ApplyAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.primitives.BonusPaySettingCode;
-import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
-import nts.uk.ctx.at.shared.dom.worktime.common.BreakFrameNo;
-import nts.uk.ctx.at.shared.dom.worktime.common.CommonRestSetting;
-import nts.uk.ctx.at.shared.dom.worktime.common.CompensatoryOccurrenceDivision;
-import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
-import nts.uk.ctx.at.shared.dom.worktime.common.DesignatedTime;
-import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeFrameNo;
-import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeZoneSet;
-import nts.uk.ctx.at.shared.dom.worktime.common.EmTimezoneNo;
-import nts.uk.ctx.at.shared.dom.worktime.common.FixedWorkTimezoneSet;
-import nts.uk.ctx.at.shared.dom.worktime.common.GoOutTimeRoundingMethod;
-import nts.uk.ctx.at.shared.dom.worktime.common.GoOutTimezoneRoundingSet;
-import nts.uk.ctx.at.shared.dom.worktime.common.HDWorkTimeSheetSetting;
-import nts.uk.ctx.at.shared.dom.worktime.common.HDWorkTimeSheetSettingGetMemento;
-import nts.uk.ctx.at.shared.dom.worktime.common.HolidayCalculation;
-import nts.uk.ctx.at.shared.dom.worktime.common.IntervalTime;
-import nts.uk.ctx.at.shared.dom.worktime.common.IntervalTimeGetMemento;
-import nts.uk.ctx.at.shared.dom.worktime.common.IntervalTimeSetting;
-import nts.uk.ctx.at.shared.dom.worktime.common.IntervalTimeSettingGetMemento;
-import nts.uk.ctx.at.shared.dom.worktime.common.OTFrameNo;
-import nts.uk.ctx.at.shared.dom.worktime.common.OneDayTime;
-import nts.uk.ctx.at.shared.dom.worktime.common.OverTimeOfTimeZoneSet;
-import nts.uk.ctx.at.shared.dom.worktime.common.OverTimeOfTimeZoneSetGetMemento;
-import nts.uk.ctx.at.shared.dom.worktime.common.PrioritySetting;
-import nts.uk.ctx.at.shared.dom.worktime.common.RestClockManageAtr;
-import nts.uk.ctx.at.shared.dom.worktime.common.RestTimeOfficeWorkCalcMethod;
-import nts.uk.ctx.at.shared.dom.worktime.common.RoundingTime;
-import nts.uk.ctx.at.shared.dom.worktime.common.SettlementOrder;
-import nts.uk.ctx.at.shared.dom.worktime.common.StampReflectTimezone;
-import nts.uk.ctx.at.shared.dom.worktime.common.SubHolTransferSet;
-import nts.uk.ctx.at.shared.dom.worktime.common.SubHolTransferSetAtr;
-import nts.uk.ctx.at.shared.dom.worktime.common.SubHolTransferSetGetMemento;
-import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRounding;
-import nts.uk.ctx.at.shared.dom.worktime.common.TimezoneOfFixedRestTimeSet;
-import nts.uk.ctx.at.shared.dom.worktime.common.TotalRoundingSet;
-import nts.uk.ctx.at.shared.dom.worktime.common.WorkSystemAtr;
-import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
-import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
-import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSetGetMemento;
-import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneExtraordTimeSet;
-import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneGoOutSet;
-import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneGoOutSetGetMemento;
-import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneLateEarlySet;
-import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneLateNightTimeSet;
-import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneMedicalSet;
-import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneMedicalSetGetMemento;
-import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneOtherSubHolTimeSet;
-import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneOtherSubHolTimeSetGetMemento;
-import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneShortTimeWorkSet;
-import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneStampSet;
-import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneStampSetGetMemento;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowFixedRestCalcMethod;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowFixedRestSet;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowRestCalcMethod;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowRestClockCalcMethod;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowRestSet;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowRestSetGetMemento;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowRestSetting;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowRestTimezone;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestSetting;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestSettingDetail;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestSettingDetailGetMemento;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestSettingGetMemento;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestTimezone;
-import nts.uk.ctx.at.shared.dom.worktime.predset.BreakDownTimeDay;
-import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
-import nts.uk.ctx.at.shared.dom.worktime.predset.PredetermineTime;
-import nts.uk.ctx.at.shared.dom.worktime.predset.PrescribedTimezoneSetting;
-import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
-import nts.uk.ctx.at.shared.dom.worktime.predset.UseSetting;
+import nts.uk.ctx.at.shared.dom.worktime.common.*;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.*;
+import nts.uk.ctx.at.shared.dom.worktime.predset.*;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.HalfDayWorkSet;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.time.TimeWithDayAttr;
+
+import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class FlexWorkSettingHelper {
 	 
 	public static FlexWorkSetting createFlexOffRestTimeZone(FlowWorkRestTimezone offRestTimeZone) {
 		val offdayWorkTimeImpl = new FlexOffdayWorkTimeGetMementoImpl(Arrays.asList(new HDWorkTimeSheetSetting()), offRestTimeZone);
-		return new FlexWorkSetting(new FlexWorkSettingImpl(ApplyAtr.USE, Collections.emptyList()
-				, new FlexOffdayWorkTime(offdayWorkTimeImpl), true));
+		return new FlexWorkSetting(new FlexWorkSettingImpl(ApplyAtr.USE
+//		        , Collections.emptyList()
+		        , Arrays.asList(new FlexHalfDayWorkTime(null, null, AmPmAtr.ONE_DAY), 
+		                        new FlexHalfDayWorkTime(null, null, AmPmAtr.AM),
+		                        new FlexHalfDayWorkTime(null, null, AmPmAtr.PM))
+				, new FlexOffdayWorkTime(offdayWorkTimeImpl), new HalfDayWorkSet(true, true, true)));
 	}
 	
 	public static FlexWorkSetting createFlexHaftRestTimeZone(FlowWorkRestTimezone flexHalfRestTimezone) {
@@ -125,7 +64,7 @@ public class FlexWorkSettingHelper {
 				);
 		
 		return  new FlexWorkSetting(new FlexWorkSettingImpl(ApplyAtr.USE, flexHalfDayWorkTimes
-				, new FlexOffdayWorkTime(offdayWorkTimeImpl), true));
+				, new FlexOffdayWorkTime(offdayWorkTimeImpl), new HalfDayWorkSet(true, true, true)));
 	}
 	
 	
@@ -142,8 +81,13 @@ public class FlexWorkSettingHelper {
 						, Arrays.asList(
 								 EmTimeZoneSetHelper.createWorkingTimezoneList(new EmTimeFrameNo(2) , TimeWithDayAttr.hourMinute( 5,  0 ), TimeWithDayAttr.hourMinute( 12, 0 ))
 						))
+				, FlexHalfDayWorkTimeHelper.createWorkTime(AmPmAtr.PM, flexHalfRestTimezone
+                        ,  OverTimeOfTimeZoneSetHelper.createOverTimeList(overTimes)
+                        , Arrays.asList(
+                                 EmTimeZoneSetHelper.createWorkingTimezoneList(new EmTimeFrameNo(2) , TimeWithDayAttr.hourMinute( 13,  0 ), TimeWithDayAttr.hourMinute( 17, 0 ))
+                        ))
 				);
-		return new FlexWorkSetting(new FlexWorkSettingImpl(ApplyAtr.NOT_USE, flexHalfDayWorkTimes, new FlexOffdayWorkTime(), true));
+		return new FlexWorkSetting(new FlexWorkSettingImpl(ApplyAtr.NOT_USE, flexHalfDayWorkTimes, new FlexOffdayWorkTime(), new HalfDayWorkSet(true, true, true)));
 	}
 	
 	
@@ -167,7 +111,7 @@ public class FlexWorkSettingHelper {
 								 EmTimeZoneSetHelper.createWorkingTimezoneList(new EmTimeFrameNo(3) , TimeWithDayAttr.hourMinute( 13,  0 ), TimeWithDayAttr.hourMinute( 29, 0 ))
 						))
 				);
-		return new FlexWorkSetting(new FlexWorkSettingImpl(ApplyAtr.USE, flexHalfDayWorkTimes, new FlexOffdayWorkTime(), true));
+		return new FlexWorkSetting(new FlexWorkSettingImpl(ApplyAtr.USE, flexHalfDayWorkTimes, new FlexOffdayWorkTime(), new HalfDayWorkSet(true, true, true)));
 	}
 	
 	public static FlexWorkSetting createUse_AM(List<OverTimeOfTimeZoneSetImpl> overTimes) {
@@ -190,7 +134,7 @@ public class FlexWorkSettingHelper {
 								 EmTimeZoneSetHelper.createWorkingTimezoneList(new EmTimeFrameNo(3) , TimeWithDayAttr.hourMinute( 13,  0 ), TimeWithDayAttr.hourMinute( 29, 0 ))
 						))
 				);
-		return new FlexWorkSetting(new FlexWorkSettingImpl(ApplyAtr.USE, flexHalfDayWorkTimes, new FlexOffdayWorkTime(), true));
+		return new FlexWorkSetting(new FlexWorkSettingImpl(ApplyAtr.USE, flexHalfDayWorkTimes, new FlexOffdayWorkTime(), new HalfDayWorkSet(true, true, true)));
 	}
 	
 	public static FlexWorkSetting createUse_PM(List<OverTimeOfTimeZoneSetImpl> overTimes) {
@@ -213,7 +157,7 @@ public class FlexWorkSettingHelper {
 								 EmTimeZoneSetHelper.createWorkingTimezoneList(new EmTimeFrameNo(3) , TimeWithDayAttr.hourMinute( 13,  0 ), TimeWithDayAttr.hourMinute( 29, 0 ))
 						))
 				);
-		return new FlexWorkSetting(new FlexWorkSettingImpl(ApplyAtr.USE, flexHalfDayWorkTimes, new FlexOffdayWorkTime(), true));
+		return new FlexWorkSetting(new FlexWorkSettingImpl(ApplyAtr.USE, flexHalfDayWorkTimes, new FlexOffdayWorkTime(), new HalfDayWorkSet(true, true, true)));
 	}
 	
 	public static HDWorkTimeSheetSetting createHdWorkTimeSheet(TimeWithDayAttr start, TimeWithDayAttr end){
@@ -235,7 +179,12 @@ public class FlexWorkSettingHelper {
 		
 		val offdayWorkTimeImpl = new FlexOffdayWorkTimeGetMementoImpl(lstWorkTimezone, offRestTimeZone);
 		
-		val flexWorkSetting = new FlexWorkSetting(new FlexWorkSettingImpl(ApplyAtr.USE, Collections.emptyList(), new FlexOffdayWorkTime(offdayWorkTimeImpl), false));
+		val flexWorkSetting = new FlexWorkSetting(new FlexWorkSettingImpl(ApplyAtr.USE
+//		        , Collections.emptyList()
+		        , Arrays.asList(new FlexHalfDayWorkTime(null, null, AmPmAtr.ONE_DAY), 
+		                        new FlexHalfDayWorkTime(null, null, AmPmAtr.AM),
+		                        new FlexHalfDayWorkTime(null, null, AmPmAtr.PM))
+		        , new FlexOffdayWorkTime(offdayWorkTimeImpl), new HalfDayWorkSet(false, false, false)));
 
 		return flexWorkSetting;
 	}
@@ -329,20 +278,20 @@ public class FlexWorkSettingHelper {
 		public static PredetemineTimeSetting create(String code, TimeWithDayAttr startClock, AttendanceTime rangeOfDay
 				, PrescribedTimezoneSetting prscTzStg) {
 			return new PredetemineTimeSetting("CID", rangeOfDay, new WorkTimeCode(code)
-						, PredTimeStg.createDummyPredTime(), false, prscTzStg, startClock, false
+						, PredTimeStg.createDummyPredTime(), prscTzStg, startClock, false
 					);
 		}
 		
 		public static PredetemineTimeSetting create(List<TimezoneUse> lstTimezone) {
 			return new PredetemineTimeSetting("CID", new AttendanceTime(2300), new WorkTimeCode("01")
-					, PredTimeStg.createDummyPredTime(), false
+					, PredTimeStg.createDummyPredTime()
 					, createPrscTzStg(lstTimezone),  TimeWithDayAttr.hourMinute( 5, 0 ), false
 				);
 		}
 		
 		public static PredetemineTimeSetting create(TimeWithDayAttr morningEndTime, TimeWithDayAttr afternoonStartTime) {
 			return new PredetemineTimeSetting("CID", new AttendanceTime(2300), new WorkTimeCode("01")
-					, PredTimeStg.createDummyPredTime(), false
+					, PredTimeStg.createDummyPredTime()
 					, createPrscTzStg(morningEndTime, afternoonStartTime),  TimeWithDayAttr.hourMinute( 5, 0 ), false
 				);
 		}
@@ -415,7 +364,6 @@ public class FlexWorkSettingHelper {
 			return RestClockManageAtr.IS_CLOCK_MANAGE;
 		}
 
-		@Override
 		public FlowRestCalcMethod getCalculateMethod() {
 			return FlowRestCalcMethod.REFER_MASTER;
 		}
@@ -547,33 +495,6 @@ public class FlexWorkSettingHelper {
 		
 	}
 	
-	
-	@AllArgsConstructor
-	public static class IntervalTimeSettingOImpl implements IntervalTimeSettingGetMemento{
-
-		@Override
-		public boolean getuseIntervalExemptionTime() {
-			return false;
-		}
-
-		@Override
-		public TimeRoundingSetting getIntervalExemptionTimeRound() {
-			
-			return new TimeRoundingSetting(Unit.ROUNDING_TIME_15MIN, Rounding.ROUNDING_DOWN);
-		}
-
-		@Override
-		public IntervalTime getIntervalTime() {
-			val intervalTimeMemento = new IntervalTimeImpl();
-			return new IntervalTime(intervalTimeMemento);
-		}
-
-		@Override
-		public boolean getuseIntervalTime() {
-			return false;
-		}
-	}
-	
 	@AllArgsConstructor
 	public static class SubHolTransferSetImpl implements SubHolTransferSetGetMemento{
 		//1日：８ｈ
@@ -676,11 +597,11 @@ public class FlexWorkSettingHelper {
 			return false;
 		}
 
-		@Override
-		public IntervalTimeSetting getIntervalSet() {
-		    val intervalTimeSetting = new IntervalTimeSettingOImpl();
-			return new IntervalTimeSetting(intervalTimeSetting);
-		}
+//		@Override
+//		public IntervalTimeSetting getIntervalSet() {
+//		    val intervalTimeSetting = new IntervalTimeSettingOImpl();
+//			return new IntervalTimeSetting(intervalTimeSetting);
+//		}
 
 		@Override
 		public List<WorkTimezoneOtherSubHolTimeSet> getSubHolTimeSet() {
@@ -834,7 +755,7 @@ public class FlexWorkSettingHelper {
 		
 		private FlexOffdayWorkTime flexOffDayWorkTime;
 		
-		private boolean useHalfDayShift;
+		private HalfDayWorkSet useHalfDayShift;
 
 		@Override
 		public String getCompanyId() {
@@ -849,7 +770,7 @@ public class FlexWorkSettingHelper {
 		@Override
 		public CoreTimeSetting getCoreTimeSetting() {
 			return new CoreTimeSetting(new TimeSheet(new TimeWithDayAttr(480), new TimeWithDayAttr(960))
-										 , coreSettingApplyAtr, new AttendanceTime(3000));
+										 , coreSettingApplyAtr, new AttendanceTime(3000), new OutingCalcWithinCoreTime(NotUseAtr.USE, NotUseAtr.USE));
 		}
 
 		@Override
@@ -869,7 +790,7 @@ public class FlexWorkSettingHelper {
 		}
 
 		@Override
-		public boolean getUseHalfDayShift() {
+		public HalfDayWorkSet getUseHalfDayShift() {
 			return useHalfDayShift;
 		}
 
@@ -882,12 +803,6 @@ public class FlexWorkSettingHelper {
 		public List<StampReflectTimezone> getLstStampReflectTimezone() {
 			return Collections.emptyList();
 		}
-
-		@Override
-		public FlexCalcSetting getCalculateSetting() {
-			return new FlexCalcSetting();
-		}
-		
 
     }
 	

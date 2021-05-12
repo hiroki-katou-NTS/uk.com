@@ -7,57 +7,78 @@ type KibanViewModel = {
 };
 
 /** Create new ViewModel and automatic binding to __viewContext */
-function bean(dialogOption?: DialogOption): any {
+function bean(dialogOption?: nts.uk.ui.vm.DialogOption): any {
 	return function (ctor: any): any {
 		__viewContext.ready(() => {
-			nts.uk.ui.viewmodel.$storage().then(($params: any) => {
-				const $viewModel = new ctor($params)
-					, $created = $viewModel['created'];
+			const { localShared } = nts.uk.ui.windows.container;
 
-				_.extend($viewModel, { $el: undefined });
+			nts.uk.ui.viewmodel.$storage()
+				.then(($params: any) => {
+					const $viewModel = new ctor($params || localShared)
+						, $created = $viewModel['created'];
 
-				// hook to created function
-				if ($created && _.isFunction($created)) {
-					$created.apply($viewModel, [$params]);
-				}
+					_.extend($viewModel, { $el: undefined });
 
-				// hook to mounted function
-				$viewModel.$nextTick(() => {
-					const $mounted = $viewModel['mounted'];
-					const kvm: KibanViewModel = nts.uk.ui._viewModel.kiban;
-
-					_.extend($viewModel, { $el: document.querySelector('#master-wrapper') });
-
-					if (kvm) {
-						ko.computed({
-							read: () => {
-								$viewModel.$validate.valid(!kvm.errorDialogViewModel.errors().length);
-							},
-							owner: $viewModel,
-							disposeWhenNodeIsRemoved: $viewModel.$el
-						});
+					// hook to created function
+					if ($created && _.isFunction($created)) {
+						$created.apply($viewModel, [$params || localShared]);
 					}
 
-					if ($mounted && _.isFunction($mounted)) {
-						$mounted.apply($viewModel, []);
-					}
+					// hook to mounted function
+					$viewModel.$nextTick(() => {
+						const $mounted = $viewModel['mounted'];
+						const kvm: KibanViewModel = nts.uk.ui._viewModel.kiban;
+
+						_.extend($viewModel, { $el: document.querySelector('#master-wrapper') });
+
+						if (kvm) {
+							ko.computed({
+								read: () => {
+									$viewModel.$validate.valid(!kvm.errorDialogViewModel.errors().length);
+								},
+								owner: $viewModel,
+								disposeWhenNodeIsRemoved: $viewModel.$el
+							});
+						}
+
+						if ($mounted && _.isFunction($mounted)) {
+							$mounted.apply($viewModel, []);
+						}
+					});
+
+					__viewContext.bind($viewModel, dialogOption);
 				});
-
-				__viewContext.bind($viewModel, dialogOption);
-			});
 		});
 	};
 }
 
-function component(options: { name: string; template: string; }): any {
+function component(options: nts.uk.ui.vm.ViewModelOption): any {
 	return function (ctor: any): any {
-		return $.Deferred().resolve(options.template.match(/\.html$/))
+		const { name, template, alternalBinding } = options;
+
+		if (alternalBinding) {
+			ko.bindingHandlers[name] = {
+				init(element: HTMLElement, __: () => any, allBindingsAccessor: KnockoutAllBindingsAccessor, ___: any, bindingContext: KnockoutBindingContext) {
+					const allBinding = { ...allBindingsAccessor() };
+					const params = _.mapKeys(allBinding, (_v: any, key: string) => _.camelCase(key));
+
+					ko.applyBindingsToNode(element, { component: { name, params } }, bindingContext);
+
+					element.removeAttribute('data-bind');
+
+					return { controlsDescendantBindings: true };
+				}
+			};
+		}
+
+		return $.Deferred()
+			.resolve(template.match(/\.html$/))
 			.then((url: boolean) => {
-				return url ? $.get(options.template) : options.template;
+				return url ? $.get(template) : template;
 			})
 			.then((template: string) => {
-				if (!ko.components.isRegistered(options.name)) {
-					ko.components.register(options.name, {
+				if (!ko.components.isRegistered(name)) {
+					ko.components.register(name, {
 						template,
 						viewModel: {
 							createViewModel($params: any, $el: any) {
@@ -746,71 +767,15 @@ module nts.uk.ui.viewmodel {
 
 	BaseViewModel.prototype.$validate = $validate;
 
+	BaseViewModel.prototype.$query = ((): { [key: string]: string; } => {
+		const query = location.search.substring(1);
+
+		if (!query || !query.match(/=/)) {
+			return {};
+		}
+
+		return JSON.parse('{"' + decodeURI(query).replace(/"/g, '\\"').replace(/&/g, '","').replace(/=/g, '":"') + '"}');
+	})();
+
 	Object.defineProperty(ko, 'ViewModel', { value: BaseViewModel });
-}
-
-module nts.uk.ui.bindings.i18n {
-	@handler({
-		bindingName: 'i18n',
-		validatable: true,
-		virtual: false
-	})
-	export class I18nBindingHandler implements KnockoutBindingHandler {
-		update(element: HTMLElement, valueAccessor: () => string, allBindingsAccessor?: KnockoutAllBindingsAccessor): void {
-			const msg = ko.unwrap(valueAccessor());
-			const params = ko.unwrap(allBindingsAccessor.get('params'));
-
-			$(element).text(nts.uk.resource.getText(msg, params));
-		}
-	}
-}
-
-module nts.uk.ui.bindings.icon {
-	const icons: Array<number | string> = [];
-
-	@handler({
-		bindingName: 'icon',
-		validatable: true,
-		virtual: false
-	})
-	export class IconBindingHandler implements KnockoutBindingHandler {
-		update(el: HTMLElement, value: () => KnockoutObservable<number> | number, allBindingsAccessor: KnockoutAllBindingsAccessor) {
-			const numb: number = ko.unwrap(value());
-			const size: string = allBindingsAccessor.get('size') || 'contain';
-			const url = `/nts.uk.com.js.web/lib/nittsu/ui/style/stylesheets/images/icons/numbered/${numb}.png`;
-
-			$.Deferred()
-				.resolve(true)
-				.then(() => icons.indexOf(numb) > -1)
-				.then((exist: boolean) => !!exist || $.get(url))
-				.then(() => {
-					if (icons.indexOf(numb) === -1) {
-						icons.push(numb);
-					}
-
-					$(el).css({
-						'background-image': `url('${url}')`,
-						'background-repeat': 'no-repeat',
-						'background-position': 'center',
-						'background-size': size
-					});
-				});
-		}
-	}
-}
-
-module nts.uk.ui.bindings.date {
-	@handler({
-		bindingName: 'date',
-		validatable: true,
-		virtual: false
-	})
-	export class DateBindingHandler implements KnockoutBindingHandler {
-		update(element: HTMLElement, valueAccessor: () => KnockoutObservable<Date> | Date, allBindingsAccessor?: KnockoutAllBindingsAccessor) {
-			const date = ko.unwrap(valueAccessor());
-			const format = ko.unwrap(allBindingsAccessor.get('format')) || 'YYYY/MM/DD';
-
-			$(element).text(moment(date).format(format));
-		}
-	}
 }

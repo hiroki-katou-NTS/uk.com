@@ -21,7 +21,7 @@ public class DisplayTimeItemDto {
 	 * @param displayOrder2 the display order 2
 	 * @param columnWidthTable2 the column width table 2
 	 */
-	public DisplayTimeItemDto(int itemDaily2, int displayOrder2, Optional<Integer> columnWidthTable2) {
+	public DisplayTimeItemDto(int itemDaily2, Integer displayOrder2, Optional<Integer> columnWidthTable2) {
 		this.itemDaily = itemDaily2;
 		this.displayOrder = displayOrder2;
 		this.columnWidthTable = columnWidthTable2.orElse(null);

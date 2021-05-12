@@ -41,7 +41,7 @@ public class SelectDelCategoryFinder {
 	@Inject
 	private DataDeletionPatternSettingRepository dataDeletionPatternSettingRepository;
 
-	public DataDeletionPatternSettingDto findSelectCategoryInfo(SelectDelCategoryCommand command) {
+	public DataDeletionPatternSettingDto<DelSelectionCategoryNameDto> findSelectCategoryInfo(SelectDelCategoryCommand command) {
 
 		List<DelSelectionCategoryNameDto> categoryNames = findSelectionCategoryName(command);
 
@@ -49,8 +49,8 @@ public class SelectDelCategoryFinder {
 		return dataDeletionPatternSettingRepository
 				.findByPk(AppContexts.user().contractCode(), command.getPatternCode(), command.getPatternClassification())
 				.map(p -> {
-					DataDeletionPatternSettingDto dto = new DataDeletionPatternSettingDto();
-					p.setMemento(dto);
+					DataDeletionPatternSettingDto<DelSelectionCategoryNameDto> dto = DataDeletionPatternSettingDto
+							.createFromDomain(p);
 					dto.setSelectCategories(categoryNames);
 					return dto;
 				}).orElse(null);
@@ -61,7 +61,7 @@ public class SelectDelCategoryFinder {
 		// 選択削除カテゴリを取得する
 		List<DataDeletionSelectionCategory> selectCategories = dataDeletionSelectionCategoryRepository
 				.findByPatternCdAndPatternAtrAndSystemTypes(command.getPatternCode(),
-						command.getPatternClassification(), command.getSystemType());
+						command.getPatternClassification(), command.getSystemType(), AppContexts.user().contractCode());
 
 		// ドメインモデル「データ削除カテゴリ」を取得する
 		List<CategoryForDelete> categories = categoryRepository.getCategoryByListId(

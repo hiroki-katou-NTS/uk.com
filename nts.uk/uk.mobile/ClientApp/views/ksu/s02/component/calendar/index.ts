@@ -2,6 +2,7 @@ import { component, Prop, Watch } from '@app/core/component';
 import { _, Vue, moment } from '@app/provider';
 import * as $ from 'jquery';
 
+
 import { CalendarAComponent } from 'views/ksu/s02/component/a';
 
 import { CalendarBComponent } from 'views/ksu/s02/component/b';
@@ -22,10 +23,10 @@ export class CalendarComponent extends Vue {
             datas: null
         })
     })
-    public params!: { datas: any };
+    public params!: { datas: any, checkRegister: boolean };
     public clnLst = [];
     public mode = null;
-    public dataFromParent = { data: this.params.datas };
+    public dataFromParent = { data: this.params.datas,checkRegister:this.params.checkRegister };
 
 
     @Watch('params.datas')
@@ -34,7 +35,7 @@ export class CalendarComponent extends Vue {
         if (datas.data != null && vm.mode == null) {
             vm.mode = datas.data.specifyWorkPre;
         }
-        this.dataFromParent = { data: datas.data };
+        this.dataFromParent = { data: datas.data,checkRegister:datas.checkRegister };
 
     }
 

@@ -176,7 +176,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 									empList,
 								 	dateList,
 							 		appDispInfoStartupOutput,
-									isAgent: vm.isAgentMode() 
+									isAgent: vm.isAgentNew() 
 								};
 						return vm.$ajax(API.startNew, command);
 					}
@@ -445,11 +445,22 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 				return;
 			}
 			
-			if(vm.mode() != MODE.MULTiPLE_AGENT){
+			if (!vm.isAgentNew()){
 				vm.registerSingle();
 			} else {
 				vm.registerMulti();
 			}
+		}
+		
+		isAgentNew() {
+			const vm = this;
+			let isMultipleEmp = true;
+			if (_.isEmpty(vm.employeeIdLst)) {
+				isMultipleEmp = false;
+			} else {
+				isMultipleEmp = vm.employeeIdLst.length != 1;
+			}
+			return isMultipleEmp;
 		}
 
 		registerSingle(){
@@ -498,7 +509,8 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 						};
 						return vm.$ajax('at', API.register, commandRegister).then((successData) => {
 							return vm.$dialog.info({ messageId: "Msg_15" }).then(() => {
-								CommonProcess.handleAfterRegister(successData, vm.isSendMail(), vm);
+								nts.uk.request.ajax("at", API.reflectApp, successData.reflectAppIdLst);
+								CommonProcess.handleAfterRegister(successData, vm.isSendMail(), vm, false, vm.dataSource.appDispInfoStartupOutput.appDispInfoNoDateOutput.employeeInfoLst);
 							});
 						});
 					}
@@ -617,7 +629,8 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 						};
 						return vm.$ajax('at', API.registerMulti, commandRegister).then((successData) => {
 							return vm.$dialog.info({ messageId: "Msg_15" }).then(() => {
-								CommonProcess.handleAfterRegister(successData, vm.isSendMail(), vm);
+								nts.uk.request.ajax("at", API.reflectApp, successData.reflectAppIdLst);
+								CommonProcess.handleAfterRegister(successData, vm.isSendMail(), vm, true);
 							});
 						});
 					}
@@ -1445,7 +1458,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 						startTime: 0,
 						endTime: 0,
 						appHdWorkDispInfoDto: self.dataSource,
-						isAgent: self.isAgentMode()
+						isAgent: self.isAgentNew()
 					};
 
 					self.$blockui('show');
@@ -1526,7 +1539,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 			param.applicationType = AppType.HOLIDAY_WORK_APPLICATION;
 			self.dataSource.appDispInfoStartupOutput.appDispInfoWithDateOutput.prePostAtr = self.application().prePostAtr;
 			param.appHdWorkDispInfoDto = ko.toJS(self.dataSource);
-			param.isAgent = self.isAgentMode();
+			param.isAgent = self.isAgentNew();
 			self.$blockui('show');
 			self.$ajax(API.changeAppDate, param)
 				.done((res: AppHdWorkDispInfo) => { 
@@ -1549,7 +1562,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 				.then(isValid => {
 					if (isValid) {
 						let command = {} as ParamCalculationHolidayWork;
-						command.isAgent = self.isAgentMode();
+						command.isAgent = self.isAgentNew();
 						let workContent = {} as WorkContent;
 						let workInfo = self.workInfo() as WorkInfo;
 						workContent.workTypeCode = workInfo.workType().code as string;
@@ -1576,7 +1589,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 							timeZone1.end = workInfo.workHours1.end();
 							timeZoneArray.push(timeZone1);
 						}
-						if(!self.managementMultipleWorkCyclescheck()){
+						if(self.managementMultipleWorkCyclescheck()){
 							let timeZone2 = {} as TimeZone;
 							if (!_.isNil(workInfo.workHours2) && _.isNumber(workInfo.workHours2.start()) && _.isNumber(workInfo.workHours2.end())) {
 								timeZone2.frameNo = 2;
@@ -1713,7 +1726,8 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 		checkBeforeRegister: "at/request/application/holidaywork/checkBeforeRegister",
 		register: "at/request/application/holidaywork/register",
 		checkBeforeRegisterMulti: "at/request/application/holidaywork/checkBeforeRegisterMulti",
-		registerMulti: "at/request/application/holidaywork/registerMulti"
+		registerMulti: "at/request/application/holidaywork/registerMulti",
+		reflectApp: "at/request/application/reflect-app"
 	}
 	interface AppHdWorkDispInfo {
 		dispFlexTime: boolean;

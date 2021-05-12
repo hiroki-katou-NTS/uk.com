@@ -253,6 +253,7 @@ module nts.uk.at.view.kaf006.c.viewmodel {
                 }).done((result) => {
                     if (result) {
                         return vm.$dialog.info({ messageId: "Msg_15"}).then(() => {
+							service.reflectApp(result.reflectAppIdLst);
 							return CommonProcess.handleMailResult(result, vm).then(() => {
 								nts.uk.ui.windows.setShared('KAF006C_RESULT', { appID: result.appIDLst[0] });
 								vm.closeDialog();
@@ -265,7 +266,7 @@ module nts.uk.at.view.kaf006.c.viewmodel {
                         if (error.messageId === "Msg_1715" || error.messageId === "Msg_1521") {
                             nts.uk.ui.dialog.error({ messageId: error.messageId, messageParams: [error.parameterIds[0], error.parameterIds[1]] });
                         } else {
-                            nts.uk.ui.dialog.error({ messageId: error.messageId });
+                            nts.uk.ui.dialog.error({ messageId: error.messageId, messageParams: error.parameterIds });
                         }
                     }
                 }).always(() => {

@@ -14,14 +14,16 @@ public class JpaDataStorageSelectionCategoryRepository extends JpaRepository
 		implements DataStorageSelectionCategoryRepository {
 
 	private static final String SELECT_BY_PATTERN_CD_AND_PATTERN_ATR_AND_SYSTEM_TYPES = "SELECT t FROM SspmtDataStorageSelectionCategory t "
-			+ "WHERE t.pk.patternCode = :patternCd AND t.pk.patternClassification = :patternAtr AND t.pk.systemType IN :systemTypes";
+			+ "WHERE t.pk.patternCode = :patternCd AND t.pk.patternClassification = :patternAtr AND t.pk.systemType IN :systemTypes "
+			+ "AND t.pk.contractCode = :contractCd";
 
 	@Override
 	public List<DataStorageSelectionCategory> findByPatternCdAndPatternAtrAndSystemTypes(String patternCd,
-			int patternAtr, List<Integer> systemTypes) {
+			int patternAtr, List<Integer> systemTypes, String contractCd) {
 		return this.queryProxy()
 				.query(SELECT_BY_PATTERN_CD_AND_PATTERN_ATR_AND_SYSTEM_TYPES, SspmtDataStorageSelectionCategory.class)
 				.setParameter("patternCd", patternCd).setParameter("patternAtr", patternAtr)
-				.setParameter("systemTypes", systemTypes).getList(DataStorageSelectionCategory::createFromMemento);
+				.setParameter("contractCd", contractCd).setParameter("systemTypes", systemTypes)
+				.getList(DataStorageSelectionCategory::createFromMemento);
 	}
 }

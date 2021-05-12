@@ -246,12 +246,13 @@ module nts.uk.at.view.kaf002_ref.b.viewmodel {
             }).then(res => {
                 if (res != undefined) {
                     return self.$dialog.info({ messageId: "Msg_15" }).then(() => {
+						nts.uk.request.ajax("at", API.reflectApp, res.reflectAppIdLst);
                     	return res;
                     } );
                 }
             }).then((result) => {
 				if(result) {
-					CommonProcess.handleAfterRegister(result, self.isSendMail(), self);
+					CommonProcess.handleAfterRegister(result, self.isSendMail(), self, false, self.appDispInfoStartupOutput().appDispInfoNoDateOutput.employeeInfoLst);
 				}
 			}).fail(res => {
                 self.showError(res);
@@ -373,7 +374,7 @@ module nts.uk.at.view.kaf002_ref.b.viewmodel {
             start: "at/request/application/stamp/startStampApp",
             checkRegister: "at/request/application/stamp/checkBeforeRegister",
             register: "at/request/application/stamp/register",
-            getDetail: "at/request/application/stamp/detailAppStamp"
-            
+            getDetail: "at/request/application/stamp/detailAppStamp",
+            reflectApp: "at/request/application/reflect-app"
         }
 }

@@ -8,7 +8,7 @@ import nts.arc.time.GeneralDateTime;
  */
 @Data
 public class FavoriteSpecifyDelCommand {
-	// 作��D
+	// 作成者ID
 	private String creatorId;
 
 	// 入力日

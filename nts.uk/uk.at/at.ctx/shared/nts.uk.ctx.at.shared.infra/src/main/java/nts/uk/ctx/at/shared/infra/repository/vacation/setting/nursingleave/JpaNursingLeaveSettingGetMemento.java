@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.vacation.setting.nursingleave;
 
+import java.util.List;
+
 //import java.util.List;
 import java.util.Optional;
 //import java.util.stream.Collectors;
@@ -76,12 +78,10 @@ public class JpaNursingLeaveSettingGetMemento implements NursingLeaveSettingGetM
      * NursingVacationSettingGetMemento#getStartMonthDay()
      */
     @Override
-    public Integer getStartMonthDay() {
-       return this.entityNursing.getStartMonthDay();
-
-//    	int month = this.entityNursing.getStartMonthDay() / 100;
-//    	int day = this.entityNursing.getStartMonthDay() % 100;
-//    	return new MonthDay(month, day);
+    public MonthDay getStartMonthDay() {
+    	int month = this.entityNursing.getStartMonthDay() / 100;
+    	int day = this.entityNursing.getStartMonthDay() % 100;
+    	return new MonthDay(month, day);
     }
 
     /*
@@ -91,8 +91,8 @@ public class JpaNursingLeaveSettingGetMemento implements NursingLeaveSettingGetM
      * NursingVacationSettingGetMemento#getMaxPersonSetting()
      */
     @Override
-    public MaxPersonSetting getMaxPersonSetting() {
-        return new MaxPersonSetting(new JpaMaxPersonSettingGetMemento(this.entityNursing));
+    public List<MaxPersonSetting> getMaxPersonSetting() {
+        return MaxPersonSetting.getList(new JpaMaxPersonSettingGetMemento(this.entityNursing));
     }
 
 	@Override
@@ -110,9 +110,10 @@ public class JpaNursingLeaveSettingGetMemento implements NursingLeaveSettingGetM
 		return new TimeCareNursingSet(
 				EnumAdaptor.valueOf(this.entityNursing.getDigestiveUnit() != null ? this.entityNursing.getDigestiveUnit() : 0, TimeDigestiveUnit.class),
 				EnumAdaptor.valueOf(this.entityNursing.getTimeManageAtr() != null ? this.entityNursing.getTimeManageAtr(): 0, ManageDistinct.class ));
-		
-		
+
+
 	}
+
 
     /*
      * (non-Javadoc)

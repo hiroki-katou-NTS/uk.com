@@ -48,7 +48,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.earlyleavet
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateSetting;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.latetime.LateTimeOfDaily;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ChildCareAttribute;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortWorkTimFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortWorkingTimeSheet;
@@ -57,6 +56,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomat
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.TaskCode;
+import nts.uk.ctx.at.shared.dom.shortworktime.ChildCareAtr;
 import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
@@ -1424,12 +1424,12 @@ public class WorkScheduleTest {
 		ShortTimeOfDailyAttd shortTime = new ShortTimeOfDailyAttd(Arrays.asList(
 				new ShortWorkingTimeSheet(
 						new ShortWorkTimFrameNo(1), 
-						ChildCareAttribute.CHILD_CARE, 
+						ChildCareAtr.CHILD_CARE, 
 						TimeWithDayAttr.hourMinute(11, 0), 
 						TimeWithDayAttr.hourMinute(12, 0)),
 				new ShortWorkingTimeSheet(
 						new ShortWorkTimFrameNo(2), 
-						ChildCareAttribute.CARE, 
+						ChildCareAtr.CARE, 
 						TimeWithDayAttr.hourMinute(15, 0), 
 						TimeWithDayAttr.hourMinute(17, 0))
 				));
@@ -1508,7 +1508,7 @@ public class WorkScheduleTest {
 		ShortTimeOfDailyAttd shortTime = new ShortTimeOfDailyAttd(Arrays.asList(
 				new ShortWorkingTimeSheet(
 						new ShortWorkTimFrameNo(2), 
-						ChildCareAttribute.CARE, 
+						ChildCareAtr.CARE, 
 						TimeWithDayAttr.hourMinute(15, 0), 
 						TimeWithDayAttr.hourMinute(17, 0))
 				));
@@ -1967,7 +1967,7 @@ public class WorkScheduleTest {
 					goStraight, 
 					backStraight, 
 					DayOfWeek.MONDAY, 
-					new ArrayList<>()); 
+					new ArrayList<>(), Optional.empty()); 
 			
 			return new WorkSchedule(
 					"employeeID",

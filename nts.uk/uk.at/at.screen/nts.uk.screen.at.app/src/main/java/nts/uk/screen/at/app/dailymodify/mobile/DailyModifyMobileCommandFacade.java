@@ -35,19 +35,20 @@ import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.MonthlyRecordWorkDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.ClosureDateDto;
 import nts.uk.ctx.at.record.dom.daily.itemvalue.DailyItemValue;
-import nts.uk.ctx.at.shared.dom.application.reflectprocess.ScheduleRecordClassifi;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.ScheduleRecordClassifi;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.CorrectDailyAttendanceService;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.AttendanceItemUtil;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.ChangeDailyAttendance;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.ICorrectionAttendanceRule;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.IntegrationOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.erroralarm.EmployeeMonthlyPerError;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItem;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemAtr;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemRepository;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
+import nts.uk.screen.at.app.dailymodify.CorrectDaiAttRequireImpl;
 import nts.uk.screen.at.app.dailymodify.command.DailyModifyRCommandFacade;
 import nts.uk.screen.at.app.dailymodify.command.InsertAllData;
 import nts.uk.screen.at.app.dailymodify.command.common.DailyCalcParam;
@@ -95,13 +96,13 @@ public class DailyModifyMobileCommandFacade {
 
 	@Inject
 	private DailyModifyRCommandFacade dailyRCommandFacade;
-	
+
 	@Inject
 	private DailyCorrectCalcTimeService dCCalcTimeService;
-	
+
 	@Inject
-	private ICorrectionAttendanceRule iRule;
-	
+	private CorrectDaiAttRequireImpl correctDaiAttRequireImpl;
+
 	@Inject
 	private DailyCorrectEventServiceCenter dailyCorrectEventServiceCenter;
 
@@ -187,8 +188,17 @@ public class DailyModifyMobileCommandFacade {
 			//勤怠ルールの補正処理
 			//2021/03/19 - 日別修正から補正処理を実行する対応
 			val changeSetting = new ChangeDailyAttendance(false, false, false, true, ScheduleRecordClassifi.RECORD);
+			List<DailyRecordDto> dtoOldTemp = dailyOlds;
 			dailyEdits = dailyEdits.stream().map(x -> {
-				val domDaily = iRule.process(x.toDomain(x.getEmployeeId(), x.getDate()), changeSetting);
+				val domDaily = CorrectDailyAttendanceService.processAttendanceRule(
+						correctDaiAttRequireImpl.createRequire(), x.toDomain(x.getEmployeeId(), x.getDate()),
+						changeSetting);
+				//振休振出として扱う日数を補正する
+				val dailyOldSameDate = dtoOldTemp.stream().filter(
+						old -> old.getEmployeeId().equals(x.getEmployeeId()) && old.getDate().equals(x.getDate()))
+						.findFirst().orElse(null);
+				CorrectDailyAttendanceService.correctFurikyu(correctDaiAttRequireImpl.createRequire(),
+						dailyOldSameDate.getWorkInfo().toDomain(x.getEmployeeId(), x.getDate()), domDaily.getWorkInformation());
 				//ootsuka mode
 				if (AppContexts.optionLicense().customize().ootsuka()) {
 					 List<DPItemValue> lstItemValue = mapSidDateNotChange.get(Pair.of(x.getEmployeeId(), x.getDate()));
@@ -200,7 +210,7 @@ public class DailyModifyMobileCommandFacade {
 										it.getValueType() == null ? ValueType.UNKNOWN : ValueType.valueOf(it.getValueType()),
 										it.getLayoutCode(), it.getItemId()))
 								.collect(Collectors.toList());
-						
+
 					DailyModifyRCResult updatedOoTsuka = DailyModifyRCResult.builder().employeeId(x.getEmployeeId())
 							.workingDate(x.getDate()).items(itemValues).completed();
 					EventCorrectResult result = dailyCorrectEventServiceCenter.correctRunTime(DailyRecordDto
@@ -305,7 +315,7 @@ public class DailyModifyMobileCommandFacade {
 			if (dataParent.isCheckDailyChange()) {
 				domainDailyNew = resultIU.getLstDailyDomain();
 			}
-            
+
 			if (dataParent.getMode() == DisplayFormat.Individual.value) {
 				//// 月別実績の集計
 				DailyCalcResult resultCalcMonth = processMonthlyCalc.processMonthCalc(commandNew, commandOld,

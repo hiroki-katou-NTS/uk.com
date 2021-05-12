@@ -1,0 +1,56 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:com="http://xmlns.jcp.org/jsf/component"
+  xmlns:h="http://xmlns.jcp.org/jsf/html"
+>
+  <body>
+    <ui:composition template="../../../../master/dialog.xhtml">
+      <ui:define name="htmlHead">
+        <com:scriptfile set="IGNITE" />
+        <script>
+          var dialogSize = { width: 380, height: 400 };
+        </script>
+        <com:stylefile path="ksm007.c.main.css" />
+        <com:scriptfile path="ksm007.c.vm.js" />
+      </ui:define>
+
+      <ui:define name="content">
+        <div id="contents-area" class="ksm-007c">
+            <div class="control-group valign-center">
+                <div class="label" data-bind="text: $i18n('KSM007_36')"/>
+            </div>
+            <div class="control-group valign-center">
+                <div data-bind="ntsFormLabel: {required: true, text: $i18n('KSM007_37')}"/>
+                <div id="startDate"
+                     tabindex="1"
+                     data-bind="ntsDatePicker: {
+                                    name: '#[KSM007_38]',
+                                    value: startFromDate,
+                                    required: true,
+                                    startDate: beginStartDate
+                            }"/>
+                <span data-bind="text: $i18n('KSM007_39')"/>
+                <span data-bind="text: $i18n('KSM007_40')"/>
+            </div>
+        </div>
+        <div id="functions-area-bottom">
+          <button
+            tabindex="2"
+            id="btnProceed"
+            class="x-large proceed"
+            data-bind="click: saveData, text: $i18n('KSM007_41'), enable: $root.errors.isEmpty"
+          />
+          <button
+            tabindex="3"
+            id="btnClose"
+            class="large"
+            data-bind="click: closeDialog, text: $i18n('KSM007_42')"
+          />
+        </div>
+      </ui:define>
+    </ui:composition>
+  </body>
+</html>

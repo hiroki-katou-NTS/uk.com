@@ -11,6 +11,6 @@ public class ChildCareNurseStartdateInfoDto {
 	/** 子の看護介護休暇残数 */
 	private ChildCareNurseRemainingNumberDto remainingNumber ;
 	/** 子の看護介護休暇上限日数 */
-	private Double limitDays;
+	private Integer limitDays;
 
 }

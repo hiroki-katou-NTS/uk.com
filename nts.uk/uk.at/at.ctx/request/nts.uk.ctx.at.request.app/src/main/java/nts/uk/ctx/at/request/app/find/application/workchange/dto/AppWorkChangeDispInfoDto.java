@@ -117,7 +117,7 @@ public class AppWorkChangeDispInfoDto {
 					new AttendanceTime(predetemineTimeSetting.rangeTimeDay),
 					new WorkTimeCode(predetemineTimeSetting.workTimeCode),
 					predetermineTime,
-					predetemineTimeSetting.nightShift,
+//					predetemineTimeSetting.nightShift,
 					prescribedTimezoneSetting,
 					new TimeWithDayAttr(predetemineTimeSetting.startDateClock),
 					predetemineTimeSetting.predetermine);

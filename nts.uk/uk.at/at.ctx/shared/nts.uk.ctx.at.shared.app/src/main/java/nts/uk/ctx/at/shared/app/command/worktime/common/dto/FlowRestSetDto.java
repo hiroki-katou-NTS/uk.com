@@ -34,7 +34,7 @@ public class FlowRestSetDto implements FlowRestSetGetMemento {
 	private Integer timeManagerSetAtr;
 
 	/** The calculate method. */
-	private Integer calculateMethod;
+//	private Integer calculateMethod;
 
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.at.shared.dom.worktime.common.FlowRestSetGetMemento#getUseStamp()
@@ -63,9 +63,9 @@ public class FlowRestSetDto implements FlowRestSetGetMemento {
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.at.shared.dom.worktime.common.FlowRestSetGetMemento#getCalculateMethod()
 	 */
-	@Override
-	public FlowRestCalcMethod getCalculateMethod() {
-		return FlowRestCalcMethod.valueOf(this.calculateMethod);
-	}
+//	@Override
+//	public FlowRestCalcMethod getCalculateMethod() {
+//		return FlowRestCalcMethod.valueOf(this.calculateMethod);
+//	}
 
 }

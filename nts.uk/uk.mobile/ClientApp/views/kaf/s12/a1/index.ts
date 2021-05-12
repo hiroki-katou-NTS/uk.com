@@ -62,17 +62,24 @@ export class KafS12A1Component extends Vue {
             vm.outingTimeZones.push(new OutingTimeZone(no, no <= 3));
         }
         if (!_.isEmpty(vm.details)) {
+            let maxWorkNoHasData = 3;
             vm.details.forEach((i) => {
                 if (i.appTimeType < 4) {
-                    vm.lateEarlyTimeZones[i.appTimeType].timeValue = i.appTimeType == AppTimeType.ATWORK || i.appTimeType == AppTimeType.ATWORK2 ? i.timeZones[0].startTime : i.timeZones[0].endTime;
+                    vm.lateEarlyTimeZones[i.appTimeType].timeValue = i.appTimeType == AppTimeType.ATWORK || i.appTimeType == AppTimeType.ATWORK2 ? i.timeZones[0].endTime : i.timeZones[0].startTime;
                 } else {
                     i.timeZones.forEach((j) => {
+                        maxWorkNoHasData = Math.max(j.workNo, maxWorkNoHasData);
                         vm.outingTimeZones[j.workNo - 1].appTimeType = i.appTimeType;
                         vm.outingTimeZones[j.workNo - 1].timeZone.start = j.startTime;
                         vm.outingTimeZones[j.workNo - 1].timeZone.end = j.endTime;
                     });
                 }
             });
+            for (let no = 1; no <= maxWorkNoHasData; no++) {
+                if (!vm.outingTimeZones[no - 1].display) {
+                    vm.outingTimeZones[no - 1].display = true;
+                }
+            }
         } else {
             vm.$watch('reflectSetting', (newVal: ReflectSetting, oldVal) => {
                 if (!oldVal && newVal) {
@@ -116,37 +123,43 @@ export class KafS12A1Component extends Vue {
                     || (i.appTimeType === 1 && self.condition3)
                     || (i.appTimeType === 2 && self.condition9)
                     || (i.appTimeType === 3 && self.condition12)) {
-                    if (i.timeValue == null) {
-                        switch (i.appTimeType) {
-                            case AppTimeType.ATWORK:
-                                i.timeValue = opActualContentDisplayLst[0].opAchievementDetail.opWorkTime;
-                                break;
-                            case AppTimeType.OFFWORK:
-                                i.timeValue = opActualContentDisplayLst[0].opAchievementDetail.opLeaveTime;
-                                break;
-                            case AppTimeType.ATWORK2:
-                                i.timeValue = opActualContentDisplayLst[0].opAchievementDetail.opWorkTime2;
-                                break;
-                            case AppTimeType.OFFWORK2:
-                                i.timeValue = opActualContentDisplayLst[0].opAchievementDetail.opDepartureTime2;
-                                break;
-                            default:
-                                break;
-                        }
+                    switch (i.appTimeType) {
+                        case AppTimeType.ATWORK:
+                            i.timeValue = opActualContentDisplayLst[0].opAchievementDetail.opWorkTime;
+                            break;
+                        case AppTimeType.OFFWORK:
+                            i.timeValue = opActualContentDisplayLst[0].opAchievementDetail.opLeaveTime;
+                            break;
+                        case AppTimeType.ATWORK2:
+                            i.timeValue = opActualContentDisplayLst[0].opAchievementDetail.opWorkTime2;
+                            break;
+                        case AppTimeType.OFFWORK2:
+                            i.timeValue = opActualContentDisplayLst[0].opAchievementDetail.opDepartureTime2;
+                            break;
+                        default:
+                            break;
                     }
                 }
             });
 
-            const outingTimes = opActualContentDisplayLst[0].opAchievementDetail.stampRecordOutput.outingTime || [];
             self.outingTimeZones.forEach((i: OutingTimeZone) => {
-                outingTimes.forEach((time: any) => {
-                    if (time.frameNo == i.workNo && i.timeZone.start == null && i.timeZone.end == null) {
-                        i.timeZone.start = time.opStartTime;
-                        i.timeZone.end = time.opEndTime;
-                        i.appTimeType = time.opGoOutReasonAtr == 3 ? AppTimeType.UNION : AppTimeType.PRIVATE;
-                    }
-                });
+                i.timeZone.start = null;
+                i.timeZone.end = null;
+                i.appTimeType = AppTimeType.PRIVATE;
             });
+            let maxWorkNoHasData = 3;
+            const outingTimes = opActualContentDisplayLst[0].opAchievementDetail.stampRecordOutput.outingTime || [];
+            outingTimes.filter((time: any) => time.opGoOutReasonAtr == 0 || time.opGoOutReasonAtr == 3).forEach((time: any) => {
+                maxWorkNoHasData = Math.max(time.frameNo, maxWorkNoHasData);
+                self.outingTimeZones[time.frameNo - 1].timeZone.start = time.opStartTime;
+                self.outingTimeZones[time.frameNo - 1].timeZone.end = time.opEndTime;
+                self.outingTimeZones[time.frameNo - 1].appTimeType = time.opGoOutReasonAtr == 3 ? AppTimeType.UNION : AppTimeType.PRIVATE;
+            });
+            for (let no = 1; no <= maxWorkNoHasData; no++) {
+                if (!self.outingTimeZones[no - 1].display) {
+                    self.outingTimeZones[no - 1].display = true;
+                }
+            }
         } else if (self.newMode && prePostAtr == 0) {
             self.lateEarlyTimeZones.forEach((i: LateEarlyTimeZone) => {
                 i.timeValue = null;

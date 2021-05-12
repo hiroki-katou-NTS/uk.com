@@ -71,12 +71,11 @@ module nts.uk.at.view.kdl049.a.viewmodel {
             let param = {
                 targetDate: self.targetDate(),
                 workPlaceID: self.workPlaceID(),
-                eventComName: self.comEventName(),
-                eventWorkplaceName: self.wplEventName()
+                eventComName: self.comEventName().trim(),
+                eventWorkplaceName: self.wplEventName().trim()
             }
-            service.addEvent(param).done(() => {
 
-               
+            service.addEvent(param).done(() => {               
                 let dataShare = {
                     targetDate: self.targetDate(),
                     workPlaceID: self.workPlaceID(),
@@ -90,8 +89,6 @@ module nts.uk.at.view.kdl049.a.viewmodel {
             }).fail((res) => {
 
             });
-
-
         }
 
         closeDialog() {

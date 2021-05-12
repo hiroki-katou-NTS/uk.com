@@ -211,7 +211,7 @@ public class BreakDayOffManagementQueryImpl implements BreakDayOffManagementQuer
 		List<InterimBreakDayOffMng> lstBreakDayOffMng = new ArrayList<>();
 		for (InterimBreakMng x : lstBreakMng) {
 			//ドメインモデル「暫定休出代休紐付け管理」を取得する
-			lstBreakDayOffMng = breakDayOffRepo.getBreakDayOffMng(x.getBreakMngId(), true, DataManagementAtr.INTERIM);
+			lstBreakDayOffMng = breakDayOffRepo.getBreakDayOffMng(x.getRemainManaID(), true, DataManagementAtr.INTERIM);
 			lstBreakDayOffMng.stream()
 				.forEach(b -> {
 					//ドメインモデル「暫定代休管理データ」を取得する
@@ -269,11 +269,11 @@ public class BreakDayOffManagementQueryImpl implements BreakDayOffManagementQuer
 		lstInterimBreakMng.stream().forEach(x -> {
 			BreakHistoryData breakData = new BreakHistoryData();
 			breakData.setChkDisappeared(false);
-			breakData.setBreakMngId(x.getBreakMngId());
+			breakData.setBreakMngId(x.getRemainManaID());
 			breakData.setExpirationDate(x.getExpirationDate());
 			breakData.setUnUseDays(x.getUnUsedDays().v());
 			breakData.setOccurrenceDays(x.getOccurrenceDays().v());
-			remainRepo.getById(x.getBreakMngId()).ifPresent(y -> {
+			remainRepo.getById(x.getRemainManaID()).ifPresent(y -> {
 				MngHistDataAtr atr = MngHistDataAtr.NOTREFLECT;
 				if(y.getCreatorAtr() == CreateAtr.RECORD) {
 					atr = MngHistDataAtr.RECORD;
@@ -315,7 +315,7 @@ public class BreakDayOffManagementQueryImpl implements BreakDayOffManagementQuer
 		//暫定代休管理データの件数分ループ
 		lstInterimDayOffMng.stream().forEach(x -> {
 			DayOffHistoryData dayOffData = new DayOffHistoryData();
-			Optional<InterimRemain> remainData = remainRepo.getById(x.getDayOffManaId());
+			Optional<InterimRemain> remainData = remainRepo.getById(x.getRemainManaID());
 			remainData.ifPresent(y -> {
 				MngHistDataAtr atr = MngHistDataAtr.NOTREFLECT;
 				if(y.getCreatorAtr() == CreateAtr.RECORD) {
@@ -326,7 +326,7 @@ public class BreakDayOffManagementQueryImpl implements BreakDayOffManagementQuer
 				dayOffData.setCreateAtr(atr);
 				dayOffData.setDayOffDate(new CompensatoryDayoffDate(false, Optional.of(y.getYmd())));
 			});
-			dayOffData.setDayOffId(x.getDayOffManaId());
+			dayOffData.setDayOffId(x.getRemainManaID());
 			dayOffData.setRequeiredDays(x.getRequiredDay().v());
 			dayOffData.setUnOffsetDays(x.getUnOffsetDay().v());
 			outPutData.add(dayOffData);

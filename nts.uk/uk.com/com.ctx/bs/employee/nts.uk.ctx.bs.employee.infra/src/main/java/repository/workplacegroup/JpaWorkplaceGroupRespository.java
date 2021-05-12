@@ -20,20 +20,22 @@ import nts.uk.ctx.bs.employee.dom.workplace.group.WorkplaceGroupRespository;
  */
 @Stateless
 public class JpaWorkplaceGroupRespository extends JpaRepository implements WorkplaceGroupRespository {
-	
+
 	private static final String SELECT = "SELECT c FROM BsymtWorkplaceGroup c ";
 
 	private static final String SELECT_BY_CID = SELECT + " WHERE c.pk.CID = :CID";
-	
+
 	private static final String SELECT_BY_CID_ORDER = SELECT + " WHERE c.pk.CID = :CID ORDER BY c.WKPGRPCode ASC";
-	
+
 	private static final String SELECT_BY_CID_CODE_WID = SELECT_BY_CID + " AND c.pk.WKPGRPID = :WKPGRPID";
-	
+
 	private static final String SELECT_BY_LIST_ID = SELECT_BY_CID + " AND c.pk.WKPGRPID IN :lstWKPGRPID ORDER BY c.WKPGRPCode ASC";
-	
+
 	private static final String SELECT_BY_CID_CODE_WCD = SELECT_BY_CID + " AND c.WKPGRPCode = :WKPGRPCode";
-	
+
 	private static final String SELECT_BY_LIST_CD = SELECT_BY_CID + " AND c.WKPGRPCode IN :lstWKPGRPCode ORDER BY c.WKPGRPCode ASC";
+
+
 	/**
 	 * insert ( 職場グループ )
 	 * @param group
@@ -51,7 +53,7 @@ public class JpaWorkplaceGroupRespository extends JpaRepository implements Workp
 	public void update(WorkplaceGroup group) {
 		Optional<BsymtWorkplaceGroup> workPlaceGroup = this.queryProxy().query(SELECT_BY_CID_CODE_WID, BsymtWorkplaceGroup.class)
 				.setParameter("CID", group.getCID())
-				.setParameter("WKPGRPID", group.getWKPGRPID())
+				.setParameter("WKPGRPID", group.getId())
 				.getSingle();
 		if(workPlaceGroup.isPresent()){
 			BsymtWorkplaceGroup newData = workPlaceGroup.get();
@@ -59,7 +61,7 @@ public class JpaWorkplaceGroupRespository extends JpaRepository implements Workp
 			this.commandProxy().update(newData);
 		}
 	}
-	
+
 	/**
 	 * delete ( 会社ID, 職場グループID )
 	 * @param CID
@@ -68,7 +70,7 @@ public class JpaWorkplaceGroupRespository extends JpaRepository implements Workp
 	@Override
 	public void delete(String CID, String WKPGRPID) {
 		Optional<WorkplaceGroup> wpGroup = this.getById(CID, WKPGRPID);
-		
+
 		if(wpGroup.isPresent())
 			this.commandProxy().remove(BsymtWorkplaceGroup.class, new BsymtWorkplaceGroupPk(CID, WKPGRPID));
 	}
@@ -101,7 +103,7 @@ public class JpaWorkplaceGroupRespository extends JpaRepository implements Workp
 				.setParameter("lstWKPGRPID", lstWKPGRP)
 				.getList(c -> c.toDomain());
 	}
-	
+
 	/**
 	 * exists ( 会社ID, 職場グループID )
 	 * @param CID

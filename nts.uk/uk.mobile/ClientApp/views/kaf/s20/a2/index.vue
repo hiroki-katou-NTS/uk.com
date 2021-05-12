@@ -65,7 +65,7 @@
               </div>
               <div class="collapse">
                 <div class="card-body">
-                  <span>{{item.description}}</span><br>
+                  <span style="display: block;">{{item.description}}</span>
                   <span v-if="item.lowerCheck || item.upperCheck || item.unit || item.optionalItemAtr == 0">
                     {{ 'KAF020_25' | i18n }}
                   </span>
@@ -146,7 +146,7 @@
               v-bind:record-id="index"
               v-bind:columns="{ input: 'col-10' }"
             />
-            <span class="position-absolute">{{(item.optionalItemAtr == 0 ? 'KAF020_32' : item.unit) | i18n }}</span>
+            <span class="position-absolute">{{ item.unit }}</span>
           </div>
         </div>
       </div>

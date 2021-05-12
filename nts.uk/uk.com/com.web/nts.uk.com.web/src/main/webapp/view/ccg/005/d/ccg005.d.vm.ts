@@ -69,6 +69,7 @@ module nts.uk.at.view.ccg005.d.screenModel {
           vm.$errors("clear");
         }
       });
+      $("#D5_1").focus();
     }
 
     private bindingData(order: number) {
@@ -90,6 +91,7 @@ module nts.uk.at.view.ccg005.d.screenModel {
       vm.$blockui("grayout");
       vm.$ajax(API.getFavoriteInformation).then((data: FavoriteSpecifyData[]) => {
         vm.favoriteList(data);
+        vm.bindingData(vm.selectedFavoriteOrder());
         vm.$blockui("clear");
       })
       .always(() => vm.$blockui("clear"));
@@ -127,7 +129,7 @@ module nts.uk.at.view.ccg005.d.screenModel {
             const favoriteSpecify = new FavoriteSpecifyData({
               favoriteName: vm.favoriteName(),
               creatorId: __viewContext.user.employeeId,
-              inputDate: moment.utc().toISOString(),
+              inputDate: moment().format(),
               targetSelection: vm.selectedRuleCode(),
               workplaceId: vm.selectedRuleCode() === TargetSelection.WORKPLACE ? vm.workPlaceIdList() : [],
               order: vm.getNewOrder(),

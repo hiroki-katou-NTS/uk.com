@@ -4,7 +4,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -140,7 +139,7 @@ public class AppListApproveCommandHandler extends CommandHandlerWithResult<AppLi
 					Optional.empty());
 			// アルゴリズム「承認する」を実行する
 			ApproveProcessResult approveProcessResult = approveAppHandler.approve(companyID, application.getAppID(), application, appDispInfoStartupOutput, 
-					"", listOfAppTypes);
+					"", listOfAppTypes, true);
 			if(approveProcessResult.isProcessDone()) {
 				return Pair.of(true, "");
 			} else {

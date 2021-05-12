@@ -36,7 +36,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.Annu
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.CalcAnnLeaAttendanceRate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.CreateInterimAnnualMngData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualHolidayMng;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TempAnnualLeaveMngs;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualLeaveMngWork;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.GrantRemainRegisterType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
@@ -53,6 +53,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.GetClosureIdHistory;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.GetClosureStartForEmployee;
+import nts.uk.ctx.at.shared.dom.workrule.closure.service.GetClosureStartForEmployee.RequireM1;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantDays;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantHdTblSet;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantNum;
@@ -223,8 +224,8 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 		val grantTableCode = empBasicInfo.getGrantRule().getGrantTableCode().v();
 
 		// 「休暇の集計期間から入社前、退職後を除く」を実行する
-		aggrPeriod = ConfirmLeavePeriod.sumPeriod(aggrPeriod, employee);
-		if (aggrPeriod == null) return Optional.empty();
+		Optional<DatePeriod> period = ConfirmLeavePeriod.sumPeriod(aggrPeriod, employee);
+		if (!period.isPresent()) return Optional.empty();
 
 		// 年休付与テーブル設定、勤続年数テーブル　取得
 		Optional<GrantHdTblSet> grantHdTblSetOpt = Optional.empty();
@@ -253,7 +254,7 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 			// 次回年休付与を計算
 			nextAnnualLeaveGrantList = CalcNextAnnualLeaveGrantDate.algorithm(
 					require, cacheCarrier,
-					companyId, employeeId, Optional.of(aggrPeriod),
+					companyId, employeeId, Optional.of(period.get()),
 					Optional.ofNullable(employee), annualLeaveEmpBasicInfoOpt,
 					grantHdTblSetOpt, lengthServiceTblsOpt);
 
@@ -320,7 +321,7 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 
 		// 年休集計期間を作成
 		List<AggregatePeriodWork> aggregateWork = createAggregatePeriod(
-				nextAnnualLeaveGrantList, aggrPeriod, grantRemainingDatas);
+				nextAnnualLeaveGrantList, period.get(), grantRemainingDatas);
 
 		// 暫定年休管理データを取得する
 		val tempAnnualLeaveMngs = getTempAnnualLeaveMngs(
@@ -462,9 +463,9 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 		if (sttMng.isPresent()){
 			// 受け取った「年月日」を返す
 			closureStart = sttMng.get().getPeriod().end();
-			if (closureStart.before(GeneralDate.max())){
-				closureStart = closureStart.addDays(1);
-			}
+//			if (closureStart.before(GeneralDate.max())){
+//				closureStart = closureStart.addDays(1);
+//			}
 			closureStartOpt = Optional.of(closureStart);
 		}
 		else {
@@ -965,7 +966,7 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 
 //		List<InterimRemain> interimRemains(String employeeId, DatePeriod dateData, RemainType remainType);
 
-		List<TmpAnnualHolidayMng> tmpAnnualHolidayMng(String sid, DatePeriod dateData);
+		List<TempAnnualLeaveMngs> tmpAnnualHolidayMng(String sid, DatePeriod dateData);
 
 		List<AttendanceTimeOfMonthly> attendanceTimeOfMonthly(String employeeId, DatePeriod period);
 	}

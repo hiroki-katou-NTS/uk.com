@@ -6,7 +6,7 @@ module nts.uk.at.view.kal003.b.viewmodel {
     import resource = nts.uk.resource;
     import sharemodel = nts.uk.at.view.kal003.share.model;
     import shareutils = nts.uk.at.view.kal003.share.kal003utils;
-    
+    import NumberEditorOption = nts.uk.ui.option.NumberEditorOption;
 
 
     export class ScreenModel {
@@ -18,6 +18,12 @@ module nts.uk.at.view.kal003.b.viewmodel {
         listCompareTypes: KnockoutObservableArray<model.EnumModel> = ko.observableArray([]);
         itemListTargetServiceType_BA1_2: KnockoutObservableArray<model.EnumModel> = ko.observableArray([]);
         itemListTargetSelectionRange_BA1_5: KnockoutObservableArray<model.EnumModel> = ko.observableArray([]);
+        listCheckTimeType: KnockoutObservableArray<model.EnumModel> = ko.observableArray([]);
+        listTimeZoneTargetRange: KnockoutObservableArray<model.EnumModel> = ko.observableArray([]);
+        listTypeOfContrast: KnockoutObservableArray<model.EnumModel> = ko.observableArray([]);
+        listTypeOfDays: KnockoutObservableArray<model.EnumModel> = ko.observableArray([]);
+        listTypeOfTime: KnockoutObservableArray<model.EnumModel> = ko.observableArray([]);
+        listTypeOfVacations: KnockoutObservableArray<model.EnumModel> = ko.observableArray([]);
         listAllWorkType: Array<string> = ([]);
         listAllAttdItem: Array<string> = ([]);
         listAllWorkingTime: Array<string> = ([]);
@@ -51,9 +57,32 @@ module nts.uk.at.view.kal003.b.viewmodel {
         //MinhVV 
         mulMonCheckCondSet: KnockoutObservable<sharemodel.MulMonCheckCondSet>;
         private setting: sharemodel.MulMonCheckCondSet;
-
-
-
+        
+        isPattern: KnockoutObservable<boolean> = ko.observable(false);
+        isPatternA: KnockoutObservable<boolean> = ko.observable(false);
+        isPatternB: KnockoutObservable<boolean> = ko.observable(false);
+        isPatternD: KnockoutObservable<boolean> = ko.observable(false);
+        isPatternE: KnockoutObservable<boolean> = ko.observable(false);
+        isPatternG: KnockoutObservable<boolean> = ko.observable(false);
+        isPatternForContinuousWork: KnockoutObservable<boolean> = ko.observable(false);
+        isPatterForContinuousTimeZone: KnockoutObservable<boolean> = ko.observable(false);
+        isPatternForRemainingNumber: KnockoutObservable<boolean> = ko.observable(false);
+        
+        isTimeEditor: KnockoutObservable<boolean> = ko.observable(false);
+        isNumberEditor: KnockoutObservable<boolean> = ko.observable(false);
+        isDayEditor: KnockoutObservable<boolean> = ko.observable(false);
+        
+        constraint: KnockoutObservable<string> = ko.observable("");
+        numberEditorOption: KnockoutObservable<NumberEditorOption> = ko.observable(new NumberEditorOption({
+            numberGroup: true,
+            decimallength: 2,
+            placeholder: "",
+            width: "",
+            textalign: "left"
+        }));
+        
+        scheCheckTypeCondition: KnockoutObservable<number> = ko.observable(0);
+        
         constructor(isDoNothing) {
             let self = this;
             let option = windows.getShared('inputKal003b');
@@ -188,6 +217,18 @@ module nts.uk.at.view.kal003.b.viewmodel {
                     });
                     break;
                 }
+                case sharemodel.CATEGORY.SCHEDULE_DAILY:
+                    self.processScheduleDaily(option);                    
+                    break;
+                case sharemodel.CATEGORY.SCHEDULE_MONTHLY:
+                    self.processScheduleMonthly(option);
+                    break;
+                case sharemodel.CATEGORY.SCHEDULE_YEAR:
+                    self.processScheduleYear(option);
+                    break;
+                case sharemodel.CATEGORY.WEEKLY:
+                    self.processScheduleWeekly(option);
+                    break;
                 default: break;
             }
 
@@ -223,6 +264,34 @@ module nts.uk.at.view.kal003.b.viewmodel {
                         dfd.reject();
                     });
                     break;
+                case sharemodel.CATEGORY.SCHEDULE_DAILY:
+                    $.when(self.getAllEnums(), self.getEnumSchedule()).done(function() {
+                        dfd.resolve();
+                    }).fail(() => {
+                        dfd.reject();
+                    });
+                    break;
+                case sharemodel.CATEGORY.SCHEDULE_MONTHLY:
+                    $.when(self.getEnumScheduleMonthly()).done(function() {
+                        dfd.resolve();
+                    }).fail(() => {
+                        dfd.reject();
+                    });
+                    break;
+                case sharemodel.CATEGORY.SCHEDULE_YEAR:
+                    $.when(self.getEnumScheduleYear()).done(function() {
+                        dfd.resolve();
+                    }).fail(() => {
+                        dfd.reject();
+                    });
+                    break;
+                case sharemodel.CATEGORY.WEEKLY:
+                    $.when(self.getEnumScheduleWeekly()).done(function() {
+                        dfd.resolve();
+                    }).fail(() => {
+                        dfd.reject();
+                    });
+                    break;
                 default: break;
             }
 
@@ -235,11 +304,9 @@ module nts.uk.at.view.kal003.b.viewmodel {
         private settingEnableComparisonMaxValueField(isStart: boolean) {
             let self = this;
             if (isStart) {
-                self.enableComparisonMaxValue(
-                    self.workRecordExtractingCondition().errorAlarmCondition().atdItemCondition().group1().lstErAlAtdItemCon()[0].compareOperator() > 5);
+                self.enableComparisonMaxValue(self.workRecordExtractingCondition().errorAlarmCondition().atdItemCondition().group1().lstErAlAtdItemCon()[0].compareOperator() > 5);
             } else {
-                self.enableComparisonMaxValue(
-                self.comparisonRange().comparisonOperator() > 5);
+                self.enableComparisonMaxValue(self.comparisonRange().comparisonOperator() > 5);
             }
         }
 
@@ -329,8 +396,39 @@ module nts.uk.at.view.kal003.b.viewmodel {
 //           });
 
         }
+        
         private initComparisonValueRange(): model.ComparisonValueRange {
             let self = this;
+            
+            if (self.category() == sharemodel.CATEGORY.SCHEDULE_DAILY) {
+                return new model.ComparisonValueRange(
+                    self.workRecordExtractingCondition().checkItem
+                    , self.workRecordExtractingCondition().errorAlarmCondition().workTypeCondition().comparisonOperator
+                    , self.workRecordExtractingCondition().errorAlarmCondition().workTypeCondition().compareStartValue()
+                    , self.workRecordExtractingCondition().errorAlarmCondition().workTypeCondition().compareEndValue());
+            }
+            
+            if (self.category() == sharemodel.CATEGORY.SCHEDULE_MONTHLY || self.category() == sharemodel.CATEGORY.SCHEDULE_YEAR || self.category() == sharemodel.CATEGORY.WEEKLY) {
+                let startValue = self.workRecordExtractingCondition().errorAlarmCondition().monthlyCondition().compareStartValue();
+                let endValue = self.workRecordExtractingCondition().errorAlarmCondition().monthlyCondition().compareEndValue();
+                
+                if (self.category() == sharemodel.CATEGORY.SCHEDULE_MONTHLY && self.workRecordExtractingCondition().checkItem() == 3) {
+                    let operator = self.workRecordExtractingCondition().errorAlarmCondition().workTypeCondition().comparisonOperator();
+                    let defaultInputs = [
+                        new sharemodel.InputModel(0, true, startValue, true, true, nts.uk.resource.getText("KAL003_80")), 
+                        new sharemodel.InputModel(0, true, endValue, operator > 5, true, nts.uk.resource.getText("KAL003_83"))];
+                    self.workRecordExtractingCondition().errorAlarmCondition().monthlyCondition().inputs(defaultInputs);
+                }
+                var comparisonValueRange = new model.ComparisonValueRange(
+                    self.workRecordExtractingCondition().checkItem
+                    , self.workRecordExtractingCondition().errorAlarmCondition().monthlyCondition().comparisonOperator
+                    , startValue
+                    , endValue);
+                comparisonValueRange.minValue(startValue);
+                comparisonValueRange.maxValue(endValue);
+                return comparisonValueRange;
+            }
+
             let erAlAtdItemCondition = self.workRecordExtractingCondition().errorAlarmCondition().atdItemCondition().group1().lstErAlAtdItemCon()[0];
 
             let comparisonValueRange;
@@ -424,6 +522,130 @@ module nts.uk.at.view.kal003.b.viewmodel {
                 }).always(() => {
                     dfd.resolve();
                 });
+            return dfd.promise();
+        }
+        
+        /**
+         * Get enum for all category schedule: daily
+         */
+        private getEnumSchedule(): JQueryPromise<any> {
+            let self = this,
+                dfd = $.Deferred();
+            $.when(service.getEnumDaiCheckItemType(), service.getCheckTimeType(), service.getTimeZoneTargetRange()).done((
+                        listDaiCheckItemType: Array<model.EnumModel>, listCheckTimeType: Array<model.EnumModel>, listTimeZoneTargetRange: Array<model.EnumModel>) => {
+                self.listTypeCheckWorkRecords(self.getLocalizedNameForEnum(listDaiCheckItemType));
+                self.listCheckTimeType(self.getLocalizedNameForEnum(listCheckTimeType));
+                self.listTimeZoneTargetRange(self.getLocalizedNameForEnum(listTimeZoneTargetRange));
+                dfd.resolve();
+
+            }).always(() => {
+                dfd.resolve();
+            });
+            
+            return dfd.promise();
+        }
+        
+        /**
+         * Get enum for all category schedule: monthly
+         */
+        private getEnumScheduleMonthly(): JQueryPromise<any> {
+            let self = this,
+                dfd = $.Deferred();
+            $.when(service.getEnumMonCheckItemType(),
+                   service.getEnumTypeOfContrast(),
+                   service.getEnumTypeOfDays(),
+                   service.getEnumTypeOfTime(),
+                   service.getEnumTypeOfVacations(),
+                   service.getEnumSingleValueCompareTypse(),
+                   service.getEnumRangeCompareType(),
+                   service.getSpecialHoliday()).done((
+                        listMonCheckItemType: Array<model.EnumModel>, 
+                        listTypeOfContrast: Array<model.EnumModel>, 
+                        listTypeOfDays: Array<model.EnumModel>,
+                        listTypeOfTime: Array<model.EnumModel>,
+                        listTypeOfVacations: Array<model.EnumModel>,
+                        listSingleValueCompareTypse: Array<model.EnumModel>,
+                        listRangeCompareType: Array<model.EnumModel>,
+                        listSpecialCode) => {
+                self.listTypeCheckWorkRecords(self.getLocalizedNameForEnum(listMonCheckItemType));
+                self.listCheckTimeType(self.getLocalizedNameForEnum(listTypeOfContrast));
+               
+                self.listTypeOfContrast(self.getLocalizedNameForEnum(listTypeOfContrast));
+                self.listTypeOfDays(self.getLocalizedNameForEnum(listTypeOfDays));
+                self.listTypeOfTime(self.getLocalizedNameForEnum(listTypeOfTime));
+                self.listTypeOfVacations(self.getLocalizedNameForEnum(listTypeOfVacations));
+                       
+                self.getChangeListCheckTimeType(self.checkItemTemp());
+                       
+                self.listSingleValueCompareTypes(self.getLocalizedNameForEnum(listSingleValueCompareTypse));
+                self.listRangeCompareTypes(self.getLocalizedNameForEnum(listRangeCompareType));
+                self.buildListCompareTypes();
+                       
+                self.listSpecialholidayframe = listSpecialCode;
+                dfd.resolve();
+
+            }).always(() => {
+                dfd.resolve();
+            });
+            
+            return dfd.promise();
+        }
+        
+        private getEnumScheduleYear(): JQueryPromise<any> {
+            let self = this,
+                dfd = $.Deferred();
+            $.when(service.getEnumYearCheckItemType(),
+                   service.getEnumTypeOfDays(),
+                   service.getEnumTypeOfTime(),
+                   service.getEnumSingleValueCompareTypse(),
+                   service.getEnumRangeCompareType()).done((
+                        listYearCheckItemType: Array<model.EnumModel>, 
+                        listTypeOfDays: Array<model.EnumModel>,
+                        listTypeOfTime: Array<model.EnumModel>,
+                        listSingleValueCompareTypse: Array<model.EnumModel>,
+                        listRangeCompareType: Array<model.EnumModel>) => {
+                self.listTypeCheckWorkRecords(self.getLocalizedNameForEnum(listYearCheckItemType));
+                self.listCheckTimeType(self.getLocalizedNameForEnum(listTypeOfDays));
+               
+                self.listTypeOfDays(self.getLocalizedNameForEnum(listTypeOfDays));
+                self.listTypeOfTime(self.getLocalizedNameForEnum(listTypeOfTime));
+                       
+                self.getChangeListCheckTimeTypeScheduleYear(self.checkItemTemp());
+                       
+                self.listSingleValueCompareTypes(self.getLocalizedNameForEnum(listSingleValueCompareTypse));
+                self.listRangeCompareTypes(self.getLocalizedNameForEnum(listRangeCompareType));
+                self.buildListCompareTypes();
+                       
+                dfd.resolve();
+
+            }).always(() => {
+                dfd.resolve();
+            });
+            
+            return dfd.promise();
+        }
+        
+        private getEnumScheduleWeekly(): JQueryPromise<any> {
+            let self = this,
+                dfd = $.Deferred();
+            $.when(service.getEnumWeeklyCheckItemType(),
+                   service.getEnumSingleValueCompareTypse(),
+                   service.getEnumRangeCompareType()).done((
+                        listWeeklyCheckItemType: Array<model.EnumModel>, 
+                        listSingleValueCompareTypse: Array<model.EnumModel>,
+                        listRangeCompareType: Array<model.EnumModel>) => {
+                self.listTypeCheckWorkRecords(self.getLocalizedNameForEnum(listWeeklyCheckItemType));
+                       
+                self.listSingleValueCompareTypes(self.getLocalizedNameForEnum(listSingleValueCompareTypse));
+                self.listRangeCompareTypes(self.getLocalizedNameForEnum(listRangeCompareType));
+                self.buildListCompareTypes();
+                       
+                dfd.resolve();
+
+            }).always(() => {
+                dfd.resolve();
+            });
+            
             return dfd.promise();
         }
 
@@ -598,11 +820,20 @@ module nts.uk.at.view.kal003.b.viewmodel {
                 self.listAllWorkingTime = self.getListWorkTimeCdFromDtos(settingTimeZones);
                 //get name
                 let listItems = self.workRecordExtractingCondition().errorAlarmCondition().workTimeCondition().planLstWorkTime();
-
-                self.generateNameCorrespondingToAttendanceItem(listItems).done((data) => {
-                    self.displayWorkingTimeSelections_BA5_3(data);
-                });
-                //self.initialWorkTimeCodesFromDtos(settingTimeZones);
+                var strWt = "";
+                for (var i = 0; i < listItems.length; i++) {
+                    var wt = _.filter(settingTimeZones, function(o) { return o.worktimeCode == listItems[i]});
+                    if(wt != null || wt != undefined){
+                        strWt += ', ' + wt[0].workTimeName;
+                    }
+                }
+                if(strWt != ""){
+                    self.displayWorkingTimeSelections_BA5_3(strWt.substring(2));    
+                } else {
+                    self.displayWorkingTimeSelections_BA5_3(strWt);
+                }
+                
+                
                 //ドメインモデル「勤務種類」を取得する - Acquire domain model "WorkType"
                 self.initialWorkTypes(defered);
             }, function(rejected) {
@@ -811,6 +1042,7 @@ module nts.uk.at.view.kal003.b.viewmodel {
                     if (listItems != null && listItems != undefined) {
                         let listCodes: Array<string> = self.getListCode(listItems);
                         workTypeCondition.planLstWorkType(listCodes);
+                        workTypeCondition.planFilterAtr = true;
                         // get name
                         let names: string = self.buildItemName(listItems);
                         self.displayWorkTypeSelections_BA1_4(names);
@@ -841,10 +1073,24 @@ module nts.uk.at.view.kal003.b.viewmodel {
                     let listItems: Array<any> = windows.getShared("kml001selectedCodeList");
                     if (listItems != null && listItems != undefined) {
                         workTimeCondition.planLstWorkTime(listItems);
-                        //get name
-                        self.generateNameCorrespondingToAttendanceItem(listItems).done((data) => {
-                            self.displayWorkingTimeSelections_BA5_3(data);
-                        });
+                        var dfd = $.Deferred();
+                        service.getAttendCoutinousTimeZone().done((settingTimeZones) => {
+                            //get name
+                            var strWt = "";
+                            for (var i = 0; i < listItems.length; i++) {
+                                var wt = _.filter(settingTimeZones, function(o) { return o.worktimeCode === listItems[i]});
+                                if(wt != null || wt != undefined){
+                                    strWt += ', ' + wt[0].workTimeName;
+                                }
+                            }
+                            if(strWt != ""){
+                                self.displayWorkingTimeSelections_BA5_3(strWt.substring(2));    
+                            } else {
+                                self.displayWorkingTimeSelections_BA5_3(strWt);
+                            }
+                        }, function(rejected) {
+                            dfd.resolve();
+                        });                        
                     }
                     block.clear();
                 });
@@ -962,6 +1208,33 @@ module nts.uk.at.view.kal003.b.viewmodel {
                     });
                     break;
                 }
+                    
+                case sharemodel.CATEGORY.WEEKLY:
+                    let currentAtdItemConMon = self.workRecordExtractingCondition().errorAlarmCondition().monthlyCondition();
+                    self.getListItemByAtrWeekly(self.workRecordExtractingCondition().checkItem(), 1).done((lstItem) => {
+                        let lstItemCode = lstItem.map((item) => { return item.attendanceItemId; });
+                        //Open dialog KDW007C
+                        let param = {
+                            attr: 1,
+                            lstAllItems: lstItemCode,
+                            lstAddItems: currentAtdItemConMon.countableAddAtdItems(),
+                            lstSubItems: currentAtdItemConMon.countableSubAtdItems()
+                        };
+
+                        nts.uk.ui.windows.setShared("KDW007Params", param);
+                        nts.uk.ui.windows.sub.modal("at", "/view/kdw/007/c/index.xhtml").onClosed(() => {
+                            $(".nts-input").ntsError("clear");
+                            let output = nts.uk.ui.windows.getShared("KDW007CResults");
+                            if (output) {
+                                console.log(output);
+                                currentAtdItemConMon.countableAddAtdItems(output.lstAddItems.map((item) => { return parseInt(item); }));
+                                currentAtdItemConMon.countableSubAtdItems(output.lstSubItems.map((item) => { return parseInt(item); }));
+                                self.fillTextDisplayTargetWeekly(lstItem, currentAtdItemConMon);
+                            }
+                        });
+
+                    });
+                    break;
                 default: break;
             }
 
@@ -1059,6 +1332,33 @@ module nts.uk.at.view.kal003.b.viewmodel {
                     dfd.resolve(lstAtdItem);
                 });
             } else if (typeCheck == 5) { // 日数
+                service.getAttendanceItemByAtrNew(MONTHLYATTENDANCEITEMATR.DAYS, mode).done((lstAtdItem) => {
+                    dfd.resolve(lstAtdItem);
+                });
+            } else {
+                dfd.resolve([]);
+            }
+            return dfd.promise();
+        }
+        
+        /**
+         * <CATEGORY=WEEKLY>
+         * Get attendance item
+         */
+        getListItemByAtrWeekly(typeCheck: number, mode: number) {
+            let self = this;
+            let dfd = $.Deferred<any>();
+            if (typeCheck == WEEKLYCHECKITEMTYPE.TIMES || typeCheck == WEEKLYCHECKITEMTYPE.CONTINUOUS_TIMES) { //combobox select
+                //With type 回数 - Times ,
+                service.getAttendanceItemByAtrNew(MONTHLYATTENDANCEITEMATR.NUMBER, mode).done((lstAtdItem) => {
+                    dfd.resolve(lstAtdItem);
+                });
+            } else if (typeCheck == WEEKLYCHECKITEMTYPE.TIME || typeCheck == WEEKLYCHECKITEMTYPE.CONTINUOUS_TIME) {
+                //With type 時間 - Time
+                service.getAttendanceItemByAtrNew(MONTHLYATTENDANCEITEMATR.TIME, mode).done((lstAtdItem) => {
+                    dfd.resolve(lstAtdItem);
+                });
+            } else if (typeCheck == WEEKLYCHECKITEMTYPE.DAYS || typeCheck == WEEKLYCHECKITEMTYPE.CONTINUOUS_DAY) { // 日数
                 service.getAttendanceItemByAtrNew(MONTHLYATTENDANCEITEMATR.DAYS, mode).done((lstAtdItem) => {
                     dfd.resolve(lstAtdItem);
                 });
@@ -1198,6 +1498,48 @@ module nts.uk.at.view.kal003.b.viewmodel {
 
             return defered.promise();
         }
+        
+        /**
+         * <CATEGORY=WEEKLY>
+         * File text display for element B2_3 of pattern A
+         */
+        fillTextDisplayTargetWeekly(sourceName, currentAtdItemCondition) {
+            let self = this;
+            let countableAddAtdItems = currentAtdItemCondition.countableAddAtdItems(),
+                countableSubAtdItems = currentAtdItemCondition.countableSubAtdItems();
+            if (sourceName) {
+                self.convertToText(sourceName, countableAddAtdItems, countableSubAtdItems);
+                return;
+            }
+            let itemIds = _.concat(countableAddAtdItems, countableSubAtdItems);
+            if (itemIds.length === 0) {
+                return;
+            }
+            service.getAttendanceItemByCodesNew(itemIds, 1).done((lstItems) => {
+                self.convertToText(lstItems, countableAddAtdItems, countableSubAtdItems);
+            });  
+        }
+        
+        /**
+         * <CATEGORY=WEEKLY>
+         */
+        convertToText(sourceName: Array<any>, countableAddAtdItems: Array<number>, countableSubAtdItems: Array<number>) {
+            let self = this;
+            let addText = "", subText = "";
+            if (countableAddAtdItems && countableAddAtdItems.length > 0) {
+                addText = "" + _.map(countableAddAtdItems, (id) => {
+                    let finded = _.find(sourceName, (item) => { return id === item.attendanceItemId; });
+                    return finded === undefined ? "" : finded.attendanceItemName
+                }).join("+");
+            }
+            if (countableSubAtdItems && countableSubAtdItems.length > 0) {
+                subText = '-' + _.map(countableSubAtdItems, (id) => {
+                    let finded = _.find(sourceName, (item) => { return id === item.attendanceItemId; });
+                    return finded === undefined ? "" : finded.attendanceItemName
+                }).join("-");
+            }
+            self.displayAttendanceItemSelections_BA2_3(addText + subText);
+        }
 
         /**
          * close dialog B and return result
@@ -1209,7 +1551,6 @@ module nts.uk.at.view.kal003.b.viewmodel {
                 return;
             }
             
-
             switch (self.category()) {
                 case sharemodel.CATEGORY.DAILY: {
                     let workRecordExtractingCondition = self.workRecordExtractingCondition();
@@ -1301,6 +1642,86 @@ module nts.uk.at.view.kal003.b.viewmodel {
                     }
                     break;
                 }
+                case sharemodel.CATEGORY.SCHEDULE_DAILY:
+                    self.workRecordExtractingCondition().errorAlarmCondition().workTypeCondition().comparisonOperator(self.comparisonRange().comparisonOperator());
+                    self.workRecordExtractingCondition().errorAlarmCondition().workTypeCondition().compareStartValue(self.comparisonRange().minValue());
+                    self.workRecordExtractingCondition().errorAlarmCondition().workTypeCondition().compareEndValue(self.comparisonRange().maxValue());
+                    let alchecktargetcondition = {
+                        filterByBusinessType: false,
+                        filterByJobTitle: false,
+                        filterByEmployment: false,
+                        filterByClassification: false,
+                        lstBusinessTypeCode: [],
+                        lstJobTitleId: [],
+                        lstEmploymentCode: [],
+                        lstClassificationCode: [],    
+                    };
+                    if (self.workRecordExtractingCondition().errorAlarmCondition().alCheckTargetCondition == null) {
+                        self.workRecordExtractingCondition().errorAlarmCondition().alCheckTargetCondition = ko.observable();
+                    }
+                    self.workRecordExtractingCondition().errorAlarmCondition().alCheckTargetCondition(alchecktargetcondition);
+
+                    let retData = ko.toJS(self.workRecordExtractingCondition());
+                    retData = shareutils.convertArrayOfWorkRecordExtractingConditionToJS(retData, self.workRecordExtractingCondition());
+                    windows.setShared('outputKal003b', retData);
+                    windows.close();
+                    break;
+                case sharemodel.CATEGORY.SCHEDULE_MONTHLY:
+                    self.workRecordExtractingCondition().errorAlarmCondition().monthlyCondition().scheCheckCondition(self.scheCheckTypeCondition());
+                    self.workRecordExtractingCondition().errorAlarmCondition().monthlyCondition().comparisonOperator(self.comparisonRange().comparisonOperator());
+                    self.workRecordExtractingCondition().errorAlarmCondition().monthlyCondition().compareStartValue(self.comparisonRange().minValue());
+                    self.workRecordExtractingCondition().errorAlarmCondition().monthlyCondition().compareEndValue(self.comparisonRange().maxValue());
+                    if (self.workRecordExtractingCondition().checkItem() == 3) {
+                        let startValue = self.workRecordExtractingCondition().errorAlarmCondition().monthlyCondition().inputs()[0].value;
+                        let endValue = self.workRecordExtractingCondition().errorAlarmCondition().monthlyCondition().inputs()[1].value;
+                        self.workRecordExtractingCondition().errorAlarmCondition().monthlyCondition().compareStartValue(startValue);
+                        self.workRecordExtractingCondition().errorAlarmCondition().monthlyCondition().compareEndValue(endValue);
+                    }
+                    let alchecktargetcondition = {
+                        filterByBusinessType: false,
+                        filterByJobTitle: false,
+                        filterByEmployment: false,
+                        filterByClassification: false,
+                        lstBusinessTypeCode: [],
+                        lstJobTitleId: [],
+                        lstEmploymentCode: [],
+                        lstClassificationCode: [],    
+                    };
+                    if (self.workRecordExtractingCondition().errorAlarmCondition().alCheckTargetCondition == null) {
+                        self.workRecordExtractingCondition().errorAlarmCondition().alCheckTargetCondition = ko.observable();
+                    }
+                    self.workRecordExtractingCondition().errorAlarmCondition().alCheckTargetCondition(alchecktargetcondition);
+
+                    let retData = ko.toJS(self.workRecordExtractingCondition());
+                    retData = shareutils.convertArrayOfWorkRecordExtractingConditionToJS(retData, self.workRecordExtractingCondition());
+                    windows.setShared('outputKal003b', retData);
+                    windows.close();
+                    break;
+                case sharemodel.CATEGORY.SCHEDULE_YEAR:
+                case sharemodel.CATEGORY.WEEKLY:
+                    let alchecktargetcondition = {
+                        filterByBusinessType: false,
+                        filterByJobTitle: false,
+                        filterByEmployment: false,
+                        filterByClassification: false,
+                        lstBusinessTypeCode: [],
+                        lstJobTitleId: [],
+                        lstEmploymentCode: [],
+                        lstClassificationCode: [],    
+                    };
+                    if (self.workRecordExtractingCondition().errorAlarmCondition().alCheckTargetCondition == null) {
+                        self.workRecordExtractingCondition().errorAlarmCondition().alCheckTargetCondition = ko.observable();
+                    }
+                    self.workRecordExtractingCondition().errorAlarmCondition().alCheckTargetCondition(alchecktargetcondition);
+                    self.workRecordExtractingCondition().errorAlarmCondition().monthlyCondition().scheCheckCondition(self.scheCheckTypeCondition());                 
+                    self.workRecordExtractingCondition().errorAlarmCondition().monthlyCondition().comparisonOperator(self.comparisonRange().comparisonOperator());
+                    self.workRecordExtractingCondition().errorAlarmCondition().monthlyCondition().compareStartValue(self.comparisonRange().minValue());
+                    self.workRecordExtractingCondition().errorAlarmCondition().monthlyCondition().compareEndValue(self.comparisonRange().maxValue());
+                    let retData = ko.toJS(self.workRecordExtractingCondition());
+                    retData = shareutils.convertArrayOfWorkRecordExtractingConditionToJS(retData, self.workRecordExtractingCondition());
+                    windows.setShared('outputKal003b', retData);
+                    windows.close();
+                    break;
                 default: break;
             }
 
@@ -1488,6 +1909,714 @@ module nts.uk.at.view.kal003.b.viewmodel {
             }
             return comparisonValueRange;
         }
+        
+        /**
+         * Process with category is schedule daily
+         */
+        private processScheduleDaily(option): void {
+            let self = this;
+            
+            self.setting = $.extend({}, shareutils.getDefaultWorkRecordExtractingCondition(0), option.data);
+
+            let workRecordExtractingCond = shareutils.convertTransferDataToWorkRecordExtractingCondition(self.setting);
+            self.workRecordExtractingCondition = ko.observable(workRecordExtractingCond);
+            // setting comparison value range
+    
+            self.comparisonRange = ko.observable(self.initComparisonValueRange());
+            self.resetComparisonRangeMinMaxValueNull();
+            self.checkItemTemp = ko.observable(self.workRecordExtractingCondition().checkItem());
+            
+            self.controlShowPattern(self.workRecordExtractingCondition().checkItem());
+            self.scheduleDailyShowTimeEditor(self.workRecordExtractingCondition().checkItem());
+            
+            self.settingEnableComparisonMaxValueField(false);
+            
+            self.initialScheduleDaily();
+            
+            // change select item check
+            self.workRecordExtractingCondition().checkItem.subscribe((itemCheck) => {
+                errors.clearAll();
+                
+                self.settingEnableComparisonMaxValueField(false);
+                self.controlShowPattern(itemCheck);
+                self.scheduleDailyShowTimeEditor(itemCheck);
+                
+                self.workRecordExtractingCondition().errorAlarmCondition().workTypeCondition().comparePlanAndActual(0);
+                self.workRecordExtractingCondition().errorAlarmCondition().workTimeCondition().comparePlanAndActual(0);
+                self.workRecordExtractingCondition().errorAlarmCondition().workTypeCondition().planLstWorkType([]);
+                self.workRecordExtractingCondition().errorAlarmCondition().workTimeCondition().planLstWorkTime([]);
+                self.workRecordExtractingCondition().errorAlarmCondition().displayMessage("");
+                self.workRecordExtractingCondition().errorAlarmCondition().continuousPeriod(null);
+                self.comparisonRange().comparisonOperator(0);
+                self.comparisonRange().minAmountOfMoneyValue(null);
+                self.comparisonRange().maxAmountOfMoneyValue(null);
+                self.comparisonRange().minTimeValue(null);
+                self.comparisonRange().maxTimeValue(null);
+                self.comparisonRange().minTimesValue(null);
+                self.comparisonRange().maxTimesValue(null);
+                self.comparisonRange().maxTimeWithinDayValue(null);
+                self.comparisonRange().minTimeWithinDayValue(null);
+                if ((itemCheck && itemCheck != undefined) || itemCheck === 0) {
+                    self.initialScheduleDaily().then(function() {
+                        self.settingEnableComparisonMaxValueField(false);
+                        if ((self.checkItemTemp() || self.checkItemTemp() == 0) && self.checkItemTemp() != itemCheck) {
+                            setTimeout(function() { self.displayAttendanceItemSelections_BA2_3(""); }, 200);
+                        }
+                    }); 
+                }
+                $(".nts-input").ntsError("clear");
+            });
+            self.comparisonRange().comparisonOperator.subscribe((operN) => {
+                self.settingEnableComparisonMaxValueField(false);
+                $(".nts-input").ntsError("clear");
+                self.validateStartEnd();
+            });
+            self.workRecordExtractingCondition().errorAlarmCondition().workTypeCondition().comparePlanAndActual = ko.observable(self.setting.errorAlarmCondition.workTypeCondition.comparePlanAndActual);
+            self.required_BA1_4 = ko.observable(self.workRecordExtractingCondition().errorAlarmCondition().workTypeCondition().comparePlanAndActual() > 0);
+            self.workRecordExtractingCondition().errorAlarmCondition().workTypeCondition().comparePlanAndActual.subscribe((newV) => {
+                self.required_BA1_4(newV > 0);
+                $(".nts-input").ntsError("clear");
+            });
+            
+            self.registerEventChangeCompareValue();
+        }
+        
+        /**
+         * Process with category is schedule monthly
+         */
+        private processScheduleMonthly(option): void {
+            let self = this;
+            
+            self.setting = $.extend({}, shareutils.getDefaultWorkRecordExtractingCondition(0), option.data);
+
+            let workRecordExtractingCond = shareutils.convertTransferDataToWorkRecordExtractingCondition(self.setting);
+            self.workRecordExtractingCondition = ko.observable(workRecordExtractingCond);
+            
+            // setting comparison value range
+            self.comparisonRange = ko.observable(self.initComparisonValueRange());
+            self.resetComparisonRangeMinMaxValueNull();
+            self.checkItemTemp = ko.observable(self.workRecordExtractingCondition().checkItem());
+            self.scheduleMonthlyControlShowPattern(self.workRecordExtractingCondition().checkItem());
+            self.scheduleMonthlyShowTimeEditor(self.workRecordExtractingCondition().checkItem());
+            self.getChangeListCheckTimeType(self.workRecordExtractingCondition().checkItem());
+            
+            self.settingEnableComparisonMaxValueField(false);
+            self.enableRemainNumberDay2(self.workRecordExtractingCondition().checkItem());
+            
+            self.scheCheckTypeCondition(self.workRecordExtractingCondition().errorAlarmCondition().monthlyCondition().scheCheckCondition());
+            self.workRecordExtractingCondition().errorAlarmCondition().monthlyCondition().scheCheckCondition.subscribe((value) => {
+                self.scheCheckTypeCondition(value);
+            });
+            
+            // change select item check
+            self.workRecordExtractingCondition().checkItem.subscribe((itemCheck) => {
+                errors.clearAll();
+                
+                self.settingEnableComparisonMaxValueField(false);
+                self.enableRemainNumberDay2(itemCheck);
+                self.getChangeListCheckTimeType(itemCheck);
+                self.scheduleMonthlyControlShowPattern(itemCheck);
+                self.scheduleMonthlyShowTimeEditor(itemCheck);
+                
+                self.workRecordExtractingCondition().errorAlarmCondition().monthlyCondition(new sharemodel.ScheMonCond());
+                self.workRecordExtractingCondition().errorAlarmCondition().displayMessage("");
+                self.workRecordExtractingCondition().errorAlarmCondition().continuousPeriod(null);
+                self.comparisonRange().comparisonOperator(0);
+                self.comparisonRange().minAmountOfMoneyValue(null);
+                self.comparisonRange().maxAmountOfMoneyValue(null);
+                self.comparisonRange().minTimeValue(null);
+                self.comparisonRange().maxTimeValue(null);
+                self.comparisonRange().minTimesValue(null);
+                self.comparisonRange().maxTimesValue(null);
+                self.comparisonRange().maxTimeWithinDayValue(null);
+                self.comparisonRange().minTimeWithinDayValue(null);
+                self.comparisonRange().minValue(null);
+                self.comparisonRange().maxValue(null);
+                $(".nts-input").ntsError("clear");
+            });
+            self.comparisonRange().comparisonOperator.subscribe((operN) => {
+                self.settingEnableComparisonMaxValueField(false);
+                self.enableRemainNumberDay2(self.workRecordExtractingCondition().checkItem());
+                $(".nts-input").ntsError("clear");
+                self.validateStartEnd();
+            });
+            
+            self.registerEventChangeCompareValue();
+        }
+        
+        /**
+         * Process with category is schedule Year
+         */
+        private processScheduleYear(option): void {
+            let self = this;
+            
+            self.setting = $.extend({}, shareutils.getDefaultWorkRecordExtractingCondition(0), option.data);
+
+            let workRecordExtractingCond = shareutils.convertTransferDataToWorkRecordExtractingCondition(self.setting);
+            self.workRecordExtractingCondition = ko.observable(workRecordExtractingCond);
+            
+            // setting comparison value range
+            self.comparisonRange = ko.observable(self.initComparisonValueRange());
+            self.resetComparisonRangeMinMaxValueNull();
+            self.checkItemTemp = ko.observable(self.workRecordExtractingCondition().checkItem());
+            self.scheduleYearShowTimeEditor(self.workRecordExtractingCondition().checkItem());
+            self.scheduleYearControlShowPattern(self.workRecordExtractingCondition().checkItem());
+            self.getChangeListCheckTimeTypeScheduleYear(self.workRecordExtractingCondition().checkItem());
+            
+            self.settingEnableComparisonMaxValueField(false);
+            
+            self.scheCheckTypeCondition(self.workRecordExtractingCondition().errorAlarmCondition().monthlyCondition().scheCheckCondition());
+            self.workRecordExtractingCondition().errorAlarmCondition().monthlyCondition().scheCheckCondition.subscribe((value) => {
+                self.scheCheckTypeCondition(value);
+            });
+            
+            // change select item check
+            self.workRecordExtractingCondition().checkItem.subscribe((itemCheck) => {
+                errors.clearAll();
+                
+                self.settingEnableComparisonMaxValueField(false);
+                self.scheduleYearShowTimeEditor(itemCheck);
+                self.getChangeListCheckTimeTypeScheduleYear(itemCheck);
+                self.scheduleYearControlShowPattern(itemCheck);
+                
+                self.workRecordExtractingCondition().errorAlarmCondition().monthlyCondition(new sharemodel.ScheMonCond());
+                self.workRecordExtractingCondition().errorAlarmCondition().displayMessage("");
+                self.workRecordExtractingCondition().errorAlarmCondition().continuousPeriod(null);
+                self.comparisonRange().comparisonOperator(0);
+                self.comparisonRange().minAmountOfMoneyValue(null);
+                self.comparisonRange().maxAmountOfMoneyValue(null);
+                self.comparisonRange().minTimeValue(null);
+                self.comparisonRange().maxTimeValue(null);
+                self.comparisonRange().minTimesValue(null);
+                self.comparisonRange().maxTimesValue(null);
+                self.comparisonRange().maxTimeWithinDayValue(null);
+                self.comparisonRange().minTimeWithinDayValue(null);
+                self.comparisonRange().minValue(null);
+                self.comparisonRange().maxValue(null);
+                $(".nts-input").ntsError("clear");
+            });
+            self.comparisonRange().comparisonOperator.subscribe((operN) => {
+                self.settingEnableComparisonMaxValueField(false);
+                $(".nts-input").ntsError("clear");
+                self.validateStartEnd();
+            });
+            
+            self.registerEventChangeCompareValue();
+        }
+        
+        /**
+         * Process with category is schedule Weekly
+         */
+        private processScheduleWeekly(option): void {
+            let self = this;
+            
+            let defaultSetting = shareutils.getDefaultWorkRecordExtractingCondition(0)
+            defaultSetting.errorAlarmCondition().continuousPeriod(null);
+            self.setting = $.extend({}, defaultSetting, option.data);
+
+            let workRecordExtractingCond = shareutils.convertTransferDataToWorkRecordExtractingCondition(self.setting);
+            self.workRecordExtractingCondition = ko.observable(workRecordExtractingCond);
+            
+            // setting comparison value range
+            self.comparisonRange = ko.observable(self.initComparisonValueRange());
+            self.resetComparisonRangeMinMaxValueNull();
+            self.checkItemTemp = ko.observable(self.workRecordExtractingCondition().checkItem());
+            self.weeklyShowTimeEditor(self.workRecordExtractingCondition().checkItem());
+            self.scheduleWeeklyControlShowPattern(self.workRecordExtractingCondition().checkItem());
+            
+            self.settingEnableComparisonMaxValueField(false);
+            self.fillTextDisplayTargetWeekly(null, self.workRecordExtractingCondition().errorAlarmCondition().monthlyCondition());
+            
+            // change select item check
+            self.workRecordExtractingCondition().checkItem.subscribe((itemCheck) => {
+                errors.clearAll();
+                
+                self.settingEnableComparisonMaxValueField(false);
+                self.weeklyShowTimeEditor(itemCheck);
+                self.scheduleWeeklyControlShowPattern(itemCheck);
+                
+                self.workRecordExtractingCondition().errorAlarmCondition().continuousPeriod(null);
+                self.workRecordExtractingCondition().errorAlarmCondition().monthlyCondition(new sharemodel.ScheMonCond());
+                self.workRecordExtractingCondition().errorAlarmCondition().displayMessage("");
+                self.workRecordExtractingCondition().errorAlarmCondition().continuousPeriod(null);
+                self.comparisonRange().comparisonOperator(0);
+                self.comparisonRange().minAmountOfMoneyValue(null);
+                self.comparisonRange().maxAmountOfMoneyValue(null);
+                self.comparisonRange().minTimeValue(null);
+                self.comparisonRange().maxTimeValue(null);
+                self.comparisonRange().minTimesValue(null);
+                self.comparisonRange().maxTimesValue(null);
+                self.comparisonRange().maxTimeWithinDayValue(null);
+                self.comparisonRange().minTimeWithinDayValue(null);
+                self.comparisonRange().minValue(null);
+                self.comparisonRange().maxValue(null);
+                self.displayAttendanceItemSelections_BA2_3("");
+                $(".nts-input").ntsError("clear");
+            });
+            self.comparisonRange().comparisonOperator.subscribe((operN) => {
+                self.settingEnableComparisonMaxValueField(false);
+                $(".nts-input").ntsError("clear");
+                self.validateStartEnd();
+            });
+            
+            self.registerEventChangeCompareValue();
+        }
+        
+        private registerEventChangeCompareValue(): void {
+            let self = this;
+            self.enableComparisonMaxValue.subscribe((val) => {
+                if (!val) {
+                    self.comparisonRange().maxValue(null); 
+                }
+            });
+            
+            self.comparisonRange().minValue.subscribe((val) => {
+               setTimeout(() => {
+                   self.validateStartEnd();
+               }, 25);
+            });
+            
+            self.comparisonRange().maxValue.subscribe((val) => {
+               setTimeout(() => {
+                    self.validateStartEnd();
+               }, 25);
+            });
+        }
+        
+        /**
+         * Validate comparison when operator > 5
+         */
+        private validateComparison(): void {
+            let self = this,
+            if (self.comparisonRange().comparisonOperator() <= 5) {
+                return;
+            }
+            
+            if (self.category() == sharemodel.CATEGORY.SCHEDULE_MONTHLY) {
+                if (self.workRecordExtractingCondition().checkItem() == 3) {
+                    self.comparisonRange().minValue(self.workRecordExtractingCondition().errorAlarmCondition().monthlyCondition().inputs()[0].value());
+                    self.comparisonRange().maxValue(self.workRecordExtractingCondition().errorAlarmCondition().monthlyCondition().inputs()[1].value());
+                }
+            }
+            
+            if (self.comparisonRange().comparisonOperator() == 7 || self.comparisonRange().comparisonOperator() == 9) {
+                setTimeout(() => {
+                    if (parseInt(self.comparisonRange().minValue()) > parseInt(self.comparisonRange().maxValue())) {
+                        $('.endValue').ntsError('set', { messageId: "Msg_836" });
+                    }
+                }, 25);
+            }
+            if (self.comparisonRange().comparisonOperator() == 6 || self.comparisonRange().comparisonOperator() == 8) {
+                setTimeout(() => {
+                    if (parseInt(self.comparisonRange().minValue()) >= parseInt(self.comparisonRange().maxValue())) {
+                        $('.endValue').ntsError('set', { messageId: "Msg_836" });
+                    }
+                }, 25);
+            }
+        }
+        
+        private validateStartEnd(el: string = '.endValue'): void {
+            const vm = this;
+            let maxValue = parseInt(vm.comparisonRange().maxValue());
+            let minValue = parseInt(vm.comparisonRange().minValue());
+            let operator = vm.comparisonRange().comparisonOperator();
+            if (_.isNil(maxValue) ){
+                return;
+            }
+
+            if  (( _.indexOf([RangeCompareType.BETWEEN_RANGE_OPEN, RangeCompareType.OUTSIDE_RANGE_OPEN], operator) != -1
+                    && minValue >= maxValue )
+                || ( _.indexOf([RangeCompareType.BETWEEN_RANGE_OPEN, RangeCompareType.OUTSIDE_RANGE_OPEN], operator) == -1
+                    && minValue > maxValue ))
+            {
+                $(el).ntsError('set', { messageId: "Msg_927" });
+            }
+            return;
+        }
+        
+        private resetComparisonRangeMinMaxValueNull() {
+            let self = this;
+            if (self.category() == sharemodel.CATEGORY.SCHEDULE_DAILY) {
+                if (self.workRecordExtractingCondition().errorAlarmCondition().workTypeCondition().compareStartValue == null) {
+                    self.workRecordExtractingCondition().errorAlarmCondition().workTypeCondition().compareStartValue = ko.observable(null);
+                }
+                if (self.workRecordExtractingCondition().errorAlarmCondition().workTypeCondition().compareEndValue == null) {
+                    self.workRecordExtractingCondition().errorAlarmCondition().workTypeCondition().compareEndValue = ko.observable(null);
+                }
+                
+                self.comparisonRange().minValue(self.workRecordExtractingCondition().errorAlarmCondition().workTypeCondition().compareStartValue());
+                self.comparisonRange().maxValue(self.workRecordExtractingCondition().errorAlarmCondition().workTypeCondition().compareEndValue());
+                return;
+            }
+            
+            if (self.workRecordExtractingCondition().errorAlarmCondition().monthlyCondition().compareStartValue == null
+                || self.workRecordExtractingCondition().errorAlarmCondition().monthlyCondition().compareStartValue() == null) {
+                self.comparisonRange().minValue(null);  
+            }
+            if (self.workRecordExtractingCondition().errorAlarmCondition().monthlyCondition().compareEndValue == null
+                || self.workRecordExtractingCondition().errorAlarmCondition().monthlyCondition().compareEndValue() == null) {
+                self.comparisonRange().maxValue(null); 
+            }
+        }
+        
+        private initialScheduleDaily(): JQueryPromise<any> {
+            let self = this,
+                dfd = $.Deferred();
+            switch (self.workRecordExtractingCondition().checkItem()) {
+                case 0:          //時間
+                    self.initialWorkTypes(dfd);
+                    break;
+                case 1:   //連続時間
+                    self.initialWorkTypes(dfd);
+                    break;
+                case 2:   //連続時間帯
+                    self.initialWorkTypes(dfd);
+                    break;
+                case 3: //連続勤務
+                    self.initialDailyItemChkCountinuousTimeZone(dfd);
+                    break;
+                default:
+                    break;
+            }
+            dfd.resolve();
+            return dfd.promise();
+        }
+        
+        /**
+         * <Category=SCHEDULE_MONTHLY>
+         * enable/disable input day 2
+         */
+        private enableRemainNumberDay2(checkItem): void {
+            let self = this;
+            if (checkItem != 3) {
+                return;    
+            }
+            
+            if (self.workRecordExtractingCondition().errorAlarmCondition().monthlyCondition().inputs()) {
+                self.workRecordExtractingCondition().errorAlarmCondition().monthlyCondition().inputs()[1].enable(self.comparisonRange().comparisonOperator() > 5);
+                self.workRecordExtractingCondition().errorAlarmCondition().monthlyCondition().inputs()[1].required(self.comparisonRange().comparisonOperator() > 5);
+                
+                self.workRecordExtractingCondition().errorAlarmCondition().monthlyCondition().inputs()[0].value.subscribe((val) => {
+                   self.comparisonRange().minValue(val);
+                });
+                
+                self.workRecordExtractingCondition().errorAlarmCondition().monthlyCondition().inputs()[1].value.subscribe((val) => {
+                   self.comparisonRange().maxValue(val);;
+                });
+            } 
+        }
+        
+        /**
+         * <Category=SCHEDULE_MONTHLY>
+         * Get dropdow check condition by Monthly Check Item Type
+         */
+        private getChangeListCheckTimeType(itemCheck): void {
+            let self = this;
+            switch(itemCheck) {
+                case 0:
+                    self.listCheckTimeType(self.listTypeOfContrast());
+                    break;
+                case 1:
+                    self.listCheckTimeType(self.listTypeOfTime());
+                    break;
+                case 2:
+                    self.listCheckTimeType(self.listTypeOfDays());
+                    break;
+                case 3:
+                    self.listCheckTimeType(self.listTypeOfVacations());
+                    break;
+                default:
+                    self.listCheckTimeType(self.listTypeOfContrast());
+                    break;    
+            }
+        }
+        
+        /**
+         * <Category=SCHEDULE_DAILY>
+         * show time editor or number editor by check item (チェック項目) 
+         */
+        private scheduleDailyShowTimeEditor(checkItem): void {
+            let self = this;
+            self.resetTimeAndNumberEditor();
+            self.isTimeEditor(true);
+        }
+        
+        /**
+         * <Category=SCHEDULE_MONTHLY>
+         * show time editor or number editor by check item (チェック項目) 
+         */
+        private scheduleMonthlyShowTimeEditor(checkItem): void {
+            let self = this;
+            self.resetTimeAndNumberEditor();
+            switch(checkItem) {
+                case 0:
+                    self.isNumberEditor(true);
+                    self.constraint("CheckUpperLimitComparison");
+                    self.numberEditorOption(new NumberEditorOption({
+                        grouplength: 0,
+                        decimallength: 0,
+                        placeholder: ''
+                    }));
+                    break;
+                case 1:
+                    self.isTimeEditor(true);
+                    break;
+                case 2:
+                    self.isNumberEditor(true);
+                    self.constraint("CheckUpperLimitDay");
+                    self.numberEditorOption(new NumberEditorOption({
+                        grouplength: 0,
+                        decimallength: 1,
+                        placeholder: ''
+                    }));
+                    break;
+                
+                default:
+                    self.isNumberEditor(true);
+                    break;    
+            }
+        }
+        
+        /**
+         * <Category=SCHEDULE_YEAR>
+         * show time editor or number editor by check item (チェック項目) 
+         */
+        private scheduleYearShowTimeEditor(checkItem): void {
+            let self = this;
+            self.resetTimeAndNumberEditor();
+            switch(checkItem) {
+                case 0:
+                    self.isTimeEditor(true);
+                    break;
+                case 1:
+                    self.isDayEditor(true);
+                    break;
+                default:
+                    self.isTimeEditor(true);
+                    break;    
+            } 
+        }
+        
+        /**
+         * <Category=WEEKLY>
+         * show time editor or number editor by check item (チェック項目) 
+         */
+        private weeklyShowTimeEditor(checkItem): void {
+            let self = this;
+            self.resetTimeAndNumberEditor();
+            switch(checkItem) {
+                case 1:
+                case 4:
+                    self.isTimeEditor(true);
+                    break;
+                case 2:
+                case 5:
+                    self.isDayEditor(true);
+                    break;
+                case 3:
+                case 6:
+                    self.isNumberEditor(true);
+                    break;
+                default:
+                    self.isTimeEditor(true);
+                    break;    
+            } 
+        }
+        
+        /**
+         * <Category=SCHEDULE_YEAR>
+         * Get dropdow check condition by Monthly Check Item Type
+         */
+        private getChangeListCheckTimeTypeScheduleYear(itemCheck): void {
+            let self = this;
+            switch(itemCheck) {
+                case 0:
+                    self.listCheckTimeType(self.listTypeOfTime());
+                    break;
+                case 1:
+                    self.listCheckTimeType(self.listTypeOfDays());
+                    break;
+                default:
+                    self.listCheckTimeType(self.listTypeOfTime());
+                    break;    
+            }
+        }
+        
+        /**
+         * <Category=SCHEDULE_DAILY>
+         * The control show/hide screen pattern when change チェック項目
+         */
+        private controlShowPattern(itemCheck): void {
+            let self = this;
+            self.isPattern(true);
+            switch(itemCheck) {
+                case 0:
+                    self.showPatternD();
+                    break;
+                case 1:
+                    self.showPatternG();
+                    break;
+                case 2:
+                    self.showPatternForContinuousWork();
+                    break;
+                case 3:
+                    self.showPatternForContinuousTimeZone();
+                    break;
+                default:
+                    self.resetPattern();
+                    break;    
+            }    
+        }
+        
+        /**
+         * <Category=SCHEDULE_MONTHLY>
+         * The control show/hide screen pattern when change チェック項目
+         */
+        private scheduleMonthlyControlShowPattern(itemCheck): void {
+            let self = this;
+            self.isPattern(true);
+            switch(itemCheck) {
+                case 0:
+                case 1:
+                case 2:
+                    self.showPatternB();
+                    break;
+                case 3:
+                    self.showPatternForRemainingNumber();
+                    break;
+                default:
+                    self.resetPattern();
+                    break;    
+            }    
+        }
+        
+        /**
+         * <Category=SCHEDULE_YEAR>
+         * The control show/hide screen pattern when change チェック項目
+         */
+        private scheduleYearControlShowPattern(itemCheck): void {
+            let self = this;
+            self.isPattern(true);
+            self.showPatternB();    
+        }
+        
+        /**
+         * <Category=WEEKLY>
+         * The control show/hide screen pattern when change チェック項目
+         */
+        private scheduleWeeklyControlShowPattern(itemCheck): void {
+            let self = this;
+            self.isPattern(true);
+            switch(itemCheck) {
+                case 1:
+                case 2:
+                case 3:
+                    self.showPatternA();
+                    break;
+                case 4:
+                case 5:
+                case 6:
+                    self.showPatternE();
+                    break;
+                default:
+                    self.resetPattern();
+                    break;    
+            }        
+        }
+        
+        /**
+         * Show screen pattern A
+         */
+        private showPatternA(): void {
+            let self = this;
+            self.resetPattern();
+            self.isPatternA(true);
+        }
+        
+        /**
+         * Show screen pattern B
+         */
+        private showPatternB(): void {
+            let self = this;
+            self.resetPattern();
+            self.isPatternB(true);
+        }
+        
+        /**
+         * Show screen pattern D
+         */
+        private showPatternD(): void {
+            let self = this;
+            self.resetPattern();
+            self.isPatternD(true);
+        }
+        
+        /**
+         * Show screen pattern E
+         */
+        private showPatternE(): void {
+            let self = this;
+            self.resetPattern();
+            self.isPatternE(true);
+        }
+        
+        /**
+         * Show screen pattern G
+         */
+        private showPatternG(): void {
+            let self = this;
+            self.resetPattern();
+            self.isPatternG(true);
+        }
+        
+        /**
+         * For continuous work (連続勤務の場合)
+         */
+        private showPatternForContinuousWork(): void {
+            let self = this;
+            self.resetPattern();
+            self.isPatternForContinuousWork(true);
+        }
+        
+        /**
+         * For continuous time zones (連続時間帯の場合)
+         */
+        private showPatternForContinuousTimeZone(): void {
+            let self = this;
+            self.resetPattern();
+            self.isPatterForContinuousTimeZone(true);
+        }
+        
+        private showPatternForRemainingNumber(): void {
+            let self = this;
+            self.resetPattern();
+            self.isPatternForRemainingNumber(true);    
+        }
+        
+        /**
+         * Hide all screen pattern
+         */
+        private resetPattern(): void {
+            let self = this;
+            self.isPatternA(false);
+            self.isPatternB(false);
+            self.isPatternD(false);
+            self.isPatternE(false);
+            self.isPatternG(false);
+            self.isPatternForContinuousWork(false);
+            self.isPatterForContinuousTimeZone(false);
+            self.isPatternForRemainingNumber(false);  
+        }
+        
+        /**
+         * Hide time and number editor
+         */
+        private resetTimeAndNumberEditor(): void {
+            let self = this;
+            self.isTimeEditor(false);
+            self.isNumberEditor(false);
+            self.isDayEditor(false);
+        }
     }
     //MinhVV Add
     export enum CONDITIONATR {
@@ -1514,6 +2643,20 @@ module nts.uk.at.view.kal003.b.viewmodel {
         REFER_TO_MASTER = 5
 
 
+    }
+    
+    export enum WEEKLYCHECKITEMTYPE {
+        TIME = 1,
+        /* 日数 */
+        DAYS = 2,
+        /* 回数 */
+        TIMES = 3,
+        /* 連続時間 */
+        CONTINUOUS_TIME = 4,
+        /* 連続時間 */
+        CONTINUOUS_DAY = 5,
+        /* 連続回数 */
+        CONTINUOUS_TIMES = 5
     }
 
 
@@ -1601,6 +2744,17 @@ module nts.uk.at.view.kal003.b.viewmodel {
         FIXED_VALUE = 0, //, "Enum_ConditionType_FixedValue"),
         /* 勤怠項目 */
         ATTENDANCE_ITEM = 1 //, "Enum_ConditionType_AttendanceItem");
+    }
+    
+    export enum RangeCompareType{
+        // 範囲の間（境界値を含まない）（＜＞）
+        BETWEEN_RANGE_OPEN = 6,
+        /* 範囲の間（境界値を含む）（≦≧） */
+        BETWEEN_RANGE_CLOSED = 7,
+        /* 範囲の外（境界値を含まない）（＞＜） */
+        OUTSIDE_RANGE_OPEN = 8,
+        /* 範囲の外（境界値を含む）（≧≦） */
+        OUTSIDE_RANGE_CLOSED = 9,
     }
 
     module model {

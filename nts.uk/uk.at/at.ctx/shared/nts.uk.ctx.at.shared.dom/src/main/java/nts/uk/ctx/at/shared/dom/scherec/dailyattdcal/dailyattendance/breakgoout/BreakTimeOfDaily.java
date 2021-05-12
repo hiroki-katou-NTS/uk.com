@@ -21,8 +21,8 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.DeductionAtr;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.StatutoryAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeZoneSet;
+import nts.uk.ctx.at.shared.dom.worktime.common.TimezoneOfFixedRestTimeSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
-import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixRestTimezoneSet;
 
 /**
  * 日別実績の休憩時間
@@ -94,7 +94,7 @@ public class BreakTimeOfDaily {
 			//休憩回数
 			goOutTimes = new BreakTimeGoOutTimes(breakTimeCount);
 			//勤務間時間
-			duringTime = new AttendanceTime(0);
+			duringTime = oneDay.calcBetweenBreakTime();
 			//補正後時間帯
 			breakTimeSheets = new ArrayList<>();
 		}
@@ -139,6 +139,11 @@ public class BreakTimeOfDaily {
 			HolidayCalcMethodSet holidayCalcMethodSet,
 			Optional<WorkTimezoneCommonSet> commonSetting) {
 		val withinDedTime = oneDay.calcWithinTotalTime(conditionAtr,dedAtr,StatutoryAtr.Statutory,pertimesheet,premiumAtr,holidayCalcMethodSet,commonSetting);
+		if(dedAtr.isAppropriate()) {
+			//勤務間休憩時間帯
+			AttendanceTime betweenBreakTime = oneDay.calcBetweenBreakTime();
+			withinDedTime.addMinutesNotReturn(betweenBreakTime, betweenBreakTime);
+		}
 		val excessDedTime = oneDay.calcWithinTotalTime(conditionAtr,dedAtr,StatutoryAtr.Excess,pertimesheet,premiumAtr,holidayCalcMethodSet,commonSetting);
 		return DeductionTotalTime.of(withinDedTime.addMinutes(excessDedTime.getTime(), excessDedTime.getCalcTime()), withinDedTime, excessDedTime);
 	}
@@ -151,7 +156,7 @@ public class BreakTimeOfDaily {
 	 * @return 休憩未使用時間
 	 */
 	public AttendanceTime calcUnUseBrekeTime(
-			FixRestTimezoneSet fixRestTimezoneSet,
+	        TimezoneOfFixedRestTimeSet fixRestTimezoneSet,
 			List<EmTimeZoneSet> fixWoSetting,
 			TimeLeavingOfDailyAttd timeLeavingOfDailyPerformance) {
 		

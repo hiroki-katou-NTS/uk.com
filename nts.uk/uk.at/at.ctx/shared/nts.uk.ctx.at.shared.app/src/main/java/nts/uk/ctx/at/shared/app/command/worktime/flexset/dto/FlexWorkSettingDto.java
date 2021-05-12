@@ -4,10 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.command.worktime.flexset.dto;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import lombok.Getter;
 import lombok.Setter;
 import nts.gul.collection.CollectionUtil;
@@ -18,12 +14,16 @@ import nts.uk.ctx.at.shared.dom.worktime.common.StampReflectTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.CoreTimeSetting;
-import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexCalcSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexHalfDayWorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexOffdayWorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSettingGetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestSetting;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.HalfDayWorkSet;
 import nts.uk.shr.com.context.AppContexts;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * The Class FlexWorkSettingDto.
@@ -48,16 +48,13 @@ public class FlexWorkSettingDto implements FlexWorkSettingGetMemento{
 	private WorkTimezoneCommonSetDto commonSetting;
 
 	/** The use half day shift. */
-	private boolean useHalfDayShift;
+	private HalfDayWorkSet useHalfDayShift;
 
 	/** The lst half day work timezone. */
 	private List<FlexHalfDayWorkTimeDto> lstHalfDayWorkTimezone;
 
 	/** The lst stamp reflect timezone. */
 	private List<StampReflectTimezoneDto> lstStampReflectTimezone;
-
-	/** The calculate setting. */
-	private FlexCalcSettingDto calculateSetting;
 
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSettingGetMemento#getCompanyId()
@@ -111,16 +108,8 @@ public class FlexWorkSettingDto implements FlexWorkSettingGetMemento{
 	 * @see nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSettingGetMemento#getUseHalfDayShift()
 	 */
 	@Override
-	public boolean getUseHalfDayShift() {
+	public HalfDayWorkSet getUseHalfDayShift() {
 		return this.useHalfDayShift;
-	}
-
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSettingGetMemento#getCalculateSetting()
-	 */
-	@Override
-	public FlexCalcSetting getCalculateSetting() {
-		return new FlexCalcSetting(this.calculateSetting);
 	}
 
 	/* (non-Javadoc)

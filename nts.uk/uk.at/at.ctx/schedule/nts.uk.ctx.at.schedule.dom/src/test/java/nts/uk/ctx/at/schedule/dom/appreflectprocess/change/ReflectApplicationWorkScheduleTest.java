@@ -10,10 +10,9 @@ import mockit.Injectable;
 import mockit.Mocked;
 import mockit.integration.junit4.JMockit;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.shared.dom.application.common.PrePostAtrShare;
-import nts.uk.ctx.at.shared.dom.application.common.ReflectedStateShare;
-import nts.uk.ctx.at.shared.dom.application.reflectprocess.cancellation.AddDataBeforeApplicationReflect;
-import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.GetDomainReflectModelApp;
+import nts.uk.ctx.at.schedule.dom.appreflectprocess.change.state.SCReflectedState;
+import nts.uk.ctx.at.shared.dom.scherec.application.common.PrePostAtrShare;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.condition.GetDomainReflectModelApp;
 
 @RunWith(JMockit.class)
 public class ReflectApplicationWorkScheduleTest {
@@ -38,7 +37,7 @@ public class ReflectApplicationWorkScheduleTest {
 				GeneralDate.today(), // 処理対象日
 				SCReflectApplicationHelper.createReflectStatusResult(), 0);// 勤務予定の反映状態
 
-		assertThat(actualResult.getLeft().getReflectStatus()).isEqualTo(ReflectedStateShare.NOTREFLECTED);
+		assertThat(actualResult.getLeft().getReflectStatus()).isEqualTo(SCReflectedState.NOTREFLECTED);
 
 	}
 
@@ -56,8 +55,7 @@ public class ReflectApplicationWorkScheduleTest {
 	 * →勤務予定から日別実績(work）がある
 	 */
 	@Test
-	public void testHasSchedule(@Mocked GetDomainReflectModelApp getReflect,
-			@Mocked AddDataBeforeApplicationReflect addData) {
+	public void testHasSchedule(@Mocked GetDomainReflectModelApp getReflect) {
 
 //		new Expectations() {
 //			{

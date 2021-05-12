@@ -47,7 +47,7 @@ public class SpecialHolidayFinder {
 	public List<SpecialHolidayDto> findByCompanyId() {
 		String companyId = AppContexts.user().companyId();
 
-		return this.sphdRepo.findByCompanyId(companyId).stream().map(c -> SpecialHolidayDto.fromDomain(c))
+		return this.sphdRepo.findByCompanyIdWithTargetItem(companyId).stream().map(c -> SpecialHolidayDto.fromDomain(c))
 				.collect(Collectors.toList());
 	}
 

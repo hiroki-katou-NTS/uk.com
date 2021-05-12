@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.vacationapplication.leaveapplication;
 
 import lombok.AllArgsConstructor;
-import nts.uk.ctx.at.shared.dom.workdayoff.frame.NotUseAtr;
 @AllArgsConstructor
 public enum ReflectWorkHourCondition {
 

@@ -114,10 +114,20 @@ __viewContext.ready(function() {
                 width: "200px",
                 rowHeight: "33px"
             };
+            
+            let middleDeco = [];
+            middleDeco.push(new CellColor("3", "startTime1", "xseal"));
+            middleDeco.push(new CellColor("6", "startTime2", "xseal"));
             let middleContent = {
                 columns: middleColumns,
                 dataSource: middleDs,
-                primaryKey: "empId"
+                primaryKey: "empId",
+                features: [
+                    {
+                        name: "BodyCellStyle",
+                        decorator: middleDeco
+                    }
+                ]
             };
             
             let width = "48px";
@@ -186,10 +196,19 @@ __viewContext.ready(function() {
                 detailContentDs.push({ empId: i.toString(), _0: "", _1: "", _2: "", _3: "", _4: "", _5: "", _6: "", _7: "", _8: "", _9: "", _10: "", _11: "", _12: "", _13: "", _14: "", _15: "", _16: "", _17: "", _18: "", _19: "", _20: "", _21: "", _22: "", _23: "" });
             }
             
+            let detailDeco = [];
+            detailDeco.push(new CellColor("3", "_6", "xseal"));
+            detailDeco.push(new CellColor("6", "_6", "xseal"));
             let detailContent = {
                 columns: detailColumns,
                 dataSource: detailContentDs,
-                primaryKey: "empId"
+                primaryKey: "empId",
+                features: [
+                    {
+                        name: "BodyCellStyle",
+                        decorator: detailDeco
+                    }
+                ]
             };
             
             let extable = new nts.uk.ui.exTable.ExTable($("#extable"), {
@@ -426,6 +445,9 @@ __viewContext.ready(function() {
                     this.ruler.addChartWithType("BreakTime", {
                         id: `lgc${i}_0`,
                         parent: `lgc${i}`,
+                        followParent: false,
+                        pruneOnSlide: true,
+                        zIndex: 1001,
                         lineNo: i,
                         start: 24,
                         end: 36,
@@ -507,10 +529,10 @@ __viewContext.ready(function() {
                         start: 102,
                         end: 210,
                         lineNo: i,
-                        limitStartMin: 84,
-                        limitStartMax: 144,
-                        limitEndMin: 168,
-                        limitEndMax: 264,
+//                        limitStartMin: 84,
+//                        limitStartMax: 144,
+//                        limitEndMin: 168,
+//                        limitEndMax: 264,
                         title: "フレックス勤務"
                     });
                     
@@ -610,6 +632,17 @@ __viewContext.ready(function() {
                     end: 72
                 }
             }]);
+        }
+    }
+    
+    class CellColor {
+        columnKey: any;
+        rowId: any;
+        clazz: any;
+        constructor(rowId: any, columnKey: any, clazz: any) {
+            this.columnKey = columnKey;
+            this.rowId = rowId;
+            this.clazz = clazz;
         }
     }
     

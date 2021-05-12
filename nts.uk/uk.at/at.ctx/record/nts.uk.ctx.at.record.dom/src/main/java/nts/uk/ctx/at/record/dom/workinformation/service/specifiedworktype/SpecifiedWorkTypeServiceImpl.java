@@ -12,17 +12,17 @@ import javax.inject.Inject;
 import lombok.val;
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.adapter.employee.EmployeeRecordAdapter;
 import nts.uk.ctx.at.record.dom.adapter.employee.EmployeeRecordImport;
 import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.shared.dom.common.days.AttendanceDaysMonth;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualHolidayMng;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TempAnnualLeaveMngs;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualHolidayMngRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.GetClosureStartForEmployee;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
-import nts.arc.time.calendar.period.DatePeriod;
 
 @Stateless
 public class SpecifiedWorkTypeServiceImpl implements SpecifiedWorkTypeService {
@@ -111,13 +111,13 @@ public class SpecifiedWorkTypeServiceImpl implements SpecifiedWorkTypeService {
 				
 				// 「暫定データ取得期間」が存在するかチェック
 				if (tempPeriod != null) {
-					List<TmpAnnualHolidayMng> interimRemains = this.tmpAnnualHolidayMngRepository.getBySidPeriod(employeeId, tempPeriod);
+					List<TempAnnualLeaveMngs> interimRemains = this.tmpAnnualHolidayMngRepository.getBySidPeriod(employeeId, tempPeriod);
 					
 					for (WorkTypeCode workTypeCode : workTypeList) {
 						Double count = (double) 0;
 						
 						if (!interimRemains.isEmpty()) {
-							List<TmpAnnualHolidayMng> listNew = interimRemains.stream()
+							List<TempAnnualLeaveMngs> listNew = interimRemains.stream()
 									.filter(item -> item.getWorkTypeCode().equals(workTypeCode.v()))
 									.collect(Collectors.toList());
 

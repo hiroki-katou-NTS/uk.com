@@ -25,7 +25,7 @@ public class CompanyHolidayMngSetting {
 	/**
 	 * 振休管理設定
 	 */
-	private Optional<ComSubstVacation> absSetting;
+	private Optional<ComSubstVacation> absSetting = Optional.empty();
 	/**
 	 * 代休管理設定
 	 */

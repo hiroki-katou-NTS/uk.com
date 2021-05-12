@@ -1,8 +1,12 @@
 package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.algorithmdailyper;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.ErrorMessageInfo;
 
 /**
  * 
@@ -22,11 +26,18 @@ public class OutputTimeReflectForWorkinfo {
 	 * 打刻反映範囲
 	 */
 	private StampReflectRangeOutput stampReflectRangeOutput;
+	
+	/**
+	 * 
+	 */
+	private List<ErrorMessageInfo> error = new ArrayList<>();
 
-	public OutputTimeReflectForWorkinfo(EndStatus endStatus, StampReflectRangeOutput stampReflectRangeOutput) {
+	public OutputTimeReflectForWorkinfo(EndStatus endStatus, StampReflectRangeOutput stampReflectRangeOutput,
+			List<ErrorMessageInfo> error) {
 		super();
 		this.endStatus = endStatus;
 		this.stampReflectRangeOutput = stampReflectRangeOutput;
+		this.error = error;
 	}
-
+	
 }

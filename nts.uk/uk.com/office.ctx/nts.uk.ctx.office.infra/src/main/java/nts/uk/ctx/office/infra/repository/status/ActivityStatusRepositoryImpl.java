@@ -23,8 +23,7 @@ public class ActivityStatusRepositoryImpl extends JpaRepository implements Activ
 	public void insert(ActivityStatus domain) {
 		OfidtPresentStatus entity = new OfidtPresentStatus();
 		domain.setMemento(entity);
-		entity.setVersion(0);
-		entity.setContractCd(AppContexts.user().contractCode());
+		entity.setCid(AppContexts.user().companyId());
 		this.commandProxy().insert(entity);
 	}
 
@@ -35,13 +34,11 @@ public class ActivityStatusRepositoryImpl extends JpaRepository implements Activ
 	    Optional<OfidtPresentStatus> oldEntity = this.queryProxy().find(entity.getPk(), OfidtPresentStatus.class);
 	    if(oldEntity.isPresent()) {
 	    	OfidtPresentStatus updateEntity = oldEntity.get();
-	    	updateEntity.setVersion(updateEntity.getVersion() + 1);
 	    	updateEntity.setActivity(entity.getActivity());
 	    	updateEntity.setDate(entity.getDate());
 	    	this.commandProxy().update(updateEntity);
 	    } else {
-	    	entity.setVersion(0);
-	    	entity.setContractCd(AppContexts.user().contractCode());
+	    	entity.setCid(AppContexts.user().companyId());
 			this.commandProxy().insert(entity);
 	    }
 	}

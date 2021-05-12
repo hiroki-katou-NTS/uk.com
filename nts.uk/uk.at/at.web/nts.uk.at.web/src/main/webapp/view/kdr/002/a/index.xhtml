@@ -1,11 +1,11 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:com="http://xmlns.jcp.org/jsf/component"
-	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component" xmlns:h="http://xmlns.jcp.org/jsf/html">
+
 <body>
 	<ui:composition template="../../../../master/base.xhtml">
+		
 		<ui:define name="htmlHead">
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="kdr002.a.main.css" />
@@ -15,114 +15,247 @@
 			<com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
 			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
 			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
-			<com:scriptfile path="/view/ccg/share/ccg.service.js"
-				of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/ccg/share/ccg.service.js" of="/nts.uk.com.web" />
 			<com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
+
+			<com:ValidatorScript>
+				nts.uk.ctx.at.function.dom.alarm.checkcondition.annualholiday.NumberDayAward
+			</com:ValidatorScript>
+			
 		</ui:define>
+
 
 		<ui:define name="content">
 			<div id="functions-area">
-				<!-- A1_1 -->
+				<!-- A1_1 EXCEL-->
+				<button id="A1_1" class="proceed" tabindex="1"
+					data-bind="click: exportExcel, enable: (!nts.uk.ui.errors.hasError())">#{i18n.getText('KDR002_1')}</button>
+				<!-- A1_3 PDF-->
 				<button id="A1_1" class="proceed" tabindex="2"
-					data-bind="click: exportButton, enable: (!nts.uk.ui.errors.hasError())">#{i18n.getText('KDR001_25')}</button>
+					data-bind="click: exportPDF, enable: (!nts.uk.ui.errors.hasError())">#{i18n.getText('KDR002_40')}</button>
 			</div>
 
-			<div class="cf" id="contents-area">
+			<div class="fixed-flex-layout" id="contents-area">
 				<!-- A2_1  CCG001-->
-
-				<div class="ccg001searchkcp005">
-					<div id="ccgcomponent"></div>
-
+				<div id="ccgcomponent"></div>
+				<div class="drag-panel" style="margin-left: 75px; margin-top: 10px; height: 620px; width: 430px;">
+				<!-- <div class="drag-panel min-width-layout-1" style="margin-left: 75px; margin-top: 10px; height: 620px; width: 530px;"> -->
 					<!-- A2_2  -->
 					<div class="employeeInfoSearch">
-						<div class="selectionHoliday">
+						<div >
 							<div tabindex="3" id="employeeSearch"></div>
 						</div>
 					</div>
 				</div>
 
-				<div class="holidayAction">
+				<div class="self-panel">
+					<div class="holidayAction ">
 
 
-					<div class="div_line">
-						<!-- A3_1 -->
-						<div class="labelRangeDate div_line_col_1"
-							data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KDR002_2')}
+						<div>
+							<!-- A3_1 -->
+							<div class="labelRangeDate mr-15" data-bind="ntsFormLabel: {}">#{i18n.getText('KDR002_2')}
+							</div>
+							<!-- A3_11 -->
+							<button
+								data-bind="ntsHelpButton: {image: '/view/kdr/002/a/image/KDR002_1.png', position: 'right top'}">?</button>
 						</div>
-					</div>
 
-					<div class="div_line">
 						<!-- A3_2 -->
-						<div id="date_type_group" tabindex="4"
-							data-bind="ntsRadioBoxGroup: {
-								name:'#[KDR002_2]',
-								options: dateTypes ,
-								optionsValue: 'code',
-								optionsText: 'name',
-								value: selectedDateType ,
-								enable: true
-								}">
-						</div>
-					</div>
-					<div class="div_line">
-						<!-- A3_5 -->
-						<div id="ref_type_group" tabindex="5"
-							data-bind="ntsRadioBoxGroup: {
-								name:'#[KDR002_5]',
-								options: referenceTypes ,
-								optionsValue: 'code',
-								optionsText: 'name',
-								value: selectedReferenceType ,
-								enable: selectedDateType() == 0
-								}">
-						</div>
-						<div id="print_date">
-							<!-- A3_8 -->
-							<label>#{i18n.getText('KDR002_8')}</label>
-							<!-- A3_9 -->
-							<div id="print_date_picker" tabindex="6"
-								data-bind="ntsDatePicker: {
-										value: printDate , 
-										dateFormat: 'yearmonth',
-										name:'#[KDR002_8]',
-										enable:selectedDateType() == 1,
-										required:selectedDateType() == 1
-										}">
+						<div class="A3_2">
+							<!-- radio 1  -->
+							<div class="mt-30 ml-40">
+								<span class="ntsControl">
+									<label class="ntsRadioBox">
+										<input tabindex="4" type="radio"
+											data-bind="checkedValue: 0, checked: selectedDateType" />
+										<span tabindex="4" class="box"></span><span
+											class="label">#{i18n.getText('KDR002_3')}</span>
+									</label>
+								</span>
+								<!-- A3_5 -->
+								<div class="ml-42"
+									tabindex="5"
+									data-bind="ntsSwitchButton: {
+										name: '#[KDR002_5]',
+										options: referenceTypeA3_5,
+										optionsValue: 'code',
+										optionsText: 'name',
+										value: selectedReferenceType,
+										enable: selectedDateType() === 0 }"></div>
+							</div>
+							<!-- radio 2  -->
+							<div class="mt-30 ml-40" style="display: inline-flex;">
+								<!-- A3_10 -->
+								<div>
+									<span class="ntsControl">
+										<label class="ntsRadioBox">
+											<input tabindex="4" type="radio"
+												data-bind="checkedValue: 1, checked: selectedDateType" />
+											<span tabindex="4" class="box"></span><span
+												class="label">#{i18n.getText('KDR002_41')}</span>
+										</label>
+									</span>
+								</div>
+
+
+								<div class="date-range-a3_15">
+									<!-- A3_15 -->
+									<span class="box"></span><span
+											class="label">#{i18n.getText('KDR002_43')}</span>
+									<!-- A3_12 A3_13 A3_14 -->
+									<div id="daterangepicker" class="a3_15" tabindex="6"
+										data-bind="ntsDateRangePicker: {
+											required: false,
+											enable: selectedDateType() === 1,
+											showNextPrevious: true,
+											value: period,
+											maxRange: 'oneYear'}" >
+									</div>
+								</div>
+
+							</div>
+							<!-- radio 3  -->
+							<div class="mt-22 ml-40">
+								<!-- A3_4
+								 -->
+								<span class="ntsControl">
+									<label class="ntsRadioBox">
+										<input tabindex="4" type="radio"
+											data-bind="checkedValue: 2, checked: selectedDateType" />
+										<span tabindex="4" class="box"></span><span
+											class="label">#{i18n.getText('KDR002_4')}</span>
+									</label>
+								</span>
+								<div id="print_date" style="display: inline;">
+									<!-- A3_8 -->
+									<label>#{i18n.getText('KDR002_8')}</label>
+									<!-- A3_9 -->
+									<div tabindex="8" data-bind="ntsDatePicker: {
+												value: printDate ,
+												dateFormat: 'yearmonth',
+												name:'#[KDR002_8]',
+												enable:selectedDateType() == 2,
+												}">
+									</div>
+								</div>
 							</div>
 						</div>
-					</div>
+						<!-- A5_1 -->
+						<div class="div_line">
+							<div style="display: flex;">
+								<!-- A5_1  -->
+								<div class="labelRangeDate" data-bind="ntsFormLabel: {}">
+									#{i18n.getText('KDR002_46')}
+								</div>
+								<!-- A5_7 -->
+								<div class="ml-20 align-seft-center"
+									tabindex="9"
+									data-bind="ntsCheckBox: {
+										checked: isExtraction,
+										enable: true },
+										visible: true">
+									</div>
+								<!-- A5_2 -->
+								<div class="align-seft-center">
+									<input  tabindex="10"
+										data-bind="ntsNumberEditor:{
+											constraint: 'NumberDayAward',
+											name: '#[KDR002_58]',
+											value: inputExtraction,
+											required: requiredInputExtraction,
+											enable: requiredInputExtraction,
+											option: {
+												width : '65px',
+												unitID: 'DAYS'
+											}}" />
+								</div>
+								<!-- A5_3 -->
+								<div id="page_break_cbb" class="div_line_col_2 align-seft-center ml-10 w-100"
+									tabindex="11"
+									data-bind="ntsComboBox: {
+										options: ko.observableArray([
+											{ code: 0, name: '#{i18n.getText('KDR002_47')}' },
+											{ code: 1, name: '#{i18n.getText('KDR002_48')}' }
+										]),
+										optionsValue: 'code',
+										name:'#[KDR002_59]',
+										value: optionExtractionValue,
+										optionsText: 'name',
+										editable: false,
+										enable: isExtraction(),
+										columns: [
+											{ prop: 'name', length: 4 }
+										]}">
 
+								</div>
+								<!-- A5_5 -->
+								<div class="align-seft-center ml-10">
+									#{i18n.getText('KDR002_49')}
+								</div>
+							</div>
+							<div class="mt-10">
+								<!-- A5_6 -->
+								<div style="text-align: center;"  >
+									#{i18n.getText('KDR002_50')}
+								</div>
+							</div>
 
-					<div class="div_line">
+						</div>
+						<!-- A7_1 -->
+						<div class="div_line">
+							<!-- A7_1  -->
+							<div class="labelRangeDate" style="display: -ms-grid; display: grid;" data-bind="ntsFormLabel: {}">
+								#{i18n.getText('KDR002_54')}
+							</div>
+							<!-- A7_2 -->
+							<div class="ml-100" tabindex="12" data-bind="ntsCheckBox: {
+								checked: doubleTrack,
+								enable: true },
+								visible: true">
+								#{i18n.getText('KDR002_55')}</div>
+						</div>
+						<!-- A6_1 -->
+						<div class="div_line mt-22" style="display: flex;">
+							<!-- A6_1  -->
+							<div class="labelRangeDate div_line_col_1 align-seft-center" data-bind="ntsFormLabel: {}">
+								#{i18n.getText('KDR002_51')}
+							</div>
+							<!-- A6_2 -->
+							<div class="ml-120 pageBreak align-seft-center" tabindex="13" data-bind="ntsSwitchButton: {
+								name: '#[KDR002_51]',
+								options: printAnnualLeaveDate,
+								optionsValue: 'code',
+								optionsText: 'name',
+								value: printAnnualLeaveDateSelect,
+								}"></div>
+						</div>
 
 						<!-- A4_1  -->
-						<div class="labelRangeDate div_line_col_1"
-							data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KDR002_9')}
-						</div>
+						<div class="div_line mt-22" style="display: flex;">
 
-						<!-- A4_2  -->
-						<div id="page_break_cbb" class="div_line_col_2" tabindex="7"
-							data-bind="ntsComboBox: {
-								name:'#[KDR002_9]',
-								required: true,
-								options: pageBreakTypes ,
+							<!-- A4_1  -->
+							<div class="labelRangeDate div_line_col_1 align-seft-center" data-bind="ntsFormLabel: {}">
+								#{i18n.getText('KDR002_9')}
+							</div>
+
+							<!-- A4_2  -->
+							<div class="ml-120 pageBreak align-seft-center" tabindex="14" data-bind="ntsSwitchButton: {
+								name: '#[KDR002_9]',
+								options: pageBreakTypes,
 								optionsValue: 'code',
-								visibleItemsCount: 3,
-								value: pageBreakSelected ,
 								optionsText: 'name',
-								editable: false,
-								enable: true,
-								
-								columns: [
-									{ prop: 'name', length: 10 }
-								]}">
+								value: pageBreakSelected,
+								}"></div>
 						</div>
+
+
 					</div>
-
-
 				</div>
+
 			</div>
 		</ui:define>
 	</ui:composition>
 </body>
+
 </html>

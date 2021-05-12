@@ -12,7 +12,8 @@ module nts.uk.at.view.kaf012.a.viewmodel {
         startNew: "at/request/application/timeLeave/init",
         changeAppDate: "at/request/application/timeLeave/changeAppDate",
         checkRegister: "at/request/application/timeLeave/checkBeforeRegister",
-        register: "at/request/application/timeLeave/register"
+        register: "at/request/application/timeLeave/register",
+		reflectApp: "at/request/application/reflect-app"
     };
 
     @bean()
@@ -61,14 +62,16 @@ module nts.uk.at.view.kaf012.a.viewmodel {
                 if(loadDataFlag) {
 					vm.application().employeeIDLst(empLst);
                     const appDispInfoStartupOutput = ko.toJS(vm.appDispInfoStartupOutput);
-                    return vm.$ajax(API.startNew, {appDispInfoStartupOutput: appDispInfoStartupOutput});
+                    if (vm.appDispInfoStartupOutput().appDispInfoWithDateOutput.opErrorFlag == 0) {
+                        return vm.$ajax(API.startNew, {appDispInfoStartupOutput: appDispInfoStartupOutput});
+                    }
                 }
             }).then((res: any) => {
                 if(res) {
                     vm.reflectSetting(res.reflectSetting);
                     vm.timeLeaveRemaining(res.timeLeaveRemaining);
                     vm.timeLeaveManagement(res.timeLeaveManagement);
-                    if (vm.applyTimeData().filter(i => i.display()).length == 0) {
+                    if (vm.applyTimeData().filter(i => i.display()).length == 0 && vm.appDispInfoStartupOutput().appDispInfoWithDateOutput.opErrorFlag == 0) {
                         vm.$dialog.error({messageId: "Msg_474"}).then(() => {
                             nts.uk.request.jumpToTopPage();
                         });
@@ -78,11 +81,13 @@ module nts.uk.at.view.kaf012.a.viewmodel {
                     vm.handleChangeAppDate(params.baseDate);
                 }
             }).fail((error: any) => {
-                vm.$dialog.error(error).then(() => {
-                    if (error.messageId == "Msg_474") {
-                        nts.uk.request.jumpToTopPage();
-                    }
-                });
+                if (vm.appDispInfoStartupOutput().appDispInfoWithDateOutput.opErrorFlag == 0) {
+                    vm.$dialog.error(error).then(() => {
+                        if (error.messageId == "Msg_474") {
+                            nts.uk.request.jumpToTopPage();
+                        }
+                    });
+                }
             }).always(() => {
                 vm.$blockui("hide");
                 $(vm.$el).find('#kaf000-a-component4-singleDate').focus();
@@ -93,6 +98,17 @@ module nts.uk.at.view.kaf012.a.viewmodel {
             const vm = this;
             vm.application().appDate.subscribe(value => {
                 vm.handleChangeAppDate(value);
+                vm.applyTimeData().forEach((row : DataModel) => {
+                    row.applyTime.forEach(apply => {
+                        apply.substituteAppTime(0);
+                        apply.annualAppTime(0);
+                        apply.careAppTime(0);
+                        apply.childCareAppTime(0);
+                        apply.super60AppTime(0);
+                        apply.specialAppTime(0);
+                        apply.calculatedTime(0);
+                    });
+                });
             });
             vm.appDispInfoStartupOutput.subscribe(value => {
                 if (vm.application().prePostAtr() == 1 && value) {
@@ -104,6 +120,19 @@ module nts.uk.at.view.kaf012.a.viewmodel {
                     vm.updateInputTime(vm.appDispInfoStartupOutput());
                 }
             });
+            vm.leaveType.subscribe(value => {
+                vm.applyTimeData().forEach((row : DataModel) => {
+                    row.applyTime.forEach(apply => {
+                        apply.substituteAppTime(0);
+                        apply.annualAppTime(0);
+                        apply.careAppTime(0);
+                        apply.childCareAppTime(0);
+                        apply.super60AppTime(0);
+                        apply.specialAppTime(0);
+                        apply.calculatedTime(0);
+                    });
+                });
+            });
         }
 
         updateInputTime(value: any) {
@@ -113,40 +142,56 @@ module nts.uk.at.view.kaf012.a.viewmodel {
                 vm.applyTimeData()[AppTimeType.OFFWORK].timeZones[0].startTime(value.appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.opLeaveTime);
                 vm.applyTimeData()[AppTimeType.ATWORK2].timeZones[0].startTime(value.appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.opWorkTime2);
                 vm.applyTimeData()[AppTimeType.OFFWORK2].timeZones[0].startTime(value.appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.opDepartureTime2);
+                vm.applyTimeData()[4].timeZones.forEach(tz => {
+                    tz.startTime(null);
+                    tz.endTime(null);
+                    tz.appTimeType(AppTimeType.PRIVATE);
+                });
+                let maxWorkNoHasData = 3;
                 const outingTimes = value.appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.stampRecordOutput.outingTime || [];
                 outingTimes.filter((time: any) => time.opGoOutReasonAtr == 0 || time.opGoOutReasonAtr == 3)
                     .forEach((time: any) => {
+                        maxWorkNoHasData = Math.max(maxWorkNoHasData, time.frameNo);
                         vm.applyTimeData()[4].timeZones[time.frameNo - 1].startTime(time.opStartTime);
                         vm.applyTimeData()[4].timeZones[time.frameNo - 1].endTime(time.opEndTime);
                         vm.applyTimeData()[4].timeZones[time.frameNo - 1].appTimeType(time.opGoOutReasonAtr == 3 ? AppTimeType.UNION : AppTimeType.PRIVATE);
                     });
+                if (maxWorkNoHasData > 3) {
+                    vm.applyTimeData()[4].timeZones.forEach(i => {
+                        i.display(true);
+                    });
+                    vm.applyTimeData()[4].displayShowMore(false);
+                }
             }
         }
 
         handleChangeAppDate(value: string) {
             const vm = this;
-            vm.$validate(['#kaf000-a-component4 .nts-input']).then((valid: boolean) => {
-                if (valid) {
-                    const command = {
-                        appDate: new Date(value).toISOString(),
-                        appDisplayInfo: {
-                            appDispInfoStartupOutput: vm.appDispInfoStartupOutput(),
-                            timeLeaveManagement: vm.timeLeaveManagement()
-                        }
-                    };
-                    vm.$blockui("show").then(() => {
-                        return vm.$ajax(API.changeAppDate, command);
-                    }).done((res: any) => {
-                        if (res) {
-                            vm.timeLeaveManagement(res.timeLeaveManagement);
-                        }
-                    }).fail((error: any) => {
-                        vm.$dialog.error(error);
-                    }).always(() => {
-                        vm.$blockui("hide")
-                    });
-                }
-            });
+            if (vm.appDispInfoStartupOutput().appDispInfoWithDateOutput.opErrorFlag == 0) {
+                vm.$validate(['#kaf000-a-component4 .nts-input']).then((valid: boolean) => {
+                    if (valid) {
+                        const command = {
+                            appDate: new Date(value).toISOString(),
+                            appDisplayInfo: {
+                                appDispInfoStartupOutput: vm.appDispInfoStartupOutput(),
+                                timeLeaveManagement: vm.timeLeaveManagement(),
+                                reflectSetting: vm.reflectSetting()
+                            }
+                        };
+                        vm.$blockui("show").then(() => {
+                            return vm.$ajax(API.changeAppDate, command);
+                        }).done((res: any) => {
+                            if (res) {
+                                vm.timeLeaveManagement(res.timeLeaveManagement);
+                            }
+                        }).fail((error: any) => {
+                            vm.$dialog.error(error);
+                        }).always(() => {
+                            vm.$blockui("hide")
+                        });
+                    }
+                });
+            }
         }
 
         public handleConfirmMessage(listMes: any, res: any): any {
@@ -203,14 +248,13 @@ module nts.uk.at.view.kaf012.a.viewmodel {
                             || applyTime.childCareAppTime > 0
                             || applyTime.careAppTime > 0
                             || applyTime.super60AppTime > 0
-                            || applyTime.specialAppTime > 0
-                            || !!row.timeZones[0].startTime()) {
+                            || applyTime.specialAppTime > 0) {
                             details.push({
                                 appTimeType: row.appTimeType,
                                 timeZones: [{
                                     workNo: row.appTimeType == AppTimeType.ATWORK || row.appTimeType == AppTimeType.OFFWORK ? 1 : 2,
-                                    startTime: row.appTimeType == AppTimeType.ATWORK || row.appTimeType == AppTimeType.ATWORK2 ? row.timeZones[0].startTime() : null,
-                                    endTime: row.appTimeType == AppTimeType.ATWORK || row.appTimeType == AppTimeType.ATWORK2 ? null : row.timeZones[0].startTime(),
+                                    startTime: row.appTimeType == AppTimeType.ATWORK || row.appTimeType == AppTimeType.ATWORK2 ? row.scheduledTime() : row.timeZones[0].startTime(),
+                                    endTime: row.appTimeType == AppTimeType.ATWORK || row.appTimeType == AppTimeType.ATWORK2 ? row.timeZones[0].startTime() : row.scheduledTime(),
                                 }],
                                 applyTime: applyTime
                             });
@@ -231,8 +275,7 @@ module nts.uk.at.view.kaf012.a.viewmodel {
                             || privateApplyTime.childCareAppTime > 0
                             || privateApplyTime.careAppTime > 0
                             || privateApplyTime.super60AppTime > 0
-                            || privateApplyTime.specialAppTime > 0
-                            || privateTimeZones.length > 0) {
+                            || privateApplyTime.specialAppTime > 0) {
                             details.push({
                                 appTimeType: AppTimeType.PRIVATE,
                                 timeZones: privateTimeZones.map(z => ({workNo: z.workNo, startTime: z.startTime(), endTime: z.endTime()})),
@@ -254,8 +297,7 @@ module nts.uk.at.view.kaf012.a.viewmodel {
                             || unionApplyTime.childCareAppTime > 0
                             || unionApplyTime.careAppTime > 0
                             || unionApplyTime.super60AppTime > 0
-                            || unionApplyTime.specialAppTime > 0
-                            || unionTimeZones.length > 0) {
+                            || unionApplyTime.specialAppTime > 0) {
                             details.push({
                                 appTimeType: AppTimeType.UNION,
                                 timeZones: unionTimeZones.map(z => ({workNo: z.workNo, startTime: z.startTime(), endTime: z.endTime()})),
@@ -267,23 +309,14 @@ module nts.uk.at.view.kaf012.a.viewmodel {
             });
 
             vm.$validate('.nts-input', '#kaf000-a-component3-prePost', '#kaf000-a-component5-comboReason').then(isValid => {
-                let timeZoneError = false;
-                details.forEach(d => {
-                    if (d.appTimeType >= 4) {
-                        d.timeZones.forEach((tz: any) => {
-                            if (tz.startTime > tz.endTime) {
-                                timeZoneError = true;
-                                $("#endTime-" + tz.workNo).ntsError("set", {messageId: "Msg_857"});
-                            }
-                        });
-                    }
-                });
-                if (isValid && !timeZoneError) {
+                if (isValid && !nts.uk.ui.errors.hasError()) {
                     vm.$blockui("show").then(() => {
                         return vm.$ajax(API.changeAppDate, {
                             appDate: new Date(vm.application().appDate()).toISOString(),
                             appDisplayInfo: {
-                                appDispInfoStartupOutput: vm.appDispInfoStartupOutput()
+                                appDispInfoStartupOutput: vm.appDispInfoStartupOutput(),
+                                timeLeaveManagement: vm.timeLeaveManagement(),
+                                reflectSetting: vm.reflectSetting()
                             }
                         });
                     }).then(() => {
@@ -313,7 +346,8 @@ module nts.uk.at.view.kaf012.a.viewmodel {
                     }).done(result => {
                         if (result != undefined) {
                             vm.$dialog.info({messageId: "Msg_15"}).then(() => {
-                            	CommonProcess.handleAfterRegister(result, vm.isSendMail(), vm);
+								nts.uk.request.ajax("at", API.reflectApp, result.reflectAppIdLst);
+                            	CommonProcess.handleAfterRegister(result, vm.isSendMail(), vm, false, vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.employeeInfoLst);
                             });
                         }
                     }).fail(err => {

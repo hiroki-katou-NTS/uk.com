@@ -83,6 +83,7 @@ public class PrintContentOfEachApp {
 	public PrintContentOfEachApp() {
 		this.opPrintContentOfHolidayWork = Optional.empty();
 		this.opPrintContentOfWorkChange = Optional.empty();
+		this.opPrintContentOfTimeLeave = Optional.empty();
 		this.opAppStampOutput = Optional.empty();
 		this.opArrivedLateLeaveEarlyInfo = Optional.empty();
 		this.opInforGoBackCommonDirectOutput = Optional.empty();
@@ -90,5 +91,6 @@ public class PrintContentOfEachApp {
 		this.opDetailOutput = Optional.empty();
 		this.opOptionalItem = Optional.empty();
 		this.optHolidayShipment = Optional.empty();
+		this.opPrintContentApplyForLeave = Optional.empty();
 	}
 }

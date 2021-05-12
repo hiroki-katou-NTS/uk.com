@@ -12,6 +12,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.request.app.command.application.stamp.command.RegisterOrUpdateAppStampCmd;
 import nts.uk.ctx.at.request.app.find.application.ApplicationDto;
 import nts.uk.ctx.at.request.app.find.application.stamp.dto.AppRecordImageDto;
 import nts.uk.ctx.at.request.app.find.application.stamp.dto.AppStampDto;
@@ -29,14 +30,14 @@ import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode;
 import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppStandardReasonCode;
 @Transactional
 @Stateless
-public class RegisterAppStampCommandHandler extends CommandHandlerWithResult<RegisterOrUpdateAppStampParam, ProcessResult>{
+public class RegisterAppStampCommandHandler extends CommandHandlerWithResult<RegisterOrUpdateAppStampCmd, ProcessResult>{
 	@Inject
 	private AppCommonDomainServiceRegister appCommonDomainServiceRegister;
 	
 	public static final String DATE_FORMAT = "yyyy/MM/dd";
 	@Override
-	protected ProcessResult handle(CommandHandlerContext<RegisterOrUpdateAppStampParam> context) {
-		RegisterOrUpdateAppStampParam param = context.getCommand();
+	protected ProcessResult handle(CommandHandlerContext<RegisterOrUpdateAppStampCmd> context) {
+		RegisterOrUpdateAppStampCmd param = context.getCommand();
 		String pattern2 = "yyyy/MM/dd";
 		AppStampDto appStampDto = param.getAppStampDto();
 		AppRecordImageDto appRecordImageDto = param.getAppRecordImageDto();
