@@ -22,12 +22,7 @@ public class PasswordAuthenticateWithEmployeeCode {
 			String password) {
 		
 		// ロックアウトされている社員は認証させてはいけない
-		require.getAccountLockPolicy(identified.getTenantCode())
-				.ifPresent(policy -> {
-					if (policy.isLocked(require, identified.getUserId())) {
-						throw new BusinessException(new RawErrorMessage(policy.getLockOutMessage().v()));
-					}
-				});
+		checkLockout(require, identified);
 		
 		// パスワード認証
 		val user = identified.getUser();
@@ -42,6 +37,18 @@ public class PasswordAuthenticateWithEmployeeCode {
 												.orElse(ValidationResultOnLogin.ok());
 		
 		return PasswordAuthenticationResult.success(passwordPolicyResult);
+	}
+
+	/**
+	 *ロックされているかチェックする 
+	 */
+	private static void checkLockout(Require require, IdentifiedEmployeeInfo identified) {
+		require.getAccountLockPolicy(identified.getTenantCode())
+				.ifPresent(policy -> {
+					if (policy.isLocked(require, identified.getUserId())) {
+						throw new BusinessException(new RawErrorMessage(policy.getLockOutMessage().v()));
+					}
+				});
 	}
 	
 	public static interface Require extends
