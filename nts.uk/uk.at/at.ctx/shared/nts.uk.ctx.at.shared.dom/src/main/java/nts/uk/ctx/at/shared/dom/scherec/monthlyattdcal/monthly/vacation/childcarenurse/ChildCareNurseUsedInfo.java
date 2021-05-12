@@ -6,7 +6,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.Used
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.ChildCareNurseUsedNumber;
 
 /**
- * 子の看護介護残数
+ * 子の看護介護使用数
  * @author yuri_tamakoshi
  */
 @Getter
