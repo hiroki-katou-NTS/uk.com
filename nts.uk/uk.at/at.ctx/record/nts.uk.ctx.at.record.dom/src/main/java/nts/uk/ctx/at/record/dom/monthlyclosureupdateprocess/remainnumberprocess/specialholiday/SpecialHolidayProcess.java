@@ -19,7 +19,6 @@ import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremain
 import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.export.SpecialLeaveManagementService;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.DailyInterimRemainMngData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.GrantRemainRegisterType;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.InterimSpecialHolidayMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRemainingData;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHoliday;
@@ -55,9 +54,9 @@ public class SpecialHolidayProcess {
 
 			/** 特別休暇残数更新 */
 			return AtomTask.of(updateRemainSpecialHoliday(require, output, empId, period.getPeriod(),
-														specialHoliday.getSpecialHolidayCode().v(), specialHoliday.getAutoGrant().value))
+														specialHoliday.getSpecialHolidayCode().v(), specialHoliday.getAutoGrant().value));
 					/** 特別休暇暫定データ削除 */
-							.then(() -> require.deleteInterim(empId, period.getPeriod(), RemainType.SPECIAL));
+							//.then(() -> require.deleteInterim(empId, period.getPeriod(), RemainType.SPECIAL));
 		}).collect(Collectors.toList());
 
 		return AtomTask.bundle(atomTask);
@@ -181,8 +180,6 @@ public class SpecialHolidayProcess {
 	public static interface Require extends RequireM1, RequireM2 {
 
 		List<SpecialHoliday> specialHoliday(String companyId);
-
-		void deleteInterim(String employeeId, DatePeriod dateData, RemainType remainType);
 	}
 
 	public static interface RequireM3 {

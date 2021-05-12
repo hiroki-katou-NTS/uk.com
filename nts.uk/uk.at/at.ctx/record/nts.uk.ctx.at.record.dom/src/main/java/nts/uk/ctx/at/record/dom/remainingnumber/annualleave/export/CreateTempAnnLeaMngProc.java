@@ -160,7 +160,6 @@ public class CreateTempAnnLeaMngProc {
 		if (mode == InterimRemainMngMode.OTHER){
 
 			// 「暫定年休管理データ」をDELETEする
-			atomTask.add(AtomTask.of(() -> require.deleteInterim(employeeId, period, RemainType.ANNUAL)));
 
 			// 「個人残数更新フラグ管理．更新状況」を「更新済み」にUpdateする
 			//*****（未）　設計待ち。
@@ -344,8 +343,6 @@ public class CreateTempAnnLeaMngProc {
 
 	public static interface RequireM3 extends RequireM4, RequireM2, RequireM1,
 		GetVacationAddSet.RequireM1 {
-
-		void deleteInterim(String sId, DatePeriod period, RemainType type);
 	}
 
 	public static interface RequireM4 {
