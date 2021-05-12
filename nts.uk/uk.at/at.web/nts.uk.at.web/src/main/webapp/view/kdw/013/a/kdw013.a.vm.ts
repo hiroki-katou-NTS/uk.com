@@ -80,8 +80,6 @@ module nts.uk.ui.at.kdp013.a {
 
         events: KnockoutObservableArray<calendar.EventApi> = ko.observableArray([]);
 
-        confirmers: KnockoutObservableArray<calendar.Employee> = ko.observableArray([]);
-
         breakTime: KnockoutObservable<calendar.BreakTime> = ko.observable();
 
         businessHours: KnockoutObservableArray<calendar.BussinessHour> = ko.observableArray([]);
@@ -101,6 +99,12 @@ module nts.uk.ui.at.kdp013.a {
         attendanceTimes: KnockoutObservableArray<calendar.AttendanceTime> = ko.observableArray([]);
 
         employees: KnockoutObservableArray<calendar.Employee> = ko.observableArray([]);
+        confirmers!: KnockoutComputed<calendar.Employee[]>;
+
+        // Change date range data model
+        $datas: KnockoutObservable<ChangeDateDto | null> = ko.observable(null);
+
+        // settings (first load data)
         $settings: KnockoutObservable<StartProcessDto | null> = ko.observable(null);
 
         constructor() {
@@ -110,16 +114,18 @@ module nts.uk.ui.at.kdp013.a {
             const { $query, employees } = vm;
             const { mode } = $query;
             const cache: ChangeDateParam = initialCache();
-            const sameCache = (params: ChangeDateParam) => {
-                if (cache.refDate === params.refDate) {
-                    if (cache.displayPeriod.end === params.displayPeriod.end) {
-                        if (cache.displayPeriod.start === params.displayPeriod.start) {
-                            return true;
+            const sameCache = (params: ChangeDateParam): 0 | 1 | 2 => {
+                if (cache.displayPeriod.end === params.displayPeriod.end) {
+                    if (cache.displayPeriod.start === params.displayPeriod.start) {
+                        if (cache.refDate === params.refDate) {
+                            return 2;
                         }
+
+                        return 1;
                     }
                 }
 
-                return false;
+                return 0;
             };
             const updateCache = (params: ChangeDateParam) => {
                 cache.displayPeriod.end = params.displayPeriod.end;
@@ -171,19 +177,49 @@ module nts.uk.ui.at.kdp013.a {
                                 end: moment(end).format(DATE_TIME_FORMAT)
                             }
                         };
+                        const pair = sameCache(params);
 
-                        if (!sameCache(params)) {
+                        if (pair !== 2) {
                             updateCache(params);
+                        }
 
+                        if (pair === 0) {
                             vm
                                 .$ajax('at', API.CHANGE_DATE, params)
-                                .then((data: ChangeDateDto) => {
-                                    console.log(data);
-                                });
+                                .then((data: ChangeDateDto) => vm.$datas(data));
                         }
                     }
                 }
             }).extend({ rateLimit: 250 });
+
+            vm.confirmers = ko.computed({
+                read: () => {
+                    const datas = ko.unwrap(vm.$datas);
+                    const $date = ko.unwrap(vm.initialDate);
+                    const $moment = moment($date).format(DATE_FORMAT);
+
+                    if (datas) {
+                        const { lstComfirmerDto } = datas;
+
+                        return _
+                            .chain(lstComfirmerDto)
+                            .filter(({ confirmDateTime }) => (confirmDateTime || "").indexOf($moment) === 0)
+                            .map(({
+                                confirmSID: id,
+                                confirmSCD: code,
+                                businessName: name
+                            }) => ({
+                                id,
+                                code,
+                                name,
+                                selected: false
+                            }))
+                            .value();
+                    }
+
+                    return [] as calendar.Employee[];
+                }
+            }).extend({ rateLimit: 500 });
         }
 
         mounted() {
