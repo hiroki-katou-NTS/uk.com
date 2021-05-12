@@ -29,15 +29,14 @@ public class WorkTimeInfoRequest extends NRLRequest<Frame>{
 	private SendNRDataAdapter sendNRDataAdapter;
 	
 	@Override
-	public void sketch(ResourceContext<Frame> context) {
+	public void sketch(String empInfoTerCode, ResourceContext<Frame> context) {
 		// TODO Auto-generated method stub
 		List<MapItem> items = new ArrayList<>();
 		items.add(FrameItemArranger.SOH());
 		items.add(new MapItem(Element.HDR, Command.WORKTIME_INFO.Response));
 		//Get work time info from DB, count records
-		String nrlNo = context.getEntity().pickItem(Element.NRL_NO);
-		//TODO: default ContractCode "000000000000"
-		List<SendWorkTimeNameImport> lstInfo = sendNRDataAdapter.sendWorkTime(nrlNo.trim(), "000000000000");
+		String contractCode =  context.getEntity().pickItem(Element.CONTRACT_CODE);
+		List<SendWorkTimeNameImport> lstInfo = sendNRDataAdapter.sendWorkTime(empInfoTerCode, contractCode);
 		StringBuilder builder = new StringBuilder();
 		for(SendWorkTimeNameImport infoName : lstInfo) {
 			builder.append(toStringObject(infoName));
@@ -51,6 +50,7 @@ public class WorkTimeInfoRequest extends NRLRequest<Frame>{
 		items.add(FrameItemArranger.NoFragment());
 		items.add(new MapItem(Element.NRL_NO, context.getTerminal().getNrlNo()));
 		items.add(new MapItem(Element.MAC_ADDR, context.getTerminal().getMacAddress()));
+		items.add(new MapItem(Element.CONTRACT_CODE, contractCode));
 		items.add(FrameItemArranger.ZeroPadding());
 		//Number of records
 		items.add(new MapItem(Element.NUMBER, String.valueOf(lstInfo.size())));

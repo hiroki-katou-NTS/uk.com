@@ -11,6 +11,7 @@ import javax.inject.Inject;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 
+import lombok.val;
 import nts.uk.ctx.at.function.app.nrl.Command;
 import nts.uk.ctx.at.function.app.nrl.DefaultValue;
 import nts.uk.ctx.at.function.app.nrl.data.MarshalResult;
@@ -21,9 +22,15 @@ import nts.uk.ctx.at.function.app.nrl.response.NRLResponse;
 import nts.uk.ctx.at.function.app.nrl.xml.DefaultXDocument;
 import nts.uk.ctx.at.function.app.nrl.xml.Element;
 import nts.uk.ctx.at.function.app.nrl.xml.Frame;
+import nts.uk.ctx.at.function.app.nrlremote.SendToNRLRemote;
+import nts.uk.ctx.at.function.dom.adapter.employmentinfoterminal.infoterminal.RQEmpInfoTerminalAdapter;
+import nts.uk.shr.com.system.property.UKServerSystemProperties;
+import nts.uk.shr.infra.data.TenantLocatorService;
 
 /**
  * Request dispatcher.
+ * 
+ * NRLをオブジェクトに変換する
  * 
  * @author manhnd
  */
@@ -47,6 +54,7 @@ public class RequestDispatcher {
 		RequestMapper.put(Command.TIMESET_INFO.Request, TimeSettingInfoRequest.class);
 		RequestMapper.put(Command.WORKTIME_INFO.Request, WorkTimeInfoRequest.class);
 		RequestMapper.put(Command.WORKTYPE_INFO.Request, WorkTypeInfoRequest.class);
+		RequestMapper.put(Command.TR_REMOTE.Request, SendToNRLRemote.class);
 	}
 	
 	/**
@@ -54,6 +62,12 @@ public class RequestDispatcher {
 	 */
 	@Inject
 	private DefaultXDocument document;
+	
+	@Inject
+	private AuthenticateNRCommunicationQuery authenQuery;
+	
+	@Inject
+	private RQEmpInfoTerminalAdapter rqEmpInfoTerminalAdapter;
 	
 	/**
 	 * Ignite.
@@ -77,19 +91,42 @@ public class RequestDispatcher {
 			if (!DefaultValue.SOH.equals(soh)) throw new InvalidFrameException();
 			String hdr = frame.pickItem(Element.HDR);
 
+			String nrlNo = frame.pickItem(Element.NRL_NO);
+			String macAddr = frame.pickItem(Element.MAC_ADDR);
+			String contractCode = frame.pickItem(Element.CONTRACT_CODE);
 			Command command = Command.findName(hdr).orElseThrow(InvalidFrameException::new);
 			if (command == Command.ACCEPT || command == Command.NOACCEPT) return NRLResponse.mute();
 			if (Arrays.asList(datas).stream().noneMatch(d -> d == command)) {
-				String nrlNo = frame.pickItem(Element.NRL_NO);
-				String macAddr = frame.pickItem(Element.MAC_ADDR);
-				return NRLResponse.noAccept(nrlNo, macAddr).build().addPayload(Frame.class, ErrorCode.PARAM.value);
+				return NRLResponse.noAccept(nrlNo, macAddr, contractCode).build().addPayload(Frame.class, ErrorCode.PARAM.value);
 			}
 			
 			NRLRequest<Frame> request = CDI.current().select(RequestMapper.get(hdr)).get();
 			if (request.intrEntity(frame.isCracked())) {
 				frame = document.unmarshal(result.toInputStream());
 			}
-			return request.responseTo(frame);
+			
+			//タイムレコーダの通信を認証する
+			boolean checkAuthen = authenQuery.process(contractCode);
+			if(!checkAuthen) {
+				return NRLResponse.noAccept(nrlNo, macAddr, contractCode).build().addPayload(Frame.class, ErrorCode.PARAM.value);
+			}
+			
+			//就業情報端末を取得する
+			val empInfoTerCodeOpt = rqEmpInfoTerminalAdapter.getEmpInfoTerminalCode(contractCode, macAddr);
+			if(!empInfoTerCodeOpt.isPresent()) {
+				return NRLResponse.noAccept(nrlNo, macAddr, contractCode).build().addPayload(Frame.class, ErrorCode.PARAM.value);
+			}
+
+			//TODO: DS_通信状況を記録する.通信状況を記録する
+			
+			NRLResponse reponse =  request.responseTo(empInfoTerCodeOpt.get(), frame);
+			
+			if(UKServerSystemProperties.isCloud()) {
+				TenantLocatorService.disconnect();
+			}
+			
+			return reponse;
+			
 		} catch (JAXBException | NoSuchMethodException ex) {
 			throw new RuntimeException(ex);
 		} finally {

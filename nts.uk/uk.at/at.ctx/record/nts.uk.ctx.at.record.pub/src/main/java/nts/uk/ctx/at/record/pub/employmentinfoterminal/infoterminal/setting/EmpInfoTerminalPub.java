@@ -19,4 +19,14 @@ public interface EmpInfoTerminalPub {
 	 */
 	public Optional<EmpInfoTerminalExport> getEmpInfoTerminal(String empInfoTerCode, String contractCode);
 	
+	
+	/**
+	 * 就業情報端末を取得する
+	 * 
+	 * @param empInfoTerCode
+	 * @param contractCode
+	 * @return
+	 */
+	public Optional<String> getEmpInfoTerminalCode(String contractCode, String macAddr);
+	
 }

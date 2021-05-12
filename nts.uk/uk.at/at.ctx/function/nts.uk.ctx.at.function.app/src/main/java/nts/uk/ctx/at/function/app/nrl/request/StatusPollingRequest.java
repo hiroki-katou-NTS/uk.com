@@ -30,8 +30,9 @@ public class StatusPollingRequest extends NRLRequest<Frame> {
 	 * @see nts.uk.ctx.at.function.app.nrl.request.NRLRequest#sketch(nts.uk.ctx.at.function.app.nrl.request.ResourceContext)
 	 */
 	@Override
-	public void sketch(ResourceContext<Frame> context) {
+	public void sketch(String empInfoTerCode, ResourceContext<Frame> context) {
 		
+		String contractCode =  context.getEntity().pickItem(Element.CONTRACT_CODE);
 		List<MapItem> items = new ArrayList<>();
 		items.add(FrameItemArranger.SOH());
 		items.add(new MapItem(Element.HDR, Command.POLLING.Response));
@@ -41,13 +42,12 @@ public class StatusPollingRequest extends NRLRequest<Frame> {
 		items.add(FrameItemArranger.NoFragment());
 		items.add(new MapItem(Element.NRL_NO, context.getTerminal().getNrlNo()));
 		items.add(new MapItem(Element.MAC_ADDR, context.getTerminal().getMacAddress()));
+		items.add(new MapItem(Element.CONTRACT_CODE, contractCode));
 		items.add(FrameItemArranger.ZeroPadding());
 		items.add(new MapItem(Element.STATUS, Element.Value.STATUS_REQ_NORMAL_RES));
 		// Get flag from DB to set to request
-		String nrlNo = context.getEntity().pickItem(Element.NRL_NO);
-		//TODO: default ContractCode "000000000000"
 		SendTimeRecordSettingImport setting = sendNRDataAdapter
-				.sendTimeRecordSetting(nrlNo.trim(), "000000000000").orElse(new SendTimeRecordSettingImport());
+				.sendTimeRecordSetting(empInfoTerCode, contractCode).orElse(new SendTimeRecordSettingImport());
 
 		items.add(new MapItem(Element.REQUEST1, setting.isRequest1() ? Element.Value.FLAG_ON : Element.Value.FLAG_OFF));
 		items.add(new MapItem(Element.REQUEST2, setting.isRequest2() ? Element.Value.FLAG_ON : Element.Value.FLAG_OFF));
