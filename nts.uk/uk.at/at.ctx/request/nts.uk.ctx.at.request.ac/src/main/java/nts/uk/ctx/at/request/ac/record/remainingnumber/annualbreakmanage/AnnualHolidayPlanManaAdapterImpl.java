@@ -16,13 +16,10 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumb
 import nts.uk.ctx.at.request.dom.vacation.history.service.PeriodVactionCalInfor;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TempAnnualLeaveMngs;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualHolidayMngRepository;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemainRepository;
 @Stateless
 public class AnnualHolidayPlanManaAdapterImpl implements AnnualHolidayPlanManaAdapter{
 	@Inject
 	private AnnualHolidayPlanManaPub planPub;
-	@Inject
-	private InterimRemainRepository interimMng;
 	@Inject
 	private TmpAnnualHolidayMngRepository annualMng;
 	@Override

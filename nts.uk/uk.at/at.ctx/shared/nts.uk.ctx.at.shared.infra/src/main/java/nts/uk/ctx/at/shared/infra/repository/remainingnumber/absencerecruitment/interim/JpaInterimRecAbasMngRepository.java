@@ -3,7 +3,6 @@ package nts.uk.ctx.at.shared.infra.repository.remainingnumber.absencerecruitment
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,7 +23,6 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.Inter
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecAbsMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
-import nts.uk.ctx.at.shared.dom.remainingnumber.base.HolidayAtr;
 //import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualHolidayMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.DataManagementAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.OccurrenceDay;
@@ -38,12 +36,9 @@ import nts.uk.ctx.at.shared.infra.entity.remainingnumber.absencerecruitment.inte
 import nts.uk.ctx.at.shared.infra.entity.remainingnumber.absencerecruitment.interim.KrcdtInterimHdSubMngPK;
 import nts.uk.ctx.at.shared.infra.entity.remainingnumber.absencerecruitment.interim.KrcdtInterimRecHdSub;
 import nts.uk.ctx.at.shared.infra.entity.remainingnumber.absencerecruitment.interim.KrcdtInterimRecMng;
-
 import nts.uk.ctx.at.shared.infra.entity.remainingnumber.absencerecruitment.interim.KrcdtInterimRecMngPK;
 import nts.uk.ctx.at.shared.infra.entity.remainingnumber.absencerecruitment.interim.KrcmtInterimRecAbsPK;
 import nts.uk.shr.com.context.AppContexts;
-
-import nts.uk.ctx.at.shared.infra.entity.remainingnumber.absencerecruitment.interim.KrcmtInterimRecAbsPK;
 
 
 @Stateless
@@ -459,13 +454,16 @@ public class JpaInterimRecAbasMngRepository extends JpaRepository implements Int
      * @return
      */
 	@Override
-	public List<InterimRecMng> getRecByIds(List<String> mngIds) {
-		if (mngIds == null || mngIds.isEmpty()) return Collections.emptyList();
+	public List<InterimRecMng> getRecByIds(String employeeId,
+			DatePeriod period) {
 		return this.queryProxy()
 				.query("SELECT a FROM KrcdtInterimRecMng a" +
-                        "AND a.remainMngId in :mngIds " +
+						"WHERE a.pk.sid = :sid " +
+                        "AND AND a.pk.ymd <= :start AND a.pk.ymd >= :end" +
                         "ORDER BY a.pk.ymd", KrcdtInterimRecMng.class)
-				.setParameter("mngIds", mngIds)
+				.setParameter("sid", employeeId)
+				.setParameter("start", period.start())
+				.setParameter("end", period.end())
 				.getList((KrcdtInterimRecMng i) -> new InterimRecMng(
 						i.remainMngId,
 						i.pk.sid,
