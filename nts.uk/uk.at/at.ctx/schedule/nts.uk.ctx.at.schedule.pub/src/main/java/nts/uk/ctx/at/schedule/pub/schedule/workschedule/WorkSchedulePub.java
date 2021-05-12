@@ -53,4 +53,13 @@ public interface WorkSchedulePub {
      */
 	// Update bug redmine: http://192.168.50.4:3000/issues/116305
     public Optional<ScWorkScheduleExport_New> findByIdNewV2(String employeeId, GeneralDate baseDate);
+    
+    /**
+	 * 
+	 * 勤務予定の確定状態を取得する
+	 * @param employeeID
+	 * @param date
+	 * @return
+	 */
+	public List<WorkScheduleConfirmExport> findConfirmById(List<String> employeeID, DatePeriod date);
 }
