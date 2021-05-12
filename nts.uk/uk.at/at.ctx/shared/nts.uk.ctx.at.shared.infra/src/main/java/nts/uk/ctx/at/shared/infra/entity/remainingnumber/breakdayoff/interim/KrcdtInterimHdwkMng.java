@@ -3,8 +3,8 @@ package nts.uk.ctx.at.shared.infra.entity.remainingnumber.breakdayoff.interim;
 import java.io.Serializable;
 
 import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.Id;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -19,33 +19,49 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCDT_INTERIM_HDWK_MNG")
+@Table(name = "KSHDT_INTERIM_HDWK")
 public class KrcdtInterimHdwkMng extends ContractUkJpaEntity implements Serializable{
-	/**暫定休出管理データID	 */
-	@Id
-	@Column(name = "BREAK_MNG_ID")
-	public String breakMngId;
-	/**	１日相当時間 */
-	@Column(name = "ONEDAY_EQUIVALENT_TIME")
-	public int oneDayEquivalentTime;
+	
+	@EmbeddedId
+	public KrcdtInterimHdwkMngPk pk;
+	
+	/**残数管理データID	 */
+	@Column(name = "REMAIN_MNG_ID")
+	public String remainMngId;
+	
+	/** 作成元区分	 */
+	@Column(name ="CREATOR_ATR")
+	public int createAtr;
+	
 	/**	使用期限日 */
 	@Column(name = "EXPIRATION_DAYS")
 	public GeneralDate expirationDate;
-	/**	発生時間数 */
-	@Column(name = "OCCURRENCE_TIMES")
-	public int occurrenceTimes;
+	
 	/**	発生日数 */
 	@Column(name = "OCCURRENCE_DAYS")
 	public Double occurrenceDays;
-	/**	半日相当時間 */
-	@Column(name = "HAFTDAY_EQUI_TIME")
-	public int haftDayEquiTime;
-	/**	未使用時間数 */
-	@Column(name = "UNUSED_TIMES")
-	public int unUsedTimes;
+	
+	/**	発生時間数 */
+	@Column(name = "OCCURRENCE_TIMES")
+	public int occurrenceTimes;
+	
 	/**	未使用日数 */
 	@Column(name = "UNUSED_DAYS")
 	public Double unUsedDays;
+	
+	/**	未使用時間数 */
+	@Column(name = "UNUSED_TIMES")
+	public int unUsedTimes;
+	
+	/**	１日相当時間 */
+	@Column(name = "ONEDAY_EQUIVALENT_TIME")
+	public int oneDayEquivalentTime;
+	
+	/**	半日相当時間 */
+	@Column(name = "HAFTDAY_EQUI_TIME")
+	public int haftDayEquiTime;
+	
+	
 	
 	
 	/**
@@ -56,8 +72,7 @@ public class KrcdtInterimHdwkMng extends ContractUkJpaEntity implements Serializ
 
 	@Override
 	protected Object getKey() {
-		// TODO Auto-generated method stub
-		return breakMngId;
+		return pk;
 	}
 	
 

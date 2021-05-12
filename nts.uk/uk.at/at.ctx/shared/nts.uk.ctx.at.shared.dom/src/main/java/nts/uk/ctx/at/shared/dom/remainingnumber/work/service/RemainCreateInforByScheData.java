@@ -24,4 +24,13 @@ public interface RemainCreateInforByScheData {
 	 * @return
 	 */
 	List<ScheRemainCreateInfor> createRemainInfor(CacheCarrier cacheCarrier, String cid, String sid, List<GeneralDate> dates);
+	
+	/**
+	 * 暫定データを作成する為の勤務予定を取得する
+	 * @param cid
+	 * @param sid
+	 * @param ymd 年月日
+	 * @return
+	 */
+	List<ScheRemainCreateInfor> createRemainInforNew(String sid, List<GeneralDate> dates);
 }

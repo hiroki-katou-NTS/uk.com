@@ -142,20 +142,24 @@ export class KafS12A1Component extends Vue {
                 }
             });
 
-            const outingTimes = opActualContentDisplayLst[0].opAchievementDetail.stampRecordOutput.outingTime || [];
             self.outingTimeZones.forEach((i: OutingTimeZone) => {
-                outingTimes.filter((time: any) => time.opGoOutReasonAtr == 0 || time.opGoOutReasonAtr == 3).forEach((time: any) => {
-                    if (time.frameNo == i.workNo) {
-                        i.timeZone.start = time.opStartTime;
-                        i.timeZone.end = time.opEndTime;
-                        i.appTimeType = time.opGoOutReasonAtr == 3 ? AppTimeType.UNION : AppTimeType.PRIVATE;
-                    } else {
-                        i.timeZone.start = null;
-                        i.timeZone.end = null;
-                        i.appTimeType = AppTimeType.PRIVATE;
-                    }
-                });
+                i.timeZone.start = null;
+                i.timeZone.end = null;
+                i.appTimeType = AppTimeType.PRIVATE;
             });
+            let maxWorkNoHasData = 3;
+            const outingTimes = opActualContentDisplayLst[0].opAchievementDetail.stampRecordOutput.outingTime || [];
+            outingTimes.filter((time: any) => time.opGoOutReasonAtr == 0 || time.opGoOutReasonAtr == 3).forEach((time: any) => {
+                maxWorkNoHasData = Math.max(time.frameNo, maxWorkNoHasData);
+                self.outingTimeZones[time.frameNo - 1].timeZone.start = time.opStartTime;
+                self.outingTimeZones[time.frameNo - 1].timeZone.end = time.opEndTime;
+                self.outingTimeZones[time.frameNo - 1].appTimeType = time.opGoOutReasonAtr == 3 ? AppTimeType.UNION : AppTimeType.PRIVATE;
+            });
+            for (let no = 1; no <= maxWorkNoHasData; no++) {
+                if (!self.outingTimeZones[no - 1].display) {
+                    self.outingTimeZones[no - 1].display = true;
+                }
+            }
         } else if (self.newMode && prePostAtr == 0) {
             self.lateEarlyTimeZones.forEach((i: LateEarlyTimeZone) => {
                 i.timeValue = null;
