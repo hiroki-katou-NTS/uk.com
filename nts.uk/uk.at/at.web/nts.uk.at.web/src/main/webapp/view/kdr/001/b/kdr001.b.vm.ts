@@ -602,6 +602,14 @@ module nts.uk.at.view.kdr001.b.viewmodel {
                 nts.uk.ui.errors.clearAll();
             });
 
+            self.outputItemsHolidays.subscribe((isCheck) => {
+                if (isCheck === false) {
+                    self.outputHolidayForward(false);
+                    self.monthlyPublic(false);
+                }
+                nts.uk.ui.errors.clearAll();
+            });
+
             self.nursingLeave.subscribe(() => {
                 nts.uk.ui.errors.clearAll();
             });
@@ -612,9 +620,6 @@ module nts.uk.at.view.kdr001.b.viewmodel {
                 nts.uk.ui.errors.clearAll();
             });
             self.childNursingLeave.subscribe(() => {
-                nts.uk.ui.errors.clearAll();
-            });
-            self.yearlyHoliday.subscribe(() => {
                 nts.uk.ui.errors.clearAll();
             });
             self.insideHours.subscribe(() => {
