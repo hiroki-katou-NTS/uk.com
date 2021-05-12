@@ -128,6 +128,7 @@ module nts.uk.at.view.kdr001.b.viewmodel {
                                 specialHolidayName: "",
                                 enable: false
                             }));
+                        }
                     }
                 }
 
@@ -620,14 +621,7 @@ module nts.uk.at.view.kdr001.b.viewmodel {
                 }
                 nts.uk.ui.errors.clearAll();
             });
-
             self.nursingLeave.subscribe(() => {
-                nts.uk.ui.errors.clearAll();
-            });
-            self.representSubstitute.subscribe(() => {
-                nts.uk.ui.errors.clearAll();
-            });
-            self.outputHolidayForward.subscribe(() => {
                 nts.uk.ui.errors.clearAll();
             });
             self.childNursingLeave.subscribe(() => {
@@ -637,18 +631,6 @@ module nts.uk.at.view.kdr001.b.viewmodel {
                 nts.uk.ui.errors.clearAll();
             });
             self.insideHalfDay.subscribe(() => {
-                nts.uk.ui.errors.clearAll();
-            });
-            self.numberRemainingPause.subscribe(() => {
-                nts.uk.ui.errors.clearAll();
-            });
-            self.unDigestedPause.subscribe(() => {
-                nts.uk.ui.errors.clearAll();
-            });
-            self.hd60HUndigested.subscribe(() => {
-                nts.uk.ui.errors.clearAll();
-            });
-            self.hd60HRemain.subscribe(() => {
                 nts.uk.ui.errors.clearAll();
             });
             self.yearlyReserved.subscribe(() => {

@@ -7,7 +7,7 @@
 <body>
 <ui:composition template="../../../../master/dialog.xhtml">
     <ui:define name="htmlHead">
-        <script>var dialogSize = {width: 1200, height: 540};</script>
+        <script>var dialogSize = {width: 1200, height: 850};</script>
         <com:scriptfile set="IGNITE"/>
         <com:stylefile path="kdr001.b.main.css"/>
         <com:scriptfile path="kdr001.b.start.js"/>
@@ -65,7 +65,7 @@
 					}"></table>
                 </div>
             </div>
-            <div class="holidayAction" style="margin-right: 1000px;" data-bind="with: currentHoliday">
+            <div class="holidayAction" style="margin-right: 360px;" data-bind="with: currentHoliday">
                 <div class="holiday-button">
                     <div class="labelWork"
                          data-bind="ntsFormLabel: {required: true, constraint:['HolidayRemainingCode','HolidayRemainingName']}">#{i18n.getText('KDR001_42')}
@@ -94,24 +94,24 @@
                     </div>
                     <!-- B4_2  -->
                     <table class="fixed-checkbox-table" id = "outputItems" tabindex="8" style="width: 680px; margin-top: 5px;">
-                        <tr id="rowYearlyHoliday">
+                        <tr id="rowYearlyHoliday" >
                             <td>
                                 <!-- B4_3  -->
-                                <div tabindex="9"
+                                <div tabindex="9" style="width: 162px"
                                      data-bind="ntsCheckBox: { checked: yearlyHoliday, enable: true, text: '#{i18n.getText('Com_PaidHoliday')}' }"></div>
                             </td>
                         </tr>
-                        <tr id="rowInsideHalfDay">
+                        <tr id="rowInsideHalfDay" >
                             <td>
                                 <!-- B4_4 -->
-                                <div tabindex="10"
+                                <div tabindex="10"  style="width: 162px"
                                      data-bind="ntsCheckBox: { checked: insideHalfDay, enable: yearlyHoliday, text: '#{i18n.getText('KDR001_44')}' }"></div>
                             </td>
                         </tr>
                         <tr id="rowInsideHours">
                             <td>
                                 <!-- B4_6 -->
-                                <div tabindex="11"
+                                <div tabindex="11"  style="width: 162px"
                                      data-bind="ntsCheckBox: { checked: insideHours, enable: yearlyHoliday, text: '#{i18n.getText('KDR001_45')}' }"></div>
                             </td>
                         </tr>

@@ -1,18 +1,18 @@
 
 .ccg001searchkcp005{
-	float:left;
+	float:unset;
 	margin-left: 90px;
 	height: 417px;
 }
 
 .holidayAction {
-	margin-left: 30px;
+	margin-left: 10px;
 	z-index: 100;
 	padding-left: 30px;
 	height: 200px;
 }
 .holidayAction table {
-	margin-top: 20px;	
+	margin-top: 20px;
 }
 .holidayAction table tr {
 	display: flex;
@@ -32,8 +32,8 @@
 	border-radius: 5px;
 }
 
-#contents-area { 
-	display: flex;
+#contents-area {
+	display: unset;
 }
 .panel.panel-frame {
 	width: 525px;
@@ -53,4 +53,7 @@ body {
 }
 #combo-box2 button{
 	width: 65px;
+}
+.form-panel {
+	display: flex;
 }
