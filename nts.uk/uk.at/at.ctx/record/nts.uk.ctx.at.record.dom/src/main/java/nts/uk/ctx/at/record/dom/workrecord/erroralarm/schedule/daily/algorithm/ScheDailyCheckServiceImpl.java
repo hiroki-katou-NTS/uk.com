@@ -1120,7 +1120,7 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 	 */
 	private String formatTimeWithDay(Integer value) {
 		TimeWithDayAttr timeWithday = new TimeWithDayAttr(value);
-		return timeWithday.getInDayTimeWithFormat();
+		return timeWithday.getRawTimeWithFormat();
 	}
 	
 	/**
