@@ -93,7 +93,7 @@ module nts.uk.at.view.kdr001.b.viewmodel {
                     $('#rowNursingCareHoliday').addClass("hidden");
                 }
                 if (!vacationControl || vacationControl.publicHolidaySetting == false) {
-                    $('#rowNursingCareHoliday').addClass("hidden");
+                    $('#publicHolidaySetting').addClass("hidden");
                 }
                 if (!vacationControl || vacationControl.com60HourVacationSetting == false) {
                     $('#rowHD60HItemCheck').addClass("hidden");

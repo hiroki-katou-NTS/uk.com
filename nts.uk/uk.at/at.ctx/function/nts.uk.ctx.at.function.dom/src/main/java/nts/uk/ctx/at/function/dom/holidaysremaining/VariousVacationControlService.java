@@ -87,7 +87,7 @@ public class VariousVacationControlService {
 		//ドメインモデル「公休設定」を取得する
 		val publicHoliday =  publicHolidaySettingRepository.get(companyId);
 
-		if (publicHoliday.isPresent()) {
+		if (publicHoliday.isPresent()&&publicHoliday.get().getIsManagePublicHoliday()== ManageDistinct.YES.value) {
 			publicHolidaySetting = true;
 		}
 
