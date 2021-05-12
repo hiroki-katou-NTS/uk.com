@@ -2,6 +2,8 @@ module nts.uk.ui.at.kdp013.share {
     const { randomId } = nts.uk.util;
 
     export module dropdown {
+        const vm = new ko.ViewModel();
+
         const style = `
             .nts-dropdown {
                 position: relative;
@@ -244,10 +246,16 @@ module nts.uk.ui.at.kdp013.share {
                 ko.computed({
                     read: () => {
                         const item = ko.unwrap(selected);
-                        const { code, name } = item;
 
-                        $(element)
-                            .html(`<td>${code}</td><td>${name}</td>`);
+                        if (item) {
+                            const { code, name } = item;
+
+                            $(element)
+                                .html(`<td>${code}</td><td>${name}</td>`);
+                        } else {
+                            $(element)
+                                .html(`<td>${vm.$i18n('KDW013_41')}</td><td></td>`);
+                        }
                     },
                     disposeWhenNodeIsRemoved: element
                 });
@@ -366,7 +374,7 @@ module nts.uk.ui.at.kdp013.share {
                             return { id, code, name };
                         }
 
-                        return { id: '', code: '', name: '' };
+                        return null;
                     }
                 });
             }
