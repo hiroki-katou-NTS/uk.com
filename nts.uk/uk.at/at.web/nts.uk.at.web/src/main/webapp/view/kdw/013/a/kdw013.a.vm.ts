@@ -223,15 +223,19 @@ module nts.uk.ui.at.kdp013.a {
             vm.attendanceTimes = ko.computed({
                 read: () => {
                     const datas = ko.unwrap(vm.$datas);
+                    const empls = ko.unwrap(vm.employees);
+
                     // need update by employId if: mode=1
+                    const employee = _.find(empls, ({ selected }) => !!selected);
+                    const employeeId = employee ? employee.id : vm.$user.employeeId;
 
                     if (datas) {
                         const { lstWorkRecordDetailDto } = datas;
 
                         return _
                             .chain(lstWorkRecordDetailDto)
-                            .orderBy(['date'])
-                            .filter(({ sId }) => !!sId)
+                            // .orderBy(['date'])
+                            .filter(({ sId }) => sId === employeeId)
                             .map(({
                                 date,
                                 actualContent,
