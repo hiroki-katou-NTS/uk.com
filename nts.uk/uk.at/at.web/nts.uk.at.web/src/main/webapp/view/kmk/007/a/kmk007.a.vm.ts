@@ -1,3 +1,4 @@
+import ukText = nts.uk.text;
 module nts.uk.at.view.kmk007.a.viewmodel {
     export class ScreenModel {
         columns: KnockoutObservableArray<any>;
@@ -29,6 +30,7 @@ module nts.uk.at.view.kmk007.a.viewmodel {
         isEnable: KnockoutObservable<boolean> = ko.observable(true);
         isEnableOneDay: KnockoutObservable<boolean> = ko.observable(false);
         langId: KnockoutObservable<string> = ko.observable('ja');
+        medicalOption: KnockoutObservable<boolean> = ko.observable(true);
 
         constructor() {
             var self = this,
@@ -45,6 +47,7 @@ module nts.uk.at.view.kmk007.a.viewmodel {
                     timeLeaveWork: 0,
                     attendanceTime: 0,
                     genSubHodiday: 0,
+                    publicHoliday: 0,
                     dayNightTimeAsk: 0
                 };
 
@@ -65,7 +68,6 @@ module nts.uk.at.view.kmk007.a.viewmodel {
                 workTypeCode: '',
                 name: '',
                 abbreviationName: '',
-                symbolicName: '',
                 abolishAtr: 0,
                 memo: '',
                 workAtr: 0,
@@ -154,6 +156,12 @@ module nts.uk.at.view.kmk007.a.viewmodel {
 
             self.currentCode = ko.observable();
 
+            self.currentWorkType().dispName.subscribe(function(value) {
+                if (!ukText.isNullOrEmpty(value)) {
+                    self.currentWorkType().dispAbName(self.subString(value, 6));
+                }
+            });
+
             self.currentWorkType().oneDayCls.subscribe(function(newOneDayCls) {
                 self.checkCalculatorMethod(newOneDayCls);
 
@@ -229,7 +237,6 @@ module nts.uk.at.view.kmk007.a.viewmodel {
                             cwt.abbreviationName(itemWorkType.abbreviationName);
                             cwt.abNameNotJP(itemWorkTypeLang.abNameNotJP);
                             cwt.dispAbName(self.langId() == 'ja' ? itemWorkType.abbreviationName : itemWorkTypeLang.abNameNotJP);
-                            cwt.symbolicName(itemWorkType.symbolicName);
                             cwt.abolishAtr(itemWorkType.abolishAtr);
                             cwt.memo(itemWorkType.memo);
                             cwt.workAtr(itemWorkType.workAtr);
@@ -266,12 +273,17 @@ module nts.uk.at.view.kmk007.a.viewmodel {
             $("#switch-language")['ntsSwitchMasterLanguage']();
             $("#switch-language").on("selectionChanged", (event: any) => self.langId(event['detail']['languageId']));
 
+            // ドメインモデル「特別休暇枠」を取得する(lấy dữ liệu domain 「特別休暇枠」)
             self.getSpecialHolidayFrame();
+            // ドメインモデル「欠勤枠」を取得する(lấy dữ liệu domain「欠勤枠」)
             self.getAbsenceFrame();
 
+            // アルゴリズム「勤務種類をすべて取得する」を実行する
             self.getWorkType().done(function() {
                 let lwtData = ko.toJS(lwt);
+                // 取得件数チェック(check số data lấy được)
                 if (lwtData.length > 0) {
+                    // アルゴリズム「医療オプションを取得する」を実行する
                     self.currentCode(lwtData[0].workTypeCode);
                 }
                 else {
@@ -305,6 +317,7 @@ module nts.uk.at.view.kmk007.a.viewmodel {
             worktypeset.dayNightTimeAsk(itemWorkType.dayNightTimeAsk);
             worktypeset.digestPublicHd(itemWorkType.digestPublicHd);
             worktypeset.genSubHodiday(itemWorkType.genSubHodiday);
+            worktypeset.publicHoliday(itemWorkType.publicHoliday);
             worktypeset.holidayAtr(itemWorkType.holidayAtr);
             worktypeset.sumAbsenseNo(itemWorkType.sumAbsenseNo);
             worktypeset.sumSpHodidayNo(itemWorkType.sumSpHodidayNo);
@@ -538,7 +551,6 @@ module nts.uk.at.view.kmk007.a.viewmodel {
             cwt.workTypeCode('');
             cwt.dispName('');
             cwt.dispAbName('');
-            cwt.symbolicName('');
             cwt.abolishAtr(0);
             cwt.memo('');
             cwt.workAtr(0);
@@ -559,6 +571,7 @@ module nts.uk.at.view.kmk007.a.viewmodel {
             od.timeLeaveWork(0);
             od.attendanceTime(0);
             od.genSubHodiday(0);
+            od.publicHoliday(0);
             od.dayNightTimeAsk(0);
 
             mn.workTypeCode('');
@@ -574,6 +587,7 @@ module nts.uk.at.view.kmk007.a.viewmodel {
             mn.timeLeaveWork(0);
             mn.attendanceTime(0);
             mn.genSubHodiday(0);
+            mn.publicHoliday(0);
             mn.dayNightTimeAsk(0);
 
             af.workTypeCode('');
@@ -589,6 +603,7 @@ module nts.uk.at.view.kmk007.a.viewmodel {
             af.timeLeaveWork(0);
             af.attendanceTime(0);
             af.genSubHodiday(0);
+            af.publicHoliday(0);
             af.dayNightTimeAsk(0);
             self.currentCode("");
             
@@ -631,7 +646,6 @@ module nts.uk.at.view.kmk007.a.viewmodel {
                 workTypeCode: item.workTypeCode,
                 name: item.name,
                 abbreviationName: item.abbreviationName,
-                symbolicName: item.symbolicName,
                 abolishAtr: item.abolishAtr,
                 memo: item.memo,
                 workAtr: item.workAtr,
@@ -845,6 +859,19 @@ module nts.uk.at.view.kmk007.a.viewmodel {
                 nts.uk.ui.block.clear();
             });
         }
+
+        private subString(value: string, length: number): string {
+            let maxCountHalfSizeCharacter = length;
+            let valueTemp = "";
+            const valueSplip = value.split("");
+            valueSplip.forEach((character: string) => {
+                maxCountHalfSizeCharacter -= ukText.countHalf(character);
+                if (maxCountHalfSizeCharacter >= 0) {
+                    valueTemp += character;
+                }
+            });
+            return valueTemp;
+        }
     }
 
     export enum WorkAtr {
@@ -925,7 +952,6 @@ module nts.uk.at.view.kmk007.a.viewmodel {
         name: string;
         abNameNotJP?: string;
         abbreviationName: string;
-        symbolicName: string;
         abolishAtr: number;
         memo: string;
         workAtr: number;
@@ -949,7 +975,6 @@ module nts.uk.at.view.kmk007.a.viewmodel {
         abNameNotJP: KnockoutObservable<string>;
         abbreviationName: KnockoutObservable<string>;
         dispAbName: KnockoutObservable<string>;
-        symbolicName: KnockoutObservable<string>;
         abolishAtr: KnockoutObservable<any>;
         memo: KnockoutObservable<string>;
         workAtr: KnockoutObservable<number>;
@@ -971,7 +996,6 @@ module nts.uk.at.view.kmk007.a.viewmodel {
             this.abNameNotJP = ko.observable(param.abNameNotJP);
             this.abbreviationName = ko.observable(param.abbreviationName);
             this.dispAbName = ko.observable(param.dispAbName);
-            this.symbolicName = ko.observable(param.symbolicName);
             this.abolishAtr = ko.observable(!!param.abolishAtr);
             this.memo = ko.observable(param.memo);
             this.workAtr = ko.observable(param.workAtr);
@@ -1004,6 +1028,7 @@ module nts.uk.at.view.kmk007.a.viewmodel {
         timeLeaveWork?: number;
         attendanceTime?: number;
         genSubHodiday?: number;
+        publicHoliday?: number;
         dayNightTimeAsk?: number;
     }
 
@@ -1020,6 +1045,7 @@ module nts.uk.at.view.kmk007.a.viewmodel {
         attendanceTime: KnockoutObservable<any>;
         genSubHodiday: KnockoutObservable<any>;
         dayNightTimeAsk: KnockoutObservable<any>;
+        publicHoliday: KnockoutObservable<any>;
         listAbsenceFrame: KnockoutObservableArray<any> = ko.observableArray([]);
         listSpecialHlFrame: KnockoutObservableArray<any> = ko.observableArray([]);
 
@@ -1036,6 +1062,7 @@ module nts.uk.at.view.kmk007.a.viewmodel {
                 this.timeLeaveWork = ko.observable(!!param.timeLeaveWork);
                 this.attendanceTime = ko.observable(!!param.attendanceTime);
                 this.genSubHodiday = ko.observable(!!param.genSubHodiday);
+                this.publicHoliday = ko.observable(!!param.publicHoliday)
                 this.dayNightTimeAsk = ko.observable(!!param.dayNightTimeAsk);
             }
         }
