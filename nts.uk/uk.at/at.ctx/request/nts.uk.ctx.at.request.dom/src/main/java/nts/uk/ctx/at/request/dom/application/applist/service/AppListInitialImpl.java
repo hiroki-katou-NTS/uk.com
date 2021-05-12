@@ -860,7 +860,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		result.setApplicantCD(applicant.getEmployeeCode());
 		// result.setAppReason
 		result.setInputDate(application.getInputDate());
-		result.setOpEntererName(Optional.of(I18NText.getText("CMM045_304", mapEmpInfo.get(application.getEnteredPersonID()).getBusinessName())));
+		result.setOpEntererName(Optional.of(I18NText.getText("CMM045_230", mapEmpInfo.get(application.getEnteredPersonID()).getBusinessName())));
 		result.setOpAppStartDate(application.getOpAppStartDate().map(x -> x.getApplicationDate()));
 		result.setOpAppEndDate(application.getOpAppEndDate().map(x -> x.getApplicationDate()));
 		result.setAppDate(application.getAppDate().getApplicationDate());
