@@ -33,11 +33,11 @@ public class GetPeriodExcluseEntryRetireTime {
 
 		// 開始前
 		if (target.isBefore(comparison))
-			return Optional.of(overlap);
+			return Optional.empty();
 
 		// 終了後
 		if (target.isAfter(comparison))
-			return Optional.of(overlap);
+			return Optional.empty();
 
 		// 重複あり
 		overlap = target;
