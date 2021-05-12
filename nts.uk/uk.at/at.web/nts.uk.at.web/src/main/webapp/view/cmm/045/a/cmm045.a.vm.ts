@@ -1209,6 +1209,9 @@ module cmm045.a.viewmodel {
 					//}
 				}
 				nameStr += item[key];
+				if(item.application.employeeID != item.application.enteredPerson) {
+					nameStr += item.opEntererName;
+				}
 				return _.escape(nameStr).replace(/\n/g, '<br/>');
 			}
 
@@ -1900,43 +1903,39 @@ module cmm045.a.viewmodel {
             let colorIn = a.substring(0,1);
             if (colorIn == '土') {//土
                 inputDate = '<div class = "saturdayCell ' + classApp + '" >' + '<div>' + input + '</div>';
-				inputDate += '</div>';
 				if(isSyncApp) {
 					inputDate += '<div style="margin-top: 5px;">' + input + '</div>';
 				}
+				inputDate += '</div>';
             }
             if (colorIn == '日') {//日
                 inputDate = '<div class = "sundayCell ' + classApp + '" >' + '<div>' + input + '</div>';
-				inputDate += '</div>';
 				if(isSyncApp) {
 					inputDate += '<div style="margin-top: 5px;">' + input + '</div>';
 				}
+				inputDate += '</div>';
             }
             return inputDate;
         }
         appDateColor(date: string, classApp: string, priod: string, linkAppDate: string): string{
             let appDate = '<div class = "' + classApp + '" >' + '<div>' + date + priod + '</div>';
-			if(linkAppDate) {
-				appDate += '<div style="margin-top: 5px;">' + linkAppDate + priod + '</div>';
+			let dateDay = date.split("(")[1].substring(0,1);
+			if (dateDay == '土') {//土
+				appDate = '<div class = "saturdayCell ' + classApp + '" >' + '<div>' + date + priod + '</div></div>';
 			}
-			appDate += '</div>';
-            //color text appDate
-            let a = date.split("(")[1];
-            let color = a.substring(0,1);
-            if (color == '土') {//土
-                appDate = '<div class = "saturdayCell  ' + classApp + '" >' + '<div>' + date + priod + '</div>';
-				appDate += '</div>';
-				if(linkAppDate) {
-					appDate += '<div style="margin-top: 5px;">' + linkAppDate + priod + '</div>';
+			if (dateDay == '日') {//日
+				appDate = '<div class = "sundayCell ' + classApp + '" >' + '<div>' + date + priod + '</div></div>';
+			}
+            if(linkAppDate) {
+				let linkAppDateDay = linkAppDate.split("(")[1].substring(0,1);
+				if (linkAppDateDay == '土') {
+					appDate += '<div class="saturdayCell" style="margin-top: 5px;">' + linkAppDate + priod + '</div>';
+				}
+				if (linkAppDateDay == '日') {
+					appDate += '<div class="sundayCell" style="margin-top: 5px;">' + linkAppDate + priod + '</div>';
 				}
             }
-            if (color == '日') {//日
-                appDate = '<div class = "sundayCell  ' + classApp + '" >' + '<div>' + date + priod + '</div>';
-				appDate += '</div>';
-				if(linkAppDate) {
-					appDate += '<div style="margin-top: 5px;">' + linkAppDate + priod + '</div>';
-				}
-            }
+
             return appDate;
         }
         //doi ung theo y amid-mizutani さん
