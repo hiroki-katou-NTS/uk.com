@@ -72,13 +72,13 @@
                     <!--A4_4-->
                     <div class="radios" tabindex="5" data-bind="ntsRadioBoxGroup: {
 	                    options:  [
-                          { id: 0, name: '#{i18n.getText('KDR001_66')}',enable: true},
-                          { id: 1, name: '#{i18n.getText('KDR001_67')}', enable: $vm.getCheckauthor'},
+                          { id: 0, name: '#{i18n.getText('KDR001_66')}'},
+                          { id: 1, name: '#{i18n.getText('KDR001_67')}', enable: $vm.getCheckauthor()}
                         ],
 	                    optionsValue: 'id',
 	                    optionsText: 'name',
 	                    value: $vm.selectedId,
-	                    enable: enable,
+	                    enable: true,
 	                    name: '#{i18n.getText('KDR001_59')}'
 	                    }" style="width:100px; position: relative; top: 25px;">
                     </div>
