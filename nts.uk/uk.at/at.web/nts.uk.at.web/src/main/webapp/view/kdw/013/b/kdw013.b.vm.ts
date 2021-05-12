@@ -101,6 +101,7 @@ module nts.uk.ui.at.kdp013.b {
             .detail-event table tr>td>div {
                 max-height: 120px;
                 overflow-y: auto;
+                word-break: break-all;
             }
         </style>
         `

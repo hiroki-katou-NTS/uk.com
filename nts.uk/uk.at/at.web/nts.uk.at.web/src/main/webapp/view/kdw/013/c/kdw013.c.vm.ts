@@ -1,5 +1,9 @@
 module nts.uk.ui.at.kdp013.c {
     const COMPONENT_NAME = 'kdp013c';
+
+    const DATE_FORMAT = 'YYYY-MM-DD';
+    const DATE_TIME_FORMAT = 'YYYY-MM-DDT00:00:00.000\\Z';
+
     import calendar = nts.uk.ui.components.fullcalendar;
 
     const style = `.edit-event {
@@ -544,9 +548,11 @@ module nts.uk.ui.at.kdp013.c {
 
         mounted() {
             const vm = this;
-            const { $el, params, model, hasError } = vm;
+            const { $el, params, model, combobox, hasError } = vm;
+            const { taskList1, taskList2, taskList3, taskList4, taskList5 } = combobox;
             const { task1, task2, task3, task4, task5, workplace: workLocation } = model;
             const { view, position, data, excludeTimes } = params;
+
             const cache = {
                 view: ko.unwrap(view),
                 position: ko.unwrap(position)
@@ -624,8 +630,6 @@ module nts.uk.ui.at.kdp013.c {
                     .then((response: StartWorkInputPanelDto | null) => {
                         if (response) {
                             vm.params.$share(response);
-
-                            const { taskList1, taskList2, taskList3, taskList4, taskList5 } = vm.combobox;
                             const { taskListDto1, taskListDto2, taskListDto3, taskListDto4, taskListDto5 } = response;
 
                             if (taskListDto1) {
@@ -719,58 +723,137 @@ module nts.uk.ui.at.kdp013.c {
                 });
 
             task1
-                .subscribe((t: string) => {
-                    if (t) {
-                        vm
-                            .$ajax('at', API.SELECT, {})
-                            .then(() => {
+                .subscribe((taskCode: string) => {
+                    if (taskCode) {
+                        const { employeeId } = vm.$user;
+                        const { start } = ko.unwrap(data);
 
-                            });
+                        const params: SelectWorkItemParam = {
+                            refDate: moment(start).format(DATE_TIME_FORMAT),
+                            sId: employeeId,
+                            taskCode,
+                            taskFrameNo: 2
+                        };
+
+                        vm
+                            .$blockui('grayoutView')
+                            .then(() => vm.$ajax('at', API.SELECT, params))
+                            .then((data: TaskDto[]) => {
+                                if (data) {
+                                    taskList2(getmapperList(data));
+                                } else {
+                                    taskList2([]);
+                                }
+                            })
+                            .always(() => vm.$blockui('clearView'));
                     }
                 });
 
             task2
-                .subscribe((t: string) => {
-                    if (t) {
-                        vm
-                            .$ajax('at', API.SELECT, {})
-                            .then(() => {
+                .subscribe((taskCode: string) => {
+                    if (taskCode) {
+                        const { employeeId } = vm.$user;
+                        const { start } = ko.unwrap(data);
 
-                            });
+                        const params: SelectWorkItemParam = {
+                            refDate: moment(start).format(DATE_TIME_FORMAT),
+                            sId: employeeId,
+                            taskCode,
+                            taskFrameNo: 3
+                        };
+
+                        vm
+                            .$blockui('grayoutView')
+                            .then(() => vm.$ajax('at', API.SELECT, params))
+                            .then((data: TaskDto[]) => {
+                                if (data) {
+                                    taskList3(getmapperList(data));
+                                } else {
+                                    taskList3([]);
+                                }
+                            })
+                            .always(() => vm.$blockui('clearView'));
                     }
                 });
 
             task3
-                .subscribe((t: string) => {
-                    if (t) {
-                        vm
-                            .$ajax('at', API.SELECT, {})
-                            .then(() => {
+                .subscribe((taskCode: string) => {
+                    if (taskCode) {
+                        const { employeeId } = vm.$user;
+                        const { start } = ko.unwrap(data);
 
-                            });
+                        const params: SelectWorkItemParam = {
+                            refDate: moment(start).format(DATE_TIME_FORMAT),
+                            sId: employeeId,
+                            taskCode,
+                            taskFrameNo: 4
+                        };
+
+                        vm
+                            .$blockui('grayoutView')
+                            .then(() => vm.$ajax('at', API.SELECT, params))
+                            .then((data: TaskDto[]) => {
+                                if (data) {
+                                    taskList4(getmapperList(data));
+                                } else {
+                                    taskList4([]);
+                                }
+                            })
+                            .always(() => vm.$blockui('clearView'));
                     }
                 });
 
             task4
-                .subscribe((t: string) => {
-                    if (t) {
+                .subscribe((taskCode: string) => {
+                    if (taskCode) {
+                        const { employeeId } = vm.$user;
+                        const { start } = ko.unwrap(data);
+
+                        const params: SelectWorkItemParam = {
+                            refDate: moment(start).format(DATE_TIME_FORMAT),
+                            sId: employeeId,
+                            taskCode,
+                            taskFrameNo: 5
+                        };
+
                         vm
-                            .$ajax('at', API.SELECT, {})
-                            .then(() => {
-
-                            });
+                            .$blockui('grayoutView')
+                            .then(() => vm.$ajax('at', API.SELECT, params))
+                            .then((data: TaskDto[]) => {
+                                if (data) {
+                                    taskList5(getmapperList(data));
+                                } else {
+                                    taskList5([]);
+                                }
+                            })
+                            .always(() => vm.$blockui('clearView'));
                     }
                 });
 
+            /*
             task5
-                .subscribe((t: string) => {
-                    if (t) {
-                        vm.$ajax('at', API.SELECT, {})
-                            .then(() => {
+                .subscribe((taskCode: string) => {
+                    if (taskCode) {
+                        const { employeeId } = vm.$user;
+                        const { start } = ko.unwrap(data);
 
-                            });
+                        const params: SelectWorkItemParam = {
+                            refDate: moment(start).format(DATE_TIME_FORMAT),
+                            sId: employeeId,
+                            taskCode,
+                            taskFrameNo: 5
+                        };
+
+                        vm
+                            .$blockui('grayoutView')
+                            .then(() => vm.$ajax('at', API.SELECT, params))
+                            .then((data: TaskDto[]) => {
+                                console.log(data);
+                            })
+                            .always(() => vm.$blockui('clearView'));
                     }
                 });
+            */
 
             position
                 .subscribe((p: any) => {
@@ -875,6 +958,7 @@ module nts.uk.ui.at.kdp013.c {
             const { data } = params;
             const event = data();
             const { timeRange, descriptions } = model;
+            const { employeeId } = vm.$user;
 
             $.Deferred()
                 .resolve(true)
@@ -910,6 +994,7 @@ module nts.uk.ui.at.kdp013.c {
                             event.setExtendedProp('workCD4', ko.unwrap(task4));
                             event.setExtendedProp('workCD5', ko.unwrap(task5));
 
+                            event.setExtendedProp('sId', employeeId);
                             event.setExtendedProp('workplace', ko.unwrap(workplace));
 
                             event.setExtendedProp('descriptions', descriptions());
