@@ -493,13 +493,22 @@ module nts.uk.ui.at.kdp013.c {
 
                         const { workLocations } = startManHourInputResultDto;
 
-                        return workLocations
+                        const wlcs = workLocations
                             .map((m) => ({
+                                id: m.workLocationCD,
                                 code: m.workLocationCD,
                                 name: m.workLocationName,
                                 selected: false,
                                 $raw: m
                             }));
+
+                        return [{
+                            id: '',
+                            code: vm.$i18n('KDW013_41'),
+                            name: '',
+                            $raw: null,
+                            selected: false
+                        }, ...wlcs]
                     }
 
                     return [];
@@ -547,6 +556,7 @@ module nts.uk.ui.at.kdp013.c {
                 const { taskName } = displayInfo;
 
                 return {
+                    id: code,
                     code,
                     name: taskName,
                     selected: false,
@@ -555,8 +565,9 @@ module nts.uk.ui.at.kdp013.c {
             };
             const getmapperList = (tasks: TaskDto[]) => {
                 const lst: DropdownItem[] = [{
-                    code: '',
-                    name: vm.$i18n('KDW013_41'),
+                    id: '',
+                    code: vm.$i18n('KDW013_41'),
+                    name: '',
                     $raw: null,
                     selected: false
                 }];
@@ -612,7 +623,9 @@ module nts.uk.ui.at.kdp013.c {
                     .then((params: StartWorkInputPanelParam | null) => !!params ? vm.$ajax('at', API.START, params) : null)
                     .then((response: StartWorkInputPanelDto | null) => {
                         if (response) {
-                            const { taskList1, taskList2, taskList3, taskList4, taskList5 } = vm.combobox;
+                            vm.params.$share(response);
+                            
+                            const { taskList1, taskList2, taskList3, taskList4, taskList5, workLocations } = vm.combobox;
                             const { taskListDto1, taskListDto2, taskListDto3, taskListDto4, taskListDto5 } = response;
 
                             if (taskListDto1) {
@@ -653,7 +666,8 @@ module nts.uk.ui.at.kdp013.c {
                                     workCD2,
                                     workCD3,
                                     workCD4,
-                                    workCD5
+                                    workCD5,
+                                    workplace
                                 } = extendedProps;
 
                                 task1(workCD1);
@@ -661,12 +675,14 @@ module nts.uk.ui.at.kdp013.c {
                                 task3(workCD3);
                                 task4(workCD4);
                                 task5(workCD5);
+                                workLocations(workplace);
                             } else {
                                 task1(null);
                                 task2(null);
                                 task3(null);
                                 task4(null);
                                 task5(null);
+                                workLocations(null);
                             }
                         }
 
@@ -886,6 +902,16 @@ module nts.uk.ui.at.kdp013.c {
                                 event.setExtendedProp('status', 'update');
                             }
 
+                            const { task1, task2, task3, task4, task5, workplace } = vm.model;
+
+                            event.setExtendedProp('workCD1', ko.unwrap(task1));
+                            event.setExtendedProp('workCD2', ko.unwrap(task2));
+                            event.setExtendedProp('workCD3', ko.unwrap(task3));
+                            event.setExtendedProp('workCD4', ko.unwrap(task4));
+                            event.setExtendedProp('workCD5', ko.unwrap(task5));
+
+                            event.setExtendedProp('workplace', ko.unwrap(workplace));
+
                             event.setExtendedProp('descriptions', descriptions());
                         }
 
@@ -905,9 +931,11 @@ module nts.uk.ui.at.kdp013.c {
         position: KnockoutObservable<null | any>;
         excludeTimes: KnockoutObservableArray<share.BussinessTime>;
         $settings: KnockoutObservable<a.StartProcessDto | null>;
+        $share: KnockoutObservable<StartWorkInputPanelDto | null>;
     }
 
     type DropdownItem = {
+        id: string;
         code: string;
         name: string;
         selected: boolean;

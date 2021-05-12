@@ -96,6 +96,7 @@ module nts.uk.ui.at.kdp013.a {
         validRange: KnockoutObservable<Partial<calendar.DatesSet>> = ko.observable({});
 
         employees: KnockoutObservableArray<calendar.Employee> = ko.observableArray([]);
+
         confirmers!: KnockoutComputed<calendar.Employee[]>;
         // need map with [KDW013_21, KDW013_22, KDW013_23, KDW013_24] resource
         attendanceTimes!: KnockoutComputed<calendar.AttendanceTime[]>;
@@ -272,13 +273,13 @@ module nts.uk.ui.at.kdp013.a {
                     return [] as calendar.AttendanceTime[];
                 }
             }).extend({ rateLimit: 500 });
+
+            // get settings
+            vm.$ajax('at', API.START).then(vm.$settings);
         }
 
         mounted() {
             const vm = this;
-
-            // get settings
-            vm.$ajax('at', API.START).then(vm.$settings);
 
             _.extend(window, { vm });
         }

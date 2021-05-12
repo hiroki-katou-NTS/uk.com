@@ -2484,8 +2484,11 @@ module nts.uk.ui.components.fullcalendar {
                         position.valueHasMutated();
                     };
 
-                    ko.applyBindingsToNode($view, { component: { name: components.view, params: { update, remove, close, data, mode, $settings } } });
-                    ko.applyBindingsToNode($edit, { component: { name: components.editor, params: { remove, close, data, mode, view, position, excludeTimes, $settings } } });
+                    // mock data
+                    const $share = ko.observable(null);
+
+                    ko.applyBindingsToNode($view, { component: { name: components.view, params: { update, remove, close, data, mode, $settings, $share } } });
+                    ko.applyBindingsToNode($edit, { component: { name: components.editor, params: { remove, close, data, mode, view, position, excludeTimes, $settings, $share } } });
                 }
 
                 ko.computed({
