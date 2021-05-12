@@ -85,12 +85,7 @@ module nts.uk.at.view.kdl046.u.test {
                 setShare('dataShareDialog046', request);
                 nts.uk.ui.windows.sub.modal("/view/kdl/046/a/index.xhtml").onClosed(() => {
                     let result = nts.uk.ui.windows.getShared('dataShareKDL046');
-                    console.log(result);
-                    // let show = '';
-                    // for (const property in result) {
-                    //    show = show + '  ' +`${property}: ${result[property]}`;
-                    // }
-                    // self.result(show);
+                    self.result(ko.toJSON(result, null, 4));
                 });
 			}
 		}

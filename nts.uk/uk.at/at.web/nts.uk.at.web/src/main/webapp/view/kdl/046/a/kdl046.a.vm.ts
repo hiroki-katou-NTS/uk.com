@@ -28,6 +28,12 @@ module nts.uk.at.view.kdl046.a.viewmodel {
             } else {
                 self.selectType = _.isEmpty(self.workplaceGroupId()) ? 3 : 1;
             }
+            self.workplaceId.subscribe(value => {
+                $('#kcp017-component').ntsError('clear');
+            });
+            self.workplaceGroupId.subscribe(value => {
+                $('#kcp017-component').ntsError('clear');
+            });
         }
 
         cancel_Dialog(): any {
@@ -61,23 +67,49 @@ module nts.uk.at.view.kdl046.a.viewmodel {
                 setShared('dataShareKDL046', result);
                 nts.uk.ui.windows.close();
             } else {
-                service.getData(self.isMultiple ? self.workplaceId() : [self.workplaceId()]).done(function(data: any) {
+                service.getData(self.isMultiple ? self.workplaceId() : [self.workplaceId()]).done((data: any) => {
                     const listDataGrid = $('#workplace-tree-grid').getDataList();
                     const flwps = flat(_.cloneDeep(listDataGrid), "children");
 
                     if (self.isMultiple) {
-                        // WIP
-                        // if (_.isEmpty(data)) {
-                        //
-                        // }
-                        // for (const wkpId in data) {
-                        //
-                        // }
-                        result.unit = 0;
-                        const items = _.filter(flwps, (o: any) => self.workplaceId().indexOf(o.id) >= 0);
-                        result.workplaces = items.map(i => ({id: i.id, code: i.code, name: i.name}));
-                        nts.uk.ui.windows.setShared('dataShareKDL046', result);
-                        nts.uk.ui.windows.close();
+                        if (_.size(data) <= 0) {
+                            result.unit = 0;
+                            const items = _.filter(flwps, (o: any) => self.workplaceId().indexOf(o.id) >= 0);
+                            result.workplaces = items.map(i => ({id: i.id, code: i.code, name: i.name}));
+                            nts.uk.ui.windows.setShared('dataShareKDL046', result);
+                            nts.uk.ui.windows.close();
+                        } else if (_.size(data) == 1) {
+                            (self.workplaceId() as Array<string>).forEach(wkpId => {
+                                const wkpGroup = data[wkpId];
+                                if (wkpGroup) {
+                                    result.workplaceGroups = [
+                                        {
+                                            id: wkpGroup.workplaceGroupID,
+                                            code: wkpGroup.workplaceGroupCode,
+                                            name: wkpGroup.workplaceGroupName
+                                        }
+                                    ];
+                                }
+                            });
+                            result.unit = 1;
+                            nts.uk.ui.dialog.confirmDanger({
+                                messageId: "Msg_1769",
+                                messageParams: [result.workplaceGroups[0].code, result.workplaceGroups[0].name]
+                            }).ifYes(() => {
+                                nts.uk.ui.windows.setShared('dataShareKDL046', result);
+                                nts.uk.ui.windows.close();
+                            }).ifNo(() => {
+
+                            });
+                        } else {
+                            for (const wkpId in data) {
+                                const wkp = _.find(flwps, (o: any) => o.id == wkpId);
+                                $("#kcp017-component").ntsError('set', {
+                                    messageId:'Msg_2144',
+                                    messageParams:[wkp.code, wkp.name, data[wkpId].workplaceGroupCode, data[wkpId].workplaceGroupName]
+                                });
+                            }
+                        }
                     } else {
                         const wkpGroup = data[self.workplaceId().toString()];
                         if (wkpGroup) {
