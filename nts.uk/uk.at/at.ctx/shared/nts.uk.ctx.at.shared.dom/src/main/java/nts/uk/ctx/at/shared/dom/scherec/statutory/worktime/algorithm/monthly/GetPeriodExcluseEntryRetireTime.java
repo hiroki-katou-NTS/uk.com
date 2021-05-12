@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.algorithm.monthly;
 
+import java.util.Optional;
+
 import lombok.val;
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.calendar.period.DatePeriod;
@@ -9,7 +11,7 @@ import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
 public class GetPeriodExcluseEntryRetireTime {
 
 	/** 入社前、退職後を期間から除く */
-	public static DatePeriod getPeriodExcluseEntryRetireTime(Require require, CacheCarrier cacheCarrier, String sid, DatePeriod period) {
+	public static Optional<DatePeriod> getPeriodExcluseEntryRetireTime(Require require, CacheCarrier cacheCarrier, String sid, DatePeriod period) {
 
 		// 社員を取得する
 		EmployeeImport employee = require.employeeInfo(cacheCarrier, sid);
@@ -25,17 +27,17 @@ public class GetPeriodExcluseEntryRetireTime {
 	 * @param comparison 比較対象期間
 	 * @return 重複期間 （null = 重複なし）
 	 */
-	public static DatePeriod confirmProcPeriod(DatePeriod target, DatePeriod comparison) {
+	public static Optional<DatePeriod> confirmProcPeriod(DatePeriod target, DatePeriod comparison) {
 
 		DatePeriod overlap = null; // 重複期間
 
 		// 開始前
 		if (target.isBefore(comparison))
-			return overlap;
+			return Optional.of(overlap);
 
 		// 終了後
 		if (target.isAfter(comparison))
-			return overlap;
+			return Optional.of(overlap);
 
 		// 重複あり
 		overlap = target;
@@ -50,7 +52,7 @@ public class GetPeriodExcluseEntryRetireTime {
 			overlap = overlap.cutOffWithNewEnd(comparison.end());
 		}
 
-		return overlap;
+		return Optional.of(overlap);
 	}
 	
 	public static interface Require {

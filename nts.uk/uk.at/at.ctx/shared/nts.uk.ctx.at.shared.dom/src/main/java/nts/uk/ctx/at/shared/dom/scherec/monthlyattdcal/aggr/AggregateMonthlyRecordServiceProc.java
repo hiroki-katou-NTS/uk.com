@@ -221,7 +221,7 @@ public class AggregateMonthlyRecordServiceProc {
 			public EmployeeImport employeeInfo(CacheCarrier cacheCarrier, String empId) {
 				return employee;
 			}
-		}, cacheCarrier, this.employeeId, datePeriod);
+		}, cacheCarrier, this.employeeId, datePeriod).orElse(null);
 		
 		if (monthPeriod == null) {
 			// 処理期間全体が、入社前または退職後の時
@@ -444,7 +444,7 @@ public class AggregateMonthlyRecordServiceProc {
 
 			// 処理期間を計算 （一か月の集計期間と労働条件履歴期間の重複を確認する）
 			val term = this.workingConditions.get(historyId);
-			DatePeriod aggrPeriod = GetPeriodExcluseEntryRetireTime.confirmProcPeriod(monthPeriod, term);
+			DatePeriod aggrPeriod = GetPeriodExcluseEntryRetireTime.confirmProcPeriod(monthPeriod, term).orElse(null);
 			if (aggrPeriod == null) {
 				// 履歴の期間と重複がない時
 				continue;
@@ -511,9 +511,8 @@ public class AggregateMonthlyRecordServiceProc {
 		if (this.companySets.getCurrentMonthPeriodMap().containsKey(this.closureId.value)) {
 			DatePeriod currentPeriod = this.companySets.getCurrentMonthPeriodMap().get(this.closureId.value);
 			// 当月の締め期間と実行期間を比較し、重複した期間を取り出す
-			DatePeriod confPeriod = GetPeriodExcluseEntryRetireTime.confirmProcPeriod(currentPeriod, datePeriod);
 			// 重複期間があれば、当月
-			if (confPeriod != null)
+			if (GetPeriodExcluseEntryRetireTime.confirmProcPeriod(currentPeriod, datePeriod).isPresent())
 				isCurrentMonth = true;
 		}
 		if (remainingProcAtr == true)

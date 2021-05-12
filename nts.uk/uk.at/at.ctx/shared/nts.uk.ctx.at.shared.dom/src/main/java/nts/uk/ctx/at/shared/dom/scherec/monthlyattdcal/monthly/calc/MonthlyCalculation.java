@@ -25,12 +25,12 @@ import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
 import nts.uk.ctx.at.shared.dom.common.days.AttendanceDaysMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonthWithMinus;
-import nts.uk.ctx.at.shared.dom.ot.frame.RoleOvertimeWork;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.MonthlyAggregationErrorInfo;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.export.GetDeforAggrSet;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.export.GetFlexAggrSet;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.export.GetRegularAggrSet;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.roleofovertimework.roleofovertimework.RoleOvertimeWorkEnum;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.roundingset.RoundingSetOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.vtotalmethod.DefoAggregateMethodOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.vtotalmethod.FlexAggregateMethodOfMonthly;
@@ -355,7 +355,7 @@ public class MonthlyCalculation implements SerializableWithOptional {
 			this.settingsByDefo.getRoleOverTimeFrameMap().putIfAbsent(otFrameNo, roleOverTimeFrame);
 
 			// 自動的に除く残業枠
-			if (roleOverTimeFrame.getRole() != RoleOvertimeWork.MIX_IN_OUT_STATUTORY)
+			if (roleOverTimeFrame.getRole() != RoleOvertimeWorkEnum.MIX_IN_OUT_STATUTORY)
 				continue;
 			this.settingsByReg.getAutoExceptOverTimeFrames().add(roleOverTimeFrame);
 			this.settingsByDefo.getAutoExceptOverTimeFrames().add(roleOverTimeFrame);
@@ -581,7 +581,6 @@ public class MonthlyCalculation implements SerializableWithOptional {
 		} else if (this.workingSystem == WorkingSystem.FLEX_TIME_WORK) { // フレックス時間勤務 の時
 			
 			/** 月の法定労働時間を取得する。*/
-			/**　元々、　*/
 			this.statutoryWorkingTime = this.settingsByFlex.getStatutoryWorkingTimeMonth(require, yearMonth, procPeriod, closureId,
 					Optional.of(this.aggregateTime.getVacationUseTime().getCompensatoryLeave()), 
 					this.monthlyCalculatingDailys.getAttendanceTimeOfDailyMap().values());

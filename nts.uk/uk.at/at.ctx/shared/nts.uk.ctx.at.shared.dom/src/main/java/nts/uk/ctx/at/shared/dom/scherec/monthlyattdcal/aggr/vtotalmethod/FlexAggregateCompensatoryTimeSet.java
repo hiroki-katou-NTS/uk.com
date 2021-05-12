@@ -69,19 +69,19 @@ public class FlexAggregateCompensatoryTimeSet {
 	/** 遅刻、早退、外出の合計時間を取得する*/
 	private int calcSumLateLeaveEarlyOutingTime(Collection<AttendanceTimeOfDailyAttendance> dailyAttendanceTime) {
 		
-		/** 合計遅刻時間を取得する */
+		/** 遅刻相殺時間を取得する */
 		val compensatoryLateTime = dailyAttendanceTime.stream()
 				.mapToInt(c -> c.getLateTimeOfDaily().stream()
 									.mapToInt(l -> l.getOffsetCompensatoryTime().valueAsMinutes())
 									.sum())
 				.sum(); 
-		/** 合計早退時間を取得する */
+		/** 早退相殺時間を取得する */
 		val compensatoryLeaveEarlyTime = dailyAttendanceTime.stream()
 				.mapToInt(c -> c.getLeaveEarlyTimeOfDaily().stream()
 									.mapToInt(l -> l.getOffsetCompensatoryTime().valueAsMinutes())
 									.sum())
 				.sum(); 
-		/** 合計外出時間を取得する */
+		/** 外出相殺時間を取得する */
 		val compensatoryOutingTime = dailyAttendanceTime.stream()
 				.mapToInt(c -> c.getOutingTimeOfDaily().stream()
 									.mapToInt(l -> l.getOffsetCompensatoryTime().valueAsMinutes())

@@ -26,9 +26,9 @@ public class AggregateMethodOfMonthly extends AggregateRoot {
 	/** 前月の最終週を含めて計算するか */
 	private boolean calcWithPreviousMonthLastWeek;
 	
-	/** 変形労働の途中入社退職時の月間割増計算方法 */
+	/** 変形労働の集計方法 */
 	private DefoAggregateMethodOfMonthly defoAggregateMethod;
-	/** 途中入社、途中退職時に按分するか */
+	/** フレックスの集計方法 */
 	private FlexAggregateMethodOfMonthly flexAggregateMethod;
 	
 	/**

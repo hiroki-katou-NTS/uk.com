@@ -19,6 +19,9 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 @AllArgsConstructor
 @Getter
 public class DefoAggregateMethodOfMonthly {
+
+	/** 途中入社、途中退職時の割増計算方法 */
+	private MonPremiumTimeCalcMethodInEntryOfDefo premiumTimeCalcMethod;
 	
 	public DefoAggregateMethodOfMonthly () {
 		this.premiumTimeCalcMethod = MonPremiumTimeCalcMethodInEntryOfDefo.CALC_BY_STATUTORY_TIME;
@@ -28,9 +31,6 @@ public class DefoAggregateMethodOfMonthly {
 		
 		return new DefoAggregateMethodOfMonthly(EnumAdaptor.valueOf(calcMethod, MonPremiumTimeCalcMethodInEntryOfDefo.class));
 	}
-
-	/** 途中入社、途中退職時の割増計算方法 */
-	private MonPremiumTimeCalcMethodInEntryOfDefo premiumTimeCalcMethod;
 	
 	/** 総枠を計算する */
 	public AttendanceTimeMonth calc(Require require, CacheCarrier cacheCarrier, String sid, YearMonth targetYm, 
@@ -40,27 +40,11 @@ public class DefoAggregateMethodOfMonthly {
 		val statutory = MonthlyStatutoryWorkingHours.monAndWeekStatutoryTime(require, cacheCarrier, cid, employmentCode, 
 				sid, baseDate, targetYm, WorkingSystem.VARIABLE_WORKING_TIME_WORK);
 		
-		/** 月の時間を返す */
 		val monthlyTime = statutory.map(c -> new AttendanceTimeMonth(c.getMonthlyEstimateTime().v())).orElseGet(() -> new AttendanceTimeMonth(0));
+		val weeklyEstimateTime = statutory.map(c -> new AttendanceTimeMonth(c.getWeeklyEstimateTime().v())).orElseGet(() -> new AttendanceTimeMonth(0));
 		
-		/** 補正するかを確認する */
-		if(this.premiumTimeCalcMethod == MonPremiumTimeCalcMethodInEntryOfDefo.CALC_BY_STATUTORY_TIME) return monthlyTime;
-		
-		/** 入社前、退職後を期間から除く */
-		val exclusedPeriod = GetPeriodExcluseEntryRetireTime.getPeriodExcluseEntryRetireTime(require, cacheCarrier , sid, period);
-
-		/** 在職日数を計算する */
-		val workingDays = exclusedPeriod.datesBetween().size();
-		
-		/** 当月の期間を算出する */
-		val closurePeriod = ClosureService.getClosurePeriod(require, closureId.value, targetYm);
-		
-		/** 在職しない日数を確認する */
-		if(closurePeriod.datesBetween().size() == workingDays) return  monthlyTime;
-		
-		/** 総枠時間を計算して返す */
-		val totalTime = (workingDays * statutory.map(c -> c.getWeeklyEstimateTime().v()).orElse(0)) / 7;
-		return new AttendanceTimeMonth(totalTime);
+		/** 総枠を計算する */
+		return getStatutoryWorkingTime(require, cacheCarrier, sid, targetYm, monthlyTime, weeklyEstimateTime, period, closureId);
 	}
 	
 	/** 総枠を計算する */
@@ -71,7 +55,10 @@ public class DefoAggregateMethodOfMonthly {
 		if(this.premiumTimeCalcMethod == MonPremiumTimeCalcMethodInEntryOfDefo.CALC_BY_STATUTORY_TIME) return monthlyTime;
 		
 		/** 入社前、退職後を期間から除く */
-		val exclusedPeriod = GetPeriodExcluseEntryRetireTime.getPeriodExcluseEntryRetireTime(require, cacheCarrier , sid, period);
+		val exclusedPeriod = GetPeriodExcluseEntryRetireTime.getPeriodExcluseEntryRetireTime(require, cacheCarrier , sid, period).orElse(null);
+		if (exclusedPeriod == null) {
+			return new AttendanceTimeMonth(0);
+		}
 
 		/** 在職日数を計算する */
 		val workingDays = exclusedPeriod.datesBetween().size();

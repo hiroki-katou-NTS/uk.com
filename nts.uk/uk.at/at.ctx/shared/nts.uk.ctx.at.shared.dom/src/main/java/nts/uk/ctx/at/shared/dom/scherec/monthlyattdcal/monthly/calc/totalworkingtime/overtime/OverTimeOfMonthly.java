@@ -370,7 +370,7 @@ public class OverTimeOfMonthly implements Cloneable, Serializable{
 				}
 				break;
 				
-			case IN_OVERTIME_STATUTORY:
+			case OT_STATUTORY_WORK:
 				
 				// 取得した残業枠時間を集計残業時間に入れる　（入れた時間分を法定内残業にできる時間から引く）
 				switch (overTimeAndTransferAtr){
@@ -397,7 +397,7 @@ public class OverTimeOfMonthly implements Cloneable, Serializable{
 				}
 				break;
 				
-			case OUT_OVERTIME_STATUTORY:
+			case OUT_OT_STATUTORY:
 				
 				// 取得した残業枠時間を集計残業時間に入れる
 				switch (overTimeAndTransferAtr){

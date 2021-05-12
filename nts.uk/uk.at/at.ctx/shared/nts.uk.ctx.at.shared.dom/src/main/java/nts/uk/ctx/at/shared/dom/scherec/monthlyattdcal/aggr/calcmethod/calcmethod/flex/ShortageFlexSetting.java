@@ -10,7 +10,6 @@ import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.layer.dom.DomainObject;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
 import nts.uk.ctx.at.shared.dom.common.Month;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.WorkingSystemChangeCheckService;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.WorkingSystemChangeCheckService.WorkingSystemChangeState;
@@ -116,19 +115,6 @@ public class ShortageFlexSetting extends DomainObject implements Serializable {
 		}
 		
 		return result;
-	}
-	
-	/** 次の集計期間で同じ労働制で集計するかを確認する */
-	public boolean isSameWorkingSystemWithNextAggrPeriod(Require require, CacheCarrier cacheCarrier, String sid, DatePeriod period) {
-		
-		val employee = require.employeeInfo(cacheCarrier, sid);
-		
-		/** 期間中に退職しているかどうかの判断 */
-		if (employee.isRetired(period)) return false;
-		
-		/** 次の期間の労働制が処理期間と一緒かを確認する */
-		val workingSystemChangeState = WorkingSystemChangeCheckService.isSameWorkingSystemWithNextPeriod(require, sid, period, WorkingSystem.FLEX_TIME_WORK);
-		return workingSystemChangeState == WorkingSystemChangeState.NO_CHANGE;
 	}
 	
 	public static interface Require extends WorkingSystemChangeCheckService.RequireM1 {

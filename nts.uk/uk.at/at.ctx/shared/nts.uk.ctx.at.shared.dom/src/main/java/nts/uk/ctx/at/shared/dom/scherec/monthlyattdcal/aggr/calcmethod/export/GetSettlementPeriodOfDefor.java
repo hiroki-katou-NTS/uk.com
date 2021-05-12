@@ -167,6 +167,9 @@ public class GetSettlementPeriodOfDefor {
 	
 	/**
 	 * 精算月か確認する
+	 * @param Require
+	 * @param sid 社員ID
+	 * @param period 期間
 	 * @param yearMonth 判定年月
 	 * @param isRetireMonth 退職月かどうか
 	 * @return true：精算月、false：精算月でない

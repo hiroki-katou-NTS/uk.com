@@ -38,6 +38,7 @@ public class WorkingSystemChangeCheckService {
 	}
 	
 	@AllArgsConstructor
+	/**　労働制変更状態　*/
 	public static enum WorkingSystemChangeState {
 		
 		/** 変更されていない */

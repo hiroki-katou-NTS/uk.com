@@ -1091,60 +1091,6 @@ public class FlexTimeOfMonthly implements SerializableWithOptional{
 		
 		return new AttendanceTimeMonthWithMinus(calcFlexTargetMinutes);
 	}
-	
-	/**
-	 * 所定労働時間（代休控除後）を求める
-	 * @param companyId 会社ID
-	 * @param employeeId 社員ID
-	 * @param yearMonth 年月（度）
-	 * @param datePeriod 期間
-	 * @param aggregateTotalWorkingTime 総労働時間
-	 * @param prescribedWorkingTimeMonth 月間所定労働時間
-	 * @return 所定労働時間（代休控除後）
-	 */
-//	private AttendanceTimeMonthWithMinus askCompensatoryLeaveAfterDeduction(String companyId, 
-//			String employeeId, YearMonth yearMonth, DatePeriod datePeriod,
-//			AggregateTotalWorkingTime aggregateTotalWorkingTime,
-//			AttendanceTimeMonth prescribedWorkingTimeMonth){
-//		
-//		AttendanceTimeMonthWithMinus compensatoryLeaveAfterDeduction = new AttendanceTimeMonthWithMinus(0);
-//
-//		// 「フレックス勤務所定労働時間取得」を取得する
-//		// エラー処理　（計算準備での読み込みでエラー発生するので、このタイミングでは発生しない）
-//		val getFlexPredWorkTime = this.getFlexPredWorkTimeOpt.orElseGet(() -> new GetFlexPredWorkTime(companyId));
-//			
-//		// 「フレックス勤務所定労働時間取得」を確認する
-//		if (getFlexPredWorkTime.getReference() == ReferencePredTimeOfFlex.FROM_MASTER){// マスタから参照
-//			
-//			// 所定労働時間を取得する
-//			compensatoryLeaveAfterDeduction = new AttendanceTimeMonthWithMinus(prescribedWorkingTimeMonth.v());
-//		} else {// 実績から参照
-//			
-//			// 実績から計画所定労働時間を取得する
-//			compensatoryLeaveAfterDeduction = new AttendanceTimeMonthWithMinus(
-//					aggregateTotalWorkingTime.getPrescribedWorkingTime()
-//							.getTotalSchedulePrescribedWorkingTime(datePeriod).v());
-//		}
-//		
-//		// 休出をフレックスに含めるか確認する
-//		// ※　本来は、「法定外休出時間をフレックス時間に含める」を確認する仕様だが、クラス属性が未実装のため、仮対応　2018.11.17 shuichi_ishida
-//		val compensatoryLeave = aggregateTotalWorkingTime.getVacationUseTime().getCompensatoryLeave();
-//		compensatoryLeave.aggregate(datePeriod);
-//		int cmpLeaveUseMinutes = compensatoryLeave.getUseTime().v();
-//		if (this.flexAggrSet.getFlexTimeHandle().isIncludeOverTime()){
-//			
-//			// 法定内代休時間の計算　（含める場合、引く代休時間は法定内のみにする）
-//			cmpLeaveUseMinutes = compensatoryLeave.calcLegalTime(datePeriod).v();
-//		}
-//		
-//		// 所定労働時間から代休分を引く
-//		compensatoryLeaveAfterDeduction = compensatoryLeaveAfterDeduction.minusMinutes(cmpLeaveUseMinutes);
-//		if (compensatoryLeaveAfterDeduction.lessThan(0)){
-//			compensatoryLeaveAfterDeduction = new AttendanceTimeMonthWithMinus(0);
-//		}
-//		
-//		return compensatoryLeaveAfterDeduction;
-//	}
 
 	/**
 	 * フレックス超過の処理をする　（原則）
@@ -1451,7 +1397,7 @@ public class FlexTimeOfMonthly implements SerializableWithOptional{
 			result -= this.flexCarryforwardTime.getFlexCarryforwardWorkTime().v();
 			
 			// 「法定内として扱う時間」」を返す
-			return new AttendanceTimeMonth(result);
+			return new AttendanceTimeMonth(result < 0 ? 0 : result);
 		}
 
 		// 複数月
