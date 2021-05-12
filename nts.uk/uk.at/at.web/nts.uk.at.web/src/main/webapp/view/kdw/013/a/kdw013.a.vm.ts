@@ -237,10 +237,11 @@ module nts.uk.ui.at.kdp013.a {
                             // .orderBy(['date'])
                             .filter(({ sId }) => sId === employeeId)
                             .map(({
-                                date,
+                                date: strDate,
                                 actualContent,
                             }) => {
                                 const events: string[] = [];
+                                const date = moment(strDate, DATE_FORMAT).toDate();
                                 const { breakHours, end, start, totalWorkingHours } = actualContent;
 
                                 if (start) {
@@ -263,10 +264,7 @@ module nts.uk.ui.at.kdp013.a {
                                     events.push(vm.$i18n('KDW013_24', [formatTime(totalWorkingHours, 'Time_Short_HM')]));
                                 }
 
-                                return {
-                                    date: moment(date, DATE_FORMAT).toDate(),
-                                    events,
-                                };
+                                return { date, events, };
                             })
                             .value();
                     }
