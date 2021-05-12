@@ -32,7 +32,7 @@ public class StampResultConfirmDto {
 			ConfirmStatusActualResult cfsr, Optional<ItemValue> attendance, Optional<ItemValue> leave) {
 
 		for (DisplayScreenStampingResultDto display : screenDisplays) {
-			this.workPlaceName = display.getWorkplaceNm();
+			this.workPlaceName = display.getWorkPlaceName();
 			this.stampRecords.addAll(display.getStampDataOfEmployeesDto().getStampRecords());
 		}
 
