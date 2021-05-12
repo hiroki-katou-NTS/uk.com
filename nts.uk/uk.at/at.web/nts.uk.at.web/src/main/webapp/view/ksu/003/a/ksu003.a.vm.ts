@@ -2468,7 +2468,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			let self = this, dfd = $.Deferred(), updatedCells = $("#extable-ksu003").exTable("updatedCells"), params = [];
 			if (!_.isNil(window.parent) && window.parent.length > 1){
 				setTimeout(function() {
-				$(window.parent[1].$('body').contents().find('#btnClose')).click()
+				$(window.parent.document).find('div > iframe').contents().find('#btnClose').trigger('click');
 				}, 10);
 			}
 			block.grayout();
