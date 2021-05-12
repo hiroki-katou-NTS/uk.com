@@ -1,4 +1,7 @@
 module nts.uk.ui.at.kdp013.share {
+    const { time } = nts.uk as any;
+    const { byId } = time.format as { byId: (format: string, time: number) => string };
+
     // get time as minute in date
     export const getTimeOfDate = (date: Date) => {
         if (!_.isDate(date)) {
@@ -80,4 +83,5 @@ module nts.uk.ui.at.kdp013.share {
         return hour * 60 + minute;
     };
 
+    export const formatTime = (value: number, format: 'Clock_Short_HM' | 'Time_Short_HM' | 'Time_Short_HM') => byId(format, value);
 }

@@ -876,11 +876,16 @@ module nts.uk.ui.at.kdp013.c {
 
                             const { status } = event.extendedProps;
 
+                            if (!event.extendedProps.id) {
+                                event.setExtendedProp('id', randomId());
+                            }
+
                             if (['new', 'add'].indexOf(status) === -1) {
                                 event.setExtendedProp('status', 'add');
                             } else {
                                 event.setExtendedProp('status', 'update');
                             }
+
                             event.setExtendedProp('descriptions', descriptions());
                         }
 

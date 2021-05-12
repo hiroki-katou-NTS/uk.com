@@ -7,7 +7,7 @@ module nts.uk.ui.at.kdp013.a {
         HOLIDAY_WORK_APPLICATION = 1
     };
 
-    const { randomId } = nts.uk.util;
+    const { formatTime } = share;
     import calendar = nts.uk.ui.components.fullcalendar;
 
     const DATE_FORMAT = 'YYYY-MM-DD';
@@ -95,11 +95,10 @@ module nts.uk.ui.at.kdp013.a {
         availableView: KnockoutObservableArray<calendar.InitialView> = ko.observableArray(['oneDay', 'fullWeek']);
         validRange: KnockoutObservable<Partial<calendar.DatesSet>> = ko.observable({});
 
-        // need map with [KDW013_21, KDW013_22, KDW013_23, KDW013_24] resource
-        attendanceTimes: KnockoutObservableArray<calendar.AttendanceTime> = ko.observableArray([]);
-
         employees: KnockoutObservableArray<calendar.Employee> = ko.observableArray([]);
         confirmers!: KnockoutComputed<calendar.Employee[]>;
+        // need map with [KDW013_21, KDW013_22, KDW013_23, KDW013_24] resource
+        attendanceTimes!: KnockoutComputed<calendar.AttendanceTime[]>;
 
         // Change date range data model
         $datas: KnockoutObservable<ChangeDateDto | null> = ko.observable(null);
@@ -218,6 +217,57 @@ module nts.uk.ui.at.kdp013.a {
                     }
 
                     return [] as calendar.Employee[];
+                }
+            }).extend({ rateLimit: 500 });
+
+            vm.attendanceTimes = ko.computed({
+                read: () => {
+                    const datas = ko.unwrap(vm.$datas);
+                    // need update by employId if: mode=1
+
+                    if (datas) {
+                        const { lstWorkRecordDetailDto } = datas;
+
+                        return _
+                            .chain(lstWorkRecordDetailDto)
+                            .orderBy(['date'])
+                            .filter(({ sId }) => !!sId)
+                            .map(({
+                                date,
+                                actualContent,
+                            }) => {
+                                const events: string[] = [];
+                                const { breakHours, end, start, totalWorkingHours } = actualContent;
+
+                                if (start) {
+                                    const { timeWithDay } = start;
+
+                                    events.push(vm.$i18n('KDW013_21', [formatTime(timeWithDay, 'Time_Short_HM')]));
+                                }
+
+                                if (end) {
+                                    const { timeWithDay } = end;
+
+                                    events.push(vm.$i18n('KDW013_22', [formatTime(timeWithDay, 'Time_Short_HM')]));
+                                }
+
+                                if (breakHours) {
+                                    events.push(vm.$i18n('KDW013_23', [formatTime(breakHours, 'Time_Short_HM')]));
+                                }
+
+                                if (totalWorkingHours) {
+                                    events.push(vm.$i18n('KDW013_24', [formatTime(totalWorkingHours, 'Time_Short_HM')]));
+                                }
+
+                                return {
+                                    date: moment(date, DATE_FORMAT).toDate(),
+                                    events,
+                                };
+                            })
+                            .value();
+                    }
+
+                    return [] as calendar.AttendanceTime[];
                 }
             }).extend({ rateLimit: 500 });
         }

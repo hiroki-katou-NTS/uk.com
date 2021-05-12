@@ -7,11 +7,10 @@ module nts.uk.ui.at.kdp013.d {
         HOLIDAY_WORK_APPLICATION = 1
     };
 
-    const { OVER_TIME_APPLICATION } = OverTimeLeaveAtr;
-
+    const { formatTime } = share;
     const $vm = new ko.ViewModel();
-    const { time } = nts.uk as any;
-    const { byId } = time.format as { byId: (format: string, time: number) => string };
+
+    const { OVER_TIME_APPLICATION } = OverTimeLeaveAtr;
 
     const map2Link = (otAtr: OverTimeLeaveAtr) => {
         if (otAtr === OVER_TIME_APPLICATION) {
@@ -22,10 +21,10 @@ module nts.uk.ui.at.kdp013.d {
     };
     const map2Description = (otAtr: OverTimeLeaveAtr, time: number) => {
         if (otAtr === OVER_TIME_APPLICATION) {
-            return $vm.$i18n('KDW013_38', [byId('Time_Short_HM', time)]);
+            return $vm.$i18n('KDW013_38', [formatTime(time, 'Time_Short_HM')]);
         }
 
-        return $vm.$i18n('KDW013_39', [byId('Time_Short_HM', time)]);
+        return $vm.$i18n('KDW013_39', [formatTime(time, 'Time_Short_HM')]);
     };
 
     @bean()
