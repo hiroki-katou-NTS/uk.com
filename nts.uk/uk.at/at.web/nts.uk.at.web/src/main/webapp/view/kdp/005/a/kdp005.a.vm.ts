@@ -520,7 +520,7 @@ module nts.uk.at.view.kdp005.a {
 						if (data) {
 							const mode = 'notification';
 							const companyId = (data || {}).companyId;
-							self.checkHis(self);
+							vm.$window.modal('at', DIALOG.F, { mode, companyId });
 						}
 					});
 			}
