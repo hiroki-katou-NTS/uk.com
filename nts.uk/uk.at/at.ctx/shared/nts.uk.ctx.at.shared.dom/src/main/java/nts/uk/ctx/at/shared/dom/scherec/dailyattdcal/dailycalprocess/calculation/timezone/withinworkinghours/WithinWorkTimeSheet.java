@@ -386,15 +386,6 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 	}
 	
 	/**
-	 * 早退判断時刻を取得する
-	 * @param workNo
-	 * @return 早退判断時刻
-	 */
-	public Optional<LeaveEarlyDecisionClock> getLeaveEarlyDecisionClock(int workNo) {
-		return this.leaveEarlyDecisionClock.stream().filter(tc -> tc.getWorkNo() == workNo).findFirst();
-	}
-	
-	/**
 	 * コアタイムのセット
 	 * @param coreTimeSetting コアタイム時間設定
 	 */
@@ -1415,24 +1406,30 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 				predetermineTimeSet,
 				integrationOfWorkTime,
 				integrationOfDaily);
-
+		
+		if(!within.getLateTimeSheet().isPresent() || !within.getLateTimeSheet().get().getForDeducationTimeSheet().isPresent()) {
+			return timeLeavingWork;
+		}
+		//遅刻控除時間帯
+		LateLeaveEarlyTimeSheet lateDeducation = within.getLateTimeSheet().get().getForDeducationTimeSheet().get();
+		
 		//控除判断処理
 		boolean isDeductLateTime = holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getAdvancedSet().get().decisionLateDeductSetting(
-				AttendanceTime.ZERO,
+				lateDeducation.calcTotalTime(),
 				integrationOfWorkTime.getCommonSetting().getLateEarlySet().getOtherEmTimezoneLateEarlySet(LateEarlyAtr.LATE).getGraceTimeSet(),
 				integrationOfWorkTime.getCommonSetting(),
 				todayWorkType);
 
 		//控除する場合
-		if(isDeductLateTime && within.getLateTimeSheet().isPresent()){
-			LateTimeSheet lateTimeSheet = within.getLateTimeSheet().get();
-			if (lateTimeSheet.getForDeducationTimeSheet().isPresent()){
-				if(!timeLeavingWork.getStampOfAttendance().isPresent()) return timeLeavingWork;
-				
-				//出退勤．出勤 ← 遅刻時間帯終了時刻
-				timeLeavingWork.getStampOfAttendance().get().getTimeDay().setTimeWithDay(
-						Optional.of(lateTimeSheet.getForDeducationTimeSheet().get().getTimeSheet().getEnd()));
-			}
+		if(isDeductLateTime && timeLeavingWork.getStampOfAttendance().isPresent()){
+			//出退勤．出勤 ← 遅刻時間帯終了時刻
+			timeLeavingWork.getStampOfAttendance().get().getTimeDay().setTimeWithDay(
+					Optional.of(lateDeducation.getTimeSheet().getEnd()));
+			
+			//時間帯．開始 ← 遅刻時間帯終了時刻
+			this.withinWorkTimeFrame.stream()
+					.filter(c -> c.getWorkingHoursTimeNo().v() == workNo)
+					.findFirst().ifPresent(c -> c.shiftStart(lateDeducation.getTimeSheet().getEnd()));
 		}
 		return timeLeavingWork;
 	}
@@ -1495,24 +1492,30 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 				predetermineTimeSet,
 				integrationOfWorkTime,
 				integrationOfDaily);
-	
+		
+		if(!within.getLeaveEarlyTimeSheet().isPresent() || !within.getLeaveEarlyTimeSheet().get().getForDeducationTimeSheet().isPresent()) {
+			return timeLeavingWork;
+		}
+		//遅刻控除時間帯
+		LateLeaveEarlyTimeSheet leaveEarlyDeducation = within.getLeaveEarlyTimeSheet().get().getForDeducationTimeSheet().get();
+		
 		//控除判断処理
 		boolean isDeductLateTime = holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getAdvancedSet().get().decisionLateDeductSetting(
 				AttendanceTime.ZERO,
 				integrationOfWorkTime.getCommonSetting().getLateEarlySet().getOtherEmTimezoneLateEarlySet(LateEarlyAtr.EARLY).getGraceTimeSet(),
 				integrationOfWorkTime.getCommonSetting(),
 				todayWorkType);
-	
+		
 		//控除する場合
-		if(isDeductLateTime && within.getLeaveEarlyTimeSheet().isPresent()){
-			LeaveEarlyTimeSheet leaveEarlyTimeSheet = within.getLeaveEarlyTimeSheet().get();
-			if (leaveEarlyTimeSheet.getForDeducationTimeSheet().isPresent()){
-				if(!timeLeavingWork.getStampOfLeave().isPresent()) return timeLeavingWork;
-				
-				//出退勤．退勤 ← 早退時間帯終了時刻 
-				timeLeavingWork.getStampOfLeave().get().getTimeDay().setTimeWithDay(
-					 Optional.of(leaveEarlyTimeSheet.getForDeducationTimeSheet().get().getTimeSheet().getStart()));
-			}
+		if(isDeductLateTime && timeLeavingWork.getStampOfLeave().isPresent()){
+			//出退勤．退勤 ← 早退時間帯終了時刻 
+			timeLeavingWork.getStampOfLeave().get().getTimeDay().setTimeWithDay(
+				 Optional.of(leaveEarlyDeducation.getTimeSheet().getStart()));
+			
+			//時間帯．終了 ← 早退時間帯終了時刻
+			this.withinWorkTimeFrame.stream()
+					.filter(c -> c.getWorkingHoursTimeNo().v() == workNo)
+					.findFirst().ifPresent(c -> c.shiftEnd(leaveEarlyDeducation.getTimeSheet().getStart()));
 		}
 		return timeLeavingWork;
 	}

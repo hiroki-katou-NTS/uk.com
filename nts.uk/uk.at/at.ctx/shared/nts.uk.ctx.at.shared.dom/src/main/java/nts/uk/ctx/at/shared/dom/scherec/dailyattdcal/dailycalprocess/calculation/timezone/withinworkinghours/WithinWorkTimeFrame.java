@@ -1048,9 +1048,8 @@ public class WithinWorkTimeFrame extends ActualWorkingTimeSheet {
 	 * @param predetermineTimeSetForCalc 計算用所定時間設定
 	 * @param integrationOfWorkTime 統合就業時間帯
 	 * @param integrationOfDaily 日別実績(Work)
-	 * @return 遅刻時間帯
 	 */
-	public Optional<LateTimeSheet> createLateTimeSheet(
+	public void createLateTimeSheet(
 			Optional<LateDecisionClock> lateDesClock,
 			TimeLeavingWork timeLeavingWork,
 			OtherEmTimezoneLateEarlySet otherEmTimezoneLateEarlySet,
@@ -1075,8 +1074,6 @@ public class WithinWorkTimeFrame extends ActualWorkingTimeSheet {
 				predetermineTimeSetForCalc,
 				integrationOfWorkTime,
 				integrationOfDaily);
-		
-		return this.lateTimeSheet;
 	}
 	
 	 /**
@@ -1092,9 +1089,8 @@ public class WithinWorkTimeFrame extends ActualWorkingTimeSheet {
 	 * @param predetermineTimeSetForCalc 計算用所定時間設定
 	 * @param integrationOfWorkTime 統合就業時間帯
 	 * @param integrationOfDaily 日別実績(Work)
-	 * @return 早退時間帯
 	 */
-	public Optional<LeaveEarlyTimeSheet> createLeaveEarlyTimeSheet(
+	public void createLeaveEarlyTimeSheet(
 			Optional<LeaveEarlyDecisionClock> leaveEarlyDesClock,
 			TimeLeavingWork timeLeavingWork,
 			OtherEmTimezoneLateEarlySet otherEmTimezoneLateEarlySet,
@@ -1119,8 +1115,6 @@ public class WithinWorkTimeFrame extends ActualWorkingTimeSheet {
 				predetermineTimeSetForCalc,
 				integrationOfWorkTime,
 				integrationOfDaily);
-		
-		return this.leaveEarlyTimeSheet;
 	}
 	
 	/**
