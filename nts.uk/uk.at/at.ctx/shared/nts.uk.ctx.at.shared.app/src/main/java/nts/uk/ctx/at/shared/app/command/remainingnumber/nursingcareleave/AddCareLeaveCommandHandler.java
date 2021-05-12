@@ -1,21 +1,25 @@
 package nts.uk.ctx.at.shared.app.command.remainingnumber.nursingcareleave;
 
 
+import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
-import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.data.ChildCareLeaveRemaiDataRepo;
-import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.data.ChildCareLeaveRemainingData;
-import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.data.LeaveForCareData;
-import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.data.LeaveForCareDataRepo;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.care.CareUsedNumberData;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.care.CareUsedNumberRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.ChildCareNurseUsedNumber;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.ChildCareUsedNumberData;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.ChildCareUsedNumberRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.ChildCareLeaveRemInfoRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.ChildCareLeaveRemainingInfo;
-import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.LeaveForCareInfo;
-import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.LeaveForCareInfoRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.CareLeaveRemainingInfo;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.CareLeaveRemainingInfoRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.UpperLimitSetting;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.usenumber.DayNumberOfUse;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.pereg.app.command.PeregAddCommandHandler;
 import nts.uk.shr.pereg.app.command.PeregAddCommandResult;
@@ -26,16 +30,22 @@ public class AddCareLeaveCommandHandler extends CommandHandlerWithResult<AddCare
 		implements PeregAddCommandHandler<AddCareLeaveCommand> {
 
 	@Inject
-	private LeaveForCareInfoRepository careInfoRepo;
+	private CareLeaveRemainingInfoRepository careInfoRepo;
 
 	@Inject
 	private ChildCareLeaveRemInfoRepository childCareInfoRepo;
 
 	@Inject
-	private ChildCareLeaveRemaiDataRepo childCareDataRepo;
-	
+	private ChildCareUsedNumberRepository childCareDataRepo;
+
 	@Inject
-	private LeaveForCareDataRepo careDataRepo;
+	private CareUsedNumberRepository careDataRepo;
+
+	@Inject
+	private ChildCareUsedNumberRepository childCareUsedNumberRepository;
+
+	@Inject
+	private CareUsedNumberRepository careUsedNumberRepository;
 
 	@Override
 	public String targetCategoryCd() {
@@ -51,36 +61,48 @@ public class AddCareLeaveCommandHandler extends CommandHandlerWithResult<AddCare
 	protected PeregAddCommandResult handle(CommandHandlerContext<AddCareLeaveCommand> context) {
 		String cId = AppContexts.user().companyId();
 		AddCareLeaveCommand data = context.getCommand();
-		// child-care-data
+		// 子の看護-使用数
 		if (data.getChildCareUsedDays() != null) {
-			ChildCareLeaveRemainingData childCareData = ChildCareLeaveRemainingData.getChildCareHDRemaining(
-					data.getSId(), data.getChildCareUsedDays().doubleValue());
-			childCareDataRepo.add(childCareData, cId);
+			ChildCareUsedNumberData usedNumber = new ChildCareUsedNumberData(
+					data.getSId(),
+					new ChildCareNurseUsedNumber(
+							new DayNumberOfUse(data.getChildCareUsedDays().doubleValue())
+							,Optional.empty()
+					)
+			);
+			childCareUsedNumberRepository.persistAndUpdate(data.getSId(), usedNumber);
 		}
 
-		// care-data
+		// 介護-使用数
 		if (data.getCareUsedDays() != null) {
-			LeaveForCareData careData = LeaveForCareData.getCareHDRemaining(
-					data.getSId(),data.getCareUsedDays().doubleValue());
-			careDataRepo.add(careData, cId);
+			CareUsedNumberData usedNumber = new CareUsedNumberData(
+					data.getSId(),
+					new ChildCareNurseUsedNumber(
+							new DayNumberOfUse(data.getCareUsedDays().doubleValue())
+							,Optional.empty()
+					)
+			);
+			careUsedNumberRepository.persistAndUpdate(data.getSId(), usedNumber);
 		}
 
+		// 子の看護 - 上限情報
 		ChildCareLeaveRemainingInfo childCareInfo = ChildCareLeaveRemainingInfo.createChildCareLeaveInfo(
 				data.getSId(), data.getChildCareUseArt() == null ? 0 : data.getChildCareUseArt().intValue(),
 				data.getChildCareUpLimSet() == null ? UpperLimitSetting.FAMILY_INFO.value
 						: data.getChildCareUpLimSet().intValue(),
-				data.getChildCareThisFiscal() == null ? null : data.getChildCareThisFiscal().doubleValue(),
-				data.getChildCareNextFiscal() == null ? null : data.getChildCareNextFiscal().doubleValue());
+				data.getChildCareThisFiscal() == null ? null : data.getChildCareThisFiscal().intValue(),
+				data.getChildCareNextFiscal() == null ? null : data.getChildCareNextFiscal().intValue());
 		childCareInfoRepo.add(childCareInfo, cId);
 
-		LeaveForCareInfo careInfo = LeaveForCareInfo.createCareLeaveInfo(data.getSId(),
+		// 介護-上限情報
+		CareLeaveRemainingInfo careInfo = CareLeaveRemainingInfo.createCareLeaveInfo(data.getSId(),
 				data.getCareUseArt() == null ? 0 : data.getCareUseArt().intValue(),
 				data.getCareUpLimSet() == null ? UpperLimitSetting.FAMILY_INFO.value
 						: data.getCareUpLimSet().intValue(),
-				data.getCareThisFiscal() == null ? null : data.getCareThisFiscal().doubleValue(),
-				data.getCareNextFiscal() == null ? null : data.getCareNextFiscal().doubleValue());
+				data.getCareThisFiscal() == null ? null : data.getCareThisFiscal().intValue(),
+				data.getCareNextFiscal() == null ? null : data.getCareNextFiscal().intValue());
 		careInfoRepo.add(careInfo, cId);
-		
+
 		return new PeregAddCommandResult(data.getSId());
 	}
 

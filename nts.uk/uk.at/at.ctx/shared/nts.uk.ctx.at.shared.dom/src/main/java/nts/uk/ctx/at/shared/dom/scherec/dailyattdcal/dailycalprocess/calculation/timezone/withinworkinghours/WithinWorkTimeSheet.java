@@ -1718,32 +1718,27 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 		if(flowWorkSetting.getHalfDayWorkTimezoneLstOTTimezone().isEmpty()) {
 			//1日の計算範囲から終了時刻を計算
 			endTime = predetermineTimeSet.getOneDayTimeSpan().getEnd();
-			//退勤時刻の補正
-			this.correctleaveTimeForFlow(endTime);
-			//就業時間内時間枠クラスを作成（更新）
-			this.createWithinWorkTimeFramesAsFlowWork(deductionTimeSheet, endTime);
-			return;
 		}
-		
-		//残業開始となる経過時間を取得
-		AttendanceTime elapsedTime = flowWorkSetting.getHalfDayWorkTimezoneLstOTTimezone().get(0).getFlowTimeSetting().getElapsedTime();
-		
-		//経過時間から終了時刻を計算
-		endTime = this.withinWorkTimeFrame.get(0).getTimeSheet().getStart().forwardByMinutes(elapsedTime.valueAsMinutes());
-		
-		for(TimeSheetOfDeductionItem item : deductionTimeSheet.getForDeductionTimeZoneList()) {
-			//重複している時間帯
-			Optional<TimeSpanForDailyCalc> overlapptingTime = Optional.empty();
-			overlapptingTime = item.getTimeSheet().getDuplicatedWith(new TimeSpanForDailyCalc(startTime, endTime));
-			if(!overlapptingTime.isPresent() && !endTime.equals(item.getTimeSheet().getStart())) continue;
+		else{
+			//残業開始となる経過時間を取得
+			AttendanceTime elapsedTime = flowWorkSetting.getHalfDayWorkTimezoneLstOTTimezone().get(0).getFlowTimeSetting().getElapsedTime();
 			
-			//控除時間分、終了時刻をズラす
-			if(item.getDeductionAtr().isGoOut()) {
-				endTime = endTime.forwardByMinutes(item.getTimeSheet().lengthAsMinutes() - item.getDeductionOffSetTime().get().getTotalOffSetTime());
-				if(endTime.isNegative()) endTime = TimeWithDayAttr.THE_PRESENT_DAY_0000;
-			}
-			else {
-				endTime = endTime.forwardByMinutes(item.getTimeSheet().lengthAsMinutes());
+			//経過時間から終了時刻を計算
+			endTime = this.withinWorkTimeFrame.get(0).getTimeSheet().getStart().forwardByMinutes(elapsedTime.valueAsMinutes());
+			
+			for(TimeSheetOfDeductionItem item : deductionTimeSheet.getForDeductionTimeZoneList()) {
+				// 重複している時間帯
+				Optional<TimeSpanForDailyCalc> overlapptingTime =
+						item.getTimeSheet().getDuplicatedWith(new TimeSpanForDailyCalc(startTime, endTime));
+				if(!overlapptingTime.isPresent()) continue;
+				// 重複していた時、対象の控除時間帯から重複開始時刻以降の時間帯を取り出す
+				TimeSheetOfDeductionItem diffSheet = item.reCreateOwn(overlapptingTime.get().getStart(), false);
+				// 控除時間の計算
+				int deductTime = diffSheet.calcTotalTime(NotUseAtr.USE, NotUseAtr.NOT_USE).valueAsMinutes();
+				if (deductTime > 0){
+					// 控除時間分、終了時刻をズラす
+					endTime = endTime.forwardByMinutes(deductTime);
+				}
 			}
 		}
 		

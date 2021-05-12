@@ -44,8 +44,8 @@ module nts.uk.com.view.ktg031.b {
           const listAlarmSetting: AlarmDisplaySettingDto[] = _.map(res, (item, index) => {
             // トップページに表示（本人） and トップページに表示（管理者）
             let isDisplayMessage = '';
-            const mailPrincipal = item.execSetting.alarmExtraction.mailPrincipal;
-            const mailAdministrator = item.execSetting.alarmExtraction.mailAdministrator;
+            const mailPrincipal = item.execSetting.alarmExtraction.displayOnTopPagePrincipal;
+            const mailAdministrator = item.execSetting.alarmExtraction.displayOnTopPageAdministrator;
             const alarmCode = item.execSetting.alarmExtraction.alarmCode;
             if (mailPrincipal && mailAdministrator) {
               isDisplayMessage = vm.$i18n('KTG031_29');

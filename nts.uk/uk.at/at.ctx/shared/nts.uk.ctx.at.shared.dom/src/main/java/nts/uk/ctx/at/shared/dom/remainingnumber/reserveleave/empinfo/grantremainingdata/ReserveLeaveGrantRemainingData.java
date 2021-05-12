@@ -9,6 +9,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.GrantRemainRegisterType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.LeaveGrantRemainingData;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveNumberInfo;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveRemainingNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveUsedNumber;
 
@@ -16,6 +17,35 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdat
 // domain name CS00038: 積立年休付与残数データ
 public class ReserveLeaveGrantRemainingData extends LeaveGrantRemainingData {
 
+	/**
+	 * ファクトリー
+	 * @param leavID ID
+	 * @param employeeId 社員ID
+	 * @param grantDate 付与日
+	 * @param deadline 期限日
+	 * @param expirationStatus 期限切れ状態
+	 * @param registerType 登録種別
+	 * @param details 明細
+	 * @return 休暇付与残数データ　
+	 */
+	public static ReserveLeaveGrantRemainingData of(
+			String leavID,
+			String employeeId,
+			GeneralDate grantDate,
+			GeneralDate deadline,
+			LeaveExpirationStatus expirationStatus,
+			GrantRemainRegisterType registerType,
+			LeaveNumberInfo details) {
+
+		ReserveLeaveGrantRemainingData domain = new ReserveLeaveGrantRemainingData();
+		domain.employeeId = employeeId;
+		domain.grantDate = grantDate;
+		domain.deadline = deadline;
+		domain.expirationStatus = expirationStatus;
+		domain.registerType = registerType;
+		domain.details = details;
+		return domain;
+	}
 
 	public static ReserveLeaveGrantRemainingData createFromJavaType(String id, String employeeId, GeneralDate grantDate,
 			GeneralDate deadline, int expirationStatus, int registerType, double grantDays, double usedDays,
@@ -136,5 +166,5 @@ public class ReserveLeaveGrantRemainingData extends LeaveGrantRemainingData {
 		return true;
 	}
 
-	
+
 }

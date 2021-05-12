@@ -321,10 +321,11 @@ public class LateTimeSheet {
 				deductTimeSheet, lateStartClock, withinWorkTimeFrame, otherEmTimezoneLateEarlySet);
 		if (!beforeAdjustOpt.isPresent()) return Optional.empty();
 		LateLeaveEarlyTimeSheet beforeAdjust = beforeAdjustOpt.get();
-		// 遅刻時間を計算
-		AttendanceTime lateTime = beforeAdjust.calcTotalTime();
+		// 遅刻時間を計算（丸め前、丸め後）
+		AttendanceTime beforeRounding = beforeAdjust.calcTotalTime(NotUseAtr.USE, NotUseAtr.NOT_USE);
+		AttendanceTime afterRounding = beforeAdjust.calcTotalTime();
 		// 遅刻終了時刻を取得
-		TimeWithDayAttr lateEndClock = beforeAdjust.getLateEndTime(lateTime, deductTimeSheet);
+		TimeWithDayAttr lateEndClock = beforeAdjust.getLateEndTime(beforeRounding, afterRounding, deductTimeSheet);
 		// 遅刻早退時間帯を作成して返す
 		LateLeaveEarlyTimeSheet result = new LateLeaveEarlyTimeSheet(
 				new TimeSpanForDailyCalc(lateStartClock, lateEndClock), beforeAdjust.getRounding());

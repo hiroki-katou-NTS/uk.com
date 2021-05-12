@@ -6,11 +6,14 @@ import java.util.List;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootStateAdapter;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.AppTypeSetting;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -28,8 +31,8 @@ public class AfterProcessDeleteImpl implements AfterProcessDelete {
 	@Inject
 	private ApplicationApprovalService applicationApprovalService;
 	
-	/*@Inject
-	private InterimRemainDataMngRegisterDateChange interimRemainDataMngRegisterDateChange;*/
+	@Inject
+	private InterimRemainDataMngRegisterDateChange interimRemainDataMngRegisterDateChange;
 	
 	@Override
 	public List<String> screenAfterDelete(String appID, Application application, AppDispInfoStartupOutput appDispInfoStartupOutput) {
@@ -52,19 +55,14 @@ public class AfterProcessDeleteImpl implements AfterProcessDelete {
 		}*/
 		
 		// 暫定データの登録(Đăng ký dữ liệu tạm thời)
-//		List<GeneralDate> lstDate = new ArrayList<>();
-//		if(application.getOpAppStartDate().isPresent() && application.getOpAppEndDate().isPresent()) {
-//			GeneralDate startDate = application.getOpAppStartDate().get().getApplicationDate();
-//			GeneralDate endDate = application.getOpAppEndDate().get().getApplicationDate();
-//			for(GeneralDate loopDate = startDate; loopDate.beforeOrEquals(endDate); loopDate = loopDate.addDays(1)){
-//				lstDate.add(loopDate);
-//			}	
-//		}
+		GeneralDate startDate = application.getOpAppStartDate().isPresent() ? application.getOpAppStartDate().get().getApplicationDate() : application.getAppDate().getApplicationDate();
+		GeneralDate endDate = application.getOpAppEndDate().isPresent() ? application.getOpAppEndDate().get().getApplicationDate() : application.getAppDate().getApplicationDate();
+		List<GeneralDate> lstDate = new DatePeriod(startDate, endDate).datesBetween();
 		// refactor 4
-		/*interimRemainDataMngRegisterDateChange.registerDateChange(
+		interimRemainDataMngRegisterDateChange.registerDateChange(
 				companyID, 
 				application.getEmployeeID(), 
-				lstDate.isEmpty() ? Arrays.asList(application.getAppDate().getApplicationDate()) : lstDate);*/
+				lstDate);
 		return destinationLst;
 	}
 

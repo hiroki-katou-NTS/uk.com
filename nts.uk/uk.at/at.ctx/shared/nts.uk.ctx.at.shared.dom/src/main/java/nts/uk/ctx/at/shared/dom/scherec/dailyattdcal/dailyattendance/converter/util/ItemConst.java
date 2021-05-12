@@ -4,6 +4,7 @@ public interface ItemConst extends Cloneable {
 	
 	public final String DAILY = "日次";
 	public final String MONTHLY = "月次";
+	public final String ANY_PERIOD = "任意期間";
 	
 	public final int DEFAULT_IDX = 0;
 	public final int DEFAULT_NEXT_IDX = 1;
@@ -169,6 +170,10 @@ public interface ItemConst extends Cloneable {
 	public final String AGREEMENT_TIME_OF_MANAGE_PERIOD_CODE = LAYOUT_L;
 	public final String AGREEMENT_TIME_OF_MANAGE_PERIOD_NAME = "管理期間の36協定時間";
 
+	public final String ANY_PERIOD_ATTENDANCE_TIME_CODE = LAYOUT_C;
+	public final String ANY_PERIOD_ATTENDANCE_TIME_NAME = "任意期間別実績の勤怠時間";
+
+	public final String OPTIONAL_ITEM = "任意項目";
 	public final String OPTIONAL_ITEM_VALUE = "任意項目値";
 	
 	public final String WORK_TYPE = "勤務種類";
