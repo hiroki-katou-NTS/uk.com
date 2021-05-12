@@ -2,7 +2,6 @@ package nts.uk.ctx.at.function.app.nrl.request;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -16,32 +15,32 @@ import nts.uk.ctx.at.function.app.nrl.data.ItemSequence.MapItem;
 import nts.uk.ctx.at.function.app.nrl.xml.Element;
 import nts.uk.ctx.at.function.app.nrl.xml.Frame;
 import nts.uk.ctx.at.function.dom.adapter.employmentinfoterminal.infoterminal.SendNRDataAdapter;
-import nts.uk.ctx.at.function.dom.adapter.employmentinfoterminal.infoterminal.SendOvertimeNameImport;
-import nts.uk.ctx.at.function.dom.adapter.employmentinfoterminal.infoterminal.SendOvertimeNameImport.SendOvertimeDetailImport;
+import nts.uk.ctx.at.function.dom.adapter.employmentinfoterminal.infoterminal.SendReasonApplicationImport;
 
 /**
  * @author ThanhNX
  *
- *残業・休日出勤リクエスト
+ *申請理由リクエスト
  */
 @RequestScoped
-@Named(Command.OVERTIME_INFO)
-public class OverTimeInfoRequest extends NRLRequest<Frame> {
+@Named(Command.APPLICATION_INFO)
+public class ApplicationReasonRequest extends NRLRequest<Frame>{
 
 	@Inject
 	private SendNRDataAdapter sendNRDataAdapter;
-
+	
 	@Override
 	public void sketch(String empInfoTerCode, ResourceContext<Frame> context) {
-		// TODO Auto-generated method stub
 		List<MapItem> items = new ArrayList<>();
 		items.add(FrameItemArranger.SOH());
-		items.add(new MapItem(Element.HDR, Command.OVERTIME_INFO.Response));
-		// Get work time info from DB, count records
+		items.add(new MapItem(Element.HDR, Command.APPLICATION_INFO.Response));
 		String contractCode =  context.getEntity().pickItem(Element.CONTRACT_CODE);
-		Optional<SendOvertimeNameImport> info = sendNRDataAdapter.sendOvertime(empInfoTerCode,
-				contractCode);
-		String payload = info.isPresent() ? toStringObject(info.get()) : "";
+		List<SendReasonApplicationImport> lstInfo = sendNRDataAdapter.sendReasonApp(empInfoTerCode, contractCode);
+		StringBuilder builder = new StringBuilder();
+		for(SendReasonApplicationImport infoName : lstInfo) {
+			builder.append(toStringObject(infoName));
+		}
+		String payload = builder.toString();
 		byte[] payloadBytes = Codryptofy.decode(payload);
 		int length = payloadBytes.length + 32;
 		items.add(new MapItem(Element.LENGTH, Integer.toHexString(length)));
@@ -52,30 +51,23 @@ public class OverTimeInfoRequest extends NRLRequest<Frame> {
 		items.add(new MapItem(Element.MAC_ADDR, context.getTerminal().getMacAddress()));
 		items.add(new MapItem(Element.CONTRACT_CODE, contractCode));
 		items.add(FrameItemArranger.ZeroPadding());
-		// Number of records
+		//Number of records
+		items.add(new MapItem(Element.NUMBER, String.valueOf(lstInfo.size())));
 		context.collectEncrypt(items, payload);
-
 	}
 
+	private String toStringObject(SendReasonApplicationImport data) {
+		StringBuilder builder = new StringBuilder(); 
+		builder.append(StringUtils.rightPad(data.getAppReasonNo(), 2));
+		//half payload16
+		builder.append(StringUtils.rightPad(data.getAppReasonName(), 40));
+		builder.append(StringUtils.rightPad("", 6, " "));
+		return builder.toString();
+	}
+	
 	@Override
 	public String responseLength() {
-		// TODO Auto-generated method stub
 		return null;
-	}
-
-	private String toStringObject(SendOvertimeNameImport info) {
-		StringBuilder builder = new StringBuilder();
-		for (SendOvertimeDetailImport overTime : info.getOvertimes()) {
-			// half
-			builder.append(StringUtils.rightPad(overTime.getSendOvertimeName(), 12));
-		}
-
-		for (SendOvertimeDetailImport vacation : info.getVacations()) {
-			// half
-			builder.append(StringUtils.rightPad(vacation.getSendOvertimeName(), 12));
-		}
-
-		return builder.toString();
 	}
 
 }

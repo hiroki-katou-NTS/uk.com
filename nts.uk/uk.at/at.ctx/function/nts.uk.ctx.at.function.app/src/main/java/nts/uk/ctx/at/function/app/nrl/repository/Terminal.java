@@ -6,6 +6,8 @@ import lombok.Data;
 /**
  * Terminal.
  * 
+ * NR通信コマンドの変値
+ * 
  * @author manhnd
  */
 @Data

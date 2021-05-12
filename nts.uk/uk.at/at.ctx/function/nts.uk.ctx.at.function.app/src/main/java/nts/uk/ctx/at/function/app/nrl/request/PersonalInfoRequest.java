@@ -20,6 +20,7 @@ import nts.uk.ctx.at.function.dom.adapter.employmentinfoterminal.infoterminal.Se
 /**
  * Personal info request.
  * 
+ * 個人情報リクエスト
  * @author manhnd
  */
 @RequestScoped
@@ -75,7 +76,7 @@ public class PersonalInfoRequest extends NRLRequest<Frame> {
 		builder.append(StringUtils.rightPad(data.getDepartmentCode(), 10));
 		builder.append(StringUtils.rightPad(data.getCompanyCode(), 4));
 		builder.append(StringUtils.rightPad(data.getReservation(), 4));
-		builder.append(StringUtils.rightPad("", 6, "a"));
+		builder.append(StringUtils.rightPad("", 6, " "));
 		return builder.toString();
 	}
 

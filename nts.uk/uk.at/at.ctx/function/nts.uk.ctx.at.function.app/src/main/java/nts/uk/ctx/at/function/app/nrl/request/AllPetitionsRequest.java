@@ -25,6 +25,7 @@ import nts.uk.ctx.at.function.dom.adapter.employmentinfoterminal.infoterminal.ap
 /**
  * All petitions request.
  * 
+ * NRLの申請をオブジェクトに変換する
  * @author manhnd
  */
 @RequestScoped

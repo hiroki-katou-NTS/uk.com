@@ -20,6 +20,7 @@ import nts.uk.ctx.at.function.dom.adapter.employmentinfoterminal.infoterminal.Se
 /**
  * @author ThanhNX
  *
+ *勤務種類リクエスト
  */
 @RequestScoped
 @Named(Command.WORKTYPE_INFO)
@@ -64,7 +65,7 @@ public class WorkTypeInfoRequest extends NRLRequest<Frame> {
 		builder.append(StringUtils.rightPad(data.getDaiClassifiNum(), 2));
 		// half payload16
 		builder.append(StringUtils.rightPad(data.getWorkName(), 6));
-		builder.append(StringUtils.rightPad("", 6, "a"));
+		builder.append(StringUtils.rightPad("", 5, " "));
 		return builder.toString();
 	}
 

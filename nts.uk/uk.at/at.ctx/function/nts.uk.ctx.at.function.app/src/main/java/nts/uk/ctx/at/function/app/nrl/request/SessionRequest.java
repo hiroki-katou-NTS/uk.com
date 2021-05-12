@@ -11,6 +11,7 @@ import nts.uk.ctx.at.function.dom.adapter.employmentinfoterminal.infoterminal.De
 /**
  * Session request.
  * 
+ * 削除リクエスト
  * @author manhnd
  */
 @RequestScoped

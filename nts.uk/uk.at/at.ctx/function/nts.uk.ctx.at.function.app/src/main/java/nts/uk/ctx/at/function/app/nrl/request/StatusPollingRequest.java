@@ -17,6 +17,8 @@ import nts.uk.ctx.at.function.dom.adapter.employmentinfoterminal.infoterminal.Se
 /**
  * Status polling request.
  * 
+ * NRLの設定オブジェクトに変換する
+ * 
  * @author manhnd
  */
 @RequestScoped

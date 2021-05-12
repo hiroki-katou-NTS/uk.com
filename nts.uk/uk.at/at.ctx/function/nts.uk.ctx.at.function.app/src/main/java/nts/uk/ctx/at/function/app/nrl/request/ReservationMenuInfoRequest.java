@@ -20,6 +20,7 @@ import nts.uk.ctx.at.function.dom.adapter.employmentinfoterminal.infoterminal.Se
 /**
  * @author ThanhNX
  *
+ *予約メニューリクエスト
  */
 @RequestScoped
 @Named(Command.RESERVATION_INFO)
@@ -67,7 +68,7 @@ public class ReservationMenuInfoRequest extends NRLRequest<Frame> {
 			builder.append(StringUtils.rightPad(data.getBentoMenu(), 16));
 			builder.append(StringUtils.rightPad(data.getUnit(), 2));
 		}
-		builder.append(StringUtils.rightPad("", 8, "a"));
+		builder.append(StringUtils.rightPad("", 8, " "));
 		return builder.toString();
 	}
 

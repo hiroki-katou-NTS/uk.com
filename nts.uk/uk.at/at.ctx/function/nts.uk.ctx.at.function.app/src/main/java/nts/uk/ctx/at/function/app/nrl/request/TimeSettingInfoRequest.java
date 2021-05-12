@@ -17,6 +17,7 @@ import nts.uk.ctx.at.function.dom.adapter.employmentinfoterminal.infoterminal.Se
 /**
  * @author ThanhNX
  *
+ *時刻合わせリクエスト
  */
 @RequestScoped
 @Named(Command.TIMESET_INFO)
