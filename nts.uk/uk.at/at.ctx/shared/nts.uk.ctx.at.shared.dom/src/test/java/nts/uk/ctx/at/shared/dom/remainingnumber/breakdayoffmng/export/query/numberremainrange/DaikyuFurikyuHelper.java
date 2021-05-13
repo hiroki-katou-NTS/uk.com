@@ -88,7 +88,7 @@ public class DaikyuFurikyuHelper {
 				occurrentTime, unbalanceDay, unbalanceTime);
 
 	}
-	
+
 	public static AccumulationAbsenceDetail createDetailDefault(OccurrenceDigClass occurrentClass,
 			Optional<GeneralDate> dayoffDate, String manageId) {
 		return createDetailDefault(true, occurrentClass, dayoffDate, manageId, 0.0, 0, 0.0, 0);
@@ -124,7 +124,7 @@ public class DaikyuFurikyuHelper {
 
 		return createDetailDefault(isDaikyu, occurrentClass, dayoffDate, manageId, 0.0, 0, unbalanceDay, unbalanceTime);
 	}
-	
+
 	public static AccumulationAbsenceDetail createDetailDefault(boolean isDaikyu, OccurrenceDigClass occurrentClass,
 			Optional<GeneralDate> dayoffDate, String manageId, GeneralDate deadline,
 			Double unbalanceDay, Integer unbalanceTime) {
@@ -194,7 +194,7 @@ public class DaikyuFurikyuHelper {
 			GeneralDate nextDay) {
 		return createDefaultResult(lstAccDetail, 0.0, nextDay);
 	}
-	
+
 	public static SubstituteHolidayAggrResult createDefaultResult(List<AccumulationAbsenceDetail> lstAccDetail, Double carryDay,
 			GeneralDate nextDay) {
 		return new SubstituteHolidayAggrResult(new VacationDetails(lstAccDetail),
@@ -225,30 +225,37 @@ public class DaikyuFurikyuHelper {
 	}
 
 	public static InterimDayOffMng createDayOff(String id, int requireTime, double requireDay) {
-		return new InterimDayOffMng(id, new RequiredTime(requireTime), new RequiredDay(requireDay),
-				new UnOffsetTime(1020), new UnOffsetDay(1.0));
+		return null;
+		/*new InterimDayOffMng(id, new RequiredTime(requireTime), new RequiredDay(requireDay),
+				new UnOffsetTime(1020), new UnOffsetDay(1.0));*/
 	}
 
 	public static InterimBreakMng createBreak(String id, GeneralDate deadline, int unUseTime, double unUseDay) {
 
-		return new InterimBreakMng(id, new AttendanceTime(480), deadline, new OccurrenceTime(480),
-				new OccurrenceDay(1.0), new AttendanceTime(240), new UnUsedTime(unUseTime), new UnUsedDay(unUseDay));
+		return null;
+		/*new InterimBreakMng(id, new AttendanceTime(480), deadline, new OccurrenceTime(480),
+				new OccurrenceDay(1.0), new AttendanceTime(240), new UnUsedTime(unUseTime), new UnUsedDay(unUseDay));*/
 	}
 
 	public static InterimRemain createRemain(String id, GeneralDate date, CreateAtr createBy, RemainType type) {
-		return new InterimRemain(id, SID, date, createBy, type);
+		return null; /*new InterimRemain(id, SID, date, createBy, type);*/
 	}
-	
+
 	public static InterimAbsMng createAbsMng(String id, double requireDay) {
-		return new InterimAbsMng(id, new RequiredDay(requireDay), new UnOffsetDay(1.0));
+		return null; //new InterimAbsMng(id, new RequiredDay(requireDay), new UnOffsetDay(1.0));
 	}
-	
-	public static InterimRecMng createRecMng(String id, GeneralDate deadline, double occDay) {
-		return new InterimRecMng(id, deadline, new OccurrenceDay(occDay), HolidayAtr.PUBLICHOLIDAY, new UnUsedDay(1.0));
+
+	public static InterimRecMng createRecMng(String remainManaID, String sid, GeneralDate ymd, CreateAtr creatorAtr,
+			RemainType remainType, GeneralDate deadline, double occDay) {
+
+		return new InterimRecMng(remainManaID, sid, ymd, creatorAtr, remainType, deadline, new OccurrenceDay(1.0),
+				new UnUsedDay(1.0));
 	}
-	
-	public static InterimRecMng createRecUseMng(String id, GeneralDate deadline, double unuse) {
-		return new InterimRecMng(id, deadline, new OccurrenceDay(1.0), HolidayAtr.PUBLICHOLIDAY, new UnUsedDay(unuse));
+
+	public static InterimRecMng createRecUseMng(String remainManaID, String sid, GeneralDate ymd, CreateAtr creatorAtr,
+			RemainType remainType, GeneralDate deadline, double unuse) {
+		return new InterimRecMng(remainManaID, sid, ymd, creatorAtr, remainType, deadline, new OccurrenceDay(1.0),
+				new UnUsedDay(unuse));
 	}
 
 	public static AbsRecMngInPeriodRefactParamInput createAbsRecInput(DatePeriod period, GeneralDate dateRefer,
@@ -258,7 +265,7 @@ public class DaikyuFurikyuHelper {
 				interimMng, useRecMng, Optional.empty(), Optional.empty(), Optional.empty(),
 				new FixedManagementDataMonth(new ArrayList<>(), new ArrayList<>()));
 	}
-	
+
 	public static AbsRecMngInPeriodRefactParamInput createAbsRecInput(DatePeriod period, GeneralDate dateRefer,
 			boolean mode, boolean replaceChk, Optional<CompenLeaveAggrResult> optBeforeResult) {
 		return new AbsRecMngInPeriodRefactParamInput(CID, SID, period, dateRefer, mode, replaceChk, new ArrayList<>(),
@@ -270,7 +277,7 @@ public class DaikyuFurikyuHelper {
 			double usedDays) {
 		return new LeaveComDayOffManagement(SID, occDate, digestDate, usedDays, TargetSelectionAtr.MANUAL.value);
 	}
-	
+
 	public static PayoutSubofHDManagement createHD(GeneralDate occDate, GeneralDate digestDate,
 			double usedDays) {
 		return new PayoutSubofHDManagement(SID, occDate, digestDate, usedDays, TargetSelectionAtr.MANUAL.value);

@@ -7,12 +7,15 @@ package nts.uk.ctx.at.shared.app.find.vacation.setting.nursingleave.dto;
 import java.util.List;
 import java.util.Optional;
 
+import lombok.Builder;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.MaxPersonSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingCategory;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingLeaveSettingSetMemento;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.TimeCareNursingSet;
+import nts.uk.shr.com.time.calendar.MonthDay;
 
+@Builder
 public class NursingLeaveSettingDto implements NursingLeaveSettingSetMemento {
 	
 	/** The Constant INDEX_NURSING_SETTING. */
@@ -48,9 +51,10 @@ public class NursingLeaveSettingDto implements NursingLeaveSettingSetMemento {
 
     /** 欠勤枠NO */
     public Integer absenceWorkDay;
-    
+
+
     public Integer timeDigestiveUnit;
-    
+
     public Integer manageDistinct;
 
     /*
@@ -87,7 +91,17 @@ public class NursingLeaveSettingDto implements NursingLeaveSettingSetMemento {
         this.nursingCategory = nursingCategory.value;
     }
 
-
+    /*
+     * (non-Javadoc)
+     *
+     * @see nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.
+     * NursingVacationSettingSetMemento#setStartMonthDay(java.lang.Integer)
+     */
+    @Override
+    public void setStartMonthDay(MonthDay startMonthDay) {
+    	int monthday = startMonthDay.getMonth() * 100 + startMonthDay.getDay();
+    	this.startMonthDay = monthday;
+    }
 
 	@Override
 	public void setHdspFrameNo(Optional<Integer> specialHolidayFrame) {
@@ -103,12 +117,6 @@ public class NursingLeaveSettingDto implements NursingLeaveSettingSetMemento {
 			this.absenceWorkDay = workAbsence.get();
 		else
 			this.absenceWorkDay = 0;
-	}
-
-	@Override
-	public void setStartMonthDay(Integer startMonthDay) {
-		 this.startMonthDay = startMonthDay;
-		
 	}
 
 	@Override
@@ -133,19 +141,19 @@ public class NursingLeaveSettingDto implements NursingLeaveSettingSetMemento {
 	public void setTimeCareNursingSet(TimeCareNursingSet timeCareNursingSet) {
 		this.timeDigestiveUnit = timeCareNursingSet.getTimeDigestiveUnit().value;
 		this.manageDistinct = timeCareNursingSet.getManageDistinct().value;
-		
+
 	}
 
 	@Override
 	public void setNumPer1(Integer numPer1) {
 		this.nursingNumberPerson = 1;
-		
+
 	}
 
 	@Override
 	public void setNumPer2(Integer numPer2) {
 		this.nursingNumberPerson = 2;
-		
+
 	}
 
 	

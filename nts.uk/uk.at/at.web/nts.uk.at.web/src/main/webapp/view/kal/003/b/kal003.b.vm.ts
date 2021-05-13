@@ -1042,6 +1042,7 @@ module nts.uk.at.view.kal003.b.viewmodel {
                     if (listItems != null && listItems != undefined) {
                         let listCodes: Array<string> = self.getListCode(listItems);
                         workTypeCondition.planLstWorkType(listCodes);
+                        workTypeCondition.planFilterAtr = true;
                         // get name
                         let names: string = self.buildItemName(listItems);
                         self.displayWorkTypeSelections_BA1_4(names);
@@ -1961,7 +1962,7 @@ module nts.uk.at.view.kal003.b.viewmodel {
                         if ((self.checkItemTemp() || self.checkItemTemp() == 0) && self.checkItemTemp() != itemCheck) {
                             setTimeout(function() { self.displayAttendanceItemSelections_BA2_3(""); }, 200);
                         }
-                    });
+                    }); 
                 }
                 $(".nts-input").ntsError("clear");
             });
