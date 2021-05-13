@@ -7,7 +7,7 @@
 <body>
 <ui:composition template="../../../../master/dialog.xhtml">
     <ui:define name="htmlHead">
-        <script>var dialogSize = {width: 1200, height: 850};</script>
+        <script>var dialogSize = {width: 1200, height: 800};</script>
         <com:scriptfile set="IGNITE"/>
         <com:stylefile path="kdr001.b.main.css"/>
         <com:scriptfile path="kdr001.b.start.js"/>
@@ -186,17 +186,17 @@
 											value: listSpecialHoliday}"></div>
                             </td>
                         </tr>
-                        <tr id="rowChildNursingHoliday">
+                        <tr id="rowChildNursingHoliday" >
                             <td>
                                 <!-- B4_20  -->
-                                <div tabindex="45"
+                                <div tabindex="45" style="width: 300px"
                                      data-bind="ntsCheckBox: { checked: childNursingLeave,  enable: true, text: '#{i18n.getText('KDR001_47')}' }"></div>
                             </td>
                         </tr>
-                        <tr id="rowNursingCareHoliday">
+                        <tr id="rowNursingCareHoliday"  style="width: 162px">
                             <td>
                                 <!-- B4_21  -->
-                                <div tabindex="46"
+                                <div tabindex="46" style="width: 300px"
                                      data-bind="ntsCheckBox: { checked: nursingLeave, enable: true, text: '#{i18n.getText('KDR001_48')}' }"></div>
                             </td>
                         </tr>

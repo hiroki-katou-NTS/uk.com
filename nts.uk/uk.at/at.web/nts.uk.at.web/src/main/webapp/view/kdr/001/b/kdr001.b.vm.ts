@@ -79,6 +79,7 @@ module nts.uk.at.view.kdr001.b.viewmodel {
 
                 if (!vacationControl || vacationControl.substituteHolidaySetting == false) {
                     $('#rowSubstituteHoliday').addClass("hidden");
+
                 }
 
                 if (!vacationControl || vacationControl.pauseItemHolidaySetting == false) {
@@ -169,6 +170,8 @@ module nts.uk.at.view.kdr001.b.viewmodel {
             let vacationControl = self.vacationControl;
             if (!vacationControl || vacationControl.annualHolidaySetting == false) {
                 self.currentHoliday().yearlyHoliday(false);
+                self.currentHoliday().insideHalfDay(false);
+                self.currentHoliday().insideHours(false);
             }
 
             if (!vacationControl || vacationControl.yearlyReservedSetting == false) {
@@ -177,10 +180,20 @@ module nts.uk.at.view.kdr001.b.viewmodel {
 
             if (!vacationControl || vacationControl.substituteHolidaySetting == false) {
                 self.currentHoliday().outputItemSubstitute(false);
+                self.currentHoliday().representSubstitute(false);
+                self.currentHoliday().remainingChargeSubstitute(false);
             }
 
             if (!vacationControl || vacationControl.pauseItemHolidaySetting == false) {
                 self.currentHoliday().pauseItem(false);
+                self.currentHoliday().unDigestedPause(false);
+                self.currentHoliday().numberRemainingPause(false);
+            }
+
+            if (!vacationControl || vacationControl.com60HourVacationSetting == false) {
+                self.currentHoliday().hd60HItem(false);
+                self.currentHoliday().hd60HUndigested(false);
+                self.currentHoliday().hd60HRemain(false);
             }
 
             if (!vacationControl || vacationControl.childNursingSetting == false) {
@@ -191,9 +204,16 @@ module nts.uk.at.view.kdr001.b.viewmodel {
                 self.currentHoliday().nursingLeave(false);
             }
 
+            if (!vacationControl || vacationControl.publicHolidaySetting == false) {
+                self.currentHoliday().outputItemsHolidays(false);
+                self.currentHoliday().outputHolidayForward(false);
+                self.currentHoliday().monthlyPublic(false);
+            }
+
             if (!vacationControl || vacationControl.listSpecialHoliday.length == 0) {
                 self.currentHoliday().listSpecialHoliday([]);
             }
+
             else {
                 let listSpecialHoliday: Array<number> = [];
                 _.forEach(self.currentHoliday().listSpecialHoliday(), function (item) {
@@ -330,13 +350,48 @@ module nts.uk.at.view.kdr001.b.viewmodel {
                 currentHoliday: HolidayRemaining = self.currentHoliday();
             let params = getShared("KDR001Params");
             currentHoliday.itemSelType = params.settingId;
+            let vacationControl = self.vacationControl;
             $('.nts-input').trigger("validate");
 
             if (errors.hasError() === false) {
 
                 block.invisible();
-
+                if (!vacationControl || vacationControl.annualHolidaySetting == false) {
+                    self.currentHoliday().yearlyHoliday(false);
+                    self.currentHoliday().insideHalfDay(false);
+                    self.currentHoliday().insideHours(false);
+                }
+                if (!vacationControl || vacationControl.yearlyReservedSetting == false) {
+                    self.currentHoliday().yearlyReserved(false);
+                }
+                if (!vacationControl || vacationControl.substituteHolidaySetting == false) {
+                    self.currentHoliday().outputItemSubstitute(false);
+                    self.currentHoliday().representSubstitute(false);
+                    self.currentHoliday().remainingChargeSubstitute(false);
+                }
+                if (!vacationControl || vacationControl.pauseItemHolidaySetting == false) {
+                    self.currentHoliday().pauseItem(false);
+                    self.currentHoliday().unDigestedPause(false);
+                    self.currentHoliday().numberRemainingPause(false);
+                }
+                if (!vacationControl || vacationControl.com60HourVacationSetting == false) {
+                    self.currentHoliday().hd60HItem(false);
+                    self.currentHoliday().hd60HUndigested(false);
+                    self.currentHoliday().hd60HRemain(false);
+                }
+                if (!vacationControl || vacationControl.childNursingSetting == false) {
+                    self.currentHoliday().childNursingLeave(false);
+                }
+                if (!vacationControl || vacationControl.nursingCareSetting == false) {
+                    self.currentHoliday().nursingLeave(false);
+                }
+                if (!vacationControl || vacationControl.publicHolidaySetting == false) {
+                    self.currentHoliday().outputItemsHolidays(false);
+                    self.currentHoliday().outputHolidayForward(false);
+                    self.currentHoliday().monthlyPublic(false);
+                }
                 if (self.isNewMode()) {
+
                     // create new holiday
                     service.addHolidayRemaining(ko.toJS(currentHoliday)).done(() => {
                         self.getAllData(currentHoliday.cd()).done(() => {
@@ -370,6 +425,8 @@ module nts.uk.at.view.kdr001.b.viewmodel {
                             });
                         });
                     }).fail(function (error) {
+                        $('#outputItems').ntsError('set', error);
+                        $('#outputItems').focus();
                         $('#residence-code').ntsError('set', {messageId: error.messageId});
                     }).always(function () {
                         self.setFocus();
@@ -589,6 +646,7 @@ module nts.uk.at.view.kdr001.b.viewmodel {
                     self.representSubstitute(false);
                     self.remainingChargeSubstitute(false);
                 }
+                nts.uk.ui.errors.clearAll();
             });
 
             self.pauseItem.subscribe((isCheck) => {
