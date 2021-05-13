@@ -247,7 +247,7 @@ public class HolidayShipmentMobileWS extends WebService {
 					companyID, 
 					command.getWorkTypeNew().getWorkTypeCode(), 
 					command.getWorkTimeCD());
-		    List<TimezoneUse> timezoneUses = Collections.emptyList();
+		    List<TimezoneUse> timezoneUses = new ArrayList<TimezoneUse>();
 		    for (int i = 0; i < timeZones.size(); i++) {
                 timezoneUses.add(new TimezoneUse(timeZones.get(i).getStart(), timeZones.get(i).getEnd(), UseSetting.USE, i));
             }
