@@ -10,11 +10,15 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
+import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveUsedDayNumber;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.UsedMinutes;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.param.AnnualHolidayGrantDetail;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.param.DailyInterimRemainMngDataAndFlg;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.param.ReferenceAtr;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualHolidayMng;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TempAnnualLeaveMngs;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AnnualLeaveUsedNumber;
 import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
 import nts.uk.ctx.at.shared.dom.worktype.DailyWork;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
@@ -24,7 +28,7 @@ import nts.arc.time.calendar.period.DatePeriod;
 public class AnnualHolidayGrantDetailInforImpl implements AnnualHolidayGrantDetailInfor{
 	@Inject
 	private GetPeriodFromPreviousToNextGrantDate periodService;
-	@Inject	
+	@Inject
 	private GetAnnualHolidayGrantInfor annGrantInforService;
 	@Inject
 	private WorkTypeRepository worktypeRepo;
@@ -46,25 +50,28 @@ public class AnnualHolidayGrantDetailInforImpl implements AnnualHolidayGrantDeta
 		}
 		// 期間内の年休使用明細を取得する - 4
 		List<DailyInterimRemainMngDataAndFlg> lstRemainMngData = annGrantInforService.lstRemainData(
-				cid, 
-				sid, 
+				cid,
+				sid,
 				new DatePeriod(startDate, datePeriod.end()),
 				referenceAtr);
-		
+
 		// 暫定年休管理データを年休使用詳細へ変換
 		lstRemainMngData.stream().forEach(x ->{
-			TmpAnnualHolidayMng annData = x.getData().getAnnualHolidayData().get();
-			
+
+			TempAnnualLeaveMngs annData = x.getData().getAnnualHolidayData().get();
 			Optional<WorkType> getWorkType = worktypeRepo.findByPK(cid, annData.getWorkTypeCode().v());
 			DailyWork dw =  getWorkType.isPresent() ? getWorkType.get().getDailyWork() : null;
 			Integer vacation = dw == null ? null : (dw.isOneDay() ? 0 : (dw.IsLeaveForMorning() ? 1 : 2));
 			// Fix bug in case of flex
 			if (vacation == null && annData.getCreatorAtr().equals(CreateAtr.FLEXCOMPEN)) {
-				vacation = annData.getUseNumber().getUsedDays().get().greaterThan(0.5) ? 0 : 1;
+				vacation = annData.getUsedNumber().getDays().greaterThan(0.5) ? 0 : 1;
 			}
 
 			AnnualHolidayGrantDetail annDetail = new AnnualHolidayGrantDetail(sid, annData.getYmd(),
-					annData.getUseNumber(),
+					AnnualLeaveUsedNumber.of(
+							Optional.ofNullable(new AnnualLeaveUsedDayNumber(annData.getUsedNumber().getDays().v())),
+							Optional.ofNullable(new UsedMinutes(
+									annData.getUsedNumber().getMinutes().map(minute -> minute.v()).orElse(0)))),
 					x.isReferenceFlg() ? ReferenceAtr.RECORD
 							: ((annData.getCreatorAtr() == CreateAtr.RECORD
 									|| annData.getCreatorAtr() == CreateAtr.FLEXCOMPEN) ? ReferenceAtr.RECORD
