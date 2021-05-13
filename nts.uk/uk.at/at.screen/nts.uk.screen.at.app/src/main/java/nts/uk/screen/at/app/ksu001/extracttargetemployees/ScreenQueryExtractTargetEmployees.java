@@ -37,11 +37,10 @@ import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.EmpMedicalWorkF
 import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.EmpMedicalWorkStyleHistoryRepository;
 import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.NurseClassification;
 import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.NurseClassificationRepository;
-import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.GetEmpCanReferBySpecOrganizationService;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.GetEmpCanReferService;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.RegulationInfoEmpQuery;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.adapter.WorkplaceGroupAdapter;
-import nts.uk.ctx.sys.auth.dom.algorithm.AcquireUserIDFromEmpIDService;
 import nts.uk.query.pub.employee.EmployeeSearchQueryDto;
 import nts.uk.query.pub.employee.RegulationInfoEmployeeExport;
 import nts.uk.query.pub.employee.RegulationInfoEmployeePub;
@@ -64,9 +63,6 @@ public class ScreenQueryExtractTargetEmployees {
 	private RegulationInfoEmployeeAdapter regulInfoEmployeeAdap;
 	@Inject
 	private RegulationInfoEmployeePub regulInfoEmpPub;
-	@Inject
-	private AcquireUserIDFromEmpIDService acquireUserIDFromEmpIDService;
-	
 	@Inject
 	private  SortSettingRepository sortSettingRepo;
 	@Inject
@@ -91,10 +87,10 @@ public class ScreenQueryExtractTargetEmployees {
 	public List<EmployeeInformationImport> getListEmp(ExtractTargetEmployeesParam param) {
 		
 		// step 1 get domainSv 組織を指定して参照可能な社員を取得する
-		RequireGetEmpImpl requireGetEmpImpl = new RequireGetEmpImpl(workplaceGroupAdapter, regulInfoEmployeeAdap, regulInfoEmpPub, acquireUserIDFromEmpIDService);
+		RequireGetEmpImpl requireGetEmpImpl = new RequireGetEmpImpl(workplaceGroupAdapter, regulInfoEmployeeAdap, regulInfoEmpPub);
 		String epmloyeeId = AppContexts.user().employeeId();
 		TargetOrgIdenInfor targetOrgIdenInfor = param.targetOrgIdenInfor;
-		List<String> sids = GetEmpCanReferBySpecOrganizationService.getListEmpID(requireGetEmpImpl, param.baseDate,epmloyeeId , targetOrgIdenInfor);
+		List<String> sids = GetEmpCanReferService.getByOrg(requireGetEmpImpl, param.baseDate,epmloyeeId , targetOrgIdenInfor);
 		
 		// step 2, 3
 		EmployeeInformationQueryDtoImport input = new EmployeeInformationQueryDtoImport(sids, param.baseDate, false, false, false, false, false, false);
@@ -127,7 +123,7 @@ public class ScreenQueryExtractTargetEmployees {
 	}
 	
 	@AllArgsConstructor
-	private static class RequireGetEmpImpl implements GetEmpCanReferBySpecOrganizationService.Require {
+	private static class RequireGetEmpImpl implements GetEmpCanReferService.Require {
 		
 		@Inject
 		private WorkplaceGroupAdapter workplaceGroupAdapter;
@@ -135,13 +131,17 @@ public class ScreenQueryExtractTargetEmployees {
 		private RegulationInfoEmployeeAdapter regulInfoEmpAdap;
 		@Inject
 		private RegulationInfoEmployeePub regulInfoEmpPub;
-		@Inject
-		private AcquireUserIDFromEmpIDService acquireUserIDFromEmpIDService;
 		
 		@Override
-		public List<String> getReferableEmp(GeneralDate date, String empId, String workplaceGroupID) {
+		public List<String> getEmpCanReferByWorkplaceGroup(GeneralDate date, String empId, String workplaceGroupID) {
 			List<String> data = workplaceGroupAdapter.getReferableEmp( date, empId, workplaceGroupID);
 			return data;
+		}
+		
+		@Override
+		public List<String> getAllEmpCanReferByWorkplaceGroup(GeneralDate date, String empId) {
+			// don't have to implement it
+			return null;
 		}
 
 		@Override
@@ -153,14 +153,9 @@ public class ScreenQueryExtractTargetEmployees {
 		}
 
 		@Override
-		public String getRoleID(GeneralDate date, String employId) {
-			// (Lấy userID từ employeeID)
-			Optional<String> userID = acquireUserIDFromEmpIDService.getUserIDByEmpID(employId);
-			if (!userID.isPresent()) {
-				return null;
-			}
-			String roleId = AppContexts.user().roles().forAttendance();
-			return roleId;
+		public String getRoleID() {
+			
+			return AppContexts.user().roles().forAttendance();
 		}
 
 		@Override
@@ -202,6 +197,7 @@ public class ScreenQueryExtractTargetEmployees {
 					.collect(Collectors.toList());
 			return resultList;
 		}
+
 	}
 	
 	@AllArgsConstructor
