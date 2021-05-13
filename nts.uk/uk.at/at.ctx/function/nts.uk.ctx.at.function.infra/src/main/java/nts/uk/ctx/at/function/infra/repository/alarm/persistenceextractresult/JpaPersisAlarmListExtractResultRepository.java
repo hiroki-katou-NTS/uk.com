@@ -146,4 +146,16 @@ public class JpaPersisAlarmListExtractResultRepository extends JpaRepository imp
 //        KfndtPersisAlarmExtPk pk = new KfndtPersisAlarmExtPk(domain.getCompanyID(), "processId-TODO");
 //        this.commandProxy().remove(pk);
     }
+
+    @Override
+    public List<PersistenceAlarmListExtractResult> getAlarmExtractResult(String companyId, List<String> employeeIds) {
+        String sql = "SELECT * FROM KFNDT_PERSIS_ALARM_EXT kpae "
+                + " JOIN KFNDT_ALARM_EXTRAC_RESULT kaer ON kpae.CID = kaer.CID AND kpae.PROCESS_ID = kaer.PROCESS_ID "
+                + " WHERE kpae.CID = @companyId AND kaer.SID IN @empIds";
+
+        return new NtsStatement(sql, this.jdbcProxy())
+                .paramString("companyId", companyId)
+                .paramString("empIds", employeeIds)
+                .getList(x -> KfndtPersisAlarmExt.MAPPER.toEntity(x).toDomain());
+    }
 }
