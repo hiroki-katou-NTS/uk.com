@@ -8,7 +8,7 @@ import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.ov
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class HdWorkAppReflectCommand_Old {
+public class HdWorkAppReflectCommand_New {
     private int reflectActualHolidayWorkAtr;
     private int workReflect;
     private int reflectPaytime;
