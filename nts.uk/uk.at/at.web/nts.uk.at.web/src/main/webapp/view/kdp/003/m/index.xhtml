@@ -8,7 +8,7 @@
         <ui:define name="htmlHead">
 
             <com:scriptfile set="IGNITE" />
-            <script>var dialogSize = { width: 699, height: 540 };</script>
+            <script>var dialogSize = { width: 699, height: 500 };</script>
             <com:stylefile path="./style.css" />
             <com:scriptfile path="./kdp003.m.vm.js" />
 
@@ -18,7 +18,7 @@
                 <div class="view-m">
                     <div class="title" data-bind="i18n: 'KDP003_70'"></div>
                     <div class="content">
-                        <div class="btn-back">
+                        <div class="btn-back" data-bind="if: $vm.mode_hiden">
                             <button data-bind="click: back, enable: check_back"><i class="icon icon-button-arrow-left"></i></button>
                         </div>
                         <div class="workplaces cf" data-bind="foreach: { data: $vm.buttonDisplays, as: 'col'}, firstFocus: $vm.buttonDisplays">
@@ -26,7 +26,7 @@
                                 <button data-bind="i18n: row.workplaceName, click: function() { $vm.seleceted.apply($vm, [row.workplaceId]) } "></button>
                             </div>
                         </div>
-                        <div class="btn-next">
+                        <div class="btn-next" data-bind="if: $vm.mode_hiden">
                             <button data-bind="click: next , enable: check_next"><i class="icon icon-button-arrow-right"></i></button>
                         </div>
                     </div>

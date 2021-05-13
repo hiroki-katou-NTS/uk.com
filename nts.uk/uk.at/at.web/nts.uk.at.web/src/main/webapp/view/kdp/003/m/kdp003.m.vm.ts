@@ -52,6 +52,8 @@ module nts.uk.at.view.kdp003.m {
 
         workplace: WorkPlaceInfo[][] = [];
 
+        mode_hiden: KnockoutObservable<boolean | null> = ko.observable(null);
+
         constructor() {
             super();
 
@@ -63,12 +65,11 @@ module nts.uk.at.view.kdp003.m {
 
                     return _.chunk(buttons, 3);
                 }
-            })
+            });
         }
 
         created() {
             const vm = this;
-
             vm.reloadData();
 
         }
@@ -106,6 +107,12 @@ module nts.uk.at.view.kdp003.m {
                     vm.$window
                         .storage(KDP003_SAVE_DATA)
                         .then((data: Data) => {
+                            if (data.WKPID.length <= 9) {
+                                vm.mode_hiden(false);
+                                vm.$window.size(500, 585);
+                            }else {
+                                vm.mode_hiden(true);
+                            }
                             const param = { sid: data.SID, workPlaceIds: data.WKPID };
                             vm.$ajax(API.WORKPLACE_INFO, param)
                                 .then((workPlace: workPlace) => {
