@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.DataManagementAtr;
+import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 
 public interface InterimRecAbasMngRepository {
@@ -168,5 +169,10 @@ public interface InterimRecAbasMngRepository {
 	 * @param mngIds
 	 * @return
 	 */
-	List<InterimRecMng> getRecByIds(List<String> mngIds);
+	List<InterimRecMng> getRecByIds(String employeeId,
+			DatePeriod period);
+
+	void deleteInterimAbsMngBySidAndYmd(String sId, GeneralDate ymd);
+
+	void deleteInterimRecMngBySidAndYmd(String sid, GeneralDate ymd);
 }

@@ -132,22 +132,22 @@ export class KafS04AComponent extends KafS00ShrComponent {
                     vm.kafS00P1Params2.scheduleTime = item.opAchievementDetail.achievementEarly.scheDepartureTime1;
                     vm.kafS00P1Params3.scheduleTime = item.opAchievementDetail.achievementEarly.scheAttendanceTime2;
                     vm.kafS00P1Params4.scheduleTime = item.opAchievementDetail.achievementEarly.scheDepartureTime2;
-                    if (item.opAchievementDetail.opWorkTime != null) {
+                    if (item.opAchievementDetail.opWorkTime != null && item.opAchievementDetail.achievementEarly.scheAttendanceTime1 != null) {
                         if (item.opAchievementDetail.achievementEarly.scheAttendanceTime1 < item.opAchievementDetail.opWorkTime) {
                             vm.kafS00P1Params1.scheduleExcess = ExcessTimeStatus.ALARM;
                         }
                     }
-                    if (item.opAchievementDetail.opLeaveTime != null) {
+                    if (item.opAchievementDetail.opLeaveTime != null && item.opAchievementDetail.achievementEarly.scheDepartureTime1 != null) {
                         if (item.opAchievementDetail.achievementEarly.scheDepartureTime1 > item.opAchievementDetail.opLeaveTime) {
                             vm.kafS00P1Params2.scheduleExcess = ExcessTimeStatus.ALARM;
                         }
                     }
-                    if (item.opAchievementDetail.opWorkTime2 != null) {
+                    if (item.opAchievementDetail.opWorkTime2 != null && item.opAchievementDetail.achievementEarly.scheAttendanceTime2 != null) {
                         if (item.opAchievementDetail.achievementEarly.scheAttendanceTime2 < item.opAchievementDetail.opWorkTime2) {
                             vm.kafS00P1Params3.scheduleExcess = ExcessTimeStatus.ALARM;
                         }
                     }
-                    if (item.opAchievementDetail.opDepartureTime2 != null) {
+                    if (item.opAchievementDetail.opDepartureTime2 != null && item.opAchievementDetail.achievementEarly.scheDepartureTime2 != null) {
                         if (item.opAchievementDetail.achievementEarly.scheDepartureTime2 > item.opAchievementDetail.opDepartureTime2) {
                             vm.kafS00P1Params4.scheduleExcess = ExcessTimeStatus.ALARM;
                         }
@@ -525,25 +525,25 @@ export class KafS04AComponent extends KafS00ShrComponent {
                         vm.kafS00P1Params3.scheduleTime = item.opAchievementDetail.achievementEarly.scheAttendanceTime2;
                         vm.kafS00P1Params4.scheduleTime = item.opAchievementDetail.achievementEarly.scheDepartureTime2;
 
-                        if (item.opAchievementDetail.opWorkTime != null) {
+                        if (item.opAchievementDetail.opWorkTime != null && item.opAchievementDetail.achievementEarly.scheAttendanceTime1 != null) {
                             if (item.opAchievementDetail.achievementEarly.scheAttendanceTime1 < item.opAchievementDetail.opWorkTime) {
                                 vm.kafS00P1Params1.scheduleExcess = ExcessTimeStatus.ALARM;
                             }
                             vm.time.attendanceTime = item.opAchievementDetail.opWorkTime;
                         }
-                        if (item.opAchievementDetail.opLeaveTime != null) {
+                        if (item.opAchievementDetail.opLeaveTime != null && item.opAchievementDetail.achievementEarly.scheDepartureTime1 != null) {
                             if (item.opAchievementDetail.achievementEarly.scheDepartureTime1 > item.opAchievementDetail.opLeaveTime) {
                                 vm.kafS00P1Params2.scheduleExcess = ExcessTimeStatus.ALARM;
                             }
                             vm.time.leaveTime = item.opAchievementDetail.opLeaveTime;
                         }
-                        if (item.opAchievementDetail.opWorkTime2 != null) {
+                        if (item.opAchievementDetail.opWorkTime2 != null && item.opAchievementDetail.achievementEarly.scheAttendanceTime2 != null) {
                             if (item.opAchievementDetail.achievementEarly.scheAttendanceTime2 < item.opAchievementDetail.opWorkTime2) {
                                 vm.kafS00P1Params3.scheduleExcess = ExcessTimeStatus.ALARM;
                             }
                             vm.time.attendanceTime2 = item.opAchievementDetail.opWorkTime2;
                         }
-                        if (item.opAchievementDetail.opDepartureTime2 != null) {
+                        if (item.opAchievementDetail.opDepartureTime2 != null && item.opAchievementDetail.achievementEarly.scheDepartureTime2 != null) {
                             if (item.opAchievementDetail.achievementEarly.scheDepartureTime2 > item.opAchievementDetail.opDepartureTime2) {
                                 vm.kafS00P1Params4.scheduleExcess = ExcessTimeStatus.ALARM;
                             }

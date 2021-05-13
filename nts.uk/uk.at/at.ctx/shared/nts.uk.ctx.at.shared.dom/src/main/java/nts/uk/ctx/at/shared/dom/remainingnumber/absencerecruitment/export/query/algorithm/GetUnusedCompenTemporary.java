@@ -2,9 +2,7 @@ package nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
@@ -13,9 +11,9 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.param.AbsRecMngInPeriodRefactParamInput;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.param.UnbalanceCompensation;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecMng;
-import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.ProcessDataTemporary;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.CompensatoryDayoffDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.DigestionAtr;
+import nts.uk.ctx.at.shared.dom.remainingnumber.base.HolidayAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.ManagementDataRemainUnit;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.AccumulationAbsenceDetail;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.AccumulationAbsenceDetail.AccuVacationBuilder;
@@ -41,34 +39,33 @@ public class GetUnusedCompenTemporary {
 	public static List<AccumulationAbsenceDetail> process(Require require, AbsRecMngInPeriodRefactParamInput input) {
 
 		List<InterimRecMng> lstRecMng = new ArrayList<>();
-		List<InterimRemain> lstInterimMngOfRec = new ArrayList<>();
+		//List<InterimRemain> lstInterimMngOfRec = new ArrayList<>();
 		List<AccumulationAbsenceDetail> lstOutput = new ArrayList<>();
 
 		// INPUT．モードをチェックする
 		if (input.isMode()) {
 			// INPUT．上書き用の暫定管理データを受け取る
 			// INPUT．上書き用の暫定管理データから「暫定振出管理データ」を取得する
-			lstInterimMngOfRec.addAll(input.getInterimMng().stream()
-					.filter(x -> x.getSID().equals(input.getSid())
-							&& x.getYmd().afterOrEquals(input.getDateData().start())
-							&& x.getYmd().beforeOrEquals(input.getDateData().end())
-							&& x.getRemainType() == RemainType.PICKINGUP)
-					.collect(Collectors.toList()));
-			Map<String, String> mapId = lstInterimMngOfRec.stream()
-					.collect(Collectors.toMap(x -> x.getRemainManaID(), x -> x.getRemainManaID()));
-			lstRecMng.addAll(input.getUseRecMng().stream().filter(x -> mapId.containsKey(x.getRecruitmentMngId()))
-					.collect(Collectors.toList()));
+//			lstInterimMngOfRec.addAll(input.getInterimMng().stream()
+//					.filter(x -> x.getSID().equals(input.getSid())
+//							&& x.getYmd().afterOrEquals(input.getDateData().start())
+//							&& x.getYmd().beforeOrEquals(input.getDateData().end())
+//							&& x.getRemainType() == RemainType.PICKINGUP)
+//					.collect(Collectors.toList()));
+//			Map<String, String> mapId = lstInterimMngOfRec.stream()
+//					.collect(Collectors.toMap(x -> x.getRemainManaID(), x -> x.getRemainManaID()));
+			lstRecMng.addAll(input.getUseRecMng());
 
 		} else {
 			// ドメインモデル「暫定振出管理データ」を取得する
-			lstInterimMngOfRec
-					.addAll(require.getRemainBySidPriod(input.getSid(), input.getDateData(), RemainType.PICKINGUP));
+//			lstInterimMngOfRec
+//					.addAll(require.getRemainBySidPriod(input.getSid(), input.getDateData(), RemainType.PICKINGUP));
 			lstRecMng.addAll(require.getRecBySidDatePeriod(input.getSid(), input.getDateData()));
 
 		}
 
 		// 対象期間のドメインモデル「暫定振出管理データ」を上書き用の暫定管理データに置き換える
-		ProcessDataTemporary.processOverride(input, input.getUseRecMng(), lstInterimMngOfRec, lstRecMng);
+		//ProcessDataTemporary.processOverride(input, input.getUseRecMng(), lstInterimMngOfRec, lstRecMng);
 
 		// 振休の設定を取得する
 		LeaveSetOutput leaveSetOut = GetSettingCompensaLeave.process(require, input.getCid(), input.getSid(),
@@ -76,11 +73,11 @@ public class GetUnusedCompenTemporary {
 
 		// 取得した件数をチェックする
 		for (InterimRecMng interimRecMng : lstRecMng) {
-			InterimRemain remainData = lstInterimMngOfRec.stream()
-					.filter(x -> x.getRemainManaID().equals(interimRecMng.getRecruitmentMngId()))
-					.collect(Collectors.toList()).get(0);
+//			InterimRemain remainData = lstInterimMngOfRec.stream()
+//					.filter(x -> x.getRemainManaID().equals(interimRecMng.getRemainManaID()))
+//					.collect(Collectors.toList()).get(0);
 			// アルゴリズム「振休と紐付けをしない振出を取得する」を実行する
-			lstOutput.add(getNotTypeRec(require, interimRecMng, remainData, input.getCid(), input.getSid(),
+			lstOutput.add(getNotTypeRec(require, interimRecMng, input.getCid(), input.getSid(),
 					input.getDateData().end(), leaveSetOut));
 		}
 		return lstOutput;
@@ -89,9 +86,9 @@ public class GetUnusedCompenTemporary {
 
 	// 4-1.振休と紐付けをしない振出を取得する
 	public static AccumulationAbsenceDetail getNotTypeRec(Require require, InterimRecMng recMng,
-			InterimRemain remainData, String cid, String sid, GeneralDate aggEndDate, LeaveSetOutput leaveSetOut) {
+			 String cid, String sid, GeneralDate aggEndDate, LeaveSetOutput leaveSetOut) {
 		// ドメインモデル「暫定振出振休紐付け管理」を取得する
-		List<PayoutSubofHDManagement> lstInterimMng = require.getByPayoutId(remainData.getSID(), remainData.getYmd());
+		List<PayoutSubofHDManagement> lstInterimMng = require.getByPayoutId(recMng.getSID(), recMng.getYmd());
 
 		// 未使用日数←SELF.発生日数
 		double unUseDays = recMng.getOccurrenceDays().v();
@@ -114,29 +111,27 @@ public class GetUnusedCompenTemporary {
 //				ExpirationTime.valueOf(leaveSetOut.getExpirationOfLeave()), tightSettingResult,
 //				remainData.getYmd());
 
-		CompensatoryDayoffDate date = new CompensatoryDayoffDate(false, Optional.of(remainData.getYmd()));
+		CompensatoryDayoffDate date = new CompensatoryDayoffDate(false, Optional.of(recMng.getYmd()));
 		MngDataStatus dataAtr = MngDataStatus.NOTREFLECTAPP;
-		if (remainData.getCreatorAtr() == CreateAtr.SCHEDULE) {
+		if (recMng.getCreatorAtr() == CreateAtr.SCHEDULE) {
 			dataAtr = MngDataStatus.SCHEDULE;
-		} else if (remainData.getCreatorAtr() == CreateAtr.RECORD) {
+		} else if (recMng.getCreatorAtr() == CreateAtr.RECORD) {
 			dataAtr = MngDataStatus.RECORD;
 		}
 
-		AccumulationAbsenceDetail detail = new AccuVacationBuilder(remainData.getSID(), date,
-				OccurrenceDigClass.OCCURRENCE, dataAtr, recMng.getRecruitmentMngId())
+		AccumulationAbsenceDetail detail = new AccuVacationBuilder(recMng.getSID(), date,
+				OccurrenceDigClass.OCCURRENCE, dataAtr, recMng.getRemainManaID())
 						.numberOccurren(new NumberConsecuVacation(
 								new ManagementDataRemainUnit(recMng.getOccurrenceDays().v()), Optional.empty()))
 						.unbalanceNumber(
 								new NumberConsecuVacation(new ManagementDataRemainUnit(unUseDays), Optional.empty()))
 						.build();
 		return new UnbalanceCompensation(detail, recMng.getExpirationDate(), DigestionAtr.USED, Optional.empty(),
-				recMng.getStatutoryAtr());
+				HolidayAtr.STATUTORY_HOLIDAYS);
+				//recMng.getStatutoryAtr());
 	}
 
 	public static interface Require extends GetSettingCompensaLeave.Require {
-
-		// InterimRemainRepository
-		List<InterimRemain> getRemainBySidPriod(String employeeId, DatePeriod dateData, RemainType remainType);
 
 		// InterimRecAbasMngRepository
 		List<InterimRecMng> getRecBySidDatePeriod(String sid, DatePeriod period);

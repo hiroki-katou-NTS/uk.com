@@ -13,12 +13,7 @@ import lombok.Setter;
 import lombok.val;
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggregatePeriodWork;
-import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.GrantPeriodAtr;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveGrantRemainingData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveNumberInfo;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveUsedDayNumber;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.UsedMinutes;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.GrantRemainRegisterType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.RemNumShiftListWork;
@@ -27,14 +22,12 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdat
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveRemainingNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveUsedDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveUsedNumber;
-import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveUsedTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.ReserveLeaveGrantRemainingData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveGrantDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveUsedDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveUsedNumber;
-import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.interim.TmpReserveLeaveMngWork;
+import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.interim.TmpResereLeaveMng;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.erroralarm.ReserveLeaveError;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AnnualLeaveUsedNumber;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.reserveleave.ReserveLeaveRemainingNumberInfo;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPriority;
@@ -175,7 +168,7 @@ public class ReserveLeaveInfo implements Cloneable {
 			RequireM1 require,
 			CacheCarrier cacheCarrier,
 			String companyId, String employeeId, RsvLeaAggrPeriodWork aggrPeriodWork,
-			List<TmpReserveLeaveMngWork> tmpReserveLeaveMngs,
+			List<TmpResereLeaveMng> tmpReserveLeaveMngs,
 			AggrResultOfReserveLeave aggrResult,
 			AnnualPaidLeaveSetting annualPaidLeaveSet,
 			Optional<RetentionYearlySetting> retentionYearlySet,
@@ -462,7 +455,7 @@ public class ReserveLeaveInfo implements Cloneable {
 			LeaveRemainingNumber.RequireM3 require,
 			String companyId, String employeeId,
 			RsvLeaAggrPeriodWork aggrPeriodWork,
-			List<TmpReserveLeaveMngWork> tmpReserveLeaveMngs,
+			List<TmpResereLeaveMng> tmpReserveLeaveMngs,
 			AggrResultOfReserveLeave aggrResult,
 			AnnualPaidLeaveSetting annualPaidLeaveSet){
 
@@ -472,7 +465,7 @@ public class ReserveLeaveInfo implements Cloneable {
 		}
 
 		// 「暫定積立年休管理データリスト」を取得する
-		List<TmpReserveLeaveMngWork> targetList = new ArrayList<>();
+		List<TmpResereLeaveMng> targetList = new ArrayList<>();
 		for (val tmpReserveLeaveMng : tmpReserveLeaveMngs){
 			if (!aggrPeriodWork.getPeriod().contains(tmpReserveLeaveMng.getYmd())) continue;
 			targetList.add(tmpReserveLeaveMng);

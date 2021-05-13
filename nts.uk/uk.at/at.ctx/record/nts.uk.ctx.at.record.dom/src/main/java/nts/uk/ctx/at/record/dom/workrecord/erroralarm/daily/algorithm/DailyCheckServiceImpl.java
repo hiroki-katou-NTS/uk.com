@@ -1431,11 +1431,10 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 				.stream().filter(a -> a.isReflectedCategory() && a.getStampDateTime().toDate().equals(baseDate))
 				.collect(Collectors.toList());
 		if(lstStampDakoku.isEmpty()) return result;
-		
-		result.alarmMessage = TextResource.localize("KAL010_623", lstStampDakoku.get(0).getType().getChangeClockArt().nameId);
-		result.alarmTarget =  TextResource.localize("KAL010_35", 
-				lstStampDakoku.get(0).getType().getChangeClockArt().nameId,
-				lstStampDakoku.get(0).getStampDateTime().toString());	
+		String strClockArt = lstStampDakoku.stream().map(x -> x.getType().getChangeClockArt().nameId).collect(Collectors.joining(","));
+		result.alarmMessage = TextResource.localize("KAL010_623", strClockArt);
+		result.alarmTarget =  lstStampDakoku.stream().map(x -> TextResource.localize("KAL010_35", x.getType().getChangeClockArt().nameId, lstStampDakoku.get(0).getStampDateTime().toString()))
+				.collect(Collectors.joining(","));
 		return result;
 	}
 	
@@ -1473,7 +1472,7 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 		// 職場の特定日設定を取得する (Acquire specific day setting of the workplace)
 		RecSpecificDateSettingImport specificDateSetting = specificDateSettingAdapter.specificDateSettingService(companyId, wplId, integra.getYmd());
 		//取得した「特定日」をチェック
-		if(specificDateSetting == null) return result;
+		if(specificDateSetting == null || specificDateSetting.getNumberList().isEmpty()) return result;
 		
 		//特定日項目NO（List）から特定日を取得
 		// アラーム表示値を生成する
@@ -1536,25 +1535,23 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 		Optional<TimeLeavingWork> timeLeavingWork2 = optAttendanceLeave.get().getAttendanceLeavingWork(1);
 		String strAttendanceSt = "";
 		if(timeLeavingWork2.isPresent() 
-				&& timeLeavingWork2.get().getAttendanceStamp().isPresent()
-				&& timeLeavingWork2.get().getAttendanceStamp().get().getActualStamp().isPresent()
-				&& timeLeavingWork2.get().getAttendanceStamp().get().getActualStamp().get().getTimeDay().getTimeWithDay().isPresent()) {
-			TimeWithDayAttr timeWithDay = timeLeavingWork2.get()
-					.getAttendanceStamp().get().getActualStamp().get().getTimeDay().getTimeWithDay().get();
-			strAttendanceSt = timeWithDay.getRawTimeWithFormat();
+				&& timeLeavingWork2.get().getAttendanceStamp().isPresent()) {
+			TimeWithDayAttr timeWithDay = timeLeavingWork2.get().getAttendanceStamp().get().getActualStamp().isPresent() 
+					? timeLeavingWork2.get().getAttendanceStamp().get().getActualStamp().get().getTimeDay().getTimeWithDay().get()
+							: (timeLeavingWork2.get().getAttendanceStamp().get().getStamp().isPresent() ? timeLeavingWork2.get().getAttendanceStamp().get().getStamp().get().getTimeDay().getTimeWithDay().get() : null);
+			strAttendanceSt = timeWithDay.getFullText();
 		}
 		String strleaveStamp = "";
 		if(timeLeavingWork2.isPresent() 
-				&& timeLeavingWork2.get().getLeaveStamp().isPresent()
-				&& timeLeavingWork2.get().getLeaveStamp().get().getActualStamp().isPresent()
-				&& timeLeavingWork2.get().getLeaveStamp().get().getActualStamp().get().getTimeDay().getTimeWithDay().isPresent()) {
-			TimeWithDayAttr timeWithDay = timeLeavingWork2.get()
-					.getLeaveStamp().get().getActualStamp().get().getTimeDay().getTimeWithDay().get();
-			strleaveStamp = timeWithDay.getRawTimeWithFormat();
+				&& timeLeavingWork2.get().getLeaveStamp().isPresent()) {
+			TimeWithDayAttr timeWithDay = timeLeavingWork2.get().getLeaveStamp().get().getActualStamp().isPresent() 
+					? timeLeavingWork2.get().getLeaveStamp().get().getActualStamp().get().getTimeDay().getTimeWithDay().get()
+							: (timeLeavingWork2.get().getLeaveStamp().get().getStamp().isPresent() ? timeLeavingWork2.get().getLeaveStamp().get().getStamp().get().getTimeDay().getTimeWithDay().get() : null);
+			strleaveStamp = timeWithDay.getFullText();
 		}
 		if(!strAttendanceSt.isEmpty() || !strleaveStamp.isEmpty()) {
-			result.alarmMessage = TextResource.localize("KAL010_25", strAttendanceSt + '～' + strleaveStamp);
-			result.alarmTarget =  TextResource.localize("KAL010_621", strAttendanceSt + '～' + strleaveStamp);	
+			result.alarmMessage = TextResource.localize("KAL010_25", strAttendanceSt , strleaveStamp);
+			result.alarmTarget =  TextResource.localize("KAL010_621", strAttendanceSt, strleaveStamp);	
 		}
 		return result;
 	}
@@ -1571,19 +1568,15 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 		ErrorInfo result = new ErrorInfo("", "");		
 		List<EmployeeDailyPerError> lstDoubleStamp = dailyAlermService.doubleStampAlgorithm(integra);
 		if(lstDoubleStamp.isEmpty()) return result;
-		String strItemNameD = "";
-		for(EmployeeDailyPerError doubleStamp : lstDoubleStamp) {
-			if(doubleStamp == null) continue;
-			List<MonthlyAttendanceItemNameDto> lstItemName = lstItemDay.stream()
-					.filter(a -> doubleStamp.getAttendanceItemList().contains(a.getAttendanceItemId()))
-					.collect(Collectors.toList());
-			if(lstItemName.isEmpty()) continue;
-			for(MonthlyAttendanceItemNameDto dto: lstItemName) {
-				strItemNameD += ", " + dto.getAttendanceItemName();
-			}
+		List<Integer> lstAttItemId = new ArrayList<Integer>();
+		for(EmployeeDailyPerError err : lstDoubleStamp) {
+			lstAttItemId.addAll(err.getAttendanceItemList());
 		}
-		if(strItemNameD.isEmpty()) return result;
-		strItemNameD = strItemNameD.substring(2);
+		
+		String strItemNameD = lstItemDay.stream()
+				.filter(x -> lstAttItemId.contains(x.getAttendanceItemId()))
+				.map(a -> a.getAttendanceItemName()).collect(Collectors.joining(","));
+		
 		result.alarmMessage = TextResource.localize("KAL010_16");
 		result.alarmTarget =  TextResource.localize("KAL010_617", strItemNameD);
 		return result;
@@ -1603,18 +1596,8 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 					|| x.getEditStateSetting() == EditStateSetting.HAND_CORRECTION_OTHER)
 				.collect(Collectors.toList());
 		if(lstEditState.isEmpty()) return result;
-		String strItemName = "";
-		for(EditStateOfDailyAttd editSt: lstEditState) {
-			Optional<MonthlyAttendanceItemNameDto> optAttItem = lstItemDay.stream()
-					.filter(a -> a.getAttendanceItemId() == editSt.getAttendanceItemId())
-					.findFirst();
-			if(optAttItem.isPresent()) {
-				strItemName += ", " + optAttItem.get().getAttendanceItemName();
-			}
-		}
-		if(strItemName.isEmpty()) return result;
-		
-		strItemName = strItemName.substring(2);
+		List<Integer> lstAttItemId = lstEditState.stream().map(x -> x.getAttendanceItemId()).collect(Collectors.toList());
+		String strItemName = lstItemDay.stream().filter(x -> lstAttItemId.contains(x.getAttendanceItemId())).map(a -> a.getAttendanceItemName()).collect(Collectors.joining(","));
 		result.alarmMessage = TextResource.localize("KAL010_16");
 		result.alarmTarget =  TextResource.localize("KAL010_617", strItemName);
 		return result;
@@ -2391,16 +2374,16 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 			
 			if(timeLeavingWork.getAttendanceStamp().isPresent()) {
 				strActualStamp = timeLeavingWork.getAttendanceStamp().get().getActualStamp().isPresent() ? timeLeavingWork.getAttendanceStamp().get().getActualStamp().get().getTimeDay().getTimeWithDay().get().getFullText()
-						:  timeLeavingWork.getAttendanceStamp().get().getStamp().isPresent() ? timeLeavingWork.getAttendanceStamp().get().getStamp().get().getTimeDay().getTimeWithDay().get().getFullText() :  "打刻漏れ";
+						:  timeLeavingWork.getAttendanceStamp().get().getStamp().isPresent() ? timeLeavingWork.getAttendanceStamp().get().getStamp().get().getTimeDay().getTimeWithDay().get().getFullText() :  TextResource.localize("KAL010_1027");
 			} else {
-				strActualStamp = "打刻漏れ";
+				strActualStamp = TextResource.localize("KAL010_1027");
 			}
 			
 			if(timeLeavingWork.getLeaveStamp().isPresent()) {
 				strLeaveStamp = timeLeavingWork.getLeaveStamp().get().getActualStamp().isPresent() ? timeLeavingWork.getLeaveStamp().get().getActualStamp().get().getTimeDay().getTimeWithDay().get().getFullText()
-						: timeLeavingWork.getLeaveStamp().get().getStamp().isPresent() ? timeLeavingWork.getLeaveStamp().get().getStamp().get().getTimeDay().getTimeWithDay().get().getFullText() :  "打刻漏れ";
+						: timeLeavingWork.getLeaveStamp().get().getStamp().isPresent() ? timeLeavingWork.getLeaveStamp().get().getStamp().get().getTimeDay().getTimeWithDay().get().getFullText() :  TextResource.localize("KAL010_1027");
 			} else {
-				strLeaveStamp = "打刻漏れ";
+				strLeaveStamp = TextResource.localize("KAL010_1027");
 			}
 		}
 		int day = integra.getYmd().localDate().getDayOfWeek().getValue();
