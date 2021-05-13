@@ -274,8 +274,40 @@ module nts.uk.ui.at.kdp013.a {
                 }
             }).extend({ rateLimit: 500 });
 
-            // get settings
-            vm.$ajax('at', API.START).then(vm.$settings);
+            // get settings Msg_1960
+            vm
+                .$ajax('at', API.START)
+                .then((response: StartProcessDto) => {
+                    // 作業利用設定チェック
+                    if (!response) {
+                        return vm.$dialog.error({ messageId: 'Msg_1960' });
+                    }
+
+                    const { startManHourInputResultDto } = response;
+
+                    if (!startManHourInputResultDto) {
+                        return vm.$dialog.error({ messageId: 'Msg_1960' });
+                    }
+
+                    const { taskFrameUsageSetting, tasks } = startManHourInputResultDto;
+
+                    if (!taskFrameUsageSetting) {
+                        return vm.$dialog.error({ messageId: 'Msg_1960' });
+                    }
+
+                    const { frameSettingList } = taskFrameUsageSetting;
+
+                    if (!frameSettingList || frameSettingList.length === 0) {
+                        return vm.$dialog.error({ messageId: 'Msg_1960' });
+                    }
+
+                    // 作業マスタチェック
+                    if (!tasks || tasks.length === 0) {
+                        return vm.$dialog.error({ messageId: 'Msg_1961' });
+                    }
+
+                    vm.$settings(response);
+                });
         }
 
         mounted() {
