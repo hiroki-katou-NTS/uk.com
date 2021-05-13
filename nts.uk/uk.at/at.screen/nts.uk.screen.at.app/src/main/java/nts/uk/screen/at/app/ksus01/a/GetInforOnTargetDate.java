@@ -48,7 +48,6 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
-import nts.uk.ctx.sys.auth.dom.algorithm.AcquireUserIDFromEmpIDService;
 import nts.uk.query.model.employee.EmployeeInformation;
 import nts.uk.query.model.employee.EmployeeInformationQuery;
 import nts.uk.query.model.employee.EmployeeInformationRepository;
@@ -74,9 +73,6 @@ public class GetInforOnTargetDate {
 	
 	@Inject
 	private RegulationInfoEmployeeAdapter regulInfoEmpAdap;
-	
-	@Inject
-	private AcquireUserIDFromEmpIDService acquireUserIDFromEmpIDService;
 	
 	@Inject
 	private WorkTypeRepository workTypeRepo;
@@ -120,7 +116,7 @@ public class GetInforOnTargetDate {
 		
     	String companyId = AppContexts.user().companyId();
     	String sid = AppContexts.user().employeeId();
-    	RequireImpl require = new RequireImpl(companyId, workScheduleRepository, workplaceGroupAdapter, regulInfoEmpAdap, acquireUserIDFromEmpIDService, workTypeRepo, basicScheduleService, regulInfoEmpPub, empAffiliationInforAdapter, workTimeSettingRepository
+    	RequireImpl require = new RequireImpl(companyId, workScheduleRepository, workplaceGroupAdapter, regulInfoEmpAdap, workTypeRepo, basicScheduleService, regulInfoEmpPub, empAffiliationInforAdapter, workTimeSettingRepository
     			, fixedWorkSettingRepository, flowWorkSettingRepository, flexWorkSettingRepository, predetemineTimeSettingRepository);
     	
     	RequireWorkAvailabilityImpl requireWorkAvailability = new RequireWorkAvailabilityImpl(companyId, workTypeRepo, workTimeSettingRepository, basicScheduleService, fixedWorkSettingRepository
@@ -318,7 +314,6 @@ public class GetInforOnTargetDate {
 		private WorkScheduleRepository workScheduleRepository;
 		private WorkplaceGroupAdapter workplaceGroupAdapter;
 		private RegulationInfoEmployeeAdapter regulInfoEmpAdap;
-		private AcquireUserIDFromEmpIDService acquireUserIDFromEmpIDService;
 		private WorkTypeRepository workTypeRepo;
 		private BasicScheduleService basicScheduleService;
         private RegulationInfoEmployeePub regulInfoEmpPub;
@@ -336,7 +331,7 @@ public class GetInforOnTargetDate {
 		}
 
 		@Override
-		public List<String> getReferableEmp(GeneralDate date, String empId, String workplaceGroupID) {
+		public List<String> getEmpCanReferByWorkplaceGroup(GeneralDate date, String empId, String workplaceGroupID) {
 			List<String> data = workplaceGroupAdapter.getReferableEmp( date, empId, workplaceGroupID);
             return data;
 		}
@@ -352,13 +347,8 @@ public class GetInforOnTargetDate {
 		}
 
 		@Override
-		public String getRoleID(GeneralDate date, String employId) {
-			Optional<String> userID = acquireUserIDFromEmpIDService.getUserIDByEmpID(employId);
-            if (!userID.isPresent()) {
-                return null;
-            }
-            String roleId = AppContexts.user().roles().forAttendance();
-            return roleId;
+		public String getRoleID() {
+            return AppContexts.user().roles().forAttendance();
 		}
 
 		@Override
@@ -463,6 +453,12 @@ public class GetInforOnTargetDate {
 		@Override
 		public List<WorkSchedule> getWorkSchedule(List<String> sids, GeneralDate baseDate) {
 			return workScheduleRepository.getList(sids, DatePeriod.oneDay(baseDate));
+		}
+
+		@Override
+		public List<String> getAllEmpCanReferByWorkplaceGroup(GeneralDate date, String empId) {
+			// don't have to implement it
+			return null;
 		}
 		
 	}
