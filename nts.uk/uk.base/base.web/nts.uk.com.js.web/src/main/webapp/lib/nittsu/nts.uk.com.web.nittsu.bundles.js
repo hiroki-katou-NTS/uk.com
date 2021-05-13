@@ -19376,21 +19376,25 @@ var nts;
                             }
                             var id = 'ntsErrorDialog_' + idX;
                             var $dialog = $("<div>", { "id": id, "class": "ntsErrorDialog" });
-                            if (self.isRoot) {
+                            // get top object (jQuery & document)
+                            var $$ = window.top.window.$;
+                            var $document = window.top.document;
+                            // move error dialog to top windows
+                            $$($document).find('body').append($dialog);
+                            // shit code
+                            /*if (self.isRoot) {
                                 PS.$('body').append($dialog);
-                            }
-                            else {
-                                var temp = self;
+                            } else {
+                                let temp = self;
                                 while (!nts.uk.util.isNullOrUndefined(temp)) {
                                     if (temp.isRoot) {
                                         $(temp.globalContext.document.getElementsByTagName("body")).append($dialog);
                                         temp = null;
-                                    }
-                                    else {
+                                    } else {
                                         temp = temp.parent;
                                     }
                                 }
-                            }
+                            }*/
                             // Create Buttons
                             var dialogbuttons = [];
                             var _loop_2 = function (button) {
