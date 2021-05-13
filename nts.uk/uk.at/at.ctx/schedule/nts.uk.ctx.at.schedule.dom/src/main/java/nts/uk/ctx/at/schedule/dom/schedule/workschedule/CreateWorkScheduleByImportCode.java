@@ -64,7 +64,7 @@ public class CreateWorkScheduleByImportCode {
 					e.getMessage() );
 		}
 		
-		// 勤務予定を補正する補
+		// 勤務予定を補正する
 		WorkSchedule correctedResult = require.correctWorkSchedule(newWorkSchedule);
 		
 		// 登録処理
