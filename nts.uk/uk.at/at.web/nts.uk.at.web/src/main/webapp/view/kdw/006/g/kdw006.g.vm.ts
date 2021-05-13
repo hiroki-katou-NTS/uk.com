@@ -157,15 +157,9 @@ module nts.uk.at.view.kdw006.g.viewmodel {
 
         saveData() {
             let self = this;
-            $('.name-group').trigger('validate');
             
-            setTimeout(() => {
-                if (nts.uk.ui.errors.hasError()) {
-                    return;
-                }
-                //            if(self.validate()){
-                //               return; 
-                //            }
+            self.$validate().then((valid: boolean) => {
+                if (valid) {
                 self.$blockui("show");
                 service.register(self.selectedCode(), self.groups1(), self.groups2()).done(function(res) {
                     if (self.groups1.length > 0 || self.groups2.length > 0) {
@@ -182,7 +176,10 @@ module nts.uk.at.view.kdw006.g.viewmodel {
                 }).always(() => {
                     self.$blockui("hide");
                 });
-            }, 100);
+                }
+            }).always(() => {
+                self.$blockui("hide");
+            });
         }
         
         private validate(): boolean {

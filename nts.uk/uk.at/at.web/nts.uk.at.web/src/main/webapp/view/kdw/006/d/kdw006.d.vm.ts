@@ -67,11 +67,18 @@ module nts.uk.at.view.kdw006.d.viewmodel {
         saveData() {
             let self = this;
             self.$blockui("show");
-            service.register(self.selectedItem(), self.functionalRestriction()).done(function(res: Array<RoleItem>) {
-                
-                self.$dialog.info({ messageId: "Msg_15" });
+            self.$validate().then((valid: boolean) => {
+                if (valid) {
+                    self.$blockui("show");
+                    service.register(self.selectedItem(), self.functionalRestriction()).done(function(res: Array<RoleItem>) { 
+                        self.$dialog.info({ messageId: "Msg_15" });
+                    }).always(() => {
+                        self.$blockui("hide");
+                    });
+                }
+            }).always(() => {
+                self.$blockui("hide");
             });
-            self.$blockui("hide");
         }
         
         jumpTo() {
@@ -137,6 +144,7 @@ module nts.uk.at.view.kdw006.d.viewmodel {
                     name: selectedRoleItem.roleName,
                     targetType: 8,// ロール
                     itemListSetting: listRoleId,
+                    roleType: 3, //就業
                 };
                 console.log(param, 'param');
 
@@ -144,27 +152,24 @@ module nts.uk.at.view.kdw006.d.viewmodel {
                 nts.uk.ui.windows.sub.modal("com", "/view/cdl/023/a/index.xhtml").onClosed(() => {
                     self.$blockui("show");
                     let data = nts.uk.ui.windows.getShared("CDL023Output");
-                    console.log(data, 'data');
-                    
-                    // if (!nts.uk.util.isNullOrUndefined(data)) {
-                    //     let command = {
-                    //         targetEmploymentCodes: data,
-                    //         overide: isOveride,
-                    //         employmentCode: self.selectedCode()
-                    //     };
-                    //     service.copyDaiPerfAuth('command', []).done(() => {
-                    //         self.$dialog.info({ messageId: "Msg_15" }).then(function() {
-                    //             self.start();
-                    //             self.$blockui("hide");
-                    //         });
-                    //     }).fail(function(res: any) {
-                    //         self.$dialog.alert({ messageId: res.messageId, messageParams: res.parameterIds }).then(function() {
-                    //             self.$blockui("hide");
-                    //         });
-                    //     }).always(() => {
-                    //         self.$blockui("hide");
-                    //     });
-                    // }
+                    if (!nts.uk.util.isNullOrUndefined(data)) {
+                        let command = {
+                            selectedRole: selectedRoleItem.roleId,
+                            targetRoleList: data,
+                        }
+                        service.copyDaiPerfAuth(command).done(() => {
+                            self.$dialog.info({ messageId: "Msg_15" }).then(function() {
+                                self.start();
+                                self.$blockui("hide");
+                            });
+                        }).fail(function(res: any) {
+                            self.$dialog.alert({ messageId: res.messageId, messageParams: res.parameterIds }).then(function() {
+                                self.$blockui("hide");
+                            });
+                        }).always(() => {
+                            self.$blockui("hide");
+                        });
+                    }
                     self.$blockui("hide");
                 });
             });
