@@ -30,7 +30,6 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.base.CompensatoryDayoffDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.DigestionAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.HolidayAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemainRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.DataManagementAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
@@ -240,12 +239,8 @@ public class AbsenceReruitmentMngInPeriodQuery {
 			}
 		} else {
 			//ドメインモデル「暫定振休管理データ」を取得する
-			lstInterimMng =  require.interimRemains(paramInput.getSid(), paramInput.getDateData(), RemainType.PAUSE);
 			
-			lstInterimMng.stream().forEach(x -> {
-				Optional<InterimAbsMng> optAbsMng = require.interimAbsMng(x.getRemainManaID());
-				optAbsMng.ifPresent(z -> lstAbsMng.add(z));
-			});
+			lstAbsMng.addAll(require.interimAbsMng(paramInput.getSid(), paramInput.getDateData()));
 		}
 		//INPUT．上書きフラグをチェックする
 		if(paramInput.isOverwriteFlg()
@@ -585,21 +580,10 @@ public class AbsenceReruitmentMngInPeriodQuery {
 			//}
 		} else {
 			//ドメインモデル「暫定振休管理データ」を取得する
-			lstInterimMngOfAbs =  require.interimRemains(paramInput.getSid(), paramInput.getDateData(), RemainType.PAUSE);
-			for (InterimRemain x : lstInterimMngOfAbs) {
-				Optional<InterimAbsMng> optAbsMng = require.interimAbsMng(x.getRemainManaID());
-				if(optAbsMng.isPresent()) {
-					lstAbsMng.add(optAbsMng.get());
-				}
-			}
+			
+			lstAbsMng.addAll(require.interimAbsMng(paramInput.getSid(), paramInput.getDateData()));
 			//ドメインモデル「暫定振出管理データ」を取得する
-			lstInterimMngOfRec =  require.interimRemains(paramInput.getSid(), paramInput.getDateData(), RemainType.PICKINGUP);
-			for (InterimRemain x : lstInterimMngOfRec) {
-				Optional<InterimRecMng> optRecMng = require.interimRecMng(x.getRemainManaID());
-				if(optRecMng.isPresent()) {
-					lstRecMng.add(optRecMng.get());
-				}
-			}	
+			lstRecMng.addAll( require.interimRecMng(paramInput.getSid(), paramInput.getDateData()));
 		}
 		//20181003 DuDT fix bug 101491 ↓
 		List<InterimRemain> lstTmpAbs = new ArrayList<>(lstInterimMngOfAbs);
@@ -812,14 +796,12 @@ public class AbsenceReruitmentMngInPeriodQuery {
 	
 	public static interface RequireM5 extends RequireM7, RequireM3, RequireM0 {
 
-		Optional<InterimRecMng> interimRecMng(String recId);
+		List<InterimRecMng> interimRecMng(String recId, DatePeriod datePeriod);
 	}
 	
 	public static interface RequireM0  {
 
-		List<InterimRemain> interimRemains(String employeeId, DatePeriod dateData, RemainType remainType);
-
-		Optional<InterimAbsMng> interimAbsMng(String absId);
+		List<InterimAbsMng> interimAbsMng(String absId, DatePeriod datePeriod);
 	}
 	
 	public static interface RequireM3 extends AbsenceTenProcess.RequireM3, RequireM6 {
@@ -840,7 +822,7 @@ public class AbsenceReruitmentMngInPeriodQuery {
 		List<SubstitutionOfHDManagementData> substitutionOfHDManagementData(String cid, String sid, GeneralDate ymd, double unOffseDays);
 	}
 	
-	public static RequireM10 createRequireM10(InterimRemainRepository interimRemainRepo,
+	public static RequireM10 createRequireM10(
 			InterimRecAbasMngRepository interimRecAbasMngRepo, ClosureRepository closureRepo,
 			ClosureEmploymentRepository closureEmploymentRepo, CompanyAdapter companyAdapter,
 			ShareEmploymentAdapter shareEmploymentAdapter, EmpSubstVacationRepository empSubstVacationRepo,
@@ -850,13 +832,8 @@ public class AbsenceReruitmentMngInPeriodQuery {
 		return new RequireM10() {
 			
 			@Override
-			public List<InterimRemain> interimRemains(String employeeId, DatePeriod dateData, RemainType remainType) {
-				return interimRemainRepo.getRemainBySidPriod(employeeId, dateData, remainType);
-			}
-			
-			@Override
-			public Optional<InterimAbsMng> interimAbsMng(String absId) {
-				return interimRecAbasMngRepo.getAbsById(absId);
+			public List<InterimAbsMng> interimAbsMng(String absId, DatePeriod datePeriod) {
+				return interimRecAbasMngRepo.getAbsBySidDatePeriod(absId, datePeriod);
 			}
 			
 			@Override
@@ -896,8 +873,8 @@ public class AbsenceReruitmentMngInPeriodQuery {
 			}
 			
 			@Override
-			public Optional<InterimRecMng> interimRecMng(String recId) {
-				return interimRecAbasMngRepo.getReruitmentById(recId);
+			public List<InterimRecMng> interimRecMng(String recId, DatePeriod datePeriod) {
+				return interimRecAbasMngRepo.getRecBySidDatePeriod(recId,datePeriod);
 			}
 			
 			@Override

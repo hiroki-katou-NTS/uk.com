@@ -169,7 +169,8 @@ public interface InterimRecAbasMngRepository {
 	 * @param mngIds
 	 * @return
 	 */
-	List<InterimRecMng> getRecByIds(List<String> mngIds);
+	List<InterimRecMng> getRecByIds(String employeeId,
+			DatePeriod period);
 
 	void deleteInterimAbsMngBySidAndYmd(String sId, GeneralDate ymd);
 

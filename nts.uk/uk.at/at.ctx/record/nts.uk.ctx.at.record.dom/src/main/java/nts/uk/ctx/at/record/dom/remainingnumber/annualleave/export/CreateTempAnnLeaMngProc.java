@@ -22,7 +22,6 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdat
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UseDay;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.MonAggrCompanySettings;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.MonthlyCalculatingDailys;
@@ -161,12 +160,6 @@ public class CreateTempAnnLeaMngProc {
 		if (mode == InterimRemainMngMode.OTHER){
 
 			// 「暫定年休管理データ」をDELETEする
-			atomTask.add(AtomTask.of(() -> require.deleteInterim(employeeId, period, RemainType.ANNUAL)));
-
-			// 「暫定年休管理データ」をINSERTする
-			for (val tempAnnualLeaveMng : this.tempAnnualLeaveMngs) {
-				atomTask.add(AtomTask.of(() -> require.persistAndUpdateInterimRemain(tempAnnualLeaveMng)));
-			}
 
 			// 「個人残数更新フラグ管理．更新状況」を「更新済み」にUpdateする
 			//*****（未）　設計待ち。
@@ -350,10 +343,6 @@ public class CreateTempAnnLeaMngProc {
 
 	public static interface RequireM3 extends RequireM4, RequireM2, RequireM1,
 		GetVacationAddSet.RequireM1 {
-
-		void persistAndUpdateInterimRemain(InterimRemain domain);
-
-		void deleteInterim(String sId, DatePeriod period, RemainType type);
 	}
 
 	public static interface RequireM4 {

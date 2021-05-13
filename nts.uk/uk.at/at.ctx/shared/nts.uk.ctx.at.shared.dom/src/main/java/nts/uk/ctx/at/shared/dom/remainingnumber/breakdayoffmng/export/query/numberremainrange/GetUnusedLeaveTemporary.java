@@ -135,10 +135,6 @@ public class GetUnusedLeaveTemporary {
 
 	public static interface Require extends SettingSubstituteHolidayProcess.Require {
 
-		// 暫定残数管理データ
-		// InterimRemainRepository
-		List<InterimRemain> getRemainBySidPriod(String employeeId, DatePeriod dateData, RemainType remainType);
-
 		// InterimBreakDayOffMngRepository
 		List<InterimBreakMng> getBySidPeriod(String sid, DatePeriod period);
 

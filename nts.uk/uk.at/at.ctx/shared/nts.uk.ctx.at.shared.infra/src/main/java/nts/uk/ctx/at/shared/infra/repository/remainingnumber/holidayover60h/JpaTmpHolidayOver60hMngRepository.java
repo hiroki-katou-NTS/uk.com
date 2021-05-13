@@ -112,18 +112,14 @@ public class JpaTmpHolidayOver60hMngRepository extends JpaRepository implements 
 																				  , int remainType) {
 		// TODO change to 60h table
 		try (PreparedStatement sql = this.connection().prepareStatement(
-			  "SELECT * FROM KRCDT_HDPAID_TEMP a1"
-			+ "	INNER JOIN KRCDT_INTERIM_REMAIN_MNG a2"
-			+ "		ON a1.ANNUAL_MNG_ID = a2.REMAIN_MNG_ID"
-			+ " WHERE a2.SID = ?"
-			+ " 	AND a2.REMAIN_TYPE = ?"
-			+ " 	AND a2.YMD >= ? and a2.YMD <= ?"
-			+ " ORDER BY a2.YMD")) {
+			  "SELECT * FROM KSHDT_INTERIM_HDPAID a1"
+			+ " WHERE a1.SID = ?"
+			+ " 	AND a1.YMD >= ? and a1.YMD <= ?"
+			+ " ORDER BY a1.YMD")) {
 
 			sql.setString(1, employeeId);
-			sql.setInt(2, remainType);
-			sql.setDate(3, Date.valueOf(period.start().localDate()));
-			sql.setDate(4, Date.valueOf(period.end().localDate()));
+			sql.setDate(2, Date.valueOf(period.start().localDate()));
+			sql.setDate(3, Date.valueOf(period.end().localDate()));
 
 //			return new NtsResultSet(sql.executeQuery()).getList(x -> toDomain(x));
 			// TODO fake data for test
