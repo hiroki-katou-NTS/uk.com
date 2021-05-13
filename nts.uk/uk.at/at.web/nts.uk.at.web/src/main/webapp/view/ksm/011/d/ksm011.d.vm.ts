@@ -54,10 +54,10 @@ module nts.uk.at.view.ksm011.d {
       ]);
       
       vm.conditionWorkSchedule = ko.observableArray([
-        { code: CWSchedule.INSURANCE_STATUS, name: vm.$i18n('CWSchedule_Insurance_Status') },
+        // { code: CWSchedule.INSURANCE_STATUS, name: vm.$i18n('CWSchedule_Insurance_Status') },
         { code: CWSchedule.TEAM, name: vm.$i18n('CWSchedule_Team') },
         { code: CWSchedule.RANK, name: vm.$i18n('CWSchedule_Rank') },
-        { code: CWSchedule.QUALIFICATION, name: vm.$i18n('CWSchedule_Qualification') },
+        // { code: CWSchedule.QUALIFICATION, name: vm.$i18n('CWSchedule_Qualification') },
         { code: CWSchedule.LICENSE_ATR, name: vm.$i18n('CWSchedule_License') }     
       ]);
       vm.getSetting();

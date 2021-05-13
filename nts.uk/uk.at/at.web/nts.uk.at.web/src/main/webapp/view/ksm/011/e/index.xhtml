@@ -82,6 +82,61 @@
 									changeData: permissionCommon,
 									maxRow: 2
 								}"></ccg026-component>
+                <div class="divi">
+                  <div class="title">
+                    <span data-bind="text: $vm.$i18n('KSM011_99')"></span>
+                  </div>
+                  <hr />
+                  <div class="table">
+                    <div class="cell valign-top">
+                      <div
+                              data-bind="ntsFormLabel: { required: true }, text: $vm.$i18n('KSM011_100')"
+                      ></div>
+                    </div>
+                    <div class="cell">
+                      <div
+                              class="cf"
+                              id="KSM011_D24"
+                              tabindex="7"
+                              data-bind="ntsSwitchButton: {
+										name: '#[KSM011_100]',
+										options: switchItems,
+										optionsValue: 'code',
+										optionsText: 'name',
+										value: basicFunctionControl,
+										required: true,
+										enable: true }"
+                      ></div>
+                      <div class="table mt-5">
+                        <div class="cell valign-center">
+                          <label data-bind="text: $vm.$i18n('KSM011_102')"></label>
+                        </div>
+                        <div class="cell valign-center">
+                          <div
+                                  tabindex="8"
+                                  id="combo-box"
+                                  class="comboBox"
+                                  data-bind="ntsComboBox: {
+													name: '#[KSM011_103]',
+													options: daysList,
+													optionsValue: 'day',
+													visibleItemsCount: 5,
+													value: dateSelected,
+													optionsText: 'name',
+													editable: false,
+													enable: basicFunctionControl() === 1,
+													required: true,
+													selectFirstIfNull: true
+												}"
+                          ></div>
+                        </div>
+                        <div class="cell valign-center">
+                          <span data-bind="text: $vm.$i18n('KSM011_104')"></span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
               <div class="tab-content-2">
 								<ccg026-component params="{
@@ -99,61 +154,6 @@
 									maxRow: 2
 								}"></ccg026-component>
 							</div>
-            </div>
-            <div class="divi">
-              <div class="title">
-                <span data-bind="text: $vm.$i18n('KSM011_99')"></span>
-              </div>
-              <hr />
-              <div class="table">
-                <div class="cell valign-top">
-                  <div
-                    data-bind="ntsFormLabel: { required: true }, text: $vm.$i18n('KSM011_100')"
-                  ></div>
-                </div>
-                <div class="cell">
-                  <div
-                    class="cf"
-                    id="KSM011_D24"
-                    tabindex="7"
-                    data-bind="ntsSwitchButton: {
-										name: '#[KSM011_100]',
-										options: switchItems,
-										optionsValue: 'code',
-										optionsText: 'name',
-										value: basicFunctionControl,
-										required: true,
-										enable: true }"
-                  ></div>
-                  <div class="table mt-5">
-                    <div class="cell valign-center">
-                      <label data-bind="text: $vm.$i18n('KSM011_102')"></label>
-                    </div>
-                    <div class="cell valign-center">
-                      <div
-                        tabindex="8"
-                        id="combo-box"
-                        class="comboBox"
-                        data-bind="ntsComboBox: {
-													name: '#[KSM011_103]',
-													options: daysList,
-													optionsValue: 'day',
-													visibleItemsCount: 5,
-													value: dateSelected,
-													optionsText: 'name',
-													editable: false,
-													enable: basicFunctionControl() === 1,
-													required: true,
-													selectFirstIfNull: true
-												}"
-                      ></div>
-                    </div>
-                    <div class="cell valign-center">
-                      <span data-bind="text: $vm.$i18n('KSM011_104')"></span>
-                    </div>
-                  </div>
-                </div>
-              </div>
             </div>
           </div>
         </div>
