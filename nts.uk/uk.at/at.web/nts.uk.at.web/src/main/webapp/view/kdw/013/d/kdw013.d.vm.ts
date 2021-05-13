@@ -103,7 +103,7 @@ module nts.uk.ui.at.kdp013.d {
         // close dialog
         close() {
             const vm = this;
-
+            // ダイアログを閉じる
             vm.$window.close();
         }
     }

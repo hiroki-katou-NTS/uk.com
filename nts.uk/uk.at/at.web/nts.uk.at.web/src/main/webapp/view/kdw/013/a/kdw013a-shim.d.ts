@@ -190,7 +190,7 @@ module nts.uk.ui.at.kdp013.a {
     /**
      * 日別勤怠の編集状態
      */
-    export enum EditStateSetting {
+    enum EditStateSetting {
         /** 手修正（本人） */
         HAND_CORRECTION_MYSELF = 0,
         /** 手修正（他人） */

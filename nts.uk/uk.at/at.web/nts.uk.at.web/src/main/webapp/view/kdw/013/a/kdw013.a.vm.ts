@@ -1,10 +1,19 @@
 module nts.uk.ui.at.kdp013.a {
-    enum OverTimeLeaveAtr {
-        // 0: 残業申請
-        OVER_TIME_APPLICATION = 0,
+    /**
+     * 日別勤怠の編集状態
+     */
+    enum EditStateSetting {
+        /** 手修正（本人） */
+        HAND_CORRECTION_MYSELF = 0,
+        /** 手修正（他人） */
+        HAND_CORRECTION_OTHER = 1,
+        /** 申請反映 */
+        REFLECT_APPLICATION = 2,
+        /** 打刻反映 */
+        IMPRINT = 3,
+        /** 申告反映 */
+        DECLARE_APPLICATION = 4
 
-        //1: 休日出勤申請
-        HOLIDAY_WORK_APPLICATION = 1
     };
 
     const { formatTime } = share;
@@ -319,11 +328,30 @@ module nts.uk.ui.at.kdp013.a {
         saveData() {
             const vm = this;
             const { events } = vm;
+            const { HAND_CORRECTION_MYSELF } = EditStateSetting;
             const command: RegisterWorkContentCommand = {
-                editStateSetting: EditStateSetting.HAND_CORRECTION_MYSELF,
+                editStateSetting: HAND_CORRECTION_MYSELF,
                 employeeId: vm.$user.employeeId,
                 mode: 0,
-                workDetails: []
+                workDetails: ko.unwrap(events).map(({ start, extendedProps }) => {
+                    const { workCD1, workCD2, workCD3, workCD4, workCD5, workplace: workLocationCD, descriptions: remarks } = extendedProps;
+
+                    return {
+                        date: moment(start).toISOString(),
+                        lstWorkDetailsParamCommand: [{
+                            remarks,
+                            supportFrameNo: 1,
+                            workGroup: {
+                                workCD1,
+                                workCD2,
+                                workCD3,
+                                workCD4,
+                                workCD5
+                            },
+                            workLocationCD
+                        }]
+                    };
+                })
             };
 
             vm.$blockui('grayout')
@@ -339,9 +367,14 @@ module nts.uk.ui.at.kdp013.a {
                                 .info({ messageId: 'Msg_15' })
                                 .then(() => lstOvertimeLeaveTime);
                         }
+
+                        return vm.$dialog
+                            // ,Msg_2066, Msg_2080
+                            .error({ messageId: 'Msg_2081' })
+                            .then(() => null);
                     }
 
-                    return null;
+                    return $.Deferred().resolve(null);
                 })
                 .then((data) => {
                     if (data && data.length) {
