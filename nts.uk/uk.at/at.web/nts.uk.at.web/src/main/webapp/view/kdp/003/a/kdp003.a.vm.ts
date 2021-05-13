@@ -223,6 +223,7 @@ module nts.uk.at.kdp003.a {
 						return vm.$ajax('at', API.FINGER_STAMP_SETTING)
 							.then((data: FingerStampSetting) => {
 								if (data) {
+									
 									vm.fingerStampSetting(data);
 								}
 							})
@@ -630,8 +631,6 @@ module nts.uk.at.kdp003.a {
 		}
 
 		stampButtonClick(btn: share.ButtonSetting, layout: share.PageLayout) {
-			console.log(layout);
-			console.log(btn);
 
 			const vm = this;
 			vm.getWorkPlacesInfo();
@@ -700,10 +699,15 @@ module nts.uk.at.kdp003.a {
 							// shorten name
 							const { modal, storage } = vm.$window;
 
+							var isSupport: boolean = false;
+							
+							if (btn.supportWplset == null || btn.supportWplset == 1) {
+								isSupport = true;
+							}
 							if (fingerStampSetting) {
 								vm.$window.storage(KDP003_SAVE_DATA)
 									.then((dataStorage: StorageData) => {
-										if (dataStorage.WKPID.length > 1) {
+										if (dataStorage.WKPID.length > 1 && isSupport) {
 
 											vm.$window.modal('at', DIALOG.M)
 												.then((data: string) => {
@@ -932,6 +936,7 @@ module nts.uk.at.kdp003.a {
 		passwordRequiredArt: boolean;
 		resultDisplayTime: number;
 		textColor: string;
+		supportWplset: number;
 	}
 
 	enum NotUseAtr {
