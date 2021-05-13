@@ -174,15 +174,12 @@ public class JpaInterimRecAbasMngRepository extends JpaRepository implements Int
 								.getList(c -> toDomainRecMng(c)));
 		});
 		return resultList;*/
-		try(PreparedStatement sql = this.connection().prepareStatement("SELECT * FROM KRCDT_INTERIM_REC_MNG a1"
-				+ " INNER JOIN KRCDT_INTERIM_REMAIN_MNG a2 "
-				+ " ON a1.RECRUITMENT_MNG_ID = a2.REMAIN_MNG_ID"
-				+ " WHERE a2.SID = ?"
-				+ " AND a2.REMAIN_TYPE = " + RemainType.PICKINGUP.value
-				+ " AND a2.YMD >= ? and a2.YMD <= ?"
+		try(PreparedStatement sql = this.connection().prepareStatement("SELECT * FROM KSHDT_INTERIM_REC a1"
+				+ " WHERE a1.SID = ?"
+				+ " AND a1.YMD >= ? and a1.YMD <= ?"
 				+ " AND a1.UNUSED_DAYS > ?"
 				+ " AND a1.EXPIRATION_DAYS >= ? and a1.EXPIRATION_DAYS <= ?"
-				+ " ORDER BY a2.YMD");
+				+ " ORDER BY a1.YMD");
 				)
 		{
 			sql.setString(1, sid);
@@ -402,12 +399,10 @@ public class JpaInterimRecAbasMngRepository extends JpaRepository implements Int
 	@SneakyThrows
 	@Override
 	public List<InterimRecMng> getRecBySidDatePeriod(String sid, DatePeriod period) {
-		try(PreparedStatement sql = this.connection().prepareStatement("SELECT * FROM KRCDT_INTERIM_REC_MNG a1"
-				+ " INNER JOIN KRCDT_INTERIM_REMAIN_MNG a2 ON a1.RECRUITMENT_MNG_ID = a2.REMAIN_MNG_ID"
-				+ " WHERE a2.SID = ?"
-				+ " AND a2.REMAIN_TYPE = " + RemainType.PICKINGUP.value
-				+ " AND a2.YMD >= ? and a2.YMD <= ?"
-				+ " ORDER BY a2.YMD");
+		try(PreparedStatement sql = this.connection().prepareStatement("SELECT * FROM KSHDT_INTERIM_REC a1"
+				+ " WHERE a1.SID = ?"
+				+ " AND a1.YMD >= ? and a1.YMD <= ?"
+				+ " ORDER BY a1.YMD");
 		)
 		{
 			sql.setString(1, sid);
