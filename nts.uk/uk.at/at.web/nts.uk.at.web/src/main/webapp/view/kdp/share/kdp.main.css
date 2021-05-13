@@ -51,8 +51,6 @@
 } 
 .table2 div.label{
 	width: 146px;
-    margin-top: 24px;
-    vertical-align: top;
     text-align: center;
     word-break: break-word;
 }
@@ -67,6 +65,11 @@
 
 .btn3 img, .btn4 img, .btn5 img, .btn6 img {
 	margin-top: 6px;
+}
+
+.table2 .btn3 img, .table2 .btn4 img, .table2 .btn3 div.label, .table2 .btn4 div.label {
+	margin-top: 0px;
+	vertical-align: middle;
 }
 
 .btn2, .btn4, .btn6 {
