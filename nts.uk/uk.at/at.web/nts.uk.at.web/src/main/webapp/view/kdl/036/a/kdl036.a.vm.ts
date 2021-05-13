@@ -210,7 +210,7 @@ module nts.uk.at.view.kdl036.a.viewmodel {
         usedNumber: number;
 
         constructor(checked: boolean, params: IHolidayWorkInfo, requiredNumberOfDays: KnockoutObservable<number>, startDate: string, usedNumber?: number) {
-            this.enabled = ko.observable(new Date(params.expirationDate).getTime() > new Date(startDate).getTime());
+            this.enabled = ko.observable(new Date(params.expirationDate).getTime() >= new Date(startDate).getTime());
             this.checked = ko.observable(checked);
             this.holidayWorkDate = params.holidayWorkDate;
             this.displayedHolidayWorkDate = (params.expiringThisMonth ? "［" : "")

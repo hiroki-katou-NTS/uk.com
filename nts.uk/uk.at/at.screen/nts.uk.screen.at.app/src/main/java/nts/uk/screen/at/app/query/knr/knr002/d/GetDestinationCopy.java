@@ -67,7 +67,7 @@ public class GetDestinationCopy {
 			dto.setModelEmpInfoTer(e.getModelEmpInfoTer().value);
 			dto.setMacAddress(e.getMacAddress().v());
 			dto.setIpAddress(e.getIpAddress().isPresent()?
-							 e.getIpAddress().get().getFullIpAddress() : "");
+							 e.getIpAddress().get().toString() : "");
 			dto.setTerSerialNo(e.getTerSerialNo().isPresent()?
 							   e.getTerSerialNo().get().v() : "");
 			dto.setWorkLocationName(workLocation.isPresent()?

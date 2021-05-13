@@ -5,9 +5,8 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualHolidayMng;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TempAnnualLeaveMngs;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
  * entity 暫定年休管理データ
@@ -58,12 +57,12 @@ public class KshdtInterimHdpaid extends ContractUkJpaEntity{
 		return pk;
 	}
 
-	public void update(TmpAnnualHolidayMng domain) {
+	public void update(TempAnnualLeaveMngs domain) {
 
 		this.remainMngId = domain.getRemainManaID();
 		this.creatorAtr = domain.getCreatorAtr().value;
-		this.useDays = domain.getUseNumber().getUsedDays().map(c -> c.v()).orElse(null);
-		this.useTime = domain.getUseNumber().getUsedTime().map(c -> c.valueAsMinutes()).orElse(null);
+		this.useDays = domain.getUsedNumber().getDays().v().equals(0d) ? null : domain.getUsedNumber().getDays().v();
+		this.useTime = domain.getUsedNumber().getMinutes().map(x -> x.v()).orElse(null);
 		this.workTypeCode = domain.getWorkTypeCode().v();
 
 	}

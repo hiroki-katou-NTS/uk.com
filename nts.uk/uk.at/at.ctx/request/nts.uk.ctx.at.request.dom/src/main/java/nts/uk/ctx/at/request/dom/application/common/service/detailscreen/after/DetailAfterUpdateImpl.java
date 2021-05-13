@@ -56,7 +56,7 @@ public class DetailAfterUpdateImpl implements DetailAfterUpdate {
 		// アルゴリズム「一括解除する」を実行する(THực hiện [delete đồng loạt])
 		approvalRootStateAdapter.doReleaseAllAtOnce(companyID, application.getAppID());
 		// 「申請」.差し戻し理由をクリア(Clear 「申請」.lí do trả về)
-		application.setOpReversionReason(Optional.of(new ReasonForReversion("")));
+//		application.setOpReversionReason(Optional.of(new ReasonForReversion("")));
 		// 「反映情報」.実績反映状態を未反映にする(Set [thong tin phản ánh]. ''trạng thái phản ánh thực tế'' thành chưa phản ánh)
 		for(ReflectionStatusOfDay reflectionStatusOfDay : application.getReflectionStatus().getListReflectionStatusOfDay()) {
 			reflectionStatusOfDay.setActualReflectStatus(ReflectedState.NOTREFLECTED);

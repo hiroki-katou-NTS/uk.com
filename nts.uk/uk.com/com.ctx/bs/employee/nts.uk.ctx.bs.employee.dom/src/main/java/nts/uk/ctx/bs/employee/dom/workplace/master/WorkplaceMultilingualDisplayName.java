@@ -6,7 +6,7 @@ import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 
 /**
- * 
+ *  職場多言語表示名
  * @author HungTT
  *
  */

@@ -2,7 +2,7 @@ package nts.uk.ctx.at.request.dom.adapter.monthly.vacation.childcarenurse;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.ChildCareNurseUsedNumber;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.ChildCareNurseUsedNumber;
 
 import java.util.List;
 
@@ -18,7 +18,7 @@ public class ChildCareNursePeriodImport {
 	/** エラー情報 */
 	private List<ChildCareNurseErrorsImport> childCareNurseErrors;
 	/** 期間終了日の翌日時点での使用数 */
-	private ChildCareNurseUsedNumber asOfPeriodEnd;
+	private ChildCareNurseUsedNumberImport asOfPeriodEnd;
 	/** 起算日からの休暇情報 */
 	private ChildCareNurseStartdateDaysInfoImport startdateDays;
 	/** 起算日を含む期間フラグ */

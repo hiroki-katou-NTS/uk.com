@@ -54,6 +54,10 @@ public class KrcmtMonAttendanceItem extends ContractUkJpaEntity implements Seria
 	@Column(name = "LINE_BREAK_POS_NAME")
 	private int lineBreakPosName;
 
+	/** The two monthly display. */
+	@Column(name = "TWO_MONTHLY_DISPLAY")
+	private int twoMonthlyDisplay;
+
 	/**
 	 * Instantiates a new krcmt mon attendance item.
 	 */
@@ -83,6 +87,7 @@ public class KrcmtMonAttendanceItem extends ContractUkJpaEntity implements Seria
 		this.isAllowChange = domain.getUserCanUpdateAtr().value;
 		this.lineBreakPosName = domain.getNameLineFeedPosition();
 		this.primitiveValue = domain.getPrimitiveValue().map(x -> x.value).orElse(null);
+		this.twoMonthlyDisplay = domain.getTwoMonthlyDisplay().value;
 	}
 
 	/*

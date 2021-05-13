@@ -38,4 +38,3 @@ public class NextDayAfterPeriodEndWork {
 		return domain;
 	}
 }
-

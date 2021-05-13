@@ -1052,7 +1052,9 @@ public class AttendanceItemUtil implements ItemConst {
 
 		DAILY_ITEM(DEFAULT_IDX, DAILY),
 
-		MONTHLY_ITEM(DEFAULT_NEXT_IDX, MONTHLY);
+		MONTHLY_ITEM(DEFAULT_NEXT_IDX, MONTHLY),
+
+		ANY_PERIOD_ITEM(DEFAULT_NEXT_IDX + 1, ANY_PERIOD);
 
 		public final int value;
 

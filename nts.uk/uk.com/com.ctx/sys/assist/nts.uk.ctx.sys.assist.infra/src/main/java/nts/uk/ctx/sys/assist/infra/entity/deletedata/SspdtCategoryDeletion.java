@@ -31,12 +31,6 @@ public class SspdtCategoryDeletion extends ContractUkJpaEntity implements Serial
 	@Column(name = "PERIOD_DELETION")
 	public GeneralDate periodDeletion;
 	
-	/**
-	 * システム種類
-	 */
-	@Column(name = "SYSTEM_TYPE")
-	public int systemType;
-	
 	@ManyToOne
 	@JoinColumn(name = "DEL_ID", referencedColumnName = "DEL_ID", insertable = false, updatable = false)
 	public SspdtDeletionManual manualSetDeletion;
@@ -48,19 +42,17 @@ public class SspdtCategoryDeletion extends ContractUkJpaEntity implements Serial
 
 	public CategoryDeletion toDomain() {
 		return CategoryDeletion.createFromJavatype(this.sspdtCategoryDeletionPK.delId, 
-				this.sspdtCategoryDeletionPK.categoryId, this.periodDeletion, this.systemType);
+				this.sspdtCategoryDeletionPK.categoryId, this.periodDeletion, this.sspdtCategoryDeletionPK.systemType);
 	}
 
 	public static SspdtCategoryDeletion toEntity(CategoryDeletion categoryDeletion) {
 		return new SspdtCategoryDeletion(new SspdtCategoryDeletionPK(
-				categoryDeletion.getDelId(), categoryDeletion.getCategoryId()),
-				categoryDeletion.getPeriodDeletion(), categoryDeletion.getSystemType());
+				categoryDeletion.getDelId(), categoryDeletion.getCategoryId(), categoryDeletion.getSystemType()),
+				categoryDeletion.getPeriodDeletion());
 	}
 
-	public SspdtCategoryDeletion(SspdtCategoryDeletionPK sspdtCategoryDeletionPK, GeneralDate periodDeletion,
-			int systemType) {
+	public SspdtCategoryDeletion(SspdtCategoryDeletionPK sspdtCategoryDeletionPK, GeneralDate periodDeletion) {
 		this.sspdtCategoryDeletionPK = sspdtCategoryDeletionPK;
 		this.periodDeletion = periodDeletion;
-		this.systemType = systemType;
 	}
 }

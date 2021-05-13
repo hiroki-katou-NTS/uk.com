@@ -16,6 +16,7 @@ import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.appabsence.HolidayAppType;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.AtEmployeeAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeInfoImport;
@@ -113,8 +114,13 @@ public class CommonAppPrintImpl implements CommonAppPrint {
 				appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getBaseDate());
 		printContentOfApp.setWorkPlaceName(workplaceInforLst.stream().findFirst().map(x -> x.getWorkplaceName()).orElse(null));
 		// 指定する定型理由コードから定型理由を取得する
+		Optional<HolidayAppType> holidayAppType = opPrintContentOfEachApp.get().getOpPrintContentApplyForLeave().isPresent() ? 
+		        Optional.of(opPrintContentOfEachApp.get().getOpPrintContentApplyForLeave().get().getApplyForLeave().getVacationInfo().getHolidayApplicationType()) :
+		            Optional.empty();
 		Optional<AppReasonStandard> opAppReasonStandard = appReasonStandardRepository.findByCD(
+		        companyID, 
 				appType, 
+				holidayAppType, 
 				application.getOpAppStandardReasonCD().orElse(null));
 		printContentOfApp.setAppReasonStandard(opAppReasonStandard.orElse(null));
 		// 印字する承認者を取得する

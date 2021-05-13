@@ -11,6 +11,5 @@ public interface BasicScheduleAdapter {
 	
 	List<WorkScheduleSidImport> findAllWorkSchedule();
 	
-	List<WorkBreakTimeImport> findWorkBreakTime(String employeeId, GeneralDate baseDate);
 
 }

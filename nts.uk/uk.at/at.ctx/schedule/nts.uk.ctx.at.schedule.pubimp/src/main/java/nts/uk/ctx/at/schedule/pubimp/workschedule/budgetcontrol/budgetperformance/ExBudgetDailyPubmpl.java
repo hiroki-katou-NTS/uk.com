@@ -1,34 +1,39 @@
 package nts.uk.ctx.at.schedule.pubimp.workschedule.budgetcontrol.budgetperformance;
 
-import nts.arc.enums.EnumAdaptor;
-import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExtBudgetMoney;
-import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExtBudgetNumberPerson;
-import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExtBudgetNumericalVal;
-import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExtBudgetUnitPrice;
-import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.timeunit.ExtBudgetTime;
-import nts.uk.ctx.at.schedule.dom.workschedule.budgetcontrol.budgetperformance.ExtBudgetActualValues;
-import nts.uk.ctx.at.schedule.dom.workschedule.budgetcontrol.budgetperformance.ExtBudgetDaily;
-import nts.uk.ctx.at.schedule.dom.workschedule.budgetcontrol.budgetperformance.ExtBudgetDailyRepository;
-import nts.uk.ctx.at.schedule.pub.workschedule.budgetcontrol.budgetperformance.*;
-import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
-import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrganizationUnit;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import java.util.List;
-import java.util.stream.Collectors;
+
+import nts.arc.enums.EnumAdaptor;
+import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.schedule.dom.budget.external.acceptance.ExtBudgetNumberPerson;
+import nts.uk.ctx.at.schedule.dom.budget.external.acceptance.ExtBudgetNumericalVal;
+import nts.uk.ctx.at.schedule.dom.budget.external.acceptance.ExtBudgetUnitPrice;
+import nts.uk.ctx.at.schedule.dom.budget.external.actualresults.ExternalBudgetActualResult;
+import nts.uk.ctx.at.schedule.dom.budget.external.actualresults.ExternalBudgetActualResultRepository;
+import nts.uk.ctx.at.schedule.dom.budget.external.actualresults.ExternalBudgetMoneyValue;
+import nts.uk.ctx.at.schedule.dom.budget.external.actualresults.ExternalBudgetTimeValue;
+import nts.uk.ctx.at.schedule.dom.budget.external.actualresults.ExternalBudgetValues;
+import nts.uk.ctx.at.schedule.pub.workschedule.budgetcontrol.budgetperformance.ExtBudgetActualValuesExport;
+import nts.uk.ctx.at.schedule.pub.workschedule.budgetcontrol.budgetperformance.ExtBudgetDailyExport;
+import nts.uk.ctx.at.schedule.pub.workschedule.budgetcontrol.budgetperformance.ExtBudgetDailyPub;
+import nts.uk.ctx.at.schedule.pub.workschedule.budgetcontrol.budgetperformance.ExtBudgetType;
+import nts.uk.ctx.at.schedule.pub.workschedule.budgetcontrol.budgetperformance.TargetOrgIdenInforExport;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrganizationUnit;
 
 @Stateless
 public class ExBudgetDailyPubmpl implements ExtBudgetDailyPub {
 
     @Inject
-    private ExtBudgetDailyRepository repository;
+    private ExternalBudgetActualResultRepository repository;
 
     @Override
     public List<ExtBudgetDailyExport> getAllExtBudgetDailyByPeriod(TargetOrgIdenInforExport targetOrg, DatePeriod datePeriod) {
 
-        List<ExtBudgetDaily> data = repository.getAllExtBudgetDailyByPeriod(
+        List<ExternalBudgetActualResult> data = repository.getAllByPeriod(
                 new TargetOrgIdenInfor(EnumAdaptor.valueOf(targetOrg.getUnit(), TargetOrganizationUnit.class),
                         targetOrg.getWorkplaceId(),
                         targetOrg.getWorkplaceGroupId()
@@ -46,7 +51,7 @@ public class ExBudgetDailyPubmpl implements ExtBudgetDailyPub {
                 x.getWorkplaceId(),
                 x.getWorkplaceGroupId()
         )).collect(Collectors.toList());
-        List<ExtBudgetDaily> extBudget = repository.getAllExtBudgetDailyByPeriod(
+        List<ExternalBudgetActualResult> extBudget = repository.getAllByPeriod(
                 lstTargetOrg.stream().map(x -> new TargetOrgIdenInfor(
                         EnumAdaptor.valueOf(x.getUnit(), TargetOrganizationUnit.class),
                         x.getWorkplaceId(),
@@ -57,7 +62,7 @@ public class ExBudgetDailyPubmpl implements ExtBudgetDailyPub {
         return extBudget.stream().map(this::convertdata).collect(Collectors.toList());
     }
 
-    private ExtBudgetDailyExport convertdata(ExtBudgetDaily domain) {
+    private ExtBudgetDailyExport convertdata(ExternalBudgetActualResult domain) {
         return new ExtBudgetDailyExport(
                 new TargetOrgIdenInforExport(domain.getTargetOrg().getUnit().value, domain.getTargetOrg().getWorkplaceId(), domain.getTargetOrg().getWorkplaceGroupId()),
                 domain.getItemCode().v(),
@@ -66,15 +71,15 @@ public class ExBudgetDailyPubmpl implements ExtBudgetDailyPub {
         );
     }
 
-    private ExtBudgetActualValuesExport getActualValue(ExtBudgetActualValues actualValue) {
-        if (actualValue instanceof ExtBudgetMoney) {
-            return new ExtBudgetActualValuesExport(ExtBudgetType.MONEY, ((ExtBudgetMoney) actualValue).v());
+    private ExtBudgetActualValuesExport getActualValue(ExternalBudgetValues actualValue) {
+        if (actualValue instanceof ExternalBudgetMoneyValue) {
+            return new ExtBudgetActualValuesExport(ExtBudgetType.MONEY, ((ExternalBudgetMoneyValue) actualValue).v());
         } else if (actualValue instanceof ExtBudgetNumberPerson) {
             return new ExtBudgetActualValuesExport(ExtBudgetType.NUM_PERSON, ((ExtBudgetNumberPerson) actualValue).v());
         } else if (actualValue instanceof ExtBudgetNumericalVal) {
             return new ExtBudgetActualValuesExport(ExtBudgetType.NUM_VAL, ((ExtBudgetNumericalVal) actualValue).v());
-        } else if (actualValue instanceof ExtBudgetTime) {
-            return new ExtBudgetActualValuesExport(ExtBudgetType.TIME, ((ExtBudgetTime) actualValue).v());
+        } else if (actualValue instanceof ExternalBudgetTimeValue) {
+            return new ExtBudgetActualValuesExport(ExtBudgetType.TIME, ((ExternalBudgetTimeValue) actualValue).v());
         } else if (actualValue instanceof ExtBudgetUnitPrice) {
             return new ExtBudgetActualValuesExport(ExtBudgetType.UNIT_PRICE, ((ExtBudgetUnitPrice) actualValue).v());
         }

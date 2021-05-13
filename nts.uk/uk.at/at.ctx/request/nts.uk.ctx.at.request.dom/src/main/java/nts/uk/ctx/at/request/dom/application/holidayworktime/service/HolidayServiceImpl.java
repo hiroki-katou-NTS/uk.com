@@ -17,7 +17,6 @@ import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
-import nts.uk.ctx.at.request.dom.application.ReflectedState;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeInfoImport;
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.CommonOvertimeHoliday;
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.PreActualColorCheck;
@@ -33,8 +32,6 @@ import nts.uk.ctx.at.request.dom.application.common.service.other.output.OverTim
 import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoWithDateOutput;
-import nts.uk.ctx.at.request.dom.application.holidayshipment.brkoffsupchangemng.BrkOffSupChangeMng;
-import nts.uk.ctx.at.request.dom.application.holidayshipment.brkoffsupchangemng.BrkOffSupChangeMngRepository;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepository;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.commonalgorithm.ICommonAlgorithmHolidayWork;
@@ -80,7 +77,6 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
-import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class HolidayServiceImpl implements HolidayService {
@@ -120,9 +116,6 @@ public class HolidayServiceImpl implements HolidayService {
 	
 	@Inject
 	private ApplicationRepository applicationRepository;
-	
-	@Inject
-	private BrkOffSupChangeMngRepository brkOffSupChangeMngRepository;
 	
 	@Inject
 	private WorkTypeRepository workTypeRepository;
@@ -399,7 +392,7 @@ public class HolidayServiceImpl implements HolidayService {
 		
 		//	#113397
 		//	ドメインモデル「勤務種類」を取得 
-		Optional<WorkType> workType = workTypeRepository.findNoAbolishByPK(companyId, appHolidayWork.getWorkInformation().getWorkTypeCode().v());
+		Optional<WorkType> workType = workTypeRepository.findByPK(companyId, appHolidayWork.getWorkInformation().getWorkTypeCode().v());
 		hdWorkDispInfoWithDateOutput.setInitWorkTypeName(workType.isPresent() ? Optional.of(workType.get().getName()) : Optional.empty());
 		
 		//	#113397
@@ -508,8 +501,8 @@ public class HolidayServiceImpl implements HolidayService {
 		String workTypeCode = Optional.ofNullable(appHolidayWork.getWorkInformation().getWorkTypeCode()).map(x -> x.v()).orElse(null);
 		String workTimeCode = appHolidayWork.getWorkInformation().getWorkTimeCodeNotNull().map(x -> x.v()).orElse(null);
 		if (appHdWorkDispInfoOutput.getWorkInfo().isPresent()) {
-			workTypeCode = workTypeCode.equals(appHdWorkDispInfoOutput.getWorkInfo().get().getWorkType()) ? workTypeCode : null;
-			workTimeCode = workTimeCode.equals(appHdWorkDispInfoOutput.getWorkInfo().get().getWorkTime()) ? workTimeCode : null;			
+			workTypeCode = !workTypeCode.equals(appHdWorkDispInfoOutput.getWorkInfo().get().getWorkType()) ? workTypeCode : null;
+			workTimeCode = !workTimeCode.equals(appHdWorkDispInfoOutput.getWorkInfo().get().getWorkTime()) ? workTimeCode : null;			
 		}
 		//	4-1.詳細画面登録前の処理
 		detailBeforeProcessRegisterService.processBeforeDetailScreenRegistration(companyId, appHolidayWork.getApplication().getEmployeeID(), 
@@ -526,29 +519,6 @@ public class HolidayServiceImpl implements HolidayService {
 		checkBeforeOutput = commonHolidayWorkAlgorithm.individualErrorCheck(require, companyId, appHdWorkDispInfoOutput, appHolidayWork, 1);	//mode update = 1
 
 		return checkBeforeOutput;
-	}
-
-	@Override
-	public void deleteHdChange(String applicationId) {
-		String companyId = AppContexts.user().companyId();
-		
-		Optional<BrkOffSupChangeMng> brkOffSupChangeMngOp = brkOffSupChangeMngRepository.findHolidayAppID(applicationId);
-		if(brkOffSupChangeMngOp.isPresent()) {
-			BrkOffSupChangeMng brkOffSupChangeMng = brkOffSupChangeMngOp.get();
-			
-			//	アルゴリズム「振休申請復活」を実行する
-				//	ドメインモデル「振休振出申請」を取得する
-			Application application = applicationRepository.findByID(companyId, applicationId).get();
-				//	「振休振出申請.反映情報.実績反映状態(stateReflectionReal)」を「未反映(notReflected)」に更新する
-			application.getReflectionStatus().getListReflectionStatusOfDay()
-				.forEach(state -> state.setActualReflectStatus(ReflectedState.NOTREFLECTED));
-			applicationRepository.update(application);
-			
-			//	ドメインモデル「振休申請休出変更管理」を削除する
-			brkOffSupChangeMngRepository.remove(brkOffSupChangeMng.getRecAppID(), brkOffSupChangeMng.getAbsenceLeaveAppID());
-			
-			//	暫定データの登録 	pending
-		}
 	}
 
 	@Override
