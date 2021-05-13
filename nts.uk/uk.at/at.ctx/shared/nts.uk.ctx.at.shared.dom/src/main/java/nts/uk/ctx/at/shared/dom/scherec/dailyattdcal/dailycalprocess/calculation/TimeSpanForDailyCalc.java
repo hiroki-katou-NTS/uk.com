@@ -210,6 +210,14 @@ public class TimeSpanForDailyCalc implements Cloneable {
 				.sum());
 	}
 	
+	/**
+	 * 開始と終了が逆転している
+	 * start > end
+	 */
+	public boolean isReverse() {
+		return this.timeSpan.isReverse();
+	}
+	
 	public TimeSpanForDailyCalc clone() {
 		TimeSpanForDailyCalc clone =  new TimeSpanForDailyCalc();
 		try {

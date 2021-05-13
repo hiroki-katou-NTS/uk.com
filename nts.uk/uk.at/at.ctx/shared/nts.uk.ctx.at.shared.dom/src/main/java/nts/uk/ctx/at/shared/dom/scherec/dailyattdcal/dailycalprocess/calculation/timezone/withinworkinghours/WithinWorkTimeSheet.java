@@ -385,19 +385,6 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 		return this.lateDecisionClock.stream().filter(tc -> tc.getWorkNo() == workNo).findFirst();
 	}
 	
-//	/**
-//	 * 引数のNoと一致する早退判断時刻を取得する
-//	 * @param workNo
-//	 * @return　早退判断時刻
-//	 */
-//	public LeaveEarlyDecisionClock getleaveEarlyDecisionClock(int workNo) {
-//		List<LeaveEarlyDecisionClock> clockList = this.leaveEarlyDecisionClock.stream().filter(tc -> tc.getWorkNo()==workNo).collect(Collectors.toList());
-//		if(clockList.size()>1) {
-//			throw new RuntimeException("Exist duplicate workNo : " + workNo);
-//		}
-//		return clockList.get(0);
-//	}
-//	
 	/**
 	 * コアタイムのセット
 	 * @param coreTimeSetting コアタイム時間設定
@@ -1419,24 +1406,30 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 				predetermineTimeSet,
 				integrationOfWorkTime,
 				integrationOfDaily);
-
+		
+		if(!within.getLateTimeSheet().isPresent() || !within.getLateTimeSheet().get().getForDeducationTimeSheet().isPresent()) {
+			return timeLeavingWork;
+		}
+		//遅刻控除時間帯
+		LateLeaveEarlyTimeSheet lateDeducation = within.getLateTimeSheet().get().getForDeducationTimeSheet().get();
+		
 		//控除判断処理
 		boolean isDeductLateTime = holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getAdvancedSet().get().decisionLateDeductSetting(
-				AttendanceTime.ZERO,
+				lateDeducation.calcTotalTime(),
 				integrationOfWorkTime.getCommonSetting().getLateEarlySet().getOtherEmTimezoneLateEarlySet(LateEarlyAtr.LATE).getGraceTimeSet(),
 				integrationOfWorkTime.getCommonSetting(),
 				todayWorkType);
 
 		//控除する場合
-		if(isDeductLateTime && within.getLateTimeSheet().isPresent()){
-			LateTimeSheet lateTimeSheet = within.getLateTimeSheet().get();
-			if (lateTimeSheet.getForDeducationTimeSheet().isPresent()){
-				if(!timeLeavingWork.getStampOfAttendance().isPresent()) return timeLeavingWork;
-				
-				//出退勤．出勤 ← 遅刻時間帯終了時刻
-				timeLeavingWork.getStampOfAttendance().get().getTimeDay().setTimeWithDay(
-						Optional.of(lateTimeSheet.getForDeducationTimeSheet().get().getTimeSheet().getEnd()));
-			}
+		if(isDeductLateTime && timeLeavingWork.getStampOfAttendance().isPresent()){
+			//出退勤．出勤 ← 遅刻時間帯終了時刻
+			timeLeavingWork.getStampOfAttendance().get().getTimeDay().setTimeWithDay(
+					Optional.of(lateDeducation.getTimeSheet().getEnd()));
+			
+			//時間帯．開始 ← 遅刻時間帯終了時刻
+			this.withinWorkTimeFrame.stream()
+					.filter(c -> c.getWorkingHoursTimeNo().v() == workNo)
+					.findFirst().ifPresent(c -> c.shiftStart(lateDeducation.getTimeSheet().getEnd()));
 		}
 		return timeLeavingWork;
 	}
@@ -1499,24 +1492,30 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 				predetermineTimeSet,
 				integrationOfWorkTime,
 				integrationOfDaily);
-	
+		
+		if(!within.getLeaveEarlyTimeSheet().isPresent() || !within.getLeaveEarlyTimeSheet().get().getForDeducationTimeSheet().isPresent()) {
+			return timeLeavingWork;
+		}
+		//遅刻控除時間帯
+		LateLeaveEarlyTimeSheet leaveEarlyDeducation = within.getLeaveEarlyTimeSheet().get().getForDeducationTimeSheet().get();
+		
 		//控除判断処理
 		boolean isDeductLateTime = holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getAdvancedSet().get().decisionLateDeductSetting(
 				AttendanceTime.ZERO,
 				integrationOfWorkTime.getCommonSetting().getLateEarlySet().getOtherEmTimezoneLateEarlySet(LateEarlyAtr.EARLY).getGraceTimeSet(),
 				integrationOfWorkTime.getCommonSetting(),
 				todayWorkType);
-	
+		
 		//控除する場合
-		if(isDeductLateTime && within.getLeaveEarlyTimeSheet().isPresent()){
-			LeaveEarlyTimeSheet leaveEarlyTimeSheet = within.getLeaveEarlyTimeSheet().get();
-			if (leaveEarlyTimeSheet.getForDeducationTimeSheet().isPresent()){
-				if(!timeLeavingWork.getStampOfLeave().isPresent()) return timeLeavingWork;
-				
-				//出退勤．退勤 ← 早退時間帯終了時刻 
-				timeLeavingWork.getStampOfLeave().get().getTimeDay().setTimeWithDay(
-					 Optional.of(leaveEarlyTimeSheet.getForDeducationTimeSheet().get().getTimeSheet().getStart()));
-			}
+		if(isDeductLateTime && timeLeavingWork.getStampOfLeave().isPresent()){
+			//出退勤．退勤 ← 早退時間帯終了時刻 
+			timeLeavingWork.getStampOfLeave().get().getTimeDay().setTimeWithDay(
+				 Optional.of(leaveEarlyDeducation.getTimeSheet().getStart()));
+			
+			//時間帯．終了 ← 早退時間帯終了時刻
+			this.withinWorkTimeFrame.stream()
+					.filter(c -> c.getWorkingHoursTimeNo().v() == workNo)
+					.findFirst().ifPresent(c -> c.shiftEnd(leaveEarlyDeducation.getTimeSheet().getStart()));
 		}
 		return timeLeavingWork;
 	}
@@ -1719,32 +1718,27 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 		if(flowWorkSetting.getHalfDayWorkTimezoneLstOTTimezone().isEmpty()) {
 			//1日の計算範囲から終了時刻を計算
 			endTime = predetermineTimeSet.getOneDayTimeSpan().getEnd();
-			//退勤時刻の補正
-			this.correctleaveTimeForFlow(endTime);
-			//就業時間内時間枠クラスを作成（更新）
-			this.createWithinWorkTimeFramesAsFlowWork(deductionTimeSheet, endTime);
-			return;
 		}
-		
-		//残業開始となる経過時間を取得
-		AttendanceTime elapsedTime = flowWorkSetting.getHalfDayWorkTimezoneLstOTTimezone().get(0).getFlowTimeSetting().getElapsedTime();
-		
-		//経過時間から終了時刻を計算
-		endTime = this.withinWorkTimeFrame.get(0).getTimeSheet().getStart().forwardByMinutes(elapsedTime.valueAsMinutes());
-		
-		for(TimeSheetOfDeductionItem item : deductionTimeSheet.getForDeductionTimeZoneList()) {
-			//重複している時間帯
-			Optional<TimeSpanForDailyCalc> overlapptingTime = Optional.empty();
-			overlapptingTime = item.getTimeSheet().getDuplicatedWith(new TimeSpanForDailyCalc(startTime, endTime));
-			if(!overlapptingTime.isPresent() && !endTime.equals(item.getTimeSheet().getStart())) continue;
+		else{
+			//残業開始となる経過時間を取得
+			AttendanceTime elapsedTime = flowWorkSetting.getHalfDayWorkTimezoneLstOTTimezone().get(0).getFlowTimeSetting().getElapsedTime();
 			
-			//控除時間分、終了時刻をズラす
-			if(item.getDeductionAtr().isGoOut()) {
-				endTime = endTime.forwardByMinutes(item.getTimeSheet().lengthAsMinutes() - item.getDeductionOffSetTime().get().getTotalOffSetTime());
-				if(endTime.isNegative()) endTime = TimeWithDayAttr.THE_PRESENT_DAY_0000;
-			}
-			else {
-				endTime = endTime.forwardByMinutes(item.getTimeSheet().lengthAsMinutes());
+			//経過時間から終了時刻を計算
+			endTime = this.withinWorkTimeFrame.get(0).getTimeSheet().getStart().forwardByMinutes(elapsedTime.valueAsMinutes());
+			
+			for(TimeSheetOfDeductionItem item : deductionTimeSheet.getForDeductionTimeZoneList()) {
+				// 重複している時間帯
+				Optional<TimeSpanForDailyCalc> overlapptingTime =
+						item.getTimeSheet().getDuplicatedWith(new TimeSpanForDailyCalc(startTime, endTime));
+				if(!overlapptingTime.isPresent()) continue;
+				// 重複していた時、対象の控除時間帯から重複開始時刻以降の時間帯を取り出す
+				TimeSheetOfDeductionItem diffSheet = item.reCreateOwn(overlapptingTime.get().getStart(), false);
+				// 控除時間の計算
+				int deductTime = diffSheet.calcTotalTime(NotUseAtr.USE, NotUseAtr.NOT_USE).valueAsMinutes();
+				if (deductTime > 0){
+					// 控除時間分、終了時刻をズラす
+					endTime = endTime.forwardByMinutes(deductTime);
+				}
 			}
 		}
 		

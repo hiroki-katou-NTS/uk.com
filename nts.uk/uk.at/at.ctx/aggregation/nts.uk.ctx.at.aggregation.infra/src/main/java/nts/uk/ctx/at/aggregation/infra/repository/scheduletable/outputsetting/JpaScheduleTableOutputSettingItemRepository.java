@@ -12,8 +12,8 @@ import javax.ejb.TransactionAttributeType;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.aggregation.dom.schedulecounter.PersonalCounterCategory;
-import nts.uk.ctx.at.aggregation.dom.schedulecounter.WorkplaceCounterCategory;
+import nts.uk.ctx.at.aggregation.dom.schedulecounter.tally.PersonalCounterCategory;
+import nts.uk.ctx.at.aggregation.dom.schedulecounter.tally.WorkplaceCounterCategory;
 import nts.uk.ctx.at.aggregation.dom.scheduletable.OneRowOutputItem;
 import nts.uk.ctx.at.aggregation.dom.scheduletable.OutputItem;
 import nts.uk.ctx.at.aggregation.dom.scheduletable.OutputSettingCode;

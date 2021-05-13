@@ -2,6 +2,7 @@ package nts.uk.ctx.at.shared.app.command.remainingnumber.nursingcareleave;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -10,11 +11,13 @@ import javax.transaction.Transactional;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.ChildCareLeaveRemainingDataService;
-import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.data.ChildCareLeaveRemainingData;
-import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.data.LeaveForCareData;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.care.CareUsedNumberData;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.ChildCareNurseUsedNumber;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.ChildCareUsedNumberData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.ChildCareLeaveRemainingInfo;
-import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.LeaveForCareInfo;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.CareLeaveRemainingInfo;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.UpperLimitSetting;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.usenumber.DayNumberOfUse;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.pereg.app.command.MyCustomizeException;
 import nts.uk.shr.pereg.app.command.PeregAddCommandResult;
@@ -26,7 +29,7 @@ implements PeregAddListCommandHandler<AddCareLeaveCommand>{
 
 	@Inject
 	private ChildCareLeaveRemainingDataService  service;
-	
+
 	@Override
 	public String targetCategoryCd() {
 		return "CS00036";
@@ -42,39 +45,51 @@ implements PeregAddListCommandHandler<AddCareLeaveCommand>{
 		String cid = AppContexts.user().companyId();
 		List<AddCareLeaveCommand> cmd = context.getCommand();
 		List<PeregAddCommandResult> result = new ArrayList<>();
-		List<ChildCareLeaveRemainingData> childCareDataInsert = new ArrayList<>();
-		List<LeaveForCareData> leaveCareDataInsert = new ArrayList<>();
+		List<ChildCareUsedNumberData> childCareDataInsert = new ArrayList<>();
+		List<CareUsedNumberData> leaveCareDataInsert = new ArrayList<>();
 		List<ChildCareLeaveRemainingInfo> childCareLeaveInfoInsert = new ArrayList<>();
-		List<LeaveForCareInfo> leaveCareInfoInsert = new ArrayList<>();
+		List<CareLeaveRemainingInfo> leaveCareInfoInsert = new ArrayList<>();
 		cmd.stream().forEach(c ->{
-			// child-care-data
+			// 子の看護-使用数
 			if (c.getChildCareUsedDays() != null) {
-				ChildCareLeaveRemainingData childCareData = ChildCareLeaveRemainingData.getChildCareHDRemaining(
-						c.getSId(), c.getChildCareUsedDays().doubleValue());
-				childCareDataInsert.add(childCareData);
+				ChildCareUsedNumberData usedNumber = new ChildCareUsedNumberData(
+						c.getSId(),
+						new ChildCareNurseUsedNumber(
+								new DayNumberOfUse(c.getChildCareUsedDays().doubleValue())
+								,Optional.empty()
+						)
+				);
+				childCareDataInsert.add(usedNumber);
 			}
 
-			// care-data
+			// 介護-使用数
 			if (c.getCareUsedDays() != null) {
-				LeaveForCareData careData = LeaveForCareData.getCareHDRemaining(
-						c.getSId(),c.getCareUsedDays().doubleValue());
-				leaveCareDataInsert.add(careData);
+				CareUsedNumberData usedNumber = new CareUsedNumberData(
+						c.getSId(),
+						new ChildCareNurseUsedNumber(
+								new DayNumberOfUse(c.getCareUsedDays().doubleValue())
+								,Optional.empty()
+						)
+				);
+				leaveCareDataInsert.add(usedNumber);
 			}
 
+			// 子の看護 - 上限情報
 			ChildCareLeaveRemainingInfo childCareInfo = ChildCareLeaveRemainingInfo.createChildCareLeaveInfo(
 					c.getSId(), c.getChildCareUseArt() == null ? 0 : c.getChildCareUseArt().intValue(),
 					c.getChildCareUpLimSet() == null ? UpperLimitSetting.FAMILY_INFO.value
 							: c.getChildCareUpLimSet().intValue(),
-					c.getChildCareThisFiscal() == null ? null : c.getChildCareThisFiscal().doubleValue(),
-					c.getChildCareNextFiscal() == null ? null : c.getChildCareNextFiscal().doubleValue());
+					c.getChildCareThisFiscal() == null ? null : c.getChildCareThisFiscal().intValue(),
+					c.getChildCareNextFiscal() == null ? null : c.getChildCareNextFiscal().intValue());
 			childCareLeaveInfoInsert.add(childCareInfo);
 
-			LeaveForCareInfo careInfo = LeaveForCareInfo.createCareLeaveInfo(c.getSId(),
+			// 介護-上限情報
+			CareLeaveRemainingInfo careInfo = CareLeaveRemainingInfo.createCareLeaveInfo(c.getSId(),
 					c.getCareUseArt() == null ? 0 : c.getCareUseArt().intValue(),
 					c.getCareUpLimSet() == null ? UpperLimitSetting.FAMILY_INFO.value
 							: c.getCareUpLimSet().intValue(),
-					c.getCareThisFiscal() == null ? null : c.getCareThisFiscal().doubleValue(),
-					c.getCareNextFiscal() == null ? null : c.getCareNextFiscal().doubleValue());
+					c.getCareThisFiscal() == null ? null : c.getCareThisFiscal().intValue(),
+					c.getCareNextFiscal() == null ? null : c.getCareNextFiscal().intValue());
 			leaveCareInfoInsert.add(careInfo);
 			result.add(new PeregAddCommandResult(c.getSId()));
 		});

@@ -73,7 +73,6 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numb
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.NumberRemainVacationLeaveRangeQuery;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.BreakDayOffRemainMngRefactParam;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.SubstituteHolidayAggrResult;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemainRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutManagementDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SubstitutionOfHDManaDataRepository;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.breakinfo.FixedManagementDataMonth;
@@ -128,9 +127,6 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 	private ManagedParallelWithContext parallel;
 	@Inject
 	private HolidayRemainMergeAdapter hdRemainAdapter;
-	
-	@Inject
-	private InterimRemainRepository interimRemainRepo;
 	@Inject
 	private ClosureEmploymentRepository closureEmploymentRepo;
 	@Inject
@@ -463,8 +459,7 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 		}
 
 		if (variousVacationControl.isPauseItemHolidaySetting()) {
-			val absenceReruitmentMngInPeriodQueryRequire = AbsenceReruitmentMngInPeriodQuery.createRequireM10(
-					interimRemainRepo, interimRecAbasMngRepo, closureRepository, closureEmploymentRepo,
+			val absenceReruitmentMngInPeriodQueryRequire = AbsenceReruitmentMngInPeriodQuery.createRequireM10( interimRecAbasMngRepo, closureRepository, closureEmploymentRepo,
 					companyAdapter, shareEmploymentAdapter, empSubstVacationRepo, comSubstVacationRepo,
 					substitutionOfHDManaDataRepo, payoutManagementDataRepo);
 			

@@ -295,6 +295,7 @@ module nts.uk.com.view.ccg013.c.viewmodel {
             });
             _.forEach(self.newItems(), (x, index) => {
                 x.index = index + 1;
+                x.order = index;
             });
             self.newItems(_.orderBy(self.newItems(), ['order'], ['asc']));
             self.currentCodeList([]);

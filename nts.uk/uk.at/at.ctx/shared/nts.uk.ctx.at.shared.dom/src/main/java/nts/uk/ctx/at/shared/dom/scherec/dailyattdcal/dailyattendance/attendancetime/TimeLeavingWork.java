@@ -14,8 +14,8 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.time
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkTimeInformation;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.entranceandexit.LogOnInfo;
 import nts.uk.ctx.at.shared.dom.worktime.common.GoLeavingWorkAtr;
-//import nts.uk.ctx.at.shared.dom.worktime.common.GoLeavingWorkAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZone;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowCalculateSet;
 import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
@@ -232,5 +232,23 @@ public class TimeLeavingWork extends DomainObject{
 						0), //
 				new TimeActualStamp(null, new WorkStamp(
 						new WorkTimeInformation(new ReasonTimeChange(reason, null), null), Optional.empty()), 0));
+	}
+	
+	/**
+	 * 出勤時刻を予定開始時刻にする
+	 * @param scheduleStartTime 予定開始時刻
+	 * @param flowCalculateSet 流動計算設定
+	 */
+	public void setScheduleStartTimeForFlow(TimeWithDayAttr scheduleStartTime, FlowCalculateSet flowCalculateSet) {
+		//出勤時刻
+		Optional<TimeWithDayAttr> myStartTime = this.getAttendanceTime();
+		if(!myStartTime.isPresent()) {
+			return;
+		}
+		if(!flowCalculateSet.isCalcFromScheduleStartTime(myStartTime.get(), scheduleStartTime)) {
+			return;
+		}
+		//出勤時刻←予定開始時刻
+		this.getStampOfAttendance().get().getTimeDay().setTimeWithDay(Optional.of(scheduleStartTime));
 	}
 }

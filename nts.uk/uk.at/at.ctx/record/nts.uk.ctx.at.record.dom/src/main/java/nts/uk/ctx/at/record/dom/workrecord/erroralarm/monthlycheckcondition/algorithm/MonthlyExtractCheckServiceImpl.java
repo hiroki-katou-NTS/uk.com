@@ -55,9 +55,9 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.Type
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.checkremainnumber.CheckOperatorType;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.checkremainnumber.CheckRemainNumberMon;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.checkremainnumber.CheckRemainNumberMonRepository;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycondition.TimeItemCheckMonthly;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedTimeDuration;
 import nts.uk.ctx.at.record.dom.workrecord.export.WorkRecordExport;
+import nts.uk.ctx.at.record.dom.workrecord.export.dto.AffiliationStatus;
 import nts.uk.ctx.at.record.dom.workrecord.export.dto.EmpAffInfoExport;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.month.ConfirmationMonth;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.repository.ConfirmationMonthRepository;
@@ -89,7 +89,6 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numb
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.SubstituteHolidayAggrResult;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.UnbalanceVacation;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakDayOffMngRepository;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemainRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveRemainingDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveUsedDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.ComDayOffManaDataRepository;
@@ -179,8 +178,6 @@ public class MonthlyExtractCheckServiceImpl implements MonthlyExtractCheckServic
 	@Inject
 	private CompensLeaveComSetRepository compensLeaveComSetRepository;
 
-	@Inject
-	private InterimRemainRepository interimRemainRepository;
 
 	@Inject
 	private InterimBreakDayOffMngRepository interimBreakDayOffMngRepository;
@@ -248,6 +245,14 @@ public class MonthlyExtractCheckServiceImpl implements MonthlyExtractCheckServic
 			}
 			for(String sid : emps) {
 				for (YearMonth ym : mPeriod.yearMonthsBetween()) {
+					//社員の会社所属にチェック
+					List<AffiliationStatus> affiliationStatus = data.empAffInfo.getAffiliationStatus().stream()
+							.filter(x -> x.getEmployeeID().equals(sid) 
+									&& !x.getPeriodInformation().stream().filter(a -> a.getYearMonthPeriod().start().lessThanOrEqualTo(ym)
+																										&& a.getYearMonthPeriod().end().greaterThanOrEqualTo(ym)).collect(Collectors.toList()).isEmpty())
+							.collect(Collectors.toList());
+					if(affiliationStatus.isEmpty()) continue;
+					
 					YearMonth endMonthTemp = mPeriod.end().addMonths(1);
 					GeneralDate endDateTemp = GeneralDate.ymd(endMonthTemp.year(), endMonthTemp.month(), 1);
 					GeneralDate enDate = endDateTemp.addDays(-1);
@@ -346,7 +351,7 @@ public class MonthlyExtractCheckServiceImpl implements MonthlyExtractCheckServic
 							DatePeriod newPeriod = new DatePeriod(periodCurrentMonth.start(), periodCurrentMonth.start().addYears(1).addDays(-1));
 							RequireImpl requireImpl = new RequireImpl.RequireImplBuilder(comDayOffManaDataRepository,
 									leaveManaDataRepository, shareEmploymentAdapter, compensLeaveEmSetRepository,
-									compensLeaveComSetRepository).interimRemainRepo(interimRemainRepository)
+									compensLeaveComSetRepository)
 											.interimBreakDayOffMngRepo(interimBreakDayOffMngRepository).companyAdapter(companyAdapter)
 											.closureEmploymentRepo(closureEmploymentRepo).closureRepo(closureRepo)
 											.leaveComDayOffManaRepository(leaveComDayOffManaRepository).build();
@@ -373,14 +378,9 @@ public class MonthlyExtractCheckServiceImpl implements MonthlyExtractCheckServic
 											&& ((UnbalanceVacation)x).getDigestionCate() == DigestionAtr.UNUSED)
 									.collect(Collectors.toList());
 							if(lstAcctAbsen.isEmpty()) continue;
-							for(AccumulationAbsenceDetail detail : lstAcctAbsen) {
-								
-								checkValue += "\n" + TextResource.localize("KAL010_305",
-										detail.getDateOccur().getDayoffDate().get().toString(),
-										String.valueOf(detail.getUnbalanceNumber().getDay().v()));
-								
-							}
-							
+							checkValue += lstAcctAbsen.stream().map(detail -> 
+								TextResource.localize("KAL010_305",	detail.getDateOccur().getDayoffDate().get().toString(),	String.valueOf(detail.getUnbalanceNumber().getDay().v()))
+							).collect(Collectors.joining("\n"));						
 							if(!checkValue.isEmpty()) {
 								alarmContent += "\n" + TextResource.localize("KAL010_279",
 										String.valueOf(deadlCheckMonth), checkValue);
@@ -392,20 +392,13 @@ public class MonthlyExtractCheckServiceImpl implements MonthlyExtractCheckServic
 							.filter(x -> x.getEmployeeId().equals(sid) && x.getYm().equals(ym))
 							.collect(Collectors.toList());
 						if(lstEditState.isEmpty()) continue;
-						String itemName = "";
-						for(EditStateOfMonthlyPerformance editStare: lstEditState) {
-							List<String> lstItemName = data.lstItemMond.stream().filter(x -> x.getAttendanceItemId() == editStare.getAttendanceItemId())
-									.collect(Collectors.toList())
-									.stream().map(x -> x.getAttendanceItemName()).collect(Collectors.toList());
-							if(!lstItemName.isEmpty()) {
-								itemName = "、" + lstItemName.get(0);
-							}
-						}
-						if(!itemName.isEmpty()) {
-							itemName = itemName.substring(1);
-							alarmContent =  TextResource.localize("KAL010_606");
-							checkValue = itemName;
-						}
+						List<Integer> lstAttItem = lstEditState.stream().map(x -> x.getAttendanceItemId()).collect(Collectors.toList());
+						String itemName = data.lstItemMond.stream().filter(x -> lstAttItem.contains(x.getAttendanceItemId()))
+								.map(a -> a.getAttendanceItemName()).collect(Collectors.joining(", "));
+						
+						alarmContent =  TextResource.localize("KAL010_606");
+						checkValue =  TextResource.localize("KAL010_631", itemName);
+						
 						break;
 						default:
 							break;
@@ -544,6 +537,14 @@ public class MonthlyExtractCheckServiceImpl implements MonthlyExtractCheckServic
 				if(anyCond.getTypeCheckItem().value > 3) { //チェック種類：時間、日数、回数、金額、複合条件
 
 					for (YearMonth yearMonth : mPeriod.yearMonthsBetween()) {
+						//社員の会社所属にチェック
+						List<AffiliationStatus> affiliationStatus = data.empAffInfo.getAffiliationStatus().stream()
+								.filter(x -> x.getEmployeeID().equals(sid) 
+										&& !x.getPeriodInformation().stream().filter(a -> a.getYearMonthPeriod().start().lessThanOrEqualTo(yearMonth)
+																											&& a.getYearMonthPeriod().end().greaterThanOrEqualTo(yearMonth)).collect(Collectors.toList()).isEmpty())
+								.collect(Collectors.toList());
+						if(affiliationStatus.isEmpty()) continue;
+						
 						if(isError(checkPerTimeMonActualResult, anyCond.getErrorAlarmCheckID(), sid, yearMonth)) {
 							if(anyCond.getTypeCheckItem() == TypeMonCheckItem.COMPOUND_CON) {
 								extractCompoun(lstResultCondition, anyCond, sid, yearMonth, resultsData, data, getWplByListSidAndPeriod);
@@ -1217,8 +1218,6 @@ public class MonthlyExtractCheckServiceImpl implements MonthlyExtractCheckServic
 		private EmpAffInfoExport empAffInfo;
 		/**	月別実績の抽出条件	 */
 		private List<ExtraResultMonthly> lstAnyCondMon;
-		/**月別実績の勤怠項目チェック */
-		private List<TimeItemCheckMonthly> lstTimeItem;
 		/**	月別実績の固定抽出条件	 */
 		private List<FixedExtraMon> lstFixCond; 
 		/**月別実績の固定抽出項目 */
@@ -1290,7 +1289,7 @@ public class MonthlyExtractCheckServiceImpl implements MonthlyExtractCheckServic
 				}
 				if(!this.lstFixCond.stream().filter(x -> x.getFixedExtraItemMonNo() == SysFixedMonPerEral.MANUAL_INPUT)
 						.collect(Collectors.toList()).isEmpty()) {
-					this.lstEditState = editStateMonthRepo.findBySidsAndYM(lstSid, dPeriod);
+					this.lstEditState = editStateMonthRepo.findBySidsAndYM(lstSid, mPeriod);
 				}
 			}
 			

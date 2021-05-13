@@ -61,8 +61,9 @@ public class OutingTimeSheet extends DomainObject {
 	 * @return 控除項目の時間帯
 	 */
 	public TimeSheetOfDeductionItem toTimeSheetOfDeductionItem() {
-		return TimeSheetOfDeductionItem.createTimeSheetOfDeductionItem(new TimeSpanForDailyCalc(this.goOut.get().getTimeDay()
-																											.getTimeWithDay().orElse(TimeWithDayAttr.THE_PRESENT_DAY_0000), 
+		return TimeSheetOfDeductionItem.createTimeSheetOfDeductionItem(new TimeSpanForDailyCalc(this.goOut.map(x-> x.getTimeDay()
+																									.getTimeWithDay().orElse(TimeWithDayAttr.THE_PRESENT_DAY_0000))
+																									.orElse(TimeWithDayAttr.THE_PRESENT_DAY_0000), 
 																										this.comeBack.get().getTimeDay()
 																											.getTimeWithDay().orElse(TimeWithDayAttr.THE_PRESENT_DAY_0000)),
 																			  new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN),

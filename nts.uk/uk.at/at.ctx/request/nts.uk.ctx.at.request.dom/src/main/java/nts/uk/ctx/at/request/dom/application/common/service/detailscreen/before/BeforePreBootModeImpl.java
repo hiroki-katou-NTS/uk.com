@@ -46,27 +46,13 @@ public class BeforePreBootModeImpl implements BeforePreBootMode {
 			// 反映状態を取得する
 			outputData.setReflectPlanState(EnumAdaptor.valueOf(application.getAppReflectedState().value, ReflectPlanPerState.class));
 		}	
-		
-		// get User
-		// "Application".Applicant = login If employee ID is true
-		//ログイン者が承認者かチェックする(Check xem login có phải là người approve ko?)
-		
-		Boolean isApprover = approvalRootStateAdapter.judgmentTargetPersonIsApprover(companyID, application.getAppID(), employeeID);
-		if(isApprover.equals(Boolean.TRUE)){
-			if(application.getEmployeeID().equals(employeeID)){
-				outputData.setUser(User.APPLICANT_APPROVER);
-			} else {
-				outputData.setUser(User.APPROVER);
-			}
-		} else {
-			if(application.getEmployeeID().equals(employeeID)){
-				outputData.setUser(User.APPLICANT);
-			} else {
-				outputData.setUser(User.OTHER);
-			}
-		}
+		// アルゴリズム「利用者の判定」を実行する(thực hiện thuật toán "đánh giá user")
+		outputData.setUser(otherCommonAlgorithmService.userJudgment(companyID, application.getAppID(), employeeID));
+		// 利用者をチェックする(Check người sử dụng)
 		if(outputData.getUser().equals(User.APPLICANT_APPROVER)||outputData.getUser().equals(User.APPROVER)){
+			// アルゴリズム「指定した社員が承認できるかの判断」を実行する
 			ApproverPersonImport approverPersonImport = approvalRootStateAdapter.judgmentTargetPersonCanApprove(companyID, application.getAppID(), employeeID);
+			// 承認できるフラグ = 承認できるフラグ(output)、ログイン者の承認区分 = 承認区分(output)、代行期限切れフラグ = 代行期限切れフラグ(output)
 			outputData.setAuthorizableFlags(approverPersonImport.getAuthorFlag());
 			outputData.setApprovalATR(EnumAdaptor.valueOf(approverPersonImport.getApprovalAtr().value, ApprovalAtr.class));
 			outputData.setAlternateExpiration(approverPersonImport.getExpirationAgentFlag());

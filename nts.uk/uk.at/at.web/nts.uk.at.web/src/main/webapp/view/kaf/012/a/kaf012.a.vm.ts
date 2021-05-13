@@ -156,10 +156,13 @@ module nts.uk.at.view.kaf012.a.viewmodel {
                         vm.applyTimeData()[4].timeZones[time.frameNo - 1].endTime(time.opEndTime);
                         vm.applyTimeData()[4].timeZones[time.frameNo - 1].appTimeType(time.opGoOutReasonAtr == 3 ? AppTimeType.UNION : AppTimeType.PRIVATE);
                     });
-                if (maxWorkNoHasData > 3) {
-                    vm.applyTimeData()[4].timeZones.forEach(i => {
-                        i.display(true);
-                    });
+
+                for (let no = 1; no <= maxWorkNoHasData; no++) {
+                    if (!vm.applyTimeData()[4].timeZones[no - 1].display()) {
+                        vm.applyTimeData()[4].timeZones[no - 1].display(true);
+                    }
+                }
+                if (maxWorkNoHasData >= 10) {
                     vm.applyTimeData()[4].displayShowMore(false);
                 }
             }
@@ -347,7 +350,7 @@ module nts.uk.at.view.kaf012.a.viewmodel {
                         if (result != undefined) {
                             vm.$dialog.info({messageId: "Msg_15"}).then(() => {
 								nts.uk.request.ajax("at", API.reflectApp, result.reflectAppIdLst);
-                            	CommonProcess.handleAfterRegister(result, vm.isSendMail(), vm, vm.isAgentMode());
+                            	CommonProcess.handleAfterRegister(result, vm.isSendMail(), vm, false, vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.employeeInfoLst);
                             });
                         }
                     }).fail(err => {

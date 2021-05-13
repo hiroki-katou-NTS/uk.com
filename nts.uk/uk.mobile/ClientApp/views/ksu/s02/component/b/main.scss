@@ -331,6 +331,8 @@
     margin-bottom: -0.1em;
 }
 
+
+
 .caret-helpbutton:before {
     content: '';
     position: absolute;
@@ -449,6 +451,10 @@ body { font-family: "Meiryo UI"; }
 }
 .table-block-day {
   width: auto !important;
+}
+
+.form-control {
+  box-shadow: none !important;
 }
 
 .cell-data {

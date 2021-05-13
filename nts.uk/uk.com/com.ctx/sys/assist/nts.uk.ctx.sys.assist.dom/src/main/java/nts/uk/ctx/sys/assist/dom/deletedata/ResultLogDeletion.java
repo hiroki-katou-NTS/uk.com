@@ -1,5 +1,7 @@
 package nts.uk.ctx.sys.assist.dom.deletedata;
 
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -37,21 +39,21 @@ public class ResultLogDeletion extends AggregateRoot {
 
 	// エラー内容
 	/** The error content. */
-	private ErrorContent errorContent;
+	private Optional<ErrorContent> errorContent;
 
 	// エラー社員
 	/** The error employee id. */
-	private String errorEmployeeId;
+	private Optional<String> errorEmployeeId;
 
 	// エラー日付
 	/** The error date. */
-	private GeneralDate errorDate;
+	private Optional<GeneralDate> errorDate;
 
 	public static ResultLogDeletion createFromJavatype(int seqId, String delId, String companyId, GeneralDateTime logTime,
 			String processingContent, String errorContent, String errorEmployeeId,
 			GeneralDate errorDate) {
 		return new ResultLogDeletion(seqId, delId, companyId, logTime,
-				new ProcessingContent(processingContent), new ErrorContent(errorContent),
-				errorEmployeeId, errorDate);
+				new ProcessingContent(processingContent), Optional.ofNullable(errorContent).map(ErrorContent::new),
+				Optional.ofNullable(errorEmployeeId), Optional.ofNullable(errorDate));
 	}
 }

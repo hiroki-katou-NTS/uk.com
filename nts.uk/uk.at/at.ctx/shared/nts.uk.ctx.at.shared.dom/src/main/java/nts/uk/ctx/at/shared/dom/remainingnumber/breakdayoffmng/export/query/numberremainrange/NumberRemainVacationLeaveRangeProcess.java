@@ -19,9 +19,6 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numb
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakDayOffMngRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimDayOffMng;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemainRepository;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.ComDayOffManaDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.CompensatoryDayOffManaData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveComDayOffManaRepository;
@@ -54,9 +51,6 @@ public class NumberRemainVacationLeaveRangeProcess {
 	private CompensLeaveComSetRepository compensLeaveComSetRepository;
 
 	@Inject
-	private InterimRemainRepository interimRemainRepository;
-
-	@Inject
 	private InterimBreakDayOffMngRepository interimBreakDayOffMngRepository;
 
 	@Inject
@@ -79,7 +73,7 @@ public class NumberRemainVacationLeaveRangeProcess {
 	public RequireImpl createRequire() {
 		return new RequireImpl.RequireImplBuilder(comDayOffManaDataRepository,
 				leaveManaDataRepository, shareEmploymentAdapter, compensLeaveEmSetRepository,
-				compensLeaveComSetRepository).interimRemainRepo(interimRemainRepository)
+				compensLeaveComSetRepository)
 						.interimBreakDayOffMngRepo(interimBreakDayOffMngRepository).companyAdapter(companyAdapter)
 						.closureEmploymentRepo(closureEmploymentRepo).closureRepo(closureRepo)
 						.leaveComDayOffManaRepository(leaveComDayOffManaRepository).build();
@@ -97,9 +91,7 @@ public class NumberRemainVacationLeaveRangeProcess {
 		private final CompensLeaveEmSetRepository compensLeaveEmSetRepository;
 
 		private final CompensLeaveComSetRepository compensLeaveComSetRepository;
-
-		private final InterimRemainRepository interimRemainRepository;
-
+		
 		private final InterimBreakDayOffMngRepository interimBreakDayOffMngRepository;
 
 		private final CompanyAdapter companyAdapter;
@@ -116,7 +108,6 @@ public class NumberRemainVacationLeaveRangeProcess {
 			this.shareEmploymentAdapter = builder.shareEmploymentAdapter;
 			this.compensLeaveEmSetRepository = builder.compensLeaveEmSetRepository;
 			this.compensLeaveComSetRepository = builder.compensLeaveComSetRepository;
-			this.interimRemainRepository = builder.interimRemainRepository;
 			this.interimBreakDayOffMngRepository = builder.interimBreakDayOffMngRepository;
 			this.companyAdapter = builder.companyAdapter;
 			this.closureEmploymentRepo = builder.closureEmploymentRepo;
@@ -153,11 +144,6 @@ public class NumberRemainVacationLeaveRangeProcess {
 		}
 
 		@Override
-		public List<InterimRemain> getRemainBySidPriod(String employeeId, DatePeriod dateData, RemainType remainType) {
-			return interimRemainRepository.getRemainBySidPriod(employeeId, dateData, remainType);
-		}
-
-		@Override
 		public List<InterimDayOffMng> getDayOffBySidPeriod(String sid, DatePeriod period) {
 			return interimBreakDayOffMngRepository.getDayOffBySidPeriod(sid, period);
 		}
@@ -185,8 +171,6 @@ public class NumberRemainVacationLeaveRangeProcess {
 
 			public CompensLeaveComSetRepository compensLeaveComSetRepository;
 
-			public InterimRemainRepository interimRemainRepository;
-
 			public InterimBreakDayOffMngRepository interimBreakDayOffMngRepository;
 
 			public CompanyAdapter companyAdapter;
@@ -206,11 +190,6 @@ public class NumberRemainVacationLeaveRangeProcess {
 				this.shareEmploymentAdapter = shareEmploymentAdapter;
 				this.compensLeaveEmSetRepository = compensLeaveEmSetRepository;
 				this.compensLeaveComSetRepository = compensLeaveComSetRepository;
-			}
-
-			public RequireImplBuilder interimRemainRepo(InterimRemainRepository interimRemainRepository) {
-				this.interimRemainRepository = interimRemainRepository;
-				return this;
 			}
 
 			public RequireImplBuilder interimBreakDayOffMngRepo(

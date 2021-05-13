@@ -38,12 +38,34 @@ module nts.uk.at.view.kdl034.a.viewmodel {
                 self.sName = result.applicantName;
                 let applicant = new Approver(result.applicantId, result.applicantName, null, result.applicantJob, false);
                 listApprover.push(applicant);
-                approvalFrame.forEach(function(approver) {
-                    if(result.phaseLogin == 0 || approver.phaseOrder > result.phaseLogin){
-                        listApprover.push(new Approver(approver.approverID, approver.approverName,
-                        approver.phaseOrder, approver.jobTitle, approver.agentFlag));
+                let groupByPhase = _.groupBy(approvalFrame, 'phaseOrder');
+                let arrayPhase = [];
+                for(var key in groupByPhase) {arrayPhase.push(groupByPhase[key])}
+                arrayPhase.forEach(function(approverLst) {
+                    let name = "";
+                    for (let i = 0; i < approverLst.length; i++) {
+                        if (result.phaseLogin == 0 || approverLst[i].phaseOrder > result.phaseLogin) {
+                            if (approverLst[i].agentFlag) {
+                                name = name.concat(getText('KDL034_20', [approverLst[i].approverName]));
+                            } else {
+                                name = name.concat(approverLst[i].approverName)
+                            }
+                            if (i != approverLst.length - 1) {
+                                name = name.concat('、');
+                            }
+                        }
+                    }
+                    if (approverLst.length > 0) {
+                        listApprover.push(new Approver(approverLst[0].approverID, name,
+                            approverLst[0].phaseOrder, approverLst[0].jobTitle, false));
                     }
                 });
+                // approvalFrame.forEach(function(approver) {
+                //     if(result.phaseLogin == 0 || approver.phaseOrder > result.phaseLogin){
+                //         listApprover.push(new Approver(approver.approverID, approver.approverName,
+                //         approver.phaseOrder, approver.jobTitle, approver.agentFlag));
+                //     }
+                // });
                 self.listApprover(listApprover);
                 self.selectedApproverId(result.applicantId);
                 dfd.resolve();
@@ -149,10 +171,11 @@ module nts.uk.at.view.kdl034.a.viewmodel {
             this.phaseOrder = phaseOrder;
             this.jobTitle = jobTitle;
             if (_.isNull(phaseOrder)) {//申請者
-                this.dispApprover = "申請者：　" + jobTitle + "　" + name;
+                this.dispApprover = getText('KDL034_18') + name;
             } else {//フェーズ
                 let nameDis = agent == true ? name + ' ' + '代行' : name;
-                this.dispApprover = "フェーズ" + phaseOrder + "の承認者：　" + jobTitle + "　" + nameDis;
+                // this.dispApprover = "フェーズ" + phaseOrder + "の承認者：　" + jobTitle + "　" + nameDis;
+                this.dispApprover = getText('KDL034_19', [phaseOrder]) + nameDis;
             }
             this.idAndPhase = id + "__" + phaseOrder;
         }

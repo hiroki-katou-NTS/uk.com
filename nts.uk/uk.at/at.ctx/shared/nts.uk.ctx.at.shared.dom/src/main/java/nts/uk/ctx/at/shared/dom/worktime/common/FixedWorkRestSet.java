@@ -35,8 +35,8 @@ public class FixedWorkRestSet extends WorkTimeDomainObject implements Cloneable{
 	 */
 	public FixedWorkRestSet(FixedWorkRestSetGetMemento memento) {
 		this.commonRestSet = memento.getCommonRestSet();
-		this.isPlanActualNotMatchMasterRefer = memento.getIsPlanActualNotMatchMasterRefer();
-		this.calculateMethod = memento.getCalculateMethod();
+//		this.isPlanActualNotMatchMasterRefer = memento.getIsPlanActualNotMatchMasterRefer();
+//		this.calculateMethod = memento.getCalculateMethod();
 	}
 
 	/**
@@ -46,8 +46,8 @@ public class FixedWorkRestSet extends WorkTimeDomainObject implements Cloneable{
 	 */
 	public void saveToMemento(FixedWorkRestSetSetMemento memento) {
 		memento.setCommonRestSet(this.commonRestSet);
-		memento.setIsPlanActualNotMatchMasterRefer(this.isPlanActualNotMatchMasterRefer);
-		memento.setCalculateMethod(this.calculateMethod);
+//		memento.setIsPlanActualNotMatchMasterRefer(this.isPlanActualNotMatchMasterRefer);
+//		memento.setCalculateMethod(this.calculateMethod);
 	}
 	
 	/**
