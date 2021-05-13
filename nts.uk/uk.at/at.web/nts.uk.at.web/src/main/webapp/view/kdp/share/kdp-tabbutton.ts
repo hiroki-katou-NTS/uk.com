@@ -10,9 +10,7 @@ module nts.uk.at.view.kdp.share {
 			<!-- /ko -->
 			</div>
 		</div>
-		<!-- ko if: ko.unwrap($component.filteredTabs).length > 1 -->
-			<div data-bind="ntsTabPanel: { dataSource: $component.filteredTabs, active: $component.selected }"></div>
-		<!-- /ko -->
+		
 		<div data-bind="foreach: { data: $component.filteredTabs, as: 'group' }">
 			<div class="grid-container" data-bind="
 				if: ko.toJS($component.currentTab).pageNo === group.pageLayout.pageNo,
@@ -38,6 +36,12 @@ module nts.uk.at.view.kdp.share {
 	</style>
 		<!-- /ko -->
 	`;
+
+	// Không biết phần này để làm j nhưng nó gây ra lỗi #115990
+	// Nó đc đặt vào khoảng trống bên trên.
+	// <!-- ko if: ko.unwrap($component.filteredTabs).length  -->
+	// 		<div data-bind="ntsTabPanel: { dataSource: $component.filteredTabs, active: $component.selected }"></div>
+	// 	<!-- /ko -->
 
 	const DEFAULT_GRAY = '#E8E9EB';
 
