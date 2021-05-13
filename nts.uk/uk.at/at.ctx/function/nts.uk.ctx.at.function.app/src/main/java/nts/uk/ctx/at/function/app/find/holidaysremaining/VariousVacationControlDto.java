@@ -17,6 +17,8 @@ public class VariousVacationControlDto {
 	private boolean nursingCareSetting;
 	private boolean com60HourVacationSetting ;
 	private boolean publicHolidaySetting ;
+	boolean halfDayYearlySetting;
+	boolean hourlyLeaveSetting;
 
 	private List<SpecialHolidayDto> listSpecialHoliday;
 
@@ -30,6 +32,8 @@ public class VariousVacationControlDto {
 				domain.isNursingCareSetting(),
 				domain.isCom60HourVacationSetting(),
 				domain.isPublicHolidaySetting(),
+				domain.isHalfDayYearlySetting(),
+				domain.isHourlyLeaveSetting(),
 				domain.getListSpecialHoliday().stream()
 						.map(c -> SpecialHolidayDto.fromDomain(c)).collect(Collectors.toList()));
 

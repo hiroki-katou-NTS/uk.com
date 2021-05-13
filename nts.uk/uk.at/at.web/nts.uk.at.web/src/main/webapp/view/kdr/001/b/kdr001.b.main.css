@@ -31,7 +31,9 @@
 	width: 200px;
 	margin: 10px 0px;
 }
-
+#contents-area {
+	padding: 8px !important;
+}
 
 .holidaytable table, th, td {
     border-bottom: 1px solid #4e5d6c;

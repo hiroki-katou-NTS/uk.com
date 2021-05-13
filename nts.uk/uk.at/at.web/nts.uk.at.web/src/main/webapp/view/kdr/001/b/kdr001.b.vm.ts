@@ -72,7 +72,12 @@ module nts.uk.at.view.kdr001.b.viewmodel {
                     $('#rowInsideHalfDay').addClass("hidden");
                     $('#rowInsideHours').addClass("hidden");
                 }
-
+                if (!vacationControl || vacationControl.halfDayYearlySetting == false) {
+                    $('#rowInsideHalfDay').addClass("hidden");
+                }
+                if (!vacationControl || vacationControl.hourlyLeaveSetting == false) {
+                    $('#rowInsideHours').addClass("hidden");
+                }
                 if (!vacationControl || vacationControl.yearlyReservedSetting == false) {
                     $('#rowYearlyReserved').addClass("hidden");
                 }
@@ -177,7 +182,12 @@ module nts.uk.at.view.kdr001.b.viewmodel {
             if (!vacationControl || vacationControl.yearlyReservedSetting == false) {
                 self.currentHoliday().yearlyReserved(false);
             }
-
+            if (!vacationControl || vacationControl.halfDayYearlySetting == false) {
+                self.currentHoliday().insideHalfDay(false);
+            }
+            if (!vacationControl || vacationControl.hourlyLeaveSetting == false) {
+                self.currentHoliday().insideHours(false);
+            }
             if (!vacationControl || vacationControl.substituteHolidaySetting == false) {
                 self.currentHoliday().outputItemSubstitute(false);
                 self.currentHoliday().representSubstitute(false);
@@ -739,6 +749,8 @@ module nts.uk.at.view.kdr001.b.viewmodel {
         nursingCareSetting: boolean;
         com60HourVacationSetting: boolean;
         publicHolidaySetting: boolean;
+        halfDayYearlySetting:boolean;
+        hourlyLeaveSetting:boolean;
         listSpecialHoliday: Array<ISpecialHoliday>;
     }
 

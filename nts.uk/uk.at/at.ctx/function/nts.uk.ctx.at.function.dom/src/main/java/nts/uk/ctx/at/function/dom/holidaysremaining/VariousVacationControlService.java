@@ -52,16 +52,20 @@ public class VariousVacationControlService {
 		boolean nursingCareSetting = false;
 		boolean com60HourVacationSetting = false;
 		boolean publicHolidaySetting = false;
-
+		boolean halfdayyearlySetting = false;
+		boolean hourlyLeaveSetting = false;
 
 		String companyId = AppContexts.user().companyId();
 		// 年休設定
 		val annualPaidLeave = annualPaidLeaveSettingRepository.findByCompanyId(companyId);
-		if (annualPaidLeave != null
-				&& annualPaidLeave.getYearManageType() == ManageDistinct.YES
-				&&annualPaidLeave.getManageAnnualSetting().getHalfDayManage().getManageType() == ManageDistinct.YES
-				&&annualPaidLeave.getTimeSetting().getTimeManageType()==ManageDistinct.YES ) {
+		if (annualPaidLeave != null&& annualPaidLeave.getYearManageType() == ManageDistinct.YES ) {
 			annualHolidaySetting = true;
+		}
+		if(annualPaidLeave!=null && annualPaidLeave.getManageAnnualSetting().getHalfDayManage().getManageType() == ManageDistinct.YES){
+			halfdayyearlySetting = true;
+		}
+		if(annualPaidLeave!=null &&annualPaidLeave.getTimeSetting().getTimeManageType()==ManageDistinct.YES){
+			hourlyLeaveSetting = true;
 		}
 
 		// 積立年休設定
@@ -121,6 +125,6 @@ public class VariousVacationControlService {
 
 		return new VariousVacationControl(annualHolidaySetting, yearlyReservedSetting, substituteHolidaySetting,
 				pauseItemHolidaySetting, childNursingSetting, nursingCareSetting,
-				com60HourVacationSetting,publicHolidaySetting,listSpecialHoliday);
+				com60HourVacationSetting,publicHolidaySetting, halfdayyearlySetting,hourlyLeaveSetting,listSpecialHoliday);
 	}
 }
