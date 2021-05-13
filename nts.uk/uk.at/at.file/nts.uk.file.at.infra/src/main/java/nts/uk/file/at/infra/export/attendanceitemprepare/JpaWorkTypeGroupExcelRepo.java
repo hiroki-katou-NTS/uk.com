@@ -26,7 +26,7 @@ public class JpaWorkTypeGroupExcelRepo extends JpaRepository implements WorkType
 			+ "from KRCMT_CHANGEABLE_WKTP_GRP d "
 			+ "join KRCMT_CHANGEABLE_WKTP_GRP_DETAIL a on d.CID = a.CID and d.EMP_CD = a.EMP_CD and d.WORKTYPE_GROUP_NO = a.WORKTYPE_GROUP_NO "
 			+ "left join KSHMT_WKTP b on a.WORKTYPE_CD = b.CD and b.CID=?companyId "
-			+ "where a.CID='000000000000-0000' and a.EMP_CODE='0'  ";
+			+ "where a.CID='000000000000-0000' and a.EMP_CD='0'  ";
 	
 	@Override
 	public Map<String, Map<Integer, List<WorkTypeDtoExcel>>> getAllWorkType() {

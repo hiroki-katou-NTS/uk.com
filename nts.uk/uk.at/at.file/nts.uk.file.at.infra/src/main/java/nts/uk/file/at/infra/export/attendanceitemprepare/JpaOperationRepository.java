@@ -1,7 +1,6 @@
 package nts.uk.file.at.infra.export.attendanceitemprepare;
 
 import java.math.BigDecimal;
-import java.sql.PreparedStatement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -12,13 +11,13 @@ import javax.persistence.Query;
 import lombok.SneakyThrows;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.arc.layer.infra.data.jdbc.NtsResultSet;
+import nts.arc.layer.infra.data.jdbc.NtsStatement;
+import nts.uk.ctx.at.record.dom.confirmemployment.RestrictConfirmEmployment;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.ApprovalProcess;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.DaiPerformanceFun;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.FormatPerformance;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.IdentityProcess;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.MonPerformanceFun;
-import nts.uk.ctx.at.record.dom.workrecord.operationsetting.YourselfConfirmError;
 import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtDaiFuncControl;
 import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtFormatPerformance;
 import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtMonPerformanceFun;
@@ -156,4 +155,15 @@ public class JpaOperationRepository extends JpaRepository implements OperationEx
 
 	}
 
+	@Override
+	public Optional<RestrictConfirmEmployment> getRestrictConfirmEmploymentByCompanyId(String companyId) {
+		String sql = "select * from KRCMT_WORK_FIXED_CTR where CID = @companyId";
+		return new NtsStatement(sql, this.jdbcProxy())
+				.paramString("companyId", companyId)
+				.getSingle(rec -> {
+					return new RestrictConfirmEmployment(
+							rec.getString("CID"), 
+							rec.getInt("USAGE_ATR") == 0 ? false : true);
+		});
+	}
 }
