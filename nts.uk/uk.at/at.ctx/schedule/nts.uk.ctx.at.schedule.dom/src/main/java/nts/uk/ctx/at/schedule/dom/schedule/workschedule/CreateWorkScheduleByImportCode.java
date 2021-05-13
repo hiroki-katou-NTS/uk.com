@@ -32,7 +32,7 @@ public class CreateWorkScheduleByImportCode {
 			ShiftMasterImportCode importCode,
 			boolean isOverwrite) {
 		
-		// 上書き可否判定・
+		// 上書き可否判定
 		val oldWorkSchedule = require.getWorkSchedule(employeeId, date);
 		if ( oldWorkSchedule.isPresent() && ! isOverwrite ) {
 			
