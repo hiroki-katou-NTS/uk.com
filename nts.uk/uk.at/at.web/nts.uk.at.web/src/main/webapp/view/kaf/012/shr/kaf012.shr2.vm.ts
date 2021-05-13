@@ -381,36 +381,77 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
                     if (value.timeSpecialLeaveMng) {
                         vm.specialLeaveFrames(value.timeSpecialLeaveMng.listSpecialFrame || []);
                     }
+                    const checkData = (leaveType: number) => {
+                        for (let i = 0; i < 5; i++) {
+                            for (let j = 0; j < vm.applyTimeData()[i].applyTime.length; j++) {
+                                switch(leaveType) {
+                                    case LeaveType.SUBSTITUTE:
+                                        if (vm.applyTimeData()[i].applyTime[j].substituteAppTime() > 0) return true;
+                                        break;
+                                    case LeaveType.ANNUAL:
+                                        if (vm.applyTimeData()[i].applyTime[j].annualAppTime() > 0) return true;
+                                        break;
+                                    case LeaveType.CHILD_NURSING:
+                                        if (vm.applyTimeData()[i].applyTime[j].childCareAppTime() > 0) return true;
+                                        break;
+                                    case LeaveType.NURSING:
+                                        if (vm.applyTimeData()[i].applyTime[j].careAppTime() > 0) return true;
+                                        break;
+                                    case LeaveType.SUPER_60H:
+                                        if (vm.applyTimeData()[i].applyTime[j].super60AppTime() > 0) return true;
+                                        break;
+                                    case LeaveType.SPECIAL:
+                                        if (vm.applyTimeData()[i].applyTime[j].specialAppTime() > 0) return true;
+                                        break;
+                                    default:
+                                        break;
+                                }
+                            }
+                        }
+                        return false;
+                    };
                     const switchOptions = [
                         {
                             code: 0,
                             name: vm.$i18n('KAF012_3'),
-                            display: (value.timeSubstituteLeaveMng.timeSubstituteLeaveMngAtr && !!vm.reflectSetting() && vm.reflectSetting().condition.substituteLeaveTime == 1) || vm.leaveType() == 0
+                            display: (value.timeSubstituteLeaveMng.timeSubstituteLeaveMngAtr && !!vm.reflectSetting() && vm.reflectSetting().condition.substituteLeaveTime == 1)
+                                        || vm.leaveType() == LeaveType.SUBSTITUTE
+                                        || (vm.leaveType() == LeaveType.COMBINATION && checkData(0))
                         },
                         {
                             code: 1,
                             name: vm.$i18n('KAF012_4'),
-                            display: (value.timeAnnualLeaveMng.timeAnnualLeaveMngAtr && !!vm.reflectSetting() && vm.reflectSetting().condition.annualVacationTime == 1) || vm.leaveType() == 1
+                            display: (value.timeAnnualLeaveMng.timeAnnualLeaveMngAtr && !!vm.reflectSetting() && vm.reflectSetting().condition.annualVacationTime == 1)
+                                        || vm.leaveType() == LeaveType.ANNUAL
+                                        || (vm.leaveType() == LeaveType.COMBINATION && checkData(1))
                         },
                         {
                             code: 2,
                             name: vm.$i18n('Com_ChildNurseHoliday'),
-                            display: (!!vm.reflectSetting() && vm.reflectSetting().condition.childNursing == 1) || vm.leaveType() == 2
+                            display: (!!vm.reflectSetting() && vm.reflectSetting().condition.childNursing == 1)
+                                        || vm.leaveType() == LeaveType.CHILD_NURSING
+                                        || (vm.leaveType() == LeaveType.COMBINATION && checkData(2))
                         },
                         {
                             code: 3,
                             name: vm.$i18n('Com_CareHoliday'),
-                            display: (!!vm.reflectSetting() && vm.reflectSetting().condition.nursing == 1) || vm.leaveType() == 3
+                            display: (!!vm.reflectSetting() && vm.reflectSetting().condition.nursing == 1)
+                                        || vm.leaveType() == LeaveType.NURSING
+                                        || (vm.leaveType() == LeaveType.COMBINATION && checkData(3))
                         },
                         {
                             code: 4,
                             name: vm.$i18n('Com_ExsessHoliday'),
-                            display: (value.super60HLeaveMng.super60HLeaveMngAtr && !!vm.reflectSetting() && vm.reflectSetting().condition.superHoliday60H == 1) || vm.leaveType() == 4
+                            display: (value.super60HLeaveMng.super60HLeaveMngAtr && !!vm.reflectSetting() && vm.reflectSetting().condition.superHoliday60H == 1)
+                                        || vm.leaveType() == LeaveType.SUPER_60H
+                                        || (vm.leaveType() == LeaveType.COMBINATION && checkData(4))
                         },
                         {
                             code: 5,
                             name: vm.$i18n('KAF012_46'),
-                            display: (value.timeSpecialLeaveMng.timeSpecialLeaveMngAtr && !!vm.reflectSetting() && vm.reflectSetting().condition.specialVacationTime == 1) || vm.leaveType() == 5
+                            display: (value.timeSpecialLeaveMng.timeSpecialLeaveMngAtr && !!vm.reflectSetting() && vm.reflectSetting().condition.specialVacationTime == 1)
+                                        || vm.leaveType() == LeaveType.SPECIAL
+                                        || (vm.leaveType() == LeaveType.COMBINATION && checkData(5))
                         }
                     ];
                     const result = switchOptions.filter(i => i.display);
