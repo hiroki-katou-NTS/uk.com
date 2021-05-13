@@ -391,14 +391,49 @@ module nts.uk.ui.at.kdp013.a {
             vm.dateRange({ start, end });
         }
 
+        // 作業実績を確認する
         confirm() {
             const vm = this;
+            const { $user, $datas, employees, initialDate } = vm;
+            const date = ko.unwrap(initialDate);
+            const selected = _.find(ko.unwrap(employees), (e) => e.selected);
+
+            if (selected) {
+                const command: AddWorkRecodConfirmationCommand = {
+                    //対象者
+                    // get from A2_5 control
+                    employeeId: selected.id,
+                    //対象日
+                    // get from initialDate
+                    date: moment(date).toISOString(),
+                    //確認者
+                    // 作業詳細.作業グループ
+                    confirmerId: $user.employeeId
+                };
+
+                vm
+                    // 作業実績を確認する
+                    .$ajax('at', API.ADD, command)
+                    .then((lstComfirmerDto: ConfirmerDto[]) => {
+                        const _datas = ko.unwrap($datas);
+
+                        if (_datas) {
+                            _datas.lstComfirmerDto = lstComfirmerDto;
+
+                            // update confirmers
+                            $datas.valueHasMutated();
+                        } else {
+                            $datas({ lstComfirmerDto, lstWorkRecordDetailDto: [], workCorrectionStartDate: '', workGroupDtos: [] });
+                        }
+                    })
+                    .then(() => vm.editable.valueHasMutated());
+            }
         }
 
         // 作業実績の確認を解除する
         removeConfirm() {
             const vm = this;
-            const { $user, employees, initialDate } = vm;
+            const { $user, $datas, employees, initialDate } = vm;
             const date = ko.unwrap(initialDate);
             const selected = _.find(ko.unwrap(employees), (e) => e.selected);
 
@@ -416,9 +451,19 @@ module nts.uk.ui.at.kdp013.a {
                 };
 
                 vm
+                    // 作業実績の確認を解除する
                     .$ajax('at', API.DELETE, command)
-                    .then(() => {
+                    .then((lstComfirmerDto: ConfirmerDto[]) => {
+                        const _datas = ko.unwrap($datas);
 
+                        if (_datas) {
+                            _datas.lstComfirmerDto = lstComfirmerDto;
+
+                            // update confirmers
+                            $datas.valueHasMutated();
+                        } else {
+                            $datas({ lstComfirmerDto, lstWorkRecordDetailDto: [], workCorrectionStartDate: '', workGroupDtos: [] });
+                        }
                     })
                     // trigger reload event on child component
                     .then(() => vm.editable.valueHasMutated());

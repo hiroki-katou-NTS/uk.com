@@ -475,16 +475,18 @@ module nts.uk.ui.at.kdp013.a {
         workLocationCD: string;
     };
 
-    export type DeleteWorkResultConfirmationCommand = {
-        //対象者
+    export type AddWorkRecodConfirmationCommand = {
+        // 対象者
         employeeId: string;
 
-        //対象日
+        // 対象日
         date: string;
 
-        //確認者
+        // 確認者
         confirmerId: string;
     };
+
+    export type DeleteWorkResultConfirmationCommand = AddWorkRecodConfirmationCommand;
 
     export type ChangeDateParam = {
 
