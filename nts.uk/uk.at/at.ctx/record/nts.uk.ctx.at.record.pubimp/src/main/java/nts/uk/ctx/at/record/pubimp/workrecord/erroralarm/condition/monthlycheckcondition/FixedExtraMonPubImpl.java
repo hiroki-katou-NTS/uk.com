@@ -31,8 +31,8 @@ public class FixedExtraMonPubImpl implements FixedExtraMonPub{
 	}
 
 	@Override
-	public void addFixedExtraMon(FixedExtraMonPubEx fixedExtraMon) {
-		repo.addFixedExtraMon(convertToDomain(fixedExtraMon));
+	public void persistFixedExtraMon(FixedExtraMonPubEx fixedExtraMon) {
+		repo.persistFixedExtraMon(convertToDomain(fixedExtraMon));
 		
 	}
 
