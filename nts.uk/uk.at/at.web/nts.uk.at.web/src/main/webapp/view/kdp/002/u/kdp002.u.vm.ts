@@ -21,7 +21,12 @@ module nts.uk.at.kdp002.u {
 		modeNew: KnockoutObservable<boolean | null> = ko.observable(false);
 
 		created(param: IParams) {
-			const vm = this
+			const vm = this;
+
+			_.forEach(param.data.msgNotices, ((value) => {
+				value.message.creator = value.creator;
+				value.message.startDate = moment(value.message.startDate).format('MM/DD');
+			}));
 
 			_.forEach(param.data.msgNotices, (value) => {
 				
@@ -105,6 +110,7 @@ module nts.uk.at.kdp002.u {
 		startDate: Date;
 		targetInformation: ITargetInformation;
 		employeeIdSeen: any;
+		creator: string;
 	}
 
 	interface ICreatorAndDate {

@@ -33,6 +33,7 @@ module nts.uk.at.kdp003.a {
 	};
 
 	const KDP003_SAVE_DATA = 'loginKDP003';
+	const WORKPLACES_STORAGE = 'WORKPLACES_STORAGE';
 
 	@bean()
 	export class ViewModel extends ko.ViewModel {
@@ -49,6 +50,8 @@ module nts.uk.at.kdp003.a {
 
 		// Notification
 		messageNoti: KnockoutObservable<IMessage> = ko.observable();
+
+		workPlaceInfos: IWorkPlaceInfo[] = [];
 
 		worklocationCode: string = '';
 		workplaceId: string = null;
@@ -92,8 +95,12 @@ module nts.uk.at.kdp003.a {
 
 			vm.basyo();
 
+			//get workplaces Info
+			vm.getWorkPlacesInfo();
+
 			// show or hide stampHistoryButton
 			vm.message.subscribe((value) => {
+				
 				vm.showClockButton.company(value === null);
 			});
 
@@ -114,11 +121,20 @@ module nts.uk.at.kdp003.a {
 					.then((data: undefined | StorageData) => {
 						if (data) {
 
-							// vm.loadEmployees(data);
+							vm.loadEmployees(data);
 
 						}
 					});
 			});
+		}
+
+		getWorkPlacesInfo() {
+			const vm = this;
+
+			vm.$window.storage(WORKPLACES_STORAGE)
+				.then((data: IWorkPlaceInfo[]) => {
+					vm.workPlaceInfos = data
+				});
 		}
 
 		// get WorkPlace from basyo -> save locastorage.
@@ -208,6 +224,7 @@ module nts.uk.at.kdp003.a {
 						return vm.$ajax('at', API.FINGER_STAMP_SETTING)
 							.then((data: FingerStampSetting) => {
 								if (data) {
+									
 									vm.fingerStampSetting(data);
 								}
 							})
@@ -285,6 +302,8 @@ module nts.uk.at.kdp003.a {
 								})) as JQueryPromise<LoginData>;
 						}
 					}
+
+					vm.getWorkPlacesInfo();
 
 					return data;
 				})
@@ -480,12 +499,14 @@ module nts.uk.at.kdp003.a {
 						if (!ko.unwrap(vm.modeBasyo)) {
 							return vm.$window.modal('at', DIALOG.K, params)
 								.then((workplaceData: undefined | k.Return) => {
+
 									return {
 										loginData,
 										workplaceData
 									};
 								}) as JQueryPromise<LoginData>;
 						}
+						vm.getWorkPlacesInfo();
 					}
 				})
 				.then((data: LoginData) => {
@@ -611,7 +632,9 @@ module nts.uk.at.kdp003.a {
 		}
 
 		stampButtonClick(btn: share.ButtonSetting, layout: share.PageLayout) {
+
 			const vm = this;
+			vm.getWorkPlacesInfo();
 			const { buttonPage, employeeData } = vm;
 			const { selectedId, employees, nameSelectArt } = ko.toJS(employeeData) as EmployeeListData;
 			const reloadSetting = () =>
@@ -671,22 +694,38 @@ module nts.uk.at.kdp003.a {
 							const mode: number = 1;
 							const { employeeId, employeeCode } = data.em;
 							const fingerStampSetting = ko.unwrap(vm.fingerStampSetting);
-							const workLocationName = vm.workplaceName;
-							const workpalceId = vm.workplaceId;
-							const employeeInfo = { mode, employeeId, employeeCode, workLocationName, workpalceId };
+							// const workLocationName = vm.workplaceName;
+							// const workpalceId = vm.workplaceId;
 
 							// shorten name
 							const { modal, storage } = vm.$window;
 
+							// var isSupport: boolean = false;
+							
+							// if (btn.supportWplset == 1) {
+							// 	isSupport = true;
+							// }
 							if (fingerStampSetting) {
 								vm.$window.storage(KDP003_SAVE_DATA)
 									.then((dataStorage: StorageData) => {
-										if (dataStorage.WKPID.length > 1) {
+										if (dataStorage.WKPID.length > 1 && btn.supportWplset == 1) {
 
 											vm.$window.modal('at', DIALOG.M)
 												.then((data: string) => {
 
 													if (data) {
+														var workplace: IWorkPlaceInfo = _.find(vm.workPlaceInfos, ((value) => {
+															if (value.id === data) {
+																return value;
+															}
+														}));
+
+														var workLocationName: string = '';
+														var workplaceId: string = data;
+														if (workplace) {
+															workLocationName = workplace.name
+														}
+
 														vm.$ajax(API.REGISTER, {
 															employeeId,
 															dateTime: moment(vm.$date.now()).format(),
@@ -696,6 +735,7 @@ module nts.uk.at.kdp003.a {
 															},
 															refActualResult: {
 																cardNumberSupport: null,
+																workPlaceId: data,
 																workLocationCD: vm.worklocationCode,
 																workTimeCode: '',
 																overtimeDeclaration: {
@@ -709,8 +749,10 @@ module nts.uk.at.kdp003.a {
 															const { USE } = NotUseAtr;
 
 															vm.playAudio(btn.audioType);
+															const employeeInfo = { mode, employeeId, employeeCode, workLocationName, workplaceId };
 
 															if (notUseAttr === USE && [share.ChangeClockArt.WORKING_OUT].indexOf(btn.changeClockArt) > -1) {
+
 																return storage('KDP010_2C', displayItemId)
 																	.then(() => storage('infoEmpToScreenC', employeeInfo))
 																	.then(() => storage('screenC', { screen: "KDP003" }))
@@ -734,6 +776,27 @@ module nts.uk.at.kdp003.a {
 												});
 
 										} else {
+
+											var workPlaceId: string;
+											var workLocationName: string = '';
+
+											if (dataStorage.WKPID.length = 1) {
+												workPlaceId = dataStorage.WKPID[0];
+												var workplace: IWorkPlaceInfo = _.find(vm.workPlaceInfos, ((value) => {
+													if (value.id === workPlaceId) {
+														return value;
+													}
+												}));
+
+												if (ko.unwrap(vm.modeBasyo)) {
+													workLocationName = vm.workplaceName;
+												} else {
+													if (workplace) {
+														workLocationName = workplace.name
+													}
+												}
+											}
+
 											vm.$ajax(API.REGISTER, {
 												employeeId,
 												dateTime: moment(vm.$date.now()).format(),
@@ -743,6 +806,7 @@ module nts.uk.at.kdp003.a {
 												},
 												refActualResult: {
 													cardNumberSupport: null,
+													workPlaceId: workPlaceId,
 													workLocationCD: vm.worklocationCode,
 													workTimeCode: '',
 													overtimeDeclaration: {
@@ -756,6 +820,7 @@ module nts.uk.at.kdp003.a {
 												const { USE } = NotUseAtr;
 
 												vm.playAudio(btn.audioType);
+												const employeeInfo = { mode, employeeId, employeeCode, workLocationName, workPlaceId };
 
 												if (notUseAttr === USE && [share.ChangeClockArt.WORKING_OUT].indexOf(btn.changeClockArt) > -1) {
 													return storage('KDP010_2C', displayItemId)
@@ -872,6 +937,7 @@ module nts.uk.at.kdp003.a {
 		passwordRequiredArt: boolean;
 		resultDisplayTime: number;
 		textColor: string;
+		supportWplset: number;
 	}
 
 	enum NotUseAtr {
@@ -971,5 +1037,14 @@ module nts.uk.at.kdp003.a {
 	interface IBasyo {
 		workLocationName: string;
 		workpalceId: string;
+	}
+
+	interface IWorkPlaceInfo {
+		code: string,
+		hierarchyCode: string,
+		id: string,
+		name: string,
+		workplaceDisplayName: string,
+		workplaceGeneric: string
 	}
 }

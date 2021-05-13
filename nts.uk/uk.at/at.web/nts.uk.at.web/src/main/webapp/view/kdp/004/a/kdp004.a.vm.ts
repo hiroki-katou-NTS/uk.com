@@ -15,15 +15,18 @@ module nts.uk.at.view.kdp004.a {
 		import getMessage = nts.uk.resource.getMessage;
 		import f = nts.uk.at.kdp003.f;
 		import FingerStampSetting = nts.uk.at.kdp003.a.FingerStampSetting;
+		import checkType = nts.uk.at.view.kdp.share.checkType;
 
 		const DIALOG = {
 			R: '/view/kdp/003/r/index.xhtml',
-			F: '/view/kdp/003/f/index.xhtml'
+			F: '/view/kdp/003/f/index.xhtml',
+			M: '/view/kdp/003/m/index.xhtml'
 		};
 
 		const API = {
 			NOTICE: 'at/record/stamp/notice/getStampInputSetting',
-			GET_LOCATION: 'at/record/stamp/employment_system/get_location_stamp_input'
+			GET_LOCATION: 'at/record/stamp/employment_system/get_location_stamp_input',
+			SETTING_STAMP_COMMON: 'at/record/stamp/settings_stamp_common'
 		};
 
 		const KDP004_SAVE_DATA = 'loginKDP004';
@@ -50,43 +53,71 @@ module nts.uk.at.view.kdp004.a {
 			messageNoti: KnockoutObservable<IMessage> = ko.observable();
 			fingerStampSetting: KnockoutObservable<FingerStampSetting> = ko.observable(DEFAULT_SETTING);
 
+			modeBasyo: KnockoutObservable<boolean> = ko.observable(false);
+			
+			// get from basyo;
+			workplace: string[] | [] = [];
+			worklocationCode: string = '';
+			workplaceId: string = null;
+			workplaceName: string = null;
+
+			supportUse: KnockoutObservable<boolean> = ko.observable(false);
+
 			constructor() {
 				let self = this;
-
 			}
 
 			public startPage(): JQueryPromise<void> {
 				let self = this;
+				let vm = new ko.ViewModel();
 				let dfd = $.Deferred<void>();
-				nts.uk.characteristics.restore("loginKDP004").done(function (loginInfo: ILoginInfo) {
-					if (!loginInfo) {
-						console.log(self.loginInfo);
-						self.setLoginInfo().done((loginResult) => {
-							if (!loginResult) {
-								self.isUsed(false);
-								dfd.resolve();
-								return;
-							}
-							self.doFirstLoad().done(() => {
-								dfd.resolve();
-								return;
-							});
-						});
-					} else {
-						self.loginInfo = loginInfo;
-						self.doFirstLoad().done(() => {
-							dfd.resolve();
-						});
-						console.log(self.loginInfo);
-						self.loadNotice(self.loginInfo);
-					}
-				}).always(() => {
-					service.getLogginSetting().done((res) => {
-						self.listCompany(_.filter(res, 'fingerAuthStamp'));
-					});
 
-				});
+				vm.$blockui('invisible')
+					.then(() => {
+						self.basyo();
+					}).then(() => {
+						nts.uk.characteristics.restore(KDP004_SAVE_DATA).done(function (loginInfo: ILoginInfo) {
+					
+					
+							if (!loginInfo) {
+								self.setLoginInfo().done((loginResult) => {
+									if (!loginResult) {
+										self.isUsed(false);
+										dfd.resolve();
+										return;
+									}
+									self.doFirstLoad().done(() => {
+										dfd.resolve();
+										return;
+									});
+								});
+							} else {
+								self.loginInfo = loginInfo;
+								console.log(ko.unwrap(self.modeBasyo));
+								if (ko.unwrap(self.modeBasyo)) {
+									self.loginInfo.selectedWP = self.workplace;
+									nts.uk.characteristics.save(KDP004_SAVE_DATA, self.loginInfo);
+								}
+		
+								self.doFirstLoad().done(() => {
+									dfd.resolve();
+								});
+								self.loadNotice(self.loginInfo);
+							}
+						}).always(() => {
+							service.getLogginSetting().done((res) => {
+								self.listCompany(_.filter(res, 'fingerAuthStamp'));
+							});
+		
+						});
+					})
+					.always(() => {
+						vm.$blockui('clear');
+					});
+				
+				
 				return dfd.promise();
+				
 			}
 
 			showButton() {
@@ -179,56 +210,25 @@ module nts.uk.at.view.kdp004.a {
 					}
 					self.loginInfo = loginResult.em;
 
-					//URLOption basyoが存在している場合
-					var params = new URLSearchParams(window.location.search);
-					var locationCd = params.get('basyo');
-					let vm = new ko.ViewModel();
-
-					if (locationCd) {
-						//打刻入力の場所を取得する
-						nts.uk.characteristics.restore("contractInfo").done(function (contractInfo: IContractInfo) {
-							const param = {
-								contractCode: contractInfo.contractCode,
-								workLocationCode: locationCd
-							}
-							vm.$ajax(API.GET_LOCATION, param)
-								.done((data: ILocationStampInput) => {
-									//※職場IDを取得しなかった場合
-									if (data.workpalceId === null || data.workpalceId.length == 0) {
-										self.openScreenK().done((result) => {
-											if (!result) {
-												self.errorMessage(getMessage("Msg_1647"));
-												dfd.resolve();
-												return;
-											}
-											self.loginInfo.selectedWP = result;
-										});
-
-										//※職場IDを取得した場合
-									} else {
-										self.loginInfo.selectedWP = data.workpalceId;
-									}
-								});
-						});
-
-					} else {
+					if (!ko.unwrap(self.modeBasyo)) {
 						self.openScreenK().done((result) => {
-							if (result) {
-								
-								self.loginInfo.selectedWP = result;
-								nts.uk.characteristics.save("loginKDP004", self.loginInfo).done(() => {
-									location.reload();
-								});
-							} else {
-								location.reload();
+							if (!result) {
+								self.errorMessage(getMessage("Msg_1647"));
+								dfd.resolve();
+								return;
 							}
-
-						});
+							
+							self.loginInfo.selectedWP = result;
+		
+							nts.uk.characteristics.save(KDP004_SAVE_DATA, self.loginInfo);
+							dfd.resolve(self.loginInfo);
+							});
+					} else {
+						self.loginInfo.selectedWP = self.workplace;
+		
+						nts.uk.characteristics.save(KDP004_SAVE_DATA, self.loginInfo);
+						dfd.resolve(self.loginInfo);
 					}
-					nts.uk.characteristics.save("loginKDP004", self.loginInfo);
-					dfd.resolve(self.loginInfo);
-					console.log(self.loginInfo);
-					
 
 				}).always(() => {
 					block.grayout();
@@ -447,9 +447,8 @@ module nts.uk.at.view.kdp004.a {
 						self.openScreenK().done((result) => {
 							if (result) {
 								self.loginInfo.selectedWP = result;
-								nts.uk.characteristics.save("loginKDP004", self.loginInfo).done(() => {
+								nts.uk.characteristics.save(KDP004_SAVE_DATA, self.loginInfo).done(() => {
 									location.reload();
-									console.log(self.loginInfo);
 								});
 							} else {
 								location.reload();
@@ -469,7 +468,7 @@ module nts.uk.at.view.kdp004.a {
 				let self = this;
 				let vm = new ko.ViewModel();
 				block.invisible();
-				let data = {
+				let registerdata = {
 					employeeId: loginInfo && loginInfo.em ? loginInfo.em.employeeId : vm.$user.employeeId,
 					datetime: moment(vm.$date.now()).format('YYYY/MM/DD HH:mm:ss'),
 					stampNumber: null,
@@ -485,24 +484,69 @@ module nts.uk.at.view.kdp004.a {
 					},
 					authcMethod: loginInfo.authType
 				};
+				const mode: number = 1;
+				const { employeeId, employeeCode } = loginInfo.em;
+				const workLocationName = self.workplaceName;
+				const workpalceId = self.workplaceId;
+				const employeeInfo = { mode, employeeId, employeeCode, workLocationName, workpalceId };
 
-				service.stampInput(data).done((res) => {
-					//phat nhac
-					self.playAudio(button.audioType);
+				vm.$window.storage(KDP004_SAVE_DATA)
+				.then((dataStorage: StorageData) => {
 
-					if (self.stampResultDisplay().notUseAttr == 1 && button.changeClockArt == 1) {
-						self.openScreenC(button, layout, loginInfo.em);
+					//打刻入力で共通設定を取得する
+					vm.$ajax(API.SETTING_STAMP_COMMON)
+					.done((data: ISettingsStampCommon) => {
+						if (data) {
+							self.supportUse(data.supportUse);
+						}
+					});
+
+					let btnType = checkType(button.changeClockArt, button.changeCalArt, button.setPreClockArt, button.changeHalfDay, button.btnReservationArt);
+
+					if (dataStorage.WKPID.length > 1 && self.supportUse() === true && _.includes([14, 15, 16, 17, 18], btnType)) {
+						vm.$window.modal('at', DIALOG.M)
+							.then((result: string) => {
+								service.stampInput(registerdata).done((res) => {
+
+									//phat nhac
+									self.playAudio(button.audioType);
+				
+									if (self.stampResultDisplay().notUseAttr == 1 && button.changeClockArt == 1) {
+										vm.$window.storage('infoEmpToScreenC', employeeInfo);
+										self.openScreenC(button, layout, loginInfo.em);
+									} else {
+										vm.$window.storage('infoEmpToScreenB', employeeInfo);
+										self.openScreenB(button, layout, loginInfo.em);
+									}
+				
+								}).fail((res) => {
+									dialog.alertError({ messageId: res.messageId });
+								}).always(() => {
+									self.getStampToSuppress();
+									block.clear();
+								});
+
+							});
 					} else {
-						self.openScreenB(button, layout, loginInfo.em);
+						service.stampInput(registerdata).done((res) => {
+
+							//phat nhac
+							self.playAudio(button.audioType);
+		
+							if (self.stampResultDisplay().notUseAttr == 1 && button.changeClockArt == 1) {
+								self.openScreenC(button, layout, loginInfo.em);
+							} else {
+								self.openScreenB(button, layout, loginInfo.em);
+							}
+		
+						}).fail((res) => {
+							dialog.alertError({ messageId: res.messageId });
+						}).always(() => {
+							self.getStampToSuppress();
+							block.clear();
+						});
 					}
-
-				}).fail((res) => {
-					dialog.alertError({ messageId: res.messageId });
-				}).always(() => {
-					self.getStampToSuppress();
-					block.clear();
 				});
-
 
 			}
 
@@ -589,12 +633,39 @@ module nts.uk.at.view.kdp004.a {
 						vm.$ajax(API.NOTICE, param)
 							.done((data: IMessage) => {
 								self.messageNoti(data);
-								console.log(data);
 							});
 					})
 					.always(() => {
 						vm.$blockui('clear');
 					});
+			}
+
+			// URLOption basyo
+			basyo() {
+				const self = this,
+					vm = new ko.ViewModel(),
+					params = new URLSearchParams(window.location.search),
+					locationCd = params.get('basyo');
+
+				// URLOption basyoが存在している場合
+				if (locationCd) {
+					const param = {
+						contractCode: '000000000004',
+						workLocationCode: locationCd
+					}
+	
+					vm.$ajax(API.GET_LOCATION, param)
+						.done((data: IBasyo) => {
+							if (data) {
+								self.modeBasyo(true);
+								self.workplace = [data.workpalceId];
+								self.worklocationCode = locationCd;
+								self.workplaceId = data.workpalceId;
+								self.workplaceName = data.workLocationName;
+							}
+						});
+	
+				}
 			}
 		}
 
@@ -643,5 +714,16 @@ module nts.uk.at.view.kdp004.a {
 		targetSIDs: string[];
 		targetWpids: string[];
 		destination: number | null;
+	}
+
+	interface IBasyo {
+		workLocationName: string;
+		workpalceId: string;
+	}
+
+	interface ISettingsStampCommon {
+		supportUse: boolean;
+		temporaryUse: boolean;
+		workUse: boolean;
 	}
 }
