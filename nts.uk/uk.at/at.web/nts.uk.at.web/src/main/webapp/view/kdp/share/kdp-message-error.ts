@@ -191,9 +191,6 @@ module nts.uk.at.view.kdp.share {
         reload() {
             const vm = this;
 
-            console.log(ko.unwrap(ko.unwrap(vm.messageNoti)).messageNotices);
-
-
             vm.$blockui('invisible')
                 .then(() => {
 

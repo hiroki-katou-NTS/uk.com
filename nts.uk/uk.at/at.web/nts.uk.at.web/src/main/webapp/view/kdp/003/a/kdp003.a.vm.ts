@@ -100,6 +100,7 @@ module nts.uk.at.kdp003.a {
 
 			// show or hide stampHistoryButton
 			vm.message.subscribe((value) => {
+				
 				vm.showClockButton.company(value === null);
 			});
 
@@ -120,7 +121,7 @@ module nts.uk.at.kdp003.a {
 					.then((data: undefined | StorageData) => {
 						if (data) {
 
-							// vm.loadEmployees(data);
+							vm.loadEmployees(data);
 
 						}
 					});
@@ -699,15 +700,15 @@ module nts.uk.at.kdp003.a {
 							// shorten name
 							const { modal, storage } = vm.$window;
 
-							var isSupport: boolean = false;
+							// var isSupport: boolean = false;
 							
-							if (btn.supportWplset == null || btn.supportWplset == 1) {
-								isSupport = true;
-							}
+							// if (btn.supportWplset == 1) {
+							// 	isSupport = true;
+							// }
 							if (fingerStampSetting) {
 								vm.$window.storage(KDP003_SAVE_DATA)
 									.then((dataStorage: StorageData) => {
-										if (dataStorage.WKPID.length > 1 && isSupport) {
+										if (dataStorage.WKPID.length > 1 && btn.supportWplset == 1) {
 
 											vm.$window.modal('at', DIALOG.M)
 												.then((data: string) => {
