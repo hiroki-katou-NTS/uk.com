@@ -56,22 +56,27 @@ module nts.uk.ui.at.kdp013.d {
 
         mounted() {
             const vm = this;
+            const { employeeId } = vm.$user;
 
             $(vm.$el)
                 // patch click link
-                // note: change pseudo if DataContent change property
+                // D1_7のリンクをクリックすると、申請画面を別のタブで起動する
                 .on('click', 'td[aria-describedby="kdw-013-ddata_link"]', (evt: JQueryEventObject) => {
                     const ds = ko.unwrap(vm.dataSource);
                     const di = $(evt.target).closest('tr[data-id]').data('id');
                     const exist = _.find(ds, ({ overtimeLeaveAtr }) => overtimeLeaveAtr === di);
 
                     if (exist) {
-                        // logic per record at here
-                        // note: change jump data
-                        if (exist.overtimeLeaveAtr === OVER_TIME_APPLICATION) {
-                            vm.$jump('at', '/view/kaf/005/a/index.xhtml', exist);
+                        const params: KAF005Params = {
+                            appType: 1,
+                            baseDate: exist.date,
+                            employeeIds: [employeeId],
+                            isAgentMode: false
+                        };
+                        if (exist.overtimeLeaveAtr !== OVER_TIME_APPLICATION) {
+                            vm.$jump.blank('at', '/view/kaf/010/a/index.xhtml', params);
                         } else {
-                            vm.$jump('at', '/view/kaf/006/a/index.xhtml', exist);
+                            vm.$jump.blank('at', '/view/kaf/005/a/index.xhtml?overworkatr=2', params);
                         }
                     }
                 });
@@ -101,5 +106,12 @@ module nts.uk.ui.at.kdp013.d {
 
             vm.$window.close();
         }
+    }
+
+    interface KAF005Params {
+        appType: number;
+        employeeIds: Array<string>;
+        baseDate: string;
+        isAgentMode?: boolean;
     }
 }

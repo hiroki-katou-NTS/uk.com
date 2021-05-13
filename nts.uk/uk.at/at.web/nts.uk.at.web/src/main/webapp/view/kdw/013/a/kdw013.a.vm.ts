@@ -318,18 +318,36 @@ module nts.uk.ui.at.kdp013.a {
 
         saveData() {
             const vm = this;
-            // sample data for open view d
-            const data: OvertimeLeaveTime[] = [{
-                date: '2021/01/01',
-                overtimeLeaveAtr: OverTimeLeaveAtr.HOLIDAY_WORK_APPLICATION,
-                time: 720
-            }, {
-                date: '2021/01/02',
-                overtimeLeaveAtr: OverTimeLeaveAtr.OVER_TIME_APPLICATION,
-                time: 720
-            }];
+            const { events } = vm;
+            const command: RegisterWorkContentCommand = {
+                editStateSetting: EditStateSetting.HAND_CORRECTION_MYSELF,
+                employeeId: vm.$user.employeeId,
+                mode: 0,
+                workDetails: []
+            };
 
-            vm.openDialogCaculationResult(data);
+            vm.$blockui('grayout')
+                // 作業を登録する
+                .then(() => vm.$ajax('at', API.REGISTER, command))
+                .then((response: RegisterWorkContentDto) => {
+
+                    if (response) {
+                        const { lstErrorMessageInfo, lstOvertimeLeaveTime } = response;
+
+                        if (!lstErrorMessageInfo || lstErrorMessageInfo.length === 0) {
+                            return vm.$dialog
+                                .info({ messageId: 'Msg_15' })
+                                .then(() => lstOvertimeLeaveTime);
+                        }
+                    }
+
+                    return null;
+                })
+                .then((data) => {
+                    if (data && data.length) {
+                        vm.openDialogCaculationResult(data);
+                    }
+                });
         }
 
         // 日付を変更する
