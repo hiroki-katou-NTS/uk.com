@@ -13,5 +13,5 @@ public class ErrorAlarmDto {
  	//	ver22 大塚オプション
 	private boolean ootsukaOption;
 	private List<ErrorAlarmWorkRecordDto> errorAlarmWorkRecordList;
-	
+	private List<Integer> applicationList;
 }

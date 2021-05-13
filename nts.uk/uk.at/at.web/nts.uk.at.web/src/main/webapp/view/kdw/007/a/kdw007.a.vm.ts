@@ -12,6 +12,8 @@ module nts.uk.at.view.kdw007.a.viewmodel {
     export class ScreenModel {
         screenMode: KnockoutObservable<number> = ko.observable(ScreenMode.Daily);
         isNewMode: KnockoutObservable<boolean> = ko.observable(false);
+        // ver22
+        isDuplicate: KnockoutObservable<boolean> = ko.observable(false);
         isAtdItemColor: KnockoutObservable<boolean> = ko.observable(true);
         enumShowTypeAtr: KnockoutObservableArray<any> = ko.observableArray([
             //fix bug 98671
@@ -32,7 +34,9 @@ module nts.uk.at.view.kdw007.a.viewmodel {
         listTypeAtr: KnockoutObservableArray<any> = ko.observableArray([
             { code: '0', name: getText("Enum_ErrorAlarmClassification_Error") },
             { code: '1', name: getText("Enum_ErrorAlarmClassification_Alarm") },
-            { code: '2', name: getText("Enum_ErrorAlarmClassification_Other") }
+            // { code: '2', name: getText("Enum_ErrorAlarmClassification_Other") }
+            { code: '2', name: getText("Enum_ErrorAlarmClassification_ExCondition") }
+           
         ]);
         gridListColumns: KnockoutObservableArray<any> = ko.observableArray([
             { headerText: getText("KDW007_6"), key: 'code', width: 45 },
@@ -60,27 +64,22 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             { code: 1, name: getText("Enum_FilterByCompare_Extract_Same") },
             { code: 2, name: getText("Enum_FilterByCompare_Extract_Different") }
         ]);
-        // Tab 5
+        // Tab 5: ApplicationType_ 実績で使用する申請種類
         lstApplicationType = ko.observableArray([
-            { code: 0, name: "残業申請（早出）" },
-            { code: 1, name: "残業申請（通常）" },
-            { code: 2, name: "残業申請（早出・通常）" },
-            { code: 3, name: "休暇申請" },
-            { code: 4, name: "勤務変更申請" },
-//            { code: 5, name: "出張申請" },
-            { code: 6, name: "直行直帰申請" },
-            { code: 7, name: "休出時間申請" },
-//            { code: 8, name: "打刻申請（外出許可）" },
-//            { code: 9, name: "打刻申請（出退勤漏れ）" },
-//            { code: 10, name: "打刻申請（打刻取消）" },
-//            { code: 11, name: "打刻申請（レコーダイメージ）" },
-//            { code: 12, name: "打刻申請（その他）" },
-//            { code: 13, name: "時間年休申請" },
-//            { code: 14, name: "遅刻早退取消申請" },
-            
-            { code: 14, name: "振休振出申請" },
-//            { code: 16, name: "連続出張申請" },
-//            { code: 17, name: "３６協定時間申請" }
+            { code: 0, name: "残業申請（早出）" }, //OVERTIME_APPLICATION
+            { code: 1, name: "残業申請（通常）" }, //OVERTIME_APPLICATION_NORMAL
+            { code: 2, name: "残業申請（早出・通常）" }, //  OVERTIME_APPLICATION_EARLY_REGULAR
+            { code: 3, name: "休暇申請" }, //ABSENCE_APPLICATION
+            { code: 4, name: "勤務変更申請" }, // WORK_CHANGE_APPLICATION
+            { code: 5, name: "出張申請" }, // BUSINESS_TRIP_APPLICATION
+            { code: 6, name: "直行直帰申請" }, // GO_RETURN_DIRECTLY_APPLICATION
+            { code: 7, name: "休出時間申請" }, // LEAVE_TIME_APPLICATION
+            { code: 8, name: "打刻申請" }, // STAMP_APPLICATION
+            { code: 9, name: "打刻申請（レコーダイメージ）" }, // REGISTER_TIME_CARD_IMAGE
+            { code: 10, name: "時間休暇申請 " }, // ANNUAL_HD_APPLICATION
+            { code: 11, name: "遅刻早退取消申請" }, // EARLY_LEAVE_CANCEL_APPLICATION
+            { code: 12, name: "振休振出申請 " }, // COMPLEMENT_LEAVE_APPLICATION
+            { code: 13, name: "任意申請" } // OPTIONAL_APPLICATION
         ]);
         appTypeGridlistColumns = ko.observableArray([
             { headerText: 'コード', key: 'code', width: 100, hidden: true },
@@ -92,7 +91,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
         //  ver22: ◆大塚オプション
         ootsukaOption: KnockoutObservable<boolean> = ko.observable(false);
         
-        constructor(isMonthly) {
+        constructor(isMonthly:any) {
             let self = this;
             self.sideBar = ko.observable(2);
             if (isMonthly) { //monthly
@@ -170,7 +169,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             });
                  },100);
 
-            self.selectedErrorAlarm().typeAtr.subscribe((val) => {
+            self.selectedErrorAlarm().typeAtr.subscribe((val: any) => {
                 if (self.screenMode() == ScreenMode.Daily && self.selectedErrorAlarm().typeAtr() == '2') {
                     self.isAtdItemColor(false);
                 } else {
@@ -198,7 +197,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             self.screenMode.valueHasMutated();
         }
 
-        changeSelectedErrorAlarm(foundItem) {
+        changeSelectedErrorAlarm(foundItem: any) {
             let self = this;
             nts.uk.ui.errors.clearAll();
             if (self.screenMode() == ScreenMode.Daily) {
@@ -289,16 +288,24 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                 self.newTab();
             }
         }
+        duplicate(){
+            let self = this;
+            self.isDuplicate(true);
+            self.isNewMode(true);
+            self.selectedErrorAlarmCode(null);
+            self.selectedErrorAlarm().code("");
+            self.selectedErrorAlarm().name("");
+        }
 
-        resetMonthlyConditon(selectedErrorAlarm, param) {
+        resetMonthlyConditon(selectedErrorAlarm: any, param: any) {
             selectedErrorAlarm.operatorBetweenPlanActual(param && param.operatorBetweenPlanActual ? param.operatorBetweenPlanActual : 0);
             selectedErrorAlarm.operatorBetweenGroups(param && param.operatorBetweenGroups ? param.operatorBetweenGroups : 0);
             selectedErrorAlarm.operatorGroup1(param && param.operatorGroup1 ? param.operatorGroup1 : 0);
             selectedErrorAlarm.operatorGroup2(param && param.operatorGroup2 ? param.operatorGroup2 : 0);
             selectedErrorAlarm.group2UseAtr(param && param.group2UseAtr ? param.group2UseAtr : false);
-            selectedErrorAlarm.erAlAtdItemConditionGroup1.forEach((condition) => {
+            selectedErrorAlarm.erAlAtdItemConditionGroup1.forEach((condition: any) => {
                 if (param && param.erAlAtdItemConditionGroup1 && param.erAlAtdItemConditionGroup1.length > 0) {
-                    param.erAlAtdItemConditionGroup1.forEach((conditionParam) => {
+                    param.erAlAtdItemConditionGroup1.forEach((conditionParam: any) => {
                         if (conditionParam.targetNO == condition.targetNO()) {
                             condition.setData(conditionParam.targetNO, conditionParam);
                         }
@@ -385,41 +392,42 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                 }
             });
         }
-
-        resetMonthlyConditon(selectedErrorAlarm, param) {
-            selectedErrorAlarm.operatorBetweenPlanActual(param && param.operatorBetweenPlanActual ? param.operatorBetweenPlanActual : 0);
-            selectedErrorAlarm.operatorBetweenGroups(param && param.operatorBetweenGroups ? param.operatorBetweenGroups : 0);
-            selectedErrorAlarm.operatorGroup1(param && param.operatorGroup1 ? param.operatorGroup1 : 0);
-            selectedErrorAlarm.operatorGroup2(param && param.operatorGroup2 ? param.operatorGroup2 : 0);
-            selectedErrorAlarm.group2UseAtr(param && param.group2UseAtr ? param.group2UseAtr : false);
-            selectedErrorAlarm.erAlAtdItemConditionGroup1.forEach((condition) => {
-                if (param && param.erAlAtdItemConditionGroup1 && param.erAlAtdItemConditionGroup1.length > 0) {
-                    param.erAlAtdItemConditionGroup1.forEach((conditionParam) => {
-                        if (conditionParam.targetNO == condition.targetNO()) {
-                            condition.setData(conditionParam.targetNO, conditionParam);
-                        }
-                    });
-                } else {
-                    condition.setData(condition.targetNO(), null);
-                }
-            });
-            selectedErrorAlarm.erAlAtdItemConditionGroup2.forEach((condition) => {
-                if (param && param.erAlAtdItemConditionGroup2 && param.erAlAtdItemConditionGroup2.length > 0) {
-                    param.erAlAtdItemConditionGroup2.forEach((conditionParam) => {
-                        if (conditionParam.targetNO == condition.targetNO()) {
-                            condition.setData(conditionParam.targetNO, conditionParam);
-                        }
-                    });
-                } else {
-                    condition.setData(condition.targetNO(), null);
-                }
-            });
-        }
+// duplicate Method
+        // resetMonthlyConditon(selectedErrorAlarm, param) {
+        //     selectedErrorAlarm.operatorBetweenPlanActual(param && param.operatorBetweenPlanActual ? param.operatorBetweenPlanActual : 0);
+        //     selectedErrorAlarm.operatorBetweenGroups(param && param.operatorBetweenGroups ? param.operatorBetweenGroups : 0);
+        //     selectedErrorAlarm.operatorGroup1(param && param.operatorGroup1 ? param.operatorGroup1 : 0);
+        //     selectedErrorAlarm.operatorGroup2(param && param.operatorGroup2 ? param.operatorGroup2 : 0);
+        //     selectedErrorAlarm.group2UseAtr(param && param.group2UseAtr ? param.group2UseAtr : false);
+        //     selectedErrorAlarm.erAlAtdItemConditionGroup1.forEach((condition) => {
+        //         if (param && param.erAlAtdItemConditionGroup1 && param.erAlAtdItemConditionGroup1.length > 0) {
+        //             param.erAlAtdItemConditionGroup1.forEach((conditionParam) => {
+        //                 if (conditionParam.targetNO == condition.targetNO()) {
+        //                     condition.setData(conditionParam.targetNO, conditionParam);
+        //                 }
+        //             });
+        //         } else {
+        //             condition.setData(condition.targetNO(), null);
+        //         }
+        //     });
+        //     selectedErrorAlarm.erAlAtdItemConditionGroup2.forEach((condition) => {
+        //         if (param && param.erAlAtdItemConditionGroup2 && param.erAlAtdItemConditionGroup2.length > 0) {
+        //             param.erAlAtdItemConditionGroup2.forEach((conditionParam) => {
+        //                 if (conditionParam.targetNO == condition.targetNO()) {
+        //                     condition.setData(conditionParam.targetNO, conditionParam);
+        //                 }
+        //             });
+        //         } else {
+        //             condition.setData(condition.targetNO(), null);
+        //         }
+        //     });
+        // }
 
         newTab() {
             let self = this;
             self.tabs()[0].visible(true);
             self.tabs()[1].visible(true);
+            self.tabs()[1].enable(true);
             self.tabs()[2].visible(true);
             self.tabs()[3].visible(true);
             self.tabs()[4].visible(true);
@@ -430,6 +438,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             let self = this;
             self.tabs()[0].visible(true);
             self.tabs()[1].visible(true);
+            self.tabs()[1].enable(false);
             self.tabs()[2].visible(false);
             self.tabs()[3].visible(false);
             if (self.screenMode() == ScreenMode.Daily && self.selectedErrorAlarm().typeAtr == 2) {

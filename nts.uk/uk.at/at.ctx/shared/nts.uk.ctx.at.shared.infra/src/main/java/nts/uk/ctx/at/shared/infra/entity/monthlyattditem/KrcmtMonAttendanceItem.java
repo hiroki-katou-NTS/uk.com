@@ -92,6 +92,7 @@ public class KrcmtMonAttendanceItem extends ContractUkJpaEntity implements Seria
 		this.lineBreakPosName = domain.getNameLineFeedPosition();
 		this.primitiveValue = domain.getPrimitiveValue().map(x -> x.value).orElse(null);
 		this.displayName = domain.getDisplayName().isPresent() ? domain.getDisplayName().get().v() : null;
+		this.twoMonthlyDisplay = domain.getTwoMonthlyDisplay().value;
 	}
 
 	/*

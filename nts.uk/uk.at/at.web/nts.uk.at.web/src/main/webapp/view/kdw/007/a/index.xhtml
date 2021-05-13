@@ -44,7 +44,7 @@
 					<!--A1_4-->
 					<com:ko-if bind="screenMode() == 0">
 						<button id = "copy-button" class="normal" 
-										data-bind="if: screenMode() === 0, click: remove, enable: !isNewMode()">#{i18n.getText('KDW007_112')}</button>
+										data-bind="if: screenMode() === 0, click: duplicate, enable: !isNewMode()">#{i18n.getText('KDW007_112')}</button>
 					</com:ko-if>
 				</div>
 				<div id="contents-area" class="fixed-flex-layout">
@@ -160,11 +160,9 @@
 									<!--A4_10-->
 									<span id="color-display-target-item-span" data-bind="text: selectedErrorAlarm().errorDisplayItemName"></span>
 								</div>
-								<div class="valign-center control-group">
-									<div id="color-label" data-bind="ntsFormLabel: {}">#{i18n.getText('KDW007_13')}</div>
-									<div id="colorpicker" data-bind="ntsColorPicker: {value: selectedErrorAlarm().messageColor, enable: selectedErrorAlarm().typeAtr() != 2, width: 100}"/>
-								</div>
+								<!--A4_13-->
 								<div id="message-label" data-bind="ntsFormLabel: {constraint: 'DisplayMessage', required: false }">#{i18n.getText('KDW007_14')}</div>
+								<!--A4_14-->
 								<textarea id="messageDisplay" class="need-check" data-bind="ntsMultilineEditor: { 
 								    name: '#[KDW007_14]',
 									value: selectedErrorAlarm().displayMessage, 
@@ -172,9 +170,16 @@
 									required: false, 
 									resizeable: false,
 									enable: selectedErrorAlarm().typeAtr()!=2 }" /><br/>
-								<div id="boldAtr" data-bind="ntsCheckBox: { checked: selectedErrorAlarm().boldAtr, 
+								<div class="valign-center control-group" style="margin-top: 10px;">
+									<!--A4_11-->
+									<div id="color-label" data-bind="ntsFormLabel: {}">#{i18n.getText('KDW007_13')}</div>
+									<!--A4_12-->
+									<div id="colorpicker" data-bind="ntsColorPicker: {value: selectedErrorAlarm().messageColor, enable: selectedErrorAlarm().typeAtr() != 2, width: 100}"/>
+									<!--A4_15-->
+									<div id="boldAtr" data-bind="ntsCheckBox: { checked: selectedErrorAlarm().boldAtr, 
 																	enable: selectedErrorAlarm().typeAtr()!=2, 
 																	text: '#{i18n.getText('KDW007_15')}' }"></div>
+								</div>
 							</div>
 							<!-- End Tab 1 -->
 							<!-- Tab 2 --> <!--A4_3-->

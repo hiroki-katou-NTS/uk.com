@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.shared.ws.scherec.dailyattendanceitem;
 
+import java.util.List;
+
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -36,4 +38,10 @@ public class DailyAttendanceItemAuthorityWS extends WebService {
 		this.dailyAttdHandler.handle(command);
 	}
 	
+	@POST
+	@Path("getdailyrolesbycid")
+	public List<String> getDailytRolesByCid() {
+		return this.finder.getDailytRolesByCid();
+	}
+
 }

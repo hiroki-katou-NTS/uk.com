@@ -31,17 +31,17 @@ module nts.uk.at.view.kdw002.a {
             return nts.uk.request.ajax(paths.getListMonthlyAttdItem);
         }
 
-        export function getControlOfDailyItem(attendanceItemId): JQueryPromise<any> {
+        export function getControlOfDailyItem(attendanceItemId: any): JQueryPromise<any> {
             return nts.uk.request.ajax(paths.getControlOfDailyItem + attendanceItemId);
         }
-        export function getControlOfMonthlyItem(attendanceItemId): JQueryPromise<any> {
+        export function getControlOfMonthlyItem(attendanceItemId: any): JQueryPromise<any> {
             return nts.uk.request.ajax(paths.getControlOfMonthlyItem + attendanceItemId);
         }
-        export function updateDaily(command): JQueryPromise<any> {
+        export function updateDaily(command: any): JQueryPromise<any> {
             return nts.uk.request.ajax(paths.updateDaily, command);
         }
 
-        export function updateMonthly(command): JQueryPromise<any> {
+        export function updateMonthly(command: any): JQueryPromise<any> {
             return nts.uk.request.ajax(paths.updateMonthly, command);
         }
         //

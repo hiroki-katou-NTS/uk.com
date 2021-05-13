@@ -3,12 +3,16 @@
  */
 package nts.uk.ctx.at.record.app.find.workrecord.erroralarm;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErAlApplication;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErAlApplicationRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecord;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecordRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.ErrorAlarmCondition;
@@ -23,6 +27,10 @@ public class ErrorAlarmWorkRecordFinder {
 
 	@Inject
 	private ErrorAlarmWorkRecordRepository repository;
+	
+	// エラー発生時に呼び出す申請一覧
+	@Inject
+	private ErAlApplicationRepository erAlApplicationRepository;
 	
 	
 	/**
@@ -42,6 +50,7 @@ public class ErrorAlarmWorkRecordFinder {
 				.collect(Collectors.toList());
 		errorAlarmDto.setErrorAlarmWorkRecordList(lstDto);
 		errorAlarmDto.setOotsukaOption(getOotsukaOptionInfo());
+		errorAlarmDto.setApplicationList(getApplicationName());
 		return errorAlarmDto;
 	}
 
@@ -63,6 +72,17 @@ public class ErrorAlarmWorkRecordFinder {
 	
 	public boolean getOotsukaOptionInfo() {
 		return AppContexts.optionLicense().customize().ootsuka();
+	}
+	
+	/** UKDesign.UniversalK.就業.KDW_日別実績.KDW007_勤務実績のエラーアラーム設定.エラー/アラームの条件設定.アルゴリズム.日別.申請の名称を取得する.ログインしている会社をもとにドメインモデル「エラー発生時に呼び出す申請一覧」を取得する */
+	public List<Integer> getApplicationName() {
+		String companyId = AppContexts.user().companyId();
+		String errorAlarmCode = null;
+		Optional<ErAlApplication> errApp = this.erAlApplicationRepository.getAllErAlAppByEralCode(companyId, errorAlarmCode);
+		if(!errApp.isPresent())
+			return Collections.emptyList();
+		ErAlApplication errAppVal = errApp.get();
+		return errAppVal.getAppType();
 	}
 
 }
