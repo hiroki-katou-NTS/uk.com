@@ -286,11 +286,11 @@ module nts.uk.at.view.ktg027.a {
                         });
 
                     vm.$window.storage('KTG027_TARGET').then((rs: {isRefresh: boolean, target: any}) => {
-                        if (rs.isRefresh) {
+                        if (rs && rs.isRefresh) {
                             vm.targetYear(rs.target);
                             return;
                         }
-                        
+
                         // update targetYear by closure data
                         if (closingInformationForNextMonth) {
                             const { processingYm } = closingInformationForNextMonth;

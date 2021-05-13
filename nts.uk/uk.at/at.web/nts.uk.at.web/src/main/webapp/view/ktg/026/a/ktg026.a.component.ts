@@ -477,7 +477,7 @@ module nts.uk.at.view.ktg026.a {
 
                         vm.$window.storage('KTG026_TARGET')
                             .then((rs: {isRefresh: boolean, target: any}) => {
-                                if (rs.isRefresh) {
+                                if (rs && rs.isRefresh) {
                                     targetYear = rs.target;
                                 }
                             })
