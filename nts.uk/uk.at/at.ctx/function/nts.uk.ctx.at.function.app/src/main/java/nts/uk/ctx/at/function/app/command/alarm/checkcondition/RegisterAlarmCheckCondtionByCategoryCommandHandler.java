@@ -293,14 +293,8 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 
 				// update list fixedExtraMonFun
 				for (FixedExtraMonFunImport fixedExtraMonFun : command.getMonAlarmCheckCon().getListFixExtraMon()) {
-					if (fixedExtraMonFun.getMonAlarmCheckID() == null
-							|| fixedExtraMonFun.getMonAlarmCheckID().equals("")) {
-						fixedExtraMonFun.setMonAlarmCheckID(monAlarmCheckCon.getMonAlarmCheckConID());
-						this.fixedExtraMonFunAdapter.addFixedExtraMon(fixedExtraMonFun);
-					} else {
-						this.fixedExtraMonFunAdapter.updateFixedExtraMon(fixedExtraMonFun);
-
-					}
+					fixedExtraMonFun.setMonAlarmCheckID(monAlarmCheckCon.getMonAlarmCheckConID());
+					this.fixedExtraMonFunAdapter.persistFixedExtraMon(fixedExtraMonFun);
 				}
 				break;
 
@@ -622,7 +616,7 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 				// add list fixedExtraMonFun
 				for (FixedExtraMonFunImport fixedExtraMonFun : command.getMonAlarmCheckCon().getListFixExtraMon()) {
 					fixedExtraMonFun.setMonAlarmCheckID(monAlarmCheckConID);
-					this.fixedExtraMonFunAdapter.addFixedExtraMon(fixedExtraMonFun);
+					this.fixedExtraMonFunAdapter.persistFixedExtraMon(fixedExtraMonFun);
 				}
 
 				break;
