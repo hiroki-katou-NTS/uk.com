@@ -21,19 +21,25 @@ import nts.arc.time.GeneralDateTime;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.CheckedCondition;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.CompareRange;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.CompareSingleValue;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.CountableTarget;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.ErAlAttendanceItemCondition;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.CompareOperatorText;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.ConditionType;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.ConvertCompareTypeToText;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.ErrorAlarmConditionType;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.algorithm.WorkPlaceHistImportAl;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.algorithm.WorkPlaceIdAndPeriodImportAl;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedTimeDuration;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.HolidayTime;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.weekly.ExtractionCondScheduleWeekly;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.weekly.ExtractionCondScheduleWeeklyRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.weekly.WeeklyCheckItemType;
 import nts.uk.ctx.at.record.dom.workrecord.errorsetting.ContinuousCount;
 import nts.uk.ctx.at.record.dom.workrecord.errorsetting.algorithm.CalCountForConsecutivePeriodChecking;
+import nts.uk.ctx.at.record.dom.workrecord.errorsetting.algorithm.CalCountForConsecutivePeriodOutput;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.AlarmListCheckInfor;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.AlarmListCheckType;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.ExtractionAlarmPeriodDate;
@@ -61,13 +67,15 @@ public class WeeklyCheckServiceImpl implements WeeklyCheckService {
 	private AttendanceItemConvertFactory attendanceItemConvertFactory;
 	@Inject
 	private CalCountForConsecutivePeriodChecking calCountForConsecutivePeriodChecking;
+	@Inject
+	private ConvertCompareTypeToText convertComparaToText;
 	
 	@Override
 	public void extractWeeklyCheck(String cid, List<String> lstSid, DatePeriod period,
 			List<WorkPlaceHistImportAl> wplByListSidAndPeriods, String listOptionalItem,
 			List<ResultOfEachCondition> lstResultCondition, List<AlarmListCheckInfor> lstCheckType,
 			Consumer<Integer> counter, Supplier<Boolean> shouldStop) {
-		String contractCode = AppContexts.user().companyCode();
+		String contractCode = AppContexts.user().contractCode();
 		
 		parallelManager.forEach(CollectionUtil.partitionBySize(lstSid, 100), emps -> {
 			synchronized (this) {
@@ -80,6 +88,7 @@ public class WeeklyCheckServiceImpl implements WeeklyCheckService {
 			Map<Integer, String> attendanceItemMap = weeklyAttendanceItemService.getAttendanceItem(cid);
 			
 			// 週別実績の値を取得
+			// QA#116337
 			List<AttendanceTimeOfWeekly> attendanceTimeOfWeeklys = getWeeklyPerformanceService.getValues(lstSid, period);
 			
 			// ドメインモデル「週別実績の抽出条件」を取得する
@@ -126,6 +135,9 @@ public class WeeklyCheckServiceImpl implements WeeklyCheckService {
 							// 任意抽出条件のアラーム値を作成する
 							ExtractionResultDetail extractDetail = createAlarmExtraction(
 									attWeekly, weeklyCond, count, attendanceItemMap, cid, sid, wpkId, ym, attendanceTimeOfWeeklyYms.size());
+							if (extractDetail == null) {
+								continue;
+							}
 							
 							List<ResultOfEachCondition> lstResultTmp = lstResultCondition.stream()
 									.filter(x -> x.getCheckType() == AlarmListCheckType.FreeCheck && x.getNo().equals(alarmCode)).collect(Collectors.toList());
@@ -217,6 +229,8 @@ public class WeeklyCheckServiceImpl implements WeeklyCheckService {
 		String checkTargetValue = TextResource.localize("KAL010_1314");
 		
 		// 週別実績の任意抽出条件．チェック項目の種類！＝4,5,6　AND　該当区分　＝　True
+		// OR
+		// 週別実績の任意抽出条件．チェック項目の種類＝＝4 or 5or 6　AND　取得したOptional<連続カウント＞　!＝　Empty
 		if ((!weeklyCond.isContinuos() && check) || (weeklyCond.isContinuos() && continuousOutput.continuousCountOpt.isPresent())) {
 			// 「抽出結果詳細」を作成
 			// アラーム項目日付　＝Input．週別実績の勤怠時間．期間．開始日
@@ -227,14 +241,15 @@ public class WeeklyCheckServiceImpl implements WeeklyCheckService {
 				comment = Optional.ofNullable(weeklyCond.getErrorAlarmMessage().get().v());
 			}
 			// アラーム内容
-			String param0 = Strings.EMPTY;
+			String param0 = getCompareOperatorText(weeklyCond.getCheckConditions(), weeklyCond.getCheckItemType());
+			
 			// 	チェック項目の種類は連続じゃないの場合　－＞#KAL010_1308
 			String param1 = TextResource.localize("KAL010_1308");
 			// チェック項目の種類は連続じゃないの場合　－＞Input．週別実績の勤怠時間から計算した値 
 			String param2 = weeklyActualAttendanceTime;
 			if (weeklyCond.isContinuos()) {
 				String continuousPeriodValue = String.valueOf(weeklyCond.getContinuousPeriod().get().v());
-				param0 = TextResource.localize("KAL010_1312", continuousPeriodValue);
+				param0 += TextResource.localize("KAL010_1312", continuousPeriodValue);
 				// チェック項目の種類は連続の場合　－＞#KAL010_1309
 				param1 = TextResource.localize("KAL010_1309");
 				param2 += TextResource.localize("KAL010_1311");
@@ -244,18 +259,20 @@ public class WeeklyCheckServiceImpl implements WeeklyCheckService {
 			}
 			
 			alarmContent = TextResource.localize("KAL010_1310", param0, param1, param2);
+			
+			// 取得したアカウント、作成した「抽出結果詳細」を返す
+			ExtractionResultDetail detail = new ExtractionResultDetail(sid, 
+					extractionAlarmPeriodDate, 
+					weeklyCond.getName().v(), 
+					alarmContent, 
+					GeneralDateTime.now(), 
+					Optional.ofNullable(wpkId), 
+					comment, 
+					Optional.ofNullable(checkTargetValue));
+			return detail;
 		}
 		
-		// 取得したアカウント、作成した「抽出結果詳細」を返す
-		ExtractionResultDetail detail = new ExtractionResultDetail(sid, 
-				extractionAlarmPeriodDate, 
-				weeklyCond.getName().v(), 
-				alarmContent, 
-				GeneralDateTime.now(), 
-				Optional.ofNullable(wpkId), 
-				comment, 
-				Optional.ofNullable(checkTargetValue));
-		return detail;
+		return null;
 	}
 	
 	/**
@@ -315,16 +332,15 @@ public class WeeklyCheckServiceImpl implements WeeklyCheckService {
 		if (weeklyCond.getContinuousPeriod().isPresent()) {
 			continuousPeriod = weeklyCond.getContinuousPeriod().get().v();
 		}
-		Optional<ContinuousCount> optContinuousCount = Optional.empty();
-		calCountForConsecutivePeriodChecking.getContinuousCount(
-				optContinuousCount, 
+		
+		CalCountForConsecutivePeriodOutput calCountForConsecutivePeriodOutput = calCountForConsecutivePeriodChecking.getContinuousCount(
 				count, 
 				continuousPeriod, 
 				errorAtr, 
 				null);
 		ouput.check = errorAtr;
-		ouput.continuousCountOpt = optContinuousCount;
-		ouput.count = count;
+		ouput.continuousCountOpt = calCountForConsecutivePeriodOutput.getOptContinuousCount();
+		ouput.count = calCountForConsecutivePeriodOutput.getCount();
 		
 		return ouput;
 	}
@@ -344,6 +360,69 @@ public class WeeklyCheckServiceImpl implements WeeklyCheckService {
 			return value.getValueType().isDouble() ? ((Double) value.value()) : Double.valueOf((Integer) value.value());
 		}
 		return 0d;
+	}
+	
+	/**
+	 * Get parameter 0 for alarm content 
+	 */
+	@SuppressWarnings({ "rawtypes" })
+	public String getCompareOperatorText(CheckedCondition checkCondition, WeeklyCheckItemType weeklyCheckType) {
+		String checkCondTypeName = weeklyCheckType.nameId;
+		
+		int compare = checkCondition instanceof CompareSingleValue 
+				? ((CompareSingleValue) checkCondition).getCompareOpertor().value
+				: ((CompareRange) checkCondition).getCompareOperator().value;
+				
+		CompareOperatorText compareOperatorText = convertComparaToText.convertCompareType(compare);
+		
+		String startValueStr = Strings.EMPTY;
+		String endValueStr = Strings.EMPTY;
+		Double startValue = checkCondition instanceof CompareSingleValue 
+						? (Double)((CompareSingleValue) checkCondition).getValue()
+						: (Double)((CompareRange) checkCondition).getStartValue();
+		Double endValue = checkCondition instanceof CompareRange  
+				? (Double)((CompareRange) checkCondition).getEndValue() : null;
+				
+		switch (weeklyCheckType) {
+		case TIME:
+		case CONTINUOUS_TIME:
+			HolidayTime startTime = new HolidayTime(startValue.intValue());
+			startValueStr = startTime.getTimeWithFormat();
+			if (endValue != null) {
+				CheckedTimeDuration endTime = new CheckedTimeDuration(endValue.intValue());
+				endValueStr = endTime.getTimeWithFormat();
+			}
+		case TIMES:
+		case CONTINUOUS_TIMES:		
+			startValueStr = String.valueOf(startValue.intValue());
+			if (endValue != null) {
+				endValueStr = String.valueOf(endValue.intValue());
+			}
+			break;
+		case DAY_NUMBER:
+		case CONTINUOUS_DAY:
+			startValueStr = startValue.toString();
+			if (endValue != null) {
+				endValueStr = endValue.toString();
+			}
+		default:
+			break;
+		}
+		
+		String variable0 = "";
+		if(compare <= 5) {
+			variable0 = checkCondTypeName + compareOperatorText.getCompareLeft() + startValueStr;
+		} else {
+			if (compare == 6 || compare == 7) {
+				variable0 = startValueStr + compareOperatorText.getCompareLeft() + checkCondTypeName
+						+ compareOperatorText.getCompareright() + endValueStr;
+			} else {
+				variable0 = checkCondTypeName + compareOperatorText.getCompareLeft() + startValueStr
+						+ ", " + checkCondTypeName + compareOperatorText.getCompareright() + endValueStr;
+			}
+		}
+		
+		return variable0;
 	}
 	
 	private class ContinuousOutput {

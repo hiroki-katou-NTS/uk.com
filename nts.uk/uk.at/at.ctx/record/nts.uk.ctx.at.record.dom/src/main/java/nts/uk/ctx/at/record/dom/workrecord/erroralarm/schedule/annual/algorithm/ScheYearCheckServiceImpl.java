@@ -460,7 +460,7 @@ public class ScheYearCheckServiceImpl implements ScheYearCheckService {
 		if(compare <= 5) {
 			variable0 = checkCondTypeName + compareOperatorText.getCompareLeft() + startValue;
 		} else {
-			if (compare > 5 && compare <= 7) {
+			if (compare == 6 || compare == 7) {
 				variable0 = startValue + compareOperatorText.getCompareLeft() + checkCondTypeName
 						+ compareOperatorText.getCompareright() + endValue;
 			} else {
@@ -511,11 +511,15 @@ public class ScheYearCheckServiceImpl implements ScheYearCheckService {
 			
 			// 休暇日数を計算
 			if (dayCheckCond.getTypeOfDays() == TypeOfDays.ANNUAL_LEAVE_NUMBER) {
-				// 休暇日数　＝　取得した年休積休の集計結果．年休．年休情報(期間終了日時点)．使用日数
-				totalTime = aggResult.getAnnualLeave().get().getAsOfPeriodEnd().getUsedDays().v().doubleValue();
+				if (aggResult.getAnnualLeave().isPresent()) {
+					// 休暇日数　＝　取得した年休積休の集計結果．年休．年休情報(期間終了日時点)．使用日数
+					totalTime = aggResult.getAnnualLeave().get().getAsOfPeriodEnd().getUsedDays().v().doubleValue();
+				}
 			} else {
-				// 休暇日数　＝　取得した年休積休の集計結果．積立年休．積立年休情報(期間終了日時点)．使用日数
-				totalTime = aggResult.getReserveLeave().get().getAsOfPeriodEnd().getUsedDays().v().doubleValue();
+				if (aggResult.getReserveLeave().isPresent()) {
+					// 休暇日数　＝　取得した年休積休の集計結果．積立年休．積立年休情報(期間終了日時点)．使用日数
+					totalTime = aggResult.getReserveLeave().get().getAsOfPeriodEnd().getUsedDays().v().doubleValue();
+				}
 			}
 			break;
 		default:

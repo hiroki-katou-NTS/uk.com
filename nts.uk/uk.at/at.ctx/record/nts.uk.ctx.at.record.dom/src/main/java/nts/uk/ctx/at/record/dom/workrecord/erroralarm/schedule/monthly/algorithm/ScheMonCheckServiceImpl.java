@@ -45,6 +45,7 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.ConvertCompareTypeTo
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.algorithm.StatusOfEmployeeAdapterAl;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.algorithm.WorkPlaceHistImportAl;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.algorithm.WorkPlaceIdAndPeriodImportAl;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedTimeDuration;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.monthly.DayCheckCond;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.monthly.ExtractionCondScheduleMonth;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.monthly.ExtractionCondScheduleMonthRepository;
@@ -52,10 +53,11 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.monthly.FixedExtr
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.monthly.FixedExtractionSMonConRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.monthly.FixedExtractionSMonItems;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.monthly.FixedExtractionSMonItemsRepository;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.monthly.MonCheckItemType;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.monthly.PublicHolidayCheckCond;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.monthly.ScheMonCheckService;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.monthly.TimeCheckCond;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.monthly.TypeOfDays;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.monthly.TypeOfTime;
 import nts.uk.ctx.at.record.dom.workrecord.errorsetting.algorithm.CompareValueRangeChecking;
 import nts.uk.ctx.at.shared.dom.adapter.attendanceitemname.AttendanceItemNameAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
@@ -299,21 +301,22 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 			DatePeriod dPeriod, String errorCheckId, String listFixedItem, String listOptionalItem) {
 		YearMonth ym = dPeriod.yearMonthsBetween().get(0);
 		Year year = new Year(ym.year());
+		DatePeriod dateInMonths = new DatePeriod(dPeriod.start().yearMonth().firstGeneralDate(), dPeriod.end().yearMonth().lastGeneralDate());
 		
 		// スケジュールの勤怠項目を取得する
 		Map<Integer, String> attendanceItems = attendanceItemNameAdapter.getAttendanceItemNameAsMapName(cid, 0);
 		
 		// 社員ID(List)、期間を設定して勤務予定を取得する
-		List<WorkScheduleWorkInforImport> workScheduleWorkInfos = workScheduleWorkInforAdapter.getBy(lstSid, dPeriod);
+		List<WorkScheduleWorkInforImport> workScheduleWorkInfos = workScheduleWorkInforAdapter.getBy(lstSid, dateInMonths);
 		
 		// 社員と期間を条件に日別実績を取得する
-		List<IntegrationOfDaily> empDailyPerformance = dailyRecordShareFinder.findByListEmployeeId(lstSid, dPeriod);
+		List<IntegrationOfDaily> empDailyPerformance = dailyRecordShareFinder.findByListEmployeeId(lstSid, dateInMonths);
 		
 		// 社員ID（List）、期間を設定して月別実績を取得する
 		List<AttendanceTimeOfMonthly> attendanceTimeOfMonthlies = attendanceTimeOfMonthlyRepo.findBySidsAndYearMonths(lstSid, dPeriod.yearMonthsBetween());
 				
 		// アルゴリズム「社員IDと基準日から社員の雇用コードを取得」を実行する。
-		Map<String, List<SyEmploymentImport>> employeeHistoryMap = this.syEmploymentAdapter.finds(lstSid, dPeriod);
+		Map<String, List<SyEmploymentImport>> employeeHistoryMap = this.syEmploymentAdapter.finds(lstSid, dateInMonths);
         
 		Map<String, Map<DatePeriod, WorkingConditionItem>> empWorkingCondItem = new HashMap<>();
 		List<FixedExtractionSMonCon> fixedScheConds = new ArrayList<>();
@@ -444,10 +447,10 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 			// (チェック項目の種類　＝　対比　AND　チェックする対比　!＝　所定公休日数比)　OR　チェック項目の種類　＝　日数
 			if (isNotPublicHolidayWorkingDay || scheCondMonth.isNumberDay()) {
 				List<WorkingCondition> listWorkingCondition = workingConditionRepository
-						.getBySidsAndDatePeriod(lstSid, dPeriod);
+						.getBySidsAndDatePeriod(lstSid, dateInMonths);
 				
 				// 社員ID（List）と期間から労働条件を取得する
-				List<WorkingConditionItem> workingConditionItems = workingConditionItemRepository.getBySidsAndDatePeriod(lstSid, dPeriod);
+				List<WorkingConditionItem> workingConditionItems = workingConditionItemRepository.getBySidsAndDatePeriod(lstSid, dateInMonths);
 				
 				// ドメインモデル「労働条件項目」を取得
 				Map<String, WorkingConditionItem> mapWorkingCondtionItem = workingConditionItems.stream()
@@ -466,7 +469,7 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 		}		
 		
 		// 社員ID（List）と指定期間から社員の雇用履歴を取得
-		List<SharedSidPeriodDateEmploymentImport> lstEmploymentHis = this.shareEmploymentAdapter.getEmpHistBySidAndPeriodRequire(new CacheCarrier(), lstSid, dPeriod);
+		List<SharedSidPeriodDateEmploymentImport> lstEmploymentHis = this.shareEmploymentAdapter.getEmpHistBySidAndPeriodRequire(new CacheCarrier(), lstSid, dateInMonths);
 		
 		// [NO.642]指定した会社の雇用毎の締め日を取得する
 		List<ClosureDateOfEmploymentImport> closureDateOfEmps = workDayAdapter.getClosureDate(cid);
@@ -491,7 +494,7 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 				.closingPeriods(closingPeriods)
 				.closureDateOfEmps(closureDateOfEmps)
 				.publicHdSettingOpt(publicHdSettingOpt)
-				.publicHolidayManagementUsageUnit(publicHolidayManagementUsageUnit)
+				.publicHolidayManagementUsageUnitOpt(publicHolidayManagementUsageUnit)
 				.employmentMonthDaySetting(optEmploymentMonthDaySetting)
 				.employeeMonthDaySetting(optEmployeeMonthDaySetting)
 				.workplaceMonthDaySetting(optWorkplaceMonthDaySetting)
@@ -537,6 +540,10 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 		
 		// Input．スケジュール月次の任意抽出条件をループする
 		for (ExtractionCondScheduleMonth scheCondMon: prepareData.getScheCondMonths()) {
+			if (scheCondMon.getCheckConditions() == null) {
+				continue;
+			}
+			
 			// チェック項目をチェック
 			switch (scheCondMon.getCheckItemType()) {
 			case CONTRAST:
@@ -616,7 +623,7 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 				break;
 			case TIME:
 				// 時間の場合
-				ExtractionResultDetail extractDetailItemTime =conditionTab2ItemTime(
+				ExtractionResultDetail extractDetailItemTime = conditionTab2ItemTime(
 						cid, sid, wkpId, ym, 
 						attendanceTimeOfMon, workSchedules, integrationOfDailys, 
 						scheCondMon, presentClosingPeriod);
@@ -796,6 +803,10 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 			// 所定公休日数比の場合
 			// Input．公休設定．公休を管理するかをチェック
 			if (prepareData.getPublicHdSettingOpt().isPresent()) {
+				if (prepareData.getPublicHdSettingOpt().get().getIsManagePublicHoliday() != 1) {
+					return null;
+				}
+				
 				// 所定公休日数比をチェック				
 				
 				// 公休使用数を計算する
@@ -819,17 +830,20 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 						.findFirst();
 				Optional<CompanyMonthDaySetting> optCompanyMonthDaySettingOpt = prepareData.getCompanyMonthDaySetting();
 				
-				Double numberOfHoliday = numberOfDayHolidayService.getNumberOfHoliday(
-						prepareData.getPublicHolidayManagementUsageUnitOpt().get(),
-						employmentMonthDaySettingOpt,
-						employeeMonthDaySettingOpt, 
-						workplaceMonthDaySettingOpt, 
-						optCompanyMonthDaySettingOpt);
+				Double numberOfHoliday = 0.0;
+				if (prepareData.getPublicHolidayManagementUsageUnitOpt().isPresent()) {
+					numberOfHoliday = numberOfDayHolidayService.getNumberOfHoliday(
+							prepareData.getPublicHolidayManagementUsageUnitOpt().get(),
+							employmentMonthDaySettingOpt,
+							employeeMonthDaySettingOpt, 
+							workplaceMonthDaySettingOpt, 
+							optCompanyMonthDaySettingOpt);
+				}
 				
 				// 比率を計算
 				Double ratio = 0.0;
 				if (numberOfHoliday != 0) {
-					ratio = totalNumberOfHoliday/numberOfHoliday;
+					ratio = (totalNumberOfHoliday/numberOfHoliday) * 100;
 				}
 				
 				// 条件をチェックする
@@ -848,7 +862,7 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 				}
 				
 				// 比較条件
-				String param0 = getCompareOperatorText(scheCondMon.getCheckConditions(), publicHoliday.getTypeOfContrast().nameId);
+				String param0 = getCompareOperatorText(scheCondMon.getCheckConditions(), publicHoliday.getTypeOfContrast().nameId, scheCondMon.getCheckItemType());
 				// 所定公休日数
 				String param1 = String.valueOf(numberOfHoliday);
 				// 合計公休使用数
@@ -861,6 +875,10 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 			// 基準時間比（通常）の場合
 			// Input．労働条件項目．労働制をチェック			
 			WorkingConditionItem workingConditionItemHoliday = getWorkingConditionItem(sid, ym, prepareData);
+			if (workingConditionItemHoliday == null) {
+				return null;
+			}
+			
 			if (WorkingSystem.REGULAR_WORK != workingConditionItemHoliday.getLaborSystem()) {
 				return null;
 			}
@@ -892,7 +910,7 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 			// ※取得した比較対象基準時間　＝　０　の場合
 			// 比率　＝　0
 			Double ratio = 0.0;
-			if (totalComparsion == 0) {
+			if (totalComparsion != 0.0) {
 				ratio = (totalWorkingTime / totalComparsion) * 100;
 			}
 			
@@ -912,7 +930,7 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 			}
 			
 			// アラーム内容
-			String param0 = getCompareOperatorText(scheCondMon.getCheckConditions(), publicHoliday.getTypeOfContrast().nameId);
+			String param0 = getCompareOperatorText(scheCondMon.getCheckConditions(), publicHoliday.getTypeOfContrast().nameId, scheCondMon.getCheckItemType());
 			String param1 = String.valueOf(totalComparsion);
 			String param2 = String.valueOf(totalWorkingTime);
 			alarmContent = TextResource.localize("KAL010_1117", param0, param1, param2);
@@ -924,6 +942,10 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 			// 基準時間比（変形労働）の場合
 			// Input．労働条件項目．労働制をチェック
 			WorkingConditionItem workingConditionItemDayOff = getWorkingConditionItem(sid, ym, prepareData);
+			if (workingConditionItemDayOff == null) {
+				return null;
+			}
+			
 			if (WorkingSystem.REGULAR_WORK != workingConditionItemDayOff.getLaborSystem()) {
 				return null;
 			}
@@ -975,7 +997,7 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 			}
 			
 			// アラーム内容
-			String paramDayOff0 = getCompareOperatorText(scheCondMon.getCheckConditions(), publicHoliday.getTypeOfContrast().nameId);
+			String paramDayOff0 = getCompareOperatorText(scheCondMon.getCheckConditions(), publicHoliday.getTypeOfContrast().nameId, scheCondMon.getCheckItemType());
 			String paramDayOff1 = String.valueOf(totalComparsionDayOff);
 			String paramDayOff2 = String.valueOf(totalWorkingTimeDayOff);
 			alarmContent = TextResource.localize("KAL010_1117", paramDayOff0, paramDayOff1, paramDayOff2);
@@ -987,6 +1009,10 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 			// 基準時間比（フレックス）の場合
 			// Input．労働条件項目．労働制をチェック
 			WorkingConditionItem workingConditionItemPubHoliday = getWorkingConditionItem(sid, ym, prepareData);
+			if (workingConditionItemPubHoliday == null) {
+				return null;
+			}
+			
 			if (WorkingSystem.REGULAR_WORK != workingConditionItemPubHoliday.getLaborSystem()) {
 				return null;
 			}
@@ -1065,7 +1091,7 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 			}
 			
 			// アラーム内容
-			String paramPub0 = getCompareOperatorText(scheCondMon.getCheckConditions(), publicHoliday.getTypeOfContrast().nameId);
+			String paramPub0 = getCompareOperatorText(scheCondMon.getCheckConditions(), publicHoliday.getTypeOfContrast().nameId, scheCondMon.getCheckItemType());
 			String paramPub1 = String.valueOf(totalComparsionPubHoliday);
 			String paramPub2 = String.valueOf(totalWorkingTimePubHoliday);
 			alarmContent = TextResource.localize("KAL010_1117", paramPub0, paramPub1, paramPub2);
@@ -1098,14 +1124,14 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 	}
 	
 	private WorkingConditionItem getWorkingConditionItem(String sid, YearMonth ym, ScheMonPrepareData prepareData) {
-		DatePeriod dPeriod = new DatePeriod(ym.firstGeneralDate(), ym.lastGeneralDate());
 		Map<DatePeriod, WorkingConditionItem> empWorkingCondItem = prepareData.getEmpWorkingCondItem().get(sid);
 		if (empWorkingCondItem.isEmpty()) {
 			return null;
 		}
 		
-		WorkingConditionItem workingConditionItem = empWorkingCondItem.get(dPeriod);		
-		return workingConditionItem;
+		boolean dateInRange = empWorkingCondItem.keySet().stream()
+				.anyMatch(x -> x.start().beforeOrEquals(ym.firstGeneralDate()) && x.end().afterOrEquals(ym.lastGeneralDate()));		
+		return dateInRange ? empWorkingCondItem.values().stream().findFirst().get() : null;
 	}
 	
 	/**
@@ -1177,6 +1203,8 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 		int totalTime = scheTimeAndTotalWorkingService.getScheTimeAndTotalWorkingTime(
 				ym, attendanceTimeOfMonthly, presentClosingPeriod, integrationDailys, workSchedules);
 		
+		TimeCheckCond timeCheckCond = (TimeCheckCond)scheCondMon.getScheCheckConditions();
+		
 		// 条件をチェックする
 		boolean checkCompareValue = false;
 		if (scheCondMon.getCheckConditions() instanceof CompareRange) {
@@ -1197,7 +1225,7 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 						? scheCondMon.getErrorAlarmMessage().get().v()
 						: Strings.EMPTY;
 		// アラーム内容
-		String param = getCompareOperatorText(scheCondMon.getCheckConditions(), TypeOfTime.SCHETIME_WORKING_HOURS.nameId);
+		String param = getCompareOperatorText(scheCondMon.getCheckConditions(), timeCheckCond.getTypeOfTime().nameId, scheCondMon.getCheckItemType());
 		String alarmContent = TextResource.localize("KAL010_1118", param, String.valueOf(totalTime));
 		// チェック対象値
 		String checkValue = TextResource.localize("KAL010_1121", String.valueOf(totalTime));
@@ -1248,6 +1276,9 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
                     false, false, Optional.of(false),
                     Optional.empty(), Optional.empty(), Optional.empty(),
                     Optional.empty(), Optional.empty(), Optional.empty());
+			if (!aggResult.getAnnualLeave().isPresent()) {
+				break;
+			}
 			
 			// 休暇日数を計算
 			if (dayCheckCond.getTypeOfDays() == TypeOfDays.ANNUAL_LEAVE_NUMBER) {
@@ -1293,7 +1324,7 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 						? scheCondMon.getErrorAlarmMessage().get().v()
 						: Strings.EMPTY;
 		// アラーム内容
-		String param = getCompareOperatorText(scheCondMon.getCheckConditions(), TypeOfTime.SCHETIME_WORKING_HOURS.nameId);
+		String param = getCompareOperatorText(scheCondMon.getCheckConditions(), dayCheckCond.getTypeOfDays().nameId, scheCondMon.getCheckItemType());
 		String alarmContent = TextResource.localize("KAL010_1119", param, String.valueOf(totalTime));
 		// チェック対象値
 		String checkValue = TextResource.localize("KAL010_1120", String.valueOf(totalTime));
@@ -1430,7 +1461,7 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 	 * Get parameter 0 for alarm content 
 	 */
 	@SuppressWarnings({ "rawtypes" })
-	public String getCompareOperatorText(CheckedCondition checkCondition, String checkCondTypeName) {
+	public String getCompareOperatorText(CheckedCondition checkCondition, String checkCondTypeName, MonCheckItemType monCheckType) {
 		if (checkCondition == null) {
 			return checkCondTypeName;		
 		}
@@ -1441,22 +1472,48 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 				
 		CompareOperatorText compareOperatorText = convertComparaToText.convertCompareType(compare);
 		
-		String startValue = checkCondition instanceof CompareSingleValue 
-						? ((CompareSingleValue) checkCondition).getValue().toString()
-						: ((CompareRange) checkCondition).getStartValue().toString();
-		String endValue = checkCondition instanceof CompareRange  
-				? ((CompareRange) checkCondition).getEndValue().toString() : null;
+		String startValueStr = Strings.EMPTY;
+		String endValueStr = Strings.EMPTY;
+		Double startValue = checkCondition instanceof CompareSingleValue 
+						? (Double)((CompareSingleValue) checkCondition).getValue()
+						: (Double)((CompareRange) checkCondition).getStartValue();
+		Double endValue = checkCondition instanceof CompareRange  
+				? (Double)((CompareRange) checkCondition).getEndValue() : null;
+				
+		switch (monCheckType) {
+		case CONTRAST:
+			startValueStr = String.valueOf(startValue.intValue());
+			if (endValue != null) {
+				endValueStr = String.valueOf(endValue.intValue());
+			}
+			break;
+		case TIME:
+			CheckedTimeDuration startTime = new CheckedTimeDuration(startValue.intValue());
+			startValueStr = startTime.getTimeWithFormat();
+			if (endValue != null) {
+				CheckedTimeDuration endTime = new CheckedTimeDuration(endValue.intValue());
+				endValueStr = endTime.getTimeWithFormat();
+			}
+		case NUMBER_DAYS:
+		case REMAIN_NUMBER:
+			startValueStr = startValue.toString();
+			if (endValue != null) {
+				endValueStr = endValue.toString();
+			}
+		default:
+			break;
+		}
 		
 		String variable0 = "";
 		if(compare <= 5) {
-			variable0 = checkCondTypeName + compareOperatorText.getCompareLeft() + startValue;
+			variable0 = checkCondTypeName + compareOperatorText.getCompareLeft() + startValueStr;
 		} else {
-			if (compare > 5 && compare <= 7) {
-				variable0 = startValue + compareOperatorText.getCompareLeft() + checkCondTypeName
-						+ compareOperatorText.getCompareright() + endValue;
+			if (compare == 6 || compare == 7) {
+				variable0 = startValueStr + compareOperatorText.getCompareLeft() + checkCondTypeName
+						+ compareOperatorText.getCompareright() + endValueStr;
 			} else {
-				variable0 = checkCondTypeName + compareOperatorText.getCompareLeft() + startValue
-						+ ", " + checkCondTypeName + compareOperatorText.getCompareright() + endValue;
+				variable0 = checkCondTypeName + compareOperatorText.getCompareLeft() + startValueStr
+						+ ", " + checkCondTypeName + compareOperatorText.getCompareright() + endValueStr;
 			}
 		}
 		

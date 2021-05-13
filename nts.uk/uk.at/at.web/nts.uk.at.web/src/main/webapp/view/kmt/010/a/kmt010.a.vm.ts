@@ -100,6 +100,7 @@ module nts.uk.at.view.kmt010.a {
             const vm = this;
             vm.multiSelectedId.subscribe((workplaceId) => {
                 vm.getWorkPlaceDetails(workplaceId);
+                vm.selectedTab('tab-1');
             });
         }
 
