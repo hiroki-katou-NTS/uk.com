@@ -285,22 +285,24 @@ module nts.uk.at.view.ktg027.a {
                             }
                         });
 
-                    vm.$window.storage('KTG027_TARGET').then(rs => {
+                    vm.$window.storage('KTG027_TARGET').then((rs: {isRefresh: boolean, target: any}) => {
                         if (rs.isRefresh) {
                             vm.targetYear(rs.target);
                             return;
                         }
-                    });
-                    // update targetYear by closure data
-                    if (closingInformationForNextMonth) {
-                        const { processingYm } = closingInformationForNextMonth;
+                        
+                        // update targetYear by closure data
+                        if (closingInformationForNextMonth) {
+                            const { processingYm } = closingInformationForNextMonth;
 
-                        vm.targetYear(`${processingYm}`);
-                    } else {
+                            vm.targetYear(`${processingYm}`);
+                            return;
+                        }
+
                         const { processingYm } = closingInformationForCurrentMonth;
 
                         vm.targetYear(`${processingYm}`);
-                    }
+                    });
                 })
                 .fail((message: { messageId: string }) => {
                     vm.$dialog.error(message).then(() => vm.$blockui('clearView'));

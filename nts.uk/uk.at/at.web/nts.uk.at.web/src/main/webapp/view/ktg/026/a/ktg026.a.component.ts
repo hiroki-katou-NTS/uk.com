@@ -453,7 +453,7 @@ module nts.uk.at.view.ktg026.a {
 
         created(param?: any) {
             const vm = this;
-            vm.isDialog = !!param.mode;
+            vm.isDialog = param && !!param.mode;
             vm.dialogParam = vm.isDialog ? param : null;
             const { $user, cache } = vm;
             const { employeeId } = vm.isDialog ? vm.dialogParam:  $user;
@@ -461,11 +461,7 @@ module nts.uk.at.view.ktg026.a {
             const { currentOrNextMonth } = (cache || { currentOrNextMonth: 1 });
             const targetDate: any = vm.isDialog ? vm.dialogParam.targetDate : null;
             let targetYear: any = vm.isDialog ? vm.dialogParam.targetYear : null;
-            vm.$window.storage('KTG026_TARGET').then(rs => {
-                if (rs.isRefresh) {
-                    targetYear = rs.target;
-                }
-            });
+
             const command = { employeeId, targetDate, targetYear, currentOrNextMonth };
 
             vm
@@ -479,11 +475,19 @@ module nts.uk.at.view.ktg026.a {
                         // ???
                         vm.employeeName(response.empInfo.businessName);
 
-                        const year = !_.isNull(targetYear)
-                            ? targetYear
-                            : ((currentOrNextMonth === 1 ? yearIncludeThisMonth : yearIncludeNextMonth) || '');
-
-                        vm.targetYear(year.toString());
+                        vm.$window.storage('KTG026_TARGET')
+                            .then((rs: {isRefresh: boolean, target: any}) => {
+                                if (rs.isRefresh) {
+                                    targetYear = rs.target;
+                                }
+                            })
+                            .then(() => {
+                                const year = !_.isNull(targetYear)
+                                ? targetYear
+                                : ((currentOrNextMonth === 1 ? yearIncludeThisMonth : yearIncludeNextMonth) || '');
+    
+                                vm.targetYear(year.toString());
+                            });
 
                         vm.displayDataTable(response);
                     }
