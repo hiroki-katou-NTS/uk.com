@@ -101,6 +101,7 @@ module nts.uk.ui.at.kdp013.b {
             .detail-event table tr>td>div {
                 max-height: 120px;
                 overflow-y: auto;
+                word-break: break-all;
             }
         </style>
         `
@@ -108,7 +109,8 @@ module nts.uk.ui.at.kdp013.b {
     export class ViewModel extends ko.ViewModel {
         dataSources: KnockoutObservableArray<KeyValue> = ko.observableArray([]);
 
-        taskFrameSettings: KnockoutObservableArray<a.TaskFrameSettingDto> = ko.observableArray([]);
+        workLocations!: KnockoutComputed<a.WorkLocationDto[]>;
+        taskFrameSettings!: KnockoutComputed<a.TaskFrameSettingDto[]>;
 
         constructor(public params: Params) {
             super();
@@ -116,7 +118,24 @@ module nts.uk.ui.at.kdp013.b {
             const vm = this;
             const { $settings } = params;
 
-            ko.computed({
+            vm.workLocations = ko.computed({
+                read: () => {
+                    const settings = ko.unwrap($settings);
+
+
+                    if (settings) {
+                        const { startManHourInputResultDto } = settings;
+
+                        const { workLocations } = startManHourInputResultDto;
+
+                        return workLocations;
+                    }
+
+                    return [];
+                }
+            });
+
+            vm.taskFrameSettings = ko.computed({
                 read: () => {
                     const settings = ko.unwrap($settings);
 
@@ -127,28 +146,40 @@ module nts.uk.ui.at.kdp013.b {
                         const { taskFrameUsageSetting } = startManHourInputResultDto;
                         const { frameSettingList } = taskFrameUsageSetting;
 
-                        vm.taskFrameSettings(frameSettingList);;
+                        return frameSettingList;
                     }
+
+                    return [];
                 }
             });
         }
 
         mounted() {
             const vm = this;
-            const { params, taskFrameSettings } = vm;
-            const { data } = params;
+            const { params, workLocations, taskFrameSettings } = vm;
+            const { data, $share } = params;
 
             ko.computed({
                 read: () => {
                     const model: KeyValue[] = [];
                     const event = ko.unwrap(data);
+                    const shared = ko.unwrap($share);
+                    const works = ko.unwrap(workLocations);
                     const settings = ko.unwrap(taskFrameSettings);
 
                     const [first, second, thirt, four, five] = settings;
 
                     if (event) {
                         const { extendedProps, start, end } = event;
-                        const { descriptions } = extendedProps;
+                        const {
+                            descriptions,
+                            workCD1,
+                            workCD2,
+                            workCD3,
+                            workCD4,
+                            workCD5,
+                            workplace
+                        } = extendedProps;
 
                         const startTime = getTimeOfDate(start);
                         const endTime = getTimeOfDate(end);
@@ -158,27 +189,93 @@ module nts.uk.ui.at.kdp013.b {
                         model.push({ key: 'KDW013_25', value: number2String(endTime - startTime) });
 
                         if (first && first.useAtr === 1) {
-                            model.push({ key: first.frameName, value: '' });
+
+                            if (shared) {
+                                const { taskListDto1 } = shared;
+                                const exist = _.find(taskListDto1, ({ code }) => code === workCD1);
+
+                                if (exist) {
+                                    model.push({ key: first.frameName, value: `${exist.code} ${exist.displayInfo.taskName}` });
+                                } else {
+                                    model.push({ key: first.frameName, value: workCD1 });
+                                }
+                            } else {
+                                model.push({ key: first.frameName, value: workCD1 });
+                            }
                         }
 
                         if (second && second.useAtr === 1) {
-                            model.push({ key: second.frameName, value: '' });
+
+                            if (shared) {
+                                const { taskListDto2 } = shared;
+                                const exist = _.find(taskListDto2, ({ code }) => code === workCD2);
+
+                                if (exist) {
+                                    model.push({ key: second.frameName, value: `${exist.code} ${exist.displayInfo.taskName}` });
+                                } else {
+                                    model.push({ key: second.frameName, value: workCD2 });
+                                }
+                            } else {
+                                model.push({ key: second.frameName, value: workCD2 });
+                            }
                         }
 
                         if (thirt && thirt.useAtr === 1) {
-                            model.push({ key: thirt.frameName, value: '' });
+                            if (shared) {
+                                const { taskListDto3 } = shared;
+                                const exist = _.find(taskListDto3, ({ code }) => code === workCD3);
+
+                                if (exist) {
+                                    model.push({ key: thirt.frameName, value: `${exist.code} ${exist.displayInfo.taskName}` });
+                                } else {
+                                    model.push({ key: thirt.frameName, value: workCD3 });
+                                }
+                            } else {
+                                model.push({ key: thirt.frameName, value: workCD3 });
+                            }
                         }
 
                         if (four && four.useAtr === 1) {
-                            model.push({ key: four.frameName, value: '' });
+                            if (shared) {
+                                const { taskListDto4 } = shared;
+                                const exist = _.find(taskListDto4, ({ code }) => code === workCD4);
+
+                                if (exist) {
+                                    model.push({ key: four.frameName, value: `${exist.code} ${exist.displayInfo.taskName}` });
+                                } else {
+                                    model.push({ key: four.frameName, value: workCD4 });
+                                }
+                            } else {
+                                model.push({ key: four.frameName, value: workCD4 });
+                            }
                         }
 
                         if (five && five.useAtr === 1) {
-                            model.push({ key: five.frameName, value: '' });
+                            if (shared) {
+                                const { taskListDto5 } = shared;
+                                const exist = _.find(taskListDto5, ({ code }) => code === workCD5);
+
+                                if (exist) {
+                                    model.push({ key: five.frameName, value: `${exist.code} ${exist.displayInfo.taskName}` });
+                                } else {
+                                    model.push({ key: five.frameName, value: workCD5 });
+                                }
+                            } else {
+                                model.push({ key: five.frameName, value: workCD5 });
+                            }
                         }
 
-                        model.push({ key: 'KDW013_28', value: '' });
+                        const work = _.find(works, ({ workLocationCD }) => workLocationCD === workplace);
+
+                        if (work) {
+                            model.push({ key: 'KDW013_28', value: `${work.workLocationCD} ${work.workLocationName}` });
+                        } else {
+                            model.push({ key: 'KDW013_28', value: '' });
+                        }
+
                         model.push({ key: 'KDW013_29', value: descriptions });
+
+                        vm.dataSources(model);
                     } else {
                         model.push({ key: 'KDW013_27', value: '' });
                         model.push({ key: 'KDW013_25', value: '' });
@@ -205,9 +302,9 @@ module nts.uk.ui.at.kdp013.b {
 
                         model.push({ key: 'KDW013_28', value: '' });
                         model.push({ key: 'KDW013_29', value: '' });
-                    }
 
-                    vm.dataSources(model);
+                        vm.dataSources(model);
+                    }
                 },
                 disposeWhenNodeIsRemoved: vm.$el
             });
@@ -245,5 +342,6 @@ module nts.uk.ui.at.kdp013.b {
         mode: KnockoutObservable<boolean>;
         data: KnockoutObservable<FullCalendar.EventApi>;
         $settings: KnockoutObservable<a.StartProcessDto | null>;
+        $share: KnockoutObservable<c.StartWorkInputPanelDto | null>;
     }
 }

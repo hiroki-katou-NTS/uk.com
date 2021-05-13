@@ -2,6 +2,8 @@ module nts.uk.ui.at.kdp013.share {
     const { randomId } = nts.uk.util;
 
     export module dropdown {
+        const vm = new ko.ViewModel();
+
         const style = `
             .nts-dropdown {
                 position: relative;
@@ -111,6 +113,7 @@ module nts.uk.ui.at.kdp013.share {
         const COMPONENT_NAME = 'dropdown';
 
         interface DropdownItem {
+            id: string;
             name: string;
             code: string;
         }
@@ -243,10 +246,16 @@ module nts.uk.ui.at.kdp013.share {
                 ko.computed({
                     read: () => {
                         const item = ko.unwrap(selected);
-                        const { code, name } = item;
 
-                        $(element)
-                            .html(`<td>${code}</td><td>${name}</td>`);
+                        if (item) {
+                            const { code, name } = item;
+
+                            $(element)
+                                .html(`<td>${code}</td><td>${name}</td>`);
+                        } else {
+                            $(element)
+                                .html(`<td>${vm.$i18n('KDW013_41')}</td><td></td>`);
+                        }
                     },
                     disposeWhenNodeIsRemoved: element
                 });
@@ -340,7 +349,8 @@ module nts.uk.ui.at.kdp013.share {
 
                         return _.chain(items)
                             .filter(({ name, code }) => name.indexOf(filter) > -1 || code.indexOf(filter) > -1)
-                            .map(({ name, code }, index) => ({
+                            .map(({ id, name, code }, index) => ({
+                                id,
                                 code,
                                 name,
                                 selected: selected === code,
@@ -355,16 +365,16 @@ module nts.uk.ui.at.kdp013.share {
                         const items = ko.unwrap(params.items);
                         const highlight = ko.unwrap(vm.highlight);
                         const selected = ko.unwrap(params.selected);
-                        const exist = _.find(items, ({ code }, index) => highlight === index || code === selected);
+                        const exist = _.find(items, ({ id }, index) => highlight === index || id === selected);
 
 
                         if (exist) {
-                            const { code, name } = exist;
+                            const { id, code, name } = exist;
 
-                            return { code, name };
+                            return { id, code, name };
                         }
 
-                        return { code: '', name: '' };
+                        return null;
                     }
                 });
             }
@@ -383,7 +393,7 @@ module nts.uk.ui.at.kdp013.share {
                         vm.filter('');
                         vm.highlight(-1);
                     } else {
-                        const items = ko.unwrap(vm.items).map(({ code }) => code);
+                        const items = ko.unwrap(vm.items).map(({ id }) => id);
                         const selected = ko.unwrap(vm.params.selected);
                         const index = _.indexOf(items, selected);
 
@@ -465,7 +475,7 @@ module nts.uk.ui.at.kdp013.share {
                                     const exist = _.find(items, ({ }, index) => index === highlight);
 
                                     if (exist) {
-                                        vm.params.selected(exist.code);
+                                        vm.params.selected(exist.id);
                                     }
 
                                     vm.show(false);
@@ -513,7 +523,7 @@ module nts.uk.ui.at.kdp013.share {
                 const { params } = vm;
 
                 // emit selected id to parent component
-                params.selected(item.code);
+                params.selected(item.id);
 
                 vm.show(false);
 
