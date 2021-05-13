@@ -28,7 +28,7 @@
 				<a id="C1_1" class="goback" tabindex="1" 
 					data-bind="ntsLinkButton: { action: jumpTo }">#{i18n.getText('KDW006_25')}</a>
 				<button id="C1_2" class="proceed" tabindex="2"
-					data-bind="click: saveData, timeClick: 1000" style="margin-left: 85px;">#{i18n.getText('KDW006_26')}</button>
+					data-bind="click: saveData, enable: $root.errors.isEmpty" style="margin-left: 85px;">#{i18n.getText('KDW006_26')}</button>
 			</div>
 			<div id="contents-area">
 				<div id="contents">
@@ -194,28 +194,26 @@
 
 					<div id="C4_14" class="left-content" data-bind="ntsFormLabel: { constraint: 'Comment', required: false }">#{i18n.getText('KDW006_298')}</div>
 					<div class="right-content">
-						<div id="C4_15" tabindex="15" class="radio-error"
-							data-bind="ntsRadioBoxGroup: {
+						<div id="C4_15" class="cf" tabindex="15" data-bind="ntsSwitchButton: {
 							name: $i18n('KDW006_298'),
 							options: itemList,
 							optionsValue: 'code',
 							optionsText: 'name',
 							value: identityProcessDto().yourselfConfirmError,
-							enable: identityProcessDto().useDailySelfCk}">
-						</div>
+							enable: identityProcessDto().useDailySelfCk
+						}"></div>
 					</div>
 
 					<div id="C4_18" class="left-content" data-bind="ntsFormLabel: { constraint: 'Comment', required: false }">#{i18n.getText('KDW006_301')}</div>
 					<div class="right-content">
-						<div id="C4_19" tabindex="16" class="radio-error"
-							data-bind="ntsRadioBoxGroup: {
+						<div id="C4_19" class="cf" tabindex="16" data-bind="ntsSwitchButton: {
 							name: $i18n('KDW006_301'),
 							options: itemList,
 							optionsValue: 'code',
 							optionsText: 'name',
 							value: approvalProcessDto().supervisorConfirmError,
-				        	enable: approvalProcessDto().useDailyBossChk}">
-						</div>
+							enable: approvalProcessDto().useDailyBossChk
+						}"></div>
 					</div>
 
 					<div id="C4_22" class="left-content" data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KDW006_302')}</div>
