@@ -73,7 +73,6 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numb
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.SubstituteHolidayAggrResult;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.UnbalanceVacation;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakDayOffMngRepository;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemainRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.ComDayOffManaDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveManaDataRepository;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.breakinfo.FixedManagementDataMonth;
@@ -140,8 +139,6 @@ public class MonthlyAggregateProcessService {
 	private ClosureEmploymentRepository closureEmploymentRepo;
 	@Inject
 	private ShareEmploymentAdapter shareEmploymentAdapter;
-	@Inject
-	private InterimRemainRepository interimRemainRepo;
 	@Inject
 	private InterimBreakDayOffMngRepository interimBreakDayOffMngRepo;
 	@Inject

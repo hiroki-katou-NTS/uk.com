@@ -9,7 +9,7 @@ import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TempAnnualLeaveManagement;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TempAnnualLeaveMngs;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.ManagementDays;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.ScheduleRecordAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.TimeHoliday;
@@ -83,9 +83,9 @@ public class KrcdtAnnleaMngTemp extends UkJpaEntity implements Serializable {
 	 * ドメインに変換
 	 * @return 暫定年休管理データ
 	 */
-	public TempAnnualLeaveManagement toDomain(){
-
-		return TempAnnualLeaveManagement.of(
+	public TempAnnualLeaveMngs toDomain(){
+		return null;
+		/*return TempAnnualLeaveMngs.of(
 				this.PK.employeeId,
 				this.PK.ymd,
 				new ManagementDays(this.annualLeaveUse),
@@ -97,17 +97,17 @@ public class KrcdtAnnleaMngTemp extends UkJpaEntity implements Serializable {
 				new TimeHoliday(this.timeAnnualLeaveUsePrivateGoOut),
 				new TimeHoliday(this.timeAnnualLeaveUseUnionGoOut),
 				new WorkTypeCode(this.workTypeCode),
-				EnumAdaptor.valueOf(this.scheduleRecordAtr, ScheduleRecordAtr.class));
+				EnumAdaptor.valueOf(this.scheduleRecordAtr, ScheduleRecordAtr.class));*/
 	}
 
 	/**
 	 * ドメインから変換　（for Insert）
 	 * @param domain 暫定年休管理データ
 	 */
-	public void fromDomainForPersist(TempAnnualLeaveManagement domain){
+	public void fromDomainForPersist(TempAnnualLeaveMngs domain){
 
 		this.PK = new KrcdtAnnleaMngTempPK(
-				domain.getEmployeeId(),
+				domain.getSID(),
 				domain.getYmd());
 		this.fromDomainForUpdate(domain);
 	}
@@ -116,9 +116,9 @@ public class KrcdtAnnleaMngTemp extends UkJpaEntity implements Serializable {
 	 * ドメインから変換　(for Update)
 	 * @param domain 暫定年休管理データ
 	 */
-	public void fromDomainForUpdate(TempAnnualLeaveManagement domain){
+	public void fromDomainForUpdate(TempAnnualLeaveMngs domain){
 
-		this.annualLeaveUse = domain.getAnnualLeaveUse().v();
+		/*this.annualLeaveUse = domain.getAnnualLeaveUse().v();
 		this.timeAnnualLeaveUse = domain.getTimeAnnualLeaveUse().v();
 		this.timeAnnualLeaveUseBeforeWork = domain.getTimeAnnualLeaveUseBeforeWork().v();
 		this.timeAnnualLeaveUseAfterWork = domain.getTimeAnnualLeaveUseAfterWork().v();
@@ -127,6 +127,6 @@ public class KrcdtAnnleaMngTemp extends UkJpaEntity implements Serializable {
 		this.timeAnnualLeaveUsePrivateGoOut = domain.getTimeAnnualLeaveUsePrivateGoOut().v();
 		this.timeAnnualLeaveUseUnionGoOut = domain.getTimeAnnualLeaveUseUnionGoOut().v();
 		this.workTypeCode = domain.getWorkType().v();
-		this.scheduleRecordAtr = domain.getScheduleRecordAtr().value;
+		this.scheduleRecordAtr = domain.getScheduleRecordAtr().value;*/
 	}
 }
