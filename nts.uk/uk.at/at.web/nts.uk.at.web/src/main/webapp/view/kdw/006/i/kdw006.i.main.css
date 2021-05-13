@@ -10,11 +10,11 @@
 }
 
 .nts-switch-button {
-	width: 125px;
+	width: 110px;
 }
 
 .ntsHelpButton {
-	margin-left: 10px;
+	margin-left: 5px;
 }
 
 .I4-spacing{
@@ -22,7 +22,7 @@
 }
 
 .mid-line-spacing{
-	margin: 0 10px;
+	margin: 0 12px;
 }
 
 .inline{
@@ -33,10 +33,16 @@
 	width: 1250px;
 }
 
+#I2_2 {
+	position: relative;
+    top: 12px;
+    width: 220px;
+}
+
 #I3_2 {
 	position: relative;
 	top: 12px;
-	width: 125px;
+	width: 110px;
 }
 
 #I3_4 {
