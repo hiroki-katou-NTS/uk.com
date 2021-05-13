@@ -98,7 +98,7 @@ module nts.uk.at.view.ksm011.c {
     saveData() {
       const vm = this;
 
-      if(vm.workTypeControl() === 1 && _.isEmpty(vm.workTypeList())) {
+      if(vm.workTypeControl() === 1 && (_.isEmpty(vm.workTypeList()) || vm.workTypeListText().indexOf(vm.$i18n("KSM011_107")) >= 0)) {
         $('#KSM011_C3_6').ntsError('set', {messageId:'Msg_1690', messageParams:[vm.$i18n("KSM011_47")]});
         return;
       }

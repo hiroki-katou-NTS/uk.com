@@ -48,11 +48,11 @@ public class RegisterCompanyShiftTableRuleCommandHandler extends CommandHandler<
 
 
         ShiftTableRule shiftTableRule = ShiftTableRule.create(
-                NotUseAtr.valueOf(command.getUsePublicAtr())
-                , NotUseAtr.valueOf(command.getUseWorkAvailabilityAtr())
-                , shiftTableSetting
-                , availabilityAssignMethodList
-                , Optional.of(new FromNoticeDays(command.getUseWorkAvailabilityAtr()))
+                NotUseAtr.valueOf(command.getUsePublicAtr()),
+                NotUseAtr.valueOf(command.getUseWorkAvailabilityAtr()),
+                shiftTableSetting,
+                availabilityAssignMethodList,
+                Optional.of(new FromNoticeDays(command.getUseWorkAvailabilityAtr()))
         );
 
 

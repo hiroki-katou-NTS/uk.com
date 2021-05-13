@@ -146,11 +146,12 @@ module nts.uk.at.view.ksm011.e {
       });
 
       vm.roleId.subscribe((newRoleId) => {
-        vm.getRoleInfor(newRoleId);
+        if (!_.isEmpty(newRoleId)) vm.getRoleInfor(newRoleId);
+        vm.selectedTab('tab-1');
       });       
     }
 
-    getRoleInfor(roleId?: string) {
+    getRoleInfor(roleId: string) {
       const vm = this;
       vm.$blockui("show");
       vm.$ajax(fetch.getRoleInfor + roleId).done((data) => {

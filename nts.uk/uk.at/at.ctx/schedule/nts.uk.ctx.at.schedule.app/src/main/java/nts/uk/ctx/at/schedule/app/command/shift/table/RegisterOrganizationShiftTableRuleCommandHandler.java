@@ -38,11 +38,21 @@ public class RegisterOrganizationShiftTableRuleCommandHandler extends CommandHan
         }
 
         /** 作る(するしない区分, するしない区分, シフト表の設定, List<勤務希望の指定方法>, Optional<何日前に通知するかの日数>) **/
-        Optional<WorkAvailabilityRule> shiftTableSetting = Optional.of(new WorkAvailabilityRuleDateSetting(
-                new OneMonth(new DateInMonth(command.getClosureDate(), EnumAdaptor.valueOf(command.getClosureDate(), ClosureDateType.class) == ClosureDateType.LASTDAY))
-                , new DateInMonth(command.getAvailabilityDeadLine(), EnumAdaptor.valueOf(command.getAvailabilityDeadLine(), ClosureDateType.class) == ClosureDateType.LASTDAY)
-                , new HolidayAvailabilityMaxdays(command.getHolidayMaxDays())
-        ));
+        Optional<WorkAvailabilityRule> shiftTableSetting = Optional.of(
+                new WorkAvailabilityRuleDateSetting(
+                        new OneMonth(
+                                new DateInMonth(
+                                        command.getClosureDate(),
+                                        command.getClosureDate() == ClosureDateType.LASTDAY.value
+                                )
+                        ),
+                        new DateInMonth(
+                                command.getAvailabilityDeadLine(),
+                                command.getAvailabilityDeadLine() == ClosureDateType.LASTDAY.value
+                        ),
+                        new HolidayAvailabilityMaxdays(command.getHolidayMaxDays())
+                )
+        );
 
         List<AssignmentMethod> availabilityAssignMethodList = command.getAvailabilityAssignMethod() == AssignmentMethod.HOLIDAY.value
                 ? Collections.singletonList(AssignmentMethod.HOLIDAY)
@@ -52,19 +62,19 @@ public class RegisterOrganizationShiftTableRuleCommandHandler extends CommandHan
         /** Case シフト表のルール．勤務希望運用区分 = する */
         if (command.getUseWorkAvailabilityAtr() == 1) {
             shiftTableRule = ShiftTableRule.create(
-                    NotUseAtr.valueOf(command.getUsePublicAtr())
-                    , NotUseAtr.valueOf(command.getUseWorkAvailabilityAtr())
-                    , shiftTableSetting
-                    , availabilityAssignMethodList
-                    , Optional.of(new FromNoticeDays(command.getUseWorkAvailabilityAtr()))
+                    NotUseAtr.valueOf(command.getUsePublicAtr()),
+                    NotUseAtr.valueOf(command.getUseWorkAvailabilityAtr()),
+                    shiftTableSetting,
+                    availabilityAssignMethodList,
+                    Optional.of(new FromNoticeDays(command.getUseWorkAvailabilityAtr()))
             );
         } else {
             shiftTableRule = ShiftTableRule.create(
-                    NotUseAtr.valueOf(command.getUsePublicAtr())
-                    , NotUseAtr.valueOf(command.getUseWorkAvailabilityAtr())
-                    , Optional.empty()
-                    , availabilityAssignMethodList
-                    , Optional.of(new FromNoticeDays(command.getUseWorkAvailabilityAtr()))
+                    NotUseAtr.valueOf(command.getUsePublicAtr()),
+                    NotUseAtr.valueOf(command.getUseWorkAvailabilityAtr()),
+                    Optional.empty(),
+                    availabilityAssignMethodList,
+                    Optional.of(new FromNoticeDays(command.getUseWorkAvailabilityAtr()))
             );
         }
 
