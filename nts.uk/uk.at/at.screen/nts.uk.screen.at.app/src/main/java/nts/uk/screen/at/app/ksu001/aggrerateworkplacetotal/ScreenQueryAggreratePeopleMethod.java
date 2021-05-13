@@ -2,13 +2,11 @@ package nts.uk.screen.at.app.ksu001.aggrerateworkplacetotal;
 
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import mockit.Injectable;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.aggregation.dom.schedulecounter.aggregationprocess.workplacecounter.CountNumberOfPeopleByEachWorkMethodService;
@@ -31,8 +29,8 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless 
 public class ScreenQueryAggreratePeopleMethod {
 
-	@Injectable
-	private CountNumberOfPeopleByEachWorkMethodService.Require require;
+//	@Inject
+//	private CountNumberOfPeopleByEachWorkMethodService.Require require;
 	
 	@Inject
 	private GetWorkingHoursInformationQuery getWorkingHoursInformationQuery;
@@ -55,7 +53,7 @@ public class ScreenQueryAggreratePeopleMethod {
 			// 1.1: 勤務方法別に集計する(Require, 対象組織識別情報, 期間, List<日別勤怠(Work)>, List<日別勤怠(Work)>, 勤務方法の集計単位, 関数( ( String ) -> T ))
 			Map<GeneralDate, List<NumberOfPeopleByEachWorkMethod<String>>> countWork = 
 						CountNumberOfPeopleByEachWorkMethodService.countByWorkMethod(
-								require,
+								null,
 								targetOrg,
 								period,
 								scheduleList,
@@ -82,7 +80,7 @@ public class ScreenQueryAggreratePeopleMethod {
 			// 2.1 シフト別人数を取得する(Require, 対象組織識別情報, 期間, List<日別勤怠(Work)>, List<日別勤怠(Work)>)
 			Map<GeneralDate, List<NumberOfPeopleByEachWorkMethod<ShiftMasterCode>>> shift = 
 					CountNumberOfPeopleByEachWorkMethodService.getByShift(
-							require,
+							null,
 							targetOrg,
 							period,
 							scheduleList,

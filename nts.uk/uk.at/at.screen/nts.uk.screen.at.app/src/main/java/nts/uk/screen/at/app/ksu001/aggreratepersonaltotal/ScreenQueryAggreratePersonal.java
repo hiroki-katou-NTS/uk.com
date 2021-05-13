@@ -9,7 +9,6 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import mockit.Injectable;
 import nts.arc.time.calendar.DateInMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.aggregation.dom.schedulecounter.aggregationprocess.personcounter.EstimatedSalary;
@@ -35,8 +34,8 @@ public class ScreenQueryAggreratePersonal {
 	@Inject 
 	private ScreenQueryAggrerateNumberTimePs screenQueryAggrerateNumberTime;
 	
-	@Injectable
-	EstimatedSalaryAggregationService.Require require;
+//	@Inject
+//	EstimatedSalaryAggregationService.Require require;
 	
 	public AggreratePersonalDto aggreratePersonal(
 			PersonalCounterCategory personalCounter, // 個人計カテゴリ
@@ -67,7 +66,7 @@ public class ScreenQueryAggreratePersonal {
 			
 			// 2: 月間想定給与額を集計する(Require, 年月, 日付, List<日別勤怠(Work)>)
 			Map<EmployeeId, EstimatedSalary> etimatedMonthSalarys = EstimatedSalaryAggregationService.aggregateByMonthly(
-					require,
+					null,
 					null,
 					closeDate,
 					aggrerateintegrationOfDaily
@@ -83,7 +82,7 @@ public class ScreenQueryAggreratePersonal {
 			
 			// 3: 年間想定給与額を集計する(Require, 年月日, List<社員ID>)
 			Map<EmployeeId, EstimatedSalary> etimatedYearSalarys = EstimatedSalaryAggregationService.aggregateByYearly(
-					require, // require
+					null, // require
 					datePeriod.end(), // 基準日 = Input.期間.終了日
 					aggrerateintegrationOfDaily.stream() // 社員IDリスト = Input.日別勤怠リスト : map $.社員ID distinct
 					.map(x -> x.getEmployeeId())

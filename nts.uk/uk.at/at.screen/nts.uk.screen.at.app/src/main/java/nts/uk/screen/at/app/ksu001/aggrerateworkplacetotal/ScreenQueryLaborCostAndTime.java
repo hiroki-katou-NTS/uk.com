@@ -9,7 +9,6 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import mockit.Injectable;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.aggregation.app.find.schedulecounter.wkplaborcostandtime.WkpLaborCostAndTimeFinder;
@@ -30,8 +29,8 @@ public class ScreenQueryLaborCostAndTime {
 	@Inject
 	private WkpLaborCostAndTimeFinder wkpLaborCostAndTimeFinder;
 	
-	@Injectable
-	private CountLaborCostTimeService.Require require;
+//	@Inject
+//	private CountLaborCostTimeService.Require require;
 	
 	public Map<GeneralDate, Map<LaborCostAggregationUnitDto, BigDecimal>> aggrerate(
 			TargetOrgIdenInfor targetOrg,
@@ -46,7 +45,7 @@ public class ScreenQueryLaborCostAndTime {
 		// 2: 集計する(Require, 対象組織識別情報, 期間, Map<人件費・時間の集計単位, 人件費・時間>, List<日別勤怠(Work)>)
 		if (wkpLaborCostAndTime.isPresent()) {
 			Map<GeneralDate, Map<LaborCostAggregationUnit, BigDecimal>> tallies = CountLaborCostTimeService.aggregate(
-					require,
+					null,
 					targetOrg,
 					datePeriod,
 					wkpLaborCostAndTime.get().getLaborCostAndTimeList(),

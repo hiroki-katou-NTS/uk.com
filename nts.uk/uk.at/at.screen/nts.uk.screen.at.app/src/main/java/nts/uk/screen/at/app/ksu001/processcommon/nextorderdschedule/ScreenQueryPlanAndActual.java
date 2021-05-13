@@ -6,8 +6,8 @@ import java.util.Map;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 
-import mockit.Injectable;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ScheManaStatuTempo;
@@ -23,11 +23,11 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattend
 @Stateless
 public class ScreenQueryPlanAndActual {
 
-	@Injectable
-	private WorkScheManaStatusService.Require require1;
-	
-	@Injectable
-	private DailyResultAccordScheduleStatusService.Require require2;
+//	@Inject
+//	private WorkScheManaStatusService.Require require1;
+//	
+//	@Inject
+//	private DailyResultAccordScheduleStatusService.Require require2;
 	
 	/**
 	 * 
@@ -43,7 +43,7 @@ public class ScreenQueryPlanAndActual {
 		PlanAndActual output = new PlanAndActual();
 		//1: 取得する(Require, List<社員ID>, 期間)
 		Map<ScheManaStatuTempo, Optional<WorkSchedule>> schedule = 
-					WorkScheManaStatusService.getScheduleManagement(require1, sids, datePeriod);
+					WorkScheManaStatusService.getScheduleManagement(null, sids, datePeriod);
 		
 		output.setSchedule(schedule);
 		output.setDailySchedule(new HashMap<ScheManaStatuTempo, Optional<IntegrationOfDaily>>());
@@ -64,7 +64,7 @@ public class ScreenQueryPlanAndActual {
 			}
 			// 2: 取得する(Require, List<社員ID>, 期間)
 			Map<ScheManaStatuTempo , Optional<IntegrationOfDaily>> dailySchedule = 
-					DailyResultAccordScheduleStatusService.get(require2, sids, datePeriod);
+					DailyResultAccordScheduleStatusService.get(null, sids, datePeriod);
 			
 			output.setDailySchedule(dailySchedule);
 			

@@ -1,6 +1,7 @@
 package nts.uk.screen.at.app.ksu001.aggrerateworkplacetotal;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,9 +11,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import org.assertj.core.util.Arrays;
 
-import mockit.Injectable;
 import nts.uk.ctx.at.aggregation.dom.schedulecounter.aggregationprocess.TotalTimesCounterService;
 import nts.uk.ctx.at.shared.dom.common.EmployeeId;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
@@ -38,8 +37,8 @@ public class ScreenQueryAggrerateNumberTimeWp {
 	@Inject
 	private TotalTimesRepository totalTimeRepository;
 	
-	@Injectable
-	TotalTimesCounterService.Require require;
+//	@Inject
+//	TotalTimesCounterService.Require require;
 	
 	public Map<EmployeeId, Map<TotalTimes, BigDecimal>> aggrerate(
 			List<IntegrationOfDaily> aggrerateintegrationOfDaily
@@ -54,7 +53,7 @@ public class ScreenQueryAggrerateNumberTimeWp {
 
 			// 2.1: 社員別に集計する(Require, List<回数集計NO>, List<日別勤怠(Work)>)
 			Map<EmployeeId, Map<Integer, BigDecimal>> countTotalTime = TotalTimesCounterService.countingNumberOfTotalTimeByEmployee(
-					require,
+					null,
 					Arrays.asList(new Integer[] {countInfoOp.get().getCountNumberOfTimeDtos().get(0).getNumber()})  // 集計対象の回数集計 = 1で取得した「回数集計選択」．選択した項目リスト
 						  .stream()
 						  .map(x -> (Integer)x)
