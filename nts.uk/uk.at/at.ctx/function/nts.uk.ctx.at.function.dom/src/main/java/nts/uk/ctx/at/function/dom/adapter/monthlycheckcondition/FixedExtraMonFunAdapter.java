@@ -5,7 +5,7 @@ import java.util.List;
 public interface FixedExtraMonFunAdapter {
 	List<FixedExtraMonFunImport> getByEralCheckID(String monAlarmCheckID);
 	
-	void addFixedExtraMon(FixedExtraMonFunImport fixedExtraMon);
+	void persistFixedExtraMon(FixedExtraMonFunImport fixedExtraMon);
 	
 	void updateFixedExtraMon(FixedExtraMonFunImport fixedExtraMon);
 	

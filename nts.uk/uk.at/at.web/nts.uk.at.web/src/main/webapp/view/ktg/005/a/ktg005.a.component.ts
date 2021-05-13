@@ -42,7 +42,7 @@ module nts.uk.ui.ktg005.a {
 			</table>
 		</div>
 		<div class="ktg-005-a ktg005-fontsize ktg005-border" data-bind="widget-content: 100">
-			<div data-bind="with: $component.executionAppResult">
+			<div data-bind="with: $component.executionAppResult" style="padding: 0px 40px 0px 30px;">
 				<table style="width: 100%">
 					<colgroup>
 						<col width="auto" />
@@ -60,12 +60,15 @@ module nts.uk.ui.ktg005.a {
 			</div>
 		</div>
 		<style rel="stylesheet">
+			.ktg-005-a table tr {
+				height: 30px !important;
+			}
 			.ktg-005-a .text-right {
 				text-align: right;
 			}
 			.ktg005-fontsize div.form-label>span.text {
 				font-size: 1rem !important;
-				padding-left: 8px;
+				padding-left: 5px;
 			}
 			.ktg005-fontsize-larger div.form-label>span.text {
 				font-size: 1.2rem !important;

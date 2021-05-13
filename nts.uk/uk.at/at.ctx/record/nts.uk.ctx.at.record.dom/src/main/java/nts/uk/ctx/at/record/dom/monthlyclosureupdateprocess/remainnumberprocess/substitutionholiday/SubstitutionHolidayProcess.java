@@ -56,9 +56,9 @@ public class SubstitutionHolidayProcess {
 				 /** 振休残数更新 */
 				.then(updateRemainSubstitutionHoliday(require, output.getVacationDetails(), period, empId))
 				/** 振休逐次休暇の紐付け情報を追加する */
-				.then(addSeqVacation(require, empId, output.getLstSeqVacation()))		
+				.then(addSeqVacation(require, empId, output.getLstSeqVacation()));		
 				/** 振休暫定データ削除 */
-				.then(deleteTempSubstitutionData(require, period, empId));		
+				//.then(deleteTempSubstitutionData(require, period, empId));		
 	}
 	
 	/** 振休逐次休暇の紐付け情報を追加する */
@@ -118,13 +118,13 @@ public class SubstitutionHolidayProcess {
 	}
 	
 	/** 暫定データ削除 */
-	private static AtomTask deleteTempSubstitutionData(RequireM3 require, AggrPeriodEachActualClosure period, String empId) {
+	//private static AtomTask deleteTempSubstitutionData(RequireM3 require, AggrPeriodEachActualClosure period, String empId) {
 		
 		/** アルゴリズム「振出暫定データの削除」を実行する */
-		return AtomTask.of(() -> require.deleteInterim(empId, period.getPeriod(), RemainType.PICKINGUP))
+		//return AtomTask.of(() -> require.deleteInterim(empId, period.getPeriod(), RemainType.PICKINGUP))
 				/** アルゴリズム「振休暫定データの削除」を実行する */
-				.then(() -> require.deleteInterim(empId, period.getPeriod(), RemainType.PAUSE));
-	}
+				//.then(() -> require.deleteInterim(empId, period.getPeriod(), RemainType.PAUSE));
+	//}
 	
 
 	/** 振休残数更新 */
@@ -264,8 +264,6 @@ public class SubstitutionHolidayProcess {
 	}
 
 	private static interface RequireM3 {
-		
-		void deleteInterim(String sid, DatePeriod period, RemainType type);
 	}
 	
 	public static interface RequireM2 extends NumberCompensatoryLeavePeriodQuery.Require {

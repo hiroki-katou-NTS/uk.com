@@ -1,31 +1,31 @@
 module nts.uk.at.view.kaf005.shr.work_info.viewmodel {
 	const template = `
 	<div data-bind="with: $parent">
-<div data-bind="if: workInfo">
+<div style="margin-top: -2px" data-bind="if: workInfo">
 
 	<div class="table" data-bind="if : visibleModel.c7()">
 		<div class="cell valign-center" style="width: 120px;">
 			<!--A4_1 勤務種類ラベル-->
-			<div class="valign-center control-group"
+			<div class="valign-center"
 				data-bind="text: $i18n('KAF005_34'), ntsFormLabel:{required: true}"></div>
 			<BR />
 			<!--A4_4 就業時間ラベル-->
-			<div class="valign-center control-group"
+			<div style="padding-top: 10px" class="valign-center"
 				data-bind="text: $i18n('KAF005_35'), ntsFormLabel:{required: true}"></div>
 		</div>
-		<div class="cell valign-top" data-bind="if: visibleModel.c7()" style="width: 40px;">
+		<div class="cell valign-top" data-bind="if: visibleModel.c7()" style="width: 45px;">
 			<!--A4_7 選択ボタン-->
 			<button class="workSelectKAF005"
 				data-bind="enable: !visibleModel.c31() && outputMode(), click : openDialogKdl003, text: $i18n('KAF005_36')"></button>
 		</div>
 		<div class="cell valign-center">
-			<div class="valign-center control-group">
+			<div class="valign-center">
 				<!--A4_2 勤務種類コード-->
 				<label class="lblWorkTypeCd" data-bind="text: ko.toJS(workInfo).workType.code"></label>
 				<!--A4_3 勤務種類名称-->
 				<LABEL data-bind="text: ko.toJS(workInfo).workType.name"></LABEL>
 			</div>
-			<div class="valign-center control-group">
+			<div class="valign-center">
 				<!--A4_5 就業時間コード-->
 				<label class="lblSiftCd" data-bind="text: ko.toJS(workInfo).workTime.code"></label>
 				<!--A4_6 就業時間名称-->
@@ -36,8 +36,8 @@ module nts.uk.at.view.kaf005.shr.work_info.viewmodel {
 
 
 	<!--勤務時間 1-->
-	<div class="valign-center control-group">
-		<div class="table" data-bind="if: visibleModel.c7()">
+	<div style="margin-bottom: 10px">
+		<div class="table" style="margin-top: -2px" data-bind="if: visibleModel.c7()">
 			<div style="width: 120px" class="cell valign-top cm-column2">
 				<!--A4_8 勤務時間ラベル-->
 				<div class="lblTitle"
@@ -78,7 +78,7 @@ module nts.uk.at.view.kaf005.shr.work_info.viewmodel {
 		</div>
 		
 		
-		<div class="table" data-bind="if: visibleModel.c29()">
+		<div class="table" style="margin-top: 2px" data-bind="if: visibleModel.c29()">
 			<div style="width: 120px" class="cell valign-top cm-column2">
 				<div class="lblTitle"
 					

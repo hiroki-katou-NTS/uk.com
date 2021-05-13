@@ -58,11 +58,11 @@ public class UpdateTimeLeaveApplicationCommandHandler extends CommandHandlerWith
 
         //暫定データの登録
         // TODO: wait for update
-//        this.interimRemainDataMngRegisterDateChange.registerDateChange(
-//                companyId,
-//                application.getEmployeeID(),
-//                Arrays.asList(application.getAppDate().getApplicationDate())
-//        );
+        this.interimRemainDataMngRegisterDateChange.registerDateChange(
+                companyId,
+                application.getEmployeeID(),
+                Arrays.asList(application.getAppDate().getApplicationDate())
+        );
 
         //4-2.詳細画面登録後の処理
         return detailAfterUpdate.processAfterDetailScreenRegistration(AppContexts.user().companyId(), application.getAppID(),

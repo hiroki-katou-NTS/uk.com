@@ -924,6 +924,7 @@ export class KafS06AComponent extends KafS00ShrComponent {
                 
                 // đăng kí 
                 return vm.$http.post('at', vm.modeNew ? API.insert : API.update, vm.modeNew ? command : commandUpdate).then((res: any) => {
+                    vm.$http.post('at', API.reflectApp, res.data.reflectAppIdLst);
                     vm.$goto('kafs06a1', { mode: vm.modeNew ? ScreenMode.NEW : ScreenMode.DETAIL, appID: res.data.appIDLst[0] });
                 });
             }
@@ -1813,7 +1814,8 @@ const API = {
     insert: 'at/request/application/appforleave/mobile/insert',
     update: 'at/request/application/appforleave/mobile/update',
     registerSample: 'at/request/application/changeDataSample',
-    sendMailAfterRegisterSample: ''
+    sendMailAfterRegisterSample: '',
+    reflectApp: 'at/request/application/reflect-app'
 };
 interface HolidayWorkSubHolidayLinkingMng {
     // 社員ID

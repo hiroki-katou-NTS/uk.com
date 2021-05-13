@@ -69,8 +69,8 @@ module nts.uk.at.view.ktg027.a {
                     <table>
                         <colgroup>
                             <col width="25%" />
-                            <col width="25%" />
-                            <col width="50%" />
+                            <col width="17%" />
+                            <col width="58%" />
                         </colgroup>
                         <head>
                             <tr>
@@ -78,9 +78,11 @@ module nts.uk.at.view.ktg027.a {
                                     <div data-bind="ntsFormLabel: { required: false, text: $component.$i18n('Com_Person') }"></div>
                                 </th>
                                 <th class="text-center" style="white-space: nowrap;">
-                                    <div data-bind="ntsFormLabel: { required: false, text: $component.$i18n('KTG027_4') }"></div>
+                                    <div style="padding-right: 0;" data-bind="
+                                        ntsFormLabel: { required: false, text: $component.$i18n('KTG027_4') }">
+                                    </div>
                                 </th>
-                                <td rowspan="1">
+                                <td style="padding-left: 10px;" rowspan="1">
                                     <canvas data-bind="ktg-026-chart: $component.dataTable, type: 'head'"></canvas>
                                 </td>
                             </tr>
@@ -92,17 +94,25 @@ module nts.uk.at.view.ktg027.a {
                 <div>
                     <table>
                         <colgroup>
-                            <col width="25%" />
-                            <col width="25%" />
-                            <col width="50%" />
+                            <col width="42%" />
+                            <col width="58%" />
                         </colgroup>
                         <tbody data-bind="foreach: { data: $component.dataTable, as: 'row' }">
-                            <tr>
-                                <td class="text-underline" data-bind="text: row.businessName, click: function() { $component.openKTG026(row) }"></td>
-                                <td class="text-right">
-                                    <div class="text-underline" data-bind="time: row.time.tt, click: function() { $component.openKDW003(row) }, css: row.state"></div>
+                            <tr style="height: 35px;">
+                                <td>
+                                    <div class="text-underline limited-label" data-bind="
+                                        text: row.businessName,
+                                        click: function() { $component.openKTG026(row) }"
+                                        style="float:left; width: 60%; padding-left: 5px;">
+                                    </div>
+                                    <div class="text-right text-underline" data-bind="
+                                        time: row.time.tt,
+                                        click: function() { $component.openKDW003(row) },
+                                        css: row.state"
+                                        style="height: 25px; padding-right: 5px;">
+                                    </div>
                                 </td>
-                                <td data-bind="ktg-chart: $component.dataTable"></td>
+                                <td style="padding-left: 10px;" data-bind="ktg-chart: $component.dataTable"></td>
                             </tr>
                         </tbody>
                     </table>
@@ -195,7 +205,7 @@ module nts.uk.at.view.ktg027.a {
                 }
                 /* 限度エラー時間超過 */
                 .ktg-027-a.widget-content.ui-resizable .exceeding-limit-error {
-                    background-color: #FD4D4D; /* 36協定エラー */
+                    background-color: #FF99CC; /* 36協定エラー */
                     color: #ffffff; /* 36協定エラー文字 */
                 }
                 /* 限度アラーム時間超過（特例あり） */
@@ -213,7 +223,7 @@ module nts.uk.at.view.ktg027.a {
                 }
                 /* 特例限度エラー時間超過 */
                 .ktg-027-a.widget-content.ui-resizable .special-exceeded-limit-error {
-                    background-color: #FD4D4D; /* 36協定エラー */
+                    background-color: #FF99CC; /* 36協定エラー */
                     color: #ffffff; /* 36協定エラー文字 */
                 }
             </style>
@@ -255,6 +265,13 @@ module nts.uk.at.view.ktg027.a {
 
                     return _
                         .chain(employees)
+                        .filter((emp: PersonalInfo) => {
+                            const os = _.find(overtimeSubor, ({ employeeId }) => employeeId === emp.employeeId);
+                            if (os) {
+                                return true;
+                            }
+                            return false;
+                        })
                         .map((emp: PersonalInfo) => {
                             const os = _.find(overtimeSubor, ({ employeeId }) => employeeId === emp.employeeId);
                             const ps = _.find(personalSubor, ({ employeeId }) => employeeId === emp.employeeId);
@@ -290,7 +307,7 @@ module nts.uk.at.view.ktg027.a {
                         return '.ktg-027-a.widget-content:not(.widget-fixed) td[rowspan] canvas { height: 0px !important; }';
                     }
 
-                    return `.ktg-027-a.widget-content:not(.widget-fixed) td[rowspan] canvas { height: ${data.length * 41}px !important; }`;
+                    return `.ktg-027-a.widget-content:not(.widget-fixed) td[rowspan] canvas { height: ${data.length * 35}px !important; }`;
                 }
             });
 

@@ -16,10 +16,10 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 	const template= `
 		<div id="kaf005-b">
 			<div id="contents-area"
-				style="background-color: inherit; height: calc(100vh - 165px); min-width: 1230px">
-				<div class="two-panel" style="height: 100%;">
+				style="background-color: inherit; height: calc(100vh - 137px);">
+				<div class="two-panel" style="height: 100%; width: 1260px">
 					<div class="left-panel"
-						style="width: calc(100% - 410px); height: inherit">
+						style="width: calc(1260px - 388px); height: inherit">
 						<div style="height: inherit; overflow-y: auto; background-color: #fff; padding:0 10px; overflow-x: hidden">
 							<div class="table"
 								style="border-bottom: 2px solid #B1B1B1; padding-bottom: 30px; margin-bottom: 30px; width: 100%;">
@@ -42,6 +42,11 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 														} }"></div>
 								</div>
 							</div>
+							<div data-bind="component: { name: 'kaf000-b-component2', 
+														params: {
+															appType: appType,
+															appDispInfoStartupOutput: appDispInfoStartupOutput
+														} }"></div>
 							<div
 								data-bind="component: { name: 'kaf000-b-component5', 
 														params: {
@@ -56,24 +61,23 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 															application: application,
 															appDispInfoStartupOutput: appDispInfoStartupOutput
 														} }"
-								style="width: fit-content; display: inline-block; vertical-align: middle; margin-top: 12px"></div>
+								style="width: fit-content; display: inline-block; vertical-align: middle; margin-top: -15px"></div>
 
 
 
-							<div>
+							<div style="margin-top: -10px">
 
 
 								
-
-
-								<div class="table"></div>
-
-
-								<div
-									data-bind="component: { name: 'kaf005-share-work-info', 
-										params: {
-														workInfo: workInfo
-													} 
+	<div data-bind="component: { name: 'kaf005-share',
+											params: {
+												restTime: restTime,
+												holidayTime: holidayTime,
+												overTime: overTime,
+												visibleModel: visibleModel,
+												agent: agentForTable
+											}
+							
 										}"></div>
 
 								<div
@@ -96,7 +100,7 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 
 
 
-							<div style="margin-top: 12px"
+							<div style="margin-top: 11px"
 								data-bind="component: { name: 'kaf000-b-component7', 
 														params: {
 															appType: appType,
@@ -113,7 +117,7 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 							</div>                          
 						</div>
 					</div>
-					<div class="right-panel" style="width: 410px; height: inherit;">
+					<div class="right-panel" style="width: 388px; height: inherit; padding-right: 0px">
 						<div style="height: inherit; background-color: #fff; overflow-y: auto; overflow-x: hidden">
 							<div style="padding-top: 10px"
 								data-bind="component: { name: 'kaf000-b-component1', 
@@ -219,6 +223,7 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 			})
 			
 		}
+		agentForTable: KnockoutObservable<Boolean> = ko.observable(false);
         created(
             params: {
                 appType: any,
@@ -269,6 +274,21 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 							
 							
 							vm.getBreakTimes();
+						}
+				})
+				document.getElementById('inpStartTime2').addEventListener('focusout', () => {
+					if (_.isNumber(vm.workInfo().workHours2.start()) && _.isNumber(vm.workInfo().workHours2.end())) {
+							
+							
+							vm.dataSource.calculatedFlag = CalculatedFlag.UNCALCULATED;
+						}
+				})
+				
+				document.getElementById('inpEndTime2').addEventListener('focusout', () => {
+					if (_.isNumber(vm.workInfo().workHours2.start()) && _.isNumber(vm.workInfo().workHours2.end())) {
+							
+							
+							vm.dataSource.calculatedFlag = CalculatedFlag.UNCALCULATED;
 						}
 				})
 				

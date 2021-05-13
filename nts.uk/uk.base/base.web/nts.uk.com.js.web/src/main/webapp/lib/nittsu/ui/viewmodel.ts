@@ -4,93 +4,96 @@
 function bean(dialogOption?: JQueryUI.DialogOptions): any {
 	return function (ctor: any): any {
 		__viewContext.ready(() => {
-			nts.uk.ui.viewmodel.$storage().then(($params: any) => {
-				const $viewModel = new ctor($params)
-					, $created = $viewModel['created'];
+			const { localShared } = nts.uk.ui.windows.container;
 
-				_.extend($viewModel, { $el: undefined });
+			nts.uk.ui.viewmodel.$storage()
+				.then(($params: any) => {
+					const $viewModel = new ctor($params || localShared)
+						, $created = $viewModel['created'];
 
-				// hook to created function
-				if ($created && _.isFunction($created)) {
-					$created.apply($viewModel, [$params]);
-				}
+					_.extend($viewModel, { $el: undefined });
 
-				__viewContext.bind($viewModel, dialogOption);
+					// hook to created function
+					if ($created && _.isFunction($created)) {
+						$created.apply($viewModel, [$params || localShared]);
+					}
 
-				const { $window } = $viewModel;
-				const kvm = nts.uk.ui._viewModel.kiban;
+					__viewContext.bind($viewModel, dialogOption);
 
-				kvm.title
-					.subscribe((title: string) => {
-						const old = ko.unwrap($window.title)
+					const { $window } = $viewModel;
+					const kvm = nts.uk.ui._viewModel.kiban;
 
-						if (title !== old) {
-							$window.title(title);
-						} else {
-							$window.title.valueHasMutated();
-						}
-					});
+					kvm.title
+						.subscribe((title: string) => {
+							const old = ko.unwrap($window.title)
 
-				kvm.systemName.valueHasMutated();
+							if (title !== old) {
+								$window.title(title);
+							} else {
+								$window.title.valueHasMutated();
+							}
+						});
 
-				$window.title
-					.subscribe((title: string) => kvm.title(title));
+					kvm.systemName.valueHasMutated();
 
-				kvm.mode
-					.subscribe((mode: string) => {
-						const old = ko.unwrap($window.mode)
+					$window.title
+						.subscribe((title: string) => kvm.title(title));
 
-						if (mode !== old) {
-							$window.mode(mode);
-						} else {
-							$window.mode.valueHasMutated();
-						}
-					});
+					kvm.mode
+						.subscribe((mode: string) => {
+							const old = ko.unwrap($window.mode)
 
-				kvm.mode.valueHasMutated();
+							if (mode !== old) {
+								$window.mode(mode);
+							} else {
+								$window.mode.valueHasMutated();
+							}
+						});
 
-				$window.mode
-					.subscribe((mode: 'view' | 'modal') => kvm.mode.valueHasMutated());
+					kvm.mode.valueHasMutated();
 
-				kvm.header
-					.subscribe((header: boolean) => {
-						const old = ko.unwrap($window.header)
+					$window.mode
+						.subscribe((mode: 'view' | 'modal') => kvm.mode.valueHasMutated());
 
-						if (header !== old) {
-							$window.header(header);
-						} else {
-							$window.header.valueHasMutated();
-						}
-					});
+					kvm.header
+						.subscribe((header: boolean) => {
+							const old = ko.unwrap($window.header)
 
-				kvm.header.valueHasMutated();
+							if (header !== old) {
+								$window.header(header);
+							} else {
+								$window.header.valueHasMutated();
+							}
+						});
 
-				$window.header
-					.subscribe((header: boolean) => kvm.header(header));
+					kvm.header.valueHasMutated();
 
-				$(() => {
-					// hook to mounted function
-					$viewModel.$nextTick(() => {
-						const $mounted = $viewModel['mounted'];
+					$window.header
+						.subscribe((header: boolean) => kvm.header(header));
 
-						_.extend($viewModel, { $el: document.querySelector('#master-wrapper') });
+					$(() => {
+						// hook to mounted function
+						$viewModel.$nextTick(() => {
+							const $mounted = $viewModel['mounted'];
 
-						if (kvm) {
-							ko.computed({
-								read: () => {
-									$viewModel.$validate.valid(!kvm.errorDialogViewModel.errors().length);
-								},
-								owner: $viewModel,
-								disposeWhenNodeIsRemoved: $viewModel.$el
-							});
-						}
+							_.extend($viewModel, { $el: document.querySelector('#master-wrapper') });
 
-						if ($mounted && _.isFunction($mounted)) {
-							$mounted.apply($viewModel, []);
-						}
+							if (kvm) {
+								ko.computed({
+									read: () => {
+										$viewModel.$validate.valid(!kvm.errorDialogViewModel.errors().length);
+									},
+									owner: $viewModel,
+									disposeWhenNodeIsRemoved: $viewModel.$el
+								});
+							}
+
+							if ($mounted && _.isFunction($mounted)) {
+								$mounted.apply($viewModel, []);
+							}
+						});
 					});
 				});
-			});
 		});
 	};
 }

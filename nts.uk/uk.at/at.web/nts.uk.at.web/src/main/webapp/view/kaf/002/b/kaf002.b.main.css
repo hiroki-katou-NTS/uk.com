@@ -6,6 +6,7 @@ input {
 }
 .inlineBlockFirst {
 	display: inline-block;
+	margin-top: -20px;
 }
 .labelFirst {
 	float: left;
@@ -13,7 +14,7 @@ input {
 }
 .blockSecond {
 	display: block;
-	margin-top: 12px;
+	margin-top: 7px;
 	margin-left: 40px;
 }
 .inputBlockSecond {
@@ -193,4 +194,13 @@ div.form-label.broken {
 }
 .centerCheckBox .secondCheckBox {
 	display: inline-block; margin-left: 88px
+}
+
+.marginCustome1 {
+	margin-top: 5px !important;
+	margin-bottom: 22px !important;
+}
+.marginCustome2 {
+	margin-top: 2px !important;
+	margin-bottom: 22px !important;
 }

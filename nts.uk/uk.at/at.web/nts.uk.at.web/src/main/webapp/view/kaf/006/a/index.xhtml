@@ -51,11 +51,11 @@
                 <button class="proceed" data-bind="click: register, enable: $root.errors.isEmpty"
                     tabindex="1">#{i18n.getText('KAF006_1')}</button>
                 <!-- A1_7 -->
-                <button data-bind="click: openKDL020, visible: condition10Annual" tabindex="3">#{i18n.getText('KAF006_67')}</button>
+                <!-- <button data-bind="click: openKDL020, visible: condition10Annual" tabindex="3">#{i18n.getText('KAF006_67')}</button> -->
                 <!-- A1_8 -->
-                <button data-bind="click: openKDL029, visible: condition10Accum" tabindex="3">#{i18n.getText('KAF006_68')}</button>
+                <!-- <button data-bind="click: openKDL029, visible: condition10Accum" tabindex="3">#{i18n.getText('KAF006_68')}</button> -->
                 <!-- A1_3 -->
-                <button data-bind="click: openKDL005, visible: condition10Substi" tabindex="3">#{i18n.getText('KAF006_3')}</button>
+                <!-- <button data-bind="click: openKDL005, visible: condition10Substi" tabindex="3">#{i18n.getText('KAF006_3')}</button> -->
                 <div data-bind="component: { name: 'kaf000-a-component7', 
 											params: {
 												appType: appType,
@@ -63,10 +63,10 @@
 												appDispInfoStartupOutput: appDispInfoStartupOutput
 											} }" style="display: inline-block;"></div>
             </div>
-            <div style="display: inline-block; position: absolute; z-index: 1000; margin-left: 70px;" data-bind="component: { name: 'kaf000-a-component9', params: isFromOther }"></div>
+            <div style="display: inline-block; position: absolute; z-index: 10; margin-left: 70px;" data-bind="component: { name: 'kaf000-a-component9', params: isFromOther }"></div>
             <div id="contents-area" style="background-color: inherit;">
-                <div class="two-panel" style="height: 100%;">
-                    <div class="left-panel" style="width: calc(100% - 410px); height: inherit;">
+                <div class="two-panel" style="height: 100%; width: 1260px">
+                    <div class="left-panel" style="width: calc(1260px - 388px); height: inherit;">
                         <div style="height: inherit; background-color: #fff; padding: 0 10px; overflow-y: auto; overflow-x: hidden;">
                             <div class="table" style="border-bottom: 2px solid #B1B1B1; padding-bottom: 30px; margin-bottom: 30px; width: 100%;">
 								<div class="cell" style="vertical-align: middle;">
@@ -113,7 +113,7 @@
                                                 hdAppSet: hdAppSet,
                                                 selectedType: selectedType
                                             } }"></div>
-                            <div id="work-type-div" class="mv-13">
+                            <div id="work-type-div" class="mv-13" style="margin-bottom: -6px">
                                 <div class="table">
                                     <div class="cell col-1">
                                         <div class="cell valign-center required" data-bind="ntsFormLabel:{ required: true }, text: $i18n('KAF006_16')"></div>
@@ -182,7 +182,7 @@
 															application: application,
 															appDispInfoStartupOutput: appDispInfoStartupOutput
 														} }"></div>
-							<div style="text-align: center; padding-top: 30px;">
+							<div style="text-align: center; padding-top: 20px;">
 								<div style="padding-bottom: 5px;">
 									<button style="width: 300px;" class="proceed x-large" data-bind="click: register, enable: $root.errors.isEmpty">#{i18n.getText('KAF007_54')}</button>
 								</div>
@@ -197,25 +197,25 @@
 							</div>
                         </div>
                     </div>
-                    <div class="right-panel" style="width: 410px; height: inherit;">
+                    <div class="right-panel" style="width: 388px; height: inherit; padding-right: 0px">
 						<div style="height: inherit; background-color: #fff; overflow-y: auto; overflow-x: hidden;">
 							<div data-bind="component: { name: 'kaf000-a-component1', 
 														params: {
 															appType: appType,
 															appDispInfoStartupOutput: appDispInfoStartupOutput
 														} }"></div>
+                            <div data-bind="component: { name: 'kaf006-shr-component1',
+                                                        params: {
+                                                            appType: appType,
+                                                            application: application,
+                                                            appDispInfoStartupOutput: appDispInfoStartupOutput
+                                                        } }"></div>
 							<div data-bind="component: { name: 'kaf000-a-component8',
 														params: {
 															appType: appType,
 															application: application,
 															appDispInfoStartupOutput: appDispInfoStartupOutput
 														} }"></div>
-                            <div class="mv-13" data-bind="component: { name: 'kaf006-shr-component1', 
-                                                        params: {
-                                                            appType: appType,
-                                                            application: application,
-                                                            appDispInfoStartupOutput: appDispInfoStartupOutput
-                                                        } }"></div>
 						</div>
 					</div>
                 </div>
