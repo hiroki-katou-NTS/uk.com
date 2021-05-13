@@ -1038,6 +1038,17 @@ module nts.uk.ui.at.kdp013.c {
                                 event.setExtendedProp('status', 'update');
                             }
 
+                            if (task) {
+                                const { displayInfo } = task;
+
+                                if (displayInfo) {
+                                    const { color, taskName } = displayInfo;
+
+                                    event.setProp('title', taskName);
+                                    event.setProp('backgroundColor', color);
+                                }
+                            }
+
                             event.setExtendedProp('workCD1', ko.unwrap(task1));
                             event.setExtendedProp('workCD2', ko.unwrap(task2));
                             event.setExtendedProp('workCD3', ko.unwrap(task3));
