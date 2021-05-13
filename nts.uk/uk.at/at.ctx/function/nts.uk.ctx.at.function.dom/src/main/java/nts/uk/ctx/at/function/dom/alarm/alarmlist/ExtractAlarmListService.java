@@ -58,7 +58,7 @@ public class ExtractAlarmListService {
 				lstSid,
                 runCode,
 				null,
-				null, finished -> {
+				new ArrayList<>(), finished -> {
 					counter.set(counter.get() + finished);
 				},
 				() -> {

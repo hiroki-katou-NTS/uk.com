@@ -221,8 +221,6 @@ public class ExecAlarmListProcessingDefault implements ExecAlarmListProcessingSe
 				ExtractedAlarmDto extractedAlarmDto = extractAlarmListService.extractAlarm(listEmployeeSearch,
 						patternCode, listPeriodByCategory, runCode);
 				listExtractedAlarmDto.add(extractedAlarmDto);
-//				val perDm = Dummy.dumDomain;
-//				val conds = Dummy.alarmExtractConditions;
 				// アラーム（トップページ）永続化の処理
                 List<String> lstSid = listEmployeeSearch.stream().map(EmployeeSearchDto::getId).collect(Collectors.toList());
 				alarmTopPageProcessingService.persisTopPageProcessing(runCode, patternCode, lstSid, listPeriodByCategory, extractedAlarmDto.getPersisAlarmExtractResult(),
