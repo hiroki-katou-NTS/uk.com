@@ -1,7 +1,7 @@
 <div id="kaf012-b">
-    <div id="contents-area" style="background-color: inherit; height: calc(100vh - 165px); min-width: 1475px; overflow-x: auto">
-        <div class="two-panel" style="height: 100%;">
-            <div class="left-panel" style="width: calc(100% - 410px); height: inherit; ">
+    <div id="contents-area" style="background-color: inherit; height: calc(100vh - 137px); overflow-x: auto">
+        <div class="two-panel" style="height: 100%; width: 1693px">
+            <div class="left-panel" style="width: 1305px; height: inherit;">
                 <div style="height: inherit; overflow-y: auto; background-color: #fff; padding: 0 10px; overflow-x: hidden;">
                     <div class="table"
                          style="border-bottom: 2px solid #B1B1B1; padding-bottom: 30px; margin-bottom: 30px; width: 100%;">
@@ -21,7 +21,12 @@
                                                 } }"></div>
                         </div>
                     </div>
-                    <div data-bind="component: { name: 'kaf000-b-component5',
+                    <div data-bind="component: { name: 'kaf000-b-component2', 
+														params: {
+															appType: appType,
+															appDispInfoStartupOutput: appDispInfoStartupOutput
+														} }"></div>
+                    <div style="margin-bottom: -15px" data-bind="component: { name: 'kaf000-b-component5',
                                                 params: {
                                                     appType: appType,
                                                     application: application,
@@ -35,8 +40,8 @@
                                                 } }"
                          style="width: fit-content; display: inline-block; vertical-align: middle;"></div>
 
-                    <div class="table">
-                        <div class="cell" style="min-width: 825px; padding-right: 10px;">
+                    <div class="table" style="margin-bottom: 9px">
+                        <div class="cell" style="min-width: 825px;">
                             <div data-bind="component: { name: 'kaf012-share-component2',
                                         params: {
                                             reflectSetting: reflectSetting,
@@ -60,7 +65,7 @@
 
                 </div>
             </div>
-            <div class="right-panel" style="width: 410px; height: inherit; ">
+            <div class="right-panel" style="width: 388px; height: inherit; padding-right: 0px">
                 <div style="height: inherit; background-color: #fff; overflow-y: auto; overflow-x: hidden;">
                     <div style="padding-top: 10px" data-bind="component: { name: 'kaf000-b-component1',
                             params: {

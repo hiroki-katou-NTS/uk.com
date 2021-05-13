@@ -16,13 +16,13 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
     import GoOutTypeDispControl = nts.uk.at.view.kaf002_ref.m.viewmodel.GoOutTypeDispControl;
 	import CommonProcess = nts.uk.at.view.kaf000.shr.viewmodel.CommonProcess;
     const template = `
-        <div id="kaf002-c">
+	<div id="kaf002-c">
             <div id="contents-area"
-                style="background-color: inherit; height: calc(100vh - 165px); min-width: 1130px">
-                <div class="two-panel" style="height: 100%;">
+                style="background-color: inherit; height: calc(100vh - 137px);">
+                <div class="two-panel" style="height: 100%; width: 1297px">
                     <div class="left-panel"
-                        style="width: calc(100% - 410px); height: inherit;">
-                        <div style="height: inherit; overflow-y: auto; background-color: #fff; padding: 10px; overflow-x: hidden;">
+                        style="width: calc(1297px - 388px); height: inherit;">
+                        <div style="height: inherit; overflow-y: auto; background-color: #fff; padding: 0 10px;overflow-x: hidden;">
                             <div class="table"
                                 style="border-bottom: 2px solid #B1B1B1; padding-bottom: 30px; margin-bottom: 30px; width: 100%;">
                                 <div class="cell" style="vertical-align: middle;">
@@ -44,6 +44,11 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
                                                         } }"></div>
                                 </div>
                             </div>
+							<div data-bind="component: { name: 'kaf000-b-component2', 
+														params: {
+															appType: appType,
+															appDispInfoStartupOutput: appDispInfoStartupOutput
+														} }"></div>
                             <div
                                 data-bind="component: { name: 'kaf000-b-component5', 
                                                         params: {
@@ -58,16 +63,16 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
                                                             application: application,
                                                             appDispInfoStartupOutput: appDispInfoStartupOutput
                                                         } }"
-                                style="width: fit-content; display: inline-block; vertical-align: middle; margin-top: 12px"></div>
+                                style="width: fit-content; display: inline-block; vertical-align: middle; margin-top: -16px"></div>
 
 
 
-                            <div>
+                            <div style="margin-top: -1px">
                                 <div class="table"></div>
 
                                 <!-- C5 -->
 
-                                <div style="display: block">
+                                <div style="display: block; margin-top: -13px">
                                     <!-- C6_1 -->
                                     <div id="labelM"
                                         data-bind="ntsFormLabel: {}, text: $i18n('KAF002_17')"></div>
@@ -99,7 +104,7 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
                             </div>
 
 
-                            <div style="margin-top: 12px"
+                            <div style="margin-top: 13px"
                                 data-bind="component: { name: 'kaf000-b-component7', 
                                                         params: {
                                                             appType: appType,
@@ -112,7 +117,7 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
                             </div>  
                         </div>
                     </div>
-                    <div class="right-panel" style="width: 410px; height: inherit;">
+                    <div class="right-panel" style="width: 388px; height: inherit; padding-right: 0px">
                         <div style="height: inherit; background-color: #fff; overflow-y: auto; overflow-x: hidden">
                             <div style="margin: 10px;"
                                 data-bind="component: { name: 'kaf000-b-component1', 
@@ -132,7 +137,7 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
                 </div>
             </div>
         </div>
-    `
+`
     
     @component({
         name: 'kaf002-c',

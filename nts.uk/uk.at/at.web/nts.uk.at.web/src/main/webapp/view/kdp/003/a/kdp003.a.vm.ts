@@ -53,9 +53,8 @@ module nts.uk.at.kdp003.a {
 
 		workPlaceInfos: IWorkPlaceInfo[] = [];
 
-		worklocationCode: string = '';
+		worklocationCode: null | string = null;
 		workplaceId: string = null;
-		workplaceName: string = null;
 
 		// setting for button A3
 		showClockButton: {
@@ -100,8 +99,11 @@ module nts.uk.at.kdp003.a {
 
 			// show or hide stampHistoryButton
 			vm.message.subscribe((value) => {
-				
+
 				vm.showClockButton.company(value === null);
+
+				console.log(ko.unwrap(vm.message));
+
 			});
 
 			vm.$ajax('at', API.NOW)
@@ -152,11 +154,16 @@ module nts.uk.at.kdp003.a {
 				vm.$ajax(API.GET_WORKPLACE_BASYO, param)
 					.done((data: IBasyo) => {
 						if (data) {
-							vm.modeBasyo(true);
-							vm.workPlace = [data.workpalceId];
-							vm.worklocationCode = locationCd;
-							vm.workplaceId = data.workpalceId;
-							vm.workplaceName = data.workLocationName;
+
+							if (data.workLocationName != null || data.workpalceId != null) {
+								vm.worklocationCode = locationCd;
+							}
+
+							if (data.workpalceId) {
+								vm.modeBasyo(true);
+								vm.workPlace = [data.workpalceId];
+								vm.workplaceId = data.workpalceId;
+							}
 						}
 					});
 
@@ -224,7 +231,7 @@ module nts.uk.at.kdp003.a {
 						return vm.$ajax('at', API.FINGER_STAMP_SETTING)
 							.then((data: FingerStampSetting) => {
 								if (data) {
-									
+
 									vm.fingerStampSetting(data);
 								}
 							})
@@ -701,7 +708,7 @@ module nts.uk.at.kdp003.a {
 							const { modal, storage } = vm.$window;
 
 							// var isSupport: boolean = false;
-							
+
 							// if (btn.supportWplset == 1) {
 							// 	isSupport = true;
 							// }
@@ -788,13 +795,7 @@ module nts.uk.at.kdp003.a {
 													}
 												}));
 
-												if (ko.unwrap(vm.modeBasyo)) {
-													workLocationName = vm.workplaceName;
-												} else {
-													if (workplace) {
-														workLocationName = workplace.name
-													}
-												}
+												workLocationName = workplace.name;
 											}
 
 											vm.$ajax(API.REGISTER, {

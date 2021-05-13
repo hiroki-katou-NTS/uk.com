@@ -60,11 +60,23 @@ public class JpaAppReasonStandardRepository extends JpaRepository implements App
 				.getList();
 		return Optional.ofNullable(KrcmtAppReason.toDomain(entities));
 	}
+	
+	@Override
+	public Optional<AppReasonStandard> findByHolAndAppType(String companyID, ApplicationType appType, HolidayAppType holidayAppType) {
+	    List<KrcmtAppReason> entities = this.queryProxy()
+                .query("select a from KrcmtAppReason a where a.pk.applicationType = :appType AND a.pk.companyId = :companyId", KrcmtAppReason.class)
+                .setParameter("companyId", companyID)
+                .setParameter("appType", appType.value)
+                .getList();
+	    if (holidayAppType != null) {
+	        entities = entities.stream().filter(x -> x.getPk().holidayAppType == holidayAppType.value).collect(Collectors.toList());
+	    }
+        return Optional.ofNullable(KrcmtAppReason.toDomain(entities));
+	}
 
 	@Override
-	public Optional<AppReasonStandard> findByCD(ApplicationType appType, AppStandardReasonCode appStandardReasonCode) {
-		String companyID = AppContexts.user().companyId();
-		Optional<AppReasonStandard> opAppReasonStandard = this.findByAppType(companyID, appType);
+	public Optional<AppReasonStandard> findByCD(String CID, ApplicationType appType, Optional<HolidayAppType> holidayAppType, AppStandardReasonCode appStandardReasonCode) {
+		Optional<AppReasonStandard> opAppReasonStandard = this.findByHolAndAppType(CID, appType, holidayAppType.isPresent() ? holidayAppType.get() : null);
 		if(!opAppReasonStandard.isPresent()) {
 			return Optional.empty();
 		}
@@ -72,7 +84,7 @@ public class JpaAppReasonStandardRepository extends JpaRepository implements App
 		Optional<ReasonTypeItem> opReasonTypeItem = reasonTypeItemLst.stream().filter(x -> x.getAppStandardReasonCD().equals(appStandardReasonCode)).findAny();
 		if(opReasonTypeItem.isPresent()) {
 			return Optional.of(new AppReasonStandard(
-								companyID, 
+								CID, 
 								opAppReasonStandard.get().getApplicationType(), 
 								Arrays.asList(opReasonTypeItem.get()), 
 								opAppReasonStandard.get().getOpHolidayAppType()));

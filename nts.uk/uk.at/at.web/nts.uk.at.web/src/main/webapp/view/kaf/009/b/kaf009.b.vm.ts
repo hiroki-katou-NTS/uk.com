@@ -5,10 +5,10 @@ module nts.uk.at.view.kaf009_ref.b.viewmodel {
 	import PrintContentOfEachAppDto = nts.uk.at.view.kaf000.shr.viewmodel.PrintContentOfEachAppDto;
 	import CommonProcess = nts.uk.at.view.kaf000.shr.viewmodel.CommonProcess;
     const template = `
-        <div id="kaf009-b">
-            <div id="contents-area" style="background-color: inherit; height: calc(100vh - 165px); min-width: 1130px">
-                <div class="two-panel" style="height: 100%;">
-                    <div class="left-panel" style="width: calc(100% - 410px); height: inherit">
+	<div id="kaf009-b">
+            <div id="contents-area" style="background-color: inherit; height: calc(100vh - 137px);">
+                <div class="two-panel" style="height: 100%; width: 1260px">
+                    <div class="left-panel" style="width: calc(1260px - 388px); height: inherit">
                         <div style="height: inherit; overflow-y: auto; background-color: #fff; padding: 0 10px; overflow-x: hidden">
                             <div class="table" style="border-bottom: 2px solid #B1B1B1; padding-bottom: 30px; margin-bottom: 30px; width: 100%;">
                                 <div class="cell" style="vertical-align: middle;">
@@ -27,6 +27,11 @@ module nts.uk.at.view.kaf009_ref.b.viewmodel {
                                                         } }"></div>
                                 </div>
                             </div>
+							<div data-bind="component: { name: 'kaf000-b-component2', 
+														params: {
+															appType: appType,
+															appDispInfoStartupOutput: appDispInfoStartupOutput
+														} }"></div>
                             <div data-bind="component: { name: 'kaf000-b-component5', 
                                                         params: {
                                                             appType: appType,
@@ -38,14 +43,14 @@ module nts.uk.at.view.kaf009_ref.b.viewmodel {
                                                             appType: appType,
                                                             application: application,
                                                             appDispInfoStartupOutput: appDispInfoStartupOutput
-                                                        } }" style="width: fit-content; display: inline-block; vertical-align: middle; margin-top: 12px"></div>
+                                                        } }" style="width: fit-content; display: inline-block; vertical-align: middle; margin-top: -15px"></div>
                                                         
                                                         
-                        <div
+                        <div style="margin-top: -19px;"
                                 data-bind="component: { name: 'kaf009-share', params: {dataFetch: dataFetch, model:model, mode: mode } }"></div>                             
                                                         
                                                         
-                            <div style="margin-top: 12px" data-bind="component: { name: 'kaf000-b-component7', 
+                            <div style="margin-top: -3px;" data-bind="component: { name: 'kaf000-b-component7', 
                                                         params: {
                                                             appType: appType,
                                                             application: application,
@@ -58,7 +63,7 @@ module nts.uk.at.view.kaf009_ref.b.viewmodel {
                             </div>                            
                         </div>
                     </div>
-                    <div class="right-panel" style="width: 410px; height: inherit;">
+                    <div class="right-panel" style="width: 388px; height: inherit; padding-right: 0px">
                         <div style="height: inherit; background-color: #fff; overflow-y: auto; overflow-x: hidden">
                             <div style="padding-top: 10px" data-bind="component: { name: 'kaf000-b-component1', 
                                     params: {
@@ -76,7 +81,8 @@ module nts.uk.at.view.kaf009_ref.b.viewmodel {
                 </div>
             </div>
         </div>
-    `
+
+`
     @component({
         name: 'kaf009-b',
         template: template
@@ -165,7 +171,8 @@ module nts.uk.at.view.kaf009_ref.b.viewmodel {
                         appDispInfoStartup: ko.observable(res.appDispInfoStartup),
                         goBackReflect: ko.observable(res.goBackReflect),
                         lstWorkType: ko.observable(res.lstWorkType),
-                        goBackApplication: ko.observable(res.goBackApplication)
+                        goBackApplication: ko.observable(res.goBackApplication),
+						workInfo: res.workInfo
                     });
                     vm.printContentOfEachAppDto().opInforGoBackCommonDirectOutput = ko.toJS(vm.dataFetch);
                 }
@@ -367,6 +374,8 @@ module nts.uk.at.view.kaf009_ref.b.viewmodel {
         lstWorkType: KnockoutObservable<any>;
 
         goBackApplication: KnockoutObservable<any>;
+
+		workInfo: any;
     }
     export class GoBackApplication {
         straightDistinction: number;

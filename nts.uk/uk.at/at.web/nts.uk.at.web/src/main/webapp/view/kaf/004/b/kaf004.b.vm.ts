@@ -10,10 +10,10 @@ module nts.uk.at.view.kaf004_ref.b.viewmodel {
     @component({
         name: 'kaf004-b',
         template: `
-        <div id="kaf004-b">
+         <div id="kaf004-b">
             <div id="contents-area" style="background-color: inherit; height: calc(100vh - 137px);">
-                <div class="two-panel" style="height: 100%;">
-                    <div class="left-panel" style="width: calc(100% - 410px); height: inherit;">
+                <div class="two-panel" style="height: 100%; width: 1260px">
+                    <div class="left-panel" style="width: calc(1260px - 388px); height: inherit;">
                         <div style="height: inherit; background-color: #fff; padding: 0 10px; overflow-y: auto; overflow-x: hidden">
                             <div class="table" style="border-bottom: 2px solid #B1B1B1; padding-bottom: 30px; margin-bottom: 30px; width: 100%;">
                                 <div class="cell" style="vertical-align: middle;">
@@ -32,18 +32,23 @@ module nts.uk.at.view.kaf004_ref.b.viewmodel {
                                                         } }"></div>
                                 </div>
                             </div>
+							<div data-bind="component: { name: 'kaf000-b-component2', 
+														params: {
+															appType: appType,
+															appDispInfoStartupOutput: appDispInfoStartupOutput
+														} }"></div>
                             <div data-bind="component: { name: 'kaf000-b-component5', 
                                                         params: {
                                                             appType: appType,
                                                             application: application,
                                                             appDispInfoStartupOutput: appDispInfoStartupOutput
-                                                        } }"></div>
+                                                        } }" style="margin-bottom: -15px"></div>
                             <div data-bind="component: { name: 'kaf000-b-component6', 
                                                         params: {
                                                             appType: appType,
                                                             application: application,
                                                             appDispInfoStartupOutput: appDispInfoStartupOutput
-                                                        } }" style="width: fit-content; display: inline-block; vertical-align: middle;"></div>
+                                                        } }" style="width: fit-content; display: inline-block; vertical-align: middle; margin-bottom: -10px"></div>
                             <div data-bind="component: {name: 'kaf004_share'}" style="margin: 7px 0"></div>
                             <div class="mv-13" data-bind="component: { name: 'kaf000-b-component7', 
                                                         params: {
@@ -53,7 +58,7 @@ module nts.uk.at.view.kaf004_ref.b.viewmodel {
                                                         } }"></div>
                         </div>
                     </div>
-                    <div class="right-panel" style="width: 410px; height: inherit;">
+                    <div class="right-panel" style="width: 388px; height: inherit; padding-right: 0px">
                         <div style="height: inherit; background-color: #fff; overflow-y: auto; overflow-x: hidden">
                             <div style="margin: 10px" data-bind="component: { name: 'kaf000-b-component1', 
                                     params: {

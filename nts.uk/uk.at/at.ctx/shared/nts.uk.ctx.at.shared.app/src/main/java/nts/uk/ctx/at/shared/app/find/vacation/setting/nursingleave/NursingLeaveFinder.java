@@ -24,21 +24,21 @@ import nts.uk.shr.com.context.AppContexts;
  */
 @Stateless
 public class NursingLeaveFinder {
-    
+
     /** The Constant INDEX_NURSING_SETTING. */
     private static final int INDEX_NURSING_SETTING = 0;
-    
+
     /** The Constant INDEX_CHILD_NURSING_SETTING. */
     private static final int INDEX_CHILD_NURSING_SETTING = 1;
-    
+
     /** The nursing repo. */
     @Inject
     private NursingLeaveSettingRepository nursingRepo;
-    
+
     /** The work type finder. */
 //    @Inject
 //    private WorkTypeFinder workTypeFinder;
-    
+
     /**
      * Find nursing leave by company id.
      *
@@ -52,20 +52,38 @@ public class NursingLeaveFinder {
         }
         // Find all work type by company id
         //List<WorkTypeDto> listWorkType = this.workTypeFinder.findByCompanyId();
-        
+
         // NURSING
         NursingLeaveSetting nursingSetting = listSetting.get(INDEX_NURSING_SETTING);
-        NursingLeaveSettingDto nursingSettingDto = new NursingLeaveSettingDto();
+        NursingLeaveSettingDto nursingSettingDto = this.createDefaultDto();
         nursingSetting.saveToMemento(nursingSettingDto);
-        
+
         // CHILD NURSING
         NursingLeaveSetting childNursingSetting = listSetting.get(INDEX_CHILD_NURSING_SETTING);
-        NursingLeaveSettingDto childNursingSettingDto = new NursingLeaveSettingDto();
+        NursingLeaveSettingDto childNursingSettingDto = this.createDefaultDto();
         childNursingSetting.saveToMemento(childNursingSettingDto);
-        
+
         return Arrays.asList(nursingSettingDto, childNursingSettingDto);
     }
-    
+
+    private NursingLeaveSettingDto createDefaultDto() {
+    	return NursingLeaveSettingDto.builder()
+    	.manageType(0)
+    	.nursingCategory(0)
+    	.startMonthDay(0)
+    	.nursingNumberLeaveDay(0)
+    	.nursingNumberPerson(0)
+    	.nursingNumberLeaveDay2(0)
+    	.nursingNumberPerson2(0)
+    	.specialHolidayFrame(0)
+    	.absenceWorkDay(0)
+    	.timeDigestiveUnit(0)
+    	.manageDistinct(0)
+    	.build();
+    }
+
+
+
     /**
      * Find work type.
      *
@@ -78,7 +96,7 @@ public class NursingLeaveFinder {
 //                .map(item -> item.getWorkTypeCode() + "." + item.getName())
 //                .collect(Collectors.joining("、"));
 //    }
-    
+
     /**
      * Find list work type code by company id.
      *

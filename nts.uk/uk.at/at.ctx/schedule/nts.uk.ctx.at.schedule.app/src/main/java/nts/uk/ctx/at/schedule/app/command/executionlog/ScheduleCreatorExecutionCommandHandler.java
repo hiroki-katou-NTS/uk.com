@@ -713,12 +713,14 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 		// Input「対象開始日」と、取得した「開始年月日」を比較
 		DatePeriod dateAfterCorrection = dateBeforeCorrection;
 		if (dateBeforeCorrection.start().before(dateP.start())) {
-			dateAfterCorrection = dateBeforeCorrection.cutOffWithNewStart(dateP.start());
+//			dateAfterCorrection = dateBeforeCorrection.cutOffWithNewStart(dateP.start());
+			dateAfterCorrection = new DatePeriod(dateP.start(), dateAfterCorrection.end());
 		}
 		// Output「対象開始日(補正後)」に、取得した「締め期間. 開始日年月日」を設定する
 		if (dateAfterCorrection.start().beforeOrEquals(dateBeforeCorrection.end())) {
 			// Out「対象終了日(補正後)」に、Input「対象終了日」を設定する
-			dateAfterCorrection = dateAfterCorrection.cutOffWithNewEnd(dateBeforeCorrection.end());
+//			dateAfterCorrection = dateAfterCorrection.cutOffWithNewEnd(dateBeforeCorrection.end());
+			dateAfterCorrection = new DatePeriod(dateAfterCorrection.start(), dateBeforeCorrection.end());
 			return new StateAndValueDatePeriod(dateAfterCorrection, StateValueDate.TARGET_PERIOD); // true
 		}
 

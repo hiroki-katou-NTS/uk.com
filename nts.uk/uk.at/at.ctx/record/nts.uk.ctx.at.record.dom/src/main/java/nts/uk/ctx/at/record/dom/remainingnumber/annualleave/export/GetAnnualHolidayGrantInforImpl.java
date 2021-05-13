@@ -14,7 +14,6 @@ import javax.inject.Inject;
 
 import lombok.AllArgsConstructor;
 import lombok.val;
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
@@ -32,29 +31,18 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremaini
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveRemainingHistory;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveTimeRemainHistRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveTimeRemainingHistory;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveUsedDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.CreateInterimAnnualMngData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.param.AnnualHolidayGrant;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.param.AnnualHolidayGrantInfor;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.param.DailyInterimRemainMngDataAndFlg;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.param.ReferenceAtr;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualHolidayMng;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TempAnnualLeaveMngs;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualHolidayMngRepository;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualLeaveMngWork;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.LeaveGrantRemainingData;
-import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveGrantDayNumber;
-import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveGrantNumber;
-import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveGrantTime;
-import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveNumberInfo;
-import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveRemainingNumber;
-import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveRemainingTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveUsedDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveUsedNumber;
-import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveUsedTime;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemainRepository;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.AggregateMonthlyRecordService;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceTimeOfMonthlyRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
@@ -81,15 +69,13 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 	private static final int UNDER = 0;
 	// 以上
 	private static final int OVER = 1;
-	
+
 	@Inject
 	private GetPeriodFromPreviousToNextGrantDate periodGrantInfor;
 	@Inject
 	private AnnualLeaveRemainHistRepository annualRepo;
 	@Inject
 	private TmpAnnualHolidayMngRepository annualRepository;
-	@Inject
-	private InterimRemainRepository interimRepo;
 	@Inject
 	private AnnualLeaveTimeRemainHistRepository annTimeRemainHisRepo;
 	/** 月別実績の勤怠時間 */
@@ -124,9 +110,9 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 			boolean exCondition,int exConditionDays, int exComparison) {
 		val require = requireService.createRequire();
 		val cacheCarrier = new CacheCarrier();
-		
+
 		GetAnnualHolidayGrantInforDto getAnnualHolidayGrantInforDto = new GetAnnualHolidayGrantInforDto();
-		
+
 		// 抽出対象社員←true（対象社員である）
 		getAnnualHolidayGrantInforDto.setEmployeeExtracted(true);
 		//指定した月を基準に、前回付与日から次回付与日までの期間を取得 - 1 2 3
@@ -158,22 +144,24 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 		List<DailyInterimRemainMngData> lstRemainData = lstUseInfor.stream().map(x -> {
 			return x.getData();
 		}).collect(Collectors.toList());
-		List<TmpAnnualLeaveMngWork> lstTmpAnnual = new ArrayList<>();
+		List<TempAnnualLeaveMngs> lstTmpAnnual = new ArrayList<>();
 		for (DailyInterimRemainMngData remainMng : lstRemainData) {
-			TmpAnnualHolidayMng annData = remainMng.getAnnualHolidayData().get();
-//			InterimRemain remainData = remainMng.getRecAbsData()
-//					.stream()
-//					.filter(x -> x.getRemainManaID().equals(annData.getRemainManaID()))
-//					.collect(Collectors.toList()).get(0);
-			TmpAnnualLeaveMngWork tmpAnnual = TmpAnnualLeaveMngWork.of(annData);
-			lstTmpAnnual.add(tmpAnnual);
+			remainMng.getAnnualHolidayData().ifPresent(x -> {
+				TempAnnualLeaveMngs tmpAnnual = x;
+				lstTmpAnnual.add(tmpAnnual);
+			});
+			/*InterimRemain remainData = remainMng.getRecAbsData()
+					.stream()
+					.filter(x -> x.getRemainManaID().equals(annData.getRemainManaID()))
+					.collect(Collectors.toList()).get(0);*/
+			
 		}
 
 		//過去月集計モードを判断する
 		boolean isPastMonth = this.determinePastMonth(periodOutput, ym, closureOfEmp);
-		
+
 		//期間中の年休残数を取得 - 5
-		// 年月←INPUT．指定年 ------対象期間区分が１年経過時点の場合、年月←取得した期間．開始日の年月部分 
+		// 年月←INPUT．指定年 ------対象期間区分が１年経過時点の場合、年月←取得した期間．開始日の年月部分
 		Optional<AggrResultOfAnnualLeave> optAnnualLeaveRemain = GetAnnLeaRemNumWithinPeriodProc
 				.algorithm(require, cacheCarrier, cid,
 					sid,
@@ -187,8 +175,12 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 					Optional.empty(),//前回の年休の集計結果
 //					Optional.of(true),//集計開始日を締め開始日とする
 //					Optional.of(false), //不足分付与残数データ出力区分
+//					Optional.of(isPastMonth),//過去月集計モード
+//					Optional.of(ym), //年月
+//					Optional.of(new DatePeriod(startDate, period.end())));
 					Optional.of(isPastMonth),//過去月集計モード
-					Optional.of(ymStartDateByClosure)); //年月
+					Optional.of(ymStartDateByClosure),
+					Optional.empty()); //年月
 		if(!optAnnualLeaveRemain.isPresent()) {
 			getAnnualHolidayGrantInforDto.setAnnualHolidayGrantInfor(Optional.ofNullable(output));
 			return getAnnualHolidayGrantInforDto;
@@ -204,10 +196,10 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 		List<ClosureHistory> closureHistories = closureOfEmp.getClosureHistories().stream()
 				.filter(x -> x.getStartYearMonth().lessThanOrEqualTo(ymStartDateByClosure) && x.getEndYearMonth().greaterThanOrEqualTo(ymStartDateByClosure))
 				.collect(Collectors.toList());
-		
+
 		//ダブルトラック開始日を取得する
 		Optional<GeneralDate> getDateDoubleTrack = this.getDoubleTrackStartDate(period.start(), output.getLstGrantInfor(), doubletrack);
-		
+
 		//指定月時点の使用数を計算 - 6
 		List<AnnualLeaveGrantRemainingData> lstAnnRemainHis = this.lstRemainHistory(sid, remainDataList, getDateDoubleTrack.orElse(period.start()));
 		if(!lstAnnRemainHis.isEmpty()) {
@@ -217,9 +209,9 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 					.filter(data -> Objects.nonNull(data.getYmd()))
 					.sorted(Comparator.comparing(AnnualHolidayGrant::getYmd))
 					.collect(Collectors.toList()));
-		}	
-		
-		//前回付与日～INPUT．指定年月の間で期限が切れた付与情報を取得 - 7 
+		}
+
+		//前回付与日～INPUT．指定年月の間で期限が切れた付与情報を取得 - 7
 		GeneralDate dateInforFormPeriod = getDateDoubleTrack.isPresent() ? getDateDoubleTrack.get() : period.start();
 		closureHistories.forEach(x -> {
 			List<AnnualHolidayGrant> grantInforFormPeriod = this.grantInforFormPeriod(sid, ymStartDateByClosure, x.getClosureId(),
@@ -231,12 +223,12 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 		output.getLstGrantInfor().sort(Comparator.comparing(AnnualHolidayGrant::getYmd));
 
 		// 対象期間区分をチェックする
-		
+
 		if(periodOutput == AFTER_1_YEAR) {
 			//条件に合わない<OUTPUT>年休付与を削除する
 			output.getLstGrantInfor().removeIf(i -> i.getYmd().before(dateInforFormPeriod) || i.getYmd().after(period.end()));
 		}
-		
+
 		getAnnualHolidayGrantInforDto.setAnnualHolidayGrantInfor(Optional.of(output));
 		//抽出条件_チェック(A5_7)をチェックする
 		List<AnnualHolidayGrant> newGrant =  getAnnualHolidayGrantInforDto.getAnnualHolidayGrantInfor().get().getLstGrantInfor();
@@ -252,8 +244,8 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 		if (getAnnualHolidayGrantInforDto.getAnnualHolidayGrantInfor().isPresent()) {
 			getAnnualHolidayGrantInforDto.getAnnualHolidayGrantInfor().get()
 					.setDoubleTrackStartDate(getDateDoubleTrack);
-		}	
-			
+		}
+
 		//年休付与情報を返す
 		return getAnnualHolidayGrantInforDto;
 	}
@@ -290,7 +282,7 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 		DatePeriod datePeriodClosure = ClosureService.getClosurePeriod(require, annRemainHisInfor.getClosureId().value, annRemainHisInfor.getYearMonth());
 		return Optional.ofNullable(datePeriodClosure.start());
 	}
-	
+
 	@Override
 	public List<DailyInterimRemainMngDataAndFlg> lstRemainData(String cid, String sid, DatePeriod datePeriod,
 			ReferenceAtr referenceAtr) {
@@ -316,16 +308,13 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 				lstOutputData = this.getAnnualHolidayRemainData(require, cacheCarrier, cid, sid, new DatePeriod(datePeriod.start(), startDate.addDays(-1)));
 			}
 			//暫定年休管理データを取得 締め開始日 <= 対象日 < INPUT．期間．終了日
-			List<TmpAnnualHolidayMng> lstTmpAnnual = annualRepository.getBySidPeriod(sid, new DatePeriod(startDate, datePeriod.end()));
-			for (TmpAnnualHolidayMng x : lstTmpAnnual) {
-				Optional<InterimRemain> interimInfor = interimRepo.getById(x.getRemainManaID());
-				if(interimInfor.isPresent()) {
-					DailyInterimRemainMngData remainMng = new DailyInterimRemainMngData();
-					remainMng.setRecAbsData(Arrays.asList(x));
-					remainMng.setAnnualHolidayData(Optional.of(x));
-					DailyInterimRemainMngDataAndFlg outData = new DailyInterimRemainMngDataAndFlg(remainMng, false);
-					lstOutputData.add(outData);
-				}
+			List<TempAnnualLeaveMngs> lstTmpAnnual = annualRepository.getBySidPeriod(sid, new DatePeriod(startDate, datePeriod.end()));
+			for (TempAnnualLeaveMngs x : lstTmpAnnual) {
+				DailyInterimRemainMngData remainMng = new DailyInterimRemainMngData();
+				remainMng.setRecAbsData(Arrays.asList(x));
+				remainMng.setAnnualHolidayData(Optional.of(x));
+				DailyInterimRemainMngDataAndFlg outData = new DailyInterimRemainMngDataAndFlg(remainMng, false);
+				lstOutputData.add(outData);
 			}
 		}
 
@@ -357,11 +346,13 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 			}
 		}
 		for (DailyInterimRemainMngData x : lstFlex) {
-			double usedDays = x.getAnnualHolidayData().get().getUseNumber().getUsedDays().map(c -> c.v()).orElse(0d);
+			double usedDays = x.getAnnualHolidayData().map(annal-> annal.getAppTimeType().map(appTime-> appTime.getAppTimeType().map(time-> Double.valueOf(time.value)).orElse(0d)).orElse(0d)).orElse(0d);
 			if(usedDays <= 0) {
 				continue;
 			}
-			TmpAnnualHolidayMng annualInterim = x.getAnnualHolidayData().get();
+			if (x.getAnnualHolidayData().isPresent()) {
+			
+			TempAnnualLeaveMngs annualInterim = x.getAnnualHolidayData().get();
 			if(usedDays <= 1.0) {
 				lstOutputData.add(new DailyInterimRemainMngDataAndFlg(x, true));
 				continue;
@@ -369,17 +360,26 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 			for(double i = 0; usedDays - i > 0; i++) {
 				DailyInterimRemainMngData flexTmp = new DailyInterimRemainMngData();
 				flexTmp.setRecAbsData(x.getRecAbsData());
-				TmpAnnualHolidayMng annualInterimTmp = new TmpAnnualHolidayMng(annualInterim.getRemainManaID(),
-						annualInterim.getSID(), x.getYmd(), annualInterim.getCreatorAtr());
+				TempAnnualLeaveMngs annualInterimTmp = new TempAnnualLeaveMngs(
+						annualInterim.getRemainManaID(),
+						annualInterim.getSID(),
+						annualInterim.getYmd(),
+						annualInterim.getCreatorAtr(),
+						annualInterim.getRemainType(),
+						annualInterim.getWorkTypeCode(),
+						annualInterim.getUsedNumber(),
+						annualInterim.getAppTimeType()
+						);
 //				annualInterimTmp.setAnnualId(annualInterim.getAnnualId());
 				annualInterimTmp.setWorkTypeCode(annualInterim.getWorkTypeCode());
 
-				val usedNumber = nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AnnualLeaveUsedNumber.of(
-						Optional.of(new AnnualLeaveUsedDayNumber(usedDays - i >= 1 ? 1.0 : 0.5)), Optional.empty());
-				annualInterimTmp.setUseNumber(usedNumber);
+				val usedNumber = LeaveUsedNumber.of(new LeaveUsedDayNumber(usedDays - i >= 1 ? 1.0 : 0.5),
+						Optional.empty(), Optional.empty(), Optional.empty());
+				annualInterimTmp.setUsedNumber(usedNumber);
 				flexTmp.setAnnualHolidayData(Optional.of(annualInterimTmp));
 
 				lstOutputData.add(new DailyInterimRemainMngDataAndFlg(flexTmp, true));
+				}
 			}
 		}
 		return lstOutputData;
@@ -436,7 +436,7 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 		}).filter(Objects::nonNull).map(data -> (AnnualLeaveGrantRemainingData) data).collect(Collectors.toList());
 	}
 
-	//前回付与日～INPUT．指定年月の間で期限が切れた付与情報を取得 - 7 
+	//前回付与日～INPUT．指定年月の間で期限が切れた付与情報を取得 - 7
 	@Override
 	public List<AnnualHolidayGrant> grantInforFormPeriod(String sid, YearMonth ym,  ClosureId closureID,
 			ClosureDate closureDate, DatePeriod period, boolean isPastMonth) {
@@ -462,7 +462,7 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 		// 取得した年休付与残数データをOUTPUTのクラスに移送
 		return lstAnnRemainHis.stream().map(AnnualHolidayGrant::fromData).collect(Collectors.toList());
 	}
-	
+
 	/**
 	 * ダブルトラック開始日を取得する
 	 * @param 取得した期間．開始日(前回付与日) - Acquisition period. Start date (previous grant date)
@@ -470,13 +470,13 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 	 * @return ダブルトラック開始日 - double track start date
 	 */
 	private Optional<GeneralDate> getDoubleTrackStartDate(GeneralDate lastGrantDate, List<AnnualHolidayGrant> lstGrant, boolean doubletrack) {
-		// A7_2（ダブルトラックの場合に、対象期間を広げで取得明細を表示する。）をチェックする - check A7_2 ( is doubleTrack ) 
+		// A7_2（ダブルトラックの場合に、対象期間を広げで取得明細を表示する。）をチェックする - check A7_2 ( is doubleTrack )
 		if(doubletrack) {
 			// 期間開始日←前回付与日－１年＋１日 --- Period start date ← Last grant date - 1 year + 1 day
 			GeneralDate startDate = lastGrantDate.addDays(+1).addYears(-1);
 			// 期間終了日←前回付与日－１日--- Period end date ← Last grant date - 1 day
 			GeneralDate endDate = lastGrantDate.addDays(-1);
-			
+
 			List<GeneralDate> generalDateGrant = lstGrant.stream().map(i -> i.getYmd()).sorted((a,b) -> a.compareTo(b)).collect(Collectors.toList());
 			// 期間開始日 ≦ 付与日 ≦ 期間終了日に合致する付与日を求める - Period start date ≤ grant date ≤ find the grant date that matches the period end date
 			List<GeneralDate> getDbTrackDate = new ArrayList<GeneralDate>();
@@ -485,19 +485,19 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 					getDbTrackDate.add(gd);
 				}
 			}
-			
+
 			if (getDbTrackDate.isEmpty()) {
 				return Optional.empty();
 			}
-			
+
 			// 合致した付与日の内、一番小さな日をダブルトラック開始日として返す - Returns the smallest of the matching grant dates as the double track start date
-			// được hiểu là lấy ra cái ngày xác định nhỏ nhất . vì mục đích của đường đôi này tìm ra cái ngày nhỏ nhất để làm mốc start date, có thể check lai nếu sai 
+			// được hiểu là lấy ra cái ngày xác định nhỏ nhất . vì mục đích của đường đôi này tìm ra cái ngày nhỏ nhất để làm mốc start date, có thể check lai nếu sai
 			return getDbTrackDate.stream().min(GeneralDate::compareTo);
 		}
 		return Optional.empty();
-		
+
 	}
-	
+
 	/**
 	 * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.勤務実績.残数管理.定期的に付与する休暇.年休管理.Export.Query.[NO.550]年休付与情報を取得.アルゴリズム.抽出条件での絞り込みを行う.抽出条件での絞り込みを行う
 	 * @param employeeId - 社員ID
@@ -514,14 +514,14 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 		// アルゴリズム「年休社員基本情報を取得する」を実行し、年休付与基準日を取得する
 		Optional<AnnualLeaveEmpBasicInfo> annualLeaveEmpBasicInfo = annLeaEmpBasicInfoRepository.get(employeeId);
 		if (!annualLeaveEmpBasicInfo.isPresent()) {
-			// false：対象社員ではない - Not a target employee 
+			// false：対象社員ではない - Not a target employee
 			return false;
 		}
 		// 次回年休付与を計算 - Calculate the next annual leave grant
 		List<NextAnnualLeaveGrant> annualLeaveGrant = CalcNextAnnualLeaveGrantDate.algorithm(
 							require, cacheCarrier, companyId, employeeId, Optional.empty());
 		if (annualLeaveGrant.isEmpty()) {
-			// false：対象社員ではない - Not a target employee 
+			// false：対象社員ではない - Not a target employee
 			return false;
 		}
 		// INPUT．年休付与(List)を付与日でソートする
@@ -562,7 +562,7 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 		}
 		return false;
 	}
-	
+
 	/**
 	 * 過去月集計モードを判断する
 	 */

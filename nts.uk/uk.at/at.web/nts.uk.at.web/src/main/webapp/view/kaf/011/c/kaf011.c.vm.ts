@@ -3,6 +3,7 @@ module nts.uk.at.view.kaf011.c.viewmodel {
    	import ajax = nts.uk.request.ajax;
 	import block = nts.uk.ui.block;
 	import dialog = nts.uk.ui.dialog;
+	import AppType = nts.uk.at.view.kaf000.shr.viewmodel.model.AppType;
 	
 	export class KAF011C {
 		displayInforWhenStarting: any;
@@ -10,11 +11,14 @@ module nts.uk.at.view.kaf011.c.viewmodel {
 		reasonTypeItemLst: KnockoutObservableArray<any> = ko.observableArray([]);
 		appStandardReasonCD: KnockoutObservable<number> = ko.observable();
 		appReason: KnockoutObservable<string> = ko.observable("");
+		appDispInfoStartupOutput: any = ko.observable();
+		appType: KnockoutObservable<number> = ko.observable(AppType.COMPLEMENT_LEAVE_APPLICATION);
 		constructor(){
 			let self = this;
 			let dataTransfer = windows.getShared('KAF011C');
 			self.displayInforWhenStarting = dataTransfer;
 			let reasonTypeItemLst: any = dataTransfer.appDispInfoStartup.appDispInfoNoDateOutput.reasonTypeItemLst;
+			self.appDispInfoStartupOutput(dataTransfer.appDispInfoStartup);
 			self.appDate = ko.observable(dataTransfer.abs.application.appDate);
 			if(reasonTypeItemLst){
 				self.reasonTypeItemLst(reasonTypeItemLst);	
@@ -23,13 +27,17 @@ module nts.uk.at.view.kaf011.c.viewmodel {
 				block.invisible();
 				ajax('at/request/application/holidayshipment/changeDateScreenC',{appDateNew: new Date(value), displayInforWhenStarting: self.displayInforWhenStarting}).then((data: any) =>{
 					self.displayInforWhenStarting.appDispInfoStartup.appDispInfoWithDateOutput = data.appDispInfoStartup.appDispInfoWithDateOutput;
+					self.appDispInfoStartupOutput(data.appDispInfoStartup);
 				}).fail((fail: any) => {
 					dialog.error({ messageId: fail.messageId});
 				}).always(() => {
                     block.clear();
                 });
 			});
+			
+			
 		}
+		
 		
 		triggerValidate(): boolean{
 			$('.nts-input').trigger("validate");
@@ -79,7 +87,7 @@ module nts.uk.at.view.kaf011.c.viewmodel {
 				ajax('at/request/application/holidayshipment/saveChangeDateScreenC',{appDateNew: new Date(self.appDate()), displayInforWhenStarting: self.displayInforWhenStarting, appReason: self.appReason(), appStandardReasonCD: self.appStandardReasonCD()}).then((data: any) =>{
 					dialog.info({ messageId: "Msg_15"}).then(()=>{
 						nts.uk.request.ajax("at", "at/request/application/reflect-app", data.reflectAppIdLst);
-						return CommonProcess.handleMailResult(data, self).then(() => {
+						return self.handleMailResult(data, self).then(() => {
 							nts.uk.ui.windows.setShared('KAF011C_RESLUT', { appID: data.appIDLst[0] });
 							self.closeDialog();
                             return true;
@@ -96,10 +104,15 @@ module nts.uk.at.view.kaf011.c.viewmodel {
 		closeDialog(){
 			windows.close();
 		}
+		
+		
 	}
 	
     __viewContext.ready(function() {
-    	__viewContext.bind(new KAF011C());
+		const vm = new KAF011C()
+    	__viewContext.bind(vm);
+		
+		
 		$("#recAppDate").focus();
     });
 }

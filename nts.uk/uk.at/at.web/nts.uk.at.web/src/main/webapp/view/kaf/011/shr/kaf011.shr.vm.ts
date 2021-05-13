@@ -133,6 +133,7 @@ module nts.uk.at.view.kaf011 {
 			if (_.filter(self.workTypeList(), {'workType': param.workInformation.workType}).length == 0) {
 				self.workTypeList().push({ workTypeCode: param.workInformation.workType, name: 'マスタ未登録' });
 			}
+			self.workTypeList(_.sortBy(self.workTypeList(), [ 'workTypeCode' ]));
 			self.workInformation.update(param.workInformation);
 
 			self.leaveComDayOffMana(_.map(param.leaveComDayOffMana, (c) =>new SubWorkSubHolidayLinkingMng(c)));

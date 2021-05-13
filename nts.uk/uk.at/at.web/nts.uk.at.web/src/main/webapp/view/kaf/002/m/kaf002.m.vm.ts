@@ -8,7 +8,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
 		<div
 			data-bind="text: comment1().content,
 					   style: {color: comment1().color,
-					   margin:'10px',
+					   marginBottom:'9px',
 					   fontWeight: comment1().isBold ? 'bold' : 'normal'}"
 			class="label"
 			style="white-space: break-spaces; width: auto !important">
@@ -27,7 +27,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
 		<div
 			data-bind="text: comment2().content,
 					   style: {color: comment2().color,
-					   margin:'10px',
+					   marginTop:'10px',
 					   fontWeight: comment2().isBold ? 'bold' : 'normal'}"
 			class="label"
 			style="white-space: break-spaces; width: auto !important">
@@ -139,18 +139,38 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
                 
 				if (self.isPreAtr()) {
 					if (self.selectedTab() == 'tab-2') {
-							$('#kaf002TabPanel').width(600)							
+							$('#kaf002TabPanel').width(580)							
 					} else {
 							$('#kaf002TabPanel').width(450)							
 					}
 				
 				} else {
 					if (self.selectedTab() == 'tab-2') {
-							$('#kaf002TabPanel').width(700)							
+							$('#kaf002TabPanel').width(680)							
 					} else {
 							$('#kaf002TabPanel').width(550)							
 					}
 				}
+				if (value) {
+					
+					if (value == 'tab-1') {
+	                        self.selectedTemp(0);
+	                   
+	                } else if (value == 'tab-2') {
+	                    self.selectedTemp(1);
+	                   
+	                } else if (value == 'tab-3') {
+	                    self.selectedTemp(5);
+	                   
+	                } else if (value == 'tab-4') {
+	                    self.selectedTemp(2);
+	                   
+	                } else if (value == 'tab-5') {
+	                    self.selectedTemp(4);
+	                    
+	                }
+				}
+				
 
                 
             })
@@ -238,14 +258,14 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
             const self = this;
             if (self.isPreAtr()) {
 				if (self.selectedTab() == 'tab-2') {
-						$('#kaf002TabPanel').width(600)							
+						$('#kaf002TabPanel').width(580)							
 				} else {
 						$('#kaf002TabPanel').width(450)							
 				}
 				
 			} else {
 				if (self.selectedTab() == 'tab-2') {
-						$('#kaf002TabPanel').width(700)							
+						$('#kaf002TabPanel').width(680)							
 				} else {
 						$('#kaf002TabPanel').width(550)							
 				}

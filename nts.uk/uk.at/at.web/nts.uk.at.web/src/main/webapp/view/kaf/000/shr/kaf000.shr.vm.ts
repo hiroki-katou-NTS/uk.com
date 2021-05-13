@@ -275,7 +275,7 @@ module nts.uk.at.view.kaf000.shr.viewmodel {
                 useDivision = appDispInfoStartupOutput.appDispInfoWithDateOutput.approvalFunctionSet.appUseSetLst[0].useDivision,
                 recordDate = appDispInfoStartupOutput.appDispInfoNoDateOutput.applicationSetting.recordDate,
                 empHistImport = appDispInfoStartupOutput.appDispInfoWithDateOutput.empHistImport,
-           		opErrorFlag = appDispInfoStartupOutput.appDispInfoWithDateOutput.opErrorFlag,
+                opErrorFlag = appDispInfoStartupOutput.appDispInfoWithDateOutput.opErrorFlag,
                 msgID = "";
             if(mode && useDivision == 0) {
 				if(recordDate == 0) {
