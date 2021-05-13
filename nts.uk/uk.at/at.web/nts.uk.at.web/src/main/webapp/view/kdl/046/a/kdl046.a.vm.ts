@@ -57,7 +57,7 @@ module nts.uk.at.view.kdl046.a.viewmodel {
                 const workplaceGroups: Array<any> = ko.dataFor($("#workplace-group-pannel")[0]).workplaceGroups();
                 if (self.isMultiple) {
                     let items = _.filter(workplaceGroups, (o) => self.workplaceGroupId().indexOf(o.id) >= 0);
-                    result.workplaceGroups = items;
+                    result.workplaceGroups = items.map(i => ({id: i.id, code: i.code, name: i.name}));
                 } else {
                     let itemWplGr = _.filter(workplaceGroups, (o) => o.id === self.workplaceGroupId());
                     result.workplaceGroupCode = itemWplGr.length > 0 ? itemWplGr[0].code : '';
