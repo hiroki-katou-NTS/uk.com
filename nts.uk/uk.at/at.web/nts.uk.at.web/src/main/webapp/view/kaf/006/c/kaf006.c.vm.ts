@@ -266,7 +266,7 @@ module nts.uk.at.view.kaf006.c.viewmodel {
                         if (error.messageId === "Msg_1715" || error.messageId === "Msg_1521") {
                             nts.uk.ui.dialog.error({ messageId: error.messageId, messageParams: [error.parameterIds[0], error.parameterIds[1]] });
                         } else {
-                            nts.uk.ui.dialog.error({ messageId: error.messageId });
+                            nts.uk.ui.dialog.error({ messageId: error.messageId, messageParams: error.parameterIds });
                         }
                     }
                 }).always(() => {

@@ -137,18 +137,18 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 			String connectOvertimeString = "";
 			if(!CollectionUtil.isEmpty(lstType)) {
 				connectAppTypeString = "select c.APP_ID from KRQDT_APPLICATION c left join KRQDT_APP_REFLECT_STATE d on c.APP_ID = d.APP_ID " +
-						"where c.APP_ID IN @subListId AND c.APP_TYPE IN @lstType AND d.REFLECT_PER_STATE IN @lstState " +
+						"where c.APP_ID IN @subListId AND c.APP_TYPE IN @lstType " +
 						"AND c.CID = @companyID AND c.PRE_POST_ATR IN @prePostAtrLst";
 			}
 			if(!CollectionUtil.isEmpty(stampRequestModeLst)) {
 				connectStampString = "select e.APP_ID from KRQDT_APPLICATION e left join KRQDT_APP_REFLECT_STATE f on e.APP_ID = f.APP_ID " +
 						"where e.APP_ID IN @subListId AND e.STAMP_OPTION_ATR IN @stampRequestModeLst " +
-						"AND f.REFLECT_PER_STATE IN @lstState AND e.CID = @companyID AND e.PRE_POST_ATR IN @prePostAtrLst";
+						"AND e.CID = @companyID AND e.PRE_POST_ATR IN @prePostAtrLst";
 			}
 			if(!CollectionUtil.isEmpty(overtimeAppAtrLst)) {
 				connectOvertimeString = "select g.APP_ID from KRQDT_APPLICATION g left join KRQDT_APP_REFLECT_STATE h on g.APP_ID = h.APP_ID " +
 						"left join KRQDT_APP_OVERTIME i on g.APP_ID = i.APP_ID  where g.APP_ID IN @subListId " +
-						"AND h.REFLECT_PER_STATE IN @lstState AND g.CID = @companyID AND g.PRE_POST_ATR IN @prePostAtrLst AND i.OVERTIME_ATR IN @overtimeAppAtrLst";
+						"AND g.CID = @companyID AND g.PRE_POST_ATR IN @prePostAtrLst AND i.OVERTIME_ATR IN @overtimeAppAtrLst";
 			}
 			whereCondition = Arrays.asList(connectAppTypeString, connectStampString, connectOvertimeString).stream()
 					.filter(x -> Strings.isNotBlank(x)).collect(Collectors.joining(" union "));
@@ -170,7 +170,6 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 			}
 			NtsStatement ntsStatement = new NtsStatement(sql, this.jdbcProxy())
 					.paramString("subListId", subListId)
-					.paramInt("lstState", lstState)
 					.paramString("companyID", companyID)
 					.paramInt("prePostAtrLst", prePostAtrLst.stream().map(x -> x.value).collect(Collectors.toList()));
 			if(!CollectionUtil.isEmpty(employeeIDLst)) {
@@ -406,6 +405,30 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 		List<Map<String, Object>> mapLst = new NtsStatement(sql, this.jdbcProxy())
 				.paramString("sid", sid)
 				.paramDate("dateData", dateData)
+				.paramInt("recordStatus", reflect)
+				.paramInt("appType", appType)
+				.getList(rec -> toObject(rec));
+		List<KrqdtApplication> krqdtApplicationLst = convertToEntity(mapLst);
+		return krqdtApplicationLst.stream().map(c -> c.toDomain()).collect(Collectors.toList());
+	}
+	
+	@Override
+	@SneakyThrows
+	public List<Application> getByListDateReflectType(String sid, DatePeriod period, List<Integer> reflect,
+			List<Integer> appType) {
+		String sql = SELECT_MEMO
+				+ "FROM KRQDT_APPLICATION a" 
+				+ " join KRQDT_APP_REFLECT_STATE b"
+				+ "  on a.APP_ID = b.APP_ID and  a.CID = b.CID"
+				+ " WHERE  a.APPLICANTS_SID =  @sid "
+				+ " AND a.APP_DATE >= @startDate " 
+				+ " AND a.APP_DATE <= @endDate " 
+				+ " AND a.APP_TYPE IN @appType " 
+				+ " AND b.REFLECT_PER_STATE IN @recordStatus" + " ORDER BY a.INPUT_DATE ASC";
+		List<Map<String, Object>> mapLst = new NtsStatement(sql, this.jdbcProxy())
+				.paramString("sid", sid)
+				.paramDate("startDate", period.start())
+				.paramDate("endDate", period.end())
 				.paramInt("recordStatus", reflect)
 				.paramInt("appType", appType)
 				.getList(rec -> toObject(rec));

@@ -18,7 +18,7 @@ public class CreateCodeTest_Entity {
 		/** ファイル出力先フォルダ */
 		String outpath = "C:\\Users\\masaaki_jinno\\Documents\\dev\\就業\\自動生成コード";
 		/** ファイル名 */
-		String fileName = "KRCDT_INTERIM_HD_SP_MNG 暫定特別休暇管理データ.csv";
+		String fileName = "KSHMT_HDNURSING_LEAVE 看護介護休暇.csv";
 
 		  // CSVファイルをArrayListに読み込み
 		  BufferedReader br = null;
@@ -48,10 +48,10 @@ public class CreateCodeTest_Entity {
 			  int rowNo = 0;
 			  for (String[] line_data : data) {
 				  rowNo++;
-				  if ( rowNo < 12 ) { // 最初はスキップ
-					  if ( rowNo == 3 ) {
+				  if ( rowNo < 20 ) { // 最初はスキップ
+					  if ( rowNo == 2 ) {
 						  tableDefInfo.setTableName(StringOf(line_data,2));
-					  } else if ( rowNo == 4 ) {
+					  } else if ( rowNo == 3 ) {
 						  tableDefInfo.setTableNameComment(StringOf(line_data,2));
 					  }
 					  continue;
@@ -68,16 +68,27 @@ public class CreateCodeTest_Entity {
 
 				  ColumnDefInfo columnDefInfo = new ColumnDefInfo();
 
+//				  columnDefInfo.setColumnNo(StringOf(line_data,0));
+//				  columnDefInfo.setColumnName(StringOf(line_data,1));
+//				  columnDefInfo.setColumnNameComment(StringOf(line_data,2));
+//				  columnDefInfo.setColumnType(StringOf(line_data,7));
+//				  columnDefInfo.setColumnLength(StringOf(line_data,8));
+//				  columnDefInfo.setDecimalLength(StringOf(line_data,9));
+//				  columnDefInfo.setDataLength(StringOf(line_data,16));
+//				  columnDefInfo.setDefaultValue(StringOf(line_data,17));
+//				  columnDefInfo.setNullable(StringOf(line_data,18));
+//				  columnDefInfo.setBiko(StringOf(line_data,19));
+
 				  columnDefInfo.setColumnNo(StringOf(line_data,0));
 				  columnDefInfo.setColumnName(StringOf(line_data,1));
 				  columnDefInfo.setColumnNameComment(StringOf(line_data,2));
 				  columnDefInfo.setColumnType(StringOf(line_data,7));
 				  columnDefInfo.setColumnLength(StringOf(line_data,8));
 				  columnDefInfo.setDecimalLength(StringOf(line_data,9));
-				  columnDefInfo.setDataLength(StringOf(line_data,16));
-				  columnDefInfo.setDefaultValue(StringOf(line_data,17));
-				  columnDefInfo.setNullable(StringOf(line_data,18));
-				  columnDefInfo.setBiko(StringOf(line_data,19));
+				  columnDefInfo.setDataLength(StringOf(line_data,13));
+				  columnDefInfo.setDefaultValue(StringOf(line_data,14));
+				  columnDefInfo.setNullable(StringOf(line_data,15));
+				  columnDefInfo.setBiko(StringOf(line_data,16));
 
 				  columnDefInfoList.add(columnDefInfo);
 			  }

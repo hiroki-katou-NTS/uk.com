@@ -2,7 +2,6 @@ package nts.uk.ctx.at.shared.infra.repository.remainingnumber.breakdayoffmng.int
 
 import java.sql.Date;
 import java.sql.PreparedStatement;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -16,12 +15,15 @@ import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet.NtsResultRecord;
+import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakDayOffMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakDayOffMngRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimDayOffMng;
+import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.DataManagementAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.OccurrenceDay;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.OccurrenceTime;
@@ -35,11 +37,15 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UnUsedDa
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UnUsedTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UseDay;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UseTime;
+import nts.uk.ctx.at.shared.dom.remainingnumber.work.AppTimeType;
+import nts.uk.ctx.at.shared.dom.remainingnumber.work.DigestionHourlyTimeType;
+import nts.uk.ctx.at.shared.infra.entity.remainingnumber.breakdayoff.interim.KrcdtInterimHdwkMng;
+import nts.uk.ctx.at.shared.infra.entity.remainingnumber.breakdayoff.interim.KrcdtInterimHdwkMngPk;
 import nts.uk.ctx.at.shared.infra.entity.remainingnumber.breakdayoff.interim.KrcmtInterimBreakDayOff;
 import nts.uk.ctx.at.shared.infra.entity.remainingnumber.breakdayoff.interim.KrcmtInterimBreakDayOffPK;
-import nts.uk.ctx.at.shared.infra.entity.remainingnumber.breakdayoff.interim.KrcdtInterimHdwkMng;
 import nts.uk.ctx.at.shared.infra.entity.remainingnumber.breakdayoff.interim.KrcmtInterimDayOffMng;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.shared.infra.entity.remainingnumber.breakdayoff.interim.KrcmtInterimDayOffMngPK;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class JpaInterimBreakDayOffMngRepository extends JpaRepository implements InterimBreakDayOffMngRepository{
@@ -74,14 +80,20 @@ public class JpaInterimBreakDayOffMngRepository extends JpaRepository implements
 	private static final String QUERY_DAYOFF_ID_ATR = QUERY_DAYOFF_MNG + " AND c.breakMngAtr = :breakMngAtr";
 	private static final String QUERY_BREAK_ID_ATR = QUERY_BREAK_MNG + " AND c.dayOffMngAtr = :dayOffMngAtr";
 	private static final String DELETE_DAYOFFMNG_BYID = "DELETE FROM KrcmtInterimDayOffMng c WHERE c.dayOffMngId = :dayOffMngId";
+	private static final String DELETE_DAYOFFMNG_BY_SID_AND_YMD = "DELETE FROM KrcmtInterimDayOffMng c WHERE c.pk.sid = :sid AND c.pk.ymd = :ymd";
 	private static final String DELETE_BREAKMNG_BYID = "DELETE FROM KrcdtInterimHdwkMng c WHERE c.breakMngId = :breakMngId";
+	private static final String DELETE_BREAKMNG_BY_SID_AND_YMD = "DELETE FROM KrcdtInterimHdwkMng c WHERE c.pk.sid = :sid AND c.pk.ymd = :ymd";
 	@Override
 	public Optional<InterimBreakMng> getBreakManaBybreakMngId(String breakManaId) {
 		return this.queryProxy().find(breakManaId, KrcdtInterimHdwkMng.class)
 				.map(x -> toDomainBreakMng(x));
 	}
 	private InterimBreakMng toDomainBreakMng(KrcdtInterimHdwkMng x) {		
-		return new InterimBreakMng(x.breakMngId, 
+		return new InterimBreakMng(x.remainMngId, 
+				x.pk.sid,
+				x.pk.ymd,
+				EnumAdaptor.valueOf(x.createAtr, CreateAtr.class),
+				RemainType.BREAK,
 				new AttendanceTime(x.occurrenceTimes),
 				x.expirationDate,
 				new OccurrenceTime(x.occurrenceTimes), 
@@ -97,10 +109,19 @@ public class JpaInterimBreakDayOffMngRepository extends JpaRepository implements
 				.map(x -> toDomainDayoffMng(x));
 	}
 	private InterimDayOffMng toDomainDayoffMng(KrcmtInterimDayOffMng x) {
-		return new InterimDayOffMng(x.dayOffMngId, new RequiredTime(x.requiredTimes),
+		return new InterimDayOffMng(
+				x.remainMngId,
+				x.pk.sid,
+				x.pk.ymd,
+				EnumAdaptor.valueOf(x.createAtr, CreateAtr.class),
+				RemainType.SUBHOLIDAY,
+				new RequiredTime(x.requiredTimes),
 				new RequiredDay(x.requiredDays),
 				new UnOffsetTime(x.unOffSetTimes),
-				new UnOffsetDay(x.unOffsetDays));
+				new UnOffsetDay(x.unOffsetDays),
+				Optional.ofNullable(DigestionHourlyTimeType.of(x.pk.timeDigestiveAtr == 1,
+						Optional.ofNullable(EnumAdaptor.valueOf(x.pk.timeHdType, AppTimeType.class))))
+				);
 	}
 	
 	@Override
@@ -136,12 +157,9 @@ public class JpaInterimBreakDayOffMngRepository extends JpaRepository implements
 								.getList(c -> toDomainBreakMng(c)));
 		});
 		return resultList;*/
-		try(PreparedStatement sql = this.connection().prepareStatement("SELECT * FROM KRCDT_INTERIM_HDWK_MNG a1"
-				+ " INNER JOIN KRCDT_INTERIM_REMAIN_MNG a2 "
-				+ " ON a1.BREAK_MNG_ID = a2.REMAIN_MNG_ID"
-				+ " WHERE a2.SID = ?"
-				+ " AND a2.REMAIN_TYPE = " + RemainType.BREAK.value
-				+ " AND a2.YMD >= ? and a2.YMD <= ?"
+		try(PreparedStatement sql = this.connection().prepareStatement("SELECT * FROM KSHDT_INTERIM_HDWK a1"
+				+ " WHERE a1.SID = ?"
+				+ " AND a1.YMD >= ? and a1.YMD <= ?"
 				+ " AND a1.UNUSED_DAYS > ?"
 				+ " AND a1.EXPIRATION_DAYS >= ? and a1.EXPIRATION_DAYS <= ?"
 				+ " ORDER BY a2.YMD");
@@ -173,13 +191,18 @@ public class JpaInterimBreakDayOffMngRepository extends JpaRepository implements
 	public void persistAndUpdateInterimBreakMng(InterimBreakMng domain) {
 
 		// キー
-		val key = domain.getBreakMngId();
+		 KrcdtInterimHdwkMngPk pk = new KrcdtInterimHdwkMngPk(AppContexts.user().companyId(), 
+					domain.getSID(), 
+					domain.getYmd());
 		
 		// 登録・更新
-		KrcdtInterimHdwkMng entity = this.getEntityManager().find(KrcdtInterimHdwkMng.class, key);
+		KrcdtInterimHdwkMng entity = this.getEntityManager().find(KrcdtInterimHdwkMng.class, pk);
 		if (entity == null){
 			entity = new KrcdtInterimHdwkMng();
-			entity.breakMngId = domain.getBreakMngId();
+			
+			entity.pk = pk;
+			entity.createAtr = domain.getCreatorAtr().value;
+			entity.remainMngId = domain.getRemainManaID();
 			entity.oneDayEquivalentTime = domain.getOnedayTime().v();
 			entity.expirationDate = domain.getExpirationDate();
 			entity.occurrenceTimes = domain.getOccurrenceTimes().v();
@@ -190,6 +213,8 @@ public class JpaInterimBreakDayOffMngRepository extends JpaRepository implements
 			this.getEntityManager().persist(entity);
 		}
 		else {
+			entity.createAtr = domain.getCreatorAtr().value;
+			entity.remainMngId = domain.getRemainManaID();
 			entity.oneDayEquivalentTime = domain.getOnedayTime().v();
 			entity.expirationDate = domain.getExpirationDate();
 			entity.occurrenceTimes = domain.getOccurrenceTimes().v();
@@ -212,13 +237,21 @@ public class JpaInterimBreakDayOffMngRepository extends JpaRepository implements
 	public void persistAndUpdateInterimDayOffMng(InterimDayOffMng domain) {
 		
 		// キー
-		val key = domain.getDayOffManaId();
+		KrcmtInterimDayOffMngPK pk = new KrcmtInterimDayOffMngPK(
+				AppContexts.user().companyId(), 
+				domain.getSID(), 
+				domain.getYmd(),
+				domain.getAppTimeType().map(x -> x.isHourlyTimeType() ? 1 : 0).orElse(0),
+				domain.getAppTimeType().map(x -> x.getAppTimeType().map(appTime -> appTime.value).orElse(0)).orElse(0)
+				);
 		
 		// 登録・更新
-		KrcmtInterimDayOffMng entity = this.getEntityManager().find(KrcmtInterimDayOffMng.class, key);
+		KrcmtInterimDayOffMng entity = this.getEntityManager().find(KrcmtInterimDayOffMng.class, pk);
 		if (entity == null){
 			entity = new KrcmtInterimDayOffMng();
-			entity.dayOffMngId = domain.getDayOffManaId();
+			entity.pk = pk;
+			entity.createAtr = domain.getCreatorAtr().value;
+			entity.remainMngId = domain.getRemainManaID();
 			entity.requiredTimes = domain.getRequiredTime().v();
 			entity.requiredDays = domain.getRequiredDay().v();
 			entity.unOffSetTimes = domain.getUnOffsetTimes().v();
@@ -226,6 +259,8 @@ public class JpaInterimBreakDayOffMngRepository extends JpaRepository implements
 			this.getEntityManager().persist(entity);
 		}
 		else {
+			entity.remainMngId = domain.getRemainManaID();
+			entity.createAtr = domain.getCreatorAtr().value;
 			entity.requiredTimes = domain.getRequiredTime().v();
 			entity.requiredDays = domain.getRequiredDay().v();
 			entity.unOffSetTimes = domain.getUnOffsetTimes().v();
@@ -340,12 +375,10 @@ public class JpaInterimBreakDayOffMngRepository extends JpaRepository implements
 	@SneakyThrows
 	@Override
 	public List<InterimBreakMng> getBySidPeriod(String sid, DatePeriod period) {
-		try (PreparedStatement sql = this.connection().prepareStatement("SELECT * FROM KRCDT_INTERIM_HDWK_MNG a1"
-				+ " INNER JOIN KRCDT_INTERIM_REMAIN_MNG a2 ON a1.BREAK_MNG_ID = a2.REMAIN_MNG_ID"
-				+ " WHERE a2.SID = ?"
-				+ " AND a2.REMAIN_TYPE = " + RemainType.BREAK.value
-				+ " AND a2.YMD >= ? and a2.YMD <= ?"
-				+ " ORDER BY a2.YMD");
+		try (PreparedStatement sql = this.connection().prepareStatement("SELECT * FROM KSHDT_INTERIM_HDWK a1"
+				+ " WHERE a1.SID = ?"
+				+ " AND a1.YMD >= ? and a1.YMD <= ?"
+				+ " ORDER BY a1.YMD");
 				)
 		{
 			sql.setString(1, sid);
@@ -357,7 +390,12 @@ public class JpaInterimBreakDayOffMngRepository extends JpaRepository implements
 		}
 	}
 	private InterimBreakMng toDomain(NtsResultRecord x) {
-		return new InterimBreakMng(x.getString("BREAK_MNG_ID"),
+		return new InterimBreakMng(
+				x.getString("REMAIN_MNG_ID"),
+				x.getString("SID"),
+				x.getGeneralDate("YMD"),
+				EnumAdaptor.valueOf(x.getInt("CREATOR_ATR"), CreateAtr.class),
+				RemainType.BREAK ,
 				new AttendanceTime(x.getInt("ONEDAY_EQUIVALENT_TIME")),
 				x.getGeneralDate("EXPIRATION_DAYS"), 
 				new OccurrenceTime(x.getInt("OCCURRENCE_TIMES")),
@@ -369,12 +407,10 @@ public class JpaInterimBreakDayOffMngRepository extends JpaRepository implements
 	@SneakyThrows
 	@Override
 	public List<InterimDayOffMng> getDayOffBySidPeriod(String sid, DatePeriod period) {
-		try (PreparedStatement sql = this.connection().prepareStatement("SELECT * FROM KRCDT_INTERIM_HD_COM_MNG a1"
-				+ " INNER JOIN KRCDT_INTERIM_REMAIN_MNG a2 ON a1.DAYOFF_MNG_ID = a2.REMAIN_MNG_ID"
-				+ " WHERE a2.SID = ?"
-				+ " AND a2.REMAIN_TYPE = " + RemainType.SUBHOLIDAY.value
-				+ " AND a2.YMD >= ? and a2.YMD <= ?"
-				+ " ORDER BY a2.YMD");
+		try (PreparedStatement sql = this.connection().prepareStatement("SELECT * FROM KSHDT_INTERIM_HDCOM a1"
+				+ " WHERE a1.SID = ?"
+				+ " AND a1.YMD >= ? and a1.YMD <= ?"
+				+ " ORDER BY a1.YMD");
 				)
 		{
 			sql.setString(1, sid);
@@ -386,10 +422,33 @@ public class JpaInterimBreakDayOffMngRepository extends JpaRepository implements
 		}
 	}
 	private InterimDayOffMng toDomainDayOff(NtsResultRecord x) {
-		return new InterimDayOffMng(x.getString("DAYOFF_MNG_ID"),
+		return new InterimDayOffMng(
+				x.getString("REMAIN_MNG_ID"),
+				x.getString("SID"),
+				x.getGeneralDate("YMD"),
+				EnumAdaptor.valueOf(x.getInt("CREATOR_ATR"), CreateAtr.class),
+				RemainType.SUBHOLIDAY,
 				new RequiredTime(x.getInt("REQUIRED_TIMES")),
-				new RequiredDay(x.getDouble("REQUEIRED_DAYS")),
+				new RequiredDay(x.getDouble("REQUIRED_DAYS")),
 				new UnOffsetTime(x.getInt("UNOFFSET_TIMES")),
-				new UnOffsetDay(x.getDouble("UNOFFSET_DAYS")));
+				new UnOffsetDay(x.getDouble("UNOFFSET_DAYS")),
+				Optional.ofNullable(DigestionHourlyTimeType.of(x.getInt("TIME_DIGESTIVE_ATR") == 1,
+						Optional.ofNullable(EnumAdaptor.valueOf(x.getInt("TIME_HD_TYPE"), AppTimeType.class))))
+				);
+	}
+	@Override
+	public void deleteInterimDayOffMngBySidAndYmd(String sid, GeneralDate ymd) {
+		this.getEntityManager().createQuery(DELETE_DAYOFFMNG_BY_SID_AND_YMD)
+		.setParameter("sid", sid)
+		.setParameter("ymd", ymd)
+		.executeUpdate();
+		
+	}
+	@Override
+	public void deleteInterimBreakMngBySidAndYmd(String sid, GeneralDate ymd) {
+		this.getEntityManager().createQuery(DELETE_BREAKMNG_BY_SID_AND_YMD)
+		.setParameter("sid", sid)
+		.setParameter("ymd", ymd)
+		.executeUpdate();
 	}
 }

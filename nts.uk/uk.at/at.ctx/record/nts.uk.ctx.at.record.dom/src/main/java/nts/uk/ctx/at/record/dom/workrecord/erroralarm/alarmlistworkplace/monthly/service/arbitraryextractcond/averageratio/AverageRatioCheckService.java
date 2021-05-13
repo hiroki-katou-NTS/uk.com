@@ -102,7 +102,7 @@ public class AverageRatioCheckService {
                                 cid, empInfo.getSid(), period, InterimRemainMngMode.OTHER, criteriaDate,
                                 false, false, Optional.of(false),
                                 Optional.empty(), Optional.empty(), Optional.empty(),
-                                Optional.empty(), Optional.empty(), Optional.empty());
+                                Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty());
                         Optional<AggrResultOfAnnualLeave> annualLeave = aggResult.getAnnualLeave();
                         switch (averageRatio.get()) {
                             case HOLIDAY_VACATION_RATE:
