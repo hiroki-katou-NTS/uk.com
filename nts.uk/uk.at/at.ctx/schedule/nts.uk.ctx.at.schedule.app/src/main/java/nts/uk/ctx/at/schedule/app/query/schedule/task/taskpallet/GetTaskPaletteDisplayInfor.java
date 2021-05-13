@@ -57,8 +57,10 @@ public WorkPaletteDisplayInforDto get( int targetUnit , String organizationID ,G
 		}).collect(Collectors.toList());
 		//3: 取得する(ページ，対象組織)Optional＜組織の作業パレット＞
 		Optional<TaskPaletteOrganization> taskPaletteOrg = repo.getByPage(targetOrgIdenInfor, page);
+		//4:Optional<組織の作業パレット> isPresent: 表示情報を取得する(Require, 年月日) : 作業パレット
 		if (taskPaletteOrg.isPresent()) {
 			TaskImpl require = new TaskImpl(taskingRepository);
+			//4.1: create()
 			taskPalette = Optional.of(taskPaletteOrg.get().getDisplayInfo(require, date));
 			taskPaletteDto = TaskPaletteDto.toDto(taskPalette.get());
 		}

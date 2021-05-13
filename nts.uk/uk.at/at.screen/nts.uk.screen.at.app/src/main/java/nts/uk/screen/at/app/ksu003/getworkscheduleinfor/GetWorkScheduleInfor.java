@@ -38,7 +38,7 @@ import nts.uk.shr.com.context.AppContexts;
 /**
  * «ScreenQuery» 作業予定情報を取得する
  * UKDesign.UniversalK.就業.KSU_スケジュール.KSU003_個人スケジュール修正(日付別).A：個人スケジュール修正(日付別).メニュー別OCD.作業予定情報を取得する
- * @author kingo
+ * @author HieuLt
  *
  */
 @Stateless
