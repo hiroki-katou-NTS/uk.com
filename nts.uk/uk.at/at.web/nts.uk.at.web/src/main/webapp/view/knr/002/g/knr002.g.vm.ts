@@ -186,9 +186,11 @@ module knr002.g {
                           //  }).always(() => {
                           //      blockUI.clear();
                           //  }); 
-                    } else self.selectEmployee(false);
+                        } 
+                    }  else self.selectEmployee(false);
                 });
             }
+            
 
             /**
              * get worktype to be sent
