@@ -526,6 +526,23 @@ module nts.uk.com.view.ccg008.a.screenModel {
 		getMinutes(value: number) {
 			return [0, 1, 5, 10, 20, 30, 40, 50, 60][value] || 0;
 		}
+
+		refreshLayout() {
+			const vm = this;
+			vm.$window.storage('KTG026_TARGET').then((rs: {isRefresh: boolean, target: any}) => {
+				if (rs) {
+					rs.isRefresh = true;
+					vm.$window.storage('KTG026_TARGET', rs);
+				}
+			});
+			vm.$window.storage('KTG027_TARGET').then((rs: {isRefresh: boolean, target: any}) => {
+				if (rs) {
+					rs.isRefresh = true;
+					vm.$window.storage('KTG027_TARGET', rs);
+				}
+			});
+			vm.callApiTopPage();
+		}
 	}
 
 	export class ItemCbbModel {

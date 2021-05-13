@@ -277,10 +277,20 @@ module nts.uk.at.view.ktg027.a {
                     vm.targetYear
                         .subscribe((ym: string | null) => {
                             if (typeof ym === 'string') {
+                                vm.$window.storage('KTG027_TARGET', {
+                                    isRefresh: false,
+                                    target: ym
+                                });
                                 vm.loadData(ym, closureId);
                             }
                         });
 
+                    vm.$window.storage('KTG027_TARGET').then(rs => {
+                        if (rs.isRefresh) {
+                            vm.targetYear(rs.target);
+                            return;
+                        }
+                    });
                     // update targetYear by closure data
                     if (closingInformationForNextMonth) {
                         const { processingYm } = closingInformationForNextMonth;
