@@ -27,4 +27,21 @@ public class InterimRemainCreateDataInputPara {
 	private List<AppRemainCreateInfor> appData;
 	/**	時間代休利用: True: 利用, False: 未利用 */
 	private boolean dayOffTimeIsUse;
+	//呼び出し元機能（予定／実績／申請）
+	private CallFunction callFunction = CallFunction.APPLICATION;
+	
+	public InterimRemainCreateDataInputPara(String cid, String sid, DatePeriod dateData,
+			List<RecordRemainCreateInfor> recordData, List<ScheRemainCreateInfor> scheData,
+			List<AppRemainCreateInfor> appData, boolean dayOffTimeIsUse) {
+		super();
+		this.cid = cid;
+		this.sid = sid;
+		this.dateData = dateData;
+		this.recordData = recordData;
+		this.scheData = scheData;
+		this.appData = appData;
+		this.dayOffTimeIsUse = dayOffTimeIsUse;
+	}
+	
+	
 }
