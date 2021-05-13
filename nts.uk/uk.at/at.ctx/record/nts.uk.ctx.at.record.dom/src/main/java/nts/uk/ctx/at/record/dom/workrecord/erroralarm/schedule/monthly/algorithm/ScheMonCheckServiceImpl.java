@@ -2,7 +2,11 @@ package nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.monthly.algorith
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -735,10 +739,15 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 				AnnualLeaveRemainingTime annualLeaveRemainingTime = new AnnualLeaveRemainingTime(annualLeaveOutput.totalRemainingTimes.intValue());
 				param1 = param1 + "　" + annualLeaveRemainingTime.getTimeWithFormat() + "時間";
 			}
-			String param2 = "";
-			for (Map.Entry<GeneralDate, WorkTypeClassification> entry : annualLeaveOutput.workTypeMap.entrySet()) {
-				param2 +=  entry.getKey().toString() + "　" + TextResource.localize(entry.getValue().nameId);
+			
+			Map<GeneralDate, WorkTypeClassification> sortedMap = sortByValue(annualLeaveOutput.workTypeMap);
+			
+			List<String> param2Lst = new ArrayList<>();
+			for (Map.Entry<GeneralDate, WorkTypeClassification> entry : sortedMap.entrySet()) {
+				param2Lst.add(entry.getKey().toString() + "　" + TextResource.localize(entry.getValue().nameId));
 			}
+			String param2 = StringUtils.join(param2Lst, ",");
+			
 			// アラーム内容
 			String alarmContent = TextResource.localize("KAL010_1115", param0, param1, param2);
 			// チェック対象値
@@ -764,6 +773,29 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 		
 		return result;
 	}
+	
+	private static Map<GeneralDate, WorkTypeClassification> sortByValue(Map<GeneralDate, WorkTypeClassification> unsortMap) {
+        // 1. Convert Map to List of Map
+        List<Map.Entry<GeneralDate, WorkTypeClassification>> list =
+                new LinkedList<Map.Entry<GeneralDate, WorkTypeClassification>>(unsortMap.entrySet());
+
+        // 2. Sort list with Collections.sort(), provide a custom Comparator
+        //    Try switch the o1 o2 position for a different order
+        Collections.sort(list, new Comparator<Map.Entry<GeneralDate, WorkTypeClassification>>() {
+            public int compare(Map.Entry<GeneralDate, WorkTypeClassification> o1,
+                               Map.Entry<GeneralDate, WorkTypeClassification> o2) {
+                return (o1.getKey()).compareTo(o2.getKey());
+            }
+        });
+
+        // 3. Loop the sorted list and put it into a new insertion order Map LinkedHashMap
+        Map<GeneralDate, WorkTypeClassification> sortedMap = new LinkedHashMap<GeneralDate, WorkTypeClassification>();
+        for (Map.Entry<GeneralDate, WorkTypeClassification> entry : list) {
+            sortedMap.put(entry.getKey(), entry.getValue());
+        }
+        
+        return sortedMap;
+    }
 	
 	/**
 	 * Process with チェック項目=対比
