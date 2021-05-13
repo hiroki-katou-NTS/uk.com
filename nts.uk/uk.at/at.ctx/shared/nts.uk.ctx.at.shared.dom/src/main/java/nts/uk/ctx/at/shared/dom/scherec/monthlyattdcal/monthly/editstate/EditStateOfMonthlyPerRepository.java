@@ -34,5 +34,5 @@ public interface EditStateOfMonthlyPerRepository {
 	 */
 	void remove(String employeeId, YearMonth yearMonth, ClosureId closureId, ClosureDate closureDate);
 	
-	List<EditStateOfMonthlyPerformance> findBySidsAndYM(List<String> lstSid, DatePeriod mPeriod);
+	List<EditStateOfMonthlyPerformance> findBySidsAndYM(List<String> lstSid, YearMonthPeriod mPeriod);
 }
