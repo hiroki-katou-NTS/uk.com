@@ -385,8 +385,9 @@ module nts.uk.at.view.kdr001.a.viewmodel {
             nts.uk.ui.block.invisible();
             let startMonth = moment(self.dateValue().startDate, 'YYYY/MM');
             let endMonth = moment(self.dateValue().endDate, 'YYYY/MM');
-            let totalMonths = (parseInt(endMonth.format("YYYY")) * 12 + parseInt(endMonth.format("MM")))
-                - (parseInt(startMonth.format("YYYY")) * 12 + parseInt(startMonth.format("MM")));
+            let end = (parseInt(endMonth.format("YYYY")) * 12 + parseInt(endMonth.format("MM")))
+            let start =   (parseInt(startMonth.format("YYYY")) * 12 + parseInt(startMonth.format("MM"))) ;
+            let totalMonths= (end - start) +1;
             if (totalMonths < 0) {
                 nts.uk.ui.dialog.alertError({messageId: 'Msg_1217'});
                 nts.uk.ui.block.clear();
