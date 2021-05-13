@@ -20,8 +20,10 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.An
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveGrantRemainingData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveRemainingHistory;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.AnnualLeaveMaxData;
+
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TempAnnualLeaveMngs;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.AnnualLeaveMaxHistoryData;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualHolidayMng;
+//import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualHolidayMng;
 import nts.uk.ctx.at.shared.dom.scherec.closurestatus.ClosureStatusManagement;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceTimeOfMonthly;
@@ -46,7 +48,9 @@ import nts.uk.shr.com.time.calendar.date.ClosureDate;
  */
 
 
-public class CalcAnnLeaAttendanceRateRequireM3Test{  //implements GetAnnLeaRemNumWithinPeriodProc.RequireM3 {
+public class CalcAnnLeaAttendanceRateRequireM3Test{
+	//implements GetAnnLeaRemNumWithinPeriodProc.RequireM3 {
+
 //
 //	/** バイナリデータ */
 //	HashMap<String, Object> binaryData;
@@ -149,45 +153,39 @@ public class CalcAnnLeaAttendanceRateRequireM3Test{  //implements GetAnnLeaRemNu
 //
 //		return listFilter;
 //	}
-//
-////	@Override
-////	public List<WorkInfoOfDailyPerformance> dailyWorkInfos(String employeeId, DatePeriod datePeriod) {
-////		//return workInformationRepo.findByPeriodOrderByYmd(employeeId, datePeriod);
-////		//	"select * from KRCDT_WORK_SCHEDULE_TIME where SID = ? and YMD >= ? and YMD <= ? order by YMD ")) {
-////
-////		List<WorkInfoOfDailyPerformance> list
-////			= (List<WorkInfoOfDailyPerformance>)binaryData.get(WorkInfoOfDailyPerformance.class.toString());
-////		List<WorkInfoOfDailyPerformance> listFilter
-////			= list.stream()
-////				.filter(c -> c.getEmployeeId().equals(employeeId))
-////				.filter(c -> c.getYmd().afterOrEquals(datePeriod.start()))
-////				.filter(c -> c.getYmd().beforeOrEquals(datePeriod.end()))
-////				.sorted((a1, a2) -> a1.getYmd().compareTo(a2.getYmd()))
-////				.collect(Collectors.toList());
-////
-////		return listFilter;
-////	}
-//
-//	@Override
-//	public Optional<WorkType> workType(String companyId, String workTypeCd) {
-//		// return workTypeRepo.findByPK(companyId, workTypeCd);
-//		List<WorkType> list
-//			= (List<WorkType>) binaryData.get(WorkType.class.toString());
-//		WorkType workType
-//			= list.stream()
-//				.filter(c -> c.getWorkTypeCode().equals(workTypeCd))
-//				.findFirst().orElse(null);
-//
-//		return Optional.ofNullable(workType);
-//	}
-//
-//	/** 日別実績の運用開始設定　*/
-//	@Override
-//	public Optional<OperationStartSetDailyPerform> dailyOperationStartSet(CompanyId companyId) {
-////		return operationStartSetDailyPerformRepo.findByCid(companyId);
-//		List<OperationStartSetDailyPerform> list
-//			= (List<OperationStartSetDailyPerform>) binaryData.get(OperationStartSetDailyPerform.class.toString());
-//		OperationStartSetDailyPerform operationStartSetDailyPerform
+
+	/*@Override
+	public Optional<WorkType> workType(String companyId, String workTypeCd) {
+		// return workTypeRepo.findByPK(companyId, workTypeCd);
+		List<WorkType> list
+			= (List<WorkType>) binaryData.get(WorkType.class.toString());
+		WorkType workType
+			= list.stream()
+				.filter(c -> c.getWorkTypeCode().equals(workTypeCd))
+				.findFirst().orElse(null);
+
+		return Optional.ofNullable(workType);
+	}*/
+
+	/** 日別実績の運用開始設定　*/
+	/*@Override
+	public Optional<OperationStartSetDailyPerform> dailyOperationStartSet(CompanyId companyId) {
+//		return operationStartSetDailyPerformRepo.findByCid(companyId);
+		List<OperationStartSetDailyPerform> list
+			= (List<OperationStartSetDailyPerform>) binaryData.get(OperationStartSetDailyPerform.class.toString());
+		OperationStartSetDailyPerform operationStartSetDailyPerform
+			= list.stream()
+				.filter(c -> c.getCompanyId().equals(companyId))
+				.findFirst().orElse(null);
+
+		return Optional.ofNullable(operationStartSetDailyPerform);
+	}
+
+	@Override
+	public List<TempAnnualLeaveMngs> tmpAnnualHolidayMng(String sid, DatePeriod dateData) {*/
+//		List<TmpAnnualHolidayMng> list
+//			= (List<TmpAnnualHolidayMng>)binaryData.get(TmpAnnualHolidayMng.class.toString());
+//		List<TmpAnnualHolidayMng> listFilter
 //			= list.stream()
 //				.filter(c -> c.getCompanyId().equals(companyId))
 //				.findFirst().orElse(null);

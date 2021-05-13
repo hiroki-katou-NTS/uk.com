@@ -305,6 +305,7 @@ module nts.uk.com.view.cmm040.a.viewmodel {
             errors.clearAll();
             let self = this;
             self.isCreate(false);
+            self.valueA5_2('');
             let data = _.find(self.workPlacesList(), ['workLocationCD', workLocationCD]);
             $("#grid2").remove();
             $("#grid").append("<table id='grid2'></table>");
@@ -656,24 +657,22 @@ module nts.uk.com.view.cmm040.a.viewmodel {
             });
         }
         buttonA5_16(): any {
-           
+
             let self = this;
             $.ajax({
-                url: "http://geoapi.heartrails.com/api/json?method=suggest&matching=like&keyword=" + self.valueA5_2(),
-                beforeSend: function(xhr) {
-                    xhr.overrideMimeType("text/plain; charset=x-user-defined");
-                }
+                url: 'http://geoapi.heartrails.com/api/json',
+                data: { method: 'suggest', matching: 'like', keyword: self.valueA5_2() }
             })
                 .done(function(data) {
-                    if (JSON.parse(data).response.location == undefined) {
+                    if (data.response.location == undefined) {
                         self.latitude('');
                         self.longitude('');
                         return;
                     }
-                    let result = JSON.parse(data).response.location[0];
+                    let result = data.response.location[0];
                     self.latitude(result.y);
                     self.longitude(result.x);
-                     errors.clearAll();
+                    errors.clearAll();
                 });
         }
         private loadRadiusEnums(): JQueryPromise<Array<Enum>> {

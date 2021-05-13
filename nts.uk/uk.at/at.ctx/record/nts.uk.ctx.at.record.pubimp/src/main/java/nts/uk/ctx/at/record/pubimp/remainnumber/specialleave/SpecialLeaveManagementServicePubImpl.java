@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.pubimp.remainnumber.specialleave;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -10,6 +11,7 @@ import javax.inject.Inject;
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.cache.CacheCarrier;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.ComplileInPeriodOfSpecialLeaveParam;
 import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.InPeriodOfSpecialLeaveResultInfor;
 import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveInfo;
@@ -44,6 +46,8 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdat
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveOverNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveRemainingNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveUsedNumber;
+import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
+import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UseDay;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UseTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.InterimSpecialHolidayMng;
@@ -346,23 +350,30 @@ public class SpecialLeaveManagementServicePubImpl implements SpecialLeaveManagem
 					param.getSpecialLeaveCode(),
 					param.isMngAtr(),
 					param.isOverwriteFlg(),
-					param.getInterimSpecialData().stream().map(action->toDomain(action)).collect(Collectors.toList()),
-					param.getIsOverWritePeriod());
+					param.getInterimSpecialData().stream().map(action->toDomain(param.getSid(),param.getBaseDate(),action)).collect(Collectors.toList()),
+					param.getIsOverWritePeriod()
+					);
 	}
 
 	/**
 	 * ドメインへ変換
+	 * @param generalDate 
+	 * @param sId 
 	 * @param param
 	 * @return
 	 */
-	static public InterimSpecialHolidayMng toDomain(InterimSpecialHolidayMngPubParam param) {
+	static public InterimSpecialHolidayMng toDomain(String sId, GeneralDate generalDate, InterimSpecialHolidayMngPubParam param) {
 		return new InterimSpecialHolidayMng(
 				param.getSpecialHolidayId(),
+				sId,
+				generalDate,
+				CreateAtr.SCHEDULE,
+				RemainType.SPECIAL,
 				param.getSpecialHolidayCode(),
 				EnumAdaptor.valueOf(param.getMngAtr(), ManagermentAtr.class),
 				param.getUseTimes().map(mapper->new UseTime(mapper.v())),
-				param.getUseDays().map(mapper->new UseDay(mapper.v()))
-				);
+				param.getUseDays().map(mapper->new UseDay(mapper.v())),
+				Optional.empty());
 	}
 
 }
