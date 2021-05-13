@@ -954,11 +954,62 @@ module nts.uk.ui.at.kdp013.c {
 
         save(result?: 'yes' | 'cancel' | null) {
             const vm = this;
-            const { params, model } = vm;
+            const { params, model, combobox } = vm;
             const { data } = params;
             const event = data();
             const { timeRange, descriptions } = model;
             const { employeeId } = vm.$user;
+            const { task1, task2, task3, task4, task5, workplace } = model;
+            const { taskList1, taskList2, taskList3, taskList4, taskList5 } = combobox;
+            const t1 = ko.unwrap(task1);
+            const t2 = ko.unwrap(task2);
+            const t3 = ko.unwrap(task3);
+            const t4 = ko.unwrap(task4);
+            const t5 = ko.unwrap(task5);
+
+            const getTaskInfo = (): TaskDto | null => {
+                if (t5) {
+                    const selected = _.find(ko.unwrap(taskList5), ({ id }) => t5 === id);
+
+                    if (selected) {
+                        return selected.$raw;
+                    }
+                }
+
+                if (t4) {
+                    const selected = _.find(ko.unwrap(taskList4), ({ id }) => t4 === id);
+
+                    if (selected) {
+                        return selected.$raw;
+                    }
+                }
+
+                if (t3) {
+                    const selected = _.find(ko.unwrap(taskList3), ({ id }) => t3 === id);
+
+                    if (selected) {
+                        return selected.$raw;
+                    }
+                }
+
+                if (t2) {
+                    const selected = _.find(ko.unwrap(taskList2), ({ id }) => t2 === id);
+
+                    if (selected) {
+                        return selected.$raw;
+                    }
+                }
+
+                if (t1) {
+                    const selected = _.find(ko.unwrap(taskList1), ({ id }) => t1 === id);
+
+                    if (selected) {
+                        return selected.$raw;
+                    }
+                }
+
+                return null;
+            };
 
             $.Deferred()
                 .resolve(true)
@@ -970,6 +1021,7 @@ module nts.uk.ui.at.kdp013.c {
                         if (event) {
                             const { start } = event;
                             const tr = ko.unwrap(timeRange);
+                            const task = getTaskInfo();
 
                             event.setStart(setTimeOfDate(start, tr.start));
                             event.setEnd(setTimeOfDate(start, tr.end));
@@ -985,8 +1037,6 @@ module nts.uk.ui.at.kdp013.c {
                             } else {
                                 event.setExtendedProp('status', 'update');
                             }
-
-                            const { task1, task2, task3, task4, task5, workplace } = vm.model;
 
                             event.setExtendedProp('workCD1', ko.unwrap(task1));
                             event.setExtendedProp('workCD2', ko.unwrap(task2));
