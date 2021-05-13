@@ -211,7 +211,8 @@ module nts.uk.at.view.kdw002.c {
                             code: empRole.roleCode,
                             name: empRole.roleName,
                             targetType: 8,
-                            itemListSetting: roleIDs ? roleIDs : []
+                            itemListSetting: roleIDs ? roleIDs : [],
+                            roleType: 3
                         };
                         console.log(param, 'param');        
                         nts.uk.ui.windows.setShared("CDL023Input", param);
@@ -239,7 +240,8 @@ module nts.uk.at.view.kdw002.c {
                             code: empRole.roleCode,
                             name: empRole.roleName,
                             targetType: 8,
-                            itemListSetting: roleIDs ? roleIDs : []
+                            itemListSetting: roleIDs ? roleIDs : [],
+                            roleType: 3
                         };
                         console.log(param, 'param');        
                         nts.uk.ui.windows.setShared("CDL023Input", param);
