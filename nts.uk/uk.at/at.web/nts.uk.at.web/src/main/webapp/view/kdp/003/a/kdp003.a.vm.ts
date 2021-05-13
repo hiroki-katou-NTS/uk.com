@@ -18,8 +18,7 @@ module nts.uk.at.kdp003.a {
 		REGISTER: '/at/record/stamp/employment/system/register-stamp-input',
 		NOW: '/server/time/now',
 		NOTICE: 'at/record/stamp/notice/getStampInputSetting',
-		GET_WORKPLACE_BASYO: 'at/record/stamp/employment_system/get_location_stamp_input',
-		WORKPLACE_LIST: 'bs/employee/wkpdep/get-wkpdepinfo-kcp004'
+		GET_WORKPLACE_BASYO: 'at/record/stamp/employment_system/get_location_stamp_input'
 	};
 
 	const DIALOG = {
@@ -34,6 +33,7 @@ module nts.uk.at.kdp003.a {
 	};
 
 	const KDP003_SAVE_DATA = 'loginKDP003';
+	const WORKPLACES_STORAGE = 'WORKPLACES_STORAGE';
 
 	@bean()
 	export class ViewModel extends ko.ViewModel {
@@ -129,17 +129,10 @@ module nts.uk.at.kdp003.a {
 
 		getWorkPlacesInfo() {
 			const vm = this;
-			const param = {
-				baseDate: vm.$date.now(),
-				restrictionOfReferenceRange: true,
-				startMode: 0,
-				systemType: 2,
-			}
 
-			vm.$ajax('com', API.WORKPLACE_LIST, param)
-				.done((data: IWorkPlaceInfo[]) => {
-					vm.workPlaceInfos = data;
-					console.log(vm.workPlaceInfos);
+			vm.$window.storage(WORKPLACES_STORAGE)
+				.then((data: IWorkPlaceInfo[]) => {
+					vm.workPlaceInfos = data
 				});
 		}
 
@@ -638,8 +631,10 @@ module nts.uk.at.kdp003.a {
 
 		stampButtonClick(btn: share.ButtonSetting, layout: share.PageLayout) {
 			console.log(layout);
+			console.log(btn);
 
 			const vm = this;
+			vm.getWorkPlacesInfo();
 			const { buttonPage, employeeData } = vm;
 			const { selectedId, employees, nameSelectArt } = ko.toJS(employeeData) as EmployeeListData;
 			const reloadSetting = () =>
@@ -750,7 +745,6 @@ module nts.uk.at.kdp003.a {
 
 															vm.playAudio(btn.audioType);
 															const employeeInfo = { mode, employeeId, employeeCode, workLocationName, workplaceId };
-															console.log(employeeInfo);
 
 															if (notUseAttr === USE && [share.ChangeClockArt.WORKING_OUT].indexOf(btn.changeClockArt) > -1) {
 
@@ -822,8 +816,6 @@ module nts.uk.at.kdp003.a {
 
 												vm.playAudio(btn.audioType);
 												const employeeInfo = { mode, employeeId, employeeCode, workLocationName, workPlaceId };
-
-												console.log(employeeInfo);
 
 												if (notUseAttr === USE && [share.ChangeClockArt.WORKING_OUT].indexOf(btn.changeClockArt) > -1) {
 													return storage('KDP010_2C', displayItemId)
