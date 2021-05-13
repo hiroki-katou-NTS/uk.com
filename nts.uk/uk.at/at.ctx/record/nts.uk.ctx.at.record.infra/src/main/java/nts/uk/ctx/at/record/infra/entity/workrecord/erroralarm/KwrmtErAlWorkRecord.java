@@ -362,7 +362,7 @@ public class KwrmtErAlWorkRecord extends ContractUkJpaEntity implements Serializ
 				Collections.emptyList(), (0), (0), null, null, null, Collections.emptyList(), Collections.emptyList(),
 				(0), (0), null, null, null, Collections.emptyList(), Collections.emptyList(), (0), (0), "0", null, null,
 				null, 0);
-		if (!domain.getFixedAtr()) {
+		// kdw007: ver22 if (!domain.getFixedAtr()) {
 			// Set Check target condition
 			int filterByBusinessType = conditionDomain.getCheckTargetCondtion().getFilterByBusinessType() ? (1) : (0);
 			int filterByJobTitle = (conditionDomain.getCheckTargetCondtion().getFilterByJobTitle() ? 1 : 0);
@@ -460,7 +460,7 @@ public class KwrmtErAlWorkRecord extends ContractUkJpaEntity implements Serializ
 					group2UseAtr, atdItemConditionGroup1, krcstErAlConGroup1, atdItemConditionGroup2,
 					krcstErAlConGroup2,
 					conditionDomain.getContinuousPeriod() != null ? conditionDomain.getContinuousPeriod().v() : 0);
-		}
+		// kdw007_ver22} 
 		KwrmtErAlWorkRecord entity = new KwrmtErAlWorkRecord(kwrmtErAlWorkRecordPK, errorAlarmName, fixedAtr, useAtr,
 				domain.getRemarkCancelErrorInput().isUse(), domain.getRemarkColumnNo(), typeAtr, boldAtr,
 				messageColor.equals("") ? null : messageColor, cancelableAtr, errorDisplayItem, eralCheckId,

@@ -66,20 +66,20 @@ module nts.uk.at.view.kdw007.a.viewmodel {
         ]);
         // Tab 5: ApplicationType_ 実績で使用する申請種類
         lstApplicationType = ko.observableArray([
-            { code: 0, name: "残業申請（早出）" }, //OVERTIME_APPLICATION
-            { code: 1, name: "残業申請（通常）" }, //OVERTIME_APPLICATION_NORMAL
-            { code: 2, name: "残業申請（早出・通常）" }, //  OVERTIME_APPLICATION_EARLY_REGULAR
-            { code: 3, name: "休暇申請" }, //ABSENCE_APPLICATION
-            { code: 4, name: "勤務変更申請" }, // WORK_CHANGE_APPLICATION
-            { code: 5, name: "出張申請" }, // BUSINESS_TRIP_APPLICATION
-            { code: 6, name: "直行直帰申請" }, // GO_RETURN_DIRECTLY_APPLICATION
-            { code: 7, name: "休出時間申請" }, // LEAVE_TIME_APPLICATION
-            { code: 8, name: "打刻申請" }, // STAMP_APPLICATION
-            { code: 9, name: "打刻申請（レコーダイメージ）" }, // REGISTER_TIME_CARD_IMAGE
-            { code: 10, name: "時間休暇申請 " }, // ANNUAL_HD_APPLICATION
-            { code: 11, name: "遅刻早退取消申請" }, // EARLY_LEAVE_CANCEL_APPLICATION
-            { code: 12, name: "振休振出申請 " }, // COMPLEMENT_LEAVE_APPLICATION
-            { code: 13, name: "任意申請" } // OPTIONAL_APPLICATION
+            { code: 0, name: getText("Enum_ApplicationType_OVERTIME_APPLICATION") }, //OVERTIME_APPLICATION
+            { code: 1, name: getText("Enum_ApplicationType_OVERTIME_APPLICATION_NORMAL") }, //OVERTIME_APPLICATION_NORMAL
+            { code: 2, name: getText("Enum_ApplicationType_OVERTIME_APPLICATION_EARLY_REGULAR") }, //  OVERTIME_APPLICATION_EARLY_REGULAR
+            { code: 3, name: getText("Enum_ApplicationType_ABSENCE_APPLICATION") }, //ABSENCE_APPLICATION
+            { code: 4, name: getText("Enum_ApplicationType_WORK_CHANGE_APPLICATION") }, // WORK_CHANGE_APPLICATION
+            { code: 5, name: getText("Enum_ApplicationType_BUSINESS_TRIP_APPLICATION") }, // BUSINESS_TRIP_APPLICATION
+            { code: 6, name: getText("Enum_ApplicationType_GO_RETURN_DIRECTLY_APPLICATION") }, // GO_RETURN_DIRECTLY_APPLICATION
+            { code: 7, name: getText("Enum_ApplicationType_LEAVE_TIME_APPLICATION") }, // LEAVE_TIME_APPLICATION
+            { code: 8, name: getText("Enum_ApplicationType_STAMP_APPLICATION") }, // STAMP_APPLICATION
+            { code: 9, name: getText("Enum_ApplicationType_REGISTER_TIME_CARD_IMAGE") }, // REGISTER_TIME_CARD_IMAGE
+            { code: 10, name: getText("Enum_ApplicationType_ANNUAL_HD_APPLICATION") }, // ANNUAL_HD_APPLICATION
+            { code: 11, name: getText("Enum_ApplicationType_EARLY_LEAVE_CANCEL_APPLICATION") }, // EARLY_LEAVE_CANCEL_APPLICATION
+            { code: 12, name: getText("Enum_ApplicationType_COMPLEMENT_LEAVE_APPLICATION") }, // COMPLEMENT_LEAVE_APPLICATION
+            { code: 13, name: getText("Enum_ApplicationType_OPTIONAL_APPLICATION") }, // OPTIONAL_APPLICATION
         ]);
         appTypeGridlistColumns = ko.observableArray([
             { headerText: 'コード', key: 'code', width: 100, hidden: true },
@@ -91,10 +91,12 @@ module nts.uk.at.view.kdw007.a.viewmodel {
         //  ver22: ◆大塚オプション
         ootsukaOption: KnockoutObservable<boolean> = ko.observable(false);
         
-        constructor(isMonthly:any) {
+        constructor(isDaily:any) {
             let self = this;
             self.sideBar = ko.observable(2);
-            if (isMonthly) { //monthly
+            if (isDaily) { //daily
+                self.screenMode(ScreenMode.Daily);
+            } else {
                 self.screenMode(ScreenMode.Monthly);
             }
             self.selectedErrorAlarm = ko.observable(new ErrorAlarmWorkRecord(self.screenMode()));
@@ -215,15 +217,15 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             $("#errorAlarmWorkRecordName").focus();
         }
 
-        startPage(code): JQueryPromise<any> {
+        startPage(code: any): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
             nts.uk.ui.block.grayout();
             if (self.screenMode() == ScreenMode.Daily) {
                 self.sideBar(1);
-                service.getAttendanceItemByCodes([833, 834, 835, 836, 837], self.screenMode()).done((lstItems) => {
+                service.getAttendanceItemByCodes([833, 834, 835, 836, 837], self.screenMode()).done((lstItems: any) => {
                     if (lstItems && lstItems.length > 0) {
-                        let lstItemCode = lstItems.map((item) => { return { code: item.attendanceItemId, name: item.attendanceItemName }; });
+                        let lstItemCode = lstItems.map((item: any) => { return { code: item.attendanceItemId, name: item.attendanceItemName }; });
                         self.listRemarkColumnNo(lstItemCode);
                     }
                 });
@@ -438,7 +440,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             let self = this;
             self.tabs()[0].visible(true);
             self.tabs()[1].visible(true);
-            self.tabs()[1].enable(false);
+            self.tabs()[1].enable(true);
             self.tabs()[2].visible(false);
             self.tabs()[3].visible(false);
             if (self.screenMode() == ScreenMode.Daily && self.selectedErrorAlarm().typeAtr == 2) {

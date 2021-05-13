@@ -44,7 +44,7 @@ public class JpaMonthlyItemControlByAuthRepository extends JpaRepository impleme
 	private static final String FIND_BY_CID = "SELECT DISTINCT c.AUTHORITY_MON_ID" + " FROM KSHMT_MON_ITEM_DISP_CTR c"
 			+ " WHERE c.CID = ? ";
 	
-	private static final String DELETE = "DELETE FROM KSHMT_MON_ITEM_DISP_CTR c WHERE c.CID = ? AND c.AUTHORITY_MON_ID = ?";
+	private static final String DELETE = "DELETE FROM KSHMT_MON_ITEM_DISP_CTR WHERE CID = ? AND AUTHORITY_MON_ID = ?";
 
 //	private static final String SELECT_BY_AUTHORITY_MONTHLY_LIST_ID = "SELECT c FROM KrcstDisplayAndInputMonthly c"
 //			+ " WHERE c.krcstDisplayAndInputMonthlyPK.companyID = :companyID"
