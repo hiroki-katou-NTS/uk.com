@@ -34,6 +34,7 @@ import nts.uk.ctx.exio.dom.exi.codeconvert.AcceptCdConvert;
 import nts.uk.ctx.exio.dom.exi.codeconvert.AcceptCdConvertRepository;
 import nts.uk.ctx.exio.dom.exi.codeconvert.CdConvertDetails;
 import nts.uk.ctx.exio.dom.exi.codeconvert.CodeConvertCode;
+import nts.uk.ctx.exio.dom.exi.condset.AcceptMode;
 import nts.uk.ctx.exio.dom.exi.condset.AcceptanceLineNumber;
 import nts.uk.ctx.exio.dom.exi.condset.StdAcceptCondSet;
 import nts.uk.ctx.exio.dom.exi.condset.StdAcceptCondSetRepository;
@@ -46,10 +47,7 @@ import nts.uk.ctx.exio.dom.exi.execlog.ExacErrorLog;
 import nts.uk.ctx.exio.dom.exi.execlog.ExacErrorLogRepository;
 import nts.uk.ctx.exio.dom.exi.execlog.ExacExeResultLog;
 import nts.uk.ctx.exio.dom.exi.execlog.ExacExeResultLogRepository;
-import nts.uk.ctx.exio.dom.exi.execlog.ExtExecutionMode;
 import nts.uk.ctx.exio.dom.exi.execlog.ExtResultStatus;
-import nts.uk.ctx.exio.dom.exi.execlog.ProcessingFlg;
-import nts.uk.ctx.exio.dom.exi.execlog.StandardFlg;
 import nts.uk.ctx.exio.dom.exi.extcategory.ExternalAcceptCategory;
 import nts.uk.ctx.exio.dom.exi.extcategory.ExternalAcceptCategoryItem;
 import nts.uk.ctx.exio.dom.exi.extcategory.ExternalAcceptCategoryItemService;
@@ -155,119 +153,27 @@ public class SyncCsvCheckImportDataCommandHandler extends AsyncCommandHandler<Cs
 				List<List<String>> lstLineData = new ArrayList<>();
 				//Read record				
 				NtsCsvRecord record = csvParsedResult.getRecords().get(i + startLine - 2);
-				boolean isLineError = true; //エラー行を数る
-				boolean isCond = true; //True 受入条件がOK、False　受入条件がNOT　OK　　//受入条件をチェック
-				Map<SpecialExternalItem, SpecialEditValue> mapItemSpecial = new HashMap<>();
-				Map<Integer, Object> mapLineContent = new HashMap<>();
-				for(int items = 0; items < colHeader.columnLength(); items ++){ //line of item
-					String csvItemName = colHeader.getColumn(items).toString();
-					Object csvItemValue = record.getColumn(items);
-					
-					int count = items + 1;
-					List<StdAcceptItem> lstAcceptSetItem = lstAccSetItem.stream()
-							.filter(x -> x.getCsvItemName().get().equals(csvItemName) && x.getCsvItemNumber().get() == count)
-							.collect(Collectors.toList());
-					if(lstAcceptSetItem.isEmpty()) continue;
-					StdAcceptItem accSetItem = lstAcceptSetItem.get(0);
-					
-					List<ExternalAcceptCategoryItem> accItems = lstAcceptItem.stream()
-							.filter(x -> x.getCategoryId() == categoryId && x.getItemNo() == accSetItem.getAcceptItemNumber())
-							.collect(Collectors.toList());
-					if(accItems.isEmpty()) continue;
-					ExternalAcceptCategoryItem acceptItem = accItems.get(0);
-					
-					lstLineData.add(Arrays.asList(csvItemName, csvItemValue.toString()));
-					//①　受付条件設定チェック			
-					AcceptItemEditValueDto condEditAndCheck = accSetItem.checkCondition(csvItemValue.toString());
-					//コード変換に選択があるか判別
-					condEditAndCheck = convertCodeItem(lstcdConvert, accSetItem, csvItemValue.toString(), condEditAndCheck);
-					csvItemValue = condEditAndCheck.getEditValue();
-					if(!condEditAndCheck.getEditError().isEmpty()) {
-						errItems += 1;
-						//エラー内容を編集してドメイン「外部受入エラーログ」に書き出す
-						ExacErrorLog exLog = new ExacErrorLog(errItems, //ログ連番
-								cid,
-								command.getProcessId(),
-								Optional.ofNullable(csvItemName),
-								Optional.ofNullable(csvItemValue.toString()),
-								Optional.ofNullable(TextResource.localize(condEditAndCheck.getEditError())),
-								new AcceptanceLineNumber(i),
-								GeneralDateTime.now(),
-								Optional.ofNullable(acceptItem.getItemName()),
-								ErrorOccurrenceIndicator.EDIT);
-						lstExacErrorLog.add(exLog);
-						isLineError = condEditAndCheck.isResultCheck(); //
-					}
-					
-					if(!condEditAndCheck.isResultCheck()) {
-						isCond = false;
-					} else {
-						//② Check primitive value
-						if(acceptItem.getPrimitiveName().isPresent() && !acceptItem.getPrimitiveName().get().isEmpty()) {
-							String prvError = checkPrimitivalue(acceptItem.getPrimitiveName().get(), csvItemValue);
-							if(!prvError.isEmpty()) {
-								errItems += 1;
-								ExacErrorLog exLog = new ExacErrorLog(errItems, //ログ連番
-										cid,
-										command.getProcessId(),
-										Optional.ofNullable(csvItemName),
-										Optional.ofNullable(csvItemValue.toString()),
-										Optional.ofNullable(prvError),
-										new AcceptanceLineNumber(i),
-										GeneralDateTime.now(),
-										Optional.ofNullable(acceptItem.getItemName()),
-										ErrorOccurrenceIndicator.EDIT);
-								lstExacErrorLog.add(exLog);
-								isLineError = false; //
-							}
-						}
-						
-						//③　TODO アルゴリズム「特殊区分項目の編集」を実行
-						SpecialEditValue speValue = new SpecialEditValue();
-						if(acceptItem.getSpecialFlg() != SpecialExternalItem.NOTSPECIAL) {
-							//【work特殊区分】に該当特殊区分の値が既に存在（取得済み）するかをチェックする
-							if(mapItemSpecial.containsKey(acceptItem.getSpecialFlg())) {
-								speValue = mapItemSpecial.get(acceptItem.getSpecialFlg());
-							} else {
-								speValue = categoryItemService.editSpecial(csvItemValue,
-										condSet.getAcceptMode(),
-										lstLineData,
-										acceptItem);
-								mapItemSpecial.put(acceptItem.getSpecialFlg(), speValue);
-							}
-							if(speValue.isChkError()) {
-								errItems += 1;
-								ExacErrorLog exLog = new ExacErrorLog(errItems, //ログ連番
-										cid,
-										command.getProcessId(),
-										Optional.ofNullable(acceptItem.getTableName() + "[" + acceptItem.getColumnName() + "]"),
-										Optional.ofNullable(csvItemValue.toString()),
-										Optional.ofNullable(TextResource.localize(speValue.getErrorContent())),
-										new AcceptanceLineNumber(i),
-										GeneralDateTime.now(),
-										Optional.ofNullable(acceptItem.getItemName()),
-										ErrorOccurrenceIndicator.EDIT);
-								lstExacErrorLog.add(exLog);
-								isLineError = false;
-								continue;
-							}
-							csvItemValue = speValue.getEditValue();
-						}
-						
-						//④　TODO　履歴区分
-						mapLineContent.put(items, csvItemValue);
-					}
-					
-					
-				} //line of item
 				
-				if(!isLineError) {
+				//アルゴリズム「受入項目チェック＆編集」を実行する
+				ItemCheck checkAndEditItemOfLine = this.checkAndEditItemOfLine(cid,
+						colHeader,
+						record, 
+						lstAccSetItem, 
+						lstAcceptItem, 
+						categoryId, 
+						lstLineData, 
+						lstcdConvert, 
+						errItems, 
+						command.getProcessId(), 
+						lstExacErrorLog, i,  condSet.getAcceptMode());
+				
+				if(!checkAndEditItemOfLine.isLineError) {
 					lineErrors += 1; 
 					setter.updateData(NUMBER_OF_ERROR, lineErrors);
 				} else {
-					if(isCond) {
+					if(checkAndEditItemOfLine.isCond) {
 						//TODO insert vao db	
-						lstCsvContent.add(mapLineContent);
+						lstCsvContent.add(checkAndEditItemOfLine.mapLineContent);
 					}			
 					setter.updateData(NUMBER_OF_SUCCESS, i - lineErrors);
 				}
@@ -306,6 +212,124 @@ public class SyncCsvCheckImportDataCommandHandler extends AsyncCommandHandler<Cs
 			e.printStackTrace();
 			throw new RuntimeException(e);
 		}
+	}
+	//受入項目チェック＆編集
+	private ItemCheck checkAndEditItemOfLine(String cid, NtsCsvRecord colHeader, NtsCsvRecord record, 
+			List<StdAcceptItem> lstAccSetItem, List<ExternalAcceptCategoryItem> lstAcceptItem, 
+			int categoryId,List<List<String>> lstLineData,List<AcceptCdConvert> lstcdConvert,
+			int errItems, String processId, List<ExacErrorLog> lstExacErrorLog,
+			int lines, Optional<AcceptMode> acceptMode) {
+		boolean isLineError = true; //エラー行を数る
+		boolean isCond = true; //True 受入条件がOK、False　受入条件がNOT　OK　　//受入条件をチェック
+		//特殊区分項目の編集の返す値
+		Map<SpecialExternalItem, SpecialEditValue> mapItemSpecial = new HashMap<>();
+		//項目の編集値
+		Map<Integer, Object> mapLineContent = new HashMap<>();
+		for(int items = 0; items < colHeader.columnLength(); items ++){ //item of line
+			String csvItemName = colHeader.getColumn(items).toString();
+			Object csvItemValue = record.getColumn(items);
+			
+			int count = items + 1;
+			List<StdAcceptItem> lstAcceptSetItem = lstAccSetItem.stream()
+					.filter(x -> x.getCsvItemName().get().equals(csvItemName) && x.getCsvItemNumber().get() == count)
+					.collect(Collectors.toList());
+			if(lstAcceptSetItem.isEmpty()) continue;
+			StdAcceptItem accSetItem = lstAcceptSetItem.get(0);
+			
+			List<ExternalAcceptCategoryItem> accItems = lstAcceptItem.stream()
+					.filter(x -> x.getCategoryId() == categoryId && x.getItemNo() == accSetItem.getAcceptItemNumber())
+					.collect(Collectors.toList());
+			if(accItems.isEmpty()) continue;
+			ExternalAcceptCategoryItem acceptItem = accItems.get(0);
+			
+			lstLineData.add(Arrays.asList(csvItemName, csvItemValue.toString()));
+			//①　受付条件設定チェック			
+			//アルゴリズム「取得した値を編集する」を実行する Execute the algorithm "Edit acquired value"
+			AcceptItemEditValueDto condEditAndCheck = accSetItem.checkCondition(csvItemValue.toString());
+			//コード変換に選択があるか判別
+			condEditAndCheck = convertCodeItem(lstcdConvert, accSetItem, csvItemValue.toString(), condEditAndCheck);
+			csvItemValue = condEditAndCheck.getEditValue();
+			if(!condEditAndCheck.getEditError().isEmpty()) {
+				errItems += 1;
+				//エラー内容を編集してドメイン「外部受入エラーログ」に書き出す
+				ExacErrorLog exLog = new ExacErrorLog(errItems, //ログ連番
+						cid,
+						processId,
+						Optional.ofNullable(csvItemName),
+						Optional.ofNullable(csvItemValue.toString()),
+						Optional.ofNullable(TextResource.localize(condEditAndCheck.getEditError())),
+						new AcceptanceLineNumber(lines),
+						GeneralDateTime.now(),
+						Optional.ofNullable(acceptItem.getItemName()),
+						ErrorOccurrenceIndicator.EDIT);
+				lstExacErrorLog.add(exLog);
+				isLineError = condEditAndCheck.isResultCheck(); //
+			}
+			
+			if(!condEditAndCheck.isResultCheck()) {
+				isCond = false;
+			} else {
+				//② Check primitive value
+				if(acceptItem.getPrimitiveName().isPresent() && !acceptItem.getPrimitiveName().get().isEmpty()) {
+					String prvError = checkPrimitivalue(acceptItem.getPrimitiveName().get(), csvItemValue);
+					if(!prvError.isEmpty()) {
+						errItems += 1;
+						ExacErrorLog exLog = new ExacErrorLog(errItems, //ログ連番
+								cid,
+								processId,
+								Optional.ofNullable(csvItemName),
+								Optional.ofNullable(csvItemValue.toString()),
+								Optional.ofNullable(prvError),
+								new AcceptanceLineNumber(lines),
+								GeneralDateTime.now(),
+								Optional.ofNullable(acceptItem.getItemName()),
+								ErrorOccurrenceIndicator.EDIT);
+						lstExacErrorLog.add(exLog);
+						isLineError = false; //
+					}
+				}
+				
+				//③　TODO アルゴリズム「特殊区分項目の編集」を実行
+				SpecialEditValue speValue = new SpecialEditValue();
+				if(acceptItem.getSpecialFlg() != SpecialExternalItem.NOTSPECIAL) {
+					//【work特殊区分】に該当特殊区分の値が既に存在（取得済み）するかをチェックする
+					if(mapItemSpecial.containsKey(acceptItem.getSpecialFlg())) {
+						speValue = mapItemSpecial.get(acceptItem.getSpecialFlg());
+					} else {
+						speValue = categoryItemService.editSpecial(csvItemValue,
+								acceptMode,
+								lstLineData,
+								acceptItem);
+						mapItemSpecial.put(acceptItem.getSpecialFlg(), speValue);
+					}
+					if(speValue.isChkError()) {
+						errItems += 1;
+						ExacErrorLog exLog = new ExacErrorLog(errItems, //ログ連番
+								cid,
+								processId,
+								Optional.ofNullable(acceptItem.getTableName() + "[" + acceptItem.getColumnName() + "]"),
+								Optional.ofNullable(csvItemValue.toString()),
+								Optional.ofNullable(TextResource.localize(speValue.getErrorContent())),
+								new AcceptanceLineNumber(lines),
+								GeneralDateTime.now(),
+								Optional.ofNullable(acceptItem.getItemName()),
+								ErrorOccurrenceIndicator.EDIT);
+						lstExacErrorLog.add(exLog);
+						isLineError = false;
+						continue;
+					}
+					csvItemValue = speValue.getEditValue();
+				}
+				
+				//④　TODO　履歴区分
+				
+				
+				mapLineContent.put(items, csvItemValue);
+			}
+			
+			
+		} //item of line
+		return new ItemCheck(isLineError, isCond, mapLineContent);
 	}
 	
 	private String checkPrimitivalue(String prvName, Object prvValue) {
@@ -380,5 +404,17 @@ public class SyncCsvCheckImportDataCommandHandler extends AsyncCommandHandler<Cs
 		}
 		return condEditAndCheck;
 	}
-
+	
+	public class ItemCheck{
+		boolean isLineError = true; //エラー行を数る
+		boolean isCond = true; //True 受入条件がOK、False　受入条件がNOT　OK　　//受入条件をチェック
+		//項目の編集値
+		Map<Integer, Object> mapLineContent = new HashMap<>();
+		
+		public ItemCheck(boolean isLineError, boolean isCond, Map<Integer, Object> mapLineContent ) {
+			this.isLineError = isLineError;
+			this.isCond = isCond;
+			this.mapLineContent = mapLineContent;
+		}
+	}
 }

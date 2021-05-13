@@ -73,7 +73,7 @@ public class StdAcceptItem extends AggregateRoot {
 	 */
 	private Optional<DataFormatSetting> dataFormatSetting;
 	/**
-	 * 受入項目チェック＆編集
+	 * 取得した値を編集する（一次は対象外）
 	 * @param itemValue
 	 * @return
 	 */
