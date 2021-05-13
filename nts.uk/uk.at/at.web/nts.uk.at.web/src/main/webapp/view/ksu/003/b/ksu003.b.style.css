@@ -1,7 +1,7 @@
 .container-custom {	
 	display: flex;
 	margin: 20px;
-	width: 950px;
+	width: 900px;
 }
 
 .caret-background.caret-bottom:after {
@@ -40,14 +40,14 @@
 
 #task {
 	background-color: #FBE5D6;
-	width: 810px;
+	width: 730px;
 	padding: 3px;
 	display: inline-block;
 	margin-left: 8px;
 }
 
 #task button {
-	width: 156px !important;
+	width: 140px !important;
 	height: 25px !important
 }
 

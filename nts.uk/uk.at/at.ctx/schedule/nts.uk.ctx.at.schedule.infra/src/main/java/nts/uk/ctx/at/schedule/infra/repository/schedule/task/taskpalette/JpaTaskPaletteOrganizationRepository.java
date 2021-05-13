@@ -71,13 +71,11 @@ public class JpaTaskPaletteOrganizationRepository extends JpaRepository implemen
 						.setParameter("targetId", domain.getTargetOrg().getTargetId())
 						.setParameter("page", domain.getPage())
 						.executeUpdate();
-//			this.commandProxy().removeAll(kscmtTaskPaletteDetails);	
 		}
 		KscmtTaskPalettePk kscmtTaskPalettePk = new KscmtTaskPalettePk(companyId, domain.getTargetOrg().getUnit().value, domain.getTargetOrg().getTargetId(), domain.getPage());
 		
 		Optional<KscmtTaskPalette> optional = this.queryProxy().find(kscmtTaskPalettePk, KscmtTaskPalette.class);
 		if(optional.isPresent()) {
-//			this.commandProxy().remove(optional.get());
 			optional.get().pageName = domain.getDisplayInfo().getName().v();
 			optional.get().remark = domain.getDisplayInfo().getRemark().get().v();
 			this.commandProxy().update(optional.get());					

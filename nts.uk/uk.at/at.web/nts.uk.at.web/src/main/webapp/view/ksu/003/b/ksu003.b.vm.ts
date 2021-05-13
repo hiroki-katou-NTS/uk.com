@@ -109,9 +109,20 @@ module nts.uk.at.view.ksu003.b {
                     }
                     if (!_.isNull(self.taskPaletteOrgnization().keys())) {
                         for (let i = 0; i < self.taskPaletteOrgnization().keys().length; i++) {
-                            dataSource.splice(self.taskPaletteOrgnization().keys()[i] - 1, 1, { text: self.taskPaletteOrgnization().taskAbNames()[i], tooltip: self.taskPaletteOrgnization().taskAbNames()[i] });
+                            if(self.taskPaletteOrgnization().listTaskStatus()[i] == 0){
+                                dataSource.splice(self.taskPaletteOrgnization().keys()[i] - 1, 1, {
+                                    text: self.taskPaletteOrgnization().taskAbNames()[i], 
+                                    tooltip: self.taskPaletteOrgnization().taskAbNames()[i] });
+                            } else if(self.taskPaletteOrgnization().listTaskStatus()[i] == 1){
+                                dataSource.splice(self.taskPaletteOrgnization().keys()[i] - 1, 1, {
+                                    text: 'マスタ未登録', 
+                                    tooltip: 'マスタ未登録'});
+                            } else if(self.taskPaletteOrgnization().listTaskStatus()[i] == 2){
+                                dataSource.splice(self.taskPaletteOrgnization().keys()[i] - 1, 1, {
+                                    text: '期限切れ', 
+                                    tooltip: '期限切れ'});
+                            }                            
                         }
-
                     } else {
                         self.enableDelete(false);
                     }                   
@@ -312,6 +323,7 @@ module nts.uk.at.view.ksu003.b {
         taskCodes: Array<string>;
         taskNames: Array<string>;
         taskAbNames: Array<string>;
+        listTaskStatus: Array<number>;
     }
 
     class TaskPaletteOrgnization {
@@ -326,6 +338,7 @@ module nts.uk.at.view.ksu003.b {
         taskNames: KnockoutObservableArray<string> = ko.observableArray([]);
         taskAbNames: KnockoutObservableArray<string> = ko.observableArray([]);
         tasks: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
+        listTaskStatus: KnockoutObservableArray<number> = ko.observableArray([]);
 
         updateData(param: ITaskPaletteOrgnization){
             const self = this;
@@ -338,7 +351,8 @@ module nts.uk.at.view.ksu003.b {
             self.keys(param.keys);
             self.taskCodes(param.taskCodes);
             self.taskNames(param.taskNames);
-            self.taskAbNames(param.taskAbNames);          
+            self.taskAbNames(param.taskAbNames);       
+            self.listTaskStatus(param.listTaskStatus);   
         }
 
         resetData() {
@@ -353,6 +367,7 @@ module nts.uk.at.view.ksu003.b {
             self.taskCodes([]);
             self.taskNames([]);
             self.taskAbNames([]);  
+            self.listTaskStatus([]);
         }
     }   
 

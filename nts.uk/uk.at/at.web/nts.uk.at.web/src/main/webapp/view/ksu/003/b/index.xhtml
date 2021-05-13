@@ -6,10 +6,10 @@
 <body>
     <ui:composition template="../../../../master/dialog.xhtml">
         <ui:define name="htmlHead">
-            <script>var dialogSize = { width: 1000, height: 450 };</script>
+            <script>var dialogSize = { width: 930, height: 450 };</script>
             <com:ValidatorScript>
-                nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.TaskName
-                nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.TaskNote
+                nts.uk.ctx.at.schedule.dom.schedule.task.taskpalette.TaskPaletteName
+                nts.uk.ctx.at.schedule.dom.schedule.task.taskpalette.TaskPaletteRemark
             </com:ValidatorScript>
             <com:scriptfile set="IGNITE" />
             <com:stylefile path="ksu003.b.style.css" />
@@ -39,13 +39,13 @@
                 </div>
                 <div class="container-custom">
                     <!--B2-9-->
-                    <div id="name" data-bind="ntsFormLabel: {required: true, constraint: 'TaskName'}">
+                    <div id="name" data-bind="ntsFormLabel: {required: true, constraint: 'TaskPaletteName'}">
                         #{i18n.getText('KSU003_78')}</div>
                     <!--B2-10-->
-                    <input id="taskName" style="margin-left: 20px;" data-bind="ntsTextEditor: {
+                    <input id="taskName" tabindex="5" style="margin-left: 20px;" data-bind="ntsTextEditor: {
                                         value: taskPaletteOrgnization().name,
                                         required: true, 
-                                        constraint: 'TaskName', 
+                                        constraint: 'TaskPaletteName', 
                                         option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({                                        
                                             width: '60px',
                                             textalign: 'left'
@@ -55,13 +55,13 @@
                 </div>
                 <div class="container-custom">
                     <!--B2-11-->
-                    <div id="name" data-bind="ntsFormLabel: {required: false, constraint: 'TaskNote'}">
+                    <div id="name" data-bind="ntsFormLabel: {required: false, constraint: 'TaskPaletteRemark'}">
                         #{i18n.getText('KSU003_79')}</div>
                     <!--B2-12-->
-                    <textarea id="remarks" rows="3" cols="97" style="margin-left: 13px;" data-bind="ntsMultilineEditor: {
+                    <textarea id="remarks" tabindex="6" rows="3" cols="87" style="margin-left: 13px;" data-bind="ntsMultilineEditor: {
                                         value: taskPaletteOrgnization().remarks,
                                         required: true, 
-                                        constraint: 'TaskNote', 
+                                        constraint: 'TaskPaletteRemark', 
                                         name: '#[KSU003_79]'
                                     }" />
                 </div>
