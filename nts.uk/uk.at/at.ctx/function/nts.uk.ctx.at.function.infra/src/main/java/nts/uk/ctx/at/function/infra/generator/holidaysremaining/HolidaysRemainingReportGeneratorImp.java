@@ -60,7 +60,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
     @Inject
     private CompensLeaveComSetRepository compensLeaveComSetRepository;
 
-    private static final String TEMPLATE_FILE = "report/kdr001_v1.xlsx";
+    private static final String TEMPLATE_FILE = "report/KDR001_V4.xlsx";
     private static final String REPORT_FILE_NAME = "休暇残数管理表.xlsx";
     private static final int NUMBER_ROW_OF_PAGE = 37;
     private static final int NUMBER_ROW_OF_HEADER = 5;
