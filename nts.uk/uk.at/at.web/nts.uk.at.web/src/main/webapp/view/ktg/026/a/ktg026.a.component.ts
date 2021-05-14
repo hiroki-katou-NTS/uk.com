@@ -480,14 +480,13 @@ module nts.uk.at.view.ktg026.a {
                                 if (rs && rs.isRefresh) {
                                     targetYear = rs.target;
                                 }
-                            })
-                            .then(() => {
+                                
                                 const year = !_.isNull(targetYear)
                                 ? targetYear
                                 : ((currentOrNextMonth === 1 ? yearIncludeThisMonth : yearIncludeNextMonth) || '');
     
                                 vm.targetYear(year.toString());
-                            });
+                            })
 
                         vm.displayDataTable(response);
                     }
