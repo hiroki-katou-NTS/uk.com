@@ -11,24 +11,30 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.care.interimdata.TempCareManagement;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.care.interimdata.TempCareManagementRepository;
 import nts.uk.ctx.at.shared.infra.entity.remainingnumber.nursingcareleave.care.interimdata.KshdtInterimCareData;
+import nts.uk.ctx.at.shared.infra.entity.remainingnumber.nursingcareleave.care.interimdata.KshdtInterimCareDataPK;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * リポジトリ実装：暫定介護管理データ
  * @author yuri_tamakoshi
  */
 @Stateless
-public class JpaTempCareManagementRepository extends JpaRepository implements TempCareManagementRepository{
+public class JpaTempCareManagementRepository extends JpaRepository implements TempCareManagementRepository {
 
-	private static final String SELECT_BY_PERIOD = "SELECT a FROM KrcdtInterimCareData a "
-			+ "WHERE a.sId = :employeeId "
-			+ "AND a.ymd >= :startYmd "
-			+ "AND a.ymd <= :endYmd "
-			+ "ORDER BY a.ymd ";
+	private static final String SELECT_BY_PERIOD = "SELECT a FROM KshdtInterimCareData a "
+			+ "WHERE a.pk.sid = :employeeId "
+			+ "AND a.pk.ymd >= :startYmd "
+			+ "AND a.pk.ymd <= :endYmd "
+			+ "ORDER BY a.pk.ymd ";
 
-	private static final String SELECT_BY_EMPLOYEEID_YMD = "SELECT a FROM KrcdtInterimCareData a"
-			+ " WHERE a.sId = :employeeID"
-			+ "AND a.ymd =  : ymd "
-			+ " ORDER BY a.ymd ASC";
+	private static final String SELECT_BY_EMPLOYEEID_YMD = "SELECT a FROM KshdtInterimCareData a"
+			+ " WHERE a.pk.sid = :employeeID"
+			+ "AND a.pk.ymd =  : ymd "
+			+ " ORDER BY a.pk.ymd ASC";
+
+	private static final String DELETE_BY_SID_YMD = "DELETE FROM KshdtInterimCareData a"
+			+ " WHERE a.pk.sid = :sid"
+			+ "	AND a.pk.ymd =  :ymd ";
 
 
 	/** 検索 */
@@ -57,18 +63,25 @@ public class JpaTempCareManagementRepository extends JpaRepository implements Te
 	@Override
 	public void persistAndUpdate(TempCareManagement domain) {
 
-		val key = domain.getRemainManaID();
+		KshdtInterimCareDataPK pk = new KshdtInterimCareDataPK(
+				AppContexts.user().companyId(),
+				domain.getSID(),
+				domain.getYmd(),
+				domain.getAppTimeType().map(x -> x.isHourlyTimeType() ? 1 : 0).orElse(0),
+				domain.getAppTimeType().flatMap(c -> c.getAppTimeType()).map(c -> c.value).orElse(0));
 
 		// 登録・更新
-		KshdtInterimCareData entity = this.getEntityManager().find(KshdtInterimCareData.class, key);
-		if (entity == null){
-			entity = new KshdtInterimCareData();
-			entity.fromDomainForPersist(domain);
-			this.getEntityManager().persist(entity);
-		}
-		else {
+		this.queryProxy().find(pk, KshdtInterimCareData.class).ifPresent(entity -> {
 			entity.fromDomainForUpdate(domain);
-		}
+			this.getEntityManager().flush();
+			return;
+		});
+
+		KshdtInterimCareData entity = new KshdtInterimCareData();
+		entity.pk = pk;
+		entity.fromDomainForPersist(domain);
+		this.getEntityManager().persist(entity);
+		this.getEntityManager().flush();
 	}
 
 
@@ -95,4 +108,13 @@ public class JpaTempCareManagementRepository extends JpaRepository implements Te
 				.setParameter("endYmd", period.end())
 				.getList(c -> c.toDomain());
 	}
+
+	@Override
+	public void deleteBySidAndYmd(String sid, GeneralDate ymd) {
+		this.getEntityManager().createQuery(DELETE_BY_SID_YMD)
+		.setParameter("sid", sid)
+		.setParameter("ymd", ymd)
+		.executeUpdate();
+	}
+
 }
