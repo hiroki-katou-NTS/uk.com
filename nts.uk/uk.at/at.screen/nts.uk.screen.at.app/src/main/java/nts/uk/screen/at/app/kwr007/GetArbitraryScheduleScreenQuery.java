@@ -19,7 +19,7 @@ public class GetArbitraryScheduleScreenQuery {
     private GetAttendanceItemInfo getAttendanceItemInfo;
 
     public AttendanceItemInfoDto geInfo(int formNumberDisplay) {
-        val listMonthly = getAttendanceItemInfo.getAttendanceItemInfo(TypeOfItem.Monthly, formNumberDisplay);
+        val listMonthly = getAttendanceItemInfo.getAttendanceItemInfo(TypeOfItem.AnyPeriod, formNumberDisplay);
         return new AttendanceItemInfoDto(Collections.emptyList(),listMonthly);
     }
 }

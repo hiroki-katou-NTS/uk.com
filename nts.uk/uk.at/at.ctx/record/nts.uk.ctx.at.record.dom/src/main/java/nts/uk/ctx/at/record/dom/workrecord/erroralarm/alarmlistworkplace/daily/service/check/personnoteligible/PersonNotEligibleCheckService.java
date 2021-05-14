@@ -51,7 +51,7 @@ public class PersonNotEligibleCheckService {
                     period, InterimRemainMngMode.OTHER, criteriaDate,
                     false, Optional.of(false),
                     Optional.empty(), Optional.empty(), Optional.of(false),
-                    Optional.empty());
+                    Optional.empty(), Optional.empty());
 
             if (!aggrResultOpt.isPresent()) continue;
             AggrResultOfAnnualLeave aggrResult = aggrResultOpt.get();

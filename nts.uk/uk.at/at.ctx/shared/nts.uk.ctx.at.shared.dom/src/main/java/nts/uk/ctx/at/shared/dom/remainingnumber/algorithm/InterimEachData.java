@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimAbsMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecMng;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualHolidayMng;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TempAnnualLeaveMngs;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimDayOffMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
@@ -41,7 +41,7 @@ public class InterimEachData {
 	 * 年休の暫定残数管理
 	 */
 	List<InterimRemain> annualMng = new ArrayList<>();
-	List<TmpAnnualHolidayMng> annualHolidayData = new ArrayList<>();
+	List<TempAnnualLeaveMngs> annualHolidayData = new ArrayList<>();
 	/**
 	 * 積立年休の暫定残数管理
 	 */

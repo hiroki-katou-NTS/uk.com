@@ -9,7 +9,7 @@ public class ChildCareNurseErrorsDto {
 	/** 子の看護介護使用数 */
 	private  ChildCareNurseUsedNumberDto usedNumber;
 	/** 子の看護介護上限日数 */
-	private Double limitDays;
+	private Integer limitDays;
 	/** 子の看護介護エラー対象年月日 */
 	private String ymd;
 
