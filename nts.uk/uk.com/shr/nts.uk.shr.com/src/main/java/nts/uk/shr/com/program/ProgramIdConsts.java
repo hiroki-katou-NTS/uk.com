@@ -297,6 +297,8 @@ public class ProgramIdConsts {
 	
 	public static final String KSU003A = "KSU003A";
 	
+	public static final String KSU003B = "KSU003B";
+	
 	public static final String KSU005A = "KSU005A";
 	
 	public static final String KSU005B = "KSU005B";
