@@ -1,4 +1,4 @@
-module nts.uk.ui.at.kdp013.share {
+module nts.uk.ui.at.kdw013.share {
     const { number2String, string2Number, validateNumb } = share;
 
     export type BussinessTime = {
@@ -292,6 +292,29 @@ module nts.uk.ui.at.kdp013.share {
 
                 // validate outofrange at here
                 // Msg_2164
+                const msg2164 = !!_
+                    .chain($excludes)
+                    .filter(({ endTime, startTime }) => {
+                        // overlap start time of other event
+                        if (start < startTime && end > startTime) {
+                            return true;
+                        }
+
+                        // overlap end time of other event
+                        if (start < endTime && end > endTime) {
+                            return true;
+                        }
+
+                        return false;
+                    })
+                    .size()
+                    .value();
+
+                if (msg2164) {
+                    errorId('Msg_2164');
+
+                    return;
+                }
 
                 // validate revert value
                 if (start >= end) {
