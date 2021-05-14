@@ -14,6 +14,7 @@ import mockit.integration.junit4.JMockit;
 import nts.uk.ctx.at.shared.dom.scherec.application.common.PrePostAtrShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.reflectprocess.common.ReflectApplicationHelper;
 import nts.uk.ctx.at.shared.dom.scherec.application.stamp.AppStampShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.stamp.StartEndClassificationShare;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.DailyRecordOfApplication;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.ScheduleRecordClassifi;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.stampapplication.StampAppReflect;
@@ -43,7 +44,13 @@ public class StampAppReflectTest {
 	public void test() {
 		DailyRecordOfApplication dailyApp = ReflectApplicationHelper.createRCWithTimeLeavFull(ScheduleRecordClassifi.RECORD,
 				1);// no = 1
+		
 		AppStampShare application = ReflectApplicationHelper.createAppStamp(PrePostAtrShare.PREDICT);
+		application.getListTimeStampApp().addAll(ReflectApplicationHelper.createlstTimeStamp(
+				StartEndClassificationShare.END, // 開始終了区分
+				666, // 時刻
+				1, // 応援勤務枠No
+				"lo"));// 勤務場所)
 		List<Integer> actualResult = new ArrayList<Integer>();
 		actualResult.addAll(new StampAppReflect().reflectRecord(require, application, dailyApp));
 		assertThat(actualResult).isEqualTo(Arrays.asList(3, 4));

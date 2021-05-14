@@ -44,6 +44,8 @@ public class ReflectAttendance {
 							.add(new ScheduleTimeSheet(timeZone.getWorkNo().v(),
 									timeZone.getTimeZone().getStartTime().v(),
 									timeZone.getTimeZone().getEndTime().v()));
+					lstItemId.addAll(Arrays.asList(CancelAppStamp.createItemId(3, timeZone.getWorkNo().v(), 2),
+							CancelAppStamp.createItemId(4, timeZone.getWorkNo().v(), 2)));
 				} else {
 					//input.出勤を反映すると input.退勤を反映するをチェックする
 					if(reflectLeav.orElse(false) && reflectLeav.orElse(false)) {
