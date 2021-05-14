@@ -19,11 +19,7 @@ module nts.uk.at.view.kdw006.d.service {
         return nts.uk.request.ajax(paths.getRoleIds);
     }
 
-    export function copyDaiPerfAuth(selectedRole: string, targetRoleList: Array<string>): JQueryPromise<Array<any>> {
-        let command = {
-            selectedRole,
-            targetRoleList
-        }
+    export function copyDaiPerfAuth(command: any): JQueryPromise<Array<any>> {
         return nts.uk.request.ajax(paths.copyDaiPerfAuth, command);
     }
 

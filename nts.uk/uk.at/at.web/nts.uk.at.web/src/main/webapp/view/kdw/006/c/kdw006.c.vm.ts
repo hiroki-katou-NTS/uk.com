@@ -209,23 +209,27 @@ module nts.uk.at.view.kdw006.c.viewmodel {
             self.monPerformanceFunDto().cid(__viewContext.user.companyId);
             self.restrictConfirmEmploymentDto().companyID(__viewContext.user.companyId);
             self.$blockui("grayout");
-            if (nts.uk.ui.errors.hasError() === false) {
-                service.updateDaiFuncControl(daiFuncControl).done(function() {
-                    service.updateMonthly(ko.toJS(self.monPerformanceFunDto)).done(function() {
-                        service.updateAppType(ko.toJS(self.appTypeDto)).done(function() {
-                            service.updateRestrictConfirmEmp(ko.toJS(self.restrictConfirmEmploymentDto)).done(function() {
-                                self.$blockui("show");
-                                self.$dialog.info({ messageId: "Msg_15" }).then(() => {
-                                    location.reload();
-                                });
-                                self.$blockui("hide");
-                            })
+            self.$validate().then((valid: boolean) => {
+                if (valid) {
+                    service.updateDaiFuncControl(daiFuncControl).done(function() {
+                        service.updateMonthly(ko.toJS(self.monPerformanceFunDto)).done(function() {
+                            service.updateAppType(ko.toJS(self.appTypeDto)).done(function() {
+                                service.updateRestrictConfirmEmp(ko.toJS(self.restrictConfirmEmploymentDto)).done(function() {
+                                    self.$blockui("show");
+                                    self.$dialog.info({ messageId: "Msg_15" }).then(() => {
+                                        location.reload();
+                                    });
+                                    self.$blockui("hide");
+                                })
+                            });
                         });
+                    }).always(() => {
+                        self.$blockui("hide");
                     });
-                }).always(() => {
-                    self.$blockui("hide");
-                });
-            }
+                }
+            }).always(() => {
+                self.$blockui("hide");
+            });
         }
 
         toDaiFuncControl(): IDaiFuncControl{
