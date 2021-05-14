@@ -435,9 +435,9 @@ module nts.uk.at.kdp003.f {
 
 			var roleEmployee: RoleEmployee;
 
-			if (companyCode) {
-				return vm.$dialog.error({ messageId: 'Msg_301'});
-			}
+			// if (companyCode) {
+			// 	return vm.$dialog.error({ messageId: 'Msg_301'});
+			// }
 
 			if (message) {
 				return vm.$dialog.error(message);
