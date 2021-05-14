@@ -80,11 +80,8 @@ module nts.uk.at.view.kdw002.a {
 
                 //
                 self.isSave = ko.observable(true);
-                self.isDaily = dataShare === undefined ? false : dataShare.ShareObject.isDaily;
+                self.isDaily = dataShare === undefined ? false : dataShare.ShareObject;
                 self.sideBar = ko.observable(1);
-                if (!self.isDaily) {
-                    self.sideBar(2);
-                }
                 self.headerColorValue = ko.observable('');
                 self.linebreak = ko.observable(0);
                 self.unitRoundings = ko.observableArray([]);

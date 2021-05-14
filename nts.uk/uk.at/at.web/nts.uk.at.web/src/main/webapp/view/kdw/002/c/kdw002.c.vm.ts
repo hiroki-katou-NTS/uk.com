@@ -35,9 +35,6 @@ module nts.uk.at.view.kdw002.c {
                 self.dailyServiceTypeControl = ko.observable(null);
                 self.isDaily = dataShare === undefined ? false : dataShare.ShareObject;
                 self.sideBar =  ko.observable(1);
-                if(!self.isDaily){
-                    self.sideBar(2);
-                } 
                 //
                 self.datasources = ko.observableArray([]);
                 self.selectedList = ko.observableArray([]);
