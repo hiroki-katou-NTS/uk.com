@@ -22,6 +22,7 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.adapter.monthly.vacation.childcarenurse.ChildCareNursePeriodImport;
+import nts.uk.ctx.at.request.dom.adapter.monthly.vacation.childcarenurse.TempChildCareNurseManagementImport;
 import nts.uk.ctx.at.request.dom.adapter.monthly.vacation.childcarenurse.care.GetRemainingNumberCareAdapter;
 import nts.uk.ctx.at.request.dom.adapter.monthly.vacation.childcarenurse.childcare.GetRemainingNumberChildCareNurseAdapter;
 import nts.uk.ctx.at.request.dom.adapter.record.remainingnumber.holidayover60h.AggrResultOfHolidayOver60hImport;
@@ -204,9 +205,6 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
 
 	@Inject
 	private CommonAlgorithm commonAlgorithm;
-
-	@Inject
-	private WorkTimeSettingService weorkTimeSettingService;
 
 	@Inject
 	private VacationApplicationReflectRepository vacationAppReflectRepository;
@@ -751,12 +749,13 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
 		if (longTermCareManagement.equals(ManageDistinct.YES)) {
 		    // [NO.207]期間中の介護休暇残数を取得
 		    ChildCareNursePeriodImport longtermCarePeriod = getRemainingNumberCareAdapter.getCareRemNumWithinPeriod(
+		            companyID, 
 		            employeeID, 
 		            new DatePeriod(closureDate, closureDate.addYears(1).addDays(-1)), 
 		            InterimRemainMngMode.OTHER, 
 		            baseDate, 
 		            Optional.of(false), 
-		            Optional.empty(), 
+		            new ArrayList<TempChildCareNurseManagementImport>(),
                     Optional.empty(), 
                     Optional.empty(), 
                     Optional.empty());
