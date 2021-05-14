@@ -604,7 +604,15 @@ module nts.uk.at.view.kdp005.a {
 						if (data) {
 							const mode = 'notification';
 							const companyId = (data || {}).companyId;
-							vm.$window.modal('at', DIALOG.F, { mode, companyId });
+							vm.$window.modal('at', DIALOG.F, { mode, companyId })
+								.then((output: string) => {
+									if (output !== 'loginSuccess') {
+										vm.$window.modal('at', DIALOG.P)
+											.then(() => {
+												self.loadNotice(self.loginInfo);
+											})
+									}
+								});
 						}
 					});
 			}

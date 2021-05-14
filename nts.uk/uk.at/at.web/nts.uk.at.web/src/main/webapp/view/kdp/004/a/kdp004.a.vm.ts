@@ -612,7 +612,7 @@ module nts.uk.at.view.kdp004.a {
 
 							vm.$window.modal('at', DIALOG.F, { mode, companyId })
 								.then((output: string) => {
-									if (output !== 'close') {
+									if (output !== 'loginSuccess') {
 										vm.$window.modal('at', DIALOG.P)
 											.then(() => {
 												self.loadNotice(self.loginInfo);
