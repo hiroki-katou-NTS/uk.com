@@ -87,6 +87,7 @@ public class KrcmtMonAttendanceItem extends ContractUkJpaEntity implements Seria
 		this.isAllowChange = domain.getUserCanUpdateAtr().value;
 		this.lineBreakPosName = domain.getNameLineFeedPosition();
 		this.primitiveValue = domain.getPrimitiveValue().map(x -> x.value).orElse(null);
+		this.twoMonthlyDisplay = domain.getTwoMonthlyDisplay().value;
 	}
 
 	/*

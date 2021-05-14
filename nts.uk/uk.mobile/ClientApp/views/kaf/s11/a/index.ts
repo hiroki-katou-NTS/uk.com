@@ -1206,19 +1206,19 @@ export class KafS11AComponent extends KafS00ShrComponent {
             if (result) {
                 // đăng kí 
                 return vm.$http.post('at', API.submit, command).then((data: any) => {
-                    return data.data;
+                    vm.$http.post('at', API.reflectApp, data.data.reflectAppIdLst);
+
+                    return data;
                 });
             }
         }).then((result: any) => {
             if (result) {
-                // gửi mail sau khi đăng kí
-                // return vm.$ajax('at', API.sendMailAfterRegisterSample);
                 return result;
             }
         }).then((result: any) => {
             if (result) {
                 // vm.$goto('kafs11a1', { mode: vm.mode, appID: result.data.appID });
-                vm.$goto('kafs11a1', { mode: vm.mode, appID: result.appIDLst[0] });
+                vm.$goto('kafs11a1', { mode: vm.mode, appID: result.data.appIDLst[0] });
             }
         }).catch((failData) => {
             // xử lý lỗi nghiệp vụ riêng
@@ -1417,7 +1417,8 @@ const API = {
     getWorkTimeByCDLst: 'at/shared/worktimesetting/get_worktime_by_codes',
     checkBeforeSubmit: 'at/request/application/holidayshipment/mobile/checkBeforeSubmit',
     submit: 'at/request/application/holidayshipment/mobile/submit',
-    getTimeZoneValue: 'at/request/application/holidayshipment/mobile/getTimeZoneValue'
+    getTimeZoneValue: 'at/request/application/holidayshipment/mobile/getTimeZoneValue',
+    reflectApp: 'at/request/application/reflect-app'
 };
 
 export interface KAFS11Params {

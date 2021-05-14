@@ -65,4 +65,12 @@ public enum PrePlanWorkTimeCalcMethod {
 		// Not found.
 		return null;
 	}
+	
+	/**
+	 * 予定開始時刻から計算する
+	 * @return true：予定開始時刻から計算する  false：出勤時刻から計算する
+	 */
+	public boolean isCalcFromPlanStartTime() {
+		return this.equals(CALC_FROM_PLAN_START_TIME);
+	}
 }
