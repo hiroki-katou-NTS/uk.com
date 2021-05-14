@@ -32,6 +32,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         showA9: boolean;
 
         // A4_4
+        modeDisplayList: KnockoutObservableArray<any>;
         selectedModeDisplayInBody: KnockoutObservable<number> = ko.observable(undefined);
 
         // A4_7
@@ -139,6 +140,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         
         listCellRetained = [];
         
+        visibleA4_234: KnockoutObservable<boolean>   = ko.observable(true);
+        visibleA4_567: KnockoutObservable<boolean>   = ko.observable(true);
+        
         constructor(dataLocalStorage) {
             let self = this;
             
@@ -195,11 +199,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 if(self.flag == true)
                     return;
                 
-//                uk.localStorage.getItem(self.KEY).ifPresent((data) => {
-//                    let userInfor = JSON.parse(data);
-//                    userInfor.achievementDisplaySelected = (newValue == 1) ? true : false;
-//                    uk.localStorage.setItemAsJson(self.KEY, userInfor);
-//                });
                 if (self.userInfor) {
                     self.userInfor.achievementDisplaySelected = (newValue == 1) ? true : false;
                     characteristics.save(self.KEY, self.userInfor);
@@ -232,41 +231,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 });
             });
             
-            if (dataLocalStorage) {
-                // A4_4 表示形式の初期選択と画面モード (Chọn default của các hình thức hiển thị và mode màn hình)
-                if (self.userInfor.disPlayFormat == 'shift') {
-                    self.selectedModeDisplayInBody('shift');
-                    self.visibleShiftPalette(true);
-                } else if (self.userInfor.disPlayFormat == 'shortName') {
-                    self.selectedModeDisplayInBody('shortName');
-                    self.visibleShiftPalette(false);
-                } else if (self.userInfor.disPlayFormat == 'time') {
-                    self.selectedModeDisplayInBody('time');
-                    self.visibleShiftPalette(false);
-                }
-            } else {
-                self.selectedModeDisplayInBody('time');
-                self.visibleShiftPalette(false);
-            }
-
-//            uk.localStorage.getItem(self.KEY).ifPresent((data) => {
-//                let userInfor: IUserInfor = JSON.parse(data);
-//                // A4_4 表示形式の初期選択と画面モード (Chọn default của các hình thức hiển thị và mode màn hình)
-//                if (userInfor.disPlayFormat == 'shift') {
-//                    self.selectedModeDisplayInBody('shift');
-//                    self.visibleShiftPalette(true);
-//                } else if (userInfor.disPlayFormat == 'shortName') {
-//                    self.selectedModeDisplayInBody('shortName');
-//                    self.visibleShiftPalette(false);
-//                } else if (userInfor.disPlayFormat == 'time') {
-//                    self.selectedModeDisplayInBody('time');
-//                    self.visibleShiftPalette(false);
-//                }
-//            }).ifEmpty((data) => {
-//                self.selectedModeDisplayInBody('time');
-//                self.visibleShiftPalette(false);
-//            });
-
+            self.modeDisplayList  = ko.observableArray([]);
             self.selectedModeDisplayInBody.subscribe(function(viewMode) {
                 if (viewMode == null)
                     return;
@@ -338,13 +303,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     characteristics.save(self.KEY, self.userInfor);
                 }
 
-//                uk.localStorage.getItem(self.KEY).ifPresent((data) => {
-//                    let userInfor: IUserInfor = JSON.parse(data);
-//                    userInfor.backgroundColor = value;
-//                    shiftMasterWithWorkStyleLst = userInfor.shiftMasterWithWorkStyleLst;
-//                    uk.localStorage.setItemAsJson(self.KEY, userInfor);
-//                });
-                
                 if (value == 0) {
                     detailContentDeco = self.listBgOfCellSelfOther;
                 }
@@ -475,15 +433,24 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
             service.getDataStartScreen(param).done((data: IDataStartScreen) => {
                 console.log(data.dataBasicDto);
-                
-                self.displayButtonsHerder(data);
-                
+                // khởi tạo data localStorage khi khởi động lần đầu.
+                self.displayButtonsHerder(data, viewMode);
+
+                self.creatDataLocalStorege(data.dataBasicDto);
+
+                viewMode = self.selectedModeDisplayInBody();
+                // trong trưởng hợp ở localstorage lưu viewMode = time, và updateMode = edit
+                // Nhưng khi lấy setting từ server về lại chỉ có 2 viewMode là shortName và shift 
+                // => phải set là updateMode , vì 2 mode shortName và shift không có updateMode = edit 
+                if (viewMode != 'time' && updateMode == 'edit'){
+                    updateMode = 'stick';
+                    self.userInfor.updateMode = 'stick';
+                    characteristics.save(self.KEY, self.userInfor);
+                 }
+                // ngày có thể chỉnh sửa schedule
                 self.scheduleModifyStartDate = data.dataBasicDto.scheduleModifyStartDate;
                 self.saveDataGrid(data);
 
-                // khởi tạo data localStorage khi khởi động lần đầu.
-                self.creatDataLocalStorege(data.dataBasicDto);
-                
                 __viewContext.viewModel.viewAB.filter(data.dataBasicDto.unit == 0 ? true : false);
                 __viewContext.viewModel.viewAB.workplaceIdKCP013(data.dataBasicDto.unit == 0 ? data.dataBasicDto.workplaceId : data.dataBasicDto.workplaceGroupId);
                 
@@ -525,7 +492,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             return dfd.promise();
         }
         
-        displayButtonsHerder(data) {
+        displayButtonsHerder(data, viewModeLocal) {
             let self = this;
             // các domain liên quan đến phần ẩn hiện
             // スケジュール修正の機能制御   - ScheFunctionControl                          
@@ -621,7 +588,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             
             self.calculateDisPlaySwitchA32(data);
             
-
+            self.calculateDisPlayFormatA4(data, viewModeLocal);
 
         }
         
@@ -652,14 +619,15 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 $('#A1_12').off('click');
             }
         }
-
+        
+        // ※12,※13,※14
         calculateDisPlaySwitchA32(data) {
             let self = this;
-            //lấy setting trong domain này スケジュール修正職場別の機能制御    - ScheFunctionCtrlByWorkplace
+            //lấy setting trong domain này スケジュール修正職場別の機能制御    - ScheFunctionCtrlByWorkplace.useDisplayPeriod
             // code tam ghep data server sau
             let useDisplayPeriods = [0,1];
             if (useDisplayPeriods.length == 0) {
-
+                self. selectedDisplayPeriod(1)
             } else if (useDisplayPeriods.length == 1) {
                 self.disPeriodSelectionList().push({ id: 1, name: getText("KSU001_39") });
                 if (useDisplayPeriods[0] == 0){
@@ -667,11 +635,137 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 } else if (useDisplayPeriods[0] == 1){
                     self.disPeriodSelectionList().push({ id: 3, name: getText("KSU001_41") });
                 }
-
             } else if (useDisplayPeriods.length == 2) {
                 self.disPeriodSelectionList().push({ id: 1, name: getText("KSU001_39") });
                 self.disPeriodSelectionList().push({ id: 2, name: getText("KSU001_40") });
                 self.disPeriodSelectionList().push({ id: 3, name: getText("KSU001_41") });
+            }
+        }
+        
+        calculateDisPlayFormatA4(data, viewModeLocal) {
+            let self = this;
+            //lấy setting trong domain này スケジュール修正職場別の機能制御    - ScheFunctionCtrlByWorkplace.useDisplayFormat
+            //略名 AbbreviatedName(0)*/
+            //勤務 WorkInfo(1)
+            //シフト Shift(2)
+            // code tam ghep data server sau
+            // ※15,※16,※17,※29
+            let useDisplayFormats = [0,1,2]; 
+            let viewModeSetting = '';
+            if (useDisplayFormats.length == 0) {
+                self.visibleA4_234(false);
+            } else if (useDisplayFormats.length == 1) {
+                if (useDisplayFormats[0] == 0) {
+                    self.modeDisplayList().push({ id: 'time', name: getText("KSU001_43") });
+                    viewModeSetting = 'time';
+                } else if (useDisplayFormats[0] == 1) {
+                    self.modeDisplayList().push({ id: 'shortName', name: getText("KSU001_44") });
+                    viewModeSetting = 'shortName';
+                } else if (useDisplayFormats[0] == 2) {
+                    self.modeDisplayList().push({ id: 'shift', name: getText("KSU001_45") });
+                    viewModeSetting = 'shift';
+                }
+                self.visibleA4_234(false);
+            } else if (useDisplayFormats.length == 2) {
+                if ((useDisplayFormats[0] == 0 || useDisplayFormats[0] == 1) && (useDisplayFormats[1] == 0 || useDisplayFormats[1] == 1)) {
+                    self.modeDisplayList().push({ id: 'time', name: getText("KSU001_43") });
+                    self.modeDisplayList().push({ id: 'shortName', name: getText("KSU001_44") });
+                    viewModeSetting = 'timeshortName';
+                } else if ((useDisplayFormats[0] == 1 || useDisplayFormats[0] == 2) && (useDisplayFormats[1] == 1 || useDisplayFormats[1] == 2)) {
+                    self.modeDisplayList().push({ id: 'time', name: getText("KSU001_43") });
+                    self.modeDisplayList().push({ id: 'shift', name: getText("KSU001_45") });
+                    viewModeSetting = 'timeshift';
+                } else if ((useDisplayFormats[0] == 0 || useDisplayFormats[0] == 2) && (useDisplayFormats[1] == 0 || useDisplayFormats[1] == 2)) {
+                    self.modeDisplayList().push({ id: 'shortName', name: getText("KSU001_44") });
+                    self.modeDisplayList().push({ id: 'shift', name: getText("KSU001_45") });
+                    viewModeSetting = 'shortNameshift';
+                }
+            } else if (useDisplayFormats.length == 3) {
+                self.modeDisplayList().push({ id: 'time', name: getText("KSU001_43") });
+                self.modeDisplayList().push({ id: 'shortName', name: getText("KSU001_44") });
+                self.modeDisplayList().push({ id: 'shift', name: getText("KSU001_45") });
+                viewModeSetting = 'timeshortNameshift';
+            }
+            
+            // check lại mode hiển thị luu trong localstorage có nằm trong setting lấy về từ server hay không
+            // vì có trường hợp ở local lưu mode time , nhưng trên server lấy setting về chỉ có mode shortname chẳng hạn
+            self.setViewMode(self.modeDisplayList(), viewModeSetting);
+            
+            
+            
+            
+        }
+        
+        setViewMode(viewModeList, viewModeSetting) {
+            let self = this;
+            if (!_.isNil(self.userInfor)) {
+                let viewModeSaveLocal = self.userInfor.disPlayFormat;
+                // viewMode : là viewMode lấy  từ setting của domain ScheFunctionCtrlByWorkplace.useDisplayFormat
+                if (viewModeSetting == '' || viewModeSetting == 'time') {
+                    self.selectedModeDisplayInBody('time');
+                    self.visibleShiftPalette(false);
+                } else if (viewModeSetting == 'shortName') {
+                    self.selectedModeDisplayInBody('shortName');
+                    self.visibleShiftPalette(false);
+                } else if (viewModeSetting == 'shift') {
+                    self.selectedModeDisplayInBody('shift');
+                    self.visibleShiftPalette(true);
+                } else if (viewModeSetting == 'timeshortName') {
+                    if (viewModeSaveLocal == 'time') {
+                        self.selectedModeDisplayInBody('time');
+                        self.visibleShiftPalette(false);
+                    } else if (viewModeSaveLocal == 'shortName') {
+                        self.selectedModeDisplayInBody('shortName');
+                        self.visibleShiftPalette(false);
+                    } else {
+                        self.selectedModeDisplayInBody('time');
+                        self.visibleShiftPalette(false);
+                    }
+                } else if (viewModeSetting == 'timeshift') {
+                    if (viewModeSaveLocal == 'time') {
+                        self.selectedModeDisplayInBody('time');
+                        self.visibleShiftPalette(false);
+                    } else if (viewModeSaveLocal == 'shift') {
+                        self.selectedModeDisplayInBody('shift');
+                        self.visibleShiftPalette(true);
+                    } else {
+                        self.selectedModeDisplayInBody('time');
+                        self.visibleShiftPalette(false);
+                    }
+                } else if (viewModeSetting == 'shortNameshift') {
+                    if (viewModeSaveLocal == 'shortName') {
+                        self.selectedModeDisplayInBody('shortName');
+                        self.visibleShiftPalette(false);
+                    } else if (viewModeSaveLocal == 'shift') {
+                        self.selectedModeDisplayInBody('shift');
+                        self.visibleShiftPalette(true);
+                    } else {
+                        self.selectedModeDisplayInBody('shortName');
+                        self.visibleShiftPalette(false);
+                    }
+                } else if (viewModeSetting == 'timeshortNameshift') {
+                    if (viewModeSaveLocal == 'time') {
+                        self.selectedModeDisplayInBody('time');
+                        self.visibleShiftPalette(false);
+                    } else if (viewModeSaveLocal == 'shortName') {
+                        self.selectedModeDisplayInBody('shortName');
+                        self.visibleShiftPalette(false);
+                    } else {
+                        self.selectedModeDisplayInBody('shift');
+                        self.visibleShiftPalette(true);
+                    }
+                }
+            } else {
+                if (viewModeSetting == '' || viewModeSetting == 'time' || viewModeSetting == 'timeshortName' || viewModeSetting == 'timeshift' || viewModeSetting == 'timeshortNameshift') {
+                    self.selectedModeDisplayInBody('time');
+                    self.visibleShiftPalette(false);
+                } else if (viewModeSetting == 'shortName' || viewModeSetting == 'shortNameshift') {
+                    self.selectedModeDisplayInBody('shortName');
+                    self.visibleShiftPalette(false);
+                } else if (viewModeSetting == 'shift') {
+                    self.selectedModeDisplayInBody('shift');
+                    self.visibleShiftPalette(true);
+                }
             }
         }
         
@@ -788,6 +882,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 self.userInfor = data;
                 characteristics.save(self.KEY, self.userInfor);
             } else {
+                self.userInfor.disPlayFormat = self.selectedModeDisplayInBody();
                 self.userInfor.achievementDisplaySelected = false;
                 characteristics.save(self.KEY, self.userInfor);
             }

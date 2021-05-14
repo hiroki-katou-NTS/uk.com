@@ -14,23 +14,24 @@ module nts.uk.at.view.ksu001.a {
 
                 __viewContext.viewModel.viewA.setIconEventHeader();
 
-            if (__viewContext.viewModel.viewAC.listPageWkpIsEmpty == true) {
-                $('.ntsButtonTableButton').addClass('nowithContent');
-            }
-            
-            let item = uk.localStorage.getItem('nts.uk.characteristics.ksu001Data');
-            let userInfor = JSON.parse(item.get());
-            if (userInfor.updateMode == 'copyPaste') {
-                setTimeout(() => {
-                    __viewContext.viewModel.viewA.setStyler();
-                }, 800);
-            }
-            
-            $(window).resize(function() {
-                __viewContext.viewModel.viewA.setPositionButonDownAndHeightGrid();
-                __viewContext.viewModel.viewA.setPositionButonToRight();
-                __viewContext.viewModel.viewA.setHeightScreen();
-            });
+                if (__viewContext.viewModel.viewAC.listPageWkpIsEmpty == true) {
+                    $('.ntsButtonTableButton').addClass('nowithContent');
+                }
+
+                if (!_.isNil(data)) {
+                    if (data.updateMode == 'copyPaste') {
+                        setTimeout(() => {
+                            __viewContext.viewModel.viewA.setStyler();
+                        }, 800);
+                    }
+                }
+
+
+                $(window).resize(function() {
+                    __viewContext.viewModel.viewA.setPositionButonDownAndHeightGrid();
+                    __viewContext.viewModel.viewA.setPositionButonToRight();
+                    __viewContext.viewModel.viewA.setHeightScreen();
+                });
 
                 if (__viewContext.viewModel.viewAC.listPageWkpIsEmpty == true) {
                     $('.ntsButtonTableButton').addClass('nowithContent');

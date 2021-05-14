@@ -151,22 +151,20 @@
 				<!-- popup khi click btn A4 Screen-display-settings -->
 				<div id="A4_1_popup" class="popup-area popup-panel A4_1A">
 					<div style="margin-left: 0px">
-						<div>
+						<div data-bind="visible: visibleA4_234">
 							<div class="area6-left">
 								<span id="A4_2">#{i18n.getText('KSU001_42')}</span>
 								<span id="A4_3">：</span>
 							</div>
 							<div id="A4_4" tabindex="30" class="cf area6-right"
 								data-bind="ntsSwitchButton: {
- 									options: [{id: 'time', name: '#{i18n.getText('KSU001_43')}'}, 
-		 									 {id: 'shortName', name: '#{i18n.getText('KSU001_44')}'}, 
-		 									 {id: 'shift', name: '#{i18n.getText('KSU001_45')}'}] , 
+ 									options: modeDisplayList, 
 									optionsValue: 'id', 
  									optionsText: 'name', 
  									value: selectedModeDisplayInBody , 
  									enable: true }"></div> 
 						</div>
-						<div>
+						<div data-bind="visible: visibleA4_567">
 							<div class="area6-left" >
 								<span id="A4_5">#{i18n.getText('KSU001_133')}</span>
 								<span id="A4_6">：</span>
