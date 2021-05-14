@@ -45,13 +45,16 @@ public class ReflectAttendance {
 									timeZone.getTimeZone().getStartTime().v(),
 									timeZone.getTimeZone().getEndTime().v()));
 				} else {
+					//input.出勤を反映すると input.退勤を反映するをチェックする
+					if(reflectLeav.orElse(false) && reflectLeav.orElse(false)) {
 					// 勤務時間帯を日別勤怠(work）にセットする
 					scheduleTimeSheet.get().setAttendance(timeZone.getTimeZone().getStartTime());
 					scheduleTimeSheet.get().setLeaveWork(timeZone.getTimeZone().getEndTime());
+					lstItemId.addAll(Arrays.asList(CancelAppStamp.createItemId(3, timeZone.getWorkNo().v(), 2),
+							CancelAppStamp.createItemId(4, timeZone.getWorkNo().v(), 2)));
+					}
 				}
 
-				lstItemId.addAll(Arrays.asList(CancelAppStamp.createItemId(3, timeZone.getWorkNo().v(), 2),
-						CancelAppStamp.createItemId(4, timeZone.getWorkNo().v(), 2)));
 			} else {
 				// [日別勤怠(work）の出退勤]をチェック
 				// 日別勤怠の出退勤
