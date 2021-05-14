@@ -48,9 +48,7 @@ module nts.uk.at.kdp003.q {
 		workPlaceIdList: KnockoutObservableArray<string> = ko.observableArray([]);
 		workPlaceName: KnockoutObservableArray<string> = ko.observableArray([]);
 		notificationCreated: KnockoutObservable<NotificationCreated> = ko.observable(null);
-		workPlaceText: KnockoutComputed<string> = ko.computed(() => {
-			return this.workPlaceName().join(COMMA);
-		});
+		
 		workPlaceTxtRefer: KnockoutObservable<string> = ko.observable('');
 		startDateOfMsgUpdate = '';
 
@@ -306,7 +304,6 @@ module nts.uk.at.kdp003.q {
 			vm.$window.modal('at', '/view/kdp/003/k/index.xhtml', { multiSelect: true })
 				.then((selectedWP) => {
 					vm.workPlaceIdList(selectedWP.selectedId);
-					console.log(vm.workPlaceIdList());
 
 			vm.$ajax('com', API.GET_NAME_OF_DESTINATION_WKP, vm.workPlaceIdList()).then((response: WorkplaceInfo[]) => {
 				if (response) {
@@ -314,6 +311,7 @@ module nts.uk.at.kdp003.q {
 					const workPlaceName = _.map(response, x => x.workplaceName);
 					vm.workPlaceIdList(workPlaceIdList);
 					vm.workPlaceName(workPlaceName);
+					vm.workPlaceTxtRefer(vm.workPlaceName().join(COMMA));
 				}
 				});
 				});
