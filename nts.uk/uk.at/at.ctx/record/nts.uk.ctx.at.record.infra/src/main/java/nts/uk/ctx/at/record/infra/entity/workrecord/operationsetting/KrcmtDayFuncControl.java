@@ -25,18 +25,18 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCMT_DAI_FUNC_CONTROL")
-public class KrcmtDaiFuncControl extends ContractUkJpaEntity implements Serializable {
+@Table(name = "KRCMT_DAY_FUNC_CONTROL")
+public class KrcmtDayFuncControl extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
-	public static final JpaEntityMapper<KrcmtDaiFuncControl> MAPPER = new JpaEntityMapper<>(KrcmtDaiFuncControl.class);
+	public static final JpaEntityMapper<KrcmtDayFuncControl> MAPPER = new JpaEntityMapper<>(KrcmtDayFuncControl.class);
 	
 	/**
 	* ID
 	*/
 	@EmbeddedId
-	public KrcmtDaiFuncControlPk daiFuncControlPk;
+	public KrcmtDayFuncControlPk dayFuncControlPk;
     
 	/**
 	* コメント
@@ -110,14 +110,14 @@ public class KrcmtDaiFuncControl extends ContractUkJpaEntity implements Serializ
 
 	@Override
 	protected Object getKey() {
-		return daiFuncControlPk;
+		return dayFuncControlPk;
 	}
 	
-	public static KrcmtDaiFuncControl toEntity(DaiPerformanceFun daiPerformanceFun,
+	public static KrcmtDayFuncControl toEntity(DaiPerformanceFun daiPerformanceFun,
 			IdentityProcess identityProcess,
 			ApprovalProcess approvalProcess) {
 		
-		return new KrcmtDaiFuncControl(new KrcmtDaiFuncControlPk(daiPerformanceFun.getCid()), 
+		return new KrcmtDayFuncControl(new KrcmtDayFuncControlPk(daiPerformanceFun.getCid()), 
 						daiPerformanceFun.getComment().toString(),
 						daiPerformanceFun.getDisp36Atr(), 
 						daiPerformanceFun.getFlexDispAtr(), 
@@ -131,7 +131,7 @@ public class KrcmtDaiFuncControl extends ContractUkJpaEntity implements Serializ
 	}
 	
 	public DaiPerformanceFun toDomainDaiPerformanceFun() {
-		return new DaiPerformanceFun(this.daiFuncControlPk.cid, 
+		return new DaiPerformanceFun(this.dayFuncControlPk.cid, 
 				new Comment(this.comment),
         		this.disp36Atr, 
         		this.flexDispAtr, 
@@ -139,13 +139,13 @@ public class KrcmtDaiFuncControl extends ContractUkJpaEntity implements Serializ
 	}
 	
 	public IdentityProcess toDomainIdentityProcess() {
-		return new IdentityProcess(this.daiFuncControlPk.cid, 
+		return new IdentityProcess(this.dayFuncControlPk.cid, 
 				this.daySelfChk, this.monSelfChk, 
         		this.daySelfChkError == null ? null : EnumAdaptor.valueOf(this.daySelfChkError, YourselfConfirmError.class));
 	}
 	
 	public ApprovalProcess toDomainApprovalProcess() {
-		return new ApprovalProcess(this.daiFuncControlPk.cid, 
+		return new ApprovalProcess(this.dayFuncControlPk.cid, 
         		this.dayBossChk, this.monBossChk, 
         		dayBossChkError == null ? null : EnumAdaptor.valueOf(this.dayBossChkError, YourselfConfirmError.class));
 	}

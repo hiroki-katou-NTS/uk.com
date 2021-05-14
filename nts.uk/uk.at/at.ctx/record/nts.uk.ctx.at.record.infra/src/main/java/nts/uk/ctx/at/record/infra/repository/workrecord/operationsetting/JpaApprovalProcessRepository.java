@@ -9,18 +9,18 @@ import lombok.SneakyThrows;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.ApprovalProcess;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.ApprovalProcessRepository;
-import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtDaiFuncControl;
+import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtDayFuncControl;
 
 @Stateless
 public class JpaApprovalProcessRepository extends JpaRepository implements ApprovalProcessRepository
 {
 
-    private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM KrcmtDaiFuncControl f";
-    private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.daiFuncControlPk.cid =:cid ";
+    private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM KrcmtDayFuncControl f";
+    private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.dayFuncControlPk.cid =:cid ";
 
     @Override
     public List<ApprovalProcess> getAllApprovalProcess(){
-    	List<ApprovalProcess> data = this.queryProxy().query(SELECT_ALL_QUERY_STRING, KrcmtDaiFuncControl.class)
+    	List<ApprovalProcess> data = this.queryProxy().query(SELECT_ALL_QUERY_STRING, KrcmtDayFuncControl.class)
     			.getList(c -> c.toDomainApprovalProcess());
     	
         return data;
@@ -29,17 +29,8 @@ public class JpaApprovalProcessRepository extends JpaRepository implements Appro
     @Override
     @SneakyThrows
     public Optional<ApprovalProcess> getApprovalProcessById(String cid){
-    	return this.queryProxy().query(SELECT_BY_KEY_STRING, KrcmtDaiFuncControl.class)
+    	return this.queryProxy().query(SELECT_BY_KEY_STRING, KrcmtDayFuncControl.class)
     	        .setParameter("cid", cid)
     	        .getSingle(c->c.toDomainApprovalProcess());
-//    	try (PreparedStatement statement = this.connection().prepareStatement("SELECT * from KRCMT_DAI_FUNC_CONTROL h WHERE h.CID = ?")) {
-//			statement.setString(1, cid);
-//			return new NtsResultSet(statement.executeQuery()).getSingle(rec -> {
-//				return new ApprovalProcess(cid, null, 
-//		        		rec.getInt("DAY_BOSS_CHK"), 
-//		        		rec.getInt("MON_BOSS_CHK"), 
-//		        		rec.getInt("DAY_BOSS_CHK_ERROR") == null ? null : EnumAdaptor.valueOf(rec.getInt("DAY_BOSS_CHK_ERROR"), YourselfConfirmError.class));
-//			});
-//    	}
     }
 }

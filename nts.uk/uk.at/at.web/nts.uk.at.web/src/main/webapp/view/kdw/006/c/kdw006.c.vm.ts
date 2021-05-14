@@ -205,13 +205,13 @@ module nts.uk.at.view.kdw006.c.viewmodel {
         saveData() {
             let self = this;
 
-            let daiFuncControl: IDaiFuncControl = self.toDaiFuncControl();
+            let dayFuncControl: IDayFuncControl = self.toDayFuncControl();
             self.monPerformanceFunDto().cid(__viewContext.user.companyId);
             self.restrictConfirmEmploymentDto().companyID(__viewContext.user.companyId);
             self.$blockui("grayout");
             self.$validate().then((valid: boolean) => {
                 if (valid) {
-                    service.updateDaiFuncControl(daiFuncControl).done(function() {
+                    service.updateDayFuncControl(dayFuncControl).done(function() {
                         service.updateMonthly(ko.toJS(self.monPerformanceFunDto)).done(function() {
                             service.updateAppType(ko.toJS(self.appTypeDto)).done(function() {
                                 service.updateRestrictConfirmEmp(ko.toJS(self.restrictConfirmEmploymentDto)).done(function() {
@@ -232,31 +232,31 @@ module nts.uk.at.view.kdw006.c.viewmodel {
             });
         }
 
-        toDaiFuncControl(): IDaiFuncControl{
+        toDayFuncControl(): IDayFuncControl{
             let self = this;
 
-            let daiFuncControl: IDaiFuncControl = {} as IDaiFuncControl;
-            daiFuncControl.cid = __viewContext.user.companyId;
-            daiFuncControl.comment = self.daiPerformanceFunDto().comment();
-            daiFuncControl.disp36Atr = self.daiPerformanceFunDto().disp36Atr();
-            daiFuncControl.flexDispAtr = self.daiPerformanceFunDto().flexDispAtr();
-            daiFuncControl.checkErrRefDisp = self.daiPerformanceFunDto().checkErrRefDisp();
-            daiFuncControl.daySelfChk = self.identityProcessDto().useDailySelfCk();
-            daiFuncControl.monSelfChK = self.identityProcessDto().useMonthSelfCK();
+            let dayFuncControl: IDayFuncControl = {} as IDayFuncControl;
+            dayFuncControl.cid = __viewContext.user.companyId;
+            dayFuncControl.comment = self.daiPerformanceFunDto().comment();
+            dayFuncControl.disp36Atr = self.daiPerformanceFunDto().disp36Atr();
+            dayFuncControl.flexDispAtr = self.daiPerformanceFunDto().flexDispAtr();
+            dayFuncControl.checkErrRefDisp = self.daiPerformanceFunDto().checkErrRefDisp();
+            dayFuncControl.daySelfChk = self.identityProcessDto().useDailySelfCk();
+            dayFuncControl.monSelfChK = self.identityProcessDto().useMonthSelfCK();
             if (self.identityProcessDto().useDailySelfCk()) {
-                daiFuncControl.daySelfChkError = self.identityProcessDto().yourselfConfirmError();
+                dayFuncControl.daySelfChkError = self.identityProcessDto().yourselfConfirmError();
             } else {
-                daiFuncControl.daySelfChkError = self.yourselfConfirmErrorOldValue;
+                dayFuncControl.daySelfChkError = self.yourselfConfirmErrorOldValue;
             }
-            daiFuncControl.dayBossChk = self.approvalProcessDto().useDailyBossChk();
-            daiFuncControl.monBossChk = self.approvalProcessDto().useMonthBossChk();
+            dayFuncControl.dayBossChk = self.approvalProcessDto().useDailyBossChk();
+            dayFuncControl.monBossChk = self.approvalProcessDto().useMonthBossChk();
             if (self.approvalProcessDto().useDailyBossChk()) {
-                daiFuncControl.dayBossChkError = self.approvalProcessDto().supervisorConfirmError();
+                dayFuncControl.dayBossChkError = self.approvalProcessDto().supervisorConfirmError();
             } else {
-                daiFuncControl.dayBossChkError = self.supervisorConfirmErrorOldValue;
+                dayFuncControl.dayBossChkError = self.supervisorConfirmErrorOldValue;
             }
 
-            return daiFuncControl;
+            return dayFuncControl;
         }
 
         openHDialog() {
@@ -278,7 +278,7 @@ module nts.uk.at.view.kdw006.c.viewmodel {
         }
     }
 
-    interface IDaiFuncControl {
+    interface IDayFuncControl {
         cid: string;
         comment: string;
         disp36Atr: boolean;

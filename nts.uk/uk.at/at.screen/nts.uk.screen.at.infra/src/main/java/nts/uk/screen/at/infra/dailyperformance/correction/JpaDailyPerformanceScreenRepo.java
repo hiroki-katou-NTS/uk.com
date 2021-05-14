@@ -64,8 +64,8 @@ import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.KrcmtEr
 import nts.uk.ctx.at.record.infra.entity.workrecord.identificationstatus.KrcdtIdentificationStatus;
 import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtAttendanceAut;
 import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtChangeableWktpGrpDetail;
-import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtDaiFuncControl;
-import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtDaiFuncControlPk;
+import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtDayFuncControl;
+import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtDayFuncControlPk;
 import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtFormatPerformance;
 import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtFormatPerformancePk;
 import nts.uk.ctx.at.record.infra.entity.workrecord.workfixed.KrcstWorkFixed;
@@ -1383,12 +1383,12 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		OperationOfDailyPerformanceDto dto = new OperationOfDailyPerformanceDto();
 		Optional<KrcmtFormatPerformance> format = this.queryProxy().find(new KrcmtFormatPerformancePk(companyId),
 				KrcmtFormatPerformance.class);
-		Optional<KrcmtDaiFuncControl> daiFunc = this.queryProxy().find(new KrcmtDaiFuncControlPk(companyId),
-				KrcmtDaiFuncControl.class);
-		dto.setComment(daiFunc.isPresent() ? daiFunc.get().comment : "");
+		Optional<KrcmtDayFuncControl> dayFunc = this.queryProxy().find(new KrcmtDayFuncControlPk(companyId),
+				KrcmtDayFuncControl.class);
+		dto.setComment(dayFunc.isPresent() ? dayFunc.get().comment : "");
 		dto.setSettingUnit(
 				EnumAdaptor.valueOf(format.isPresent() ? format.get().settingUnitType : 1, SettingUnitType.class));
-		dto.setShowError(daiFunc.isPresent() ? daiFunc.get().checkErrRefDisp == 1 : false);
+		dto.setShowError(dayFunc.isPresent() ? dayFunc.get().checkErrRefDisp == 1 : false);
 		return dto;
 	}
 
@@ -1632,7 +1632,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 
 	@Override
 	public Optional<IdentityProcessUseSetDto> findIdentityProcessUseSet(String comapnyId) {
-		return this.queryProxy().find(new KrcmtDaiFuncControlPk(comapnyId), KrcmtDaiFuncControl.class)
+		return this.queryProxy().find(new KrcmtDayFuncControlPk(comapnyId), KrcmtDayFuncControl.class)
 				.map(x -> new IdentityProcessUseSetDto(x.daySelfChk == 1 ? true : false,
 						x.monSelfChk == 1 ? true : false,
 						x.daySelfChkError != null ? x.daySelfChkError : null));
@@ -1658,7 +1658,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 
 	@Override
 	public Optional<ApprovalUseSettingDto> findApprovalUseSettingDto(String comapnyId) {
-		return this.queryProxy().find(new KrcmtDaiFuncControlPk(comapnyId), KrcmtDaiFuncControl.class)
+		return this.queryProxy().find(new KrcmtDayFuncControlPk(comapnyId), KrcmtDayFuncControl.class)
 				.map(x -> new ApprovalUseSettingDto(x.dayBossChk == 1 ? true : false,
 						x.monBossChk == 1 ? true : false,
 						x.dayBossChkError != null ? x.dayBossChkError : null));

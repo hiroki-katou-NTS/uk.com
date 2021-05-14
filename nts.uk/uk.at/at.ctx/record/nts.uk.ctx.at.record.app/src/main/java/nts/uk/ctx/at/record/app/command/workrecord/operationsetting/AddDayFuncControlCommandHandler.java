@@ -7,20 +7,20 @@ import javax.transaction.Transactional;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.ApprovalProcess;
-import nts.uk.ctx.at.record.dom.workrecord.operationsetting.DaiFuncControlRepository;
+import nts.uk.ctx.at.record.dom.workrecord.operationsetting.DayFuncControlRepository;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.DaiPerformanceFun;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.IdentityProcess;
 
 @Stateless
 @Transactional
-public class AddDaiFuncControlCommandHandler extends CommandHandler<DaiFuncControlCommand>{
+public class AddDayFuncControlCommandHandler extends CommandHandler<DayFuncControlCommand>{
 
 	@Inject
-	private DaiFuncControlRepository repository;
+	private DayFuncControlRepository repository;
 	
 	@Override
-	protected void handle(CommandHandlerContext<DaiFuncControlCommand> context) {
-		DaiFuncControlCommand addCommand = context.getCommand();
+	protected void handle(CommandHandlerContext<DayFuncControlCommand> context) {
+		DayFuncControlCommand addCommand = context.getCommand();
 		DaiPerformanceFun daiPerformanceFun = DaiPerformanceFun.createFromJavaType(addCommand.getCid(), 
 				addCommand.getComment(), 
 				addCommand.isDisp36Atr() ? 1 : 0, 

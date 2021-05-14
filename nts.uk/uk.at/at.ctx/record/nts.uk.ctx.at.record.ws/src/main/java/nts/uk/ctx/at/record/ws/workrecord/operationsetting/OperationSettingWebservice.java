@@ -12,11 +12,11 @@ import javax.ws.rs.Produces;
 
 import nts.arc.enums.EnumConstant;
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.at.record.app.command.workrecord.operationsetting.DaiFuncControlCommand;
+import nts.uk.ctx.at.record.app.command.workrecord.operationsetting.DayFuncControlCommand;
 import nts.uk.ctx.at.record.app.command.workrecord.operationsetting.FormatPerformanceCommand;
 import nts.uk.ctx.at.record.app.command.workrecord.operationsetting.MonPerformanceFunCommand;
 import nts.uk.ctx.at.record.app.command.workrecord.operationsetting.RestrictConfirmEmploymentCommand;
-import nts.uk.ctx.at.record.app.command.workrecord.operationsetting.UpdateDaiFuncControlCommandHandler;
+import nts.uk.ctx.at.record.app.command.workrecord.operationsetting.UpdateDayFuncControlCommandHandler;
 import nts.uk.ctx.at.record.app.command.workrecord.operationsetting.UpdateFormatPerformanceCommandHandler;
 import nts.uk.ctx.at.record.app.command.workrecord.operationsetting.UpdateMonPerformanceFunCommandHandler;
 import nts.uk.ctx.at.record.app.command.workrecord.operationsetting.UpdateRestrictConfirmEmploymentCommandHandler;
@@ -70,7 +70,7 @@ public class OperationSettingWebservice extends WebService {
 	private UpdateRestrictConfirmEmploymentCommandHandler updateRestrictConfirmEmploymentCommandHandler;
 	
 	@Inject
-	private UpdateDaiFuncControlCommandHandler updateDaiFuncControlCommandHandler;
+	private UpdateDayFuncControlCommandHandler updateDayFuncControlCommandHandler;
 	
 	@Inject
 	private ApplicationTypeFinder appTypeFinder; 
@@ -85,7 +85,7 @@ public class OperationSettingWebservice extends WebService {
 	}
 	
 	@POST
-	@Path("getdaily")
+	@Path("getDaily")
 	public DaiPerformanceFunDto getDaiPerformanceFunById() {
 		String companyId = AppContexts.user().companyId();
 		DaiPerformanceFunDto dto =  daiPerformanceFunFinder.getDaiPerformanceFunById(companyId);
@@ -141,9 +141,9 @@ public class OperationSettingWebservice extends WebService {
 	}
 	
 	@POST
-	@Path("updateDaiFuncControl")
-	public void updateDaiFuncControl(DaiFuncControlCommand command){
-		updateDaiFuncControlCommandHandler.handle(command);
+	@Path("updateDayFuncControl")
+	public void updateDayFuncControl(DayFuncControlCommand command){
+		updateDayFuncControlCommandHandler.handle(command);
 	}
 	
 	@POST

@@ -18,7 +18,7 @@ import nts.uk.ctx.at.record.dom.workrecord.operationsetting.DaiPerformanceFun;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.FormatPerformance;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.IdentityProcess;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.MonPerformanceFun;
-import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtDaiFuncControl;
+import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtDayFuncControl;
 import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtFormatPerformance;
 import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtMonPerformanceFun;
 import nts.uk.file.at.app.export.attendanceitemprepare.ApplicationCallExport;
@@ -34,9 +34,9 @@ import nts.uk.file.at.app.export.attendanceitemprepare.RoleExport;
 public class JpaOperationRepository extends JpaRepository implements OperationExcelRepo
 {
 	int test = 0 ;
-	//DaiFuncControl
-	private static final String SELECT_ALL_QUERY_STRING_DAI_FUNC = "SELECT f FROM KrcmtDaiFuncControl f";
-    private static final String SELECT_BY_KEY_STRING_DAI_FUNC = SELECT_ALL_QUERY_STRING_DAI_FUNC + " WHERE  f.daiFuncControlPk.cid =:cid ";
+	//DayFuncControl
+	private static final String SELECT_ALL_QUERY_STRING_DAY_FUNC = "SELECT f FROM KrcmtDayFuncControl f";
+    private static final String SELECT_BY_KEY_STRING_DAY_FUNC = SELECT_ALL_QUERY_STRING_DAY_FUNC + " WHERE  f.dayFuncControlPk.cid =:cid ";
 	
 //    private static final String SELECT_ALL_QUERY_STRING_DAILY = "SELECT f FROM KrcmtDaiPerformEdFun f";
 //    private static final String SELECT_BY_KEY_STRING_DAILY = SELECT_ALL_QUERY_STRING_DAILY + " WHERE  f.daiPerformanceFunPk.cid =:cid ";
@@ -69,7 +69,7 @@ public class JpaOperationRepository extends JpaRepository implements OperationEx
   
     @Override
     public Optional<DaiPerformanceFun> getDaiPerformanceFunById(String companyId){
-        return this.queryProxy().query(SELECT_BY_KEY_STRING_DAI_FUNC, KrcmtDaiFuncControl.class)
+        return this.queryProxy().query(SELECT_BY_KEY_STRING_DAY_FUNC, KrcmtDayFuncControl.class)
         .setParameter("cid", companyId)
         .getSingle(c->c.toDomainDaiPerformanceFun());
     }
@@ -85,32 +85,16 @@ public class JpaOperationRepository extends JpaRepository implements OperationEx
     @Override
     @SneakyThrows
     public Optional<IdentityProcess> getIdentityProcessById(String companyId){
-    	return this.queryProxy().query(SELECT_BY_KEY_STRING_DAI_FUNC, KrcmtDaiFuncControl.class)
+    	return this.queryProxy().query(SELECT_BY_KEY_STRING_DAY_FUNC, KrcmtDayFuncControl.class)
     	        .setParameter("cid", companyId)
     	        .getSingle(c->c.toDomainIdentityProcess());
-//    	try (PreparedStatement statement = this.connection().prepareStatement("SELECT * from KRCMT_SELF_CHECK_SET h WHERE h.CID = ?")) {
-//			statement.setString(1, companyId);
-//			return new NtsResultSet(statement.executeQuery()).getSingle(rec -> {
-//				return new IdentityProcess(companyId, rec.getInt("USE_DAILY_SELF_CHECK"), 
-//		        		rec.getInt("USE_MONTHLY_SELF_CHECK"),
-//		        		rec.getInt("YOURSELF_CONFIRM_ERROR") == null ? null : EnumAdaptor.valueOf(rec.getInt("YOURSELF_CONFIRM_ERROR"), YourselfConfirmError.class));
-//			});
-//    	}
     }
     @Override
     @SneakyThrows
     public Optional<ApprovalProcess> getApprovalProcessById(String companyId){
-    	return this.queryProxy().query(SELECT_BY_KEY_STRING_DAI_FUNC, KrcmtDaiFuncControl.class)
+    	return this.queryProxy().query(SELECT_BY_KEY_STRING_DAY_FUNC, KrcmtDayFuncControl.class)
     	        .setParameter("cid", companyId)
     	        .getSingle(c->c.toDomainApprovalProcess());
-//    	try (PreparedStatement statement = this.connection().prepareStatement("SELECT * from KRCMT_BOSS_CHECK_SET h WHERE h.CID = ?")) {
-//			statement.setString(1, companyId);
-//			return new NtsResultSet(statement.executeQuery()).getSingle(rec -> {
-//				return new ApprovalProcess(companyId,
-//		        		rec.getInt("USE_DAILY_BOSS_CHECK"), rec.getInt("USE_MONTHLY_BOSS_CHECK"), 
-//		        		rec.getInt("SUPERVISOR_CONFIRM_ERROR") == null ? null : EnumAdaptor.valueOf(rec.getInt("SUPERVISOR_CONFIRM_ERROR"), YourselfConfirmError.class));
-//			});
-//    	}
     }
 	
 	@Override

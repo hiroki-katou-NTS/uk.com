@@ -3,7 +3,7 @@ package nts.uk.ctx.at.record.dom.workrecord.operationsetting;
 /**
  * 日別実績の機能制限
  */
-public interface DaiFuncControlRepository {
+public interface DayFuncControlRepository {
 	
 	public void add(DaiPerformanceFun daiPerformanceFun, IdentityProcess identityProcess, ApprovalProcess approvalProcess);
 	
