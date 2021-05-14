@@ -478,18 +478,19 @@ module nts.uk.at.view.kdp005.a {
 
 				let source = self.playAudio(button.audioType);
 
+				//打刻入力で共通設定を取得する
+				vm.$ajax(API.SETTING_STAMP_COMMON)
+				.done((data: ISettingsStampCommon) => {
+					if (data) {
+						self.supportUse(data.supportUse);
+					}
+				});
+
 				vm.$window.storage(KDP005_SAVE_DATA)
-				.then((dataStorage: StorageData) => {
-					//打刻入力で共通設定を取得する
-					vm.$ajax(API.SETTING_STAMP_COMMON)
-					.done((data: ISettingsStampCommon) => {
-						if (data) {
-							self.supportUse(data.supportUse);
-						}
-					});
+				.then((dataStorage: any) => {
 
 					let btnType = checkType(button.changeClockArt, button.changeCalArt, button.setPreClockArt, button.changeHalfDay, button.btnReservationArt);
-					if (dataStorage.WKPID.length > 1 && self.supportUse() === true && _.includes([14, 15, 16, 17, 18], btnType)) {
+					if (dataStorage.selectedWP.length > 1 && self.supportUse() === true && _.includes([14, 15, 16, 17, 18], btnType)) {
 						vm.$window.modal('at', DIALOG.M)
 							.then((result: string) => {
 								service.addCheckCard(registerdata).done((res) => {
@@ -603,7 +604,7 @@ module nts.uk.at.view.kdp005.a {
 						if (data) {
 							const mode = 'notification';
 							const companyId = (data || {}).companyId;
-							self.checkHis(self);
+							vm.$window.modal('at', DIALOG.F, { mode, companyId });
 						}
 					});
 			}

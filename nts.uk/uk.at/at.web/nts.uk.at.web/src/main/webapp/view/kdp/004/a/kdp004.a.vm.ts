@@ -94,7 +94,6 @@ module nts.uk.at.view.kdp004.a {
 								});
 							} else {
 								self.loginInfo = loginInfo;
-								console.log(ko.unwrap(self.modeBasyo));
 								if (ko.unwrap(self.modeBasyo)) {
 									self.loginInfo.selectedWP = self.workplace;
 									nts.uk.characteristics.save(KDP004_SAVE_DATA, self.loginInfo);
@@ -491,20 +490,20 @@ module nts.uk.at.view.kdp004.a {
 				const workpalceId = self.workplaceId;
 				const employeeInfo = { mode, employeeId, employeeCode, workLocationName, workpalceId };
 
-				vm.$window.storage(KDP004_SAVE_DATA)
-					.then((dataStorage: StorageData) => {
+				//打刻入力で共通設定を取得する
+				vm.$ajax(API.SETTING_STAMP_COMMON)
+				.done((data: ISettingsStampCommon) => {
+					if (data) {
+						self.supportUse(data.supportUse);
+					}
+				});
 
-						//打刻入力で共通設定を取得する
-						vm.$ajax(API.SETTING_STAMP_COMMON)
-							.done((data: ISettingsStampCommon) => {
-								if (data) {
-									self.supportUse(data.supportUse);
-								}
-							});
+				vm.$window.storage(KDP004_SAVE_DATA)
+				.then((dataStorage: any) => {
 
 						let btnType = checkType(button.changeClockArt, button.changeCalArt, button.setPreClockArt, button.changeHalfDay, button.btnReservationArt);
 
-						if (dataStorage.WKPID.length > 1 && self.supportUse() === true && _.includes([14, 15, 16, 17, 18], btnType)) {
+						if (dataStorage.selectedWP.length > 1 && self.supportUse() === true && _.includes([14, 15, 16, 17, 18], btnType)) {
 							vm.$window.modal('at', DIALOG.M)
 								.then((result: string) => {
 									service.stampInput(registerdata).done((res) => {
