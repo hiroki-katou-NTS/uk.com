@@ -1059,6 +1059,7 @@ module nts.uk.ui.at.kdw013.calendar {
                                             taskName: title,
                                             color: backgroundColor
                                         } = displayInfo;
+                                        const relateId = randomId();
 
                                         return {
                                             start: new Date(),
@@ -1067,6 +1068,7 @@ module nts.uk.ui.at.kdw013.calendar {
                                             backgroundColor,
                                             textColor: '',
                                             extendedProps: {
+                                                relateId,
                                                 status: 'new',
                                                 taskFrameNo,
                                                 code,
@@ -1472,8 +1474,6 @@ module nts.uk.ui.at.kdw013.calendar {
                             };
                         }
                     }
-
-                    vm.$dialog.error({ messageId: 'DATA_SOURCE_NOT_FOUND' });
 
                     return null;
                 }
