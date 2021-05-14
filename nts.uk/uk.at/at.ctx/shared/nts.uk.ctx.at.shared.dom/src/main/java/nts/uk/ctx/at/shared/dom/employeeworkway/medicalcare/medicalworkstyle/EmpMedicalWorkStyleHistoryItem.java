@@ -6,11 +6,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
 import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.MedicalCareWorkStyle;
-
-
 /**
  * 社員の医療勤務形態履歴項目
- * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.shared.社員の働き方.医療勤務形態.社員の医療勤務形態履歴項目
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.shared.社員の働き方.医療介護.医療勤務形態.社員の医療勤務形態履歴項目
  * @author HieuLt
  *
  */

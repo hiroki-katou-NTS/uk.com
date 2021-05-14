@@ -9,7 +9,7 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 
 /**
  * 社員の夜勤上限時間を取得する
- * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.shared.社員の働き方.医療勤務形態.社員の夜勤上限時間を取得する
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.shared.社員の働き方.医療介護.医療勤務形態.社員の夜勤上限時間を取得する
  * @author lan_lt
  *
  */
