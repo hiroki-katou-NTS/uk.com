@@ -1,7 +1,9 @@
 package nts.uk.ctx.at.function.app.nrl.request;
 
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 
+import nts.uk.ctx.at.function.dom.adapter.employmentinfoterminal.infoterminal.RQEmpInfoTerminalAdapter;
 import nts.uk.shr.com.system.property.UKServerSystemProperties;
 import nts.uk.shr.infra.data.TenantLocatorService;
 
@@ -13,13 +15,17 @@ import nts.uk.shr.infra.data.TenantLocatorService;
 @Stateless
 public class AuthenticateNRCommunicationQuery {
 
-	public boolean process(String contractCode) {
+	@Inject
+	private RQEmpInfoTerminalAdapter rqEmpInfoTerminalAdapter;
+	
+	public boolean process(String contractCode, String macAddr) {
 
-		if (!UKServerSystemProperties.isCloud())
-			return false;
+		if (UKServerSystemProperties.isCloud()) {
+			TenantLocatorService.connect(contractCode);
+		}
+		
+		return rqEmpInfoTerminalAdapter.getEmpInfoTerminalCode(contractCode, macAddr).isPresent();
 
-		TenantLocatorService.connect(contractCode);
-		return true;
 	}
 
 }

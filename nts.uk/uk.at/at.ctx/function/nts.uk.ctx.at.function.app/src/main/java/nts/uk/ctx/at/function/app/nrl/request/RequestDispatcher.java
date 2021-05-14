@@ -106,7 +106,7 @@ public class RequestDispatcher {
 			}
 			
 			//タイムレコーダの通信を認証する
-			boolean checkAuthen = authenQuery.process(contractCode);
+			boolean checkAuthen = authenQuery.process(contractCode, macAddr);
 			if(!checkAuthen) {
 				return NRLResponse.noAccept(nrlNo, macAddr, contractCode).build().addPayload(Frame.class, ErrorCode.PARAM.value);
 			}
@@ -121,10 +121,6 @@ public class RequestDispatcher {
 			
 			NRLResponse reponse =  request.responseTo(empInfoTerCodeOpt.get(), frame);
 			
-			if(UKServerSystemProperties.isCloud()) {
-				TenantLocatorService.disconnect();
-			}
-			
 			return reponse;
 			
 		} catch (JAXBException | NoSuchMethodException ex) {
@@ -132,6 +128,9 @@ public class RequestDispatcher {
 		} finally {
 			if (Objects.nonNull(result)) {
 				result.dispose();
+			}
+			if(UKServerSystemProperties.isCloud()) {
+				TenantLocatorService.disconnect();
 			}
 		}
 	}

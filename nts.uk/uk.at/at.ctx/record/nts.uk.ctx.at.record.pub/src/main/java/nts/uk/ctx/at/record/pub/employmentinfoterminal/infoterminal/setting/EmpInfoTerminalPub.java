@@ -5,7 +5,9 @@ import java.util.Optional;
 import nts.uk.ctx.at.record.pub.employmentinfoterminal.infoterminal.setting.dto.EmpInfoTerminalExport;
 
 /**
- * @author ThanhNX 就業情報端末Repository
+ * @author ThanhNX 
+ * 
+ * 就業情報端末を取得する
  *
  */
 public interface EmpInfoTerminalPub {
