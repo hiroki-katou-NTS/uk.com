@@ -295,6 +295,16 @@ module nts.uk.ui.at.kdw013.share {
                 const msg2164 = !!_
                     .chain($excludes)
                     .filter(({ endTime, startTime }) => {
+                        // inside other event
+                        if (start > startTime && start < endTime) {
+                            return true;
+                        }
+
+                        // inside other event
+                        if (end > startTime && end < endTime) {
+                            return true;
+                        }
+
                         // overlap start time of other event
                         if (start < startTime && end > startTime) {
                             return true;
