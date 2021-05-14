@@ -170,8 +170,8 @@ public class GetInformationStartupScreenQuery {
         public List<String> searchEmployee(RegulationInfoEmpQuery q, String roleId) {
             EmployeeSearchQueryDto query = EmployeeSearchQueryDto.builder()
                     .baseDate(GeneralDateTime.fromString(q.getBaseDate().toString() + SPACE + ZEZO_TIME, DATE_TIME_FORMAT))
-                    .referenceRange(q.getReferenceRange())
-                    .systemType(q.getSystemType())
+                    .referenceRange(q.getReferenceRange().value)
+                    .systemType(q.getSystemType().value)
                     .filterByWorkplace(q.getFilterByWorkplace())
                     .workplaceCodes(q.getWorkplaceIds())
                     .filterByEmployment(false)
