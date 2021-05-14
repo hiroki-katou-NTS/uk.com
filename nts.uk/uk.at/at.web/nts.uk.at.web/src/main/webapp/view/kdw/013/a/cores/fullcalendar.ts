@@ -2224,6 +2224,10 @@ module nts.uk.ui.components.fullcalendar {
                     mutatedEvents();
                 });
 
+            vm.$nextTick(() => {
+                vm.calendar.updateSize();
+            });
+
             // test item
             _.extend(window, { dragger, calendar: vm.calendar, params, popupPosition });
         }
