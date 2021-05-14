@@ -111,8 +111,8 @@ module nts.uk.at.view.ksu003.b {
                         for (let i = 0; i < self.taskPaletteOrgnization().keys().length; i++) {
                             if(self.taskPaletteOrgnization().listTaskStatus()[i] == 0){
                                 dataSource.splice(self.taskPaletteOrgnization().keys()[i] - 1, 1, {
-                                    text: self.taskPaletteOrgnization().taskAbNames()[i], 
-                                    tooltip: self.taskPaletteOrgnization().taskAbNames()[i] });
+                                    text: self.taskPaletteOrgnization().taskNames()[i], 
+                                    tooltip: self.taskPaletteOrgnization().taskNames()[i] });
                             } else if(self.taskPaletteOrgnization().listTaskStatus()[i] == 1){
                                 dataSource.splice(self.taskPaletteOrgnization().keys()[i] - 1, 1, {
                                     text: 'マスタ未登録', 
@@ -221,7 +221,7 @@ module nts.uk.at.view.ksu003.b {
             self.taskPaletteOrgnization().keys.splice(Number($(event)[0].dataset.idx), 1);
             self.taskPaletteOrgnization().taskNames.splice(Number($(event)[0].dataset.idx), 1);
             self.taskPaletteOrgnization().taskCodes.splice(Number($(event)[0].dataset.idx), 1);
-            self.taskPaletteOrgnization().taskAbNames.splice(Number($(event)[0].dataset.idx), 1);
+            self.taskPaletteOrgnization().taskNames.splice(Number($(event)[0].dataset.idx), 1);
             dfd.resolve()
             return dfd.promise();           
         }
@@ -254,7 +254,7 @@ module nts.uk.at.view.ksu003.b {
                     self.taskPaletteOrgnization().keys.push(position);
                     self.taskPaletteOrgnization().taskCodes.push(dataFromKdl012);
                     self.taskPaletteOrgnization().taskNames.push(dataFromKdl012);
-                    self.taskPaletteOrgnization().taskAbNames.push(dataFromKdl012);
+                    self.taskPaletteOrgnization().taskNames.push(dataFromKdl012);
                     dfd.resolve({ text: self.textName(), tooltip: self.tooltip(), data: dataFromKdl012.data });
                 }
             });    
@@ -322,7 +322,7 @@ module nts.uk.at.view.ksu003.b {
         keys: Array<number>;
         taskCodes: Array<string>;
         taskNames: Array<string>;
-        taskAbNames: Array<string>;
+        taskNames: Array<string>;
         listTaskStatus: Array<number>;
     }
 
@@ -336,7 +336,7 @@ module nts.uk.at.view.ksu003.b {
         keys: KnockoutObservableArray<number> = ko.observableArray([]);
         taskCodes: KnockoutObservableArray<string> = ko.observableArray([]);
         taskNames: KnockoutObservableArray<string> = ko.observableArray([]);
-        taskAbNames: KnockoutObservableArray<string> = ko.observableArray([]);
+        taskNames: KnockoutObservableArray<string> = ko.observableArray([]);
         tasks: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
         listTaskStatus: KnockoutObservableArray<number> = ko.observableArray([]);
 
@@ -351,7 +351,7 @@ module nts.uk.at.view.ksu003.b {
             self.keys(param.keys);
             self.taskCodes(param.taskCodes);
             self.taskNames(param.taskNames);
-            self.taskAbNames(param.taskAbNames);       
+            self.taskNames(param.taskNames);       
             self.listTaskStatus(param.listTaskStatus);   
         }
 
@@ -366,7 +366,7 @@ module nts.uk.at.view.ksu003.b {
             self.keys([]);
             self.taskCodes([]);
             self.taskNames([]);
-            self.taskAbNames([]);  
+            self.taskNames([]);  
             self.listTaskStatus([]);
         }
     }   

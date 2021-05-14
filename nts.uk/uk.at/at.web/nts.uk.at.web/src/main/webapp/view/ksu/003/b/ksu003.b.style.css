@@ -16,11 +16,28 @@
 	text-decoration: none;
 }
 
+.ntsContextMenu {
+	width: 90px !important;
+	min-width: 90px !important;
+}
+
+.ntsContextMenu li {
+	padding: 0px 0px 0 19px !important;
+}
+
+/* ul {
+	width: 90px !important;
+} */
 #line {
-	margin: 3px 1%;	
+	width: 856px;
+	margin-left: 20px;	
 	border:none;
 	height: 1px;
 	background:#9A9A9A
+}
+
+#remarks {
+	width: 715px;
 }
 
 #group-link-button {
