@@ -155,11 +155,15 @@ module nts.uk.at.view.kmk007.a.viewmodel {
 
             self.currentCode = ko.observable();
 
-            self.currentWorkType().dispName.subscribe(function(value) {
-                if (!ukText.isNullOrEmpty(value)) {
-                    self.currentWorkType().dispAbName(self.subString(value, 6));
+            $('#input-workTypeName').on("input", (event: any) => {
+                const val = event.target.value;
+                if (!ukText.isNullOrEmpty(val)) {
+                    $('#abbreviation-name-input').ntsError('clear');
+                    self.currentWorkType().dispAbName(self.subString(val, 6));
+                } else {
+                    self.currentWorkType().dispAbName("");
                 }
-            });
+             });
 
             self.currentWorkType().oneDayCls.subscribe(function(newOneDayCls) {
                 self.checkCalculatorMethod(newOneDayCls);
