@@ -7,8 +7,7 @@ html{
 #kdp002a {
   width: 38.6rem;
   margin: 0 auto;
-  height: calc(100vh - 100px);
-  /* min-width: 150vmin; */
+  height: calc(100vh);
 }
 
 #kdp002a.has-info {
@@ -128,5 +127,5 @@ html{
 }
 
 .tab-button-panel.has-tab.has-comment+div.pull-left {
-  padding-top: 71px !important;
+  padding-top: 74px !important;
 }

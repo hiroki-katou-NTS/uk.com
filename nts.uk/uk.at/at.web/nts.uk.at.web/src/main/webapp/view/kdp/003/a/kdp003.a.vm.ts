@@ -191,7 +191,7 @@ module nts.uk.at.kdp003.a {
 
 						vm.$window.modal('at', DIALOG.F, { mode, companyId })
 							.then((output: string) => {
-								if (output !== 'close') {
+								if (output === 'loginSuccess') {
 									vm.$window.modal('at', DIALOG.P)
 										.then(() => {
 											vm.loadNotice(data);
@@ -206,7 +206,6 @@ module nts.uk.at.kdp003.a {
 			const vm = this;
 			let startDate = vm.$date.now();
 			startDate.setDate(startDate.getDate() - 3);
-			debugger;
 
 			const param = {
 				periodDto: {
@@ -313,7 +312,7 @@ module nts.uk.at.kdp003.a {
 						const { loginData } = data;
 						const params = { multiSelect: true };
 
-						if (!ko.unwrap(vm.modeBasyo)) {
+						if (!ko.unwrap(vm.modeBasyo) && loginData.msgErrorId !== "Msg_1527") {
 							return vm.$window
 								.modal('at', DIALOG.K, params)
 								.then((workplaceData: k.Return) => ({
@@ -516,7 +515,7 @@ module nts.uk.at.kdp003.a {
 					} else {
 						const params = { multiSelect: true };
 
-						if (!ko.unwrap(vm.modeBasyo)) {
+						if (!ko.unwrap(vm.modeBasyo) && loginData.msgErrorId !== "Msg_1527") {
 							return vm.$window.modal('at', DIALOG.K, params)
 								.then((workplaceData: undefined | k.Return) => {
 
