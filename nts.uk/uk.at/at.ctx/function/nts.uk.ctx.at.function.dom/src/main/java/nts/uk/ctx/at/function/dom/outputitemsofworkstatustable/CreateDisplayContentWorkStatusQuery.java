@@ -143,7 +143,8 @@ public class CreateDisplayContentWorkStatusQuery {
                         ));
                     }
                 }
-                val total = itemValue.stream().filter(q -> q.getActualValue() != null)
+                val total = itemValue.stream().filter(q -> q.getActualValue() != null
+                        && checkSumTotal(q.getAttributes()) )
                         .mapToDouble(DailyValue::getActualValue).sum();
                 itemOneLines.add(
                         new OutputItemOneLine(
@@ -179,4 +180,11 @@ public class CreateDisplayContentWorkStatusQuery {
         Map<Object, Boolean> seen = new ConcurrentHashMap<>();
         return t -> seen.putIfAbsent(keyExtractor.apply(t), Boolean.TRUE) == null;
     }
+    private static boolean checkSumTotal(CommonAttributesOfForms attributes){
+        return attributes == CommonAttributesOfForms.TIME
+                || attributes == CommonAttributesOfForms.NUMBER_OF_TIMES
+                || attributes == CommonAttributesOfForms.AMOUNT_OF_MONEY;
+
+    }
+
 }
