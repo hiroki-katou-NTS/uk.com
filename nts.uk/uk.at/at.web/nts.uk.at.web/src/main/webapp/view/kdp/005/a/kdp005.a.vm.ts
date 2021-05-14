@@ -19,7 +19,8 @@ module nts.uk.at.view.kdp005.a {
 		const DIALOG = {
 			R: '/view/kdp/003/r/index.xhtml',
 			F: '/view/kdp/003/f/index.xhtml',
-			M: '/view/kdp/003/m/index.xhtml'
+			M: '/view/kdp/003/m/index.xhtml',
+			P: '/view/kdp/003/p/index.xhtml'
 		};
 
 		const KDP005_SAVE_DATA = 'loginKDP005';
@@ -604,7 +605,15 @@ module nts.uk.at.view.kdp005.a {
 						if (data) {
 							const mode = 'notification';
 							const companyId = (data || {}).companyId;
-							vm.$window.modal('at', DIALOG.F, { mode, companyId });
+							vm.$window.modal('at', DIALOG.F, { mode, companyId })
+								.then((output: string) => {
+									if (output === 'loginSuccess') {
+										vm.$window.modal('at', DIALOG.P)
+											.then(() => {
+												self.loadNotice(self.loginInfo);
+											})
+									}
+								});
 						}
 					});
 			}

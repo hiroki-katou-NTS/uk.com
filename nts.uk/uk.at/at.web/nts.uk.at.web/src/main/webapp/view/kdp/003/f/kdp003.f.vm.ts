@@ -368,8 +368,6 @@ module nts.uk.at.kdp003.f {
 						.fail((response: any) => {
 							const { message, messageId } = response;
 
-							debugger;
-
 							if (!messageId) {
 								vm.$dialog.error(message);
 							} else {
@@ -454,7 +452,6 @@ module nts.uk.at.kdp003.f {
 					vm.$blockui('show')
 						.then(() => vm.$ajax(api, model))
 						.fail((response: any) => {
-							debugger;
 							const { message, messageId } = response;
 
 							if (!messageId) {
