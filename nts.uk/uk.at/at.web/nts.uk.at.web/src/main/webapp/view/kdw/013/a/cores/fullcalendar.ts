@@ -1054,23 +1054,30 @@ module nts.uk.ui.at.kdw013.calendar {
                                         displayInfo,
                                         expirationEndDate,
                                         expirationStartDate
-                                    }) => ({
-                                        start: new Date(),
-                                        end: new Date(),
-                                        title: '',
-                                        backgroundColor: '',
-                                        textColor: '',
-                                        extendedProps: {
-                                            status: 'new',
-                                            taskFrameNo,
-                                            code,
-                                            cooperationInfo,
-                                            displayInfo,
-                                            expirationEndDate,
-                                            expirationStartDate,
-                                            childTaskList,
-                                        } as any
-                                    }))
+                                    }) => {
+                                        const {
+                                            taskName: title,
+                                            color: backgroundColor
+                                        } = displayInfo;
+
+                                        return {
+                                            start: new Date(),
+                                            end: new Date(),
+                                            title,
+                                            backgroundColor,
+                                            textColor: '',
+                                            extendedProps: {
+                                                status: 'new',
+                                                taskFrameNo,
+                                                code,
+                                                cooperationInfo,
+                                                displayInfo,
+                                                expirationEndDate,
+                                                expirationStartDate,
+                                                childTaskList,
+                                            } as any
+                                        };
+                                    })
                                     .value();
 
                                 // update dragger items
