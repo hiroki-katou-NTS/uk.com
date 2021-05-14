@@ -51,7 +51,7 @@ module nts.uk.ui.at.kdw013.share {
                 .$validate
                 .constraint(constraint)
                 .then((value: vm.Constraint) => {
-                    console.log(value);
+                    // console.log(value);
                 });
 
             value
