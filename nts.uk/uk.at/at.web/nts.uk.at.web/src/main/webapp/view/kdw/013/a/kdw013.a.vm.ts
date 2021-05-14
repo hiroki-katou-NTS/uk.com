@@ -1,4 +1,4 @@
-module nts.uk.ui.at.kdp013.a {
+module nts.uk.ui.at.kdw013.a {
     /**
      * 日別勤怠の編集状態
      */

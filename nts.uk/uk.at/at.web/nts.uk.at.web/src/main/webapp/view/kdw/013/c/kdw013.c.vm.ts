@@ -1,4 +1,4 @@
-module nts.uk.ui.at.kdp013.c {
+module nts.uk.ui.at.kdw013.c {
     const COMPONENT_NAME = 'kdp013c';
 
     const DATE_FORMAT = 'YYYY-MM-DD';

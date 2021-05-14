@@ -1,4 +1,4 @@
-module nts.uk.ui.at.kdp013.b {
+module nts.uk.ui.at.kdw013.b {
     const COMPONENT_NAME = 'kdp013b';
 
     const { getTimeOfDate, number2String } = share;

@@ -1,4 +1,4 @@
-module nts.uk.ui.at.kdp013.share {
+module nts.uk.ui.at.kdw013.share {
     const { time } = nts.uk as any;
     const { byId } = time.format as { byId: (format: string, time: number) => string };
 

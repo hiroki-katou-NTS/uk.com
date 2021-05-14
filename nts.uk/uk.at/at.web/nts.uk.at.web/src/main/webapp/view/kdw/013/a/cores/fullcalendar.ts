@@ -6,6 +6,7 @@
 module nts.uk.ui.components.fullcalendar {
     const { randomId } = nts.uk.util;
     const { version } = nts.uk.util.browser;
+    const { getTimeOfDate } = at.kdw013.share;
 
     type Calendar = FullCalendar.Calendar;
     export type EventApi = Partial<FullCalendar.EventApi>;
@@ -1676,8 +1677,15 @@ module nts.uk.ui.components.fullcalendar {
                         }
 
                         popupData.event(event);
-                        // update exclude-times at here
-                        // ??? 
+
+                        // update exclude-times
+                        const sameDayEvent = _
+                            .chain(vm.calendar.getEvents())
+                            .filter(({ start, id }) => id !== event.id && moment(start).isSame(event.start, 'day'))
+                            .map(({ start, end }) => ({ startTime: getTimeOfDate(start), endTime: getTimeOfDate(end) }))
+                            .value();
+
+                        popupData.excludeTimes(sameDayEvent);
 
                         // show popup on edit mode
                         popupPosition.event(el);
