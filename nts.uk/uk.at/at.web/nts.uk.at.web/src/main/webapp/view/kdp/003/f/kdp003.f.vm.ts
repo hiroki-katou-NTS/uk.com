@@ -428,11 +428,16 @@ module nts.uk.at.kdp003.f {
 			const { password, companyCode } = model;
 			const companies: CompanyItem[] = ko.unwrap(vm.listCompany);
 
+
 			const message = ko.unwrap(vm.message);
 
 			var dataResultLogin: TimeStampLoginData;
 
 			var roleEmployee: RoleEmployee;
+
+			if (companyCode) {
+				return vm.$dialog.error({ messageId: 'Msg_301'});
+			}
 
 			if (message) {
 				return vm.$dialog.error(message);
