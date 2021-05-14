@@ -83,7 +83,7 @@ module nts.uk.ui.kdp001.a {
                     </div>
                 <!-- /ko -->
             </div>
-            <div class="kdp-001-a kdp-001-a-msg"data-bind="
+            <div style="color: #ff0000 !important;" class="kdp-001-a kdp-001-a-msg"data-bind="
                     css: { 
                         'hidden': !$component.message.display()
                     },
@@ -458,7 +458,7 @@ module nts.uk.ui.kdp001.a {
 
         modeBasyo: KnockoutObservable<boolean> = ko.observable(false);
         workLocationName: KnockoutObservable<string | null> = ko.observable(null);
-        workpalceId: KnockoutObservable<string | null> = ko.observable(null);
+        workplaceId: KnockoutObservable<string | null> = ko.observable(null);
         modeA: KnockoutObservable<boolean> = ko.observable(false);
         workpalceCD: KnockoutObservable<string | null> = ko.observable(null);
 
@@ -686,7 +686,7 @@ module nts.uk.ui.kdp001.a {
                             employeeCode,
                             mode: MODE_PERSON,
                             workLocationName: ko.unwrap(vm.workLocationName),
-                            workpalceId: ko.unwrap(vm.workpalceId)
+                            workpalceId: ko.unwrap(vm.workplaceId)
                         }),
                         vm.$window.shared('screenB', { screen: "KDP001" }),
                     )
@@ -702,7 +702,7 @@ module nts.uk.ui.kdp001.a {
                             mode: MODE_PERSON,
                             stampDate,
                             workLocationName: ko.unwrap(vm.workLocationName),
-                            workpalceId: ko.unwrap(vm.workpalceId)
+                            workpalceId: ko.unwrap(vm.workplaceId)
 
                         }),
                         vm.$window.shared('screenC', { screen: "KDP001" }),
@@ -715,6 +715,7 @@ module nts.uk.ui.kdp001.a {
                 buttonPositionNo,
                 refActualResults: {
                     cardNumberSupport,
+                    workPlaceId: ko.unwrap(vm.workplaceId),
                     workLocationCD: ko.unwrap(vm.workpalceCD),
                     workTimeCode,
                     overtimeDeclaration
@@ -789,7 +790,7 @@ module nts.uk.ui.kdp001.a {
                                 if (data) {
                                     vm.workpalceCD(locationCd);
                                     vm.workLocationName(data.workLocationName);
-                                    vm.workpalceId(data.workpalceId);
+                                    vm.workplaceId(data.workpalceId);
                                 }
                             })
                     })
