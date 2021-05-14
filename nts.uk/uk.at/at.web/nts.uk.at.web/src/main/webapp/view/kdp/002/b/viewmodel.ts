@@ -383,39 +383,36 @@ class KDP002BViewModel extends ko.ViewModel {
 
     weary() {
         const vm = this;
-        vm.sendStatusEmojs(0);
+        vm.sendStatusEmojs(Emoji.WEARY);
     }
 
     sad() {
         const vm = this;
-        vm.sendStatusEmojs(1);
+        vm.sendStatusEmojs(Emoji.SAD);
     }
 
     average() {
         const vm = this;
-        vm.sendStatusEmojs(2);
+        vm.sendStatusEmojs(Emoji.AVERAGE);
     }
 
     good() {
         const vm = this;
-        vm.sendStatusEmojs(3);
+        vm.sendStatusEmojs(Emoji.GOOD);
     }
 
     happy() {
         const vm = this;
-        vm.sendStatusEmojs(4);
+        vm.sendStatusEmojs(Emoji.HAPPY);
     }
 
-    sendStatusEmojs(param: number) {
+    sendStatusEmojs(param: Emoji) {
         const vm = this;
         const input = {
             sid: vm.infoEmpFromScreenA.employeeId,
-            emoji: param,
+            emoji: param.valueOf(),
             date: new Date()
         }
-        console.log(param);
-
-        console.log(input);
 
         vm.$ajax(kDP002RequestUrl.SEND_EMOJI, input)
             .always(() => {
