@@ -33,6 +33,8 @@ import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.em
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentHisScheduleAdapter;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentPeriodImported;
 import nts.uk.screen.at.app.ksu001.processcommon.CreateWorkScheduleWorkInfor;
+import nts.uk.screen.at.app.ksu003.getlistempworkhours.EmpTaskInfoDto;
+import nts.uk.screen.at.app.ksu003.getlistempworkhours.GetListEmpWorkHours;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -57,22 +59,19 @@ public class GetWorkScheduleInfor {
 	@Inject
 	private EmploymentHisScheduleAdapter employmentHisScheduleAdapter;
 	
+	@Inject
+	private GetListEmpWorkHours getListEmpWorkHours;
 	
 	
-	public String get(List<String> lstEmpId , DatePeriod datePeriod ){
+	
+	public List<EmpTaskInfoDto> get(List<String> lstEmpId , DatePeriod datePeriod ){
 		//取得する(Require, List<社員ID>, 期間)
 		// Call DS 予定管理状態に応じて勤務予定を取得する
 		RequireImpl requireImpl = new RequireImpl(lstEmpId, datePeriod, workScheduleRepo, empComHisAdapter, workCondRepo, empLeaveHisAdapter, empLeaveWorkHisAdapter, employmentHisScheduleAdapter);
 		Map<ScheManaStatuTempo, Optional<WorkSchedule>> mngStatusAndWScheMap =  WorkScheManaStatusService.getScheduleManagement(requireImpl, lstEmpId, datePeriod);
-		//Optional<WorkSchedule>
-		List<WorkSchedule> lstWorkSchedule = new ArrayList<>();
-		mngStatusAndWScheMap.forEach((k,v)->{
-			if(v.isPresent()){
-				lstWorkSchedule.add(v.get());
-			}
-		});
 		//Collection<Optional<WorkSchedule>> optWorkSchedule = mngStatusAndWScheMap.values();
-		return null;
+		List<EmpTaskInfoDto> data = getListEmpWorkHours.get(mngStatusAndWScheMap);
+		return data;
 	}
 	
 	@AllArgsConstructor

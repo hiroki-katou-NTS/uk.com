@@ -1,5 +1,7 @@
 package nts.uk.screen.at.app.ksu003.getlistempworkhours;
 
+import java.util.Optional;
+
 import lombok.Value;
 import nts.uk.ctx.at.shared.app.query.task.TaskData;
 
@@ -8,6 +10,12 @@ public class AllTaskScheduleDetail {
 	//作業予定詳細
 	private TaskScheduleDetailDto taskScheduleDetail;
 	//作業
-	private TaskData task;
+	private Optional<TaskData> task;
+	public AllTaskScheduleDetail(TaskScheduleDetailDto taskScheduleDetail, Optional<TaskData> task) {
+		super();
+		this.taskScheduleDetail = taskScheduleDetail;
+		this.task = task;
+	}
+	
 	
 }
