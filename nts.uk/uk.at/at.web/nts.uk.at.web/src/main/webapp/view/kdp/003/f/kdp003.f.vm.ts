@@ -506,7 +506,7 @@ module nts.uk.at.kdp003.f {
 							setTimeout(() => {
 								if (roleEmployee) {
 									if (roleEmployee.employeeReferenceRange != 3) {
-										vm.$window.close();
+										vm.$window.close('loginSuccess');
 									}
 								}
 							}, 100);
@@ -529,7 +529,7 @@ module nts.uk.at.kdp003.f {
 		cancelLogin() {
 			const vm = this;
 
-			vm.$window.close('close');
+			vm.$window.close();
 		}
 	}
 
