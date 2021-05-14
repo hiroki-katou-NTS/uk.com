@@ -20,8 +20,6 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBr
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimDayOffMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.export.ClosureRemainPeriodOutputData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.export.RemainManagementExport;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemainRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.DataManagementAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.ComDayOffManaDataRepository;
@@ -38,8 +36,6 @@ public class BreakDayOffManagementQueryImpl implements BreakDayOffManagementQuer
 	private RemainManagementExport remainManaExport;
 	@Inject
 	private InterimBreakDayOffMngRepository breakDayOffRepo;
-	@Inject
-	private InterimRemainRepository remainRepo;
 	@Inject
 	private LeaveManaDataRepository leaveManaDataRepo;
 	@Inject
@@ -273,16 +269,14 @@ public class BreakDayOffManagementQueryImpl implements BreakDayOffManagementQuer
 			breakData.setExpirationDate(x.getExpirationDate());
 			breakData.setUnUseDays(x.getUnUsedDays().v());
 			breakData.setOccurrenceDays(x.getOccurrenceDays().v());
-			remainRepo.getById(x.getRemainManaID()).ifPresent(y -> {
-				MngHistDataAtr atr = MngHistDataAtr.NOTREFLECT;
-				if(y.getCreatorAtr() == CreateAtr.RECORD) {
-					atr = MngHistDataAtr.RECORD;
-				} else if (y.getCreatorAtr() == CreateAtr.SCHEDULE) {
-					atr = MngHistDataAtr.SCHEDULE;
-				}
-				breakData.setMngAtr(atr);
-				breakData.setBreakDate(new CompensatoryDayoffDate(false, Optional.of(y.getYmd())));
-			});
+			MngHistDataAtr atr = MngHistDataAtr.NOTREFLECT;
+			if(x.getCreatorAtr() == CreateAtr.RECORD) {
+				atr = MngHistDataAtr.RECORD;
+			} else if (x.getCreatorAtr() == CreateAtr.SCHEDULE) {
+				atr = MngHistDataAtr.SCHEDULE;
+			}
+			breakData.setMngAtr(atr);
+			breakData.setBreakDate(new CompensatoryDayoffDate(false, Optional.of(x.getYmd())));
 			outputData.add(breakData);
 		});
 		return outputData;
@@ -315,17 +309,14 @@ public class BreakDayOffManagementQueryImpl implements BreakDayOffManagementQuer
 		//暫定代休管理データの件数分ループ
 		lstInterimDayOffMng.stream().forEach(x -> {
 			DayOffHistoryData dayOffData = new DayOffHistoryData();
-			Optional<InterimRemain> remainData = remainRepo.getById(x.getRemainManaID());
-			remainData.ifPresent(y -> {
-				MngHistDataAtr atr = MngHistDataAtr.NOTREFLECT;
-				if(y.getCreatorAtr() == CreateAtr.RECORD) {
-					atr = MngHistDataAtr.RECORD;
-				} else if (y.getCreatorAtr() == CreateAtr.SCHEDULE) {
-					atr = MngHistDataAtr.SCHEDULE;
-				}
-				dayOffData.setCreateAtr(atr);
-				dayOffData.setDayOffDate(new CompensatoryDayoffDate(false, Optional.of(y.getYmd())));
-			});
+			MngHistDataAtr atr = MngHistDataAtr.NOTREFLECT;
+			if(x.getCreatorAtr() == CreateAtr.RECORD) {
+				atr = MngHistDataAtr.RECORD;
+			} else if (x.getCreatorAtr() == CreateAtr.SCHEDULE) {
+				atr = MngHistDataAtr.SCHEDULE;
+			}
+			dayOffData.setCreateAtr(atr);
+			dayOffData.setDayOffDate(new CompensatoryDayoffDate(false, Optional.of(x.getYmd())));
 			dayOffData.setDayOffId(x.getRemainManaID());
 			dayOffData.setRequeiredDays(x.getRequiredDay().v());
 			dayOffData.setUnOffsetDays(x.getUnOffsetDay().v());

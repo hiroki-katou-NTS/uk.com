@@ -96,8 +96,8 @@ public class JpaTmpResereLeaveMngRepository extends JpaRepository implements Tmp
 				x.getString("SID"),
 				x.getGeneralDate("YMD"),
 				EnumAdaptor.valueOf(x.getInt("CREATOR_ATR"), CreateAtr.class),
-				EnumAdaptor.valueOf(x.getInt("REMAIN_ATR"), RemainType.class),
-				new UseDay(x.getBigDecimal("USE_DAYS") == null ? 0 : x.getBigDecimal("USE_DAYS").doubleValue()));
+				RemainType.FUNDINGANNUAL,
+				new UseDay(x.getBigDecimal("USED_DAYS") == null ? 0 : x.getBigDecimal("USED_DAYS").doubleValue()));
 	}
 
 	@Override

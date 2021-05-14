@@ -36,6 +36,7 @@ import nts.uk.ctx.at.function.dom.adapter.monthlycheckcondition.ExtraResultMonth
 import nts.uk.ctx.at.function.dom.adapter.monthlycheckcondition.FixedExtraItemMonFunAdapter;
 import nts.uk.ctx.at.function.dom.adapter.monthlycheckcondition.FixedExtraItemMonFunImport;
 import nts.uk.ctx.at.function.dom.adapter.monthlycheckcondition.FixedExtraMonFunAdapter;
+import nts.uk.ctx.at.function.dom.adapter.monthlycheckcondition.FixedExtraMonFunImport;
 import nts.uk.ctx.at.function.dom.adapter.multimonth.MultiMonthFucAdapter;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.annual.ScheduleAnnualAlarmCheckCond;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.schedaily.ScheduleDailyAlarmCheckCond;
@@ -318,17 +319,27 @@ public class AlarmCheckConditionByCategoryFinder {
 			listEralCheckIDOld = monAlarmCheckCon.getArbExtraCon();
 			// get fixExtra monthly
 			List<FixedExtraItemMonFunImport> dataFixedExtraMon = fixExtraItemMon.getAllFixedExtraItemMon();
-			listFixedExtraMonFun = fixExtraMon.getByEralCheckID(monAlarmCheckCon.getMonAlarmCheckConID()).stream()
-					.map(c -> FixedExtraMonFunDto.convertToImport(c)).collect(Collectors.toList());
-			for (FixedExtraMonFunDto fixedExtraMonFunDto : listFixedExtraMonFun) {
-				for (FixedExtraItemMonFunImport fixedExtraItemMonFunImport : dataFixedExtraMon) {
-					if (fixedExtraMonFunDto.getFixedExtraItemMonNo() == fixedExtraItemMonFunImport
-							.getFixedExtraItemMonNo()) {
-						fixedExtraMonFunDto.setMonAlarmCheckName(fixedExtraItemMonFunImport.getFixedExtraItemMonName());
-						break;
-					}
-				}
-			} // end for
+			List<FixedExtraMonFunImport> lstFixedExtraMonFunImport = fixExtraMon.getByEralCheckID(monAlarmCheckCon.getMonAlarmCheckConID());
+			listFixedExtraMonFun = dataFixedExtraMon.stream().map(importData -> new FixedExtraMonFunDto(
+					"",
+					importData.getFixedExtraItemMonName(),
+					importData.getFixedExtraItemMonNo(),
+					 lstFixedExtraMonFunImport.stream().filter(x -> x.getFixedExtraItemMonNo() == importData.getFixedExtraItemMonNo()).findFirst().isPresent() ? 
+							 lstFixedExtraMonFunImport.stream().filter(x -> x.getFixedExtraItemMonNo() == importData.getFixedExtraItemMonNo()).findFirst().get().isUseAtr() : false,
+					importData.getMessage()
+					)).collect(Collectors.toList());
+			/*
+			 * listFixedExtraMonFun =
+			 * fixExtraMon.getByEralCheckID(monAlarmCheckCon.getMonAlarmCheckConID()).stream
+			 * () .map(c ->
+			 * FixedExtraMonFunDto.convertToImport(c)).collect(Collectors.toList()); for
+			 * (FixedExtraMonFunDto fixedExtraMonFunDto : listFixedExtraMonFun) { for
+			 * (FixedExtraItemMonFunImport fixedExtraItemMonFunImport : dataFixedExtraMon) {
+			 * if (fixedExtraMonFunDto.getFixedExtraItemMonNo() ==
+			 * fixedExtraItemMonFunImport .getFixedExtraItemMonNo()) {
+			 * fixedExtraMonFunDto.setMonAlarmCheckName(fixedExtraItemMonFunImport.
+			 * getFixedExtraItemMonName()); break; } } } // end for
+			 */		
 		}
 
 		if (domain.getCategory() == AlarmCategory.MULTIPLE_MONTH && domain.getExtractionCondition() != null) {

@@ -78,6 +78,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 		index045: number = 0;
 		colorBreak45: boolean = true;
 		checkCloseKsu003: boolean = false;
+		// ver 4
+		displayRangeSelect : KnockoutObservable<number> = ko.observable(1); // A14
 		constructor(data: any) {
 			let self = this;
 			// get data from sc A
@@ -136,7 +138,6 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				} else {
 					self.sortEmployee(value);
 				}
-
 			});
 
 			/** A3_4 */
@@ -2464,9 +2465,12 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 
 		// đăng ký màn hình ksu003
 		saveData(type: any): JQueryPromise<any> {
-			let self = this, dfd = $.Deferred(), updatedCells = $("#extable-ksu003").exTable("updatedCells"), params = [];
-			if (!_.isNil(window.parent) && window.parent.length > 1)
+			if (!_.isNil(window.parent) && window.parent.length > 1){
+				setTimeout(function() {
 				$(window.parent[1].$('body').contents().find('#btnClose')).click()
+				}, 10);
+			}
+			let self = this, dfd = $.Deferred(), updatedCells = $("#extable-ksu003").exTable("updatedCells"), params = [];
 			block.grayout();
 
 			let dataReg = model.buidDataReg(updatedCells, self.dataScreen003A().targetInfor , self.dataScreen003A().employeeInfo , self.employeeIdLogin , self.colorBreak45 , self.index045);
@@ -4244,15 +4248,17 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				errorRegistrationList: dataReg.listErrorInfo, // エラー内容リスト 
 			}
 			setShared('dataShareDialogKDL053', param);
-			if (!_.isNil(window.parent) && window.parent.length > 1){
-				setTimeout(function() {
-				$(window.parent[1].$('body').contents().find('#btnClose')).click()
-				}, 10);
-			}
+			
 			nts.uk.ui.windows.sub.modeless('/view/kdl/053/a/index.xhtml').onClosed(function(): any {
 				console.log('closed');
 			});
 			block.clear();
+			
+			/*setTimeout(function() {
+			if (!_.isNil(window.parent) && window.parent.length > 1){
+				//$(window.parent.document).find('div > iframe').contents().find('#btnClose').trigger('click');
+			}
+			}, 1);*/
 		}
 
 		// open dialog kdl045

@@ -7,9 +7,7 @@ import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.DailyInterimRemainMngData;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveUsedDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TempAnnualLeaveMngs;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualLeaveMngWork;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveUsedDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveUsedNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveUsedTime;
@@ -87,12 +85,11 @@ public class CreateInterimAnnualMngData {
 	 * @param targetYmd 作成対象年月日
 	 * @return 暫定年休管理データWORK
 	 */
-	public static Optional<TmpAnnualLeaveMngWork> ofCompensFlexToWork(AttendanceTimeOfMonthly timeMonth, GeneralDate targetYmd) {
+	public static Optional<TempAnnualLeaveMngs> ofCompensFlexToWork(AttendanceTimeOfMonthly timeMonth, GeneralDate targetYmd) {
 
 		val dailyInterimRemainMngDataOpt = ofCompensFlex(timeMonth, targetYmd);
 		if (!dailyInterimRemainMngDataOpt.isPresent()) return Optional.empty();
 		val mngData = dailyInterimRemainMngDataOpt.get();
-		return Optional.of(TmpAnnualLeaveMngWork.of(
-				mngData.getAnnualHolidayData().get()));
+		return Optional.of(mngData.getAnnualHolidayData().get());
 	}
 }

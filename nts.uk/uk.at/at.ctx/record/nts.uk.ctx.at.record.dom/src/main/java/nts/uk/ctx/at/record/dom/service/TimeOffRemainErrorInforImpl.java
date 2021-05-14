@@ -33,16 +33,13 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.RecordRemainCreateInfo
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.CreateInterimAnnualMngData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TempAnnualLeaveMngs;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualLeaveMngWork;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.NumberRemainVacationLeaveRangeProcess;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.BreakDayOffRemainMngRefactParam;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimDayOffMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.interim.TmpResereLeaveMng;
-import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.interim.TmpReserveLeaveMngWork;
 import nts.uk.ctx.at.shared.dom.remainingnumber.service.RemainNumberCreateInformation;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.InterimSpecialHolidayMng;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.export.pererror.CreatePerErrorsFromLeaveErrors;
@@ -136,21 +133,9 @@ public class TimeOffRemainErrorInforImpl implements TimeOffRemainErrorInfor{
 		val require = requireService.createRequire();
 		val cacheCarrier = new CacheCarrier();
 
-		List<TmpAnnualLeaveMngWork> mngWork = new ArrayList<>();
-		mngWork = annualHolidayData.stream()
-				.map(o -> {
-//					InterimRemain annualInterim = annualMng.stream().filter(a -> a.getRemainManaID() == o.getAnnualId())
-//							.collect(Collectors.toList()).get(0);
-					return TmpAnnualLeaveMngWork.of(o);
-				}).collect(Collectors.toList());
-		List<TmpReserveLeaveMngWork> lstReserve = resereLeaveData.stream()
-				.map(l -> {
-					InterimRemain reserveInterim = resereMng.stream()
-							.filter(a -> a.getRemainType() == RemainType.FUNDINGANNUAL
-										&& a.getRemainManaID().equals(l.getRemainManaID()))
-							.collect(Collectors.toList()).get(0);
-					return TmpReserveLeaveMngWork.of(reserveInterim, l);
-				}).collect(Collectors.toList());
+		List<TempAnnualLeaveMngs> mngWork = new ArrayList<>();
+		mngWork = annualHolidayData;
+		List<TmpResereLeaveMng> lstReserve = resereLeaveData;
 		//期間中の年休積休残数を取得
 		AggrResultOfAnnAndRsvLeave chkAnnaualAndResere = GetAnnAndRsvRemNumWithinPeriod.algorithm(
 				require, cacheCarrier, param.getCid(),
@@ -199,12 +184,6 @@ public class TimeOffRemainErrorInforImpl implements TimeOffRemainErrorInfor{
 		val cacheCarrier = new CacheCarrier();
 
 		//特別休暇暫定データに、親ドメインの情報を更新する。　※暫定データの作成処理がまだ対応中のため、親ドメインと子ドメインが別々になっているので。
-		for (InterimSpecialHolidayMng specialData : specialHolidayData) {
-			interimSpecial.stream().filter(c -> c.getRemainManaID().equals(specialData.getRemainManaID())).findFirst()
-					.ifPresent(c -> {
-						specialData.setParentValue(c);
-					});
-		}
 
 		//○ドメインモデル「特別休暇」を取得する
 		List<SpecialHoliday> lstSpecial = holidayRepo.findByCompanyId(param.getCid());

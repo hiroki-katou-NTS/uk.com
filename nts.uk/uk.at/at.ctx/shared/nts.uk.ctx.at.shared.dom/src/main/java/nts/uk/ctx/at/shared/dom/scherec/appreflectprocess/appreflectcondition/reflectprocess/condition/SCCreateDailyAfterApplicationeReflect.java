@@ -105,8 +105,6 @@ public class SCCreateDailyAfterApplicationeReflect {
 
 		case OPTIONAL_ITEM_APPLICATION:
 			// 任意項目を反映する
-			((ReflectionOptionalItemApp) domainSetReflect).reflect((OptionalItemApplicationShare) application,
-					dailyApp);
 			break;
 
 		default:

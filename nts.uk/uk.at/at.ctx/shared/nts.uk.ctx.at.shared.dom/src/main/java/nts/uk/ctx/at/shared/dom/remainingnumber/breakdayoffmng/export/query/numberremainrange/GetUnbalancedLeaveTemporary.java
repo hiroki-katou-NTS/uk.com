@@ -111,10 +111,6 @@ public class GetUnbalancedLeaveTemporary {
 
 	public static interface Require {
 
-		// 暫定残数管理データ
-		// InterimRemainRepository
-		List<InterimRemain> getRemainBySidPriod(String employeeId, DatePeriod dateData, RemainType remainType);
-
 		// 暫定代休管理データ
 		// InterimBreakDayOffMngRepository
 		List<InterimDayOffMng> getDayOffBySidPeriod(String sid, DatePeriod period);
