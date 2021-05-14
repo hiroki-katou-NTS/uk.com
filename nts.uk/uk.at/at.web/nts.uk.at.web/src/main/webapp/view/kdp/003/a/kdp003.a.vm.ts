@@ -27,6 +27,7 @@ module nts.uk.at.kdp003.a {
 		S: '/view/kdp/003/s/index.xhtml',
 		R: '/view/kdp/003/r/index.xhtml',
 		M: '/view/kdp/003/m/index.xhtml',
+		P: '/view/kdp/003/p/index.xhtml',
 		KDP002_B: '/view/kdp/002/b/index.xhtml',
 		KDP002_C: '/view/kdp/002/c/index.xhtml',
 		KDP002_T: '/view/kdp/002/t/index.xhtml'
@@ -137,6 +138,7 @@ module nts.uk.at.kdp003.a {
 				.then((data: IWorkPlaceInfo[]) => {
 					vm.workPlaceInfos = data
 				});
+
 		}
 
 		// get WorkPlace from basyo -> save locastorage.
@@ -187,7 +189,15 @@ module nts.uk.at.kdp003.a {
 						const mode = 'notification';
 						const companyId = (data || {}).CID;
 
-						vm.$window.modal('at', DIALOG.F, { mode, companyId });
+						vm.$window.modal('at', DIALOG.F, { mode, companyId })
+							.then((output: string) => {
+								if (output !== 'close') {
+									vm.$window.modal('at', DIALOG.P)
+										.then(() => {
+											vm.loadNotice(data);
+										});
+								}
+							});
 					}
 				});
 		}
@@ -196,6 +206,7 @@ module nts.uk.at.kdp003.a {
 			const vm = this;
 			let startDate = vm.$date.now();
 			startDate.setDate(startDate.getDate() - 3);
+			debugger;
 
 			const param = {
 				periodDto: {
@@ -209,6 +220,8 @@ module nts.uk.at.kdp003.a {
 				.then(() => {
 					vm.$ajax(API.NOTICE, param)
 						.done((data: IMessage) => {
+							console.log(data);
+
 							vm.messageNoti(data);
 						});
 				})
@@ -624,6 +637,7 @@ module nts.uk.at.kdp003.a {
 					});
 				})
 				.then((data: f.TimeStampLoginData) => {
+					console.log(data);
 					if (data) {
 						if (data.msgErrorId) {
 							return vm.$dialog.error({ messageId: data.msgErrorId });
@@ -695,6 +709,8 @@ module nts.uk.at.kdp003.a {
 					return vm.$window.modal('at', DIALOG.F, params);
 				})
 				.then((data: f.TimeStampLoginData) => {
+					console.log(data);
+
 					if (data && !data.msgErrorId && !data.errorMessage) {
 
 						if (data.em) {
