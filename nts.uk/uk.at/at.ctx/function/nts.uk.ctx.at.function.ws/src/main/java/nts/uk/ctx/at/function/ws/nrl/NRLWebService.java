@@ -12,7 +12,7 @@ import nts.uk.ctx.at.function.app.nrl.request.RequestDispatcher;
 import nts.uk.ctx.at.function.app.nrl.response.NRLResponse;
 import nts.uk.ctx.at.function.app.nrl.xml.Frame;
 
-@Path("/nr/old")
+@Path("/nr/process")
 @Produces("application/xml; charset=shift_jis")
 public class NRLWebService extends RequestDispatcher {
 
@@ -44,7 +44,7 @@ public class NRLWebService extends RequestDispatcher {
 	@POST
 	@Path("masterCollect.aspx")
 	@RequestData({ Command.PERSONAL_INFO, Command.OVERTIME_INFO, Command.RESERVATION_INFO, Command.TIMESET_INFO,
-			Command.WORKTIME_INFO, Command.WORKTYPE_INFO, Command.TR_REMOTE })
+			Command.WORKTIME_INFO, Command.WORKTYPE_INFO, Command.APPLICATION_INFO, Command.TR_REMOTE })
 	public Frame requestMasterDatas(InputStream is) {
 		NRLResponse response = ignite(is);
 		return response.getEntity(Frame.class);
