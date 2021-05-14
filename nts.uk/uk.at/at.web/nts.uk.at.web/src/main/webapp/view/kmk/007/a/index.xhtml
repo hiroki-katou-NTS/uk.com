@@ -117,7 +117,7 @@
 								<div data-bind="with: currentWorkType().oneDay">
 									<div>
 										<div style="margin-left: 20px;"
-											data-bind="ntsCheckBox: { checked: dayNightTimeAsk , enable: $parent.isEnable }">#{i18n.getText('KMK007_23')}</div>
+											data-bind="ntsCheckBox: { checked: dayNightTimeAsk , enable: $parent.isEnable }, if: $parent.medicalOption()">#{i18n.getText('KMK007_23')}</div>
 									</div>
 									<div>
 										<div style="margin-left: 20px;"
@@ -183,7 +183,7 @@
 									<!-- A6_5 -->
 									<div>
 										<div style="margin-left: 20px;"
-											data-bind="ntsCheckBox: { checked: publicHoliday, enable: $parent.isEnable }">#{i18n.getText('KMK007_27')}</div>
+											data-bind="ntsCheckBox: { checked: digestPublicHd, enable: $parent.isEnable }">#{i18n.getText('KMK007_27')}</div>
 									</div>
 									<div>
 										<div style="margin-left: 20px;"
@@ -222,7 +222,7 @@
 										data-bind="ntsCheckBox: { checked: digestPublicHd, enable: $parent.isEnable }">#{i18n.getText('KMK007_27')}</div>
 									<div>
 										<div style="margin-left: 20px;"
-											data-bind="ntsCheckBox: { checked: dayNightTimeAsk, enable: $parent.isEnable }">#{i18n.getText('KMK007_23')}</div>
+											data-bind="ntsCheckBox: { checked: dayNightTimeAsk, enable: $parent.isEnable }, if: $parent.medicalOption()">#{i18n.getText('KMK007_23')}</div>
 									</div>
 									<div>
 										<div style="margin-left: 20px;"
@@ -331,7 +331,7 @@
 								<div data-bind="with: currentWorkType().morning">
 									<div>
 										<div style="margin-left: 20px;"
-											data-bind="ntsCheckBox: { checked: dayNightTimeAsk, enable: $parent.isEnable }">#{i18n.getText('KMK007_23')}</div>
+											data-bind="ntsCheckBox: { checked: dayNightTimeAsk, enable: $parent.isEnable }, if: $parent.medicalOption()">#{i18n.getText('KMK007_23')}</div>
 									</div>
 									<div>
 										<div style="margin-left: 20px;"
@@ -403,7 +403,7 @@
 										data-bind="ntsCheckBox: { checked: digestPublicHd, enable: $parent.isEnable }">#{i18n.getText('KMK007_27')}</div>
 									<div>
 										<div style="margin-left: 20px;"
-											data-bind="ntsCheckBox: { checked: dayNightTimeAsk, enable: $parent.isEnable }">#{i18n.getText('KMK007_23')}</div>
+											data-bind="ntsCheckBox: { checked: dayNightTimeAsk, enable: $parent.isEnable }, if: $parent.medicalOption()">#{i18n.getText('KMK007_23')}</div>
 									</div>
 									<div>
 										<div style="margin-left: 20px;"
@@ -473,7 +473,7 @@
 								<div data-bind="with: currentWorkType().afternoon">
 									<div>
 										<div style="margin-left: 20px;"
-											data-bind="ntsCheckBox: { checked: dayNightTimeAsk, enable: $parent.isEnable &amp;&amp; $parent.currentWorkType().morningCls() != '7'}">#{i18n.getText('KMK007_23')}</div>
+											data-bind="ntsCheckBox: { checked: dayNightTimeAsk, enable: $parent.isEnable &amp;&amp; $parent.currentWorkType().morningCls() != '7'}, if: $parent.medicalOption()">#{i18n.getText('KMK007_23')}</div>
 									</div>
 									<div>
 										<div style="margin-left: 20px;"
@@ -545,7 +545,7 @@
 										data-bind="ntsCheckBox: { checked: digestPublicHd, enable: $parent.isEnable }">#{i18n.getText('KMK007_27')}</div>
 									<div>
 										<div style="margin-left: 20px;"
-											data-bind="ntsCheckBox: { checked: dayNightTimeAsk, enable: $parent.isEnable &amp;&amp; $parent.currentWorkType().morningCls() != '0'}">#{i18n.getText('KMK007_23')}</div>
+											data-bind="ntsCheckBox: { checked: dayNightTimeAsk, enable: $parent.isEnable &amp;&amp; $parent.currentWorkType().morningCls() != '0'}, if: $parent.medicalOption()">#{i18n.getText('KMK007_23')}</div>
 									</div>
 									<div>
 										<div style="margin-left: 20px;"

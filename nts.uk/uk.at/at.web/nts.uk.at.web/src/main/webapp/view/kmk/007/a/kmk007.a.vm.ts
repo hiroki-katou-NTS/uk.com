@@ -47,7 +47,6 @@ module nts.uk.at.view.kmk007.a.viewmodel {
                     timeLeaveWork: 0,
                     attendanceTime: 0,
                     genSubHodiday: 0,
-                    publicHoliday: 0,
                     dayNightTimeAsk: 0
                 };
 
@@ -281,6 +280,9 @@ module nts.uk.at.view.kmk007.a.viewmodel {
             // アルゴリズム「勤務種類をすべて取得する」を実行する
             self.getWorkType().done(function() {
                 let lwtData = ko.toJS(lwt);
+                service.getMedicalOption().done(function(data) {
+                    self.medicalOption(data);
+                });
                 // 取得件数チェック(check số data lấy được)
                 if (lwtData.length > 0) {
                     // アルゴリズム「医療オプションを取得する」を実行する
@@ -317,7 +319,6 @@ module nts.uk.at.view.kmk007.a.viewmodel {
             worktypeset.dayNightTimeAsk(itemWorkType.dayNightTimeAsk);
             worktypeset.digestPublicHd(itemWorkType.digestPublicHd);
             worktypeset.genSubHodiday(itemWorkType.genSubHodiday);
-            worktypeset.publicHoliday(itemWorkType.publicHoliday);
             worktypeset.holidayAtr(itemWorkType.holidayAtr);
             worktypeset.sumAbsenseNo(itemWorkType.sumAbsenseNo);
             worktypeset.sumSpHodidayNo(itemWorkType.sumSpHodidayNo);
@@ -571,7 +572,6 @@ module nts.uk.at.view.kmk007.a.viewmodel {
             od.timeLeaveWork(0);
             od.attendanceTime(0);
             od.genSubHodiday(0);
-            od.publicHoliday(0);
             od.dayNightTimeAsk(0);
 
             mn.workTypeCode('');
@@ -587,7 +587,6 @@ module nts.uk.at.view.kmk007.a.viewmodel {
             mn.timeLeaveWork(0);
             mn.attendanceTime(0);
             mn.genSubHodiday(0);
-            mn.publicHoliday(0);
             mn.dayNightTimeAsk(0);
 
             af.workTypeCode('');
@@ -603,7 +602,6 @@ module nts.uk.at.view.kmk007.a.viewmodel {
             af.timeLeaveWork(0);
             af.attendanceTime(0);
             af.genSubHodiday(0);
-            af.publicHoliday(0);
             af.dayNightTimeAsk(0);
             self.currentCode("");
             
@@ -1028,7 +1026,6 @@ module nts.uk.at.view.kmk007.a.viewmodel {
         timeLeaveWork?: number;
         attendanceTime?: number;
         genSubHodiday?: number;
-        publicHoliday?: number;
         dayNightTimeAsk?: number;
     }
 
@@ -1045,7 +1042,6 @@ module nts.uk.at.view.kmk007.a.viewmodel {
         attendanceTime: KnockoutObservable<any>;
         genSubHodiday: KnockoutObservable<any>;
         dayNightTimeAsk: KnockoutObservable<any>;
-        publicHoliday: KnockoutObservable<any>;
         listAbsenceFrame: KnockoutObservableArray<any> = ko.observableArray([]);
         listSpecialHlFrame: KnockoutObservableArray<any> = ko.observableArray([]);
 
@@ -1062,7 +1058,6 @@ module nts.uk.at.view.kmk007.a.viewmodel {
                 this.timeLeaveWork = ko.observable(!!param.timeLeaveWork);
                 this.attendanceTime = ko.observable(!!param.attendanceTime);
                 this.genSubHodiday = ko.observable(!!param.genSubHodiday);
-                this.publicHoliday = ko.observable(!!param.publicHoliday)
                 this.dayNightTimeAsk = ko.observable(!!param.dayNightTimeAsk);
             }
         }
