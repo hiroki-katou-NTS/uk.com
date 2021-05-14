@@ -7,7 +7,7 @@ html{
 #kdp002a {
   width: 38.6rem;
   margin: 0 auto;
-  height: calc(100vh);
+  height: auto;
 }
 
 #kdp002a.has-info {
