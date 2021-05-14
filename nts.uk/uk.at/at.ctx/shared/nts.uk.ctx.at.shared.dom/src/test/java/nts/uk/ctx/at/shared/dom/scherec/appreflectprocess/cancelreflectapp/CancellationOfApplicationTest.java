@@ -31,6 +31,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.D
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateSetting;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 
 @RunWith(JMockit.class)
 @SuppressWarnings("unchecked")
@@ -117,7 +118,7 @@ public class CancellationOfApplicationTest {
 	 */
 
 	@Test
-	public void test3(@Mocked AcquireAppReflectHistForCancel appHist) {
+	public void test3(@Mocked AcquireAppReflectHistForCancel appHist, @Mocked DailyRecordToAttendanceItemConverter converter) {
 
 		ApplicationShare app = ReflectApplicationHelper.createAppShare(PrePostAtrShare.PREDICT);
 
@@ -132,13 +133,53 @@ public class CancellationOfApplicationTest {
 						anyBoolean, GeneralDateTime.min());
 				result = Arrays.asList(
 						createAppReflectHist(null, Pair.of(28, "002"), Pair.of(34, "600")));
+				
+				converter.toDomain();
+				result = createItemId(createDomain(28, 29, 31), 29, "003");
 			}
 		};
+		
+		val domainBefore = createDomain(28, 29, 31);
+		assertThat(domainBefore.getWorkInformation().getRecordInfo().getWorkTypeCode().v()).isEqualTo("AAA");// item28
+		assertThat(domainBefore.getWorkInformation().getRecordInfo().getWorkTimeCode().v()).isEqualTo("BBB");// item29
+		assertThat(domainBefore.getAttendanceLeave().get().getAttendanceLeavingWork(1).get().getAttendanceStamp().get()
+				.getStamp()// item31
+				.get().getTimeDay().getTimeWithDay().get().v()).isEqualTo(654);
+		
 		DailyAfterAppReflectResult actualResult = CancellationOfApplication.process(require, app, GeneralDate.ymd(2021, 4, 21),
-				ScheduleRecordClassifi.RECORD, createDomain(28, 29, 31));// 日別勤怠(work）.編集状態
+				ScheduleRecordClassifi.RECORD, domainBefore);// 日別勤怠(work）.編集状態
 
 		assertThat(actualResult.getLstItemId()).containsExactly(29);//②
+		
+		assertThat(actualResult.getDomainDaily().getWorkInformation().getRecordInfo().getWorkTypeCode().v()).isEqualTo("AAA");// item28
+		assertThat(actualResult.getDomainDaily().getWorkInformation().getRecordInfo().getWorkTimeCode().v()).isEqualTo("003");// item29
+		assertThat(actualResult.getDomainDaily().getAttendanceLeave().get().getAttendanceLeavingWork(0).get().getAttendanceStamp().get()
+				.getStamp()// item31
+				.get().getTimeDay().getTimeWithDay().get().v()).isEqualTo(654);
 
+	}
+	
+	private IntegrationOfDaily createItemId(IntegrationOfDaily dom, Integer id, Object value) {
+		
+		switch (id) {
+		case 28:
+			dom.getWorkInformation().getRecordInfo().setWorkTypeCode(value.toString());
+			break;
+		case 29:
+			dom.getWorkInformation().getRecordInfo().setWorkTimeCode(value.toString());
+			break;
+		case 31:
+			dom.getAttendanceLeave().get().getAttendanceLeavingWork(1).get().getAttendanceStamp().get().getStamp()
+					.get().getTimeDay().setTimeWithDay(Optional.of(new TimeWithDayAttr((Integer)value)));
+			break;
+		case 34:
+			dom.getAttendanceLeave().get().getAttendanceLeavingWork(1).get().getLeaveStamp().get().getStamp().get()
+					.getTimeDay().setTimeWithDay(Optional.of(new TimeWithDayAttr((Integer)value)));
+			break;
+		default:
+			break;
+		}
+		return dom;
 	}
 	
 	/*
@@ -265,9 +306,28 @@ public class CancellationOfApplicationTest {
 	
 	private IntegrationOfDaily createDomain(Integer... lstEdit) {
 		val dom = ReflectApplicationHelper.createRCWithTimeLeavOverTime().getDomain();
+
 		List<EditStateOfDailyAttd> lst = new ArrayList<EditStateOfDailyAttd>();
-		for(int i = 0; i< lstEdit.length; i ++) {
-			lst.add( new EditStateOfDailyAttd(lstEdit[i], EditStateSetting.REFLECT_APPLICATION));
+		for (int i = 0; i < lstEdit.length; i++) {
+			switch (lstEdit[i]) {
+			case 28:
+				dom.getWorkInformation().getRecordInfo().setWorkTypeCode("AAA");
+				break;
+			case 29:
+				dom.getWorkInformation().getRecordInfo().setWorkTimeCode("BBB");
+				break;
+			case 31:
+				dom.getAttendanceLeave().get().getAttendanceLeavingWork(1).get().getAttendanceStamp().get().getStamp()
+						.get().getTimeDay().setTimeWithDay(Optional.of(new TimeWithDayAttr(654)));
+				break;
+			case 34:
+				dom.getAttendanceLeave().get().getAttendanceLeavingWork(1).get().getLeaveStamp().get().getStamp().get()
+						.getTimeDay().setTimeWithDay(Optional.of(new TimeWithDayAttr(987)));
+				break;
+			default:
+				break;
+			}
+			lst.add(new EditStateOfDailyAttd(lstEdit[i], EditStateSetting.REFLECT_APPLICATION));
 		}
 		dom.setEditState(lst);
 		return dom;

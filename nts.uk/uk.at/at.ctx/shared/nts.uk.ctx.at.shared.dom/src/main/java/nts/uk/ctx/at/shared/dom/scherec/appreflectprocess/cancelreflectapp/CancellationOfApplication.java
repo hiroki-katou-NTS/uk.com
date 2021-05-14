@@ -56,7 +56,7 @@ public class CancellationOfApplication {
 					false, appHist.get().getAppHistLastest().getReflectionTime());
 			// 取得した[反映前（List）]に、対象の勤怠項目があるかチェック
 			if (!checkAgain.isEmpty() && checkAgain.stream().flatMap(x -> x.getLstAttBeforeAppReflect().stream())
-					.filter(x -> x.getAttendanceId() == hist.getAttendanceId()).findFirst().isPresent()) {
+					.filter(x -> x.getAttendanceId() == hist.getAttendanceId()).peek(x -> System.out.print("gia tri"+ x.getAttendanceId())).findFirst().isPresent()) {
 				continue;
 			}
 

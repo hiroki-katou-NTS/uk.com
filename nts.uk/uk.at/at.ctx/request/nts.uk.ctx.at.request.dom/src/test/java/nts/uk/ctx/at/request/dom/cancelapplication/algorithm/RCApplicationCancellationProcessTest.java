@@ -41,6 +41,8 @@ public class RCApplicationCancellationProcessTest {
 	 * 
 	 * → 反映状態のまま
 	 * 
+	 * → 勤務予定の取消の処理を呼ばない
+	 * 
 	 * 準備するデータ
 	 * 
 	 * →反映状態!=反映済み
@@ -59,6 +61,13 @@ public class RCApplicationCancellationProcessTest {
 				NotUseAtr.NOT_USE);
 
 		assertThat(actualResult.getStatusWorkRecord().getReflectStatus()).isEqualTo(ReflectedState.NOTREFLECTED);
+		new Verifications() {
+			{
+				require.processRecover((ApplicationShare) any, (GeneralDate) any, (ReflectStatusResult) any,
+						(NotUseAtr) any);
+				times = 0;
+			}
+		};
 	}
 
 	/*

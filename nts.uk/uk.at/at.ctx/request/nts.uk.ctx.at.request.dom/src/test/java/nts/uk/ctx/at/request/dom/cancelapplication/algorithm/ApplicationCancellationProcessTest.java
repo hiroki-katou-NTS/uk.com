@@ -106,7 +106,9 @@ public class ApplicationCancellationProcessTest {
 	 * 
 	 * → ①申請日＜社員の締め開始日場合反映した申請は削除が出来ない
 	 * 
-	 * → ②申請日>=社員の締め開始日場合反映した申請は削除が出来る
+	 * → ②申請日=社員の締め開始日場合反映した申請は削除が出来る
+	 * 
+	 * → ③申請日>=社員の締め開始日場合反映した申請は削除が出来る
 	 * 
 	 * 準備するデータ
 	 * 
@@ -156,9 +158,9 @@ public class ApplicationCancellationProcessTest {
 								ReasonNotReflect.TIGHTENING_PROCESS_COMPLETED,
 								ReasonNotReflectDaily.TIGHTENING_PROCESS_COMPLETED), // ①申請日＜社員の締め開始日場合反映した申請は削除が出来ない
 						Tuple.tuple(GeneralDate.ymd(2021, 4, 21), ReflectedState.CANCELED, ReflectedState.CANCELED,
-								null, null), // ②申請日>=社員の締め開始日場合反映した申請は削除が出来る
+								null, null), // ②申請日=社員の締め開始日場合反映した申請は削除が出来る
 						Tuple.tuple(GeneralDate.ymd(2021, 4, 22), ReflectedState.CANCELED, ReflectedState.CANCELED,
-								null, null));// ②申請日>=社員の締め開始日場合反映した申請は削除が出来る
+								null, null));// ③申請日>=社員の締め開始日場合反映した申請は削除が出来る
 	}
 
 	/*

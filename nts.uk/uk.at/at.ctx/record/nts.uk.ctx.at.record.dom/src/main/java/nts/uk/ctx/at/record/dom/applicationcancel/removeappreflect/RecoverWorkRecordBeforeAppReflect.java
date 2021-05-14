@@ -33,7 +33,7 @@ public class RecoverWorkRecordBeforeAppReflect {
 		// 勤務実績から日別実績(work）を取得する
 		IntegrationOfDaily domainDaily = require.findDaily(application.getEmployeeID(), date).orElse(null);
 		if (domainDaily == null) {
-			return new RCRecoverAppReflectOutput(reflectStatus, null, AtomTask.none());
+			return new RCRecoverAppReflectOutput(reflectStatus, Optional.empty(), AtomTask.none());
 		}
 		// 申請の取消
 		DailyAfterAppReflectResult cancellationResult = CancellationOfApplication.process(require, application, date,
@@ -74,7 +74,7 @@ public class RecoverWorkRecordBeforeAppReflect {
 		}
 		// 反映状態を「取消済み」に更新する
 		reflectStatus.setReflectStatus(RCReflectedState.CANCELED);
-		return new RCRecoverAppReflectOutput(reflectStatus, domainDailyUpdate, atomTask);
+		return new RCRecoverAppReflectOutput(reflectStatus, Optional.of(domainDailyUpdate), atomTask);
 	}
 
 	private static ChangeDailyAttendance createChangeDailyAtt(List<Integer> lstItemId) {

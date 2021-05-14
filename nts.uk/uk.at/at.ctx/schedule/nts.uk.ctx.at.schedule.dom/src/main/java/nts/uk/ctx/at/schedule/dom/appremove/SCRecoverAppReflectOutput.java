@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.schedule.dom.appremove;
 
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import nts.arc.task.tran.AtomTask;
@@ -19,7 +21,7 @@ public class SCRecoverAppReflectOutput {
 	private SCReflectStatusResult reflectStatus;
 
 	// 勤務予定
-	private IntegrationOfDaily schedule;
+	private Optional<IntegrationOfDaily> schedule;
 
 	//
 	private AtomTask atomTask;

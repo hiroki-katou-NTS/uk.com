@@ -36,6 +36,8 @@ public class RecoverWorkScheduleBeforeAppReflectTest {
 	 * 
 	 * → 反映状態を更新しない
 	 * 
+	 *  → データベースを登録しない
+	 * 
 	 * 準備するデータ
 	 * 
 	 * →勤務予定がない
@@ -54,8 +56,18 @@ public class RecoverWorkScheduleBeforeAppReflectTest {
 
 		SCRecoverAppReflectOutput result = RecoverWorkScheduleBeforeAppReflect.process(require, app,
 				GeneralDate.ymd(2021, 04, 21), createStatus(SCReflectedState.REFLECTED), NotUseAtr.NOT_USE);
-		assertThat(result.getSchedule()).isNull();
+		assertThat(result.getSchedule()).isEmpty();
 		assertThat(result.getReflectStatus().getReflectStatus()).isEqualTo(SCReflectedState.REFLECTED);
+		new Verifications() {
+			{
+				require.insertSchedule((WorkSchedule) any);
+				times = 0;
+
+				require.updateAppReflectHist(anyString, anyString, (GeneralDate) any, (ScheduleRecordClassifi) any,
+						anyBoolean);
+				times = 0;
+			}
+		};
 	}
 
 	/*

@@ -1,9 +1,11 @@
 package nts.uk.ctx.at.record.pub.cancelapplication;
 
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import nts.arc.task.tran.AtomTask;
-import nts.uk.ctx.at.record.pub.cancelapplication.state.ReflectStatusResultExport;
+import nts.uk.ctx.at.record.pub.appreflect.export.RCReflectStatusResultExport;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 
 /**
@@ -16,10 +18,10 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattend
 public class RCRecoverAppReflectOutputExport {
 
 	// output>反映状態
-	private ReflectStatusResultExport reflectStatus;
+	private RCReflectStatusResultExport reflectStatus;
 
 	// 日別実績
-	private IntegrationOfDaily workRecord;
+	private Optional<IntegrationOfDaily> workRecord;
 
 	//
 	private AtomTask atomTask;

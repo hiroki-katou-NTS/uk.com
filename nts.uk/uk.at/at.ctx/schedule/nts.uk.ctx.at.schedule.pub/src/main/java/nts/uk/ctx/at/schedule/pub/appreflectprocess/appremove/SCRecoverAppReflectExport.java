@@ -1,9 +1,11 @@
 package nts.uk.ctx.at.schedule.pub.appreflectprocess.appremove;
 
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import nts.arc.task.tran.AtomTask;
-import nts.uk.ctx.at.schedule.pub.appreflectprocess.appremove.export.ReflectStatusResultExport;
+import nts.uk.ctx.at.schedule.pub.appreflectprocess.export.SCReflectStatusResultExport;
 
 /**
  * @author thanh_nx
@@ -15,10 +17,10 @@ import nts.uk.ctx.at.schedule.pub.appreflectprocess.appremove.export.ReflectStat
 public class SCRecoverAppReflectExport {
 
 	// output>反映状態
-	private ReflectStatusResultExport reflectStatus;
+	private SCReflectStatusResultExport reflectStatus;
 
 	// 勤務予定
-	private Object domainSchedule;
+	private Optional<Object> domainSchedule;
 
 	//
 	private AtomTask atomTask;

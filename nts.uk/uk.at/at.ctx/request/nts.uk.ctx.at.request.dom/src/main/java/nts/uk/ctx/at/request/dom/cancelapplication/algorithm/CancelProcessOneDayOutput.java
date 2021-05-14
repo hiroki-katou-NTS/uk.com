@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.request.dom.cancelapplication.algorithm;
 
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import nts.arc.task.tran.AtomTask;
@@ -19,10 +21,10 @@ public class CancelProcessOneDayOutput {
 	private OneDayReflectStatusOutput oneDayReflect;
 
 	// 勤務予定
-	private IntegrationOfDaily schedule;
+	private Optional<IntegrationOfDaily> schedule;
 
 	// 日別実績
-	private IntegrationOfDaily workRecord;
+	private Optional<IntegrationOfDaily> workRecord;
 	
 	private AtomTask task;
 }

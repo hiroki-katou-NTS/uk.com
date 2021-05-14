@@ -28,7 +28,7 @@ public class RCApplicationCancellationProcess {
 
 		// [input.反映状態.反映状態]をチェック
 		if (statusWorkRecord.getReflectStatus() != ReflectedState.REFLECTED) {
-			return new RCCancelProcessOneDayOutput(statusWorkRecord, null, AtomTask.none());
+			return new RCCancelProcessOneDayOutput(statusWorkRecord, Optional.empty(), AtomTask.none());
 		}
 
 		// DB登録するか区分をチェック
@@ -42,7 +42,7 @@ public class RCApplicationCancellationProcess {
 				PreCheckProcessResult preCheck = PreCheckProcessWorkRecord.preCheck(require, cid, app, closureId, false,
 						statusWorkRecord, date);
 				if (preCheck.getProcessFlag() == NotUseAtr.NOT_USE) {
-					return new RCCancelProcessOneDayOutput(preCheck.getReflectStatus(), null, AtomTask.none());
+					return new RCCancelProcessOneDayOutput(preCheck.getReflectStatus(), Optional.empty(), AtomTask.none());
 				}
 			}
 
@@ -64,7 +64,7 @@ public class RCApplicationCancellationProcess {
 		// AppReflectExeConditionRepository
 		public Optional<AppReflectExecutionCondition> findAppReflectExecCond(String companyId);
 
-		// RecoverWorkRecordBeforeAppReflectAdaper
+		// RecoverRCBeforeAppReflectAdaper
 		public RQRecoverAppReflectOutputImport processRecover(ApplicationShare application, GeneralDate date,
 				ReflectStatusResult reflectStatus, NotUseAtr dbRegisterClassfi);
 	}

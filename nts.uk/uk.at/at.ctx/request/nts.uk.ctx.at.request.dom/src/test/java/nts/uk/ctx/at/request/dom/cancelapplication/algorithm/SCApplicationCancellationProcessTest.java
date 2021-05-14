@@ -41,6 +41,8 @@ public class SCApplicationCancellationProcessTest {
 	 * 
 	 * → 反映状態が取消済
 	 * 
+	 * →勤務予定の取消がない
+	 * 
 	 * 
 	 * 準備するデータ
 	 * 
@@ -58,12 +60,21 @@ public class SCApplicationCancellationProcessTest {
 				application, GeneralDate.ymd(2021, 4, 20), 1,
 				ReflectApplicationHelper.createReflectStatusResult(ReflectedState.REFLECTED), NotUseAtr.NOT_USE);
 		assertThat(actualResult.getStatusWorkSchedule().getReflectStatus()).isEqualTo(ReflectedState.CANCELED);
+		new Verifications() {
+			{
+				require.process((ApplicationShare) any, (GeneralDate) any, (ReflectStatusResult) any,
+						(NotUseAtr) any);
+				times = 0;
+			}
+		};
 	}
 
 	/*
 	 * テストしたい内容
 	 * 
 	 * → 反映状態のまま
+	 * 
+	 *→ 勤務予定の取消がない
 	 * 
 	 * 
 	 * 準備するデータ
@@ -86,6 +97,13 @@ public class SCApplicationCancellationProcessTest {
 				NotUseAtr.NOT_USE);
 
 		assertThat(actualResult.getStatusWorkSchedule().getReflectStatus()).isEqualTo(ReflectedState.NOTREFLECTED);
+		new Verifications() {
+			{
+				require.process((ApplicationShare) any, (GeneralDate) any, (ReflectStatusResult) any,
+						(NotUseAtr) any);
+				times = 0;
+			}
+		};
 	}
 
 	/*

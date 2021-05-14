@@ -37,7 +37,7 @@ public class RecoverWorkScheduleBeforeAppReflect {
 		// 勤務予定から日別実績(work）を取得する
 		WorkSchedule workSchedule = require.get(application.getEmployeeID(), date).orElse(null);
 		if (workSchedule == null)
-			return new SCRecoverAppReflectOutput(reflectStatus, null, AtomTask.none());
+			return new SCRecoverAppReflectOutput(reflectStatus, Optional.empty(), AtomTask.none());
 		IntegrationOfDaily domainDaily = new IntegrationOfDaily(workSchedule.getEmployeeID(), workSchedule.getYmd(),
 				workSchedule.getWorkInfo(), CalAttrOfDailyAttd.createAllCalculate(), workSchedule.getAffInfo(),
 				Optional.empty(), new ArrayList<>(), Optional.empty(), workSchedule.getLstBreakTime(),
@@ -90,7 +90,7 @@ public class RecoverWorkScheduleBeforeAppReflect {
 		}
 		// 反映状態を「取消済み」に更新する
 		reflectStatus.setReflectStatus(SCReflectedState.CANCELED);
-		return new SCRecoverAppReflectOutput(reflectStatus, domainDaily, atomTask);
+		return new SCRecoverAppReflectOutput(reflectStatus, Optional.of(domainDaily), atomTask);
 	}
 
 	private static ChangeDailyAttendance createChangeDailyAtt(List<Integer> lstItemId) {

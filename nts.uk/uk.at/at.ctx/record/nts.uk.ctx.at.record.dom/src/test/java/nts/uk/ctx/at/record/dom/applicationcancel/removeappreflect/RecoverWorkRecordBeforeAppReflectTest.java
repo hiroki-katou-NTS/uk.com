@@ -56,7 +56,7 @@ public class RecoverWorkRecordBeforeAppReflectTest {
 				GeneralDate.ymd(2021, 04, 21), createStatus(RCReflectedState.REFLECTED), // before state
 				NotUseAtr.NOT_USE);
 		
-		assertThat(result.getWorkRecord()).isNull();
+		assertThat(result.getWorkRecord()).isEmpty();
 		assertThat(result.getReflectStatus().getReflectStatus()).isEqualTo(RCReflectedState.REFLECTED);
 
 	}

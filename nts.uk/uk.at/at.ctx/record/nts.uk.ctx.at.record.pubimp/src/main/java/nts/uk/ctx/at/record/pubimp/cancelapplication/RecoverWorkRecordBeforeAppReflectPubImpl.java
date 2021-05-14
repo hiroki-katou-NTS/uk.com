@@ -20,12 +20,12 @@ import nts.uk.ctx.at.record.dom.applicationcancel.removeappreflect.RCRecoverAppR
 import nts.uk.ctx.at.record.dom.applicationcancel.removeappreflect.RecoverWorkRecordBeforeAppReflect;
 import nts.uk.ctx.at.record.dom.daily.DailyRecordAdUpService;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculateDailyRecordServiceCenter;
+import nts.uk.ctx.at.record.pub.appreflect.export.RCReasonNotReflectDailyExport;
+import nts.uk.ctx.at.record.pub.appreflect.export.RCReasonNotReflectExport;
+import nts.uk.ctx.at.record.pub.appreflect.export.RCReflectStatusResultExport;
+import nts.uk.ctx.at.record.pub.appreflect.export.RCReflectedStateExport;
 import nts.uk.ctx.at.record.pub.cancelapplication.RCRecoverAppReflectOutputExport;
 import nts.uk.ctx.at.record.pub.cancelapplication.RecoverWorkRecordBeforeAppReflectPub;
-import nts.uk.ctx.at.record.pub.cancelapplication.state.ReasonNotReflectDailyExport;
-import nts.uk.ctx.at.record.pub.cancelapplication.state.ReasonNotReflectExport;
-import nts.uk.ctx.at.record.pub.cancelapplication.state.ReflectStatusResultExport;
-import nts.uk.ctx.at.record.pub.cancelapplication.state.ReflectedStateExport;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.converter.DailyRecordShareFinder;
 import nts.uk.ctx.at.shared.dom.scherec.application.common.ApplicationShare;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.ScheduleRecordClassifi;
@@ -69,7 +69,7 @@ public class RecoverWorkRecordBeforeAppReflectPubImpl implements RecoverWorkReco
 
 	@Override
 	public RCRecoverAppReflectOutputExport process(ApplicationShare application, GeneralDate date,
-			ReflectStatusResultExport reflectStatus, NotUseAtr dbRegisterClassfi) {
+			RCReflectStatusResultExport reflectStatus, NotUseAtr dbRegisterClassfi) {
 		RequireImpl requireImpl = new RequireImpl(dailyRecordConverter, workingConditionRepository,
 				dailyRecordShareFinder, correctionAfterTimeChange, calculateDailyRecordServiceCenter,
 				dailyRecordAdUpService, applicationReflectHistoryRepo);
@@ -79,18 +79,18 @@ public class RecoverWorkRecordBeforeAppReflectPubImpl implements RecoverWorkReco
 				output.getAtomTask());
 	}
 
-	private RCReflectStatusResult convertToShare(ReflectStatusResultExport reflectStatus) {
+	private RCReflectStatusResult convertToShare(RCReflectStatusResultExport reflectStatus) {
 
 		return new RCReflectStatusResult(EnumAdaptor.valueOf(reflectStatus.getReflectStatus().value, RCReflectedState.class),
 				EnumAdaptor.valueOf(reflectStatus.getReasonNotReflectWorkRecord().value, RCReasonNotReflectDaily.class),
 				EnumAdaptor.valueOf(reflectStatus.getReasonNotReflectWorkSchedule().value, RCReasonNotReflect.class));
 	}
 
-	private ReflectStatusResultExport convertToExport(RCReflectStatusResult reflectStatus) {
+	private RCReflectStatusResultExport convertToExport(RCReflectStatusResult reflectStatus) {
 
-		return new ReflectStatusResultExport(ReflectedStateExport.valueOf(reflectStatus.getReflectStatus().value),
-				ReasonNotReflectDailyExport.valueOf(reflectStatus.getReasonNotReflectWorkRecord().value),
-				ReasonNotReflectExport.valueOf(reflectStatus.getReasonNotReflectWorkSchedule().value));
+		return new RCReflectStatusResultExport(EnumAdaptor.valueOf(reflectStatus.getReflectStatus().value, RCReflectedStateExport.class),
+				EnumAdaptor.valueOf(reflectStatus.getReasonNotReflectWorkRecord().value, RCReasonNotReflectDailyExport.class),
+						EnumAdaptor.valueOf(reflectStatus.getReasonNotReflectWorkSchedule().value, RCReasonNotReflectExport.class));
 	}
 
 	@AllArgsConstructor

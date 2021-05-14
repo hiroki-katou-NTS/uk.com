@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.request.dom.application.common.adapter.record.cancelapplication;
 
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import nts.arc.task.tran.AtomTask;
@@ -19,7 +21,7 @@ public class RQRecoverAppReflectOutputImport {
 	private ReflectStatusResult reflectStatus;
 
 	// 日別実績
-	private IntegrationOfDaily workRecord;
+	private Optional<IntegrationOfDaily> workRecord;
 
 	//
 	private AtomTask atomTask;

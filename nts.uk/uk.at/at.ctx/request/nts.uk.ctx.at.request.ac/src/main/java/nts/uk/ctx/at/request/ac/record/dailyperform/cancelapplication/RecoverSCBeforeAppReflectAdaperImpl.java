@@ -13,10 +13,10 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.record.cancelapplica
 import nts.uk.ctx.at.request.dom.applicationreflect.object.ReflectStatusResult;
 import nts.uk.ctx.at.schedule.pub.appreflectprocess.appremove.RecoverSCBeforeAppReflectPub;
 import nts.uk.ctx.at.schedule.pub.appreflectprocess.appremove.SCRecoverAppReflectExport;
-import nts.uk.ctx.at.schedule.pub.appreflectprocess.appremove.export.ReasonNotReflectDailyExport;
-import nts.uk.ctx.at.schedule.pub.appreflectprocess.appremove.export.ReasonNotReflectExport;
-import nts.uk.ctx.at.schedule.pub.appreflectprocess.appremove.export.ReflectStatusResultExport;
-import nts.uk.ctx.at.schedule.pub.appreflectprocess.appremove.export.ReflectedStateExport;
+import nts.uk.ctx.at.schedule.pub.appreflectprocess.export.SCReasonNotReflectDailyExport;
+import nts.uk.ctx.at.schedule.pub.appreflectprocess.export.SCReasonNotReflectExport;
+import nts.uk.ctx.at.schedule.pub.appreflectprocess.export.SCReflectStatusResultExport;
+import nts.uk.ctx.at.schedule.pub.appreflectprocess.export.SCReflectedStateExport;
 import nts.uk.ctx.at.shared.dom.scherec.application.common.ApplicationShare;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
@@ -33,17 +33,20 @@ public class RecoverSCBeforeAppReflectAdaperImpl implements RecoverSCBeforeAppRe
 		SCRecoverAppReflectExport export = pub.process(application, date, convertToExport(reflectStatus),
 				dbRegisterClassfi);
 		return new RQRecoverAppReflectImport(convertToShare(export.getReflectStatus()),
-				(IntegrationOfDaily) export.getDomainSchedule(), export.getAtomTask());
+				export.getDomainSchedule().map(x -> (IntegrationOfDaily) x), export.getAtomTask());
 	}
 
-	private ReflectStatusResultExport convertToExport(ReflectStatusResult reflectStatus) {
+	private SCReflectStatusResultExport convertToExport(ReflectStatusResult reflectStatus) {
 
-		return new ReflectStatusResultExport(ReflectedStateExport.valueOf(reflectStatus.getReflectStatus().value),
-				ReasonNotReflectDailyExport.valueOf(reflectStatus.getReasonNotReflectWorkRecord().value),
-				ReasonNotReflectExport.valueOf(reflectStatus.getReasonNotReflectWorkSchedule().value));
+		return new SCReflectStatusResultExport(
+				EnumAdaptor.valueOf(reflectStatus.getReflectStatus().value, SCReflectedStateExport.class),
+				EnumAdaptor.valueOf(reflectStatus.getReasonNotReflectWorkRecord().value,
+						SCReasonNotReflectDailyExport.class),
+				EnumAdaptor.valueOf(reflectStatus.getReasonNotReflectWorkSchedule().value,
+						SCReasonNotReflectExport.class));
 	}
 
-	private ReflectStatusResult convertToShare(ReflectStatusResultExport reflectStatus) {
+	private ReflectStatusResult convertToShare(SCReflectStatusResultExport reflectStatus) {
 
 		return new ReflectStatusResult(
 				EnumAdaptor.valueOf(reflectStatus.getReflectStatus().value, ReflectedState.class),

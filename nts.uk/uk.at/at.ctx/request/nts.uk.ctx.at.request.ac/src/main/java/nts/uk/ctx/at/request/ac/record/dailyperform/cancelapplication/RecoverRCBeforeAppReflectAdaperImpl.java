@@ -6,11 +6,11 @@ import javax.inject.Inject;
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.pub.appreflect.export.RCReasonNotReflectDailyExport;
+import nts.uk.ctx.at.record.pub.appreflect.export.RCReasonNotReflectExport;
+import nts.uk.ctx.at.record.pub.appreflect.export.RCReflectStatusResultExport;
+import nts.uk.ctx.at.record.pub.appreflect.export.RCReflectedStateExport;
 import nts.uk.ctx.at.record.pub.cancelapplication.RecoverWorkRecordBeforeAppReflectPub;
-import nts.uk.ctx.at.record.pub.cancelapplication.state.ReasonNotReflectDailyExport;
-import nts.uk.ctx.at.record.pub.cancelapplication.state.ReasonNotReflectExport;
-import nts.uk.ctx.at.record.pub.cancelapplication.state.ReflectStatusResultExport;
-import nts.uk.ctx.at.record.pub.cancelapplication.state.ReflectedStateExport;
 import nts.uk.ctx.at.request.dom.application.ReasonNotReflect;
 import nts.uk.ctx.at.request.dom.application.ReasonNotReflectDaily;
 import nts.uk.ctx.at.request.dom.application.ReflectedState;
@@ -34,17 +34,17 @@ public class RecoverRCBeforeAppReflectAdaperImpl implements RecoverRCBeforeAppRe
 				result.getAtomTask());
 	}
 
-	private ReflectStatusResult convertToShare(ReflectStatusResultExport reflectStatus) {
+	private ReflectStatusResult convertToShare(RCReflectStatusResultExport reflectStatus) {
 
 		return new ReflectStatusResult(EnumAdaptor.valueOf(reflectStatus.getReflectStatus().value, ReflectedState.class),
 				EnumAdaptor.valueOf(reflectStatus.getReasonNotReflectWorkRecord().value, ReasonNotReflectDaily.class),
 						EnumAdaptor.valueOf(reflectStatus.getReasonNotReflectWorkSchedule().value, ReasonNotReflect.class));
 	}
 
-	private ReflectStatusResultExport convertToExport(ReflectStatusResult reflectStatus) {
+	private RCReflectStatusResultExport convertToExport(ReflectStatusResult reflectStatus) {
 
-		return new ReflectStatusResultExport(ReflectedStateExport.valueOf(reflectStatus.getReflectStatus().value),
-				ReasonNotReflectDailyExport.valueOf(reflectStatus.getReasonNotReflectWorkRecord().value),
-				ReasonNotReflectExport.valueOf(reflectStatus.getReasonNotReflectWorkSchedule().value));
+		return new RCReflectStatusResultExport(EnumAdaptor.valueOf(reflectStatus.getReflectStatus().value, RCReflectedStateExport.class),
+				EnumAdaptor.valueOf(reflectStatus.getReasonNotReflectWorkRecord().value, RCReasonNotReflectDailyExport.class),
+						EnumAdaptor.valueOf(reflectStatus.getReasonNotReflectWorkSchedule().value, RCReasonNotReflectExport.class));
 	}
 }
