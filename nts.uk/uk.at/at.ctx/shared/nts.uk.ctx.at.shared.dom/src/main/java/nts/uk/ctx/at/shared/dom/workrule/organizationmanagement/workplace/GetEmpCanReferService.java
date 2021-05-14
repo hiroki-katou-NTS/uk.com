@@ -69,8 +69,8 @@ public class GetEmpCanReferService {
 		 * @param nameType 氏名の種類
 		 * @return List<社員ID>
 		 */
-		List<String> sortEmployee(List<String> employeeIdList, Integer systemType, Integer sortOrderNo, GeneralDate date, Integer nameType);
-		// TODO change systemType(システム区分), nameType(氏名の種類) to ENUM
+		List<String> sortEmployee(List<String> employeeIdList, EmployeeSearchCallSystemType systemType, Integer sortOrderNo, GeneralDate date, Integer nameType);
+		// TODO change nameType(氏名の種類) to ENUM
 		
 		/**
 		 * ロールIDを取得する

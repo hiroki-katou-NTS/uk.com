@@ -37,6 +37,7 @@ import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.EmpMedicalWorkF
 import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.EmpMedicalWorkStyleHistoryRepository;
 import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.NurseClassification;
 import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.NurseClassificationRepository;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.EmployeeSearchCallSystemType;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.GetEmpCanReferService;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.RegulationInfoEmpQuery;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
@@ -145,9 +146,14 @@ public class ScreenQueryExtractTargetEmployees {
 		}
 
 		@Override
-		public List<String> sortEmployee(List<String> lstmployeeId, Integer sysAtr, Integer sortOrderNo,
+		public List<String> sortEmployee(List<String> lstmployeeId, EmployeeSearchCallSystemType sysAtr, Integer sortOrderNo,
 				GeneralDate referenceDate, Integer nameType) {
-			List<String> data = regulInfoEmpAdap.sortEmployee(AppContexts.user().companyId(), lstmployeeId, sysAtr, sortOrderNo, nameType, 
+			List<String> data = regulInfoEmpAdap.sortEmployee(
+					AppContexts.user().companyId(), 
+					lstmployeeId, 
+					sysAtr.value, 
+					sortOrderNo, 
+					nameType, 
 					GeneralDateTime.fromString(referenceDate.toString() + SPACE + ZEZO_TIME, DATE_TIME_FORMAT));
 			return data;
 		}

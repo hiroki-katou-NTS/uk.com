@@ -14,6 +14,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.function.dom.adapter.RegulationInfoEmployeeAdapter;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.EmployeeSearchCallSystemType;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.GetEmpCanReferService;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.RegulationInfoEmpQuery;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
@@ -113,9 +114,15 @@ public class GetEmployeeOrganizationInfoScreenQuery {
         }
 
         @Override
-        public List<String> sortEmployee(List<String> lstmployeeId, Integer sysAtr, Integer sortOrderNo,
+        public List<String> sortEmployee(List<String> lstmployeeId, EmployeeSearchCallSystemType sysAtr, Integer sortOrderNo,
                                          GeneralDate referenceDate, Integer nameType) {
-            List<String> data = regulInfoEmpAdap.sortEmployee(AppContexts.user().companyId(), lstmployeeId, sysAtr, sortOrderNo, nameType,
+        	
+            List<String> data = regulInfoEmpAdap.sortEmployee(
+            		AppContexts.user().companyId(), 
+            		lstmployeeId, 
+            		sysAtr.value, 
+            		sortOrderNo, 
+            		nameType,
                     GeneralDateTime.fromString(referenceDate.toString() + SPACE + ZEZO_TIME, DATE_TIME_FORMAT));
             return data;
         }
