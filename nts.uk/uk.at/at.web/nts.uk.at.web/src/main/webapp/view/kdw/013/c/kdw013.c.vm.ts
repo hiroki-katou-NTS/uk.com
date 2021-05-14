@@ -4,8 +4,6 @@ module nts.uk.ui.at.kdw013.c {
     const DATE_FORMAT = 'YYYY-MM-DD';
     const DATE_TIME_FORMAT = 'YYYY-MM-DDT00:00:00.000\\Z';
 
-    import calendar = nts.uk.ui.components.fullcalendar;
-
     const style = `.edit-event {
         width: 350px;
     }

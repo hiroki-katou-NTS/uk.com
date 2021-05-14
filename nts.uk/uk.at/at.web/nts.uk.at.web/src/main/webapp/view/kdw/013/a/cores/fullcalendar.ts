@@ -3,7 +3,7 @@
 /// <reference path="../../../../../lib/generic/fullcalendar/timegrid.d.ts" />
 /// <reference path="../../../../../lib/generic/fullcalendar/interaction.d.ts" />
 
-module nts.uk.ui.components.fullcalendar {
+module nts.uk.ui.at.kdw013.calendar {
     const { randomId } = nts.uk.util;
     const { version } = nts.uk.util.browser;
     const { getTimeOfDate } = at.kdw013.share;
@@ -822,7 +822,8 @@ module nts.uk.ui.components.fullcalendar {
                 availableView,
                 viewModel,
                 validRange,
-                attendanceTimes
+                attendanceTimes,
+                $settings
             } = params;
             const $caches: {
                 new: KnockoutObservable<EventApi | null>;
@@ -1030,6 +1031,52 @@ module nts.uk.ui.components.fullcalendar {
                 .subscribe(c => {
                     if (!c) {
                         $(`.${POWNER_CLASS_CPY}`).removeClass(POWNER_CLASS_CPY);
+                    }
+                });
+
+            // update drag item
+            $settings
+                .subscribe((settings: a.StartProcessDto | null) => {
+                    if (settings) {
+                        const { startManHourInputResultDto } = settings;
+
+                        if (startManHourInputResultDto) {
+                            const { tasks } = startManHourInputResultDto;
+
+                            if (tasks && tasks.length) {
+                                const draggers: EventRaw[] = _
+                                    .chain(tasks)
+                                    .map(({
+                                        taskFrameNo,
+                                        childTaskList,
+                                        code,
+                                        cooperationInfo,
+                                        displayInfo,
+                                        expirationEndDate,
+                                        expirationStartDate
+                                    }) => ({
+                                        start: new Date(),
+                                        end: new Date(),
+                                        title: '',
+                                        backgroundColor: '',
+                                        textColor: '',
+                                        extendedProps: {
+                                            status: 'new',
+                                            taskFrameNo,
+                                            code,
+                                            cooperationInfo,
+                                            displayInfo,
+                                            expirationEndDate,
+                                            expirationStartDate,
+                                            childTaskList,
+                                        } as any
+                                    }))
+                                    .value();
+
+                                // update dragger items
+                                vm.dragItems(draggers);
+                            }
+                        }
                     }
                 });
 

@@ -1,4 +1,4 @@
-module nts.uk.ui.at.kdp013.d {
+module nts.uk.ui.at.kdw013.d {
     export type DataItem = a.OvertimeLeaveTime & {
         description: string;
         link: string;

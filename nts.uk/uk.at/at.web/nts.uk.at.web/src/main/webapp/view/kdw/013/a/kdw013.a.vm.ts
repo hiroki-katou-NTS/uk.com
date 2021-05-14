@@ -17,7 +17,6 @@ module nts.uk.ui.at.kdw013.a {
     };
 
     const { formatTime } = share;
-    import calendar = nts.uk.ui.components.fullcalendar;
 
     const DATE_FORMAT = 'YYYY-MM-DD';
     const DATE_TIME_FORMAT = 'YYYY-MM-DDT00:00:00.000\\Z';

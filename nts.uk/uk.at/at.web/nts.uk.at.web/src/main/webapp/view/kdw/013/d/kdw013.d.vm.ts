@@ -1,4 +1,4 @@
-module nts.uk.ui.at.kdp013.d {
+module nts.uk.ui.at.kdw013.d {
     enum OverTimeLeaveAtr {
         // 0: 残業申請
         OVER_TIME_APPLICATION = 0,
