@@ -2,10 +2,16 @@
 
 module nts.uk.at.view.kdp003.m {
     const KDP003_SAVE_DATA = 'loginKDP003';
+    const KDP004_SAVE_DATA = 'loginKDP004';
+    const KDP005_SAVE_DATA = 'loginKDP005';
 
     const API = {
         WORKPLACE_INFO: "screen/at/kdp003/workplace-info"
     };
+
+    interface IParams {
+        screen: string;
+    }
 
     @handler({
         bindingName: 'firstFocus'
@@ -68,10 +74,23 @@ module nts.uk.at.view.kdp003.m {
             });
         }
 
-        created() {
+        created(param: IParams) {
             const vm = this;
-            vm.reloadData();
 
+            switch (param.screen) {
+                case 'KDP003':
+                    vm.reloadData(KDP003_SAVE_DATA);
+                    break;
+                case 'KDP004':
+                    vm.reloadData(KDP004_SAVE_DATA);
+                    break;
+                case 'KDP005':
+                    vm.reloadData(KDP005_SAVE_DATA);
+                    break;
+                default:
+                    vm.reloadData(KDP003_SAVE_DATA);
+                    break
+            }
         }
 
         mounted() {
@@ -99,18 +118,18 @@ module nts.uk.at.view.kdp003.m {
         }
 
         // Reload data in storage when the data storage change
-        reloadData() {
+        reloadData(key: string) {
             const vm = this;
             // get data in storage
             vm.$blockui('invisible')
                 .then(() => {
                     vm.$window
-                        .storage(KDP003_SAVE_DATA)
+                        .storage(key)
                         .then((data: Data) => {
                             if (data.WKPID.length <= 9) {
                                 vm.mode_hiden(false);
                                 vm.$window.size(500, 585);
-                            }else {
+                            } else {
                                 vm.mode_hiden(true);
                             }
                             const param = { sid: data.SID, workPlaceIds: data.WKPID };

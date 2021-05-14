@@ -732,7 +732,7 @@ module nts.uk.at.kdp003.a {
 									.then((dataStorage: StorageData) => {
 										if (dataStorage.WKPID.length > 1 && btn.supportWplset == 1) {
 
-											vm.$window.modal('at', DIALOG.M)
+											vm.$window.modal('at', DIALOG.M, {screen: 'KDP003'})
 												.then((data: string) => {
 
 													if (data) {
