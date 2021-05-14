@@ -16,7 +16,7 @@ import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.re
  */
 public class ReflectStartEndWork {
 
-	//「出勤.時刻」と「退勤.時刻」を更新する
+	// 始業終業の反映
 	public static List<Integer> reflect(Require require, String cid, DailyRecordOfApplication dailyApp,
 			List<TimeZoneWithWorkNo> timeZoneWithWorkNoLst, PrePostAtrShare prePostAtr) {
 		List<Integer> itemIds = new ArrayList<Integer>();
@@ -30,6 +30,13 @@ public class ReflectStartEndWork {
 		return itemIds;
 	}
 
+	//反映する
+	public static List<Integer> reflect(Require require, String cid, DailyRecordOfApplication dailyApp,
+			List<TimeZoneWithWorkNo> timeZoneWithWorkNoLst, PrePostAtrShare prePostAtr, boolean att, boolean leav) {
+		return ReflectAttendance.reflect(require, cid, timeZoneWithWorkNoLst, ScheduleRecordClassifi.SCHEDULE, dailyApp,
+				Optional.of(att), Optional.of(leav), Optional.empty());
+	}
+	
 	public static interface Require extends ReflectAttendance.Require {
 		
 	}

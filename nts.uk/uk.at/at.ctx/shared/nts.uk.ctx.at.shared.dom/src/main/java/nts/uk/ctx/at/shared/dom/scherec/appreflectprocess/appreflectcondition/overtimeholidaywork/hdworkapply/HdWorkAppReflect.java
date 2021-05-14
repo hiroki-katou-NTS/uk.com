@@ -74,7 +74,7 @@ public class HdWorkAppReflect {
 			DailyRecordOfApplication dailyApp) {
 
 		// 休日出勤申請の反映（勤務予定）
-		return this.getBefore().process(require, cid, holidayApp, dailyApp);
+		return this.getBefore().processSC(require, cid, holidayApp, dailyApp);
 	}
 
 	public static interface RequireSC extends BeforeHdWorkAppReflect.Require {

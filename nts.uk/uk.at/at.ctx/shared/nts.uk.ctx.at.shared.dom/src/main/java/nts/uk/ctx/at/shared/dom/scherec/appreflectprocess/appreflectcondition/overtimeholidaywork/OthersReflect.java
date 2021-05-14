@@ -83,15 +83,17 @@ public class OthersReflect extends DomainObject {
 					.filter(x -> x.getDivTimeId() == reason.getDiviationTime()).findFirst();
 			if (divgTimeOpt.isPresent()) {
 				// 該当の[乖離理由]を日別勤怠(work）にセットする
-				divgTimeOpt.get().setDivResonCode(Optional.of(reason.getReasonCode()));
-				divgTimeOpt.get().setDivReason(Optional.of(new DivergenceReasonContent(reason.getReason().v())));
+				divgTimeOpt.get().setDivResonCode(Optional.ofNullable(reason.getReasonCode()));
+				divgTimeOpt.get().setDivReason(Optional.ofNullable(
+						reason.getReason() == null ? null : new DivergenceReasonContent(reason.getReason().v())));
 			} else {
 				// 該当の勤務NOをキーにした[乖離時間]を作成する
 				DivergenceTime timeTemp = DivergenceTime.createDefaultWithNo(reason.getDiviationTime());
 
 				// 該当の[乖離理由]を日別勤怠(work）にセットする
-				timeTemp.setDivResonCode(Optional.of(reason.getReasonCode()));
-				timeTemp.setDivReason(Optional.of(new DivergenceReasonContent(reason.getReason().v())));
+				timeTemp.setDivResonCode(Optional.ofNullable(reason.getReasonCode()));
+				timeTemp.setDivReason(Optional.ofNullable(
+						reason.getReason() == null ? null : new DivergenceReasonContent(reason.getReason().v())));
 				divgTimes.add(timeTemp);
 			}
 
