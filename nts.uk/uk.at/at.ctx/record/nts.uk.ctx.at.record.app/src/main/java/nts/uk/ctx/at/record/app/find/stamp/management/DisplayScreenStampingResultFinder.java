@@ -137,7 +137,7 @@ public class DisplayScreenStampingResultFinder {
 			List<WorkplaceInforImport> listWorkPlaceInfoExport = syWorkplaceAdapter.getWorkplaceInforByWkpIds(AppContexts.user().companyId(), Collections.singletonList(wkpId), refDate);
 			
 			String workplaceCd = listWorkPlaceInfoExport.isEmpty() ? "" : listWorkPlaceInfoExport.get(0).getWorkplaceCode();
-			String workplaceName = listWorkPlaceInfoExport.isEmpty() ? "" : listWorkPlaceInfoExport.get(0).getWorkplaceName();
+			String workplaceName = listWorkPlaceInfoExport.isEmpty() ? "" : listWorkPlaceInfoExport.get(0).getWorkplaceDisplayName();
 			
 			DisplayScreenStampingResultDto data = new DisplayScreenStampingResultDto(workLocationName,
 					new StampDataOfEmployeesDto(stampDataOfEmployees), workplaceCd, workplaceName);

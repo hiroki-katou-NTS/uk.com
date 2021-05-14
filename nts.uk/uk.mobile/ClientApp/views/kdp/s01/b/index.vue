@@ -33,7 +33,7 @@
       <div>{{ screenData.localtion }}</div>
     </div>
 
-     <label class="font-weight-bold col-13 value"> {{ "KDPS01_67" | i18n }}</label>
+     <label v-show="isEmotionMode" class="font-weight-bold col-13 value"> {{ "KDPS01_67" | i18n }}</label>
 
     <div v-show="isEmotionMode" class="col-12 value" style="padding-bottom: 40px;">
       <img tabindex="2" v-bind:src="'/nts.uk.mobile.web/dist/resources/185.png'" v-on:click="clickEmoji(4)" height="50" width="50"/>
