@@ -80,9 +80,9 @@ public class WorkplaceGroupFinder {
 		workplaceIds.forEach(wkpId -> {
 			affWpGroupRepo.getWorkplaceGroup(cid, wkpId).ifPresent(wkpGroup -> {
 				result.put(wkpId, new WorkplaceGroupInforDto(
-						wkpGroup.getWKPGRPID(),
-						wkpGroup.getWKPGRPCode().v(),
-						wkpGroup.getWKPGRPName().v(),
+						wkpGroup.getId()	,
+						wkpGroup.getCode().v(),
+						wkpGroup.getName().v(),
 						true
 				));
 			});
