@@ -5,6 +5,7 @@ import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.uk.ctx.at.schedule.dom.displaysetting.functioncontrol.*;
 import nts.uk.ctx.at.schedule.infra.entity.displaysetting.functioncontrol.KscmtFuncCtrBywkp;
 import nts.uk.ctx.at.schedule.infra.entity.displaysetting.functioncontrol.KscmtFuncCtrBywkpAlchkcd;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 import org.apache.commons.lang3.BooleanUtils;
 
 import javax.ejb.Stateless;
@@ -44,36 +45,34 @@ public class JpaScheFunctionCtrlByWorkplaceRepository extends JpaRepository impl
 
     @Override
     public void update(String companyId, ScheFunctionCtrlByWorkplace domain) {
-        KscmtFuncCtrBywkp up = this.queryProxy()
-                .find(companyId, KscmtFuncCtrBywkp.class)
-                .get();
+        this.queryProxy().find(companyId, KscmtFuncCtrBywkp.class).ifPresent(entity -> {
+            entity.display28days = BooleanUtils.toInteger(domain.isUseDisplayPeriod(FuncCtrlDisplayPeriod.TwentyEightDayCycle));
+            entity.display1month = BooleanUtils.toInteger(domain.isUseDisplayPeriod(FuncCtrlDisplayPeriod.LastDayUtil));
+            entity.modeAbbr = BooleanUtils.toInteger(domain.isUseDisplayFormat(FuncCtrlDisplayFormat.AbbreviatedName));
+            entity.modeFull = BooleanUtils.toInteger(domain.isUseDisplayFormat(FuncCtrlDisplayFormat.WorkInfo));
+            entity.modeShift = BooleanUtils.toInteger(domain.isUseDisplayFormat(FuncCtrlDisplayFormat.Shift));
+            entity.openDispBydate = BooleanUtils.toInteger(domain.isStartControl(FuncCtrlStartControl.ByDate));
+            entity.openDispByperson = BooleanUtils.toInteger(domain.isStartControl(FuncCtrlStartControl.ByPerson));
+            entity.useCompletion = domain.getUseCompletionAtr().value;
 
-        up.display28days = BooleanUtils.toInteger(domain.isUseDisplayPeriod(FuncCtrlDisplayPeriod.TwentyEightDayCycle));
-        up.display1month = BooleanUtils.toInteger(domain.isUseDisplayPeriod(FuncCtrlDisplayPeriod.LastDayUtil));
-        up.modeAbbr = BooleanUtils.toInteger(domain.isUseDisplayFormat(FuncCtrlDisplayFormat.AbbreviatedName));
-        up.modeFull = BooleanUtils.toInteger(domain.isUseDisplayFormat(FuncCtrlDisplayFormat.WorkInfo));
-        up.modeShift = BooleanUtils.toInteger(domain.isUseDisplayFormat(FuncCtrlDisplayFormat.Shift));
-        up.openDispBydate = BooleanUtils.toInteger(domain.isStartControl(FuncCtrlStartControl.ByDate));
-        up.openDispByperson = BooleanUtils.toInteger(domain.isStartControl(FuncCtrlStartControl.ByPerson));
-        up.useCompletion = domain.getUseCompletionAtr().value;
+            domain.getCompletionMethodControl().ifPresent(completionControl -> {
+                entity.completionMethod = completionControl.getCompletionExecutionMethod().value;
+                entity.completionAndDecision = BooleanUtils.toInteger(completionControl.isCompletionMethodControl(FuncCtrlCompletionMethod.Confirm));
+                entity.completionAndAlchk = BooleanUtils.toInteger(completionControl.isCompletionMethodControl(FuncCtrlCompletionMethod.AlarmCheck));
+            });
 
-        Optional<CompletionMethodControl> completionMethodCtrl = domain.getCompletionMethodControl();
-        if (completionMethodCtrl.isPresent() && (completionMethodCtrl.get().getCompletionExecutionMethod() != null))
-            up.completionMethod = completionMethodCtrl.get().getCompletionExecutionMethod().value;
-        if (completionMethodCtrl.isPresent() && !completionMethodCtrl.get().getCompletionMethodControl().isEmpty())
-            up.completionAndDecision = BooleanUtils.toInteger(completionMethodCtrl.get().isCompletionMethodControl(FuncCtrlCompletionMethod.Confirm));
-        if (completionMethodCtrl.isPresent() && !completionMethodCtrl.get().getCompletionMethodControl().isEmpty())
-            up.completionAndAlchk = BooleanUtils.toInteger(completionMethodCtrl.get().isCompletionMethodControl(FuncCtrlCompletionMethod.AlarmCheck));
-
-        this.commandProxy().update(up);
+            this.commandProxy().update(entity);
+        });
 
         // Update KSCMT_FUNC_CTR_USE_WKTP
-        String query = "select c from KscmtFuncCtrBywkpAlchkcd c where c.pk.cid = :cid";
-        List<KscmtFuncCtrBywkpAlchkcd> oldWktps = this.queryProxy().query(query, KscmtFuncCtrBywkpAlchkcd.class)
-                .setParameter("cid", companyId)
-                .getList();
-        this.commandProxy().removeAll(oldWktps);
-        this.getEntityManager().flush();
-        this.commandProxy().insertAll(KscmtFuncCtrBywkpAlchkcd.toEntities(companyId, domain));
+        if (domain.getUseCompletionAtr() == NotUseAtr.USE && domain.getCompletionMethodControl().isPresent()) {
+            String query = "select c from KscmtFuncCtrBywkpAlchkcd c where c.pk.cid = :cid";
+            List<KscmtFuncCtrBywkpAlchkcd> oldWktps = this.queryProxy().query(query, KscmtFuncCtrBywkpAlchkcd.class)
+                    .setParameter("cid", companyId)
+                    .getList();
+            this.commandProxy().removeAll(oldWktps);
+            this.getEntityManager().flush();
+            this.commandProxy().insertAll(KscmtFuncCtrBywkpAlchkcd.toEntities(companyId, domain));
+        }
     }
 }
