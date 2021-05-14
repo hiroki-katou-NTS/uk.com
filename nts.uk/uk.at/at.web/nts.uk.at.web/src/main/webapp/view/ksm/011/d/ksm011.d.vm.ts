@@ -67,10 +67,16 @@ module nts.uk.at.view.ksm011.d {
             $('#KSM011_D6_14').ntsError('clear');
         }
       });
-    }
-
-    created(params: any) {
-      const vm = this;
+        vm.completionFunction.subscribe(value => {
+            if (value != 1) {
+                $('#KSM011_D6_14').ntsError('clear');
+            }
+        });
+        vm.completionExecutionMethod.subscribe(value => {
+            if (value != 1) {
+                $('#KSM011_D6_14').ntsError('clear');
+            }
+        });
     }
 
     mounted() {
@@ -134,7 +140,7 @@ module nts.uk.at.view.ksm011.d {
         return;
       }
 
-      if (vm.alarmCheck() == 1 && _.isEmpty(vm.alarmConditionList())) {
+      if (vm.completionFunction() == 1 && vm.completionExecutionMethod() == 1 && vm.alarmCheck() == 1 && _.isEmpty(vm.alarmConditionList())) {
           $('#KSM011_D6_14').ntsError('set', {messageId:'Msg_1690', messageParams:[vm.$i18n("KSM011_87")]});
           return;
       }

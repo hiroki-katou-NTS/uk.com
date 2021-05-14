@@ -43,7 +43,7 @@ public class KscmtFuncCtrBywkpAlchkcd extends ContractUkJpaEntity implements Ser
     }
 
     public static List<KscmtFuncCtrBywkpAlchkcd> toEntities(String companyId, ScheFunctionCtrlByWorkplace domain) {
-        if (CollectionUtil.isEmpty(domain.getCompletionMethodControl().get().getAlarmCheckCodeList())) {
+        if (!domain.getCompletionMethodControl().isPresent() || CollectionUtil.isEmpty(domain.getCompletionMethodControl().get().getAlarmCheckCodeList())) {
             return Collections.emptyList();
         }
 

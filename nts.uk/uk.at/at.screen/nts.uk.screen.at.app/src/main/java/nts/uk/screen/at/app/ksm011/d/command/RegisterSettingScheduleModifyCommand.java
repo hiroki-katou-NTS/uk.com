@@ -3,6 +3,7 @@ package nts.uk.screen.at.app.ksm011.d.command;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.schedule.dom.displaysetting.functioncontrol.*;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
@@ -85,11 +86,11 @@ public class RegisterSettingScheduleModifyCommand {
         if (this.alarmCheckUsage == 1)
             lstCompletionMethod.add(FuncCtrlCompletionMethod.AlarmCheck);
 
-        Optional<CompletionMethodControl> completionMethodCtrl =
-                Optional.of(CompletionMethodControl.create(
-                        this.completionMethod == 0
-                                ? FuncCtrlCompletionExecutionMethod.SelectAtRuntime
-                                : FuncCtrlCompletionExecutionMethod.SettingBefore,
+        NotUseAtr useCompletionAtr = NotUseAtr.valueOf(this.useCompletion);
+        Optional<CompletionMethodControl> completionMethodCtrl = useCompletionAtr == NotUseAtr.NOT_USE
+                ? Optional.empty()
+                : Optional.of(CompletionMethodControl.create(
+                        EnumAdaptor.valueOf(this.completionMethod, FuncCtrlCompletionExecutionMethod.class),
                         lstCompletionMethod,
                         alarmConditions
                 ));
@@ -98,7 +99,8 @@ public class RegisterSettingScheduleModifyCommand {
                 lstDisplayPeriod,
                 lstDisplayFormat,
                 lstStartControl,
-                NotUseAtr.valueOf(this.useCompletion),
-                completionMethodCtrl);
+                useCompletionAtr,
+                completionMethodCtrl
+        );
     }
 }
