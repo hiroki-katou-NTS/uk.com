@@ -25,9 +25,6 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.An
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnualLeaveEmpBasicInfo;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TempAnnualLeaveMngs;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualHolidayMngRepository;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemainRepository;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.test.LengthServiceTest;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceTimeOfMonthlyRepository;
@@ -91,10 +88,6 @@ public class CalcAnnLeaAttendanceRateRequireM3 {
 	/** 日別実績の運用開始設定 */
 	@Inject
 	private OperationStartSetDailyPerformRepository operationStartSetDailyPerformRepo;
-	
-	/** 暫定残数管理データ */
-	@Inject
-	protected InterimRemainRepository interimRemainRepo;
 	
 	/** 暫定年休管理データ */
 	@Inject
@@ -225,15 +218,15 @@ public class CalcAnnLeaAttendanceRateRequireM3 {
 		toBinaryMap.put(OperationStartSetDailyPerform.class.toString(), operationStartSetDailyPerformList);
 		
 		// 暫定残数管理データ
-		val interimRemainList
-			= new ArrayList<InterimRemain>();
-	
-		for(String employeeId: employeeIds){
-			List<InterimRemain> interimRemainListTmp
-				= interimRemainRepo.getRemainBySidPriod(employeeId, datePeriodData, RemainType.ANNUAL);
-			interimRemainList.addAll(interimRemainListTmp);
-		}
-		toBinaryMap.put(InterimRemain.class.toString(), interimRemainList);
+//		val interimRemainList
+//			= new ArrayList<InterimRemain>();
+//	
+//		for(String employeeId: employeeIds){
+//			List<InterimRemain> interimRemainListTmp
+//				=  tmpAnnualHolidayMngRepo.getBySidPeriod(employeeId, datePeriodData);
+//			interimRemainList.addAll(interimRemainListTmp);
+//		}
+//		toBinaryMap.put(InterimRemain.class.toString(), interimRemainList);
 	
 		
 		// 年休残数管理データ

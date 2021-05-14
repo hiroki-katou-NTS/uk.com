@@ -133,9 +133,6 @@ public class GetUnusedCompenTemporary {
 
 	public static interface Require extends GetSettingCompensaLeave.Require {
 
-		// InterimRemainRepository
-		List<InterimRemain> getRemainBySidPriod(String employeeId, DatePeriod dateData, RemainType remainType);
-
 		// InterimRecAbasMngRepository
 		List<InterimRecMng> getRecBySidDatePeriod(String sid, DatePeriod period);
 

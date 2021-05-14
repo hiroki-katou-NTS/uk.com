@@ -14,7 +14,6 @@ import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.adapter.company.AffCompanyHistImport;
-import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggregatePeriodWork;
 import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.ComplileInPeriodOfSpecialLeaveParam;
 import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.GrantPeriodAtr;
 import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.InPeriodOfSpecialLeaveResultInfor;
@@ -27,7 +26,6 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.ConfirmLeavePeriod;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveRemainingNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.InterimSpecialHolidayMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.basicinfo.SpecialLeaveBasicInfo;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRemainingData;
@@ -729,25 +727,15 @@ public class SpecialLeaveManagementService {
 			// 暫定Dを作っておくので、ここでは作らない
 		} else {
 			// ドメインモデル「特別休暇暫定データ」を取得する
-			List<InterimRemain> lstInterimMngTmp
-				= require.interimRemains(
-					param.getSid(),
-					param.getComplileDate(),
-					RemainType.SPECIAL);
-
-			lstInterimMngTmp.stream().forEach(a -> {
-
-				List<InterimSpecialHolidayMng> lstSpecialData
-					= require.interimSpecialHolidayMng(a.getRemainManaID())
-						.stream().filter(x -> x.getSpecialHolidayCode() == param.getSpecialLeaveCode())
-						.collect(Collectors.toList());
-				if(!lstSpecialData.isEmpty()) {
-					lstSpecialData.forEach(specialData->{
-						specialData.setParentValue(a);
-					});
-					lstOutput.addAll(lstSpecialData);
-				}
-			});
+			
+			List<InterimSpecialHolidayMng> lstSpecialData
+			= require.interimSpecialHolidayMng(param.getSid(),
+					param.getComplileDate())
+				.stream().filter(x -> x.getSpecialHolidayCode() == param.getSpecialLeaveCode())
+				.collect(Collectors.toList());
+			if (!lstSpecialData.isEmpty()) {
+				lstOutput.addAll(lstSpecialData);
+			}
 		}
 
 		
@@ -837,9 +825,7 @@ public class SpecialLeaveManagementService {
 
 	public static interface RequireM2 {
 
-		List<InterimRemain> interimRemains(String employeeId, DatePeriod dateData, RemainType remainType);
-
-		List<InterimSpecialHolidayMng> interimSpecialHolidayMng(String mngId);
+		List<InterimSpecialHolidayMng> interimSpecialHolidayMng(String mngId, DatePeriod datePeriod);
 	}
 
 	public static interface RequireM3 extends LeaveRemainingNumber.RequireM3, InforSpecialLeaveOfEmployeeSevice.RequireM4 {
