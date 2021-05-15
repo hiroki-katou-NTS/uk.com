@@ -79,16 +79,16 @@ module nts.uk.at.view.kdp003.m {
 
             switch (param.screen) {
                 case 'KDP003':
-                    vm.reloadData(KDP003_SAVE_DATA);
+                    vm.reloadData(KDP003_SAVE_DATA, 'KDP003');
                     break;
                 case 'KDP004':
-                    vm.reloadData(KDP004_SAVE_DATA);
+                    vm.reloadData(KDP004_SAVE_DATA, 'KDP004');
                     break;
                 case 'KDP005':
-                    vm.reloadData(KDP005_SAVE_DATA);
+                    vm.reloadData(KDP005_SAVE_DATA, 'KDP005');
                     break;
                 default:
-                    vm.reloadData(KDP003_SAVE_DATA);
+                    vm.reloadData(KDP003_SAVE_DATA, 'KDP003');
                     break
             }
         }
@@ -214,7 +214,6 @@ module nts.uk.at.view.kdp003.m {
             const vm = this;
             vm.$ajax(API.WORKPLACE_INFO, param)
                 .then((workPlace: workPlace) => {
-
                     if (workPlace.sWkpHistExport) {
                         const exist = _.find(workPlace.workPlaceInfo, (values) => {
                             return values.workplaceId === workPlace.sWkpHistExport.workplaceId;
@@ -230,72 +229,71 @@ module nts.uk.at.view.kdp003.m {
 
                     vm.workplace = _.chunk(workPlace.workPlaceInfo, 9);
                     vm.position.valueHasMutated();
+                });
+        }
+
+        // Reload Data in view
+        reload(index: number) {
+            const vm = this;
+            vm.$blockui('invisible')
+                .then(() => {
+                    vm.model(vm.workplace[index])
                 })
-        });
+                .always(() => {
+                    vm.$blockui('clear');
+                });
+        }
+
+        back() {
+            const vm = this;
+            vm.position(ko.unwrap(vm.position) - 1);
+        }
+
+        next() {
+            const vm = this;
+            vm.position(ko.unwrap(vm.position) + 1);
+        }
+
+        seleceted(workplaceId: string) {
+            const vm = this;
+            vm.$window.close(workplaceId);
+        }
+
+        close() {
+            const vm = this;
+            vm.$window.close();
+        }
     }
 
-    // Reload Data in view
-    reload(index: number) {
-        const vm = this;
-        vm.$blockui('invisible')
-            .then(() => {
-                vm.model(vm.workplace[index])
-            })
-            .always(() => {
-                vm.$blockui('clear');
-            });
+    interface Data {
+        CCD: string;
+        CID: string;
+        PWD: string;
+        SCD: string;
+        SID: string;
+        WKLOC_CD: string;
+        WKPID: [string];
     }
 
-    back() {
-        const vm = this;
-        vm.position(ko.unwrap(vm.position) - 1);
+    interface workPlace {
+        sWkpHistExport: SWkpHistExport;
+        workPlaceInfo: WorkPlaceInfo[];
     }
 
-    next() {
-        const vm = this;
-        vm.position(ko.unwrap(vm.position) + 1);
+    interface SWkpHistExport {
+        wkpDisplayName: string;
+        workplaceCode: string;
+        workplaceId: string;
+        workplaceName: string;
     }
 
-    seleceted(workplaceId: string) {
-        const vm = this;
-        vm.$window.close(workplaceId);
+    interface WorkPlaceInfo {
+        displayName: string;
+        externalCode: null | string;
+        genericName: string;
+        hierarchyCode: string;
+        workplaceCode: string;
+        workplaceId: string;
+        s: string;
     }
-
-    close() {
-        const vm = this;
-        vm.$window.close();
-    }
-}
-
-interface Data {
-    CCD: string;
-    CID: string;
-    PWD: string;
-    SCD: string;
-    SID: string;
-    WKLOC_CD: string;
-    WKPID: [string];
-}
-
-interface workPlace {
-    sWkpHistExport: SWkpHistExport;
-    workPlaceInfo: WorkPlaceInfo[];
-}
-
-interface SWkpHistExport {
-    wkpDisplayName: string;
-    workplaceCode: string;
-    workplaceId: string;
-    workplaceName: string;
-}
-
-interface WorkPlaceInfo {
-    displayName: string;
-    externalCode: null | string;
-    genericName: string;
-    hierarchyCode: string;
-    workplaceCode: string;
-    workplaceId: string;
-    s: string;
-}
 }
