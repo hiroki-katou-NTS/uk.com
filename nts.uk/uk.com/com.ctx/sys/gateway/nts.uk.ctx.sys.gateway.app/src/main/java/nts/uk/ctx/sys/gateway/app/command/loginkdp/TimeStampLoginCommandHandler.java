@@ -129,7 +129,7 @@ public class TimeStampLoginCommandHandler extends LoginBaseTimeStampCommandHandl
 			}
 			
 			// note: ユーザーの有効期限チェック (Kiểm tra thời hạn hiệu lực của User)
-			this.checkLimitTime(user, companyId, employeeCode, em.getEmployeeId(), remarkMessage);
+//			this.checkLimitTime(user, companyId, employeeCode, em.getEmployeeId(), remarkMessage);
 		}
 
 		// note: 実行時環境作成
