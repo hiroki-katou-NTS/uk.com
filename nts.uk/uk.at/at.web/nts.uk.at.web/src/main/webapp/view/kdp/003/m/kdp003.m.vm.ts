@@ -135,6 +135,20 @@ module nts.uk.at.view.kdp003.m {
                             const param = { sid: data.SID, workPlaceIds: data.WKPID };
                             vm.$ajax(API.WORKPLACE_INFO, param)
                                 .then((workPlace: workPlace) => {
+
+                                    if (workPlace.sWkpHistExport) {
+                                        const exist = _.find(workPlace.workPlaceInfo, (values) => {
+                                            return values.workplaceId === workPlace.sWkpHistExport.workplaceId;
+                                        })
+
+                                        if (exist) {
+                                            _.remove(workPlace.workPlaceInfo, ((values) => {
+                                                return values.workplaceId === exist.workplaceId;
+                                            }));
+                                            workPlace.workPlaceInfo.unshift(exist);
+                                        }
+                                    }
+
                                     vm.workplace = _.chunk(workPlace.workPlaceInfo, 9);
                                     vm.position.valueHasMutated();
                                 })
