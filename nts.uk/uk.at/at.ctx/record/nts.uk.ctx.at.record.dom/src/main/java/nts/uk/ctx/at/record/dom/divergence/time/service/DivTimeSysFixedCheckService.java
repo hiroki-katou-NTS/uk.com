@@ -299,7 +299,6 @@ public class DivTimeSysFixedCheckService {
 	}
 	
 	/** 確認解除 */
-
 	public List<EmployeeDailyPerError> removeconfirm(String comId, String empId, GeneralDate tarD, 
 			List<EmployeeDailyPerError> errors, Optional<IdentityProcessUseSet> iPUSOpt, Optional<ApprovalProcessingUseSetting>  approvalSet) {
 		List<EmployeeDailyPerError> divEr67 = errors.stream().filter(c -> c.getErrorAlarmWorkRecordCode() != null

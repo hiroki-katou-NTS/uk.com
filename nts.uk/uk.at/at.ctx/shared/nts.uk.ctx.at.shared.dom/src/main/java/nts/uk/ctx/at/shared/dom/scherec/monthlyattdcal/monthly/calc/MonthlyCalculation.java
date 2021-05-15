@@ -32,6 +32,8 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.export.Ge
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.export.GetRegularAggrSet;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.roleofovertimework.roleofovertimework.RoleOvertimeWorkEnum;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.roundingset.RoundingSetOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.vtotalmethod.DefoAggregateMethodOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.vtotalmethod.FlexAggregateMethodOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.MonAggrCompanySettings;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.MonAggrEmployeeSettings;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.MonthlyCalculatingDailys;
@@ -278,6 +280,9 @@ public class MonthlyCalculation implements SerializableWithOptional {
 		if (workplaceOpt.isPresent()) {
 			this.workplaceId = workplaceOpt.get().getWorkplaceId();
 		}
+		
+		this.settingsByFlex.setFlexAggregateMethodMonthly(companySets.getVerticalTotalMethod().getFlexAggregateMethod());
+		this.settingsByDefo.setDefoAggregateMethod(companySets.getVerticalTotalMethod().getDefoAggregateMethod());
 
 		// 「締め」 取得
 		this.closureOpt = Optional.ofNullable(companySets.getClosureMap().get(closureId.value));
@@ -345,13 +350,12 @@ public class MonthlyCalculation implements SerializableWithOptional {
 
 		// 残業枠の役割
 		for (val roleOverTimeFrame : companySets.getRoleOverTimeFrameList()) {
-			this.settingsByReg.getRoleOverTimeFrameMap().putIfAbsent(roleOverTimeFrame.getOvertimeFrNo().v(),
-					roleOverTimeFrame);
-			this.settingsByDefo.getRoleOverTimeFrameMap().putIfAbsent(roleOverTimeFrame.getOvertimeFrNo().v(),
-					roleOverTimeFrame);
+			val otFrameNo = roleOverTimeFrame.getOvertimeWorkFrNo().v().intValue();
+			this.settingsByReg.getRoleOverTimeFrameMap().putIfAbsent(otFrameNo, roleOverTimeFrame);
+			this.settingsByDefo.getRoleOverTimeFrameMap().putIfAbsent(otFrameNo, roleOverTimeFrame);
 
 			// 自動的に除く残業枠
-			if (roleOverTimeFrame.getRoleOTWorkEnum() != RoleOvertimeWorkEnum.MIX_IN_OUT_STATUTORY)
+			if (roleOverTimeFrame.getRole() != RoleOvertimeWorkEnum.MIX_IN_OUT_STATUTORY)
 				continue;
 			this.settingsByReg.getAutoExceptOverTimeFrames().add(roleOverTimeFrame);
 			this.settingsByDefo.getAutoExceptOverTimeFrames().add(roleOverTimeFrame);
@@ -393,24 +397,25 @@ public class MonthlyCalculation implements SerializableWithOptional {
 				break;
 			}
 			val monAndWeekStatTime = monAndWeekStatTimeOpt.get();
-			int weekMinutes = monAndWeekStatTime.getWeeklyEstimateTime().v();
-			int monthMinutes = monAndWeekStatTime.getMonthlyEstimateTime().v();
-			this.statutoryWorkingTime = new AttendanceTimeMonth(monthMinutes);
-			this.settingsByReg.setStatutoryWorkingTimeWeek(new AttendanceTimeMonth(weekMinutes));
-			this.settingsByReg.setStatutoryWorkingTimeMonth(new AttendanceTimeMonth(monthMinutes));
-			this.settingsByDefo.setStatutoryWorkingTimeWeek(new AttendanceTimeMonth(weekMinutes));
-			this.settingsByDefo.setStatutoryWorkingTimeMonth(new AttendanceTimeMonth(monthMinutes));
+			val weekMinutes = new AttendanceTimeMonth(monAndWeekStatTime.getWeeklyEstimateTime().v());
+			val monthMinutes = new AttendanceTimeMonth(monAndWeekStatTime.getMonthlyEstimateTime().v());
+			/** 按分した法定労働時間を取得する　（月別実績に保存する用） */
+			this.statutoryWorkingTime = companySets.getVerticalTotalMethod().getDefoAggregateMethod().getStatutoryWorkingTime(
+					require, cacheCarrier, employeeId, yearMonth, monthMinutes, weekMinutes, procPeriod, closureId);
+			this.settingsByReg.setStatutoryWorkingTimeWeek(weekMinutes);
+			this.settingsByReg.setStatutoryWorkingTimeMonth(monthMinutes);
+			this.settingsByDefo.setStatutoryWorkingTimeWeek(weekMinutes);
+			this.settingsByDefo.setStatutoryWorkingTimeMonth(monthMinutes);
 			break;
 		case FLEX_TIME_WORK:
 			val flexMonAndWeekStatTime = MonthlyStatutoryWorkingHours.flexMonAndWeekStatutoryTime(
 					require, cacheCarrier, companyId, this.employmentCd, employeeId, procPeriod.end(), yearMonth);
-			int statMinutes = flexMonAndWeekStatTime.getStatutorySetting().v();
-			int predMinutes = flexMonAndWeekStatTime.getSpecifiedSetting().v();
-			int weekAveMinutes = flexMonAndWeekStatTime.getWeekAveSetting().v();
-			this.statutoryWorkingTime = new AttendanceTimeMonth(statMinutes);
-			this.settingsByFlex.setStatutoryWorkingTimeMonth(new AttendanceTimeMonth(statMinutes));
-			this.settingsByFlex.setPrescribedWorkingTimeMonth(new AttendanceTimeMonth(predMinutes));
-			this.settingsByFlex.setWeekAverageTime(new AttendanceTimeMonth(weekAveMinutes));
+//			this.statutoryWorkingTime = this.settingsByFlex.getStatutoryWorkingTimeMonth(require, yearMonth, procPeriod, closureId,
+//					monthlyCompensatoryTime, this.monthlyCalculatingDailys.getAttendanceTimeOfDailyMap().values());
+			/** 按分した法定労働時間を取得する　（月別実績に保存する用） */
+			this.settingsByFlex.setStatutoryWorkingTimeMonth(new AttendanceTimeMonth(flexMonAndWeekStatTime.getStatutorySetting().v()));
+			this.settingsByFlex.setPrescribedWorkingTimeMonth(new AttendanceTimeMonth(flexMonAndWeekStatTime.getSpecifiedSetting().v()));
+			this.settingsByFlex.setWeekAverageTime(new AttendanceTimeMonth(flexMonAndWeekStatTime.getWeekAveSetting().v()));
 			
 			// 退職日が当月の期間内の時、翌月繰越可能時間 = 0
 			if (this.isRetireMonth)
@@ -568,14 +573,17 @@ public class MonthlyCalculation implements SerializableWithOptional {
 			ConcurrentStopwatches.start("12223:通常変形の月単位：");
 
 			// 通常・変形労働勤務の月単位の時間を集計する
-			this.actualWorkingTime.aggregateMonthlyHours(require, this.companyId, this.employeeId, this.yearMonth,
+			this.actualWorkingTime.aggregateMonthlyHours(require, cacheCarrier, this.companyId, this.employeeId, this.yearMonth,
 					this.closureId, this.closureDate, aggrPeriod, this.workingSystem, aggrAtr, this.isRetireMonth,
 					this.workplaceId, this.employmentCd, this.settingsByReg, this.settingsByDefo, this.aggregateTime);
 
 			ConcurrentStopwatches.stop("12223:通常変形の月単位：");
-		}
-		// フレックス時間勤務 の時
-		else if (this.workingSystem == WorkingSystem.FLEX_TIME_WORK) {
+		} else if (this.workingSystem == WorkingSystem.FLEX_TIME_WORK) { // フレックス時間勤務 の時
+			
+			/** 月の法定労働時間を取得する。*/
+			this.statutoryWorkingTime = this.settingsByFlex.getStatutoryWorkingTimeMonth(require, yearMonth, procPeriod, closureId,
+					Optional.of(this.aggregateTime.getVacationUseTime().getCompensatoryLeave()), 
+					this.monthlyCalculatingDailys.getAttendanceTimeOfDailyMap().values());
 
 			// フレックス集計方法を取得する
 			val flexAggrMethod = this.settingsByFlex.getFlexAggrSet().getAggrMethod();
@@ -596,7 +604,8 @@ public class MonthlyCalculation implements SerializableWithOptional {
 			// フレックス勤務の月単位の時間を集計する
 			this.flexTime.aggregateMonthlyHours(require, cacheCarrier, this.companyId, this.employeeId, this.yearMonth, 
 					this.closureId, aggrPeriod, aggrAtr, flexAggrMethod, this.workingConditionItem, this.workplaceId, 
-					this.employmentCd, this.companySets, this.employeeSets, this.settingsByFlex, this.aggregateTime);
+					this.employmentCd, this.companySets, this.employeeSets, this.settingsByFlex, this.aggregateTime,
+					this.closureDate, this.monthlyCalculatingDailys.getAttendanceTimeOfDailyMap().values());
 
 			ConcurrentStopwatches.stop("12223:フレックスの月単位：");
 		}
@@ -617,9 +626,9 @@ public class MonthlyCalculation implements SerializableWithOptional {
 			this.addAnnualLeaveUseTime();
 
 			// フレックス勤務の就業時間を求める （Redmine#106235）
-			val workTimeOpt = this.flexTime.askWorkTimeOfFlex(this.companyId, this.employeeId, this.yearMonth,
+			val workTimeOpt = this.flexTime.askWorkTimeOfFlex(require, this.companyId, this.employeeId, this.closureId, this.yearMonth,
 					aggrPeriod, this.settingsByFlex.getFlexAggrSet().getAggrMethod(), settingsByFlex,
-					this.aggregateTime);
+					this.aggregateTime, this.monthlyCalculatingDailys.getAttendanceTimeOfDailyMap().values());
 			if (workTimeOpt.isPresent()) {
 				this.aggregateTime.getWorkTime().setWorkTime(workTimeOpt.get());
 			}
@@ -1345,7 +1354,8 @@ public class MonthlyCalculation implements SerializableWithOptional {
 	
 	public static interface RequireM5 extends GetRegularAggrSet.RequireM1, RequireM0, 
 		GetDeforAggrSet.RequireM1, GetFlexAggrSet.RequireM1, MonthlyStatutoryWorkingHours.RequireM4,
-		MonthlyStatutoryWorkingHours.RequireM1{
+		MonthlyStatutoryWorkingHours.RequireM1, DefoAggregateMethodOfMonthly.Require,
+		FlexAggregateMethodOfMonthly.Require {
 		
 		Optional<UsageUnitSetting> usageUnitSetting(String companyId);
 		

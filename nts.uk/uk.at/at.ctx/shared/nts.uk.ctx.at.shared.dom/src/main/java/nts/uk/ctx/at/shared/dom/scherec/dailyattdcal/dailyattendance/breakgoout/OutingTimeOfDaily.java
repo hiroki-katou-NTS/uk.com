@@ -69,6 +69,19 @@ public class OutingTimeOfDaily {
 		this.outingTimeSheets = outingTimeSheets;
 	}
 	
+	/** 相殺代休時間を求める */
+	public AttendanceTime getOffsetCompensatoryTime() {
+		
+		/** IF ＠控除用合計時間.合計時間。計算時間　＜　＠休暇使用時間。時間代休使用時間 */
+		if (this.deductionTotalTime.getTotalTime().getCalcTime().lessThan(this.timeVacationUseOfDaily.getTimeCompensatoryLeaveUseTime())) {
+			/** Return　＠控除用合計時間.合計時間。計算時間	*/
+			return this.deductionTotalTime.getTotalTime().getCalcTime();
+		}
+		
+		/** Return　＠休暇使用時間。時間代休使用時間 */
+		return this.timeVacationUseOfDaily.getTimeCompensatoryLeaveUseTime();
+	}
+	
 	/**
 	 * 日別実績の外出時間
 	 * @param recordClass 時間帯作成、時間計算で再取得が必要になっているクラスたちの管理クラス
