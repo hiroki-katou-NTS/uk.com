@@ -50,7 +50,7 @@
 
     <div class=" value">
       <div class="col-12" style="text-align: center;">
-        <label class="col-6 px-0">
+        <label class="col-12 px-0">
         {{screenData.attendanceItem.attendance}}
         </label>
       </div>
