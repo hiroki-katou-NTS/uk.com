@@ -184,7 +184,7 @@ module nts.uk.ui.kdp001.a {
                 <!-- ko if: !$component.message.display() -->
                     <!-- ko if: $component.poral -->
                         <div class="kdp-001-a-potal" data-bind="
-                                widget-content: 168,
+                                widget-content: 149,
                                 css: {  'has-info-long': $component.lengthStamps() === 'long' ,
                                         'has-info-short': $component.lengthStamps() === 'short'}
                                 ">
@@ -365,7 +365,7 @@ module nts.uk.ui.kdp001.a {
                 }
                 .kdp-001-a-potal.widget-content {
                     border: 1px solid #b1b1b1;
-                    max-height: 168px;
+                    max-height: 149px;
                     width: 448px;
                     margin: 5px auto;
                     border-radius: 3px;
