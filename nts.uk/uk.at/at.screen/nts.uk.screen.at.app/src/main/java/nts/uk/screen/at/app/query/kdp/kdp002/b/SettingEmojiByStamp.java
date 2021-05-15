@@ -37,9 +37,9 @@ public class SettingEmojiByStamp {
 		
 		result = emojiStateMng.get().getManageEmojiState().value == 0 ? false : true;
 		
-		if (emojiStateMng.get().getEmojiStateSetting().getEmijiName().v().equals("")){
-			result = false;
-		}
+//		if (emojiStateMng.get().getEmojiStateSetting().getEmijiName().v().equals("")){
+//			result = false;
+//		}
 		
 		return result;
 	}
