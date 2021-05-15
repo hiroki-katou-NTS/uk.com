@@ -383,7 +383,7 @@ module nts.uk.at.kdp003.f {
 									if (data) {
 										roleEmployee = data;
 										if (roleEmployee.employeeReferenceRange == 3) {
-											vm.$dialog.error({ messageId: 'Msg_1887'});
+											vm.$dialog.error({ messageId: 'Msg_1887' });
 										}
 									}
 								})
@@ -428,16 +428,11 @@ module nts.uk.at.kdp003.f {
 			const { password, companyCode } = model;
 			const companies: CompanyItem[] = ko.unwrap(vm.listCompany);
 
-
 			const message = ko.unwrap(vm.message);
 
 			var dataResultLogin: TimeStampLoginData;
 
 			var roleEmployee: RoleEmployee;
-
-			// if (companyCode) {
-			// 	return vm.$dialog.error({ messageId: 'Msg_301'});
-			// }
 
 			if (message) {
 				return vm.$dialog.error(message);
@@ -453,6 +448,9 @@ module nts.uk.at.kdp003.f {
 				.then((valid: boolean) => {
 					if (!valid) {
 						return;
+					}
+					if (companyCode === '') {
+						return vm.$dialog.error({ messageId: 'Msg_301' });
 					}
 					vm.$blockui('show')
 						.then(() => vm.$ajax(api, model))
@@ -474,7 +472,7 @@ module nts.uk.at.kdp003.f {
 									if (data) {
 										roleEmployee = data;
 										if (roleEmployee.employeeReferenceRange == 3) {
-											vm.$dialog.error({ messageId: 'Msg_1887'});
+											vm.$dialog.error({ messageId: 'Msg_1887' });
 										}
 									}
 								})
