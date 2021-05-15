@@ -135,16 +135,16 @@ public class CancellationOfApplicationTest {
 						createAppReflectHist(null, Pair.of(28, "002"), Pair.of(34, "600")));
 				
 				converter.toDomain();
-				result = createItemId(createDomain(28, 29, 31), 29, "003");
+				result = createItemId(createDomain(28, 29), 29, "003");
 			}
 		};
 		
-		val domainBefore = createDomain(28, 29, 31);
+		val domainBefore = createDomain(28, 29);
 		assertThat(domainBefore.getWorkInformation().getRecordInfo().getWorkTypeCode().v()).isEqualTo("AAA");// item28
 		assertThat(domainBefore.getWorkInformation().getRecordInfo().getWorkTimeCode().v()).isEqualTo("BBB");// item29
 		assertThat(domainBefore.getAttendanceLeave().get().getAttendanceLeavingWork(1).get().getAttendanceStamp().get()
 				.getStamp()// item31
-				.get().getTimeDay().getTimeWithDay().get().v()).isEqualTo(654);
+				.get().getTimeDay().getTimeWithDay().get().v()).isEqualTo(480);
 		
 		DailyAfterAppReflectResult actualResult = CancellationOfApplication.process(require, app, GeneralDate.ymd(2021, 4, 21),
 				ScheduleRecordClassifi.RECORD, domainBefore);// 日別勤怠(work）.編集状態
@@ -153,9 +153,9 @@ public class CancellationOfApplicationTest {
 		
 		assertThat(actualResult.getDomainDaily().getWorkInformation().getRecordInfo().getWorkTypeCode().v()).isEqualTo("AAA");// item28
 		assertThat(actualResult.getDomainDaily().getWorkInformation().getRecordInfo().getWorkTimeCode().v()).isEqualTo("003");// item29
-		assertThat(actualResult.getDomainDaily().getAttendanceLeave().get().getAttendanceLeavingWork(0).get().getAttendanceStamp().get()
+		assertThat(actualResult.getDomainDaily().getAttendanceLeave().get().getAttendanceLeavingWork(1).get().getAttendanceStamp().get()
 				.getStamp()// item31
-				.get().getTimeDay().getTimeWithDay().get().v()).isEqualTo(654);
+				.get().getTimeDay().getTimeWithDay().get().v()).isEqualTo(480);
 
 	}
 	
@@ -196,7 +196,7 @@ public class CancellationOfApplicationTest {
 	 * 
 	 */
 	@Test
-	public void test4(@Mocked AcquireAppReflectHistForCancel appHist) {
+	public void test4(@Mocked AcquireAppReflectHistForCancel appHist,@Mocked DailyRecordToAttendanceItemConverter converter) {
 
 		ApplicationShare app = ReflectApplicationHelper.createAppShare(PrePostAtrShare.PREDICT);
 
@@ -210,12 +210,20 @@ public class CancellationOfApplicationTest {
 				require.findAppReflectHistAfterMaxTime(anyString, (GeneralDate) any, (ScheduleRecordClassifi) any,
 						anyBoolean, GeneralDateTime.min());
 				result = Arrays.asList();
+				
+				converter.toDomain();
+				result = createItemId(createDomain(28), 28, "002");
 			}
 		};
+		
+		val domainBefore = createDomain(28);
+		assertThat(domainBefore.getWorkInformation().getRecordInfo().getWorkTypeCode().v()).isEqualTo("AAA");// item28
 		DailyAfterAppReflectResult actualResult = CancellationOfApplication.process(require, app, GeneralDate.ymd(2021, 4, 21),
-				ScheduleRecordClassifi.RECORD, createDomain(28));// 日別勤怠(work）.編集状態
+				ScheduleRecordClassifi.RECORD, domainBefore);// 日別勤怠(work）.編集状態
 
 		assertThat(actualResult.getLstItemId()).containsExactly(28);
+		
+		assertThat(actualResult.getDomainDaily().getWorkInformation().getRecordInfo().getWorkTypeCode().v()).isEqualTo("002");// item28
 
 	}
 
@@ -254,12 +262,17 @@ public class CancellationOfApplicationTest {
 				result = createDomain(28);
 			}
 		};
+		
+		val domainBefore = createDomain(28);
+		assertThat(domainBefore.getWorkInformation().getRecordInfo().getWorkTypeCode().v()).isEqualTo("AAA");// item28
 		DailyAfterAppReflectResult actualResult = CancellationOfApplication.process(require, app, GeneralDate.ymd(2021, 4, 21),
-				ScheduleRecordClassifi.RECORD, createDomain(28));// 日別勤怠(work）.編集状態
+				ScheduleRecordClassifi.RECORD, domainBefore);// 日別勤怠(work）.編集状態
 
 		assertThat(actualResult.getDomainDaily().getEditState())
 				.extracting(x -> x.getAttendanceItemId(), x -> x.getEditStateSetting())
 				.containsExactly(Tuple.tuple(28, EditStateSetting.HAND_CORRECTION_MYSELF));
+		
+		assertThat(actualResult.getDomainDaily().getWorkInformation().getRecordInfo().getWorkTypeCode().v()).isEqualTo("AAA");// item28
 
 	}
 	
