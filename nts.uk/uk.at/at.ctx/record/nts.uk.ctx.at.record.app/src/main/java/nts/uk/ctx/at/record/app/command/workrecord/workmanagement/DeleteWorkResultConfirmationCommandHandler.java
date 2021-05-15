@@ -53,7 +53,7 @@ public class DeleteWorkResultConfirmationCommandHandler extends CommandHandler<D
 
 		@Override
 		public void delete(ConfirmationWorkResults confirmationWorkResults) {
-			confirmationWorkResultsRepo.insert(confirmationWorkResults);
+			confirmationWorkResultsRepo.delete(confirmationWorkResults);
 		}
 
 		@Override
