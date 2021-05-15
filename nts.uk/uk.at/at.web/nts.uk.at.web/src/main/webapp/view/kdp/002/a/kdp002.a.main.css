@@ -15,7 +15,8 @@ html{
 }
 
 #kdp002a.has-info-work2 {
-  width: 833px;
+  max-width: 833px;
+  width: 100%;
 }
 
 .kdp002a {
@@ -33,11 +34,11 @@ html{
 
 #stamp-desc{
   height: 73px;
-  width: 102vmin;
-  font-size: 1.5vmin;
-  padding: 0 0 0 0.5vmin;
-  word-break: break-word;
-  word-wrap: break-word;
+    width: 100%;
+    font-size: 1.5vmin;
+    padding: 0 0 0 1vmin;
+    word-break: break-word;
+    word-wrap: break-word;
 }
 
 #stamp-date {
@@ -49,7 +50,8 @@ html{
   margin-top: 10px;
 }
 #stamp-header {
-  padding: 10px;
+  padding: 0px 0px 10px;
+  margin: 0;
 }
 #stamp-header .panel {
   padding: 0px;
@@ -128,4 +130,9 @@ html{
 
 .tab-button-panel.has-tab.has-comment+div.pull-left {
   padding-top: 74px !important;
+  width: 28vmin;
+}
+
+#stamp-input .stampFullScreen {
+	width: 100%;
 }

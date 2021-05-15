@@ -29,16 +29,18 @@
                             'has-info-work2': $vm.state() === 'state1'}">
           <div data-bind="stamp-clock: { setting: stampSetting() }"></div>
           <!-- </div> --> 
-          <div id="stamp-input" class="pull-left" data-bind="kdp-tab-button-panel: { 
+          <div id="stamp-input" class="pull-left" data-bind="style:{'width': stampGrid().displayMethod() == 0 ? '100vmin': '65vmin'},
+          kdp-tab-button-panel: { 
             tabs: stampTab().tabs,
             stampToSuppress: $vm.stampToSuppress,
             click: function(btn, layout) { $vm.clickBtn1.apply($vm, [btn, layout]); },
             marginBottom: 0
           }"></div> 
+          <com:ko-if bind=" stampGrid().displayMethod() != 0 ">
           	<div class="pull-left" id="stamp-info">
               <ui:include src="emboss-info.xhtml" />
           	</div>
-          
+          </com:ko-if>
         </div>
       </div>
     </ui:define>
