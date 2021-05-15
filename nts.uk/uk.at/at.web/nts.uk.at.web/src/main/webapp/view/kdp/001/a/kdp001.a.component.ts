@@ -48,7 +48,8 @@ module nts.uk.ui.kdp001.a {
         getSettingStampInput: '/at/record/stamp/employment_system/get_setting_stamp_input',
         getOmissionContents: '/at/record/stamp/employment_system/get_omission_contents',
         getStampToSuppress: '/at/record/stamp/employment_system/get_stamp_to_suppress',
-        getLocation: 'at/record/stamp/employment_system/get_location_stamp_input'
+        getLocation: 'at/record/stamp/employment_system/get_location_stamp_input',
+        WORKPLACE_INFO: "screen/at/kdp003/workplace-info"
     };
 
     //個人
@@ -788,10 +789,24 @@ module nts.uk.ui.kdp001.a {
                     .then(() => {
                         vm.$ajax(REST_API.getLocation, param)
                             .done((data: IBasyo) => {
+
                                 if (data) {
                                     vm.workpalceCD(locationCd);
-                                    vm.workLocationName(data.workLocationName);
                                     vm.workplaceId(data.workpalceId);
+                                }
+
+                                if (ko.unwrap(vm.workplaceId) !== null) {
+                                    const param = { sid: __viewContext.user.employeeId, workPlaceIds: [ko.unwrap(vm.workplaceId)] };
+        
+                                    vm.$ajax(REST_API.WORKPLACE_INFO, param)
+                                        .then((workPlace: any) => {
+        
+                                            if (workPlace) {
+                                                if (workPlace.workPlaceInfo.length > 0) {
+                                                    vm.workLocationName(workPlace.workPlaceInfo[0].workplaceName)
+                                                }
+                                            }
+                                        })
                                 }
                             })
                     })
