@@ -598,7 +598,7 @@ module nts.uk.ui.kdp001.a {
 
                         vm.time.style(`color: ${textColor || DEFAULT_COLOR_TIME};`);
 
-                        if (ko.unwrap(vm.message.data).messageId = 'Msg_1645') {
+                        if (ko.unwrap(vm.message.data).messageId === 'Msg_1645') {
                             vm.time.style(`color: DEFAULT_COLOR_TIME;`);
                         }
 
