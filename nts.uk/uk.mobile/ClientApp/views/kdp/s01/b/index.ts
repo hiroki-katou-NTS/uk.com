@@ -77,7 +77,10 @@ export class KdpS01BComponent extends Vue {
         });
 
         vm.$http.post('at', servicePath.getEmojiSetting).then((result: any) => {
-            vm.isEmotionMode = result.data;
+           
+            if (result.data == true && _.includes (['出勤', '出勤応援'], vm.screenData.stampAtr)) {
+                vm.isEmotionMode = true;
+            }
 
             if (!vm.isEmotionMode) {
                 vm.InitCountTime();
