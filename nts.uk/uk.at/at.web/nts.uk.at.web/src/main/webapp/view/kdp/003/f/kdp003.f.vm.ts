@@ -383,7 +383,7 @@ module nts.uk.at.kdp003.f {
 									if (data) {
 										roleEmployee = data;
 										if (roleEmployee.employeeReferenceRange == 3) {
-											vm.$dialog.error({ messageId: 'Msg_1887'});
+											vm.$dialog.error({ messageId: 'Msg_1887' });
 										}
 									}
 								})
@@ -449,6 +449,9 @@ module nts.uk.at.kdp003.f {
 					if (!valid) {
 						return;
 					}
+					if (companyCode === '') {
+						return vm.$dialog.error({ messageId: 'Msg_301' });
+					}
 					vm.$blockui('show')
 						.then(() => vm.$ajax(api, model))
 						.fail((response: any) => {
@@ -469,7 +472,7 @@ module nts.uk.at.kdp003.f {
 									if (data) {
 										roleEmployee = data;
 										if (roleEmployee.employeeReferenceRange == 3) {
-											vm.$dialog.error({ messageId: 'Msg_1887'});
+											vm.$dialog.error({ messageId: 'Msg_1887' });
 										}
 									}
 								})

@@ -100,22 +100,6 @@ module nts.uk.at.view.kdp002.c {
 				let itemIds: DISPLAY_ITEM_IDS = nts.uk.ui.windows.getShared("KDP010_2C");
 				self.infoEmpFromScreenA = nts.uk.ui.windows.getShared("infoEmpToScreenC");
 
-				self.getNotification();
-
-				self.$window.shared("screenC").done((nameScreen: any) => {
-					switch (nameScreen.screen) {
-						case 'KDP001':
-						case 'KDP002':
-							self.showBtnNoti(false);
-							// 	break
-							// case 'KDP003':
-							// case 'KDP004':
-							// case 'KDP005':
-							// 	self.showBtnNoti(true);
-							break
-					}
-				});
-
 				if (self.infoEmpFromScreenA.workLocationName) {
 					self.laceName(self.infoEmpFromScreenA.workLocationName);
 				}
@@ -194,6 +178,20 @@ module nts.uk.at.view.kdp002.c {
 						self.permissionCheck(res.confirmResult.permissionCheck == 1);
 					} else {
 						self.displayButton(false);
+					}
+				});
+
+				self.$window.shared("screenC").done((nameScreen: any) => {
+					switch (nameScreen.screen) {
+						case 'KDP001':
+						case 'KDP002':
+							self.showBtnNoti(false);
+							break
+						case 'KDP003':
+						case 'KDP004':
+						case 'KDP005':
+							self.getNotification();
+							break
 					}
 				});
 
