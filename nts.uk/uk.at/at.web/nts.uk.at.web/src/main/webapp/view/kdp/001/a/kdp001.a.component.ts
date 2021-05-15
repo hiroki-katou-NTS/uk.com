@@ -774,7 +774,8 @@ module nts.uk.ui.kdp001.a {
         basyo() {
             const vm = this,
                 params = new URLSearchParams(window.location.search),
-                locationCd = params.get('basyo');
+                locationCd = params.get('basyo'),
+                mode = params.get('mode');
 
             if (locationCd) {
                 vm.modeBasyo(true)
@@ -797,6 +798,12 @@ module nts.uk.ui.kdp001.a {
                     .always(() => {
                         vm.$blockui('clear');
                     });
+            }
+
+            if (mode) {
+                if (mode === 'a') {
+                    vm.modeA(true);
+                }
             }
         }
 
