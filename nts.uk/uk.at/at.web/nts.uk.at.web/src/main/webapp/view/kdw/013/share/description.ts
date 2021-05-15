@@ -1,4 +1,4 @@
-module nts.uk.ui.at.kdp013.share {
+module nts.uk.ui.at.kdw013.share {
     const { countHalf } = nts.uk.text;
 
     @handler({
@@ -51,7 +51,7 @@ module nts.uk.ui.at.kdp013.share {
                 .$validate
                 .constraint(constraint)
                 .then((value: vm.Constraint) => {
-                    console.log(value);
+                    // console.log(value);
                 });
 
             value

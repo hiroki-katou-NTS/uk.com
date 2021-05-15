@@ -3,9 +3,10 @@
 /// <reference path="../../../../../lib/generic/fullcalendar/timegrid.d.ts" />
 /// <reference path="../../../../../lib/generic/fullcalendar/interaction.d.ts" />
 
-module nts.uk.ui.components.fullcalendar {
+module nts.uk.ui.at.kdw013.calendar {
     const { randomId } = nts.uk.util;
     const { version } = nts.uk.util.browser;
+    const { getTimeOfDate } = at.kdw013.share;
 
     type Calendar = FullCalendar.Calendar;
     export type EventApi = Partial<FullCalendar.EventApi>;
@@ -821,7 +822,8 @@ module nts.uk.ui.components.fullcalendar {
                 availableView,
                 viewModel,
                 validRange,
-                attendanceTimes
+                attendanceTimes,
+                $settings
             } = params;
             const $caches: {
                 new: KnockoutObservable<EventApi | null>;
@@ -1029,6 +1031,61 @@ module nts.uk.ui.components.fullcalendar {
                 .subscribe(c => {
                     if (!c) {
                         $(`.${POWNER_CLASS_CPY}`).removeClass(POWNER_CLASS_CPY);
+                    }
+                });
+
+            // update drag item
+            $settings
+                .subscribe((settings: a.StartProcessDto | null) => {
+                    if (settings) {
+                        const { startManHourInputResultDto } = settings;
+
+                        if (startManHourInputResultDto) {
+                            const { tasks } = startManHourInputResultDto;
+
+                            if (tasks && tasks.length) {
+                                const draggers: EventRaw[] = _
+                                    .chain(tasks)
+                                    .map(({
+                                        taskFrameNo,
+                                        childTaskList,
+                                        code,
+                                        cooperationInfo,
+                                        displayInfo,
+                                        expirationEndDate,
+                                        expirationStartDate
+                                    }) => {
+                                        const {
+                                            taskName: title,
+                                            color: backgroundColor
+                                        } = displayInfo;
+                                        const relateId = randomId();
+
+                                        return {
+                                            start: new Date(),
+                                            end: new Date(),
+                                            title,
+                                            backgroundColor,
+                                            textColor: '',
+                                            extendedProps: {
+                                                relateId,
+                                                status: 'new',
+                                                taskFrameNo,
+                                                code,
+                                                cooperationInfo,
+                                                displayInfo,
+                                                expirationEndDate,
+                                                expirationStartDate,
+                                                childTaskList,
+                                            } as any
+                                        };
+                                    })
+                                    .value();
+
+                                // update dragger items
+                                vm.dragItems(draggers);
+                            }
+                        }
                     }
                 });
 
@@ -1418,8 +1475,6 @@ module nts.uk.ui.components.fullcalendar {
                         }
                     }
 
-                    vm.$dialog.error({ messageId: 'DATA_SOURCE_NOT_FOUND' });
-
                     return null;
                 }
             });
@@ -1676,8 +1731,15 @@ module nts.uk.ui.components.fullcalendar {
                         }
 
                         popupData.event(event);
-                        // update exclude-times at here
-                        // ??? 
+
+                        // update exclude-times
+                        const sameDayEvent = _
+                            .chain(vm.calendar.getEvents())
+                            .filter(({ start, id }) => id !== event.id && moment(start).isSame(event.start, 'day'))
+                            .map(({ start, end }) => ({ startTime: getTimeOfDate(start), endTime: getTimeOfDate(end) }))
+                            .value();
+
+                        popupData.excludeTimes(sameDayEvent);
 
                         // show popup on edit mode
                         popupPosition.event(el);
@@ -2215,6 +2277,10 @@ module nts.uk.ui.components.fullcalendar {
                     $caches.new(null);
                     mutatedEvents();
                 });
+
+            vm.$nextTick(() => {
+                vm.calendar.updateSize();
+            });
 
             // test item
             _.extend(window, { dragger, calendar: vm.calendar, params, popupPosition });

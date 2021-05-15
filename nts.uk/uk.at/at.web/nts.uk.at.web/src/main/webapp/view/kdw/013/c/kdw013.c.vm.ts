@@ -1,10 +1,8 @@
-module nts.uk.ui.at.kdp013.c {
+module nts.uk.ui.at.kdw013.c {
     const COMPONENT_NAME = 'kdp013c';
 
     const DATE_FORMAT = 'YYYY-MM-DD';
     const DATE_TIME_FORMAT = 'YYYY-MM-DDT00:00:00.000\\Z';
-
-    import calendar = nts.uk.ui.components.fullcalendar;
 
     const style = `.edit-event {
         width: 350px;
