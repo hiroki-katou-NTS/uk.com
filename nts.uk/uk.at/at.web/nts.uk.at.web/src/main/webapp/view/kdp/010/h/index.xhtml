@@ -365,7 +365,7 @@
 										data-bind="click: openHDialog.bind($data,8), style:{ 'background-color' :  buttonInfo()[7].buttonColor()}">
 										<com:ko-if bind="buttonInfo()[7].usrArt() != 0">
 											<img width="60px" height="60px" data-bind="attr:{src: buttonInfo()[7].icon}" />
-											<div class="label" data-bind="text: buttonInfo()[7].buttonName 
+											<div class="label" data-bind="text: buttonInfo()[7].buttonName, 
 																		  style: {
 																		  	'font-size': 
 																		  		buttonInfo()[7].buttonName().length > 17 ? '14px' :
