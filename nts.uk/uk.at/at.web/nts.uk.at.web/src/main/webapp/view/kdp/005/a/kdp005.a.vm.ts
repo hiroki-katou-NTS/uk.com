@@ -566,7 +566,11 @@ module nts.uk.at.view.kdp005.a {
 					mode: Mode.Personal,
 				});
 
-				modal('/view/kdp/002/c/index.xhtml', { screen: "KDP005" }).onClosed(function (): any {
+				setShared("screenC", {
+					screen: "KDP005"
+				});
+
+				modal('/view/kdp/002/c/index.xhtml').onClosed(function (): any {
 					self.openKDP002T(button, layout);
 				});
 			}
