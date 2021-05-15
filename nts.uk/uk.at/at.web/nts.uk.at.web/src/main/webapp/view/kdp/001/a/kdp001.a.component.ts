@@ -726,6 +726,7 @@ module nts.uk.ui.kdp001.a {
                 .$blockui("invisibleView")
                 .then(() => vm.$ajax('at', REST_API.registerStampInput, command))
                 .then((stampDate: string) => {
+                    
                     switch (buttonPositionNo) {
                         case 1:
                         case 3:
@@ -746,6 +747,8 @@ module nts.uk.ui.kdp001.a {
                 }))
                 .then((response: any) => {
 
+                    console.log(response);
+                    
                     if (response) {
                         const { dailyAttdErrorInfos } = response;
 
@@ -790,7 +793,7 @@ module nts.uk.ui.kdp001.a {
                         vm.$ajax(REST_API.getLocation, param)
                             .done((data: IBasyo) => {
 
-                                if (data) {
+                                if (data.workpalceId != null) {
                                     vm.workpalceCD(locationCd);
                                     vm.workplaceId(data.workpalceId);
                                 }
