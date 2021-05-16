@@ -23,19 +23,18 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.TimeSheetRoundingAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.CalculationRangeOfOneDay;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.DeductionAtr;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.ShortTimeWorkSheetWithoutWork;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.TimeSheetOfDeductionItem;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.outsideworktime.OverTimeFrameTimeSheetForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.withinworkinghours.WithinWorkTimeFrame;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.withinworkinghours.WithinWorkTimeSheet;
 import nts.uk.ctx.at.shared.dom.shortworktime.ChildCareAtr;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.StatutoryAtr;
-import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
  * 日別実績の短時間勤務時間
  * @author ken_takasu
- *
  */
 
 @Getter
@@ -58,32 +57,19 @@ public class ShortWorkTimeOfDaily {
 		this.childCareAttribute = childCareAttribute;
 	}
 	
-	
 	/**
 	 * 日別実績の短時間勤務時間
 	 * @param recordClass 実績
 	 * @param premiumAtr 割増区分
-	 * @param holidayCalcMethodSet 休暇の計算方法の設定
-	 * @param commonSetting 就業時間帯の共通設定
 	 * @return 日別実績の短時間勤務時間
 	 */
 	public static ShortWorkTimeOfDaily calcShortWorkTime(
 			ManageReGetClass recordClass,
-			PremiumAtr premiumAtr,
-			HolidayCalcMethodSet holidayCalcMethodSet,
-			Optional<WorkTimezoneCommonSet> commonSetting) {
+			PremiumAtr premiumAtr) {
 		
 		WorkTimes workTimes = new WorkTimes(0);
-		
-		DeductionTotalTime totalTime = DeductionTotalTime.of(
-				TimeWithCalculation.sameTime(new AttendanceTime(0)),
-				TimeWithCalculation.sameTime(new AttendanceTime(0)),
-				TimeWithCalculation.sameTime(new AttendanceTime(0)));
-		
-		DeductionTotalTime totalDeductionTime = DeductionTotalTime.of(
-				TimeWithCalculation.sameTime(new AttendanceTime(0)),
-				TimeWithCalculation.sameTime(new AttendanceTime(0)),
-				TimeWithCalculation.sameTime(new AttendanceTime(0)));
+		DeductionTotalTime totalTime = DeductionTotalTime.defaultValue();
+		DeductionTotalTime totalDeductionTime = DeductionTotalTime.defaultValue();
 		
 		ChildCareAtr careAtr = getChildCareAttributeToDaily(recordClass.getIntegrationOfDaily());
 		
@@ -95,24 +81,10 @@ public class ShortWorkTimeOfDaily {
 					.size());
 			
 			//計上時間の計算
-			totalTime = calculationDedBreakTime(
-					careAtr.isChildCare()?ConditionAtr.Child:ConditionAtr.Care,
-					DeductionAtr.Appropriate,
-					recordClass.getCalculationRangeOfOneDay(),
-					premiumAtr,
-					holidayCalcMethodSet,
-					commonSetting);
+			totalTime = calcTotalShortWorkTime(recordClass, DeductionAtr.Appropriate, careAtr, premiumAtr);
 			
-			if(decisionDeductChild(premiumAtr,recordClass.getHolidayCalcMethodSet())) {
-				//控除時間の計算
-				totalDeductionTime = calculationDedBreakTime(
-						careAtr.isChildCare()?ConditionAtr.Child:ConditionAtr.Care,
-						DeductionAtr.Deduction,
-						recordClass.getCalculationRangeOfOneDay(),
-						premiumAtr,
-						holidayCalcMethodSet,
-						commonSetting);
-			}
+			//控除時間の計算
+			totalDeductionTime = calcTotalShortWorkTime(recordClass, DeductionAtr.Deduction, careAtr, premiumAtr);
 		}
 		return new ShortWorkTimeOfDaily(workTimes, totalTime, totalDeductionTime, careAtr);
 	}
@@ -166,75 +138,84 @@ public class ShortWorkTimeOfDaily {
 		return new WorkTimes(result.size());
 	}
 	
-	
-	/**
-	 * 控除育児時間を計算するか判定
-	 * @param premiumAtr
-	 * @param holidayCalcMethodSet
-	 * @param commonSetting
-	 * @return
-	 */
-	private static boolean decisionDeductChild(PremiumAtr premiumAtr,HolidayCalcMethodSet holidayCalcMethodSet) {
-		boolean decisionDeductChild = true;
-		if(premiumAtr.isRegularWork()) {			
-			Optional<WorkTimeCalcMethodDetailOfHoliday> advancedSet = holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getAdvancedSet();				
-				if(advancedSet.isPresent()&&advancedSet.get().getCalculateIncludCareTime()==NotUseAtr.USE) {
-					decisionDeductChild = false;
-				}
-		}else {
-			Optional<PremiumCalcMethodDetailOfHoliday> advanceSet = holidayCalcMethodSet.getPremiumCalcMethodOfHoliday().getAdvanceSet();
-				if(advanceSet.isPresent()&&advanceSet.get().getCalculateIncludCareTime()==NotUseAtr.USE) {
-					decisionDeductChild = true;
-				}
-		}
-		return decisionDeductChild;
-	}
-	
-	/**
-	 * 合計時間算出
-	 * @param conditionAtr 条件
-	 * @param dedAtr 控除区分
-	 * @param oneDay 1日の計算範囲
-	 * @param premiumAtr 割増区分
-	 * @param holidayCalcMethodSet 休暇の計算方法の設定
-	 * @param commonSetting 就業時間帯の共通設定
-	 * @return 控除合計時間
-	 */
-	public static DeductionTotalTime calculationDedBreakTime(
-			ConditionAtr conditionAtr,
-			DeductionAtr dedAtr,
-			CalculationRangeOfOneDay oneDay,
-			PremiumAtr premiumAtr,
-			HolidayCalcMethodSet holidayCalcMethodSet,
-			Optional<WorkTimezoneCommonSet> commonSetting) {
-		return createDudAllTime(conditionAtr,dedAtr,TimeSheetRoundingAtr.PerTimeSheet,oneDay,premiumAtr,holidayCalcMethodSet,commonSetting);
-	}
-	
 	/**
 	 * 短時間勤務時間の計算
-	 * @param conditionAtr 条件
+	 * @param recordClass 実績
 	 * @param dedAtr 控除区分
-	 * @param pertimesheet
-	 * @param oneDay 1日の計算範囲
+	 * @param careAtr 育児介護区分
 	 * @param premiumAtr 割増区分
-	 * @param holidayCalcMethodSet 休暇の計算方法の設定
-	 * @param commonSetting 就業時間帯の共通設定
 	 * @return 控除合計時間
 	 */
-	private static DeductionTotalTime createDudAllTime(
-			ConditionAtr conditionAtr,
+	public static DeductionTotalTime calcTotalShortWorkTime(
+			ManageReGetClass recordClass,
 			DeductionAtr dedAtr,
-			TimeSheetRoundingAtr pertimesheet,
-			CalculationRangeOfOneDay oneDay,
+			ChildCareAtr careAtr,
+			PremiumAtr premiumAtr){
+		
+		DeductionTotalTime result = DeductionTotalTime.defaultValue();
+		
+		// 短時間勤務を控除するかどうかの設定を確認
+		if (decisionDeductChild(dedAtr, premiumAtr, recordClass.getHolidayCalcMethodSet())){
+			CalculationRangeOfOneDay oneDay = recordClass.getCalculationRangeOfOneDay();
+			ConditionAtr conditionAtr = (careAtr.isChildCare() ? ConditionAtr.Child : ConditionAtr.Care);
+			// 所定内育児時間の計算
+			TimeWithCalculation withinTime = oneDay.getDeductionTime(
+					conditionAtr, dedAtr, StatutoryAtr.Statutory, TimeSheetRoundingAtr.ALL, Optional.empty());
+			// 所定外育児時間の計算
+			TimeWithCalculation excessTime = oneDay.getDeductionTime(
+					conditionAtr, dedAtr, StatutoryAtr.Excess, TimeSheetRoundingAtr.ALL, Optional.empty());
+			// 合計時間の計算
+			result = DeductionTotalTime.of(
+					withinTime.addMinutes(excessTime.getTime(), excessTime.getCalcTime()),
+					withinTime,
+					excessTime);
+		}
+		if (dedAtr.isAppropriate()){
+			if (recordClass.getCalculationRangeOfOneDay().getShortTimeWSWithoutWork().isPresent()){
+				ShortTimeWorkSheetWithoutWork withoutWork =
+						recordClass.getCalculationRangeOfOneDay().getShortTimeWSWithoutWork().get();
+				// 勤務外短時間勤務時間を累計する
+				ConditionAtr conditionAtr = ConditionAtr.Child;
+				if (careAtr.isCare()) conditionAtr = ConditionAtr.Care;
+				AttendanceTime withoutTime = withoutWork.sumShortWorkTimeWithoutWork(
+						conditionAtr, TimeSheetRoundingAtr.ALL, Optional.empty());
+				result = DeductionTotalTime.of(
+						result.getTotalTime().addMinutes(withoutTime, withoutTime),
+						result.getWithinStatutoryTotalTime(),
+						result.getExcessOfStatutoryTotalTime());
+			}
+		}
+		// 控除合計時間を返す
+		return result;
+	}
+	
+	/**
+	 * 短時間勤務を控除するかどうかの設定を確認
+	 * @param dedAtr 控除区分
+	 * @param premiumAtr 割増区分
+	 * @param holidayCalcMethodSet 休暇の計算方法の設定
+	 * @return true:控除する,false:控除しない
+	 */
+	private static boolean decisionDeductChild(
+			DeductionAtr dedAtr,
 			PremiumAtr premiumAtr,
-			HolidayCalcMethodSet holidayCalcMethodSet,
-			Optional<WorkTimezoneCommonSet> commonSetting) {
-		//所定内育児時間の計算
-		val withinDedTime = oneDay.calcWithinTotalTime(conditionAtr,dedAtr,StatutoryAtr.Statutory,pertimesheet,premiumAtr,holidayCalcMethodSet,commonSetting);
-		//所定外育児時間の計算
-		val excessDedTime = oneDay.calcWithinTotalTime(conditionAtr,dedAtr,StatutoryAtr.Excess,pertimesheet,premiumAtr,holidayCalcMethodSet,commonSetting);
-		//合計時間の計算&return 
-		return DeductionTotalTime.of(withinDedTime.addMinutes(excessDedTime.getTime(), excessDedTime.getCalcTime()), withinDedTime, excessDedTime);
+			HolidayCalcMethodSet holidayCalcMethodSet) {
+		
+		if (dedAtr.isAppropriate()) return true;
+		
+		if (premiumAtr.isRegularWork()) {			
+			Optional<WorkTimeCalcMethodDetailOfHoliday> advancedSet = holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getAdvancedSet();
+			if (advancedSet.isPresent()){
+				if (advancedSet.get().getCalculateIncludCareTime() == NotUseAtr.USE) return false;
+			}
+		}
+		else{
+			Optional<PremiumCalcMethodDetailOfHoliday> advanceSet = holidayCalcMethodSet.getPremiumCalcMethodOfHoliday().getAdvanceSet();
+			if (advanceSet.isPresent()){
+				if (advanceSet.get().getCalculateIncludCareTime() == NotUseAtr.USE) return true;
+			}
+		}
+		return true;
 	}
 	
 	/**
