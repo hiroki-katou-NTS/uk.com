@@ -85,7 +85,7 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
                                                                             value: startTime, 
                                                                             inputFormat: 'time', 
                                                                             mode: 'time',
-                                                                            enable: !$parents[1].viewMode(),
+                                                                            enable: !$parents[1].viewMode() &amp;&amp; enableInput(),
                                                                             required: startTimeRequired
                                                                         }, attr: {id: 'startTime-' + workNo}"/>
                                                     <span class="label" data-bind="text: $vm.$i18n('KAF012_30')"/>
@@ -96,14 +96,15 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
                                                                             value: endTime, 
                                                                             inputFormat: 'time', 
                                                                             mode: 'time',
-                                                                            enable: !$parents[1].viewMode(),
+                                                                            enable: !$parents[1].viewMode() &amp;&amp; enableInput(),
                                                                             required: endTimeRequired
                                                                         }, attr: {id: 'endTime-' + workNo}"/>
-                                                    <div style="width: 80px" data-bind="ntsComboBox: {
+                                                    <div style="display: inline-flex;" data-bind="if: displayCombobox() &amp;&amp; appTimeType() != 1 &amp;&amp; appTimeType() != 2">
+                                                        <div style="width: 80px" data-bind="ntsComboBox: {
                                                                                 name: $vm.$i18n('KAF012_32'),
                                                                                 options: ko.observableArray([
-                                                                                    {value: 4, name: $vm.$i18n('KAF012_33')},
-                                                                                    {value: 5, name: $vm.$i18n('KAF012_34')}
+                                                                                    {value: 0, name: $vm.$i18n('KAF012_33')},
+                                                                                    {value: 3, name: $vm.$i18n('KAF012_34')}
                                                                                 ]),
                                                                                 optionsValue: 'value',
                                                                                 optionsText: 'name',
@@ -113,8 +114,12 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
                                                                                 editable: false,
                                                                                 visibleItemsCount: 2,
                                                                                 enable: !$parents[1].viewMode()
-                                                                            },
-                                                                            css: {hidden: !displayCombobox()}"/>
+                                                                            }"/>
+                                                    </div>
+                                                    <span data-bind="text: $vm.$i18n('KAF012_33'), visible: appTimeType() == 0 &amp;&amp; !enableInput()"/><!--私用-->
+                                                    <span data-bind="text: $vm.$i18n('KAF012_52'), visible: appTimeType() == 1"/><!--公用-->
+                                                    <span data-bind="text: $vm.$i18n('KAF012_51'), visible: appTimeType() == 2"/><!--有償-->
+                                                    <span data-bind="text: $vm.$i18n('KAF012_34'), visible: appTimeType() == 3 &amp;&amp; !enableInput()"/><!--組合-->
                                                 </div>
                                             </div>
                                         </div>
@@ -522,10 +527,10 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
                                 endTime: vm.applyTimeData()[3].timeZones[0].startTime() || vm.applyTimeData()[3].scheduledTime(),
                             }
                         ],
-                        outingTimeZones: vm.applyTimeData()[4].display() ? vm.applyTimeData()[4].timeZones.filter(i => i.startTime() != null && i.endTime() != null)
+                        outingTimeZones: vm.applyTimeData()[4].display() ? vm.applyTimeData()[4].timeZones.filter(i => i.enableInput() && i.startTime() != null && i.endTime() != null)
                             .map(i => ({
                                 frameNo: i.workNo,
-                                outingAtr: i.appTimeType(),
+                                outingAtr: i.appTimeType() == GoingOutReason.PRIVATE ? AppTimeType.PRIVATE : AppTimeType.UNION,
                                 startTime: i.startTime(),
                                 endTime: i.endTime()
                             })) : []
@@ -724,6 +729,13 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
         PRIVATE = 4, /**	私用外出 */
         UNION = 5 /**	組合外出 */
     }
+
+    export enum GoingOutReason {
+        PRIVATE = 0,        /* 私用 */
+        PUBLIC = 1,         /* 公用 */
+        COMPENSATION = 2,   /* 有償 */
+        UNION = 3           /* 組合 */
+    }
     
     export class TimeZone {
         appTimeType: KnockoutObservable<number>;
@@ -734,9 +746,10 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
         displayCombobox: KnockoutObservable<boolean>;
         startTimeRequired: KnockoutObservable<boolean>;
         endTimeRequired: KnockoutObservable<boolean>;
+        enableInput: KnockoutComputed<boolean>;
 
         constructor(appTimeType: number, workNo: number, reflectSetting?: KnockoutObservable<ReflectSetting>) {
-            this.appTimeType = ko.observable(appTimeType);
+            this.appTimeType = ko.observable(GoingOutReason.PRIVATE);
             this.workNo = workNo;
             this.startTime = ko.observable(null);
             this.endTime = ko.observable(null);
@@ -777,6 +790,24 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
                 if (this.appTimeType() >= 4) {
                     this.validateTime(this.startTime(), value);
                 }
+            });
+
+            this.enableInput = ko.computed(() => {
+                if (this.appTimeType() == GoingOutReason.PUBLIC || this.appTimeType() == GoingOutReason.COMPENSATION)
+                    return false;
+                if (!this.displayCombobox()) {
+                    if (!!reflectSetting
+                        && !!reflectSetting()
+                        && reflectSetting().destination.privateGoingOut == 1
+                        && this.appTimeType() == GoingOutReason.UNION)
+                        return false;
+                    if (!!reflectSetting
+                        && !!reflectSetting()
+                        && reflectSetting().destination.unionGoingOut == 1
+                        && this.appTimeType() == GoingOutReason.PRIVATE)
+                        return false;
+                }
+                return true;
             });
         }
 
@@ -852,13 +883,13 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
                             && !!reflectSetting()
                             && reflectSetting().destination.privateGoingOut == 1
                             && reflectSetting().destination.unionGoingOut != 1)
-                            || timeZones.filter(i => i.appTimeType() == AppTimeType.PRIVATE).length > 0;
+                            || timeZones.filter(i => i.appTimeType() == GoingOutReason.PRIVATE && i.enableInput()).length > 0;
                     else if (appTimeType == AppTimeType.UNION)
                         return  (!!reflectSetting
                             && !!reflectSetting()
                             && reflectSetting().destination.unionGoingOut == 1
                             && reflectSetting().destination.privateGoingOut != 1)
-                            || timeZones.filter(i => i.appTimeType() == AppTimeType.UNION).length > 0;
+                            || timeZones.filter(i => i.appTimeType() == GoingOutReason.UNION && i.enableInput()).length > 0;
                     else return false;
                 }
                 return true;
