@@ -82,12 +82,13 @@ public class KscmtShiftTableRuleForOrg extends ContractUkJpaEntity implements Se
     }
 
     public ShiftTableRuleForOrganization toDomain() {
-        if (this.useWorkAvailabilityAtr == 0) {
+        TargetOrgIdenInfor target = TargetOrgIdenInfor.createFromTargetUnit(
+                TargetOrganizationUnit.valueOf(this.pk.targetUnit),
+                this.pk.targetID
+        );
+        if (this.kscmtShiftTableRuleForOrgAvai == null) {
             return new ShiftTableRuleForOrganization(
-                    TargetOrgIdenInfor.createFromTargetUnit(
-                            TargetOrganizationUnit.valueOf(this.pk.targetUnit),
-                            this.pk.targetID
-                    ),
+                    target,
                     new ShiftTableRule(
                             NotUseAtr.valueOf(usePublicAtr),
                             NotUseAtr.valueOf(useWorkAvailabilityAtr),
@@ -98,10 +99,7 @@ public class KscmtShiftTableRuleForOrg extends ContractUkJpaEntity implements Se
             );
         }
         return new ShiftTableRuleForOrganization(
-                TargetOrgIdenInfor.createFromTargetUnit(
-                        TargetOrganizationUnit.valueOf(this.pk.targetUnit),
-                        this.pk.targetID
-                ),
+                target,
                 kscmtShiftTableRuleForOrgAvai.toDomain(this.usePublicAtr, this.useWorkAvailabilityAtr)
         );
     }
