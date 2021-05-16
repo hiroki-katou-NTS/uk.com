@@ -137,9 +137,9 @@ public class KscmtFuncCtrBywkp extends ContractUkJpaEntity implements Serializab
             lstStartControl.add(FuncCtrlStartControl.ByPerson);
 
         List<FuncCtrlCompletionMethod> lstCompletionMethod = new ArrayList<>();
-        if (this.completionAndDecision == 1)
+        if (this.completionAndDecision != null && this.completionAndDecision == 1)
             lstCompletionMethod.add(FuncCtrlCompletionMethod.Confirm);
-        if (this.completionAndAlchk == 1)
+        if (this.completionAndAlchk != null && this.completionAndAlchk == 1)
             lstCompletionMethod.add(FuncCtrlCompletionMethod.AlarmCheck);
 
         Optional<CompletionMethodControl> completionMethodCtrl = this.completionMethod == null
