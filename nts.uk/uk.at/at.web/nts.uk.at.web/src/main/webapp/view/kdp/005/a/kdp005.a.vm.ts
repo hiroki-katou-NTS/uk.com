@@ -478,8 +478,6 @@ module nts.uk.at.view.kdp005.a {
 				};
 				const mode: number = 1;
 				const { employeeId, employeeCode } = employeeIdRegister;
-				const workLocationName = self.workplaceName;
-				const workpalceId = self.workplaceId;
 
 				let source = self.playAudio(button.audioType);
 
@@ -518,7 +516,7 @@ module nts.uk.at.view.kdp005.a {
 											let audio = new Audio(source);
 											audio.play();
 										}
-										const employeeInfo = { mode, employeeId, employeeCode, workLocationName, workpalceId };
+										const employeeInfo = { mode, employeeId, employeeCode, workLocationName, workplaceId };
 					
 										if (self.stampResultDisplay().notUseAttr == 1 && button.changeClockArt == 1) {
 											vm.$window.storage('infoEmpToScreenC', employeeInfo);
