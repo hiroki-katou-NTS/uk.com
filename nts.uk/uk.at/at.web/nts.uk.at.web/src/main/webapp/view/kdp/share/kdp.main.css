@@ -193,7 +193,6 @@
 .tab-button-panel .grid-container {
 	padding: 0 1vmin;
 	box-sizing: border-box;
-	padding-bottom: 5px;
 }
 
 .tab-button-panel .grid-container>div:not(:first-child) {
