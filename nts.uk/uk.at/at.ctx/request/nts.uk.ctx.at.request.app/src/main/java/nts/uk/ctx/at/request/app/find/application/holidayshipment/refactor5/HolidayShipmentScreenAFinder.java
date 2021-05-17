@@ -222,7 +222,7 @@ public class HolidayShipmentScreenAFinder {
 		if(compensatoryLeaveComSetting == null) {
 			result.setSubstituteManagement(ManageDistinct.NO.value);
 		}else {
-			result.setSubstituteManagement(compensatoryLeaveComSetting.getIsManaged().value);
+			result.setSubstituteManagement(compensatoryLeaveComSetting.getLinkingManagementATR().value);
 		}
 		
 		return result;
