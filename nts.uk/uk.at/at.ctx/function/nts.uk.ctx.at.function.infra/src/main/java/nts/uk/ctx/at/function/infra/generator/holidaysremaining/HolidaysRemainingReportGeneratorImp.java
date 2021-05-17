@@ -90,10 +90,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
             } else if (dataSource.getPageBreak() == BreakSelection.Individual.value) {
                 printPersonBreakPage(worksheet, dataSource);
             }
-            val total_month = totalMonths(dataSource.getStartMonth().yearMonth(),dataSource.getEndMonth().yearMonth()) +1;
             removeTemplate(worksheet);
-            Cells cells = worksheet.getCells();
-            cells.deleteColumns(10+total_month,(NUMBER_COLUMN -  (10+total_month)),true);
             designer.getDesigner().setWorkbook(workbook);
             designer.processDesigner();
 
@@ -1566,7 +1563,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
             // M2_1
             cells.get(firstRow, 9).setValue(TextResource.localize("KDR001_17"));
             // M2_3
-            cells.get(firstRow + 1, 9).setValue(TextResource.localize("KDR001_18"));
+            cells.get(firstRow + 2, 9).setValue(TextResource.localize("KDR001_18"));
 
             if (employee.getCurrentMonth().isPresent()) {
                 YearMonth currentMonth = employee.getCurrentMonth().get();
@@ -2160,7 +2157,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 
     private void setBackgroundGray(Cell cell) {
         Style style = cell.getStyle();
-        style.setForegroundColor(Color.getGray());
+        style.setForegroundColor(Color.getDarkGray());
         cell.setStyle(style);
     }
 
