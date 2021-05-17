@@ -656,11 +656,11 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 self.visibleA4_234(false);
             } else if (useDisplayFormats.length == 1) {
                 if (useDisplayFormats[0] == 0) {
-                    self.modeDisplayList().push({ id: 'time', name: getText("KSU001_43") });
-                    viewModeSetting = 'time';
-                } else if (useDisplayFormats[0] == 1) {
                     self.modeDisplayList().push({ id: 'shortName', name: getText("KSU001_44") });
                     viewModeSetting = 'shortName';
+                } else if (useDisplayFormats[0] == 1) {
+                    self.modeDisplayList().push({ id: 'time', name: getText("KSU001_43") });
+                    viewModeSetting = 'time';
                 } else if (useDisplayFormats[0] == 2) {
                     self.modeDisplayList().push({ id: 'shift', name: getText("KSU001_45") });
                     viewModeSetting = 'shift';
@@ -4323,7 +4323,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
          */
         openDialogG(): void {
             let self = this;
-
             // listEmpData : {id : '' , code : '', name : ''}
             setShared('dataShareDialogG', {
                 startDate   : moment(self.dtPrev()).format('YYYY/MM/DD'),
