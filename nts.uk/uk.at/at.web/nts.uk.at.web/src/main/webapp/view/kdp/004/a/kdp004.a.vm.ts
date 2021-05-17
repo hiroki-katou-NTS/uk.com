@@ -59,9 +59,8 @@ module nts.uk.at.view.kdp004.a {
 
 			// get from basyo;
 			workplace: string[] | [] = [];
-			worklocationCode: string = '';
+			worklocationCode: null | string = null;
 			workplaceId: string = null;
-			workplaceName: string = null;
 
 			workPlaceInfos: IWorkPlaceInfo[] = [];
 			supportUse: KnockoutObservable<boolean> = ko.observable(false);
@@ -698,11 +697,16 @@ module nts.uk.at.view.kdp004.a {
 					vm.$ajax(API.GET_LOCATION, param)
 						.done((data: IBasyo) => {
 							if (data) {
-								self.modeBasyo(true);
-								self.workplace = [data.workpalceId];
-								self.worklocationCode = locationCd;
-								self.workplaceId = data.workpalceId;
-								self.workplaceName = data.workLocationName;
+
+								if (data.workLocationName != null || data.workpalceId != null) {
+									self.worklocationCode = locationCd;
+								}
+
+								if (data.workpalceId) {
+									self.modeBasyo(true);
+									self.workplace = [data.workpalceId];
+									self.workplaceId = data.workpalceId;
+								}
 							}
 						});
 
