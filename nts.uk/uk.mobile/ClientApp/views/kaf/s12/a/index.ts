@@ -424,7 +424,7 @@ export class KafS12AComponent extends KafS00ShrComponent {
                 }
             });
         });
-        const privateOutings = outingTimeZones.filter((i: OutingTimeZone) => i.appTimeType == AppTimeType.PRIVATE);
+        const privateOutings = outingTimeZones.filter((i: OutingTimeZone) => i.appTimeType == GoingOutReason.PRIVATE);
         if (privateOutings.length > 0) {
             vm.details.push({
                 appTimeType: AppTimeType.PRIVATE,
@@ -444,7 +444,7 @@ export class KafS12AComponent extends KafS00ShrComponent {
                 }
             });
         }
-        const unionOutings = outingTimeZones.filter((i: OutingTimeZone) => i.appTimeType == AppTimeType.UNION);
+        const unionOutings = outingTimeZones.filter((i: OutingTimeZone) => i.appTimeType == GoingOutReason.UNION);
         if (unionOutings.length > 0) {
             vm.details.push({
                 appTimeType: AppTimeType.UNION,
