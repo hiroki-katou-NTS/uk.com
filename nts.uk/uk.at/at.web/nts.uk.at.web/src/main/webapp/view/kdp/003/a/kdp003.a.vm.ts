@@ -96,6 +96,7 @@ module nts.uk.at.kdp003.a {
 		created() {
 			const vm = this;
 
+			// get location from basyo
 			vm.basyo();
 
 			//get workplaces Info
@@ -105,8 +106,6 @@ module nts.uk.at.kdp003.a {
 			vm.message.subscribe((value) => {
 
 				vm.showClockButton.company(value === null);
-
-				console.log(ko.unwrap(vm.message));
 
 			});
 
@@ -197,7 +196,7 @@ module nts.uk.at.kdp003.a {
 								if (output === 'loginSuccess') {
 									vm.$window.modal('at', DIALOG.P)
 										.then(() => {
-											vm.loadNotice(data);
+											window.location.reload(false);
 										});
 								}
 							});
@@ -735,7 +734,7 @@ module nts.uk.at.kdp003.a {
 									.then((dataStorage: StorageData) => {
 										if (dataStorage.WKPID.length > 1 && btn.supportWplset == 1) {
 
-											vm.$window.modal('at', DIALOG.M, {screen: 'KDP003'})
+											vm.$window.modal('at', DIALOG.M, { screen: 'KDP003' })
 												.then((data: string) => {
 
 													if (data) {

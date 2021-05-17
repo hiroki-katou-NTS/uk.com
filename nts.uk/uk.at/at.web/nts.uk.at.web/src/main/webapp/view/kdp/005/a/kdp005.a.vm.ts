@@ -655,6 +655,7 @@ module nts.uk.at.view.kdp005.a {
 										vm.$window.modal('at', DIALOG.P)
 											.then(() => {
 												self.loadNotice(self.loginInfo);
+												window.location.reload(false);
 											})
 									}
 								});
