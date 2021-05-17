@@ -8,7 +8,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import nts.uk.ctx.sys.env.dom.mailnoticeset.company.ContactName;
-import nts.uk.ctx.sys.env.dom.mailnoticeset.company.UserInformationUseMethod;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.dto.EmployeeInfoContactImport;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.dto.OtherContactDTO;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.dto.PersonContactImport;
@@ -120,14 +119,6 @@ public class UserInformationUseMethodService {
 	}
 
 	public static interface Require {
-
-		/**
-		 * [R-1] ユーザー情報の使用方法を取得する ユーザー情報の使用方法Repository.取得する(会社ID)
-		 * 
-		 * @param cid
-		 * @return
-		 */
-		Optional<UserInformationUseMethod> getUserInfoByCid(String cid);
 
 		/**
 		 * [R-2] 個人連絡先を取得する 個人連絡先Repository.取得する(個人ID)

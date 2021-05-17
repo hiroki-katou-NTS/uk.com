@@ -22,7 +22,6 @@ import nts.uk.ctx.bs.employee.pub.generalinfo.EmployeeGeneralInfoPub;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.adapter.EmployeeInfoContactAdapter;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.adapter.PersonContactAdapter;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.company.ContactUsageSetting;
-import nts.uk.ctx.sys.env.dom.mailnoticeset.company.UserInformationUseMethod;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.company.UserInformationUseMethodRepository;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.company.service.ContactDisplaySetting;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.company.service.ContactInformation;
@@ -124,7 +123,7 @@ public class ReferContactInformationScreenQuery {
 		}
 		
 		// 4: 連絡先情報を取得(Require, 会社ID, 社員ID, 個人ID)
-		RequireImpl require = new RequireImpl(personContactAdapter, employeeInfoContactAdapter, userInformationUseMethodRepository);
+		RequireImpl require = new RequireImpl(personContactAdapter, employeeInfoContactAdapter);
 		ContactInformation contactInfo = UserInformationUseMethodService.get(require, AppContexts.user().companyId(), sid, personalId, settingContactInformation);
 		ContactInformationDTO contactInformation = ContactInformationDTO.builder()
 				.companyMobileEmailAddress(contactInfo.getCompanyMobileEmailAddress() != null ? contactInfo.getCompanyMobileEmailAddress().orElse("") : "")
@@ -192,14 +191,6 @@ public class ReferContactInformationScreenQuery {
 		
 		@Inject
 		private EmployeeInfoContactAdapter employeeInfoContactAdapter;
-		
-		@Inject
-		private UserInformationUseMethodRepository userInformationUseMethodRepository;
-		
-		@Override
-		public Optional<UserInformationUseMethod> getUserInfoByCid(String cid) {
-			return this.userInformationUseMethodRepository.findByCId(cid);
-		}
 
 		@Override
 		public Optional<PersonContactImport> getByPersonalId(String personalId) {

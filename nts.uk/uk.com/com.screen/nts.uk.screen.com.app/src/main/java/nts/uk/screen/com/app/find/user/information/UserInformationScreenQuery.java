@@ -22,8 +22,6 @@ import nts.uk.ctx.bs.person.dom.person.personal.avatar.UserAvatar;
 import nts.uk.ctx.bs.person.dom.person.personal.contact.PersonalContact;
 import nts.uk.ctx.bs.person.dom.person.personal.contact.PersonalContactRepository;
 import nts.uk.ctx.sys.auth.dom.adapter.employee.employeeinfo.EmployeeInfoAdapter;
-import nts.uk.ctx.sys.auth.dom.adapter.employee.employeeinfo.EmployeeInformationImport;
-import nts.uk.ctx.sys.auth.dom.adapter.employee.service.EmployeeService;
 import nts.uk.ctx.sys.auth.dom.password.changelog.PasswordChangeLog;
 import nts.uk.ctx.sys.auth.dom.password.changelog.PasswordChangeLogRepository;
 import nts.uk.ctx.sys.auth.pub.role.RoleExportRepo;
@@ -50,7 +48,6 @@ import nts.uk.screen.com.app.find.user.information.anniversary.AnniversaryNotice
 import nts.uk.shr.com.context.AppContexts;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import lombok.AllArgsConstructor;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -236,18 +233,5 @@ public class UserInformationScreenQuery {
 	    	datePeriod.start().compareTo(GeneralDate.today()) <= 0 
 	    	&& datePeriod.end().compareTo(GeneralDate.today()) >= 0
        );
-    }
-    
-    @AllArgsConstructor
-    private static class EmployeeServiceRequireIpml implements EmployeeService.Require {
-    	
-    	@Inject
-    	EmployeeInfoAdapter employeeInfoAdapter;
-
-		@Override
-		public EmployeeInformationImport findEmployeeInformation(String employeeId, GeneralDate baseDate) {
-			return employeeInfoAdapter.findEmployeeInformation(employeeId, baseDate);
-		}
-    	
     }
 }
