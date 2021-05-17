@@ -63,6 +63,9 @@ module nts.uk.at.view.kdp004.a {
 			workplaceName: string = null;
 
 			supportUse: KnockoutObservable<boolean> = ko.observable(false);
+			
+			pageComment: KnockoutObservable<string> = ko.observable('');
+			commentColor: KnockoutObservable<string> = ko.observable('');
 
 			constructor() {
 				let self = this;

@@ -11,6 +11,7 @@ module nts.uk.at.view.kdp002.a {
 			displayType: any = { HIDE: 0, DISPLAY: 1, SHOW_TIME_CARD: 2 };
 			dateValue: KnockoutObservable<{ startDate: string; endDate: string; }>;
 			yearMonth: KnockoutObservable<any>;
+			workManagementMultiple: KnockoutObservable<boolean> = ko.observable(false);
 
 			constructor(start: IStartPage, workManagementMultiple: boolean) {
 				let self = this;
@@ -19,6 +20,7 @@ module nts.uk.at.view.kdp002.a {
 				self.displayMethod = ko.observable(setting.historyDisplayMethod);
 				self.dateValue = ko.observable({ startDate: moment().add(-3, 'days').format('YYYY/MM/DD'), endDate: moment().format('YYYY/MM/DD') });
 				self.yearMonth = ko.observable(moment().format('YYYY/MM'));
+				self.workManagementMultiple(workManagementMultiple);
 
 				if (self.displayMethod() == self.displayType.DISPLAY) {
 					self.columns([

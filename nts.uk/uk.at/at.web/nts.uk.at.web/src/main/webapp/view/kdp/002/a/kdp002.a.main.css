@@ -5,18 +5,18 @@ html{
   overflow-y: scroll;
 }
 #kdp002a {
-  width: 38.6rem;
+  width: 100%;
+  max-width: 540px;
   margin: 0 auto;
   height: auto;
 }
 
 #kdp002a.has-info {
-  width: 72rem;
+  max-width: 1008px;
 }
 
 #kdp002a.has-info-work2 {
   max-width: 833px;
-  width: 100%;
 }
 
 .kdp002a {
@@ -129,8 +129,7 @@ html{
 }
 
 .tab-button-panel.has-tab.has-comment+div.pull-left {
-  padding-top: 74px !important;
-  width: 28vmin;
+  padding-top: 68px !important;
 }
 
 #stamp-input .stampFullScreen {

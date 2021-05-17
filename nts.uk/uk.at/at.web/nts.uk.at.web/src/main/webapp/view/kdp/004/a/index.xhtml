@@ -114,10 +114,15 @@
 							</div>
 							<ui:include src="/view/kdp/002/a/stamp-tab.xhtml" />
 						</div> -->
+						<com:ko-if bind="pageComment() != ''">
+			          		<div class="pageComent" data-bind="html: pageComment, style: {color: commentColor}"></div>
+			          	</com:ko-if>
 						<com:ko-if bind="ko.toJS($vm.errorMessage) === ''">
 							<div data-bind="kdp-tab-button-panel: { 
 								tabs: stampTab().tabs,
 								stampToSuppress: null,
+								pageComment: pageComment,
+            					commentColor: commentColor,
 								click: function(btn, layout) { $vm.clickBtn1.apply($vm, [btn, layout]); },
 								marginBottom: 0
 							}"></div>

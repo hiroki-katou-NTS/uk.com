@@ -89,6 +89,9 @@ module nts.uk.at.kdp003.a {
 			};
 
 		fingerStampSetting: KnockoutObservable<FingerStampSetting> = ko.observable(DEFAULT_SETTING);
+		
+		pageComment: KnockoutObservable<string> = ko.observable('');
+		commentColor: KnockoutObservable<string> = ko.observable('');
 
 		created() {
 			const vm = this;

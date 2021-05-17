@@ -25,14 +25,22 @@
     <ui:define name="content">
       <div id="contents-area" class="cf kdp002a">
         <!-- A1 -->
-        <div id="kdp002a" class="cf" data-bind="css: { 'has-info': $vm.state() === 'state2' ,
-                            'has-info-work2': $vm.state() === 'state1'}">
+        <div id="kdp002a" class="cf" data-bind="css: { 'has-info': $vm.state() === 'state2' , 'has-info-work2': $vm.state() === 'state1'}">
           <div data-bind="stamp-clock: { setting: stampSetting() }"></div>
+          <com:ko-if bind="pageComment() != ''">
+          		<div class="pageComent" data-bind="html: pageComment, style: {color: commentColor}"></div>
+          </com:ko-if>
           <!-- </div> --> 
-          <div id="stamp-input" class="pull-left" data-bind="style:{'width': stampGrid().displayMethod() == 0 ? '100vmin': '65vmin'},
+          <div id="stamp-input" class="pull-left" data-bind="
+          css: stampGrid().displayMethod() == 1 ? 'pageScale1': 
+          		stampGrid().displayMethod() == 2 ? 
+          			workManagementMultiple() ? 'pageScale2' : 'pageScale1' : 
+          		'pageNoScale', 
           kdp-tab-button-panel: { 
             tabs: stampTab().tabs,
             stampToSuppress: $vm.stampToSuppress,
+            pageComment: pageComment,
+            commentColor: commentColor,
             click: function(btn, layout) { $vm.clickBtn1.apply($vm, [btn, layout]); },
             marginBottom: 0
           }"></div> 

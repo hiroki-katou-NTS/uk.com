@@ -14,6 +14,9 @@ module nts.uk.at.view.kdp002.a {
             workManagementMultiple: KnockoutObservable<boolean> = ko.observable(false);
             checkerShowWork2: KnockoutObservable<boolean> = ko.observable(false);
 
+			pageComment: KnockoutObservable<string> = ko.observable('');
+			commentColor: KnockoutObservable<string> = ko.observable('');
+
             state!: KnockoutComputed<STATE>;
             constructor() {
                 const vm = this;

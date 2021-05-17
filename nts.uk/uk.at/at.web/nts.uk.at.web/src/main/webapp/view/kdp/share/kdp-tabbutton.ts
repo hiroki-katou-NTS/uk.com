@@ -3,13 +3,6 @@
 module nts.uk.at.view.kdp.share {
 	const tabButtonTempate = `
 		<!-- ko if: ko.unwrap($component.filteredTabs).length -->
-		<div data-bind="let: { $tab: ko.toJS($component.currentTab) }">
-			<div id= "stamp-desc" data-bind = "css: { 'hideCmt': $tab.stampPageComment.length == 0 }">
-			<!-- ko if: $tab.stampPageComment.length -->
-				<div data-bind="html: $tab.stampPageComment, style: { color: $tab.stampPageCommentColor }"></div>
-			<!-- /ko -->
-			</div>
-		</div>
 		<!-- ko if: ko.unwrap($component.filteredTabs).length > 1 -->
 			<div data-bind="ntsTabPanel: { dataSource: $component.filteredTabs, active: $component.selected }"></div>
 		<!-- /ko -->
@@ -168,9 +161,9 @@ module nts.uk.at.view.kdp.share {
 			const text = document.createElement('div');
 			if (data.btnPositionNo === 1 || data.btnPositionNo === 2) {
 				if (data.btnName.length <= 8 ) {
-					text.className = "fs-30 top-15";
+					text.className = "fs-30";
 				} else {
-					text.className = "fs-24 top-15";
+					text.className = "fs-24";
 				}
 			} else {
 				text.className = "fs-20";
@@ -191,6 +184,7 @@ module nts.uk.at.view.kdp.share {
 					'visibility': data.btnPositionNo === -1 || data.usrArt === 0 || (supportUse === false && _.includes([14, 15, 16, 17, 18], btnType)) 
 					|| (temporaryUse === false && _.includes([12, 13], btnType)) ? 'hidden' : 'visible'
 				});
+			$('.btn-layout-type-0>div:first-child button').css({'height':$('.btn-layout-type-0>div:first-child button').width()+'px'});
 		}
 	}
 	const COMPONENT_NAME = 'kdp-tab-button-panel';
@@ -229,7 +223,7 @@ module nts.uk.at.view.kdp.share {
 		supportUse: KnockoutObservable<boolean> = ko.observable(false);
 
 		temporaryUse: KnockoutObservable<boolean> = ko.observable(false);
-
+		
 		constructor(public params: StampParam) {
 			super();
 
@@ -241,6 +235,14 @@ module nts.uk.at.view.kdp.share {
 
 			if (!params.tabs) {
 				params.tabs = ko.observableArray([]);
+			}
+			
+			if(!params.pageComment){
+				params.pageComment = ko.observable('');
+			}
+			
+			if(!params.commentColor){
+				params.commentColor = ko.observable('');
 			}
 
 			if (!params.stampToSuppress) {
@@ -292,8 +294,8 @@ module nts.uk.at.view.kdp.share {
 						stampPageName: ''
 					};
 
-					// escape html and replace new line chars to break tag
-					currentTab.stampPageComment = _.escape(currentTab.stampPageComment).replace(/(\r|\n)/g, '<br />');
+					vm.params.pageComment(currentTab.stampPageComment);
+					vm.params.commentColor(currentTab.stampPageCommentColor);
 					
 					if (vm.$el) {
 						if (currentTab.stampPageComment) {
@@ -308,7 +310,7 @@ module nts.uk.at.view.kdp.share {
 							vm.$el.classList.remove('has-tab');							
 						}
 					}
-
+					vm.setSize();
 					return currentTab;
 				}
 			});
@@ -407,19 +409,22 @@ module nts.uk.at.view.kdp.share {
 							});
 						}
 					}
-
 					return filters;
 				}
 			});
-
+			
 			//打刻入力で共通設定を取得する
 			vm.$ajax('at/record/stamp/settings_stamp_common')
 				.done((data: ISettingsStampCommon) => {
 					vm.supportUse(!!data.supportUse);
 					vm.temporaryUse(!!data.temporaryUse);
 				});
+			window.onresize = function() {vm.setSize();}
 		}
-
+		
+		setSize = function() {
+        	$('.btn-layout-type-0>div:first-child button').css({'height':$('.btn-layout-type-0>div:first-child button').width()+'px'});
+		}
 		mounted() {
 			const vm = this;
 			const tid = 'tabindex';
@@ -479,6 +484,8 @@ module nts.uk.at.view.kdp.share {
 		tabs: KnockoutObservableArray<PageLayout>;
 		stampToSuppress: KnockoutObservable<StampToSuppress>;
 		marginBottom: KnockoutObservable<number>;
+		pageComment: KnockoutObservable<string>;
+		commentColor: KnockoutObservable<string>;
 	}
 
 	export interface StampToSuppress {
