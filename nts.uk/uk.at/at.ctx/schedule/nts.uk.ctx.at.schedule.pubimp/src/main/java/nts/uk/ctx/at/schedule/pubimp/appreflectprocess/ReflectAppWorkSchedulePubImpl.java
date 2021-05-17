@@ -46,6 +46,7 @@ import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.la
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.AppReflectOtHdWork;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.AppReflectOtHdWorkRepository;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.cancellation.ApplicationReflectHistory;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.cancellation.ApplicationReflectHistoryRepo;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.stampapplication.StampAppReflect;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.stampapplication.StampAppReflectRepository;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.substituteworkapplication.SubstituteWorkAppReflect;
@@ -153,6 +154,9 @@ public class ReflectAppWorkSchedulePubImpl implements ReflectApplicationWorkSche
 	
 	@Inject
 	private SubstituteWorkAppReflectRepository substituteWorkAppReflectRepository;
+	
+	@Inject
+	private ApplicationReflectHistoryRepo applicationReflectHistoryRepo;
 
 	@Inject
 	private StampReflectionManagementRepository timePriorityRepository;
@@ -167,7 +171,8 @@ public class ReflectAppWorkSchedulePubImpl implements ReflectApplicationWorkSche
 				predetemineTimeSettingRepository, fixedWorkSettingRepository, flowWorkSettingRepository,
 				goBackReflectRepository, stampAppReflectRepository, lateEarlyCancelReflectRepository,
 				reflectWorkChangeAppRepository, timeLeaveAppReflectRepository, appReflectOtHdWorkRepository,
-				vacationApplicationReflectRepository, timePriorityRepository, subLeaveAppReflectRepository, substituteWorkAppReflectRepository);
+				vacationApplicationReflectRepository, timePriorityRepository, subLeaveAppReflectRepository, substituteWorkAppReflectRepository,
+				applicationReflectHistoryRepo);
 		Pair<SCReflectStatusResult, AtomTask> result = ReflectApplicationWorkSchedule.process(impl, companyId,
 				(ApplicationShare) application, date, convertToDom(reflectStatus),
 				preAppWorkScheReflectAttr);
@@ -247,6 +252,8 @@ public class ReflectAppWorkSchedulePubImpl implements ReflectApplicationWorkSche
 	    private final SubLeaveAppReflectRepository subLeaveAppReflectRepository;
     	
     	private final SubstituteWorkAppReflectRepository substituteWorkAppReflectRepository;
+    	
+    	private final ApplicationReflectHistoryRepo applicationReflectHistoryRepo;
 
 		@Override
 		public Optional<WorkType> getWorkType(String workTypeCd) {
@@ -271,8 +278,7 @@ public class ReflectAppWorkSchedulePubImpl implements ReflectApplicationWorkSche
 
 		@Override
 		public void insertAppReflectHist(ApplicationReflectHistory hist) {
-			// TODO Auto-generated method stub
-
+			applicationReflectHistoryRepo.insertAppReflectHist(hist);
 		}
 
 		@Override

@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.request.dom.applicationreflect.object;
 
-import java.util.Arrays;
 import java.util.Optional;
 
 import lombok.AllArgsConstructor;
@@ -8,7 +7,6 @@ import lombok.Data;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.DailyAttendanceUpdateStatus;
 import nts.uk.ctx.at.request.dom.application.ReflectedState;
-import nts.uk.ctx.at.request.dom.application.ReflectionStatus;
 import nts.uk.ctx.at.request.dom.application.ReflectionStatusOfDay;
 
 /**

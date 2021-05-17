@@ -14,12 +14,16 @@ import nts.uk.ctx.at.record.dom.editstate.repository.EditStateOfDailyPerformance
 import nts.uk.ctx.at.record.pub.appreflect.CreateEditStatusHistAppReasonPub;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.ScheduleRecordClassifi;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.cancellation.ApplicationReflectHistory;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.cancellation.ApplicationReflectHistoryRepo;
 
 @Stateless
 public class CreateEditStatusHistAppReasonPubImpl implements CreateEditStatusHistAppReasonPub {
 
 	@Inject
 	private EditStateOfDailyPerformanceRepository editStateOfDailyRepo;
+	
+	@Inject
+	private ApplicationReflectHistoryRepo applicationReflectHistoryRepo;
 
 	@Override
 	public void process(String employeeId, GeneralDate date, String appId, ScheduleRecordClassifi classification,
@@ -47,8 +51,7 @@ public class CreateEditStatusHistAppReasonPubImpl implements CreateEditStatusHis
 
 		@Override
 		public void insertAppReflectHist(ApplicationReflectHistory hist) {
-			// TODO Auto-generated method stub
-
+			applicationReflectHistoryRepo.insertAppReflectHist(hist);
 		}
 
 	}
