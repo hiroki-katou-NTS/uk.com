@@ -51,7 +51,7 @@ public class EnterStampFromSmartPhoneService {
 		Optional<WorkLocation> workLocation = FindWorkPlaceFromStampedPositionService.find(require, positionInfor);
 		//  if $打刻場所.isPresent
 		if(workLocation.isPresent()) {
-			refActualResults.getWorkInforStamp().ifPresent(c->c.getWorkLocationCD().ifPresent(e -> e = workLocation.get().getWorkLocationCD()));
+			refActualResults.getWorkInforStamp().ifPresent(c->c.setWorkLocationCD(Optional.of(workLocation.get().getWorkLocationCD())));
 		}
 		
 		// $スマホ打刻の打刻設定 = require.スマホ打刻の打刻設定を取得する()

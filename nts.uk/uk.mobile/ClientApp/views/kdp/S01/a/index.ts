@@ -243,11 +243,11 @@ export class KdpS01AComponent extends Vue {
                 geoCoordinate: { latitude: null, longitude: null },
                 refActualResult: { cardNumberSupport: null, overtimeDeclaration: null, workLocationCD: null, workTimeCode: null }
             };
-        navigator.geolocation.getCurrentPosition((position) => {
 
+        let latitude = null,
+            longitude = null;
+        navigator.geolocation.getCurrentPosition((position) => {
             if (position) {
-                let latitude = null,
-                longitude = null;
 
                 if (vm.locationInfoUse) {
                     latitude = position.coords.latitude;
@@ -284,7 +284,38 @@ export class KdpS01AComponent extends Vue {
                         vm.showError(res);
                     });
             }
+        }, (error) => {
+            command.geoCoordinate = { latitude, longitude };
+            vm.$mask('show');
+
+            vm.$http.post('at', servicePath.registerStamp, command)
+                .then((result: any) => {
+                    vm.$mask('hide');
+                    vm.getStampToSuppress();
+
+                    if (!_.has(button, 'buttonType.stampType.changeClockArt')) {
+
+                        vm.openDialogB(command.stampButton);
+                    } else {
+                        let changeClockArt = button.buttonType.stampType.changeClockArt;
+                        switch (changeClockArt) {
+                            case 1:
+                                if (vm.setting.usrAtrValue === 1) {
+                                    vm.openDialogC(command.stampButton);
+                                } else {
+                                    vm.openDialogB(command.stampButton);
+                                }
+                                break;
+                            default:
+                                vm.openDialogB(command.stampButton);
+                                break;
+                        }
+                    }
+                }).catch((res: any) => {
+                    vm.showError(res);
+                });
         });
+
     }
 
     private openDialogB(stampButton: model.IStampButtonCommand) {
