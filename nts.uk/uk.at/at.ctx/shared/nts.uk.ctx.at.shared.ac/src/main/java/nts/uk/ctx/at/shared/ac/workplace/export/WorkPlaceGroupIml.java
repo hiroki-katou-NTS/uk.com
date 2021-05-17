@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.shared.ac.workplace.export;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -69,6 +70,13 @@ public class WorkPlaceGroupIml implements WorkplaceGroupAdapter{
 		//	return 職場グループPublish.参照可能な社員を取得する( 基準日, 社員ID, 職場グループID )																								
 		List<String> result = workplaceGroupPublish.getReferableEmployees(date, empId, workplaceGroupID);
 		return result;
+	}
+
+	@Override
+	public List<String> getAllReferableEmp(GeneralDate date, String employeeId) {
+		
+		// TODO implement please
+		return new ArrayList<>();
 	}
 
 	
