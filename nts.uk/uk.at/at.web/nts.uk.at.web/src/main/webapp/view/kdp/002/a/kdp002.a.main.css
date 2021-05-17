@@ -118,18 +118,7 @@ html{
 }
 
 .tab-button-panel+div.pull-left {
-  padding-top: 0px !important;
-}
-
-.tab-button-panel.has-tab:not(.has-comment)+div.pull-left {
-  padding-top: 70px !important;
-}
-.tab-button-panel.has-comment:not(.has-tab)+div.pull-left {
-  padding-top: 74px !important;
-}
-
-.tab-button-panel.has-tab.has-comment+div.pull-left {
-  padding-top: 68px !important;
+  padding-top: 68px;
 }
 
 #stamp-input .stampFullScreen {

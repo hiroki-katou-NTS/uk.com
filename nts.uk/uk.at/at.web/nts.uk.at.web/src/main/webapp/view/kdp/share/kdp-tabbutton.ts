@@ -9,7 +9,8 @@ module nts.uk.at.view.kdp.share {
 		<div data-bind="foreach: { data: $component.filteredTabs, as: 'group' }">
 			<div class="grid-container" data-bind="
 				if: ko.toJS($component.currentTab).pageNo === group.pageLayout.pageNo,
-				css: 'btn-layout-type-' + group.pageLayout.buttonLayoutType">
+				css: 'btn-layout-type-' + group.pageLayout.buttonLayoutType,
+				style: {padding: ko.toJS($component.currentTab).pageNo === group.pageLayout.pageNo ? '': '0'}">
 				<!-- ko foreach: _.chunk(ko.unwrap(group.pageLayout.buttonSettings), 2) -->
 				<div data-bind="foreach: $data" class="cf">
 					<button class="stamp-rec-btn"
