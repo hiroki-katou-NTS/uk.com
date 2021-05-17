@@ -17,7 +17,7 @@ import nts.uk.ctx.at.function.app.nrl.xml.Frame;
 public class NRLWebService extends RequestDispatcher {
 
 	@POST
-	@Path("dataCollect.aspx")
+	@Path("dataCollect")
 	@RequestData({ Command.TEST, Command.POLLING, Command.SESSION, Command.ALL_IO_TIME })
 	public Frame requestTimeInOut(InputStream is) {
 		NRLResponse response = ignite(is);
@@ -26,7 +26,7 @@ public class NRLWebService extends RequestDispatcher {
 	}
 
 	@POST
-	@Path("sinseiCollect.aspx")
+	@Path("sinseiCollect")
 	@RequestData({ Command.ALL_PETITIONS })
 	public Frame requestApplications(InputStream is) {
 		NRLResponse response = ignite(is);
@@ -34,7 +34,7 @@ public class NRLWebService extends RequestDispatcher {
 	}
 
 	@POST
-	@Path("yoyakuCollect.aspx")
+	@Path("yoyakuCollect")
 	@RequestData({ Command.ALL_RESERVATION })
 	public Frame requestReservations(InputStream is) {
 		NRLResponse response = ignite(is);
@@ -42,7 +42,7 @@ public class NRLWebService extends RequestDispatcher {
 	}
 
 	@POST
-	@Path("masterCollect.aspx")
+	@Path("masterCollect")
 	@RequestData({ Command.PERSONAL_INFO, Command.OVERTIME_INFO, Command.RESERVATION_INFO, Command.TIMESET_INFO,
 			Command.WORKTIME_INFO, Command.WORKTYPE_INFO, Command.APPLICATION_INFO, Command.TR_REMOTE })
 	public Frame requestMasterDatas(InputStream is) {
