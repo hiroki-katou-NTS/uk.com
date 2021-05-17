@@ -123,6 +123,12 @@ module nts.uk.ui.at.kdw013.a {
             const { mode } = $query;
             const cache: ChangeDateParam = initialCache();
             const sameCache = (params: ChangeDateParam): 0 | 1 | 2 => {
+                if (cache.employeeId !== params.employeeId) {
+                    if (params.displayPeriod.start && params.displayPeriod.end) {
+                        return 0;
+                    }
+                }
+
                 if (cache.displayPeriod.end === params.displayPeriod.end) {
                     if (cache.displayPeriod.start === params.displayPeriod.start) {
                         if (cache.refDate === params.refDate) {
@@ -171,7 +177,7 @@ module nts.uk.ui.at.kdw013.a {
 
             ko.computed({
                 read: () => {
-                    const { employeeId } = vm.$user;
+                    const employeeId = ko.unwrap(vm.employee) || vm.$user.employeeId;
                     const date = ko.unwrap(vm.initialDate);
                     const dateRange = ko.unwrap(vm.dateRange);
                     const { start, end } = dateRange;
@@ -502,10 +508,10 @@ module nts.uk.ui.at.kdw013.a {
             }"></div>
             <ul class="list-employee" data-bind="foreach: { data: $component.employees, as: 'item' }">
                 <li class="item" data-bind="
-                    click: function() { $component.selectEmployee(item.employeeCode) },
+                    click: function() { $component.selectEmployee(item.sid) },
                     timeClick: -1,
                     css: {
-                        'selected': ko.computed(function() { return item.employeeCode === ko.unwrap($component.params.employee); })
+                        'selected': ko.computed(function() { return item.sid === ko.unwrap($component.params.employee); })
                     }">
                     <div data-bind="text: item.employeeCode"></div>
                     <div data-bind="text: item.employeeName"></div>
@@ -515,17 +521,18 @@ module nts.uk.ui.at.kdw013.a {
         export class EmployeeDepartmentComponent extends ko.ViewModel {
             department: KnockoutObservable<string> = ko.observable('');
 
-            employees!: KnockoutComputed<any[]>;
-            departments!: KnockoutComputed<any[]>;
+            employees!: KnockoutComputed<EmployeeBasicInfoImport[]>;
+            departments!: KnockoutComputed<WorkplaceInfoDto[]>;
 
             constructor(private params: EmployeeDepartmentParams) {
                 super();
 
                 const vm = this;
-                const { $settings } = params;
+                const { $settings, mode } = params;
 
                 vm.employees = ko.computed({
                     read: () => {
+                        const loaded = ko.unwrap(mode);
                         const $sets = ko.unwrap($settings);
                         const $dept = ko.unwrap(vm.department);
 
@@ -536,25 +543,7 @@ module nts.uk.ui.at.kdw013.a {
                                 const { employeeInfos, lstEmployeeInfo } = refWorkplaceAndEmployeeDto;
 
                                 // updating
-                                return lstEmployeeInfo.filter(({ sid }) => employeeInfos[sid] === $dept || true);
-                            }
-                        }
-
-                        return [];
-                    }
-                });
-
-                vm.departments = ko.computed({
-                    read: () => {
-                        const $sets = ko.unwrap($settings);
-
-                        if ($sets) {
-                            const { refWorkplaceAndEmployeeDto } = $sets;
-
-                            if (refWorkplaceAndEmployeeDto) {
-                                const { workplaceInfos } = refWorkplaceAndEmployeeDto;
-
-                                return workplaceInfos;
+                                return loaded ? [] : lstEmployeeInfo.filter(({ sid }) => employeeInfos[sid] === $dept || true);
                             }
                         }
 
@@ -564,6 +553,37 @@ module nts.uk.ui.at.kdw013.a {
 
                     }
                 });
+
+                vm.departments = ko.computed({
+                    read: () => {
+                        const loaded = ko.unwrap(mode);
+                        const $sets = ko.unwrap($settings);
+
+                        if ($sets) {
+                            const { refWorkplaceAndEmployeeDto } = $sets;
+
+                            if (refWorkplaceAndEmployeeDto) {
+                                const { workplaceInfos } = refWorkplaceAndEmployeeDto;
+
+                                return loaded ? [] : workplaceInfos;
+                            }
+                        }
+
+                        return [];
+                    },
+                    write: (value: any) => {
+
+                    }
+                });
+
+                vm.employees
+                    .subscribe((emps: EmployeeBasicInfoImport[]) => {
+                        if (emps.length && !ko.unwrap(vm.params.employee)) {
+                            const [first] = emps;
+
+                            vm.params.employee(first.sid);
+                        }
+                    });
             }
 
             mounted() {
