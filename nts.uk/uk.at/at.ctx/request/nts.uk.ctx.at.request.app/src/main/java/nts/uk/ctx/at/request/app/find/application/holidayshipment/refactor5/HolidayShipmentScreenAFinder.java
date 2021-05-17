@@ -34,6 +34,7 @@ import nts.uk.ctx.at.shared.app.find.scherec.appreflectprocess.appreflectconditi
 import nts.uk.ctx.at.shared.app.find.scherec.appreflectprocess.appreflectcondition.vacationapplication.VacationAppReflectOptionDto;
 import nts.uk.ctx.at.shared.app.find.worktype.WorkTypeDto;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsenceReruitmentMngInPeriodQuery;
+import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.OccurrenceDigClass;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.param.CompenLeaveAggrResult;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.require.RemainNumberTempRequireService;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.AccumulationAbsenceDetail;
@@ -410,6 +411,9 @@ public class HolidayShipmentScreenAFinder {
 	public Optional<GeneralDate> getClosestDeadline(List<AccumulationAbsenceDetail> lstAbsRecMng) {
 		GeneralDate result = GeneralDate.max();
 		for (AccumulationAbsenceDetail absRecDetailPara : lstAbsRecMng) {
+			if(absRecDetailPara.getOccurrentClass() == OccurrenceDigClass.DIGESTION) {
+				continue;
+			}
 			LeaveOccurrDetail detail = (LeaveOccurrDetail)absRecDetailPara;
 			if(detail.getDeadline().before(result)) {
 				result = detail.getDeadline();
