@@ -1052,8 +1052,8 @@ export class KafS11AComponent extends KafS00ShrComponent {
 
     private updateTimeRange(isComplement: boolean, result: any) {
         const vm = this;
-        let timeZone1 = _.find(result.timeZoneLst, (o) => o.workNo == 1),
-            timeZone2 = _.find(result.timeZoneLst, (o) => o.workNo == 2);
+        let timeZone1 = _.find(result.timeZoneLst, (o) => o.workNo == 0),
+            timeZone2 = _.find(result.timeZoneLst, (o) => o.workNo == 1);
         if (isComplement) {
             if (timeZone1) {
                 vm.complementWorkInfo.timeRange1 = { start: timeZone1.timeZone.startTime, end: timeZone1.timeZone.endTime };
