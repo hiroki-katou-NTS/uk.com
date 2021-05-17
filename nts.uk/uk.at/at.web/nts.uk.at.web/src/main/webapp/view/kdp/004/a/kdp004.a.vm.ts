@@ -31,6 +31,7 @@ module nts.uk.at.view.kdp004.a {
 		};
 
 		const KDP004_SAVE_DATA = 'loginKDP004';
+		const WORKPLACES_STORAGE = 'WORKPLACES_STORAGE';
 
 		export class ScreenModel {
 			stampSetting: KnockoutObservable<StampSetting> = ko.observable({} as StampSetting);
@@ -58,10 +59,10 @@ module nts.uk.at.view.kdp004.a {
 
 			// get from basyo;
 			workplace: string[] | [] = [];
-			worklocationCode: string = '';
+			worklocationCode: null | string = null;
 			workplaceId: string = null;
-			workplaceName: string = null;
 
+			workPlaceInfos: IWorkPlaceInfo[] = [];
 			supportUse: KnockoutObservable<boolean> = ko.observable(false);
 			
 			pageComment: KnockoutObservable<string> = ko.observable('');
@@ -79,6 +80,8 @@ module nts.uk.at.view.kdp004.a {
 				vm.$blockui('invisible')
 					.then(() => {
 						self.basyo();
+						self.getWorkPlacesInfo();
+						
 					}).then(() => {
 						nts.uk.characteristics.restore(KDP004_SAVE_DATA).done(function (loginInfo: ILoginInfo) {
 
@@ -371,6 +374,7 @@ module nts.uk.at.view.kdp004.a {
 
 			public clickBtn1(btn: any, layout: any) {
 				const vm = this;
+				vm.getWorkPlacesInfo();
 
 				vm.doAuthent().done((res: IAuthResult) => {
 					if (res.isSuccess) {
@@ -489,9 +493,6 @@ module nts.uk.at.view.kdp004.a {
 				};
 				const mode: number = 1;
 				const { employeeId, employeeCode } = loginInfo.em;
-				const workLocationName = self.workplaceName;
-				const workpalceId = self.workplaceId;
-				const employeeInfo = { mode, employeeId, employeeCode, workLocationName, workpalceId };
 
 				//打刻入力で共通設定を取得する
 				vm.$ajax(API.SETTING_STAMP_COMMON)
@@ -509,28 +510,47 @@ module nts.uk.at.view.kdp004.a {
 						if (dataStorage.selectedWP.length > 1 && self.supportUse() === true && _.includes([14, 15, 16, 17, 18], btnType)) {
 							vm.$window.modal('at', DIALOG.M, {screen: 'KDP004'} )
 								.then((result: string) => {
-									service.stampInput(registerdata).done((res) => {
+									if(result) {
 
-										//phat nhac
-										self.playAudio(button.audioType);
+										var workplace: IWorkPlaceInfo = _.find(self.workPlaceInfos, ((value) => {
+											if (value.id === result) {
+												return value;
+											}
+										}));
 
-										if (self.stampResultDisplay().notUseAttr == 1 && button.changeClockArt == 1) {
-											vm.$window.storage('infoEmpToScreenC', employeeInfo);
-											self.openScreenC(button, layout, loginInfo.em);
-										} else {
-											vm.$window.storage('infoEmpToScreenB', employeeInfo);
-											self.openScreenB(button, layout, loginInfo.em);
+										var workLocationName: string = '';
+										var workplaceId: string = result;
+										if (workplace) {
+											workLocationName = workplace.name
 										}
 
-									}).fail((res) => {
-										dialog.alertError({ messageId: res.messageId });
-									}).always(() => {
-										self.getStampToSuppress();
-										block.clear();
-									});
+										service.stampInput(registerdata).done((res) => {
 
+											//phat nhac
+											self.playAudio(button.audioType);
+											const employeeInfo = { mode, employeeId, employeeCode, workLocationName, workplaceId };
+
+											if (self.stampResultDisplay().notUseAttr == 1 && button.changeClockArt == 1) {
+												vm.$window.storage('infoEmpToScreenC', employeeInfo);
+												vm.$window.storage('screenC', { screen: "KDP004" });
+												self.openScreenC(button, layout, loginInfo.em);
+											} else {
+												vm.$window.storage('infoEmpToScreenB', employeeInfo);
+												vm.$window.storage('screenB', { screen: "KDP004" });
+												self.openScreenB(button, layout, loginInfo.em);
+											}
+	
+										}).fail((res) => {
+											dialog.alertError({ messageId: res.messageId });
+										}).always(() => {
+											self.getStampToSuppress();
+											block.clear();
+										});
+									}
 								});
+							
 						} else {
+
 							service.stampInput(registerdata).done((res) => {
 
 								//phat nhac
@@ -652,6 +672,17 @@ module nts.uk.at.view.kdp004.a {
 					});
 			}
 
+			getWorkPlacesInfo() {
+				let vm = new ko.ViewModel();
+				let self = this;
+	
+				vm.$window.storage(WORKPLACES_STORAGE)
+					.then((data: IWorkPlaceInfo[]) => {
+						self.workPlaceInfos = data
+					});
+	
+			}
+
 			// URLOption basyo
 			basyo() {
 				const self = this,
@@ -669,11 +700,16 @@ module nts.uk.at.view.kdp004.a {
 					vm.$ajax(API.GET_LOCATION, param)
 						.done((data: IBasyo) => {
 							if (data) {
-								self.modeBasyo(true);
-								self.workplace = [data.workpalceId];
-								self.worklocationCode = locationCd;
-								self.workplaceId = data.workpalceId;
-								self.workplaceName = data.workLocationName;
+
+								if (data.workLocationName != null || data.workpalceId != null) {
+									self.worklocationCode = locationCd;
+								}
+
+								if (data.workpalceId) {
+									self.modeBasyo(true);
+									self.workplace = [data.workpalceId];
+									self.workplaceId = data.workpalceId;
+								}
 							}
 						});
 
@@ -737,5 +773,14 @@ module nts.uk.at.view.kdp004.a {
 		supportUse: boolean;
 		temporaryUse: boolean;
 		workUse: boolean;
+	}
+
+	interface IWorkPlaceInfo {
+		code: string,
+		hierarchyCode: string,
+		id: string,
+		name: string,
+		workplaceDisplayName: string,
+		workplaceGeneric: string
 	}
 }

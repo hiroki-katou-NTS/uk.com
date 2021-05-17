@@ -48,7 +48,8 @@ module nts.uk.ui.kdp001.a {
         getSettingStampInput: '/at/record/stamp/employment_system/get_setting_stamp_input',
         getOmissionContents: '/at/record/stamp/employment_system/get_omission_contents',
         getStampToSuppress: '/at/record/stamp/employment_system/get_stamp_to_suppress',
-        getLocation: 'at/record/stamp/employment_system/get_location_stamp_input'
+        getLocation: 'at/record/stamp/employment_system/get_location_stamp_input',
+        WORKPLACE_INFO: "screen/at/kdp003/workplace-info"
     };
 
     //個人
@@ -183,7 +184,7 @@ module nts.uk.ui.kdp001.a {
                 <!-- ko if: !$component.message.display() -->
                     <!-- ko if: $component.poral -->
                         <div class="kdp-001-a-potal" data-bind="
-                                widget-content: 168,
+                                widget-content: 149,
                                 css: {  'has-info-long': $component.lengthStamps() === 'long' ,
                                         'has-info-short': $component.lengthStamps() === 'short'}
                                 ">
@@ -364,7 +365,7 @@ module nts.uk.ui.kdp001.a {
                 }
                 .kdp-001-a-potal.widget-content {
                     border: 1px solid #b1b1b1;
-                    max-height: 168px;
+                    max-height: 149px;
                     width: 448px;
                     margin: 5px auto;
                     border-radius: 3px;
@@ -598,7 +599,7 @@ module nts.uk.ui.kdp001.a {
 
                         vm.time.style(`color: ${textColor || DEFAULT_COLOR_TIME};`);
 
-                        if (ko.unwrap(vm.message.data).messageId = 'Msg_1645') {
+                        if (ko.unwrap(vm.message.data).messageId === 'Msg_1645') {
                             vm.time.style(`color: DEFAULT_COLOR_TIME;`);
                         }
 
@@ -725,6 +726,7 @@ module nts.uk.ui.kdp001.a {
                 .$blockui("invisibleView")
                 .then(() => vm.$ajax('at', REST_API.registerStampInput, command))
                 .then((stampDate: string) => {
+                    
                     switch (buttonPositionNo) {
                         case 1:
                         case 3:
@@ -745,6 +747,8 @@ module nts.uk.ui.kdp001.a {
                 }))
                 .then((response: any) => {
 
+                    console.log(response);
+                    
                     if (response) {
                         const { dailyAttdErrorInfos } = response;
 
@@ -788,10 +792,30 @@ module nts.uk.ui.kdp001.a {
                     .then(() => {
                         vm.$ajax(REST_API.getLocation, param)
                             .done((data: IBasyo) => {
-                                if (data) {
+
+                                console.log(data);
+
+                                if(data) {
                                     vm.workpalceCD(locationCd);
-                                    vm.workLocationName(data.workLocationName);
-                                    vm.workplaceId(data.workpalceId);
+
+                                    if (data.workpalceId != null) {
+                                        vm.workpalceCD(locationCd);
+                                        vm.workplaceId(data.workpalceId);
+                                    }
+                                }
+
+                                if (ko.unwrap(vm.workplaceId) !== null) {
+                                    const param = { sid: __viewContext.user.employeeId, workPlaceIds: [ko.unwrap(vm.workplaceId)] };
+        
+                                    vm.$ajax(REST_API.WORKPLACE_INFO, param)
+                                        .then((workPlace: any) => {
+        
+                                            if (workPlace) {
+                                                if (workPlace.workPlaceInfo.length > 0) {
+                                                    vm.workLocationName(workPlace.workPlaceInfo[0].workplaceName)
+                                                }
+                                            }
+                                        })
                                 }
                             })
                     })

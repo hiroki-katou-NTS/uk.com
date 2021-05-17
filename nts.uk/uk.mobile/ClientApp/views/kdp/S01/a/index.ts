@@ -61,6 +61,8 @@ export class KdpS01AComponent extends Vue {
         workUse: false
     };
 
+    public locationInfoUse: boolean = false;
+
     public get textComment() {
         const vm = this;
         const { setting } = vm;
@@ -103,6 +105,7 @@ export class KdpS01AComponent extends Vue {
                     vm.$http.post('at', servicePath.getSettingStampCommon).then((result: any) => {  
                         vm.settingStampCommon.supportUse = result.data.supportUse;
                         vm.settingStampCommon.temporaryUse = result.data.temporaryUse;
+                        vm.locationInfoUse = data.setting.locationInfoUse;
                     
                         if (_.has(data, 'setting.pageLayoutSettings') && data.setting.pageLayoutSettings.length > 0) {                          
 
@@ -243,8 +246,13 @@ export class KdpS01AComponent extends Vue {
         navigator.geolocation.getCurrentPosition((position) => {
 
             if (position) {
-                let latitude = position.coords.latitude,
+                let latitude = null,
+                longitude = null;
+
+                if (vm.locationInfoUse) {
+                    latitude = position.coords.latitude;
                     longitude = position.coords.longitude;
+                }
 
                 command.geoCoordinate = { latitude, longitude };
                 vm.$mask('show');

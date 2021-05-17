@@ -24,6 +24,7 @@ module nts.uk.at.view.kdp005.a {
 		};
 
 		const KDP005_SAVE_DATA = 'loginKDP005';
+		const WORKPLACES_STORAGE = 'WORKPLACES_STORAGE';
 
 		const API = {
 			NOTICE: 'at/record/stamp/notice/getStampInputSetting',
@@ -53,14 +54,17 @@ module nts.uk.at.view.kdp005.a {
 			messageNoti: KnockoutObservable<IMessage> = ko.observable();
 			fingerStampSetting: KnockoutObservable<FingerStampSetting> = ko.observable(DEFAULT_SETTING);
 
+			//basyo mode
 			modeBasyo: KnockoutObservable<boolean> = ko.observable(false);
+
+			// workplace get in basyo;
+			workplace: string[] | [] = [];
 			
 			// get from basyo;
-			workplace: string[] | [] = [];
-			worklocationCode: string = '';
+			worklocationCode: null | string = null;
 			workplaceId: string = null;
-			workplaceName: string = null;
 
+			workPlaceInfos: IWorkPlaceInfo[] = [];
 			supportUse: KnockoutObservable<boolean> = ko.observable(false);
 			
 			pageComment: KnockoutObservable<string> = ko.observable('');
@@ -86,6 +90,7 @@ module nts.uk.at.view.kdp005.a {
 				vm.$blockui('invisible')
 					.then(() => {
 						self.basyo();
+						self.getWorkPlacesInfo();
 					}).then(() => {
 						service.getLogginSetting().done((res) => {
 							self.listCompany = _.filter(res, 'icCardStamp');
@@ -293,6 +298,8 @@ module nts.uk.at.view.kdp005.a {
 
 			public clickBtn1(btn: any, layout: any) {
 				const vm = this;
+				vm.getWorkPlacesInfo();
+
 				modal('/view/kdp/005/h/index.xhtml').onClosed(function (): any {
 					let ICCard = getShared('ICCard');
 					if (ICCard && ICCard != '') {
@@ -476,9 +483,6 @@ module nts.uk.at.view.kdp005.a {
 				};
 				const mode: number = 1;
 				const { employeeId, employeeCode } = employeeIdRegister;
-				const workLocationName = self.workplaceName;
-				const workpalceId = self.workplaceId;
-				const employeeInfo = { mode, employeeId, employeeCode, workLocationName, workpalceId };
 
 				let source = self.playAudio(button.audioType);
 
@@ -497,26 +501,45 @@ module nts.uk.at.view.kdp005.a {
 					if (dataStorage.selectedWP.length > 1 && self.supportUse() === true && _.includes([14, 15, 16, 17, 18], btnType)) {
 						vm.$window.modal('at', DIALOG.M, {screen: 'KDP005'})
 							.then((result: string) => {
-								service.addCheckCard(registerdata).done((res) => {
-									//phat nhac
-									if (source) {
-										let audio = new Audio(source);
-										audio.play();
+
+								if(result) {
+									var workplace: IWorkPlaceInfo = _.find(self.workPlaceInfos, ((value) => {
+										if (value.id === result) {
+											return value;
+										}
+									}));
+
+									var workLocationName: string = '';
+									var workplaceId: string = result;
+									if (workplace) {
+										workLocationName = workplace.name
 									}
-				
-									if (self.stampResultDisplay().notUseAttr == 1 && button.changeClockArt == 1) {
-										vm.$window.storage('infoEmpToScreenC', employeeInfo);
-										self.openScreenC(button, layout, employeeIdRegister);
-									} else {
-										vm.$window.storage('infoEmpToScreenB', employeeInfo);
-										self.openScreenB(button, layout, employeeIdRegister);
-									}
-								}).fail((res) => {
-									dialog.alertError({ messageId: res.messageId });
-								}).always(() => {
-									//					self.getStampToSuppress();
-									block.clear();
-								});
+
+									service.addCheckCard(registerdata).done((res) => {
+										//phat nhac
+										if (source) {
+											let audio = new Audio(source);
+											audio.play();
+										}
+										const employeeInfo = { mode, employeeId, employeeCode, workLocationName, workplaceId };
+					
+										if (self.stampResultDisplay().notUseAttr == 1 && button.changeClockArt == 1) {
+											vm.$window.storage('infoEmpToScreenC', employeeInfo);
+											vm.$window.storage('screenC', { screen: "KDP005" });
+											self.openScreenC(button, layout, employeeIdRegister);
+										} else {
+											vm.$window.storage('infoEmpToScreenB', employeeInfo);
+											vm.$window.storage('screenB', { screen: "KDP005" });
+											self.openScreenB(button, layout, employeeIdRegister);
+										}
+									}).fail((res) => {
+										dialog.alertError({ messageId: res.messageId });
+									}).always(() => {
+										//					self.getStampToSuppress();
+										block.clear();
+									});
+								}
+								
 							});
 					} else {
 						service.addCheckCard(registerdata).done((res) => {
@@ -569,11 +592,7 @@ module nts.uk.at.view.kdp005.a {
 					mode: Mode.Personal,
 				});
 
-				setShared("screenC", {
-					screen: "KDP005"
-				});
-
-				modal('/view/kdp/002/c/index.xhtml').onClosed(function (): any {
+				modal('/view/kdp/002/c/index.xhtml', { screen: "KDP005" }).onClosed(function (): any {
 					self.openKDP002T(button, layout);
 				});
 			}
@@ -653,6 +672,17 @@ module nts.uk.at.view.kdp005.a {
 				}
 			}
 
+			getWorkPlacesInfo() {
+				let vm = new ko.ViewModel();
+				let self = this;
+	
+				vm.$window.storage(WORKPLACES_STORAGE)
+					.then((data: IWorkPlaceInfo[]) => {
+						self.workPlaceInfos = data
+					});
+	
+			}
+
 				// URLOption basyo
 				basyo() {
 					const self = this,
@@ -670,11 +700,15 @@ module nts.uk.at.view.kdp005.a {
 						vm.$ajax(API.GET_LOCATION, param)
 							.done((data: IBasyo) => {
 								if (data) {
-									self.modeBasyo(true);
-									self.workplace = [data.workpalceId];
-									self.worklocationCode = locationCd;
-									self.workplaceId = data.workpalceId;
-									self.workplaceName = data.workLocationName;
+									if (data.workLocationName != null || data.workpalceId != null) {
+										self.worklocationCode = locationCd;
+									}
+									
+									if (data.workpalceId) {
+										self.modeBasyo(true);
+										self.workplace = [data.workpalceId];
+										self.workplaceId = data.workpalceId;
+									}
 								}
 							});
 		
@@ -702,5 +736,14 @@ module nts.uk.at.view.kdp005.a {
 	interface IBasyo {
 		workLocationName: string;
 		workpalceId: string;
+	}
+
+	interface IWorkPlaceInfo {
+		code: string,
+		hierarchyCode: string,
+		id: string,
+		name: string,
+		workplaceDisplayName: string,
+		workplaceGeneric: string
 	}
 }

@@ -31,6 +31,9 @@ public class SettingsSmartphoneStampDto {
 
 	// 打刻ボタンを抑制する
 	private boolean buttonEmphasisArt;
+	
+	// 位置情報を利用する
+	private boolean locationInfoUse;
 
 	public static SettingsSmartphoneStampDto fromDomain(SettingsSmartphoneStamp domain) {
 
@@ -38,6 +41,6 @@ public class SettingsSmartphoneStampDto {
 				domain.getCid(),
 				DisplaySettingsStampScreenDto.fromDomain(domain.getDisplaySettingsStampScreen()), 
 				domain.getPageLayoutSettings().stream().map(setting-> StampPageLayoutDto.fromDomain(setting)).collect(Collectors.toList()),
-				domain.isButtonEmphasisArt());
+				domain.isButtonEmphasisArt(), domain.getLocationInfoUse().isUse());
 	}
 }

@@ -79,16 +79,16 @@ module nts.uk.at.view.kdp003.m {
 
             switch (param.screen) {
                 case 'KDP003':
-                    vm.reloadData(KDP003_SAVE_DATA);
+                    vm.reloadData(KDP003_SAVE_DATA, 'KDP003');
                     break;
                 case 'KDP004':
-                    vm.reloadData(KDP004_SAVE_DATA);
+                    vm.reloadData(KDP004_SAVE_DATA, 'KDP004');
                     break;
                 case 'KDP005':
-                    vm.reloadData(KDP005_SAVE_DATA);
+                    vm.reloadData(KDP005_SAVE_DATA, 'KDP005');
                     break;
                 default:
-                    vm.reloadData(KDP003_SAVE_DATA);
+                    vm.reloadData(KDP003_SAVE_DATA, 'KDP003');
                     break
             }
         }
@@ -118,45 +118,118 @@ module nts.uk.at.view.kdp003.m {
         }
 
         // Reload data in storage when the data storage change
-        reloadData(key: string) {
+        reloadData(key: string, nameScreen: string) {
             const vm = this;
             // get data in storage
-            vm.$blockui('invisible')
-                .then(() => {
-                    vm.$window
-                        .storage(key)
-                        .then((data: Data) => {
-                            if (data.WKPID.length <= 9) {
-                                vm.mode_hiden(false);
-                                vm.$window.size(500, 585);
-                            } else {
-                                vm.mode_hiden(true);
-                            }
-                            const param = { sid: data.SID, workPlaceIds: data.WKPID };
-                            vm.$ajax(API.WORKPLACE_INFO, param)
-                                .then((workPlace: workPlace) => {
 
-                                    if (workPlace.sWkpHistExport) {
-                                        const exist = _.find(workPlace.workPlaceInfo, (values) => {
-                                            return values.workplaceId === workPlace.sWkpHistExport.workplaceId;
-                                        })
-
-                                        if (exist) {
-                                            _.remove(workPlace.workPlaceInfo, ((values) => {
-                                                return values.workplaceId === exist.workplaceId;
-                                            }));
-                                            workPlace.workPlaceInfo.unshift(exist);
-                                        }
+            switch (nameScreen) {
+                case 'KDP003':
+                    vm.$blockui('invisible')
+                        .then(() => {
+                            vm.$window
+                                .storage(key)
+                                .then((data: Data) => {
+                                    if (data.WKPID.length <= 9) {
+                                        vm.mode_hiden(false);
+                                        vm.$window.size(500, 585);
+                                    } else {
+                                        vm.mode_hiden(true);
                                     }
+                                    const param = { sid: data.SID, workPlaceIds: data.WKPID };
+                                    vm.call(param);
 
-                                    vm.workplace = _.chunk(workPlace.workPlaceInfo, 9);
-                                    vm.position.valueHasMutated();
-                                })
+                                });
+                        })
+                        .always(() => {
+                            vm.$blockui('clear');
                         });
-                })
-                .always(() => {
-                    vm.$blockui('clear');
-                })
+                    break;
+                case 'KDP004':
+                    vm.$blockui('invisible')
+                        .then(() => {
+                            vm.$window
+                                .storage(key)
+                                .then((data: Data) => {
+                                    if (data.selectedWP.length <= 9) {
+                                        vm.mode_hiden(false);
+                                        vm.$window.size(500, 585);
+                                    } else {
+                                        vm.mode_hiden(true);
+                                    }
+                                    const param = { sid: data.employeeId, workPlaceIds: data.selectedWP };
+                                    vm.call(param);
+
+                                });
+                        })
+                        .always(() => {
+                            vm.$blockui('clear');
+                        });
+                    break;
+                case 'KDP005':
+                    vm.$blockui('invisible')
+                        .then(() => {
+                            vm.$window
+                                .storage(key)
+                                .then((data: Data) => {
+                                    if (data.selectedWP.length <= 9) {
+                                        vm.mode_hiden(false);
+                                        vm.$window.size(500, 585);
+                                    } else {
+                                        vm.mode_hiden(true);
+                                    }
+                                    const param = { sid: data.employeeId, workPlaceIds: data.selectedWP };
+                                    vm.call(param);
+
+                                });
+                        })
+                        .always(() => {
+                            vm.$blockui('clear');
+                        });
+                    break;
+                default:
+                    vm.$blockui('invisible')
+                        .then(() => {
+                            vm.$window
+                                .storage(key)
+                                .then((data: Data) => {
+                                    if (data.WKPID.length <= 9) {
+                                        vm.mode_hiden(false);
+                                        vm.$window.size(500, 585);
+                                    } else {
+                                        vm.mode_hiden(true);
+                                    }
+                                    const param = { sid: data.SID, workPlaceIds: data.WKPID };
+                                    vm.call(param);
+
+                                });
+                        })
+                        .always(() => {
+                            vm.$blockui('clear');
+                        });
+                    break
+            }
+        }
+
+        call(param: any) {
+            const vm = this;
+            vm.$ajax(API.WORKPLACE_INFO, param)
+                .then((workPlace: workPlace) => {
+                    if (workPlace.sWkpHistExport) {
+                        const exist = _.find(workPlace.workPlaceInfo, (values) => {
+                            return values.workplaceId === workPlace.sWkpHistExport.workplaceId;
+                        })
+
+                        if (exist) {
+                            _.remove(workPlace.workPlaceInfo, ((values) => {
+                                return values.workplaceId === exist.workplaceId;
+                            }));
+                            workPlace.workPlaceInfo.unshift(exist);
+                        }
+                    }
+
+                    vm.workplace = _.chunk(workPlace.workPlaceInfo, 9);
+                    vm.position.valueHasMutated();
+                });
         }
 
         // Reload Data in view

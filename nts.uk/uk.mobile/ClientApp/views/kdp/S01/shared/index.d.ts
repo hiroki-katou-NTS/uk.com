@@ -24,6 +24,9 @@ export module model {
         // 打刻ボタンを抑制する
         buttonEmphasisArt: boolean;
 
+        // 位置情報を利用する
+	    locationInfoUse: boolean;
+
     }
 
     export interface IStampPageLayoutDto {

@@ -34,7 +34,7 @@ public class LocationStampInput {
 				param.workLocationCode);
 
 		if (!optWorkLocation.isPresent()) {
-			return dto;
+			return null;
 		}
 
 		WorkLocation workLocation = optWorkLocation.get();
