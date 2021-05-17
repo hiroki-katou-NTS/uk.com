@@ -100,7 +100,11 @@ module nts.uk.at.view.kdp002.c {
 				vm.$ajax('at','screen/at/kdp003/workplace-info', param)
 					.then((data: any) => {
 						if (data) {
-							self.laceName(data.workPlaceInfo[0].displayName);
+							if (data.workPlaceInfo[0].displayName === 'コード削除済') {
+								self.laceName('');
+							} else {
+								self.laceName(data.workPlaceInfo[0].displayName);
+							}
 						}
 					});
 			}

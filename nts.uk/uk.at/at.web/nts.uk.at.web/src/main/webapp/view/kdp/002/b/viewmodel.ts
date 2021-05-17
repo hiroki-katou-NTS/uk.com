@@ -148,7 +148,11 @@ class KDP002BViewModel extends ko.ViewModel {
         vm.$ajax(kDP002RequestUrl.WORKPLACE_INFO, param)
             .then((data: any) => {
                 if (data) {
-                    self.workPlace(data.workPlaceInfo[0].displayName);
+                    if (data.workPlaceInfo[0].displayName === 'コード削除済') {
+                        self.workPlace('');
+                    } else {
+                        self.workPlace(data.workPlaceInfo[0].displayName);
+                    }
                 }
             })
     }
