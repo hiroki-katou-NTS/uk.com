@@ -20,7 +20,7 @@ public class ReferContactInformationWs {
 	
 	@POST
 	@Path("get")
-	public ReferContactInformationDto getContactInfomation(String employeeId, Integer startMode) {
-		return this.screenQuerry.getContactInfomation(employeeId, EnumAdaptor.valueOf(startMode, StartMode.class));
+	public ReferContactInformationDto getContactInfomation(ReferContactInformationParams params) {
+		return this.screenQuerry.getContactInfomation(params.getEmployeeId(), EnumAdaptor.valueOf(params.getStartMode(), StartMode.class));
 	}
 }

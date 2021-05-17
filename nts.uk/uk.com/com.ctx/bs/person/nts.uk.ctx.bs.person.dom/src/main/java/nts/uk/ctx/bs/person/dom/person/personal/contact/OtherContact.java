@@ -4,8 +4,6 @@ import lombok.Builder;
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
 
-import java.util.Optional;
-
 /**
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.基幹.個人.個人連絡先.個人連絡先
  */
