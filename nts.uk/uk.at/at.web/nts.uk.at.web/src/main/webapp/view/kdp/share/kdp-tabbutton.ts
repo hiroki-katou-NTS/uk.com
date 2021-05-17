@@ -160,15 +160,6 @@ module nts.uk.at.view.kdp.share {
 			ko.applyBindingsToNode(icon, { ntsIcon: { no: getIcon(data.changeClockArt, data.changeCalArt, data.setPreClockArt, data.changeHalfDay, data.btnReservationArt), 'width': '68', 'height': '68' } });
 
 			const text = document.createElement('div');
-			if (data.btnPositionNo === 1 || data.btnPositionNo === 2) {
-				if (data.btnName.length <= 8 ) {
-					text.className = "fs-30";
-				} else {
-					text.className = "fs-24";
-				}
-			} else {
-				text.className = "fs-20";
-			}
 
 			const { supportUse, temporaryUse } = data;
 
@@ -186,6 +177,11 @@ module nts.uk.at.view.kdp.share {
 					|| (temporaryUse === false && _.includes([12, 13], btnType)) ? 'hidden' : 'visible'
 				});
 			$('.btn-layout-type-0>div:first-child button').css({'height':$('.btn-layout-type-0>div:first-child button').width()+'px'});
+			if (data.btnPositionNo === 1 || data.btnPositionNo === 2) {
+				changeFontSize(element, 1);	
+			} else {
+				changeFontSize(element, 0);
+			}
 		}
 	}
 	const COMPONENT_NAME = 'kdp-tab-button-panel';
@@ -425,6 +421,13 @@ module nts.uk.at.view.kdp.share {
 		
 		setSize = function() {
         	$('.btn-layout-type-0>div:first-child button').css({'height':$('.btn-layout-type-0>div:first-child button').width()+'px'});
+			$('.btn-layout-type-0>div:first-child button div').css({'font':$('.btn-layout-type-0>div:first-child button').width()/this.va+'px'});
+			$('.btn-layout-type-0>div:first-child button').each(function() {
+				changeFontSize(this, 0);	
+			});
+			$('.btn-layout-type-0>div:not(:first-child) button').each(function() {
+				changeFontSize(this, 1);	
+			});
 		}
 		mounted() {
 			const vm = this;
@@ -589,5 +592,22 @@ module nts.uk.at.view.kdp.share {
 		supportUse: boolean;
 		temporaryUse: boolean;
 		workUse: boolean;
+	}
+	let changeFontSize = function(element: HTMLButtonElement, type : number){
+		if(element.innerText.length < 9){
+			if(type == 0) {
+				element.style.fontSize = '2.8vmin';	
+			}else{
+				element.style.fontSize = '2.2vmin';
+			}
+			return;
+		}
+		let maxSize : number = 20;
+		if(type == 0) {
+			maxSize = 26;	
+		}
+		let fontSize = (element.offsetWidth / element.innerText.length) + (type == 0 ? 8 : 5);
+		if(fontSize > maxSize) fontSize = maxSize;
+		element.style.fontSize = fontSize + 'px';
 	}
 }
