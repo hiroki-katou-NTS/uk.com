@@ -20,6 +20,7 @@ import nts.uk.ctx.at.function.dom.adapter.employmentinfoterminal.infoterminal.Se
 /**
  * @author ThanhNX
  *
+ *予約メニューリクエスト
  */
 @RequestScoped
 @Named(Command.RESERVATION_INFO)
@@ -29,16 +30,15 @@ public class ReservationMenuInfoRequest extends NRLRequest<Frame> {
 	private SendNRDataAdapter sendNRDataAdapter;
 
 	@Override
-	public void sketch(ResourceContext<Frame> context) {
+	public void sketch(String empInfoTerCode, ResourceContext<Frame> context) {
 		// TODO Auto-generated method stub
 		List<MapItem> items = new ArrayList<>();
 		items.add(FrameItemArranger.SOH());
 		items.add(new MapItem(Element.HDR, Command.RESERVATION_INFO.Response));
 		// Get work time info from DB, count records
-		String nrlNo = context.getEntity().pickItem(Element.NRL_NO);
-		// TODO: default ContractCode "000000000000"
-		List<SendReservationMenuImport> lstInfo = sendNRDataAdapter.sendReservMenu(nrlNo.trim(),
-				"000000000000");
+		String contractCode =  context.getEntity().pickItem(Element.CONTRACT_CODE);
+		List<SendReservationMenuImport> lstInfo = sendNRDataAdapter.sendReservMenu(empInfoTerCode,
+				contractCode);
 		String payload = toStringObject(lstInfo);
 		byte[] payloadBytes = Codryptofy.decode(payload);
 		int length = payloadBytes.length + 40;
@@ -48,6 +48,7 @@ public class ReservationMenuInfoRequest extends NRLRequest<Frame> {
 		items.add(FrameItemArranger.NoFragment());
 		items.add(new MapItem(Element.NRL_NO, context.getTerminal().getNrlNo()));
 		items.add(new MapItem(Element.MAC_ADDR, context.getTerminal().getMacAddress()));
+		items.add(new MapItem(Element.CONTRACT_CODE, contractCode));
 		items.add(FrameItemArranger.ZeroPadding());
 		// Number of records
 		context.collectEncrypt(items, payload);
@@ -67,7 +68,7 @@ public class ReservationMenuInfoRequest extends NRLRequest<Frame> {
 			builder.append(StringUtils.rightPad(data.getBentoMenu(), 16));
 			builder.append(StringUtils.rightPad(data.getUnit(), 2));
 		}
-		builder.append(StringUtils.rightPad("", 8, "a"));
+		builder.append(StringUtils.rightPad("", 8, " "));
 		return builder.toString();
 	}
 

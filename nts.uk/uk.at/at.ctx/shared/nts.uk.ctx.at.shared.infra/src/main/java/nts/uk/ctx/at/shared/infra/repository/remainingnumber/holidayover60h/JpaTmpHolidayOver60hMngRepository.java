@@ -13,13 +13,17 @@ import javax.ejb.TransactionAttributeType;
 
 import lombok.SneakyThrows;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.jdbc.NtsResultSet;
+import nts.arc.layer.infra.data.jdbc.NtsResultSet.NtsResultRecord;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.remainingnumber.holidayover60h.interim.TmpHolidayOver60hMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.holidayover60h.interim.TmpHolidayOver60hMngRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
+import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UseTime;
-import nts.uk.ctx.at.shared.infra.entity.remainingnumber.annlea.KrcdtHdpaidTemp;
+import nts.uk.ctx.at.shared.dom.remainingnumber.work.AppTimeType;
+import nts.uk.ctx.at.shared.dom.remainingnumber.work.DigestionHourlyTimeType;
 import nts.uk.ctx.at.shared.infra.entity.remainingnumber.annlea.KshdtInterimHdpaid;
 import nts.uk.ctx.at.shared.infra.entity.remainingnumber.holidayover60h.KrcmtInterimHd60h;
 import nts.uk.ctx.at.shared.infra.entity.remainingnumber.holidayover60h.KrcmtInterimHd60hPK;
@@ -39,9 +43,17 @@ public class JpaTmpHolidayOver60hMngRepository extends JpaRepository implements 
 		return Optional.empty();
 	}
 
-//	private TmpAnnualHolidayMng toDomain(KrcdtHdpaidTemp x) {
-//		return new TmpAnnualHolidayMng(x.annualMngId, x.workTypeCode, new UseDay(x.useDays));
-//	}
+	private TmpHolidayOver60hMng toDomain(NtsResultRecord x) {
+		return new TmpHolidayOver60hMng(
+				x.getString("REMAIN_MNG_ID"),
+				x.getString("SID"),
+				x.getGeneralDate("YMD"),
+				x.getEnum("CREATOR_ATR", CreateAtr.class),
+				RemainType.SIXTYHOUR,
+				Optional.ofNullable(x.getInt("USED_TIME") == null ? null : new UseTime(x.getInt("USED_TIME"))),
+				Optional.ofNullable(new DigestionHourlyTimeType(x.getInt("TIME_DIGESTIVE_ATR") == 1,
+						Optional.ofNullable(x.getEnum("TIME_HD_TYPE", AppTimeType.class)))));
+	}
 
 	@Override
 	public void deleteById(String mngId) {
@@ -81,21 +93,19 @@ public class JpaTmpHolidayOver60hMngRepository extends JpaRepository implements 
 	@SneakyThrows
 	@Override
 	public List<TmpHolidayOver60hMng> getBySidPeriod(String sid, DatePeriod period) {
-//		try(PreparedStatement sql = this.connection().prepareStatement("SELECT * FROM KRCDT_HDPAID_TEMP a1"
-//				+ " INNER JOIN KRCDT_INTERIM_REMAIN_MNG a2 ON a1.ANNUAL_MNG_ID = a2.REMAIN_MNG_ID"
-//				+ " WHERE a2.SID = ?"
-//				+ " AND  a2.REMAIN_TYPE = 0"
-//				+ " AND a2.YMD >= ? and a2.YMD <= ?"
-//				+ " ORDER BY a2.YMD");
-//		)
-//		{
-//			sql.setString(1, sid);
-//			sql.setDate(2, Date.valueOf(period.start().localDate()));
-//			sql.setDate(3, Date.valueOf(period.end().localDate()));
-//			List<TmpAnnualHolidayMng> lstOutput = new NtsResultSet(sql.executeQuery())
-//					.getList(x -> toDomain(x));
-//			return lstOutput;
-			return new ArrayList<TmpHolidayOver60hMng>();
+		try(PreparedStatement sql = this.connection().prepareStatement("SELECT * FROM KRCDT_HDPAID_TEMP a1"
+				+ " WHERE a1.SID = ?"
+				+ " AND a1.YMD >= ? and a1.YMD <= ?"
+				+ " ORDER BY a1.YMD");
+		)
+		{
+			sql.setString(1, sid);
+			sql.setDate(2, Date.valueOf(period.start().localDate()));
+			sql.setDate(3, Date.valueOf(period.end().localDate()));
+			List<TmpHolidayOver60hMng> lstOutput = new NtsResultSet(sql.executeQuery())
+					.getList(x -> toDomain(x));
+			return lstOutput;
+		}
 	}
 
 	/**

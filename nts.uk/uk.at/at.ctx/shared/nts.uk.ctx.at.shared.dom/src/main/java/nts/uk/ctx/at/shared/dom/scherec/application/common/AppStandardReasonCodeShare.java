@@ -4,7 +4,7 @@ import nts.arc.primitive.IntegerPrimitiveValue;
 import nts.arc.primitive.constraint.IntegerRange;
 
 /**
- * 申請定型理由コード
+ * 申請定型理由コード(反映用)
  * 
  * @author thanh_nx
  *
