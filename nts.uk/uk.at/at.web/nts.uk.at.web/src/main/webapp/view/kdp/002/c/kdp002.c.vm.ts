@@ -91,6 +91,20 @@ module nts.uk.at.view.kdp002.c {
 					{ headerText: nts.uk.resource.getText("KDP002_60"), key: 'value', width: 175 }
 				]);
 			}
+
+			getWorkPlacwName(workPlaceId: string) {
+				const vm = new ko.ViewModel();
+				const self = this;
+
+				const param = { sid: vm.$user.employeeId, workPlaceIds: [workPlaceId] };
+				vm.$ajax('at','screen/at/kdp003/workplace-info', param)
+					.then((data: any) => {
+						if (data) {
+							self.laceName(data.workPlaceInfo[0].displayName);
+						}
+					});
+			}
+
 			/**
 			 * start page  
 			 */
@@ -99,10 +113,9 @@ module nts.uk.at.view.kdp002.c {
 					dfd = $.Deferred();
 				let itemIds: DISPLAY_ITEM_IDS = nts.uk.ui.windows.getShared("KDP010_2C");
 				self.infoEmpFromScreenA = nts.uk.ui.windows.getShared("infoEmpToScreenC");
+				
 
-				if (self.infoEmpFromScreenA.workLocationName) {
-					self.laceName(self.infoEmpFromScreenA.workLocationName);
-				}
+				self.getWorkPlacwName(self.infoEmpFromScreenA.workPlaceId);
 
 				let data = {
 					employeeId: self.infoEmpFromScreenA.employeeId,
@@ -225,7 +238,7 @@ module nts.uk.at.view.kdp002.c {
 				const param = {
 					startDate: startDate,
 					endDate: mockvm.$date.now(),
-					sid: vm.infoEmpFromScreenA.employeeId
+					sid: __viewContext.user.employeeId
 				}
 
 				service.getNotificationSetting()

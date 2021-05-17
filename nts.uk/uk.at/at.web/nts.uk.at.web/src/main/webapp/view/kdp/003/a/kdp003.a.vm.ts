@@ -613,6 +613,9 @@ module nts.uk.at.kdp003.a {
 				// show message from login data (return by f dialog)
 				.fail((message: { messageId: string }) => {
 					vm.message(message);
+				})
+				.always(() => {
+					window.location.reload(false);
 				});
 		}
 
