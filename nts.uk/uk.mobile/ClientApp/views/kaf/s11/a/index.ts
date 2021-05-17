@@ -608,12 +608,13 @@ export class KafS11AComponent extends KafS00ShrComponent {
 
     get enableComplementTimeRange() {
         const vm = this;
-        if (vm.mode == ScreenMode.DETAIL) {
+        // if (vm.mode == ScreenMode.DETAIL) {
+        //
+        //     return vm.cdtSubstituteWorkAppReflect();
+        // }
 
-            return vm.cdtSubstituteWorkAppReflect();
-        }
-
-        return vm.cdtSubMngComplementDailyType();
+        return vm.cdtSubstituteWorkAppReflect();
+        // return vm.cdtSubMngComplementDailyType();
     }
 
     // ※6-1, ※6-2

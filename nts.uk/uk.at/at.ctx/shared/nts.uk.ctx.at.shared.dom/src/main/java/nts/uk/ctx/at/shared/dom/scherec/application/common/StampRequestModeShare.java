@@ -3,7 +3,7 @@ package nts.uk.ctx.at.shared.dom.scherec.application.common;
 import lombok.AllArgsConstructor;
 
 /**
- * 打刻申請モード
+ * 打刻申請モード(反映用)
  * 
  * @author thanh_nx
  *

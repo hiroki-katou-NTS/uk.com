@@ -30,10 +30,10 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.schedule.ba
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeAppAtr;
 import nts.uk.ctx.at.request.dom.applicationreflect.AppReflectExeConditionRepository;
 import nts.uk.ctx.at.request.dom.applicationreflect.AppReflectExecutionCondition;
+import nts.uk.ctx.at.request.dom.applicationreflect.object.ReflectStatusResult;
 import nts.uk.ctx.at.request.dom.reasonappdaily.ReasonApplicationDailyResult;
 import nts.uk.ctx.at.request.dom.reasonappdaily.ReasonApplicationDailyResultRepo;
 import nts.uk.ctx.at.shared.dom.scherec.application.common.ApplicationShare;
-import nts.uk.ctx.at.shared.dom.scherec.application.reflect.ReflectStatusResultShare;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.ScheduleRecordClassifi;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
@@ -116,8 +116,8 @@ public class CreateRequireReflectionProcess {
 		private final ReasonApplicationDailyResultRepo reasonApplicationDailyResultRepo;
 
 		@Override
-		public Pair<Object, AtomTask> process(ApplicationShare application,
-				GeneralDate date, ReflectStatusResultShare reflectStatus, int preAppWorkScheReflectAttr) {
+		public Pair<ReflectStatusResult, AtomTask> process(ApplicationShare application,
+				GeneralDate date, ReflectStatusResult reflectStatus, int preAppWorkScheReflectAttr) {
 			return eflectApplicationWorkScheduleAdapter.process(application, date, reflectStatus,
 					preAppWorkScheReflectAttr);
 		}
@@ -153,8 +153,8 @@ public class CreateRequireReflectionProcess {
 		}
 
 		@Override
-		public Pair<ReflectStatusResultShare, Optional<AtomTask>> processWork(ApplicationShare application,
-				GeneralDate date, ReflectStatusResultShare reflectStatus) {
+		public Pair<ReflectStatusResult, Optional<AtomTask>> processWork(ApplicationShare application,
+				GeneralDate date, ReflectStatusResult reflectStatus) {
 			return reflectApplicationWorkRecordAdapter.process(application, date, reflectStatus);
 		}
 
