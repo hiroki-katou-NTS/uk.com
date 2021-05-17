@@ -62,8 +62,10 @@ public class AggregateMonthlyRecordValue {
 	/** 特別休暇月別残数データ */
 	private List<SpecialHolidayRemainData> specialLeaveRemainList;
 	/** 介護休暇月別残数データ */
+	@Setter
 	private Optional<CareRemNumEachMonth> monCareHdRemain;
 	/** 子の看護休暇月別残数データ */
+	@Setter
 	private Optional<ChildcareRemNumEachMonth> monChildHdRemain;
 
 //	/** 年休積立年休の集計結果 */

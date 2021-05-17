@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare;
+package nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.children.service;
 
 
 import lombok.Getter;

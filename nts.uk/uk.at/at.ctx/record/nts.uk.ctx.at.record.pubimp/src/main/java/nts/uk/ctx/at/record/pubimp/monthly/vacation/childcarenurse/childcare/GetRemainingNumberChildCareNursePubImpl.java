@@ -129,7 +129,7 @@ public class GetRemainingNumberChildCareNursePubImpl implements GetRemainingNumb
 	}
 
 	// 子の看護休暇エラー情報
-	private List<ChildCareNurseErrorsExport> createError(List<nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare.ChildCareNurseErrors> childCareNurseErrors) {
+	private List<ChildCareNurseErrorsExport> createError(List<nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.children.service.ChildCareNurseErrors> childCareNurseErrors) {
 
 		return childCareNurseErrors.stream().map(c ->
 																ChildCareNurseErrorsExport.of(

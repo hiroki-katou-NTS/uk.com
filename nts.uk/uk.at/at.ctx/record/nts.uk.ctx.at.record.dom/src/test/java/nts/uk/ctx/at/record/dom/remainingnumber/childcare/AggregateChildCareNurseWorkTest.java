@@ -21,7 +21,6 @@ import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare.AggregateChildCareNurseWork;
 import nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare.ChildCareNurseCalcResultWithinPeriod;
 import nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare.ChildCareNurseCalcUsedNumber;
-import nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare.ChildCareNurseErrors;
 import nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare.ChildCareNurseRemainingNumberCalcWork;
 import nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare.ChildCareNurseStartdateInfo;
 import nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare.NextDayAfterPeriodEndWork;
@@ -32,6 +31,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainAt
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.ChildCareNurseUsedNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.interimdata.TempChildCareNurseManagement;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.children.service.ChildCareNurseErrors;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.ChildCareLeaveRemainingInfo;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.NursingCareLeaveRemainingInfo;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.UpperLimitSetting;

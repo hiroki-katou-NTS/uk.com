@@ -9,6 +9,8 @@ import lombok.Setter;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.ChildCareNurseUsedNumber;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.children.service.ChildCareNurseErrors;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.information.care.CareRemNumEachMonth;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.information.childnursing.ChildcareRemNumEachMonth;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.childcarenurse.ChildCareNurseRemainingNumber;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.childcarenurse.ChildCareNurseUsedInfo;
@@ -72,7 +74,7 @@ public class AggrResultOfChildCareNurse {
 	}
 
 	/**
-	 * 子の看護介護-月別残数データ作成
+	 * 子の看護-月別残数データ作成
 	 * @param employeeId
 	 * @param yearMonth
 	 * @param closureId
@@ -81,29 +83,12 @@ public class AggrResultOfChildCareNurse {
 	 * @param childCareNurseResult
 	 * @return
 	 */
-	public ChildcareRemNumEachMonth createRemainData(
+	public ChildcareRemNumEachMonth createChildCareRemainData(
 			String employeeId,
 			YearMonth yearMonth,
 			ClosureId closureId,
 			ClosureDate closureDate,
 			DatePeriod period){
-
-//
-//		// 社員ID ← パラメータ「社員ID」
-//		domain.setEmployeeId(employeeId);
-//
-//		// 年月 ← パラメータ「年月」
-//		domain.setYearMonth(yearMonth);
-//
-//		// 締めID ← パラメータ「締めID」
-//		domain.setClosureId(closureId);
-//
-//		// 締め日 ← パラメータ「締め日」
-//		domain.setClosureDate(closureDate);
-//
-//		// 締め処理状態 ← ”未締め”
-//		domain.setClosureStatus(ClosureStatus.UNTREATED); // 未締め
-
 
 		/** 本年使用数 */
 		ChildCareNurseUsedInfo thisYearUsedInfo = this.aggrperiodinfo.getThisYear().clone();
@@ -129,6 +114,52 @@ public class AggrResultOfChildCareNurse {
 
 		ChildcareRemNumEachMonth domain
 		= new ChildcareRemNumEachMonth(
+				employeeId, yearMonth, closureId, closureDate, rem);
+
+		return domain;
+	}
+
+	/**
+	 * 介護-月別残数データ作成
+	 * @param employeeId
+	 * @param yearMonth
+	 * @param closureId
+	 * @param closureDate
+	 * @param period
+	 * @param childCareNurseResult
+	 * @return
+	 */
+	public CareRemNumEachMonth createCareRemainData(
+			String employeeId,
+			YearMonth yearMonth,
+			ClosureId closureId,
+			ClosureDate closureDate,
+			DatePeriod period){
+
+		/** 本年使用数 */
+		ChildCareNurseUsedInfo thisYearUsedInfo = this.aggrperiodinfo.getThisYear().clone();
+		/** 本年残数 */
+		ChildCareNurseRemainingNumber thisYearRemainNumber = this.startdateDays.getThisYear().getRemainingNumber().clone();
+		/** 翌年使用数 */
+		Optional<ChildCareNurseUsedInfo> nextYearUsedInfo= this.aggrperiodinfo.getNextYear().map(c->c.clone());
+		/** 翌年残数 */
+		Optional<ChildCareNurseRemainingNumber> nextYearRemainNumber=this.startdateDays.getNextYear().map(c->c.getRemainingNumber().clone());
+		/** 合計使用数 */
+		ChildCareNurseUsedInfo usedInfo = this.aggrperiodinfo.getThisYear().clone();
+		if(this.aggrperiodinfo.getNextYear().isPresent()) {
+			usedInfo.add(this.aggrperiodinfo.getNextYear().get());
+		}
+
+		ChildcareNurseRemNumEachMonth rem = ChildcareNurseRemNumEachMonth.of(
+				thisYearUsedInfo,
+				usedInfo,
+				thisYearRemainNumber,
+				nextYearUsedInfo,
+				nextYearRemainNumber
+				);
+
+		CareRemNumEachMonth domain
+		= new CareRemNumEachMonth(
 				employeeId, yearMonth, closureId, closureDate, rem);
 
 		return domain;
