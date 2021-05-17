@@ -7,7 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.exio.dom.exi.csvimport.ExiCharset;
+import nts.uk.ctx.exio.dom.exi.csvimport.CsvRecordImpoter;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
@@ -46,20 +46,8 @@ public class StdAcceptCondSet extends AggregateRoot {
 	 * 既存データの削除
 	 */
 	private NotUseAtr deleteExistData;
-	/**
-	 * CSVデータの項目名行
-	 */
-	private Optional<AcceptanceLineNumber> csvDataItemLineNumber;
 
-	/**
-	 * CSVデータの取込開始行
-	 */
-	private Optional<AcceptanceLineNumber> csvDataStartLine;
-
-	/**
-	 * 文字コード
-	 */
-	private Optional<ExiCharset> characterCode;
+	private CsvRecordImpoter csvRecordImpoter;
 
 	/**
 	 * チェック完了

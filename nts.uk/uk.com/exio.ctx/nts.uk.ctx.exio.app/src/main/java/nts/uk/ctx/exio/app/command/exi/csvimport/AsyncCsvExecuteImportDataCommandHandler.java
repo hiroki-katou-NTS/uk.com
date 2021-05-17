@@ -10,7 +10,7 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.task.data.TaskDataSetter;
 
 @Stateful
-public class SyncCsvExecuteImportDataCommandHandler extends AsyncCommandHandler<CsvImportDataCommand> {
+public class AsyncCsvExecuteImportDataCommandHandler extends AsyncCommandHandler<CsvImportDataCommand> {
 	
 	private static final String NUMBER_OF_ERROR = "エラー件数";
 	private static final String NUMBER_OF_SUCCESS = "処理カウント";

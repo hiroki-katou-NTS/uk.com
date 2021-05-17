@@ -1,24 +1,24 @@
 package nts.uk.ctx.exio.infra.repository.exi.condset;
 
+import java.util.List;
+import java.util.Optional;
+
+import javax.ejb.Stateless;
+
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.exio.dom.exi.condset.AcceptMode;
 import nts.uk.ctx.exio.dom.exi.condset.AcceptanceConditionCode;
 import nts.uk.ctx.exio.dom.exi.condset.AcceptanceConditionName;
-import nts.uk.ctx.exio.dom.exi.condset.AcceptanceLineNumber;
 import nts.uk.ctx.exio.dom.exi.condset.DeleteExistDataMethod;
 import nts.uk.ctx.exio.dom.exi.condset.StdAcceptCondSet;
 import nts.uk.ctx.exio.dom.exi.condset.StdAcceptCondSetRepository;
 import nts.uk.ctx.exio.dom.exi.condset.SystemType;
-import nts.uk.ctx.exio.dom.exi.csvimport.ExiCharset;
+import nts.uk.ctx.exio.dom.exi.csvimport.CsvRecordImpoter;
 import nts.uk.ctx.exio.infra.entity.exi.condset.OiomtExAcCond;
 import nts.uk.ctx.exio.infra.entity.exi.condset.OiomtStdAcceptCondSetPk;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
-
-import javax.ejb.Stateless;
-import java.util.List;
-import java.util.Optional;
 
 /**
  * The class Jpa standard acceptance condition setting repository.<br>
@@ -72,9 +72,10 @@ public class JpaStdAcceptCondSetRepository extends JpaRepository implements StdA
 				Optional.ofNullable(entity.getSystemType() == null ? null : EnumAdaptor.valueOf(entity.getSystemType(), SystemType.class)),
 				Optional.ofNullable(entity.getCategoryId()),
 				EnumAdaptor.valueOf(entity.getDeleteExistData(), NotUseAtr.class),
-				Optional.ofNullable(entity.getCsvDataLineNumber() == null ? null : new AcceptanceLineNumber(entity.getCsvDataLineNumber())),
-				Optional.ofNullable(entity.getCsvDataStartLine() == null ? null : new AcceptanceLineNumber(entity.getCsvDataStartLine())),
-				Optional.ofNullable(entity.getCharacterCode() == null ? null :  EnumAdaptor.valueOf(entity.getCharacterCode(), ExiCharset.class)),
+				new CsvRecordImpoter(
+						entity.getCsvDataLineNumber(),
+						entity.getCsvDataStartLine(),
+						entity.getCharacterCode()),
 				EnumAdaptor.valueOf(entity.getCheckCompleted(), NotUseAtr.class),
 				Optional.ofNullable(entity.getDeleteExtDataMethod() == null ? null : EnumAdaptor.valueOf(entity.getDeleteExtDataMethod(), DeleteExistDataMethod.class)),
 				Optional.ofNullable(entity.getAcceptMode() == null ? null : EnumAdaptor.valueOf(entity.getAcceptMode(), AcceptMode.class)));
@@ -129,10 +130,10 @@ public class JpaStdAcceptCondSetRepository extends JpaRepository implements StdA
 				contractCd,
 				domain.getSystemType().isPresent() ? domain.getSystemType().get().value : null,
 				domain.getCategoryId().isPresent() ? domain.getCategoryId().get() : null,
-				domain.getCsvDataItemLineNumber().isPresent() ? domain.getCsvDataItemLineNumber().get().v() : null,
+				domain.getCsvRecordImpoter().getCsvDataItemLineNumber(),
 				domain.getDeleteExistData().value,
-				domain.getCsvDataStartLine().isPresent() ? domain.getCsvDataStartLine().get().v() : null,
-				domain.getCharacterCode().isPresent() ? domain.getCharacterCode().get().value : null,
+				domain.getCsvRecordImpoter().getCsvDataStartLine(),
+				domain.getCsvRecordImpoter().getCharacterCode(),
 				domain.getAcceptMode().isPresent() ? domain.getAcceptMode().get().value : null,
 				domain.getConditionSetName().v(), domain.getCheckCompleted().value,
 				domain.getDeleteExistDataMethod().isPresent() ? domain.getDeleteExistDataMethod().get().value : null);
