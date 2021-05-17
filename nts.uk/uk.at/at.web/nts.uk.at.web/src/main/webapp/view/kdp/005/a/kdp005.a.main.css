@@ -2,6 +2,11 @@ html {
 	overflow: hidden;
 }
 
+#contents-area {
+	overflow-y: auto;
+    height: 100vh;
+}
+
 #kdp002a{
 	width: 100%;
 	max-width: 540px;
@@ -11,7 +16,6 @@ html {
 .kdp005a {
 	background: linear-gradient(#EBFCF6, #F5F5F5);
 	padding: 10px;
-	height: 66rem;
 }
 
 #content-area {

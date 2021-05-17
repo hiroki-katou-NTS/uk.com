@@ -1,8 +1,9 @@
 html{
   overflow: hidden;
 }
-#content-area {
-  overflow-y: scroll;
+#contents-area {
+	overflow-y: auto;
+    height: 100vh;
 }
 #kdp004a {
 	width: 100%;
@@ -13,7 +14,6 @@ html{
 .kdp004a {
   padding: 10px;
   background: linear-gradient(#EBFCF6, #F5F5F5);
-  height: 66rem;
 }
 
 #genText {
