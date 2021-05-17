@@ -145,16 +145,15 @@ module nts.uk.at.view.kdw002.a {
                                     switch(self.unit()){
                                         case 0:
                                             self.timeUnit(cAttendanceItem.inputUnitOfTimeItem);
-                                        case 2:
+                                        case 1:
                                             self.numberOfTimesUnit(cAttendanceItem.inputUnitOfTimeItem);
-                                        case 5:
+                                        case 2:
                                             self.moneyUnit(cAttendanceItem.inputUnitOfTimeItem);
                                     }
                                 } else {
                                     self.headerColorValue(null);
                                     self.timeInputCurrentCode(0);
                                     self.roundingUnitValue(null);
-                                    self.unit(null);
                                 }
                             });
                         } else {
@@ -167,16 +166,15 @@ module nts.uk.at.view.kdw002.a {
                                     switch(self.unit()){
                                         case 0:
                                             self.timeUnit(cAttendanceItem.inputUnitOfTimeItem);
-                                        case 2:
+                                        case 1:
                                             self.numberOfTimesUnit(cAttendanceItem.inputUnitOfTimeItem);
-                                        case 5:
+                                        case 2:
                                             self.moneyUnit(cAttendanceItem.inputUnitOfTimeItem);
                                     }
                                 } else {
                                     self.headerColorValue(null);
                                     self.timeInputCurrentCode(0);
                                     self.roundingUnitValue(null);
-                                    self.unit(null);
                                 }
                             });
                         }
@@ -190,7 +188,6 @@ module nts.uk.at.view.kdw002.a {
                             self.displayNameEnable(false);
                             self.headerColorValue(null);
                             self.aICurrentCode.valueHasMutated();
-                            self.unit(null);
                         });
                         $(document).on('click', '.clear-btn', function(evt) {
                             self.aICurrentCode(null);
@@ -332,13 +329,13 @@ module nts.uk.at.view.kdw002.a {
                             nts.uk.ui.dialog.error({ messageId: "Msg_1713" }).then(() => nts.uk.ui.block.clear());
                             return;
                         }
-                    case 2:
+                    case 1:
                         if (self.numberOfTimesUnit() == null && self.frameCategory() === 8){
                             nts.uk.ui.dialog.error({ messageId: "Msg_1713" }).then(() => nts.uk.ui.block.clear());
                             return;
                         }
-                    case 5:
-                        if(self.unit() === 5 && self.moneyUnit() == null && self.frameCategory() === 8){
+                    case 2:
+                        if(self.moneyUnit() == null && self.frameCategory() === 8){
                             nts.uk.ui.dialog.error({ messageId: "Msg_1713" }).then(() => nts.uk.ui.block.clear());
                             return;
                         }
@@ -365,9 +362,9 @@ module nts.uk.at.view.kdw002.a {
                     switch(self.unit()){
                         case 0:
                             AtItems.inputUnitOfTimeItem = self.timeUnit();
-                        case 2:
+                        case 1:
                             AtItems.inputUnitOfTimeItem = self.numberOfTimesUnit();
-                        case 5:
+                        case 2:
                             AtItems.inputUnitOfTimeItem = self.moneyUnit();
                     }             
                     nts.uk.ui.block.invisible();
@@ -411,9 +408,9 @@ module nts.uk.at.view.kdw002.a {
                     switch(self.unit()){
                         case 0:
                             AtItems.inputUnitOfTimeItem = self.timeUnit();
-                        case 2:
+                        case 1:
                             AtItems.inputUnitOfTimeItem = self.numberOfTimesUnit();
-                        case 5:
+                        case 2:
                             AtItems.inputUnitOfTimeItem = self.moneyUnit();
                     } 
 
