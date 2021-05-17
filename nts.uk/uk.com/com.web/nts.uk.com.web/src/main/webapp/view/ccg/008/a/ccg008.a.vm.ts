@@ -529,19 +529,22 @@ module nts.uk.com.view.ccg008.a.screenModel {
 
 		refreshLayout() {
 			const vm = this;
-			vm.$window.storage('KTG026_TARGET').then((rs: {isRefresh: boolean, target: any}) => {
+			const restoreKtg026 = vm.$window.storage('KTG026_TARGET').then((rs: {isRefresh: boolean, target: any}) => {
 				if (rs) {
 					rs.isRefresh = true;
 					vm.$window.storage('KTG026_TARGET', rs);
 				}
 			});
-			vm.$window.storage('KTG027_TARGET').then((rs: {isRefresh: boolean, target: any}) => {
+			const restoreKtg027 = vm.$window.storage('KTG027_TARGET').then((rs: {isRefresh: boolean, target: any}) => {
 				if (rs) {
 					rs.isRefresh = true;
 					vm.$window.storage('KTG027_TARGET', rs);
 				}
 			});
-			vm.callApiTopPage();
+
+			$.when(restoreKtg026, restoreKtg027).then(() => {
+				vm.callApiTopPage();
+			})
 		}
 	}
 
