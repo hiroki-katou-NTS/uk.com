@@ -4,6 +4,7 @@
 
 #calendar-reflect-pattern {
 	width: 990px;
+  height: 635px;
 }
 
 #reflect-setting {
@@ -94,9 +95,6 @@
 }
 .reflection-btn-text{
 	white-space: pre-wrap;
-}
-#btnDecide{
-	margin-top: 10px;
 }
 
 .pull-left .control-group {
