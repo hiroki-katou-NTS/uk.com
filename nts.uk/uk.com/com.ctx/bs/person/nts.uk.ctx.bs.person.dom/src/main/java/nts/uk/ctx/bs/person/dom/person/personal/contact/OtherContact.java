@@ -19,11 +19,6 @@ public class OtherContact extends DomainObject {
     private Integer otherContactNo;
 
     /**
-     * 在席照会に表示するか
-     */
-    private Optional<Boolean> isDisplay;
-
-    /**
      * 連絡先のアドレス
      */
     private OtherContactAddress address;

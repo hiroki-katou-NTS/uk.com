@@ -43,38 +43,38 @@ public class UserInfoUseMethodServiceTest {
 		assertThat(res).isFalse();
 	}
 	
-	/**
-	 * Test [pvt-1]利用チェックする: No3
-	 * 連絡先利用設定=個人選択可
-	 * 在席照会に表示するか true
-	 */
-	@Test
-	public void testCheckUsageIndividualSelect() {
-		val res = UserInformationUseMethodService.checkUsage(ContactUsageSetting.INDIVIDUAL_SELECT, Optional.of(true));
-		assertThat(res).isTrue();
-	}
-	
-	/**
-	 * Test [pvt-1]利用チェックする: No4
-	 * 連絡先利用設定=個人選択可
-	 * 在席照会に表示するか false
-	 */
-	@Test
-	public void testCheckUsageIndividualSelect2() {
-		val res = UserInformationUseMethodService.checkUsage(ContactUsageSetting.INDIVIDUAL_SELECT, Optional.of(false));
-		assertThat(res).isFalse();
-	}
-	
-	/**
-	 * Test [pvt-1]利用チェックする: No5
-	 * 連絡先利用設定=個人選択可
-	 * 在席照会に表示するか empty
-	 */
-	@Test
-	public void testCheckUsageIndividualSelect3() {
-		val res = UserInformationUseMethodService.checkUsage(ContactUsageSetting.INDIVIDUAL_SELECT, Optional.empty());
-		assertThat(res).isFalse();
-	}
+//	/**
+//	 * Test [pvt-1]利用チェックする: No3
+//	 * 連絡先利用設定=個人選択可
+//	 * 在席照会に表示するか true
+//	 */
+//	@Test
+//	public void testCheckUsageIndividualSelect() {
+//		val res = UserInformationUseMethodService.checkUsage(ContactUsageSetting.INDIVIDUAL_SELECT, Optional.of(true));
+//		assertThat(res).isTrue();
+//	}
+//	
+//	/**
+//	 * Test [pvt-1]利用チェックする: No4
+//	 * 連絡先利用設定=個人選択可
+//	 * 在席照会に表示するか false
+//	 */
+//	@Test
+//	public void testCheckUsageIndividualSelect2() {
+//		val res = UserInformationUseMethodService.checkUsage(ContactUsageSetting.INDIVIDUAL_SELECT, Optional.of(false));
+//		assertThat(res).isFalse();
+//	}
+//	
+//	/**
+//	 * Test [pvt-1]利用チェックする: No5
+//	 * 連絡先利用設定=個人選択可
+//	 * 在席照会に表示するか empty
+//	 */
+//	@Test
+//	public void testCheckUsageIndividualSelect3() {
+//		val res = UserInformationUseMethodService.checkUsage(ContactUsageSetting.INDIVIDUAL_SELECT, Optional.empty());
+//		assertThat(res).isFalse();
+//	}
 	
 	/**
 	 * Test 連絡先情報を取得 with result is new ContactInformation()
