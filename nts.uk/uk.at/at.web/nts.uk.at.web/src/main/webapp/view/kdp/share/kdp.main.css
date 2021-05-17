@@ -274,8 +274,7 @@
 	top: 0;
 }
 
-.tab-button-panel .grid-container.btn-layout-type-1>div,
-.tab-button-panel .grid-container.btn-layout-type-0>div:not(:first-child) {
+.tab-button-panel .grid-container.btn-layout-type-1>div{
 	max-height: 113px;
 	height: 18vmin;
 }
@@ -305,7 +304,7 @@
 
 .btn-layout-type-0 div:not(:first-child) .stamp-rec-btn div{
 	height: 3vmin;
-	max-height: 30px;
+	max-height: 25px;
 }
 
 .tab-button-panel .grid-container.btn-layout-type-1>div>button>div {

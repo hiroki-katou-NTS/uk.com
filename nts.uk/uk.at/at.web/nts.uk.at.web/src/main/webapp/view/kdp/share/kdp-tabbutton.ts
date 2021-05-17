@@ -177,10 +177,11 @@ module nts.uk.at.view.kdp.share {
 					|| (temporaryUse === false && _.includes([12, 13], btnType)) ? 'hidden' : 'visible'
 				});
 			$('.btn-layout-type-0>div:first-child button').css({'height':$('.btn-layout-type-0>div:first-child button').width()+'px'});
+			$('.btn-layout-type-0>div:not(:first-child) button').css({'height':$('.btn-layout-type-0>div:not(:first-child) button').width()/2.2+'px'});
 			if (data.btnPositionNo === 1 || data.btnPositionNo === 2) {
-				changeFontSize(element, 1);	
+				changeFontSize(element, 0);	
 			} else {
-				changeFontSize(element, 0);
+				changeFontSize(element, 1);
 			}
 		}
 	}
@@ -421,7 +422,7 @@ module nts.uk.at.view.kdp.share {
 		
 		setSize = function() {
         	$('.btn-layout-type-0>div:first-child button').css({'height':$('.btn-layout-type-0>div:first-child button').width()+'px'});
-			$('.btn-layout-type-0>div:first-child button div').css({'font':$('.btn-layout-type-0>div:first-child button').width()/this.va+'px'});
+			$('.btn-layout-type-0>div:not(:first-child) button').css({'height':$('.btn-layout-type-0>div:not(:first-child) button').width()/2.2+'px'});
 			$('.btn-layout-type-0>div:first-child button').each(function() {
 				changeFontSize(this, 0);	
 			});
