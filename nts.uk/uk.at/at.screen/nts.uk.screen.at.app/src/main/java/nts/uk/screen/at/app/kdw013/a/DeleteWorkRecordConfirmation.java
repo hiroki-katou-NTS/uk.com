@@ -5,7 +5,7 @@ import java.util.List;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.record.app.command.workrecord.workmanagement.DeleteWorkResultConfirmationCommand;
+import nts.uk.ctx.at.record.app.command.workrecord.workmanagement.DeleteWorkResultConfirmCommand;
 import nts.uk.ctx.at.record.app.command.workrecord.workmanagement.DeleteWorkResultConfirmationCommandHandler;
 
 /**
@@ -22,7 +22,7 @@ public class DeleteWorkRecordConfirmation {
 	@Inject
 	private GetWorkConfirmationStatus getStatus;
 	
-	public List<ConfirmerDto> delete(DeleteWorkResultConfirmationCommand command) {
+	public List<ConfirmerDto> delete(DeleteWorkResultConfirmCommand command) {
 		//1: 解除する(対象者, 対象日, 確認者)
 		//作業実績の確認を解除する
 		deleteHandler.handle(command);

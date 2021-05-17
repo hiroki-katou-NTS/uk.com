@@ -74,7 +74,7 @@ public class StartProcess {
 					refWorkplaceAndEmployeeDto.getEmployeeInfos(), 
 					refWorkplaceAndEmployeeDto.getLstEmployeeInfo(),
 					refWorkplaceAndEmployeeDto.getWorkplaceInfos().stream().map(m -> 
-					new WorkplaceInfoDto(m.getHistoryId(), m.getWorkplaceCode().v(), m.getWorkplaceName().v()
+					new WorkplaceInfoDto(m.getWorkplaceId(), m.getWorkplaceCode().v(), m.getWorkplaceName().v()
 							, m.getWkpGenericName().v(), m.getWkpDisplayName().v(), m.getOutsideWkpCode().v())
 					).collect(Collectors.toList())));
 		}

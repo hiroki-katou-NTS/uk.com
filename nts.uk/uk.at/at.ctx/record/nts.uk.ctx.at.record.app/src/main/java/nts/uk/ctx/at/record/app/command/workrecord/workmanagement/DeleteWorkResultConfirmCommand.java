@@ -11,7 +11,7 @@ import nts.arc.time.GeneralDate;
  */
 @Getter
 @Setter
-public class DeleteWorkResultConfirmationCommand {
+public class DeleteWorkResultConfirmCommand {
 	
 	//対象者
 	private String employeeId;

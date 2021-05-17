@@ -11,7 +11,7 @@ import javax.inject.Inject;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.app.command.workrecord.workrecord.AddAttendanceTimeZoneCommand;
-import nts.uk.ctx.at.record.app.command.workrecord.workrecord.AddAttendanceTimeZoneCommandHandler;
+import nts.uk.ctx.at.record.app.command.workrecord.workrecord.RegisterWorkManHoursCommandHandler;
 import nts.uk.ctx.at.record.app.command.workrecord.workrecord.WorkDetail;
 import nts.uk.ctx.at.record.dom.daily.ouen.SupportFrameNo;
 import nts.uk.ctx.at.record.dom.daily.ouen.WorkDetailsParam;
@@ -37,7 +37,7 @@ import nts.uk.shr.com.context.AppContexts;
 public class RegisterWorkContent {
 
 	@Inject
-	private AddAttendanceTimeZoneCommandHandler handler;
+	private RegisterWorkManHoursCommandHandler handler;
 
 	@Inject
 	private GetTargetTime getTargetTime;

@@ -11,8 +11,8 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public class WorkplaceInfoDto {
-	/** The history id. */
-    private String historyId;
+	/** 職場ID */
+	private String workplaceId;
 
     /** The workplace code. */
     private String workplaceCode;

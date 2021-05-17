@@ -44,7 +44,7 @@ import nts.uk.shr.com.context.AppContexts;
  *
  */
 @Stateless
-public class AddAttendanceTimeZoneCommandHandler
+public class RegisterWorkManHoursCommandHandler
 		extends CommandHandlerWithResult<AddAttendanceTimeZoneCommand, List<IntegrationOfDaily>> {
 
 	@Inject
