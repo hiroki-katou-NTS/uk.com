@@ -551,14 +551,34 @@ module nts.uk.at.view.kdp004.a {
 							
 						} else {
 
+							var workplaceId: string;
+							var workLocationName: string = '';
+
+							if (dataStorage.selectedWP.length = 1) {
+								workplaceId = dataStorage.selectedWP[0];
+								var workplace: IWorkPlaceInfo = _.find(self.workPlaceInfos, ((value) => {
+									if (value.id === workplaceId) {
+										return value;
+									}
+								}));
+
+								workLocationName = workplace.name;
+							}
+
 							service.stampInput(registerdata).done((res) => {
 
 								//phat nhac
 								self.playAudio(button.audioType);
+								const employeeInfo = { mode, employeeId, employeeCode, workLocationName, workplaceId };
+
 
 								if (self.stampResultDisplay().notUseAttr == 1 && button.changeClockArt == 1) {
+									vm.$window.storage('infoEmpToScreenC', employeeInfo);
+									vm.$window.storage('screenC', { screen: "KDP004" });
 									self.openScreenC(button, layout, loginInfo.em);
 								} else {
+									vm.$window.storage('infoEmpToScreenB', employeeInfo);
+									vm.$window.storage('screenB', { screen: "KDP004" });
 									self.openScreenB(button, layout, loginInfo.em);
 								}
 
