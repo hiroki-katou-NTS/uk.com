@@ -137,6 +137,7 @@ module nts.uk.ui.at.kdw013.calendar {
         .fc-container .fc-sidebar .fc-employees>ul {
             overflow-x: hidden;
         }
+        .fc-container .fc-sidebar .fc-events>ul,
         .fc-container .fc-sidebar .fc-employees>ul {
             border: 1px solid #ccc;
             border-radius: 3px;
@@ -146,7 +147,7 @@ module nts.uk.ui.at.kdw013.calendar {
             height: 224px;
         }
         .fc-container .fc-sidebar .fc-events>ul {
-            max-height: 112px;
+            height: 140px;
         }
         .fc-container .fc-sidebar .fc-employees>.ui-igcombo-wrapper {
             width: 100%;
@@ -443,7 +444,7 @@ module nts.uk.ui.at.kdw013.calendar {
     type ComponentParameters = {
         viewModel: any;
         events: EventRaw[] | KnockoutObservableArray<EventRaw>;
-        employees: KnockoutObservableArray<Employee>;
+        employee: KnockoutObservable<string>;
         confirmers: KnockoutObservableArray<Employee>;
         locale: CalendarLocale | KnockoutObservable<CalendarLocale>;
         initialView: InitialView | KnockoutObservable<InitialView>;
@@ -585,7 +586,7 @@ module nts.uk.ui.at.kdw013.calendar {
             <div class="fc-employees" data-bind="
                     kdw013-department: 'kdw013-department',
                     mode: $component.params.editable,
-                    employees: $component.params.employees,
+                    employee: $component.params.employee,
                     initialDate: $component.params.initialDate,
                     $settings: $component.params.$settings
                 "></div>
@@ -654,7 +655,7 @@ module nts.uk.ui.at.kdw013.calendar {
                     availableView: ko.observableArray([]),
                     initialDate: ko.observable(new Date()),
                     events: ko.observableArray([]),
-                    employees: ko.observableArray([]),
+                    employee: ko.observable(''),
                     confirmers: ko.observableArray([]),
                     attendanceTimes: ko.observableArray([]),
                     breakTime: ko.observable(null),
@@ -678,7 +679,7 @@ module nts.uk.ui.at.kdw013.calendar {
                 event,
                 components,
                 events,
-                employees,
+                employee,
                 confirmers,
                 scrollTime,
                 initialDate,
@@ -728,8 +729,8 @@ module nts.uk.ui.at.kdw013.calendar {
                 this.params.events = ko.observableArray([]);
             }
 
-            if (employees === undefined) {
-                this.params.employees = ko.observableArray([]);
+            if (employee === undefined) {
+                this.params.employee = ko.observable('');
             }
 
             if (confirmers === undefined) {

@@ -103,7 +103,7 @@ module nts.uk.ui.at.kdw013.a {
         availableView: KnockoutObservableArray<calendar.InitialView> = ko.observableArray(['oneDay', 'fullWeek']);
         validRange: KnockoutObservable<Partial<calendar.DatesSet>> = ko.observable({});
 
-        employees: KnockoutObservableArray<calendar.Employee> = ko.observableArray([]);
+        employee: KnockoutObservable<string> = ko.observable('');
 
         confirmers!: KnockoutComputed<calendar.Employee[]>;
         // need map with [KDW013_21, KDW013_22, KDW013_23, KDW013_24] resource
@@ -119,7 +119,7 @@ module nts.uk.ui.at.kdw013.a {
             super();
 
             const vm = this;
-            const { $query, employees } = vm;
+            const { $query, employee } = vm;
             const { mode } = $query;
             const cache: ChangeDateParam = initialCache();
             const sameCache = (params: ChangeDateParam): 0 | 1 | 2 => {
@@ -232,11 +232,10 @@ module nts.uk.ui.at.kdw013.a {
             vm.attendanceTimes = ko.computed({
                 read: () => {
                     const datas = ko.unwrap(vm.$datas);
-                    const empls = ko.unwrap(vm.employees);
+                    const employee = ko.unwrap(vm.employee);
 
                     // need update by employId if: mode=1
-                    const employee = _.find(empls, ({ selected }) => !!selected);
-                    const employeeId = employee ? employee.id : vm.$user.employeeId;
+                    const employeeId = employee || vm.$user.employeeId;
 
                     if (datas) {
                         const { lstWorkRecordDetailDto } = datas;
@@ -393,15 +392,15 @@ module nts.uk.ui.at.kdw013.a {
         // 作業実績を確認する
         confirm() {
             const vm = this;
-            const { $user, $datas, employees, initialDate } = vm;
+            const { $user, $datas, employee, initialDate } = vm;
             const date = ko.unwrap(initialDate);
-            const selected = _.find(ko.unwrap(employees), (e) => e.selected);
+            const employeeId = ko.unwrap(employee);
 
-            if (selected) {
+            if (employeeId) {
                 const command: AddWorkRecodConfirmationCommand = {
                     //対象者
                     // get from A2_5 control
-                    employeeId: selected.id,
+                    employeeId,
                     //対象日
                     // get from initialDate
                     date: moment(date).toISOString(),
@@ -432,15 +431,15 @@ module nts.uk.ui.at.kdw013.a {
         // 作業実績の確認を解除する
         removeConfirm() {
             const vm = this;
-            const { $user, $datas, employees, initialDate } = vm;
+            const { $user, $datas, employee, initialDate } = vm;
             const date = ko.unwrap(initialDate);
-            const selected = _.find(ko.unwrap(employees), (e) => e.selected);
+            const employeeId = ko.unwrap(employee);
 
-            if (selected) {
+            if (employeeId) {
                 const command = {
                     //対象者
                     // get from A2_5 control
-                    employeeId: selected.id,
+                    employeeId,
                     //対象日
                     // get from initialDate
                     date: moment(date).toISOString(),
@@ -480,7 +479,7 @@ module nts.uk.ui.at.kdw013.a {
     export module department {
         type EmployeeDepartmentParams = {
             mode: KnockoutObservable<boolean>;
-            employees: KnockoutObservableArray<calendar.Employee>;
+            employee: KnockoutObservable<string>;
             $settings: KnockoutObservable<a.StartProcessDto | null>;
         };
 
@@ -491,27 +490,32 @@ module nts.uk.ui.at.kdw013.a {
                 name: $component.$i18n('KDW013_5'),
                 options: $component.departments,
                 visibleItemsCount: 20,
-                value: ko.observable(),
+                value: $component.department,
                 editable: true,
                 selectFirstIfNull: true,
+                optionsValue: 'workplaceCode',
+                optionsText: 'wkpDisplayName',
                 columns: [
-                    { prop: 'code', length: 4 },
-                    { prop: 'name', length: 10 }
+                    { prop: 'workplaceCode', length: 4 },
+                    { prop: 'wkpDisplayName', length: 10 }
                 ]
             }"></div>
-            <ul class="list-employee" data-bind="foreach: { data: $component.params.employees, as: 'item' }">
+            <ul class="list-employee" data-bind="foreach: { data: $component.employees, as: 'item' }">
                 <li class="item" data-bind="
-                    click: function() { $component.selectEmployee(item) },
+                    click: function() { $component.selectEmployee(item.employeeCode) },
                     timeClick: -1,
                     css: {
-                        'selected': item.selected
+                        'selected': ko.computed(function() { return item.employeeCode === ko.unwrap($component.params.employee); })
                     }">
-                    <div data-bind="text: item.code"></div>
-                    <div data-bind="text: item.name"></div>
+                    <div data-bind="text: item.employeeCode"></div>
+                    <div data-bind="text: item.employeeName"></div>
                 </li>
             </ul>`
         })
         export class EmployeeDepartmentComponent extends ko.ViewModel {
+            department: KnockoutObservable<string> = ko.observable('');
+
+            employees!: KnockoutComputed<any[]>;
             departments!: KnockoutComputed<any[]>;
 
             constructor(private params: EmployeeDepartmentParams) {
@@ -519,6 +523,26 @@ module nts.uk.ui.at.kdw013.a {
 
                 const vm = this;
                 const { $settings } = params;
+
+                vm.employees = ko.computed({
+                    read: () => {
+                        const $sets = ko.unwrap($settings);
+                        const $dept = ko.unwrap(vm.department);
+
+                        if ($sets) {
+                            const { refWorkplaceAndEmployeeDto } = $sets;
+
+                            if (refWorkplaceAndEmployeeDto) {
+                                const { employeeInfos, lstEmployeeInfo } = refWorkplaceAndEmployeeDto;
+
+                                // updating
+                                return lstEmployeeInfo.filter(({ sid }) => employeeInfos[sid] === $dept || true);
+                            }
+                        }
+
+                        return [];
+                    }
+                });
 
                 vm.departments = ko.computed({
                     read: () => {
@@ -552,22 +576,14 @@ module nts.uk.ui.at.kdw013.a {
                     .removeAttr('data-bind');
             }
 
-            public selectEmployee(item: calendar.Employee) {
+            public selectEmployee(id: string) {
                 const vm = this;
-                const { employees } = vm.params;
-                const unwraped = ko.toJS(employees);
+                const { department } = vm;
+                const { employee } = vm.params;
 
-                _.each(unwraped, (emp: calendar.Employee) => {
-                    if (emp.code === item.code) {
-                        emp.selected = true;
-                    } else {
-                        emp.selected = false;
-                    }
-                });
+                employee(id);
 
-                if (ko.isObservable(employees)) {
-                    employees(unwraped);
-                }
+                department.valueHasMutated();
             }
         }
     }
