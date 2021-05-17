@@ -95,15 +95,17 @@ public class HdRemainManageDto {
      */
     private boolean hd60HItem;
 
-    /**
-     * 時間外超過項目を出力する
-     */
-    private boolean hd60HUndigested;
+
 
     /**
      * 時間外超過項目を出力する
      */
     private boolean hd60HRemain;
+
+    /**
+     * 時間外超過項目を出力する
+     */
+    private boolean hd60HUndigested;
 
     /**
      * 公休の項目を出力する
@@ -162,13 +164,31 @@ public class HdRemainManageDto {
     }
 
     private HdRemainManageDto(
-            String layoutId, int itemSelType, String sid,
-            String cid, String cd, String name, boolean yearlyHoliday, boolean insideHalfDay,
-            boolean insideHours, boolean yearlyReserved, boolean outItemSub, boolean representSub,
-            boolean remainChargeSub, boolean pauseItem, boolean undigestedPause, boolean numRemainPause,
-            boolean hd60HItem, boolean hd60HUndigested, boolean hd60HRemain, boolean outputItemsHolidays,
-            boolean outputHolidayForward, boolean monthlyPublic, boolean childCareLeave,
-            boolean nursingCareLeave, List<Integer> specHolidays) {
+            String layoutId,
+            int itemSelType,
+            String sid,
+            String cid,
+            String cd,
+            String name,
+            boolean yearlyHoliday,
+            boolean insideHalfDay,
+            boolean insideHours,
+            boolean yearlyReserved,
+            boolean outItemSub,
+            boolean representSub,
+            boolean remainChargeSub,
+            boolean pauseItem,
+            boolean undigestedPause,
+            boolean numRemainPause,
+            boolean hd60HItem,
+            boolean hd60HRemain,
+            boolean hd60HUndigested,
+            boolean outputItemsHolidays,
+            boolean outputHolidayForward,
+            boolean monthlyPublic,
+            boolean childCareLeave,
+            boolean nursingCareLeave,
+            List<Integer> specHolidays) {
         super();
         this.cid = cid;
         this.cd = cd;

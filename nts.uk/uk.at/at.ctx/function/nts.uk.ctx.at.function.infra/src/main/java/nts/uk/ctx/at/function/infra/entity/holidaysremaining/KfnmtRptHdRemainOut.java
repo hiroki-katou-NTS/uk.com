@@ -196,11 +196,30 @@ public class KfnmtRptHdRemainOut extends ContractUkJpaEntity implements Serializ
         return layoutId;
     }
 
-    public KfnmtRptHdRemainOut(String layoutId, int itemSelType, String sid, String cid, String cd, String name, int yearlyHoliday,
-                               int insideHalfDay, int insideHours, int yearlyReserved, int outItemSub, int representSub,
-                               int remainChargeSub, int pauseItem, int undigestedPause, int numRemainPause,
-                               int hD60HItem, int hD60HUndigested, int hD60HRemain, int outputItemsHolidays,
-                               int outputHolidayForward, int monthlyPublic, int childCareLeave, int nursingCareLeave,
+    public KfnmtRptHdRemainOut(String layoutId,
+                               int itemSelType,
+                               String sid,
+                               String cid,
+                               String cd,
+                               String name,
+                               int yearlyHoliday,
+                               int insideHalfDay,
+                               int insideHours,
+                               int yearlyReserved,
+                               int outItemSub,
+                               int representSub,
+                               int remainChargeSub,
+                               int pauseItem,
+                               int undigestedPause,
+                               int numRemainPause,
+                               int hD60HItem,
+                               int hD60HRemain,
+                               int hD60HUndigested,
+                               int outputItemsHolidays,
+                               int outputHolidayForward,
+                               int monthlyPublic,
+                               int childCareLeave,
+                               int nursingCareLeave,
                                List<KfnmtRptHdRemainHdsp> kfnmtSpecialHolidays) {
         super();
         this.layoutId = layoutId;

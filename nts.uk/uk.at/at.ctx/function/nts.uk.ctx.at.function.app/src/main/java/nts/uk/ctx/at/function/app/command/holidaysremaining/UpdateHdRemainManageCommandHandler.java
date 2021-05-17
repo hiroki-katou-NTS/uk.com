@@ -29,12 +29,21 @@ public class UpdateHdRemainManageCommandHandler extends CommandHandler<HdRemainM
         LoginUserContext login = AppContexts.user();
         String companyId = login.companyId();
         HdRemainManageCommand command = context.getCommand();
-        ItemOutputForm itemOutputForm = new ItemOutputForm(command.isNursingLeave(),
-                command.isRemainingChargeSubstitute(), command.isRepresentSubstitute(),
-                command.isOutputItemSubstitute(), command.isOutputHolidayForward(), command.isMonthlyPublic(),
-                command.isOutputItemsHolidays(), command.isChildNursingLeave(), command.isYearlyHoliday(),
-                command.isInsideHours(), command.isInsideHalfDay(), command.isNumberRemainingPause(),
-                command.isUnDigestedPause(), command.isPauseItem(),
+        ItemOutputForm itemOutputForm = new ItemOutputForm(
+                command.isNursingLeave(),
+                command.isRemainingChargeSubstitute(),
+                command.isRepresentSubstitute(),
+                command.isOutputItemSubstitute(),
+                command.isOutputHolidayForward(),
+                command.isMonthlyPublic(),
+                command.isOutputItemsHolidays(),
+                command.isChildNursingLeave(),
+                command.isYearlyHoliday(),
+                command.isInsideHours(),
+                command.isInsideHalfDay(),
+                command.isNumberRemainingPause(),
+                command.isUnDigestedPause(),
+                command.isPauseItem(),
                 command.isHd60HItem(),
                 command.isHd60HRemain(),
                 command.isHd60HUndigested(),
