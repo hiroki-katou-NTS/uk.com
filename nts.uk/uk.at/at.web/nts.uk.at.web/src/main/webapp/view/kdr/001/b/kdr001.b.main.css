@@ -62,3 +62,6 @@
 	padding: 7px;
 	outline: none;
 }
+div.form-label.required {
+	border-color: #97D155; !important;
+}

@@ -646,8 +646,8 @@ module nts.uk.at.view.kdr001.b.viewmodel {
             self.unDigestedPause = ko.observable(param ? param.unDigestedPause || false : false);
             self.pauseItem = ko.observable(param ? param.pauseItem || false : false);
             self.hd60HItem = ko.observable(param ? param.hd60HItem || false : false);
-            self.hd60HUndigested = ko.observable(param ? param.hd60HUndigested || false : false);
             self.hd60HRemain = ko.observable(param ? param.hd60HRemain || false : false);
+            self.hd60HUndigested = ko.observable(param ? param.hd60HUndigested || false : false);
             self.yearlyReserved = ko.observable(param ? param.yearlyReserved || false : false);
             self.listSpecialHoliday = ko.observableArray(param ? param.listSpecialHoliday || [] : []);
 
