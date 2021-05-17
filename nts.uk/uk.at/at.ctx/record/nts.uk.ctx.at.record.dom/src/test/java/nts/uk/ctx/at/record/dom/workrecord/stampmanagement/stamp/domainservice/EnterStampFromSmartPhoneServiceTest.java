@@ -78,7 +78,7 @@ public class EnterStampFromSmartPhoneServiceTest {
 	NtsAssert.businessException("Msg_1632",
 			() -> EnterStampFromSmartPhoneService.create(require, contractCode, employeeId,
 					dateTime, stampButton,
-					Optional.empty(), null, "000000000000-0001"));
+					Optional.empty(), null));
 	
 	}
 
@@ -110,7 +110,7 @@ public class EnterStampFromSmartPhoneServiceTest {
 	NtsAssert.businessException("Msg_1632",
 			() -> EnterStampFromSmartPhoneService.create(require, contractCode, employeeId,
 					dateTime, stampButton,
-					Optional.of(geoCoordinate), null, "000000000000-0001"));
+					Optional.of(geoCoordinate), null));
 	
 	}
 	
@@ -180,7 +180,7 @@ public class EnterStampFromSmartPhoneServiceTest {
 	
 	TimeStampInputResult timeStampInputResult = EnterStampFromSmartPhoneService.create(require, contractCode, employeeId,
 					dateTime, stampButton,
-					Optional.of(geoCoordinate), null, "000000000000-0001");
+					Optional.of(geoCoordinate), null);
 	
 	assertThat(timeStampInputResult.at).isNotEmpty();
 	assertThat(timeStampInputResult.stampDataReflectResult.getAtomTask()).isNotNull();

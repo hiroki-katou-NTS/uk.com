@@ -10,7 +10,6 @@ import nts.uk.ctx.at.record.dom.stampmanagement.workplace.WorkLocation;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.AuthcMethod;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.RefectActualResult;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Relieve;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampLocationInfor;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampMeans;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ButtonSettings;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampButton;
@@ -47,27 +46,18 @@ public class EnterStampFromSmartPhoneService {
 
 	public static TimeStampInputResult create(Require require, ContractCode contractCode, String employeeID,
 			GeneralDateTime stampDatetime, StampButton stampButton, Optional<GeoCoordinate> positionInfor,
-			RefectActualResult refActualResults, String cid) {
-		// $打刻場所情報 = empty
-		StampLocationInfor stampLocalInfo = null;
+			RefectActualResult refActualResults) {
 		//	$打刻場所 = 打刻場所を求める#取得する(require,地理座標)
-		Optional<WorkLocation> workLocation = FindWorkPlaceFromStampedPositionService.find(require, positionInfor, cid);
+		Optional<WorkLocation> workLocation = FindWorkPlaceFromStampedPositionService.find(require, positionInfor);
 		//  if $打刻場所.isPresent
 		if(workLocation.isPresent()) {
-			//Trong video giải thích anh Tuấn Vũ said: 
-			//"phần này bên Lẩu sửa và tự đối ứng nên khi làm tới phần này thì bảo ảnh để anh hỏi bên Lẩu"
+			refActualResults.getWorkInforStamp().ifPresent(c->c.getWorkLocationCD().ifPresent(e -> e = workLocation.get().getWorkLocationCD()));
 		}
 		
-		if (positionInfor.isPresent()) {
-			stampLocalInfo = new StampLocationInfor(positionInfor.get(), false);
-		}
-
 		// $スマホ打刻の打刻設定 = require.スマホ打刻の打刻設定を取得する()
-		Optional<SettingsSmartphoneStamp> settingSmartPhoneStampOpt = require
-				.getSmartphoneStampSetting();
+		Optional<SettingsSmartphoneStamp> settingSmartPhoneStampOpt = require.getSmartphoneStampSetting();
 
 		if (!settingSmartPhoneStampOpt.isPresent()) {
-
 			throw new BusinessException("Msg_1632");
 		}
 

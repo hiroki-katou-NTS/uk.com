@@ -26,6 +26,8 @@ import nts.uk.ctx.at.record.dom.stamp.card.stamcardedit.StampCardEditingRepo;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
+import nts.uk.ctx.at.record.dom.stampmanagement.workplace.WorkLocation;
+import nts.uk.ctx.at.record.dom.stampmanagement.workplace.WorkLocationRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampDakokuRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecord;
@@ -91,6 +93,9 @@ public class RegisterSmartPhoneStampCommandHandler
 	
 	@Inject
 	private TemporarilyReflectStampDailyAttd temporarilyReflectStampDailyAttd;
+	
+	@Inject
+	private WorkLocationRepository workLocationRepository;
 
 	@Override
 	protected GeneralDate handle(CommandHandlerContext<RegisterSmartPhoneStampCommand> context) {
@@ -101,12 +106,12 @@ public class RegisterSmartPhoneStampCommandHandler
 		EnterStampFromSmartPhoneServiceImpl require = new EnterStampFromSmartPhoneServiceImpl(stampCardRepo,
 				stampCardEditRepo, companyAdapter, sysEmpPub, stampRecordRepo, stampDakokuRepo,
 				createDailyResultDomainServiceNew, getSettingRepo, createDailyResults, timeReflectFromWorkinfo, 
-				temporarilyReflectStampDailyAttd);
+				temporarilyReflectStampDailyAttd, workLocationRepository);
 
 		TimeStampInputResult stampRes = EnterStampFromSmartPhoneService.create(require,
 				new ContractCode(AppContexts.user().contractCode()), AppContexts.user().employeeId(),
 				cmd.getStampDatetime(), cmd.getStampButton().toDomainValue(),
-				Optional.ofNullable(cmd.getGeoCoordinate().toDomainValue()), cmd.getRefActualResult().toDomainValue(), AppContexts.user().companyId());
+				Optional.ofNullable(cmd.getGeoCoordinate().toDomainValue()), cmd.getRefActualResult().toDomainValue());
 		// 2.1:not 打刻入力結果 empty
 
 		if (stampRes != null) {
@@ -163,6 +168,8 @@ public class RegisterSmartPhoneStampCommandHandler
 		private TimeReflectFromWorkinfo timeReflectFromWorkinfo;
 
 		private TemporarilyReflectStampDailyAttd temporarilyReflectStampDailyAttd;
+		
+		private WorkLocationRepository workLocationRepository;
 
 		@Override
 		public List<StampCard> getLstStampCardBySidAndContractCd(String sid) {
@@ -239,8 +246,14 @@ public class RegisterSmartPhoneStampCommandHandler
 		}
 
 		@Override
-		public Optional<SettingsSmartphoneStamp> getSettingsSmartphoneStamp(String cid) {
-			return getSettingRepo.get(cid);
+		public Optional<SettingsSmartphoneStamp> getSettingsSmartphoneStamp() {
+			return getSettingRepo.get(AppContexts.user().companyId());
+		}
+
+		@Override
+		public List<WorkLocation> findAll() {
+			// TODO Auto-generated method stub
+			return workLocationRepository.findAll(AppContexts.user().contractCode());
 		}
 
 	}
