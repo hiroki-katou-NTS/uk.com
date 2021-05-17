@@ -124,7 +124,7 @@
 #stamp-input {
 	max-width: 540px;
 	padding-top: 10px;
-	width: 65%;
+	width: 100%;
 }
 
 /* #stamp-info {
@@ -322,9 +322,6 @@
 	display: none;
 }
 
-#stamp-input.pageNoScale {
-	 width: 100%;
-}
 #stamp-input.pageScale1 {
 	 width: calc(100% - 463px);
 }
@@ -333,5 +330,6 @@
 }
 .pageComent {
 	white-space: break-spaces;
+    padding: 0 1vmin;
 }
 
