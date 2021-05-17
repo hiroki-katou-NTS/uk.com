@@ -80,6 +80,11 @@ module nts.uk.at.kdp003.k {
 								if (values2.children.length > 0) {
 									_.forEach(values2.children, ((values3) => {
 										vm.pushDataStorage(values3);
+										if (values3.children.length > 0) {
+											_.forEach(values3.children, ((values4) => {
+												vm.pushDataStorage(values4);
+											}));
+										}
 									}));
 								}
 							}));
@@ -88,13 +93,26 @@ module nts.uk.at.kdp003.k {
 				}
 			}));
 
-			console.log(vm.dataStorage);
-			
 			vm.$window.storage(WORKPLACES_STORAGE, vm.dataStorage);
 
 			if (!selectedId || !selectedId.length) {
 				vm.$dialog.error({ messageId: 'Msg_643' });
 			} else {
+				const selectedId1:  string | string[] = [];
+
+				_.forEach(vm.dataStorage, ((values) => {
+
+					const exist = _.find(selectedId, ((value1) => {
+						return value1 === values.id;
+					}));
+
+					if (exist) {
+						selectedId1.push(exist);
+					}
+				}));
+
+				selectedId = selectedId1;
+
 				vm.$window.close({ selectedId });
 			}
 		}

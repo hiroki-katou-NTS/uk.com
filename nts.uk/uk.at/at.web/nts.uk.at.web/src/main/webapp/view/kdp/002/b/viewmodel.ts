@@ -7,7 +7,8 @@ const kDP002RequestUrl = {
     NOTIFICATION_STAMP: 'at/record/stamp/notification_by_stamp',
     SETTING_NIKONIKO: 'at/record/stamp/setting_emoji_stamp',
     SEND_EMOJI: 'at/record/stamp/regis_emotional_state',
-    GET_SETTING: 'at/record/stamp/settingNoti'
+    GET_SETTING: 'at/record/stamp/settingNoti',
+    WORKPLACE_INFO: "screen/at/kdp003/workplace-info"
 }
 
 interface TimeClock {
@@ -84,9 +85,11 @@ class KDP002BViewModel extends ko.ViewModel {
 
                 vm.startPage();
 
-                if (infoEmp.workLocationName) {
-                    vm.workPlace(infoEmp.workLocationName);
-                }
+                vm.getWorkPlacwName(infoEmp.workPlaceId);
+
+                // if (infoEmp.workLocationName) {
+                //     vm.workPlace(infoEmp.workLocationName);
+                // }
 
             });
             vm.$window.shared("screenB").done((nameScreen: any) => {
@@ -135,6 +138,19 @@ class KDP002BViewModel extends ko.ViewModel {
         }, 300);
 
         vm.settingSizeView();
+    }
+
+    getWorkPlacwName(workPlaceId: string) {
+        const vm = new ko.ViewModel();
+        const self = this;
+
+        const param = { sid: vm.$user.employeeId, workPlaceIds: [workPlaceId] };
+        vm.$ajax(kDP002RequestUrl.WORKPLACE_INFO, param)
+            .then((data: any) => {
+                if (data) {
+                    self.workPlace(data.workPlaceInfo[0].displayName);
+                }
+            })
     }
 
     settingSizeView() {
@@ -300,7 +316,7 @@ class KDP002BViewModel extends ko.ViewModel {
         const param = {
             startDate: startDate,
             endDate: vm.$date.now(),
-            sid: vm.infoEmpFromScreenA.employeeId
+            sid: vm.$user.employeeId
         }
 
         vm.$blockui('invisible')
@@ -311,6 +327,8 @@ class KDP002BViewModel extends ko.ViewModel {
                         if (data) {
                             vm.$ajax(kDP002RequestUrl.NOTIFICATION_STAMP, param)
                                 .done((data: IMsgNotices[]) => {
+
+                                    console.log(data);
 
                                     vm.notificationStamp(data);
 

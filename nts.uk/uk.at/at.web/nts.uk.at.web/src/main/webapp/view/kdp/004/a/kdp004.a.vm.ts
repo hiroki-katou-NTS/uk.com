@@ -521,7 +521,7 @@ module nts.uk.at.view.kdp004.a {
 										var workLocationName: string = '';
 										var workplaceId: string = result;
 										if (workplace) {
-											workLocationName = workplace.name
+											workLocationName = workplace.workplaceDisplayName
 										}
 
 										service.stampInput(registerdata).done((res) => {
