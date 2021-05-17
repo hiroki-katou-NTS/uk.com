@@ -209,13 +209,25 @@ public class HolidayWorkFrameTimeSheetForCalc extends ActualWorkingTimeSheet{
 	/**
 	 * 計算処理
 	 * 休出時間の計算
-	 * @param forceCalcTime 強制時間区分
-	 * @param autoCalcSet 
+	 * @param autoCalcSet 自動計算設定
+	 * @return 休出時間
 	 */
-	public AttendanceTime correctCalculationTime(AutoCalSetting autoCalcSet,DeductionAtr dedAtr) {
-		return this.calcTotalTime();
+	public TimeDivergenceWithCalculation correctCalculationTime(AutoCalSetting autoCalcSet) {
+		AttendanceTime time = autoCalcSet.getCalAtr().isCalculateEmbossing() ? this.calcTotalTime() : AttendanceTime.ZERO;
+		AttendanceTime calcTime = this.calcTotalTime();
+		return TimeDivergenceWithCalculation.createTimeWithCalculation(time, calcTime);
 	}
-
+	
+	/**
+	 * 深夜時間の計算
+	 * @param autoCalcSet 自動計算設定
+	 * @return 深夜時間
+	 */
+	public TimeDivergenceWithCalculation calcMidNightTime(AutoCalSetting autoCalcSet) {
+		AttendanceTime time = autoCalcSet.getCalAtr().isCalculateEmbossing() ? this.getMidNightTimeSheet().calcTotalTime() : AttendanceTime.ZERO;
+		AttendanceTime calcTime = this.getMidNightTimeSheet().calcTotalTime();
+		return TimeDivergenceWithCalculation.createTimeWithCalculation(time, calcTime);
+	}
 	
 //	/**
 //	 *　指定条件の控除項目だけの控除時間

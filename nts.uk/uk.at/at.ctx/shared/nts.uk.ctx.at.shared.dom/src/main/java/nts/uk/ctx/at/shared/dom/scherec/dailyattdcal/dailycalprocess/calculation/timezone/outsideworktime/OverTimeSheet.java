@@ -126,22 +126,20 @@ public class OverTimeSheet {
 
 		//時間帯の計算
 		for(OverTimeFrameTimeSheetForCalc overTimeFrameTime : sortedFrameTimeSheet) {
-			val forceAtr = autoCalcSet.decisionUseCalcSetting(overTimeFrameTime.getWithinStatutryAtr(), overTimeFrameTime.isGoEarly()).getCalAtr();
 			//残業時間　－　控除時間算出
-			AttendanceTime calcDedTime = overTimeFrameTime.correctCalculationTime(Optional.empty(), autoCalcSet,DeductionAtr.Deduction).getTime();
-			AttendanceTime calcRecTime = overTimeFrameTime.correctCalculationTime(Optional.empty(), autoCalcSet,DeductionAtr.Appropriate).getTime();
+			TimeDivergenceWithCalculation overTime = overTimeFrameTime.correctCalculationTime(Optional.empty(), autoCalcSet);
 			if(!numberOrder.contains(overTimeFrameTime.getFrameTime().getOverWorkFrameNo()))
 				numberOrder.add(overTimeFrameTime.getFrameTime().getOverWorkFrameNo());
 			//加算だけ
 			if(overTimeFrameList.containsKey(overTimeFrameTime.getFrameTime().getOverWorkFrameNo().v())) {
 				val frame = overTimeFrameList.get(overTimeFrameTime.getFrameTime().getOverWorkFrameNo().v());
-				val addFrame = frame.addOverTime(forceAtr.isCalculateEmbossing()?calcRecTime:new AttendanceTime(0),calcDedTime);
+				val addFrame = frame.addOverTime(overTime.getTime(), overTime.getCalcTime());
 				overTimeFrameList.replace(overTimeFrameTime.getFrameTime().getOverWorkFrameNo().v(), addFrame);
 			}
 			//枠追加
 			else {
 				overTimeFrameList.put(overTimeFrameTime.getFrameTime().getOverWorkFrameNo().v(),
-									  overTimeFrameTime.getFrameTime().addOverTime(forceAtr.isCalculateEmbossing()?calcRecTime:new AttendanceTime(0),calcDedTime));
+						overTimeFrameTime.getFrameTime().addOverTime(overTime.getTime(), overTime.getCalcTime()));
 			}
 		}
 		List<OverTimeFrameTime> calcOverTimeWorkTimeList = new ArrayList<>(overTimeFrameList.values()); 
@@ -398,15 +396,16 @@ public class OverTimeSheet {
 	 * 深夜時間計算
 	 * @return 計算時間get
 	 */
-	public AttendanceTime calcMidNightTime(AutoCalOvertimeSetting autoCalcSet) {
-		
+	public TimeDivergenceWithCalculation calcMidNightTime(AutoCalOvertimeSetting autoCalcSet) {
+		AttendanceTime time = new AttendanceTime(0);
 		AttendanceTime calcTime = new AttendanceTime(0);
 		for(OverTimeFrameTimeSheetForCalc timeSheet:frameTimeSheets) {
 			val calcSet = getCalcSetByAtr(autoCalcSet, timeSheet.getWithinStatutryAtr(),timeSheet.isGoEarly());
 			val calcValue = timeSheet.getMidNightTimeSheet().calcTotalTime();
-			calcTime = calcTime.addMinutes(calcSet.getCalAtr().isCalculateEmbossing()?calcValue.valueAsMinutes():0);
+			time = time.addMinutes(calcSet.getCalAtr().isCalculateEmbossing()?calcValue.valueAsMinutes():0);
+			calcTime = calcTime.addMinutes(calcValue.valueAsMinutes());
 		}
-		return calcTime;
+		return TimeDivergenceWithCalculation.createTimeWithCalculation(time, calcTime);
 	}
 	
 	/**

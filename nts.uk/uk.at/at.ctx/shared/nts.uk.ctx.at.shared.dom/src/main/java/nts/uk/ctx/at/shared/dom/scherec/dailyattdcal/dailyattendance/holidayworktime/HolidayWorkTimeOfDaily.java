@@ -160,12 +160,12 @@ public class HolidayWorkTimeOfDaily {
 		
 		EachStatutoryHolidayWorkTime eachTime = new EachStatutoryHolidayWorkTime();
 		for(HolidayWorkFrameTimeSheetForCalc  frameTime : holidayWorkTimeSheet.getWorkHolidayTime()) {
-			eachTime.addTime(frameTime.getStatutoryAtr().get(), holidayLateNightAutoCalSetting.getCalAtr().isCalculateEmbossing()?frameTime.getMidNightTimeSheet().calcTotalTime():new AttendanceTime(0));
+			eachTime.addTime(frameTime.getStatutoryAtr().get(), frameTime.calcMidNightTime(holidayLateNightAutoCalSetting));
 		}
 		List<HolidayWorkMidNightTime> holidayWorkList = new ArrayList<>();
-		holidayWorkList.add(new HolidayWorkMidNightTime(TimeDivergenceWithCalculation.sameTime(eachTime.getStatutory()),StaturoryAtrOfHolidayWork.WithinPrescribedHolidayWork));
-		holidayWorkList.add(new HolidayWorkMidNightTime(TimeDivergenceWithCalculation.sameTime(eachTime.getExcess()),StaturoryAtrOfHolidayWork.ExcessOfStatutoryHolidayWork));
-		holidayWorkList.add(new HolidayWorkMidNightTime(TimeDivergenceWithCalculation.sameTime(eachTime.getPublicholiday()),StaturoryAtrOfHolidayWork.PublicHolidayWork));
+		holidayWorkList.add(new HolidayWorkMidNightTime(eachTime.getStatutory(), StaturoryAtrOfHolidayWork.WithinPrescribedHolidayWork));
+		holidayWorkList.add(new HolidayWorkMidNightTime(eachTime.getExcess(), StaturoryAtrOfHolidayWork.ExcessOfStatutoryHolidayWork));
+		holidayWorkList.add(new HolidayWorkMidNightTime(eachTime.getPublicholiday(), StaturoryAtrOfHolidayWork.PublicHolidayWork));
 		
 		//事前制御の設定を確認
 		if(holidayLateNightAutoCalSetting.getUpLimitORtSet()==TimeLimitUpperLimitSetting.LIMITNUMBERAPPLICATION){
@@ -210,10 +210,8 @@ public class HolidayWorkTimeOfDaily {
 			if (declareOutsideWork.getHolidayWorkTimeSheet().isPresent()){
 				HolidayWorkTimeSheet declareSheet = declareOutsideWork.getHolidayWorkTimeSheet().get();
 				for(HolidayWorkFrameTimeSheetForCalc frameTime : declareSheet.getWorkHolidayTime()) {
-					AttendanceTime declareTime =
-							holidayLateNightAutoCalSetting.getCalAtr().isCalculateEmbossing()?
-									frameTime.getMidNightTimeSheet().calcTotalTime() : new AttendanceTime(0);
-					if (declareTime.valueAsMinutes() > 0){
+					TimeDivergenceWithCalculation declareTime = frameTime.calcMidNightTime(holidayLateNightAutoCalSetting);
+					if (declareTime.getTime().valueAsMinutes() > 0){
 						eachTime.addTime(frameTime.getStatutoryAtr().get(), declareTime);
 						// 編集状態．休出深夜に処理中の法定区分を追加する
 						calcRange.getEditState().getHolidayWorkMn().add(frameTime.getStatutoryAtr().get());
@@ -237,7 +235,7 @@ public class HolidayWorkTimeOfDaily {
 								HolidayWorkTimeSheet declareSheet = declareOutsideWork.getHolidayWorkTimeSheet().get();
 								if (declareSheet.getWorkHolidayTime().size() > 0){
 									eachTime.addTime(
-											declareSheet.getWorkHolidayTime().get(0).getStatutoryAtr().get(), declareTime);
+											declareSheet.getWorkHolidayTime().get(0).getStatutoryAtr().get(), TimeDivergenceWithCalculation.sameTime(declareTime));
 									// 編集状態．休出深夜に処理中の法定区分を追加する
 									calcRange.getEditState().getHolidayWorkMn().add(
 											declareSheet.getWorkHolidayTime().get(0).getStatutoryAtr().get());
@@ -253,13 +251,13 @@ public class HolidayWorkTimeOfDaily {
 			for (HolidayWorkMidNightTime record : recordList){
 				switch(record.getStatutoryAtr()){
 				case WithinPrescribedHolidayWork:
-					record.getTime().replaceTimeWithCalc(eachTime.getStatutory());
+					record.getTime().replaceTimeWithCalc(eachTime.getStatutory().getTime());
 					break;
 				case ExcessOfStatutoryHolidayWork:
-					record.getTime().replaceTimeWithCalc(eachTime.getExcess());
+					record.getTime().replaceTimeWithCalc(eachTime.getExcess().getTime());
 					break;
 				case PublicHolidayWork:
-					record.getTime().replaceTimeWithCalc(eachTime.getPublicholiday());
+					record.getTime().replaceTimeWithCalc(eachTime.getPublicholiday().getTime());
 					break;
 				}
 			}
