@@ -118,7 +118,7 @@ public class CancellationOfApplicationTest {
 	 */
 
 	@Test
-	public void test3(@Mocked AcquireAppReflectHistForCancel appHist, @Mocked DailyRecordToAttendanceItemConverter converter) {
+	public void test3(@Mocked AcquireAppReflectHistForCancel appHist) {
 
 		ApplicationShare app = ReflectApplicationHelper.createAppShare(PrePostAtrShare.PREDICT);
 
@@ -127,59 +127,23 @@ public class CancellationOfApplicationTest {
 				AcquireAppReflectHistForCancel.process(require, app, (GeneralDate) any, (ScheduleRecordClassifi) any);
 				result = Optional.of(new AcquireAppReflectHistForCancelOutput(
 						createAppReflectHist(GeneralDateTime.min()), // 最新の申請反映履歴
-						createAppReflectHist(null, Pair.of(28, "002"), Pair.of(29, "003"), Pair.of(31, "600"))));// 取得した[元に戻すための申請反映履歴].反映前（List）
+						createAppReflectHist(null, Pair.of(28, "002"), Pair.of(29, "003"))));// 取得した[元に戻すための申請反映履歴].反映前（List）
 
 				require.findAppReflectHistAfterMaxTime(anyString, (GeneralDate) any, (ScheduleRecordClassifi) any,
 						anyBoolean, GeneralDateTime.min());
 				result = Arrays.asList(
 						createAppReflectHist(null, Pair.of(28, "002"), Pair.of(34, "600")));
 				
-				converter.toDomain();
-				result = createItemId(createDomain(28, 29), 29, "003");
 			}
 		};
 		
 		val domainBefore = createDomain(28, 29);
-		assertThat(domainBefore.getWorkInformation().getRecordInfo().getWorkTypeCode().v()).isEqualTo("AAA");// item28
-		assertThat(domainBefore.getWorkInformation().getRecordInfo().getWorkTimeCode().v()).isEqualTo("BBB");// item29
-		assertThat(domainBefore.getAttendanceLeave().get().getAttendanceLeavingWork(1).get().getAttendanceStamp().get()
-				.getStamp()// item31
-				.get().getTimeDay().getTimeWithDay().get().v()).isEqualTo(480);
 		
 		DailyAfterAppReflectResult actualResult = CancellationOfApplication.process(require, app, GeneralDate.ymd(2021, 4, 21),
 				ScheduleRecordClassifi.RECORD, domainBefore);// 日別勤怠(work）.編集状態
 
 		assertThat(actualResult.getLstItemId()).containsExactly(29);//②
-		
-		assertThat(actualResult.getDomainDaily().getWorkInformation().getRecordInfo().getWorkTypeCode().v()).isEqualTo("AAA");// item28
-		assertThat(actualResult.getDomainDaily().getWorkInformation().getRecordInfo().getWorkTimeCode().v()).isEqualTo("003");// item29
-		assertThat(actualResult.getDomainDaily().getAttendanceLeave().get().getAttendanceLeavingWork(1).get().getAttendanceStamp().get()
-				.getStamp()// item31
-				.get().getTimeDay().getTimeWithDay().get().v()).isEqualTo(480);
 
-	}
-	
-	private IntegrationOfDaily createItemId(IntegrationOfDaily dom, Integer id, Object value) {
-		
-		switch (id) {
-		case 28:
-			dom.getWorkInformation().getRecordInfo().setWorkTypeCode(value.toString());
-			break;
-		case 29:
-			dom.getWorkInformation().getRecordInfo().setWorkTimeCode(value.toString());
-			break;
-		case 31:
-			dom.getAttendanceLeave().get().getAttendanceLeavingWork(1).get().getAttendanceStamp().get().getStamp()
-					.get().getTimeDay().setTimeWithDay(Optional.of(new TimeWithDayAttr((Integer)value)));
-			break;
-		case 34:
-			dom.getAttendanceLeave().get().getAttendanceLeavingWork(1).get().getLeaveStamp().get().getStamp().get()
-					.getTimeDay().setTimeWithDay(Optional.of(new TimeWithDayAttr((Integer)value)));
-			break;
-		default:
-			break;
-		}
-		return dom;
 	}
 	
 	/*
@@ -196,7 +160,7 @@ public class CancellationOfApplicationTest {
 	 * 
 	 */
 	@Test
-	public void test4(@Mocked AcquireAppReflectHistForCancel appHist,@Mocked DailyRecordToAttendanceItemConverter converter) {
+	public void test4(@Mocked AcquireAppReflectHistForCancel appHist) {
 
 		ApplicationShare app = ReflectApplicationHelper.createAppShare(PrePostAtrShare.PREDICT);
 
@@ -211,8 +175,6 @@ public class CancellationOfApplicationTest {
 						anyBoolean, GeneralDateTime.min());
 				result = Arrays.asList();
 				
-				converter.toDomain();
-				result = createItemId(createDomain(28), 28, "002");
 			}
 		};
 		
@@ -223,8 +185,6 @@ public class CancellationOfApplicationTest {
 
 		assertThat(actualResult.getLstItemId()).containsExactly(28);
 		
-		assertThat(actualResult.getDomainDaily().getWorkInformation().getRecordInfo().getWorkTypeCode().v()).isEqualTo("002");// item28
-
 	}
 
 	/*
