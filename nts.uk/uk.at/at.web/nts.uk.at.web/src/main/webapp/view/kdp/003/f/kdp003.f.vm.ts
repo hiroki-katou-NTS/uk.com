@@ -438,11 +438,11 @@ module nts.uk.at.kdp003.f {
 				return vm.$dialog.error(message);
 			}
 
-			if (passwordRequired === false) {
-				_.omit(model, ['password']);
-				// note: メニュー別OCD内の記述を移送表に追加する
-				model.passwordInvalid = true;
-			}
+			// if (passwordRequired === false) {
+			// 	_.omit(model, ['password']);
+			// 	// note: メニュー別OCD内の記述を移送表に追加する
+			// 	model.passwordInvalid = true;
+			// }
 
 			vm.$validate()
 				.then((valid: boolean) => {
@@ -455,6 +455,7 @@ module nts.uk.at.kdp003.f {
 					vm.$blockui('show')
 						.then(() => vm.$ajax(api, model))
 						.fail((response: any) => {
+
 							const { message, messageId } = response;
 
 							if (!messageId) {
@@ -613,7 +614,7 @@ module nts.uk.at.kdp003.f {
 
 	export class Model {
 		// default data;
-		contractCode: string = '000000000000';
+		contractCode: string = '000000000004';
 		passwordInvalid: boolean = false;
 		isAdminMode: boolean = false;
 		runtimeEnvironmentCreate: boolean = true;
