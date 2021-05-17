@@ -5,13 +5,20 @@ package nts.uk.screen.at.app.ksu001.displayinworkinformation;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.enums.EnumAdaptor;
+import nts.arc.time.calendar.DateInMonth;
+import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.aggregation.dom.schedulecounter.tally.PersonalCounterCategory;
+import nts.uk.ctx.at.aggregation.dom.schedulecounter.tally.WorkplaceCounterCategory;
 import nts.uk.screen.at.app.ksu001.processcommon.GetListWorkTypeAvailable;
 import nts.uk.screen.at.app.ksu001.processcommon.WorkScheduleWorkInforDto;
 import nts.uk.screen.at.app.ksu001.scheduleactualworkinfo.GetScheduleActualOfWorkInfo;
+import nts.uk.screen.at.app.ksu001.scheduleactualworkinfo.ScheduleActualOfWorkOutput;
 
 /**
  * @author laitv 
@@ -41,5 +48,32 @@ public class DisplayInWorkInformation {
 
 		result.setListWorkScheduleWorkInfor(listWorkScheduleWorkInfor);
 		return result;
+	}
+	
+	public DisplayInWorkInfoResult_New getDataWorkInfo_New(DisplayInWorkInfoParam_New param) {
+		// 1: <call>
+		List<WorkTypeInfomation> listWorkTypeInfo = getListWorkTypeAvailable.getData_New();
+		
+		// 2: <call>
+		ScheduleActualOfWorkOutput scheduleActualOfWorkOutput = 
+				
+			getScheduleActualOfWorkInfo.getDataScheduleAndAactualOfWorkInfoNew(
+					param.getListSid(),
+					new DatePeriod(param.getStartDate(), param.getEndDate()),
+					DateInMonth.of(param.getDay()),
+					param.getActualData,
+					param.getTargetOrgIdenInforDto().convertFromDomain(),
+					Optional.ofNullable(param.getPersonalCounterOp()).flatMap(x -> Optional.of(EnumAdaptor.valueOf(x, PersonalCounterCategory.class))),
+					Optional.ofNullable(param.getWorkplaceCounterOp()).flatMap(x -> Optional.of(EnumAdaptor.valueOf(x, WorkplaceCounterCategory.class)))
+					);
+		
+		return new DisplayInWorkInfoResult_New(
+				listWorkTypeInfo,
+				scheduleActualOfWorkOutput.getWorkScheduleWorkInforDtos(),
+				scheduleActualOfWorkOutput.getAggreratePersonal(),
+				scheduleActualOfWorkOutput.getAggrerateWorkplace()
+				);
+		
+		
 	}
 }

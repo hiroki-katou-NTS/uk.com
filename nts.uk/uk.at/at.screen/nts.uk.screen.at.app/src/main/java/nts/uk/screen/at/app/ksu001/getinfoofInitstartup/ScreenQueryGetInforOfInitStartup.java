@@ -4,6 +4,7 @@
 package nts.uk.screen.at.app.ksu001.getinfoofInitstartup;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -18,7 +19,13 @@ import nts.uk.ctx.at.schedule.dom.displaysetting.DisplaySettingByWorkplace;
 import nts.uk.ctx.at.schedule.dom.displaysetting.DisplaySettingByWorkplaceRepository;
 import nts.uk.ctx.at.schedule.dom.displaysetting.authcontrol.ScheAuthModifyDeadline;
 import nts.uk.ctx.at.schedule.dom.displaysetting.authcontrol.ScheAuthModifyDeadlineRepository;
+import nts.uk.ctx.at.schedule.dom.displaysetting.authcontrol.ScheModifyAuthCtrlByWorkPlaceRepository;
+import nts.uk.ctx.at.schedule.dom.displaysetting.authcontrol.ScheModifyAuthCtrlByWorkplace;
+import nts.uk.ctx.at.schedule.dom.displaysetting.authcontrol.ScheModifyAuthCtrlCommon;
+import nts.uk.ctx.at.schedule.dom.displaysetting.authcontrol.ScheModifyAuthCtrlCommonRepository;
 import nts.uk.ctx.at.schedule.dom.displaysetting.authcontrol.ScheModifyStartDateService;
+import nts.uk.ctx.at.schedule.dom.displaysetting.functioncontrol.ScheFunctionControl;
+import nts.uk.ctx.at.schedule.dom.displaysetting.functioncontrol.ScheFunctionCtrlByWorkplace;
 import nts.uk.ctx.at.schedule.dom.shift.management.shifttable.GetShiftTableRuleForOrganizationService;
 import nts.uk.ctx.at.schedule.dom.shift.management.shifttable.ShiftTableRule;
 import nts.uk.ctx.at.schedule.dom.shift.management.shifttable.ShiftTableRuleForCompany;
@@ -38,6 +45,8 @@ import nts.uk.ctx.bs.employee.dom.workplace.master.service.WorkplaceExportServic
 import nts.uk.ctx.bs.employee.dom.workplace.master.service.WorkplaceInforParam;
 import nts.uk.ctx.bs.employee.pub.workplace.export.EmpOrganizationPub;
 import nts.uk.ctx.bs.employee.pub.workplace.workplacegroup.EmpOrganizationExport;
+import nts.uk.screen.at.app.ksu001.summarycategory.GetSummaryCategory;
+import nts.uk.screen.at.app.ksu001.summarycategory.SummaryCategoryDto;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -66,6 +75,15 @@ public class ScreenQueryGetInforOfInitStartup {
 	private ShiftTableRuleForOrganizationRepo shiftTableRuleForOrgRepo;
 	@Inject
 	private ShiftTableRuleForCompanyRepo shiftTableRuleForCompanyRepo;
+	
+//	@Inject
+//	private ScheModifyAuthCtrlCommonRepository scheModifyAuthCtrlCommonRepository;
+//	
+//	@Inject
+//	private ScheModifyAuthCtrlByWorkPlaceRepository scheModifyAuthCtrlByWorkPlaceRepository;
+	
+	@Inject
+	private GetSummaryCategory getSummaryCategory;
 	
 	public DataScreenQueryGetInforDto getData() {
 		// Step 1,2
@@ -104,7 +122,74 @@ public class ScreenQueryGetInforOfInitStartup {
 			useWorkAvailabilityAtr = shiftTableRule.get().getUseWorkAvailabilityAtr().value == 1 ? true : false;
 		}
 		
+		
+		
+		
+		
 		return new DataScreenQueryGetInforDto(datePeriod.start(), datePeriod.end(), targetOrgIdenInforDto, displayInfoOrganization, scheduleModifyStartDate, usePublicAtr, useWorkAvailabilityAtr);
+	}
+	
+	public DataScreenQueryGetInforDto_New getDataNew() {
+		// Step 1,2
+		String companyID = AppContexts.user().companyId();
+		Optional<DisplaySettingByWorkplace> workScheDisplaySettingOpt = workScheDisplaySettingRepo.get(companyID);
+		if (!workScheDisplaySettingOpt.isPresent()) {
+			return new DataScreenQueryGetInforDto_New();
+		}
+
+		DatePeriod datePeriod = workScheDisplaySettingOpt.get().calcuInitDisplayPeriod();
+
+		// step 3
+		// goi domain service 社員の対象組織識別情報を取得する
+		String sidLogin = AppContexts.user().employeeId();
+		RequireImpl require = new RequireImpl(empOrganizationPub);
+		TargetOrgIdenInfor targetOrgIdenInfor = GetTargetIdentifiInforService.get(require, datePeriod.end(), sidLogin);
+		
+		// step 4
+		RequireWorkPlaceImpl requireWorkPlace = new RequireWorkPlaceImpl(workplaceGroupAdapter,workplaceExportService,affWorkplaceGroupRepo);
+		DisplayInfoOrganization displayInfoOrganization =  targetOrgIdenInfor.getDisplayInfor(requireWorkPlace, datePeriod.end());
+		
+		TargetOrgIdenInforDto targetOrgIdenInforDto = new TargetOrgIdenInforDto( targetOrgIdenInfor );
+		
+		// step 5
+		RequireScheModifyStartDate requireScheModifyStartDate = new RequireScheModifyStartDate(scheAuthModifyDeadlineRepo);
+		String roleId = AppContexts.user().roles().forAttendance();
+		GeneralDate scheduleModifyStartDate = ScheModifyStartDateService.getModifyStartDate(requireScheModifyStartDate, roleId);
+		
+		// step 6
+		RequireGetShiftTableRuleImpl requireGetShiftTableRuleImpl    = new RequireGetShiftTableRuleImpl(shiftTableRuleForOrgRepo, shiftTableRuleForCompanyRepo);
+		Optional<ShiftTableRule> shiftTableRule = GetShiftTableRuleForOrganizationService.get(requireGetShiftTableRuleImpl, targetOrgIdenInfor);
+		Boolean usePublicAtr = false; // 公開を利用するか
+		Boolean useWorkAvailabilityAtr = false; // 勤務希望を利用するか
+		if(shiftTableRule.isPresent()){
+			usePublicAtr =  shiftTableRule.get().getUsePublicAtr().value == 1;
+			useWorkAvailabilityAtr = shiftTableRule.get().getUseWorkAvailabilityAtr().value == 1;
+		}
+		
+		
+		// step 7 waiting 3si
+		Optional<ScheFunctionControl> scheFunctionControlOp = Optional.empty();
+		
+		// step 8 waiting 3si
+		
+		Optional<ScheFunctionCtrlByWorkplace> scheFunctionCtrlByWorkplaceOp = Optional.empty();
+		// step 9 getAllByRoleId
+		List<ScheModifyAuthCtrlCommon> scheModifyAuthCtrlCommons = 
+//				scheModifyAuthCtrlCommonRepository.getAllByRoleId(companyID, roleId);
+				Collections.emptyList();
+		
+		// step 10 getAllByRoleId
+		List<ScheModifyAuthCtrlByWorkplace> scheModifyAuthCtrlByWorkplaces = 
+//				scheModifyAuthCtrlByWorkPlaceRepository.getAllByRoleId(companyID, roleId);
+				Collections.emptyList();
+		
+		// step 11 取得する(表示形式)
+		SummaryCategoryDto summaryCategory = getSummaryCategory.get(null);
+		
+		// step 12 get()
+		
+		
+		return new DataScreenQueryGetInforDto_New(datePeriod.start(), datePeriod.end(), targetOrgIdenInforDto, displayInfoOrganization, scheduleModifyStartDate, usePublicAtr, useWorkAvailabilityAtr);
 	}
 	
 	

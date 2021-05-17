@@ -4,8 +4,11 @@
 package nts.uk.screen.at.app.ksu001.getschedulesbyshift;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -19,6 +22,7 @@ import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.Target
 import nts.uk.screen.at.app.ksu001.aggrerateschedule.AggrerateScheduleDto;
 import nts.uk.screen.at.app.ksu001.aggrerateschedule.ScreenQueryAggrerateSchedule;
 import nts.uk.screen.at.app.ksu001.displayinshift.ShiftMasterMapWithWorkStyle;
+import nts.uk.screen.at.app.ksu001.getshiftpalette.ShiftMasterDto;
 import nts.uk.screen.at.app.ksu001.getworkactualshift.GetActualOfShift;
 import nts.uk.screen.at.app.ksu001.getworkscheduleshift.GetScheduleOfShift;
 import nts.uk.screen.at.app.ksu001.getworkscheduleshift.ScheduleOfShiftDto;
@@ -101,12 +105,12 @@ public class GetScheduleActualOfShift {
 	 * @param personalCounterOp ・個人計カテゴリ　：Optional<個人計カテゴリ>
 	 * @param workplaceCounterOp ・職場計カテゴリ　：Optional<職場計カテゴリ>
 	 */
-	public ScheduleActualOfShiftOutput getDataNew(
+	public SchedulesbyShiftDataResult_New getDataNew(
 			List<ShiftMasterMapWithWorkStyle> listShiftMasterNotNeedGet,
 			List<String> sids,
 			DatePeriod datePeriod,
 			DateInMonth closeDate,
-			Boolean isAchievement,
+			boolean isAchievement,
 			TargetOrgIdenInfor targetOrg,
 			Optional<PersonalCounterCategory> personalCounterOp,
 			Optional<WorkplaceCounterCategory> workplaceCounterOp
@@ -117,11 +121,12 @@ public class GetScheduleActualOfShift {
 				datePeriod,
 				isAchievement);
 		//2 取得する()
-		WorkScheduleShiftBaseResult workScheduleShiftBaseResult = screenQueryWorkScheduleShift.create(
-				listShiftMasterNotNeedGet,
-				planAndActual.getSchedule(),
-				planAndActual.getDailySchedule(),
-				isAchievement);
+		WorkScheduleShiftBaseResult workScheduleShiftBaseResult =
+				screenQueryWorkScheduleShift.create(
+						listShiftMasterNotNeedGet,
+						planAndActual.getSchedule(),
+						planAndActual.getDailySchedule(),
+						isAchievement);
 		
 		// 3 集計する(List<社員ID>, 期間, 日付, , , 対象組織識別情報, Optional<個人計カテゴリ>, Optional<職場計カテゴリ>, boolean)
 		AggrerateScheduleDto aggrerateSchedule =
@@ -135,10 +140,12 @@ public class GetScheduleActualOfShift {
 						personalCounterOp,
 						workplaceCounterOp,
 						true); // シフト表示か = true
-		
-		return new ScheduleActualOfShiftOutput(
+		return new SchedulesbyShiftDataResult_New(
 				workScheduleShiftBaseResult.getListWorkScheduleShift(),
-				workScheduleShiftBaseResult.getMapShiftMasterWithWorkStyle(),
+				workScheduleShiftBaseResult.getMapShiftMasterWithWorkStyle()
+				   .entrySet()
+				   .stream()
+				   .collect(Collectors.toMap(e -> new ShiftMasterDto(e.getKey()), e -> e.getValue().map(x -> x.value).orElse(null))),
 				aggrerateSchedule.getAggreratePersonal(),
 				aggrerateSchedule.getAggrerateWorkplace()
 				);

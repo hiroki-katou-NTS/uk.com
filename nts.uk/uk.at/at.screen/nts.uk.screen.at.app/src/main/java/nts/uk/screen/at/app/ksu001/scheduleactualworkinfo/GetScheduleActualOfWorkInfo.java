@@ -18,14 +18,11 @@ import nts.uk.ctx.at.aggregation.dom.schedulecounter.tally.WorkplaceCounterCateg
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 import nts.uk.screen.at.app.ksu001.aggrerateschedule.AggrerateScheduleDto;
 import nts.uk.screen.at.app.ksu001.aggrerateschedule.ScreenQueryAggrerateSchedule;
-import nts.uk.screen.at.app.ksu001.displayinshift.ShiftMasterMapWithWorkStyle;
 import nts.uk.screen.at.app.ksu001.displayinworkinformation.DisplayInWorkInfoParam;
-import nts.uk.screen.at.app.ksu001.getschedulesbyshift.ScheduleActualOfShiftOutput;
-import nts.uk.screen.at.app.ksu001.processcommon.WorkScheduleShiftBaseResult;
+import nts.uk.screen.at.app.ksu001.processcommon.ScreenQueryCreateWorkSchedule;
 import nts.uk.screen.at.app.ksu001.processcommon.WorkScheduleWorkInforDto;
 import nts.uk.screen.at.app.ksu001.processcommon.nextorderdschedule.PlanAndActual;
 import nts.uk.screen.at.app.ksu001.processcommon.nextorderdschedule.ScreenQueryPlanAndActual;
-import nts.uk.screen.at.app.ksu001.processcommon.nextorderdschedule.ScreenQueryWorkScheduleShift;
 
 /**
  * @author laitv
@@ -44,10 +41,10 @@ public class GetScheduleActualOfWorkInfo {
 	private ScreenQueryPlanAndActual screenQueryPlanAndActual;
 	
 	@Inject
-	private ScreenQueryWorkScheduleShift screenQueryWorkScheduleShift;
+	private ScreenQueryAggrerateSchedule screenQueryAggrerateSchedule;
 	
 	@Inject
-	private ScreenQueryAggrerateSchedule screenQueryAggrerateSchedule;
+	private ScreenQueryCreateWorkSchedule screenQueryCreateWorkSchedule;
 	
 	public List<WorkScheduleWorkInforDto> getDataScheduleAndAactualOfWorkInfo(DisplayInWorkInfoParam param) {
 		
@@ -78,24 +75,24 @@ public class GetScheduleActualOfWorkInfo {
 		}
 		return listDataSchedule;
 	}
+	
 	/**
 	 * 予定・実績を勤務情報で取得する（未発注）
 	 * 
-	 * @param listShiftMasterNotNeedGet
-	 * @param sids
-	 * @param datePeriod
-	 * @param closeDate
-	 * @param isAchievement
-	 * @param targetOrg
-	 * @param personalCounterOp
-	 * @param workplaceCounterOp
+	 * @param sids // 社員リスト
+	 * @param datePeriod // 期間
+	 * @param closeDate // 締め日
+	 * @param isAchievement // 実績も取得するか
+	 * @param targetOrg // 対象組織
+	 * @param personalCounterOp // 個人計カテゴリ
+	 * @param workplaceCounterOp // 職場計カテゴリ
 	 * @return
 	 */
-	public ScheduleActualOfShiftOutput getDataScheduleAndAactualOfWorkInfoNew(List<ShiftMasterMapWithWorkStyle> listShiftMasterNotNeedGet,
+	public ScheduleActualOfWorkOutput getDataScheduleAndAactualOfWorkInfoNew(
 			List<String> sids,
 			DatePeriod datePeriod,
 			DateInMonth closeDate,
-			Boolean isAchievement,
+			boolean isAchievement,
 			TargetOrgIdenInfor targetOrg,
 			Optional<PersonalCounterCategory> personalCounterOp,
 			Optional<WorkplaceCounterCategory> workplaceCounterOp
@@ -106,11 +103,11 @@ public class GetScheduleActualOfWorkInfo {
 				datePeriod,
 				isAchievement);
 		//2 取得する()
-		WorkScheduleShiftBaseResult workScheduleShiftBaseResult = screenQueryWorkScheduleShift.create(
-				listShiftMasterNotNeedGet,
-				planAndActual.getSchedule(),
-				planAndActual.getDailySchedule(),
-				isAchievement);
+		List<WorkScheduleWorkInforDto> workScheduleWorkInforDtos = 
+				screenQueryCreateWorkSchedule.get(
+					planAndActual.getSchedule(),
+					planAndActual.getDailySchedule(),
+					isAchievement);
 		
 		// 3 集計する(List<社員ID>, 期間, 日付, , , 対象組織識別情報, Optional<個人計カテゴリ>, Optional<職場計カテゴリ>, boolean)
 		AggrerateScheduleDto aggrerateSchedule =
@@ -125,9 +122,8 @@ public class GetScheduleActualOfWorkInfo {
 						workplaceCounterOp,
 						false); // シフト表示か = false
 		
-		return new ScheduleActualOfShiftOutput(
-				workScheduleShiftBaseResult.getListWorkScheduleShift(),
-				workScheduleShiftBaseResult.getMapShiftMasterWithWorkStyle(),
+		return new ScheduleActualOfWorkOutput(
+				workScheduleWorkInforDtos,
 				aggrerateSchedule.getAggreratePersonal(),
 				aggrerateSchedule.getAggrerateWorkplace()
 				);
