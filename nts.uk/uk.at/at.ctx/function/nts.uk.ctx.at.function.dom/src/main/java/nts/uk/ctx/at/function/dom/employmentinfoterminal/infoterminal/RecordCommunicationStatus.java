@@ -27,17 +27,12 @@ public class RecordCommunicationStatus {
 			return task;
 
 		// 就業情報端末通信状況を取得する
-		Optional<EmpInfoTerminalComStatus> empTerComstatus = require.getEmpTerComStatus(contractCode, terCode);
-
-		if (!empTerComstatus.isPresent()) {
-			return task;
-		}
+		EmpInfoTerminalComStatus empTerComstatus = require.getEmpTerComStatus(contractCode, terCode)
+				.orElse(new EmpInfoTerminalComStatus(contractCode, terCode, systemTime));
 
 		// 通信異常があったか判断する
-		if (empTerComstatus.map(
-				x -> x.isCommunicationError(new MonitorIntervalTime(empTerInfo.get().getIntervalTime()), systemTime))
-				.orElse(false)) {
-			val empTerComStsNew = empTerComstatus.get().createAbnormalPeriod(systemTime);
+		if (empTerComstatus.isCommunicationError(new MonitorIntervalTime(empTerInfo.get().getIntervalTime()), systemTime)) {
+			val empTerComStsNew = empTerComstatus.createAbnormalPeriod(systemTime);
 
 			task.then(() -> {
 				require.insertEmpComAbPeriod(empTerComStsNew);
@@ -47,7 +42,7 @@ public class RecordCommunicationStatus {
 
 		// $就業情報端末通信状況Update ＝ $就業情報端末通信状況.最終通信日時を更新する($システム日時)
 		task.then(() -> {
-			require.updateEmpTerStatus(empTerComstatus.get().updateLastTime(systemTime));
+			require.updateEmpTerStatus(empTerComstatus.updateLastTime(systemTime));
 
 			// 過去の「就業情報端末通信異常期間」は削除する。
 			require.deleteEmpTerComAbPast(contractCode, terCode, EmpInfoTerComAbPeriod.getDayRemoveInfo());
