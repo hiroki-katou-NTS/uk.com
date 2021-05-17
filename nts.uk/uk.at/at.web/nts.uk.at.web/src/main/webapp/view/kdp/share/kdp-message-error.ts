@@ -13,40 +13,38 @@ module nts.uk.at.view.kdp.share {
     };
 
     const template = `
-    <div class="kdp-message-error">
-        <div class="company" data-bind="style: { 'background-color': $component.headOfficeNotice.backGroudColor }">
-            <span data-bind="i18n: $component.headOfficeNotice.title,
-                style: { 'color': $component.headOfficeNotice.textColor }"></span>
-            <span class="text-company" data-bind="i18n: $component.headOfficeNotice.contentMessager,
-                style: { 'color': $component.headOfficeNotice.textColor }"></span>
-        </div>
-        <div data-bind="style: { 'background-color': $component.workplaceNotice.backGroudColor }">
-            <div class="workPlace">
-                <div class="title">
-                    <div class="name-title">
-                        <div style:"box-sizing: border-box" data-bind="i18n: $component.workplaceNotice.title,
-                            style: { 'color': $component.workplaceNotice.textColor}"></div>
-                    </div>
-                    <div class="btn-title">
-                        <button style="background-color: transparent;" 
-                                class="icon" 
-                                data-bind="ntsIcon: { no: 160, width: 30, height: 30 }, click: events.registerNoti.click">
-                        </button>
-                    </div>
-                </div>
-                <div class="content">
-                    <div class="text-content" data-bind="i18n: $component.workplaceNotice.contentMessager,
+    <div class="company" data-bind="style: { 'background-color': $component.headOfficeNotice.backGroudColor }">
+        <span data-bind="i18n: $component.headOfficeNotice.title,
+            style: { 'color': $component.headOfficeNotice.textColor }"></span>
+        <span class="text-company" data-bind="i18n: $component.headOfficeNotice.contentMessager,
+            style: { 'color': $component.headOfficeNotice.textColor }"></span>
+    </div>
+    <div data-bind="style: { 'background-color': $component.workplaceNotice.backGroudColor }">
+        <div class="workPlace">
+            <div class="title">
+                <div class="name-title">
+                    <div style:"box-sizing: border-box" data-bind="i18n: $component.workplaceNotice.title,
                         style: { 'color': $component.workplaceNotice.textColor}"></div>
-                        <button class="btn-content" data-bind="ntsIcon: { no: 161, width: 30, height: 30 }, click: events.shoNoti.click">
-                        </button>
-                <div>
+                </div>
+                <div class="btn-title">
+                    <button style="background-color: transparent;" 
+                            class="icon" 
+                            data-bind="ntsIcon: { no: 160, width: 30, height: 30 }, click: events.registerNoti.click">
+                    </button>
+                </div>
             </div>
+            <div class="content">
+                <div class="text-content" data-bind="i18n: $component.workplaceNotice.contentMessager,
+                    style: { 'color': $component.workplaceNotice.textColor}"></div>
+                    <button class="btn-content" data-bind="ntsIcon: { no: 161, width: 30, height: 30 }, click: events.shoNoti.click">
+                    </button>
+            <div>
         </div>
     </div>
     <style>
         .kdp-message-error {
             max-width: 700px;
-            padding: 0px 5px;
+            padding: 10px 10px 0 10px;
         }
 
         .kdp-message-error .company {

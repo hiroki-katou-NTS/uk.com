@@ -658,7 +658,8 @@ module nts.uk.at.view.kdp004.a {
 									if (output === 'loginSuccess') {
 										vm.$window.modal('at', DIALOG.P)
 											.then(() => {
-												self.loadNotice(self.loginInfo);
+												// self.loadNotice(self.loginInfo);
+												window.location.reload(false);
 											})
 									}
 								});
