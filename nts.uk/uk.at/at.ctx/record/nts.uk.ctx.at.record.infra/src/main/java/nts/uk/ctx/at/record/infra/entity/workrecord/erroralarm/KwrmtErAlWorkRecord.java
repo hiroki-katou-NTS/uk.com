@@ -362,7 +362,6 @@ public class KwrmtErAlWorkRecord extends ContractUkJpaEntity implements Serializ
 				Collections.emptyList(), (0), (0), null, null, null, Collections.emptyList(), Collections.emptyList(),
 				(0), (0), null, null, null, Collections.emptyList(), Collections.emptyList(), (0), (0), "0", null, null,
 				null, 0);
-		if (!domain.getFixedAtr()) {
 			// Set Check target condition
 			int filterByBusinessType = conditionDomain.getCheckTargetCondtion().getFilterByBusinessType() ? (1) : (0);
 			int filterByJobTitle = (conditionDomain.getCheckTargetCondtion().getFilterByJobTitle() ? 1 : 0);
@@ -381,6 +380,7 @@ public class KwrmtErAlWorkRecord extends ContractUkJpaEntity implements Serializ
 			List<KrcmtEralClass> lstClassification = conditionDomain.getCheckTargetCondtion().getLstClassificationCode()
 					.stream().map(clssCd -> new KrcmtEralClass(new KrcstErAlClassPK(eralCheckId, clssCd.v(),domain.getCompanyId())))
 					.collect(Collectors.toList());
+		if (!domain.getFixedAtr()) {
 			// Set worktype condition
 			int workTypeUseAtr = conditionDomain.getWorkTypeCondition().isUse() ? 1 : 0;
 			int wtCompareAtr = conditionDomain.getWorkTypeCondition().getComparePlanAndActual().value;
@@ -772,6 +772,8 @@ public class KwrmtErAlWorkRecord extends ContractUkJpaEntity implements Serializ
 	
 	public static ErrorAlarmCondition toConditionDomain(KwrmtErAlWorkRecord entity, KrcmtErAlCondition alCon) {
 		ErrorAlarmCondition condition = ErrorAlarmCondition.init();
+		if(alCon == null)
+			return new ErrorAlarmCondition(entity.eralCheckId, "");
 		condition.setDisplayMessage(alCon.messageDisplay);
 		condition.setContinuousPeriod(alCon.continuousPeriod);
 		if (!entity.fixedAtr) {

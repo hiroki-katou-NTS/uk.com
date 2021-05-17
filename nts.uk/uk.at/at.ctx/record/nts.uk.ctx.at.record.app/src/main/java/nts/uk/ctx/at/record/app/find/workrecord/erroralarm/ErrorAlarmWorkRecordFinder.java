@@ -58,8 +58,29 @@ public class ErrorAlarmWorkRecordFinder {
 			}
 		}
 		List<ErrorAlarmWorkRecordDto> lstDto = lstErrorAlarm.stream()
-				.map(eral -> ErrorAlarmWorkRecordDto.fromDomain(eral, eral.getErrorAlarmCondition()))
-				.collect(Collectors.toList());
+				.map(eral -> {
+					if(eral.getFixedAtr() && eral.getErrorAlarmCondition() == null)
+						return new ErrorAlarmWorkRecordDto(eral.getCompanyId(),
+								eral.getCode().v().substring(1),
+								eral.getName().v(),
+								eral.getFixedAtr() ? 1 : 0,
+								eral.getUseAtr() ? 1 : 0,
+								eral.getRemarkCancelErrorInput().value,
+								eral.getRemarkColumnNo(),
+								eral.getTypeAtr().value,
+								"",
+								eral.getMessage().getBoldAtr() ? 1 : 0,
+								eral.getMessage().getMessageColor().v(),
+								eral.getCancelableAtr() ? 1 : 0,
+								eral.getErrorDisplayItem() != null ? eral.getErrorDisplayItem().intValue() : null,
+								0,
+								eral.getLstApplication(),
+								0,
+								0,
+								0,
+								false);
+					return ErrorAlarmWorkRecordDto.fromDomain(eral, eral.getErrorAlarmCondition());
+				}).collect(Collectors.toList());
 		errorAlarmDto.setErrorAlarmWorkRecordList(lstDto);
 		errorAlarmDto.setOotsukaOption(getOotsukaOptionInfo());
 		errorAlarmDto.setApplicationList(getApplicationName());

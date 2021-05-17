@@ -298,7 +298,7 @@ public class ErrorAlarmWorkRecordDto {
 				erAlAtdItemConditionGroup2.add(erAlAtdItemConditionDto);
 			}
 			errorAlarmWorkRecordDto.setErAlAtdItemConditionGroup2(erAlAtdItemConditionGroup2);
-		} else { // kdw007_ver22
+		} else if(conditionDomain.getCheckTargetCondtion() != null){ // kdw007_ver22
 			errorAlarmWorkRecordDto.setAlCheckTargetCondition(new AlarmCheckTargetConditionDto(
 					conditionDomain.getCheckTargetCondtion().getFilterByBusinessType(),
 					conditionDomain.getCheckTargetCondtion().getFilterByJobTitle(),
