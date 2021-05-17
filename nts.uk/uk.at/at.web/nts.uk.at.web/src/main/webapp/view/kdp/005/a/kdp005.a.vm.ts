@@ -512,7 +512,7 @@ module nts.uk.at.view.kdp005.a {
 									var workLocationName: string = '';
 									var workplaceId: string = result;
 									if (workplace) {
-										workLocationName = workplace.name
+										workLocationName = workplace.workplaceDisplayName
 									}
 
 									service.addCheckCard(registerdata).done((res) => {
