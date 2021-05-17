@@ -965,7 +965,8 @@ public class ErrorAlarmWorkRecordExportImpl {
                         if(c.getUseAtr()){ //G11_3
                         	data.put("使用区分", TextResource.localize("KDW006_185"));
                         }else{
-                        	data.put("使用区分", TextResource.localize("KDW006_186"));
+//                        	data.put("使用区分", TextResource.localize("KDW006_186"));		//không in những item useAtr=false, giống commit bef4cb7
+                        	return;
                         }
 
                         ColorCode messageColor = c.getMessage().getMessageColor();
