@@ -793,9 +793,15 @@ module nts.uk.ui.kdp001.a {
                         vm.$ajax(REST_API.getLocation, param)
                             .done((data: IBasyo) => {
 
-                                if (data.workpalceId != null) {
+                                console.log(data);
+
+                                if(data) {
                                     vm.workpalceCD(locationCd);
-                                    vm.workplaceId(data.workpalceId);
+
+                                    if (data.workpalceId != null) {
+                                        vm.workpalceCD(locationCd);
+                                        vm.workplaceId(data.workpalceId);
+                                    }
                                 }
 
                                 if (ko.unwrap(vm.workplaceId) !== null) {
