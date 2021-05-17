@@ -469,9 +469,9 @@ export class KafS11AComponent extends KafS00ShrComponent {
         if (workTime) {
             return workTime.workTimeDisplayName.workTimeName;
         }
-        if (vm.mode == ScreenMode.DETAIL) {
-            return vm.getCDFormat(workTimeCD) + ' ' + vm.$i18n('KAFS11_32');
-        }
+        // if (vm.mode == ScreenMode.DETAIL) {
+        //     return vm.getCDFormat(workTimeCD) + ' ' + vm.$i18n('KAFS11_32');
+        // }
 
         return '';
     }
