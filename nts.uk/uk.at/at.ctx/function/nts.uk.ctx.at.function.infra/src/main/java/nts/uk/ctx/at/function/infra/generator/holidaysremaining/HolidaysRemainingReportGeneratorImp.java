@@ -168,6 +168,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                 firstRow += NUMBER_ROW_OF_HEADER;
             }
             // D1_1, D1_2
+            cells.copyRows(cells, 5, firstRow, 1);
             cells.get(firstRow, 0).setValue(TextResource.localize("KDR001_12") + ": " + employee.getWorkplaceCode()
                     + "　" + employee.getWorkplaceName());
             firstRow += 1;
@@ -298,6 +299,9 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
         cells.merge(rowIndexD, 0, 1, 2, true);
         // D2_1
         totalRowD += 1;
+        for (int index = 0; index < 2 ; index++) {
+            setTopBorderStyle(cells.get(rowIndexD , index));
+        }
         cells.get(rowIndexD, 0).setValue(employee.getEmployeeCode() + " " + employee.getEmployeeName());
         // D2_7 + D25 (POISITION CODE + POISITION NAME)
         cells.merge(rowIndexD + 1, 0, 1, 2, true);
@@ -647,7 +651,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
             return firstRow;
         }
         for (int index = 0; index < NUMBER_COLUMN - 2; index++) {
-            setBottomBorderStyle(cells.get(firstRow , 2 + index));
+            setTopBorderStyle(cells.get(firstRow , 2 + index));
         }
         cells.copyRows(cells, NUMBER_ROW_OF_HEADER + 10, firstRow, 2);
         // H1_1
@@ -999,7 +1003,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
         int rowIndexNumberRemainingPause = 0;
         cells.copyRows(cells, NUMBER_ROW_OF_HEADER + 16, firstRow, 2);
         // J1_1
-        cells.get(firstRow, 2).setValue(TextResource.localize("#KDR001_78"));
+        cells.get(firstRow, 2).setValue(TextResource.localize("KDR001_78"));
         // J2_1
         cells.get(firstRow, 9).setValue(TextResource.localize("KDR001_16"));
         // J2_2
@@ -1189,7 +1193,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
         int rowIndexNumberRemainingPause = 0;
         cells.copyRows(cells, NUMBER_ROW_OF_HEADER + 20, firstRow, 2);
         // K1_1
-        cells.get(firstRow, 2).setValue(TextResource.localize("#KDR001_78"));
+        cells.get(firstRow, 2).setValue(TextResource.localize("KDR001_78"));
         // K2_1
         cells.get(firstRow, 9).setValue(TextResource.localize("KDR001_17"));
         // K2_2
@@ -1237,7 +1241,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
             }
         }
         for (int index = 0; index < NUMBER_COLUMN - 2; index++) {
-            setBottomBorderStyle(cells.get(firstRow -1, 2 + index));
+            setTopBorderStyle(cells.get(firstRow , 2 + index));
             setBottomBorderStyle(cells.get(firstRow + totalRows -1, 2 + index));
         }
         return firstRow + totalRows;
@@ -1669,7 +1673,8 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                     }
                 }
 
-                for (YearMonth ym : lstYm) {
+                for (int i = 0; i < lstYm.size(); i++) {
+                    YearMonth ym = lstYm.get(i);
                     SpecialVacationImported spVaCrurrentMonthImported = hdRemainingInfor.getMapSPVaCrurrentMonth().get(ym) != null ?
                             hdRemainingInfor.getMapSPVaCrurrentMonth().get(ym).get(specialHolidayCode) : null;
                     if (spVaCrurrentMonthImported != null) {
@@ -1682,34 +1687,36 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                             if (spVaCrurrentMonthImported.getRemainDate() < 0) {
                                 setForegroundRed(cells.get(firstRow + 1, 10 + totalMonth));
                             }
-
-                            // M2_7 特別休暇１_使用日数
-                            cells.get(firstRow + 2, 10 + totalMonth).setValue("");
-                            setBackgroundGray(cells.get(firstRow + 2, 10 + totalMonth));
-                            // M2_8 特別休暇１_残数日数
-                            cells.get(firstRow + 3, 10 + totalMonth).setValue("");
-                            setBackgroundGray(cells.get(firstRow + 3, 10 + totalMonth));
+                            if(i == 0){
+                                cells.get(firstRow + 2, 10 + totalMonth).setValue(spVaCrurrentMonthImported.getRemainDate());
+                                //M2_8
+                                cells.get(firstRow + 3, 10 + totalMonth).setValue(spVaCrurrentMonthImported.getRemainHours());
+                            }else {
+                                // M2_7 特別休暇１_使用日数
+                                setBackgroundGray(cells.get(firstRow + 2, 10 + totalMonth));
+                                // M2_8 特別休暇１_残数日数
+                                setBackgroundGray(cells.get(firstRow + 3, 10 + totalMonth));
+                            }
 
                         }
                     }
                     totalMonth++;
                 }
-
                 // Set background
-                for (int index = 0; index <= totalMonths(dataSource.getStartMonth().yearMonth(),
-                        dataSource.getEndMonth().yearMonth()); index++) {
-                    if (dataSource.getStartMonth().addMonths(index).yearMonth().compareTo(currentMonth) > 0) {
-                        setBackgroundGray(cells.get(firstRow + 1, 10 + index));
-//						setBackgroundGray(cells.get(firstRow, 10 + index));
-//						setBackgroundGray(cells.get(firstRow + 1, 10 + index));
-                    }
-
-                    if (!dataSource.isSameCurrentMonth()
-                            && dataSource.getStartMonth().addMonths(index).yearMonth().compareTo(currentMonth) == 0) {
-                        setCurrentMonthBackground(cells.get(firstRow, 10 + index));
-                        setCurrentMonthBackground(cells.get(firstRow + 1, 10 + index));
-                    }
-                }
+//                for (int index = 0; index <= totalMonths(dataSource.getStartMonth().yearMonth(),
+//                        dataSource.getEndMonth().yearMonth()); index++) {
+//                    if (dataSource.getStartMonth().addMonths(index).yearMonth().compareTo(currentMonth) > 0) {
+//                        setBackgroundGray(cells.get(firstRow + 1, 10 + index));
+////						setBackgroundGray(cells.get(firstRow, 10 + index));
+////						setBackgroundGray(cells.get(firstRow + 1, 10 + index));
+//                    }
+//
+//                    if (!dataSource.isSameCurrentMonth()
+//                            && dataSource.getStartMonth().addMonths(index).yearMonth().compareTo(currentMonth) == 0) {
+//                        setCurrentMonthBackground(cells.get(firstRow, 10 + index));
+//                        setCurrentMonthBackground(cells.get(firstRow + 1, 10 + index));
+//                    }
+//                }
             }
 
             firstRow += 4;
@@ -2120,7 +2127,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 //            }
 //        }
         for (int index = 0; index < NUMBER_COLUMN - 2; index++) {
-            setBottomBorderStyle(cells.get(firstRow -1, 2 + index));
+            setTopBorderStyle(cells.get(firstRow , 2 + index));
             setBottomBorderStyle(cells.get(firstRow + totalRows -1, 2 + index));
         }
         return firstRow + totalRows;
