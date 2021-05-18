@@ -148,6 +148,20 @@ module nts.uk.ui.at.kdw013.a {
                 cache.refDate = params.refDate;
             };
 
+            vm.$datas
+                .subscribe((data: SelectTargetEmployeeDto) => {
+                    if (data) {
+                        const { lstWorkRecordDetailDto } = data;
+
+                        if (lstWorkRecordDetailDto) {
+                            const events = _
+                                .chain(lstWorkRecordDetailDto)
+                                .map(({ lstWorkDetailsParamDto }) => lstWorkRecordDetailDto)
+                                .value();
+                        }
+                    }
+                });
+
             vm.$toggle = {
                 save: ko.computed({
                     read: () => {
@@ -249,7 +263,7 @@ module nts.uk.ui.at.kdw013.a {
                         return _
                             .chain(lstWorkRecordDetailDto)
                             // .orderBy(['date'])
-                            .filter(({ sId }) => sId === employeeId)
+                            .filter(({ sid }) => sid === employeeId)
                             .map(({
                                 date: strDate,
                                 actualContent,
@@ -261,20 +275,24 @@ module nts.uk.ui.at.kdw013.a {
                                 if (start) {
                                     const { timeWithDay } = start;
 
-                                    events.push(vm.$i18n('KDW013_21', [formatTime(timeWithDay, 'Time_Short_HM')]));
+                                    if (_.isNumber(timeWithDay)) {
+                                        events.push(vm.$i18n('KDW013_21', [formatTime(timeWithDay, 'Time_Short_HM')]));
+                                    }
                                 }
 
                                 if (end) {
                                     const { timeWithDay } = end;
 
-                                    events.push(vm.$i18n('KDW013_22', [formatTime(timeWithDay, 'Time_Short_HM')]));
+                                    if (_.isNumber(timeWithDay)) {
+                                        events.push(vm.$i18n('KDW013_22', [formatTime(timeWithDay, 'Time_Short_HM')]));
+                                    }
                                 }
 
-                                if (breakHours) {
+                                if (_.isNumber(breakHours)) {
                                     events.push(vm.$i18n('KDW013_23', [formatTime(breakHours, 'Time_Short_HM')]));
                                 }
 
-                                if (totalWorkingHours) {
+                                if (_.isNumber(totalWorkingHours)) {
                                     events.push(vm.$i18n('KDW013_24', [formatTime(totalWorkingHours, 'Time_Short_HM')]));
                                 }
 

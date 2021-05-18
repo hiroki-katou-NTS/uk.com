@@ -276,7 +276,7 @@ module nts.uk.ui.at.kdw013.calendar {
         }
         .fc-container .fc-event-note>div {
             padding: 2px;
-            min-height: 60px;
+            min-height: 112px;
             overflow: hidden;
         } 
         .fc-container .fc-event-note>div>div{
@@ -968,6 +968,8 @@ module nts.uk.ui.at.kdw013.calendar {
                             days.unshift({ date: null, events: [] });
                         }
                     }
+
+                    setTimeout(vm.calendar.updateSize, 500);
 
                     return days;
                 },

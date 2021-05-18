@@ -309,7 +309,7 @@ module nts.uk.ui.at.kdw013.a {
         date: string;
 
         // 社員ID
-        sId: string;
+        sid: string;
 
         // 作業詳細リスト
         lstWorkDetailsParamDto: WorkDetailsParamDto[];
