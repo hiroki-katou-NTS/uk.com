@@ -63,10 +63,10 @@ public class AggregateMonthlyRecordValue {
 	private List<SpecialHolidayRemainData> specialLeaveRemainList;
 	/** 介護休暇月別残数データ */
 	@Setter
-	private Optional<CareRemNumEachMonth> monCareHdRemain;
+	private List<CareRemNumEachMonth> careHdRemainList;
 	/** 子の看護休暇月別残数データ */
 	@Setter
-	private Optional<ChildcareRemNumEachMonth> monChildHdRemain;
+	private List<ChildcareRemNumEachMonth> childHdRemainList;
 
 //	/** 年休積立年休の集計結果 */
 //	@Setter
@@ -102,8 +102,8 @@ public class AggregateMonthlyRecordValue {
 		this.absenceLeaveRemainList = new ArrayList<>();
 		this.monthlyDayoffRemainList = new ArrayList<>();
 		this.specialLeaveRemainList = new ArrayList<>();
-		this.monCareHdRemain = Optional.empty();
-		this.monChildHdRemain = Optional.empty();
+		this.careHdRemainList = new ArrayList<>();
+		this.childHdRemainList = new ArrayList<>();
 
 //		this.aggrResultOfAnnAndRsvLeave = new AggrResultOfAnnAndRsvLeave();
 //		this.absRecRemainMngOfInPeriodOpt = Optional.empty();
@@ -243,8 +243,12 @@ public class AggregateMonthlyRecordValue {
 		result.getSpecialLeaveRemain().addAll(this.specialLeaveRemainList);
 		result.getAttendanceTimeOfWeek().addAll(this.attendanceTimeWeeks);
 		result.getEmployeeMonthlyPerError().addAll(this.perErrors);
-		result.setCare(this.monCareHdRemain);
-		result.setChildCare(this.monChildHdRemain);
+		CareRemNumEachMonth careRemain = null;
+		if (this.careHdRemainList.size() > 0) careRemain = this.careHdRemainList.get(0);
+		result.setCare(Optional.ofNullable(careRemain));
+		ChildcareRemNumEachMonth childCareRemain = null;
+		if (this.childHdRemainList.size() > 0) childCareRemain = this.childHdRemainList.get(0);
+		result.setChildCare(Optional.ofNullable(childCareRemain));
 		return result;
 	}
 }

@@ -1202,11 +1202,9 @@ public class AggregateMonthlyRecordServiceProc {
 		// 特別休暇
 		this.aggregateResult.getSpecialLeaveRemainList().addAll(output.getSpecialLeaveRemainList());
 		// 子の看護
-		this.aggregateResult.setMonChildHdRemain(output.getMonChildHdRemain());
+		this.aggregateResult.getChildHdRemainList().addAll(output.getChildHdRemainList());
 		// 介護
-		this.aggregateResult.setMonCareHdRemain(output.getMonCareHdRemain());
-
-
+		this.aggregateResult.getCareHdRemainList().addAll(output.getCareHdRemainList());
 
 
 		// エラー一覧

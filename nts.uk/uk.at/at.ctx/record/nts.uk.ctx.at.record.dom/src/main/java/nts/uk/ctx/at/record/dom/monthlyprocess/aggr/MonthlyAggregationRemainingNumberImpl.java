@@ -588,7 +588,7 @@ public class MonthlyAggregationRemainingNumberImpl implements MonthlyAggregation
 				this.employeeId, this.yearMonth,
 				this.closureId, this.closureDate, period);
 
-		this.aggregateResult.setMonChildHdRemain(Optional.of(childcareLeaRemNum));
+		this.aggregateResult.getChildHdRemainList().add(childcareLeaRemNum);
 
 		// 月別残数エラー一覧を作成する
 		this.aggregateResult.getPerErrors()
@@ -632,7 +632,7 @@ public class MonthlyAggregationRemainingNumberImpl implements MonthlyAggregation
 				this.employeeId, this.yearMonth,
 				this.closureId, this.closureDate, period);
 
-		this.aggregateResult.setMonCareHdRemain(Optional.of(careLeaRemNum));
+		this.aggregateResult.getCareHdRemainList().add(careLeaRemNum);
 
 		// 月別残数エラー一覧を作成する
 		this.aggregateResult.getPerErrors()

@@ -4441,7 +4441,7 @@ public class KrcdtMonRemain extends ContractUkJpaEntity implements Serializable 
 					/** 本年残数 */
 					ChildCareNurseRemainingNumber.of(
 							new DayNumberOfRemain(this.careRemainDaysBefore),
-							Optional.of(new TimeOfRemain(this.careRemainMinutesBefore))
+							this.careRemainMinutesBefore==null? Optional.empty(): Optional.of(new TimeOfRemain(this.careRemainMinutesBefore))
 							),
 					/** 翌年使用数 */
 					Optional.of(ChildCareNurseUsedInfo.of(
@@ -4459,7 +4459,7 @@ public class KrcdtMonRemain extends ContractUkJpaEntity implements Serializable 
 					/** 翌年残数 */
 					Optional.of(ChildCareNurseRemainingNumber.of(
 							new DayNumberOfRemain(this.careRemainDaysAfter),
-							Optional.of(new TimeOfRemain(this.careRemainMinutesAfter))
+							this.careRemainMinutesAfter == null? Optional.empty(): Optional.of(new TimeOfRemain(this.careRemainMinutesAfter))
 							))
 				);
 		return new ChildcareRemNumEachMonth(
@@ -4515,7 +4515,7 @@ public class KrcdtMonRemain extends ContractUkJpaEntity implements Serializable 
 					/** 本年残数 */
 					ChildCareNurseRemainingNumber.of(
 							new DayNumberOfRemain(this.childRemainDaysBefore),
-							Optional.of(new TimeOfRemain(this.childRemainMinutesBefore))
+							this.childRemainMinutesBefore == null?Optional.empty() : Optional.of(new TimeOfRemain(this.childRemainMinutesBefore))
 							),
 					/** 翌年使用数 */
 					Optional.of(ChildCareNurseUsedInfo.of(
@@ -4533,7 +4533,7 @@ public class KrcdtMonRemain extends ContractUkJpaEntity implements Serializable 
 					/** 翌年残数 */
 					Optional.of(ChildCareNurseRemainingNumber.of(
 							new DayNumberOfRemain(this.childRemainDaysAfter),
-							Optional.of(new TimeOfRemain(this.childRemainMinutesAfter))
+							this.childRemainMinutesAfter == null? Optional.empty(): Optional.of(new TimeOfRemain(this.childRemainMinutesAfter))
 							))
 				);
 		return new CareRemNumEachMonth(
