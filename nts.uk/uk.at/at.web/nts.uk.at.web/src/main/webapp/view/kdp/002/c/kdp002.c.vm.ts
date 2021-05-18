@@ -208,6 +208,8 @@ module nts.uk.at.view.kdp002.c {
 				});
 
 				self.$window.shared("screenC").done((nameScreen: any) => {
+					console.log(nameScreen);
+					
 					switch (nameScreen.screen) {
 						case 'KDP001':
 						case 'KDP002':
@@ -259,8 +261,6 @@ module nts.uk.at.view.kdp002.c {
 						if (data) {
 							service.getNotification(param)
 								.done((data: IMsgNotices[]) => {
-
-									vm.showBtnNoti(true);
 
 									vm.notificationStamp(data);
 

@@ -583,7 +583,9 @@ module nts.uk.at.view.kdp005.a {
 					mode: Mode.Personal,
 					workPlaceId: self.workPlaceId
 				});
-
+				setShared("screenC", {
+					screen: "KDP005"
+				});
 				modal('/view/kdp/002/c/index.xhtml', { screen: "KDP005" }).onClosed(function (): any {
 					self.openKDP002T(button, layout);
 				});
