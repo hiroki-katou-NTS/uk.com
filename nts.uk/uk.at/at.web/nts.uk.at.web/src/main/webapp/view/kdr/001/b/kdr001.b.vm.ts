@@ -104,17 +104,8 @@ module nts.uk.at.view.kdr001.b.viewmodel {
                 if (!vacationControl || vacationControl.com60HourVacationSetting == false) {
                     $('#rowHD60HItemCheck').addClass("hidden");
                 }
-
                 if (!vacationControl || vacationControl.listSpecialHoliday.length == 0) {
-                    //$('#rowSpecialHoliday').addClass("hidden");
-                    for (let i = 1; i < 21; i++) {
-                        self.allSpecialHolidays.push(new SpecialHoliday({
-                            specialHolidayCode: i,
-                            specialHolidayName: "",
-                            enable: false
-                        }));
-                    }
-                    self.currentHoliday().listSpecialHoliday([]);
+                    $('#rowSpecialHoliday').addClass("hidden");
                 }
                 else {
                     for (let i = 1; i < 21; i++) {
@@ -158,6 +149,8 @@ module nts.uk.at.view.kdr001.b.viewmodel {
                     else {
                         self.currentCode.valueHasMutated();
                     }
+                }else if(holidayRemainings.length ==0){
+                    self.isNewMode(true)
                 }
 
                 dfd.resolve(self);
