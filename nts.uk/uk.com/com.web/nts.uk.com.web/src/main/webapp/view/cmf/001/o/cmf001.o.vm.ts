@@ -296,7 +296,10 @@ module nts.uk.com.view.cmf001.o.viewmodel {
                         if (data2 && data2.length) {
                             _.each(_rspList, rs => {
                                 let item2 = _.find(data2, x => { return x.itemNo == rs.categoryItemNo(); });
-                                rs.acceptItemName(item2.itemName);
+                                if(item2){
+                                    rs.acceptItemName(item2.itemName);    
+                                }
+                                
                             });
                         }
 
