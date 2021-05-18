@@ -70,8 +70,8 @@ public class OuenWorkTimeSheetOfDaily extends AggregateRoot {
 	private List<Integer> getAttendanceId(List<OuenWorkTimeSheetOfDailyAttendance> ouenTimeSheet){
 		
 		List<ItemValue> itemValues = AttendanceItemIdContainer.getIds(AttendanceItemType.DAILY_ITEM);
-		
-		Map<Integer, List<ItemValue>> mapWorkNoItemsValue = AttendanceItemIdContainer.mapWorkNoItemsValue(itemValues);
+		List<ItemValue> values = itemValues.stream().filter(x -> !x.path().replace(x.path().replaceAll("[0-9]+$", ""), "").equals("")).collect(Collectors.toList());
+		Map<Integer, List<ItemValue>> mapWorkNoItemsValue = AttendanceItemIdContainer.mapWorkNoItemsValue(values);
 		List<Integer> result = new ArrayList<Integer>();
 		for (OuenWorkTimeSheetOfDailyAttendance i : ouenTimeSheet) {
 			List<ItemValue> id = mapWorkNoItemsValue.get(i.getWorkNo());
