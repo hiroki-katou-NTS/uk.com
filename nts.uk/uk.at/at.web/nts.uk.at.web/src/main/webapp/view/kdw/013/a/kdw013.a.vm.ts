@@ -122,9 +122,15 @@ module nts.uk.ui.at.kdw013.a {
             const vm = this;
             const { $query, employee } = vm;
             const { mode } = $query;
-            const cache: ChangeDateParam = initialCache();
-            const sameCache = (params: ChangeDateParam): 0 | 1 | 2 => {
+            const cache: ChangeDateParam & { pair: -1 | 0 | 1 | 2 } = { ...initialCache(), pair: 0 };
+            const sameCache = (params: ChangeDateParam): -1 | 0 | 1 | 2 => {
                 if (cache.employeeId !== params.employeeId) {
+                    if (cache.displayPeriod.end === params.displayPeriod.end) {
+                        if (cache.displayPeriod.start === params.displayPeriod.start) {
+                            return -1;
+                        }
+                    }
+
                     if (params.displayPeriod.start && params.displayPeriod.end) {
                         return 0;
                     }
@@ -151,6 +157,10 @@ module nts.uk.ui.at.kdw013.a {
 
             vm.$datas
                 .subscribe((data: SelectTargetEmployeeDto) => {
+                    if (cache.pair === -1) {
+                        return;
+                    }
+
                     if (data) {
                         const { lstWorkRecordDetailDto } = data;
 
@@ -261,13 +271,13 @@ module nts.uk.ui.at.kdw013.a {
                                 end: moment(end).subtract(1, 'day').endOf('day').format(DATE_TIME_FORMAT)
                             }
                         };
-                        const pair = sameCache(params);
+                        cache.pair = sameCache(params);
 
-                        if (pair !== 2) {
+                        if (cache.pair !== 2) {
                             updateCache(params);
                         }
 
-                        if (pair === 0) {
+                        if (cache.pair <= 0) {
                             // s.h.i.t
                             // vm.$datas(null);
 
