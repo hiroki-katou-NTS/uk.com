@@ -31,6 +31,7 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeSet;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeSetCheck;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeUnit;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * 大塚専用処理(実装)
@@ -158,6 +159,10 @@ public class OotsukaProcessServiceImpl implements OotsukaProcessService{
 	public boolean decisionOotsukaMode(WorkType workType,
 										Optional<FixedWorkCalcSetting> calcMethodOfFixWork,
 										TimeLeavingOfDailyAttd attendanceLeaving, HolidayCalculation holidayCalculation) {
+		/** 大塚オプション　の　ON/OFFを判断する処理が入る。 */
+		if (!AppContexts.optionLicense().customize().ootsuka())
+			return false;
+		
 		//勤務計算をする　＆＆　打刻漏れをしていない
 		if(decisionAbleCalc(workType,calcMethodOfFixWork,holidayCalculation) && !attendanceLeaving.isLeakageStamp()) {
 			return true;

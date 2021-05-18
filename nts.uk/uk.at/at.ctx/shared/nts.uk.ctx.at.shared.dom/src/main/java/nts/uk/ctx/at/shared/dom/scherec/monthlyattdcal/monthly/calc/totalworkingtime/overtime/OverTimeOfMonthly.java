@@ -551,7 +551,7 @@ public class OverTimeOfMonthly implements Cloneable, Serializable{
 				totalLegalOverMinutes += legalOverTime.getTransferTime().getTime().v();
 				
 				// 大塚モードの確認
-				if (true) {
+				if (AppContexts.optionLicense().customize().ootsuka()) {
 					
 					// 法定内残業内訳年休時間の計算
 					int detailAnnualMinutes = 0;
