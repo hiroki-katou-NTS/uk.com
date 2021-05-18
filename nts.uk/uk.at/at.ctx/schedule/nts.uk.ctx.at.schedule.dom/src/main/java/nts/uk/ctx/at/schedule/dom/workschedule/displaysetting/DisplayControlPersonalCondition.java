@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.val;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
 import nts.arc.time.GeneralDate;
@@ -31,34 +32,38 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
  * 
  */
 @AllArgsConstructor
+@Getter
 public class DisplayControlPersonalCondition implements DomainAggregate {
 
-	@Getter
 	/** 会社ID **/
 	private final String companyID;
-	@Getter
-	/** List<条件表示制御> --- 条件表示制御リスト **/
+	
+	/** 条件表示制御リスト **/
 	private List<PersonInforDisplayControl> listConditionDisplayControl; 
-
-	@Getter
-	/** Optional<勤務予定の資格設定> 資格設定 **/
+	
+	/** 資格設定 **/
 	private Optional<WorkscheQualifi> otpWorkscheQualifi;
 
 	/**
 	 * [C-1] 個人条件の表示制御
 	 * 
 	 * @param companyID
-	 * @param listConditionDisplayControl
-	 * @param otpWorkscheQualifi
-	 * @return
+	 * @param listConditionDisplayControl 条件表示制御リスト
+	 * @param otpWorkscheQualifi 資格設定
+	 * @return 個人条件の表示制御
 	 */
-	public static DisplayControlPersonalCondition get(String companyID,
-			List<PersonInforDisplayControl> listConditionDisplayControl, Optional<WorkscheQualifi> otpWorkscheQualifi) {
-		if ((listConditionDisplayControl.stream()
-				.anyMatch(c -> c.getConditionATR().value != ConditionATRWorkSchedule.QUALIFICATION.value))
-				&& (!otpWorkscheQualifi.isPresent())) {
+	public static DisplayControlPersonalCondition get(
+			String companyID,
+			List<PersonInforDisplayControl> listConditionDisplayControl, 
+			Optional<WorkscheQualifi> otpWorkscheQualifi) {
+		
+		val qualificationAtr = listConditionDisplayControl.stream()
+			.filter( e -> e.getConditionATR() == ConditionATRWorkSchedule.QUALIFICATION ).findFirst();
+		
+		if (qualificationAtr.isPresent() && qualificationAtr.get().getDisplayCategory().isUse() && !otpWorkscheQualifi.isPresent() ) {
 			throw new BusinessException("Msg_1682");
 		}
+		
 		return new DisplayControlPersonalCondition(companyID, listConditionDisplayControl, otpWorkscheQualifi);
 	}
 

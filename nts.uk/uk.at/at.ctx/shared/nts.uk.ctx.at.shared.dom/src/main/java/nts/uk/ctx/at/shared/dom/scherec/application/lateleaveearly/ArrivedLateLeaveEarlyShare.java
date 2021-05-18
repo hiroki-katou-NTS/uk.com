@@ -10,7 +10,7 @@ import nts.uk.ctx.at.shared.dom.scherec.application.common.ApplicationShare;
 /**
  * @author thanh_nx
  *
- *         遅刻早退取消申請
+ *         遅刻早退取消申請(反映用)
  */
 @Setter
 @Getter

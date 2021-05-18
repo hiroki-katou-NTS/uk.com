@@ -164,7 +164,7 @@ public class Frame implements MeanCarryable {
 		int i = 0;
 		for (String item : items) {
 			byte[] bytes = bodyBytes != null && Element.PAYLOAD.equals(item) ? bodyBytes : 
-							((Element.NRL_NO.equals(item) || Element.MAC_ADDR.equals(item)) ?
+							((Element.NRL_NO.equals(item) || Element.MAC_ADDR.equals(item) ||  Element.CONTRACT_CODE.equals(item)) ?
 									asciiCharToBytes(pickItem(item)) : hexStringToBytes(pickItem(item)));
 			int arrLen = bytes.length;
 			System.arraycopy(bytes, 0, byteDatas, i, arrLen);

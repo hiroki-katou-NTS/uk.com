@@ -7,6 +7,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.vacationapplication.VacationAppReflectOption;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.vacationapplication.leaveapplication.ReflectWorkHourCondition;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.vacationapplication.subleaveapp.SubstituteLeaveAppReflect;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 @NoArgsConstructor
@@ -19,6 +20,7 @@ public class SubLeaveAppReflectCommand {
 
     public SubstituteLeaveAppReflect toDomain() {
         return new SubstituteLeaveAppReflect(
+        		AppContexts.user().companyId(),
                 new VacationAppReflectOption(
                         EnumAdaptor.valueOf(oneDayLeaveDeleteAttendance, NotUseAtr.class),
                         EnumAdaptor.valueOf(reflectAttendance, NotUseAtr.class),

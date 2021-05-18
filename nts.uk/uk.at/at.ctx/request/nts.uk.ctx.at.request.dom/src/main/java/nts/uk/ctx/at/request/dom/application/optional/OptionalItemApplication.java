@@ -29,4 +29,11 @@ public class OptionalItemApplication extends Application {
      * 申請値
      */
     private List<AnyItemValue> optionalItems;
+    
+	public OptionalItemApplication(OptionalItemApplicationTypeCode code, List<AnyItemValue> optionalItems,
+			Application app) {
+		super(app);
+		this.code = code;
+		this.optionalItems = optionalItems;
+	}
 }

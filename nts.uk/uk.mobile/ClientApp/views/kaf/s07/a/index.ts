@@ -63,6 +63,8 @@ export class KafS07AComponent extends KafS00ShrComponent {
 
     public isCondition4: boolean = false;
 
+    public appWorkChangeDisp: any = null;
+
     // data is fetched service
     public data: any = 'data';
 
@@ -190,6 +192,9 @@ export class KafS07AComponent extends KafS00ShrComponent {
                 return;
             }
             self.data = res.data;
+            if (res.data.appWorkChangeDispInfo) {
+                self.appWorkChangeDisp = res.data.appWorkChangeDispInfo;
+            }
             self.createParamA();
             self.createParamB();
             self.createParamC();
@@ -770,7 +775,8 @@ export class KafS07AComponent extends KafS00ShrComponent {
             appWorkChangeDto: self.appWorkChangeDto,
             // 申請表示情報．申請表示情報(基準日関係あり)．承認ルートエラー情報
             isError: self.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDispInfoWithDateOutput.opErrorFlag,
-            appDispInfoStartupDto: self.appDispInfoStartupOutput
+            appDispInfoStartupDto: self.appDispInfoStartupOutput, 
+            appWorkChangeDispInfo: self.appWorkChangeDisp
         }).then((res: any) => {
             //self.$mask('hide');
             // confirmMsgLst

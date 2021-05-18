@@ -151,6 +151,14 @@ public class GoBackDirectlyFinder {
 		return InforGoBackCommonDirectDto.fromDomain(goBackDirectService.getDataDetailAlgorithm(param.getCompanyId(), param.getApplicationId(), appDispInfoStartupOutput));		
 	}
 	
+	public InforGoBackCommonDirectDto getDetailKAS009(ParamUpdate param) {
+//		14-1.詳細画面起動前申請共通設定を取得する
+		 AppDispInfoStartupOutput appDispInfoStartupOutput = 
+				 appCommonSetService.getCommonSetBeforeDetail(param.getCompanyId(), param.getApplicationId());
+//		アルゴリズム「直行直帰画面初期（更新）」を実行する
+		return InforGoBackCommonDirectDto.fromDomain(goBackDirectService.getDataDetailAlgorithmMobile(param.getCompanyId(), param.getApplicationId(), appDispInfoStartupOutput));		
+	}
+	
 	// Refactor5  mobile
 	public InforGoBackCommonDirectDto getStartKAFS09(ParamStartMobile paramStart) {
 		String companyId = AppContexts.user().companyId();
