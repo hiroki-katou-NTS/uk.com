@@ -29,7 +29,7 @@
 					data-bind="ntsLinkButton: { action: jumpTo }">#{i18n.getText('KDW006_25')}</a>
 				<!-- G1_2 -->
 				<button id="register-button" class="proceed" tabindex="2"
-					data-bind="click: saveData, enable: employmentList().length>0" >#{i18n.getText('KDW006_26')}</button>
+					data-bind="click: saveData, enable: employmentList().length>0 &amp;&amp; $root.errors.isEmpty()" >#{i18n.getText('KDW006_26')}</button>
 				<!-- G5_1 -->
 				<button id="copy-button" class="normal" tabindex="3"
 					data-bind="click: copyData, enable: mode() != 0" >#{i18n.getText('KDW006_52')}</button>

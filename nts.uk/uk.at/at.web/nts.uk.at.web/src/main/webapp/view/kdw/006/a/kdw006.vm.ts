@@ -3,21 +3,58 @@ module nts.uk.at.view.kdw006 {
         export class ScreenModel extends ko.ViewModel {
 
             ootsuka: KnockoutObservable<boolean>;
+            formatPerformanceDto: KnockoutObservable<FormatPerformanceDto>;
 
             constructor(dataShare: any) {
                 super();
 
                 var self = this;
                 self.ootsuka = ko.observable(false);
-                service.start().done(function(data) {
-                    self.ootsuka(data);
-                });
+
+                self.formatPerformanceDto = ko.observable(new FormatPerformanceDto({
+                    cid: '',
+                    settingUnitType: 0,
+                }));
             }
 
             startPage(): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred();
-                dfd.resolve();
+                self.$blockui("grayout");
+                $.when(self.start(), self.getFormat()).done(() => {
+                    dfd.resolve();
+                }).always(() => {
+                    nts.uk.ui.errors.clearAll();
+                    self.$blockui("hide");
+                });
+                return dfd.promise();
+            }
+
+            start(): JQueryPromise<any> {
+                let self = this;
+                let dfd = $.Deferred();
+                service.start().done(function(data) {
+                    if (data) {
+                        self.ootsuka(data);
+                        dfd.resolve();
+                    } else {
+                        dfd.resolve();
+                    }
+                });
+                return dfd.promise();
+            }
+
+            getFormat(): JQueryPromise<any> {
+                let self = this;
+                let dfd = $.Deferred();
+                service.getFormat().done(function(data) {
+                    if (data) {
+                        self.formatPerformanceDto(new FormatPerformanceDto(data));
+                        dfd.resolve();
+                    } else {
+                        dfd.resolve();
+                    }
+                });
                 return dfd.promise();
             }
 
@@ -32,46 +69,23 @@ module nts.uk.at.view.kdw006 {
 
             //---daily---
             open002Control() {
-                let settingUnit = SettingUnit.BUSINESSTYPE;
                 let isDaily = true;
-                nts.uk.request.jump("/view/kdw/002/a/index.xhtml", { 
-                    ShareObject: {
-                        settingUnit,
-                        isDaily
-                    } 
-                });
+                nts.uk.request.jump("/view/kdw/002/a/index.xhtml", { ShareObject: isDaily  });
             }
 
             open002Setting() {
-                let settingUnit = SettingUnit.BUSINESSTYPE;
                 let isDaily = true;
-                nts.uk.request.jump("/view/kdw/002/c/index.xhtml", { 
-                    ShareObject: {
-                        settingUnit,
-                        isDaily
-                    } 
-                });
+                nts.uk.request.jump("/view/kdw/002/c/index.xhtml", { ShareObject: isDaily  });
             }
 
             open008() {
                 var self = this;
                 
-                let settingUnit = SettingUnit.BUSINESSTYPE;
                 let isDaily = true;
-                if (self.ootsuka()) {
-                    nts.uk.request.jump("/view/kdw/008/b/index.xhtml", { 
-                        ShareObject: {
-                            settingUnit,
-                            isDaily
-                        }
-                    });
+                if (self.formatPerformanceDto().settingUnitType() == SettingUnitType.AUTHORITY) {
+                    nts.uk.request.jump("/view/kdw/008/a/index.xhtml", { ShareObject: isDaily  });
                 } else {
-                    nts.uk.request.jump("/view/kdw/008/d/index.xhtml", { 
-                        ShareObject: {
-                            settingUnit,
-                            isDaily
-                        }
-                    });
+                    nts.uk.request.jump("/view/kdw/008/b/index.xhtml", { ShareObject: isDaily  });
                 }
             }
 
@@ -90,46 +104,23 @@ module nts.uk.at.view.kdw006 {
 
             //---monthly---
             open002ControlMonth() {
-                let settingUnit = SettingUnit.BUSINESSTYPE;
                 let isDaily = false;
-                nts.uk.request.jump("/view/kdw/002/a/index.xhtml", { 
-                    ShareObject: {
-                        settingUnit,
-                        isDaily
-                    } 
-                });
+                nts.uk.request.jump("/view/kdw/002/a/index.xhtml", { ShareObject: isDaily  });
             }
 
             open002SettingMonth() {
-                let settingUnit = SettingUnit.BUSINESSTYPE;
                 let isDaily = false;
-                nts.uk.request.jump("/view/kdw/002/c/index.xhtml", { 
-                    ShareObject: {
-                        settingUnit,
-                        isDaily
-                    } 
-                });
+                nts.uk.request.jump("/view/kdw/002/c/index.xhtml", { ShareObject: isDaily  });
             }
 
             open008Month() {
                 var self = this;
                 
-                let settingUnit = SettingUnit.BUSINESSTYPE;
                 let isDaily = false;
-                if (self.ootsuka()) {
-                    nts.uk.request.jump("/view/kdw/008/b/index.xhtml", { 
-                        ShareObject: {
-                            settingUnit,
-                            isDaily
-                        }
-                    });
+                if (self.formatPerformanceDto().settingUnitType() == SettingUnitType.AUTHORITY) {
+                    nts.uk.request.jump("/view/kdw/008/a/index.xhtml", { ShareObject: isDaily  });
                 } else {
-                    nts.uk.request.jump("/view/kdw/008/d/index.xhtml", { 
-                        ShareObject: {
-                            settingUnit,
-                            isDaily
-                        }
-                    });
+                    nts.uk.request.jump("/view/kdw/008/b/index.xhtml", { ShareObject: isDaily  });
                 }
             }
 
@@ -146,10 +137,25 @@ module nts.uk.at.view.kdw006 {
             }
         }
 
-        enum SettingUnit {
+        enum SettingUnitType {
             AUTHORITY,
-            BUSINESSTYPE,
-            EMPLOYMENT
+            BUSINESS_TYPE
+        }
+
+        interface IFormatPerformanceDto {
+            cid: string;
+            settingUnitType: number;
+        }
+        
+        class FormatPerformanceDto {
+            cid: KnockoutObservable<string>;
+            settingUnitType: KnockoutObservable<number>;
+    
+            constructor(param: IFormatPerformanceDto) {
+                let self = this;
+                self.cid = ko.observable(param.cid);
+                self.settingUnitType = ko.observable(param.settingUnitType);
+            }
         }
     }
 }

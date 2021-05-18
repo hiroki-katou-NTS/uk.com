@@ -44,7 +44,7 @@ public class JpaDailyAttdItemAuthRepository extends JpaRepository implements Dai
 	private static final String FIND_BY_CID = "SELECT DISTINCT c.AUTHORITY_DAILY_ID" + " FROM KSHMT_DAY_ITEM_DISP_CTR c"
 			+ " WHERE c.CID = ? ";
 	
-	private static final String DELETE = "DELETE FROM KSHMT_DAY_ITEM_DISP_CTR c WHERE c.CID = ? AND c.AUTHORITY_DAILY_ID = ?";
+	private static final String DELETE = "DELETE FROM KSHMT_DAY_ITEM_DISP_CTR WHERE CID = ? AND AUTHORITY_DAILY_ID = ?";
 
 	@Override
 	public Optional<DailyAttendanceItemAuthority> getDailyAttdItem(String companyID, String authorityDailyId) {

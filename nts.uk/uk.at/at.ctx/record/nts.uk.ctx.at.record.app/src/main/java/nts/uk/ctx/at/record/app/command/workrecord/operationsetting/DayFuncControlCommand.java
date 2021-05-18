@@ -3,7 +3,7 @@ package nts.uk.ctx.at.record.app.command.workrecord.operationsetting;
 import lombok.Value;
 
 @Value
-public class DaiFuncControlCommand {
+public class DayFuncControlCommand {
 	
 	/**
 	 * 会社ID

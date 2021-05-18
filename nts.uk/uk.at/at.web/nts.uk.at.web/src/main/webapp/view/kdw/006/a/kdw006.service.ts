@@ -5,10 +5,16 @@ module nts.uk.at.view.kdw006 {
 
         let servicePath = {
             start: 'at/record/workrecord/attendanceitemprepare/start',
+
+            getFormat: 'at/record/workrecord/operationsetting/getFormat',
         }
 
         export function start(): JQueryPromise<any> {
             return nts.uk.request.ajax(servicePath.start);
+        }
+
+        export function getFormat(): JQueryPromise<any> {
+            return nts.uk.request.ajax(servicePath.getFormat);
         }
 
         //Export common excel

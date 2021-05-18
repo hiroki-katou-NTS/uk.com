@@ -15,7 +15,8 @@
 			<com:scriptfile path="kdw006.i.service.js" />
 
 			<com:EnumScript>
-				nts.uk.ctx.sys.auth.dom.role.EmployeeReferenceRange
+				nts.uk.ctx.at.record.dom.jobmanagement.manhourrecordreferencesetting.ReferenceRange
+				nts.uk.ctx.at.record.dom.jobmanagement.manhourrecordreferencesetting.ElapsedMonths
 			</com:EnumScript>
 
 			<com:ValidatorScript>
@@ -28,21 +29,27 @@
 				<a id="I1_1" class="goback" tabindex="1" 
 					data-bind="ntsLinkButton: { action: jumpTo }">#{i18n.getText('KDW006_25')}</a>
 				<button id="I1_2" class="proceed" tabindex="2"
-					data-bind="click: register, timeClick: 1000" style="margin-left: 40px;">#{i18n.getText('KDW006_26')}</button>
+					data-bind="click: register, enable: $root.errors.isEmpty" style="margin-left: 40px;">#{i18n.getText('KDW006_26')}</button>
 			</div>
             <div id="contents-area">
 				<div id="contents">
 
                     <div id="I2_1" class="left-content" data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KDW006_234')}</div>
 					<div class="right-content">
-						<div id="I2_2" class="cf" tabindex="3" data-bind="ntsSwitchButton: {
+						<div id="I2_2" tabindex="3" data-bind="ntsComboBox: {
 							name: $i18n('KDW006_234'),
-							options: empRefRange,
+							options: referenceRange,
 							optionsValue: 'value',
+							value: referenceRangeValue,
 							optionsText: 'name',
-							value: empRefRangeValue,
+							editable: true,
 							enable: true,
-							required: false }"></div>
+							required: false,
+							selectFirstIfNull: true,
+							columns: [
+								{ prop: 'code', length: 4 },
+								{ prop: 'name', length: 10 },
+							]}"></div>
                         <button id="I2_3" tabindex="4" data-bind="ntsHelpButton: {
                             textId: 'KDW006_245',
                             textParams:[], 
@@ -53,10 +60,10 @@
 					<div class="right-content">
                             <div id="I3_2" tabindex="5" data-bind="ntsComboBox: {
                                 name: $i18n('KDW006_235'),
-                                options: empRefRange,
+                                options: elapsedMonths,
                                 optionsValue: 'value',
                                 visibleItemsCount: 7,
-                                value: empRefRangeValue,
+                                value: elapsedMonthsValue,
                                 optionsText: 'name',
                                 editable: true,
                                 enable: true,
@@ -66,7 +73,7 @@
                                     { prop: 'code', length: 4 },
                                     { prop: 'name', length: 10 },
                                 ]}"></div>
-							<div style="display: inline-block; width: 120px;">
+							<div style="display: inline-block; width: 105px;">
 								<span id="I3_4" class="label">#{i18n.getText('KDW006_236')}</span>
 							</div>
                             <button id="I3_5" tabindex="6" data-bind="ntsHelpButton: {
@@ -87,7 +94,7 @@
 											]),
 									optionsValue: 'code',
 									optionsText: 'name',
-									value: empRefRangeValue,
+									value: useAtr,
 									enable: true,
 									required: false }"></div>
 								<button id="I4_5" tabindex="8" data-bind="ntsHelpButton: {
@@ -104,11 +111,11 @@
 										name: $i18n('KDW006_248'),
 										value: time,
 										constraint: 'AttendanceTimeMonth',
-										option: ko.mapping.fromJS(new nts.uk.ui.option.TimeEditorOption({
-											width: '50'
-										})),
-										required: false,
-										enable: true}" />
+										inputFormat: 'time',
+										mode: 'time',
+										option: {width: '50'},
+										required: useAtr() == 1,
+										enable: useAtr() == 1}" />
 								</div>
 								<div class="inline">
 									<span id="I4_8" class="label">#{i18n.getText('KDW006_247')}</span>
@@ -121,24 +128,24 @@
 								<div class="inline mid-line-spacing">
 									<input id="I4_10" tabindex="10" data-bind="ntsTextEditor: {
 										name: $i18n('KDW006_244'),
-										value: text,
+										value: displayMessage,
 										constraint: 'ErrorAlarmMessage',
 										option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
 											textmode: 'text',
 											width: '500px'
 										})),
 										required: false,
-										enable: true,
+										enable: useAtr() == 1,
 										readonly: false
 									}" />
 								</div>
 								<div id="I4_11" tabindex="11" class="inline mid-line-spacing" data-bind="ntsColorPicker: {
 									name: $i18n('KDW006_243'),
-									value: color,
-									enable: true, 
+									value: messageColor,
+									enable: useAtr() == 1, 
 									width: 50}"></div>
 								<div id="I4_12" tabindex="12" class="inline" data-bind="ntsCheckBox: { 
-									checked: checkBox }">#{i18n.getText('KDW006_241')}</div>
+									checked: boldAtr, enable: useAtr() == 1 }">#{i18n.getText('KDW006_241')}</div>
 							</div>
 						</div>
 					</div>

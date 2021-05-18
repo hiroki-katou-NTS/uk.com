@@ -31,7 +31,7 @@
 				<div id="functions-area">
 					<!--A1_6-->
 					<a class="goback" tabindex="4"
-									data-bind="ntsLinkButton: { action: jumpTo.bind($data, sideBar) }">#{i18n.getText('KDW007_17')}</a>
+									data-bind="ntsLinkButton: { action: jumpTo }">#{i18n.getText('KDW007_17')}</a>
 					<!--A1_1-->
 					<button tabindex="1"
 									data-bind="click: setNewMode">#{i18n.getText('KDW007_2')}</button>
@@ -119,8 +119,7 @@
 										optionsValue: 'code',
 										optionsText: 'name',
 										value: selectedErrorAlarm().typeAtr,
-										enable: true }"></div>
-										<!-- ver22 enable: selectedErrorAlarm().fixedAtr() != 1 }"></div> -->
+										enable: selectedErrorAlarm().fixedAtr() != 1 }"></div>
 								</div>
 								<!--A4_22-->
 								<div class="label" id="noticed-label">#{i18n.getText('KDW007_91')}</div>
@@ -172,7 +171,7 @@
 									enable: selectedErrorAlarm().typeAtr()!=2 }" /><br/>
 								<div class="valign-center control-group" style="margin-top: 10px;">
 									<!--A4_11-->
-									<div id="color-label" data-bind="ntsFormLabel: {}">#{i18n.getText('KDW007_13')}</div>
+									<div id="color-label" style="margin-top: 5px;" data-bind="ntsFormLabel: {}">#{i18n.getText('KDW007_13')}</div>
 									<!--A4_12-->
 									<div id="colorpicker" data-bind="ntsColorPicker: {value: selectedErrorAlarm().messageColor, enable: selectedErrorAlarm().typeAtr() != 2, width: 100}"/>
 									<!--A4_15-->

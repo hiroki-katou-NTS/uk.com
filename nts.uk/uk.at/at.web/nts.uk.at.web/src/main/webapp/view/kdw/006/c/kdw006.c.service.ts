@@ -5,7 +5,7 @@ module nts.uk.at.view.kdw006.c.service {
         // C2_4, C2_5, C3_4
         getApproval: 'at/record/workrecord/operationsetting/getApproval',
         // C2_6 -> C2_12
-        getDaily: 'at/record/workrecord/operationsetting/getdaily',
+        getDaily: 'at/record/workrecord/operationsetting/getDaily',
         // C3_2
         getMonthly: 'at/record/workrecord/operationsetting/getMonthy',
 
@@ -19,7 +19,7 @@ module nts.uk.at.view.kdw006.c.service {
 
         updateRestrictConfirmEmp: 'at/record/workrecord/operationsetting/updateRestrictConfirmEmp',
 
-        updateDaiFuncControl: 'at/record/workrecord/operationsetting/updateDaiFuncControl',
+        updateDayFuncControl: 'at/record/workrecord/operationsetting/updateDayFuncControl',
         
         getApplicationType: 'at/record/workrecord/operationsetting/findApplicationType',
     };
@@ -36,8 +36,8 @@ module nts.uk.at.view.kdw006.c.service {
         return nts.uk.request.ajax(servicePath.updateRestrictConfirmEmp, cm);
     }
 
-    export function updateDaiFuncControl(cm: any): JQueryPromise<any> {
-        return nts.uk.request.ajax(servicePath.updateDaiFuncControl, cm);
+    export function updateDayFuncControl(cm: any): JQueryPromise<any> {
+        return nts.uk.request.ajax(servicePath.updateDayFuncControl, cm);
     }
 
     export function getAppType(): JQueryPromise<any> {

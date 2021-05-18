@@ -15,7 +15,8 @@
 
 .panel-frame {
 	min-height: 250px;
-	width: 250px;
+	width: 280px;
+	text-align: center;
 }
 
 .panel-custom-font-size {

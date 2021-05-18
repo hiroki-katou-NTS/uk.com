@@ -4,26 +4,26 @@ import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.ApprovalProcess;
-import nts.uk.ctx.at.record.dom.workrecord.operationsetting.DaiFuncControlRepository;
+import nts.uk.ctx.at.record.dom.workrecord.operationsetting.DayFuncControlRepository;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.DaiPerformanceFun;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.IdentityProcess;
-import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtDaiFuncControl;
-import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtDaiFuncControlPk;
+import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtDayFuncControl;
+import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtDayFuncControlPk;
 
 @Stateless
-public class JpaDaiFuncControlRepository extends JpaRepository implements DaiFuncControlRepository{
+public class JpaDayFuncControlRepository extends JpaRepository implements DayFuncControlRepository{
 
 	@Override
 	public void add(DaiPerformanceFun daiPerformanceFun,
 			IdentityProcess identityProcess, ApprovalProcess approvalProcess) {
-		this.commandProxy().insert(KrcmtDaiFuncControl.toEntity(daiPerformanceFun, identityProcess, approvalProcess));
+		this.commandProxy().insert(KrcmtDayFuncControl.toEntity(daiPerformanceFun, identityProcess, approvalProcess));
 	}
 
 	@Override
 	public void update(DaiPerformanceFun daiPerformanceFun,
 			IdentityProcess identityProcess, ApprovalProcess approvalProcess) {
-		KrcmtDaiFuncControl newEntity = KrcmtDaiFuncControl.toEntity(daiPerformanceFun, identityProcess, approvalProcess);
-		KrcmtDaiFuncControl updateEntity = this.queryProxy().find(newEntity.daiFuncControlPk, KrcmtDaiFuncControl.class).orElse(null);
+		KrcmtDayFuncControl newEntity = KrcmtDayFuncControl.toEntity(daiPerformanceFun, identityProcess, approvalProcess);
+		KrcmtDayFuncControl updateEntity = this.queryProxy().find(newEntity.dayFuncControlPk, KrcmtDayFuncControl.class).orElse(null);
         if (null == updateEntity) {
         	this.add(daiPerformanceFun, identityProcess, approvalProcess);
             return;
@@ -43,6 +43,6 @@ public class JpaDaiFuncControlRepository extends JpaRepository implements DaiFun
 
 	@Override
 	public void remove(String cid) {
-		this.commandProxy().remove(KrcmtDaiFuncControl.class, new KrcmtDaiFuncControlPk(cid)); 
+		this.commandProxy().remove(KrcmtDayFuncControl.class, new KrcmtDayFuncControlPk(cid)); 
 	}
 }

@@ -35,9 +35,6 @@ module nts.uk.at.view.kdw002.c {
                 self.dailyServiceTypeControl = ko.observable(null);
                 self.isDaily = dataShare === undefined ? false : dataShare.ShareObject;
                 self.sideBar =  ko.observable(1);
-                if(!self.isDaily){
-                    self.sideBar(2);
-                } 
                 //
                 self.datasources = ko.observableArray([]);
                 self.selectedList = ko.observableArray([]);
@@ -211,7 +208,8 @@ module nts.uk.at.view.kdw002.c {
                             code: empRole.roleCode,
                             name: empRole.roleName,
                             targetType: 8,
-                            itemListSetting: roleIDs ? roleIDs : []
+                            itemListSetting: roleIDs ? roleIDs : [],
+                            roleType: 3
                         };
                         console.log(param, 'param');        
                         nts.uk.ui.windows.setShared("CDL023Input", param);
@@ -239,7 +237,8 @@ module nts.uk.at.view.kdw002.c {
                             code: empRole.roleCode,
                             name: empRole.roleName,
                             targetType: 8,
-                            itemListSetting: roleIDs ? roleIDs : []
+                            itemListSetting: roleIDs ? roleIDs : [],
+                            roleType: 3
                         };
                         console.log(param, 'param');        
                         nts.uk.ui.windows.setShared("CDL023Input", param);

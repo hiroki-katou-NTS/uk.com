@@ -23,7 +23,7 @@
 				<!-- <a tabindex="1" class="goback" data-bind="ntsLinkButton: { jump: '/view/kdw/006/a/index.xhtml' }">#{i18n.getText('KDW002_8')}</a> -->
 				<!--A1_1-->
 				<a tabindex="1" id="button1" class="goback"
-					data-bind="ntsLinkButton: { action: jumpToHome.bind($data, sideBar)}">#{i18n.getText('KDW002_21')}</a>
+					data-bind="ntsLinkButton: { action: jumpToHome}">#{i18n.getText('KDW002_21')}</a>
 				<!--A1_2-->
 				<button tabindex="2" data-prevent-click="true" class="proceed"
 					data-bind="click: submitData,enable :isSave">#{i18n.getText('KDW002_2')}</button>
@@ -117,19 +117,19 @@
 							<td><div id="A5_1"
 									data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KDW002_27')}</div></td>
 							<td>
-								<!-- ver 8 A5_4, A5_5-->
+								<!-- ver 8 A5_4, A5_5 5-->
 								<div id="A5_4" tabindex="8" class="detailContent" style="width: 95px;"
 												data-bind="ntsComboBox: {
 																	name: '{#KDW002_48}',
-																	options: amountUnits,
+																	options: moneyUnits,
 																	optionsValue: 'code',
 																	visibleItemsCount: 5,
-																	value: amountUnit,
+																	value: moneyUnit,
 																	optionsText: 'name',
 																	enable: true,
 																	required: false},
 																	visible: unit() === 2">
-								</div> <!-- ver 8 A5_6, A5_7-->
+								</div> <!-- ver 8 A5_6, A5_7 2-->
 								<div id="A5_6" tabindex="9" class="detailContent" style="width: 95px;"
 												data-bind="ntsComboBox: {
 																	name: '{#KDW002_48}',
