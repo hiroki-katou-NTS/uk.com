@@ -29,7 +29,7 @@ export class KdpS01TComponent extends Vue {
 
     public goto(button) {
         let vm = this,
-            url = button.screen + 'S' + button.screenCd.slice(1) + button.screenId.toLowerCase(),
+            url = button.screen + 's' + button.screenCd.slice(1) + button.screenId.toLowerCase(),
             param;
 
         if (button.queryString) {
