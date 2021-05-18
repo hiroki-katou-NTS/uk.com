@@ -461,7 +461,7 @@ module nts.uk.ui.kdp001.a {
         workLocationName: KnockoutObservable<string | null> = ko.observable(null);
         workplaceId: KnockoutObservable<string | null> = ko.observable(null);
         modeA: KnockoutObservable<boolean> = ko.observable(false);
-        workpalceCD: KnockoutObservable<string | null> = ko.observable(null);
+        workpalceCD: string | null = null;
 
         message: {
             data: KnockoutObservable<MessageData>;
@@ -717,7 +717,7 @@ module nts.uk.ui.kdp001.a {
                 refActualResults: {
                     cardNumberSupport,
                     workPlaceId: ko.unwrap(vm.workplaceId),
-                    workLocationCD: ko.unwrap(vm.workpalceCD),
+                    workLocationCD: vm.workpalceCD,
                     workTimeCode,
                     overtimeDeclaration
                 }
@@ -726,7 +726,7 @@ module nts.uk.ui.kdp001.a {
                 .$blockui("invisibleView")
                 .then(() => vm.$ajax('at', REST_API.registerStampInput, command))
                 .then((stampDate: string) => {
-                    
+
                     switch (buttonPositionNo) {
                         case 1:
                         case 3:
@@ -747,8 +747,6 @@ module nts.uk.ui.kdp001.a {
                 }))
                 .then((response: any) => {
 
-                    console.log(response);
-                    
                     if (response) {
                         const { dailyAttdErrorInfos } = response;
 
@@ -792,24 +790,21 @@ module nts.uk.ui.kdp001.a {
                     .then(() => {
                         vm.$ajax(REST_API.getLocation, param)
                             .done((data: IBasyo) => {
-
-                                console.log(data);
-
-                                if(data) {
-                                    vm.workpalceCD(locationCd);
-
+                                if (data) {
+                                    if (data.workpalceId != null || data.workLocationName != null) {
+                                        vm.workpalceCD = locationCd;
+                                    }
                                     if (data.workpalceId != null) {
-                                        vm.workpalceCD(locationCd);
                                         vm.workplaceId(data.workpalceId);
                                     }
                                 }
 
                                 if (ko.unwrap(vm.workplaceId) !== null) {
                                     const param = { sid: __viewContext.user.employeeId, workPlaceIds: [ko.unwrap(vm.workplaceId)] };
-        
+
                                     vm.$ajax(REST_API.WORKPLACE_INFO, param)
                                         .then((workPlace: any) => {
-        
+
                                             if (workPlace) {
                                                 if (workPlace.workPlaceInfo.length > 0) {
                                                     vm.workLocationName(workPlace.workPlaceInfo[0].workplaceName)
@@ -817,7 +812,7 @@ module nts.uk.ui.kdp001.a {
                                             }
                                         })
                                 }
-                            })
+                            });
                     })
                     .always(() => {
                         vm.$blockui('clear');
@@ -844,7 +839,6 @@ module nts.uk.ui.kdp001.a {
                     // stamp data
                     if (employee) {
                         const { stampRecords } = employee;
-
                         if (stampRecords && stampRecords.length) {
                             const mappeds = _
                                 .chain(stampRecords)

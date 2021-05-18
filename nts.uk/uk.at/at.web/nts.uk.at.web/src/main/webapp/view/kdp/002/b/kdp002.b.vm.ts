@@ -34,7 +34,6 @@ module nts.uk.at.view.kdp002.b {
 				let self = this;
 				self.resultDisplayTime(nts.uk.ui.windows.getShared("resultDisplayTime"));
 				self.infoEmpFromScreenA = nts.uk.ui.windows.getShared("infoEmpToScreenB");
-
 				self.disableResultDisplayTime(self.resultDisplayTime() > 0 ? true : false);
 
 				self.columns2 = ko.observableArray([

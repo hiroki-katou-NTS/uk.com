@@ -81,6 +81,8 @@ class KDP002BViewModel extends ko.ViewModel {
             vm.$window.shared("infoEmpToScreenB").done(infoEmp => {
 
                 vm.infoEmpFromScreenA = infoEmp;
+                console.log(infoEmp);
+                
                 vm.disableResultDisplayTime(vm.resultDisplayTime() > 0 ? true : false);
 
                 vm.startPage();
@@ -144,9 +146,10 @@ class KDP002BViewModel extends ko.ViewModel {
         const vm = new ko.ViewModel();
         const self = this;
 
-        const param = { sid: vm.$user.employeeId, workPlaceIds: [workPlaceId] };
+        const param = { sid: self.infoEmpFromScreenA.employeeId, workPlaceIds: [workPlaceId] };
         vm.$ajax(kDP002RequestUrl.WORKPLACE_INFO, param)
             .then((data: any) => {
+                
                 if (data) {
                     if (data.workPlaceInfo[0].displayName === 'コード削除済') {
                         self.workPlace('');
@@ -320,7 +323,7 @@ class KDP002BViewModel extends ko.ViewModel {
         const param = {
             startDate: startDate,
             endDate: vm.$date.now(),
-            sid: vm.$user.employeeId
+            sid: vm.infoEmpFromScreenA.employeeId
         }
 
         vm.$blockui('invisible')
@@ -331,8 +334,6 @@ class KDP002BViewModel extends ko.ViewModel {
                         if (data) {
                             vm.$ajax(kDP002RequestUrl.NOTIFICATION_STAMP, param)
                                 .done((data: IMsgNotices[]) => {
-
-                                    console.log(data);
 
                                     vm.notificationStamp(data);
 
