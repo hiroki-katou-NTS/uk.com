@@ -4,11 +4,17 @@ import java.util.Optional;
 
 import nts.uk.ctx.at.shared.dom.adapter.application.reflect.SHAppReflectionSetting;
 import nts.uk.ctx.at.shared.dom.scherec.application.common.ApplicationTypeShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.furiapp.TypeApplicationHolidaysShare;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.businesstrip.ReflectBusinessTripApp;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.directgoback.GoBackReflect;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.lateearlycancellation.LateEarlyCancelReflect;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.optional.ReflectionOptionalItemApp;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.AppReflectOtHdWork;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.stampapplication.StampAppReflect;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.substituteworkapplication.SubstituteWorkAppReflect;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.timeleaveapplication.TimeLeaveApplicationReflect;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.vacationapplication.leaveapplication.VacationApplicationReflect;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.vacationapplication.subleaveapp.SubstituteLeaveAppReflect;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.workchangeapp.ReflectWorkChangeApp;
 
 /**
@@ -19,16 +25,16 @@ import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.wo
 public class GetDomainReflectModelApp {
 
 	public static Object process(Require require, String companyId, ApplicationTypeShare appType,
-			Optional<Object> typeDaikyu) {
+			Optional<TypeApplicationHolidaysShare> typeDaikyu) {
 
 		// 反映する申請の申請種類をもとに、反映条件のドメインモデルを取得する
 		switch (appType) {
 		case OVER_TIME_APPLICATION:
-			// TODO: 0：残業申請の反映
-			return null;
+			// 0：残業申請の反映
+			return require.findOvertime(companyId).orElse(null);
 		case ABSENCE_APPLICATION:
-			// TODO: 1：休暇申請の反映
-			return null;
+			// 1：休暇申請の反映
+			return require.findVacationApp(companyId).orElse(null);
 		case WORK_CHANGE_APPLICATION:
 			// 2：勤務変更申請の反映
 			return require.findReflectWorkCg(companyId).orElse(null);
@@ -39,8 +45,8 @@ public class GetDomainReflectModelApp {
 			// 4：直行直帰申請の反映
 			return require.findReflectGoBack(companyId).orElse(null);
 		case HOLIDAY_WORK_APPLICATION:
-			// TODO: 6：休日出勤申請の反映
-			return null;
+			// 休日出勤申請の反映
+			return require.findOvertime(companyId).orElse(null);
 		case STAMP_APPLICATION:
 			// 7：打刻申請の反映
 			return require.findReflectAppStamp(companyId).orElse(null);
@@ -51,12 +57,16 @@ public class GetDomainReflectModelApp {
 			// 9: 遅刻早退取消申請の反映
 			return require.findReflectArrivedLateLeaveEarly(companyId).orElse(null);
 		case COMPLEMENT_LEAVE_APPLICATION:
-			// TODO: 申請.振休振出申請
-			return null;
+			// 申請.振休振出申請
+			if (typeDaikyu.get() == TypeApplicationHolidaysShare.Abs) {
+				return require.findSubLeaveAppReflectByCompany(companyId).orElse(null);
+			} else {
+				return require.findSubWorkAppReflectByCompany(companyId).orElse(null);
+			}
 
 		case OPTIONAL_ITEM_APPLICATION:
-			// TODO: 15：任意項目の反映
-			return null;
+			// 任意項目の反映
+			return new ReflectionOptionalItemApp();
 
 		default:
 			return null;
@@ -83,5 +93,13 @@ public class GetDomainReflectModelApp {
 		public Optional<ReflectBusinessTripApp> findReflectBusinessTripApp(String companyId);
 		
 		public Optional<TimeLeaveApplicationReflect> findReflectTimeLeav(String companyId);
+		
+		public Optional<AppReflectOtHdWork> findOvertime(String companyId);
+		
+		public Optional<VacationApplicationReflect> findVacationApp(String companyId);
+		
+		public Optional<SubstituteWorkAppReflect> findSubWorkAppReflectByCompany(String companyId);
+
+		public Optional<SubstituteLeaveAppReflect> findSubLeaveAppReflectByCompany(String companyId);
 	}
 }

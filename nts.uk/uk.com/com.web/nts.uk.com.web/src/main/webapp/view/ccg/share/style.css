@@ -263,3 +263,9 @@
 #ccgcomponent > div:first-child {
     min-width: 475px;
 }
+.tabs-content {
+  height: 90%;
+}
+#tab-panel {
+  height: 93% !important;
+}

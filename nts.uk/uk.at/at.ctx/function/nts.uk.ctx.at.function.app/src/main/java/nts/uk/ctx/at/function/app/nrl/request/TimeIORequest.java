@@ -40,7 +40,7 @@ public class TimeIORequest extends NRLRequest<Frame> {
 	 * @see nts.uk.ctx.at.function.app.nrl.request.NRLRequest#sketch(nts.uk.ctx.at.function.app.nrl.request.ResourceContext)
 	 */
 	@Override
-	public void sketch(ResourceContext<Frame> context) {
+	public void sketch(String empInfoTerCode, ResourceContext<Frame> context) {
 		String payload = context.getEntity().pickItem(Element.PAYLOAD);
 		int length = payload.length();
 		int q = length / DefaultValue.SINGLE_FRAME_LEN;
@@ -72,8 +72,7 @@ public class TimeIORequest extends NRLRequest<Frame> {
 		}
 
 		//Insert 打刻データ into DB
-		String nrlNo = context.getEntity().pickItem(Element.NRL_NO);
-		//TODO: default ContractCode "000000000000"
+		String contractCode =  context.getEntity().pickItem(Element.CONTRACT_CODE);
 		for (int i = 0; i < q; i++) {
 			Record record = exchange.getRecord(i);
 			
@@ -84,7 +83,7 @@ public class TimeIORequest extends NRLRequest<Frame> {
 							.midnightTime(record.get(FieldName.IO_MIDNIGHTOT)).build();
 			
 			Pair<Optional<AtomTask>, Optional<StampDataReflectResultImport>> result = convertTRStampAdapter
-					.convertData(nrlNo.trim(), "000000000000", stamData);
+					.convertData(empInfoTerCode, contractCode, stamData);
 			if (result.getLeft().isPresent())
 				result.getLeft().get().run();
 			if (result.getRight().isPresent())

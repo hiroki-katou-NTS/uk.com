@@ -197,20 +197,14 @@
 						data-bind="click: btnCancel, enable : enableCancelButton() &amp;&amp; $root.errors.isEmpty">#{i18n.getText('KAF000_24')}</button>
 				</div>
 			</div>
-			<div style="display: inline-block; position: absolute; left: 70px; z-index: 10;">
+			<div style="display: inline-block; position: absolute; left: 60px; z-index: 10;">
 				<a class="goback link-button" data-bind="click: backtoCMM045">#{i18n.getText('KAF000_14')}</a>
 			</div>
-			<div style="display: inline-block; margin-left: 10px; margin-right: 10px; position: absolute; left: 190px; z-index: 10;">
+			<div style="display: inline-block; margin-left: 5px; margin-right: 5px; position: absolute; left: 180px; z-index: 10;">
 				<!-- B1_2 -->
-				<button class="kaf000-function-btn"
-					data-bind="click: back, enable: $vm.enableBack">
-					<i data-bind="ntsIcon: { no: 9 }"></i>
-				</button>
+				<button data-bind="click: back, enable: $vm.enableBack" style="width: 27px;">◀</button>
 				<!-- B1_3 -->
-				<button class="kaf000-function-btn"
-					data-bind="click: next, enable: $vm.enableNext">
-					<i data-bind="ntsIcon: { no: 10 }"></i>
-				</button>
+				<button data-bind="click: next, enable: $vm.enableNext" style="width: 27px;">▶</button>
 			</div>
 			<div>
 				<div data-bind="if: currentApp()=='sample'">
