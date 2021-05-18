@@ -84,64 +84,58 @@ module nts.uk.at.view.kdp005.a {
 
 			public startPage(): JQueryPromise<void> {
 				let self = this;
-				let vm = new ko.ViewModel();
 				let dfd = $.Deferred<void>();
 
-				vm.$blockui('invisible')
-					.then(() => {
-						self.basyo();
-						self.getWorkPlacesInfo();
-					}).then(() => {
-						service.getLogginSetting().done((res) => {
-							self.listCompany = _.filter(res, 'icCardStamp');
-							if (self.listCompany.length == 0) {
-								self.errorMessage(getMessage("Msg_1527"));
-								self.isUsed(false);
-								dfd.resolve();
-							} else {
-								self.btnChangeCompany(self.listCompany.length > 0);
-								characteristics.restore("loginKDP005").done(function (loginInfo: ILoginInfo) {
-									if (loginInfo) {
-										self.loginInfo = loginInfo;
-
-										if (ko.unwrap(self.modeBasyo)) {
-											self.loginInfo.selectedWP = self.workplace;
-											nts.uk.characteristics.save(KDP005_SAVE_DATA, self.loginInfo);
-										}
-
-										if (__viewContext.user.companyId != loginInfo.companyId || __viewContext.user.employeeCode != loginInfo.employeeCode) {
-											self.login(self.loginInfo).done(() => {
-												location.reload();
-											}).fail(() => {
-												dfd.resolve();
-											});
+				self.getWorkPlacesInfo();
+				self.basyo().done(() => {
+					service.getLogginSetting().done((res) => {
+						self.listCompany = _.filter(res, 'icCardStamp');
+						if (self.listCompany.length == 0) {
+							self.errorMessage(getMessage("Msg_1527"));
+							self.isUsed(false);
+							dfd.resolve();
+						} else {
+							self.btnChangeCompany(self.listCompany.length > 0);
+							characteristics.restore("loginKDP005").done(function (loginInfo: ILoginInfo) {
+								if (loginInfo) {
+									self.loginInfo = loginInfo;
+	
+									if (ko.unwrap(self.modeBasyo)) {
+										self.loginInfo.selectedWP = self.workplace;
+										nts.uk.characteristics.save(KDP005_SAVE_DATA, self.loginInfo);
+									}
+	
+									if (__viewContext.user.companyId != loginInfo.companyId || __viewContext.user.employeeCode != loginInfo.employeeCode) {
+										self.login(self.loginInfo).done(() => {
+											location.reload();
+										}).fail(() => {
+											dfd.resolve();
+										});
+									} else {
+										self.doFirstLoad().done(() => {
+											dfd.resolve();
+										});
+									}
+	
+									self.loadNotice(loginInfo);
+	
+								} else {
+									self.setLoginInfo().done((loginResult) => {
+										if (!loginResult) {
+											self.isUsed(false);
+											dfd.resolve();
 										} else {
 											self.doFirstLoad().done(() => {
 												dfd.resolve();
 											});
 										}
-
-										self.loadNotice(loginInfo);
-
-									} else {
-										self.setLoginInfo().done((loginResult) => {
-											if (!loginResult) {
-												self.isUsed(false);
-												dfd.resolve();
-											} else {
-												self.doFirstLoad().done(() => {
-													dfd.resolve();
-												});
-											}
-										});
-									}
-								});
-							}
-						});
-					})
-					.always(() => {
-						vm.$blockui('clear');
+									});
+								}
+							});
+						}
 					});
+				});
+		
 				return dfd.promise();
 			}
 
@@ -476,7 +470,7 @@ module nts.uk.at.view.kdp005.a {
 					},
 					refActualResult: {
 						cardNumberSupport: null,
-						workLocationCD: null,
+						workLocationCD: self.worklocationCode,
 						workTimeCode: null,
 						overtimeDeclaration: null
 					}
@@ -679,7 +673,8 @@ module nts.uk.at.view.kdp005.a {
 			}
 
 			// URLOption basyo
-			basyo() {
+			basyo(): JQueryPromise<any>  {
+				let dfd = $.Deferred<any>();
 				const self = this,
 					vm = new ko.ViewModel(),
 					params = new URLSearchParams(window.location.search),
@@ -691,23 +686,29 @@ module nts.uk.at.view.kdp005.a {
 						contractCode: '000000000004',
 						workLocationCode: locationCd
 					}
-
+	
 					vm.$ajax(API.GET_LOCATION, param)
 						.done((data: IBasyo) => {
 							if (data) {
 								if (data.workLocationName != null || data.workpalceId != null) {
 									self.worklocationCode = locationCd;
+									dfd.resolve();
 								}
-
+								
 								if (data.workpalceId) {
 									self.modeBasyo(true);
 									self.workplace = [data.workpalceId];
 									self.workPlaceId = data.workpalceId;
+									dfd.resolve();
 								}
+							} else {
+								dfd.resolve();
 							}
 						});
-
+				} else {
+					dfd.resolve();
 				}
+				return dfd.promise();
 			}
 		}
 	}
