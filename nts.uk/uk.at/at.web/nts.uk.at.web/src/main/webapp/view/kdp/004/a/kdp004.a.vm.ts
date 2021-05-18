@@ -87,7 +87,7 @@ module nts.uk.at.view.kdp004.a {
 									dfd.resolve();
 									return;
 								}
-								self.doFirstLoad().done(() => {
+								$.when(self.doFirstLoad(), self.loadNotice(self.loginInfo)).done(() => {
 									dfd.resolve();
 									return;
 								});
@@ -99,10 +99,9 @@ module nts.uk.at.view.kdp004.a {
 								nts.uk.characteristics.save(KDP004_SAVE_DATA, self.loginInfo);
 							}
 
-							self.doFirstLoad().done(() => {
+							$.when(self.doFirstLoad(), self.loadNotice(self.loginInfo)).done(() => {
 								dfd.resolve();
 							});
-							self.loadNotice(self.loginInfo);
 						}
 					}).always(() => {
 						service.getLogginSetting().done((res) => {
@@ -658,9 +657,10 @@ module nts.uk.at.view.kdp004.a {
 					});
 			}
 
-			loadNotice(loginInfo: any) {
+			loadNotice(loginInfo: any): JQueryPromise<any> {
 				let vm = new ko.ViewModel();
 				const self = this;
+				let dfd = $.Deferred<any>();
 				let startDate = vm.$date.now();
 				startDate.setDate(startDate.getDate() - 3);
 
@@ -680,8 +680,10 @@ module nts.uk.at.view.kdp004.a {
 							});
 					})
 					.always(() => {
+						dfd.resolve();
 						vm.$blockui('clear');
 					});
+				return dfd.promise();
 			}
 
 			getWorkPlacesInfo() {
