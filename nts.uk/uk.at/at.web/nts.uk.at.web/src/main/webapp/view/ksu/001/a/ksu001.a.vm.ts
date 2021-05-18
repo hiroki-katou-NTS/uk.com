@@ -440,10 +440,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 console.log(data.dataBasicDto);
                 
                 // khởi tạo data localStorage khi khởi động lần đầu.
-                self.creatDataLocalStorege(data.dataBasicDto);
+                self.creatDataLocalStorege(data);
                 
                 self.displayButtonsHerder(data);
-
+                
                 viewMode = self.selectedModeDisplayInBody();
                 // trong trưởng hợp ở localstorage lưu viewMode = time, và updateMode = edit
                 // Nhưng khi lấy setting từ server về lại chỉ có 2 viewMode là shortName và shift 
@@ -835,11 +835,11 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             return dfd.promise();
         }
 
-        creatDataLocalStorege(dataBasic: IDataBasicDto) {
+        creatDataLocalStorege(dataSetting) {
             let self = this;
             if (_.isNil(self.userInfor)) {
                 let data : IUserInfor = {};
-                data.disPlayFormat = self.selectedModeDisplayInBody();
+                data.disPlayFormat = 'time';
                 data.backgroundColor = 0; // 0 : 通常; 1: シフト   // mau nền default của shiftMode
                 data.achievementDisplaySelected = false;
                 data.shiftPalletUnit = 1;
@@ -849,18 +849,18 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 data.shiftPalletPositionNumberOrg = { column : 0 , row : 0 };
                 data.gridHeightSelection = 1;
                 data.heightGridSetting = '';
-                data.unit = dataBasic.unit;
-                data.workplaceId= dataBasic.workplaceId;
-                data.workplaceGroupId = dataBasic.workplaceGroupId;
-                data.workPlaceName = dataBasic.targetOrganizationName;
-                data.code = dataBasic.code;
+                data.unit = dataSetting.dataBasicDto.unit;
+                data.workplaceId= dataSetting.dataBasicDto.workplaceId;
+                data.workplaceGroupId = dataSetting.dataBasicDto.workplaceGroupId;
+                data.workPlaceName = dataSetting.dataBasicDto.targetOrganizationName;
+                data.code = dataSetting.dataBasicDto.code;
                 data.workType = {};
                 data.workTime = {};
                 data.shiftMasterWithWorkStyleLst = [];
                 self.userInfor = data;
                 characteristics.save(self.KEY, self.userInfor);
             } else {
-                self.userInfor.disPlayFormat = self.selectedModeDisplayInBody();
+                self.userInfor.disPlayFormat = 'time';
                 self.userInfor.achievementDisplaySelected = false;
                 characteristics.save(self.KEY, self.userInfor);
             }
