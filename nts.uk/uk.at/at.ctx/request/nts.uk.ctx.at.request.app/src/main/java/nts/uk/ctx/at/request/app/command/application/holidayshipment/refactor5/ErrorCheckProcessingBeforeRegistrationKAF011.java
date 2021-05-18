@@ -131,7 +131,7 @@ public class ErrorCheckProcessingBeforeRegistrationKAF011 {
 			if(!earchInterimRemainCheck.isChkFundingAnnual()) {
 				throw new BusinessException("Msg_1409", "積休不足区分");
 			}
-			if(earchInterimRemainCheck.isChkSpecial()) {
+			if(!earchInterimRemainCheck.isChkSpecial()) {
 				throw new BusinessException("Msg_1409", "特休不足区分 ");
 			}
 		}
