@@ -7,8 +7,8 @@ import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 
 /**
- * @author anhnm
- * 時間消化申請
+ * @author thannx
+ * 時間消化申請(反映用)
  *
  */
 @Data

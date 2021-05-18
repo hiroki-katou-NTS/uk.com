@@ -5,7 +5,6 @@ import lombok.Data;
 import nts.uk.ctx.bs.person.dom.person.personal.contact.*;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -26,19 +25,9 @@ public class PersonalContactDto implements PersonalContact.MementoSetter, Person
     private String mailAddress;
 
     /**
-     * メールアドレスが在席照会に表示するか
-     */
-    private Boolean isMailAddressDisplay;
-
-    /**
      * 携帯メールアドレス
      */
     private String mobileEmailAddress;
-
-    /**
-     * 携帯メールアドレスが在席照会に表示するか
-     */
-    private Boolean isMobileEmailAddressDisplay;
 
     /**
      * 携帯電話番号
@@ -46,29 +35,14 @@ public class PersonalContactDto implements PersonalContact.MementoSetter, Person
     private String phoneNumber;
 
     /**
-     * 携帯電話番号が在席照会に表示するか
-     */
-    private Boolean isPhoneNumberDisplay;
-
-    /**
      * 緊急連絡先１
      */
     private EmergencyContactDto emergencyContact1;
 
     /**
-     * 緊急連絡先１が在席照会に表示するか
-     */
-    private Boolean isEmergencyContact1Display;
-
-    /**
      * 緊急連絡先２
      */
     private EmergencyContactDto emergencyContact2;
-
-    /**
-     * 緊急連絡先２が在席照会に表示するか
-     */
-    private Boolean isEmergencyContact2Display;
 
     /**
      * 他の連絡先
@@ -98,7 +72,6 @@ public class PersonalContactDto implements PersonalContact.MementoSetter, Person
         this.otherContacts = otherContacts.stream()
                 .map(otherContact -> OtherContactDto.builder()
                         .otherContactNo(otherContact.getOtherContactNo())
-                        .isDisplay(otherContact.getIsDisplay().orElse(null))
                         .address(otherContact.getAddress().v())
                         .build()
                 ).collect(Collectors.toList());
@@ -115,28 +88,13 @@ public class PersonalContactDto implements PersonalContact.MementoSetter, Person
 	}
 
 	@Override
-	public Boolean getIsMailAddressDisplay() {
-		return this.isMailAddressDisplay;
-	}
-
-	@Override
 	public String getMobileEmailAddress() {
 		return this.mobileEmailAddress;
 	}
 
 	@Override
-	public Boolean getIsMobileEmailAddressDisplay() {
-		return this.isMobileEmailAddressDisplay;
-	}
-
-	@Override
 	public String getPhoneNumber() {
 		return this.phoneNumber;
-	}
-
-	@Override
-	public Boolean getIsPhoneNumberDisplay() {
-		return this.isPhoneNumberDisplay;
 	}
 
 	@Override
@@ -149,11 +107,6 @@ public class PersonalContactDto implements PersonalContact.MementoSetter, Person
 	}
 
 	@Override
-	public Boolean getIsEmergencyContact1Display() {
-		return this.isEmergencyContact1Display;
-	}
-
-	@Override
 	public EmergencyContact getEmergencyContact2() {
 		return  EmergencyContact.builder()
 				.contactName(new ContactName(this.emergencyContact2.getContactName()))
@@ -163,16 +116,10 @@ public class PersonalContactDto implements PersonalContact.MementoSetter, Person
 	}
 
 	@Override
-	public Boolean getIsEmergencyContact2Display() {
-		return this.isEmergencyContact2Display;
-	}
-
-	@Override
 	public List<OtherContact> getOtherContacts() {
 		return this.otherContacts.stream()
 				.map(item -> OtherContact.builder()
 						.otherContactNo(item.getOtherContactNo())
-						.isDisplay(Optional.ofNullable(item.getIsDisplay()))
 						.address(new OtherContactAddress(item.getAddress()))
 						.build())
 				.collect(Collectors.toList());
@@ -189,37 +136,12 @@ public class PersonalContactDto implements PersonalContact.MementoSetter, Person
 	}
 
 	@Override
-	public void setIsMailAddressDisplay(Boolean isMailAddressDisplay) {
-		this.isMailAddressDisplay = isMailAddressDisplay;
-	}
-
-	@Override
 	public void setMobileEmailAddress(String mobileEmailAddress) {
 		this.mobileEmailAddress = mobileEmailAddress;
 	}
 
 	@Override
-	public void setIsMobileEmailAddressDisplay(Boolean isMobileEmailAddressDisplay) {
-		this.isMobileEmailAddressDisplay = isMobileEmailAddressDisplay;
-	}
-
-	@Override
 	public void setPhoneNumber(String phoneNumber) {
 		this.phoneNumber = phoneNumber;
-	}
-
-	@Override
-	public void setIsPhoneNumberDisplay(Boolean isPhoneNumberDisplay) {
-		this.isPhoneNumberDisplay = isPhoneNumberDisplay;
-	}
-
-	@Override
-	public void setIsEmergencyContact1Display(Boolean isEmergencyContact1Display) {
-		this.isEmergencyContact1Display = isEmergencyContact1Display;
-	}
-
-	@Override
-	public void setIsEmergencyContact2Display(Boolean isEmergencyContact2Display) {
-		this.isEmergencyContact2Display = isEmergencyContact2Display;
 	}
 }
