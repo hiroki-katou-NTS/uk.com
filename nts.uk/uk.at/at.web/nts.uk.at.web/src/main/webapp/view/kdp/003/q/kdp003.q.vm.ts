@@ -305,15 +305,17 @@ module nts.uk.at.kdp003.q {
 				.then((selectedWP) => {
 					vm.workPlaceIdList(selectedWP.selectedId);
 
-			vm.$ajax('com', API.GET_NAME_OF_DESTINATION_WKP, vm.workPlaceIdList()).then((response: WorkplaceInfo[]) => {
-				if (response) {
-					const workPlaceIdList = _.map(response, x => x.workplaceId);
-					const workPlaceName = _.map(response, x => x.workplaceName);
-					vm.workPlaceIdList(workPlaceIdList);
-					vm.workPlaceName(workPlaceName);
-					vm.workPlaceTxtRefer(vm.workPlaceName().join(COMMA));
-				}
-				});
+					if (vm.workPlaceIdList().length > 0) {
+						vm.$ajax('com', API.GET_NAME_OF_DESTINATION_WKP, vm.workPlaceIdList()).then((response: WorkplaceInfo[]) => {
+							if (response) {
+								const workPlaceIdList = _.map(response, x => x.workplaceId);
+								const workPlaceName = _.map(response, x => x.workplaceName);
+								vm.workPlaceIdList(workPlaceIdList);
+								vm.workPlaceName(workPlaceName);
+								vm.workPlaceTxtRefer(vm.workPlaceName().join(COMMA));
+							}
+							});
+					}
 				});
 
 				
