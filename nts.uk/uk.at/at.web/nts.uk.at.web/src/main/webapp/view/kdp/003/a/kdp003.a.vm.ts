@@ -55,7 +55,7 @@ module nts.uk.at.kdp003.a {
 		workPlaceInfos: IWorkPlaceInfo[] = [];
 
 		worklocationCode: null | string = null;
-		workplaceId: string = null;
+		workPlaceId: string = null;
 
 		// setting for button A3
 		showClockButton: {
@@ -89,7 +89,7 @@ module nts.uk.at.kdp003.a {
 			};
 
 		fingerStampSetting: KnockoutObservable<FingerStampSetting> = ko.observable(DEFAULT_SETTING);
-		
+
 		pageComment: KnockoutObservable<string> = ko.observable('');
 		commentColor: KnockoutObservable<string> = ko.observable('');
 
@@ -166,7 +166,7 @@ module nts.uk.at.kdp003.a {
 							if (data.workpalceId) {
 								vm.modeBasyo(true);
 								vm.workPlace = [data.workpalceId];
-								vm.workplaceId = data.workpalceId;
+								vm.workPlaceId = data.workpalceId;
 							}
 						}
 					});
@@ -498,6 +498,7 @@ module nts.uk.at.kdp003.a {
 		setting() {
 			const vm = this;
 			const { storage } = vm.$window;
+			var workplace: undefined | k.Return = undefined
 
 			if (!!ko.unwrap(vm.message)) {
 				vm.message(false);
@@ -520,7 +521,7 @@ module nts.uk.at.kdp003.a {
 						if (!ko.unwrap(vm.modeBasyo) && loginData.msgErrorId !== "Msg_1527") {
 							return vm.$window.modal('at', DIALOG.K, params)
 								.then((workplaceData: undefined | k.Return) => {
-
+									workplace = workplaceData;
 									return {
 										loginData,
 										workplaceData
@@ -615,6 +616,9 @@ module nts.uk.at.kdp003.a {
 					vm.message(message);
 				})
 				.always(() => {
+					if (workplace === undefined) {
+						localStorage.removeItem(KDP003_SAVE_DATA);
+					}
 					window.location.reload(false);
 				});
 		}
@@ -713,7 +717,6 @@ module nts.uk.at.kdp003.a {
 					return vm.$window.modal('at', DIALOG.F, params);
 				})
 				.then((data: f.TimeStampLoginData) => {
-					console.log(data);
 
 					if (data && !data.msgErrorId && !data.errorMessage) {
 
@@ -735,89 +738,18 @@ module nts.uk.at.kdp003.a {
 							if (fingerStampSetting) {
 								vm.$window.storage(KDP003_SAVE_DATA)
 									.then((dataStorage: StorageData) => {
-										if (dataStorage.WKPID.length > 1 && btn.supportWplset == 1) {
-
-											vm.$window.modal('at', DIALOG.M, { screen: 'KDP003' })
-												.then((data: string) => {
-
-													if (data) {
-														var workplace: IWorkPlaceInfo = _.find(vm.workPlaceInfos, ((value) => {
-															if (value.id === data) {
-																return value;
-															}
-														}));
-
-														var workLocationName: string = '';
-														var workplaceId: string = data;
-														if (workplace) {
-															workLocationName = workplace.name
+										if (dataStorage.WKPID.length > 1) {
+											if (btn.supportWplset == 1) {
+												vm.$window.modal('at', DIALOG.M, { screen: 'KDP003' })
+													.then((data: string) => {
+														if (data) {
+															vm.workPlaceId = data;
 														}
-
-														vm.$ajax(API.REGISTER, {
-															employeeId,
-															dateTime: moment(vm.$date.now()).format(),
-															stampButton: {
-																pageNo: layout.pageNo,
-																buttonPositionNo: btn.btnPositionNo
-															},
-															refActualResult: {
-																cardNumberSupport: null,
-																workPlaceId: data,
-																workLocationCD: vm.worklocationCode,
-																workTimeCode: '',
-																overtimeDeclaration: {
-																	overTime: 0,
-																	overLateNightTime: 0
-																}
-															}
-														}).then(() => {
-															const { stampResultDisplay } = fingerStampSetting;
-															const { displayItemId, notUseAttr } = stampResultDisplay || { displayItemId: [], notUseAttr: 0 } as StampResultDisplay;
-															const { USE } = NotUseAtr;
-
-															vm.playAudio(btn.audioType);
-															const employeeInfo = { mode, employeeId, employeeCode, workLocationName, workplaceId };
-
-															if (notUseAttr === USE && [share.ChangeClockArt.WORKING_OUT].indexOf(btn.changeClockArt) > -1) {
-
-																return storage('KDP010_2C', displayItemId)
-																	.then(() => storage('infoEmpToScreenC', employeeInfo))
-																	.then(() => storage('screenC', { screen: "KDP003" }))
-																	.then(() => modal('at', DIALOG.KDP002_C)) as JQueryPromise<any>;
-															} else {
-																const { stampSetting } = fingerStampSetting;
-																const { resultDisplayTime } = stampSetting;
-
-																return storage('resultDisplayTime', resultDisplayTime)
-																	.then(() => storage('infoEmpToScreenB', employeeInfo))
-																	.then(() => storage('screenB', { screen: "KDP003" }))
-																	.then(() => modal('at', DIALOG.KDP002_B)) as JQueryPromise<any>;
-															}
-														})
-															.fail((message: BussinessException) => {
-																const { messageId, parameterIds } = message;
-
-																vm.$dialog.error({ messageId, messageParams: parameterIds });
-															});
-													}
-												});
-
-										} else {
-
-											var workPlaceId: string;
-											var workLocationName: string = '';
-
-											if (dataStorage.WKPID.length = 1) {
-												workPlaceId = dataStorage.WKPID[0];
-												var workplace: IWorkPlaceInfo = _.find(vm.workPlaceInfos, ((value) => {
-													if (value.id === workPlaceId) {
-														return value;
-													}
-												}));
-
-												workLocationName = workplace.name;
+													})
+											} else {
+												vm.workPlaceId = dataStorage.WKPID[0];
 											}
-
+											
 											vm.$ajax(API.REGISTER, {
 												employeeId,
 												dateTime: moment(vm.$date.now()).format(),
@@ -827,7 +759,7 @@ module nts.uk.at.kdp003.a {
 												},
 												refActualResult: {
 													cardNumberSupport: null,
-													workPlaceId: workPlaceId,
+													workPlaceId: vm.workPlaceId,
 													workLocationCD: vm.worklocationCode,
 													workTimeCode: '',
 													overtimeDeclaration: {
@@ -841,7 +773,59 @@ module nts.uk.at.kdp003.a {
 												const { USE } = NotUseAtr;
 
 												vm.playAudio(btn.audioType);
-												const employeeInfo = { mode, employeeId, employeeCode, workLocationName, workPlaceId };
+												const employeeInfo = { mode, employeeId, employeeCode, workPlaceId: vm.workPlaceId };
+
+												if (notUseAttr === USE && [share.ChangeClockArt.WORKING_OUT].indexOf(btn.changeClockArt) > -1) {
+
+													return storage('KDP010_2C', displayItemId)
+														.then(() => storage('infoEmpToScreenC', employeeInfo))
+														.then(() => storage('screenC', { screen: "KDP003" }))
+														.then(() => modal('at', DIALOG.KDP002_C)) as JQueryPromise<any>;
+												} else {
+													const { stampSetting } = fingerStampSetting;
+													const { resultDisplayTime } = stampSetting;
+
+													return storage('resultDisplayTime', resultDisplayTime)
+														.then(() => storage('infoEmpToScreenB', employeeInfo))
+														.then(() => storage('screenB', { screen: "KDP003" }))
+														.then(() => modal('at', DIALOG.KDP002_B)) as JQueryPromise<any>;
+												}
+											})
+												.fail((message: BussinessException) => {
+													const { messageId, parameterIds } = message;
+
+													vm.$dialog.error({ messageId, messageParams: parameterIds });
+												});
+										} else {
+
+											if (dataStorage.WKPID.length = 1) {
+												vm.workPlaceId = dataStorage.WKPID[0];
+											}
+
+											vm.$ajax(API.REGISTER, {
+												employeeId,
+												dateTime: moment(vm.$date.now()).format(),
+												stampButton: {
+													pageNo: layout.pageNo,
+													buttonPositionNo: btn.btnPositionNo
+												},
+												refActualResult: {
+													cardNumberSupport: null,
+													workPlaceId: vm.workPlaceId,
+													workLocationCD: vm.worklocationCode,
+													workTimeCode: '',
+													overtimeDeclaration: {
+														overTime: 0,
+														overLateNightTime: 0
+													}
+												}
+											}).then(() => {
+												const { stampResultDisplay } = fingerStampSetting;
+												const { displayItemId, notUseAttr } = stampResultDisplay || { displayItemId: [], notUseAttr: 0 } as StampResultDisplay;
+												const { USE } = NotUseAtr;
+
+												vm.playAudio(btn.audioType);
+												const employeeInfo = { mode, employeeId, employeeCode, workPlaceId: vm.workPlaceId };
 
 												if (notUseAttr === USE && [share.ChangeClockArt.WORKING_OUT].indexOf(btn.changeClockArt) > -1) {
 													return storage('KDP010_2C', displayItemId)

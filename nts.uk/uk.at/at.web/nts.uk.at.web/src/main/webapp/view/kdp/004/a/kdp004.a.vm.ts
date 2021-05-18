@@ -557,7 +557,9 @@ module nts.uk.at.view.kdp004.a {
 						} else {
 
 							if (dataStorage.selectedWP.length = 1) {
-								self.workPlaceId = dataStorage.selectedWP[0];
+								if (self.workPlaceId !== '') {
+									self.workPlaceId = dataStorage.selectedWP[0];
+								}
 							}
 
 							service.stampInput(registerdata).done((res) => {

@@ -43,9 +43,10 @@ module nts.uk.at.view.kdp002.t {
 					for (let idx = 0; idx < length; idx++) {
 						let btn = self.getBtn(error.listRequired[idx]);
 						if (btn) {
-							if (btn.appType == 1 || btn.appType == 2 || btn.appType == 3 || btn.appType == 4 || btn.appType == 5 || btn.appType == 6) {
-								listRequired.push(btn);
-							}
+							listRequired.push(btn);
+							// if (btn.appType == 1 || btn.appType == 2 || btn.appType == 3 || btn.appType == 4 || btn.appType == 5 || btn.appType == 6) {
+							// 	listRequired.push(btn);
+							// }
 						}
 					}
 					self.dataShare = {
