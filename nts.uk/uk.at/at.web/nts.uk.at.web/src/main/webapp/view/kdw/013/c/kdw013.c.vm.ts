@@ -589,7 +589,7 @@ module nts.uk.ui.at.kdw013.c {
                         if (event) {
                             const { extendedProps, start, end } = event as any as calendar.EventRaw;
                             const {
-                                descriptions,
+                                remarks,
                                 sId,
                                 workCD1,
                                 workCD2,
@@ -600,7 +600,7 @@ module nts.uk.ui.at.kdw013.c {
                             const startTime = getTimeOfDate(start);
                             const endTime = getTimeOfDate(end);
 
-                            model.descriptions(descriptions);
+                            model.descriptions(remarks);
 
                             model.timeRange({ start: startTime, end: endTime });
 
@@ -669,7 +669,7 @@ module nts.uk.ui.at.kdw013.c {
                                     workCD3,
                                     workCD4,
                                     workCD5,
-                                    workplace
+                                    workLocationCD: wlc
                                 } = extendedProps;
 
                                 task1(workCD1);
@@ -677,7 +677,7 @@ module nts.uk.ui.at.kdw013.c {
                                 task3(workCD3);
                                 task4(workCD4);
                                 task5(workCD5);
-                                workLocation(workplace);
+                                workLocation(wlc);
                             } else {
                                 task1(null);
                                 task2(null);

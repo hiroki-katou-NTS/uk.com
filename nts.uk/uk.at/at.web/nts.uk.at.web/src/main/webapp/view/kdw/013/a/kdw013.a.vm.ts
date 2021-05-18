@@ -124,13 +124,15 @@ module nts.uk.ui.at.kdw013.a {
             const { mode } = $query;
             const cache: ChangeDateParam & { pair: -1 | 0 | 1 | 2 } = { ...initialCache(), pair: 0 };
             const sameCache = (params: ChangeDateParam): -1 | 0 | 1 | 2 => {
-                if (cache.employeeId !== params.employeeId) {
+                if (cache.refDate !== params.refDate) {
                     if (cache.displayPeriod.end === params.displayPeriod.end) {
                         if (cache.displayPeriod.start === params.displayPeriod.start) {
                             return -1;
                         }
                     }
+                }
 
+                if (cache.employeeId !== params.employeeId) {
                     if (params.displayPeriod.start && params.displayPeriod.end) {
                         return 0;
                     }
@@ -256,10 +258,14 @@ module nts.uk.ui.at.kdw013.a {
 
             ko.computed({
                 read: () => {
-                    const employeeId = ko.unwrap(vm.employee) || vm.$user.employeeId;
+                    const employeeId = ko.unwrap(vm.editable) === false ? ko.unwrap(vm.employee) : vm.$user.employeeId;
                     const date = ko.unwrap(vm.initialDate);
                     const dateRange = ko.unwrap(vm.dateRange);
                     const { start, end } = dateRange;
+
+                    if (!employeeId) {
+                        return;
+                    }
 
                     if (!!start && !!end && moment(date).isBetween(start, end)) {
                         const params: ChangeDateParam = {
