@@ -112,12 +112,10 @@ module nts.uk.at.view.kdp005.a {
 											dfd.resolve();
 										});
 									} else {
-										self.doFirstLoad().done(() => {
+										$.when(self.doFirstLoad(), self.loadNotice(self.loginInfo)).done(() => {
 											dfd.resolve();
 										});
 									}
-
-									self.loadNotice(loginInfo);
 
 								} else {
 									self.setLoginInfo().done((loginResult) => {
@@ -125,7 +123,7 @@ module nts.uk.at.view.kdp005.a {
 											self.isUsed(false);
 											dfd.resolve();
 										} else {
-											self.doFirstLoad().done(() => {
+											$.when(self.doFirstLoad(), self.loadNotice(self.loginInfo)).done(() => {
 												dfd.resolve();
 											});
 										}
@@ -660,7 +658,7 @@ module nts.uk.at.view.kdp005.a {
 									if (output === 'loginSuccess') {
 										vm.$window.modal('at', DIALOG.P)
 											.then(() => {
-												self.loadNotice(self.loginInfo);
+												// self.loadNotice(self.loginInfo);
 												window.location.reload(false);
 											})
 									}
@@ -669,9 +667,10 @@ module nts.uk.at.view.kdp005.a {
 					});
 			}
 
-			loadNotice(loginInfo: any) {
+			loadNotice(loginInfo: any) : JQueryPromise<any> {
 				let vm = new ko.ViewModel();
 				const self = this;
+				let dfd = $.Deferred<any>();
 				let startDate = vm.$date.now();
 				startDate.setDate(startDate.getDate() - 3);
 
@@ -692,8 +691,10 @@ module nts.uk.at.view.kdp005.a {
 								});
 						})
 						.always(() => {
+							dfd.resolve();
 							vm.$blockui('clear');
 						});
+					return dfd.promise();
 				}
 			}
 
