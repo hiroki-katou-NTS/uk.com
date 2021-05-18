@@ -644,6 +644,13 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 			default:
 				break;
 			}
+			
+			Optional<AlarmListCheckInfor> optCheckInfor = result.getLstCheckType().stream()
+					.filter(x -> x.getChekType() == AlarmListCheckType.FreeCheck && x.getNo().equals(String.valueOf(scheCondMon.getSortOrder())))
+					.findFirst();
+			if(optCheckInfor.isPresent()) {
+				result.getLstCheckType().add(new AlarmListCheckInfor(String.valueOf(scheCondMon.getSortOrder()), AlarmListCheckType.FreeCheck));
+			}
 		}
 		
 		return result;
@@ -765,10 +772,16 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 			extractDetailItemTime.setAlarmContent(alarmContent);
 			extractDetailItemTime.setCheckValue(Optional.ofNullable(checkValue));
 			result.getLstResultCondition().add(new ResultOfEachCondition(
-					AlarmListCheckType.FreeCheck, 
+					AlarmListCheckType.FixCheck, 
 					String.valueOf(fixScheMon.getFixedCheckSMonItems().value), 
 					Arrays.asList(extractDetailItemTime)));
 			
+			Optional<AlarmListCheckInfor> optCheckInfor = result.getLstCheckType().stream()
+					.filter(x -> x.getChekType() == AlarmListCheckType.FixCheck && x.getNo().equals(String.valueOf(fixScheMon.getFixedCheckSMonItems().value)))
+					.findFirst();
+			if(optCheckInfor.isPresent()) {
+				result.getLstCheckType().add(new AlarmListCheckInfor(String.valueOf(fixScheMon.getFixedCheckSMonItems().value), AlarmListCheckType.FixCheck));
+			}			
 		}
 		
 		return result;
