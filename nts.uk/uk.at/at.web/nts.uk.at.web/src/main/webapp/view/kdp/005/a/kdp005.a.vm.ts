@@ -99,12 +99,12 @@ module nts.uk.at.view.kdp005.a {
 							characteristics.restore("loginKDP005").done(function (loginInfo: ILoginInfo) {
 								if (loginInfo) {
 									self.loginInfo = loginInfo;
-	
+
 									if (ko.unwrap(self.modeBasyo)) {
 										self.loginInfo.selectedWP = self.workplace;
 										nts.uk.characteristics.save(KDP005_SAVE_DATA, self.loginInfo);
 									}
-	
+
 									if (__viewContext.user.companyId != loginInfo.companyId || __viewContext.user.employeeCode != loginInfo.employeeCode) {
 										self.login(self.loginInfo).done(() => {
 											location.reload();
@@ -116,9 +116,9 @@ module nts.uk.at.view.kdp005.a {
 											dfd.resolve();
 										});
 									}
-	
+
 									self.loadNotice(loginInfo);
-	
+
 								} else {
 									self.setLoginInfo().done((loginResult) => {
 										if (!loginResult) {
@@ -135,7 +135,7 @@ module nts.uk.at.view.kdp005.a {
 						}
 					});
 				});
-		
+
 				return dfd.promise();
 			}
 
@@ -497,25 +497,26 @@ module nts.uk.at.view.kdp005.a {
 								.then((result: string) => {
 
 									if (result) {
+										if (result.notification !== null) {
+											service.addCheckCard(registerdata).done((res) => {
+												//phat nhac
+												if (source) {
+													let audio = new Audio(source);
+													audio.play();
+												}
 
-										service.addCheckCard(registerdata).done((res) => {
-											//phat nhac
-											if (source) {
-												let audio = new Audio(source);
-												audio.play();
-											}
-
-											if (self.stampResultDisplay().notUseAttr == 1 && button.changeClockArt == 1) {
-												self.openScreenC(button, layout, employeeIdRegister);
-											} else {
-												self.openScreenB(button, layout, employeeIdRegister);
-											}
-										}).fail((res) => {
-											dialog.alertError({ messageId: res.messageId });
-										}).always(() => {
-											//					self.getStampToSuppress();
-											block.clear();
-										});
+												if (self.stampResultDisplay().notUseAttr == 1 && button.changeClockArt == 1) {
+													self.openScreenC(button, layout, employeeIdRegister);
+												} else {
+													self.openScreenB(button, layout, employeeIdRegister);
+												}
+											}).fail((res) => {
+												dialog.alertError({ messageId: res.messageId });
+											}).always(() => {
+												//					self.getStampToSuppress();
+												block.clear();
+											});
+										}
 									}
 
 								});
@@ -673,7 +674,7 @@ module nts.uk.at.view.kdp005.a {
 			}
 
 			// URLOption basyo
-			basyo(): JQueryPromise<any>  {
+			basyo(): JQueryPromise<any> {
 				let dfd = $.Deferred<any>();
 				const self = this,
 					vm = new ko.ViewModel(),
@@ -686,7 +687,7 @@ module nts.uk.at.view.kdp005.a {
 						contractCode: '000000000004',
 						workLocationCode: locationCd
 					}
-	
+
 					vm.$ajax(API.GET_LOCATION, param)
 						.done((data: IBasyo) => {
 							if (data) {
@@ -694,7 +695,7 @@ module nts.uk.at.view.kdp005.a {
 									self.worklocationCode = locationCd;
 									dfd.resolve();
 								}
-								
+
 								if (data.workpalceId) {
 									self.modeBasyo(true);
 									self.workplace = [data.workpalceId];

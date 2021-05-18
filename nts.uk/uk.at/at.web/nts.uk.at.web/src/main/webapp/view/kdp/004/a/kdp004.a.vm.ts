@@ -64,7 +64,7 @@ module nts.uk.at.view.kdp004.a {
 
 			workPlaceInfos: IWorkPlaceInfo[] = [];
 			supportUse: KnockoutObservable<boolean> = ko.observable(false);
-			
+
 			pageComment: KnockoutObservable<string> = ko.observable('');
 			commentColor: KnockoutObservable<string> = ko.observable('');
 
@@ -98,7 +98,7 @@ module nts.uk.at.view.kdp004.a {
 								self.loginInfo.selectedWP = self.workplace;
 								nts.uk.characteristics.save(KDP004_SAVE_DATA, self.loginInfo);
 							}
-	
+
 							self.doFirstLoad().done(() => {
 								dfd.resolve();
 							});
@@ -108,10 +108,10 @@ module nts.uk.at.view.kdp004.a {
 						service.getLogginSetting().done((res) => {
 							self.listCompany(_.filter(res, 'fingerAuthStamp'));
 						});
-	
+
 					});
 				});
-				
+
 				return dfd.promise();
 
 			}
@@ -486,64 +486,66 @@ module nts.uk.at.view.kdp004.a {
 
 				//打刻入力で共通設定を取得する
 				vm.$ajax(API.SETTING_STAMP_COMMON)
-				.done((data: ISettingsStampCommon) => {
-					if (data) {
-						self.supportUse(data.supportUse);
-					}
-				});
+					.done((data: ISettingsStampCommon) => {
+						if (data) {
+							self.supportUse(data.supportUse);
+						}
+					});
 
 				vm.$window.storage(KDP004_SAVE_DATA)
-				.then((dataStorage: any) => {
+					.then((dataStorage: any) => {
 
 						let btnType = checkType(button.changeClockArt, button.changeCalArt, button.setPreClockArt, button.changeHalfDay, button.btnReservationArt);
 
 						if (dataStorage.selectedWP.length > 1 && self.supportUse() === true && _.includes([14, 15, 16, 17, 18], btnType)) {
-							vm.$window.modal('at', DIALOG.M, {screen: 'KDP004'} )
+							vm.$window.modal('at', DIALOG.M, { screen: 'KDP004' })
 								.then((result: string) => {
-									if(result) {
 
-										self.workPlaceId = result;
+									if (result) {
+										if (result.notification !== null) {
+											self.workPlaceId = result;
 
-										// var workplace: IWorkPlaceInfo = _.find(self.workPlaceInfos, ((value) => {
-										// 	if (value.id === result) {
-										// 		return value;
-										// 	}
-										// }));
+											// var workplace: IWorkPlaceInfo = _.find(self.workPlaceInfos, ((value) => {
+											// 	if (value.id === result) {
+											// 		return value;
+											// 	}
+											// }));
 
-										// var workLocationName: string = '';
-										// var workPlaceId: string = result;
-										// if (workplace) {
-										// 	workLocationName = workplace.workplaceDisplayName
-										// }
+											// var workLocationName: string = '';
+											// var workPlaceId: string = result;
+											// if (workplace) {
+											// 	workLocationName = workplace.workplaceDisplayName
+											// }
 
-										service.stampInput(registerdata).done((res) => {
+											service.stampInput(registerdata).done((res) => {
 
-											//phat nhac
-											self.playAudio(button.audioType);
-											// const employeeInfo = { mode, employeeId, employeeCode, workLocationName, workPlaceId };
-											
+												//phat nhac
+												self.playAudio(button.audioType);
+												// const employeeInfo = { mode, employeeId, employeeCode, workLocationName, workPlaceId };
 
-											if (self.stampResultDisplay().notUseAttr == 1 && button.changeClockArt == 1) {
-												// Cái này dùng để làm j ?
-												// vm.$window.storage('infoEmpToScreenC', employeeInfo);
-												// vm.$window.storage('screenC', { screen: "KDP004" });
-												self.openScreenC(button, layout, loginInfo.em);
-											} else {
-												// Cái này dùng để làm j ?
-												// vm.$window.storage('infoEmpToScreenB', employeeInfo);
-												// vm.$window.storage('screenB', { screen: "KDP004" });
-												self.openScreenB(button, layout, loginInfo.em);
-											}
-	
-										}).fail((res) => {
-											dialog.alertError({ messageId: res.messageId });
-										}).always(() => {
-											self.getStampToSuppress();
-											block.clear();
-										});
+
+												if (self.stampResultDisplay().notUseAttr == 1 && button.changeClockArt == 1) {
+													// Cái này dùng để làm j ?
+													// vm.$window.storage('infoEmpToScreenC', employeeInfo);
+													// vm.$window.storage('screenC', { screen: "KDP004" });
+													self.openScreenC(button, layout, loginInfo.em);
+												} else {
+													// Cái này dùng để làm j ?
+													// vm.$window.storage('infoEmpToScreenB', employeeInfo);
+													// vm.$window.storage('screenB', { screen: "KDP004" });
+													self.openScreenB(button, layout, loginInfo.em);
+												}
+
+											}).fail((res) => {
+												dialog.alertError({ messageId: res.messageId });
+											}).always(() => {
+												self.getStampToSuppress();
+												block.clear();
+											});
+										}
 									}
 								});
-							
+
 						} else {
 
 							if (dataStorage.selectedWP.length = 1) {
@@ -555,7 +557,7 @@ module nts.uk.at.view.kdp004.a {
 								//phat nhac
 								self.playAudio(button.audioType);
 								// const employeeInfo = { mode, employeeId, employeeCode, workLocationName, workPlaceId };
-								
+
 
 								if (self.stampResultDisplay().notUseAttr == 1 && button.changeClockArt == 1) {
 									// Cái này dùng để làm j ?
@@ -685,12 +687,12 @@ module nts.uk.at.view.kdp004.a {
 			getWorkPlacesInfo() {
 				let vm = new ko.ViewModel();
 				let self = this;
-	
+
 				vm.$window.storage(WORKPLACES_STORAGE)
 					.then((data: IWorkPlaceInfo[]) => {
 						self.workPlaceInfos = data
 					});
-	
+
 			}
 
 			// URLOption basyo

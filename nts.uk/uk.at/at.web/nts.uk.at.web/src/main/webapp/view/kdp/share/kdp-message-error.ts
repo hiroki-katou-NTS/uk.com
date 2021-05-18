@@ -232,9 +232,7 @@ module nts.uk.at.view.kdp.share {
                             vm.workplaceNotice.update(DestinationClassification.WORKPLACE,
                                 workplaceNoticeList[0].notificationMessage);
                         }
-
                     } else {
-
 
                         if (ko.unwrap(vm.notiSet)) {
                             vm.workplaceNotice.update(DestinationClassification.WORKPLACE,
@@ -255,8 +253,8 @@ module nts.uk.at.view.kdp.share {
     class Model {
         title: KnockoutObservable<string> = ko.observable('本部より');
         contentMessager: KnockoutObservable<string> = ko.observable('');
-        textColor: KnockoutObservable<string> = ko.observable('#123123');
-        backGroudColor: KnockoutObservable<string> = ko.observable('#123123');
+        textColor: KnockoutObservable<string> = ko.observable('#E2F0D9');
+        backGroudColor: KnockoutObservable<string> = ko.observable('#E2F0D9');
 
         constructor(type: DestinationClassification) {
             const vm = this;
