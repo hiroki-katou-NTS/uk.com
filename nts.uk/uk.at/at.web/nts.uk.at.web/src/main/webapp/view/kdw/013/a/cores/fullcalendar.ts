@@ -1560,13 +1560,13 @@ module nts.uk.ui.at.kdw013.calendar {
                 eventContent: (args: EventContentArg) => {
                     const { type } = args.view;
                     const { title, extendedProps } = args.event;
-                    const { descriptions } = extendedProps;
+                    const { remarks } = extendedProps;
 
                     if (['timeGridDay', 'timeGridWeek'].indexOf(type) !== -1) {
                         return {
                             html: `<div class="fc-event-title-container">
                                 <div class="fc-event-title fc-sticky"><h4>${title}</h4></div>
-                                ${_.isString(descriptions) ? descriptions.split('\n').map((m: string) => `<div class="fc-event-description fc-sticky">${m}</div>`).join('') : ''}
+                                ${_.isString(remarks) ? remarks.split('\n').map((m: string) => `<div class="fc-event-description fc-sticky">${m}</div>`).join('') : ''}
                             </div>`
                         };
                     }
@@ -1581,7 +1581,7 @@ module nts.uk.ui.at.kdw013.calendar {
                     if (type === 'listWeek') {
                         return {
                             html: `<h4>${title}</h4>
-                            ${_.isString(descriptions) ? descriptions.split('\n').map((m: string) => `<div class="fc-event-description fc-sticky">${m}</div>`).join('') : ''}`
+                            ${_.isString(remarks) ? remarks.split('\n').map((m: string) => `<div class="fc-event-description fc-sticky">${m}</div>`).join('') : ''}`
                         };
                     }
 
