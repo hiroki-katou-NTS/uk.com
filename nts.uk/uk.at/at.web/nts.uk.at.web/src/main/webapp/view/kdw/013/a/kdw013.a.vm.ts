@@ -499,10 +499,10 @@ module nts.uk.ui.at.kdw013.a {
                 value: $component.department,
                 editable: true,
                 selectFirstIfNull: true,
-                optionsValue: 'workplaceCode',
+                optionsValue: 'workplaceId',
                 optionsText: 'wkpDisplayName',
                 columns: [
-                    { prop: 'workplaceCode', length: 4 },
+                    { prop: 'workplaceId', length: 4 },
                     { prop: 'wkpDisplayName', length: 10 }
                 ]
             }"></div>
@@ -543,7 +543,7 @@ module nts.uk.ui.at.kdw013.a {
                                 const { employeeInfos, lstEmployeeInfo } = refWorkplaceAndEmployeeDto;
 
                                 // updating
-                                return loaded ? [] : lstEmployeeInfo.filter(({ sid }) => employeeInfos[sid] === $dept || true);
+                                return loaded ? [] : lstEmployeeInfo.filter(({ sid }) => employeeInfos[sid] === $dept);
                             }
                         }
 

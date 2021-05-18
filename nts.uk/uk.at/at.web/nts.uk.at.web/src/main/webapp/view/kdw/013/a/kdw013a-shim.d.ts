@@ -90,8 +90,8 @@ module nts.uk.ui.at.kdw013.a {
     };
 
     export type WorkplaceInfo = {
-        /** The history id. */
-        historyId: string;
+        /** 職場ID */
+        workplaceId: string;
 
         /** The workplace code. */
         workplaceCode: string;
