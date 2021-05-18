@@ -16,6 +16,12 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
  */
 public class ReflectDirectBounceClassifi {
 
+	/**
+	 * @param dailyApp
+	 * @param returnHome  直帰区分
+	 * @param goOut 直行区分
+	 * @return
+	 */
 	public static List<Integer> reflect(DailyRecordOfApplication dailyApp, NotUseAtr returnHome, NotUseAtr goOut) {
 		// [input. 直行区分]のチェック
 		List<Integer> itemIds = new ArrayList<Integer>();

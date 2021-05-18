@@ -72,18 +72,20 @@ public class KscmtShiftTableRuleForCompany extends ContractUkJpaEntity implement
 				domain.getShiftTableRule().getUsePublicAtr().value,
 				domain.getShiftTableRule().getUseWorkAvailabilityAtr().value,
 				KscmtShiftTableRuleForCompanyAvai.toEntity(companyId, domain.getShiftTableRule())
-				);
+		);
 	}
 	
 	public ShiftTableRuleForCompany toDomain() {
-		if(this.useWorkAvailabilityAtr == 0 ) {
-			return new ShiftTableRuleForCompany(new ShiftTableRule(
-					NotUseAtr.valueOf(usePublicAtr), 
-					NotUseAtr.valueOf(useWorkAvailabilityAtr),
-					Optional.empty(), 
-					new ArrayList<>(),
-					Optional.empty()
-					));
+		if (this.kscmtShiftTableRuleForCompanyAvai == null) {
+			return new ShiftTableRuleForCompany(
+					new ShiftTableRule(
+							NotUseAtr.valueOf(usePublicAtr),
+							NotUseAtr.valueOf(useWorkAvailabilityAtr),
+							Optional.empty(),
+							new ArrayList<>(),
+							Optional.empty()
+					)
+			);
 		}
 		return new ShiftTableRuleForCompany(kscmtShiftTableRuleForCompanyAvai.toDomain(this.usePublicAtr, this.useWorkAvailabilityAtr));
 	}

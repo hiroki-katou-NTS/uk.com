@@ -3,7 +3,6 @@ package nts.uk.ctx.at.schedule.dom.workschedule.displaysetting;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -26,7 +25,6 @@ import nts.uk.ctx.at.schedule.dom.employeeinfo.scheduleteam.ScheduleTeamName;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.scheduleteam.domainservice.EmpTeamInfor;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.scheduleteam.domainservice.GetScheduleTeamInfoService;
 import nts.uk.ctx.at.schedule.dom.schedule.setting.displaycontrol.PersonSymbolQualify;
-import nts.uk.ctx.at.schedule.dom.workschedule.displaysetting.DisplayControlPersonalCondition.Require;
 import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.EmpLicenseClassification;
 import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.GetEmpLicenseClassificationService;
 import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.LicenseClassification;
@@ -36,49 +34,106 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 public class DisplayControlPersonalConditionTest {
 
 	@Injectable
-	private Require require;
+	private DisplayControlPersonalCondition.Require require;
 
 	@Test
 	public void getter() {
-		NtsAssert.invokeGetters(DisplayControlPersonalConditionHelper.getData());
+		NtsAssert.invokeGetters( DisplayControlPersonalConditionHelper.defaultData() );
 	}
 
+	/**
+	 * ・条件
+	 * 		資格のするしない区分 = する
+	 * 		資格設定.isEmpty
+	 * ・期待
+	 * 		BusinessException Msg_1682
+	 */
 	@Test
-	public void get_Have_Msg() {
-		List<PersonInforDisplayControl> result = Arrays.asList(
-				new PersonInforDisplayControl(ConditionATRWorkSchedule.INSURANCE_STATUS, NotUseAtr.USE),
-				new PersonInforDisplayControl(ConditionATRWorkSchedule.TEAM, NotUseAtr.USE),
-				new PersonInforDisplayControl(ConditionATRWorkSchedule.RANK, NotUseAtr.USE),
-				new PersonInforDisplayControl(ConditionATRWorkSchedule.QUALIFICATION, NotUseAtr.USE));
+	public void get_Msg_1682() {
+		
+		List<PersonInforDisplayControl> controlList = 
+				DisplayControlPersonalConditionHelper.createControlListWithQualificationAtr(NotUseAtr.USE);
+		
 		NtsAssert.businessException("Msg_1682", () -> {
-			DisplayControlPersonalCondition.get("cid", result, Optional.empty());
+			DisplayControlPersonalCondition.get("cid", controlList, Optional.empty());
 		});
 	}
 
+	/**
+	 * ・条件
+	 * 		資格のするしない区分 = しない
+	 * 		資格設定.isEmpty
+	 * ・期待
+	 * 		作成できる
+	 */
 	@Test
-	public void test_msg_1786() {
-		NtsAssert.businessException("Msg_1786", () -> {
-			WorkscheQualifi.workScheduleQualification(new PersonSymbolQualify("1"), new ArrayList<>());
-		});
+	public void test_getSuccess_qualification_NotUse () {
+		
+		List<PersonInforDisplayControl> controlList = 
+				DisplayControlPersonalConditionHelper.createControlListWithQualificationAtr( NotUseAtr.NOT_USE );
+		
+		// run
+		DisplayControlPersonalCondition result = 
+				DisplayControlPersonalCondition.get("cid", controlList, Optional.empty());
+		
+		// assert
+		assertThat( result.getCompanyID().equals("cid")).isTrue();
+		assertThat( result.getListConditionDisplayControl() )
+			.extracting( 
+					e -> e.getConditionATR(), 
+					e -> e.getDisplayCategory() )
+			.contains( 
+					tuple( ConditionATRWorkSchedule.QUALIFICATION, NotUseAtr.NOT_USE ));
+		
+		assertThat( result.getOtpWorkscheQualifi() ).isEmpty();
 	}
-
+	
+	/**
+	 * ・条件
+	 * 		資格のするしない区分 = する
+	 * 		資格設定.isPresent
+	 * ・期待
+	 * 		作成できる
+	 */
 	@Test
-	public void test_getSucces() {
-		List<QualificationCD> listQualificationCD = Arrays.asList(new QualificationCD("1"), new QualificationCD("2"));
-		WorkscheQualifi qualifi = WorkscheQualifi.workScheduleQualification(new PersonSymbolQualify("1"),
-				listQualificationCD);
-
-		List<PersonInforDisplayControl> result = Arrays
-				.asList(new PersonInforDisplayControl(ConditionATRWorkSchedule.QUALIFICATION, NotUseAtr.USE));
-
-		DisplayControlPersonalCondition condition = DisplayControlPersonalCondition.get("cid", result,
-				Optional.ofNullable(qualifi));
-		assertThat(condition.getCompanyID().equals("cid")).isTrue();
-		assertThat(condition.getOtpWorkscheQualifi().get().getQualificationMark().v().equals("1")).isTrue();
-		assertThat(condition.getOtpWorkscheQualifi().get().getListQualificationCD().isEmpty()).isFalse();
-		assertThat(condition.getListConditionDisplayControl())
-				.extracting(x -> x.getConditionATR(), x -> x.getDisplayCategory())
-				.containsExactly(tuple(ConditionATRWorkSchedule.QUALIFICATION, NotUseAtr.USE));
+	public void test_getSuccess_qualification_Use () {
+		
+		List<PersonInforDisplayControl> controlList = 
+				Arrays.asList(
+						new PersonInforDisplayControl(ConditionATRWorkSchedule.INSURANCE_STATUS, NotUseAtr.NOT_USE),
+						new PersonInforDisplayControl(ConditionATRWorkSchedule.TEAM, NotUseAtr.NOT_USE),
+						new PersonInforDisplayControl(ConditionATRWorkSchedule.RANK, NotUseAtr.USE),
+						new PersonInforDisplayControl(ConditionATRWorkSchedule.QUALIFICATION, NotUseAtr.USE ),
+						new PersonInforDisplayControl(ConditionATRWorkSchedule.LICENSE_ATR, NotUseAtr.USE) );
+		
+		WorkscheQualifi workScheQualification = WorkscheQualifi.workScheduleQualification(
+				new PersonSymbolQualify("x"), 
+				Arrays.asList(
+						new QualificationCD("01"), 
+						new QualificationCD("02")));
+		
+		// run
+		DisplayControlPersonalCondition result = 
+				DisplayControlPersonalCondition.get("cid", controlList, Optional.of(workScheQualification));
+		
+		// assert
+		assertThat( result.getCompanyID().equals("cid")).isTrue();
+		assertThat( result.getListConditionDisplayControl())
+			.extracting( 
+					e -> e.getConditionATR(), 
+					e -> e.getDisplayCategory() )
+			.containsExactlyInAnyOrder( 
+					tuple( ConditionATRWorkSchedule.INSURANCE_STATUS, NotUseAtr.NOT_USE ),
+					tuple( ConditionATRWorkSchedule.TEAM, NotUseAtr.NOT_USE ),
+					tuple( ConditionATRWorkSchedule.RANK, NotUseAtr.USE ),
+					tuple( ConditionATRWorkSchedule.QUALIFICATION, NotUseAtr.USE ),
+					tuple( ConditionATRWorkSchedule.LICENSE_ATR, NotUseAtr.USE ) );
+		
+		assertThat( result.getOtpWorkscheQualifi().get().getQualificationMark() ).isEqualTo( new PersonSymbolQualify("x") );
+		assertThat( result.getOtpWorkscheQualifi().get().getListQualificationCD() )
+			.containsExactlyInAnyOrder( 
+					new QualificationCD("01"), 
+					new QualificationCD("02") );
 	}
 
 	@Test
@@ -130,9 +185,12 @@ public class DisplayControlPersonalConditionTest {
 		};
 
 		DisplayControlPersonalCondition data = DisplayControlPersonalCondition.get("companyID",
-				Arrays.asList(new PersonInforDisplayControl(ConditionATRWorkSchedule.TEAM, NotUseAtr.USE),
-						new PersonInforDisplayControl(ConditionATRWorkSchedule.RANK, NotUseAtr.USE),
-						new PersonInforDisplayControl(ConditionATRWorkSchedule.LICENSE_ATR, NotUseAtr.USE)),
+				Arrays.asList(
+					new PersonInforDisplayControl(ConditionATRWorkSchedule.TEAM, NotUseAtr.USE),
+					new PersonInforDisplayControl(ConditionATRWorkSchedule.RANK, NotUseAtr.USE),
+					new PersonInforDisplayControl(ConditionATRWorkSchedule.LICENSE_ATR, NotUseAtr.USE),
+					new PersonInforDisplayControl(ConditionATRWorkSchedule.INSURANCE_STATUS, NotUseAtr.NOT_USE),
+					new PersonInforDisplayControl(ConditionATRWorkSchedule.QUALIFICATION, NotUseAtr.NOT_USE) ),
 				Optional.of(WorkscheQualifi.workScheduleQualification(new PersonSymbolQualify("〇"),
 						Arrays.asList(new QualificationCD("C1")))));
 

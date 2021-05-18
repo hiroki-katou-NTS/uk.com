@@ -277,20 +277,32 @@ module nts.uk.at.view.ktg027.a {
                     vm.targetYear
                         .subscribe((ym: string | null) => {
                             if (typeof ym === 'string') {
+                                vm.$window.storage('KTG027_TARGET', {
+                                    isRefresh: false,
+                                    target: ym
+                                });
                                 vm.loadData(ym, closureId);
                             }
                         });
 
-                    // update targetYear by closure data
-                    if (closingInformationForNextMonth) {
-                        const { processingYm } = closingInformationForNextMonth;
+                    vm.$window.storage('KTG027_TARGET').then((rs: {isRefresh: boolean, target: any}) => {
+                        if (rs && rs.isRefresh) {
+                            vm.targetYear(rs.target);
+                            return;
+                        }
 
-                        vm.targetYear(`${processingYm}`);
-                    } else {
+                        // update targetYear by closure data
+                        if (closingInformationForNextMonth) {
+                            const { processingYm } = closingInformationForNextMonth;
+
+                            vm.targetYear(`${processingYm}`);
+                            return;
+                        }
+
                         const { processingYm } = closingInformationForCurrentMonth;
 
                         vm.targetYear(`${processingYm}`);
-                    }
+                    });
                 })
                 .fail((message: { messageId: string }) => {
                     vm.$dialog.error(message).then(() => vm.$blockui('clearView'));
