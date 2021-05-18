@@ -86,3 +86,9 @@
   .header-green {
   	background-color: #BFEA60;
   }
+
+  div#master-wrapper div#master-content div[id^="functions-area-bottom"]>button.btn-error {
+    position: absolute;
+    top: -5px !important;
+    left: 56px !important;
+  }

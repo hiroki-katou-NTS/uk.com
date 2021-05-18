@@ -41,7 +41,8 @@
 }
 
 .kdp-003-a #stamp-input {
-	width: calc(100% - 270px);
+	/* width: calc(100% - 270px); */
+	width: 100%;
 }
 
 .kdp-003-a .not_used_label {
