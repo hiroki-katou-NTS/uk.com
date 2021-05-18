@@ -37,6 +37,7 @@ import nts.uk.screen.at.app.ksu001.start.OrderEmployeeParam;
 import nts.uk.screen.at.app.ksu001.start.StartKSU001;
 import nts.uk.screen.at.app.ksu001.start.StartKSU001Dto;
 import nts.uk.screen.at.app.ksu001.start.StartKSU001Param;
+import nts.uk.screen.at.app.ksu001.start.StartKSU001Ver5;
 import nts.uk.screen.at.app.ksu001.validwhenedittime.ValidDataWhenEditTime;
 import nts.uk.screen.at.app.ksu001.validwhenedittime.ValidDataWhenEditTimeParam;
 import nts.uk.screen.at.app.ksu001.validwhenpaste.ValidDataWhenPaste;
@@ -54,6 +55,8 @@ public class KSU001WebService extends WebService{
 
 	@Inject
 	private StartKSU001 startKSU001;
+	@Inject
+	private StartKSU001Ver5 startKSU001Ver5;
 	@Inject
 	private ChangeMonthFinder changeMonthFinder;
 	@Inject
@@ -80,6 +83,12 @@ public class KSU001WebService extends WebService{
 	@Path("start")
 	public StartKSU001Dto getDataStartScreen(StartKSU001Param param){
 		StartKSU001Dto data = startKSU001.getData(param);
+		return data;
+	}
+	
+	@Path("startver5")
+	public StartKSU001Dto getDataStartScreenVer5(StartKSU001Param param){
+		StartKSU001Dto data = startKSU001Ver5.getData(param);
 		return data;
 	}
 	

@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.function.dom.adapter.annualworkschedule.EmployeeInformationImport;
@@ -33,7 +34,8 @@ import nts.uk.screen.at.app.ksu001.eventinformationandpersonal.PersonalCondition
 import nts.uk.screen.at.app.ksu001.extracttargetemployees.EmployeeInformationDto;
 import nts.uk.screen.at.app.ksu001.extracttargetemployees.ExtractTargetEmployeesParam;
 import nts.uk.screen.at.app.ksu001.extracttargetemployees.ScreenQueryExtractTargetEmployees;
-import nts.uk.screen.at.app.ksu001.getinfoofInitstartup.DataScreenQueryGetInforDto;
+import nts.uk.screen.at.app.ksu001.getinfoofInitstartup.DataScreenQueryGetInforDto_New;
+import nts.uk.screen.at.app.ksu001.getinfoofInitstartup.FuncCtrlDisplayFormatDto;
 import nts.uk.screen.at.app.ksu001.getinfoofInitstartup.ScreenQueryGetInforOfInitStartup;
 import nts.uk.screen.at.app.ksu001.getshiftpalette.PageInfo;
 import nts.uk.screen.at.app.ksu001.getshiftpalette.TargetShiftPalette;
@@ -42,10 +44,10 @@ import nts.uk.screen.at.app.ksu001.processcommon.WorkScheduleWorkInforDto;
 
 /**
  * @author laitv 初期起動 
- * path:UKDesign.UniversalK.就業.KSU_スケジュール.KSU001_個人スケジュール修正(職場別).A：個人スケジュール修正（職場別）.メニュー別OCD.初期起動
+ * path: UKDesign.UniversalK.就業.KSU_スケジュール.KSU001_個人スケジュール修正(職場別).A：個人スケジュール修正（職場別）.メニュー別OCD.初期起動
  */
 @Stateless
-public class StartKSU001 {
+public class StartKSU001Ver5 {
 
 	@Inject
 	private ScreenQueryGetInforOfInitStartup getInforOfInitStartup;
@@ -63,7 +65,7 @@ public class StartKSU001 {
 	public StartKSU001Dto getData(StartKSU001Param param) {
 		
 		// step 1
-		DataScreenQueryGetInforDto resultStep1 = getInforOfInitStartup.getData();
+		DataScreenQueryGetInforDto_New resultStep1 = getInforOfInitStartup.getDataNew();
 		
 		// step 2 start
 		GeneralDate startDate = StringUtil.isNullOrEmpty(param.startDate, true) ? resultStep1.startDate : GeneralDate.fromString(param.startDate, DATE_FORMAT);
@@ -104,7 +106,10 @@ public class StartKSU001 {
 		// data cua Grid
 		List<ScheduleOfShiftDto> listWorkScheduleShift = new ArrayList<>();
 		
-		if (param.viewMode.equals("time") || param.viewMode.equals("shortName")) {
+		// tính toán để xem gọi viewMode nào
+		Integer viewModeSelected = calculateViewModeSelected(param.viewMode, resultStep1.scheFunctionCtrlByWorkplace.useDisplayFormat);
+		
+		if (viewModeSelected == FuncCtrlDisplayFormatDto.WorkInfo.value || viewModeSelected == FuncCtrlDisplayFormatDto.AbbreviatedName.value) {
 			// step 4 || 5.2 start
 			DisplayInWorkInfoParam param4 = new DisplayInWorkInfoParam(listSid, startDate, endDate, param.getActualData);
 			DisplayInWorkInfoResult  resultStep4 = new DisplayInWorkInfoResult();
@@ -112,7 +117,7 @@ public class StartKSU001 {
 			listWorkTypeInfo = resultStep4.listWorkTypeInfo;
 			listWorkScheduleWorkInfor = resultStep4.listWorkScheduleWorkInfor;
 			
-		} else if (param.viewMode.equals("shift")) {
+		} else if (viewModeSelected == FuncCtrlDisplayFormatDto.Shift.value) {
 			// step 5.1 start
 			// step5.1
 			DisplayInShiftParam param51 = new DisplayInShiftParam();
@@ -135,18 +140,41 @@ public class StartKSU001 {
 		
 		StartKSU001Dto result = convertData(resultStep1, resultStep2, resultStep3,
 				listWorkTypeInfo, listWorkScheduleWorkInfor, 
-				listPageInfo,targetShiftPalette,shiftMasterWithWorkStyleLst,listWorkScheduleShift);
+				listPageInfo,targetShiftPalette,shiftMasterWithWorkStyleLst,listWorkScheduleShift, viewModeSelected);
 		return result;
 	}
 	
-	private StartKSU001Dto convertData(DataScreenQueryGetInforDto resultStep1,List<EmployeeInformationImport> resultStep2, 
+	private Integer calculateViewModeSelected(String viewModefromUI, List<Integer> useDisplayFormat) {
+		/** 略名 AbbreviatedName(0) */
+		/** 勤務 WorkInfo(1) */
+		/** シフト Shift(2) */
+		if (useDisplayFormat.isEmpty())
+			throw new BusinessException("List 使用する表示形式(useDisplayFormat) empty");
+
+		Integer vMode = viewModefromUI.equals("time") ? 1 : (viewModefromUI.equals("shortName") ? 0 : 2);
+		if (useDisplayFormat.contains(vMode)) {
+			return vMode;
+		} else {
+			if (useDisplayFormat.contains(FuncCtrlDisplayFormatDto.WorkInfo.value)) {
+				return FuncCtrlDisplayFormatDto.WorkInfo.value;
+			} else if (useDisplayFormat.contains(FuncCtrlDisplayFormatDto.AbbreviatedName.value)) {
+				return FuncCtrlDisplayFormatDto.AbbreviatedName.value;
+			} else if (useDisplayFormat.contains(FuncCtrlDisplayFormatDto.Shift.value)) {
+				return FuncCtrlDisplayFormatDto.Shift.value;
+			}
+		}
+		return FuncCtrlDisplayFormatDto.WorkInfo.value;
+	}
+	
+	private StartKSU001Dto convertData(DataScreenQueryGetInforDto_New resultStep1,List<EmployeeInformationImport> resultStep2, 
 			DataSpecDateAndHolidayDto resultStep3, List<WorkTypeInfomation> listWorkTypeInfo, 
 			List<WorkScheduleWorkInforDto> listWorkScheduleWorkInfor,
-			List<PageInfo> listPageInfo, TargetShiftPalette targetShiftPalette, List<ShiftMasterMapWithWorkStyle> shiftMasterWithWorkStyleLst, List<ScheduleOfShiftDto> listWorkScheduleShift) {
+			List<PageInfo> listPageInfo, TargetShiftPalette targetShiftPalette, List<ShiftMasterMapWithWorkStyle> shiftMasterWithWorkStyleLst, List<ScheduleOfShiftDto> listWorkScheduleShift, Integer viewModeSelected) {
 		StartKSU001Dto result = new StartKSU001Dto();
 		
 		//	data tra ve cua step1	
 		DataBasicDto dataBasicDto = new DataBasicDto(resultStep1);
+		dataBasicDto.setViewMode(viewModeSelected);
 		result.setDataBasicDto(dataBasicDto);
 		
 		//  data tra ve cua step2
