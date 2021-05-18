@@ -366,7 +366,7 @@ module nts.uk.at.view.ksm005.b {
                 nts.uk.ui.windows.sub.modal('/view/kdl/002/a/index.xhtml', {
                     title: '乖離時間の登録＞対象項目',
                     width: 700,
-                    height: 520
+                    height: 650
                 }).onClosed(function (): any {
                     let lstNewData = nts.uk.ui.windows.getShared('KDL002_SelectedNewItem');
                     if (lstNewData) {

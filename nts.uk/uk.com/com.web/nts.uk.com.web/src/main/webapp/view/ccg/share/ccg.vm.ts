@@ -1896,6 +1896,7 @@ module nts.uk.com.view.ccg.share.ccg {
 
                 // set data to kcp005
                 self.employeeListTab3(self.toUnitModelList(sortedList));
+                $('#tab3kcp005').ntsListComponent(self.tab3kcp005option);
                 return;
             }
             
@@ -2110,6 +2111,7 @@ module nts.uk.com.view.ccg.share.ccg {
 
                         // Load list employee to KCP005
                         self.employeeinfo.employeeInputList(self.toUnitModelList(data));
+                        $('#employeeinfo').ntsListComponent(self.employeeinfo);
 
                         // Reset selected employees on KCP005
                         self.selectedCodeEmployee([]);
