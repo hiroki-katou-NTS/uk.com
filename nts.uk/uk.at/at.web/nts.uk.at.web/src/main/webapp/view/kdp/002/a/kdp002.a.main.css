@@ -6,17 +6,17 @@ html{
 }
 #kdp002a {
   width: 100%;
-  max-width: 540px;
+  max-width: 480px;
   margin: 0 auto;
   height: auto;
 }
 
 #kdp002a.has-info {
-  max-width: 1008px;
+  max-width: 943px;
 }
 
 #kdp002a.has-info-work2 {
-  max-width: 833px;
+  max-width: 753px;
 }
 
 .kdp002a {
@@ -118,7 +118,7 @@ html{
 }
 
 .tab-button-panel+div.pull-left {
-  padding-top: 68px;
+  padding-top: 58px;
 }
 
 #stamp-input .stampFullScreen {

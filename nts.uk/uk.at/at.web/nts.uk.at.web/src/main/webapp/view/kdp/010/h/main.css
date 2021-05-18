@@ -38,8 +38,13 @@
 	width: 283px;
 }
 
+.left-area {
+    width: 502px;
+    margin: 0 auto;
+}
+
 #right-area {
-	margin-left: 110px;
+	margin-left: 122px;
 	margin-top: -134px;
 }
 
@@ -49,7 +54,12 @@
 
 #item-panel {
 	height: 357px;
-	margin-top: 10px;
+	margin: 10px auto 0;
+    width: 478px;
+}
+
+.btn-name.btn5, .btn-name.btn3, .btn-name.btn1 {
+    margin-left: 1px;
 }
 
 .btn_2, .btn_3, .btn_4 {

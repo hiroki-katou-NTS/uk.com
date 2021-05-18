@@ -176,8 +176,8 @@ module nts.uk.at.view.kdp.share {
 					'visibility': data.btnPositionNo === -1 || data.usrArt === 0 || (supportUse === false && _.includes([14, 15, 16, 17, 18], btnType)) 
 					|| (temporaryUse === false && _.includes([12, 13], btnType)) ? 'hidden' : 'visible'
 				});
-			$('.btn-layout-type-0>div:first-child button').css({'height':$('.btn-layout-type-0>div:first-child button').width()+'px'});
-			$('.btn-layout-type-0>div:not(:first-child) button').css({'height':$('.btn-layout-type-0>div:not(:first-child) button').width()/2.2+'px'});
+			$('.btn-layout-type-0>div:first-child button').css({'height':$('.btn-layout-type-0>div:first-child button').width() - 10 +'px'});
+			$('.btn-layout-type-0>div:not(:first-child) button').css({'height':$('.btn-layout-type-0>div:not(:first-child) button').width()/2.3 - 5 + 'px'});
 			if (data.btnPositionNo === 1 || data.btnPositionNo === 2) {
 				changeFontSize(element, 0);	
 			} else {
@@ -422,7 +422,7 @@ module nts.uk.at.view.kdp.share {
 		
 		setSize = function() {
         	$('.btn-layout-type-0>div:first-child button').css({'height':$('.btn-layout-type-0>div:first-child button').width()+'px'});
-			$('.btn-layout-type-0>div:not(:first-child) button').css({'height':$('.btn-layout-type-0>div:not(:first-child) button').width()/2.2+'px'});
+			$('.btn-layout-type-0>div:not(:first-child) button').css({'height':$('.btn-layout-type-0>div:not(:first-child) button').width()/2.3+'px'});
 			$('.btn-layout-type-0>div:first-child button').each(function() {
 				changeFontSize(this, 0);	
 			});
@@ -596,18 +596,18 @@ module nts.uk.at.view.kdp.share {
 	}
 	let changeFontSize = function(element: HTMLButtonElement, type : number){
 		if(element.innerText.length < 9){
-			if(type == 0) {
-				element.style.fontSize = '2.8vmin';	
+			if(type == 0 && $('.btn-layout-type-0>div').length > 0) {
+				element.style.fontSize = '26px';	
 			}else{
-				element.style.fontSize = '2.2vmin';
+				element.style.fontSize = '20px';
 			}
 			return;
 		}
 		let maxSize : number = 20;
-		if(type == 0) {
+		if(type == 0 && $('.btn-layout-type-0>div').length > 0 ) {
 			maxSize = 26;	
-		}
-		let fontSize = (element.offsetWidth / element.innerText.length) + (type == 0 ? 8 : 5);
+		} 
+		let fontSize = (element.offsetWidth / element.innerText.length) + (type == 0 && $('.btn-layout-type-0>div').length > 0 ? 6.5 : 5);
 		if(fontSize > maxSize) fontSize = maxSize;
 		element.style.fontSize = fontSize + 'px';
 	}
