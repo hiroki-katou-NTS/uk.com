@@ -1,6 +1,5 @@
 package nts.uk.ctx.exio.dom.exi.extcategory.specialedit;
 
-import java.util.List;
 import java.util.Optional;
 
 import javax.inject.Inject;
@@ -13,12 +12,13 @@ import nts.uk.ctx.exio.dom.exo.exoutsummaryservice.EmployeeInforExoImport;
 import nts.uk.ctx.exio.dom.exo.exoutsummaryservice.RegulationInfoEmployeeAdapter;
 
 public class SpecialEditEmployeeId extends SpecialEdit{
+	private String originalValue;
 	@Inject
 	private RegulationInfoEmployeeAdapter empAdapter;
 	
-	public SpecialEditEmployeeId(boolean chkError, Object itemValue, Optional<AcceptMode> accMode,
-			List<List<String>> lstLineData) {
-		super(chkError, itemValue, accMode, lstLineData);
+	public SpecialEditEmployeeId(boolean chkError, String itemValue, String originalValue, Optional<AcceptMode> accMode) {
+		super(chkError, itemValue, accMode);
+		this.originalValue = originalValue;
 	}
 	
 	/**
@@ -29,13 +29,13 @@ public class SpecialEditEmployeeId extends SpecialEdit{
 	 * @return
 	 */
 	public SpecialEditValue edit() {
-		val specialEditCompanyID = new SpecialEditCompanyID(chkError, itemValue, accMode, lstLineData);
+		val specialEditCompanyID = new SpecialEditCompanyID(chkError, editedItemValue, originalValue, accMode);
 		SpecialEditValue result = specialEditCompanyID.edit();
 		
 		//会社IDを取得できる
 		if(!result.isChkError()) {
 			//RQ18.「会社ID」「社員コード」より社員基本情報を取得を実行する
-			Optional<EmployeeInforExoImport> optEmpInfor = empAdapter.getEmployeeInforByCid(result.getEditValue().toString(), itemValue.toString());
+			Optional<EmployeeInforExoImport> optEmpInfor = empAdapter.getEmployeeInforByCid(result.getEditValue().toString(), editedItemValue);
 			if(!optEmpInfor.isPresent()) {
 				//INPUT.受入モード　＝　上書き　であるかをチェックする
 				if(accMode.isPresent() && accMode.get() == AcceptMode.UPDATE_ONLY) {

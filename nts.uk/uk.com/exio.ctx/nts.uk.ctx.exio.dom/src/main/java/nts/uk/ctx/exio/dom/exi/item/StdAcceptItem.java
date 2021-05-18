@@ -10,6 +10,7 @@ import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.exio.dom.exi.condset.AcScreenCondSet;
 import nts.uk.ctx.exio.dom.exi.condset.AcceptanceConditionCode;
+import nts.uk.ctx.exio.dom.exi.csvimport.CsvItem;
 import nts.uk.ctx.exio.dom.exi.dataformat.ChrDataFormatSet;
 import nts.uk.ctx.exio.dom.exi.dataformat.DataFormatSetting;
 import nts.uk.ctx.exio.dom.exi.dataformat.DateDataFormSet;
@@ -77,10 +78,10 @@ public class StdAcceptItem extends AggregateRoot {
 	 * @param itemValue
 	 * @return
 	 */
-	public AcceptItemEditValueDto checkCondition(String itemValue) {
+	public AcceptItemEditValueDto checkCondition(CsvItem csvItem,String itemValue) {
 		boolean resultCheck = true;
 		Object toItemValue = itemValue;
-		AcceptItemEditValueDto result = new AcceptItemEditValueDto(toItemValue, resultCheck, "");
+		AcceptItemEditValueDto result = new AcceptItemEditValueDto(itemValue, resultCheck, "");
 		if(this.getDataFormatSetting().isPresent()) {
 			switch (this.itemType) {
 			case CHARACTER:

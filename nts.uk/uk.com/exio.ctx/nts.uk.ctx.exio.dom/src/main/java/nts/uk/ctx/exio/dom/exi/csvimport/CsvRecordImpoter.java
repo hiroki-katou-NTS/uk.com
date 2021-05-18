@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import lombok.AllArgsConstructor;
@@ -13,6 +15,9 @@ import nts.gul.csv.CSVParsedResult;
 import nts.gul.csv.NtsCsvReader;
 import nts.gul.csv.NtsCsvRecord;
 import nts.uk.ctx.exio.dom.exi.condset.AcceptanceLineNumber;
+import nts.uk.ctx.exio.dom.exi.extcategory.ExternalAcceptCategoryItem;
+import nts.uk.ctx.exio.dom.exi.item.StdAcceptItem;
+
 /**
  * CSVの1レコードを取り込む
  * @author ai_muto
@@ -64,18 +69,7 @@ public class CsvRecordImpoter {
 		this.charset = ExiCharset.valueOf(encoding);
 	}
 	
-	public NtsCsvRecord read(Require require) throws IOException {
-		val colHeader = readHeader(require);
-		
-		for(int i =0; i < colHeader.getRowNumber(); i++) {
-			String column = (String) colHeader.getColumn(i);
-		}
-		
-		//TODO:
-		throw new RuntimeException("未実装！");
-	}
-	
-	public NtsCsvRecord readHeader(Require require) throws IOException {
+	public List<CsvRecord> read(Require require) throws IOException, RequiredMasterDataNotFoundException {
 		NtsCsvReader csvReader = NtsCsvReader.newReader()
 				.withNoHeader()
 				.skipEmptyLines(true)
@@ -93,7 +87,36 @@ public class CsvRecordImpoter {
 		if(csvParsedResult.getRecords().size() <= startLine) {
 			throw new BusinessException("CSVファイルの行数より取込開始行が大きいです、確認してください。");
 		}
-		return colHeader;
+		
+		val csvParsedLines = csvParsedResult.getRecords().subList(startLine - 1, csvParsedResult.getRecords().size());
+
+		val lstAccSetItem = require.getListStdAcceptItems();
+		val optAcceptCategory = require.getAcceptCategory();
+		if(!optAcceptCategory.isPresent()) {
+			throw new RequiredMasterDataNotFoundException();
+		}
+		List<ExternalAcceptCategoryItem> lstAcceptItem =  optAcceptCategory.get().getLstAcceptItem();
+		
+		List<CsvRecord> result = new ArrayList<>();
+		for (NtsCsvRecord csvParsedLine : csvParsedLines) {
+			List<CsvItem> items = new ArrayList<>();
+			for (int i = 0; i<colHeader.columnLength(); i++) {
+				String itemName = colHeader.getColumn(i).toString();
+				int csvItemNo = i +1;
+				Optional<StdAcceptItem> opAcceptSetItem = lstAccSetItem.stream()
+						.filter(x -> x.getCsvItemNumber().get() == csvItemNo)
+						.findFirst();
+				Optional<ExternalAcceptCategoryItem> accItems = 
+						opAcceptSetItem.isPresent()
+						? lstAcceptItem.stream()
+							.filter(x -> x.getItemNo() == opAcceptSetItem.get().getAcceptItemNumber())
+							.findFirst()
+						: Optional.empty();
+				items.add(new CsvItem(itemName, csvParsedLine.getColumn(itemName).toString(), opAcceptSetItem.orElse(null), accItems));
+			}
+			result.add(new CsvRecord(items));
+		}
+		return result;
 	}
 	
 	private Charset getCharset() {

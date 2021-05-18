@@ -6,7 +6,6 @@ import lombok.Data;
 @AllArgsConstructor
 @Data
 public class AcceptItemEditValueDto {
-
 	private Object editValue;
 	
 	/**
@@ -17,5 +16,4 @@ public class AcceptItemEditValueDto {
 	 * チェックのエラー内容
 	 */
 	private String editError;
-
 }

@@ -18,15 +18,17 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.infra.file.storage.StoredFileStreamService;
 import nts.arc.task.data.TaskDataSetter;
 import nts.arc.time.GeneralDateTime;
-import nts.gul.csv.NtsCsvRecord;
 import nts.uk.ctx.exio.dom.exi.codeconvert.AcceptCdConvert;
 import nts.uk.ctx.exio.dom.exi.codeconvert.AcceptCdConvertRepository;
 import nts.uk.ctx.exio.dom.exi.condset.StdAcceptCondSet;
 import nts.uk.ctx.exio.dom.exi.condset.StdAcceptCondSetRepository;
 import nts.uk.ctx.exio.dom.exi.csvimport.CsvItemImport;
+import nts.uk.ctx.exio.dom.exi.csvimport.CsvRecord;
 import nts.uk.ctx.exio.dom.exi.csvimport.CsvRecordImpoter;
 import nts.uk.ctx.exio.dom.exi.csvimport.ItemCheck;
+import nts.uk.ctx.exio.dom.exi.csvimport.RequiredMasterDataNotFoundException;
 import nts.uk.ctx.exio.dom.exi.execlog.ExacErrorLog;
+import nts.uk.ctx.exio.dom.exi.execlog.ExacErrorLogManager;
 import nts.uk.ctx.exio.dom.exi.execlog.ExacErrorLogRepository;
 import nts.uk.ctx.exio.dom.exi.execlog.ExacExeResultLog;
 import nts.uk.ctx.exio.dom.exi.execlog.ExacExeResultLogRepository;
@@ -83,52 +85,46 @@ public class AsyncCsvCheckImportDataCommandHandler extends AsyncCommandHandler<C
 		if(!optCondSet.isPresent() || !optCondSet.get().getCategoryId().isPresent()) return;
 		StdAcceptCondSet condSet = optCondSet.get();
 		int categoryId = condSet.getCategoryId().get();
+		
+		val logManager = new ExacErrorLogManager(cid, command.getProcessId());
 
-		val require = new RequireImpl(command.getCsvFileId(), cid, conditionSetCd, categoryId);
+		val require = new RequireImpl(command.getCsvFileId(), cid, conditionSetCd, categoryId, logManager);
 		
 		ExacExeResultLog resultLog = new ExacExeResultLog();
-		int lineErrors = 0;
+		int errorCount = 0;
+		int successCount = 0;
 		try {
 			Optional<ExacExeResultLog> optResultLog = exResultLog.getExacExeResultLogById(cid, conditionSetCd, command.getProcessId());
 			if(optResultLog.isPresent()) resultLog = optResultLog.get();
 			
-			NtsCsvRecord colHeader = condSet.getCsvRecordImpoter().readHeader(require);
-			
+			//NtsCsvRecord colHeader = condSet.getCsvRecordImpoter().readHeader(require);
+			List<CsvRecord> csvRecords;
+			try {
+				csvRecords = condSet.getCsvRecordImpoter().read(require);
+			}
+			catch (RequiredMasterDataNotFoundException ex){
+				setter.updateData(NUMBER_OF_SUCCESS, command.getCsvLine());
+				setter.updateData(STATUS, command.getStateBehavior());
+				return;
+			}
 			List<ExacErrorLog> lstExacErrorLog = new ArrayList<>();
 			List<Map<Integer, Object>> lstCsvContent = new ArrayList<>();
 			int errItems = 0;
-			for (int i = 1; i <= command.getCsvLine() ; i++) { // line
-				List<List<String>> lstLineData = new ArrayList<>();
-				//Read record				
-//				NtsCsvRecord record = csvParsedResult.getRecords().get(i + startLine - 2);
-				NtsCsvRecord record = condSet.getCsvRecordImpoter().read(require);
-				
+			for (CsvRecord csvRecord : csvRecords) { // line
 				//アルゴリズム「受入項目チェック＆編集」を実行する
-				CsvItemImport csvItemImporter = new CsvItemImport(cid,
-						colHeader,
-						record,  
-						categoryId, 
-						lstLineData,
-						errItems, 
-						command.getProcessId(), 
-						lstExacErrorLog, i,  condSet.getAcceptMode()
-						);
+				CsvItemImport csvItemImporter = new CsvItemImport(csvRecord, csvRecords.indexOf(csvRecord) + 1,  condSet.getAcceptMode());
 				ItemCheck checkAndEditItemOfLine = csvItemImporter.readLine(require);
-				if(checkAndEditItemOfLine.isAcceptCategoryNotFound()) {
-					setter.updateData(NUMBER_OF_SUCCESS, command.getCsvLine());
-					setter.updateData(STATUS, command.getStateBehavior());
-					return;
-				}
 				
 				if(!checkAndEditItemOfLine.isLineError()) {
-					lineErrors += 1; 
-					setter.updateData(NUMBER_OF_ERROR, lineErrors);
+					errorCount += 1; 
+					setter.updateData(NUMBER_OF_ERROR, errorCount);
 				} else {
+					successCount += 1;
 					if(checkAndEditItemOfLine.isCond()) {
 						//TODO insert vao db	
 						lstCsvContent.add(checkAndEditItemOfLine.getMapLineContent());
 					}			
-					setter.updateData(NUMBER_OF_SUCCESS, i - lineErrors);
+					setter.updateData(NUMBER_OF_SUCCESS, successCount);
 				}
 							
 				//↓-----------lan truoc
@@ -154,13 +150,13 @@ public class AsyncCsvCheckImportDataCommandHandler extends AsyncCommandHandler<C
 				//↑---------lan truoc
 			} // line
 			exacErrorLogRepository.addList(lstExacErrorLog);
-			resultLog.setErrorCount(lineErrors);
+			resultLog.setErrorCount(errorCount);
 			resultLog.setProcessEndDatetime(Optional.ofNullable(GeneralDateTime.now()));
 			exResultLog.update(resultLog);
 //			inputStream.close();
 		} catch (IOException e) {
 			resultLog.setResultStatus(Optional.of(ExtResultStatus.FAILURE));
-			resultLog.setErrorCount(lineErrors);
+			resultLog.setErrorCount(errorCount);
 			exResultLog.update(resultLog);
 			e.printStackTrace();
 			throw new RuntimeException(e);
@@ -173,16 +169,18 @@ public class AsyncCsvCheckImportDataCommandHandler extends AsyncCommandHandler<C
 		private String cid;
 		String conditionSetCd;
 		private int categoryId;
+		ExacErrorLogManager logManager;
 
 		List<StdAcceptItem> listStdAcceptItems;
 		Optional<ExternalAcceptCategory> acceptCategory;
 		List<AcceptCdConvert> acceptCdConvert;
 		
-		public RequireImpl(String fileId, String cid, String conditionSetCd, int categoryId) {
+		public RequireImpl(String fileId, String cid, String conditionSetCd, int categoryId, ExacErrorLogManager logManager) {
 			this.fileId=fileId;
 			this.cid = cid;
 			this.conditionSetCd = conditionSetCd;
 			this.categoryId = categoryId;
+			this.logManager = logManager;
 			
 			this.mapItemSpecial = new HashMap<>();
 			acceptCategory = null;
@@ -230,6 +228,11 @@ public class AsyncCsvCheckImportDataCommandHandler extends AsyncCommandHandler<C
 				this.acceptCdConvert = cdConvertRepos.getAcceptCdConvertByCompanyId(this.cid);
 			}
 			return this.acceptCdConvert;
+		}
+
+		@Override
+		public ExacErrorLogManager getLogManager() {
+			return logManager;
 		}
 	}
 }

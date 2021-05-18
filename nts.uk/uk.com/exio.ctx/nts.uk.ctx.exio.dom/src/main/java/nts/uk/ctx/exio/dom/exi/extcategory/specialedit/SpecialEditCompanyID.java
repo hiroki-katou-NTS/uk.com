@@ -1,6 +1,5 @@
 package nts.uk.ctx.exio.dom.exi.extcategory.specialedit;
 
-import java.util.List;
 import java.util.Optional;
 
 import nts.uk.ctx.exio.dom.exi.condset.AcceptMode;
@@ -8,9 +7,11 @@ import nts.uk.ctx.exio.dom.exi.extcategory.SpecialEditValue;
 import nts.uk.shr.com.context.AppContexts;
 
 public class SpecialEditCompanyID extends SpecialEdit{
-	public SpecialEditCompanyID(boolean chkError, Object itemValue, Optional<AcceptMode> accMode,
-			List<List<String>> lstLineData) {
-		super(chkError, itemValue, accMode, lstLineData);
+	private String originalValue;
+	
+	public SpecialEditCompanyID(boolean chkError, String editedItemValue, String originalValue, Optional<AcceptMode> accMode) {
+		super(chkError, editedItemValue, accMode);
+		this.originalValue = originalValue;
 	}
 	
 	/**
@@ -22,27 +23,22 @@ public class SpecialEditCompanyID extends SpecialEdit{
 	public SpecialEditValue edit() {
 		SpecialEditValue result = new SpecialEditValue();
 		result.setChkError(this.chkError);
-		result.setEditValue(this.itemValue);
+		result.setEditValue(this.editedItemValue);
 		
-		if(itemValue == null || itemValue == "") {
-			String columnName = "CID";
-			for(List<String> lstData : lstLineData) {
-				if(lstData.get(0).equals(columnName)) {
-					itemValue = lstData.get(1);
-				}
-			}
-			if(itemValue == null || itemValue == "") {
+		if(editedItemValue == null || editedItemValue == "") {
+			if(this.originalValue == null || this.originalValue == "") {
 				result.setChkError(true);
 				result.setErrorContent("Msg_2128");
 				return result;
 			}
+			editedItemValue = originalValue;
 		}
 		String contractCode =  AppContexts.user().contractCode();
 		if(contractCode.isEmpty()) {
 			result.setChkError(true);
 			result.setErrorContent("Msg_2127");
 		} else {
-			result.setEditValue(contractCode + "-" + itemValue);
+			result.setEditValue(contractCode + "-" + editedItemValue);
 		}
 		return result;
 	}
