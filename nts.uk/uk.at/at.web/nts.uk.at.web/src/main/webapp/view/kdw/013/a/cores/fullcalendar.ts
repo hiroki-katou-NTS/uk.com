@@ -969,19 +969,6 @@ module nts.uk.ui.at.kdw013.calendar {
                         }
                     }
 
-                    vm.$nextTick(() => {
-                        $.Deferred()
-                            .resolve(true)
-                            .then(() => {
-                                const { type } = vm.calendar.view;
-
-                                vm.calendar.changeView('dayGridMonth');
-
-                                return type;
-                            })
-                            .then((type: string) => vm.calendar.changeView(type));
-                    });
-
                     return days;
                 },
                 disposeWhenNodeIsRemoved: vm.$el
@@ -1098,9 +1085,13 @@ module nts.uk.ui.at.kdw013.calendar {
 
                                 // update dragger items
                                 vm.dragItems(draggers);
+
+                                return;
                             }
                         }
                     }
+
+                    vm.dragItems([]);
                 });
 
             // fix ie display

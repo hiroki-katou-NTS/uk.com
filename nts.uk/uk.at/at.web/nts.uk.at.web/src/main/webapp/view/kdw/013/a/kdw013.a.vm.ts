@@ -16,10 +16,11 @@ module nts.uk.ui.at.kdw013.a {
 
     };
 
-    const { formatTime } = share;
+    const { formatTime, setTimeOfDate } = share;
+    const { randomId } = nts.uk.util;
 
     const DATE_FORMAT = 'YYYY-MM-DD';
-    const DATE_TIME_FORMAT = 'YYYY-MM-DDT00:00:00.000\\Z';
+    const DATE_TIME_FORMAT = 'YYYY-MM-DDTHH:mm:00.000\\Z';
 
     const API: API = {
         ADD: '/screen/at/kdw013/a/add',
@@ -156,10 +157,65 @@ module nts.uk.ui.at.kdw013.a {
                         if (lstWorkRecordDetailDto) {
                             const events = _
                                 .chain(lstWorkRecordDetailDto)
-                                .map(({ lstWorkDetailsParamDto }) => lstWorkRecordDetailDto)
+                                .map(({ date, sid, lstWorkDetailsParamDto }) => {
+                                    const events: calendar.EventRaw[] =
+                                        _.chain(lstWorkDetailsParamDto)
+                                            .map(({
+                                                remarks,
+                                                supportFrameNo,
+                                                timeZone,
+                                                workGroup,
+                                                workLocationCD,
+                                            }) => {
+                                                const $date = moment(date, DATE_FORMAT).toDate();
+
+                                                const { end, start } = timeZone;
+                                                const {
+                                                    workCD1,
+                                                    workCD2,
+                                                    workCD3,
+                                                    workCD4,
+                                                    workCD5
+                                                } = workGroup;
+
+                                                const { timeWithDay: startTime } = start;
+                                                const { timeWithDay: endTime } = end;
+
+                                                return {
+                                                    start: setTimeOfDate($date, startTime),
+                                                    end: setTimeOfDate($date, endTime || (startTime + 60)),
+                                                    title: '',
+                                                    backgroundColor: '',
+                                                    textColor: '',
+                                                    extendedProps: {
+                                                        id: randomId(),
+                                                        status: 'normal' as any,
+                                                        relateId: randomId(),
+                                                        description: remarks,
+                                                        sId: sid,
+                                                        workCD1,
+                                                        workCD2,
+                                                        workCD3,
+                                                        workCD4,
+                                                        workCD5,
+                                                        workplace: workLocationCD
+                                                    } as any
+                                                };
+                                            })
+                                            .value();
+
+                                    return events;
+                                })
+                                .flatten()
                                 .value();
+
+                            vm.events(events);
+
+                            return;
                         }
                     }
+
+                    vm.events([]);
                 });
 
             vm.$toggle = {
@@ -196,13 +252,13 @@ module nts.uk.ui.at.kdw013.a {
                     const dateRange = ko.unwrap(vm.dateRange);
                     const { start, end } = dateRange;
 
-                    if (!!start && !!end) {
+                    if (!!start && !!end && moment(date).isBetween(start, end)) {
                         const params: ChangeDateParam = {
                             employeeId,
-                            refDate: moment(date).format(DATE_TIME_FORMAT),
+                            refDate: moment(date).startOf('day').format(DATE_TIME_FORMAT),
                             displayPeriod: {
-                                start: moment(start).format(DATE_TIME_FORMAT),
-                                end: moment(end).format(DATE_TIME_FORMAT)
+                                start: moment(start).startOf('day').format(DATE_TIME_FORMAT),
+                                end: moment(end).subtract(1, 'day').endOf('day').format(DATE_TIME_FORMAT)
                             }
                         };
                         const pair = sameCache(params);
@@ -212,9 +268,14 @@ module nts.uk.ui.at.kdw013.a {
                         }
 
                         if (pair === 0) {
+                            // s.h.i.t
+                            // vm.$datas(null);
+
                             vm
-                                .$ajax('at', API.CHANGE_DATE, params)
-                                .then((data: ChangeDateDto) => vm.$datas(data));
+                                .$blockui('grayout')
+                                .then(() => vm.$ajax('at', API.CHANGE_DATE, params))
+                                .then((data: ChangeDateDto) => vm.$datas(data))
+                                .always(() => vm.$blockui('clear'));
                         }
                     }
                 }
@@ -307,7 +368,8 @@ module nts.uk.ui.at.kdw013.a {
 
             // get settings Msg_1960
             vm
-                .$ajax('at', API.START)
+                .$blockui('grayout')
+                .then(() => vm.$ajax('at', API.START))
                 .then((response: StartProcessDto) => {
                     // 作業利用設定チェック
                     if (!response) {
@@ -338,7 +400,8 @@ module nts.uk.ui.at.kdw013.a {
                     }
 
                     vm.$settings(response);
-                });
+                })
+                .always(() => vm.$blockui('clear'));
         }
 
         mounted() {
