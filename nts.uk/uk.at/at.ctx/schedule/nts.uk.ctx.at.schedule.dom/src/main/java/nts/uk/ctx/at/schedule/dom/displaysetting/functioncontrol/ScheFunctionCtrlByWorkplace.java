@@ -9,6 +9,7 @@ import lombok.Getter;
 import nts.arc.error.BusinessException;
 import nts.arc.i18n.I18NText;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
+import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeForm;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
@@ -85,4 +86,27 @@ public class ScheFunctionCtrlByWorkplace implements DomainAggregate {
 		
 	}
 
+	/**
+	 * @param form
+	 * @return
+	 */
+	public boolean isUseDisplayPeriod (FuncCtrlDisplayPeriod form) {
+		return this.useDisplayPeriod.contains(form);
+	}
+
+	/**
+	 * @param form
+	 * @return
+	 */
+	public boolean isUseDisplayFormat (FuncCtrlDisplayFormat form) {
+		return this.useDisplayFormat.contains(form);
+	}
+
+	/**
+	 * @param form
+	 * @return
+	 */
+	public boolean isStartControl (FuncCtrlStartControl form) {
+		return this.pageCanBeStarted.contains(form);
+	}
 }

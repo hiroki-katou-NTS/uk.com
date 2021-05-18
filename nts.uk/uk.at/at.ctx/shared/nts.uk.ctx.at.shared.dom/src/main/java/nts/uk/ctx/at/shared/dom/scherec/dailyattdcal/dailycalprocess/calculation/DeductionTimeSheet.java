@@ -846,14 +846,20 @@ public class DeductionTimeSheet {
 			val startTime = timeLeave.flatMap(c -> c.getAttendanceTime()).orElse(oneDayOfRange.getStart());
 			
 			if (workTime.getWorkTimeSetting().getWorkTimeDivision().isFlow()) { /** 流動勤務の場合 */
+				/** 出勤時刻を予定開始時刻にする */
+				calcRange.setScheduleStartTimeForFlow(
+						integrationOfDaily.getWorkInformation(),
+						workTime.getFlowWorkSetting().get().getFlowSetting().getCalculateSetting());
+				
+				Optional<TimeLeavingWork> firstTimeLeave = calcRange.getAttendanceLeavingWork().getAttendanceLeavingWork(new WorkNo(1));
 				
 				/** 計算範囲を判断 */
 				val within = calcRange.createWithinWorkTimeFrameIncludingCalculationRange(workType,
-						integrationOfDaily, workTime.getFlowWorkSetting().get(), 
-						getTimeLeaveWork(integrationOfDaily), predetermineTimeSet);
+						firstTimeLeave.orElse(getTimeLeaveWork(integrationOfDaily)), predetermineTimeSet);
 				
 				/** 計算開始時刻を取得 */
 				return within.getTimeSheet().getStart();
+				
 			} else if(workTime.getWorkTimeSetting().getWorkTimeDivision().isFlex()) { /** フレックス勤務用　の場合 */
 				
 				/** ○就業時間帯の計算開始時刻を取得 */
