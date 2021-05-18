@@ -49,7 +49,7 @@ module nts.uk.at.view.kdp.share {
 			.time-container .time .text-time {
 				position: absolute;
 				top: -23px;
-				right: -107px;
+				right: -94px;
 				font-size: 85px;
 				color: white;
 			}

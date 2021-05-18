@@ -122,8 +122,8 @@
 }
 
 #stamp-input {
-	max-width: 540px;
-	padding-top: 10px;
+	max-width: 480px;
+	padding-top: 0px;
 	width: 100%;
 }
 
@@ -147,6 +147,7 @@
 	padding-bottom: 10px;
 	position: relative;
 	overflow: hidden;
+    margin-bottom: 1vmin;
 }
 
 #stamp-header #stamp-date {
@@ -196,7 +197,7 @@
 }
 
 .tab-button-panel .grid-container>div:not(:first-child) {
-	margin-top: 10px;
+	margin-top: 8px;
 }
 
 .tab-button-panel .grid-container>div>button {
@@ -212,11 +213,11 @@
 }
 
 .tab-button-panel .grid-container>div>button:not(:first-child) {
-	margin-left: 10px;
+	margin-left: 8px;
 }
 
 .tab-button-panel .grid-container.btn-layout-type-0>div:nth-child(1)>button>i {
-    max-width: 120px !important;
+    max-width: 100px !important;
     max-height: 120px !important;
     width: 80% !important;
     height: 55% !important;
@@ -224,8 +225,8 @@
 
 .tab-button-panel .grid-container.btn-layout-type-0>div:nth-child(2)>button>i,
 .tab-button-panel .grid-container.btn-layout-type-0>div:nth-child(3)>button>i {
-	max-width: 60px !important;
-    max-height: 60px !important;
+	max-width: 40px !important;
+    max-height: 40px !important;
     width: 80% !important;
     height: 55% !important;
 }
@@ -275,8 +276,8 @@
 }
 
 .tab-button-panel .grid-container.btn-layout-type-1>div{
-	max-height: 113px;
-	height: 18vmin;
+	max-height: 96px;
+	height: 23vmin;
 }
 
 .tab-button-panel .grid-container.btn-layout-type-1>div>button {
@@ -297,6 +298,10 @@
 	vertical-align: middle;
 }
 
+.tab-button-panel .tabs-panel.horizontal>.tabs-list {
+	padding: 7px;
+}
+
 .btn-layout-type-0 div:first-child .stamp-rec-btn div{
 	height: 4vmin;
 	max-height: 40px;
@@ -314,6 +319,7 @@
     width: 65%;
     display: inline-block;
     vertical-align: middle;
+    font-size: inherit;
 }
 
 .stamp-square-btn-container {
@@ -346,7 +352,7 @@
 }
 .pageComent {
 	white-space: break-spaces;
-    padding: 0 1vmin 1.5vmin;
+    padding: 0 1vmin 1vmin;
     word-break: break-word;
 }
 
