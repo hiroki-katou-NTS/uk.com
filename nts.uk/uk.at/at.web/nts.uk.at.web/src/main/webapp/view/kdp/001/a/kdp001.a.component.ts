@@ -462,6 +462,7 @@ module nts.uk.ui.kdp001.a {
         workplaceId: KnockoutObservable<string | null> = ko.observable(null);
         modeA: KnockoutObservable<boolean> = ko.observable(false);
         workpalceCD: string | null = null;
+        workPalceIds: string[] = null;
 
         message: {
             data: KnockoutObservable<MessageData>;
@@ -510,14 +511,14 @@ module nts.uk.ui.kdp001.a {
                 }
             });
 
-            vm.poral = ko.computed({
-                read: () => {
-                    const url = document.URL.toString();
-                    const result = url.endsWith("view/ccg/008/a/index.xhtml");
+            // vm.poral = ko.computed({
+            //     read: () => {
+            //         const url = document.URL.toString();
+            //         const result = url.endsWith("view/ccg/008/a/index.xhtml");
 
-                    return result;
-                }
-            });
+            //         return result;
+            //     }
+            // });
 
             vm.widget = ko.computed({
                 read: () => {
@@ -774,15 +775,25 @@ module nts.uk.ui.kdp001.a {
         }
 
         basyo() {
+
+            $.urlParam = function (name) {
+                var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
+                if (results == null) {
+                    return null;
+                }
+                else {
+                    return decodeURI(results[1]) || 0;
+                }
+            }
+
             const vm = this,
-                params = new URLSearchParams(window.location.search),
-                locationCd = params.get('basyo'),
-                mode = params.get('mode');
+                locationCd = $.urlParam('basyo'),
+                mode = $.urlParam('mode');
 
             if (locationCd) {
                 vm.modeBasyo(true)
                 const param = {
-                    contractCode: __viewContext.user.contractCode,
+                    contractCode: '000000000004',
                     workLocationCode: locationCd
                 }
 
@@ -795,7 +806,7 @@ module nts.uk.ui.kdp001.a {
                                         vm.workpalceCD = locationCd;
                                     }
                                     if (data.workpalceId != null) {
-                                        vm.workplaceId(data.workpalceId);
+                                        vm.workplaceId(data.workpalceId[0]);
                                     }
                                 }
 
@@ -872,7 +883,7 @@ module nts.uk.ui.kdp001.a {
 
     interface IBasyo {
         workLocationName: string;
-        workpalceId: string;
+        workpalceId: string[];
     }
 
     interface MessageData {

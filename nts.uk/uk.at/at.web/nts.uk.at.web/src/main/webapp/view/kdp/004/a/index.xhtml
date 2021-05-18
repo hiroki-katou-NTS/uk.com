@@ -112,8 +112,8 @@
 							<ui:include src="/view/kdp/002/a/stamp-tab.xhtml" />
 						</div> -->
 						<com:ko-if bind="pageComment() != ''">
-			          		<div class="pageComent" data-bind="html: pageComment, style: {color: commentColor}"></div>
-			          	</com:ko-if>
+							<div class="pageComent" data-bind="html: pageComment, style: {color: commentColor}"></div>
+						</com:ko-if>
 						<com:ko-if bind="ko.toJS($vm.errorMessage) === ''">
 							<div data-bind="kdp-tab-button-panel: { 
 								tabs: stampTab().tabs,
@@ -124,23 +124,25 @@
 								marginBottom: 0
 							}"></div>
 						</com:ko-if>
-						  <com:ko-if bind="isUsed">
-							<com:ko-if bind="ko.toJS($vm.fingerStampSetting).noticeSetDto.displayAtr == 1">
-							<div class="kdp-message-error" data-bind="component: {
-								name: 'kdp-message-error',
-								params:{
-									events: {
-										registerNoti: {
-											click: function() { $vm.settingNoti.apply($vm, []); }
-										},
-										shoNoti: {
-											click: function() { $vm.shoNoti.apply($vm, []); }
+						<com:ko-if bind="isUsed">
+							<com:ko-if bind="ko.toJS($vm.fingerStampSetting).noticeSetDto">
+								<com:ko-if bind="ko.toJS($vm.fingerStampSetting).noticeSetDto.displayAtr == 1">
+									<div class="kdp-message-error" data-bind="component: {
+										name: 'kdp-message-error',
+										params:{
+											events: {
+												registerNoti: {
+													click: function() { $vm.settingNoti.apply($vm, []); }
+												},
+												shoNoti: {
+													click: function() { $vm.shoNoti.apply($vm, []); }
+												}
+											},
+											notiSet: fingerStampSetting,
+											messageNoti: messageNoti
 										}
-									},
-									notiSet: fingerStampSetting,
-									messageNoti: messageNoti
-								}
-							}"></div>
+									}"></div>
+								</com:ko-if>
 							</com:ko-if>
 						</com:ko-if>
 						<div style="padding: 0 10px 10px 80px" data-bind="ifnot:isUsed">

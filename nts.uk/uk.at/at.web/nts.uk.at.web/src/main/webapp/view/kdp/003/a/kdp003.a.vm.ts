@@ -96,9 +96,6 @@ module nts.uk.at.kdp003.a {
 		created() {
 			const vm = this;
 
-			// get location from basyo
-			vm.basyo();
-
 			//get workplaces Info
 			vm.getWorkPlacesInfo();
 
@@ -142,10 +139,21 @@ module nts.uk.at.kdp003.a {
 		}
 
 		// get WorkPlace from basyo -> save locastorage.
-		basyo() {
+		basyo(): JQueryPromise<any> {
+			let dfd = $.Deferred<any>();
+
+			$.urlParam = function (name) {
+				var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
+				if (results == null) {
+					return null;
+				}
+				else {
+					return decodeURI(results[1]) || 0;
+				}
+			}
+
 			const vm = this,
-				params = new URLSearchParams(window.location.search),
-				locationCd = params.get('basyo');
+				locationCd = $.urlParam('basyo');
 
 			if (locationCd) {
 				const param = {
@@ -163,13 +171,16 @@ module nts.uk.at.kdp003.a {
 
 							if (data.workpalceId) {
 								vm.modeBasyo(true);
-								vm.workPlace = [data.workpalceId];
-								vm.workPlaceId = data.workpalceId;
+								vm.workPlace = data.workpalceId;
 							}
 						}
 					});
-
+				dfd.resolve();
+			} else {
+				dfd.resolve();
 			}
+
+			return dfd.promise();
 		}
 
 		shoNoti() {
@@ -194,7 +205,6 @@ module nts.uk.at.kdp003.a {
 								if (output === 'loginSuccess') {
 									vm.$window.modal('at', DIALOG.P)
 										.then(() => {
-											debugger;
 											window.location.reload(false);
 										});
 								}
@@ -307,6 +317,9 @@ module nts.uk.at.kdp003.a {
 								}));
 						}) as JQueryPromise<LoginData>;
 				})
+				.then(() => {
+					return vm.basyo() as JQueryPromise<LoginData>;
+				})
 				.then((data: LoginData) => {
 					// if dialog f return data (first login)
 					if (data.loginData && !data.loginData.msgErrorId && !data.loginData.errorMessage && !data.storageData) {
@@ -322,8 +335,6 @@ module nts.uk.at.kdp003.a {
 								})) as JQueryPromise<LoginData>;
 						}
 					}
-
-					vm.getWorkPlacesInfo();
 
 					return data;
 				})
@@ -511,114 +522,118 @@ module nts.uk.at.kdp003.a {
 					return vm.$window.modal('at', DIALOG.F, { mode, companyId });
 				})
 				// check storage data
-				.then((loginData: undefined | f.TimeStampLoginData) => {
-					if (loginData === undefined) {
-						return {};
-					} else {
-						const params = { multiSelect: true };
+				.then(() => {
+					vm.basyo()
+						.done((loginData: undefined | f.TimeStampLoginData) => {
+							if (loginData === undefined) {
+								return {};
+							} else {
+								const params = { multiSelect: true };
 
-						if (!ko.unwrap(vm.modeBasyo) && loginData.msgErrorId !== "Msg_1527") {
-							return vm.$window.modal('at', DIALOG.K, params)
-								.then((workplaceData: undefined | k.Return) => {
-									workplace = workplaceData;
-									openViewK = true;
-									return {
-										loginData,
-										workplaceData
-									};
-								}) as JQueryPromise<LoginData>;
-						}
-						vm.getWorkPlacesInfo();
-					}
-				})
-				.then((data: LoginData) => {
-					if (!data.loginData || !data.workplaceData) {
-						return storage(KDP003_SAVE_DATA)
-							.then((data: undefined | StorageData) => {
-								if (_.isNil(data)) {
-									vm.setMessage({ messageId: 'Msg_1647' });
-
-									return false;
+								if (!ko.unwrap(vm.modeBasyo) && loginData.msgErrorId !== "Msg_1527") {
+									return vm.$window.modal('at', DIALOG.K, params)
+										.then((workplaceData: undefined | k.Return) => {
+											workplace = workplaceData;
+											openViewK = true;
+											return {
+												loginData,
+												workplaceData
+											};
+										}) as JQueryPromise<LoginData>;
 								}
+								vm.getWorkPlacesInfo();
+							}
+						})
+						.then((data: LoginData) => {
+							if (!data.loginData || !data.workplaceData) {
+								return storage(KDP003_SAVE_DATA)
+									.then((data: undefined | StorageData) => {
+										if (_.isNil(data)) {
+											vm.setMessage({ messageId: 'Msg_1647' });
 
-								// reload with old data
-								// return data;
-							});
-					}
+											return false;
+										}
 
-					const { loginData, workplaceData } = data;
+										// reload with old data
+										// return data;
+									});
+							}
 
-					if (loginData.msgErrorId) {
-						vm.setMessage({ messageId: loginData.msgErrorId });
+							const { loginData, workplaceData } = data;
 
-						return false;
-					}
+							if (loginData.msgErrorId) {
+								vm.setMessage({ messageId: loginData.msgErrorId });
 
-					if (loginData.errorMessage) {
-						vm.setMessage(loginData.errorMessage);
+								return false;
+							}
 
-						return false;
-					}
+							if (loginData.errorMessage) {
+								vm.setMessage(loginData.errorMessage);
 
-					// if login & select workspace success
-					const { em } = loginData;
-					const { selectedId } = workplaceData;
+								return false;
+							}
 
-					const storageData = {
-						CCD: em.companyCode,
-						CID: em.companyId,
-						PWD: em.password,
-						SCD: em.employeeCode,
-						SID: em.employeeId,
-						WKLOC_CD: '',
-						WKPID: _.isString(selectedId) ? [selectedId] : selectedId
-					};
+							// if login & select workspace success
+							const { em } = loginData;
+							const { selectedId } = workplaceData;
 
-					return storage(KDP003_SAVE_DATA, storageData) as JQueryPromise<StorageData>;
-				})
-				.then((data: false | StorageData) => {
-					// if login and storage data success
-					if (data) {
-						// data login by storage
-						const {
-							CCD,
-							CID,
-							PWD,
-							SCD,
-							SID
-						} = data;
+							const storageData = {
+								CCD: em.companyCode,
+								CID: em.companyId,
+								PWD: em.password,
+								SCD: em.employeeCode,
+								SID: em.employeeId,
+								WKLOC_CD: '',
+								WKPID: _.isString(selectedId) ? [selectedId] : selectedId
+							};
 
-						const loginParams: f.ModelData = {
-							contractCode: '000000000000',
-							companyCode: CCD,
-							companyId: CID,
-							employeeCode: SCD,
-							employeeId: SID,
-							password: PWD,
-							passwordInvalid: false,
-							isAdminMode: true,
-							runtimeEnvironmentCreate: true
-						};
+							return storage(KDP003_SAVE_DATA, storageData) as JQueryPromise<StorageData>;
+						})
+						.then((data: false | StorageData) => {
+							// if login and storage data success
+							if (data) {
+								// data login by storage
+								const {
+									CCD,
+									CID,
+									PWD,
+									SCD,
+									SID
+								} = data;
 
-						// login again (wtf?????)
-						return vm.$ajax('at', API.LOGIN_ADMIN, loginParams)
-							.then(() => vm.$ajax('at', API.FINGER_STAMP_SETTING))
-							.then((data: FingerStampSetting) => {
-								if (data) {
-									vm.fingerStampSetting(data);
-								}
-							})
-							.then(() => vm.loadData(data)) as JQueryPromise<any>;
-					}
-				})
-				// show message from login data (return by f dialog)
-				.fail((message: { messageId: string }) => {
-					vm.message(message);
-				})
-				.always(() => {
-					if (openViewK) {
-						window.location.reload(false);
-					}
+								const loginParams: f.ModelData = {
+									contractCode: '000000000000',
+									companyCode: CCD,
+									companyId: CID,
+									employeeCode: SCD,
+									employeeId: SID,
+									password: PWD,
+									passwordInvalid: false,
+									isAdminMode: true,
+									runtimeEnvironmentCreate: true
+								};
+
+								// login again (wtf?????)
+								return vm.$ajax('at', API.LOGIN_ADMIN, loginParams)
+									.then(() => vm.$ajax('at', API.FINGER_STAMP_SETTING))
+									.then((data: FingerStampSetting) => {
+										if (data) {
+											vm.fingerStampSetting(data);
+										}
+									})
+									.then(() => vm.loadData(data)) as JQueryPromise<any>;
+							}
+						})
+						// show message from login data (return by f dialog)
+						.fail((message: { messageId: string }) => {
+							vm.message(message);
+						})
+						.always(() => {
+							if (openViewK) {
+								window.location.reload(false);
+							}
+						});
+
 				});
 		}
 
@@ -746,7 +761,7 @@ module nts.uk.at.kdp003.a {
 																vm.workPlaceId = data;
 															}
 														}
-														
+
 														vm.$ajax(API.REGISTER, {
 															employeeId,
 															dateTime: moment(vm.$date.now()).format(),
@@ -797,6 +812,8 @@ module nts.uk.at.kdp003.a {
 													})
 											} else {
 												vm.workPlaceId = dataStorage.WKPID[0];
+
+												console.log(vm.workPlaceId);
 
 												vm.$ajax(API.REGISTER, {
 													employeeId,
@@ -1090,7 +1107,7 @@ module nts.uk.at.kdp003.a {
 
 	interface IBasyo {
 		workLocationName: string;
-		workpalceId: string;
+		workpalceId: string[];
 	}
 
 	interface IWorkPlaceInfo {

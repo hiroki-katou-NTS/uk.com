@@ -1,13 +1,14 @@
 package nts.uk.screen.at.app.query.kdp.kdp001.a;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.record.dom.stampmanagement.workplace.WorkLocation;
 import nts.uk.ctx.at.record.dom.stampmanagement.workplace.WorkLocationRepository;
-import nts.uk.ctx.at.record.dom.stampmanagement.workplace.WorkplacePossible;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -40,14 +41,12 @@ public class LocationStampInput {
 		WorkLocation workLocation = optWorkLocation.get();
 
 		dto.setWorkLocationName(workLocation.getWorkLocationName().toString());
-		Optional<WorkplacePossible> workPlacePossible = optWorkLocation.get().getListWorkplace().stream()
-				.filter(t -> t.getCompanyId().equals(cid)).findFirst();
-		
-		if (!workPlacePossible.isPresent()) {
-			return dto;
-		}
 
-		dto.setWorkpalceId(workPlacePossible.get().getWorkpalceId());
+		List<String> workplaces = workLocation.getListWorkplace().stream().filter(x -> x.getCompanyId().equals(cid))
+				.map(m -> m.getWorkpalceId())
+				.collect(Collectors.toList());
+
+		dto.setWorkpalceId(workplaces);
 
 		return dto;
 	}

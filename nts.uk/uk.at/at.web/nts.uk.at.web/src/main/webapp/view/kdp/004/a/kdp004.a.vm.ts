@@ -719,10 +719,20 @@ module nts.uk.at.view.kdp004.a {
 			// URLOption basyo
 			basyo(): JQueryPromise<any> {
 				let dfd = $.Deferred<any>();
+
+				$.urlParam = function (name) {
+					var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
+					if (results == null) {
+						return null;
+					}
+					else {
+						return decodeURI(results[1]) || 0;
+					}
+				}
+
 				const self = this,
 					vm = new ko.ViewModel(),
-					params = new URLSearchParams(window.location.search),
-					locationCd = params.get('basyo');
+					locationCd = $.urlParam('basyo');
 
 				// URLOption basyoが存在している場合
 				if (locationCd) {
@@ -742,8 +752,7 @@ module nts.uk.at.view.kdp004.a {
 
 								if (data.workpalceId) {
 									self.modeBasyo(true);
-									self.workplace = [data.workpalceId];
-									self.workPlaceId = data.workpalceId;
+									self.workplace = data.workpalceId;
 									dfd.resolve();
 								}
 							} else {
@@ -807,7 +816,7 @@ module nts.uk.at.view.kdp004.a {
 
 	interface IBasyo {
 		workLocationName: string;
-		workpalceId: string;
+		workpalceId: string[];
 	}
 
 	interface ISettingsStampCommon {
