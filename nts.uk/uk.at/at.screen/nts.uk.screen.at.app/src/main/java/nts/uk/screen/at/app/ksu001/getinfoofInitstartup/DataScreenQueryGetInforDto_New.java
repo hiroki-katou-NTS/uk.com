@@ -1,5 +1,7 @@
 package nts.uk.screen.at.app.ksu001.getinfoofInitstartup;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,5 +23,12 @@ public class DataScreenQueryGetInforDto_New {
 	public Boolean usePublicAtr; // 公開を利用するか
 	public Boolean useWorkAvailabilityAtr; // 勤務希望を利用するか
 
-
+	// スケジュール修正の機能制御
+	public ScheFunctionControlDto scheFunctionControl;
+	// スケジュール修正職場別の機能制御
+	public ScheFunctionCtrlByWorkplaceDto scheFunctionCtrlByWorkplace;
+	// スケジュール修正共通の権限制御
+	public List<ScheModifyAuthCtrlCommonDto> scheModifyAuthCtrlCommon;
+	// スケジュール修正職場別の権限制御
+	public List<ScheModifyAuthCtrlByWorkplaceDto> scheModifyAuthCtrlByWorkplace;
 }

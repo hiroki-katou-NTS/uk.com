@@ -189,7 +189,23 @@ public class ScreenQueryGetInforOfInitStartup {
 		// step 12 get()
 		
 		
-		return new DataScreenQueryGetInforDto_New(datePeriod.start(), datePeriod.end(), targetOrgIdenInforDto, displayInfoOrganization, scheduleModifyStartDate, usePublicAtr, useWorkAvailabilityAtr);
+		return new DataScreenQueryGetInforDto_New(
+				datePeriod.start(),
+				datePeriod.end(),
+				targetOrgIdenInforDto,
+				displayInfoOrganization,
+				scheduleModifyStartDate,
+				usePublicAtr,
+				useWorkAvailabilityAtr,
+				ScheFunctionControlDto.fromDomain(scheFunctionControlOp.orElse(null)),
+				ScheFunctionCtrlByWorkplaceDto.fromDomain(scheFunctionCtrlByWorkplaceOp.orElse(null)),
+				scheModifyAuthCtrlCommons.stream()
+											  .map(x -> ScheModifyAuthCtrlCommonDto.fromDomain(x))
+											  .collect(Collectors.toList()),
+			    scheModifyAuthCtrlByWorkplaces.stream()
+			    						      .map(x -> ScheModifyAuthCtrlByWorkplaceDto.fromDomain(x))
+			    						      .collect(Collectors.toList())
+				);
 	}
 	
 	
