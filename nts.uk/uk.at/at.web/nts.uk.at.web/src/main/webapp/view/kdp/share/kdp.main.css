@@ -52,7 +52,7 @@
 .table2 div.label{
 	width: 146px;
     text-align: center;
-    word-break: break-word;
+    word-break: break-all;;
 }
 
 .table2 img {
@@ -249,7 +249,7 @@
 .tab-button-panel .grid-container.btn-layout-type-1>div>button>div {
 	font-size: 2.5vmin;
 	color: inherit;
-    word-break: break-word;
+    word-break: break-all;
 }
 
 .btn-layout-type-0 .fs-30 {

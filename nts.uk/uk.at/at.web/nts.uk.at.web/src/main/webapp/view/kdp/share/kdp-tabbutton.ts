@@ -610,7 +610,7 @@ module nts.uk.at.view.kdp.share {
 		if(type == 0 && $('.btn-layout-type-0>div').length > 0 ) {
 			maxSize = 26;	
 		} 
-		let fontSize = (element.offsetWidth / element.innerText.length) + (type == 0 && $('.btn-layout-type-0>div').length > 0 ? 6.5 : 5);
+		let fontSize = (element.offsetWidth / element.innerText.length) + (type == 0 && $('.btn-layout-type-0>div').length > 0 ? 5 : $('.btn-layout-type-0>div').length > 0 ? 5 : 2);
 		if(fontSize > maxSize) fontSize = maxSize;
 		element.style.fontSize = fontSize + 'px';
 	}
