@@ -449,6 +449,17 @@ module nts.uk.at.view.kdw008.a {
                 return attItemDetail;
             }
 
+            duplicate() {
+                let self = this;
+                self.selectedCode(null);
+                self.currentDailyFormatCode(null);
+                self.currentDailyFormatName('');
+                self.showCode(true);
+                self.isUpdate(false);
+                self.isRemove(false);
+                $("#currentCode").focus();
+            }
+
             setNewMode() {
                 let self = this;
                 self.currentDailyFormatCode(null);

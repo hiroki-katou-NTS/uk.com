@@ -48,6 +48,8 @@ module nts.uk.at.view.kdw008.b {
             sideBar: KnockoutObservable<number>;
             enableSheetNo: KnockoutObservable<boolean>;
 
+            listBusinessCode: KnockoutObservableArray<string> = ko.observableArray([]);
+
             constructor(dataShare: any) {
                 var self = this;
                 //check daily
@@ -92,19 +94,19 @@ module nts.uk.at.view.kdw008.b {
                 self.columns1 = ko.observableArray([
                     { headerText: getText('KDW008_7'), key: 'attendanceItemDisplayNumber', width: 70 },
                     { headerText: getText('KDW008_7'), key: 'attendanceItemId', hidden: true, width: 100 },
-                    { headerText: getText('KDW008_8'), key: 'attendanceItemName', width: 150, formatter: _.escape }
+                    { headerText: getText('KDW008_8'), key: 'attendanceItemName', width: 100, formatter: _.escape }
                 ]);
 
                 self.columns2 = ko.observableArray([
                     { headerText: getText('KDW008_7'), key: 'attendanceItemDisplayNumber', width: 70 },
                     { headerText: getText('KDW008_7'), key: 'attendanceItemId', hidden: true, width: 100 },
-                    { headerText: getText('KDW008_8'), key: 'attendanceItemName', width: 150, formatter: _.escape }
+                    { headerText: getText('KDW008_8'), key: 'attendanceItemName', width: 100, formatter: _.escape }
                 ]);
 
                 self.columns3 = ko.observableArray([
                     { headerText: getText('KDW008_7'), key: 'attendanceItemDisplayNumber', width: 70 },
                     { headerText: getText('KDW008_7'), key: 'attendanceItemId', hidden: true, width: 100 },
-                    { headerText: getText('KDW008_8'), key: 'attendanceItemName', width: 150, formatter: _.escape }
+                    { headerText: getText('KDW008_8'), key: 'attendanceItemName', width: 100, formatter: _.escape }
                 ]);
 
                 self.tabs = ko.observableArray([
@@ -221,6 +223,40 @@ module nts.uk.at.view.kdw008.b {
                     dfd.resolve();
                 })
                 return dfd.promise();
+            }
+
+
+            copy() {
+                let self = this;
+                console.log('copy hihi');
+                block.invisible();
+                service.getListMonthlyRecordWorkType().done((res: Array<MonthlyRecordWorkTypeDto>) => {
+                    self.listBusinessCode(res.map((item) => item.businessTypeCode));
+
+                    let param = {
+                        code: self.selectedCode(),
+                        name: self.currentBusinessTypeName(),
+                        targetType: 9,
+                        itemListSetting: self.listBusinessCode()
+                    };
+                    console.log(param, 'param');
+                    nts.uk.ui.windows.setShared("CDL023Input", param);
+                    nts.uk.ui.windows.sub.modal("com", "/view/cdl/023/a/index.xhtml").onClosed(() => {
+                        let output: Array<string> = nts.uk.ui.windows.getShared("CDL023Output");
+                        let command = {
+                            businessTypeCode: self.selectedCode(),
+                            listBusinessTypeCode: output
+                        }
+                        service.copyMonthly(command).done(() => {
+                            nts.uk.ui.dialog.info({ messageId: 'Msg_15' }).then(() => {
+                                self.initSelectedCodeHasMutated();
+                                console.log('msg15');
+                            });
+                        }).fail(() => console.log('fail'));
+                    })
+
+                }).fail((err) => {})
+                .always(() => block.clear());
             }
 
             getBusinessType(): JQueryPromise<any> {
