@@ -429,6 +429,9 @@ module nts.uk.at.view.kdp.share {
 			$('.btn-layout-type-0>div:not(:first-child) button').each(function() {
 				changeFontSize(this, 1);	
 			});
+			$('.btn-layout-type-1>div button').each(function() {
+				changeFontSize(this, 1);	
+			});
 		}
 		mounted() {
 			const vm = this;
