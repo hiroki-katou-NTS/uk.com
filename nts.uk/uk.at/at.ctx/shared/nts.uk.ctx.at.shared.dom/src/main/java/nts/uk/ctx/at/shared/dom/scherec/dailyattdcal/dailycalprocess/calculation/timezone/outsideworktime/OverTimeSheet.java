@@ -397,15 +397,13 @@ public class OverTimeSheet {
 	 * @return 計算時間get
 	 */
 	public TimeDivergenceWithCalculation calcMidNightTime(AutoCalOvertimeSetting autoCalcSet) {
-		AttendanceTime time = new AttendanceTime(0);
-		AttendanceTime calcTime = new AttendanceTime(0);
+		TimeDivergenceWithCalculation calcTime = TimeDivergenceWithCalculation.defaultValue();
 		for(OverTimeFrameTimeSheetForCalc timeSheet:frameTimeSheets) {
 			val calcSet = getCalcSetByAtr(autoCalcSet, timeSheet.getWithinStatutryAtr(),timeSheet.isGoEarly());
-			val calcValue = timeSheet.getMidNightTimeSheet().calcTotalTime();
-			time = time.addMinutes(calcSet.getCalAtr().isCalculateEmbossing()?calcValue.valueAsMinutes():0);
-			calcTime = calcTime.addMinutes(calcValue.valueAsMinutes());
+			val calcValue = timeSheet.calcMidNightTime(calcSet);
+			calcTime = calcTime.addMinutes(calcValue.getTime(), calcValue.getCalcTime());
 		}
-		return TimeDivergenceWithCalculation.createTimeWithCalculation(time, calcTime);
+		return calcTime;
 	}
 	
 	/**

@@ -218,17 +218,6 @@ public class HolidayWorkFrameTimeSheetForCalc extends ActualWorkingTimeSheet{
 		return TimeDivergenceWithCalculation.createTimeWithCalculation(time, calcTime);
 	}
 	
-	/**
-	 * 深夜時間の計算
-	 * @param autoCalcSet 自動計算設定
-	 * @return 深夜時間
-	 */
-	public TimeDivergenceWithCalculation calcMidNightTime(AutoCalSetting autoCalcSet) {
-		AttendanceTime time = autoCalcSet.getCalAtr().isCalculateEmbossing() ? this.getMidNightTimeSheet().calcTotalTime() : AttendanceTime.ZERO;
-		AttendanceTime calcTime = this.getMidNightTimeSheet().calcTotalTime();
-		return TimeDivergenceWithCalculation.createTimeWithCalculation(time, calcTime);
-	}
-	
 //	/**
 //	 *　指定条件の控除項目だけの控除時間
 //	 * @param forcsList
