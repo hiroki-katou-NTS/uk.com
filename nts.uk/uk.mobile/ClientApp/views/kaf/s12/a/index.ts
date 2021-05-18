@@ -14,7 +14,8 @@ import {
     LateEarlyTimeZone,
     OutingTimeZone,
     LeaveType,
-    AppTimeType
+    AppTimeType,
+    GoingOutReason
 } from '../shr';
 
 @component({
@@ -233,7 +234,7 @@ export class KafS12AComponent extends KafS00ShrComponent {
             ],
             outingTimeZones: outingTimeZones.map((i: OutingTimeZone) => ({
                     frameNo: i.workNo,
-                    outingAtr: i.appTimeType,
+                    outingAtr: i.appTimeType == GoingOutReason.PRIVATE ? AppTimeType.PRIVATE : AppTimeType.UNION,
                     startTime: i.timeZone.start,
                     endTime: i.timeZone.end
                 }))
@@ -354,6 +355,7 @@ export class KafS12AComponent extends KafS00ShrComponent {
         if (vm.newMode) {
             vm.$http.post('at', API.register, data).then((res: any) => {
                 if (res) {
+                    vm.$http.post('at', API.reflectApp, res.data.reflectAppIdLst);
                     vm.appID = res.data.appIDLst[0];
                     vm.step = 'KAFS12_3';
                 }
@@ -494,4 +496,5 @@ const API = {
     checkBeforeRegister: 'at/request/application/timeLeave/checkBeforeRegister',
     register: 'at/request/application/timeLeave/register',
     update: 'at/request/application/timeLeave/update',
+    reflectApp: 'at/request/application/reflect-app'
 };

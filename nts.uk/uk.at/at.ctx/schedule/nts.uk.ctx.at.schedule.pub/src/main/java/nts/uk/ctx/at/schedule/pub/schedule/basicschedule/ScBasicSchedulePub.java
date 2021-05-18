@@ -54,18 +54,6 @@ public interface ScBasicSchedulePub {
 	 */
 	public List<ScWorkBreakTimeExport> findWorkBreakTime(String employeeId, GeneralDate baseDate);
 
-	/**
-	 * 最も未来の勤務予定の年月日を取得する
-	 * 
-	 * RequestList439
-	 * 
-	 * 異動者、勤務種別変更者の作成期間の計算
-	 * 社員ID（List）を条件に、存在するスケジュール期間の中で最も大きい年月日を取得する
-	 * 
-	 * @param sIds
-	 * @return GeneralDate
-	 */
-	public Optional<GeneralDate> acquireMaxDateBasicSchedule(List<String> sIds);
 	
 	/**
 	 * 

@@ -73,4 +73,10 @@ public class AnyItemValue {
 		}
 		return 0;
 	}
+	
+	//NOとデフォルトを作成する
+	public static AnyItemValue createDefaultWithNo(int no) {
+		return new AnyItemValue(new AnyItemNo(no), Optional.of(new AnyItemTimes(BigDecimal.valueOf(0))),
+				Optional.of(new AnyItemAmount(0)), Optional.of(new AnyItemTime(0)));
+	}
 }

@@ -79,7 +79,8 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 												restTime: restTime,
 												holidayTime: holidayTime,
 												overTime: overTime,
-												visibleModel: visibleModel
+												visibleModel: visibleModel,
+												agent: agentForTable
 											}
 							
 										}"></div>
@@ -142,6 +143,7 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 		restTemp: Array<any>;
 	
 		justSelectWork: boolean = false;
+		agentForTable: KnockoutObservable<Boolean> = ko.observable(false);
         created(
             params: {
                 appType: any,
@@ -190,6 +192,21 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 							
 							
 							vm.getBreakTimes();
+						}
+				})
+				document.getElementById('inpStartTime2').addEventListener('focusout', () => {
+					if (_.isNumber(vm.workInfo().workHours2.start()) && _.isNumber(vm.workInfo().workHours2.end())) {
+							
+							
+							vm.dataSource.calculatedFlag = CalculatedFlag.UNCALCULATED;
+						}
+				})
+				
+				document.getElementById('inpEndTime2').addEventListener('focusout', () => {
+					if (_.isNumber(vm.workInfo().workHours2.start()) && _.isNumber(vm.workInfo().workHours2.end())) {
+							
+							
+							vm.dataSource.calculatedFlag = CalculatedFlag.UNCALCULATED;
 						}
 				})
 				
