@@ -184,7 +184,7 @@ public class KscdtSchBasicInfo extends ContractUkJpaEntity {
 		// workNo = 2 nữa thì mới insert thêm item 41,44
 		if (workSchedule.getOptTimeLeaving().isPresent()) {
 			if (workSchedule.getOptTimeLeaving().get().getWorkTimes() != null && workSchedule.getOptTimeLeaving().get().getWorkTimes().v() != 0) {
-				if (workSchedule.getOptTimeLeaving().get().getWorkTimes().v() == 1) {
+				if (workSchedule.getOptTimeLeaving().get().getWorkTimes().v() == 1 && workSchedule.getOptTimeLeaving().get().getTimeLeavingWorks().get(0).getWorkNo().v() == 1) {
 					kscdtSchAtdLvwTimes = kscdtSchAtdLvwTimes.stream().filter(i -> i.pk.workNo == 1).collect(Collectors.toList());
 				}
 			}
