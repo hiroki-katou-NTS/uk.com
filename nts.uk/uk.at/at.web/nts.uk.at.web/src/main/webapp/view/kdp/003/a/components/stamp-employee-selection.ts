@@ -256,9 +256,6 @@ module nts.uk.at.kdp003.a {
 			// 	.trigger('resize');
 
 			setInterval(function () {
-				const si = $('#stamp-input');
-				const msg = si.children().last().get(0);
-				const size = msg.getBoundingClientRect();
 
 				var paramSize = '0px';
 
@@ -267,7 +264,7 @@ module nts.uk.at.kdp003.a {
 				if (grid && $grid.data('igGrid')) {
 					// const top = grid.getBoundingClientRect().top;
 					// const maxHeight = size.y + size.height;
-					const param: string = Math.floor(size.bottom / 1) - 185 + "px";
+					const param: string = $('#stamp-input').height() - 185 + "px";
 
 					if (paramSize !== param) {
 						paramSize = param;
