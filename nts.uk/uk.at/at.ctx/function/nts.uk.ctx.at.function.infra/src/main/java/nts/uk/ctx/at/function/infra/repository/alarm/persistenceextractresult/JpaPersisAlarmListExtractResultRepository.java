@@ -6,6 +6,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.function.infra.entity.alarm.persistenceextractresult.KfndtAlarmExtracResultPK;
 import nts.uk.ctx.at.function.infra.entity.alarm.persistenceextractresult.KfndtPersisAlarmExt;
 import nts.uk.ctx.at.shared.dom.alarmList.AlarmCategory;
 import nts.uk.ctx.at.shared.dom.alarmList.AlarmPatternCode;
@@ -56,7 +57,7 @@ public class JpaPersisAlarmListExtractResultRepository extends JpaRepository imp
                     List<ExtractResultDetail> extractDetails = Collections.singletonList(
                             new ExtractResultDetail(
                                     new ExtractionAlarmPeriodDate(Optional.of(GeneralDate.fromString(x.getStartDate(), "yyyy/MM/dd")),
-                                            Optional.ofNullable(StringUtils.isEmpty(x.getEndDate()) ? GeneralDate.fromString(x.getEndDate(), "yyyy/MM/dd") : null)),
+                                            Optional.ofNullable(!StringUtils.isEmpty(x.getEndDate()) ? GeneralDate.fromString(x.getEndDate(), "yyyy/MM/dd") : null)),
                                     x.getAlarmPatternName(),
                                     x.getAlarmContent(),
                                     x.getRunTime(),
@@ -136,15 +137,41 @@ public class JpaPersisAlarmListExtractResultRepository extends JpaRepository imp
             return;
         }
 
+        List<KfndtAlarmExtracResultPK> lstDelete = new ArrayList<>();
         String cid = domain.getCompanyID();
-        String sql = "DELETE FROM KfndtPersisAlarmExt a JOIN KfndtAlarmExtracResult b ON a.pk.cid = b.pk.cid AND a.pk.processId = b.pk.processId"
-                + "WHERE a.pk.cid = :cid";
+        String patternCd = domain.getAlarmPatternCode().v();
+        String runCode = domain.getAutoRunCode();
+        domain.getAlarmListExtractResults().stream().forEach(x -> {
+            x.getAlarmExtractInfoResults().stream().forEach(y -> {
+                y.getExtractionResultDetails().stream().forEach(z -> {
+                    lstDelete.add(new KfndtAlarmExtracResultPK(
+                            cid,
+                            "",
+                            x.getEmployeeID(),
+                            y.getAlarmCategory().value,
+                            y.getAlarmCheckConditionCode().v(),
+                            y.getAlarmListCheckType().value,
+                            y.getAlarmCheckConditionNo(),
+                            String.valueOf(z.getPeriodDate().getStartDate())));
+                });
+            });
+        });
 
-        this.getEntityManager().createQuery(sql).setParameter("cid", cid).executeUpdate();
-        this.getEntityManager().flush();
+        lstDelete.forEach(x -> {
+            String sql = "DELETE FROM KfndtAlarmExtracResult a WHERE a.pk.cid = :cid AND a.pk.sid = :sid "
+                    + " AND a.pk.category = :category AND a.pk.alarmCheckCode = :code AND a.pk.checkAtr = :checkType "
+                    + " AND a.pk.conditionNo = :no AND a.pk.startDate = :startDate ";
 
-//        KfndtPersisAlarmExtPk pk = new KfndtPersisAlarmExtPk(domain.getCompanyID(), "processId-TODO");
-//        this.commandProxy().remove(pk);
+            this.getEntityManager().createQuery(sql).setParameter("cid", cid)
+                    .setParameter("sid", x.sid)
+                    .setParameter("category", x.category)
+                    .setParameter("code", x.alarmCheckCode)
+                    .setParameter("checkType", x.checkAtr)
+                    .setParameter("no", x.conditionNo)
+                    .setParameter("startDate", x.startDate)
+                    .executeUpdate();
+            this.getEntityManager().flush();
+        });
     }
 
     @Override

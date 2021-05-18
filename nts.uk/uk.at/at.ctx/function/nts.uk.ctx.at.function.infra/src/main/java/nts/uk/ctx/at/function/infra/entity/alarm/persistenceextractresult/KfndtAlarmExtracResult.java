@@ -90,7 +90,7 @@ public class KfndtAlarmExtracResult extends ContractUkJpaEntity implements Seria
         List<ExtractResultDetail> extractDetails = Arrays.asList(
                 new ExtractResultDetail(
                         new ExtractionAlarmPeriodDate(Optional.of(GeneralDate.fromString(this.pk.startDate, "yyyy/MM/dd")),
-                                Optional.ofNullable(StringUtils.isEmpty(this.endDate) ? GeneralDate.fromString(this.endDate, "yyyy/MM/dd") : null)),
+                                Optional.ofNullable(!StringUtils.isEmpty(this.endDate) ? GeneralDate.fromString(this.endDate, "yyyy/MM/dd") : null)),
                         this.alarmItemName,
                         this.alarmContent,
                         this.runTime,

@@ -117,36 +117,5 @@ public class KfndtPersisAlarmExt extends ContractUkJpaEntity implements Serializ
                 alarmListExtractResults,
                 this.pk.cid,
                 this.autoRunCode);
-
-//        Map<String, List<KfndtAlarmExtracResult>> mapEmpId = this.extractResults.stream()
-//                .collect(Collectors.groupingBy(x -> x.pk.sid));
-//        for (val item : mapEmpId.keySet()) {
-//            val lstValue = mapEmpId.get(item)
-//            List<AlarmExtractInfoResult> alarmExtractInfoResults = new ArrayList<>();
-//            if (!lstValue.isEmpty()) {
-//                List<ExtractResultDetail> details = new ArrayList<>();
-//                lstValue.forEach(x -> {
-//                    details.add(new ExtractResultDetail(
-//                            new ExtractionAlarmPeriodDate(Optional.of(GeneralDate.fromString(x.pk.startDate, "yyyy/MM/dd")),
-//                                    Optional.ofNullable(StringUtils.isEmpty(x.endDate) ? GeneralDate.fromString(x.endDate, "yyyy/MM/dd") : null)),
-//                            x.alarmItemName,
-//                            x.alarmContent,
-//                            x.runTime,
-//                            Optional.ofNullable(x.workPlaceId),
-//                            Optional.ofNullable(x.message),
-//                            Optional.ofNullable(x.checkValue)));
-//
-//                    alarmExtractInfoResults.add(new AlarmExtractInfoResult(
-//                            x.pk.alarmCheckCode,
-//                            new AlarmCheckConditionCode(x.pk.alarmCheckCode),
-//                            EnumAdaptor.valueOf(x.pk.category, AlarmCategory.class),
-//                            EnumAdaptor.valueOf(x.pk.checkAtr, AlarmListCheckType.class),
-//                            details));
-//                });
-//            }
-//            alarmListExtractResults.add(new AlarmEmployeeList(
-//                    alarmExtractInfoResults,
-//                    item));
-//        }
     }
 }

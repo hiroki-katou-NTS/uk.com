@@ -78,24 +78,28 @@ public class AlarmTopPageProcessingServiceImpl implements AlarmTopPageProcessing
 
             lstCategoryPeriod.forEach(p -> {
                 //永続化のアラームリスト抽出結果を絞り込む
-                Optional<AlarmExtractionCondition> extractCond = alarmExtractConds.stream().filter(e -> e.getAlarmCategory().value == p.getCategory()).findFirst();
-                if (!extractCond.isPresent()) {
+                List<AlarmExtractionCondition> extractConds = alarmExtractConds.stream().filter(e -> e.getAlarmCategory().value == p.getCategory()).collect(Collectors.toList());
+                if (extractConds.isEmpty()) {
                     return;
                 }
+                val exConCates = extractConds.stream().map(x -> x.getAlarmCategory().value).distinct().collect(Collectors.toList());
+                val exConCodes = extractConds.stream().map(x -> x.getAlarmCheckConditionCode().v()).distinct().collect(Collectors.toList());
+                val exConTypes = extractConds.stream().map(x -> x.getAlarmListCheckType().value).distinct().collect(Collectors.toList());
+                val exConNos = extractConds.stream().map(AlarmExtractionCondition::getAlarmCheckConditionNo).distinct().collect(Collectors.toList());
                 List<AlarmEmployeeList> lstExtractResultDB = persisAlarmExtract.getAlarmListExtractResults().stream()
-                        .filter(x -> x.getAlarmExtractInfoResults().stream().anyMatch(y -> y.getAlarmCategory().value == extractCond.get().getAlarmCategory().value
-                                && y.getAlarmCheckConditionCode().v().equals(extractCond.get().getAlarmCheckConditionCode().v())
-                                && y.getAlarmListCheckType().value == extractCond.get().getAlarmListCheckType().value
-                                && y.getAlarmCheckConditionNo().equals(extractCond.get().getAlarmCheckConditionNo())
-                                && y.getExtractionResultDetails().stream().anyMatch(z -> {
-                            if (z.getPeriodDate() == null || !z.getPeriodDate().getStartDate().isPresent() || !z.getPeriodDate().getEndDate().isPresent()) {
-                                return true;
-                            } else if (!z.getPeriodDate().getEndDate().isPresent()) {
-                                return z.getPeriodDate().getStartDate().get().afterOrEquals(p.getStartDate()) && z.getPeriodDate().getStartDate().get().beforeOrEquals(p.getEndDate());
-                            } else {
-                                return z.getPeriodDate().getStartDate().get().afterOrEquals(p.getStartDate()) && z.getPeriodDate().getEndDate().get().beforeOrEquals(p.getEndDate());
-                            }
-                        }))).collect(Collectors.toList());
+                        .filter(x -> x.getAlarmExtractInfoResults().stream().anyMatch(y -> exConCates.contains(y.getAlarmCategory().value)
+                                && exConCodes.contains(y.getAlarmCheckConditionCode().v())
+                                && exConTypes.contains(y.getAlarmListCheckType().value)
+                                && exConNos.contains(y.getAlarmCheckConditionNo())
+//                                && y.getExtractionResultDetails().stream().anyMatch(z -> {
+//                            if (z.getPeriodDate() == null || !z.getPeriodDate().getEndDate().isPresent()) {
+//                                return true;
+//                            } else if (!z.getPeriodDate().getEndDate().isPresent()) {
+//                                return z.getPeriodDate().getStartDate().get().afterOrEquals(p.getStartDate()) && z.getPeriodDate().getStartDate().get().beforeOrEquals(p.getEndDate());
+//                            } else {
+//                                return z.getPeriodDate().getStartDate().get().afterOrEquals(p.getStartDate()) && z.getPeriodDate().getEndDate().get().beforeOrEquals(p.getEndDate());
+//                            }})
+                        )).collect(Collectors.toList());
 
                 List<AlarmEmployeeList> lstExtractResultInput = alarmResult.getAlarmListExtractResults().stream()
                         .filter(x -> x.getAlarmExtractInfoResults().stream().anyMatch(y -> y.getAlarmCategory().value == p.getCategory()))
@@ -107,31 +111,37 @@ public class AlarmTopPageProcessingServiceImpl implements AlarmTopPageProcessing
                     // Filter two list
                     filterData(lstExtractResultDB, lstExtractResultInput, lstDelete);
                     lstExResultDelete.addAll(lstDelete);
-                    //Delete: 今回のアラーム結果がないがデータベースに存在している場合データベースを削除
-                    PersistenceAlarmListExtractResult persisExtractResultDelete = new PersistenceAlarmListExtractResult(
-                            persisAlarmExtract.getAlarmPatternCode(),
-                            persisAlarmExtract.getAlarmPatternName(),
-                            lstExResultDelete,
-                            persisAlarmExtract.getCompanyID(),
-                            persisAlarmExtract.getAutoRunCode()
-                    );
-                    alarmExtractResultRepo.delete(persisExtractResultDelete);
 
-                    //Insert: 今回のアラーム結果がデータベースに存在してない場合データベースのデータを追加
                     List<AlarmEmployeeList> lstInput = new ArrayList<>();
                     // Filter two list
                     filterData(lstExtractResultInput, lstExtractResultDB, lstInput);
                     lstExResultInsert.addAll(lstInput);
-                    PersistenceAlarmListExtractResult persisExtractResultInsert = new PersistenceAlarmListExtractResult(
-                            alarmResult.getAlarmPatternCode(),
-                            alarmResult.getAlarmPatternName(),
-                            lstExResultInsert,
-                            alarmResult.getCompanyID(),
-                            alarmResult.getAutoRunCode()
-                    );
-                    alarmExtractResultRepo.insert(persisExtractResultInsert);
                 }
             });
+
+            //Delete: 今回のアラーム結果がないがデータベースに存在している場合データベースを削除
+            if(!CollectionUtil.isEmpty(lstExResultDelete)){
+                PersistenceAlarmListExtractResult persisExtractResultDelete = new PersistenceAlarmListExtractResult(
+                        persisAlarmExtract.getAlarmPatternCode(),
+                        persisAlarmExtract.getAlarmPatternName(),
+                        lstExResultDelete,
+                        persisAlarmExtract.getCompanyID(),
+                        persisAlarmExtract.getAutoRunCode()
+                );
+                alarmExtractResultRepo.delete(persisExtractResultDelete);
+            }
+
+            //Insert: 今回のアラーム結果がデータベースに存在してない場合データベースのデータを追加
+            if(!CollectionUtil.isEmpty(lstExResultInsert)){
+                PersistenceAlarmListExtractResult persisExtractResultInsert = new PersistenceAlarmListExtractResult(
+                        alarmResult.getAlarmPatternCode(),
+                        alarmResult.getAlarmPatternName(),
+                        lstExResultInsert,
+                        alarmResult.getCompanyID(),
+                        alarmResult.getAutoRunCode()
+                );
+                alarmExtractResultRepo.insert(persisExtractResultInsert);
+            }
         }
 
         //アラームリストからトップページアラームデータに変換する

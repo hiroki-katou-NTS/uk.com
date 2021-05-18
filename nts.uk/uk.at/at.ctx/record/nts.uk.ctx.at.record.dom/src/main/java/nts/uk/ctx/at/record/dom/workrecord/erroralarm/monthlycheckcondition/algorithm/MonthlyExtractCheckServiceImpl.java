@@ -232,7 +232,6 @@ public class MonthlyExtractCheckServiceImpl implements MonthlyExtractCheckServic
 					shouldStop,
 					alarmExtractConditions,
 					alarmCheckConditionCode,
-					alarmExtractInfoResults,
                     alarmEmployeeList);
 			
 		});
@@ -251,7 +250,7 @@ public class MonthlyExtractCheckServiceImpl implements MonthlyExtractCheckServic
 			FixedExtraMon fixCond,
 			List<ResultOfEachCondition> lstResultCondition, DataCheck data, Consumer<Integer> counter,
 			Supplier<Boolean> shouldStop, List<AlarmExtractionCondition> alarmExtractConditions, String alarmCheckConditionCode,
-			List<AlarmExtractInfoResult> alarmExtractInfoResults, List<AlarmEmployeeList> alarmEmployeeList) {
+			List<AlarmEmployeeList> alarmEmployeeList) {
 
 		// 「アラーム抽出条件」を作成してInput．List＜アラーム抽出条件＞を追加
 		List<AlarmExtractionCondition> extractionConditions = alarmExtractConditions.stream()
@@ -274,6 +273,7 @@ public class MonthlyExtractCheckServiceImpl implements MonthlyExtractCheckServic
 				}
 			}
 			for(String sid : emps) {
+				List<AlarmExtractInfoResult> lstExtractInfoResult = new ArrayList<>();
 				for (YearMonth ym : mPeriod.yearMonthsBetween()) {
 					YearMonth endMonthTemp = mPeriod.end().addMonths(1);
 					GeneralDate endDateTemp = GeneralDate.ymd(endMonthTemp.year(), endMonthTemp.month(), 1);
@@ -462,27 +462,13 @@ public class MonthlyExtractCheckServiceImpl implements MonthlyExtractCheckServic
 								Optional.ofNullable(fixCond.getMessage().isPresent() ? fixCond.getMessage().get().v() : null),
 								Optional.ofNullable(checkValue));
 
-						List<AlarmExtractInfoResult> result = alarmExtractInfoResults.stream()
-								.filter(x -> x.getAlarmListCheckType() == AlarmListCheckType.FreeCheck
-										&& x.getAlarmCheckConditionNo().equals(String.valueOf(fixCond.getFixedExtraItemMonNo().value)))
-								.collect(Collectors.toList());
-						if (result.isEmpty()) {
-                            alarmExtractInfoResults.add(new AlarmExtractInfoResult(
-                                    String.valueOf(fixCond.getFixedExtraItemMonNo().value),
-                                    new AlarmCheckConditionCode(alarmCheckConditionCode),
-                                    AlarmCategory.MONTHLY,
-                                    AlarmListCheckType.FreeCheck,
-                                    Collections.singletonList(exDetail)));
+						lstExtractInfoResult.addAll(Collections.singletonList(new AlarmExtractInfoResult(
+								String.valueOf(fixCond.getFixedExtraItemMonNo().value),
+								new AlarmCheckConditionCode(alarmCheckConditionCode),
+								AlarmCategory.MONTHLY,
+								AlarmListCheckType.FixCheck,
+								Collections.singletonList(exDetail))));
 
-                            alarmEmployeeList.add(new AlarmEmployeeList(alarmExtractInfoResults, sid));
-						} else {
-                            AlarmExtractInfoResult ex = result.get(0);
-                            alarmExtractInfoResults.remove(ex);
-                            ex.getExtractionResultDetails().add(exDetail);
-                            alarmExtractInfoResults.add(ex);
-
-                            alarmEmployeeList.add(new AlarmEmployeeList(alarmExtractInfoResults, sid));
-						}
 //						List<ResultOfEachCondition> result = lstResultCondition.stream()
 //								.filter(x -> x.getCheckType() == AlarmListCheckType.FixCheck && x.getNo().equals(String.valueOf(fixCond.getFixedExtraItemMonNo().value)))
 //								.collect(Collectors.toList());
@@ -500,6 +486,7 @@ public class MonthlyExtractCheckServiceImpl implements MonthlyExtractCheckServic
 //						}
 					}
 				}
+				alarmEmployeeList.add(new AlarmEmployeeList(lstExtractInfoResult, sid));
 			}
 			synchronized (this) {
 				counter.accept(emps.size());
@@ -593,14 +580,14 @@ public class MonthlyExtractCheckServiceImpl implements MonthlyExtractCheckServic
 				}
 			}
 			for(String sid : emps) {
-								
+				List<AlarmExtractInfoResult> lstExtractInfoResult = new ArrayList<>();
 				if(remainCond != null) {//残数チェック
 					if(!optCheckConMonthly.isPresent()) {
 						return;
 					}
 					AttendanceItemCondition checkConMonthly = optCheckConMonthly.get();
 					remainCheck(mPeriod, anyCond, lstResultCondition, data, checkConMonthly, remainCond, checkVacation,
-							sid, getWplByListSidAndPeriod, alarmExtractInfoResults, alarmCheckConditionCode, alarmEmployeeList);
+							sid, getWplByListSidAndPeriod, alarmCheckConditionCode, lstExtractInfoResult);
 				}
 				if(anyCond.getTypeCheckItem() == TypeMonCheckItem.CERTAIN_DAY_OFF) {
 					//TODO 「期間内の公休残数を集計する」まだ完成してないから対応してない
@@ -611,10 +598,10 @@ public class MonthlyExtractCheckServiceImpl implements MonthlyExtractCheckServic
 						if(isError(checkPerTimeMonActualResult, anyCond.getErrorAlarmCheckID(), sid, yearMonth)) {
 							if(anyCond.getTypeCheckItem() == TypeMonCheckItem.COMPOUND_CON) {
 								extractCompoun(lstResultCondition, anyCond, sid, yearMonth, resultsData, data, getWplByListSidAndPeriod,
-										alarmExtractInfoResults, alarmCheckConditionCode, alarmEmployeeList);
+										alarmCheckConditionCode, lstExtractInfoResult);
 							} else {
 								extractTimeDayTimesMoney(lstResultCondition, anyCond, sid, yearMonth, resultsData, data, getWplByListSidAndPeriod,
-										alarmExtractInfoResults, alarmCheckConditionCode, alarmEmployeeList);
+										alarmCheckConditionCode, lstExtractInfoResult);
 							}
 						}
 					}
@@ -642,9 +629,9 @@ public class MonthlyExtractCheckServiceImpl implements MonthlyExtractCheckServic
 	private void remainCheck(YearMonthPeriod mPeriod, ExtraResultMonthly anyCond,
 			List<ResultOfEachCondition> lstResultCondition, DataCheck data, AttendanceItemCondition checkConMonthly,
 			CheckRemainNumberMon remainCond, TypeCheckVacation checkVacation, String sid, List<WorkPlaceHistImportAl> getWplByListSidAndPeriod,
-			List<AlarmExtractInfoResult> alarmExtractInfoResults, String alarmCheckConditionCode, List<AlarmEmployeeList> alarmEmployeeList) {
+			String alarmCheckConditionCode, List<AlarmExtractInfoResult> alarmExtractInfoResults) {
 		CompareOperatorText compareOperatorText = convertComparaToText.convertCompareType(
-				remainCond.getCheckOperatorType() == CheckOperatorType.SINGLE_VALUE 
+				remainCond.getCheckOperatorType() == CheckOperatorType.SINGLE_VALUE
 						? checkConMonthly.getGroup1().getLstErAlAtdItemCon().get(0).getCompareSingleValue().getConditionType().value
 						:checkConMonthly.getGroup1().getLstErAlAtdItemCon().get(0).getCompareRange().getCompareOperator().value);
 		switch (checkVacation) {
@@ -656,8 +643,7 @@ public class MonthlyExtractCheckServiceImpl implements MonthlyExtractCheckServic
 			for(AnnualLeaveUsageDto annaData : lstAnn) {
 				double remainingDays = annaData.getRemainingDays().v();
 				chkCheckValue(anyCond, lstResultCondition, checkConMonthly, remainCond, sid, getWplByListSidAndPeriod,
-						compareOperatorText, remainingDays, annaData.getYearMonth(), alarmExtractInfoResults, alarmCheckConditionCode,
-                        alarmEmployeeList);
+						compareOperatorText, remainingDays, annaData.getYearMonth(), alarmExtractInfoResults, alarmCheckConditionCode);
 			}
 			break;
 		case SUB_HOLIDAY:
@@ -668,8 +654,7 @@ public class MonthlyExtractCheckServiceImpl implements MonthlyExtractCheckServic
 			for(DayoffCurrentMonthOfEmployee dayOffRemain : lstDayOffRemain) {
 				double remainingDays = dayOffRemain.getRemainingDays();
 				chkCheckValue(anyCond, lstResultCondition, checkConMonthly, remainCond, sid, getWplByListSidAndPeriod,
-						compareOperatorText, remainingDays, dayOffRemain.getYm(), alarmExtractInfoResults, alarmCheckConditionCode,
-                        alarmEmployeeList);
+						compareOperatorText, remainingDays, dayOffRemain.getYm(), alarmExtractInfoResults, alarmCheckConditionCode);
 			}
 			break;
 		case PAUSE:
@@ -677,14 +662,12 @@ public class MonthlyExtractCheckServiceImpl implements MonthlyExtractCheckServic
 			if(lstPauseRemain.isEmpty()) {
 				return;
 			}
-			
+
 			for(AbsenceleaveCurrentMonthOfEmployee pauseRemain: lstPauseRemain) {
 				double remainDays = pauseRemain.getRemainingDays();
 				chkCheckValue(anyCond, lstResultCondition, checkConMonthly, remainCond, sid, getWplByListSidAndPeriod,
-						compareOperatorText, remainDays, pauseRemain.getYm(), alarmExtractInfoResults, alarmCheckConditionCode,
-                        alarmEmployeeList);
+						compareOperatorText, remainDays, pauseRemain.getYm(), alarmExtractInfoResults, alarmCheckConditionCode);
 			}
-			
 			break;
 		case YEARLY_RESERVED:
 			List<ReserveLeaveUsageDto> lstReserve = data.mapReserveData.get(sid);
@@ -694,8 +677,7 @@ public class MonthlyExtractCheckServiceImpl implements MonthlyExtractCheckServic
 			for(ReserveLeaveUsageDto reserve : lstReserve) {
 				double remaiDays = reserve.getRemainingDays().v();
 				chkCheckValue(anyCond, lstResultCondition, checkConMonthly, remainCond, sid, getWplByListSidAndPeriod,
-						compareOperatorText, remaiDays, reserve.getYearMonth(), alarmExtractInfoResults, alarmCheckConditionCode,
-                        alarmEmployeeList);
+						compareOperatorText, remaiDays, reserve.getYearMonth(), alarmExtractInfoResults, alarmCheckConditionCode);
 			}
 			break;
 		case SPECIAL_HOLIDAY:
@@ -707,10 +689,10 @@ public class MonthlyExtractCheckServiceImpl implements MonthlyExtractCheckServic
 			for(SpecialHolidayRemainDataOutput speHoliday : lstSpeHoliday) {
 				double remainDay = speHoliday.getRemainDays();
 				chkCheckValue(anyCond, lstResultCondition, checkConMonthly, remainCond, sid, getWplByListSidAndPeriod,
-						compareOperatorText, remainDay, speHoliday.getYm(), alarmExtractInfoResults, alarmCheckConditionCode,
-                        alarmEmployeeList);
+						compareOperatorText, remainDay, speHoliday.getYm(), alarmExtractInfoResults, alarmCheckConditionCode);
 			}
-			
+			break;
+
 			default:
 				break;
 		}
@@ -777,8 +759,7 @@ public class MonthlyExtractCheckServiceImpl implements MonthlyExtractCheckServic
 			AttendanceItemCondition checkConMonthly, CheckRemainNumberMon remainCond, String sid,
 			List<WorkPlaceHistImportAl> getWplByListSidAndPeriod,
 			CompareOperatorText compareOperatorText, double remainingDays, YearMonth ym,
-			List<AlarmExtractInfoResult> alarmExtractInfoResults, String alarmCheckConditionCode,
-            List<AlarmEmployeeList> alarmEmployeeList) {
+			List<AlarmExtractInfoResult> alarmExtractInfoResults, String alarmCheckConditionCode) {
 		GeneralDate date = GeneralDate.ymd(ym.year(), ym.month(), 1);
 		ErAlAttendanceItemCondition<?> erAlAtdItemCon = checkConMonthly.getGroup1()
 				.getLstErAlAtdItemCon().get(0);
@@ -817,12 +798,12 @@ public class MonthlyExtractCheckServiceImpl implements MonthlyExtractCheckServic
 					Optional.empty());
 			
 			setExtractAlarm(anyCond, lstResultCondition, sid, getWplByListSidAndPeriod, checkerValue, alarmMessage,
-					pDate, ym, alarmExtractInfoResults, alarmCheckConditionCode, alarmEmployeeList);
+					pDate, ym, alarmCheckConditionCode, alarmExtractInfoResults);
 		}
 	}
 	private void setExtractAlarm(ExtraResultMonthly anyCond, List<ResultOfEachCondition> lstResultCondition, String sid,
 			List<WorkPlaceHistImportAl> getWplByListSidAndPeriod, String checkerValue, String alarmMessage, ExtractionAlarmPeriodDate pDate, YearMonth ym,
-			List<AlarmExtractInfoResult> alarmExtractInfoResults, String alarmCheckConditionCode, List<AlarmEmployeeList> alarmEmployeeList) {
+			String alarmCheckConditionCode, List<AlarmExtractInfoResult> alarmExtractInfoResults) {
 		GeneralDate startDate = GeneralDate.ymd(ym.year(), ym.month(), 1);
 		GeneralDate enDate = startDate.addMonths(1).addDays(-1);
 		String workplaceId = "";
@@ -843,25 +824,26 @@ public class MonthlyExtractCheckServiceImpl implements MonthlyExtractCheckServic
 				Optional.ofNullable(workplaceId),
 				Optional.ofNullable(anyCond.getDisplayMessage().isPresent() ? anyCond.getDisplayMessage().get().v() : null),
 				Optional.ofNullable(checkerValue));
-		List<AlarmExtractInfoResult> result = alarmExtractInfoResults.stream()
-				.filter(x -> x.getAlarmListCheckType() == AlarmListCheckType.FreeCheck && x.getAlarmCheckConditionNo().equals(String.valueOf(anyCond.getSortBy())))
-				.collect(Collectors.toList());
-		if(result.isEmpty()) {
+
+//		List<AlarmExtractInfoResult> result = alarmExtractInfoResults.stream()
+//				.filter(x -> x.getAlarmListCheckType() == AlarmListCheckType.FreeCheck && x.getAlarmCheckConditionNo().equals(String.valueOf(anyCond.getSortBy())))
+//				.collect(Collectors.toList());
+//		if(result.isEmpty()) {
             alarmExtractInfoResults.add(new AlarmExtractInfoResult(
                     String.valueOf(anyCond.getSortBy()),
                     new AlarmCheckConditionCode(alarmCheckConditionCode),
                     AlarmCategory.MONTHLY,
                     AlarmListCheckType.FreeCheck,
                     Collections.singletonList(detail)));
+//		}
+//		else {
+//			AlarmExtractInfoResult ex = result.get(0);
+//			alarmExtractInfoResults.remove(ex);
+//			ex.getExtractionResultDetails().add(detail);
+//			alarmExtractInfoResults.add(ex);
+//            alarmEmployeeList.add(new AlarmEmployeeList(alarmExtractInfoResults, sid));
+//		}
 
-            alarmEmployeeList.add(new AlarmEmployeeList(alarmExtractInfoResults, sid));
-		} else {
-			AlarmExtractInfoResult ex = result.get(0);
-			alarmExtractInfoResults.remove(ex);
-			ex.getExtractionResultDetails().add(detail);
-			alarmExtractInfoResults.add(ex);
-            alarmEmployeeList.add(new AlarmEmployeeList(alarmExtractInfoResults, sid));
-		}
 //		List<ResultOfEachCondition> result = lstResultCondition.stream()
 //				.filter(x -> x.getCheckType() == AlarmListCheckType.FreeCheck && x.getNo().equals(String.valueOf(anyCond.getSortBy())))
 //				.collect(Collectors.toList());
@@ -889,8 +871,8 @@ public class MonthlyExtractCheckServiceImpl implements MonthlyExtractCheckServic
 	 */
 	private void extractCompoun(List<ResultOfEachCondition> lstResultCondition, ExtraResultMonthly anyCond,
 			String sid, YearMonth yearMonth, Map<String, Map<YearMonth, Map<String, List<String>>>> resultsData, DataCheck data
-			, List<WorkPlaceHistImportAl> getWplByListSidAndPeriod, List<AlarmExtractInfoResult> alarmExtractInfoResults,
-			String alarmCheckConditionCode, List<AlarmEmployeeList> alarmEmployeeList) {
+			, List<WorkPlaceHistImportAl> getWplByListSidAndPeriod,
+			String alarmCheckConditionCode, List<AlarmExtractInfoResult> alarmExtractInfoResults) {
 		List<ErAlAttendanceItemCondition<?> > listErAlAtdItemCon = anyCond.getCheckConMonthly().get().getGroup1().getLstErAlAtdItemCon();
 		List<String> lstData = resultsData.get(sid).get(yearMonth).get(anyCond.getErrorAlarmCheckID());
 		ExtractGroupValue alarmGroup2 = new ExtractGroupValue();
@@ -926,7 +908,7 @@ public class MonthlyExtractCheckServiceImpl implements MonthlyExtractCheckServic
 		periodDate.setStartDate(Optional.ofNullable(startDate));
 		periodDate.setEndDate(Optional.empty());		
 		setExtractAlarm(anyCond, lstResultCondition, sid, getWplByListSidAndPeriod, checkedValue, alarmDescriptionValue, periodDate, yearMonth,
-				alarmExtractInfoResults, alarmCheckConditionCode, alarmEmployeeList);
+				alarmCheckConditionCode, alarmExtractInfoResults);
 	}
 	private ExtractGroupValue getDesGroup(ExtraResultMonthly anyCond, List<ErAlAttendanceItemCondition<?>> listErAlAtdItemConG1, DataCheck data,
 			List<String> lstData) {
@@ -1020,8 +1002,8 @@ public class MonthlyExtractCheckServiceImpl implements MonthlyExtractCheckServic
 	 */
 	private void extractTimeDayTimesMoney(List<ResultOfEachCondition> lstResultCondition, ExtraResultMonthly anyCond,
 			String sid, YearMonth yearMonth, Map<String, Map<YearMonth, Map<String,List<String>>>> resultsData, DataCheck data
-			, List<WorkPlaceHistImportAl> getWplByListSidAndPeriod, List<AlarmExtractInfoResult> alarmExtractInfoResults,
-			String alarmCheckConditionCode, List<AlarmEmployeeList> alarmEmployeeList) {
+			, List<WorkPlaceHistImportAl> getWplByListSidAndPeriod,
+			String alarmCheckConditionCode, List<AlarmExtractInfoResult> alarmExtractInfoResults) {
 		String checkedValue = resultsData.get(sid).get(yearMonth).get(anyCond.getErrorAlarmCheckID()).get(0);
 		ErAlAttendanceItemCondition<?> erAlAtdItemConAdapterDto = anyCond.getCheckConMonthly().get().getGroup1().getLstErAlAtdItemCon().get(0);
 		int compare = erAlAtdItemConAdapterDto.getCompareSingleValue() != null ? erAlAtdItemConAdapterDto.getCompareSingleValue().getCompareOpertor().value
@@ -1194,8 +1176,7 @@ public class MonthlyExtractCheckServiceImpl implements MonthlyExtractCheckServic
 				checkedValue,
 				alarmDescription,
 				periodDate, yearMonth,
-				alarmExtractInfoResults, alarmCheckConditionCode,
-                alarmEmployeeList);
+				alarmCheckConditionCode, alarmExtractInfoResults);
 	}
 	private String getNameErrorAlarm(List<MonthlyAttendanceItemNameDto> attendanceItemNames ,int type,String nameErrorAlarm){
 		if(!CollectionUtil.isEmpty(attendanceItemNames)) {

@@ -146,7 +146,8 @@ public class AlarmListPersonServiceAdapterImpl implements AlarmListPersonService
 			String errorDailyCheckId, ScheduleDailyAlarmCheckCond dailyAlarmCondition,
 			List<WorkPlaceHistImport> getWplByListSidAndPeriod, List<StatusOfEmployeeAdapter> lstStatusEmp,
 			List<ResultOfEachCondition> lstResultCondition, List<AlarmListCheckInfor> lstCheckType,
-			Consumer<Integer> counter, Supplier<Boolean> shouldStop) {
+			Consumer<Integer> counter, Supplier<Boolean> shouldStop, List<AlarmEmployeeList> alarmEmployeeList,
+			List<AlarmExtractionCondition> alarmExtractConditions, String alarmCheckConditionCode) {
 				
 		String listOptionalItem = dailyAlarmCondition.getListOptionalItem();
 		String listFixedItem = dailyAlarmCondition.getListFixedItem();
@@ -162,7 +163,8 @@ public class AlarmListPersonServiceAdapterImpl implements AlarmListPersonService
 		extractService.extractScheDailyCheckResult(
 				cid, lstSid, dPeriod, errorDailyCheckId, 
 				listOptionalItem, listFixedItem, 
-				lstWkpIdAndPeriod, lstStaEmp, lstResultCondition, lstCheckType, counter, shouldStop);		
+				lstWkpIdAndPeriod, lstStaEmp, lstResultCondition, lstCheckType, counter, shouldStop,
+				alarmEmployeeList, alarmExtractConditions, alarmCheckConditionCode);
 	}
 
 	@Override
@@ -209,7 +211,8 @@ public class AlarmListPersonServiceAdapterImpl implements AlarmListPersonService
 			ScheduleMonthlyAlarmCheckCond scheduleMonthlyAlarmCheckCond,
 			List<WorkPlaceHistImport> getWplByListSidAndPeriod, List<StatusOfEmployeeAdapter> lstStatusEmp,
 			List<ResultOfEachCondition> lstResultCondition, List<AlarmListCheckInfor> lstCheckType,
-			Consumer<Integer> counter, Supplier<Boolean> shouldStop) {
+			Consumer<Integer> counter, Supplier<Boolean> shouldStop, List<AlarmEmployeeList> alarmEmployeeList,
+			List<AlarmExtractionCondition> alarmExtractConditions, String alarmCheckConditionCode) {
 		String listOptionalItemId = scheduleMonthlyAlarmCheckCond.getListOptionalItem();
 		String listFixedItemId = scheduleMonthlyAlarmCheckCond.getListFixedItem();
 		
@@ -225,7 +228,7 @@ public class AlarmListPersonServiceAdapterImpl implements AlarmListPersonService
 				cid, lstSid, dPeriod, errorCheckId, 
 				listFixedItemId, listOptionalItemId, 
 				lstWkpIdAndPeriod, lstStaEmp, 
-				lstResultCondition, lstCheckType, counter, shouldStop);
+				lstResultCondition, lstCheckType, counter, shouldStop, alarmEmployeeList, alarmExtractConditions, alarmCheckConditionCode);
 	}
 
 	

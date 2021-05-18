@@ -160,7 +160,10 @@ public class ExecAlarmListProcessingDefault implements ExecAlarmListProcessingSe
 				List<PeriodByAlarmCategory> listPeriodByCategory = new ArrayList<>();
 				for (CheckConditionTimeDto checkConditionTime : listCheckCondition) {
 					if (checkConditionTime.getCategory() == AlarmCategory.SCHEDULE_4WEEK.value
-							|| checkConditionTime.getCategory() == AlarmCategory.DAILY.value) {
+							|| checkConditionTime.getCategory() == AlarmCategory.DAILY.value
+							|| checkConditionTime.getCategory() == AlarmCategory.SCHEDULE_DAILY.value
+							|| checkConditionTime.getCategory() == AlarmCategory.WEEKLY.value
+							|| checkConditionTime.getCategory() == AlarmCategory.APPLICATION_APPROVAL.value) {
 						GeneralDate startDate = GeneralDate.fromString(checkConditionTime.getStartDate(), "yyyy/MM/dd");
 						GeneralDate endDate = GeneralDate.fromString(checkConditionTime.getEndDate(), "yyyy/MM/dd");
 						PeriodByAlarmCategory periodByAlarmCategory = new PeriodByAlarmCategory(
@@ -168,7 +171,9 @@ public class ExecAlarmListProcessingDefault implements ExecAlarmListProcessingSe
 								endDate, checkConditionTime.getPeriod36Agreement());
 						listPeriodByCategory.add(periodByAlarmCategory);
 					} else if (checkConditionTime.getCategory() == AlarmCategory.MONTHLY.value
-							|| checkConditionTime.getCategory() == AlarmCategory.MULTIPLE_MONTH.value) {
+							|| checkConditionTime.getCategory() == AlarmCategory.MULTIPLE_MONTH.value
+							|| checkConditionTime.getCategory() == AlarmCategory.SCHEDULE_MONTHLY.value
+							|| checkConditionTime.getCategory() == AlarmCategory.SCHEDULE_YEAR.value) {
 						GeneralDate startDate = GeneralDate.fromString(checkConditionTime.getStartMonth().substring(0, 4) + "/" + checkConditionTime.getStartMonth().substring(4, 6) + "/01",
 								"yyyy/MM/dd");
 						GeneralDate endDate = GeneralDate

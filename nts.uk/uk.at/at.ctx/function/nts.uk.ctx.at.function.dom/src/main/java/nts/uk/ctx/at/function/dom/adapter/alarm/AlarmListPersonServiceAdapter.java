@@ -107,7 +107,8 @@ public interface AlarmListPersonServiceAdapter {
 			List<WorkPlaceHistImport> getWplByListSidAndPeriod, 
 			List<StatusOfEmployeeAdapter> lstStatusEmp, 
 			List<ResultOfEachCondition> lstResultCondition, List<AlarmListCheckInfor> lstCheckType, Consumer<Integer> counter,
-			Supplier<Boolean> shouldStop);
+			Supplier<Boolean> shouldStop, List<AlarmEmployeeList> alarmEmployeeList,
+			List<AlarmExtractionCondition> alarmExtractConditions, String alarmCheckConditionCode);
 	
 	/**
 	 * スケジュール年間
@@ -130,7 +131,8 @@ public interface AlarmListPersonServiceAdapter {
 			List<WorkPlaceHistImport> getWplByListSidAndPeriod, 
 			List<StatusOfEmployeeAdapter> lstStatusEmp, List<ResultOfEachCondition> lstResultCondition, 
 			List<AlarmListCheckInfor> lstCheckType, Consumer<Integer> counter,
-			Supplier<Boolean> shouldStop);
+			Supplier<Boolean> shouldStop, List<AlarmEmployeeList> alarmEmployeeList,
+			List<AlarmExtractionCondition> alarmExtractConditions, String alarmCheckConditionCode);
 	
 	/**
 	 * 週次

@@ -1,11 +1,6 @@
 package nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.monthly.algorithm;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -14,6 +9,8 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.daily.algorithm.OutputCheckResult;
+import nts.uk.ctx.at.shared.dom.alarmList.AlarmCategory;
+import nts.uk.ctx.at.shared.dom.alarmList.persistenceextractresult.*;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.util.Strings;
 
@@ -201,7 +198,9 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 	public void extractScheMonCheck(String cid, List<String> lstSid, DatePeriod dPeriod, String errorCheckId,
 			String listFixedItemId, String listOptionalItemId, List<WorkPlaceHistImportAl> wplByListSidAndPeriod,
 			List<StatusOfEmployeeAdapterAl> lstStatusEmp, List<ResultOfEachCondition> lstResultCondition,
-			List<AlarmListCheckInfor> lstCheckType, Consumer<Integer> counter, Supplier<Boolean> shouldStop) {
+			List<AlarmListCheckInfor> lstCheckType, Consumer<Integer> counter, Supplier<Boolean> shouldStop,
+			List<AlarmEmployeeList> alarmEmployeeList, List<AlarmExtractionCondition> alarmExtractConditions,
+			String alarmCheckConditionCode) {
 		String contractCode = AppContexts.user().contractCode();
 		// チェックする前データを準備
 		ScheMonPrepareData prepareData = prepareDataBeforeChecking(contractCode, cid, lstSid, dPeriod, errorCheckId, listFixedItemId, listOptionalItemId);
@@ -215,6 +214,7 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 			
 			// Input．List＜社員ID＞をループ
 			for (String sid: lstSid) {
+				List<AlarmExtractInfoResult> lstExtractInfoResult = new ArrayList<>();
 				// Input．期間の開始月から終了月まで１ヶ月ごとにループ
 				List<YearMonth> months = dPeriod.yearMonthsBetween();
 				for(int mon = 0; mon < months.size(); mon++) {
@@ -266,25 +266,29 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 					// チェック条件の種類ごとにチェックを行う
 					
 					// 任意の場合
-					OutputCheckResult tab2 = extractConditionTab2(cid, sid, wplId, exMon, prepareData, wplByListSidAndPeriod, integrationOfDailys, workSchedules, attendanceTimeOfMon);
-					if (!tab2.getLstResultCondition().isEmpty()) {
-						lstResultCondition.addAll(tab2.getLstResultCondition());
+					OutputCheckResult tab2 = extractConditionTab2(cid, sid, wplId, exMon, prepareData, wplByListSidAndPeriod, integrationOfDailys, workSchedules, attendanceTimeOfMon, alarmCheckConditionCode);
+					if (!tab2.getAlarmExtractInfoResults().isEmpty()) {
+						lstExtractInfoResult.addAll(tab2.getAlarmExtractInfoResults());
 					}
 					
-					if (!tab2.getLstCheckType().isEmpty()) {
-						lstCheckType.addAll(tab2.getLstCheckType());
+					if (!tab2.getAlarmExtractConditions().isEmpty()) {
+//						lstCheckType.addAll(tab2.getLstCheckType());
+						alarmExtractConditions.addAll(tab2.getAlarmExtractConditions());
 					}
 					
 					// 固定の場合
 					// 優先使用のアラーム値を作成する
-					OutputCheckResult tab3 = extractConditionTab3(cid, sid, wplId, exMon, prepareData, wplByListSidAndPeriod, integrationOfDailys, workSchedules, attendanceTimeOfMon);
-					if (!tab3.getLstResultCondition().isEmpty()) {
-						lstResultCondition.addAll(tab3.getLstResultCondition());
+					OutputCheckResult tab3 = extractConditionTab3(cid, sid, wplId, exMon, prepareData, wplByListSidAndPeriod, integrationOfDailys, workSchedules, attendanceTimeOfMon, alarmCheckConditionCode);
+					if (!tab3.getAlarmExtractInfoResults().isEmpty()) {
+						lstExtractInfoResult.addAll(tab2.getAlarmExtractInfoResults());
 					}
-					
-					if (!tab3.getLstCheckType().isEmpty()) {
-						lstCheckType.addAll(tab3.getLstCheckType());
+
+					if (!tab3.getAlarmExtractConditions().isEmpty()) {
+						alarmExtractConditions.addAll(tab3.getAlarmExtractConditions());
 					}
+				}
+				if (!lstExtractInfoResult.isEmpty()) {
+					alarmEmployeeList.add(new AlarmEmployeeList(lstExtractInfoResult, sid));
 				}
 			}
 			
@@ -522,8 +526,8 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 			List<WorkPlaceHistImportAl> wplByListSidAndPeriod,
 			List<IntegrationOfDaily> integrationOfDailys,
 			List<WorkScheduleWorkInforImport> workSchedules,
-			AttendanceTimeOfMonthly attendanceTimeOfMon) {
-		OutputCheckResult result = new OutputCheckResult(new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
+			AttendanceTimeOfMonthly attendanceTimeOfMon, String alarmCheckConditionCode) {
+		OutputCheckResult result = new OutputCheckResult(new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
 		
 		// 社員に対応する処理締めを取得する
 		val require = requireService.createRequire();
@@ -586,21 +590,27 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 					continue;
 				}
 				
-				ExtractionResultDetail extractDetailItemContrast = conditionTab2ItemContrast(
+				ExtractResultDetail extractDetailItemContrast = conditionTab2ItemContrast(
 						cid, sid, wkpId, employeeCode, ym,
 						closureIdPresentClosingPeriodOpt.get(), prepareData, attendanceTimeOfMon, scheCondMon);
 				if (extractDetailItemContrast == null) {
 					continue;
 				}
 				
-				result.getLstResultCondition().add(new ResultOfEachCondition(
-						AlarmListCheckType.FreeCheck, 
-						String.valueOf(scheCondMon.getSortOrder()), 
-						Arrays.asList(extractDetailItemContrast)));
+//				result.getLstResultCondition().add(new ResultOfEachCondition(
+//						AlarmListCheckType.FreeCheck,
+//						String.valueOf(scheCondMon.getSortOrder()),
+//						Arrays.asList(extractDetailItemContrast)));
+				result.getAlarmExtractInfoResults().add(new AlarmExtractInfoResult(
+						String.valueOf(scheCondMon.getSortOrder()),
+						new AlarmCheckConditionCode(alarmCheckConditionCode),
+						AlarmCategory.SCHEDULE_MONTHLY,
+						AlarmListCheckType.FreeCheck,
+						Collections.singletonList(extractDetailItemContrast)));
 				break;
 			case NUMBER_DAYS:
 				// 日数の場合
-				ExtractionResultDetail extractDetailItemDay = conditionTab2ItemDay(
+				ExtractResultDetail extractDetailItemDay = conditionTab2ItemDay(
 						cid, sid, wkpId, ym, 
 						attendanceTimeOfMon, 
 						workSchedules, 
@@ -613,17 +623,23 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 					continue;
 				}
 				
-				result.getLstResultCondition().add(new ResultOfEachCondition(
-						AlarmListCheckType.FreeCheck, 
-						String.valueOf(scheCondMon.getSortOrder()), 
-						Arrays.asList(extractDetailItemDay)));
+//				result.getLstResultCondition().add(new ResultOfEachCondition(
+//						AlarmListCheckType.FreeCheck,
+//						String.valueOf(scheCondMon.getSortOrder()),
+//						Arrays.asList(extractDetailItemDay)));
+				result.getAlarmExtractInfoResults().add(new AlarmExtractInfoResult(
+						String.valueOf(scheCondMon.getSortOrder()),
+						new AlarmCheckConditionCode(alarmCheckConditionCode),
+						AlarmCategory.SCHEDULE_MONTHLY,
+						AlarmListCheckType.FreeCheck,
+						Collections.singletonList(extractDetailItemDay)));
 				break;
 			case REMAIN_NUMBER:
 				// TODO EA not description
 				break;
 			case TIME:
 				// 時間の場合
-				ExtractionResultDetail extractDetailItemTime = conditionTab2ItemTime(
+				ExtractResultDetail extractDetailItemTime = conditionTab2ItemTime(
 						cid, sid, wkpId, ym, 
 						attendanceTimeOfMon, workSchedules, integrationOfDailys, 
 						scheCondMon, presentClosingPeriod);
@@ -631,10 +647,16 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 					continue;
 				}
 				
-				result.getLstResultCondition().add(new ResultOfEachCondition(
-						AlarmListCheckType.FreeCheck, 
-						String.valueOf(scheCondMon.getSortOrder()), 
-						Arrays.asList(extractDetailItemTime)));
+//				result.getLstResultCondition().add(new ResultOfEachCondition(
+//						AlarmListCheckType.FreeCheck,
+//						String.valueOf(scheCondMon.getSortOrder()),
+//						Arrays.asList(extractDetailItemTime)));
+				result.getAlarmExtractInfoResults().add(new AlarmExtractInfoResult(
+						String.valueOf(scheCondMon.getSortOrder()),
+						new AlarmCheckConditionCode(alarmCheckConditionCode),
+						AlarmCategory.SCHEDULE_MONTHLY,
+						AlarmListCheckType.FreeCheck,
+						Collections.singletonList(extractDetailItemTime)));
 				break;
 				
 			default:
@@ -655,8 +677,8 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 			List<WorkPlaceHistImportAl> wplByListSidAndPeriod,
 			List<IntegrationOfDaily> integrationOfDailys,
 			List<WorkScheduleWorkInforImport> workSchedules,
-			AttendanceTimeOfMonthly attendanceTimeOfMon) {
-		OutputCheckResult result = new OutputCheckResult(new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
+			AttendanceTimeOfMonthly attendanceTimeOfMon, String alarmCheckConditionCode) {
+		OutputCheckResult result = new OutputCheckResult(new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
 		
 		// 対比の場合
 		// 対比のチェック条件をチェック
@@ -747,19 +769,23 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 			String comment = fixScheMon.getMessageDisp() != null && fixScheMon.getMessageDisp().isPresent()
 					? fixScheMon.getMessageDisp().get().v()
 					: Strings.EMPTY;
-			ExtractionResultDetail extractDetailItemTime = new ExtractionResultDetail();
-			extractDetailItemTime.setSID(sid);
+			ExtractResultDetail extractDetailItemTime = new ExtractResultDetail();
 			extractDetailItemTime.setWpID(Optional.ofNullable(wkpId));
-			extractDetailItemTime.setComment(Optional.ofNullable(comment));
+			extractDetailItemTime.setMessage(Optional.ofNullable(comment));
 			extractDetailItemTime.setPeriodDate(new ExtractionAlarmPeriodDate(Optional.of(ym.firstGeneralDate()), Optional.of(ym.lastGeneralDate())));
 			extractDetailItemTime.setRunTime(GeneralDateTime.now());
 			extractDetailItemTime.setAlarmContent(alarmContent);
 			extractDetailItemTime.setCheckValue(Optional.ofNullable(checkValue));
-			result.getLstResultCondition().add(new ResultOfEachCondition(
-					AlarmListCheckType.FreeCheck, 
-					String.valueOf(fixScheMon.getFixedCheckSMonItems().value), 
+//			result.getLstResultCondition().add(new ResultOfEachCondition(
+//					AlarmListCheckType.FreeCheck,
+//					String.valueOf(fixScheMon.getFixedCheckSMonItems().value),
+//					Arrays.asList(extractDetailItemTime)));
+			result.getAlarmExtractInfoResults().add(new AlarmExtractInfoResult(
+					String.valueOf(fixScheMon.getFixedCheckSMonItems().value),
+					new AlarmCheckConditionCode(alarmCheckConditionCode),
+					AlarmCategory.SCHEDULE_MONTHLY,
+					AlarmListCheckType.FreeCheck,
 					Arrays.asList(extractDetailItemTime)));
-			
 		}
 		
 		return result;
@@ -770,7 +796,7 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 	 * <Tab2>
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	private ExtractionResultDetail conditionTab2ItemContrast(
+	private ExtractResultDetail conditionTab2ItemContrast(
 			String cid, String sid, String wkpId, String empCode, YearMonth ym, 
 			ClosureIdPresentClosingPeriod closureIdPresentClosingPeriod, 
 			ScheMonPrepareData prepareData,
@@ -1112,8 +1138,7 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 						? scheCondMon.getErrorAlarmMessage().get().v()
 						: Strings.EMPTY;		
 		ExtractionAlarmPeriodDate extractionAlarmPeriodDate = new ExtractionAlarmPeriodDate(Optional.of(ym.firstGeneralDate()), Optional.empty());
-		return new ExtractionResultDetail(
-				sid,
+		return new ExtractResultDetail(
 				extractionAlarmPeriodDate, 
 				alarmName, 
 				alarmContent, 
@@ -1192,7 +1217,7 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 	 * <Tab2>
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	private ExtractionResultDetail conditionTab2ItemTime(
+	private ExtractResultDetail conditionTab2ItemTime(
 			String cid, String sid, String wkpId, YearMonth ym,
 			AttendanceTimeOfMonthly attendanceTimeOfMonthly,
 			List<WorkScheduleWorkInforImport> workSchedules,
@@ -1231,8 +1256,7 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 		String checkValue = TextResource.localize("KAL010_1121", String.valueOf(totalTime));
 		
 		ExtractionAlarmPeriodDate extractionAlarmPeriodDate = new ExtractionAlarmPeriodDate(Optional.of(ym.firstGeneralDate()), Optional.empty());
-		return new ExtractionResultDetail(
-				sid, 
+		return new ExtractResultDetail(
 				extractionAlarmPeriodDate, 
 				alarmName, 
 				alarmContent, 
@@ -1246,7 +1270,7 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 	 * 時間チェック条件をチェック
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	private ExtractionResultDetail conditionTab2ItemDay(
+	private ExtractResultDetail conditionTab2ItemDay(
 			String cid, String sid, String wkpId, YearMonth ym,
 			AttendanceTimeOfMonthly attendanceTimeOfMonthly,
 			List<WorkScheduleWorkInforImport> workSchedules,
@@ -1330,8 +1354,7 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 		String checkValue = TextResource.localize("KAL010_1120", String.valueOf(totalTime));
 		
 		ExtractionAlarmPeriodDate extractionAlarmPeriodDate = new ExtractionAlarmPeriodDate(Optional.of(ym.firstGeneralDate()), Optional.empty());
-		return new ExtractionResultDetail(
-				sid, 
+		return new ExtractResultDetail(
 				extractionAlarmPeriodDate, 
 				alarmName, 
 				alarmContent, 
