@@ -2,6 +2,7 @@ package nts.uk.ctx.at.schedule.infra.entity.displaysetting.functioncontrol;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
 import nts.uk.ctx.at.schedule.dom.displaysetting.functioncontrol.*;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
@@ -94,19 +95,19 @@ public class KscmtFuncCtrBywkp extends ContractUkJpaEntity implements Serializab
      * 完了機能の実行方法 : スケジュール修正職場別の機能制御.完了方法制御.完了実行方法
      */
     @Column(name = "COMPLETION_METHOD")
-    public int completionMethod;
+    public Integer completionMethod;
 
     /**
      * 実行と同時に確定するか : スケジュール修正職場別の機能制御.完了方法制御.完了方法制御
      */
     @Column(name = "COMPLETION_AND_DECISION")
-    public int completionAndDecision;
+    public Integer completionAndDecision;
 
     /**
      * 実行と同時にアラームチェックするか : スケジュール修正職場別の機能制御.完了方法制御.完了方法制御
      */
     @Column(name = "COMPLETION_AND_ALCHK")
-    public int completionAndAlchk;
+    public Integer completionAndAlchk;
 
     /**
      * Convert to domain
@@ -124,32 +125,27 @@ public class KscmtFuncCtrBywkp extends ContractUkJpaEntity implements Serializab
         List<FuncCtrlDisplayFormat> lstDisplayFormat = new ArrayList<>();
         if (this.modeAbbr == 1)
             lstDisplayFormat.add(FuncCtrlDisplayFormat.AbbreviatedName);
-
         if (this.modeFull == 1)
             lstDisplayFormat.add(FuncCtrlDisplayFormat.WorkInfo);
-
         if (this.modeShift == 1)
             lstDisplayFormat.add(FuncCtrlDisplayFormat.Shift);
 
         List<FuncCtrlStartControl> lstStartControl = new ArrayList<>();
         if (this.openDispBydate == 1)
             lstStartControl.add(FuncCtrlStartControl.ByDate);
-
         if (this.openDispByperson == 1)
             lstStartControl.add(FuncCtrlStartControl.ByPerson);
 
         List<FuncCtrlCompletionMethod> lstCompletionMethod = new ArrayList<>();
-        if (this.completionAndDecision == 1)
+        if (this.completionAndDecision != null && this.completionAndDecision == 1)
             lstCompletionMethod.add(FuncCtrlCompletionMethod.Confirm);
-
-        if (this.completionAndAlchk == 1)
+        if (this.completionAndAlchk != null && this.completionAndAlchk == 1)
             lstCompletionMethod.add(FuncCtrlCompletionMethod.AlarmCheck);
 
-        Optional<CompletionMethodControl> completionMethodCtrl =
-                Optional.of(CompletionMethodControl.create(
-                        this.completionMethod == 0
-                                ? FuncCtrlCompletionExecutionMethod.SelectAtRuntime
-                                : FuncCtrlCompletionExecutionMethod.SettingBefore,
+        Optional<CompletionMethodControl> completionMethodCtrl = this.completionMethod == null
+                ? Optional.empty()
+                : Optional.of(CompletionMethodControl.create(
+                        EnumAdaptor.valueOf(this.completionMethod, FuncCtrlCompletionExecutionMethod.class),
                         lstCompletionMethod,
                         alarmCheckCodeList
                 ));
@@ -159,7 +155,8 @@ public class KscmtFuncCtrBywkp extends ContractUkJpaEntity implements Serializab
                 lstDisplayFormat,
                 lstStartControl,
                 NotUseAtr.valueOf(this.useCompletion),
-                completionMethodCtrl);
+                completionMethodCtrl
+        );
     }
 
     /**
@@ -173,17 +170,18 @@ public class KscmtFuncCtrBywkp extends ContractUkJpaEntity implements Serializab
         Optional<CompletionMethodControl> completionMethodCtrl = domain.getCompletionMethodControl();
 
         return new KscmtFuncCtrBywkp(
-                companyId
-                , BooleanUtils.toInteger(domain.isUseDisplayPeriod(FuncCtrlDisplayPeriod.TwentyEightDayCycle))
-                , BooleanUtils.toInteger(domain.isUseDisplayPeriod(FuncCtrlDisplayPeriod.LastDayUtil))
-                , BooleanUtils.toInteger(domain.isUseDisplayFormat(FuncCtrlDisplayFormat.AbbreviatedName))
-                , BooleanUtils.toInteger(domain.isUseDisplayFormat(FuncCtrlDisplayFormat.WorkInfo))
-                , BooleanUtils.toInteger(domain.isUseDisplayFormat(FuncCtrlDisplayFormat.Shift))
-                , BooleanUtils.toInteger(domain.isStartControl(FuncCtrlStartControl.ByDate))
-                , BooleanUtils.toInteger(domain.isStartControl(FuncCtrlStartControl.ByPerson))
-                , domain.getUseCompletionAtr().value
-                , completionMethodCtrl.get().getCompletionExecutionMethod().value
-                , BooleanUtils.toInteger(completionMethodCtrl.get().isCompletionMethodControl(FuncCtrlCompletionMethod.Confirm))
-                , BooleanUtils.toInteger(completionMethodCtrl.get().isCompletionMethodControl(FuncCtrlCompletionMethod.AlarmCheck)));
+                companyId,
+                BooleanUtils.toInteger(domain.isUseDisplayPeriod(FuncCtrlDisplayPeriod.TwentyEightDayCycle)),
+                BooleanUtils.toInteger(domain.isUseDisplayPeriod(FuncCtrlDisplayPeriod.LastDayUtil)),
+                BooleanUtils.toInteger(domain.isUseDisplayFormat(FuncCtrlDisplayFormat.AbbreviatedName)),
+                BooleanUtils.toInteger(domain.isUseDisplayFormat(FuncCtrlDisplayFormat.WorkInfo)),
+                BooleanUtils.toInteger(domain.isUseDisplayFormat(FuncCtrlDisplayFormat.Shift)),
+                BooleanUtils.toInteger(domain.isStartControl(FuncCtrlStartControl.ByDate)),
+                BooleanUtils.toInteger(domain.isStartControl(FuncCtrlStartControl.ByPerson)),
+                domain.getUseCompletionAtr().value,
+                !completionMethodCtrl.isPresent() ? null : completionMethodCtrl.get().getCompletionExecutionMethod().value,
+                !completionMethodCtrl.isPresent() ? null : BooleanUtils.toInteger(completionMethodCtrl.get().isCompletionMethodControl(FuncCtrlCompletionMethod.Confirm)),
+                !completionMethodCtrl.isPresent() ? null : BooleanUtils.toInteger(completionMethodCtrl.get().isCompletionMethodControl(FuncCtrlCompletionMethod.AlarmCheck))
+        );
     }
 }
