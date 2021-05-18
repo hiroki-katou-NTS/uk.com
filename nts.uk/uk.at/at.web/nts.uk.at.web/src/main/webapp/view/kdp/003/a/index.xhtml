@@ -37,8 +37,7 @@
 					<div id="stamp-input" class="time-stamp" data-bind="let: { fss: ko.unwrap(fingerStampSetting) }">
 						<div data-bind="stamp-clock: {
 								setting: {
-									textColor: (fss.stampSetting || {}).textColor || '#000',
-									backGroundColor: (fss.stampSetting || {}).backGroundColor || '#fff'
+									textColor: (fss.stampSetting || {}).textColor || '#7F7F7F'
 								},
 								events: {
 									setting: {
