@@ -498,6 +498,24 @@ module nts.uk.at.view.kdp005.a {
 
 									if (result) {
 										if (result.notification !== null) {
+
+											self.workPlaceId = result;
+
+											let registerdata = {
+												stampedCardNumber: stampedCardNumber,
+												datetime: moment(vm.$date.now()).format('YYYY/MM/DD HH:mm:ss'),
+												stampButton: {
+													pageNo: layout.pageNo,
+													buttonPositionNo: button.btnPositionNo
+												},
+												refActualResult: {
+													cardNumberSupport: null,
+													workPlaceId: self.workPlaceId,
+													workLocationCD: self.worklocationCode,
+													workTimeCode: null,
+													overtimeDeclaration: null
+												}
+											};
 											service.addCheckCard(registerdata).done((res) => {
 												//phat nhac
 												if (source) {
@@ -527,6 +545,23 @@ module nts.uk.at.view.kdp005.a {
 									self.workPlaceId = dataStorage.selectedWP[0];
 								}
 							}
+
+							let registerdata = {
+								stampedCardNumber: stampedCardNumber,
+								datetime: moment(vm.$date.now()).format('YYYY/MM/DD HH:mm:ss'),
+								stampButton: {
+									pageNo: layout.pageNo,
+									buttonPositionNo: button.btnPositionNo
+								},
+								refActualResult: {
+									cardNumberSupport: null,
+									workPlaceId: self.workPlaceId,
+									workLocationCD: self.worklocationCode,
+									workTimeCode: null,
+									overtimeDeclaration: null
+								}
+							};
+
 							service.addCheckCard(registerdata).done((res) => {
 								//phat nhac
 								if (source) {
