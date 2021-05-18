@@ -1502,7 +1502,7 @@ module nts.uk.ui.at.kdw013.calendar {
                 slotEventOverlap: false,
                 eventOverlap: false,
                 selectOverlap: false,
-                rerenderDelay: 500,
+                // rerenderDelay: 500,
                 dateClick: () => {
                     const events = vm.calendar.getEvents();
 

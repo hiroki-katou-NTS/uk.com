@@ -25,7 +25,7 @@ module nts.uk.ui.at.kdw013.a {
     const API: API = {
         ADD: '/screen/at/kdw013/a/add',
         // DeleteWorkResultConfirmationCommand
-        DELETE: '/screen/at/kdw013/a/delete',
+        DELETE: '/screen/at/kdw013/a/delete_work_result_confirm',
         // 対象社員を選択する
         // Chọn nhân viên ở A2_4
         // same api: CHANGE_DATE
@@ -34,8 +34,8 @@ module nts.uk.ui.at.kdw013.a {
         // Chọn ngày ở [画面イメージ]A6_1/[固有部品]A1_1
         CHANGE_DATE: '/screen/at/kdw013/a/changeDate',
         // RegisterWorkContentCommand
-        REGISTER: '/screen/at/kdw013/a/register',
-        REG_WORKTIME: '/screen/at/kdw013/registerWorkTime',
+        REGISTER: '/screen/at/kdw013/a/register_work_content',
+        REG_WORKTIME: '/screen/at/kdw013/register_work_man_hours',
         START: '/screen/at/kdw013/a/start'
     };
 
