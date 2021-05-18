@@ -561,10 +561,8 @@ public class MonthlyAggregationRemainingNumberImpl implements MonthlyAggregation
 		List<TempChildCareManagement> overWriteList = new ArrayList<>();
 
 		for (val dailyInterimRemainMng : this.dailyInterimRemainMngs) {
-			if (dailyInterimRemainMng.getRecAbsData().size() <= 0)
-				continue;
-
-			//TODO:暫定データの作成処理が完了したら、dailyInterimRemainMngから子の看護の暫定データをoverWriteListにaddする
+			if(dailyInterimRemainMng.getChildCareData().isPresent())
+				overWriteList.add(dailyInterimRemainMng.getChildCareData().get());
 		}
 
 		val require = childCareNurseRequireImplFactory.createRequireImpl();
@@ -607,10 +605,8 @@ public class MonthlyAggregationRemainingNumberImpl implements MonthlyAggregation
 		List<TempCareManagement> overWriteList = new ArrayList<>();
 
 		for (val dailyInterimRemainMng : this.dailyInterimRemainMngs) {
-			if (dailyInterimRemainMng.getRecAbsData().size() <= 0)
-				continue;
-
-			//TODO:暫定データの作成処理が完了したら、dailyInterimRemainMngから介護の暫定データをoverWriteListにaddする
+			if(dailyInterimRemainMng.getCareData().isPresent())
+				overWriteList.add(dailyInterimRemainMng.getCareData().get());
 		}
 
 		val require = childCareNurseRequireImplFactory.createRequireImpl();

@@ -76,7 +76,10 @@ public class CreateInterimAnnualMngData {
 				Optional.of(tmpAnnualHolidayMngOpt.get()),
 				Optional.empty(),
 				Optional.empty(),
-				new ArrayList<>()));
+				new ArrayList<>(),
+				Optional.empty(),
+				Optional.empty()
+				));
 	}
 
 	/**

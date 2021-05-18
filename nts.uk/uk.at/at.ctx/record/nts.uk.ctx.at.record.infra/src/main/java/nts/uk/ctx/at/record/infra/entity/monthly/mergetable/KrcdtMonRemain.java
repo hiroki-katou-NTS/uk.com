@@ -33,6 +33,8 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.child
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveGrantDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveRemainingDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveUsedDayNumber;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.remainingnumber.DayNumberOfRemain;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.remainingnumber.TimeOfRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.usenumber.DayNumberOfUse;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.usenumber.TimeOfUse;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.information.care.CareRemNumEachMonth;
@@ -1704,6 +1706,34 @@ public class KrcdtMonRemain extends ContractUkJpaEntity implements Serializable 
 	@Column(name = "CA_USED_MINUTES_AFTER")
 	public Integer careUsedMinutesAfter;
 
+
+	/** 子の看護残日数本年 */
+	@Column(name = "CH_REMAIN_DAYS_BEFORE")
+	public double childRemainDaysBefore;
+	/** 子の看護残時間本年 */
+	@Column(name = "CH_REMAIN_MINUTES_BEFORE")
+	public Integer childRemainMinutesBefore;
+	/** 子の看護残日数翌年 */
+	@Column(name = "CH_REMAIN_DAYS_AFTER")
+	public Double childRemainDaysAfter;
+	/** 子の看護残時間翌年 */
+	@Column(name = "CH_REMAIN_MINUTES_AFTER")
+	public Integer childRemainMinutesAfter;
+	/** 介護残日数本年 */
+	@Column(name = "CA_REMAIN_DAYS_BEFORE")
+	public double careRemainDaysBefore;
+	/** 介護護残時間本年 */
+	@Column(name = "CA_REMAIN_MINUTES_BEFORE")
+	public Integer careRemainMinutesBefore;
+	/** 介護残日数翌年 */
+	@Column(name = "CA_REMAIN_DAYS_AFTER")
+	public Double careRemainDaysAfter;
+	/** 介護残時間翌年 */
+	@Column(name = "CA_REMAIN_MINUTES_AFTER")
+	public Integer careRemainMinutesAfter;
+
+
+
 	@Override
 	protected Object getKey() {
 		return krcdtMonRemainPk;
@@ -3077,6 +3107,10 @@ public class KrcdtMonRemain extends ContractUkJpaEntity implements Serializable 
 		this.childUsedMinutes = domain.getRemNumEachMonth().getUsedInfo().getUsedNumber().getUsedTimes().map(mapper->mapper.v()).orElse(0);
 		this.childUsedMinutesBefore = domain.getRemNumEachMonth().getThisYearUsedInfo().getUsedNumber().getUsedTimes().map(mapper->mapper.v()).orElse(0);
 		this.childUsedMinutesAfter = domain.getRemNumEachMonth().getNextYearUsedInfo().map(mapper->mapper.getUsedNumber().getUsedTimes().map(mapper2->mapper2.v()).orElse(0)).orElse(0);
+		this.childRemainDaysBefore=domain.getRemNumEachMonth().getThisYearRemainNumber().getRemainDay().v();
+		this.childRemainDaysAfter=domain.getRemNumEachMonth().getNextYearRemainNumber().map(mapper->mapper.getRemainDay().v()).orElse(0.0);
+		this.childRemainMinutesBefore=domain.getRemNumEachMonth().getThisYearRemainNumber().getRemainTimes().map(mapper->mapper.v()).orElse(0);
+		this.childRemainMinutesAfter=domain.getRemNumEachMonth().getNextYearRemainNumber().map(mapper->mapper.getRemainTimes().map(c->c.v()).orElse(0)).orElse(0);
 	}
 
 	public void deleteChildRemainData(){
@@ -3086,6 +3120,10 @@ public class KrcdtMonRemain extends ContractUkJpaEntity implements Serializable 
 		this.childUsedMinutes = null;
 		this.childUsedMinutesBefore = null;
 		this.childUsedMinutesAfter = null;
+		this.childRemainDaysBefore=0.0;
+		this.childRemainDaysAfter=null;
+		this.childRemainMinutesBefore=null;
+		this.childRemainMinutesAfter=null;
 	}
 
 	/** KRCDT_MON_CARE_HD_REMAIN **/
@@ -3101,6 +3139,10 @@ public class KrcdtMonRemain extends ContractUkJpaEntity implements Serializable 
 		this.careUsedMinutes = domain.getRemNumEachMonth().getUsedInfo().getUsedNumber().getUsedTimes().map(mapper->mapper.v()).orElse(0);
 		this.careUsedMinutesBefore = domain.getRemNumEachMonth().getThisYearUsedInfo().getUsedNumber().getUsedTimes().map(mapper->mapper.v()).orElse(0);
 		this.careUsedMinutesAfter = domain.getRemNumEachMonth().getNextYearUsedInfo().map(mapper->mapper.getUsedNumber().getUsedTimes().map(mapper2->mapper2.v()).orElse(0)).orElse(0);
+		this.careRemainDaysBefore=domain.getRemNumEachMonth().getThisYearRemainNumber().getRemainDay().v();
+		this.careRemainDaysAfter=domain.getRemNumEachMonth().getNextYearRemainNumber().map(mapper->mapper.getRemainDay().v()).orElse(0.0);
+		this.careRemainMinutesBefore=domain.getRemNumEachMonth().getThisYearRemainNumber().getRemainTimes().map(mapper->mapper.v()).orElse(0);
+		this.careRemainMinutesAfter=domain.getRemNumEachMonth().getNextYearRemainNumber().map(mapper->mapper.getRemainTimes().map(c->c.v()).orElse(0)).orElse(0);
 	}
 
 	public void deleteCareRemainData(){
@@ -3110,6 +3152,10 @@ public class KrcdtMonRemain extends ContractUkJpaEntity implements Serializable 
 		this.careUsedMinutes = null;
 		this.careUsedMinutesBefore = null;
 		this.careUsedMinutesAfter = null;
+		this.careRemainDaysBefore=0.0;
+		this.careRemainDaysAfter=null;
+		this.careRemainMinutesBefore=null;
+		this.careRemainMinutesAfter=null;
 	}
 
 	/**
@@ -4393,8 +4439,10 @@ public class KrcdtMonRemain extends ContractUkJpaEntity implements Serializable 
 							new UsedTimes(0)
 							),
 					/** 本年残数 */
-					new ChildCareNurseRemainingNumber(), // 要実装
-
+					ChildCareNurseRemainingNumber.of(
+							new DayNumberOfRemain(this.careRemainDaysBefore),
+							Optional.of(new TimeOfRemain(this.careRemainMinutesBefore))
+							),
 					/** 翌年使用数 */
 					Optional.of(ChildCareNurseUsedInfo.of(
 							ChildCareNurseUsedNumber.of(
@@ -4408,9 +4456,11 @@ public class KrcdtMonRemain extends ContractUkJpaEntity implements Serializable 
 							/** 時間休暇使用日数 */
 							new UsedTimes(0)
 							)),
-
 					/** 翌年残数 */
-					Optional.empty() // 要実装
+					Optional.of(ChildCareNurseRemainingNumber.of(
+							new DayNumberOfRemain(this.careRemainDaysAfter),
+							Optional.of(new TimeOfRemain(this.careRemainMinutesAfter))
+							))
 				);
 		return new ChildcareRemNumEachMonth(
 				this.krcdtMonRemainPk.getEmployeeId(),
@@ -4463,8 +4513,10 @@ public class KrcdtMonRemain extends ContractUkJpaEntity implements Serializable 
 							new UsedTimes(0)
 							),
 					/** 本年残数 */
-					new ChildCareNurseRemainingNumber(), // 要実装
-
+					ChildCareNurseRemainingNumber.of(
+							new DayNumberOfRemain(this.childRemainDaysBefore),
+							Optional.of(new TimeOfRemain(this.childRemainMinutesBefore))
+							),
 					/** 翌年使用数 */
 					Optional.of(ChildCareNurseUsedInfo.of(
 							ChildCareNurseUsedNumber.of(
@@ -4478,9 +4530,11 @@ public class KrcdtMonRemain extends ContractUkJpaEntity implements Serializable 
 							/** 時間休暇使用日数 */
 							new UsedTimes(0)
 							)),
-
 					/** 翌年残数 */
-					Optional.empty() // 要実装
+					Optional.of(ChildCareNurseRemainingNumber.of(
+							new DayNumberOfRemain(this.childRemainDaysAfter),
+							Optional.of(new TimeOfRemain(this.childRemainMinutesAfter))
+							))
 				);
 		return new CareRemNumEachMonth(
 				this.krcdtMonRemainPk.getEmployeeId(),
