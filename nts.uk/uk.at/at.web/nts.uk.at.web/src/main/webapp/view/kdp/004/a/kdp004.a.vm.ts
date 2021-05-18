@@ -475,6 +475,7 @@ module nts.uk.at.view.kdp004.a {
 					},
 					refActualResult: {
 						cardNumberSupport: null,
+						workPlaceId: self.workPlaceId,
 						workLocationCD: self.worklocationCode,
 						workTimeCode: null,
 						overtimeDeclaration: null
@@ -505,17 +506,23 @@ module nts.uk.at.view.kdp004.a {
 										if (result.notification !== null) {
 											self.workPlaceId = result;
 
-											// var workplace: IWorkPlaceInfo = _.find(self.workPlaceInfos, ((value) => {
-											// 	if (value.id === result) {
-											// 		return value;
-											// 	}
-											// }));
-
-											// var workLocationName: string = '';
-											// var workPlaceId: string = result;
-											// if (workplace) {
-											// 	workLocationName = workplace.workplaceDisplayName
-											// }
+											let registerdata = {
+												employeeId: loginInfo && loginInfo.em ? loginInfo.em.employeeId : vm.$user.employeeId,
+												datetime: moment(vm.$date.now()).format('YYYY/MM/DD HH:mm:ss'),
+												stampNumber: null,
+												stampButton: {
+													pageNo: layout.pageNo,
+													buttonPositionNo: button.btnPositionNo
+												},
+												refActualResult: {
+													cardNumberSupport: null,
+													workPlaceId: self.workPlaceId,
+													workLocationCD: self.worklocationCode,
+													workTimeCode: null,
+													overtimeDeclaration: null
+												},
+												authcMethod: loginInfo.authType
+											};
 
 											service.stampInput(registerdata).done((res) => {
 
@@ -525,14 +532,8 @@ module nts.uk.at.view.kdp004.a {
 
 
 												if (self.stampResultDisplay().notUseAttr == 1 && button.changeClockArt == 1) {
-													// Cái này dùng để làm j ?
-													// vm.$window.storage('infoEmpToScreenC', employeeInfo);
-													// vm.$window.storage('screenC', { screen: "KDP004" });
 													self.openScreenC(button, layout, loginInfo.em);
 												} else {
-													// Cái này dùng để làm j ?
-													// vm.$window.storage('infoEmpToScreenB', employeeInfo);
-													// vm.$window.storage('screenB', { screen: "KDP004" });
 													self.openScreenB(button, layout, loginInfo.em);
 												}
 
@@ -551,6 +552,24 @@ module nts.uk.at.view.kdp004.a {
 							if (dataStorage.selectedWP.length = 1) {
 								self.workPlaceId = dataStorage.selectedWP[0];
 							}
+
+							let registerdata = {
+								employeeId: loginInfo && loginInfo.em ? loginInfo.em.employeeId : vm.$user.employeeId,
+								datetime: moment(vm.$date.now()).format('YYYY/MM/DD HH:mm:ss'),
+								stampNumber: null,
+								stampButton: {
+									pageNo: layout.pageNo,
+									buttonPositionNo: button.btnPositionNo
+								},
+								refActualResult: {
+									cardNumberSupport: null,
+									workPlaceId: self.workPlaceId,
+									workLocationCD: self.worklocationCode,
+									workTimeCode: null,
+									overtimeDeclaration: null
+								},
+								authcMethod: loginInfo.authType
+							};
 
 							service.stampInput(registerdata).done((res) => {
 
