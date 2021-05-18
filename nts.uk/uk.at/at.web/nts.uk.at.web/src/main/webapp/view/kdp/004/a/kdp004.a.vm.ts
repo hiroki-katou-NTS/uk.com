@@ -60,7 +60,7 @@ module nts.uk.at.view.kdp004.a {
 			// get from basyo;
 			workplace: string[] | [] = [];
 			worklocationCode: null | string = null;
-			workplaceId: string = null;
+			workPlaceId: string = null;
 
 			workPlaceInfos: IWorkPlaceInfo[] = [];
 			supportUse: KnockoutObservable<boolean> = ko.observable(false);
@@ -512,31 +512,36 @@ module nts.uk.at.view.kdp004.a {
 								.then((result: string) => {
 									if(result) {
 
-										var workplace: IWorkPlaceInfo = _.find(self.workPlaceInfos, ((value) => {
-											if (value.id === result) {
-												return value;
-											}
-										}));
+										self.workPlaceId = result;
 
-										var workLocationName: string = '';
-										var workplaceId: string = result;
-										if (workplace) {
-											workLocationName = workplace.workplaceDisplayName
-										}
+										// var workplace: IWorkPlaceInfo = _.find(self.workPlaceInfos, ((value) => {
+										// 	if (value.id === result) {
+										// 		return value;
+										// 	}
+										// }));
+
+										// var workLocationName: string = '';
+										// var workPlaceId: string = result;
+										// if (workplace) {
+										// 	workLocationName = workplace.workplaceDisplayName
+										// }
 
 										service.stampInput(registerdata).done((res) => {
 
 											//phat nhac
 											self.playAudio(button.audioType);
-											const employeeInfo = { mode, employeeId, employeeCode, workLocationName, workplaceId };
+											// const employeeInfo = { mode, employeeId, employeeCode, workLocationName, workPlaceId };
+											
 
 											if (self.stampResultDisplay().notUseAttr == 1 && button.changeClockArt == 1) {
-												vm.$window.storage('infoEmpToScreenC', employeeInfo);
-												vm.$window.storage('screenC', { screen: "KDP004" });
+												// Cái này dùng để làm j ?
+												// vm.$window.storage('infoEmpToScreenC', employeeInfo);
+												// vm.$window.storage('screenC', { screen: "KDP004" });
 												self.openScreenC(button, layout, loginInfo.em);
 											} else {
-												vm.$window.storage('infoEmpToScreenB', employeeInfo);
-												vm.$window.storage('screenB', { screen: "KDP004" });
+												// Cái này dùng để làm j ?
+												// vm.$window.storage('infoEmpToScreenB', employeeInfo);
+												// vm.$window.storage('screenB', { screen: "KDP004" });
 												self.openScreenB(button, layout, loginInfo.em);
 											}
 	
@@ -551,34 +556,26 @@ module nts.uk.at.view.kdp004.a {
 							
 						} else {
 
-							var workplaceId: string;
-							var workLocationName: string = '';
-
 							if (dataStorage.selectedWP.length = 1) {
-								workplaceId = dataStorage.selectedWP[0];
-								var workplace: IWorkPlaceInfo = _.find(self.workPlaceInfos, ((value) => {
-									if (value.id === workplaceId) {
-										return value;
-									}
-								}));
-
-								workLocationName = workplace.name;
+								self.workPlaceId = dataStorage.selectedWP[0];
 							}
 
 							service.stampInput(registerdata).done((res) => {
 
 								//phat nhac
 								self.playAudio(button.audioType);
-								const employeeInfo = { mode, employeeId, employeeCode, workLocationName, workplaceId };
-
+								// const employeeInfo = { mode, employeeId, employeeCode, workLocationName, workPlaceId };
+								
 
 								if (self.stampResultDisplay().notUseAttr == 1 && button.changeClockArt == 1) {
-									vm.$window.storage('infoEmpToScreenC', employeeInfo);
-									vm.$window.storage('screenC', { screen: "KDP004" });
+									// Cái này dùng để làm j ?
+									// vm.$window.storage('infoEmpToScreenC', employeeInfo);
+									// vm.$window.storage('screenC', { screen: "KDP004" });
 									self.openScreenC(button, layout, loginInfo.em);
 								} else {
-									vm.$window.storage('infoEmpToScreenB', employeeInfo);
-									vm.$window.storage('screenB', { screen: "KDP004" });
+									// Cái này dùng để làm j ?
+									// vm.$window.storage('infoEmpToScreenB', employeeInfo);
+									// vm.$window.storage('screenB', { screen: "KDP004" });
 									self.openScreenB(button, layout, loginInfo.em);
 								}
 
@@ -603,6 +600,7 @@ module nts.uk.at.view.kdp004.a {
 					employeeCode: loginInfo ? loginInfo.employeeCode : vm.$user.employeeCode,
 					employeeName: loginInfo ? loginInfo.employeeName : self.loginInfo.employeeName,
 					mode: Mode.Personal,
+					workPlaceId: self.workPlaceId
 				});
 				setShared("screenB", {
 					screen: "KDP004"
@@ -621,6 +619,7 @@ module nts.uk.at.view.kdp004.a {
 					employeeCode: loginInfo ? loginInfo.employeeCode : vm.$user.employeeCode,
 					employeeName: loginInfo ? loginInfo.employeeName : self.loginInfo.employeeName,
 					mode: Mode.Personal,
+					workPlaceId: self.workPlaceId
 				});
 				setShared("screenC", {
 					screen: "KDP004"
@@ -729,7 +728,7 @@ module nts.uk.at.view.kdp004.a {
 								if (data.workpalceId) {
 									self.modeBasyo(true);
 									self.workplace = [data.workpalceId];
-									self.workplaceId = data.workpalceId;
+									self.workPlaceId = data.workpalceId;
 								}
 							}
 						});
