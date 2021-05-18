@@ -439,10 +439,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             service.getDataStartScreen(param).done((data: IDataStartScreen) => {
                 console.log(data.dataBasicDto);
                 
-                self.displayButtonsHerder(data);
-                
                 // khởi tạo data localStorage khi khởi động lần đầu.
                 self.creatDataLocalStorege(data.dataBasicDto);
+                
+                self.displayButtonsHerder(data);
 
                 viewMode = self.selectedModeDisplayInBody();
                 // trong trưởng hợp ở localstorage lưu viewMode = time, và updateMode = edit
@@ -682,7 +682,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             }
             
             // set css lại
-            
         }
         
         calculateDisPlayFormatA4_234(data) {
@@ -2346,7 +2345,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             });
             nts.uk.ui.block.clear();
         }
-        
+
         /**
         * Create exTable
         */
@@ -2572,80 +2571,45 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             };
 
             let start = performance.now();
-            
+
+            let extbl = new nts.uk.ui.exTable.ExTable($("#extable"), {
+                headerHeight: "60px",
+                bodyRowHeight: viewMode == 'shift' ? "35px" : "50px",
+                bodyHeight: "500px",
+                horizontalSumHeaderHeight: "0px",
+                horizontalSumBodyHeight: "0px",
+                horizontalSumBodyRowHeight: "0px",
+                areaResize: true,
+                bodyHeightMode: bodyHeightMode,
+                windowXOccupation: windowXOccupation,
+                windowYOccupation: windowYOccupation,
+                manipulatorId: self.keyGridGrid,
+                manipulatorKey: "sid",
+                updateMode: updateMode,
+                pasteOverWrite: true,
+                stickOverWrite: true,
+                viewMode: viewMode,
+                showTooltipIfOverflow: true,
+                errorMessagePopup: true,
+                customValidate: customValidate,
+                determination: {
+                    rows: [0],
+                    columns: ["codeNameOfEmp"]
+                },
+                heightSetter: {
+                    showBodyHeightButton: true,
+                    click: function() {
+                        alert("Show dialog");
+                    }
+                }
+            });
+            extbl.LeftmostHeader(leftmostHeader).LeftmostContent(leftmostContent);
             if (self.showA9) {
-                new nts.uk.ui.exTable.ExTable($("#extable"), {
-                    headerHeight: "60px",
-                    bodyRowHeight: viewMode == 'shift' ? "35px" : "50px",
-                    bodyHeight: "500px",
-                    horizontalSumHeaderHeight: "0px",
-                    horizontalSumBodyHeight: "0px",
-                    horizontalSumBodyRowHeight: "0px",
-                    areaResize: true,
-                    bodyHeightMode: bodyHeightMode,
-                    windowXOccupation: windowXOccupation,
-                    windowYOccupation: windowYOccupation,
-                    manipulatorId: self.keyGridGrid,
-                    manipulatorKey: "sid",
-                    updateMode: updateMode,
-                    pasteOverWrite: true,
-                    stickOverWrite: true,
-                    viewMode: viewMode,
-                    showTooltipIfOverflow: true,
-                    errorMessagePopup: true,
-                    customValidate: customValidate,
-                    determination: {
-                        rows: [0],
-                        columns: ["codeNameOfEmp"]
-                    },
-                    heightSetter: {
-                        showBodyHeightButton: true,
-                        click: function() {
-                            alert("Show dialog");
-                        }
-                    }
-                })
-                    .LeftmostHeader(leftmostHeader).LeftmostContent(leftmostContent)
-                    .MiddleHeader(middleHeader).MiddleContent(middleContent)
-                    .DetailHeader(detailHeader).DetailContent(detailContent)
-                    .create();
-            } else {
-                new nts.uk.ui.exTable.ExTable($("#extable"), {
-                    headerHeight: "60px",
-                    bodyRowHeight: viewMode == 'shift' ? "35px" : "50px",
-                    bodyHeight: "500px",
-                    horizontalSumHeaderHeight: "0px",
-                    horizontalSumBodyHeight: "0px",
-                    horizontalSumBodyRowHeight: "0px",
-                    areaResize: true,
-                    bodyHeightMode: bodyHeightMode,
-                    windowXOccupation: windowXOccupation,
-                    windowYOccupation: windowYOccupation,
-                    manipulatorId: self.keyGrid,
-                    manipulatorKey: "sid",
-                    updateMode: updateMode,
-                    pasteOverWrite: true,
-                    stickOverWrite: true,
-                    viewMode: viewMode,
-                    showTooltipIfOverflow: true,
-                    errorMessagePopup: true,
-                    customValidate: customValidate,
-                    determination: {
-                        rows: [0],
-                        columns: ["codeNameOfEmp"]
-                    },
-                    heightSetter: {
-                        showBodyHeightButton: true,
-                        click: function() {
-                            alert("Show dialog");
-                        }
-                    }
-                })
-                    .LeftmostHeader(leftmostHeader).LeftmostContent(leftmostContent)
-                    .DetailHeader(detailHeader).DetailContent(detailContent)
-                    .create();
+                extbl.MiddleHeader(middleHeader).MiddleContent(middleContent);
             }
-            
+            extbl.DetailHeader(detailHeader).DetailContent(detailContent);
+            extbl.create();
+
             // set height grid theo localStorage đã lưu
             self.setPositionButonDownAndHeightGrid();
             $('#btnControlLeftRight').width($("#extable").width() + 10);
