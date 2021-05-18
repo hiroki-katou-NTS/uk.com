@@ -46,9 +46,15 @@ module nts.uk.ui.at.kdw013.calendar {
         extendedProps: Record<string, any> & {
             id: string;
             status: EventStatus;
-            relateId: string;
             description: string;
-            employeeId: string;
+            sId: string;
+            workCD1: string;
+            workCD2: string;
+            workCD3: string;
+            workCD4: string;
+            workCD5: string;
+            workLocationCD: string;
+            remarks: string;
         };
     };
 
@@ -180,6 +186,7 @@ module nts.uk.ui.at.kdw013.calendar {
         .fc-container .fc-sidebar .fc-employees>ul>li>div:first-child {
             float: left;
             min-width: 70px;
+            padding-right: 7px;
         }
         .fc-container .fc-sidebar .fc-events>ul>li>div:not(:first-child),
         .fc-container .fc-sidebar .fc-employees>ul>li>div:not(:first-child) {

@@ -200,15 +200,14 @@ module nts.uk.ui.at.kdw013.a {
                                                     extendedProps: {
                                                         id: randomId(),
                                                         status: 'normal' as any,
-                                                        relateId: randomId(),
-                                                        description: remarks,
+                                                        remarks,
                                                         sId: sid,
                                                         workCD1,
                                                         workCD2,
                                                         workCD3,
                                                         workCD4,
                                                         workCD5,
-                                                        workplace: workLocationCD
+                                                        workLocationCD
                                                     } as any
                                                 };
                                             })

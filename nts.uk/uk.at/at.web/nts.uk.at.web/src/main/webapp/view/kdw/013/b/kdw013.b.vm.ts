@@ -172,13 +172,13 @@ module nts.uk.ui.at.kdw013.b {
                     if (event) {
                         const { extendedProps, start, end } = event;
                         const {
-                            descriptions,
+                            remarks,
                             workCD1,
                             workCD2,
                             workCD3,
                             workCD4,
                             workCD5,
-                            workplace
+                            workLocationCD
                         } = extendedProps;
 
                         const startTime = getTimeOfDate(start);
@@ -265,7 +265,7 @@ module nts.uk.ui.at.kdw013.b {
                             }
                         }
 
-                        const work = _.find(works, ({ workLocationCD }) => workLocationCD === workplace);
+                        const work = _.find(works, ({ workLocationCD: wlc }) => wlc === workLocationCD);
 
                         if (work) {
                             model.push({ key: 'KDW013_28', value: `${work.workLocationCD} ${work.workLocationName}` });
@@ -273,7 +273,7 @@ module nts.uk.ui.at.kdw013.b {
                             model.push({ key: 'KDW013_28', value: '' });
                         }
 
-                        model.push({ key: 'KDW013_29', value: descriptions });
+                        model.push({ key: 'KDW013_29', value: remarks });
 
                         vm.dataSources(model);
                     } else {

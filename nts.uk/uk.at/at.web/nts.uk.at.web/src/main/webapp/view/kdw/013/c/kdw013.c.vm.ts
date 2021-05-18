@@ -1054,9 +1054,9 @@ module nts.uk.ui.at.kdw013.c {
                             event.setExtendedProp('workCD5', ko.unwrap(task5));
 
                             event.setExtendedProp('sId', employeeId);
-                            event.setExtendedProp('workplace', ko.unwrap(workplace));
+                            event.setExtendedProp('workLocationCD', ko.unwrap(workplace));
 
-                            event.setExtendedProp('descriptions', descriptions());
+                            event.setExtendedProp('remarks', descriptions());
                         }
 
                         // close popup
