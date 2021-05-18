@@ -21,7 +21,23 @@ import { KdlS36Component } from 'views/kdl/s36';
     resource: require('./resources.json'),
     validations: {
         prePostAtr: {
-            required: true
+            selectCheck: {
+                test(value: number) {
+                    const vm = this;
+                    if (value == null || value < 0 || value > 1) {
+                        document.getElementById('prePostSelect').className += ' invalid';
+
+                        return false;
+                    }
+                    let prePostSelectElement = document.getElementById('prePostSelect');
+                    if (!_.isNull(prePostSelectElement)) {
+                        prePostSelectElement.classList.remove('invalid');
+                    }
+
+                    return true;
+                },
+                messageId: 'MsgB_30'
+            }
         },
         complementLeaveAtr: {
             required: true
@@ -233,6 +249,7 @@ export class KafS11AComponent extends KafS00ShrComponent {
         const vm = this;
         vm.prePostAtr = vm.displayInforWhenStarting.appDispInfoStartup.appDispInfoWithDateOutput.prePostAtr;
         if (vm.mode == ScreenMode.DETAIL) {
+            vm.prePostAtr = vm.displayInforWhenStarting.appDispInfoStartup.appDetailScreenInfo.application.prePostAtr;
             if (vm.displayInforWhenStarting.rec) {
                 vm.complementDate = new Date(moment(vm.displayInforWhenStarting.rec.application.appDate).format('YYYY/MM/DD'));
             }
@@ -1192,7 +1209,8 @@ export class KafS11AComponent extends KafS00ShrComponent {
         vm.isValidateAll = vm.customValidate(vm);
         vm.$validate();
         if (!vm.$valid || !vm.isValidateAll) {
-
+            window.scrollTo(500, 0);
+            
             return;
         }
         vm.$mask('show');
