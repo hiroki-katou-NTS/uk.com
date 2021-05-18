@@ -125,9 +125,7 @@ module nts.uk.at.kdp003.a {
 				vm.$window.storage(KDP003_SAVE_DATA)
 					.then((data: undefined | StorageData) => {
 						if (data) {
-
 							vm.loadEmployees(data);
-
 						}
 					});
 			});
@@ -196,6 +194,7 @@ module nts.uk.at.kdp003.a {
 								if (output === 'loginSuccess') {
 									vm.$window.modal('at', DIALOG.P)
 										.then(() => {
+											debugger;
 											window.location.reload(false);
 										});
 								}
@@ -498,7 +497,7 @@ module nts.uk.at.kdp003.a {
 		setting() {
 			const vm = this;
 			const { storage } = vm.$window;
-			var workplace: undefined | k.Return = undefined
+			var openViewK: boolean | null = null;
 
 			if (!!ko.unwrap(vm.message)) {
 				vm.message(false);
@@ -522,6 +521,7 @@ module nts.uk.at.kdp003.a {
 							return vm.$window.modal('at', DIALOG.K, params)
 								.then((workplaceData: undefined | k.Return) => {
 									workplace = workplaceData;
+									openViewK = true;
 									return {
 										loginData,
 										workplaceData
@@ -542,7 +542,7 @@ module nts.uk.at.kdp003.a {
 								}
 
 								// reload with old data
-								return data;
+								// return data;
 							});
 					}
 
@@ -616,10 +616,9 @@ module nts.uk.at.kdp003.a {
 					vm.message(message);
 				})
 				.always(() => {
-					if (workplace === undefined) {
-						localStorage.removeItem(KDP003_SAVE_DATA);
+					if (openViewK) {
+						window.location.reload(false);
 					}
-					window.location.reload(false);
 				});
 		}
 
@@ -749,7 +748,7 @@ module nts.uk.at.kdp003.a {
 											} else {
 												vm.workPlaceId = dataStorage.WKPID[0];
 											}
-											
+
 											vm.$ajax(API.REGISTER, {
 												employeeId,
 												dateTime: moment(vm.$date.now()).format(),
