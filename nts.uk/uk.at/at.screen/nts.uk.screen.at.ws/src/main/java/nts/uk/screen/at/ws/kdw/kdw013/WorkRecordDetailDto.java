@@ -21,7 +21,7 @@ public class WorkRecordDetailDto {
 	private GeneralDate date;
 
 	// 社員ID
-	private String sId;
+	private String employeeId;
 
 	// 作業詳細リスト
 	private List<WorkDetailsParamDto> lstWorkDetailsParamDto;
@@ -33,7 +33,7 @@ public class WorkRecordDetailDto {
 		WorkRecordDetailDto workRecordDetailDto = new WorkRecordDetailDto();
 
 		workRecordDetailDto.setDate(domain.getDate());
-		workRecordDetailDto.setSId(domain.getSId());
+		workRecordDetailDto.setEmployeeId(domain.getSID());
 		workRecordDetailDto.setLstWorkDetailsParamDto(domain.getLstworkDetailsParam().orElse(null).stream()
 				.map(m -> WorkDetailsParamDto.toDto(m)).collect(Collectors.toList()));
 		workRecordDetailDto.setActualContent(

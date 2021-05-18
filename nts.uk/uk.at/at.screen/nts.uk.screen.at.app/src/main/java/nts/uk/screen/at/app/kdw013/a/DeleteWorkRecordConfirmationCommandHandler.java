@@ -14,7 +14,7 @@ import nts.uk.ctx.at.record.app.command.workrecord.workmanagement.DeleteWorkResu
  *
  */
 @Stateless
-public class DeleteWorkRecordConfirmation {
+public class DeleteWorkRecordConfirmationCommandHandler {
 	
 	@Inject
 	private DeleteWorkResultConfirmationCommandHandler deleteHandler;

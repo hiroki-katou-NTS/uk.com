@@ -17,8 +17,13 @@ public class AddWorkRecodConfirmationCommand {
 	private String employeeId;
 
 	// 対象日
-	private GeneralDate date;
+	private String date;
 
 	// 確認者
 	private String confirmerId;
+
+	public GeneralDate getDate() {
+		return GeneralDate.fromString(this.date, "yyyy/MM/dd HH:mm:ss");
+	}
+
 }

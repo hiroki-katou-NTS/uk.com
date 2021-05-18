@@ -14,18 +14,23 @@ import nts.uk.ctx.at.record.app.command.workrecord.workrecord.AddAttendanceTimeZ
 import nts.uk.ctx.at.record.app.command.workrecord.workrecord.RegisterWorkManHoursCommandHandler;
 import nts.uk.ctx.at.record.app.command.workrecord.workrecord.WorkDetail;
 import nts.uk.ctx.at.record.dom.daily.ouen.SupportFrameNo;
+import nts.uk.ctx.at.record.dom.daily.ouen.TimeZone;
 import nts.uk.ctx.at.record.dom.daily.ouen.WorkDetailsParam;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.ExecutionAttr;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.ExecutionTypeDaily;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyresults.CreateDailyResultDomainServiceNew;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyresults.OutputCreateDailyResult;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.ReasonTimeChange;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkTimeInformation;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateSetting;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.WorkinputRemarks;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.work.WorkGroup;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
  * UKDesign.UniversalK.就業.KDW_日別実績.KDW013_工数入力.A:工数入力.メニュー別OCD.作業内容を登録する
@@ -34,7 +39,7 @@ import nts.uk.shr.com.context.AppContexts;
  *
  */
 @Stateless
-public class RegisterWorkContent {
+public class RegisterWorkContentHandler {
 
 	@Inject
 	private RegisterWorkManHoursCommandHandler handler;
@@ -76,14 +81,22 @@ public class RegisterWorkContent {
 		List<WorkDetailCommand> lstWorkDetailCmd = command.getWorkDetails();
 
 		List<WorkDetail> workDetails = lstWorkDetailCmd.stream()
-				.map(m -> new WorkDetail(m.getDate(),
-						m.getLstWorkDetailsParamCommand().stream()
-								.map(n -> new WorkDetailsParam(new SupportFrameNo(n.getSupportFrameNo()), null,
-										Optional.ofNullable(WorkGroup.create(n.getWorkGroup().getWorkCD1(),
-												n.getWorkGroup().getWorkCD2(), n.getWorkGroup().getWorkCD3(),
-												n.getWorkGroup().getWorkCD4(), n.getWorkGroup().getWorkCD5())),
-										Optional.ofNullable(new WorkinputRemarks(n.getRemarks())),
-										Optional.ofNullable(new WorkLocationCD(n.getWorkLocationCD()))))
+				.map(workDetail -> new WorkDetail(workDetail.getDate(),
+						
+						workDetail.getLstWorkDetailsParamCommand().stream()
+								.map(workDetailParam -> new WorkDetailsParam(new SupportFrameNo(
+										workDetailParam.getSupportFrameNo()),
+										new TimeZone(
+												new WorkTimeInformation(new ReasonTimeChange(TimeChangeMeans.HAND_CORRECTION_PERSON, Optional.empty()),
+														new TimeWithDayAttr(workDetailParam.getTimeZone().getStart())),
+												new WorkTimeInformation(new ReasonTimeChange(TimeChangeMeans.HAND_CORRECTION_PERSON, Optional.empty()),
+														new TimeWithDayAttr(workDetailParam.getTimeZone().getEnd())),
+												Optional.empty()),
+										Optional.ofNullable(WorkGroup.create(workDetailParam.getWorkGroup().getWorkCD1(),
+												workDetailParam.getWorkGroup().getWorkCD2(), workDetailParam.getWorkGroup().getWorkCD3(),
+												workDetailParam.getWorkGroup().getWorkCD4(), workDetailParam.getWorkGroup().getWorkCD5())),
+										Optional.ofNullable(new WorkinputRemarks(workDetailParam.getRemarks())),
+										Optional.ofNullable(new WorkLocationCD(workDetailParam.getWorkLocationCD()))))
 								.collect(Collectors.toList())))
 				.collect(Collectors.toList());
 

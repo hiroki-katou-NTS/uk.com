@@ -15,7 +15,7 @@ import nts.uk.ctx.at.record.app.command.workrecord.workmanagement.AddWorkRecodCo
  *
  */
 @Stateless
-public class AddWorkRecordConfirmation {
+public class AddWorkRecordConfirmationCommandHandler {
 	
 	@Inject
 	private AddWorkRecodConfirmationCommandHandler confirmHandler;

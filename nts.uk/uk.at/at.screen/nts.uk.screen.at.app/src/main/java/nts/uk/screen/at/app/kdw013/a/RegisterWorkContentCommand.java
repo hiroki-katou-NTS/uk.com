@@ -2,8 +2,8 @@ package nts.uk.screen.at.app.kdw013.a;
 
 import java.util.List;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
 import nts.arc.time.GeneralDate;
 
 /**
@@ -12,7 +12,7 @@ import nts.arc.time.GeneralDate;
  *
  */
 @Getter
-@Setter
+@AllArgsConstructor
 public class RegisterWorkContentCommand {
 	
 	/** 対象者 */
@@ -24,9 +24,15 @@ public class RegisterWorkContentCommand {
 	/** List<年月日,List<作業詳細>> */
 	private List<WorkDetailCommand> workDetails;
 	
+	/** 確認モード */
 	private int mode;
 	
 	/** 変更対象日 */
-	private GeneralDate changedDate;
+	private String changedDate;
+	
+	
+	public GeneralDate getChangedDate() {
+		return GeneralDate.fromString(this.changedDate, "yyyy/MM/dd HH:mm:ss");
+	}
 	
 }

@@ -53,7 +53,7 @@ public class GetDailyPerformanceData {
 				// 年月日
 				detail.setDate(i.getYmd());
 				// 社員ID
-				detail.setSId(i.getEmployeeId());
+				detail.setSID(i.getEmployeeId());
 
 				// 作業詳細リスト
 				List<WorkDetailsParam> lstworkDetailsParam = new ArrayList<>();

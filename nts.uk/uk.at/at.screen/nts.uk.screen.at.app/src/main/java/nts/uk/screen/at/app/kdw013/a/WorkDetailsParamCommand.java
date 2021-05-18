@@ -2,7 +2,6 @@ package nts.uk.screen.at.app.kdw013.a;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import nts.uk.ctx.at.record.app.find.dailyattendance.timesheet.ouen.dto.WorkGroupDto;
 
 /**
  * 
@@ -16,9 +15,9 @@ public class WorkDetailsParamCommand {
 	private int supportFrameNo;
 	
 	// 時間帯: 時間帯
-	
+	private TimeZoneCommand timeZone;
 	// 作業グループ
-	private WorkGroupDto workGroup;
+	private WorkGroupCommand workGroup;
 	
 	// 備考: 作業入力備考
 	private String remarks;
