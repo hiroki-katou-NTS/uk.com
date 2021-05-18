@@ -17,14 +17,14 @@ public interface TempAnnualLeaveMngRepository {
 	 * @param employeeID
 	 * @return List<TempAnnualLeaveManagement>
 	 */
-	List<TempAnnualLeaveManagement> findByEmployeeID(String employeeID);
+	List<TempAnnualLeaveMngs> findByEmployeeID(String employeeID);
 	/**
 	 * 検索
 	 * @param employeeId 社員ID
 	 * @param ymd 年月日
 	 * @return 該当する暫定年休管理データ
 	 */
-	Optional<TempAnnualLeaveManagement> find(String employeeId, GeneralDate ymd);
+	Optional<TempAnnualLeaveMngs> find(String employeeId, GeneralDate ymd);
 
 	/**
 	 * 検索　（期間）
@@ -32,13 +32,13 @@ public interface TempAnnualLeaveMngRepository {
 	 * @param period 期間
 	 * @return 該当する暫定年休管理データ　（年月日順）
 	 */
-	List<TempAnnualLeaveManagement> findByPeriodOrderByYmd(String employeeId, DatePeriod period);
+	List<TempAnnualLeaveMngs> findByPeriodOrderByYmd(String employeeId, DatePeriod period);
 
 	/**
 	 * 登録および更新
 	 * @param tempAnnualLeaveManagement 暫定年休管理データ
 	 */
-	void persistAndUpdate(TempAnnualLeaveManagement tempAnnualLeaveManagement);
+	void persistAndUpdate(TempAnnualLeaveMngs tempAnnualLeaveManagement);
 	
 	/**
 	 * 削除
@@ -67,5 +67,5 @@ public interface TempAnnualLeaveMngRepository {
 	 * @param period 指定期間の開始日<=年月日<=INPUT．指定期間の終了日
 	 * @return
 	 */
-	List<TempAnnualLeaveManagement> findBySidWorkTypePeriod(String employeeId, String workTypeCode, DatePeriod period);
+	List<TempAnnualLeaveMngs> findBySidWorkTypePeriod(String employeeId, String workTypeCode, DatePeriod period);
 }

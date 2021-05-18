@@ -1,11 +1,14 @@
 package nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.stampapplication;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import org.apache.commons.lang3.tuple.Pair;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -15,7 +18,9 @@ import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.shared.dom.common.TimeZoneWithWorkNo;
 import nts.uk.ctx.at.shared.dom.scherec.application.common.PrePostAtrShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.stamp.AppStampShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.stamp.StartEndClassificationShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.stamp.TimeStampAppEnumShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.stamp.TimeStampAppShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.stamp.TimeZoneStampClassificationShare;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.DailyRecordOfApplication;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.condition.ReflectStartEndWork;
@@ -28,6 +33,7 @@ import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.st
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.stampapplication.algorithm.ReflectTemporaryAttLeav;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.stampapplication.algorithm.support.CancelSupportStartEnd;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.stampapplication.algorithm.support.ReflectSupportStartEnd;
+import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
@@ -106,21 +112,48 @@ public class StampAppReflect extends AggregateRoot {
 			// 事後
 			// 打刻申請の反映
 			lstItemId.addAll(reflectStampApp(application, dailyApp));
-
 			// 応援の反映
 			lstItemId.addAll(reflectSupport(require, application, dailyApp));
 		} else {
 			// [事前]
 			// 始業終業の反映
-			lstItemId.addAll(ReflectStartEndWork.reflect(require, companyId, dailyApp,
-					application.getListTimeStampAppOther().stream()
-							.map(x -> new TimeZoneWithWorkNo(x.getDestinationTimeZoneApp().getEngraveFrameNo(),
-									x.getTimeZone().getStartTime().v(), x.getTimeZone().getEndTime().v()))
-							.collect(Collectors.toList()),
-					PrePostAtrShare.PREDICT));
+			Arrays.asList(1, 2).stream().forEach(no -> {
+				lstItemId.addAll(reflectStartEndWork(require, dailyApp, PrePostAtrShare.PREDICT,
+						application.getListTimeStampApp(), new WorkNo(no)));
+			});
 		}
 
 		return lstItemId;
+	}
+
+	// 始業終業時刻を反映する
+	private List<Integer> reflectStartEndWork(Require require, DailyRecordOfApplication dailyApp,
+			PrePostAtrShare prePostAtr, List<TimeStampAppShare> listTimeStampApp, WorkNo workNo) {
+		// 開始、終了時刻を取得する
+		List<Pair<StartEndClassificationShare, Integer>> timeZoneWithWorkNoLst = listTimeStampApp.stream()
+				.filter(x -> x.getDestinationTimeApp().getEngraveFrameNo() == workNo.v()
+						&& x.getDestinationTimeApp()
+								.getTimeStampAppEnum() == TimeStampAppEnumShare.ATTEENDENCE_OR_RETIREMENT
+						&& x.getTimeOfDay() != null)
+				.map(x -> {
+					return Pair.of(x.getDestinationTimeApp().getStartEndClassification(), x.getTimeOfDay().v());
+				}).collect(Collectors.toList());
+
+		if (timeZoneWithWorkNoLst.isEmpty())
+			return new ArrayList<>();
+
+		Integer startTime = timeZoneWithWorkNoLst.stream().filter(x -> x.getKey() == StartEndClassificationShare.START)
+				.map(x -> x.getRight()).findFirst().orElse(null);
+
+		Integer endTime = timeZoneWithWorkNoLst.stream().filter(x -> x.getKey() == StartEndClassificationShare.END)
+				.map(x -> x.getRight()).findFirst().orElse(null);
+
+		// 時間帯を作成
+		TimeZoneWithWorkNo timzone = new TimeZoneWithWorkNo(workNo.v(), startTime, endTime);
+
+		// 反映する
+		return ReflectStartEndWork.reflect(require, companyId, dailyApp, Arrays.asList(timzone), prePostAtr,
+				timzone.getTimeZone().getStartTime() != null, timzone.getTimeZone().getEndTime() != null);
 	}
 
 	/**
@@ -131,7 +164,7 @@ public class StampAppReflect extends AggregateRoot {
 	public Collection<Integer> reflectSchedule(AppStampShare application, DailyRecordOfApplication dailyApp) {
 		return reflectStampApp(application, dailyApp);
 	}
-	
+
 	/**
 	 * @author thanh_nx
 	 *
@@ -139,7 +172,6 @@ public class StampAppReflect extends AggregateRoot {
 	 */
 
 	public Collection<Integer> reflectStampApp(AppStampShare application, DailyRecordOfApplication dailyApp) {
-
 		Set<Integer> lstItemId = new HashSet<>();
 		// [出退勤を反映する]をチェック
 
@@ -270,9 +302,8 @@ public class StampAppReflect extends AggregateRoot {
 		return lstItemId;
 	}
 
-
 	public static interface Require extends ReflectSupportStartEnd.Require, ReflectStartEndWork.Require {
 
-	}
+	}	
 
 }

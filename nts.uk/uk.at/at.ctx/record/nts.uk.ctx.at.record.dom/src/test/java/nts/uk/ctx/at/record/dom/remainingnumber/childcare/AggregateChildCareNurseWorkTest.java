@@ -245,7 +245,6 @@ public class AggregateChildCareNurseWorkTest {
 						ymd(2020,10, 18),	//GeneralDate ymd,
 						CreateAtr.RECORD,	//CreateAtr creatorAtr,
 						remainType,	//RemainType remainType,
-						RemainAtr.SINGLE,	//RemainAtr remainAtr,
 						usedNumber(useDay, usedTimes),
 						Optional.empty()// DigestionHourlyTimeType
 					));

@@ -74,6 +74,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.weekly.AttendanceTimeOfWe
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItem;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.applicable.EmpCondition;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.CalcResultOfAnyItem;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.algorithm.monthly.GetPeriodExcluseEntryRetireTime;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHoliday;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
@@ -214,8 +215,14 @@ public class AggregateMonthlyRecordServiceProc {
 		EmployeeImport employee = this.employeeSets.getEmployee();
 
 		// 入社前、退職後を期間から除く → 一か月の集計期間
-		val termInOffice = new DatePeriod(employee.getEntryDate(), employee.getRetiredDate());
-		DatePeriod monthPeriod = this.confirmProcPeriod(datePeriod, termInOffice);
+		DatePeriod monthPeriod = GetPeriodExcluseEntryRetireTime.getPeriodExcluseEntryRetireTime(new GetPeriodExcluseEntryRetireTime.Require() {
+			
+			@Override
+			public EmployeeImport employeeInfo(CacheCarrier cacheCarrier, String empId) {
+				return employee;
+			}
+		}, cacheCarrier, this.employeeId, datePeriod).orElse(null);
+		
 		if (monthPeriod == null) {
 			// 処理期間全体が、入社前または退職後の時
 			return this.aggregateResult;
@@ -437,7 +444,7 @@ public class AggregateMonthlyRecordServiceProc {
 
 			// 処理期間を計算 （一か月の集計期間と労働条件履歴期間の重複を確認する）
 			val term = this.workingConditions.get(historyId);
-			DatePeriod aggrPeriod = this.confirmProcPeriod(monthPeriod, term);
+			DatePeriod aggrPeriod = GetPeriodExcluseEntryRetireTime.confirmProcPeriod(monthPeriod, term).orElse(null);
 			if (aggrPeriod == null) {
 				// 履歴の期間と重複がない時
 				continue;
@@ -504,9 +511,8 @@ public class AggregateMonthlyRecordServiceProc {
 		if (this.companySets.getCurrentMonthPeriodMap().containsKey(this.closureId.value)) {
 			DatePeriod currentPeriod = this.companySets.getCurrentMonthPeriodMap().get(this.closureId.value);
 			// 当月の締め期間と実行期間を比較し、重複した期間を取り出す
-			DatePeriod confPeriod = this.confirmProcPeriod(currentPeriod, datePeriod);
 			// 重複期間があれば、当月
-			if (confPeriod != null)
+			if (GetPeriodExcluseEntryRetireTime.confirmProcPeriod(currentPeriod, datePeriod).isPresent())
 				isCurrentMonth = true;
 		}
 		if (remainingProcAtr == true)
@@ -1565,41 +1571,6 @@ public class AggregateMonthlyRecordServiceProc {
 		// 2018.01.21 DEL shuichi_ishida Redmine#105681
 		// 時短日割適用日数
 		// this.TimeSavingDailyRateApplyDays();
-	}
-
-	/**
-	 * 処理期間との重複を確認する （重複期間を取り出す）
-	 *
-	 * @param target 処理期間
-	 * @param comparison 比較対象期間
-	 * @return 重複期間 （null = 重複なし）
-	 */
-	private DatePeriod confirmProcPeriod(DatePeriod target, DatePeriod comparison) {
-
-		DatePeriod overlap = null; // 重複期間
-
-		// 開始前
-		if (target.isBefore(comparison))
-			return overlap;
-
-		// 終了後
-		if (target.isAfter(comparison))
-			return overlap;
-
-		// 重複あり
-		overlap = target;
-
-		// 開始日より前を除外
-		if (overlap.contains(comparison.start())) {
-			overlap = overlap.cutOffWithNewStart(comparison.start());
-		}
-
-		// 終了日より後を除外
-		if (overlap.contains(comparison.end())) {
-			overlap = overlap.cutOffWithNewEnd(comparison.end());
-		}
-
-		return overlap;
 	}
 
 	/**

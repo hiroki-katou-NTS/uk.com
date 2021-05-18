@@ -65,7 +65,7 @@ public class GetUnusedCompenTemporaryTest {
 	 */
 	@Test
 	public void testModeMonth() {
-		List<InterimRecMng> useRecMng = Arrays.asList(
+		/*List<InterimRecMng> useRecMng = Arrays.asList(
 				DaikyuFurikyuHelper.createRecMng("a1", GeneralDate.max(), 1.0),
 				DaikyuFurikyuHelper.createRecMng("a2", GeneralDate.max(),1.0),
 				DaikyuFurikyuHelper.createRecMng("a3", GeneralDate.max(), 0.0));
@@ -100,9 +100,9 @@ public class GetUnusedCompenTemporaryTest {
 
 			}
 
-		};
+		};*/
 
-		List<AccumulationAbsenceDetail> actualResult = GetUnusedCompenTemporary.process(require, inputParam);
+		/*List<AccumulationAbsenceDetail> actualResult = GetUnusedCompenTemporary.process(require, inputParam);
 
 		assertThat(actualResult)
 				.extracting(x -> x.getManageId(),
@@ -121,7 +121,7 @@ public class GetUnusedCompenTemporaryTest {
 								GeneralDate.ymd(9999, 12, 31), DigestionAtr.USED),
 						Tuple.tuple("a3", MngDataStatus.RECORD, false,
 								Optional.of(GeneralDate.ymd(2019, 11, 8)), OccurrenceDigClass.OCCURRENCE, 0.0,
-								GeneralDate.ymd(9999, 12, 31), DigestionAtr.USED));
+								GeneralDate.ymd(9999, 12, 31), DigestionAtr.USED));*/
 		}
 
 	/*
@@ -141,7 +141,7 @@ public class GetUnusedCompenTemporaryTest {
 	@Test
 	public void testModeOther() {
 
-		AbsRecMngInPeriodRefactParamInput inputParam = DaikyuFurikyuHelper.createAbsRecInput(
+		/*AbsRecMngInPeriodRefactParamInput inputParam = DaikyuFurikyuHelper.createAbsRecInput(
 				new DatePeriod(GeneralDate.ymd(2019, 11, 01), GeneralDate.ymd(2020, 10, 31)),//集計開始日, 集計終了日 
 				GeneralDate.ymd(2019, 11, 30), //画面表示日
 				false, //モード 
@@ -180,8 +180,8 @@ public class GetUnusedCompenTemporaryTest {
 			}
 
 		};
-
-		List<AccumulationAbsenceDetail> actualResult = GetUnusedCompenTemporary.process(require, inputParam);
+*/
+		/*List<AccumulationAbsenceDetail> actualResult = GetUnusedCompenTemporary.process(require, inputParam);
 
 		assertThat(actualResult)
 		.extracting(x -> x.getManageId(),
@@ -200,7 +200,7 @@ public class GetUnusedCompenTemporaryTest {
 								GeneralDate.ymd(9999, 12, 31), DigestionAtr.USED),
 						Tuple.tuple("a3", MngDataStatus.RECORD, false,
 								Optional.of(GeneralDate.ymd(2019, 11, 8)),  OccurrenceDigClass.OCCURRENCE, 0.0,
-								GeneralDate.ymd(9999, 12, 31), DigestionAtr.USED));
+								GeneralDate.ymd(9999, 12, 31), DigestionAtr.USED));*/
 
 
 	}

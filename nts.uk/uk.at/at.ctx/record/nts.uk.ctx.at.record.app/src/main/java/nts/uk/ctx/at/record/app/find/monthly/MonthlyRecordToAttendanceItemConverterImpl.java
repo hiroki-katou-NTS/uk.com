@@ -319,6 +319,11 @@ public class MonthlyRecordToAttendanceItemConverterImpl  extends AttendanceItemC
 	}
 
 	@Override
+	protected boolean isAnyPeriod() {
+		return false;
+	}
+
+	@Override
 	protected Object correctOptionalItem(Object dto) {
 		if (dto == null) {
 			return dto;

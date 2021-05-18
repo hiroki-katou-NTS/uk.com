@@ -5,17 +5,31 @@ import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.scherec.application.appabsence.ApplyForLeaveShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.bussinesstrip.BusinessTripShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.common.ApplicationShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.common.ApplicationTypeShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.furiapp.AbsenceLeaveAppShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.furiapp.ApplicationForHolidaysShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.furiapp.RecruitmentAppShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.furiapp.TypeApplicationHolidaysShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.gobackdirectly.GoBackDirectlyShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.holidayworktime.AppHolidayWorkShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.optional.OptionalItemApplicationShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.overtime.AppOverTimeShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.stamp.AppStampShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.timeleaveapplication.TimeLeaveApplicationShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.workchange.AppWorkChangeShare;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.businesstrip.ReflectBusinessTripApp;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.directgoback.GoBackReflect;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.optional.ReflectionOptionalItemApp;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.AppReflectOtHdWork;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.DailyRecordOfApplication;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.stampapplication.StampAppReflect;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.substituteworkapplication.SubstituteWorkAppReflect;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.timeleaveapplication.TimeLeaveApplicationReflect;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.vacationapplication.leaveapplication.VacationApplicationReflect;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.vacationapplication.subleaveapp.SubstituteLeaveAppReflect;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.workchangeapp.ReflectWorkChangeApp;
 
 /**
@@ -30,15 +44,18 @@ public class SCCreateDailyAfterApplicationeReflect {
 
 		// TODO: typeDaikyu chua co domain
 		Object domainSetReflect = GetDomainReflectModelApp.process(require, companyId, application.getAppType(),
-				Optional.empty());
+				application.getAppType() != ApplicationTypeShare.COMPLEMENT_LEAVE_APPLICATION ? Optional.empty()
+						: Optional.of(((ApplicationForHolidaysShare) application).getTypeApplicationHolidays()));
 		List<Integer> itemIds = new ArrayList<Integer>();
 		switch (application.getAppType()) {
 		case OVER_TIME_APPLICATION:
-			// TODO: 0：残業申請を反映する（勤務予定）
+			// 0：残業申請を反映する（勤務予定）
+			itemIds.addAll(((AppReflectOtHdWork) domainSetReflect).processRC(require, (AppOverTimeShare) application, dailyApp));
 			break;
 		case ABSENCE_APPLICATION:
-			// TODO: 1：休暇申請を反映する(勤務予定）
-			break;
+			// 1：休暇申請を反映する(勤務予定）
+			return ((VacationApplicationReflect) domainSetReflect).processSC(require, (ApplyForLeaveShare) application,
+					dailyApp);
 		case WORK_CHANGE_APPLICATION:
 			// 2：勤務変更申請を反映する(勤務予定）inprocess xu ly set stampsource
 			itemIds.addAll(((ReflectWorkChangeApp) domainSetReflect).reflectSchedule(require,
@@ -55,7 +72,9 @@ public class SCCreateDailyAfterApplicationeReflect {
 					(GoBackDirectlyShare) application, dailyApp));
 			break;
 		case HOLIDAY_WORK_APPLICATION:
-			// TODO: 6：休日出勤申請を反映する（勤務予定）
+			// 6：休日出勤申請を反映する（勤務予定）
+			itemIds.addAll(((AppReflectOtHdWork) domainSetReflect).processHolSc(require, (AppHolidayWorkShare) application,
+					dailyApp).getLstItemId());
 			break;
 		case STAMP_APPLICATION:
 			// 7：打刻申請を反映する（勤務予定）
@@ -71,11 +90,21 @@ public class SCCreateDailyAfterApplicationeReflect {
 			// 9: 遅刻早退取消申請
 			break;
 		case COMPLEMENT_LEAVE_APPLICATION:
-			// TODO: [input. 申請.振休振出申請種類]をチェック
+			// [input. 申請.振休振出申請種類]をチェック
+			if (((ApplicationForHolidaysShare) application)
+					.getTypeApplicationHolidays() == TypeApplicationHolidaysShare.Abs) {
+				// 振休申請を反映する（勤務予定）
+				itemIds.addAll(((SubstituteLeaveAppReflect) domainSetReflect)
+						.processSC(require, (AbsenceLeaveAppShare) application, dailyApp).getLstItemId());
+			} else {
+				// 振出申請を反映する（勤務予定）
+				itemIds.addAll(((SubstituteWorkAppReflect) domainSetReflect)
+						.reflectSC(require, (RecruitmentAppShare) application, dailyApp).getLstItemId());
+			}
 			break;
 
 		case OPTIONAL_ITEM_APPLICATION:
-			// TODO: 15：任意項目を反映する
+			// 任意項目を反映する
 			break;
 
 		default:
@@ -86,7 +115,9 @@ public class SCCreateDailyAfterApplicationeReflect {
 	}
 
 	public static interface Require extends GetDomainReflectModelApp.Require, ReflectWorkChangeApp.Require,
-			GoBackReflect.Require, ReflectBusinessTripApp.Require {
+			GoBackReflect.Require, ReflectBusinessTripApp.Require, AppReflectOtHdWork.RequireSC,
+			VacationApplicationReflect.RequireSC, AppReflectOtHdWork.RequireHolSC, SubstituteLeaveAppReflect.RequireSC,
+			SubstituteWorkAppReflect.RequireSC{
 
 	}
 }

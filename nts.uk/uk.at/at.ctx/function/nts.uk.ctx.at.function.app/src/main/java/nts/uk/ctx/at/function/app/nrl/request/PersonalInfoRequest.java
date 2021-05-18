@@ -20,6 +20,7 @@ import nts.uk.ctx.at.function.dom.adapter.employmentinfoterminal.infoterminal.Se
 /**
  * Personal info request.
  * 
+ * 個人情報リクエスト
  * @author manhnd
  */
 @RequestScoped
@@ -33,14 +34,12 @@ public class PersonalInfoRequest extends NRLRequest<Frame> {
 	 * @see nts.uk.ctx.at.function.app.nrl.request.NRLRequest#sketch(nts.uk.ctx.at.function.app.nrl.request.ResourceContext)
 	 */
 	@Override
-	public void sketch(ResourceContext<Frame> context) {
+	public void sketch(String empInfoTerCode, ResourceContext<Frame> context) {
 		List<MapItem> items = new ArrayList<>();
 		items.add(FrameItemArranger.SOH());
 		items.add(new MapItem(Element.HDR, Command.PERSONAL_INFO.Response));
-		// TODO: Get personal info from DB, count records
-		String nrlNo = context.getEntity().pickItem(Element.NRL_NO);
-		//TODO: default ContractCode "000000000000"
-		List<SendPerInfoNameImport> lstPerInfo = sendNRDataAdapter.sendPerInfo(nrlNo.trim(), "000000000000");
+		String contractCode =  context.getEntity().pickItem(Element.CONTRACT_CODE);
+		List<SendPerInfoNameImport> lstPerInfo = sendNRDataAdapter.sendPerInfo(empInfoTerCode, contractCode);
 		StringBuilder builder = new StringBuilder();
 		for(SendPerInfoNameImport infoName : lstPerInfo) {
 			builder.append(toStringObject(infoName));
@@ -54,6 +53,7 @@ public class PersonalInfoRequest extends NRLRequest<Frame> {
 		items.add(FrameItemArranger.NoFragment());
 		items.add(new MapItem(Element.NRL_NO, context.getTerminal().getNrlNo()));
 		items.add(new MapItem(Element.MAC_ADDR, context.getTerminal().getMacAddress()));
+		items.add(new MapItem(Element.CONTRACT_CODE, contractCode));
 		items.add(FrameItemArranger.ZeroPadding());
 		//Number of records
 		items.add(new MapItem(Element.NUMBER, String.valueOf(lstPerInfo.size())));
@@ -76,7 +76,7 @@ public class PersonalInfoRequest extends NRLRequest<Frame> {
 		builder.append(StringUtils.rightPad(data.getDepartmentCode(), 10));
 		builder.append(StringUtils.rightPad(data.getCompanyCode(), 4));
 		builder.append(StringUtils.rightPad(data.getReservation(), 4));
-		builder.append(StringUtils.rightPad("", 6, "a"));
+		builder.append(StringUtils.rightPad("", 6, " "));
 		return builder.toString();
 	}
 
