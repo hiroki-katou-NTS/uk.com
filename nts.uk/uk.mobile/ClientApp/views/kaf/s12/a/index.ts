@@ -14,7 +14,8 @@ import {
     LateEarlyTimeZone,
     OutingTimeZone,
     LeaveType,
-    AppTimeType
+    AppTimeType,
+    GoingOutReason
 } from '../shr';
 
 @component({
@@ -233,7 +234,7 @@ export class KafS12AComponent extends KafS00ShrComponent {
             ],
             outingTimeZones: outingTimeZones.map((i: OutingTimeZone) => ({
                     frameNo: i.workNo,
-                    outingAtr: i.appTimeType,
+                    outingAtr: i.appTimeType == GoingOutReason.PRIVATE ? AppTimeType.PRIVATE : AppTimeType.UNION,
                     startTime: i.timeZone.start,
                     endTime: i.timeZone.end
                 }))
