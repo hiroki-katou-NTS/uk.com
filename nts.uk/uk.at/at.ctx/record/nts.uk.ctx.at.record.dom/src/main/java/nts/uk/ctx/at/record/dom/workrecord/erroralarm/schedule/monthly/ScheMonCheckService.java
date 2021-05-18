@@ -9,6 +9,8 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.algorithm.Stat
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.algorithm.WorkPlaceHistImportAl;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.AlarmListCheckInfor;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.ResultOfEachCondition;
+import nts.uk.ctx.at.shared.dom.alarmList.persistenceextractresult.AlarmExtractionCondition;
+import nts.uk.ctx.at.shared.dom.alarmList.persistenceextractresult.AlarmEmployeeList;
 
 /**
  * UKDesign.ドメインモデル."NittsuSystem.UniversalK".就業.contexts.勤務実績.勤務実績.勤務実績のエラーアラーム設定.アラームリスト.スケジュール日次・月次・年間.スケジュール月次のアラームリストのチェック条件.アルゴリズム.スケジュール月次の集計処理
@@ -25,5 +27,6 @@ public interface ScheMonCheckService {
 			List<WorkPlaceHistImportAl> getWplByListSidAndPeriod, 
 			List<StatusOfEmployeeAdapterAl> lstStatusEmp, List<ResultOfEachCondition> lstResultCondition, 
 			List<AlarmListCheckInfor> lstCheckType, Consumer<Integer> counter,
-			Supplier<Boolean> shouldStop);
+			Supplier<Boolean> shouldStop, List<AlarmEmployeeList> alarmEmployeeList,
+			List<AlarmExtractionCondition> alarmExtractConditions, String alarmCheckConditionCode);
 }

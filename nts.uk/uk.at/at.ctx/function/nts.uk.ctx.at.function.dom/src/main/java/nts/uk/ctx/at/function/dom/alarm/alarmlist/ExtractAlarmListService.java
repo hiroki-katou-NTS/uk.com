@@ -62,7 +62,7 @@ public class ExtractAlarmListService {
 					counter.set(counter.get() + finished);
 				},
 				() -> {
-					return true;
+					return false;
 				});
 		// 集計データが無い場合
 		List<AlarmExtraValueWkReDto> listAlarmExtraValueWR = extractData.getExtractedAlarmData();

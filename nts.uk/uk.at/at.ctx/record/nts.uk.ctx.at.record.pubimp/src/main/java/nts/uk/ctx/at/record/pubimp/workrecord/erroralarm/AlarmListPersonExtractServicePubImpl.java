@@ -75,7 +75,7 @@ public class AlarmListPersonExtractServicePubImpl implements AlarmListPersonExtr
 			List<WorkPlaceHistImportAl> getWplByListSidAndPeriod,
 			List<StatusOfEmployeeAdapterAl> lstStatusEmp, List<ResultOfEachCondition> lstResultCondition,
 			List<AlarmListCheckInfor> lstCheckType, Consumer<Integer> counter,
-			Supplier<Boolean> shouldStop,List<AlarmEmployeeList> alarmEmployeeList,
+			Supplier<Boolean> shouldStop, List<AlarmEmployeeList> alarmEmployeeList,
 			List<AlarmExtractionCondition> alarmExtractConditions,
 			String alarmCheckConditionCode) {
 		
@@ -135,11 +135,13 @@ public class AlarmListPersonExtractServicePubImpl implements AlarmListPersonExtr
 											String errorDailyCheckId, String listOptionalItem, String listFixedItem,
 											List<WorkPlaceHistImportAl> getWplByListSidAndPeriod, List<StatusOfEmployeeAdapterAl> lstStatusEmp,
 											List<ResultOfEachCondition> lstResultCondition, List<AlarmListCheckInfor> lstCheckType,
-											Consumer<Integer> counter, Supplier<Boolean> shouldStop) {
+											Consumer<Integer> counter, Supplier<Boolean> shouldStop, List<AlarmEmployeeList> alarmEmployeeList,
+											List<AlarmExtractionCondition> alarmExtractConditions, String alarmCheckConditionCode) {
 		scheDailyCheckService.extractScheDailyCheck(
 				cid, lstSid, dPeriod, errorDailyCheckId, listOptionalItem,
 				listFixedItem, getWplByListSidAndPeriod, lstStatusEmp,
-				lstResultCondition, lstCheckType, counter, shouldStop);
+				lstResultCondition, lstCheckType, counter, shouldStop, alarmEmployeeList,
+                alarmExtractConditions, alarmCheckConditionCode);
 	}
 
 
@@ -159,12 +161,14 @@ public class AlarmListPersonExtractServicePubImpl implements AlarmListPersonExtr
 	public void extractScheMonCheckResult(String cid, List<String> lstSid, DatePeriod dPeriod, String errorCheckId,
 										  String listFixedItemId, String listOptionalItemId, List<WorkPlaceHistImportAl> getWplByListSidAndPeriod,
 										  List<StatusOfEmployeeAdapterAl> lstStatusEmp, List<ResultOfEachCondition> lstResultCondition,
-										  List<AlarmListCheckInfor> lstCheckType, Consumer<Integer> counter, Supplier<Boolean> shouldStop) {
+										  List<AlarmListCheckInfor> lstCheckType, Consumer<Integer> counter, Supplier<Boolean> shouldStop,
+										  List<AlarmEmployeeList> alarmEmployeeList, List<AlarmExtractionCondition> alarmExtractConditions,
+										  String alarmCheckConditionCode) {
 		scheMonCheckService.extractScheMonCheck(
 				cid, lstSid,
 				dPeriod, errorCheckId, listFixedItemId, listOptionalItemId,
 				getWplByListSidAndPeriod, lstStatusEmp, lstResultCondition,
-				lstCheckType, counter, shouldStop);
+				lstCheckType, counter, shouldStop, alarmEmployeeList, alarmExtractConditions, alarmCheckConditionCode);
 	}
 
 	@Override

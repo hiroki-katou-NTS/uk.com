@@ -90,7 +90,7 @@ public class CreateAlarmDataTopPageService {
 
             //$削除の情報　＝　削除の情報Param#作成する(アラームリスト、 $全てエラーが解除済み社員、 上長、 $パターンコード )
             delInfo = Optional.of(DeleteInfoAlarmImport.builder()
-                    .alarmClassification(deleteInfo.get().getAlarmClassification())
+                    .alarmClassification(deleteInfo.isPresent() ? deleteInfo.get().getAlarmClassification() : 0)
                     .sids(allEmpErrorsRemoved)
                     .displayAtr(1)
                     .patternCode(patternCode)
@@ -111,14 +111,15 @@ public class CreateAlarmDataTopPageService {
             //職場、基準日からアラーム通知先の社員を取得する
             List<String> empIds = require.getListEmployeeId(wkpl, GeneralDate.today());
             //$発生日時　＝　$職場Map.get($)　：　sort $.発生日時 DESC first $.発生日時
-            GeneralDateTime occurrenceDateTime = workplaceMap.get(wkpl).stream()
+            Optional<WorkplaceHistoryTopAlarmParamMerged> optWkplTopAlarm = workplaceMap.get(wkpl).stream()
                     .sorted((e1, e2) -> e2.getOccurrenceDateTime().compareTo(e1.getOccurrenceDateTime()))
-                    .findFirst().get().getOccurrenceDateTime();
+                    .findFirst();
+            GeneralDateTime occurrenceDateTime = optWkplTopAlarm.isPresent() ? optWkplTopAlarm.get().getOccurrenceDateTime() : null;
 
             //$上長１　＝　$上長の社員IDList　：　トップアラームParam#作成する(
             empIds.forEach(e -> {
                 TopPageAlarmImport topAlarmObj = TopPageAlarmImport.builder()
-                        .alarmClassification(deleteInfo.get().getAlarmClassification())
+                        .alarmClassification(deleteInfo.isPresent() ? deleteInfo.get().getAlarmClassification() : 0)
                         .occurrenceDateTime(occurrenceDateTime)
                         .displaySId(e)
                         .displayAtr(1)
