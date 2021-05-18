@@ -9,14 +9,7 @@ import lombok.Setter;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.function.dom.adapter.holidayover60h.AggrResultOfHolidayOver60hImport;
-import nts.uk.ctx.at.function.dom.adapter.holidaysremaining.AnnLeaGrantNumberImported;
-import nts.uk.ctx.at.function.dom.adapter.holidaysremaining.AnnLeaveOfThisMonthImported;
-import nts.uk.ctx.at.function.dom.adapter.holidaysremaining.AnnLeaveUsageStatusOfThisMonthImported;
-import nts.uk.ctx.at.function.dom.adapter.holidaysremaining.AnnualLeaveUsageImported;
-import nts.uk.ctx.at.function.dom.adapter.holidaysremaining.ChildNursingLeaveCurrentSituationImported;
-import nts.uk.ctx.at.function.dom.adapter.holidaysremaining.CurrentHolidayRemainImported;
-import nts.uk.ctx.at.function.dom.adapter.holidaysremaining.NursingLeaveCurrentSituationImported;
-import nts.uk.ctx.at.function.dom.adapter.holidaysremaining.StatusOfHolidayImported;
+import nts.uk.ctx.at.function.dom.adapter.holidaysremaining.*;
 import nts.uk.ctx.at.function.dom.adapter.periodofspecialleave.SpecialHolidayImported;
 import nts.uk.ctx.at.function.dom.adapter.periodofspecialleave.SpecialVacationImported;
 import nts.uk.ctx.at.function.dom.adapter.reserveleave.ReserveHolidayImported;
@@ -74,6 +67,8 @@ public class HolidayRemainingInfor {
 	private CompenLeaveAggrResult compenLeaveAggrResult;
 	//RQ 677
 	private AggrResultOfHolidayOver60hImport aggrResultOfHolidayOver60h;
+	//363
+	List<AggrResultOfAnnualLeaveEachMonthKdr> rs363New;
 	public HolidayRemainingInfor(Optional<GeneralDate> grantDate, List<AnnLeaGrantNumberImported> listAnnLeaGrantNumber,
 			AnnLeaveOfThisMonthImported annLeaveOfThisMonth, List<AnnualLeaveUsageImported> listAnnualLeaveUsage,
 			List<AnnLeaveUsageStatusOfThisMonthImported> listAnnLeaveUsageStatusOfThisMonth,
@@ -90,7 +85,8 @@ public class HolidayRemainingInfor {
 			CurrentHolidayRemainImported currentHolidayRemainLeft,
 			SubstituteHolidayAggrResult substituteHolidayAggrResult,
 			CompenLeaveAggrResult compenLeaveAggrResult,
-            AggrResultOfHolidayOver60hImport aggrResultOfHolidayOver60h) {
+            AggrResultOfHolidayOver60hImport aggrResultOfHolidayOver60h,
+			 List<AggrResultOfAnnualLeaveEachMonthKdr> rs363New) {
 		super();
 		this.grantDate = grantDate;
 		this.listAnnLeaGrantNumber = listAnnLeaGrantNumber;
@@ -114,6 +110,7 @@ public class HolidayRemainingInfor {
 		this. substituteHolidayAggrResult =  substituteHolidayAggrResult;
 		this.compenLeaveAggrResult = compenLeaveAggrResult;
 		this.aggrResultOfHolidayOver60h = aggrResultOfHolidayOver60h;
+		this.rs363New = rs363New;
 	}
 	
 	

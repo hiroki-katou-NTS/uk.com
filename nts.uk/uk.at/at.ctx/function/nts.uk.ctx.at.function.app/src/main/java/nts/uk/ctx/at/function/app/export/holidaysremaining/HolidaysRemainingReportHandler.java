@@ -35,21 +35,7 @@ import nts.uk.ctx.at.function.dom.adapter.annualworkschedule.EmployeeInformation
 import nts.uk.ctx.at.function.dom.adapter.annualworkschedule.EmployeeInformationQueryDtoImport;
 import nts.uk.ctx.at.function.dom.adapter.holidayover60h.AggrResultOfHolidayOver60hImport;
 import nts.uk.ctx.at.function.dom.adapter.holidayover60h.GetHolidayOver60hPeriodAdapter;
-import nts.uk.ctx.at.function.dom.adapter.holidaysremaining.AnnLeaGrantNumberImported;
-import nts.uk.ctx.at.function.dom.adapter.holidaysremaining.AnnLeaveOfThisMonthImported;
-import nts.uk.ctx.at.function.dom.adapter.holidaysremaining.AnnLeaveRemainingAdapter;
-import nts.uk.ctx.at.function.dom.adapter.holidaysremaining.AnnLeaveUsageStatusOfThisMonthImported;
-import nts.uk.ctx.at.function.dom.adapter.holidaysremaining.AnnualLeaveUsageImported;
-import nts.uk.ctx.at.function.dom.adapter.holidaysremaining.CheckCallRequest;
-import nts.uk.ctx.at.function.dom.adapter.holidaysremaining.ChildNursingLeaveCurrentSituationImported;
-import nts.uk.ctx.at.function.dom.adapter.holidaysremaining.ChildNursingLeaveRemainingAdapter;
-import nts.uk.ctx.at.function.dom.adapter.holidaysremaining.CurrentHolidayRemainImported;
-import nts.uk.ctx.at.function.dom.adapter.holidaysremaining.HdRemainDetailMerEx;
-import nts.uk.ctx.at.function.dom.adapter.holidaysremaining.HolidayRemainMerEx;
-import nts.uk.ctx.at.function.dom.adapter.holidaysremaining.HolidayRemainMergeAdapter;
-import nts.uk.ctx.at.function.dom.adapter.holidaysremaining.NursingLeaveCurrentSituationImported;
-import nts.uk.ctx.at.function.dom.adapter.holidaysremaining.NursingLeaveRemainingAdapter;
-import nts.uk.ctx.at.function.dom.adapter.holidaysremaining.StatusOfHolidayImported;
+import nts.uk.ctx.at.function.dom.adapter.holidaysremaining.*;
 import nts.uk.ctx.at.function.dom.adapter.periodofspecialleave.ComplileInPeriodOfSpecialLeaveAdapter;
 import nts.uk.ctx.at.function.dom.adapter.periodofspecialleave.SpecialHolidayImported;
 import nts.uk.ctx.at.function.dom.adapter.periodofspecialleave.SpecialVacationImported;
@@ -357,6 +343,7 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 
         CurrentHolidayRemainImported currentHolidayRemainLeft = null;
 
+        List<AggrResultOfAnnualLeaveEachMonthKdr> getRs363 = new ArrayList<>();
 
 
         if (!closureInforOpt.isPresent()) {
@@ -398,6 +385,8 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
             // Call RequestList363
             if (currentMonth.compareTo(endDate.yearMonth()) <= 0) {
                 listAnnLeaveUsageStatusOfThisMonth = remainDel.getResult363();
+                getRs363 = hdRemainAdapter.getRs363(employeeId, currentMonth, baseDate,
+                        new DatePeriod(startDate, endDate), true);
             }
         }
 
@@ -615,9 +604,8 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
                 listAnnLeaveUsageStatusOfThisMonth, reserveHoliday, listReservedYearHoliday, listRsvLeaUsedCurrentMon,
                 listCurrentHoliday, listStatusHoliday, listCurrentHolidayRemain, listStatusOfHoliday, mapSpecVaca,
                 lstMapSPVaCurrMon, mapSpeHd, childNursingLeave, nursingLeave, currentHolidayLeft,
-                currentHolidayRemainLeft, substituteHolidayAggrResult, subVaca, aggrResultOfHolidayOver60h);
+                currentHolidayRemainLeft, substituteHolidayAggrResult, subVaca, aggrResultOfHolidayOver60h,getRs363);
     }
-
     private Optional<ClosureInfo> getClosureInfor(int closureId) {
         val listClosureInfo = ClosureService.getAllClosureInfo(ClosureService.createRequireM2(closureRepository));
         return listClosureInfo.stream().filter(i -> i.getClosureId().value == closureId).findFirst();
