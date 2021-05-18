@@ -254,7 +254,7 @@ module nts.uk.at.view.kdp.share {
 					if (textColor) {
 						return { textColor };
 					} else {
-						return { textColor: 'rgb(255, 255, 255)' };
+						return { textColor: '#7F7F7F' };
 					}
 				});
 			}
