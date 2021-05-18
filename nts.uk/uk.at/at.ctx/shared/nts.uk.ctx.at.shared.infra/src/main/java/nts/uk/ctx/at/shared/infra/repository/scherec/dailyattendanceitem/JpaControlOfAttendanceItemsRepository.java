@@ -16,6 +16,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.ControlOfAttendanceI
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.primitivevalue.HeaderBackgroundColor;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.repository.ControlOfAttendanceItemsRepository;
 import nts.uk.ctx.at.shared.infra.entity.scherec.dailyattendanceitem.KshmtDayAtdCtr;
+import nts.uk.ctx.at.shared.infra.entity.scherec.dailyattendanceitem.KshmtDayAtdCtrPK;
 
 @Stateless
 public class JpaControlOfAttendanceItemsRepository extends JpaRepository implements ControlOfAttendanceItemsRepository {
@@ -36,10 +37,11 @@ public class JpaControlOfAttendanceItemsRepository extends JpaRepository impleme
 
 	@Override
 	public void updateControlOfAttendanceItem(ControlOfAttendanceItems controlOfAttendanceItems) {
-		KshmtDayAtdCtr newEntity =KshmtDayAtdCtr.toEntity(controlOfAttendanceItems);
-		KshmtDayAtdCtr updateEntity = this.queryProxy().find(newEntity.getKshmtDayAtdCtrPK(), KshmtDayAtdCtr.class).get();
-		updateEntity.headerBgColorOfDailyPer = newEntity.headerBgColorOfDailyPer;
-		updateEntity.inputUnitOfTimeItem = newEntity.inputUnitOfTimeItem;
+		//KshmtDayAtdCtr newEntity =KshmtDayAtdCtr.toEntity(controlOfAttendanceItems);
+		KshmtDayAtdCtr updateEntity = this.queryProxy().find(new KshmtDayAtdCtrPK(
+				controlOfAttendanceItems.getCompanyID(), controlOfAttendanceItems.getItemDailyID()), KshmtDayAtdCtr.class).get();
+		updateEntity.headerBgColorOfDailyPer = controlOfAttendanceItems.getHeaderBgColorOfDailyPer().map(h -> h.v()).orElse(null);
+		updateEntity.inputUnitOfTimeItem = controlOfAttendanceItems.getInputUnitOfTimeItem().orElse(null);
 		this.commandProxy().update(updateEntity);
 	}
 

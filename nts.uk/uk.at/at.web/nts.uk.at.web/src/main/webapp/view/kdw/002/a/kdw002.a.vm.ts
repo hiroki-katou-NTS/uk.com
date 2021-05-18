@@ -145,10 +145,13 @@ module nts.uk.at.view.kdw002.a {
                                     switch(self.unit()){
                                         case 0:
                                             self.timeUnit(cAttendanceItem.inputUnitOfTimeItem);
+                                            break;
                                         case 1:
                                             self.numberOfTimesUnit(cAttendanceItem.inputUnitOfTimeItem);
+                                            break;
                                         case 2:
                                             self.moneyUnit(cAttendanceItem.inputUnitOfTimeItem);
+                                            break;
                                     }
                                 } else {
                                     self.headerColorValue(null);
@@ -166,10 +169,13 @@ module nts.uk.at.view.kdw002.a {
                                     switch(self.unit()){
                                         case 0:
                                             self.timeUnit(cAttendanceItem.inputUnitOfTimeItem);
+                                            break;
                                         case 1:
                                             self.numberOfTimesUnit(cAttendanceItem.inputUnitOfTimeItem);
+                                            break;
                                         case 2:
                                             self.moneyUnit(cAttendanceItem.inputUnitOfTimeItem);
+                                            break;
                                     }
                                 } else {
                                     self.headerColorValue(null);
@@ -329,16 +335,19 @@ module nts.uk.at.view.kdw002.a {
                             nts.uk.ui.dialog.error({ messageId: "Msg_1713" }).then(() => nts.uk.ui.block.clear());
                             return;
                         }
+                        break;
                     case 1:
                         if (self.numberOfTimesUnit() == null && self.frameCategory() === 8){
                             nts.uk.ui.dialog.error({ messageId: "Msg_1713" }).then(() => nts.uk.ui.block.clear());
                             return;
                         }
+                        break;
                     case 2:
                         if(self.moneyUnit() == null && self.frameCategory() === 8){
                             nts.uk.ui.dialog.error({ messageId: "Msg_1713" }).then(() => nts.uk.ui.block.clear());
                             return;
                         }
+                        break;
                 }
 
                 let attendanceItem = _.find(self.attendanceItems(), { displayNumber: Number(self.aICurrentCode()) });
@@ -362,10 +371,13 @@ module nts.uk.at.view.kdw002.a {
                     switch(self.unit()){
                         case 0:
                             AtItems.inputUnitOfTimeItem = self.timeUnit();
+                            break;
                         case 1:
                             AtItems.inputUnitOfTimeItem = self.numberOfTimesUnit();
+                            break;
                         case 2:
                             AtItems.inputUnitOfTimeItem = self.moneyUnit();
+                            break;
                     }             
                     nts.uk.ui.block.invisible();
                     service.updateDaily(AtItems).done(x => {
@@ -408,10 +420,13 @@ module nts.uk.at.view.kdw002.a {
                     switch(self.unit()){
                         case 0:
                             AtItems.inputUnitOfTimeItem = self.timeUnit();
+                            break;
                         case 1:
                             AtItems.inputUnitOfTimeItem = self.numberOfTimesUnit();
+                            break;
                         case 2:
                             AtItems.inputUnitOfTimeItem = self.moneyUnit();
+                            break;
                     } 
 
                     nts.uk.ui.block.invisible();
