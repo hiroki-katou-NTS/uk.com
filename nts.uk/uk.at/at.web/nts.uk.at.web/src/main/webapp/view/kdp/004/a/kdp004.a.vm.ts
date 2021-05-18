@@ -74,54 +74,44 @@ module nts.uk.at.view.kdp004.a {
 
 			public startPage(): JQueryPromise<void> {
 				let self = this;
-				let vm = new ko.ViewModel();
 				let dfd = $.Deferred<void>();
 
-				vm.$blockui('invisible')
-					.then(() => {
-						self.basyo();
-						self.getWorkPlacesInfo();
-						
-					}).then(() => {
-						nts.uk.characteristics.restore(KDP004_SAVE_DATA).done(function (loginInfo: ILoginInfo) {
+				self.getWorkPlacesInfo();
+				self.basyo().done(() => {
+					nts.uk.characteristics.restore(KDP004_SAVE_DATA).done(function (loginInfo: ILoginInfo) {
 
-
-							if (!loginInfo) {
-								self.setLoginInfo().done((loginResult) => {
-									if (!loginResult) {
-										self.isUsed(false);
-										dfd.resolve();
-										return;
-									}
-									self.doFirstLoad().done(() => {
-										dfd.resolve();
-										return;
-									});
-								});
-							} else {
-								self.loginInfo = loginInfo;
-								if (ko.unwrap(self.modeBasyo)) {
-									self.loginInfo.selectedWP = self.workplace;
-									nts.uk.characteristics.save(KDP004_SAVE_DATA, self.loginInfo);
+						if (!loginInfo) {
+							self.setLoginInfo().done((loginResult) => {
+								if (!loginResult) {
+									self.isUsed(false);
+									dfd.resolve();
+									return;
 								}
-
 								self.doFirstLoad().done(() => {
 									dfd.resolve();
+									return;
 								});
-								self.loadNotice(self.loginInfo);
-							}
-						}).always(() => {
-							service.getLogginSetting().done((res) => {
-								self.listCompany(_.filter(res, 'fingerAuthStamp'));
 							});
-
+						} else {
+							self.loginInfo = loginInfo;
+							if (ko.unwrap(self.modeBasyo)) {
+								self.loginInfo.selectedWP = self.workplace;
+								nts.uk.characteristics.save(KDP004_SAVE_DATA, self.loginInfo);
+							}
+	
+							self.doFirstLoad().done(() => {
+								dfd.resolve();
+							});
+							self.loadNotice(self.loginInfo);
+						}
+					}).always(() => {
+						service.getLogginSetting().done((res) => {
+							self.listCompany(_.filter(res, 'fingerAuthStamp'));
 						});
-					})
-					.always(() => {
-						vm.$blockui('clear');
+	
 					});
-
-
+				});
+				
 				return dfd.promise();
 
 			}
@@ -485,7 +475,7 @@ module nts.uk.at.view.kdp004.a {
 					},
 					refActualResult: {
 						cardNumberSupport: null,
-						workLocationCD: null,
+						workLocationCD: self.worklocationCode,
 						workTimeCode: null,
 						overtimeDeclaration: null
 					},
@@ -557,9 +547,7 @@ module nts.uk.at.view.kdp004.a {
 						} else {
 
 							if (dataStorage.selectedWP.length = 1) {
-								if (self.workPlaceId !== '') {
-									self.workPlaceId = dataStorage.selectedWP[0];
-								}
+								self.workPlaceId = dataStorage.selectedWP[0];
 							}
 
 							service.stampInput(registerdata).done((res) => {
@@ -706,7 +694,8 @@ module nts.uk.at.view.kdp004.a {
 			}
 
 			// URLOption basyo
-			basyo() {
+			basyo(): JQueryPromise<any> {
+				let dfd = $.Deferred<any>();
 				const self = this,
 					vm = new ko.ViewModel(),
 					params = new URLSearchParams(window.location.search),
@@ -725,17 +714,24 @@ module nts.uk.at.view.kdp004.a {
 
 								if (data.workLocationName != null || data.workpalceId != null) {
 									self.worklocationCode = locationCd;
+									dfd.resolve();
 								}
 
 								if (data.workpalceId) {
 									self.modeBasyo(true);
 									self.workplace = [data.workpalceId];
 									self.workPlaceId = data.workpalceId;
+									dfd.resolve();
 								}
+							} else {
+								dfd.resolve();
 							}
 						});
 
+				} else {
+					dfd.resolve();
 				}
+				return dfd.promise();
 			}
 		}
 
