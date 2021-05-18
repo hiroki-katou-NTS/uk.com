@@ -96,7 +96,7 @@ module nts.uk.at.view.kdp002.c {
 				const self = this;
 
 				const param = { sid: self.infoEmpFromScreenA.employeeId, workPlaceIds: [workPlaceId] };
-				vm.$ajax('at','screen/at/kdp003/workplace-info', param)
+				vm.$ajax('at', 'screen/at/kdp003/workplace-info', param)
 					.then((data: any) => {
 						if (data) {
 							if (data.workPlaceInfo[0].displayName === 'コード削除済') {
@@ -131,6 +131,7 @@ module nts.uk.at.view.kdp002.c {
 					let itemIds = ["TIME", "AMOUNT", "TIME_WITH_DAY", "DAYS", "COUNT", "CLOCK"];
 
 					if (res) {
+
 						if (_.size(res.stampRecords) > 0) {
 							res.stampRecords = _.orderBy(res.stampRecords, ['stampTimeWithSec'], ['desc']);
 							let record = res.stampRecords[0];
@@ -155,6 +156,8 @@ module nts.uk.at.view.kdp002.c {
 
 							if (res.itemValues) {
 								// C4	実績の属性と表示書式について
+								var resutl: any[] = [];
+
 								res.itemValues.forEach(item => {
 									if (item.itemId == 28 || item.itemId == 29 || item.itemId == 31 || item.itemId == 34) {
 										item.value = '';
@@ -167,19 +170,27 @@ module nts.uk.at.view.kdp002.c {
 									} else if ((item.valueType == "DAYS" || item.valueType == "COUNT") && item.value) {
 										item.valueType = nts.uk.ntsNumber.formatNumber(parseFloat(item.valueType), new nts.uk.ui.option.NumberEditorOption({ grouplength: 3, decimallength: 1 }));
 									}
+
+									const exist = _.find(data.attendanceItems, ((valueFind) => {
+										return valueFind == item.itemId;
+									}));
+
+									if (exist) {
+										resutl.push(item);
+									}
 								});
 
-								self.item1(res.itemValues.length > 0 ? res.itemValues[0].name : '');
-								self.item2(res.itemValues.length > 1 ? res.itemValues[1].name : '');
-								self.item3(res.itemValues.length > 2 ? res.itemValues[2].name : '');
-								self.item4(res.itemValues.length > 3 ? res.itemValues[3].name : '');
-								self.item5(res.itemValues.length > 4 ? res.itemValues[4].name : '');
+								self.item1(resutl.length > 0 ? resutl[0].name : '');
+								self.item2(resutl.length > 1 ? resutl[1].name : '');
+								self.item3(resutl.length > 2 ? resutl[2].name : '');
+								self.item4(resutl.length > 3 ? resutl[3].name : '');
+								self.item5(resutl.length > 4 ? resutl[4].name : '');
 
-								self.value1(res.itemValues.length > 0 ? res.itemValues[0].value : '');
-								self.value2(res.itemValues.length > 1 ? res.itemValues[1].value : '');
-								self.value3(res.itemValues.length > 2 ? res.itemValues[2].value : '');
-								self.value4(res.itemValues.length > 3 ? res.itemValues[3].value : '');
-								self.value5(res.itemValues.length > 4 ? res.itemValues[4].value : '');
+								self.value1(resutl.length > 0 ? resutl[0].value : '');
+								self.value2(resutl.length > 1 ? resutl[1].value : '');
+								self.value3(resutl.length > 2 ? resutl[2].value : '');
+								self.value4(resutl.length > 3 ? resutl[3].value : '');
+								self.value5(resutl.length > 4 ? resutl[4].value : '');
 							}
 
 							self.items(res.itemValues);
