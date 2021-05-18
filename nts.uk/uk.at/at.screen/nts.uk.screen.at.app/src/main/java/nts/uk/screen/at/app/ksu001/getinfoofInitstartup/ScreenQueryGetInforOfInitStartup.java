@@ -139,9 +139,8 @@ public class ScreenQueryGetInforOfInitStartup {
 
 		// step 3
 		// goi domain service 社員の対象組織識別情報を取得する
-		String sidLogin = AppContexts.user().employeeId();
 		RequireImpl require = new RequireImpl(empOrganizationPub);
-		TargetOrgIdenInfor targetOrgIdenInfor = GetTargetIdentifiInforService.get(require, datePeriod.end(), sidLogin);
+		TargetOrgIdenInfor targetOrgIdenInfor = GetTargetIdentifiInforService.get(require, datePeriod.end(), AppContexts.user().employeeId());
 		
 		// step 4
 		RequireWorkPlaceImpl requireWorkPlace = new RequireWorkPlaceImpl(workplaceGroupAdapter,workplaceExportService,affWorkplaceGroupRepo);

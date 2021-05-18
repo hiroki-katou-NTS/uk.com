@@ -1,5 +1,7 @@
 package nts.uk.screen.at.app.ksu001.start;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -8,6 +10,10 @@ import nts.arc.time.GeneralDate;
 import nts.uk.screen.at.app.ksu001.getinfoofInitstartup.DataScreenQueryGetInforDto;
 import nts.uk.screen.at.app.ksu001.getinfoofInitstartup.DataScreenQueryGetInforDto_New;
 import nts.uk.screen.at.app.ksu001.getinfoofInitstartup.FuncCtrlDisplayFormatDto;
+import nts.uk.screen.at.app.ksu001.getinfoofInitstartup.ScheFunctionControlDto;
+import nts.uk.screen.at.app.ksu001.getinfoofInitstartup.ScheFunctionCtrlByWorkplaceDto;
+import nts.uk.screen.at.app.ksu001.getinfoofInitstartup.ScheModifyAuthCtrlByWorkplaceDto;
+import nts.uk.screen.at.app.ksu001.getinfoofInitstartup.ScheModifyAuthCtrlCommonDto;
 
 /**
  * @author laitv
@@ -28,6 +34,17 @@ public class DataBasicDto {
 	public GeneralDate scheduleModifyStartDate;  // 修正可能開始日
 	public Boolean usePublicAtr; // 公開を利用するか
 	public Boolean useWorkAvailabilityAtr; // 勤務希望を利用するか
+	// スケジュール修正の機能制御
+	public ScheFunctionControlDto scheFunctionControl;
+	// スケジュール修正職場別の機能制御
+	public ScheFunctionCtrlByWorkplaceDto scheFunctionCtrlByWorkplace;
+	// スケジュール修正共通の権限制御
+	public List<ScheModifyAuthCtrlCommonDto> scheModifyAuthCtrlCommon;
+	// スケジュール修正職場別の権限制御
+	public List<ScheModifyAuthCtrlByWorkplaceDto> scheModifyAuthCtrlByWorkplace;
+	
+	public boolean medicalOP;
+	
 	public String viewModeSelected;
 	
 	public DataBasicDto(DataScreenQueryGetInforDto_New resultStep1) {
@@ -42,6 +59,12 @@ public class DataBasicDto {
 		this.scheduleModifyStartDate = resultStep1.scheduleModifyStartDate;
 		this.usePublicAtr = resultStep1.usePublicAtr;
 		this.useWorkAvailabilityAtr = resultStep1.useWorkAvailabilityAtr;
+		
+		this.scheFunctionControl = resultStep1.scheFunctionControl;
+		this.scheFunctionCtrlByWorkplace = resultStep1.scheFunctionCtrlByWorkplace;
+		this.scheModifyAuthCtrlCommon = resultStep1.scheModifyAuthCtrlCommon;
+		this.scheModifyAuthCtrlByWorkplace = resultStep1.scheModifyAuthCtrlByWorkplace;
+		this.medicalOP = resultStep1.medicalOP;
 	}
 	
 	public DataBasicDto(DataScreenQueryGetInforDto resultStep1) {

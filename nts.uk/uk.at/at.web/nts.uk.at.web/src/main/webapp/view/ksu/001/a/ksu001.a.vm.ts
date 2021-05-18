@@ -437,8 +437,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             }
 
             service.getDataStartScreen(param).done((data: IDataStartScreen) => {
-                console.log(data.dataBasicDto);
-                
                 // khởi tạo data localStorage khi khởi động lần đầu.
                 self.creatDataLocalStorege(data);
                 
@@ -506,29 +504,33 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             // スケジュール修正共通の権限制御    - ScheModifyAuthCtrlCommon                         
             // スケジュール修正職場別の権限制御  - ScheModifyAuthCtrlByWorkplace
             
-            let scheFunctionCtrlByWorkplaceUse = true; // lấy ra từ domian ScheFunctionCtrlByWorkplace
-            let medicalOP = true; // 医療OP
+            // lấy ra từ domian ScheFunctionCtrlByWorkplace.useCompletionAtr
+            let scheFunctionCtrlByWorkplaceUse = data.dataBasicDto.scheFunctionCtrlByWorkplace.useCompletionAtr == 1? true:false; 
+            let medicalOP = data.dataBasicDto.medicalOP; // 医療OP
             
             // map với data domain sau
             // check hiển thị với Common và Authority
-            let funcNo1_Common = true; // 休暇状況参照 Vacation status reference
-            let funcNo2_Common = true; // 修正履歴参照 Refer to revision history
-            let funcNo1_WorkPlace = true; // 登録 Registration
-            let funcNo2_WorkPlace = true; // 確定 Confirm
-            let funcNo3_WorkPlace = true; // 完了 Done
-            let funcNo4_WorkPlace = true; // アラームチェック Alarm check
-            let funcNo5_WorkPlace = true; // 出力 output
-            let funcNo6_WorkPlace = true; // 取り込み Capture
-            let funcNo7_WorkPlace = true; // 勤務希望 Hope to work
-            let funcNo8_WorkPlace = true; // 公開 Release
-            let funcNo9_WorkPlace = true; // 応援登録 Support registration
-            let funcNo10_WorkPlace = true; // 並び順設定 Sort order setting
-            let funcNo11_WorkPlace = true; // チーム設定 Team settings
-            let funcNo12_WorkPlace = true; // ランク分け Ranking
-            let funcNo13_WorkPlace = true; // 行事登録 Event registration
-            let funcNo14_WorkPlace = true; // 集計欄の金額表示 Amount display in the summary column
-            let funcNo15_WorkPlace = true; // 予算実績入力 Budget actual input
-            let funcNo16_WorkPlace = true; // 計画人数入力 Enter the planned number of people
+            let scheModifyAuthCtrlCommon = data.dataBasicDto.scheModifyAuthCtrlCommon;  // list
+            let scheModifyAuthCtrlByWorkplace = data.dataBasicDto.scheModifyAuthCtrlByWorkplace; // list
+            
+            let funcNo1_Common = _.find(scheModifyAuthCtrlCommon, function(o) { return o.functionNo==1; }).isAvailable; // 休暇状況参照 Vacation status reference
+            let funcNo2_Common = _.find(scheModifyAuthCtrlCommon, function(o) { return o.functionNo==2; }).isAvailable; // 修正履歴参照 Refer to revision history
+            let funcNo1_WorkPlace = _.find(scheModifyAuthCtrlByWorkplace, function(o) { return o.functionNo==1; }).isAvailable; // 登録 Registration
+            let funcNo2_WorkPlace = _.find(scheModifyAuthCtrlByWorkplace, function(o) { return o.functionNo==2; }).isAvailable; // 確定 Confirm
+            let funcNo3_WorkPlace = _.find(scheModifyAuthCtrlByWorkplace, function(o) { return o.functionNo==3; }).isAvailable; // 完了 Done
+            let funcNo4_WorkPlace = _.find(scheModifyAuthCtrlByWorkplace, function(o) { return o.functionNo==4; }).isAvailable; // アラームチェック Alarm check
+            let funcNo5_WorkPlace = _.find(scheModifyAuthCtrlByWorkplace, function(o) { return o.functionNo==5; }).isAvailable; // 出力 output
+            let funcNo6_WorkPlace = _.find(scheModifyAuthCtrlByWorkplace, function(o) { return o.functionNo==6; }).isAvailable; // 取り込み Capture
+            let funcNo7_WorkPlace = _.find(scheModifyAuthCtrlByWorkplace, function(o) { return o.functionNo==7; }).isAvailable; // 勤務希望 Hope to work
+            let funcNo8_WorkPlace = _.find(scheModifyAuthCtrlByWorkplace, function(o) { return o.functionNo==8; }).isAvailable; // 公開 Release
+            let funcNo9_WorkPlace = _.find(scheModifyAuthCtrlByWorkplace, function(o) { return o.functionNo==9; }).isAvailable; // 応援登録 Support registration
+            let funcNo10_WorkPlace = _.find(scheModifyAuthCtrlByWorkplace, function(o) { return o.functionNo==10; }).isAvailable; // 並び順設定 Sort order setting
+            let funcNo11_WorkPlace = _.find(scheModifyAuthCtrlByWorkplace, function(o) { return o.functionNo==11; }).isAvailable; // チーム設定 Team settings
+            let funcNo12_WorkPlace = _.find(scheModifyAuthCtrlByWorkplace, function(o) { return o.functionNo==12; }).isAvailable; // ランク分け Ranking
+            let funcNo13_WorkPlace = _.find(scheModifyAuthCtrlByWorkplace, function(o) { return o.functionNo==13; }).isAvailable; // 行事登録 Event registration
+            let funcNo14_WorkPlace = _.find(scheModifyAuthCtrlByWorkplace, function(o) { return o.functionNo==14; }).isAvailable; // 集計欄の金額表示 Amount display in the summary column
+            let funcNo15_WorkPlace = _.find(scheModifyAuthCtrlByWorkplace, function(o) { return o.functionNo==15; }).isAvailable; // 予算実績入力 Budget actual input
+            let funcNo16_WorkPlace = _.find(scheModifyAuthCtrlByWorkplace, function(o) { return o.functionNo==16; }).isAvailable; // 計画人数入力 Enter the planned number of people
             // button A1_1  職1
             if (funcNo1_WorkPlace == false) {
                 $('#A1_1').css('visibility', 'hidden');
@@ -665,7 +667,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let self = this;
             //lấy setting trong domain này スケジュール修正職場別の機能制御    - ScheFunctionCtrlByWorkplace.useDisplayPeriod
             // code tam ghep data server sau
-            let useDisplayPeriods = [0,1];
+            let useDisplayPeriods = data.dataBasicDto.scheFunctionCtrlByWorkplace.useDisplayPeriod;
             if (useDisplayPeriods.length == 0) {
                 self. selectedDisplayPeriod(1)
             } else if (useDisplayPeriods.length == 1) {
@@ -692,8 +694,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             //シフト Shift(2)
             // code tam ghep data server sau
             // ※15,※16,※17,※29
-            let useDisplayFormats = [0, 1, 2];
-            let viewModeSelected = 'time';
+            let useDisplayFormats = data.dataBasicDto.scheFunctionCtrlByWorkplace.useDisplayFormat;
             if (useDisplayFormats.length == 0) {
                 self.visibleA4_234(false);
             } else if (useDisplayFormats.length == 1) {
@@ -722,7 +723,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 self.modeDisplayList().push({ id: 'shift', name: getText("KSU001_45") });
             }
 
-            self.setViewModeSelected(viewModeSelected);
+            self.setViewModeSelected(data.dataBasicDto.viewModeSelected);
         }
         
         // viewModeSelected la server tra ve
@@ -743,7 +744,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         calculateDisPlayFormatA4_567(data) {
             let self = this;
             // ※18 - lay setting trong domain スケジュール修正の機能制御.実績表示できるか   - ScheFunctionControl.isDisplayActual
-            let isDisplayActual = true;
+            let isDisplayActual = data.dataBasicDto.scheFunctionControl.isDisplayActual;
             self.visibleA4_567(isDisplayActual);
         }
         
@@ -839,7 +840,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let self = this;
             if (_.isNil(self.userInfor)) {
                 let data : IUserInfor = {};
-                data.disPlayFormat = 'time';
+                data.disPlayFormat = dataSetting.dataBasicDto.viewModeSelected;
                 data.backgroundColor = 0; // 0 : 通常; 1: シフト   // mau nền default của shiftMode
                 data.achievementDisplaySelected = false;
                 data.shiftPalletUnit = 1;
@@ -860,7 +861,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 self.userInfor = data;
                 characteristics.save(self.KEY, self.userInfor);
             } else {
-                self.userInfor.disPlayFormat = 'time';
+                self.userInfor.disPlayFormat = dataSetting.dataBasicDto.viewModeSelected;
                 self.userInfor.achievementDisplaySelected = false;
                 characteristics.save(self.KEY, self.userInfor);
             }

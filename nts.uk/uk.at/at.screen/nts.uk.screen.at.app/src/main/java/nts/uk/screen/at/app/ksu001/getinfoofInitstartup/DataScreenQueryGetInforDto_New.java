@@ -31,4 +31,6 @@ public class DataScreenQueryGetInforDto_New {
 	public List<ScheModifyAuthCtrlCommonDto> scheModifyAuthCtrlCommon;
 	// スケジュール修正職場別の権限制御
 	public List<ScheModifyAuthCtrlByWorkplaceDto> scheModifyAuthCtrlByWorkplace;
+	
+	public boolean medicalOP;
 }
