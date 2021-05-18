@@ -1,19 +1,17 @@
-package nts.uk.screen.at.app.ksu001.getsendingperiod;
+package nts.uk.screen.at.app.ksu001.achievementorschedule;
 
 import java.util.List;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import nts.arc.time.GeneralDate;
+import nts.uk.screen.at.app.ksu001.displayinshift.ShiftMasterMapWithWorkStyle;
 
-
-@NoArgsConstructor
 @AllArgsConstructor
-@Setter
-@Getter
-public class ChangePeriodInWorkInfoParam_New {
+@NoArgsConstructor
+@Data
+public class AchievementOrScheduleParam {
 	
 	public GeneralDate startDate;            	 
 	public GeneralDate endDate;    	
@@ -22,16 +20,19 @@ public class ChangePeriodInWorkInfoParam_New {
 	public String workplaceId;     	         
 	public String workplaceGroupId;
 	public List<String> sids;
+	public List<ShiftMasterMapWithWorkStyle> listShiftMasterNotNeedGetNew;
 	public boolean getActualData;
-	
-	
+
 	
 	// ・集計したい個人計：Optional<個人計カテゴリ>
 	public Integer personalCounterOp;
 	
-	//・集計したい職場計：Optional<職場計カテゴリ>
+	// ・集計したい職場計：Optional<職場計カテゴリ>
 	
 	public Integer workplaceCounterOp;
-	// ・締め日：日付
+	
+	// 締め日
 	public int day;
+	
+	public String mode;
 }

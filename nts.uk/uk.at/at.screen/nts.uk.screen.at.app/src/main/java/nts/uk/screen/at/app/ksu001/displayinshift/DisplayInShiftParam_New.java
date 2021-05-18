@@ -28,4 +28,15 @@ public class DisplayInShiftParam_New {
 	public ShiftPaletteWantGet shiftPaletteWantGet; // ・取得したいシフトパレット：Optional<単位, ページ>  単位
 	public boolean getActualData;            // ・実績も取得するか：boolean : có lấy data thực tế không
 	public int unit;					     // workPlace | workPlaceGroup
+	
+	// ・集計したい個人計：Optional<個人計カテゴリ>
+	public Integer personalCounterOp;
+	
+	// ・集計したい職場計：Optional<職場計カテゴリ>
+	
+	public Integer workplaceCounterOp;
+	
+	// 締め日
+	public int day;
+	
 }

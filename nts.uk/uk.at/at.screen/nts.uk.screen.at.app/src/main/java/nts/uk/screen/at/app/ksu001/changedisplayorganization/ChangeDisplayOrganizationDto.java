@@ -1,24 +1,36 @@
-package nts.uk.screen.at.app.ksu001.displayinshift;
+package nts.uk.screen.at.app.ksu001.changedisplayorganization;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import lombok.Value;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import nts.uk.screen.at.app.ksu001.aggreratepersonaltotal.AggreratePersonalDto;
 import nts.uk.screen.at.app.ksu001.aggrerateworkplacetotal.AggrerateWorkplaceDto;
+import nts.uk.screen.at.app.ksu001.displayinshift.ShiftMasterMapWithWorkStyle;
+import nts.uk.screen.at.app.ksu001.eventinformationandpersonal.DataSpecDateAndHolidayDto;
+import nts.uk.screen.at.app.ksu001.extracttargetemployees.EmployeeInformationDto;
 import nts.uk.screen.at.app.ksu001.getshiftpalette.PageInfo;
 import nts.uk.screen.at.app.ksu001.getshiftpalette.ShiftMasterDto;
 import nts.uk.screen.at.app.ksu001.getshiftpalette.TargetShiftPalette;
 import nts.uk.screen.at.app.ksu001.getworkscheduleshift.ScheduleOfShiftDto;
 
-@Value
-public class DisplayInShiftResult_New {
-	// data cua shift pallet
-	public List<PageInfo> listPageInfo ;                      // List<ページ, 名称>
-	public TargetShiftPalette targetShiftPalette ; // 対象のシフトパレット： Optional<ページ, シフトパレット>
-//	public List<ShiftMasterMapWithWorkStyle> shiftMasterWithWorkStyleLst;  // 取得したシフト一覧： List<シフトマスタ, 出勤休日区分> ==> thằng này sẽ lưu vào localStorage
-	 
-	// data cua Grid 
+@AllArgsConstructor
+@NoArgsConstructor
+@Data
+public class ChangeDisplayOrganizationDto {
+	// List<社員ID, 社員コード, ビジネスネーム>
+	public List<EmployeeInformationDto> employeeInformationDtos = Collections.emptyList();
+	// 
+	public DataSpecDateAndHolidayDto dataSpecDateAndHolidayDto;
+	
+	// ・List<ページ, 名称>　　※シフトパレット
+	public List<PageInfo> listPageInfo; 
+	// ・対象ページのシフトパレット
+	public TargetShiftPalette targetShiftPalette;
+	
 	public List<ScheduleOfShiftDto> listWorkScheduleShift;  // List<勤務予定（シフト）dto> ==> data hiển thị trên grid
 	
 	
@@ -31,4 +43,5 @@ public class DisplayInShiftResult_New {
 	// ・職場計集計結果　←集計内容によって情報が異なる
 	public AggrerateWorkplaceDto aggrerateWorkplace;
 	
+
 }

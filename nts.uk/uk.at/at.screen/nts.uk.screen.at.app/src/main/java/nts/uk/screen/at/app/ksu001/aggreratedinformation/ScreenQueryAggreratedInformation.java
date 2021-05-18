@@ -48,14 +48,14 @@ public class ScreenQueryAggreratedInformation {
 	@Inject
 	private ScreenQueryAggrerateSchedule screenQueryAggrerateSchedule;
 	
-	public void get(
+	public AggrerateScheduleDto get(
 			List<String> sids,
 			DatePeriod datePeriod,
 			DateInMonth closeDate,
 			Boolean isAchievement,
 			Optional<PersonalCounterCategory> personalCounterOp,
 			Optional<WorkplaceCounterCategory> workplaceCounterOp,
-			Boolean isShiftDisplay
+			boolean isShiftDisplay
 			) {
 		TargetOrgIdenInfor targetOrg = null; // do not find param
 		// 1: 取得する職場計.isPresent && 取得する職場計 == 外部予算実績
@@ -73,7 +73,7 @@ public class ScreenQueryAggreratedInformation {
 		
 		
 		// 3: 集計する(List<社員ID>, 期間, 日付, , , 対象組織識別情報, Optional<個人計カテゴリ>, Optional<職場計カテゴリ>, boolean)
-		AggrerateScheduleDto AggrerateSchedule = 
+		AggrerateScheduleDto aggrerateSchedule = 
 						screenQueryAggrerateSchedule.aggrerateSchedule(
 								sids,
 								datePeriod,
@@ -85,6 +85,6 @@ public class ScreenQueryAggreratedInformation {
 								workplaceCounterOp,
 								isShiftDisplay);
 		
-		
+		return aggrerateSchedule;
 	}
 }

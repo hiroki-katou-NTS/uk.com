@@ -43,7 +43,7 @@ public class ScreenQueryAggreratePeopleMethod {
 			DatePeriod period,
 			List<IntegrationOfDaily> scheduleList,
 			List<IntegrationOfDaily> actualList,
-			Boolean isShiftDisplay
+			boolean isShiftDisplay
 			) {
 		
 		AggreratePeopleMethodOutput output = new AggreratePeopleMethodOutput();

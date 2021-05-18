@@ -64,7 +64,7 @@ public class ScreenQueryAggrerateSchedule {
 			TargetOrgIdenInfor targetOrg,
 			Optional<PersonalCounterCategory> personalCounterOp,
 			Optional<WorkplaceCounterCategory> workplaceCounterOp,
-			Boolean isShiftDisplay
+			boolean isShiftDisplay
 			) {
 		AggrerateScheduleDto output = new AggrerateScheduleDto();
 		// 1: 日別勤怠Workに変換する()
