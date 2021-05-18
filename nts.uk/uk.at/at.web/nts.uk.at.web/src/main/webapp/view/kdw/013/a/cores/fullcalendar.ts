@@ -969,7 +969,18 @@ module nts.uk.ui.at.kdw013.calendar {
                         }
                     }
 
-                    setTimeout(vm.calendar.updateSize, 500);
+                    vm.$nextTick(() => {
+                        $.Deferred()
+                            .resolve(true)
+                            .then(() => {
+                                const { type } = vm.calendar.view;
+
+                                vm.calendar.changeView('dayGridMonth');
+
+                                return type;
+                            })
+                            .then((type: string) => vm.calendar.changeView(type));
+                    });
 
                     return days;
                 },
@@ -1493,6 +1504,7 @@ module nts.uk.ui.at.kdw013.calendar {
                 slotEventOverlap: false,
                 eventOverlap: false,
                 selectOverlap: false,
+                rerenderDelay: 500,
                 dateClick: () => {
                     const events = vm.calendar.getEvents();
 
