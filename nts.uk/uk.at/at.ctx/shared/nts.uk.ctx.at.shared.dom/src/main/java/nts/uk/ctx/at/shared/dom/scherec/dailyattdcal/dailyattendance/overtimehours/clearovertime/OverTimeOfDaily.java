@@ -435,7 +435,7 @@ public class OverTimeOfDaily {
 			OutsideWorkTimeSheet declareOutsideWork = declareCalcRange.getOutsideWorkTimeSheet().get();
 			if (declareOutsideWork.getOverTimeWorkSheet().isPresent()){
 				OverTimeSheet declareSheet = declareOutsideWork.getOverTimeWorkSheet().get();
-				result = declareSheet.calcMidNightTime(autoCalcSet).getTime();
+				result = declareSheet.calcMidNightTime(autoCalcSet).getCalcTime();
 			}
 			// 申告残業深夜時間を返す
 			return result;

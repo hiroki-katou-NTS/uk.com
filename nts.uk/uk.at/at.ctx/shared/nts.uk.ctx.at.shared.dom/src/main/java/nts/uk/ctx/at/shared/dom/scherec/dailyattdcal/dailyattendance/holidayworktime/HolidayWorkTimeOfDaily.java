@@ -210,9 +210,9 @@ public class HolidayWorkTimeOfDaily {
 			if (declareOutsideWork.getHolidayWorkTimeSheet().isPresent()){
 				HolidayWorkTimeSheet declareSheet = declareOutsideWork.getHolidayWorkTimeSheet().get();
 				for(HolidayWorkFrameTimeSheetForCalc frameTime : declareSheet.getWorkHolidayTime()) {
-					TimeDivergenceWithCalculation declareTime = frameTime.calcMidNightTime(holidayLateNightAutoCalSetting);
-					if (declareTime.getTime().valueAsMinutes() > 0){
-						eachTime.addTime(frameTime.getStatutoryAtr().get(), declareTime);
+					AttendanceTime declareTime = frameTime.calcMidNightTime(holidayLateNightAutoCalSetting).getCalcTime();
+					if (declareTime.valueAsMinutes() > 0){
+						eachTime.addTime(frameTime.getStatutoryAtr().get(), TimeDivergenceWithCalculation.sameTime(declareTime));
 						// 編集状態．休出深夜に処理中の法定区分を追加する
 						calcRange.getEditState().getHolidayWorkMn().add(frameTime.getStatutoryAtr().get());
 					}

@@ -574,7 +574,8 @@ public class OverTimeFrameTimeSheetForCalc extends ActualWorkingTimeSheet {
 												.map(tc -> tc.createDuplicateRange(new TimeSpanForDailyCalc(this.timeSheet.getStart(), baseTime)).get())
 												.collect(Collectors.toList());
 			//深夜時間帯
-			MidNightTimeSheetForCalcList beforeMid = this.getMidNightTimeSheet().getDuplicateRangeTimeSheet(new TimeSpanForDailyCalc(this.timeSheet.getStart(), baseTime));
+			MidNightTimeSheetForCalcList beforDuplicate = this.getMidNightTimeSheet().getDuplicateRangeTimeSheet(new TimeSpanForDailyCalc(this.timeSheet.getStart(), baseTime));
+			MidNightTimeSheetForCalcList beforeMid = beforDuplicate.recreateMidNightTimeSheetBeforeBase(baseTime, true);
         	
             returnList.add(new OverTimeFrameTimeSheetForCalc(new TimeSpanForDailyCalc(this.timeSheet.getStart(), baseTime)
                                                          ,new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN)
@@ -613,7 +614,8 @@ public class OverTimeFrameTimeSheetForCalc extends ActualWorkingTimeSheet {
 												.map(tc -> tc.createDuplicateRange(new TimeSpanForDailyCalc( baseTime, this.timeSheet.getEnd())).get())
 												.collect(Collectors.toList());
 			//深夜時間帯
-			MidNightTimeSheetForCalcList afterMid = this.getMidNightTimeSheet().getDuplicateRangeTimeSheet(new TimeSpanForDailyCalc(baseTime, this.timeSheet.getEnd()));
+			MidNightTimeSheetForCalcList afterDuplicate = this.getMidNightTimeSheet().getDuplicateRangeTimeSheet(new TimeSpanForDailyCalc(baseTime, this.timeSheet.getEnd()));
+			MidNightTimeSheetForCalcList afterMid = afterDuplicate.recreateMidNightTimeSheetBeforeBase(baseTime, false);
             
             returnList.add(new OverTimeFrameTimeSheetForCalc(new TimeSpanForDailyCalc(baseTime, this.timeSheet.getEnd())
                                                           ,this.rounding

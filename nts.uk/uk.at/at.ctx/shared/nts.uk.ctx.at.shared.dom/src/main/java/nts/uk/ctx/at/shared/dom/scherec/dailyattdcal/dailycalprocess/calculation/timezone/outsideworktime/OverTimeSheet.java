@@ -400,8 +400,7 @@ public class OverTimeSheet {
 		TimeDivergenceWithCalculation calcTime = TimeDivergenceWithCalculation.defaultValue();
 		for(OverTimeFrameTimeSheetForCalc timeSheet:frameTimeSheets) {
 			val calcSet = getCalcSetByAtr(autoCalcSet, timeSheet.getWithinStatutryAtr(),timeSheet.isGoEarly());
-			val calcValue = timeSheet.calcMidNightTime(calcSet);
-			calcTime = calcTime.addMinutes(calcValue.getTime(), calcValue.getCalcTime());
+			calcTime = calcTime.addMinutes(timeSheet.calcMidNightTime(calcSet));
 		}
 		return calcTime;
 	}
