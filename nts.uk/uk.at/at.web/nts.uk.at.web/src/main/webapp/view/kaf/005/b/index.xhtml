@@ -51,9 +51,13 @@
 
 							<div style="margin-top: -10px">
 
-
+							<div data-bind="component: { name: 'kaf005-share-work-info',
+										params: {
+														workInfo: workInfo
+													}
+										}"></div>
 								
-	<div data-bind="component: { name: 'kaf005-share',
+							<div data-bind="component: { name: 'kaf005-share',
 											params: {
 												restTime: restTime,
 												holidayTime: holidayTime,
@@ -63,27 +67,7 @@
 											}
 							
 										}"></div>
-
-								<div
-									data-bind="component: { name: 'kaf005-share',
-													params: {
-														restTime: restTime,
-														holidayTime: holidayTime,
-														overTime: overTime,
-														visibleModel: visibleModel
-													}
-									
-												}"></div>
-
-
-
 							</div>
-
-
-
-
-
-
 							<div style="margin-top: 11px"
 								data-bind="component: { name: 'kaf000-b-component7', 
 														params: {

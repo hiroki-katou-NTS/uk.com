@@ -12,7 +12,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 /**
  * @author thanh_nx
  *
- *         出張申請
+ *         出張申請(反映用)
  */
 @Getter
 @Setter

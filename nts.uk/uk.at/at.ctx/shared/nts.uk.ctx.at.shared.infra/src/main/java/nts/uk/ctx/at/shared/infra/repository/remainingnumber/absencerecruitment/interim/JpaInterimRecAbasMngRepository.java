@@ -416,7 +416,7 @@ public class JpaInterimRecAbasMngRepository extends JpaRepository implements Int
 
 	private InterimRecMng toDomain(NtsResultRecord x) {
 		return new InterimRecMng(x.getString("REMAIN_MNG_ID"),
-				x.getString("CID"),
+				x.getString("SID"),
 				x.getGeneralDate("YMD"),
 				x.getEnum("CREATOR_ATR", CreateAtr.class),
 				RemainType.PICKINGUP,

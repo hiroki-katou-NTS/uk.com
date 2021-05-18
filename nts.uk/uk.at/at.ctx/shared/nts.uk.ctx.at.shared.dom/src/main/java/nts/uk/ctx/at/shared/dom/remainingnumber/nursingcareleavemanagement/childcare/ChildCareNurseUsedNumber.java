@@ -111,9 +111,9 @@ public class ChildCareNurseUsedNumber implements Cloneable{
 	 */
 	public ChildCareNurseUsedNumber usedDayfromUsedTime(Optional<LaborContractTime> contractTime) {
 
-		if(contractTime.get().v() == 0) {
+		if(!contractTime.isPresent() || contractTime.get().v() == 0) {
 			return this;
-		}else {
+		} else {
 			// 使用時間を契約時間分だけ日数に変換する
 			int timeOfUse = this.usedTimes.map(c -> c.valueAsMinutes()).orElse(0);
 			int days = timeOfUse / contractTime.get().valueAsMinutes();

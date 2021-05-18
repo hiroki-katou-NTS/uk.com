@@ -29,6 +29,8 @@ import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
+import nts.uk.ctx.at.request.dom.application.appabsence.ApplyForLeave;
+import nts.uk.ctx.at.request.dom.application.appabsence.ApplyForLeaveRepository;
 import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTrip;
 import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTripRepository;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
@@ -51,11 +53,18 @@ import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDi
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoWithDateOutput;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectlyRepository;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveApp;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveAppRepository;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentApp;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentAppRepository;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepository;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.CalculatedFlag;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.CheckBeforeOutputMulti;
 import nts.uk.ctx.at.request.dom.application.lateleaveearly.ArrivedLateLeaveEarly;
 import nts.uk.ctx.at.request.dom.application.lateleaveearly.ArrivedLateLeaveEarlyRepository;
+import nts.uk.ctx.at.request.dom.application.optional.OptionalItemApplication;
+import nts.uk.ctx.at.request.dom.application.optional.OptionalItemApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTimeRepository;
 import nts.uk.ctx.at.request.dom.application.overtime.ApplicationTime;
@@ -154,7 +163,16 @@ public class OvertimeServiceImpl implements OvertimeService {
 	private GetApplicationReflectionResultAdapter getApplicationReflectionResultAdapter;
 	@Inject
 	private TimeLeaveApplicationRepository timeLeaveApplicationRepo;
-	
+	@Inject
+	private ApplyForLeaveRepository applyForLeaveRepository;
+	@Inject
+	private AppHolidayWorkRepository appHolidayWorkRepository;
+	@Inject
+	private AbsenceLeaveAppRepository absenceLeaveAppRepository;
+	@Inject
+	private RecruitmentAppRepository recruitmentAppRepository;
+	@Inject
+	private OptionalItemApplicationRepository optionalItemApplicationRepository;
 	
 	
 	@Override
@@ -560,6 +578,35 @@ public class OvertimeServiceImpl implements OvertimeService {
 			@Override
 			public Optional<TimeLeaveApplication> findTimeLeavById(String companyId, String appId) {
 				return timeLeaveApplicationRepo.findById(companyId, appId);
+			}
+			@Override
+			public Optional<AppOverTime> findOvertime(String companyId, String appId) {
+				return appOverTimeRepository.find(companyId, appId);
+			}
+
+			@Override
+			public Optional<ApplyForLeave> findApplyForLeave(String CID, String appId) {
+				return applyForLeaveRepository.findApplyForLeave(CID, appId);
+			}
+
+			@Override
+			public Optional<AppHolidayWork> findAppHolidayWork(String companyId, String appId) {
+				return appHolidayWorkRepository.find(companyId, appId);
+			}
+			
+			@Override
+			public Optional<AbsenceLeaveApp> findAbsenceByID(String applicationID) {
+				return absenceLeaveAppRepository.findByAppId(applicationID);
+			}
+
+			@Override
+			public Optional<RecruitmentApp> findRecruitmentByID(String applicationID) {
+				return recruitmentAppRepository.findByAppId(applicationID);
+			}
+
+			@Override
+			public Optional<OptionalItemApplication> getOptionalByAppId(String companyId, String appId) {
+				return optionalItemApplicationRepository.getByAppId(companyId, appId);
 			}
 		};
 	}

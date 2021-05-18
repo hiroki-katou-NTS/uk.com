@@ -67,9 +67,13 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 
 							<div style="margin-top: -10px">
 
-
+							<div data-bind="component: { name: 'kaf005-share-work-info', 
+										params: {
+														workInfo: workInfo
+													} 
+										}"></div>
 								
-	<div data-bind="component: { name: 'kaf005-share',
+							<div data-bind="component: { name: 'kaf005-share',
 											params: {
 												restTime: restTime,
 												holidayTime: holidayTime,
@@ -79,18 +83,6 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 											}
 							
 										}"></div>
-
-								<div
-									data-bind="component: { name: 'kaf005-share',
-													params: {
-														restTime: restTime,
-														holidayTime: holidayTime,
-														overTime: overTime,
-														visibleModel: visibleModel
-													}
-									
-												}"></div>
-
 
 
 							</div>
