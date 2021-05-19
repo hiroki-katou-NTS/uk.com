@@ -56,4 +56,12 @@ public class ExacErrorLogManager {
     	this.logs.add(log);
 		
 	}
+	
+	public void save(Require require) {
+		require.save(this.logs);
+	}
+	
+	public interface Require {
+		void save(List<ExacErrorLog> logs);
+	}
 }

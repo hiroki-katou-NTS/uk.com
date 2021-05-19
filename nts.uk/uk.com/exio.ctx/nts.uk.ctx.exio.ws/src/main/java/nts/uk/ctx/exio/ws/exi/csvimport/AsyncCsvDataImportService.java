@@ -13,7 +13,7 @@ import nts.uk.ctx.exio.app.command.exi.csvimport.AsyncCsvCheckImportDataCommandH
 
 @Path("exio/exi/csvimport")
 @Produces("application/json")
-public class SyncCsvDataImportService extends WebService {
+public class AsyncCsvDataImportService extends WebService {
 
 	@Inject
 	AsyncCsvCheckImportDataCommandHandler checkImportHandler;

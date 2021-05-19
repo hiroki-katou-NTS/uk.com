@@ -97,7 +97,6 @@ public class AsyncCsvCheckImportDataCommandHandler extends AsyncCommandHandler<C
 			Optional<ExacExeResultLog> optResultLog = exResultLog.getExacExeResultLogById(cid, conditionSetCd, command.getProcessId());
 			if(optResultLog.isPresent()) resultLog = optResultLog.get();
 			
-			//NtsCsvRecord colHeader = condSet.getCsvRecordImpoter().readHeader(require);
 			List<CsvRecord> csvRecords;
 			try {
 				csvRecords = condSet.getCsvRecordImpoter().read(require);
@@ -107,9 +106,7 @@ public class AsyncCsvCheckImportDataCommandHandler extends AsyncCommandHandler<C
 				setter.updateData(STATUS, command.getStateBehavior());
 				return;
 			}
-			List<ExacErrorLog> lstExacErrorLog = new ArrayList<>();
 			List<Map<Integer, Object>> lstCsvContent = new ArrayList<>();
-			int errItems = 0;
 			for (CsvRecord csvRecord : csvRecords) { // line
 				//アルゴリズム「受入項目チェック＆編集」を実行する
 				CsvItemImport csvItemImporter = new CsvItemImport(csvRecord, csvRecords.indexOf(csvRecord) + 1,  condSet.getAcceptMode());
@@ -149,11 +146,16 @@ public class AsyncCsvCheckImportDataCommandHandler extends AsyncCommandHandler<C
 				}
 				//↑---------lan truoc
 			} // line
-			exacErrorLogRepository.addList(lstExacErrorLog);
+
+			logManager.save(new ExacErrorLogManager.Require(){
+				@Override
+				public void save(List<ExacErrorLog> logs) {
+					exacErrorLogRepository.addList(logs);
+				}
+			});
 			resultLog.setErrorCount(errorCount);
 			resultLog.setProcessEndDatetime(Optional.ofNullable(GeneralDateTime.now()));
 			exResultLog.update(resultLog);
-//			inputStream.close();
 		} catch (IOException e) {
 			resultLog.setResultStatus(Optional.of(ExtResultStatus.FAILURE));
 			resultLog.setErrorCount(errorCount);
