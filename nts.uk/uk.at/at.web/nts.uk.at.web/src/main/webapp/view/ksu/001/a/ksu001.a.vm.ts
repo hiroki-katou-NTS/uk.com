@@ -434,6 +434,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 unit: !_.isNil(self.userInfor) ? self.userInfor.unit : 0,
                 workplaceId: null,
                 workplaceGroupId: null,
+                personTotalSelected: 1, // A11_1
+                workplaceSelected: 1 // A12_1
             }
 
             service.getDataStartScreen(param).done((data: IDataStartScreen) => {
@@ -835,7 +837,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             }
             return dfd.promise();
         }
-
+        
         creatDataLocalStorege(dataSetting) {
             let self = this;
             if (_.isNil(self.userInfor)) {

@@ -9,6 +9,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nts.uk.screen.at.app.ksu001.aggreratepersonaltotal.AggreratePersonalDto;
+import nts.uk.screen.at.app.ksu001.aggrerateworkplacetotal.AggrerateWorkplaceDto;
 import nts.uk.screen.at.app.ksu001.displayinshift.ShiftMasterMapWithWorkStyle;
 import nts.uk.screen.at.app.ksu001.displayinworkinformation.WorkTypeInfomation;
 import nts.uk.screen.at.app.ksu001.eventinformationandpersonal.DateInformationDto;
@@ -50,5 +52,9 @@ public class StartKSU001Dto {
 	public TargetShiftPalette targetShiftPalette; // 対象のシフトパレッ
 	public List<ShiftMasterMapWithWorkStyle> shiftMasterWithWorkStyleLst;
 	public List<ScheduleOfShiftDto> listWorkScheduleShift; // ・List<勤務予定（シフト）dto>
+	public AggreratePersonalDto aggreratePersonal; // 個人計集計結果　←集計内容によって情報が異なる (update ver5)
+	public AggrerateWorkplaceDto aggrerateWorkplace; // ・職場計集計結果　←集計内容によって情報が異なる  (update ver5)
+	
+	
 	
 }

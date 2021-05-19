@@ -1,7 +1,7 @@
 module nts.uk.at.view.ksu001.a.service {
     let paths: any = {
         getSendingPeriod: "screen/at/schedule/schedule/start/getSendingPeriod",
-        getDataStartScreen: "screen/at/schedule/start",
+        getDataStartScreen: "screen/at/schedule/startver",
         getDataOfShiftMode: "screen/at/schedule/shift",
         getDataOfShortNameMode: "screen/at/schedule/shortname",
         getDataOfTimeMode: "screen/at/schedule/time",

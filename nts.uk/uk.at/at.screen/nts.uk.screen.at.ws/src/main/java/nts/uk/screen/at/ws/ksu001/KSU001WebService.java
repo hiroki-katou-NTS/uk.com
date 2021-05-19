@@ -86,7 +86,8 @@ public class KSU001WebService extends WebService{
 		return data;
 	}
 	
-	@Path("startver5")
+	@POST
+	@Path("startver")
 	public StartKSU001Dto getDataStartScreenVer5(StartKSU001Param param){
 		StartKSU001Dto data = startKSU001Ver5.getData(param);
 		return data;

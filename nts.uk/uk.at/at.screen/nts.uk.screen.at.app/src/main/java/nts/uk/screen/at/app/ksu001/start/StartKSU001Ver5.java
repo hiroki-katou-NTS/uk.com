@@ -5,6 +5,7 @@ package nts.uk.screen.at.app.ksu001.start;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -18,13 +19,12 @@ import nts.uk.ctx.at.function.dom.adapter.annualworkschedule.EmployeeInformation
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrganizationUnit;
 import nts.uk.screen.at.app.ksu001.displayinshift.DisplayInShift;
-import nts.uk.screen.at.app.ksu001.displayinshift.DisplayInShiftParam;
-import nts.uk.screen.at.app.ksu001.displayinshift.DisplayInShiftResult;
+import nts.uk.screen.at.app.ksu001.displayinshift.DisplayInShiftParam_New;
+import nts.uk.screen.at.app.ksu001.displayinshift.DisplayInShiftResult_New;
 import nts.uk.screen.at.app.ksu001.displayinshift.ShiftMasterMapWithWorkStyle;
-import nts.uk.screen.at.app.ksu001.displayinworkinformation.DisplayInWorkInfoParam;
-import nts.uk.screen.at.app.ksu001.displayinworkinformation.DisplayInWorkInfoResult;
+import nts.uk.screen.at.app.ksu001.displayinworkinformation.DisplayInWorkInfoParam_New;
+import nts.uk.screen.at.app.ksu001.displayinworkinformation.DisplayInWorkInfoResult_New;
 import nts.uk.screen.at.app.ksu001.displayinworkinformation.DisplayInWorkInformation;
-import nts.uk.screen.at.app.ksu001.displayinworkinformation.WorkTypeInfomation;
 import nts.uk.screen.at.app.ksu001.eventinformationandpersonal.DataSpecDateAndHolidayDto;
 import nts.uk.screen.at.app.ksu001.eventinformationandpersonal.DateInformationDto;
 import nts.uk.screen.at.app.ksu001.eventinformationandpersonal.DisplayControlPersonalCondDto;
@@ -37,10 +37,8 @@ import nts.uk.screen.at.app.ksu001.extracttargetemployees.ScreenQueryExtractTarg
 import nts.uk.screen.at.app.ksu001.getinfoofInitstartup.DataScreenQueryGetInforDto_New;
 import nts.uk.screen.at.app.ksu001.getinfoofInitstartup.FuncCtrlDisplayFormatDto;
 import nts.uk.screen.at.app.ksu001.getinfoofInitstartup.ScreenQueryGetInforOfInitStartup;
-import nts.uk.screen.at.app.ksu001.getshiftpalette.PageInfo;
-import nts.uk.screen.at.app.ksu001.getshiftpalette.TargetShiftPalette;
-import nts.uk.screen.at.app.ksu001.getworkscheduleshift.ScheduleOfShiftDto;
-import nts.uk.screen.at.app.ksu001.processcommon.WorkScheduleWorkInforDto;
+import nts.uk.screen.at.app.ksu001.getinfoofInitstartup.TargetOrgIdenInforDto;
+import nts.uk.screen.at.app.ksu001.getshiftpalette.ShiftMasterDto;
 
 /**
  * @author laitv 初期起動 
@@ -75,14 +73,9 @@ public class StartKSU001Ver5 {
 		
 		TargetOrgIdenInfor targetOrgIdenInfor = null;
 		if (resultStep1.targetOrgIdenInfor.unit == TargetOrganizationUnit.WORKPLACE.value) {
-			targetOrgIdenInfor = new TargetOrgIdenInfor(TargetOrganizationUnit.WORKPLACE,
-					Optional.of(param.workplaceId == null ? resultStep1.targetOrgIdenInfor.workplaceId : param.workplaceId),
-					Optional.empty());
-		}else{
-			targetOrgIdenInfor = new TargetOrgIdenInfor(
-					TargetOrganizationUnit.WORKPLACE_GROUP,
-					Optional.empty(),
-					Optional.of(param.workplaceGroupId == null ? resultStep1.targetOrgIdenInfor.workplaceGroupId : param.workplaceGroupId));
+			targetOrgIdenInfor = new TargetOrgIdenInfor(TargetOrganizationUnit.WORKPLACE,Optional.of(param.workplaceId == null ? resultStep1.targetOrgIdenInfor.workplaceId : param.workplaceId),Optional.empty());
+		} else {
+			targetOrgIdenInfor = new TargetOrgIdenInfor(TargetOrganizationUnit.WORKPLACE_GROUP, Optional.empty(),Optional.of(param.workplaceGroupId == null ? resultStep1.targetOrgIdenInfor.workplaceGroupId : param.workplaceGroupId));
 		}
 
 		ExtractTargetEmployeesParam param2 = new ExtractTargetEmployeesParam(endDate, targetOrgIdenInfor);
@@ -96,31 +89,26 @@ public class StartKSU001Ver5 {
 		// step 3 end
 		
 		// data tra ve cua step4 || step 5.2
-		List<WorkTypeInfomation> listWorkTypeInfo = new ArrayList<>();
-		List<WorkScheduleWorkInforDto> listWorkScheduleWorkInfor = new ArrayList<>();
+		DisplayInWorkInfoResult_New  resultStep4 = new DisplayInWorkInfoResult_New();
 
 		// data tra ve cua step 5.1
-		List<PageInfo> listPageInfo = new ArrayList<>();
-		TargetShiftPalette targetShiftPalette = null;
-		List<ShiftMasterMapWithWorkStyle> shiftMasterWithWorkStyleLst = new ArrayList<>();
-		// data cua Grid
-		List<ScheduleOfShiftDto> listWorkScheduleShift = new ArrayList<>();
+		DisplayInShiftResult_New resultStep51 = null;
 		
 		// tính toán để xem gọi viewMode nào
 		Integer viewModeSelected = calculateViewModeSelected(param.viewMode, resultStep1.scheFunctionCtrlByWorkplace.useDisplayFormat);
 		
+		// lấy data Grid, shiftPallet, Worktype
 		if (viewModeSelected == FuncCtrlDisplayFormatDto.WorkInfo.value || viewModeSelected == FuncCtrlDisplayFormatDto.AbbreviatedName.value) {
 			// step 4 || 5.2 start
-			DisplayInWorkInfoParam param4 = new DisplayInWorkInfoParam(listSid, startDate, endDate, param.getActualData);
-			DisplayInWorkInfoResult  resultStep4 = new DisplayInWorkInfoResult();
-			resultStep4 = displayInWorkInfo.getDataWorkInfo(param4);
-			listWorkTypeInfo = resultStep4.listWorkTypeInfo;
-			listWorkScheduleWorkInfor = resultStep4.listWorkScheduleWorkInfor;
+			TargetOrgIdenInforDto targetOrgIdenInforDto = new TargetOrgIdenInforDto(targetOrgIdenInfor);
+			DisplayInWorkInfoParam_New param4 = new DisplayInWorkInfoParam_New(listSid, startDate, endDate,
+					param.getActualData, resultStep1.closeDate.getDay(), targetOrgIdenInforDto,
+					param.personTotalSelected, param.workplaceSelected);
+			resultStep4 = displayInWorkInfo.getDataWorkInfo_New(param4);
 			
 		} else if (viewModeSelected == FuncCtrlDisplayFormatDto.Shift.value) {
 			// step 5.1 start
-			// step5.1
-			DisplayInShiftParam param51 = new DisplayInShiftParam();
+			DisplayInShiftParam_New param51 = new DisplayInShiftParam_New();
 			param51.setListSid(listSid);
 			param51.setStartDate(startDate);
 			param51.setEndDate(endDate);
@@ -130,17 +118,15 @@ public class StartKSU001Ver5 {
 			param51.setShiftPaletteWantGet(new ShiftPaletteWantGet(param.shiftPalletUnit, param.pageNumberCom, param.pageNumberOrg));
 			param51.setGetActualData(param.getActualData);
 			param51.setUnit(param.unit);
+			
+			param51.setPersonalCounterOp(param.personTotalSelected);
+			param51.setWorkplaceCounterOp(param.workplaceSelected);
+			param51.setDay(resultStep1.closeDate.getDay());
 
-			DisplayInShiftResult resultStep51 = displayInShift.getData(param51);
-			listPageInfo = resultStep51.listPageInfo;
-			targetShiftPalette = resultStep51.targetShiftPalette;
-			shiftMasterWithWorkStyleLst = resultStep51.shiftMasterWithWorkStyleLst;
-			listWorkScheduleShift = resultStep51.listWorkScheduleShift;
+			resultStep51 = displayInShift.getData_New(param51);
 		}
 		
-		StartKSU001Dto result = convertData(resultStep1, resultStep2, resultStep3,
-				listWorkTypeInfo, listWorkScheduleWorkInfor, 
-				listPageInfo,targetShiftPalette,shiftMasterWithWorkStyleLst,listWorkScheduleShift, viewModeSelected);
+		StartKSU001Dto result = convertData(resultStep1, resultStep2, resultStep3, resultStep4, resultStep51, viewModeSelected);
 		return result;
 	}
 	
@@ -166,10 +152,11 @@ public class StartKSU001Ver5 {
 		return FuncCtrlDisplayFormatDto.WorkInfo.value;
 	}
 	
-	private StartKSU001Dto convertData(DataScreenQueryGetInforDto_New resultStep1,List<EmployeeInformationImport> resultStep2, 
-			DataSpecDateAndHolidayDto resultStep3, List<WorkTypeInfomation> listWorkTypeInfo, 
-			List<WorkScheduleWorkInforDto> listWorkScheduleWorkInfor,
-			List<PageInfo> listPageInfo, TargetShiftPalette targetShiftPalette, List<ShiftMasterMapWithWorkStyle> shiftMasterWithWorkStyleLst, List<ScheduleOfShiftDto> listWorkScheduleShift, Integer viewModeSelected) {
+	private StartKSU001Dto convertData(DataScreenQueryGetInforDto_New resultStep1,
+			List<EmployeeInformationImport> resultStep2, 
+			DataSpecDateAndHolidayDto resultStep3, 
+			DisplayInWorkInfoResult_New  resultStep4,
+			DisplayInShiftResult_New resultStep51, Integer viewModeSelected) {
 		StartKSU001Dto result = new StartKSU001Dto();
 		
 		//	data tra ve cua step1	
@@ -199,13 +186,28 @@ public class StartKSU001Ver5 {
 		result.setDisplayControlPersonalCond(displayControlPersonalCond);
 		
 		//  data tra ve cua step4
-		result.setListWorkTypeInfo(listWorkTypeInfo);
-		result.setListWorkScheduleWorkInfor(listWorkScheduleWorkInfor);
-		// 5.1
-		result.setListPageInfo(listPageInfo);
-		result.setTargetShiftPalette(targetShiftPalette);
+		result.setListWorkTypeInfo(resultStep4.listWorkTypeInfo);
+		result.setListWorkScheduleWorkInfor(resultStep4.workScheduleWorkInforDtos);
+		
+		// data tra ve cua 5.1
+		List<ShiftMasterMapWithWorkStyle> shiftMasterWithWorkStyleLst = new ArrayList<>();
+		result.setListPageInfo(resultStep51.listPageInfo);
+		result.setTargetShiftPalette(resultStep51.targetShiftPalette);
+		result.setListWorkScheduleShift(resultStep51.listWorkScheduleShift);
+		Map<ShiftMasterDto, Integer> mapShiftMasterWithWorkStyle = resultStep51.mapShiftMasterWithWorkStyle;
+		if(!mapShiftMasterWithWorkStyle.isEmpty()){
+			mapShiftMasterWithWorkStyle.forEach((key, value) -> {
+				shiftMasterWithWorkStyleLst.add(new ShiftMasterMapWithWorkStyle(key, value == null ? null : String.valueOf(value)));
+			});
+		}
 		result.setShiftMasterWithWorkStyleLst(shiftMasterWithWorkStyleLst);
-		result.setListWorkScheduleShift(listWorkScheduleShift);
+		if (viewModeSelected == FuncCtrlDisplayFormatDto.Shift.value) {
+			result.setAggreratePersonal(resultStep51.aggreratePersonal);
+			result.setAggrerateWorkplace(resultStep51.aggrerateWorkplace);
+		} else {
+			result.setAggreratePersonal(resultStep4.aggreratePersonal);
+			result.setAggrerateWorkplace(resultStep4.aggrerateWorkplace);
+		}
 		return result;
 	}
 }
