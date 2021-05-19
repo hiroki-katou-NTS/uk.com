@@ -25,10 +25,14 @@ public class KsrdtReflectAppHist extends ContractUkJpaEntity implements Serializ
 	@EmbeddedId
 	public KsrdtReflectAppHistPK pk;
 
+	// 会社ID
+	@Column(name = "CID")
+	public String cid;
+		
 	// 取消区分
 	@Column(name = "DELETE_ATR")
 	public int deleteAtr;
-
+	
 	@Override
 	protected Object getKey() {
 		return pk;

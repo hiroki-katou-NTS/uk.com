@@ -11,7 +11,7 @@ public interface ApplicationReflectHistoryRepo {
 	public List<ApplicationReflectHistory> findAppReflectHistAfterMaxTime(String sid, GeneralDate baseDate,
 			ScheduleRecordClassifi classification, boolean flgRemove, GeneralDateTime reflectionTime);
 
-	public void insertAppReflectHist(ApplicationReflectHistory hist);
+	public void insertAppReflectHist(String cid, ApplicationReflectHistory hist);
 
 	public void updateAppReflectHist(String sid, String appId, GeneralDate baseDate,
 			ScheduleRecordClassifi classification, boolean flagRemove);
