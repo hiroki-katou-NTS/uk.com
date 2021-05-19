@@ -340,7 +340,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 							$("#extable-ksu003").exTable("cellValue", "middle", empId, "endTime2", formatById("Clock_Short_HM", (schedule.endTime2)));
 						else
 							$("#extable-ksu003").exTable("cellValue", "middle", empId, "endTime2", "");
-
+						
+						if(self.checkCalcSum == true)
 						$("#extable-ksu003").exTable("cellValue", "middle", empId, "totalTime", totalTime);
 
 						let cssTotalTime: string = self.dataScreen003A().targetInfor == 1 ? "#extable-ksu003 > .ex-body-middle > table > tbody tr:nth-child" + "(" + (index + 2).toString() + ")" + " > td:nth-child(9)" :
@@ -818,6 +819,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 						if (self.checkCloseKsu003 == true) return;
 						errorDialog({ messageId: error.messageId }).then(() => {
 							self.checkOpenDialog = false;
+							self.checkCalcSum = true;
 							block.clear();
 							let css = model.getCss(index, self.dataScreen003A().targetInfor);
 
@@ -1925,6 +1927,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 						block.invisible();
 						self.checkCalcSum = false;
 						errorDialog({ messageId: "Msg_54" }).then(() => {
+							self.checkCalcSum = true;
 							self.enableSave(false);
 							self.checkOpenDialog = false;
 							block.clear();
@@ -1954,6 +1957,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 						block.invisible();
 						self.checkCalcSum = false;
 						errorDialog({ messageId: "Msg_54" }).then(() => {
+							self.checkCalcSum = true;
 							self.checkOpenDialog = false;
 							self.enableSave(false);
 							block.clear();
@@ -2088,10 +2092,12 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 						messageId: "Msg_1780",
 						supplements: {}
 					});
+					self.checkCalcSum = false;
 					self.checkOpenDialog = false;
 					if (dataMid.worktypeCode == "" && dataCell.originalEvent.detail.columnKey === "worktypeCode") {
 						block.invisible();
 						bundledErrors({ errors: errors }).then(() => {
+							self.checkCalcSum = true;
 							self.enableSave(false);
 							if (dataMid.worktypeName != "" && dataMid.worktimeCode != "") {
 								$(cssWorkType).click();
@@ -3843,7 +3849,9 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 							_.forEach(self.lstErr, x => {
 								errorsInfo = _.uniqBy(x, (y: any) => { return y.message });
 							});
+							self.checkCalcSum = false;
 							bundledErrors({ errors: errorsInfo }).then(() => {
+								self.checkCalcSum = true;
 								self.enableSave(false);
 								block.clear();
 								if (columnKey === "startTime1") {
@@ -4463,7 +4471,9 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 						if (self.checkDragDrop == true) return;
 						if (self.checkCloseKsu003 == true) return;
 						block.invisible();
+						self.checkCalcSum = false;
 						errorDialog({ messageId: "Msg_54" }).then(() => {
+							self.checkCalcSum = true;
 							self.enableSave(false);
 							self.checkOpenDialog = false;
 							block.clear();
@@ -4491,7 +4501,9 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 						if (self.checkDragDrop == true) return;
 						if (self.checkCloseKsu003 == true) return;
 						block.invisible();
+						self.checkCalcSum = false;
 						errorDialog({ messageId: "Msg_54" }).then(() => {
+							self.checkCalcSum = true;
 							self.enableSave(false);
 							self.checkOpenDialog = false;
 							block.clear();
@@ -4625,7 +4637,9 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					if (dataMid.worktypeCode == "" && dataCell.originalEvent.detail.columnKey === "worktypeCode") {
 						block.invisible();
 						self.enableSave(false);
+						self.checkCalcSum = false;
 						bundledErrors({ errors: errors }).then(() => {
+							self.checkCalcSum = true;
 							if (dataMid.worktypeName != "" && dataMid.worktimeCode != "") {
 								$(css.cssWorkType).click();
 								$(css.cssWorkType).click();
