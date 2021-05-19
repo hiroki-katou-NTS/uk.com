@@ -30,13 +30,15 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.subs
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSet;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetRepository;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.TargetWorkTypeByApp;
-import nts.uk.ctx.at.shared.app.find.workcheduleworkrecord.appreflectprocess.appreflectcondition.substituteworkapplication.SubstituteWorkAppReflectDto;
-import nts.uk.ctx.at.shared.app.find.workcheduleworkrecord.appreflectprocess.appreflectcondition.vacationapplication.VacationAppReflectOptionDto;
+import nts.uk.ctx.at.shared.app.find.scherec.appreflectprocess.appreflectcondition.substituteworkapplication.SubstituteWorkAppReflectDto;
+import nts.uk.ctx.at.shared.app.find.scherec.appreflectprocess.appreflectcondition.vacationapplication.VacationAppReflectOptionDto;
 import nts.uk.ctx.at.shared.app.find.worktype.WorkTypeDto;
-import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecDetailPara;
-import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecRemainMngOfInPeriod;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsenceReruitmentMngInPeriodQuery;
+import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.OccurrenceDigClass;
+import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.param.CompenLeaveAggrResult;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.require.RemainNumberTempRequireService;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.AccumulationAbsenceDetail;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.LeaveOccurrDetail;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveComSetRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
@@ -44,8 +46,8 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacation;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacationRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.EmpSubstVacation;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.EmpSubstVacationRepository;
-import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.substituteworkapplication.SubstituteWorkAppReflectRepository;
-import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.vacationapplication.subleaveapp.SubLeaveAppReflectRepository;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.substituteworkapplication.SubstituteWorkAppReflectRepository;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.vacationapplication.subleaveapp.SubLeaveAppReflectRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
@@ -194,12 +196,14 @@ public class HolidayShipmentScreenAFinder {
 		result.setApplicationForHoliday(applicationForHoliday);
 		
 		//[No.506]振休残数を取得する ([No.506]Lấy số ngày nghỉ bù còn lại)
-		AbsRecRemainMngOfInPeriod absRecMngRemain = AbsenceReruitmentMngInPeriodQuery.getAbsRecMngRemain(remainNumberTempRequireService.createRequire(), new CacheCarrier(), lstEmployee.get(0), GeneralDate.today());
-		
+		CompenLeaveAggrResult absRecMngRemain = AbsenceReruitmentMngInPeriodQuery.getAbsRecMngRemain(
+				remainNumberTempRequireService.createRequire(), new CacheCarrier(), lstEmployee.get(0),
+				GeneralDate.today());
+
 		RemainingHolidayInforDto remainingHolidayInfor = new RemainingHolidayInforDto(absRecMngRemain);
 		
 		//一番近い期限日を取得する - get ngày kì hạn gần nhất
-		Optional<GeneralDate> closestDueDate = this.getClosestDeadline(absRecMngRemain.getLstAbsRecMng());
+		Optional<GeneralDate> closestDueDate = this.getClosestDeadline(absRecMngRemain.getVacationDetails().getLstAcctAbsenDetail());
 		if(closestDueDate.isPresent()) {
 			remainingHolidayInfor.setClosestDueDate(closestDueDate.get().toString());
 		}
@@ -219,7 +223,7 @@ public class HolidayShipmentScreenAFinder {
 		if(compensatoryLeaveComSetting == null) {
 			result.setSubstituteManagement(ManageDistinct.NO.value);
 		}else {
-			result.setSubstituteManagement(compensatoryLeaveComSetting.getIsManaged().value);
+			result.setSubstituteManagement(compensatoryLeaveComSetting.getLinkingManagementATR().value);
 		}
 		
 		return result;
@@ -404,12 +408,15 @@ public class HolidayShipmentScreenAFinder {
 	}
 	
 	//一番近い期限日を取得する
-	public Optional<GeneralDate> getClosestDeadline(List<AbsRecDetailPara> lstAbsRecMng) {
+	public Optional<GeneralDate> getClosestDeadline(List<AccumulationAbsenceDetail> lstAbsRecMng) {
 		GeneralDate result = GeneralDate.max();
-		for (AbsRecDetailPara absRecDetailPara : lstAbsRecMng) {
-			if(absRecDetailPara.getUnUseOfRec().isPresent() 
-					&& absRecDetailPara.getUnUseOfRec().get().getExpirationDate().before(result)) {
-				result = absRecDetailPara.getUnUseOfRec().get().getExpirationDate();
+		for (AccumulationAbsenceDetail absRecDetailPara : lstAbsRecMng) {
+			if(absRecDetailPara.getOccurrentClass() == OccurrenceDigClass.DIGESTION) {
+				continue;
+			}
+			LeaveOccurrDetail detail = (LeaveOccurrDetail)absRecDetailPara;
+			if(detail.getDeadline().before(result)) {
+				result = detail.getDeadline();
 			}
 		}
 		return result.after(GeneralDate.today().addMonths(3)) ? Optional.empty() : Optional.of(result);

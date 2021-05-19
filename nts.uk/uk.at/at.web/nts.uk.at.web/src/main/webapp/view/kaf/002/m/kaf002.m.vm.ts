@@ -212,6 +212,16 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
             }
             const index = s[0].index;
             self.isLinkList[index] = false;
+			_.forEach(s, (item: GridItem) => {
+				const start = (Number)(item.startTimeRequest());
+				const end = (Number)(item.endTimeRequest());
+				if (_.isNaN(start) || start >= 7200 || start <= -1200) {
+					item.startTimeRequest(null);
+				}
+				if (_.isNaN(end) || end >= 7200 || end <= -1200) {
+					item.endTimeRequest(null);
+				} 
+			})
             self.loadGrid(ko.toJS(self.nameGrids)[index], s, s[0].typeStamp);
             self.binding();
             self.disableControl();                
@@ -392,8 +402,38 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
                         });
                     }
 
+					_.forEach(self.dataSource[index], i => {
+                        if (ko.toJS(i.flagEnable)) {
+                            i.flagObservable.subscribe((value) => {
+								if (value) {
+									const list = _.filter(self.dataSource[index], itemDetail => {
+										return !itemDetail.flagObservable() && itemDetail.flagEnable();
+									});	
+									if (index == items[0].index && !item() && !list.length) {
+										item(true);
+									}								
+								} else {
+									const list = _.filter(self.dataSource[index], itemDetail => {
+										return itemDetail.flagObservable() && itemDetail.flagEnable();
+									});
+									if (index == items[0].index && item() && !list.length) {
+										item(false);
+									}
+									
+								}
+								
+							})
+                        }
+                    });
+
                 });
+
+
             }
+
+	
+
+
 //
             let headerFlagContent = '';
             let dataSource;
@@ -475,7 +515,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
               columns: [
                   { headerText: 'ID', key: 'id', dataType: 'number', width: '50px', ntsControl: 'Label' },
                   { headerText: '', key: 'text1', dataType: 'string', width: '120px' },
-                  { headerText: self.$i18n('KAF002_22'), key: 'typeReason', dataType: 'string', width: '137px', ntsControl: 'Combobox' },
+                  { headerText: self.$i18n('KAF002_24'), key: 'typeReason', dataType: 'string', width: '137px', ntsControl: 'Combobox' },
                   { headerText: self.$i18n('KAF002_22'), key: 'startTime', dataType: 'string', width: '140px' },
                   { headerText: self.$i18n('KAF002_23'), key: 'endTime', dataType: 'string', width: '140px'},
                   { headerText: headerFlagContent, key: 'flag', dataType: 'string', width: '100px'}
@@ -567,8 +607,10 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
         flagObservable: KnockoutObservable<boolean> = ko.observable( false );
         flagEnable: KnockoutObservable<boolean> = ko.observable( true );
         index: number;
+		nameStart: string;
+		nameEnd: string;
 
-        typeStamp: STAMPTYPE
+        typeStamp: STAMPTYPE;
         constructor( dataObject: TimePlaceOutput, typeStamp: STAMPTYPE ) {
             const self = this;
             self.typeStamp = typeStamp;
@@ -584,23 +626,42 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
             let end = _.isNull(self.endTimeActual) ? '--:--' : parseTime.create(self.endTimeActual).shortText;
             let idGetList = typeStamp == STAMPTYPE.EXTRAORDINARY ? self.id - 3 : self.id - 1;
             let param = 'dataSource[' + String(self.index) +']';
+			const frameNo = dataObject.frameNo;
             if ( typeStamp == STAMPTYPE.ATTENDENCE ) {
-                this.text1 = nts.uk.resource.getText( 'KAF002_65', [dataObject.frameNo] );
+				if (frameNo == 1) {
+	                this.text1 = nts.uk.resource.getText( 'KAF002_103', [dataObject.frameNo]);	
+					this.nameStart = nts.uk.resource.getText('KAF002_101', [dataObject.frameNo]);
+					this.nameEnd = nts.uk.resource.getText('KAF002_102', [dataObject.frameNo]);				
+				} else {
+					this.text1 = nts.uk.resource.getText( 'KAF002_65', [dataObject.frameNo]);
+					this.nameStart = nts.uk.resource.getText('KAF002_87', [dataObject.frameNo]);
+					this.nameEnd = nts.uk.resource.getText('KAF002_88', [dataObject.frameNo]);		
+				}
                 param = param + 1;
             } else if ( typeStamp == STAMPTYPE.GOOUT_RETURNING ) {
                 this.text1 = nts.uk.resource.getText( 'KAF002_67', [dataObject.frameNo] );
+				this.nameStart = nts.uk.resource.getText('KAF002_91', [dataObject.frameNo]);
+				this.nameEnd = nts.uk.resource.getText('KAF002_92', [dataObject.frameNo]);
                 param = param + 3;
             } else if ( typeStamp == STAMPTYPE.BREAK ) {
                 this.text1 = nts.uk.resource.getText( 'KAF002_75', [dataObject.frameNo] );
+				this.nameStart = nts.uk.resource.getText('KAF002_93', [dataObject.frameNo]);
+				this.nameEnd = nts.uk.resource.getText('KAF002_94', [dataObject.frameNo]);
                 param = param + 4;
             } else if ( typeStamp == STAMPTYPE.PARENT ) {
                 this.text1 = nts.uk.resource.getText( 'KAF002_68', [dataObject.frameNo] );
+				this.nameStart = nts.uk.resource.getText('KAF002_95', [dataObject.frameNo]);
+				this.nameEnd = nts.uk.resource.getText('KAF002_96', [dataObject.frameNo]);
                 param = param + 5;
             } else if ( typeStamp == STAMPTYPE.NURSE ) {
                 this.text1 = nts.uk.resource.getText( 'KAF002_69', [dataObject.frameNo] );
+				this.nameStart = nts.uk.resource.getText('KAF002_97', [dataObject.frameNo]);
+				this.nameEnd = nts.uk.resource.getText('KAF002_98', [dataObject.frameNo]);
                 param = param + 6;
             } else if ( typeStamp == STAMPTYPE.EXTRAORDINARY ) {
                 this.text1 = nts.uk.resource.getText( 'KAF002_66', [dataObject.frameNo - 2] );
+				this.nameStart = nts.uk.resource.getText('KAF002_89', [dataObject.frameNo -2]);
+				this.nameEnd = nts.uk.resource.getText('KAF002_90', [dataObject.frameNo -2]);
                 param = param + 2;
             }
             this.startTime = '<div style="display: block; margin: 0px 5px 5px 5px">'
@@ -608,7 +669,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
                 + '<div align="center">'
                 + '<input style="width: 90px; text-align: center" data-name="Time Editor" data-bind="'
                 + 'style:{\'background-color\': ' + param + '[' + idGetList + '].flagEnable() ? (' + param + '[' + idGetList + '].startTimeActual ? (' + param + '[' + idGetList + '].flagObservable() ? \'#b1b1b1\' : \'\') : \'#ffc0cb\') : \'\'},'
-                + 'ntsTimeEditor: {value: ' + param + '[' + idGetList + '].startTimeRequest, enable: !' + param + '[' + idGetList + '].flagObservable() , constraint: \'TimeWithDayAttr\', inputFormat: \'time\', mode: \'time\', required: false}" />'
+                + 'ntsTimeEditor: {value: ' + param + '[' + idGetList + '].startTimeRequest, enable: !' + param + '[' + idGetList + '].flagObservable() , constraint: \'TimeWithDayAttr\', inputFormat: \'time\', mode: \'time\', required: false, name: \''+ self.nameStart +'\'}" />'
                 + '</div>'
                 + '</div>';
             this.endTime = '<div style="display: block; margin: 0px 5px 5px 5px">'
@@ -616,7 +677,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
                 + '<div align="center">'
                 + '<input style="width: 90px; text-align: center" data-name="Time Editor" data-bind="'
                 + 'style:{\'background-color\': ' + param + '[' + idGetList + '].flagEnable() ? (' + param + '[' + idGetList + '].endTimeActual ? (' + param + '[' + idGetList + '].flagObservable() ? \'#b1b1b1\' : \'\') : \'#ffc0cb\') : \'\'},'
-                + 'ntsTimeEditor: {value: ' + param + '[' + idGetList + '].endTimeRequest, enable: !' + param + '[' + idGetList + '].flagObservable() , constraint: \'TimeWithDayAttr\', inputFormat: \'time\', mode: \'time\', required: false}" />'
+                + 'ntsTimeEditor: {value: ' + param + '[' + idGetList + '].endTimeRequest, enable: !' + param + '[' + idGetList + '].flagObservable() , constraint: \'TimeWithDayAttr\', inputFormat: \'time\', mode: \'time\', required: false, name: \''+ self.nameEnd +'\'}" />'
                 + '</div>'
                 + '</div>';
 
@@ -637,7 +698,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
                 + '<div align="center">'
                 + '<input style="width: 90px; text-align: center" data-name="Time Editor" data-bind="'
                 + 'style:{\'background-color\': ' + param + '[' + idGetList + '].flagEnable() ? (' + param + '[' + idGetList + '].startTimeActual ? (' + param + '[' + idGetList + '].flagObservable() ? \'#b1b1b1\' : \'\') : \'#ffc0cb\') : \'\'},'
-                + 'ntsTimeWithDayEditor: {value: ' + param + '[' + idGetList + '].startTimeRequest, enable: !' + param + '[' + idGetList + '].flagObservable() , constraint: \'TimeWithDayAttr\', inputFormat: \'time\', mode: \'time\', required: false}" />'
+                + 'ntsTimeWithDayEditor: {value: ' + param + '[' + idGetList + '].startTimeRequest, enable: !' + param + '[' + idGetList + '].flagObservable() , constraint: \'TimeWithDayAttr\', inputFormat: \'time\', mode: \'time\', required: false, name: \''+ self.nameStart +'\'}" />'
                 + '</div>'
                 + '</div>';
             this.endTime = '<div class="endTime" style="display: block; margin: 0px 5px 5px 5px">'
@@ -645,7 +706,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
                 + '<div align="center">'
                 + '<input style="width: 90px; text-align: center" data-name="Time Editor" data-bind="'
                 + 'style:{\'background-color\': ' + param + '[' + idGetList + '].flagEnable() ? (' + param + '[' + idGetList + '].endTimeActual ? (' + param + '[' + idGetList + '].flagObservable() ? \'#b1b1b1\' : \'\') : \'#ffc0cb\') : \'\'},'
-                + 'ntsTimeWithDayEditor: {value: ' + param + '[' + idGetList + '].endTimeRequest, enable: !' + param + '[' + idGetList + '].flagObservable() , constraint: \'TimeWithDayAttr\', inputFormat: \'time\', mode: \'time\', required: false}" />'
+                + 'ntsTimeWithDayEditor: {value: ' + param + '[' + idGetList + '].endTimeRequest, enable: !' + param + '[' + idGetList + '].flagObservable() , constraint: \'TimeWithDayAttr\', inputFormat: \'time\', mode: \'time\', required: false, name: \''+ self.nameEnd +'\'}" />'
                 + '</div>'
                 + '</div>';
 
@@ -659,13 +720,13 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
             this.startTime = '<div class="startTime" style="display: block; margin: 0px 5px 5px 5px">'
                 + '<div align="center" style="padding-top: 10px; padding-bottom: 5px">'
                 + '<input style="width: 90px; text-align: center" data-name="Time Editor" data-bind="'
-                + 'ntsTimeWithDayEditor: {value: ' + param + '[' + idGetList + '].startTimeRequest , constraint: \'TimeWithDayAttr\', inputFormat: \'time\', mode: \'time\', required: false}" />'
+                + 'ntsTimeWithDayEditor: {value: ' + param + '[' + idGetList + '].startTimeRequest , constraint: \'TimeWithDayAttr\', inputFormat: \'time\', mode: \'time\', required: false, name: \''+ self.nameStart +'\'}" />'
                 + '</div>'
                 + '</div>';
             this.endTime = '<div class="endTime" style="display: block; margin: 0px 5px 5px 5px">'
                 + '<div align="center" style="padding-top: 10px; padding-bottom: 5px">'
                 + '<input style="width: 90px; text-align: center" data-name="Time Editor" data-bind="'
-                + 'ntsTimeWithDayEditor: {value: ' + param + '[' + idGetList + '].endTimeRequest , constraint: \'TimeWithDayAttr\', inputFormat: \'time\', mode: \'time\', required: false}" />'
+                + 'ntsTimeWithDayEditor: {value: ' + param + '[' + idGetList + '].endTimeRequest , constraint: \'TimeWithDayAttr\', inputFormat: \'time\', mode: \'time\', required: false, name: \''+ self.nameEnd +'\'}" />'
                 + '</div>'
                 + '</div>';
         }

@@ -10,6 +10,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -26,6 +27,7 @@ import nts.gul.collection.CollectionUtil;
 import nts.gul.reflection.ReflectionUtil;
 import nts.gul.reflection.ReflectionUtil.Condition;
 import nts.gul.text.StringUtil;
+import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtilRes;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemRoot;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemValue;
@@ -35,6 +37,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.u
 
 public class AttendanceItemUtil implements ItemConst {
 
+	private static final String SEPERATE_QUOTE = Pattern.quote(DEFAULT_SEPERATOR);
 	private static final AttendanceItemUtilCacheHolder CACHE_HOLDER = AttendanceItemUtilCacheHolder.cacheNow();
 
 	public static <T extends ConvertibleAttendanceItem> List<ItemValue> toItemValues(T attendanceItems) {
@@ -45,7 +48,7 @@ public class AttendanceItemUtil implements ItemConst {
 	public static <T extends ConvertibleAttendanceItem> List<ItemValue> toItemValues(T attendanceItems,
 			AttendanceItemType type) {
 
-		return toItemValues(attendanceItems, Collections.emptyList());
+		return toItemValues(attendanceItems, Collections.emptyList(), type);
 	}
 
 	public static <T extends ConvertibleAttendanceItem> List<ItemValue> toItemValues(T attendanceItems,
@@ -62,7 +65,7 @@ public class AttendanceItemUtil implements ItemConst {
 	public static <T extends ConvertibleAttendanceItem> Map<T, List<ItemValue>> toItemValues(List<T> attendanceItems,
 			AttendanceItemType type) {
 
-		return toItemValues(attendanceItems, Collections.emptyList());
+		return toItemValues(attendanceItems, Collections.emptyList(), type);
 	}
 
 	public static <T extends ConvertibleAttendanceItem> Map<T, List<ItemValue>> toItemValues(List<T> attendanceItems,
@@ -86,57 +89,59 @@ public class AttendanceItemUtil implements ItemConst {
 	public static <T extends ConvertibleAttendanceItem> Map<T, List<ItemValue>> toItemValues(List<T> attendanceItems,
 			Collection<Integer> itemIds, AttendanceItemType type) {
 
-		if (CollectionUtil.isEmpty(attendanceItems)) {
-			return new HashMap<>();
+		Map<T, List<ItemValue>> result = new HashMap<>();
+		
+		for (T at : attendanceItems) {
+			result.put(at,  AttendanceItemUtilRes.collect(at, itemIds, type));
 		}
-
-		AttendanceItemRoot root = attendanceItems.get(0).getClass().getAnnotation(AttendanceItemRoot.class);
-
-		if (root == null) {
-			return new HashMap<>();
-		}
-
-		int layout = root.isContainer() ? DEFAULT_IDX : DEFAULT_NEXT_IDX;
-
-		return getItemValues(attendanceItems, layout, root.isContainer() ? EMPTY_STRING : root.rootName(),
-				getItemMap(type, itemIds, null, layout));
+		
+		return result;
+		
+//		if (attendanceItems.size() < 10) {
+//			return attendanceItems.stream().collect(Collectors.toMap(c -> c, c -> AttendanceItemUtilRes.collect(c, itemIds, type)));
+//		}
+//		
+//		return attendanceItems.parallelStream().collect(Collectors.toMap(c -> c, c -> AttendanceItemUtilRes.collect(c, itemIds, type)));
+//		if (CollectionUtil.isEmpty(attendanceItems)) {
+//			return new HashMap<>();
+//		}
+//
+//		AttendanceItemRoot root = attendanceItems.get(0).getClass().getAnnotation(AttendanceItemRoot.class);
+//
+//		if (root == null) {
+//			return new HashMap<>();
+//		}
+//
+//		int layout = root.isContainer() ? DEFAULT_IDX : DEFAULT_NEXT_IDX;
+//
+//		return getItemValues(attendanceItems, layout, root.isContainer() ? EMPTY_STRING : root.rootName(),
+//				getItemMap(type, itemIds, null, layout));
 	}
 
-	public static <T extends ConvertibleAttendanceItem> T fromItemValues(Class<T> classType,
-			Collection<ItemValue> attendanceItems) {
-
-		return fromItemValues(classType, attendanceItems, AttendanceItemType.DAILY_ITEM);
-	}
-
-	public static <T extends ConvertibleAttendanceItem> T fromItemValues(Class<T> classType,
-			Collection<ItemValue> attendanceItems, AttendanceItemType type) {
-
-		return fromItemValues(ReflectionUtil.newInstance(classType), attendanceItems);
-	}
-
-	public static <T> T fromItemValues(T attendanceItems, Collection<ItemValue> itemValues) {
+	public static <T extends ConvertibleAttendanceItem> T fromItemValues(T attendanceItems, Collection<ItemValue> itemValues) {
 
 		return fromItemValues(attendanceItems, itemValues, AttendanceItemType.DAILY_ITEM);
 	}
 
-	public static <T> T fromItemValues(T attendanceItems, Collection<ItemValue> itemValues, AttendanceItemType type) {
+	public static <T extends ConvertibleAttendanceItem> T fromItemValues(T attendanceItems, Collection<ItemValue> itemValues, AttendanceItemType type) {
 
-		if (CollectionUtil.isEmpty(itemValues)) {
-			return attendanceItems;
-		}
-
-		AttendanceItemRoot root = attendanceItems.getClass().getAnnotation(AttendanceItemRoot.class);
-
-		if (root == null) {
-			return attendanceItems;
-		}
-
-		int layout = root.isContainer() ? DEFAULT_IDX : DEFAULT_NEXT_IDX;
-
-		Map<Integer, ItemValue> itemMap = itemValues.stream().collect(Collectors.toMap(c -> c.itemId(), c -> c));
-
-		return fromItemValues(attendanceItems, layout, root.isContainer() ? EMPTY_STRING : root.rootName(), DEFAULT_IDX,
-				false, getItemMap(type, itemMap.keySet(), c -> itemMap.get(c.itemId()).withPath(c.path()), layout));
+		return AttendanceItemUtilRes.merge(attendanceItems, itemValues, type);
+//		if (CollectionUtil.isEmpty(itemValues)) {
+//			return attendanceItems;
+//		}
+//
+//		AttendanceItemRoot root = attendanceItems.getClass().getAnnotation(AttendanceItemRoot.class);
+//
+//		if (root == null) {
+//			return attendanceItems;
+//		}
+//
+//		int layout = root.isContainer() ? DEFAULT_IDX : DEFAULT_NEXT_IDX;
+//
+//		Map<Integer, ItemValue> itemMap = itemValues.stream().collect(Collectors.toMap(c -> c.itemId(), c -> c));
+//
+//		return fromItemValues(attendanceItems, layout, root.isContainer() ? EMPTY_STRING : root.rootName(), DEFAULT_IDX,
+//				false, getItemMap(type, itemMap.keySet(), c -> itemMap.get(c.itemId()).withPath(c.path()), layout));
 	}
 
 	private static <T> Map<T, List<ItemValue>> getItemValues(List<T> attendanceItems, int layoutIdx, String path,
@@ -469,6 +474,7 @@ public class AttendanceItemUtil implements ItemConst {
 				(m, v) -> m.put(v.getKey(), getItemWith(v.getValue(), layout, targetIdx, className)), HashMap::putAll);
 	}
 
+	@SuppressWarnings("unchecked")
 	private static <T> Field getIdxField(AttendanceItemLayout layout, Class<T> className, boolean listNoIdx) {
 
 		return CACHE_HOLDER.getAndCache(StringUtils.join("IDX2FIELD_", className.hashCode()), () -> {
@@ -928,18 +934,21 @@ public class AttendanceItemUtil implements ItemConst {
 
 	}
 
+	@SuppressWarnings("unchecked")
 	private static AttendanceItemLayout getLayoutAnnotation(Field field) {
 
 		return CACHE_HOLDER.getAndCache(StringUtils.join("LAYOUT_ANNOTATION_", field.hashCode()),
 				() -> field.getAnnotation(AttendanceItemLayout.class));
 	}
 
+	@SuppressWarnings("unchecked")
 	private static AttendanceItemValue getItemValueAnnotation(Field field) {
 
 		return CACHE_HOLDER.getAndCache(StringUtils.join("VALUE_ANNOTATION_", field.hashCode()),
 				() -> field.getAnnotation(AttendanceItemValue.class));
 	}
 
+	@SuppressWarnings("unchecked")
 	private static AttendanceItemRoot getRootAnnotation(Field field) {
 
 		return CACHE_HOLDER.getAndCache(StringUtils.join("ROOT_ANNOTATION_", field.hashCode()),
@@ -1001,6 +1010,7 @@ public class AttendanceItemUtil implements ItemConst {
 		return StringUtils.join(currentLayout, DEFAULT_LAYOUT_SEPERATOR, fieldLayout);
 	}
 
+	@SuppressWarnings("unchecked")
 	private static <T> String getExCondition(String exConditionParam, T object, AttendanceItemLayout layout) {
 
 		String exCondition = exConditionParam == null ? EMPTY_STRING : exConditionParam;
@@ -1027,6 +1037,7 @@ public class AttendanceItemUtil implements ItemConst {
 				c -> getExCondition(exCondition.get(c.getKey()), c.getValue(), layout)));
 	}
 
+	@SuppressWarnings("unchecked")
 	private static <T> String getExConditionField(T object, AttendanceItemLayout layout) {
 		return CACHE_HOLDER.getAndCache(StringUtils.join("EXFIELD_", object.getClass().hashCode()), () -> {
 			if (!layout.needCheckIDWithMethod().isEmpty()) {
@@ -1041,7 +1052,9 @@ public class AttendanceItemUtil implements ItemConst {
 
 		DAILY_ITEM(DEFAULT_IDX, DAILY),
 
-		MONTHLY_ITEM(DEFAULT_NEXT_IDX, MONTHLY);
+		MONTHLY_ITEM(DEFAULT_NEXT_IDX, MONTHLY),
+
+		ANY_PERIOD_ITEM(DEFAULT_NEXT_IDX + 1, ANY_PERIOD);
 
 		public final int value;
 

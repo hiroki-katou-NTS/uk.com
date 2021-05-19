@@ -18,10 +18,44 @@ import { KSUS01BComponent } from '../b/index';
     components: {
         'worktype': KDL002Component,
         'ksus01b': KSUS01BComponent
+    },
+    methods: {
+        resize() {
+            let vh = window.innerHeight * 0.01;
+            document.documentElement.style.setProperty('--vh', `${vh}px`);
+        }
+    },
+    created() {
+        window.addEventListener('resize', this.resize);
+    },
+    beforeDestroy() {
+        document.body.style.removeProperty('overflowY');
+        document.body.style.removeProperty('position');
+        document.body.style.removeProperty('top');
+        document.body.style.removeProperty('width');
+    },
+    watch: {
+        isDetailShow() {
+            let scrollPos = 0;
+            if (this.isDetailShow) {
+                // scrollPos = window.pageYOffset;
+                document.body.style.overflowY = 'hidden';
+                document.body.style.position = 'fixed';
+                document.body.style.top = `-${scrollPos}px`;
+                document.body.style.width = '100%';
+
+                return;
+            }
+            scrollPos = window.pageYOffset;
+            document.body.style.removeProperty('overflowY');
+            document.body.style.removeProperty('position');
+            document.body.style.removeProperty('top');
+            document.body.style.removeProperty('width');
+        }
     }
 })
 export class KSUS01AComponent extends Vue {
-    public title: string = 'KSUS01A';
+    public title: string = 'ksus01a';
 
     public yearMonthOldVal: string = moment().format('YYYYMM');
     public yearMonth: string = moment().format('YYYYMM');
@@ -110,7 +144,11 @@ export class KSUS01AComponent extends Vue {
     }
 
     public mounted() {
-        
+        let self = this;
+        let containerFluid = document.getElementsByClassName('container-fluid');
+        if (containerFluid.length > 0) {
+            containerFluid[0].className = 'container-fluid px-3'; //#115384
+        }
     }
 
     public initData() {
@@ -124,6 +162,9 @@ export class KSUS01AComponent extends Vue {
             self.endDatePublicationPeriod = data.endDatePublicationPeriod;
             self.publicOpAtr = data.publicOpAtr;
             self.workDesiredOpAtr = data.workDesiredOpAtr;
+
+            self.yearMonth = moment(self.startDate, 'YYYY/MM/DD').format('YYYYMM');
+            self.yearMonthOldVal = moment(self.startDate, 'YYYY/MM/DD').format('YYYYMM');
 
             self.getInforOnTargetPeriod();
         }).catch((error: any) => {
@@ -381,7 +422,7 @@ export class KSUS01AComponent extends Vue {
         self.$mask('show');
         self.$http.post('at', API.getDateDetail, command).then((res: any) => {
             let data: InforOnTargetDateDto = res.data;
-            self.detailCell.displayData.otherStaffs = data.businessNames.join(', ');
+            self.detailCell.displayData.otherStaffs = data.businessNames.join('、');
             self.detailCell.displayData.workDesireMemo = data.memo;
             self.detailCell.displayData.workScheduleTimeZone = data.listAttendanceDto;
             self.detailCell.displayData.listWorkDesire = [];
@@ -494,10 +535,16 @@ export class KSUS01AComponent extends Vue {
         const vm = this;
         switch (error.messageId) {
             case 'Msg_2049':
-                vm.$modal.error({ messageId: error.messageId, messageParams: error.parameterIds });
+                vm.$modal.error({ messageId: error.messageId, messageParams: error.parameterIds }).then(() => {
+                    vm.$mask('hide');
+                    vm.$goto('ccg008a');
+                });
                 break;
             default:
-                vm.$modal.error({ messageId: error.messageId, messageParams: error.parameterIds });
+                vm.$modal.error({ messageId: error.messageId, messageParams: error.parameterIds }).then(() => {
+                    vm.$mask('hide');
+                    vm.$goto('ccg008a');
+                });
                 break;
         }
     }

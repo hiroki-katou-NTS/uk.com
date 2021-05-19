@@ -9,12 +9,13 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.request.app.find.application.WorkInformationForApplicationDto;
 import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.TimeZoneUseDto;
 import nts.uk.ctx.at.request.app.find.setting.company.applicationapprovalsetting.applicationsetting.DisplayReasonDto;
 import nts.uk.ctx.at.request.app.find.setting.company.applicationapprovalsetting.vacationapplicationsetting.HolidayApplicationSettingDto;
 import nts.uk.ctx.at.request.dom.application.appabsence.service.output.AppAbsenceStartInfoOutput;
-import nts.uk.ctx.at.shared.app.command.workcheduleworkrecord.appreflectprocess.appreflectcondition.vacationapplication.leaveapplication.HolidayApplicationReflectCommand;
+import nts.uk.ctx.at.shared.app.command.scherec.appreflectprocess.appreflectcondition.vacationapplication.leaveapplication.HolidayApplicationReflectCommand;
 import nts.uk.ctx.at.shared.app.find.remainingnumber.paymana.PayoutSubofHDManagementDto;
 import nts.uk.ctx.at.shared.app.find.remainingnumber.subhdmana.dto.LeaveComDayOffManaDto;
 import nts.uk.ctx.at.shared.app.find.worktype.WorkTypeDto;
@@ -85,6 +86,11 @@ public class AppAbsenceStartInfoDto {
 	public SpecAbsenceDispInfoDto specAbsenceDispInfo;
 	
 	/**
+	 * 申請中の勤務情報
+	 */
+	public WorkInformationForApplicationDto workInfomationForApplication;
+	
+	/**
 	 * 選択中の勤務種類
 	 */
 	public String selectedWorkTypeCD;
@@ -135,6 +141,7 @@ public class AppAbsenceStartInfoDto {
 				CollectionUtil.isEmpty(workTimeLst) ? Collections.emptyList() : workTimeLst.stream().map(x -> x.toDomain()).collect(Collectors.toList()), 
 				workTypeNotRegister, 
 				specAbsenceDispInfo == null ? Optional.empty() : Optional.of(specAbsenceDispInfo.toDomain()), 
+				Optional.ofNullable(workInfomationForApplication == null ? null : workInfomationForApplication.toDomain()),
 				Optional.ofNullable(selectedWorkTypeCD), 
 				Optional.ofNullable(selectedWorkTimeCD),
 				requiredVacationTime == null ? Optional.empty() : Optional.of(new AttendanceTime(requiredVacationTime)));

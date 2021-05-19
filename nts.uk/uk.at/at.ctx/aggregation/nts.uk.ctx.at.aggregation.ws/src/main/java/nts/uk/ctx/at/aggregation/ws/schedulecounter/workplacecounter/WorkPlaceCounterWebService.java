@@ -12,7 +12,7 @@ import nts.uk.ctx.at.aggregation.app.command.schedulecounter.workplacecounter.Re
 import nts.uk.ctx.at.aggregation.app.command.schedulecounter.workplacecounter.RegisterWorkplaceCounterCommandHandler;
 import nts.uk.ctx.at.aggregation.app.find.schedulecounter.wkpcounter.WorkplaceCounterCategoryDto;
 import nts.uk.ctx.at.aggregation.app.find.schedulecounter.wkpcounter.WorkplaceCounterFinder;
-import nts.uk.ctx.at.aggregation.dom.schedulecounter.WorkplaceCounterCategory;
+import nts.uk.ctx.at.aggregation.dom.schedulecounter.tally.WorkplaceCounterCategory;
 
 /**
  * KML002 Screen B

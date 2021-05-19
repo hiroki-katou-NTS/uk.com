@@ -25,6 +25,7 @@ import nts.uk.ctx.at.function.dom.adapter.employmentinfoterminal.infoterminal.ap
 /**
  * All petitions request.
  * 
+ * NRLの申請をオブジェクトに変換する
  * @author manhnd
  */
 @RequestScoped
@@ -41,7 +42,7 @@ public class AllPetitionsRequest extends NRLRequest<Frame> {
 	 * function.app.nrl.request.ResourceContext)
 	 */
 	@Override
-	public void sketch(ResourceContext<Frame> context) {
+	public void sketch(String empInfoTerCode, ResourceContext<Frame> context) {
 
 		String payload = context.getEntity().pickItem(Element.PAYLOAD);
 		int length = payload.length();
@@ -103,11 +104,11 @@ public class AllPetitionsRequest extends NRLRequest<Frame> {
 			}
 		}
 
-		String nrlNo = context.getEntity().pickItem(Element.NRL_NO);
+		String contractCode =  context.getEntity().pickItem(Element.CONTRACT_CODE);
 		for (int i = 0; i < q; i++) {
 			Record record = exchange.getRecord(i);
 
-			Optional<AtomTask> result = adapter.converData(nrlNo.trim(), "000000000000",
+			Optional<AtomTask> result = adapter.converData(empInfoTerCode, contractCode,
 					createAppReception(record, type));
 			if (result.isPresent())
 				result.get().run();

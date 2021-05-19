@@ -13,7 +13,7 @@
 	<com:EnumScript>
 		nts.uk.ctx.at.function.dom.alarm.checkcondition.fourweekfourdayoff.FourW4DCheckCond
 	</com:EnumScript>
-	<div id="daily-content" data-bind="visible: category() == 5">
+	<div id="daily-content" data-bind="visible: category() == 5 || category() == 0 || category() == 3 || category() == 4 || category() == 6">
 		<div id="div_group_function">
 		    <table>
 		       <tr>
@@ -93,7 +93,7 @@
 		</div>
 		<div class="valign-center control-group">
 			<div
-				data-bind="ntsRadioButton: { checked: schedule4WeekCheckCondition, option: list4weekClassEnum()[1], name: '#[KAL003_150]', optionValue: 'value', optionText: 'name', group: 'D4W4', enable : false}"></div>
+				data-bind="ntsRadioButton: { checked: schedule4WeekCheckCondition, option: list4weekClassEnum()[1], name: '#[KAL003_150]', optionValue: 'value', optionText: 'name', group: 'D4W4' }"></div>
 			<label class="label4w4d">#{i18n.getText('KAL003_152')}</label>
 		</div>
 	</div>

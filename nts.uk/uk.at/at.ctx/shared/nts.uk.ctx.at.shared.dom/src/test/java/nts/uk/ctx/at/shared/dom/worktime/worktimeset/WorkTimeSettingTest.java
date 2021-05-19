@@ -11,6 +11,10 @@ import mockit.Verifications;
 import mockit.integration.junit4.JMockit;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.uk.ctx.at.shared.dom.common.color.ColorCode;
+import nts.uk.ctx.at.shared.dom.workingcondition.ManageAtr;
+import nts.uk.ctx.at.shared.dom.workingcondition.NotUseAtr;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.worktime.common.AbolishAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeForm;
@@ -125,16 +129,32 @@ public class WorkTimeSettingTest {
 
 	}
 
-
 	protected static class Helper {
 
 		public static WorkTimeSetting getDummyWorkSetting(String code, WorkTimeDailyAtr workForm, WorkTimeMethodSet method) {
 			return new WorkTimeSetting("0000001-001", new WorkTimeCode(code), new WorkTimeDivision(workForm, method)
-					, AbolishAtr.NOT_ABOLISH, new ColorCode("#ffffff")
-					, new WorkTimeDisplayName(new WorkTimeName("表示名#"), new WorkTimeAbName("略名"), new WorkTimeSymbol("記"))
+					, AbolishAtr.NOT_ABOLISH
+					, new WorkTimeDisplayName(new WorkTimeName("表示名#"), new WorkTimeAbName("略名"))
 					, new Memo(""), new WorkTimeNote(""));
 		}
-
+		
+		public static WorkingConditionItem getDummyWorkConditionItem(WorkingSystem workingSystem){
+			return new WorkingConditionItem(
+					"historyId",
+					ManageAtr.NOTUSE,
+					null,
+					null,
+					NotUseAtr.NOTUSE,
+					NotUseAtr.NOTUSE,
+					"employeeId",
+					NotUseAtr.NOTUSE,
+					null,
+					workingSystem,
+					null,
+					null,
+					0,
+					null,
+					null);
+		}
 	}
-
 }

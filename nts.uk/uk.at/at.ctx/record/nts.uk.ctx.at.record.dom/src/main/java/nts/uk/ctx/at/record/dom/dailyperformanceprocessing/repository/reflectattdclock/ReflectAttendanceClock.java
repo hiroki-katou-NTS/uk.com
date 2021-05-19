@@ -16,6 +16,8 @@ import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
+import nts.uk.ctx.at.shared.dom.calculationsetting.StampReflectionManagement;
+import nts.uk.ctx.at.shared.dom.calculationsetting.repository.StampReflectionManagementRepository;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.schedule.WorkingDayCategory;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
@@ -25,7 +27,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancet
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.WorkTimes;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeActualStamp;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.EngravingMethod;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.PriorityTimeReflectAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.ReasonTimeChange;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.TimePriority;
@@ -33,7 +34,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.time
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkTimeInformation;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemService;
 import nts.uk.ctx.at.shared.dom.worktime.algorithm.getcommonset.GetCommonSet;
@@ -43,6 +43,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.StampPiorityAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneStampSet;
+import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
@@ -65,7 +66,7 @@ public class ReflectAttendanceClock {
 	private ReflectWorkInformationDomainService reflectWorkInformationDomainService;
 	
 	@Inject
-	private TimePriorityRepository timePriorityRepository;
+	private StampReflectionManagementRepository timePriorityRepository;
 	
 	@Inject 
 	private RecordDomRequireService requireService;
@@ -196,7 +197,9 @@ public class ReflectAttendanceClock {
 		if(actualStampAtr == ActualStampAtr.STAMP ) {
 			ReasonTimeChange reasonTimeChangeNew = new ReasonTimeChange(TimeChangeMeans.REAL_STAMP,Optional.of(EngravingMethod.TIME_RECORD_ID_INPUT));
 			//時刻を変更してもいいか判断する
-			boolean check = this.isCanChangeTime(cid, workStamp, reasonTimeChangeNew);
+			boolean check = workStamp
+					.map(x -> x.isCanChangeTime(new RequireImpl(), cid, reasonTimeChangeNew.getTimeChangeMeans()))
+					.orElse(false);
 			if(!check) {
 				return ReflectStampOuput.NOT_REFLECT;
 			}
@@ -284,8 +287,15 @@ public class ReflectAttendanceClock {
 			if (workTimezoneCommonSet.isPresent()) {
 				return workTimezoneCommonSet.get().getStampSet();
 			}
+			throw new RuntimeException("Not exist 就業時間帯の打刻設定1");
 		}
-		throw new RuntimeException("Not exist 就業時間帯の打刻設定"); 
+		Optional<WorkTimezoneCommonSet> workTimezoneCommonSet = GetCommonSet.workTimezoneCommonSet(
+				requireService.createRequire(), cid, workTimeCode.get().v());
+		if (workTimezoneCommonSet.isPresent()) {
+			return workTimezoneCommonSet.get().getStampSet();
+		}
+			
+		throw new RuntimeException("Not exist 就業時間帯の打刻設定2"); 
 	}
 	
 	private PrioritySetting getPrioritySetting(WorkTimezoneStampSet stampSet, StampPiorityAtr stampPiorityAtr) {
@@ -506,55 +516,7 @@ public class ReflectAttendanceClock {
 //		return null;
 //	}
 	
-	/**
-	 * 時刻を変更してもいいか判断する (new_2020)
-	 */
-	public boolean isCanChangeTime(String cid,Optional<WorkStamp> workStamp,ReasonTimeChange reasonTimeChangeNew) {
-		//ドメインモデル「時刻の優先順位」を取得する
-		Optional<TimePriority> optTimePriority =  timePriorityRepository.getByCid(cid);
-		if(!workStamp.isPresent()) {
-			return false;
-		}
-		//時刻変更手段と反映時刻優先もとに優先順位をチェックする
-		TimeChangeMeans timeChangeMeansNew = reasonTimeChangeNew.getTimeChangeMeans();
-		TimeChangeMeans timeChangeMeansOld = workStamp.get().getTimeDay().getReasonTimeChange().getTimeChangeMeans();
-		//true 1	
-		if (timeChangeMeansNew == TimeChangeMeans.HAND_CORRECTION_OTHERS
-				|| timeChangeMeansNew == TimeChangeMeans.HAND_CORRECTION_PERSON
-				|| timeChangeMeansNew == TimeChangeMeans.APPLICATION) {
-			return true;
-		}
-		//true 2,true4
-		if((timeChangeMeansNew == TimeChangeMeans.REAL_STAMP || timeChangeMeansNew == TimeChangeMeans.SPR_COOPERATION )
-			&& 	(timeChangeMeansOld == TimeChangeMeans.REAL_STAMP || timeChangeMeansOld == TimeChangeMeans.SPR_COOPERATION
-					|| timeChangeMeansOld == TimeChangeMeans.DIRECT_BOUNCE || timeChangeMeansOld == TimeChangeMeans.AUTOMATIC_SET)) {
-			return true;
-		}
-		//true 3
-		if((timeChangeMeansNew == TimeChangeMeans.REAL_STAMP || timeChangeMeansNew == TimeChangeMeans.SPR_COOPERATION )
-				&& 	timeChangeMeansOld == TimeChangeMeans.DIRECT_BOUNCE_APPLICATION
-				&& 	(optTimePriority.isPresent() && optTimePriority.get().getPriorityTimeReflectAtr() == PriorityTimeReflectAtr.ACTUAL_TIME)) {
-			return true;
-		}
-		//true 6
-		if(timeChangeMeansNew == TimeChangeMeans.DIRECT_BOUNCE_APPLICATION
-				&& (timeChangeMeansOld == TimeChangeMeans.DIRECT_BOUNCE_APPLICATION || timeChangeMeansOld == TimeChangeMeans.DIRECT_BOUNCE
-					||timeChangeMeansOld == TimeChangeMeans.AUTOMATIC_SET)) {
-			return true;
-		}
-		//true 5
-		if(timeChangeMeansNew == TimeChangeMeans.DIRECT_BOUNCE_APPLICATION
-				&& (timeChangeMeansOld == TimeChangeMeans.REAL_STAMP || timeChangeMeansOld == TimeChangeMeans.SPR_COOPERATION)
-				&& (optTimePriority.isPresent() && optTimePriority.get().getPriorityTimeReflectAtr() == PriorityTimeReflectAtr.APP_TIME)) {
-			return true;
-		}
-		//true 7
-		if((timeChangeMeansNew == TimeChangeMeans.DIRECT_BOUNCE || timeChangeMeansNew == TimeChangeMeans.AUTOMATIC_SET )
-				&& 	(timeChangeMeansOld == TimeChangeMeans.DIRECT_BOUNCE || timeChangeMeansOld == TimeChangeMeans.AUTOMATIC_SET )) {
-			return true;
-		}
-		return false;
-	}
+	
 	/**
 	 * 打刻反映回数を更新 (new_2020)
 	 */
@@ -566,5 +528,15 @@ public class ReflectAttendanceClock {
 					timeActualStamp.getNumberOfReflectionStamp() == null ? 1
 							: timeActualStamp.getNumberOfReflectionStamp() + 1);
 		}
+	}
+	
+	public class RequireImpl implements WorkStamp.Require{
+
+		@Override
+		public Optional<StampReflectionManagement> findByCid(String companyId) {
+			return timePriorityRepository.findByCid(companyId);
+		}
+		
+		
 	}
 }

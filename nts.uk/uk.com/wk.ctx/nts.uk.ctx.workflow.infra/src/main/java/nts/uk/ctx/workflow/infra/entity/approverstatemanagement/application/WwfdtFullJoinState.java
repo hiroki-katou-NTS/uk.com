@@ -1,6 +1,5 @@
 package nts.uk.ctx.workflow.infra.entity.approverstatemanagement.application;
 
-import java.sql.ResultSet;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -35,8 +34,8 @@ public class WwfdtFullJoinState {
 	private GeneralDate appDate;
 	private Integer approverInListOrder;
 	
-	public static List<WwfdtFullJoinState> fromResultSet(ResultSet rs) {
-		return new NtsResultSet(rs).getList(x -> {
+	public static List<WwfdtFullJoinState> fromResultSet(NtsResultSet rs) {
+		return rs.getList(x -> {
 			return new WwfdtFullJoinState(
 					x.getString("ROOT_STATE_ID"), 
 					x.getString("EMPLOYEE_ID"), 

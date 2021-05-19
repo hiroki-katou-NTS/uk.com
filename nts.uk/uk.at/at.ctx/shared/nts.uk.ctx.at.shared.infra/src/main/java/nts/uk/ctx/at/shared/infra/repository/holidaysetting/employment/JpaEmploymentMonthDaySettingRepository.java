@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.shared.infra.repository.holidaysetting.employment;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -153,5 +154,18 @@ public class JpaEmploymentMonthDaySettingRepository extends JpaRepository implem
 					.collect(Collectors.toList()); 
 		}
 		return new ArrayList<>();
+	}
+
+	@Override
+	public List<EmploymentMonthDaySetting> findByCompany(CompanyId companyId) {
+		List<KshmtHdpubMonthdaysEmp> result = this.findBy(companyId, null, null, null);
+		
+		// Check exist
+		if (result.isEmpty()) {
+			return new ArrayList<>();
+		}
+		
+		return result.stream().map(x -> new EmploymentMonthDaySetting(new JpaEmploymentMonthDaySettingGetMemento(Arrays.asList(x))))
+				.collect(Collectors.toList());
 	}
 }

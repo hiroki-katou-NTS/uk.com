@@ -38,7 +38,7 @@ public class KTG001QueryProcessor_ver04 {
 	 * 起動する
 	 * 「承認すべきデータ」ウィジェットを起動する
 	 */
-	public ApprovedDataWidgetStartDto getApprovedDataWidgetStart(Integer yearMonth, int closureId) {
+	public ApprovedDataWidgetStartDto getApprovedDataWidgetStart(Integer yearMonth, Integer closureId) {
 		ApprovedDataWidgetStartDto approvedDataWidgetStartDto = new ApprovedDataWidgetStartDto();
 		String companyId = AppContexts.user().companyId();
 		

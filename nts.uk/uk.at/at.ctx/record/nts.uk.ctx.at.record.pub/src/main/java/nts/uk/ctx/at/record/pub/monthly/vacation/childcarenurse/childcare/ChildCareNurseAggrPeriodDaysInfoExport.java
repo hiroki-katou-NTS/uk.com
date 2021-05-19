@@ -6,7 +6,7 @@ import lombok.Getter;
 import nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare.ChildCareNurseAggrPeriodDaysInfo;
 import nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare.ChildCareNurseAggrPeriodInfo;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.UsedTimes;
-import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.ChildCareNurseUsedNumber;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.ChildCareNurseUsedNumber;
 
 /**
  * 集計期間の休暇情報
@@ -19,15 +19,12 @@ public class ChildCareNurseAggrPeriodDaysInfoExport {
 	/** 子の看護休暇情報（翌年） */
 	private Optional<ChildCareNurseAggrPeriodInfoExport> nextYear;
 
-
 	/**
 	 * コンストラクタ
 	 */
 	public ChildCareNurseAggrPeriodDaysInfoExport(){
-
 		this.thisYear = new ChildCareNurseAggrPeriodInfoExport();
 		this.nextYear =  Optional.empty();
-
 	}
 	/**
 	 * ファクトリー
@@ -45,17 +42,21 @@ public class ChildCareNurseAggrPeriodDaysInfoExport {
 		return domain;
 	}
 
+	/**
+	 * ドメインへ変換
+	 * @return
+	 */
 	public ChildCareNurseAggrPeriodDaysInfo toDomain() {
 		return ChildCareNurseAggrPeriodDaysInfo.of(
 				ChildCareNurseAggrPeriodInfo.of(
 						new UsedTimes(thisYear.getUsedCount()),
 						new UsedTimes(thisYear.getUsedDays()),
-						thisYear.getAggrPeriodUsedNumber()
+						thisYear.getAggrPeriodUsedNumber().toDomain()
 				),
 				nextYear.map(i -> ChildCareNurseAggrPeriodInfo.of(
 						new UsedTimes(i.getUsedCount()),
 						new UsedTimes(i.getUsedDays()),
-						i.getAggrPeriodUsedNumber()
+						i.getAggrPeriodUsedNumber().toDomain()
 				))
 		);
 	}

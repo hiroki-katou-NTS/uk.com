@@ -10,7 +10,6 @@ import nts.uk.ctx.at.function.app.nrl.data.ItemSequence.MapItem;
 import nts.uk.ctx.at.function.app.nrl.data.Sequential;
 import nts.uk.ctx.at.function.app.nrl.exceptions.ErrorCode;
 import nts.uk.ctx.at.function.app.nrl.repository.Terminal;
-import nts.uk.ctx.at.function.app.nrl.repository.TerminalRepository;
 import nts.uk.ctx.at.function.app.nrl.response.MeanCarryable;
 import nts.uk.ctx.at.function.app.nrl.response.NRLResponse;
 
@@ -36,11 +35,6 @@ public class ResourceContext<T extends MeanCarryable> extends RequestContext<T> 
 	private Terminal terminal;
 	
 	/**
-	 * Terminal repository 
-	 */
-	private TerminalRepository terminalRepository;
-	
-	/**
 	 * Command 
 	 */
 	private Command command;
@@ -55,11 +49,10 @@ public class ResourceContext<T extends MeanCarryable> extends RequestContext<T> 
 	 */
 	private NRLResponse response;
 	
-	public ResourceContext(T entity, Terminal terminal, TerminalRepository repo, 
+	public ResourceContext(T entity, Terminal terminal, 
 			Command command, Sequential<? extends MeanCarryable> sequence) {
 		this.entity = entity;
 		this.terminal = terminal;
-		this.terminalRepository = repo;
 		this.command = command;
 		this.sequence = sequence;
 	}
@@ -101,7 +94,7 @@ public class ResourceContext<T extends MeanCarryable> extends RequestContext<T> 
 	 * @param error
 	 */
 	public void responseNoAccept(ErrorCode error) {
-		response = NRLResponse.noAccept(terminal.getNrlNo(), terminal.getMacAddress()).build()
+		response = NRLResponse.noAccept(terminal.getNrlNo(), terminal.getMacAddress(), terminal.getContractCode()).build()
 				.addPayload(getType(), error.value);
 	}
 
@@ -109,7 +102,7 @@ public class ResourceContext<T extends MeanCarryable> extends RequestContext<T> 
 	 * Response accept.
 	 */
 	public void responseAccept() {
-		response = NRLResponse.ok(terminal.getNrlNo(), terminal.getMacAddress()).build().pushBCC(getType());
+		response = NRLResponse.ok(terminal.getNrlNo(), terminal.getMacAddress(), terminal.getContractCode()).build().pushBCC(getType());
 	}
 
 	/**

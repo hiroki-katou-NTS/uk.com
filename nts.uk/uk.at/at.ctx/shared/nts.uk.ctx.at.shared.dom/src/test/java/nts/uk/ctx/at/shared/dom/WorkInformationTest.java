@@ -21,7 +21,6 @@ import nts.uk.ctx.at.shared.dom.WorkInformation.Require;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo;
 import nts.uk.ctx.at.shared.dom.workrule.BreakTimeZone;
 import nts.uk.ctx.at.shared.dom.workrule.ErrorStatusWorkInfo;
 import nts.uk.ctx.at.shared.dom.worktime.ChangeableWorkingTimeZone;
@@ -35,6 +34,7 @@ import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
 import nts.uk.ctx.at.shared.dom.worktime.predset.UseSetting;
+import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktype.AttendanceDayAttr;
 import nts.uk.ctx.at.shared.dom.worktype.DeprecateClassification;
@@ -818,7 +818,7 @@ public class WorkInformationTest {
 		// 出勤日区分
 		val atdDayAtr = AttendanceDayAttr.HALF_TIME_PM;
 		// 変更可能な勤務時間帯
-		val cwtzPerNoList = Arrays.asList(ChangeableWorkingTimeZonePerNo.createAsUnchangeable(new WorkNo(1).toAttendance()
+		val cwtzPerNoList = Arrays.asList(ChangeableWorkingTimeZonePerNo.createAsUnchangeable(new WorkNo(1)
 									, new TimeSpanForCalc( TimeWithDayAttr.hourMinute( 8, 0 ), TimeWithDayAttr.hourMinute( 17, 0 ) )
 							));
 		val chgWrkTz = ChangeableWorkingTimeZone.createWithoutSeparationOfHalfDay(cwtzPerNoList, cwtzPerNoList);
@@ -873,9 +873,9 @@ public class WorkInformationTest {
 		val atdDayAtr = AttendanceDayAttr.HOLIDAY_WORK;
 		// 勤務NOごとの変更可能な勤務時間帯リスト
 		val cwtzPerNoList = Arrays.asList(
-				ChangeableWorkingTimeZonePerNo.createAsStartEqualsEnd(new WorkNo(1).toAttendance()
+				ChangeableWorkingTimeZonePerNo.createAsStartEqualsEnd(new WorkNo(1)
 						, new TimeSpanForCalc( TimeWithDayAttr.hourMinute(  8,  0 ), TimeWithDayAttr.hourMinute( 17,  0 ) ))
-			,	ChangeableWorkingTimeZonePerNo.createAsStartEqualsEnd(new WorkNo(2).toAttendance()
+			,	ChangeableWorkingTimeZonePerNo.createAsStartEqualsEnd(new WorkNo(2)
 						, new TimeSpanForCalc( TimeWithDayAttr.hourMinute( 18, 30 ), TimeWithDayAttr.hourMinute( 25, 30 ) ))
 		);
 		val chgWrkTz = ChangeableWorkingTimeZone.createWithoutSeparationOfHalfDay(cwtzPerNoList, cwtzPerNoList);
@@ -919,7 +919,7 @@ public class WorkInformationTest {
 		// Pattern: 指定された勤務NOがリストに存在する
 		{
 			// Execute
-			val result = instance.containsOnChangeableWorkingTime(require, checkTarget, cwtzPerNoList.get(1).getWorkNo().toTemporary(), time);
+			val result = instance.containsOnChangeableWorkingTime(require, checkTarget, cwtzPerNoList.get(1).getWorkNo(), time);
 
 			// Assertion
 			assertThat( result ).isEqualTo( cwtzPerNoList.get(1).contains(time, checkTarget) );

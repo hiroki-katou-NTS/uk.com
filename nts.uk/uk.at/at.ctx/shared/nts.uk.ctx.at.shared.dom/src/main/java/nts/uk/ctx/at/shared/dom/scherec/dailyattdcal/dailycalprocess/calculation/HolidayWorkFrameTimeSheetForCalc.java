@@ -19,6 +19,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.Time
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.holidayworktime.HolidayWorkFrameTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.holidayworktime.HolidayWorkFrameTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.paytime.SpecificDateAttrOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.MidNightTimeSheetForCalcList;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.DeductionAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.TimeSheetOfDeductionItem;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.someitems.BonusPayTimeSheetForCalc;
@@ -69,7 +70,7 @@ public class HolidayWorkFrameTimeSheetForCalc extends ActualWorkingTimeSheet{
 	public HolidayWorkFrameTimeSheetForCalc(TimeSpanForDailyCalc timeSheet, TimeRoundingSetting rounding,
 			List<TimeSheetOfDeductionItem> recorddeductionTimeSheets,
 			List<TimeSheetOfDeductionItem> deductionTimeSheets, List<BonusPayTimeSheetForCalc> bonusPayTimeSheet,
-			List<SpecBonusPayTimeSheetForCalc> specifiedBonusPayTimeSheet, Optional<MidNightTimeSheetForCalc> midNighttimeSheet,
+			List<SpecBonusPayTimeSheetForCalc> specifiedBonusPayTimeSheet, MidNightTimeSheetForCalcList midNighttimeSheet,
 			HolidayWorkFrameTime frameTime, boolean treatAsTimeSpentAtWork, EmTimezoneNo holidayWorkTimeSheetNo,
 			Finally<StaturoryAtrOfHolidayWork> statutoryAtr) {
 		super(timeSheet, rounding, recorddeductionTimeSheets, deductionTimeSheets, bonusPayTimeSheet, specifiedBonusPayTimeSheet,
@@ -105,7 +106,7 @@ public class HolidayWorkFrameTimeSheetForCalc extends ActualWorkingTimeSheet{
 				deductionTimeSheets,
 				new ArrayList<>(),
 				new ArrayList<>(),
-				Optional.empty());
+				MidNightTimeSheetForCalcList.createEmpty());
 		this.frameTime = frameTime;
 		this.TreatAsTimeSpentAtWork = false;
 		this.HolidayWorkTimeSheetNo = holidayWorkTimeSheetNo;
@@ -208,13 +209,14 @@ public class HolidayWorkFrameTimeSheetForCalc extends ActualWorkingTimeSheet{
 	/**
 	 * 計算処理
 	 * 休出時間の計算
-	 * @param forceCalcTime 強制時間区分
-	 * @param autoCalcSet 
+	 * @param autoCalcSet 自動計算設定
+	 * @return 休出時間
 	 */
-	public AttendanceTime correctCalculationTime(AutoCalSetting autoCalcSet,DeductionAtr dedAtr) {
-		return this.calcTotalTime();
+	public TimeDivergenceWithCalculation correctCalculationTime(AutoCalSetting autoCalcSet) {
+		AttendanceTime time = autoCalcSet.getCalAtr().isCalculateEmbossing() ? this.calcTotalTime() : AttendanceTime.ZERO;
+		AttendanceTime calcTime = this.calcTotalTime();
+		return TimeDivergenceWithCalculation.createTimeWithCalculation(time, calcTime);
 	}
-
 	
 //	/**
 //	 *　指定条件の控除項目だけの控除時間
@@ -327,7 +329,7 @@ public class HolidayWorkFrameTimeSheetForCalc extends ActualWorkingTimeSheet{
 				holidayStartEnd.getStart(),
 				endTime,
 				processingTimezone.getFlowTimeSetting().getRounding(),
-				timeSheetOfDeductionItems,
+				timeSheetOfDeductionItems.stream().map(t -> t.clone()).collect(Collectors.toList()),
 				frame,
 				new EmTimezoneNo(processingTimezone.getWorktimeNo()),
 				Finally.of(StaturoryAtrOfHolidayWork.deicisionAtrByHolidayAtr(todayWorkType.getHolidayAtr().get())));

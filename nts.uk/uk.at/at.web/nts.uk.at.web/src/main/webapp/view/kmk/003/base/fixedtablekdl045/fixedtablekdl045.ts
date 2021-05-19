@@ -214,7 +214,9 @@ module nts.fixedtablekdl045 {
                     //$("#kkkk *").prop('disabled',true);
                     $('#kkkk').find('button').attr('disabled', 'disabled');
                 } else{
-                   $('#btn-add').removeAttr("disabled");
+                    if(self.isEnaleAddButton()){
+                        $('#btn-add').removeAttr("disabled");
+                    }
                 }   
             });
             
@@ -791,14 +793,14 @@ class FixTableBindingHandler implements KnockoutBindingHandler {
                         var error = false;
                         for (let i = 0; i < source.length - 1; i++) {
                             if (source[i].range1().breakFrameNo < workNo) {
-                                if (source[i].range1().endTime >= currentRowData.range1().startTime) {
+                                if (source[i].range1().endTime > currentRowData.range1().startTime && source[i].range1().startTime < currentRowData.range1().startTime) {
                                     error = true;
                                     break;
                                 }
                             }
                         }
                         if (error) {
-                          //  current.ntsError('set', {messageId:'Msg_515',messageParams:[nts.uk.resource.getText('KDL045_26')]});
+                             current.ntsError('set', {messageId:'Msg_515',messageParams:[nts.uk.resource.getText('KDL045_26')]});
                         } else {
                             current.ntsError('clear');
                         }

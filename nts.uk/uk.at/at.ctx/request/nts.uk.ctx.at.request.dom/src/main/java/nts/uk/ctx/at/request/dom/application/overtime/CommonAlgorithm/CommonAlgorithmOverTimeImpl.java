@@ -10,6 +10,9 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.Time36AgreementError;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.Time36AgreementErrorAtr;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.Time36ErrorInforList;
 import org.apache.commons.lang3.StringUtils;
 
 import nts.arc.enums.EnumAdaptor;
@@ -67,11 +70,8 @@ import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.deviationtime.deviationtimeframe.DivergenceTimeRoot;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.deviationtime.deviationtimeframe.DivergenceTimeRootRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.deviationtime.deviationtimeframe.DivergenceTimeUseSet;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.Time36AgreementError;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.Time36AgreementErrorAtr;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.Time36ErrorInforList;
-import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.overtimeholidaywork.AppReflectOtHdWork;
-import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.overtimeholidaywork.AppReflectOtHdWorkRepository;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.AppReflectOtHdWork;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.AppReflectOtHdWorkRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
@@ -782,7 +782,17 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 		if (overStateOutput != null) {
 			if (overStateOutput.getIsExistApp()) {
 				// メッセージ（Msg_1508）をOUTPUT「確認メッセージリスト」に追加する
-				output.add(new ConfirmMsgOutput("Msg_1508", Collections.emptyList()));
+				output.add(new ConfirmMsgOutput(
+										"Msg_2019",
+										displayInfoOverTime
+											.getAppDispInfoStartup()
+										    .getAppDispInfoNoDateOutput()
+										    .getEmployeeInfoLst()
+										    .stream()
+										    .filter(x -> x.getSid().equals(appOverTime.getApplication().getEmployeeID()))
+										    .map(x -> x.getBussinessName())
+										    .collect(Collectors.toList()))
+										    );
 			} else { // false
 				// 取得した「事前申請・実績の超過状態．事前超過」をチェックする
 				if (overStateOutput.getAdvanceExcess().isAdvanceExcess()) {
@@ -797,7 +807,7 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 											   .getAppDispInfoNoDateOutput()
 											   .getEmployeeInfoLst()
 											   .stream()
-											   .filter(x -> x.equals(appOverTime.getApplication().getEmployeeID()))
+											   .filter(x -> x.getSid().equals(appOverTime.getApplication().getEmployeeID()))
 											   .findFirst()
 											   .map(x -> x.getBussinessName())
 											   .orElse(""));
@@ -907,7 +917,7 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 				   .getAppDispInfoNoDateOutput()
 				   .getEmployeeInfoLst()
 				   .stream()
-				   .filter(x -> x.equals(sid))
+				   .filter(x -> x.getSid().equals(sid))
 				   .findFirst()
 				   .map(x -> x.getBussinessName())
 				   .orElse(""));
@@ -1032,11 +1042,13 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 		commonOvertimeholiday.calculateButtonCheck(
 				displayInfoOverTime.getCalculatedFlag(),
 				EnumAdaptor.valueOf(displayInfoOverTime.getInfoNoBaseDate().getOverTimeAppSet().getApplicationDetailSetting().getTimeCalUse().value, UseAtr.class));
-		// 勤務種類、就業時間帯のマスタ未登録チェックする
-		detailBeforeUpdate.displayWorkingHourCheck(
-				companyId,
-				appOverTime.getWorkInfoOp().flatMap(x -> Optional.ofNullable(x.getWorkTypeCode())).map(x -> x.v()).orElse(null),
-				appOverTime.getWorkInfoOp().flatMap(x -> Optional.ofNullable(x.getWorkTimeCode())).map(x -> x.v()).orElse(null));
+		if (!displayInfoOverTime.getWorkInfo().isPresent()) {
+			// 勤務種類、就業時間帯のマスタ未登録チェックする
+			detailBeforeUpdate.displayWorkingHourCheck(
+					companyId,
+					appOverTime.getWorkInfoOp().flatMap(x -> Optional.ofNullable(x.getWorkTypeCode())).map(x -> x.v()).orElse(null),
+					appOverTime.getWorkInfoOp().flatMap(x -> Optional.ofNullable(x.getWorkTimeCode())).map(x -> x.v()).orElse(null));			
+		}
 		// 申請する残業時間をチェックする
 		this.checkOverTime(appOverTime.getApplicationTime());
 		// 事前申請・実績超過チェックする
@@ -1111,6 +1123,12 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 				displayInfoOverTime.getInfoBaseDateOutput().getWorktypes(),
 				appDispInfoStartup,
 				displayInfoOverTime.getInfoNoBaseDate().getOverTimeAppSet());
+		if (CollectionUtil.isEmpty(displayInfoOverTime.getInfoBaseDateOutput().getWorktypes())) {
+			throw new BusinessException("Msg_1568");
+		}
+		if (CollectionUtil.isEmpty(displayInfoOverTime.getAppDispInfoStartup().getAppDispInfoWithDateOutput().getOpWorkTimeLst().orElse(Collections.emptyList()))) {
+			throw new BusinessException("Msg_1567");
+		}
 		
 		displayInfoOverTime.setInfoWithDateApplicationOp(Optional.ofNullable(infoWithDateApplication));
 		displayInfoOverTime.setCalculatedFlag(CalculatedFlag.UNCALCULATED);

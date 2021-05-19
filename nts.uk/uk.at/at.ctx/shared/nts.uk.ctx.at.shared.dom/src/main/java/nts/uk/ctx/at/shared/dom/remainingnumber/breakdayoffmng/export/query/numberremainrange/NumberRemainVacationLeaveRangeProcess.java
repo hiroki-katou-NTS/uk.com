@@ -7,23 +7,18 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.Getter;
-import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.EmploymentHistShareImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyAdapter;
-import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyDto;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.DigestionAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.BreakDayOffRemainMngRefactParam;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.SubstituteHolidayAggrResult;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakDayOffMngRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimDayOffMng;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemainRepository;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.ComDayOffManaDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.CompensatoryDayOffManaData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveComDayOffManaRepository;
@@ -34,8 +29,6 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveC
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveEmSetRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveEmSetting;
-import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 
@@ -58,9 +51,6 @@ public class NumberRemainVacationLeaveRangeProcess {
 	private CompensLeaveComSetRepository compensLeaveComSetRepository;
 
 	@Inject
-	private InterimRemainRepository interimRemainRepository;
-
-	@Inject
 	private InterimBreakDayOffMngRepository interimBreakDayOffMngRepository;
 
 	@Inject
@@ -77,16 +67,18 @@ public class NumberRemainVacationLeaveRangeProcess {
 
 	public SubstituteHolidayAggrResult getBreakDayOffMngInPeriod(BreakDayOffRemainMngRefactParam inputParam) {
 
-		RequireImpl requireImpl = new RequireImpl.RequireImplBuilder(comDayOffManaDataRepository,
+		return NumberRemainVacationLeaveRangeQuery.getBreakDayOffMngInPeriod(createRequire(), inputParam);
+	}
+
+	public RequireImpl createRequire() {
+		return new RequireImpl.RequireImplBuilder(comDayOffManaDataRepository,
 				leaveManaDataRepository, shareEmploymentAdapter, compensLeaveEmSetRepository,
-				compensLeaveComSetRepository).interimRemainRepo(interimRemainRepository)
+				compensLeaveComSetRepository)
 						.interimBreakDayOffMngRepo(interimBreakDayOffMngRepository).companyAdapter(companyAdapter)
 						.closureEmploymentRepo(closureEmploymentRepo).closureRepo(closureRepo)
 						.leaveComDayOffManaRepository(leaveComDayOffManaRepository).build();
-
-		return NumberRemainVacationLeaveRangeQuery.getBreakDayOffMngInPeriod(requireImpl, inputParam);
 	}
-
+	
 	@Getter
 	public static class RequireImpl implements NumberRemainVacationLeaveRangeQuery.Require {
 
@@ -99,9 +91,7 @@ public class NumberRemainVacationLeaveRangeProcess {
 		private final CompensLeaveEmSetRepository compensLeaveEmSetRepository;
 
 		private final CompensLeaveComSetRepository compensLeaveComSetRepository;
-
-		private final InterimRemainRepository interimRemainRepository;
-
+		
 		private final InterimBreakDayOffMngRepository interimBreakDayOffMngRepository;
 
 		private final CompanyAdapter companyAdapter;
@@ -118,7 +108,6 @@ public class NumberRemainVacationLeaveRangeProcess {
 			this.shareEmploymentAdapter = builder.shareEmploymentAdapter;
 			this.compensLeaveEmSetRepository = builder.compensLeaveEmSetRepository;
 			this.compensLeaveComSetRepository = builder.compensLeaveComSetRepository;
-			this.interimRemainRepository = builder.interimRemainRepository;
 			this.interimBreakDayOffMngRepository = builder.interimBreakDayOffMngRepository;
 			this.companyAdapter = builder.companyAdapter;
 			this.closureEmploymentRepo = builder.closureEmploymentRepo;
@@ -155,11 +144,6 @@ public class NumberRemainVacationLeaveRangeProcess {
 		}
 
 		@Override
-		public List<InterimRemain> getRemainBySidPriod(String employeeId, DatePeriod dateData, RemainType remainType) {
-			return interimRemainRepository.getRemainBySidPriod(employeeId, dateData, remainType);
-		}
-
-		@Override
 		public List<InterimDayOffMng> getDayOffBySidPeriod(String sid, DatePeriod period) {
 			return interimBreakDayOffMngRepository.getDayOffBySidPeriod(sid, period);
 		}
@@ -169,30 +153,10 @@ public class NumberRemainVacationLeaveRangeProcess {
 			return interimBreakDayOffMngRepository.getBySidPeriod(sid, period);
 		}
 
-		@Override
-		public CompanyDto getFirstMonth(String companyId) {
-			return companyAdapter.getFirstMonth(companyId);
-		}
 
 		@Override
 		public List<EmploymentHistShareImport> findByEmployeeIdOrderByStartDate(String employeeId) {
 			return shareEmploymentAdapter.findByEmployeeIdOrderByStartDate(employeeId);
-		}
-
-		@Override
-		public Optional<BsEmploymentHistoryImport> employmentHistory(CacheCarrier cacheCarrier, String companyId,
-				String employeeId, GeneralDate baseDate) {
-			return shareEmploymentAdapter.findEmploymentHistoryRequire(cacheCarrier, companyId, employeeId, baseDate);
-		}
-
-		@Override
-		public Optional<ClosureEmployment> employmentClosure(String companyID, String employmentCD) {
-			return closureEmploymentRepo.findByEmploymentCD(companyID, employmentCD);
-		}
-
-		@Override
-		public Optional<Closure> closure(String companyId, int closureId) {
-			return closureRepo.findById(companyId, closureId);
 		}
 
 		public static class RequireImplBuilder {
@@ -206,8 +170,6 @@ public class NumberRemainVacationLeaveRangeProcess {
 			public CompensLeaveEmSetRepository compensLeaveEmSetRepository;
 
 			public CompensLeaveComSetRepository compensLeaveComSetRepository;
-
-			public InterimRemainRepository interimRemainRepository;
 
 			public InterimBreakDayOffMngRepository interimBreakDayOffMngRepository;
 
@@ -228,11 +190,6 @@ public class NumberRemainVacationLeaveRangeProcess {
 				this.shareEmploymentAdapter = shareEmploymentAdapter;
 				this.compensLeaveEmSetRepository = compensLeaveEmSetRepository;
 				this.compensLeaveComSetRepository = compensLeaveComSetRepository;
-			}
-
-			public RequireImplBuilder interimRemainRepo(InterimRemainRepository interimRemainRepository) {
-				this.interimRemainRepository = interimRemainRepository;
-				return this;
 			}
 
 			public RequireImplBuilder interimBreakDayOffMngRepo(

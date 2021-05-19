@@ -11,17 +11,43 @@ module nts.uk.com.view.cmm048.e {
 
     mounted() {
       const vm = this;
+
+      //check HTTPs and Browser version
+      const isAbleCapBtn = vm.isHttps() && vm.isChromeOrEdge();
+
+      //add button take photo in ntsImageEditor
       $("#upload").ready(() => {
+
         $(".comfirm-checkbox").remove();
         $(".edit-action-container").hide();
-        $(`<button data-bind="click: openDialogE2"> ${vm.$i18n('CMM048_107')} </button>`)
-          .attr('class', 'upload-webcam')
-          .insertAfter(".upload-btn");
-        ko.applyBindings(vm, $(".upload-webcam")[0]);
+
+        if (isAbleCapBtn) {
+
+          $(`<button> ${vm.$i18n('CMM048_107')} </button>`)
+            .attr('id', 'upload-webcam')
+            .insertAfter(".upload-btn");
+
+          //Handle no webcam
+          $("#upload-webcam").ready(() => {
+            navigator.getUserMedia = ((navigator as any).getUserMedia
+              || (navigator as any).webkitGetUserMedia
+              || (navigator as any).mozGetUserMedia
+              || (navigator as any).msGetUserMedia);
+            if (navigator.getUserMedia) {
+              navigator.getUserMedia({ video: true }, () => $("#upload-webcam").click(() => vm.openDialogE2()), () => vm.handleBtnSnapWithoutCamera());
+            } else {
+              vm.handleBtnSnapWithoutCamera();
+            }
+          });
+        }
       });
+
       if (vm.fileId()) {
         $(".edit-action-container").show();
         $("#upload").ntsImageEditor("selectByFileId", vm.fileId());
+        vm.imagePreviewZoneHalfHeight(isAbleCapBtn);
+      } else {
+        vm.imagePreviewZoneFullHeight(isAbleCapBtn);
       }
       $("#upload").bind("imgloaded", () => {
         $(".edit-action-container").show();
@@ -36,15 +62,68 @@ module nts.uk.com.view.cmm048.e {
       } catch (Error) {
         $('.upload-btn').focus();
       }
+
+      //reset hight of image preview when image is loaded
+      $("#upload").bind("imgloaded", (evt: any, query?: any) => {
+        if (query) {
+          vm.imagePreviewZoneHalfHeight(isAbleCapBtn);
+        }
+      });
+    }
+
+    private isHttps(): boolean {
+      if (window.location.protocol === "https:") {
+        return true;
+      }
+      return false;
+    }
+
+    private isChromeOrEdge(): boolean {
+      const browser = String((nts.uk.util as any).browser.version);
+      if (browser.search("Chrome") !== -1) {
+        return true;
+      }
+      return false;
+    }
+
+    private imagePreviewZoneFullHeight(bool: boolean) {
+      if (bool) {
+        $('.image-preview-container').css('height', "325px");
+        $('.image-upload-icon').css('height', "240px");
+        $('.container-no-upload-background').css('height', "325px");
+      } else {
+        $('.image-preview-container').css('height', "340px");
+        $('.image-upload-icon').css('height', "275px");
+        $('.container-no-upload-background').css('height', "340px");
+      }
+    }
+
+    private imagePreviewZoneHalfHeight(bool: boolean) {
+      if (bool) {
+        $('.image-preview-container').css('height', "240px");
+        $('.image-upload-icon').css('height', "240px");
+        $('.container-no-upload-background').css('height', "240px");
+      } else {
+        $('.image-preview-container').css('height', "275px");
+        $('.image-upload-icon').css('height', "275px");
+        $('.container-no-upload-background').css('height', "275px");
+      }
+    }
+
+    private handleBtnSnapWithoutCamera() {
+      const vm = this;
+      $("#upload-webcam").attr('disabled', 'true');
+      $(`<span>${vm.$i18n('CMM048_115')}</span>`)
+        .css("color", "red")
+        .css("margin-left", "10px")
+        .insertAfter("#upload-webcam");
     }
 
     public openDialogE2() {
       const vm = this;
-      //TODO
       vm.$window.modal("/view/cmm/048/f/index.xhtml").then((uri: string) => {
         if (uri) {
           $(".edit-action-container").show();
-
           $("#upload").ntsImageEditor("showByUrl", { url: uri });
         }
       });

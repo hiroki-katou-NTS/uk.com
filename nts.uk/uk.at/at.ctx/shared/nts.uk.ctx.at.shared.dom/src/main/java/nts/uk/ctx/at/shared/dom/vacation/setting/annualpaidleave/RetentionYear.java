@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave;
 
+import java.io.Serializable;
+
 import nts.arc.primitive.IntegerPrimitiveValue;
 import nts.arc.primitive.constraint.IntegerRange;
 
@@ -11,8 +13,8 @@ import nts.arc.primitive.constraint.IntegerRange;
  * The Class RetentionYear.
  */
 // 保持年数
-@IntegerRange(min = 0, max = 5)
-public class RetentionYear extends IntegerPrimitiveValue<RetentionYear> {
+@IntegerRange(min = 2, max = 5)
+public class RetentionYear extends IntegerPrimitiveValue<RetentionYear> implements Serializable {
 
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 8879850157645403702L;

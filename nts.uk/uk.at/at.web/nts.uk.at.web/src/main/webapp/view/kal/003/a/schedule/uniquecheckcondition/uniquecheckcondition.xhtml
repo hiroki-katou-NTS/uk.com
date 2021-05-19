@@ -1,0 +1,58 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+	<com:ValidatorScript>
+        nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.MessageDisplay
+    </com:ValidatorScript>
+
+	<div>
+		<table id="table-schedule-fixed">
+			<colgroup>
+				<col width="60px" />
+				<col width="50px" />
+				<col width="50px" />
+				<col width="140px" />
+				<col width="210px" />
+			</colgroup>
+			<thead>
+				<tr>
+					<!-- I2_2 3 4 5 6 7 8 9 -->
+					<th class="ui-widget-header" style="text-align: center;"><div
+							data-bind="text: $vm.$i18n('KAL003_153')"></div></th>
+					<th class="ui-widget-header" style="text-align: center;">#{i18n.getText('KAL003_24')}</th>
+					<th class="ui-widget-header">#{i18n.getText('KAL003_53')}</th>
+					<th class="ui-widget-header">#{i18n.getText('KAL003_54')}</th>
+					<th class="ui-widget-header">#{i18n.getText('KAL003_55')}</th>
+
+				</tr>
+			</thead>
+			<tbody>
+				<com:ko-foreach bind="listFixedConditionWorkRecord">
+					<tr>
+						<td style="text-align: center;">
+							<div data-bind="ntsCheckBox: { checked: useAtr }"></div>
+						</td>
+						<td style="text-align: center;"><span
+							data-bind="text: fixConWorkRecordNo"></span></td>
+						<com:ko-if bind="eralarmAtr()==0">
+							<td class="bg-daily-error">ER</td>
+						</com:ko-if>
+						<com:ko-if bind="eralarmAtr()==1">
+							<td class="bg-daily-alarm">AL</td>
+						</com:ko-if>
+						<com:ko-if
+							bind="eralarmAtr()!=0 &amp;&amp; eralarmAtr()!=1">
+							<td></td>
+						</com:ko-if>
+						<td><span data-bind="text: checkName"></span></td>
+						<td><input class="fixedcheckID"
+							data-bind="ntsTextEditor: {name: '#[KAL003_55]', value: message,constraint: 'MessageDisplay',required: true, option: {width: '193px'}}" /></td>
+					</tr>
+				</com:ko-foreach>
+			</tbody>
+		</table>
+	</div>
+</ui:composition>

@@ -10,7 +10,7 @@ import javax.persistence.MappedSuperclass;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.infra.data.entity.type.GeneralDateToDBConverter;
 import nts.arc.time.GeneralDate;
-import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
  * 
@@ -20,7 +20,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @NoArgsConstructor
 @MappedSuperclass
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-public class KrcdtDaySyaErrorAtd extends ContractUkJpaEntity {
+public class KrcdtDaySyaErrorAtd extends UkJpaEntity {
 
 	@EmbeddedId
 	public KrcdtErAttendanceItemPK krcdtErAttendanceItemPK;
@@ -31,6 +31,9 @@ public class KrcdtDaySyaErrorAtd extends ContractUkJpaEntity {
 	@Column(nullable = false, name = "SID")
 	public String sid;
 	
+	@Column(nullable = false, name = "CONTRACT_CD")
+	public String ccd;
+	
 	@Column(nullable = false, name = "PROCESSING_DATE")
 	@Convert(converter = GeneralDateToDBConverter.class)
 	public GeneralDate processDate;
@@ -40,26 +43,13 @@ public class KrcdtDaySyaErrorAtd extends ContractUkJpaEntity {
 		return this.krcdtErAttendanceItemPK;
 	}
 	
-//	@ManyToOne
-//	@JoinColumns({ @JoinColumn(name = "ID", referencedColumnName = "ID", insertable = false, updatable = false)})
-//	public KrcdtOtkErAl erOtk;
-//	
-//	@ManyToOne
-//	@JoinColumns({ @JoinColumn(name = "ID", referencedColumnName = "ID", insertable = false, updatable = false)})
-//	public KrcdtEmpDivErAl erDiv;
-//	
-//	@ManyToOne
-//	@JoinColumns({ @JoinColumn(name = "ID", referencedColumnName = "ID", insertable = false, updatable = false)})
-//	public KrcdtDaySyaError erOth;
-	
-	public static KrcdtDaySyaErrorAtd toEntity(String id, int attendanceItemId, String cid, 
-			String sid, String ccd, GeneralDate processDate){
-		KrcdtDaySyaErrorAtd krcdtErAttendanceItem = new KrcdtDaySyaErrorAtd();
-		KrcdtErAttendanceItemPK krcdtErAttendanceItemPK = new KrcdtErAttendanceItemPK(id, attendanceItemId);
-		krcdtErAttendanceItem.krcdtErAttendanceItemPK = krcdtErAttendanceItemPK;
-		krcdtErAttendanceItem.cid = cid;
-		krcdtErAttendanceItem.sid = cid;
-		krcdtErAttendanceItem.processDate = processDate;
-		return krcdtErAttendanceItem;
+	public KrcdtDaySyaErrorAtd(String id, int attendanceItemId, String cid, 
+			String sid, String ccd, GeneralDate processDate) {
+		
+		this.krcdtErAttendanceItemPK = new KrcdtErAttendanceItemPK(id, attendanceItemId);
+		this.ccd = ccd;
+		this.cid = cid;
+		this.sid = cid;
+		this.processDate = processDate;
 	}
 }

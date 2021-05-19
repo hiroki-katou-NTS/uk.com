@@ -37,12 +37,12 @@ public class DisplayInfoOverTime {
 	private OvertimeAppAtr overtimeAppAtr;
 	// 申請表示情報
 	private AppDispInfoStartupOutput appDispInfoStartup;
-	// 代行申請か
-	private Boolean isProxy;
 	// 計算結果
 	private Optional<CalculationResult> calculationResultOp = Optional.empty();
 	// 申請日に関係する情報
 	private Optional<InfoWithDateApplication> infoWithDateApplicationOp = Optional.empty(); 
 	// 計算済フラグ
 	private CalculatedFlag calculatedFlag;
+	// 申請中の勤務情報
+	private Optional<WorkInfo> workInfo = Optional.empty();
 }

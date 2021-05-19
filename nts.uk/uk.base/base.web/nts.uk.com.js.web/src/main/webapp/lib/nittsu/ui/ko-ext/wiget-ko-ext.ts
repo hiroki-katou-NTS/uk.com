@@ -46,20 +46,16 @@ module nts.uk.knockout.binding.widget {
         virtual: false
     })
     export class WidgetResizeContentBindingHandler implements KnockoutBindingHandler {
-        init(element: HTMLDivElement, valueAccessor: () => number | undefined | KnockoutObservable<number | undefined>, allBindingsAccessor: KnockoutAllBindingsAccessor, viewModel: { widget: string; }, bindingContext: KnockoutBindingContext): { controlsDescendantBindings: boolean; } {
+        init(element: HTMLDivElement, valueAccessor: () => number | undefined | KnockoutObservable<number | undefined>, allBindingsAccessor: KnockoutAllBindingsAccessor, viewModel: nts.uk.ui.vm.ViewModel & { widget: string; }, bindingContext: KnockoutBindingContext): { controlsDescendantBindings: boolean; } {
             const $el = $(element);
-            const { widget } = viewModel;
-            const WG_SIZE = 'WIDGET_SIZE';
+            const { widget, $user } = viewModel;
+            const WG_SIZE = `${$user.employeeId}.WIDGET_SIZE`;
             const mkv = new ko.ViewModel();
             const minHeight = valueAccessor();
             const key = ko.unwrap<string>(widget);
 
             const src: string | undefined = allBindingsAccessor.get('src');
             const def: number | undefined = allBindingsAccessor.get('default');
-
-            if (def) {
-                element.style.maxHeight = `${def}px`;
-            }
 
             if (element.tagName !== 'DIV') {
                 element.innerText = 'Please use [div] tag with [widget-content] binding';
@@ -170,8 +166,15 @@ module nts.uk.knockout.binding.widget {
                             const height = size[key];
 
                             if (height && height.set) {
+                                element.style.maxHeight = '';
                                 element.style.height = height.value;
+                            } else if (def) {
+                                element.style.height = `${def}px`;
+                                element.style.maxHeight = `${def}px`;
                             }
+                        } else if (def) {
+                            element.style.height = `${def}px`;
+                            element.style.maxHeight = `${def}px`;
                         }
                     });
             }

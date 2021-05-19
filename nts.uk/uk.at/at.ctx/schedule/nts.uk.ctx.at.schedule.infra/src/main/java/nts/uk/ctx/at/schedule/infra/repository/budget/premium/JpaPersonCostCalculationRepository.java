@@ -211,26 +211,6 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
                 listEntityAtt(kmlstPremiumSet.getPk().companyID, kmlstPremiumSet.getPk().histID,
                         kmlstPremiumSet.getPk().premiumNo));
     }
-
-    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-    @Override
-    public List<PersonCostCalculation> findByCompanyIDAndDisplayNumber(String companyID, GeneralDate date) {
-        return null;
-    }
-
-    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-    @Override
-    public List<PersonCostCalculation> findByCompanyIDAndDisplayNumberNotFull(String companyID, DatePeriod date, List<Integer> itemNos) {
-        return null;
-    }
-
-    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-    @Override
-    public List<PremiumSetting> findPremiumSettingBy(String companyID, GeneralDate date) {
-        return null;
-    }
-
-
     private List<KscmtPremiumItem> getPremiumItems(String comId) {
         try (PreparedStatement statement = this.connection().prepareStatement(
                 "select * FROM KSCMT_PREMIUM_ITEM where CID = ? ")) {

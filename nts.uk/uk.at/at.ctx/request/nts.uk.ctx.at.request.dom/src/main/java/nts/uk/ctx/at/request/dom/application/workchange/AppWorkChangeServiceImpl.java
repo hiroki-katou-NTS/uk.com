@@ -19,12 +19,14 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
+import nts.uk.ctx.at.request.dom.application.WorkInformationForApplication;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ErrorFlagImport;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeUpdate;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgorithm;
+import nts.uk.ctx.at.request.dom.application.common.service.setting.WorkInfoListOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoWithDateOutput;
 import nts.uk.ctx.at.request.dom.application.overtime.service.CheckWorkingInfoResult;
@@ -37,14 +39,12 @@ import nts.uk.ctx.at.request.dom.application.workchange.output.WorkTypeWorkTimeS
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.workchange.AppWorkChangeSet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.workchange.InitDisplayWorktimeAtr;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSet;
-import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.TargetWorkTypeByApp;
-import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.WorkTypeObjAppHoliday;
 import nts.uk.ctx.at.request.dom.setting.request.application.workchange.AppWorkChangeSettingOutput;
 import nts.uk.ctx.at.shared.dom.common.TimeZoneWithWorkNo;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
-import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.workchangeapp.ReflectWorkChangeApp;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.workchangeapp.ReflectWorkChangeApp;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
@@ -92,9 +92,6 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 	@Inject
 	private AppWorkChangeSetRepository appWorkChangeSetRepoNew;
 
-	public WorkTypeObjAppHoliday geWorkTypeObjAppHoliday(AppEmploymentSetting x, ApplicationType hdType) {
-		return x.getListWTOAH().stream().filter(y -> y.getAppType() == hdType).findFirst().get();
-	}
 	
 	@Override
 	public AppWorkChangeDispInfo getStartNew(String companyID, List<String> employeeIDLst, List<GeneralDate> dateLst,
@@ -406,11 +403,24 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 		String workTimeCD = appWorkChange.getOpWorkTimeCD().isPresent() ? appWorkChange.getOpWorkTimeCD().get().v() : null;
 		ChangeWkTypeTimeOutput changeWkTypeTimeOutput =
 				this.changeWorkTypeWorkTime(companyID, workTypeCD, Optional.ofNullable(workTimeCD), appWorkChangeSettingOutput.getAppWorkChangeSet());
+		// 申請中の勤務種類・就業時間帯を取得する
+		Optional<List<WorkTimeSetting>> opWorkTimeLst = appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpWorkTimeLst();
+		WorkInfoListOutput workinfos = this.commonAlgorithm.getWorkInfoList(companyID, workTypeCD, Optional.ofNullable(workTimeCD), workTypeLst, opWorkTimeLst.isPresent() ? opWorkTimeLst.get() : new ArrayList<WorkTimeSetting>());
+		
+		WorkInformationForApplication workInformationForApplication = null;
+		if (workTimeCD != null || workTypeCD != null) {
+		    workInformationForApplication = new WorkInformationForApplication(
+		            workTimeCD != null ? new WorkTimeCode(workTimeCD) : null, 
+		            workTypeCD != null ? new WorkTypeCode(workTypeCD) : null);
+		}
+		
 		// 取得した情報をOUTPUT「勤務変更申請の表示情報」にセットする
+		appDispInfoStartupOutput.getAppDispInfoWithDateOutput().setOpWorkTimeLst(Optional.of(workinfos.getWorkTimes()));
+		appWorkChangeDispInfo.setWorkInformationForApplication(Optional.ofNullable(workInformationForApplication));
 		appWorkChangeDispInfo.setAppDispInfoStartupOutput(appDispInfoStartupOutput);
 		appWorkChangeDispInfo.setAppWorkChangeSet(appWorkChangeSettingOutput.getAppWorkChangeSet());
 		appWorkChangeDispInfo.setReflectWorkChangeApp(appWorkChangeSettingOutput.getAppWorkChangeReflect());
-		appWorkChangeDispInfo.setWorkTypeLst(workTypeLst);
+		appWorkChangeDispInfo.setWorkTypeLst(workinfos.getWorkTypes());
 		appWorkChangeDispInfo.setPredetemineTimeSetting(changeWkTypeTimeOutput.getOpPredetemineTimeSetting());
 		appWorkChangeDispInfo.setSetupType(Optional.ofNullable(changeWkTypeTimeOutput.getSetupType()));
 		// 「勤務変更申請の表示情報」と「勤務変更申請」を返す
@@ -421,8 +431,22 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 
 	@Override
 	public List<ConfirmMsgOutput> checkBeforeUpdate(String companyID, Application application,
-			AppWorkChange appWorkChange, boolean agentAtr, AppDispInfoStartupOutput appDispInfoStartupOutput) {
+			AppWorkChange appWorkChange, boolean agentAtr, AppDispInfoStartupOutput appDispInfoStartupOutput, AppWorkChangeDispInfo appWorkChangeDispInfo) {
 		List<ConfirmMsgOutput> result = new ArrayList<>();
+		String workTypeCD = null;
+		String workTimeCD = null;
+		if (appWorkChange.getOpWorkTypeCD().isPresent() && appWorkChangeDispInfo.getWorkInformationForApplication().isPresent()) {
+		    if (!appWorkChange.getOpWorkTypeCD().get().v()
+		            .equals(appWorkChangeDispInfo.getWorkInformationForApplication().get().getWorkTypeCode().v())) {
+		        workTypeCD = appWorkChange.getOpWorkTypeCD().get().v();
+		    }
+		}
+		if (appWorkChange.getOpWorkTimeCD().isPresent() && appWorkChangeDispInfo.getWorkInformationForApplication().isPresent()) {
+            if (!appWorkChange.getOpWorkTimeCD().get().v()
+                    .equals(appWorkChangeDispInfo.getWorkInformationForApplication().get().getWorkTimeCode().v())) {
+                workTimeCD = appWorkChange.getOpWorkTimeCD().get().v();
+            }
+        }
 		// 詳細画面の登録時チェック処理（全申請共通）
 		detailBeforeUpdate.processBeforeDetailScreenRegistration(
 				companyID, 
@@ -432,8 +456,8 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 				application.getAppID(), 
 				application.getPrePostAtr(), 
 				application.getVersion(), 
-				appWorkChange.getOpWorkTypeCD().isPresent() ? appWorkChange.getOpWorkTypeCD().get().v() : null , 
-				appWorkChange.getOpWorkTimeCD().isPresent() ? appWorkChange.getOpWorkTimeCD().get().v(): null,
+				workTypeCD , 
+				workTimeCD,
 				appDispInfoStartupOutput);
 		// 登録時チェック処理（勤務変更申請）
 		this.checkRegisterWorkChange(application, appWorkChange);
@@ -569,7 +593,7 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 	
 	@Override
 	public WorkChangeCheckRegOutput checkBeforeRegister(Boolean mode, String companyId, Application application,
-			AppWorkChange appWorkChange, ErrorFlagImport opErrorFlag, AppDispInfoStartupOutput appDispInfoStartupOutput) {
+			AppWorkChange appWorkChange, ErrorFlagImport opErrorFlag, AppDispInfoStartupOutput appDispInfoStartupOutput, AppWorkChangeDispInfo appWorkChangeDispInfo) {
 		WorkChangeCheckRegOutput workChangeCheckRegOutput = new WorkChangeCheckRegOutput();
 //		INPUT．「画面モード」をチェックする
 		if (mode ) {
@@ -577,7 +601,7 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 			workChangeCheckRegOutput = this.checkBeforeRegister(companyId, opErrorFlag, application, appWorkChange, appDispInfoStartupOutput);
 		}else {
 //			更新前のエラーチェック処理
-			workChangeCheckRegOutput.setConfirmMsgLst(this.checkBeforeUpdate(companyId, application, appWorkChange, false, appDispInfoStartupOutput));
+			workChangeCheckRegOutput.setConfirmMsgLst(this.checkBeforeUpdate(companyId, application, appWorkChange, false, appDispInfoStartupOutput, appWorkChangeDispInfo));
 		}
 
 		return workChangeCheckRegOutput;

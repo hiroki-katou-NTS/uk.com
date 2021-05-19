@@ -18,6 +18,7 @@ import {
     CmmS45ShrComponentsApp10Component,
     CmmS45ShrComponentsApp6Component,
     CmmS45ShrComponentsApp8Component,
+    CmmS45ComponentsApp9Component,
     Reason,
 } from 'views/cmm/s45/shr/components';
 import { CmmS45ShrComponentsApp1Component } from 'views/cmm/s45/shr/components/app1/index';
@@ -41,6 +42,7 @@ import { CmmS45ShrComponentsApp1Component } from 'views/cmm/s45/shr/components/a
         'app5': CmmS45ComponentsApp5Component,
         'app7': CmmS45ShrComponentsApp7Component,
         'app8': CmmS45ShrComponentsApp8Component,
+        'app9': CmmS45ComponentsApp9Component,
         'app0': CmmS45ShrComponentsApp0Component,
         'app15': CmmS45ShrComponentsApp15Component,
         'app1': CmmS45ShrComponentsApp1Component,
@@ -356,7 +358,7 @@ export class CmmS45DComponent extends Vue {
                     }).then((resApprove: any) => {
                         self.$mask('hide');
                         if (resApprove.data.processDone) {
-                            // self.reflectApp(resApprove.data.reflectAppId);
+                            self.reflectApp(resApprove.data.reflectAppIdLst);
                             self.$modal('cmms45f', { 'action': 1, 'listAppMeta': self.listAppMeta, 'currentApp': self.currentApp })
                             .then((resAfterApprove: any) => {
                                 self.controlDialog(resAfterApprove);        
@@ -461,10 +463,10 @@ export class CmmS45DComponent extends Vue {
     }
 
     // phản ánh đơn xin sau khi chấp nhận, từ chối
-    public reflectApp(appID: string): void {
+    public reflectApp(reflectAppIdLst: Array<string>): void {
         let self = this;
-        if (!_.isEmpty(appID)) {
-            self.$http.post('at', API.reflectApp, [appID]);
+        if (!_.isEmpty(reflectAppIdLst)) {
+            self.$http.post('at', API.reflectApp, reflectAppIdLst);
         }
     }
 

@@ -12,14 +12,14 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.TimeDigestiveUnit;
  * The Interface TimeVacationSettingSetMemento.
  */
 public interface TimeAnnualSettingSetMemento {
-    
+
     /**
      * Sets the company id.
      *
      * @param companyId the new company id
      */
     void setCompanyId(String companyId);
-    
+
     /**
      * Sets the time manage type.
      *
@@ -36,6 +36,18 @@ public interface TimeAnnualSettingSetMemento {
      */
     void setMaxYearDayLeave(TimeAnnualMaxDay maxYearDayLeave);
 
+//    /**
+//     * Sets the enough time one day.
+//     *
+//     * @param isEnoughTimeOneDay the new enough time one day
+//     */
+//    void setEnoughTimeOneDay(boolean isEnoughTimeOneDay);
+
+    /**
+     * Sets TimeAnnualRoundProcesCla.
+     *
+     * @param timeAnnualRoundProcesCla
+     */
     void setRoundProcessClassific(TimeAnnualRoundProcesCla timeAnnualRoundProcesCla);
     
     void setTimeAnnualLeaveTimeDay(TimeAnnualLeaveTimeDay timeAnnualLeaveTimeDay);

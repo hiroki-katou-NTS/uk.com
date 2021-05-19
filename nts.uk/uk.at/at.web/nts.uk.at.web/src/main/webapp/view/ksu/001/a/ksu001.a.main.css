@@ -216,7 +216,11 @@
 }
 
 #A16{
-	height: 90px;
+	height: 120px;
+}
+
+#A16 table td {
+	border: 0px solid #ccc !important;
 }
 
 .square {
@@ -385,7 +389,9 @@
 	width: 65px
 }
 
-.icon-leftmost {
+.icon-leftmost { 
+	background-image:
+		url(/nts.uk.com.js.web/lib/nittsu/ui/style/stylesheets/images/icons/numbered/7.png);
 	height: 20px;
 	width: 20px;
 	left: 2px !important;
@@ -559,10 +565,6 @@ html {
 	height: 25px;
 }
 
-#A16 table td {
-	border: 0px solid #ccc !important;
-}
-
 .background-attendance {background-color: #0000ff !important;}
 .background-holiday {background-color: #ff0000 !important;}
 .background-half-day-work {background-color: #FF7F27 !important; }
@@ -579,4 +581,15 @@ table th, table td {
 
 #functions-area {
 	overflow: unset !important;
+}
+
+#A16_3 > label:nth-child(1) {
+	padding-top: 7px;
+}
+#A16_3 > label:nth-child(2) {
+	padding-top: 10px;
+}
+
+#extable>div.ex-header-leftmost.xheader>table>tbody>tr>td>a {
+	pointer-events: none;
 }

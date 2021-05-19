@@ -19,20 +19,18 @@ public enum RemainType {
 	PAUSE(3,"振休"),
 	/**	代休 */
 	SUBHOLIDAY(4,"代休"),
-	/**	時間年休 */
-	TIMEANNUAL(5, "時間年休"),
-	/**
-	 * 振出
-	 */
-	PICKINGUP(6,"振出"),
-	/**
-	 * 休出
-	 */
-	BREAK(7,"休出"),
+	/** 振出*/
+	PICKINGUP(5,"振出"),
+	/** 休出 */
+	BREAK(6,"休出"),
+	/**60H超休*/
+	SIXTYHOUR(7,"60H超休"),
+	/** 公休*/
+	PUBLICHOLIDAY(8,"公休"),
 	/**	子の看護 */
-	CHILDCARE(10,"子の看護"),
+	CHILDCARE(9,"子の看護"),
 	/**	介護 */
-	CARE(11, "介護");
+	CARE(10, "介護");
 
 
 	public final Integer value;

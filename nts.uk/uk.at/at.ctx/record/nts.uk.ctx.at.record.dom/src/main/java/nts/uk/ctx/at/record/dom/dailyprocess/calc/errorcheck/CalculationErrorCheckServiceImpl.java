@@ -28,7 +28,6 @@ import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.attendance.MasterShareBus;
 import nts.uk.ctx.at.shared.dom.attendance.MasterShareBus.MasterShareContainer;
 import nts.uk.ctx.at.shared.dom.common.TimeOfDay;
-import nts.uk.ctx.at.shared.dom.dailyprocess.calc.FactoryManagePerPersonDailySet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.CommonCompanySettingForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.DailyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.service.AttendanceItemConvertFactory;
@@ -38,6 +37,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManagePerCompanySet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManagePerPersonDailySet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.deviationtime.deviationtimeframe.CheckExcessAtr;
+import nts.uk.ctx.at.shared.dom.scherec.dailyprocess.calc.FactoryManagePerPersonDailySet;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.algorithm.DailyStatutoryLaborTime;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.DailyUnit;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
@@ -76,14 +76,15 @@ public class CalculationErrorCheckServiceImpl implements CalculationErrorCheckSe
 	@Inject
 	private WorkingConditionItemRepository workingConditionItemRepository;
 	
-	@Inject
-	private CalculationErrorCheckService calculationErrorCheckService;
-	
 	@Inject 
 	private RecordDomRequireService requireService;
 	
 	@Inject
 	private FactoryManagePerPersonDailySet factoryManagePerPersonDailySet;
+
+	/** 申告エラーチェックサービス */
+	@Inject
+	private DeclareErrorCheckService declareErrorCheckService;
 	
 	@Override
 	public IntegrationOfDaily errorCheck(IntegrationOfDaily integrationOfDaily, ManagePerPersonDailySet personCommonSetting, ManagePerCompanySet master) {
@@ -282,7 +283,7 @@ public class CalculationErrorCheckServiceImpl implements CalculationErrorCheckSe
 				return dailyRecordCreateErrorAlermService.doubleStampAlgorithm(integrationOfDaily);
 			//申告
 			case DECLARE:
-				return integrationOfDaily.getDeclareErrorList(fixedErrorAlarmCode.get());
+				return this.declareErrorCheckService.errorCheck(integrationOfDaily, fixedErrorAlarmCode.get());
 			//それ以外ルート
 			default:
 				return Collections.emptyList();

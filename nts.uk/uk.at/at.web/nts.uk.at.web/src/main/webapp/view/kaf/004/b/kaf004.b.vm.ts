@@ -29,43 +29,45 @@ module nts.uk.at.view.kaf004_ref.b.viewmodel {
                                         appDispInfoStartupOutput: appDispInfoStartupOutput
                                     } }"></div>
             <div class="table">
-                <div class="cell" style="width: 825px;" data-bind="component: { name: 'kaf000-b-component4',
+                <div class="cell" style="min-width: 825px; padding-right: 10px;">
+                    <div data-bind="component: { name: 'kaf000-b-component4',
                                     params: {
                                         appType: appType,
                                         application: application,
                                         appDispInfoStartupOutput: appDispInfoStartupOutput
                                     } }"></div>
-                 <div class="cell" style="position: absolute;" data-bind="component: { name: 'kaf000-b-component9',
+                    <div data-bind="component: { name: 'kaf000-b-component5',
+                                    params: {
+                                        appType: appType,
+                                        application: application,
+                                        appDispInfoStartupOutput: appDispInfoStartupOutput
+                                    } }"></div>
+                    <div data-bind="component: { name: 'kaf000-b-component6',
+                                    params: {
+                                        appType: appType,
+                                        application: application,
+                                        appDispInfoStartupOutput: appDispInfoStartupOutput
+                                    } }"></div>
+                    <div class="fixed-flex-layout" style="margin-left: -10px;" data-bind="component: {name: 'kaf004_share'}"></div>
+                    <div data-bind="component: { name: 'kaf000-b-component7',
+                                    params: {
+                                        appType: appType,
+                                        application: application,
+                                        appDispInfoStartupOutput: appDispInfoStartupOutput
+                                    } }"></div>
+                    <div data-bind="component: { name: 'kaf000-b-component8',
+                                    params: {
+                                        appType: appType,
+                                        appDispInfoStartupOutput: appDispInfoStartupOutput
+                                    } }"></div>
+                </div>
+                <div class="cell" style="position: absolute;" data-bind="component: { name: 'kaf000-b-component9',
                                     params: {
                                         appType: appType,
                                         application: application,
                                         appDispInfoStartupOutput: $vm.appDispInfoStartupOutput
                                     } }"></div>
             </div>
-            <div data-bind="component: { name: 'kaf000-b-component5',
-                                    params: {
-                                        appType: appType,
-                                        application: application,
-                                        appDispInfoStartupOutput: appDispInfoStartupOutput
-                                    } }"></div>
-            <div data-bind="component: { name: 'kaf000-b-component6',
-                                    params: {
-                                        appType: appType,
-                                        application: application,
-                                        appDispInfoStartupOutput: appDispInfoStartupOutput
-                                    } }"></div>
-            <div class="fixed-flex-layout" style="margin-left: -10px;" data-bind="component: {name: 'kaf004_share'}"></div>
-            <div data-bind="component: { name: 'kaf000-b-component7',
-                                    params: {
-                                        appType: appType,
-                                        application: application,
-                                        appDispInfoStartupOutput: appDispInfoStartupOutput
-                                    } }"></div>
-            <div data-bind="component: { name: 'kaf000-b-component8',
-                                    params: {
-                                        appType: appType,
-                                        appDispInfoStartupOutput: appDispInfoStartupOutput
-                                    } }"></div>
         </div>
 
     </div>
@@ -85,7 +87,7 @@ module nts.uk.at.view.kaf004_ref.b.viewmodel {
         isSendMail: KnockoutObservable<Boolean>;
         printContentOfEachAppDto: KnockoutObservable<PrintContentOfEachAppDto>;
         approvalReason: KnockoutObservable<string>;
-        cancalAppDispSet: boolean = true;
+        cancalAppDispSet: KnockoutObservable<boolean> = ko.observable(true);
         outputMode: KnockoutObservable<number> = ko.observable(0);
 
         created(
@@ -171,7 +173,7 @@ module nts.uk.at.view.kaf004_ref.b.viewmodel {
 
             vm.managementMultipleWorkCycles(params.appDispInfoStartupOutput.appDispInfoNoDateOutput.managementMultipleWorkCycles);
 
-            vm.cancalAppDispSet = params.lateEarlyCancelAppSet.cancelAtr !== 0;
+            vm.cancalAppDispSet(params.lateEarlyCancelAppSet.cancelAtr !== 0);
             var achiveEarly = vm.appDispInfoStartupOutput().appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail;
             var lateOrLeaveEarlies = params.arrivedLateLeaveEarly.lateOrLeaveEarlies;
             var start1 = _.filter(lateOrLeaveEarlies, { 'workNo': 1, 'lateOrEarlyClassification': 0 });
@@ -181,15 +183,35 @@ module nts.uk.at.view.kaf004_ref.b.viewmodel {
 
             if (start1.length > 0) {
                 vm.workManagement.workTime(start1[0].timeWithDayAttr);
+            } else {
+                if (achiveEarly !== null && achiveEarly.opWorkTime !== null && vm.application().prePostAtr() == 1
+                    && achiveEarly.trackRecordAtr === 0) {
+                    vm.workManagement.workTime(achiveEarly.opWorkTime);
+                }
             }
             if (end1.length > 0) {
                 vm.workManagement.leaveTime(end1[0].timeWithDayAttr);
+            } else {
+                if (achiveEarly !== null && achiveEarly.opLeaveTime !== null && vm.application().prePostAtr() == 1
+                    && achiveEarly.trackRecordAtr === 0) {
+                    vm.workManagement.leaveTime(achiveEarly.opLeaveTime);
+                }
             }
             if (start2.length > 0) {
                 vm.workManagement.workTime2(start2[0].timeWithDayAttr);
+            } else {
+                if (achiveEarly !== null && achiveEarly.opWorkTime2 !== null && vm.application().prePostAtr() == 1
+                    && achiveEarly.trackRecordAtr === 0) {
+                    vm.workManagement.workTime2(achiveEarly.opWorkTime2);
+                }
             }
             if (end2.length > 0) {
                 vm.workManagement.leaveTime2(end2[0].timeWithDayAttr);
+            } else {
+                if (achiveEarly !== null && achiveEarly.opDepartureTime2 !== null && vm.application().prePostAtr() == 1
+                    && achiveEarly.trackRecordAtr === 0) {
+                    vm.workManagement.leaveTime2(achiveEarly.opDepartureTime2);
+                }
             }
 
             var check1 = _.filter(vm.arrivedLateLeaveEarlyInfo().arrivedLateLeaveEarly.lateCancelation, { 'workNo': 1, 'lateOrEarlyClassification': 0 });
@@ -221,25 +243,25 @@ module nts.uk.at.view.kaf004_ref.b.viewmodel {
                     vm.workManagement.scheWorkTime2(nts.uk.time.format.byId("Clock_Short_HM", achiveEarly.achievementEarly.scheDepartureTime2));
             }
 
-            if (achiveEarly !== null && achiveEarly.opWorkTime !== null && vm.application().prePostAtr() == 1
-                && achiveEarly.trackRecordAtr === 0) {
-                vm.workManagement.workTime(achiveEarly.opWorkTime);
-            }
+            // if (achiveEarly !== null && achiveEarly.opWorkTime !== null && vm.application().prePostAtr() == 1
+            //     && achiveEarly.trackRecordAtr === 0) {
+            //     vm.workManagement.workTime(achiveEarly.opWorkTime);
+            // }
 
-            if (achiveEarly !== null && achiveEarly.opLeaveTime !== null && vm.application().prePostAtr() == 1
-                && achiveEarly.trackRecordAtr === 0) {
-                vm.workManagement.leaveTime(achiveEarly.opLeaveTime);
-            }
+            // if (achiveEarly !== null && achiveEarly.opLeaveTime !== null && vm.application().prePostAtr() == 1
+            //     && achiveEarly.trackRecordAtr === 0) {
+            //     vm.workManagement.leaveTime(achiveEarly.opLeaveTime);
+            // }
 
-            if (achiveEarly !== null && achiveEarly.opWorkTime2 !== null && vm.application().prePostAtr() == 1
-                && achiveEarly.trackRecordAtr === 0) {
-                vm.workManagement.workTime2(achiveEarly.opWorkTime2);
-            }
+            // if (achiveEarly !== null && achiveEarly.opWorkTime2 !== null && vm.application().prePostAtr() == 1
+            //     && achiveEarly.trackRecordAtr === 0) {
+            //     vm.workManagement.workTime2(achiveEarly.opWorkTime2);
+            // }
 
-            if (achiveEarly !== null && achiveEarly.opDepartureTime2 !== null && vm.application().prePostAtr() == 1
-                && achiveEarly.trackRecordAtr === 0) {
-                vm.workManagement.leaveTime2(achiveEarly.opDepartureTime2);
-            }
+            // if (achiveEarly !== null && achiveEarly.opDepartureTime2 !== null && vm.application().prePostAtr() == 1
+            //     && achiveEarly.trackRecordAtr === 0) {
+            //     vm.workManagement.leaveTime2(achiveEarly.opDepartureTime2);
+            // }
 
             if (!vm.workManagement.scheAttendanceTime) {
                 vm.workManagement.scheAttendanceTime("--:--");
@@ -471,7 +493,7 @@ module nts.uk.at.view.kaf004_ref.b.viewmodel {
         // ※9
         public condition9() {
             // 事前事後区分に「事後」に選択している場合　（事後モード）
-            return ko.toJS(this.application().prePostAtr) === 1 && this.cancalAppDispSet;
+            return this.application().prePostAtr() === 1 && this.cancalAppDispSet();
         }
     }
 

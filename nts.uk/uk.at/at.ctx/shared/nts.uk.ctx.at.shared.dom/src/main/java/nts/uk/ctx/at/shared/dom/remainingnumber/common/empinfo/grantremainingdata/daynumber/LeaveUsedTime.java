@@ -4,7 +4,7 @@ import nts.arc.primitive.TimeDurationPrimitiveValue;
 import nts.arc.primitive.constraint.TimeRange;
 
 /**
- * 休暇使用数（時間）　   
+ * 休暇使用時間
  * @author masaaki_jinno
  *
  */
@@ -17,4 +17,7 @@ public class LeaveUsedTime extends TimeDurationPrimitiveValue<LeaveUsedTime>{
 		super(timeAsMinutes);
 	}
 
+	public LeaveUsedTime clone() {
+		return new LeaveUsedTime(this.v());
+	}
 }

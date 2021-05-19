@@ -21,7 +21,23 @@ import { KdlS36Component } from 'views/kdl/s36';
     resource: require('./resources.json'),
     validations: {
         prePostAtr: {
-            required: true
+            selectCheck: {
+                test(value: number) {
+                    const vm = this;
+                    if (value == null || value < 0 || value > 1) {
+                        document.getElementById('prePostSelect').className += ' invalid';
+
+                        return false;
+                    }
+                    let prePostSelectElement = document.getElementById('prePostSelect');
+                    if (!_.isNull(prePostSelectElement)) {
+                        prePostSelectElement.classList.remove('invalid');
+                    }
+
+                    return true;
+                },
+                messageId: 'MsgB_30'
+            }
         },
         complementLeaveAtr: {
             required: true
@@ -233,6 +249,7 @@ export class KafS11AComponent extends KafS00ShrComponent {
         const vm = this;
         vm.prePostAtr = vm.displayInforWhenStarting.appDispInfoStartup.appDispInfoWithDateOutput.prePostAtr;
         if (vm.mode == ScreenMode.DETAIL) {
+            vm.prePostAtr = vm.displayInforWhenStarting.appDispInfoStartup.appDetailScreenInfo.application.prePostAtr;
             if (vm.displayInforWhenStarting.rec) {
                 vm.complementDate = new Date(moment(vm.displayInforWhenStarting.rec.application.appDate).format('YYYY/MM/DD'));
             }
@@ -469,9 +486,9 @@ export class KafS11AComponent extends KafS00ShrComponent {
         if (workTime) {
             return workTime.workTimeDisplayName.workTimeName;
         }
-        if (vm.mode == ScreenMode.DETAIL) {
-            return vm.getCDFormat(workTimeCD) + ' ' + vm.$i18n('KAFS11_32');
-        }
+        // if (vm.mode == ScreenMode.DETAIL) {
+        //     return vm.getCDFormat(workTimeCD) + ' ' + vm.$i18n('KAFS11_32');
+        // }
 
         return '';
     }
@@ -608,12 +625,13 @@ export class KafS11AComponent extends KafS00ShrComponent {
 
     get enableComplementTimeRange() {
         const vm = this;
-        if (vm.mode == ScreenMode.DETAIL) {
+        // if (vm.mode == ScreenMode.DETAIL) {
+        //
+        //     return vm.cdtSubstituteWorkAppReflect();
+        // }
 
-            return vm.cdtSubstituteWorkAppReflect();
-        }
-
-        return vm.cdtSubMngComplementDailyType();
+        return vm.cdtSubstituteWorkAppReflect();
+        // return vm.cdtSubMngComplementDailyType();
     }
 
     // ※6-1, ※6-2
@@ -1051,8 +1069,8 @@ export class KafS11AComponent extends KafS00ShrComponent {
 
     private updateTimeRange(isComplement: boolean, result: any) {
         const vm = this;
-        let timeZone1 = _.find(result.timeZoneLst, (o) => o.workNo == 1),
-            timeZone2 = _.find(result.timeZoneLst, (o) => o.workNo == 2);
+        let timeZone1 = _.find(result.timeZoneLst, (o) => o.workNo == 0),
+            timeZone2 = _.find(result.timeZoneLst, (o) => o.workNo == 1);
         if (isComplement) {
             if (timeZone1) {
                 vm.complementWorkInfo.timeRange1 = { start: timeZone1.timeZone.startTime, end: timeZone1.timeZone.endTime };
@@ -1191,7 +1209,8 @@ export class KafS11AComponent extends KafS00ShrComponent {
         vm.isValidateAll = vm.customValidate(vm);
         vm.$validate();
         if (!vm.$valid || !vm.isValidateAll) {
-
+            window.scrollTo(500, 0);
+            
             return;
         }
         vm.$mask('show');
@@ -1206,19 +1225,19 @@ export class KafS11AComponent extends KafS00ShrComponent {
             if (result) {
                 // đăng kí 
                 return vm.$http.post('at', API.submit, command).then((data: any) => {
-                    return data.data;
+                    vm.$http.post('at', API.reflectApp, data.data.reflectAppIdLst);
+
+                    return data;
                 });
             }
         }).then((result: any) => {
             if (result) {
-                // gửi mail sau khi đăng kí
-                // return vm.$ajax('at', API.sendMailAfterRegisterSample);
                 return result;
             }
         }).then((result: any) => {
             if (result) {
                 // vm.$goto('kafs11a1', { mode: vm.mode, appID: result.data.appID });
-                vm.$goto('kafs11a1', { mode: vm.mode, appID: result.appID });
+                vm.$goto('kafs11a1', { mode: vm.mode, appID: result.data.appIDLst[0] });
             }
         }).catch((failData) => {
             // xử lý lỗi nghiệp vụ riêng
@@ -1417,7 +1436,8 @@ const API = {
     getWorkTimeByCDLst: 'at/shared/worktimesetting/get_worktime_by_codes',
     checkBeforeSubmit: 'at/request/application/holidayshipment/mobile/checkBeforeSubmit',
     submit: 'at/request/application/holidayshipment/mobile/submit',
-    getTimeZoneValue: 'at/request/application/holidayshipment/mobile/getTimeZoneValue'
+    getTimeZoneValue: 'at/request/application/holidayshipment/mobile/getTimeZoneValue',
+    reflectApp: 'at/request/application/reflect-app'
 };
 
 export interface KAFS11Params {

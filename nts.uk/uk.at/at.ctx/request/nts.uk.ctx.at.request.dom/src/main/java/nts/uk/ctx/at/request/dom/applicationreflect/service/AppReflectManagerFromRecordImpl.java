@@ -31,13 +31,13 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAd
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SEmpHistImport;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.getapp.GetApplicationForReflect;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.getapp.GetApplicationRequireImpl;
-import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.closurestatus.ClosureStatusManagementRequestImport;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.dailymonthlyprocessing.ExeStateOfCalAndSumImport;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.dailymonthlyprocessing.ExecutionLogRequestImport;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.dailymonthlyprocessing.ExecutionTypeExImport;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.dailymonthlyprocessing.SetInforReflAprResultImport;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.dailymonthlyprocessing.TargetPersonImport;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.dailymonthlyprocessing.TargetPersonRequestImport;
+import nts.uk.ctx.at.shared.dom.scherec.closurestatus.ClosureStatusManagementRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -46,8 +46,6 @@ public class AppReflectManagerFromRecordImpl implements AppReflectManagerFromRec
 	private TargetPersonRequestImport targetPerson;
 	@Inject
 	private ExecutionLogRequestImport execuLog;
-	@Inject
-	private ClosureStatusManagementRequestImport closureStatusImport;
 	@Inject
 	private ApplicationRepository applicationRepo;
 	@Inject
@@ -62,6 +60,9 @@ public class AppReflectManagerFromRecordImpl implements AppReflectManagerFromRec
 	
 	@Inject
 	private EmployeeRequestAdapter employeeAdapter;
+	
+	@Inject
+	private ClosureStatusManagementRepository closureStatusManagementRepository;
 
 	@SuppressWarnings("rawtypes")
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -126,26 +127,33 @@ public class AppReflectManagerFromRecordImpl implements AppReflectManagerFromRec
 	@Override
 	public void reflectAppOfEmployee(String workId, String sid, DatePeriod datePeriod,
 			ExecutionTypeExImport refAppResult) {
-		//ドメインモデル「締め状態管理」を取得する
-		Optional<DatePeriod> optClosureStatus = closureStatusImport.closureDatePeriod(sid);
-		//「申請期間」を作成する
-		//申請期間　←　パラメータ.期間のうちドメインモデル「締め状態管理.期間」に含まれている期間を削除した期間
-		DatePeriod appDatePeriod = datePeriod;
-		if(optClosureStatus.isPresent()) {
-			DatePeriod closureDatePeriod = optClosureStatus.get();
-			if(datePeriod.start().beforeOrEquals(closureDatePeriod.end())
-					&& closureDatePeriod.end().before(datePeriod.end())) {
-				appDatePeriod = new DatePeriod(closureDatePeriod.end().addDays(1), datePeriod.end());
-			} else if (closureDatePeriod.end().beforeOrEquals(datePeriod.start())
-					&& datePeriod.end().after(closureDatePeriod.end())) {
-				GeneralDate sDate = datePeriod.start();
-				if(closureDatePeriod.end().equals(datePeriod.start())) {
-					sDate = datePeriod.start().addDays(1);
-				}
-				appDatePeriod = new DatePeriod(sDate, datePeriod.end());
-			}	
-		}		
-		this.reflectAppOfAppDate(workId, sid, refAppResult, appDatePeriod);		
+		// ドメインモデル「締め状態管理」を取得する
+		List<DatePeriod> lstPeriodMag = closureStatusManagementRepository.getAllByEmpId(sid).stream()
+				.map(x -> x.getPeriod()).sorted((x, y) -> x.end().compareTo(y.end())).collect(Collectors.toList());
+		DatePeriod dateProcess = datePeriod;
+		for(DatePeriod datePeriodCls : lstPeriodMag) {
+			/**
+			 * Input :      |*****************| 
+			 * 
+			 * closure |**********************|
+			 */
+			if (datePeriod.start().afterOrEquals(datePeriodCls.start())
+					&& datePeriod.end().beforeOrEquals(datePeriodCls.end())) {
+				return;
+			}
+			
+			/**
+			 * Input :                        |*************************************| 
+			 * 
+			 * closure |**********************|
+			 */
+			if (datePeriod.start().before(datePeriodCls.end()) && datePeriod.end().after(datePeriodCls.end())) {
+				dateProcess = new DatePeriod(datePeriodCls.end().addDays(1), datePeriod.end());
+			}
+			
+		}
+		
+		this.reflectAppOfAppDate(workId, sid, refAppResult, dateProcess);
 	}
 	@Override
 	public void reflectAppOfAppDate(String workId, String sid, ExecutionTypeExImport refAppResult,
@@ -206,8 +214,14 @@ public class AppReflectManagerFromRecordImpl implements AppReflectManagerFromRec
 		lstApptype.add(ApplicationType.BUSINESS_TRIP_APPLICATION.value);
 		lstApptype.add(ApplicationType.GO_RETURN_DIRECTLY_APPLICATION.value);
 		lstApptype.add(ApplicationType.STAMP_APPLICATION.value);
-		//lstApptype.add(ApplicationType.ANNUAL_HOLIDAY_APPLICATION.value);
+		lstApptype.add(ApplicationType.ANNUAL_HOLIDAY_APPLICATION.value);
 		lstApptype.add(ApplicationType.EARLY_LEAVE_CANCEL_APPLICATION.value);
+		lstApptype.add(ApplicationType.OVER_TIME_APPLICATION.value);
+		lstApptype.add(ApplicationType.ABSENCE_APPLICATION.value);
+		lstApptype.add(ApplicationType.HOLIDAY_WORK_APPLICATION.value);
+		lstApptype.add(ApplicationType.COMPLEMENT_LEAVE_APPLICATION.value);
+		lstApptype.add(ApplicationType.OPTIONAL_ITEM_APPLICATION.value);
+		
 		List<Integer> lstRecordStatus = new ArrayList<>();
 		List<Integer> lstScheStatus = new ArrayList<>();
 		//実行種別を確認

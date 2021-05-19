@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
-import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.ReceptionRestrictionSetting;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -25,18 +24,18 @@ public class ReceptionRestrictionSettingDto {
 	 */
 	public AfterhandRestrictionDto afterhandRestriction;
 	
-	public static ReceptionRestrictionSettingDto fromDomain(ReceptionRestrictionSetting receptionRestrictionSetting) {
-		ReceptionRestrictionSettingDto receptionRestrictionSettingDto = new ReceptionRestrictionSettingDto();
-		receptionRestrictionSettingDto.appType = receptionRestrictionSetting.getAppType().value;
-		receptionRestrictionSettingDto.beforehandRestriction = BeforehandRestrictionDto.fromDomain(receptionRestrictionSetting.getBeforehandRestriction());
-		receptionRestrictionSettingDto.afterhandRestriction = AfterhandRestrictionDto.fromDomain(receptionRestrictionSetting.getAfterhandRestriction());
-		return receptionRestrictionSettingDto;
-	}
+//	public static ReceptionRestrictionSettingDto fromDomain(ReceptionRestrictionSetting receptionRestrictionSetting) {
+//		ReceptionRestrictionSettingDto receptionRestrictionSettingDto = new ReceptionRestrictionSettingDto();
+//		receptionRestrictionSettingDto.appType = receptionRestrictionSetting.getAppType().value;
+//		receptionRestrictionSettingDto.beforehandRestriction = BeforehandRestrictionDto.fromDomain(receptionRestrictionSetting.getBeforehandRestriction());
+//		receptionRestrictionSettingDto.afterhandRestriction = AfterhandRestrictionDto.fromDomain(receptionRestrictionSetting.getAfterhandRestriction());
+//		return receptionRestrictionSettingDto;
+//	}
 	
-	public ReceptionRestrictionSetting toDomain() {
-		return new ReceptionRestrictionSetting(
-				EnumAdaptor.valueOf(appType, ApplicationType.class), 
-				beforehandRestriction.toDomain(), 
-				afterhandRestriction.toDomain());
-	}
+//	public ReceptionRestrictionSetting toDomain() {
+//		return new ReceptionRestrictionSetting(
+//				EnumAdaptor.valueOf(appType, ApplicationType.class),
+//				beforehandRestriction.toDomain(),
+//				afterhandRestriction.toDomain());
+//	}
 }

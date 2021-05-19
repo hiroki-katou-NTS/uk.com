@@ -4,9 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.worktime.common;
 
-import nts.uk.ctx.at.shared.dom.worktime.common.BooleanGetAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.CommonRestSetting;
-import nts.uk.ctx.at.shared.dom.worktime.common.FixedRestCalculateMethod;
 import nts.uk.ctx.at.shared.dom.worktime.common.FixedWorkRestSetGetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.common.RestTimeOfficeWorkCalcMethod;
 import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtWtDif;
@@ -59,17 +57,17 @@ public class JpaFixedWorkRestSetGetMemento<T extends ContractUkJpaEntity> implem
 	 * @see nts.uk.ctx.at.shared.dom.worktime.common.FixedWorkRestSetGetMemento#
 	 * getIsPlanActualNotMatchMasterRefer()
 	 */
-	@Override
-	public boolean getIsPlanActualNotMatchMasterRefer() {
-		if (this.entity instanceof KshmtWtFix) {
-			return BooleanGetAtr.getAtrByInteger(((KshmtWtFix) this.entity).getIsPlanActualNotMatchMasterRefe());
-		}
-		if (this.entity instanceof KshmtWtDif) {
-			return BooleanGetAtr
-					.getAtrByInteger(((KshmtWtDif) this.entity).getDtIsPlanActualNotMatchMasterRefe());
-		}
-		throw new IllegalStateException("entity type is not valid");
-	}
+//	@Override
+//	public boolean getIsPlanActualNotMatchMasterRefer() {
+//		if (this.entity instanceof KshmtWtFix) {
+//			return BooleanGetAtr.getAtrByInteger(((KshmtWtFix) this.entity).getIsPlanActualNotMatchMasterRefe());
+//		}
+//		if (this.entity instanceof KshmtWtDif) {
+//			return BooleanGetAtr
+//					.getAtrByInteger(((KshmtWtDif) this.entity).getDtIsPlanActualNotMatchMasterRefe());
+//		}
+//		throw new IllegalStateException("entity type is not valid");
+//	}
 
 	/*
 	 * (non-Javadoc)
@@ -77,15 +75,15 @@ public class JpaFixedWorkRestSetGetMemento<T extends ContractUkJpaEntity> implem
 	 * @see nts.uk.ctx.at.shared.dom.worktime.common.FixedWorkRestSetGetMemento#
 	 * getCalculateMethod()
 	 */
-	@Override
-	public FixedRestCalculateMethod getCalculateMethod() {
-		if (this.entity instanceof KshmtWtFix) {
-			return FixedRestCalculateMethod.valueOf(((KshmtWtFix) this.entity).getCalcMethod());
-		}
-		if (this.entity instanceof KshmtWtDif) {
-			return FixedRestCalculateMethod.valueOf(((KshmtWtDif) this.entity).getDtCalcMethod());
-		}
-		throw new IllegalStateException("entity type is not valid");
-	}
+//	@Override
+//	public FixedRestCalculateMethod getCalculateMethod() {
+//		if (this.entity instanceof KshmtWtFix) {
+//			return FixedRestCalculateMethod.valueOf(((KshmtWtFix) this.entity).getCalcMethod());
+//		}
+//		if (this.entity instanceof KshmtWtDif) {
+//			return FixedRestCalculateMethod.valueOf(((KshmtWtDif) this.entity).getDtCalcMethod());
+//		}
+//		throw new IllegalStateException("entity type is not valid");
+//	}
 
 }

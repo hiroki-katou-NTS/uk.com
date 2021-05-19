@@ -194,20 +194,11 @@ export class KafS20A2Component extends KafS00ShrComponent {
             const { application } = appDetail;
             const { optionalItems } = application;
 
-            optionalItems.forEach((item) => {
-                let optionalItem = appDetail.optionalItems.find((optionalItem) => {
-
-                    return optionalItem.optionalItemNo == item.itemNo;
-                });
-                let controlAttendance = appDetail.controlOfAttendanceItems.find((controlAttendance) => {
-
-                    return item.itemNo == controlAttendance.itemDailyID - 640;
-                });
-
+            appDetail.optionalItems.forEach((optionalItem: any) => {
+                let item = _.find(optionalItems, {itemNo: optionalItem.optionalItemNo});
+                let controlAttendance = _.find(appDetail.controlOfAttendanceItems, {itemDailyID: optionalItem.optionalItemNo + 640});
                 const { calcResultRange, optionalItemAtr, optionalItemName, optionalItemNo, unit, description, dispOrder } = optionalItem;
                 const { lowerCheck, upperCheck, amountLower, amountUpper, numberLower, numberUpper, timeLower, timeUpper } = calcResultRange;
-
-                const { amount, times, time } = item;
 
                 vm.optionalItemApplication.push({
                     lowerCheck,
@@ -218,9 +209,9 @@ export class KafS20A2Component extends KafS00ShrComponent {
                     numberUpper,
                     timeLower,
                     timeUpper,
-                    amount,
-                    number: times,
-                    time,
+                    amount: item ? item.amount : null,
+                    number: item ? item.times : null,
+                    time: item ? item.time : null,
                     inputUnitOfTimeItem: controlAttendance ? controlAttendance.inputUnitOfTimeItem : null,
                     optionalItemAtr,
                     optionalItemName,
@@ -362,16 +353,11 @@ export class KafS20A2Component extends KafS00ShrComponent {
 
         vm.$http.post('at', API.register, params).then((res: IRes) => {
             vm.$mask('hide');
-
+            vm.$http.post('at', API.reflectApp, res.data.reflectAppIdLst);
             vm.$emit('nextToStep3', res);
         }).catch((error) => {
             vm.$mask('hide');
-            //show Msg_1691,1692,1693
-            if (error.messageId == 'Msg_1691' || error.messageId == 'Msg_1692' || error.messageId == 'Msg_1693') {
-                vm.$modal.warn({ messageId: error.messageId, messageParams: error.parameterIds[0] });
-            } else {
-                vm.handleErrorMessage(error);
-            }
+            vm.handleErrorMessage(error);
         });
 
     }
@@ -411,12 +397,7 @@ export class KafS20A2Component extends KafS00ShrComponent {
             vm.$emit('nextToStep3', res);
         }).catch((error: any) => {
             vm.$mask('hide');
-            //show Msg_1691,1692,1693
-            if (error.messageId == 'Msg_1691' || error.messageId == 'Msg_1692' || error.messageId == 'Msg_1693') {
-                vm.$modal.warn({ messageId: error.messageId, messageParams: error.parameterIds[0] });
-            } else {
-                vm.handleErrorMessage(error);
-            }
+            vm.handleErrorMessage(error);
         });
     }
 
@@ -424,27 +405,23 @@ export class KafS20A2Component extends KafS00ShrComponent {
     public handleErrorMessage(res: any) {
         const vm = this;
         vm.$mask('hide');
-        if (res.messageId) {
-            return vm.$modal.error({ messageId: res.messageId, messageParams: res.parameterIds });
+        if (_.isArray(res.errors)) {
+            res.errors.forEach((error) => {
+                document.querySelector('.item-' + error.parameterIds[1] + ' input').classList.add('is-invalid');
+                document.querySelector('.item-' + error.parameterIds[1] + ' .invalid-feedback').innerHTML = '<span>' + error.errorMessage + '</span>';
+            });
         } else {
-
-            // if (_.isArray(res.errors)) {
-            //     return vm.$modal.error({ messageId: res.errors[0].messageId, messageParams: res.parameterIds });
-            // } else {
-            //     return vm.$modal.error({ messageId: res.errors[0].messageId, messageParams: res.parameterIds });
-            // }
+            return vm.$modal.error(res);
         }
     }
 
     public handleKaf00BChangePrePost(prePost) {
         const vm = this;
-
         vm.application.prePostAtr = prePost;
     }
 
     public handleKaf00BChangeDate(changeDate) {
         const vm = this;
-
         vm.application.opAppStartDate = vm.$dt.date(changeDate.startDate, 'YYYY/MM/DD');
         vm.application.opAppEndDate = vm.$dt.date(changeDate.endDate, 'YYYY/MM/DD');
         vm.application.appDate = vm.$dt.date(changeDate.startDate, 'YYYY/MM/DD');
@@ -452,13 +429,11 @@ export class KafS20A2Component extends KafS00ShrComponent {
 
     public handleKaf00CChangeAppReason(appReason) {
         const vm = this;
-
         vm.application.opAppReason = appReason;
     }
 
     public handleKaf00CChangeReasonCD(appReasonCD) {
         const vm = this;
-
         vm.application.opAppStandardReasonCD = appReasonCD;
     }
 }
@@ -468,4 +443,5 @@ const API = {
     getControlAttendance: 'ctx/at/request/application/optionalitem/getControlAttendance',
     getListItemNo: 'ctx/at/record/optionalitem/findByListItemNo',
     update: 'ctx/at/request/application/optionalitem/update',
+    reflectApp: 'at/request/application/reflect-app'
 };

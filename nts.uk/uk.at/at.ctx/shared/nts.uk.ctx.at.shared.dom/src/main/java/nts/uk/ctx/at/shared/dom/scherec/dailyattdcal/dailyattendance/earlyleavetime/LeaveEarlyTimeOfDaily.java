@@ -6,6 +6,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.Getter;
+import lombok.Setter;
 import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
@@ -21,7 +22,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancet
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeWithCalculation;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.ErrorAlarmWorkRecordCode;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.vacationusetime.VacationClass;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.AttendanceItemDictionaryForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.IntervalExemptionTime;
@@ -34,6 +34,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
+import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
@@ -57,6 +58,9 @@ public class LeaveEarlyTimeOfDaily {
 	private TimevacationUseTimeOfDaily timePaidUseTime;
 	//インターバル時間
 	private IntervalExemptionTime intervalTime;
+	// 早退報告したのでアラームにしない
+	@Setter
+	private boolean doNotSetAlarm;
 	
 	
 	public LeaveEarlyTimeOfDaily(TimeWithCalculation leaveEarlyTime, TimeWithCalculation lateDeductionTime, WorkNo workNo,
@@ -66,6 +70,7 @@ public class LeaveEarlyTimeOfDaily {
 		this.workNo = workNo;
 		this.timePaidUseTime = timePaidUseTime;
 		this.intervalTime = exemptionTime;
+		this.doNotSetAlarm = false;
 	}
 	
 	/**
@@ -239,10 +244,14 @@ public class LeaveEarlyTimeOfDaily {
 		return result;
 	}
 	
+	//クリア 早退時間の時間
 	public void  resetData() {
-		this.leaveEarlyTime = TimeWithCalculation.sameTime(new AttendanceTime(0));
-		this.leaveEarlyDeductionTime = TimeWithCalculation.sameTime(new AttendanceTime(0));
-		this. timePaidUseTime =  TimevacationUseTimeOfDaily.defaultValue();
-		this.intervalTime =  IntervalExemptionTime.defaultValue();
+		this.leaveEarlyTime.setTime(new AttendanceTime(0));
+	}
+	
+	public static LeaveEarlyTimeOfDaily createDefaultWithNo(int no) {
+		return new LeaveEarlyTimeOfDaily(TimeWithCalculation.sameTime(new AttendanceTime(0)),
+				TimeWithCalculation.sameTime(new AttendanceTime(0)), new WorkNo(no),
+				TimevacationUseTimeOfDaily.defaultValue(), IntervalExemptionTime.defaultValue());
 	}
 }

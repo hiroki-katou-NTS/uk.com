@@ -93,10 +93,10 @@ module nts.uk.ui.chart {
                     let lineCharts = self.gcChart[chart.lineNo];
                     if (_(lineCharts).keys().find(k => {
                         let sameLineChart: GanttChart = lineCharts[k];
-                        return (sameLineChart.id !== chart.id && _.isNil(sameLineChart.parent) 
+                        return (sameLineChart.id !== chart.id && sameLineChart.parent === chart.parent 
                                 && !sameLineChart.bePassedThrough
-                                && ((pDec.end > sameLineChart.start && pDec.end < sameLineChart.end) 
-                                    || (pDec.start > sameLineChart.start && pDec.start < sameLineChart.end)));
+                                && ((diff > 0 && chart.end <= sameLineChart.start && pDec.end > sameLineChart.start) 
+                                    || (diff < 0 && chart.start >= sameLineChart.end && pDec.start < sameLineChart.end)));
                     })) return;
                     
                     if (parentChart && ((diff > 0 && pDec.end > parentChart.end) || (diff < 0 && pDec.start < parentChart.start))) return;
@@ -112,17 +112,34 @@ module nts.uk.ui.chart {
                             childSlide = _.find(self.slideTrigger.children, c => c.id === child.id);
                             if (!childSlide) return;
                             child.reposition({ start: childSlide.start + step, end: childSlide.end + step, left: childSlide.left + step * child.unitToPx });
-                        } else if (diff > 0 && child.start < pDec.start && !child.pin) {
-                            childSlide = _.find(self.slideTrigger.children, c => c.id === child.id);
-                            if (!childSlide) return;
-                            child.reposition({ width: childSlide.length + (childSlide.start - pDec.start) * child.unitToPx, left: pDec.start * child.unitToPx, start: pDec.start });
-                        } else if (diff < 0 && child.end > pDec.end && !child.pin) {
-                            childSlide = _.find(self.slideTrigger.children, c => c.id === child.id);
-                            if (!childSlide) return;
-                            child.reposition({ width: childSlide.length + (pDec.end - childSlide.end) * child.unitToPx, end: pDec.end });
+                        } else if (!child.pin || (child.pin && child.pruneOnSlide)) {
+                            let childStart = Math.max(child.initStart, pDec.start),
+                                childEnd = Math.min(child.initEnd, pDec.end);
+                            if (childStart < childEnd) {
+                                let childLength = (childEnd - childStart) * child.unitToPx - 1;
+                                if (child.pin && child.rollup) { 
+                                    child.reposition({
+                                        width: childLength,
+                                        left: childStart * child.unitToPx
+                                    });
+                                } else {
+                                    child.reposition({ 
+                                        width: childLength, 
+                                        start: childStart, 
+                                        end: childEnd, 
+                                        left: childStart * child.unitToPx 
+                                    });
+                                }
+                                
+                                if (childLength > 0 && !self.chartArea.contains(child.html)) {
+                                    self.chartArea.appendChild(child.html);
+                                }
+                            } else child.reposition({ width: 0 });
                         }
                     });
                     
+                    pDec.initStart = pDec.start;
+                    pDec.initEnd = pDec.end;
                     chart.reposition(pDec);
                 } else if (self.slideTrigger.holdPos === HOLD_POS.START) {
                     if (chart.fixed === CHART_FIXED.START || chart.fixed === CHART_FIXED.BOTH) return;
@@ -136,7 +153,7 @@ module nts.uk.ui.chart {
                     let lineCharts = self.gcChart[chart.lineNo];
                     if (_(lineCharts).keys().find(k => {
                         let sameLineChart: GanttChart = lineCharts[k];
-                        return (sameLineChart.id !== chart.id && _.isNil(sameLineChart.parent) 
+                        return (sameLineChart.id !== chart.id && sameLineChart.parent === chart.parent 
                                 && !sameLineChart.bePassedThrough
                                 && (nearestLine < chart.start && pDec.start < sameLineChart.end && chart.end > sameLineChart.end));
                     })) return;
@@ -201,7 +218,7 @@ module nts.uk.ui.chart {
                     let lineCharts = self.gcChart[chart.lineNo];
                     if (_(lineCharts).keys().find(k => {
                         let sameLineChart: GanttChart = lineCharts[k];
-                        return (sameLineChart.id !== chart.id && _.isNil(sameLineChart.parent) 
+                        return (sameLineChart.id !== chart.id && sameLineChart.parent === chart.parent 
                                 && !sameLineChart.bePassedThrough
                                 && (nearestLine > chart.end && pDec.end > sameLineChart.start && chart.start < sameLineChart.start));
                     })) return;
@@ -345,7 +362,16 @@ module nts.uk.ui.chart {
                     length: parseFloat(chart.html.style.width),
                     start: chart.start,
                     end: chart.end,
-                    children: _.map(chart.children, c => ({ id: c.id, start: c.start, end: c.end, length: parseFloat(c.html.style.width), left: parseFloat(c.html.style.left) })),
+                    children: _.map(chart.children, c => 
+                        ({ 
+                            id: c.id, 
+                            start: c.start, 
+                            end: c.end, 
+                            initStart: c.initStart, 
+                            initEnd: c.initEnd,
+                            length: parseFloat(c.html.style.width), 
+                            left: parseFloat(c.html.style.left) 
+                        })),
                     edgeCharts: []
                 };
                 
@@ -407,7 +433,9 @@ module nts.uk.ui.chart {
             }
             
             if (chart.fixed === CHART_FIXED.BOTH && parentChart 
-                && chart.start > parentChart.start && chart.end < parentChart.end
+                && ((chart.start > parentChart.start && chart.end < parentChart.end)
+                    || ((chart.start === parentChart.start || chart.end === parentChart.end) 
+                        && (chart.end - chart.start) * chart.unitToPx <= chart.drawerSize + 2))
                 && (event.offsetX < chart.drawerSize || parseFloat(chart.html.style.width) - chart.drawerSize < event.offsetX)) {
                 return HOLD_POS.BODY;
             } else if (chart.fixed !== CHART_FIXED.START && event.offsetX < chart.drawerSize) {
@@ -656,6 +684,7 @@ module nts.uk.ui.chart {
         drawerSize: number;
         bePassedThrough: boolean;
         pin: boolean;
+        pruneOneSlide: boolean;
         rollup: boolean;
         roundEdge: boolean;
         resizeFinished: any;
@@ -683,6 +712,7 @@ module nts.uk.ui.chart {
             this.drawerSize = options.drawerSize;
             this.bePassedThrough = options.bePassedThrough;
             this.pin = options.pin;
+            this.pruneOnSlide = options.pruneOnSlide;
             this.rollup = options.rollup;
             this.roundEdge = options.roundEdge;
             this.resizeFinished = options.resizeFinished;
@@ -701,6 +731,8 @@ module nts.uk.ui.chart {
         maxArea: number = 1000;
         start: number;
         end: number;
+        initStart: number;
+        initEnd: number;
         zIndex: number = 1000;
         color: string = "#b8f441";
         origin: Array<any> = [0, 0];
@@ -721,6 +753,7 @@ module nts.uk.ui.chart {
         locked: boolean = false;
         rollup: boolean = false;
         pin: boolean = false;
+        pruneOnSlide: boolean = false;
         roundEdge: boolean = false;
         html: HTMLElement;
         resizeFinished: any;
@@ -732,6 +765,8 @@ module nts.uk.ui.chart {
             self.limitStartMax = options.limitStartMax || options.maxArea || self.maxArea;
             self.limitEndMax = options.limitEndMax || options.maxArea || self.maxArea;
             $.extend(self, options);
+            self.initStart = self.start;
+            self.initEnd = self.end;
         }
         
         newChart() {
@@ -783,6 +818,14 @@ module nts.uk.ui.chart {
                 self.end = style.end;
             }
             
+            if (_.has(style, "initStart")) {
+                self.initStart = style.initStart;
+            }
+            
+            if (_.has(style, "initEnd")) {
+                self.initEnd = style.initEnd;
+            }
+            
             if (_.has(style, "top")) {
                 self.html.style.top = `${style.top}px`;
             }
@@ -794,6 +837,7 @@ module nts.uk.ui.chart {
             if (_.has(style, "width")) {
                 if (style.width <= 0) {
                     if (self.html.parentNode) {
+                        self.html.style.width = "0px";
                         self.html.parentNode.removeChild(self.html);
                     }
                 } else {

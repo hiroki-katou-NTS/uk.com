@@ -24,12 +24,9 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakDayOffMngRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimDayOffMng;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemainRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.OccurrenceDay;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.OccurrenceTime;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RequiredDay;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RequiredTime;
@@ -54,9 +51,6 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 @Transactional(value = TxType.REQUIRED)
 public class InterimBreakDayoffServiceImpl implements InterimBreakDayoffService {
 
-	/** 暫定残数管理データ */
-	@Inject
-	private InterimRemainRepository interimRemainRepo;
 	/** 暫定代休・休出管理データ */
 	@Inject
 	private InterimBreakDayOffMngRepository interimBreakDayoffMngRepo;
@@ -129,20 +123,18 @@ public class InterimBreakDayoffServiceImpl implements InterimBreakDayoffService 
 				
 				// 暫定代休管理データを作成
 				String dayoffGuid = IdentifierUtil.randomUniqueId();
-				InterimRemain remain = new InterimRemain(
+				InterimDayOffMng dayoffMng = new InterimDayOffMng(
 						dayoffGuid,
 						employeeId,
 						targetWorkInfo.getYmd(),
 						CreateAtr.RECORD,
 						RemainType.SUBHOLIDAY,
-						RemainAtr.SINGLE);
-				InterimDayOffMng dayoffMng = new InterimDayOffMng(
-						dayoffGuid,
 						new RequiredTime(0),
 						new RequiredDay(dayoffDays),
 						new UnOffsetTime(0),
-						new UnOffsetDay(dayoffDays));
-				this.interimRemainRepo.persistAndUpdateInterimRemain(remain);
+						new UnOffsetDay(dayoffDays),
+						Optional.empty()
+						);
 				this.interimBreakDayoffMngRepo.persistAndUpdateInterimDayOffMng(dayoffMng);
 			}
 			
@@ -197,15 +189,12 @@ public class InterimBreakDayoffServiceImpl implements InterimBreakDayoffService 
 					
 					// 暫定休出管理データを作成
 					String breakGuid = IdentifierUtil.randomUniqueId();
-					InterimRemain remain = new InterimRemain(
+					InterimBreakMng breakMng = new InterimBreakMng(
 							breakGuid,
 							employeeId,
 							targetWorkInfo.getYmd(),
 							CreateAtr.RECORD,
 							RemainType.BREAK,
-							RemainAtr.SINGLE);
-					InterimBreakMng breakMng = new InterimBreakMng(
-							breakGuid,
 							new AttendanceTime(designatedTime.getOneDayTime().v()),
 							GeneralDate.ymd(9999, 12, 31),
 							new OccurrenceTime(0),
@@ -213,7 +202,6 @@ public class InterimBreakDayoffServiceImpl implements InterimBreakDayoffService 
 							new AttendanceTime(designatedTime.getHalfDayTime().v()),
 							new UnUsedTime(0),
 							new UnUsedDay(breakDays));
-					this.interimRemainRepo.persistAndUpdateInterimRemain(remain);
 					this.interimBreakDayoffMngRepo.persistAndUpdateInterimBreakMng(breakMng);
 				}
 			}
@@ -223,23 +211,13 @@ public class InterimBreakDayoffServiceImpl implements InterimBreakDayoffService 
 	/** 削除 */
 	@Override
 	public void remove(String employeeId, DatePeriod period) {
-
-		// 暫定代休管理データを削除
-		val dayoffList = this.interimRemainRepo.getRemainBySidPriod(employeeId, period, RemainType.SUBHOLIDAY);
-		for (val dayoffData : dayoffList){
-			val targetId = dayoffData.getRemainManaID();
-			this.interimBreakDayoffMngRepo.deleteInterimDayOffMng(targetId);
-			this.interimBreakDayoffMngRepo.deleteBreakDayOffById(targetId, false);
-		}
-		this.interimRemainRepo.deleteBySidPeriodType(employeeId, period, RemainType.SUBHOLIDAY);
-
-		// 暫定休出管理データを削除
-		val breakList = this.interimRemainRepo.getRemainBySidPriod(employeeId, period, RemainType.BREAK);
-		for (val breakData : breakList){
-			val targetId = breakData.getRemainManaID();
-			this.interimBreakDayoffMngRepo.deleteInterimBreakMng(targetId);
-			this.interimBreakDayoffMngRepo.deleteBreakDayOffById(targetId, true);
-		}
-		this.interimRemainRepo.deleteBySidPeriodType(employeeId, period, RemainType.BREAK);
+		
+		
+		period.datesBetween().forEach(x -> {
+			// 暫定代休管理データを削除
+			this.interimBreakDayoffMngRepo.deleteInterimBreakMngBySidAndYmd(employeeId, x);
+			// 暫定休出管理データを削除
+			this.interimBreakDayoffMngRepo.deleteInterimDayOffMngBySidAndYmd(employeeId, x);
+		});
 	}
 }

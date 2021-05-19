@@ -5,7 +5,6 @@ import java.util.Map;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ActualContentDisplay;
@@ -13,7 +12,6 @@ import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDi
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.CheckBeforeOutputMulti;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
-import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime_Old;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOvertimeDetail;
 import nts.uk.ctx.at.request.dom.application.overtime.ApplicationTime;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeAppAtr;
@@ -34,46 +32,7 @@ public interface OvertimeService {
 	 */
 	public int checkOvertimeAtr(String url);
 	
-	/**
-	 * 07_勤務種類取得
-	 * @param companyID
-	 * @param employeeID
-	 * @param personalLablorCodition
-	 * @param requestAppDetailSetting
-	 * @return
-	 */
-	// public List<WorkTypeOvertime> getWorkType(String companyID,String employeeID,ApprovalFunctionSetting approvalFunctionSetting,Optional<AppEmploymentSetting> appEmploymentSettings);
 	
-	/**
-	 * 08_就業時間帯取得
-	 * @param companyID
-	 * @param employeeID
-	 * @param personalLablorCodition
-	 * @param requestAppDetailSetting
-	 * @return
-	 */
-	// public List<SiftType> getSiftType(String companyID,String employeeID,ApprovalFunctionSetting approvalFunctionSetting,GeneralDate baseDate);
-	
-	/**
-	 * 09_勤務種類就業時間帯の初期選択をセットする
-	 * @param companyID
-	 * @param employeeID
-	 * @param baseDate
-	 * @param workTypes
-	 * @param siftTypes
-	 * @return
-	 */
-	public WorkTypeAndSiftType getWorkTypeAndSiftTypeByPersonCon(String companyID,String employeeID,GeneralDate baseDate,List<WorkTypeOvertime> workTypes, List<SiftType> siftTypes);
-	
-	
-	void CreateOvertime(AppOverTime_Old domain, Application newApp);
-	
-	/**
-	 * 起動時の36協定時間の状態を取得する
-	 * @param appOvertimeDetail
-	 * @return
-	 */
-	public AgreementTimeStatusOfMonthly getTime36Detail(AppOvertimeDetail appOvertimeDetail);
 	
 	/**
 	 * Refactor5 計算を実行する
@@ -86,6 +45,7 @@ public interface OvertimeService {
 	 * @param advanceApplicationTime
 	 * @param achieveApplicationTime
 	 * @param workContent
+	 * @param agent
 	 * @return 残業申請の表示情報
 	 */
 	public DisplayInfoOverTime calculate(
@@ -97,7 +57,8 @@ public interface OvertimeService {
 			ApplicationTime advanceApplicationTime, 
 			ApplicationTime achieveApplicationTime,
 			WorkContent workContent,
-			OvertimeAppSet overtimeAppSet
+			OvertimeAppSet overtimeAppSet,
+			Boolean agent
 			);
 	/**
 	 * Refactor5 19_計算処理
@@ -121,7 +82,8 @@ public interface OvertimeService {
 			ApplicationTime advanceApplicationTime, 
 			ApplicationTime achieveApplicationTime,
 			WorkContent workContent,
-			OvertimeAppSet overtimeAppSet);
+			OvertimeAppSet overtimeAppSet,
+			Boolean agent);
 	
 	/**
 	 * Refactor5 01_初期起動の処理
@@ -138,7 +100,7 @@ public interface OvertimeService {
 			AppDispInfoStartupOutput appDispInfoStartupOutput,
 			Optional<Integer> startTimeSPR,
 			Optional<Integer> endTimeSPR,
-			Boolean isProxy
+			Boolean agent
 			);
 	
 	/**
@@ -272,7 +234,7 @@ public interface OvertimeService {
 			AppDispInfoStartupOutput appDispInfoStartupOutput,
 			Optional<Integer> startTimeSPR,
 			Optional<Integer> endTimeSPR,
-			Boolean isProxy
+			Boolean agent
 			);
 	/**
 	 * Refactor5 UKDesign.UniversalK.就業.KAF_申請.KAF005_残業申請.A：残業申請（新規登録）.ユースケース
@@ -295,7 +257,8 @@ public interface OvertimeService {
 			Optional<Integer> endTimeSPR,
 			AppDispInfoStartupOutput appDispInfoStartupOutput,
 			OvertimeAppSet overtimeAppSet,
-			PrePostInitAtr prePost
+			PrePostInitAtr prePost,
+			Boolean agent
 			);
 	
 
@@ -325,7 +288,8 @@ public interface OvertimeService {
 			OvertimeAppSet overtimeAppSet,
 			List<WorkType> worktypes,
 			PrePostInitAtr prePost,
-			DisplayInfoOverTime displayInfoOverTime
+			DisplayInfoOverTime displayInfoOverTime,
+			Boolean agent
 			);
 	
 	// Mobile //
@@ -349,7 +313,8 @@ public interface OvertimeService {
 			Optional<DisplayInfoOverTime> disOptional,
 			Optional<AppOverTime> appOptional,
 			AppDispInfoStartupOutput appDispInfoStartupOutput,
-			OvertimeAppAtr overtimeAppAtr);
+			OvertimeAppAtr overtimeAppAtr,
+			Boolean agent);
 	/**
 	 * Refactor5 UKDesign.UniversalK.就業.KAF_申請.KAFS05_残業申請(スマホ).A：残業申請(新規).アルゴリズム.申請日を変更する
 	 * 申請日を変更する
@@ -423,7 +388,8 @@ public interface OvertimeService {
 			AppOverTime appOverTime,
 			Boolean mode,
 			String employeeId,
-			Optional<GeneralDate> dateOp
+			Optional<GeneralDate> dateOp,
+			Boolean agent
 			);
 	/**
 	 * Refactor5 個別登録前チェッ処理（複数人版）

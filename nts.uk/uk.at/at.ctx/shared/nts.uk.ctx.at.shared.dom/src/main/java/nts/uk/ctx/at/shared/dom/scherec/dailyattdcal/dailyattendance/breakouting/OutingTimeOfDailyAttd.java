@@ -15,6 +15,8 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.DeductionClassification;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.TimeSheetOfDeductionItem;
 import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
+import nts.uk.ctx.at.shared.dom.worktime.common.RoundingTime;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowFixedRestSet;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestSettingDetail;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestTimezone;
@@ -46,30 +48,37 @@ public class OutingTimeOfDailyAttd {
 	public List<TimeSheetOfDeductionItem> removeUnuseItemBaseOnAtr(DeductionAtr dedAtr,
 			WorkTimeMethodSet workTimeMethodSet,
 			Optional<FlowWorkRestTimezone> fluRestTime,
-			Optional<FlowWorkRestSettingDetail> flowDetail) {
+			Optional<FlowWorkRestSettingDetail> flowDetail,
+			RoundingTime roundingTime) {
 		
 		/** △外出を取得 */
-		List<TimeSheetOfDeductionItem> returnList = (dedAtr.isDeduction())?
+		List<OutingTimeSheet> outtingTimeSheetreturnList = (dedAtr.isDeduction())?
 														//控除用の時は、外出理由 = 私用or組合のみの時間帯に絞る(他の2つは消す)
 														this.outingTimeSheets.stream()
 																			 .filter(tc->tc.getReasonForGoOut().isPrivateOrUnion())
 																			 .filter(ts -> ts.isCalcState())
-																			 .map(tc -> tc.toTimeSheetOfDeductionItem())
 																			 .collect(Collectors.toList()):
 														//全ての時は、全外出時間帯が対象
 														this.outingTimeSheets.stream()
 																			 .filter(ts -> ts.isCalcState())
-																			 .map(tc -> tc.toTimeSheetOfDeductionItem())
 																			 .collect(Collectors.toList());
+																			 
+		List<OutingTimeSheet> roundingOutingTime = roundingTime.roundingOutingTime(outtingTimeSheetreturnList);
+																			 
+		List<TimeSheetOfDeductionItem> returnList = roundingOutingTime.stream()
+															 .map(tc -> tc.toTimeSheetOfDeductionItem())
+															.collect(Collectors.toList());
+		
 		/** ○流動勤務かどうか判断 */
 		if(workTimeMethodSet.isFluidWork()) {
 			
 			val isStampWithoutRefer = flowDetail.map(c -> c.getFlowFixedRestSetting().getCalculateMethod().isStampWithoutReference()).orElse(false);
 			val isFixBreak = fluRestTime.map(c -> c.isFixRestTime()).orElse(false);
-			val isReferRestTime = flowDetail.map(c -> c.getFlowRestSetting().getCalculateMethod().isUseMasterAndStamp()).orElse(false);
+//			val isReferRestTime = flowDetail.map(c -> c.getFlowRestSetting().getCalculateMethod().isUseMasterAndStamp()).orElse(false);
+			val isUseStamp = flowDetail.get().getFlowRestSetting().isUseStamp();
 
 			/** ○外出を休憩として扱うかどうか判断 */
-			if((isStampWithoutRefer && isFixBreak) || (!isFixBreak  && isReferRestTime)) {
+			if((isStampWithoutRefer && isFixBreak) || (!isFixBreak && isUseStamp)) {
 				
 				returnList = convertFromgoOutTimeToBreakTime(flowDetail.get().getFlowFixedRestSetting(),returnList);
 			}
@@ -94,7 +103,7 @@ public class OutingTimeOfDailyAttd {
 			if((fluidprefixBreakTimeSet.isUsePrivateGoOutRest() && deductionItem.getGoOutReason().get().isPrivate())
 				||(fluidprefixBreakTimeSet.isUseAssoGoOutRest() && deductionItem.getGoOutReason().get().isUnion())) {
 				/** ○控除項目の時間帯の休憩用の区分を変更 */
-				returnList.add(TimeSheetOfDeductionItem.createTimeSheetOfDeductionItemAsFixed(deductionItem.getTimeSheet(),
+				returnList.add(TimeSheetOfDeductionItem.createTimeSheetOfDeductionItem(deductionItem.getTimeSheet(),
 																							  deductionItem.getRounding(),
 																							  deductionItem.getRecordedTimeSheet(),
 																							  deductionItem.getDeductionTimeSheet(),

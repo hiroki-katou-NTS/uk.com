@@ -1,21 +1,21 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Optional;
 
 import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.DailyInterimRemainMngData;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualHolidayMng;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualLeaveMngWork;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TempAnnualLeaveMngs;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveUsedDayNumber;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveUsedNumber;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveUsedTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UseDay;
+import nts.uk.ctx.at.shared.dom.remainingnumber.work.DigestionHourlyTimeType;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceTimeOfMonthly;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 
 /**
  * 暫定年休管理データを作成する
@@ -28,15 +28,29 @@ public class CreateInterimAnnualMngData {
 	 * @param timeMonth 月別実績の勤怠時間
 	 * @return 暫定年休管理データ
 	 */
-	public static Optional<TmpAnnualHolidayMng> ofCompensFlex(AttendanceTimeOfMonthly timeMonth) {
-		
+	public static Optional<TempAnnualLeaveMngs> ofCompensFlex(AttendanceTimeOfMonthly timeMonth) {
+
 		// 「暫定年休管理データ」を作成
 		if (timeMonth == null) return Optional.empty();
+
 		val flexTime = timeMonth.getMonthlyCalculation().getFlexTime();
-		double deductDays = flexTime.getFlexShortDeductTime().getAnnualLeaveDeductDays().v();
+		double deductDays = timeMonth.getMonthlyCalculation().getFlexTime().getFlexShortDeductTime().getAnnualLeaveDeductDays().v();
+		double deductTimes = flexTime.getFlexShortDeductTime().getAbsenceDeductTime().v();
 		String dataGuid = IdentifierUtil.randomUniqueId();
-		TmpAnnualHolidayMng result = new TmpAnnualHolidayMng(dataGuid, "000", new UseDay(deductDays));
-		
+		TempAnnualLeaveMngs result = new TempAnnualLeaveMngs(
+				dataGuid,
+				timeMonth.getEmployeeId(),
+				timeMonth.getYearMonth().lastGeneralDate(),
+				CreateAtr.FLEXCOMPEN,
+				RemainType.ANNUAL,
+				new WorkTypeCode("000"),
+				LeaveUsedNumber.of(new LeaveUsedDayNumber(deductDays),
+				Optional.ofNullable(new LeaveUsedTime((int) deductTimes)),Optional.empty(),Optional.empty()),
+				Optional.ofNullable(DigestionHourlyTimeType.of(false, Optional.empty()))
+				);
+
+
+
 		// 「暫定年休管理データ」を返す
 		return Optional.of(result);
 	}
@@ -49,42 +63,33 @@ public class CreateInterimAnnualMngData {
 	 */
 	/** 月別実績の勤怠時間からフレックス補填の暫定年休管理データを作成する */
 	public static Optional<DailyInterimRemainMngData> ofCompensFlex(AttendanceTimeOfMonthly timeMonth, GeneralDate targetYmd) {
-		
+
 		val tmpAnnualHolidayMngOpt = ofCompensFlex(timeMonth);
 		if (!tmpAnnualHolidayMngOpt.isPresent()) return Optional.empty();
-		val tmpAnnualHolidayMng = tmpAnnualHolidayMngOpt.get();
-		InterimRemain interimRemain = new InterimRemain(
-				tmpAnnualHolidayMng.getAnnualId(),
-				timeMonth.getEmployeeId(),
-				targetYmd,
-				CreateAtr.FLEXCOMPEN,
-				RemainType.ANNUAL,
-				RemainAtr.SINGLE);
-		
+
 		return Optional.of(new DailyInterimRemainMngData(
+				targetYmd,
 				Optional.empty(),
-				new ArrayList<>(Arrays.asList(interimRemain)),
+				new ArrayList<>(),
 				Optional.empty(),
 				Optional.empty(),
-				Optional.of(tmpAnnualHolidayMng),
+				Optional.of(tmpAnnualHolidayMngOpt.get()),
 				Optional.empty(),
 				Optional.empty(),
 				new ArrayList<>()));
 	}
-	
+
 	/**
 	 * 月別実績の勤怠時間からフレックス補填の暫定年休管理データを作成する
 	 * @param timeMonth 月別実績の勤怠時間
 	 * @param targetYmd 作成対象年月日
 	 * @return 暫定年休管理データWORK
 	 */
-	public static Optional<TmpAnnualLeaveMngWork> ofCompensFlexToWork(AttendanceTimeOfMonthly timeMonth, GeneralDate targetYmd) {
-		
+	public static Optional<TempAnnualLeaveMngs> ofCompensFlexToWork(AttendanceTimeOfMonthly timeMonth, GeneralDate targetYmd) {
+
 		val dailyInterimRemainMngDataOpt = ofCompensFlex(timeMonth, targetYmd);
 		if (!dailyInterimRemainMngDataOpt.isPresent()) return Optional.empty();
 		val mngData = dailyInterimRemainMngDataOpt.get();
-		return Optional.of(TmpAnnualLeaveMngWork.of(
-				mngData.getRecAbsData().get(0),
-				mngData.getAnnualHolidayData().get()));
+		return Optional.of(mngData.getAnnualHolidayData().get());
 	}
 }

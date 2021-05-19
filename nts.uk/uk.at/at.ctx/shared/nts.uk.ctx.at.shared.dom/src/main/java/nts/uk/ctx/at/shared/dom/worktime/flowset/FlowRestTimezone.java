@@ -133,7 +133,7 @@ public class FlowRestTimezone extends WorkTimeDomainObject implements Cloneable{
 	 * @param oldDomain
 	 *            the old domain
 	 */
-	public void correctData(ScreenMode screenMode, FlowRestTimezone oldDomain) {
+	public void correctData(FlowRestTimezone oldDomain) {
 		if (!this.useHereAfterRestSet) {
 			this.hereAfterRestSet = oldDomain.getHereAfterRestSet();
 		}
@@ -191,7 +191,7 @@ public class FlowRestTimezone extends WorkTimeDomainObject implements Cloneable{
 		
 		/** ○休憩範囲に含まれる流動休憩の数を計算 */
 		val restTimes = restRange / this.hereAfterRestSet.getFlowPassageTime().valueAsMinutes();
-		val toCreate = Math.abs(10 - this.flowRestSets.size() - restTimes);
+		val toCreate = 10 - this.flowRestSets.size() < restTimes ? 10 - this.flowRestSets.size() : restTimes;
 		
 		/** ○最大時間を保持 */
 		AttendanceTime maxRestTimeCopy = new AttendanceTime(maxRestTime.valueAsMinutes());

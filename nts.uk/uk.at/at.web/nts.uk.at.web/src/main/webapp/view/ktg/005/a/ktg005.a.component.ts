@@ -75,19 +75,31 @@ module nts.uk.ui.ktg005.a {
 			employeeCharge: false
 		});
 
+		constructor(private params: { currentOrNextMonth: 1 | 2; }) {
+			super();
+
+			if (this.params === undefined) {
+				this.params = { currentOrNextMonth: 1 };
+			}
+
+			if (this.params.currentOrNextMonth === undefined) {
+				this.params.currentOrNextMonth = 1;
+			}
+		}
+
 		created() {
 			const vm = this;
+			const { params } = vm;
 			const { employeeId, companyId } = vm.$user;
-			const cache = nts.uk.ui.windows.getShared('cache');
 			const topPagePartCode = $(location).attr('search').split('=')[1];
 
 			vm.$blockui('invisibleView')
 				.then(() => vm.$ajax('at', REST_API.getOptionalWidgetDisplay, topPagePartCode))
 				.then((widDisplay: IOptionalWidgetDisplay) => {
 					const { datePeriodDto } = widDisplay;
-					const { currentOrNextMonth } = cache || { currentOrNextMonth: '1' };
-					const startDate = currentOrNextMonth == "1" ? datePeriodDto.strCurrentMonth : datePeriodDto.strNextMonth;
-					const endDate = currentOrNextMonth == "1" ? datePeriodDto.endCurrentMonth : datePeriodDto.endNextMonth;
+					const { currentOrNextMonth } = params || { currentOrNextMonth: 11 };
+					const startDate = currentOrNextMonth === 1 ? datePeriodDto.strCurrentMonth : datePeriodDto.strNextMonth;
+					const endDate = currentOrNextMonth === 1 ? datePeriodDto.endCurrentMonth : datePeriodDto.endNextMonth;
 
 					return vm.$ajax('at', REST_API.startScreenA, { companyId, employeeId, startDate, endDate });
 				})

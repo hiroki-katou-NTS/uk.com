@@ -14,15 +14,17 @@ public class JpaDataDeletionSelectionCategoryRepository extends JpaRepository im
 
 	private static final String SELECT_BY_PATTERN_CD_AND_PATTERN_ATR_AND_SYSTEM_TYPES = "SELECT t from SspmtDataDeletionSelectionCategory t "
 			+ "WHERE t.pk.patternCode = :patternCd AND t.pk.patternClassification = :patternAtr "
-			+ "AND t.pk.systemType IN :systemTypes";
+			+ "AND t.pk.systemType IN :systemTypes "
+			+ "AND t.pk.contractCode = :contractCd";
 	
 	@Override
 	public List<DataDeletionSelectionCategory> findByPatternCdAndPatternAtrAndSystemTypes(String patternCd,
-			int patternAtr, List<Integer> systemTypes) {
+			int patternAtr, List<Integer> systemTypes, String contractCd) {
 		return this.queryProxy().query(SELECT_BY_PATTERN_CD_AND_PATTERN_ATR_AND_SYSTEM_TYPES, SspmtDataDeletionSelectionCategory.class)
 				.setParameter("patternCd", patternCd)
 				.setParameter("patternAtr", patternAtr)
 				.setParameter("systemTypes", systemTypes)
+				.setParameter("contractCd", contractCd)
 				.getList(DataDeletionSelectionCategory::createFromMemento);
 	}
 

@@ -45,10 +45,8 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.overtimehou
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.overtimehours.clearovertime.FlexTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.overtimehours.clearovertime.OverTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.paytime.RaiseSalaryTimeOfDailyPerfor;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ChildCareAttribute;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortWorkTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.TemporaryTimeOfDaily;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.vacationusetime.AbsenceOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.vacationusetime.AnnualOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.vacationusetime.HolidayOfDaily;
@@ -77,6 +75,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.DeductionAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.withinworkinghours.WithinWorkTimeFrame;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.deviationtime.deviationtimeframe.CheckExcessAtr;
+import nts.uk.ctx.at.shared.dom.shortworktime.ChildCareAtr;
 //import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalAtrOvertime;
 //import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalFlexOvertimeSetting;
 //import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalOvertimeSetting;
@@ -90,17 +89,12 @@ import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
-//import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
-//import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalRaisingSalarySetting;
-//import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
-//import nts.uk.ctx.at.shared.dom.workrule.statutoryworktime.DailyCalculationPersonalInformation;
-//import nts.uk.ctx.at.shared.dom.workrule.waytowork.PersonalLaborCondition;
 import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeZoneSet;
+import nts.uk.ctx.at.shared.dom.worktime.common.TimezoneOfFixedRestTimeSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
-//import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneOtherSubHolTimeSet;
-import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixRestTimezoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
+import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
 //import nts.uk.ctx.at.shared.dom.worktime.flexset.CoreTimeSetting;
 //import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexCalcSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
@@ -108,6 +102,18 @@ import nts.uk.ctx.at.shared.dom.worktype.AttendanceHolidayAttr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.time.TimeWithDayAttr;
+
+//import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalAtrOvertime;
+//import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalFlexOvertimeSetting;
+//import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalOvertimeSetting;
+//import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalSetting;
+//import nts.uk.ctx.at.shared.dom.ot.autocalsetting.TimeLimitUpperLimitSetting;
+//import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.DailyUnit;
+//import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
+//import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalRaisingSalarySetting;
+//import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
+//import nts.uk.ctx.at.shared.dom.workrule.statutoryworktime.DailyCalculationPersonalInformation;
+//import nts.uk.ctx.at.shared.dom.workrule.waytowork.PersonalLaborCondition;
 
 /**
  * 
@@ -264,7 +270,7 @@ public class TotalWorkingTime {
 									new ShortWorkTimeOfDaily(new WorkTimes(0),
 															 DeductionTotalTime.of(TimeWithCalculation.sameTime(new AttendanceTime(0)), TimeWithCalculation.sameTime(new AttendanceTime(0)), TimeWithCalculation.sameTime(new AttendanceTime(0))),
 															 DeductionTotalTime.of(TimeWithCalculation.sameTime(new AttendanceTime(0)), TimeWithCalculation.sameTime(new AttendanceTime(0)), TimeWithCalculation.sameTime(new AttendanceTime(0))),
-															 ChildCareAttribute.CARE),
+															 ChildCareAtr.CARE),
 									new HolidayOfDaily(new AbsenceOfDaily(new AttendanceTime(0)),
 													   new TimeDigestOfDaily(new AttendanceTime(0),new AttendanceTime(0)),
 													   new YearlyReservedOfDaily(new AttendanceTime(0)),
@@ -745,7 +751,7 @@ public class TotalWorkingTime {
 	 * @return
 	 */
 	public TotalWorkingTime reCalcLateLeave(Optional<WorkTimezoneCommonSet> workTimeZone,
-			Optional<FixRestTimezoneSet> fixRestTimeZoneSet, List<EmTimeZoneSet> fixWoSetting,
+			Optional<TimezoneOfFixedRestTimeSet> fixRestTimeZoneSet, List<EmTimeZoneSet> fixWoSetting,
 			Optional<TimeLeavingOfDailyAttd> attendanceLeave, AttendanceTime actualPredTime, WorkType workType) {
 		if (workType.getDailyWork().decisionNeedPredTime() != AttendanceHolidayAttr.FULL_TIME) {
 			offSetRestTime(workTimeZone,fixRestTimeZoneSet,fixWoSetting,attendanceLeave);	
@@ -759,7 +765,7 @@ public class TotalWorkingTime {
 	 * 大塚モード(欠勤控除)時の休暇加算時間との相殺処理
 	 */
 	private void offSetRestTime(Optional<WorkTimezoneCommonSet> workTimeZone,
-			Optional<FixRestTimezoneSet> fixRestTimeZoneSet, List<EmTimeZoneSet> fixWoSetting,
+			Optional<TimezoneOfFixedRestTimeSet> fixRestTimeZoneSet, List<EmTimeZoneSet> fixWoSetting,
 			Optional<TimeLeavingOfDailyAttd> attendanceLeave) {		
 		//休暇時に計算する設定かどうか判断
 		if(!workTimeZone.isPresent()
@@ -801,7 +807,7 @@ public class TotalWorkingTime {
 	/**
 	 * 大塚モード(欠勤控除)時の休憩未取得時間との相殺処理
 	 */
-	private void offSetUnUseBreakTime(Optional<WorkTimezoneCommonSet> workTimeZone, Optional<FixRestTimezoneSet> fixRestTimeZoneSet, List<EmTimeZoneSet> fixWoSetting, Optional<TimeLeavingOfDailyAttd> attendanceLeave,
+	private void offSetUnUseBreakTime(Optional<WorkTimezoneCommonSet> workTimeZone, Optional<TimezoneOfFixedRestTimeSet> fixRestTimeZoneSet, List<EmTimeZoneSet> fixWoSetting, Optional<TimeLeavingOfDailyAttd> attendanceLeave,
 									AttendanceTime actualPredTime) {
 		AttendanceTime unBreakTime = new AttendanceTime(0);
 		//休憩未取得を計算するためのチェック
@@ -815,7 +821,7 @@ public class TotalWorkingTime {
 		int withinBreakTime = 0;
 		//就業時間帯に設定されている休憩のループ
 		if(fixRestTimeZoneSet.isPresent()) {
-			for(DeductionTime breakTImeSheet : fixRestTimeZoneSet.get().getLstTimezone()) {
+			for(DeductionTime breakTImeSheet : fixRestTimeZoneSet.get().getTimezones()) {
 				//就業時間帯に設定されている勤務時間帯のstream
 				withinBreakTime += fixWoSetting.stream().filter(tc -> tc.getTimezone().isOverlap(breakTImeSheet))
 													  .map(tt -> tt.getTimezone().getDuplicatedWith(breakTImeSheet.timeSpan()).get().lengthAsMinutes())

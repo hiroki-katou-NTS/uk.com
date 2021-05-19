@@ -23,16 +23,17 @@ import nts.arc.error.BusinessException;
 import nts.arc.i18n.I18NText.Builder;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.schedule.dom.schedule.task.taskschedule.TaskSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.CreateWorkSchedule.WorkTimeZone;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule.Require;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.affiliationinfor.AffiliationInforOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeOfDailyAttd;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.worktime.ChangeableWorkingTimeZonePerNo.ClockAreaAtr;
 import nts.uk.ctx.at.shared.dom.worktime.ChangeableWorkingTimeZonePerNo.ContainsResult;
+import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 @RunWith(Enclosed.class)
@@ -248,9 +249,11 @@ public class CreateWorkScheduleTest {
 					workInfo, 
 					affInfo, 
 					new BreakTimeOfDailyAttd(), 
-					new ArrayList<>(), 
+					new ArrayList<>(),
+					TaskSchedule.createWithEmptyList(),
 					Optional.empty(), 
 					Optional.empty(), 
+					Optional.empty(),
 					Optional.empty());
 			
 			new MockUp<WorkSchedule>() {

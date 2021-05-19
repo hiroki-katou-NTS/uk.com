@@ -1,6 +1,8 @@
 package nts.uk.screen.at.app.ksus01.a;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -150,6 +152,10 @@ public class GetInforOnTargetDate {
     		
     		// 3: [出勤休日区分＜＞休日]: <call>(): List＜クエリモデル「社員情報」＞
     		List<EmployeeInformation> listEmployeeInformation = employeeInformationRepository.find(params);
+    		Comparator<EmployeeInformation> compareByCodes = 
+    				(EmployeeInformation emp1, EmployeeInformation emp2) 
+    				-> Integer.valueOf(emp1.getEmployeeCode()).compareTo(Integer.valueOf(emp2.getEmployeeCode()));
+    		Collections.sort(listEmployeeInformation, compareByCodes);
     		
     		listBusinessName = listEmployeeInformation.stream().map(e -> e.getBusinessName()).collect(Collectors.toList());
     		

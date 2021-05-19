@@ -44,6 +44,12 @@ module nts.uk.ui.at.ksu002.a {
 					data.value.finish.valueHasMutated();
 				}
 
+				if (data.value.required() !== value.required) {
+					data.value.required(value.required);
+				} else {
+					data.value.required.valueHasMutated();
+				}
+
 				if (data.state.wtype() !== state.wtype) {
 					data.state.wtype(state.wtype);
 				} else {
@@ -148,6 +154,8 @@ module nts.uk.ui.at.ksu002.a {
 		workplaceId: KnockoutObservable<string> = ko.observable('');
 		achievement: KnockoutObservable<ACHIEVEMENT> = ko.observable(ACHIEVEMENT.NO);
 		workData: KnockoutObservable<null | WorkData> = ko.observable(null);
+		
+		saveDataEnable: KnockoutObservable<boolean> = ko.observable(true);
 
 		created() {
 			const vm = this;
@@ -318,8 +326,9 @@ module nts.uk.ui.at.ksu002.a {
 			vm.enable = ko.computed({
 				read: () => {
 					const bdate = ko.unwrap(vm.baseDate);
+					const openKDL = ko.unwrap(vm.saveDataEnable);
 
-					return !!bdate && !!bdate.begin && !!bdate.finish;
+					return !!bdate && !!bdate.begin && !!bdate.finish && openKDL;
 				},
 				owner: vm
 			});
@@ -602,7 +611,8 @@ module nts.uk.ui.at.ksu002.a {
 			// Remove validate all (accept error data in old cells)
 			// vm.$validate()
 			$.Deferred()
-				.resolve(true)
+				// get valid flag from kiban viewmodel
+				.resolve(vm.$validate.valid())
 				.then((valid: boolean) => {
 					if (valid) {
 						const sid = vm.$user.employeeId;
@@ -646,9 +656,11 @@ module nts.uk.ui.at.ksu002.a {
 										employeeIds: [sid],
 										isRegistered: Number(registered)
 									};
-
+									vm.saveDataEnable(false);
 									// call KDL053
-									return vm.$window.modal('at', '/view/kdl/053/a/index.xhtml', params);
+									return vm.$window
+									.modeless('at', '/view/kdl/053/a/index.xhtml', params)
+									.then(() => vm.saveDataEnable(true));
 								}
 							})
 							// reload data

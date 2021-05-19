@@ -1,66 +1,109 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:com="http://xmlns.jcp.org/jsf/component"
-	xmlns:h="http://xmlns.jcp.org/jsf/html">
-<body>
-	<ui:composition template="../../../../master/base.xhtml">
-		<ui:define name="htmlHead">
-			<title>#{i18n.getText('KAL003_1')}</title>
-			<com:scriptfile set="IGNITE" />
-			<com:scriptfile path="../share/model.js" />
-			<com:scriptfile path="../share/kal003utils.js" />
-			<com:scriptfile path="common/scopecheck.js" />
-			<com:scriptfile path="common/checkconditiontab.js" />
-			<com:scriptfile path="monthly/checkalarmcommon.js" />
-			<com:scriptfile path="daily/dailyperformance/dailyperfortab.js" />
-			<com:scriptfile path="daily/fixedcheckcondition/fixedchecktab.js" />
-			<com:scriptfile path="monthly/alarmchecktab.js" />
-			<com:scriptfile path="agreement/agreementerror/agreementerror.js" />
-			<com:scriptfile path="agreement/agreementhour/agreementhour.js" />
-			<com:scriptfile path="annualholiday/checksubconagreement/checksubconagr.js" />
-			<com:scriptfile path="annualholiday/checkconagreement/checkconagr.js" />
-			<com:stylefile path="kal003.a.style.css" />
-			<com:scriptfile path="kal003.a.service.js" />
-			<com:scriptfile path="kal003.a.vm.js" />
-            <com:scriptfile path="../b/kal003.b.service.js" />
-            <com:scriptfile path="../b/kal003.b.vm.js" />
+<html
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:com="http://xmlns.jcp.org/jsf/component"
+  xmlns:h="http://xmlns.jcp.org/jsf/html"
+>
+  <body>
+    <ui:composition template="../../../../master/base.xhtml">
+      <ui:define name="htmlHead">
+        <title>#{i18n.getText('KAL003_1')}</title>
+        <com:scriptfile set="IGNITE" />
+        <com:scriptfile path="../share/model.js" />
+        <com:scriptfile path="../share/kal003utils.js" />
+        <com:scriptfile path="common/scopecheck.js" />
+        <com:scriptfile path="common/checkconditiontab.js" />
+        <com:scriptfile path="monthly/checkalarmcommon.js" />
+        <com:scriptfile path="daily/dailyperformance/dailyperfortab.js" />
+        <com:scriptfile
+          path="approval/fixedcheckcondition/appfixedchecktab.js"
+        />
+        <com:scriptfile path="daily/fixedcheckcondition/fixedchecktab.js" />
+        <com:scriptfile path="monthly/alarmchecktab.js" />
+        <com:scriptfile path="agreement/agreementerror/agreementerror.js" />
+        <com:scriptfile path="agreement/agreementhour/agreementhour.js" />
+        <com:scriptfile path="annualholiday/checksubconagreement/checksubconagr.js" />
+        <com:scriptfile path="annualholiday/checkconagreement/checkconagr.js" />
+        <com:scriptfile path="mastercheck/fixedcondition/fixedcondition.js" />
 
-			<com:ValidatorScript>
-		        nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionCode
-		        nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionName
-		    </com:ValidatorScript>
+        <com:stylefile path="schedule/kal003.a.schedule.main.css" />
+        <com:scriptfile path="schedule/kal003.a.schedule.checkconditions.js"/><!-- check conditions -->
+        <com:scriptfile path="schedule/kal003.a.schedule.checkconditions.fixed.js" /><!-- fixed check conditions -->        
+        <com:scriptfile path="schedule/uniquecheckcondition/kal003.a.schedule.uniquecheckcondition.js" /><!-- unique check conditions -->      
 
-			<com:scriptfile path="kal003.a.start.js" />
+        <com:stylefile path="kal003.a.style.css" />
+        <com:scriptfile path="kal003.a.service.js" />
+        <com:scriptfile path="kal003.a.vm.js" />
+        <com:scriptfile path="../b/kal003.b.service.js" />
+        <com:scriptfile path="../b/kal003.b.vm.js" />
 
-		</ui:define>
+        <com:ValidatorScript>
+          nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionCode
+          nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionName
+        </com:ValidatorScript>
 
-		<ui:define name="content">
-			<div id="functions-area">
-				<div class="container">
-					<a class="goback link-button" tabindex="1" data-bind="ntsLinkButton: { jump: '../../002/a/index.xhtml' }">#{i18n.getText('KAL004_3')}</a>
-					<button tabindex="1" data-bind="click: openKAL003dDialog">#{i18n.getText('KAL003_5')}</button>
-					<button tabindex="2"
-						data-bind="click: registerAlarmCheckCondition, enable: $root.errors.isEmpty"
-						class="proceed">#{i18n.getText('KAL003_6')}</button>
-					<!-- <button tabindex="3" data-bind="enable: screenMode() == 1">#{i18n.getText('KAL003_7')}</button> -->
-					<button tabindex="4"
-						data-bind="click: deleteAlarmCheckCondition, enable: screenMode() == 1"
-						class="danger">#{i18n.getText('KAL003_8')}</button>
+        <com:scriptfile path="kal003.a.start.js" />
+      </ui:define>
+
+      <ui:define name="content">
+        <div id="functions-area">
+          <div class="container">
+            <a
+              class="goback link-button"
+              tabindex="1"
+              data-bind="ntsLinkButton: { jump: '../../002/a/index.xhtml' }"
+              >#{i18n.getText('KAL004_3')}</a>
+            <button tabindex="1" data-bind="click: openKAL003dDialog">
+              #{i18n.getText('KAL003_5')}
+            </button>
+            <button
+              tabindex="2"
+              data-bind="click: registerAlarmCheckCondition, enable: $root.errors.isEmpty"
+              class="proceed"
+            >
+              #{i18n.getText('KAL003_6')}
+            </button>
+
+            <!-- <button tabindex="3" data-bind="enable: screenMode() == 1">#{i18n.getText('KAL003_7')}</button> -->
+            <button
+              tabindex="4"
+              data-bind="click: deleteAlarmCheckCondition, enable: screenMode() == 1"
+              class="danger"
+            >
+              #{i18n.getText('KAL003_8')}
+            </button>
+            <button
+              tabindex="3"
+              data-bind="click: duplicateAlarmCheckCondition, enable: screenMode() == 1"
+            >
+              #{i18n.getText('KAL003_7')}
+            </button>
+            <!-- <button tabindex="1">#{i18n.getText('KAL003_7')}</button>	 -->
+            <button
+              id="print-button_1"
+              tabindex="5"
+              data-bind="click: exportExcel"
+            >
+              #{i18n.getText('KAL003_313')}
+						</button>
 						
-					<button id="print-button_1" tabindex="5" data-bind="click: exportExcel">#{i18n.getText('KAL003_313')}</button>
-				</div>
-			</div>
-			<div class="contents-area">
-				<div class="container">
-					<div class="left-content">
-						<div
-							data-bind="ntsPanel:{width: '300px', height: '400px', direction: 'right', showIcon: false, visible: true}">
-							<div class="valign-center control-group">
-								<label>#{i18n.getText('KAL003_48')}</label>
-								<div tabindex="6" id="combo-box"
-									data-bind="ntsComboBox: {
+						<button data-bind="click: checkParentValueFromSub">Test</button>
+          </div>
+        </div>
+        <div class="contents-area">
+          <div class="container">
+            <div class="left-content">
+              <div
+                data-bind="ntsPanel:{width: '300px', height: '400px', direction: 'right', showIcon: false, visible: true}"
+              >
+                <div class="valign-center control-group">
+                  <label>#{i18n.getText('KAL003_48')}</label>
+                  <div
+                    tabindex="6"
+                    id="combo-box"
+                    data-bind="ntsComboBox: {
 									options: cbbItemList,
 									optionsValue: 'code',
 									visibleItemsCount: 5,
@@ -72,10 +115,13 @@
 									columns: [
 										{ prop: 'code', length: 3, hidden: true },
 										{ prop: 'name', length: 8 },
-									]}"></div>
-							</div>
-							<table id="single-list" tabindex="7"
-								data-bind="ntsGridList: {								
+									]}"
+                  ></div>
+                </div>
+                <table
+                  id="single-list"
+                  tabindex="7"
+                  data-bind="ntsGridList: {								
  									height: 350,
  									name: '#[KAL003_10]', 
  									dataSource: listAlarmCheckCondition, 
@@ -86,82 +132,168 @@
 						            ], 
  									multiple: false, 
  									value: selectedAlarmCheckConditionCode 
- 								}"></table>
-						</div>
-					</div>
-					<div class="right-content">
-						<div data-bind="with: selectedAlarmCheckCondition">
-							<div class="valign-center control-group">
-								<div class="flabel" data-bind="ntsFormLabel: {required: true,constraint: ['AlarmCheckConditionCode' , 'AlarmCheckConditionName']}">#{i18n.getText('KAL003_11')}</div>
-								<input
-									tabindex="8" id="A3_2" style = "margin-right: 5px"
-									data-bind="ntsTextEditor: {name: '#[KAL003_11]', value: code, required: true, constraint: 'AlarmCheckConditionCode', enable: $parent.screenMode() == 0, option: {width: '27px'}}" />
-								<input tabindex="8" id="A3_4"
-									data-bind="ntsTextEditor: {name: '#[KAL003_12]', value: name, required: true, constraint: 'AlarmCheckConditionName'}" />
-							</div>
-							<div class="valign-center control-group">
-								<div class="flabel" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAL003_9')}</div>
-								<label
-									data-bind="text: displayCategory"></label>
-							</div>
-							<!-- <div class="valign-center control-group"
-								data-bind="visible: category() == 5">
-								<label class="flabel">#{i18n.getText('KAL003_50')}</label>
-								<div tabindex="9"
-									data-bind="ntsRadioBoxGroup: {
+ 								}"
+                ></table>
+              </div>
+            </div>
+            <div class="right-content">
+              <div data-bind="with: selectedAlarmCheckCondition">
+                <div class="valign-center control-group">
+                  <div
+                    class="flabel"
+                    data-bind="ntsFormLabel: {required: true,constraint: ['AlarmCheckConditionCode' , 'AlarmCheckConditionName']}"
+                  >
+                    #{i18n.getText('KAL003_11')}
+                  </div>
+                  <input
+                    tabindex="8"
+                    id="A3_2"
+                    style="margin-right: 5px"
+                    data-bind="ntsTextEditor: {name: '#[KAL003_11]', value: code, required: true, constraint: 'AlarmCheckConditionCode', enable: $parent.screenMode() == 0, option: {width: '27px'}}"
+                  />
+                  <input
+                    tabindex="8"
+                    id="A3_4"
+                    data-bind="ntsTextEditor: {name: '#[KAL003_12]', value: name, required: true, constraint: 'AlarmCheckConditionName'}"
+                  />
+                </div>
+                <div class="valign-center control-group">
+                  <div
+                    class="flabel"
+                    data-bind="ntsFormLabel: {required: true}"
+                  >
+                    #{i18n.getText('KAL003_9')}
+                  </div>
+                  <label data-bind="text: displayCategory"></label>
+                </div>
+                <div
+                  class="valign-center control-group"
+                  data-bind="visible: category() == 5"
+                >
+                  <label class="flabel">#{i18n.getText('KAL003_50')}</label>
+                  <div
+                    tabindex="9"
+                    data-bind="ntsRadioBoxGroup: {
 									options: $parent.radioItemList,
 									optionsValue: 'code',
 									optionsText: 'name',
 									value: $parent.selectedDataCondition,
-									enable: true}"></div>
-							</div> -->
-							<div class="valign-center control-group"
-								data-bind="visible: false">
-								<label class="flabel">#{i18n.getText('KAL003_13')}</label> 
-								<input
-									data-bind="ntsTextEditor: {name: '#[KAL003_13]', value: displayAvailableRoles, readonly: true}" />
-								<button tabindex="10">#{i18n.getText('KAL003_14')}</button>
-							</div>
-						</div>
-						<div id="tab-panel" tabindex="11"
-							data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}">
-							<div class="tab-content-1" data-bind="with: tabScopeCheck">
-								<div data-bind="with: targetCondition">
-									<ui:include src="common/scopecheck.xhtml" />
-								</div>
-							</div>
-							<div class="tab-content-2" data-bind="with: tabDailyErrorAlarm">
-								<ui:include src="daily/dailyperformance/dailyperfor.xhtml" />
-							</div> 
-							<div class="tab-content-3" data-bind="with: tabCheckCondition">
-								<ui:include src="common/checkconditions.xhtml" />
-							</div>
-							<div class="tab-content-4" data-bind="with: tabFixedCondition">
-								<ui:include src="daily/fixedcheckcondition/fixedcheck.xhtml" />
-							</div>
-							<div class="tab-content-5" data-bind="with: tabAlarmcheck">
-								<ui:include src="monthly/alarmcheck.xhtml" />
-							</div>
-							<div class="tab-content-6" data-bind="with: tabCheckAlarm">
-								<ui:include src="monthly/checkalarmcommon.xhtml" />
-							</div>
-							<div class="tab-content-7" data-bind="with: tabAgreementError">
-								<ui:include src="agreement/agreementerror/agreementerror.xhtml" />
-							</div>
-							<div class="tab-content-8" data-bind="with: tabAgreementHour">
-								<ui:include src="agreement/agreementhour/agreementhour.xhtml" />
-							</div> 
-							<div class="tab-content-9" data-bind="with: tabAnnualHolidaySubCon">
-								<ui:include src="annualholiday/checksubconagreement/checksubconagr.xhtml" />
-							</div>
-							<div class="tab-content-10" data-bind="with: tabAnnualHolidayCon">
-								<ui:include src="annualholiday/checkconagreement/checkconagr.xhtml" />
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</ui:define>
-	</ui:composition>
-</body>
+									enable: true}"
+                  ></div>
+                </div>
+                <div
+                  class="valign-center control-group"
+                  data-bind="visible: false"
+                >
+                  <label class="flabel">#{i18n.getText('KAL003_13')}</label>
+                  <input
+                    data-bind="ntsTextEditor: {name: '#[KAL003_13]', value: displayAvailableRoles, readonly: true}"
+                  />
+                  <button tabindex="10">#{i18n.getText('KAL003_14')}</button>
+                </div>
+              </div>
+              <div
+                id="tab-panel"
+                tabindex="11"
+                data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}"
+              >
+                <div class="tab-content-1" data-bind="with: tabScopeCheck">
+                  <div data-bind="with: targetCondition">
+                    <ui:include src="common/scopecheck.xhtml" />
+                  </div>
+                </div>
+                <div class="tab-content-2" data-bind="with: tabDailyErrorAlarm">
+                  <ui:include src="daily/dailyperformance/dailyperfor.xhtml" />
+                </div>
+                <div class="tab-content-3" data-bind="with: tabCheckCondition">
+                  <ui:include src="common/checkconditions.xhtml" />
+                </div>
+                <div class="tab-content-4" data-bind="with: tabFixedCondition">
+                  <ui:include
+                    src="daily/fixedcheckcondition/fixedcheck.xhtml"
+                  />
+                </div>
+                <div class="tab-content-5" data-bind="with: tabAlarmcheck">
+                  <ui:include src="monthly/alarmcheck.xhtml" />
+                </div>
+                <div class="tab-content-6" data-bind="with: tabCheckAlarm">
+                  <ui:include src="monthly/checkalarmcommon.xhtml" />
+                </div>
+                <div class="tab-content-7" data-bind="with: tabAgreementError">
+                  <ui:include
+                    src="agreement/agreementerror/agreementerror.xhtml"
+                  />
+                </div>
+                <div class="tab-content-8" data-bind="with: tabAgreementHour">
+                  <ui:include
+                    src="agreement/agreementhour/agreementhour.xhtml"
+                  />
+                </div>
+                <div
+                  class="tab-content-9"
+                  data-bind="with: tabAnnualHolidaySubCon"
+                >
+                  <ui:include
+                    src="annualholiday/checksubconagreement/checksubconagr.xhtml"
+                  />
+                </div>
+                <div
+                  class="tab-content-10"
+                  data-bind="with: tabAnnualHolidayCon"
+                >
+                  <ui:include
+                    src="annualholiday/checkconagreement/checkconagr.xhtml"
+                  />
+                </div>
+                <div
+                  class="tab-content-11"
+                  data-bind="with: tabMasterCheckFixedCon"
+                >
+                  <ui:include
+                    src="mastercheck/fixedcondition/fixedcondition.xhtml"
+                  />
+                </div>
+                <div
+                  class="tab-content-12"
+                  data-bind="with: tabAppFixCondition"
+                >
+                  <ui:include
+                    src="approval/fixedcheckcondition/appfixedcheck.xhtml"
+                  />
+                </div>
+                <!-- ver 2 -->
+                <div class="tab-content-13" data-bind="with: tabScheduleCheckConditions">
+                  <div
+                    data-bind="component: { 
+											name: 'kal003-a-schedule-daily', 
+											params: { 
+                        tabScheduleCheckConditions: $data 
+											}
+										}"
+                  ></div>
+                </div>
+                <div class="tab-content-14" data-bind="with: tabScheduleFixedCheckConditions">
+                  <div
+                    data-bind="component: { 
+                      name: 'kal003-a-schedule-daily-fixed', 
+                      params: {
+                        tabScheduleFixedCheckConditions: $data 
+                      }
+                    }"
+                  ></div>
+                </div>
+                
+                <div class="tab-content-15" data-bind="with: tabScheUniqueCheckCondition">
+                  <ui:include
+                    src="schedule/uniquecheckcondition/uniquecheckcondition.xhtml"
+                  />
+                </div>
+                                
+              </div>
+            </div>
+          </div>
+        </div>
+      </ui:define>
+    </ui:composition>
+  </body>
 </html>

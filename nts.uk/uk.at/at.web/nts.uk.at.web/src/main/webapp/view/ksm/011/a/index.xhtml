@@ -1,492 +1,92 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:com="http://xmlns.jcp.org/jsf/component"
-	xmlns:h="http://xmlns.jcp.org/jsf/html">
-<body>
-	<ui:composition template="../../../../master/sidebar.xhtml">
-		<ui:define name="sidebar-head">
-			<com:ValidatorScript>
-				nts.uk.ctx.at.schedule.dom.schedule.setting.displaycontrol.PersonSymbolQualify
-				nts.uk.ctx.at.schedule.dom.schedule.setting.modify.control.CorrectDeadline
-			</com:ValidatorScript>
-			<com:scriptfile set="IGNITE" />
-			
-			<com:stylefile path="/view/ccg/025/component/component.css" of="/nts.uk.com.web" />
-			<com:scriptfile path="/view/ccg/025/component/component.service.js" of="/nts.uk.com.web" />
-			<com:scriptfile path="/view/ccg/025/component/component.vm.js" of="/nts.uk.com.web" />
-			
-			<com:stylefile path="/view/ccg/026/component/component.css" of="/nts.uk.com.web" />
-			<com:scriptfile path="/view/ccg/026/component/component.service.js" of="/nts.uk.com.web" />
-			<com:scriptfile path="/view/ccg/026/component/component.vm.js" of="/nts.uk.com.web" />
-			
-			<com:scriptfile path="/view/ccg/026/component.js" of="/nts.uk.com.web" />
-				
-			<com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
-			<com:stylefile path="/view/ksm/011/main.css"  of="/nts.uk.at.web"/>
-			<com:scriptfile path="/view/ksm/011/b/ksm011.b.vm.js" />
-			<com:scriptfile path="/view/ksm/011/b/ksm011.b.service.js" />
-			<com:scriptfile path="/view/ksm/011/c/ksm011.c.vm.js" />
-			<com:scriptfile path="/view/ksm/011/c/ksm011.c.service.js" />
-			<com:scriptfile path="/view/ksm/011/d/ksm011.d.vm.js" />
-			<com:scriptfile path="/view/ksm/011/d/ksm011.d.service.js" />
-			
-			<com:scriptfile path="ksm011.a.vm.js" />
-			<com:scriptfile path="ksm011.a.service.js" />
-			<com:scriptfile path="ksm011.a.start.js" />
-			
-			
-		</ui:define>
+<html
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:com="http://xmlns.jcp.org/jsf/component"
+  xmlns:h="http://xmlns.jcp.org/jsf/html"
+>
+  <body>
+    <ui:composition template="../../../../master/base.xhtml">
+      <ui:define name="htmlHead">
+        <com:scriptfile set="IGNITE" />
+        <com:stylefile path="ksm011.a.css" />
+        <com:scriptfile path="ksm011.a.vm.js" />
+      </ui:define>
 
-		<ui:define name="sidebar" tabindex="1">
-			<div data-bind="with: tabView">
-				<ul class="navigator"
-					data-bind="foreach: tabs().filter(function(t) { return t.display() == true})">
-					<li><a
-						data-bind="text: name, click: changeTab, css: { 'active': active }, attr: { href: '#tabpanel-' + id.toLowerCase() }"></a></li>
-				</ul>
-			</div>
-		</ui:define>
-		
-		<ui:define name="sidebar-content">
-			<div class="sidebar-content-header" data-bind="with: tabView">
-				<span class="title" data-bind="text: title"></span>
-				
-				<com:ko-if bind="currentTab()=='A'">
-					<button tabindex="2" class="proceed" data-bind="click: $parent.viewmodelA.registration.bind($parent.viewmodelA)">#{i18n.getText('KSM011_6')}</button>
-				</com:ko-if>
-				
-				<com:ko-if bind="currentTab()=='B'">
-					<button tabindex="2" class="proceed" data-bind="click: $parent.viewmodelB.registration.bind($parent.viewmodelB)">#{i18n.getText('KSM011_6')}</button>
-				</com:ko-if>
-				
-				<com:ko-if bind="currentTab()=='C'">
-					<button class="proceed" data-bind="click: $parent.viewmodelC.registration.bind($parent.viewmodelC)">#{i18n.getText('KSM011_6')}</button>
-				</com:ko-if>
-				
-				<com:ko-if bind="currentTab()=='D'">
-					<button class="proceed" data-bind="click: $parent.viewmodelD.registration.bind($parent.viewmodelD)">#{i18n.getText('KSM011_6')}</button>
-					<button>#{i18n.getText('KSM011_81')}</button>
-				</com:ko-if>
-				
-				<button id="A_BTN_001" tabindex="3" data-bind="click: exportExcel">#{i18n.getText('KSM011_136')}</button>
-			</div>
-			
-			<div id="tabpanel-a" role="tabpanel" class="screen-a" data-bind="with: viewmodelA">
-				<div class="contents-area-a cf">
-					<table class="link-control">
-						<tr>
-							<td><a tabindex="4" href="#control-01" class="hyperlink hyperlink-disable">#{i18n.getText('KSM011_76')}</a></td>
-							<td><a tabindex="5" href="#control-02" class="hyperlink">#{i18n.getText('KSM011_16')}</a></td>
-							<td><a tabindex="6" href="#control-03" class="hyperlink">#{i18n.getText('KSM011_20')}</a></td>
-							<td><a tabindex="7" href="#control-04" class="hyperlink">#{i18n.getText('KSM011_23')}</a></td>
-							<td><a tabindex="8" href="#control-05" class="hyperlink">#{i18n.getText('KSM011_27')}</a></td>
-							<td><a tabindex="9" href="#control-06" class="hyperlink">#{i18n.getText('KSM011_34')}</a></td>
-							<td><a tabindex="10" href="#control-07" class="hyperlink">#{i18n.getText('KSM011_38')}</a></td>
-							<td><a tabindex="11" href="#control-08" class="hyperlink">#{i18n.getText('KSM011_48')}</a></td>
-						</tr>
-					</table>
-					
-					<div id="item-panel" class="panel panel-frame item-panel">
-						<div id="control-01" class="block-1">
-							<label class="basic-label">#{i18n.getText('KSM011_76')}</label>
-							<hr class="nav" />
-							<table class="basic-items">
-								<tr>
-									<td><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KSM011_7')}</div></td>
-									<td><div tabindex="12" class="cf" data-bind="ntsSwitchButton: {
-												options: alarmCheckAtr,
-												optionsValue: 'code',
-												optionsText: 'name',
-												value: selectedAlarm,
-												enable: true }"></div>
-									</td>
-								</tr>
-								<tr>
-									<td><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KSM011_10')}</div></td>
-									<td><div tabindex="13" class="cf" data-bind="ntsSwitchButton: {
-												options: confirmedAtr,
-												optionsValue: 'code',
-												optionsText: 'name',
-												value: selectedConfirmed,
-												enable: true }"></div>
-									</td>
-								</tr>
-								<tr>
-									<td><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KSM011_11')}</div></td>
-									<td><div tabindex="14" class="cf" data-bind="ntsSwitchButton: {
-												options: publicAtr,
-												optionsValue: 'code',
-												optionsText: 'name',
-												value: selectedPublic,
-												enable: true }"></div>
-									</td>
-								</tr>
-								<tr>
-									<td><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KSM011_12')}</div></td>
-									<td><div tabindex="15" class="cf" data-bind="ntsSwitchButton: {
-												options: outputAtr,
-												optionsValue: 'code',
-												optionsText: 'name',
-												value: selectedOutput,
-												enable: true }"></div>
-									</td>
-								</tr>
-								<tr>
-									<td><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KSM011_13')}</div></td>
-									<td><div tabindex="16" class="cf" data-bind="ntsSwitchButton: {
-												options: workDevision,
-												optionsValue: 'code',
-												optionsText: 'name',
-												value: selectedWorkDivision,
-												enable: true }"></div>
-									</td>
-								</tr>
-								<tr>
-									<td><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KSM011_14')}</div></td>
-									<td><div tabindex="17" class="cf" data-bind="ntsSwitchButton: {
-												options: teamDivision,
-												optionsValue: 'code',
-												optionsText: 'name',
-												value: selectedTeamDivision,
-												enable: true }"></div>
-									</td>
-								</tr>
-								<tr>
-									<td><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KSM011_15')}</div></td>
-									<td><div tabindex="18" class="cf" data-bind="ntsSwitchButton: {
-												options: rankAtr,
-												optionsValue: 'code',
-												optionsText: 'name',
-												value: selectedRank,
-												enable: true }"></div>
-									</td>
-								</tr>
-								<tr>
-									<td><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KSM011_80')}</div></td>
-									<td><div id="x" tabindex="19" class="cbx-days" data-bind="ntsComboBox: {
-											options: dayOfWeek,
-											optionsValue: 'code',
-											value: selectedDay,
-											optionsText: 'name',
-											enable: true,
-											columns: [
-												{ prop: 'name', length: 10 },
-											]}"></div>
-									</td>
-								</tr>
-							</table>
-						</div>
-						
-						<div id="control-02" class="block-2">
-							<label class="basic-label">#{i18n.getText('KSM011_16')}</label>
-							<hr class="nav" />
-							<table class="type-items">
-								<tr>
-									<td><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KSM011_17')}</div></td>
-									<td><div tabindex="20" class="cf" data-bind="ntsSwitchButton: {
-												options: shortNameDisp,
-												optionsValue: 'code',
-												optionsText: 'name',
-												value: selectedShortName,
-												enable: true }"></div>
-									</td>
-								</tr>
-								<tr>
-									<td><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KSM011_18')}</div></td>
-									<td><div tabindex="21" class="cf" data-bind="ntsSwitchButton: {
-												options: timeDisp,
-												optionsValue: 'code',
-												optionsText: 'name',
-												value: selectedTime,
-												enable: true }"></div>
-									</td>
-								</tr>
-								<tr>
-									<td><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KSM011_19')}</div></td>
-									<td><div tabindex="22" class="cf" data-bind="ntsSwitchButton: {
-												options: symbols,
-												optionsValue: 'code',
-												optionsText: 'name',
-												value: selectedSymbol,
-												enable: true }"></div>
-									</td>
-								</tr>
-							</table>
-						</div>
-						
-						<div id="control-03" class="block-3">
-							<label class="basic-label">#{i18n.getText('KSM011_20')}</label>
-							<hr class="nav" />
-							<table class="period-items">
-								<tr>
-									<td><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KSM011_21')}</div></td>
-									<td><div tabindex="23" class="cf" data-bind="ntsSwitchButton: {
-												options: dispOn28th,
-												optionsValue: 'code',
-												optionsText: 'name',
-												value: selectedDispOn28th,
-												enable: true }"></div>
-									</td>
-								</tr>
-								<tr>
-									<td><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KSM011_22')}</div></td>
-									<td><div tabindex="24" class="cf" data-bind="ntsSwitchButton: {
-												options: endDateIndication,
-												optionsValue: 'code',
-												optionsText: 'name',
-												value: selectedIndication,
-												enable: true }"></div>
-									</td>
-								</tr>
-							</table>
-						</div>
-						
-						<div id="control-04" class="block-4">
-							<label class="basic-label">#{i18n.getText('KSM011_23')}</label>
-							<hr class="nav" />
-							<table class="activation-items">
-								<tr>
-									<td><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KSM011_24')}</div></td>
-									<td><div tabindex="25" class="cf" data-bind="ntsSwitchButton: {
-												options: individualDisp,
-												optionsValue: 'code',
-												optionsText: 'name',
-												value: selectedIndividual,
-												enable: true }"></div>
-									</td>
-								</tr>
-								<tr>
-									<td><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KSM011_25')}</div></td>
-									<td><div tabindex="26" class="cf" data-bind="ntsSwitchButton: {
-												options: dispByDate,
-												optionsValue: 'code',
-												optionsText: 'name',
-												value: selectedDate,
-												enable: true }"></div>
-									</td>
-								</tr>
-								<tr>
-									<td><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KSM011_26')}</div></td>
-									<td><div tabindex="27" class="cf" data-bind="ntsSwitchButton: {
-												options: indicationByShift,
-												optionsValue: 'code',
-												optionsText: 'name',
-												value: selectedIndicationByShift,
-												enable: true }"></div>
-									</td>
-								</tr>
-							</table>
-						</div>
-						
-						<div id="control-05" class="block-5">
-							<label class="basic-label">#{i18n.getText('KSM011_27')}</label>
-							<hr class="nav" />
-							<table class="time-items">
-								<tr>
-									<td><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KSM011_28')}</div></td>
-									<td><div tabindex="28" class="cf" data-bind="ntsSwitchButton: {
-												options: regularWork,
-												optionsValue: 'code',
-												optionsText: 'name',
-												value: selectedRegular,
-												enable: true }"></div>
-									</td>
-								</tr>
-								<tr>
-									<td><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KSM011_31')}</div></td>
-									<td><div tabindex="29" class="cf" data-bind="ntsSwitchButton: {
-												options: fluidWork,
-												optionsValue: 'code',
-												optionsText: 'name',
-												value: selectedFluid,
-												enable: true }"></div>
-									</td>
-								</tr>
-								<tr>
-									<td><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KSM011_32')}</div></td>
-									<td><div tabindex="30" class="cf" data-bind="ntsSwitchButton: {
-												options: workForFlex,
-												optionsValue: 'code',
-												optionsText: 'name',
-												value: selectedFlex,
-												enable: true }"></div>
-									</td>
-								</tr>
-								<tr>
-									<td><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KSM011_33')}</div></td>
-									<td><div tabindex="31" class="cf" data-bind="ntsSwitchButton: {
-												options: overtime,
-												optionsValue: 'code',
-												optionsText: 'name',
-												value: selectedOvertime,
-												enable: true }"></div>
-									</td>
-								</tr>
-							</table>
-						</div>
-						
-						<div id="control-06" class="block-6">
-							<label class="basic-label">#{i18n.getText('KSM011_34')}</label>
-							<hr class="nav" />
-							<table class="creation-items">
-								<tr>
-									<td><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KSM011_35')}</div></td>
-									<td><div tabindex="32" class="cf" data-bind="ntsSwitchButton: {
-												options: generalCreated,
-												optionsValue: 'code',
-												optionsText: 'name',
-												value: selectedGeneral,
-												enable: true }"></div>
-									</td>
-								</tr>
-								<tr>
-									<td><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KSM011_36')}</div></td>
-									<td><div tabindex="33" class="cf" data-bind="ntsSwitchButton: {
-												options: simulation,
-												optionsValue: 'code',
-												optionsText: 'name',
-												value: selectedSimulation,
-												enable: true }"></div>
-									</td>
-								</tr>
-								<tr>
-									<td><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KSM011_37')}</div></td>
-									<td><div tabindex="34" class="cf" data-bind="ntsSwitchButton: {
-												options: capture,
-												optionsValue: 'code',
-												optionsText: 'name',
-												value: selectedCapture,
-												enable: true }"></div>
-									</td>
-								</tr>
-							</table>
-						</div>
-						
-						<div id="control-07" class="block-7">
-							<label class="basic-label">#{i18n.getText('KSM011_38')}</label>
-							<hr class="nav" />
-							<table class="complete-method-items">
-								<tr>
-									<td><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KSM011_39')}</div></td>
-									<td><div tabindex="35" class="cf" data-bind="ntsSwitchButton: {
-												options: completeFunc,
-												optionsValue: 'code',
-												optionsText: 'name',
-												value: selectedCompFunc,
-												enable: true }"></div>
-									</td>
-								</tr>
-								<tr>
-									<td><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KSM011_40')}</div></td>
-									<td><div tabindex="36" data-bind="ntsRadioBoxGroup: {
-												options: optionComplete,
-												optionsValue: 'id',
-												optionsText: 'name',
-												value: selectedOptionComp,
-												enable: optionCompleteEnable }"></div>
-									</td>
-								</tr>
-								<tr>
-									<td colspan="2"><label class="basic-label sub-label-title">#{i18n.getText('KSM011_43')}</label><hr class="nav" /></td>
-								</tr>
-								<tr>
-									<td><div data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KSM011_7')}</div></td>
-									<td><div tabindex="37" class="cf" data-bind="ntsSwitchButton: {
-												options: alarmCheck,
-												optionsValue: 'code',
-												optionsText: 'name',
-												value: selectedAlarmCheck,
-												enable: alarmCheckEnable }"></div>
-									</td>
-								</tr>
-								<tr>
-									<td><div data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KSM011_77')}</div></td>
-									<td><div tabindex="38" data-bind="ntsRadioBoxGroup: {
-												options: alarmMethod,
-												optionsValue: 'id',
-												optionsText: 'name',
-												value: selectedAlarmMethod,
-												enable: alarmMethodEnable }"></div>
-									</td>
-								</tr>
-								<tr>
-									<td><div data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KSM011_44')}</div></td>
-									<td>
-										<button tabindex="39" data-bind="click: openEDialog, enable: openEDialogEnable">#{i18n.getText('KSM011_45')}</button>
-										<input class="txtcondition" data-bind="ntsTextEditor: { value: conditionList, enable: conditionListEnable, readonly: true }" />
-									</td>
-								</tr>
-								<tr>
-									<td><div data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KSM011_46')}</div></td>
-									<td><div tabindex="40" class="cf" data-bind="ntsSwitchButton: {
-												options: unhooking,
-												optionsValue: 'code',
-												optionsText: 'name',
-												value: selectedUnhooking,
-												enable: unhookingEnable }"></div>
-									</td>
-								</tr>
-								<tr>
-									<td><div data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KSM011_47')}</div></td>
-									<td><div tabindex="41" class="cf" data-bind="ntsSwitchButton: {
-												options: confirm,
-												optionsValue: 'code',
-												optionsText: 'name',
-												value: selectedConfirm,
-												enable: confirmEnable }"></div>
-									</td>
-								</tr>
-							</table>
-						</div>
-						
-						<div id="control-08" class="block-8">
-							<label class="basic-label">#{i18n.getText('KSM011_48')}</label>
-							<hr class="nav" />
-							<table class="search-control-items">
-								<tr>
-									<td><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KSM011_49')}</div></td>
-									<td><div tabindex="42" class="cf" data-bind="ntsSwitchButton: {
-												options: searchMethod,
-												optionsValue: 'code',
-												optionsText: 'name',
-												value: selectedSearchMethod,
-												enable: true }"></div>
-									</td>
-								</tr>
-								<tr>
-									<td><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KSM011_50')}</div></td>
-									<td><div tabindex="43" data-bind="ntsRadioBoxGroup: {
-												options: retrievalMethod,
-												optionsValue: 'id',
-												optionsText: 'name',
-												value: selectedRetrieval,
-												enable: selectedSearchMethod() == 1 }"></div>
-									</td>
-								</tr>
-							</table>
-						</div>
-					</div>
-				</div>
-			</div>
-			
-			<div id="tabpanel-b" role="tabpanel" class="screen-b"
-				data-bind="with: viewmodelB">
-				<ui:include src="../b/index.xhtml" />
-			</div>
-			
-			<div id="tabpanel-c" role="tabpanel" class="screen-c"
-				data-bind="with: viewmodelC">
-				<ui:include src="../c/index.xhtml" />
-			</div>
-			
-			<div id="tabpanel-d" role="tabpanel" class="screen-d"
-				data-bind="with: viewmodelD">
-				<ui:include src="../d/index.xhtml" />
-			</div>
-
-		</ui:define>
-	</ui:composition>
-</body>
+      <ui:define name="content">
+        <div id="contents-area">
+          <div class="panel panel-frame pull-left">
+            <div class="panel-body">
+              <div class="row panel panel-gray-bg">
+                <span data-bind="text: $i18n('KSM011_6')"></span>
+              </div>
+              <div class="row label">
+                <span data-bind="text: $i18n('KSM011_7')"></span>
+              </div>
+              <div class="row button">
+                <button tabindex="1" class="caret-right caret-inline" data-bind="click: gotoScreenB">
+                  <span data-bind="text: $i18n('KSM011_8')"></span>
+                </button>
+              </div>
+              <div class="row label">
+                <span data-bind="text: $i18n('KSM011_9')"></span>
+              </div>
+              <div class="row button">
+                <button tabindex="2" class="caret-right caret-inline" data-bind="click: gotoScreenC">
+                  <span data-bind="text: $i18n('KSM011_10')"></span>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="panel panel-frame pull-left">
+            <div class="panel-body">
+              <div class="row panel panel-gray-bg">
+                <span data-bind="text: $i18n('KSM011_11')"></span>
+              </div>
+              <div class="row label">
+                <span data-bind="text: $i18n('KSM011_12')"></span>
+              </div>
+              <div class="row button">
+                <button tabindex="3" class="caret-right caret-inline" data-bind="click: gotoScreenD">
+                  <span data-bind="text: $i18n('KSM011_13')"></span>
+                </button>
+              </div>
+              <div class="row label">
+                <span data-bind="text: $i18n('KSM011_113')"></span>
+              </div>
+              <div class="row button">
+                <button tabindex="4" class="caret-right caret-inline" data-bind="click: goToScreenKML002B">
+                  <span data-bind="text: $i18n('KSM011_114')"></span>
+                </button>
+              </div>
+              <div class="row label">
+                <span data-bind="text: $i18n('KSM011_115')"></span>
+              </div>
+              <div class="row button">
+                <button tabindex="4" class="caret-right caret-inline" data-bind="click: goToScreenKML002C">
+                  <span data-bind="text: $i18n('KSM011_116')"></span>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="panel panel-frame pull-left">
+            <div class="panel-body">
+              <div class="row panel panel-gray-bg">
+                <span data-bind="text: $i18n('KSM011_117')"></span>
+              </div>
+              <div class="row label">
+                <span data-bind="text: $i18n('KSM011_14')"></span>
+              </div>
+              <div class="row button">
+                <button tabindex="4" class="caret-right caret-inline" data-bind="click: gotoScreenE">
+                  <span data-bind="text: $i18n('KSM011_15')"></span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ui:define>
+    </ui:composition>
+  </body>
 </html>

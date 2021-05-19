@@ -22,7 +22,7 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
         appDispInfoStartupOutput: any;
         managementMultipleWorkCycles: KnockoutObservable<Boolean>;
         isSendMail: KnockoutObservable<boolean>;
-        cancalAppDispSet: boolean = true;
+        cancalAppDispSet: KnockoutObservable<boolean> = ko.observable(true);
         delete1: KnockoutObservable<boolean> = ko.observable(false);
         delete2: KnockoutObservable<boolean> = ko.observable(false);
         delete3: KnockoutObservable<boolean> = ko.observable(false);
@@ -79,7 +79,7 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
                     }
                 }).then((successData: any) => {
                     if (successData) {
-                        vm.cancalAppDispSet = successData.lateEarlyCancelAppSet.cancelAtr !== 0;
+                        vm.cancalAppDispSet(successData.lateEarlyCancelAppSet.cancelAtr !== 0);
                         vm.cancelAtr = ko.observable(successData.lateEarlyCancelAppSet.cancelAtr);
 
                         if (this.cancelAtr() == 2) {
@@ -409,6 +409,7 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
 
             vm.arrivedLateLeaveEarlyInfo().earlyInfos = [];
 
+            vm.$blockui("show");
             vm.$ajax(API.register,
                 {
                     appType: ko.toJS(vm.application().appType),
@@ -417,7 +418,8 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
                 }).then((success: any) => {
                     if (success) {
                         vm.$dialog.info({ messageId: "Msg_15" }).then(() => {
-							CommonProcess.handleAfterRegister(success, vm.isSendMail(), vm);
+							nts.uk.request.ajax("at", API.reflectApp, success.reflectAppIdLst);
+							CommonProcess.handleAfterRegister(success, vm.isSendMail(), vm, false, vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.employeeInfoLst);
                         });
                     }
                 }).fail((fail: any) => {
@@ -429,6 +431,8 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
                     vm.$dialog.error(message);
 
                     return;
+                }).always(() => {
+                    vm.$blockui("hide");
                 })
         }
 
@@ -445,7 +449,7 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
         // ※8
         public condition8() {
             // 事前事後区分に「事後」に選択している場合　（事後モード）
-            return ko.toJS(this.application().prePostAtr) === 1 && this.cancalAppDispSet;
+            return this.application().prePostAtr() === 1 && this.cancalAppDispSet();
         }
 
         public showConfirmResult(messages: Array<any>, vm: any) {
@@ -467,7 +471,8 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
         initPage: "at/request/application/lateorleaveearly/initPage",
         changeAppDate: "at/request/application/lateorleaveearly/changeAppDate",
         getMsgList: "at/request/application/lateorleaveearly/getMsgList",
-        register: "at/request/application/lateorleaveearly/register"
+        register: "at/request/application/lateorleaveearly/register",
+		reflectApp: "at/request/application/reflect-app"
     };
 
     export class IdItem {

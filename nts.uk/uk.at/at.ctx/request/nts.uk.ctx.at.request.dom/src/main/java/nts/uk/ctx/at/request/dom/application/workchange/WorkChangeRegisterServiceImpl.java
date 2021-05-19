@@ -9,7 +9,8 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
-import nts.arc.error.BusinessException;
+import org.apache.logging.log4j.util.Strings;
+
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService;
@@ -19,6 +20,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewA
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.AppTypeSetting;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
 
@@ -38,10 +40,8 @@ public class WorkChangeRegisterServiceImpl implements IWorkChangeRegisterService
 	@Inject
 	private BasicScheduleService basicScheduleService;
 
-//	@Inject
-//	private InterimRemainDataMngRegisterDateChange interimRemainDataMngRegisterDateChange;
-//	@Inject
-//	private OtherCommonAlgorithm otherCommonAlg;
+	@Inject
+	private InterimRemainDataMngRegisterDateChange interimRemainDataMngRegisterDateChange;
 	
 	@Inject
 	private IWorkChangeUpdateService workChangeUpdateService;
@@ -65,7 +65,7 @@ public class WorkChangeRegisterServiceImpl implements IWorkChangeRegisterService
 		// KAFS07
 		workChangeRepository.add(workChange);
 		// アルゴリズム「2-2.新規画面登録時承認反映情報の整理」を実行する
-		registerService.newScreenRegisterAtApproveInfoReflect(application.getEmployeeID(), application);
+		String reflectAppId = registerService.newScreenRegisterAtApproveInfoReflect(application.getEmployeeID(), application);
 
 		
 
@@ -91,54 +91,22 @@ public class WorkChangeRegisterServiceImpl implements IWorkChangeRegisterService
 		}
 
 		// 暫定データの登録
-//		interimRemainDataMngRegisterDateChange.registerDateChange(companyId, application.getEmployeeID(), listDate);
+		interimRemainDataMngRegisterDateChange.registerDateChange(companyId, application.getEmployeeID(), listDate);
 
 		// 共通アルゴリズム「2-3.新規画面登録後の処理」を実行する
-		// TODO: 申請設定 domain has changed!
 		AppTypeSetting appTypeSetting = appDispInfoStartupOutput.getAppDispInfoNoDateOutput().getApplicationSetting().getAppTypeSettings()
 				.stream().filter(x -> x.getAppType()==application.getAppType()).findAny().get();
-		 return newAfterRegister.processAfterRegister(
+		ProcessResult processResult = newAfterRegister.processAfterRegister(
 				 Arrays.asList(application.getAppID()), 
 				 appTypeSetting,
 				 appDispInfoStartupOutput.getAppDispInfoNoDateOutput().isMailServerSet(),
 				 false);
-//		return null;
+		if(Strings.isNotBlank(reflectAppId)) {
+			processResult.setReflectAppIdLst(Arrays.asList(reflectAppId));
+		}
+		return processResult;
 	}
 
-	@Override
-	public void checkWorkHour(AppWorkChange_Old workChange) {
-		// 就業時間（開始時刻：終了時刻）
-		// 開始時刻 ＞ 終了時刻
-		if (workChange.getWorkTimeStart1() > workChange.getWorkTimeEnd1()) {
-			// エラーメッセージ(Msg_579)
-			// エラーリストにセットする
-			throw new BusinessException("Msg_579");
-		}
-		// 就業時間２（開始時刻：終了時刻）
-		// 開始時刻 ＞ 終了時刻
-		if (workChange.getWorkTimeStart2() > workChange.getWorkTimeEnd2()) {
-			// エラーメッセージ(Msg_580)
-			// エラーリストにセットする
-			throw new BusinessException("Msg_580");
-		}
-		// 就業時間：就業時間
-		// 就業時間（終了時刻） > 就業時刻２（開始時刻）
-		if (workChange.getWorkTimeEnd1() > workChange.getWorkTimeStart2()) {
-			// エラーメッセージ(Msg_581)
-			// エラーリストにセットする
-			throw new BusinessException("Msg_581");
-		}
-	}
-
-	@Override
-	public void checkBreakTime1(AppWorkChange_Old workChange) {
-		// 開始時刻 ＞ 終了時刻
-		if (workChange.getBreakTimeStart1() > workChange.getBreakTimeEnd1()) {
-			// エラーメッセージ(Msg_582)
-			// エラーリストにセットする
-			throw new BusinessException("Msg_582");
-		}
-	}
 
 	@Override
 	public boolean isTimeRequired(String workTypeCD) {

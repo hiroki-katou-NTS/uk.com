@@ -20,7 +20,7 @@ import nts.uk.ctx.at.request.dom.application.overtime.OvertimeAppAtr;
 import nts.uk.ctx.at.request.dom.reasonappdaily.ApplicationReasonInfo;
 import nts.uk.ctx.at.request.dom.reasonappdaily.ApplicationTypeReason;
 import nts.uk.ctx.at.request.dom.reasonappdaily.ReasonApplicationDailyResult;
-import nts.uk.ctx.at.shared.dom.application.reflectprocess.ScheduleRecordClassifi;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.ScheduleRecordClassifi;
 
 /**
  * @author thanh_nx

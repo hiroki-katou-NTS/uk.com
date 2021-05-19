@@ -83,7 +83,6 @@ public class WorkTypeWebService extends WebService {
 	public List<WorkTypeInfor> getPossibleWorkType(List<String> lstPossible) {
 		return this.find.getPossibleWorkType(lstPossible);
 	}
-	
 	/**
 	 * Gets the possible work type with no master.
 	 *
@@ -117,7 +116,6 @@ public class WorkTypeWebService extends WebService {
 	public List<WorkTypeDto> findNotDeprecated() {
 		return this.find.findNotDeprecated();
 	}
-	
 	/**
 	 * Find all by order.
 	 *
@@ -128,7 +126,6 @@ public class WorkTypeWebService extends WebService {
 	public List<WorkTypeInfor> findAllByOrder() {
 		return this.find.findAllByOrder();
 	}
-	
 	/**
 	 * Find work type by condition.
 	 *
@@ -138,7 +135,6 @@ public class WorkTypeWebService extends WebService {
 	@Path("findWorkTypeByCondition")
 	public List<WorkTypeDto> findWorkTypeByCondition() {
 		List<WorkTypeDto> dto = this.find.findWorkTypeByCondition();
-		
 		if (!CollectionUtil.isEmpty(dto)){
 			return dto;
 		} else {
@@ -259,7 +255,6 @@ public class WorkTypeWebService extends WebService {
 	public void order(List<WorkTypeDispOrderCommand> command) {
 		this.workTypeDispOrderCommandHandler.handle(command);
 	}
-	
 	/**
 	 * initialize
 	 *
@@ -270,20 +265,18 @@ public class WorkTypeWebService extends WebService {
 	public List<WorkTypeDto> initializeOrder(WorkTypeDispInitializeOrderCommand command) {
 		return this.workTypeDispInitializeOrderCommandHandler.handle(command);
 	}
-	
 	@POST
 	@Path("getpossiblewktypeKDL002")
 	public List<WorkTypeInfor> getPossibleWkTypeKDL002(List<String> lstPossible) {
-		List<String> lst = lstPossible!= null? lstPossible : Collections.emptyList();
-		return this.find.getPossibleWorkTypeKDL002(lst);
+		List<String> listCode = lstPossible != null ? lstPossible : Collections.emptyList();
+		listCode = listCode.stream().filter(x->!x.equals("")).collect(Collectors.toList());
+		return this.find.getPossibleWorkTypeKDL002(listCode);
 	}
-	
 	@POST
 	@Path("get_not_remove_work_type")
 	public List<WorkTypeInfor> getNotRemoveWorkType(getWkTypeParamDto param) {
 		return this.find.getNotRemoveWorkType(param.getWkTypeCodes());
 	}
-	
 }
 
 @Value

@@ -27,3 +27,7 @@
 #combo-box{
 	width: 450px;
 }
+
+.ui-igcombo-dropdown {
+	max-width: 521px;
+}

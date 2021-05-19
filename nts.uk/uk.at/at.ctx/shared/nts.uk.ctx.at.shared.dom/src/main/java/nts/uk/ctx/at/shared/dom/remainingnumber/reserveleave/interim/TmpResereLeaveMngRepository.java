@@ -17,7 +17,7 @@ public interface TmpResereLeaveMngRepository {
 	 * @param resereMngId
 	 */
 	public void deleteById(String resereMngId);
-	
+
 	/**
 	 * 登録および更新
 	 * @param dataMng
@@ -34,5 +34,6 @@ public interface TmpResereLeaveMngRepository {
 	 * @param sid
 	 * @param period
 	 */
-	public void deleteSidPriod(String sid, DatePeriod period);
+	public void deleteSidPeriod(String sid, DatePeriod period);
+
 }

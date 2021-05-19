@@ -20,10 +20,12 @@ import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.multimonth.KrcmtA
 public class JpaMulMonAlarmCheckCondRepository extends JpaRepository implements MulMonAlarmCheckCondRepository {
 	
 	private static final String SELECT_BY_LIST_ID = "SELECT c FROM KrcmtAlstChkmltUd c "
-			+ " WHERE c.errorAlarmCheckID IN :listErrorAlarmCheckID ORDER BY c.insDate ASC ";
+			+ " WHERE c.pk.eralCheckId IN :listErrorAlarmCheckID ORDER BY c.pk.condNo";
 	private static final String SELECT_BY_CODE  = "SELECT c FROM KrcmtAlstChkmltUd c "
-			+ " WHERE c.errorAlarmCheckID =:errorAlarmCheckID" ;
-	
+			+ " WHERE c.pk.eralCheckId =:errorAlarmCheckID" ;
+	private static final String SELECT_BY_USEATR = "SELECT c FROM KrcmtAlstChkmltUd c "
+			+ " WHERE c.pk.eralCheckId IN :lstId "
+			+ " AND c.useAtr = :useAtr";
 	@Override
 	public List<MulMonthAlarmCheckCond> getMulMonAlarmsByListID(List<String> listErrorAlarmCheckID) {
 		if(listErrorAlarmCheckID.isEmpty()) {
@@ -56,14 +58,8 @@ public class JpaMulMonAlarmCheckCondRepository extends JpaRepository implements 
 	
 	@Override
 	public void updateMulMonAlarm(MulMonthAlarmCheckCond mulMonthAlarmCheckCond) {
-		KrcmtAlstChkmltUd updateEntity = this.queryProxy().find(mulMonthAlarmCheckCond.getErrorAlarmCheckID(), KrcmtAlstChkmltUd.class).get();
 		KrcmtAlstChkmltUd newEntity = KrcmtAlstChkmltUd.toEntity(mulMonthAlarmCheckCond);
-		updateEntity.nameAlarmCon = newEntity.nameAlarmCon;
-		updateEntity.typeCheckItem = newEntity.typeCheckItem;
-		updateEntity.messageBold = newEntity.messageBold;
-		updateEntity.messageColor = newEntity.messageColor;
-		updateEntity.messageDisplay = newEntity.messageDisplay;
-		this.commandProxy().update(updateEntity);
+		this.commandProxy().update(newEntity);
 		this.getEntityManager().flush();
 	}
 	
@@ -72,5 +68,14 @@ public class JpaMulMonAlarmCheckCondRepository extends JpaRepository implements 
 		this.commandProxy().remove(KrcmtAlstChkmltUd.class,errorAlarmCheckID);
 		this.getEntityManager().flush();
 	}
-
+	@Override
+	public List<MulMonthAlarmCheckCond> getMulCondByUseAtr(List<String> lstId, boolean useAtr) {
+		List<KrcmtAlstChkmltUd> data = new ArrayList<>();
+		data.addAll(
+				this.queryProxy().query(SELECT_BY_USEATR, KrcmtAlstChkmltUd.class)
+						.setParameter("lstId", lstId)
+						.setParameter("useAtr", useAtr ? 1 : 0)
+						.getList());
+		return data.stream().map(c->c.toDomain()).collect(Collectors.toList());
+	}
 }
