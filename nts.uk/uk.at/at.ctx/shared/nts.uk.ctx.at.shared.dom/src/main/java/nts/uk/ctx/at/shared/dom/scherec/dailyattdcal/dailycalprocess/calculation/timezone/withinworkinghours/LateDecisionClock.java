@@ -181,11 +181,17 @@ public class LateDecisionClock {
 				.getWorkTimeSpanWithinPred(predetermineTimeSet);
 		if (workTimeZoneList.size() <= 0) return Optional.empty();
 		// 時間帯を作成
-		TimeWithDayAttr minTime = attendance;
+		TimeWithDayAttr minTime = null;
 		for (EmTimeZoneSet workTimeZone : workTimeZoneList){
 			TimeWithDayAttr start = workTimeZone.getTimezone().getStart();
-			if (minTime.lessThan(start)) minTime = start;
+			if (minTime == null){
+				minTime = start;
+				continue;
+			}
+			if (minTime.greaterThan(start)) minTime = start;
 		}
+		if (minTime == null) return Optional.empty();
+		if (minTime.greaterThanOrEqualTo(attendance)) return Optional.empty();
 		return Optional.of(new TimeSpanForDailyCalc(minTime, attendance));
 	}
 	

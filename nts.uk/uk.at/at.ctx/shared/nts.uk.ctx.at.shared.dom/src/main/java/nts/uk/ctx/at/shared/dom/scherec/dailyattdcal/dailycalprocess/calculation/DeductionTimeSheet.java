@@ -259,21 +259,26 @@ public class DeductionTimeSheet {
 			ManagePerCompanySet companyCommonSetting,
 			ManagePerPersonDailySet personCommonSetting) {
 		
-		/** 休憩時間帯取得 */
-		val sheetList = getBreakTimeDeductionForCalc(integrationOfDaily);
+		List<TimeSheetOfDeductionItem> sheetList = new ArrayList<>();
 		
-		/** 勤務間休憩時間帯を取得 */
-		betweenWorkTimeSheets.ifPresent(bwt -> sheetList.add(bwt));
-		
-		/** 外出時間帯取得 */
-		val goOutDeduct = integrationOfDaily.getOutingTime().map(c -> c.removeUnuseItemBaseOnAtr(
-																	deductionAtr,
-																	integrationOfWorkTime.getWorkTimeSetting().getWorkTimeDivision().getWorkTimeMethodSet(),
-																	integrationOfWorkTime.getFlowWorkRestTimezone(todayWorkType),
-																	integrationOfWorkTime.getFlowWorkRestSettingDetail(),
-																	integrationOfWorkTime.getCommonSetting().getStampSet().getRoundingTime()))
-													.orElseGet(() -> new ArrayList<>());
-		sheetList.addAll(goOutDeduct);
+		// 休日系でない時
+		if (!todayWorkType.getDecisionAttendanceHolidayAttr()){
+			/** 休憩時間帯取得 */
+			sheetList.addAll(getBreakTimeDeductionForCalc(integrationOfDaily));
+			
+			/** 勤務間休憩時間帯を取得 */
+			betweenWorkTimeSheets.ifPresent(bwt -> sheetList.add(bwt));
+			
+			/** 外出時間帯取得 */
+			val goOutDeduct = integrationOfDaily.getOutingTime().map(c -> c.removeUnuseItemBaseOnAtr(
+					deductionAtr,
+					integrationOfWorkTime.getWorkTimeSetting().getWorkTimeDivision().getWorkTimeMethodSet(),
+					integrationOfWorkTime.getFlowWorkRestTimezone(todayWorkType),
+					integrationOfWorkTime.getFlowWorkRestSettingDetail(),
+					integrationOfWorkTime.getCommonSetting().getStampSet().getRoundingTime()))
+					.orElseGet(() -> new ArrayList<>());
+			sheetList.addAll(goOutDeduct);
+		}
 		
 		/** 短時間勤務時間帯を取得 */
 		sheetList.addAll(getShortTimeWorkSheet(
