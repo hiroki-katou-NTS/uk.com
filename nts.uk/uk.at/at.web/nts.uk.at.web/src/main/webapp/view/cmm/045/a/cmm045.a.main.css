@@ -140,7 +140,7 @@ html {
     overflow: auto;
 }
 .grid-text-label {
-	padding-top: 10px;
+	padding-top: 5px;
 	vertical-align: top;
 }
 .reflectionStatus, .opApprovalStatusInquiry {
@@ -157,4 +157,9 @@ td.appType {
 }
 td.appContent {
 	min-width: 75px;
+}
+
+.popup-panel-cmm045 #multi-list_displayContainer {
+	overflow: unset !important;
+	height: 525px !important;
 }
