@@ -40,15 +40,10 @@ public class EmployeeContactPubImpl implements EmployeeContactPub {
 		return new EmployeeContactObject(
 				item.getEmployeeId(),
 				item.getMailAddress().map(m -> m.v()).orElse(null),
-				item.getIsMailAddressDisplay().map(m -> m.booleanValue()).orElse(false),
 				item.getSeatDialIn().map(m -> m.v()).orElse(null),
-				item.getIsSeatDialInDisplay().map(m -> m.booleanValue()).orElse(false),
 				item.getSeatExtensionNumber().map(m -> m.v()).orElse(null),
-				item.getIsSeatExtensionNumberDisplay().map(m -> m.booleanValue()).orElse(false),
 				item.getMobileMailAddress().map(m -> m.v()).orElse(null),
-				item.getIsMobileMailAddressDisplay().map(m -> m.booleanValue()).orElse(false),
-				item.getCellPhoneNumber().map(m -> m.v()).orElse(null),
-				item.getIsCellPhoneNumberDisplay().map(m -> m.booleanValue()).orElse(false)
+				item.getCellPhoneNumber().map(m -> m.v()).orElse(null)
 				);
 	}
 
@@ -96,19 +91,14 @@ public class EmployeeContactPubImpl implements EmployeeContactPub {
 				.employeeId(employeeId)
 				.personId(p.getPersonalId())
 				.cellPhoneNumber(p.getPhoneNumber().map(m -> m.v()).orElse(null))
-				.isPhoneNumberDisplay(p.getIsPhoneNumberDisplay().map(m -> m.booleanValue()).orElse(false))
 				.mailAdress(p.getMailAddress().map(m -> m.v()).orElse(null))
-				.isMailAddressDisplay(p.getIsMailAddressDisplay().map(m -> m.booleanValue()).orElse(false))
 				.mobileMailAdress(p.getMobileEmailAddress().map(m -> m.v()).orElse(null))
-				.isMobileEmailAddressDisplay(p.getIsMobileEmailAddressDisplay().map(m -> m.booleanValue()).orElse(false))
 				.memo1(p.getEmergencyContact1().map(item -> item.getRemark().v()).orElse(null))
 				.contactName1(p.getEmergencyContact1().map(item -> item.getContactName().v()).orElse(null))
 				.phoneNumber1(p.getEmergencyContact1().map(item -> item.getPhoneNumber().v()).orElse(null))
-				.isEmergencyContact1Display(p.getIsEmergencyContact1Display().map(m -> m.booleanValue()).orElse(false))
 				.memo2(p.getEmergencyContact2().map(item -> item.getRemark().v()).orElse(null))
 				.contactName2(p.getEmergencyContact2().map(item -> item.getContactName().v()).orElse(null))
 				.phoneNumber2(p.getEmergencyContact2().map(item -> item.getPhoneNumber().v()).orElse(null))
-				.isEmergencyContact2Display(p.getIsEmergencyContact2Display().map(m -> m.booleanValue()).orElse(false))
 				.build();
 	}
 	

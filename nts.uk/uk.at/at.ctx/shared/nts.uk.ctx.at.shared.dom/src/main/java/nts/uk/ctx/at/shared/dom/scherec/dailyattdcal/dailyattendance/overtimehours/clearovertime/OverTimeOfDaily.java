@@ -391,13 +391,12 @@ public class OverTimeOfDaily {
 			}
 		}
 		// 残業深夜時間の計算
-		AttendanceTime calcTime = overTimeSheet.calcMidNightTime(autoCalcSet);
-		calcTime = calcTime.addMinutes(flexWithoutTime.valueAsMinutes());
+		TimeDivergenceWithCalculation midnightTime = overTimeSheet.calcMidNightTime(autoCalcSet);
+		midnightTime = midnightTime.addMinutes(flexWithoutTime, flexWithoutTime);
 		// 事前申請制御
-		if(calAttr.getOvertimeSetting().getNormalMidOtTime().getUpLimitORtSet()==TimeLimitUpperLimitSetting.LIMITNUMBERAPPLICATION&&calcTime.greaterThanOrEqualTo(beforeApplicationTime.valueAsMinutes())) {
-			return new ExcessOverTimeWorkMidNightTime(TimeDivergenceWithCalculation.createTimeWithCalculation(beforeApplicationTime, calcTime));
+		if(calAttr.getOvertimeSetting().getNormalMidOtTime().getUpLimitORtSet()==TimeLimitUpperLimitSetting.LIMITNUMBERAPPLICATION&&midnightTime.getTime().greaterThanOrEqualTo(beforeApplicationTime.valueAsMinutes())) {
+			return new ExcessOverTimeWorkMidNightTime(TimeDivergenceWithCalculation.createTimeWithCalculation(beforeApplicationTime, midnightTime.getCalcTime()));
 		}
-		TimeDivergenceWithCalculation midnightTime = TimeDivergenceWithCalculation.sameTime(calcTime);
 		if (declareResult.getCalcRangeOfOneDay().isPresent()){
 			// 申告残業深夜時間の計算
 			AttendanceTime declareTime = OverTimeOfDaily.calcDeclareOvertimeMidnightTime(
@@ -436,7 +435,7 @@ public class OverTimeOfDaily {
 			OutsideWorkTimeSheet declareOutsideWork = declareCalcRange.getOutsideWorkTimeSheet().get();
 			if (declareOutsideWork.getOverTimeWorkSheet().isPresent()){
 				OverTimeSheet declareSheet = declareOutsideWork.getOverTimeWorkSheet().get();
-				result = declareSheet.calcMidNightTime(autoCalcSet);
+				result = declareSheet.calcMidNightTime(autoCalcSet).getCalcTime();
 			}
 			// 申告残業深夜時間を返す
 			return result;

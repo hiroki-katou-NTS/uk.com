@@ -4,8 +4,11 @@ module nts.uk.at.view.ktg026.a.viewmodel {
 	@bean()
 	export class ViewModel extends ko.ViewModel {
 
+		paramDialog: any;
+
 		constructor(private params: any) {
 			super();
+			this.paramDialog = params;
 		}
 
 		mounted() {

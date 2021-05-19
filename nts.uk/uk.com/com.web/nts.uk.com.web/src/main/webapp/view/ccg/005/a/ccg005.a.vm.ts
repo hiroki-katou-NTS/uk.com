@@ -1114,6 +1114,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
       const data = {
         employeeId: !!sid ? sid : vm.loginSid,
         referenceDate: new Date(),
+        startMode: 0
       };
       vm.$window.modal('com', '/view/cdl/010/a/index.xhtml', data);
     }

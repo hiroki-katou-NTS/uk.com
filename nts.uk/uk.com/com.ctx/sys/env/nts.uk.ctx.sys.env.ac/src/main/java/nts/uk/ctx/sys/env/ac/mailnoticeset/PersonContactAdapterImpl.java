@@ -45,11 +45,6 @@ public class PersonContactAdapterImpl implements PersonContactAdapter {
 					item.getCellPhoneNumber(),
 					item.getPhoneNumber1(),
 					item.getPhoneNumber2(),
-					item.getIsMailAddressDisplay(),
-					item.getIsMobileEmailAddressDisplay(),
-					item.getIsPhoneNumberDisplay(),
-					item.getIsEmergencyContact1Display(),
-					item.getIsEmergencyContact2Display(),
 					convertListOtherContact(item.getOtherContacts())))
 				.collect(Collectors.toList());
 	}
@@ -78,11 +73,6 @@ public class PersonContactAdapterImpl implements PersonContactAdapter {
 					item.getCellPhoneNumber(),
 					item.getPhoneNumber1(),
 					item.getPhoneNumber2(),
-					item.getIsMailAddressDisplay(),
-					item.getIsMobileEmailAddressDisplay(),
-					item.getIsPhoneNumberDisplay(),
-					item.getIsEmergencyContact1Display(),
-					item.getIsEmergencyContact2Display(),
 					convertListOtherContact(item.getOtherContacts()));
 		}
 		return Optional.ofNullable(personContactImport);
@@ -92,7 +82,6 @@ public class PersonContactAdapterImpl implements PersonContactAdapter {
 		return otherContacts.stream()
 				.map(mapper -> OtherContactDTO.builder()
 						.no(mapper.getNo())
-						.isDisplay(mapper.getIsDisplay().orElse(false))
 						.address(mapper.getAddress())
 						.build())
 				.collect(Collectors.toList());
