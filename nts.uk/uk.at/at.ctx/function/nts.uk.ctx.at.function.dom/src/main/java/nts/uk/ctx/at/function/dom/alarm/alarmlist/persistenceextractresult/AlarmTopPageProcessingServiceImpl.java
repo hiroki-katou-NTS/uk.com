@@ -16,13 +16,16 @@ import nts.uk.ctx.at.function.dom.alarm.AlarmPatternCode;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.PeriodByAlarmCategory;
 import nts.uk.ctx.at.function.dom.processexecution.ExecutionCode;
 import nts.uk.ctx.at.function.dom.processexecution.UpdateProcessAutoExecution;
+import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.ExtractionAlarmPeriodDate;
 import nts.uk.ctx.at.shared.dom.alarmList.persistenceextractresult.*;
 import nts.uk.shr.com.context.AppContexts;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -82,24 +85,71 @@ public class AlarmTopPageProcessingServiceImpl implements AlarmTopPageProcessing
                 if (extractConds.isEmpty()) {
                     return;
                 }
-                val exConCates = extractConds.stream().map(x -> x.getAlarmCategory().value).distinct().collect(Collectors.toList());
-                val exConCodes = extractConds.stream().map(x -> x.getAlarmCheckConditionCode().v()).distinct().collect(Collectors.toList());
-                val exConTypes = extractConds.stream().map(x -> x.getAlarmListCheckType().value).distinct().collect(Collectors.toList());
-                val exConNos = extractConds.stream().map(AlarmExtractionCondition::getAlarmCheckConditionNo).distinct().collect(Collectors.toList());
-                List<AlarmEmployeeList> lstExtractResultDB = persisAlarmExtract.getAlarmListExtractResults().stream()
-                        .filter(x -> x.getAlarmExtractInfoResults().stream().anyMatch(y -> exConCates.contains(y.getAlarmCategory().value)
-                                && exConCodes.contains(y.getAlarmCheckConditionCode().v())
-                                && exConTypes.contains(y.getAlarmListCheckType().value)
-                                && exConNos.contains(y.getAlarmCheckConditionNo())
-//                                && y.getExtractionResultDetails().stream().anyMatch(z -> {
-//                            if (z.getPeriodDate() == null || !z.getPeriodDate().getEndDate().isPresent()) {
-//                                return true;
-//                            } else if (!z.getPeriodDate().getEndDate().isPresent()) {
-//                                return z.getPeriodDate().getStartDate().get().afterOrEquals(p.getStartDate()) && z.getPeriodDate().getStartDate().get().beforeOrEquals(p.getEndDate());
-//                            } else {
-//                                return z.getPeriodDate().getStartDate().get().afterOrEquals(p.getStartDate()) && z.getPeriodDate().getEndDate().get().beforeOrEquals(p.getEndDate());
-//                            }})
-                        )).collect(Collectors.toList());
+
+                List<AlarmEmployeeList> lstExtractResultDB = new ArrayList<>();
+                extractConds.stream().forEach(c -> {
+                    persisAlarmExtract.getAlarmListExtractResults().stream().filter(Objects::nonNull).forEach(x -> {
+                        List<AlarmExtractInfoResult> infoResults = new ArrayList<>();
+                        x.getAlarmExtractInfoResults().stream().filter(Objects::nonNull).forEach(y -> {
+                            List<ExtractResultDetail> details = new ArrayList<>();
+                            y.getExtractionResultDetails().stream().filter(Objects::nonNull).forEach(z -> {
+                                if (z.getPeriodDate() == null) {
+                                    if (c.getAlarmCategory().value == y.getAlarmCategory().value && c.getAlarmCheckConditionCode().v().equals(y.getAlarmCheckConditionCode().v())
+                                            && c.getAlarmListCheckType().value == y.getAlarmListCheckType().value && c.getAlarmCheckConditionNo().equals(y.getAlarmCheckConditionNo())) {
+                                        details.add(z);
+                                    }
+                                } else if (!z.getPeriodDate().getEndDate().isPresent()) {
+                                    if (c.getAlarmCategory().value == y.getAlarmCategory().value && c.getAlarmCheckConditionCode().v().equals(y.getAlarmCheckConditionCode().v())
+                                            && c.getAlarmListCheckType().value == y.getAlarmListCheckType().value && c.getAlarmCheckConditionNo().equals(y.getAlarmCheckConditionNo())
+                                            && z.getPeriodDate().getStartDate().get().afterOrEquals(p.getStartDate()) && z.getPeriodDate().getStartDate().get().beforeOrEquals(p.getEndDate())) {
+                                        details.add(z);
+                                    }
+                                } else {
+                                    if (c.getAlarmCategory().value == y.getAlarmCategory().value && c.getAlarmCheckConditionCode().v().equals(y.getAlarmCheckConditionCode().v())
+                                            && c.getAlarmListCheckType().value == y.getAlarmListCheckType().value && c.getAlarmCheckConditionNo().equals(y.getAlarmCheckConditionNo())
+                                            && z.getPeriodDate().getStartDate().get().afterOrEquals(p.getStartDate()) && z.getPeriodDate().getEndDate().get().beforeOrEquals(p.getEndDate())) {
+                                        details.add(z);
+                                    }
+                                }
+                            });
+                            if (!details.isEmpty()) {
+                                infoResults.add(new AlarmExtractInfoResult(
+                                        y.getAlarmCheckConditionNo(),
+                                        y.getAlarmCheckConditionCode(),
+                                        y.getAlarmCategory(),
+                                        y.getAlarmListCheckType(),
+                                        details));
+                            }
+                        });
+                        if (!infoResults.isEmpty()) {
+                            val lstExistEmp = lstExtractResultDB.stream().filter(a -> a.getEmployeeID().equals(x.getEmployeeID())).findFirst();
+                            if (!lstExistEmp.isPresent()) {
+                                lstExtractResultDB.add(new AlarmEmployeeList(infoResults, x.getEmployeeID()));
+                            } else {
+                                lstExtractResultDB.stream().filter(a -> a.getEmployeeID().equals(x.getEmployeeID())).forEach(e -> e.getAlarmExtractInfoResults().addAll(infoResults));
+                            }
+                        }
+                    });
+                });
+
+                List<AlarmEmployeeList> lstExtractResultDB2 = new ArrayList<>();
+                extractConds.stream().forEach(c -> {
+                    val temp = persisAlarmExtract.getAlarmListExtractResults().stream()
+                            .filter(x -> x.getAlarmExtractInfoResults().stream().anyMatch(y -> c.getAlarmCategory().value == y.getAlarmCategory().value
+                                            && c.getAlarmCheckConditionCode().v().equals(y.getAlarmCheckConditionCode().v())
+                                            && c.getAlarmListCheckType().value == y.getAlarmListCheckType().value
+                                            && c.getAlarmCheckConditionNo().equals(y.getAlarmCheckConditionNo())
+                                && y.getExtractionResultDetails().stream().anyMatch(z -> {
+                            if (z.getPeriodDate() == null) {
+                                return true;
+                            } else if (!z.getPeriodDate().getEndDate().isPresent()) {
+                                return z.getPeriodDate().getStartDate().get().afterOrEquals(p.getStartDate()) && z.getPeriodDate().getStartDate().get().beforeOrEquals(p.getEndDate());
+                            } else {
+                                return z.getPeriodDate().getStartDate().get().afterOrEquals(p.getStartDate()) && z.getPeriodDate().getEndDate().get().beforeOrEquals(p.getEndDate());
+                            }})
+                            )).collect(Collectors.toList());
+                    lstExtractResultDB2.addAll(temp);
+                });
 
                 List<AlarmEmployeeList> lstExtractResultInput = alarmResult.getAlarmListExtractResults().stream()
                         .filter(x -> x.getAlarmExtractInfoResults().stream().anyMatch(y -> y.getAlarmCategory().value == p.getCategory()))
@@ -159,10 +209,6 @@ public class AlarmTopPageProcessingServiceImpl implements AlarmTopPageProcessing
     }
 
     private void filterData(List<AlarmEmployeeList> lstX, List<AlarmEmployeeList> lstY, List<AlarmEmployeeList> lstResult) {
-        List<String> lstEmpX = lstX.stream().map(AlarmEmployeeList::getEmployeeID).collect(Collectors.toList());
-        List<String> lstEmpY = lstY.stream().map(AlarmEmployeeList::getEmployeeID).collect(Collectors.toList());
-        List<String> filterEmps = lstEmpX.stream().filter(x -> !lstEmpY.contains(x)).collect(Collectors.toList());
-        List<AlarmEmployeeList> lstNotContainEmp1 = lstX.stream().filter(x -> filterEmps.contains(x.getEmployeeID())).collect(Collectors.toList());
 
         List<AlarmEmployeeList> lstNotContainEmp = lstX.stream().filter(x -> lstY.stream().anyMatch(y -> !y.getEmployeeID().equals(x.getEmployeeID()))).collect(Collectors.toList());
         if (!lstNotContainEmp.isEmpty()) {
