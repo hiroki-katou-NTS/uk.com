@@ -103,12 +103,12 @@ module nts.uk.at.view.kdp004.a {
 								dfd.resolve();
 							});
 						}
-					}).always(() => {
-						service.getLogginSetting().done((res) => {
-							self.listCompany(_.filter(res, 'fingerAuthStamp'));
-						});
-
+					})
+				}).always(() => {
+					service.getLogginSetting().done((res) => {
+						self.listCompany(_.filter(res, 'fingerAuthStamp'));
 					});
+
 				});
 
 				return dfd.promise();
@@ -205,25 +205,28 @@ module nts.uk.at.view.kdp004.a {
 					}
 					self.loginInfo = loginResult.em;
 
-					if (!ko.unwrap(self.modeBasyo)) {
-						self.openScreenK().done((result) => {
-							if (!result) {
-								self.errorMessage(getMessage("Msg_1647"));
-								dfd.resolve();
-								return;
+					self.basyo()
+						.then(() => {
+							if (!ko.unwrap(self.modeBasyo)) {
+								self.openScreenK().done((result) => {
+									if (!result) {
+										self.errorMessage(getMessage("Msg_1647"));
+										dfd.resolve();
+										return;
+									}
+
+									self.loginInfo.selectedWP = result;
+
+									nts.uk.characteristics.save(KDP004_SAVE_DATA, self.loginInfo);
+									dfd.resolve(self.loginInfo);
+								});
+							} else {
+								self.loginInfo.selectedWP = self.workplace;
+
+								nts.uk.characteristics.save(KDP004_SAVE_DATA, self.loginInfo);
+								dfd.resolve(self.loginInfo);
 							}
-
-							self.loginInfo.selectedWP = result;
-
-							nts.uk.characteristics.save(KDP004_SAVE_DATA, self.loginInfo);
-							dfd.resolve(self.loginInfo);
-						});
-					} else {
-						self.loginInfo.selectedWP = self.workplace;
-
-						nts.uk.characteristics.save(KDP004_SAVE_DATA, self.loginInfo);
-						dfd.resolve(self.loginInfo);
-					}
+						})
 
 				}).always(() => {
 					block.grayout();
@@ -440,17 +443,27 @@ module nts.uk.at.view.kdp004.a {
 						let result: any = loginResult.em;
 						result.selectedWP = self.loginInfo ? self.loginInfo.selectedWP : null;
 						self.loginInfo = loginResult.em;
-						self.openScreenK().done((result) => {
-							if (result) {
-								self.loginInfo.selectedWP = result;
-								nts.uk.characteristics.save(KDP004_SAVE_DATA, self.loginInfo).done(() => {
-									location.reload();
-								});
-							} else {
-								location.reload();
-							}
+						self.basyo()
+							.then(() => {
+								if (!ko.unwrap(self.modeBasyo)) {
+									self.openScreenK().done((result) => {
+										if (result) {
+											self.loginInfo.selectedWP = result;
+											nts.uk.characteristics.save(KDP004_SAVE_DATA, self.loginInfo).done(() => {
+												location.reload();
+											});
+										} else {
+											location.reload();
+										}
 
-						});
+									})
+								} else {
+									self.loginInfo.selectedWP = self.workplace;
+									nts.uk.characteristics.save(KDP004_SAVE_DATA, self.loginInfo).done(() => {
+										location.reload();
+									});
+								}
+							});
 					} else {
 						if (loginResult.msgErrorId == "Msg_1527") {
 							self.isUsed(false);
@@ -751,9 +764,11 @@ module nts.uk.at.view.kdp004.a {
 								}
 
 								if (data.workpalceId) {
-									self.modeBasyo(true);
-									self.workplace = data.workpalceId;
-									dfd.resolve();
+									if (data.workpalceId.length > 0) {
+										self.modeBasyo(true);
+										self.workplace = data.workpalceId;
+										dfd.resolve();
+									}
 								}
 							} else {
 								dfd.resolve();
