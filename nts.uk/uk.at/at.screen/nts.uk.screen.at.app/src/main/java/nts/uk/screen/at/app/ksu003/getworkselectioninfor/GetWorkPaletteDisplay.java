@@ -78,6 +78,7 @@ public class GetWorkPaletteDisplay {
 	public static class TaskImpl implements TaskPaletteOrganization.Require {
 
 		@Inject
+		
 		private TaskingRepository taskingRepository;
 
 		@Override
