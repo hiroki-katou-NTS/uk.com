@@ -50,9 +50,6 @@ public class KDW013WebService {
 	private ChangeDate changeDate;
 
 	@Inject
-	private SelectTargetEmployee selectTargetEmployee;
-
-	@Inject
 	private StartProcess startProcess;
 	
 	@Inject
@@ -65,13 +62,6 @@ public class KDW013WebService {
 	public StartProcessDto startProcess() {
 		return startProcess.startProcess();
 	}
-	
-	// 対象社員を選択する
-	@POST
-	@Path("a/select")
-	public SelectTargetEmployeeDto selectTargetEmployee(SelectTargetEmployeeParam param) {
-		return selectTargetEmployee.select(param);
-	}
 
 	// 日付を変更する
 	@POST
@@ -82,14 +72,14 @@ public class KDW013WebService {
 
 	// 作業実績を確認する
 	@POST
-	@Path("a/add")
+	@Path("a/add_confirm")
 	public List<ConfirmerDto> registerConfirmation(AddWorkRecodConfirmationCommand param) {
 		return addWorkRecordConfirmationHandler.add(param);
 	}
 
 	// 作業実績の確認を解除する
 	@POST
-	@Path("a/delete_work_result_confirm")
+	@Path("a/delete_confirm")
 	public List<ConfirmerDto> deleteConfirmation(DeleteWorkResultConfirmCommand param) {
 		return deleteWorkRecordConfirmationHandler.delete(param);
 	}
