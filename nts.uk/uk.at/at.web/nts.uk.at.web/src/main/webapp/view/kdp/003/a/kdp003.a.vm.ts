@@ -148,7 +148,7 @@ module nts.uk.at.kdp003.a {
 
 			if (locationCd) {
 				const param = {
-					contractCode: vm.$user.contractCode,
+					contractCode: '000000000004',
 					workLocationCode: locationCd
 				}
 
@@ -276,7 +276,7 @@ module nts.uk.at.kdp003.a {
 					} = storageData as StorageData;
 
 					const loginParams: f.ModelData = {
-						contractCode: vm.$user.contractCode,
+						contractCode: '000000000004',
 						companyCode: CCD,
 						companyId: CID,
 						employeeCode: SCD,
@@ -328,7 +328,7 @@ module nts.uk.at.kdp003.a {
 
 					if (locationCd) {
 						const param = {
-							contractCode: vm.$user.contractCode,
+							contractCode: '000000000004',
 							workLocationCode: locationCd
 						}
 
@@ -584,7 +584,7 @@ module nts.uk.at.kdp003.a {
 
 					if (locationCd) {
 						const param = {
-							contractCode: vm.$user.contractCode,
+							contractCode: '000000000004',
 							workLocationCode: locationCd
 						}
 

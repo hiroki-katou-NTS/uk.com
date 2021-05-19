@@ -750,7 +750,7 @@ module nts.uk.at.view.kdp004.a {
 				// URLOption basyoが存在している場合
 				if (locationCd) {
 					const param = {
-						contractCode: __viewContext.user.contractCode,
+						contractCode: '000000000004',
 						workLocationCode: locationCd
 					}
 

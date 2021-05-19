@@ -41,8 +41,7 @@ public class GetListCompanyhaveBeenStamped {
 		// 1.get
 		//fix contractCode request UI ,AO  ※2020/4　の説明ではASP認証について内容が存在しないため、契約コードは「000000000000」で実施してください
 		
-//		String contractCd = "000000000004" ;
-		String contractCd = AppContexts.user().contractCode();
+		String contractCd = "000000000004" ;
 		Boolean isAbolition = false;
 		List<GetListCompanyHasStampedDto> resultList = new ArrayList<>();
 		
