@@ -109,8 +109,8 @@ module nts.uk.at.view.ksu003.a.model {
 		}
 
 		if (time[index].endTimeRange != null) {
-			limitEndMin = self.checkRangeLimitTime(time, timeRangeLimit, 3, 0) ? ((time[index].endTimeRange.startTime.time) / 5) : timeRangeLimit;
-			limitEndMax = self.checkRangeLimitTime(time, timeRangeLimit, 4, 0) ? ((time[index].endTimeRange.endTime.time) / 5) : timeRangeLimit;
+			limitEndMin = self.checkRangeLimitTime(time, timeRangeLimit, 3, 0, dispStartHours) ? ((time[index].endTimeRange.startTime.time) / 5) : timeRangeLimit;
+			limitEndMax = self.checkRangeLimitTime(time, timeRangeLimit, 4, 0, dispStartHours) ? ((time[index].endTimeRange.endTime.time) / 5) : timeRangeLimit;
 			if (time[index].endTimeRange.startTime.time <= dispStartHours) {
 				limitEndMin = dispStartHours;
 			}
@@ -376,7 +376,7 @@ module nts.uk.at.view.ksu003.a.model {
 						} else {
 							if (_.isEqual($(cssbreakTime).css("background-color"), "rgb(148, 183, 254)")) isBreakByHand = false;
 						}
-						if (colorBreak45 == true) isBreakByHand = true;
+						if (colorBreak45 == true && index045 != -1) isBreakByHand = true;
 					}
 					let dataCell: any = {
 						sid: employeeInfo[cells[0].rowIndex].empId,
@@ -406,7 +406,7 @@ module nts.uk.at.view.ksu003.a.model {
 				} else {
 					if (_.isEqual($(cssbreakTime).css("background-color"), "rgb(148, 183, 254)")) isBreakByHand = false;
 				}
-				if (colorBreak45 == true) isBreakByHand = true;
+				if (colorBreak45 == true && index045 != -1) isBreakByHand = true;
 			}
 			let dataCell: any = null;
 			if (index045 != -1) {
