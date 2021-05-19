@@ -186,12 +186,18 @@ public class LeaveEarlyDecisionClock {
 				.getWorkTimeSpanWithinPred(predetermineTimeSet);
 		if (workTimeZoneList.size() <= 0) return Optional.empty();
 		// 時間帯を作成
-		TimeWithDayAttr maxTime = leave;
+		TimeWithDayAttr maxTime = null;
 		for (EmTimeZoneSet workTimeZone : workTimeZoneList){
 			TimeWithDayAttr end = workTimeZone.getTimezone().getEnd();
-			if (maxTime.greaterThan(end)) maxTime = end;
+			if (maxTime == null){
+				maxTime = end;
+				continue;
+			}
+			if (maxTime.lessThan(end)) maxTime = end;
 		}
-		return Optional.of(new TimeSpanForDailyCalc(maxTime, leave));
+		if (maxTime == null) return Optional.empty();
+		if (maxTime.lessThanOrEqualTo(leave)) return Optional.empty();
+		return Optional.of(new TimeSpanForDailyCalc(leave, maxTime));
 	}
 	
 	/**

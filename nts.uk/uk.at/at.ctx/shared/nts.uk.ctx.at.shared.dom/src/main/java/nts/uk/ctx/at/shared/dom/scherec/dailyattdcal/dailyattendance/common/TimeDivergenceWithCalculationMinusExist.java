@@ -27,7 +27,7 @@ public class TimeDivergenceWithCalculationMinusExist {
 	 * 乖離計算
 	 */
 	private void calcDiv(){
-		this.divergenceTime = this.time.minusMinutes(this.calcTime.valueAsMinutes());
+		this.divergenceTime = this.calcTime.minusMinutes(this.time.valueAsMinutes());
 	}
 	
 	/**

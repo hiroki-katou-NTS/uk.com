@@ -24,11 +24,14 @@ public class TimeDivergenceWithCalculation {
 	private TimeDivergenceWithCalculation(AttendanceTime time,AttendanceTime calcTime) {
 		this.time = time==null?new AttendanceTime(0):time;
 		this.calcTime = calcTime==null?new AttendanceTime(0):calcTime;
-		this.divergenceTime = new AttendanceTimeOfExistMinus(this.time.valueAsMinutes() - this.calcTime.valueAsMinutes());
-		// 大塚モード時の仕様のため、業務処理側で個別に判断する(2020/11/9 shuichi_ishida)
-//		if(this.divergenceTime.valueAsMinutes()<0) {
-//			this.divergenceTime = new AttendanceTime(0);
-//		}
+		this.calcDiv();
+	}
+	
+	/**
+	 * 乖離計算
+	 */
+	private void calcDiv(){
+		this.divergenceTime = new AttendanceTimeOfExistMinus(this.calcTime.valueAsMinutes() - this.time.valueAsMinutes());
 	}
 	
 	/**
@@ -77,7 +80,7 @@ public class TimeDivergenceWithCalculation {
 	 */
 	public void replaceTimeWithCalc(AttendanceTime time) {
 		this.time = time;
-		this.divergenceTime = new AttendanceTimeOfExistMinus(this.time.valueAsMinutes() - this.calcTime.valueAsMinutes());
+		this.calcDiv();
 	}
 	
 	/**
@@ -87,12 +90,11 @@ public class TimeDivergenceWithCalculation {
 	 */
 	public void replaceTimeAndCalcDiv(AttendanceTime calcTime) {
 		this.calcTime = calcTime;
-		this.divergenceTime = new AttendanceTimeOfExistMinus(this.time.valueAsMinutes() - this.calcTime.valueAsMinutes());
+		this.calcDiv();
 	}
 	
 	public static TimeDivergenceWithCalculation emptyTime() {
 		return TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0));
-		
 	}
 	
 	/**
@@ -103,7 +105,7 @@ public class TimeDivergenceWithCalculation {
 	public void addMinutesNotReturn(AttendanceTime time,AttendanceTime calcTime) {
 		this.time = this.time.addMinutes(time.valueAsMinutes());
 		this.calcTime = this.calcTime.addMinutes(calcTime.valueAsMinutes());
-		this.divergenceTime = new AttendanceTimeOfExistMinus(this.time.valueAsMinutes() - this.calcTime.valueAsMinutes());
+		this.calcDiv();
 	}
 	
 	/**
