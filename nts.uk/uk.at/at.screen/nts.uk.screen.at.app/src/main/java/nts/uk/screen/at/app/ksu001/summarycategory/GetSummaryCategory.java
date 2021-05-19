@@ -1,16 +1,21 @@
 package nts.uk.screen.at.app.ksu001.summarycategory;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.aggregation.app.find.schedulecounter.personal.PersonalCounterCategoryDto;
 import nts.uk.ctx.at.aggregation.app.find.schedulecounter.personal.PersonalCounterFinder;
+import nts.uk.ctx.at.aggregation.app.find.schedulecounter.wkpcounter.WorkplaceCounterCategoryDto;
 import nts.uk.ctx.at.aggregation.app.find.schedulecounter.wkpcounter.WorkplaceCounterFinder;
 import nts.uk.ctx.at.aggregation.dom.schedulecounter.tally.PersonalCounter;
+import nts.uk.ctx.at.aggregation.dom.schedulecounter.tally.PersonalCounterCategory;
 import nts.uk.ctx.at.aggregation.dom.schedulecounter.tally.WorkplaceCounter;
-import nts.uk.shr.com.context.AppContexts;
+import nts.uk.ctx.at.aggregation.dom.schedulecounter.tally.WorkplaceCounterCategory;
 
 /**
  *  集計カテゴリを取得する
@@ -34,10 +39,18 @@ public class GetSummaryCategory {
 	 */
 	public SummaryCategoryDto get(String displayFormat) {
 		SummaryCategoryDto output = new SummaryCategoryDto();
-		String companyId = AppContexts.user().companyId();
 		// 1 取得する()
-		// type is incorrect
 		Optional<WorkplaceCounter> workplaceCounterOp = Optional.empty();
+		List<WorkplaceCounterCategoryDto> workplaceCounterCategorys = 
+					workplaceCounterFinder.findById();
+		if (!CollectionUtil.isEmpty(workplaceCounterCategorys)) {
+			workplaceCounterOp = Optional.of(WorkplaceCounter.create(
+					workplaceCounterCategorys.stream()
+											 .map(x -> WorkplaceCounterCategory.of(x.getValue()))
+											 .collect(Collectors.toList())
+											 
+					));
+		}
 		if (workplaceCounterOp.isPresent()) {
 			output.setUseCategoriesWorkplace(workplaceCounterOp.get().getUseCategories());
 		}
@@ -46,6 +59,17 @@ public class GetSummaryCategory {
 		// type is incorrect
 		Optional<PersonalCounter> personalCounterOp = Optional.empty();
 		
+		List<PersonalCounterCategoryDto> personalCounterCategory =
+				personalCounterFinder.findById();
+		
+		if (!CollectionUtil.isEmpty(personalCounterCategory)) {
+			
+			personalCounterOp = Optional.of(PersonalCounter.create(
+					personalCounterCategory.stream()
+								   		   .map(x -> PersonalCounterCategory.of(x.getValue()))
+								   		   .collect(Collectors.toList())
+								   		   ));
+		}
 		if (personalCounterOp.isPresent()) {
 			output.setUseCategoriesPersonal(personalCounterOp.get().getUseCategories());
 		}

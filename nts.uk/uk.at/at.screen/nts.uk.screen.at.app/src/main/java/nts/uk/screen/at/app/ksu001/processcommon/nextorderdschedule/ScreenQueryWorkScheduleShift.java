@@ -5,14 +5,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ScheManaStatuTempo;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
+import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMaster;
 import nts.uk.screen.at.app.ksu001.displayinshift.ShiftMasterMapWithWorkStyle;
+import nts.uk.screen.at.app.ksu001.getworkscheduleshift.ScheduleOfShiftDto;
 import nts.uk.screen.at.app.ksu001.processcommon.CreateWorkScheduleShift;
 import nts.uk.screen.at.app.ksu001.processcommon.CreateWorkScheduleShiftBase;
 import nts.uk.screen.at.app.ksu001.processcommon.WorkScheduleShiftBaseResult;
@@ -49,14 +53,15 @@ public class ScreenQueryWorkScheduleShift {
 			) {
 		WorkScheduleShiftBaseResult output = new WorkScheduleShiftBaseResult(
 				Collections.emptyList(),
-				new HashMap()
+				new HashMap<ShiftMaster, Optional<WorkStyle>>()
 				);
 		// 1: call
 		WorkScheduleShiftResult workScheduleShiftResult = 
 				createWorkScheduleShift.getWorkScheduleShift(
 							mngStatusAndWScheMap,
 							listShiftMasterNotNeedGetNew);
-		
+		output.setListWorkScheduleShift(workScheduleShiftResult.getListWorkScheduleShift());
+		output.setMapShiftMasterWithWorkStyle(workScheduleShiftResult.getMapShiftMasterWithWorkStyle());
 		// 2 実績も取得するか == true
 		if (isAchievement) {
 			// 2.1: <call>
@@ -71,8 +76,38 @@ public class ScreenQueryWorkScheduleShift {
 				取得した予定を実績で上書きしてListを作る。 
 			 */
 			
-			// todo
+			List<ScheduleOfShiftDto> achievements = workScheduleShiftBaseResult.getListWorkScheduleShift();
 			
+			Map<ShiftMaster,Optional<WorkStyle>> achievementShiftMaster = workScheduleShiftBaseResult.getMapShiftMasterWithWorkStyle();
+			
+			List<ScheduleOfShiftDto> schedules = workScheduleShiftResult.getListWorkScheduleShift();
+			
+			Map<ShiftMaster,Optional<WorkStyle>> schedulesShiftMaster = workScheduleShiftResult.getMapShiftMasterWithWorkStyle();
+			
+			List<ScheduleOfShiftDto> list1 = achievements.stream()
+									.filter(x -> !schedules.stream()
+														  .anyMatch(y -> y.getDate().equals(x.getDate()) && y.getEmployeeId().equals(x.getEmployeeId())))
+									.collect(Collectors.toList());
+									
+			List<ScheduleOfShiftDto> list2 = achievements.stream()
+					.filter(x -> schedules.stream()
+										  .anyMatch(y -> y.getDate().equals(x.getDate()) && y.getEmployeeId().equals(x.getEmployeeId())))
+					.collect(Collectors.toList());
+			
+			list1.addAll(list2);
+			Map<ShiftMaster,Optional<WorkStyle>> map = new HashMap<ShiftMaster, Optional<WorkStyle>>();
+			achievementShiftMaster.forEach((k1, v1) -> {
+				schedulesShiftMaster.forEach((k2, v2) -> {
+					if (k2.getShiftMasterCode().v().equals(k1.getShiftMasterCode().v())) {
+						map.put(k2, v2);						
+					} else {
+						map.put(k1, v1);
+					}
+				});
+			});
+			output.setListWorkScheduleShift(list1);
+			output.setMapShiftMasterWithWorkStyle(map);
+								  
 			
 		}
 		

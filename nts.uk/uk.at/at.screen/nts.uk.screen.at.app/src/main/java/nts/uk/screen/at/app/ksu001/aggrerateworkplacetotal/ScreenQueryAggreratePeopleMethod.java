@@ -32,9 +32,6 @@ import nts.uk.shr.com.context.AppContexts;
  */
 @Stateless 
 public class ScreenQueryAggreratePeopleMethod {
-
-//	@Inject
-//	private CountNumberOfPeopleByEachWorkMethodService.Require require;
 	
 	@Inject
 	private GetWorkingHoursInformationQuery getWorkingHoursInformationQuery;

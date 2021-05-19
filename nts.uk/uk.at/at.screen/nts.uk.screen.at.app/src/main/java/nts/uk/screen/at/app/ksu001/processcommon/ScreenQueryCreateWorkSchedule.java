@@ -42,23 +42,23 @@ public class ScreenQueryCreateWorkSchedule {
 		List<WorkScheduleWorkInforDto> output = new ArrayList<WorkScheduleWorkInforDto>();
 		
 		// 1: 作成する(Map<社員の予定管理状態, Optional<勤務予定>>)
-		List<WorkScheduleWorkInforDto> workScheduleWorkInfoDto = 
+		List<WorkScheduleWorkInforDto> workScheduleWorkInfor1 = 
 					createWorkScheduleWorkInfor.getDataScheduleOfWorkInfo(mngStatusAndWScheMap);
 		
 		// 2実績も取得するか == true
 		if (isAchievement) {
 			// 2.1: 作成する(Map<社員の予定管理状態, Optional<日別勤怠(Work)>>)
-			List<WorkScheduleWorkInforDto> workScheduleWorkInforDto =
+			List<WorkScheduleWorkInforDto> workScheduleWorkInfor2 =
 						createWorkScheduleWorkInforBase.getDataScheduleOfWorkInfo(map);
 			
 			// 2.2 
-			List<WorkScheduleWorkInforDto> list1 = workScheduleWorkInfoDto.stream()
-								   .filter(x -> !workScheduleWorkInfoDto.stream()
+			List<WorkScheduleWorkInforDto> list1 = workScheduleWorkInfor1.stream()
+								   .filter(x -> !workScheduleWorkInfor2.stream()
 										   .anyMatch(y -> y.getDate().equals(x.getDate()) && y.getEmployeeId().equals(x.getEmployeeId())))
 								   .collect(Collectors.toList());
 			
-			List<WorkScheduleWorkInforDto> list2 = workScheduleWorkInforDto.stream()
-							   .filter(x -> workScheduleWorkInforDto.stream()
+			List<WorkScheduleWorkInforDto> list2 = workScheduleWorkInfor2.stream()
+							   .filter(x -> workScheduleWorkInfor1.stream()
 									   .anyMatch(y -> y.getDate().equals(x.getDate()) && y.getEmployeeId().equals(x.getEmployeeId())))
 							   .collect(Collectors.toList());
 			list1.addAll(list2);
