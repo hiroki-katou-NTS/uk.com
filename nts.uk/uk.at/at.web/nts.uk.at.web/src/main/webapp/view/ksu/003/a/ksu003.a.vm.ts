@@ -2184,7 +2184,9 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 						});
 					}
 				} else {
+					setTimeout(function() {
 					self.openKDL053(rs);
+					}, 50);
 					block.clear();
 				}
 			}).fail(function(error: any) {
@@ -4122,6 +4124,19 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				self.check045003 = true;
 				block.clear();
 			});
+		}
+		
+		public checkOpenG(){
+			let self = this;
+			$(window.parent.document).contents().find('body').find('iframe').contents().find('#btnCloseG').trigger('click');
+			if($(window.parent.document).contents().find('body').find('iframe').length < 2) {
+			 self.openGDialog()
+			}
+			else{
+				setTimeout(function() {
+				self.openGDialog()
+				},100);
+			}
 		}
 
 		/** A1_3 - Open dialog G */

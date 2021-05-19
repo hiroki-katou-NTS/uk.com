@@ -424,21 +424,6 @@ module nts.uk.at.view.ksu003.a.model {
 					bounceAtr: employeeInfo[index045].workInfoDto.bounceAtr,
 					isBreakByHand: isBreakByHand
 				}
-			} else {
-				dataCell = {
-					sid: employeeInfo[0].empId,
-					ymd: employeeInfo[0].workInfoDto.date,
-					workTypeCd: employeeInfo[index045].workScheduleDto.workTypeCode,
-					workTimeCd: employeeInfo[index045].workScheduleDto.workTimeCode,
-					startTime: employeeInfo[index045].workScheduleDto.startTime1,
-					endTime: employeeInfo[index045].workScheduleDto.endTime1,
-					startTime2: employeeInfo[index045].workScheduleDto.startTime2,
-					endTime2: employeeInfo[index045].workScheduleDto.endTime2,
-					listBreakTime: employeeInfo[index045].workScheduleDto.listBreakTimeZoneDto,
-					directAtr: employeeInfo[index045].workInfoDto.directAtr,
-					bounceAtr: employeeInfo[index045].workInfoDto.bounceAtr,
-					isBreakByHand: isBreakByHand
-				}
 			}
 			dataReg.push(dataCell);
 		}
