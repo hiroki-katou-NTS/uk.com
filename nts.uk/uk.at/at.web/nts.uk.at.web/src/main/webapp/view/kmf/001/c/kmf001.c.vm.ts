@@ -255,7 +255,7 @@ module nts.uk.pr.view.kmf001.c {
                 command.roundProcessClassific = self.enableTimeMaxNumberCompany() ? self.selectedroundProcessClassific() : dataBackup.roundProcessClassific;
                 //http://localhost:8080/nts.uk.at.web/view/ksm/007/a/index.xhtml
                 command.timeOfDayReference =  self.selectC531();
-                command.uniformTime =  self.uniformTime() ;
+                command.uniformTime =  !isNaN(self.uniformTime()) ? self.uniformTime() : parseInt(self.uniformTime().split(':')[0])*60 + parseInt(self.uniformTime().split(':')[1]);
                 command.contractTimeRound =  self.selectC535() ;
                 
                 return command;
