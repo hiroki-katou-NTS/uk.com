@@ -79,7 +79,7 @@ module nts.uk.ui.kdp001.a {
                     <span class="seconds" data-bind="date: $component.time.now, format: ':ss', attr: { style: $component.time.style }"></span>
                 </div>
                 <!-- ko if: $component.useTopMenuLink -->
-                    <div data-bind="if: modeA" class="button-link">
+                    <div style="color: blue !important;" data-bind="if: modeA" class="button-link">
                         <a href="#" data-bind="i18n: 'KDP001_4', click: toTopPage"></a>
                     </div>
                 <!-- /ko -->
@@ -691,7 +691,7 @@ module nts.uk.ui.kdp001.a {
                             employeeCode,
                             mode: MODE_PERSON,
                             workLocationName: ko.unwrap(vm.workLocationName),
-                            workpalceId: ko.unwrap(vm.workplaceId)
+                            workPlaceId: ko.unwrap(vm.workplaceId)
                         }),
                         vm.$window.shared('screenB', { screen: "KDP001" }),
                     )
@@ -707,7 +707,7 @@ module nts.uk.ui.kdp001.a {
                             mode: MODE_PERSON,
                             stampDate,
                             workLocationName: ko.unwrap(vm.workLocationName),
-                            workpalceId: ko.unwrap(vm.workplaceId)
+                            workPlaceId: ko.unwrap(vm.workplaceId)
 
                         }),
                         vm.$window.shared('screenC', { screen: "KDP001" }),
@@ -792,11 +792,11 @@ module nts.uk.ui.kdp001.a {
             const vm = this,
                 locationCd = $.urlParam('basyo'),
                 mode = $.urlParam('mode');
-
+                
             if (locationCd) {
                 vm.modeBasyo(true)
                 const param = {
-                    contractCode: '000000000004',
+                    contractCode: vm.$user.contractCode,
                     workLocationCode: locationCd
                 }
 
@@ -804,12 +804,15 @@ module nts.uk.ui.kdp001.a {
                     .then(() => {
                         vm.$ajax(REST_API.getLocation, param)
                             .done((data: IBasyo) => {
+                                console.log(data);
                                 if (data) {
                                     if (data.workpalceId != null || data.workLocationName != null) {
                                         vm.workpalceCD = locationCd;
                                     }
                                     if (data.workpalceId != null) {
-                                        vm.workplaceId(data.workpalceId[0]);
+                                        if (data.workpalceId.length > 0) {
+                                            vm.workplaceId(data.workpalceId[0]);
+                                        }
                                     }
                                 }
 
