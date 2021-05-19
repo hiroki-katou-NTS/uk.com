@@ -45,16 +45,8 @@ public class PersonContactPubImpl implements PersonContactPub {
 		pcObject.setContactName2(emerContact2.map(item -> item.getContactName().v()).orElse(null));
 		pcObject.setPhoneNumber2(emerContact2.map(item -> item.getPhoneNumber().v()).orElse(null));
 		
-		pcObject.setIsPhoneNumberDisplay(p.getIsPhoneNumberDisplay());
-		pcObject.setIsMailAddressDisplay(p.getIsMailAddressDisplay());
-		pcObject.setIsMobileEmailAddressDisplay(p.getIsMobileEmailAddressDisplay());
-		pcObject.setIsPhoneNumberDisplay(p.getIsPhoneNumberDisplay());
-		pcObject.setIsEmergencyContact1Display(p.getIsEmergencyContact1Display());
-		pcObject.setIsEmergencyContact2Display(p.getIsEmergencyContact2Display());
-		
 		List<OtherContact> otherContacts = p.getOtherContacts().stream()
 				.map(x -> OtherContact.builder()
-					.isDisplay(x.getIsDisplay())
 					.no(x.getOtherContactNo())
 					.address(x.getAddress().v())
 					.build())
