@@ -30,7 +30,7 @@ public class AttItemName {
 	
 	private Integer frameNo;
 	
-	
+	private Integer attendanceAtr;
 	
 	
 	private List<FrameNoAdapterDto> dailyAttendanceLinkingList;

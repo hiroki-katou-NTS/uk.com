@@ -387,17 +387,20 @@ public class RoleDailyExportExcelImpl {
                         if(color!=null){
                         	data.put("ヘッダー色", color.replace("#", ""));
                         }
-    	                Integer inputUnit = controlItem.getInputUnitOfTimeItem()==null ? 0:controlItem.getInputUnitOfTimeItem();
-    	                
-    	                switch (c.getTypeOfAttendanceItem()) {
+    	                Float inputUnit = controlItem.getInputUnitOfTimeItem()==null ? 0 : controlItem.getInputUnitOfTimeItem();
+
+    	                switch (c.getAttendanceAtr()) {
     	                	case 5:	//DailyAttendanceAtr.Time
-    	                		data.put("丸め単位", inputUnit + TextResource.localize("KDW006_154"));
+    	                		data.put("丸め単位", inputUnit % 1 == 0 ? (int) Math.floor(inputUnit) + TextResource.localize("KDW006_154") : 
+    	                			inputUnit + TextResource.localize("KDW006_154"));
     	                		break;
     	                	case 2: //DailyAttendanceAtr.NumberOfTime
-    	                		data.put("丸め単位", inputUnit + TextResource.localize("KDW006_230"));
+    	                		data.put("丸め単位", inputUnit % 1 == 0 ? (int) Math.floor(inputUnit) + TextResource.localize("KDW006_230") : 
+    	                			inputUnit + TextResource.localize("KDW006_230"));
     	                		break;
     	                	case 3: //DailyAttendanceAtr.AmountOfMoney
-    	                		data.put("丸め単位", inputUnit + TextResource.localize("KDW006_231"));
+    	                		data.put("丸め単位", inputUnit % 1 == 0 ? (int) Math.floor(inputUnit) + TextResource.localize("KDW006_231"): 
+    	                			inputUnit + TextResource.localize("KDW006_231"));
     	                		break;
     	                	default:
     	                		data.put("丸め単位","");
