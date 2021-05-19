@@ -69,22 +69,24 @@
 							}"></div>
 						</com:ko-if>
 					<com:ko-if bind="isUsed">
-						<com:ko-if bind="ko.toJS($vm.fingerStampSetting).noticeSetDto.displayAtr == 1">
-						<div class= "kdp-message-error" data-bind="component: {
-								name: 'kdp-message-error',
-								params:{
-									events: {
-										registerNoti: {
-											click: function() { $vm.settingNoti.apply($vm, []); }
+						<com:ko-if bind="ko.toJS($vm.fingerStampSetting).noticeSetDto">
+							<com:ko-if bind="ko.toJS($vm.fingerStampSetting).noticeSetDto.displayAtr == 1">
+							<div class= "kdp-message-error" data-bind="component: {
+									name: 'kdp-message-error',
+									params:{
+										events: {
+											registerNoti: {
+												click: function() { $vm.settingNoti.apply($vm, []); }
+											},
+											shoNoti: {
+												click: function() { $vm.shoNoti.apply($vm, []); }
+											}
 										},
-										shoNoti: {
-											click: function() { $vm.shoNoti.apply($vm, []); }
-										}
-									},
-									notiSet: fingerStampSetting,
-									messageNoti: messageNoti
-								}
-							}"></div>
+										notiSet: fingerStampSetting,
+										messageNoti: messageNoti
+									}
+								}"></div>
+							</com:ko-if>
 						</com:ko-if>
 					</com:ko-if>
 					<com:ko-if bind="!isUsed()">
