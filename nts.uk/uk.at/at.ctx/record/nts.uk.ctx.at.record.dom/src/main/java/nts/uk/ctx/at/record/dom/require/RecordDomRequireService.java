@@ -22,8 +22,6 @@ import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.Year;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.actualworkinghours.repository.AttendanceTimeRepository;
-import nts.uk.ctx.at.record.dom.adapter.basicschedule.BasicScheduleAdapter;
-import nts.uk.ctx.at.record.dom.adapter.basicschedule.BasicScheduleSidDto;
 import nts.uk.ctx.at.record.dom.adapter.classification.affiliate.AffClassificationAdapter;
 import nts.uk.ctx.at.record.dom.adapter.classification.affiliate.AffClassificationSidImport;
 import nts.uk.ctx.at.record.dom.adapter.company.AffCompanyHistImport;
@@ -504,8 +502,6 @@ public class RecordDomRequireService {
 	@Inject
 	private ErrMessageInfoRepository errMessageInfoRepo;
 	@Inject
-	private BasicScheduleAdapter basicScheduleAdapter;
-	@Inject
 	private SubstitutionOfHDManaDataRepository substitutionOfHDManaDataRepo;
 	@Inject
 	private PayoutManagementDataRepository payoutManagementDataRepo;
@@ -704,7 +700,7 @@ public class RecordDomRequireService {
 				companyAdapter, anyItemOfMonthlyRepo, empCalAndSumExeLogRepo, editStateOfMonthlyPerRepo, executorService, affiliationInforOfDailyPerforRepo, specialHolidayRepo,
 				converterFactory, predWorkingDaysAdaptor, updateAllDomainMonthService, agreementUnitSetRepo, agreementTimeWorkPlaceRepo, affClassficationAdapter, syEmploymentAdapter,
 				agreementTimeOfEmploymentRepo, agreementTimeOfClassificationRepo, agreementTimeCompanyRepo, remainMergeRepo, agreementYearSettingRepo, agreementMonthSettingRepo,
-				agreementTimeOfManagePeriodRepo, targetPersonRepo, errMessageInfoRepo, basicScheduleAdapter, substitutionOfHDManaDataRepo, payoutManagementDataRepo,
+				agreementTimeOfManagePeriodRepo, targetPersonRepo, errMessageInfoRepo, substitutionOfHDManaDataRepo, payoutManagementDataRepo,
 				comDayOffManaDataRepo, leaveManaDataRepo, interimBreakDayOffMngRepo, specialLeaveGrantRepo, annualLeaveTimeRemainHistRepo, annualLeaveMaxHistRepo, rsvLeaveGrantRemainHistRepo,
 				rsvLeaveGrantTimeRemainHistRepo, interimRecAbasMngRepo, interimSpecialHolidayMngRepo, interimRemainOffMonthProcess, monthlyClosureUpdateErrorInforRepo, monthlyClosureUpdateLogRepo,
 				monthlyClosureUpdatePersonLogRepo, ouenWorkTimeSheetOfDailyRepo, ouenWorkTimeOfDailyRepo, ouenAggregateFrameSetOfMonthlyRepo, regularLaborTimeComRepo, deforLaborTimeComRepo,
@@ -751,7 +747,7 @@ public class RecordDomRequireService {
 				Employment36HoursRepository agreementTimeOfEmploymentRepo, Classification36AgreementTimeRepository agreementTimeOfClassificationRepo, Company36AgreedHoursRepository agreementTimeCompanyRepo, RemainMergeRepository remainMergeRepo,
 
 				AgreementYearSettingRepository agreementYearSettingRepo, AgreementMonthSettingRepository agreementMonthSettingRepo, AgreementTimeOfManagePeriodRepository agreementTimeOfManagePeriodRepo, TargetPersonRepository targetPersonRepo,
-				ErrMessageInfoRepository errMessageInfoRepo, BasicScheduleAdapter basicScheduleAdapter, SubstitutionOfHDManaDataRepository substitutionOfHDManaDataRepo2,
+				ErrMessageInfoRepository errMessageInfoRepo, SubstitutionOfHDManaDataRepository substitutionOfHDManaDataRepo2,
 
 				PayoutManagementDataRepository payoutManagementDataRepo2, ComDayOffManaDataRepository comDayOffManaDataRepo2, LeaveManaDataRepository leaveManaDataRepo2, InterimBreakDayOffMngRepository interimBreakDayOffMngRepo2,
 				SpecialLeaveGrantRepository specialLeaveGrantRepo2, AnnualLeaveTimeRemainHistRepository annualLeaveTimeRemainHistRepo, AnnualLeaveMaxHistRepository annualLeaveMaxHistRepo, RsvLeaveGrantRemainHistRepository rsvLeaveGrantRemainHistRepo,
@@ -842,7 +838,6 @@ public class RecordDomRequireService {
 			this.agreementTimeOfManagePeriodRepo = agreementTimeOfManagePeriodRepo;
 			this.targetPersonRepo = targetPersonRepo;
 			this.errMessageInfoRepo = errMessageInfoRepo;
-			this.basicScheduleAdapter = basicScheduleAdapter;
 			this.substitutionOfHDManaDataRepo = substitutionOfHDManaDataRepo2;
 			this.payoutManagementDataRepo = payoutManagementDataRepo2;
 			this.comDayOffManaDataRepo = comDayOffManaDataRepo2;
@@ -1039,8 +1034,6 @@ public class RecordDomRequireService {
 		private TargetPersonRepository targetPersonRepo;
 
 		private ErrMessageInfoRepository errMessageInfoRepo;
-
-		private BasicScheduleAdapter basicScheduleAdapter;
 
 		private SubstitutionOfHDManaDataRepository substitutionOfHDManaDataRepo;
 
@@ -1669,11 +1662,6 @@ public class RecordDomRequireService {
 		@Override
 		public List<AttendanceTimeOfMonthly> attendanceTimeOfMonthly(String employeeId, GeneralDate criteriaDate) {
 			return attendanceTimeOfMonthlyRepo.findByDate(employeeId, criteriaDate);
-		}
-
-		@Override
-		public Optional<BasicScheduleSidDto> basicScheduleSid(String employeeId, GeneralDate baseDate) {
-			return basicScheduleAdapter.findAllBasicSchedule(employeeId, baseDate);
 		}
 
 		@Override

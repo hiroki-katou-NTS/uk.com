@@ -130,7 +130,7 @@ module nts.uk.at.view.kaf011 {
 			let self = this;
 			self.application.update(param.application);
 			self.workTypeList(workTypeList);
-			if (_.filter(self.workTypeList(), {'workType': param.workInformation.workType}).length == 0) {
+			if (_.filter(self.workTypeList(), {'workTypeCode': param.workInformation.workType}).length == 0) {
 				self.workTypeList().push({ workTypeCode: param.workInformation.workType, name: 'マスタ未登録' });
 			}
 			self.workTypeList(_.sortBy(self.workTypeList(), [ 'workTypeCode' ]));

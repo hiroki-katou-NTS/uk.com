@@ -653,14 +653,14 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
 
             let holidayAppDates = [];
 
-            let application: ApplicationDto = new ApplicationDto(
+            let application: ApplicationDto = new ApplicationDto( 
                 null,
                 null,
                 ko.toJS(vm.application().prePostAtr),
                 vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.employeeInfoLst[0].sid,
                 ko.toJS(vm.application().appType),
                 ko.toJS(vm.application().appDate),
-                null,
+                vm.$user.employeeId,
                 null,
                 null,
                 null,

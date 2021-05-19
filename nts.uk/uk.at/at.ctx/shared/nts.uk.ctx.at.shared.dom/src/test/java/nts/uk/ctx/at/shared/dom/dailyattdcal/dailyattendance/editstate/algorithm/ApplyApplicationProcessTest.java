@@ -11,6 +11,7 @@ import org.junit.Test;
 
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateSetting;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.algorithm.ApplyApplicationProcess;
 
 public class ApplyApplicationProcessTest {
 

@@ -151,7 +151,7 @@ module nts.uk.com.view.ccg026.component {
                             roleType: v
                         };
 
-                    if (!_.isEmpty(roleId) && !_.isEqual(oldData, compare)) {
+                    if (!_.isEmpty(roleId) && !_.isEqual(oldData, compare) && !ko.isObservable(params.changeData)) {
                         switch (v) {
                             case ROLE_TYPE.COMPANY_MANAGER:
                                 fetch.com_mngr(roleId).done(data => {
