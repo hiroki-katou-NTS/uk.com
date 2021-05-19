@@ -462,7 +462,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 
 			$("#extable-ksu003").exTable("cellValue", "middle", empId, "worktypeCode", schedule.workTypeCode);
 			$("#extable-ksu003").exTable("cellValue", "middle", empId, "worktimeCode", schedule.workTimeCode);
-
+			
+			if (self.checkCalcSum == false) return;
 			let lstTime: any = [], timeRangeLimit = ((self.timeRange * 60) / 5), totalBrkTime: any = null;
 			self.lstBreakSum = [], self.lstAllChildShow = [], self.lstHolidayShort = [];
 			lstTime = self.calcChartTypeTime(dataFixed, dataFixed.workScheduleDto.listBreakTimeZoneDto,
@@ -2025,6 +2026,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 						}
 
 						// tính lại tổng time
+						if (self.checkCalcSum == false) return;
 						let lstTime: any = [], timeRangeLimit = ((self.timeRange * 60) / 5), totalBrkTime: any = null;
 						self.lstBreakSum = [], self.lstAllChildShow = [], self.lstHolidayShort = [];
 						lstTime = self.calcChartTypeTime(dataFixed[0], dataFixed[0].workScheduleDto.listBreakTimeZoneDto,
@@ -2960,6 +2962,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 
 			let dataFixed = self.dataScreen003A().employeeInfo[i];
 			let dataFixInfo = _.filter(self.fixedWorkInformationDto, x => { return x.empId === self.dataScreen003A().employeeInfo[i].empId });
+			if (self.checkCalcSum == false) return;
 			let lstTime: any = [], timeRangeLimit = ((self.timeRange * 60) / 5);
 			self.lstBreakSum = [], self.lstAllChildShow = [], self.lstHolidayShort = [];
 			lstTime = self.calcChartTypeTime(dataFixed, dataFixed.workScheduleDto.listBreakTimeZoneDto,
@@ -4574,6 +4577,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 							|| (timeConvert.start2 == "" && timeConvert.end2 != "") || (timeConvert.start2 != "" && timeConvert.end2 == ""))
 							return;
 						// tính lại tổng time
+						if (self.checkCalcSum == false) return;
 						let lstTime: any = [], timeRangeLimit = ((self.timeRange * 60) / 5), totalBrkTime: any = null;
 						self.lstBreakSum = [], self.lstAllChildShow = [], self.lstHolidayShort = [];
 						lstTime = self.calcChartTypeTime(dataFixed[0], dataFixed[0].workScheduleDto.listBreakTimeZoneDto,
