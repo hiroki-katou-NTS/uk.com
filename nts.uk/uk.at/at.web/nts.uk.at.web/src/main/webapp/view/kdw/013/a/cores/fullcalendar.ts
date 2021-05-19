@@ -1073,6 +1073,7 @@ module nts.uk.ui.at.kdw013.calendar {
                                 .chain(workGroupDtos)
                                 .map((wg) => {
                                     const task = getTask(wg);
+                                    const { workCD1, workCD2, workCD3, workCD4, workCD5 } = wg;
 
                                     if (!task) {
                                         return null;
@@ -1105,6 +1106,12 @@ module nts.uk.ui.at.kdw013.calendar {
                                             expirationEndDate,
                                             expirationStartDate,
                                             childTaskList,
+                                            workCD1,
+                                            workCD2,
+                                            workCD3,
+                                            workCD4,
+                                            workCD5,
+                                            remarks: getTitles(wg)
                                         } as any
                                     };
                                 })

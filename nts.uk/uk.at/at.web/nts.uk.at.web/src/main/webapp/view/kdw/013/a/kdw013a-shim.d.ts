@@ -467,8 +467,11 @@ module nts.uk.ui.at.kdw013.a {
         /** List<年月日,List<作業詳細>> */
         workDetails: WorkDetailCommand[];
 
-        /// ????
+        /** 確認モード */
         mode: number;
+
+        /** 変更対象日 */
+        changedDate: string;
     };
 
     export type WorkDetailCommand = {
@@ -483,16 +486,42 @@ module nts.uk.ui.at.kdw013.a {
         // 応援勤務枠No: 応援勤務枠No
         supportFrameNo: number;
 
-        // 時間帯: 時間帯
-
-        // 作業グループ
-        workGroup: WorkGroupDto;
-
         // 備考: 作業入力備考
         remarks: string;
 
         // 勤務場所: 勤務場所コード
         workLocationCD: string;
+
+        // 時間帯: 時間帯
+        timeZone: TimeZoneCommand;
+
+        // 作業グループ
+        workGroup: WorkGroupCommand;
+    };
+
+    export type TimeZoneCommand = {
+        // 開始
+        start: number;
+
+        // 終了
+        end: number;
+    };
+
+    export type WorkGroupCommand = {
+        /** 作業CD1 */
+        workCD1: string;
+
+        /** 作業CD2 */
+        workCD2: string;
+
+        /** 作業CD3 */
+        workCD3: string;
+
+        /** 作業CD4 */
+        workCD4: string;
+
+        /** 作業CD5 */
+        workCD5: string;
     };
 
     export type AddWorkRecodConfirmationCommand = {

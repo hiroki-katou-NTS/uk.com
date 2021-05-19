@@ -16,7 +16,7 @@ module nts.uk.ui.at.kdw013.a {
 
     };
 
-    const { formatTime, setTimeOfDate } = share;
+    const { formatTime, setTimeOfDate, getTimeOfDate } = share;
     const { randomId } = nts.uk.util;
 
     const DATE_FORMAT = 'YYYY-MM-DD';
@@ -430,11 +430,12 @@ module nts.uk.ui.at.kdw013.a {
             const { events } = vm;
             const { HAND_CORRECTION_MYSELF } = EditStateSetting;
             const command: RegisterWorkContentCommand = {
+                changedDate: moment().format(DATE_TIME_FORMAT),
                 editStateSetting: HAND_CORRECTION_MYSELF,
                 employeeId: vm.$user.employeeId,
                 mode: 0,
-                workDetails: ko.unwrap(events).map(({ start, extendedProps }) => {
-                    const { workCD1, workCD2, workCD3, workCD4, workCD5, workplace: workLocationCD, descriptions: remarks } = extendedProps;
+                workDetails: ko.unwrap(events).map(({ start, end, extendedProps }) => {
+                    const { workCD1, workCD2, workCD3, workCD4, workCD5, workLocationCD, remarks } = extendedProps;
 
                     return {
                         date: moment(start).toISOString(),
@@ -448,7 +449,11 @@ module nts.uk.ui.at.kdw013.a {
                                 workCD4,
                                 workCD5
                             },
-                            workLocationCD
+                            workLocationCD,
+                            timeZone: {
+                                end: getTimeOfDate(end),
+                                start: getTimeOfDate(start)
+                            }
                         }]
                     };
                 })
@@ -480,7 +485,8 @@ module nts.uk.ui.at.kdw013.a {
                     if (data && data.length) {
                         vm.openDialogCaculationResult(data);
                     }
-                });
+                })
+                .always(() => vm.$blockui('clear'));
         }
 
         // 日付を変更する
