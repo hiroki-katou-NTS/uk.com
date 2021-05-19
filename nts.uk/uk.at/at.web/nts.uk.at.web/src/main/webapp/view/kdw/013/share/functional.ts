@@ -84,4 +84,51 @@ module nts.uk.ui.at.kdw013.share {
     };
 
     export const formatTime = (value: number, format: 'Clock_Short_HM' | 'Time_Short_HM' | 'Time_Short_HM') => byId(format, value);
+
+
+    export const getTasks = (wg: a.WorkGroupDto, tasks: c.TaskDto[]) => {
+        const { workCD1, workCD2, workCD3, workCD4, workCD5 } = wg;
+        const task1 = _.find(tasks, ({ code }) => code === workCD1);
+        const task2 = _.find(tasks, ({ code }) => code === workCD2);
+        const task3 = _.find(tasks, ({ code }) => code === workCD3);
+        const task4 = _.find(tasks, ({ code }) => code === workCD4);
+        const task5 = _.find(tasks, ({ code }) => code === workCD5);
+
+        return [task1, task2, task3, task4, task5];
+    };
+    export const getTask = (wg: a.WorkGroupDto, tasks: c.TaskDto[]) => {
+        const [task1, task2, task3, task4, task5] = getTasks(wg, tasks);
+
+        return task5 || task4 || task3 || task2 || task1;
+    };
+    export const getTitles = (wg: a.WorkGroupDto, tasks: c.TaskDto[]) => {
+        return getTasks(wg, tasks)
+            .map((m: c.TaskDto | undefined) => {
+                if (m) {
+                    const { displayInfo } = m;
+
+                    if (displayInfo) {
+                        return displayInfo.taskName;
+                    }
+
+                    return '';
+                }
+            })
+            .join('/')
+            .replace(/\/{2,}/, '/')
+            .replace(/\/$/, '');
+    };
+    export const getBackground = (wg: a.WorkGroupDto, tasks: c.TaskDto[]) => {
+        const task = getTask(wg, tasks);
+
+        if (task) {
+            const { displayInfo } = task;
+
+            if (displayInfo) {
+                return displayInfo.color;
+            }
+        }
+
+        return '';
+    };
 }

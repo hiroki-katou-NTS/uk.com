@@ -16,7 +16,7 @@ module nts.uk.ui.at.kdw013.a {
 
     };
 
-    const { formatTime, setTimeOfDate, getTimeOfDate } = share;
+    const { formatTime, setTimeOfDate, getTimeOfDate, getTask, getBackground, getTitles } = share;
     const { randomId } = nts.uk.util;
 
     const DATE_FORMAT = 'YYYY-MM-DD';
@@ -156,78 +156,88 @@ module nts.uk.ui.at.kdw013.a {
 
                 cache.refDate = params.refDate;
             };
+            const computedEvents = (data: SelectTargetEmployeeDto | null, settings: StartProcessDto | null) => {
+                if (cache.pair === -1) {
+                    return;
+                }
 
-            vm.$datas
-                .subscribe((data: SelectTargetEmployeeDto) => {
-                    if (cache.pair === -1) {
-                        return;
-                    }
+                if (data && settings) {
+                    const { lstWorkRecordDetailDto } = data;
+                    const { startManHourInputResultDto } = settings;
 
-                    if (data) {
-                        const { lstWorkRecordDetailDto } = data;
+                    if (lstWorkRecordDetailDto && startManHourInputResultDto) {
+                        const { tasks } = startManHourInputResultDto;
+                        const events = _
+                            .chain(lstWorkRecordDetailDto)
+                            .map(({ date, employeeId, lstWorkDetailsParamDto }) => {
+                                const events: calendar.EventRaw[] =
+                                    _.chain(lstWorkDetailsParamDto)
+                                        .map(({
+                                            remarks,
+                                            supportFrameNo,
+                                            timeZone,
+                                            workGroup,
+                                            workLocationCD,
+                                        }) => {
+                                            const $date = moment(date, DATE_FORMAT).toDate();
 
-                        if (lstWorkRecordDetailDto) {
-                            const events = _
-                                .chain(lstWorkRecordDetailDto)
-                                .map(({ date, employeeId, lstWorkDetailsParamDto }) => {
-                                    const events: calendar.EventRaw[] =
-                                        _.chain(lstWorkDetailsParamDto)
-                                            .map(({
-                                                remarks,
-                                                supportFrameNo,
-                                                timeZone,
-                                                workGroup,
-                                                workLocationCD,
-                                            }) => {
-                                                const $date = moment(date, DATE_FORMAT).toDate();
+                                            const { end, start } = timeZone;
+                                            const {
+                                                workCD1,
+                                                workCD2,
+                                                workCD3,
+                                                workCD4,
+                                                workCD5
+                                            } = workGroup;
+                                            const task = getTask(workGroup, tasks) || { displayInfo: {} } as any as c.TaskDto;
+                                            const { displayInfo } = task;
+                                            const { color: backgroundColor } = displayInfo;
 
-                                                const { end, start } = timeZone;
-                                                const {
+                                            const { timeWithDay: startTime } = start;
+                                            const { timeWithDay: endTime } = end;
+
+                                            return {
+                                                start: setTimeOfDate($date, startTime),
+                                                end: setTimeOfDate($date, endTime || (startTime + 60)),
+                                                title: '',
+                                                backgroundColor,
+                                                textColor: '',
+                                                extendedProps: {
+                                                    id: randomId(),
+                                                    status: 'normal' as any,
+                                                    remarks,
+                                                    employeeId,
+                                                    supportFrameNo,
                                                     workCD1,
                                                     workCD2,
                                                     workCD3,
                                                     workCD4,
-                                                    workCD5
-                                                } = workGroup;
+                                                    workCD5,
+                                                    workLocationCD
+                                                } as any
+                                            };
+                                        })
+                                        .value();
 
-                                                const { timeWithDay: startTime } = start;
-                                                const { timeWithDay: endTime } = end;
+                                return events;
+                            })
+                            .flatten()
+                            .value();
 
-                                                return {
-                                                    start: setTimeOfDate($date, startTime),
-                                                    end: setTimeOfDate($date, endTime || (startTime + 60)),
-                                                    title: '',
-                                                    backgroundColor: '',
-                                                    textColor: '',
-                                                    extendedProps: {
-                                                        id: randomId(),
-                                                        status: 'normal' as any,
-                                                        remarks,
-                                                        employeeId,
-                                                        workCD1,
-                                                        workCD2,
-                                                        workCD3,
-                                                        workCD4,
-                                                        workCD5,
-                                                        workLocationCD
-                                                    } as any
-                                                };
-                                            })
-                                            .value();
+                        vm.events(events);
 
-                                    return events;
-                                })
-                                .flatten()
-                                .value();
-
-                            vm.events(events);
-
-                            return;
-                        }
+                        return;
                     }
+                }
 
-                    vm.events([]);
-                });
+                vm.events([]);
+            };
+
+            vm.$datas
+                .subscribe((datas) => computedEvents(datas, ko.unwrap(vm.$settings)));
+
+            vm.$settings
+                .subscribe((settings) => computedEvents(ko.unwrap(vm.$datas), settings));
 
             vm.$toggle = {
                 save: ko.computed({
@@ -435,13 +445,13 @@ module nts.uk.ui.at.kdw013.a {
                 employeeId: vm.$user.employeeId,
                 mode: 0,
                 workDetails: ko.unwrap(events).map(({ start, end, extendedProps }) => {
-                    const { workCD1, workCD2, workCD3, workCD4, workCD5, workLocationCD, remarks } = extendedProps;
+                    const { workCD1, workCD2, workCD3, workCD4, workCD5, workLocationCD, remarks, supportFrameNo } = extendedProps;
 
                     return {
                         date: moment(start).toISOString(),
                         lstWorkDetailsParamCommand: [{
                             remarks,
-                            supportFrameNo: 1,
+                            supportFrameNo,
                             workGroup: {
                                 workCD1,
                                 workCD2,
@@ -458,6 +468,8 @@ module nts.uk.ui.at.kdw013.a {
                     };
                 })
             };
+
+            console.log({ command });
 
             vm.$blockui('grayout')
                 // 作業を登録する

@@ -6,7 +6,7 @@
 module nts.uk.ui.at.kdw013.calendar {
     const { randomId } = nts.uk.util;
     const { version } = nts.uk.util.browser;
-    const { getTimeOfDate } = at.kdw013.share;
+    const { getTimeOfDate, getTask, getBackground, getTitles } = at.kdw013.share;
 
     type Calendar = FullCalendar.Calendar;
     export type EventApi = Partial<FullCalendar.EventApi>;
@@ -1023,56 +1023,10 @@ module nts.uk.ui.at.kdw013.calendar {
                         const { tasks } = startManHourInputResultDto;
 
                         if (tasks && tasks.length) {
-                            const getTasks = (wg: a.WorkGroupDto) => {
-                                const { workCD1, workCD2, workCD3, workCD4, workCD5 } = wg;
-                                const task1 = _.find(tasks, ({ code }) => code === workCD1);
-                                const task2 = _.find(tasks, ({ code }) => code === workCD2);
-                                const task3 = _.find(tasks, ({ code }) => code === workCD3);
-                                const task4 = _.find(tasks, ({ code }) => code === workCD4);
-                                const task5 = _.find(tasks, ({ code }) => code === workCD5);
-
-                                return [task1, task2, task3, task4, task5];
-                            };
-                            const getTask = (wg: a.WorkGroupDto) => {
-                                const [task1, task2, task3, task4, task5] = getTasks(wg);
-
-                                return task5 || task4 || task3 || task2 || task1;
-                            };
-                            const getTitles = (wg: a.WorkGroupDto) => {
-                                return getTasks(wg)
-                                    .map((m: c.TaskDto | undefined) => {
-                                        if (m) {
-                                            const { displayInfo } = m;
-
-                                            if (displayInfo) {
-                                                return displayInfo.taskName;
-                                            }
-
-                                            return '';
-                                        }
-                                    })
-                                    .join('/')
-                                    .replace(/\/{2,}/, '/')
-                                    .replace(/\/$/, '');
-                            };
-                            const getBackground = (wg: a.WorkGroupDto) => {
-                                const task = getTask(wg);
-
-                                if (task) {
-                                    const { displayInfo } = task;
-
-                                    if (displayInfo) {
-                                        return displayInfo.color;
-                                    }
-                                }
-
-                                return '';
-                            };
-
                             const draggers: EventRaw[] = _
                                 .chain(workGroupDtos)
                                 .map((wg) => {
-                                    const task = getTask(wg);
+                                    const task = getTask(wg, tasks);
                                     const { workCD1, workCD2, workCD3, workCD4, workCD5 } = wg;
 
                                     if (!task) {
@@ -1093,8 +1047,8 @@ module nts.uk.ui.at.kdw013.calendar {
                                     return {
                                         start: new Date(),
                                         end: new Date(),
-                                        title: getTitles(wg),
-                                        backgroundColor: getBackground(wg),
+                                        title: getTitles(wg, tasks),
+                                        backgroundColor: getBackground(wg, tasks),
                                         textColor: '',
                                         extendedProps: {
                                             relateId,
@@ -1111,7 +1065,7 @@ module nts.uk.ui.at.kdw013.calendar {
                                             workCD3,
                                             workCD4,
                                             workCD5,
-                                            remarks: getTitles(wg)
+                                            remarks: getTitles(wg, tasks)
                                         } as any
                                     };
                                 })
