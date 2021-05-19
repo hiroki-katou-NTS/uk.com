@@ -439,6 +439,9 @@ module nts.uk.ui.kdp001.a {
                 .has-info-short {
                     overflow-y: hidden;
                 }
+				.kdp-001-a.widget-title .button-link a {
+					color: #0000EE;
+				}
             </style>
         `
     })
