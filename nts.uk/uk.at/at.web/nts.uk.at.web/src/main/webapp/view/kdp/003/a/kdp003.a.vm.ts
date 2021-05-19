@@ -96,6 +96,8 @@ module nts.uk.at.kdp003.a {
 		created() {
 			const vm = this;
 
+			vm.basyo();
+
 			//get workplaces Info
 			vm.getWorkPlacesInfo();
 
@@ -127,6 +129,48 @@ module nts.uk.at.kdp003.a {
 					});
 			});
 		}
+
+		// get WorkPlace from basyo -> save locastorage.
+		basyo() {
+
+			$.urlParam = function (name) {
+				var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
+				if (results == null) {
+					return null;
+				}
+				else {
+					return decodeURI(results[1]) || 0;
+				}
+			}
+
+			const vm = this,
+				locationCd = $.urlParam('basyo');
+
+			if (locationCd) {
+				const param = {
+					contractCode: '000000000004',
+					workLocationCode: locationCd
+				}
+
+				vm.$ajax(API.GET_WORKPLACE_BASYO, param)
+					.done((data: IBasyo) => {
+						if (data) {
+
+							if (data.workLocationName != null || data.workpalceId != null) {
+								vm.worklocationCode = locationCd;
+							}
+
+							if (data.workpalceId) {
+								if (data.workpalceId.length > 0) {
+									vm.modeBasyo(true);
+									vm.workPlace = data.workpalceId;
+								}
+							}
+						}
+					});
+			}
+		}
+
 
 		getWorkPlacesInfo() {
 			const vm = this;
@@ -657,7 +701,7 @@ module nts.uk.at.kdp003.a {
 				.then((data: false | StorageData) => {
 
 					console.log(data);
-					
+
 					// if login and storage data success
 					if (data) {
 						// data login by storage

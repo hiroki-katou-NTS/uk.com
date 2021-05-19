@@ -198,37 +198,40 @@ module nts.uk.at.view.kdp005.a {
 						self.errorMessage(getMessage("Msg_1647"));
 						dfd.resolve();
 					} else {
-						if (!ko.unwrap(self.modeBasyo)) {
-							self.openDialogK().done((result) => {
-								if (!result) {
-									if (__viewContext.user.companyId != loginResult.em.companyId || __viewContext.user.employeeCode != loginResult.em.employeeCode) {
-										location.reload();
-										dfd.resolve();
-									} else {
-										self.stampSetting({});
-										self.errorMessage(getMessage("Msg_1647"));
-										dfd.resolve();
-									}
-								} else {
-									self.loginInfo = loginResult.em;
-									self.loginInfo.selectedWP = result;
-									characteristics.save("loginKDP005", self.loginInfo).done(() => {
-										if (__viewContext.user.companyId != loginResult.em.companyId || __viewContext.user.employeeCode != loginResult.em.employeeCode) {
-											location.reload();
-											dfd.resolve();
+						self.basyo()
+							.then(() => {
+								if (!ko.unwrap(self.modeBasyo)) {
+									self.openDialogK().done((result) => {
+										if (!result) {
+											if (__viewContext.user.companyId != loginResult.em.companyId || __viewContext.user.employeeCode != loginResult.em.employeeCode) {
+												location.reload();
+												dfd.resolve();
+											} else {
+												self.stampSetting({});
+												self.errorMessage(getMessage("Msg_1647"));
+												dfd.resolve();
+											}
 										} else {
-											dfd.resolve(self.loginInfo);
+											self.loginInfo = loginResult.em;
+											self.loginInfo.selectedWP = result;
+											characteristics.save("loginKDP005", self.loginInfo).done(() => {
+												if (__viewContext.user.companyId != loginResult.em.companyId || __viewContext.user.employeeCode != loginResult.em.employeeCode) {
+													location.reload();
+													dfd.resolve();
+												} else {
+													dfd.resolve(self.loginInfo);
+												}
+											});
 										}
 									});
-
-
+								} else {
+									self.loginInfo = loginResult.em;
+									self.loginInfo.selectedWP = self.workplace;
+									nts.uk.characteristics.save(KDP005_SAVE_DATA, self.loginInfo).done(() => {
+										location.reload();
+									});
 								}
 							});
-						} else {
-							self.loginInfo = loginResult.em;
-							self.loginInfo.selectedWP = self.workplace;
-							nts.uk.characteristics.save(KDP005_SAVE_DATA, self.loginInfo);
-						}
 
 					}
 				}).always(() => {
@@ -410,27 +413,37 @@ module nts.uk.at.view.kdp005.a {
 					companyId: __viewContext.user.companyId
 				}).done((loginResult) => {
 					if (loginResult && loginResult.result) {
-						self.openDialogK().done((result) => {
-							if (result) {
-								self.loginInfo = loginResult.em;
-								self.loginInfo.selectedWP = result;
-								characteristics.save("loginKDP005", self.loginInfo).done(() => {
-									location.reload();
-								});
-							} else {
-								if (self.loginInfo) {
-									self.login(self.loginInfo).done(() => {
-										if (__viewContext.user.companyId != self.loginInfo.companyId || __viewContext.user.employeeCode != self.loginInfo.employeeCode) {
-											location.reload();
+						self.basyo()
+							.then(() => {
+								if (!ko.unwrap(self.modeBasyo)) {
+									self.openDialogK().done((result) => {
+										if (result) {
+											self.loginInfo = loginResult.em;
+											self.loginInfo.selectedWP = result;
+											characteristics.save("loginKDP005", self.loginInfo).done(() => {
+												location.reload();
+											});
+										} else {
+											if (self.loginInfo) {
+												self.login(self.loginInfo).done(() => {
+													if (__viewContext.user.companyId != self.loginInfo.companyId || __viewContext.user.employeeCode != self.loginInfo.employeeCode) {
+														location.reload();
+													}
+												});
+											} else {
+												if (__viewContext.user.companyId != loginResult.em.companyId || __viewContext.user.employeeCode != loginResult.em.employeeCode) {
+													location.reload();
+												}
+											}
 										}
 									});
 								} else {
-									if (__viewContext.user.companyId != loginResult.em.companyId || __viewContext.user.employeeCode != loginResult.em.employeeCode) {
+									self.loginInfo.selectedWP = self.workplace;
+									characteristics.save("loginKDP005", self.loginInfo).done(() => {
 										location.reload();
-									}
+									});
 								}
-							}
-						});
+							})
 					} else {
 						if (loginResult.msgErrorId == "Msg_1527") {
 							self.isUsed(false);
@@ -673,7 +686,7 @@ module nts.uk.at.view.kdp005.a {
 					});
 			}
 
-			loadNotice(loginInfo: any) : JQueryPromise<any> {
+			loadNotice(loginInfo: any): JQueryPromise<any> {
 				let vm = new ko.ViewModel();
 				const self = this;
 				let dfd = $.Deferred<any>();
@@ -749,9 +762,11 @@ module nts.uk.at.view.kdp005.a {
 								}
 
 								if (data.workpalceId) {
-									self.modeBasyo(true);
-									self.workplace = data.workpalceId;
-									dfd.resolve();
+									if (data.workpalceId.length > 0) {
+										self.modeBasyo(true);
+										self.workplace = data.workpalceId;
+										dfd.resolve();
+									}
 								}
 							} else {
 								dfd.resolve();
