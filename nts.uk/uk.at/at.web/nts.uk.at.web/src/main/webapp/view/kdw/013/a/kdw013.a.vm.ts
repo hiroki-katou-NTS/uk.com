@@ -447,8 +447,8 @@ module nts.uk.ui.at.kdw013.a {
 
             const command: RegisterWorkContentCommand = {
                 changedDate: moment().format(DATE_TIME_FORMAT),
-                start: moment(start).format(DATE_TIME_FORMAT),
-                end: moment(end).format(DATE_TIME_FORMAT),
+                start: moment(start).startOf('day').format(DATE_TIME_FORMAT),
+                end: moment(end).subtract(1, 'day').endOf('day').format(DATE_TIME_FORMAT),
                 editStateSetting: HAND_CORRECTION_MYSELF,
                 employeeId: vm.$user.employeeId,
                 mode: 0,
