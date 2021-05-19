@@ -104,7 +104,9 @@ public class OutsideWorkTimeSheet {
 				overTimeWorkFrameTimeSheet = overTimeDayEnd.getOverTimeList();
 				holidayWorkFrameTimeSheetForCalc = overTimeDayEnd.getHolList();
 			}
-		} else {
+		}
+		if(todayWorkType.isHolidayWork()) {
+			/* 休日出勤の処理 */
 			holidayWorkFrameTimeSheetForCalc = HolidayWorkFrameTimeSheetForCalc.createHolidayTimeWorkFrame(
 					timeLeavingWork,
 					integrationOfWorkTime.getHDWorkTimeSheetSettingList(),
