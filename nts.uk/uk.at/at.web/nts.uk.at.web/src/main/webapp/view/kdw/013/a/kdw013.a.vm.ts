@@ -604,10 +604,10 @@ module nts.uk.ui.at.kdw013.a {
             }"></div>
             <ul class="list-employee" data-bind="foreach: { data: $component.employees, as: 'item' }">
                 <li class="item" data-bind="
-                    click: function() { $component.selectEmployee(item.sid) },
+                    click: function() { $component.selectEmployee(item.employeeId) },
                     timeClick: -1,
                     css: {
-                        'selected': ko.computed(function() { return item.sid === ko.unwrap($component.params.employee); })
+                        'selected': ko.computed(function() { return item.employeeId === ko.unwrap($component.params.employee); })
                     }">
                     <div data-bind="text: item.employeeCode"></div>
                     <div data-bind="text: item.employeeName"></div>
@@ -617,7 +617,7 @@ module nts.uk.ui.at.kdw013.a {
         export class EmployeeDepartmentComponent extends ko.ViewModel {
             department: KnockoutObservable<string> = ko.observable('');
 
-            employees!: KnockoutComputed<EmployeeBasicInfoImport[]>;
+            employees!: KnockoutComputed<EmployeeBasicInfoDto[]>;
             departments!: KnockoutComputed<WorkplaceInfoDto[]>;
 
             constructor(private params: EmployeeDepartmentParams) {
@@ -639,7 +639,7 @@ module nts.uk.ui.at.kdw013.a {
                                 const { employeeInfos, lstEmployeeInfo } = refWorkplaceAndEmployeeDto;
 
                                 // updating
-                                return loaded ? [] : lstEmployeeInfo.filter(({ sid }) => employeeInfos[sid] === $dept);
+                                return loaded ? [] : lstEmployeeInfo.filter(({ employeeId }) => employeeInfos[employeeId] === $dept);
                             }
                         }
 
@@ -673,11 +673,11 @@ module nts.uk.ui.at.kdw013.a {
                 });
 
                 vm.employees
-                    .subscribe((emps: EmployeeBasicInfoImport[]) => {
+                    .subscribe((emps: EmployeeBasicInfoDto[]) => {
                         if (emps.length && !ko.unwrap(vm.params.employee)) {
                             const [first] = emps;
 
-                            vm.params.employee(first.sid);
+                            vm.params.employee(first.employeeId);
                         }
                     });
             }

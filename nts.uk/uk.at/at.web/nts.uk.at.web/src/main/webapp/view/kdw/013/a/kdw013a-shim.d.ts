@@ -43,11 +43,10 @@ module nts.uk.ui.at.kdw013.a {
         };
 
         /** List＜社員ID（List）から社員コードと表示名を取得＞*/
-        lstEmployeeInfo: EmployeeBasicInfoImport[];
+        lstEmployeeInfo: EmployeeBasicInfoDto[];
 
         /** List＜職場情報一覧＞ */
         workplaceInfos: WorkplaceInfoDto[];
-
     }
 
     export type WorkplaceInfoDto = {
@@ -77,16 +76,37 @@ module nts.uk.ui.at.kdw013.a {
         };
 
         /** List＜社員ID（List）から社員コードと表示名を取得＞*/
-        lstEmployeeInfo: EmployeeBasicInfoImport[];
+        lstEmployeeInfo: EmployeeBasicInfoDto[];
 
         /** List＜職場情報一覧＞ */
         workplaceInfos: WorkplaceInfo[];
     };
 
-    export type EmployeeBasicInfoImport = {
-        sid: string;
+    export type EmployeeBasicInfoDto = {
+        /**
+         * 社員ID
+         */
+        employeeId: string;
+        /**
+         * 社員コード
+         */
         employeeCode: string;
+        /**
+         * 社員名
+         */
         employeeName: string;
+        /**
+         * 所属CD
+         */
+        affiliationCode: string;
+        /**
+         * 所属ID
+         */
+        affiliationId: string;
+        /**
+         * 所属名称
+         */
+        affiliationName: string;
     };
 
     export type WorkplaceInfo = {
