@@ -5,7 +5,6 @@ import java.util.Map;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeBasicInfoImport;
 
 /**
  * 
@@ -20,7 +19,7 @@ public class GetRefWorkplaceAndEmployeeResultDto {
 	private Map<String, String> employeeInfos;
 	
 	/** List＜社員ID（List）から社員コードと表示名を取得＞*/
-	private List<EmployeeBasicInfoImport> lstEmployeeInfo;
+	private List<EmployeeBasicInfoDto> lstEmployeeInfo;
 	 
 	/** List＜職場情報一覧＞ */
 	private List<WorkplaceInfoDto> workplaceInfos;
