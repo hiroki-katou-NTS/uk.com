@@ -50,6 +50,8 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 	
 	private static final String DELETE_BY_LIST_DATE = "WHERE a.pk.sid = :sid AND a.pk.ymd IN :ymds";
 	
+	private static final String SELECT_MAX = "SELECT MAX(c.startDate) FROM KscdtSchBasicInfo c WHERE c.pk.sid IN :employeeIDs";
+	
 //	private static final String GET_MAX_DATE_WORK_SCHE_BY_LIST_EMP = "SELECT c.pk.ymd FROM KscdtSchBasicInfo c "
 //			+ " WHERE c.pk.sid IN :listEmp"
 //			+ " ORDER BY c.pk.ymd desc ";
@@ -77,6 +79,14 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 				.setParameter("employeeID", employeeID).setParameter("ymd", ymd)
 				.getSingle(c -> c.toDomain(employeeID, ymd));
 		return workSchedule;
+	}
+	
+	@Override
+	public Optional<GeneralDate> getMaxDate(List<String> employeeIDs, GeneralDate ymd) {
+		GeneralDate date = this.queryProxy().query(SELECT_MAX, GeneralDate.class)
+				.setParameter("employeeIDs", employeeIDs)
+				.getSingleOrNull();
+		return Optional.ofNullable(date);
 	}
 
 	@Override
