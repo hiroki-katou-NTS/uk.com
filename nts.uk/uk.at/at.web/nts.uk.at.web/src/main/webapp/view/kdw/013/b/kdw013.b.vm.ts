@@ -3,7 +3,7 @@ module nts.uk.ui.at.kdw013.b {
 
     const { getTimeOfDate, number2String } = share;
 
-    const API_REMOVE = '/screen/at/kdw013/delete';
+    // const API_REMOVE = '/screen/at/kdw013/delete';
 
     @handler({
         bindingName: 'content',
@@ -317,13 +317,15 @@ module nts.uk.ui.at.kdw013.b {
 
         remove() {
             const vm = this;
-            const { data } = vm.params;
-            const { extendedProps } = ko.unwrap(data);
-            const { employeeId, confirmerId, date } = extendedProps;
-            const params = { employeeId, date, confirmerId };
+            // const { data } = vm.params;
+            // const { extendedProps } = ko.unwrap(data);
+            // const { employeeId, confirmerId, date } = extendedProps;
+            // const params = { employeeId, date, confirmerId };
 
-            vm
-                .$ajax('at', API_REMOVE, params)
+            // vm
+            //    .$ajax('at', API_REMOVE, params)
+            $.Deferred()
+                .resolve()
                 .then(() => {
                     vm.params.remove();
                 });

@@ -169,7 +169,7 @@ module nts.uk.ui.at.kdw013.a {
                         if (lstWorkRecordDetailDto) {
                             const events = _
                                 .chain(lstWorkRecordDetailDto)
-                                .map(({ date, sid, lstWorkDetailsParamDto }) => {
+                                .map(({ date, employeeId, lstWorkDetailsParamDto }) => {
                                     const events: calendar.EventRaw[] =
                                         _.chain(lstWorkDetailsParamDto)
                                             .map(({
@@ -203,7 +203,7 @@ module nts.uk.ui.at.kdw013.a {
                                                         id: randomId(),
                                                         status: 'normal' as any,
                                                         remarks,
-                                                        sId: sid,
+                                                        employeeId,
                                                         workCD1,
                                                         workCD2,
                                                         workCD3,
@@ -339,7 +339,7 @@ module nts.uk.ui.at.kdw013.a {
                         return _
                             .chain(lstWorkRecordDetailDto)
                             // .orderBy(['date'])
-                            .filter(({ sid }) => sid === employeeId)
+                            .filter(({ employeeId }) => employeeId === employeeId)
                             .map(({
                                 date: strDate,
                                 actualContent,
