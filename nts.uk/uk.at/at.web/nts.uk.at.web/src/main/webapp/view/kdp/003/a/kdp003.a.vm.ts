@@ -18,7 +18,8 @@ module nts.uk.at.kdp003.a {
 		REGISTER: '/at/record/stamp/employment/system/register-stamp-input',
 		NOW: '/server/time/now',
 		NOTICE: 'at/record/stamp/notice/getStampInputSetting',
-		GET_WORKPLACE_BASYO: 'at/record/stamp/employment_system/get_location_stamp_input'
+		GET_WORKPLACE_BASYO: 'at/record/stamp/employment_system/get_location_stamp_input',
+		confirmUseOfStampInput: 'at/record/stamp/employment_system/confirm_use_of_stamp_input'
 	};
 
 	const DIALOG = {
@@ -242,6 +243,17 @@ module nts.uk.at.kdp003.a {
 
 			$(window).trigger('resize');
 
+			var checkUsed: boolean | null;
+
+			vm.$ajax(API.confirmUseOfStampInput, { employeeId: null, stampMeans: 0 })
+				.then((data: any) => {
+					if (data.used == 2) {
+						checkUsed = false;
+					} else {
+						checkUsed = true;
+					}
+				});
+
 			return $.Deferred()
 				.resolve(true)
 				.then(() => storage(KDP003_SAVE_DATA))
@@ -349,6 +361,8 @@ module nts.uk.at.kdp003.a {
 						const { loginData } = data;
 						const params = { multiSelect: true };
 
+						console.log(loginData);
+
 						if (!ko.unwrap(vm.modeBasyo) && loginData.msgErrorId !== "Msg_1527") {
 							return vm.$window
 								.modal('at', DIALOG.K, params)
@@ -363,15 +377,13 @@ module nts.uk.at.kdp003.a {
 				})
 				.then((data: LoginData) => {
 					// if not return full data (first login)
-					if (!data.storageData && (!data.loginData || !data.workplaceData && !ko.unwrap(vm.modeBasyo))) {
+					if (!data.storageData && (!data.loginData || !data.workplaceData)) {
 						vm.setMessage({ messageId: 'Msg_1647' });
 
 						return false;
 					}
 
 					const { loginData, storageData, workplaceData } = data;
-
-					console.log(data.workplaceData);
 
 					if (data.workplaceData) {
 						if (!data.workplaceData.selectedId) {
@@ -391,6 +403,12 @@ module nts.uk.at.kdp003.a {
 
 					if (loginData.errorMessage) {
 						vm.setMessage(loginData.errorMessage);
+
+						return false;
+					}
+
+					if (!checkUsed) {
+						vm.message({ messageId: 'Msg_1645', messageParams: [vm.$i18n('KDP002_2')]});
 
 						return false;
 					}
@@ -444,6 +462,7 @@ module nts.uk.at.kdp003.a {
 					return storageData;
 				})
 				.then((data: false | StorageData) => {
+
 					// if login and storage data success
 					if (data) {
 						vm.loadNotice(data);
@@ -557,6 +576,7 @@ module nts.uk.at.kdp003.a {
 			const vm = this;
 			const { storage } = vm.$window;
 			var openViewK: boolean | null = null;
+			var saveSuccess: boolean = false;
 
 			if (!!ko.unwrap(vm.message)) {
 				vm.message(false);
@@ -700,10 +720,9 @@ module nts.uk.at.kdp003.a {
 				})
 				.then((data: false | StorageData) => {
 
-					console.log(data);
-
 					// if login and storage data success
 					if (data) {
+						saveSuccess = true;
 						// data login by storage
 						const {
 							CCD,
@@ -741,8 +760,9 @@ module nts.uk.at.kdp003.a {
 					vm.message(message);
 				})
 				.always(() => {
-					if (openViewK) {
+					if (openViewK && !saveSuccess) {
 						window.location.reload(false);
+						openViewK = false;
 					}
 				});
 		}
@@ -769,7 +789,6 @@ module nts.uk.at.kdp003.a {
 					});
 				})
 				.then((data: f.TimeStampLoginData) => {
-					console.log(data);
 					if (data) {
 						if (data.msgErrorId) {
 							return vm.$dialog.error({ messageId: data.msgErrorId });
