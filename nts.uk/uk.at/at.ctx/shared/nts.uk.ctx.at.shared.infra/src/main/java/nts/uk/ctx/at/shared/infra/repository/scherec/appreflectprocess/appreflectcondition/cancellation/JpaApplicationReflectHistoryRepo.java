@@ -89,9 +89,9 @@ public class JpaApplicationReflectHistoryRepo extends JpaRepository implements A
 	}
 
 	@Override
-	public void insertAppReflectHist(ApplicationReflectHistory hist) {
-		this.commandProxy().insert(toEntityHist(hist));
-		this.commandProxy().insertAll(toEntityRestore(hist));
+	public void insertAppReflectHist(String cid, ApplicationReflectHistory hist) {
+		this.commandProxy().insert(toEntityHist(cid, hist));
+		this.commandProxy().insertAll(toEntityRestore(cid, hist));
 	}
 
 	@Override
@@ -126,17 +126,17 @@ public class JpaApplicationReflectHistoryRepo extends JpaRepository implements A
 		})).values().stream().collect(Collectors.toList());
 	}
 
-	private KsrdtReflectAppHist toEntityHist(ApplicationReflectHistory dom) {
+	private KsrdtReflectAppHist toEntityHist(String cid, ApplicationReflectHistory dom) {
 		return new KsrdtReflectAppHist(new KsrdtReflectAppHistPK(dom.getEmployeeId(), dom.getDate(),
-				dom.getApplicationId(), dom.getClassification().value, dom.getReflectionTime()),
+				dom.getApplicationId(), dom.getClassification().value, dom.getReflectionTime()), cid, 
 				dom.isCancellationCate() ? 1 : 0);
 	}
 
-	private List<KsrdtReflectAppHistRestore> toEntityRestore(ApplicationReflectHistory dom) {
+	private List<KsrdtReflectAppHistRestore> toEntityRestore(String cid, ApplicationReflectHistory dom) {
 		return dom.getLstAttBeforeAppReflect().stream().map(x -> {
 			return new KsrdtReflectAppHistRestore(
 					new KsrdtReflectAppHistRestorePK(dom.getEmployeeId(), dom.getDate(), dom.getApplicationId(),
-							dom.getClassification().value, dom.getReflectionTime(), x.getAttendanceId()),
+							dom.getClassification().value, dom.getReflectionTime(), x.getAttendanceId()), cid, 
 					x.getValue(), x.getEditState().map(y -> y.getEditStateSetting().value).orElse(null));
 		}).collect(Collectors.toList());
 	}

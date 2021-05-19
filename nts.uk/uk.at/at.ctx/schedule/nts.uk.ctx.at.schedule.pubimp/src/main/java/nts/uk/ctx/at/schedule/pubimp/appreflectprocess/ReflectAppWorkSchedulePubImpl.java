@@ -278,7 +278,7 @@ public class ReflectAppWorkSchedulePubImpl implements ReflectApplicationWorkSche
 
 		@Override
 		public void insertAppReflectHist(ApplicationReflectHistory hist) {
-			applicationReflectHistoryRepo.insertAppReflectHist(hist);
+			applicationReflectHistoryRepo.insertAppReflectHist(companyId, hist);
 		}
 
 		@Override
