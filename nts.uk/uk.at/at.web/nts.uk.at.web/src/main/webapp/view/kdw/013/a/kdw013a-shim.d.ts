@@ -472,6 +472,9 @@ module nts.uk.ui.at.kdw013.a {
 
         /** 変更対象日 */
         changedDate: string;
+
+        start: string;
+        end: string;
     };
 
     export type WorkDetailCommand = {

@@ -437,10 +437,18 @@ module nts.uk.ui.at.kdw013.a {
 
         saveData() {
             const vm = this;
-            const { events } = vm;
+            const { events, dateRange } = vm;
             const { HAND_CORRECTION_MYSELF } = EditStateSetting;
+            const { start, end } = ko.unwrap(dateRange);
+
+            if (!start || !end) {
+                return;
+            }
+
             const command: RegisterWorkContentCommand = {
                 changedDate: moment().format(DATE_TIME_FORMAT),
+                start: moment(start).format(DATE_TIME_FORMAT),
+                end: moment(end).format(DATE_TIME_FORMAT),
                 editStateSetting: HAND_CORRECTION_MYSELF,
                 employeeId: vm.$user.employeeId,
                 mode: 0,
@@ -468,8 +476,6 @@ module nts.uk.ui.at.kdw013.a {
                     };
                 })
             };
-
-            console.log({ command });
 
             vm.$blockui('grayout')
                 // 作業を登録する
