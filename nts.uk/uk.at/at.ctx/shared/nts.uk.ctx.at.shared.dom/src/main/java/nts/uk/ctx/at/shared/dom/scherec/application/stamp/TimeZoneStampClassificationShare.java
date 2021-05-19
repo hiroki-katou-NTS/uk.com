@@ -3,7 +3,7 @@ package nts.uk.ctx.at.shared.dom.scherec.application.stamp;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
-//打刻申請時間帯分類
+//打刻申請時間帯分類(反映用)
 public enum TimeZoneStampClassificationShare {
 //	2
 	PARENT(0,"育児"),

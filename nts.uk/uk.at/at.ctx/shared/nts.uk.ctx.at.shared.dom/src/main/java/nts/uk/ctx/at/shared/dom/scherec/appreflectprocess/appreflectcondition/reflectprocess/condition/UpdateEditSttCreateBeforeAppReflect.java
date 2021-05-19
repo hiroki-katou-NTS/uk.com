@@ -2,8 +2,8 @@ package nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.r
 
 import java.util.List;
 
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.editstate.algorithm.ApplyApplicationProcess;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.DailyRecordOfApplication;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.algorithm.ApplyApplicationProcess;
 
 /**
  * @author thanh_nx

@@ -46,4 +46,8 @@ public class HolidayWorkMidNightTime {
 		this.time = timeDivergenceWithCalculation;
 	}
 	
+	//該当の法定区分をキーにした[休出深夜時間]を作成する
+	public static HolidayWorkMidNightTime createDefaultWithAtr(StaturoryAtrOfHolidayWork statutoryAtr) {
+		return new HolidayWorkMidNightTime(TimeDivergenceWithCalculation.defaultValue(), statutoryAtr);
+	}
 }

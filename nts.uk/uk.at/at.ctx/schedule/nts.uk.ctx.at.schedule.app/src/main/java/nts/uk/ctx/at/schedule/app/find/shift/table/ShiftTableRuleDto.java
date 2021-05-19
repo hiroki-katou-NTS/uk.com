@@ -47,15 +47,15 @@ public class ShiftTableRuleDto {
 
     public static ShiftTableRuleDto fromDomain(ShiftTableRuleForCompany domain) {
         if (domain == null || domain.getShiftTableRule() == null) return null;
-        val shiftTableSetting = (WorkAvailabilityRuleDateSetting) domain.getShiftTableRule().getShiftTableSetting().get();
+        val shiftTableSetting = (WorkAvailabilityRuleDateSetting) domain.getShiftTableRule().getShiftTableSetting().orElse(null);
 
         return new ShiftTableRuleDto(
-                domain.getShiftTableRule().getUsePublicAtr().value
-                , domain.getShiftTableRule().getUseWorkAvailabilityAtr().value
-                , shiftTableSetting.getHolidayMaxDays().v()
-                , shiftTableSetting.getClosureDate().getClosingDate().getDay()
-                , shiftTableSetting.getAvailabilityDeadLine().getDay()
-                , domain.getShiftTableRule().getAvailabilityAssignMethodList().stream().filter(x -> x == AssignmentMethod.HOLIDAY).findFirst().isPresent() ? 0 : 1
+                domain.getShiftTableRule().getUsePublicAtr().value,
+                domain.getShiftTableRule().getUseWorkAvailabilityAtr().value,
+                shiftTableSetting == null ? 0 : shiftTableSetting.getHolidayMaxDays().v(),
+                shiftTableSetting == null ? 0 : shiftTableSetting.getClosureDate().getClosingDate().getDay(),
+                shiftTableSetting == null ? 0 : shiftTableSetting.getAvailabilityDeadLine().getDay(),
+                domain.getShiftTableRule().getAvailabilityAssignMethodList().stream().anyMatch(x -> x == AssignmentMethod.HOLIDAY) ? 0 : 1
         );
     }
 }

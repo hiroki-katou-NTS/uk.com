@@ -31,11 +31,6 @@ public class AppStampShare extends ApplicationShare {
 //	時間帯の取消
 	private List<DestinationTimeZoneAppShare> listDestinationTimeZoneApp;
 
-//	申請内容
-	public String getAppContent() {
-		return null;
-	}
-
 	public AppStampShare(ApplicationShare application) {
 		super(application);
 	}

@@ -42,7 +42,7 @@
                     <kafs12-outing
                             v-show="timeZone.display"
                             v-bind:params="timeZone"
-                            v-bind:switchOptions="outingOptions"
+                            v-bind:reflectSetting="reflectSetting"
                             v-bind:appDispInfoStartupOutput="appDispInfoStartupOutput"
                             v-bind:displaySwitch="condition16"/>
                 </div>
