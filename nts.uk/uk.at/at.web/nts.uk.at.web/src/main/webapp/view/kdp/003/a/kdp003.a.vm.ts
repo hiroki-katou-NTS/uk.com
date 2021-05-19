@@ -246,19 +246,6 @@ module nts.uk.at.kdp003.a {
 				.resolve(true)
 				.then(() => storage(KDP003_SAVE_DATA))
 				.then((storageData: undefined | StorageData) => {
-					if (storageData !== undefined) {
-						return vm.$ajax('at', API.FINGER_STAMP_SETTING)
-							.then((data: FingerStampSetting) => {
-								if (data) {
-									vm.fingerStampSetting(data);
-								}
-							})
-							.then(() => storageData);
-					}
-
-					return storageData;
-				})
-				.then((storageData: undefined | StorageData) => {
 					if (storageData === undefined) {
 						return vm.$window.modal('at', DIALOG.F, { mode: 'admin' })
 							.then((loginData: f.TimeStampLoginData) => ({
@@ -439,6 +426,19 @@ module nts.uk.at.kdp003.a {
 
 							return storage(KDP003_SAVE_DATA, storeData);
 						}
+					}
+
+					return storageData;
+				})
+				.then((storageData: false | StorageData) => {
+					if (storageData) {
+						return vm.$ajax('at', API.FINGER_STAMP_SETTING)
+							.then((data: FingerStampSetting) => {
+								if (data) {
+									vm.fingerStampSetting(data);
+								}
+							})
+							.then(() => storageData);
 					}
 
 					return storageData;

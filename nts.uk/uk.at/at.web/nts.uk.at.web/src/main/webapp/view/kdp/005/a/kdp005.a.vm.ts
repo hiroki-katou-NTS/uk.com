@@ -112,7 +112,11 @@ module nts.uk.at.view.kdp005.a {
 											dfd.resolve();
 										});
 									} else {
-										$.when(self.doFirstLoad(), self.loadNotice(self.loginInfo)).done(() => {
+										self.login(self.loginInfo).done(() => {
+											$.when(self.doFirstLoad(), self.loadNotice(self.loginInfo)).done(() => {
+												dfd.resolve();
+											});
+										}).fail(() => {
 											dfd.resolve();
 										});
 									}
