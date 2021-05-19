@@ -435,7 +435,9 @@ module nts.uk.at.kdp003.f {
 			var roleEmployee: RoleEmployee;
 
 			if (message) {
-				return vm.$dialog.error(message);
+				if (message.messageId !== 'Msg_1645') {
+					return vm.$dialog.error(message);
+				}
 			}
 
 			// if (passwordRequired === false) {
