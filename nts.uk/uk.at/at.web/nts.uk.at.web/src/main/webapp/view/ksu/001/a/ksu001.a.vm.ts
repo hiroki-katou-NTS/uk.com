@@ -146,6 +146,33 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         visibleA4_8: KnockoutObservable<boolean>   = ko.observable(true);
         visibleA4_9: KnockoutObservable<boolean>   = ko.observable(true);
         canRegisterEvent = true;
+		
+		// 個人計カテゴリ
+		vertSelectLst: KnockoutObservableArray<any> = ko.observableArray([
+			{ code: 0, name: '月間想定給与額' },
+			{ code: 1, name: '年間想定給与額' },
+			// { code: 2, name: '基準労働時間比較' },
+			{ code: 3, name: '労働時間' },
+			// { code: 4, name: '夜勤時間' },
+			// { code: 5, name: '週間休日日数' },
+			{ code: 6, name: '出勤・休日日数' },
+			{ code: 7, name: '回数集計１' },
+			{ code: 8, name: '回数集計２' },
+			{ code: 9, name: '回数集計３' }
+        ]);
+		vertSelectValue: KnockoutObservable<number> = ko.observable(1);
+		
+		horzSelectLst: KnockoutObservableArray<any> = ko.observableArray([
+			{ code: 0, name: '人件費・時間' },
+			{ code: 1, name: '外部予算実績' },
+			{ code: 2, name: '回数集計' },
+			{ code: 3, name: '就業時間帯別の利用人数' },
+			// { code: 4, name: '時間帯人数' },
+			{ code: 5, name: '雇用人数' },
+			{ code: 6, name: '分類人数' },
+			{ code: 7, name: '職位人数' }
+		]);
+		horzSelectValue: KnockoutObservable<any> = ko.observable(1);
         
         constructor(dataLocalStorage) {
             let self = this;
@@ -2537,6 +2564,50 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 },
                 fields: ["workTypeCode", "workTypeName", "workTimeCode", "workTimeName", "shiftName", "startTime", "endTime", "shiftCode", "confirmed", "achievements"],
             };
+			
+			let vertSumHeader = self.createVertSumHeader();
+		    let vertSumContent = self.createVertSumContent(detailContent);
+
+			let leftHorzContentDs = [];
+			for (let i = 0; i < 3; i++) {
+				leftHorzContentDs.push({ itemId: i.toString(), itemName: "8:00 ~ 9:00", sum: "23.5" });	
+			}
+			let leftHorzColumns = [
+				// { headerText: , icon: { for: "header", class: "aaaa", width: "0px"}}
+		        { headerText: '<div id="horzDropDown"></div>', key: "itemName", width: "160px", icon: { for: "header", class: "aaaa", width: "0px"}}
+		    ];
+		    let leftHorzSumHeader = {
+		        columns: leftHorzColumns,
+		        rowHeight: "40px"
+		    };
+		    let leftHorzSumContent = {
+		        columns: leftHorzColumns,
+		        dataSource: leftHorzContentDs,
+		        primaryKey: "itemId"
+		    };
+			
+			let horizontalSumHeader = {
+		        columns: detailColumns,
+		        dataSource: [new ExItem(undefined, null, null, null, true, self.arrDay)],
+				rowHeight: "40px",
+				features: [{
+                    name: "HeaderCellStyle",
+                    decorator: detailHeaderDeco
+                }]
+		    };
+			let horizontalSumContentDs = _.cloneDeep(detailContentDs);
+			_.forEach(horizontalSumContentDs, (horizontalSumContent, index1) => {
+				_.forEach(detailColumns, (detailColumn, index2) => {
+					if(!_.includes(['employeeId', 'sid'], detailColumn.key)) {
+						horizontalSumContent[detailColumn.key] = index1 + '' + index2;	
+					}
+				});
+			});
+		    let horizontalSumContent = {
+		        columns: detailColumns,
+		        dataSource: horizontalSumContentDs,
+                primaryKey: "employeeId",
+		    };
             
             function customValidate(idx, key, innerIdx, value, obj) {
                 let startTime, endTime;
@@ -2578,10 +2649,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let extbl = new nts.uk.ui.exTable.ExTable($("#extable"), {
                 headerHeight: "60px",
                 bodyRowHeight: viewMode == 'shift' ? "35px" : "50px",
-                bodyHeight: "500px",
-                horizontalSumHeaderHeight: "0px",
-                horizontalSumBodyHeight: "0px",
-                horizontalSumBodyRowHeight: "0px",
+                bodyHeight: "300px",
+                horizontalSumHeaderHeight: "4px",
+                horizontalSumBodyHeight: "140px",
+                horizontalSumBodyRowHeight: "20px",
                 areaResize: true,
                 bodyHeightMode: bodyHeightMode,
                 windowXOccupation: windowXOccupation,
@@ -2611,6 +2682,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 extbl.MiddleHeader(middleHeader).MiddleContent(middleContent);
             }
             extbl.DetailHeader(detailHeader).DetailContent(detailContent);
+			extbl.VerticalSumHeader(vertSumHeader).VerticalSumContent(vertSumContent);
+			extbl.LeftHorzSumHeader(leftHorzSumHeader).LeftHorzSumContent(leftHorzSumContent);
+        	extbl.HorizontalSumHeader(horizontalSumHeader).HorizontalSumContent(horizontalSumContent);
             extbl.create();
 
             // set height grid theo localStorage đã lưu
@@ -2618,7 +2692,152 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             $('#btnControlLeftRight').width($("#extable").width() + 10);
             $("#sub-content-main").width($('#extable').width() + 30);
             console.log(performance.now() - start);
+
+			$("#vertDropDown").html(function() { return $('#vertDiv'); });
+			$('#vertDiv').css('display', '');
+			
+			$('.ex-body-vert-sum').scroll(() => {
+				$('#vertDiv').css('margin-left', $('.ex-body-vert-sum').scrollLeft().valueOf() + 'px');
+			});
+			
+			self.sumEmpSelectValue.subscribe(value => {
+				let newVertSumHeader = self.createVertSumHeader();
+			    let newVertSumContent = self.createVertSumContent(detailContent);
+				$("#cacheDiv").append($('#vertDiv'));
+        		$("#extable").exTable("updateTable", "verticalSummaries", newVertSumHeader, newVertSumContent);
+				$("#vertDropDown").html(function() { return $('#vertDiv'); });
+			});
         }
+
+		createVertSumColumns() {
+			let self = this,
+				group: any = [];
+			switch(self.sumEmpSelectValue()) {
+				// 月間想定給与額
+				case 0: 
+					group = [
+						{ headerText: getText("KSU001_18"), key: "colum1", width: "100px" },
+	                	{ headerText: getText("KSU001_19"), key: "colum2", width: "100px" },
+					];
+					break;
+				// 年間想定給与額
+				case 1: 
+					group = [
+						{ headerText: getText("KSU001_18"), key: "colum1", width: "100px" },
+	                	{ headerText: getText("KSU001_19"), key: "colum2", width: "100px" },
+					];
+					break;
+				// 労働時間
+				case 3: 
+					group = [
+						{ headerText: getText("KSU001_20"), key: "colum1", width: "100px" },
+	                	{ headerText: getText("KSU001_50"), key: "colum2", width: "100px" },
+						{ headerText: getText("KSU001_51"), key: "colum3", width: "100px" },
+					];
+					break;
+				// 出勤・休日日数
+				case 6: 
+					group = [
+						{ headerText: getText("KSU001_61"), key: "colum1", width: "100px" },
+	                	{ headerText: getText("KSU001_62"), key: "colum2", width: "100px" },
+					];
+					break;
+				// 回数集計１
+				case 7: 
+					group = [
+						{ headerText: getText("KSU001_18"), key: "colum1", width: "100px" },
+	                	{ headerText: getText("KSU001_19"), key: "colum2", width: "100px" },
+					];
+				break;
+				// 回数集計２
+				case 8: 
+					group = [
+						{ headerText: getText("KSU001_18"), key: "colum1", width: "100px" },
+	                	{ headerText: getText("KSU001_19"), key: "colum2", width: "100px" },
+					];
+				break;
+				// 回数集計３
+				case 9: 
+					group = [
+						{ headerText: getText("KSU001_18"), key: "colum1", width: "100px" },
+	                	{ headerText: getText("KSU001_19"), key: "colum2", width: "100px" },
+					];
+					break;
+				deault: break;
+			}
+			let vertSumColumns = [
+		        { 
+		            headerText: '<div id="vertDropDown"></div>',
+					icon: { for: "header", class: "", width: "0px" },
+		            group: group
+		        }
+		    ];
+			return vertSumColumns;
+		}
+		
+		createVertSumHeader() {
+			let self = this,
+				vertSumHeader = {
+		        columns: self.createVertSumColumns(),
+		        width: "200px",
+		        features: [{
+		            name: "HeaderRowHeight",
+		            rows: { 0: "40px", 1: "20px" }   
+		        }]
+		    };
+			return vertSumHeader;
+		}
+		
+		createVertSumContent(detailContent: any) {
+			let self = this,
+				vertSumContentDs: any = [],
+				vertContentDeco: any = [];
+			_.forEach(detailContent.dataSource, (item, index) => {
+				switch(self.sumEmpSelectValue()) {
+					// 月間想定給与額
+					case 0: 
+						vertSumContentDs.push({ empID: item.employeeId, colum1: '00' + index, colum2: '00' + index });
+						vertContentDeco.push(new CellColor("colum2", index.toString(), "bg-daily-alter-self", 0));
+						break;
+					// 年間想定給与額
+					case 1: 
+						vertSumContentDs.push({ empID: item.employeeId, colum1: '01' + index, colum2: '01' + index });
+						vertContentDeco.push(new CellColor("colum2", index.toString(), "bg-daily-alter-self", 0));
+						break;
+					// 労働時間
+					case 3: 
+						vertSumContentDs.push({ empID: item.employeeId, colum1: '03' + index, colum2: '03' + index, colum3: '03' + index });
+						break;
+					// 出勤・休日日数
+					case 6: 
+						vertSumContentDs.push({ empID: item.employeeId, colum1: '06' + index, colum2: '06' + index });
+						break;
+					// 回数集計１
+					case 7: 
+						vertSumContentDs.push({ empID: item.employeeId, colum1: '07' + index, colum2: '07' + index });
+						break;
+					// 回数集計２
+					case 8: 
+						vertSumContentDs.push({ empID: item.employeeId, colum1: '08' + index, colum2: '08' + index });
+						break;
+					// 回数集計３
+					case 9: 
+						vertSumContentDs.push({ empID: item.employeeId, colum1: '09' + index, colum2: '09' + index });
+						break;
+					deault: break;
+				}
+			});
+			let vertSumContent = {
+		        columns: self.createVertSumColumns(),
+		        dataSource: vertSumContentDs,
+		        primaryKey: "empId",
+				features: [{
+                    name: "BodyCellStyle",
+                    decorator: vertContentDeco
+                }]
+		    };
+			return vertSumContent;
+		}
         
         bindingEventClickFlower() {
             let self = this;

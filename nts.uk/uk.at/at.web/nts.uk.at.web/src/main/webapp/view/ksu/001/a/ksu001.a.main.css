@@ -593,3 +593,6 @@ table th, table td {
 #extable>div.ex-header-leftmost.xheader>table>tbody>tr>td>a {
 	pointer-events: none;
 }
+#vertComboBox * {
+	text-align: left;
+}

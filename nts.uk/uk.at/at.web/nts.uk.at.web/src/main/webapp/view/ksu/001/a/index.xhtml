@@ -420,6 +420,27 @@
 						</div>
 					</div>
 				</div>
+				<div id="cacheDiv">
+					<div id="vertDiv" style="display: none; text-align: left;">
+						<div id="vertComboBox" data-bind="ntsComboBox: {
+										options: vertSelectLst,
+										optionsValue: 'code',
+										optionsText: 'name',
+										value: vertSelectValue }">
+						</div>
+					</div>
+					<div id="horzDiv" style="display: none; text-align: left;">
+						<div id="horzComboBox" style="width: 120px;" data-bind="ntsComboBox: {
+										options: horzSelectLst,
+										optionsValue: 'code',
+										optionsText: 'name',
+										value: horzSelectValue }">
+						</div>
+						<div style="display: inline-block; vertical-align: top;">
+							<button>test</button>
+						</div>
+					</div>
+				</div>
 			</div>
 		</ui:define>
 	</ui:composition>
