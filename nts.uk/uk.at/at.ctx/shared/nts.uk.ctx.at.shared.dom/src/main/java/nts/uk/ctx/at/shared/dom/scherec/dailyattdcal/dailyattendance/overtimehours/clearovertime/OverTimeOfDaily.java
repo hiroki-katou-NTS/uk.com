@@ -39,6 +39,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.declare.DeclareCalcRange;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.declare.DeclareTimezoneResult;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.CalculationRangeOfOneDay;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.DeductionAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.outsideworktime.OverTimeFrameTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.outsideworktime.OverTimeFrameTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.outsideworktime.OverTimeSheet;
@@ -308,7 +309,8 @@ public class OverTimeOfDaily {
 					conditionItem,
 					predetermineTimeSetByPersonInfo,
 					coreTimeSetting,
-					NotUseAtr.NOT_USE);
+					NotUseAtr.NOT_USE,
+					Optional.of(DeductionAtr.Appropriate));
 		}
 
 		val overTimeWork = new AttendanceTime(0);
@@ -777,7 +779,7 @@ public class OverTimeOfDaily {
 			List<OverTimeFrameTime> overtimeFrameTimeList){
 		
 		//大塚モードの確認
-		if (true) return;	// 仮対応として、常に0補正しない動作とする。 2020.12.10 shuichi_ishida
+		if (AppContexts.optionLicense().customize().ootsuka() == false) return;
 		
 		//マイナスの乖離時間を0にする
 		for (val overtimeFrameTime : overtimeFrameTimeList){

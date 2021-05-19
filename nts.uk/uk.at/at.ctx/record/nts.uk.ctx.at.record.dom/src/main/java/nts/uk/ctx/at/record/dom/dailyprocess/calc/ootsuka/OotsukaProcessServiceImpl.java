@@ -10,7 +10,6 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 
 import lombok.val;
-import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
@@ -42,6 +41,7 @@ import nts.uk.shr.com.context.AppContexts;
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class OotsukaProcessServiceImpl implements OotsukaProcessService{
 	
+	/** 大塚1日年休時に計算するための勤種変更 */
 	@Override
 	public WorkType getOotsukaWorkType(WorkType workType,
 									   Optional<FixedWorkCalcSetting> calcMethodOfFixWork,
@@ -148,35 +148,30 @@ public class OotsukaProcessServiceImpl implements OotsukaProcessService{
 		}
 	}
 
-
-
-	/**
-	 * 大塚モード判断処理
-	 * @param holidayCalculation 
-	 * @return
-	 */
+	/** 大塚モード判断処理 */
 	@Override
-	public boolean decisionOotsukaMode(WorkType workType,
-										Optional<FixedWorkCalcSetting> calcMethodOfFixWork,
-										TimeLeavingOfDailyAttd attendanceLeaving, HolidayCalculation holidayCalculation) {
-		/** 大塚オプション　の　ON/OFFを判断する処理が入る。 */
-		if (!AppContexts.optionLicense().customize().ootsuka())
-			return false;
-		
-		//勤務計算をする　＆＆　打刻漏れをしていない
-		if(decisionAbleCalc(workType,calcMethodOfFixWork,holidayCalculation) && !attendanceLeaving.isLeakageStamp()) {
-			return true;
+	public boolean decisionOotsukaMode(
+			WorkType workType,
+			Optional<FixedWorkCalcSetting> calcMethodOfFixWork,
+			TimeLeavingOfDailyAttd attendanceLeaving,
+			HolidayCalculation holidayCalculation) {
+
+		// 大塚モードの時
+		if (AppContexts.optionLicense().customize().ootsuka()){
+			// 勤務計算をする かつ 打刻漏れをしていない
+			if (decisionAbleCalc(workType,calcMethodOfFixWork,holidayCalculation) && !attendanceLeaving.isLeakageStamp()){
+				return true;
+			}
 		}
 		return false;
 	}
 	
-	
 	/**
 	 * 日勤務で計算するかどうか判断
 	 * @param workType 勤務種類
-	 * @param holidayCalculation 
+	 * @param holidayCalculation 休暇時の計算
 	 * @param isCalcInVacation 休暇時の計算
-	 * @return
+	 * @return true:計算する,false:計算しない
 	 */
 	private boolean decisionAbleCalc(WorkType workType,Optional<FixedWorkCalcSetting> calcMethodOfFixWork, HolidayCalculation holidayCalculation) {
 		//休暇時の計算を取得
@@ -192,9 +187,7 @@ public class OotsukaProcessServiceImpl implements OotsukaProcessService{
 		}
 	}
 	
-	/**
-	 * 大塚モード(PCログオン時間で計算した値の埋め込み)
-	 */
+	/** 大塚モード(PCログオン時間で計算した値の埋め込み) */
 	@Override
 	public IntegrationOfDaily integrationConverter(IntegrationOfDaily fromStamp, IntegrationOfDaily fromPcLogInfo) {
 		if(fromPcLogInfo.getAttendanceTimeOfDailyPerformance().isPresent()
@@ -257,7 +250,7 @@ public class OotsukaProcessServiceImpl implements OotsukaProcessService{
 	         .replaceTimeAndCalcDiv(excessOverMidNight);
 			//フレックス時間の置き換え
 			fromStamp.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().getFlexTime().getFlexTime()
-			 .replaceTimeAndCalcDiv(flexTime);
+			 .replaceCalcTimeAndCalcDiv(flexTime);
 			//休出、休出振替
 			fromStamp.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getWorkHolidayTime().get()
 			 .setPCLogOnValue(holWorkMap);

@@ -376,7 +376,7 @@ public class HolidayWorkTimeOfDaily {
 			List<HolidayWorkFrameTime> holidayWorkFrameTimeList){
 		
 		//大塚モードの確認
-		if (true) return;	// 仮対応として、常に0補正しない動作とする。 2020.12.10 shuichi_ishida
+		if (AppContexts.optionLicense().customize().ootsuka() == false) return;
 		
 		//マイナスの乖離時間を0にする
 		for (val holidayWorkFrameTime : holidayWorkFrameTimeList){

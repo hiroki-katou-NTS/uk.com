@@ -13,11 +13,16 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.PredetermineTimeSetForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.TimeSpanForDailyCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.TimeSheetOfDeductionItem;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.ootsuka.OotsukaStaticService;
 import nts.uk.ctx.at.shared.dom.worktime.IntegrationOfWorkTime;
+import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeZoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.GraceTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.LateEarlyAtr;
+import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixHalfDayWorkTimezone;
+import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.CoreTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
+import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeForm;
 import nts.uk.ctx.at.shared.dom.worktype.AttendanceHolidayAttr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -54,9 +59,10 @@ public class LeaveEarlyDecisionClock {
 			WorkType workType,
 			DeductionTimeSheet deductionTimeSheet) {
 		
+		// 所定時間設定の取得
 		val predetermineTimeSheet = predetermineTimeSet.getTimeSheets(workType.getDailyWork().decisionNeedPredTime(),workNo);
-		if(!predetermineTimeSheet.isPresent())
-			return Optional.empty();
+		if(!predetermineTimeSheet.isPresent()) return Optional.empty();
+		
 		TimeWithDayAttr decisionClock = new TimeWithDayAttr(0);
 		
 		//計算範囲の取得
@@ -75,8 +81,8 @@ public class LeaveEarlyDecisionClock {
 				List<TimeSheetOfDeductionItem> breakTimeSheetList = deductionTimeSheet.getForDeductionTimeZoneList()
 						.stream().filter(t -> t.getDeductionAtr().isBreak()).collect(Collectors.toList());
 				// 大塚モードの休憩時間帯取得
-				breakTimeSheetList.addAll(LateTimeSheet.getBreakTimeSheetForOOtsuka(
-						workType, integrationOfWorkTime, integrationOfDaily));
+				breakTimeSheetList.addAll(OotsukaStaticService.getBreakTimeSheet(
+						workType, integrationOfWorkTime, integrationOfDaily.getAttendanceLeave()));
 				// 逆順ソート
 				breakTimeSheetList = breakTimeSheetList.stream()
 						.sorted((first,second) -> second.getTimeSheet().getStart().compareTo(first.getTimeSheet().getStart()))
@@ -100,16 +106,23 @@ public class LeaveEarlyDecisionClock {
 	
 	/**
 	 * 早退時間の計算範囲の取得
-	 * @param predetermineTimeSet
-	 * @param timeLeavingWork
-	 * @return
+	 * @param predetermineTimeSet 所定時間設定
+	 * @param timeLeavingWork 出退勤
+	 * @param workTime 統合就業時間帯
+	 * @param predetermineTimeSetForCalc 計算用所定時間設定
+	 * @param attr 出勤休日区分
+	 * @return 計算範囲
 	 */
-	static public Optional<TimeSpanForDailyCalc> getCalcRange(TimezoneUse predetermineTimeSet,
-														 TimeLeavingWork timeLeavingWork,
-														 IntegrationOfWorkTime workTime,
-														 PredetermineTimeSetForCalc predetermineTimeSetForCalc,AttendanceHolidayAttr attr)
+	static public Optional<TimeSpanForDailyCalc> getCalcRange(
+			TimezoneUse predetermineTimeSet,
+			TimeLeavingWork timeLeavingWork,
+			IntegrationOfWorkTime workTime,
+			PredetermineTimeSetForCalc predetermineTimeSetForCalc,
+			AttendanceHolidayAttr attr)
 	{
-		//退勤時刻
+		Optional<TimeSpanForDailyCalc> result = Optional.empty();
+		
+		// 退勤時刻の取得
 		TimeWithDayAttr leave = null;
 		if(timeLeavingWork.getLeaveStamp().isPresent()) {
 			if(timeLeavingWork.getLeaveStamp().get().getStamp().isPresent()) {
@@ -118,17 +131,14 @@ public class LeaveEarlyDecisionClock {
 				}
 			}
 		}
-		
-		//フレックス勤務では無い場合の計算範囲
-		Optional<TimeSpanForDailyCalc> result = Optional.empty();
-		if(leave!=null) {
+		if (leave != null){
 			result = Optional.of(new TimeSpanForDailyCalc(leave, predetermineTimeSet.getEnd()));
-			//フレ勤務かどうか判断
+			// フレックス勤務かどうか判断
 			if(workTime.getWorkTimeSetting().getWorkTimeDivision().isFlex()) {
-				
+				// フレックス勤務
 				CoreTimeSetting coreTimeSetting = workTime.getFlexWorkSetting().get().getCoreTimeSetting();
 				
-				//コアタイム使用するかどうか
+				// コアタイム使用するかどうか
 				if(coreTimeSetting.getTimesheet().isNOT_USE()) {
 					return Optional.empty();
 				}
@@ -138,11 +148,50 @@ public class LeaveEarlyDecisionClock {
 				}
 				return Optional.of(new TimeSpanForDailyCalc(leave,coreTime.getEndTime()));
 			}
+			// 勤務形態を取得する
+			WorkTimeForm workTimeform = workTime.getWorkTimeSetting().getWorkTimeDivision().getWorkTimeForm();
+			if (workTimeform.isFixed()){
+				// 固定勤務
+				// 固定勤務の計算範囲の取得
+				return getCalcRangeForFixed(predetermineTimeSet, leave, workTime, attr);
+			}
+			// 流動勤務
 			if(leave.lessThanOrEqualTo(predetermineTimeSet.getStart())) {
 				result = Optional.of(new TimeSpanForDailyCalc(predetermineTimeSet.getStart(),predetermineTimeSet.getEnd()));
 			}
 		}
 		return result;
+	}
+	
+	/**
+	 * 固定勤務の早退時間の計算範囲の取得
+	 * @param predetermineTimeSet 所定時間設定
+	 * @param leave 退勤時刻
+	 * @param integrationOfWorkTime 統合就業時間帯
+	 * @param attr 出勤休日区分
+	 * @return 計算範囲
+	 */
+	private static Optional<TimeSpanForDailyCalc> getCalcRangeForFixed(
+			TimezoneUse predetermineTimeSet,
+			TimeWithDayAttr leave,
+			IntegrationOfWorkTime integrationOfWorkTime,
+			AttendanceHolidayAttr attr){
+		
+		// 所定時間内に含まれる就業時間帯を取得
+		Optional<FixedWorkSetting> fixedSetOpt = integrationOfWorkTime.getFixedWorkSetting();
+		if (!fixedSetOpt.isPresent()) return Optional.empty();
+		Optional<FixHalfDayWorkTimezone> workTimeSetOpt = fixedSetOpt.get().getFixHalfDayWorkTimezone(attr);
+		if (!workTimeSetOpt.isPresent()) return Optional.empty();
+		List<EmTimeZoneSet> workTimeZoneList = workTimeSetOpt.get().getWorkTimezone()
+				.getWorkTimeSpanWithinPred(predetermineTimeSet);
+		if (workTimeZoneList.size() <= 0) return Optional.empty();
+		// 時間帯を作成
+		TimeWithDayAttr maxTime = leave;
+		for (EmTimeZoneSet workTimeZone : workTimeZoneList){
+			TimeWithDayAttr end = workTimeZone.getTimezone().getEnd();
+			if (maxTime.greaterThan(end)) maxTime = end;
+		}
+		return Optional.of(new TimeSpanForDailyCalc(maxTime, leave));
 	}
 	
 	/**

@@ -3,26 +3,22 @@ package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.midnighttimezone;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import lombok.val;
-import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Rounding;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Unit;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.ConditionAtr;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.DeductionTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.TimeSpanForDailyCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.CalculationTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.DeductionAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.TimeSheetOfDeductionItem;
-import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
  * 深夜時間帯
  * @author keisuke_hoshina
- *
  */
 public class MidNightTimeSheetForCalc extends CalculationTimeSheet {
 
@@ -112,40 +108,31 @@ public class MidNightTimeSheetForCalc extends CalculationTimeSheet {
 	 * 計算用深夜時間帯を作成する
 	 * @param calcRange 計算範囲
 	 * @param midNightTimeSheet 深夜時間帯
-	 * @param dedTimeSheet 控除時間帯
-	 * @param recordTimeSheet 計上用控除時間帯
+	 * @param deductTimeSheet 控除時間帯
 	 * @param roundSetting 深夜時間丸め設定
 	 * @return 計算範囲と重複した計算用深夜時間帯
 	 */
 	public static Optional<MidNightTimeSheetForCalc> create(
 			TimeSpanForDailyCalc calcRange,
 			TimeSpanForDailyCalc midNightTimeSheet,
-			List<TimeSheetOfDeductionItem> dedTimeSheet,
-			List<TimeSheetOfDeductionItem> recordTimeSheet,
+			DeductionTimeSheet deductTimeSheet,
 			TimeRoundingSetting roundSetting){
-		//計算範囲と深夜時間帯の重複した時間帯を取得
+		
+		// 計算範囲と深夜時間帯の重複した時間帯を取得
 		Optional<TimeSpanForDailyCalc> duplicate = calcRange.getDuplicatedWith(midNightTimeSheet);
 		if(!duplicate.isPresent()) {
 			return Optional.empty();
 		}
 		
-		//計算用深夜時間帯を作成
+		// 計算用深夜時間帯を作成
 		MidNightTimeSheetForCalc duplicatedMidNight = new MidNightTimeSheetForCalc(
 				duplicate.get(),
 				roundSetting,
 				new ArrayList<>(),
 				new ArrayList<>());
 		
-		//計上用の控除時間帯を重複した範囲でセットする
-		duplicatedMidNight.addDuplicatedDeductionTimeSheet(
-				dedTimeSheet,
-				DeductionAtr.Deduction,
-				Optional.of(new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN)));
-		
-		//控除用の控除時間帯を重複した範囲でセットする
-		duplicatedMidNight.addDuplicatedDeductionTimeSheet(
-				recordTimeSheet,
-				DeductionAtr.Appropriate,
+		// 控除時間帯の登録
+		duplicatedMidNight.registDeductionList(deductTimeSheet,
 				Optional.of(new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN)));
 		
 		return Optional.of(duplicatedMidNight);
@@ -179,21 +166,24 @@ public class MidNightTimeSheetForCalc extends CalculationTimeSheet {
 		}
 		if(this.timeSheet.getStart().lessThan(outSideStart)
 				&& outSideStart.lessThan(this.timeSheet.getEnd())) {
+			//自身の控除時間帯の取得
+			DeductionTimeSheet deductTimeSheet = this.getCloneDeductionTimeSheet();
+			
 			//計算用深夜時間帯（所定内）の作成
 			MidNightTimeSheetForCalc within = new MidNightTimeSheetForCalc(
 					new TimeSpanForDailyCalc(this.timeSheet.getStart(), outSideStart),
 					this.rounding.clone(),
-					this.recordedTimeSheet.stream().map(r -> r.clone()).collect(Collectors.toList()),
-					this.deductionTimeSheet.stream().map(d -> d.clone()).collect(Collectors.toList()));
-			within.trimRecordedAndDeductionToSelfRange();
+					new ArrayList<>(),
+					new ArrayList<>());
+			within.registDeductionList(deductTimeSheet, Optional.empty());
 			
 			//計算用深夜時間帯（所定外）の作成
 			MidNightTimeSheetForCalc outside = new MidNightTimeSheetForCalc(
 					new TimeSpanForDailyCalc(outSideStart, this.timeSheet.getEnd()),
 					this.rounding.clone(),
-					this.recordedTimeSheet.stream().map(r -> r.clone()).collect(Collectors.toList()),
-					this.deductionTimeSheet.stream().map(d -> d.clone()).collect(Collectors.toList()));
-			outside.trimRecordedAndDeductionToSelfRange();
+					new ArrayList<>(),
+					new ArrayList<>());
+			outside.registDeductionList(deductTimeSheet, Optional.empty());
 			
 			//作成した計算用深夜時間帯を所定内、所定外にそれぞれ追加する
 			inOut.within.add(within);
