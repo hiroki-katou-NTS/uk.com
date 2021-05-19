@@ -162,7 +162,7 @@ public class JpaInterimBreakDayOffMngRepository extends JpaRepository implements
 				+ " AND a1.YMD >= ? and a1.YMD <= ?"
 				+ " AND a1.UNUSED_DAYS > ?"
 				+ " AND a1.EXPIRATION_DAYS >= ? and a1.EXPIRATION_DAYS <= ?"
-				+ " ORDER BY a2.YMD");
+				+ " ORDER BY a1.YMD");
 				)
 		{
 			sql.setString(1, sid);

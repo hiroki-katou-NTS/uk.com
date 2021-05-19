@@ -4,6 +4,7 @@ module nts.uk.at.view.kaf012.b.viewmodel {
 	import PrintContentOfEachAppDto = nts.uk.at.view.kaf000.shr.viewmodel.PrintContentOfEachAppDto;
     import DataModel = nts.uk.at.view.kaf012.shr.viewmodel2.DataModel;
     import AppTimeType = nts.uk.at.view.kaf012.shr.viewmodel2.AppTimeType;
+    import GoingOutReason = nts.uk.at.view.kaf012.shr.viewmodel2.GoingOutReason;
     import LeaveType = nts.uk.at.view.kaf012.shr.viewmodel1.LeaveType;
 	import CommonProcess = nts.uk.at.view.kaf000.shr.viewmodel.CommonProcess;
 
@@ -132,13 +133,10 @@ module nts.uk.at.view.kaf012.b.viewmodel {
                                             || detail.appTimeType == AppTimeType.OFFWORK2 ? z.startTime : z.endTime;
                             const endTime = detail.appTimeType < 4 ? null : z.endTime;
                             if (detail.appTimeType >= 4) {
-                                if (vm.applyTimeData()[4].timeZones[index].displayCombobox())
-                                    vm.applyTimeData()[4].timeZones[index].appTimeType(detail.appTimeType);
-                                if (vm.applyTimeData()[4].timeZones[index].appTimeType() == detail.appTimeType) {
-                                    maxWorkNoHasData = Math.max(maxWorkNoHasData, index + 1);
-                                    vm.applyTimeData()[4].timeZones[index].startTime(startTime);
-                                    vm.applyTimeData()[4].timeZones[index].endTime(endTime);
-                                }
+                                maxWorkNoHasData = Math.max(maxWorkNoHasData, index + 1);
+                                vm.applyTimeData()[4].timeZones[index].appTimeType(detail.appTimeType == AppTimeType.PRIVATE ? GoingOutReason.PRIVATE : GoingOutReason.UNION);
+                                vm.applyTimeData()[4].timeZones[index].startTime(startTime);
+                                vm.applyTimeData()[4].timeZones[index].endTime(endTime);
                             } else {
                                 vm.applyTimeData()[detail.appTimeType].timeZones[index].startTime(startTime);
                                 vm.applyTimeData()[detail.appTimeType].timeZones[index].endTime(endTime);
@@ -179,6 +177,19 @@ module nts.uk.at.view.kaf012.b.viewmodel {
 
                     if(vm.leaveType() == LeaveType.COMBINATION && _.isFunction(vm.childCalcEvent)) {
                         vm.childCalcEvent();
+                    }
+
+                    if (vm.application().prePostAtr() == 1
+                        && vm.appDispInfoStartupOutput().appDispInfoWithDateOutput.opActualContentDisplayLst
+                        && vm.appDispInfoStartupOutput().appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail) {
+                        const outingTimes = vm.appDispInfoStartupOutput().appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.stampRecordOutput.outingTime || [];
+                        outingTimes.forEach((time: any) => {
+                            if (!vm.applyTimeData()[4].timeZones[time.frameNo - 1].startTime() && !vm.applyTimeData()[4].timeZones[time.frameNo - 1].endTime()) {
+                                vm.applyTimeData()[4].timeZones[time.frameNo - 1].startTime(time.opStartTime);
+                                vm.applyTimeData()[4].timeZones[time.frameNo - 1].endTime(time.opEndTime);
+                                vm.applyTimeData()[4].timeZones[time.frameNo - 1].appTimeType(time.opGoOutReasonAtr);
+                            }
+                        });
                     }
 
                     if (maxWorkNoHasData > 3) {
@@ -240,7 +251,7 @@ module nts.uk.at.view.kaf012.b.viewmodel {
                             });
                         }
                     } else {
-                        const privateTimeZones = row.timeZones.filter(z => z.appTimeType() == AppTimeType.PRIVATE && (!!z.startTime() || !!z.endTime()));
+                        const privateTimeZones = row.timeZones.filter(z => z.appTimeType() == GoingOutReason.PRIVATE && z.enableInput() && (!!z.startTime() || !!z.endTime()));
                         const privateApplyTime = {
                             substituteAppTime: vm.leaveType() == LeaveType.SUBSTITUTE || vm.leaveType() == LeaveType.COMBINATION ? row.applyTime[0].substituteAppTime() : 0,
                             annualAppTime: vm.leaveType() == LeaveType.ANNUAL || vm.leaveType() == LeaveType.COMBINATION ? row.applyTime[0].annualAppTime() : 0,
@@ -262,7 +273,7 @@ module nts.uk.at.view.kaf012.b.viewmodel {
                                 applyTime: privateApplyTime
                             });
                         }
-                        const unionTimeZones = row.timeZones.filter(z => z.appTimeType() == AppTimeType.UNION && (!!z.startTime() || !!z.endTime()));
+                        const unionTimeZones = row.timeZones.filter(z => z.appTimeType() == GoingOutReason.UNION && z.enableInput() && (!!z.startTime() || !!z.endTime()));
                         const unionApplyTime = {
                             substituteAppTime: vm.leaveType() == LeaveType.SUBSTITUTE || vm.leaveType() == LeaveType.COMBINATION ? row.applyTime[1].substituteAppTime() : 0,
                             annualAppTime: vm.leaveType() == LeaveType.ANNUAL || vm.leaveType() == LeaveType.COMBINATION ? row.applyTime[1].annualAppTime() : 0,
