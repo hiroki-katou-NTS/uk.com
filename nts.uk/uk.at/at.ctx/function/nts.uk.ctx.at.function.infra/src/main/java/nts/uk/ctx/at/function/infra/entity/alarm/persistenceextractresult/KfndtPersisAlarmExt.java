@@ -3,6 +3,7 @@ package nts.uk.ctx.at.function.infra.entity.alarm.persistenceextractresult;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
+import nts.gul.collection.CollectionUtil;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.shared.dom.alarmList.AlarmPatternCode;
 import nts.uk.ctx.at.shared.dom.alarmList.AlarmPatternName;
@@ -109,7 +110,9 @@ public class KfndtPersisAlarmExt extends ContractUkJpaEntity implements Serializ
      * @return PersistenceAlarmListExtractResult
      */
     public PersistenceAlarmListExtractResult toDomain() {
-        List<AlarmEmployeeList> alarmListExtractResults = this.extractResults.stream().map(KfndtAlarmExtracResult::toDomain).collect(Collectors.toList());
+        List<AlarmEmployeeList> alarmListExtractResults = CollectionUtil.isEmpty(this.extractResults)
+                ? new ArrayList<>()
+                : KfndtAlarmExtracResult.toDomain(this.extractResults);
 
         return new PersistenceAlarmListExtractResult(
                 new AlarmPatternCode(this.patternCode),

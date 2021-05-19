@@ -1,4 +1,4 @@
-.popup-area1 .link-button {
+.popup-area1 .link-button, td ul li .link-button {
     background-color: inherit;
     color: rgb(0, 102, 204);
 }

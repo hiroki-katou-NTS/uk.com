@@ -16,16 +16,21 @@ module nts.uk.at.view.kal001.b {
             eralRecord: KnockoutObservable<number>;
             eralRecordText: KnockoutObservable<string>;
             dataSource: Array<model.ValueExtractAlarmDto> = [];
+            employeeIds: Array<String>;
             flgActive: KnockoutObservable<boolean>;
             processId: string;
 
+            isTopPage: boolean;
             menuItems: KnockoutObservableArray<any> = ko.observableArray([]);
 
-            constructor(param) {
+            constructor(param: any) {
                 let self = this;
+                self.isTopPage = !!param.isTopPage;
                 self.processId = param.processId;
-                self.eralRecord = ko.observable(param.totalErAlRecord);
-                self.eralRecordText = ko.observable(self.getEralRecordText(param));
+                self.dataSource = param.listAlarmExtraValueWkReDto || [];
+                self.employeeIds = param.employeeIds || self.dataSource.map((i: model.ValueExtractAlarmDto) => i.employeeID);
+                self.eralRecord = ko.observable(param.totalErAlRecord || 0);
+                self.eralRecordText = ko.observable(self.getEralRecordText());
                 self.currentSelectedRow = ko.observable(null);
                 self.flgActive = ko.observable(true);
                 self.columns = [
@@ -38,14 +43,21 @@ module nts.uk.at.view.kal001.b {
                     {headerText: getText('KAL001_17'), key: 'alarmItem', width: 115},
                     {headerText: getText('KAL001_18'), key: 'alarmValueMessage', width: 245},
                     {headerText: getText('KAL001_41'), key: 'checkedValue', width: 100},
-                    {headerText: getText('KAL001_19'), key: 'comment', width: 260},
-                    {headerText: getText('KAL001_162'), key: 'menuName', width: 200, ntsControl: 'Link'}
+                    {headerText: getText('KAL001_19'), key: 'comment', width: 260}
                 ];
-                self.dataSource = param.listAlarmExtraValueWkReDto || [];
+                if (self.isTopPage) {
+                    self.columns.push({headerText: getText('KAL001_162'), key: 'menuDisplay', width: 200});
+                } else {
+                    if (_.isEmpty(self.dataSource)) {
+                        nts.uk.ui.dialog.info({ messageId: "Msg_835" });
+                        self.flgActive(false);
+                    }
+                }
             }
 
-            getEralRecordText(param: any): string {
-                if (_.isNil(param.listAlarmExtraValueWkReDto) || param.totalErAlRecord <= 1000) {
+            getEralRecordText(): string {
+                const self = this;
+                if (_.isEmpty(self.dataSource) || self.eralRecord() <= 1000) {
                     return "";
                 }
                 return nts.uk.resource.getMessage("Msg_1524", [1000]);
@@ -54,6 +66,36 @@ module nts.uk.at.view.kal001.b {
             startPage(): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred();
+
+                if (self.isTopPage) {
+                    block.invisible();
+                    service.getExtractAlarmWebMenuData(self.employeeIds).done((res: Array<model.ValueExtractAlarmDto>) => {
+                        self.dataSource = res;
+                        self.eralRecord = ko.observable(res.length);
+                        self.eralRecordText = ko.observable(self.getEralRecordText());
+                        self.convertMenuDisplay();
+                        self.initGrid();
+                        dfd.resolve();
+                        if (_.isEmpty(self.dataSource)) {
+                            nts.uk.ui.dialog.info({ messageId: "Msg_835" });
+                            self.flgActive(false);
+                        }
+                    }).fail(error => {
+                        alertError(error);
+                        dfd.reject();
+                    }).always(() => {
+                        block.clear();
+                    });
+                } else {
+                    self.initGrid();
+                    dfd.resolve();
+                }
+
+                return dfd.promise();
+            }
+
+            initGrid() {
+                const self = this;
                 $("#grid").ntsGrid({
                     height: '450px',
                     width: '1222px',
@@ -69,39 +111,76 @@ module nts.uk.at.view.kal001.b {
                             columnSettings: [
                                 {columnKey: "workplaceName", allowTooltips: true}
                             ]
+                        },
+                        {
+                            name: 'Resizing',
+                            columnSettings: [
+                                {columnKey: 'guid', allowResizing: false},
+                                {columnKey: 'workplaceName', allowResizing: true, minimumWidth: 60},
+                                {columnKey: 'employeeCode', allowResizing: true, minimumWidth: 60},
+                                {columnKey: 'employeeName', allowResizing: true, minimumWidth: 60},
+                                {columnKey: 'alarmValueDate', allowResizing: true, minimumWidth: 60},
+                                {columnKey: 'categoryName', allowResizing: true, minimumWidth: 60},
+                                {columnKey: 'alarmItem', allowResizing: true, minimumWidth: 60},
+                                {columnKey: 'alarmValueMessage', allowResizing: true, minimumWidth: 60},
+                                {columnKey: 'checkedValue', allowResizing: true, minimumWidth: 60},
+                                {columnKey: 'comment', allowResizing: true, minimumWidth: 60},
+                                {columnKey: 'menuDisplay', allowResizing: true, minimumWidth: 60}
+                            ]
                         }
-                    ],
-                    ntsControls: [
-                        { name: 'Link', click: (rowId: any) => {self.handleClickLinkButton(rowId);}, controlType: 'LinkLabel' },
                     ],
                     enableTooltip: true
                 });
-                dfd.resolve();
-                return dfd.promise();
             }
 
-            handleClickLinkButton(rowId: string) {
+            convertMenuDisplay() {
                 const self = this;
-                const selectedRow: model.ValueExtractAlarmDto = _.find(self.dataSource, r => r.guid == rowId);
-                if (selectedRow) {
-                    if (selectedRow.menuItems.length == 1) {
-                        $(".popup-area1").ntsPopup("init");
-                        self.menuItems([]);
-                        nts.uk.request.jumpFromDialogOrFrame(selectedRow.menuItems[0].url);
-                    } else {
+                self.dataSource.forEach(row => {
+                    row.menuDisplay = `<ul>`;
+                    row.menuItems.forEach((item, index) => {
+                        if (index < 2) {
+                            row.menuDisplay += `<li>
+                                <div class="link-button goto-` + item.programId + `" 
+                                    data-bind="click: handleClickLink.bind('` + item.programId + `', '` + (_.isEmpty(item.queryString) ? item.url : item.url + item.queryString) + `')">
+                                    ` + item.menuName + `
+                                </div>
+                            </li>`;
+                        } else if (index == 2) {
+                            row.menuDisplay += `<li>
+                                <div class="link-button open-popup-` + row.guid + `" 
+                                    data-bind="click: handleClickLink.bind('` + row.guid + `', '')">
+                                    ...
+                                </div>
+                            </li>`;
+                        }
+                    });
+                    row.menuDisplay += `</ul>`;
+                });
+            }
+
+            handleClickLink(url: string, vm: any, event?: any) {
+                const programId = this;
+                if (_.isEmpty(url)) {
+                    const selectedRow: model.ValueExtractAlarmDto = _.find(vm.dataSource, r => r.guid == programId.toString());
+                    if (selectedRow) {
                         $(".popup-area1").ntsPopup({
-                            trigger: ".nts-grid-control-menuName-" + rowId,
+                            trigger: ".open-popup-" + programId,
                             position: {
                                 my: "left top",
                                 at: "left bottom",
-                                of: ".nts-grid-control-menuName-" + rowId
+                                of: ".open-popup-" + programId
                             },
                             showOnStart: false,
                             dismissible: true
                         });
-                        self.menuItems(selectedRow.menuItems);
+
+                        vm.menuItems(selectedRow.menuItems);
                         $(".popup-area1").ntsPopup("show");
                     }
+                } else {
+                    $(".popup-area1").ntsPopup("init");
+                    vm.menuItems([]);
+                    nts.uk.request.jumpFromDialogOrFrame(url);
                 }
             }
 
@@ -137,8 +216,6 @@ module nts.uk.at.view.kal001.b {
             closeDialog() {
                 nts.uk.ui.windows.close();
             }
-
-
         }
     }
 
@@ -160,7 +237,7 @@ module nts.uk.at.view.kal001.b {
             alarmValueMessage: string;
             comment: string;
             checkedValue: string;
-            menuName: string;
+            menuDisplay: string;
             menuItems: Array<any>;
         }
     }

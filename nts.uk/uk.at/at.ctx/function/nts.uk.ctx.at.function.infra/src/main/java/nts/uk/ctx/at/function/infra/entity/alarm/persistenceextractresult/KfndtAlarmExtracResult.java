@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.function.infra.entity.alarm.persistenceextractresult;
 
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
@@ -16,9 +18,8 @@ import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @NoArgsConstructor
 @Entity
@@ -86,28 +87,45 @@ public class KfndtAlarmExtracResult extends ContractUkJpaEntity implements Seria
         this.checkValue = checkValue;
     }
 
-    public AlarmEmployeeList toDomain() {
-        List<ExtractResultDetail> extractDetails = Arrays.asList(
-                new ExtractResultDetail(
-                        new ExtractionAlarmPeriodDate(Optional.of(GeneralDate.fromString(this.pk.startDate, "yyyy/MM/dd")),
-                                Optional.ofNullable(!StringUtils.isEmpty(this.endDate) ? GeneralDate.fromString(this.endDate, "yyyy/MM/dd") : null)),
-                        this.alarmItemName,
-                        this.alarmContent,
-                        this.runTime,
-                        Optional.ofNullable(this.workPlaceId),
-                        Optional.ofNullable(this.message),
-                        Optional.ofNullable(this.checkValue)));
+    public static List<AlarmEmployeeList> toDomain(List<KfndtAlarmExtracResult> entities) {
+        List<AlarmEmployeeList> domains = new ArrayList<>();
+        Map<String, List<KfndtAlarmExtracResult>> mapBySid = entities.stream().collect(Collectors.groupingBy(e -> e.pk.sid));
+        mapBySid.forEach((sid, entitiesOfSid) -> {
+            List<AlarmExtractInfoResult> alarmExtractInfoResults = new ArrayList<>();
+            Map<GroupKey, List<KfndtAlarmExtracResult>> mapByGroupKey = entities.stream().collect(Collectors.groupingBy(e -> new GroupKey(e.pk.conditionNo, e.pk.alarmCheckCode, e.pk.category, e.pk.checkAtr)));
+            mapByGroupKey.forEach((key, value) -> {
+                AlarmExtractInfoResult infoResult = new AlarmExtractInfoResult(
+                        key.conditionNo,
+                        new AlarmCheckConditionCode(key.alarmCheckCode),
+                        EnumAdaptor.valueOf(key.category, AlarmCategory.class),
+                        EnumAdaptor.valueOf(key.checkAtr, AlarmListCheckType.class),
+                        value.stream().map(e -> new ExtractResultDetail(
+                                new ExtractionAlarmPeriodDate(
+                                        Optional.of(GeneralDate.fromString(e.pk.startDate, "yyyy/MM/dd")),
+                                        Optional.ofNullable(e.endDate == null ? null : GeneralDate.fromString(e.endDate, "yyyy/MM/dd"))
+                                ),
+                                e.alarmItemName,
+                                e.alarmContent,
+                                e.runTime,
+                                Optional.ofNullable(e.workPlaceId),
+                                Optional.ofNullable(e.message),
+                                Optional.ofNullable(e.checkValue)
+                        )).sorted(Comparator.comparing(i -> i.getPeriodDate().getStartDate().get()))
+                                .collect(Collectors.toList())
+                );
+                alarmExtractInfoResults.add(infoResult);
+            });
+            domains.add(new AlarmEmployeeList(alarmExtractInfoResults, sid));
+        });
+        return domains;
+    }
 
-        List<AlarmExtractInfoResult> alarmExtractInfoResults = Arrays.asList(
-                new AlarmExtractInfoResult(this.pk.conditionNo,
-                        new AlarmCheckConditionCode(this.pk.alarmCheckCode),
-                        EnumAdaptor.valueOf(this.pk.category, AlarmCategory.class),
-                        EnumAdaptor.valueOf(this.pk.checkAtr, AlarmListCheckType.class),
-                        extractDetails));
-
-        return new AlarmEmployeeList(
-                alarmExtractInfoResults,
-                this.pk.sid
-        );
+    @AllArgsConstructor
+    @EqualsAndHashCode
+    static class GroupKey {
+        public String conditionNo;
+        public String alarmCheckCode;
+        public int category;
+        public int checkAtr;
     }
 }

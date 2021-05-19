@@ -6,6 +6,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.function.infra.entity.alarm.persistenceextractresult.KfndtAlarmExtracResultPK;
 import nts.uk.ctx.at.function.infra.entity.alarm.persistenceextractresult.KfndtPersisAlarmExt;
 import nts.uk.ctx.at.shared.dom.alarmList.AlarmCategory;
@@ -176,13 +177,11 @@ public class JpaPersisAlarmListExtractResultRepository extends JpaRepository imp
 
     @Override
     public List<PersistenceAlarmListExtractResult> getAlarmExtractResult(String companyId, List<String> employeeIds) {
-        String sql = "SELECT * FROM KFNDT_PERSIS_ALARM_EXT kpae "
-                + " JOIN KFNDT_ALARM_EXTRAC_RESULT kaer ON kpae.CID = kaer.CID AND kpae.PROCESS_ID = kaer.PROCESS_ID "
-                + " WHERE kpae.CID = @companyId AND kaer.SID IN @empIds";
+        if (CollectionUtil.isEmpty(employeeIds)) return Collections.emptyList();
 
-        return new NtsStatement(sql, this.jdbcProxy())
-                .paramString("companyId", companyId)
-                .paramString("empIds", employeeIds)
-                .getList(x -> KfndtPersisAlarmExt.MAPPER.toEntity(x).toDomain());
+        return this.queryProxy().query("select distinct a from KfndtPersisAlarmExt a join a.extractResults b " +
+                "where a.pk.cid = :companyId and b.pk.sid in :empIds", KfndtPersisAlarmExt.class)
+                .setParameter("companyId", companyId)
+                .setParameter("empIds", employeeIds).getList(KfndtPersisAlarmExt::toDomain);
     }
 }

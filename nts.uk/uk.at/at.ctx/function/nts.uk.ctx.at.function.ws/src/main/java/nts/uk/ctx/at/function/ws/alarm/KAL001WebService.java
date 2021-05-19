@@ -146,7 +146,7 @@ public class KAL001WebService {
 
 	@POST
 	@Path("alarmlist/webmenu")
-	public Map<String, Map<Integer, List<WebMenuInfoDto>>> getAlarmListWebMenu(List<String> employeeIds) {
+	public List<ValueExtractAlarmDto> getAlarmListWebMenu(List<String> employeeIds) {
 	    return extractAlarmListFinder.getWebMenu(employeeIds);
     }
 }

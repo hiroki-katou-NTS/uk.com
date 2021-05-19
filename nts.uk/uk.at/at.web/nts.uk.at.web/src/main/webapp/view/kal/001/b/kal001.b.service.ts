@@ -11,5 +11,9 @@ module nts.uk.at.view.kal001.b {
         export function exportAlarmData(processId, alarmCode): JQueryPromise<any> {
             return nts.uk.request.exportFile(paths.exportAlarmData + processId + '/' + alarmCode);
         };
+
+        export function getExtractAlarmWebMenuData(data: any): JQueryPromise<any> {
+            return nts.uk.request.ajax(paths.getExtractAlarmWebMenu, data);
+        }
     }
 }
