@@ -30,15 +30,6 @@ import nts.uk.screen.at.app.ksu001.processcommon.nextorderdschedule.ScreenQueryP
 @Stateless
 public class ScreenQueryAggreratedInformation {
 
-//	
-////	社員リスト　　　：List<社員ID>
-////	期間　　　　　　：期間
-////	締め日　　　　　：日付
-////	実績も取得するか：boolean
-////	取得する個人計　：Optional<個人計カテゴリ>
-////	取得する職場計　：Optional<職場計カテゴリ>
-////	シフト表示か　　：boolean
-
 	@Inject
 	private ScreenQueryExternalBudgetPerformance screenQueryExternalBudgetPerformance;
 	
@@ -48,15 +39,28 @@ public class ScreenQueryAggreratedInformation {
 	@Inject
 	private ScreenQueryAggrerateSchedule screenQueryAggrerateSchedule;
 	
-	public AggrerateScheduleDto get(
+	/**
+	 * 
+	 * @param sids 社員リスト
+	 * @param datePeriod 期間
+	 * @param closeDate 締め日
+	 * @param isAchievement 実績も取得するか
+	 * @param personalCounterOp 取得する個人計
+	 * @param workplaceCounterOp 取得する職場計
+	 * @param isShiftDisplay シフト表示か
+	 * @return
+	 */
+	public AggreratedInformationDto get(
 			List<String> sids,
 			DatePeriod datePeriod,
 			DateInMonth closeDate,
 			Boolean isAchievement,
+			TargetOrgIdenInfor targetOrgIdenInfor, // EA is not description
 			Optional<PersonalCounterCategory> personalCounterOp,
 			Optional<WorkplaceCounterCategory> workplaceCounterOp,
 			boolean isShiftDisplay
 			) {
+		AggreratedInformationDto output = new AggreratedInformationDto();
 		TargetOrgIdenInfor targetOrg = null; // do not find param
 		// 1: 取得する職場計.isPresent && 取得する職場計 == 外部予算実績
 		if (workplaceCounterOp.map(x -> x == WorkplaceCounterCategory.EXTERNAL_BUDGET).orElse(false)) {
@@ -66,6 +70,7 @@ public class ScreenQueryAggreratedInformation {
 						screenQueryExternalBudgetPerformance.aggrerate(
 							targetOrg,
 							datePeriod);
+			output.setExternalBudget(externalBudget);
 		}
 		//2: 取得する(List<社員ID>, 期間, boolean)
 		PlanAndActual planAndActual =
@@ -85,6 +90,8 @@ public class ScreenQueryAggreratedInformation {
 								workplaceCounterOp,
 								isShiftDisplay);
 		
-		return aggrerateSchedule;
+		output.setAggrerateSchedule(aggrerateSchedule);
+		
+		return output;
 	}
 }

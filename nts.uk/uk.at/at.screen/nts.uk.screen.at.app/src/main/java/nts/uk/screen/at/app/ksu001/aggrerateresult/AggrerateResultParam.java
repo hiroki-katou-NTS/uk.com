@@ -15,7 +15,9 @@ public class AggrerateResultParam {
 	public GeneralDate startDate;            	 
 	public GeneralDate endDate;    	
 	
-	
+	public int unit;
+	public String workplaceId;     	         
+	public String workplaceGroupId;
 	public List<String> sids;
 	public boolean getActualData;
 

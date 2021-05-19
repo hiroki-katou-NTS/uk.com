@@ -12,8 +12,8 @@ import nts.uk.ctx.at.aggregation.dom.schedulecounter.tally.PersonalCounterCatego
 import nts.uk.ctx.at.aggregation.dom.schedulecounter.tally.WorkplaceCounterCategory;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrganizationUnit;
+import nts.uk.screen.at.app.ksu001.aggreratedinformation.AggreratedInformationDto;
 import nts.uk.screen.at.app.ksu001.aggreratedinformation.ScreenQueryAggreratedInformation;
-import nts.uk.screen.at.app.ksu001.aggrerateschedule.AggrerateScheduleDto;
 
 /**
  *  集計結果を再表示する
@@ -27,13 +27,25 @@ public class GetAggrerateResult {
 	@Inject
 	private ScreenQueryAggreratedInformation screenQueryAggreratedInformation;
 	
-	public AggrerateScheduleDto get(AggrerateResultParam param) {
+	public AggreratedInformationDto get(AggrerateResultParam param) {
+		TargetOrgIdenInfor targetOrgIdenInfor;
+		if (param.unit == TargetOrganizationUnit.WORKPLACE.value) {
+			targetOrgIdenInfor = new TargetOrgIdenInfor(TargetOrganizationUnit.WORKPLACE,
+					Optional.of(param.workplaceId),
+					Optional.empty());
+		} else {
+			targetOrgIdenInfor = new TargetOrgIdenInfor(
+					TargetOrganizationUnit.WORKPLACE_GROUP,
+					Optional.empty(),
+					Optional.of(param.workplaceGroupId));
+		}
 		// 取得する()
 		return screenQueryAggreratedInformation.get(
 				param.getSids(),
 				new DatePeriod(param.getStartDate(), param.getEndDate()),
 				DateInMonth.of(param.getDay()),
 				param.getActualData,
+				targetOrgIdenInfor,
 				Optional.ofNullable(param.getPersonalCounterOp()).flatMap(x -> Optional.of(EnumAdaptor.valueOf(x, PersonalCounterCategory.class))),
 				Optional.ofNullable(param.getWorkplaceCounterOp()).flatMap(x -> Optional.of(EnumAdaptor.valueOf(x, WorkplaceCounterCategory.class))),
 				param.isShiftDisplay()
