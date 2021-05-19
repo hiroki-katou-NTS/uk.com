@@ -35,21 +35,23 @@ public class TimeZoneDto {
 
 	public static TimeZoneDto toDto(TimeZone timeZone) {
 		TimeZoneDto timeZoneDto = new TimeZoneDto();
-		WorkTimeInformationDto startWorkTimeInformationDto = new WorkTimeInformationDto();
-		startWorkTimeInformationDto.setReasonTimeChange(
+		
+		WorkTimeInformationDto startInfo = new WorkTimeInformationDto();
+		startInfo.setReasonTimeChange(
 				new ReasonTimeChangeDto(timeZone.getStart().getReasonTimeChange().getTimeChangeMeans().value,
 						timeZone.getStart().getReasonTimeChange().getEngravingMethod().map(m -> m.value).orElse(null)));
-		startWorkTimeInformationDto.setTimeWithDay(timeZone.getStart().getTimeWithDay().map(m -> m.v()).orElse(null));
-
-		WorkTimeInformationDto endWorkTimeInformationDto = new WorkTimeInformationDto();
-		startWorkTimeInformationDto.setReasonTimeChange(
+		startInfo.setTimeWithDay(timeZone.getStart().getTimeWithDay().map(m -> m.v()).orElse(null));
+		timeZoneDto.setStart(startInfo);
+		
+		WorkTimeInformationDto endInfo = new WorkTimeInformationDto();
+		endInfo.setReasonTimeChange(
 				new ReasonTimeChangeDto(timeZone.getEnd().getReasonTimeChange().getTimeChangeMeans().value,
 						timeZone.getEnd().getReasonTimeChange().getEngravingMethod().map(m -> m.value).orElse(null)));
-		startWorkTimeInformationDto.setTimeWithDay(timeZone.getEnd().getTimeWithDay().map(m -> m.v()).orElse(null));
+		endInfo.setTimeWithDay(timeZone.getEnd().getTimeWithDay().map(m -> m.v()).orElse(null));
 
 		timeZoneDto.setWorkingHours(timeZone.getWorkingHours().map(m -> m.v()).orElse(null));
-		timeZoneDto.setStart(startWorkTimeInformationDto);
-		timeZoneDto.setEnd(endWorkTimeInformationDto);
+		
+		timeZoneDto.setEnd(endInfo);
 
 		return timeZoneDto;
 	}

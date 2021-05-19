@@ -42,8 +42,8 @@ public class GetDailyPerformanceData {
 		// 1: get(社員ID,期間)
 		List<IntegrationOfDaily> lstIntegrationOfDaily = getter.getIntegrationOfDaily(sId, period);
 
-		for (IntegrationOfDaily i : lstIntegrationOfDaily) {
-			List<TimeLeavingWork> timeLeavingWorks = i.getAttendanceLeave().map(x-> x.getTimeLeavingWorks()).orElse(Collections.emptyList());
+		for (IntegrationOfDaily interDaily : lstIntegrationOfDaily) {
+			List<TimeLeavingWork> timeLeavingWorks = interDaily.getAttendanceLeave().map(x-> x.getTimeLeavingWorks()).orElse(Collections.emptyList());
 
 			for (TimeLeavingWork time : timeLeavingWorks) {
 
@@ -51,21 +51,21 @@ public class GetDailyPerformanceData {
 				WorkRecordDetail detail = new WorkRecordDetail();
 
 				// 年月日
-				detail.setDate(i.getYmd());
+				detail.setDate(interDaily.getYmd());
 				// 社員ID
-				detail.setSID(i.getEmployeeId());
+				detail.setSID(interDaily.getEmployeeId());
 
 				// 作業詳細リスト
 				List<WorkDetailsParam> lstworkDetailsParam = new ArrayList<>();
 
-				for (OuenWorkTimeSheetOfDailyAttendance a : i.getOuenTimeSheet()) {
-					for (OuenWorkTimeOfDailyAttendance b : i.getOuenTime()) {
+				for (OuenWorkTimeSheetOfDailyAttendance ouenSheet : interDaily.getOuenTimeSheet()) {
+					for (OuenWorkTimeOfDailyAttendance ouenTime : interDaily.getOuenTime()) {
 						WorkDetailsParam workDetailsParam = new WorkDetailsParam(
-								new SupportFrameNo(a.getTimeSheet().getWorkNo().v()),
-								new TimeZone(a.getTimeSheet().getStart().get(), a.getTimeSheet().getEnd().get(),
-										Optional.ofNullable(b.getWorkTime().getTotalTime())),
-								a.getWorkContent().getWork(), a.getWorkContent().getWorkRemarks(),
-								a.getWorkContent().getWorkplace().getWorkLocationCD());
+								new SupportFrameNo(ouenSheet.getTimeSheet().getWorkNo().v()),
+								new TimeZone(ouenSheet.getTimeSheet().getStart().get(), ouenSheet.getTimeSheet().getEnd().get(),
+										Optional.ofNullable(ouenTime.getWorkTime().getTotalTime())),
+								ouenSheet.getWorkContent().getWork(), ouenSheet.getWorkContent().getWorkRemarks(),
+								ouenSheet.getWorkContent().getWorkplace().getWorkLocationCD());
 						lstworkDetailsParam.add(workDetailsParam);
 					}
 				}
@@ -74,13 +74,13 @@ public class GetDailyPerformanceData {
 				ActualContent actualContent = new ActualContent();
 
 				// 休憩リスト
-				actualContent.setBreakTimeSheets(i.getBreakTime().getBreakTimeSheets());
+				actualContent.setBreakTimeSheets(interDaily.getBreakTime().getBreakTimeSheets());
 				// 休憩時間
-				actualContent.setBreakHours(Optional.ofNullable(i.getAttendanceTimeOfDailyPerformance().map(
+				actualContent.setBreakHours(Optional.ofNullable(interDaily.getAttendanceTimeOfDailyPerformance().map(
 						x -> x.getActualWorkingTimeOfDaily().getTotalWorkingTime().getBreakTimeOfDaily().getWorkTime())
 						.orElse(null)));
 				// 総労働時間
-				actualContent.setTotalWorkingHours(Optional.ofNullable(i.getAttendanceTimeOfDailyPerformance()
+				actualContent.setTotalWorkingHours(Optional.ofNullable(interDaily.getAttendanceTimeOfDailyPerformance()
 						.map(x -> x.getActualWorkingTimeOfDaily().getTotalWorkingTime().getTotalTime()).orElse(null)));
 
 				if (time.getWorkNo().v() == 1) {
