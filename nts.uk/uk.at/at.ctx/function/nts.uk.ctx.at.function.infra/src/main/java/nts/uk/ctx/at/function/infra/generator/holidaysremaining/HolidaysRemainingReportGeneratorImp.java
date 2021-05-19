@@ -729,11 +729,8 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                 // H2_3 当月以降, set lại giá trị cho cột này nếu bằng 0 thì không hiển thị ra
                 cells.get(firstRow, 10 + totalMonth).setValue(rsvLeaUsedCurrentMonItem.getUsedNumber() != null
                         && rsvLeaUsedCurrentMonItem.getUsedNumber() == 0 ? null : df.format(rsvLeaUsedCurrentMonItem.getUsedNumber()));
-                if (currentMonth.compareTo(rsvLeaUsedCurrentMonItem.getYearMonth()) != 0) {
-                    continue;
-                }
                 // H2_4 当月以降
-                cells.get(firstRow + 1, 10 + totalMonth).setValue(df.format(rsvLeaUsedCurrentMonItem.getRemainNumber()));
+                setBackgroundGray( cells.get(firstRow + 1, 10 + totalMonth));
                 if (rsvLeaUsedCurrentMonItem.getRemainNumber() < 0) {
                     setForegroundRed(cells.get(firstRow + 1, 10 + totalMonth));
                 }
