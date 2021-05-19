@@ -453,10 +453,10 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                 setForegroundRed(cells.get(firstRow, 7));
             }
             // E1_13; SUM VALUE 281
-            val valueE113 = 113; // todo
+            val valueE113 = null; // todo
             Double leave_Hours = checkShowAreaAnnualBreak2(
                     dataSource.getHolidaysRemainingManagement()) ?
-                    (double) valueE113 : null;
+                     valueE113 : null;
             cells.get(firstRow + 1, 5).setValue(leave_Hours);
             if (leave_Hours != null && leave_Hours < 0) {
                 setForegroundRed(cells.get(firstRow + 1, 5));
