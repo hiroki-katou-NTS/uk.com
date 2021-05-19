@@ -53,7 +53,7 @@ module nts.uk.at.view.ksu001.a {
             });
 
             initEvent();
-        };
+        });
     });
     
     function initEvent(): void {
