@@ -119,7 +119,9 @@ public class JpaInterimBreakDayOffMngRepository extends JpaRepository implements
 				new RequiredDay(x.requiredDays),
 				new UnOffsetTime(x.unOffSetTimes),
 				new UnOffsetDay(x.unOffsetDays),
-				Optional.ofNullable(DigestionHourlyTimeType.of(x.pk.timeDigestiveAtr == 1,
+				Optional.ofNullable(
+						DigestionHourlyTimeType.of(x.pk.timeDigestiveAtr == 1, x.pk.timeHdType == 0 ? Optional.empty()
+								:
 						Optional.ofNullable(EnumAdaptor.valueOf(x.pk.timeHdType, AppTimeType.class))))
 				);
 	}
@@ -242,7 +244,7 @@ public class JpaInterimBreakDayOffMngRepository extends JpaRepository implements
 				domain.getSID(), 
 				domain.getYmd(),
 				domain.getAppTimeType().map(x -> x.isHourlyTimeType() ? 1 : 0).orElse(0),
-				domain.getAppTimeType().map(x -> x.getAppTimeType().map(appTime -> appTime.value).orElse(0)).orElse(0)
+				domain.getAppTimeType().map(x -> x.getAppTimeType().map(appTime -> appTime.value + 1).orElse(0)).orElse(0)
 				);
 		
 		// 登録・更新
