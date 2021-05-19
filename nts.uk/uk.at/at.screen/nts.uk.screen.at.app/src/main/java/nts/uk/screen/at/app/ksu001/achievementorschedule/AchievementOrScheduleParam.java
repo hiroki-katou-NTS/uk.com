@@ -12,9 +12,6 @@ import nts.uk.screen.at.app.ksu001.displayinshift.ShiftMasterMapWithWorkStyle;
 @NoArgsConstructor
 @Data
 public class AchievementOrScheduleParam {
-	public static final Integer SHIFT_MODE = 0; // シフト表示の場合
-	public static final Integer WORK_MODE = 1; // 勤務表示
-	public static final Integer ABBREVIATION_MODE = 2; // 略名表示の場合
 	
 	public GeneralDate startDate;            	 
 	public GeneralDate endDate;    	

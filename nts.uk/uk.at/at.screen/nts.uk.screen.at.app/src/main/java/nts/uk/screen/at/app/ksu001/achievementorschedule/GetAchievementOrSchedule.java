@@ -12,6 +12,7 @@ import nts.uk.ctx.at.aggregation.dom.schedulecounter.tally.PersonalCounterCatego
 import nts.uk.ctx.at.aggregation.dom.schedulecounter.tally.WorkplaceCounterCategory;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrganizationUnit;
+import nts.uk.screen.at.app.ksu001.getinfoofInitstartup.FuncCtrlDisplayFormatDto;
 import nts.uk.screen.at.app.ksu001.getschedulesbyshift.GetScheduleActualOfShift;
 import nts.uk.screen.at.app.ksu001.getschedulesbyshift.SchedulesbyShiftDataResult_New;
 import nts.uk.screen.at.app.ksu001.scheduleactualworkinfo.GetScheduleActualOfWorkInfo;
@@ -46,7 +47,7 @@ public class GetAchievementOrSchedule {
 					Optional.of(param.workplaceGroupId));
 		}
 		// Aa:シフト表示の場合
-		if (param.getMode() == AchievementOrScheduleParam.SHIFT_MODE) {
+		if (param.getMode() == FuncCtrlDisplayFormatDto.Shift.value) {
 			SchedulesbyShiftDataResult_New schedulesbyShiftDataResult_New =
 					getScheduleActualOfShift.getDataNew(
 							param.getListShiftMasterNotNeedGetNew(),
@@ -66,8 +67,8 @@ public class GetAchievementOrSchedule {
 						.aggrerateWorkplace(schedulesbyShiftDataResult_New.getAggrerateWorkplace())
 						.build();
 			
-		} else if (param.getMode() == AchievementOrScheduleParam.WORK_MODE 
-				|| param.getMode() == AchievementOrScheduleParam.ABBREVIATION_MODE) {
+		} else if (param.getMode() == FuncCtrlDisplayFormatDto.WorkInfo.value 
+				|| param.getMode() == FuncCtrlDisplayFormatDto.AbbreviatedName.value) {
 			
 			ScheduleActualOfWorkOutput scheduleActualOfWorkOutput =
 					getScheduleActualOfWorkInfo.getDataScheduleAndAactualOfWorkInfoNew(

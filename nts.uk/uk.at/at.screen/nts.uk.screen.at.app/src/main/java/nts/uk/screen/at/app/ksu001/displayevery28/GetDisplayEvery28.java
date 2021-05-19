@@ -5,6 +5,7 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.at.record.app.find.monthly.root.common.DatePeriodDto;
 import nts.uk.screen.at.app.ksu001.get28dateperiod.ScreenQuery28DayPeriod;
+import nts.uk.screen.at.app.ksu001.getinfoofInitstartup.FuncCtrlDisplayFormatDto;
 import nts.uk.screen.at.app.ksu001.getsendingperiod.ChangePeriodInShift;
 import nts.uk.screen.at.app.ksu001.getsendingperiod.ChangePeriodInShiftParam_New;
 import nts.uk.screen.at.app.ksu001.getsendingperiod.ChangePeriodInShiftResult_New;
@@ -34,7 +35,7 @@ public class GetDisplayEvery28 {
 		DisplayEvery28Dto output = new DisplayEvery28Dto();
 		// 取得する(年月日)
 		DatePeriodDto datePeriodDto = screenQuery28DayPeriod.get(param.getDate());
-		if (param.getMode() == DisplayEvery28Param.SHIFT_MODE) { // Aa:シフト表示の場合
+		if (param.getMode() == FuncCtrlDisplayFormatDto.Shift.value) { // Aa:シフト表示の場合
 			ChangePeriodInShiftResult_New changePeriodInShiftResult_New =
 					changePeriodInShift.getData_New(
 							new ChangePeriodInShiftParam_New(

@@ -13,9 +13,7 @@ import nts.uk.screen.at.app.ksu001.displayinshift.ShiftMasterMapWithWorkStyle;
 @AllArgsConstructor
 @Data
 public class DisplayEvery28Param {
-	public static final Integer SHIFT_MODE = 0; // シフト表示の場合
-	public static final Integer WORK_MODE = 1; // 勤務表示
-	public static final Integer ABBREVIATION_MODE = 2; // 略名表示の場合
+
 	public GeneralDate date;
 	public GeneralDate startDate;            	 
 	public GeneralDate endDate;    	
