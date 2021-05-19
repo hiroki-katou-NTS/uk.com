@@ -87,9 +87,9 @@
 							}"></div>
 						</com:ko-if>
 					</com:ko-if>
-					<div style="padding: 0 10px 10px 80px; min-width: 66vmin;" data-bind="ifnot:isUsed">
-						<span class=" not_used_label label " data-bind="text:errorMessage"></span>
-					</div>
+					<com:ko-if bind="!isUsed()">
+						<div class="not_used_label" data-bind="text:errorMessage"></div>
+					</com:ko-if>
 					</div>
 
 				</div>
