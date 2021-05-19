@@ -19,7 +19,7 @@ module nts.uk.com.view.cmm040.b.viewmodel {
         oldValue4: any = 9999;
         oldValue5: any = 9999;
         checkDel: boolean = false;
-        listIp::  KnockoutObservableArray<any> = ko.observableArray([]);
+        listIp:  KnockoutObservableArray<any> = ko.observableArray([]);
         
         //workLocationName:
         isCreate: KnockoutObservable<boolean>;
