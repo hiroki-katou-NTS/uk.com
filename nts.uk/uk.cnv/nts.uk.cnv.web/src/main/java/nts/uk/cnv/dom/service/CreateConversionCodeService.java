@@ -118,6 +118,7 @@ public class CreateConversionCodeService {
 					})
 					.collect(Collectors.toList());
 				return new ConversionTable(
+						info.getDatebaseType().spec(),
 						ct.getTargetTableName(),
 						ct.getDateColumnName(),
 						ct.getStartDateColumnName(),

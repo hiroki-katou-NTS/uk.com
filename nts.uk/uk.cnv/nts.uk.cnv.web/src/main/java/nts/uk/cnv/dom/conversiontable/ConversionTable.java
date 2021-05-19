@@ -7,7 +7,7 @@ import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.val;
-import nemunoki.oruta.shr.tabledefinetype.databasetype.SqlServerSpec;
+import nemunoki.oruta.shr.tabledefinetype.DatabaseSpec;
 import nts.uk.cnv.dom.constants.Constants;
 import nts.uk.cnv.dom.conversionsql.ColumnExpression;
 import nts.uk.cnv.dom.conversionsql.ColumnName;
@@ -25,6 +25,7 @@ import nts.uk.cnv.dom.conversionsql.WhereSentence;
 @Getter
 @AllArgsConstructor
 public class ConversionTable {
+	private DatabaseSpec spec;
 	private TableFullName targetTableName;
 
 	private Optional<String> dateColumnName;
@@ -36,7 +37,24 @@ public class ConversionTable {
 
 	public ConversionSQL createConversionSql() {
 		val newWhereList = new ArrayList<WhereSentence>(whereList);
-		val spec = new SqlServerSpec();		// コンバートコードはSqlServerでのみ動作させる仕様のため直指定
+//		val spec = new SqlServerSpec();		// コンバートコードはSqlServerでのみ動作させる仕様のため直指定
+		addPeriodCondition(spec, newWhereList);
+
+		ConversionSQL result = new ConversionSQL(
+					new InsertSentence(targetTableName, new ArrayList<>()),
+					new ArrayList<>(),
+					new FromSentence(Optional.empty(), new ArrayList<>()),
+					newWhereList
+				);
+
+		for(OneColumnConversion oneColumnConversion : conversionMap) {
+			result = oneColumnConversion.apply(result);
+		}
+
+		return result;
+	}
+
+	private void addPeriodCondition(DatabaseSpec spec, List<WhereSentence> newWhereList) {
 		if(dateColumnName.isPresent()) {
 			newWhereList.add(
 				new WhereSentence(
@@ -73,19 +91,6 @@ public class ConversionTable {
 				)
 			);
 		}
-
-		ConversionSQL result = new ConversionSQL(
-					new InsertSentence(targetTableName, new ArrayList<>()),
-					new ArrayList<>(),
-					new FromSentence(Optional.empty(), new ArrayList<>()),
-					newWhereList
-				);
-
-		for(OneColumnConversion oneColumnConversion : conversionMap) {
-			result = oneColumnConversion.apply(result);
-		}
-
-		return result;
 	}
 
 }

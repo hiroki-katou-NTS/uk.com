@@ -110,6 +110,7 @@ public class ScvmtConversionTable extends JpaEntity implements Serializable  {
 		List<WhereSentence> where = createWhereSentence(info, source.getCondition());
 
 		return new ConversionTable(
+					info.getDatebaseType().spec(),
 					new TableFullName(info.getTargetDatabaseName(), info.getTargetSchema(), pk.getTargetTableName(), "base"),
 					source.getDateColumnName(),
 					source.getStartDateColumnName(),

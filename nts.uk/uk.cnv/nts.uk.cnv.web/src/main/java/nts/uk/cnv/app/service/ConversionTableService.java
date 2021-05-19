@@ -98,6 +98,7 @@ public class ConversionTableService {
 		}
 
 		ConversionTable conversonTable = new ConversionTable(
+				info.getDatebaseType().spec(),
 				new TableFullName(info.getTargetDatabaseName(), info.getSourceSchema(), dto.getTable(), ""),
 				source.getDateColumnName(),
 				source.getStartDateColumnName(),

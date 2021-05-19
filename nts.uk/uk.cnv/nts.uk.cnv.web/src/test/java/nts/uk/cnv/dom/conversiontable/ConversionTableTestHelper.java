@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Optional;
 
+import nemunoki.oruta.shr.tabledefinetype.databasetype.SqlServerSpec;
 import nts.uk.cnv.dom.constants.Constants;
 import nts.uk.cnv.dom.conversionsql.ColumnName;
 import nts.uk.cnv.dom.conversionsql.Join;
@@ -20,6 +21,7 @@ public class ConversionTableTestHelper {
 
 	public static ConversionTable create_emptyDummy() {
 		return new ConversionTable(
+				new SqlServerSpec(),
 				new TableFullName(),
 				Optional.empty(),
 				Optional.empty(),
@@ -30,6 +32,7 @@ public class ConversionTableTestHelper {
 
 	public static ConversionTable create_companyDummy(ConversionInfo info) {
 		return new ConversionTable(
+				new SqlServerSpec(),
 				new TableFullName(info.getTargetDatabaseName(), info.getTargetSchema(), "BCMMT_COMPANY", ""),
 				Optional.empty(),
 				Optional.empty(),
@@ -87,6 +90,7 @@ public class ConversionTableTestHelper {
 
 	public static ConversionTable create_personDummy(ConversionInfo info) {
 		return new ConversionTable(
+				new SqlServerSpec(),
 				new TableFullName(info.getTargetDatabaseName(), info.getTargetSchema(), "BPSMT_PERSON", ""),
 				Optional.empty(),
 				Optional.empty(),
