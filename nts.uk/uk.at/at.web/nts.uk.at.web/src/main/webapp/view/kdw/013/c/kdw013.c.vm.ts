@@ -38,7 +38,7 @@ module nts.uk.ui.at.kdw013.c {
         text-align: center;
     }
     .edit-event>table>tbody>tr>td>.ntsControl {
-        width: 100%;
+        width: 280px;
         display: block;
         box-sizing: border-box;
         margin-bottom: 10px;

@@ -472,7 +472,8 @@ module nts.uk.ui.at.kdw013.calendar {
             view: string;
             editor: string;
         }
-        $settings: KnockoutObservable<any | null>;
+        $datas: KnockoutObservable<a.ChangeDateDto | null>;
+        $settings: KnockoutObservable<a.StartProcessDto | null>;
     };
 
     type PopupData = {
@@ -675,6 +676,7 @@ module nts.uk.ui.at.kdw013.calendar {
                         view: 'kdp013b',
                         editor: 'kdp013c'
                     },
+                    $datas: ko.observable(null),
                     $settings: ko.observable(null)
                 };
             }
@@ -697,7 +699,9 @@ module nts.uk.ui.at.kdw013.calendar {
                 slotDuration,
                 attendanceTimes,
                 breakTime,
-                businessHours
+                businessHours,
+                $datas,
+                $settings
             } = this.params;
 
             if (locale === undefined) {
@@ -831,6 +835,7 @@ module nts.uk.ui.at.kdw013.calendar {
                 viewModel,
                 validRange,
                 attendanceTimes,
+                $datas,
                 $settings
             } = params;
             const $caches: {
@@ -1009,6 +1014,114 @@ module nts.uk.ui.at.kdw013.calendar {
                 disposeWhenNodeIsRemoved: vm.$el
             });
 
+            const computedDragItems = (datas: a.ChangeDateDto | null, settings: a.StartProcessDto | null) => {
+                if (datas && settings) {
+                    const { workGroupDtos } = datas;
+                    const { startManHourInputResultDto } = settings;
+
+                    if (workGroupDtos && startManHourInputResultDto) {
+                        const { tasks } = startManHourInputResultDto;
+
+                        if (tasks && tasks.length) {
+                            const getTasks = (wg: a.WorkGroupDto) => {
+                                const { workCD1, workCD2, workCD3, workCD4, workCD5 } = wg;
+                                const task1 = _.find(tasks, ({ code }) => code === workCD1);
+                                const task2 = _.find(tasks, ({ code }) => code === workCD2);
+                                const task3 = _.find(tasks, ({ code }) => code === workCD3);
+                                const task4 = _.find(tasks, ({ code }) => code === workCD4);
+                                const task5 = _.find(tasks, ({ code }) => code === workCD5);
+
+                                return [task1, task2, task3, task4, task5];
+                            };
+                            const getTask = (wg: a.WorkGroupDto) => {
+                                const [task1, task2, task3, task4, task5] = getTasks(wg);
+
+                                return task5 || task4 || task3 || task2 || task1;
+                            };
+                            const getTitles = (wg: a.WorkGroupDto) => {
+                                return getTasks(wg)
+                                    .map((m: c.TaskDto | undefined) => {
+                                        if (m) {
+                                            const { displayInfo } = m;
+
+                                            if (displayInfo) {
+                                                return displayInfo.taskName;
+                                            }
+
+                                            return '';
+                                        }
+                                    })
+                                    .join('/')
+                                    .replace(/\/{2,}/, '/')
+                                    .replace(/\/$/, '');
+                            };
+                            const getBackground = (wg: a.WorkGroupDto) => {
+                                const task = getTask(wg);
+
+                                if (task) {
+                                    const { displayInfo } = task;
+
+                                    if (displayInfo) {
+                                        return displayInfo.color;
+                                    }
+                                }
+
+                                return '';
+                            };
+
+                            const draggers: EventRaw[] = _
+                                .chain(workGroupDtos)
+                                .map((wg) => {
+                                    const task = getTask(wg);
+
+                                    if (!task) {
+                                        return null;
+                                    }
+
+                                    const relateId = randomId();
+                                    const {
+                                        taskFrameNo,
+                                        code,
+                                        cooperationInfo,
+                                        displayInfo,
+                                        expirationEndDate,
+                                        expirationStartDate,
+                                        childTaskList
+                                    } = task;
+
+                                    return {
+                                        start: new Date(),
+                                        end: new Date(),
+                                        title: getTitles(wg),
+                                        backgroundColor: getBackground(wg),
+                                        textColor: '',
+                                        extendedProps: {
+                                            relateId,
+                                            status: 'new',
+                                            taskFrameNo,
+                                            code,
+                                            cooperationInfo,
+                                            displayInfo,
+                                            expirationEndDate,
+                                            expirationStartDate,
+                                            childTaskList,
+                                        } as any
+                                    };
+                                })
+                                .filter((m) => !!m)
+                                .value();
+
+                            // update dragger items
+                            vm.dragItems(draggers);
+
+                            return;
+                        }
+                    }
+                }
+
+                vm.dragItems([]);
+            }
+
             dataEvent.alt
                 .subscribe((c) => $el.attr('alt', +c));
 
@@ -1042,63 +1155,18 @@ module nts.uk.ui.at.kdw013.calendar {
                     }
                 });
 
+            $
+
+            // update drag item
+            $datas
+                .subscribe((data: a.ChangeDateDto | null) => {
+                    computedDragItems(data, ko.unwrap($settings));
+                });
+
             // update drag item
             $settings
                 .subscribe((settings: a.StartProcessDto | null) => {
-                    if (settings) {
-                        const { startManHourInputResultDto } = settings;
-
-                        if (startManHourInputResultDto) {
-                            const { tasks } = startManHourInputResultDto;
-
-                            if (tasks && tasks.length) {
-                                const draggers: EventRaw[] = _
-                                    .chain(tasks)
-                                    .map(({
-                                        taskFrameNo,
-                                        childTaskList,
-                                        code,
-                                        cooperationInfo,
-                                        displayInfo,
-                                        expirationEndDate,
-                                        expirationStartDate
-                                    }) => {
-                                        const {
-                                            taskName: title,
-                                            color: backgroundColor
-                                        } = displayInfo;
-                                        const relateId = randomId();
-
-                                        return {
-                                            start: new Date(),
-                                            end: new Date(),
-                                            title,
-                                            backgroundColor,
-                                            textColor: '',
-                                            extendedProps: {
-                                                relateId,
-                                                status: 'new',
-                                                taskFrameNo,
-                                                code,
-                                                cooperationInfo,
-                                                displayInfo,
-                                                expirationEndDate,
-                                                expirationStartDate,
-                                                childTaskList,
-                                            } as any
-                                        };
-                                    })
-                                    .value();
-
-                                // update dragger items
-                                vm.dragItems(draggers);
-
-                                return;
-                            }
-                        }
-                    }
-
-                    vm.dragItems([]);
+                    computedDragItems(ko.unwrap($datas), settings);
                 });
 
             // fix ie display
