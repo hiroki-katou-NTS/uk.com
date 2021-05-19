@@ -45,7 +45,7 @@
             marginBottom: 0
           }"></div> 
           <com:ko-if bind=" stampGrid().displayMethod() != 0 ">
-          	<div class="pull-left" id="stamp-info">
+          	<div class="pull-left" id="stamp-info" data-bind="style:{'padding-top':stampTab().tabs().length > 1 ? '42px' : '0'}">
               <ui:include src="emboss-info.xhtml" />
           	</div>
           </com:ko-if>
