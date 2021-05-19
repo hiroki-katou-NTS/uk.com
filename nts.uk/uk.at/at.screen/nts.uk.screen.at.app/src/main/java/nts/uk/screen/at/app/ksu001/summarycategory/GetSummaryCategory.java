@@ -4,7 +4,10 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 
+import nts.uk.ctx.at.aggregation.app.find.schedulecounter.personal.PersonalCounterFinder;
+import nts.uk.ctx.at.aggregation.app.find.schedulecounter.wkpcounter.WorkplaceCounterFinder;
 import nts.uk.ctx.at.aggregation.dom.schedulecounter.tally.PersonalCounter;
 import nts.uk.ctx.at.aggregation.dom.schedulecounter.tally.WorkplaceCounter;
 import nts.uk.shr.com.context.AppContexts;
@@ -18,6 +21,11 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class GetSummaryCategory {
 
+	@Inject
+	private WorkplaceCounterFinder workplaceCounterFinder;
+	
+	@Inject
+	private PersonalCounterFinder personalCounterFinder;
 	
 	/**
 	 * 
@@ -27,7 +35,8 @@ public class GetSummaryCategory {
 	public SummaryCategoryDto get(String displayFormat) {
 		SummaryCategoryDto output = new SummaryCategoryDto();
 		String companyId = AppContexts.user().companyId();
-		// 1 取得する() wait 3si
+		// 1 取得する()
+		// type is incorrect
 		Optional<WorkplaceCounter> workplaceCounterOp = Optional.empty();
 		if (workplaceCounterOp.isPresent()) {
 			output.setUseCategoriesWorkplace(
@@ -38,7 +47,8 @@ public class GetSummaryCategory {
 									  .collect(Collectors.toList()));
 		}
 		
-		// 2 スケジュール個人計情報を取得する() wait 3si
+		// 2 スケジュール個人計情報を取得する()
+		// type is incorrect
 		Optional<PersonalCounter> personalCounterOp = Optional.empty();
 		
 		if (personalCounterOp.isPresent()) {

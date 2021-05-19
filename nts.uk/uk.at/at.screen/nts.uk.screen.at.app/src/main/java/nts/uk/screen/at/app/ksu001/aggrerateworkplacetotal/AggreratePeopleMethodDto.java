@@ -8,14 +8,15 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.aggregation.dom.schedulecounter.aggregationprocess.workplacecounter.NumberOfPeopleByEachWorkMethod;
-import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterCode;
+import nts.uk.ctx.at.shared.app.find.workrule.shiftmaster.WorkTimeSettingDto;
+import nts.uk.screen.at.app.ksu001.getshiftpalette.ShiftMasterDto;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class AggreratePeopleMethodOutput {
+public class AggreratePeopleMethodDto {
 
-	public Map<GeneralDate, List<NumberOfPeopleByEachWorkMethod<String>>> countWork;
+	public Map<GeneralDate, List<NumberOfPeopleByEachWorkMethod<WorkTimeSettingDto>>> countWork;
 
-	public Map<GeneralDate, List<NumberOfPeopleByEachWorkMethod<ShiftMasterCode>>> shift;
+	public Map<GeneralDate, List<NumberOfPeopleByEachWorkMethod<ShiftMasterDto>>> shift;
 }

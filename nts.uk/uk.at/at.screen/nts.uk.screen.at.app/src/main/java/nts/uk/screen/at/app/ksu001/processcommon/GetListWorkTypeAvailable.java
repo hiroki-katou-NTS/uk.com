@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.at.schedule.app.find.schedule.setting.functioncontrol.ScheFuncControlCorrectionFinder;
 import nts.uk.ctx.at.schedule.dom.displaysetting.functioncontrol.ScheFunctionControl;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
@@ -40,8 +41,9 @@ public class GetListWorkTypeAvailable {
 	@Inject
 	private WorkTypeRepository workTypeRepo;
 	
-//	@Inject
-//	private ScheFunctionControl scheFunctionControl;
+	@Inject
+	private ScheFuncControlCorrectionFinder scheFuncControlCorrectionFinder;
+	
 	
 	public List<WorkTypeInfomation> getData() {
 
@@ -77,8 +79,8 @@ public class GetListWorkTypeAvailable {
 
 		String cid = AppContexts.user().companyId();
 		List<WorkTypeDto> workTypeDtos;
-		// 1 取得する() // waitting 3si
-		Optional<ScheFunctionControl> scheFunctionControl = Optional.empty();
+		// 1 取得する()
+		Optional<ScheFunctionControl> scheFunctionControl = scheFuncControlCorrectionFinder.getData(cid);
 		
 		// 2: スケジュール修正の機能制御.表示可能勤務種類制御
 		if (scheFunctionControl.map(x -> x.getDisplayWorkTypeControl() == NotUseAtr.USE).orElse(false)) {

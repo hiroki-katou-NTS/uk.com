@@ -46,7 +46,7 @@ public class GetAchievementOrSchedule {
 					Optional.of(param.workplaceGroupId));
 		}
 		// Aa:シフト表示の場合
-		if (param.getMode().equals("shift")) {
+		if (param.getMode() == AchievementOrScheduleParam.SHIFT_MODE) {
 			SchedulesbyShiftDataResult_New schedulesbyShiftDataResult_New =
 					getScheduleActualOfShift.getDataNew(
 							param.getListShiftMasterNotNeedGetNew(),
@@ -66,7 +66,8 @@ public class GetAchievementOrSchedule {
 						.aggrerateWorkplace(schedulesbyShiftDataResult_New.getAggrerateWorkplace())
 						.build();
 			
-		} else if (param.getMode().equals("work") || param.getMode().equals("Abbreviation")) {
+		} else if (param.getMode() == AchievementOrScheduleParam.WORK_MODE 
+				|| param.getMode() == AchievementOrScheduleParam.ABBREVIATION_MODE) {
 			
 			ScheduleActualOfWorkOutput scheduleActualOfWorkOutput =
 					getScheduleActualOfWorkInfo.getDataScheduleAndAactualOfWorkInfoNew(
@@ -87,7 +88,7 @@ public class GetAchievementOrSchedule {
 						.build();
 		}
 		
-		return null;
+		return new AchievementOrScheduleDto();
 	}
 
 }

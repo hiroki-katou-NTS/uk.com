@@ -4,7 +4,6 @@
 package nts.uk.screen.at.app.ksu001.getinfoofInitstartup;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -15,12 +14,16 @@ import javax.inject.Inject;
 import lombok.AllArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.schedule.app.find.schedule.setting.functioncontrol.ScheFuncControlCorrectionFinder;
+import nts.uk.ctx.at.schedule.app.find.schedule.setting.functioncontrol.ScheFunctionCtrlByWorkplaceFinder;
 import nts.uk.ctx.at.schedule.dom.displaysetting.DisplaySettingByWorkplace;
 import nts.uk.ctx.at.schedule.dom.displaysetting.DisplaySettingByWorkplaceRepository;
 import nts.uk.ctx.at.schedule.dom.displaysetting.authcontrol.ScheAuthModifyDeadline;
 import nts.uk.ctx.at.schedule.dom.displaysetting.authcontrol.ScheAuthModifyDeadlineRepository;
+import nts.uk.ctx.at.schedule.dom.displaysetting.authcontrol.ScheModifyAuthCtrlByWorkPlaceRepository;
 import nts.uk.ctx.at.schedule.dom.displaysetting.authcontrol.ScheModifyAuthCtrlByWorkplace;
 import nts.uk.ctx.at.schedule.dom.displaysetting.authcontrol.ScheModifyAuthCtrlCommon;
+import nts.uk.ctx.at.schedule.dom.displaysetting.authcontrol.ScheModifyAuthCtrlCommonRepository;
 import nts.uk.ctx.at.schedule.dom.displaysetting.authcontrol.ScheModifyStartDateService;
 import nts.uk.ctx.at.schedule.dom.displaysetting.functioncontrol.ScheFunctionControl;
 import nts.uk.ctx.at.schedule.dom.displaysetting.functioncontrol.ScheFunctionCtrlByWorkplace;
@@ -46,6 +49,7 @@ import nts.uk.ctx.bs.employee.pub.workplace.workplacegroup.EmpOrganizationExport
 import nts.uk.screen.at.app.ksu001.summarycategory.GetSummaryCategory;
 import nts.uk.screen.at.app.ksu001.summarycategory.SummaryCategoryDto;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.license.option.OptionLicense;
 
 /**
  * @author laitv 
@@ -74,11 +78,17 @@ public class ScreenQueryGetInforOfInitStartup {
 	@Inject
 	private ShiftTableRuleForCompanyRepo shiftTableRuleForCompanyRepo;
 	
-//	@Inject
-//	private ScheModifyAuthCtrlCommonRepository scheModifyAuthCtrlCommonRepository;
-//	
-//	@Inject
-//	private ScheModifyAuthCtrlByWorkPlaceRepository scheModifyAuthCtrlByWorkPlaceRepository;
+	@Inject
+	private ScheModifyAuthCtrlCommonRepository scheModifyAuthCtrlCommonRepository;
+	
+	@Inject
+	private ScheModifyAuthCtrlByWorkPlaceRepository scheModifyAuthCtrlByWorkPlaceRepository;
+	
+	@Inject
+	private ScheFuncControlCorrectionFinder scheFuncControlCorrectionFinder;
+	
+	@Inject
+	private ScheFunctionCtrlByWorkplaceFinder scheFunctionCtrlByWorkplaceFinder;
 	
 	@Inject
 	private GetSummaryCategory getSummaryCategory;
@@ -164,27 +174,26 @@ public class ScreenQueryGetInforOfInitStartup {
 		}
 		
 		
-		// step 7 waiting 3si
-		Optional<ScheFunctionControl> scheFunctionControlOp = Optional.empty();
+		// step 7 
+		Optional<ScheFunctionControl> scheFunctionControlOp = 
+				scheFuncControlCorrectionFinder.getData(companyID);
 		
-		// step 8 waiting 3si
-		
-		Optional<ScheFunctionCtrlByWorkplace> scheFunctionCtrlByWorkplaceOp = Optional.empty();
+		// step 8 
+		Optional<ScheFunctionCtrlByWorkplace> scheFunctionCtrlByWorkplaceOp = 
+				scheFunctionCtrlByWorkplaceFinder.getScheFuncCtrlByWorkplace();
 		// step 9 getAllByRoleId
 		List<ScheModifyAuthCtrlCommon> scheModifyAuthCtrlCommons = 
-//				scheModifyAuthCtrlCommonRepository.getAllByRoleId(companyID, roleId);
-				Collections.emptyList();
+				scheModifyAuthCtrlCommonRepository.getAllByRoleId(companyID, roleId);
 		
 		// step 10 getAllByRoleId
 		List<ScheModifyAuthCtrlByWorkplace> scheModifyAuthCtrlByWorkplaces = 
-//				scheModifyAuthCtrlByWorkPlaceRepository.getAllByRoleId(companyID, roleId);
-				Collections.emptyList();
+				scheModifyAuthCtrlByWorkPlaceRepository.getAllByRoleId(companyID, roleId);
 		
 		// step 11 取得する(表示形式)
 		SummaryCategoryDto summaryCategory = getSummaryCategory.get(null);
 		
 		// step 12 get()
-		
+		OptionLicense optionaLicense = AppContexts.optionLicense();
 		
 		return new DataScreenQueryGetInforDto_New(
 				datePeriod.start(),
@@ -201,7 +210,12 @@ public class ScreenQueryGetInforOfInitStartup {
 											  .collect(Collectors.toList()),
 			    scheModifyAuthCtrlByWorkplaces.stream()
 			    						      .map(x -> ScheModifyAuthCtrlByWorkplaceDto.fromDomain(x))
-			    						      .collect(Collectors.toList())
+			    						      .collect(Collectors.toList()),
+		        optionaLicense.attendance().schedule().medical(),
+		        optionaLicense.attendance().schedule().nursing(),
+			    summaryCategory.getUseCategoriesPersonal(),
+			    summaryCategory.getUseCategoriesWorkplace(),
+			    workScheDisplaySettingOpt.get().getEndDay().getClosingDate()
 				);
 	}
 	

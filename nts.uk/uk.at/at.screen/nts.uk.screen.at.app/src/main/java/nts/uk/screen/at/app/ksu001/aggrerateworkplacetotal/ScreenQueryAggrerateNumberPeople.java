@@ -9,8 +9,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
+import lombok.Builder;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.aggregation.dom.schedulecounter.aggregationprocess.workplacecounter.CountNumberOfPeopleByAttributeService;
 import nts.uk.ctx.at.aggregation.dom.schedulecounter.tally.WorkplaceCounterCategory;
@@ -38,6 +37,7 @@ import nts.uk.ctx.bs.employee.dom.employment.Employment;
 import nts.uk.ctx.bs.employee.dom.employment.EmploymentRepository;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfo;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfoRepository;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.EmploymentDto;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -47,9 +47,6 @@ import nts.uk.shr.com.context.AppContexts;
  */
 @Stateless
 public class ScreenQueryAggrerateNumberPeople {
-
-//	@Inject
-//	private CountNumberOfPeopleByAttributeService.Require require;
 	
 	@Inject 
 	private EmploymentRepository employmentRepository;
@@ -60,12 +57,41 @@ public class ScreenQueryAggrerateNumberPeople {
 	@Inject 
 	private JobTitleInfoRepository jobTitleInfoRepository;
 	
+	@Inject
+	private BasicScheduleService service;
+	
+	@Inject
+	private WorkTypeRepository workTypeRepository;
+	
+	@Inject
+	private WorkTimeSettingRepository workTimeSettingRepository;
+	
+	@Inject
+	private FixedWorkSettingRepository fixedWorkSet;
+	
+	@Inject
+	private FlowWorkSettingRepository flowWorkSet;
+	
+	@Inject
+	private FlexWorkSettingRepository flexWorkSet;
+	
+	@Inject
+	private PredetemineTimeSettingRepository predetemineTimeSet;
+	
 	public AggrerateNumberPeopleDto aggrerate(
 			GeneralDate baseDate,
 			List<IntegrationOfDaily> dailyWorks,
 			WorkplaceCounterCategory workplaceCounterOp
 			) {
-		RequireImpl require = new RequireImpl();
+		RequireImpl require = RequireImpl.builder()
+									.service(service)
+									.workTypeRepository(workTypeRepository)
+									.workTimeSettingRepository(workTimeSettingRepository)
+									.fixedWorkSet(fixedWorkSet)
+									.flowWorkSet(flowWorkSet)
+									.flexWorkSet(flexWorkSet)
+									.predetemineTimeSet(predetemineTimeSet)
+									.build();
 		AggrerateNumberPeopleDto output = new AggrerateNumberPeopleDto();
 		String companyId = AppContexts.user().companyId();
 		if (workplaceCounterOp == WorkplaceCounterCategory.EMPLOYMENT_PEOPLE) { // 1: 職場計カテゴリ == 雇用人数
@@ -77,27 +103,41 @@ public class ScreenQueryAggrerateNumberPeople {
 			List<String> empCodes = countEachEpl.entrySet()
 						.stream()
 						.map(x -> x.getValue())
-						.map(x -> x.entrySet().stream().map(y -> y.getKey().v()).collect(Collectors.toList()))
+						.map(x -> x.entrySet()
+								   .stream()
+								   .map(y -> y.getKey().v())
+								   .collect(Collectors.toList()))
 						.flatMap(list -> list.stream())
 						.distinct()
 						.collect(Collectors.toList());
 			//1.2 : <call>
-			List<Employment> employments = employmentRepository.findByEmpCodes(
-					companyId,
-					empCodes);
+			List<Employment> employments = 
+					employmentRepository.findByEmpCodes(
+											companyId,
+											empCodes);
 			
 			
 			
-			Map<GeneralDate, Map<Employment, BigDecimal>> employmentOutput = 
+			Map<GeneralDate, Map<EmploymentDto, BigDecimal>> employmentOutput = 
 					countEachEpl.entrySet()
 						.stream()
 						.collect(Collectors.toMap(
-								e -> (GeneralDate) e.getKey(),
-								e -> ((Map<EmploymentCode, BigDecimal>)e.getValue()).entrySet()
-											.stream()
-											.collect(Collectors.toMap(
-													f -> employments.stream().filter(x -> x.getEmploymentCode().v().equals(f.getKey().v())).findFirst().orElse(null),
-													f -> f.getValue()))
+								e -> e.getKey(),
+								e -> e.getValue().entrySet()
+												.stream()
+												.collect(Collectors.toMap(
+														f -> employments
+																.stream()
+																.filter(x -> x.getEmploymentCode().v().equals(f.getKey().v()))
+																.map(x -> new EmploymentDto(
+																				x.getCompanyId().v(),
+																				x.getEmploymentCode().v(),
+																				x.getEmploymentName().v(),
+																				x.getEmpExternalCode().v(),
+																				x.getMemo().v()
+																				))
+																.findFirst().orElse(null),
+														f -> f.getValue()))
 								
 								));
 			
@@ -119,18 +159,23 @@ public class ScreenQueryAggrerateNumberPeople {
 					.distinct()
 					.collect(Collectors.toList()));
 			
-			Map<GeneralDate, Map<Classification, BigDecimal>> classificationOutput = 
-					countEachClassification.entrySet()
-					.stream()
-					.collect(Collectors.toMap(
-							e -> (GeneralDate) e.getKey(),
-							e -> ((Map<ClassificationCode, BigDecimal>)e.getValue()).entrySet()
-										.stream()
-										.collect(Collectors.toMap(
-												f -> classifications.stream().filter(x -> x.getClassificationCode().v().equals(f.getKey().v())).findFirst().orElse(null),
-												f -> f.getValue()))
-							
-							));
+			Map<GeneralDate, Map<ClassificationDto, BigDecimal>> classificationOutput = 
+					countEachClassification
+						.entrySet()
+						.stream()
+						.collect(Collectors.toMap(
+								e -> e.getKey(),
+								e -> e.getValue().entrySet()
+											.stream()
+											.collect(Collectors.toMap(
+													f -> classifications.stream()
+																		.filter(x -> x.getClassificationCode().v().equals(f.getKey().v()))
+																		.map(x -> ClassificationDto.fromDomain(x))
+																		.findFirst()
+																		.orElse(null),
+													f -> f.getValue()))
+								
+								));
 			
 			output.classification = classificationOutput;
 			
@@ -141,26 +186,39 @@ public class ScreenQueryAggrerateNumberPeople {
 					CountNumberOfPeopleByAttributeService.countingEachJobTitle(require, dailyWorks);
 			
 			// 3.2: <call>
-			List<JobTitleInfo> jobTitleInfos = jobTitleInfoRepository.findByIds(
-					companyId,
-					countEachJob.entrySet()
-					.stream()
-					.map(x -> x.getValue())
-					.map(x -> x.entrySet().stream().map(y -> y.getKey()).collect(Collectors.toList()))
-					.flatMap(list -> list.stream())
-					.distinct()
-					.collect(Collectors.toList()),
-					baseDate);
-			Map<GeneralDate, Map<JobTitleInfo, BigDecimal>> jobTitileInfoOutput =
+			List<JobTitleInfo> jobTitleInfos = 
+					jobTitleInfoRepository
+							.findByIds(
+								companyId,
+								countEachJob
+									.entrySet()
+									.stream()
+									.map(x -> x.getValue())
+									.map(x -> x.entrySet()
+											   .stream()
+											   .map(y -> y.getKey())
+											   .collect(Collectors.toList()))
+									.flatMap(list -> list.stream())
+									.distinct()
+									.collect(Collectors.toList()),
+							baseDate);
+			Map<GeneralDate, Map<JobTitleInfoDto, BigDecimal>> jobTitileInfoOutput =
 					countEachJob.entrySet()
 					.stream()
 					.collect(Collectors.toMap(
-							e -> (GeneralDate) e.getKey(),
-							e -> ((Map<String, BigDecimal>)e.getValue()).entrySet()
+							e -> e.getKey(),
+							e -> e.getValue()
+										.entrySet()
 										.stream()
-										.collect(Collectors.toMap(
-												f -> jobTitleInfos.stream().filter(x -> x.getJobTitleCode().v().equals(f.getKey())).findFirst().orElse(null),
-												f -> f.getValue()))
+										.collect(
+												Collectors.toMap(
+													f -> jobTitleInfos.stream()
+																	  .filter(x -> x.getJobTitleCode().v().equals(f.getKey()))
+																	  .map(x -> JobTitleInfoDto.fromDomain(x))
+																	  .findFirst()
+																	  .orElse(null),
+													f -> f.getValue()
+												))
 							
 							));
 			output.jobTitleInfo = jobTitileInfoOutput;
@@ -171,8 +229,7 @@ public class ScreenQueryAggrerateNumberPeople {
 		
 	}
 	
-	@AllArgsConstructor
-	@NoArgsConstructor
+	@Builder
 	private static class RequireImpl implements CountNumberOfPeopleByAttributeService.Require {
 
 		private final String companyId = AppContexts.user().companyId();

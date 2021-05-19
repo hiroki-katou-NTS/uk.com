@@ -11,9 +11,8 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.aggregation.dom.schedulecounter.tally.WorkplaceCounterCategory;
 import nts.uk.ctx.at.schedule.app.find.budget.external.ExternalBudgetDto;
-import nts.uk.ctx.at.shared.dom.common.EmployeeId;
+import nts.uk.ctx.at.shared.app.find.scherec.totaltimes.dto.TotalTimesDetailDto;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
-import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalTimes;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 
 /**
@@ -55,20 +54,21 @@ public class ScreenQueryAggrerateWorkplaceTotal {
 		// 職場計カテゴリ == 人件費・時間
 		if (workplaceCounterOp == WorkplaceCounterCategory.LABOR_COSTS_AND_TIME) {
 			// 1: 集計する(対象組織識別情報, 期間, List<日別勤怠(Work)>)
-			Map<GeneralDate, Map<LaborCostAggregationUnitDto, BigDecimal>> laborCostAndTime = screenQueryLaborCostAndTime.aggrerate(
-					targetOrg,
-					aggrerateintegrationOfDaily,
-					datePeriod);
+			Map<GeneralDate, Map<LaborCostAggregationUnitDto, BigDecimal>> laborCostAndTime = 
+					screenQueryLaborCostAndTime.aggrerate(
+													targetOrg,
+													aggrerateintegrationOfDaily,
+													datePeriod);
 			
-			output.laborCostAndTime = laborCostAndTime;
+			output.setLaborCostAndTime(laborCostAndTime);
 			
 		}
 		// 職場計カテゴリ == 回数集計
 		else if (workplaceCounterOp == WorkplaceCounterCategory.TIMES_COUNTING) {
 			//2: 集計する(List<日別勤怠(Work)>)
-			Map<EmployeeId, Map<TotalTimes, BigDecimal>> timeCount = screenQueryAggrerateNumberTime.aggrerate(aggrerateintegrationOfDaily);
-			
-			
+			Map<String, Map<TotalTimesDetailDto, BigDecimal>> timeCount = 
+					screenQueryAggrerateNumberTime.aggrerate(aggrerateintegrationOfDaily);
+			output.setTimeCount(timeCount);
 		
 		}
 		// 職場計カテゴリ == 雇用人数 or 分類人数 or 職位人数
@@ -76,11 +76,12 @@ public class ScreenQueryAggrerateWorkplaceTotal {
 				|| workplaceCounterOp == WorkplaceCounterCategory.CLASSIFICATION_PEOPLE
 				|| workplaceCounterOp == WorkplaceCounterCategory.POSITION_PEOPLE) {
 			// 3: 集計する(年月日, List<日別勤怠(Work)>, 職場計カテゴリ)
-			AggrerateNumberPeopleDto aggrerateNumberPeople = screenQueryAggrerateNumberPeople.aggrerate(
-					datePeriod.end(),
-					aggrerateintegrationOfDaily,
-					workplaceCounterOp);
-			output.aggrerateNumberPeople = aggrerateNumberPeople;
+			AggrerateNumberPeopleDto aggrerateNumberPeople = 
+					screenQueryAggrerateNumberPeople.aggrerate(
+							datePeriod.end(),
+							aggrerateintegrationOfDaily,
+							workplaceCounterOp);
+			output.setAggrerateNumberPeople(aggrerateNumberPeople);
 			
 		}
 		// 職場計カテゴリ == 外部予算実績
@@ -92,7 +93,7 @@ public class ScreenQueryAggrerateWorkplaceTotal {
 					datePeriod
 					);
 			
-			output.externalBudget = externalBudget;
+			output.setExternalBudget(externalBudget);
 		}
 		
 		return output;
