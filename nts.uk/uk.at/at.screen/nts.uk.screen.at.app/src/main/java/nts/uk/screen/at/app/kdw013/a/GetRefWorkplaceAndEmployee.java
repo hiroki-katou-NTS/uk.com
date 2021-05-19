@@ -18,7 +18,6 @@ import nts.uk.ctx.at.record.dom.jobmanagement.manhourrecordreferencesetting.ManH
 import nts.uk.ctx.at.record.dom.jobmanagement.manhourrecordreferencesetting.ManHourRecordReferenceSettingRepository;
 import nts.uk.ctx.at.record.dom.workrecord.actualsituation.CheckShortageFlex;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
-import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeBasicInfoImport;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.WorkplaceExportServiceAdapter;
 import nts.uk.ctx.bs.employee.dom.workplace.info.OutsideWorkplaceCode;
 import nts.uk.ctx.bs.employee.dom.workplace.info.WkpCode;
@@ -79,7 +78,9 @@ public class GetRefWorkplaceAndEmployee {
 		// 3: <call>()
 		// [No.600]社員ID（List）から社員コードと表示名を取得（削除社員考慮）
 		DatePeriod datePeriod = new DatePeriod(refDate, refDate);
-		List<EmployeeBasicInfoImport> lstEmployeeInfo = empEmployeeAdapter.getEmpInfoLstBySids(lstEmpIds, datePeriod, true, true);
+		List<EmployeeBasicInfoDto> lstEmployeeInfo = empEmployeeAdapter.getEmpInfoLstBySids(lstEmpIds, datePeriod, true, true).stream().map(info-> {
+					return new EmployeeBasicInfoDto(info.getSid(), info.getEmployeeCode(), info.getEmployeeName());
+		}).collect(Collectors.toList());
 
 		// 4: <call>()
 		// [No.560]職場IDから職場の情報をすべて取得する
