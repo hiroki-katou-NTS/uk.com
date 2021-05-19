@@ -46,15 +46,10 @@ public class JpaEmployeeContactRepository extends JpaRepository implements Emplo
         if (oldEntity.isPresent()) {
             BsymtContactAddrEmp updateEntity = oldEntity.get();
             updateEntity.setMailAddress(entity.getMailAddress());
-            updateEntity.setIsMailAddressDisplay(entity.getIsMailAddressDisplay());
             updateEntity.setSeatDialIn(entity.getSeatDialIn());
-            updateEntity.setIsSeatDialInDisplay(entity.getIsSeatDialInDisplay());
             updateEntity.setSeatExtensionNumber(entity.getSeatExtensionNumber());
-            updateEntity.setIsSeatExtensionNumberDisplay(entity.getIsSeatExtensionNumberDisplay());
             updateEntity.setCellPhoneNumber(entity.getCellPhoneNumber());
-            updateEntity.setIsCellPhoneNumberDisplay(entity.getIsCellPhoneNumberDisplay());
             updateEntity.setMobileMailAddress(entity.getMobileMailAddress());
-            updateEntity.setIsMobileMailAddressDisplay(entity.getIsMobileMailAddressDisplay());
             this.commandProxy().update(updateEntity);
         }
 

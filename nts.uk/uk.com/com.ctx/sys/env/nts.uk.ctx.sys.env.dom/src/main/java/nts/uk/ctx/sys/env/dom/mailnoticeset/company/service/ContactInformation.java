@@ -40,15 +40,15 @@ public class ContactInformation {
 	private ContactName seatExtensionNumber;
 	
 	/** 緊急連絡先1 */
-	private String emergencyNumber1;
+	private Optional<String> emergencyNumber1;
 	
 	/** 緊急連絡先2 */
-	private String emergencyNumber2;
+	private Optional<String> emergencyNumber2;
 	
 	/** 個人の携帯電話番号 */
-	private String personalMobilePhoneNumber;
+	private Optional<String> personalMobilePhoneNumber;
 	
 	/** 会社の携帯電話番号 */
-	private String companyMobilePhoneNumber;
+	private Optional<String> companyMobilePhoneNumber;
 
 }
