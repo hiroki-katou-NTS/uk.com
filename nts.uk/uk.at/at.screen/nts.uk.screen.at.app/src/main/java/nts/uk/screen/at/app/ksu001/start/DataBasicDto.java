@@ -43,7 +43,9 @@ public class DataBasicDto {
 	// スケジュール修正職場別の権限制御
 	public List<ScheModifyAuthCtrlByWorkplaceDto> scheModifyAuthCtrlByWorkplace;
 	
-	public boolean medicalOP;
+	public boolean medicalOP; // 医療OP
+	
+	public boolean nursingCareOP; // 介護OP 
 	
 	public String viewModeSelected;
 	
@@ -65,6 +67,7 @@ public class DataBasicDto {
 		this.scheModifyAuthCtrlCommon = resultStep1.scheModifyAuthCtrlCommon;
 		this.scheModifyAuthCtrlByWorkplace = resultStep1.scheModifyAuthCtrlByWorkplace;
 		this.medicalOP = resultStep1.medicalOP;
+		this.nursingCareOP = resultStep1.nursingCareOP;
 	}
 	
 	public DataBasicDto(DataScreenQueryGetInforDto resultStep1) {

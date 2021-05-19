@@ -32,5 +32,12 @@ public class DataScreenQueryGetInforDto_New {
 	// スケジュール修正職場別の権限制御
 	public List<ScheModifyAuthCtrlByWorkplaceDto> scheModifyAuthCtrlByWorkplace;
 	
-	public boolean medicalOP;
+	public boolean medicalOP; // 医療OP
+	
+	public boolean nursingCareOP; // 介護OP 
+	
+	//List<個人計カテゴリ> list item combobox A11_1			 		
+	
+	//List<職場計カテゴリ> list item combobox A12_1					
+
 }
