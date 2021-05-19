@@ -213,8 +213,8 @@ public class ScreenQueryGetInforOfInitStartup {
 			    						      .collect(Collectors.toList()),
 		        optionaLicense.attendance().schedule().medical(),
 		        optionaLicense.attendance().schedule().nursing(),
+		        summaryCategory.getUseCategoriesWorkplace(),
 			    summaryCategory.getUseCategoriesPersonal(),
-			    summaryCategory.getUseCategoriesWorkplace(),
 			    workScheDisplaySettingOpt.get().getEndDay().getClosingDate()
 				);
 	}

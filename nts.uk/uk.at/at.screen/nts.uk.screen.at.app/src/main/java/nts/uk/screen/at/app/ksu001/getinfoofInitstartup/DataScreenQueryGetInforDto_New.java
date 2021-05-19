@@ -9,6 +9,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.DateInMonth;
+import nts.uk.ctx.at.aggregation.dom.schedulecounter.tally.PersonalCounterCategory;
+import nts.uk.ctx.at.aggregation.dom.schedulecounter.tally.WorkplaceCounterCategory;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.DisplayInfoOrganization;
 
 @Getter
@@ -44,10 +46,10 @@ public class DataScreenQueryGetInforDto_New {
 	public boolean nursingCareOP;
 	
 	// 職場計.利用カテゴリ一覧
-	public List<Integer> useCategoriesWorkplace = Collections.emptyList();
+	public List<WorkplaceCounterCategory> useCategoriesWorkplace = Collections.emptyList();
 	
 	// 個人計.利用カテゴリ一覧
-	public List<Integer> useCategoriesPersonal = Collections.emptyList();
+	public List<PersonalCounterCategory> useCategoriesPersonal = Collections.emptyList();
 	
 	// ・締め日 = スケジュール修正職場別の表示設定.初期表示期間の終了日.締め日
 	public DateInMonth closeDate;

@@ -39,12 +39,7 @@ public class GetSummaryCategory {
 		// type is incorrect
 		Optional<WorkplaceCounter> workplaceCounterOp = Optional.empty();
 		if (workplaceCounterOp.isPresent()) {
-			output.setUseCategoriesWorkplace(
-					workplaceCounterOp.get()
-									  .getUseCategories()
-									  .stream()
-									  .map(x -> x.value)
-									  .collect(Collectors.toList()));
+			output.setUseCategoriesWorkplace(workplaceCounterOp.get().getUseCategories());
 		}
 		
 		// 2 スケジュール個人計情報を取得する()
@@ -52,13 +47,7 @@ public class GetSummaryCategory {
 		Optional<PersonalCounter> personalCounterOp = Optional.empty();
 		
 		if (personalCounterOp.isPresent()) {
-			output.setUseCategoriesPersonal(
-					personalCounterOp.get()
-									 .getUseCategories()
-									 .stream()
-									 .map(x -> x.value)
-									 .collect(Collectors.toList())
-					);
+			output.setUseCategoriesPersonal(personalCounterOp.get().getUseCategories());
 		}
 		
 		return output;
