@@ -28,11 +28,6 @@ public class RegisterWorkContentCommand {
 	private int mode;
 	
 	/** 変更対象日 */
-	private String changedDate;
-	
-	
-	public GeneralDate getChangedDate() {
-		return GeneralDate.fromString(this.changedDate, "yyyy/MM/dd HH:mm:ss");
-	}
+	private GeneralDate changedDate;
 	
 }

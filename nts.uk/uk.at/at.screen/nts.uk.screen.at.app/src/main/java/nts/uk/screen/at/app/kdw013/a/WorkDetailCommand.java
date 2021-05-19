@@ -11,14 +11,9 @@ import nts.arc.time.GeneralDate;
 public class WorkDetailCommand {
 	
 	/** 年月日 */
-	private String date;
+	private GeneralDate date;
 
 	/** List<作業詳細> */
 	private List<WorkDetailsParamCommand> lstWorkDetailsParamCommand;
-	
-	
-	public GeneralDate getDate() {
-		return GeneralDate.fromString(this.date, "yyyy/MM/dd HH:mm:ss");
-	}
 
 }
