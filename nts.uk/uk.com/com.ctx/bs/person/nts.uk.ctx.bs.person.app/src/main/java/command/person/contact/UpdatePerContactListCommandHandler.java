@@ -37,16 +37,23 @@ public class UpdatePerContactListCommandHandler
 	protected List<MyCustomizeException> handle(CommandHandlerContext<List<UpdatePerContactCommand>> context) {
 		List<UpdatePerContactCommand> cmd = context.getCommand();
 		List<PersonalContact> domains = cmd.stream().map(c -> {
-			PersonalContactDto dto = PersonalContactDto.builder().personalId(c.getPersonId())
-					.mailAddress(c.getMailAdress()).isMailAddressDisplay(false)
-					.mobileEmailAddress(c.getMobileMailAdress()).isPhoneNumberDisplay(false)
-					.isMobileEmailAddressDisplay(false).phoneNumber(c.getCellPhoneNumber())
-					.emergencyContact1(EmergencyContactDto.builder().contactName(c.getContactName1())
-							.remark(c.getMemo1()).phoneNumber(c.getPhoneNumber1()).build())
-					.isEmergencyContact1Display(false)
-					.emergencyContact2(EmergencyContactDto.builder().contactName(c.getContactName2())
-							.remark(c.getMemo2()).phoneNumber(c.getPhoneNumber2()).build())
-					.isEmergencyContact2Display(false).otherContacts(new ArrayList<OtherContactDto>()).build();
+			PersonalContactDto dto = PersonalContactDto.builder()
+					.personalId(c.getPersonId())
+					.mailAddress(c.getMailAdress())
+					.mobileEmailAddress(c.getMobileMailAdress())
+					.phoneNumber(c.getCellPhoneNumber())
+					.emergencyContact1(EmergencyContactDto.builder()
+							.contactName(c.getContactName1())
+							.remark(c.getMemo1())
+							.phoneNumber(c.getPhoneNumber1())
+							.build())
+					.emergencyContact2(EmergencyContactDto.builder()
+							.contactName(c.getContactName2())
+							.remark(c.getMemo2())
+							.phoneNumber(c.getPhoneNumber2())
+							.build())
+					.otherContacts(new ArrayList<OtherContactDto>())
+					.build();
 			return PersonalContact.createFromMemento(dto);
 		}).collect(Collectors.toList());
 		// Update person emergency contact

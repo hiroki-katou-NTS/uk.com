@@ -450,10 +450,15 @@ module nts.uk.at.view.kdp005.a {
 								}
 							})
 					} else {
-						if (loginResult.msgErrorId == "Msg_1527") {
-							self.isUsed(false);
-							self.errorMessage(getMessage("Msg_1527"));
-						}
+						let dfd = $.Deferred<void>();
+						service.getLogginSetting().done((res) => {
+							self.listCompany = _.filter(res, 'icCardStamp');
+							if (self.listCompany.length == 0) {
+								self.errorMessage(getMessage("Msg_1527"));
+								self.isUsed(false);
+								location.reload();
+							}
+						})
 					}
 				});
 			}
@@ -770,8 +775,12 @@ module nts.uk.at.view.kdp005.a {
 									if (data.workpalceId.length > 0) {
 										self.modeBasyo(true);
 										self.workplace = data.workpalceId;
-										dfd.resolve();
 									}
+
+									if (data.workpalceId.length == 0) {
+										self.modeBasyo(false);
+									}
+									dfd.resolve();
 								}
 							} else {
 								dfd.resolve();

@@ -14,8 +14,8 @@ module nts.uk.at.view.kdp002.a {
             workManagementMultiple: KnockoutObservable<boolean> = ko.observable(false);
             checkerShowWork2: KnockoutObservable<boolean> = ko.observable(false);
 
-			pageComment: KnockoutObservable<string> = ko.observable('');
-			commentColor: KnockoutObservable<string> = ko.observable('');
+            pageComment: KnockoutObservable<string> = ko.observable('');
+            commentColor: KnockoutObservable<string> = ko.observable('');
 
             state!: KnockoutComputed<STATE>;
             constructor() {
@@ -27,7 +27,7 @@ module nts.uk.at.view.kdp002.a {
                         const stampGrid = ko.unwrap(vm.stampGrid);
                         const displayMethod = ko.unwrap(stampGrid.displayMethod);
 
-                        if (displayMethod === 1 ) {
+                        if (displayMethod === 1) {
                             return 'state2';
                         }
 
@@ -37,7 +37,7 @@ module nts.uk.at.view.kdp002.a {
 
                         if (!wmm && displayMethod === 2) {
                             return 'state2';
-                            
+
                         }
 
                         return 'state3';
@@ -45,7 +45,7 @@ module nts.uk.at.view.kdp002.a {
                 });
             }
 
-            
+
 
             public startPage(): JQueryPromise<void> {
                 let self = this;
@@ -239,24 +239,6 @@ module nts.uk.at.view.kdp002.a {
                     }
                 });
             }
-
-            public reCalGridWidthHeight() {
-                let windowHeight = window.innerHeight - 250;
-                const $hgrid = $('#stamp-history-list');
-
-                if ($hgrid.data('igGrid')) {
-                    $hgrid.igGrid("option", "   ht", windowHeight);
-                }
-
-                const $cgrid = $('#time-card-list');
-
-                if ($cgrid.data('igGrid')) {
-                    $cgrid.igGrid("option", "height", windowHeight);
-                }
-
-                $('#content-area').css('height', windowHeight + 109);
-            }
-
         }
 
     }
@@ -264,4 +246,25 @@ module nts.uk.at.view.kdp002.a {
         Personal = 1, // 個人
         Shared = 2  // 共有 
     }
+
+}
+
+let reCalGridWidthHeight = () => {
+    const resize = () => {
+        let stampBtnHeight = $('#stampBtnContainer').height() - 43 + 'px';
+
+        const $hgrid = $('#stamp-history-list');
+
+        if ($hgrid.data('igGrid')) {
+            $hgrid.igGrid("option", "height", stampBtnHeight);
+        }
+
+        const $cgrid = $('#time-card-list');
+
+        if ($cgrid.data('igGrid')) {
+            $cgrid.igGrid("option", "height", stampBtnHeight);
+        }
+    };
+
+    setTimeout(resize);
 }

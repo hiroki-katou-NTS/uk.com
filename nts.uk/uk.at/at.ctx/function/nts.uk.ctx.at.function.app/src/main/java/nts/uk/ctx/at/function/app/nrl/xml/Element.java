@@ -22,6 +22,7 @@ public class Element {
 	public static final String FRAGMENT_NUMBER = "Fragment Number";
 	public static final String NRL_NO = "NRL_No";
 	public static final String MAC_ADDR = "MAC_Address";
+	public static final String CONTRACT_CODE = "Contract_Code";
 	public static final String PADDING = "Padding";
 	public static final String PADDING1 = "Padding1";
 	public static final String PADDING2 = "Padding2";

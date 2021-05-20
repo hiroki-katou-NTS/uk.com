@@ -15,9 +15,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class UserInfo {
-	/** The is screen C. */
-	private Boolean isScreenC;
-
 	/** The employee ids. */
 	private List<String> employeeIds;
 }

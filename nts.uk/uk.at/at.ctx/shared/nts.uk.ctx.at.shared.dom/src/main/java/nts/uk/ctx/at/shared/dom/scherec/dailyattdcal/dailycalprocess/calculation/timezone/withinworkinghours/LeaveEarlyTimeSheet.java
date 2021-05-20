@@ -598,6 +598,9 @@ public class LeaveEarlyTimeSheet {
 		DeductionAtr deductionAtr,
 		CompanyHolidayPriorityOrder companyholidayPriorityOrder,
 		TimevacationUseTimeOfDaily timeVacationUseTime) {
+		if(!this.getDecitionTimeSheet(deductionAtr).isPresent()) {
+			return;
+		}
 		
 		this.getDecitionTimeSheet(deductionAtr).get().offsetProcessInPriorityOrder(
 				deductionAtr,

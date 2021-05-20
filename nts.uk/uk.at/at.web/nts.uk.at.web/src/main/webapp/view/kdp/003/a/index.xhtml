@@ -50,7 +50,7 @@
 									}
 								}
 							}"></div>
-						<com:ko-if bind="ko.toJS($vm.errorMessage) === '' &amp;&amp;  pageComment() != ''">
+						<com:ko-if bind="ko.toJS($vm.message) === null &amp;&amp;  pageComment() != ''">
 							<div class="pageComent" data-bind="html: pageComment, style: {color: commentColor}"></div>
 						</com:ko-if>
 						<com:ko-if bind="ko.toJS($vm.message) === null">

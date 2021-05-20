@@ -1,7 +1,5 @@
 package nts.uk.screen.at.app.query.kdp.kdp001.a;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -11,7 +9,6 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.at.record.dom.stampmanagement.workplace.WorkLocation;
 import nts.uk.ctx.at.record.dom.stampmanagement.workplace.WorkLocationRepository;
-import nts.uk.ctx.at.record.dom.stampmanagement.workplace.WorkplacePossible;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -45,14 +42,9 @@ public class LocationStampInput {
 
 		dto.setWorkLocationName(workLocation.getWorkLocationName().toString());
 
-		List<String> workplaces = new ArrayList<>();
-		
-		for (WorkplacePossible wkp : workLocation.getListWorkplace()) {
-			if (wkp.getCompanyId().equals(cid)) {
-				workplaces.add(wkp.getWorkpalceId());
-			}
-		}
-		
+		List<String> workplaces = workLocation.getListWorkplace().stream().filter(x -> x.getCompanyId().equals(cid))
+				.map(m -> m.getWorkpalceId())
+				.collect(Collectors.toList());
 		dto.setWorkpalceId(workplaces);
 
 		return dto;

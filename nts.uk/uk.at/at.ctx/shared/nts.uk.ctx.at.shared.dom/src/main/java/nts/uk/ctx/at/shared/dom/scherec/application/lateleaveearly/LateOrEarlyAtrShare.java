@@ -3,7 +3,7 @@ package nts.uk.ctx.at.shared.dom.scherec.application.lateleaveearly;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
-//遅刻早退区分
+//遅刻早退区分(反映用)
 public enum LateOrEarlyAtrShare {
 //	遅刻
 	LATE(0, "遅刻"),

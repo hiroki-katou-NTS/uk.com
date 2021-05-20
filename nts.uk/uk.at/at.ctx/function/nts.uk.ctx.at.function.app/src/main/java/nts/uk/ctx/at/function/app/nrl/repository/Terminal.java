@@ -6,6 +6,8 @@ import lombok.Data;
 /**
  * Terminal.
  * 
+ * NR通信コマンドの変値
+ * 
  * @author manhnd
  */
 @Data
@@ -21,4 +23,9 @@ public class Terminal {
 	 * MAC Address
 	 */
 	private String macAddress;
+	
+	/**
+	 * ContractCode
+	 */
+	private String contractCode;
 }

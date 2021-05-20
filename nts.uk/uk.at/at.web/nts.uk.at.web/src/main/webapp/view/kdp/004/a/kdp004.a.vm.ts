@@ -109,6 +109,8 @@ module nts.uk.at.view.kdp004.a {
 						self.listCompany(_.filter(res, 'fingerAuthStamp'));
 					});
 
+					self.modeBasyo(false);
+
 				});
 
 				return dfd.promise();
@@ -198,6 +200,13 @@ module nts.uk.at.view.kdp004.a {
 				self.openScreenF({
 					mode: 'admin'
 				}).done((loginResult) => {
+					const exest = false;
+
+					if (!loginResult.result) {
+						loginResult = undefined;
+					}
+
+
 					if (!loginResult || !loginResult.result) {
 						self.errorMessage(getMessage(!loginResult ? "Msg_1647" : loginResult.msgErrorId));
 						dfd.resolve();
@@ -230,6 +239,7 @@ module nts.uk.at.view.kdp004.a {
 
 				}).always(() => {
 					block.grayout();
+					self.modeBasyo(false);
 					service.startPage()
 						.done((res: any) => {
 							if (!res.stampSetting || !res.stampResultDisplay) {
@@ -445,6 +455,9 @@ module nts.uk.at.view.kdp004.a {
 						self.loginInfo = loginResult.em;
 						self.basyo()
 							.then(() => {
+
+								console.log(ko.unwrap(self.modeBasyo));
+
 								if (!ko.unwrap(self.modeBasyo)) {
 									self.openScreenK().done((result) => {
 										if (result) {
@@ -455,7 +468,6 @@ module nts.uk.at.view.kdp004.a {
 										} else {
 											location.reload();
 										}
-
 									})
 								} else {
 									self.loginInfo.selectedWP = self.workplace;
@@ -463,6 +475,9 @@ module nts.uk.at.view.kdp004.a {
 										location.reload();
 									});
 								}
+							})
+							.always(() => {
+								self.modeBasyo(false);
 							});
 					} else {
 						if (loginResult.msgErrorId == "Msg_1527") {
@@ -731,7 +746,7 @@ module nts.uk.at.view.kdp004.a {
 
 			// URLOption basyo
 			basyo(): JQueryPromise<any> {
-				let dfd = $.Deferred<any>();
+				let dfd = $.Deferred<any>();=
 
 				$.urlParam = function (name) {
 					var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
@@ -746,6 +761,8 @@ module nts.uk.at.view.kdp004.a {
 				const self = this,
 					vm = new ko.ViewModel(),
 					locationCd = $.urlParam('basyo');
+
+				console.log(ko.unwrap(self.modeBasyo));
 
 				// URLOption basyoが存在している場合
 				if (locationCd) {
@@ -767,8 +784,11 @@ module nts.uk.at.view.kdp004.a {
 									if (data.workpalceId.length > 0) {
 										self.modeBasyo(true);
 										self.workplace = data.workpalceId;
-										dfd.resolve();
 									}
+									if (data.workpalceId.length == 0) {
+										self.modeBasyo(false);
+									}
+									dfd.resolve();
 								}
 							} else {
 								dfd.resolve();

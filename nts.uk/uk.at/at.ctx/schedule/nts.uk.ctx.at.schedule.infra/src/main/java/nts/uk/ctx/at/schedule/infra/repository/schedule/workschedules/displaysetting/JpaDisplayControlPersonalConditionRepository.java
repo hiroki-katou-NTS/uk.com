@@ -30,7 +30,7 @@ public class JpaDisplayControlPersonalConditionRepository extends JpaRepository
 
 	private static final String DELETE_QUA = "delete from KscmtSyacndDispCtlQua a WHERE a.pk.cid = :cid ";
 	private static final String DELETE_DISPCTL = "delete from KscmtSyacndDispCtl a WHERE a.pk.cid = :cid ";
-	private static final String query = "SELECT a FROM KscmtSyacndDispCtl a WHERE a.pk.cid = :cid AND WHERE a.pk.cndAtr IN :cndAtr";
+	private static final String query = "SELECT a FROM KscmtSyacndDispCtl a WHERE a.pk.cid = :cid AND a.pk.cndAtr IN :cndAtr";
 	private static final String DELETE = "delete from KscmtSyacndDispCtlQua a "
 			+ " WHERE a.pk.cid = :cid AND a.pk.qualification IN :qualification ";
 	private static final String QUERY_QUALIFICATION = "SELECT a.pk.qualification FROM KscmtSyacndDispCtlQua a WHERE a.pk.cid = :cid ";

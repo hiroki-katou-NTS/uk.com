@@ -85,7 +85,7 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
                                                                             value: startTime, 
                                                                             inputFormat: 'time', 
                                                                             mode: 'time',
-                                                                            enable: !$parents[1].viewMode(),
+                                                                            enable: !$parents[1].viewMode() &amp;&amp; enableInput(),
                                                                             required: startTimeRequired
                                                                         }, attr: {id: 'startTime-' + workNo}"/>
                                                     <span class="label" data-bind="text: $vm.$i18n('KAF012_30')"/>
@@ -96,14 +96,15 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
                                                                             value: endTime, 
                                                                             inputFormat: 'time', 
                                                                             mode: 'time',
-                                                                            enable: !$parents[1].viewMode(),
+                                                                            enable: !$parents[1].viewMode() &amp;&amp; enableInput(),
                                                                             required: endTimeRequired
                                                                         }, attr: {id: 'endTime-' + workNo}"/>
-                                                    <div style="width: 80px" data-bind="ntsComboBox: {
+                                                    <div style="display: inline-flex;" data-bind="if: displayCombobox() &amp;&amp; appTimeType() != 1 &amp;&amp; appTimeType() != 2">
+                                                        <div style="width: 80px" data-bind="ntsComboBox: {
                                                                                 name: $vm.$i18n('KAF012_32'),
                                                                                 options: ko.observableArray([
-                                                                                    {value: 4, name: $vm.$i18n('KAF012_33')},
-                                                                                    {value: 5, name: $vm.$i18n('KAF012_34')}
+                                                                                    {value: 0, name: $vm.$i18n('KAF012_33')},
+                                                                                    {value: 3, name: $vm.$i18n('KAF012_34')}
                                                                                 ]),
                                                                                 optionsValue: 'value',
                                                                                 optionsText: 'name',
@@ -113,8 +114,12 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
                                                                                 editable: false,
                                                                                 visibleItemsCount: 2,
                                                                                 enable: !$parents[1].viewMode()
-                                                                            },
-                                                                            css: {hidden: !displayCombobox()}"/>
+                                                                            }"/>
+                                                    </div>
+                                                    <span data-bind="text: $vm.$i18n('KAF012_33'), visible: appTimeType() == 0 &amp;&amp; !enableInput()"/><!--私用-->
+                                                    <span data-bind="text: $vm.$i18n('KAF012_52'), visible: appTimeType() == 1"/><!--公用-->
+                                                    <span data-bind="text: $vm.$i18n('KAF012_51'), visible: appTimeType() == 2"/><!--有償-->
+                                                    <span data-bind="text: $vm.$i18n('KAF012_34'), visible: appTimeType() == 3 &amp;&amp; !enableInput()"/><!--組合-->
                                                 </div>
                                             </div>
                                         </div>
@@ -381,36 +386,77 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
                     if (value.timeSpecialLeaveMng) {
                         vm.specialLeaveFrames(value.timeSpecialLeaveMng.listSpecialFrame || []);
                     }
+                    const checkData = (leaveType: number) => {
+                        for (let i = 0; i < 5; i++) {
+                            for (let j = 0; j < vm.applyTimeData()[i].applyTime.length; j++) {
+                                switch(leaveType) {
+                                    case LeaveType.SUBSTITUTE:
+                                        if (vm.applyTimeData()[i].applyTime[j].substituteAppTime() > 0) return true;
+                                        break;
+                                    case LeaveType.ANNUAL:
+                                        if (vm.applyTimeData()[i].applyTime[j].annualAppTime() > 0) return true;
+                                        break;
+                                    case LeaveType.CHILD_NURSING:
+                                        if (vm.applyTimeData()[i].applyTime[j].childCareAppTime() > 0) return true;
+                                        break;
+                                    case LeaveType.NURSING:
+                                        if (vm.applyTimeData()[i].applyTime[j].careAppTime() > 0) return true;
+                                        break;
+                                    case LeaveType.SUPER_60H:
+                                        if (vm.applyTimeData()[i].applyTime[j].super60AppTime() > 0) return true;
+                                        break;
+                                    case LeaveType.SPECIAL:
+                                        if (vm.applyTimeData()[i].applyTime[j].specialAppTime() > 0) return true;
+                                        break;
+                                    default:
+                                        break;
+                                }
+                            }
+                        }
+                        return false;
+                    };
                     const switchOptions = [
                         {
                             code: 0,
                             name: vm.$i18n('KAF012_3'),
-                            display: (value.timeSubstituteLeaveMng.timeSubstituteLeaveMngAtr && !!vm.reflectSetting() && vm.reflectSetting().condition.substituteLeaveTime == 1) || vm.leaveType() == 0
+                            display: (value.timeSubstituteLeaveMng.timeSubstituteLeaveMngAtr && !!vm.reflectSetting() && vm.reflectSetting().condition.substituteLeaveTime == 1)
+                                        || vm.leaveType() == LeaveType.SUBSTITUTE
+                                        || (vm.leaveType() == LeaveType.COMBINATION && checkData(0))
                         },
                         {
                             code: 1,
                             name: vm.$i18n('KAF012_4'),
-                            display: (value.timeAnnualLeaveMng.timeAnnualLeaveMngAtr && !!vm.reflectSetting() && vm.reflectSetting().condition.annualVacationTime == 1) || vm.leaveType() == 1
+                            display: (value.timeAnnualLeaveMng.timeAnnualLeaveMngAtr && !!vm.reflectSetting() && vm.reflectSetting().condition.annualVacationTime == 1)
+                                        || vm.leaveType() == LeaveType.ANNUAL
+                                        || (vm.leaveType() == LeaveType.COMBINATION && checkData(1))
                         },
                         {
                             code: 2,
                             name: vm.$i18n('Com_ChildNurseHoliday'),
-                            display: (!!vm.reflectSetting() && vm.reflectSetting().condition.childNursing == 1) || vm.leaveType() == 2
+                            display: (!!vm.reflectSetting() && vm.reflectSetting().condition.childNursing == 1)
+                                        || vm.leaveType() == LeaveType.CHILD_NURSING
+                                        || (vm.leaveType() == LeaveType.COMBINATION && checkData(2))
                         },
                         {
                             code: 3,
                             name: vm.$i18n('Com_CareHoliday'),
-                            display: (!!vm.reflectSetting() && vm.reflectSetting().condition.nursing == 1) || vm.leaveType() == 3
+                            display: (!!vm.reflectSetting() && vm.reflectSetting().condition.nursing == 1)
+                                        || vm.leaveType() == LeaveType.NURSING
+                                        || (vm.leaveType() == LeaveType.COMBINATION && checkData(3))
                         },
                         {
                             code: 4,
                             name: vm.$i18n('Com_ExsessHoliday'),
-                            display: (value.super60HLeaveMng.super60HLeaveMngAtr && !!vm.reflectSetting() && vm.reflectSetting().condition.superHoliday60H == 1) || vm.leaveType() == 4
+                            display: (value.super60HLeaveMng.super60HLeaveMngAtr && !!vm.reflectSetting() && vm.reflectSetting().condition.superHoliday60H == 1)
+                                        || vm.leaveType() == LeaveType.SUPER_60H
+                                        || (vm.leaveType() == LeaveType.COMBINATION && checkData(4))
                         },
                         {
                             code: 5,
                             name: vm.$i18n('KAF012_46'),
-                            display: (value.timeSpecialLeaveMng.timeSpecialLeaveMngAtr && !!vm.reflectSetting() && vm.reflectSetting().condition.specialVacationTime == 1) || vm.leaveType() == 5
+                            display: (value.timeSpecialLeaveMng.timeSpecialLeaveMngAtr && !!vm.reflectSetting() && vm.reflectSetting().condition.specialVacationTime == 1)
+                                        || vm.leaveType() == LeaveType.SPECIAL
+                                        || (vm.leaveType() == LeaveType.COMBINATION && checkData(5))
                         }
                     ];
                     const result = switchOptions.filter(i => i.display);
@@ -481,10 +527,10 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
                                 endTime: vm.applyTimeData()[3].timeZones[0].startTime() || vm.applyTimeData()[3].scheduledTime(),
                             }
                         ],
-                        outingTimeZones: vm.applyTimeData()[4].display() ? vm.applyTimeData()[4].timeZones.filter(i => i.startTime() != null && i.endTime() != null)
+                        outingTimeZones: vm.applyTimeData()[4].display() ? vm.applyTimeData()[4].timeZones.filter(i => i.enableInput() && i.startTime() != null && i.endTime() != null)
                             .map(i => ({
                                 frameNo: i.workNo,
-                                outingAtr: i.appTimeType(),
+                                outingAtr: i.appTimeType() == GoingOutReason.PRIVATE ? AppTimeType.PRIVATE : AppTimeType.UNION,
                                 startTime: i.startTime(),
                                 endTime: i.endTime()
                             })) : []
@@ -683,6 +729,13 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
         PRIVATE = 4, /**	私用外出 */
         UNION = 5 /**	組合外出 */
     }
+
+    export enum GoingOutReason {
+        PRIVATE = 0,        /* 私用 */
+        PUBLIC = 1,         /* 公用 */
+        COMPENSATION = 2,   /* 有償 */
+        UNION = 3           /* 組合 */
+    }
     
     export class TimeZone {
         appTimeType: KnockoutObservable<number>;
@@ -693,9 +746,10 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
         displayCombobox: KnockoutObservable<boolean>;
         startTimeRequired: KnockoutObservable<boolean>;
         endTimeRequired: KnockoutObservable<boolean>;
+        enableInput: KnockoutComputed<boolean>;
 
         constructor(appTimeType: number, workNo: number, reflectSetting?: KnockoutObservable<ReflectSetting>) {
-            this.appTimeType = ko.observable(appTimeType);
+            this.appTimeType = ko.observable(GoingOutReason.PRIVATE);
             this.workNo = workNo;
             this.startTime = ko.observable(null);
             this.endTime = ko.observable(null);
@@ -736,6 +790,24 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
                 if (this.appTimeType() >= 4) {
                     this.validateTime(this.startTime(), value);
                 }
+            });
+
+            this.enableInput = ko.computed(() => {
+                if (this.appTimeType() == GoingOutReason.PUBLIC || this.appTimeType() == GoingOutReason.COMPENSATION)
+                    return false;
+                if (!this.displayCombobox()) {
+                    if (!!reflectSetting
+                        && !!reflectSetting()
+                        && reflectSetting().destination.privateGoingOut == 1
+                        && this.appTimeType() == GoingOutReason.UNION)
+                        return false;
+                    if (!!reflectSetting
+                        && !!reflectSetting()
+                        && reflectSetting().destination.unionGoingOut == 1
+                        && this.appTimeType() == GoingOutReason.PRIVATE)
+                        return false;
+                }
+                return true;
             });
         }
 
@@ -811,13 +883,13 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
                             && !!reflectSetting()
                             && reflectSetting().destination.privateGoingOut == 1
                             && reflectSetting().destination.unionGoingOut != 1)
-                            || timeZones.filter(i => i.appTimeType() == AppTimeType.PRIVATE).length > 0;
+                            || timeZones.filter(i => i.appTimeType() == GoingOutReason.PRIVATE && i.enableInput()).length > 0;
                     else if (appTimeType == AppTimeType.UNION)
                         return  (!!reflectSetting
                             && !!reflectSetting()
                             && reflectSetting().destination.unionGoingOut == 1
                             && reflectSetting().destination.privateGoingOut != 1)
-                            || timeZones.filter(i => i.appTimeType() == AppTimeType.UNION).length > 0;
+                            || timeZones.filter(i => i.appTimeType() == GoingOutReason.UNION && i.enableInput()).length > 0;
                     else return false;
                 }
                 return true;
