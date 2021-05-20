@@ -1150,36 +1150,36 @@ module nts.uk.at.view.kmk003.a {
                     screenMode: _self.tabMode()
                 };
                 //auto generate data for lstTimezone morning and afternoon in a2 if it was hidden
-                if (_self.addMode()){
-                    let presSetting = _self.predetemineTimeSetting.prescribedTimezoneSetting;
-                    let morningEnd = presSetting.morningEndTime();
-                    let afterStart = presSetting.afternoonStartTime();
 
-                    //morning
-                    let timeZoneAMDto : EmTimeZoneSetDto = {
-                        employmentTimeFrameNo : 1,
-                        timezone : {
-                            start: presSetting.shiftOne.start(),
-                            end: morningEnd,
-                            rounding: {rounding: 0, roundingTime: 0}
-                        }
+                let presSetting = _self.predetemineTimeSetting.prescribedTimezoneSetting;
+                let morningEnd = presSetting.morningEndTime();
+                let afterStart = presSetting.afternoonStartTime();
+
+                //morning
+                let timeZoneAMDto: EmTimeZoneSetDto = {
+                    employmentTimeFrameNo: 1,
+                    timezone: {
+                        start: presSetting.shiftOne.start(),
+                        end: morningEnd,
+                        rounding: {rounding: 0, roundingTime: 0}
                     }
-                    command.fixedWorkSetting.lstHalfDayWorkTimezone[1].workTimezone.lstWorkingTimezone = [];
-                    command.fixedWorkSetting.lstHalfDayWorkTimezone[1].workTimezone.lstWorkingTimezone.push(timeZoneAMDto);
-
-                    //afternoon
-                    let timeZonePMDto : EmTimeZoneSetDto = {
-                        employmentTimeFrameNo : 1,
-                        timezone : {
-                            start: afterStart,
-                            end: presSetting.shiftTwo.useAtr() ? presSetting.shiftTwo.end() : presSetting.shiftOne.end(),
-                            rounding: {rounding: 0, roundingTime: 0}
-                        }
-                    }
-
-                    command.fixedWorkSetting.lstHalfDayWorkTimezone[2].workTimezone.lstWorkingTimezone = [];
-                    command.fixedWorkSetting.lstHalfDayWorkTimezone[2].workTimezone.lstWorkingTimezone.push(timeZonePMDto);
                 }
+                command.fixedWorkSetting.lstHalfDayWorkTimezone[1].workTimezone.lstWorkingTimezone = [];
+                command.fixedWorkSetting.lstHalfDayWorkTimezone[1].workTimezone.lstWorkingTimezone.push(timeZoneAMDto);
+
+                //afternoon
+                let timeZonePMDto: EmTimeZoneSetDto = {
+                    employmentTimeFrameNo: 1,
+                    timezone: {
+                        start: afterStart,
+                        end: presSetting.shiftTwo.useAtr() ? presSetting.shiftTwo.end() : presSetting.shiftOne.end(),
+                        rounding: {rounding: 0, roundingTime: 0}
+                    }
+                }
+
+                command.fixedWorkSetting.lstHalfDayWorkTimezone[2].workTimezone.lstWorkingTimezone = [];
+                command.fixedWorkSetting.lstHalfDayWorkTimezone[2].workTimezone.lstWorkingTimezone.push(timeZonePMDto);
+
                 return command;
             }
 

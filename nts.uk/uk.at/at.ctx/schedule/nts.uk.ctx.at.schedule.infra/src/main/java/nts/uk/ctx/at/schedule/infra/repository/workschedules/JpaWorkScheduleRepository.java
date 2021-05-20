@@ -114,10 +114,14 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 	@Override
 	public void update(WorkSchedule workSchedule) {
 		String cID = AppContexts.user().companyId();
-		Optional<KscdtSchBasicInfo> oldData = this.queryProxy().query(SELECT_BY_KEY, KscdtSchBasicInfo.class)
-				.setParameter("employeeID", workSchedule.getEmployeeID()).setParameter("ymd", workSchedule.getYmd())
-				.getSingle(c -> c);
-
+		/*
+		 * Optional<KscdtSchBasicInfo> oldData = this.queryProxy().query(SELECT_BY_KEY,
+		 * KscdtSchBasicInfo.class) .setParameter("employeeID",
+		 * workSchedule.getEmployeeID()).setParameter("ymd", workSchedule.getYmd())
+		 * .getSingle(c -> c);
+		 */
+		KscdtSchBasicInfo entity = KscdtSchBasicInfo.toEntity(workSchedule, cID);
+		Optional<KscdtSchBasicInfo> oldData = this.queryProxy().find(entity.getPk(), KscdtSchBasicInfo.class);
 		if (oldData.isPresent()) {
 			KscdtSchBasicInfo newData = KscdtSchBasicInfo.toEntity(workSchedule, cID);
 			oldData.get().confirmedATR = newData.confirmedATR;

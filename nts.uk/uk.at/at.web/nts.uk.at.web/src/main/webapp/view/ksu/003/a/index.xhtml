@@ -29,12 +29,13 @@
 		</ui:define>
 		<!-- PAGE CONTENT -->
 		<ui:define name="content">
+		<div id="ui-area" style="display: none;">
 			<div id="functions-area">
 				<button tabindex="1" id="A1_1" class="proceed"
 					data-bind="click: saveData, enable: enableSave">#{i18n.getText('KSU003_2')}</button>
 				<button tabindex="2" id="A1_2" class=" marginleft15px">#{i18n.getText('KSU003_3')}</button>
 				<button tabindex="3" id="A1_3" class="create  marginleft15px"
-					data-bind="click: openGDialog">#{i18n.getText('KSU003_4')}</button>
+					data-bind="click: checkOpenG">#{i18n.getText('KSU003_4')}</button>
 				<button tabindex="4" id="A1_4" class="close"
 					data-bind="click: closeDialog">#{i18n.getText('KSU003_5')}</button>
 			</div>
@@ -176,15 +177,49 @@
 					</div> -->
 				</div>
 			</div>
-
 			<div id="A14" class="popup-area popup-panel">
-				<div tabindex="10" id="display-format" class="cf"
-					style="margin-left: 5px"
-					data-bind="ntsSwitchButton: {
-											options: [{id: 1, name: '#{i18n.getText('KSU003_10')}'}, {id: 2, name: '#{i18n.getText('KSU003_11')}'}] ,
+				<div>
+					<div data-bind="ntsFormLabel: {required: true}">
+						#{i18n.getText('KSU003_98')}</div>
+					<div tabindex="10" id="display-range" class="cf"
+						data-bind="ntsSwitchButton: {
+											options: [{id: 1, name: '#{i18n.getText('KSU003_100')}'}, {id: 2, name: '#{i18n.getText('KSU003_101')}'}] ,
 											optionsValue: 'id',
 											optionsText: 'name',
 											value: selectedDisplayPeriod}">
+					</div>
+				</div>
+				<div>
+					<div id = "start-time-label" data-bind="ntsFormLabel: {required: true}">
+						#{i18n.getText('KSU003_102')}</div>
+					<div id="combo-box-start"
+						data-bind="ntsComboBox: {
+					name: '#KSU003_58',
+					options: sortList,
+					optionsValue: 'code',
+					value: checked,
+					optionsText: 'name',
+					enable: true,
+					columns: [
+						{ prop: 'name', length: 5 },
+					]}">
+					</div>
+				</div>
+				<div>
+					<div id = "start-time-label" data-bind="ntsFormLabel: {required: true}">
+						#{i18n.getText('KSU003_103')}</div>
+					<div id="combo-box-start"
+						data-bind="ntsComboBox: {
+					name: '#KSU003_58',
+					options: sortList,
+					optionsValue: 'code',
+					value: checked,
+					optionsText: 'name',
+					enable: true,
+					columns: [
+						{ prop: 'name', length: 5 },
+					]}">
+					</div>
 				</div>
 			</div>
 
@@ -323,6 +358,7 @@
 						</div>
 					</div>
 				</div>
+			</div>
 			</div>
 		</ui:define>
 	</ui:composition>
