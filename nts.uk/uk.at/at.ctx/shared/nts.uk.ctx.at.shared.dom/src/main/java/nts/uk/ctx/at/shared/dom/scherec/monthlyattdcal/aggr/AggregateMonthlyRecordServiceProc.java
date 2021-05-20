@@ -82,6 +82,7 @@ import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.Err
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
@@ -396,9 +397,16 @@ public class AggregateMonthlyRecordServiceProc {
 		ConcurrentStopwatches.stop("12300:36協定時間：");
 		ConcurrentStopwatches.start("12500:任意項目：");
 
-		// 大塚カスタマイズの集計
-		Map<Integer, Map<Integer, AnyItemAggrResult>> anyItemCustomizeValue = this
-				.aggregateCustomizeForOtsuka(require, cacheCarrier, this.yearMonth, this.closureId, this.companySets);
+		Map<Integer, Map<Integer, AnyItemAggrResult>> anyItemCustomizeValue = new HashMap<>();
+		/** 大塚モードを確認する */
+		if (AppContexts.optionLicense().customize().ootsuka()) {
+			// 大塚カスタマイズの集計
+			anyItemCustomizeValue = this
+					.aggregateCustomizeForOtsuka(require, cacheCarrier, this.yearMonth, this.closureId, this.companySets);
+		} else {
+			// 任意項目カスタマイズ値 ※ 最初のInteger=0（月結果）、1～（各週結果（週No））
+			anyItemCustomizeValue.put(0, new HashMap<>()); // 月結果
+		}
 
 		// 月別実績の任意項目を集計
 		this.aggregateAnyItem(require, monthPeriod, anyItemCustomizeValue);
@@ -410,7 +418,7 @@ public class AggregateMonthlyRecordServiceProc {
 		ConcurrentStopwatches.start("12600:大塚カスタマイズ：");
 
 		// 大塚カスタマイズ
-		this.customizeForOtsuka();
+		//this.customizeForOtsuka();
 
 		ConcurrentStopwatches.stop("12600:大塚カスタマイズ：");
 
@@ -751,12 +759,9 @@ public class AggregateMonthlyRecordServiceProc {
 	/**
 	 * 大塚カスタマイズ （任意項目集計）
 	 *
-	 * @param yearMonth
-	 *            年月
-	 * @param closureId
-	 *            締めID
-	 * @param companySets
-	 *            月別集計で必要な会社別設定
+	 * @param yearMonth 年月
+	 * @param closureId 締めID
+	 * @param companySets 月別集計で必要な会社別設定
 	 * @return 任意項目カスタマイズ値
 	 */
 	private Map<Integer, Map<Integer, AnyItemAggrResult>> aggregateCustomizeForOtsuka(RequireM11 require, CacheCarrier cacheCarrier,
@@ -821,7 +826,8 @@ public class AggregateMonthlyRecordServiceProc {
 		for (val optionalItem : companySets.getOptionalItemMap().values()) {
 			Integer optionalItemNo = optionalItem.getOptionalItemNo().v();
 
-			if (!isWeek && !isPeriodAggr) {
+			/** 月間集計　＆＆　大塚モードを確認する */
+			if (!isWeek && !isPeriodAggr && AppContexts.optionLicense().customize().ootsuka()) {
 				// 大塚カスタマイズ （月別実績の任意項目←任意項目カスタマイズ値）
 				if (anyItemCustomizeValue != null) {
 					if (anyItemCustomizeValue.containsKey(optionalItemNo)) {

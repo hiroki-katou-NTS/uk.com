@@ -334,7 +334,7 @@ public class ReflectApplicationWorkRecordPubImpl implements ReflectApplicationWo
 
 		@Override
 		public void insertAppReflectHist(ApplicationReflectHistory hist) {
-			applicationReflectHistoryRepo.insertAppReflectHist(hist);
+			applicationReflectHistoryRepo.insertAppReflectHist(companyId, hist);
 		}
 
 		@Override

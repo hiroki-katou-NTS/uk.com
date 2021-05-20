@@ -16,6 +16,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattend
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacation;
+import nts.uk.shr.com.context.AppContexts;
 
 /** Workを考慮した月次処理用の暫定残数管理データを作成する */
 public class CreateDailyInterimRemainMngs {
@@ -27,11 +28,11 @@ public class CreateDailyInterimRemainMngs {
 			String cid, String sid, DatePeriod period, List<IntegrationOfDaily> dailyRecord, Optional<ComSubstVacation> absSettingOpt,
 			CompensatoryLeaveComSetting dayOffSetting, Optional<AttendanceTimeOfMonthly> monthlyAttendanceTime) {
 
+		/** 日別勤怠（Work）から暫定管理データを作成*/
 		val dailyRemains = createDailyRemains( require, cacheCarrier, cid, sid, period, dailyRecord, absSettingOpt, dayOffSetting);
-
-		createRemainFromMonthly(dailyRemains, monthlyAttendanceTime, period);
-
-		return dailyRemains;
+		
+		/** ○月別実績(Work)から年休フレックス補填分の暫定年休管理データを作成する */
+		return createRemainFromMonthly(dailyRemains, monthlyAttendanceTime, period);
 	}
 
 	private static List<DailyInterimRemainMngData> createRemainFromMonthly(List<DailyInterimRemainMngData> daily,
@@ -40,8 +41,13 @@ public class CreateDailyInterimRemainMngs {
 		/** ○パラメータ「月別実績(Work)」が存在するかチェック */
 		if (monthlyAttendanceTime.isPresent()) {
 
+			/** 大塚モードかを確認する */
+			if (!AppContexts.optionLicense().customize().ootsuka()) 
+				return daily;
+			
 			/** ○月別実績(Work)から年休フレックス補填分の暫定年休管理データを作成する */
-			CreateInterimAnnualMngData.ofCompensFlex(monthlyAttendanceTime.get(), period.end()).ifPresent(c -> daily.add(c));
+			CreateInterimAnnualMngData.ofCompensFlex(monthlyAttendanceTime.get(), period.end())
+										.ifPresent(c -> daily.add(c));
 		}
 
 		return daily;

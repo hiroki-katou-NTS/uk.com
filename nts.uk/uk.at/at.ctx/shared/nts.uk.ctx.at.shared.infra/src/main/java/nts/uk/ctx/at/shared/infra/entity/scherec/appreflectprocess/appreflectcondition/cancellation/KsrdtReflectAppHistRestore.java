@@ -25,6 +25,10 @@ public class KsrdtReflectAppHistRestore extends ContractUkJpaEntity implements S
 	@EmbeddedId
 	public KsrdtReflectAppHistRestorePK pk;
 
+	// 会社ID
+	@Column(name = "CID")
+	public String cid;
+
 	// 値
 	@Column(name = "VALUE")
 	public String value;
