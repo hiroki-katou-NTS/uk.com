@@ -39,7 +39,6 @@ public class ScreenQueryCreateWorkSchedule {
 			Map<ScheManaStatuTempo, Optional<IntegrationOfDaily>> map,
 			Boolean isAchievement
 			) {
-		List<WorkScheduleWorkInforDto> output = new ArrayList<WorkScheduleWorkInforDto>();
 		
 		// 1: 作成する(Map<社員の予定管理状態, Optional<勤務予定>>)
 		List<WorkScheduleWorkInforDto> workScheduleWorkInfor1 = 
@@ -65,8 +64,7 @@ public class ScreenQueryCreateWorkSchedule {
 			return list1;
 				  
 		}
-		
-		return output;
+		return workScheduleWorkInfor1;
 		
 	}
 	
