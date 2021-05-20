@@ -3,6 +3,7 @@ package nts.uk.screen.at.app.ksu001.aggrerateworkplacetotal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -36,12 +37,13 @@ public class ScreenQueryExternalBudgetPerformance {
 	 * @param targetOrg 対象組織識別情報
 	 * @param datePeriod 期間
 	 */
-	public Map<GeneralDate, Map<ExternalBudgetDto, Integer>> aggrerate(
+	public Map<GeneralDate, Map<ExternalBudgetDto, String>> aggrerate(
 			TargetOrgIdenInfor targetOrg,
 			DatePeriod datePeriod
 			) {
 		
-		Map<GeneralDate, Map<ExternalBudgetDto, Integer>> output = new HashMap<GeneralDate, Map<ExternalBudgetDto, Integer>>();
+		Map<GeneralDate, Map<ExternalBudgetDto, String>> output = new HashMap<GeneralDate, Map<ExternalBudgetDto, String>>();
+		Map<String, Map<ExternalBudgetDto, String>> map = new HashMap<String, Map<ExternalBudgetDto, String>>();
 		String companyId = AppContexts.user().companyId();
 		//1: 取得する()
 		List<ExternalBudgetDto> externalBudgets = getExternalBudgetPerformanceItems.getByComanyID(companyId);
@@ -56,11 +58,27 @@ public class ScreenQueryExternalBudgetPerformance {
 							   param.setEndDate(datePeriod.end().toString());
 							   param.setItemCode(x.getExternalBudgetCode());
 							   List<DailyExternalBudgetDto> dailyExternalBudgets = dailyExternalBudgetQuery.getDailyExternalBudget(param);  
-							   
+							   for (DailyExternalBudgetDto dto: dailyExternalBudgets) {
+//								   GeneralDate date = GeneralDate.fromString(dto.getDate(), "yyyy/MM/dd");
+								   String date = dto.getDate();
+								   if (map.containsKey(date)) {
+									   Map<ExternalBudgetDto, String> value = map.get(date);
+									   value.put(x, dto.getValue());
+								   } else {
+									   Map<ExternalBudgetDto, String> value = new HashMap<ExternalBudgetDto, String>();
+									   value.put(x, dto.getValue());
+									   map.put(date, value);
+								   }
+							   }
 							   return dailyExternalBudgets;
 							   
 						   });
-			// todo
+			return map.entrySet()
+			 	.stream()
+			 	.collect(Collectors.toMap(
+			 			e -> GeneralDate.fromString(e.getKey(), "yyyy/MM/dd"),
+			 			Map.Entry::getValue)
+	 			);
 		}
 		
 		return output;

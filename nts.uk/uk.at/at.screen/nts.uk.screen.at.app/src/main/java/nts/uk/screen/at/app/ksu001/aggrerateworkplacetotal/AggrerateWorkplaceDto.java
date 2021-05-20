@@ -25,5 +25,5 @@ public class AggrerateWorkplaceDto {
 	public AggrerateNumberPeopleDto aggrerateNumberPeople;
 	
 	// Map<年月日, Map<外部予算実績項目, 外部予算実績値>>
-	public Map<GeneralDate, Map<ExternalBudgetDto, Integer>> externalBudget;
+	public Map<GeneralDate, Map<ExternalBudgetDto, String>> externalBudget;
 }

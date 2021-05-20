@@ -1,5 +1,6 @@
 package nts.uk.screen.at.app.ksu001.processcommon.nextorderdschedule;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
@@ -15,7 +16,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattend
 @Data
 public class PlanAndActual {
 
-	private Map<ScheManaStatuTempo, Optional<WorkSchedule>> schedule;
+	private Map<ScheManaStatuTempo, Optional<WorkSchedule>> schedule = new HashMap<ScheManaStatuTempo, Optional<WorkSchedule>>();
 	
-	private Map<ScheManaStatuTempo , Optional<IntegrationOfDaily>> dailySchedule;
+	private Map<ScheManaStatuTempo , Optional<IntegrationOfDaily>> dailySchedule = new HashMap<ScheManaStatuTempo, Optional<IntegrationOfDaily>>();
 }

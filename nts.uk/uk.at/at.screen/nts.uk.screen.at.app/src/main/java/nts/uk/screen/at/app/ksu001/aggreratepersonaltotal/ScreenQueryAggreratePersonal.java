@@ -263,6 +263,9 @@ public class ScreenQueryAggreratePersonal {
 		private WorkScheduleRepository workScheduleRepository;
 		
 		@Inject
+		private DailyRecordWorkFinder dailyRecordWorkFinder;
+
+		@Inject
 		private EmpComHisAdapter empComHisAdapter;
 		
 		@Inject
@@ -276,9 +279,6 @@ public class ScreenQueryAggreratePersonal {
 		
 		@Inject
 		private EmploymentHisScheduleAdapter employmentHisScheduleAdapter;
-		
-		@Inject
-		private DailyRecordWorkFinder dailyRecordWorkFinder;
 		
 		@Inject
 		private CriterionAmountUsageSettingRepository criterionAmountUsageSettingRepository;
@@ -297,35 +297,35 @@ public class ScreenQueryAggreratePersonal {
 		private static String cid = AppContexts.user().companyId();
 
 		
-		public Require(
-				WorkScheduleRepository workScheduleRepository,
-				DailyRecordWorkFinder dailyRecordWorkFinder,
-				EmpComHisAdapter empComHisAdapter,
-				WorkingConditionRepository workCondRepo,
-				EmpLeaveHistoryAdapter empLeaveHisAdapter,
-				EmpLeaveWorkHistoryAdapter empLeaveWorkHisAdapter,
-				EmploymentHisScheduleAdapter employmentHisScheduleAdapter,
-				CriterionAmountUsageSettingRepository criterionAmountUsageSettingRepository,
-				CriterionAmountForCompanyRepository criterionAmountForCompanyRepository,
-				CriterionAmountForEmploymentRepository criterionAmountForEmploymentRepository,
-				HandlingOfCriterionAmountRepository handlingOfCriterionAmountRepository
-				) {
-			
-
-			}
+//		public Require(
+//				WorkScheduleRepository workScheduleRepository,
+//				DailyRecordWorkFinder dailyRecordWorkFinder,
+//				EmpComHisAdapter empComHisAdapter,
+//				WorkingConditionRepository workCondRepo,
+//				EmpLeaveHistoryAdapter empLeaveHisAdapter,
+//				EmpLeaveWorkHistoryAdapter empLeaveWorkHisAdapter,
+//				EmploymentHisScheduleAdapter employmentHisScheduleAdapter,
+//				CriterionAmountUsageSettingRepository criterionAmountUsageSettingRepository,
+//				CriterionAmountForCompanyRepository criterionAmountForCompanyRepository,
+//				CriterionAmountForEmploymentRepository criterionAmountForEmploymentRepository,
+//				HandlingOfCriterionAmountRepository handlingOfCriterionAmountRepository
+//				) {
+//			this.workScheduleRepository = workScheduleRepository;
+//
+//			}
 		
 		
 		@Override
 		public List<IntegrationOfDaily> getSchduleList(List<EmployeeId> empIds, DatePeriod period) {
-			
-			return workScheduleRepository.getList(
-											empIds.stream()
-													.map(x -> x.v())
-													.collect(Collectors.toList()),
-											period)
-										 .stream()
-										 .map(WorkSchedule::convertToIntegrationOfDaily)
-										 .collect(Collectors.toList());
+			List<WorkSchedule> workSchedules = 
+					workScheduleRepository.getList(
+						empIds.stream()
+							.map(x -> x.v())
+							.collect(Collectors.toList()),
+						period);
+			return workSchedules.stream()
+								 .map(WorkSchedule::convertToIntegrationOfDaily)
+								 .collect(Collectors.toList());
 		}
 
 		@Override

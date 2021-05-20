@@ -14,7 +14,7 @@ import nts.uk.screen.at.app.ksu001.aggrerateschedule.AggrerateScheduleDto;
 @Data
 public class AggreratedInformationDto {
 
-	public Map<GeneralDate, Map<ExternalBudgetDto, Integer>> externalBudget;
+	public Map<GeneralDate, Map<ExternalBudgetDto, String>> externalBudget;
 	
 	public AggrerateScheduleDto aggrerateSchedule;
 	

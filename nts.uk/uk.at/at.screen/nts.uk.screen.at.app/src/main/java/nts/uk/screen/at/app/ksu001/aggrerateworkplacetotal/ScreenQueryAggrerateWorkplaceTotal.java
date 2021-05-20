@@ -87,7 +87,7 @@ public class ScreenQueryAggrerateWorkplaceTotal {
 		// 職場計カテゴリ == 外部予算実績
 		else if (workplaceCounterOp == WorkplaceCounterCategory.EXTERNAL_BUDGET) {
 			//4: 取得する(対象組織識別情報, 期間)
-			Map<GeneralDate, Map<ExternalBudgetDto, Integer>> externalBudget = 
+			Map<GeneralDate, Map<ExternalBudgetDto, String>> externalBudget = 
 			screenQueryExternalBudgetPerformance.aggrerate(
 					targetOrg,
 					datePeriod
