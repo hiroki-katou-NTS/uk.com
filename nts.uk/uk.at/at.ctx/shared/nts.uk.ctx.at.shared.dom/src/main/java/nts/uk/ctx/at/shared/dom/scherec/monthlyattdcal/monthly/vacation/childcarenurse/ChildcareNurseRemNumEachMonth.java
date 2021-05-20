@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * 子の看護休暇月別残数データ
+ * 子の看護介護休暇月別残数データ
  * @author masaaki_jinno
  *
  */

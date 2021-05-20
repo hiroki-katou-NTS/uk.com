@@ -10,8 +10,8 @@ import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.ChildCareNurseUsedNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.children.service.ChildCareNurseErrors;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.information.care.CareRemNumEachMonth;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.information.childnursing.ChildcareRemNumEachMonth;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.care.CareRemNumEachMonth;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.childcare.ChildcareRemNumEachMonth;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.childcarenurse.ChildCareNurseRemainingNumber;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.childcarenurse.ChildCareNurseUsedInfo;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.childcarenurse.ChildcareNurseRemNumEachMonth;
@@ -90,31 +90,12 @@ public class AggrResultOfChildCareNurse {
 			ClosureDate closureDate,
 			DatePeriod period){
 
-		/** 本年使用数 */
-		ChildCareNurseUsedInfo thisYearUsedInfo = this.aggrperiodinfo.getThisYear().clone();
-		/** 本年残数 */
-		ChildCareNurseRemainingNumber thisYearRemainNumber = this.startdateDays.getThisYear().getRemainingNumber().clone();
-		/** 翌年使用数 */
-		Optional<ChildCareNurseUsedInfo> nextYearUsedInfo= this.aggrperiodinfo.getNextYear().map(c->c.clone());
-		/** 翌年残数 */
-		Optional<ChildCareNurseRemainingNumber> nextYearRemainNumber=this.startdateDays.getNextYear().map(c->c.getRemainingNumber().clone());
-		/** 合計使用数 */
-		ChildCareNurseUsedInfo usedInfo = this.aggrperiodinfo.getThisYear().clone();
-		if(this.aggrperiodinfo.getNextYear().isPresent()) {
-			usedInfo.add(this.aggrperiodinfo.getNextYear().get());
-		}
-
-		ChildcareNurseRemNumEachMonth rem = ChildcareNurseRemNumEachMonth.of(
-				thisYearUsedInfo,
-				usedInfo,
-				thisYearRemainNumber,
-				nextYearUsedInfo,
-				nextYearRemainNumber
-				);
+		// 月別残数データ作成
+		ChildcareNurseRemNumEachMonth rem = createChildcareNurseRemNumEachMonth();
 
 		ChildcareRemNumEachMonth domain
-		= new ChildcareRemNumEachMonth(
-				employeeId, yearMonth, closureId, closureDate, rem);
+			= new ChildcareRemNumEachMonth(
+					employeeId, yearMonth, closureId, closureDate, rem);
 
 		return domain;
 	}
@@ -136,6 +117,22 @@ public class AggrResultOfChildCareNurse {
 			ClosureDate closureDate,
 			DatePeriod period){
 
+		// 月別残数データ作成
+		ChildcareNurseRemNumEachMonth rem = createChildcareNurseRemNumEachMonth();
+
+		CareRemNumEachMonth domain
+			= new CareRemNumEachMonth(
+					employeeId, yearMonth, closureId, closureDate, rem);
+
+		return domain;
+	}
+
+	/**
+	 * 子の看護介護-月別残数データ作成（共通部分）
+	 * @return
+	 */
+	private ChildcareNurseRemNumEachMonth createChildcareNurseRemNumEachMonth() {
+
 		/** 本年使用数 */
 		ChildCareNurseUsedInfo thisYearUsedInfo = this.aggrperiodinfo.getThisYear().clone();
 		/** 本年残数 */
@@ -158,11 +155,7 @@ public class AggrResultOfChildCareNurse {
 				nextYearRemainNumber
 				);
 
-		CareRemNumEachMonth domain
-		= new CareRemNumEachMonth(
-				employeeId, yearMonth, closureId, closureDate, rem);
-
-		return domain;
+		return rem;
 	}
 
 }

@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.information.childnursing;
+package nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.care;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,11 +13,11 @@ import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
 /**
  * @author phongtq
- * 子の看護休暇月別残数データ
+ * 介護休暇月別残数データ
  */
 @Getter
 @AllArgsConstructor
-public class ChildcareRemNumEachMonth extends AggregateRoot{
+public class CareRemNumEachMonth extends AggregateRoot{
 
 	/** 社員ID */
 	private  String employeeId;
@@ -35,7 +35,7 @@ public class ChildcareRemNumEachMonth extends AggregateRoot{
 	/**
 	 * コンストラクタ
 	 */
-	public ChildcareRemNumEachMonth(
+	public CareRemNumEachMonth(
 			String employeeId,
 			YearMonth yearMonth,
 			ClosureId closureId,
