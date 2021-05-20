@@ -83,7 +83,7 @@ public class GetListWorkTypeAvailable {
 		Optional<ScheFunctionControl> scheFunctionControl = scheFuncControlCorrectionFinder.getData(cid);
 		
 		// 2: スケジュール修正の機能制御.表示可能勤務種類制御
-		if (scheFunctionControl.map(x -> x.getDisplayWorkTypeControl() == NotUseAtr.USE).orElse(false)) {
+		if (scheFunctionControl.map(x -> x.getDisplayWorkTypeControl() == NotUseAtr.NOT_USE).orElse(false)) {
 			
 			// //2.1: <<Public>> 廃止されていない勤務種類をすべて取得する
 			workTypeDtos = basicScheduleService.getAllWorkTypeNotAbolished(cid) 
