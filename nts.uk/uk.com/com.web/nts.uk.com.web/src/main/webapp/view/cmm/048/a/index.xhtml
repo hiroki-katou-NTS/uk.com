@@ -123,14 +123,6 @@
                           textalign: 'left',
                         }
                       }" />
-                    <span data-bind="ifnot: cPhoneCheckable">
-                      <span class="no-cb" id="A9_2">#{i18n.getText('CMM048_81')}</span>
-                    </span>
-                    <span data-bind="if: cPhoneCheckable">
-                      <div class="cb" id="A9_1" data-bind="ntsCheckBox: { checked: empContactPhoneDisp, enable: true}">
-                        #{i18n.getText('CMM048_81')}
-                      </div>
-                    </span>
                   </td>
                 </tr>
                 <tr data-bind="if: psPhoneUseable">
@@ -150,14 +142,6 @@
                           textalign: 'left',
                         }
                       }" />
-                    <span data-bind="ifnot: psPhoneCheckable">
-                      <span class="no-cb" id="A9_4">#{i18n.getText('CMM048_81')}</span>
-                    </span>
-                    <span data-bind="if: psPhoneCheckable">
-                      <div class="cb" id="A9_3" data-bind="ntsCheckBox: { checked: psContactPhoneDisp, enable: true}">
-                        #{i18n.getText('CMM048_81')}
-                      </div>
-                    </span>
                   </td>
                 </tr>
                 <tr data-bind="if: emergencyNum1Useable">
@@ -177,15 +161,6 @@
                           textalign: 'left',
                         }
                       }" />
-                    <span data-bind="ifnot: emergencyNum1Checkable">
-                      <span class="no-cb" id="A9_6">#{i18n.getText('CMM048_81')}</span>
-                    </span>
-                    <span data-bind="if: emergencyNum1Checkable">
-                      <div class="cb" id="A9_5"
-                        data-bind="ntsCheckBox: { checked: psContactEmergencyContact1Disp, enable: true}">
-                        #{i18n.getText('CMM048_81')}
-                      </div>
-                    </span>
                   </td>
                 </tr>
                 <tr data-bind="if: emergencyNum2Useable">
@@ -205,15 +180,6 @@
                           textalign: 'left',
                         }
                       }" />
-                    <span data-bind="ifnot: emergencyNum2Checkable">
-                      <span class="no-cb" id="A9_8">#{i18n.getText('CMM048_81')}</span>
-                    </span>
-                    <span data-bind="if: emergencyNum2Checkable">
-                      <div class="cb" id="A9_7"
-                        data-bind="ntsCheckBox: { checked: psContactEmergencyContact2Disp, enable: true}">
-                        #{i18n.getText('CMM048_81')}
-                      </div>
-                    </span>
                   </td>
                 </tr>
                 <tr data-bind="if: dialInNumUseable">
@@ -232,15 +198,6 @@
                         textalign: 'left',
                       }
                     }" />
-                    <span data-bind="ifnot: dialInNumCheckable">
-                      <span class="no-cb" id="A9_10">#{i18n.getText('CMM048_81')}</span>
-                    </span>
-                    <span data-bind="if: dialInNumCheckable">
-                      <div class="cb" id="A9_9"
-                        data-bind="ntsCheckBox: { checked: empContactSeatDialInDisp, enable: true}">
-                        #{i18n.getText('CMM048_81')}
-                      </div>
-                    </span>
                   </td>
                 </tr>
                 <tr data-bind="if: extensionNumUseable">
@@ -259,15 +216,6 @@
                         textalign: 'left',
                       }
                     }" />
-                    <span data-bind="ifnot: extensionNumCheckable">
-                      <span class="no-cb" id="A9_12">#{i18n.getText('CMM048_81')}</span>
-                    </span>
-                    <span data-bind="if: extensionNumCheckable">
-                      <div class="cb" id="A9_11"
-                        data-bind="ntsCheckBox: { checked: empContactSeatExtensionNumDisp, enable: true}">
-                        #{i18n.getText('CMM048_81')}
-                      </div>
-                    </span>
                   </td>
                 </tr>
                 <tr data-bind="if: cEmailAddrUseable">
@@ -286,15 +234,6 @@
                         textalign: 'left',
                       }
                     }" />
-                    <span data-bind="ifnot: cEmailAddrCheckable">
-                      <span class="no-cb" id="A9_14">#{i18n.getText('CMM048_81')}</span>
-                    </span>
-                    <span data-bind="if: cEmailAddrCheckable">
-                      <div class="cb" id="A9_13"
-                        data-bind="ntsCheckBox: { checked: empContactMailAddrDisp, enable: true}">
-                        #{i18n.getText('CMM048_81')}
-                      </div>
-                    </span>
                   </td>
                 </tr>
                 <tr data-bind="if: cMobileEmailAddrUseable">
@@ -313,15 +252,6 @@
                         textalign: 'left',
                       }
                     }" />
-                    <span data-bind="ifnot: cMobileEmailAddrCheckable">
-                      <span class="no-cb" id="A9_16">#{i18n.getText('CMM048_81')}</span>
-                    </span>
-                    <span data-bind="if: cMobileEmailAddrCheckable">
-                      <div class="cb" id="A9_15"
-                        data-bind="ntsCheckBox: { checked: empContactMobileMailAddrDisp, enable: true}">
-                        #{i18n.getText('CMM048_81')}
-                      </div>
-                    </span>
                   </td>
                 </tr>
                 <tr data-bind="if: psEmailAddrUseable">
@@ -340,14 +270,6 @@
                         textalign: 'left',
                       }
                     }" />
-                    <span data-bind="ifnot: psEmailAddrCheckable">
-                      <span class="no-cb" id="A9_18">#{i18n.getText('CMM048_81')}</span>
-                    </span>
-                    <span data-bind="if: psEmailAddrCheckable">
-                      <div class="cb" id="A9_17" data-bind="ntsCheckBox: { checked: psContactMailAddrDisp, enable: true}">
-                        #{i18n.getText('CMM048_81')}
-                      </div>
-                    </span>
                   </td>
                 </tr>
                 <tr data-bind="if: psMobileEmailAddrUseable">
@@ -366,21 +288,12 @@
                         textalign: 'left',
                       }
                     }" />
-                    <span data-bind="ifnot: psMobileEmailAddrCheckable">
-                      <span class="no-cb" id="A9_20">#{i18n.getText('CMM048_81')}</span>
-                    </span>
-                    <span data-bind="if: psMobileEmailAddrCheckable">
-                      <div class="cb" id="A9_19"
-                        data-bind="ntsCheckBox: { checked: psContactMobileEmailAddrDisp, enable: true}">
-                        #{i18n.getText('CMM048_81')}
-                      </div>
-                    </span>
                   </td>
                 </tr>
                 <!-- A7 end -->
                 <!-- A8 start -->
                 <tbody data-bind="foreach : ListOtherContact">
-                  <tr data-bind="if: isContactDisplay">
+                  <tr data-bind="if: contactUsage">
                     <td class="profile-information" id="A7_20" data-bind="text: contactName" />
                     <td colspan="2">
                       <input data-bind="attr: { id: contactNo }, ntsTextEditor: {
@@ -393,15 +306,6 @@
                           textalign: 'left'
                         }
                       }" />
-                      <span data-bind="ifnot: contactUsage">
-                        <span class="no-cb" id="A8_3">#{i18n.getText('CMM048_81')}</span>
-                      </span>
-                      <span data-bind="if: contactUsage">
-                        <div class="cb" id="A8_4"
-                          data-bind="ntsCheckBox: { checked: isContactDisplayOnOther, enable: true}">
-                          #{i18n.getText('CMM048_81')}
-                        </div>
-                      </span>
                     </td>
                   </tr>
                 </tbody>

@@ -85,8 +85,6 @@ public class HolidayWorkTimeSheet{
 			boolean upperControl){
 		
 		Map<Integer,HolidayWorkFrameTime> holidayTimeFrameList = new HashMap<Integer, HolidayWorkFrameTime>();
-		//強制区分
-		val forceAtr = holidayAutoCalcSetting.getCalAtr();
 		//枠時間のソート
 		val sortedFrameTimeSheet = sortFrameTime(
 				require, this.workHolidayTime, integrationOfDaily.getEmployeeId(), integrationOfDaily.getYmd(),
@@ -95,20 +93,19 @@ public class HolidayWorkTimeSheet{
 		List<HolidayWorkFrameNo> numberOrder = new ArrayList<>();
 		
 		for(HolidayWorkFrameTimeSheetForCalc holidayWorkFrameTime:sortedFrameTimeSheet) {
-			AttendanceTime calcDedTime = holidayWorkFrameTime.correctCalculationTime(holidayAutoCalcSetting,DeductionAtr.Deduction);
-			AttendanceTime calcRecTime = holidayWorkFrameTime.correctCalculationTime(holidayAutoCalcSetting,DeductionAtr.Appropriate);
+			TimeDivergenceWithCalculation time = holidayWorkFrameTime.correctCalculationTime(holidayAutoCalcSetting);
 			if(!numberOrder.contains(holidayWorkFrameTime.getFrameTime().getHolidayFrameNo()))
 				numberOrder.add(holidayWorkFrameTime.getFrameTime().getHolidayFrameNo());
 			//加算だけ
 			if(holidayTimeFrameList.containsKey(holidayWorkFrameTime.getFrameTime().getHolidayFrameNo().v())) {
 				val frame = holidayTimeFrameList.get(holidayWorkFrameTime.getFrameTime().getHolidayFrameNo().v());
-				val addFrame = frame.addHolidayTimeExistReturn(forceAtr.isCalculateEmbossing()?calcRecTime:new AttendanceTime(0),calcDedTime);
+				val addFrame = frame.addHolidayTimeExistReturn(time.getTime(), time.getCalcTime());
 				holidayTimeFrameList.replace(holidayWorkFrameTime.getFrameTime().getHolidayFrameNo().v(), addFrame);
 			}
 			//枠追加
 			else {
 				holidayTimeFrameList.put(holidayWorkFrameTime.getFrameTime().getHolidayFrameNo().v(),
-										holidayWorkFrameTime.getFrameTime().addHolidayTimeExistReturn(forceAtr.isCalculateEmbossing()?calcRecTime:new AttendanceTime(0),calcDedTime));
+										holidayWorkFrameTime.getFrameTime().addHolidayTimeExistReturn(time.getTime(), time.getCalcTime()));
 			}
 		}
 		//Map→List変換

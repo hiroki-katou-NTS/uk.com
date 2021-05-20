@@ -208,13 +208,34 @@ public class HolidayWorkFrameTimeSheetForCalc extends ActualWorkingTimeSheet{
 	/**
 	 * 計算処理
 	 * 休出時間の計算
-	 * @param forceCalcTime 強制時間区分
-	 * @param autoCalcSet 
+	 * @param autoCalcSet 自動計算設定
+	 * @return 休出時間
 	 */
-	public AttendanceTime correctCalculationTime(AutoCalSetting autoCalcSet,DeductionAtr dedAtr) {
-		return this.calcTotalTime();
+	public TimeDivergenceWithCalculation correctCalculationTime(AutoCalSetting autoCalcSet) {
+		AttendanceTime time = autoCalcSet.getCalAtr().isCalculateEmbossing() ? this.calcTotalTime() : AttendanceTime.ZERO;
+		AttendanceTime calcTime = this.calcTotalTime();
+		return TimeDivergenceWithCalculation.createTimeWithCalculation(time, calcTime);
 	}
-
+	
+//	/**
+//	 *　指定条件の控除項目だけの控除時間
+//	 * @param forcsList
+//	 * @param atr
+//	 * @return
+//	 */
+//	public AttendanceTime forcs(List<TimeSheetOfDeductionItem> forcsList,ConditionAtr atr,DeductionAtr dedAtr){
+//		AttendanceTime dedTotalTime = new AttendanceTime(0);
+//		val loopList = this.getDedTimeSheetByAtr(dedAtr, atr);
+//		for(TimeSheetOfDeductionItem deduTimeSheet: loopList) {
+//			if(deduTimeSheet.checkIncludeCalculation(atr)) {
+//				dedTotalTime = dedTotalTime.addMinutes(deduTimeSheet.calcTotalTime().valueAsMinutes());
+//			}
+//		}
+//		return dedTotalTime;
+//	}
+	
+	//＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊
+	
 	/**
 	 * 休出枠時間帯の作成（流動）
 	 * @param todayWorkType 当日の勤務種類

@@ -353,7 +353,7 @@ public class OverTimeFrameTimeSheetForCalc extends ActualWorkingTimeSheet {
 			AttendanceTime ableRangeTime = new AttendanceTime(personDailySetting.getDailyUnit().getDailyTime().valueAsMinutes() - workTime.valueAsMinutes());
 			
 			HolidayCalculation holidayCalculation = integrationOfWorkTime.getCommonSetting().getHolidayCalculation();
-			if(ableRangeTime.greaterThan(0) && integrationOfDaily.getCalAttr().getOvertimeSetting().getLegalOtTime().getCalAtr().isCalculateEmbossing())
+			if(ableRangeTime.greaterThan(0))
 			{
 				boolean isReclass = false;		//法定内分割するかどうか
 				//休暇時の計算設定を確認
@@ -403,7 +403,7 @@ public class OverTimeFrameTimeSheetForCalc extends ActualWorkingTimeSheet {
 		AttendanceTime transTime = new AttendanceTime(0);
 		
 		for(int number = 0; number < overTimeWorkFrameTimeSheetList.size(); number++) {
-			overTime = overTimeWorkFrameTimeSheetList.get(number).correctCalculationTime(Optional.of(forceAtr),autoCalculationSet,DeductionAtr.Deduction).getTime();
+			overTime = overTimeWorkFrameTimeSheetList.get(number).correctCalculationTime(Optional.of(forceAtr),autoCalculationSet).getTime();
 			
 			if(ableRangeTime.greaterThan(overTime)) {
 				transTime = overTime;
@@ -538,7 +538,7 @@ public class OverTimeFrameTimeSheetForCalc extends ActualWorkingTimeSheet {
 												.collect(Collectors.toList());
 			//深夜時間帯
 			MidNightTimeSheetForCalcList beforDuplicate = this.getMidNightTimeSheet().getDuplicateRangeTimeSheet(new TimeSpanForDailyCalc(this.timeSheet.getStart(), baseTime));
-			MidNightTimeSheetForCalcList beforeMid = beforDuplicate.recreateMidNightTimeSheetBeforeBase(baseTime, false);
+			MidNightTimeSheetForCalcList beforeMid = beforDuplicate.recreateMidNightTimeSheetBeforeBase(baseTime, true);
         	
             returnList.add(new OverTimeFrameTimeSheetForCalc(new TimeSpanForDailyCalc(this.timeSheet.getStart(), baseTime)
                                                          ,new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN)
@@ -604,10 +604,9 @@ public class OverTimeFrameTimeSheetForCalc extends ActualWorkingTimeSheet {
 	 * @param forceCalcTime 強制時間区分
 	 * @param autoCalcSet 残業時間の自動計算設定
 	 */
-	public TimeWithCalculation correctCalculationTime(
+	public TimeDivergenceWithCalculation correctCalculationTime(
 			Optional<Boolean> forceCalcTime,
-			AutoCalOvertimeSetting autoCalcSet,
-			DeductionAtr dedAtr) {
+			AutoCalOvertimeSetting autoCalcSet) {
 		
 		//「打刻から計算する」
 		boolean isCalculateEmboss = false;
@@ -623,9 +622,9 @@ public class OverTimeFrameTimeSheetForCalc extends ActualWorkingTimeSheet {
 		//残業時間の計算
 		AttendanceTime overTime = overTimeCalculationByAdjustTime();
 		
-		if(isCalculateEmboss) return TimeWithCalculation.sameTime(overTime);
+		if(isCalculateEmboss) return TimeDivergenceWithCalculation.sameTime(overTime);
 		
-		return TimeWithCalculation.createTimeWithCalculation(AttendanceTime.ZERO, overTime);
+		return TimeDivergenceWithCalculation.createTimeWithCalculation(AttendanceTime.ZERO, overTime);
 	}
 	
 	/**
@@ -799,8 +798,7 @@ public class OverTimeFrameTimeSheetForCalc extends ActualWorkingTimeSheet {
 		//計算処理
 		AttendanceTime overTime = this.correctCalculationTime(
 				Optional.of(true),
-				autoCalcSet,
-				DeductionAtr.Deduction).getTime();
+				autoCalcSet).getTime();
 		
 		if(!flowWorkTimezoneSetting.getMatchWorkNoOverTimeWorkSheet(this.overTimeWorkSheetNo.v()+1).isPresent()) return overTime;
 		

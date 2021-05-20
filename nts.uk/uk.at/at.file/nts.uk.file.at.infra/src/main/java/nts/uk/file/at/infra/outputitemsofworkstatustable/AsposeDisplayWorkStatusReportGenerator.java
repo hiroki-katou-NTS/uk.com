@@ -290,6 +290,7 @@ public class AsposeDisplayWorkStatusReportGenerator extends AsposeCellsReportGen
 
         }
         PageSetup pageSetup = worksheet.getPageSetup();
+        cells.deleteRow(countRow);
         pageSetup.setPrintArea(PRINT_AREA + countRow);
     }
 
@@ -410,7 +411,7 @@ public class AsposeDisplayWorkStatusReportGenerator extends AsposeCellsReportGen
     @Getter
     @Setter
     private static class PrintOneLineDto {
-        private double totalOfOneLine;
+        private Double totalOfOneLine;
         private String outPutItemName;
         private DailyValue dailyValue;
         private GeneralDate date;
