@@ -445,37 +445,68 @@ module nts.uk.ui.at.kdw013.a {
                 return;
             }
 
+            const $events = ko.unwrap(events);
+            const dateRanges = () => {
+                const dates: Date[] = [];
+                const begin = moment(start);
+
+                while (begin.isBefore(end, 'day')) {
+                    dates.push(begin.toDate());
+
+                    begin.add(1, 'day');
+                }
+
+                return dates;
+            };
+
             const command: RegisterWorkContentCommand = {
                 changedDate: moment().format(DATE_TIME_FORMAT),
-                start: moment(start).startOf('day').format(DATE_TIME_FORMAT),
-                end: moment(end).subtract(1, 'day').endOf('day').format(DATE_TIME_FORMAT),
                 editStateSetting: HAND_CORRECTION_MYSELF,
                 employeeId: vm.$user.employeeId,
                 mode: 0,
-                workDetails: ko.unwrap(events).map(({ start, end, extendedProps }) => {
-                    const { workCD1, workCD2, workCD3, workCD4, workCD5, workLocationCD, remarks, supportFrameNo } = extendedProps;
-
-                    return {
-                        date: moment(start).toISOString(),
-                        lstWorkDetailsParamCommand: [{
-                            remarks,
-                            supportFrameNo,
-                            workGroup: {
+                workDetails: dateRanges().map((date) => {
+                    const lstWorkDetailsParamCommand = _
+                        .chain($events)
+                        .filter(({ start }) => moment(start).isSame(date, 'day'))
+                        .map(({ start, end, extendedProps }) => {
+                            const {
                                 workCD1,
                                 workCD2,
                                 workCD3,
                                 workCD4,
-                                workCD5
-                            },
-                            workLocationCD,
-                            timeZone: {
-                                end: getTimeOfDate(end),
-                                start: getTimeOfDate(start)
-                            }
-                        }]
+                                workCD5,
+                                workLocationCD,
+                                remarks,
+                                supportFrameNo
+                            } = extendedProps;
+
+                            return {
+                                remarks,
+                                supportFrameNo,
+                                workGroup: {
+                                    workCD1,
+                                    workCD2,
+                                    workCD3,
+                                    workCD4,
+                                    workCD5
+                                },
+                                workLocationCD,
+                                timeZone: {
+                                    end: getTimeOfDate(end),
+                                    start: getTimeOfDate(start)
+                                }
+                            };
+                        })
+                        .value();
+
+                    return {
+                        date: moment(date).toISOString(),
+                        lstWorkDetailsParamCommand
                     };
                 })
             };
+
+            console.log(command);
 
             vm.$blockui('grayout')
                 // 作業を登録する
