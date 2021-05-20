@@ -19,7 +19,7 @@ module nts.uk.at.kdp003.a {
 		NOW: '/server/time/now',
 		NOTICE: 'at/record/stamp/notice/getStampInputSetting',
 		GET_WORKPLACE_BASYO: 'at/record/stamp/employment_system/get_location_stamp_input',
-		confirmUseOfStampInput: 'at/record/stamp/employment_system/confirm_use_of_stamp_input'
+		confirmUseOfStampInput: 'at/record/stamp/employment_system/confirm_use_of_stamp_input',
 	};
 
 	const DIALOG = {
@@ -279,6 +279,7 @@ module nts.uk.at.kdp003.a {
 						.then((data: f.CompanyItem[]) => {
 							if (!data.length || _.every(data, d => d.selectUseOfName === false)) {
 								// note: ログイン失敗(打刻会社一覧が取得できない場合)
+								vm.message({ messageId: 'Msg_1527' });
 								vm.setMessage({ messageId: 'Msg_1527' });
 
 								// UI[F2]  打刻使用可能会社の取得と判断 
