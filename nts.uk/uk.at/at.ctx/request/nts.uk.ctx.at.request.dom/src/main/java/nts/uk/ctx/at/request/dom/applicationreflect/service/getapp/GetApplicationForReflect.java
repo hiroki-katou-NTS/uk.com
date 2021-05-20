@@ -4,9 +4,15 @@ import java.util.Optional;
 
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.appabsence.ApplyForLeave;
 import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTrip;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveApp;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentApp;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
 import nts.uk.ctx.at.request.dom.application.lateleaveearly.ArrivedLateLeaveEarly;
+import nts.uk.ctx.at.request.dom.application.optional.OptionalItemApplication;
+import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.request.dom.application.stamp.AppRecordImage;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStamp;
 import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode;
@@ -20,11 +26,17 @@ public class GetApplicationForReflect {
 
 		switch (appType) {
 		case OVER_TIME_APPLICATION:
-			// TODO: 0：残業申請
-			return null;
+			// 0：残業申請
+			return require.findOvertime(companyId, appID).map(x -> {
+				x.setApplication(app);
+				return x;
+			}).orElse(null);
 		case ABSENCE_APPLICATION:
-			// TODO: 1：休暇申請の反映
-			return null;
+			//1：休暇申請の反映
+			return require.findApplyForLeave(companyId, appID).map(x -> {
+				x.setApplication(app);
+				return x;
+			}).orElse(null);
 		case WORK_CHANGE_APPLICATION:
 			// 2：勤務変更申請
 			return require.findAppWorkCg(companyId, appID, app).orElse(null);
@@ -35,8 +47,11 @@ public class GetApplicationForReflect {
 			// 4：直行直帰申請
 			return require.findGoBack(companyId, appID, app).orElse(null);
 		case HOLIDAY_WORK_APPLICATION:
-			// TODO: 6：休日出勤申請
-			return null;
+			// 6：休日出勤申請
+			return require.findAppHolidayWork(companyId, appID).map(x -> {
+				x.setApplication(app);
+				return x;
+			}).orElse(null);
 		case STAMP_APPLICATION:
 			// 7：打刻申請
 			if(app.getOpStampRequestMode().get().equals(StampRequestMode.STAMP_ADDITIONAL)) {
@@ -54,12 +69,21 @@ public class GetApplicationForReflect {
 			// 9: 遅刻早退取消申請
 			return require.findArrivedLateLeaveEarly(companyId, appID, app).orElse(null);
 		case COMPLEMENT_LEAVE_APPLICATION:
-			// TODO: 申請.振休振出申請
-			return null;
+			// 申請.振休振出申請
+			AbsenceLeaveApp absence = require.findAbsenceByID(appID).orElse(null);
+			if (absence != null) {
+				// 振休申請
+				return absence;
+			} else {
+				// 振出申請
+				return require.findRecruitmentByID(appID).orElse(null);
+			}
 
 		case OPTIONAL_ITEM_APPLICATION:
-			// TODO: 15：任意項目
-			return null;
+			// 任意項目
+			return require.getOptionalByAppId(companyId, appID).map(x -> {
+				return new OptionalItemApplication(x.getCode(), x.getOptionalItems(), app);
+			}).orElse(null);
 
 		default:
 			return null;
@@ -81,5 +105,17 @@ public class GetApplicationForReflect {
 		public Optional<AppRecordImage> findAppRecordImage(String companyId, String appID, Application app);
 		
 		public Optional<TimeLeaveApplication> findTimeLeavById(String companyId, String appId);
+		
+		public Optional<AppOverTime> findOvertime(String companyId, String appId);
+		
+		public Optional<ApplyForLeave> findApplyForLeave(String CID, String appId);
+		
+		public Optional<AppHolidayWork> findAppHolidayWork(String companyId, String appId);
+		
+		public Optional<AbsenceLeaveApp> findAbsenceByID(String applicationID);
+
+		public Optional<RecruitmentApp> findRecruitmentByID(String applicationID);
+		
+		public Optional<OptionalItemApplication> getOptionalByAppId(String companyId, String appId);
 	}
 }

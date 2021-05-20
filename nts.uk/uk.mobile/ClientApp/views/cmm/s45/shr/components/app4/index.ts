@@ -162,6 +162,6 @@ class GoBackDirect {
     }
 }
 const API = {
-    start: 'at/request/application/gobackdirectly/getDetail'
+    start: 'at/request/application/gobackdirectly/mobile/getDetail'
 };
 

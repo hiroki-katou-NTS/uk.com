@@ -35,16 +35,23 @@ public class AddPerContactCommandHandler extends CommandHandlerWithResult<AddPer
 	@Override
 	protected PeregAddCommandResult handle(CommandHandlerContext<AddPerContactCommand> context) {
 		val command = context.getCommand();
-		PersonalContactDto dto = PersonalContactDto.builder().personalId(command.getPersonId())
-				.mailAddress(command.getMailAdress()).isMailAddressDisplay(false)
-				.mobileEmailAddress(command.getMobileMailAdress()).isPhoneNumberDisplay(false)
-				.isMobileEmailAddressDisplay(false).phoneNumber(command.getCellPhoneNumber())
-				.emergencyContact1(EmergencyContactDto.builder().contactName(command.getContactName1())
-						.remark(command.getMemo1()).phoneNumber(command.getPhoneNumber1()).build())
-				.isEmergencyContact1Display(false)
-				.emergencyContact2(EmergencyContactDto.builder().contactName(command.getContactName2())
-						.remark(command.getMemo2()).phoneNumber(command.getPhoneNumber2()).build())
-				.isEmergencyContact2Display(false).otherContacts(new ArrayList<OtherContactDto>()).build();
+		PersonalContactDto dto = PersonalContactDto.builder()
+				.personalId(command.getPersonId())
+				.mailAddress(command.getMailAdress())
+				.mobileEmailAddress(command.getMobileMailAdress())
+				.phoneNumber(command.getCellPhoneNumber())
+				.emergencyContact1(EmergencyContactDto.builder()
+						.contactName(command.getContactName1())
+						.remark(command.getMemo1())
+						.phoneNumber(command.getPhoneNumber1())
+						.build())
+				.emergencyContact2(EmergencyContactDto.builder()
+						.contactName(command.getContactName2())
+						.remark(command.getMemo2())
+						.phoneNumber(command.getPhoneNumber2())
+						.build())
+				.otherContacts(new ArrayList<OtherContactDto>())
+				.build();
 		PersonalContact perContact = PersonalContact.createFromMemento(dto);
 		personalContactRepository.insert(perContact);
 

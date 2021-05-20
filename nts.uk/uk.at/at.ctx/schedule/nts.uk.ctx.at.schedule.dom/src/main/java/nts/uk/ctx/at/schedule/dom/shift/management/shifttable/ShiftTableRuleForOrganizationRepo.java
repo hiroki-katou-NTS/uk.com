@@ -42,4 +42,11 @@ public interface ShiftTableRuleForOrganizationRepo {
 	 */
 	public List<ShiftTableRuleForOrganization> getList(String companyId, List<TargetOrgIdenInfor> targetOrgList);
 
+	/**
+	 * getAll
+	 * @param companyId  会社ID
+	 * @return List<組織のシフト表のルール>
+	 */
+	public List<ShiftTableRuleForOrganization> getAll(String companyId);
+
 }
