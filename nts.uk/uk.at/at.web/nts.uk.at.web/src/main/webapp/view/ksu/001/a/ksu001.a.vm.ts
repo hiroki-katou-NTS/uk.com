@@ -542,24 +542,24 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let scheModifyAuthCtrlCommon = data.dataBasicDto.scheModifyAuthCtrlCommon;  // list
             let scheModifyAuthCtrlByWorkplace = data.dataBasicDto.scheModifyAuthCtrlByWorkplace; // list
             
-            let funcNo1_Common = _.find(scheModifyAuthCtrlCommon, function(o) { return o.functionNo==1; }).isAvailable; // 休暇状況参照 Vacation status reference
-            let funcNo2_Common = _.find(scheModifyAuthCtrlCommon, function(o) { return o.functionNo==2; }).isAvailable; // 修正履歴参照 Refer to revision history
-            let funcNo1_WorkPlace = _.find(scheModifyAuthCtrlByWorkplace, function(o) { return o.functionNo==1; }).isAvailable; // 登録 Registration
-            let funcNo2_WorkPlace = _.find(scheModifyAuthCtrlByWorkplace, function(o) { return o.functionNo==2; }).isAvailable; // 確定 Confirm
-            let funcNo3_WorkPlace = _.find(scheModifyAuthCtrlByWorkplace, function(o) { return o.functionNo==3; }).isAvailable; // 完了 Done
-            let funcNo4_WorkPlace = _.find(scheModifyAuthCtrlByWorkplace, function(o) { return o.functionNo==4; }).isAvailable; // アラームチェック Alarm check
-            let funcNo5_WorkPlace = _.find(scheModifyAuthCtrlByWorkplace, function(o) { return o.functionNo==5; }).isAvailable; // 出力 output
-            let funcNo6_WorkPlace = _.find(scheModifyAuthCtrlByWorkplace, function(o) { return o.functionNo==6; }).isAvailable; // 取り込み Capture
-            let funcNo7_WorkPlace = _.find(scheModifyAuthCtrlByWorkplace, function(o) { return o.functionNo==7; }).isAvailable; // 勤務希望 Hope to work
-            let funcNo8_WorkPlace = _.find(scheModifyAuthCtrlByWorkplace, function(o) { return o.functionNo==8; }).isAvailable; // 公開 Release
-            let funcNo9_WorkPlace = _.find(scheModifyAuthCtrlByWorkplace, function(o) { return o.functionNo==9; }).isAvailable; // 応援登録 Support registration
-            let funcNo10_WorkPlace = _.find(scheModifyAuthCtrlByWorkplace, function(o) { return o.functionNo==10; }).isAvailable; // 並び順設定 Sort order setting
-            let funcNo11_WorkPlace = _.find(scheModifyAuthCtrlByWorkplace, function(o) { return o.functionNo==11; }).isAvailable; // チーム設定 Team settings
-            let funcNo12_WorkPlace = _.find(scheModifyAuthCtrlByWorkplace, function(o) { return o.functionNo==12; }).isAvailable; // ランク分け Ranking
-            let funcNo13_WorkPlace = _.find(scheModifyAuthCtrlByWorkplace, function(o) { return o.functionNo==13; }).isAvailable; // 行事登録 Event registration
-            let funcNo14_WorkPlace = _.find(scheModifyAuthCtrlByWorkplace, function(o) { return o.functionNo==14; }).isAvailable; // 集計欄の金額表示 Amount display in the summary column
-            let funcNo15_WorkPlace = _.find(scheModifyAuthCtrlByWorkplace, function(o) { return o.functionNo==15; }).isAvailable; // 予算実績入力 Budget actual input
-            let funcNo16_WorkPlace = _.find(scheModifyAuthCtrlByWorkplace, function(o) { return o.functionNo==16; }).isAvailable; // 計画人数入力 Enter the planned number of people
+            let funcNo1_Common = true; // _.find(scheModifyAuthCtrlCommon, function(o) { return o.functionNo==1; }).isAvailable; // 休暇状況参照 Vacation status reference
+            let funcNo2_Common = true; // _.find(scheModifyAuthCtrlCommon, function(o) { return o.functionNo==2; }).isAvailable; // 修正履歴参照 Refer to revision history
+            let funcNo1_WorkPlace = true; //_.find(scheModifyAuthCtrlByWorkplace, function(o) { return o.functionNo==1; }).isAvailable; // 登録 Registration
+            let funcNo2_WorkPlace = true; //_.find(scheModifyAuthCtrlByWorkplace, function(o) { return o.functionNo==2; }).isAvailable; // 確定 Confirm
+            let funcNo3_WorkPlace = true; //_.find(scheModifyAuthCtrlByWorkplace, function(o) { return o.functionNo==3; }).isAvailable; // 完了 Done
+            let funcNo4_WorkPlace = true; //_.find(scheModifyAuthCtrlByWorkplace, function(o) { return o.functionNo==4; }).isAvailable; // アラームチェック Alarm check
+            let funcNo5_WorkPlace = true; //_.find(scheModifyAuthCtrlByWorkplace, function(o) { return o.functionNo==5; }).isAvailable; // 出力 output
+            let funcNo6_WorkPlace = true; //_.find(scheModifyAuthCtrlByWorkplace, function(o) { return o.functionNo==6; }).isAvailable; // 取り込み Capture
+            let funcNo7_WorkPlace = true; //_.find(scheModifyAuthCtrlByWorkplace, function(o) { return o.functionNo==7; }).isAvailable; // 勤務希望 Hope to work
+            let funcNo8_WorkPlace = true; //_.find(scheModifyAuthCtrlByWorkplace, function(o) { return o.functionNo==8; }).isAvailable; // 公開 Release
+            let funcNo9_WorkPlace = true; //_.find(scheModifyAuthCtrlByWorkplace, function(o) { return o.functionNo==9; }).isAvailable; // 応援登録 Support registration
+            let funcNo10_WorkPlace = true; //_.find(scheModifyAuthCtrlByWorkplace, function(o) { return o.functionNo==10; }).isAvailable; // 並び順設定 Sort order setting
+            let funcNo11_WorkPlace = true; //_.find(scheModifyAuthCtrlByWorkplace, function(o) { return o.functionNo==11; }).isAvailable; // チーム設定 Team settings
+            let funcNo12_WorkPlace = true; //_.find(scheModifyAuthCtrlByWorkplace, function(o) { return o.functionNo==12; }).isAvailable; // ランク分け Ranking
+            let funcNo13_WorkPlace = true; //_.find(scheModifyAuthCtrlByWorkplace, function(o) { return o.functionNo==13; }).isAvailable; // 行事登録 Event registration
+            let funcNo14_WorkPlace = true; //_.find(scheModifyAuthCtrlByWorkplace, function(o) { return o.functionNo==14; }).isAvailable; // 集計欄の金額表示 Amount display in the summary column
+            let funcNo15_WorkPlace = true; //_.find(scheModifyAuthCtrlByWorkplace, function(o) { return o.functionNo==15; }).isAvailable; // 予算実績入力 Budget actual input
+            let funcNo16_WorkPlace = true; //_.find(scheModifyAuthCtrlByWorkplace, function(o) { return o.functionNo==16; }).isAvailable; // 計画人数入力 Enter the planned number of people
             // button A1_1  職1
             if (funcNo1_WorkPlace == false) {
                 $('#A1_1').css('visibility', 'hidden');
@@ -2700,7 +2700,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 				$('#vertDiv').css('margin-left', $('.ex-body-vert-sum').scrollLeft().valueOf() + 'px');
 			});
 			
-			self.sumEmpSelectValue.subscribe(value => {
+			self.vertSelectValue.subscribe(value => {
 				let newVertSumHeader = self.createVertSumHeader();
 			    let newVertSumContent = self.createVertSumContent(detailContent);
 				$("#cacheDiv").append($('#vertDiv'));
@@ -2712,7 +2712,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 		createVertSumColumns() {
 			let self = this,
 				group: any = [];
-			switch(self.sumEmpSelectValue()) {
+			switch(self.vertSelectValue()) {
 				// 月間想定給与額
 				case 0: 
 					group = [
@@ -2793,7 +2793,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 				vertSumContentDs: any = [],
 				vertContentDeco: any = [];
 			_.forEach(detailContent.dataSource, (item, index) => {
-				switch(self.sumEmpSelectValue()) {
+				switch(self.vertSelectValue()) {
 					// 月間想定給与額
 					case 0: 
 						vertSumContentDs.push({ empID: item.employeeId, colum1: '00' + index, colum2: '00' + index });
