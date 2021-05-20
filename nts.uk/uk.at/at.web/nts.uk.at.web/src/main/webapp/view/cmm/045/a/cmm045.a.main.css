@@ -140,7 +140,7 @@ html {
     overflow: auto;
 }
 .grid-text-label {
-	padding-top: 5px;
+	padding-top: 6px;
 	vertical-align: top;
 }
 .reflectionStatus, .opApprovalStatusInquiry {
