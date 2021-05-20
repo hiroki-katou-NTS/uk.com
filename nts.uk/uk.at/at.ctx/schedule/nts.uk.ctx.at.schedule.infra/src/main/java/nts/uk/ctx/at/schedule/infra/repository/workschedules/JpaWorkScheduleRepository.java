@@ -32,6 +32,7 @@ import nts.uk.ctx.at.schedule.infra.entity.schedule.workschedule.KscdtSchPremium
 import nts.uk.ctx.at.schedule.infra.entity.schedule.workschedule.KscdtSchShortTime;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.workschedule.KscdtSchShortTimeTs;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.workschedule.KscdtSchShortTimeTsPK;
+import nts.uk.ctx.at.schedule.infra.entity.schedule.workschedule.KscdtSchTask;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortWorkingTimeSheet;
@@ -446,6 +447,60 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 				}
 			}
 			
+			if (!oldData.get().kscdtSchTime.kscdtSchTask.isEmpty()) {
+				// get list insert and update data exist
+				List<KscdtSchTask> listInsert = new ArrayList<>();
+				for (KscdtSchTask task : newData.kscdtSchTime.kscdtSchTask) {
+					List<KscdtSchTask> checkLst = new ArrayList<>();
+					oldData.get().kscdtSchTime.kscdtSchTask.forEach(x -> {
+						if(task.pk.sid.equals(x.pk.sid)
+								&& task.pk.ymd.equals(x.pk.ymd)
+								&& task.pk.serialNo == x.pk.serialNo) {
+							x.taskCode = task.taskCode;
+							x.startClock = task.startClock;
+							x.endClock = task.endClock;
+							checkLst.add(x);
+						} 
+					});
+					if(checkLst.isEmpty()) {
+						listInsert.add(task);
+					}
+				}
+				
+				List<KscdtSchTask> listRemove = new ArrayList<>();
+				for (KscdtSchTask taskOld : oldData.get().kscdtSchTime.kscdtSchTask) {
+					boolean checkExist = false;
+					for (KscdtSchTask task : newData.kscdtSchTime.kscdtSchTask) {
+						if(task.pk.serialNo == taskOld.pk.serialNo
+								&& task.pk.sid.equals(taskOld.pk.sid)
+								&& task.pk.ymd.equals(taskOld.pk.ymd)
+								) {
+							checkExist = true;
+							break;
+						}
+					}
+					if(!checkExist) {
+						listRemove.add(taskOld);
+					}
+				}
+				
+				//remove
+				String delete = "delete from KscdtSchTask o " + " where o.pk.sid = :sid "
+						+ " and o.pk.ymd = :ymd " + " and o.pk.serialNo = :serialNo";
+				for(KscdtSchTask sle : listRemove) {
+					this.getEntityManager().createQuery(delete).setParameter("sid", sle.pk.sid)
+					.setParameter("ymd", sle.pk.ymd)
+					.setParameter("serialNo", sle.pk.serialNo).executeUpdate();
+				}
+				//add
+				for(KscdtSchTask sle : listInsert) {
+					this.commandProxy().insert(sle);
+				}
+				
+			} else {
+				oldData.get().kscdtSchTime.kscdtSchTask = newData.kscdtSchTime.kscdtSchTask;
+			}
+			
 			// List<KscdtSchEditState> editStates;			
 			if (!oldData.get().editStates.isEmpty()) {
 				// get list insert and update data exist
@@ -464,6 +519,32 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 					if(checkLst.isEmpty()) {
 						listInsert.add(schState);
 					}
+				}
+				
+				List<KscdtSchEditState> listRemove = new ArrayList<>();
+				for (KscdtSchEditState editStateOld : oldData.get().editStates) {
+					boolean checkExist = false;
+					for (KscdtSchEditState editState : newData.editStates) {
+						if(editState.pk.atdItemId == editStateOld.pk.atdItemId
+								&& editState.pk.sid.equals(editStateOld.pk.sid)
+								&& editState.pk.ymd.equals(editStateOld.pk.ymd)
+								) {
+							checkExist = true;
+							break;
+						}
+					}
+					if(!checkExist) {
+						listRemove.add(editStateOld);
+					}
+				}
+				
+				//remove
+				String delete = "delete from KscdtSchEditState o " + " where o.pk.sid = :sid "
+						+ " and o.pk.ymd = :ymd " + " and o.pk.atdItemId = :atdItemId";
+				for(KscdtSchEditState sle : listRemove) {
+					this.getEntityManager().createQuery(delete).setParameter("sid", sle.pk.sid)
+					.setParameter("ymd", sle.pk.ymd)
+					.setParameter("atdItemId", sle.pk.atdItemId).executeUpdate();
 				}
 				//add
 				for(KscdtSchEditState sle : listInsert) {
