@@ -92,7 +92,7 @@ public class StartKSU001Ver5 {
 		DisplayInWorkInfoResult_New  resultStep4 = new DisplayInWorkInfoResult_New();
 
 		// data tra ve cua step 5.1
-		DisplayInShiftResult_New resultStep51 = null;
+		DisplayInShiftResult_New resultStep51 = new DisplayInShiftResult_New();
 		
 		// tính toán để xem gọi viewMode nào
 		Integer viewModeSelected = calculateViewModeSelected(param.viewMode, resultStep1.scheFunctionCtrlByWorkplace.useDisplayFormat);

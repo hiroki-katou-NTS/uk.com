@@ -3,7 +3,9 @@ package nts.uk.screen.at.app.ksu001.displayinshift;
 import java.util.List;
 import java.util.Map;
 
-import lombok.Value;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import nts.uk.screen.at.app.ksu001.aggreratepersonaltotal.AggreratePersonalDto;
 import nts.uk.screen.at.app.ksu001.aggrerateworkplacetotal.AggrerateWorkplaceDto;
 import nts.uk.screen.at.app.ksu001.getshiftpalette.PageInfo;
@@ -11,7 +13,9 @@ import nts.uk.screen.at.app.ksu001.getshiftpalette.ShiftMasterDto;
 import nts.uk.screen.at.app.ksu001.getshiftpalette.TargetShiftPalette;
 import nts.uk.screen.at.app.ksu001.getworkscheduleshift.ScheduleOfShiftDto;
 
-@Value
+@NoArgsConstructor
+@AllArgsConstructor
+@Data
 public class DisplayInShiftResult_New {
 	// data cua shift pallet
 	public List<PageInfo> listPageInfo ;                      // List<ページ, 名称>
