@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare;
+package nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.childcarenurse;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -6,12 +6,13 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.Used
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.ChildCareNurseUsedNumber;
 
 /**
- * 子の看護介護使用情報
+ * 子の看護介護使用数
  * @author yuri_tamakoshi
  */
 @Getter
 @Setter
 public class ChildCareNurseUsedInfo {
+
 	/** 使用数 */
 	private ChildCareNurseUsedNumber usedNumber;
 	/** 時間休暇使用回数 */
@@ -26,6 +27,22 @@ public class ChildCareNurseUsedInfo {
 		this.usedNumber = new ChildCareNurseUsedNumber();
 		this.usedTimes = new UsedTimes(0);
 		this.usedDays = new UsedTimes(0);
+	}
+
+	/**
+	 * コンストラクタ　ChildCareNurseUsedNumber
+	 */
+	public ChildCareNurseUsedInfo(ChildCareNurseUsedInfo c){
+		this.usedNumber = c.usedNumber.clone();
+		this.usedTimes = c.usedTimes.clone();
+		this.usedDays = c.usedDays.clone();
+	}
+
+	/**
+	 * クローン
+	 */
+	public ChildCareNurseUsedInfo clone() {
+		return new ChildCareNurseUsedInfo(this);
 	}
 
 	/**
@@ -44,6 +61,16 @@ public class ChildCareNurseUsedInfo {
 		domain.usedNumber = usedNumber;
 		domain.usedTimes = usedTimes;
 		domain.usedDays = usedDays;
+		return domain;
+	}
+
+	public ChildCareNurseUsedInfo add(ChildCareNurseUsedInfo target) {
+		ChildCareNurseUsedInfo domain = this.clone();
+
+		domain.getUsedNumber().add(target.getUsedNumber());
+		domain.getUsedDays().add(target.getUsedDays());
+		domain.getUsedTimes().add(target.getUsedTimes());
+
 		return domain;
 	}
 }

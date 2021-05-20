@@ -217,13 +217,13 @@ public class AggregateMonthlyRecordServiceProc {
 
 		// 入社前、退職後を期間から除く → 一か月の集計期間
 		DatePeriod monthPeriod = GetPeriodExcluseEntryRetireTime.getPeriodExcluseEntryRetireTime(new GetPeriodExcluseEntryRetireTime.Require() {
-			
+
 			@Override
 			public EmployeeImport employeeInfo(CacheCarrier cacheCarrier, String empId) {
 				return employee;
 			}
 		}, cacheCarrier, this.employeeId, datePeriod).orElse(null);
-		
+
 		if (monthPeriod == null) {
 			// 処理期間全体が、入社前または退職後の時
 			return this.aggregateResult;
@@ -508,7 +508,7 @@ public class AggregateMonthlyRecordServiceProc {
 	 */
 	private void remainingProcess(RequireM8 require,CacheCarrier cacheCarrier, DatePeriod period,
 			String companyId, String employeeId, YearMonth yearMonth, ClosureId closureId,   ClosureDate closureDate,
-			MonAggrCompanySettings companySets, MonAggrEmployeeSettings employeeSets, 
+			MonAggrCompanySettings companySets, MonAggrEmployeeSettings employeeSets,
 			MonthlyCalculatingDailys monthlyCalculatingDailys,
 			DatePeriod datePeriod, Boolean remainingProcAtr) {
 
@@ -1178,7 +1178,7 @@ public class AggregateMonthlyRecordServiceProc {
 	private void remainingProcess(
 			RequireM8 require, CacheCarrier cacheCarrier, DatePeriod period,
 			String companyId, String employeeId, YearMonth yearMonth, ClosureId closureId,   ClosureDate closureDate,
-			MonAggrCompanySettings companySets, MonAggrEmployeeSettings employeeSets, 
+			MonAggrCompanySettings companySets, MonAggrEmployeeSettings employeeSets,
 			MonthlyCalculatingDailys monthlyCalculatingDailys,
 			InterimRemainMngMode interimRemainMngMode, boolean isCalcAttendanceRate) {
 
@@ -1207,7 +1207,12 @@ public class AggregateMonthlyRecordServiceProc {
 		this.aggregateResult.getMonthlyDayoffRemainList().addAll(output.getMonthlyDayoffRemainList());
 		// 特別休暇
 		this.aggregateResult.getSpecialLeaveRemainList().addAll(output.getSpecialLeaveRemainList());
-		
+		// 子の看護
+		this.aggregateResult.getChildHdRemainList().addAll(output.getChildHdRemainList());
+		// 介護
+		this.aggregateResult.getCareHdRemainList().addAll(output.getCareHdRemainList());
+
+
 		// エラー一覧
 		this.aggregateResult.getPerErrors().addAll(output.getPerErrors());
 
@@ -1232,8 +1237,8 @@ public class AggregateMonthlyRecordServiceProc {
 //		this.specialLeaveRemain(require, cacheCarrier, period, interimRemainMngMode);
 //
 //		ConcurrentStopwatches.stop("12440:特別休暇：");
-		
-		
+
+
 	}
 
 	/**
@@ -1596,7 +1601,7 @@ public class AggregateMonthlyRecordServiceProc {
 		val workInfo = this.monthlyCalculatingDailys.getWorkInfoOfDailyMap().entrySet().stream().filter(
 				x -> x.getKey().afterOrEquals(datePeriod.start()) && x.getKey().beforeOrEquals(datePeriod.end()))
 				.collect(Collectors.toList()).stream().sorted((x, y) -> x.getKey().compareTo(y.getKey())).findFirst();
-		
+
 		if (workInfo.isPresent()) {
 			isExistStartWorkInfo = true;
 		}
@@ -1719,7 +1724,7 @@ public class AggregateMonthlyRecordServiceProc {
 
 		AggregateMonthlyRecordValue aggregation(CacheCarrier cacheCarrier, DatePeriod period,
 				String companyId, String employeeId, YearMonth yearMonth, ClosureId closureId,   ClosureDate closureDate,
-				MonAggrCompanySettings companySets, MonAggrEmployeeSettings employeeSets, 
+				MonAggrCompanySettings companySets, MonAggrEmployeeSettings employeeSets,
 				MonthlyCalculatingDailys monthlyCalculatingDailys,
 				InterimRemainMngMode interimRemainMngMode, boolean isCalcAttendanceRate);
 
@@ -1735,7 +1740,7 @@ public class AggregateMonthlyRecordServiceProc {
 
 	public static interface RequireM7 {
 
-		List<DailyInterimRemainMngData> createDailyInterimRemainMngs(CacheCarrier cacheCarrier, String companyId, String employeeId, 
+		List<DailyInterimRemainMngData> createDailyInterimRemainMngs(CacheCarrier cacheCarrier, String companyId, String employeeId,
 				DatePeriod period, MonAggrCompanySettings comSetting, MonthlyCalculatingDailys dailys);
 	}
 
