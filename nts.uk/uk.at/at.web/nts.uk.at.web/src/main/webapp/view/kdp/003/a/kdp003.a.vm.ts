@@ -341,10 +341,16 @@ module nts.uk.at.kdp003.a {
 					return data;
 				})
 				.then((data: LoginData) => {
-
 					var exest = false;
+					var check1527 = false;
 
-					if (ko.unwrap(vm.message).messageId !== 'Msg_1527') {
+					if (ko.unwrap(vm.message)) {
+						if (ko.unwrap(vm.message).messageId === 'Msg_1527') {
+							check1527 = true;
+						}
+					}
+
+					if (!check1527) {
 						if (data.loginData.notification == null) {
 							exest = true;
 						}
@@ -373,8 +379,16 @@ module nts.uk.at.kdp003.a {
 					return data;
 				})
 				.then((data: LoginData) => {
-					
-					if (ko.unwrap(vm.message).messageId === 'Msg_1527') {
+
+					var check1527 = false;
+
+					if (ko.unwrap(vm.message)) {
+						if (ko.unwrap(vm.message).messageId === 'Msg_1527') {
+							check1527 = true;
+						}
+					}
+
+					if (check1527) {
 						vm.setMessage({ messageId: 'Msg_1527' });
 
 						return false;
@@ -702,6 +716,18 @@ module nts.uk.at.kdp003.a {
 					var exist = true;
 					var exist1 = false;
 					var checkExistBasyo = false;
+					var check1527 = false;
+
+					if (data.msgErrorId) {
+						if (data.msgErrorId === "Msg_1527") {
+							check1527 = true;
+						}
+					}
+
+					if (check1527) {
+						vm.setMessage({ messageId: 'Msg_1527' });
+						return false;
+					}
 
 					if (data === undefined) {
 						return false;
