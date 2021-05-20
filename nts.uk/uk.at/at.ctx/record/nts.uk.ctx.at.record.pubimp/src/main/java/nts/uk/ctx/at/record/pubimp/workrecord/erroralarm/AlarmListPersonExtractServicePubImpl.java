@@ -149,11 +149,13 @@ public class AlarmListPersonExtractServicePubImpl implements AlarmListPersonExtr
 	public void extractScheYearCheckResult(String cid, List<String> lstSid, DatePeriod dPeriod, String errorCheckId,
 										   String listOptionalItem, List<WorkPlaceHistImportAl> lstWkpIdAndPeriod,
 										   List<StatusOfEmployeeAdapterAl> lstStaEmp, List<ResultOfEachCondition> lstResultCondition,
-										   List<AlarmListCheckInfor> lstCheckType, Consumer<Integer> counter, Supplier<Boolean> shouldStop) {
+										   List<AlarmListCheckInfor> lstCheckType, Consumer<Integer> counter, Supplier<Boolean> shouldStop,
+										   List<AlarmEmployeeList> alarmEmployeeList, List<AlarmExtractionCondition> alarmExtractConditions,
+										   String alarmCheckConditionCode) {
 		scheYearCheckService.extractScheYearCheck(
 				cid, lstSid, dPeriod, errorCheckId, listOptionalItem,
 				lstWkpIdAndPeriod, lstStaEmp, lstResultCondition,
-				lstCheckType, counter, shouldStop);
+				lstCheckType, counter, shouldStop, alarmEmployeeList, alarmExtractConditions, alarmCheckConditionCode);
 	}
 
 
@@ -175,10 +177,12 @@ public class AlarmListPersonExtractServicePubImpl implements AlarmListPersonExtr
 	public void extractWeeklyCheckResult(String cid, List<String> lstSid, DatePeriod period,
 										 List<WorkPlaceHistImportAl> wplByListSidAndPeriods, String listOptionalItem,
 										 List<ResultOfEachCondition> lstResultCondition, List<AlarmListCheckInfor> lstCheckType,
-										 Consumer<Integer> counter, Supplier<Boolean> shouldStop) {
+										 Consumer<Integer> counter, Supplier<Boolean> shouldStop,
+										 List<AlarmEmployeeList> alarmEmployeeList, List<AlarmExtractionCondition> alarmExtractConditions,
+										 String alarmCheckConditionCode) {
 		weeklyCheckService.extractWeeklyCheck(
 				cid, lstSid, period, wplByListSidAndPeriods, listOptionalItem,
-				lstResultCondition, lstCheckType, counter, shouldStop);
+				lstResultCondition, lstCheckType, counter, shouldStop, alarmEmployeeList, alarmExtractConditions, alarmCheckConditionCode);
 	}
 
 }

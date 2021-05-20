@@ -281,7 +281,6 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 					}
 					
 					if (!tab2.getAlarmExtractConditions().isEmpty()) {
-//						lstCheckType.addAll(tab2.getLstCheckType());
 						alarmExtractConditions.addAll(tab2.getAlarmExtractConditions());
 					}
 					
@@ -671,6 +670,18 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 			default:
 				break;
 			}
+
+            List<AlarmExtractionCondition> extractionConditions = result.getAlarmExtractConditions().stream()
+                    .filter(x -> x.getAlarmListCheckType() == AlarmListCheckType.FreeCheck && x.getAlarmCheckConditionNo().equals(String.valueOf(scheCondMon.getSortOrder())))
+                    .collect(Collectors.toList());
+            if (extractionConditions.isEmpty()) {
+                result.getAlarmExtractConditions().add(new AlarmExtractionCondition(
+                        String.valueOf(scheCondMon.getSortOrder()),
+                        new AlarmCheckConditionCode(alarmCheckConditionCode),
+                        AlarmCategory.SCHEDULE_MONTHLY,
+                        AlarmListCheckType.FreeCheck
+                ));
+            }
 			
 			Optional<AlarmListCheckInfor> optCheckInfor = result.getLstCheckType().stream()
 					.filter(x -> x.getChekType() == AlarmListCheckType.FreeCheck && x.getNo().equals(String.valueOf(scheCondMon.getSortOrder())))
@@ -797,13 +808,25 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 			extractDetailItemTime.setRunTime(GeneralDateTime.now());
 			extractDetailItemTime.setAlarmContent(alarmContent);
 			extractDetailItemTime.setCheckValue(Optional.ofNullable(checkValue));
-			// TODO VietTX
+
 			result.getAlarmExtractInfoResults().add(new AlarmExtractInfoResult(
 					String.valueOf(fixScheMon.getFixedCheckSMonItems().value),
 					new AlarmCheckConditionCode(alarmCheckConditionCode),
 					AlarmCategory.SCHEDULE_MONTHLY,
-					AlarmListCheckType.FreeCheck,
+					AlarmListCheckType.FixCheck,
 					Arrays.asList(extractDetailItemTime)));
+
+            List<AlarmExtractionCondition> extractionConditions = result.getAlarmExtractConditions().stream()
+                    .filter(x -> x.getAlarmListCheckType() == AlarmListCheckType.FixCheck && x.getAlarmCheckConditionNo().equals(String.valueOf(fixScheMon.getFixedCheckSMonItems().value)))
+                    .collect(Collectors.toList());
+            if (extractionConditions.isEmpty()) {
+                result.getAlarmExtractConditions().add(new AlarmExtractionCondition(
+                        String.valueOf(fixScheMon.getFixedCheckSMonItems().value),
+                        new AlarmCheckConditionCode(alarmCheckConditionCode),
+                        AlarmCategory.SCHEDULE_MONTHLY,
+                        AlarmListCheckType.FixCheck
+                ));
+            }
 //			result.getLstResultCondition().add(new ResultOfEachCondition(
 //					AlarmListCheckType.FixCheck,
 //					String.valueOf(fixScheMon.getFixedCheckSMonItems().value),
