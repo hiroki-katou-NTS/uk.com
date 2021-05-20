@@ -26,6 +26,7 @@
 
 		<ui:define name="content">
 			<div id="functions-area">
+				<div data-bind="pg-name: pgName"></div>
 				<button data-bind="click: clearData" tabindex="1">#{i18n.getText('CMM008_1')}</button>
 				<button class="proceed"
 					data-bind="click: createEmployment, enable: $root.errors.isEmpty"
@@ -47,7 +48,7 @@
 							data-bind="ntsFormLabel: {required: true, constraint: ['EmploymentCode', 'EmploymentName']}">
 							<label>#{i18n.getText('CMM008_6')}</label>
 						</div>
-						<div style="padding-left: 10px; padding-bottom: 10px" class="fixed-flex-layout-right">
+						<div style="padding-bottom: 10px" class="fixed-flex-layout-right">
 							<input id="empCode"
 								data-bind="ntsTextEditor: {
 										name: '#[CMM008_7]',

@@ -4,8 +4,11 @@ $editor-border-color: #EAE8F2;
 	input.nts-input,
 	input.nts-editor,
 	textarea.nts-input {
-		&:not([type=radio]),
-		&:not([type=checkbox]) {
+		&:not(
+			[type=radio],
+			[type=checkbox],
+			.ntsSearchBox
+		) {
 			outline: none;
 			border: 1px solid $editor-border-color;
 			padding: 6px 10px;
