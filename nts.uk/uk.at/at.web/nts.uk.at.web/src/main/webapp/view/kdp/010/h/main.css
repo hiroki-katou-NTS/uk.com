@@ -108,7 +108,7 @@
     border: 0;
 }
 .btn-name div {
-	font-size: 19px;
+	font-size: 18px;
 }
 
 .btn1 div, .btn2 div {
@@ -119,6 +119,7 @@
 } 
 .table1 .btn-name div  {
 	height: 32px;
+    word-break: break-all;
 } 
 .btn-name div.smallText {
 	font-size: 21px;
