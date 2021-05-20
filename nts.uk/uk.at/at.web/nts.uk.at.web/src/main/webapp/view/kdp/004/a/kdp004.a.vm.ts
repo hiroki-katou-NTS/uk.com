@@ -198,6 +198,13 @@ module nts.uk.at.view.kdp004.a {
 				self.openScreenF({
 					mode: 'admin'
 				}).done((loginResult) => {
+					const exest = false;
+
+					if (!loginResult.result) {
+						loginResult = undefined;
+					}
+
+
 					if (!loginResult || !loginResult.result) {
 						self.errorMessage(getMessage(!loginResult ? "Msg_1647" : loginResult.msgErrorId));
 						dfd.resolve();

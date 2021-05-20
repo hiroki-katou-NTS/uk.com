@@ -277,9 +277,9 @@ module nts.uk.at.kdp003.a {
 					// <<ScreenQuery>> 打刻管理者でログインする
 					return vm.$ajax('at', API.COMPANIES)
 						.then((data: f.CompanyItem[]) => {
+
 							if (!data.length || _.every(data, d => d.selectUseOfName === false)) {
 								// note: ログイン失敗(打刻会社一覧が取得できない場合)
-								vm.message({ messageId: 'Msg_1527' });
 								vm.setMessage({ messageId: 'Msg_1527' });
 
 								// UI[F2]  打刻使用可能会社の取得と判断 
@@ -300,6 +300,7 @@ module nts.uk.at.kdp003.a {
 						}) as JQueryPromise<LoginData>;
 				})
 				.then((data: LoginData) => {
+
 					$.urlParam = function (name) {
 						var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
 
@@ -343,12 +344,14 @@ module nts.uk.at.kdp003.a {
 
 					var exest = false;
 
-					if (data.loginData.notification == null) {
-						exest = true;
-					}
+					if (ko.unwrap(vm.message).messageId !== 'Msg_1527') {
+						if (data.loginData.notification == null) {
+							exest = true;
+						}
 
-					if (data.loginData.result) {
-						exest = false;
+						if (data.loginData.result) {
+							exest = false;
+						}
 					}
 
 					// if dialog f return data (first login)
@@ -356,10 +359,6 @@ module nts.uk.at.kdp003.a {
 					if (data.loginData && !data.loginData.msgErrorId && !data.loginData.errorMessage && !data.storageData && !exest) {
 						const { loginData } = data;
 						const params = { multiSelect: true };
-
-						if (loginData.msgErrorId === "Msg_1527") {
-							vm.message({ messageId: 'Msg_1527' });
-						}
 
 						if (!ko.unwrap(vm.modeBasyo) && loginData.msgErrorId !== "Msg_1527") {
 							return vm.$window
@@ -374,6 +373,19 @@ module nts.uk.at.kdp003.a {
 					return data;
 				})
 				.then((data: LoginData) => {
+					
+					if (ko.unwrap(vm.message).messageId === 'Msg_1527') {
+						vm.setMessage({ messageId: 'Msg_1527' });
+
+						return false;
+					}
+
+					if (data.loginData.msgErrorId === "Msg_1527") {
+						vm.setMessage({ messageId: 'Msg_1527' });
+
+						return false;
+					}
+
 					var exest = false;
 
 					if (data.loginData.notification == null) {
@@ -666,10 +678,6 @@ module nts.uk.at.kdp003.a {
 
 					if (loginData.notification == null && !exist1) {
 						exist = true;
-					}
-
-					if (loginData.msgErrorId === "MSG_1527") {
-						vm.message({ messageId: 'Msg_1527' });
 					}
 
 					const params = { multiSelect: true };
