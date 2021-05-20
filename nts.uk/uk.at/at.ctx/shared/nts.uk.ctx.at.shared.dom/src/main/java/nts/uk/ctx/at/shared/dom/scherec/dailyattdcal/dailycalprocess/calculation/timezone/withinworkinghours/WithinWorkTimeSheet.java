@@ -35,7 +35,16 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattend
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.earlyleavetime.LeaveEarlyTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.latetime.LateTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.paytime.BonusPayTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.vacationusetime.AbsenceOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.vacationusetime.AnnualOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.vacationusetime.HolidayOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.vacationusetime.OverSalaryOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.vacationusetime.SpecialHolidayOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.vacationusetime.SubstituteHolidayOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.vacationusetime.TimeDigestOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.vacationusetime.TransferHolidayOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.vacationusetime.VacationClass;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.vacationusetime.YearlyReservedOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.CommonFixedWorkTimezoneSet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.DeductionOffSetTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.DeductionTimeSheet;
@@ -1561,10 +1570,14 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 		
 		//就業時間内時間帯を作成
 		creatingWithinWorkTimeSheet.createWithinWorkTimeSheetAsFlowWork(
+				personDailySetting,
+				todayWorkType,
+				integrationOfWorkTime.getCode(),
 				startTime,
 				deductionTimeSheet,
 				integrationOfWorkTime.getFlowWorkSetting().get(),
-				predetermineTimeSet);
+				predetermineTimeSet,
+				companyCommonSetting.getHolidayAdditionPerCompany());
 		
 		//時間休暇溢れ分の割り当て（流動就内）
 		creatingWithinWorkTimeSheet.allocateOverflowTimeVacation(
@@ -1702,16 +1715,24 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 	
 	/**
 	 * 就業時間内時間帯を作成
+	 * @param personDailySetting 社員設定管理
+	 * @param workType 勤務種類
+	 * @param workTimeCode 就業時間帯コード
 	 * @param startTime 開始時刻
 	 * @param deductionTimeSheet 控除時間帯
 	 * @param flowWorkSetting 流動勤務設定
 	 * @param predetermineTimeSet 計算用所定時間設定
+	 * @param holidayAdditionSet 休暇加算時間設定
 	 */
 	private void createWithinWorkTimeSheetAsFlowWork(
+			ManagePerPersonDailySet personDailySetting,
+			WorkType workType,
+			WorkTimeCode workTimeCode,
 			TimeWithDayAttr startTime,
 			DeductionTimeSheet deductionTimeSheet,
 			FlowWorkSetting flowWorkSetting,
-			PredetermineTimeSetForCalc predetermineTimeSet) {
+			PredetermineTimeSetForCalc predetermineTimeSet,
+			Optional<HolidayAddtionSet> holidayAdditionSet) {
 		
 		TimeWithDayAttr endTime;
 		
@@ -1741,6 +1762,18 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 				}
 			}
 		}
+		//休暇加算時間を計算する
+		VacationAddTime vacationAddTime = VacationClass.createAllZero().calcVacationAddTime(
+				PremiumAtr.RegularWork,
+				workType,
+				Optional.of(workTimeCode),
+				personDailySetting.getPersonInfo(),
+				holidayAdditionSet,
+				personDailySetting.getAddSetting().getVacationCalcMethodSet(),
+				Optional.of(predetermineTimeSet),
+				Optional.of(personDailySetting.getPredetermineTimeSetByPersonWeekDay()));
+		
+		endTime = endTime.backByMinutes(vacationAddTime.calcTotaladdVacationAddTime());
 		
 		//退勤時刻の補正
 		endTime = this.correctleaveTimeForFlow(endTime);
