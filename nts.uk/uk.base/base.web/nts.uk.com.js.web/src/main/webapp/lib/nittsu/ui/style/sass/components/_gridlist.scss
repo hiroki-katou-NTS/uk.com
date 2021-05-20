@@ -17,7 +17,8 @@
 		outline: none;
 		border-radius: 2px;
 		border: 1px solid #EAE8F2 !important;
-		height: auto !important;
+		// conflict with set option size of igGrid
+		// height: auto !important;
 
 		&:focus {
 			border-color: $focused_color !important;
