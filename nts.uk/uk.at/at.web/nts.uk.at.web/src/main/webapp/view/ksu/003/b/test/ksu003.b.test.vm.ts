@@ -31,6 +31,7 @@ module nts.uk.at.view.ksu003.b.test {
             selectedPage: KnockoutObservable<number>;
             isEnable: KnockoutObservable<boolean>;
             isEditable: KnockoutObservable<boolean>;
+			pageNo: KnockoutObservable<string> = ko.observable('');	
 			constructor() {
 				var self = this;
                 
@@ -50,10 +51,9 @@ module nts.uk.at.view.ksu003.b.test {
 				self.required = ko.observable(true);
 				self.baseDate = ko.observable(new Date());
 				self.selectedWorkplaceId = ko.observable('');				
-				self.date = ko.observable('2021/05/05');
+				self.date = ko.observable(new Date().toString());
 
-				// self.startDateString = ko.observable("2020/10/01");
-				// self.endDateString = ko.observable("2020/10/31");
+				
 				self.dateValue = ko.observable({});
 				self.workPlace.subscribe((x) => {
 					self.isWorkPlaceGroup(!x);
@@ -121,6 +121,7 @@ module nts.uk.at.view.ksu003.b.test {
 				setShared('dataShareKsu003b', request);		
 				self.currentScreen = nts.uk.ui.windows.sub.modal("/view/ksu/003/b/index.xhtml").onClosed(() => {
                     let data = getShared('dataShareFromKsu003b');
+					self.pageNo(getShared('dataShareFromKsu003b'));
                 });
 			}
 			public startPage(): JQueryPromise<any> {
