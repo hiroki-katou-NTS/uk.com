@@ -442,6 +442,7 @@ module nts.uk.at.view.kdp005.a {
 										}
 									});
 								} else {
+									self.loginInfo = loginResult.em;
 									self.loginInfo.selectedWP = self.workplace;
 									characteristics.save("loginKDP005", self.loginInfo).done(() => {
 										location.reload();

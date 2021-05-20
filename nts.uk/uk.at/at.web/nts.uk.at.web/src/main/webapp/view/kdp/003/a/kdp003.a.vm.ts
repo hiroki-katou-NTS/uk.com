@@ -99,9 +99,6 @@ module nts.uk.at.kdp003.a {
 
 			vm.basyo();
 
-			//get workplaces Info
-			vm.getWorkPlacesInfo();
-
 			// show or hide stampHistoryButton
 			vm.message.subscribe((value) => {
 
@@ -170,16 +167,6 @@ module nts.uk.at.kdp003.a {
 						}
 					});
 			}
-		}
-
-
-		getWorkPlacesInfo() {
-			const vm = this;
-
-			vm.$window.storage(WORKPLACES_STORAGE)
-				.then((data: IWorkPlaceInfo[]) => {
-					vm.workPlaceInfos = data
-				});
 		}
 
 		shoNoti() {
@@ -332,19 +319,16 @@ module nts.uk.at.kdp003.a {
 						}
 
 						return vm.$ajax(API.GET_WORKPLACE_BASYO, param)
-							.then((data: IBasyo) => {
-								console.log(data);
-
-								if (data) {
-
-									if (data.workLocationName != null || data.workpalceId != null) {
+							.then((dataBasyo: IBasyo) => {
+								if (dataBasyo) {
+									if (dataBasyo.workLocationName != null || dataBasyo.workpalceId != null) {
 										vm.worklocationCode = locationCd;
 									}
 
-									if (data.workpalceId) {
-										if (data.workpalceId.length > 0) {
+									if (dataBasyo.workpalceId) {
+										if (dataBasyo.workpalceId.length > 0) {
 											vm.modeBasyo(true);
-											vm.workPlace = data.workpalceId;
+											vm.workPlace = dataBasyo.workpalceId;
 										}
 									}
 								}
@@ -361,8 +345,6 @@ module nts.uk.at.kdp003.a {
 						const { loginData } = data;
 						const params = { multiSelect: true };
 
-						console.log(loginData);
-
 						if (!ko.unwrap(vm.modeBasyo) && loginData.msgErrorId !== "Msg_1527") {
 							return vm.$window
 								.modal('at', DIALOG.K, params)
@@ -376,8 +358,9 @@ module nts.uk.at.kdp003.a {
 					return data;
 				})
 				.then((data: LoginData) => {
+
 					// if not return full data (first login)
-					if (!data.storageData && (!data.loginData || !data.workplaceData)) {
+					if (!data.storageData && (!data.loginData || !data.workplaceData && !ko.unwrap(vm.modeBasyo))) {
 						vm.setMessage({ messageId: 'Msg_1647' });
 
 						return false;
@@ -408,7 +391,7 @@ module nts.uk.at.kdp003.a {
 					}
 
 					if (!checkUsed) {
-						vm.message({ messageId: 'Msg_1645', messageParams: [vm.$i18n('KDP002_2')]});
+						vm.message({ messageId: 'Msg_1645', messageParams: [vm.$i18n('KDP002_2')] });
 
 						return false;
 					}
@@ -604,13 +587,12 @@ module nts.uk.at.kdp003.a {
 
 					if (locationCd) {
 						const param = {
-							contractCode: '000000000004',
+							contractCode: vm.$user.contractCode,
 							workLocationCode: locationCd
 						}
 
 						return vm.$ajax(API.GET_WORKPLACE_BASYO, param)
 							.then((data: IBasyo) => {
-								console.log(data);
 
 								if (data) {
 
@@ -632,91 +614,137 @@ module nts.uk.at.kdp003.a {
 					return loginData;
 				})
 				.then((loginData: undefined | f.TimeStampLoginData) => {
-					console.log(loginData);
-					if (loginData === undefined) {
-						if (loginData.notification == null) {
-							return {};
-						}
-					} else {
-						const params = { multiSelect: true };
 
-						if (!ko.unwrap(vm.modeBasyo) && loginData.msgErrorId !== "Msg_1527") {
-							return vm.$window.modal('at', DIALOG.K, params)
-								.then((workplaceData: undefined | k.Return) => {
-									openViewK = true;
-									return {
-										loginData,
-										workplaceData
-									};
-								}) as JQueryPromise<LoginData>;
-						}
-						vm.getWorkPlacesInfo();
+					var exist = false;
+					var exist1 = false;
+					if (loginData === undefined) {
+						exist = true;
+					}
+
+					if (loginData.result) {
+						exist1 = true;
+					}
+
+					if (loginData.notification == null && !exist1) {
+						exist = true;
+					}
+
+					const params = { multiSelect: true };
+					if (!exist && !ko.unwrap(vm.modeBasyo) && loginData.msgErrorId !== "Msg_1527") {
+						return vm.$window.modal('at', DIALOG.K, params)
+							.then((workplaceData: undefined | k.Return) => {
+								openViewK = true;
+								return {
+									loginData,
+									workplaceData
+								};
+							}) as JQueryPromise<LoginData>;
+					} else {
+
+						return loginData;
 					}
 				})
 				.then((data: LoginData) => {
-					console.log(data);
+					var exist = true;
+					var exist1 = false;
 
-					if (!data.loginData || !data.workplaceData) {
-						return storage(KDP003_SAVE_DATA)
-							.then((data: undefined | StorageData) => {
-								if (_.isNil(data)) {
-									vm.setMessage({ messageId: 'Msg_1647' });
-
-									return false;
-								}
-
-								// reload with old data
-								// return data;
-							});
+					if (data === undefined) {
+						return false;
 					}
 
-					if (data.workplaceData) {
-						if (!data.workplaceData.selectedId) {
-							if (data.workplaceData.notification == null) {
-								return storage(KDP003_SAVE_DATA)
-									.then((data: undefined | StorageData) => {
-										if (_.isNil(data)) {
-											vm.setMessage({ messageId: 'Msg_1647' });
+					if (data.loginData) {
+						exist1 = true;
+					}
 
-											return false;
-										}
+					if (data.notification == null && !exist1 && !ko.unwrap(vm.modeBasyo)) {
 
-										// reload with old data
-										// return data;
-									});
+						exist = false;
+					}
+
+					if (!exist) {
+						return false;
+					}
+
+					if (ko.unwrap(vm.modeBasyo)) {
+						if (vm.workPlace.length <= 0) {
+							vm.setMessage({ messageId: 'Msg_1647' });
+							return false;
+						}
+					} else {
+						if (data.workplaceData) {
+							if (!data.workplaceData.selectedId) {
+								if (data.workplaceData.notification == null) {
+									return storage(KDP003_SAVE_DATA)
+										.then((data: undefined | StorageData) => {
+											if (_.isNil(data)) {
+												vm.setMessage({ messageId: 'Msg_1647' });
+
+												return false;
+											}
+										});
+								}
 							}
 						}
 					}
 
-					const { loginData, workplaceData } = data;
+					if (ko.unwrap(vm.modeBasyo)) {
+						if (data.msgErrorId) {
+							vm.setMessage({ messageId: data.msgErrorId });
 
-					if (loginData.msgErrorId) {
-						vm.setMessage({ messageId: loginData.msgErrorId });
+							return false;
+						}
 
-						return false;
-					}
+						if (data.errorMessage) {
+							vm.setMessage(data.errorMessage);
 
-					if (loginData.errorMessage) {
-						vm.setMessage(loginData.errorMessage);
+							return false;
+						}
+					} else {
+						if (data.loginData.msgErrorId) {
+							vm.setMessage({ messageId: data.loginData.msgErrorId });
 
-						return false;
+							return false;
+						}
+
+						if (data.loginData.errorMessage) {
+							vm.setMessage(data.loginData.errorMessage);
+
+							return false;
+						}
 					}
 
 					// if login & select workspace success
-					const { em } = loginData;
-					const { selectedId } = workplaceData;
 
-					const storageData = {
-						CCD: em.companyCode,
-						CID: em.companyId,
-						PWD: em.password,
-						SCD: em.employeeCode,
-						SID: em.employeeId,
-						WKLOC_CD: '',
-						WKPID: _.isString(selectedId) ? [selectedId] : selectedId
-					};
+					if (ko.unwrap(vm.modeBasyo)) {
+						const storageData = {
+							CCD: data.em.companyCode,
+							CID: data.em.companyId,
+							PWD: data.em.password,
+							SCD: data.em.employeeCode,
+							SID: data.em.employeeId,
+							WKLOC_CD: '',
+							WKPID: vm.workPlace
+						};
 
-					return storage(KDP003_SAVE_DATA, storageData) as JQueryPromise<StorageData>;
+						return storage(KDP003_SAVE_DATA, storageData) as JQueryPromise<StorageData>;
+					} else {
+
+						const { em } = data.loginData;
+						const { selectedId } = data.workplaceData;
+
+						const storageData = {
+							CCD: em.companyCode,
+							CID: em.companyId,
+							PWD: em.password,
+							SCD: em.employeeCode,
+							SID: em.employeeId,
+							WKLOC_CD: '',
+							WKPID: _.isString(selectedId) ? [selectedId] : selectedId
+						};
+
+						return storage(KDP003_SAVE_DATA, storageData) as JQueryPromise<StorageData>;
+					}
+
 				})
 				.then((data: false | StorageData) => {
 
@@ -733,7 +761,7 @@ module nts.uk.at.kdp003.a {
 						} = data;
 
 						const loginParams: f.ModelData = {
-							contractCode: '000000000000',
+							contractCode: vm.$user.contractCode,
 							companyCode: CCD,
 							companyId: CID,
 							employeeCode: SCD,
@@ -760,9 +788,17 @@ module nts.uk.at.kdp003.a {
 					vm.message(message);
 				})
 				.always(() => {
-					if (openViewK && !saveSuccess) {
-						window.location.reload(false);
-						openViewK = false;
+					if (ko.unwrap(vm.modeBasyo)) {
+						if (saveSuccess) {
+							window.location.reload(false);
+							saveSuccess = false;
+						}
+					} else {
+						if (openViewK && saveSuccess) {
+							window.location.reload(false);
+							openViewK = false;
+							saveSuccess = false;
+						}
 					}
 				});
 		}
@@ -806,7 +842,6 @@ module nts.uk.at.kdp003.a {
 		stampButtonClick(btn: share.ButtonSetting, layout: share.PageLayout) {
 
 			const vm = this;
-			vm.getWorkPlacesInfo();
 			const { buttonPage, employeeData } = vm;
 			const { selectedId, employees, nameSelectArt } = ko.toJS(employeeData) as EmployeeListData;
 			const reloadSetting = () =>
@@ -941,8 +976,6 @@ module nts.uk.at.kdp003.a {
 													})
 											} else {
 												vm.workPlaceId = dataStorage.WKPID[0];
-
-												console.log(vm.workPlaceId);
 
 												vm.$ajax(API.REGISTER, {
 													employeeId,
