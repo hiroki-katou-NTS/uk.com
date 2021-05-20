@@ -123,8 +123,8 @@ public abstract class NRLResponse implements BCCCalculable {
 	 * @param macAddr
 	 * @return response
 	 */
-	public static ResponseBuilder ok(String nrlNo, String macAddr) {
-		return ResponseBuilder.newInstance(nrlNo, macAddr).status(Status.ACCEPT)
+	public static ResponseBuilder ok(String nrlNo, String macAddr, String contractCode) {
+		return ResponseBuilder.newInstance(nrlNo, macAddr, contractCode).status(Status.ACCEPT)
 				.command(Command.ACCEPT).accept();
 	}
 	
@@ -143,8 +143,8 @@ public abstract class NRLResponse implements BCCCalculable {
 	 * @param macAddr
 	 * @return response
 	 */
-	public static ResponseBuilder noAccept(String nrlNo, String macAddr) {
-		return ResponseBuilder.newInstance(nrlNo, macAddr).status(Status.NOACCEPT)
+	public static ResponseBuilder noAccept(String nrlNo, String macAddr, String contractCode) {
+		return ResponseBuilder.newInstance(nrlNo, macAddr, contractCode).status(Status.NOACCEPT)
 				.command(Command.NOACCEPT).noAccept();
 	}
 	
@@ -162,12 +162,14 @@ public abstract class NRLResponse implements BCCCalculable {
 		private Status status;
 		private MapItem nrlNo;
 		private MapItem macAddr;
+		private MapItem contractCode;
 		
 		private ResponseBuilder() {}
 		
-		private ResponseBuilder(String nrlNo, String macAddr) { 
+		private ResponseBuilder(String nrlNo, String macAddr, String contractCode) { 
 			this.nrlNo = new MapItem(Element.NRL_NO, nrlNo);
 			this.macAddr = new MapItem(Element.MAC_ADDR, macAddr);
+			this.contractCode = new MapItem(Element.CONTRACT_CODE, contractCode);
 		}
 		
 		/**
@@ -184,8 +186,8 @@ public abstract class NRLResponse implements BCCCalculable {
 		 * @param macAddr
 		 * @return instance
 		 */
-		public static ResponseBuilder newInstance(String nrlNo, String macAddr) {
-			return new ResponseBuilder(nrlNo, macAddr);
+		public static ResponseBuilder newInstance(String nrlNo, String macAddr, String contractCode) {
+			return new ResponseBuilder(nrlNo, macAddr, contractCode);
 		}
 		
 		/**
@@ -226,7 +228,7 @@ public abstract class NRLResponse implements BCCCalculable {
 			if (nrlNo == null || macAddr == null) throw new RuntimeException("NRL no and MAC address are required.");
 			List<MapItem> nak = Arrays.asList(FrameItemArranger.SOH(), FrameItemArranger.HDR_NAK(),
 					FrameItemArranger.Length_NAK(), FrameItemArranger.Version(), FrameItemArranger.FlagEndNoAck(), 
-					FrameItemArranger.NoFragment(), this.nrlNo, this.macAddr, FrameItemArranger.ZeroPadding());
+					FrameItemArranger.NoFragment(), this.nrlNo, this.macAddr, this.contractCode, FrameItemArranger.ZeroPadding());
 			entity = CDI.current().select(FrameItemArranger.class).get().plot(nak, Command.NOACCEPT);
 			return this;
 		}
@@ -240,6 +242,7 @@ public abstract class NRLResponse implements BCCCalculable {
 			List<MapItem> items = Arrays.asList(FrameItemArranger.SOH(), new MapItem(Element.HDR, Command.ACCEPT.Response),
 					new MapItem(Element.LENGTH, Element.Value.ACCEPT_RES_LEN), FrameItemArranger.Version(),
 					FrameItemArranger.FlagEndNoAck(), FrameItemArranger.NoFragment(), this.nrlNo, this.macAddr, 
+					this.contractCode, 
 					FrameItemArranger.ZeroPadding());
 			entity = CDI.current().select(FrameItemArranger.class).get().plot(items, Command.ACCEPT);
 			return this;

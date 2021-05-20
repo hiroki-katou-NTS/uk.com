@@ -39,13 +39,10 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.param.DailyIn
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.param.ReferenceAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TempAnnualLeaveMngs;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualHolidayMngRepository;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualLeaveMngWork;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.LeaveGrantRemainingData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveUsedDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveUsedNumber;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemainRepository;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.AggregateMonthlyRecordService;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceTimeOfMonthlyRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
@@ -79,8 +76,6 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 	private AnnualLeaveRemainHistRepository annualRepo;
 	@Inject
 	private TmpAnnualHolidayMngRepository annualRepository;
-	@Inject
-	private InterimRemainRepository interimRepo;
 	@Inject
 	private AnnualLeaveTimeRemainHistRepository annTimeRemainHisRepo;
 	/** 月別実績の勤怠時間 */
@@ -149,10 +144,10 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 		List<DailyInterimRemainMngData> lstRemainData = lstUseInfor.stream().map(x -> {
 			return x.getData();
 		}).collect(Collectors.toList());
-		List<TmpAnnualLeaveMngWork> lstTmpAnnual = new ArrayList<>();
+		List<TempAnnualLeaveMngs> lstTmpAnnual = new ArrayList<>();
 		for (DailyInterimRemainMngData remainMng : lstRemainData) {
 			remainMng.getAnnualHolidayData().ifPresent(x -> {
-				TmpAnnualLeaveMngWork tmpAnnual = TmpAnnualLeaveMngWork.of(x);
+				TempAnnualLeaveMngs tmpAnnual = x;
 				lstTmpAnnual.add(tmpAnnual);
 			});
 			/*InterimRemain remainData = remainMng.getRecAbsData()
@@ -315,14 +310,11 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 			//暫定年休管理データを取得 締め開始日 <= 対象日 < INPUT．期間．終了日
 			List<TempAnnualLeaveMngs> lstTmpAnnual = annualRepository.getBySidPeriod(sid, new DatePeriod(startDate, datePeriod.end()));
 			for (TempAnnualLeaveMngs x : lstTmpAnnual) {
-				Optional<InterimRemain> interimInfor = interimRepo.getById(x.getRemainManaID());
-				if(interimInfor.isPresent()) {
-					DailyInterimRemainMngData remainMng = new DailyInterimRemainMngData();
-					remainMng.setRecAbsData(Arrays.asList(x));
-					remainMng.setAnnualHolidayData(Optional.of(x));
-					DailyInterimRemainMngDataAndFlg outData = new DailyInterimRemainMngDataAndFlg(remainMng, false);
-					lstOutputData.add(outData);
-				}
+				DailyInterimRemainMngData remainMng = new DailyInterimRemainMngData();
+				remainMng.setRecAbsData(Arrays.asList(x));
+				remainMng.setAnnualHolidayData(Optional.of(x));
+				DailyInterimRemainMngDataAndFlg outData = new DailyInterimRemainMngDataAndFlg(remainMng, false);
+				lstOutputData.add(outData);
 			}
 		}
 

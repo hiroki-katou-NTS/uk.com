@@ -4,11 +4,9 @@ import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
-//import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualHolidayMng;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualLeaveMngWork;
-//import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.interim.TmpResereLeaveMng;
-import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.interim.TmpReserveLeaveMngWork;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TempAnnualLeaveMngs;
+import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.interim.TmpResereLeaveMng;
 
 public interface GetAnnLeaRemNumWithinPeriodSharedImport {
 	/**
@@ -27,7 +25,7 @@ public interface GetAnnLeaRemNumWithinPeriodSharedImport {
 	 */
 	List<AnnualLeaveErrorSharedImport> annualLeaveErrors(String companyId, String employeeId, DatePeriod aggrPeriod, 
 			boolean mode,GeneralDate criteriaDate, boolean isGetNextMonthData, boolean isCalcAttendanceRate,
-			Optional<Boolean> isOverWrite, Optional<List<TmpAnnualLeaveMngWork>> forOverWriteList, Optional<Boolean> noCheckStartDate);
+			Optional<Boolean> isOverWrite, Optional<List<TempAnnualLeaveMngs>> forOverWriteList, Optional<Boolean> noCheckStartDate);
 	/**
 	 * 年休積休
 	 * @param companyId
@@ -47,8 +45,8 @@ public interface GetAnnLeaRemNumWithinPeriodSharedImport {
 	List<ReserveLeaveErrorImport> reserveLeaveErrors(String companyId, String employeeId, DatePeriod aggrPeriod, boolean mode,
 			GeneralDate criteriaDate, boolean isGetNextMonthData, boolean isCalcAttendanceRate,
 			Optional<Boolean> isOverWrite,
-			Optional<List<TmpAnnualLeaveMngWork>> tempAnnDataforOverWriteList,
-			Optional<List<TmpReserveLeaveMngWork>> tempRsvDataforOverWriteList,
+			Optional<List<TempAnnualLeaveMngs>> tempAnnDataforOverWriteList,
+			Optional<List<TmpResereLeaveMng>> tempRsvDataforOverWriteList,
 			Optional<Boolean> isOutputForShortage,
 			Optional<Boolean> noCheckStartDate);
 }

@@ -246,9 +246,16 @@ public class CommonAlgorithmHolidayWorkImpl implements ICommonAlgorithmHolidayWo
 	public CheckBeforeOutput individualErrorCheck(boolean require, String companyId,
 			AppHdWorkDispInfoOutput appHdWorkDispInfoOutput, AppHolidayWork appHolidayWork, Integer mode) {
 		CheckBeforeOutput checkBeforeOutput = new CheckBeforeOutput();
-		
+		String workTypeCode = Optional.ofNullable(appHolidayWork.getWorkInformation().getWorkTypeCode()).map(x -> x.v()).orElse(null);
+		String workTimeCode = appHolidayWork.getWorkInformation().getWorkTimeCodeNotNull().map(x -> x.v()).orElse(null);
+		if (appHdWorkDispInfoOutput.getWorkInfo().isPresent()) {
+			workTypeCode = !workTypeCode.equals(appHdWorkDispInfoOutput.getWorkInfo().get().getWorkType()) ? workTypeCode : null;
+			workTimeCode = !workTimeCode.equals(appHdWorkDispInfoOutput.getWorkInfo().get().getWorkTime()) ? workTimeCode : null;			
+		}
 		//	勤務種類、就業時間帯チェックのメッセージを表示
-		this.checkWorkMessageDisp(appHolidayWork.getWorkInformation().getWorkTypeCode().v(), appHolidayWork.getWorkInformation().getWorkTimeCode().v());
+		this.checkWorkMessageDisp(
+				workTypeCode,
+				workTimeCode);
 		
 		//	計算ボタン未クリックチェック
 		commonOvertimeHoliday.calculateButtonCheck(appHdWorkDispInfoOutput.getCalculationResult().isPresent() ? 

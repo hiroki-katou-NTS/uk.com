@@ -28,8 +28,6 @@ import nts.uk.ctx.at.request.dom.applicationreflect.algorithm.common.ReflectAppl
 import nts.uk.ctx.at.request.dom.applicationreflect.object.PreApplicationWorkScheReflectAttr;
 import nts.uk.ctx.at.request.dom.applicationreflect.object.ReflectStatusResult;
 import nts.uk.ctx.at.shared.dom.scherec.application.common.ApplicationShare;
-import nts.uk.ctx.at.shared.dom.scherec.application.common.ReflectedStateShare;
-import nts.uk.ctx.at.shared.dom.scherec.application.reflect.ReflectStatusResultShare;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 @RunWith(JMockit.class)
@@ -82,8 +80,8 @@ public class ProcessReflectWorkRecordTest {
 				result = Optional
 						.of(new AppReflectExecutionCondition(companyId, PreApplicationWorkScheReflectAttr.NOT_REFLECT, NotUseAtr.NOT_USE, NotUseAtr.USE));// 勤務実績が確定状態でも反映する
 
-				require.processWork((ApplicationShare)any, dateRefer, (ReflectStatusResultShare) any);
-				result = Pair.of(new ReflectStatusResultShare(ReflectedStateShare.REFLECTED, null, null),
+				require.processWork((ApplicationShare)any, dateRefer, (ReflectStatusResult) any);
+				result = Pair.of(new ReflectStatusResult(ReflectedState.REFLECTED, null, null),
 						Optional.empty());
 
 			}
@@ -163,8 +161,8 @@ public class ProcessReflectWorkRecordTest {
 						(ReflectStatusResult) any, dateRefer);
 				result = new PreCheckProcessResult(NotUseAtr.USE, statusWorkRecord);
 				
-				require.processWork((ApplicationShare)any, dateRefer, (ReflectStatusResultShare) any);
-				result = Pair.of(new ReflectStatusResultShare(ReflectedStateShare.REFLECTED, null, null),
+				require.processWork((ApplicationShare)any, dateRefer, (ReflectStatusResult) any);
+				result = Pair.of(new ReflectStatusResult(ReflectedState.REFLECTED, null, null),
 						Optional.empty());
 			}
 		};

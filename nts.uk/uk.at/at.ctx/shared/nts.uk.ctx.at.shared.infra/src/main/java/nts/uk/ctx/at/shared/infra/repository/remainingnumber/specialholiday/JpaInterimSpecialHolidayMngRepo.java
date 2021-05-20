@@ -8,6 +8,7 @@ import javax.ejb.Stateless;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UseDay;
@@ -28,6 +29,11 @@ public class JpaInterimSpecialHolidayMngRepo extends JpaRepository implements In
 			+ " WHERE c.remainMngId = :remainMngId";
 	private static final String QUERY_BY_ID = "SELECT c FROM KrcdtInterimHdSpMng c"
 			+ " WHERE c.remainMngId = :remainMngId";
+	
+	private static final String QUERY_BY_SID_PERIOD = "SELECT c FROM KrcdtInterimHdSpMng c"
+			+ " WHERE c.pk.sid = :sid"
+			+ " AND c.pk.ymd >= :startDate "
+			+ " AND c.pk.ymd <= :endDate";
 	
 	private static final String DELETE_BY_SID_YMD = "DELETE FROM KrcdtInterimHdSpMng c"
 			+ " WHERE c.pk.sid = :sid AND c.pk.ymd = :ymd";
@@ -96,6 +102,15 @@ public class JpaInterimSpecialHolidayMngRepo extends JpaRepository implements In
 		.setParameter("sid", sId)
 		.setParameter("ymd", ymd)
 		.executeUpdate();
+	}
+
+	@Override
+	public List<InterimSpecialHolidayMng> findSpecialHolidayBySidAndPeriod(String sId, DatePeriod period) {
+		return this.queryProxy().query(QUERY_BY_SID_PERIOD, KrcdtInterimHdSpMng.class)
+				.setParameter("sid", sId)
+				.setParameter("startDate", period.start())
+				.setParameter("endDate", period.end())
+				.getList(c -> toDomain(c));
 	}
 
 }

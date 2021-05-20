@@ -157,15 +157,12 @@ public class JpaInterimBreakDayOffMngRepository extends JpaRepository implements
 								.getList(c -> toDomainBreakMng(c)));
 		});
 		return resultList;*/
-		try(PreparedStatement sql = this.connection().prepareStatement("SELECT * FROM KRCDT_INTERIM_HDWK_MNG a1"
-				+ " INNER JOIN KRCDT_INTERIM_REMAIN_MNG a2 "
-				+ " ON a1.BREAK_MNG_ID = a2.REMAIN_MNG_ID"
-				+ " WHERE a2.SID = ?"
-				+ " AND a2.REMAIN_TYPE = " + RemainType.BREAK.value
-				+ " AND a2.YMD >= ? and a2.YMD <= ?"
+		try(PreparedStatement sql = this.connection().prepareStatement("SELECT * FROM KSHDT_INTERIM_HDWK a1"
+				+ " WHERE a1.SID = ?"
+				+ " AND a1.YMD >= ? and a1.YMD <= ?"
 				+ " AND a1.UNUSED_DAYS > ?"
 				+ " AND a1.EXPIRATION_DAYS >= ? and a1.EXPIRATION_DAYS <= ?"
-				+ " ORDER BY a2.YMD");
+				+ " ORDER BY a1.YMD");
 				)
 		{
 			sql.setString(1, sid);
@@ -378,12 +375,10 @@ public class JpaInterimBreakDayOffMngRepository extends JpaRepository implements
 	@SneakyThrows
 	@Override
 	public List<InterimBreakMng> getBySidPeriod(String sid, DatePeriod period) {
-		try (PreparedStatement sql = this.connection().prepareStatement("SELECT * FROM KRCDT_INTERIM_HDWK_MNG a1"
-				+ " INNER JOIN KRCDT_INTERIM_REMAIN_MNG a2 ON a1.BREAK_MNG_ID = a2.REMAIN_MNG_ID"
-				+ " WHERE a2.SID = ?"
-				+ " AND a2.REMAIN_TYPE = " + RemainType.BREAK.value
-				+ " AND a2.YMD >= ? and a2.YMD <= ?"
-				+ " ORDER BY a2.YMD");
+		try (PreparedStatement sql = this.connection().prepareStatement("SELECT * FROM KSHDT_INTERIM_HDWK a1"
+				+ " WHERE a1.SID = ?"
+				+ " AND a1.YMD >= ? and a1.YMD <= ?"
+				+ " ORDER BY a1.YMD");
 				)
 		{
 			sql.setString(1, sid);

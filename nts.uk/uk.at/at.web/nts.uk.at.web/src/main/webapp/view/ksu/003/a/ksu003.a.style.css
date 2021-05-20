@@ -20,6 +20,7 @@
 	height: 25px;
 	margin-left: 25px;
 }
+
 .ui-igcombo-list{
 	max-height: 130px !important;
 }
@@ -64,6 +65,12 @@
 	height: 20px;
 	display: inline-block;
 	vertical-align: text-top;
+}
+
+.settingTimeGrid{
+	height: 22px !important;
+    width: 18px !important;
+    box-shadow: none !important;
 }
 
 .popup-div {
@@ -257,6 +264,16 @@ html {
 	margin-top: -26px;
 	margin-left: 58px;
 	width: 117px;
+}
+
+#A14 {
+	z-index: 2000 !important;
+	height: 125px !important;
+	width: 330px !important;
+}
+
+#combo-box-start{
+	width: 60px !important;
 }
 
 #org-name {

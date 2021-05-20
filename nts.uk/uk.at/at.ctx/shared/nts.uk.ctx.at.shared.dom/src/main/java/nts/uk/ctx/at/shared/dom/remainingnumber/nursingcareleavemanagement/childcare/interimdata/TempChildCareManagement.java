@@ -42,7 +42,7 @@ public class TempChildCareManagement  extends TempChildCareNurseManagement {
 	 * @return 暫定子の看護管理データ
 	 */
 	public static TempChildCareManagement of(
-			String remainManaID, String sID, GeneralDate ymd, CreateAtr creatorAtr, RemainType remainAtr,
+			String remainManaID, String sID, GeneralDate ymd, CreateAtr creatorAtr,
 			ChildCareNurseUsedNumber usedNumber,
 			Optional<DigestionHourlyTimeType>  appTimeType) {
 

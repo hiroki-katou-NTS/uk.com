@@ -7,6 +7,7 @@ package nts.uk.ctx.at.shared.dom.worktime.flowset;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
  * The Class FlowCalculateSet.
@@ -48,5 +49,22 @@ public class FlowCalculateSet extends WorkTimeDomainObject implements Cloneable{
 			throw new RuntimeException("FlowCalculateSet clone error.");
 		}
 		return cloned;
+	}
+	
+	/**
+	 * 予定開始時刻から計算するか判断する
+	 * @param recordStart 出勤時刻
+	 * @param scheduleStart 予定開始時刻
+	 * @return true：予定開始時刻から計算する　false：予定開始時刻から計算しない
+	 */
+	public boolean isCalcFromScheduleStartTime(TimeWithDayAttr recordStart, TimeWithDayAttr scheduleStart) {
+		if(!this.calcStartTimeSet.isCalcFromPlanStartTime()) {
+			return false; //予定開始時刻から計算しない
+		}
+		if(recordStart.greaterThanOrEqualTo(scheduleStart)) {
+			return false; //出勤時刻>=予定開始時刻
+		}
+		//計算する
+		return true;
 	}
 }

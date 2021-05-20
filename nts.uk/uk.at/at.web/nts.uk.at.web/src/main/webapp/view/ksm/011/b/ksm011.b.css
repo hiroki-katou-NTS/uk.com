@@ -1,0 +1,51 @@
+.tabpanel .contents-area {
+  padding: 25px;
+}
+
+.cell-left {
+  width: 100px;
+}
+.table .cell-left {
+  width: 120px;
+}
+
+.table .group .cell-left {
+  width: 180px;
+} 
+.sidebar-content {
+  height: 100%;
+}
+
+.table .cell-left .form-label {
+  line-height: 37px;
+}
+.table.mb-5 {
+  margin-bottom: 10px;
+}
+.table .cell-left .form-label.normal {
+  line-height: normal;
+}
+
+.table .divi {
+  margin-top: 20px;
+}
+
+#kcp017 {
+  max-width: 500px;
+}
+
+#kcp017 .panel.ntsPanel {
+  padding: 20px 0 0;
+}
+
+.comboBox {
+  width: 70px;
+}
+
+.mt-5 {
+  margin: 0 20px;
+  margin-bottom: -25px;
+}
+.mt-5 .table .cell:first-child {
+  width: 60%;
+}

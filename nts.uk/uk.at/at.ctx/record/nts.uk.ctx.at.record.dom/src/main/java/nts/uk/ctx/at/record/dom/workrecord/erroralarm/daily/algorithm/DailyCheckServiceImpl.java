@@ -1568,19 +1568,15 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 		ErrorInfo result = new ErrorInfo("", "");		
 		List<EmployeeDailyPerError> lstDoubleStamp = dailyAlermService.doubleStampAlgorithm(integra);
 		if(lstDoubleStamp.isEmpty()) return result;
-		String strItemNameD = "";
-		for(EmployeeDailyPerError doubleStamp : lstDoubleStamp) {
-			if(doubleStamp == null) continue;
-			List<MonthlyAttendanceItemNameDto> lstItemName = lstItemDay.stream()
-					.filter(a -> doubleStamp.getAttendanceItemList().contains(a.getAttendanceItemId()))
-					.collect(Collectors.toList());
-			if(lstItemName.isEmpty()) continue;
-			for(MonthlyAttendanceItemNameDto dto: lstItemName) {
-				strItemNameD += ", " + dto.getAttendanceItemName();
-			}
+		List<Integer> lstAttItemId = new ArrayList<Integer>();
+		for(EmployeeDailyPerError err : lstDoubleStamp) {
+			lstAttItemId.addAll(err.getAttendanceItemList());
 		}
-		if(strItemNameD.isEmpty()) return result;
-		strItemNameD = strItemNameD.substring(2);
+		
+		String strItemNameD = lstItemDay.stream()
+				.filter(x -> lstAttItemId.contains(x.getAttendanceItemId()))
+				.map(a -> a.getAttendanceItemName()).collect(Collectors.joining(","));
+		
 		result.alarmMessage = TextResource.localize("KAL010_16");
 		result.alarmTarget =  TextResource.localize("KAL010_617", strItemNameD);
 		return result;
@@ -1600,18 +1596,8 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 					|| x.getEditStateSetting() == EditStateSetting.HAND_CORRECTION_OTHER)
 				.collect(Collectors.toList());
 		if(lstEditState.isEmpty()) return result;
-		String strItemName = "";
-		for(EditStateOfDailyAttd editSt: lstEditState) {
-			Optional<MonthlyAttendanceItemNameDto> optAttItem = lstItemDay.stream()
-					.filter(a -> a.getAttendanceItemId() == editSt.getAttendanceItemId())
-					.findFirst();
-			if(optAttItem.isPresent()) {
-				strItemName += ", " + optAttItem.get().getAttendanceItemName();
-			}
-		}
-		if(strItemName.isEmpty()) return result;
-		
-		strItemName = strItemName.substring(2);
+		List<Integer> lstAttItemId = lstEditState.stream().map(x -> x.getAttendanceItemId()).collect(Collectors.toList());
+		String strItemName = lstItemDay.stream().filter(x -> lstAttItemId.contains(x.getAttendanceItemId())).map(a -> a.getAttendanceItemName()).collect(Collectors.joining(","));
 		result.alarmMessage = TextResource.localize("KAL010_16");
 		result.alarmTarget =  TextResource.localize("KAL010_617", strItemName);
 		return result;
