@@ -523,14 +523,22 @@ module nts.uk.ui.at.kdw013.a {
                         }
 
                         return vm.$dialog
-                            // ,Msg_2066, Msg_2080
-                            .error({ messageId: 'Msg_2081' })
+                            // ,Msg_2066
+                            .error({ messageId: 'Msg_2066' })
                             .then(() => null);
                     }
 
                     return $.Deferred().resolve(null);
                 })
-                .then((data) => {
+                .fail((response: ErrorMessage) => {
+                    const { messageId, parameterIds } = response;
+
+                    return vm.$dialog
+                        // Msg_2080
+                        .error({ messageId, messageParams: parameterIds })
+                        .then(() => null);
+                })
+                .then((data: OvertimeLeaveTime[] | null) => {
                     if (data && data.length) {
                         vm.openDialogCaculationResult(data);
                     }

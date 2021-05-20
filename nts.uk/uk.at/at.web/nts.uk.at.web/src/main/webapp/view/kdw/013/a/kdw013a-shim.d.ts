@@ -620,4 +620,14 @@ module nts.uk.ui.at.kdw013.a {
         //1: 休日出勤申請
         HOLIDAY_WORK_APPLICATION = 1
     };
+
+    export type ErrorMessage = {
+        atTime: string;
+        businessException: boolean;
+        errorMessage: string;
+        message: string;
+        messageId: string;
+        parameterIds: string[];
+        responseStatus: string;
+    }
 }
