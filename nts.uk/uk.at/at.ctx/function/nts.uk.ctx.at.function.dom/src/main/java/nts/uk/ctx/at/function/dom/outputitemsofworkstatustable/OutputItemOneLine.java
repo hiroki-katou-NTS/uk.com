@@ -17,7 +17,7 @@ import java.util.List;
 @Setter
 public class OutputItemOneLine {
     // 一行の合計
-    private double totalOfOneLine;
+    private Double totalOfOneLine;
     // 出力項目名称
     private String outPutItemName;
     // 出力項目の値

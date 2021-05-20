@@ -37563,13 +37563,14 @@ function bean(dialogOption) {
     return function (ctor) {
         __viewContext.ready(function () {
             var localShared = nts.uk.ui.windows.container.localShared;
-            nts.uk.ui.viewmodel.$storage()
+            nts.uk.ui.viewmodel
+                .$storage()
                 .then(function ($params) {
-                var $viewModel = new ctor($params || localShared), $created = $viewModel['created'];
+                var $viewModel = new ctor($params || (_.isEmpty(localShared) ? undefined : localShared)), $created = $viewModel['created'];
                 _.extend($viewModel, { $el: undefined });
                 // hook to created function
                 if ($created && _.isFunction($created)) {
-                    $created.apply($viewModel, [$params || localShared]);
+                    $created.apply($viewModel, [$params || (_.isEmpty(localShared) ? undefined : localShared)]);
                 }
                 // hook to mounted function
                 $viewModel.$nextTick(function () {
