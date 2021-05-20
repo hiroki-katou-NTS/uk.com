@@ -84,7 +84,8 @@ public class ConvertAlarmListToTopPageAlarmDataService {
                 Optional.of(patternCode.v()),
                 Optional.ofNullable(finalPatternName),
                 Optional.empty(),
-                Optional.empty()
+                Optional.empty(),
+                new ArrayList<>()
         )).collect(Collectors.toList());
 
         List<AtomTask> atomTask = new ArrayList<>();

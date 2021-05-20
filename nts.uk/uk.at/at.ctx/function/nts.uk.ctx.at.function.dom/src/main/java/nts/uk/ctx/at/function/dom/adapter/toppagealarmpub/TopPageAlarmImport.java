@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.function.dom.adapter.toppagealarmpub;
 
+import java.util.List;
 import java.util.Optional;
 
 import lombok.AllArgsConstructor;
@@ -54,4 +55,9 @@ public class TopPageAlarmImport {
 	 * 表示メッセージ
 	 */
 	private Optional<String> displayMessage;
+
+	/**
+	 * 部下の社員ID
+	 */
+	private List<String> subEmployeeIds;
 }

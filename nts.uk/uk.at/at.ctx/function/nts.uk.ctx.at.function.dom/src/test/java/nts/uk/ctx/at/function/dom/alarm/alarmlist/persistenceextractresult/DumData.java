@@ -12,6 +12,7 @@ import nts.uk.ctx.at.shared.dom.alarmList.AlarmCategory;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.AlarmListCheckType;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.ExtractionAlarmPeriodDate;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -153,7 +154,8 @@ public class DumData {
                     Optional.of("patternCode1"),
                     Optional.of("patternName1"),
                     Optional.of("linkUrl"),
-                    Optional.of("displayMessage")
+                    Optional.of("displayMessage"),
+                    new ArrayList<>()
             ),
             new TopPageAlarmImport(
                     1,
@@ -163,7 +165,8 @@ public class DumData {
                     Optional.of("patternCode2"),
                     Optional.of("patternName2"),
                     Optional.of("linkUrl"),
-                    Optional.of("displayMessage")
+                    Optional.of("displayMessage"),
+                    new ArrayList<>()
             ),
             new TopPageAlarmImport(
                     1,
@@ -173,7 +176,8 @@ public class DumData {
                     Optional.of("patternCode3"),
                     Optional.of("patternName3"),
                     Optional.of("linkUrl"),
-                    Optional.of("displayMessage")
+                    Optional.of("displayMessage"),
+                    new ArrayList<>()
             ),
             new TopPageAlarmImport(
                     1,
@@ -183,7 +187,8 @@ public class DumData {
                     Optional.of("patternCode4"),
                     Optional.of("patternName4"),
                     Optional.of("linkUrl"),
-                    Optional.of("displayMessage")
+                    Optional.of("displayMessage"),
+                    new ArrayList<>()
             ),
             new TopPageAlarmImport(
                     1,
@@ -193,7 +198,8 @@ public class DumData {
                     Optional.of("patternCode4"),
                     Optional.of("patternName4"),
                     Optional.of("linkUrl"),
-                    Optional.of("displayMessage")
+                    Optional.of("displayMessage"),
+                    new ArrayList<>()
             )
     );
 
@@ -307,7 +313,8 @@ public class DumData {
                     Optional.of("patternCode1"),
                     Optional.of("patternName1"),
                     Optional.of("linkUrl"),
-                    Optional.of("displayMessage")
+                    Optional.of("displayMessage"),
+                    new ArrayList<>()
             ),
             new TopPageAlarmImport(
                     1,
@@ -317,7 +324,8 @@ public class DumData {
                     Optional.of("patternCode2"),
                     Optional.of("patternName2"),
                     Optional.of("linkUrl"),
-                    Optional.of("displayMessage")
+                    Optional.of("displayMessage"),
+                    new ArrayList<>()
             ),
             new TopPageAlarmImport(
                     1,
@@ -327,7 +335,8 @@ public class DumData {
                     Optional.of("patternCode2"),
                     Optional.of("patternName2"),
                     Optional.of("linkUrl"),
-                    Optional.of("displayMessage")
+                    Optional.of("displayMessage"),
+                    new ArrayList<>()
             )
     );
 
@@ -348,7 +357,8 @@ public class DumData {
                     Optional.of("patternCode1"),
                     Optional.of("patternName1"),
                     Optional.of("linkUrl"),
-                    Optional.of("displayMessage")
+                    Optional.of("displayMessage"),
+                    new ArrayList<>()
             )
     );
 

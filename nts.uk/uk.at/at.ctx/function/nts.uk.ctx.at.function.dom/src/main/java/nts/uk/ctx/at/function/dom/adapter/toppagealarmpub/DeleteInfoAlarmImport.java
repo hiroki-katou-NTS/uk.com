@@ -30,7 +30,7 @@ public class DeleteInfoAlarmImport {
      */
     private int displayAtr;
     
-    /*
+    /**
      * パターンコード
      */
     private Optional<String> patternCode;

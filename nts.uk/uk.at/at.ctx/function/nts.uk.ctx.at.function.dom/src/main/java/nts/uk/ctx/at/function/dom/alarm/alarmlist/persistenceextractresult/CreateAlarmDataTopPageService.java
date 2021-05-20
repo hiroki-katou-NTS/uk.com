@@ -47,40 +47,34 @@ public class CreateAlarmDataTopPageService {
         Map<String, String> empIdMap = wkplHistoryInfos.stream()
                 .collect(Collectors.toMap(AffAtWorkplaceExport::getEmployeeId, AffAtWorkplaceExport::getWorkplaceId));
 
-        List<WorkplaceHistoryTopAlarmParamMerged> mergedList = new ArrayList<>();
-        wkplHistoryInfos.forEach(w -> alarmListInfo.forEach(alarm -> {
-            if (w.getEmployeeId().equals(alarm.getDisplaySId())) {
-                mergedList.add(new WorkplaceHistoryTopAlarmParamMerged(
-                        w.getEmployeeId(),
-                        w.getWorkplaceId(),
-                        w.getHistoryID(),
-                        w.getNormalWorkplaceID(),
-                        alarm.getAlarmClassification(),
-                        alarm.getOccurrenceDateTime(),
-                        alarm.getDisplaySId(),
-                        alarm.getDisplayAtr(),
-                        alarm.getPatternCode(),
-                        alarm.getPatternName(),
-                        alarm.getLinkUrl(),
-                        alarm.getDisplayMessage()
-                ));
-            }
-        }));
         //$職場Map　： map groupingBy $$所属職場履歴情報リスト.職場ID　//※補足1を参照
-        Map<String, List<WorkplaceHistoryTopAlarmParamMerged>> workplaceMap = mergedList.stream()
-                .collect(Collectors.groupingBy(WorkplaceHistoryTopAlarmParamMerged::getWorkplaceId));
+        Map<String, List<TopPageAlarmImport>> workplaceMap = wkplHistoryInfos.stream()
+                .collect(Collectors.groupingBy(
+                        i -> i.getWorkplaceId(),
+                        Collectors.mapping(
+                                i -> alarmListInfo.stream()
+                                        .filter(a -> a.getDisplaySId().equals(i.getEmployeeId()))
+                                        .findAny()
+                                        .orElse(null),
+                                Collectors.toList()
+                        )
+                ));
 
         //$チェックの職場IDList　＝　$所属職場履歴情報リスト　：　map　$.職場ID
         List<String> checkWkplId = wkplHistoryInfos.stream().map(AffAtWorkplaceExport::getWorkplaceId).distinct().collect(Collectors.toList());
 
         //$エラーがある職場IDList　＝　$エラーがある社員IDList　：　map　$社員IDMap.get($)
         List<String> wkplIdListErrors = empIdErrors.stream().map(empIdMap::get).filter(Objects::nonNull).distinct().collect(Collectors.toList());
+
         //$エラーがなくなった職場IDList　＝　$チェックの職場IDList　：　except　$エラーがある職場IDList
         List<String> wkplIdListNotErrors = checkWkplId.stream()
                 .filter(x -> !wkplIdListErrors.contains(x))
                 .collect(Collectors.toList());
 
+        // $削除の情報　＝　Empty
         Optional<DeleteInfoAlarmImport> delInfo = Optional.empty();
+
+        // if　$エラーがなくなった職場IDList.isPrensent()　//削除
         if (!CollectionUtil.isEmpty(wkplIdListNotErrors)) {
             List<String> allEmpErrorsRemoved = new ArrayList<>();
             wkplIdListNotErrors.forEach(x -> {
@@ -111,25 +105,24 @@ public class CreateAlarmDataTopPageService {
             //職場、基準日からアラーム通知先の社員を取得する
             List<String> empIds = require.getListEmployeeId(wkpl, GeneralDate.today());
             //$発生日時　＝　$職場Map.get($)　：　sort $.発生日時 DESC first $.発生日時
-            Optional<WorkplaceHistoryTopAlarmParamMerged> optWkplTopAlarm = workplaceMap.get(wkpl).stream()
+            Optional<TopPageAlarmImport> optWkplTopAlarm = workplaceMap.get(wkpl).stream()
                     .sorted((e1, e2) -> e2.getOccurrenceDateTime().compareTo(e1.getOccurrenceDateTime()))
                     .findFirst();
             GeneralDateTime occurrenceDateTime = optWkplTopAlarm.isPresent() ? optWkplTopAlarm.get().getOccurrenceDateTime() : null;
 
-            //$上長１　＝　$上長の社員IDList　：　トップアラームParam#作成する(
-            empIds.forEach(e -> {
-                TopPageAlarmImport topAlarmObj = TopPageAlarmImport.builder()
-                        .alarmClassification(deleteInfo.isPresent() ? deleteInfo.get().getAlarmClassification() : 0)
-                        .occurrenceDateTime(occurrenceDateTime)
-                        .displaySId(e)
-                        .displayAtr(1)
-                        .patternCode(patternCode)
-                        .patternName(patternName)
-                        .linkUrl(Optional.empty())
-                        .displayMessage(Optional.empty())
-                        .build();
-                topAlarmList.add(topAlarmObj);
-            });
+            //$上長１　＝　$上長の社員IDList　：　トップアラームParam#作成する(アラームリスト、$発生日時、$、上長、[prv-1]部下のエラーがある社員IDを判断する（Loopしてる職場ID、$職場Map)、$パターンコード、Empty、Empty、$パターン名称）
+            topAlarmList.addAll(empIds.stream().map(empId -> TopPageAlarmImport.builder()
+                    .alarmClassification(deleteInfo.isPresent() ? deleteInfo.get().getAlarmClassification() : 0)
+                    .occurrenceDateTime(occurrenceDateTime)
+                    .displaySId(empId)
+                    .displayAtr(1)
+                    .patternCode(patternCode)
+                    .patternName(patternName)
+                    .linkUrl(Optional.empty())
+                    .displayMessage(Optional.empty())
+                    .subEmployeeIds(getEmployeeIdsWithChildWkpError(wkpl, workplaceMap))
+                    .build()
+            ).collect(Collectors.toList()));
         });
         //$上長のアラームリスト　：distinct　　//※重複の社員IDは追加しない
         List<TopPageAlarmImport> topAlarmListDistinct = topAlarmList.stream()
@@ -137,6 +130,17 @@ public class CreateAlarmDataTopPageService {
 
         Optional<DeleteInfoAlarmImport> finalDelInfo = delInfo;
         return AtomTask.of(() -> require.create(companyId, topAlarmListDistinct, finalDelInfo));
+    }
+
+    /**
+     * [prv-1]部下のエラーがある社員IDを判断する
+     * @param workplaceId
+     * @param workplaceMap
+     * @return 部下のエラーがある社員ID
+     */
+    private static List<String> getEmployeeIdsWithChildWkpError(String workplaceId, Map<String, List<TopPageAlarmImport>> workplaceMap) {
+        List<TopPageAlarmImport> topAlarmParamList = workplaceMap.getOrDefault(workplaceId, new ArrayList<>());
+        return topAlarmParamList.stream().map(i -> i.getDisplaySId()).collect(Collectors.toList());
     }
 
     private static <T> Predicate<T> distinctByKey(Function<? super T, Object> keyExtractor) {
