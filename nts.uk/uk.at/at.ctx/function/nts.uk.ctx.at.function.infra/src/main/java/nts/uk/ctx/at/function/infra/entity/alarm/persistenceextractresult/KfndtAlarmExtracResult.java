@@ -94,6 +94,7 @@ public class KfndtAlarmExtracResult extends ContractUkJpaEntity implements Seria
             List<AlarmExtractInfoResult> alarmExtractInfoResults = new ArrayList<>();
             Map<GroupKey, List<KfndtAlarmExtracResult>> mapByGroupKey = entities.stream().collect(Collectors.groupingBy(e -> new GroupKey(e.pk.conditionNo, e.pk.alarmCheckCode, e.pk.category, e.pk.checkAtr)));
             mapByGroupKey.forEach((key, value) -> {
+                value.sort(Comparator.comparing(i -> i.pk.startDate));
                 AlarmExtractInfoResult infoResult = new AlarmExtractInfoResult(
                         key.conditionNo,
                         new AlarmCheckConditionCode(key.alarmCheckCode),
@@ -110,8 +111,7 @@ public class KfndtAlarmExtracResult extends ContractUkJpaEntity implements Seria
                                 Optional.ofNullable(e.workPlaceId),
                                 Optional.ofNullable(e.message),
                                 Optional.ofNullable(e.checkValue)
-                        )).sorted(Comparator.comparing(i -> i.getPeriodDate().getStartDate().get()))
-                                .collect(Collectors.toList())
+                        )).collect(Collectors.toList())
                 );
                 alarmExtractInfoResults.add(infoResult);
             });
