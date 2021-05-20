@@ -1,7 +1,12 @@
 module nts.uk.at.view.ksc001.a {
     export module viewmodel {
         export class ScreenModel {
+
+            pgName: KnockoutObservable<string> = ko.observable('');
+
             constructor() {
+                const self = this;
+                self.getProgramName();
             }
             /**
              * get data on start page
@@ -25,6 +30,16 @@ module nts.uk.at.view.ksc001.a {
             referenceHistoryScreen(): void {
                 let self = this;
                nts.uk.request.jump("/view/ksc/001/g/index.xhtml");
+            }
+
+            getProgramName() {
+                const self = this;
+                const namePath = nts.uk.text.format('sys/portal/standardmenu/findProgramName/{0}/{1}', 'KSC001', 'A');
+                nts.uk.request.ajax('com', namePath).then((value: string) => {
+                    if (!_.isNil(value)) {
+                        self.pgName(value);
+                    }
+                });
             }
         }
     }
