@@ -46,6 +46,7 @@ export class CmmS45ShrComponentsApp10Component extends Vue {
             if (vm.abs) {
                 wkTimeCodes.push(vm.abs.workInformation.workTime);
             }
+            vm.params.appDispInfoStartupOutput.appDispInfoWithDateOutput = data.data.appDispInfoStartup.appDispInfoWithDateOutput;
             
             return vm.$http.post('at', API.getWorkTimeByCDLst, { wkTimeCodes });
         }).then((data: any) => {

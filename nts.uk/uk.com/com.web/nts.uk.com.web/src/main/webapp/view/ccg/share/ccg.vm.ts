@@ -2611,7 +2611,7 @@ var CCG001_HTML = `<div id="component-ccg001" class="cf height-maximum" style="v
                                         <div id="ccg001-btn-KCP005-apply" class="ccg001-btn ccg-btn-vertical height-maximum"
                                             data-bind="attr: {tabindex: ccg001Tabindex}, click: extractSelectedEmployees">
                                             <div class="ccg001-cell mid">
-                                                <i class="icon icon-47-white-check-mark"></i>
+                                                <i class="icon icon-47-white-check-mark icon-ml"></i>
                                                 <div class="ccg-lbl-vertical ccg-lbl-extract-emp">`+CCG001TextResource.CCG001_26+`</div>
                                             </div>
                                         </div>
@@ -2684,7 +2684,7 @@ var CCG001_HTML = `<div id="component-ccg001" class="cf height-maximum" style="v
                         <div id="ccg001-btn-KCP005-apply" class="ccg001-btn ccg-btn-vertical height-maximum"
                             data-bind="attr: {tabindex: ccg001Tabindex}, click: extractSelectedEmployeesInTab3">
                             <div class="ccg001-cell mid">
-                                <i class="icon icon-47-white-check-mark"></i>
+                                <i class="icon icon-47-white-check-mark icon-ml"></i>
                                 <div class="ccg-lbl-vertical ccg-lbl-extract-emp">`+CCG001TextResource.CCG001_26+`</div>
                             </div>
                         </div>
@@ -2701,7 +2701,7 @@ var CCG001_HTML = `<div id="component-ccg001" class="cf height-maximum" style="v
         <span class="position-mid ccg001-caret ccg001-caret-vertical caret-right"></span>
         <div id="ccg001-btn-search-drawer" class="position-mid ccg001-btn ccg-btn-vertical" data-bind="click: showComponent">
             <div class="ccg001-cell mid">
-            <i class="icon icon-01-searchmode"></i>
+            <i class="icon icon-01-searchmode icon-ml"></i>
             <div class="ccg-lbl-vertical ccg-lbl-search-drawer">`+CCG001TextResource.CCG001_21+`</div>
             </div>
         </div>
