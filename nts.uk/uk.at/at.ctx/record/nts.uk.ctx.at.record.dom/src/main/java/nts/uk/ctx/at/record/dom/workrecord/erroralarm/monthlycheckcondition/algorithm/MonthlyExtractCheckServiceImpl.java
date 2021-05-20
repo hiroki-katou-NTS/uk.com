@@ -89,7 +89,6 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numb
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.SubstituteHolidayAggrResult;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.UnbalanceVacation;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakDayOffMngRepository;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemainRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveRemainingDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveUsedDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.ComDayOffManaDataRepository;
@@ -179,8 +178,6 @@ public class MonthlyExtractCheckServiceImpl implements MonthlyExtractCheckServic
 	@Inject
 	private CompensLeaveComSetRepository compensLeaveComSetRepository;
 
-	@Inject
-	private InterimRemainRepository interimRemainRepository;
 
 	@Inject
 	private InterimBreakDayOffMngRepository interimBreakDayOffMngRepository;
@@ -354,7 +351,7 @@ public class MonthlyExtractCheckServiceImpl implements MonthlyExtractCheckServic
 							DatePeriod newPeriod = new DatePeriod(periodCurrentMonth.start(), periodCurrentMonth.start().addYears(1).addDays(-1));
 							RequireImpl requireImpl = new RequireImpl.RequireImplBuilder(comDayOffManaDataRepository,
 									leaveManaDataRepository, shareEmploymentAdapter, compensLeaveEmSetRepository,
-									compensLeaveComSetRepository).interimRemainRepo(interimRemainRepository)
+									compensLeaveComSetRepository)
 											.interimBreakDayOffMngRepo(interimBreakDayOffMngRepository).companyAdapter(companyAdapter)
 											.closureEmploymentRepo(closureEmploymentRepo).closureRepo(closureRepo)
 											.leaveComDayOffManaRepository(leaveComDayOffManaRepository).build();

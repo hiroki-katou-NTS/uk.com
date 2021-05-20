@@ -65,11 +65,11 @@ public class WorkTimeIsFluidWork {
 				&& workTypeInfor.isPresent()) {
 			PredetemineTimeSetting timeSetting = pred.get();
 			WorkType workTypeData = workTypeInfor.get();
-			if(workTypeData.getDailyWork().getWorkTypeUnit() == WorkTypeUnit.OneDay) {
+			if(workTypeData.getDailyWork().getWorkTypeUnit().equals(WorkTypeUnit.OneDay)) {
 				return timeSetting.getPredTime().getPredTime().getOneDay().v();
-			} else if (workTypeData.getDailyWork().decisionNeedPredTime() == AttendanceHolidayAttr.MORNING) {
+			} else if (workTypeData.getDailyWork().decisionNeedPredTime().equals(AttendanceHolidayAttr.MORNING)) {
 				return timeSetting.getPredTime().getPredTime().getMorning().v();
-			} else if (workTypeData.getDailyWork().decisionNeedPredTime() == AttendanceHolidayAttr.AFTERNOON) {
+			} else if (workTypeData.getDailyWork().decisionNeedPredTime().equals(AttendanceHolidayAttr.AFTERNOON)) {
 				return timeSetting.getPredTime().getPredTime().getAfternoon().v();
 			} else {
 				return 0;

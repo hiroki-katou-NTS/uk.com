@@ -22,87 +22,87 @@ import nts.uk.ctx.at.function.app.nrl.xml.Element;
 public abstract class ItemSequence<T extends MeanCarryable> implements Sequential<T> {
 
 	public static final List<String> NOACCEPT_ORDER = Arrays.asList(Element.SOH, Element.HDR, Element.LENGTH,
-			Element.VERSION, Element.FLAG, Element.FRAGMENT_NUMBER, Element.NRL_NO, Element.MAC_ADDR, Element.PADDING,
+			Element.VERSION, Element.FLAG, Element.FRAGMENT_NUMBER, Element.NRL_NO, Element.MAC_ADDR,  Element.CONTRACT_CODE , Element.PADDING,
 			Element.PAYLOAD, Element.BCC);
 	public static final List<String> ACCEPT_ORDER = Arrays.asList(Element.SOH, Element.HDR, Element.LENGTH,
-			Element.VERSION, Element.FLAG, Element.FRAGMENT_NUMBER, Element.NRL_NO, Element.MAC_ADDR, Element.PADDING,
+			Element.VERSION, Element.FLAG, Element.FRAGMENT_NUMBER, Element.NRL_NO, Element.MAC_ADDR, Element.CONTRACT_CODE , Element.PADDING,
 			Element.BCC);
 
 	public static final List<String> TEST_ORDER = Arrays.asList(Element.SOH, Element.HDR, Element.LENGTH,
-			Element.VERSION, Element.FLAG, Element.FRAGMENT_NUMBER, Element.NRL_NO, Element.MAC_ADDR, Element.PADDING,
+			Element.VERSION, Element.FLAG, Element.FRAGMENT_NUMBER, Element.NRL_NO, Element.MAC_ADDR, Element.CONTRACT_CODE , Element.PADDING,
 			Element.BCC);
 
 	public static final List<String> POLLING_REQ_ORDER = Arrays.asList(Element.SOH, Element.HDR, Element.LENGTH,
-			Element.VERSION, Element.FLAG, Element.FRAGMENT_NUMBER, Element.NRL_NO, Element.MAC_ADDR, Element.PADDING,
+			Element.VERSION, Element.FLAG, Element.FRAGMENT_NUMBER, Element.NRL_NO, Element.MAC_ADDR, Element.CONTRACT_CODE , Element.PADDING,
 			Element.BCC);
 	public static final List<String> POLLING_RES_ORDER = Arrays.asList(Element.SOH, Element.HDR, Element.LENGTH,
-			Element.VERSION, Element.FLAG, Element.FRAGMENT_NUMBER, Element.NRL_NO, Element.MAC_ADDR, Element.PADDING,
+			Element.VERSION, Element.FLAG, Element.FRAGMENT_NUMBER, Element.NRL_NO, Element.MAC_ADDR, Element.CONTRACT_CODE , Element.PADDING,
 			Element.STATUS, Element.REQUEST1, Element.REQUEST2, Element.REQUEST3, Element.REQUEST4, Element.REQUEST5,
 			Element.REQUEST6, Element.REQUEST7, Element.REQUEST8, Element.REQUEST9, Element.REQUEST10,
 			Element.REQUEST11, Element.REQUEST12, Element.REQUEST13, Element.REQUEST14, Element.REQUEST15,
 			Element.REQUEST16, Element.REQUEST17, Element.BCC);
 
 	public static final List<String> SESSION_REQ_ORDER = Arrays.asList(Element.SOH, Element.HDR, Element.LENGTH,
-			Element.VERSION, Element.FLAG, Element.FRAGMENT_NUMBER, Element.NRL_NO, Element.MAC_ADDR, Element.PADDING,
+			Element.VERSION, Element.FLAG, Element.FRAGMENT_NUMBER, Element.NRL_NO, Element.MAC_ADDR, Element.CONTRACT_CODE , Element.PADDING,
 			Element.BCC);
 
 	public static final List<String> ALL_IOTIME_REQ_ORDER = Arrays.asList(Element.SOH, Element.HDR, Element.PADDING1,
-			Element.LENGTH, Element.VERSION, Element.FLAG, Element.FRAGMENT_NUMBER, Element.NRL_NO, Element.MAC_ADDR,
+			Element.LENGTH, Element.VERSION, Element.FLAG, Element.FRAGMENT_NUMBER, Element.NRL_NO, Element.MAC_ADDR, Element.CONTRACT_CODE ,
 			Element.PADDING2, Element.PAYLOAD, Element.BCC);
 
 	public static final List<String> ALL_PETITIONS_REQ_ORDER = Arrays.asList(Element.SOH, Element.HDR, Element.PADDING1,
-			Element.LENGTH, Element.VERSION, Element.FLAG, Element.FRAGMENT_NUMBER, Element.NRL_NO, Element.MAC_ADDR,
+			Element.LENGTH, Element.VERSION, Element.FLAG, Element.FRAGMENT_NUMBER, Element.NRL_NO, Element.MAC_ADDR, Element.CONTRACT_CODE ,
 			Element.PADDING2, Element.PAYLOAD, Element.BCC);
 
 	public static final List<String> PERSONAL_INFO_REQ_ORDER = Arrays.asList(Element.SOH, Element.HDR, Element.LENGTH,
-			Element.VERSION, Element.FLAG, Element.FRAGMENT_NUMBER, Element.NRL_NO, Element.MAC_ADDR, Element.PADDING,
+			Element.VERSION, Element.FLAG, Element.FRAGMENT_NUMBER, Element.NRL_NO, Element.MAC_ADDR, Element.CONTRACT_CODE , Element.PADDING,
 			Element.BCC);
 	public static final List<String> PERSONAL_INFO_RES_ORDER = Arrays.asList(Element.SOH, Element.HDR, Element.LENGTH,
-			Element.VERSION, Element.FLAG, Element.FRAGMENT_NUMBER, Element.NRL_NO, Element.MAC_ADDR, Element.PADDING,
+			Element.VERSION, Element.FLAG, Element.FRAGMENT_NUMBER, Element.NRL_NO, Element.MAC_ADDR, Element.CONTRACT_CODE , Element.PADDING,
 			Element.NUMBER, Element.PAYLOAD, Element.BCC);
 
 	public static final List<String> ALL_RSV_REQ_ORDER = Arrays.asList(Element.SOH, Element.HDR, Element.PADDING1,
-			Element.LENGTH, Element.VERSION, Element.FLAG, Element.FRAGMENT_NUMBER, Element.NRL_NO, Element.MAC_ADDR,
+			Element.LENGTH, Element.VERSION, Element.FLAG, Element.FRAGMENT_NUMBER, Element.NRL_NO, Element.MAC_ADDR, Element.CONTRACT_CODE ,
 			Element.PADDING2, Element.PAYLOAD, Element.BCC);
 
 	public static final List<String> WORKTYPE_INFO_REQ_ORDER = Arrays.asList(Element.SOH, Element.HDR, Element.LENGTH,
-			Element.VERSION, Element.FLAG, Element.FRAGMENT_NUMBER, Element.NRL_NO, Element.MAC_ADDR, Element.PADDING,
+			Element.VERSION, Element.FLAG, Element.FRAGMENT_NUMBER, Element.NRL_NO, Element.MAC_ADDR, Element.CONTRACT_CODE , Element.PADDING,
 			Element.BCC);
 	public static final List<String> WORKTYPE_INFO_RES_ORDER = Arrays.asList(Element.SOH, Element.HDR, Element.LENGTH,
-			Element.VERSION, Element.FLAG, Element.FRAGMENT_NUMBER, Element.NRL_NO, Element.MAC_ADDR, Element.PADDING,
+			Element.VERSION, Element.FLAG, Element.FRAGMENT_NUMBER, Element.NRL_NO, Element.MAC_ADDR, Element.CONTRACT_CODE , Element.PADDING,
 			Element.NUMBER, Element.PAYLOAD, Element.BCC);
 
 	public static final List<String> WORKTIME_INFO_REQ_ORDER = Arrays.asList(Element.SOH, Element.HDR, Element.LENGTH,
-			Element.VERSION, Element.FLAG, Element.FRAGMENT_NUMBER, Element.NRL_NO, Element.MAC_ADDR, Element.PADDING,
+			Element.VERSION, Element.FLAG, Element.FRAGMENT_NUMBER, Element.NRL_NO, Element.MAC_ADDR, Element.CONTRACT_CODE , Element.PADDING,
 			Element.BCC);
 	public static final List<String> WORKTIME_INFO_RES_ORDER = Arrays.asList(Element.SOH, Element.HDR, Element.LENGTH,
-			Element.VERSION, Element.FLAG, Element.FRAGMENT_NUMBER, Element.NRL_NO, Element.MAC_ADDR, Element.PADDING,
+			Element.VERSION, Element.FLAG, Element.FRAGMENT_NUMBER, Element.NRL_NO, Element.MAC_ADDR, Element.CONTRACT_CODE , Element.PADDING,
 			Element.NUMBER, Element.PAYLOAD, Element.BCC);
 
 	public static final List<String> OVERTIME_INFO_REQ_ORDER = Arrays.asList(Element.SOH, Element.HDR, Element.LENGTH,
-			Element.VERSION, Element.FLAG, Element.FRAGMENT_NUMBER, Element.NRL_NO, Element.MAC_ADDR, Element.PADDING,
+			Element.VERSION, Element.FLAG, Element.FRAGMENT_NUMBER, Element.NRL_NO, Element.MAC_ADDR, Element.CONTRACT_CODE , Element.PADDING,
 			Element.BCC);
 	public static final List<String> OVERTIME_INFO_RES_ORDER = Arrays.asList(Element.SOH, Element.HDR, Element.LENGTH,
-			Element.VERSION, Element.FLAG, Element.FRAGMENT_NUMBER, Element.NRL_NO, Element.MAC_ADDR, Element.PADDING,
+			Element.VERSION, Element.FLAG, Element.FRAGMENT_NUMBER, Element.NRL_NO, Element.MAC_ADDR, Element.CONTRACT_CODE , Element.PADDING,
 			Element.PAYLOAD, Element.BCC);
 
 	public static final List<String> RESERV_INFO_REQ_ORDER = Arrays.asList(Element.SOH, Element.HDR, Element.LENGTH,
-			Element.VERSION, Element.FLAG, Element.FRAGMENT_NUMBER, Element.NRL_NO, Element.MAC_ADDR, Element.PADDING,
+			Element.VERSION, Element.FLAG, Element.FRAGMENT_NUMBER, Element.NRL_NO, Element.MAC_ADDR, Element.CONTRACT_CODE , Element.PADDING,
 			Element.BCC);
 	public static final List<String> RESERV_INFO_RES_ORDER = Arrays.asList(Element.SOH, Element.HDR, Element.LENGTH,
-			Element.VERSION, Element.FLAG, Element.FRAGMENT_NUMBER, Element.NRL_NO, Element.MAC_ADDR, Element.PADDING,
+			Element.VERSION, Element.FLAG, Element.FRAGMENT_NUMBER, Element.NRL_NO, Element.MAC_ADDR, Element.CONTRACT_CODE , Element.PADDING,
 			Element.PAYLOAD, Element.BCC);
 
 	public static final List<String> TIMESET_INFO_REQ_ORDER = Arrays.asList(Element.SOH, Element.HDR, Element.LENGTH,
-			Element.VERSION, Element.FLAG, Element.FRAGMENT_NUMBER, Element.NRL_NO, Element.MAC_ADDR, Element.PADDING,
+			Element.VERSION, Element.FLAG, Element.FRAGMENT_NUMBER, Element.NRL_NO, Element.MAC_ADDR, Element.CONTRACT_CODE , Element.PADDING,
 			Element.BCC);
 	public static final List<String> TIMESET_INFO_RES_ORDER = Arrays.asList(Element.SOH, Element.HDR, Element.LENGTH,
-			Element.VERSION, Element.FLAG, Element.FRAGMENT_NUMBER, Element.NRL_NO, Element.MAC_ADDR, Element.PADDING,
+			Element.VERSION, Element.FLAG, Element.FRAGMENT_NUMBER, Element.NRL_NO, Element.MAC_ADDR, Element.CONTRACT_CODE , Element.PADDING,
 			Element.YEAR, Element.MONTH, Element.DAY, Element.HOUR, Element.MINITE, Element.SECOND, Element.WEEK,
 			Element.BCC);
 
 	public static final List<String> TR_REMOTE = Arrays.asList(Element.SOH, Element.HDR, Element.LENGTH,
-			Element.VERSION, Element.FLAG, Element.FRAGMENT_NUMBER, Element.NRL_NO, Element.MAC_ADDR, Element.PADDING,
+			Element.VERSION, Element.FLAG, Element.FRAGMENT_NUMBER, Element.NRL_NO, Element.MAC_ADDR, Element.CONTRACT_CODE , Element.PADDING,
 			Element.PAYLOAD, Element.BCC);
 	
 	/**

@@ -524,7 +524,6 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 
 	private void setColorTextBox(TextBox textBox) {
 	    Font textFont = textBox.getFont();
-	    textBox.getTextOptions().setName("源ノ角ゴシック JP Normal");
 	    textFont.setColor(Color.fromArgb(255, 0, 0));
 	    textBox.setFont(textFont);
 	}

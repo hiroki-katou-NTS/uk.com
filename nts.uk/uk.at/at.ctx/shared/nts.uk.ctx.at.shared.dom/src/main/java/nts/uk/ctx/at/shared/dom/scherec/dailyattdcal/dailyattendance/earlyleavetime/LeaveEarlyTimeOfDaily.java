@@ -244,11 +244,9 @@ public class LeaveEarlyTimeOfDaily {
 		return result;
 	}
 	
+	//クリア 早退時間の時間
 	public void  resetData() {
-		this.leaveEarlyTime = TimeWithCalculation.sameTime(new AttendanceTime(0));
-		this.leaveEarlyDeductionTime = TimeWithCalculation.sameTime(new AttendanceTime(0));
-		this. timePaidUseTime =  TimevacationUseTimeOfDaily.defaultValue();
-		this.intervalTime =  IntervalExemptionTime.defaultValue();
+		this.leaveEarlyTime.setTime(new AttendanceTime(0));
 	}
 	
 	public static LeaveEarlyTimeOfDaily createDefaultWithNo(int no) {

@@ -469,15 +469,10 @@ module nts.uk.at.view.kaf000.b.viewmodel {
 		            });
                 });
                 break;
-            case "Msg_1691":
-                vm.$dialog.error({ messageId: res.messageId, messageParams: res.parameterIds }).then(() => {
-					vm.$blockui("hide");
-				});
-                break;
             case "Msg_1692":
-            case "Msg_1693": {
+            case "Msg_1693":
                 break;
-            }
+			case "Msg_1691":
 			case 'Msg_235':
 			case 'Msg_391':
 			case 'Msg_1518':
@@ -506,6 +501,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             case 'Msg_1686':
             case 'Msg_1706':
             case 'Msg_1983':
+			case "Msg_1654":
 				vm.$dialog.error({ messageId: res.messageId, messageParams: res.parameterIds }).then(() => {
 					vm.$blockui("hide");
 				});

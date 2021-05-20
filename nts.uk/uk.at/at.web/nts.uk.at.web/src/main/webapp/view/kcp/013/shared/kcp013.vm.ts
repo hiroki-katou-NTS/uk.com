@@ -296,10 +296,7 @@ module nts.uk.ui.at.kcp013.shared {
 
                             // redmine #113691
                             if (filter) {
-                                if (check) {
-                                    
-                                    
-                                } else {
+                                if (!check) {
                                     // trường hợp workPlace không có worktime thì sẽ lấy theo company.
                                     if (data.hasWorkTimeInModeWorkPlace == true) {
                                         vm.data.filter(true);
