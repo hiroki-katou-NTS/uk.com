@@ -611,11 +611,11 @@ module nts.uk.at.view.kdp.share {
 			}
 			return;
 		}
-		let maxSize : number = 18;
+		let maxSize : number = 16;
 		if(type == 0 && $('.btn-layout-type-0>div').length > 0 ) {
-			maxSize = 21;	
+			maxSize = 16;	
 		} 
-		let fontSize = (element.offsetWidth / element.innerText.length) + (type == 0 && $('.btn-layout-type-0>div').length > 0 ? 5 : $('.btn-layout-type-0>div').length > 0 ? 5 : 2);
+		let fontSize = (element.offsetWidth / element.innerText.length) + (type == 0 && $('.btn-layout-type-0>div').length > 0 ? 4 : $('.btn-layout-type-0>div').length > 0 ? 4 : 1);
 		if(fontSize > maxSize) fontSize = maxSize;
 		element.style.fontSize = fontSize + 'px';
 	}

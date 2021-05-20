@@ -47,7 +47,6 @@ import nts.uk.ctx.at.shared.dom.calculationsetting.repository.StampReflectionMan
 import nts.uk.ctx.at.shared.dom.dailyattdcal.converter.DailyRecordShareFinder;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailywork.worktime.empwork.EmployeeWorkDataSetting;
 import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.output.PeriodInMasterList;
-import nts.uk.ctx.at.shared.dom.dailyprocess.calc.CalculateOption;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
 import nts.uk.ctx.at.shared.dom.scherec.application.common.ApplicationShare;
@@ -210,7 +209,7 @@ public class ReflectApplicationWorkRecordPubImpl implements ReflectApplicationWo
 				convertDailyRecordToAd, calculateDailyRecordServiceCenter, dailyRecordAdUpService,
 				requestSettingAdapter, flexWorkSettingRepository, predetemineTimeSettingRepository,
 				fixedWorkSettingRepository, flowWorkSettingRepository, goBackReflectRepository,
-				stampAppReflectRepository, lateEarlyCancelReflectRepository, reflectWorkChangeAppRepository,
+				stampAppReflectRepository, lateEarlyCancelReflectRepository, reflectWorkChangeAppRepository, createDailyResults,
 				timeLeaveAppReflectRepository, appReflectOtHdWorkRepository, vacationApplicationReflectRepository, timePriorityRepository,
 				compensLeaveComSetRepository, subLeaveAppReflectRepository, substituteWorkAppReflectRepository);
 		val result = ReflectApplicationWorkRecord.process(impl ,(ApplicationShare) application, date, convertToDom(reflectStatus));
