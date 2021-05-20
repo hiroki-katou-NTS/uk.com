@@ -1,5 +1,6 @@
 package nts.uk.screen.at.app.query.kdp.kdp001.a;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -45,7 +46,7 @@ public class LocationStampInput {
 		List<String> workplaces = workLocation.getListWorkplace().stream().filter(x -> x.getCompanyId().equals(cid))
 				.map(m -> m.getWorkpalceId())
 				.collect(Collectors.toList());
-
+		Collections.reverse(workplaces);
 		dto.setWorkpalceId(workplaces);
 
 		return dto;
