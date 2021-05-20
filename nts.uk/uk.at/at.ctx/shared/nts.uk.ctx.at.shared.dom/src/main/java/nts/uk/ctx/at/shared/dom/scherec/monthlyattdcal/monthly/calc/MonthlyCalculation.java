@@ -63,6 +63,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 import nts.uk.ctx.at.shared.dom.workrule.weekmanage.WeekStart;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
@@ -622,8 +623,11 @@ public class MonthlyCalculation implements SerializableWithOptional {
 		// フレックス時間勤務の時
 		if (this.workingSystem == WorkingSystem.FLEX_TIME_WORK) {
 
-			// 年休使用時間に加算する
-			this.addAnnualLeaveUseTime();
+			/** 大塚モードかを確認する */
+			if (AppContexts.optionLicense().customize().ootsuka()) { 
+				// 年休使用時間に加算する
+				this.addAnnualLeaveUseTime();
+			}
 
 			// フレックス勤務の就業時間を求める （Redmine#106235）
 			val workTimeOpt = this.flexTime.askWorkTimeOfFlex(require, this.companyId, this.employeeId, this.closureId, this.yearMonth,
@@ -632,9 +636,12 @@ public class MonthlyCalculation implements SerializableWithOptional {
 			if (workTimeOpt.isPresent()) {
 				this.aggregateTime.getWorkTime().setWorkTime(workTimeOpt.get());
 			}
-
-			// 控除時間が余分に入れられていないか確認する
-			this.checkDeductTime();
+			
+			/** 大塚モードかを確認する */
+			if (AppContexts.optionLicense().customize().ootsuka()) { 
+				// 控除時間が余分に入れられていないか確認する
+				this.checkDeductTime();
+			}
 		}
 
 		ConcurrentStopwatches.stop("12225:フレックス補填：");

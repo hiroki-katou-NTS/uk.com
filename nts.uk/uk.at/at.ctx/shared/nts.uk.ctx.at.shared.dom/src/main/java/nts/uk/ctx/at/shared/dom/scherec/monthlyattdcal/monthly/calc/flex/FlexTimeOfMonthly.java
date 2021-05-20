@@ -450,22 +450,23 @@ public class FlexTimeOfMonthly implements SerializableWithOptional{
 		}
 		
 		// 大塚モードの判断
-		if (AppContexts.optionLicense().customize().ootsuka()) {
-			// 大塚カスタマイズ（フレ永続繰越）
-			{
-				// フレックス繰越不足時間が計算されているか確認
-				int carryforwardShortageMinutes = this.flexCarryforwardTime.getFlexCarryforwardShortageTime().v();
-				if (carryforwardShortageMinutes > 0){
-					
-					// フレ不足時間←フレ繰越不足時間を加算
-					this.flexShortageTime = this.flexShortageTime.addMinutes(carryforwardShortageMinutes);
-					
-					// フレックス時間←フレ繰越不足時間を減算
-					this.flexTime.setFlexTime(this.flexTime.getFlexTime().addMinutes(-carryforwardShortageMinutes, 0));
-					
-					// フレ繰越不足時間←0:00
-					this.flexCarryforwardTime.setFlexCarryforwardShortageTime(new AttendanceTimeMonth(0));
-				}
+		if (!AppContexts.optionLicense().customize().ootsuka()) 
+			return;
+		
+		// 大塚カスタマイズ（フレ永続繰越）
+		{
+			// フレックス繰越不足時間が計算されているか確認
+			int carryforwardShortageMinutes = this.flexCarryforwardTime.getFlexCarryforwardShortageTime().v();
+			if (carryforwardShortageMinutes > 0){
+				
+				// フレ不足時間←フレ繰越不足時間を加算
+				this.flexShortageTime = this.flexShortageTime.addMinutes(carryforwardShortageMinutes);
+				
+				// フレックス時間←フレ繰越不足時間を減算
+				this.flexTime.setFlexTime(this.flexTime.getFlexTime().addMinutes(-carryforwardShortageMinutes, 0));
+				
+				// フレ繰越不足時間←0:00
+				this.flexCarryforwardTime.setFlexCarryforwardShortageTime(new AttendanceTimeMonth(0));
 			}
 		}
 		
@@ -1276,14 +1277,14 @@ public class FlexTimeOfMonthly implements SerializableWithOptional{
 				period, yearMonth, aggregateAtr, employeeSets, settingsByFlex, closureId, closureDate, 
 				Optional.of(aggregateTotalWorkingTime), dailyAttendanceTime).v();
 		
+		/** 大塚モードかを確認する */
 		// 「月次法定内のみ加算」を確認する
-		if (this.addMonthlyWithinStatutory){
+		if (AppContexts.optionLicense().customize().ootsuka() && this.addMonthlyWithinStatutory){
 			
 			// 大塚モードで求める
 			this.calcLegalFlexTimeForOtuka(require, cacheCarrier, employeeId, yearMonth, period, flexTimeAfterSettle,
 					new AttendanceTimeMonth(treatLegalMinutes), settingsByFlex, aggregateTotalWorkingTime);
-		}
-		else{
+		} else{
 			
 			// 「法定内として扱う時間」と「清算後フレックス時間」を比較する
 			if (treatLegalMinutes >= flexTimeAfterSettle.v()){
