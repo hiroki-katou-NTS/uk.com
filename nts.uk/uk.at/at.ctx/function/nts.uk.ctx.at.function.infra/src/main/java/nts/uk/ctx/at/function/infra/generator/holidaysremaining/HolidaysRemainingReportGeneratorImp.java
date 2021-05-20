@@ -436,7 +436,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
             val use_after_grant = rs363New.stream()
                     .map(e -> e.getAggrResultOfAnnualLeave().getAsOfPeriodEnd()
                             .getRemainingNumber().getAnnualLeaveWithMinus().getUsedNumberInfo()
-                            .getUsedNumberAfterGrantOpt().get().getUsedDays().get().v()).mapToDouble(e -> e).sum();
+                            .getUsedNumberAfterGrantOpt().get().getUsedDays().get()).mapToDouble(e -> e!=null?e.v():0).sum();
 
             val valueE15 = use_date + use_after_grant; //
             Double used_Days = checkShowAreaAnnualBreak1(
@@ -452,7 +452,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
             val valueE16 = rs363New.stream()
                     .map(e -> e.getAggrResultOfAnnualLeave().getAsOfPeriodEnd()
                             .getRemainingNumber().getAnnualLeaveWithMinus().getRemainingNumberInfo()
-                            .getRemainingNumberBeforeGrant().getTotalRemainingDays().v()).mapToDouble(e -> e).sum(); //
+                            .getRemainingNumberBeforeGrant().getTotalRemainingDays()).mapToDouble(e -> e!=null?e.v():0).sum(); //
 
             Double number_date_remain = checkShowAreaAnnualBreak1(
                     dataSource.getHolidaysRemainingManagement()) ?
@@ -513,7 +513,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
             val valueE115 = rs363New.stream()
                     .map(e -> e.getAggrResultOfAnnualLeave().getAsOfPeriodEnd()
                             .getRemainingNumber().getAnnualLeaveWithMinus().getRemainingNumberInfo()
-                            .getRemainingNumberBeforeGrant().getTotalRemainingDays().v()).mapToDouble(e -> e).sum();
+                            .getRemainingNumberBeforeGrant().getTotalRemainingDays()).mapToDouble(e -> e!=null?e.v():0).sum();
             Double leave_RemainHours =
                     checkShowAreaAnnualBreak2(dataSource.getHolidaysRemainingManagement()) ?
                             (double) valueE115 : null;
@@ -1555,7 +1555,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
         val valueG15 = data363.stream()
                 .map(e -> e.getAggrResultOfAnnualLeave().getAsOfPeriodEnd()
                         .getRemainingNumber().getAnnualLeaveWithMinus().getRemainingNumberInfo()
-                        .getRemainingNumberBeforeGrant().getTotalRemainingDays().v()).mapToDouble(e -> e).sum();
+                        .getRemainingNumberBeforeGrant().getTotalRemainingDays()).mapToDouble(e -> e!=null?e.v():0).sum();
         ;
 
         //G1_5 : 月度残時間
