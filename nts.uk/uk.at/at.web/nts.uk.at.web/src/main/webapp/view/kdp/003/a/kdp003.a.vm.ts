@@ -670,6 +670,10 @@ module nts.uk.at.kdp003.a {
 											vm.modeBasyo(true);
 											vm.workPlace = data.workpalceId;
 										}
+
+										if (data.workpalceId.length == 0) {
+											vm.modeBasyo(false);
+										}
 									}
 								}
 							})

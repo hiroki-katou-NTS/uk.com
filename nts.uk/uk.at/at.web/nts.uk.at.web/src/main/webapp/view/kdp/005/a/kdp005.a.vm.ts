@@ -775,8 +775,12 @@ module nts.uk.at.view.kdp005.a {
 									if (data.workpalceId.length > 0) {
 										self.modeBasyo(true);
 										self.workplace = data.workpalceId;
-										dfd.resolve();
 									}
+
+									if (data.workpalceId.length == 0) {
+										self.modeBasyo(false);
+									}
+									dfd.resolve();
 								}
 							} else {
 								dfd.resolve();
