@@ -3,7 +3,6 @@ package nts.uk.screen.at.ws.kdw.kdw013;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.app.find.monthly.root.common.DatePeriodDto;
 
 /**
  * 
@@ -21,6 +20,6 @@ public class ChangeDateParam {
 	private GeneralDate refDate;
 
 	// 表示期間
-	private DatePeriodDto displayPeriod;
+	private DatePeriodCommand displayPeriod;
 	
 }

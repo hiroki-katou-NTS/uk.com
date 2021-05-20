@@ -137,8 +137,13 @@ public class OuenWorkTimeSheetOfDailyRepoImpl extends JpaRepository implements O
 
 	@Override
 	public void delete(List<OuenWorkTimeSheetOfDaily> domain) {
-		domain.stream().map(c -> KrcdtDayOuenTimeSheet.convert(c)).forEach(e -> {
-			commandProxy().remove(e);
+		domain.stream().map(c -> KrcdtDayOuenTimeSheet.convert(c)).forEach(lstE -> {
+			lstE.forEach(e -> {
+				this.queryProxy().find(e.pk, KrcdtDayOuenTimeSheet.class).ifPresent(entity -> {
+					commandProxy().remove(entity);
+				});
+			});
+
 		});
 	}
 	

@@ -38,7 +38,7 @@ import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enu
 import nts.uk.shr.com.context.AppContexts;
 
 /**
- * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.勤務実績.勤務実績.日別時間帯別実績.App.作業工数を登録する
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.勤務実績.勤務実績.日別時間帯別実績.App.作業工数を登録する.応援作業別勤怠時間帯を登録する
  * 
  * @author tutt
  *
@@ -94,9 +94,14 @@ public class RegisterWorkManHoursCommandHandler
 			ManHourInputResult manHourInputResult = RegisterWorkHoursService.register(require, AppContexts.user().companyId(), command.getEmployeeId(),
 					w.getDate(), command.getEditStateSetting(), w.getLstWorkDetailsParam());
 			
-			if(manHourInputResult.getIntegrationOfDaily().isPresent()) {
+			
+			
+			if (manHourInputResult.getIntegrationOfDaily().isPresent()) {
 				result.add(manHourInputResult.getIntegrationOfDaily().get());
 			}
+			
+			// 2:persist
+			manHourInputResult.getAtomTask().run();
 		}
 		
 		return result;
