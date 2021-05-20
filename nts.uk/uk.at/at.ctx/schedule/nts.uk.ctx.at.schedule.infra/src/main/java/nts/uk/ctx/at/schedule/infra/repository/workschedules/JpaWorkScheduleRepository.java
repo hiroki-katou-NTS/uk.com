@@ -501,6 +501,7 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 //				oldData.get().kscdtSchTime.kscdtSchTask = newData.kscdtSchTime.kscdtSchTask;
 //			}
 //			
+
 			// List<KscdtSchEditState> editStates;			
 			if (!oldData.get().editStates.isEmpty()) {
 				// get list insert and update data exist
