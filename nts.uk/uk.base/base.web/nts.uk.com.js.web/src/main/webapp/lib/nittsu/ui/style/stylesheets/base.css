@@ -3009,25 +3009,24 @@ button.caret-right:after {
   outline: none;
   border-radius: 2px;
   border: 1px solid #EAE8F2 !important;
-  height: auto !important;
 }
-/* line 22, ../sass/components/_gridlist.scss */
+/* line 23, ../sass/components/_gridlist.scss */
 .nts-gridlist.ui-iggrid:focus {
   border-color: #0096f2 !important;
   box-shadow: 0 0 0 2px #8cd3ff;
 }
-/* line 28, ../sass/components/_gridlist.scss */
+/* line 29, ../sass/components/_gridlist.scss */
 .nts-gridlist.ui-iggrid table th,
 .nts-gridlist.ui-iggrid table th.ui-iggrid-header {
   padding: 0;
   outline: none;
   border: 1px solid transparent;
 }
-/* line 35, ../sass/components/_gridlist.scss */
+/* line 36, ../sass/components/_gridlist.scss */
 .nts-gridlist.ui-iggrid table col[data-role="rs"] {
   min-width: 30px;
 }
-/* line 39, ../sass/components/_gridlist.scss */
+/* line 40, ../sass/components/_gridlist.scss */
 .nts-gridlist.ui-iggrid table th.ui-widget-header {
   padding: 12px 0;
   color: #4A4A58;
@@ -3036,7 +3035,7 @@ button.caret-right:after {
   position: relative;
   box-sizing: border-box;
 }
-/* line 48, ../sass/components/_gridlist.scss */
+/* line 49, ../sass/components/_gridlist.scss */
 .nts-gridlist.ui-iggrid table th.ui-widget-header:not(:last-child)::after {
   content: '';
   display: block;
@@ -3047,7 +3046,7 @@ button.caret-right:after {
   position: absolute;
   border-right: 1px solid #EAE8F2;
 }
-/* line 63, ../sass/components/_gridlist.scss */
+/* line 64, ../sass/components/_gridlist.scss */
 .nts-gridlist.ui-iggrid table th .ui-igcheckbox-normal,
 .nts-gridlist.ui-iggrid table td .ui-igcheckbox-normal {
   cursor: pointer;
@@ -3061,13 +3060,13 @@ button.caret-right:after {
   border: 2px solid #30CC40;
   margin-right: 2px;
 }
-/* line 75, ../sass/components/_gridlist.scss */
+/* line 76, ../sass/components/_gridlist.scss */
 .nts-gridlist.ui-iggrid table th .ui-igcheckbox-normal:focus,
 .nts-gridlist.ui-iggrid table td .ui-igcheckbox-normal:focus {
   border-color: #30CC40 !important;
   box-shadow: 0 0 0 2px #aaebb1;
 }
-/* line 80, ../sass/components/_gridlist.scss */
+/* line 81, ../sass/components/_gridlist.scss */
 .nts-gridlist.ui-iggrid table th .ui-igcheckbox-normal::after,
 .nts-gridlist.ui-iggrid table td .ui-igcheckbox-normal::after {
   top: 4px;
@@ -3081,32 +3080,32 @@ button.caret-right:after {
   border-top: none;
   border-right: none;
 }
-/* line 93, ../sass/components/_gridlist.scss */
+/* line 94, ../sass/components/_gridlist.scss */
 .nts-gridlist.ui-iggrid table th .ui-igcheckbox-normal[data-chk="on"],
 .nts-gridlist.ui-iggrid table td .ui-igcheckbox-normal[data-chk="on"] {
   background-color: #30CC40;
 }
-/* line 95, ../sass/components/_gridlist.scss */
+/* line 96, ../sass/components/_gridlist.scss */
 .nts-gridlist.ui-iggrid table th .ui-igcheckbox-normal[data-chk="on"]::after,
 .nts-gridlist.ui-iggrid table td .ui-igcheckbox-normal[data-chk="on"]::after {
   content: '';
 }
-/* line 100, ../sass/components/_gridlist.scss */
+/* line 101, ../sass/components/_gridlist.scss */
 .nts-gridlist.ui-iggrid table th .ui-igcheckbox-normal[data-chk="off"],
 .nts-gridlist.ui-iggrid table td .ui-igcheckbox-normal[data-chk="off"] {
   background-color: transparent;
 }
-/* line 104, ../sass/components/_gridlist.scss */
+/* line 105, ../sass/components/_gridlist.scss */
 .nts-gridlist.ui-iggrid table th .ui-igcheckbox-normal .ui-icon,
 .nts-gridlist.ui-iggrid table td .ui-igcheckbox-normal .ui-icon {
   display: none;
 }
-/* line 110, ../sass/components/_gridlist.scss */
+/* line 111, ../sass/components/_gridlist.scss */
 .nts-gridlist.ui-iggrid table div.ui-widget-header {
   width: 100% !important;
   border-bottom: 1px solid #EAE8F2 !important;
 }
-/* line 116, ../sass/components/_gridlist.scss */
+/* line 117, ../sass/components/_gridlist.scss */
 .nts-gridlist.ui-iggrid table .ui-iggrid-record tr,
 .nts-gridlist.ui-iggrid table .ui-iggrid-record th,
 .nts-gridlist.ui-iggrid table .ui-iggrid-record td {
@@ -3115,18 +3114,18 @@ button.caret-right:after {
   border: 1px solid transparent;
   box-sizing: border-box;
 }
-/* line 124, ../sass/components/_gridlist.scss */
+/* line 125, ../sass/components/_gridlist.scss */
 .nts-gridlist.ui-iggrid table .ui-iggrid-record tr:not(.ui-iggrid-rowselector-class),
 .nts-gridlist.ui-iggrid table .ui-iggrid-record th:not(.ui-iggrid-rowselector-class),
 .nts-gridlist.ui-iggrid table .ui-iggrid-record td:not(.ui-iggrid-rowselector-class) {
   padding: 7px 5px;
 }
-/* line 129, ../sass/components/_gridlist.scss */
+/* line 130, ../sass/components/_gridlist.scss */
 .nts-gridlist.ui-iggrid table .ui-iggrid-record th,
 .nts-gridlist.ui-iggrid table .ui-iggrid-record td {
   position: relative;
 }
-/* line 134, ../sass/components/_gridlist.scss */
+/* line 135, ../sass/components/_gridlist.scss */
 .nts-gridlist.ui-iggrid table .ui-iggrid-record th:not(:last-child)::after,
 .nts-gridlist.ui-iggrid table .ui-iggrid-record td:not(:last-child)::after {
   content: '';
@@ -3138,29 +3137,29 @@ button.caret-right:after {
   position: absolute;
   border-right: 1px solid #EAE8F2;
 }
-/* line 147, ../sass/components/_gridlist.scss */
+/* line 148, ../sass/components/_gridlist.scss */
 .nts-gridlist.ui-iggrid table .ui-iggrid-record .ui-state-hover {
   color: #30CC40;
   background: linear-gradient(0deg, rgba(68, 224, 140, 0.1), rgba(68, 224, 140, 0.1)), #FFFFFF;
 }
-/* line 152, ../sass/components/_gridlist.scss */
+/* line 153, ../sass/components/_gridlist.scss */
 .nts-gridlist.ui-iggrid table .ui-iggrid-record .ui-state-active {
   font-weight: 700;
   color: #30CC40;
   background: linear-gradient(0deg, rgba(68, 224, 140, 0.1), rgba(68, 224, 140, 0.1)), #FFFFFF;
   box-shadow: 0px 8px 10px rgba(22, 154, 28, 0.1);
 }
-/* line 160, ../sass/components/_gridlist.scss */
+/* line 161, ../sass/components/_gridlist.scss */
 .nts-gridlist.ui-iggrid table .row-disable {
   background-color: #CCC;
 }
 
-/* line 171, ../sass/components/_gridlist.scss */
+/* line 172, ../sass/components/_gridlist.scss */
 .ui-iggrid .nts-gridlist tbody td {
   white-space: pre;
 }
 
-/* line 175, ../sass/components/_gridlist.scss */
+/* line 176, ../sass/components/_gridlist.scss */
 .ui-iggrid-tooltip {
   /* max-width: 500px !important; */
   display: table;
@@ -3168,7 +3167,7 @@ button.caret-right:after {
 }
 
 /* fix for header column width not map with column width in body */
-/* line 183, ../sass/components/_gridlist.scss */
+/* line 184, ../sass/components/_gridlist.scss */
 .ui-iggrid-headertable {
   max-width: 100% !important;
 }

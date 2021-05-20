@@ -674,47 +674,18 @@ module nts.uk.com.view.cmm018.shr {
                     employeeUnit: 0
                 }
                 if(sysAtr == 0){//SHUUGYOU
-                    servicebase.settingCas005().done(function(cas005){
                         //就業ロールを取得
-                        let empRoleSet = cas005;
-                        let result = null;
                         servicebase.settingKaf022().done(function(kaf022){
                             let appSet = kaf022;       
+                            setUnit.employeeUnit = appSet.employeeUnit;
+                            setUnit.workplaceUnit = appSet.workplaceUnit;
+                            setUnit.companyUnit = appSet.companyUnit;
                     
-                            let empAgent = empRoleSet.employeeRefSpecAgent;
-                    //       0: 全員(ALL)
-                    //       1: 社員参照範囲と同じ(ALL_EMPLOYEE_REF_RANGE)
-                            //取得した「承認者・代行者指定時社員参照」をチェック
-                            if(empAgent == 0){//「全社員」の場合
-                                dfd.resolve(appSet);
-                            } 
-                            //「社員参照範囲と同じ」の場合
-                            //取得した「社員参照範囲」をチェック
-                            let empRef = null;
-                            if(!_.isNull(empRoleSet.role)) {
-                                empRef = empRoleSet.role.employeeReferenceRange;     
-                            }
-                            //0: 全社員 ALL_EMPLOYEE
-                            //1: 部門（配下含む） DEPARTMENT_AND_CHILD
-                            //2: 部門（配下含まない） DEPARTMENT_ONLY
-                            //3: 自分のみ ONLY_MYSELF
-                            if(empRef == 0){//「全社員」の場合
-                                dfd.resolve(appSet);
-                            }else if(empRef == 3){//「自分のみ」の場合
-                                //社員単位の表示区分　＝　申請承認設定．承認者の登録設定．社員単位の表示区分
-                                setUnit.employeeUnit = appSet.employeeUnit;
-                            }else {
-                                //職場単位の表示区分　＝　申請承認設定．承認者の登録設定．職場単位の表示区分
-                                setUnit.workplaceUnit = appSet.workplaceUnit;
-                                //社員単位の表示区分　＝　申請承認設定．承認者の登録設定．社員単位の表示区分
-                                setUnit.employeeUnit = appSet.employeeUnit;
-                            }
-    //                        result = this.checkDis(setUnit);
                             dfd.resolve(setUnit);
                             
                         });
                         
-                    });
+                    // });
                 }else{//JINJI
                     servicebase.setDisHR().done(function(disHr){
                         //COM_MODE
