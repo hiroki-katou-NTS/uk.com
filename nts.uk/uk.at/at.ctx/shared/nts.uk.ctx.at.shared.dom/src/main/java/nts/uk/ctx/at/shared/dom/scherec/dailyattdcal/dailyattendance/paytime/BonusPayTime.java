@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.paytime;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeWithCalculation;
 
@@ -14,6 +15,7 @@ public class BonusPayTime {
 	//加給項目ＮＯ
 	private int BonusPayTimeItemNo;
 	//加給時間
+	@Setter
 	private AttendanceTime bonusPayTime;
 	//所定内加給
 	private TimeWithCalculation withinBonusPay;
@@ -46,5 +48,9 @@ public class BonusPayTime {
 		this.excessBonusPayTime.replaceCalcTime(excessCalcTime);
 	}
 
+	public static BonusPayTime createDefaultWithNo(int no) {
+		return new BonusPayTime(no, new AttendanceTime(0), TimeWithCalculation.sameTime(new AttendanceTime(0)),
+				TimeWithCalculation.sameTime(new AttendanceTime(0)));
+	}
 
 }

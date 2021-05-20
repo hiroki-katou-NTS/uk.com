@@ -333,5 +333,11 @@ public class TimeSpanForCalc extends DomainObject implements ComparableRange<Tim
 		return new TimeSpanForCalc(new TimeWithDayAttr(newStart), new TimeWithDayAttr(newEnd));
 	}
 
-	
+	/**
+	 * 開始と終了が逆転している
+	 * start > end
+	 */
+	public boolean isReverse() {
+		return this.start.greaterThan(this.end);
+	}
 }

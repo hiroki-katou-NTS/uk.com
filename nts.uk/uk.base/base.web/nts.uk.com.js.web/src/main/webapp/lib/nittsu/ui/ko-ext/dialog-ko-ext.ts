@@ -122,7 +122,16 @@ module nts.uk.ui.koExtentions {
                 }
                 var id = 'ntsErrorDialog_' + idX;
                 var $dialog = $("<div>", { "id": id, "class": "ntsErrorDialog" });
-                if (self.isRoot) {
+
+                // get top object (jQuery & document)
+                const $$ = window.top.window.$;
+                const $document = window.top.document;
+
+                // move error dialog to top windows
+                $$($document).find('body').append($dialog);
+
+                // shit code
+                /*if (self.isRoot) {
                     PS.$('body').append($dialog);
                 } else {
                     let temp = self;
@@ -134,7 +143,7 @@ module nts.uk.ui.koExtentions {
                             temp = temp.parent;
                         }
                     }
-                }
+                }*/
                 
                 // Create Buttons
                 var dialogbuttons = [];

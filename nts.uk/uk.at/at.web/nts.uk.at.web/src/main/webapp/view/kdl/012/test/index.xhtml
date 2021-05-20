@@ -73,6 +73,19 @@
                 <div data-bind="ntsFormLabel: {}" >Current Code List:</div>
                 <textarea style="width: 600px; height: 200px;" data-bind="ntsMultilineEditor: {value: selectionCodeTxt}"/>
             </div>
+            <div class="control-group valign-top">
+                <div data-bind="ntsFormLabel: {}" >Result:</div>
+                <div data-bind="if: !!ko.unwrap(items).length" style="padding-left: 168px;">
+                    <table style="width: 600px; height: 200px;" id="multi-list" data-bind="ntsGridList: {
+								height: 200,
+								options: items,
+								optionsValue: 'code',
+								columns: header,
+								multiple: false
+							}"></table>
+                </div>
+            </div>
+
         </div>
     </ui:define>
 </ui:composition>

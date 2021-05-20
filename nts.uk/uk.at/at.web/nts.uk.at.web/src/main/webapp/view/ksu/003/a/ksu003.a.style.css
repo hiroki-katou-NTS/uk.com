@@ -266,6 +266,16 @@ html {
 	width: 117px;
 }
 
+#A14 {
+	z-index: 2000 !important;
+	height: 125px !important;
+	width: 330px !important;
+}
+
+#combo-box-start{
+	width: 60px !important;
+}
+
 #org-name {
 	animation: blinkingText 4.2s infinite;
 }

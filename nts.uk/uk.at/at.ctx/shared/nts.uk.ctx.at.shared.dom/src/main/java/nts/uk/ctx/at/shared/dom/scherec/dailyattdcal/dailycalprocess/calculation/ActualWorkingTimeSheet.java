@@ -13,12 +13,14 @@ import nts.uk.ctx.at.shared.dom.common.timerounding.Rounding;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Unit;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.ActualWorkTimeSheetAtr;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalSetting;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.BonusPayAutoCalcSet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.GetCalcAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.BonusPayAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.setting.BonusPaySetting;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.setting.SpecBonusPayTimesheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.calcategory.CalAttrOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeDivergenceWithCalculation;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeWithCalculation;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.paytime.BonusPayTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.paytime.SpecificDateAttrOfDailyAttd;
@@ -367,5 +369,16 @@ public abstract class ActualWorkingTimeSheet extends CalculationTimeSheet{
 		
 		ActualWorkingTimeSheet.getBonusPayTimeSheetIncludeDedTimeSheet(bonuspaySetting, this.timeSheet, this.deductionTimeSheet, this.recordedTimeSheet);
 		ActualWorkingTimeSheet.getSpecBonusPayTimeSheetIncludeDedTimeSheet(bonuspaySetting, this.timeSheet, this.deductionTimeSheet, this.recordedTimeSheet, specificDateAttrSheets);
+	}
+	
+	/**
+	 * 深夜時間の計算
+	 * @param autoCalcSet 自動計算設定
+	 * @return 深夜時間
+	 */
+	public TimeDivergenceWithCalculation calcMidNightTime(AutoCalSetting autoCalcSet) {
+		AttendanceTime time = autoCalcSet.getCalAtr().isCalculateEmbossing() ? this.getMidNightTimeSheet().calcTotalTime() : AttendanceTime.ZERO;
+		AttendanceTime calcTime = this.getMidNightTimeSheet().calcTotalTime();
+		return TimeDivergenceWithCalculation.createTimeWithCalculation(time, calcTime);
 	}
 }

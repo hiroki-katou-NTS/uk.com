@@ -44,7 +44,7 @@ module nts.uk.com.view.cmm040.a.viewmodel {
         enableA53: KnockoutObservable<boolean>;
 
         option: any;
-
+        listIpCancel:  KnockoutObservableArray<any> = ko.observableArray([]);
         constructor() {
             let self = this;
 
@@ -99,6 +99,7 @@ module nts.uk.com.view.cmm040.a.viewmodel {
                 // if (value == null) return;
                 self.items = [];
                 self.selectWorkLocation(value);
+                self.listIpCancel();
 
             });
             self.valueA5_2.subscribe(function(value) {
@@ -472,7 +473,10 @@ module nts.uk.com.view.cmm040.a.viewmodel {
                 workLocationName: self.workLocationName()
             }
             nts.uk.ui.windows.setShared("CMM040B", param);
-            nts.uk.ui.windows.sub.modal("/view/cmm/040/b/index.xhtml", { dialogClass: "no-close" }).onClosed(() => { });
+            nts.uk.ui.windows.sub.modal("/view/cmm/040/b/index.xhtml", { dialogClass: "no-close" }).onClosed(() => { 
+            self.listIpCancel(nts.uk.ui.windows.getShared('DataCMM040B'));
+            
+            });
         }
 
         buttonA5_3(): any {
@@ -554,6 +558,7 @@ module nts.uk.com.view.cmm040.a.viewmodel {
                 });
             }
             $("#focus").focus();
+            self.listIpCancel([]);
         }
 
         add() {
@@ -562,14 +567,14 @@ module nts.uk.com.view.cmm040.a.viewmodel {
             if (!$(".nts-input").ntsError("hasError")) {
                 let listWorkplace = [];
                 self.cdl008data();
-
+               //  nts.uk.ui.windows.getShared('DataCMM040B');    
                 let param = {
                     workLocationCD: self.workLocationCD(),
                     workLocationName: self.workLocationName(),
                     radius: self.radius(),
                     latitude: self.latitude(),
                     longitude: self.longitude(),
-                    listIPAddress: [],
+                    listIPAddress:  self.listIpCancel(),
                     listWorkplace: self.listWorkPlaceIDs
                 }
                 // let select = 
@@ -657,23 +662,22 @@ module nts.uk.com.view.cmm040.a.viewmodel {
             });
         }
         buttonA5_16(): any {
-           
+
             let self = this;
             $.ajax({
-                url: "http://geoapi.heartrails.com/api/json?method=suggest&matching=like&keyword=" + self.valueA5_2(),
-                beforeSend: function(xhr) {
-                    xhr.overrideMimeType("text/plain; charset=x-user-defined");
-                }
-            }).done(function(data) {
-                    if (JSON.parse(data).response.location == undefined) {
+                url: 'http://geoapi.heartrails.com/api/json',
+                data: { method: 'suggest', matching: 'like', keyword: self.valueA5_2() }
+            })
+                .done(function(data) {
+                    if (data.response.location == undefined) {
                         self.latitude('');
                         self.longitude('');
                         return;
                     }
-                    let result = JSON.parse(data).response.location[0];
+                    let result = data.response.location[0];
                     self.latitude(result.y);
                     self.longitude(result.x);
-                     errors.clearAll();
+                    errors.clearAll();
                 });
         }
         private loadRadiusEnums(): JQueryPromise<Array<Enum>> {

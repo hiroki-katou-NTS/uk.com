@@ -59,8 +59,6 @@ public class WorkTypeExportImpl implements MasterListData {
 				ColumnTextAlign.CENTER, "", true));
 		columns.add(new MasterHeaderColumn("略名", TextResource.localize("KMK007_68"),
 				ColumnTextAlign.CENTER, "", true));
-		columns.add(new MasterHeaderColumn("記号", TextResource.localize("KMK007_69"),
-				ColumnTextAlign.CENTER, "", true));
 		columns.add(new MasterHeaderColumn("備考", TextResource.localize("KMK007_70"),
 				ColumnTextAlign.CENTER, "", true));
 		columns.add(new MasterHeaderColumn("廃止区分", TextResource.localize("KMK007_71"),

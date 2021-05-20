@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 /**
  * @author thanh_nx
  *
- *         申請種類
+ *         申請種類(反映用)
  */
 @AllArgsConstructor
 public enum ApplicationTypeShare {
