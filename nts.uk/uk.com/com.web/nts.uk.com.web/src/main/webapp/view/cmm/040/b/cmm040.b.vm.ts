@@ -19,6 +19,8 @@ module nts.uk.com.view.cmm040.b.viewmodel {
         oldValue4: any = 9999;
         oldValue5: any = 9999;
         checkDel: boolean = false;
+        listIp:  KnockoutObservableArray<any> = ko.observableArray([]);
+        
         //workLocationName:
         isCreate: KnockoutObservable<boolean>;
         constructor() {
@@ -59,10 +61,10 @@ module nts.uk.com.view.cmm040.b.viewmodel {
                 if (value == null)
                     return;
                 if (self.oldValue1 == value) return;
-                
+
                 if (value.toString() == "") {
-                self.oldValue1 = self.valueB3_4_ipaddress1();
-                    $('#target').ntsError('set', { messageId: "MsgB_1",  messageParams: [nts.uk.resource.getText("CMM040_36")] });
+                    self.oldValue1 = self.valueB3_4_ipaddress1();
+                    $('#target').ntsError('set', { messageId: "MsgB_1", messageParams: [nts.uk.resource.getText("CMM040_36")] });
                     return;
                 }
                 if ((value > 255) || (value < 0)) {
@@ -80,11 +82,11 @@ module nts.uk.com.view.cmm040.b.viewmodel {
                     return;
                 if (self.oldValue2 == value) return;
                 if (value.toString() == "") {
-                self.oldValue2 = self.valueB3_6_ipaddress2();
-                    $('#validateB3_6').ntsError('set', { messageId: "MsgB_1",  messageParams: [nts.uk.resource.getText("CMM040_36")] });
+                    self.oldValue2 = self.valueB3_6_ipaddress2();
+                    $('#validateB3_6').ntsError('set', { messageId: "MsgB_1", messageParams: [nts.uk.resource.getText("CMM040_36")] });
                     return;
                 }
-                if ( (value > 255) || (value < 0)) {
+                if ((value > 255) || (value < 0)) {
                     $('#validateB3_6').ntsError('set', { messageId: "Msg_2153" });
                 }
                 self.oldValue2 = self.valueB3_6_ipaddress2();
@@ -93,8 +95,8 @@ module nts.uk.com.view.cmm040.b.viewmodel {
                 if (value == null) return;
                 if (self.oldValue3 == value) return;
                 if (value.toString() == "") {
-                self.oldValue3 = self.valueB3_8_ipaddress3();
-                    $('#validateB3_8').ntsError('set', { messageId: "MsgB_1",  messageParams: [nts.uk.resource.getText("CMM040_36")] });
+                    self.oldValue3 = self.valueB3_8_ipaddress3();
+                    $('#validateB3_8').ntsError('set', { messageId: "MsgB_1", messageParams: [nts.uk.resource.getText("CMM040_36")] });
                     return;
                 }
                 if ((value > 255) || (value < 0)) {
@@ -106,8 +108,8 @@ module nts.uk.com.view.cmm040.b.viewmodel {
                 if (value == null) return;
                 if (self.oldValue4 == value) return;
                 if (value.toString() == "") {
-                self.oldValue4 = self.valueB3_10_ipaddress4();
-                    $('#validateB3_10').ntsError('set', { messageId: "MsgB_1",  messageParams: [nts.uk.resource.getText("CMM040_36")] });
+                    self.oldValue4 = self.valueB3_10_ipaddress4();
+                    $('#validateB3_10').ntsError('set', { messageId: "MsgB_1", messageParams: [nts.uk.resource.getText("CMM040_36")] });
                     return;
                 }
                 if ((value > 255) || (value < 0)) {
@@ -116,7 +118,7 @@ module nts.uk.com.view.cmm040.b.viewmodel {
                 self.oldValue4 = self.valueB3_10_ipaddress4();
             });
             self.valueB3_12.subscribe(function(value) {
-                
+
                 if (value == null) return;
                 if (self.oldValue5 == value) return;
                 if ((value > 255) || (value < 0)) {
@@ -143,6 +145,7 @@ module nts.uk.com.view.cmm040.b.viewmodel {
 
                     }
                     self.workLocationList(datas);
+                    
                     if (self.valueB3_4_ipaddress1() == null) self.findByIndex(0);
                     let code = self.valueB3_4_ipaddress1() + "." + self.valueB3_6_ipaddress2() + "." + self.valueB3_8_ipaddress3() + "." + self.valueB3_10_ipaddress4();
                     if (self.checkDel != true)
@@ -175,7 +178,31 @@ module nts.uk.com.view.cmm040.b.viewmodel {
         }
 
         cancel_Dialog(): any {
+
             let self = this;
+//            if (parseInt(self.valueB3_10_ipaddress4()) < parseInt(self.valueB3_12())) {
+//                i = parseInt(self.valueB3_12());
+//            } else {
+//                i = parseInt(self.valueB3_10_ipaddress4());
+//            }
+//            let param =
+//                {
+//                    net1: Number(self.valueB3_4_ipaddress1()),
+//                    net2: Number(self.valueB3_6_ipaddress2()),
+//                    host1: Number(self.valueB3_8_ipaddress3()),
+//                    host2: Number(self.valueB3_10_ipaddress4()),
+//                }
+            let ipData = [];
+            for  (let i = 0 ; i <self.workLocationList().length ; i++){
+                    ipData.push({
+                        net1: self.workLocationList()[i].workLocationCD.split(".")[0],
+                        net2: self.workLocationList()[i].workLocationCD.split(".")[1],
+                        host1: self.workLocationList()[i].workLocationCD.split(".")[2],
+                        host2: self.workLocationList()[i].workLocationCD.split(".")[3]
+                        })
+                }         
+
+            nts.uk.ui.windows.setShared("DataCMM040B", ipData);
             nts.uk.ui.windows.close();
         }
 
@@ -270,16 +297,16 @@ module nts.uk.com.view.cmm040.b.viewmodel {
                     nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function() {
                         self.checkDel = true;
                         //self.startPage().done(() => {
-                         if(self.workLocationList().length == 0){
-                             self.newMode();
+                        if (self.workLocationList().length == 0) {
+                            self.newMode();
                             errors.clearAll();
-                             }   
+                        }
                         if (index == -1) {
                             self.selectCode(null);
                             self.workLocationList([]);
                             self.newMode();
                             errors.clearAll();
-                            
+
                         }
                         else {
                             self.findByIndex(index == self.workLocationList().length ? index - 1 : index);

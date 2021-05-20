@@ -35,4 +35,17 @@ public class AddIPAddressCmd {
 		 return Ipv4Address.parse(this.net1 + "." + this.net2 + "." + this.host1 + "." + this.host2);
 	}
 	
+	public static AddIPAddressCmd toDto(Ipv4Address domain){
+		return new AddIPAddressCmd(
+				null,
+				domain.getNet1(),
+				domain.getNet2(),
+				domain.getHost1(),
+				domain.getHost2(),
+				0);
+		
+		
+		
+	}
+	
 }
