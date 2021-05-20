@@ -46,10 +46,10 @@ import nts.uk.ctx.at.function.dom.adapter.vacation.CurrentHolidayImported;
 import nts.uk.ctx.at.function.dom.adapter.vacation.StatusHolidayImported;
 import nts.uk.ctx.at.function.dom.holidaysremaining.VariousVacationControl;
 import nts.uk.ctx.at.function.dom.holidaysremaining.VariousVacationControlService;
-import nts.uk.ctx.at.function.dom.holidaysremaining.report.HolidayRemainingDataSource;
-import nts.uk.ctx.at.function.dom.holidaysremaining.report.HolidayRemainingInfor;
-import nts.uk.ctx.at.function.dom.holidaysremaining.report.HolidaysRemainingEmployee;
-import nts.uk.ctx.at.function.dom.holidaysremaining.report.HolidaysRemainingReportGenerator;
+import nts.uk.ctx.at.function.dom.holidaysremaining.report.*;
+import nts.uk.ctx.at.record.dom.monthly.vacation.specialholiday.monthremaindata.export.SpecialHolidayRemainDataOutput;
+import nts.uk.ctx.at.record.dom.monthly.vacation.specialholiday.monthremaindata.export.SpecialHolidayRemainDataSevice;
+import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsenceReruitmentMngInPeriodQuery;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.NumberCompensatoryLeavePeriodProcess;
@@ -66,6 +66,8 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numb
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutManagementDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SubstitutionOfHDManaDataRepository;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.breakinfo.FixedManagementDataMonth;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.remainmerge.RemainMerge;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.remainmerge.RemainMergeRepository;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHoliday;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacationRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.EmpSubstVacationRepository;
@@ -142,6 +144,10 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
     private RemainNumberTempRequireService requireService;
     @Inject
     private GetHolidayOver60hPeriodAdapter getHolidayOver60hRemNumWithinPeriodAdapter;
+    @Inject
+    private RemainMergeRepository repoRemainMer;
+    @Inject
+    private SpecialHolidayRemainDataSevice rq263;
     @Override
     protected void handle(ExportServiceContext<HolidaysRemainingReportQuery> context) {
         val query = context.getQuery();
@@ -307,7 +313,8 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
     private HolidayRemainingInfor getHolidayRemainingInfor(VariousVacationControl variousVacationControl,
                                                            Optional<ClosureInfo> closureInforOpt, String employeeId, GeneralDate baseDate, GeneralDate startDate,
                                                            GeneralDate endDate, Optional<YearMonth> currMonth) {
-
+        // 263New
+        List<SpecialHolidayRemainDataOutputKdr> getSpeHdOfConfMonVer2 = new ArrayList<>();
         // RequestList369
         Optional<GeneralDate> grantDate = Optional.empty();
         // RequestList281
@@ -357,6 +364,8 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
         YearMonthPeriod period = new YearMonthPeriod(startDate.yearMonth(), currentMonth.previousMonth());
         // Mer RQ255,258,259,260,263
         HolidayRemainMerEx hdRemainMer = hdRemainAdapter.getRemainMer(employeeId, period);
+        val lstYrMon = ConvertHelper.yearMonthsBetween(period);
+        Map<YearMonth, List<RemainMerge>> mapRemainMer = repoRemainMer.findBySidsAndYrMons(employeeId, lstYrMon);
         // Mer RQ265,268,269,363,364,369
         boolean call265 = variousVacationControl.isAnnualHolidaySetting();
         boolean call268 = variousVacationControl.isYearlyReservedSetting();
@@ -599,12 +608,32 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
                 Optional.empty(),
                 Optional.empty()
         );
+        getSpeHdOfConfMonVer2 =
+                rq263.getSpeHdOfConfMonVer2(employeeId,period,mapRemainMer)
+                        .stream().map(e->new SpecialHolidayRemainDataOutputKdr(
+                                e.getSid(),
+                        e.getYm(),
+                        e.getSpecialHolidayCd(),
+                        e.getUseDays(),
+                        e.getBeforeUseDays(),
+                        e.getAfterUseDays(),
+                        e.getUseTimes(),
+                        e.getBeforeUseTimes(),
+                        e.getAfterUseTimes(),
+                        e.getUseNumber(),
+                        e.getRemainDays(),
+                        e.getRemainTimes(),
+                        e.getBeforeRemainDays(),
+                        e.getBeforeRemainTimes(),
+                        e.getAfterRemainDays(),
+                        e.getAfterRemainTimes()
+                )).collect(Collectors.toList());
 
         return new HolidayRemainingInfor(grantDate, listAnnLeaGrantNumber, annLeaveOfThisMonth, listAnnualLeaveUsage,
                 listAnnLeaveUsageStatusOfThisMonth, reserveHoliday, listReservedYearHoliday, listRsvLeaUsedCurrentMon,
                 listCurrentHoliday, listStatusHoliday, listCurrentHolidayRemain, listStatusOfHoliday, mapSpecVaca,
                 lstMapSPVaCurrMon, mapSpeHd, childNursingLeave, nursingLeave, currentHolidayLeft,
-                currentHolidayRemainLeft, substituteHolidayAggrResult, subVaca, aggrResultOfHolidayOver60h,getRs363);
+                currentHolidayRemainLeft, substituteHolidayAggrResult, subVaca, aggrResultOfHolidayOver60h,getRs363,getSpeHdOfConfMonVer2);
     }
     private Optional<ClosureInfo> getClosureInfor(int closureId) {
         val listClosureInfo = ClosureService.getAllClosureInfo(ClosureService.createRequireM2(closureRepository));
