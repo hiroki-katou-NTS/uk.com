@@ -347,11 +347,11 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 			return beforeDeductTime;
 		}
 		//遅刻早退判断時刻の範囲に広げる
-		if(timeSpan.getStart().greaterThan(lateDesClock.get().getLateDecisionClock())) {
-			beforeDeductTime = timeSpan.shiftOnlyStart(lateDesClock.get().getLateDecisionClock());
+		if(beforeDeductTime.getStart().greaterThan(lateDesClock.get().getLateDecisionClock())) {
+			beforeDeductTime = beforeDeductTime.shiftOnlyStart(lateDesClock.get().getLateDecisionClock());
 		}
-		if(timeSpan.getEnd().lessThan(leaveEarlyDesClock.get().getLeaveEarlyDecisionClock())) {
-			beforeDeductTime = timeSpan.shiftOnlyEnd(leaveEarlyDesClock.get().getLeaveEarlyDecisionClock());
+		if(beforeDeductTime.getEnd().lessThan(leaveEarlyDesClock.get().getLeaveEarlyDecisionClock())) {
+			beforeDeductTime = beforeDeductTime.shiftOnlyEnd(leaveEarlyDesClock.get().getLeaveEarlyDecisionClock());
 		}
 		return beforeDeductTime;
 	}
