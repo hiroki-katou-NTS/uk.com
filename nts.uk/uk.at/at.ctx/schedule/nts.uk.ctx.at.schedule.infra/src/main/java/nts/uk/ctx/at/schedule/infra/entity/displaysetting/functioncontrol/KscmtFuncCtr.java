@@ -9,6 +9,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import org.apache.commons.lang3.BooleanUtils;
 
 import lombok.AllArgsConstructor;
@@ -68,7 +69,12 @@ public class KscmtFuncCtr extends ContractUkJpaEntity implements Serializable {
 	 */
 	@Column(name = "DISPLAY_ACTUAL")
 	public int displayActual;
-	
+
+	/**
+	 * 	表示する勤務種類を制御するか
+	 */
+	@Column(name = "CONTROL_USE_WKTP")
+	public int controlUseWktp;
 	
 	/**
 	 * convert to entity
@@ -82,10 +88,12 @@ public class KscmtFuncCtr extends ContractUkJpaEntity implements Serializable {
 				,	BooleanUtils.toInteger(domain.isChangeableForm(WorkTimeForm.FIXED))
 				,	BooleanUtils.toInteger(domain.isChangeableForm(WorkTimeForm.FLEX))
 				,	BooleanUtils.toInteger(domain.isChangeableForm(WorkTimeForm.FLOW))
-				,	BooleanUtils.toInteger(domain.isDisplayActual()));
+				,	BooleanUtils.toInteger(domain.isDisplayActual())
+				,   domain.getDisplayWorkTypeControl().value
+		);
 	}
 	
-	public ScheFunctionControl toDomain () {
+	public ScheFunctionControl toDomain (List<WorkTypeCode> displayableWorkTypeCodeList) {
 		
 		List<WorkTimeForm> lstWork = new ArrayList<>();
 		
@@ -101,7 +109,7 @@ public class KscmtFuncCtr extends ContractUkJpaEntity implements Serializable {
 		return new ScheFunctionControl (
 				lstWork, 
 				(this.displayActual == 1),
-				NotUseAtr.NOT_USE, // TODO: team VN implement!
-				new ArrayList<>() ); // TODO: team VN implement!
+				NotUseAtr.valueOf(this.controlUseWktp),
+				displayableWorkTypeCodeList );
 	}
 }

@@ -58,7 +58,6 @@ public class LateEarlyCancelReflect extends AggregateRoot {
 	 *         取消の反映
 	 */
 	public DailyAfterAppReflectResult reflectCancel(ArrivedLateLeaveEarlyShare appWorkChange, DailyRecordOfApplication dailyApp) {
-
 		List<Integer> lstItemId = new ArrayList<>();
 		// [input.遅刻早退取消申請.取消（List）]でループ
 		appWorkChange.getLateCancelation().stream().forEach(data -> {

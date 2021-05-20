@@ -55,7 +55,7 @@ module nts.uk.at.view.kdl034.a.viewmodel {
                             }
                         }
                     }
-                    if (approverLst.length > 0) {
+                    if (approverLst.length > 0 && name != "") {
                         listApprover.push(new Approver(approverLst[0].approverID, name,
                             approverLst[0].phaseOrder, approverLst[0].jobTitle, false));
                     }
