@@ -243,7 +243,14 @@ module nts.uk.at.view.ksu003.b {
 
         openDialogKdl012(data: any, event:any): JQueryPromise<any> {
             let self = this, dfd = $.Deferred();
-            let position : number;
+            let position : number, index: number;      
+
+            self.clearError();
+            if(data){
+                index = _.indexOf(self.taskPaletteOrgnization().keys(), Number(data.target.dataset.idx) + 1);
+            } else if(event){
+                index = _.indexOf(self.taskPaletteOrgnization().keys(), Number($(event)[0].dataset.idx) + 1);
+            }            
             self.textName(data ? data.text : null);
             self.tooltip(data ? data.tooltip : null);
 
@@ -258,7 +265,7 @@ module nts.uk.at.view.ksu003.b {
                 showExpireDate: true,
                 workFrameNoSelection: 1,
                 referenceDate: moment(dataShare.referenceDate).format("YYYY/MM/DD"),
-                selectionCodeList: self.taskPaletteOrgnization().taskCodes()
+                selectionCodeList: [self.taskPaletteOrgnization().taskCodes()[index]]
             };
             setShared('KDL012Params', request);
 
