@@ -34,15 +34,21 @@ public class UpdatePerContactCommandHandler extends CommandHandler<UpdatePerCont
 	protected void handle(CommandHandlerContext<UpdatePerContactCommand> context) {
 		val command = context.getCommand();
 		PersonalContactDto dto = PersonalContactDto.builder().personalId(command.getPersonId())
-				.mailAddress(command.getMailAdress()).isMailAddressDisplay(false)
-				.mobileEmailAddress(command.getMobileMailAdress()).isPhoneNumberDisplay(false)
-				.isMobileEmailAddressDisplay(false).phoneNumber(command.getCellPhoneNumber())
-				.emergencyContact1(EmergencyContactDto.builder().contactName(command.getContactName1())
-						.remark(command.getMemo1()).phoneNumber(command.getPhoneNumber1()).build())
-				.isEmergencyContact1Display(false)
-				.emergencyContact2(EmergencyContactDto.builder().contactName(command.getContactName2())
-						.remark(command.getMemo2()).phoneNumber(command.getPhoneNumber2()).build())
-				.isEmergencyContact2Display(false).otherContacts(new ArrayList<OtherContactDto>()).build();
+				.mailAddress(command.getMailAdress())
+				.mobileEmailAddress(command.getMobileMailAdress())
+				.phoneNumber(command.getCellPhoneNumber())
+				.emergencyContact1(EmergencyContactDto.builder()
+						.contactName(command.getContactName1())
+						.remark(command.getMemo1())
+						.phoneNumber(command.getPhoneNumber1())
+						.build())
+				.emergencyContact2(EmergencyContactDto.builder()
+						.contactName(command.getContactName2())
+						.remark(command.getMemo2())
+						.phoneNumber(command.getPhoneNumber2())
+						.build())
+				.otherContacts(new ArrayList<OtherContactDto>())
+				.build();
 		PersonalContact perContact = PersonalContact.createFromMemento(dto);
 		personalContactRepository.update(perContact);
 	}

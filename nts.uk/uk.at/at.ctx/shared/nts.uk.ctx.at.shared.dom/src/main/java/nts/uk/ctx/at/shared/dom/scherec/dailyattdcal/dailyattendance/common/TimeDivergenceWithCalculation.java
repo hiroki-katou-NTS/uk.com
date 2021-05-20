@@ -116,6 +116,16 @@ public class TimeDivergenceWithCalculation {
 		return new TimeDivergenceWithCalculation(this.time.addMinutes(time.valueAsMinutes()),this.calcTime.addMinutes(calcTime.valueAsMinutes()));
 	}
 	
+	/**
+	 * 加算する
+	 * @param time 加算する時間
+	 * @return 加算後の計算乖離付き時間
+	 */
+	public TimeDivergenceWithCalculation addMinutes(TimeDivergenceWithCalculation time) {
+		return new TimeDivergenceWithCalculation(
+				this.time.addMinutes(time.getTime().valueAsMinutes()),
+				this.calcTime.addMinutes(time.getCalcTime().valueAsMinutes()));
+	}
 	
 	/**
 	 * 自身の乖離時間を計算する
