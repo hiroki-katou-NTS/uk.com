@@ -99,6 +99,7 @@ module nts.uk.com.view.cmm040.a.viewmodel {
                 // if (value == null) return;
                 self.items = [];
                 self.selectWorkLocation(value);
+                self.listIpCancel();
 
             });
             self.valueA5_2.subscribe(function(value) {
@@ -557,6 +558,7 @@ module nts.uk.com.view.cmm040.a.viewmodel {
                 });
             }
             $("#focus").focus();
+            self.listIpCancel([]);
         }
 
         add() {

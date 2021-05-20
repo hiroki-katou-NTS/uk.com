@@ -5,10 +5,8 @@
 	xmlns:com="http://xmlns.jcp.org/jsf/component"
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 <body>
-	<ui:composition template="../../../../master/sidebar.xhtml"
-		tabindex="-1">
-
-		<ui:define name="sidebar-head" tabindex="-1">
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead" tabindex="-1">
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
 			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
@@ -22,38 +20,19 @@
 			<com:stylefile path="style.css" />
 		</ui:define>
 
-		<ui:define name="sidebar">
-			<ul tabindex="-1" class="navigator">
-				<!-- A1_1 -->
-				<li data-bind="click: onSelectScreenB"><a tabindex="-1"
-					href="#tabpanel-1" role="tab-navigator" class="active">#{i18n.getText('CMM021_3')}</a></li>
-				<!-- A1_2 -->
-				<li data-bind="click: onSelectScreenC"><a tabindex="-1"
-					href="#tabpanel-2" role="tab-navigator">#{i18n.getText('CMM021_4')}</a></li>
-			</ul>
-		</ui:define>
+		<ui:define name="content" tabindex="-1">
 
-		<ui:define name="sidebar-content" tabindex="-1">
-
-			<div class="sidebar-content-header" tabindex="-1">
-				<com:ko tag="if" bind="isScreenBSelected">
-					<span class="title">#{i18n.getText('CMM021_3')}</span>
-				</com:ko>
-				<com:ko tag="if" bind="isScreenCSelected">
-					<span class="title">#{i18n.getText('CMM021_4')}</span>
-				</com:ko>
-
-				<span
-					class="action-bar"> <!-- BEGIN A2_1 & A2_2 -->
-					<button tabindex="1" class="proceed"
-						data-bind="click: saveAccount, enable: $root.errors.isEmpty">#{i18n.getText('CMM021_5')}</button>
-					<button tabindex="2" class="danger"
-						data-bind="click: deleteAccount, enable: enable_Delete">#{i18n.getText('CMM021_6')}</button>
-					<!-- END A2_1 & A2_2 -->
-				</span>
+			<!-- BEGIN A2_1 & A2_2 -->
+			<div id="functions-area" tabindex="-1">
+				<button tabindex="1" class="proceed"
+					data-bind="click: saveAccount, enable: $root.errors.isEmpty">#{i18n.getText('CMM021_5')}</button>
+				<button tabindex="2" class="danger"
+					data-bind="click: deleteAccount, enable: enable_Delete">#{i18n.getText('CMM021_6')}</button>
 			</div>
-			<div class="fixed-flex-layout">
-			<div id="com-ccg001"></div>
+			<!-- END A2_1 & A2_2 -->
+
+			<div class="fixed-flex-layout" id="contents-area">
+			<div id="com-ccg001" />
 			<!-- start-left-content -->
 			<div class="master-list-select fixed-flex-layout-left">
 				<div class="caret-right caret-background bg-green">
@@ -71,21 +50,6 @@
 							}">
 						</div>
 					</div>
-
-					<!-- Searchbox A6_1-->
-					<!-- <div class="searchbox">
-						<div tabindex="-1"
-							data-bind="ntsSearchBox:{
-							             searchMode: 'filter',
-										 targetKey: 'loginId', 									
-										 comId: 'single-list', 
-										 items: listUserInfos, 
-										 selected: loginId, 
-										 selectedKey: 'loginId', 
-										 fields: ['loginId', 'employeeCode','businessName','isSetting'], 
-										 mode: 'igGrid'
-							 }" />
-					</div> -->
 
 					<!-- table grid list -->
 					<!-- A7_1 -->
@@ -131,19 +95,7 @@
 						</tr>
 					</table>
 				</div>
-				<div class="show-tab-panel">
-					<div id="tabpanel-1" role="tabpanel">
-						<com:ko tag="if" bind="isScreenBSelected">
-							<ui:include src="b.xhtml" />
-						</com:ko>
-					</div>
-					<div id="tabpanel-2" role="tabpanel"
-						data-bind="visible: isScreenCSelected" style="display: none;">
-						<com:ko tag="if" bind="isScreenCSelected">
-							<ui:include src="c.xhtml" />
-						</com:ko>
-					</div>
-				</div>
+				<ui:include src="b.xhtml" />
 			</div>
 			<!-- end-right-content -->
 			</div>

@@ -79,6 +79,6 @@ public interface WorkScheduleRepository {
 	 */
 	Optional<GeneralDate> getMaxDateWorkSche(List<String> listEmp);
 
-	Optional<GeneralDate> getMaxDate(List<String> employeeIDs, GeneralDate ymd);
+	//Optional<GeneralDate> getMaxDate(List<String> employeeIDs, GeneralDate ymd);
 }
 
