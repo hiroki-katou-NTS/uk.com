@@ -28,11 +28,18 @@ module nts.uk.com.view.cmm011.v2.a.viewmodel {
         listHierarchyChange: Array<any> = [];
         needRegenerateHierarchyCode: boolean = false;
         backupCode: string = null;
+        pgName: KnockoutObservable<string> = ko.observable('');
 
         constructor() {
             let self = this;
             if (!_.isEmpty(queryString.items)) {
                 self.initMode = Number(queryString.items["initmode"]);
+            }
+
+            if (self.initMode === SCREEN_MODE.WORKPLACE) {
+                self.pgName(`${'CMM011A '}${getText('CMM011_201')}`);
+            } else {
+                self.pgName(`${'CMM011A '}${getText('CMM011_301')}`);
             }
             self.configuration = ko.observable(new WkpDepConfig(null, null, null));
             self.items = ko.observableArray([]);
