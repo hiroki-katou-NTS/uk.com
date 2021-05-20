@@ -521,20 +521,18 @@ module nts.uk.ui.at.kdw013.a {
                                 .info({ messageId: 'Msg_15' })
                                 .then(() => lstOvertimeLeaveTime);
                         }
-
-                        return vm.$dialog
-                            // ,Msg_2066
-                            .error({ messageId: 'Msg_2066' })
-                            .then(() => null);
                     }
 
-                    return $.Deferred().resolve(null);
+                    return $
+                        .Deferred()
+                        .resolve()
+                        .then(() => null);
                 })
                 .fail((response: ErrorMessage) => {
                     const { messageId, parameterIds } = response;
 
                     return vm.$dialog
-                        // Msg_2080
+                        // Msg_2066, Msg_2080
                         .error({ messageId, messageParams: parameterIds })
                         .then(() => null);
                 })
