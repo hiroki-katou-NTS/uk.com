@@ -146,7 +146,7 @@ module nts.uk.at.kdp003.a {
 
 			if (locationCd) {
 				const param = {
-					contractCode: '000000000004',
+					contractCode: vm.$user.contractCode,
 					workLocationCode: locationCd
 				}
 
@@ -262,7 +262,7 @@ module nts.uk.at.kdp003.a {
 					} = storageData as StorageData;
 
 					const loginParams: f.ModelData = {
-						contractCode: '000000000004',
+						contractCode: vm.$user.contractCode,
 						companyCode: CCD,
 						companyId: CID,
 						employeeCode: SCD,
@@ -315,7 +315,7 @@ module nts.uk.at.kdp003.a {
 
 					if (locationCd) {
 						const param = {
-							contractCode: '000000000004',
+							contractCode: vm.$user.contractCode,
 							workLocationCode: locationCd
 						}
 
@@ -340,11 +340,26 @@ module nts.uk.at.kdp003.a {
 					return data;
 				})
 				.then((data: LoginData) => {
+
+					var exest = false;
+
+					if (data.loginData.notification == null) {
+						exest = true;
+					}
+
+					if (data.loginData.result) {
+						exest = false;
+					}
+
 					// if dialog f return data (first login)
 
-					if (data.loginData && !data.loginData.msgErrorId && !data.loginData.errorMessage && !data.storageData) {
+					if (data.loginData && !data.loginData.msgErrorId && !data.loginData.errorMessage && !data.storageData && !exest) {
 						const { loginData } = data;
 						const params = { multiSelect: true };
+
+						if (loginData.msgErrorId === "Msg_1527") {
+							vm.message({ messageId: 'Msg_1527' });
+						}
 
 						if (!ko.unwrap(vm.modeBasyo) && loginData.msgErrorId !== "Msg_1527") {
 							return vm.$window
@@ -359,6 +374,28 @@ module nts.uk.at.kdp003.a {
 					return data;
 				})
 				.then((data: LoginData) => {
+					var exest = false;
+
+					if (data.loginData.notification == null) {
+						exest = true;
+					}
+
+					if (!ko.unwrap(vm.modeBasyo)) {
+						if (!exest) {
+							vm.setMessage({ messageId: 'Msg_1647' });
+
+							return false;
+						}
+					} else {
+						if (data.loginData.result) {
+							exest = false;
+						}
+						if (exest) {
+							vm.setMessage({ messageId: 'Msg_1647' });
+
+							return false;
+						}
+					}
 
 					// if not return full data (first login)
 					if (!data.storageData && (!data.loginData || !data.workplaceData && !ko.unwrap(vm.modeBasyo))) {
@@ -433,6 +470,7 @@ module nts.uk.at.kdp003.a {
 					return storageData;
 				})
 				.then((storageData: false | StorageData) => {
+
 					if (storageData) {
 						return vm.$ajax('at', API.FINGER_STAMP_SETTING)
 							.then((data: FingerStampSetting) => {
@@ -630,6 +668,10 @@ module nts.uk.at.kdp003.a {
 						exist = true;
 					}
 
+					if (loginData.msgErrorId === "MSG_1527") {
+						vm.message({ messageId: 'Msg_1527' });
+					}
+
 					const params = { multiSelect: true };
 					if (!exist && !ko.unwrap(vm.modeBasyo) && loginData.msgErrorId !== "Msg_1527") {
 						return vm.$window.modal('at', DIALOG.K, params)
@@ -646,8 +688,12 @@ module nts.uk.at.kdp003.a {
 					}
 				})
 				.then((data: LoginData) => {
+
+					console.log(data);
+
 					var exist = true;
 					var exist1 = false;
+					var checkExistBasyo = false;
 
 					if (data === undefined) {
 						return false;
@@ -655,6 +701,23 @@ module nts.uk.at.kdp003.a {
 
 					if (data.loginData) {
 						exist1 = true;
+					}
+
+					if (ko.unwrap(vm.modeBasyo)) {
+
+						if (data.notification == null) {
+							var checkExistBasyo = true;
+						}
+						if (data.result) {
+							checkExistBasyo = false;
+						}
+					}
+
+					console.log(checkExistBasyo);
+
+					if (checkExistBasyo) {
+						checkExistBasyo = false;
+						return false;
 					}
 
 					if (data.notification == null && !exist1 && !ko.unwrap(vm.modeBasyo)) {
