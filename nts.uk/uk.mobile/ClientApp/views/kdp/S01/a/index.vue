@@ -47,7 +47,13 @@
           >
             <img v-bind:src="'/nts.uk.mobile.web/dist/resources/' + button.icon" height="50" width="50"/> 
             <br>
-            <div>{{ button.buttonDisSet.buttonNameSet.buttonName }}</div>
+            <div
+               v-bind:style="{
+              'font-size': button.buttonDisSet.buttonNameSet.buttonName.length > 8 ? '15px' : '20px',
+              'height': button.buttonDisSet.buttonNameSet.buttonName.length > 8 ? '29px': 'unset'
+             
+            }"
+            >{{ button.buttonDisSet.buttonNameSet.buttonName }}</div>
           </button>
         </div>
       </div>
