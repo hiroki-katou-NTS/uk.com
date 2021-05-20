@@ -190,9 +190,11 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
             list.add(hRemaiEmployee);
             maps.put(hRemaiEmployee.getWorkplaceId(), list);
         }
+        List<HolidaysRemainingEmployee> rs = new ArrayList<>();
         for (List<HolidaysRemainingEmployee> listEmployee : maps.values()) {
             firstRow = printEachWorkplace(worksheet, firstRow, listEmployee, dataSource);
         }
+
     }
 
     private int printEachWorkplace(Worksheet worksheet, int firstRow, List<HolidaysRemainingEmployee> employees,
@@ -200,6 +202,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
         if (employees.size() == 0) {
             return firstRow;
         }
+        HorizontalPageBreakCollection pageBreaks = worksheet.getHorizontalPageBreaks();
         Cells cells = worksheet.getCells();
         // print Header
         cells.copyRows(cells, 0, firstRow, NUMBER_ROW_OF_HEADER + 1);
@@ -224,15 +227,21 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
         if (firstRow % NUMBER_ROW_OF_PAGE != 0) {
             firstRow += (NUMBER_ROW_OF_PAGE - firstRow % NUMBER_ROW_OF_PAGE);
         }
+        pageBreaks.add(firstRow);
         return firstRow;
     }
 
     private void printPersonBreakPage(Worksheet worksheet, HolidayRemainingDataSource dataSource) throws Exception {
         int firstRow = NUMBER_ROW_OF_PAGE;
-
-        for (String employeeIds : dataSource.getEmpIds()) {
+        HorizontalPageBreakCollection pageBreaks = worksheet.getHorizontalPageBreaks();
+        List<String> empIds = dataSource.getEmpIds();
+        for (int i = 0; i < empIds.size(); i++) {
+            String employeeIds = empIds.get(i);
             HolidaysRemainingEmployee employee = dataSource.getMapEmployees().get(employeeIds);
             firstRow = this.printEachPerson(worksheet, firstRow, employee, dataSource);
+            if (i >= 1) {
+                pageBreaks.add(firstRow + 1);
+            }
         }
     }
 
@@ -396,7 +405,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                 val vlaueE13 = listAnnLeaGrant.get(i).getGrantDays();
                 Double days_Granted = checkShowAreaAnnualBreak1(
                         dataSource.getHolidaysRemainingManagement()) ?
-                        (double) vlaueE13 : null;
+                        (Double) vlaueE13 : null;
                 cells.get(firstRow + 2 * i, 4).setValue(df.format(days_Granted));
                 totalAddRows += 2;
             }
@@ -412,7 +421,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
             val valueE14 = listAnnLeaGrant.stream().mapToDouble(AnnLeaGrantNumberImported::getGrantDays).sum(); // TODO QA
             Double leave_DaysRemain = checkShowAreaAnnualBreak1(
                     dataSource.getHolidaysRemainingManagement()) ?
-                    (double) valueE14 : null;
+                     valueE14 : null;
             cells.get(firstRow, 5).setValue(df.format(leave_DaysRemain));
             if (leave_DaysRemain != null && leave_DaysRemain < 0) {
                 setForegroundRed(cells.get(firstRow, 5));
@@ -436,12 +445,17 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
             val use_after_grant = rs363New.stream()
                     .map(e -> e.getAggrResultOfAnnualLeave().getAsOfPeriodEnd()
                             .getRemainingNumber().getAnnualLeaveWithMinus().getUsedNumberInfo()
-                            .getUsedNumberAfterGrantOpt().get().getUsedDays().get()).mapToDouble(e -> e!=null?e.v():0).sum();
+                            .getUsedNumberAfterGrantOpt()).mapToDouble(e ->
+                            {
+                                return e.filter(annualLeaveUsedNumber -> annualLeaveUsedNumber.getUsedDays().isPresent())
+                                        .map(annualLeaveUsedNumber -> annualLeaveUsedNumber.getUsedDays().get().v()).orElseGet(() -> (double) 0);
+                            }
+                    ).sum();
 
             val valueE15 = use_date + use_after_grant; //
             Double used_Days = checkShowAreaAnnualBreak1(
                     dataSource.getHolidaysRemainingManagement()) ?
-                    (double) valueE15 : null;
+                     valueE15 : null;
             cells.get(firstRow, 6).setValue(df.format(used_Days));
             if (used_Days != null && used_Days < 0) {
                 setForegroundRed(cells.get(firstRow, 6));
@@ -452,11 +466,11 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
             val valueE16 = rs363New.stream()
                     .map(e -> e.getAggrResultOfAnnualLeave().getAsOfPeriodEnd()
                             .getRemainingNumber().getAnnualLeaveWithMinus().getRemainingNumberInfo()
-                            .getRemainingNumberBeforeGrant().getTotalRemainingDays()).mapToDouble(e -> e!=null?e.v():0).sum(); //
+                            .getRemainingNumberBeforeGrant().getTotalRemainingDays()).mapToDouble(e -> e != null ? e.v() : 0).sum(); //
 
             Double number_date_remain = checkShowAreaAnnualBreak1(
                     dataSource.getHolidaysRemainingManagement()) ?
-                    (double) valueE16 : null;
+                     valueE16 : null;
             cells.get(firstRow, 7).setValue(df.format(number_date_remain));
 
             if (number_date_remain != null && number_date_remain < 0) {
@@ -492,16 +506,16 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                     .map(e -> {
                                 val i = e.getAggrResultOfAnnualLeave().getAsOfPeriodEnd()
                                         .getRemainingNumber().getAnnualLeaveWithMinus().getUsedNumberInfo()
-                                        .getUsedNumberAfterGrantOpt().get().getUsedTime();
-                                if (i.isPresent()) {
-                                    return i.get().v();
+                                        .getUsedNumberAfterGrantOpt();
+                                if (i.isPresent() && i.get().getUsedTime().isPresent()) {
+                                    return i.get().getUsedTime().get().v();
                                 } else return 0;
                             }
                     ).mapToDouble(e -> e).sum();
 
             val valueE114 = use_time + use_after_grant_time;
             Double uses_Hours = checkShowAreaAnnualBreak2(dataSource.getHolidaysRemainingManagement()) ?
-                    (double) valueE114 : null;
+                     valueE114 : null;
             val e114 = uses_Hours != null ? convertToTime((int) (uses_Hours * 60)) : "";
             cells.get(firstRow + 1, 6).setValue(e114);
             if (uses_Hours != null && uses_Hours < 0) {
@@ -513,10 +527,10 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
             val valueE115 = rs363New.stream()
                     .map(e -> e.getAggrResultOfAnnualLeave().getAsOfPeriodEnd()
                             .getRemainingNumber().getAnnualLeaveWithMinus().getRemainingNumberInfo()
-                            .getRemainingNumberBeforeGrant().getTotalRemainingDays()).mapToDouble(e -> e!=null?e.v():0).sum();
+                            .getRemainingNumberBeforeGrant().getTotalRemainingDays()).mapToDouble(e -> e != null ? e.v() : 0).sum();
             Double leave_RemainHours =
                     checkShowAreaAnnualBreak2(dataSource.getHolidaysRemainingManagement()) ?
-                            (double) valueE115 : null;
+                             valueE115 : null;
             val e115 = leave_RemainHours != null ? convertToTime((int) (leave_RemainHours * 60)) : "";
             cells.get(firstRow + 1, 7).setValue(e115);
             if (used_Days != null && used_Days < 0) {
@@ -555,7 +569,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                 val value23 = item.getUsedDays();
                 Double e23 = checkShowAreaAnnualBreak1(
                         dataSource.getHolidaysRemainingManagement()) ?
-                        (double) value23 : null;
+                        value23 : null;
                 // E2_3 当月より前, set lại giá trị cho cột này nếu bằng 0 thì không hiển thị ra
                 cells.get(firstRow, 10 + totalMonth)
                         .setValue(df.format(e23));
@@ -641,8 +655,8 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                                     .v() : null;
                     Double e33 = checkShowAreaAnnualBreak1(
                             dataSource.getHolidaysRemainingManagement()) ?
-                            (double) value33 : null;
-                    cells.get(firstRow + 1, 10 + totalMonth).setValue(e33 != null
+                            value33 : null;
+                    cells.get(firstRow + 2, 10 + totalMonth).setValue(e33 != null
                             && e33 != 0
                             ? e33 : null);
                     // E2_4
@@ -662,7 +676,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                         String e24 = checkShowAreaAnnualBreak1(
                                 dataSource.getHolidaysRemainingManagement()) ?
                                 value24 : null;
-                        cells.get(firstRow + 2, 10 + totalMonth).setValue(e24);
+                        cells.get(firstRow + 1, 10 + totalMonth).setValue(e24);
                     }
                     //E3-4:
                     // 年休残時間 実績値 : 月度残時間
@@ -674,7 +688,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                                     .getRemainingNumberBeforeGrant().getTotalRemainingDays().v() : null;
                     Double e34 = checkShowAreaAnnualBreak1(
                             dataSource.getHolidaysRemainingManagement()) ?
-                            (double) value34 : null;
+                            value34 : null;
 
                     cells.get(firstRow + 3, 10 + totalMonth).setValue(e33 != null
                             && e34 != 0
@@ -685,14 +699,19 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                     val value23 = item.getAggrResultOfAnnualLeave().getAsOfPeriodEnd()
                             .getRemainingNumber().getAnnualLeaveWithMinus().getUsedNumberInfo()
                             .getUsedNumberBeforeGrant().getUsedDays().isPresent() ?
-                            item.getAggrResultOfAnnualLeave().getAsOfPeriodEnd()
-                                    .getRemainingNumber().getAnnualLeaveWithMinus().getUsedNumberInfo()
-                                    .getUsedNumberBeforeGrant().getUsedDays()
-                                    .get().v() : null;
+                            (item.getAggrResultOfAnnualLeave().getAsOfPeriodEnd()
+                                    .getRemainingNumber().getAnnualLeaveWithMinus()
+                                    .getUsedNumberInfo() != null ?
+                                    item.getAggrResultOfAnnualLeave().getAsOfPeriodEnd()
+                                            .getRemainingNumber().getAnnualLeaveWithMinus()
+                                            .getUsedNumberInfo().getUsedNumberBeforeGrant().getUsedDays()
+                                            .get().v() : null)
+
+                            : null;
 
                     Double e23 = checkShowAreaAnnualBreak1(
                             dataSource.getHolidaysRemainingManagement()) ?
-                            (double) value23 : null;
+                            (Double) value23 : null;
                     cells.get(firstRow, 10 + totalMonth)
                             .setValue(e23 != null
                                     && e23 != 0
@@ -705,12 +724,12 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                                     .getRemainingNumber().getAnnualLeaveWithMinus().getUsedNumberInfo()
                                     .getUsedNumberBeforeGrant().getUsedTime().get().v() : null;
 
-                    Double e24 = checkShowAreaAnnualBreak1(
+                    Integer e24 = checkShowAreaAnnualBreak1(
                             dataSource.getHolidaysRemainingManagement()) ?
-                            (double) value24 : null;
+                            (Integer) value24 : null;
                     val vl24 = e24 != null && e24 != 0 ? convertToTime((int) (e24 * 60)) : "";
 
-                    cells.get(firstRow + 2, 10 + totalMonth).setValue(vl24);
+                    cells.get(firstRow + 1, 10 + totalMonth).setValue(vl24);
 
                     // Update KDR 001 : 値＝(クリア)/背景色＝グレー;
                     setBackgroundGray(cells.get(firstRow + 2, 11 + totalMonth));
@@ -1020,10 +1039,9 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
         val timeUse = substituteHolidayAggrResult.getTimeUse().v();
         // 代休+時間代休の場合
         String i13 = "";
-        if (check.isSubstituteHolidaySetting() && dateUse != null) {
-            i13 = dateUse.toString();
-        } else if (check.isSubstituteHolidaySetting() && check.isHourlyLeaveSetting() && timeUse != null) {
-            i13 = monRemainingTime.toString();
+        if (check.isSubstituteHolidaySetting() && dateUse != null) i13 = dateUse.toString();
+        else if (check.isSubstituteHolidaySetting() && check.isHourlyLeaveSetting() && timeUse != null) {
+            i13 = Objects.requireNonNull(monRemainingTime).toString();
         }
         cells.get(firstRow, 6).setValue(i13);
         // I1_4 残数
@@ -1034,9 +1052,9 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
         // 代休+時間代休の場合
         String i14 = "";
         if (check.isSubstituteHolidaySetting() && remainDay != null) {
-            i14 = dateUse.toString();
+            i14 = Objects.requireNonNull(dateUse).toString();
         } else if (check.isSubstituteHolidaySetting() && check.isHourlyLeaveSetting() && remainTime != null) {
-            i14 = monRemainingTime.toString();
+            i14 = Objects.requireNonNull(monRemainingTime).toString();
         }
         cells.get(firstRow, 7).setValue(i14);
         // I1_5: 未消化数
@@ -1047,9 +1065,9 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
         //代休+時間代休の場合
         String i15 = "";
         if (check.isSubstituteHolidaySetting() && unusedDay != null) {
-            i15 = dateUse.toString();
+            i15 = Objects.requireNonNull(dateUse).toString();
         } else if (check.isSubstituteHolidaySetting() && check.isHourlyLeaveSetting() && unusedTime != null) {
-            i15 = monRemainingTime.toString();
+            i15 = Objects.requireNonNull(monRemainingTime).toString();
         }
         cells.get(firstRow, 8).setValue(i15);
         firstRow += totalRows;
@@ -1555,7 +1573,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
         val valueG15 = data363.stream()
                 .map(e -> e.getAggrResultOfAnnualLeave().getAsOfPeriodEnd()
                         .getRemainingNumber().getAnnualLeaveWithMinus().getRemainingNumberInfo()
-                        .getRemainingNumberBeforeGrant().getTotalRemainingDays()).mapToDouble(e -> e!=null?e.v():0).sum();
+                        .getRemainingNumberBeforeGrant().getTotalRemainingDays()).mapToDouble(e -> e != null ? e.v() : 0).sum();
         ;
 
         //G1_5 : 月度残時間
