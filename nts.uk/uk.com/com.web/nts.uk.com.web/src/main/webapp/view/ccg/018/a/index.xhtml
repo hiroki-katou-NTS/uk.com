@@ -37,26 +37,6 @@
         $("#sidebar").ntsSideBar();
       })
     </script>
-
-		<!-- <ui:define name="sidebar">
-			<div>
-				<ul id="A1_1" class="navigator" data-bind="foreach: tabs().filter(function(t) { return t.display() == true; })">
-					<li><a tabindex="-1" data-bind="text: name,
-						click: $parent.changeTab.bind($parent, $data),
-						css: { 'active': active },
-						attr: { href: '#tabpanel-' + id().toLowerCase() }"></a></li>
-				</ul>
-			</div>
-		</ui:define>
-		<ui:define name="sidebar-content">
-			<com:ko-if bind="currentTab() != null">
-				<div role="tabpanel" data-bind="attr:{id: 'tabpanel-' + currentTab().id()}">
-					<div data-bind="attr:{class: 'screen-content screen-' + currentTab().id(), id: 'screen-' + currentTab().id()} ">
-					</div>
-				</div>
-			</com:ko-if>
-		</ui:define> -->
-
     <ui:define name="content">
       <div tabindex="-1" id="functions-area"></div>
 			<table id="sidebar">
