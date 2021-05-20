@@ -500,7 +500,7 @@ module nts.uk.ui.at.kdw013.a {
                         .value();
 
                     return {
-                        date: moment(date).toISOString(),
+                        date: moment(date).format(DATE_TIME_FORMAT),
                         lstWorkDetailsParamCommand
                     };
                 })
