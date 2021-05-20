@@ -191,7 +191,9 @@ public class LateDecisionClock {
 			if (minTime.greaterThan(start)) minTime = start;
 		}
 		if (minTime == null) return Optional.empty();
-		if (minTime.greaterThanOrEqualTo(attendance)) return Optional.empty();
+		if (minTime.greaterThanOrEqualTo(attendance)){
+			return Optional.of(new TimeSpanForDailyCalc(minTime, minTime));
+		}
 		return Optional.of(new TimeSpanForDailyCalc(minTime, attendance));
 	}
 	

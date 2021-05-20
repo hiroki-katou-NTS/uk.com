@@ -182,7 +182,7 @@ public class ShortWorkTimeOfDaily {
 				result = DeductionTotalTime.of(
 						result.getTotalTime().addMinutes(withoutTime, withoutTime),
 						result.getWithinStatutoryTotalTime(),
-						result.getExcessOfStatutoryTotalTime());
+						result.getExcessOfStatutoryTotalTime().addMinutes(withoutTime, withoutTime));
 			}
 		}
 		// 控除合計時間を返す

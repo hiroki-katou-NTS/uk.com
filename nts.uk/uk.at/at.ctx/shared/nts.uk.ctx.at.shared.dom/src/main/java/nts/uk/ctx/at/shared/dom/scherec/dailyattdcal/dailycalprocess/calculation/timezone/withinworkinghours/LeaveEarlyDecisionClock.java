@@ -196,7 +196,9 @@ public class LeaveEarlyDecisionClock {
 			if (maxTime.lessThan(end)) maxTime = end;
 		}
 		if (maxTime == null) return Optional.empty();
-		if (maxTime.lessThanOrEqualTo(leave)) return Optional.empty();
+		if (maxTime.lessThanOrEqualTo(leave)){
+			return Optional.of(new TimeSpanForDailyCalc(maxTime, maxTime));
+		}
 		return Optional.of(new TimeSpanForDailyCalc(leave, maxTime));
 	}
 	
