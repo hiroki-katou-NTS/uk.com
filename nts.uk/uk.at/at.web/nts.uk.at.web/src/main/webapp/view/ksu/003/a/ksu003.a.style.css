@@ -102,8 +102,12 @@
 	margin-left: 37px;
 }
 
-#check-time, #check-name {
+#check-time{
 	margin-left: 30px;
+}
+
+ #check-name {
+	margin-left: -5px;
 }
 
 #hr-row2 {
@@ -203,7 +207,6 @@
 	white-space: nowrap;
 } 
 #note-sort {
-	margin-left: 35px;
 	margin-top: 5px !important;
 }
 
@@ -258,6 +261,7 @@ html {
 	z-index: 1999 !important;
 	width: 230px;
 }
+
 /** A3_4 */
 #combo-box-sort {
 	float: left;
@@ -280,3 +284,16 @@ html {
 	animation: blinkingText 4.2s infinite;
 }
 
+#contain-view-right-ksu003 {
+	display: inline-block;
+    margin-top: -96px !important;
+    margin-left: 288px;
+    border: 1px solid #cccccc;
+    background: rgb(219, 238, 244);
+    padding: 5px;
+    width: 1000px;
+    height: 87px;
+    border-radius: 5px;
+    font-size: 11.5px !important;
+    margin-bottom: 12px !important;
+}
