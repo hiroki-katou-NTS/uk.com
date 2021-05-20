@@ -283,7 +283,7 @@ module nts.uk.ui.at.kdw013.a {
                             refDate: moment(date).startOf('day').format(DATE_TIME_FORMAT),
                             displayPeriod: {
                                 start: moment(start).startOf('day').format(DATE_TIME_FORMAT),
-                                end: moment(end).subtract(1, 'day').endOf('day').format(DATE_TIME_FORMAT)
+                                end: moment(end).subtract(1, 'day').startOf('day').format(DATE_TIME_FORMAT)
                             }
                         };
                         cache.pair = sameCache(params);
