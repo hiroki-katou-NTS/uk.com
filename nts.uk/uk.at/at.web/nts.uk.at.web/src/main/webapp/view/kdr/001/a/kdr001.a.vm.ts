@@ -438,6 +438,11 @@ module nts.uk.at.view.kdr001.a.viewmodel {
             );
 
             let data = new ReportInfor(holidayRemainingOutputCondition, lstSelectedEployee);
+            if(nts.uk.util.isNullOrUndefined(data.holidayRemainingOutputCondition.layOutId )){
+                nts.uk.ui.dialog.alertError({messageId: 'Msg_880'});
+                nts.uk.ui.block.clear();
+                return;
+            }
             service.saveAsExcel(data).done(() => {
             }).fail(function (res: any) {
                 nts.uk.ui.dialog.alertError({messageId: res.messageId});
