@@ -170,7 +170,7 @@ public interface ICommonAlgorithmHolidayWork {
 	 * @param appHdWorkDispInfo
 	 * @param appHolidayWork
 	 */
-	public void checkBeforeMoveToAppTime(String companyId, AppHdWorkDispInfoOutput appHdWorkDispInfo,
+	public List<ConfirmMsgOutput> checkBeforeMoveToAppTime(String companyId, AppHdWorkDispInfoOutput appHdWorkDispInfo,
 			AppHolidayWork appHolidayWork);
 	
 	/**

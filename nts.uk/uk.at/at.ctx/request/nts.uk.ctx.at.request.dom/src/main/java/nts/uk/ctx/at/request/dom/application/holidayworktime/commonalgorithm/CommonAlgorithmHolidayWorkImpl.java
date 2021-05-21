@@ -61,16 +61,18 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdwo
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.HolidayWorkAppSetRepository;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSet;
 import nts.uk.ctx.at.request.dom.workrecord.dailyrecordprocess.dailycreationwork.BreakTimeZoneSetting;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.AppRemainCreateInfor;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.EarchInterimRemainCheck;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainCheckInputParam;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngCheckRegister;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.PrePostAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.require.RemainNumberTempRequireService;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.AppReflectOtHdWork;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.AppReflectOtHdWorkRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.BreakFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeSheet;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.AbsenceTenProcessCommon;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.SubstitutionHolidayOutput;
-import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.AppReflectOtHdWork;
-import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.AppReflectOtHdWorkRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
@@ -245,8 +247,12 @@ public class CommonAlgorithmHolidayWorkImpl implements ICommonAlgorithmHolidayWo
 	}
 	
 	@Override
-	public CheckBeforeOutput individualErrorCheck(boolean require, String companyId,
-			AppHdWorkDispInfoOutput appHdWorkDispInfoOutput, AppHolidayWork appHolidayWork, Integer mode) {
+	public CheckBeforeOutput individualErrorCheck(
+			boolean require,
+			String companyId,
+			AppHdWorkDispInfoOutput appHdWorkDispInfoOutput,
+			AppHolidayWork appHolidayWork,
+			Integer mode) {
 		CheckBeforeOutput checkBeforeOutput = new CheckBeforeOutput();
 		String workTypeCode = Optional.ofNullable(appHolidayWork.getWorkInformation().getWorkTypeCode()).map(x -> x.v()).orElse(null);
 		String workTimeCode = appHolidayWork.getWorkInformation().getWorkTimeCodeNotNull().map(x -> x.v()).orElse(null);
@@ -287,29 +293,88 @@ public class CommonAlgorithmHolidayWorkImpl implements ICommonAlgorithmHolidayWo
         DatePeriod closingPeriod = ClosureService.findClosurePeriod(requireM3, cacheCarrier, appHolidayWork.getApplication().getEmployeeID(), 
         		appHdWorkDispInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getBaseDate());
         
-        // 登録時の残数チェック 
-        InterimRemainCheckInputParam checkRegisterParam = InterimRemainCheckInputParam.builder()
-        									.cid(companyId) // 会社ID
-        									.sid(appHolidayWork.getApplication().getEmployeeID()) // 社員ID
-        									.datePeriod(new DatePeriod(closingPeriod.start(), closingPeriod.end().addYears(1).addDays(-1)))	// 集計開始日 and 集計終了日
-        									.mode(false) // モード(その他か)
-        									.baseDate(appHolidayWork.getApplication().getAppDate().getApplicationDate()) // 基準日
-        									.registerDate(new DatePeriod(appHolidayWork.getApplication().getAppDate().getApplicationDate(), appHolidayWork.getApplication().getAppDate().getApplicationDate())) // 登録期間の開始日・登録期間の終了日
-        									.chkRegister(true) // 登録対象区分
-        									.recordData(Collections.emptyList()) // 登録対象一覧＝申請データ
-        									.scheData(Collections.emptyList()) // ???
-        									.appData(Collections.emptyList()) // ???
-        									.chkSubHoliday(true) // 代休チェック区分
-        									.chkPause(false) // 振休チェック区分
-        									.chkAnnual(false) // 年休チェック区分
-        									.chkFundingAnnual(false) // 積休チェック区分
-        									.chkSpecial(false) // 特休チェック区分
-        									.chkPublicHoliday(false) // 公休チェック区分
-        									.chkSuperBreak(false) // 超休チェック区分
-        									.build();
+        List<AppRemainCreateInfor> appDatas = new ArrayList<AppRemainCreateInfor>();
+        
+        List<GeneralDate> lstAppDate = new ArrayList<GeneralDate>();
+        lstAppDate.add(appHolidayWork.getAppDate().getApplicationDate());
+        ApplicationTime applicationTime = appHolidayWork.getApplicationTime();
+        
+        Integer breakTimeTotal = 
+        		applicationTime.getApplicationTime()
+							   .stream()
+							   .filter(x -> x.getAttendanceType() == AttendanceType_Update.BREAKTIME)
+							   .mapToInt(x -> Optional.ofNullable(x.getApplicationTime()).map(y -> y.v()).orElse(0))
+							   .sum()
+        		+ applicationTime.getOverTimeShiftNight().flatMap(x -> Optional.ofNullable(x.getMidNightOutSide())).map(x -> x.v()).orElse(0)
+        		+ applicationTime.getOverTimeShiftNight().map(x -> x.getMidNightHolidayTimes()
+        															.stream()
+        															.mapToInt(y -> y.getAttendanceTime().v())
+        															.sum()
+        				).orElse(0);
+        									   
+        Integer overTimeTotal = 
+        		applicationTime.getApplicationTime()
+				   .stream()
+				   .filter(x -> x.getAttendanceType() != AttendanceType_Update.BREAKTIME)
+				   .mapToInt(x -> Optional.ofNullable(x.getApplicationTime()).map(y -> y.v()).orElse(0))
+				   .sum()
+			   + applicationTime.getFlexOverTime().map(x -> x.v()).orElse(0)
+			   + applicationTime.getOverTimeShiftNight().flatMap(x -> Optional.ofNullable(x.getOverTimeMidNight())).map(x -> x.v()).orElse(0);
+			   
+        
+        
+        AppRemainCreateInfor appData = AppRemainCreateInfor.builder()
+        		.sid(appHolidayWork.getEmployeeID())
+        		.appId(appHolidayWork.getAppID())
+        		.inputDate(appHolidayWork.getInputDate())
+        		.appDate(appHolidayWork.getAppDate().getApplicationDate())
+        		.prePosAtr(EnumAdaptor.valueOf(appHolidayWork.getPrePostAtr().value, PrePostAtr.class))
+        		.appType(EnumAdaptor.valueOf(appHolidayWork.getAppType().value, nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.ApplicationType.class))
+        		.workTypeCode(Optional.of(appHolidayWork.getWorkInformation().getWorkTimeCode().v()))
+        		.workTimeCode(appHolidayWork.getWorkInformation().getWorkTimeCodeNotNull().flatMap(x -> Optional.of(x.v())))
+        		.vacationTimes(Collections.emptyList())
+        		.appBreakTimeTotal(breakTimeTotal > 0 ? Optional.of(breakTimeTotal) : Optional.empty())
+        		.appOvertimeTimeTotal(overTimeTotal > 0 ? Optional.of(overTimeTotal) : Optional.empty())
+        		.startDate(appHolidayWork.getOpAppStartDate().flatMap(x -> Optional.of(x.getApplicationDate())))
+        		.endDate(appHolidayWork.getOpAppEndDate().flatMap(x -> Optional.of(x.getApplicationDate())))
+        		.lstAppDate(lstAppDate)
+        		.timeDigestionUsageInfor(Optional.empty()) 
+        		.build();
+        
+        appDatas.add(appData);
+        
+		// 登録時の残数チェック  
+        InterimRemainCheckInputParam checkRegisterParam = new InterimRemainCheckInputParam(
+        		companyId,
+        		appHolidayWork.getApplication().getEmployeeID(), 
+        		new DatePeriod(
+        				closingPeriod.start(),
+        				closingPeriod.end().addYears(1).addDays(-1)
+				),
+        		false,
+        		appHolidayWork.getApplication().getAppDate().getApplicationDate(), 
+        		new DatePeriod(
+        				appHolidayWork.getApplication()
+        							  .getAppDate()
+        							  .getApplicationDate(),
+        				appHolidayWork.getApplication()
+        							  .getAppDate()
+        							  .getApplicationDate()
+				), 
+        		true,
+        		Collections.emptyList(),
+        		Collections.emptyList(),
+        		appDatas,
+        		true,
+        		false,
+        		false,
+        		false,
+        		false,
+        		false,
+        		false);
         EarchInterimRemainCheck earchInterimRemainCheck = checkRegister.checkRegister(checkRegisterParam);
         if(earchInterimRemainCheck.isChkSubHoliday()) {
-        	confirmMsgOutputs.add(new ConfirmMsgOutput("Msg_1409", Collections.emptyList())); //missing param
+        	confirmMsgOutputs.add(new ConfirmMsgOutput("Msg_1409", Arrays.asList("代休不足区分"))); //missing param
         }
         
         AppOvertimeDetail appOvertimeDetail = new AppOvertimeDetail();
@@ -432,29 +497,88 @@ public class CommonAlgorithmHolidayWorkImpl implements ICommonAlgorithmHolidayWo
 	        DatePeriod closingPeriod = ClosureService.findClosurePeriod(requireM3, cacheCarrier, empAppHolidayWork.getApplication().getEmployeeID(), 
 	        		empAppHdWorkDispInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getBaseDate());
 	        
-	        // 登録時の残数チェック 
-	        InterimRemainCheckInputParam checkRegisterParam = InterimRemainCheckInputParam.builder()
-	        									.cid(companyId) // 会社ID
-	        									.sid(appHolidayWork.getApplication().getEmployeeID()) // 社員ID
-	        									.datePeriod(new DatePeriod(closingPeriod.start(), closingPeriod.end().addYears(1).addDays(-1)))	// 集計開始日 and 集計終了日
-	        									.mode(false) // モード(その他か)
-	        									.baseDate(appHolidayWork.getApplication().getAppDate().getApplicationDate()) // 基準日
-	        									.registerDate(new DatePeriod(appHolidayWork.getApplication().getAppDate().getApplicationDate(), appHolidayWork.getApplication().getAppDate().getApplicationDate())) // 登録期間の開始日・登録期間の終了日
-	        									.chkRegister(true) // 登録対象区分
-	        									.recordData(Collections.emptyList()) // 登録対象一覧＝申請データ
-	        									.scheData(Collections.emptyList()) // ???
-	        									.appData(Collections.emptyList()) // ???
-	        									.chkSubHoliday(true) // 代休チェック区分
-	        									.chkPause(false) // 振休チェック区分
-	        									.chkAnnual(false) // 年休チェック区分
-	        									.chkFundingAnnual(false) // 積休チェック区分
-	        									.chkSpecial(false) // 特休チェック区分
-	        									.chkPublicHoliday(false) // 公休チェック区分
-	        									.chkSuperBreak(false) // 超休チェック区分
-	        									.build();
+	        List<AppRemainCreateInfor> appDatas = new ArrayList<AppRemainCreateInfor>();
+	        
+	        List<GeneralDate> lstAppDate = new ArrayList<GeneralDate>();
+	        lstAppDate.add(empAppHolidayWork.getAppDate().getApplicationDate());
+	        ApplicationTime applicationTimeRemain = empAppHolidayWork.getApplicationTime();
+	        Integer breakTimeTotal = 
+	        		applicationTimeRemain.getApplicationTime()
+								   .stream()
+								   .filter(x -> x.getAttendanceType() == AttendanceType_Update.BREAKTIME)
+								   .mapToInt(x -> Optional.ofNullable(x.getApplicationTime()).map(y -> y.v()).orElse(0))
+								   .sum()
+	        		+ applicationTimeRemain.getOverTimeShiftNight().flatMap(x -> Optional.ofNullable(x.getMidNightOutSide())).map(x -> x.v()).orElse(0)
+	        		+ applicationTimeRemain.getOverTimeShiftNight().map(x -> x.getMidNightHolidayTimes()
+	        															.stream()
+	        															.mapToInt(y -> y.getAttendanceTime().v())
+	        															.sum()
+	        				).orElse(0);
+	        									   
+	        Integer overTimeTotal = 
+	        		applicationTimeRemain.getApplicationTime()
+					   .stream()
+					   .filter(x -> x.getAttendanceType() != AttendanceType_Update.BREAKTIME)
+					   .mapToInt(x -> Optional.ofNullable(x.getApplicationTime()).map(y -> y.v()).orElse(0))
+					   .sum()
+				   + applicationTimeRemain.getFlexOverTime().map(x -> x.v()).orElse(0)
+				   + applicationTimeRemain.getOverTimeShiftNight().flatMap(x -> Optional.ofNullable(x.getOverTimeMidNight())).map(x -> x.v()).orElse(0);
+				   
+	        	   
+	        
+	        
+	        AppRemainCreateInfor appData = AppRemainCreateInfor.builder()
+	        		.sid(empAppHolidayWork.getEmployeeID())
+	        		.appId(empAppHolidayWork.getAppID())
+	        		.inputDate(empAppHolidayWork.getInputDate())
+	        		.appDate(empAppHolidayWork.getAppDate().getApplicationDate())
+	        		.prePosAtr(EnumAdaptor.valueOf(empAppHolidayWork.getPrePostAtr().value, PrePostAtr.class))
+	        		.appType(EnumAdaptor.valueOf(empAppHolidayWork.getAppType().value, nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.ApplicationType.class))
+	        		.workTypeCode(Optional.of(empAppHolidayWork.getWorkInformation().getWorkTimeCode().v()))
+	        		.workTimeCode(empAppHolidayWork.getWorkInformation().getWorkTimeCodeNotNull().flatMap(x -> Optional.of(x.v())))
+	        		.vacationTimes(Collections.emptyList())
+	        		.appBreakTimeTotal(breakTimeTotal > 0 ? Optional.of(breakTimeTotal) : Optional.empty())
+	        		.appOvertimeTimeTotal(overTimeTotal > 0 ? Optional.of(overTimeTotal) : Optional.empty())
+	        		.startDate(empAppHolidayWork.getOpAppStartDate().flatMap(x -> Optional.of(x.getApplicationDate())))
+	        		.endDate(empAppHolidayWork.getOpAppEndDate().flatMap(x -> Optional.of(x.getApplicationDate())))
+	        		.lstAppDate(lstAppDate)
+	        		.timeDigestionUsageInfor(Optional.empty()) 
+	        		.build();
+	        
+	        appDatas.add(appData);
+	        
+	        //	登録時の残数チェック   
+	        InterimRemainCheckInputParam checkRegisterParam = new InterimRemainCheckInputParam(
+	        		companyId,
+	        		empAppHolidayWork.getApplication().getEmployeeID(), 
+	        		new DatePeriod(
+	        				closingPeriod.start(),
+	        				closingPeriod.end().addYears(1).addDays(-1)
+					),
+	        		false,
+	        		empAppHolidayWork.getApplication().getAppDate().getApplicationDate(), 
+	        		new DatePeriod(
+	        				empAppHolidayWork.getApplication()
+	        							  .getAppDate()
+	        							  .getApplicationDate(),
+						    empAppHolidayWork.getApplication()
+	        							  .getAppDate()
+	        							  .getApplicationDate()
+					), 
+	        		true,
+	        		Collections.emptyList(),
+	        		Collections.emptyList(),
+	        		appDatas,
+	        		true,
+	        		false,
+	        		false,
+	        		false,
+	        		false,
+	        		false,
+	        		false);
 	        EarchInterimRemainCheck earchInterimRemainCheck = checkRegister.checkRegister(checkRegisterParam);
 	        if(earchInterimRemainCheck.isChkSubHoliday()) {
-	        	confirmMsgOutputs.add(new ConfirmMsgOutput("Msg_1409", Collections.emptyList())); //missing param
+				confirmMsgOutputs.add(new ConfirmMsgOutput("Msg_1409", Arrays.asList("代休不足区分"))); //missing param
 	        }
 	        
 	        //	社員IDと基準日から社員の雇用コードを取得
@@ -904,7 +1028,7 @@ public class CommonAlgorithmHolidayWorkImpl implements ICommonAlgorithmHolidayWo
 	}
 
 	@Override
-	public void checkBeforeMoveToAppTime(String companyId, AppHdWorkDispInfoOutput appHdWorkDispInfo,
+	public List<ConfirmMsgOutput> checkBeforeMoveToAppTime(String companyId, AppHdWorkDispInfoOutput appHdWorkDispInfo,
 			AppHolidayWork appHolidayWork) {
 		//	勤務種類、就業時間帯チェックのメッセージを表示
 		this.checkWorkMessageDisp(appHolidayWork.getWorkInformation().getWorkTypeCode().v(), 
@@ -923,6 +1047,103 @@ public class CommonAlgorithmHolidayWorkImpl implements ICommonAlgorithmHolidayWo
     			Arrays.asList(appHolidayWork.getApplication().getAppDate().getApplicationDate()), 
     			Arrays.asList(appHolidayWork.getWorkInformation().getWorkTypeCode().v()), 
     			appHdWorkDispInfo.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getOpActualContentDisplayLst().orElse(Collections.emptyList()));
+    	
+    	//    	社員に対応する締め期間を取得する
+		val requireM3 = requireService.createRequire();
+        val cacheCarrier = new CacheCarrier();
+        DatePeriod closingPeriod = ClosureService.findClosurePeriod(requireM3, cacheCarrier, appHolidayWork.getApplication().getEmployeeID(), 
+        		appHdWorkDispInfo.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getBaseDate());
+        
+        //	登録時の残数チェック 
+        
+        List<AppRemainCreateInfor> appDatas = new ArrayList<AppRemainCreateInfor>();
+        
+        List<GeneralDate> lstAppDate = new ArrayList<GeneralDate>();
+        lstAppDate.add(appHolidayWork.getAppDate().getApplicationDate());
+        ApplicationTime applicationTime = appHolidayWork.getApplicationTime();
+        Integer breakTimeTotal = 
+        		applicationTime.getApplicationTime()
+							   .stream()
+							   .filter(x -> x.getAttendanceType() == AttendanceType_Update.BREAKTIME)
+							   .mapToInt(x -> Optional.ofNullable(x.getApplicationTime()).map(y -> y.v()).orElse(0))
+							   .sum()
+        		+ applicationTime.getOverTimeShiftNight().flatMap(x -> Optional.ofNullable(x.getMidNightOutSide())).map(x -> x.v()).orElse(0)
+        		+ applicationTime.getOverTimeShiftNight().map(x -> x.getMidNightHolidayTimes()
+        															.stream()
+        															.mapToInt(y -> y.getAttendanceTime().v())
+        															.sum()
+        				).orElse(0);
+        									   
+        Integer overTimeTotal = 
+        		applicationTime.getApplicationTime()
+				   .stream()
+				   .filter(x -> x.getAttendanceType() != AttendanceType_Update.BREAKTIME)
+				   .mapToInt(x -> Optional.ofNullable(x.getApplicationTime()).map(y -> y.v()).orElse(0))
+				   .sum()
+			   + applicationTime.getFlexOverTime().map(x -> x.v()).orElse(0)
+			   + applicationTime.getOverTimeShiftNight().flatMap(x -> Optional.ofNullable(x.getOverTimeMidNight())).map(x -> x.v()).orElse(0);
+			   
+        
+			   
+        
+        
+        AppRemainCreateInfor appData = AppRemainCreateInfor.builder()
+        		.sid(appHolidayWork.getEmployeeID())
+        		.appId(appHolidayWork.getAppID())
+        		.inputDate(appHolidayWork.getInputDate())
+        		.appDate(appHolidayWork.getAppDate().getApplicationDate())
+        		.prePosAtr(EnumAdaptor.valueOf(appHolidayWork.getPrePostAtr().value, PrePostAtr.class))
+        		.appType(EnumAdaptor.valueOf(appHolidayWork.getAppType().value, nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.ApplicationType.class))
+        		.workTypeCode(Optional.of(appHolidayWork.getWorkInformation().getWorkTimeCode().v()))
+        		.workTimeCode(appHolidayWork.getWorkInformation().getWorkTimeCodeNotNull().flatMap(x -> Optional.of(x.v())))
+        		.vacationTimes(Collections.emptyList())
+        		.appBreakTimeTotal(breakTimeTotal > 0 ? Optional.of(breakTimeTotal) : Optional.empty())
+        		.appOvertimeTimeTotal(overTimeTotal > 0 ? Optional.of(overTimeTotal) : Optional.empty())
+        		.startDate(appHolidayWork.getOpAppStartDate().flatMap(x -> Optional.of(x.getApplicationDate())))
+        		.endDate(appHolidayWork.getOpAppEndDate().flatMap(x -> Optional.of(x.getApplicationDate())))
+        		.lstAppDate(lstAppDate)
+        		.timeDigestionUsageInfor(Optional.empty()) 
+        		.build();
+        
+        appDatas.add(appData);
+        
+        //	登録時の残数チェック   
+        InterimRemainCheckInputParam checkRegisterParam = new InterimRemainCheckInputParam(
+        		companyId,
+        		appHolidayWork.getApplication().getEmployeeID(), 
+        		new DatePeriod(
+        				closingPeriod.start(),
+        				closingPeriod.end().addYears(1).addDays(-1)
+				),
+        		false,
+        		appHolidayWork.getApplication().getAppDate().getApplicationDate(), 
+        		new DatePeriod(
+        				appHolidayWork.getApplication()
+        							  .getAppDate()
+        							  .getApplicationDate(),
+        				appHolidayWork.getApplication()
+        							  .getAppDate()
+        							  .getApplicationDate()
+				), 
+        		true,
+        		Collections.emptyList(),
+        		Collections.emptyList(),
+        		appDatas,
+        		true,
+        		false,
+        		false,
+        		false,
+        		false,
+        		false,
+        		false);
+        List<ConfirmMsgOutput> confirmMsgOutputs = new ArrayList();
+        EarchInterimRemainCheck earchInterimRemainCheck = checkRegister.checkRegister(checkRegisterParam);
+        if(earchInterimRemainCheck.isChkSubHoliday()) {
+        	confirmMsgOutputs.add(new ConfirmMsgOutput("Msg_1409", Arrays.asList("代休不足区分"))); //missing param
+        }
+        
+        // 36
+        return confirmMsgOutputs;
 	}
 	
 	@Override
@@ -945,30 +1166,93 @@ public class CommonAlgorithmHolidayWorkImpl implements ICommonAlgorithmHolidayWo
 	        DatePeriod closingPeriod = ClosureService.findClosurePeriod(requireM3, cacheCarrier, appHolidayWork.getApplication().getEmployeeID(), 
 	        		appHdWorkDispInfo.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getBaseDate());
 	        
-	        // 登録時の残数チェック 
-	        InterimRemainCheckInputParam checkRegisterParam = InterimRemainCheckInputParam.builder()
-	        									.cid(companyId) // 会社ID
-	        									.sid(appHolidayWork.getApplication().getEmployeeID()) // 社員ID
-	        									.datePeriod(new DatePeriod(closingPeriod.start(), closingPeriod.end().addYears(1).addDays(-1)))	// 集計開始日 and 集計終了日
-	        									.mode(false) // モード(その他か)
-	        									.baseDate(appHolidayWork.getApplication().getAppDate().getApplicationDate()) // 基準日
-	        									.registerDate(new DatePeriod(appHolidayWork.getApplication().getAppDate().getApplicationDate(), appHolidayWork.getApplication().getAppDate().getApplicationDate())) // 登録期間の開始日・登録期間の終了日
-	        									.chkRegister(true) // 登録対象区分
-	        									.recordData(Collections.emptyList()) // 登録対象一覧＝申請データ
-	        									.scheData(Collections.emptyList()) // ???
-	        									.appData(Collections.emptyList()) // ???
-	        									.chkSubHoliday(true) // 代休チェック区分
-	        									.chkPause(false) // 振休チェック区分
-	        									.chkAnnual(false) // 年休チェック区分
-	        									.chkFundingAnnual(false) // 積休チェック区分
-	        									.chkSpecial(false) // 特休チェック区分
-	        									.chkPublicHoliday(false) // 公休チェック区分
-	        									.chkSuperBreak(false) // 超休チェック区分
-	        									.build();
+	        //	登録時の残数チェック 
+	        
+	        List<AppRemainCreateInfor> appDatas = new ArrayList<AppRemainCreateInfor>();
+	        
+	        List<GeneralDate> lstAppDate = new ArrayList<GeneralDate>();
+	        lstAppDate.add(appHolidayWork.getAppDate().getApplicationDate());
+	        ApplicationTime applicationTime = appHolidayWork.getApplicationTime();
+	        Integer breakTimeTotal = 
+	        		applicationTime.getApplicationTime()
+								   .stream()
+								   .filter(x -> x.getAttendanceType() == AttendanceType_Update.BREAKTIME)
+								   .mapToInt(x -> Optional.ofNullable(x.getApplicationTime()).map(y -> y.v()).orElse(0))
+								   .sum()
+	        		+ applicationTime.getOverTimeShiftNight().flatMap(x -> Optional.ofNullable(x.getMidNightOutSide())).map(x -> x.v()).orElse(0)
+	        		+ applicationTime.getOverTimeShiftNight().map(x -> x.getMidNightHolidayTimes()
+	        															.stream()
+	        															.mapToInt(y -> y.getAttendanceTime().v())
+	        															.sum()
+	        				).orElse(0);
+	        									   
+	        Integer overTimeTotal = 
+	        		applicationTime.getApplicationTime()
+					   .stream()
+					   .filter(x -> x.getAttendanceType() != AttendanceType_Update.BREAKTIME)
+					   .mapToInt(x -> Optional.ofNullable(x.getApplicationTime()).map(y -> y.v()).orElse(0))
+					   .sum()
+				   + applicationTime.getFlexOverTime().map(x -> x.v()).orElse(0)
+				   + applicationTime.getOverTimeShiftNight().flatMap(x -> Optional.ofNullable(x.getOverTimeMidNight())).map(x -> x.v()).orElse(0);
+				   
+	        
+				   
+	        
+	        
+	        AppRemainCreateInfor appData = AppRemainCreateInfor.builder()
+	        		.sid(appHolidayWork.getEmployeeID())
+	        		.appId(appHolidayWork.getAppID())
+	        		.inputDate(appHolidayWork.getInputDate())
+	        		.appDate(appHolidayWork.getAppDate().getApplicationDate())
+	        		.prePosAtr(EnumAdaptor.valueOf(appHolidayWork.getPrePostAtr().value, PrePostAtr.class))
+	        		.appType(EnumAdaptor.valueOf(appHolidayWork.getAppType().value, nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.ApplicationType.class))
+	        		.workTypeCode(Optional.of(appHolidayWork.getWorkInformation().getWorkTimeCode().v()))
+	        		.workTimeCode(appHolidayWork.getWorkInformation().getWorkTimeCodeNotNull().flatMap(x -> Optional.of(x.v())))
+	        		.vacationTimes(Collections.emptyList())
+	        		.appBreakTimeTotal(breakTimeTotal > 0 ? Optional.of(breakTimeTotal) : Optional.empty())
+	        		.appOvertimeTimeTotal(overTimeTotal > 0 ? Optional.of(overTimeTotal) : Optional.empty())
+	        		.startDate(appHolidayWork.getOpAppStartDate().flatMap(x -> Optional.of(x.getApplicationDate())))
+	        		.endDate(appHolidayWork.getOpAppEndDate().flatMap(x -> Optional.of(x.getApplicationDate())))
+	        		.lstAppDate(lstAppDate)
+	        		.timeDigestionUsageInfor(Optional.empty()) 
+	        		.build();
+	        
+	        appDatas.add(appData);
+	        
+	        //	登録時の残数チェック   
+	        InterimRemainCheckInputParam checkRegisterParam = new InterimRemainCheckInputParam(
+	        		companyId,
+	        		appHolidayWork.getApplication().getEmployeeID(), 
+	        		new DatePeriod(
+	        				closingPeriod.start(),
+	        				closingPeriod.end().addYears(1).addDays(-1)
+					),
+	        		false,
+	        		appHolidayWork.getApplication().getAppDate().getApplicationDate(), 
+	        		new DatePeriod(
+	        				appHolidayWork.getApplication()
+	        							  .getAppDate()
+	        							  .getApplicationDate(),
+	        				appHolidayWork.getApplication()
+	        							  .getAppDate()
+	        							  .getApplicationDate()
+					), 
+	        		true,
+	        		Collections.emptyList(),
+	        		Collections.emptyList(),
+	        		appDatas,
+	        		true,
+	        		false,
+	        		false,
+	        		false,
+	        		false,
+	        		false,
+	        		false);
 	        EarchInterimRemainCheck earchInterimRemainCheck = checkRegister.checkRegister(checkRegisterParam);
 	        if(earchInterimRemainCheck.isChkSubHoliday()) {
-	        	confirmMsgOutputs.add(new ConfirmMsgOutput("Msg_1409", Collections.emptyList())); //missing param
+	        	confirmMsgOutputs.add(new ConfirmMsgOutput("Msg_1409", Arrays.asList("代休不足区分"))); //missing param
 	        }
+
 	        
 //	        //18.３６時間の上限チェック(新規登録)_NEW
 //	        Time36ErrorInforList time36UpperLimitCheckResult = time36UpperLimitCheck.checkRegister(companyId, 
