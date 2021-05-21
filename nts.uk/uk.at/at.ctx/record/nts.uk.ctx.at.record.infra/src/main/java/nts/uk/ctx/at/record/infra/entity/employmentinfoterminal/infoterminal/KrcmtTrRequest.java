@@ -9,6 +9,7 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.arc.time.GeneralDateTime;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @AllArgsConstructor
@@ -112,7 +113,11 @@ public class KrcmtTrRequest extends UkJpaEntity implements Serializable {
 	@Column(name = "REBOOT")
 	public Integer reboot;
 	
-	
+	/**
+	 * 切替日時				
+	 */
+	@Column(name = "SWITCH_DATE")
+	public GeneralDateTime switchDate;
 
 	@Override
 	protected Object getKey() {

@@ -44,7 +44,7 @@ public class NRLWebService extends RequestDispatcher {
 	@POST
 	@Path("masterCollect")
 	@RequestData({ Command.PERSONAL_INFO, Command.OVERTIME_INFO, Command.RESERVATION_INFO, 
-			Command.WORKTIME_INFO, Command.WORKTYPE_INFO, Command.APPLICATION_INFO, Command.TR_REMOTE })
+			Command.WORKTIME_INFO, Command.WORKTYPE_INFO, Command.APPLICATION_INFO, Command.TR_REMOTE, Command.UK_SWITCH_MODE })
 	public Frame requestMasterDatas(InputStream is) {
 		NRLResponse response = ignite(is);
 		return response.getEntity(Frame.class);

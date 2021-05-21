@@ -60,6 +60,16 @@ public class SendTimeRecordSetting implements DomainValue {
 	 * 申請理由名称送信要求フラグ
 	 */
 	private final boolean request11;
+	
+	/**
+	 * リモート設定送信要求フラグ
+	 */
+	private final boolean request12;
+	
+	/**
+	 * 切替日時送信要求フラグ
+	 */
+	private final boolean request13;
 
 	public SendTimeRecordSetting(SettingBuilder builder) {
 		this.request1 = builder.request1;
@@ -72,6 +82,8 @@ public class SendTimeRecordSetting implements DomainValue {
 		this.request9 = builder.request9;
 		this.request10 = builder.request10;
 		this.request11 = builder.request11;
+		this.request12 = builder.request12;
+		this.request13 = builder.request13;
 	}
 
 	public static class SettingBuilder {
@@ -125,6 +137,16 @@ public class SendTimeRecordSetting implements DomainValue {
 		 * 申請理由名称送信要求フラグ
 		 */
 		private boolean request11;
+		
+		/**
+		 * リモート設定送信要求フラグ
+		 */
+		private boolean request12;
+		
+		/**
+		 * 切替日時送信要求フラグ
+		 */
+		private boolean request13;
 
 		public SettingBuilder(boolean request1, boolean request2, boolean request3, boolean request4,
 				boolean request6) {
@@ -164,6 +186,16 @@ public class SendTimeRecordSetting implements DomainValue {
 			return this;
 		}
 
+		public SettingBuilder createReq12(boolean request12) {
+			this.request12 = request12;
+			return this;
+		}
+		
+		public SettingBuilder createReq13(boolean request13) {
+			this.request13 = request13;
+			return this;
+		}
+		
 		public SendTimeRecordSetting build() {
 			return new SendTimeRecordSetting(this);
 		}
