@@ -30,6 +30,12 @@ public class PortalStampSettingsDto {
 
 	// トップメニューリンク利用する
 	private Integer useTopMenuLink;
+	
+	//外出打刻を利用する
+	private Integer goOutUseAtr;
+	
+	//打刻一覧を表示する
+	private Integer displayStampList;
 
 	public static PortalStampSettingsDto fromDomain(PortalStampSettings portalStampSettings) {
 
@@ -38,6 +44,7 @@ public class PortalStampSettingsDto {
 
 		return new PortalStampSettingsDto(portalStampSettings.getCid(),
 				DisplaySettingsStampScreenDto.fromDomain(portalStampSettings.getDisplaySettingsStampScreen()),
-				buttonSettings, portalStampSettings.isButtonEmphasisArt() ? 1 : 0, portalStampSettings.isToppageLinkArt() ? 1 : 0);
+				buttonSettings, portalStampSettings.isButtonEmphasisArt() ? 1 : 0, portalStampSettings.isToppageLinkArt() ? 1 : 0,
+						portalStampSettings.isGoOutUseAtr() ? 1 : 0, portalStampSettings.isDisplayStampList() ? 1 : 0);
 	}
 }

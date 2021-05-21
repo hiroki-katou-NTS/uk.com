@@ -25,15 +25,20 @@ public class KDP002AStartPageOutput {
 	private StampToSuppress stampToSuppress;
 	private TimeCard timeCard;
 	private List<EmployeeStampInfo> stampDataOfEmployees = new ArrayList<>();
+	private int useATR;
 
 	public KDP002AStartPageOutput(Optional<StampSettingPerson> settingPerson,
-			Optional<StampResultDisplay> stampRsDisplay, TimeCard timeCard, List<EmployeeStampInfo> employeeStampDatas,
-			StampToSuppress stampToSuppress) {
+			Optional<StampResultDisplay> stampRsDisplay,
+			TimeCard timeCard,
+			List<EmployeeStampInfo> employeeStampDatas,
+			StampToSuppress stampToSuppress, 
+			Integer useArt) {
 		this.stampSetting = settingPerson.isPresent() ? settingPerson.get() : null;
 		this.stampResultDisplay = stampRsDisplay.isPresent() ? stampRsDisplay.get() : null;
 		this.stampToSuppress = stampToSuppress;
 		this.timeCard = timeCard;
 		this.stampDataOfEmployees = employeeStampDatas;
+		this.useATR = useArt;
 	}
 
 }
