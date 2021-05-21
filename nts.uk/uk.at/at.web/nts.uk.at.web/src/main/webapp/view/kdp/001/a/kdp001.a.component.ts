@@ -98,45 +98,11 @@ module nts.uk.ui.kdp001.a {
                 ">
                 <button data-bind="attr: { style: btn.style }, click: function() { $component.stamp(btn); }">
                     <!-- ko if: btn.buttonPositionNo == 1 -->
-                        <!-- ko if: btn.buttonName.length < 6 -->
-                            <i data-bind="ntsIcon: { no: 205, width: 100, height: 100 }"></i>
-                        <!-- /ko -->
-                        <!-- ko if: btn.buttonName.length == 6 -->
-                            <i data-bind="ntsIcon: { no: 205, width: 95, height: 95 }"></i>
-                        <!-- /ko -->
-                        <!-- ko if: btn.buttonName.length == 7 -->
-                            <i data-bind="ntsIcon: { no: 205, width: 90, height: 90 }"></i>
-                        <!-- /ko -->
-                        <!-- ko if: btn.buttonName.length == 8 -->
-                            <i data-bind="ntsIcon: { no: 205, width: 85, height: 85 }"></i>
-                        <!-- /ko -->
-                        <!-- ko if: btn.buttonName.length == 9 -->
-                            <i data-bind="ntsIcon: { no: 205, width: 80, height: 80 }"></i>
-                        <!-- /ko -->
-                        <!-- ko if: btn.buttonName.length == 10 -->
-                            <i data-bind="ntsIcon: { no: 205, width: 85, height: 85 }"></i>
-                        <!-- /ko -->
+                        <i data-bind="ntsIcon: { no: 205, width: 85, height: 85 }"></i>
                     <!-- /ko -->
 
                     <!-- ko if: btn.buttonPositionNo == 2 -->
-                        <!-- ko if: btn.buttonName.length < 6 -->
-                            <i data-bind="ntsIcon: { no: 209, width: 100, height: 100 }"></i>
-                        <!-- /ko -->
-                        <!-- ko if: btn.buttonName.length == 6 -->
-                            <i data-bind="ntsIcon: { no: 209, width: 95, height: 95 }"></i>
-                        <!-- /ko -->
-                        <!-- ko if: btn.buttonName.length == 7 -->
-                            <i data-bind="ntsIcon: { no: 209, width: 90, height: 90 }"></i>
-                        <!-- /ko -->
-                        <!-- ko if: btn.buttonName.length == 8 -->
-                            <i data-bind="ntsIcon: { no: 209, width: 85, height: 85 }"></i>
-                        <!-- /ko -->
-                        <!-- ko if: btn.buttonName.length == 9 -->
-                            <i data-bind="ntsIcon: { no: 209, width: 80, height: 80 }"></i>
-                        <!-- /ko -->
-                        <!-- ko if: btn.buttonName.length == 10 -->
-                            <i data-bind="ntsIcon: { no: 209, width: 85, height: 85 }"></i>
-                        <!-- /ko -->
+                        <i data-bind="ntsIcon: { no: 209, width: 85, height: 85 }"></i>
                     <!-- /ko -->
 
                     <!-- ko if: btn.buttonPositionNo == 3 -->
@@ -148,35 +114,25 @@ module nts.uk.ui.kdp001.a {
                     <!-- /ko -->
 
                     <!-- ko if: btn.buttonPositionNo == 1 || btn.buttonPositionNo == 2 -->
-                        <!-- ko if: btn.buttonName.length < 6 -->
+                        <!-- ko if: btn.buttonName.length <= 8 -->
                             <div class="btn-start-1"
                                 data-bind="attr: { style: btn.style }, text: btn.buttonName"></div>
                         <!-- /ko -->
-                        <!-- ko if: btn.buttonName.length == 6 -->
+                        <!-- ko if: btn.buttonName.length > 10 -->
                             <div class="btn-start-2"
-                                data-bind="attr: { style: btn.style }, text: btn.buttonName"></div>
-                        <!-- /ko -->
-                        <!-- ko if: btn.buttonName.length == 7 -->
-                            <div class="btn-start-3"
-                                data-bind="attr: { style: btn.style }, text: btn.buttonName"></div>
-                        <!-- /ko -->
-                        <!-- ko if: btn.buttonName.length == 8 -->
-                            <div class="btn-start-4"
-                                data-bind="attr: { style: btn.style }, text: btn.buttonName"></div>
-                        <!-- /ko -->
-                        <!-- ko if: btn.buttonName.length == 9 -->
-                            <div class="btn-start-5"
-                                data-bind="attr: { style: btn.style }, text: btn.buttonName"></div>
-                        <!-- /ko -->
-                        <!-- ko if: btn.buttonName.length == 10 -->
-                            <div class="btn-start-6"
                                 data-bind="attr: { style: btn.style }, text: btn.buttonName"></div>
                         <!-- /ko -->
                     <!-- /ko -->
 
                     <!-- ko if: btn.buttonPositionNo == 3 || btn.buttonPositionNo == 4 -->
-                        <div class="btn-start-1"
-                            data-bind="attr: { style: btn.style }, text: btn.buttonName"></div>
+                        <!-- ko if: btn.buttonName.length <= 8 -->
+                            <div class="btn-start-3"
+                                data-bind="attr: { style: btn.style }, text: btn.buttonName"></div>
+                        <!-- /ko -->
+                        <!-- ko if: btn.buttonName.length > 10 -->
+                            <div class="btn-start-4"
+                                data-bind="attr: { style: btn.style }, text: btn.buttonName"></div>
+                        <!-- /ko -->
                     <!-- /ko -->
                 </button>
             </div>
@@ -281,32 +237,33 @@ module nts.uk.ui.kdp001.a {
                     border-width: 0px;
                 }
                 .kdp-001-a.kdp-001-a-btn .btn-start-1 {
-                    font-size: 40px;
-                }
-                .kdp-001-a.kdp-001-a-btn .btn-start-2 {
-                    font-size: 34px;
-                    position: relative;
-                    top: 15px;
-                }
-                .kdp-001-a.kdp-001-a-btn .btn-start-3 {
-                    font-size: 29px;
-                    position: relative;
-                    top: 15px;
-                }
-                .kdp-001-a.kdp-001-a-btn .btn-start-4 {
                     font-size: 25px;
                     position: relative;
+                    white-space: break-spaces;
+                    word-break: break-all;
                     top: 15px;
                 }
-                .kdp-001-a.kdp-001-a-btn .btn-start-5 {
-                    font-size: 22px;
-                    position: relative;
-                    top: 15px;
-                }
-                .kdp-001-a.kdp-001-a-btn .btn-start-6 {
+                .kdp-001-a.kdp-001-a-btn .btn-start-2 {
                     font-size: 20px;
                     position: relative;
-                    top: 15px;
+                    white-space: break-spaces;
+                    word-break: break-all;
+                    height: 40px;
+                }
+                .kdp-001-a.kdp-001-a-btn .btn-start-3 {
+                    font-size: 20px;
+                    position: relative;
+                    white-space: break-spaces;
+                    word-break: break-all;
+                    height: 40px;
+                }
+                .kdp-001-a.kdp-001-a-btn .btn-start-4 {
+                    font-size: 15px;
+                    position: relative;
+                    white-space: break-spaces;
+                    word-break: break-all;
+                    height: 37px;
+                    top: 2px;
                 }
                 .kdp-001-a.kdp-001-a-btn1 .btn-end {
                     font-size: 20px;
@@ -323,9 +280,6 @@ module nts.uk.ui.kdp001.a {
                     margin-top: 5px;
                     width: 222px;
                     height: 100px;
-                }
-                .kdp-001-a.kdp-001-a-btn button:nth-child(4) div {
-                    font-size: 20px;
                 }
                 .kdp-001-a.widget-content {
                     border: 1px solid #b1b1b1;
