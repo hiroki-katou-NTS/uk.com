@@ -294,17 +294,20 @@ public class RoleMonthlyExportExcelImpl  {
                         if(controlItem.getHeaderBgColorOfMonthlyPer()!=null){
                             data.put("ヘッダー色", controlItem.getHeaderBgColorOfMonthlyPer().replace("#", ""));
                         }
-                        Integer inputUnit = controlItem.getInputUnitOfTimeItem()==null ? 0:controlItem.getInputUnitOfTimeItem();
+                        Float inputUnit = controlItem.getInputUnitOfTimeItem()==null ? 0 : controlItem.getInputUnitOfTimeItem();
     	                
-    	                switch (c.getTypeOfAttendanceItem()) {
-    	                	case 5:	//DailyAttendanceAtr.Time
-    	                		data.put("丸め単位", inputUnit + TextResource.localize("KDW006_154"));
+    	                switch (c.getAttendanceAtr()) {
+    	                	case 1:	//MonthlyAttendanceItemAtr.Time
+    	                		data.put("丸め単位", inputUnit % 1 == 0 ? (int) Math.floor(inputUnit) + TextResource.localize("KDW006_154") : 
+    	                			inputUnit + TextResource.localize("KDW006_154"));
     	                		break;
-    	                	case 2: //DailyAttendanceAtr.NumberOfTime
-    	                		data.put("丸め単位", inputUnit + TextResource.localize("KDW006_230"));
+    	                	case 2: //MonthlyAttendanceItemAtr.NumberOfTime
+    	                		data.put("丸め単位", inputUnit % 1 == 0 ? (int) Math.floor(inputUnit) + TextResource.localize("KDW006_230") : 
+    	                			inputUnit + TextResource.localize("KDW006_230"));
     	                		break;
-    	                	case 3: //DailyAttendanceAtr.AmountOfMoney
-    	                		data.put("丸め単位", inputUnit + TextResource.localize("KDW006_231"));
+    	                	case 4: //MonthlyAttendanceItemAtr.AmountOfMoney
+    	                		data.put("丸め単位", inputUnit % 1 == 0 ? (int) Math.floor(inputUnit) + TextResource.localize("KDW006_231"): 
+    	                			inputUnit + TextResource.localize("KDW006_231"));
     	                		break;
     	                	default:
     	                		data.put("丸め単位","");

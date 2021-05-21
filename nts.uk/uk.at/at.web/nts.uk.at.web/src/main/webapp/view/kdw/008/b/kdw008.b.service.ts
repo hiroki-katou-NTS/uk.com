@@ -16,6 +16,7 @@ module nts.uk.at.view.kdw008.b.service {
         // monthly tab3
         getListMonthRight: "at/function/monthlycorrection/findbycode/{0}",
         updateMonthly: "at/function/monthlycorrection/updatemonthly",
+        
 
         //delete by sheet
         deleteBusiFormatBySheet: "at/record/businesstype/deletebysheet",
@@ -31,7 +32,20 @@ module nts.uk.at.view.kdw008.b.service {
         updateMobileDailyDetail: BASE_MOBILE_PATH + "updateBusTypeFormat",
         getMobileDailyDetail: BASE_MOBILE_PATH + "findBusinessTypeDailyDetail/{0}",
         getMobileMonthlyDetail: BASE_MOBILE_PATH + "findBusinessTypeMonthlyDetail/{0}",
+
+        // copy
+        getListMonthlyRecordWorkType: "at/function/monthlycorrection/findall",
+        copyMonthly: "at/function/monthlycorrection/copy"
+
     }
+
+    export function getListMonthlyRecordWorkType(): JQueryPromise<any> {
+        return nts.uk.request.ajax(paths.getListMonthlyRecordWorkType);
+    };
+
+    export function copyMonthly(command: any): JQueryPromise<any> {
+        return nts.uk.request.ajax(paths.copyMonthly, command);
+    };
 
     export function addDailyDetail(AddBusTypeCommand: any, isMobile: boolean): JQueryPromise < any > {
         let _path = !isMobile ? paths.addDailyDetail : paths.addMobileDailyDetail;

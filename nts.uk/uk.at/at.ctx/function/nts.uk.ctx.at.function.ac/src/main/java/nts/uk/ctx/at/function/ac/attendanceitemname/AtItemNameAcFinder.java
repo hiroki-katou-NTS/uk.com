@@ -51,6 +51,7 @@ public class AtItemNameAcFinder implements AtItemNameAdapter {
 			dto.setTypeOfAttendanceItem(x.getDailyAttendanceAtr().value);
 			// to ver7
 			dto.setFrameCategory(null);
+			dto.setAttendanceAtr(x.getDailyAttendanceAtr().value); //because dto.typeOfAttendanceItem is override in AttendanceItemNameService.getNameOfAttendanceItem()
 			return dto;
 		}).collect(Collectors.toList());
 		// to ver7
@@ -73,6 +74,7 @@ public class AtItemNameAcFinder implements AtItemNameAdapter {
 			dto.setTypeOfAttendanceItem(x.getMonthlyAttendanceAtr().value);
 			// to ver7
 			dto.setFrameCategory(null);
+			dto.setAttendanceAtr(x.getMonthlyAttendanceAtr().value); //because dto.typeOfAttendanceItem is override in AttendanceItemNameService.getNameOfAttendanceItem()
 			return dto;
 		}).collect(Collectors.toList());
 		// to ver7
