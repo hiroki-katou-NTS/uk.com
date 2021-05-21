@@ -59,15 +59,20 @@ public class GetDailyPerformanceData {
 				List<WorkDetailsParam> lstworkDetailsParam = new ArrayList<>();
 
 				for (OuenWorkTimeSheetOfDailyAttendance ouenSheet : interDaily.getOuenTimeSheet()) {
-					for (OuenWorkTimeOfDailyAttendance ouenTime : interDaily.getOuenTime()) {
-						WorkDetailsParam workDetailsParam = new WorkDetailsParam(
-								new SupportFrameNo(ouenSheet.getTimeSheet().getWorkNo().v()),
-								new TimeZone(ouenSheet.getTimeSheet().getStart().get(), ouenSheet.getTimeSheet().getEnd().get(),
-										Optional.ofNullable(ouenTime.getWorkTime().getTotalTime())),
-								ouenSheet.getWorkContent().getWork(), ouenSheet.getWorkContent().getWorkRemarks(),
-								ouenSheet.getWorkContent().getWorkplace().getWorkLocationCD());
-						lstworkDetailsParam.add(workDetailsParam);
-					}
+					
+					Optional<OuenWorkTimeOfDailyAttendance> ouentime = interDaily.getOuenTime().stream()
+							.filter(x -> x.getWorkNo() == ouenSheet.getWorkNo()).findFirst();
+					
+					WorkDetailsParam workDetailsParam = new WorkDetailsParam(
+							new SupportFrameNo(ouenSheet.getTimeSheet().getWorkNo().v()),
+							new TimeZone(ouenSheet.getTimeSheet().getStart().get(),
+									ouenSheet.getTimeSheet().getEnd().get(),
+									Optional.ofNullable(
+											ouentime.map(x -> x.getWorkTime().getTotalTime()).orElse(null))),
+							ouenSheet.getWorkContent().getWork(), ouenSheet.getWorkContent().getWorkRemarks(),
+							ouenSheet.getWorkContent().getWorkplace().getWorkLocationCD());
+					lstworkDetailsParam.add(workDetailsParam);
+					
 				}
 
 				// 実績内容
