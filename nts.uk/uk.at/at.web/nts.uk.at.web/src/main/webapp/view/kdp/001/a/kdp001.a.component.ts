@@ -273,9 +273,6 @@ module nts.uk.ui.kdp001.a {
                     width: 222px;
                     height: 100px;
                 }
-                .kdp-001-a.kdp-001-a-btn button:nth-child(3) div {
-                    font-size: 20px;
-                }
                 .kdp-001-a.kdp-001-a-btn button:nth-child(4) {
                     margin-top: 5px;
                     width: 222px;
@@ -435,26 +432,22 @@ module nts.uk.ui.kdp001.a {
         constructor(private mode: 'a' | 'b' | 'c' | 'd' | KnockoutObservable<'a' | 'b' | 'c' | 'd'> = 'a') {
             super();
             const vm = this;
-
             if (mode === 'a') {
                 vm.modeA(true);
             }
 
             vm.lengthStamps = ko.computed({
-
                 read: () => {
                     const stamps = ko.unwrap(vm.stamps);
 
                     if (stamps.length < 5) {
                         return 'short';
                     }
-
                     return 'long';
                 }
             });
 
             vm.basyo();
-
             vm.show = ko.computed({
                 read: () => {
                     switch (ko.unwrap<'a' | 'b' | 'c' | 'd'>(vm.mode)) {
@@ -499,7 +492,6 @@ module nts.uk.ui.kdp001.a {
                     if (!msg || !msg.messageId) {
                         return '';
                     }
-
                     return vm.$i18n.message(msg.messageId, msg.messageParams.map(vm.$i18n));
                 }
             });
@@ -507,7 +499,6 @@ module nts.uk.ui.kdp001.a {
             if (ko.isObservable(mode)) {
                 mode.subscribe(() => vm.loadData());
             }
-
             vm.loadData();
         }
 
@@ -546,7 +537,6 @@ module nts.uk.ui.kdp001.a {
                     if (portalStampSettings) {
                         const screen = ko.unwrap<string>(mode);
                         const { buttonSettings, displaySettingsStampScreen } = portalStampSettings;
-
                         const { resultDisplayTime, settingDateTimeColor, serverCorrectionInterval } = displaySettingsStampScreen || {};
                         const { backgroundColor, textColor } = settingDateTimeColor || {};
 
@@ -732,7 +722,6 @@ module nts.uk.ui.kdp001.a {
         }
 
         basyo() {
-
             $.urlParam = function (name) {
                 var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
                 if (results == null) {
@@ -746,7 +735,7 @@ module nts.uk.ui.kdp001.a {
             const vm = this,
                 locationCd = $.urlParam('basyo'),
                 mode = $.urlParam('mode');
-                
+
             if (locationCd) {
                 vm.modeBasyo(true)
                 const param = {
@@ -758,7 +747,6 @@ module nts.uk.ui.kdp001.a {
                     .then(() => {
                         vm.$ajax(REST_API.getLocation, param)
                             .done((data: IBasyo) => {
-                                console.log(data);
                                 if (data) {
                                     if (data.workpalceId != null || data.workLocationName != null) {
                                         vm.workpalceCD = locationCd;
@@ -832,7 +820,6 @@ module nts.uk.ui.kdp001.a {
 
         destroyed() {
             const vm = this;
-
             vm.show.dispose();
             vm.widget.dispose();
             vm.message.display.dispose();
@@ -964,19 +951,14 @@ module nts.uk.ui.kdp001.a {
 
     enum ButtonTypeAtr {
         // 系
-
         GOING_TO_WORK = 1,
         // 系
-
         WORKING_OUT = 2,
         // "外出系"
-
         GO_OUT = 3,
         // 戻り系
-
         RETURN = 4,
         // 予約系
-
         RESERVATION_SYSTEM = 5
     }
 
