@@ -14,16 +14,14 @@ module nts.uk.at.view.ksu003.b {
         displayName: KnockoutObservable<string> = ko.observable('');
         selectedPage: KnockoutObservable<number> = ko.observable();
         groupName: KnockoutObservable<string> = ko.observable('');
-        textButtonArrDefault: Array<any> = [
-            { name: ko.observable(nts.uk.resource.getText("ページ1", ['１'])), id: 0 },
-            { name: ko.observable(nts.uk.resource.getText("ページ2", ['２'])), id: 1 },
-            { name: ko.observable(nts.uk.resource.getText("ページ3", ['３'])), id: 2 },
-            { name: ko.observable(nts.uk.resource.getText("ページ4", ['４'])), id: 3 },
-            { name: ko.observable(nts.uk.resource.getText("ページ5", ['５'])), id: 4 }           
-        ];
-
-        textButtonArr: KnockoutObservableArray<any> = ko.observableArray([]);
-
+        textButtonArr: KnockoutObservableArray<any> = ko.observableArray([
+            { name: ko.observable(getText("KSU003_84", [1])), id: 0 },
+            { name: ko.observable(getText("KSU003_84", [2])), id: 1 },
+            { name: ko.observable(getText("KSU003_84", [3])), id: 2 },
+            { name: ko.observable(getText("KSU003_84", [4])), id: 3 },
+            { name: ko.observable(getText("KSU003_84", [5])), id: 4 }           
+        ]);
+        
         selectedLinkButton: KnockoutObservable<number> = ko.observable(1);
         contextMenu: Array<any>;
         textName: KnockoutObservable<string> = ko.observable(null);
@@ -31,6 +29,7 @@ module nts.uk.at.view.ksu003.b {
         dataWorkPairSet: KnockoutObservableArray<any> = ko.observableArray([]);
         tasks: KnockoutObservableArray<any> = ko.observableArray([]);        
         enableDelete: KnockoutObservable<boolean> = ko.observable(true);
+        choosePage: KnockoutObservable<boolean> = ko.observable(false);
         isEditing: KnockoutObservable<boolean> = ko.observable(false);
 
         targetId: KnockoutObservable<string> = ko.observable('');
@@ -44,17 +43,19 @@ module nts.uk.at.view.ksu003.b {
 
         constructor() {
             super();
-            let self = this;
+            const self = this;
             self.contextMenu = [
-                { id: "openDialog", text: nts.uk.resource.getText("作業選択"), action: self.openDialogKdl012.bind(self,event)},
-                { id: "delete", text: nts.uk.resource.getText("作業削除"), action: self.deleteTask.bind(self,event) }
+                { id: "openDialog", text: getText("作業選択"), action: self.openDialogKdl012.bind(self,event)},
+                { id: "delete", text: getText("作業削除"), action: self.deleteTask.bind(self,event) }
             ];
 
+            $("#task").ntsButtonTable("init", {row: 2, column: 5, source: self.tasks(), contextMenu: self.contextMenu, mode: "normal"});
             $("#task").bind("getdatabutton", function(evt, data) {
                 self.textName(data.text);
                 self.tooltip(data.tooltip);
                 self.dataWorkPairSet(data.data);
             });
+            $("#task").bind("getdatabutton1");
 
             self.selectedPage.subscribe((value) => {
                 self.loadData();
@@ -65,6 +66,12 @@ module nts.uk.at.view.ksu003.b {
             self.loadData();
         }
 
+        resetTextBtn(): void {
+            const self = this;_         
+            for (let i = 1; i <= 5; i++) {
+                self.textButtonArr()[i-1].name((getText("KSU003_84",[i])));
+            }
+        }
         loadData(): void {
             const self = this; 
             let request = getShared("dataShareKsu003b");        
@@ -72,8 +79,7 @@ module nts.uk.at.view.ksu003.b {
             self.targetId(request.targetId)
 
             self.$blockui("invisible");
-            self.textButtonArr.removeAll();
-            self.textButtonArr(_.clone(self.textButtonArrDefault));
+            self.resetTextBtn();
             self.$ajax(Paths.GET_ALL_TASK_PALETTE, request).done((data: Array<ITaskPalette>) => {
                 if(data && data.length > 0){                    
                     for(let i=0; i< data.length; i++){
@@ -107,7 +113,7 @@ module nts.uk.at.view.ksu003.b {
                     } else {
                         self.taskPaletteOrgnization().resetData();
                     }
-                    if (!_.isNull(self.taskPaletteOrgnization().keys())) {
+                    if (!_.isNull(self.taskPaletteOrgnization().keys()) && !_.isEmpty(self.taskPaletteOrgnization().keys())) {
                         for (let i = 0; i < self.taskPaletteOrgnization().keys().length; i++) {
                             if(self.taskPaletteOrgnization().listTaskStatus()[i] == 0){
                                 dataSource.splice(self.taskPaletteOrgnization().keys()[i] - 1, 1, {
@@ -115,15 +121,17 @@ module nts.uk.at.view.ksu003.b {
                                     tooltip: self.taskPaletteOrgnization().taskNames()[i] });
                             } else if(self.taskPaletteOrgnization().listTaskStatus()[i] == 1){
                                 dataSource.splice(self.taskPaletteOrgnization().keys()[i] - 1, 1, {
-                                    text: 'マスタ未登録', 
-                                    tooltip: 'マスタ未登録'});
+                                    text: getText("KSU003_70"), 
+                                    tooltip: ''});
                             } else if(self.taskPaletteOrgnization().listTaskStatus()[i] == 2){
                                 dataSource.splice(self.taskPaletteOrgnization().keys()[i] - 1, 1, {
-                                    text: '期限切れ', 
-                                    tooltip: '期限切れ'});
+                                    text: getText("KSU003_82"), 
+                                    tooltip: ''});
                             }                            
                         }
+                        self.choosePage(true);
                     } else {
+                        self.choosePage(false);
                         self.enableDelete(false);
                     }                   
                     self.tasks(dataSource);
@@ -131,11 +139,14 @@ module nts.uk.at.view.ksu003.b {
             }).always(() => {
                 self.$blockui("hide");
             });
-            $('input#taskName').focus();
+            $('input#pageName').focus();
         }
         
         registerOrUpdate(): void {
             const self = this;
+            if (self.validateAll()) {
+                return;
+            }
 
             if (!self.condition()) {
                 self.$dialog.error({ messageId: 'Msg_2082' });
@@ -165,6 +176,8 @@ module nts.uk.at.view.ksu003.b {
             }).always(() => {
                 self.$blockui("hide");
             });
+
+            $('input#pageName').focus();
             self.endStatus('Update');
             self.enableDelete(true);
         }
@@ -181,18 +194,19 @@ module nts.uk.at.view.ksu003.b {
                 
                 if(result === 'yes'){
                     self.$ajax(Paths.DELETE_TASK_PALETTE_ORGNIZATION, command).done(() =>{
-                        self.$dialog.info({messageId: "Msg_16"}).then(() =>{                                        
+                        self.$dialog.info({messageId: "Msg_16"}).then(() =>{                        
                             self.selectedPage.valueHasMutated(); 
                         });          
                         self.endStatus('Update');             
                     }).always(() =>{
                         self.$blockui("hide");
                     });    
-                    self.$blockui("hide");                
+                    self.$blockui("hide");      
+                    $('input#pageName').focus();          
                 }
                 if(result === 'no'){
                     self.$blockui("hide");
-                    $('input#taskName').focus();
+                    $('input#pageName').focus();
                 }
             }); 
         }
@@ -203,16 +217,17 @@ module nts.uk.at.view.ksu003.b {
             self.selectedPage(index + 1);
             self.selectedPage.valueHasMutated();
             self.selectedLinkButton(index);
-            self.handleClickLinkButton(index);      
-            $('input#taskName').focus();     
+            self.handleClickLinkButton(index);                  
+            $('input#pageName').focus();     
         }
 
-        handleClickLinkButton(index: number): void {            
+        handleClickLinkButton(index: number): void {       
+            const self = this;     
             nts.uk.ui.errors.clearAll();
             _.find($('#group-link-button a.hyperlink.color-gray'), (a) => {
                 $(a).removeClass('color-gray');
             });
-            $($('a.hyperlink')[index]).addClass('color-gray');            
+            $($('a.hyperlink')[index]).addClass('color-gray'); 
         }
 
         deleteTask(data: any, event: any): JQueryPromise<any> {
@@ -228,7 +243,14 @@ module nts.uk.at.view.ksu003.b {
 
         openDialogKdl012(data: any, event:any): JQueryPromise<any> {
             let self = this, dfd = $.Deferred();
-            let position : number;
+            let position : number, index: number;      
+
+            self.clearError();
+            if(data){
+                index = _.indexOf(self.taskPaletteOrgnization().keys(), Number(data.target.dataset.idx) + 1);
+            } else if(event){
+                index = _.indexOf(self.taskPaletteOrgnization().keys(), Number($(event)[0].dataset.idx) + 1);
+            }            
             self.textName(data ? data.text : null);
             self.tooltip(data ? data.tooltip : null);
 
@@ -243,19 +265,19 @@ module nts.uk.at.view.ksu003.b {
                 showExpireDate: true,
                 workFrameNoSelection: 1,
                 referenceDate: moment(dataShare.referenceDate).format("YYYY/MM/DD"),
-                selectionCodeList: ['']
+                selectionCodeList: [self.taskPaletteOrgnization().taskCodes()[index]]
             };
-            nts.uk.ui.windows.setShared('KDL012Params', request);
+            setShared('KDL012Params', request);
 
             nts.uk.ui.windows.sub.modal("/view/kdl/012/index.xhtml").onClosed(() => {
-                let dataFromKdl012 = getShared("KDL012Output");
+                let dataFromKdl012 = getShared("KDL012OutputList");
                 if (dataFromKdl012) {
-                    self.textName(dataFromKdl012 ? dataFromKdl012 : self.textName());
+                    self.textName(dataFromKdl012 ? dataFromKdl012[0].taskName : self.textName());
                     self.taskPaletteOrgnization().keys.push(position);
-                    self.taskPaletteOrgnization().taskCodes.push(dataFromKdl012);
-                    self.taskPaletteOrgnization().taskNames.push(dataFromKdl012);
-                    self.taskPaletteOrgnization().taskNames.push(dataFromKdl012);
-                    dfd.resolve({ text: self.textName(), tooltip: self.tooltip(), data: dataFromKdl012.data });
+                    self.taskPaletteOrgnization().taskCodes.push(dataFromKdl012[0].code);
+                    self.taskPaletteOrgnization().taskNames.push(dataFromKdl012[0].taskName);
+                    // self.taskPaletteOrgnization().taskAbNames.push(dataFromKdl012);
+                    dfd.resolve({ text: self.textName(), tooltip: self.tooltip(), data: dataFromKdl012[0] });
                 }
             });    
             return dfd.promise();                   
@@ -266,6 +288,7 @@ module nts.uk.at.view.ksu003.b {
             let positionButton = $(button).data().idx;
             let dt = self.tasks()[positionButton];
             $("#task").trigger("getdatabutton", { text: dt.text, tooltip: dt.tooltip, data: dt.data });
+            $("#task").trigger("getdatabutton1");
             $("#popup-area").css('visibility', 'visible');
             let buttonWidth = button.outerWidth(true) - 30;
             $("#popup-area").position({ "of": button, my: "left+" + buttonWidth + " top", at: "left+" + buttonWidth + " top" });
@@ -304,6 +327,18 @@ module nts.uk.at.view.ksu003.b {
             self.endStatus() === 'Update' ? setShared('dataShareFromKsu003b', self.selectedPage()) :setShared('dataShareSU003B',null);
             self.$window.close();
         }
+
+        private validateAll(): boolean {
+            $('#pageName').ntsEditor('validate');          
+            if (nts.uk.ui.errors.hasError()) {                    
+                return true;
+            }
+            return false;
+        }
+
+        private clearError(): void {
+            $('#pageName').ntsError('clear');
+        }
     }   
 
     interface ITaskPalette {      
@@ -322,7 +357,7 @@ module nts.uk.at.view.ksu003.b {
         keys: Array<number>;
         taskCodes: Array<string>;
         taskNames: Array<string>;
-        taskNames: Array<string>;
+        taskAbNames: Array<string>;
         listTaskStatus: Array<number>;
     }
 
@@ -336,7 +371,7 @@ module nts.uk.at.view.ksu003.b {
         keys: KnockoutObservableArray<number> = ko.observableArray([]);
         taskCodes: KnockoutObservableArray<string> = ko.observableArray([]);
         taskNames: KnockoutObservableArray<string> = ko.observableArray([]);
-        taskNames: KnockoutObservableArray<string> = ko.observableArray([]);
+        taskAbNames: KnockoutObservableArray<string> = ko.observableArray([]);
         tasks: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
         listTaskStatus: KnockoutObservableArray<number> = ko.observableArray([]);
 
@@ -351,7 +386,7 @@ module nts.uk.at.view.ksu003.b {
             self.keys(param.keys);
             self.taskCodes(param.taskCodes);
             self.taskNames(param.taskNames);
-            self.taskNames(param.taskNames);       
+            self.taskAbNames(param.taskAbNames);       
             self.listTaskStatus(param.listTaskStatus);   
         }
 
@@ -366,7 +401,7 @@ module nts.uk.at.view.ksu003.b {
             self.keys([]);
             self.taskCodes([]);
             self.taskNames([]);
-            self.taskNames([]);  
+            self.taskAbNames([]);
             self.listTaskStatus([]);
         }
     }   
