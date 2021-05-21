@@ -29,7 +29,6 @@ module nts.uk.at.view.ksu003.b {
         dataWorkPairSet: KnockoutObservableArray<any> = ko.observableArray([]);
         tasks: KnockoutObservableArray<any> = ko.observableArray([]);        
         enableDelete: KnockoutObservable<boolean> = ko.observable(true);
-        choosePage: KnockoutObservable<boolean> = ko.observable(false);
         isEditing: KnockoutObservable<boolean> = ko.observable(false);
 
         targetId: KnockoutObservable<string> = ko.observable('');
@@ -128,10 +127,9 @@ module nts.uk.at.view.ksu003.b {
                                     text: getText("KSU003_82"), 
                                     tooltip: ''});
                             }                            
-                        }
-                        self.choosePage(true);
+                        }                        
                     } else {
-                        self.choosePage(false);
+                        self.selectedPage(1);
                         self.enableDelete(false);
                     }                   
                     self.tasks(dataSource);
@@ -231,26 +229,33 @@ module nts.uk.at.view.ksu003.b {
         }
 
         deleteTask(data: any, event: any): JQueryPromise<any> {
-            let self = this, dfd = $.Deferred();                
-            self.tasks().splice(Number($(event)[0].dataset.idx), 1);
-            self.taskPaletteOrgnization().keys.splice(Number($(event)[0].dataset.idx), 1);
-            self.taskPaletteOrgnization().taskNames.splice(Number($(event)[0].dataset.idx), 1);
-            self.taskPaletteOrgnization().taskCodes.splice(Number($(event)[0].dataset.idx), 1);
-            self.taskPaletteOrgnization().taskNames.splice(Number($(event)[0].dataset.idx), 1);
+            let self = this, dfd = $.Deferred();
+            let index: number;
+
+            if (data && data != undefined) {
+                index = _.indexOf(self.taskPaletteOrgnization().keys(), Number(data.target.dataset.idx) + 1);
+            } else if (event && event != undefined) {
+                index = _.indexOf(self.taskPaletteOrgnization().keys(), Number($(event)[0].dataset.idx) + 1);
+            }
+            self.tasks().splice(index, 1);
+            self.taskPaletteOrgnization().keys.splice(index, 1);
+            self.taskPaletteOrgnization().taskNames.splice(index, 1);
+            self.taskPaletteOrgnization().taskCodes.splice(index, 1);
+            self.taskPaletteOrgnization().taskNames.splice(index, 1);
             dfd.resolve()
-            return dfd.promise();           
+            return dfd.promise();
         }
 
-        openDialogKdl012(data: any, event:any): JQueryPromise<any> {
+        openDialogKdl012(data: any, event: any): JQueryPromise<any> {
             let self = this, dfd = $.Deferred();
-            let position : number, index: number;      
+            let position: number, index: number;
 
             self.clearError();
-            if(data){
+            if (data && data != undefined) {
                 index = _.indexOf(self.taskPaletteOrgnization().keys(), Number(data.target.dataset.idx) + 1);
-            } else if(event){
+            } else if (event && event != undefined) {
                 index = _.indexOf(self.taskPaletteOrgnization().keys(), Number($(event)[0].dataset.idx) + 1);
-            }            
+            }
             self.textName(data ? data.text : null);
             self.tooltip(data ? data.tooltip : null);
 
@@ -279,8 +284,8 @@ module nts.uk.at.view.ksu003.b {
                     // self.taskPaletteOrgnization().taskAbNames.push(dataFromKdl012);
                     dfd.resolve({ text: self.textName(), tooltip: self.tooltip(), data: dataFromKdl012[0] });
                 }
-            });    
-            return dfd.promise();                   
+            });
+            return dfd.promise();
         }
 
         openPopup(button): JQueryPromise<any> {
@@ -292,7 +297,7 @@ module nts.uk.at.view.ksu003.b {
             $("#popup-area").css('visibility', 'visible');
             let buttonWidth = button.outerWidth(true) - 30;
             $("#popup-area").position({ "of": button, my: "left+" + buttonWidth + " top", at: "left+" + buttonWidth + " top" });
-            $("#task").bind("namechanged", function(evt, data) {
+            $("#task").bind("namechanged", function (evt, data) {
                 $("#task").unbind("namechanged");
                 if (!nts.uk.util.isNullOrUndefined(data)) {
                     dfd.resolve(data);
