@@ -12,7 +12,7 @@ import { OverTime } from '../step2/index';
 import { OverTimeWorkHoursDto } from '../../s00/sub/p2';
 
 @component({
-    name: 'kafs05',
+    name: 'kafs05a',
     route: '/kaf/s05/a',
     style: require('./style.scss'),
     template: require('./index.vue'),

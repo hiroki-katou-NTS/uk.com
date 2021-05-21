@@ -77,7 +77,7 @@ module cmm045.a.viewmodel {
 
             $("a.hyperlink").click(() => {
             	$(".popup-panel-cmm045").ntsPopup("toggle");
-					$(".popup-panel-cmm045").css('top', '124px');
+					// $(".popup-panel-cmm045").css('top', '124px');
             });
 
             $(window).on("mousedown.popup", function(e) {
@@ -2516,6 +2516,7 @@ module cmm045.a.viewmodel {
 							linkItem.appDate = item.opComplementLeaveApp.linkAppDate;
 							linkItem.opAppStartDate = item.opComplementLeaveApp.linkAppDate;
 							linkItem.opAppEndDate = item.opComplementLeaveApp.linkAppDate;
+							linkItem.application = item.opComplementLeaveApp.application;
 							listOfApplicationCmds.push(item);
 	                    	listOfApplicationCmds.push(linkItem);	
 						}
