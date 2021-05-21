@@ -1900,8 +1900,6 @@ var __extends = (this && this.__extends) || (function () {
         return extendStatics(d, b);
     };
     return function (d, b) {
-        if (typeof b !== "function" && b !== null)
-            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -17471,10 +17469,12 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-var __spreadArray = (this && this.__spreadArray) || function (to, from) {
-    for (var i = 0, il = from.length, j = to.length; i < il; i++, j++)
-        to[j] = from[i];
-    return to;
+var __spreadArrays = (this && this.__spreadArrays) || function () {
+    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
+    for (var r = Array(s), k = 0, i = 0; i < il; i++)
+        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
+            r[k] = a[j];
+    return r;
 };
 var nts;
 (function (nts) {
@@ -17539,7 +17539,7 @@ var nts;
                                         else {
                                             var exist = _.find(checkeds, function (c) { return _.isEqual(c, ko.toJS(value_1)); });
                                             if (!exist) {
-                                                accessor.checked(__spreadArray(__spreadArray([], checkeds), [value_1]));
+                                                accessor.checked(__spreadArrays(checkeds, [value_1]));
                                             }
                                             else {
                                                 _.remove(checkeds, function (c) { return _.isEqual(c, ko.toJS(value_1)); });
@@ -37493,7 +37493,7 @@ var nts;
                 Object.defineProperties($jump, {
                     self: {
                         value: function $to() {
-                            $jump.apply(null, __spreadArray([], Array.prototype.slice.apply(arguments, [])));
+                            $jump.apply(null, __spreadArrays(Array.prototype.slice.apply(arguments, [])));
                         }
                     },
                     blank: {
@@ -52620,27 +52620,56 @@ var nts;
                         var vm = new ko.ViewModel();
                         var pgName = valueAccessor();
                         var back = allBindingsAccessor.get('back');
-                        var _a = __viewContext.program, programId = _a.programId, programName = _a.programName;
+                        // const { programId } = __viewContext.program;
+                        //    = this.getProgramName();
                         var $span = $('<span>').get(0);
                         var $title = $(element);
                         $title
                             .append($span)
                             .addClass('pg-name')
                             .removeAttr('data-bind');
-                        var text = ko.computed({
-                            read: function () {
-                                var $pg = ko.unwrap(pgName);
-                                if (_.isString($pg)) {
-                                    return vm.$i18n($pg);
+                        var sessionProgram = function () {
+                            var dfd = $.Deferred();
+                            nts.uk.request.ajax('com', 'sys/portal/webmenu/program').done(function (pg) {
+                                dfd.resolve(pg);
+                            });
+                            return dfd.promise();
+                        };
+                        var programName = "";
+                        sessionProgram().done(function (pg) {
+                            if (pg && pg.length > 1) {
+                                var pgParam_1 = uk.localStorage.getItem("UKProgramParam");
+                                if (pgParam_1.isPresent()) {
+                                    var program = _.find(pg, function (p) {
+                                        return p.param === pgParam_1.get();
+                                    });
+                                    if (program) {
+                                        programName = program.name;
+                                    }
+                                    uk.localStorage.removeItem("UKProgramParam");
                                 }
-                                if ($pg) {
-                                    return ((programId || '') + " " + (programName || '')).trim();
-                                }
-                                return '';
-                            },
-                            disposeWhenNodeIsRemoved: element
+                            }
+                            else
+                                (pg && pg.length === 1);
+                            {
+                                programName = pg[0].name;
+                            }
+                            var text = ko.computed({
+                                read: function () {
+                                    var $pg = ko.unwrap(pgName);
+                                    if (_.isString($pg)) {
+                                        return vm.$i18n($pg);
+                                    }
+                                    if ($pg) {
+                                        // return `${programId || ''} ${programName || ''}`.trim();
+                                        return ("" + (programName || '')).trim();
+                                    }
+                                    return '';
+                                },
+                                disposeWhenNodeIsRemoved: element
+                            });
+                            ko.applyBindingsToNode($span, { text: text }, bindingContext);
                         });
-                        ko.applyBindingsToNode($span, { text: text }, bindingContext);
                         if (back) {
                             $title.addClass('navigator');
                             var svg = document.createElement('svg');
