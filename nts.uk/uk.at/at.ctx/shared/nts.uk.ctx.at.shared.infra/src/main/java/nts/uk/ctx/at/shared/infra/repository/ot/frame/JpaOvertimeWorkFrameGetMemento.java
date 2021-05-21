@@ -10,7 +10,7 @@ import nts.uk.ctx.at.shared.dom.ot.frame.NotUseAtr;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameGetMemento;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameName;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameNo;
-import nts.uk.ctx.at.shared.dom.ot.frame.RoleOvertimeWork;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.roleofovertimework.roleofovertimework.RoleOvertimeWorkEnum;
 import nts.uk.ctx.at.shared.infra.entity.ot.frame.KshmtOverFrame;
 
 /**
@@ -78,8 +78,8 @@ public class JpaOvertimeWorkFrameGetMemento implements OvertimeWorkFrameGetMemen
 	}
 	
 	@Override
-	public RoleOvertimeWork getRole() {
-		return RoleOvertimeWork.valueOf((int)this.kshstOvertimeFrame.getRole());
+	public RoleOvertimeWorkEnum getRole() {
+		return RoleOvertimeWorkEnum.valueOf((int)this.kshstOvertimeFrame.getRole());
 	}
 	
 	@Override

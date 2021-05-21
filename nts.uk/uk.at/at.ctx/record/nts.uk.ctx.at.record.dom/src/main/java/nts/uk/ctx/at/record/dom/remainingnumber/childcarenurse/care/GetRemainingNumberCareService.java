@@ -207,10 +207,15 @@ public class GetRemainingNumberCareService {
 		// 取得した締め開始日とパラメータ「集計開始日」を比較
 		// ===締め開始日<パラメータ「集計開始日」
 		if(closureStartDate.before(period.start())) {
+
+			DatePeriod forGetStartRemPeriod = new DatePeriod(closureStartDate, period.start().addDays(-1));
+
 			// 開始日までの介護休暇使用数を計算
 			AggrResultOfChildCareNurse getCareRemNumWithinPeriod
 				= getCareRemNumWithinPeriod(
-					companyId, employeeId,period,
+					companyId,
+					employeeId,
+					forGetStartRemPeriod,
 					performReferenceAtr,
 					criteriaDate,
 					isOverWrite,

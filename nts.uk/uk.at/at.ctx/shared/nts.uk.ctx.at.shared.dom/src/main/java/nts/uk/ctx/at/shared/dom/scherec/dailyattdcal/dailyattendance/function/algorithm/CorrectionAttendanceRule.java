@@ -127,7 +127,7 @@ public class CorrectionAttendanceRule implements ICorrectionAttendanceRule {
 		
 		// 勤怠変更後の補正
 		IntegrationOfDaily afterDomain = correctionAfterTimeChange
-				.corection(companyId, domainDaily, changeAtt, workCondOpt).getRight();
+				.corection(domainDaily, changeAtt, workCondOpt).getRight();
 
 		if (changeAtt.workInfo) {
 			// 変更する勤怠項目を確認

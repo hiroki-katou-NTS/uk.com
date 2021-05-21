@@ -118,6 +118,7 @@ public class WorkInformation implements Serializable{
 		this.workTimeCode = Optional.empty();
 	}
 
+	/** 就業時間帯が試験日かどうか判断 */
 	public boolean isExamWorkTime() {
 
 		return workTimeCode

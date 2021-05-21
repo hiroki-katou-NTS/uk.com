@@ -73,7 +73,7 @@ public class SpecificDaysOfMonthly implements Serializable{
 		if (workType == null) return;
 		if (specificDateAttrOfDaily == null) return;
 		
-		val verticalTotalMethod = require.verticalTotalMethodOfMonthly(AppContexts.user().companyId());
+		val verticalTotalMethod = require.aggregateMethodOfMonthly(AppContexts.user().companyId());
 
 		/** 勤務種類の判断 */
 		boolean isCount = verticalTotalMethod
@@ -138,6 +138,6 @@ public class SpecificDaysOfMonthly implements Serializable{
 	
 	public static interface RequireM1 {
 
-		Optional<AggregateMethodOfMonthly> verticalTotalMethodOfMonthly(String cid);
+		Optional<AggregateMethodOfMonthly> aggregateMethodOfMonthly(String cid);
 	}
 }

@@ -48,6 +48,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.erroralarm.Employ
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHoliday;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
 @Stateless
@@ -81,8 +82,10 @@ public class TimeOffRemainErrorInforImpl implements TimeOffRemainErrorInfor{
 		Map<GeneralDate, DailyInterimRemainMngData> interimRemainData = InterimRemainOffPeriodCreateData
 				.createInterimRemainByScheRecordApp(require, cacheCarrier, createInterimDataParam);
 		Optional<DailyInterimRemainMngData> optDaily = Optional.empty();
-		//月別実績(Work)から年休フレックス補填分の暫定年休管理データを作成する
-		if(param.getOptMonthlyData().isPresent()) {
+		
+		/** 大塚モードかを確認する */
+		if(param.getOptMonthlyData().isPresent() && AppContexts.optionLicense().customize().ootsuka()) {
+			//月別実績(Work)から年休フレックス補填分の暫定年休管理データを作成する
 			optDaily =  CreateInterimAnnualMngData.ofCompensFlex(param.getOptMonthlyData().get(), param.getObjDate().end());
 
 		}

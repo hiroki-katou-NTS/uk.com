@@ -9,9 +9,9 @@ import javax.inject.Inject;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.information.care.MonCareHdRemain;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.information.care.MonCareHdRemainRepository;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.remainmerge.RemainMergeRepository;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.care.CareRemNumEachMonth;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
@@ -26,7 +26,7 @@ public class JpaMonCareHdRemainRepository extends JpaRepository implements MonCa
 	private RemainMergeRepository remainRepo;
 	
 	@Override
-	public Optional<MonCareHdRemain> find(String employeeId, YearMonth yearMonth, ClosureId closureId,
+	public Optional<CareRemNumEachMonth> find(String employeeId, YearMonth yearMonth, ClosureId closureId,
 			ClosureDate closureDate) {
 		
 		return this.remainRepo.find(employeeId, yearMonth, closureId, closureDate)
@@ -34,14 +34,14 @@ public class JpaMonCareHdRemainRepository extends JpaRepository implements MonCa
 	}
 
 	@Override
-	public List<MonCareHdRemain> findByYearMonthOrderByStartYmd(String employeeId, YearMonth yearMonth) {
+	public List<CareRemNumEachMonth> findByYearMonthOrderByStartYmd(String employeeId, YearMonth yearMonth) {
 		
 		return this.remainRepo.findByYearMonthOrderByStartYmd(employeeId, yearMonth)
 				.stream().map(c -> c.getMonCareHdRemain()).collect(Collectors.toList());
 	}
 
 	@Override
-	public List<MonCareHdRemain> findByYMAndClosureIdOrderByStartYmd(String employeeId, YearMonth yearMonth,
+	public List<CareRemNumEachMonth> findByYMAndClosureIdOrderByStartYmd(String employeeId, YearMonth yearMonth,
 			ClosureId closureId) {
 		
 		return this.remainRepo.findByYMAndClosureIdOrderByStartYmd(employeeId, yearMonth, closureId)
@@ -49,7 +49,7 @@ public class JpaMonCareHdRemainRepository extends JpaRepository implements MonCa
 	}
 
 	@Override
-	public List<MonCareHdRemain> findByEmployees(List<String> employeeIds, YearMonth yearMonth, ClosureId closureId,
+	public List<CareRemNumEachMonth> findByEmployees(List<String> employeeIds, YearMonth yearMonth, ClosureId closureId,
 			ClosureDate closureDate) {
 	
 		return this.remainRepo.findByEmployees(employeeIds, yearMonth, closureId, closureDate)
@@ -57,14 +57,14 @@ public class JpaMonCareHdRemainRepository extends JpaRepository implements MonCa
 	}
 
 	@Override
-	public List<MonCareHdRemain> findBySidsAndYearMonths(List<String> employeeIds, List<YearMonth> yearMonths) {
+	public List<CareRemNumEachMonth> findBySidsAndYearMonths(List<String> employeeIds, List<YearMonth> yearMonths) {
 		
 		return this.remainRepo.findBySidsAndYearMonths(employeeIds, yearMonths)
 				.stream().map(c -> c.getMonCareHdRemain()).collect(Collectors.toList());
 	}
 
 	@Override
-	public void persistAndUpdate(MonCareHdRemain domain) {
+	public void persistAndUpdate(CareRemNumEachMonth domain) {
 		
 		this.remainRepo.persistAndUpdate(domain);
 	}
