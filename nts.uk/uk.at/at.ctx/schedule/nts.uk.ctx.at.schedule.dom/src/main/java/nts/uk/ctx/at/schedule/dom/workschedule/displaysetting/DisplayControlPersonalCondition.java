@@ -58,9 +58,9 @@ public class DisplayControlPersonalCondition implements DomainAggregate {
 			Optional<WorkscheQualifi> otpWorkscheQualifi) {
 		
 		val qualificationAtr = listConditionDisplayControl.stream()
-			.filter( e -> e.getConditionATR() == ConditionATRWorkSchedule.QUALIFICATION ).findFirst().get();
+			.filter( e -> e.getConditionATR() == ConditionATRWorkSchedule.QUALIFICATION ).findFirst();
 		
-		if ( qualificationAtr.getDisplayCategory().isUse() && !otpWorkscheQualifi.isPresent() ) {
+		if (qualificationAtr.isPresent() && qualificationAtr.get().getDisplayCategory().isUse() && !otpWorkscheQualifi.isPresent() ) {
 			throw new BusinessException("Msg_1682");
 		}
 		

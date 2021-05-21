@@ -3,6 +3,7 @@ package nts.uk.ctx.at.request.app.command.application.applicationlist;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.request.app.find.application.ApplicationDto;
 import nts.uk.ctx.at.request.dom.application.applist.service.content.ComplementLeaveAppLink;
 
 /**
@@ -19,6 +20,11 @@ public class ComplementLeaveAppLinkCmd {
 	private Integer complementLeaveFlg;
 	
 	/**
+	 * 申請
+	 */
+	private ApplicationDto application;
+	
+	/**
 	 * 紐付け申請ID
 	 */
 	private String linkAppID;
@@ -31,6 +37,7 @@ public class ComplementLeaveAppLinkCmd {
 	public ComplementLeaveAppLink toDomain() {
 		ComplementLeaveAppLink complementLeaveAppLink = new ComplementLeaveAppLink();
 		complementLeaveAppLink.setComplementLeaveFlg(complementLeaveFlg);
+		complementLeaveAppLink.setApplication(application.toDomain());
 		complementLeaveAppLink.setLinkAppID(linkAppID);
 		complementLeaveAppLink.setLinkAppDate(GeneralDate.fromString(linkAppDate, "yyyy/MM/dd"));
 		return complementLeaveAppLink;

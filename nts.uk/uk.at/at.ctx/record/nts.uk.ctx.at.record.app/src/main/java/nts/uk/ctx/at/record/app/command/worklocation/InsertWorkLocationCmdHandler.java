@@ -23,6 +23,7 @@ public class InsertWorkLocationCmdHandler extends CommandHandler<InsertUpdateWor
 	@Inject
 	private WorkLocationRepository repo;
 	
+	
 	@Override
 	protected void handle(CommandHandlerContext<InsertUpdateWorkLocationCmd> context) {
 		InsertUpdateWorkLocationCmd command = context.getCommand();
@@ -36,6 +37,7 @@ public class InsertWorkLocationCmdHandler extends CommandHandler<InsertUpdateWor
 		}
 		// 3:
 		repo.insertWorkLocation(command.toDomain());
+		
 		
 	}
 

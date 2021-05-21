@@ -8,9 +8,11 @@ import org.junit.runner.RunWith;
 
 import lombok.val;
 import mockit.integration.junit4.JMockit;
-import nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare.ChildCareNurseRemainingNumber;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.remainingnumber.DayNumberOfRemain;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.remainingnumber.TimeOfRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.usenumber.DayNumberOfUse;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.usenumber.TimeOfUse;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.childcarenurse.ChildCareNurseRemainingNumber;
 
 @RunWith(JMockit.class)
 public class ChildCareNurseRemainingNumberTest {
@@ -68,6 +70,8 @@ public class ChildCareNurseRemainingNumberTest {
 
 	// 子の看護介護残数
 	private ChildCareNurseRemainingNumber remNum(double usedDays, int usedTime) {
-		return ChildCareNurseRemainingNumber.of(new DayNumberOfUse(usedDays), Optional.of(new TimeOfUse(usedTime)));
+		return ChildCareNurseRemainingNumber.of(
+				new DayNumberOfRemain(usedDays),
+				Optional.of(new TimeOfRemain(usedTime)));
 	}
 }

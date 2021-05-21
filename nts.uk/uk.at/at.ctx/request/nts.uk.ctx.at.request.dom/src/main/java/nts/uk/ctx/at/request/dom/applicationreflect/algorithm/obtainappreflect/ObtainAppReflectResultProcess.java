@@ -14,7 +14,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.ReflectedState;
-import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.reflect.convert.ConvertApplicationToShare;
+import nts.uk.ctx.at.request.dom.application.common.adapter.scherec.convert.ConvertApplicationToShare;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.getapp.GetApplicationForReflect;
 import nts.uk.ctx.at.shared.dom.scherec.application.common.ApplicationShare;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;

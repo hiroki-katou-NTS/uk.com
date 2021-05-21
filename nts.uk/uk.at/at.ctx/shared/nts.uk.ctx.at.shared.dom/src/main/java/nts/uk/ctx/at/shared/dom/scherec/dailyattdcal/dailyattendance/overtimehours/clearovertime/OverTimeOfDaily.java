@@ -39,6 +39,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.declare.DeclareCalcRange;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.declare.DeclareTimezoneResult;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.CalculationRangeOfOneDay;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.DeductionAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.outsideworktime.OverTimeFrameTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.outsideworktime.OverTimeFrameTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.outsideworktime.OverTimeSheet;
@@ -78,6 +79,7 @@ public class OverTimeOfDaily {
 	@Setter
 	private List<OverTimeFrameTime> overTimeWorkFrameTime;
 	//法定外深夜時間 (所定外深夜時間)
+	@Setter
 	private Finally<ExcessOverTimeWorkMidNightTime> excessOverTimeWorkMidNightTime; 
 	//残業拘束時間
 	private AttendanceTime overTimeWorkSpentAtWork = new AttendanceTime(0);
@@ -307,7 +309,8 @@ public class OverTimeOfDaily {
 					conditionItem,
 					predetermineTimeSetByPersonInfo,
 					coreTimeSetting,
-					NotUseAtr.NOT_USE);
+					NotUseAtr.NOT_USE,
+					Optional.of(DeductionAtr.Appropriate));
 		}
 
 		val overTimeWork = new AttendanceTime(0);
@@ -390,13 +393,12 @@ public class OverTimeOfDaily {
 			}
 		}
 		// 残業深夜時間の計算
-		AttendanceTime calcTime = overTimeSheet.calcMidNightTime(autoCalcSet);
-		calcTime = calcTime.addMinutes(flexWithoutTime.valueAsMinutes());
+		TimeDivergenceWithCalculation midnightTime = overTimeSheet.calcMidNightTime(autoCalcSet);
+		midnightTime = midnightTime.addMinutes(flexWithoutTime, flexWithoutTime);
 		// 事前申請制御
-		if(calAttr.getOvertimeSetting().getNormalMidOtTime().getUpLimitORtSet()==TimeLimitUpperLimitSetting.LIMITNUMBERAPPLICATION&&calcTime.greaterThanOrEqualTo(beforeApplicationTime.valueAsMinutes())) {
-			return new ExcessOverTimeWorkMidNightTime(TimeDivergenceWithCalculation.createTimeWithCalculation(beforeApplicationTime, calcTime));
+		if(calAttr.getOvertimeSetting().getNormalMidOtTime().getUpLimitORtSet()==TimeLimitUpperLimitSetting.LIMITNUMBERAPPLICATION&&midnightTime.getTime().greaterThanOrEqualTo(beforeApplicationTime.valueAsMinutes())) {
+			return new ExcessOverTimeWorkMidNightTime(TimeDivergenceWithCalculation.createTimeWithCalculation(beforeApplicationTime, midnightTime.getCalcTime()));
 		}
-		TimeDivergenceWithCalculation midnightTime = TimeDivergenceWithCalculation.sameTime(calcTime);
 		if (declareResult.getCalcRangeOfOneDay().isPresent()){
 			// 申告残業深夜時間の計算
 			AttendanceTime declareTime = OverTimeOfDaily.calcDeclareOvertimeMidnightTime(
@@ -435,7 +437,7 @@ public class OverTimeOfDaily {
 			OutsideWorkTimeSheet declareOutsideWork = declareCalcRange.getOutsideWorkTimeSheet().get();
 			if (declareOutsideWork.getOverTimeWorkSheet().isPresent()){
 				OverTimeSheet declareSheet = declareOutsideWork.getOverTimeWorkSheet().get();
-				result = declareSheet.calcMidNightTime(autoCalcSet);
+				result = declareSheet.calcMidNightTime(autoCalcSet).getCalcTime();
 			}
 			// 申告残業深夜時間を返す
 			return result;
@@ -776,7 +778,7 @@ public class OverTimeOfDaily {
 			List<OverTimeFrameTime> overtimeFrameTimeList){
 		
 		//大塚モードの確認
-		if (true) return;	// 仮対応として、常に0補正しない動作とする。 2020.12.10 shuichi_ishida
+		if (AppContexts.optionLicense().customize().ootsuka() == false) return;
 		
 		//マイナスの乖離時間を0にする
 		for (val overtimeFrameTime : overtimeFrameTimeList){
