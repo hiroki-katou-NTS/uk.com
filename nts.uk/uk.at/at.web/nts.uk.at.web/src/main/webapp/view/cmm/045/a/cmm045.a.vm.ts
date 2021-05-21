@@ -77,7 +77,7 @@ module cmm045.a.viewmodel {
 
             $("a.hyperlink").click(() => {
             	$(".popup-panel-cmm045").ntsPopup("toggle");
-					$(".popup-panel-cmm045").css('top', '124px');
+					// $(".popup-panel-cmm045").css('top', '124px');
             });
 
             $(window).on("mousedown.popup", function(e) {
