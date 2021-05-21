@@ -317,7 +317,10 @@ public class AggregationProcessService {
 							lstResultCondition,
 							lstCheckType,
 							counter,
-							shouldStop);
+							shouldStop,
+                            alarmEmployeeList,
+                            alarmExtractConditions,
+                            x.getCode().v());
 					break;
 					
 				case DAILY:
@@ -342,7 +345,10 @@ public class AggregationProcessService {
 					extractAlarmService.extractWeeklyCheckResult( 
 							cid, lstSid, datePeriod, getWplByListSidAndPeriod, 
 							weeklyAlarmCheckCond, lstResultCondition, 
-							lstCheckType, counter, shouldStop);
+							lstCheckType, counter, shouldStop,
+                            alarmEmployeeList,
+                            alarmExtractConditions,
+                            x.getCode().v());
 					break;
 					
 				case MONTHLY:

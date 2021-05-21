@@ -172,7 +172,8 @@ public class AlarmListPersonServiceAdapterImpl implements AlarmListPersonService
 			String errorCheckId, ScheduleAnnualAlarmCheckCond scheYearAlarmCondition,
 			List<WorkPlaceHistImport> wplByListSidAndPeriod, List<StatusOfEmployeeAdapter> lstStatusEmp,
 			List<ResultOfEachCondition> lstResultCondition, List<AlarmListCheckInfor> lstCheckType,
-			Consumer<Integer> counter, Supplier<Boolean> shouldStop) {
+			Consumer<Integer> counter, Supplier<Boolean> shouldStop, List<AlarmEmployeeList> alarmEmployeeList,
+			List<AlarmExtractionCondition> alarmExtractConditions, String alarmCheckConditionCode) {
 		String listOptionalItem = scheYearAlarmCondition.getListOptionalItem();
 		
 		List<WorkPlaceHistImportAl> lstWkpIdAndPeriod = wplByListSidAndPeriod.stream().map(x -> 
@@ -186,14 +187,16 @@ public class AlarmListPersonServiceAdapterImpl implements AlarmListPersonService
 		extractService.extractScheYearCheckResult(
 				cid, lstSid, dPeriod, errorCheckId, 
 				listOptionalItem, 
-				lstWkpIdAndPeriod, lstStaEmp, lstResultCondition, lstCheckType, counter, shouldStop);
+				lstWkpIdAndPeriod, lstStaEmp, lstResultCondition, lstCheckType, counter, shouldStop,
+				alarmEmployeeList, alarmExtractConditions, alarmCheckConditionCode);
 	}
 
 	@Override
 	public void extractWeeklyCheckResult(String cid, List<String> lstSid, DatePeriod period,
 			List<WorkPlaceHistImport> wplByListSidAndPeriods, WeeklyAlarmCheckCond weeklyAlarmCheckCond,
 			List<ResultOfEachCondition> lstResultCondition, List<AlarmListCheckInfor> lstCheckType,
-			Consumer<Integer> counter, Supplier<Boolean> shouldStop) {
+			Consumer<Integer> counter, Supplier<Boolean> shouldStop, List<AlarmEmployeeList> alarmEmployeeList,
+			List<AlarmExtractionCondition> alarmExtractConditions, String alarmCheckConditionCode) {
 		String listOptionalItemId = weeklyAlarmCheckCond.getListOptionalItem();
 		
 		List<WorkPlaceHistImportAl> lstWkpIdAndPeriod = wplByListSidAndPeriods.stream().map(x -> 
@@ -203,7 +206,8 @@ public class AlarmListPersonServiceAdapterImpl implements AlarmListPersonService
 		
 		extractService.extractWeeklyCheckResult(
 				cid, lstSid, period, lstWkpIdAndPeriod, 
-				listOptionalItemId, lstResultCondition, lstCheckType, counter, shouldStop);
+				listOptionalItemId, lstResultCondition, lstCheckType, counter, shouldStop,
+				alarmEmployeeList, alarmExtractConditions, alarmCheckConditionCode);
 	}
 
 	@Override

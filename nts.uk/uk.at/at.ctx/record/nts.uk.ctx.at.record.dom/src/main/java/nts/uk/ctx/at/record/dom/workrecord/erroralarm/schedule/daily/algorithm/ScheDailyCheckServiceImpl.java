@@ -372,7 +372,7 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 								AlarmListCheckType.FreeCheck
 						));
 					}
-					
+
 					// スケジュール日次のアラーム抽出値を作成
 					List<AlarmExtractInfoResult> listResultCond = this.createExtractAlarm(sid,
 							exDate,
@@ -455,7 +455,7 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 					alarmCode,
 					new AlarmCheckConditionCode(alarmCheckConditionCode),
 					AlarmCategory.SCHEDULE_DAILY,
-					AlarmListCheckType.FreeCheck,
+					checkType,
 					listDetail)
 			);
 		} else {

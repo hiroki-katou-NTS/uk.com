@@ -120,7 +120,8 @@ public interface AlarmListPersonServiceAdapter {
 			List<ResultOfEachCondition> lstResultCondition, 
 			List<AlarmListCheckInfor> lstCheckType, 
 			Consumer<Integer> counter,
-			Supplier<Boolean> shouldStop);
+			Supplier<Boolean> shouldStop, List<AlarmEmployeeList> alarmEmployeeList,
+			List<AlarmExtractionCondition> alarmExtractConditions, String alarmCheckConditionCode);
 	
 	/**
 	 * スケジュール月次
@@ -147,5 +148,7 @@ public interface AlarmListPersonServiceAdapter {
 			List<ResultOfEachCondition> lstResultCondition,
 			List<AlarmListCheckInfor> lstCheckType,
 			Consumer<Integer> counter,
-			Supplier<Boolean> shouldStop);
+			Supplier<Boolean> shouldStop,
+			List<AlarmEmployeeList> alarmEmployeeList,
+			List<AlarmExtractionCondition> alarmExtractConditions, String alarmCheckConditionCode);
 }

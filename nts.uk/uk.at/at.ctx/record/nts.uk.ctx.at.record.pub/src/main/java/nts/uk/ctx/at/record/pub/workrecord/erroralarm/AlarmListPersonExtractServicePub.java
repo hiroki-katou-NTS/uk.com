@@ -103,7 +103,8 @@ public interface AlarmListPersonExtractServicePub {
 	void extractScheYearCheckResult(String cid, List<String> lstSid, DatePeriod dPeriod, String errorCheckId,
 			String listOptionalItem, List<WorkPlaceHistImportAl> lstWkpIdAndPeriod,
 			List<StatusOfEmployeeAdapterAl> lstStaEmp, List<ResultOfEachCondition> lstResultCondition,
-			List<AlarmListCheckInfor> lstCheckType, Consumer<Integer> counter, Supplier<Boolean> shouldStop);
+			List<AlarmListCheckInfor> lstCheckType, Consumer<Integer> counter, Supplier<Boolean> shouldStop,
+			List<AlarmEmployeeList> alarmEmployeeList, List<AlarmExtractionCondition> alarmExtractConditions, String alarmCheckConditionCode);
 	
 	/**
 	 * スケジュール月次
@@ -129,5 +130,6 @@ public interface AlarmListPersonExtractServicePub {
 			List<ResultOfEachCondition> lstResultCondition, 
 			List<AlarmListCheckInfor> lstCheckType, 
 			Consumer<Integer> counter,
-			Supplier<Boolean> shouldStop);
+			Supplier<Boolean> shouldStop, List<AlarmEmployeeList> alarmEmployeeList,
+			List<AlarmExtractionCondition> alarmExtractConditions, String alarmCheckConditionCode);
 }

@@ -1,8 +1,6 @@
 package nts.uk.ctx.at.function.infra.entity.alarm.persistenceextractresult;
 
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
@@ -21,6 +19,8 @@ import java.io.Serializable;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Getter
+@Setter
 @NoArgsConstructor
 @Entity
 @Table(name = "KFNDT_ALARM_EXTRAC_RESULT")

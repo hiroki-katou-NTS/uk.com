@@ -1,12 +1,14 @@
 package nts.uk.ctx.at.function.infra.repository.alarm.persistenceextractresult;
 
 import lombok.SneakyThrows;
+import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.function.infra.entity.alarm.persistenceextractresult.KfndtAlarmExtracResult;
 import nts.uk.ctx.at.function.infra.entity.alarm.persistenceextractresult.KfndtAlarmExtracResultPK;
 import nts.uk.ctx.at.function.infra.entity.alarm.persistenceextractresult.KfndtPersisAlarmExt;
 import nts.uk.ctx.at.shared.dom.alarmList.AlarmCategory;
@@ -28,6 +30,10 @@ import java.util.stream.Collectors;
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class JpaPersisAlarmListExtractResultRepository extends JpaRepository implements PersisAlarmListExtractResultRepository {
+    private static final String REMOVE_EXTRACT_RESULT = "DELETE FROM KfndtAlarmExtracResult a WHERE a.pk.cid = :cid AND a.pk.sid = :sid "
+            + " AND a.pk.category = :category AND a.pk.alarmCheckCode = :code AND a.pk.checkAtr = :checkType "
+            + " AND a.pk.conditionNo = :no AND a.pk.startDate = :startDate ";
+
     @SneakyThrows
     @Override
     public Optional<PersistenceAlarmListExtractResult> getAlarmExtractResult(String runCode, String patternCode, List<String> empIds) {
@@ -52,9 +58,9 @@ public class JpaPersisAlarmListExtractResultRepository extends JpaRepository imp
                 return Optional.empty();
             }
 
-            Map<String, List<PersisAlarmExtractResultDto>> dataMap = data.parallelStream().collect(Collectors.groupingBy(PersisAlarmExtractResultDto::getEmployeeID));
-            dataMap.entrySet().parallelStream().forEach(c -> {
-                c.getValue().parallelStream().forEach(x -> {
+            Map<String, List<PersisAlarmExtractResultDto>> dataMap = data.stream().collect(Collectors.groupingBy(PersisAlarmExtractResultDto::getEmployeeID));
+            dataMap.entrySet().stream().forEach(c -> {
+                c.getValue().stream().forEach(x -> {
                     List<ExtractResultDetail> extractDetails = Collections.singletonList(
                             new ExtractResultDetail(
                                     new ExtractionAlarmPeriodDate(Optional.of(GeneralDate.fromString(x.getStartDate(), "yyyy/MM/dd")),
@@ -67,7 +73,7 @@ public class JpaPersisAlarmListExtractResultRepository extends JpaRepository imp
                                     Optional.ofNullable(x.getCheckValue())));
 
                     alarmExtractInfoResults.add(
-                            new AlarmExtractInfoResult(x.getAlarmCheckConditionNo(),
+                            new AlarmExtractInfoResult(x.getAlarmCheckConditionNo().trim(),
                                     new AlarmCheckConditionCode(x.getAlarmCheckConditionCode()),
                                     EnumAdaptor.valueOf(x.getAlarmCategory(), AlarmCategory.class),
                                     EnumAdaptor.valueOf(x.getAlarmListCheckType(), AlarmListCheckType.class),
@@ -113,13 +119,15 @@ public class JpaPersisAlarmListExtractResultRepository extends JpaRepository imp
 
     @Override
     public Optional<PersistenceAlarmListExtractResult> getAlarmExtractResult(String companyId, String patternCode, String runCode) {
-        String sql = "SELECT a FROM KfndtPersisAlarmExt a WHERE a.pk.cid = :companyId AND a.patternCode = :patternCode AND a.autoRunCode = :runCode ";
-
-        return this.queryProxy().query(sql, KfndtPersisAlarmExt.class)
+        String sql = "SELECT DISTINCT a FROM KfndtPersisAlarmExt a WHERE a.pk.cid = :companyId AND a.patternCode = :patternCode AND a.autoRunCode = :runCode ";
+        String sql2 = "select distinct a from KfndtPersisAlarmExt a join a.extractResults b where a.pk.cid = :companyId and a.patternCode = :patternCode and a.autoRunCode = :runCode";
+        val data = this.queryProxy().query(sql2, KfndtPersisAlarmExt.class)
                 .setParameter("companyId", companyId)
                 .setParameter("patternCode", patternCode)
                 .setParameter("runCode", runCode)
-                .getSingle(c -> c.toDomain());
+                .getList(KfndtPersisAlarmExt::toDomain);
+        if(data.isEmpty()) return Optional.empty();
+        return Optional.of(data.get(0));
     }
 
     @Override
@@ -140,8 +148,6 @@ public class JpaPersisAlarmListExtractResultRepository extends JpaRepository imp
 
         List<KfndtAlarmExtracResultPK> lstDelete = new ArrayList<>();
         String cid = domain.getCompanyID();
-        String patternCd = domain.getAlarmPatternCode().v();
-        String runCode = domain.getAutoRunCode();
         domain.getAlarmListExtractResults().stream().forEach(x -> {
             x.getAlarmExtractInfoResults().stream().forEach(y -> {
                 y.getExtractionResultDetails().stream().forEach(z -> {
@@ -153,17 +159,14 @@ public class JpaPersisAlarmListExtractResultRepository extends JpaRepository imp
                             y.getAlarmCheckConditionCode().v(),
                             y.getAlarmListCheckType().value,
                             y.getAlarmCheckConditionNo(),
-                            String.valueOf(z.getPeriodDate().getStartDate())));
+                            String.valueOf(z.getPeriodDate().getStartDate().get())));
                 });
             });
         });
 
         lstDelete.forEach(x -> {
-            String sql = "DELETE FROM KfndtAlarmExtracResult a WHERE a.pk.cid = :cid AND a.pk.sid = :sid "
-                    + " AND a.pk.category = :category AND a.pk.alarmCheckCode = :code AND a.pk.checkAtr = :checkType "
-                    + " AND a.pk.conditionNo = :no AND a.pk.startDate = :startDate ";
-
-            this.getEntityManager().createQuery(sql).setParameter("cid", cid)
+            this.getEntityManager().createQuery(REMOVE_EXTRACT_RESULT)
+                    .setParameter("cid", cid)
                     .setParameter("sid", x.sid)
                     .setParameter("category", x.category)
                     .setParameter("code", x.alarmCheckCode)
@@ -171,7 +174,7 @@ public class JpaPersisAlarmListExtractResultRepository extends JpaRepository imp
                     .setParameter("no", x.conditionNo)
                     .setParameter("startDate", x.startDate)
                     .executeUpdate();
-            this.getEntityManager().flush();
+//            this.getEntityManager().flush();
         });
     }
 

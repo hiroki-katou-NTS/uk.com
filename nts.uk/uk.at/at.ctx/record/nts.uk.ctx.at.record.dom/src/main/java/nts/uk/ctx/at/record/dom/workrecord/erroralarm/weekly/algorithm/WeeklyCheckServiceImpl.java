@@ -1,9 +1,6 @@
 package nts.uk.ctx.at.record.dom.workrecord.erroralarm.weekly.algorithm;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -12,6 +9,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.at.shared.dom.alarmList.AlarmCategory;
+import nts.uk.ctx.at.shared.dom.alarmList.persistenceextractresult.*;
 import org.apache.logging.log4j.util.Strings;
 
 import nts.arc.enums.EnumAdaptor;
@@ -74,7 +73,8 @@ public class WeeklyCheckServiceImpl implements WeeklyCheckService {
 	public void extractWeeklyCheck(String cid, List<String> lstSid, DatePeriod period,
 			List<WorkPlaceHistImportAl> wplByListSidAndPeriods, String listOptionalItem,
 			List<ResultOfEachCondition> lstResultCondition, List<AlarmListCheckInfor> lstCheckType,
-			Consumer<Integer> counter, Supplier<Boolean> shouldStop) {
+			Consumer<Integer> counter, Supplier<Boolean> shouldStop, List<AlarmEmployeeList> alarmEmployeeList,
+			List<AlarmExtractionCondition> alarmExtractConditions, String alarmCheckConditionCode) {
 		String contractCode = AppContexts.user().contractCode();
 		
 		parallelManager.forEach(CollectionUtil.partitionBySize(lstSid, 100), emps -> {
@@ -99,7 +99,7 @@ public class WeeklyCheckServiceImpl implements WeeklyCheckService {
 			
 			// Input．List＜社員ID＞をループ
 			for (String sid: lstSid) {
-				
+                List<AlarmExtractInfoResult> lstExtractInfoResult = new ArrayList<>();
 				// 取得したList＜週別実績の任意抽出条件＞をループする
 				for (ExtractionCondScheduleWeekly weeklyCond: weeklyConds) {
 					String alarmCode = String.valueOf(weeklyCond.getSortOrder());
@@ -133,33 +133,64 @@ public class WeeklyCheckServiceImpl implements WeeklyCheckService {
 						// 絞り込みしたList＜週別実績の勤怠時間＞をループする
 						for (AttendanceTimeOfWeekly attWeekly: attendanceTimeOfWeeklyYms) {
 							// 任意抽出条件のアラーム値を作成する
-							ExtractionResultDetail extractDetail = createAlarmExtraction(
+							ExtractResultDetail extractDetail = createAlarmExtraction(
 									attWeekly, weeklyCond, count, attendanceItemMap, cid, sid, wpkId, ym, attendanceTimeOfWeeklyYms.size());
 							if (extractDetail == null) {
 								continue;
 							}
 							
-							List<ResultOfEachCondition> lstResultTmp = lstResultCondition.stream()
-									.filter(x -> x.getCheckType() == AlarmListCheckType.FreeCheck && x.getNo().equals(alarmCode)).collect(Collectors.toList());
-							List<ExtractionResultDetail> listDetail = new ArrayList<>();
-							if(lstResultTmp.isEmpty()) {
+//							List<ResultOfEachCondition> lstResultTmp = lstResultCondition.stream()
+//									.filter(x -> x.getCheckType() == AlarmListCheckType.FreeCheck && x.getNo().equals(alarmCode)).collect(Collectors.toList());
+//							List<ExtractionResultDetail> listDetail = new ArrayList<>();
+//							if(lstResultTmp.isEmpty()) {
+//								listDetail.add(extractDetail);
+//								lstResultCondition.add(new ResultOfEachCondition(EnumAdaptor.valueOf(1, AlarmListCheckType.class), alarmCode,
+//										listDetail));
+//							} else {
+//								lstResultCondition.stream().forEach(x -> x.getLstResultDetail().add(extractDetail));
+//                            }
+
+							List<AlarmExtractInfoResult> lstExtractTemp = lstExtractInfoResult.stream()
+									.filter(x -> x.getAlarmListCheckType() == AlarmListCheckType.FreeCheck && x.getAlarmCheckConditionNo().equals(alarmCode))
+									.collect(Collectors.toList());
+							List<ExtractResultDetail> listDetail = new ArrayList<>();
+							if (lstExtractTemp.isEmpty()) {
 								listDetail.add(extractDetail);
-								lstResultCondition.add(new ResultOfEachCondition(EnumAdaptor.valueOf(1, AlarmListCheckType.class), alarmCode, 
-										listDetail));	
+								lstExtractInfoResult.add(new AlarmExtractInfoResult(
+										alarmCode,
+										new AlarmCheckConditionCode(alarmCheckConditionCode),
+										AlarmCategory.WEEKLY,
+										AlarmListCheckType.FreeCheck,
+										listDetail
+								));
 							} else {
-								lstResultCondition.stream().forEach(x -> x.getLstResultDetail().add(extractDetail));
+								lstExtractInfoResult.stream().forEach(x -> x.getExtractionResultDetails().add(extractDetail));
 							}
 							
-							Optional<AlarmListCheckInfor> optCheckInfor = lstCheckType.stream()
-									.filter(x -> x.getChekType() == AlarmListCheckType.FreeCheck && x.getNo().equals(String.valueOf(alarmCode)))
-									.findFirst();
-							if(!optCheckInfor.isPresent()) {
-								lstCheckType.add(new AlarmListCheckInfor(String.valueOf(alarmCode), AlarmListCheckType.FreeCheck));
-							}
+//							Optional<AlarmListCheckInfor> optCheckInfor = lstCheckType.stream()
+//									.filter(x -> x.getChekType() == AlarmListCheckType.FreeCheck && x.getNo().equals(String.valueOf(alarmCode)))
+//									.findFirst();
+//							if(!optCheckInfor.isPresent()) {
+//								lstCheckType.add(new AlarmListCheckInfor(String.valueOf(alarmCode), AlarmListCheckType.FreeCheck));
+//							}
+                            List<AlarmExtractionCondition> lstExtractCondition = alarmExtractConditions.stream()
+                                    .filter(x -> x.getAlarmListCheckType() == AlarmListCheckType.FreeCheck && x.getAlarmCheckConditionNo().equals(String.valueOf(alarmCode)))
+                                    .collect(Collectors.toList());
+                            if (lstExtractCondition.isEmpty()) {
+                                alarmExtractConditions.add(new AlarmExtractionCondition(
+                                        String.valueOf(alarmCode),
+                                        new AlarmCheckConditionCode(alarmCheckConditionCode),
+                                        AlarmCategory.WEEKLY,
+                                        AlarmListCheckType.FreeCheck
+                                ));
+                            }
 						}
 					}
 					
 					// 各チェック条件の結果を作成
+				}
+				if (!lstExtractInfoResult.isEmpty()) {
+					alarmEmployeeList.add(new AlarmEmployeeList(lstExtractInfoResult, sid));
 				}
 			}
 			
@@ -172,7 +203,7 @@ public class WeeklyCheckServiceImpl implements WeeklyCheckService {
 	/*
 	 * Create alarm extraction condition
 	 */
-	private ExtractionResultDetail createAlarmExtraction(
+	private ExtractResultDetail createAlarmExtraction(
 			AttendanceTimeOfWeekly attWeekly,
 			ExtractionCondScheduleWeekly weeklyCond,
 			int count,
@@ -261,13 +292,13 @@ public class WeeklyCheckServiceImpl implements WeeklyCheckService {
 			alarmContent = TextResource.localize("KAL010_1310", param0, param1, param2);
 			
 			// 取得したアカウント、作成した「抽出結果詳細」を返す
-			ExtractionResultDetail detail = new ExtractionResultDetail(sid, 
-					extractionAlarmPeriodDate, 
-					weeklyCond.getName().v(), 
-					alarmContent, 
-					GeneralDateTime.now(), 
-					Optional.ofNullable(wpkId), 
-					comment, 
+			ExtractResultDetail detail = new ExtractResultDetail(
+					extractionAlarmPeriodDate,
+					weeklyCond.getName().v(),
+					alarmContent,
+					GeneralDateTime.now(),
+					Optional.ofNullable(wpkId),
+					comment,
 					Optional.ofNullable(checkTargetValue));
 			return detail;
 		}
