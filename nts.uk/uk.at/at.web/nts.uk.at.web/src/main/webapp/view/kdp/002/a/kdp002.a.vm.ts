@@ -256,11 +256,11 @@ let reCalGridWidthHeight = () => {
 
         if ($hgrid.data('igGrid')) {
             $hgrid.igGrid("option", "height", stampBtnHeight );
-			$('#stamp-history-list_container').css("height", stampBtnHeight);
+			$hgrid.data("height", stampBtnHeight );
         }
         if ($cgrid.data('igGrid')) {
             $cgrid.igGrid("option", "height", stampBtnHeight);
-			$('#time-card-list_container').css("height", stampBtnHeight);
+			$cgrid.data("height", stampBtnHeight );
         }
     };
     setTimeout(resize);
