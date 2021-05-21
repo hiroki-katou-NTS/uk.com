@@ -62,3 +62,7 @@
 .inline {
 	display: inline-block;
 }
+
+#listWorkTime{
+	margin-left: 50px;
+}
