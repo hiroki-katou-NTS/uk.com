@@ -461,14 +461,17 @@ module nts.uk.ui.kdp001.a {
                 }
             });
 
-            // vm.poral = ko.computed({
-            //     read: () => {
-            //         const url = document.URL.toString();
-            //         const result = url.endsWith("view/ccg/008/a/index.xhtml");
-
-            //         return result;
-            //     }
-            // });
+            vm.poral = ko.computed({
+                read: () => {
+                    const url = document.URL.toString();
+                    const sortUrl = url.substring(url.length - 26);
+                    if (sortUrl === 'view/ccg/008/a/index.xhtml') {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }
+            });
 
             vm.widget = ko.computed({
                 read: () => {

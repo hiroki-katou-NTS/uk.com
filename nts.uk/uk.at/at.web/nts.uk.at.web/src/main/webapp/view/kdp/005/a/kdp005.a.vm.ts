@@ -51,7 +51,6 @@ module nts.uk.at.view.kdp005.a {
 			listCompany = [];
 			btnHistory: KnockoutObservable<boolean> = ko.observable(false);
 			btnChangeCompany: KnockoutObservable<boolean> = ko.observable(false);
-
 			messageNoti: KnockoutObservable<IMessage> = ko.observable();
 			fingerStampSetting: KnockoutObservable<FingerStampSetting> = ko.observable(DEFAULT_SETTING);
 
@@ -64,10 +63,8 @@ module nts.uk.at.view.kdp005.a {
 			// get from basyo;
 			worklocationCode: null | string = null;
 			workPlaceId: string = null;
-
 			workPlaceInfos: IWorkPlaceInfo[] = [];
 			supportUse: KnockoutObservable<boolean> = ko.observable(false);
-
 			pageComment: KnockoutObservable<string> = ko.observable('');
 			commentColor: KnockoutObservable<string> = ko.observable('');
 
@@ -121,7 +118,6 @@ module nts.uk.at.view.kdp005.a {
 											dfd.resolve();
 										});
 									}
-
 								} else {
 									self.setLoginInfo().done((loginResult) => {
 										if (!loginResult) {
@@ -137,8 +133,7 @@ module nts.uk.at.view.kdp005.a {
 							});
 						}
 					});
-				});
-
+				}); 
 				return dfd.promise();
 			}
 
@@ -180,8 +175,7 @@ module nts.uk.at.view.kdp005.a {
 							dfd.resolve();
 							block.clear();
 						});
-
-						//						self.getStampToSuppress();
+						// self.getStampToSuppress();
 					} else {
 						self.isUsed(false);
 						self.errorMessage(self.getErrorNotUsed(res.used));
