@@ -615,16 +615,9 @@ module nts.uk.at.view.kdp004.a {
 								self.playAudio(button.audioType);
 								// const employeeInfo = { mode, employeeId, employeeCode, workLocationName, workPlaceId };
 
-
 								if (self.stampResultDisplay().notUseAttr == 1 && button.changeClockArt == 1) {
-									// Cái này dùng để làm j ?
-									// vm.$window.storage('infoEmpToScreenC', employeeInfo);
-									// vm.$window.storage('screenC', { screen: "KDP004" });
 									self.openScreenC(button, layout, loginInfo.em);
 								} else {
-									// Cái này dùng để làm j ?
-									// vm.$window.storage('infoEmpToScreenB', employeeInfo);
-									// vm.$window.storage('screenB', { screen: "KDP004" });
 									self.openScreenB(button, layout, loginInfo.em);
 								}
 

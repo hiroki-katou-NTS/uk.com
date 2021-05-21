@@ -559,13 +559,6 @@ module nts.uk.ui.kdp001.a {
                             .uniqBy('buttonPositionNo')
                             .filter(({ buttonPositionNo }) => 1 <= buttonPositionNo && buttonPositionNo <= 4)
                             .sortBy(['buttonPositionNo'])
-                            // .filter((_: any, index: number) => {
-                            //     if (['b', 'c'].indexOf(screen) > -1) {
-                            //         return true;
-                            //     }
-
-                            //     return index <= 1;
-                            // })
                             .map((btn: ButtonSetting) => {
                                 const { buttonPositionNo, buttonDisSet } = btn;
                                 const { backGroundColor, buttonNameSet } = buttonDisSet;

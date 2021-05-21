@@ -2,29 +2,6 @@
 
 module nts.uk.at.view.kdp.share {
 
-	// <div class="panel" id="stamp-date"
-	// 	data-bind="style: {
-	// 		'color': ko.toJS(settings).textColor,
-	// 		'background-color': ko.toJS(settings).backGroundColor
-	// 	}">
-	// 	<span id="stamp-date-text" data-bind="date: time, format: 'YYYY年M月D日(ddd)'"></span>
-	// </div>
-	// <div class="panel" id="stamp-time"
-	// 	data-bind="style: {
-	// 		'color': ko.toJS(settings).textColor,
-	// 		'background-color': ko.toJS(settings).backGroundColor
-	// 	}">
-	// 	<span id="stamp-time-text" data-bind="date: time, format: 'HH:mm'"></span>
-	// </div>
-	// <div class="button-group" data-bind="if: !!events">
-	// 	<div data-bind="if: !!ko.unwrap(events.setting.show)">
-	// 		<button class="btn-setting" data-bind="icon: 5, click: events.setting.click"></button>
-	// 	</div>
-	// 	<div data-bind="if: !!ko.unwrap(events.company.show)">
-	// 		<button class="btn-company proceed small" data-bind="i18n: 'KDP003_2', click: events.company.click"></button>
-	// 	</div>
-	// </div>
-
 	const template = `
 		<div class="time">
 			<div class="text-time" data-bind="i18n: 'KDP001_5'"></div>
