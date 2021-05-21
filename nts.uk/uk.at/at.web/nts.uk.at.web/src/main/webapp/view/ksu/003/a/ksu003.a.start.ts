@@ -2,9 +2,10 @@ module nts.uk.at.view.ksu003.a {
 	__viewContext.ready(function() {
 		nts.uk.characteristics.restore("USER_KSU003_INFOR").done(function(data : any) {
 			let screenModel = new viewmodel.ScreenModel(data);
+			nts.uk.ui.block.grayout();
 			screenModel.startPage().done(function() {
-				
 				__viewContext.bind(screenModel);
+				$('#ui-area').css('display','');
 				$(window).resize(function() {
 					screenModel.setPositionButonDownAndHeightGrid();
 				});
