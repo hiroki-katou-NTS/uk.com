@@ -83,18 +83,19 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
         try {
             val designer = this.createContext(TEMPLATE_FILE);
             Workbook workbook = designer.getWorkbook();
+
             WorksheetCollection worksheets = workbook.getWorksheets();
             // Get first sheet in template
             Worksheet worksheet = worksheets.get(0);
             printHeader(worksheet, dataSource);
             printTemplate(worksheet, dataSource);
-
+            HorizontalPageBreakCollection pageBreaks = worksheet.getHorizontalPageBreaks();
             if (dataSource.getPageBreak() == BreakSelection.None.value) {
                 printNoneBreakPage(worksheet, dataSource);
             } else if (dataSource.getPageBreak() == BreakSelection.Workplace.value) {
-                printWorkplaceBreakPage(worksheet, dataSource);
+                printWorkplaceBreakPage(worksheet, dataSource,pageBreaks);
             } else if (dataSource.getPageBreak() == BreakSelection.Individual.value) {
-                printPersonBreakPage(worksheet, dataSource);
+                printPersonBreakPage(worksheet, dataSource,pageBreaks);
             }
             removeTemplate(worksheet);
             designer.getDesigner().setWorkbook(workbook);
@@ -177,7 +178,8 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
         }
     }
 
-    private void printWorkplaceBreakPage(Worksheet worksheet, HolidayRemainingDataSource dataSource) throws Exception {
+    private void printWorkplaceBreakPage(Worksheet worksheet, HolidayRemainingDataSource dataSource,
+                                         HorizontalPageBreakCollection pageBreaks) throws Exception {
         int firstRow = NUMBER_ROW_OF_PAGE;
         Map<String, List<HolidaysRemainingEmployee>> maps = new HashMap<>();
 
@@ -192,17 +194,16 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
         }
         List<HolidaysRemainingEmployee> rs = new ArrayList<>();
         for (List<HolidaysRemainingEmployee> listEmployee : maps.values()) {
-            firstRow = printEachWorkplace(worksheet, firstRow, listEmployee, dataSource);
+            firstRow = printEachWorkplace(worksheet, firstRow, listEmployee, dataSource,pageBreaks);
         }
 
     }
 
     private int printEachWorkplace(Worksheet worksheet, int firstRow, List<HolidaysRemainingEmployee> employees,
-                                   HolidayRemainingDataSource dataSource) throws Exception {
+                                   HolidayRemainingDataSource dataSource, HorizontalPageBreakCollection pageBreaks) throws Exception {
         if (employees.size() == 0) {
             return firstRow;
         }
-        HorizontalPageBreakCollection pageBreaks = worksheet.getHorizontalPageBreaks();
         Cells cells = worksheet.getCells();
         // print Header
         cells.copyRows(cells, 0, firstRow, NUMBER_ROW_OF_HEADER + 1);
@@ -231,9 +232,9 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
         return firstRow;
     }
 
-    private void printPersonBreakPage(Worksheet worksheet, HolidayRemainingDataSource dataSource) throws Exception {
+    private void printPersonBreakPage(Worksheet worksheet, HolidayRemainingDataSource dataSource,
+                                      HorizontalPageBreakCollection pageBreaks) throws Exception {
         int firstRow = NUMBER_ROW_OF_PAGE;
-        HorizontalPageBreakCollection pageBreaks = worksheet.getHorizontalPageBreaks();
         List<String> empIds = dataSource.getEmpIds();
         for (int i = 0; i < empIds.size(); i++) {
             String employeeIds = empIds.get(i);
