@@ -383,13 +383,13 @@ public class AppApprovalAggregationProcessService {
 					// 承認フェーズインスタンス[INPUT.承認フェーズ番号].承認区分＝【未承認】の件数をチェックする
 					&& p.getApprovalAtr() == ApprovalBehaviorAtr.UNAPPROVED.value).count();
 			if (unapproveCount > 0) {
-				ApplicationImport app = lstApp.stream().filter(x -> x.getAppID().equals(r.getRootStateID())).collect(Collectors.toList()).get(0);
+				Optional<ApplicationImport> app = lstApp.stream().filter(x -> x.getAppID().equals(r.getRootStateID())).findFirst();
 				ExtractionAlarmPeriodDate pDate = new ExtractionAlarmPeriodDate(Optional.ofNullable(r.getApprovalRecordDate()), Optional.empty());
 				
 				setAlarmResult(fixedExtractCond,lstWplHist, lstResultCondition,
 						item, r.getEmployeeID(), period, pDate,
 						TextResource.localize("KAL010_522", String.valueOf(fixedExtractCond.getNo().value)),
-						TextResource.localize("KAL010_529",app.getAppTypeName()));
+						TextResource.localize("KAL010_529", app.isPresent() ? app.get().getAppTypeName() : "申請データが存在してない。"));
 			}
 		});
 	}
