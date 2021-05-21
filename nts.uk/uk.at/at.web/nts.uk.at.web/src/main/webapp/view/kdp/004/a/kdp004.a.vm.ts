@@ -757,7 +757,7 @@ module nts.uk.at.view.kdp004.a {
 
 			// URLOption basyo
 			basyo(): JQueryPromise<any> {
-				let dfd = $.Deferred<any>();=
+				let dfd = $.Deferred<any>();
 
 				$.urlParam = function (name) {
 					var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
