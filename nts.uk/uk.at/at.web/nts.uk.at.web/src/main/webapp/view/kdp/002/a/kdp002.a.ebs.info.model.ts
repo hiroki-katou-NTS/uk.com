@@ -3,7 +3,6 @@ module nts.uk.at.view.kdp002.a {
 		const DATE_AND_DAY_FORMAT = 'D(ddd)';
 
 		export class EmbossGridInfo {
-
 			columns: KnockoutObservableArray<any> = ko.observableArray([]);
 			currentCode: KnockoutObservable<any> = ko.observable({});
 			items: KnockoutObservableArray<any> = ko.observableArray([]);
@@ -54,24 +53,17 @@ module nts.uk.at.view.kdp002.a {
 			}
 
 			setTimeStampType(stampData) {
-
 				let value = stampData.buttonValueType;
-				if (ButtonType.GOING_TO_WORK == value || ButtonType.RESERVATION_SYSTEM == value) {
 
+				if (ButtonType.GOING_TO_WORK == value || ButtonType.RESERVATION_SYSTEM == value) {
 					stampData.timeStampType = `<div class='full-width' style='text-align: left'>` + stampData.stampArtName + '</div>';
 					return;
-
 				}
-
 				if (ButtonType.WORKING_OUT == value) {
-
 					stampData.timeStampType = `<div class='full-width' style='text-align: right'>` + stampData.stampArtName + '</div>';
 					return;
-
 				}
-
 				stampData.timeStampType = stampData.stampArtName ? `<div class='full-width' style='text-align: center'>` + stampData.stampArtName + '</div>' : '';
-
 			}
 
 			bindItemData(items: Array<any>) {
@@ -84,6 +76,7 @@ module nts.uk.at.view.kdp002.a {
 					items.forEach(stampData => {
 						stampData.code = ++idx;
 						let formatedStamp = nts.uk.time.applyFormat("Short_YMDW", stampData.stampDate);
+
 						if (moment(stampData.stampDate).day() == 6) {
 							formatedStamp = "<span class='color-schedule-saturday'> " + formatedStamp + "</span>";
 						} else if (moment(stampData.stampDate).day() == 0) {
@@ -92,13 +85,9 @@ module nts.uk.at.view.kdp002.a {
 							formatedStamp = "<span class=''> " + formatedStamp + "</span>";
 						}
 						stampData.stampDate = formatedStamp;
-
 						stampData.stampHowAndTime = "<div class='inline-bl'>" + stampData.stampHow + "</div>" + stampData.stampTime;
-
 						model.setTimeStampType(stampData);
-
 					});
-
 					model.items(items);
 				} else if (model.displayMethod() == model.displayType.SHOW_TIME_CARD) {
 					let idx = 1;
@@ -119,28 +108,21 @@ module nts.uk.at.view.kdp002.a {
 						timeCard.workIn2 = timeCard.workIn2 ? nts.uk.time.format.byId("ClockDay_Short_HM", timeCard.workIn2) : null;
 						timeCard.workOut2 = timeCard.workOut2 ? nts.uk.time.format.byId("ClockDay_Short_HM", timeCard.workOut2) : null;
 					});
-
 					model.items(items);
 				}
 			}
-
 		}
 
 		enum ButtonType {
 			// 系
-
 			GOING_TO_WORK = 1,
 			// 系
-
 			WORKING_OUT = 2,
 			// "外出系"
-
 			GO_OUT = 3,
 			// 戻り系
-
 			RETURN = 4,
 			// 予約系
-
 			RESERVATION_SYSTEM = 5
 		}
 
@@ -150,7 +132,6 @@ module nts.uk.at.view.kdp002.a {
 			stampDataOfEmployees: IStampHistoryInfo;
 			stampToSuppress: IStampToSuppress;
 			stampResultDisplay: IStampResultDisplay;
-
 		}
 
 		interface IStampResultDisplay {

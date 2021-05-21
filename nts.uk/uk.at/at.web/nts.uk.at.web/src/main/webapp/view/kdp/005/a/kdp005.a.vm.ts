@@ -33,6 +33,7 @@ module nts.uk.at.view.kdp005.a {
 		};
 
 		export class ScreenModel {
+			saveSuccess = false;
 			stampSetting: KnockoutObservable<StampSetting> = ko.observable({});
 			stampTab: KnockoutObservable<StampTab> = ko.observable(new StampTab());
 			stampToSuppress: KnockoutObservable<StampToSuppress> = ko.observable({
@@ -69,8 +70,6 @@ module nts.uk.at.view.kdp005.a {
 
 			pageComment: KnockoutObservable<string> = ko.observable('');
 			commentColor: KnockoutObservable<string> = ko.observable('');
-
-			saveSuccess = false;
 
 			constructor() {
 				let self = this;
@@ -424,6 +423,8 @@ module nts.uk.at.view.kdp005.a {
 							.then(() => {
 								if (!ko.unwrap(self.modeBasyo)) {
 									self.openDialogK().done((result) => {
+										console.log(result);
+										
 										if (result) {
 											self.saveSuccess = true;
 											self.loginInfo = loginResult.em;
@@ -432,19 +433,35 @@ module nts.uk.at.view.kdp005.a {
 												location.reload();
 											});
 										} else {
-											if (self.loginInfo) {
-												self.login(self.loginInfo).done(() => {
-													if (__viewContext.user.companyId != self.loginInfo.companyId || __viewContext.user.employeeCode != self.loginInfo.employeeCode) {
+											if (__viewContext.user.companyId != loginResult.em.companyId || __viewContext.user.employeeCode != loginResult.em.employeeCode) {
+												setTimeout(() => {
+													if (self.saveSuccess) {
 														location.reload();
 													}
-												});
-											} else {
-												if (__viewContext.user.companyId != loginResult.em.companyId || __viewContext.user.employeeCode != loginResult.em.employeeCode) {
-													if (!self.saveSuccess) {
-														location.reload();
-													}
-												}
+												}, 500);
 											}
+											// if (self.loginInfo) {
+											// 	self.login(self.loginInfo).done(() => {
+											// 		if (__viewContext.user.companyId != self.loginInfo.companyId || __viewContext.user.employeeCode != self.loginInfo.employeeCode) {
+											// 			setTimeout(() => {
+											// 				if (!self.saveSuccess) {
+											// 					console.log('Chung dep trai');
+																
+											// 					location.reload();
+											// 				}
+											// 			}, 500);
+											// 		}
+											// 	});
+											// } else {
+											// 	if (__viewContext.user.companyId != loginResult.em.companyId || __viewContext.user.employeeCode != loginResult.em.employeeCode) {
+											// 		setTimeout(() => {
+											// 			if (!self.saveSuccess) {
+											// 				console.log('Chung dep trai');
+											// 				location.reload();
+											// 			}
+											// 		}, 500);
+											// 	}
+											// }
 										}
 									});
 								} else {

@@ -81,8 +81,7 @@ class KDP002BViewModel extends ko.ViewModel {
             vm.$window.shared("infoEmpToScreenB").done(infoEmp => {
 
                 vm.infoEmpFromScreenA = infoEmp;
-                console.log(infoEmp);
-                
+
                 vm.disableResultDisplayTime(vm.resultDisplayTime() > 0 ? true : false);
 
                 vm.startPage();
@@ -149,7 +148,7 @@ class KDP002BViewModel extends ko.ViewModel {
         const param = { sid: self.infoEmpFromScreenA.employeeId, workPlaceIds: [workPlaceId] };
         vm.$ajax(kDP002RequestUrl.WORKPLACE_INFO, param)
             .then((data: any) => {
-                
+
                 if (data) {
                     if (data.workPlaceInfo[0].displayName === 'コード削除済') {
                         self.workPlace('');
