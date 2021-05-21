@@ -63,7 +63,7 @@ module nts.uk.at.view.kdp.share {
         .kdp-message-error .workPlace .title {
             box-sizing: border-box;
             width: auto;
-            height: 75px;
+            height: 65px;
             float: left;
         }
 
