@@ -68,7 +68,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
     @Inject
     private AnnLeaRemNumEachMonthRepository annLeaRemNumEachMonthRepository;
 
-    private static final String TEMPLATE_FILE = "report/KDR001_V4.xlsx";
+    private static final String TEMPLATE_FILE = "report/KDR001_V5.xlsx";
     private static final String REPORT_FILE_NAME = "休暇残数管理表.xlsx";
     private static final int NUMBER_ROW_OF_PAGE = 53;
     private static final int NUMBER_ROW_OF_HEADER = 5;
