@@ -11,7 +11,7 @@ import nts.uk.cnv.app.dto.GetErpColumnsParamDto;
 import nts.uk.cnv.app.dto.GetErpColumnsResultDto;
 import nts.uk.cnv.app.dto.GetUkColumnsParamDto;
 import nts.uk.cnv.app.service.TableInfoService;
-import nts.uk.cnv.dom.conversiontable.OneColumnConversion;
+import nts.uk.cnv.core.dom.conversiontable.OneColumnConversion;
 
 @Path("cnv/tableinfo")
 @Produces("application/json")

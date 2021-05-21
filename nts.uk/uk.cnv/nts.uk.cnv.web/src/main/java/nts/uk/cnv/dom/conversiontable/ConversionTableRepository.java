@@ -3,8 +3,11 @@ package nts.uk.cnv.dom.conversiontable;
 import java.util.List;
 import java.util.Optional;
 
-import nts.uk.cnv.dom.conversionsql.Join;
-import nts.uk.cnv.dom.service.ConversionInfo;
+import nts.uk.cnv.core.dom.conversionsql.Join;
+import nts.uk.cnv.core.dom.conversiontable.ConversionInfo;
+import nts.uk.cnv.core.dom.conversiontable.ConversionSource;
+import nts.uk.cnv.core.dom.conversiontable.ConversionTable;
+import nts.uk.cnv.core.dom.conversiontable.OneColumnConversion;
 
 public interface ConversionTableRepository {
 

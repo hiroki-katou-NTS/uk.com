@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.cnv.dom.TableIdentity;
+import nts.uk.cnv.core.dom.TableIdentity;
 import nts.uk.cnv.dom.conversiontable.ConversionCategoryTableRepository;
 import nts.uk.cnv.screen.app.query.dto.Cnv001BLoadDataDto;
 import nts.uk.cnv.screen.app.query.dto.Cnv001BLoadParamDto;

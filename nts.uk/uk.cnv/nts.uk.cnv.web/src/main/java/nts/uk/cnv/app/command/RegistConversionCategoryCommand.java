@@ -4,7 +4,7 @@ import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Value;
-import nts.uk.cnv.dom.TableIdentity;
+import nts.uk.cnv.core.dom.TableIdentity;
 
 @Value
 @AllArgsConstructor

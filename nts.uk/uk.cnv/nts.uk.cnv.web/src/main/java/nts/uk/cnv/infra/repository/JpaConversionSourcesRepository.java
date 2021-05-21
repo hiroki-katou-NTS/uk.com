@@ -7,7 +7,7 @@ import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.text.IdentifierUtil;
-import nts.uk.cnv.dom.conversiontable.ConversionSource;
+import nts.uk.cnv.core.dom.conversiontable.ConversionSource;
 import nts.uk.cnv.dom.conversiontable.ConversionSourcesRepository;
 import nts.uk.cnv.infra.entity.conversiontable.ScvmtConversionSources;
 

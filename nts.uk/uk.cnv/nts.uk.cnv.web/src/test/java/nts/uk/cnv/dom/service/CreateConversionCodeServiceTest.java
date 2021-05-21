@@ -16,11 +16,12 @@ import mockit.Tested;
 import mockit.Verifications;
 import mockit.integration.junit4.JMockit;
 import nemunoki.oruta.shr.tabledefinetype.databasetype.DatabaseType;
-import nts.uk.cnv.dom.conversiontable.ConversionRecord;
-import nts.uk.cnv.dom.conversiontable.ConversionTable;
+import nts.uk.cnv.core.dom.conversiontable.ConversionInfo;
+import nts.uk.cnv.core.dom.conversiontable.ConversionRecord;
+import nts.uk.cnv.core.dom.conversiontable.ConversionTable;
+import nts.uk.cnv.core.dom.conversiontable.pattern.manager.AdditionalConversionCode;
+import nts.uk.cnv.core.dom.conversiontable.pattern.manager.ParentJoinPatternManager;
 import nts.uk.cnv.dom.conversiontable.ConversionTableTestHelper;
-import nts.uk.cnv.dom.conversiontable.pattern.manager.AdditionalConversionCode;
-import nts.uk.cnv.dom.conversiontable.pattern.manager.ParentJoinPatternManager;
 
 @RunWith(JMockit.class)
 public class CreateConversionCodeServiceTest {

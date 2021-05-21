@@ -8,7 +8,7 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import nts.uk.cnv.dom.conversiontable.ConversionRecord;
+import nts.uk.cnv.core.dom.conversiontable.ConversionRecord;
 
 @Getter
 @Entity

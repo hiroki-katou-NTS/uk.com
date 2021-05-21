@@ -2,6 +2,8 @@ package nts.uk.cnv.dom.conversiontable;
 
 import java.util.List;
 
+import nts.uk.cnv.core.dom.conversiontable.ConversionRecord;
+
 public interface ConversionRecordRepository {
 	List<ConversionRecord> getRecords(String category, String tableName);
 

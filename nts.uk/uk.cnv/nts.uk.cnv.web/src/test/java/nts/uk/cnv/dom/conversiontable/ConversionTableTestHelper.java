@@ -5,17 +5,19 @@ import java.util.Arrays;
 import java.util.Optional;
 
 import nemunoki.oruta.shr.tabledefinetype.databasetype.SqlServerSpec;
-import nts.uk.cnv.dom.constants.Constants;
-import nts.uk.cnv.dom.conversionsql.ColumnName;
-import nts.uk.cnv.dom.conversionsql.Join;
-import nts.uk.cnv.dom.conversionsql.JoinAtr;
-import nts.uk.cnv.dom.conversionsql.OnSentence;
-import nts.uk.cnv.dom.conversionsql.TableFullName;
-import nts.uk.cnv.dom.conversiontable.pattern.CodeToIdPattern;
-import nts.uk.cnv.dom.conversiontable.pattern.FixedValuePattern;
-import nts.uk.cnv.dom.conversiontable.pattern.NotChangePattern;
-import nts.uk.cnv.dom.conversiontable.pattern.ParentJoinPattern;
-import nts.uk.cnv.dom.service.ConversionInfo;
+import nts.uk.cnv.core.dom.constants.Constants;
+import nts.uk.cnv.core.dom.conversionsql.ColumnName;
+import nts.uk.cnv.core.dom.conversionsql.Join;
+import nts.uk.cnv.core.dom.conversionsql.JoinAtr;
+import nts.uk.cnv.core.dom.conversionsql.OnSentence;
+import nts.uk.cnv.core.dom.conversionsql.TableFullName;
+import nts.uk.cnv.core.dom.conversiontable.ConversionInfo;
+import nts.uk.cnv.core.dom.conversiontable.ConversionTable;
+import nts.uk.cnv.core.dom.conversiontable.OneColumnConversion;
+import nts.uk.cnv.core.dom.conversiontable.pattern.CodeToIdPattern;
+import nts.uk.cnv.core.dom.conversiontable.pattern.FixedValuePattern;
+import nts.uk.cnv.core.dom.conversiontable.pattern.NotChangePattern;
+import nts.uk.cnv.core.dom.conversiontable.pattern.ParentJoinPattern;
 
 public class ConversionTableTestHelper {
 

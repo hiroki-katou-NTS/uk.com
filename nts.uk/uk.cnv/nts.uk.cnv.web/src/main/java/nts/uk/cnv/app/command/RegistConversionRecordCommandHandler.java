@@ -5,7 +5,7 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.cnv.dom.conversiontable.ConversionRecord;
+import nts.uk.cnv.core.dom.conversiontable.ConversionRecord;
 import nts.uk.cnv.dom.conversiontable.ConversionRecordRepository;
 
 @Stateless

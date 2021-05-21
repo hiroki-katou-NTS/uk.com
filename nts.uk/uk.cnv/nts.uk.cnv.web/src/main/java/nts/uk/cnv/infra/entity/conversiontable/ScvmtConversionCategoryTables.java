@@ -11,8 +11,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.infra.data.entity.JpaEntity;
-import nts.uk.cnv.dom.TableIdentity;
-import nts.uk.cnv.dom.conversiontable.ConversionCategoryTable;
+import nts.uk.cnv.core.dom.TableIdentity;
+import nts.uk.cnv.core.dom.conversiontable.ConversionCategoryTable;
 
 /**
  * コンバートカテゴリテーブル

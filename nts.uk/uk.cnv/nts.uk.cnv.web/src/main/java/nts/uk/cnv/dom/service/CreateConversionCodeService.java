@@ -12,15 +12,16 @@ import javax.inject.Inject;
 import lombok.val;
 import nemunoki.oruta.shr.tabledefinetype.DataType;
 import nts.arc.time.GeneralDate;
-import nts.uk.cnv.dom.constants.Constants;
-import nts.uk.cnv.dom.conversionsql.TableFullName;
-import nts.uk.cnv.dom.conversiontable.ConversionRecord;
-import nts.uk.cnv.dom.conversiontable.ConversionSource;
-import nts.uk.cnv.dom.conversiontable.ConversionTable;
-import nts.uk.cnv.dom.conversiontable.OneColumnConversion;
-import nts.uk.cnv.dom.conversiontable.pattern.ReferencedParentPattern;
-import nts.uk.cnv.dom.conversiontable.pattern.manager.AdditionalConversionCode;
-import nts.uk.cnv.dom.conversiontable.pattern.manager.ParentJoinPatternManager;
+import nts.uk.cnv.core.dom.constants.Constants;
+import nts.uk.cnv.core.dom.conversionsql.TableFullName;
+import nts.uk.cnv.core.dom.conversiontable.ConversionInfo;
+import nts.uk.cnv.core.dom.conversiontable.ConversionRecord;
+import nts.uk.cnv.core.dom.conversiontable.ConversionSource;
+import nts.uk.cnv.core.dom.conversiontable.ConversionTable;
+import nts.uk.cnv.core.dom.conversiontable.OneColumnConversion;
+import nts.uk.cnv.core.dom.conversiontable.pattern.ReferencedParentPattern;
+import nts.uk.cnv.core.dom.conversiontable.pattern.manager.AdditionalConversionCode;
+import nts.uk.cnv.core.dom.conversiontable.pattern.manager.ParentJoinPatternManager;
 
 /***
  * コンバートコードを生成する
@@ -130,7 +131,7 @@ public class CreateConversionCodeService {
 
 		List<String> convertCodes = conversionTables.stream()
 			.map(ct -> ct.createConversionSql())
-			.map(conversionSql -> conversionSql.build(info))
+			.map(conversionSql -> conversionSql.build(info.getDatebaseType().spec()))
 			.collect(Collectors.toList());
 
 		return String.join("\r\n\r\n", convertCodes);

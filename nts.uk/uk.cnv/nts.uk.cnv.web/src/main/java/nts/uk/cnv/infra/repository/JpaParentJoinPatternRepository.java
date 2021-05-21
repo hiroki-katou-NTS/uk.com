@@ -6,9 +6,9 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.cnv.dom.conversiontable.pattern.ParentJoinPattern;
-import nts.uk.cnv.dom.conversiontable.pattern.manager.ParentJoinPatternRepository;
-import nts.uk.cnv.dom.service.ConversionInfo;
+import nts.uk.cnv.core.dom.conversiontable.ConversionInfo;
+import nts.uk.cnv.core.dom.conversiontable.pattern.ParentJoinPattern;
+import nts.uk.cnv.core.dom.conversiontable.pattern.manager.ParentJoinPatternRepository;
 import nts.uk.cnv.infra.entity.conversiontable.ScvmtConversionTable;
 
 @Stateless

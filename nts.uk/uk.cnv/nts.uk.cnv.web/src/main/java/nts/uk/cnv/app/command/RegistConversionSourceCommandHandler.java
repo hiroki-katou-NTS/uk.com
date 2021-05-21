@@ -9,7 +9,7 @@ import lombok.val;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.uk.cnv.app.dto.AddSourceResult;
-import nts.uk.cnv.dom.conversiontable.ConversionSource;
+import nts.uk.cnv.core.dom.conversiontable.ConversionSource;
 import nts.uk.cnv.dom.conversiontable.ConversionSourcesRepository;
 
 @Stateless

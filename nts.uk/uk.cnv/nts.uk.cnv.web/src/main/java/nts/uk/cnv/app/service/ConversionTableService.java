@@ -12,30 +12,30 @@ import nts.arc.error.BusinessException;
 import nts.uk.cnv.app.dto.FindConversionTableDto;
 import nts.uk.cnv.app.dto.FindConversionTableResult;
 import nts.uk.cnv.app.dto.GetCategoryTablesDto;
-import nts.uk.cnv.dom.conversionsql.ConversionSQL;
-import nts.uk.cnv.dom.conversionsql.TableFullName;
-import nts.uk.cnv.dom.conversionsql.WhereSentence;
+import nts.uk.cnv.core.dom.conversionsql.ConversionSQL;
+import nts.uk.cnv.core.dom.conversionsql.TableFullName;
+import nts.uk.cnv.core.dom.conversionsql.WhereSentence;
+import nts.uk.cnv.core.dom.conversiontable.ConversionInfo;
+import nts.uk.cnv.core.dom.conversiontable.ConversionRecord;
+import nts.uk.cnv.core.dom.conversiontable.ConversionSource;
+import nts.uk.cnv.core.dom.conversiontable.ConversionTable;
+import nts.uk.cnv.core.dom.conversiontable.OneColumnConversion;
+import nts.uk.cnv.core.dom.conversiontable.pattern.CodeToCodePattern;
+import nts.uk.cnv.core.dom.conversiontable.pattern.CodeToIdPattern;
+import nts.uk.cnv.core.dom.conversiontable.pattern.ConversionType;
+import nts.uk.cnv.core.dom.conversiontable.pattern.DateTimeMergePattern;
+import nts.uk.cnv.core.dom.conversiontable.pattern.FileIdPattern;
+import nts.uk.cnv.core.dom.conversiontable.pattern.FixedValuePattern;
+import nts.uk.cnv.core.dom.conversiontable.pattern.FixedValueWithConditionPattern;
+import nts.uk.cnv.core.dom.conversiontable.pattern.NotChangePattern;
+import nts.uk.cnv.core.dom.conversiontable.pattern.ParentJoinPattern;
+import nts.uk.cnv.core.dom.conversiontable.pattern.PasswordPattern;
+import nts.uk.cnv.core.dom.conversiontable.pattern.StringConcatPattern;
+import nts.uk.cnv.core.dom.conversiontable.pattern.TimeWithDayAttrPattern;
 import nts.uk.cnv.dom.conversiontable.ConversionCategoryTableRepository;
-import nts.uk.cnv.dom.conversiontable.ConversionRecord;
 import nts.uk.cnv.dom.conversiontable.ConversionRecordRepository;
-import nts.uk.cnv.dom.conversiontable.ConversionSource;
 import nts.uk.cnv.dom.conversiontable.ConversionSourcesRepository;
-import nts.uk.cnv.dom.conversiontable.ConversionTable;
 import nts.uk.cnv.dom.conversiontable.ConversionTableRepository;
-import nts.uk.cnv.dom.conversiontable.OneColumnConversion;
-import nts.uk.cnv.dom.conversiontable.pattern.CodeToCodePattern;
-import nts.uk.cnv.dom.conversiontable.pattern.CodeToIdPattern;
-import nts.uk.cnv.dom.conversiontable.pattern.ConversionType;
-import nts.uk.cnv.dom.conversiontable.pattern.DateTimeMergePattern;
-import nts.uk.cnv.dom.conversiontable.pattern.FileIdPattern;
-import nts.uk.cnv.dom.conversiontable.pattern.FixedValuePattern;
-import nts.uk.cnv.dom.conversiontable.pattern.FixedValueWithConditionPattern;
-import nts.uk.cnv.dom.conversiontable.pattern.NotChangePattern;
-import nts.uk.cnv.dom.conversiontable.pattern.ParentJoinPattern;
-import nts.uk.cnv.dom.conversiontable.pattern.PasswordPattern;
-import nts.uk.cnv.dom.conversiontable.pattern.StringConcatPattern;
-import nts.uk.cnv.dom.conversiontable.pattern.TimeWithDayAttrPattern;
-import nts.uk.cnv.dom.service.ConversionInfo;
 
 @Stateless
 public class ConversionTableService {
@@ -109,7 +109,7 @@ public class ConversionTableService {
 
 		ConversionSQL sql = conversonTable.createConversionSql();
 
-		return sql.build(info);
+		return sql.build(info.getDatebaseType().spec());
 	}
 
 	private FindConversionTableResult mappingData(OneColumnConversion domain) {

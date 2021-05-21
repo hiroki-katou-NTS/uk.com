@@ -8,7 +8,8 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 
 import nemunoki.oruta.shr.tabledefinetype.databasetype.DatabaseType;
-import nts.uk.cnv.dom.service.ConversionInfo;
+import nts.uk.cnv.core.dom.conversionsql.ConversionSQL;
+import nts.uk.cnv.core.dom.conversiontable.ConversionInfo;
 
 /**
  * @author ai_muto
@@ -23,7 +24,7 @@ public class ConversionSQLTest {
 		ConversionInfo info = new ConversionInfo(
 				DatabaseType.sqlserver,"KINJIROU","dbo","TEST","dbo", "UK_CNV", "dbo","000000000000");
 
-		String result = target.build(info);
+		String result = target.build(info.getDatebaseType().spec());
 
         assertTrue(result.equals(
         		"INSERT INTO TEST.dbo.BSYMT_EMP_DTA_MNG_INFO (\r\n" +

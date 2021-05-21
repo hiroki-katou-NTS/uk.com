@@ -8,14 +8,15 @@ import java.util.Optional;
 import org.junit.Test;
 
 import nemunoki.oruta.shr.tabledefinetype.databasetype.DatabaseType;
-import nts.uk.cnv.dom.conversionsql.ColumnName;
-import nts.uk.cnv.dom.conversionsql.ConversionSQL;
+import nts.uk.cnv.core.dom.conversionsql.ColumnName;
+import nts.uk.cnv.core.dom.conversionsql.ConversionSQL;
+import nts.uk.cnv.core.dom.conversionsql.Join;
+import nts.uk.cnv.core.dom.conversionsql.JoinAtr;
+import nts.uk.cnv.core.dom.conversionsql.OnSentence;
+import nts.uk.cnv.core.dom.conversionsql.TableFullName;
+import nts.uk.cnv.core.dom.conversiontable.ConversionInfo;
+import nts.uk.cnv.core.dom.conversiontable.pattern.CodeToIdPattern;
 import nts.uk.cnv.dom.conversionsql.ConversionSQLHelper;
-import nts.uk.cnv.dom.conversionsql.Join;
-import nts.uk.cnv.dom.conversionsql.JoinAtr;
-import nts.uk.cnv.dom.conversionsql.OnSentence;
-import nts.uk.cnv.dom.conversionsql.TableFullName;
-import nts.uk.cnv.dom.service.ConversionInfo;
 
 /**
  * @author ai_muto
@@ -43,7 +44,7 @@ public class CodeToIdPatternTest {
 				null);
 
 		ConversionSQL result = target.apply(cs);
-		String sql = result.build(info);
+		String sql = result.build(info.getDatebaseType().spec());
 
         assertTrue(!sql.isEmpty());
 	}

@@ -5,8 +5,8 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.uk.cnv.core.dom.conversiontable.OneColumnConversion;
 import nts.uk.cnv.dom.conversiontable.ConversionTableRepository;
-import nts.uk.cnv.dom.conversiontable.OneColumnConversion;
 import nts.uk.cnv.dom.conversiontable.pattern.ConversionPatternFactory;
 
 @Stateless

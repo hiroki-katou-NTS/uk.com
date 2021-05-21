@@ -9,8 +9,8 @@ import javax.inject.Inject;
 import nts.arc.error.BusinessException;
 import nts.arc.error.RawErrorMessage;
 import nts.uk.cnv.app.dto.GetErpColumnsResultDto;
+import nts.uk.cnv.core.dom.conversiontable.OneColumnConversion;
 import nts.uk.cnv.dom.conversiontable.ConversionTableRepository;
-import nts.uk.cnv.dom.conversiontable.OneColumnConversion;
 import nts.uk.cnv.dom.tabledesign.ErpTableDesign;
 import nts.uk.cnv.dom.tabledesign.ErpTableDesignRepository;
 

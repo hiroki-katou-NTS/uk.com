@@ -5,13 +5,28 @@ import java.util.List;
 import java.util.Optional;
 
 import nemunoki.oruta.shr.tabledefinetype.databasetype.DatabaseType;
-import nts.uk.cnv.dom.conversionsql.ColumnName;
-import nts.uk.cnv.dom.conversionsql.Join;
-import nts.uk.cnv.dom.conversionsql.JoinAtr;
-import nts.uk.cnv.dom.conversionsql.OnSentence;
-import nts.uk.cnv.dom.conversionsql.RelationalOperator;
-import nts.uk.cnv.dom.conversionsql.TableFullName;
-import nts.uk.cnv.dom.service.ConversionInfo;
+import nts.uk.cnv.core.dom.conversionsql.ColumnName;
+import nts.uk.cnv.core.dom.conversionsql.Join;
+import nts.uk.cnv.core.dom.conversionsql.JoinAtr;
+import nts.uk.cnv.core.dom.conversionsql.OnSentence;
+import nts.uk.cnv.core.dom.conversionsql.RelationalOperator;
+import nts.uk.cnv.core.dom.conversionsql.TableFullName;
+import nts.uk.cnv.core.dom.conversiontable.ConversionInfo;
+import nts.uk.cnv.core.dom.conversiontable.pattern.CodeToCodePattern;
+import nts.uk.cnv.core.dom.conversiontable.pattern.CodeToIdPattern;
+import nts.uk.cnv.core.dom.conversiontable.pattern.ConversionPattern;
+import nts.uk.cnv.core.dom.conversiontable.pattern.ConversionPatternValue;
+import nts.uk.cnv.core.dom.conversiontable.pattern.ConversionType;
+import nts.uk.cnv.core.dom.conversiontable.pattern.DateTimeMergePattern;
+import nts.uk.cnv.core.dom.conversiontable.pattern.FileIdPattern;
+import nts.uk.cnv.core.dom.conversiontable.pattern.FixedValuePattern;
+import nts.uk.cnv.core.dom.conversiontable.pattern.FixedValueWithConditionPattern;
+import nts.uk.cnv.core.dom.conversiontable.pattern.GuidPattern;
+import nts.uk.cnv.core.dom.conversiontable.pattern.NotChangePattern;
+import nts.uk.cnv.core.dom.conversiontable.pattern.ParentJoinPattern;
+import nts.uk.cnv.core.dom.conversiontable.pattern.PasswordPattern;
+import nts.uk.cnv.core.dom.conversiontable.pattern.StringConcatPattern;
+import nts.uk.cnv.core.dom.conversiontable.pattern.TimeWithDayAttrPattern;
 
 public class ConversionPatternFactory {
 

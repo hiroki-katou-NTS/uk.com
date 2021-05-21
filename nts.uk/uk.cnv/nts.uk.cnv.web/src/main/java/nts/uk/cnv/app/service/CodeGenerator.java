@@ -11,15 +11,15 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.RequiredArgsConstructor;
+import nts.uk.cnv.core.dom.conversiontable.ConversionInfo;
+import nts.uk.cnv.core.dom.conversiontable.ConversionRecord;
+import nts.uk.cnv.core.dom.conversiontable.ConversionSource;
+import nts.uk.cnv.core.dom.conversiontable.ConversionTable;
 import nts.uk.cnv.dom.categorypriority.CategoryPriorityRepository;
 import nts.uk.cnv.dom.conversiontable.ConversionCategoryTableRepository;
-import nts.uk.cnv.dom.conversiontable.ConversionRecord;
 import nts.uk.cnv.dom.conversiontable.ConversionRecordRepository;
-import nts.uk.cnv.dom.conversiontable.ConversionSource;
 import nts.uk.cnv.dom.conversiontable.ConversionSourcesRepository;
-import nts.uk.cnv.dom.conversiontable.ConversionTable;
 import nts.uk.cnv.dom.conversiontable.ConversionTableRepository;
-import nts.uk.cnv.dom.service.ConversionInfo;
 import nts.uk.cnv.dom.service.CreateConversionCodeService;
 
 @Stateless

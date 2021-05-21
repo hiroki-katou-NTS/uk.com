@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.cnv.dom.conversiontable.ConversionRecord;
+import nts.uk.cnv.core.dom.conversiontable.ConversionRecord;
 import nts.uk.cnv.dom.conversiontable.ConversionRecordRepository;
 import nts.uk.cnv.infra.entity.conversiontable.ScvmtConversionRecord;
 import nts.uk.cnv.infra.entity.conversiontable.ScvmtConversionRecordPk;

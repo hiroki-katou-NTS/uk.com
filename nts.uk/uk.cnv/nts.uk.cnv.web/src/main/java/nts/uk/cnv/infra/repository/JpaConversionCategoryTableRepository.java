@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.cnv.dom.conversiontable.ConversionCategoryTable;
+import nts.uk.cnv.core.dom.conversiontable.ConversionCategoryTable;
 import nts.uk.cnv.dom.conversiontable.ConversionCategoryTableRepository;
 import nts.uk.cnv.infra.entity.conversiontable.ScvmtConversionCategoryTables;
 

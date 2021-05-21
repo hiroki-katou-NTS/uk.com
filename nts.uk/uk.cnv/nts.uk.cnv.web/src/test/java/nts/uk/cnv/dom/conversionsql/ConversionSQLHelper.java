@@ -8,19 +8,19 @@ import java.util.Optional;
 import java.util.TreeMap;
 
 import lombok.val;
-import nts.uk.cnv.dom.conversionsql.ColumnExpression;
-import nts.uk.cnv.dom.conversionsql.ColumnName;
-import nts.uk.cnv.dom.conversionsql.ConversionSQL;
-import nts.uk.cnv.dom.conversionsql.FormatType;
-import nts.uk.cnv.dom.conversionsql.FromSentence;
-import nts.uk.cnv.dom.conversionsql.InsertSentence;
-import nts.uk.cnv.dom.conversionsql.Join;
-import nts.uk.cnv.dom.conversionsql.JoinAtr;
-import nts.uk.cnv.dom.conversionsql.OnSentence;
-import nts.uk.cnv.dom.conversionsql.RelationalOperator;
-import nts.uk.cnv.dom.conversionsql.SelectSentence;
-import nts.uk.cnv.dom.conversionsql.TableFullName;
-import nts.uk.cnv.dom.conversionsql.WhereSentence;
+import nts.uk.cnv.core.dom.conversionsql.ColumnExpression;
+import nts.uk.cnv.core.dom.conversionsql.ColumnName;
+import nts.uk.cnv.core.dom.conversionsql.ConversionSQL;
+import nts.uk.cnv.core.dom.conversionsql.FormatType;
+import nts.uk.cnv.core.dom.conversionsql.FromSentence;
+import nts.uk.cnv.core.dom.conversionsql.InsertSentence;
+import nts.uk.cnv.core.dom.conversionsql.Join;
+import nts.uk.cnv.core.dom.conversionsql.JoinAtr;
+import nts.uk.cnv.core.dom.conversionsql.OnSentence;
+import nts.uk.cnv.core.dom.conversionsql.RelationalOperator;
+import nts.uk.cnv.core.dom.conversionsql.SelectSentence;
+import nts.uk.cnv.core.dom.conversionsql.TableFullName;
+import nts.uk.cnv.core.dom.conversionsql.WhereSentence;
 
 public class ConversionSQLHelper {
 	public static ConversionSQL create_emptyDummy() {

@@ -13,9 +13,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.infra.data.entity.JpaEntity;
-import nts.uk.cnv.dom.service.ConversionInfo;
-import nts.uk.cnv.dom.conversiontable.pattern.ConversionPattern;
-import nts.uk.cnv.dom.conversiontable.pattern.GuidPattern;
+import nts.uk.cnv.core.dom.conversiontable.ConversionInfo;
+import nts.uk.cnv.core.dom.conversiontable.pattern.ConversionPattern;
+import nts.uk.cnv.core.dom.conversiontable.pattern.GuidPattern;
 import nts.uk.cnv.infra.entity.conversiontable.ScvmtConversionTable;
 import nts.uk.cnv.infra.entity.conversiontable.ScvmtConversionTablePk;
 
