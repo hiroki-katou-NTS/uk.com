@@ -10,6 +10,10 @@ div#master-wrapper {
 			& > button.btn-error {
 				margin-left: 25px;
 				vertical-align: middle;
+				position: absolute;
+				left: -22px;
+				top: 40px;
+				z-index: 10005;
 			}
 
 			.pg-name {
