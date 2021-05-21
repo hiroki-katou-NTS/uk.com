@@ -273,9 +273,9 @@ module nts.uk.at.view.kdw007.a.viewmodel {
 
         /* Function Area */
 
-        jumpTo(sidebar) {
+        jumpTo() {
             let self = this;
-            nts.uk.request.jump("/view/kdw/006/a/index.xhtml", { ShareObject: sidebar() });
+            nts.uk.request.jump("/view/kdw/006/a/index.xhtml");
         }
 
         setNewMode() {
@@ -292,6 +292,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
         }
         duplicate(){
             let self = this;
+            self.showTypeAtr(0);
             self.isDuplicate(true);
             self.isNewMode(true);
             self.selectedErrorAlarmCode(null);
