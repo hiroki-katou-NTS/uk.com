@@ -82,9 +82,7 @@ module nts.uk.at.view.kdp004.a {
 
 						if (!loginInfo) {
 							self.setLoginInfo().done((loginResult) => {
-
 								if (!loginResult) {
-
 									self.isUsed(false);
 									dfd.resolve();
 									return;
@@ -106,30 +104,14 @@ module nts.uk.at.view.kdp004.a {
 							});
 						}
 					})
-				})
-					.then(() => {
-						service.getLogginSetting().done((res) => {
-							self.listCompany(_.filter(res, 'fingerAuthStamp'));
-							if (self.listCompany.length == 0) {
-								self.errorMessage(getMessage("Msg_1527"));
-								self.isUsed(false);
-								dfd.resolve();
-							}
-						});
-
-					}).always(() => {
-						service.getLogginSetting().done((res) => {
-							self.listCompany(_.filter(res, 'fingerAuthStamp'));
-							if (self.listCompany.length == 0) {
-								self.errorMessage(getMessage("Msg_1527"));
-								self.isUsed(false);
-								dfd.resolve();
-							}
-						});
-
-						self.modeBasyo(false);
-
+				}).always(() => {
+					service.getLogginSetting().done((res) => {
+						self.listCompany(_.filter(res, 'fingerAuthStamp'));
 					});
+
+					self.modeBasyo(false);
+
+				});
 
 				return dfd.promise();
 
@@ -624,8 +606,14 @@ module nts.uk.at.view.kdp004.a {
 
 
 								if (self.stampResultDisplay().notUseAttr == 1 && button.changeClockArt == 1) {
+									// Cái này dùng để làm j ?
+									// vm.$window.storage('infoEmpToScreenC', employeeInfo);
+									// vm.$window.storage('screenC', { screen: "KDP004" });
 									self.openScreenC(button, layout, loginInfo.em);
 								} else {
+									// Cái này dùng để làm j ?
+									// vm.$window.storage('infoEmpToScreenB', employeeInfo);
+									// vm.$window.storage('screenB', { screen: "KDP004" });
 									self.openScreenB(button, layout, loginInfo.em);
 								}
 
@@ -773,6 +761,8 @@ module nts.uk.at.view.kdp004.a {
 				const self = this,
 					vm = new ko.ViewModel(),
 					locationCd = $.urlParam('basyo');
+
+				console.log(ko.unwrap(self.modeBasyo));
 
 				// URLOption basyoが存在している場合
 				if (locationCd) {
