@@ -99,3 +99,7 @@
 	box-shadow: 0 0px rgb(0 0 0 / 40%);
 	border-radius: 50px;
 }
+
+.nts-gridlist.ui-iggrid {
+	height: auto !important;
+}
