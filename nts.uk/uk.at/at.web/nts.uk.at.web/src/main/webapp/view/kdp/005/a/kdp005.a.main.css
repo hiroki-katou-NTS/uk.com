@@ -4,8 +4,7 @@ html {
 
 #contents-area {
 	overflow-y: auto;
-    height: calc(100vh - 10px);
-    padding-bottom: 0;
+    height: calc(100vh - 20px);
 }
 
 #kdp002a{

@@ -425,7 +425,7 @@ module nts.uk.at.view.kdp.share {
 					vm.supportUse(!!data.supportUse);
 					vm.temporaryUse(!!data.temporaryUse);
 				});
-			window.onresize = function() {vm.setSize();}
+			window.onresize = function() {vm.setSize();params.reCalGridWidthHeight();}
 		}
 		
 		setSize = function() {

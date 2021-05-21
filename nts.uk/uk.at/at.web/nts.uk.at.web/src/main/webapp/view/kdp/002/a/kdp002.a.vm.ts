@@ -188,6 +188,7 @@ module nts.uk.at.view.kdp002.a {
                     }
                     self.stampToSuppress.valueHasMutated();
                     self.openKDP002T(button, layout);
+					setTimeout(reCalGridWidthHeight, 200);
                 });
             }
 
@@ -211,6 +212,7 @@ module nts.uk.at.view.kdp002.a {
                     }
                     self.stampToSuppress.valueHasMutated();
                     self.openKDP002T(button, layout);
+					setTimeout(reCalGridWidthHeight, 200);
                 });
             }
 
@@ -247,15 +249,18 @@ module nts.uk.at.view.kdp002.a {
 
 let reCalGridWidthHeight = () => {
     const resize = () => {
-        let stampBtnHeight = $('#stampBtnContainer').height() - 43 + 'px';
+		let h = $('#stampBtnContainer').height() - 43;
+        let stampBtnHeight =  (h < 160 ? 160 : h) + 'px';
         const $hgrid = $('#stamp-history-list');
         const $cgrid = $('#time-card-list');
 
         if ($hgrid.data('igGrid')) {
-            $hgrid.igGrid("option", "height", stampBtnHeight);
+            $hgrid.igGrid("option", "height", stampBtnHeight );
+			$('#stamp-history-list_container').css("height", stampBtnHeight);
         }
         if ($cgrid.data('igGrid')) {
             $cgrid.igGrid("option", "height", stampBtnHeight);
+			$('#time-card-list_container').css("height", stampBtnHeight);
         }
     };
     setTimeout(resize);

@@ -3,7 +3,7 @@ html{
 }
 #contents-area {
 	overflow-y: auto;
-    height: 100vh;
+    height: calc(100vh - 20px);
 }
 #kdp004a {
 	width: 100%;
