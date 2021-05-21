@@ -218,7 +218,7 @@ public class GetStampTypeToSuppressServiceTest {
 		assertThat(stampToSuppress.isGoingToWork()).isFalse();
 		assertThat(stampToSuppress.isDeparture()).isTrue();
 		assertThat(stampToSuppress.isGoOut()).isTrue();
-		assertThat(stampToSuppress.isTurnBack()).isTrue();
+		assertThat(stampToSuppress.isTurnBack()).isFalse();
 	}
 	
 	/**
@@ -257,7 +257,7 @@ public class GetStampTypeToSuppressServiceTest {
 		assertThat(stampToSuppress.isGoingToWork()).isFalse();
 		assertThat(stampToSuppress.isDeparture()).isTrue();
 		assertThat(stampToSuppress.isGoOut()).isTrue();
-		assertThat(stampToSuppress.isTurnBack()).isTrue();
+		assertThat(stampToSuppress.isTurnBack()).isFalse();
 	}
 	
 	/**

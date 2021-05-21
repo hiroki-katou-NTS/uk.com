@@ -971,6 +971,7 @@ module nts.uk.com.view.cmm049.a {
             .map((item) => item.functionId)
             .value();
           const userInformationUseMethodDto: UserInformationUseMethodDto = vm.getUserInformationUseMethodDto(vm.getOtherContactDtos());
+
           const command = new UserInformationUseMethodSaveCommand({
             userInformationUseMethodDto: userInformationUseMethodDto,
           });

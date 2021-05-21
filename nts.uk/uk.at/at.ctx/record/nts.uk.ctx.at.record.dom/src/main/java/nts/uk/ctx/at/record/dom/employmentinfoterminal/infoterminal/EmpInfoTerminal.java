@@ -26,6 +26,8 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampMeans;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecord;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampTypeDisplay;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.WorkInformationStamp;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.support.SupportCardNumber;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ButtonType;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ReservationArt;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
@@ -35,8 +37,7 @@ import nts.uk.shr.com.net.Ipv4Address;
 
 /**
  * @author ThanhNX
- *
- *         就業情報端末
+ * 就業情報端末
  */
 public class EmpInfoTerminal implements DomainAggregate {
 
@@ -119,9 +120,13 @@ public class EmpInfoTerminal implements DomainAggregate {
 	// [1] 打刻
 	public Pair<Stamp, StampRecord> createStamp(StampReceptionData recept) {
 		// 実績への反映内容
+		
+		WorkInformationStamp workInformationStamp = new WorkInformationStamp(Optional.empty(), Optional.empty(),
+				createStampInfo.getWorkLocationCd().isPresent() ? Optional.of(createStampInfo.getWorkLocationCd().get()) : Optional.empty(), 
+				recept.getSupportCode().isEmpty() ? Optional.empty() : Optional.of(new SupportCardNumber(Integer.valueOf(recept.getSupportCode()))));	
+		
 		RefectActualResult refActualResults = new RefectActualResult(
-				recept.getSupportCode().isEmpty() ? null : recept.getSupportCode(),
-				createStampInfo.getWorkLocationCd().orElse(null),
+				workInformationStamp,
 				(recept.getLeavingCategory().equals(LeaveCategory.GO_OUT.value)
 						|| recept.getLeavingCategory().equals(LeaveCategory.RETURN.value)
 						|| recept.getShift().isEmpty()) ? null : new WorkTimeCode(recept.getShift()),
@@ -152,7 +157,7 @@ public class EmpInfoTerminal implements DomainAggregate {
 		// TODO: contractCode
 		ButtonType bt = new ButtonType(ReservationArt.NONE, Optional.of(stamp.getType()));
 		return new StampRecord(new ContractCode(""), new StampNumber(recept.getIdNumber()), recept.getDateTime(),
-				new StampTypeDisplay(bt.getStampTypeDisplay()), Optional.of(empInfoTerCode));
+				new StampTypeDisplay(bt.getStampTypeDisplay()));
 	}
 
 	// [pvt-2] 予約の打刻記録を作成
@@ -160,8 +165,7 @@ public class EmpInfoTerminal implements DomainAggregate {
 		// TODO: contractCode
 		ButtonType bt = new ButtonType(ReservationArt.RESERVATION, Optional.empty());
 		return new StampRecord(new ContractCode(""), new StampNumber(reservReceptData.getIdNumber()),
-				reservReceptData.getDateTime(), new StampTypeDisplay(bt.getStampTypeDisplay()),
-				Optional.of(empInfoTerCode));
+				reservReceptData.getDateTime(), new StampTypeDisplay(bt.getStampTypeDisplay()));
 	}
 
 	// [pvt-3] 弁当予約を作成

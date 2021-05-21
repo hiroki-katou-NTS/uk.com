@@ -36222,8 +36222,8 @@ var nts;
                                     var sameLineChart = lineCharts_1[k];
                                     return (sameLineChart.id !== chart.id && sameLineChart.parent === chart.parent
                                         && !sameLineChart.bePassedThrough
-                                        && ((diff > 0 && chart.end <= sameLineChart.start && pDec_1.end > sameLineChart.start)
-                                            || (diff < 0 && chart.start >= sameLineChart.end && pDec_1.start < sameLineChart.end)));
+                                        && ((pDec_1.end > sameLineChart.start && pDec_1.end < sameLineChart.end)
+                                            || (pDec_1.start > sameLineChart.start && pDec_1.start < sameLineChart.end)));
                                 }))
                                     return;
                                 if (parentChart && ((diff > 0 && pDec_1.end > parentChart.end) || (diff < 0 && pDec_1.start < parentChart.start)))

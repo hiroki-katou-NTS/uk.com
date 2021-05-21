@@ -1,38 +1,33 @@
 <template>
   <div class="mx-n3">
     <div
-      class="pl-3 pt-2 pr-2"
-      v-bind:style="{
-        'background-color':
-          setting.displaySettingsStampScreen.settingDateTimeColor
-            .backgroundColor,
-        color: setting.displaySettingsStampScreen.settingDateTimeColor.textColor
-      }"
-    >
-      <div class="font-weight-bold clearfix">
-        <span id="date">
-          {{ $dt.now | date("YYYY年 MM月 DD日（ddd）") }}
-        </span>
-        <button
-          v-on:click="openDialogS"
-          type="button"
-          class="float-right btn btn-success"
-        >
-          {{ "KDPS01_25" | i18n }}
-        </button>
-      </div>
-      <div class="pl-5 font-weight-bold">
-        <span id="time">{{ $dt.now | date("HH:mm") }}</span>
-      </div>
-    </div>
-
-    <div
-      class="p-2 text-break"
+      class="pl-5 text-break"
+      id="textComment"
       v-bind:style="{
         color: setting.stampPageComment.commentColor
       }"
       v-html="textComment"
     ></div>
+    <div class="pl-5 pt-2 pr-2" style="position: relative;" >
+      <div class="clearfix" v-bind:style="{color: setting.displaySettingsStampScreen.settingDateTimeColor.textColor}">
+        <span id="date">
+          {{ $dt.now | date("YYYY/MM/DD（ddd）") }}
+        </span>
+        <span class="text-time">Time</span>
+      </div>
+    </div>
+     <div class="pl-4 lh-1" v-bind:style="{color: setting.displaySettingsStampScreen.settingDateTimeColor.textColor}">
+          <span id="time">{{ $dt.now | date("HH:mm") }}</span>
+          <span class="second">:{{ $dt.now | date("ss") }}</span>
+      </div>
+        <div
+          v-on:click="openDialogS"
+          type="text"
+          class="pr-4 blue-link"
+        >
+          {{ "KDPS01_25" | i18n }}
+        </div>
+
     <div class="px-3">
       <div class="row">
         <div
@@ -50,7 +45,15 @@
             v-click:500="() => stampClick(button)"
             class="btn-block btn-stamp btn btn-secondary "
           >
-            {{ button.buttonDisSet.buttonNameSet.buttonName }}
+            <img v-bind:src="'/nts.uk.mobile.web/dist/resources/' + button.icon" height="50" width="50"/> 
+            <br>
+            <div
+               v-bind:style="{
+              'font-size': button.buttonDisSet.buttonNameSet.buttonName.length > 8 ? '15px' : '20px',
+              'height': button.buttonDisSet.buttonNameSet.buttonName.length > 8 ? '29px': 'unset'
+             
+            }"
+            >{{ button.buttonDisSet.buttonNameSet.buttonName }}</div>
           </button>
         </div>
       </div>
