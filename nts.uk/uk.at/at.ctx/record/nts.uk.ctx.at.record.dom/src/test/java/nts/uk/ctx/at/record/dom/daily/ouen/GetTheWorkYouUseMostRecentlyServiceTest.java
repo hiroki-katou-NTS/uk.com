@@ -31,7 +31,6 @@ public class GetTheWorkYouUseMostRecentlyServiceTest {
 
 	private String empId = "empId";
 	private DatePeriod targetPeriod = new DatePeriod(GeneralDate.today().addMonths(-1), GeneralDate.today());
-	private GeneralDate ymd = GeneralDate.today();
 	private List<OuenWorkTimeSheetOfDaily> list = GetTheWorkYouUseMostRecentlyServiceHelper.get();
 
 	// $実績作業一覧 isEmpty
@@ -44,7 +43,7 @@ public class GetTheWorkYouUseMostRecentlyServiceTest {
 			}
 		};
 
-		List<WorkGroup> result = GetTheWorkYouUseMostRecentlyService.get(require, empId, ymd);
+		List<WorkGroup> result = GetTheWorkYouUseMostRecentlyService.get(require, empId);
 		assertThat(result.isEmpty()).isTrue();
 	}
 
@@ -66,7 +65,7 @@ public class GetTheWorkYouUseMostRecentlyServiceTest {
 			}
 		};
 
-		List<WorkGroup> result = GetTheWorkYouUseMostRecentlyService.get(require, empId, ymd);
+		List<WorkGroup> result = GetTheWorkYouUseMostRecentlyService.get(require, empId);
 		assertThat(result.isEmpty()).isFalse();
 		assertThat(result.size()).isEqualTo(10);
 		assertThat(result.get(5).getWorkCD1().v()).isEqualTo("000060");

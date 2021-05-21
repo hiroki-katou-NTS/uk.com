@@ -74,7 +74,7 @@ public class GetEmployeeDisplayInfo {
 		RequireImpl require = new RequireImpl(ouenRepo, taskRepo, taskFrameUsageSettingRepo);
 		RequireImpl1 require1 = new RequireImpl1(workChangeablePeriodSettingRepo, checkShortageFlex, syWorkplaceAdapter);
 
-		List<WorkGroup> workGroups = GetTheWorkYouUseMostRecentlyService.get(require, sid, refDate);
+		List<WorkGroup> workGroups = GetTheWorkYouUseMostRecentlyService.get(require, sid);
 		employeeDisplayInfo.setWorkGroups(workGroups);
 
 		// 2: get(ログイン会社ID)
