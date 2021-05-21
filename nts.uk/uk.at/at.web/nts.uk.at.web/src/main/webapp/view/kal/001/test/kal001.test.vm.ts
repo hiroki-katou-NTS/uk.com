@@ -19,7 +19,7 @@ module nts.uk.at.view.kal001.test {
             }//end start page 
 
             openDialogB(){
-				setShared("extractedAlarmData", {employeeIds: [__viewContext.user.employeeId], isTopPage: true});
+				nts.uk.ui.windows.setShared("extractedAlarmData", {employeeIds: [__viewContext.user.employeeId], isTopPage: true});
                 nts.uk.ui.windows.sub.modal("/view/kal/001/b/index.xhtml");    
             }
 
