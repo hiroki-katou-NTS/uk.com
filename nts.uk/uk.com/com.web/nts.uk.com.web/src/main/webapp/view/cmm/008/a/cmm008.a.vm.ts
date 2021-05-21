@@ -16,7 +16,6 @@ module nts.uk.com.view.cmm008.a {
             showsGroupCompany: KnockoutObservable<boolean>;
             commonMasterName : KnockoutObservable<string>;
             commonMasterItemId : KnockoutObservable<string>;
-            pgName: KnockoutObservable<string> = ko.observable('');
             constructor() {
                 var self = this;
 
@@ -81,8 +80,6 @@ module nts.uk.com.view.cmm008.a {
                         // Find and bind selected Employment
                         //self.loadEmployment(self.selectedCode());
                     }
-                
-                self.getProgramName();
 
                 service.findGroupCommonMaster().done(function(data) {
                     // self.itemListMatter(data.commonMasterItems);
@@ -96,16 +93,6 @@ module nts.uk.com.view.cmm008.a {
                     dfd.resolve();
                // });
                 return dfd.promise();
-            }
-
-            getProgramName() {
-                const self = this;
-                const namePath = nts.uk.text.format('sys/portal/standardmenu/findProgramName/{0}/{1}', 'CMM008', 'A');
-                nts.uk.request.ajax('com', namePath).then((value: string) => {
-                    if (!_.isNil(value)) {
-                        self.pgName(value);
-                    }
-                });
             }
 
             /**

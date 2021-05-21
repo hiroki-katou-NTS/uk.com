@@ -26,7 +26,6 @@
 
 		<ui:define name="content">
 			<div id="functions-area">
-				<div data-bind="pg-name: pgName"></div>
 				<button data-bind="click: clearData" tabindex="1">#{i18n.getText('CMM008_1')}</button>
 				<button class="proceed"
 					data-bind="click: createEmployment, enable: $root.errors.isEmpty"
