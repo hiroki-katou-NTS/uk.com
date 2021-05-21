@@ -12,7 +12,7 @@ import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.shared.app.command.scherec.monthlyattendanceitem.MonthlyItemControlByAuthCmd;
 import nts.uk.ctx.at.shared.app.command.scherec.monthlyattendanceitem.MonthlyItemControlByAuthCopyCmd;
 import nts.uk.ctx.at.shared.app.command.scherec.monthlyattendanceitem.UpdateMonthlyItemControlByAuthCmdHandler;
-import nts.uk.ctx.at.shared.app.command.scherec.monthlyattendanceitem.UpdateMonthlyItemControlByAuthCopyCmdHandler;
+import nts.uk.ctx.at.shared.app.command.scherec.monthlyattendanceitem.CopyMonthlyItemControlByAuthCmdHandler;
 import nts.uk.ctx.at.shared.app.find.scherec.monthlyattditem.MonthlyItemControlByAuthDto;
 import nts.uk.ctx.at.shared.app.find.scherec.monthlyattditem.MonthlyItemControlByAuthFinder;
 
@@ -27,7 +27,7 @@ public class MonthlyItemControlByAuthorityWS extends WebService {
 	private UpdateMonthlyItemControlByAuthCmdHandler monthlyHandler;
 	
 	@Inject
-	private UpdateMonthlyItemControlByAuthCopyCmdHandler copyMonthlyHandler;
+	private CopyMonthlyItemControlByAuthCmdHandler copyMonthlyHandler;
 	
 	@POST
 	@Path("getmonthlyattd/{roleid}")

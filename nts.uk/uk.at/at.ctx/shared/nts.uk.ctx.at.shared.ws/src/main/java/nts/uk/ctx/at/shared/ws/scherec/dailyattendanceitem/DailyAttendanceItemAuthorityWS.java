@@ -9,8 +9,10 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.at.shared.app.command.scherec.dailyattendanceitem.CopyDailyItemControlByAuthCmdHandler;
 import nts.uk.ctx.at.shared.app.command.scherec.dailyattendanceitem.DailyAttendanceItemAuthorityCmd;
 import nts.uk.ctx.at.shared.app.command.scherec.dailyattendanceitem.DailyAttendanceItemAuthorityCmdHandler;
+import nts.uk.ctx.at.shared.app.command.scherec.dailyattendanceitem.DailyItemControlByAuthCopyCmd;
 import nts.uk.ctx.at.shared.app.find.scherec.dailyattendanceitem.DailyAttendanceItemAuthorityDto;
 import nts.uk.ctx.at.shared.app.find.scherec.dailyattendanceitem.DailyAttendanceItemAuthorityFinder;
 
@@ -23,6 +25,9 @@ public class DailyAttendanceItemAuthorityWS extends WebService {
 	
 	@Inject
 	private DailyAttendanceItemAuthorityCmdHandler dailyAttdHandler;
+	
+	@Inject
+	private CopyDailyItemControlByAuthCmdHandler copyDailylyHandler;
 	
 	
 	@POST
@@ -42,6 +47,12 @@ public class DailyAttendanceItemAuthorityWS extends WebService {
 	@Path("getdailyrolesbycid")
 	public List<String> getDailytRolesByCid() {
 		return this.finder.getDailytRolesByCid();
+	}
+	
+	@POST
+	@Path("copydailylyattd")
+	public void copyMonthlyAttd(DailyItemControlByAuthCopyCmd command) {
+		this.copyDailylyHandler.handle(command);
 	}
 
 }

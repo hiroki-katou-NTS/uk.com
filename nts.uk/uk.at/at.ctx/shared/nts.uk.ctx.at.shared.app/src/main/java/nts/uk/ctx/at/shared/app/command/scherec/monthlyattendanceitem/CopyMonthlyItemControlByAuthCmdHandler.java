@@ -20,7 +20,7 @@ import nts.uk.shr.com.context.AppContexts;
  *
  */
 @Stateless
-public class UpdateMonthlyItemControlByAuthCopyCmdHandler extends CommandHandler<MonthlyItemControlByAuthCopyCmd> {
+public class CopyMonthlyItemControlByAuthCmdHandler extends CommandHandler<MonthlyItemControlByAuthCopyCmd> {
 	
 	@Inject 
 	private MonthlyItemControlByAuthRepository repo;
