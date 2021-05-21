@@ -4220,6 +4220,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let self = this;
             let item = uk.localStorage.getItem(self.KEY);
             let userInfor: IUserInfor = JSON.parse(item.get());
+            
+            $('div > iframe').contents().find('#btnCloseG').trigger('click');
 
             // listEmpData : {id : '' , code : '', name : ''}
             setShared('dataShareDialogG', {
