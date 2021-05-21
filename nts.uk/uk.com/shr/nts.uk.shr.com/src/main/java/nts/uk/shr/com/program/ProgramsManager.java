@@ -1796,16 +1796,16 @@ public class ProgramsManager {
             "/view/cdl/003/a/index.xhtml");
 
     public static final Program CMM011A = new Program(WebAppId.COM, ProgramIdConsts.CMM011A, "CMM011_201",
-            "/view/cmm/011_v2/a/index.xhtml");
+            "/view/cmm/011/a/index.xhtml");
 
     public static final Program CMM011B = new Program(WebAppId.COM, ProgramIdConsts.CMM011B, "CMM011_202",
-            "/view/cmm/011_v2/b/index.xhtml");
+            "/view/cmm/011/b/index.xhtml");
 
     public static final Program CMM011C = new Program(WebAppId.COM, ProgramIdConsts.CMM011C, "CMM011_101",
-            "/view/cmm/011_v2/c/index.xhtml");
+            "/view/cmm/011/c/index.xhtml");
 
     public static final Program CMM011D = new Program(WebAppId.COM, ProgramIdConsts.CMM011D, "CMM011_203",
-            "/view/cmm/011_v2/d/index.xhtml");
+            "/view/cmm/011/d/index.xhtml");
 
 //	public static final Program CMM011E = new Program(WebAppId.COM, ProgramIdConsts.CMM011E, "CMM011_4",
 //			"/view/cmm/011/e/index.xhtml");
