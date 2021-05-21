@@ -98,6 +98,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         detailContentDecoModeConfirm = [];
         detailColumns = [];
         detailContentDs = [];
+		vertSumContentDs: any = [];
+		vertContentDeco: any = [];
         dataSource = {};
         listEmpInfo = [];
         listWorkScheduleWorkInfor  = [];
@@ -148,31 +150,12 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         canRegisterEvent = true;
 		
 		// 個人計カテゴリ
-		vertSelectLst: KnockoutObservableArray<any> = ko.observableArray([
-			{ code: 0, name: '月間想定給与額' },
-			{ code: 1, name: '年間想定給与額' },
-			// { code: 2, name: '基準労働時間比較' },
-			{ code: 3, name: '労働時間' },
-			// { code: 4, name: '夜勤時間' },
-			// { code: 5, name: '週間休日日数' },
-			{ code: 6, name: '出勤・休日日数' },
-			{ code: 7, name: '回数集計１' },
-			{ code: 8, name: '回数集計２' },
-			{ code: 9, name: '回数集計３' }
-        ]);
-		vertSelectValue: KnockoutObservable<number> = ko.observable(1);
+		useCategoriesPersonal: KnockoutObservableArray<any> = ko.observableArray([]);
+		useCategoriesPersonalValue: KnockoutObservable<number> = ko.observable(null);
 		
-		horzSelectLst: KnockoutObservableArray<any> = ko.observableArray([
-			{ code: 0, name: '人件費・時間' },
-			{ code: 1, name: '外部予算実績' },
-			{ code: 2, name: '回数集計' },
-			{ code: 3, name: '就業時間帯別の利用人数' },
-			// { code: 4, name: '時間帯人数' },
-			{ code: 5, name: '雇用人数' },
-			{ code: 6, name: '分類人数' },
-			{ code: 7, name: '職位人数' }
-		]);
-		horzSelectValue: KnockoutObservable<any> = ko.observable(1);
+		// 職場計カテゴリ
+		useCategoriesWorkplace: KnockoutObservableArray<any> = ko.observableArray([]);
+		useCategoriesWorkplaceValue: KnockoutObservable<any> = ko.observable(null);
         
         constructor(dataLocalStorage) {
             let self = this;
@@ -498,6 +481,13 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 self.bindingToHeader(data);
                 
                 // set data Grid
+				_.remove(data.dataBasicDto.useCategoriesPersonal, (item: any) => _.includes([2, 4, 5], item.value));
+				_.remove(data.dataBasicDto.useCategoriesWorkplace, (item: any) => item.value == 4);
+				self.useCategoriesPersonal(data.dataBasicDto.useCategoriesPersonal);
+				self.useCategoriesWorkplace(data.dataBasicDto.useCategoriesWorkplace);
+				self.useCategoriesPersonalValue(_.head(self.useCategoriesPersonal()).value);
+				self.useCategoriesWorkplaceValue(_.head(self.useCategoriesWorkplace()).value);
+				
                 let dataBindGrid = self.convertDataToGrid(data, viewMode);
                 self.initExTable(dataBindGrid, viewMode, updateMode);
                 
@@ -1378,6 +1368,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let detailContentDs   = [];
             let detailContentDeco = [];
             let detailContentDecoModeConfirm = [];
+			let vertSumContentDs: any = [];
+			let vertContentDeco: any = [];
             let htmlToolTip       = [];
             let listCellNotEditBg = [];
             let listCellNotEditColor = [];
@@ -1969,6 +1961,95 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     objDetailHeaderDs['_' + ymd] = "<img class='header-image-no-event'>";
                 }
             });
+
+			switch(self.useCategoriesPersonalValue()) {
+				// 月間想定給与額
+				case 0:	
+					_.forEach(detailContentDs, (item: any, index) => {
+						let object: any = _.get(data.aggreratePersonal.estimatedSalary, item.employeeId);
+						if(object) {
+							vertSumContentDs.push({ empID: item.employeeId, criterion: object.criterion, salary: object.salary });
+							if(!_.isEmpty(object.background)) {
+								vertContentDeco.push(new CellColor("salary", index.toString(), "bg-daily-alter-self", 0));	
+							}
+						} else {
+							vertSumContentDs.push({ empID: item.employeeId, criterion: null, salary: null });
+						}
+					});
+					break;
+				// 年間想定給与額
+				case 1: 
+					_.forEach(detailContentDs, (item: any, index) => {
+						let object: any = _.get(data.aggreratePersonal.estimatedSalary, item.employeeId);
+						if(object) {
+							vertSumContentDs.push({ empID: item.employeeId, criterion: object.criterion, salary: object.salary });
+							if(!_.isEmpty(object.background)) {
+								vertContentDeco.push(new CellColor("salary", index.toString(), "bg-daily-alter-self", 0));	
+							}
+						} else {
+							vertSumContentDs.push({ empID: item.employeeId, criterion: null, salary: null });
+						}
+					});
+					break;
+				// 労働時間
+				case 3: 
+					_.forEach(detailContentDs, (item: any, index) => {
+						let object: any = _.get(data.aggreratePersonal.timeCount, item.employeeId);
+						if(object) {
+							// enum AttendanceTimesForAggregation
+							vertSumContentDs.push({ empID: item.employeeId, colum1: _.get(object, 0), colum2: _.get(object, 1), colum3: _.get(object, 2) });
+						} else {
+							vertSumContentDs.push({ empID: item.employeeId, colum1: null, colum2: null, colum3: null });
+						}
+					});
+					break;
+				// 出勤・休日日数
+				case 6: 
+					_.forEach(detailContentDs, (item: any, index) => {
+						let object: any = _.get(data.aggreratePersonal.timeCount, item.employeeId);
+						if(object) {
+							// WorkClassificationAsAggregationTarget
+							vertSumContentDs.push({ empID: item.employeeId, colum1: _.get(object, 0), colum2: _.get(object, 1) });
+						} else {
+							vertSumContentDs.push({ empID: item.employeeId, colum1: null, colum2: null });
+						}
+					});
+					break;
+				// 回数集計１
+				case 7: 
+					_.forEach(detailContentDs, (item: any, index) => {
+						let object: any = _.get(data.aggreratePersonal.timeCount, item.employeeId);
+						if(object) {
+							vertSumContentDs.push({ empID: item.employeeId, colum1: _.values(object)[0] });
+						} else {
+							vertSumContentDs.push({ empID: item.employeeId, colum1: null });
+						}
+					});
+					break;
+				// 回数集計２
+				case 8: 
+					_.forEach(detailContentDs, (item: any, index) => {
+						let object: any = _.get(data.aggreratePersonal.timeCount, item.employeeId);
+						if(object) {
+							vertSumContentDs.push({ empID: item.employeeId, colum1: _.values(object)[0] });
+						} else {
+							vertSumContentDs.push({ empID: item.employeeId, colum1: null });
+						}
+					});
+					break;
+				// 回数集計３
+				case 9: 
+					_.forEach(detailContentDs, (item: any, index) => {
+						let object: any = _.get(data.aggreratePersonal.timeCount, item.employeeId);
+						if(object) {
+							vertSumContentDs.push({ empID: item.employeeId, colum1: _.values(object)[0] });
+						} else {
+							vertSumContentDs.push({ empID: item.employeeId, colum1: null });
+						}
+					});
+					break;
+				deault: break;
+			}
             
             self.setIconEventHeader();
             
@@ -1987,6 +2068,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             self.detailColumns = detailColumns;
             self.detailContentDeco = detailContentDeco;
             self.detailContentDecoModeConfirm = detailContentDecoModeConfirm;
+			self.vertSumContentDs = vertSumContentDs;
+			self.vertContentDeco = vertContentDeco; 
             
             let empLogin = _.filter(detailContentDs, function(o) { return o.employeeId == self.employeeIdLogin; });
             if (empLogin.length > 0) {
@@ -2650,7 +2733,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 headerHeight: "60px",
                 bodyRowHeight: viewMode == 'shift' ? "35px" : "50px",
                 bodyHeight: "300px",
-                horizontalSumHeaderHeight: "4px",
+                horizontalSumHeaderHeight: "40px",
                 horizontalSumBodyHeight: "140px",
                 horizontalSumBodyRowHeight: "20px",
                 areaResize: true,
@@ -2700,7 +2783,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 				$('#vertDiv').css('margin-left', $('.ex-body-vert-sum').scrollLeft().valueOf() + 'px');
 			});
 			
-			self.vertSelectValue.subscribe(value => {
+			self.useCategoriesPersonalValue.subscribe(value => {
 				let newVertSumHeader = self.createVertSumHeader();
 			    let newVertSumContent = self.createVertSumContent(detailContent);
 				$("#cacheDiv").append($('#vertDiv'));
@@ -2712,19 +2795,19 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 		createVertSumColumns() {
 			let self = this,
 				group: any = [];
-			switch(self.vertSelectValue()) {
+			switch(self.useCategoriesPersonalValue()) {
 				// 月間想定給与額
 				case 0: 
 					group = [
-						{ headerText: getText("KSU001_18"), key: "colum1", width: "100px" },
-	                	{ headerText: getText("KSU001_19"), key: "colum2", width: "100px" },
+						{ headerText: getText("KSU001_18"), key: "criterion", width: "100px" },
+	                	{ headerText: getText("KSU001_19"), key: "salary", width: "100px" },
 					];
 					break;
 				// 年間想定給与額
 				case 1: 
 					group = [
-						{ headerText: getText("KSU001_18"), key: "colum1", width: "100px" },
-	                	{ headerText: getText("KSU001_19"), key: "colum2", width: "100px" },
+						{ headerText: getText("KSU001_18"), key: "criterion", width: "100px" },
+	                	{ headerText: getText("KSU001_19"), key: "salary", width: "100px" },
 					];
 					break;
 				// 労働時間
@@ -2746,21 +2829,18 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 				case 7: 
 					group = [
 						{ headerText: getText("KSU001_18"), key: "colum1", width: "100px" },
-	                	{ headerText: getText("KSU001_19"), key: "colum2", width: "100px" },
 					];
 				break;
 				// 回数集計２
 				case 8: 
 					group = [
 						{ headerText: getText("KSU001_18"), key: "colum1", width: "100px" },
-	                	{ headerText: getText("KSU001_19"), key: "colum2", width: "100px" },
 					];
 				break;
 				// 回数集計３
 				case 9: 
 					group = [
 						{ headerText: getText("KSU001_18"), key: "colum1", width: "100px" },
-	                	{ headerText: getText("KSU001_19"), key: "colum2", width: "100px" },
 					];
 					break;
 				deault: break;
@@ -2790,50 +2870,13 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 		
 		createVertSumContent(detailContent: any) {
 			let self = this,
-				vertSumContentDs: any = [],
-				vertContentDeco: any = [];
-			_.forEach(detailContent.dataSource, (item, index) => {
-				switch(self.vertSelectValue()) {
-					// 月間想定給与額
-					case 0: 
-						vertSumContentDs.push({ empID: item.employeeId, colum1: '00' + index, colum2: '00' + index });
-						vertContentDeco.push(new CellColor("colum2", index.toString(), "bg-daily-alter-self", 0));
-						break;
-					// 年間想定給与額
-					case 1: 
-						vertSumContentDs.push({ empID: item.employeeId, colum1: '01' + index, colum2: '01' + index });
-						vertContentDeco.push(new CellColor("colum2", index.toString(), "bg-daily-alter-self", 0));
-						break;
-					// 労働時間
-					case 3: 
-						vertSumContentDs.push({ empID: item.employeeId, colum1: '03' + index, colum2: '03' + index, colum3: '03' + index });
-						break;
-					// 出勤・休日日数
-					case 6: 
-						vertSumContentDs.push({ empID: item.employeeId, colum1: '06' + index, colum2: '06' + index });
-						break;
-					// 回数集計１
-					case 7: 
-						vertSumContentDs.push({ empID: item.employeeId, colum1: '07' + index, colum2: '07' + index });
-						break;
-					// 回数集計２
-					case 8: 
-						vertSumContentDs.push({ empID: item.employeeId, colum1: '08' + index, colum2: '08' + index });
-						break;
-					// 回数集計３
-					case 9: 
-						vertSumContentDs.push({ empID: item.employeeId, colum1: '09' + index, colum2: '09' + index });
-						break;
-					deault: break;
-				}
-			});
-			let vertSumContent = {
+				vertSumContent = {
 		        columns: self.createVertSumColumns(),
-		        dataSource: vertSumContentDs,
+		        dataSource: self.vertSumContentDs,
 		        primaryKey: "empId",
 				features: [{
                     name: "BodyCellStyle",
-                    decorator: vertContentDeco
+                    decorator: self.vertContentDeco
                 }]
 		    };
 			return vertSumContent;
@@ -4906,6 +4949,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         listPageInfo: Array<IPageInfo>,
         shiftMasterWithWorkStyleLst : Array<IShiftMasterMapWithWorkStyle>,
         listWorkScheduleShift: Array<IWorkScheduleShiftInforDto>,
+		aggreratePersonal: AggreratePersonalDto,
+		aggrerateWorkplace: AggrerateWorkplaceDto,
     }
     
     interface IPageInfo {
@@ -4924,7 +4969,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         code: string,
         scheduleModifyStartDate: string,
         usePublicAtr: boolean,
-        useWorkAvailabilityAtr: boolean
+        useWorkAvailabilityAtr: boolean,
+		useCategoriesWorkplace: [],
+		useCategoriesPersonal: []
     }
 
     interface IDisplayControlPersonalCond {
@@ -5047,6 +5094,18 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         isEdit: boolean;
         isActive: boolean;
     }
+
+	interface AggreratePersonalDto {
+		estimatedSalary: Array<any>;
+		timeCount: Array<any>;		
+	}
+	
+	interface AggrerateWorkplaceDto {
+		aggrerateNumberPeople: any;
+		externalBudget: Array<any>;
+		laborCostAndTime: Array<any>;
+		timeCount: Array<any>;
+	}
 
     enum AttendanceHolidayAttr {
         FULL_TIME = 3, //(3, "１日出勤系"),
