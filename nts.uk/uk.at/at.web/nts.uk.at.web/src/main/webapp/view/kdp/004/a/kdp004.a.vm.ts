@@ -244,6 +244,13 @@ module nts.uk.at.view.kdp004.a {
 						.done((res: any) => {
 							if (!res.stampSetting || !res.stampResultDisplay) {
 								self.errorMessage(self.getErrorNotUsed(1));
+								service.getLogginSetting().done((res) => {
+									self.listCompany(_.filter(res, 'fingerAuthStamp'));
+									if (self.listCompany.length == 0) {
+										self.errorMessage(getMessage("Msg_1527"));
+									}
+								});
+								self.errorMessage(self.getErrorNotUsed(1));
 								self.isUsed(false);
 								return;
 							}
