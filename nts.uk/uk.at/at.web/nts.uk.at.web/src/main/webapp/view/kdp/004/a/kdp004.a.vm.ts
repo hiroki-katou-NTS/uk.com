@@ -67,6 +67,7 @@ module nts.uk.at.view.kdp004.a {
 
 			pageComment: KnockoutObservable<string> = ko.observable('');
 			commentColor: KnockoutObservable<string> = ko.observable('');
+			saveSuccess = false;
 
 			constructor() {
 				let self = this;
@@ -223,7 +224,7 @@ module nts.uk.at.view.kdp004.a {
 										dfd.resolve();
 										return;
 									}
-
+									self.saveSuccess = true;
 									self.loginInfo.selectedWP = result;
 
 									nts.uk.characteristics.save(KDP004_SAVE_DATA, self.loginInfo);
@@ -469,11 +470,14 @@ module nts.uk.at.view.kdp004.a {
 									self.openScreenK().done((result) => {
 										if (result) {
 											self.loginInfo.selectedWP = result;
+											self.saveSuccess = true;
 											nts.uk.characteristics.save(KDP004_SAVE_DATA, self.loginInfo).done(() => {
 												location.reload();
 											});
 										} else {
-											location.reload();
+											if (self.saveSuccess) {
+												location.reload();
+											}
 										}
 									})
 								} else {

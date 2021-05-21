@@ -626,9 +626,9 @@ module nts.uk.at.kdp003.a {
 			var openViewK: boolean | null = null;
 			var saveSuccess: boolean = false;
 
-			if (!!ko.unwrap(vm.message)) {
-				vm.message(false);
-			}
+			// if (!!ko.unwrap(vm.message)) {
+			// 	vm.message(false);
+			// }
 			storage(KDP003_SAVE_DATA)
 				.then((data: StorageData) => {
 					const mode = 'admin';

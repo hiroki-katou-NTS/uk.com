@@ -70,6 +70,8 @@ module nts.uk.at.view.kdp005.a {
 			pageComment: KnockoutObservable<string> = ko.observable('');
 			commentColor: KnockoutObservable<string> = ko.observable('');
 
+			saveSuccess = false;
+
 			constructor() {
 				let self = this;
 				self.isUsed.subscribe((value) => {
@@ -218,6 +220,7 @@ module nts.uk.at.view.kdp005.a {
 										} else {
 											self.loginInfo = loginResult.em;
 											self.loginInfo.selectedWP = result;
+											self.saveSuccess = true;
 											characteristics.save("loginKDP005", self.loginInfo).done(() => {
 												if (__viewContext.user.companyId != loginResult.em.companyId || __viewContext.user.employeeCode != loginResult.em.employeeCode) {
 													location.reload();
@@ -422,6 +425,7 @@ module nts.uk.at.view.kdp005.a {
 								if (!ko.unwrap(self.modeBasyo)) {
 									self.openDialogK().done((result) => {
 										if (result) {
+											self.saveSuccess = true;
 											self.loginInfo = loginResult.em;
 											self.loginInfo.selectedWP = result;
 											characteristics.save("loginKDP005", self.loginInfo).done(() => {
@@ -436,7 +440,9 @@ module nts.uk.at.view.kdp005.a {
 												});
 											} else {
 												if (__viewContext.user.companyId != loginResult.em.companyId || __viewContext.user.employeeCode != loginResult.em.employeeCode) {
-													location.reload();
+													if (!self.saveSuccess) {
+														location.reload();
+													}
 												}
 											}
 										}
