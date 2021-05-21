@@ -392,7 +392,7 @@ public class HolidayServiceImpl implements HolidayService {
 		
 		//	#113397
 		//	ドメインモデル「勤務種類」を取得 
-		Optional<WorkType> workType = workTypeRepository.findNoAbolishByPK(companyId, appHolidayWork.getWorkInformation().getWorkTypeCode().v());
+		Optional<WorkType> workType = workTypeRepository.findByPK(companyId, appHolidayWork.getWorkInformation().getWorkTypeCode().v());
 		hdWorkDispInfoWithDateOutput.setInitWorkTypeName(workType.isPresent() ? Optional.of(workType.get().getName()) : Optional.empty());
 		
 		//	#113397
@@ -501,8 +501,8 @@ public class HolidayServiceImpl implements HolidayService {
 		String workTypeCode = Optional.ofNullable(appHolidayWork.getWorkInformation().getWorkTypeCode()).map(x -> x.v()).orElse(null);
 		String workTimeCode = appHolidayWork.getWorkInformation().getWorkTimeCodeNotNull().map(x -> x.v()).orElse(null);
 		if (appHdWorkDispInfoOutput.getWorkInfo().isPresent()) {
-			workTypeCode = workTypeCode.equals(appHdWorkDispInfoOutput.getWorkInfo().get().getWorkType()) ? workTypeCode : null;
-			workTimeCode = workTimeCode.equals(appHdWorkDispInfoOutput.getWorkInfo().get().getWorkTime()) ? workTimeCode : null;			
+			workTypeCode = !workTypeCode.equals(appHdWorkDispInfoOutput.getWorkInfo().get().getWorkType()) ? workTypeCode : null;
+			workTimeCode = !workTimeCode.equals(appHdWorkDispInfoOutput.getWorkInfo().get().getWorkTime()) ? workTimeCode : null;			
 		}
 		//	4-1.詳細画面登録前の処理
 		detailBeforeProcessRegisterService.processBeforeDetailScreenRegistration(companyId, appHolidayWork.getApplication().getEmployeeID(), 

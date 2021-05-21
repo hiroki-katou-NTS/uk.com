@@ -561,7 +561,7 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 		boolean isWkTypeCDNotEmpty = !StringUtil.isNullOrEmpty(wkTypeCode, true);
 		if (isWkTypeCDNotEmpty) {
 			String WkTypeName = null;
-			Optional<WorkType> wkTypeOpt = this.workTypeRepository.findNoAbolishByPK(companyID, wkTypeCode);
+			Optional<WorkType> wkTypeOpt = this.workTypeRepository.findByPK(companyID, wkTypeCode);
 			if (wkTypeOpt.isPresent()) {
 				WkTypeName = wkTypeOpt.get().getName().v();
 			}
@@ -577,7 +577,7 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 		if (isWkTimeCDNotEmpty) {
 			// 「就業時間帯名称を取得する」＝＝ NULL をチェック
 			String WkTimeName = null;
-			Optional<WorkTimeSetting> wwktimeOpt = this.workTimeRepository.findByCodeAndAbolishCondition(companyID, wkTimeCode, AbolishAtr.NOT_ABOLISH);
+			Optional<WorkTimeSetting> wwktimeOpt = this.workTimeRepository.findByCode(companyID, wkTimeCode);
 			if (wwktimeOpt.isPresent()) {
 				WkTimeName = wwktimeOpt.get().getWorkTimeDisplayName().getWorkTimeName().v();
 			}

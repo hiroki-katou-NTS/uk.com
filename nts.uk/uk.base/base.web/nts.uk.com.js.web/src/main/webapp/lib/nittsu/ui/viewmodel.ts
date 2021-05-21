@@ -12,16 +12,17 @@ function bean(dialogOption?: nts.uk.ui.vm.DialogOption): any {
 		__viewContext.ready(() => {
 			const { localShared } = nts.uk.ui.windows.container;
 
-			nts.uk.ui.viewmodel.$storage()
+			nts.uk.ui.viewmodel
+				.$storage()
 				.then(($params: any) => {
-					const $viewModel = new ctor($params || localShared)
+					const $viewModel = new ctor($params || (_.isEmpty(localShared) ? undefined : localShared))
 						, $created = $viewModel['created'];
 
 					_.extend($viewModel, { $el: undefined });
 
 					// hook to created function
 					if ($created && _.isFunction($created)) {
-						$created.apply($viewModel, [$params || localShared]);
+						$created.apply($viewModel, [$params || (_.isEmpty(localShared) ? undefined : localShared)]);
 					}
 
 					// hook to mounted function
