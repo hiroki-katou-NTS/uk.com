@@ -96,6 +96,7 @@ module nts.uk.at.view.kdp002.a {
                 };
                 service.getTimeCardData(data).done((timeCard) => {
                     self.stampGrid().bindItemData(timeCard.listAttendances);
+					reCalGridWidthHeight();
                 }).fail((res) => {
                     nts.uk.ui.dialog.alertError({ messageId: res.messageId });
                 }).always(() => {
@@ -117,6 +118,7 @@ module nts.uk.at.view.kdp002.a {
 
                 service.getStampData({ startDate, endDate, employeeId }).done((stampDatas) => {
                     self.stampGrid().bindItemData(stampDatas);
+					reCalGridWidthHeight();
                 }).fail((res) => {
                     nts.uk.ui.dialog.alertError({ messageId: res.messageId });
                 }).always(() => {
@@ -188,7 +190,6 @@ module nts.uk.at.view.kdp002.a {
                     }
                     self.stampToSuppress.valueHasMutated();
                     self.openKDP002T(button, layout);
-					setTimeout(reCalGridWidthHeight, 200);
                 });
             }
 
@@ -212,7 +213,6 @@ module nts.uk.at.view.kdp002.a {
                     }
                     self.stampToSuppress.valueHasMutated();
                     self.openKDP002T(button, layout);
-					setTimeout(reCalGridWidthHeight, 200);
                 });
             }
 
