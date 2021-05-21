@@ -155,7 +155,7 @@ module nts.uk.at.view.kaf018.a.viewmodel {
 							o.closureHistories[0].closureDate.lastDayOfMonth);
 					}));
 					vm.employmentCDLst = data.listEmploymentCD;
-					if(params) {
+					if(!_.isEmpty(params)) {
 						vm.multiSelectedWorkplaceId(_.map(params.selectWorkplaceInfo, o => o.id));
 						vm.selectedClosureId(params.closureItem.closureId);
 						vm.dateValue().startDate = params.startDate;

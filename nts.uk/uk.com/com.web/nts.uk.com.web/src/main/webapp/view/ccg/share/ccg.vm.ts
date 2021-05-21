@@ -2143,7 +2143,8 @@ module nts.uk.com.view.ccg.share.ccg {
                     selectedClosureId: self.showClosure ? self.selectedClosure : undefined,
                     hasPadding: false,
                     tabindex: self.ccg001Tabindex,
-                    subscriptions: self.employmentSubscriptions
+                    subscriptions: self.employmentSubscriptions,
+                    maxWidth: 400
                 };
 
                 self.classifications = {
@@ -2157,7 +2158,8 @@ module nts.uk.com.view.ccg.share.ccg {
                     isShowNoSelectRow: false,
                     hasPadding: false,
                     tabindex: self.ccg001Tabindex,
-                    maxRows: ConfigCCGKCP.MAX_ROWS_CLASSIFICATION
+                    maxRows: ConfigCCGKCP.MAX_ROWS_CLASSIFICATION,
+                    maxWidth: 400
                 };
 
                 self.jobtitles = {
@@ -2172,7 +2174,8 @@ module nts.uk.com.view.ccg.share.ccg {
                     isShowNoSelectRow: false,
                     hasPadding: false,
                     tabindex: self.ccg001Tabindex,
-                    maxRows: ConfigCCGKCP.MAX_ROWS_JOBTITLE
+                    maxRows: ConfigCCGKCP.MAX_ROWS_JOBTITLE,
+                    maxWidth: 400
                 };
 
                 self.departments = {
@@ -2206,7 +2209,8 @@ module nts.uk.com.view.ccg.share.ccg {
                     isFullView: true,
                     hasPadding: false,
                     tabindex: self.ccg001Tabindex,
-                    isDialog: true
+                    isDialog: true,
+                    width: 300
                 };
             }
         }
@@ -2214,7 +2218,7 @@ module nts.uk.com.view.ccg.share.ccg {
         export class ConfigCCGKCP{
             static MAX_ROWS_EMPLOYMENT = 10;
             static MAX_ROWS_CLASSIFICATION = 10;
-            static MAX_ROWS_JOBTITLE = 10;
+            static MAX_ROWS_JOBTITLE = 9;
             static MAX_ROWS_WORKPLACE = 10;
         }
         
@@ -2503,7 +2507,7 @@ var CCG001_HTML = `<div id="component-ccg001" class="cf height-maximum" style="v
                                             <label>`+CCG001TextResource.Com_Employment+`</label>
                                         </h3>
                                         <div class="contentkcp">
-                                            <div id="employmentList" style="width: 352px"></div>
+                                            <div id="employmentList" style="width: 352px; height: 335px;"></div>
                                         </div>
                                     </div>
                                 <!-- /ko -->
@@ -2540,7 +2544,7 @@ var CCG001_HTML = `<div id="component-ccg001" class="cf height-maximum" style="v
                                             <label>`+CCG001TextResource.Com_Class+`</label>
                                         </h3>
                                         <div class="contentkcp">
-                                            <div id="classificationList"></div>
+                                            <div id="classificationList" style="height: 335px;"></div>
                                         </div>
                                     </div>
                                 <!-- /ko -->
@@ -2551,7 +2555,7 @@ var CCG001_HTML = `<div id="component-ccg001" class="cf height-maximum" style="v
                                             <label>`+CCG001TextResource.Com_Jobtitle+`</label>
                                         </h3>
                                         <div class="contentkcp">
-                                            <div id="jobtitleList"></div>
+                                            <div id="jobtitleList" style="height: 310px;"></div>
                                         </div>
                                     </div>
                                 <!-- /ko -->
@@ -2607,7 +2611,7 @@ var CCG001_HTML = `<div id="component-ccg001" class="cf height-maximum" style="v
                                         <div id="ccg001-btn-KCP005-apply" class="ccg001-btn ccg-btn-vertical height-maximum"
                                             data-bind="attr: {tabindex: ccg001Tabindex}, click: extractSelectedEmployees">
                                             <div class="ccg001-cell mid">
-                                                <i class="icon icon-47-white-check-mark"></i>
+                                                <i class="icon icon-47-white-check-mark icon-ml"></i>
                                                 <div class="ccg-lbl-vertical ccg-lbl-extract-emp">`+CCG001TextResource.CCG001_26+`</div>
                                             </div>
                                         </div>
@@ -2680,7 +2684,7 @@ var CCG001_HTML = `<div id="component-ccg001" class="cf height-maximum" style="v
                         <div id="ccg001-btn-KCP005-apply" class="ccg001-btn ccg-btn-vertical height-maximum"
                             data-bind="attr: {tabindex: ccg001Tabindex}, click: extractSelectedEmployeesInTab3">
                             <div class="ccg001-cell mid">
-                                <i class="icon icon-47-white-check-mark"></i>
+                                <i class="icon icon-47-white-check-mark icon-ml"></i>
                                 <div class="ccg-lbl-vertical ccg-lbl-extract-emp">`+CCG001TextResource.CCG001_26+`</div>
                             </div>
                         </div>
@@ -2697,7 +2701,7 @@ var CCG001_HTML = `<div id="component-ccg001" class="cf height-maximum" style="v
         <span class="position-mid ccg001-caret ccg001-caret-vertical caret-right"></span>
         <div id="ccg001-btn-search-drawer" class="position-mid ccg001-btn ccg-btn-vertical" data-bind="click: showComponent">
             <div class="ccg001-cell mid">
-            <i class="icon icon-01-searchmode"></i>
+            <i class="icon icon-01-searchmode icon-ml"></i>
             <div class="ccg-lbl-vertical ccg-lbl-search-drawer">`+CCG001TextResource.CCG001_21+`</div>
             </div>
         </div>

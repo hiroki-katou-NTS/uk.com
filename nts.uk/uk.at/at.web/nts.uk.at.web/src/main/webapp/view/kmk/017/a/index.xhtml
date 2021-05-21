@@ -63,9 +63,9 @@
                       data-bind="click: deleteWorkingTimeRow, text: $i18n('KMK017_6'), enable: workplaceWorkingTimeList().length &gt; 0"
                     />
                   </div>
-                  <div class="grid-list" tabindex="6" data-bind="if: !!ko.unwrap(gridListHeader).length">
+                  <div class="grid-list" data-bind="if: !!ko.unwrap(gridListHeader).length">
                     <!-- A5_1-->
-                    <table
+                    <table tabindex="6"
                       id="grid-list"                      
                       data-bind="ntsGridList: {
                         height: gridListHeight,
