@@ -28,7 +28,8 @@ import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.WorkplaceExportServiceAdapt
 import nts.uk.shr.com.context.AppContexts;
 
 /**
- * 
+ * 作業パレットを取得する 
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.勤務予定.勤務予定.作業.作業パレット.App.作業パレットを取得する
  * @author quytb
  *
  */

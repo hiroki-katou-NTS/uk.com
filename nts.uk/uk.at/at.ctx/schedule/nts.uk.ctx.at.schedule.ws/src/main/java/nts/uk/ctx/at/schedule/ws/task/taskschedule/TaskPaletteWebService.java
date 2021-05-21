@@ -12,7 +12,7 @@ import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.schedule.app.command.task.taskpalette.TaskPaletteAddCommandHandler;
 import nts.uk.ctx.at.schedule.app.command.task.taskpalette.TaskPaletteCommand;
 import nts.uk.ctx.at.schedule.app.command.task.taskpalette.TaskPaletteDeleteCommandHandler;
-import nts.uk.ctx.at.schedule.app.find.schedule.task.taskpalette.Ksu001bRequest;
+import nts.uk.ctx.at.schedule.app.find.schedule.task.taskpalette.Ksu003bRequest;
 import nts.uk.ctx.at.schedule.app.find.schedule.task.taskpalette.TaskPaletteDto;
 import nts.uk.ctx.at.schedule.app.find.schedule.task.taskpalette.TaskPaletteFinder;
 import nts.uk.ctx.at.schedule.app.find.schedule.task.taskpalette.TaskPaletteOrgnizationDto;
@@ -37,13 +37,13 @@ public class TaskPaletteWebService extends WebService {
 	
 	@POST
 	@Path("findOne")
-	public TaskPaletteOrgnizationDto findOne(Ksu001bRequest request) {
+	public TaskPaletteOrgnizationDto findOne(Ksu003bRequest request) {
 		return this.finder.findOne(request.getTargetUnit(), request.getTargetId(), request.getPage(), request.getReferenceDate());
 	}
 	
 	@POST
 	@Path("getAll")
-	public List<TaskPaletteDto> getAll(Ksu001bRequest request) {
+	public List<TaskPaletteDto> getAll(Ksu003bRequest request) {
 		return this.finder.findTaskPalette(request.getTargetUnit(), request.getTargetId(), request.getReferenceDate());
 	}
 

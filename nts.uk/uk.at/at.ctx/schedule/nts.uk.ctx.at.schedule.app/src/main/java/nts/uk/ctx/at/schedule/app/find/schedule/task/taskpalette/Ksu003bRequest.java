@@ -15,7 +15,7 @@ import lombok.Setter;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Ksu001bRequest {
+public class Ksu003bRequest {
 	private Integer targetUnit;
 	private String targetId;
 	private Integer page;

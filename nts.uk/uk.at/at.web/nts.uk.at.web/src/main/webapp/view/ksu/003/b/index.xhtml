@@ -42,7 +42,7 @@
                     <div id="name" data-bind="ntsFormLabel: {required: true, constraint: 'TaskPaletteName'}">
                         #{i18n.getText('KSU003_78')}</div>
                     <!--B2-10-->
-                    <input id="taskName" tabindex="5" style="margin-left: 26px;" data-bind="ntsTextEditor: {
+                    <input id="pageName" tabindex="5" style="margin-left: 26px;" data-bind="ntsTextEditor: {
                                         value: taskPaletteOrgnization().name,
                                         required: true, 
                                         constraint: 'TaskPaletteName', 
@@ -60,7 +60,7 @@
                     <!--B2-12-->
                     <textarea id="remarks" tabindex="6" rows="3" cols="87" style="margin-left: 13px;" data-bind="ntsMultilineEditor: {
                                         value: taskPaletteOrgnization().remarks,
-                                        required: true, 
+                                        required: false, 
                                         constraint: 'TaskPaletteRemark', 
                                         name: '#[KSU003_79]'
                                     }" />
@@ -76,6 +76,7 @@
                         row: 2, 
                         column: 5, 
                         contextMenu: contextMenu, 
+                        disableMenuOnDataNotSet:[1],
                         click: openDialogKdl012.bind($data),
                         mode: 'master'}"></div>
                 </div>                
