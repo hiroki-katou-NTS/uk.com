@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.enums.EnumAdaptor;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.aggregation.app.find.schedulecounter.personal.PersonalCounterCategoryDto;
 import nts.uk.ctx.at.aggregation.app.find.schedulecounter.personal.PersonalCounterFinder;
@@ -46,17 +47,16 @@ public class GetSummaryCategory {
 		if (!CollectionUtil.isEmpty(workplaceCounterCategorys)) {
 			workplaceCounterOp = Optional.of(WorkplaceCounter.create(
 					workplaceCounterCategorys.stream()
-											 .map(x -> WorkplaceCounterCategory.of(x.getValue()))
+											 .map(x -> EnumAdaptor.valueOf(x.getValue(), WorkplaceCounterCategory.class))
 											 .collect(Collectors.toList())
 											 
 					));
 		}
 		if (workplaceCounterOp.isPresent()) {
-			output.setUseCategoriesWorkplace(workplaceCounterOp.get().getUseCategories());
+			output.setUseCategoriesWorkplace(EnumAdaptor.convertToValueNameList(WorkplaceCounterCategory.class, workplaceCounterOp.get().getUseCategories()));
 		}
 		
 		// 2 スケジュール個人計情報を取得する()
-		// type is incorrect
 		Optional<PersonalCounter> personalCounterOp = Optional.empty();
 		
 		List<PersonalCounterCategoryDto> personalCounterCategory =
@@ -66,12 +66,13 @@ public class GetSummaryCategory {
 			
 			personalCounterOp = Optional.of(PersonalCounter.create(
 					personalCounterCategory.stream()
-								   		   .map(x -> PersonalCounterCategory.of(x.getValue()))
+								   		   .map(x -> EnumAdaptor.valueOf(x.getValue(), PersonalCounterCategory.class))
 								   		   .collect(Collectors.toList())
 								   		   ));
 		}
 		if (personalCounterOp.isPresent()) {
-			output.setUseCategoriesPersonal(personalCounterOp.get().getUseCategories());
+			
+			output.setUseCategoriesPersonal(EnumAdaptor.convertToValueNameList(PersonalCounterCategory.class, personalCounterOp.get().getUseCategories()));
 		}
 		
 		return output;

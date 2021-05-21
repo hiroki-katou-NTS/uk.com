@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nts.arc.enums.EnumConstant;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.DateInMonth;
 import nts.uk.ctx.at.aggregation.dom.schedulecounter.tally.PersonalCounterCategory;
@@ -48,10 +49,10 @@ public class DataBasicDto {
 	public List<ScheModifyAuthCtrlByWorkplaceDto> scheModifyAuthCtrlByWorkplace;
 	
 	// 職場計.利用カテゴリ一覧
-	public List<WorkplaceCounterCategory> useCategoriesWorkplace = Collections.emptyList();
+	public List<EnumConstant> useCategoriesWorkplace = Collections.emptyList();
 	
 	// 個人計.利用カテゴリ一覧
-	public List<PersonalCounterCategory> useCategoriesPersonal = Collections.emptyList();
+	public List<EnumConstant> useCategoriesPersonal = Collections.emptyList();
 	
 	// ・締め日 = スケジュール修正職場別の表示設定.初期表示期間の終了日.締め日
 	public DateInMonth closeDate;
