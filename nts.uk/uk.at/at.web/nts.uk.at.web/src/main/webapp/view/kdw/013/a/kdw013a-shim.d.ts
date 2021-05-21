@@ -4,9 +4,7 @@ module nts.uk.ui.at.kdw013.a {
         readonly START: string;
         readonly DELETE: string;
         readonly REGISTER: string;
-        readonly SELECT: string;
         readonly CHANGE_DATE: string;
-        readonly REG_WORKTIME: string;
     };
 
     export type StartProcessDto = {

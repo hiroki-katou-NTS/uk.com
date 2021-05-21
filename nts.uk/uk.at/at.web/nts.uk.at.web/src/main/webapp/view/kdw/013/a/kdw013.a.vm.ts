@@ -23,20 +23,18 @@ module nts.uk.ui.at.kdw013.a {
     const DATE_TIME_FORMAT = 'YYYY-MM-DDTHH:mm:00.000\\Z';
 
     const API: API = {
-        ADD: '/screen/at/kdw013/a/add',
+        ADD: '/screen/at/kdw013/a/add_confirm',
         // DeleteWorkResultConfirmationCommand
-        DELETE: '/screen/at/kdw013/a/delete_work_result_confirm',
+        DELETE: '/screen/at/kdw013/a/delete_confirm',
+        // start page query params
+        START: '/screen/at/kdw013/a/start',
         // 対象社員を選択する
-        // Chọn nhân viên ở A2_4
-        // same api: CHANGE_DATE
-        SELECT: '/screen/at/kdw013/a/select',
         // 日付を変更する
+        // Chọn nhân viên ở A2_4
         // Chọn ngày ở [画面イメージ]A6_1/[固有部品]A1_1
         CHANGE_DATE: '/screen/at/kdw013/a/changeDate',
         // RegisterWorkContentCommand
-        REGISTER: '/screen/at/kdw013/a/register_work_content',
-        REG_WORKTIME: '/screen/at/kdw013/register_work_man_hours',
-        START: '/screen/at/kdw013/a/start'
+        REGISTER: '/screen/at/kdw013/a/register_work_content'
     };
 
     const initialCache = (): ChangeDateParam => ({
@@ -506,9 +504,8 @@ module nts.uk.ui.at.kdw013.a {
                 })
             };
 
-            console.log(command);
-
-            vm.$blockui('grayout')
+            vm
+                .$blockui('grayout')
                 // 作業を登録する
                 .then(() => vm.$ajax('at', API.REGISTER, command))
                 .then((response: RegisterWorkContentDto) => {
@@ -573,8 +570,9 @@ module nts.uk.ui.at.kdw013.a {
                 };
 
                 vm
+                    .$blockui('grayout')
                     // 作業実績を確認する
-                    .$ajax('at', API.ADD, command)
+                    .then(() => vm.$ajax('at', API.ADD, command))
                     .then((lstComfirmerDto: ConfirmerDto[]) => {
                         const _datas = ko.unwrap($datas);
 
@@ -587,7 +585,8 @@ module nts.uk.ui.at.kdw013.a {
                             $datas({ lstComfirmerDto, lstWorkRecordDetailDto: [], workCorrectionStartDate: '', workGroupDtos: [] });
                         }
                     })
-                    .then(() => vm.editable.valueHasMutated());
+                    .then(() => vm.editable.valueHasMutated())
+                    .always(() => vm.$blockui('clear'));
             }
         }
 
@@ -612,8 +611,9 @@ module nts.uk.ui.at.kdw013.a {
                 };
 
                 vm
+                    .$blockui('grayout')
                     // 作業実績の確認を解除する
-                    .$ajax('at', API.DELETE, command)
+                    .then(() => vm.$ajax('at', API.DELETE, command))
                     .then((lstComfirmerDto: ConfirmerDto[]) => {
                         const _datas = ko.unwrap($datas);
 
@@ -627,7 +627,8 @@ module nts.uk.ui.at.kdw013.a {
                         }
                     })
                     // trigger reload event on child component
-                    .then(() => vm.editable.valueHasMutated());
+                    .then(() => vm.editable.valueHasMutated())
+                    .always(() => vm.$blockui('clear'));
             }
         }
 
@@ -635,7 +636,8 @@ module nts.uk.ui.at.kdw013.a {
             const vm = this;
 
             vm.$window
-                .modal('at', '/view/kdw/013/d/index.xhtml', data).then(() => { });
+                .modal('at', '/view/kdw/013/d/index.xhtml', data)
+                .then(() => { });
         }
     }
 
@@ -816,50 +818,4 @@ module nts.uk.ui.at.kdw013.a {
             mode: KnockoutComputed<boolean>;
         };
     }
-
-    const initData = () => {
-        const vm = new ko.ViewModel();
-        const commands: AddAttendanceTimeZoneParam = {
-            employeeId: vm.$user.employeeId,
-            editStateSetting: 1,
-            workDetails: [{
-                date: moment().toISOString(),
-                lstWorkDetailsParam: [{
-                    remarks: '',
-                    supportFrameNo: 1,
-                    timeZone: {
-                        end: {
-                            reasonTimeChange: {
-                                engravingMethod: 0,
-                                timeChangeMeans: 0
-                            },
-                            timeWithDay: 0
-                        },
-                        start: {
-                            reasonTimeChange: {
-                                engravingMethod: 0,
-                                timeChangeMeans: 0
-                            },
-                            timeWithDay: 0
-                        },
-                        workingHours: 1
-                    },
-                    workGroup: {
-                        workCD1: '',
-                        workCD2: '',
-                        workCD3: '',
-                        workCD4: '',
-                        workCD5: ''
-                    },
-                    workLocationCD: ''
-                }]
-            }]
-        };
-
-        vm
-            .$ajax('at', API.REG_WORKTIME, commands)
-            .then(function () { });
-    }
-
-    _.extend(window, { initData });
 }
