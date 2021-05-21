@@ -10,6 +10,7 @@
 		<ui:define name="htmlHead">
 			<com:ValidatorScript>
 				nts.uk.ctx.at.shared.dom.scherec.monthlyattendanceitem.RoundingUnitPrimitive
+				nts.uk.ctx.at.shared.dom.attendance.AttendanceName
 			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="kdw002.a.main.css" />
@@ -86,6 +87,7 @@
 							<td><input id="A7_2" tabindex="5" class="detailContent" style="width: 155px;"
 								data-bind="ntsTextEditor: {
 									value: displayName,
+									constraint: 'AttendanceName',
 									name: '#[KDW002_65]',
 									enable: displayNameEnable }" /></td>
 						</tr>
