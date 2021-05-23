@@ -123,6 +123,10 @@ module nts.uk.at.view.knr002.c {
                         break;
                     case INPUT_TYPE.IP:
                         $('#C8_5').focus();
+
+                        let currentIpArr = vm.currentValue().split('.');
+                        let newCurrentValue = currentIpArr.map(e => parseInt(e)).join('.');
+                        vm.currentValue(newCurrentValue);
                         
                         if (rowData.updateValue.length == 0) {
                             if (rowData.currentValue.length == 0) {
@@ -167,7 +171,8 @@ module nts.uk.at.view.knr002.c {
                         break;
                     case INPUT_TYPE.CHECK:
                         let inputRangeArrCheck = rowData.inputRange.split('/');
-                        vm.currentValueList(inputRangeArrCheck.map((item: any, index: number) => new BoxModel(item.charAt(0), item.substring(2, item.length -1), rowData.currentValue.indexOf(item.charAt(0)) !== -1 ? true : false)));
+                        console.log(rowData, 'fix row data');
+                        vm.currentValueList(inputRangeArrCheck.map((item: any, index: number) => new BoxModel(item.charAt(0), item.substring(2, item.length -1), rowData.currentValue.charAt(index) == item.split('(')[0] ? true : false)));
                         if (rowData.updateValue.length == 0) {
                             let updateValueList: any = [];
                             vm.currentValueList().forEach((item: BoxModel) => { 
@@ -178,11 +183,24 @@ module nts.uk.at.view.knr002.c {
                             $('.update-check div')[0].focus();
                           break;
                         } 
-                        vm.updateValueList(inputRangeArrCheck.map((item: any, index: number) => new BoxModel(item.charAt(0), item.substring(2, item.length -1), rowData.updateValue.indexOf(item.charAt(0)) !== -1 ? true : false)));
+                        vm.updateValueList(inputRangeArrCheck.map((item: any, index: number) => new BoxModel(item.charAt(0), item.substring(2, item.length -1), rowData.updateValue.charAt(index) == item.split('(')[0] ? true : false)));
                             $('.update-check div')[0].focus();
                         break;
                 }
             }
+
+            private checkContainOnlyOneCharacter(setValue: string): boolean {
+                const vm = this; 
+
+                for (let i = 0; i < setValue.length; i++) {
+                    if (setValue.charAt(i) !== '1') {
+                      return false;
+                    }
+                  }
+
+                return true;
+            }
+
 
             public startPage(): JQueryPromise<void> {
                 var vm = this;
@@ -292,6 +310,13 @@ module nts.uk.at.view.knr002.c {
 
                 let checkLength = vm.settingData.length;
 
+                vm.settingData.sort((item1: SettingValue, item2: SettingValue) => { 
+                    if (item1.majorNo == item2.majorNo) {
+                        return item1.smallNo - item2.smallNo;
+                    }
+                    return item1.majorNo - item2.majorNo;
+                });
+
                 switch(vm.inputMode()) {
                     case INPUT_TYPE.LETTER:
                     case INPUT_TYPE.TIME:  
@@ -299,7 +324,7 @@ module nts.uk.at.view.knr002.c {
                             break;
                         }
                         vm.checkExistBeforeAdd(vm.rowData().smallClassification, vm.rowData().majorClassification);
-                        let item = new SettingValue(Math.random(), vm.rowData().majorClassification, vm.rowData().smallClassification, vm.updateValue(), vm.rowData().inputRange, vm.rowData().variableName);
+                        let item = new SettingValue(Math.random(), vm.rowData().majorNo, vm.rowData().majorClassification, vm.rowData().smallNo, vm.rowData().smallClassification, vm.updateValue(), vm.rowData().inputRange, vm.rowData().variableName);
                         vm.settingData.push(item);     
                         break;
                     case INPUT_TYPE.LETTER2:  
@@ -307,7 +332,7 @@ module nts.uk.at.view.knr002.c {
                             break;
                         }
                         vm.checkExistBeforeAdd(vm.rowData().smallClassification, vm.rowData().majorClassification);
-                        let item6 = new SettingValue(Math.random(), vm.rowData().majorClassification, vm.rowData().smallClassification, vm.updateValue(), '', vm.rowData().variableName);
+                        let item6 = new SettingValue(Math.random(), vm.rowData().majorNo, vm.rowData().majorClassification, vm.rowData().smallNo, vm.rowData().smallClassification, vm.updateValue(), '', vm.rowData().variableName);
                         vm.settingData.push(item6);     
                         break;    
                     case INPUT_TYPE.IP:
@@ -315,7 +340,7 @@ module nts.uk.at.view.knr002.c {
                             break;
                         }
                         vm.checkExistBeforeAdd(vm.rowData().smallClassification, vm.rowData().majorClassification);
-                        let item2 = new SettingValue(Math.random(), vm.rowData().majorClassification, vm.rowData().smallClassification, vm.ipUpdateValue(), '', vm.rowData().variableName);
+                        let item2 = new SettingValue(Math.random(), vm.rowData().majorNo, vm.rowData().majorClassification, vm.rowData().smallNo, vm.rowData().smallClassification, vm.ipUpdateValue(), '', vm.rowData().variableName);
                         vm.settingData.push(item2);     
                         break;
                     case INPUT_TYPE.SELECTION:
@@ -324,7 +349,7 @@ module nts.uk.at.view.knr002.c {
                         if (indexInputRange == -1) {
                             break;
                         }
-                        let newRow = new SettingValue(Math.random(), vm.rowData().majorClassification, vm.rowData().smallClassification, 'yes', '⦿' + vm.updateValueList()[indexInputRange].name, vm.rowData().variableName, vm.selectedUpdateValue());
+                        let newRow = new SettingValue(Math.random(), vm.rowData().majorNo, vm.rowData().majorClassification, vm.rowData().smallNo, vm.rowData().smallClassification, 'yes', '⦿' + vm.updateValueList()[indexInputRange].name, vm.rowData().variableName, vm.selectedUpdateValue());
                         vm.settingData.push(newRow);
                         break;
                     case INPUT_TYPE.CHECK:
@@ -335,7 +360,7 @@ module nts.uk.at.view.knr002.c {
                                 updateValueCheckMode += item.id;
                             }
                         });
-                        let rowCheckMode = new SettingValue(Math.random(), vm.rowData().majorClassification, vm.rowData().smallClassification, updateValueCheckMode, vm.rowData().inputRange, vm.rowData().variableName);
+                        let rowCheckMode = new SettingValue(Math.random(), vm.rowData().majorNo, vm.rowData().majorClassification, vm.rowData().smallNo, vm.rowData().smallClassification, updateValueCheckMode, vm.rowData().inputRange, vm.rowData().variableName);
                         vm.settingData.push(rowCheckMode);
 
                         break;
@@ -343,11 +368,14 @@ module nts.uk.at.view.knr002.c {
 
                 vm.selectedRowIndex(-1)
                 $('#grid').igGridSelection('selectRow', vm.selectedRowIndex());
+
                 $("#grid").igGrid("dataSourceObject", vm.settingData).igGrid("dataBind");
                 if (checkLength = 17) {
                     $("#grid").igGrid("option", "width", "534px");
                     $("#grid").igGrid("option", "width", "535px");
                 }
+
+                $('#grid_container #grid_scrollContainer').scrollTop(document.getElementById('grid_scrollContainer').scrollHeight);
             }
 
             public removeFromSetting() {
@@ -359,7 +387,7 @@ module nts.uk.at.view.knr002.c {
                 let checkLength = vm.settingData.length;
 
                 vm.settingData.splice(vm.selectedRowIndex(), 1);
-                
+
                 $("#grid").igGrid("dataSourceObject", vm.settingData).igGrid("dataBind");  
                 if (vm.selectedRowIndex() == vm.settingData.length) {
                     vm.selectedRowIndex(vm.selectedRowIndex() - 1);
@@ -373,6 +401,23 @@ module nts.uk.at.view.knr002.c {
 
             private loadSettingGrid() {
                 let vm = this;
+
+                // id: any;
+                // majorName: string;
+                // smallName: string;
+                // updateValue: string;
+                // inputRange: string;
+                // selectedIndex?: string;
+                // variableName: string;
+                if (vm.settingData.length > 0) {
+                    vm.settingData.sort((item1: SettingValue, item2: SettingValue) => { 
+                        if (item1.majorNo == item2.majorNo) {
+                            return item1.smallNo - item2.smallNo;
+                        }
+                        return item1.majorNo - item2.majorNo;
+                    });
+                }
+                
 
                 $("#grid").ntsGrid({
                     width: '535px', 
@@ -428,11 +473,17 @@ module nts.uk.at.view.knr002.c {
                 service.getAll(data.empInfoTerCode)
                 .done((res: RemoteSettingsDto) => {
                     if (res) {
-                        res.listSelectionItemsDto.sort((item1: any, item2: any) => { return item1.majorNo - item2.majorNo; });
-                        res.listContentToSendDto.forEach((item: ContentToSendDto) => {
-                            let settingValue = new SettingValue(Math.random(), item.majorClassification, item.smallClassification, item.updateValue, item.inputRange, item.variableName);
-                            vm.settingData.push(settingValue);
-                        })
+                        if (!_.isNull(res.listSelectionItemsDto)) {
+                            res.listSelectionItemsDto.sort((item1: any, item2: any) => { return item1.majorNo - item2.majorNo; });
+                        }
+
+                        if (!_.isNull(res.listContentToSendDto)) {
+                            res.listContentToSendDto.forEach((item: ContentToSendDto) => {
+                                let settingValue = new SettingValue(Math.random(), item.majorNo, item.majorClassification, item.smallNo, item.smallClassification, item.updateValue, item.inputRange, item.variableName);
+                                vm.settingData.push(settingValue);
+                            });
+                        }
+                        
                         vm.loadSettingGrid();
                         vm.dataSource(res.listSelectionItemsDto);
                         vm.bigItemData(_.uniqBy(vm.dataSource(), (item) => item.majorClassification));
@@ -530,17 +581,21 @@ module nts.uk.at.view.knr002.c {
         }
         class SettingValue {
             id: any;
+            majorNo: number;
             majorName: string;
+            smallNo: number;
             smallName: string;
             updateValue: string;
             inputRange: string;
             selectedIndex?: string;
             variableName: string;
             
-            constructor(id: number, majorName: string, smallName: string, updateValue: string, inputRange: string, variableName: string, selectedIndex?: string) {
+            constructor(id: number, majorNo: number, majorName: string, smallNo: number, smallName: string, updateValue: string, inputRange: string, variableName: string, selectedIndex?: string) {
                 const vm = this;
                 vm.id = id;
+                vm.majorNo = majorNo;
                 vm.majorName = majorName;
+                vm.smallNo = smallNo;
                 vm.smallName = smallName;
                 vm.updateValue = updateValue;
                 vm.inputRange = inputRange;
@@ -566,6 +621,7 @@ module nts.uk.at.view.knr002.c {
             variableName: string;
             inputType: number;
             numberOfDigits: number;
+            settingValue: string;
             inputRange: string;
             currentValue: string;
             updateValue: string;
