@@ -132,8 +132,8 @@ module knr002.h {
                             let employee = new ExportEmployeeSearchDto(item.employeeId, item.employeeCode, item.businessName, workplaceName);
                             employeesListTemp.push(employee);
                         }
-                        //  self.employeesListVal(_.sortBy(employeesListTemp, e => e.employeeCode));
-                        self.employeesListVal(employeesListTemp);
+                        self.employeesListVal(_.sortBy(employeesListTemp, e => e.employeeCode));
+                        //  self.employeesListVal(employeesListTemp);
                     }
                     dfd.resolve();
                 });
@@ -166,8 +166,8 @@ module knr002.h {
                            dialog.info({ messageId: "Msg_15" }).then(() => {
                         	// do something
                            });
-                       }).fail(() => {
-                           // do something
+                       }).fail(error => {
+                                dialog.error({messageId: error.messageId, messageParams: error.parameterIds});
                        }).always(() => {
                            blockUI.clear();
                        }); 
