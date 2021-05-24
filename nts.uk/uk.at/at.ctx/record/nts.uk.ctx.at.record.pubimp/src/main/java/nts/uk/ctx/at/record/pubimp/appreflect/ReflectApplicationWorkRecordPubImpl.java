@@ -59,6 +59,7 @@ import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.la
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.AppReflectOtHdWork;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.AppReflectOtHdWorkRepository;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.cancellation.ApplicationReflectHistory;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.cancellation.ApplicationReflectHistoryRepo;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.stampapplication.StampAppReflect;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.stampapplication.StampAppReflectRepository;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.substituteworkapplication.SubstituteWorkAppReflect;
@@ -191,6 +192,9 @@ public class ReflectApplicationWorkRecordPubImpl implements ReflectApplicationWo
 	
 	@Inject
 	private SubstituteWorkAppReflectRepository substituteWorkAppReflectRepository;
+	
+	@Inject
+	private ApplicationReflectHistoryRepo applicationReflectHistoryRepo;
 
 	@Inject
 	private StampReflectionManagementRepository timePriorityRepository;
@@ -211,7 +215,8 @@ public class ReflectApplicationWorkRecordPubImpl implements ReflectApplicationWo
 				fixedWorkSettingRepository, flowWorkSettingRepository, goBackReflectRepository,
 				stampAppReflectRepository, lateEarlyCancelReflectRepository, reflectWorkChangeAppRepository, createDailyResults,
 				timeLeaveAppReflectRepository, appReflectOtHdWorkRepository, vacationApplicationReflectRepository, timePriorityRepository,
-				compensLeaveComSetRepository, subLeaveAppReflectRepository, substituteWorkAppReflectRepository);
+				compensLeaveComSetRepository, subLeaveAppReflectRepository, substituteWorkAppReflectRepository,
+				applicationReflectHistoryRepo);
 		val result = ReflectApplicationWorkRecord.process(impl ,(ApplicationShare) application, date, convertToDom(reflectStatus));
 		return Pair.of(convertToExport(result.getLeft()), result.getRight());
 	}
@@ -305,6 +310,8 @@ public class ReflectApplicationWorkRecordPubImpl implements ReflectApplicationWo
 	    private final SubLeaveAppReflectRepository subLeaveAppReflectRepository;
     	
     	private final SubstituteWorkAppReflectRepository substituteWorkAppReflectRepository;
+    	
+    	private final ApplicationReflectHistoryRepo applicationReflectHistoryRepo;
 
 		@Override
 		public List<StampCard> getLstStampCardBySidAndContractCd(String sid) {
@@ -339,8 +346,7 @@ public class ReflectApplicationWorkRecordPubImpl implements ReflectApplicationWo
 
 		@Override
 		public void insertAppReflectHist(ApplicationReflectHistory hist) {
-			// TODO Auto-generated method stub
-
+			applicationReflectHistoryRepo.insertAppReflectHist(companyId, hist);
 		}
 
 		@Override

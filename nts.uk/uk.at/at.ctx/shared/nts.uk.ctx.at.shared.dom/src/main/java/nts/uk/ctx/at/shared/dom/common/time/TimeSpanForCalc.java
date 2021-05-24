@@ -19,7 +19,7 @@ import nts.arc.time.clock.ClockHourMinuteSpan;
 import nts.gul.util.range.ComparableRange;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 /**
- * Calculate time from start to end. 計算時間帯
+ * Calculate time from start to end. 計算用時間帯
  * 
  * 開始～終了の範囲の最大値は48時間
  * 
@@ -56,7 +56,7 @@ public class TimeSpanForCalc extends DomainObject implements ComparableRange<Tim
 	}
 	
 	/**
-	 * 計算時間帯を作る
+	 * 計算用時間帯を作る
 	 * @param clockSpan 時分時間帯
 	 * @return
 	 */

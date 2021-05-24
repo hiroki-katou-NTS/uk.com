@@ -2194,7 +2194,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				} else {
 					setTimeout(function() {
 					self.openKDL053(rs);
-					}, 50);
+					}, 500);
 					block.clear();
 				}
 			}).fail(function(error: any) {
@@ -4146,7 +4146,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			else{
 				setTimeout(function() {
 				self.openGDialog()
-				},100);
+				},600);
 			}
 		}
 
@@ -4161,7 +4161,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				employeeInfo: self.dataFromA().listEmp
 			};
 			setShared('dataShareDialogG', dataShare);
-			nts.uk.ui.windows.sub.modal('/view/ksu/001/g/index.xhtml').onClosed(() => {
+			nts.uk.ui.windows.sub.modeless('/view/ksu/001/g/index.xhtml').onClosed(() => {
 				block.clear();
 			});
 		}

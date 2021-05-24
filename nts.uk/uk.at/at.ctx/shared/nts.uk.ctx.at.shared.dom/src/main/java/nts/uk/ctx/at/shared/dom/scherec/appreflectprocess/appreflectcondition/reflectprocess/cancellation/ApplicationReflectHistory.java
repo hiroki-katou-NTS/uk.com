@@ -17,25 +17,25 @@ import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.re
 public class ApplicationReflectHistory implements DomainAggregate {
 
 	// 社員ID
-	private final String employeeId;
+	private String employeeId;
 
 	// 年月日
-	private final GeneralDate date;
+	private GeneralDate date;
 
 	// 申請ID
-	private final String applicationId;
+	private String applicationId;
 
 	// 反映時刻
-	private final GeneralDateTime reflectionTime;
+	private GeneralDateTime reflectionTime;
 
 	// 予定実績区分
-	private final ScheduleRecordClassifi classification;
+	private ScheduleRecordClassifi classification;
 
 	// 取消区分
-	private final boolean cancellationCate;
+	private boolean cancellationCate;
 
 	// 反映前
-	private final List<AttendanceBeforeApplicationReflect> lstAttBeforeAppReflect;
+	private List<AttendanceBeforeApplicationReflect> lstAttBeforeAppReflect;
 
 	public ApplicationReflectHistory(String employeeId, GeneralDate date, String applicationId,
 			GeneralDateTime reflectionTime, ScheduleRecordClassifi classification, boolean cancellationCate,

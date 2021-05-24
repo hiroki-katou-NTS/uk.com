@@ -108,7 +108,7 @@ public class ReflectApplicationWorkRecord {
 			require.addAllDomain(dailyRecordApp.getDomain());
 
 			// 申請反映履歴を作成する
-			CreateApplicationReflectionHist.create(require, application.getAppID(), ScheduleRecordClassifi.SCHEDULE,
+			CreateApplicationReflectionHist.create(require, application.getAppID(), ScheduleRecordClassifi.RECORD,
 					dailyRecordApp, domainBeforeReflect);
 
 		});
