@@ -331,8 +331,8 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
             cells.merge(rowIndexD + 3, 0, 1, 2, true);
             if (grantDate.isPresent()) {
                 cells.get(rowIndexD + 3, 0)
-                        .setValue("(" + TextResource.localize("KDR001_71",
-                                grantDate.get().toString("yyyy/MM/dd")) + ")");
+                        .setValue( TextResource.localize("KDR001_71",
+                                grantDate.get().toString("yyyy/MM/dd")) );
                 totalRowD += 1;
             }
             //  D2_8 No.717 TODO QA : RQ 717
@@ -418,8 +418,8 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
             cells.merge(rowIndexD + 3, 0, 1, 2, true);
             if (grantDate.isPresent()) {
                 cells.get(rowIndexD + 3, 0)
-                        .setValue("(" + TextResource.localize("KDR001_71",
-                                grantDate.get().toString("yyyy/MM/dd")) + ")");
+                        .setValue(  TextResource.localize("KDR001_71",
+                                grantDate.get().toString("yyyy/MM/dd"))  );
                 totalRowD += 1;
             }
             //  D2_8 No.717 TODO QA : RQ 717
@@ -470,8 +470,8 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                     cells.merge(rowIndexDs + 3, 0, 1, 2, true);
                     if (grantDate.isPresent()) {
                         cells.get(rowIndexDs + 3, 0)
-                                .setValue("(" + TextResource.localize("KDR001_71",
-                                        grantDate.get().toString("yyyy/MM/dd")) + ")");
+                                .setValue(  TextResource.localize("KDR001_71",
+                                        grantDate.get().toString("yyyy/MM/dd")));
                     }
                     //  D2_8 No.717 TODO QA : RQ 717
                     // cells.merge(rowIndexD + 4, 0, 1, 2, true);
