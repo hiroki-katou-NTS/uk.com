@@ -35,7 +35,8 @@ module nts.uk.at.view.kdw008.b.service {
 
         // copy
         getListMonthlyRecordWorkType: "at/function/monthlycorrection/findall",
-        copyMonthly: "at/function/monthlycorrection/copy"
+        copyMonthly: "at/function/monthlycorrection/copy",
+        copyDaily: "at/record/businesstype/copy"
 
     }
 
@@ -45,6 +46,10 @@ module nts.uk.at.view.kdw008.b.service {
 
     export function copyMonthly(command: any): JQueryPromise<any> {
         return nts.uk.request.ajax(paths.copyMonthly, command);
+    };
+
+    export function copyDaily(command: any): JQueryPromise <any> {
+        return nts.uk.request.ajax(paths.copyDaily, command);
     };
 
     export function addDailyDetail(AddBusTypeCommand: any, isMobile: boolean): JQueryPromise < any > {
