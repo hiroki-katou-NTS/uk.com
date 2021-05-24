@@ -151,11 +151,11 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 		
 		// 個人計カテゴリ
 		useCategoriesPersonal: KnockoutObservableArray<any> = ko.observableArray([]);
-		useCategoriesPersonalValue: KnockoutObservable<number> = ko.observable(null);
+		useCategoriesPersonalValue: KnockoutObservable<number> = ko.observable(1);
 		
 		// 職場計カテゴリ
 		useCategoriesWorkplace: KnockoutObservableArray<any> = ko.observableArray([]);
-		useCategoriesWorkplaceValue: KnockoutObservable<any> = ko.observable(null);
+		useCategoriesWorkplaceValue: KnockoutObservable<any> = ko.observable(7);
         
         constructor(dataLocalStorage) {
             let self = this;
@@ -444,8 +444,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 unit: !_.isNil(self.userInfor) ? self.userInfor.unit : 0,
                 workplaceId: null,
                 workplaceGroupId: null,
-                personTotalSelected: 1, // A11_1
-                workplaceSelected: 1 // A12_1
+                personTotalSelected: self.useCategoriesPersonalValue(), // A11_1
+                workplaceSelected: self.useCategoriesWorkplaceValue() // A12_1
             }
 
             service.getDataStartScreen(param).done((data: IDataStartScreen) => {
