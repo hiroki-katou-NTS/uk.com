@@ -459,6 +459,7 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 							x.taskCode = task.taskCode;
 							x.startClock = task.startClock;
 							x.endClock = task.endClock;
+							x.cid = task.cid;
 							checkLst.add(x);
 						} 
 					});
