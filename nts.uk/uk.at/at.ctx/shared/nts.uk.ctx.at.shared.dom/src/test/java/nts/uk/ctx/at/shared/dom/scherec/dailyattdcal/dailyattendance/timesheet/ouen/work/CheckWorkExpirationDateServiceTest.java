@@ -34,44 +34,12 @@ public class CheckWorkExpirationDateServiceTest {
 
 	GeneralDate date = GeneralDate.today();
 	TaskFrameNo taskFrameNo = new TaskFrameNo(1);
+	TaskFrameNo taskFrameNo2 = new TaskFrameNo(2);
 	WorkCode code = new WorkCode("WorkCode");
 
 	List<TaskFrameSetting> frameSettingList = new ArrayList<>();
 
 	Task task = new Task(new TaskCode("Code"), taskFrameNo, null, new ArrayList<>(), new DatePeriod(date, date), null);
-
-	// if 作業コード.isEmpty return
-	@Test
-	public void testCheckWorkExpiration() {
-
-		new Expectations() {
-			{
-				require.getTask(taskFrameNo, code);
-			}
-		};
-
-		CheckWorkExpirationDateService.check(require,
-				date,
-				taskFrameNo,
-				Optional.empty());
-	}
-
-	// if 作業コード.isEmpty return
-	@Test
-	public void testCheckWorkExpiration3() {
-
-		new Expectations() {
-			{
-				require.getTask(taskFrameNo, code);
-				result = Optional.of(task);
-			}
-		};
-
-		CheckWorkExpirationDateService.check(require,
-				GeneralDate.dayInYear(2021, 10),
-				taskFrameNo,
-				Optional.empty());
-	}
 
 	// error == false
 	@Test
@@ -93,7 +61,7 @@ public class CheckWorkExpirationDateServiceTest {
 	@Test
 	public void testCheckWorkExpiration_2() {
 		frameSettingList.add(new TaskFrameSetting(taskFrameNo, new TaskFrameName("DUMMY"), null));
-		frameSettingList.add(new TaskFrameSetting(taskFrameNo, new TaskFrameName("DUMMY1"), null));
+		frameSettingList.add(new TaskFrameSetting(taskFrameNo2, new TaskFrameName("DUMMY1"), null));
 
 		TaskFrameUsageSetting taskFrameUsageSetting = new TaskFrameUsageSetting(frameSettingList);
 
@@ -111,5 +79,29 @@ public class CheckWorkExpirationDateServiceTest {
 						date,
 						taskFrameNo,
 						Optional.of(code)));
+	}
+
+	// error == false
+	// task.get().checkExpirationDate(date) == true
+	@Test
+	public void testCheckWorkExpiration_3() {
+		frameSettingList.add(new TaskFrameSetting(taskFrameNo, new TaskFrameName("DUMMY"), null));
+		frameSettingList.add(new TaskFrameSetting(taskFrameNo2, new TaskFrameName("DUMMY1"), null));
+		
+		Task task = new Task(new TaskCode("Code"), taskFrameNo, null, new ArrayList<>(), new DatePeriod(date.addMonths(-5), date), null);
+
+		TaskFrameUsageSetting taskFrameUsageSetting = new TaskFrameUsageSetting(frameSettingList);
+
+		new Expectations() {
+			{
+				require.getTask(taskFrameNo, code);
+				result = Optional.of(task);
+
+				require.getTaskFrameUsageSetting();
+				result = taskFrameUsageSetting;
+			}
+		};
+
+		CheckWorkExpirationDateService.check(require, date.addMonths(-3), taskFrameNo, Optional.of(code));
 	}
 }
