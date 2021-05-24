@@ -445,8 +445,9 @@ public class KscdtSchTime extends ContractUkJpaEntity {
 																				// //extMidNiteTotalPreApp
 				0, // đang QA 110822 // intervalAtdClock
 				0, // đang QA 110822 // intervalTime
-				workingTime.getBreakTimeOfDaily() == null ? 0
-						: workingTime.getBreakTimeOfDaily().getToRecordTotalTime().getTotalTime().getTime().v(), // 34
+				workingTime.getBreakTimeOfDaily() != null && workingTime.getBreakTimeOfDaily().getToRecordTotalTime() != null 
+				&& workingTime.getBreakTimeOfDaily().getToRecordTotalTime().getTotalTime().getTime() != null ?
+						workingTime.getBreakTimeOfDaily().getToRecordTotalTime().getTotalTime().getTime().v() : 0, // 34
 																													// //
 																													// brkTotalTime
 				holidayOfDaily.getAnnual() == null ? 0 : holidayOfDaily.getAnnual().getUseTime().v(), // 35 HDPAID_TIME
