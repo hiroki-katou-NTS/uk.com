@@ -17,7 +17,9 @@ import nts.uk.ctx.at.function.dom.monthlyworkschedule.ItemSelectionEnum;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 
+import java.util.Collections;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Stateless
 @Transactional
@@ -30,10 +32,21 @@ public class AddHdRemainManageCommandHandler extends CommandHandler<HdRemainMana
 	protected void handle(CommandHandlerContext<HdRemainManageCommand> context) {
 		LoginUserContext login = AppContexts.user();
 		String companyId = login.companyId();
+		boolean duplicate = false;
 		val oldItem = holidaysRemainingManagementRepository.getHolidayManagerLogByCompanyId(companyId);
+		val listFree = oldItem.stream().filter(e->e.getItemSelectionCategory().value.intValue()==ItemSelectionEnum.FREE_SETTING.value)
+				.collect(Collectors.toList());
+		val standards = oldItem.stream().filter(e->e.getItemSelectionCategory().value.intValue()==ItemSelectionEnum.STANDARD_SELECTION.value)
+				.collect(Collectors.toList());
+
 		HdRemainManageCommand command = context.getCommand();
-		boolean duplicate = oldItem.stream().anyMatch(x->x.getCode().v()
-				.equals(command.getCd())&&x.getItemSelectionCategory().value.equals(command.getItemSelType()));
+		if(command.getItemSelType() == ItemSelectionEnum.FREE_SETTING.value){
+			duplicate = listFree.stream().anyMatch(x->x.getCode().v()
+					.equals(command.getCd())&&x.getEmployeeId().equals(login.employeeId()));
+		}else if(command.getItemSelType() == ItemSelectionEnum.STANDARD_SELECTION.value) {
+			duplicate = standards.stream().anyMatch(x->x.getCode().v()
+					.equals(command.getCd()));
+		}
 		if(duplicate){
 			throw new BusinessException("Msg_3");
 		}

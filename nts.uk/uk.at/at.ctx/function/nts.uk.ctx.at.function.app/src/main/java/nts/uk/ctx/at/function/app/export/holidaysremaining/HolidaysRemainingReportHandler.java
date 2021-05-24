@@ -282,7 +282,7 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
                     currentMonthOfFirstEmp.set(currentMonth.isPresent() ? currentMonth.get() : null);
                     ;
                 } else {
-                    if (isSameCurrentMonth.get() && !currentMonth.equals(currentMonthOfFirstEmp)) {
+                    if (isSameCurrentMonth.get() && !currentMonth.get().equals(currentMonthOfFirstEmp.get())) {
                         isSameCurrentMonth.set(false);
                     }
                 }
