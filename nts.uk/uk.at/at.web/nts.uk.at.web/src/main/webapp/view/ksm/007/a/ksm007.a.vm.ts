@@ -29,7 +29,7 @@ module nts.uk.at.view.ksm007.a {
                 isAlreadySetting: false,
                 showEmptyItem: false,
                 reloadData: ko.observable(''),
-                height: 408,
+                height: 378,
                 selectedMode: 1
             };
 
@@ -91,13 +91,13 @@ module nts.uk.at.view.ksm007.a {
 
             self.registerForm().selectedWkpType.subscribe(value => {
                 if (value == 0) {
-                    $("#multi-list_displayContainer").height(346);
-                    $("#multi-list_scrollContainer").height(346);
-                    $("#workplace-group-pannel").height(420);
+                    $("#multi-list_displayContainer").height(316);
+                    $("#multi-list_scrollContainer").height(316);
+                    $("#workplace-group-pannel").height(390);
                 } else {
-                    $("#multi-list_displayContainer").height(384);
-                    $("#multi-list_scrollContainer").height(384);
-                    $("#workplace-group-pannel").height(458);
+                    $("#multi-list_displayContainer").height(354);
+                    $("#multi-list_scrollContainer").height(354);
+                    $("#workplace-group-pannel").height(428);
                 }
             });
             self.registerForm().selectedWkpType.valueHasMutated();
@@ -155,8 +155,8 @@ module nts.uk.at.view.ksm007.a {
             for (let idx in resultProcess) {
                 let result = resultProcess[idx];
                 if (resultProcess[idx].workplaceReplacement == 3) {
-                    let workplaceInfo = _.find(listWorkplaceInfo, (wkp) => { return wkp.wkpid == result.wkpid; });
-                    let workplaceGroupInfo = _.find(listWorkplaceGroupInfo, (wkp) => { return wkp.wkpgrpid == result.wkpgrpid; });
+                    let workplaceInfo = _.find(listWorkplaceInfo, (wkp: any) => { return wkp.wkpid == result.wkpid; });
+                    let workplaceGroupInfo = _.find(listWorkplaceGroupInfo, (wkp: any) => { return wkp.wkpgrpid == result.wkpgrpid; });
                     if (workplaceInfo && workplaceGroupInfo) {
                         bundledErrors.push({
                             message: resource.getMessage('Msg_1630', [workplaceInfo.workplaceCode, workplaceInfo.workplaceName, workplaceGroupInfo.wkpgrpname]),
@@ -177,16 +177,11 @@ module nts.uk.at.view.ksm007.a {
             if (res.resProcessResult) {
                 let mgsId = ( wpType > 0 ) ? "Msg_2097" :  'Msg_15';
                 nts.uk.ui.dialog.info({ messageId: mgsId }).then(() => {
-                    if (bundledErrors.length > 0) {
-                        nts.uk.ui.dialog.bundledErrors({ errors: bundledErrors });
-                    } else {
-                        if (mgsId == "Msg_2097") self.openDialogScreenB();
-                    }
+                    if (mgsId == "Msg_2097") self.openDialogScreenB();
                 });
-            } else {
-                if (bundledErrors.length > 0) {
-                    nts.uk.ui.dialog.bundledErrors({ errors: bundledErrors });
-                }
+            }
+            if (bundledErrors.length > 0) {
+                nts.uk.ui.dialog.bundledErrors({ errors: bundledErrors });
             }
         }
 

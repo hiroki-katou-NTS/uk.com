@@ -15,10 +15,12 @@ import lombok.Setter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimAbsMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecMng;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualHolidayMng;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TempAnnualLeaveMngs;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimDayOffMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.care.interimdata.TempCareManagement;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.interimdata.TempChildCareManagement;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.interim.TmpResereLeaveMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.InterimSpecialHolidayMng;
 @AllArgsConstructor
@@ -26,9 +28,9 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.Interi
 @Setter
 @Getter
 public class DailyInterimRemainMngData {
-	
+
 	private GeneralDate ymd;
-	
+
 	/**暫定振休管理データ */
 	private Optional<InterimAbsMng> interimAbsData;
 	/**	暫定残数管理データ */
@@ -44,7 +46,7 @@ public class DailyInterimRemainMngData {
 	/**
 	 * 暫定年休管理データ
 	 */
-	private Optional<TmpAnnualHolidayMng> annualHolidayData;
+	private Optional<TempAnnualLeaveMngs> annualHolidayData;
 	/**
 	 * 暫定積立年休管理データ
 	 */
@@ -57,5 +59,15 @@ public class DailyInterimRemainMngData {
 	 * 暫定特別休暇データ
 	 */
 	private List<InterimSpecialHolidayMng> specialHolidayData;
-	
+	/**
+	 * 暫定子の看護休暇データ
+	 */
+	private Optional<TempChildCareManagement> childCareData;
+	/**
+	 * 暫定介護休暇データ
+	 */
+	private Optional<TempCareManagement> careData;
+
+
+
 }

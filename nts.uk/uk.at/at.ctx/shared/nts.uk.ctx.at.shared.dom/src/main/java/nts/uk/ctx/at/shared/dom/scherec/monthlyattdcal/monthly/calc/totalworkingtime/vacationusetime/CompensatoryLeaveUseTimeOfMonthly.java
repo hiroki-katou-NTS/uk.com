@@ -132,6 +132,22 @@ public class CompensatoryLeaveUseTimeOfMonthly implements Cloneable, Serializabl
 	}
 	
 	/**
+	 * 代休使用時間を集計する
+	 * @param datePeriod 期間
+	 */
+	public AttendanceTimeMonth aggregateTemp(DatePeriod datePeriod){
+		
+		AttendanceTimeMonth useTime = new AttendanceTimeMonth(0);
+		
+		for (val timeSeriesWork : this.timeSeriesWorks.values()){
+			if (!datePeriod.contains(timeSeriesWork.getYmd())) continue;
+			useTime = useTime.addMinutes(timeSeriesWork.getSubstituteHolidayUseTime().getUseTime().v());
+		}
+		
+		return useTime;
+	}
+	
+	/**
 	 * 代休使用時間を求める
 	 * @param datePeriod 期間
 	 * @return 代休使用時間
@@ -163,6 +179,20 @@ public class CompensatoryLeaveUseTimeOfMonthly implements Cloneable, Serializabl
 				legalMinutes += timeSeriesWork.getSubstituteHolidayUseTime().getUseTime().v();
 			}
 		}
+		return new AttendanceTimeMonth(legalMinutes);
+	}
+	
+	/**
+	 * 法定内代休時間の計算
+	 * @return 法定内代休時間
+	 */
+	public AttendanceTimeMonth calcLegalTime(){
+		
+		int legalMinutes = timeSeriesWorks.entrySet().stream() /** ◯時系列(WORK)を取得 */
+				.filter(c -> c.getValue().getHolidayAtr() == HolidayAtr.STATUTORY_HOLIDAYS) /** ◯休日区分の判断 */
+				.mapToInt(c -> c.getValue().getSubstituteHolidayUseTime().getUseTime().valueAsMinutes())
+				.sum(); /** ◯代休使用時間を累積 */
+		
 		return new AttendanceTimeMonth(legalMinutes);
 	}
 	

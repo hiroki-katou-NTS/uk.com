@@ -1374,11 +1374,11 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
                     cid, sid, period, InterimRemainMngMode.OTHER, criteriaDate,
                     false, false, Optional.of(false),
                     Optional.empty(), Optional.empty(), Optional.empty(),
-                    Optional.empty(), Optional.empty(), Optional.empty());
+                    Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty());
 			if (!aggResult.getAnnualLeave().isPresent()) {
 				break;
 			}
-			
+
 			// 休暇日数を計算
 			if (dayCheckCond.getTypeOfDays() == TypeOfDays.ANNUAL_LEAVE_NUMBER) {
 				// 休暇日数　＝　取得した年休積休の集計結果．年休．年休情報(期間終了日時点)．使用日数
@@ -1464,7 +1464,7 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
                 cid, sid, period, InterimRemainMngMode.OTHER, criteriaDate,
                 false, false, Optional.of(false),
                 Optional.empty(), Optional.empty(), Optional.empty(),
-                Optional.empty(), Optional.empty(), Optional.empty());
+                Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty());
 		
 		// 取得した残数をチェック
 		if (!aggResult.getAnnualLeave().isPresent()) {

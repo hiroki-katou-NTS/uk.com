@@ -6307,7 +6307,7 @@ var nts;
                         .on('mouseup', function (evt) {
                         var button = cache.button, position = cache.position;
                         var target = evt.target, pageX = evt.pageX, pageY = evt.pageY;
-                        if (target.tagName !== 'BUTTON') {
+                        if (target.tagName !== 'BUTTON' && !$(target).closest('button').is(button)) {
                             if (button && position) {
                                 var x = position.x, y = position.y;
                                 if (x === pageX && y === pageY) {
@@ -6320,7 +6320,8 @@ var nts;
                         cache.position = null;
                     })
                         .on('mousedown', 'button', function (evt) {
-                        cache.button = evt.target;
+                        var target = evt.target;
+                        cache.button = target.tagName === 'BUTTON' ? target : $(target).closest('button').get(0);
                         cache.position = {
                             x: evt.pageX,
                             y: evt.pageY
@@ -19763,21 +19764,25 @@ var nts;
                             }
                             var id = 'ntsErrorDialog_' + idX;
                             var $dialog = $("<div>", { "id": id, "class": "ntsErrorDialog" });
-                            if (self.isRoot) {
+                            // get top object (jQuery & document)
+                            var $$ = window.top.window.$;
+                            var $document = window.top.document;
+                            // move error dialog to top windows
+                            $$($document).find('body').append($dialog);
+                            // shit code
+                            /*if (self.isRoot) {
                                 PS.$('body').append($dialog);
-                            }
-                            else {
-                                var temp = self;
+                            } else {
+                                let temp = self;
                                 while (!nts.uk.util.isNullOrUndefined(temp)) {
                                     if (temp.isRoot) {
                                         $(temp.globalContext.document.getElementsByTagName("body")).append($dialog);
                                         temp = null;
-                                    }
-                                    else {
+                                    } else {
                                         temp = temp.parent;
                                     }
                                 }
-                            }
+                            }*/
                             // Create Buttons
                             var dialogbuttons = [];
                             var _loop_2 = function (button) {
@@ -37558,13 +37563,14 @@ function bean(dialogOption) {
     return function (ctor) {
         __viewContext.ready(function () {
             var localShared = nts.uk.ui.windows.container.localShared;
-            nts.uk.ui.viewmodel.$storage()
+            nts.uk.ui.viewmodel
+                .$storage()
                 .then(function ($params) {
-                var $viewModel = new ctor($params || localShared), $created = $viewModel['created'];
+                var $viewModel = new ctor($params || (_.isEmpty(localShared) ? undefined : localShared)), $created = $viewModel['created'];
                 _.extend($viewModel, { $el: undefined });
                 // hook to created function
                 if ($created && _.isFunction($created)) {
-                    $created.apply($viewModel, [$params || localShared]);
+                    $created.apply($viewModel, [$params || (_.isEmpty(localShared) ? undefined : localShared)]);
                 }
                 // hook to mounted function
                 $viewModel.$nextTick(function () {

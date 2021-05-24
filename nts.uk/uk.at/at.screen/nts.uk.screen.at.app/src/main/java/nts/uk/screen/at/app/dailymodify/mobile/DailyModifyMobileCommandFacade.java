@@ -96,13 +96,13 @@ public class DailyModifyMobileCommandFacade {
 
 	@Inject
 	private DailyModifyRCommandFacade dailyRCommandFacade;
-	
+
 	@Inject
 	private DailyCorrectCalcTimeService dCCalcTimeService;
-	
+
 	@Inject
 	private CorrectDaiAttRequireImpl correctDaiAttRequireImpl;
-	
+
 	@Inject
 	private DailyCorrectEventServiceCenter dailyCorrectEventServiceCenter;
 
@@ -210,7 +210,7 @@ public class DailyModifyMobileCommandFacade {
 										it.getValueType() == null ? ValueType.UNKNOWN : ValueType.valueOf(it.getValueType()),
 										it.getLayoutCode(), it.getItemId()))
 								.collect(Collectors.toList());
-						
+
 					DailyModifyRCResult updatedOoTsuka = DailyModifyRCResult.builder().employeeId(x.getEmployeeId())
 							.workingDate(x.getDate()).items(itemValues).completed();
 					EventCorrectResult result = dailyCorrectEventServiceCenter.correctRunTime(DailyRecordDto
@@ -315,7 +315,7 @@ public class DailyModifyMobileCommandFacade {
 			if (dataParent.isCheckDailyChange()) {
 				domainDailyNew = resultIU.getLstDailyDomain();
 			}
-            
+
 			if (dataParent.getMode() == DisplayFormat.Individual.value) {
 				//// 月別実績の集計
 				DailyCalcResult resultCalcMonth = processMonthlyCalc.processMonthCalc(commandNew, commandOld,

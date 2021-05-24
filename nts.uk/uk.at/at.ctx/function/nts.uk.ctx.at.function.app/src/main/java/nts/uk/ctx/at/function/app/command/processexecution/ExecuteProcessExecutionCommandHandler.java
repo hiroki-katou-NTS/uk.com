@@ -44,6 +44,7 @@ import nts.uk.ctx.at.function.app.command.processexecution.approuteupdatemonthly
 import nts.uk.ctx.at.function.app.command.processexecution.createlogfileexecution.CreateLogFileExecution;
 import nts.uk.ctx.at.function.app.command.processexecution.createschedule.executionprocess.CalPeriodTransferAndWorktype;
 import nts.uk.ctx.at.function.dom.adapter.WorkplaceWorkRecordAdapter;
+import nts.uk.ctx.at.function.dom.adapter.alarm.BasicScheduleAdapter;
 import nts.uk.ctx.at.function.dom.adapter.appreflectmanager.AppReflectManagerAdapter;
 import nts.uk.ctx.at.function.dom.adapter.appreflectmanager.ProcessStateReflectImport;
 import nts.uk.ctx.at.function.dom.adapter.dailymonthlyprocessing.DailyMonthlyprocessAdapterFn;
@@ -150,7 +151,6 @@ import nts.uk.ctx.at.schedule.dom.executionlog.RecreateCondition;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleCreateContent;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleExecutionLog;
 import nts.uk.ctx.at.schedule.dom.executionlog.SpecifyCreation;
-import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicScheduleRepository;
 import nts.uk.ctx.at.shared.dom.adapter.generalinfo.dtoimport.ExWorkplaceHistItemImport;
 import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee.BusinessTypeOfEmployeeHis;
 import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee.BusinessTypeOfEmployeeService;
@@ -281,7 +281,9 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
     @Inject
     private GetProcessingDate getProcessingDate;
     @Inject
-    private BasicScheduleRepository basicScheduleRepository;
+    private BasicScheduleAdapter basicScheduleAdapter;
+//    private BasicScheduleRepository basicScheduleRepository;
+    
     @Inject
     private CreateExtraProcessService createExtraProcessService;
 
@@ -1033,15 +1035,15 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 				// 社員ID（異動者、勤務種別変更者）（List）のみ
 				if (!CollectionUtil.isEmpty(reEmployeeList) && !checkStopExec) {
 					// 異動者、勤務種別変更者、休職者・休業者の期間の計算
-					GeneralDate endDate = basicScheduleRepository.findMaxDateByListSid(reEmployeeList);
+					Optional<GeneralDate> endDate = basicScheduleAdapter.acquireMaxDateBasicSchedule(reEmployeeList);
 
-					if (endDate != null) {
+					if (endDate.isPresent()) {
 						DatePeriod periodDate = this.getMinPeriodFromStartDate(companyId);
 						ScheduleCreatorExecutionCommand scheduleCreatorExecutionOneEmp = this
 								.getScheduleCreatorExecutionOneEmp(execId, procExec,
 										calculateSchedulePeriod, reEmployeeList, companyId, execItemCd);
 						scheduleCreatorExecutionOneEmp.getScheduleExecutionLog()
-								.setPeriod(new DatePeriod(periodDate.start(), endDate));
+								.setPeriod(new DatePeriod(periodDate.start(), endDate.get()));
 
 						boolean isTransfer = procExec.getReExecCondition().getRecreateTransfer().equals(NotUseAtr.USE);
 						boolean isWorkType = procExec.getReExecCondition().getRecreatePersonChangeWkt()

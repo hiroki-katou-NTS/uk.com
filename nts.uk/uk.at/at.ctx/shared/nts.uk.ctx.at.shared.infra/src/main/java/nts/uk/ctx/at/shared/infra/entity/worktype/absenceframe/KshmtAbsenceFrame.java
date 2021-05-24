@@ -23,9 +23,9 @@ public class KshmtAbsenceFrame extends ContractUkJpaEntity implements Serializab
 	/*枠名称*/
 	@Column(name = "NAME")
 	public String name;
-	/*欠勤枠の廃止区分*/
-	@Column(name = "ABOLISH_ATR")
-	public int abolishAtr;
+	/*欠勤枠の廃止区分 --- 利用区分*/
+	@Column(name = "USE_ATR")
+	public int useAtr;
 	@Override
 	protected Object getKey() {		
 		return kshmtAbsenceFramePK;

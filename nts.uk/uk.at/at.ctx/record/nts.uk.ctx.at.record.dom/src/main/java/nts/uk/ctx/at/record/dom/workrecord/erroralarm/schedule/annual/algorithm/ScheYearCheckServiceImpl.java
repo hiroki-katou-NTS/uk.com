@@ -532,7 +532,7 @@ public class ScheYearCheckServiceImpl implements ScheYearCheckService {
                     cid, sid, period, InterimRemainMngMode.OTHER, criteriaDate,
                     false, false, Optional.of(false),
                     Optional.empty(), Optional.empty(), Optional.empty(),
-                    Optional.empty(), Optional.empty(), Optional.empty());
+                    Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty());
 			
 			// 休暇日数を計算
 			if (dayCheckCond.getTypeOfDays() == TypeOfDays.ANNUAL_LEAVE_NUMBER) {

@@ -44,7 +44,7 @@
     data-bind="if: registerForm().workplaceGroupTypes().length &gt; 0"
   >
     <div data-bind="ntsFormLabel: {required: true, enable: true}">
-      #{i18n.getText('KSM007_10')}
+      #{i18n.getText('KSM007_50')}
     </div>
     <div
       tabindex="7"
@@ -100,8 +100,7 @@
     <table
       id="workplace-list"
       data-bind="ntsGridList: {
-                height: 281,
-                width: 650,
+                height: 251,
                 dataSource: registerForm().workplaces,
                 optionsValue: 'workplaceId',
                 columns: registerForm().gridColumns,

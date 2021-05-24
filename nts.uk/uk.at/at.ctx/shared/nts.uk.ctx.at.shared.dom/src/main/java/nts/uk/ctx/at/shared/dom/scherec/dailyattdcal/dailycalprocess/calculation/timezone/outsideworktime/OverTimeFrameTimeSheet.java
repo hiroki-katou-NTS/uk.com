@@ -2,6 +2,7 @@ package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculatio
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.TimeSpanForDailyCalc;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 
@@ -19,5 +20,19 @@ public class OverTimeFrameTimeSheet {
 	
 	//残業枠No
 	private OverTimeFrameNo frameNo;
+	
+	//【追加予定】計算残業時間
+	private AttendanceTime overTimeCalc;
+	
+	//【追加予定】計算振替残業時間
+	private AttendanceTime tranferTimeCalc;
+
+	//TODO: Temporary Constructor
+	public OverTimeFrameTimeSheet(TimeSpanForDailyCalc timeSpan, OverTimeFrameNo frameNo) {
+		this.timeSpan = timeSpan;
+		this.frameNo = frameNo;
+		this.overTimeCalc = new AttendanceTime(0);
+		this.tranferTimeCalc = new AttendanceTime(0);
+	}
 	
 }
