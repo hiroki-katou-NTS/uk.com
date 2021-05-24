@@ -51,9 +51,9 @@ public class RefTimeSetCfmService {
         while (loopYm.lessThanOrEqualTo(ymPeriod.end())) {
             // ドメインモデル「会社別月単位労働時間」を取得する。
             final YearMonth finalLoopYm = loopYm;
-            List<MonthlyWorkTimeSetCom> filterdSets = monthlySets.stream().filter(i -> i.getYm().equals(finalLoopYm)).collect(Collectors.toList());
+            List<MonthlyWorkTimeSetCom> filteredSets = monthlySets.stream().filter(i -> i.getYm().equals(finalLoopYm)).collect(Collectors.toList());
 
-            if (CollectionUtil.isEmpty(monthlySets)) {
+            if (CollectionUtil.isEmpty(filteredSets)) {
                 // 「アラーム値メッセージ」を作成します。
                 String message = TextResource.localize("KAL020_6", String.valueOf(loopYm.year()),
                         AppContexts.user().companyCode());
