@@ -182,7 +182,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				self.inputMid(dataCell);
 			});
 			
-			// ver4 
+			// ver 4 
 			self.rangeList = ko.observableArray([
 				new model.RangeModel('0', 0),new model.RangeModel('1', 1),new model.RangeModel('2', 2),new model.RangeModel('3', 3),
 				new model.RangeModel('4', 4),new model.RangeModel('5', 5),new model.RangeModel('6', 6),new model.RangeModel('7', 7),

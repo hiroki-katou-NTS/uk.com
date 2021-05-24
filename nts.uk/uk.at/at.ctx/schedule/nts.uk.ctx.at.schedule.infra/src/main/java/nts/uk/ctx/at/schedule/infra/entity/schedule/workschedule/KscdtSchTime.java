@@ -416,7 +416,7 @@ public class KscdtSchTime extends ContractUkJpaEntity {
 				.collect(Collectors.toList());
 		AtomicInteger index = new AtomicInteger();
 		List<KscdtSchTask> lstKscdtSchTask = task.getDetails().stream()
-				.map(c -> KscdtSchTask.toEntity(sID, yMD, c, index.getAndIncrement())).collect(Collectors.toList());
+				.map(c -> KscdtSchTask.toEntity(sID, yMD,cID, c, index.getAndIncrement())).collect(Collectors.toList());
 
 		KscdtSchTime kscdtSchTime = new KscdtSchTime(pk, cID, // cid
 				workingTime.getWorkTimes() == null ? 0 : workingTime.getWorkTimes().v(), // count
@@ -445,8 +445,9 @@ public class KscdtSchTime extends ContractUkJpaEntity {
 																				// //extMidNiteTotalPreApp
 				0, // đang QA 110822 // intervalAtdClock
 				0, // đang QA 110822 // intervalTime
-				workingTime.getBreakTimeOfDaily() == null ? 0
-						: workingTime.getBreakTimeOfDaily().getToRecordTotalTime().getTotalTime().getTime().v(), // 34
+				workingTime.getBreakTimeOfDaily() != null && workingTime.getBreakTimeOfDaily().getToRecordTotalTime() != null 
+				&& workingTime.getBreakTimeOfDaily().getToRecordTotalTime().getTotalTime().getTime() != null ?
+						workingTime.getBreakTimeOfDaily().getToRecordTotalTime().getTotalTime().getTime().v() : 0, // 34
 																													// //
 																													// brkTotalTime
 				holidayOfDaily.getAnnual() == null ? 0 : holidayOfDaily.getAnnual().getUseTime().v(), // 35 HDPAID_TIME

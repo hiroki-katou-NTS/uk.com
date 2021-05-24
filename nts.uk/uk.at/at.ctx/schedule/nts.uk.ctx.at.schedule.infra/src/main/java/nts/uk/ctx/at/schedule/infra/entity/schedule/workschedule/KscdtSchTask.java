@@ -37,6 +37,9 @@ public class KscdtSchTask extends ContractUkJpaEntity {
 	@Column(name = "END_CLOCK")
 	public int endClock;
 	
+	@Column(name = "CID")
+	public String cid;
+	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@PrimaryKeyJoinColumns({ @PrimaryKeyJoinColumn(name = "SID", referencedColumnName = "SID"),
 			@PrimaryKeyJoinColumn(name = "YMD", referencedColumnName = "YMD") })
@@ -47,17 +50,18 @@ public class KscdtSchTask extends ContractUkJpaEntity {
 		return pk;
 	}
 	
-	public static KscdtSchTask toEntity(String sid, GeneralDate ymd,TaskScheduleDetail taskDetail, int index) {
+	public static KscdtSchTask toEntity(String sid, GeneralDate ymd, String cid, TaskScheduleDetail taskDetail, int index) {
 		KscdtSchTask schTask = new KscdtSchTask(new KscdtSchTaskPK(sid, ymd, index), taskDetail.getTaskCode().v(),
-				taskDetail.getTimeSpan().getStart().v().intValue(), taskDetail.getTimeSpan().getEnd().v().intValue());
+				taskDetail.getTimeSpan().getStart().v().intValue(), taskDetail.getTimeSpan().getEnd().v().intValue(), cid);
 		return schTask;
 	}
 
-	public KscdtSchTask(KscdtSchTaskPK pk, String taskCode, int startClock, int endClock) {
+	public KscdtSchTask(KscdtSchTaskPK pk, String taskCode, int startClock, int endClock, String cid) {
 		super();
 		this.pk = pk;
 		this.taskCode = taskCode;
 		this.startClock = startClock;
 		this.endClock = endClock;
+		this.cid = cid;
 	}
 }
