@@ -49,6 +49,7 @@ module nts.uk.at.view.kdw008.b {
             enableSheetNo: KnockoutObservable<boolean>;
 
             listBusinessCode: KnockoutObservableArray<string> = ko.observableArray([]);
+            copyDailyDone: KnockoutObservable<number> = ko.observable(0);
 
             constructor(dataShare: any) {
                 var self = this;
@@ -155,6 +156,15 @@ module nts.uk.at.view.kdw008.b {
                     }
                 });
 
+                self.copyDailyDone.subscribe((value: number) => {
+                    if (value == 2) {
+                        nts.uk.ui.dialog.info({ messageId: 'Msg_15' }).then(() => {
+                            self.initSelectedCodeHasMutated();
+                            console.log('msg15');
+                        });
+                    }
+                })
+
                 //swap list 1
                 self.businessTypeFormatDailyValue = ko.observableArray([]);
                 self.dailyDataSource = ko.observableArray([]);
@@ -247,12 +257,29 @@ module nts.uk.at.view.kdw008.b {
                             businessTypeCode: self.selectedCode(),
                             listBusinessTypeCode: output
                         }
-                        service.copyMonthly(command).done(() => {
-                            nts.uk.ui.dialog.info({ messageId: 'Msg_15' }).then(() => {
-                                self.initSelectedCodeHasMutated();
-                                console.log('msg15');
-                            });
-                        }).fail(() => console.log('fail'));
+                        if (self.isDaily) {
+
+                            service.copyDaily(command).done(() => {
+                                let check = self.copyDailyDone() + 1;
+                                self.copyDailyDone(check);
+                            })
+                            .fail(() => {});
+
+                            service.copyMonthly(command).done(() => {
+                                let check = self.copyDailyDone() + 1;
+                                self.copyDailyDone(check);
+                            })
+                            .fail(() => {});
+
+                        } else {
+                            service.copyMonthly(command).done(() => {
+                                nts.uk.ui.dialog.info({ messageId: 'Msg_15' }).then(() => {
+                                    self.initSelectedCodeHasMutated();
+                                    console.log('msg15');
+                                });
+                            }).fail(() => console.log('fail'));
+                        }
+                        
                     })
 
                 }).fail((err) => {})

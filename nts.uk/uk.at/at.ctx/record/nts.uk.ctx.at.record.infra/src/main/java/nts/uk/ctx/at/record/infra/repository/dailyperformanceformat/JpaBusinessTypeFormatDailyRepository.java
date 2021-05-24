@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
@@ -13,14 +14,22 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.BusinessTypeFormatDaily;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.repository.BusinessTypeFormatDailyRepository;
+import nts.uk.ctx.at.record.infra.entity.dailyperformanceformat.KrcmtBusinessFormatSheet;
 import nts.uk.ctx.at.record.infra.entity.dailyperformanceformat.KrcmtBusinessTypeDaily;
 import nts.uk.ctx.at.record.infra.entity.dailyperformanceformat.KrcmtBusinessTypeDailyPK;
+import nts.uk.ctx.at.shared.dom.workrule.businesstype.BusinessTypeCode;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class JpaBusinessTypeFormatDailyRepository extends JpaRepository implements BusinessTypeFormatDailyRepository {
 
 	private static final String FIND;
+	
+	private static final String FIND_LISTCODE;
+	
+	private static final String FIND_SHEET_LISTCODE;
+	
+	private static final String FIND_SHEET_NAME; 
 
 	private static final String FIND_DETAIl;
 
@@ -45,6 +54,27 @@ public class JpaBusinessTypeFormatDailyRepository extends JpaRepository implemen
 		builderString.append("WHERE a.krcmtBusinessTypeDailyPK.companyId = :companyId ");
 		builderString.append("AND a.krcmtBusinessTypeDailyPK.businessTypeCode = :businessTypeCode ");
 		FIND = builderString.toString();
+		
+		builderString = new StringBuilder();
+		builderString.append("SELECT a ");
+		builderString.append("FROM KrcmtBusinessTypeDaily a ");
+		builderString.append("WHERE a.krcmtBusinessTypeDailyPK.companyId = :companyId ");
+		builderString.append("AND a.krcmtBusinessTypeDailyPK.businessTypeCode IN :listBusinessTypeCode ");
+		FIND_LISTCODE = builderString.toString();
+		
+		builderString = new StringBuilder();
+		builderString.append("SELECT a ");
+		builderString.append("FROM KrcmtBusinessFormatSheet a ");
+		builderString.append("WHERE a.krcmtBusinessFormatSheetPK.companyId = :companyId ");
+		builderString.append("AND a.krcmtBusinessFormatSheetPK.businessTypeCode IN :listBusinessTypeCode ");
+		FIND_SHEET_LISTCODE = builderString.toString();
+		
+		builderString = new StringBuilder();
+		builderString.append("SELECT a ");
+		builderString.append("FROM KrcmtBusinessFormatSheet a ");
+		builderString.append("WHERE a.krcmtBusinessFormatSheetPK.companyId = :companyId ");
+		builderString.append("AND a.krcmtBusinessFormatSheetPK.businessTypeCode = :businessTypeCode ");
+		FIND_SHEET_NAME = builderString.toString();
 
 		builderString = new StringBuilder();
 		builderString.append("SELECT a ");
@@ -214,5 +244,46 @@ public class JpaBusinessTypeFormatDailyRepository extends JpaRepository implemen
 				.setParameter("businessTypeCode", businessTypeCode)
 				.getList(f -> toDomain(f));
 	}
-	
+
+	@Override
+	public void copy(String companyId, String businessTypeCode, List<String> listBusinessTypeCode) {
+		
+		List<BusinessTypeFormatDaily> listBusinessTypeFormatDailyBySelectedCode = this.getBusinessTypeFormat(companyId, businessTypeCode);
+		
+		KrcmtBusinessFormatSheet krcmtBusinessFormatSheetBySelectedCode = this.queryProxy().query(FIND_SHEET_NAME, KrcmtBusinessFormatSheet.class)
+					.setParameter("companyId", companyId)
+					.setParameter("businessTypeCode", businessTypeCode)
+					.getSingle().get();
+		
+		List<KrcmtBusinessTypeDaily> listKrcmtBusinessTypeDaily = this.queryProxy().query(FIND_LISTCODE, KrcmtBusinessTypeDaily.class)
+					.setParameter("companyId", companyId)
+					.setParameter("listBusinessTypeCode", listBusinessTypeCode)
+					.getList();
+		
+		List<KrcmtBusinessFormatSheet> listKrcmtBusinessFormatSheet = this.queryProxy().query(FIND_SHEET_LISTCODE, KrcmtBusinessFormatSheet.class)
+					.setParameter("companyId", companyId)
+					.setParameter("listBusinessTypeCode", listBusinessTypeCode)
+					.getList();
+		
+		if (!listKrcmtBusinessTypeDaily.isEmpty()) {
+			this.commandProxy().removeAll(listKrcmtBusinessTypeDaily);
+			this.getEntityManager().flush();
+			this.commandProxy().removeAll(listKrcmtBusinessFormatSheet);
+		}
+		
+		listBusinessTypeCode.forEach(e -> {
+			List<KrcmtBusinessTypeDaily> newListEntity = listBusinessTypeFormatDailyBySelectedCode.stream()
+						.map(k -> toEntity(k))
+						.collect(Collectors.toList());
+			
+			newListEntity.forEach(a -> {
+				a.krcmtBusinessTypeDailyPK.businessTypeCode = e;
+			});
+			
+			this.commandProxy().insertAll(newListEntity);
+			
+			krcmtBusinessFormatSheetBySelectedCode.krcmtBusinessFormatSheetPK.businessTypeCode = e;
+			this.commandProxy().insert(krcmtBusinessFormatSheetBySelectedCode);
+		});
+	}	
 }
