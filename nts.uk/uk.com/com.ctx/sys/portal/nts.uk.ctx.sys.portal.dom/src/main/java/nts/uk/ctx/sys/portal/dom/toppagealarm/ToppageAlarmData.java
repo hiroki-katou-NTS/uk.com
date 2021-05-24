@@ -56,7 +56,7 @@ public class ToppageAlarmData extends AggregateRoot {
 	
 	
 	//部下の社員ID
-	private List<String> subSids;
+	private List<String> subSids; //#116503
 
 	/**
 	 * リンクURL

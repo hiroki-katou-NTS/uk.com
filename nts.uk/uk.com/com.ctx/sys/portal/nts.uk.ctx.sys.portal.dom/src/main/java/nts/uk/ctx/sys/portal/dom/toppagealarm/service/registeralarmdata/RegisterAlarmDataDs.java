@@ -47,7 +47,7 @@ public class RegisterAlarmDataDs {
 			// update
 			ToppageAlarmData domain = checkDomain.get();
 			if (domain.getReadDateTime().isPresent() && domain.getReadDateTime().get().before(occurrenceDateTime)) {
-				domain.changeSubSids(param.getSubSids());
+				domain.changeSubSids(param.getSubSids()); //#116503
 				domain.updateOccurrenceDateTime(occurrenceDateTime);
 				rq.update(domain);
 			}
@@ -63,7 +63,7 @@ public class RegisterAlarmDataDs {
 					.occurrenceDateTime(occurrenceDateTime)
 					.displayMessage(new DisplayMessage(dispMess.orElse("")))
 					.isResolved(false)
-					.subSids(param.getSubSids())
+					.subSids(param.getSubSids()) //#116503
 					.linkUrl(Optional.ofNullable(new LinkURL(linkUrl.orElse(""))))
 					.readDateTime(Optional.empty())
 					.patternCode(Optional.ofNullable(new AlarmListPatternCode(patternCode.orElse(""))))

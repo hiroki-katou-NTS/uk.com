@@ -46,7 +46,7 @@ public class AlarmDisplayDataDto {
 	private Integer displayAtr;
 	
 	//部下の社員ID
-	private List<String> subSids;
+	private List<String> subSids; //#116503
 	
 	//パターンコード
 	private String patternCode;
