@@ -92,7 +92,7 @@ public class DisplayInShift {
 						param.getListShiftMasterNotNeedGetNew(),
 						param.getListSid(),
 						new DatePeriod(param.getStartDate(), param.getEndDate()),
-						DateInMonth.of(param.getDay()),
+						param.getDay(),
 						param.getActualData,
 						targetOrgIdenInfor,
 						Optional.ofNullable(param.getPersonalCounterOp()).flatMap(x -> Optional.of(EnumAdaptor.valueOf(x, PersonalCounterCategory.class))),

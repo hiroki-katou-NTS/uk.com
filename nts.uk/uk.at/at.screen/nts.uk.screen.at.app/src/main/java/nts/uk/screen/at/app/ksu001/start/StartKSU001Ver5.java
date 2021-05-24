@@ -102,7 +102,7 @@ public class StartKSU001Ver5 {
 			// step 4 || 5.2 start
 			TargetOrgIdenInforDto targetOrgIdenInforDto = new TargetOrgIdenInforDto(targetOrgIdenInfor);
 			DisplayInWorkInfoParam_New param4 = new DisplayInWorkInfoParam_New(listSid, startDate, endDate,
-					param.getActualData, resultStep1.closeDate.getDay(), targetOrgIdenInforDto,
+					param.getActualData, resultStep1.closeDate, targetOrgIdenInforDto,
 					param.personTotalSelected, param.workplaceSelected);
 			resultStep4 = displayInWorkInfo.getDataWorkInfo_New(param4);
 			
@@ -121,7 +121,7 @@ public class StartKSU001Ver5 {
 			
 			param51.setPersonalCounterOp(param.personTotalSelected);
 			param51.setWorkplaceCounterOp(param.workplaceSelected);
-			param51.setDay(resultStep1.closeDate.getDay());
+			param51.setDay(resultStep1.closeDate);
 
 			resultStep51 = displayInShift.getData_New(param51);
 		}

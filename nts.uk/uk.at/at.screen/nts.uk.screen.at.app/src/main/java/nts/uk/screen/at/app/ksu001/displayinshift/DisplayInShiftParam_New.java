@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.DateInMonth;
 import nts.uk.screen.at.app.ksu001.start.ShiftPaletteWantGet;
 
 
@@ -37,6 +38,6 @@ public class DisplayInShiftParam_New {
 	public Integer workplaceCounterOp;
 	
 	// 締め日
-	public int day;
+	public DateInMonth day;
 	
 }

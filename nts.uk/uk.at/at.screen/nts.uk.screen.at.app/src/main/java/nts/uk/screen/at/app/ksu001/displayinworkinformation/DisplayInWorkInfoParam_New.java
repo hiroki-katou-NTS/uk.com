@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.DateInMonth;
 import nts.uk.screen.at.app.ksu001.getinfoofInitstartup.TargetOrgIdenInforDto;
 /**
  * 
@@ -24,7 +25,7 @@ public class DisplayInWorkInfoParam_New {
 	
 	
 //	・締め日：日付
-	public int day;
+	public DateInMonth day;
 	
 //	・対象組織：対象組織識別情報s
 	public TargetOrgIdenInforDto targetOrgIdenInforDto;

@@ -60,7 +60,7 @@ public class DisplayInWorkInformation {
 			getScheduleActualOfWorkInfo.getDataScheduleAndAactualOfWorkInfoNew(
 					param.getListSid(),
 					new DatePeriod(param.getStartDate(), param.getEndDate()),
-					DateInMonth.of(param.getDay()),
+					param.getDay(),
 					param.getActualData,
 					param.getTargetOrgIdenInforDto().convertFromDomain(),
 					Optional.ofNullable(param.getPersonalCounterOp()).flatMap(x -> Optional.of(EnumAdaptor.valueOf(x, PersonalCounterCategory.class))),
