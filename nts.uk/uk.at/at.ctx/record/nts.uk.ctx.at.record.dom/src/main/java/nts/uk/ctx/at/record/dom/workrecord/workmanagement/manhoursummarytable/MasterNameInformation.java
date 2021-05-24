@@ -104,9 +104,9 @@ public class MasterNameInformation {
      */
     private DisplayInformation createDisplayInfo(Optional<String> code, Optional<String> name) {
         if (!code.isPresent())
-            return DisplayInformation.deletedMaster();
+            return new DisplayInformation();
         if (!name.isPresent())
-            return DisplayInformation.cannnotGetName(code.get());
+            return new DisplayInformation(code.get());
         return new DisplayInformation(code.get(), name.get());
     }
 }

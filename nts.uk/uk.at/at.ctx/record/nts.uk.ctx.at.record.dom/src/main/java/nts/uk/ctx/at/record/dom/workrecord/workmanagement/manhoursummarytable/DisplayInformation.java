@@ -11,15 +11,18 @@ import org.eclipse.persistence.internal.xr.ValueObject;
 @AllArgsConstructor
 @Getter
 public class DisplayInformation extends ValueObject {
+    /** コード */
     private String code;
+    /** 名称 */
     private String name;
 
     /**
      * [C-1] 削除済みマスタ
      * @return 表示情報
      */
-    public static DisplayInformation deletedMaster() {
-        return new DisplayInformation(TextResource.localize("KHA003_101"), TextResource.localize("KHA003_101"));
+    public DisplayInformation() {
+        this.code = TextResource.localize("KHA003_101");
+        this.name = TextResource.localize("KHA003_101");
     }
 
     /**
@@ -27,7 +30,8 @@ public class DisplayInformation extends ValueObject {
      * @param code コード
      * @return 	表示情報
      */
-    public static DisplayInformation cannnotGetName(String code){
-        return new DisplayInformation(code, TextResource.localize("KHA003_101"));
+    public DisplayInformation(String code) {
+        this.code = code;
+        this.name = TextResource.localize("KHA003_101");
     }
 }
