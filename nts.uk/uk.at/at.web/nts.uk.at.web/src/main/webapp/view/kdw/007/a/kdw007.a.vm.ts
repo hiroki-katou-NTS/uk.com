@@ -457,8 +457,6 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             $(".need-check").trigger("validate");
             if (!nts.uk.ui.errors.hasError()) {
                 let data = ko.mapping.toJS(self.selectedErrorAlarm());
-                if(self.isDuplicate())
-                    data.fixedAtr = 0;
                 data.boldAtr = data.boldAtr ? 1 : 0;
                 data.alCheckTargetCondition.filterByBusinessType = data.alCheckTargetCondition.filterByBusinessType ? 1 : 0;
                 data.alCheckTargetCondition.filterByEmployment = data.alCheckTargetCondition.filterByEmployment ? 1 : 0;
