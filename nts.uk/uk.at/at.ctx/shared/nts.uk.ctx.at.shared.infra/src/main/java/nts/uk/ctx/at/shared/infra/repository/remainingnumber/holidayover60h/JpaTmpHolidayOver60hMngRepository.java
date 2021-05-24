@@ -12,6 +12,7 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 
 import lombok.SneakyThrows;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet.NtsResultRecord;
@@ -53,7 +54,7 @@ public class JpaTmpHolidayOver60hMngRepository extends JpaRepository implements 
 				Optional.ofNullable(x.getInt("USED_TIME") == null ? null : new UseTime(x.getInt("USED_TIME"))),
 				Optional.ofNullable(new DigestionHourlyTimeType(x.getInt("TIME_DIGESTIVE_ATR") == 1,
 						x.getInt("TIME_HD_TYPE") == 0 ? Optional.empty()
-								: Optional.ofNullable(x.getEnum("TIME_HD_TYPE", AppTimeType.class)))));
+								: Optional.ofNullable(EnumAdaptor.valueOf( x.getInt("TIME_HD_TYPE") - 1, AppTimeType.class)))));
 	}
 
 	@Override

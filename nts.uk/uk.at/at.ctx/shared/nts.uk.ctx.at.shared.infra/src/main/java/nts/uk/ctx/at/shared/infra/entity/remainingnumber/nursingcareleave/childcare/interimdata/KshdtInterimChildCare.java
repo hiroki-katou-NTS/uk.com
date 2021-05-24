@@ -76,7 +76,7 @@ public class KshdtInterimChildCare  extends ContractUkJpaEntity implements Seria
 		return Optional.of(DigestionHourlyTimeType.of(
 				pk.timeDigestiveAtr == 1 ? true : false,
 				Optional.ofNullable(pk.timeHdType == null || pk.timeHdType == 0 ? null
-						: EnumAdaptor.valueOf(pk.timeHdType, AppTimeType.class))));
+						: EnumAdaptor.valueOf(pk.timeHdType-1, AppTimeType.class))));
 	}
 	public void fromDomain(TempChildCareManagement domain) {
 		remainMngID = domain.getRemainManaID();

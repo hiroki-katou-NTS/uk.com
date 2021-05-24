@@ -71,7 +71,7 @@ public class KshdtInterimCareData  extends ContractUkJpaEntity implements Serial
 
 		return Optional.of(DigestionHourlyTimeType.of(
 												pk.timeDigestiveAtr == 1 ? true : false,
-												Optional.ofNullable(pk.timeHdType == null || pk.timeHdType==0 ? null : EnumAdaptor.valueOf(pk.timeHdType, AppTimeType.class))));
+												Optional.ofNullable(pk.timeHdType == null || pk.timeHdType==0 ? null : EnumAdaptor.valueOf(pk.timeHdType - 1, AppTimeType.class))));
 	}
 
 	/**

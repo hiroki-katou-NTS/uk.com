@@ -51,7 +51,7 @@ public class JpaInterimSpecialHolidayMngRepo extends JpaRepository implements In
 				Optional.of(new UseDay(c.usedDays)),
 				Optional.of(DigestionHourlyTimeType.of(c.pk.timeDigestiveAtr == 1, c.pk.timeHdType == 0
 						? Optional.empty() :
-						Optional.of(EnumAdaptor.valueOf(c.pk.timeHdType, AppTimeType.class))))
+						Optional.of(EnumAdaptor.valueOf(c.pk.timeHdType - 1, AppTimeType.class))))
 				);
 	}
 

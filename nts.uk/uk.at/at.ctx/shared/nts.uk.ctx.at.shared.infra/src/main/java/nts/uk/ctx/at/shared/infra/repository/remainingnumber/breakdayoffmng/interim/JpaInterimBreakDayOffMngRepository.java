@@ -122,7 +122,7 @@ public class JpaInterimBreakDayOffMngRepository extends JpaRepository implements
 				Optional.ofNullable(
 						DigestionHourlyTimeType.of(x.pk.timeDigestiveAtr == 1, x.pk.timeHdType == 0 ? Optional.empty()
 								:
-						Optional.ofNullable(EnumAdaptor.valueOf(x.pk.timeHdType, AppTimeType.class))))
+						Optional.ofNullable(EnumAdaptor.valueOf(x.pk.timeHdType -1 , AppTimeType.class))))
 				);
 	}
 	
