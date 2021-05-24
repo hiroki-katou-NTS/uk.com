@@ -1,0 +1,126 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:com="http://xmlns.jcp.org/jsf/component" xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+<body>
+    <ui:composition template="../../../../master/dialog.xhtml">
+        <ui:define name="htmlHead">
+            <script>var dialogSize = { width: 930, height: 680 };</script>
+            <com:ValidatorScript>
+                nts.uk.shr.com.time.TimeWithDayAttr
+            </com:ValidatorScript>
+            <com:scriptfile set="IGNITE" />
+            <com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
+            <com:stylefile path="ksu003.c.style.css" />
+            <com:scriptfile path="ksu003.c.vm.js" />
+        </ui:define>
+
+        <ui:define name="content">
+            <div id="functions-area">
+                <!--C1-1-->
+                <button class="proceed" tabindex="1"
+                    data-bind="click: registerOrUpdate">#{i18n.getText('KSU003_86')}</button>
+                <!--C1-2-->
+                <button data-bind="click: closeDialog" tabindex="2">#{i18n.getText('KSU003_87')}</button>
+            </div>
+            <div id="contents-area">
+                <!--C2-1-->
+                <div style="display: flex;">
+                    <div id="name" style="margin-left: 20px;" data-bind="ntsFormLabel: {required: false}">
+                        #{i18n.getText('KSU003_88')}</div>
+                    <!--C2-2-->
+                    <div style=" margin-top: 9px;" data-bind="html: date()"></div>
+                </div>
+                <hr id="line" />
+                <!--C4-->
+                <div tabindex="3" id="left-content" class="fixed-flex-layout-left">
+                    <div class="container-custom">
+                        <!-- <div class="custom">
+                                            <i class="icon icon-searchbox"></i>
+                                        </div> -->
+                        <div style="width: 360px"
+                            data-bind="ntsSearchBox: {targetKey: 'code', mode: 'ListBox', comId:'component-items-list', items: listEmp(), 
+                                                			searchMode: 'highlight', selected: singleSelectedCode, selectedKey: 'code', fields: ['name', 'code']}" />                
+                
+                    </div>
+                    <div id="component-items-list"></div>
+                
+                </div>
+                <div id="right-content" class="fixed-flex-layout-right">
+                    <div class="container-custom">
+                        <!--C5-1-->
+                        <div id="name" data-bind="ntsFormLabel: {required: true}">
+                            #{i18n.getText('KSU003_89')}</div>
+                        <!--C5-3-->
+                        <span class="ntsControl" style="margin-left: 35px; margin-top: 8px;">
+                            <label class="ntsRadioBox">
+                                <input type="radio" name="textRadio"
+                                    data-bind="checkedValue: 0, checked: selectedMode, enable: true" />
+                                <span class="box"></span><span class="label"> #{i18n.getText('KSU003_91')}</span>
+                            </label>
+                        </span>
+                    </div>
+                    <div class="container-custom">
+
+                         <!--C5-4-->
+                        <span class="ntsControl" style="margin-left: 100px; margin-top: 4px;" tabindex="4">
+                            <label class="ntsRadioBox" >
+                                <input type="radio" name="textRadio"
+                                    data-bind="checkedValue: 1, checked: selectedMode, enable: true" />
+                                <span class="box"></span><span class="label"> #{i18n.getText('KSU003_92')}</span>
+                            </label>
+                        </span>
+                        
+                        <!--C5-4-1-->                       
+                        <input  tabindex="5" style="margin-left: 26px;" data-bind="ntsTimeWithDayEditor: {
+                            value: startTime,
+                            constraint: 'TimeWithDayAttr',
+                            option: {width: '60px', timeWithDay: false},
+                            name: '#[KSU003_93]',
+                           
+                            required: true,
+                            enable: enableTimeZone,
+                            readonly: false,
+                            immediate: false}" />                      
+
+                        <!--C5-4-2-->
+                        <label style="margin: 5px 10px">#{i18n.getText('KSU003_94')}</label>
+
+                        <!--C5-4-3-->                        
+                        <input  tabindex="6"  data-bind="ntsTimeWithDayEditor: {                            
+                            value: endTime,
+                            constraint: 'TimeWithDayAttr',                           
+                            option: {width: '60px', timeWithDay: false},
+                            name: '#[KSU003_95]',
+                           
+                            required: true,
+                            enable: enableTimeZone,
+                            readonly: false,
+                            immediate: false}" />   
+                    </div>
+
+                    <div class="container-custom" style="margin-top: 24px !important;">
+                        <div  data-bind="ntsFormLabel: {required: true}">
+                            #{i18n.getText('KSU003_96')}</div>
+                        <!--C6-2-->
+                        <div id="combo-box" tabindex="7" style="margin-left: 50px;" 
+                                data-bind="ntsComboBox: {
+                                    options: taskMasterList,
+                                    width: 230,
+                                    optionsValue: 'code',
+                                    visibleItemsCount: 10,
+                                    value: selectedTaskCode,
+                                    optionsText: 'taskName',                                  
+                                    columns: [
+                                        { prop: 'code', length: 6 },
+                                        { prop: 'taskName', length: 16 },
+                                    ]}"></div>
+                    </div>
+                </div>
+            </div>
+        </ui:define>
+    </ui:composition>
+</body>
+
+</html>
