@@ -92,8 +92,6 @@ public class KshdtInterimCareData  extends ContractUkJpaEntity implements Serial
 		this.remainMngID = domain.getRemainManaID();
 		this.usedDays = domain.getUsedNumber().getUsedDay().v();
 		this.usedTime = domain.getUsedNumber().getUsedTimes().map(c -> c.v()).orElse(null);
-		this.pk.timeDigestiveAtr = domain.getAppTimeType().map(c -> c.isHourlyTimeType() ? 1 : 0).orElse(0);
-		this.pk.timeHdType = domain.getAppTimeType().flatMap(c -> c.getAppTimeType()).map(c -> c.value).orElse(0);
 
 	}
 }

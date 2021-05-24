@@ -434,8 +434,8 @@ public class JpaInterimBreakDayOffMngRepository extends JpaRepository implements
 				new RequiredDay(x.getDouble("REQUIRED_DAYS")),
 				new UnOffsetTime(x.getInt("UNOFFSET_TIMES")),
 				new UnOffsetDay(x.getDouble("UNOFFSET_DAYS")),
-				Optional.ofNullable(DigestionHourlyTimeType.of(x.getInt("TIME_DIGESTIVE_ATR") == 1,
-						Optional.ofNullable(EnumAdaptor.valueOf(x.getInt("TIME_HD_TYPE"), AppTimeType.class))))
+				Optional.ofNullable(DigestionHourlyTimeType.of(x.getInt("TIME_DIGESTIVE_ATR") == 1,x.getInt("TIME_HD_TYPE") == 0 ?Optional.empty():
+						Optional.ofNullable(EnumAdaptor.valueOf(x.getInt("TIME_HD_TYPE") -1 , AppTimeType.class))))
 				);
 	}
 	@Override
