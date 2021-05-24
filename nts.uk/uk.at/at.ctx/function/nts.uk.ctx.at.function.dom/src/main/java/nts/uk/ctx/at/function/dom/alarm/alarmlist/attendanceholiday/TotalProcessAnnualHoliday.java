@@ -352,14 +352,7 @@ public class TotalProcessAnnualHoliday {
 							AlarmCategory.ATTENDANCE_RATE_FOR_HOLIDAY,
 							AlarmListCheckType.FixCheck,
 							Collections.singletonList(detail)));
-
-			List<AlarmEmployeeList> alarmEmpExist = alarmEmployeeList.stream().filter(x -> x.getEmployeeID().equals(sid)).collect(Collectors.toList());
-			if (alarmEmpExist.isEmpty()) {
-				alarmEmployeeList.add(new AlarmEmployeeList(alarmExtractInfoResults, sid));
-			} else {
-				List<String> sIDs = alarmEmpExist.stream().map(AlarmEmployeeList::getEmployeeID).collect(Collectors.toList());
-				alarmEmployeeList.stream().filter(e -> sIDs.contains(e)).forEach(z -> z.getAlarmExtractInfoResults().addAll(alarmExtractInfoResults));
-			}
+			alarmEmployeeList.add(new AlarmEmployeeList(alarmExtractInfoResults, sid));
 
 //			List<ResultOfEachCondition> result = lstResultCondition.stream()
 //					.filter(x -> x.getCheckType() == AlarmListCheckType.FreeCheck && x.getNo().equals("1"))

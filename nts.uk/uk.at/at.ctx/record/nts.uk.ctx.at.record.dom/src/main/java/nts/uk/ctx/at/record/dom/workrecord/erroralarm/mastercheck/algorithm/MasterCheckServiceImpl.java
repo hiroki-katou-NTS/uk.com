@@ -202,14 +202,7 @@ public class MasterCheckServiceImpl implements MasterCheckService {
 										AlarmCategory.MASTER_CHECK,
 										AlarmListCheckType.FixCheck,
 										Collections.singletonList(resultDetail)));
-
-						List<AlarmEmployeeList> alarmEmpExist = alarmEmployeeList.stream().filter(x -> x.getEmployeeID().equals(sid)).collect(Collectors.toList());
-						if (alarmEmpExist.isEmpty()) {
-							alarmEmployeeList.add(new AlarmEmployeeList(alarmExtractInfoResults, sid));
-						} else {
-							List<String> sIDs = alarmEmpExist.stream().map(AlarmEmployeeList::getEmployeeID).collect(Collectors.toList());
-							alarmEmployeeList.stream().filter(e -> sIDs.contains(e)).forEach(z -> z.getAlarmExtractInfoResults().addAll(alarmExtractInfoResults));
-						}
+						alarmEmployeeList.add(new AlarmEmployeeList(alarmExtractInfoResults, sid));
 
 //						List<ResultOfEachCondition> lstResultTmp = lstResultCondition.stream()
 //								.filter(r -> r.getNo().equals(String.valueOf(exCond.getNo().value)) && r.getCheckType() == AlarmListCheckType.FixCheck).collect(Collectors.toList());

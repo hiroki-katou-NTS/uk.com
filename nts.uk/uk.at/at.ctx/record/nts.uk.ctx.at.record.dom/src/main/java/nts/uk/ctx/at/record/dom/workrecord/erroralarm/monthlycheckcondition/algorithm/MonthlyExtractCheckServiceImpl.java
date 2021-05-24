@@ -201,7 +201,6 @@ public class MonthlyExtractCheckServiceImpl implements MonthlyExtractCheckServic
 			List<AlarmExtractionCondition> alarmExtractConditions, String alarmCheckConditionCode) {
 		DataCheck data = new DataCheck(cid, lstSid, mPeriod, fixConId, lstAnyConID);
 		// 任意抽出条件をチェック
-		List<AlarmExtractInfoResult> alarmExtractInfoResults = new ArrayList<>();
 		data.lstAnyCondMon.stream().forEach(anyCond -> {
 			lstCheckType.add(new AlarmListCheckInfor(String.valueOf(anyCond.getSortBy()), AlarmListCheckType.FreeCheck));
 			this.extractAnyCondAlarm(lstSid,
@@ -214,7 +213,6 @@ public class MonthlyExtractCheckServiceImpl implements MonthlyExtractCheckServic
 					shouldStop,
 					alarmExtractConditions,
 					alarmCheckConditionCode,
-					alarmExtractInfoResults,
                     alarmEmployeeList);
 		});
 		
@@ -486,7 +484,9 @@ public class MonthlyExtractCheckServiceImpl implements MonthlyExtractCheckServic
 //						}
 					}
 				}
-				alarmEmployeeList.add(new AlarmEmployeeList(lstExtractInfoResult, sid));
+				if (!lstExtractInfoResult.isEmpty()) {
+					alarmEmployeeList.add(new AlarmEmployeeList(lstExtractInfoResult, sid));
+				}
 			}
 			synchronized (this) {
 				counter.accept(emps.size());
@@ -529,7 +529,7 @@ public class MonthlyExtractCheckServiceImpl implements MonthlyExtractCheckServic
 			ExtraResultMonthly anyCond,
 			List<ResultOfEachCondition> lstResultCondition, DataCheck data, Consumer<Integer> counter,
 			Supplier<Boolean> shouldStop, List<AlarmExtractionCondition> alarmExtractConditions, String alarmCheckConditionCode,
-			List<AlarmExtractInfoResult> alarmExtractInfoResults, List<AlarmEmployeeList> alarmEmployeeList) {
+			List<AlarmEmployeeList> alarmEmployeeList) {
 
 		//「アラーム抽出条件」を作成してInput．List＜アラーム抽出条件＞を追加
 		List<AlarmExtractionCondition> extractionConditions = alarmExtractConditions.stream()
@@ -606,6 +606,9 @@ public class MonthlyExtractCheckServiceImpl implements MonthlyExtractCheckServic
 						}
 					}
 					
+				}
+				if (!lstExtractInfoResult.isEmpty()) {
+					alarmEmployeeList.add(new AlarmEmployeeList(lstExtractInfoResult, sid));
 				}
 			}	
 			synchronized (this) {

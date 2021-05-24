@@ -232,7 +232,6 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 							prepareData.getListWorkType(),
 							lstStatusEmp, prepareData.getListWorktime(),
 							alarmExtractConditions, alarmCheckConditionCode);
-//					lstResultCondition.addAll(checkTab3.getLstResultCondition());
 					lstExtractInfoResult.addAll(checkTab3.getAlarmExtractInfoResults());
 
 				}
@@ -267,8 +266,6 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 								getWplByListSidAndPeriod,
 								alarmExtractConditions,
 								alarmCheckConditionCode);
-//						lstResultCondition.addAll(checkTab2.getLstResultCondition());
-//						lstCheckType.addAll(checkTab2.getLstCheckType());
 						lstExtractInfoResult.addAll(checkTab2.getAlarmExtractInfoResults());
 							
 					}
@@ -281,8 +278,6 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 							getWplByListSidAndPeriod,
 							alarmExtractConditions,
 							alarmCheckConditionCode);
-//					lstResultCondition.addAll(checkTab4.getLstResultCondition());
-//					lstCheckType.addAll(checkTab4.getLstCheckType());
 					lstExtractInfoResult.addAll(checkTab4.getAlarmExtractInfoResults());
 				}
 				alarmEmployeeLists.add(new AlarmEmployeeList(lstExtractInfoResult, sid));
@@ -1072,7 +1067,7 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 					alarmCode,
 					new AlarmCheckConditionCode(alarmCheckConditionCode),
 					AlarmCategory.DAILY,
-					AlarmListCheckType.FreeCheck,
+					checkType,
 					listDetail)
 			);
 		} else {

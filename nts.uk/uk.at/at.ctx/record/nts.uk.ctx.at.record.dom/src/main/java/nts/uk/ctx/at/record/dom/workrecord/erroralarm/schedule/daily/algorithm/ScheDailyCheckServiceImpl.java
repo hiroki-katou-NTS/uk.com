@@ -458,18 +458,9 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 					checkType,
 					listDetail)
 			);
-		} else {
-			alarmExtractInfoResults.stream().forEach(x -> x.getExtractionResultDetails().add(detail));
 		}
-//		List<ResultOfEachCondition> lstResultTmp = listResultCond.stream()
-//				.filter(x -> x.getCheckType().value == checkType.value && x.getNo().equals(alarmCode)).collect(Collectors.toList());
-//		List<ExtractionResultDetail> listDetail = new ArrayList<>();
-//		if(lstResultTmp.isEmpty()) {
-//			listDetail.add(detail);
-//			listResultCond.add(new ResultOfEachCondition(EnumAdaptor.valueOf(1, AlarmListCheckType.class), alarmCode,
-//					listDetail));
-//		} else {
-//			listResultCond.stream().forEach(x -> x.getLstResultDetail().add(detail));
+//		else {
+//			alarmExtractInfoResults.stream().forEach(x -> x.getExtractionResultDetails().add(detail));
 //		}
 		
 		return alarmExtractInfoResults;

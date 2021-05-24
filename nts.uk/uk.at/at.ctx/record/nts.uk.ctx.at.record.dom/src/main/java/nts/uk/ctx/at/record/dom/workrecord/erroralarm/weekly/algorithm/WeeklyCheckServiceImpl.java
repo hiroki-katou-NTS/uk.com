@@ -150,12 +150,7 @@ public class WeeklyCheckServiceImpl implements WeeklyCheckService {
 //								lstResultCondition.stream().forEach(x -> x.getLstResultDetail().add(extractDetail));
 //                            }
 
-							List<AlarmExtractInfoResult> lstExtractTemp = lstExtractInfoResult.stream()
-									.filter(x -> x.getAlarmListCheckType() == AlarmListCheckType.FreeCheck && x.getAlarmCheckConditionNo().equals(alarmCode))
-									.collect(Collectors.toList());
-							List<ExtractResultDetail> listDetail = new ArrayList<>();
-							if (lstExtractTemp.isEmpty()) {
-								listDetail.add(extractDetail);
+							List<ExtractResultDetail> listDetail = Arrays.asList(extractDetail);
 								lstExtractInfoResult.add(new AlarmExtractInfoResult(
 										alarmCode,
 										new AlarmCheckConditionCode(alarmCheckConditionCode),
@@ -163,9 +158,6 @@ public class WeeklyCheckServiceImpl implements WeeklyCheckService {
 										AlarmListCheckType.FreeCheck,
 										listDetail
 								));
-							} else {
-								lstExtractInfoResult.stream().forEach(x -> x.getExtractionResultDetails().add(extractDetail));
-							}
 							
 //							Optional<AlarmListCheckInfor> optCheckInfor = lstCheckType.stream()
 //									.filter(x -> x.getChekType() == AlarmListCheckType.FreeCheck && x.getNo().equals(String.valueOf(alarmCode)))

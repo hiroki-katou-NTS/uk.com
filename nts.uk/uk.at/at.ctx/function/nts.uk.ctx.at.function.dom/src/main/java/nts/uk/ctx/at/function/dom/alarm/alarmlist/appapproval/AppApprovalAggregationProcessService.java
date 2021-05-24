@@ -247,8 +247,6 @@ public class AppApprovalAggregationProcessService {
 					));
 				}
 				lstCheckInfor.add(new AlarmListCheckInfor(String.valueOf(fixedCond.getNo().value), AlarmListCheckType.FixCheck));
-
-				List<ExtractResultDetail> extractResultDetails = new ArrayList<>();
 				switch (fixedCond.getNo()) {
 					case NOT_APPROVED_1:
 					case NOT_APPROVED_2:
@@ -461,7 +459,7 @@ public class AppApprovalAggregationProcessService {
 				String.valueOf(fixedExtractCond.getNo().value),
 				new AlarmCheckConditionCode(alarmCheckConditionCode),
 				AlarmCategory.APPLICATION_APPROVAL,
-				AlarmListCheckType.FreeCheck,
+				AlarmListCheckType.FixCheck,
 				Collections.singletonList(detail)));
 
 		List<AlarmEmployeeList> alarmEmpExist = alarmEmployeeList.stream().filter(x -> x.getEmployeeID().equals(sid)).collect(Collectors.toList());
