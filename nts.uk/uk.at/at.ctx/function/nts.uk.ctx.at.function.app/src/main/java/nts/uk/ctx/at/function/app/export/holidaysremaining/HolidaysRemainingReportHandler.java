@@ -382,7 +382,7 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
             // Call RequestList369
             grantDate = remainDel.getResult369();
             // Call RequestList281
-            listAnnLeaGrantNumber = annLeaveAdapter.algorithm(employeeId);
+            listAnnLeaGrantNumber = annLeaveAdapter.getAnnLeaGrantNumberImporteds(employeeId);
             listAnnLeaGrantNumber = listAnnLeaGrantNumber.stream()
                     .sorted(Comparator.comparing(AnnLeaGrantNumberImported::getGrantDate)).collect(Collectors.toList());
             // Call RequestList265

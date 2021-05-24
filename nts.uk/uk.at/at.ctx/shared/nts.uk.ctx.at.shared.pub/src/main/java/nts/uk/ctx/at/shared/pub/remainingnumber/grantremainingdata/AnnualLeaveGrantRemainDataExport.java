@@ -19,4 +19,15 @@ public class AnnualLeaveGrantRemainDataExport {
 	 */
 	private Double grantNumberDays;
 
+	/**
+	 * 残日数
+	 */
+
+	private Double remainDay;
+	/**
+	 * 残時間
+	 */
+	private Double remainTime;
+
+
 }
