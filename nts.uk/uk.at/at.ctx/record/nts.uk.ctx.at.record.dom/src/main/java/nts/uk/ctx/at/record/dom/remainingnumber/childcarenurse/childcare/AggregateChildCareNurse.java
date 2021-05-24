@@ -14,8 +14,10 @@ import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare.AggregateChildCareNurseWork.RequireM1;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.ChildCareNurseUsedNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.interimdata.TempChildCareNurseManagement;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.children.service.ChildCareNurseErrors;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.usenumber.DayNumberOfUse;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.usenumber.TimeOfUse;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.childcarenurse.ChildCareNurseUsedInfo;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingCategory;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingLeaveSetting;
 import nts.uk.shr.com.context.AppContexts;
@@ -388,8 +390,8 @@ public class AggregateChildCareNurse {
 		// 取得した値を「子の看護介護集計結果」に設定
 		// ===子の看護介護集計結果．集計期間の休暇情報．本年 = 本年期間の「期間ごとの集計結果」
 		// ===	子の看護介護集計結果．集計期間の休暇情報．翌年= 翌年期間の「期間ごとの集計結果」
-		ChildCareNurseAggrPeriodInfo thisYear = thisYearPeriodWorkOpt.get().getAggrResultOfChildCareNurse().get().getAggrPeriodInfo();
-		Optional <ChildCareNurseAggrPeriodInfo> nextYear =  nextYearPeriodWork.map(c -> c.getAggrResultOfChildCareNurse().get().getAggrPeriodInfo());
+		ChildCareNurseUsedInfo thisYear = thisYearPeriodWorkOpt.get().getAggrResultOfChildCareNurse().get().getAggrPeriodInfo();
+		Optional <ChildCareNurseUsedInfo> nextYear =  nextYearPeriodWork.map(c -> c.getAggrResultOfChildCareNurse().get().getAggrPeriodInfo());
 
 		// 「集計期間の休暇情報」を返す
 		return ChildCareNurseAggrPeriodDaysInfo.of(thisYear, nextYear);

@@ -7,7 +7,7 @@
 #list {
 	background-color: #E0F59E;
 	width: 320px;
-	height: 333px;
+	height: 355px;
 	margin-left: 15px;
 	padding-left: 15px;
 	padding-top: 10px;
@@ -50,10 +50,6 @@ table.control {
 	margin-top: 10px;
 }
 
-.ntsControl.ntsHelpButton {
-	bottom: 30px;
-}
-
 .sp-replacer.sp-light.sp-active {
 	width: 40px;
 }
@@ -71,4 +67,8 @@ table.control {
 }
 .ccg013-nowrap {
 	white-space: nowrap;
+}
+
+.inline-flex {
+  display: inline-flex;
 }

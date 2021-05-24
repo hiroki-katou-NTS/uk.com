@@ -107,8 +107,8 @@ public class ChildCareNusingLeaveFinder {
 				.usedTimes(resultOfChildCareNurse.getStartdateDays().getThisYear().getUsedDays().getUsedTimes().map(x -> x.v()).orElse(0))
 				.build();
 		ChildCareNurseRemainingNumberDto remainingNumber = ChildCareNurseRemainingNumberDto.builder()
-				.usedDays(resultOfChildCareNurse.getStartdateDays().getThisYear().getRemainingNumber().getUsedDays().v())
-				.usedTime(resultOfChildCareNurse.getStartdateDays().getThisYear().getRemainingNumber().getUsedTime().map(x -> x.v()).orElse(0))
+				.usedDays(resultOfChildCareNurse.getStartdateDays().getThisYear().getRemainingNumber().getRemainDay().v())
+				.usedTime(resultOfChildCareNurse.getStartdateDays().getThisYear().getRemainingNumber().getRemainTimes().map(x -> x.v()).orElse(0))
 				.build();
 		ChildCareNurseStartdateInfoDto thisYear = ChildCareNurseStartdateInfoDto.builder()
 				.usedDays(usedDays)
@@ -120,11 +120,11 @@ public class ChildCareNusingLeaveFinder {
 				.build();
 		// this year
 		ChildCareNurseUsedNumberDto aggrPeriodUsedNumberThisYear = ChildCareNurseUsedNumberDto.builder()
-				.usedDay(resultOfChildCareNurse.getAggrperiodinfo().getThisYear().getAggrPeriodUsedNumber().getUsedDay().v())
-				.usedTimes(resultOfChildCareNurse.getAggrperiodinfo().getThisYear().getAggrPeriodUsedNumber().getUsedTimes().map(x -> x.v()).orElse(0))
+				.usedDay(resultOfChildCareNurse.getAggrperiodinfo().getThisYear().getUsedNumber().getUsedDay().v())
+				.usedTimes(resultOfChildCareNurse.getAggrperiodinfo().getThisYear().getUsedNumber().getUsedTimes().map(x -> x.v()).orElse(0))
 				.build();
 		ChildCareNurseAggrPeriodInfoDto aggrPeriodInfoThisYear = ChildCareNurseAggrPeriodInfoDto.builder()
-				.usedCount(resultOfChildCareNurse.getAggrperiodinfo().getThisYear().getUsedCount().v())
+				.usedCount(resultOfChildCareNurse.getAggrperiodinfo().getThisYear().getUsedTimes().v())
 				.usedDays(resultOfChildCareNurse.getAggrperiodinfo().getThisYear().getUsedDays().v())
 				.aggrPeriodUsedNumber(aggrPeriodUsedNumberThisYear)
 				.build();
@@ -198,8 +198,8 @@ public class ChildCareNusingLeaveFinder {
 				.usedTimes(resultOfChildCareNurse.getStartdateDays().getThisYear().getUsedDays().getUsedTimes().map(x -> x.v()).orElse(0))
 				.build();
 		ChildCareNurseRemainingNumberDto remainingNumber = ChildCareNurseRemainingNumberDto.builder()
-				.usedDays(resultOfChildCareNurse.getStartdateDays().getThisYear().getRemainingNumber().getUsedDays().v())
-				.usedTime(resultOfChildCareNurse.getStartdateDays().getThisYear().getRemainingNumber().getUsedTime().map(x -> x.v()).orElse(0))
+				.usedDays(resultOfChildCareNurse.getStartdateDays().getThisYear().getRemainingNumber().getRemainDay().v())
+				.usedTime(resultOfChildCareNurse.getStartdateDays().getThisYear().getRemainingNumber().getRemainTimes().map(x -> x.v()).orElse(0))
 				.build();
 		ChildCareNurseStartdateInfoDto thisYear = ChildCareNurseStartdateInfoDto.builder()
 				.usedDays(usedDays)
@@ -212,11 +212,11 @@ public class ChildCareNusingLeaveFinder {
 
 		// this year
 		ChildCareNurseUsedNumberDto aggrPeriodUsedNumberThisYear = ChildCareNurseUsedNumberDto.builder()
-				.usedDay(resultOfChildCareNurse.getAggrperiodinfo().getThisYear().getAggrPeriodUsedNumber().getUsedDay().v())
-				.usedTimes(resultOfChildCareNurse.getAggrperiodinfo().getThisYear().getAggrPeriodUsedNumber().getUsedTimes().map(x -> x.v()).orElse(0))
+				.usedDay(resultOfChildCareNurse.getAggrperiodinfo().getThisYear().getUsedNumber().getUsedDay().v())
+				.usedTimes(resultOfChildCareNurse.getAggrperiodinfo().getThisYear().getUsedNumber().getUsedTimes().map(x -> x.v()).orElse(0))
 				.build();
 		ChildCareNurseAggrPeriodInfoDto aggrPeriodInfoThisYear = ChildCareNurseAggrPeriodInfoDto.builder()
-				.usedCount(resultOfChildCareNurse.getAggrperiodinfo().getThisYear().getUsedCount().v())
+				.usedCount(resultOfChildCareNurse.getAggrperiodinfo().getThisYear().getUsedTimes().v())
 				.usedDays(resultOfChildCareNurse.getAggrperiodinfo().getThisYear().getUsedDays().v())
 				.aggrPeriodUsedNumber(aggrPeriodUsedNumberThisYear)
 				.build();

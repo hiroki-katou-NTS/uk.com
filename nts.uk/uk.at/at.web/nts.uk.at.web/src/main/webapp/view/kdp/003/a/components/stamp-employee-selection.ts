@@ -264,7 +264,7 @@ module nts.uk.at.kdp003.a {
 				if (grid && $grid.data('igGrid')) {
 					// const top = grid.getBoundingClientRect().top;
 					// const maxHeight = size.y + size.height;
-					const param: string = $('#stamp-input').height() - 185 + "px";
+					const param: string = $('#stamp-input').height() - 178 + "px";
 
 					if (paramSize !== param) {
 						paramSize = param;
