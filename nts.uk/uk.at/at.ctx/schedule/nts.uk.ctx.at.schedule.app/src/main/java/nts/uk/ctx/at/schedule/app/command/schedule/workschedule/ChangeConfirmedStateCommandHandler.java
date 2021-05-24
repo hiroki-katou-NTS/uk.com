@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.schedule.app.command.schedule.workschedule;
 
+import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -23,24 +24,28 @@ import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkScheduleRepository;
  */
 @Stateless
 @Transactional
-public class ChangeConfirmedStateCommandHandler extends CommandHandler<ChangeConfirmedStateCommand>{
+public class ChangeConfirmedStateCommandHandler extends CommandHandler<List<ChangeConfirmedStateCommand>>{
 
 	@Inject
 	private WorkScheduleRepository workScheduleRepository;
 	
 	@Override
-	protected void handle(CommandHandlerContext<ChangeConfirmedStateCommand> context) {
-		ChangeConfirmedStateCommand command = context.getCommand();
-		// 1 変更する(@Require, 社員ID, 年月日, boolean)
-		AtomTask at = ChangeConfirmedService.change(
-				new Require(workScheduleRepository),
-				command.getSid(),
-				command.getYmd(),
-				command.isConfirmed);
-		// 2
-		transaction.execute(() -> {
-			at.run();
-		});
+	protected void handle(CommandHandlerContext<List<ChangeConfirmedStateCommand>> context) {
+		List<ChangeConfirmedStateCommand> commands = context.getCommand();
+		
+		for (ChangeConfirmedStateCommand command : commands) {
+			
+			// 1 変更する(@Require, 社員ID, 年月日, boolean)
+			AtomTask at = ChangeConfirmedService.change(
+					new Require(workScheduleRepository),
+					command.getSid(),
+					command.getYmd(),
+					command.isConfirmed);
+			// 2
+			transaction.execute(() -> {
+				at.run();
+			});
+		}
 		
 	}
 
