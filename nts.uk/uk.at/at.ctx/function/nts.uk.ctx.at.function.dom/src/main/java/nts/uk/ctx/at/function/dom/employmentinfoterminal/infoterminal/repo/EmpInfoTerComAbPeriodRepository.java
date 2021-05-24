@@ -2,6 +2,7 @@ package nts.uk.ctx.at.function.dom.employmentinfoterminal.infoterminal.repo;
 
 import java.util.List;
 
+import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.function.dom.employmentinfoterminal.infoterminal.ContractCode;
 import nts.uk.ctx.at.function.dom.employmentinfoterminal.infoterminal.EmpInfoTerComAbPeriod;
@@ -25,4 +26,7 @@ public interface EmpInfoTerComAbPeriodRepository {
 	
 	// [4] 期間で取得する
 	List<EmpInfoTerComAbPeriod> getInPeriod(ContractCode contractCode, EmpInfoTerminalCode code, GeneralDateTime start, GeneralDateTime end);
+	
+	//	[5] 過去delete
+	void deletePast(ContractCode contractCode, EmpInfoTerminalCode code, GeneralDate dateDelete);
 }

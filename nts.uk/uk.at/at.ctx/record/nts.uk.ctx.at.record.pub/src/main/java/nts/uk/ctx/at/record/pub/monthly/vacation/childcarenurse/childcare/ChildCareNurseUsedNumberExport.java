@@ -5,9 +5,6 @@ import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.ChildCareNurseUsedNumber;
-import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.usenumber.DayNumberOfUse;
-import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.usenumber.TimeOfUse;
 
 /**
  * 子の看護介護使用数
@@ -44,17 +41,5 @@ public class ChildCareNurseUsedNumberExport {
 		exp.usedDays = usedDays;
 		exp.usedTime = usedTime;
 		return exp;
-	}
-
-	/**
-	 * ドメインへ変換
-	 * @return
-	 */
-	public ChildCareNurseUsedNumber toDomain() {
-
-		return ChildCareNurseUsedNumber.of(
-				new DayNumberOfUse(usedDays),
-				usedTime.isPresent() ? Optional.of(new TimeOfUse(usedTime.get())) : Optional.empty()
-				);
 	}
 }

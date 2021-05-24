@@ -28,7 +28,7 @@ public class EmpInfoTerminalComStatusTest {
 	public void isCommunicationError1() {
 		val intervalTime = new MonitorIntervalTime(1);
 		EmpInfoTerminalComStatus empInfoTerminalComStatus = EmpInfoTerminalComStatusHelper.createEmpInfoTerminalComStatus();
-		val result = empInfoTerminalComStatus.isCommunicationError(intervalTime);
+		val result = empInfoTerminalComStatus.isCommunicationError(intervalTime, GeneralDateTime.now());
 		assertThat(result).isFalse();
 	}
 	
@@ -36,7 +36,7 @@ public class EmpInfoTerminalComStatusTest {
 	public void isCommunicationError2() {
 		val intervalTime = new MonitorIntervalTime(1);
 		EmpInfoTerminalComStatus empInfoTerminalComStatus = EmpInfoTerminalComStatusHelper.createEmpInfoTerminalComStatus2();
-		val result = empInfoTerminalComStatus.isCommunicationError(intervalTime);
+		val result = empInfoTerminalComStatus.isCommunicationError(intervalTime, GeneralDateTime.now());
 		assertThat(result).isTrue();
 	}
 }

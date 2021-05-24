@@ -8,5 +8,5 @@ public class CheckProcessCommand {
 	private String empCalAndSumExecLogID;
     private String periodStartDate;
     private String periodEndDate;
-	
+
 }

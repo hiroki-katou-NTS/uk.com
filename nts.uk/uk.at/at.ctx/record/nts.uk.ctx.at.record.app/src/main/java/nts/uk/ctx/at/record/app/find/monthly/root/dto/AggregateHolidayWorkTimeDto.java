@@ -8,8 +8,6 @@ import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.ItemConst;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.TimeMonthWithCalculation;
@@ -26,27 +24,25 @@ public class AggregateHolidayWorkTimeDto implements ItemConst, AttendanceItemDat
 	private int no;
 
 	/** 休出時間 */
-	@AttendanceItemLayout(jpPropertyName = HOLIDAY_WORK, layout = LAYOUT_A)
 	private TimeMonthWithCalculationDto holidayWorkTime;
 
 	/** 事前休出時間 */
-	@AttendanceItemValue(type = ValueType.TIME)
-	@AttendanceItemLayout(jpPropertyName = BEFORE, layout = LAYOUT_B)
 	private int beforeHolidayWorkTime;
 
 	/** 振替時間 */
-	@AttendanceItemLayout(jpPropertyName = TRANSFER, layout = LAYOUT_C)
 	private TimeMonthWithCalculationDto transferTime;
 
 	/** 法定内休出時間 */
-	@AttendanceItemValue(type = ValueType.TIME)
-	@AttendanceItemLayout(jpPropertyName = LEGAL + HOLIDAY_WORK, layout = LAYOUT_D)
 	private int legalHolidayWorkTime;
 
 	/** 法定内振替休出時間 */
-	@AttendanceItemValue(type = ValueType.TIME)
-	@AttendanceItemLayout(jpPropertyName = LEGAL + TRANSFER, layout = LAYOUT_E)
 	private int legalTransferHolidayWorkTime;
+
+	/** フレックス内休出時間 */
+	private int flexHolidayWorkTime;
+
+	/** フレックス内振替休出時間 */
+	private int flexTransferHolidayWorkTime;
 
 	public AggregateHolidayWorkTime toDomain() {
 		return AggregateHolidayWorkTime.of(new HolidayWorkFrameNo(no),
@@ -54,7 +50,9 @@ public class AggregateHolidayWorkTimeDto implements ItemConst, AttendanceItemDat
 											new AttendanceTimeMonth(beforeHolidayWorkTime),
 											transferTime == null ? new TimeMonthWithCalculation() : transferTime.toDomain(),
 											new AttendanceTimeMonth(legalHolidayWorkTime),
-											new AttendanceTimeMonth(legalTransferHolidayWorkTime));
+											new AttendanceTimeMonth(legalTransferHolidayWorkTime),
+											new AttendanceTimeMonth(flexHolidayWorkTime),
+											new AttendanceTimeMonth(flexTransferHolidayWorkTime));
 	}
 	
 	public static AggregateHolidayWorkTimeDto from(AggregateHolidayWorkTime domain) {
@@ -66,6 +64,8 @@ public class AggregateHolidayWorkTimeDto implements ItemConst, AttendanceItemDat
 			dto.setLegalHolidayWorkTime(domain.getLegalHolidayWorkTime() == null ? 0 : domain.getLegalHolidayWorkTime().valueAsMinutes());
 			dto.setLegalTransferHolidayWorkTime(domain.getLegalTransferHolidayWorkTime() == null ? 0 : domain.getLegalTransferHolidayWorkTime().valueAsMinutes());
 			dto.setTransferTime(TimeMonthWithCalculationDto.from(domain.getTransferTime()));
+			dto.setFlexHolidayWorkTime(domain.getFlexHolidayWorkTime().valueAsMinutes());
+			dto.setFlexTransferHolidayWorkTime(domain.getFlexTransferHolidayWorkTime().valueAsMinutes());
 		}
 		return dto;
 	}
@@ -76,8 +76,12 @@ public class AggregateHolidayWorkTimeDto implements ItemConst, AttendanceItemDat
 			return Optional.of(ItemValue.builder().value(beforeHolidayWorkTime).valueType(ValueType.TIME));
 		case LEGAL + HOLIDAY_WORK:
 			return Optional.of(ItemValue.builder().value(legalHolidayWorkTime).valueType(ValueType.TIME));
-		case (LEGAL + TRANSFER):
+		case LEGAL + TRANSFER:
 			return Optional.of(ItemValue.builder().value(legalTransferHolidayWorkTime).valueType(ValueType.TIME));
+		case FLEX:
+			return Optional.of(ItemValue.builder().value(flexHolidayWorkTime).valueType(ValueType.TIME));
+		case FLEX + TRANSFER:
+			return Optional.of(ItemValue.builder().value(flexTransferHolidayWorkTime).valueType(ValueType.TIME));
 		default:
 		}
 		return AttendanceItemDataGate.super.valueOf(path);
@@ -111,7 +115,9 @@ public class AggregateHolidayWorkTimeDto implements ItemConst, AttendanceItemDat
 		switch (path) {
 		case BEFORE:
 		case LEGAL + HOLIDAY_WORK:
-		case (LEGAL + TRANSFER):
+		case LEGAL + TRANSFER:
+		case FLEX:
+		case FLEX + TRANSFER:
 			return PropType.VALUE;
 		default:
 		}
@@ -129,6 +135,12 @@ public class AggregateHolidayWorkTimeDto implements ItemConst, AttendanceItemDat
 			break;
 		case (LEGAL + TRANSFER):
 			legalTransferHolidayWorkTime = value.valueOrDefault(0);
+			break;
+		case (FLEX):
+			flexHolidayWorkTime = value.valueOrDefault(0);
+			break;
+		case (FLEX + TRANSFER):
+			flexTransferHolidayWorkTime = value.valueOrDefault(0);
 			break;
 		default:
 		}

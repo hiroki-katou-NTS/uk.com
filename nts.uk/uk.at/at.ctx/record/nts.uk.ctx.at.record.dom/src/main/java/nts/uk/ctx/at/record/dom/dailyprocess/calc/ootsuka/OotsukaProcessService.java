@@ -2,7 +2,6 @@ package nts.uk.ctx.at.record.dom.dailyprocess.calc.ootsuka;
 
 import java.util.Optional;
 
-import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.worktime.common.HolidayCalculation;
@@ -34,5 +33,4 @@ public interface OotsukaProcessService {
 	
 //	//IWか判断処理
 //	public boolean isIWWorkTimeAndCode(WorkType workType,WorkTimeCode workTimeCode);
-	
 }
