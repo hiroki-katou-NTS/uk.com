@@ -4480,7 +4480,6 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 
 				if ((columnKey === "startTime1" || columnKey === "startTime2" ||
 					columnKey === "endTime1" || columnKey === "endTime2") && self.checkUpdateTime.id == 0) {
-					if (checkErr2.length > 0 && checkErr.length > 0 && $("#extable-ksu003").data("errors").length > 0) return;
 					// kiểm tra startTime > endTime và time = null
 					if ((columnKey === "startTime1" || columnKey === "endTime1") &&
 						(dataMid.startTime1 == "" || duration.parseString(dataMid.startTime1).toValue() > duration.parseString(dataMid.endTime1).toValue())) {
@@ -4488,6 +4487,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 						if (self.checkCloseKsu003 == true) return;
 						block.invisible();
 						self.checkCalcSum = false;
+						self.enableSave(false);
 						errorDialog({ messageId: "Msg_54" }).then(() => {
 							self.checkCalcSum = true;
 							self.enableSave(false);
@@ -4510,7 +4510,6 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 						});
 						return;
 					}
-
 					// kiểm tra startTime > endTime và time = null
 					if ((columnKey === "startTime2" || columnKey === "endTime2") &&
 						(dataMid.startTime2 == "" || duration.parseString(dataMid.startTime2).toValue() > duration.parseString(dataMid.endTime2).toValue())) {
@@ -4538,6 +4537,11 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 								}
 							}
 						});
+						return;
+					}
+					
+					if (checkErr2.length > 0 && checkErr.length > 0 && $("#extable-ksu003").data("errors").length > 0) {
+						self.enableSave(false);
 						return;
 					}
 
