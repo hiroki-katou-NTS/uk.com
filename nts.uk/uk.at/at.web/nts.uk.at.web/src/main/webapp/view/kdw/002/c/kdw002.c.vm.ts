@@ -220,15 +220,14 @@ module nts.uk.at.view.kdw002.c {
                                 command.roleID = self.currentRoleId();
                                 command.destinationList = data;
                                 nts.uk.ui.block.invisible();
-                                service.copyMonthlyAttd(command).done(() => {
+                                service.copyDailyAttd(command).done(() => {
                                     nts.uk.ui.dialog.info({ messageId: 'Msg_15' }).then(() => {        
                                         
                                     });
                                 }).always(() => {
                                     nts.uk.ui.block.clear();
                                 });
-                            }
-                            console.log(data, 'data');                                   
+                            }                               
                         });
                     });
                 } else {
@@ -256,8 +255,7 @@ module nts.uk.at.view.kdw002.c {
                                 }).always(() => {
                                     nts.uk.ui.block.clear();
                                 });
-                            }
-                            console.log(data, 'data');                               
+                            }                              
                         });
                     });
                 }

@@ -50,7 +50,7 @@ public class DailyAttendanceItemAuthorityWS extends WebService {
 	}
 	
 	@POST
-	@Path("copydailylyattd")
+	@Path("copydailyattd")
 	public void copyMonthlyAttd(DailyItemControlByAuthCopyCmd command) {
 		this.copyDailylyHandler.handle(command);
 	}

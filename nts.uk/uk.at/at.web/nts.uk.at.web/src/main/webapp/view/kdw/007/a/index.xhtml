@@ -44,7 +44,7 @@
 					<!--A1_4-->
 					<com:ko-if bind="screenMode() == 0">
 						<button id = "copy-button" class="normal" 
-										data-bind="if: screenMode() === 0, click: duplicate, enable: !isNewMode()">#{i18n.getText('KDW007_112')}</button>
+										data-bind="if: screenMode() === 0, click: duplicate, enable:  !isNewMode() &amp;&amp; showTypeAtr() != 1 ">#{i18n.getText('KDW007_112')}</button>
 					</com:ko-if>
 				</div>
 				<div id="contents-area" class="fixed-flex-layout">
