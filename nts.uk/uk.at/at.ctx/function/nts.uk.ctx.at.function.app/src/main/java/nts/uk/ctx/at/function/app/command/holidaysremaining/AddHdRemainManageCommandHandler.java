@@ -42,7 +42,7 @@ public class AddHdRemainManageCommandHandler extends CommandHandler<HdRemainMana
 		HdRemainManageCommand command = context.getCommand();
 		if(command.getItemSelType() == ItemSelectionEnum.FREE_SETTING.value){
 			duplicate = listFree.stream().anyMatch(x->x.getCode().v()
-					.equals(command.getCd())&&x.getEmployeeId().equals(login.employeeId()));
+					.equals(command.getCd())&&x.getEmployeeId().get().equals(login.employeeId()));
 		}else if(command.getItemSelType() == ItemSelectionEnum.STANDARD_SELECTION.value) {
 			duplicate = standards.stream().anyMatch(x->x.getCode().v()
 					.equals(command.getCd()));
