@@ -21,8 +21,8 @@ public class StampRecordHelper {
 				new ContractCode("DUMMY"),
 				new StampNumber("stampNumber"), 
 				GeneralDateTime.now(), 
-				new StampTypeDisplay(""),
-				Optional.of(new EmpInfoTerminalCode("1000")));
+				new StampTypeDisplay("")
+				);
 	}
 	
 	public static List<StampRecord> getListStampRecord() {
@@ -33,15 +33,13 @@ public class StampRecordHelper {
 				new ContractCode("DUMMY"),
 				new StampNumber("stampNumber"), 
 				GeneralDateTime.now(), 
-				new StampTypeDisplay(""),  
-				Optional.of(new EmpInfoTerminalCode("0"))));
+				new StampTypeDisplay("")));
 		
 		data.add(new StampRecord(
 				new ContractCode("DUMMY"),
 				new StampNumber("stampNumber"), 
 				GeneralDateTime.now(),
-				new StampTypeDisplay(""), 
-				Optional.of(new EmpInfoTerminalCode("0"))));
+				new StampTypeDisplay("")));
 		
 		return data;
 	}
@@ -50,7 +48,6 @@ public class StampRecordHelper {
 				new ContractCode("DUMMY"),
 				new StampNumber("stampNumber"), 
 				GeneralDateTime.now(),
-				new StampTypeDisplay(""), 
-				Optional.of(new EmpInfoTerminalCode("1000")));
+				new StampTypeDisplay(""));
 	}
 }

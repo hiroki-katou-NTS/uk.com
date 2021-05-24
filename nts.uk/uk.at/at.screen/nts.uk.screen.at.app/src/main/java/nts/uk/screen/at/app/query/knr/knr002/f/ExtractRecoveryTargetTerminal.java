@@ -65,11 +65,11 @@ public class ExtractRecoveryTargetTerminal {
 			dto.setTerSerialNo(e.getTerSerialNo().isPresent() ?
 							   e.getTerSerialNo().get().v() : "");
 			dto.setIntervalTime(e.getIntervalTime().v());
-			dto.setOutSupport(e.getCreateStampInfo().getConvertEmbCate().getOutSupport().value);
-			dto.setReplace(e.getCreateStampInfo().getOutPlaceConvert().getReplace().value);
-			dto.setGoOutReason(e.getCreateStampInfo().getOutPlaceConvert().getGoOutReason().isPresent()?
-							   e.getCreateStampInfo().getOutPlaceConvert().getGoOutReason().get().value : null);
-			dto.setEntranceExit(e.getCreateStampInfo().getConvertEmbCate().getEntranceExit().value);
+			//TODO: set value to dto (temporary fixed) #20210520
+			dto.setOutSupport(0);
+			dto.setReplace(0);
+			dto.setGoOutReason(0);
+			dto.setEntranceExit(0);
 			dto.setMemo(e.getEmpInfoTerMemo().isPresent()?
 						e.getEmpInfoTerMemo().get().v() : "");
 			dto.setModelClassification(machineInfoVal.getModelEmpInfoTer().value);

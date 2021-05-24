@@ -32,7 +32,7 @@ public class ConvertTimeRecordStampService {
 	};
 
 	// 変換する
-	public static Pair<Optional<AtomTask>, Optional<StampDataReflectResult>> convertData(Require require,
+	public static Optional<Pair<Optional<AtomTask>, Optional<StampDataReflectResult>>> convertData(Require require,
 			EmpInfoTerminalCode empInfoTerCode, ContractCode contractCode, StampReceptionData stampReceptData) {
 
 		Optional<EmpInfoTerminal> empInfoTerOpt = require.getEmpInfoTerminal(empInfoTerCode, contractCode);
@@ -40,22 +40,22 @@ public class ConvertTimeRecordStampService {
 		Optional<TimeRecordReqSetting> requestSetting = require.getTimeRecordReqSetting(empInfoTerCode, contractCode);
 
 		if (!empInfoTerOpt.isPresent() || !requestSetting.isPresent())
-			return Pair.of(Optional.empty(), Optional.empty());
+			return Optional.empty();
 
 		// $就業情報端末.打刻(打刻受信データ)
-		Pair<Stamp, StampRecord> stamp = empInfoTerOpt.get().createStamp(stampReceptData);
+		Optional<Pair<Stamp, StampRecord>> stamp = empInfoTerOpt.get().getCreateStampInfo().createStamp(contractCode, stampReceptData);
 
 		if (!canCreateNewData(require, contractCode, stampReceptData))
-			return Pair.of(Optional.empty(), Optional.empty());
+			return Optional.of(Pair.of(Optional.empty(), Optional.empty()));
 
 		Optional<StampCard> stampCard = require.getByCardNoAndContractCode(contractCode,
 				new StampNumber(stampReceptData.getIdNumber()));
 
 		if (!stampCard.isPresent())
-			return Pair.of(Optional.empty(), Optional.empty());
+			return Optional.empty();
 
 		StampDataReflectResult strampReflectResult = StampDataReflectProcessService.reflect(require,
-				Optional.of(stampCard.get().getEmployeeId()), stamp.getRight(), Optional.of(stamp.getLeft()));
+				Optional.of(stampCard.get().getEmployeeId()), stamp.get().getRight(), Optional.of(stamp.get().getLeft()));
 
 		// TODO: 処理にエラーがある場合、別の申請受信データの処理を続行
 //		if (!strampReflectResult.getReflectDate().isPresent()) {
@@ -65,7 +65,7 @@ public class ConvertTimeRecordStampService {
 //				require.insertLogAll(alEmpTer.get());
 //		}
 
-		return Pair.of(Optional.empty(), Optional.of(strampReflectResult));
+		return Optional.of(Pair.of(Optional.empty(), Optional.of(strampReflectResult)));
 	}
 
 	// [pvt-1] 新しいを作成することができる

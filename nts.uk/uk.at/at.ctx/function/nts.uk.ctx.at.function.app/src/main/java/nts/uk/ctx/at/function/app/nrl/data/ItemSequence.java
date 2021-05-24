@@ -108,12 +108,11 @@ public abstract class ItemSequence<T extends MeanCarryable> implements Sequentia
 	public static final List<String> APP_REASON_REQ_ORDER = Arrays.asList(Element.SOH, Element.HDR, Element.LENGTH,
 			Element.VERSION, Element.FLAG, Element.FRAGMENT_NUMBER, Element.NRL_NO, Element.MAC_ADDR, Element.CONTRACT_CODE , Element.PADDING,
 			Element.BCC);
-
 	public static final List<String> APP_REASON_RES_ORDER = Arrays.asList(Element.SOH, Element.HDR, Element.LENGTH,
 			Element.VERSION, Element.FLAG, Element.FRAGMENT_NUMBER, Element.NRL_NO, Element.MAC_ADDR, Element.CONTRACT_CODE , Element.PADDING,
 			Element.PAYLOAD, Element.BCC);
 	
-	public static final List<String> UK_SWITCH_MODE =  Arrays.asList(Element.SOH, Element.HDR, Element.LENGTH,
+	public static final List<String> UK_SWITCH_MODE_REQ =  Arrays.asList(Element.SOH, Element.HDR, Element.LENGTH,
 			Element.VERSION, Element.FLAG, Element.FRAGMENT_NUMBER, Element.NRL_NO, Element.MAC_ADDR, Element.CONTRACT_CODE , Element.PADDING,
 			Element.BCC);
 	public static final List<String> UK_SWITCH_MODE_RES = Arrays.asList(Element.SOH, Element.HDR, Element.LENGTH,
@@ -197,7 +196,7 @@ public abstract class ItemSequence<T extends MeanCarryable> implements Sequentia
 			break;
 			
 		case UK_SWITCH_MODE:
-			 orders = request ? UK_SWITCH_MODE : UK_SWITCH_MODE_RES;;
+			 orders = request ? UK_SWITCH_MODE_REQ : UK_SWITCH_MODE_RES;
 			
 		default:
 			return Optional.empty();

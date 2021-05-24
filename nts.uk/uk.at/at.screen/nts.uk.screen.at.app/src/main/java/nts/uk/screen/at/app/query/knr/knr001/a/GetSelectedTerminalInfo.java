@@ -67,12 +67,11 @@ public class GetSelectedTerminalInfo {
 				empInfoTerValue.getTerSerialNo().isPresent() ? empInfoTerValue.getTerSerialNo().get().v() : "");
 		dto.setWorkLocationName(workLocation.isPresent() ? workLocation.get().getWorkLocationName().v() : "");
 		dto.setIntervalTime(empInfoTerValue.getIntervalTime().v());
-		dto.setOutSupport(empInfoTerValue.getCreateStampInfo().getConvertEmbCate().getOutSupport().value);
-		dto.setReplace(empInfoTerValue.getCreateStampInfo().getOutPlaceConvert().getReplace().value);
-		dto.setGoOutReason(empInfoTerValue.getCreateStampInfo().getOutPlaceConvert().getGoOutReason().isPresent()
-				? empInfoTerValue.getCreateStampInfo().getOutPlaceConvert().getGoOutReason().get().value
-				: null);
-		dto.setEntranceExit(empInfoTerValue.getCreateStampInfo().getConvertEmbCate().getEntranceExit().value);
+		//TODO: set value to dto (temporary fixed) #20210520
+		dto.setOutSupport(0);
+		dto.setReplace(0);
+		dto.setGoOutReason(0);
+		dto.setEntranceExit(0);
 		dto.setMemo(
 				empInfoTerValue.getEmpInfoTerMemo().isPresent() ? empInfoTerValue.getEmpInfoTerMemo().get().v() : "");
 		

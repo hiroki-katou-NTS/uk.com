@@ -29,15 +29,13 @@ public class StampRecordTest {
 		
 		StampNumber stampNumber = new StampNumber("stampNumber");
 		GeneralDateTime stampDateTime = GeneralDateTime.now();
-		Optional<EmpInfoTerminalCode> empInfoTerCode = Optional.of(new EmpInfoTerminalCode("1000")); 
 		StampRecord stampRecord = new StampRecord(new ContractCode("DUMMY"), 
 				stampNumber,
 				stampDateTime, 
-				new StampTypeDisplay(""), 
-				empInfoTerCode);
+				new StampTypeDisplay("")
+				);
 		assertThat(stampRecord.getStampNumber()).isEqualTo(stampNumber);
 		assertThat(stampRecord.getStampDateTime()).isEqualTo(stampDateTime);
-		assertThat(stampRecord.getEmpInfoTerCode().get()).isEqualTo(empInfoTerCode.get());
 	}
 
 }

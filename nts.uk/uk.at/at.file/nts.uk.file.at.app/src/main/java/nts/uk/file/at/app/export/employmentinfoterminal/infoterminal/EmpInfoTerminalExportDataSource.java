@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminal;
 import nts.uk.ctx.at.record.dom.stampmanagement.workplace.WorkLocation;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 /**
  * 
  * @author huylq
@@ -32,26 +33,27 @@ public class EmpInfoTerminalExportDataSource {
 	private String empInfoTerMemo;
 	
 	public static EmpInfoTerminalExportDataSource convertToDatasource(EmpInfoTerminal empInfoTerminal, WorkLocation workLocation) {
+		//TODO: set value to dto (temporary fixed) #20210520
 		String outAtr = "置き換えなし";
-		switch(empInfoTerminal.getCreateStampInfo().getOutPlaceConvert().getReplace()) {
+		switch(NotUseAtr.NOT_USE) {
 		case USE:
-			outAtr = empInfoTerminal.getCreateStampInfo().getOutPlaceConvert().getGoOutReason().get().nameId;
+			outAtr = "";
 			break;
 		case NOT_USE:
 			default:
 				break;
 		}
-		
+		//TODO: set value to dto (temporary fixed) #20210520
 		return new EmpInfoTerminalExportDataSource(empInfoTerminal.getEmpInfoTerCode().v().toString(), empInfoTerminal.getEmpInfoTerName().v(),
 				empInfoTerminal.getModelEmpInfoTer().name(), empInfoTerminal.getMacAddress().v(), 
 				empInfoTerminal.getIpAddress().isPresent() ? empInfoTerminal.getIpAddress().get().toString() : "",
 				empInfoTerminal.getTerSerialNo().isPresent() ? empInfoTerminal.getTerSerialNo().get().v() : "", 
 				workLocation != null ? empInfoTerminal.getCreateStampInfo().getWorkLocationCd().get().v() : "", 
 				workLocation != null ? workLocation.getWorkLocationName().v() : "",
-				empInfoTerminal.getIntervalTime().v(), empInfoTerminal.getCreateStampInfo().getConvertEmbCate().getOutSupport().value == 1 ? "〇" : "ー", 
-				outAtr, empInfoTerminal.getCreateStampInfo().getOutPlaceConvert().getReplace().nameId, 
-				empInfoTerminal.getCreateStampInfo().getOutPlaceConvert().getGoOutReason().isPresent() ? empInfoTerminal.getCreateStampInfo().getOutPlaceConvert().getGoOutReason().get().nameId : "", 
-				empInfoTerminal.getCreateStampInfo().getConvertEmbCate().getEntranceExit().value == 1 ? "〇" : "ー", 
+				empInfoTerminal.getIntervalTime().v(),  "ー", 
+				outAtr, "", 
+				"", 
+			   "ー", 
 				empInfoTerminal.getEmpInfoTerMemo().isPresent() ? empInfoTerminal.getEmpInfoTerMemo().get().v() : "");
 	}
 }
