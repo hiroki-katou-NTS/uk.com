@@ -831,10 +831,12 @@ public class SupportWorkReflection {
 			if ((changeMeansStart == TimeChangeMeans.HAND_CORRECTION_PERSON)
 					|| (changeMeansStart == TimeChangeMeans.HAND_CORRECTION_OTHERS)
 					|| (changeMeansStart == TimeChangeMeans.APPLICATION)) {
-				// 編集状態追加する
-				Optional<ItemValue> itemStart = mapItemValue.get(attendance.getWorkNo()).stream()
-						.filter(x -> x.getPathLink().toString().contains(ItemConst.START)).findFirst();
-				this.addEditStatus(itemStart.get().getItemId(), integrationOfDaily, changeMeansStart);
+				if (!mapItemValue.values().isEmpty()) {
+					// 編集状態追加する
+					Optional<ItemValue> itemStart = mapItemValue.get(attendance.getWorkNo()).stream()
+							.filter(x -> x.getPathLink().toString().contains(ItemConst.START)).findFirst();
+					this.addEditStatus(itemStart.get().getItemId(), integrationOfDaily, changeMeansStart);
+				}
 			}
 			TimeChangeMeans changeMeansEnd = attendance.getTimeSheet().getEnd().isPresent()
 					? attendance.getTimeSheet().getEnd().get().getReasonTimeChange().getTimeChangeMeans()
@@ -842,10 +844,12 @@ public class SupportWorkReflection {
 			if ((changeMeansEnd == TimeChangeMeans.HAND_CORRECTION_PERSON)
 					|| (changeMeansEnd == TimeChangeMeans.HAND_CORRECTION_OTHERS)
 					|| (changeMeansEnd == TimeChangeMeans.APPLICATION)) {
-				// 編集状態追加する
-				Optional<ItemValue> itemEnd = mapItemValue.get(attendance.getWorkNo()).stream()
-						.filter(x -> x.getPathLink().toString().contains(ItemConst.END)).findFirst();
-				this.addEditStatus(itemEnd.get().getItemId(), integrationOfDaily, changeMeansEnd);
+				if (!mapItemValue.values().isEmpty()) {
+					// 編集状態追加する
+					Optional<ItemValue> itemEnd = mapItemValue.get(attendance.getWorkNo()).stream()
+							.filter(x -> x.getPathLink().toString().contains(ItemConst.END)).findFirst();
+					this.addEditStatus(itemEnd.get().getItemId(), integrationOfDaily, changeMeansEnd);
+				}
 			}
 		}
 	}
