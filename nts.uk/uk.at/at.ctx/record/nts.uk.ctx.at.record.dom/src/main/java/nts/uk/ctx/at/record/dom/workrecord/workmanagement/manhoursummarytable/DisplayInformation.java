@@ -2,16 +2,15 @@ package nts.uk.ctx.at.record.dom.workrecord.workmanagement.manhoursummarytable;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import nts.uk.shr.com.i18n.TextResource;
-import org.apache.logging.log4j.util.Strings;
+import org.eclipse.persistence.internal.xr.ValueObject;
 
 /**
  * 表示情報
  */
 @AllArgsConstructor
 @Getter
-public class DisplayInformation {
+public class DisplayInformation extends ValueObject {
     private String code;
     private String name;
 
