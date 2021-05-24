@@ -279,7 +279,9 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 							alarmCheckConditionCode);
 					lstExtractInfoResult.addAll(checkTab4.getAlarmExtractInfoResults());
 				}
-				alarmEmployeeLists.add(new AlarmEmployeeList(lstExtractInfoResult, sid));
+				if (!lstExtractInfoResult.isEmpty()) {
+					alarmEmployeeLists.add(new AlarmEmployeeList(lstExtractInfoResult, sid));
+				}
 			}
 			synchronized (this) {
 				counter.accept(emps.size());

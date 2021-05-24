@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.function.dom.alarm.alarmlist.persistenceextractresult;
 
+import lombok.val;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
@@ -101,46 +102,37 @@ public class CreateAlarmDataTopPageService {
         //$パターン名称　＝　アラームリストの情報.get(0).パターン名
         Optional<String> patternName = alarmListInfo.get(0).getPatternName();
         //$エラーがある職場IDList：for
-        wkplIdListErrors.forEach(wkpl -> {
-            //職場、基準日からアラーム通知先の社員を取得する
+        for (String wkpl : wkplIdListErrors) {//職場、基準日からアラーム通知先の社員を取得する
             List<String> empIds = require.getListEmployeeId(wkpl, GeneralDate.today());
             //$発生日時　＝　$職場Map.get($)　：　sort $.発生日時 DESC first $.発生日時
-            Optional<TopPageAlarmImport> optWkplTopAlarm = workplaceMap.get(wkpl).stream()
+            val topAlarmParamList = workplaceMap.getOrDefault(wkpl, new ArrayList<>());
+
+            val optWkplTopAlarm = topAlarmParamList.stream()
                     .sorted((e1, e2) -> e2.getOccurrenceDateTime().compareTo(e1.getOccurrenceDateTime()))
                     .findFirst();
-            GeneralDateTime occurrenceDateTime = optWkplTopAlarm.isPresent() ? optWkplTopAlarm.get().getOccurrenceDateTime() : null;
+            GeneralDateTime occurrenceDateTime = optWkplTopAlarm.isPresent() ? optWkplTopAlarm.get().getOccurrenceDateTime() : GeneralDateTime.now();
 
+            val lstEmp = topAlarmParamList.stream().map(i -> i.getDisplaySId()).collect(Collectors.toList());
             //$上長１　＝　$上長の社員IDList　：　トップアラームParam#作成する(アラームリスト、$発生日時、$、上長、[prv-1]部下のエラーがある社員IDを判断する（Loopしてる職場ID、$職場Map)、$パターンコード、Empty、Empty、$パターン名称）
-            topAlarmList.addAll(empIds.stream().map(empId -> TopPageAlarmImport.builder()
-                    .alarmClassification(deleteInfo.isPresent() ? deleteInfo.get().getAlarmClassification() : 0)
-                    .occurrenceDateTime(occurrenceDateTime)
-                    .displaySId(empId)
-                    .displayAtr(1)
-                    .patternCode(patternCode)
-                    .patternName(patternName)
-                    .linkUrl(Optional.empty())
-                    .displayMessage(Optional.empty())
-                    .subEmployeeIds(getEmployeeIdsWithChildWkpError(wkpl, workplaceMap))
-                    .build()
+            topAlarmList.addAll(empIds.stream().map(empId -> new TopPageAlarmImport(
+                            deleteInfo.isPresent() ? deleteInfo.get().getAlarmClassification() : 0,
+                            occurrenceDateTime,
+                            empId,
+                            1,
+                            patternCode,
+                            patternName,
+                            Optional.empty(),
+                            Optional.empty(),
+                            lstEmp
+                    )
             ).collect(Collectors.toList()));
-        });
+        }
         //$上長のアラームリスト　：distinct　　//※重複の社員IDは追加しない
-        List<TopPageAlarmImport> topAlarmListDistinct = topAlarmList.stream()
-                .filter(distinctByKey(TopPageAlarmImport::getDisplaySId)).collect(Collectors.toList());
+//        List<TopPageAlarmImport> topAlarmListDistinct = topAlarmList.stream()
+//                .filter(distinctByKey(TopPageAlarmImport::getDisplaySId)).collect(Collectors.toList());
 
         Optional<DeleteInfoAlarmImport> finalDelInfo = delInfo;
-        return AtomTask.of(() -> require.create(companyId, topAlarmListDistinct, finalDelInfo));
-    }
-
-    /**
-     * [prv-1]部下のエラーがある社員IDを判断する
-     * @param workplaceId
-     * @param workplaceMap
-     * @return 部下のエラーがある社員ID
-     */
-    private static List<String> getEmployeeIdsWithChildWkpError(String workplaceId, Map<String, List<TopPageAlarmImport>> workplaceMap) {
-        List<TopPageAlarmImport> topAlarmParamList = workplaceMap.getOrDefault(workplaceId, new ArrayList<>());
-        return topAlarmParamList.stream().map(i -> i.getDisplaySId()).collect(Collectors.toList());
+        return AtomTask.of(() -> require.create(companyId, topAlarmList, finalDelInfo));
     }
 
     private static <T> Predicate<T> distinctByKey(Function<? super T, Object> keyExtractor) {

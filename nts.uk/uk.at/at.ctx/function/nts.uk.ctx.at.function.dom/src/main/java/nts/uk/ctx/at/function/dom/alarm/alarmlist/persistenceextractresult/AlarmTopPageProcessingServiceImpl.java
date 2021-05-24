@@ -160,6 +160,7 @@ public class AlarmTopPageProcessingServiceImpl implements AlarmTopPageProcessing
                     List<AlarmEmployeeList> lstInput = new ArrayList<>();
 
                     dataProcessingInputOutput(lstExtractResultInput, lstExtractResultDB, lstInput, lstDelete);
+                    filterData(lstExtractResultInput, lstExtractResultDB, lstInput, lstDelete);
                     lstExResultInsert.addAll(lstInput);
                     lstExResultDelete.addAll(lstDelete);
                 }
@@ -206,6 +207,7 @@ public class AlarmTopPageProcessingServiceImpl implements AlarmTopPageProcessing
 
     private void dataProcessingInputOutput(List<AlarmEmployeeList> lstInput, List<AlarmEmployeeList> lstDB, List<AlarmEmployeeList> lstInsert, List<AlarmEmployeeList> lstDelete) {
         List<AlarmEmployeeList> lstDiffEmp = lstInput.stream().filter(x -> lstDB.stream().anyMatch(y -> !y.getEmployeeID().equals(x.getEmployeeID()))).collect(Collectors.toList());
+
         if (!lstDiffEmp.isEmpty()) {
             lstInsert.addAll(lstDiffEmp);
 
@@ -328,7 +330,7 @@ public class AlarmTopPageProcessingServiceImpl implements AlarmTopPageProcessing
 
         @Override
         public List<String> getListEmployeeId(String workplaceId, GeneralDate referenceDate) {
-            return employeeAlarmListAdapter.getListEmployeeId(workplaceId, referenceDate);
+            return employeeAlarmListAdapter.getListEmployeeId(workplaceId, referenceDate).stream().distinct().collect(Collectors.toList());
         }
 
         @Override

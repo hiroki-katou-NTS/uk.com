@@ -37,62 +37,67 @@ public class JpaPersisAlarmListExtractResultRepository extends JpaRepository imp
     @SneakyThrows
     @Override
     public Optional<PersistenceAlarmListExtractResult> getAlarmExtractResult(String runCode, String patternCode, List<String> empIds) {
-        List<PersisAlarmExtractResultDto> data;
-        List<AlarmExtractInfoResult> alarmExtractInfoResults = new ArrayList<>();
-        try (PreparedStatement sql = this.connection().prepareStatement("SELECT * FROM KFNDT_PERSIS_ALARM_EXT a1"
-                + " INNER JOIN KFNDT_ALARM_EXTRAC_RESULT a2 "
-                + " ON a1.CID = a2.CID AND a1.PROCESS_ID = a2.PROCESS_ID"
-                + " WHERE a1.AUTORUN_CODE = ?"
-                + " AND a1.PATTERN_CODE = ?"
-                + " AND a2.SID IN ("
-                + NtsStatement.In.createParamsString(empIds) + ")")) {
-            sql.setString(1, runCode);
-            sql.setString(2, patternCode);
-            for (int i = 0; i < empIds.size(); i++) {
-                sql.setString(3 + i, empIds.get(i));
-            }
-
-            data = new NtsResultSet(sql.executeQuery()).getList(JpaPersisAlarmListExtractResultRepository::toDto);
-
-            if (data.isEmpty()) {
-                return Optional.empty();
-            }
-
-            Map<String, List<PersisAlarmExtractResultDto>> dataMap = data.stream().collect(Collectors.groupingBy(PersisAlarmExtractResultDto::getEmployeeID));
-            dataMap.entrySet().stream().forEach(c -> {
-                c.getValue().stream().forEach(x -> {
-                    List<ExtractResultDetail> extractDetails = Collections.singletonList(
-                            new ExtractResultDetail(
-                                    new ExtractionAlarmPeriodDate(Optional.of(GeneralDate.fromString(x.getStartDate(), "yyyy/MM/dd")),
-                                            Optional.ofNullable(!StringUtils.isEmpty(x.getEndDate()) ? GeneralDate.fromString(x.getEndDate(), "yyyy/MM/dd") : null)),
-                                    x.getAlarmPatternName(),
-                                    x.getAlarmContent(),
-                                    x.getRunTime(),
-                                    Optional.ofNullable(x.getWpID()),
-                                    Optional.ofNullable(x.getMessage()),
-                                    Optional.ofNullable(x.getCheckValue())));
-
-                    alarmExtractInfoResults.add(
-                            new AlarmExtractInfoResult(x.getAlarmCheckConditionNo().trim(),
-                                    new AlarmCheckConditionCode(x.getAlarmCheckConditionCode()),
-                                    EnumAdaptor.valueOf(x.getAlarmCategory(), AlarmCategory.class),
-                                    EnumAdaptor.valueOf(x.getAlarmListCheckType(), AlarmListCheckType.class),
-                                    extractDetails));
-                });
-            });
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-
-        return Optional.of(new PersistenceAlarmListExtractResult(
-                new AlarmPatternCode(data.get(0).getAlarmPatternCode()),
-                new AlarmPatternName(data.get(0).getAlarmPatternName()),
-                Collections.singletonList(new AlarmEmployeeList(
-                        alarmExtractInfoResults,
-                        data.get(0).getEmployeeID()
-                )),
-                data.get(0).getCompanyID(),
-                data.get(0).getAutoRunCode()));
+//        List<PersisAlarmExtractResultDto> data;
+//        List<AlarmExtractInfoResult> alarmExtractInfoResults = new ArrayList<>();
+//        try (PreparedStatement sql = this.connection().prepareStatement("SELECT * FROM KFNDT_PERSIS_ALARM_EXT a1"
+//                + " INNER JOIN KFNDT_ALARM_EXTRAC_RESULT a2 "
+//                + " ON a1.CID = a2.CID AND a1.PROCESS_ID = a2.PROCESS_ID"
+//                + " WHERE a1.AUTORUN_CODE = ?"
+//                + " AND a1.PATTERN_CODE = ?"
+//                + " AND a2.SID IN ("
+//                + NtsStatement.In.createParamsString(empIds) + ")")) {
+//            sql.setString(1, runCode);
+//            sql.setString(2, patternCode);
+//            for (int i = 0; i < empIds.size(); i++) {
+//                sql.setString(3 + i, empIds.get(i));
+//            }
+//
+//            data = new NtsResultSet(sql.executeQuery()).getList(JpaPersisAlarmListExtractResultRepository::toDto);
+//
+//            if (data.isEmpty()) {
+//                return Optional.empty();
+//            }
+//
+//            Map<String, List<PersisAlarmExtractResultDto>> dataMap = data.stream().collect(Collectors.groupingBy(PersisAlarmExtractResultDto::getEmployeeID));
+//            dataMap.entrySet().stream().forEach(c -> {
+//                c.getValue().stream().forEach(x -> {
+//                    List<ExtractResultDetail> extractDetails = Collections.singletonList(
+//                            new ExtractResultDetail(
+//                                    new ExtractionAlarmPeriodDate(Optional.of(GeneralDate.fromString(x.getStartDate(), "yyyy/MM/dd")),
+//                                            Optional.ofNullable(!StringUtils.isEmpty(x.getEndDate()) ? GeneralDate.fromString(x.getEndDate(), "yyyy/MM/dd") : null)),
+//                                    x.getAlarmPatternName(),
+//                                    x.getAlarmContent(),
+//                                    x.getRunTime(),
+//                                    Optional.ofNullable(x.getWpID()),
+//                                    Optional.ofNullable(x.getMessage()),
+//                                    Optional.ofNullable(x.getCheckValue())));
+//
+//                    alarmExtractInfoResults.add(
+//                            new AlarmExtractInfoResult(x.getAlarmCheckConditionNo().trim(),
+//                                    new AlarmCheckConditionCode(x.getAlarmCheckConditionCode()),
+//                                    EnumAdaptor.valueOf(x.getAlarmCategory(), AlarmCategory.class),
+//                                    EnumAdaptor.valueOf(x.getAlarmListCheckType(), AlarmListCheckType.class),
+//                                    extractDetails));
+//                });
+//            });
+//        } catch (SQLException e) {
+//            throw new RuntimeException(e);
+//        }
+//
+//        return Optional.of(new PersistenceAlarmListExtractResult(
+//                new AlarmPatternCode(data.get(0).getAlarmPatternCode()),
+//                new AlarmPatternName(data.get(0).getAlarmPatternName()),
+//                Collections.singletonList(new AlarmEmployeeList(
+//                        alarmExtractInfoResults,
+//                        data.get(0).getEmployeeID()
+//                )),
+//                data.get(0).getCompanyID(),
+//                data.get(0).getAutoRunCode()));
+        return this.queryProxy().query("select distinct a from KfndtPersisAlarmExt a join a.extractResults b " +
+                "where a.autoRunCode = :runCode and a.patternCode = :patternCode and b.pk.sid in :empIds", KfndtPersisAlarmExt.class)
+                .setParameter("runCode", runCode)
+                .setParameter("patternCode", patternCode)
+                .setParameter("empIds", empIds).getSingle(KfndtPersisAlarmExt::toDomain);
     }
 
     private static PersisAlarmExtractResultDto toDto(NtsResultSet.NtsResultRecord rec) {
