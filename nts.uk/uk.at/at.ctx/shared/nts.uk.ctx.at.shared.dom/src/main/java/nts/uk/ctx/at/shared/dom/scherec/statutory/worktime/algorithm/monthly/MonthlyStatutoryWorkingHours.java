@@ -42,7 +42,8 @@ public class MonthlyStatutoryWorkingHours {
 		//取得処理
 		return flexMonthlyUnit(require, cacheCarrier, cid, employmentCd, employeeId, baseDate, ym)
 				.map(flexMonthUnit -> new MonthlyFlexStatutoryLaborTime(flexMonthUnit.getLaborTime().getLegalLaborTime(), 
-																		flexMonthUnit.getLaborTime().getWithinLaborTime().get(), 
+																		flexMonthUnit.getLaborTime().getWithinLaborTime()
+																			.orElseGet(() -> new MonthlyEstimateTime(0)), 
 																		flexMonthUnit.getLaborTime().getWeekAvgTime().get()))
 				.orElseGet(() -> MonthlyFlexStatutoryLaborTime.zeroMonthlyFlexStatutoryLaborTime());
 	}

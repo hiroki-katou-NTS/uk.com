@@ -3,12 +3,6 @@ package nts.uk.ctx.at.record.app.command.monthly.vtotalmethod;
 //import java.util.Map;
 
 import lombok.Data;
-import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.vtotalmethod.SpecCountNotCalcSubject;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.vtotalmethod.SpecTotalCountMonthly;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.vtotalmethod.TADaysCountCondOfMonthlyAggr;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.vtotalmethod.TADaysCountOfMonthlyAggr;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.vtotalmethod.AggregateMethodOfMonthly;
 
 /**
  * The Class AddVerticalTotalMethodOfMonthlyCommand.

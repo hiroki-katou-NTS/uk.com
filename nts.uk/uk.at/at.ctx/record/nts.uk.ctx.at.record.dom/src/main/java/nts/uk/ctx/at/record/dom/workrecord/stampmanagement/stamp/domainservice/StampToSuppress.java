@@ -57,7 +57,8 @@ public class StampToSuppress {
 	 * @return
 	 */
 	public static StampToSuppress highlightAttendance() {
-		return new StampToSuppress(false, true, true, true);
+//		return new StampToSuppress(false, true, true, true);
+		return new StampToSuppress(false, true, true, false);
 	}
 
 }

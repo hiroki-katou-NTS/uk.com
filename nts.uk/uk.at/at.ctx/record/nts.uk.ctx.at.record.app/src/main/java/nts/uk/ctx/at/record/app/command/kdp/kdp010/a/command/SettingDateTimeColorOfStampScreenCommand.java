@@ -15,9 +15,7 @@ public class SettingDateTimeColorOfStampScreenCommand {
 	
 	private String textColor;
 
-	private String backgroundColor;
-
 	public SettingDateTimeColorOfStampScreen toDomain() {
-		return new SettingDateTimeColorOfStampScreen(new ColorCode(this.textColor), new ColorCode(this.backgroundColor));
+		return new SettingDateTimeColorOfStampScreen(new ColorCode(this.textColor));
 	}
 }

@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.flex;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.time.YearMonth;
 
 /**
