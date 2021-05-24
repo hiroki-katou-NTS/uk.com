@@ -23,7 +23,7 @@
 			<com:stylefile path="../ab/ksu003.ab.main.css" />
 			<com:scriptfile path="../ab/ksu003.ab.vm.js" />
 			<com:scriptfile path="../ab/ksu003.ab.service.js" />
-			
+
 			<com:scriptfile path="../../../kcp/013/shared/kcp013.vm.js" />
 			<com:ValidatorScript>
 					nts.uk.shr.com.time.TimeWithDayAttr
@@ -116,12 +116,12 @@
 				<hr id='hr-row2' />
 				<!-- A3_1 -->
 				<div id="screen-ab">
-						<div id="functon-area-row3-left">
-							<div>
-								<label id="operation-unit">#{i18n.getText('KSU003_12')}</label>
-							</div>
-							<div tabindex="11" id="combo-box"
-								data-bind="ntsComboBox: {
+					<div id="functon-area-row3-left">
+						<div>
+							<label id="operation-unit">#{i18n.getText('KSU003_12')}</label>
+						</div>
+						<div tabindex="11" id="combo-box"
+							data-bind="ntsComboBox: {
 					name: '#KSU003_12',
 					options: itemList,
 					optionsValue: 'code',
@@ -131,24 +131,26 @@
 					columns: [
 						{ prop: 'name', length: 5 },
 					]}">
-							</div>
-							<div>
-								<!-- A3_3 -->
-								<div tabindex="12" id="check-name"
-									data-bind="ntsCheckBox: { checked: checkedName, enable: true}">#{i18n.getText('KSU003_19')}</div>
-							</div>
-							<button tabindex="13" id="note-sort" class="small">#{i18n.getText('KSU003_18')}</button>
 						</div>
+						<div>
+							<!-- A3_3 -->
+							<div tabindex="12" id="check-name"
+								data-bind="ntsCheckBox: { checked: checkedName, enable: true}">#{i18n.getText('KSU003_19')}</div>
+						</div>
+						<button tabindex="13" id="note-sort" class="small">#{i18n.getText('KSU003_18')}</button>
+					</div>
 				</div>
+
+				<!-- ver 4 -->
 				<div id="contain-view-right-ksu003" class="inline">
-							<!-- <div data-bind="ifnot: visibleShiftPalette"> -->
-							<div id="ab1-viewModel">
-								<div data-bind="with: $parent.viewmodelAb">
-									<ui:include src="../ab/index.xhtml" />
-								</div>
-							</div>
-							<!-- </div> -->
+					<div id="ab1-viewModel">
+						<div data-bind="with: $parent.viewmodelAb">
+							<ui:include src="../ab/index.xhtml" />
+						</div>
+					</div>
 				</div>
+				<!-- ver 4 -->
+
 				<div id="contents-area">
 					<div id="side-menu" class="cf"></div>
 					<div id="content" class="cf">
@@ -186,12 +188,14 @@
 						</div>
 
 						<div id="extable-ksu003" style="height: 400px; float: left"></div>
-						<!-- <div id="setting-time-grid">
-						<button class="settingTimeGrid">
-							<i style="margin-left: -6px;"
-								data-bind="ntsIcon: { no: 3,width: 14, height: 14 }"></i>
-						</button>
-					</div> -->
+
+						<!-- ver 4 -->
+						<div id="setting-time-grid">
+							<button class="settingTimeGrid">
+								<i style="margin-left: -6px;"
+									data-bind="ntsIcon: { no: 3,width: 14, height: 14 }"></i>
+							</button>
+						</div>
 					</div>
 				</div>
 				<div id="A14" class="popup-area popup-panel">
@@ -203,7 +207,7 @@
 											options: [{id: 1, name: '#{i18n.getText('KSU003_100')}'}, {id: 2, name: '#{i18n.getText('KSU003_101')}'}] ,
 											optionsValue: 'id',
 											optionsText: 'name',
-											value: selectedDisplayPeriod}">
+											value: selectedRange}">
 						</div>
 					</div>
 					<div>
@@ -212,10 +216,10 @@
 							#{i18n.getText('KSU003_102')}</div>
 						<div id="combo-box-start"
 							data-bind="ntsComboBox: {
-					name: '#KSU003_58',
-					options: sortList,
+					name: '#KSU001_103',
+					options: rangeList,
 					optionsValue: 'code',
-					value: checked,
+					value: rangeChecked,
 					optionsText: 'name',
 					enable: true,
 					columns: [
@@ -226,13 +230,13 @@
 					<div>
 						<div id="start-time-label"
 							data-bind="ntsFormLabel: {required: true}">
-							#{i18n.getText('KSU003_103')}</div>
-						<div id="combo-box-start"
+							#{i18n.getText('KSU003_105')}</div>
+						<div id="combo-box-start-2"
 							data-bind="ntsComboBox: {
-					name: '#KSU003_58',
-					options: sortList,
+					name: '#KSU003_106',
+					options: rangeList,
 					optionsValue: 'code',
-					value: checked,
+					value: rangeChecked2,
 					optionsText: 'name',
 					enable: true,
 					columns: [
@@ -240,15 +244,18 @@
 					]}">
 						</div>
 					</div>
+					<button tabindex="-1" id="A14_11" class="proceed"
+						data-bind="">#{i18n.getText('KSU003_108')}</button>
 				</div>
+				<!-- ver 4 -->
 
-				<!-- <div id="A3_4" class="popup-area popup-panel">
-				<div>
-					<label id="sort-label">#{i18n.getText('KSU003_56')}</label><label
-						id="sort-label">#{i18n.getText('KSU003_57')}</label>
-				</div>
-				<div id="combo-box-sort"
-					data-bind="ntsComboBox: {
+				<div id="A3_4" class="popup-area popup-panel">
+					<div>
+						<label id="sort-label">#{i18n.getText('KSU003_56')}</label><label
+							id="sort-label">#{i18n.getText('KSU003_57')}</label>
+					</div>
+					<div id="combo-box-sort"
+						data-bind="ntsComboBox: {
 					name: '#KSU003_58',
 					options: sortList,
 					optionsValue: 'code',
@@ -258,11 +265,11 @@
 					columns: [
 						{ prop: 'name', length: 5 },
 					]}">
+					</div>
+					<div id="sort-label-note">
+						<label>#{i18n.getText('KSU003_61')}</label>
+					</div>
 				</div>
-				<div id="sort-label-note">
-					<label>#{i18n.getText('KSU003_61')}</label>
-				</div>
-			</div> -->
 
 				<div id="A5_1" class="popup-area popup-panel">
 					<!-- Support color -->

@@ -8,7 +8,6 @@ module nts.uk.at.view.ksu003.ab.viewmodel {
     export class ScreenModel {
 		
 		// Screen Ab1
-        width: KnockoutObservable<number>;
         tabIndex: KnockoutObservable<number | string>;
         filter: KnockoutObservable<boolean> = ko.observable(false);
         disabled: KnockoutObservable<boolean>;
@@ -21,7 +20,6 @@ module nts.uk.at.view.ksu003.ab.viewmodel {
         constructor() { //id : workplaceId || workplaceGroupId; 
             let self = this;
 			// Screen Ab1
-            self.width    = ko.observable(875);
             self.tabIndex = ko.observable('');
             self.disabled = ko.observable(false);
             self.selected = ko.observable();
@@ -33,6 +31,13 @@ module nts.uk.at.view.ksu003.ab.viewmodel {
 		showHideAb(){
 			$("#screen-Ab1").hide();
 			$("#screen-Ab2").show();
+		}
+		
+		openC(){
+			nts.uk.ui.windows.sub.modal('/view/ksu/003/c/index.xhtml').onClosed(() => {
+				
+			});
+			
 		}
 		
 		// Screen Ab1
