@@ -129,7 +129,6 @@ module nts.uk.at.view.ksu003.b {
                             }                            
                         }                        
                     } else {
-                        self.selectedPage(1);
                         self.enableDelete(false);
                     }                   
                     self.tasks(dataSource);
@@ -329,7 +328,7 @@ module nts.uk.at.view.ksu003.b {
         }
         closeDialog(): void {
             const self = this;  
-            self.endStatus() === 'Update' ? setShared('dataShareFromKsu003b', self.selectedPage()) :setShared('dataShareSU003B',null);
+            self.endStatus() === 'Update' ? setShared('dataShareFromKsu003b', self.selectedPage()) :setShared('dataShareFromKsu003b',null);
             self.$window.close();
         }
 
