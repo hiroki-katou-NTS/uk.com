@@ -416,7 +416,7 @@ public class KscdtSchTime extends ContractUkJpaEntity {
 				.collect(Collectors.toList());
 		AtomicInteger index = new AtomicInteger();
 		List<KscdtSchTask> lstKscdtSchTask = task.getDetails().stream()
-				.map(c -> KscdtSchTask.toEntity(sID, yMD, c, index.getAndIncrement())).collect(Collectors.toList());
+				.map(c -> KscdtSchTask.toEntity(sID, yMD, cID, c, index.getAndIncrement())).collect(Collectors.toList());
 
 		KscdtSchTime kscdtSchTime = new KscdtSchTime(pk, cID, // cid
 				workingTime.getWorkTimes() == null ? 0 : workingTime.getWorkTimes().v(), // count
