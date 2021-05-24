@@ -717,7 +717,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                 cells.get(firstRow + 2, 10 + totalMonth)
                         .setValue(df.format(e33));
                 // E3_4 当月より前
-                val valueE34 = item.getRemainingDays();
+                val valueE34 = item.getRemainingTime();
                 val e34 = checkShowAreaAnnualBreak2(dataSource.getHolidaysRemainingManagement()) ?
                         valueE34 : null;
                 val vle34 = e34 != null ? convertToTime((int) (e34.doubleValue())) : "";
