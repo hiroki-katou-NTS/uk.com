@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common;
 
 import lombok.Getter;
-import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
 
 /**
@@ -12,7 +11,6 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
 @Getter
 public class TimeDivergenceWithCalculationMinusExist {
 	//時間
-	@Setter
 	private AttendanceTimeOfExistMinus time;
 	//計算時間
 	private AttendanceTimeOfExistMinus calcTime;
@@ -22,54 +20,55 @@ public class TimeDivergenceWithCalculationMinusExist {
 	private TimeDivergenceWithCalculationMinusExist(AttendanceTimeOfExistMinus time,AttendanceTimeOfExistMinus calcTime) {
 		this.time = time==null?new AttendanceTimeOfExistMinus(0):time;
 		this.calcTime = calcTime==null?new AttendanceTimeOfExistMinus(0):calcTime;
-		this.divergenceTime = this.time.minusMinutes(this.calcTime.valueAsMinutes());
-		if(this.divergenceTime.valueAsMinutes()<0) {
-			this.divergenceTime = new AttendanceTimeOfExistMinus(0);
-		}
+		this.calcDiv();
+	}
+	
+	/**
+	 * 乖離計算
+	 */
+	private void calcDiv(){
+		this.divergenceTime = this.calcTime.minusMinutes(this.time.valueAsMinutes());
 	}
 	
 	/**
 	 * 時間、計算時間が同じ計算付き時間帯を作成する
-	 * @return
+	 * @return 計算乖離付き時間
 	 */
 	public static TimeDivergenceWithCalculationMinusExist sameTime(AttendanceTimeOfExistMinus time) {
 		return new TimeDivergenceWithCalculationMinusExist(time,time);
 	}
 	
-	
 	/**
 	 * 指定された時間で計算付き時間を作成する
-	 * @return
+	 * @return 計算乖離付き時間
 	 */
 	public static TimeDivergenceWithCalculationMinusExist createTimeWithCalculation(AttendanceTimeOfExistMinus time,AttendanceTimeOfExistMinus calcTime) {
 		return new TimeDivergenceWithCalculationMinusExist(time,calcTime);
-		
 	}
 	
 	/**
 	 * 自身の乖離時間を計算する
-	 * @return
+	 * @return 計算後の計算乖離付き時間
 	 */
 	public TimeDivergenceWithCalculationMinusExist calcDiverGenceTime() {
 		return new TimeDivergenceWithCalculationMinusExist(this.time,this.calcTime);
 	}
 	
-	public void replaceTime(AttendanceTimeOfExistMinus time) {
+	/**
+	 * 時間を入れ替える(乖離計算有)
+	 * @param time 時間
+	 */
+	public void replaceTimeAndCalcDiv(AttendanceTimeOfExistMinus time) {
 		this.time = time;
-	}
-	
-	public void replaceCalcTime(AttendanceTimeOfExistMinus calcTime) {
-		this.calcTime = calcTime;
+		this.calcDiv();
 	}
 	
 	/**
-	 * 計算時間のみを入れ替える(乖離計算有)
-	 * @param calcTime
-	 * @return
+	 * 計算時間を入れ替える(乖離計算有)
+	 * @param calcTime 計算時間
 	 */
-	public void replaceTimeAndCalcDiv(AttendanceTimeOfExistMinus calcTime) {
+	public void replaceCalcTimeAndCalcDiv(AttendanceTimeOfExistMinus calcTime) {
 		this.calcTime = calcTime;
-		this.divergenceTime = this.time.minusMinutes(calcTime.valueAsMinutes());
+		this.calcDiv();
 	}
-	
 }

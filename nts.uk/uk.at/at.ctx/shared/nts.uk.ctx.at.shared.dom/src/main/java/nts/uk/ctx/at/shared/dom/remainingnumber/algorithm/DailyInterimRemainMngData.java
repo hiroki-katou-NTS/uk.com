@@ -19,6 +19,8 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TempAnnualLe
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimDayOffMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.care.interimdata.TempCareManagement;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.interimdata.TempChildCareManagement;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.interim.TmpResereLeaveMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.InterimSpecialHolidayMng;
 @AllArgsConstructor
@@ -26,9 +28,9 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.Interi
 @Setter
 @Getter
 public class DailyInterimRemainMngData {
-	
+
 	private GeneralDate ymd;
-	
+
 	/**暫定振休管理データ */
 	private Optional<InterimAbsMng> interimAbsData;
 	/**	暫定残数管理データ */
@@ -57,5 +59,15 @@ public class DailyInterimRemainMngData {
 	 * 暫定特別休暇データ
 	 */
 	private List<InterimSpecialHolidayMng> specialHolidayData;
-	
+	/**
+	 * 暫定子の看護休暇データ
+	 */
+	private Optional<TempChildCareManagement> childCareData;
+	/**
+	 * 暫定介護休暇データ
+	 */
+	private Optional<TempCareManagement> careData;
+
+
+
 }

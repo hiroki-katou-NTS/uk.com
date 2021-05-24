@@ -519,31 +519,6 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 		}
 		return returnList;
 	}
-
-	private WorkingConditionItem correctWorkCondition(IntegrationOfDaily record,
-			Optional<Entry<DateHistoryItem, WorkingConditionItem>> nowWorkingItem) {
-		
-		if (record.getWorkInformation().getRecordInfo().isExamWorkTime()) {
-			return new WorkingConditionItem(nowWorkingItem.get().getValue().getHistoryId(), 
-													nowWorkingItem.get().getValue().getScheduleManagementAtr(),
-													nowWorkingItem.get().getValue().getWorkDayOfWeek(), 
-													nowWorkingItem.get().getValue().getWorkCategory(),
-													nowWorkingItem.get().getValue().getAutoStampSetAtr(),
-													nowWorkingItem.get().getValue().getAutoIntervalSetAtr(),
-													nowWorkingItem.get().getValue().getEmployeeId(),
-													nowWorkingItem.get().getValue().getVacationAddedTimeAtr(),
-													nowWorkingItem.get().getValue().getContractTime(),
-													WorkingSystem.REGULAR_WORK, 
-													nowWorkingItem.get().getValue().getHolidayAddTimeSet().orElse(null),
-													nowWorkingItem.get().getValue().getScheduleMethod().orElse(null), 
-													nowWorkingItem.get().getValue().getHourlyPaymentAtr().value,
-													nowWorkingItem.get().getValue().getTimeApply().orElse(null),
-													nowWorkingItem.get().getValue().getMonthlyPattern().orElse(null));
-		} else {
-			return nowWorkingItem.get().getValue();
-		}
-	}
-	
 	
 	/**
 	 * 計算可能な日かを判定する

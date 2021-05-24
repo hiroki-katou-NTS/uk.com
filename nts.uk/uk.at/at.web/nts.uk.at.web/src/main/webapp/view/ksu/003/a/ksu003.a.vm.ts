@@ -2194,7 +2194,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				} else {
 					setTimeout(function() {
 					self.openKDL053(rs);
-					}, 50);
+					}, 500);
 					block.clear();
 				}
 			}).fail(function(error: any) {
@@ -4146,7 +4146,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			else{
 				setTimeout(function() {
 				self.openGDialog()
-				},100);
+				},600);
 			}
 		}
 
@@ -4161,7 +4161,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				employeeInfo: self.dataFromA().listEmp
 			};
 			setShared('dataShareDialogG', dataShare);
-			nts.uk.ui.windows.sub.modal('/view/ksu/001/g/index.xhtml').onClosed(() => {
+			nts.uk.ui.windows.sub.modeless('/view/ksu/001/g/index.xhtml').onClosed(() => {
 				block.clear();
 			});
 		}
@@ -4467,7 +4467,6 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 
 				if ((columnKey === "startTime1" || columnKey === "startTime2" ||
 					columnKey === "endTime1" || columnKey === "endTime2") && self.checkUpdateTime.id == 0) {
-					if (checkErr2.length > 0 && checkErr.length > 0 && $("#extable-ksu003").data("errors").length > 0) return;
 					// kiểm tra startTime > endTime và time = null
 					if ((columnKey === "startTime1" || columnKey === "endTime1") &&
 						(dataMid.startTime1 == "" || duration.parseString(dataMid.startTime1).toValue() > duration.parseString(dataMid.endTime1).toValue())) {
@@ -4475,6 +4474,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 						if (self.checkCloseKsu003 == true) return;
 						block.invisible();
 						self.checkCalcSum = false;
+						self.enableSave(false);
 						errorDialog({ messageId: "Msg_54" }).then(() => {
 							self.checkCalcSum = true;
 							self.enableSave(false);
@@ -4497,7 +4497,6 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 						});
 						return;
 					}
-
 					// kiểm tra startTime > endTime và time = null
 					if ((columnKey === "startTime2" || columnKey === "endTime2") &&
 						(dataMid.startTime2 == "" || duration.parseString(dataMid.startTime2).toValue() > duration.parseString(dataMid.endTime2).toValue())) {
@@ -4525,6 +4524,11 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 								}
 							}
 						});
+						return;
+					}
+					
+					if (checkErr2.length > 0 && checkErr.length > 0 && $("#extable-ksu003").data("errors").length > 0) {
+						self.enableSave(false);
 						return;
 					}
 
