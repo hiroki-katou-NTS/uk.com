@@ -1,6 +1,7 @@
 package nts.uk.screen.at.app.ksu001.aggrerateworkplacetotal;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -37,7 +38,6 @@ import nts.uk.ctx.bs.employee.dom.employment.Employment;
 import nts.uk.ctx.bs.employee.dom.employment.EmploymentRepository;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfo;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfoRepository;
-import nts.uk.screen.at.app.dailyperformance.correction.dto.EmploymentDto;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -78,7 +78,7 @@ public class ScreenQueryAggrerateNumberPeople {
 	@Inject
 	private PredetemineTimeSettingRepository predetemineTimeSet;
 	
-	public AggrerateNumberPeopleDto aggrerate(
+	public Map<GeneralDate, Map<String, BigDecimal>> aggrerate(
 			GeneralDate baseDate,
 			List<IntegrationOfDaily> dailyWorks,
 			WorkplaceCounterCategory workplaceCounterOp
@@ -92,7 +92,6 @@ public class ScreenQueryAggrerateNumberPeople {
 									.flexWorkSet(flexWorkSet)
 									.predetemineTimeSet(predetemineTimeSet)
 									.build();
-		AggrerateNumberPeopleDto output = new AggrerateNumberPeopleDto();
 		String companyId = AppContexts.user().companyId();
 		if (workplaceCounterOp == WorkplaceCounterCategory.EMPLOYMENT_PEOPLE) { // 1: 職場計カテゴリ == 雇用人数
 			// 1.1: 雇用別に集計する(Require, List<日別勤怠(Work)>)
@@ -118,7 +117,7 @@ public class ScreenQueryAggrerateNumberPeople {
 			
 			
 			
-			Map<GeneralDate, Map<EmploymentDto, BigDecimal>> employmentOutput = 
+			Map<GeneralDate, Map<String, BigDecimal>> employmentOutput = 
 					countEachEpl.entrySet()
 						.stream()
 						.collect(Collectors.toMap(
@@ -129,20 +128,13 @@ public class ScreenQueryAggrerateNumberPeople {
 														f -> employments
 																.stream()
 																.filter(x -> x.getEmploymentCode().v().equals(f.getKey().v()))
-																.map(x -> new EmploymentDto(
-																				x.getCompanyId().v(),
-																				x.getEmploymentCode().v(),
-																				x.getEmploymentName().v(),
-																				x.getEmpExternalCode().v(),
-																				x.getMemo().v()
-																				))
+																.map(x -> x.getEmploymentName().v())
 																.findFirst().orElse(null),
 														f -> f.getValue()))
 								
 								));
 			
-			output.employment = employmentOutput;
-			
+			return employmentOutput;
 			
 		} else if (workplaceCounterOp == WorkplaceCounterCategory.CLASSIFICATION_PEOPLE) { // 職場計カテゴリ == 分類人数
 			//2.1:  分類別に集計する(Require, List<日別勤怠(Work)>)
@@ -159,7 +151,7 @@ public class ScreenQueryAggrerateNumberPeople {
 					.distinct()
 					.collect(Collectors.toList()));
 			
-			Map<GeneralDate, Map<ClassificationDto, BigDecimal>> classificationOutput = 
+			Map<GeneralDate, Map<String, BigDecimal>> classificationOutput = 
 					countEachClassification
 						.entrySet()
 						.stream()
@@ -170,14 +162,15 @@ public class ScreenQueryAggrerateNumberPeople {
 											.collect(Collectors.toMap(
 													f -> classifications.stream()
 																		.filter(x -> x.getClassificationCode().v().equals(f.getKey().v()))
-																		.map(x -> ClassificationDto.fromDomain(x))
+																		.map(x -> x.getClassificationName().v())
 																		.findFirst()
 																		.orElse(null),
 													f -> f.getValue()))
 								
 								));
 			
-			output.classification = classificationOutput;
+			return classificationOutput;
+			
 			
 			
 		} else if (workplaceCounterOp == WorkplaceCounterCategory.POSITION_PEOPLE) { // 職場計カテゴリ == 職位人数
@@ -202,7 +195,7 @@ public class ScreenQueryAggrerateNumberPeople {
 									.distinct()
 									.collect(Collectors.toList()),
 							baseDate);
-			Map<GeneralDate, Map<JobTitleInfoDto, BigDecimal>> jobTitileInfoOutput =
+			Map<GeneralDate, Map<String, BigDecimal>> jobTitileInfoOutput =
 					countEachJob.entrySet()
 					.stream()
 					.collect(Collectors.toMap(
@@ -214,18 +207,17 @@ public class ScreenQueryAggrerateNumberPeople {
 												Collectors.toMap(
 													f -> jobTitleInfos.stream()
 																	  .filter(x -> x.getJobTitleCode().v().equals(f.getKey()))
-																	  .map(x -> JobTitleInfoDto.fromDomain(x))
+																	  .map(x -> x.getJobTitleName().v())
 																	  .findFirst()
 																	  .orElse(null),
 													f -> f.getValue()
 												))
 							
 							));
-			output.jobTitleInfo = jobTitileInfoOutput;
+			return jobTitileInfoOutput;
 		}
 		
-		return output;
-		
+		return new HashMap<GeneralDate, Map<String, BigDecimal>>();
 		
 	}
 	

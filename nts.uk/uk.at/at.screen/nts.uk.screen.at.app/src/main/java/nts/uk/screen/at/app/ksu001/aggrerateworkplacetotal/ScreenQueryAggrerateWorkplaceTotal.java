@@ -66,7 +66,7 @@ public class ScreenQueryAggrerateWorkplaceTotal {
 		// 職場計カテゴリ == 回数集計
 		else if (workplaceCounterOp == WorkplaceCounterCategory.TIMES_COUNTING) {
 			//2: 集計する(List<日別勤怠(Work)>)
-			Map<String, Map<TotalTimesDetailDto, BigDecimal>> timeCount = 
+			Map<String, Map<String, BigDecimal>> timeCount = 
 					screenQueryAggrerateNumberTime.aggrerate(aggrerateintegrationOfDaily);
 			output.setTimeCount(timeCount);
 		
@@ -76,7 +76,7 @@ public class ScreenQueryAggrerateWorkplaceTotal {
 				|| workplaceCounterOp == WorkplaceCounterCategory.CLASSIFICATION_PEOPLE
 				|| workplaceCounterOp == WorkplaceCounterCategory.POSITION_PEOPLE) {
 			// 3: 集計する(年月日, List<日別勤怠(Work)>, 職場計カテゴリ)
-			AggrerateNumberPeopleDto aggrerateNumberPeople = 
+			Map<GeneralDate, Map<String, BigDecimal>> aggrerateNumberPeople = 
 					screenQueryAggrerateNumberPeople.aggrerate(
 							datePeriod.end(),
 							aggrerateintegrationOfDaily,
@@ -87,11 +87,11 @@ public class ScreenQueryAggrerateWorkplaceTotal {
 		// 職場計カテゴリ == 外部予算実績
 		else if (workplaceCounterOp == WorkplaceCounterCategory.EXTERNAL_BUDGET) {
 			//4: 取得する(対象組織識別情報, 期間)
-			Map<GeneralDate, Map<ExternalBudgetDto, String>> externalBudget = 
-			screenQueryExternalBudgetPerformance.aggrerate(
-					targetOrg,
-					datePeriod
-					);
+			Map<GeneralDate, Map<String, String>>  externalBudget = 
+				screenQueryExternalBudgetPerformance.aggrerate(
+						targetOrg,
+						datePeriod
+						);
 			
 			output.setExternalBudget(externalBudget);
 		}
