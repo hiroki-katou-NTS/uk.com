@@ -16,25 +16,5 @@ public class EmploymentRolePubDto {
 	 * ロールID
 	 */
 	private String roleId;
-	/**
-	 * スケジュール画面社員参照
-	 */
-	private int scheduleEmployeeRef;
-	/**
-	 * 予約画面社員参照
-	 */
-	private int bookEmployeeRef;
-	/**
-	 * 代行者指定時社員参照
-	 */
-	private  int employeeRefSpecAgent;
-	/**
-	 * 在席照会社員参照
-	 */
-	private int presentInqEmployeeRef;
-	/**
-	 * 未来日参照許可 FUTURE_DATE_REF_PERMIT
-	 */
-	private int futureDateRefPermit;
 
 }
