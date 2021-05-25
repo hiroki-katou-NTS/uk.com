@@ -136,7 +136,7 @@ public class ScreenQueryAggreratePersonal {
 			Map<EmployeeId, Map<AttendanceTimesForAggregation, BigDecimal>> dailyWorks = 
 					WorkingTimeCounterService.get(aggrerateintegrationOfDaily);
 			
-			Map<String, Map<Integer, BigDecimal>> timeCount = dailyWorks.entrySet()
+			Map<String, Map<Integer, BigDecimal>> workHours = dailyWorks.entrySet()
 					  .stream()
 					  .collect(Collectors.toMap(
 							  e -> e.getKey().v(),
@@ -147,8 +147,7 @@ public class ScreenQueryAggreratePersonal {
 							  			x -> x.getKey().getValue(),
 							  			x -> x.getValue())))
 							  );
-			output.setTimeCount(timeCount);
-			
+			output.setWorkHours(workHours);
 		}
 	
 		else if (personalCounter == PersonalCounterCategory.MONTHLY_EXPECTED_SALARY) {
@@ -193,7 +192,7 @@ public class ScreenQueryAggreratePersonal {
 				|| personalCounter == PersonalCounterCategory.TIMES_COUNTING_3) {
 			
 			// 回数集計を集計する
-			Map<String, Map<Integer, BigDecimal>> timeCount = 
+			Map<String, Map<TotalTimesDto, BigDecimal>> timeCount = 
 					screenQueryAggrerateNumberTime.aggrerate(
 							personalCounter,
 							aggrerateintegrationOfDaily)
@@ -206,7 +205,7 @@ public class ScreenQueryAggreratePersonal {
 											 .stream()
 											 .collect(
 												 Collectors.toMap(
-														 f -> f.getKey().getTotalCountNo(),
+														 f -> TotalTimesDto.fromDomain(f.getKey()),
 														 f -> f.getValue())
 											 )
 							 )
@@ -236,7 +235,7 @@ public class ScreenQueryAggreratePersonal {
 											 )
 							 )
 					);
-			output.setTimeCount(attendenceHoliday);
+			output.setWorkHours(attendenceHoliday);
 		}
 		
 		return output;
