@@ -45,9 +45,12 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryL
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -84,6 +87,12 @@ public class FactoryManagePerPersonDailySetImpl implements FactoryManagePerPerso
 	/** 雇用の代休管理設定 */
 	@Inject
 	private CompensLeaveEmSetRepository compensLeaveEmSetRepo;
+	
+	@Inject
+	private FlowWorkSettingRepository flowWorkSettingRepository;
+
+	@Inject
+	private WorkTypeRepository workTypeRepository;
 	
 	@Override
 	public Optional<ManagePerPersonDailySet> create(String companyId, ManagePerCompanySet companySetting, IntegrationOfDaily daily, WorkingConditionItem nowWorkingItem ) {
@@ -304,6 +313,21 @@ public class FactoryManagePerPersonDailySetImpl implements FactoryManagePerPerso
 		public boolean checkDateForManageCmpLeave(
 				Require require, String companyId, String employeeId, GeneralDate ymd) {
 			return this.checkDateForManageCmpLeaveService.check(require, companyId, employeeId, ymd);
+		}
+
+		@Override
+		public Optional<FlowWorkSetting> findFlowWorkSetting(String companyId, String workTimeCode) {
+			return flowWorkSettingRepository.find(companyId, workTimeCode);
+		}
+
+		@Override
+		public CompensatoryLeaveComSetting findCompensatoryLeaveComSet(String companyId) {
+			return super.compensLeaveComSetRepo.find(companyId);
+		}
+
+		@Override
+		public Optional<WorkType> findByPK(String companyId, String workTypeCd) {
+			return workTypeRepository.findByPK(companyId, workTypeCd);
 		}
 	}
 }

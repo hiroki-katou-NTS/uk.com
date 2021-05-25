@@ -255,10 +255,10 @@ public class OverTimeOfDaily {
 		//残業時間の計算
 		val overTimeFrame = overTimeSheet.collectOverTimeWorkTime(
 				recordReGet.getPersonDailySetting().getOverTimeSheetReq(),
+				workType.getCompanyId(), 
 				recordReGet.getIntegrationOfDaily().getCalAttr().getOvertimeSetting(),
 				workType,
-				eachWorkTimeSet,
-				eachCompanyTimeSet,
+				siftCode.map(x -> x.v()),
 				recordReGet.getIntegrationOfDaily(), 
 				recordReGet.getStatutoryFrameNoList(),
 				declareResult,
