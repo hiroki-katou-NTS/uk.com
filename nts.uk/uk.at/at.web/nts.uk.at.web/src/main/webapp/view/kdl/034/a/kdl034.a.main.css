@@ -28,6 +28,7 @@
 	width: 450px;
 }
 
-.ui-igcombo-dropdown {
-	max-width: 521px;
+.nts-combo-column-0 {
+	max-width: fit-content !important;
+	min-width: 442px;
 }
