@@ -12,23 +12,20 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.assertj.core.util.Strings;
+
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.DateInMonth;
 import nts.uk.ctx.at.function.dom.adapter.annualworkschedule.EmployeeInformationImport;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrganizationUnit;
 import nts.uk.screen.at.app.ksu001.displayinshift.DisplayInShift;
-import nts.uk.screen.at.app.ksu001.displayinshift.DisplayInShiftParam;
 import nts.uk.screen.at.app.ksu001.displayinshift.DisplayInShiftParam_New;
-import nts.uk.screen.at.app.ksu001.displayinshift.DisplayInShiftResult;
 import nts.uk.screen.at.app.ksu001.displayinshift.DisplayInShiftResult_New;
 import nts.uk.screen.at.app.ksu001.displayinshift.ShiftMasterMapWithWorkStyle;
-import nts.uk.screen.at.app.ksu001.displayinworkinformation.DisplayInWorkInfoParam;
 import nts.uk.screen.at.app.ksu001.displayinworkinformation.DisplayInWorkInfoParam_New;
-import nts.uk.screen.at.app.ksu001.displayinworkinformation.DisplayInWorkInfoResult;
 import nts.uk.screen.at.app.ksu001.displayinworkinformation.DisplayInWorkInfoResult_New;
 import nts.uk.screen.at.app.ksu001.displayinworkinformation.DisplayInWorkInformation;
-import nts.uk.screen.at.app.ksu001.displayinworkinformation.WorkTypeInfomation;
 import nts.uk.screen.at.app.ksu001.eventinformationandpersonal.DataSpecDateAndHolidayDto;
 import nts.uk.screen.at.app.ksu001.eventinformationandpersonal.DateInformationDto;
 import nts.uk.screen.at.app.ksu001.eventinformationandpersonal.DisplayControlPersonalCondDto;
@@ -38,13 +35,8 @@ import nts.uk.screen.at.app.ksu001.eventinformationandpersonal.PersonalCondition
 import nts.uk.screen.at.app.ksu001.extracttargetemployees.EmployeeInformationDto;
 import nts.uk.screen.at.app.ksu001.extracttargetemployees.ExtractTargetEmployeesParam;
 import nts.uk.screen.at.app.ksu001.extracttargetemployees.ScreenQueryExtractTargetEmployees;
-import nts.uk.screen.at.app.ksu001.getinfoofInitstartup.FuncCtrlDisplayFormatDto;
 import nts.uk.screen.at.app.ksu001.getinfoofInitstartup.TargetOrgIdenInforDto;
-import nts.uk.screen.at.app.ksu001.getshiftpalette.PageInfo;
 import nts.uk.screen.at.app.ksu001.getshiftpalette.ShiftMasterDto;
-import nts.uk.screen.at.app.ksu001.getshiftpalette.TargetShiftPalette;
-import nts.uk.screen.at.app.ksu001.getworkscheduleshift.ScheduleOfShiftDto;
-import nts.uk.screen.at.app.ksu001.processcommon.WorkScheduleWorkInforDto;
 import nts.uk.screen.at.app.ksu001.start.ShiftPaletteWantGet;
 import nts.uk.screen.at.app.ksu001.start.StartKSU001Dto;
 
@@ -106,7 +98,8 @@ public class ChangeWorkPlaceFinder {
 			DateInMonth closeDate =  new DateInMonth(param.day, param.isLastDay);
 			DisplayInWorkInfoParam_New param4 = new DisplayInWorkInfoParam_New(listSid, startDate, endDate,
 					param.getActualData, closeDate, targetOrgIdenInforDto,
-					param.personTotalSelected, param.workplaceSelected);
+					Strings.isNullOrEmpty(param.personTotalSelected) ? null : Integer.valueOf(param.personTotalSelected),
+					Strings.isNullOrEmpty(param.workplaceSelected) ? null : Integer.valueOf(param.workplaceSelected));
 			resultStep4 = displayInWorkInfo.getDataWorkInfo_New(param4);
 			
 		} else if (param.viewMode.equals("shift")) {
@@ -122,8 +115,8 @@ public class ChangeWorkPlaceFinder {
 			param51.setGetActualData(param.getActualData);
 			param51.setUnit(param.unit);
 			
-			param51.setPersonalCounterOp(param.personTotalSelected);
-			param51.setWorkplaceCounterOp(param.workplaceSelected);
+			param51.setPersonalCounterOp(Strings.isNullOrEmpty(param.personTotalSelected) ? null : Integer.valueOf(param.personTotalSelected));
+			param51.setWorkplaceCounterOp(Strings.isNullOrEmpty(param.workplaceSelected) ? null : Integer.valueOf(param.workplaceSelected));
 			param51.setDay(new DateInMonth(param.day, param.isLastDay));
 
 			resultStep51 = displayInShift.getData_New(param51);

@@ -33,7 +33,7 @@ public class StartKSU001Param {
 	public int unit;					     // workPlace | workPlaceGroup
 	public String workplaceId;     	         
 	public String workplaceGroupId;
-	public int personTotalSelected; // 個人計選択 A11_1
-	public int workplaceSelected;   // 職場計選択A12_1
+	public String personTotalSelected; // 個人計選択 A11_1
+	public String workplaceSelected;   // 職場計選択A12_1
 	
 }
