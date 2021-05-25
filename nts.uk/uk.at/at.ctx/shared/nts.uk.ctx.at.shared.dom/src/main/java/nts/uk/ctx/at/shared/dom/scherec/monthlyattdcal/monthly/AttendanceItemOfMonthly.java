@@ -10,7 +10,9 @@ public enum AttendanceItemOfMonthly {
 	WEEKLY_TOTAL_PREMIUM_TIME(5),
 	/** 月割増合計時間 */
 	MONTHLY_TOTAL_PREMIUM_TIME(6),
-	
+
+	/** フレックス時間 */
+	FLEX_TIME(12),
 	/** フレックス法定内時間 */
 	FLEX_LEGAL_TIME(15),
 	/** フレックス法定外時間 */
