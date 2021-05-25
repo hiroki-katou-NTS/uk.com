@@ -53,11 +53,12 @@ public class ScreenQueryAggrerateNumberTimeWp {
 	private AttendanceItemConvertFactory converterFactory;
 	
 	
-	public Map<String, Map<String, BigDecimal>> aggrerate(
+	public Map<String, Map<TotalTimesDetailDto, BigDecimal>> aggrerate(
 			List<IntegrationOfDaily> aggrerateintegrationOfDaily
 			) {
 		
 		Require require = new Require(totalTimeRepository, workTypeRepository, converterFactory); 
+		Map<String, Map<TotalTimesDetailDto, BigDecimal>> output = new HashMap<String, Map<TotalTimesDetailDto, BigDecimal>>();
 		//1: 取得する(回数集計種類)
 		Optional<CountInfoDto> countInfoOp = Optional.ofNullable(countInfoProcessor.getInfo(new RequestPrams(0)));
 		
@@ -104,7 +105,7 @@ public class ScreenQueryAggrerateNumberTimeWp {
 					    		  				   .collect(Collectors.toMap(
 					    		  						   x -> totalTimes.stream()
 					    		  						   				  .filter(y -> y.getTotalCountNo() == x.getKey())
-					    		  						   				  .findFirst().map(z -> z.getTotalTimesName()).orElse(null),
+					    		  						   				  .findFirst().orElse(null),
 					    		  						   x -> x.getValue()
 			    		  						   ))
 					    		  
@@ -113,7 +114,7 @@ public class ScreenQueryAggrerateNumberTimeWp {
 		}
 		
 		
-		return new HashMap<String, Map<String, BigDecimal>>();
+		return output;
 	}
 	
 	@AllArgsConstructor

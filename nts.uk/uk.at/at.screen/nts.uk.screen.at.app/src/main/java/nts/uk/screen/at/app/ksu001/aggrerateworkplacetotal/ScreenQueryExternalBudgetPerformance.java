@@ -37,13 +37,13 @@ public class ScreenQueryExternalBudgetPerformance {
 	 * @param targetOrg 対象組織識別情報
 	 * @param datePeriod 期間
 	 */
-	public Map<GeneralDate, Map<String, String>> aggrerate(
+	public Map<GeneralDate, Map<ExternalBudgetDto, String>> aggrerate(
 			TargetOrgIdenInfor targetOrg,
 			DatePeriod datePeriod
 			) {
 		
-		Map<GeneralDate, Map<String, String>> output = new HashMap<GeneralDate, Map<String, String>>();
-		Map<String, Map<String, String>> map = new HashMap<String, Map<String, String>>();
+		Map<GeneralDate, Map<ExternalBudgetDto, String>> output = new HashMap<GeneralDate, Map<ExternalBudgetDto, String>>();
+		Map<String, Map<ExternalBudgetDto, String>> map = new HashMap<String, Map<ExternalBudgetDto, String>>();
 		String companyId = AppContexts.user().companyId();
 		//1: 取得する()
 		List<ExternalBudgetDto> externalBudgets = getExternalBudgetPerformanceItems.getByComanyID(companyId);
@@ -62,11 +62,11 @@ public class ScreenQueryExternalBudgetPerformance {
 //								   GeneralDate date = GeneralDate.fromString(dto.getDate(), "yyyy/MM/dd");
 								   String date = dto.getDate();
 								   if (map.containsKey(date)) {
-									   Map<String, String> value = map.get(date);
-									   value.put(x.getExternalBudgetName(), dto.getValue());
+									   Map<ExternalBudgetDto, String> value = map.get(date);
+									   value.put(x, dto.getValue());
 								   } else {
-									   Map<String, String> value = new HashMap<String, String>();
-									   value.put(x.getExternalBudgetName(), dto.getValue());
+									   Map<ExternalBudgetDto, String> value = new HashMap<ExternalBudgetDto, String>();
+									   value.put(x, dto.getValue());
 									   map.put(date, value);
 								   }
 							   }
