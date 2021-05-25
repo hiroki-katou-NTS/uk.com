@@ -1146,19 +1146,19 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                     //I2_3
                     String occurrence = "";
                     if (check.isSubstituteHolidaySetting()) {
-                        occurrence = statusHolidayItem.getOccurrenceDays() == null ? "" : statusHolidayItem.getOccurrenceDays().toString();
+                        occurrence = statusHolidayItem.getOccurrenceDays() == null||statusHolidayItem.getOccurrenceDays() == 0 ? "" : statusHolidayItem.getOccurrenceDays().toString();
                     } else if (check.isSubstituteHolidaySetting() && check.isHourlyLeaveSetting()) {
-                        occurrence = (statusHolidayItem.getOccurrenceTimes() == null ? "" : statusHolidayItem.getOccurrenceTimes().toString());
+                        occurrence = (statusHolidayItem.getOccurrenceTimes() == null||statusHolidayItem.getOccurrenceTimes()==0 ? "" : statusHolidayItem.getOccurrenceTimes().toString());
                     }
 
                     cells.get(firstRow, 10 + totalMonth).setValue(occurrence);
                     // I3_3
                     String use = "";
                     if (check.isSubstituteHolidaySetting()) {
-                        use = statusHolidayItem.getUseDays() == null ? "" : statusHolidayItem.getUseDays().toString();
+                        use = statusHolidayItem.getUseDays() == null||statusHolidayItem.getUseDays()==0 ? "" : statusHolidayItem.getUseDays().toString();
                     }
                     if (check.isSubstituteHolidaySetting() && check.isHourlyLeaveSetting()) {
-                        use = statusHolidayItem.getUseTimes() == null ? "" : statusHolidayItem.getUseDays().toString();
+                        use = statusHolidayItem.getUseTimes() == null||statusHolidayItem.getUseTimes()==0 ? "" : statusHolidayItem.getUseDays().toString();
                     }
                     cells.get(firstRow + 1, 10 + totalMonth)
                             .setValue(use);
@@ -1166,9 +1166,9 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                         // I4_3 代休_未消化_日数, set lại giá trị cho cột này nếu bằng 0 thì không hiển thị ra
                         String unUsed = "";
                         if (check.isSubstituteHolidaySetting()) {
-                            unUsed = statusHolidayItem.getUnUsedDays() == null ? "" : statusHolidayItem.getUnUsedDays().toString();
+                            unUsed = statusHolidayItem.getUnUsedDays() == null||statusHolidayItem.getUnUsedDays()==0 ? "" : statusHolidayItem.getUnUsedDays().toString();
                         } else if (check.isSubstituteHolidaySetting() && check.isHourlyLeaveSetting()) {
-                            unUsed = (statusHolidayItem.getUnUsedTimes() == null ? "" : statusHolidayItem.getUnUsedTimes().toString());
+                            unUsed = (statusHolidayItem.getUnUsedTimes() == null||statusHolidayItem.getUnUsedTimes()==0 ? "" : statusHolidayItem.getUnUsedTimes().toString());
                         }
                         cells.get(firstRow + 2, 10 + totalMonth)
                                 .setValue(unUsed);
@@ -1181,10 +1181,10 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                         // I2_3
                         String occurrence = "";
                         if (check.isSubstituteHolidaySetting()) {
-                            occurrence = statusHolidayItem.getOccurrenceDays() == null ? "0" :
+                            occurrence = statusHolidayItem.getOccurrenceDays() == null||statusHolidayItem.getOccurrenceDays()==0 ? "" :
                                     statusHolidayItem.getOccurrenceDays().toString();
                         } else if (check.isSubstituteHolidaySetting() && check.isHourlyLeaveSetting()) {
-                            occurrence = (statusHolidayItem.getOccurrenceTimes() == null ? "0" :
+                            occurrence = (statusHolidayItem.getOccurrenceTimes() == null||statusHolidayItem.getOccurrenceTimes()==0 ? "" :
                                     statusHolidayItem.getOccurrenceTimes().toString());
                         }
 
@@ -1193,9 +1193,9 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                         String use = "";
 
                         if (check.isSubstituteHolidaySetting()) {
-                            use = statusHolidayItem.getUseDays() == null ? "0" : statusHolidayItem.getUseDays().toString();
+                            use = statusHolidayItem.getUseDays() == null||statusHolidayItem.getUseDays()==0 ? "" : statusHolidayItem.getUseDays().toString();
                         } else if (check.isHourlyLeaveSetting() && check.isHourlyLeaveSetting()) {
-                            use = (statusHolidayItem.getUseTimes() == null ? "0" : statusHolidayItem.getUseTimes().toString());
+                            use = (statusHolidayItem.getUseTimes() == null||statusHolidayItem.getUseTimes()==0 ? "" : statusHolidayItem.getUseTimes().toString());
                         }
 
                         cells.get(firstRow + 1, 10 + totalMonth)
@@ -1206,9 +1206,9 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                         String unUsed = "";
 
                         if (check.isSubstituteHolidaySetting()) {
-                            unUsed = statusHolidayItem.getUnUsedDays() == null ? "" : statusHolidayItem.getUnUsedDays().toString();
+                            unUsed = statusHolidayItem.getUnUsedDays() == null||statusHolidayItem.getUnUsedDays()==0 ? "" : statusHolidayItem.getUnUsedDays().toString();
                         } else if (check.isSubstituteHolidaySetting() && check.isHourlyLeaveSetting()) {
-                            unUsed = (statusHolidayItem.getUnUsedTimes() == null ? "" : statusHolidayItem.getUnUsedTimes().toString());
+                            unUsed = (statusHolidayItem.getUnUsedTimes() == null||statusHolidayItem.getUnUsedTimes()==0 ? "" : statusHolidayItem.getUnUsedTimes().toString());
                         }
                         cells.get(firstRow + 2, 10 + totalMonth)
                                 .setValue(unUsed);
@@ -1233,18 +1233,18 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                         // I2_3
                         String occurrence = "";
                         if (check.isSubstituteHolidaySetting()) {
-                            occurrence = statusHolidayItem.getOccurrenceDays() == null ? "" : statusHolidayItem.getOccurrenceDays().toString();
+                            occurrence = statusHolidayItem.getOccurrenceDays() == null||statusHolidayItem.getOccurrenceDays()==0 ? "" : statusHolidayItem.getOccurrenceDays().toString();
                         } else if (check.isSubstituteHolidaySetting() && check.isHourlyLeaveSetting()) {
-                            occurrence = (statusHolidayItem.getOccurrenceTimes() == null ? "" : statusHolidayItem.getOccurrenceTimes().toString());
+                            occurrence = (statusHolidayItem.getOccurrenceTimes() == null||statusHolidayItem.getOccurrenceTimes()==0 ? "" : statusHolidayItem.getOccurrenceTimes().toString());
                         }
                         cells.get(firstRow, 10 + totalMonth).setValue(occurrence);
                         // I3_3 代休_使用_日数時間数 実績値, set lại giá trị cho cột này nếu bằng 0 thì không hiển thị ra
                         String use = "";
                         if (check.isSubstituteHolidaySetting()) {
-                            use = statusHolidayItem.getUseDays() == null ? "" : statusHolidayItem.getUseDays().toString();
+                            use = statusHolidayItem.getUseDays() == null||statusHolidayItem.getUseDays()==0 ? "" : statusHolidayItem.getUseDays().toString();
                         }
                         if (check.isSubstituteHolidaySetting() && check.isHourlyLeaveSetting()) {
-                            use = statusHolidayItem.getUseTimes() == null ? "" : statusHolidayItem.getUseDays().toString();
+                            use = statusHolidayItem.getUseTimes() == null||statusHolidayItem.getUseTimes()==0 ? "" : statusHolidayItem.getUseDays().toString();
                         }
                         cells.get(firstRow + 1, 10 + totalMonth)
                                 .setValue(use);
