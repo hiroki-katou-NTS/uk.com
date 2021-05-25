@@ -9,9 +9,7 @@ import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.function.infra.entity.alarm.persistenceextractresult.KfndtAlarmExtracResult;
 import nts.uk.ctx.at.function.infra.entity.alarm.persistenceextractresult.KfndtAlarmExtracResultPK;
 import nts.uk.ctx.at.function.infra.entity.alarm.persistenceextractresult.KfndtPersisAlarmExt;
-import nts.uk.ctx.at.shared.dom.alarmList.persistenceextractresult.AlarmEmployeeList;
-import nts.uk.ctx.at.shared.dom.alarmList.persistenceextractresult.PersisAlarmListExtractResultRepository;
-import nts.uk.ctx.at.shared.dom.alarmList.persistenceextractresult.PersistenceAlarmListExtractResult;
+import nts.uk.ctx.at.shared.dom.alarmList.persistenceextractresult.*;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -59,9 +57,8 @@ public class JpaPersisAlarmListExtractResultRepository extends JpaRepository imp
         if (domain == null || domain.getAlarmListExtractResults().isEmpty()) {
             return;
         }
-        val empIds = domain.getAlarmListExtractResults().stream().map(AlarmEmployeeList::getEmployeeID).distinct().collect(Collectors.toList());
         val data = this.queryProxy().query("select distinct a from KfndtPersisAlarmExt a join a.extractResults b " +
-                "where a.autoRunCode = :runCode and a.patternCode = :patternCode ", KfndtPersisAlarmExt.class) //and b.pk.sid in :empIds
+                "where a.autoRunCode = :runCode and a.patternCode = :patternCode ", KfndtPersisAlarmExt.class)
                 .setParameter("runCode", domain.getAutoRunCode())
                 .setParameter("patternCode", domain.getAlarmPatternCode().v())
                 .getSingle(KfndtPersisAlarmExt::toDomain);
@@ -97,26 +94,25 @@ public class JpaPersisAlarmListExtractResultRepository extends JpaRepository imp
         if (domain == null || domain.getAlarmListExtractResults().isEmpty()) {
             return;
         }
-
         List<KfndtAlarmExtracResultPK> lstDelete = new ArrayList<>();
         String cid = domain.getCompanyID();
-        domain.getAlarmListExtractResults().stream().forEach(x -> {
-            x.getAlarmExtractInfoResults().stream().forEach(y -> {
-                y.getExtractionResultDetails().stream().forEach(z -> {
+        for (AlarmEmployeeList alarmEmployeeList : domain.getAlarmListExtractResults()) {
+            for (AlarmExtractInfoResult y : alarmEmployeeList.getAlarmExtractInfoResults()) {
+                for (ExtractResultDetail z : y.getExtractionResultDetails()) {
                     lstDelete.add(new KfndtAlarmExtracResultPK(
                             cid,
                             "",
-                            x.getEmployeeID(),
+                            alarmEmployeeList.getEmployeeID(),
                             y.getAlarmCategory().value,
                             y.getAlarmCheckConditionCode().v(),
                             y.getAlarmListCheckType().value,
                             y.getAlarmCheckConditionNo(),
                             String.valueOf(z.getPeriodDate().getStartDate().get())));
-                });
-            });
-        });
+                }
+            }
+        }
 
-        lstDelete.forEach(x -> {
+        for (KfndtAlarmExtracResultPK x : lstDelete) {
             this.getEntityManager().createQuery(REMOVE_EXTRACT_RESULT)
                     .setParameter("cid", cid)
                     .setParameter("sid", x.sid)
@@ -126,8 +122,8 @@ public class JpaPersisAlarmListExtractResultRepository extends JpaRepository imp
                     .setParameter("no", x.conditionNo)
                     .setParameter("startDate", x.startDate)
                     .executeUpdate();
-//            this.getEntityManager().flush();
-        });
+            this.getEntityManager().flush();
+        }
     }
 
     @Override

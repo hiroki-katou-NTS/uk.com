@@ -178,12 +178,12 @@ public class AlarmTopPageProcessingServiceImpl implements AlarmTopPageProcessing
 
         // có ở db, mà ko có input --> cần delete khỏi DB
 //        mapInput.forEach((key, value) -> mapDb.entrySet().removeIf(d -> !d.getKey().contains(key)));
-        List<String> lstEmpDiff = mapInput.keySet().stream()
-                .filter(keyIp -> !mapDb.keySet().contains(keyIp)).collect(Collectors.toList());
-        if (!lstEmpDiff.isEmpty()) {
-            val lstDel = lstDB.stream().filter(x -> lstEmpDiff.contains(x.getEmployeeID())).collect(Collectors.toList());
-            if (!lstDel.isEmpty()) {
-                lstDelete.addAll(lstDel);
+        for (val entryDb : mapDb.entrySet()) {
+            if (!mapInput.containsKey(entryDb.getKey())) {
+                val dataDeletes = lstDB.stream().filter(x -> x.getEmployeeID().equals(entryDb.getKey())).collect(Collectors.toList());
+                if (!dataDeletes.isEmpty()) {
+                    lstDelete.addAll(dataDeletes);
+                }
             }
         }
 
