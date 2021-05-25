@@ -225,8 +225,8 @@ public class WkpDepFinder {
 				return;
 			}
 			List<WkpDepTreeDto> currentItemChilds = optWorkplaceFindDto.get().getChildren();
-			pushToList(currentItemChilds, dto, hierarchyCode.substring(highestHierarchy, hierarchyCode.length()),
-					searchCode, HIERARCHY_LENGTH);
+			pushToList(currentItemChilds, dto, hierarchyCode.substring(HIERARCHY_LENGTH, hierarchyCode.length()),
+					searchCode, highestHierarchy);
 		}
 	}
 
