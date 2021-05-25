@@ -11,6 +11,8 @@ import java.util.Optional;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 
+import org.apache.commons.lang3.tuple.Pair;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
@@ -18,6 +20,7 @@ import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.Day;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
 /**
@@ -393,6 +396,23 @@ public class Closure extends AggregateRoot {
 	public Closure(ClosureId closureId) {
 		super();
 		this.closureId = closureId;
+	}
+	
+	/**
+	 * 締め開始日と締め日を取得する
+	 * @return
+	 */
+	public Pair<Day, Day>  getClosureStartDayAndClosureDay(){
+		Optional<ClosureDate> closureDate = getClosureDateOfCurrentMonth();
+		if(!closureDate.isPresent()){
+			return Pair.of(new Day(0), new Day(0));
+		}
+		//締め開始日を求める
+		Day start = new Day(closureDate.get().getLastDayOfMonth() ? 1 : closureDate.get().getClosureDay().v() +1);
+		//締め日を取得する
+		Day Closure = closureDate.get().getClosureDay();
+		
+		return Pair.of(start, Closure);
 	}
 	
 }
