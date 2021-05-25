@@ -143,11 +143,12 @@ public class NursingLeaveSettingTest {
 	}
 
 	// 介護対象管理データ
-	List<CareManagementDate> careManagementDate() {
-		return Arrays.asList(
-				CareManagementDate.of("900001", true, new DateHistoryItem("", new DatePeriod(GeneralDate.min(), GeneralDate.min()))),
-				CareManagementDate.of("900002", false, new DateHistoryItem("", new DatePeriod(GeneralDate.min(), GeneralDate.min()))),
-				CareManagementDate.of("900003", true, new DateHistoryItem("", new DatePeriod(GeneralDate.min(), GeneralDate.min()))));
+	Optional<CareManagementDate> careManagementDate() {
+		return Optional.of(
+				CareManagementDate.of(
+						"900001",
+						true,
+						new DateHistoryItem("", new DatePeriod(GeneralDate.min(), GeneralDate.max()))));
 
 	}
 

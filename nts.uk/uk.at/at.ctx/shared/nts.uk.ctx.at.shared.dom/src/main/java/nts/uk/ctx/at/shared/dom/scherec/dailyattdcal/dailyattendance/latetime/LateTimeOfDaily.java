@@ -62,6 +62,9 @@ public class LateTimeOfDaily {
 	private TimevacationUseTimeOfDaily timePaidUseTime;
 	//インターバル時間
 	private IntervalExemptionTime exemptionTime;
+	//遅刻報告したのでアラームにしない
+	@Setter
+	private boolean doNotSetAlarm;
 	
 	public LateTimeOfDaily(TimeWithCalculation lateTime, TimeWithCalculation lateDeductionTime, WorkNo workNo,
 			TimevacationUseTimeOfDaily timePaidUseTime, IntervalExemptionTime exemptionTime) {		
@@ -70,7 +73,22 @@ public class LateTimeOfDaily {
 		this.workNo = workNo;
 		this.timePaidUseTime = timePaidUseTime;
 		this.exemptionTime = exemptionTime;
+		this.doNotSetAlarm = false;
 	}	
+	
+	/** 相殺代休時間を求める */
+	public AttendanceTime getOffsetCompensatoryTime() {
+		
+		/** IF ＠遅刻控除時間。計算時間　＜　＠休暇使用時間。時間代休使用時間 */
+		if (this.lateDeductionTime.getCalcTime().lessThan(this.timePaidUseTime.getTimeCompensatoryLeaveUseTime())) {
+			/** Return　＠遅刻控除時間。計算時間	*/
+			return this.lateDeductionTime.getCalcTime();
+		}
+		
+		/** Return　＠休暇使用時間。時間代休使用時間 */
+		return this.timePaidUseTime.getTimeCompensatoryLeaveUseTime();
+	}
+	
 
 	/**
 	 * 遅刻時間のみ更新
@@ -300,7 +318,6 @@ public class LateTimeOfDaily {
 		}
 		return returnErrorList;
 	}
-	
 	/**
 	 * 休暇加算時間の計算
 	 * @return
@@ -317,10 +334,7 @@ public class LateTimeOfDaily {
 	}
 	
 	public void resetData() {
-		this.lateTime = TimeWithCalculation.sameTime(new AttendanceTime(0));
-		this.lateDeductionTime = TimeWithCalculation.sameTime(new AttendanceTime(0));
-		this.timePaidUseTime = TimevacationUseTimeOfDaily.defaultValue();
-		this.exemptionTime = IntervalExemptionTime.defaultValue();
+		this.lateTime.setTime(new AttendanceTime(0));
 	}
 	
 	public static LateTimeOfDaily createDefaultWithNo(int no) {

@@ -12,6 +12,7 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.outsideworktime.OverTimeFrameTime;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.timeseries.OverTimeOfTimeSeries;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.TimeMonthWithCalculation;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 
 /**
@@ -37,6 +38,10 @@ public class AggregateOverTime implements Cloneable, Serializable{
 	private AttendanceTimeMonth legalOverTime;
 	/** 法定内振替残業時間 */
 	private AttendanceTimeMonth legalTransferOverTime;
+	/** フレックス内残業時間 */
+	private AttendanceTimeMonth flexOverTime;
+	/** フレックス内振替残業時間 */
+	private AttendanceTimeMonth flexTransferOverTime;
 	
 	/** 時系列ワーク */
 	private Map<GeneralDate, OverTimeOfTimeSeries> timeSeriesWorks;
@@ -54,6 +59,8 @@ public class AggregateOverTime implements Cloneable, Serializable{
 		this.transferOverTime = TimeMonthWithCalculation.ofSameTime(0);
 		this.legalOverTime = new AttendanceTimeMonth(0);
 		this.legalTransferOverTime = new AttendanceTimeMonth(0);
+		this.flexOverTime = new AttendanceTimeMonth(0);
+		this.flexTransferOverTime = new AttendanceTimeMonth(0);
 		
 		this.timeSeriesWorks = new HashMap<>();
 	}
@@ -66,6 +73,8 @@ public class AggregateOverTime implements Cloneable, Serializable{
 	 * @param transferOverTime 振替残業時間
 	 * @param legalOverTime 法定内残業時間
 	 * @param legalTransferOverTime 法定内振替残業時間
+	 * @param flexOverTime フレックス内残業時間
+	 * @param flexTransferOverTime フレックス内振替残業時間
 	 * @return 集計残業時間
 	 */
 	public static AggregateOverTime of(
@@ -74,7 +83,9 @@ public class AggregateOverTime implements Cloneable, Serializable{
 			AttendanceTimeMonth beforeOverTime,
 			TimeMonthWithCalculation transferOverTime,
 			AttendanceTimeMonth legalOverTime,
-			AttendanceTimeMonth legalTransferOverTime){
+			AttendanceTimeMonth legalTransferOverTime,
+			AttendanceTimeMonth flexOverTime,
+			AttendanceTimeMonth flexTransferOverTime){
 
 		val domain = new AggregateOverTime(overTimeFrameNo);
 		domain.overTime = overTime;
@@ -82,6 +93,8 @@ public class AggregateOverTime implements Cloneable, Serializable{
 		domain.transferOverTime = transferOverTime;
 		domain.legalOverTime = legalOverTime;
 		domain.legalTransferOverTime = legalTransferOverTime;
+		domain.flexOverTime = flexOverTime;
+		domain.flexTransferOverTime = flexTransferOverTime;
 		return domain;
 	}
 	
@@ -98,6 +111,8 @@ public class AggregateOverTime implements Cloneable, Serializable{
 					new AttendanceTimeMonth(this.transferOverTime.getCalcTime().v()));
 			cloned.legalOverTime = new AttendanceTimeMonth(this.legalOverTime.v());
 			cloned.legalTransferOverTime = new AttendanceTimeMonth(this.legalTransferOverTime.v());
+			cloned.flexOverTime = new AttendanceTimeMonth(this.flexOverTime.v());
+			cloned.flexTransferOverTime = new AttendanceTimeMonth(this.flexTransferOverTime.v());
 			// ※　Shallow Copy.
 			cloned.timeSeriesWorks = this.timeSeriesWorks;
 		}
@@ -161,7 +176,7 @@ public class AggregateOverTime implements Cloneable, Serializable{
 	 * 集計する
 	 * @param datePeriod 期間
 	 */
-	public void aggregate(DatePeriod datePeriod){
+	public void aggregate(DatePeriod datePeriod, WorkingSystem workingSystem){
 
 		this.overTime = TimeMonthWithCalculation.ofSameTime(0);
 		this.beforeOverTime = new AttendanceTimeMonth(0);
@@ -179,6 +194,16 @@ public class AggregateOverTime implements Cloneable, Serializable{
 			this.transferOverTime = this.transferOverTime.addMinutes(
 					timeSeriesWork.getOverTime().getTransferTime().getTime().v(),
 					timeSeriesWork.getOverTime().getTransferTime().getCalcTime().v());
+			
+			if (workingSystem == WorkingSystem.FLEX_TIME_WORK) {
+
+				this.flexOverTime = this.flexOverTime.addMinutes(
+						timeSeriesWork.getLegalOverTime().getOverTimeWork().getTime().v());
+				this.flexTransferOverTime = this.flexTransferOverTime.addMinutes(
+						timeSeriesWork.getLegalOverTime().getTransferTime().getTime().v());
+				continue;
+			}
+			
 			this.legalOverTime = this.legalOverTime.addMinutes(
 					timeSeriesWork.getLegalOverTime().getOverTimeWork().getTime().v());
 			this.legalTransferOverTime = this.legalTransferOverTime.addMinutes(
@@ -199,5 +224,7 @@ public class AggregateOverTime implements Cloneable, Serializable{
 				target.transferOverTime.getTime().v(), target.transferOverTime.getCalcTime().v());
 		this.legalOverTime = this.legalOverTime.addMinutes(target.legalOverTime.v());
 		this.legalTransferOverTime = this.legalTransferOverTime.addMinutes(target.legalTransferOverTime.v());
+		this.flexOverTime = this.flexOverTime.addMinutes(target.flexOverTime.v());
+		this.flexTransferOverTime = this.flexTransferOverTime.addMinutes(target.flexTransferOverTime.v());
 	}
 }

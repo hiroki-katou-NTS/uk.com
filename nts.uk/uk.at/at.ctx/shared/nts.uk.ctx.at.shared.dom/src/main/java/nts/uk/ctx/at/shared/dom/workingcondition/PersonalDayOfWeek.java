@@ -4,10 +4,12 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.workingcondition;
 
+import java.time.DayOfWeek;
 import java.util.Optional;
 
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
+import nts.arc.time.GeneralDate;
 
 /**
  * The Class PersonalDayOfWeek.
@@ -44,6 +46,29 @@ public class PersonalDayOfWeek extends DomainObject {
 	// 日曜日
 	private Optional<SingleDaySchedule> sunday;
 
+	public Optional<SingleDaySchedule> getSingleDaySchedule(GeneralDate baseDate){
+		DayOfWeek day = baseDate.localDate().getDayOfWeek();
+		switch (day) {
+			case MONDAY:
+				return this.monday;
+			case TUESDAY:
+				return this.tuesday;
+			case WEDNESDAY:
+				return this.wednesday;
+			case THURSDAY:
+				return this.thursday;
+			case FRIDAY:
+				return this.friday;
+			case SATURDAY:
+				return this.saturday;
+			case SUNDAY:
+				return this.sunday;
+			default:
+				return Optional.empty();
+		}
+	}
+	
+	
 	/**
 	 * Instantiates a new personal day of week.
 	 *

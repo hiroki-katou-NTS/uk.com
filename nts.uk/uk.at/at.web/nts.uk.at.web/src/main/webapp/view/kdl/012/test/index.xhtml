@@ -1,0 +1,93 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+<ui:composition template="../../../../master/base.xhtml">
+    <ui:define name="htmlHead">
+        <com:scriptfile set="IGNITE"/>
+        <com:scriptfile path="kdl012.test.vm.js"/>
+        <com:ValidatorScript>
+            nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskframe.TaskFrameNo
+        </com:ValidatorScript>
+        <style>
+            .form-label {
+                width: 170px;
+            }
+        </style>
+    </ui:define>
+
+    <ui:define name="content">
+        <div id="functions-area">
+            <button style="margin-left: 100px;" data-bind="enable: $root.errors.isEmpty, click : openDialog">Open KDL 012</button>
+        </div>
+        <div id="contents-area">
+            <div class="control-group valign-center">
+                <div data-bind="ntsFormLabel: { required: true }" >Single or Multiple:</div>
+                <div data-bind="ntsSwitchButton: {
+                                    name: 'SingleOrMultiMode',
+                                    options: roundingModes,
+                                    optionsValue: 'code',
+                                    optionsText: 'name',
+                                    value: selectedModeCode
+                            }"></div>
+            </div>
+            <div class="control-group valign-center">
+                <div data-bind="ntsFormLabel: { required: true }" >Show Expire Date:</div>
+                <div data-bind="ntsSwitchButton: {
+                                    name: 'ShowExpireDate',
+                                    options: showExpireDateOptions,
+                                    optionsValue: 'code',
+                                    optionsText: 'name',
+                                    value: selectedShowExpireDateCode
+                            }"></div>
+            </div>
+            <div class="control-group valign-center">
+                <div data-bind="ntsFormLabel: { required: true }" >Task frame no:</div>
+                <div data-bind="ntsComboBox: {
+                            name: '#[KMT009_7]',
+                            options: [
+                                {code: 1, name: 'Task frame 1'},
+                                {code: 2, name: 'Task frame 2'},
+                                {code: 3, name: 'Task frame 3'},
+                                {code: 4, name: 'Task frame 4'},
+                                {code: 5, name: 'Task frame 5'}
+                            ],
+                            optionsValue: 'code',
+                            visibleItemsCount: 5,
+                            value: workFrameNoSelection,
+                            optionsText: 'name',
+                            editable: false,
+                            enable: true,
+                            required: true,
+                            selectFirstIfNull: true
+                        }"></div>
+            </div>
+            <div class="control-group valign-center">
+                <div data-bind="ntsFormLabel: { required: true }" >Base Date:</div>
+                <div data-bind="ntsDatePicker: { value: referenceDate, required: true }"></div>
+            </div>
+            <div class="control-group valign-top">
+                <div data-bind="ntsFormLabel: {}" >Current Code List:</div>
+                <textarea style="width: 600px; height: 200px;" data-bind="ntsMultilineEditor: {value: selectionCodeTxt}"/>
+            </div>
+            <div class="control-group valign-top">
+                <div data-bind="ntsFormLabel: {}" >Result:</div>
+                <div data-bind="if: !!ko.unwrap(items).length" style="padding-left: 168px;">
+                    <table style="width: 600px; height: 200px;" id="multi-list" data-bind="ntsGridList: {
+								height: 200,
+								options: items,
+								optionsValue: 'code',
+								columns: header,
+								multiple: false
+							}"></table>
+                </div>
+            </div>
+
+        </div>
+    </ui:define>
+</ui:composition>
+</body>
+</html>

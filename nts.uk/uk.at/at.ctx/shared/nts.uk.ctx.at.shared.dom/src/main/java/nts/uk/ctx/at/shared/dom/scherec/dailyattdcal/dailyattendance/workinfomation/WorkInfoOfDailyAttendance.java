@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -13,7 +11,6 @@ import lombok.val;
 import nts.arc.layer.dom.objecttype.DomainObject;
 import nts.uk.ctx.at.shared.dom.WorkInfoAndTimeZone;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.NumberOfDaySuspension;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.DayOfWeek;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZone;
@@ -44,21 +41,20 @@ public class WorkInfoOfDailyAttendance implements DomainObject {
 	private NotUseAttribute backStraightAtr;
 	// 曜日
 	private DayOfWeek dayOfWeek;
-	// 勤務予定時間帯
+	// 始業終業時間帯
 	private List<ScheduleTimeSheet> scheduleTimeSheets = new ArrayList<>();
 	//振休振出として扱う日数
 	@Setter
 	private Optional<NumberOfDaySuspension> numberDaySuspension = Optional.empty();
 
-	//Ver
+	//排他version
 	@Setter
 	@Getter
 	private long ver;
-	
-	
+
 	public WorkInfoOfDailyAttendance(WorkInformation workInfo,
 			CalculationState calculationState, NotUseAttribute goStraightAtr, NotUseAttribute backStraightAtr,
-			DayOfWeek dayOfWeek, List<ScheduleTimeSheet> scheduleTimeSheets) {
+			DayOfWeek dayOfWeek, List<ScheduleTimeSheet> scheduleTimeSheets, Optional<NumberOfDaySuspension> numberDaySuspension) {
 		super();
 		this.recordInfo = workInfo;
 		this.calculationState = calculationState;
@@ -66,7 +62,7 @@ public class WorkInfoOfDailyAttendance implements DomainObject {
 		this.backStraightAtr = backStraightAtr;
 		this.dayOfWeek = dayOfWeek;
 		this.scheduleTimeSheets = scheduleTimeSheets;
-
+        this.numberDaySuspension = numberDaySuspension;
 	}
 
 	/**
@@ -87,26 +83,26 @@ public class WorkInfoOfDailyAttendance implements DomainObject {
 			NotUseAttribute goStraightAtr,
 			DayOfWeek dayOfWeek
 			) {
-		
+
 		List<TimeZone> timeZoneList = workInfo.getWorkInfoAndTimeZone(require).get().getTimeZones();
 		List<ScheduleTimeSheet> scheduleTimeSheets = new ArrayList<>();
 		for ( int index = 0; index < timeZoneList.size(); index++) {
 			scheduleTimeSheets.add(
-					new ScheduleTimeSheet( 
-							index + 1, 
-							timeZoneList.get(index).getStart().v(), 
+					new ScheduleTimeSheet(
+							index + 1,
+							timeZoneList.get(index).getStart().v(),
 							timeZoneList.get(index).getEnd().v()));
 		}
-		
+
 		return new WorkInfoOfDailyAttendance(
-				workInfo, 
-				calculationState, 
-				goStraightAtr, 
-				backStraightAtr, 
-				dayOfWeek, 
-				scheduleTimeSheets);
+				workInfo,
+				calculationState,
+				goStraightAtr,
+				backStraightAtr,
+				dayOfWeek,
+				scheduleTimeSheets, Optional.empty());
 	}
-	
+
 	/**
 	 * 計算ステータスの変更
 	 * @param state 計算ステータス
@@ -175,19 +171,19 @@ public class WorkInfoOfDailyAttendance implements DomainObject {
 		// 始業終業に取得した所定時間帯をセットする
 		this.scheduleTimeSheets.clear();
 		timeZoneOpt.ifPresent(workInfoTimeZone -> {
-			
+
 			val timeZone = workInfoTimeZone.getTimeZones().stream()
 										.sorted((c1, c2) -> c1.getStart().compareTo(c2.getStart()))
 										.collect(Collectors.toList());
-			
+
 			for(int i = 0; i < timeZone.size(); i++) {
-				this.scheduleTimeSheets.add(new ScheduleTimeSheet(i + 1, 
-																	timeZone.get(i).getStart().valueAsMinutes(), 
+				this.scheduleTimeSheets.add(new ScheduleTimeSheet(i + 1,
+																	timeZone.get(i).getStart().valueAsMinutes(),
 																	timeZone.get(i).getEnd().valueAsMinutes()));
 			}
 		});
 	}
-	
+
 	/**
 	 * 出勤系か
 	 * @param require
@@ -196,7 +192,7 @@ public class WorkInfoOfDailyAttendance implements DomainObject {
 	public boolean isAttendanceRate(Require require) {
 		return this.recordInfo.isAttendanceRate(require);
 	}
-	
+
 	public static interface Require extends WorkInformation.Require {
 
 	}

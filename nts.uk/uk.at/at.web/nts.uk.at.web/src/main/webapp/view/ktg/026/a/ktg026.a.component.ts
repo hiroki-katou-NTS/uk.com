@@ -413,6 +413,8 @@ module nts.uk.at.view.ktg026.a {
         chartStyle!: KnockoutComputed<string>;
 
         employeesOvertime!: any;
+        isDialog: boolean = false;
+        dialogParam: any;
 
         constructor(private cache: { currentOrNextMonth: 1 | 2; } | null) {
             super();
@@ -449,14 +451,17 @@ module nts.uk.at.view.ktg026.a {
             });
         }
 
-        created() {
+        created(param?: any) {
             const vm = this;
+            vm.isDialog = param && !!param.mode;
+            vm.dialogParam = vm.isDialog ? param : null;
             const { $user, cache } = vm;
-            const { employeeId } = $user;
+            const { employeeId } = vm.isDialog ? vm.dialogParam:  $user;
             // 1: 従業員参照モード 2: 上長参照モード
             const { currentOrNextMonth } = (cache || { currentOrNextMonth: 1 });
-            const targetDate: any = null;
-            const targetYear: any = null;
+            const targetDate: any = vm.isDialog ? vm.dialogParam.targetDate : null;
+            let targetYear: any = vm.isDialog ? vm.dialogParam.targetYear : null;
+
             const command = { employeeId, targetDate, targetYear, currentOrNextMonth };
 
             vm
@@ -467,21 +472,26 @@ module nts.uk.at.view.ktg026.a {
                         vm.employeesOvertime = response;
                         const { yearIncludeThisMonth, yearIncludeNextMonth } = response;
 
-                        vm.excessTimes(response.agreeInfo.excessTimes);
-
                         // ???
                         vm.employeeName(response.empInfo.businessName);
 
-                        const targetYear = (currentOrNextMonth === 1 ? yearIncludeThisMonth : yearIncludeNextMonth) || '';
-
-                        vm.targetYear(targetYear.toString());
+                        vm.$window.storage('KTG026_TARGET')
+                            .then((rs: {isRefresh: boolean, target: any}) => {
+                                if (rs && rs.isRefresh) {
+                                    targetYear = rs.target;
+                                }
+                                
+                                const year = !_.isNull(targetYear)
+                                ? targetYear
+                                : ((currentOrNextMonth === 1 ? yearIncludeThisMonth : yearIncludeNextMonth) || '');
+    
+                                vm.targetYear(year.toString());
+                            })
 
                         vm.displayDataTable(response);
                     }
                 })
-                .fail((error: { messageId: string }) => {
-                    vm.$dialog.alert(error).then(() => vm.dataTable([]));
-                })
+                .fail(() => vm.dataTable([]))
                 .always(() => vm.$blockui('clearView'))
                 .always(() => {
                     vm.$nextTick(() => {
@@ -496,10 +506,14 @@ module nts.uk.at.view.ktg026.a {
 
         mounted() {
             const vm = this;
-            const { employeeId } = vm.$user;
+            const { employeeId } = vm.isDialog ? vm.dialogParam : vm.$user;
 
             vm.targetYear
                 .subscribe((targetYear) => {
+                    vm.$window.storage('KTG026_TARGET', {
+                        isRefresh: false,
+                        target: targetYear
+                    });
                     const { employeesOvertime } = vm;
                     const { closureID, closingPeriod } = employeesOvertime;
                     const { processingYm } = closingPeriod || { processingYm: moment().format('YYYYMM') };
@@ -527,11 +541,10 @@ module nts.uk.at.view.ktg026.a {
                 .then((response: EmployeesOvertimeDisplay) => {
                     if (!!response) {
                         vm.displayDataTable(response);
+                        vm.excessTimes(response.agreeInfo.excessTimes);
                     }
                 })
-                .fail((error: { messageId: string }) => {
-                    vm.$dialog.alert(error).then(() => vm.dataTable([]));
-                })
+                .fail(() => vm.dataTable([]))
                 .always(() => vm.$blockui('clearView'))
                 .always(() => {
                     vm.$nextTick(() => {
@@ -633,4 +646,5 @@ module nts.uk.at.view.ktg026.a {
         // 表示する年
         displayYear: number;
     }
+
 }

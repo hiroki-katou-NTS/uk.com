@@ -120,7 +120,7 @@ module nts.uk.at.view.kaf006.shr.tab4.viewmodel {
                 </div>
                 <div class="cell valign-center">
                     <button style="width: 60px; margin-right: 5px;" data-bind="text: $i18n('KAF006_50'), enable: !_.isEmpty($parent.application().appDate()) && $parent.updateMode() && $parent.checkAppDate(), click: openKDL035"></button>
-                    <div style="display: inline-block" data-bind="text: $i18n('KAF006_81')"></div>
+                    <div style="display: inline-block" data-bind="text: $i18n('KAF006_62')"></div>
                 </div>
             </div>
             <div class="table" style="margin: 10px 0;" data-bind="visible: $parent.condition14">

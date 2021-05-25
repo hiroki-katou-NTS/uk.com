@@ -95,7 +95,7 @@ public class NursingLeaveSetting extends AggregateRoot {
 		memento.setAbsenceFrameNo(this.workAbsence);
 		memento.setTimeCareNursingSet(this.timeCareNursingSetting);
 		memento.setNumPer1(1);
-		memento.setNumPer2(2);
+		memento.setNumPer2(2);	
 	}
 
 	/**
@@ -205,10 +205,12 @@ public class NursingLeaveSetting extends AggregateRoot {
 			val currentDayProcess = familyInfo.get(idx);
 
 			// Require．INPUT．介護対象管理データを取得する
-			CareManagementDate careData = require.careData(currentDayProcess.getFamilyID());
+			Optional<CareManagementDate> careData = require.careData(currentDayProcess.getFamilyID());
+			if(!careData.isPresent())
+				continue;
 
 			// 介護対象期間を確認
-			careData.careTargetPeriodWork(period, currentDayProcess.getDeadYmd(), childCareTargetChanged);
+			careData.get().careTargetPeriodWork(period, currentDayProcess.getDeadYmd(), childCareTargetChanged);
 
 			// 介護期間に含まれる介護人数変更日リストを求める
 			childCareTargetChanged = careTargetPeriod.childCareTargetChanged(childCareTargetChanged);
@@ -439,7 +441,7 @@ public class NursingLeaveSetting extends AggregateRoot {
 		List<FamilyInfo> familyInfo(String employeeId);
 
 		// 介護対象管理データ（家族ID）
-		CareManagementDate careData(String familyID);
+		Optional<CareManagementDate> careData(String familyID);
 	}
 
 	public static interface Require {
@@ -457,7 +459,7 @@ public class NursingLeaveSetting extends AggregateRoot {
 		List<FamilyInfo> familyInfo(String employeeId);
 
 //		// 介護対象管理データ（家族ID）
-		CareManagementDate careData(String familyID);
+		Optional<CareManagementDate> careData(String familyID);
 
 		// 期間の上限日数取得する（会社ID、社員ID、期間、介護看護区分）
 		NursingCareLeaveRemainingInfo upperLimitPeriod (String companyId, String employeeId, DatePeriod period, NursingCategory nursingCategory);

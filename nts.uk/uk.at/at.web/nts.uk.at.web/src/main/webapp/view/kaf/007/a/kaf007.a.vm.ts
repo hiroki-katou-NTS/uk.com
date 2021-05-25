@@ -277,12 +277,13 @@ module nts.uk.at.view.kaf007_ref.a.viewmodel {
 				applicationDto: ko.toJS(applicationDto),
 				appWorkChangeDto: ko.toJS(appWorkChangeDto),
 				isError: vm.model().appDispInfoStartupOutput().appDispInfoWithDateOutput.opErrorFlag,
-				appDispInfoStartupDto: ko.toJS(vm.model().appDispInfoStartupOutput)
+				appDispInfoStartupDto: ko.toJS(vm.model().appDispInfoStartupOutput),
+				holidayDates: holidayDateLst
 			}
 
 			vm.$blockui("show");
 
-			vm.$validate('#kaf000-a-component4 .nts-input', '#kaf000-a-component3-prePost', '#kaf000-a-component5-comboReason')
+			vm.$validate('#kaf000-a-component4 .nts-input', '#kaf000-a-component3-prePost', '#kaf000-a-component5-comboReason', '#kaf000-a-component5-textReason')
 				.then(isValid => {
 					if (isValid) {
 						if(vm.reflectWorkChange.whetherReflectAttendance() === 1 && vm.model().setupType() === 0) {
@@ -313,7 +314,7 @@ module nts.uk.at.view.kaf007_ref.a.viewmodel {
 						if (!_.isEmpty(res.holidayDateLst)) {
 							holidayDateLst = res.holidayDateLst;
 						}
-
+						command.holidayDates = holidayDateLst;
 						return vm.handleConfirmMessage(_.clone(res.confirmMsgLst), command);
 					};
 				}).then((result) => {
@@ -325,14 +326,16 @@ module nts.uk.at.view.kaf007_ref.a.viewmodel {
 					if (result != undefined) {
 						if (_.isEmpty(holidayDateLst)) {
 							return vm.$dialog.info({ messageId: "Msg_15" }).then(() => {
-								CommonProcess.handleAfterRegister(result, vm.isSendMail(), vm);
+								nts.uk.request.ajax("at", API.reflectApp, result.reflectAppIdLst);
+								CommonProcess.handleAfterRegister(result, vm.isSendMail(), vm, false, vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.employeeInfoLst);
 							});
 						} else {
 							let dispMsg = nts.uk.resource.getMessage('Msg_15') + "\n";
 							let x = nts.uk.resource.getMessage('Msg_1663', [holidayDateLst.join('、')]);
 							dispMsg += x;
 							return vm.$dialog.info(dispMsg).then(() => {
-								CommonProcess.handleAfterRegister(result, vm.isSendMail(), vm);
+								nts.uk.request.ajax("at", API.reflectApp, result.reflectAppIdLst);
+								CommonProcess.handleAfterRegister(result, vm.isSendMail(), vm, false, vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.employeeInfoLst);
 							})
 						}
 					}
@@ -380,6 +383,7 @@ module nts.uk.at.view.kaf007_ref.a.viewmodel {
 		startNew: "at/request/application/workchange/startNew",
 		register: "at/request/application/workchange/addworkchange",
 		changeAppDate: "at/request/application/workchange/changeAppDate",
-		checkBeforeRegister: "at/request/application/workchange/checkBeforeRegisterPC"
+		checkBeforeRegister: "at/request/application/workchange/checkBeforeRegisterPC",
+		reflectApp: "at/request/application/reflect-app"
 	}
 }

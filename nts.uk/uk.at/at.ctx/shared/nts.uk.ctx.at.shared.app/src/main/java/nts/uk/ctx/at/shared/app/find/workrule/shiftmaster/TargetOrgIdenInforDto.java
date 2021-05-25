@@ -22,4 +22,11 @@ public class TargetOrgIdenInforDto {
 		}
 		return TargetOrgIdenInfor.creatIdentifiWorkplaceGroup(this.workplaceGroupId);
 	}
+	
+	public static TargetOrgIdenInforDto toDto(TargetOrgIdenInfor domain) {
+		return new TargetOrgIdenInforDto(
+				domain.getUnit().value,
+				domain.getWorkplaceId().isPresent() ? domain.getWorkplaceId().get() : "",
+				domain.getWorkplaceGroupId().isPresent() ? domain.getWorkplaceGroupId().get() : "");
+	}
 }

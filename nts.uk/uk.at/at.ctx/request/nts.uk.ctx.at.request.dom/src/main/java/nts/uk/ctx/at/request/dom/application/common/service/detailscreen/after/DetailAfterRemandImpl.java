@@ -3,7 +3,6 @@ package nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -17,6 +16,8 @@ import nts.arc.time.GeneralDate;
 import nts.gul.mail.send.MailContents;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.ReasonForReversion;
 import nts.uk.ctx.at.request.dom.application.ReflectedState;
 import nts.uk.ctx.at.request.dom.application.ReflectionStatusOfDay;
@@ -25,19 +26,15 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.sys.EnvAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.sys.dto.MailDestinationImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.sys.dto.OutGoingMailImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootStateAdapter;
-import nts.uk.ctx.at.request.dom.application.common.service.application.IApplicationContentService;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.MailSenderResult;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.ApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.ApplicationSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.AppTypeSetting;
-import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispName;
-import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispNameRepository;
-import nts.uk.ctx.at.request.dom.setting.company.mailsetting.mailcontenturlsetting.UrlEmbedded;
-import nts.uk.ctx.at.request.dom.setting.company.mailsetting.mailcontenturlsetting.UrlEmbeddedRepository;
-import nts.uk.ctx.at.request.dom.setting.company.mailsetting.remandsetting.ContentOfRemandMail;
-import nts.uk.ctx.at.request.dom.setting.company.mailsetting.remandsetting.ContentOfRemandMailRepository;
-import nts.uk.ctx.at.shared.dom.ot.frame.NotUseAtr;
+import nts.uk.ctx.at.request.dom.setting.company.emailset.AppEmailSet;
+import nts.uk.ctx.at.request.dom.setting.company.emailset.AppEmailSetRepository;
+import nts.uk.ctx.at.request.dom.setting.company.emailset.Division;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.mail.MailSender;
 import nts.uk.shr.com.url.RegisterEmbededURL;
 
@@ -55,9 +52,6 @@ public class DetailAfterRemandImpl implements DetailAfterRemand {
 	@Inject
 	private ApprovalRootStateAdapter approvalRootStateAdapter;
 
-//	@Inject
-//	private AppTypeDiscreteSettingRepository appTypeDiscreteSettingRepository;
-
 	@Inject
 	private EmployeeRequestAdapter employeeAdapter;
 
@@ -66,24 +60,16 @@ public class DetailAfterRemandImpl implements DetailAfterRemand {
 
 	@Inject
 	private RegisterEmbededURL registerEmbededURL;
-
-	@Inject
-	private ContentOfRemandMailRepository remandRepo;
-
-	@Inject
-	private UrlEmbeddedRepository urlEmbeddedRepo;
-
-	@Inject 
-	private IApplicationContentService appContentService;
 	
 	@Inject
 	private EnvAdapter envAdapter;
 	
 	@Inject
-	private AppDispNameRepository repoAppDispName;
+	private ApplicationSettingRepository applicationSettingRepository;
 	
 	@Inject
-	private ApplicationSettingRepository applicationSettingRepository;
+	private AppEmailSetRepository appEmailSetRepository;
+	
 	/**
 	 * 11-2.詳細画面差し戻し後の処理
 	 */
@@ -161,23 +147,21 @@ public class DetailAfterRemandImpl implements DetailAfterRemand {
 		//アルゴリズム「申請理由出力_共通」を実行する -> xu ly trong ham get content
 		String appContent = "";
 		// String appContent = appContentService.getApplicationContent(application);
-		ContentOfRemandMail remandTemp = remandRepo.getRemandMailById(cid).orElse(null);
-		if (!Objects.isNull(remandTemp)) {
-			mailTitle = remandTemp.getMailTitle().v();
-			mailBody = remandTemp.getMailBody().v();
-		}
-		Optional<UrlEmbedded> urlEmbedded = urlEmbeddedRepo.getUrlEmbeddedById(AppContexts.user().companyId());
+		AppEmailSet appEmailSet = appEmailSetRepository.findByDivision(Division.REMAND);
+		mailTitle = appEmailSet.getEmailContentLst().stream().findFirst().map(x -> x.getOpEmailSubject().map(y -> y.v()).orElse("")).orElse("");
+		mailBody = appEmailSet.getEmailContentLst().stream().findFirst().map(x -> x.getOpEmailText().map(y -> y.v()).orElse("")).orElse("");
+//		Optional<UrlEmbedded> urlEmbedded = urlEmbeddedRepo.getUrlEmbeddedById(AppContexts.user().companyId());
 		List<String> successList = new ArrayList<>();
 		List<String> errorList = new ArrayList<>();
 		
 		// Using RQL 419 instead (1 not have mail)
 		//get list mail by list sID
 		List<MailDestinationImport> lstMail = envAdapter.getEmpEmailAddress(cid, employeeList, 6);
-		Optional<AppDispName> appDispName = repoAppDispName.getDisplay(application.getAppType().value);
+//		Optional<AppDispName> appDispName = repoAppDispName.getDisplay(application.getAppType().value);
 		String appName = "";
-		if(appDispName.isPresent()){
-			appName = appDispName.get().getDispName().v();
-		}
+//		if(appDispName.isPresent()){
+//			appName = appDispName.get().getDispName().v();
+//		}
 		//get mail login
 		List<MailDestinationImport> lstMailLogin = envAdapter.getEmpEmailAddress(cid, Arrays.asList(sidLogin), 6);
 		List<OutGoingMailImport> mailLogin = lstMailLogin.get(0).getOutGoingMails();
@@ -189,24 +173,13 @@ public class DetailAfterRemandImpl implements DetailAfterRemand {
 			String employeeName = employeeAdapter.getEmployeeName(employee);
 			OutGoingMailImport mail = envAdapter.findMailBySid(lstMail, employee);
 			String employeeMail = mail == null || mail.getEmailAddress() == null ? "" : mail.getEmailAddress();
-			// TODO
-			String urlInfo = "";
-			if (urlEmbedded.isPresent()) {
-				int urlEmbeddedCls = urlEmbedded.get().getUrlEmbedded().value;
-				NotUseAtr checkUrl = NotUseAtr.valueOf(urlEmbeddedCls);
-				if (checkUrl == NotUseAtr.USE) {
-					urlInfo = registerEmbededURL.registerEmbeddedForApp(
-							application.getAppID(), 
-							application.getAppType().value, 
-							application.getPrePostAtr().value, 
-							"", 
-							employee);
-				}
-			}
-			String urlFull = "";
-			if (!Strings.isBlank(urlInfo)) {
-				urlFull = "\n" + I18NText.getText("KDL030_30") + "\n" + urlInfo;
-			}
+			// アルゴリズム「差し戻しメール埋込URL取得」を実行する
+			String urlFull = this.getRemandEmailEmbeddedURL(
+					application.getAppID(), 
+					application.getAppType(), 
+					application.getPrePostAtr(), 
+					employee, 
+					appEmailSet.getUrlReason()==NotUseAtr.USE);
 			String mailContentToSend = I18NText.getText("Msg_1060",
 					//｛0｝氏名 - ログイン者
 					nameLogin,
@@ -241,5 +214,21 @@ public class DetailAfterRemandImpl implements DetailAfterRemand {
 			}
 		}
 		return new MailSenderResult(successList, errorList);
+	}
+	
+	private String getRemandEmailEmbeddedURL(String appID, ApplicationType appType, PrePostAtr prePostAtr,
+			String employeeID, boolean urlInclude) {
+		// ドメインモデル「申請メール設定」を取得する
+		if(!urlInclude) {
+			return "";
+		}
+		// アルゴリズム「埋込URL情報登録申請」を実行する
+		String urlInfo = registerEmbededURL.registerEmbeddedForApp(appID, appType.value, prePostAtr.value, "", employeeID);
+		// 埋込用URLが作成された場合
+		if(Strings.isBlank(urlInfo)) {
+			return "";
+		}
+		// 本文追加用URLを作成する
+		return "\n" + I18NText.getText("KDL034_17") + "\n" + urlInfo;
 	}
 }

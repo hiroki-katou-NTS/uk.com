@@ -1,29 +1,28 @@
-//package nts.uk.ctx.at.record.dom.remainingnumber.childcare;
-//
-//import org.junit.Test;
-//import org.junit.runner.RunWith;
-//import static nts.arc.time.GeneralDate.*;
-//
-//import java.util.Arrays;
-//import java.util.List;
-//import java.util.Optional;
-//
-//import mockit.integration.junit4.JMockit;
-//import nts.arc.time.GeneralDate;
-//import nts.arc.time.calendar.period.DatePeriod;
-//import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.data.CareManagementDate;
-//import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.CareTargetPeriod;
-//import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.CareTargetPeriodWork;
-//import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.ChildCareTargetChanged;
-//import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NumberOfCaregivers;
-//
-///**
-// * 介護対象管理データ
-// ****** 1.介護対象期間を確認
-// *
-// */
+package nts.uk.ctx.at.record.dom.remainingnumber.childcare;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import static nts.arc.time.GeneralDate.*;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+
+import mockit.integration.junit4.JMockit;
+import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.data.CareManagementDate;
+import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.CareTargetPeriod;
+import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.CareTargetPeriodWork;
+import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.ChildCareTargetChanged;
+import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NumberOfCaregivers;
+
+/**
+ * 介護対象管理データ
+ ****** 1.介護対象期間を確認
+ *
+ */
 //@RunWith(JMockit.class)
-//public class CareManagementDateTest {
 	/**
 	 * 介護対象期間を確認
 	 */
@@ -55,4 +54,3 @@
 //				childCareTargetChanged(),
 //				CareTargetPeriod.of(new DatePeriod(ymd(2020, 10, 16),ymd(2020, 11, 15))));
 //	}
-//}

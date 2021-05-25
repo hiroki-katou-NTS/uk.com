@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -22,7 +21,6 @@ import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.Aggrega
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AnnualLeaveInfo;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.DividedDayEachProcess;
 import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.GrantPeriodAtr;
-import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveInfo;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.ConfirmLeavePeriod;
@@ -36,13 +34,11 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.Annu
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.CalcAnnLeaAttendanceRate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.CreateInterimAnnualMngData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualHolidayMng;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualLeaveMngWork;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TempAnnualLeaveMngs;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.GrantRemainRegisterType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.YearDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveRemainingNumber;
-import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRemainingData;
 import nts.uk.ctx.at.shared.dom.scherec.closurestatus.ClosureStatusManagement;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AttendanceRate;
@@ -55,7 +51,6 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.service.GetClosureIdHistory;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.GetClosureStartForEmployee;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantDays;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantHdTblSet;
-import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantNum;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.LengthServiceTbl;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.export.NextAnnualLeaveGrant;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
@@ -193,7 +188,7 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 			GeneralDate criteriaDate,
 			boolean isCalcAttendanceRate,
 			Optional<Boolean> isOverWriteOpt,
-			Optional<List<TmpAnnualLeaveMngWork>> forOverWriteListOpt,
+			Optional<List<TempAnnualLeaveMngs>> forOverWriteListOpt,
 			Optional<AggrResultOfAnnualLeave> prevAnnualLeaveOpt,
 			Optional<Boolean> aggrPastMonthModeOpt,
 			Optional<YearMonth> yearMonthOpt,
@@ -386,7 +381,7 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 			InterimRemainMngMode mode,
 			boolean isCalcAttendanceRate,
 			Optional<Boolean> isOverWriteOpt,
-			Optional<List<TmpAnnualLeaveMngWork>> forOverWriteListOpt,
+			Optional<List<TempAnnualLeaveMngs>> forOverWriteListOpt,
 			Optional<DatePeriod> isOverWritePeriod){
 
 		AnnualLeaveInfo emptyInfo = new AnnualLeaveInfo();
@@ -462,9 +457,9 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 		if (sttMng.isPresent()){
 			// 受け取った「年月日」を返す
 			closureStart = sttMng.get().getPeriod().end();
-			if (closureStart.before(GeneralDate.max())){
-				closureStart = closureStart.addDays(1);
-			}
+//			if (closureStart.before(GeneralDate.max())){
+//				closureStart = closureStart.addDays(1);
+//			}
 			closureStartOpt = Optional.of(closureStart);
 		}
 		else {
@@ -505,7 +500,7 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 			InterimRemainMngMode mode,
 			boolean isCalcAttendanceRate,
 			Optional<Boolean> isOverWriteOpt,
-			Optional<List<TmpAnnualLeaveMngWork>> forOverWriteListOpt,
+			Optional<List<TempAnnualLeaveMngs>> forOverWriteListOpt,
 			Optional<DatePeriod> isOverWritePeriod
 			){
 
@@ -776,16 +771,16 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 	 * 暫定年休管理データを取得する
 	 * @return 暫定年休管理データWORKリスト
 	 */
-	private static List<TmpAnnualLeaveMngWork> getTempAnnualLeaveMngs(
+	private static List<TempAnnualLeaveMngs> getTempAnnualLeaveMngs(
 			RequireM2 require,
 			String employeeId,
 			DatePeriod aggrPeriod,
 			InterimRemainMngMode mode,
 			Optional<Boolean> isOverWriteOpt,
-			Optional<List<TmpAnnualLeaveMngWork>> forOverWriteListOpt,
+			Optional<List<TempAnnualLeaveMngs>> forOverWriteListOpt,
 			Optional<DatePeriod> isOverWritePeriod){
 
-		List<TmpAnnualLeaveMngWork> results = new ArrayList<>();
+		List<TempAnnualLeaveMngs> results = new ArrayList<>();
 
 		// 「モード」をチェック
 		if (mode == InterimRemainMngMode.MONTHLY){
@@ -797,7 +792,7 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 			// 「暫定年休管理データ」を取得する
 			val interimRemains = require.tmpAnnualHolidayMng(employeeId, aggrPeriod);
 			for (val master : interimRemains){
-				results.add(TmpAnnualLeaveMngWork.of(master));
+				results.add(master);
 			}
 
 			// 年休フレックス補填分を暫定年休データに反映する
@@ -965,7 +960,7 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 
 //		List<InterimRemain> interimRemains(String employeeId, DatePeriod dateData, RemainType remainType);
 
-		List<TmpAnnualHolidayMng> tmpAnnualHolidayMng(String sid, DatePeriod dateData);
+		List<TempAnnualLeaveMngs> tmpAnnualHolidayMng(String sid, DatePeriod dateData);
 
 		List<AttendanceTimeOfMonthly> attendanceTimeOfMonthly(String employeeId, DatePeriod period);
 	}

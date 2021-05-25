@@ -132,11 +132,11 @@ public class AppDispInfoWithDateDto {
 				.workTimeMethodSet(workTimeSetting.getWorkTimeDivision().getWorkTimeMethodSet().value)
 				.build();
 		workTimeSettingDto.isAbolish = workTimeSetting.isAbolish();
-		workTimeSettingDto.colorCode = workTimeSetting.getColorCode().v();
+//		workTimeSettingDto.colorCode = workTimeSetting.getColorCode().v();
 		workTimeSettingDto.workTimeDisplayName = WorkTimeDisplayNameDto.builder()
 				.workTimeName(workTimeSetting.getWorkTimeDisplayName().getWorkTimeName().v())
 				.workTimeAbName(workTimeSetting.getWorkTimeDisplayName().getWorkTimeAbName().v())
-				.workTimeSymbol(workTimeSetting.getWorkTimeDisplayName().getWorkTimeSymbol().v())
+//				.workTimeSymbol(workTimeSetting.getWorkTimeDisplayName().getWorkTimeSymbol().v())
 				.build();
 		workTimeSettingDto.memo = workTimeSetting.getMemo().v();
 		workTimeSettingDto.note = workTimeSetting.getNote().v();
@@ -174,7 +174,7 @@ public class AppDispInfoWithDateDto {
 		return appDispInfoWithDateOutput;
 	}
 	
-	private static WorkTimeSetting toDomainWorkTime(WorkTimeSettingDto workTimeSetting) {
+	public static WorkTimeSetting toDomainWorkTime(WorkTimeSettingDto workTimeSetting) {
 		return new WorkTimeSetting(
 				workTimeSetting.companyId, 
 				new WorkTimeCode(workTimeSetting.worktimeCode), 
@@ -182,11 +182,10 @@ public class AppDispInfoWithDateDto {
 						EnumAdaptor.valueOf(workTimeSetting.workTimeDivision.workTimeDailyAtr, WorkTimeDailyAtr.class), 
 						EnumAdaptor.valueOf(workTimeSetting.workTimeDivision.workTimeMethodSet, WorkTimeMethodSet.class)),
 				AbolishAtr.valueOf(workTimeSetting.isAbolish ? 0 : 1),
-				new ColorCode(workTimeSetting.colorCode), 
+//				new ColorCode(workTimeSetting.colorCode), 
 				new WorkTimeDisplayName(
 						new WorkTimeName(workTimeSetting.workTimeDisplayName.workTimeName), 
-						new WorkTimeAbName(workTimeSetting.workTimeDisplayName.workTimeAbName), 
-						new WorkTimeSymbol(workTimeSetting.workTimeDisplayName.workTimeSymbol)), 
+						new WorkTimeAbName(workTimeSetting.workTimeDisplayName.workTimeAbName)), 
 				new Memo(workTimeSetting.memo), 
 				new WorkTimeNote(workTimeSetting.note));
 	}

@@ -7,12 +7,24 @@ import javax.inject.Inject;
 
 import lombok.AllArgsConstructor;
 import nts.uk.ctx.at.request.dom.application.Application;
+import nts.uk.ctx.at.request.dom.application.appabsence.ApplyForLeave;
+import nts.uk.ctx.at.request.dom.application.appabsence.ApplyForLeaveRepository;
 import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTrip;
 import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTripRepository;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectlyRepository;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveApp;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveAppRepository;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentApp;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentAppRepository;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepository;
 import nts.uk.ctx.at.request.dom.application.lateleaveearly.ArrivedLateLeaveEarly;
 import nts.uk.ctx.at.request.dom.application.lateleaveearly.ArrivedLateLeaveEarlyRepository;
+import nts.uk.ctx.at.request.dom.application.optional.OptionalItemApplication;
+import nts.uk.ctx.at.request.dom.application.optional.OptionalItemApplicationRepository;
+import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
+import nts.uk.ctx.at.request.dom.application.overtime.AppOverTimeRepository;
 import nts.uk.ctx.at.request.dom.application.stamp.AppRecordImage;
 import nts.uk.ctx.at.request.dom.application.stamp.AppRecordImageRepository;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStamp;
@@ -39,11 +51,24 @@ public class GetApplicationRequireImpl {
 	private AppRecordImageRepository repoRecordImg;
 	@Inject
 	private TimeLeaveApplicationRepository timeLeaveApplicationRepository;
-
+	@Inject
+	private AppOverTimeRepository appOverTimeRepository;
+	@Inject
+	private ApplyForLeaveRepository applyForLeaveRepository;
+	@Inject
+	private AppHolidayWorkRepository appHolidayWorkRepository;
+	@Inject
+	private AbsenceLeaveAppRepository absenceLeaveAppRepository;
+	@Inject
+	private RecruitmentAppRepository recruitmentAppRepository;
+	@Inject
+	private OptionalItemApplicationRepository optionalItemApplicationRepository;
+	
 	public RequireImpl createImpl() {
 
 		return new RequireImpl(repoGoBack, repoBusTrip, repoLateLeave, repoStamp, repoWorkChange, repoRecordImg,
-				timeLeaveApplicationRepository);
+				timeLeaveApplicationRepository, appOverTimeRepository, applyForLeaveRepository,
+				absenceLeaveAppRepository, recruitmentAppRepository, optionalItemApplicationRepository);
 	}
 
 	@AllArgsConstructor
@@ -62,6 +87,17 @@ public class GetApplicationRequireImpl {
 		private final AppRecordImageRepository repoRecordImg;
 
 		private final TimeLeaveApplicationRepository timeLeaveApplicationRepository;
+		
+		private final AppOverTimeRepository appOverTimeRepository;
+		
+		private final ApplyForLeaveRepository applyForLeaveRepository;
+		
+		private final AbsenceLeaveAppRepository absenceLeaveAppRepository;
+		
+		private final RecruitmentAppRepository recruitmentAppRepository;
+		
+		private final OptionalItemApplicationRepository optionalItemApplicationRepository;
+		
 
 		@Override
 		public Optional<AppWorkChange> findAppWorkCg(String companyId, String appID, Application app) {
@@ -101,5 +137,34 @@ public class GetApplicationRequireImpl {
 			return timeLeaveApplicationRepository.findById(companyId, appId);
 		}
 
+		@Override
+		public Optional<AppOverTime> findOvertime(String companyId, String appId) {
+			return appOverTimeRepository.find(companyId, appId);
+		}
+
+		@Override
+		public Optional<ApplyForLeave> findApplyForLeave(String CID, String appId) {
+			return applyForLeaveRepository.findApplyForLeave(CID, appId);
+		}
+
+		@Override
+		public Optional<AppHolidayWork> findAppHolidayWork(String companyId, String appId) {
+			return appHolidayWorkRepository.find(companyId, appId);
+		}
+
+		@Override
+		public Optional<AbsenceLeaveApp> findAbsenceByID(String applicationID) {
+			return absenceLeaveAppRepository.findByAppId(applicationID);
+		}
+
+		@Override
+		public Optional<RecruitmentApp> findRecruitmentByID(String applicationID) {
+			return recruitmentAppRepository.findByID(applicationID);
+		}
+
+		@Override
+		public Optional<OptionalItemApplication> getOptionalByAppId(String companyId, String appId) {
+			return optionalItemApplicationRepository.getByAppId(companyId, appId);
+		}
 	}
 }

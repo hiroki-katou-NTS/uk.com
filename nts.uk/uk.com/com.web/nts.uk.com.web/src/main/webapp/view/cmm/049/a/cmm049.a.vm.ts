@@ -32,63 +32,48 @@ module nts.uk.com.view.cmm049.a {
 
     public companyMobilePhoneDisplay: KnockoutObservable<boolean> = ko.observable();
     public companyMobilePhoneUpdatable: KnockoutObservable<boolean> = ko.observable();
-    public companyMobilePhoneIndividual: KnockoutObservable<boolean> = ko.observable();
 
     public personalMobilePhoneDisplay: KnockoutObservable<boolean> = ko.observable();
     public personalMobilePhoneUpdatable: KnockoutObservable<boolean> = ko.observable();
-    public personalMobilePhoneIndividual: KnockoutObservable<boolean> = ko.observable();
 
     public emergencyNumber1Display: KnockoutObservable<boolean> = ko.observable();
     public emergencyNumber1Updatable: KnockoutObservable<boolean> = ko.observable();
-    public emergencyNumber1Individual: KnockoutObservable<boolean> = ko.observable();
 
     public emergencyNumber2Display: KnockoutObservable<boolean> = ko.observable();
     public emergencyNumber2Updatable: KnockoutObservable<boolean> = ko.observable();
-    public emergencyNumber2Individual: KnockoutObservable<boolean> = ko.observable();
 
     public dialInNumberDisplay: KnockoutObservable<boolean> = ko.observable();
     public dialInNumberUpdatable: KnockoutObservable<boolean> = ko.observable();
-    public dialInNumberIndividual: KnockoutObservable<boolean> = ko.observable();
 
     public extensionNumberDisplay: KnockoutObservable<boolean> = ko.observable();
     public extensionNumberUpdatable: KnockoutObservable<boolean> = ko.observable();
-    public extensionNumberIndividual: KnockoutObservable<boolean> = ko.observable();
 
     public companyEmailAddressDisplay: KnockoutObservable<boolean> = ko.observable();
     public companyEmailAddressUpdatable: KnockoutObservable<boolean> = ko.observable();
-    public companyEmailAddressIndividual: KnockoutObservable<boolean> = ko.observable();
 
     public companyMobileEmailAddressDisplay: KnockoutObservable<boolean> = ko.observable();
     public companyMobileEmailAddressUpdatable: KnockoutObservable<boolean> = ko.observable();
-    public companyMobileEmailAddressIndividual: KnockoutObservable<boolean> = ko.observable();
 
     public personalEmailAddressDisplay: KnockoutObservable<boolean> = ko.observable();
     public personalEmailAddressUpdatable: KnockoutObservable<boolean> = ko.observable();
-    public personalEmailAddressIndividual: KnockoutObservable<boolean> = ko.observable();
 
     public personalMobileEmailAddressDisplay: KnockoutObservable<boolean> = ko.observable();
     public personalMobileEmailAddressUpdatable: KnockoutObservable<boolean> = ko.observable();
-    public personalMobileEmailAddressIndividual: KnockoutObservable<boolean> = ko.observable();
 
     public otherContact1Display: KnockoutObservable<boolean> = ko.observable();
     public otherContact1ContactName: KnockoutObservable<string> = ko.observable("");
-    public otherContact1Individual: KnockoutObservable<boolean> = ko.observable();
 
     public otherContact2Display: KnockoutObservable<boolean> = ko.observable();
     public otherContact2ContactName: KnockoutObservable<string> = ko.observable("");
-    public otherContact2Individual: KnockoutObservable<boolean> = ko.observable();
 
     public otherContact3Display: KnockoutObservable<boolean> = ko.observable();
     public otherContact3ContactName: KnockoutObservable<string> = ko.observable("");
-    public otherContact3Individual: KnockoutObservable<boolean> = ko.observable();
 
     public otherContact4Display: KnockoutObservable<boolean> = ko.observable();
     public otherContact4ContactName: KnockoutObservable<string> = ko.observable("");
-    public otherContact4Individual: KnockoutObservable<boolean> = ko.observable();
 
     public otherContact5Display: KnockoutObservable<boolean> = ko.observable();
     public otherContact5ContactName: KnockoutObservable<string> = ko.observable("");
-    public otherContact5Individual: KnockoutObservable<boolean> = ko.observable();
 
     public mailFunctionDtos: KnockoutObservableArray<MailFunctionDto> = ko.observableArray([]);
     public userInformationUseMethodDto: KnockoutObservable<UserInformationUseMethodDto> = ko.observable();
@@ -262,7 +247,7 @@ module nts.uk.com.view.cmm049.a {
 
       //fix bug #112907
       vm.profileSelectedId.subscribe(newVal => {
-        if(newVal === 2) {
+        if (newVal === 2) {
           $('#A4_4_33').ntsError('clear');
           $('#A4_4_36').ntsError('clear');
           $('#A4_4_39').ntsError('clear');
@@ -272,31 +257,31 @@ module nts.uk.com.view.cmm049.a {
       });
 
       vm.otherContact1Display.subscribe((newValue: boolean) => {
-        if(!newValue) {
+        if (!newValue) {
           $('#A4_4_33').ntsError('clear');
         }
       });
 
       vm.otherContact2Display.subscribe((newValue: boolean) => {
-        if(!newValue) {
+        if (!newValue) {
           $('#A4_4_36').ntsError('clear');
         }
       });
 
       vm.otherContact3Display.subscribe((newValue: boolean) => {
-        if(!newValue) {
+        if (!newValue) {
           $('#A4_4_39').ntsError('clear');
         }
       });
 
       vm.otherContact4Display.subscribe((newValue: boolean) => {
-        if(!newValue) {
+        if (!newValue) {
           $('#A4_4_42').ntsError('clear');
         }
       });
 
       vm.otherContact5Display.subscribe((newValue: boolean) => {
-        if(!newValue) {
+        if (!newValue) {
           $('#A4_4_45').ntsError('clear');
         }
       });
@@ -314,12 +299,10 @@ module nts.uk.com.view.cmm049.a {
         }
         case 1: {
           vm.companyMobilePhoneDisplay(true);
-          vm.companyMobilePhoneIndividual(false);
           break;
         }
         case 2: {
           vm.companyMobilePhoneDisplay(true);
-          vm.companyMobilePhoneIndividual(true);
           break;
         }
         default: break;
@@ -342,12 +325,10 @@ module nts.uk.com.view.cmm049.a {
         }
         case 1: {
           vm.personalMobilePhoneDisplay(true);
-          vm.personalMobilePhoneIndividual(false);
           break;
         }
         case 2: {
           vm.personalMobilePhoneDisplay(true);
-          vm.personalMobilePhoneIndividual(true);
           break;
         }
         default: break;
@@ -370,12 +351,10 @@ module nts.uk.com.view.cmm049.a {
         }
         case 1: {
           vm.emergencyNumber1Display(true);
-          vm.emergencyNumber1Individual(false);
           break;
         }
         case 2: {
           vm.emergencyNumber1Display(true);
-          vm.emergencyNumber1Individual(true);
           break;
         }
         default: break;
@@ -398,12 +377,10 @@ module nts.uk.com.view.cmm049.a {
         }
         case 1: {
           vm.emergencyNumber2Display(true);
-          vm.emergencyNumber2Individual(false);
           break;
         }
         case 2: {
           vm.emergencyNumber2Display(true);
-          vm.emergencyNumber2Individual(true);
           break;
         }
         default: break;
@@ -426,12 +403,10 @@ module nts.uk.com.view.cmm049.a {
         }
         case 1: {
           vm.dialInNumberDisplay(true);
-          vm.dialInNumberIndividual(false);
           break;
         }
         case 2: {
           vm.dialInNumberDisplay(true);
-          vm.dialInNumberIndividual(true);
           break;
         }
         default: break;
@@ -454,12 +429,10 @@ module nts.uk.com.view.cmm049.a {
         }
         case 1: {
           vm.extensionNumberDisplay(true);
-          vm.extensionNumberIndividual(false);
           break;
         }
         case 2: {
           vm.extensionNumberDisplay(true);
-          vm.extensionNumberIndividual(true);
           break;
         }
         default: break;
@@ -482,12 +455,10 @@ module nts.uk.com.view.cmm049.a {
         }
         case 1: {
           vm.companyEmailAddressDisplay(true);
-          vm.companyEmailAddressIndividual(false);
           break;
         }
         case 2: {
           vm.companyEmailAddressDisplay(true);
-          vm.companyEmailAddressIndividual(true);
           break;
         }
         default: break;
@@ -510,12 +481,10 @@ module nts.uk.com.view.cmm049.a {
         }
         case 1: {
           vm.companyMobileEmailAddressDisplay(true);
-          vm.companyMobileEmailAddressIndividual(false);
           break;
         }
         case 2: {
           vm.companyMobileEmailAddressDisplay(true);
-          vm.companyMobileEmailAddressIndividual(true);
           break;
         }
         default: break;
@@ -538,12 +507,10 @@ module nts.uk.com.view.cmm049.a {
         }
         case 1: {
           vm.personalEmailAddressDisplay(true);
-          vm.personalEmailAddressIndividual(false);
           break;
         }
         case 2: {
           vm.personalEmailAddressDisplay(true);
-          vm.personalEmailAddressIndividual(true);
           break;
         }
         default: break;
@@ -566,12 +533,10 @@ module nts.uk.com.view.cmm049.a {
         }
         case 1: {
           vm.personalMobileEmailAddressDisplay(true);
-          vm.personalMobileEmailAddressIndividual(false);
           break;
         }
         case 2: {
           vm.personalMobileEmailAddressDisplay(true);
-          vm.personalMobileEmailAddressIndividual(true);
           break;
         }
         default: break;
@@ -592,12 +557,10 @@ module nts.uk.com.view.cmm049.a {
         }
         case 1: {
           vm.otherContact1Display(true);
-          vm.otherContact1Individual(false);
           break;
         }
         case 2: {
           vm.otherContact1Display(true);
-          vm.otherContact1Individual(true);
           break;
         }
         default: break;
@@ -614,12 +577,10 @@ module nts.uk.com.view.cmm049.a {
         }
         case 1: {
           vm.otherContact2Display(true);
-          vm.otherContact2Individual(false);
           break;
         }
         case 2: {
           vm.otherContact2Display(true);
-          vm.otherContact2Individual(true);
           break;
         }
         default: break;
@@ -636,12 +597,10 @@ module nts.uk.com.view.cmm049.a {
         }
         case 1: {
           vm.otherContact3Display(true);
-          vm.otherContact3Individual(false);
           break;
         }
         case 2: {
           vm.otherContact3Display(true);
-          vm.otherContact3Individual(true);
           break;
         }
         default: break;
@@ -658,12 +617,10 @@ module nts.uk.com.view.cmm049.a {
         }
         case 1: {
           vm.otherContact4Display(true);
-          vm.otherContact4Individual(false);
           break;
         }
         case 2: {
           vm.otherContact4Display(true);
-          vm.otherContact4Individual(true);
           break;
         }
         default: break;
@@ -680,12 +637,10 @@ module nts.uk.com.view.cmm049.a {
         }
         case 1: {
           vm.otherContact5Display(true);
-          vm.otherContact5Individual(false);
           break;
         }
         case 2: {
           vm.otherContact5Display(true);
-          vm.otherContact5Individual(true);
           break;
         }
         default: break;
@@ -815,55 +770,64 @@ module nts.uk.com.view.cmm049.a {
         model.isChecked = selectedFundtionIds.indexOf(item.functionId) !== -1;
         return model;
       });
-      vm.$grid.ntsGrid({
-        primaryKey: "functionId",
-        height: "270px",
-        dataSource: vm.mailFunctionDataSource,
-        rowVirtualization: true,
-        virtualization: true,
-        virtualizationMode: "continuous",
-        columns: [
-          {
-            headerText: "",
-            key: "functionId",
-            dataType: "number",
-            hidden: true,
-          },
-          {
-            headerText: "",
-            key: "isChecked",
-            dataType: "boolean",
-            width: "35px",
-            ntsControl: "Checkbox",
-            showHeaderCheckbox: true,
-          },
-          {
-            headerText: vm.$i18n("CMM049_21"),
-            key: "functionName",
-            dataType: "string",
-            width: "300x",
-          },
-        ],
-        features: [
-          {
-            name: "Selection",
-            mode: "row",
-            multipleSelection: true,
-            activation: false,
-          },
-        ],
-        ntsFeatures: [],
-        ntsControls: [
-          {
-            name: "Checkbox",
-            options: { value: 1, text: "" },
-            optionsValue: "value",
-            optionsText: "text",
-            controlType: "CheckBox",
-            enable: true,
-          },
-        ],
-      });
+
+      vm.$grid
+        .ntsGrid({
+          primaryKey: "functionId",
+          height: "270px",
+          dataSource: vm.mailFunctionDataSource,
+          rowVirtualization: true,
+          virtualization: true,
+          virtualizationMode: "continuous",
+          columns: [
+            {
+              headerText: "",
+              key: "functionId",
+              dataType: "number",
+              hidden: true,
+            },
+            {
+              headerText: "",
+              key: "isChecked",
+              dataType: "boolean",
+              width: "35px",
+              ntsControl: "Checkbox",
+              showHeaderCheckbox: true,
+            },
+            {
+              headerText: vm.$i18n("CMM049_21"),
+              key: "functionName",
+              dataType: "string",
+              width: "300x",
+            },
+          ],
+          features: [
+            {
+              name: "Selection",
+              mode: "row",
+              multipleSelection: true,
+              activation: true,
+            },
+          ],
+          ntsFeatures: [],
+          ntsControls: [
+            {
+              name: "Checkbox",
+              options: { value: 1, text: "" },
+              optionsValue: "value",
+              optionsText: "text",
+              controlType: "CheckBox",
+              enable: true,
+            },
+          ],
+        });
+
+      const checkbox = $(vm.$el).find('#A8_4_isChecked input[type="checkbox"]');
+      const isCheckall = vm.mailFunctionDataSource.filter(({ isChecked }) => !isChecked).length === 0;
+
+      if (checkbox.length) {
+        checkbox.prop('checked', isCheckall);
+      }
     }
 
     /**
@@ -872,15 +836,6 @@ module nts.uk.com.view.cmm049.a {
     public closeDialog() {
       const vm = this;
       vm.$window.close();
-    }
-
-    public settingValue(boo1: boolean, boo2: boolean): number {
-      if (!boo1) {
-        return 0;
-      } else {
-        return !boo2 ? 1 : 2;
-      }
-      //return !boo1 ? 0 : !boo2 ? 1 : 2;
     }
 
     public getUserInformationUseMethodDto(otherContactDtos: OtherContactDto[]): UserInformationUseMethodDto {
@@ -894,73 +849,43 @@ module nts.uk.com.view.cmm049.a {
           companyId: vm.userInformationUseMethodDto().companyId,
           settingContactInformationDto: new SettingContactInformationDto({
             companyEmailAddress: new ContactSettingDto({
-              contactUsageSetting: vm.settingValue(
-                vm.companyEmailAddressDisplay(),
-                vm.companyEmailAddressIndividual()
-              ),
+              contactUsageSetting: vm.companyEmailAddressDisplay() ? 1 : 0,
               updatable: vm.companyEmailAddressUpdatable() ? 1 : 0,
             }),
             companyMobileEmailAddress: new ContactSettingDto({
-              contactUsageSetting: vm.settingValue(
-                vm.companyMobileEmailAddressDisplay(),
-                vm.companyMobileEmailAddressIndividual()
-              ),
+              contactUsageSetting:  vm.companyMobileEmailAddressDisplay() ? 1 : 0,
               updatable: vm.companyMobileEmailAddressUpdatable() ? 1 : 0,
             }),
             companyMobilePhone: new ContactSettingDto({
-              contactUsageSetting: vm.settingValue(
-                vm.companyMobilePhoneDisplay(),
-                vm.companyMobilePhoneIndividual()
-              ),
+              contactUsageSetting: vm.companyMobilePhoneDisplay() ? 1 : 0,
               updatable: vm.companyMobilePhoneUpdatable() ? 1 : 0,
             }),
             dialInNumber: new ContactSettingDto({
-              contactUsageSetting: vm.settingValue(
-                vm.dialInNumberDisplay(),
-                vm.dialInNumberIndividual()
-              ),
+              contactUsageSetting: vm.dialInNumberDisplay() ? 1 : 0,
               updatable: vm.dialInNumberUpdatable() ? 1 : 0,
             }),
             emergencyNumber1: new ContactSettingDto({
-              contactUsageSetting: vm.settingValue(
-                vm.emergencyNumber1Display(),
-                vm.emergencyNumber1Individual()
-              ),
+              contactUsageSetting: vm.emergencyNumber1Display() ? 1 : 0,
               updatable: vm.emergencyNumber1Updatable() ? 1 : 0,
             }),
             emergencyNumber2: new ContactSettingDto({
-              contactUsageSetting: vm.settingValue(
-                vm.emergencyNumber2Display(),
-                vm.emergencyNumber2Individual()
-              ),
+              contactUsageSetting: vm.emergencyNumber2Display() ? 1 : 0,
               updatable: vm.emergencyNumber2Updatable() ? 1 : 0,
             }),
             extensionNumber: new ContactSettingDto({
-              contactUsageSetting: vm.settingValue(
-                vm.extensionNumberDisplay(),
-                vm.extensionNumberIndividual()
-              ),
+              contactUsageSetting: vm.extensionNumberDisplay() ? 1 : 0,
               updatable: vm.extensionNumberUpdatable() ? 1 : 0,
             }),
             personalEmailAddress: new ContactSettingDto({
-              contactUsageSetting: vm.settingValue(
-                vm.personalEmailAddressDisplay(),
-                vm.personalEmailAddressIndividual()
-              ),
+              contactUsageSetting: vm.personalEmailAddressDisplay() ? 1 : 0,
               updatable: vm.personalEmailAddressUpdatable() ? 1 : 0,
             }),
             personalMobileEmailAddress: new ContactSettingDto({
-              contactUsageSetting: vm.settingValue(
-                vm.personalMobileEmailAddressDisplay(),
-                vm.personalMobileEmailAddressIndividual()
-              ),
+              contactUsageSetting: vm.personalMobileEmailAddressDisplay() ? 1 : 0,
               updatable: vm.personalMobileEmailAddressUpdatable() ? 1 : 0,
             }),
             personalMobilePhone: new ContactSettingDto({
-              contactUsageSetting: vm.settingValue(
-                vm.personalMobilePhoneDisplay(),
-                vm.personalMobilePhoneIndividual()
-              ),
+              contactUsageSetting: vm.personalMobilePhoneDisplay() ? 1 : 0,
               updatable: vm.personalMobilePhoneUpdatable() ? 1 : 0,
             }),
             otherContacts: otherContactDtos,
@@ -993,42 +918,27 @@ module nts.uk.com.view.cmm049.a {
         new OtherContactDto({
           no: 1,
           contactName: vm.contactName1(),
-          contactUsageSetting: vm.settingValue(
-            vm.otherContact1Display(),
-            vm.otherContact1Individual()
-          ),
+          contactUsageSetting: vm.otherContact1Display() ? 1 : 0,
         }),
         new OtherContactDto({
           no: 2,
           contactName: vm.contactName2(),
-          contactUsageSetting: vm.settingValue(
-            vm.otherContact2Display(),
-            vm.otherContact2Individual()
-          ),
+          contactUsageSetting: vm.otherContact2Display() ? 1 : 0,
         }),
         new OtherContactDto({
           no: 3,
           contactName: vm.contactName3(),
-          contactUsageSetting: vm.settingValue(
-            vm.otherContact3Display(),
-            vm.otherContact3Individual()
-          ),
+          contactUsageSetting: vm.otherContact3Display() ? 1 : 0,
         }),
         new OtherContactDto({
           no: 4,
           contactName: vm.contactName4(),
-          contactUsageSetting: vm.settingValue(
-            vm.otherContact4Display(),
-            vm.otherContact4Individual()
-          ),
+          contactUsageSetting: vm.otherContact4Display() ? 1 : 0,
         }),
         new OtherContactDto({
           no: 5,
           contactName: vm.contactName5(),
-          contactUsageSetting: vm.settingValue(
-            vm.otherContact5Display(),
-            vm.otherContact5Individual()
-          ),
+          contactUsageSetting: vm.otherContact5Display() ? 1 : 0,
         }),
       ];
     }
@@ -1061,18 +971,18 @@ module nts.uk.com.view.cmm049.a {
             .map((item) => item.functionId)
             .value();
           const userInformationUseMethodDto: UserInformationUseMethodDto = vm.getUserInformationUseMethodDto(vm.getOtherContactDtos());
-            const command = new UserInformationUseMethodSaveCommand({
-              userInformationUseMethodDto: userInformationUseMethodDto,
-            });
-            vm.$blockui("grayout");
-            vm.$ajax(API.insertOrUpdate, command)
+          const command = new UserInformationUseMethodSaveCommand({
+            userInformationUseMethodDto: userInformationUseMethodDto,
+          });
+          vm.$blockui("grayout");
+          vm.$ajax(API.insertOrUpdate, command)
             .then(() => {
               return vm.$dialog.info({ messageId: 'Msg_15' });
             })
-              .always(() => {
-                vm.$blockui("clear");
-                this.closeDialog();
-              });
+            .always(() => {
+              vm.$blockui("clear");
+              this.closeDialog();
+            });
         }
       });
     }

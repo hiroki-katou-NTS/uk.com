@@ -17,17 +17,19 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare.AggregateChildCareNurse;
 import nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare.AggregateChildCareNurseWork;
-import nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare.ChildCareNurseAggrPeriodInfo;
 import nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare.ChildCareNurseCalcResultWithinPeriod;
-import nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare.ChildCareNurseErrors;
-import nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare.ChildCareNurseRemainingNumber;
 import nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare.ChildCareNurseStartdateInfo;
 import nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare.NextDayAfterPeriodEndWork;
 import nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare.YearAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.UsedTimes;
-import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.ChildCareNurseUsedNumber;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.ChildCareNurseUsedNumber;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.children.service.ChildCareNurseErrors;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.remainingnumber.DayNumberOfRemain;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.remainingnumber.TimeOfRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.usenumber.DayNumberOfUse;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.usenumber.TimeOfUse;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.childcarenurse.ChildCareNurseRemainingNumber;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.childcarenurse.ChildCareNurseUsedInfo;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.ChildCareNurseUpperLimit;
 
 /**
@@ -124,15 +126,15 @@ public class AggregateChildCareNurseTest {
 
 		assertThat(holidayInfo.getThisYear().getUsedDays().getUsedDay()).isEqualTo(expect.getAggrResultOfChildCareNurse().get().getStartdateInfo().getUsedDays().getUsedDay());
 		assertThat(holidayInfo.getThisYear().getUsedDays().getUsedTimes()).isEqualTo(expect.getAggrResultOfChildCareNurse().get().getStartdateInfo().getUsedDays().getUsedTimes());
-		assertThat(holidayInfo.getThisYear().getRemainingNumber().getUsedDays()).isEqualTo(expect.getAggrResultOfChildCareNurse().get().getStartdateInfo().getRemainingNumber().getUsedDays());
-		assertThat(holidayInfo.getThisYear().getRemainingNumber().getUsedTime()).isEqualTo(expect.getAggrResultOfChildCareNurse().get().getStartdateInfo().getRemainingNumber().getUsedTime());
+		assertThat(holidayInfo.getThisYear().getRemainingNumber().getRemainDay()).isEqualTo(expect.getAggrResultOfChildCareNurse().get().getStartdateInfo().getRemainingNumber().getRemainDay());
+		assertThat(holidayInfo.getThisYear().getRemainingNumber().getRemainTimes()).isEqualTo(expect.getAggrResultOfChildCareNurse().get().getStartdateInfo().getRemainingNumber().getRemainTimes());
 		assertThat(holidayInfo.getThisYear().getLimitDays()).isEqualTo(expect.getAggrResultOfChildCareNurse().get().getStartdateInfo().getLimitDays());
 
 		assertThat(holidayInfo.getNextYear()).isPresent();
 		assertThat(holidayInfo.getNextYear().get().getUsedDays().getUsedDay()).isEqualTo(expect2.getAggrResultOfChildCareNurse().get().getStartdateInfo().getUsedDays().getUsedDay());
 		assertThat(holidayInfo.getNextYear().get().getUsedDays().getUsedTimes()).isEqualTo(expect2.getAggrResultOfChildCareNurse().get().getStartdateInfo().getUsedDays().getUsedTimes());
-		assertThat(holidayInfo.getNextYear().get().getRemainingNumber().getUsedDays()).isEqualTo(expect2.getAggrResultOfChildCareNurse().get().getStartdateInfo().getRemainingNumber().getUsedDays());
-		assertThat(holidayInfo.getNextYear().get().getRemainingNumber().getUsedTime()).isEqualTo(expect2.getAggrResultOfChildCareNurse().get().getStartdateInfo().getRemainingNumber().getUsedTime());
+		assertThat(holidayInfo.getNextYear().get().getRemainingNumber().getRemainDay()).isEqualTo(expect2.getAggrResultOfChildCareNurse().get().getStartdateInfo().getRemainingNumber().getRemainDay());
+		assertThat(holidayInfo.getNextYear().get().getRemainingNumber().getRemainTimes()).isEqualTo(expect2.getAggrResultOfChildCareNurse().get().getStartdateInfo().getRemainingNumber().getRemainTimes());
 		assertThat(holidayInfo.getNextYear().get().getLimitDays()).isEqualTo(expect2.getAggrResultOfChildCareNurse().get().getStartdateInfo().getLimitDays());
 	}
 
@@ -160,17 +162,20 @@ public class AggregateChildCareNurseTest {
 	private ChildCareNurseStartdateInfo startdateDaysInfo (double usedDay,Integer usedTimes, Integer upperLimit) {
 			return ChildCareNurseStartdateInfo.of(ChildCareNurseUsedNumber.of(new DayNumberOfUse(usedDay),
 						usedTimes == null ? Optional.empty() : Optional.of(new TimeOfUse(usedTimes))),
-				ChildCareNurseRemainingNumber.of(new DayNumberOfUse(usedDay),
-						usedTimes == null ? Optional.empty() : Optional.of(new TimeOfUse(usedTimes))),
+				ChildCareNurseRemainingNumber.of(new DayNumberOfRemain(usedDay),
+						usedTimes == null ? Optional.empty() : Optional.of(new TimeOfRemain(usedTimes))),
 				new ChildCareNurseUpperLimit(upperLimit));
 	}
 
 	// 集計期間の子の看護介護休暇情報
-	private ChildCareNurseAggrPeriodInfo aggrPeriodInfo(int usedCount, int usedDays, double usedDay, Integer usedTimes) {
-		return ChildCareNurseAggrPeriodInfo.of(new UsedTimes(usedCount),
-				new UsedTimes(usedDays),
-				ChildCareNurseUsedNumber.of(new DayNumberOfUse(usedDay),
-						usedTimes == null ? Optional.empty() : Optional.of(new TimeOfUse(usedTimes))));
+	private ChildCareNurseUsedInfo aggrPeriodInfo(int usedCount, int usedDays, double usedDay, Integer usedTimes) {
+		return ChildCareNurseUsedInfo.of(
+				ChildCareNurseUsedNumber.of(
+						new DayNumberOfUse(usedDay),
+						usedTimes == null ? Optional.empty() : Optional.of(new TimeOfUse(usedTimes))),
+				new UsedTimes(usedCount),
+				new UsedTimes(usedDays)
+				);
 	}
 
 
@@ -250,16 +255,16 @@ public class AggregateChildCareNurseTest {
 		val expect = aggrChildCareNurseWork(YearAtr.THIS_YEAR, 0.0, 0, 0); 	 // 期待値：本年、使用日数0.0日、使用時間0:00、上限日数0日
 		val expect2 = aggrChildCareNurseWork(YearAtr.NEXT_YEAR, 0.0, 0, 0); // 期待値：翌年、使用日数0.0日、使用時間0:00、上限日数0日
 
-		assertThat(holidayInfo.getThisYear().getUsedCount()).isEqualTo(expect.getAggrResultOfChildCareNurse().get().getAggrPeriodInfo().getUsedCount());
+		assertThat(holidayInfo.getThisYear().getUsedTimes()).isEqualTo(expect.getAggrResultOfChildCareNurse().get().getAggrPeriodInfo().getUsedTimes());
 		assertThat(holidayInfo.getThisYear().getUsedDays()).isEqualTo(expect.getAggrResultOfChildCareNurse().get().getAggrPeriodInfo().getUsedDays());
-		assertThat(holidayInfo.getThisYear().getAggrPeriodUsedNumber().getUsedDay()).isEqualTo(expect.getAggrResultOfChildCareNurse().get().getAggrPeriodInfo().getAggrPeriodUsedNumber().getUsedDay());
-		assertThat(holidayInfo.getThisYear().getAggrPeriodUsedNumber().getUsedTimes()).isEqualTo(expect.getAggrResultOfChildCareNurse().get().getAggrPeriodInfo().getAggrPeriodUsedNumber().getUsedTimes());
+		assertThat(holidayInfo.getThisYear().getUsedNumber().getUsedDay()).isEqualTo(expect.getAggrResultOfChildCareNurse().get().getAggrPeriodInfo().getUsedNumber().getUsedDay());
+		assertThat(holidayInfo.getThisYear().getUsedNumber().getUsedTimes()).isEqualTo(expect.getAggrResultOfChildCareNurse().get().getAggrPeriodInfo().getUsedNumber().getUsedTimes());
 
 		assertThat(holidayInfo.getNextYear()).isPresent();
-		assertThat(holidayInfo.getNextYear().get().getUsedCount()).isEqualTo(expect2.getAggrResultOfChildCareNurse().get().getAggrPeriodInfo().getUsedCount());
-		assertThat(holidayInfo.getNextYear().get().getUsedCount()).isEqualTo(expect2.getAggrResultOfChildCareNurse().get().getAggrPeriodInfo().getUsedDays());
-		assertThat(holidayInfo.getNextYear().get().getAggrPeriodUsedNumber().getUsedDay()).isEqualTo(expect2.getAggrResultOfChildCareNurse().get().getAggrPeriodInfo().getAggrPeriodUsedNumber().getUsedDay());
-		assertThat(holidayInfo.getNextYear().get().getAggrPeriodUsedNumber().getUsedTimes()).isEqualTo(expect2.getAggrResultOfChildCareNurse().get().getAggrPeriodInfo().getAggrPeriodUsedNumber().getUsedTimes());
+		assertThat(holidayInfo.getNextYear().get().getUsedTimes()).isEqualTo(expect2.getAggrResultOfChildCareNurse().get().getAggrPeriodInfo().getUsedTimes());
+		assertThat(holidayInfo.getNextYear().get().getUsedTimes()).isEqualTo(expect2.getAggrResultOfChildCareNurse().get().getAggrPeriodInfo().getUsedDays());
+		assertThat(holidayInfo.getNextYear().get().getUsedNumber().getUsedDay()).isEqualTo(expect2.getAggrResultOfChildCareNurse().get().getAggrPeriodInfo().getUsedNumber().getUsedDay());
+		assertThat(holidayInfo.getNextYear().get().getUsedNumber().getUsedTimes()).isEqualTo(expect2.getAggrResultOfChildCareNurse().get().getAggrPeriodInfo().getUsedNumber().getUsedTimes());
 
 	}
 
@@ -268,17 +273,21 @@ public class AggregateChildCareNurseTest {
 		return ChildCareNurseStartdateInfo.of(
 				ChildCareNurseUsedNumber.of(new DayNumberOfUse(useDay),
 						usedTimes == null ? Optional.empty() : Optional.of(new TimeOfUse(usedTimes))),
-				ChildCareNurseRemainingNumber.of(new DayNumberOfUse(useDay),
-						usedTimes == null ? Optional.empty() : Optional.of(new TimeOfUse(usedTimes))),
+				ChildCareNurseRemainingNumber.of(new DayNumberOfRemain(useDay),
+						usedTimes == null ? Optional.empty() : Optional.of(new TimeOfRemain(usedTimes))),
 				new ChildCareNurseUpperLimit(upperLimit));
 	}
 
 
 	// 集計期間の子の看護介護休暇情報
-	private ChildCareNurseAggrPeriodInfo periodInfo(int usedCount, int usedDays, double useDay, Integer usedTimes) {
-		return ChildCareNurseAggrPeriodInfo.of(new UsedTimes(usedCount), new UsedTimes(usedDays),
-				ChildCareNurseUsedNumber.of(new DayNumberOfUse(useDay),
-						usedTimes == null ? Optional.empty() : Optional.of(new TimeOfUse(usedTimes))));
+	private ChildCareNurseUsedInfo periodInfo(int usedCount, int usedDays, double useDay, Integer usedTimes) {
+		return ChildCareNurseUsedInfo.of(
+				ChildCareNurseUsedNumber.of(
+						new DayNumberOfUse(useDay),
+						usedTimes == null ? Optional.empty() : Optional.of(new TimeOfUse(usedTimes))),
+				new UsedTimes(usedCount),
+				new UsedTimes(usedDays)
+				);
 	}
 
 	// 本年の期間の「子の看護介護集計期間WORK」を取得する

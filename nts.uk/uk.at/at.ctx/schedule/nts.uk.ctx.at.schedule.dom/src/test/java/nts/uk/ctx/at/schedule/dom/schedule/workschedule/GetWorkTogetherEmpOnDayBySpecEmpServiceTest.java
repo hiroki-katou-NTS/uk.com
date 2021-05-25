@@ -120,7 +120,7 @@ public class GetWorkTogetherEmpOnDayBySpecEmpServiceTest {
 					, CalculationState.Calculated
 					, NotUseAttribute.Not_use
 					, NotUseAttribute.Not_use
-					, DayOfWeek.FRIDAY, Collections.emptyList());
+					, DayOfWeek.FRIDAY, Collections.emptyList(), Optional.empty());
 		}
 	}
 	

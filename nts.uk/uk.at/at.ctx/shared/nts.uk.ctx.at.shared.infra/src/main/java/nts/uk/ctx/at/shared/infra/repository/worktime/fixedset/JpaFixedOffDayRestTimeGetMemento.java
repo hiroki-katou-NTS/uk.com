@@ -10,13 +10,13 @@ import java.util.stream.Collectors;
 
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
-import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixRestTimezoneSetGetMemento;
+import nts.uk.ctx.at.shared.dom.worktime.common.TimezoneOfFixedRestTimeSetGetMemento;
 import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtWtFixBrHolTs;
 
 /**
  * The Class JpaFixedOffDayRestTimeGetMemento.
  */
-public class JpaFixedOffDayRestTimeGetMemento implements FixRestTimezoneSetGetMemento {
+public class JpaFixedOffDayRestTimeGetMemento implements TimezoneOfFixedRestTimeSetGetMemento {
 
 	/** The lst entity. */
 	private List<KshmtWtFixBrHolTs> lstEntity;
@@ -43,7 +43,7 @@ public class JpaFixedOffDayRestTimeGetMemento implements FixRestTimezoneSetGetMe
 	 * getLstTimezone()
 	 */
 	@Override
-	public List<DeductionTime> getLstTimezone() {
+	public List<DeductionTime> getTimezones() {
 		return this.lstEntity.stream()
 				.map(entity -> new DeductionTime(
 						new JpaFixedRestTZDeductionTimeGetMemento<KshmtWtFixBrHolTs>(entity)))

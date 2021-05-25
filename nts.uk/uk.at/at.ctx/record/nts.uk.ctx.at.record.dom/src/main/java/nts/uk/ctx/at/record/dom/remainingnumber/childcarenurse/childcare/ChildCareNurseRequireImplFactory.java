@@ -5,6 +5,12 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.care.CareUsedNumberRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.care.interimdata.TempCareManagementRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.ChildCareUsedNumberRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.interimdata.TempChildCareManagementRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.CareLeaveRemainingInfoRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.ChildCareLeaveRemInfoRepository;
 import nts.uk.ctx.at.shared.dom.scherec.closurestatus.ClosureStatusManagementRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSettingRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingLeaveSettingRepository;
@@ -31,6 +37,18 @@ public class ChildCareNurseRequireImplFactory {
 	private EmpEmployeeAdapter empEmployeeAdapter;
 	@Inject
 	private NursingLeaveSettingRepository nursingLeaveSettingRepo;
+	@Inject
+	private ChildCareUsedNumberRepository childCareUsedNumberRepository;
+	@Inject
+	private CareUsedNumberRepository careUsedNumberRepository;
+	@Inject
+	private TempChildCareManagementRepository tempChildCareManagementRepository;
+	@Inject
+	private TempCareManagementRepository tempCareManagementRepository;
+	@Inject
+	private ChildCareLeaveRemInfoRepository childCareLeaveRemInfoRepository;
+	@Inject
+	private CareLeaveRemainingInfoRepository careLeaveRemainingInfoRepository;
 
 	public ChildCareNurseRequireImpl createRequireImpl() {
 		return new ChildCareNurseRequireImpl(
@@ -41,7 +59,13 @@ public class ChildCareNurseRequireImplFactory {
 				shareEmploymentAdapter,
 				ClosureRepo,
 				empEmployeeAdapter,
-				nursingLeaveSettingRepo
+				nursingLeaveSettingRepo,
+				childCareUsedNumberRepository,
+				careUsedNumberRepository,
+				tempChildCareManagementRepository,
+				tempCareManagementRepository,
+				childCareLeaveRemInfoRepository,
+				careLeaveRemainingInfoRepository
 				);
 	}
 

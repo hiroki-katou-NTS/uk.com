@@ -6,6 +6,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -21,6 +22,8 @@ import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
+import nts.uk.ctx.at.shared.app.find.vacation.setting.subst.SubstVacationFinder;
+import nts.uk.ctx.at.shared.app.find.vacation.setting.subst.dto.SubstVacationSettingDto;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecGenerationDigestionHis;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsenceReruitmentManaQuery;
@@ -62,6 +65,9 @@ public class EmploymentSystemFinder {
 	@Inject
 	private AbsenceTenProcessCommon absenceTenProcessCommon;
 
+	@Inject
+	private SubstVacationFinder substVacationFinder;
+	
 	@Inject
 	private NumberCompensatoryLeavePeriodProcess numberCompensatoryLeavePeriodProcess;
 
@@ -412,6 +418,11 @@ public class EmploymentSystemFinder {
 			// A8_4_3 予定残数
 			result.setScheduledRemainingDay(absRemainInfor.getScheOccurrenceDays() - absRemainInfor.getScheUseDays());
 		}
+		
+		//fix bug #115862
+		SubstVacationSettingDto subHd = this.substVacationFinder.findComSetting(companyId);
+		result.setExpiredDay(subHd.getExpirationDate());
+		
 		return result;
 	}
 

@@ -18,9 +18,10 @@ import nts.uk.ctx.at.shared.dom.common.CompanyId;
  * The Class JpaCompanyEstablishmentGetMemento.
  */
 public class JpaComEstablishmentGetMemento implements CompanyEstablishmentGetMemento{
-	
-	public static final int FIRST_TIME = 0;
-	
+
+	private String companyId;
+	private int targetYear;
+
 	/** The estimate time companys. */
 	private List<KscmtEstTimeCom> estimateTimeCompanys;
 	
@@ -37,9 +38,11 @@ public class JpaComEstablishmentGetMemento implements CompanyEstablishmentGetMem
 	 *
 	 * @param estimateTimeCompanys the estimate time companys
 	 */
-	public JpaComEstablishmentGetMemento(List<KscmtEstTimeCom> estimateTimeCompanys,
+	public JpaComEstablishmentGetMemento(String companyId, int targetYear, List<KscmtEstTimeCom> estimateTimeCompanys,
 			List<KscmtEstPriceCom> estimatePriceCompanys,
 			List<KscmtEstDaysCom> estimateDaysCompanys) {
+		this.companyId = companyId;
+		this.targetYear = targetYear;
 		this.estimateTimeCompanys = estimateTimeCompanys;
 		this.estimatePriceCompanys = estimatePriceCompanys;
 		this.estimateDaysCompanys = estimateDaysCompanys;
@@ -53,8 +56,7 @@ public class JpaComEstablishmentGetMemento implements CompanyEstablishmentGetMem
 	 */
 	@Override
 	public CompanyId getCompanyId() {
-		return new CompanyId(
-				this.estimateTimeCompanys.get(FIRST_TIME).getKscmtEstTimeComSetPK().getCid());
+		return new CompanyId(this.companyId);
 	}
 
 	/*
@@ -65,8 +67,7 @@ public class JpaComEstablishmentGetMemento implements CompanyEstablishmentGetMem
 	 */
 	@Override
 	public Year getTargetYear() {
-		return new Year(this.estimateTimeCompanys.get(FIRST_TIME).getKscmtEstTimeComSetPK()
-				.getTargetYear());
+		return new Year(this.targetYear);
 	}
 
 	/*

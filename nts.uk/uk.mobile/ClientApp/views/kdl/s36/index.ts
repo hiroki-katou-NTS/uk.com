@@ -161,7 +161,7 @@ export class KdlS36Component extends Vue {
                 .map((m, index) => ({
                     ...m,
                     checked: !!_.find(vm.managementData, (i) => i.outbreakDay == m.holidayWorkDate),
-                    enable: new Date(m.expirationDate).getTime() > new Date(vm.startDate).getTime(),
+                    enable: new Date(m.expirationDate).getTime() >= new Date(vm.startDate).getTime(),
                     get icon() {
                         const { dataType, expiringThisMonth } = m;
 

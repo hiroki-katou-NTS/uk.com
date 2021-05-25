@@ -19,11 +19,8 @@ import static nts.arc.time.GeneralDate.*;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare.AggregateChildCareNurseWork;
-import nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare.ChildCareNurseAggrPeriodInfo;
 import nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare.ChildCareNurseCalcResultWithinPeriod;
 import nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare.ChildCareNurseCalcUsedNumber;
-import nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare.ChildCareNurseErrors;
-import nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare.ChildCareNurseRemainingNumber;
 import nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare.ChildCareNurseRemainingNumberCalcWork;
 import nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare.ChildCareNurseStartdateInfo;
 import nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare.NextDayAfterPeriodEndWork;
@@ -32,12 +29,18 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.Used
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
-import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.ChildCareNurseUsedNumber;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.ChildCareNurseUsedNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.interimdata.TempChildCareNurseManagement;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.children.service.ChildCareNurseErrors;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.ChildCareLeaveRemainingInfo;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.NursingCareLeaveRemainingInfo;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.UpperLimitSetting;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.remainingnumber.DayNumberOfRemain;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.remainingnumber.TimeOfRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.usenumber.DayNumberOfUse;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.usenumber.TimeOfUse;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.childcarenurse.ChildCareNurseRemainingNumber;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.childcarenurse.ChildCareNurseUsedInfo;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.ChildCareNurseUpperLimit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.MaxPersonSetting;
@@ -59,6 +62,9 @@ public class AggregateChildCareNurseWorkTest {
 
 	@Injectable
 	private AggregateChildCareNurseWork.Require require;
+
+	private NursingCategory category = NursingCategory.ChildNursing;
+
 	/**
 	 *  1.エラーチェック
 	 */
@@ -74,7 +80,7 @@ public class AggregateChildCareNurseWorkTest {
 		ChildCareNurseUsedNumber startUsed = usedNumber(0.0, 0);
 
 		val childCare = createChildCare11(0, 0, 0, null, 0, true); // 終了日の翌日の期間 = true;
-		val nextPeriodEndAtr = childCare.errorInfo(companyId, employeeId, period, criteriaDate, startUsed, require);
+		val nextPeriodEndAtr = childCare.errorInfo(companyId, employeeId, period, criteriaDate, startUsed, category, require);
 
 		assertThat(nextPeriodEndAtr).isEmpty();
 	}
@@ -92,7 +98,7 @@ public class AggregateChildCareNurseWorkTest {
 
 		new Expectations() {
 			{
-				require.employeeInfo(employeeId); // 子の看護・介護休暇基本情報を取得する
+				require.employeeInfo(employeeId, category); // 子の看護・介護休暇基本情報を取得する
 				result = childCareLeave(NursingCategory.ChildNursing, 5, 10); //本年度上限日数5日、翌年度上限日数10日
 
 				require.nursingLeaveSetting(companyId, NursingCategory.ChildNursing); // 介護看護休暇設定を取得する（会社ID、介護看護区分）
@@ -102,7 +108,7 @@ public class AggregateChildCareNurseWorkTest {
 		};
 
 		val childCare = createChildCare11(0, 0, 0, null, 0, false); // 終了日の翌日の期間 = false;
-		val nextPeriodEndAtr = childCare.errorInfo(companyId, employeeId, period, criteriaDate, startUsed, require);
+		val nextPeriodEndAtr = childCare.errorInfo(companyId, employeeId, period, criteriaDate, startUsed, category, require);
 
 		val expect = createError(ymd(2020,10, 18), 10.0, 180, 5);	//	期待値：基準日、使用日数0日、使用時間3:00(=180)、上限日数5日
 		assertThat(nextPeriodEndAtr.get(0).getUsedNumber().getUsedDay()).isEqualTo(expect.get(0).getUsedNumber().getUsedDay());
@@ -124,7 +130,7 @@ public class AggregateChildCareNurseWorkTest {
 
 		new Expectations() {
 			{
-				require.employeeInfo(employeeId); // 子の看護・介護休暇基本情報を取得する
+				require.employeeInfo(employeeId, NursingCategory.ChildNursing); // 子の看護・介護休暇基本情報を取得する
 				result = childCareLeave(NursingCategory.ChildNursing, 5, 10); //本年度上限日数5日、翌年度上限日数10日
 
 				require.nursingLeaveSetting(companyId, NursingCategory.ChildNursing); // 介護看護休暇設定を取得する（会社ID、介護看護区分）
@@ -134,7 +140,7 @@ public class AggregateChildCareNurseWorkTest {
 		};
 
 		val childCare = createChildCare11(0, 0, 0, null, 0, false); // 終了日の翌日の期間 = false;
-		val nextPeriodEndAtr = childCare.errorInfo(companyId, employeeId, period, criteriaDate, startUsed, require);
+		val nextPeriodEndAtr = childCare.errorInfo(companyId, employeeId, period, criteriaDate, startUsed, NursingCategory.ChildNursing, require);
 
 		val expect = createError(ymd(2020,10, 18), 10.0, 180, 5);	//	期待値：基準日、使用日数0日、使用時間3:00(=180)、上限日数5日
 		assertThat(nextPeriodEndAtr.get(0).getUsedNumber().getUsedDay()).isEqualTo(expect.get(0).getUsedNumber().getUsedDay());
@@ -179,11 +185,12 @@ public class AggregateChildCareNurseWorkTest {
 												ymd(2020,10, 16),
 												usedNumber(0.0, 0),	// 起算日からの使用数（使用日数、使用時間）
 												calcUsedNumber(0.0 ,0 ,0 ,0 , 0.0, 0),// 子の看護介護計算使用数
+												category,
 												require);
 
 		val expect = calcRemaining(0.0, null, 0);//期待値：計算残数（残日数、残時間、上限日数）
-		assertThat(nextPeriodEndAtr.getRemainNumber().getUsedDays()).isEqualTo(expect.getRemainNumber().getUsedDays());
-		assertThat(nextPeriodEndAtr.getRemainNumber().getUsedTime()).isEqualTo(expect.getRemainNumber().getUsedTime());
+		assertThat(nextPeriodEndAtr.getRemainNumber().getRemainDay()).isEqualTo(expect.getRemainNumber().getRemainDay());
+		assertThat(nextPeriodEndAtr.getRemainNumber().getRemainTimes()).isEqualTo(expect.getRemainNumber().getRemainTimes());
 		assertThat(nextPeriodEndAtr.getUpperLimit()).isEqualTo(expect.getUpperLimit());
 	}
 
@@ -196,7 +203,7 @@ public class AggregateChildCareNurseWorkTest {
 		val childCare = createChildCare11(0, 0, 0, null, 0, false);	// 終了日の翌日の期間 = false
 		new Expectations() {
 			{
-				require.employeeInfo(employeeId); // 子の看護・介護休暇基本情報を取得する
+				require.employeeInfo(employeeId, NursingCategory.ChildNursing); // 子の看護・介護休暇基本情報を取得する
 				result = childCareLeave(NursingCategory.ChildNursing, 5, 10); //本年度上限日数5日、翌年度上限日数10日
 
 				require.nursingLeaveSetting(companyId, NursingCategory.ChildNursing); // 介護看護休暇設定を取得する（会社ID、介護看護区分）
@@ -210,9 +217,10 @@ public class AggregateChildCareNurseWorkTest {
 				ymd(2021,1, 10),
 				usedNumber(0.5, 0),	// 起算日からの使用数
 				calcUsedNumber(1.0 ,0 ,0 ,0 , 0.0 , 0), // 子の看護介護計算使用数
+				category,
 				require);
-		assertThat(calcRemaining.getRemainNumber().getUsedDays()).isEqualTo(expect.getRemainNumber().getUsedDays());
-		assertThat(calcRemaining.getRemainNumber().getUsedTime()).isEqualTo(expect.getRemainNumber().getUsedTime());
+		assertThat(calcRemaining.getRemainNumber().getRemainDay()).isEqualTo(expect.getRemainNumber().getRemainDay());
+		assertThat(calcRemaining.getRemainNumber().getRemainTimes()).isEqualTo(expect.getRemainNumber().getRemainTimes());
 		assertThat(calcRemaining.getUpperLimit()).isEqualTo(expect.getUpperLimit());
 	}
 
@@ -237,7 +245,6 @@ public class AggregateChildCareNurseWorkTest {
 						ymd(2020,10, 18),	//GeneralDate ymd,
 						CreateAtr.RECORD,	//CreateAtr creatorAtr,
 						remainType,	//RemainType remainType,
-						RemainAtr.SINGLE,	//RemainAtr remainAtr,
 						usedNumber(useDay, usedTimes),
 						Optional.empty()// DigestionHourlyTimeType
 					));
@@ -246,8 +253,8 @@ public class AggregateChildCareNurseWorkTest {
 	// 子の看護介護残数
 	private ChildCareNurseRemainingNumber remNum(double usedDays, Integer usedTime) {
 		return ChildCareNurseRemainingNumber.of(
-				new DayNumberOfUse(usedDays),
-				usedTime == null ? Optional.empty() : Optional.of(new TimeOfUse(usedTime)));
+				new DayNumberOfRemain(usedDays),
+				usedTime == null ? Optional.empty() : Optional.of(new TimeOfRemain(usedTime)));
 	}
 
 	// 起算日から子の看護介護休暇情報
@@ -259,9 +266,12 @@ public class AggregateChildCareNurseWorkTest {
 	}
 
 	// 集計期間の子の看護介護休暇情報
-	private ChildCareNurseAggrPeriodInfo periodInfo(int usedCount, int usedDays, double useDay, Integer usedTimes) {
-		return ChildCareNurseAggrPeriodInfo.of(new UsedTimes(usedCount), new UsedTimes(usedDays),
-				usedNumber(useDay, usedTimes));
+	private ChildCareNurseUsedInfo periodInfo(int usedCount, int usedDays, double useDay, Integer usedTimes) {
+		return ChildCareNurseUsedInfo.of(
+				usedNumber(useDay, usedTimes),
+				new UsedTimes(usedCount),
+				new UsedTimes(usedDays)
+				);
 	}
 
 	// 子の看護介護計算残数
@@ -323,14 +333,16 @@ public class AggregateChildCareNurseWorkTest {
 	}
 
 	// 子の看護休暇基本情報
-	private ChildCareLeaveRemainingInfo childCareLeave(NursingCategory leaveType, Integer maxDayForThisFiscalYear , Integer maxDayForNextFiscalYear) {
-		return ChildCareLeaveRemainingInfo.of(
+	private Optional<NursingCareLeaveRemainingInfo> childCareLeave(NursingCategory leaveType, Integer maxDayForThisFiscalYear , Integer maxDayForNextFiscalYear) {
+		ChildCareLeaveRemainingInfo obj =ChildCareLeaveRemainingInfo.of(
 				"000001",
 				leaveType,
 				true, // useClassification:使用区分
 				UpperLimitSetting.PER_INFO_EVERY_YEAR,
 				maxDayForThisFiscalYear == null ? Optional.empty() : Optional.of(new ChildCareNurseUpperLimit(maxDayForThisFiscalYear)),
 				maxDayForNextFiscalYear == null ? Optional.empty() : Optional.of(new ChildCareNurseUpperLimit(maxDayForNextFiscalYear)));
+
+		return Optional.of((NursingCareLeaveRemainingInfo)obj);
 	}
 
 	// 介護看護休暇上限人数設定

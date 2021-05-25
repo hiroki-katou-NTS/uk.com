@@ -22,5 +22,4 @@ public interface MaxPersonSettingSetMemento {
      * @param nursingNumberPerson the new nursing number person
      */
     void setNursingNumberPerson(NumberOfCaregivers nursingNumberPerson);
-
 }

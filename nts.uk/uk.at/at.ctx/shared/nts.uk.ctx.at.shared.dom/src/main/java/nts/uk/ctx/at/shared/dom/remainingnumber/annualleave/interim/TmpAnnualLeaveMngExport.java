@@ -2,10 +2,8 @@ package nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim;
 
 import lombok.Getter;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.shared.dom.remainingnumber.base.UsedDays;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UseDay;
 
@@ -75,7 +73,7 @@ public class TmpAnnualLeaveMngExport {
 	 */
 	public static TmpAnnualLeaveMngExport of(
 			InterimRemain interimRemain,
-			TmpAnnualHolidayMng tmpAnnLeaMng){
+			TempAnnualLeaveMngs tmpAnnLeaMng){
 		
 		TmpAnnualLeaveMngExport domain = new TmpAnnualLeaveMngExport();
 		domain.employeeId = interimRemain.getSID();
@@ -86,8 +84,7 @@ public class TmpAnnualLeaveMngExport {
 //		domain.remainAtr = interimRemain.getRemainAtr();
 		domain.workTypeCode = tmpAnnLeaMng.getWorkTypeCode().v();
 		/** TODO: tmpAnnLeaMng.getUseNumber().getUsedDays > 1 -> error */
-		domain.useDays = tmpAnnLeaMng.getUseNumber().getUsedDays().map(c -> new UseDay(c.v()))
-						.orElse(new UseDay(0d));
+		domain.useDays = tmpAnnLeaMng.getUsedNumber().getDays() !=null? new UseDay(tmpAnnLeaMng.getUsedNumber().getDays().v()): new UseDay(0d);
 		return domain;
 	}
 }

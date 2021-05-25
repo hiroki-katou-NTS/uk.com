@@ -22,6 +22,7 @@ import javax.ejb.TransactionAttributeType;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -130,7 +131,7 @@ public class JpaBentoReservationRepositoryImpl extends JpaRepository implements 
 		List<FullJoinBentoReservation> listFullData = new ArrayList<>();
 		while (rs.next()) {
 			String frameNo = rs.getString("MANU_FRAME");
-			String registerDate = rs.getString("REGIST_DATETIME");
+			Timestamp registerDate = rs.getTimestamp("REGIST_DATETIME"); 
 			String quantity = rs.getString("QUANTITY");
 			String autoReservation = rs.getString("AUTO_RESERVATION_ATR");
 			listFullData.add(new FullJoinBentoReservation(
@@ -143,7 +144,7 @@ public class JpaBentoReservationRepositoryImpl extends JpaRepository implements 
 					Integer.valueOf(rs.getString("ORDERED")) == 1 ? true : false,
 					rs.getString("WORK_LOCATION_CD"),
 					frameNo == null ? null : Integer.valueOf(frameNo),
-					registerDate == null ? null : GeneralDateTime.fromString(registerDate, DATE_TIME_FORMAT),
+					registerDate == null ? null : GeneralDateTime.localDateTime(registerDate.toLocalDateTime()),
 					quantity == null ? null : Integer.valueOf(quantity),
 					autoReservation == null ? null : Boolean.valueOf(autoReservation)));
 		}

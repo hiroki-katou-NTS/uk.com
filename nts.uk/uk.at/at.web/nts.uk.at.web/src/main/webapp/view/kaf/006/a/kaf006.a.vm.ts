@@ -653,14 +653,14 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
 
             let holidayAppDates = [];
 
-            let application: ApplicationDto = new ApplicationDto(
+            let application: ApplicationDto = new ApplicationDto( 
                 null,
                 null,
                 ko.toJS(vm.application().prePostAtr),
                 vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.employeeInfoLst[0].sid,
                 ko.toJS(vm.application().appType),
                 ko.toJS(vm.application().appDate),
-                null,
+                vm.$user.employeeId,
                 null,
                 null,
                 null,
@@ -757,7 +757,8 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
 			}).done((result) => {
 				if (result) {
 					return vm.$dialog.info({ messageId: "Msg_15"}).then(() => {
-						return CommonProcess.handleAfterRegister(result, vm.isSendMail(), vm);
+						nts.uk.request.ajax("at", API.reflectApp, result.reflectAppIdLst);
+						return CommonProcess.handleAfterRegister(result, vm.isSendMail(), vm, false, vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.employeeInfoLst);
 					});	
 				}
 			}).fail((failData) => {
@@ -775,7 +776,7 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
 
         validate() {
             const vm = this;
-            if (vm.condition11()) {
+            if (vm.condition11() && vm.condition30()) {
                 if (vm.isChangeWorkHour() && vm.selectedWorkTimeCD()) {
                     if (!vm.checkTimeValid(vm.startTime1) && !vm.checkTimeValid(vm.endTime1)) {
                         vm.$dialog.error({messageId: "Msg_307"});
@@ -881,7 +882,7 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
                     nursingTime: vm.nursing(),
                     childTime: vm.childNursing(),
                     timeOff: vm.timeOff(),
-                    timeSpecialVacation: 0,
+                    timeSpecialVacation: null,
                     timeAnualLeave: vm.annualTime(),
                     specialVacationFrameNO: null
                 };
@@ -1064,6 +1065,8 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
             }).done((res: any) => {
                 if (res) {
                     vm.fetchData(res);
+                    vm.payoutSubofHDManagements([]);
+                    vm.leaveComDayOffManas([]);
                 }
             }).fail(err => {
                 if (err.messageId === "Msg_43") {
@@ -1527,7 +1530,8 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
         checkVacationTyingManage: 'at/request/application/appforleave/checkVacationTyingManage',
         changeWorkType: 'at/request/application/appforleave/findChangeWorkType',
         changeWorkTime: 'at/request/application/appforleave/findChangeWorkTime',
-        changeRela: 'at/request/application/appforleave/changeRela'
+        changeRela: 'at/request/application/appforleave/changeRela',
+		reflectApp: "at/request/application/reflect-app"
     }
 
     interface DataTransfer {

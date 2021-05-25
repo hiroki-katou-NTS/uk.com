@@ -5,40 +5,42 @@ module nts.uk.at.view.kaf000.a.component9.viewmodel {
         name: 'kaf000-b-component9',
         template: `
             <div id="kaf000-b-component9" style="width: 300px;">
-                <div class="panel panel-frame panel-gray-bg">
-                    <div class="table">
-                        <div class="cell" data-bind="i18n: 'KAF000_54'"></div>
-                    </div>
-                    <div data-bind="foreach: actualContentDisplayDtoLst" style="overflow: auto; height: 200px; margin-left: 3px; margin-top: 5px;">
-                        <div style="margin-top: 3px; margin-bottom: 3px;">
-                            <div class="table" style="margin-bottom: 1px;">
-                                <div class="cell" data-bind="i18n: 'KAF000_55'"></div>
-                                <div class="cell" data-bind="text: date"></div>
-                            </div>
-                            <div class="table" style="margin-bottom: 1px; margin-top: 1px;">
-                                <div class="cell" data-bind="i18n: 'KAF000_56'"></div>
-                                <div class="cell" data-bind="if: opAchievementDetail">
-                                    <span data-bind="text: opAchievementDetail.workTypeCD"></span>
-                                    <span data-bind="text: opAchievementDetail.opWorkTypeName"></span>
-                                </div>
-                            </div>
-                            <div class="table" style="margin-bottom: 1px; margin-top: 1px;">
-                                <div class="cell" data-bind="i18n: 'KAF000_57'"></div>
-                                <div class="cell" data-bind="if: opAchievementDetail">
-                                    <span data-bind="text: opAchievementDetail.workTimeCD"></span>
-                                    <span data-bind="text: opAchievementDetail.opWorkTimeName"></span>
-                                </div>
-                            </div>
-                            <div class="table" style="margin-top: 1px;">
-                                <div class="cell" data-bind="i18n: 'KAF000_58'"></div>
-                                <div class="cell" data-bind="if: opAchievementDetail">
+				<div class="panel panel-frame panel-gray-bg">
+				    <div class="table">
+				        <div class="cell" data-bind="i18n: 'KAF000_54'"></div>
+				    </div>
+			      	<div data-bind="foreach: actualContentDisplayDtoLst" style="overflow: auto; height: 200px; margin-left: 3px; margin-top: 5px;">
+						<div style="margin-top: 3px; margin-bottom: 3px;" data-bind="style: { color: opAchievementDetail && opAchievementDetail.trackRecordAtr == 1 ? 'green' : 'black' }">
+						    <div class="table" style="margin-bottom: 1px;">
+						        <div class="cell" data-bind="i18n: 'KAF000_55'"></div>
+						        <div class="cell" data-bind="text: date"></div>
+						    </div>
+						    <div class="table" style="margin-bottom: 1px; margin-top: 1px;">
+						        <div class="cell" data-bind="i18n: 'KAF000_56'"></div>
+						        <div class="cell" data-bind="if: opAchievementDetail">
+						            <span data-bind="text: opAchievementDetail.workTypeCD"></span>
+						            <span data-bind="text: opAchievementDetail.opWorkTypeName"></span>
+						        </div>
+						    </div>
+						    <div class="table" style="margin-bottom: 1px; margin-top: 1px;">
+						        <div class="cell" data-bind="i18n: 'KAF000_57'"></div>
+						        <div class="cell" data-bind="if: opAchievementDetail">
+						            <span data-bind="text: opAchievementDetail.workTimeCD"></span>
+						            <span data-bind="text: opAchievementDetail.opWorkTimeName"></span>
+						        </div>
+						    </div>
+					    	<div class="table" style="margin-top: 1px;">
+					        	<div class="cell" data-bind="i18n: 'KAF000_58'"></div>
+					        	<div class="cell" data-bind="if: opAchievementDetail">
 									<span data-bind="if: opAchievementDetail.opWorkTime">
 										<span data-bind="text: $parent.formatTime(opAchievementDetail.opWorkTime)"></span>
 									</span>
 									<span data-bind="if: !opAchievementDetail.opWorkTime">
 										<span style="visibility: hidden;">null</span>
 									</span>
-									<span> ~ </span>
+									<span data-bind="if: opAchievementDetail.opWorkTime || opAchievementDetail.opLeaveTime">
+										<span> ~ </span>
+									</span>
 									<span data-bind="if: opAchievementDetail.opLeaveTime">
 										<span data-bind="text: $parent.formatTime(opAchievementDetail.opLeaveTime)"></span>
 									</span>
@@ -46,11 +48,11 @@ module nts.uk.at.view.kaf000.a.component9.viewmodel {
 										<span style="visibility: hidden;">null</span>
 									</span>
 								</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+			                </div>
+			            </div>
+			        </div>
+			    </div>
+			</div>
         `
     })
     class Kaf000BComponent9ViewModel extends ko.ViewModel {

@@ -10,12 +10,16 @@ import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.remainingnumber.common.DayAndTime;
-import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.ChildCareNurseUsedNumber;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.ChildCareNurseUsedNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.interimdata.TempChildCareNurseManagement;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.children.service.ChildCareNurseErrors;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.data.CareManagementDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.NursingCareLeaveRemainingInfo;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.remainingnumber.DayNumberOfRemain;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.remainingnumber.TimeOfRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.usenumber.DayNumberOfUse;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.usenumber.TimeOfUse;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.childcarenurse.ChildCareNurseRemainingNumber;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.ChildCareNurseUpperLimitPeriod;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.FamilyInfo;
@@ -73,7 +77,7 @@ public class ChildCareCheckOverUsedNumberWork {
 	 */
 	public ChildCareShortageRemainingNumberWork calcShortageRemainingNumber(String companyId,
 			String employeeId, DatePeriod period, GeneralDate criteriaDate,
-			TempChildCareNurseManagement interimDate, RequireM4 require) {
+			TempChildCareNurseManagement interimDate, NursingCategory nursingCategory, RequireM4 require) {
 
 		// 子の看護介護残数不足数
 		ChildCareShortageRemainingNumberWork shortageRemainingNumberWork = new ChildCareShortageRemainingNumberWork();
@@ -90,10 +94,12 @@ public class ChildCareCheckOverUsedNumberWork {
 		resultCheckOverUsedNumberWork.usedNumber.contractTime(require, companyId, employeeId, criteriaDate);
 
 		// INPUT．Require．子の看護・介護休暇基本情報を取得する
-		NursingCareLeaveRemainingInfo employeeInfo = require.employeeInfo(employeeId);
+		Optional<NursingCareLeaveRemainingInfo> employeeInfo = require.employeeInfo(employeeId, nursingCategory);
 
 		// 期間ごとの上限日数を求める
-		List<ChildCareNurseUpperLimitPeriod> childCareNurseUpperLimitPeriod = employeeInfo.childCareNurseUpperLimitPeriod(companyId, employeeId, period, criteriaDate, require);
+		List<ChildCareNurseUpperLimitPeriod> childCareNurseUpperLimitPeriod = new ArrayList<>();
+		if(employeeInfo.isPresent())
+			childCareNurseUpperLimitPeriod= employeeInfo.get().childCareNurseUpperLimitPeriod(companyId, employeeId, period, criteriaDate, require);
 
 		// 期間終了日時点の上限日数を確認
 		ChildCareNurseUpperLimitPeriod upperLimitPeriod =childCareNurseUpperLimitPeriod.stream().
@@ -107,7 +113,7 @@ public class ChildCareCheckOverUsedNumberWork {
 			// true
 			// 子の看護介護残数不足数．使用可能数＝暫定管理データの使用数
 			shortageRemainingNumberWork.setAvailable(interimDate.getUsedNumber());
-			shortageRemainingNumberWork.setShortageRemNum(ChildCareNurseRemainingNumber.of(new DayNumberOfUse(0.0), Optional.of(new TimeOfUse(0))));
+			shortageRemainingNumberWork.setShortageRemNum(ChildCareNurseRemainingNumber.of(new DayNumberOfRemain(0.0), Optional.of(new TimeOfRemain(0))));
 		} else {
 			// falseの場合
 			// 暫定管理データ使用数の内上限超過しないまでの値を求める
@@ -116,11 +122,11 @@ public class ChildCareCheckOverUsedNumberWork {
 
 			// 残数不足数を求める
 			// ===子の看護介護残数不足数．残数不足数 = 暫定管理データの使用数 ー 子の看護介護残数不足数．使用可能数
-			val remainDays = new DayNumberOfUse(interimDate.getUsedNumber().getUsedDay().v() - shortageRemainingNumberWork.getAvailable().getUsedDay().v());
-			val remainTimes = new TimeOfUse(interimDate.getUsedNumber().getUsedTimes().map(c -> c.valueAsMinutes()).orElse(0)
+			val remainDays = new DayNumberOfRemain(interimDate.getUsedNumber().getUsedDay().v() - shortageRemainingNumberWork.getAvailable().getUsedDay().v());
+			val remainTimes = new TimeOfRemain(interimDate.getUsedNumber().getUsedTimes().map(c -> c.valueAsMinutes()).orElse(0)
 																		- shortageRemainingNumberWork.getAvailable().getUsedTimes().map(c -> c.valueAsMinutes()).orElse(0));
-			shortageRemainingNumberWork.getShortageRemNum().setUsedDays(remainDays);
-			shortageRemainingNumberWork.getShortageRemNum().setUsedTime(Optional.of(remainTimes));
+			shortageRemainingNumberWork.getShortageRemNum().setRemainDay(remainDays);
+			shortageRemainingNumberWork.getShortageRemNum().setRemainTimes(Optional.of(remainTimes));
 		}
 		// 「子の看護介護残数不足数」を返す
 		return shortageRemainingNumberWork;
@@ -208,8 +214,10 @@ public class ChildCareCheckOverUsedNumberWork {
 		// 日と時間を残数に変換する
 		//	=== 	子の看護介護残数．日数　＝　日と時間．日
 		// ===		子の看護介護残数．時間　＝　日と時間．時間
-		ChildCareNurseRemainingNumber usedNumber = ChildCareNurseRemainingNumber.of(subDayAndTime.getDay(),
-																																					Optional.of(subDayAndTime.getTime()));
+		DayNumberOfRemain remainDay = new DayNumberOfRemain(subDayAndTime.getDay().v());
+		TimeOfRemain remainTimes = new TimeOfRemain(subDayAndTime.getTime().v());
+
+		ChildCareNurseRemainingNumber usedNumber = ChildCareNurseRemainingNumber.of(remainDay,Optional.of(remainTimes));
 
 		// 残数が上限を超えていないか
 		boolean  checkOverUpperLimit = usedNumber.checkOverUpperLimit();
@@ -229,7 +237,8 @@ public class ChildCareCheckOverUsedNumberWork {
 	 * @return ChildCareNurseErrors 子の看護介護エラー情報
 	 */
 	public List<ChildCareNurseErrors> checkOverUsedNumberWork(String companyId,
-			String employeeId, DatePeriod period, GeneralDate criteriaDate, TempChildCareNurseManagement interimDate, Require require){
+			String employeeId, DatePeriod period, GeneralDate criteriaDate,
+			TempChildCareNurseManagement interimDate, NursingCategory nursingCategory, Require require){
 
 		List<ChildCareNurseErrors> childCareNurseErrors = new ArrayList<>();
 
@@ -243,11 +252,14 @@ public class ChildCareCheckOverUsedNumberWork {
 		this.usedNumber.contractTime(require, companyId, employeeId, criteriaDate);
 
 		// INPUT．Require．子の看護・介護休暇基本情報を取得する
-		NursingCareLeaveRemainingInfo employeeInfo = require.employeeInfo(employeeId);
+		Optional<NursingCareLeaveRemainingInfo> employeeInfo = require.employeeInfo(employeeId, nursingCategory);
 
 		// 期間ごとの上限日数を求める
-		List<ChildCareNurseUpperLimitPeriod> childCareNurseUpperLimitPeriod = employeeInfo.childCareNurseUpperLimitPeriod(companyId,
-				employeeId, period, criteriaDate, require);
+		List<ChildCareNurseUpperLimitPeriod> childCareNurseUpperLimitPeriod = new ArrayList<>();
+		if(employeeInfo.isPresent()) {
+			childCareNurseUpperLimitPeriod =
+					employeeInfo.get().childCareNurseUpperLimitPeriod(companyId,employeeId, period, criteriaDate, require);
+		}
 
 		// 対象日の上限日数を確認
 		// ===上限日数期間．期間．開始日 <=暫定残数管理データ．対象日<= 上限日数期間．期間．終了日
@@ -277,7 +289,7 @@ public class ChildCareCheckOverUsedNumberWork {
 		NursingLeaveSetting nursingLeaveSetting(String companyId, NursingCategory nursingCategory);
 
 		// 子の看護・介護休暇基本情報を取得する（社員ID）
-		NursingCareLeaveRemainingInfo employeeInfo(String employeeId);
+		Optional<NursingCareLeaveRemainingInfo> employeeInfo(String employeeId, NursingCategory nursingCategory);
 
 		// 会社の年休設定を取得する（会社ID）
 		AnnualPaidLeaveSetting annualLeaveSet(String companyId);
@@ -292,11 +304,7 @@ public class ChildCareCheckOverUsedNumberWork {
 		List<FamilyInfo> familyInfo(String employeeId);
 
 		// 介護対象管理データ（家族ID）
-		CareManagementDate careData(String familyID);
-
-		// 期間の上限日数取得する（会社ID、社員ID、期間、介護看護区分）
-		NursingCareLeaveRemainingInfo upperLimitPeriod (String companyId, String employeeId, DatePeriod period, NursingCategory nursingCategory);
-
+		Optional<CareManagementDate> careData(String familyID);
 
 	}
 	public static interface RequireM4 extends RequireM5, RequireM3,  ChildCareNurseUsedNumber.RequireM3, NursingCareLeaveRemainingInfo.RequireM7{
@@ -308,7 +316,7 @@ public class ChildCareCheckOverUsedNumberWork {
 		List<FamilyInfo> familyInfo(String employeeId);
 
 		// 介護対象管理データ（家族ID）
-		CareManagementDate careData(String familyID);
+		Optional<CareManagementDate> careData(String familyID);
 	}
 
 	public static interface RequireM1 {
@@ -319,7 +327,7 @@ public class ChildCareCheckOverUsedNumberWork {
 
 	public static interface RequireM2 {
 		// 子の看護・介護休暇基本情報を取得する（社員ID）
-		NursingCareLeaveRemainingInfo employeeInfo(String employeeId);
+		Optional<NursingCareLeaveRemainingInfo> employeeInfo(String employeeId, NursingCategory nursingCategory);
 	}
 
 	public static interface RequireM3 extends DayAndTime.RequireM3{

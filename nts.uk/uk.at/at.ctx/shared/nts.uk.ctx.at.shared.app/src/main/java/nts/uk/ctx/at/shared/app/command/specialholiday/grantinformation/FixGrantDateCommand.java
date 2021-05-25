@@ -4,9 +4,13 @@ import lombok.Value;
 
 @Value
 public class FixGrantDateCommand {
-	/** 周期*/
-	private int interval;
 	
-	/** 固定付与日数 */
+	/** 	付与日数 */
 	private int grantDays;
+	
+	/** 	期限 */
+	private GrantDeadlineCommand grantPeriodic;
+	
+	/** 	付与月日 */
+	private Integer grantMonthDay;
 }

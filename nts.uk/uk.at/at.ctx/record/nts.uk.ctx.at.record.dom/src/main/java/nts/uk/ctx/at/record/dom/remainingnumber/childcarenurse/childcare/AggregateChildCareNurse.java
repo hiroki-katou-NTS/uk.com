@@ -12,10 +12,12 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare.AggregateChildCareNurseWork.RequireM1;
-import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.ChildCareNurseUsedNumber;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.ChildCareNurseUsedNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.interimdata.TempChildCareNurseManagement;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.children.service.ChildCareNurseErrors;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.usenumber.DayNumberOfUse;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.usenumber.TimeOfUse;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.childcarenurse.ChildCareNurseUsedInfo;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingCategory;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingLeaveSetting;
 import nts.uk.shr.com.context.AppContexts;
@@ -100,8 +102,12 @@ public class AggregateChildCareNurse {
 	public ChildCareNurseStartdateDaysInfo getHolidayInfoStartMonthDay() {
 
 		// 本年の期間の「子の看護介護集計期間WORK」を取得する
-		AggregateChildCareNurseWork thisYearPeriodWork = period.stream().filter(c -> c.isThisYear() && !c.getNextDayAfterPeriodEnd().isNextPeriodEndAtr())
-																										.findFirst().get();
+		Optional<AggregateChildCareNurseWork> thisYearPeriodWorkOpt
+			= period.stream().filter(c -> c.isThisYear() && !c.getNextDayAfterPeriodEnd().isNextPeriodEndAtr())
+				.findFirst();
+		if ( !thisYearPeriodWorkOpt.isPresent() ) {
+			return new ChildCareNurseStartdateDaysInfo();
+		}
 
 		// 翌年の期間の「子の看護介護集計期間WORK」を取得する
 		Optional<AggregateChildCareNurseWork> nextYearPeriodWork = period.stream().filter(c -> c.isNextYear() && !c.getNextDayAfterPeriodEnd().isNextPeriodEndAtr()).findFirst();
@@ -110,7 +116,7 @@ public class AggregateChildCareNurse {
 		//	===起算日からの休暇情報．本年 = 本年期間の「起算日からの休暇情報」
 		//	===			翌年が取得できた場合
 		//	===			起算日からの休暇情報．翌年 = 翌年期間の「起算日からの休暇情報」
-		ChildCareNurseStartdateInfo thisYear = thisYearPeriodWork.getAggrResultOfChildCareNurse().get().getStartdateInfo();
+		ChildCareNurseStartdateInfo thisYear = thisYearPeriodWorkOpt.get().getAggrResultOfChildCareNurse().get().getStartdateInfo();
 		Optional<ChildCareNurseStartdateInfo> nextYear = nextYearPeriodWork.map(c-> c.getAggrResultOfChildCareNurse().get().getStartdateInfo());
 
 		ChildCareNurseStartdateDaysInfo result = ChildCareNurseStartdateDaysInfo.of(thisYear, nextYear);
@@ -241,8 +247,11 @@ public class AggregateChildCareNurse {
 				// 一番年月日が大きい分割日を取得
 				dividedDayEachProcess.sort((c1, c2) -> c2.getYmd().compareTo(c1.getYmd()));
 				DividedDayEachProcess largest = dividedDayEachProcess.get(0);
-				// 取得した分割日の終了日の翌日の期間かどうか ←true
-				largest.setEndDate(NextDayAfterPeriodEndWork.of(largest.getEndDate().isPeriodEndAtr(), true));
+				// 取得した分割日の終了日の期間かどうか ←true
+				largest.setEndDate(NextDayAfterPeriodEndWork.of(true, largest.getEndDate().isNextPeriodEndAtr()));
+			} else {
+				// 終了日の期間かどうか　←true
+				splitEnd.stream().forEach(action->action.setEndDate(NextDayAfterPeriodEndWork.of(true, false)));
 			}
 	}
 
@@ -263,7 +272,7 @@ public class AggregateChildCareNurse {
         Optional<DividedDayEachProcess> splitEndNext = dividedDayEachProcess.stream().filter(c -> c.getYmd().equals(end))
                                                                                                                                 .findFirst();
 
-        if(!splitEndNext.isPresent()) {
+        if(splitEndNext.isPresent()) {
         	splitEndNext.get().getEndDate().setPeriodEndAtr(true);
 
         	return dividedDayEachProcess;
@@ -368,8 +377,11 @@ public class AggregateChildCareNurse {
 	public ChildCareNurseAggrPeriodDaysInfo getHolidayInfoAggrPeriod() {
 
 		// 本年の期間の「子の看護介護集計期間WORK」を取得する
-		AggregateChildCareNurseWork thisYearPeriodWork = period.stream().filter(c -> c.isThisYear() && !c.getNextDayAfterPeriodEnd().isNextPeriodEndAtr())
-																										.findFirst().get();
+		Optional<AggregateChildCareNurseWork> thisYearPeriodWorkOpt = period.stream().filter(c -> c.isThisYear() && !c.getNextDayAfterPeriodEnd().isNextPeriodEndAtr())
+																										.findFirst();
+		if ( !thisYearPeriodWorkOpt.isPresent()) {
+			return new ChildCareNurseAggrPeriodDaysInfo();
+		}
 
 		// 翌年の期間の「子の看護介護集計期間WORK」を取得する
 		Optional<AggregateChildCareNurseWork> nextYearPeriodWork = period.stream().filter(c -> c.isNextYear() && !c.getNextDayAfterPeriodEnd().isNextPeriodEndAtr())
@@ -378,8 +390,8 @@ public class AggregateChildCareNurse {
 		// 取得した値を「子の看護介護集計結果」に設定
 		// ===子の看護介護集計結果．集計期間の休暇情報．本年 = 本年期間の「期間ごとの集計結果」
 		// ===	子の看護介護集計結果．集計期間の休暇情報．翌年= 翌年期間の「期間ごとの集計結果」
-		ChildCareNurseAggrPeriodInfo thisYear = thisYearPeriodWork.getAggrResultOfChildCareNurse().get().getAggrPeriodInfo();
-		Optional <ChildCareNurseAggrPeriodInfo> nextYear =  nextYearPeriodWork.map(c -> c.getAggrResultOfChildCareNurse().get().getAggrPeriodInfo());
+		ChildCareNurseUsedInfo thisYear = thisYearPeriodWorkOpt.get().getAggrResultOfChildCareNurse().get().getAggrPeriodInfo();
+		Optional <ChildCareNurseUsedInfo> nextYear =  nextYearPeriodWork.map(c -> c.getAggrResultOfChildCareNurse().get().getAggrPeriodInfo());
 
 		// 「集計期間の休暇情報」を返す
 		return ChildCareNurseAggrPeriodDaysInfo.of(thisYear, nextYear);
@@ -406,7 +418,8 @@ public class AggregateChildCareNurse {
 	 *
 	 */
 	public AggrResultOfChildCareNurse createAggrResult(String companyId,
-			String employeeId, DatePeriod period, GeneralDate criteriaDate, ChildCareNurseUsedNumber startUsed, NursingCategory nursingCategory, Require require) {
+			String employeeId, DatePeriod period, GeneralDate criteriaDate,
+			ChildCareNurseUsedNumber startUsed, NursingCategory nursingCategory, Require require) {
 
 			// 子の看護介護集計期間．期間の件数ループ
 			for (int idx = 0; idx < this.period.size(); idx++) {
@@ -414,7 +427,7 @@ public class AggregateChildCareNurse {
 				val currentDayProcess = this.period.get(idx);
 
 				// 残数と使用数を計算する
-				currentDayProcess.calcRemainingUsed(companyId, employeeId, period, criteriaDate, startUsed, require);
+				currentDayProcess.calcRemainingUsed(companyId, employeeId, period, criteriaDate, startUsed, nursingCategory, require);
 			}
 
 			// 子の看護介護休暇集計結果をセットする

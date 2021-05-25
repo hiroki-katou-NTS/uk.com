@@ -26,11 +26,9 @@ import nts.uk.ctx.at.shared.dom.workingcondition.LaborContractTime;
  * @author xuan vinh
  *
  */
-
 @Getter
 @Setter
-@NoArgsConstructor
-public abstract class NursingCareLeaveRemainingInfo extends AggregateRoot {
+public abstract class NursingCareLeaveRemainingInfo{
 
 	// 社員ID
 	private String sId;
@@ -50,6 +48,14 @@ public abstract class NursingCareLeaveRemainingInfo extends AggregateRoot {
 	// 次年度上限日数
 	private Optional<ChildCareNurseUpperLimit> maxDayForNextFiscalYear;
 
+	/**
+	 * コンストラクタ
+	 */
+	public NursingCareLeaveRemainingInfo() {
+		maxDayForThisFiscalYear = Optional.empty();
+		maxDayForNextFiscalYear = Optional.empty();
+	}
+
 	public NursingCareLeaveRemainingInfo(String sId, NursingCategory leaveType, boolean useClassification,
 			UpperLimitSetting upperlimitSetting, Optional<ChildCareNurseUpperLimit> maxDayForThisFiscalYear,
 			Optional<ChildCareNurseUpperLimit> maxDayForNextFiscalYear) {
@@ -62,17 +68,17 @@ public abstract class NursingCareLeaveRemainingInfo extends AggregateRoot {
 		this.maxDayForNextFiscalYear = maxDayForNextFiscalYear;
 	}
 
-	public NursingCareLeaveRemainingInfo(String sId, Optional<ChildCareNurseUpperLimit> maxDayForThisFiscalYear,
-			Optional<ChildCareNurseUpperLimit> maxDayForNextFiscalYear) {
-		super();
-		this.sId = sId;
-		//this.leaveType = EnumAdaptor.valueOf(2, LeaveType.class);
-		this.leaveType = NursingCategory.ChildNursing;
-		this.useClassification = false;
-		this.upperlimitSetting = UpperLimitSetting.FAMILY_INFO;
-		this.maxDayForThisFiscalYear = maxDayForThisFiscalYear;
-		this.maxDayForNextFiscalYear = maxDayForNextFiscalYear;
-	}
+//	public NursingCareLeaveRemainingInfo(String sId, Optional<ChildCareNurseUpperLimit> maxDayForThisFiscalYear,
+//			Optional<ChildCareNurseUpperLimit> maxDayForNextFiscalYear) {
+//		super();
+//		this.sId = sId;
+//		//this.leaveType = EnumAdaptor.valueOf(2, LeaveType.class);
+//		this.leaveType = NursingCategory.ChildNursing;
+//		this.useClassification = false;
+//		this.upperlimitSetting = UpperLimitSetting.FAMILY_INFO;
+//		this.maxDayForThisFiscalYear = maxDayForThisFiscalYear;
+//		this.maxDayForNextFiscalYear = maxDayForNextFiscalYear;
+//	}
 
 	/**
 	 * 期間の上限日数を取得する
@@ -227,7 +233,6 @@ public abstract class NursingCareLeaveRemainingInfo extends AggregateRoot {
 		NursingCareLeaveRemainingInfo upperLimitPeriod (String companyId, String employeeId, DatePeriod period, NursingCategory nursingCategory);
 
 	}
-
 
 	public static interface RequireM5 extends RequireM1{
 		// 社員IDが一致する家族情報を取得（社員ID）

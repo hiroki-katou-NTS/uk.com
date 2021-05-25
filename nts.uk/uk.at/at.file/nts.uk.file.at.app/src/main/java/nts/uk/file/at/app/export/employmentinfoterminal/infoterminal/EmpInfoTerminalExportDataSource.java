@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminal;
-import nts.uk.ctx.at.record.dom.worklocation.WorkLocation;
+import nts.uk.ctx.at.record.dom.stampmanagement.workplace.WorkLocation;
 /**
  * 
  * @author huylq
@@ -44,7 +44,7 @@ public class EmpInfoTerminalExportDataSource {
 		
 		return new EmpInfoTerminalExportDataSource(empInfoTerminal.getEmpInfoTerCode().v().toString(), empInfoTerminal.getEmpInfoTerName().v(),
 				empInfoTerminal.getModelEmpInfoTer().name(), empInfoTerminal.getMacAddress().v(), 
-				empInfoTerminal.getIpAddress().isPresent() ? empInfoTerminal.getIpAddress().get().getFullIpAddress() : "",
+				empInfoTerminal.getIpAddress().isPresent() ? empInfoTerminal.getIpAddress().get().toString() : "",
 				empInfoTerminal.getTerSerialNo().isPresent() ? empInfoTerminal.getTerSerialNo().get().v() : "", 
 				workLocation != null ? empInfoTerminal.getCreateStampInfo().getWorkLocationCd().get().v() : "", 
 				workLocation != null ? workLocation.getWorkLocationName().v() : "",

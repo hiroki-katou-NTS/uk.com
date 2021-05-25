@@ -12,12 +12,12 @@ import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggrRes
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggrResultOfAnnualLeave;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AnnualLeaveInfo;
 import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.GetRsvLeaRemNumWithinPeriod;
-import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.GetRsvLeaRemNumWithinPeriodParam;
 import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.GetRsvLeaRemNumWithinPeriod.RequireM4;
+import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.GetRsvLeaRemNumWithinPeriodParam;
 import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.param.AggrResultOfReserveLeave;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualLeaveMngWork;
-import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.interim.TmpReserveLeaveMngWork;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TempAnnualLeaveMngs;
+import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.interim.TmpResereLeaveMng;
 import nts.uk.ctx.at.shared.dom.scherec.closurestatus.ClosureStatusManagement;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.MonAggrCompanySettings;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.MonAggrEmployeeSettings;
@@ -52,8 +52,8 @@ public class GetAnnAndRsvRemNumWithinPeriod {
 	public static AggrResultOfAnnAndRsvLeave algorithm(RequireM2 require, CacheCarrier cacheCarrier, String companyId,
 			String employeeId, DatePeriod aggrPeriod, InterimRemainMngMode mode, GeneralDate criteriaDate,
 			boolean isGetNextMonthData, boolean isCalcAttendanceRate, Optional<Boolean> isOverWrite,
-			Optional<List<TmpAnnualLeaveMngWork>> tempAnnDataforOverWriteList,
-			Optional<List<TmpReserveLeaveMngWork>> tempRsvDataforOverWriteList,
+			Optional<List<TempAnnualLeaveMngs>> tempAnnDataforOverWriteList,
+			Optional<List<TmpResereLeaveMng>> tempRsvDataforOverWriteList,
 			Optional<Boolean> isOutputForShortage, Optional<Boolean> noCheckStartDate,
 			Optional<AggrResultOfAnnualLeave> prevAnnualLeave, Optional<AggrResultOfReserveLeave> prevReserveLeave,
 			Optional<DatePeriod> isOverWritePeriod) {
@@ -98,8 +98,8 @@ public class GetAnnAndRsvRemNumWithinPeriod {
 			boolean isGetNextMonthData,
 			boolean isCalcAttendanceRate,
 			Optional<Boolean> isOverWrite,
-			Optional<List<TmpAnnualLeaveMngWork>> tempAnnDataforOverWriteList,
-			Optional<List<TmpReserveLeaveMngWork>> tempRsvDataforOverWriteList,
+			Optional<List<TempAnnualLeaveMngs>> tempAnnDataforOverWriteList,
+			Optional<List<TmpResereLeaveMng>> tempRsvDataforOverWriteList,
 			Optional<Boolean> isOutputForShortage,
 			Optional<Boolean> noCheckStartDate,
 			Optional<AggrResultOfAnnualLeave> prevAnnualLeave,
@@ -186,7 +186,6 @@ public class GetAnnAndRsvRemNumWithinPeriod {
 		if (noCheckStartDate.isPresent())
 			noCheckStartDate.get();
 
-		// Require の不整合によるエラー
 		Optional<AggrResultOfAnnualLeave> aggrResultOfAnnualOpt
 			= GetAnnLeaRemNumWithinPeriodProc.algorithm(
 				require, cacheCarrier, companyId, employeeId, aggrPeriod,
@@ -223,8 +222,8 @@ public class GetAnnAndRsvRemNumWithinPeriod {
 	public static AggrResultOfAnnAndRsvLeave getRemainAnnRscByPeriod(RequireM1 require, CacheCarrier cacheCarrier,
 			String cID, String sID, DatePeriod aggrPeriod, InterimRemainMngMode mode, GeneralDate criteriaDate,
 			boolean isGetNextMonthData, boolean isCalcAttendanceRate, Optional<Boolean> isOverWrite,
-			Optional<List<TmpAnnualLeaveMngWork>> tempAnnDataforOverWriteList,
-			Optional<List<TmpReserveLeaveMngWork>> tempRsvDataforOverWriteList, Optional<Boolean> isOutputForShortage,
+			Optional<List<TempAnnualLeaveMngs>> tempAnnDataforOverWriteList,
+			Optional<List<TmpResereLeaveMng>> tempRsvDataforOverWriteList, Optional<Boolean> isOutputForShortage,
 			Optional<Boolean> noCheckStartDate, Optional<AggrResultOfAnnualLeave> prevAnnualLeave,
 			Optional<AggrResultOfReserveLeave> prevReserveLeave, Optional<MonAggrCompanySettings> companySets,
 			Optional<MonAggrEmployeeSettings> employeeSets, Optional<MonthlyCalculatingDailys> monthlyCalcDailys,

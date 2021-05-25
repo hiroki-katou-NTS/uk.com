@@ -12,15 +12,17 @@ import javax.transaction.Transactional;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.ChildCareLeaveRemainingDataService;
-import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.data.ChildCareLeaveRemaiDataRepo;
-import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.data.ChildCareLeaveRemainingData;
-import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.data.LeaveForCareData;
-import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.data.LeaveForCareDataRepo;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.care.CareUsedNumberData;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.care.CareUsedNumberRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.ChildCareNurseUsedNumber;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.ChildCareUsedNumberData;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.ChildCareUsedNumberRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.ChildCareLeaveRemInfoRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.ChildCareLeaveRemainingInfo;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.CareLeaveRemainingInfo;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.CareLeaveRemainingInfoRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.UpperLimitSetting;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.usenumber.DayNumberOfUse;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.pereg.app.command.MyCustomizeException;
 import nts.uk.shr.pereg.app.command.PeregUpdateListCommandHandler;
@@ -38,10 +40,10 @@ implements PeregUpdateListCommandHandler<UpdateCareLeaveCommand>{
 	private ChildCareLeaveRemInfoRepository childCareInfoRepo;
 
 	@Inject
-	private ChildCareLeaveRemaiDataRepo childCareDataRepo;
+	private ChildCareUsedNumberRepository childCareDataRepo;
 
 	@Inject
-	private LeaveForCareDataRepo careDataRepo;
+	private CareUsedNumberRepository careDataRepo;
 
 	@Override
 	public String targetCategoryCd() {
@@ -57,12 +59,12 @@ implements PeregUpdateListCommandHandler<UpdateCareLeaveCommand>{
 	protected List<MyCustomizeException> handle(CommandHandlerContext<List<UpdateCareLeaveCommand>> context) {
 		List<UpdateCareLeaveCommand> cmd = context.getCommand();
 		String cid = AppContexts.user().companyId();
-		List<LeaveForCareData> leaveCareDataInsert = new ArrayList<>();
-		List<LeaveForCareData> leaveCareDataUpdate = new ArrayList<>();
+		List<CareUsedNumberData> leaveCareDataInsert = new ArrayList<>();
+		List<CareUsedNumberData> leaveCareDataUpdate = new ArrayList<>();
 		List<CareLeaveRemainingInfo> leaveCareInfoInsert = new ArrayList<>();
 		List<CareLeaveRemainingInfo> leaveCareInfoUpdate = new ArrayList<>();
-		List<ChildCareLeaveRemainingData> childCareDataInsert = new ArrayList<>();
-		List<ChildCareLeaveRemainingData> childCareDataUpdate = new ArrayList<>();
+		List<ChildCareUsedNumberData> childCareDataInsert = new ArrayList<>();
+		List<ChildCareUsedNumberData> childCareDataUpdate = new ArrayList<>();
 		List<ChildCareLeaveRemainingInfo> childCareLeaveInfoInsert = new ArrayList<>();
 		List<ChildCareLeaveRemainingInfo> childCareLeaveInfoUpdate = new ArrayList<>();
 
@@ -76,42 +78,59 @@ implements PeregUpdateListCommandHandler<UpdateCareLeaveCommand>{
 	}
 
 	private void createData(List<UpdateCareLeaveCommand> cmd,
-			List<ChildCareLeaveRemainingData> childCareDataInsert, List<ChildCareLeaveRemainingData> childCareDataUpdate,
-			List<LeaveForCareData> leaveCareDataInsert, List<LeaveForCareData> leaveCareDataUpdate,
-			List<ChildCareLeaveRemainingInfo> childCareLeaveInfoInsert, List<ChildCareLeaveRemainingInfo> childCareLeaveInfoUpdate,
-			List<CareLeaveRemainingInfo> leaveCareInfoInsert, List<CareLeaveRemainingInfo> leaveCareInfoUpdate) {
+			List<ChildCareUsedNumberData> childCareDataInsert,
+			List<ChildCareUsedNumberData> childCareDataUpdate,
+			List<CareUsedNumberData> leaveCareDataInsert,
+			List<CareUsedNumberData> leaveCareDataUpdate,
+			List<ChildCareLeaveRemainingInfo> childCareLeaveInfoInsert,
+			List<ChildCareLeaveRemainingInfo> childCareLeaveInfoUpdate,
+			List<CareLeaveRemainingInfo> leaveCareInfoInsert,
+			List<CareLeaveRemainingInfo> leaveCareInfoUpdate) {
+
 		String cid = AppContexts.user().companyId();
 		List<String> sids = cmd.stream().map(c -> c.getSId()).collect(Collectors.toList());
-		List<ChildCareLeaveRemainingData> checkChildCareDatailsLst = childCareDataRepo.getChildCareByEmpIds(cid, sids);
+		List<ChildCareUsedNumberData> checkChildCareDatailsLst = childCareDataRepo.find(sids);
 		List<ChildCareLeaveRemainingInfo> checkChildCareInfoLst = childCareInfoRepo.getChildCareByEmpIdsAndCid(cid, sids);
+		List<CareUsedNumberData> checkCareDatailsLst = careDataRepo.find(sids);
 		List<CareLeaveRemainingInfo> checkCareInfoLst = careInfoRepo.getCareByEmpIdsAndCid(cid, sids);
-		List<LeaveForCareData> checkCareDatailsLst = careDataRepo.getCareByEmpIds(cid, sids);
 
 		cmd.stream().forEach(c ->{
-			// child-care-data
-			ChildCareLeaveRemainingData childCareData = ChildCareLeaveRemainingData.getChildCareHDRemaining(c.getSId(),
-					c.getChildCareUsedDays() == null ? 0.0 : c.getChildCareUsedDays().doubleValue());
-			Optional<ChildCareLeaveRemainingData> childCareDetailsOpt= checkChildCareDatailsLst.stream().filter(item -> item.getSId().equals(c.getSId())).findFirst();
-			if (childCareDetailsOpt.isPresent()) {
-				childCareDataUpdate.add(childCareData);
+
+			// 子の看護-使用数
+			ChildCareUsedNumberData childUsedNumberData = new ChildCareUsedNumberData(
+					c.getSId(),
+					new ChildCareNurseUsedNumber(
+							new DayNumberOfUse(c.getChildCareUsedDays().doubleValue())
+							,Optional.empty()
+					)
+			);
+
+			Optional<ChildCareUsedNumberData> childCareUsedOpt= checkChildCareDatailsLst.stream().filter(item -> item.getEmployeeId().equals(c.getSId())).findFirst();
+			if (childCareUsedOpt.isPresent()) {
+				childCareDataUpdate.add(childCareUsedOpt.get());
 			} else {
 				if (c.getChildCareUsedDays() != null)
-					childCareDataInsert.add(childCareData);
+					childCareDataInsert.add(childUsedNumberData);
 			}
 
-			// care-data
-			LeaveForCareData careData = LeaveForCareData.getCareHDRemaining(c.getSId(),
-					c.getCareUsedDays() == null ? 0.0 : c.getCareUsedDays().doubleValue());
-			Optional<LeaveForCareData> careDataOpt = checkCareDatailsLst.stream().filter(item -> item.getSId().equals(c.getSId())).findFirst();
+			// 介護-使用数
+			CareUsedNumberData careUsedNumberData = new CareUsedNumberData(
+					c.getSId(),
+					new ChildCareNurseUsedNumber(
+							new DayNumberOfUse(c.getCareUsedDays().doubleValue())
+							,Optional.empty()
+					)
+			);
 
-			if (careDataOpt.isPresent()) {
-				leaveCareDataUpdate.add(careData);
+			Optional<CareUsedNumberData> careUsedOpt= checkCareDatailsLst.stream().filter(item -> item.getEmployeeId().equals(c.getSId())).findFirst();
+			if (careUsedOpt.isPresent()) {
+				leaveCareDataUpdate.add(careUsedOpt.get());
 			} else {
 				if (c.getCareUsedDays() != null)
-					leaveCareDataInsert.add(careData);
+					leaveCareDataInsert.add(careUsedNumberData);
 			}
 
-			// child-care-info
+			// 子の看護 - 上限情報
 			ChildCareLeaveRemainingInfo childCareInfo = ChildCareLeaveRemainingInfo.createChildCareLeaveInfo(c.getSId(),
 					c.getChildCareUseArt().intValue(),
 					c.getChildCareUpLimSet() == null ? UpperLimitSetting.FAMILY_INFO.value
@@ -125,7 +144,7 @@ implements PeregUpdateListCommandHandler<UpdateCareLeaveCommand>{
 				childCareLeaveInfoInsert.add(childCareInfo);
 			}
 
-			// care-info
+			// 介護-上限情報
 			CareLeaveRemainingInfo careInfo = CareLeaveRemainingInfo.createCareLeaveInfo(c.getSId(),
 					c.getCareUseArt().intValue(),
 					c.getCareUpLimSet() == null ? UpperLimitSetting.FAMILY_INFO.value
