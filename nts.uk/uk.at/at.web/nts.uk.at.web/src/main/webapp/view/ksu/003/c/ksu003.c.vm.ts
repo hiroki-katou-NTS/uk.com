@@ -74,15 +74,14 @@ module nts.uk.at.view.ksu003.c {
             self.selectedMode.subscribe((mode) => {
                 mode === 1 ? self.enableTimeZone(true) : self.enableTimeZone(false); 
             });              
-            // self.selectedTaskCode.subscribe((code) => {
-
-            // });          
+                
         }
 
         loadData(): void {
             const self = this;            
             let dataShare = getShared("dataShareKsu003c");
             let empList: any = [], taskList: any = [];
+
             for(let i=0; i< dataShare.employeeCodes.length; i++){
                 empList.push(new EmployeeModel(dataShare.employeeIds[i], dataShare.employeeCodes[i], dataShare.employeeNames[i]));
             }
@@ -107,22 +106,38 @@ module nts.uk.at.view.ksu003.c {
             }).always(() => {
                 self.$blockui("hide");
             });
+            $('#component-items-list').focus();
         }
 
         
         registerOrUpdate(): void {
-            const self = this;
-            self.$blockui("invisible");
-            let listEmpId: Array<string> = []; 
+            const self = this;            
+            let listEmpId: Array<string> = [], command: any; 
+
             _.each(self.selectedCode(), empCode => {
                 _.map(self.listEmp(), emp => {
                     if(emp.code == empCode) {
                         listEmpId.push(emp.id);
                     }
                 });
-            });
+            });            
 
-            let command: any = {
+            if(_.isEmpty(listEmpId)) {                
+                self.$dialog.error({ messageId: 'Msg_2147' });               
+                return;
+            }
+
+            if(self.startTime() >= self.endTime()){
+                $('#startTime').ntsError('set',{messageId: 'Msg_770',messageParams:[getText("KSU003_92")]});
+                $('#endTime').ntsError('set',{messageId: 'Msg_770',messageParams:[getText("KSU003_92")]});
+                return;
+            }
+
+            if (self.validateAll()) {
+                return;
+            }
+
+            command = {
                 "mode": self.selectedMode(),
                 "date": self.baseDate(),
                 "employeeIds": listEmpId,
@@ -131,13 +146,14 @@ module nts.uk.at.view.ksu003.c {
                 "taskCode": self.selectedTaskCode()
             }
 
+            self.$blockui("invisible");
             self.$ajax(Paths.REGISTET_TASK_SCHEDULE, command).done(() => {
                 self.$dialog.info({ messageId: 'Msg_15'}).then(() => {
-
+                    self.loadData();
                 });
                 self.endStatus('Update');
             }).fail((res) => {
-
+                self.$dialog.info({ messageId: res.messageId});
             }).always(() => {
                 self.$blockui("hide");
             });
@@ -180,9 +196,12 @@ module nts.uk.at.view.ksu003.c {
         }
 
         private validateAll(): boolean {
-            $('#scheduleTeamCd').ntsEditor('validate');
-            $('#scheduleTeamName').ntsEditor('validate');
-            $('#scheduleTeamRemarks').ntsEditor('validate');
+            const self = this;
+            $('#startTime').ntsEditor('validate');
+            $('#endTime').ntsEditor('validate');
+            // if(self.startTime() >= self.endTime()){
+            //     $('#timezone').ntsError('set',{messageId: 'Msg_770',messageParams:[getText("KSU003_92")]});
+            // }
             if (nts.uk.ui.errors.hasError()) {                    
                 return true;
             }
@@ -190,9 +209,8 @@ module nts.uk.at.view.ksu003.c {
         }
 
         private clearError(): void {
-            $('#scheduleTeamCd').ntsError('clear');
-            $('#scheduleTeamName').ntsError('clear');
-            $('#scheduleTeamRemarks').ntsError('clear');
+            $('#startTime').ntsError('clear');
+            $('#startTime').ntsError('clear');
         }
     }
     

@@ -1,5 +1,6 @@
 module nts.uk.at.view.ksu003.c.test {
-	import setShare = nts.uk.ui.windows.setShared;
+	import setShared = nts.uk.ui.windows.setShared;
+	import getShared = nts.uk.ui.windows.getShared;
 	import Ccg001ReturnedData = nts.uk.com.view.ccg.share.ccg.service.model.Ccg001ReturnedData;
 	import EmployeeSearchDto = nts.uk.com.view.ccg.share.ccg.service.model.EmployeeSearchDto;
 	// Import
@@ -27,6 +28,8 @@ module nts.uk.at.view.ksu003.c.test {
 			// startDate for validate
 			startDateValidate: KnockoutObservable<string>;
 			alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel>;
+
+			dataFromKsu003c: KnockoutObservable<string> = ko.observable('');
 
 			//Declare employee filter component
 			ccg001ComponentOption: any;
@@ -156,8 +159,10 @@ module nts.uk.at.view.ksu003.c.test {
 				request.employeeIds = lisId;
 				request.employeeCodes = listCode;
 				request.employeeNames = listName;
-				setShare('dataShareKsu003c', request);
-				self.currentScreen = nts.uk.ui.windows.sub.modal("/view/ksu/003/c/index.xhtml");
+				setShared('dataShareKsu003c', request);
+				self.currentScreen = nts.uk.ui.windows.sub.modal("/view/ksu/003/c/index.xhtml").onClosed(() => {                  
+					self.dataFromKsu003c(getShared('dataShareFromKsu003c'));
+                });
 			}
 			public startPage(): JQueryPromise<any> {
 				let self = this,
