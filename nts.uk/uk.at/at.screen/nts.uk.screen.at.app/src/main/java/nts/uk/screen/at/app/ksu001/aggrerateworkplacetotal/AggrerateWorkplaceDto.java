@@ -19,7 +19,7 @@ public class AggrerateWorkplaceDto {
 	public Map<GeneralDate, Map<LaborCostAggregationUnitDto, BigDecimal>> laborCostAndTime;
 	
 	// Map<年月日, Map<回数集計, BigDecimal>>
-	public Map<String, Map<TotalTimesDetailDto, BigDecimal>> timeCount;
+	public Map<GeneralDate, Map<TotalTimesDetailDto, BigDecimal>> timeCount;
 	
 	// Map<年月日, Map<(雇用マスタ or 分類マスタ or 職位情報), BigDecimal>>
 	public AggrerateNumberPeopleDto aggrerateNumberPeople;

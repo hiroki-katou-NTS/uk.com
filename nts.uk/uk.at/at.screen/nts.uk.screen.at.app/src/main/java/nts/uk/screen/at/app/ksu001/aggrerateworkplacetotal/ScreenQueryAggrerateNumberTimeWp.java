@@ -14,6 +14,7 @@ import javax.inject.Inject;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.aggregation.dom.schedulecounter.aggregationprocess.TotalTimesCounterService;
 import nts.uk.ctx.at.shared.app.find.scherec.totaltimes.dto.TotalTimesDetailDto;
@@ -53,12 +54,12 @@ public class ScreenQueryAggrerateNumberTimeWp {
 	private AttendanceItemConvertFactory converterFactory;
 	
 	
-	public Map<String, Map<TotalTimesDetailDto, BigDecimal>> aggrerate(
+	public Map<GeneralDate, Map<TotalTimesDetailDto, BigDecimal>> aggrerate(
 			List<IntegrationOfDaily> aggrerateintegrationOfDaily
 			) {
 		
 		Require require = new Require(totalTimeRepository, workTypeRepository, converterFactory); 
-		Map<String, Map<TotalTimesDetailDto, BigDecimal>> output = new HashMap<String, Map<TotalTimesDetailDto, BigDecimal>>();
+		Map<GeneralDate, Map<TotalTimesDetailDto, BigDecimal>> output = new HashMap<GeneralDate, Map<TotalTimesDetailDto, BigDecimal>>();
 		//1: 取得する(回数集計種類)
 		Optional<CountInfoDto> countInfoOp = Optional.ofNullable(countInfoProcessor.getInfo(new RequestPrams(0)));
 		
@@ -66,9 +67,9 @@ public class ScreenQueryAggrerateNumberTimeWp {
 		if (countInfoOp.isPresent()) {
 			
 
-			// 2.1: 社員別に集計する(Require, List<回数集計NO>, List<日別勤怠(Work)>)
-			Map<EmployeeId, Map<Integer, BigDecimal>> countTotalTime = 
-					TotalTimesCounterService.countingNumberOfTotalTimeByEmployee(
+			// 2.1: 年月日別に集計する(Require, List<回数集計NO>, List<日別勤怠(Work)>)
+			Map<GeneralDate, Map<Integer, BigDecimal>> countTotalTime = 
+					TotalTimesCounterService.countingNumberOfTotalTimeByDay(
 								require,
 								CollectionUtil.isEmpty(countInfoOp.get().getNumberOfTimeTotalDtos()) ? Collections.emptyList() : 
 									Arrays.asList(new Integer[] {countInfoOp.get().getNumberOfTimeTotalDtos().get(0).getNumber()})  // 集計対象の回数集計 = 1で取得した「回数集計選択」．選択した項目リスト
@@ -99,7 +100,7 @@ public class ScreenQueryAggrerateNumberTimeWp {
 			return countTotalTime.entrySet()
 					      .stream()
 					      .collect(Collectors.toMap(
-					    		  e -> e.getKey().v(),
+					    		  e -> e.getKey(),
 					    		  e -> e.getValue().entrySet()
 					    		  				   .stream()
 					    		  				   .collect(Collectors.toMap(

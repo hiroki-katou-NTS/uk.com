@@ -66,7 +66,7 @@ public class ScreenQueryAggrerateWorkplaceTotal {
 		// 職場計カテゴリ == 回数集計
 		else if (workplaceCounterOp == WorkplaceCounterCategory.TIMES_COUNTING) {
 			//2: 集計する(List<日別勤怠(Work)>)
-			Map<String, Map<TotalTimesDetailDto, BigDecimal>> timeCount = 
+			Map<GeneralDate, Map<TotalTimesDetailDto, BigDecimal>> timeCount = 
 					screenQueryAggrerateNumberTime.aggrerate(aggrerateintegrationOfDaily);
 			output.setTimeCount(timeCount);
 		

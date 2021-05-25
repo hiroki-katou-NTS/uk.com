@@ -61,14 +61,13 @@ public class ScreenQueryAggreratedInformation {
 			boolean isShiftDisplay
 			) {
 		AggreratedInformationDto output = new AggreratedInformationDto();
-		TargetOrgIdenInfor targetOrg = null; // do not find param
 		// 1: 取得する職場計.isPresent && 取得する職場計 == 外部予算実績
 		if (workplaceCounterOp.map(x -> x == WorkplaceCounterCategory.EXTERNAL_BUDGET).orElse(false)) {
 			
 			// 取得する(対象組織識別情報, 期間)
 			Map<GeneralDate, Map<ExternalBudgetDto, String>> externalBudget =
 						screenQueryExternalBudgetPerformance.aggrerate(
-							targetOrg,
+							targetOrgIdenInfor,
 							datePeriod);
 			output.setExternalBudget(externalBudget);
 		}
@@ -85,7 +84,7 @@ public class ScreenQueryAggreratedInformation {
 								closeDate,
 								planAndActual.getSchedule(),
 								planAndActual.getDailySchedule(),
-								targetOrg,
+								targetOrgIdenInfor,
 								personalCounterOp,
 								workplaceCounterOp,
 								isShiftDisplay);
