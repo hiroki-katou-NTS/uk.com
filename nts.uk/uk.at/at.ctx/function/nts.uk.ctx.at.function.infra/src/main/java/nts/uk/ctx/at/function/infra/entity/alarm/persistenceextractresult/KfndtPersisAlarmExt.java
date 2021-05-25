@@ -62,9 +62,8 @@ public class KfndtPersisAlarmExt extends ContractUkJpaEntity implements Serializ
      * @param domain PersistenceAlarmListExtractResult
      * @return KfndtPersisAlarmExt
      */
-    public static KfndtPersisAlarmExt of(PersistenceAlarmListExtractResult domain) {
+    public static KfndtPersisAlarmExt of(PersistenceAlarmListExtractResult domain, String processId) {
         String cid = domain.getCompanyID();
-        String processId = IdentifierUtil.randomUniqueId();  // TODO: processId = randomUUID ???
 
         List<KfndtAlarmExtracResult> extractResults = new ArrayList<>();
         domain.getAlarmListExtractResults().forEach(x ->

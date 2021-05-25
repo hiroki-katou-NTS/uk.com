@@ -107,12 +107,10 @@ public class CreateAlarmDataTopPageService {
             //$発生日時　＝　$職場Map.get($)　：　sort $.発生日時 DESC first $.発生日時
             val topAlarmParamList = workplaceMap.getOrDefault(wkpl, new ArrayList<>());
 
-            val optWkplTopAlarm = topAlarmParamList.stream()
-                    .sorted((e1, e2) -> e2.getOccurrenceDateTime().compareTo(e1.getOccurrenceDateTime()))
-                    .findFirst();
-            GeneralDateTime occurrenceDateTime = optWkplTopAlarm.isPresent() ? optWkplTopAlarm.get().getOccurrenceDateTime() : GeneralDateTime.now();
+            val optWkplTopAlarm = topAlarmParamList.stream().filter(Objects::nonNull).map(TopPageAlarmImport::getOccurrenceDateTime).max(GeneralDateTime::compareTo);
+            GeneralDateTime occurrenceDateTime = optWkplTopAlarm.isPresent() ? optWkplTopAlarm.get() : GeneralDateTime.now();
 
-            val lstEmp = topAlarmParamList.stream().map(i -> i.getDisplaySId()).collect(Collectors.toList());
+            val lstEmp = topAlarmParamList.stream().filter(Objects::nonNull).map(i -> i.getDisplaySId()).collect(Collectors.toList());
             //$上長１　＝　$上長の社員IDList　：　トップアラームParam#作成する(アラームリスト、$発生日時、$、上長、[prv-1]部下のエラーがある社員IDを判断する（Loopしてる職場ID、$職場Map)、$パターンコード、Empty、Empty、$パターン名称）
             topAlarmList.addAll(empIds.stream().map(empId -> new TopPageAlarmImport(
                             deleteInfo.isPresent() ? deleteInfo.get().getAlarmClassification() : 0,

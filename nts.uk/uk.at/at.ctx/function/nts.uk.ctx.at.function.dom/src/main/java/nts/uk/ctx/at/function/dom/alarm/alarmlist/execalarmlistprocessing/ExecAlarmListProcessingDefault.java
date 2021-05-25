@@ -1,18 +1,8 @@
 package nts.uk.ctx.at.function.dom.alarm.alarmlist.execalarmlistprocessing;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-
-import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.auth.dom.employmentrole.EmployeeReferenceRange;
 import nts.uk.ctx.at.function.dom.adapter.RegulationInfoEmployeeAdapter;
 import nts.uk.ctx.at.function.dom.adapter.RegulationInfoEmployeeAdapterDto;
@@ -28,7 +18,6 @@ import nts.uk.ctx.at.function.dom.alarm.alarmlist.ExtractAlarmListService;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.ExtractedAlarmDto;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.PeriodByAlarmCategory;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.persistenceextractresult.AlarmTopPageProcessingService;
-import nts.uk.ctx.at.function.dom.alarm.alarmlist.persistenceextractresult.AlarmTopPageProcessingServiceImpl;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.sendautoexeemail.OutputSendAutoExe;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.sendautoexeemail.SendAutoExeEmailService;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.CheckConditionTimeDto;
@@ -37,13 +26,13 @@ import nts.uk.ctx.at.function.dom.alarm.extraprocessstatus.AlarmListExtraProcess
 import nts.uk.ctx.at.function.dom.alarm.extraprocessstatus.AlarmListExtraProcessStatusRepository;
 import nts.uk.ctx.at.function.dom.alarm.extraprocessstatus.ExtractionState;
 import nts.uk.ctx.at.shared.dom.alarmList.AlarmCategory;
-import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
-import nts.uk.ctx.at.shared.dom.workrule.closure.UseClassification;
+import nts.uk.ctx.at.shared.dom.workrule.closure.*;
 import nts.uk.shr.com.i18n.TextResource;
-import nts.arc.time.calendar.period.DatePeriod;
+
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Stateless
 public class ExecAlarmListProcessingDefault implements ExecAlarmListProcessingService {

@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.shared.dom.alarmList.persistenceextractresult;
 
-import nts.uk.ctx.at.shared.dom.alarmList.persistenceextractresult.PersistenceAlarmListExtractResult;
-
 import java.util.List;
 import java.util.Optional;
 
