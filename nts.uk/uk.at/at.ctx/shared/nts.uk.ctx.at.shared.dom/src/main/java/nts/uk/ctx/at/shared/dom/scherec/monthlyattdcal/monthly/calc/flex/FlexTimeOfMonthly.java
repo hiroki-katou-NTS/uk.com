@@ -1697,7 +1697,7 @@ public class FlexTimeOfMonthly implements SerializableWithOptional{
 		
 		/** 次の集計期間で同じ労働制で集計するかを確認する */
 		if(WorkingSystemChangeCheckService.isSameWorkingSystemWithNextAggrPeriod(require, cacheCarrier, employeeId, period, WorkingSystem.FLEX_TIME_WORK) == WorkingSystemChangeState.CHANGED) {
-			/** フレックス繰越不足時間　←　フレックス不足時間(丸め後) */
+			/** フレックス繰越不可時間　←　フレックス不足時間(丸め後) */
 			this.flexCarryforwardTime.setFlexNotCarryforwardTime(new AttendanceTimeMonth(flexShortageMinutes));
 			return;
 		}
