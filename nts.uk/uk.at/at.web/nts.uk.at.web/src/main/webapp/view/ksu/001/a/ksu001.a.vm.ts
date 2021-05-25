@@ -515,258 +515,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             return dfd.promise();
         }
         
-        displayButtonsHerder(data) {
-            let self = this;
-            // các domain liên quan đến phần ẩn hiện
-            // スケジュール修正の機能制御   - ScheFunctionControl                          
-            // スケジュール修正職場別の機能制御    - ScheFunctionCtrlByWorkplace                            
-            // スケジュール修正共通の権限制御    - ScheModifyAuthCtrlCommon                         
-            // スケジュール修正職場別の権限制御  - ScheModifyAuthCtrlByWorkplace
-            
-            // lấy ra từ domian ScheFunctionCtrlByWorkplace.useCompletionAtr
-            let scheFunctionCtrlByWorkplaceUse = data.dataBasicDto.scheFunctionCtrlByWorkplace.useCompletionAtr == 1? true:false; 
-            let medicalOP = data.dataBasicDto.medicalOP; // 医療OP
-            
-            // map với data domain sau
-            // check hiển thị với Common và Authority
-            let scheModifyAuthCtrlCommon = data.dataBasicDto.scheModifyAuthCtrlCommon;  // list
-            let scheModifyAuthCtrlByWorkplace = data.dataBasicDto.scheModifyAuthCtrlByWorkplace; // list
-            
-            let funcNo1_Common = true; // _.find(scheModifyAuthCtrlCommon, function(o) { return o.functionNo==1; }).isAvailable; // 休暇状況参照 Vacation status reference
-            let funcNo2_Common = true; // _.find(scheModifyAuthCtrlCommon, function(o) { return o.functionNo==2; }).isAvailable; // 修正履歴参照 Refer to revision history
-            let funcNo1_WorkPlace = true; //_.find(scheModifyAuthCtrlByWorkplace, function(o) { return o.functionNo==1; }).isAvailable; // 登録 Registration
-            let funcNo2_WorkPlace = true; //_.find(scheModifyAuthCtrlByWorkplace, function(o) { return o.functionNo==2; }).isAvailable; // 確定 Confirm
-            let funcNo3_WorkPlace = true; //_.find(scheModifyAuthCtrlByWorkplace, function(o) { return o.functionNo==3; }).isAvailable; // 完了 Done
-            let funcNo4_WorkPlace = true; //_.find(scheModifyAuthCtrlByWorkplace, function(o) { return o.functionNo==4; }).isAvailable; // アラームチェック Alarm check
-            let funcNo5_WorkPlace = true; //_.find(scheModifyAuthCtrlByWorkplace, function(o) { return o.functionNo==5; }).isAvailable; // 出力 output
-            let funcNo6_WorkPlace = true; //_.find(scheModifyAuthCtrlByWorkplace, function(o) { return o.functionNo==6; }).isAvailable; // 取り込み Capture
-            let funcNo7_WorkPlace = true; //_.find(scheModifyAuthCtrlByWorkplace, function(o) { return o.functionNo==7; }).isAvailable; // 勤務希望 Hope to work
-            let funcNo8_WorkPlace = true; //_.find(scheModifyAuthCtrlByWorkplace, function(o) { return o.functionNo==8; }).isAvailable; // 公開 Release
-            let funcNo9_WorkPlace = true; //_.find(scheModifyAuthCtrlByWorkplace, function(o) { return o.functionNo==9; }).isAvailable; // 応援登録 Support registration
-            let funcNo10_WorkPlace = true; //_.find(scheModifyAuthCtrlByWorkplace, function(o) { return o.functionNo==10; }).isAvailable; // 並び順設定 Sort order setting
-            let funcNo11_WorkPlace = true; //_.find(scheModifyAuthCtrlByWorkplace, function(o) { return o.functionNo==11; }).isAvailable; // チーム設定 Team settings
-            let funcNo12_WorkPlace = true; //_.find(scheModifyAuthCtrlByWorkplace, function(o) { return o.functionNo==12; }).isAvailable; // ランク分け Ranking
-            let funcNo13_WorkPlace = true; //_.find(scheModifyAuthCtrlByWorkplace, function(o) { return o.functionNo==13; }).isAvailable; // 行事登録 Event registration
-            let funcNo14_WorkPlace = true; //_.find(scheModifyAuthCtrlByWorkplace, function(o) { return o.functionNo==14; }).isAvailable; // 集計欄の金額表示 Amount display in the summary column
-            let funcNo15_WorkPlace = true; //_.find(scheModifyAuthCtrlByWorkplace, function(o) { return o.functionNo==15; }).isAvailable; // 予算実績入力 Budget actual input
-            let funcNo16_WorkPlace = true; //_.find(scheModifyAuthCtrlByWorkplace, function(o) { return o.functionNo==16; }).isAvailable; // 計画人数入力 Enter the planned number of people
-            // button A1_1  職1
-            if (funcNo1_WorkPlace == false) {
-                $('#A1_1').css('visibility', 'hidden');
-                $('#A1_1').off('click');
-            }
-
-            // btn A1_2 職3 - ※35 
-            if (funcNo3_WorkPlace == false || scheFunctionCtrlByWorkplaceUse == false) {
-                $('#A1_2').css('visibility', 'hidden');
-                $('#A1_2').off('click');
-            }
-
-            // btn A1_3 職4
-            if (funcNo4_WorkPlace == false) {
-                $('#A1_3').css('visibility', 'hidden');
-                $('#A1_3').off('click');
-            }
-
-            // btn A1_5 職8 - ※27
-            if (funcNo8_WorkPlace == false || data.dataBasicDto.usePublicAtr == false) {
-                $('#A1_5').css('visibility', 'hidden');
-                $('#A1_5').off('click');
-            }
-
-            // btn A1_6 職5
-            if (funcNo5_WorkPlace == false) {
-                $('#A1_6').css('visibility', 'hidden');
-                $('#A1_6').off('click');
-            }
-
-            // btn A1_7 職7  - ※1
-            if (funcNo7_WorkPlace == false || data.dataBasicDto.useWorkAvailabilityAtr == false) {
-                $('#A1_7').css('visibility', 'hidden');
-                $('#A1_7_1').css('display', 'none');
-                $('#A1_7').off('click');
-            }
-            
-            // btn A1_8 職9  -  ※2 (tạm thời chưa đối ứng thằng ※2 này)
-            if (funcNo9_WorkPlace == false) {
-                $('#A1_8').css('visibility', 'hidden');
-                $('#A1_8').off('click');
-            }
-            
-            // btn A1_9 職6
-            if (funcNo6_WorkPlace == false) {
-                $('#A1_9').css('visibility', 'hidden');
-                $('#A1_9').off('click');
-            }
-
-            // btn A1_10 共1
-            if (funcNo1_Common == false) {
-                $('#A1_10').css('visibility', 'hidden');
-                $('#A1_10').off('click');
-            }
-
-            // btn A1_11 共2
-            if (funcNo2_Common == false) {
-                $('#A1_11').css('visibility', 'hidden');
-                $('#A1_11').off('click');
-            }
-            
-            // btn A6_1, A6_2 職2    
-            if (funcNo2_WorkPlace == false) {
-                $('#contain-view-left').empty();
-                $('#contain-view-left').css('margin-left','16px');
-                $('#contain-view-right').css('width','1177px');
-            }
-            
-            // 職13
-            if (funcNo13_WorkPlace == false) {
-                self.canRegisterEvent = false;
-            }
-            
-            self.calculateDisPlayPopupA12(funcNo10_WorkPlace, funcNo11_WorkPlace, funcNo12_WorkPlace, medicalOP);
-            
-            self.calculateDisPlaySwitchA32(data);
-            
-            self.calculateDisPlayFormatA4_234(data);
-            
-            self.calculateDisPlayFormatA4_567(data);
-            
-            // A4_8 ※30
-            if (self.visibleA4_234() == true || self.visibleA4_567() == true) {
-                self.visibleA4_8(true);
-            } else {
-                self.visibleA4_8(false);
-            }
-            
-            // A4_9 ※32
-            if ((self.userInfor.disPlayFormat == 'shift') && (self.visibleA4_234() == true || self.visibleA4_567() == true)) {
-                self.visibleA4_9(true);
-            } else {
-                self.visibleA4_9(false);
-            }
-            
-            // ※31 ẩn hiện của btn A4 lúc khơi động, phải check 1 lần nữa khi thay đổi giữa 2 mode edit và confirm.
-            // ở mode shift,khi khởi động thì lúc nào A4 cũng sẽ hiện thị (vì combobox change background luôn hiển thị khi khởi động)
-            // ở mode shift,khi chuyển giữa mode edit và confirm, thì khi ở mode confirm combobox change background sẽ bị ẳn đi, lúc này sẽ check lại ẩn hiển của A4
-            if (self.userInfor.disPlayFormat != 'shift' && self.visibleA4_234() == false && self.visibleA4_567() == false) {
-                $('#A4').css('visibility', 'hidden');
-            }
-        }
-        
-        calculateDisPlayPopupA12(funcNo10_WorkPlace, funcNo11_WorkPlace, funcNo12_WorkPlace, medicalOP) {
-            let self = this;
-            let numberItemHid = 0;
-            $('#A1_12_16, #A1_12_18, #A1_12_20').width(75);
-            // btn A1_16 職10 - ※11
-            if (funcNo10_WorkPlace == false || medicalOP == false) {
-                numberItemHid = numberItemHid+ 1;
-                $('#A1_12_1617').remove();
-            }
-
-            // btn A1_18 職11 - ※11
-            if (funcNo11_WorkPlace == false || medicalOP == false) {
-                numberItemHid = numberItemHid+ 1;
-                $('#A1_12_1819').remove();
-            }
-
-            // btn A1_20 職12 - ※11
-            if (funcNo12_WorkPlace == false || medicalOP == false) {
-                numberItemHid = numberItemHid+ 1;
-                $('#A1_12_2021').remove();
-            }
-            
-            if(numberItemHid == 3){ // ※34
-                $('#A1_12').css('visibility', 'hidden');
-                $('#A1_12').off('click');
-            }
-        }
-        
-        // ※12,※13,※14
-        calculateDisPlaySwitchA32(data) {
-            let self = this;
-            //lấy setting trong domain này スケジュール修正職場別の機能制御    - ScheFunctionCtrlByWorkplace.useDisplayPeriod
-            // code tam ghep data server sau
-            let useDisplayPeriods = data.dataBasicDto.scheFunctionCtrlByWorkplace.useDisplayPeriod;
-            if (useDisplayPeriods.length == 0) {
-                self. selectedDisplayPeriod(1)
-            } else if (useDisplayPeriods.length == 1) {
-                self.disPeriodSelectionList().push({ id: 1, name: getText("KSU001_39") });
-                if (useDisplayPeriods[0] == 0){
-                    self.disPeriodSelectionList().push({ id: 2, name: getText("KSU001_40") });
-                } else if (useDisplayPeriods[0] == 1){
-                    self.disPeriodSelectionList().push({ id: 3, name: getText("KSU001_41") });
-                }
-            } else if (useDisplayPeriods.length == 2) {
-                self.disPeriodSelectionList().push({ id: 1, name: getText("KSU001_39") });
-                self.disPeriodSelectionList().push({ id: 2, name: getText("KSU001_40") });
-                self.disPeriodSelectionList().push({ id: 3, name: getText("KSU001_41") });
-            }
-            
-            // set css lại
-        }
-        
-        calculateDisPlayFormatA4_234(data) {
-            let self = this;
-            //lấy setting trong domain này スケジュール修正職場別の機能制御    - ScheFunctionCtrlByWorkplace.useDisplayFormat
-            //略名 AbbreviatedName(0)*/
-            //勤務 WorkInfo(1)
-            //シフト Shift(2)
-            // code tam ghep data server sau
-            // ※15,※16,※17,※29
-            let useDisplayFormats = data.dataBasicDto.scheFunctionCtrlByWorkplace.useDisplayFormat;
-            if (useDisplayFormats.length == 0) {
-                self.visibleA4_234(false);
-            } else if (useDisplayFormats.length == 1) {
-                if (useDisplayFormats[0] == 0) {
-                    self.modeDisplayList().push({ id: 'shortName', name: getText("KSU001_44") });
-                } else if (useDisplayFormats[0] == 1) {
-                    self.modeDisplayList().push({ id: 'time', name: getText("KSU001_43") });
-                } else if (useDisplayFormats[0] == 2) {
-                    self.modeDisplayList().push({ id: 'shift', name: getText("KSU001_45") });
-                }
-                self.visibleA4_234(false);
-            } else if (useDisplayFormats.length == 2) {
-                if ((useDisplayFormats[0] == 0 || useDisplayFormats[0] == 1) && (useDisplayFormats[1] == 0 || useDisplayFormats[1] == 1)) {
-                    self.modeDisplayList().push({ id: 'time', name: getText("KSU001_43") });
-                    self.modeDisplayList().push({ id: 'shortName', name: getText("KSU001_44") });
-                } else if ((useDisplayFormats[0] == 1 || useDisplayFormats[0] == 2) && (useDisplayFormats[1] == 1 || useDisplayFormats[1] == 2)) {
-                    self.modeDisplayList().push({ id: 'time', name: getText("KSU001_43") });
-                    self.modeDisplayList().push({ id: 'shift', name: getText("KSU001_45") });
-                } else if ((useDisplayFormats[0] == 0 || useDisplayFormats[0] == 2) && (useDisplayFormats[1] == 0 || useDisplayFormats[1] == 2)) {
-                    self.modeDisplayList().push({ id: 'shortName', name: getText("KSU001_44") });
-                    self.modeDisplayList().push({ id: 'shift', name: getText("KSU001_45") });
-                }
-            } else if (useDisplayFormats.length == 3) {
-                self.modeDisplayList().push({ id: 'time', name: getText("KSU001_43") });
-                self.modeDisplayList().push({ id: 'shortName', name: getText("KSU001_44") });
-                self.modeDisplayList().push({ id: 'shift', name: getText("KSU001_45") });
-            }
-
-            self.setViewModeSelected(data.dataBasicDto.viewModeSelected);
-        }
-        
-        // viewModeSelected la server tra ve
-        setViewModeSelected(viewModeSelected) {
-            let self = this;
-            if (viewModeSelected == 'time') {
-                self.selectedModeDisplayInBody('time');
-                self.visibleShiftPalette(false);
-            } else if (viewModeSelected == 'shortName') {
-                self.selectedModeDisplayInBody('shortName');
-                self.visibleShiftPalette(false);
-            } else if (viewModeSelected == 'shift') {
-                self.selectedModeDisplayInBody('shift');
-                self.visibleShiftPalette(true);
-            }
-        }
-        
-        calculateDisPlayFormatA4_567(data) {
-            let self = this;
-            // ※18 - lay setting trong domain スケジュール修正の機能制御.実績表示できるか   - ScheFunctionControl.isDisplayActual
-            let isDisplayActual = data.dataBasicDto.scheFunctionControl.isDisplayActual;
-            self.visibleA4_567(isDisplayActual);
-        }
-        
         getDataWhenChangeModePeriod(startDate, endDate) {
             let self = this;
             let viewMode = self.selectedModeDisplayInBody();
@@ -781,7 +529,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 unit: self.userInfor.unit,
                 getActualData: !_.isNil(self.userInfor) ? self.userInfor.achievementDisplaySelected : false,
                 listShiftMasterNotNeedGetNew: self.userInfor.shiftMasterWithWorkStyleLst,
-                listSid: self.listSid()
+                listSid: self.listSid();
+                personTotalSelected: self.useCategoriesPersonalValue(), // A11_1
+                workplaceSelected: self.useCategoriesWorkplaceValue() // A12_1
             };
 
             service.getDataWhenChangeModePeriod(param).done((data: any) => {
@@ -913,7 +663,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 listSid: self.listSid(),
                 unit: !_.isNil(self.userInfor) ? self.userInfor.unit : 0,
                 workplaceId     : self.userInfor.workplaceId,
-                workplaceGroupId: self.userInfor.workplaceGroupId
+                workplaceGroupId: self.userInfor.workplaceGroupId,
+                personTotalSelected: self.useCategoriesPersonalValue(), // A11_1
+                workplaceSelected: self.useCategoriesWorkplaceValue() // A12_1
             };
             self.saveModeGridToLocalStorege('shift');
             self.visibleShiftPalette(true);
@@ -979,7 +731,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 getActualData: !_.isNil(self.userInfor) ? self.userInfor.achievementDisplaySelected : false,
                 unit: !_.isNil(self.userInfor) ? self.userInfor.unit : 0,
                 workplaceId     : self.userInfor.workplaceId,
-                workplaceGroupId: self.userInfor.workplaceGroupId
+                workplaceGroupId: self.userInfor.workplaceGroupId,
+                personTotalSelected: self.useCategoriesPersonalValue(), // A11_1
+                workplaceSelected: self.useCategoriesWorkplaceValue() // A12_1
             };
             
             self.visibleShiftPalette(false);
@@ -1022,7 +776,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 getActualData: !_.isNil(self.userInfor) ? self.userInfor.achievementDisplaySelected : false,
                 unit: !_.isNil(self.userInfor) ? self.userInfor.unit : 0,
                 workplaceId     : self.userInfor.workplaceId,
-                workplaceGroupId: self.userInfor.workplaceGroupId
+                workplaceGroupId: self.userInfor.workplaceGroupId,
+                personTotalSelected: self.useCategoriesPersonalValue(), // A11_1
+                workplaceSelected: self.useCategoriesWorkplaceValue() // A12_1
             };
 
             self.visibleShiftPalette(false);
@@ -2189,17 +1945,54 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 }
             }
         }
+        
+        // dang ky data
+        saveData() {
+            let self = this;
+            if (nts.uk.ui.errors.hasError()) return;
 
-        // 9999 dangky
-        saveData(): JQueryPromise<any> {
-            let self = this, dfd = $.Deferred();
-
-            if (nts.uk.ui.errors.hasError() || self.mode() === 'confirm')
-                return;
-            
             // close dialog kdl053 nếu nó đang open
             $('div > iframe').contents().find('#btnClose').trigger('click');
-            
+
+            if (self.mode() == 'edit') {
+                self.saveDataInModeEdit();
+            } else if (self.mode() == 'confirm') {
+                self.saveDataInModeConfirm();
+            }
+        }
+
+        saveDataInModeConfirm(): JQueryPromise<any> {
+            let self = this, dfd = $.Deferred();
+            nts.uk.ui.block.grayout();
+            let lockCells = $("#extable").exTable("lockCells");
+            if (lockCells.length == 0)
+                return;
+            let dataReg = [];
+            let dataSource = $("#extable").exTable('dataSource', 'detail').body;
+            _.forEach(lockCells, function(cell) {
+                let cellData = dataSource[cell.rowIndex][cell.columnKey]; // data của cell trên grid
+                dataReg.push({
+                    sid: self.listSid()[cell.rowIndex],
+                    ymd: new Date(moment(cell.columnKey.slice(1)).format('YYYY/MM/DD')),
+                    isConfirmed: !cellData.confirmed
+                });
+            });
+            debugger;
+            service.changeConfirmedState(dataReg).done((rs) => {
+                nts.uk.ui.dialog.info({ messageId: "Msg_1541" }).then(() => {
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                });
+                nts.uk.ui.block.clear();
+            }).fail(function(error) {
+                nts.uk.ui.block.clear();
+                dfd.reject();
+            });
+            return dfd.promise();
+        }
+
+        // dangky data ở mode Edit
+        saveDataInModeEdit(): JQueryPromise<any> {
+            let self = this, dfd = $.Deferred();
             nts.uk.ui.block.grayout();
             let updatedCells = $("#extable").exTable("updatedCells");
             let params = [];
@@ -2227,8 +2020,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     return [cell.rowIndex, cell.columnKey];
                 });
             }
-
-            console.log(cellsGroup);
 
             let data = self.buidDataReg(self.userInfor.disPlayFormat, cellsGroup);
             
@@ -3753,7 +3544,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
             if (arrCellUpdated.length > 0) {
                 nts.uk.ui.dialog.confirm({ messageId: "Msg_1732" }).ifYes(() => {
-                    self.enableBtnReg(false);
+                    self.enableBtnReg(true);
                     self.convertDataToGrid(self.dataSource, self.selectedModeDisplayInBody());
                     self.updateExTableWhenChangeMode(self.selectedModeDisplayInBody() , "determine");
                     self.confirmModeAct();
@@ -3761,6 +3552,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     nts.uk.ui.block.clear();
                 }).ifNo(() => {});
             } else {
+                self.enableBtnReg(true);
                 self.confirmModeAct();
                 $("#extable").exTable("updateMode", "determine");
             }
@@ -4813,6 +4605,258 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let line2 = tr.substring(indexSp - 1, tr.length);
             self.A1_7_3_line1(line1);
             self.A1_7_3_line2(line2);
+        }
+
+        displayButtonsHerder(data) {
+            let self = this;
+            // các domain liên quan đến phần ẩn hiện
+            // スケジュール修正の機能制御   - ScheFunctionControl                          
+            // スケジュール修正職場別の機能制御    - ScheFunctionCtrlByWorkplace                            
+            // スケジュール修正共通の権限制御    - ScheModifyAuthCtrlCommon                         
+            // スケジュール修正職場別の権限制御  - ScheModifyAuthCtrlByWorkplace
+
+            // lấy ra từ domian ScheFunctionCtrlByWorkplace.useCompletionAtr
+            let scheFunctionCtrlByWorkplaceUse = data.dataBasicDto.scheFunctionCtrlByWorkplace.useCompletionAtr == 1 ? true : false;
+            let medicalOP = data.dataBasicDto.medicalOP; // 医療OP
+
+            // map với data domain sau
+            // check hiển thị với Common và Authority
+            let scheModifyAuthCtrlCommon = data.dataBasicDto.scheModifyAuthCtrlCommon;  // list
+            let scheModifyAuthCtrlByWorkplace = data.dataBasicDto.scheModifyAuthCtrlByWorkplace; // list
+
+            let funcNo1_Common = true; // _.find(scheModifyAuthCtrlCommon, function(o) { return o.functionNo==1; }).isAvailable; // 休暇状況参照 Vacation status reference
+            let funcNo2_Common = true; // _.find(scheModifyAuthCtrlCommon, function(o) { return o.functionNo==2; }).isAvailable; // 修正履歴参照 Refer to revision history
+            let funcNo1_WorkPlace = true; //_.find(scheModifyAuthCtrlByWorkplace, function(o) { return o.functionNo==1; }).isAvailable; // 登録 Registration
+            let funcNo2_WorkPlace = true; //_.find(scheModifyAuthCtrlByWorkplace, function(o) { return o.functionNo==2; }).isAvailable; // 確定 Confirm
+            let funcNo3_WorkPlace = true; //_.find(scheModifyAuthCtrlByWorkplace, function(o) { return o.functionNo==3; }).isAvailable; // 完了 Done
+            let funcNo4_WorkPlace = true; //_.find(scheModifyAuthCtrlByWorkplace, function(o) { return o.functionNo==4; }).isAvailable; // アラームチェック Alarm check
+            let funcNo5_WorkPlace = true; //_.find(scheModifyAuthCtrlByWorkplace, function(o) { return o.functionNo==5; }).isAvailable; // 出力 output
+            let funcNo6_WorkPlace = true; //_.find(scheModifyAuthCtrlByWorkplace, function(o) { return o.functionNo==6; }).isAvailable; // 取り込み Capture
+            let funcNo7_WorkPlace = true; //_.find(scheModifyAuthCtrlByWorkplace, function(o) { return o.functionNo==7; }).isAvailable; // 勤務希望 Hope to work
+            let funcNo8_WorkPlace = true; //_.find(scheModifyAuthCtrlByWorkplace, function(o) { return o.functionNo==8; }).isAvailable; // 公開 Release
+            let funcNo9_WorkPlace = true; //_.find(scheModifyAuthCtrlByWorkplace, function(o) { return o.functionNo==9; }).isAvailable; // 応援登録 Support registration
+            let funcNo10_WorkPlace = true; //_.find(scheModifyAuthCtrlByWorkplace, function(o) { return o.functionNo==10; }).isAvailable; // 並び順設定 Sort order setting
+            let funcNo11_WorkPlace = true; //_.find(scheModifyAuthCtrlByWorkplace, function(o) { return o.functionNo==11; }).isAvailable; // チーム設定 Team settings
+            let funcNo12_WorkPlace = true; //_.find(scheModifyAuthCtrlByWorkplace, function(o) { return o.functionNo==12; }).isAvailable; // ランク分け Ranking
+            let funcNo13_WorkPlace = true; //_.find(scheModifyAuthCtrlByWorkplace, function(o) { return o.functionNo==13; }).isAvailable; // 行事登録 Event registration
+            let funcNo14_WorkPlace = true; //_.find(scheModifyAuthCtrlByWorkplace, function(o) { return o.functionNo==14; }).isAvailable; // 集計欄の金額表示 Amount display in the summary column
+            let funcNo15_WorkPlace = true; //_.find(scheModifyAuthCtrlByWorkplace, function(o) { return o.functionNo==15; }).isAvailable; // 予算実績入力 Budget actual input
+            let funcNo16_WorkPlace = true; //_.find(scheModifyAuthCtrlByWorkplace, function(o) { return o.functionNo==16; }).isAvailable; // 計画人数入力 Enter the planned number of people
+            // button A1_1  職1
+            if (funcNo1_WorkPlace == false) {
+                $('#A1_1').css('visibility', 'hidden');
+                $('#A1_1').off('click');
+            }
+
+            // btn A1_2 職3 - ※35 
+            if (funcNo3_WorkPlace == false || scheFunctionCtrlByWorkplaceUse == false) {
+                $('#A1_2').css('visibility', 'hidden');
+                $('#A1_2').off('click');
+            }
+
+            // btn A1_3 職4
+            if (funcNo4_WorkPlace == false) {
+                $('#A1_3').css('visibility', 'hidden');
+                $('#A1_3').off('click');
+            }
+
+            // btn A1_5 職8 - ※27
+            if (funcNo8_WorkPlace == false || data.dataBasicDto.usePublicAtr == false) {
+                $('#A1_5').css('visibility', 'hidden');
+                $('#A1_5').off('click');
+            }
+
+            // btn A1_6 職5
+            if (funcNo5_WorkPlace == false) {
+                $('#A1_6').css('visibility', 'hidden');
+                $('#A1_6').off('click');
+            }
+
+            // btn A1_7 職7  - ※1
+            if (funcNo7_WorkPlace == false || data.dataBasicDto.useWorkAvailabilityAtr == false) {
+                $('#A1_7').css('visibility', 'hidden');
+                $('#A1_7_1').css('display', 'none');
+                $('#A1_7').off('click');
+            }
+
+            // btn A1_8 職9  -  ※2 (tạm thời chưa đối ứng thằng ※2 này)
+            if (funcNo9_WorkPlace == false) {
+                $('#A1_8').css('visibility', 'hidden');
+                $('#A1_8').off('click');
+            }
+
+            // btn A1_9 職6
+            if (funcNo6_WorkPlace == false) {
+                $('#A1_9').css('visibility', 'hidden');
+                $('#A1_9').off('click');
+            }
+
+            // btn A1_10 共1
+            if (funcNo1_Common == false) {
+                $('#A1_10').css('visibility', 'hidden');
+                $('#A1_10').off('click');
+            }
+
+            // btn A1_11 共2
+            if (funcNo2_Common == false) {
+                $('#A1_11').css('visibility', 'hidden');
+                $('#A1_11').off('click');
+            }
+
+            // btn A6_1, A6_2 職2    
+            if (funcNo2_WorkPlace == false) {
+                $('#contain-view-left').empty();
+                $('#contain-view-left').css('margin-left', '16px');
+                $('#contain-view-right').css('width', '1177px');
+            }
+
+            // 職13
+            if (funcNo13_WorkPlace == false) {
+                self.canRegisterEvent = false;
+            }
+
+            self.calculateDisPlayPopupA12(funcNo10_WorkPlace, funcNo11_WorkPlace, funcNo12_WorkPlace, medicalOP);
+
+            self.calculateDisPlaySwitchA32(data);
+
+            self.calculateDisPlayFormatA4_234(data);
+
+            self.calculateDisPlayFormatA4_567(data);
+
+            // A4_8 ※30
+            if (self.visibleA4_234() == true || self.visibleA4_567() == true) {
+                self.visibleA4_8(true);
+            } else {
+                self.visibleA4_8(false);
+            }
+
+            // A4_9 ※32
+            if ((self.userInfor.disPlayFormat == 'shift') && (self.visibleA4_234() == true || self.visibleA4_567() == true)) {
+                self.visibleA4_9(true);
+            } else {
+                self.visibleA4_9(false);
+            }
+
+            // ※31 ẩn hiện của btn A4 lúc khơi động, phải check 1 lần nữa khi thay đổi giữa 2 mode edit và confirm.
+            // ở mode shift,khi khởi động thì lúc nào A4 cũng sẽ hiện thị (vì combobox change background luôn hiển thị khi khởi động)
+            // ở mode shift,khi chuyển giữa mode edit và confirm, thì khi ở mode confirm combobox change background sẽ bị ẳn đi, lúc này sẽ check lại ẩn hiển của A4
+            if (self.userInfor.disPlayFormat != 'shift' && self.visibleA4_234() == false && self.visibleA4_567() == false) {
+                $('#A4').css('visibility', 'hidden');
+            }
+        }
+
+        calculateDisPlayPopupA12(funcNo10_WorkPlace, funcNo11_WorkPlace, funcNo12_WorkPlace, medicalOP) {
+            let self = this;
+            let numberItemHid = 0;
+            $('#A1_12_16, #A1_12_18, #A1_12_20').width(75);
+            // btn A1_16 職10 - ※11
+            if (funcNo10_WorkPlace == false || medicalOP == false) {
+                numberItemHid = numberItemHid + 1;
+                $('#A1_12_1617').remove();
+            }
+
+            // btn A1_18 職11 - ※11
+            if (funcNo11_WorkPlace == false || medicalOP == false) {
+                numberItemHid = numberItemHid + 1;
+                $('#A1_12_1819').remove();
+            }
+
+            // btn A1_20 職12 - ※11
+            if (funcNo12_WorkPlace == false || medicalOP == false) {
+                numberItemHid = numberItemHid + 1;
+                $('#A1_12_2021').remove();
+            }
+
+            if (numberItemHid == 3) { // ※34
+                $('#A1_12').css('visibility', 'hidden');
+                $('#A1_12').off('click');
+            }
+        }
+
+        // ※12,※13,※14
+        calculateDisPlaySwitchA32(data) {
+            let self = this;
+            //lấy setting trong domain này スケジュール修正職場別の機能制御    - ScheFunctionCtrlByWorkplace.useDisplayPeriod
+            // code tam ghep data server sau
+            let useDisplayPeriods = data.dataBasicDto.scheFunctionCtrlByWorkplace.useDisplayPeriod;
+            if (useDisplayPeriods.length == 0) {
+                self.selectedDisplayPeriod(1)
+            } else if (useDisplayPeriods.length == 1) {
+                self.disPeriodSelectionList().push({ id: 1, name: getText("KSU001_39") });
+                if (useDisplayPeriods[0] == 0) {
+                    self.disPeriodSelectionList().push({ id: 2, name: getText("KSU001_40") });
+                } else if (useDisplayPeriods[0] == 1) {
+                    self.disPeriodSelectionList().push({ id: 3, name: getText("KSU001_41") });
+                }
+            } else if (useDisplayPeriods.length == 2) {
+                self.disPeriodSelectionList().push({ id: 1, name: getText("KSU001_39") });
+                self.disPeriodSelectionList().push({ id: 2, name: getText("KSU001_40") });
+                self.disPeriodSelectionList().push({ id: 3, name: getText("KSU001_41") });
+            }
+
+            // set css lại
+        }
+
+        calculateDisPlayFormatA4_234(data) {
+            let self = this;
+            //lấy setting trong domain này スケジュール修正職場別の機能制御    - ScheFunctionCtrlByWorkplace.useDisplayFormat
+            //略名 AbbreviatedName(0)*/
+            //勤務 WorkInfo(1)
+            //シフト Shift(2)
+            // code tam ghep data server sau
+            // ※15,※16,※17,※29
+            let useDisplayFormats = data.dataBasicDto.scheFunctionCtrlByWorkplace.useDisplayFormat;
+            if (useDisplayFormats.length == 0) {
+                self.visibleA4_234(false);
+            } else if (useDisplayFormats.length == 1) {
+                if (useDisplayFormats[0] == 0) {
+                    self.modeDisplayList().push({ id: 'shortName', name: getText("KSU001_44") });
+                } else if (useDisplayFormats[0] == 1) {
+                    self.modeDisplayList().push({ id: 'time', name: getText("KSU001_43") });
+                } else if (useDisplayFormats[0] == 2) {
+                    self.modeDisplayList().push({ id: 'shift', name: getText("KSU001_45") });
+                }
+                self.visibleA4_234(false);
+            } else if (useDisplayFormats.length == 2) {
+                if ((useDisplayFormats[0] == 0 || useDisplayFormats[0] == 1) && (useDisplayFormats[1] == 0 || useDisplayFormats[1] == 1)) {
+                    self.modeDisplayList().push({ id: 'time', name: getText("KSU001_43") });
+                    self.modeDisplayList().push({ id: 'shortName', name: getText("KSU001_44") });
+                } else if ((useDisplayFormats[0] == 1 || useDisplayFormats[0] == 2) && (useDisplayFormats[1] == 1 || useDisplayFormats[1] == 2)) {
+                    self.modeDisplayList().push({ id: 'time', name: getText("KSU001_43") });
+                    self.modeDisplayList().push({ id: 'shift', name: getText("KSU001_45") });
+                } else if ((useDisplayFormats[0] == 0 || useDisplayFormats[0] == 2) && (useDisplayFormats[1] == 0 || useDisplayFormats[1] == 2)) {
+                    self.modeDisplayList().push({ id: 'shortName', name: getText("KSU001_44") });
+                    self.modeDisplayList().push({ id: 'shift', name: getText("KSU001_45") });
+                }
+            } else if (useDisplayFormats.length == 3) {
+                self.modeDisplayList().push({ id: 'time', name: getText("KSU001_43") });
+                self.modeDisplayList().push({ id: 'shortName', name: getText("KSU001_44") });
+                self.modeDisplayList().push({ id: 'shift', name: getText("KSU001_45") });
+            }
+
+            self.setViewModeSelected(data.dataBasicDto.viewModeSelected);
+        }
+
+        // viewModeSelected la server tra ve
+        setViewModeSelected(viewModeSelected) {
+            let self = this;
+            if (viewModeSelected == 'time') {
+                self.selectedModeDisplayInBody('time');
+                self.visibleShiftPalette(false);
+            } else if (viewModeSelected == 'shortName') {
+                self.selectedModeDisplayInBody('shortName');
+                self.visibleShiftPalette(false);
+            } else if (viewModeSelected == 'shift') {
+                self.selectedModeDisplayInBody('shift');
+                self.visibleShiftPalette(true);
+            }
+        }
+
+        calculateDisPlayFormatA4_567(data) {
+            let self = this;
+            // ※18 - lay setting trong domain スケジュール修正の機能制御.実績表示できるか   - ScheFunctionControl.isDisplayActual
+            let isDisplayActual = data.dataBasicDto.scheFunctionControl.isDisplayActual;
+            self.visibleA4_567(isDisplayActual);
         }
     }
 

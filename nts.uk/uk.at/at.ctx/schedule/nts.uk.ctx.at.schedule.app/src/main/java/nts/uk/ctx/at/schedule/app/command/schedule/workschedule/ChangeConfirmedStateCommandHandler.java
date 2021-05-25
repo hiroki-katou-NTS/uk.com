@@ -62,7 +62,7 @@ public class ChangeConfirmedStateCommandHandler extends CommandHandler<List<Chan
 
 		@Override
 		public void update(WorkSchedule workSchedule) {
-			workScheduleRepository.update(workSchedule);
+			workScheduleRepository.updateConfirmedState(workSchedule);
 			
 		}
 		

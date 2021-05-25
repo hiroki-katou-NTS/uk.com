@@ -119,8 +119,8 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 
 	public KscdtSchBasicInfo toEntity(WorkSchedule workSchedule, String cID) {
 		return KscdtSchBasicInfo.toEntity(workSchedule, cID);
-	}
-
+	} 
+	
 	@Override
 	public void update(WorkSchedule workSchedule) {
 		String cID = AppContexts.user().companyId();
@@ -820,5 +820,14 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 		if (data.isEmpty())
 			return Optional.empty();
 		return Optional.of(data.get(0));
+	}
+
+	@Override
+	public void updateConfirmedState(WorkSchedule workSchedule) {
+		Optional<KscdtSchBasicInfo> entity = this.queryProxy().find(new KscdtSchBasicInfoPK(workSchedule.getEmployeeID(), workSchedule.getYmd()), KscdtSchBasicInfo.class);
+		if(entity.isPresent()){
+			entity.get().confirmedATR = workSchedule.getConfirmedATR().value == 1 ? true : false;
+			this.commandProxy().update(entity.get());
+		}
 	}
 }

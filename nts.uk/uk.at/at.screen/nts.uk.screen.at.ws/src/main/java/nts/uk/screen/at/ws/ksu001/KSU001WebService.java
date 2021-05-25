@@ -8,6 +8,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.at.schedule.app.command.schedule.workschedule.ChangeConfirmedStateCommand;
+import nts.uk.ctx.at.schedule.app.command.schedule.workschedule.ChangeConfirmedStateCommandHandler;
 import nts.uk.ctx.at.schedule.app.command.schedule.workschedule.RegisterWorkSchedule;
 import nts.uk.ctx.at.schedule.app.command.schedule.workschedule.ResultRegisWorkSchedule;
 import nts.uk.ctx.at.schedule.app.command.schedule.workschedule.WorkScheduleCommand;
@@ -79,6 +81,8 @@ public class KSU001WebService extends WebService{
 	private RegisterWorkSchedule regWorkSchedule;
 	@Inject
 	private CorrectWorkTimeHalfDay correctWorkTimeHalfDay;
+	@Inject
+	private ChangeConfirmedStateCommandHandler changeConfirmedStateHandler;
 	@POST
 	@Path("start")
 	public StartKSU001Dto getDataStartScreen(StartKSU001Param param){
@@ -96,21 +100,21 @@ public class KSU001WebService extends WebService{
 	@POST
 	@Path("shift")
 	public StartKSU001Dto getDataShiftMode(StartKSU001Param param){
-		StartKSU001Dto data = startKSU001.getData(param);
+		StartKSU001Dto data = startKSU001Ver5.getData(param);
 		return data;
 	}
 	
 	@POST
 	@Path("shortname")
 	public StartKSU001Dto getDataShortNameMode(StartKSU001Param param){
-		StartKSU001Dto data = startKSU001.getData(param);
+		StartKSU001Dto data = startKSU001Ver5.getData(param);
 		return data;
 	}
 	
 	@POST
 	@Path("time")
 	public StartKSU001Dto getDataTimeMode(StartKSU001Param param){
-		StartKSU001Dto data = startKSU001.getData(param);
+		StartKSU001Dto data = startKSU001Ver5.getData(param);
 		return data;
 	}
 	
@@ -192,6 +196,10 @@ public class KSU001WebService extends WebService{
 		return new CorrectWorkTimeHalfDayRs(strTime, endTime);
 	}
 	
-	
+	@POST
+	@Path("change-confirmed-state") 
+	public void changeConfirmedStateHandler(List<ChangeConfirmedStateCommand> param) {
+		changeConfirmedStateHandler.handle(param);;
+	}
 	
 }
