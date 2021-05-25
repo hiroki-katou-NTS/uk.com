@@ -63,15 +63,21 @@ public class HolidayRemainMergeAdapterImpl implements HolidayRemainMergeAdapter{
 		val lstYrMon = ConvertHelper.yearMonthsBetween(period);
 		Map<YearMonth, List<RemainMerge>> mapRemainMer = repoRemainMer.findBySidsAndYrMons(employeeId, lstYrMon);
 		//255
-		List<AnnualLeaveUsageExport> lstAnn = a.getYearHdMonthlyVer2(employeeId, period, mapRemainMer);
+		List<AnnualLeaveUsageExport> lstAnn = a.getYearHdMonthlyVer4(employeeId, period, mapRemainMer);
 		List<AnnualLeaveUsageImported> result255 = new ArrayList<>();
 		for (AnnualLeaveUsageExport ann : lstAnn) {
-			AnnualLeaveUsageImported HolidayRemainData = new AnnualLeaveUsageImported(ann.getYearMonth(),
-					ann.getUsedDays().v(), ann.getUsedTime().map(i -> i.v()).orElse(null), ann.getRemainingDays().v(),
-					ann.getRemainingTime().map(i -> i.v()).orElse(null));
+			AnnualLeaveUsageImported HolidayRemainData = new AnnualLeaveUsageImported(
+					ann.getYearMonth(),
+					ann.getUsedDays().v(),
+					ann.getUsedTime().map(i -> i.v()).orElse(null),
+					ann.getRemainingDays().v(),
+					ann.getRemainingTime().map(i -> i.v()).orElse(null),
+					ann.getNumOfuses().isPresent()?ann.getNumOfuses().get().v():null,
+					ann.getNumOfRemain().isPresent()?ann.getNumOfRemain().get().v():null,
+					ann.getMonthlyRemainTime().isPresent()?ann.getMonthlyRemainTime().get().v():null
+			);
 			result255.add(HolidayRemainData);
 		}
-
 		//258
 		List<ReserveLeaveUsageExport> lstRsv = b.getYearRsvMonthlyVer2(employeeId, period, mapRemainMer);
 		List<ReservedYearHolidayImported> result258 = new ArrayList<>();
