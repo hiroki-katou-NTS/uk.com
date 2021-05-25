@@ -19,6 +19,7 @@ import nts.uk.ctx.at.aggregation.dom.schedulecounter.aggregationprocess.TotalTim
 import nts.uk.ctx.at.shared.app.find.scherec.totaltimes.dto.TotalTimesDetailDto;
 import nts.uk.ctx.at.shared.dom.common.EmployeeId;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.DailyRecordToAttendanceItemConverter;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.service.AttendanceItemConvertFactory;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalTimes;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalTimesRepository;
@@ -48,12 +49,15 @@ public class ScreenQueryAggrerateNumberTimeWp {
 	@Inject
 	private WorkTypeRepository workTypeRepository;
 	
+	@Inject
+	private AttendanceItemConvertFactory converterFactory;
+	
 	
 	public Map<String, Map<TotalTimesDetailDto, BigDecimal>> aggrerate(
 			List<IntegrationOfDaily> aggrerateintegrationOfDaily
 			) {
 		
-		Require require = new Require(totalTimeRepository, workTypeRepository); // todo
+		Require require = new Require(totalTimeRepository, workTypeRepository, converterFactory); 
 		Map<String, Map<TotalTimesDetailDto, BigDecimal>> output = new HashMap<String, Map<TotalTimesDetailDto, BigDecimal>>();
 		//1: 取得する(回数集計種類)
 		Optional<CountInfoDto> countInfoOp = Optional.ofNullable(countInfoProcessor.getInfo(new RequestPrams(0)));
@@ -123,10 +127,12 @@ public class ScreenQueryAggrerateNumberTimeWp {
 		@Inject
 		private WorkTypeRepository workTypeRepository;
 		
+		@Inject
+		private AttendanceItemConvertFactory converterFactory;
+		
 		@Override
 		public DailyRecordToAttendanceItemConverter createDailyConverter() {
-			// TODO Auto-generated method stub
-			return null;
+			return converterFactory.createDailyConverter();
 		}
 
 		@Override

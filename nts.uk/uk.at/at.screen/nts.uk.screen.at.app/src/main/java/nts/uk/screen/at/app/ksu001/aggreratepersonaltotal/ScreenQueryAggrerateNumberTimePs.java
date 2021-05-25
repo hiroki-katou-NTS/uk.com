@@ -19,6 +19,7 @@ import nts.uk.ctx.at.aggregation.dom.schedulecounter.aggregationprocess.TotalTim
 import nts.uk.ctx.at.aggregation.dom.schedulecounter.tally.PersonalCounterCategory;
 import nts.uk.ctx.at.shared.dom.common.EmployeeId;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.DailyRecordToAttendanceItemConverter;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.service.AttendanceItemConvertFactory;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalTimes;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalTimesRepository;
@@ -48,8 +49,8 @@ public class ScreenQueryAggrerateNumberTimePs {
 	@Inject
 	private WorkTypeRepository workTypeRepository;
 	
-//	@Inject
-//	TotalTimesCounterService.Require require;
+	@Inject
+	private AttendanceItemConvertFactory converterFactory;
 	
 	public Map<EmployeeId, Map<TotalTimes, BigDecimal>> aggrerate(
 			PersonalCounterCategory personalCounter,
@@ -67,7 +68,7 @@ public class ScreenQueryAggrerateNumberTimePs {
 		}
 		Optional<CountInfoDto> countInfoOp = Optional.ofNullable(countInfoProcessor.getInfo(param));
 		
-		Require require = new Require(totalTimeRepository, workTypeRepository); // todo
+		Require require = new Require(totalTimeRepository, workTypeRepository, converterFactory);
 		// 2: Optional<回数集計選択>.isPresent
 		if (countInfoOp.isPresent()) {
 			
@@ -118,10 +119,12 @@ public class ScreenQueryAggrerateNumberTimePs {
 		@Inject
 		private WorkTypeRepository workTypeRepository;
 		
+		@Inject
+		private AttendanceItemConvertFactory converterFactory;
+		
 		@Override
 		public DailyRecordToAttendanceItemConverter createDailyConverter() {
-			// TODO Auto-generated method stub
-			return null;
+			return converterFactory.createDailyConverter();
 		}
 
 		@Override
