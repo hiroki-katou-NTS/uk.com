@@ -18,7 +18,16 @@ import lombok.val;
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.shared.dom.adapter.employee.*;
+import nts.uk.ctx.at.shared.dom.adapter.employee.AffComHistItemShareImport;
+import nts.uk.ctx.at.shared.dom.adapter.employee.AffCompanyHistSharedImport;
+import nts.uk.ctx.at.shared.dom.adapter.employee.ClassificationImport;
+import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
+import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeBasicInfoImport;
+import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
+import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeRecordImport;
+import nts.uk.ctx.at.shared.dom.adapter.employee.MailAddress;
+import nts.uk.ctx.at.shared.dom.adapter.employee.PersonEmpBasicInfoImport;
+import nts.uk.ctx.at.shared.dom.adapter.employee.SClsHistImport;
 import nts.uk.ctx.bs.employee.pub.classification.SClsHistExport;
 import nts.uk.ctx.bs.employee.pub.classification.SyClassificationPub;
 import nts.uk.ctx.bs.employee.pub.company.AffCompanyHistExport;
@@ -38,10 +47,10 @@ public class EmpEmployeeAdapterImpl implements EmpEmployeeAdapter {
 	/** The employee pub. */
 	@Inject
 	private SyEmployeePub employeePub;
-	
+
 	@Inject
 	private PersonEmpBasicInfoPub personEmpBasicInfoPub;
-	
+
 	@Inject
 	private SyCompanyPub syCompanyPub;
 	@Inject
@@ -59,7 +68,7 @@ public class EmpEmployeeAdapterImpl implements EmpEmployeeAdapter {
 		val cacheCarrier = new CacheCarrier();
 		return findByEmpIdRequire(cacheCarrier, empId);
 	}
-	
+
 	@Override
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public EmployeeImport findByEmpIdRequire(CacheCarrier cacheCarrier, String empId) {
@@ -81,7 +90,7 @@ public class EmpEmployeeAdapterImpl implements EmpEmployeeAdapter {
 		}
 		return null;
 	}
-	
+
 	@Override
 	public List<EmployeeImport> findByEmpId(List<String> empIds) {
 		// Get Employee Basic Info
@@ -173,7 +182,7 @@ public class EmpEmployeeAdapterImpl implements EmpEmployeeAdapter {
 		AffCompanyHistSharedImport importList = convert(this.syCompanyPub.GetAffComHisBySidAndBaseDate(sid, baseDate));
 		return importList;
 	}
-	
+
 	@Override
 	public AffCompanyHistSharedImport GetAffComHisBySid(String cid, String sid){
 		AffCompanyHistSharedImport importList = convert(this.syCompanyPub.GetAffComHisBySid(cid,sid));
@@ -200,5 +209,11 @@ public class EmpEmployeeAdapterImpl implements EmpEmployeeAdapter {
 			return Collections.emptyList();
 		return data.stream().map(c -> new EmployeeBasicInfoImport(c.getSid(), c.getEmployeeCode(), c.getEmployeeName()))
 				.collect(Collectors.toList());
+	}
+
+	@Override
+	public List<EmployeeBasicInfoImport> getEmployeeInfoListByCode(List<String> employeeCodes) {
+		// TODO 自動生成されたメソッド・スタブ
+		return null;
 	}
 }
