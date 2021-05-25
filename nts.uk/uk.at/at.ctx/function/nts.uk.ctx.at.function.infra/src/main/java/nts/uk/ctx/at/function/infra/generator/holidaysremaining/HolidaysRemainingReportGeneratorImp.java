@@ -461,7 +461,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
             }
 
         }
-        int pages = tottal / (MAX_ROW_IN_PAGE - 6);
+        double pages = tottal / (MAX_ROW_IN_PAGE - 6);
         for (int i = 0; i <= pages; i++) {
             int indexRow = first + i * (MAX_ROW_IN_PAGE - 6);
             if (i >= 1) {
