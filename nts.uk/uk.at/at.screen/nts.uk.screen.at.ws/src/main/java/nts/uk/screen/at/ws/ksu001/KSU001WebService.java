@@ -133,13 +133,13 @@ public class KSU001WebService extends WebService{
 	}
 
 	@POST
-	@Path("getShiftPallets") // get cho cả 2 trường hợp company và workPlace , goi sau khi đ
+	@Path("getShiftPallets") // get cho cả 2 trường hợp company và workPlace 
 	public GetShiftPaletteResult getShiftPallets(GetShiftPaletteParam param) {
 		return getShiftPalette.getDataShiftPallet(param);
 	}
 	
 	@POST
-	@Path("change-page") // get cho cả 2 trường hợp company và workPlace , goi sau khi đ
+	@Path("change-page") // get cho cả 2 trường hợp company và workPlace 
 	public GetShiftPalChangePageResult getShiftPallet(ChangePageParam param) {
 		return getDataWhenChangePage.gatData(param);
 	}

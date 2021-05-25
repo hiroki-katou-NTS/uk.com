@@ -157,6 +157,13 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 		useCategoriesWorkplace: KnockoutObservableArray<any> = ko.observableArray([]);
 		useCategoriesWorkplaceValue: KnockoutObservable<any> = ko.observable(7);
         
+        // 締め日 (Deadline) , 初期起動時の期間 ( Initial startup period )
+        closeDate = null;
+        startDateInitStart = null;
+        endDateInitStart = null;
+        medicalOP = false;
+        nursingCareOP = false;
+        
         constructor(dataLocalStorage) {
             let self = this;
             
@@ -466,6 +473,13 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 // ngày có thể chỉnh sửa schedule
                 self.scheduleModifyStartDate = data.dataBasicDto.scheduleModifyStartDate;
                 self.saveDataGrid(data);
+                
+                // ver5 : closeDate, startDateInit, endDateInit
+                self.closeDate = data.dataBasicDto.closeDate;
+                self.startDateInitStart = data.dataBasicDto.startDate;
+                self.endDateInitStart = data.dataBasicDto.endDate;
+                self.medicalOP = data.dataBasicDto.medicalOP;
+                self.nursingCareOP = data.dataBasicDto.nursingCareOP;
 
                 __viewContext.viewModel.viewAB.filter(data.dataBasicDto.unit == 0 ? true : false);
                 __viewContext.viewModel.viewAB.workplaceIdKCP013(data.dataBasicDto.unit == 0 ? data.dataBasicDto.workplaceId : data.dataBasicDto.workplaceGroupId);
@@ -4375,12 +4389,12 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 let dataFrom046 = getShared('dataShareKDL046');
                 if (dataFrom046 === undefined || dataFrom046 === null)
                     return;
-                self.updateScreen(dataFrom046);
+                self.updateScreenAfterChangeWP(dataFrom046);
                 console.log('closed');
             });
         }
         
-        updateScreen(input: any): JQueryPromise<any> {
+        updateScreenAfterChangeWP(input: any): JQueryPromise<any> {
             let self = this, dfd = $.Deferred();
             nts.uk.ui.block.grayout();
             let userInfor: IUserInfor = self.userInfor;
@@ -4394,7 +4408,11 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 getActualData: userInfor.achievementDisplaySelected,
                 listShiftMasterNotNeedGetNew: userInfor.shiftMasterWithWorkStyleLst, // List of shifts không cần lấy mới
                 unit: input.unit,
-                wkpId: input.unit == 0 ? input.workplaceId : input.workplaceGroupID
+                wkpId: input.unit == 0 ? input.workplaceId : input.workplaceGroupID,
+                day: self.closeDate.day,
+                isLastDay: self.closeDate.lastDay,
+                personTotalSelected: self.useCategoriesPersonalValue(), // A11_1
+                workplaceSelected: self.useCategoriesWorkplaceValue() // A12_1
             };
             
             service.changeWokPlace(param).done((data: IDataStartScreen) => {
@@ -4443,19 +4461,12 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         self.shiftPalletControlDisable();
                     }
                 }
-
+                  
                 self.saveDataGrid(data);
                 
-                let dataGrid: any = {
-                    listDateInfo: data.listDateInfo,
-                    listEmpInfo: data.listEmpInfo,
-                    displayControlPersonalCond: data.displayControlPersonalCond,
-                    listPersonalConditions: data.listPersonalConditions,
-                    listWorkScheduleWorkInfor: data.listWorkScheduleWorkInfor,
-                    listWorkScheduleShift: data.listWorkScheduleShift
-                }
-                let dataBindGrid = self.convertDataToGrid(dataGrid, self.selectedModeDisplayInBody());
                 
+                let dataBindGrid = self.convertDataToGrid(data, self.selectedModeDisplayInBody());
+                // updatelaiA1112
                 // remove va tao lai grid
                 self.destroyAndCreateGrid(dataBindGrid, self.selectedModeDisplayInBody());
 
@@ -5033,7 +5044,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         usePublicAtr: boolean,
         useWorkAvailabilityAtr: boolean,
 		useCategoriesWorkplace: [],
-		useCategoriesPersonal: []
+		useCategoriesPersonal: [],
+        closeDate: any,
+        medicalOP: any,
+        nursingCareOP: any,
     }
 
     interface IDisplayControlPersonalCond {
