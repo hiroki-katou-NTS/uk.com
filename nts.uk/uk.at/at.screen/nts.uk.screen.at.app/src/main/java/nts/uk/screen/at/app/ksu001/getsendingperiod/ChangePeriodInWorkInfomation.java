@@ -11,7 +11,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
-import nts.arc.time.calendar.DateInMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.aggregation.dom.schedulecounter.tally.PersonalCounterCategory;
 import nts.uk.ctx.at.aggregation.dom.schedulecounter.tally.WorkplaceCounterCategory;
@@ -105,7 +104,7 @@ public ChangePeriodInWorkInfoResult_New getDataNew(ChangePeriodInWorkInfoParam_N
 				getScheduleActualOfWorkInfo.getDataScheduleAndAactualOfWorkInfoNew(
 						param.getSids(),
 						new DatePeriod(param.getStartDate(), param.getEndDate()),
-						DateInMonth.of(param.getDay()),
+						param.getCloseDate(),
 						param.getActualData,
 						targetOrgIdenInfor,
 						Optional.ofNullable(param.getPersonalCounterOp()).flatMap(x -> Optional.of(EnumAdaptor.valueOf(x, PersonalCounterCategory.class))),

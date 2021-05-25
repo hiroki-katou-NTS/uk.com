@@ -37,6 +37,7 @@ public class ExtractPeriodFeedParam {
 	
 	// 締め日
 	public int day;
+	public boolean isLastDay;// 締め日
 	
 	public int mode;
 	

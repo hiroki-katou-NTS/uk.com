@@ -4,6 +4,7 @@ package nts.uk.screen.at.app.ksu001.extractperiodfeed;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.time.calendar.DateInMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.screen.at.app.ksu001.getsendingperiod.ChangePeriodInShift;
 import nts.uk.screen.at.app.ksu001.getsendingperiod.ChangePeriodInShiftParam_New;
@@ -68,7 +69,7 @@ public class GetExtractPeriodFeed {
 							param.getActualData,
 							param.getPersonalCounterOp(),
 							param.getWorkplaceCounterOp(),
-							param.getDay()
+							new DateInMonth(param.getDay(), param.isLastDay)
 							));
 			output.setChangePeriodInShiftResult_New(changePeriodInShiftResult_New);
 			
@@ -85,7 +86,7 @@ public class GetExtractPeriodFeed {
 							param.getActualData,
 							param.getPersonalCounterOp(),
 							param.getWorkplaceCounterOp(),
-							param.getDay()
+							new DateInMonth(param.getDay(), param.isLastDay)
 							));
 			output.setChangePeriodInWorkInfoResult_New(changePeriodInWorkInfoResult_New);
 		}

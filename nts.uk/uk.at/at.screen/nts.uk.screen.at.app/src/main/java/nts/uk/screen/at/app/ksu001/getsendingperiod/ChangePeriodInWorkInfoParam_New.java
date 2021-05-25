@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.DateInMonth;
 
 
 @NoArgsConstructor
@@ -33,5 +34,6 @@ public class ChangePeriodInWorkInfoParam_New {
 	
 	public Integer workplaceCounterOp;
 	// ・締め日：日付
-	public int day;
+	public DateInMonth closeDate;
+	
 }

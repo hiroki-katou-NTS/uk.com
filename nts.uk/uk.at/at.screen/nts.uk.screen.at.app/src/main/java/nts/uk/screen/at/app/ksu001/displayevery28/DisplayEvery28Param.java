@@ -35,6 +35,7 @@ public class DisplayEvery28Param {
 	
 	// 締め日
 	public int day;
+	public boolean isLastDay;
 	
 	public int mode;
 }

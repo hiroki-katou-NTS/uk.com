@@ -10,8 +10,6 @@ import lombok.Setter;
 import nts.arc.enums.EnumConstant;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.DateInMonth;
-import nts.uk.ctx.at.aggregation.dom.schedulecounter.tally.PersonalCounterCategory;
-import nts.uk.ctx.at.aggregation.dom.schedulecounter.tally.WorkplaceCounterCategory;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.DisplayInfoOrganization;
 
 @Getter

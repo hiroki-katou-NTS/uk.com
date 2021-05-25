@@ -3,6 +3,7 @@ package nts.uk.screen.at.app.ksu001.displayevery28;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.time.calendar.DateInMonth;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.DatePeriodDto;
 import nts.uk.screen.at.app.ksu001.get28dateperiod.ScreenQuery28DayPeriod;
 import nts.uk.screen.at.app.ksu001.getinfoofInitstartup.FuncCtrlDisplayFormatDto;
@@ -49,7 +50,7 @@ public class GetDisplayEvery28 {
 									param.getActualData,
 									param.getPersonalCounterOp(),
 									param.getWorkplaceCounterOp(),
-									param.getDay()
+									new DateInMonth(param.getDay(), param.isLastDay)
 									)
 							);
 			
@@ -68,7 +69,7 @@ public class GetDisplayEvery28 {
 									param.getActualData,
 									param.getPersonalCounterOp(),
 									param.getWorkplaceCounterOp(),
-									param.getDay()
+									new DateInMonth(param.getDay(), param.isLastDay)
 									)
 							);
 			

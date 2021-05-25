@@ -3344,9 +3344,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         */
         nextMonth(): void {
             let self = this;
-            if(self. selectedDisplayPeriod() == 2)
-                return;
-            
+            if (self. selectedDisplayPeriod() == 2) return;
             nts.uk.ui.block.grayout();
             
             let param = {
@@ -3361,7 +3359,11 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 getActualData   : !_.isNil(self.userInfor) ? self.userInfor.achievementDisplaySelected : false, 
                 listShiftMasterNotNeedGetNew: self.userInfor.shiftMasterWithWorkStyleLst, 
                 listSid: self.listSid(),
-                modePeriod : self. selectedDisplayPeriod()
+                modePeriod : self. selectedDisplayPeriod(),
+                day: self.closeDate.day, 
+                isLastDay: self.closeDate.lastDay,
+                personTotalSelected: self.useCategoriesPersonalValue(), // A11_1
+                workplaceSelected: self.useCategoriesWorkplaceValue() // A12_1
             };
             
             service.getDataChangeMonth(param).done((data: any) => {
@@ -3378,13 +3380,15 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     displayControlPersonalCond: data.displayControlPersonalCond,
                     listPersonalConditions: data.listPersonalConditions,
                     listWorkScheduleWorkInfor: data.listWorkScheduleWorkInfor,
-                    listWorkScheduleShift: data.listWorkScheduleShift
+                    listWorkScheduleShift: data.listWorkScheduleShift,
+                    aggreratePersonal: data.aggreratePersonal,
+                    aggrerateWorkplace: data.aggrerateWorkplace
                 }
                 let dataBindGrid = self.convertDataToGrid(dataGrid, self.selectedModeDisplayInBody());
                 
                 // remove va tao lai grid
                 self.destroyAndCreateGrid(dataBindGrid, self.selectedModeDisplayInBody());
-
+                
                 self.setUpdateMode();
                 
                 if (self.mode() == 'confirm') {
@@ -3411,9 +3415,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         */
         backMonth(): void {
             let self = this;
-            if (self. selectedDisplayPeriod() == 2)
-                return;
-
+            if (self. selectedDisplayPeriod() == 2) return;
             nts.uk.ui.block.grayout();
 
             let param = {
@@ -3421,14 +3423,18 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 startDate: self.dateTimePrev(),
                 endDate: self.dateTimeAfter(),
                 isNextMonth: false,
-                cycle28Day: self. selectedDisplayPeriod() == 2 ? true : false,
+                cycle28Day: self.selectedDisplayPeriod() == 2 ? true : false,
                 workplaceId: self.userInfor.workplaceId,
                 workplaceGroupId: self.userInfor.workplaceGroupId,
                 unit: self.userInfor.unit,
                 getActualData: !_.isNil(self.userInfor) ? self.userInfor.achievementDisplaySelected : false,
                 listShiftMasterNotNeedGetNew: self.userInfor.shiftMasterWithWorkStyleLst,
                 listSid: self.listSid(),
-                modePeriod : self. selectedDisplayPeriod()
+                modePeriod: self.selectedDisplayPeriod(),
+                day: self.closeDate.day,
+                isLastDay: self.closeDate.lastDay,
+                personTotalSelected: self.useCategoriesPersonalValue(), // A11_1
+                workplaceSelected: self.useCategoriesWorkplaceValue() // A12_1
             };
 
             service.getDataChangeMonth(param).done((data: any) => {
@@ -3446,7 +3452,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     displayControlPersonalCond: data.displayControlPersonalCond,
                     listPersonalConditions: data.listPersonalConditions,
                     listWorkScheduleWorkInfor: data.listWorkScheduleWorkInfor,
-                    listWorkScheduleShift: data.listWorkScheduleShift
+                    listWorkScheduleShift: data.listWorkScheduleShift,
+                    aggreratePersonal: data.aggreratePersonal,
+                    aggrerateWorkplace: data.aggrerateWorkplace
                 }
                 let dataBindGrid = self.convertDataToGrid(dataGrid, self.selectedModeDisplayInBody());
                 

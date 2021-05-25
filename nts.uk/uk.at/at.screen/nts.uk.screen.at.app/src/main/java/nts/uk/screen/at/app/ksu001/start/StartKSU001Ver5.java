@@ -12,8 +12,6 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import org.assertj.core.util.Strings;
-
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.gul.text.StringUtil;
@@ -105,8 +103,8 @@ public class StartKSU001Ver5 {
 			TargetOrgIdenInforDto targetOrgIdenInforDto = new TargetOrgIdenInforDto(targetOrgIdenInfor);
 			DisplayInWorkInfoParam_New param4 = new DisplayInWorkInfoParam_New(listSid, startDate, endDate,
 					param.getActualData, resultStep1.closeDate, targetOrgIdenInforDto,
-					Strings.isNullOrEmpty(param.personTotalSelected) ? null : Integer.valueOf(param.personTotalSelected),
-					Strings.isNullOrEmpty(param.workplaceSelected) ? null : Integer.valueOf(param.workplaceSelected));
+					StringUtil.isNullOrEmpty(param.personTotalSelected, true) ? null : Integer.valueOf(param.personTotalSelected),
+					StringUtil.isNullOrEmpty(param.workplaceSelected, true) ? null : Integer.valueOf(param.workplaceSelected));
 			resultStep4 = displayInWorkInfo.getDataWorkInfo_New(param4);
 			
 		} else if (viewModeSelected == FuncCtrlDisplayFormatDto.Shift.value) {
@@ -122,8 +120,8 @@ public class StartKSU001Ver5 {
 			param51.setGetActualData(param.getActualData);
 			param51.setUnit(param.unit);
 			
-			param51.setPersonalCounterOp(Strings.isNullOrEmpty(param.personTotalSelected) ? null : Integer.valueOf(param.personTotalSelected));
-			param51.setWorkplaceCounterOp(Strings.isNullOrEmpty(param.workplaceSelected) ? null : Integer.valueOf(param.workplaceSelected));
+			param51.setPersonalCounterOp(StringUtil.isNullOrEmpty(param.personTotalSelected, true) ? null : Integer.valueOf(param.personTotalSelected));
+			param51.setWorkplaceCounterOp(StringUtil.isNullOrEmpty(param.workplaceSelected, true) ? null : Integer.valueOf(param.workplaceSelected));
 			param51.setDay(resultStep1.closeDate);
 
 			resultStep51 = displayInShift.getData_New(param51);
