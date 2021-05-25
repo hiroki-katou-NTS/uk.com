@@ -4356,7 +4356,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 console.log('closed g dialog');
             });
         }
-
+        
         // A2_1
         openKDL046() {
             let self = this;
@@ -4857,6 +4857,24 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             // ※18 - lay setting trong domain スケジュール修正の機能制御.実績表示できるか   - ScheFunctionControl.isDisplayActual
             let isDisplayActual = data.dataBasicDto.scheFunctionControl.isDisplayActual;
             self.visibleA4_567(isDisplayActual);
+        }
+
+        // click btnA1_6
+        openKSU005() {
+            let self = this;
+            let userInfor: IUserInfor = self.userInfor;
+            let param = {
+                unit: userInfor.unit == 0 ? '0' : '1',
+                workplaceId: userInfor.unit == 0 ? userInfor.workplaceId : null,
+                workplaceGroupId: userInfor.unit == 0 ? null : userInfor.workplaceGroupId,
+                startDate: moment(self.dtPrev()).format('YYYY/MM/DD'),
+                endDate: moment(self.dtAft()).format('YYYY/MM/DD'),
+                sids: self.sids()
+            }
+            setShared('dataShareDialogKSU005', param);
+            nts.uk.ui.windows.sub.modal('/view/ksu/005/a/index.xhtml').onClosed(function(): any {
+                console.log('closed');
+            });
         }
     }
 
