@@ -29,6 +29,7 @@
 }
 
 .nts-combo-column-0 {
-	max-width: fit-content !important;
+	width: auto !important;
+	display: table !important;
 	min-width: 442px;
 }
