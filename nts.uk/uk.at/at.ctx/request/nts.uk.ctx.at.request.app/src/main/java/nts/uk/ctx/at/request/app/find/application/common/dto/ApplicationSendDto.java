@@ -5,27 +5,30 @@ import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Value;
-import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto_New;
-import nts.uk.ctx.at.request.app.find.application.common.dto.approvesendmail.ApproverPhaseStateSendDto;
-import nts.uk.ctx.at.request.dom.application.common.service.application.output.ApprovalRootOutput;
-import nts.uk.shr.com.context.AppContexts;
+import nts.uk.ctx.at.request.app.find.setting.company.emailset.AppEmailSetDto;
+import nts.uk.ctx.at.request.dom.application.common.service.application.output.ApplicationForSendOutput;
 @Value
 @AllArgsConstructor
 public class ApplicationSendDto {
-	public ApplicationDto_New application;
-	public String mailTemplate;
-	public List<ApproverPhaseStateSendDto> listApprovalPhaseStateDto;
-	public String applicantMail;
-	//ver6
-	private String sidLogin;
-	private String empName;
-	public static ApplicationSendDto fromDomain(ApplicationDto_New application_New, String mailTemplate, ApprovalRootOutput approvalRootContentImport, String loginerMail, String empName){
-			return new ApplicationSendDto(application_New, mailTemplate, 
-					approvalRootContentImport.getListApprovalPhaseState()
-						.stream().map(x -> ApproverPhaseStateSendDto.fromApprovalPhaseState(x))
-						.collect(Collectors.toList()),
-					loginerMail,
-					AppContexts.user().employeeId(),
-					empName);
-		}
+	/**
+	 * メール本文
+	 */
+	private String mailTemplate;
+	
+	/**
+	 * 申請メール設定
+	 */
+	private AppEmailSetDto appEmailSet;
+	
+	/**
+	 * 申請者ごと情報
+	 */
+	private List<AppSendMailByEmpDto> appSendMailByEmpLst;
+	
+	public static ApplicationSendDto fromDomain(ApplicationForSendOutput applicationForSendOutput) {
+		return new ApplicationSendDto(
+				applicationForSendOutput.getMailTemplate(), 
+				new AppEmailSetDto(applicationForSendOutput.getAppEmailSet()), 
+				applicationForSendOutput.getAppSendMailByEmpLst().stream().map(x -> AppSendMailByEmpDto.fromDomain(x)).collect(Collectors.toList()));
+	}
 }

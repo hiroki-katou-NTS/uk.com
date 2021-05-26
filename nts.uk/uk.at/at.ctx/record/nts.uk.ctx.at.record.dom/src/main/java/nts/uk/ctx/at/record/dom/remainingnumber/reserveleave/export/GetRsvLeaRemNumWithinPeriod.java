@@ -8,27 +8,23 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import lombok.val;
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AnnualLeaveInfo;
-import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.GetRsvLeaRemNumWithinPeriodParam;
-import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.RsvLeaDividedDay;
-import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.GetRsvLeaRemNumWithinPeriod.RequireM1;
-import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.GetRsvLeaRemNumWithinPeriod.RequireM2;
-import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.GetRsvLeaRemNumWithinPeriod.RequireM3;
-import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.GetRsvLeaRemNumWithinPeriod.RequireM4;
 import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.param.AggrResultOfReserveLeave;
 import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.param.GrantWork;
 import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.param.MaxSettingPeriodWork;
 import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.param.NextReserveLeaveGrant;
 import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.param.ReserveLeaveInfo;
 import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.param.RsvLeaAggrPeriodWork;
+import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveAggregatePeriodWork;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.ConfirmLeavePeriod;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveGrantRemainingData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
@@ -40,7 +36,6 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.interim.TmpReserveL
 import nts.uk.ctx.at.shared.dom.scherec.closurestatus.ClosureStatusManagement;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.MonAggrCompanySettings;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.MonthlyCalculatingDailys;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.remain.ReserveLeaveGrantRemaining;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.EmptYearlyRetentionSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.MaxDaysRetention;
@@ -103,22 +98,20 @@ public class GetRsvLeaRemNumWithinPeriod {
 		// 「休暇の集計期間から入社前、退職後を除く」を実行する
 		EmployeeImport employee = require.employee(cacheCarrier, employeeId);
 		if (employee == null) return Optional.empty();
-		DatePeriod aggrPeriod = ConfirmLeavePeriod.sumPeriod(param.getAggrPeriod(), employee);
-		if (aggrPeriod == null) return Optional.empty();
-		param.setAggrPeriod(aggrPeriod);
+		Optional<DatePeriod> aggrPeriod = ConfirmLeavePeriod.sumPeriod(param.getAggrPeriod(), employee);
+		if (!aggrPeriod.isPresent()) return Optional.empty();
+		param.setAggrPeriod(aggrPeriod.get());
 
 		AggrResultOfReserveLeave aggrResult = new AggrResultOfReserveLeave();
 
 		// 積立年休付与残数データ　取得
-		List<ReserveLeaveGrantRemaining> rsvGrantRemainingDatas = new ArrayList<>();
-		if (monthlyCalcDailys.isPresent()){
-			rsvGrantRemainingDatas = monthlyCalcDailys.get().getRsvGrantRemainingDatas();
-		}
-		else {
-			rsvGrantRemainingDatas =
-					require.reserveLeaveGrantRemainingData(employeeId, null).stream()
-							.map(c -> new ReserveLeaveGrantRemaining(c)).collect(Collectors.toList());
-		}
+		List<ReserveLeaveGrantRemainingData> rsvGrantRemainingDatas = new ArrayList<>();
+//		if (monthlyCalcDailys.isPresent()){
+//			rsvGrantRemainingDatas = monthlyCalcDailys.get().getRsvGrantRemainingDatas();
+//		}
+//		else {
+			rsvGrantRemainingDatas = require.reserveLeaveGrantRemainingData(employeeId);
+//		}
 
 		// 集計開始日時点の積立年休情報を作成
 		ReserveLeaveInfo reserveLeaveInfo = createInfoAsOfPeriodStart(
@@ -130,35 +123,37 @@ public class GetRsvLeaRemNumWithinPeriod {
 				param, retentionYearlySet, emptYearlyRetentionSetMap);
 
 		// 積立年休付与を計算
-		List<GrantWork> calcGrant = calcGrant(param.getLapsedAnnualLeaveInfos(), annualLeaveSet, maxSetPeriods);
+		List<GrantWork> calcGrant = calcGrant(param.getLapsedAnnualLeaveInfos(), annualLeaveSet, param.getAggrPeriod(), maxSetPeriods);
 
 		// 積立年休集計期間の作成
 		List<RsvLeaAggrPeriodWork> aggrPeriodWorks = createAggregatePeriod(param.getAggrPeriod(), calcGrant,
 							maxSetPeriods, rsvGrantRemainingDatas);
 
 		// 暫定積立年休管理データを取得する
-		List<TmpReserveLeaveMngWork> tmpReserveLeaveMngs = getTmpReserveLeaveMngs(require, param);
+		List<TmpResereLeaveMng> tmpReserveLeaveMngs = getTmpReserveLeaveMngs(require, param);
 
 		for (val aggrPeriodWork : aggrPeriodWorks){
 
 			// 積立年休の消滅・付与・消化
-			aggrResult = reserveLeaveInfo.lapsedGrantDigest(require, cacheCarrier, companyId, employeeId, aggrPeriodWork,
-					tmpReserveLeaveMngs, param.isGetNextMonthData(), aggrResult,
+			aggrResult = reserveLeaveInfo.lapsedGrantDigest(
+					require, cacheCarrier, companyId, employeeId, aggrPeriodWork,
+					tmpReserveLeaveMngs, aggrResult,
 					annualLeaveSet, retentionYearlySet, emptYearlyRetentionSetMap);
 		}
 
-		// 積立年休不足分を付与残数データとして作成する　→　積立年休不足分として作成した積立年休付与を削除する
-		aggrResult.getAsOfPeriodEnd().createShortageData(param.getIsOutputForShortage(), true);
-		aggrResult.getAsOfStartNextDayOfPeriodEnd().createShortageData(param.getIsOutputForShortage(), false);
-		if (aggrResult.getAsOfGrant().isPresent()){
-			for (val asOfGrant : aggrResult.getAsOfGrant().get()){
-				asOfGrant.createShortageData(param.getIsOutputForShortage(), false);
-			}
-		}
-		if (aggrResult.getLapsed().isPresent()){
-			for (val lapsed : aggrResult.getLapsed().get()){
-				lapsed.createShortageData(param.getIsOutputForShortage(), false);
-			}
+		// 【渡すパラメータ】 積休情報　←　積休の集計結果．積休情報（期間終了日時点）
+		ReserveLeaveInfo reserveLeaveInfoEnd = aggrResult.getAsOfPeriodEnd();
+
+		// マイナス分の積休付与残数を1レコードにまとめる
+		Optional<ReserveLeaveGrantRemainingData> remainingShortageData
+			= reserveLeaveInfoEnd.createLeaveGrantRemainingShortageData();
+
+		// 積休不足分として作成した積休付与データを削除する
+		aggrResult.deleteShortageRemainData();
+
+		// 積休(期間終了日時点)に残数不足の付与残数データを追加
+		if ( remainingShortageData.isPresent() ) {
+			reserveLeaveInfoEnd.getGrantRemainingList().add(remainingShortageData.get());
 		}
 
 		// 「積立年休の集計結果」を返す
@@ -177,7 +172,7 @@ public class GetRsvLeaRemNumWithinPeriod {
 			GetRsvLeaRemNumWithinPeriodParam param,
 			Optional<MonAggrCompanySettings> companySets,
 			Optional<MonthlyCalculatingDailys> monthlyCalcDailys,
-			List<ReserveLeaveGrantRemaining> rsvGrantRemainingDatas) {
+			List<ReserveLeaveGrantRemainingData> rsvGrantRemainingDatas) {
 
 		GeneralDate aggrStart = param.getAggrPeriod().start();		// 集計開始日
 
@@ -207,7 +202,8 @@ public class GetRsvLeaRemNumWithinPeriod {
 		boolean isAfterClosureStart = false;
 		Optional<GeneralDate> closureStartOpt = Optional.empty();
 		boolean noCheckStartDate = false;
-		if (param.getIsNoCheckStartDate().isPresent()) noCheckStartDate = param.getIsNoCheckStartDate().get();
+		// if (param.getIsNoCheckStartDate().isPresent()) noCheckStartDate = param.getIsNoCheckStartDate().get();
+
 		if (!noCheckStartDate){
 
 			// 休暇残数を計算する締め開始日を取得する
@@ -247,13 +243,11 @@ public class GetRsvLeaRemNumWithinPeriod {
 							new DatePeriod(closureStartOpt.get(), aggrStart.addDays(-1)),
 							param.getMode(),
 							aggrStart.addDays(-1),
-							param.isGetNextMonthData(),
 							param.getLapsedAnnualLeaveInfos(),
 							param.getIsOverWrite(),
 							param.getForOverWriteList(),
-							Optional.of(false),
-							Optional.of(true),
-							Optional.empty()),
+							Optional.empty(),
+							param.getIsOverWritePeriod()),
 					companySets,
 					monthlyCalcDailys);
 			if (!aggrResultOpt.isPresent()) return emptyInfo;
@@ -269,7 +263,7 @@ public class GetRsvLeaRemNumWithinPeriod {
 		// 締め開始日>=集計開始日　or 締め開始日がnull　の時
 
 		// 「積立年休付与残数データ」を取得
-		List<ReserveLeaveGrantRemaining> beforeClosureDatas = new ArrayList<>();
+		List<ReserveLeaveGrantRemainingData> beforeClosureDatas = new ArrayList<>();
 		GeneralDate closureStart = aggrStart;
 		if (closureStartOpt.isPresent()) closureStart = closureStartOpt.get();
 		for (val rsvGrantRemainingData : rsvGrantRemainingDatas){
@@ -290,13 +284,13 @@ public class GetRsvLeaRemNumWithinPeriod {
 	 * @return 積立年休情報
 	 */
 	private static ReserveLeaveInfo createInfoFromRemainingData(GeneralDate ymd,
-			List<ReserveLeaveGrantRemaining> grantRemainingDataList){
+			List<ReserveLeaveGrantRemainingData> grantRemainingDataList){
 
 		ReserveLeaveInfo returnInfo = new ReserveLeaveInfo();
 		returnInfo.setYmd(ymd);
 
 		// 積立年休情報．積立年休付与残数　←　パラメータ「積立年休付与残数データ」
-		List<ReserveLeaveGrantRemaining> targetDatas = new ArrayList<>();
+		List<ReserveLeaveGrantRemainingData> targetDatas = new ArrayList<>();
 		for (val grantRemainingData : grantRemainingDataList){
 			if (grantRemainingData.getExpirationStatus() == LeaveExpirationStatus.EXPIRED) continue;
 			targetDatas.add(grantRemainingData);
@@ -367,7 +361,10 @@ public class GetRsvLeaRemNumWithinPeriod {
 	 * @param maxSetPeriods 積立年休上限設定期間WORKリスト
 	 * @return 積立年休付与WORKリスト
 	 */
-	private static List<GrantWork> calcGrant(List<AnnualLeaveInfo> lapsedAnnualLeaveInfos, AnnualPaidLeaveSetting annualLeaveSet,
+	private static List<GrantWork> calcGrant(
+			List<AnnualLeaveInfo> lapsedAnnualLeaveInfos,
+			AnnualPaidLeaveSetting annualLeaveSet,
+			DatePeriod period,
 			List<MaxSettingPeriodWork> maxSetPeriods){
 
 		List<GrantWork> results = new ArrayList<>();
@@ -392,8 +389,8 @@ public class GetRsvLeaRemNumWithinPeriod {
 				double grantDays = 0.0;
 
 				// 付与残数データを取得
-				for (val grantRemaining : annualLeaveInfo.getGrantRemainingList()){
-					if (grantRemaining.getDeadline().compareTo(annualLeaveInfo.getYmd().addDays(-1)) != 0) continue;
+				for (val grantRemaining : annualLeaveInfo.getGrantRemainingDataList()){
+					if (!period.contains(grantRemaining.getDeadline())) continue;
 					if (grantRemaining.getExpirationStatus() != LeaveExpirationStatus.EXPIRED) continue;
 
 					// 付与日数に年休情報の残日数を加算
@@ -420,7 +417,7 @@ public class GetRsvLeaRemNumWithinPeriod {
 	 * @return 積立年休集計期間WORKリスト
 	 */
 	private static List<RsvLeaAggrPeriodWork> createAggregatePeriod(DatePeriod period, List<GrantWork> nextReserveLeaveGrantList,
-			List<MaxSettingPeriodWork> maxSetPeriods, List<ReserveLeaveGrantRemaining> grantRemainingDataList){
+			List<MaxSettingPeriodWork> maxSetPeriods, List<ReserveLeaveGrantRemainingData> grantRemainingDataList){
 
 		List<RsvLeaAggrPeriodWork> results = new ArrayList<>();
 
@@ -428,19 +425,20 @@ public class GetRsvLeaRemNumWithinPeriod {
 		Map<GeneralDate, RsvLeaDividedDay> dividedDayMap = new HashMap<>();
 
 		// 期間終了日翌日
+		GeneralDate dayOfPeriodEnd = period.end();
 		GeneralDate nextDayOfPeriodEnd = period.end();
-		if (nextDayOfPeriodEnd.before(GeneralDate.max())) nextDayOfPeriodEnd = nextDayOfPeriodEnd.addDays(1);
+		if (nextDayOfPeriodEnd.before(GeneralDate.max())) nextDayOfPeriodEnd = dayOfPeriodEnd.addDays(1);
 
 		// 「積立年休付与残数データ」を取得　（期限日　昇順、付与日　昇順）
-		List<ReserveLeaveGrantRemaining> remainingDatas = new ArrayList<>();
+		List<ReserveLeaveGrantRemainingData> remainingDatas = new ArrayList<>();
 		for (val grantRemainingData : grantRemainingDataList){
 			if (!period.contains(grantRemainingData.getDeadline())) continue;
 			if (grantRemainingData.getExpirationStatus() != LeaveExpirationStatus.AVAILABLE) continue;
 			remainingDatas.add(grantRemainingData);
 		}
-		Collections.sort(remainingDatas, new Comparator<ReserveLeaveGrantRemaining>() {
+		Collections.sort(remainingDatas, new Comparator<ReserveLeaveGrantRemainingData>() {
 			@Override
-			public int compare(ReserveLeaveGrantRemaining o1, ReserveLeaveGrantRemaining o2) {
+			public int compare(ReserveLeaveGrantRemainingData o1, ReserveLeaveGrantRemainingData o2) {
 				int compDeadline = o1.getDeadline().compareTo(o2.getDeadline());
 				if (compDeadline != 0) return compDeadline;
 				return o1.getGrantDate().compareTo(o2.getGrantDate());
@@ -474,9 +472,13 @@ public class GetRsvLeaRemNumWithinPeriod {
 			dividedDayMap.putIfAbsent(maxSetStart, new RsvLeaDividedDay(maxSetStart));
 		}
 
+		//期間終了日の「処理単位分割日」を取得・追加　→　フラグ設定
+		dividedDayMap.putIfAbsent(dayOfPeriodEnd, new RsvLeaDividedDay(dayOfPeriodEnd));
+		dividedDayMap.get(dayOfPeriodEnd).getEndWork().setPeriodEndAtr(true);
+
 		// 期間終了日翌日の「処理単位分割日」を取得・追加　→　フラグ設定
 		dividedDayMap.putIfAbsent(nextDayOfPeriodEnd, new RsvLeaDividedDay(nextDayOfPeriodEnd));
-		dividedDayMap.get(nextDayOfPeriodEnd).setNextDayAfterPeriodEnd(true);
+		dividedDayMap.get(nextDayOfPeriodEnd).getEndWork().setNextPeriodEndAtr(true);
 
 		// 「処理単位分割日」をソート
 		List<RsvLeaDividedDay> dividedDayList = new ArrayList<>();
@@ -519,13 +521,23 @@ public class GetRsvLeaRemNumWithinPeriod {
 			// 積立年休集計期間WORKを作成し、Listに追加
 			RsvLeaAggrPeriodWork nowWork = RsvLeaAggrPeriodWork.of(
 					workPeriod,
-					nowDividedDay.isNextDayAfterPeriodEnd(),
+					nowDividedDay.getEndWork(),
 					nowDividedDay.isGrantAtr(),
 					isAfterGrant,
 					nowDividedDay.isLapsedAtr(),
 					maxDays,
 					nowDividedDay.getNextReserveLeaveGrant());
 			results.add(nowWork);
+		}
+
+		// 処理期間内で何回目の付与なのかを保持。（一回目の付与を判断したい）
+		AtomicInteger grantNumber = new AtomicInteger(1);
+		for( RsvLeaAggrPeriodWork nowWork : results ){
+			if ( nowWork.isGrantAtr()) // 付与のとき
+			{
+				nowWork.setGrantNumber(grantNumber.get());
+				grantNumber.incrementAndGet();
+			}
 		}
 
 		// 積立年休集計期間WORKリストを返す
@@ -537,9 +549,9 @@ public class GetRsvLeaRemNumWithinPeriod {
 	 * @param param パラメータ
 	 * @return 暫定積立年休管理データWORKリスト
 	 */
-	private static List<TmpReserveLeaveMngWork> getTmpReserveLeaveMngs(RequireM1 require, GetRsvLeaRemNumWithinPeriodParam param){
+	private static List<TmpResereLeaveMng> getTmpReserveLeaveMngs(RequireM1 require, GetRsvLeaRemNumWithinPeriodParam param){
 
-		List<TmpReserveLeaveMngWork> results = new ArrayList<>();
+		List<TmpResereLeaveMng> results = new ArrayList<>();
 
 		// 「モード」をチェック
 		if (param.getMode() == InterimRemainMngMode.MONTHLY){
@@ -562,31 +574,26 @@ public class GetRsvLeaRemNumWithinPeriod {
 			// その他モード
 
 			// 「暫定積立年休管理データ」を取得する
-			val interimRemains = require.interimRemains(param.getEmployeeId(), param.getAggrPeriod(), RemainType.FUNDINGANNUAL);
-			for (val interimRemain : interimRemains){
-				val tmpReserveLeaveMngOpt = require.tmpResereLeaveMng(interimRemain.getRemainManaID());
-				if (!tmpReserveLeaveMngOpt.isPresent()) continue;
-				val tmpReserveLeaveMng = tmpReserveLeaveMngOpt.get();
-				results.add(TmpReserveLeaveMngWork.of(interimRemain, tmpReserveLeaveMng));
-			}
+			require.tmpResereLeaveMng(param.getEmployeeId(), param.getAggrPeriod()).forEach(x->{
+				results.add(new TmpResereLeaveMng(x.getRemainManaID(), x.getSID(), x.getYmd(), x.getCreatorAtr(), RemainType.FUNDINGANNUAL, x.getUseDays()));
+			});
 		}
 
 		// 「上書きフラグ」をチェック
 		if (param.getIsOverWrite().isPresent()){
 			if (param.getIsOverWrite().get()){
-
-				// 上書き用データがある時、使用する
-				if (param.getForOverWriteList().isPresent()){
-					val overWrites = param.getForOverWriteList().get();
-					for (val overWrite : overWrites){
-						// 重複データを削除
-						ListIterator<TmpReserveLeaveMngWork> itrResult = results.listIterator();
-						while (itrResult.hasNext()){
-							TmpReserveLeaveMngWork target = itrResult.next();
-							if (target.equals(overWrite)) itrResult.remove();
+				if(param.getIsOverWritePeriod().isPresent()){
+				
+					//上書き対象期間内の暫定積休管理データを削除
+					results.removeIf(x -> param.getIsOverWritePeriod().get().contains(x.getYmd()));
+	
+					// 上書き用データがある時、追加する
+					if (param.getForOverWriteList().isPresent()){
+						val overWrites = param.getForOverWriteList().get();
+						for (val overWrite : overWrites){
+							// 上書き用データを追加
+							results.add(overWrite);
 						}
-						// 上書き用データを追加
-						results.add(overWrite);
 					}
 				}
 			}
@@ -598,9 +605,7 @@ public class GetRsvLeaRemNumWithinPeriod {
 
 	public static interface RequireM1 {
 
-		List<InterimRemain> interimRemains(String employeeId, DatePeriod dateData, RemainType remainType);
-
-		Optional<TmpResereLeaveMng> tmpResereLeaveMng(String resereMngId);
+		List<TmpResereLeaveMng> tmpResereLeaveMng(String sid, DatePeriod datePeriod);
 	}
 
 	public static interface RequireM2 extends GetUpperLimitSetting.RequireM1 {
@@ -616,7 +621,7 @@ public class GetRsvLeaRemNumWithinPeriod {
 
 		//AnnualPaidLeaveSetting annualPaidLeaveSetting (String companyId);
 
-		List<ReserveLeaveGrantRemainingData> reserveLeaveGrantRemainingData(String employeeId, String cId);
+		List<ReserveLeaveGrantRemainingData> reserveLeaveGrantRemainingData(String employeeId);
 	}
 
 }

@@ -1,0 +1,89 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+<ui:composition template="../../../../master/base.xhtml">
+    <ui:define name="htmlHead">
+        <com:scriptfile set="IGNITE" />
+        <com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web"/>
+        <com:scriptfile path="kmt014.a.vm.js" />
+        <com:stylefile path="kmt014.a.main.css" />
+    </ui:define>
+    <ui:define name="content">
+        <div id="functions-area">
+            <a tabindex="1" class="goback" data-bind="ntsLinkButton: { action: goback }, text: $vm.$i18n('KMT005_2'), visible: displayGoback"/>
+            <button tabindex="2" class="proceed" data-bind="text: $vm.$i18n('KMT014_2'), click: register, enable: $root.errors.isEmpty" />
+            <button tabindex="3" class="danger" data-bind="text: $vm.$i18n('KMT014_3'), click: deleteSetting, enable: updateMode" />
+        </div>
+        <div id="contents-area" class="fixed-flex-layout">
+            <div class="fixed-flex-layout-left">
+                <div data-bind="ntsPanel:{width: '450px', height: '460px', direction: 'right', showIcon: true, visible: true}">
+                    <div class="control-group valign-center">
+                        <div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMT014_4')}</div>
+                        <div tabindex="4" data-bind="ntsDatePicker: { value: date, name: $i18n('KMT014_5') }"/>
+                        <button tabindex="5" data-bind="text: $vm.$i18n('KMT014_6'), click: changeDate" />
+                    </div>
+                    <div tabindex="6"
+                         style="width: 427px"
+                         data-bind="ntsSearchBox: {
+                                        searchMode: 'filter',
+                                        targetKey: 'taskCode',
+                                        comId: 'task-list',
+                                        items: taskList,
+                                        selected: taskCode,
+                                        selectedKey: 'taskCode',
+                                        fields: ['taskName', 'taskCode'],
+                                        mode: 'igGrid'
+                                    }" />
+                    <table tabindex="7"
+                           id="task-list"
+                           data-bind="ntsGridList: {
+                                        name: $i18n('KMT014_7'),
+                                        options: taskList,
+                                        optionsValue: 'taskCode',
+                                        columns: [
+                                            { headerText: $i18n('KMT014_8'), prop: 'taskCode', width: 180, formatter: _.escape },
+                                            { headerText: $i18n('KMT014_9'), prop: 'taskName', width: 190, formatter: _.escape, columnCssClass: 'limited-label' },
+                                            { headerText: $i18n('KMT014_10'), prop: 'alreadySet', width: 55, columnCssClass: 'text-center' }
+                                        ],
+                                        multiple: false,
+                                        value: taskCode,
+                                        height: 360
+                                    }"/>
+                </div>
+                <div style="height: 20px"/>
+            </div>
+            <div class="fixed-flex-layout-right">
+                <div class="control-group valign-center" style="padding-top: 20px;">
+                    <div data-bind="ntsFormLabel: {}">#{i18n.getText('KMT014_11')}</div>
+                    <span data-bind="text: taskCode"/>
+                </div>
+                <div class="control-group valign-center">
+                    <div data-bind="ntsFormLabel: {}">#{i18n.getText('KMT014_12')}</div>
+                    <span data-bind="text: taskName"/>
+                </div>
+                <div class="control-group valign-center">
+                    <div data-bind="ntsFormLabel: {}">#{i18n.getText('KMT014_13')}</div>
+                    <span data-bind="text: startDate"/>
+                    <span data-bind="visible: startDate() != null">#{i18n.getText('KMT014_14')}</span>
+                    <span data-bind="text: endDate"/>
+                </div>
+                <div class="control-group valign-center">
+                    <div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMT014_15')}</div>
+                    <button tabindex="8" data-bind="text: $vm.$i18n('KMT014_16'), enable: !!taskCode(), click: openCDL009" id="A6_2" />
+                    <button tabindex="9" data-bind="text: $vm.$i18n('KMT014_17'), enable: selectedEmployees().length > 0, click: removeEmployee" class="danger" />
+                </div>
+                <div class="control-group">
+                    <div style="padding-left: 100px;">
+                        <div tabindex="10" id="employee-list"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </ui:define>
+</ui:composition>
+</body>
+</html>

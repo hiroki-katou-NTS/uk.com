@@ -20,7 +20,7 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.adapter.personnelcostsetting.PersonnelCostSettingAdapter;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDaily;
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.CreateDailyResultDomainServiceImpl.ProcessState;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyresults.ProcessState;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.errorcheck.CalculationErrorCheckService;
 import nts.uk.ctx.at.record.dom.editstate.repository.EditStateOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
@@ -33,8 +33,6 @@ import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
 import nts.uk.ctx.at.shared.dom.attendance.MasterShareBus;
 import nts.uk.ctx.at.shared.dom.attendance.MasterShareBus.MasterShareContainer;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
-import nts.uk.ctx.at.shared.dom.dailyprocess.calc.CalculateOption;
-import nts.uk.ctx.at.shared.dom.dailyprocess.calc.FactoryManagePerPersonDailySet;
 import nts.uk.ctx.at.shared.dom.scherec.closurestatus.ClosureStatusManagement;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.CommonCompanySettingForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.service.AttendanceItemConvertFactory;
@@ -47,6 +45,8 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.E
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.CalculationState;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManagePerCompanySet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManagePerPersonDailySet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyprocess.calc.CalculateOption;
+import nts.uk.ctx.at.shared.dom.scherec.dailyprocess.calc.FactoryManagePerPersonDailySet;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItem;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemRepository;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.applicable.EmpCondition;
@@ -519,31 +519,6 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 		}
 		return returnList;
 	}
-
-	private WorkingConditionItem correctWorkCondition(IntegrationOfDaily record,
-			Optional<Entry<DateHistoryItem, WorkingConditionItem>> nowWorkingItem) {
-		
-		if (record.getWorkInformation().getRecordInfo().isExamWorkTime()) {
-			return new WorkingConditionItem(nowWorkingItem.get().getValue().getHistoryId(), 
-													nowWorkingItem.get().getValue().getScheduleManagementAtr(),
-													nowWorkingItem.get().getValue().getWorkDayOfWeek(), 
-													nowWorkingItem.get().getValue().getWorkCategory(),
-													nowWorkingItem.get().getValue().getAutoStampSetAtr(),
-													nowWorkingItem.get().getValue().getAutoIntervalSetAtr(),
-													nowWorkingItem.get().getValue().getEmployeeId(),
-													nowWorkingItem.get().getValue().getVacationAddedTimeAtr(),
-													nowWorkingItem.get().getValue().getContractTime(),
-													WorkingSystem.REGULAR_WORK, 
-													nowWorkingItem.get().getValue().getHolidayAddTimeSet().orElse(null),
-													nowWorkingItem.get().getValue().getScheduleMethod().orElse(null), 
-													nowWorkingItem.get().getValue().getHourlyPaymentAtr().value,
-													nowWorkingItem.get().getValue().getTimeApply().orElse(null),
-													nowWorkingItem.get().getValue().getMonthlyPattern().orElse(null));
-		} else {
-			return nowWorkingItem.get().getValue();
-		}
-	}
-	
 	
 	/**
 	 * 計算可能な日かを判定する

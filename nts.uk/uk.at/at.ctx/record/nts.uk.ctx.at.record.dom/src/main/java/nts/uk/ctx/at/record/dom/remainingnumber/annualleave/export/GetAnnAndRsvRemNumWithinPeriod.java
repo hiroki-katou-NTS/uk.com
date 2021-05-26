@@ -12,12 +12,12 @@ import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggrRes
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggrResultOfAnnualLeave;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AnnualLeaveInfo;
 import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.GetRsvLeaRemNumWithinPeriod;
-import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.GetRsvLeaRemNumWithinPeriodParam;
 import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.GetRsvLeaRemNumWithinPeriod.RequireM4;
+import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.GetRsvLeaRemNumWithinPeriodParam;
 import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.param.AggrResultOfReserveLeave;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualLeaveMngWork;
-import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.interim.TmpReserveLeaveMngWork;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TempAnnualLeaveMngs;
+import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.interim.TmpResereLeaveMng;
 import nts.uk.ctx.at.shared.dom.scherec.closurestatus.ClosureStatusManagement;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.MonAggrCompanySettings;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.MonAggrEmployeeSettings;
@@ -46,21 +46,23 @@ public class GetAnnAndRsvRemNumWithinPeriod {
 	 * @param noCheckStartDate 集計開始日を締め開始日とする　（締め開始日を確認しない）
 	 * @param prevAnnualLeave 前回の年休の集計結果
 	 * @param prevReserveLeave 前回の積立年休の集計結果
+  	 * @param isOverWritePeriod 上書き対象期間
 	 * @return 年休積立年休の集計結果
 	 */
 	public static AggrResultOfAnnAndRsvLeave algorithm(RequireM2 require, CacheCarrier cacheCarrier, String companyId,
 			String employeeId, DatePeriod aggrPeriod, InterimRemainMngMode mode, GeneralDate criteriaDate,
 			boolean isGetNextMonthData, boolean isCalcAttendanceRate, Optional<Boolean> isOverWrite,
-			Optional<List<TmpAnnualLeaveMngWork>> tempAnnDataforOverWriteList,
-			Optional<List<TmpReserveLeaveMngWork>> tempRsvDataforOverWriteList,
+			Optional<List<TempAnnualLeaveMngs>> tempAnnDataforOverWriteList,
+			Optional<List<TmpResereLeaveMng>> tempRsvDataforOverWriteList,
 			Optional<Boolean> isOutputForShortage, Optional<Boolean> noCheckStartDate,
-			Optional<AggrResultOfAnnualLeave> prevAnnualLeave, Optional<AggrResultOfReserveLeave> prevReserveLeave) {
+			Optional<AggrResultOfAnnualLeave> prevAnnualLeave, Optional<AggrResultOfReserveLeave> prevReserveLeave,
+			Optional<DatePeriod> isOverWritePeriod) {
 
 		return algorithm(require, cacheCarrier, companyId, employeeId, aggrPeriod, mode, criteriaDate,
 				isGetNextMonthData, isCalcAttendanceRate, isOverWrite,
 				tempAnnDataforOverWriteList, tempRsvDataforOverWriteList,
 				Optional.empty(), Optional.empty(), prevAnnualLeave, prevReserveLeave,
-				Optional.empty(), Optional.empty(), Optional.empty());
+				Optional.empty(), Optional.empty(), Optional.empty(), isOverWritePeriod);
 	}
 
 	/**
@@ -82,6 +84,7 @@ public class GetAnnAndRsvRemNumWithinPeriod {
 	 * @param companySets 月別集計で必要な会社別設定
 	 * @param employeeSets 月別集計で必要な社員別設定
 	 * @param monthlyCalcDailys 月の計算中の日別実績データ
+	 * @param isOverWritePeriod 上書き対象期間
 	 * @return 年休積立年休の集計結果
 	 */
 	public static AggrResultOfAnnAndRsvLeave algorithm(
@@ -95,15 +98,16 @@ public class GetAnnAndRsvRemNumWithinPeriod {
 			boolean isGetNextMonthData,
 			boolean isCalcAttendanceRate,
 			Optional<Boolean> isOverWrite,
-			Optional<List<TmpAnnualLeaveMngWork>> tempAnnDataforOverWriteList,
-			Optional<List<TmpReserveLeaveMngWork>> tempRsvDataforOverWriteList,
+			Optional<List<TempAnnualLeaveMngs>> tempAnnDataforOverWriteList,
+			Optional<List<TmpResereLeaveMng>> tempRsvDataforOverWriteList,
 			Optional<Boolean> isOutputForShortage,
 			Optional<Boolean> noCheckStartDate,
 			Optional<AggrResultOfAnnualLeave> prevAnnualLeave,
 			Optional<AggrResultOfReserveLeave> prevReserveLeave,
 			Optional<MonAggrCompanySettings> companySets,
 			Optional<MonAggrEmployeeSettings> employeeSets,
-			Optional<MonthlyCalculatingDailys> monthlyCalcDailys) {
+			Optional<MonthlyCalculatingDailys> monthlyCalcDailys,
+			Optional<DatePeriod> isOverWritePeriod)  {
 
 		AggrResultOfAnnAndRsvLeave aggrResult = new AggrResultOfAnnAndRsvLeave();
 
@@ -168,7 +172,7 @@ public class GetAnnAndRsvRemNumWithinPeriod {
 								mode, criteriaDate, isGetNextMonthData, isCalcAttendanceRate, isOverWrite,
 								tempAnnDataforOverWriteList, tempRsvDataforOverWriteList,
 								isOutputForShortage, Optional.of(true), Optional.empty(), Optional.empty(),
-								companySets, employeeSets, Optional.empty());
+								companySets, employeeSets, Optional.empty(), isOverWritePeriod);
 
 						// 受け取った結果をパラメータに反映する
 						noCheckStartDate = Optional.of(false);
@@ -182,13 +186,12 @@ public class GetAnnAndRsvRemNumWithinPeriod {
 		if (noCheckStartDate.isPresent())
 			noCheckStartDate.get();
 
-		// Require の不整合によるエラー
 		Optional<AggrResultOfAnnualLeave> aggrResultOfAnnualOpt
 			= GetAnnLeaRemNumWithinPeriodProc.algorithm(
 				require, cacheCarrier, companyId, employeeId, aggrPeriod,
 				mode, criteriaDate, isCalcAttendanceRate, isOverWrite,
 				tempAnnDataforOverWriteList, prevAnnualLeave,
-				Optional.empty(), Optional.empty());
+				Optional.empty(), Optional.empty(), isOverWritePeriod);
 
 
 		// 「年休積立年休の集計結果．年休」　←　受け取った「年休の集計結果」
@@ -203,8 +206,8 @@ public class GetAnnAndRsvRemNumWithinPeriod {
 		}
 		GetRsvLeaRemNumWithinPeriodParam rsvParam = new GetRsvLeaRemNumWithinPeriodParam(
 				companyId, employeeId, aggrPeriod, mode, criteriaDate,
-				isGetNextMonthData, lapsedAnnualLeaveInfos, isOverWrite, tempRsvDataforOverWriteList,
-				isOutputForShortage, noCheckStartDate, prevReserveLeave);
+				lapsedAnnualLeaveInfos, isOverWrite, tempRsvDataforOverWriteList,
+				prevReserveLeave,isOverWritePeriod);
 		val aggrResultOfreserveOpt = GetRsvLeaRemNumWithinPeriod.algorithm(
 				require, cacheCarrier,
 				rsvParam, companySets, monthlyCalcDailys);
@@ -219,8 +222,8 @@ public class GetAnnAndRsvRemNumWithinPeriod {
 	public static AggrResultOfAnnAndRsvLeave getRemainAnnRscByPeriod(RequireM1 require, CacheCarrier cacheCarrier,
 			String cID, String sID, DatePeriod aggrPeriod, InterimRemainMngMode mode, GeneralDate criteriaDate,
 			boolean isGetNextMonthData, boolean isCalcAttendanceRate, Optional<Boolean> isOverWrite,
-			Optional<List<TmpAnnualLeaveMngWork>> tempAnnDataforOverWriteList,
-			Optional<List<TmpReserveLeaveMngWork>> tempRsvDataforOverWriteList, Optional<Boolean> isOutputForShortage,
+			Optional<List<TempAnnualLeaveMngs>> tempAnnDataforOverWriteList,
+			Optional<List<TmpResereLeaveMng>> tempRsvDataforOverWriteList, Optional<Boolean> isOutputForShortage,
 			Optional<Boolean> noCheckStartDate, Optional<AggrResultOfAnnualLeave> prevAnnualLeave,
 			Optional<AggrResultOfReserveLeave> prevReserveLeave, Optional<MonAggrCompanySettings> companySets,
 			Optional<MonAggrEmployeeSettings> employeeSets, Optional<MonthlyCalculatingDailys> monthlyCalcDailys,
@@ -296,7 +299,7 @@ public class GetAnnAndRsvRemNumWithinPeriod {
 					cID, sID, aggrPeriod,
 					mode, criteriaDate, isCalcAttendanceRate, isOverWrite,
 					tempAnnDataforOverWriteList, prevAnnualLeave,
-					Optional.empty(), Optional.empty());
+					Optional.empty(), Optional.empty(),Optional.of(aggrPeriod));
 
 			// 「年休積立年休の集計結果．年休」　←　受け取った「年休の集計結果」
 			aggrResult.setAnnualLeave(aggrResultOfAnnualOpt);
@@ -310,8 +313,8 @@ public class GetAnnAndRsvRemNumWithinPeriod {
 			}
 			GetRsvLeaRemNumWithinPeriodParam rsvParam = new GetRsvLeaRemNumWithinPeriodParam(
 					cID, sID, aggrPeriod, mode, criteriaDate,
-					isGetNextMonthData, lapsedAnnualLeaveInfos, isOverWrite, tempRsvDataforOverWriteList,
-					isOutputForShortage, noCheckStartDate, prevReserveLeave);
+					lapsedAnnualLeaveInfos, isOverWrite, tempRsvDataforOverWriteList,
+					prevReserveLeave,Optional.of(aggrPeriod));
 			val aggrResultOfreserveOpt = GetRsvLeaRemNumWithinPeriod.algorithm(require, cacheCarrier,
 					rsvParam, companySets, monthlyCalcDailys);
 

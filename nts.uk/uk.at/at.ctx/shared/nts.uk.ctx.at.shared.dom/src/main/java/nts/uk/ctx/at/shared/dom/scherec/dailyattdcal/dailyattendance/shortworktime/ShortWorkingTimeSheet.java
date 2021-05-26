@@ -2,6 +2,8 @@ package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworkt
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
+import nts.uk.ctx.at.shared.dom.shortworktime.ChildCareAtr;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -18,7 +20,7 @@ public class ShortWorkingTimeSheet {
 	private ShortWorkTimFrameNo shortWorkTimeFrameNo;
 	
 	/** 育児介護区分: 育児介護区分*/
-	private ChildCareAttribute childCareAttr;
+	private ChildCareAtr childCareAttr;
 
 	/** 開始: 時刻(日区分付き) */
 	private TimeWithDayAttr startTime;
@@ -38,7 +40,7 @@ public class ShortWorkingTimeSheet {
 		this.shortWorkTimeFrameNo = shortWorkTimeFrameNo;
 	}
 
-	public void setChildCareAttr(ChildCareAttribute childCareAttr) {
+	public void setChildCareAttr(ChildCareAtr childCareAttr) {
 		this.childCareAttr = childCareAttr;
 	}
 
@@ -50,13 +52,21 @@ public class ShortWorkingTimeSheet {
 		this.endTime = endTime;
 	}
 
-	public ShortWorkingTimeSheet(ShortWorkTimFrameNo shortWorkTimeFrameNo, ChildCareAttribute childCareAttr,
+	public ShortWorkingTimeSheet(ShortWorkTimFrameNo shortWorkTimeFrameNo, ChildCareAtr childCareAttr,
 			TimeWithDayAttr startTime, TimeWithDayAttr endTime) {
 		super();
 		this.shortWorkTimeFrameNo = shortWorkTimeFrameNo;
 		this.childCareAttr = childCareAttr;
 		this.startTime = startTime;
 		this.endTime = endTime;
+	}
+	
+	/**
+	 * 計算用時間帯に変換する
+	 * @return
+	 */
+	public TimeSpanForCalc convertToTimeSpanForCalc() {
+		return new TimeSpanForCalc(this.startTime, this.endTime);
 	}
 	
 }

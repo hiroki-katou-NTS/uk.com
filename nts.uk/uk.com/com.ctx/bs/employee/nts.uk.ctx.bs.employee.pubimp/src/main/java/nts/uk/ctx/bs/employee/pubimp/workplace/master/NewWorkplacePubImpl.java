@@ -17,6 +17,9 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.uk.ctx.bs.employee.pub.workplace.*;
+import nts.uk.ctx.bs.employee.pub.workplace.config.WorkPlaceConfigExport;
+import nts.uk.ctx.bs.employee.pub.workplace.config.WorkPlaceConfigPub;
+import nts.uk.ctx.bs.employee.pub.workplace.master.WorkplaceInformationExport;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.util.Strings;
 
@@ -73,6 +76,9 @@ public class NewWorkplacePubImpl implements WorkplacePub {
 	
 	@Inject
 	private EmployeeDataMngInfoRepository empDataMngRepo;
+
+	@Inject
+	private WorkPlaceConfigPub workPlaceConfigPub;
 
 	@Override
 	public List<WorkplaceInforExport> getWorkplaceInforByWkpIds(String companyId, List<String> listWorkplaceId,
@@ -421,16 +427,7 @@ public class NewWorkplacePubImpl implements WorkplacePub {
 
 			WorkPlaceIdAndPeriod workPlaceIdAndPeriod = new WorkPlaceIdAndPeriod();
 
-			boolean check = (itemHist.start().afterOrEquals(datePeriod.start())
-					&& itemHist.start().beforeOrEquals(datePeriod.end())
-					&& itemHist.end().afterOrEquals(datePeriod.start())
-					&& itemHist.end().beforeOrEquals(datePeriod.end()))
-					|| (itemHist.start().afterOrEquals(datePeriod.start())
-							&& itemHist.start().beforeOrEquals(datePeriod.end())
-							&& itemHist.end().after(datePeriod.end()))
-					|| (itemHist.end().afterOrEquals(datePeriod.start())
-							&& itemHist.end().beforeOrEquals(datePeriod.end())
-							&& itemHist.start().before(datePeriod.start()));
+			boolean check = itemHist.start().beforeOrEquals(datePeriod.end()) && itemHist.end().afterOrEquals(datePeriod.start());
 
 			if (check) {
 				DatePeriod date = new DatePeriod(itemHist.start(), itemHist.end());
@@ -787,8 +784,12 @@ public class NewWorkplacePubImpl implements WorkplacePub {
 	}
 	
 	@Override
-	public Optional<WkpCdNameExport> findByWkpId(String wkpId) {	
-		WorkplaceInfo optWorkplaceInfo = workplaceInformationRepository.findByWkpId(wkpId).get(0);
+	public Optional<WkpCdNameExport> findByWkpId(String wkpId) {
+		List<WorkplaceInfo> workplaceInfoLst = workplaceInformationRepository.findByWkpId(wkpId);
+		if(CollectionUtil.isEmpty(workplaceInfoLst)) {
+			return Optional.empty();
+		}
+		WorkplaceInfo optWorkplaceInfo = workplaceInfoLst.get(0);
 		return Optional.of(WkpCdNameExport.builder().wkpCode(optWorkplaceInfo.getWorkplaceCode().v())
 				.wkpName(optWorkplaceInfo.getWorkplaceName().v()).build());
 	}
@@ -866,6 +867,33 @@ public class NewWorkplacePubImpl implements WorkplacePub {
 				.workLocationCd(affWrkPlcItem.get().getWorkLocationCode().isPresent()?
 						affWrkPlcItem.get().getWorkLocationCode().get().v() : null )
 				.build());
+	}
+
+	@Override
+	public List<WorkplaceInformationExport> getByCidAndPeriod(String companyId, DatePeriod datePeriod) {
+
+		//[No.647]期間に対応する職場構成を取得する
+		List<WorkPlaceConfigExport> workPlaceConfigLst = workPlaceConfigPub.findByCompanyIdAndPeriod(companyId, datePeriod);
+		List<String> wkpIds = new ArrayList<>();
+		workPlaceConfigLst.forEach(x -> {
+			x.getWkpConfigHistory().forEach(i -> wkpIds.add(i.getHistoryId()));
+		});
+		List<WorkplaceInformation> workplaceInforLst = workplaceInformationRepository.findByHistoryIds(AppContexts.user().companyId(), wkpIds);
+
+		return workplaceInforLst.stream()
+			.map(i -> new WorkplaceInformationExport(
+					i.getCompanyId(),
+					i.isDeleteFlag(),
+					i.getWorkplaceHistoryId(),
+					i.getWorkplaceId(),
+					i.getWorkplaceCode().v(),
+					i.getWorkplaceName().v(),
+					i.getWorkplaceGeneric().v(),
+					i.getWorkplaceDisplayName().v(),
+					i.getHierarchyCode().v(),
+					i.getWorkplaceExternalCode().isPresent() ? Optional.of(i.getWorkplaceExternalCode().get().v()) : Optional.empty()
+				)
+			).collect(Collectors.toList());
 	}
 
 }

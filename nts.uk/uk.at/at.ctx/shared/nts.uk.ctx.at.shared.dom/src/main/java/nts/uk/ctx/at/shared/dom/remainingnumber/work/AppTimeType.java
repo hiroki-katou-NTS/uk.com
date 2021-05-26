@@ -2,8 +2,13 @@ package nts.uk.ctx.at.shared.dom.remainingnumber.work;
 
 import lombok.AllArgsConstructor;
 
+/**
+ *時間休暇種類 
+ */
 @AllArgsConstructor
 public enum AppTimeType {
+	/** 日数使用 */
+	USEDAY(0),
 	/**	出勤前 */
 	ATWORK(1),
 	/**	退勤後 */

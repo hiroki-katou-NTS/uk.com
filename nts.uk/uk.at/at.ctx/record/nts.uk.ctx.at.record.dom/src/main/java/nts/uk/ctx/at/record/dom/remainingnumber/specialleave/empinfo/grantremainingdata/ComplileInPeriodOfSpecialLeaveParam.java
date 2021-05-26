@@ -7,9 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
-import nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.InterimSpecialHolidayMng;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.InterimSpecialHolidayMng;
 
 /**
  *
@@ -44,13 +43,14 @@ public class ComplileInPeriodOfSpecialLeaveParam {
 	/**上書きフラグ	 */
 	private boolean overwriteFlg;
 	/**	上書き用の暫定管理データ */
-	private List<InterimRemain> remainData;
-	/**
-	 * 特別休暇暫定データ
-	 */
-	List<InterimSpecialHolidayMng> interimSpecialData;
+	private List<InterimSpecialHolidayMng> interimSpecialData;
 //	/**
 //	 * 前回の特別休暇の集計結果情報
 //	 */
 //	Optional<InPeriodOfSpecialLeaveResultInfor> optBeforeResult;
+	
+	/**
+	 * 上書き対象期間　
+	 */
+	private Optional<DatePeriod> isOverWritePeriod;
 }

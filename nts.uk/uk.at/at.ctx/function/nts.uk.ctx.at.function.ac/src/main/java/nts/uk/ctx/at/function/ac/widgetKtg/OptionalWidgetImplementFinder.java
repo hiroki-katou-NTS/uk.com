@@ -44,12 +44,6 @@ import nts.uk.ctx.at.record.pub.workrecord.erroralarm.EmployeeDailyPerErrorPub;
 import nts.uk.ctx.at.record.pub.workrecord.remainingnumbermanagement.AnnualHolidayManagementPub;
 import nts.uk.ctx.at.record.pub.workrecord.remainingnumbermanagement.NextAnnualLeaveGrantExport;
 import nts.uk.ctx.at.request.pub.application.lateorleaveearly.LateOrLeaveEarlyPub;
-import nts.uk.ctx.at.request.pub.application.recognition.AppHdTimeNotReflectedPub;
-import nts.uk.ctx.at.request.pub.application.recognition.AppNotReflectedPub;
-import nts.uk.ctx.at.request.pub.application.recognition.ApplicationOvertimePub;
-import nts.uk.ctx.at.request.pub.application.recognition.ApplicationTimeUnreflectedPub;
-import nts.uk.ctx.at.request.pub.application.recognition.HolidayInstructPub;
-import nts.uk.ctx.at.request.pub.application.recognition.OverTimeInstructPub;
 import nts.uk.ctx.at.shared.pub.remainingnumber.annualleave.empinfo.basicinfo.GetGrantHdTblSetPub;
 import nts.uk.ctx.at.shared.pub.remainingnumber.annualleave.empinfo.basicinfo.GrantHdTblSetExport;
 import nts.uk.ctx.at.shared.pub.yearholidaygrant.CalculationMethod;
@@ -60,11 +54,7 @@ import nts.arc.time.calendar.period.DatePeriod;
 @Stateless
 public class OptionalWidgetImplementFinder implements OptionalWidgetAdapter {
 
-	@Inject
-	OverTimeInstructPub overTimeInstructPub;
-
-	@Inject
-	HolidayInstructPub holidayInstructPub;
+	
 
 	@Inject
 	private OptionalWidgetPub optionalWidgetPub;
@@ -73,19 +63,8 @@ public class OptionalWidgetImplementFinder implements OptionalWidgetAdapter {
 	private EmployeeDailyPerErrorPub employeeDailyPerErrorPub;
 
 	@Inject
-	private ApplicationOvertimePub applicationOvertimePub;
-
-	@Inject
 	private DailyExcessTotalTimePub dailyExcessTotalTimePub;
 
-	@Inject
-	private ApplicationTimeUnreflectedPub applicationTimeUnreflectedPub;
-
-	@Inject
-	private AppHdTimeNotReflectedPub appHdTimeNotReflectedPub;
-
-	@Inject
-	private AppNotReflectedPub appNotReflectedPub;
 
 	@Inject
 	private AnnualHolidayManagementPub annualHolidayManagementPub;
@@ -105,15 +84,7 @@ public class OptionalWidgetImplementFinder implements OptionalWidgetAdapter {
 	@Inject
 	private GetGrantHdTblSetPub getGrantHdTblSetPub;
 
-	@Override
-	public int getNumberOT(String employeeId, GeneralDate startDate, GeneralDate endDate) {
-		return overTimeInstructPub.acquireOverTimeWorkInstruction(employeeId, startDate, endDate).size();
-	}
-
-	@Override
-	public int getNumberBreakIndication(String employeeId, GeneralDate startDate, GeneralDate endDate) {
-		return holidayInstructPub.acquireBreakIndication(employeeId, startDate, endDate).size();
-	}
+	
 
 	@Override
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -142,15 +113,6 @@ public class OptionalWidgetImplementFinder implements OptionalWidgetAdapter {
 				.map(c -> new EmployeeErrorImport(c.getDate(), c.getHasError())).collect(Collectors.toList());
 	}
 
-	@Override
-	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
-	public List<ApplicationTimeImport> acquireTotalApplicationOverTimeHours(String sId, GeneralDate startDate,
-			GeneralDate endDate) {
-		// TODO Auto-generated method stub
-		return applicationOvertimePub.acquireTotalApplicationOverTimeHours(sId, startDate, endDate)
-				.stream().map(c -> new ApplicationTimeImport(c.getDate(), c.getTotalOtHours()))
-				.collect(Collectors.toList());
-	}
 
 	@Override
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -166,32 +128,6 @@ public class OptionalWidgetImplementFinder implements OptionalWidgetAdapter {
 					new AttendanceTimeImport(c.getValue().getExcessMidNightTime().hour(),c.getValue().getExcessMidNightTime().minute())));
 		});
 		return result;
-	}
-
-	@Override
-	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
-	public List<ApplicationTimeImport> acquireTotalApplicationTimeUnreflected(String sId, GeneralDate startDate,
-			GeneralDate endDate) {
-		// TODO Auto-generated method stub
-		return applicationTimeUnreflectedPub.acquireTotalApplicationTimeUnreflected(sId, startDate, endDate)
-				.stream().map(c -> new ApplicationTimeImport(c.getDate(), c.getTotalOtHours())).collect(Collectors.toList());
-	}
-
-	@Override
-	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
-	public List<ApplicationTimeImport> acquireTotalAppHdTimeNotReflected(String sId, GeneralDate startDate,
-			GeneralDate endDate) {
-		// TODO Auto-generated method stub
-		return appHdTimeNotReflectedPub.acquireTotalAppHdTimeNotReflected(sId, startDate, endDate)
-				.stream().map(c -> new ApplicationTimeImport(c.getDate(), c.getBreakTime())).collect(Collectors.toList());
-	}
-
-	@Override
-	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
-	public List<ApplicationTimeImport> acquireAppNotReflected(String sId, GeneralDate startDate, GeneralDate endDate) {
-		// TODO Auto-generated method stub
-		return appNotReflectedPub.acquireAppNotReflected(sId, startDate, endDate)
-				.stream().map(c -> new ApplicationTimeImport(c.getDate(), c.getTotalOtHours())).collect(Collectors.toList());
 	}
 
 	@Override

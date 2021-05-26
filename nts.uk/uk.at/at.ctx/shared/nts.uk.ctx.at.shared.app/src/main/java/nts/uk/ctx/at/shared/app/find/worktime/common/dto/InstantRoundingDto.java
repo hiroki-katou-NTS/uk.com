@@ -4,7 +4,9 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.find.worktime.common.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.worktime.common.FontRearSection;
 import nts.uk.ctx.at.shared.dom.worktime.common.InstantRoundingSetMemento;
@@ -15,6 +17,8 @@ import nts.uk.ctx.at.shared.dom.worktime.common.RoundingTimeUnit;
  */
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class InstantRoundingDto implements InstantRoundingSetMemento{
 	
 	/** The font rear section. */

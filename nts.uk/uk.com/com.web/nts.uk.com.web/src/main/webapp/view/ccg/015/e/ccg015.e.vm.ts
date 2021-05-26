@@ -96,6 +96,7 @@ module nts.uk.com.view.ccg015.e {
       if (newItem) {
         vm.itemList.splice(position, 0, newItem);
       }
+      vm.checkData();
     }
 
     // ウィジェットを取消する
@@ -185,7 +186,8 @@ module nts.uk.com.view.ccg015.e {
         })
         .always(() => vm.$blockui("clear"));
     }
-
+   
+    
     saveData() {
       const vm = this;
       const sortedWidgetList: WidgetTypeModel[] = _.map(vm.itemList(), (item, index) => new WidgetTypeModel({
@@ -205,6 +207,20 @@ module nts.uk.com.view.ccg015.e {
           vm.$dialog.info({ messageId: "Msg_15" });
         })
         .always(() => vm.$blockui("clear"));
+    }
+
+    checkData() {
+      const vm = this;
+      const sortedWidgetList: WidgetTypeModel[] = _.map(vm.itemList(), (item, index) => new WidgetTypeModel({
+        order: index, // Set oder similar to list item order
+        widgetType: Number(item.itemType),
+      }));
+      const listItem: number[] = _.map(sortedWidgetList,(item: WidgetTypeModel) => item.widgetType);
+      vm.$ajax('/toppage/checkData', listItem).then((flag: boolean) => {
+        if (!flag) {
+          vm.$dialog.error({ messageId: "Msg_2140"});
+        }
+      });
     }
 
   }
@@ -336,7 +352,7 @@ module nts.uk.com.view.ccg015.e {
     }
 
     public isComponent() {
-      return this.isKTG026() || this.isKTG027() || this.isKTG031() || this.isCCG005();
+      return this.isKTG026() || this.isKTG027() || this.isKTG031() || this.isCCG005() || this.isKTG001() || this.isKTG005 || this.isKTG004 || this.isKDP001(); 
     }
     public isKTG026() {
       return this.itemType === MenuPartType.PART_KTG_026;
@@ -349,6 +365,18 @@ module nts.uk.com.view.ccg015.e {
     }
     public isCCG005() {
       return this.itemType === MenuPartType.PART_CCG_005;
+    }
+    public isKTG001() {
+      return this.itemType === MenuPartType.PART_KTG_001;
+    }
+    public isKTG004() {
+      return this.itemType === MenuPartType.PART_KTG_004;
+    }
+    public isKTG005() {
+      return this.itemType === MenuPartType.PART_KTG_005;
+    }
+    public isKDP001() {
+      return this.itemType === MenuPartType.PART_KDP_001;
     }
   }
 }

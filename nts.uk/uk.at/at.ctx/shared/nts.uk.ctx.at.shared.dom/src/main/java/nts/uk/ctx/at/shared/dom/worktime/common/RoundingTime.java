@@ -1,18 +1,16 @@
 package nts.uk.ctx.at.shared.dom.worktime.common;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.OutingTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.OutingTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeActualStamp;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 @Getter
 @NoArgsConstructor
@@ -40,12 +38,13 @@ public class RoundingTime {
 	 */
 	public RoundingTime(RoundingTimeGetMemento memento) {
 		super();
-		this.attendanceMinuteLaterCalculate = NotUseAtr.NOT_USE;//memento.getAttendanceMinuteLaterCalculate();
-		this.leaveWorkMinuteAgoCalculate = NotUseAtr.NOT_USE;//memento.getLeaveWorkMinuteAgoCalculate();
-		this.roundingSets = Arrays.asList(new RoundingSet(new InstantRounding(FontRearSection.AFTER, RoundingTimeUnit.FIFTEEN), Superiority.ATTENDANCE),
-				new RoundingSet(new InstantRounding(FontRearSection.AFTER, RoundingTimeUnit.FIFTEEN), Superiority.GO_OUT),
-				new RoundingSet(new InstantRounding(FontRearSection.AFTER, RoundingTimeUnit.FIFTEEN), Superiority.OFFICE_WORK),
-				new RoundingSet(new InstantRounding(FontRearSection.AFTER, RoundingTimeUnit.FIFTEEN), Superiority.TURN_BACK));//memento.getRoundingSets();
+		this.attendanceMinuteLaterCalculate = memento.getAttendanceMinuteLaterCalculate();
+		this.leaveWorkMinuteAgoCalculate = memento.getLeaveWorkMinuteAgoCalculate();
+//		this.roundingSets = Arrays.asList(new RoundingSet(new InstantRounding(FontRearSection.AFTER, RoundingTimeUnit.FIFTEEN), Superiority.ATTENDANCE),
+//				new RoundingSet(new InstantRounding(FontRearSection.AFTER, RoundingTimeUnit.FIFTEEN), Superiority.GO_OUT),
+//				new RoundingSet(new InstantRounding(FontRearSection.AFTER, RoundingTimeUnit.FIFTEEN), Superiority.OFFICE_WORK),
+//				new RoundingSet(new InstantRounding(FontRearSection.AFTER, RoundingTimeUnit.FIFTEEN), Superiority.TURN_BACK));
+		this.roundingSets = memento.getRoundingSets();
 	}
 
 	/**
@@ -55,7 +54,7 @@ public class RoundingTime {
 	public void saveToMemento(RoundingTimeSetMemento memento) {
 		memento.setAttendanceMinuteLaterCalculate(this.attendanceMinuteLaterCalculate);
 		memento.setLeaveWorkMinuteAgoCalculate(this.leaveWorkMinuteAgoCalculate);
-		memento.getRoundingSets(this.roundingSets);
+		memento.setRoundingSets(this.roundingSets);
 	}
 
 	/*
@@ -172,4 +171,49 @@ public class RoundingTime {
 				new InstantRounding(FontRearSection.BEFORE, RoundingTimeUnit.ONE), Superiority.TURN_BACK));
 		return domain;
 	}
+	/*
+	 * 外出戻り時刻を丸める
+	 */
+	public List<OutingTimeSheet> roundingOutingTime(List<OutingTimeSheet> outingTimeSheets) {
+
+		List<OutingTimeSheet> newOutingTimeSheets = new ArrayList<>();
+
+		//時間帯の件数でループ
+		for(OutingTimeSheet outingTimeSheet:outingTimeSheets) {
+			Optional<WorkStamp> newGoOutStamp;
+			//外出のデータがあるか
+			if(outingTimeSheet.getGoOut().isPresent() ) {
+				//丸め設定取得
+				RoundingSet roundingSetGoOut =  this.roundingSets.stream().filter(item -> item.getSection() == Superiority.GO_OUT).findFirst().get();
+				//丸め処理
+				newGoOutStamp =Optional.of(roundingSetGoOut.getRoundingSet().roundStamp(outingTimeSheet.getGoOut().get()));
+			}else {
+				newGoOutStamp = Optional.empty();
+			}
+
+			
+
+			Optional<WorkStamp> newComeBackStamp;
+			//戻りのデータがあるか
+			if(outingTimeSheet.getComeBack().isPresent() ) {
+				//丸め設定取得
+				RoundingSet roundingSetComeBack =  this.roundingSets.stream().filter(item -> item.getSection() == Superiority.TURN_BACK).findFirst().get();
+				//丸め処理
+				newComeBackStamp =Optional.of(roundingSetComeBack.getRoundingSet().roundStamp(outingTimeSheet.getComeBack().get()));
+			}else {
+				newComeBackStamp = Optional.empty();
+			}
+
+			newOutingTimeSheets.add(new OutingTimeSheet(
+					outingTimeSheet.getOutingFrameNo(),
+					newGoOutStamp,
+					outingTimeSheet.getReasonForGoOut(),
+					newComeBackStamp));
+
+
+		}
+		
+		return newOutingTimeSheets;
+	}
+	
 }

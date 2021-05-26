@@ -11,9 +11,9 @@ import java.util.Optional;
 @Getter
 public class ChildCareNurseRemainingNumberImport implements Cloneable{
 
-	/** 子の看護休暇使用日数 */
+	/** 子の看護休暇残日数 */
 	private  Double usedDays;
-	/** 子の看護休暇使用時間 */
+	/** 子の看護休暇残時間 */
 	private Optional<Integer> usedTime;
 
 	/**
@@ -27,8 +27,8 @@ public class ChildCareNurseRemainingNumberImport implements Cloneable{
 
 	/**
 	 * ファクトリー
-	 * @param usedDays　子の看護休暇使用日数
-	 * @param usedTime　子の看護休暇使用時間
+	 * @param usedDays　子の看護休暇残日数
+	 * @param usedTime　子の看護休暇残時間
 	 * @return 子の看護介護残数
 	*/
 	public static ChildCareNurseRemainingNumberImport of (

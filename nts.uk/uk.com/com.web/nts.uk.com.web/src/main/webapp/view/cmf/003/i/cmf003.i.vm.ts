@@ -160,9 +160,9 @@ module nts.uk.com.view.cmf003.i {
       });
       vm.dataGrid = new (nts.uk.ui as any).mgrid.MGrid($("#I6_1")[0], {
         height: 800,
-        subHeight: 300,
+        subHeight: 575,
         headerHeight: "40px",
-        autoFitWindow: true,
+        autoFitWindow: false,
         dataSource: vm.resultItems(),
         primaryKey: 'id',
         primaryKeyDataType: 'number',
@@ -178,9 +178,9 @@ module nts.uk.com.view.cmf003.i {
         features: [
           {
             name: 'Paging',
-            pageSize: 100,
+            pageSize: 20,
             currentPageIndex: 0,
-            loaded: () => { }
+            loaded: () => vm.updateGridUI()
           },
           {
             name: 'ColumnFixing', fixingDirection: 'left',

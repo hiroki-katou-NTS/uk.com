@@ -129,7 +129,7 @@ public class AggregateMonthlyRecordService {
 	 * @param companySets
 	 * @return
 	 */
-	public static Map<GeneralDate, DailyInterimRemainMngData> mapInterimRemainData(RequireM1 require,
+	public static List<DailyInterimRemainMngData> mapInterimRemainData(RequireM1 require,
 			CacheCarrier cacheCarrier, String cid, String sid, DatePeriod datePeriod) {
 
 		AggregateMonthlyRecordServiceProc proc = new AggregateMonthlyRecordServiceProc();
@@ -145,8 +145,10 @@ public class AggregateMonthlyRecordService {
 		comSetting.setAbsSettingOpt(absSettingOpt);
 		comSetting.setDayOffSetting(dayOffSetting);
 		proc.setCompanySets(comSetting);
-		proc.createDailyInterimRemainMngs(require, cacheCarrier, datePeriod);
-		return proc.getDailyInterimRemainMngs();
+
+//		proc.createDailyInterimRemainMngs(require, cacheCarrier, datePeriod);
+//		return proc.getDailyInterimRemainMngs();
+		return proc.createDailyInterimRemainMngs(require, cacheCarrier, datePeriod);
 	}
 
 	public static interface RequireM2 extends AggregateMonthlyRecordServiceProc.RequireM15 {

@@ -16,7 +16,6 @@ import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.User;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ApproveProcessResult;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
-import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSettingRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -28,8 +27,8 @@ public class ApproveHolidayShipmentCommandHandler
 	@Inject
 	private DetailAfterApproval detailAfAppv;
 	
-	@Inject
-	ApplicationSettingRepository applicationSettingRepository;
+//	@Inject
+//	ApplicationSettingRepository applicationSettingRepository;
 	
 //	@Inject
 //	private AppTypeDiscreteSettingRepository appTypeDiscreteSettingRepository;
@@ -96,7 +95,7 @@ public class ApproveHolidayShipmentCommandHandler
 		ProcessResult processResult = approvalApplication(command, companyID, employeeID, version, memo, appReason, isUpdateReason);
 		
 		if(!isUpdateReason){
-			appReason = applicationRepository.findByID(companyID, processResult.getAppID()).get().getOpAppReason().get().v();
+			appReason = applicationRepository.findByID(companyID, processResult.getAppIDLst().stream().findFirst().orElse(null)).get().getOpAppReason().get().v();
 		}
 		
 		/*return new ApproveProcessResult(

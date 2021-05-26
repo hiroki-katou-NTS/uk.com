@@ -12,11 +12,11 @@ import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.Setter;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.shared.app.find.worktime.common.dto.CommonRestSettingDto;
 import nts.uk.ctx.at.shared.app.find.worktime.common.dto.FixedWorkCalcSettingDto;
-import nts.uk.ctx.at.shared.app.find.worktime.common.dto.FixedWorkRestSetDto;
 import nts.uk.ctx.at.shared.app.find.worktime.common.dto.StampReflectTimezoneDto;
 import nts.uk.ctx.at.shared.app.find.worktime.common.dto.WorkTimezoneCommonSetDto;
-import nts.uk.ctx.at.shared.dom.worktime.common.FixedWorkRestSet;
+import nts.uk.ctx.at.shared.dom.worktime.common.CommonRestSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.LegalOTSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.StampReflectTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
@@ -25,6 +25,7 @@ import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixHalfDayWorkTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixOffdayWorkTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkCalcSetting;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSettingSetMemento;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.HalfDayWorkSet;
 
 /**
  * The Class FixedWorkSettingDto.
@@ -43,10 +44,13 @@ public class FixedWorkSettingDto implements FixedWorkSettingSetMemento {
 	private WorkTimezoneCommonSetDto commonSetting;
 
 	/** The use half day shift. */
-	private Boolean useHalfDayShift;
+	private HalfDayWorkSet useHalfDayShift;
+	
+	/** The common rest set. */
+    private CommonRestSettingDto commonRestSet;
 
 	/** The fixed work rest setting. */
-	private FixedWorkRestSetDto fixedWorkRestSetting;
+//	private FixedWorkRestSetDto fixedWorkRestSetting;
 
 	/** The lst half day work timezone. */
 	private List<FixHalfDayWorkTimezoneDto> lstHalfDayWorkTimezone;
@@ -124,8 +128,14 @@ public class FixedWorkSettingDto implements FixedWorkSettingSetMemento {
 	 * setUseHalfDayShift(java.lang.Boolean)
 	 */
 	@Override
-	public void setUseHalfDayShift(Boolean useHalfDayShift) {
+	public void setUseHalfDayShift(HalfDayWorkSet useHalfDayShift) {
 		this.useHalfDayShift = useHalfDayShift;
+	}
+	
+	@Override
+	public void setCommonRestSet(CommonRestSetting commonRestSet) {
+	    this.commonRestSet = new CommonRestSettingDto();
+	    this.commonRestSet.setCalculateMethod(commonRestSet.getCalculateMethod());
 	}
 
 	/*
@@ -136,13 +146,13 @@ public class FixedWorkSettingDto implements FixedWorkSettingSetMemento {
 	 * setFixedWorkRestSetting(nts.uk.ctx.at.shared.dom.worktime.common.
 	 * FixedWorkRestSet)
 	 */
-	@Override
-	public void setFixedWorkRestSetting(FixedWorkRestSet fixedWorkRestSetting) {
-		if (fixedWorkRestSetting != null) {
-			this.fixedWorkRestSetting = new FixedWorkRestSetDto();
-			fixedWorkRestSetting.saveToMemento(this.fixedWorkRestSetting);
-		}
-	}
+//	@Override
+//	public void setFixedWorkRestSetting(FixedWorkRestSet fixedWorkRestSetting) {
+//		if (fixedWorkRestSetting != null) {
+//			this.fixedWorkRestSetting = new FixedWorkRestSetDto();
+//			fixedWorkRestSetting.saveToMemento(this.fixedWorkRestSetting);
+//		}
+//	}
 
 	/*
 	 * (non-Javadoc)

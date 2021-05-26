@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.request.dom.applicationreflect.object;
 
-import java.util.Arrays;
 import java.util.Optional;
 
 import lombok.AllArgsConstructor;
@@ -8,7 +7,6 @@ import lombok.Data;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.DailyAttendanceUpdateStatus;
 import nts.uk.ctx.at.request.dom.application.ReflectedState;
-import nts.uk.ctx.at.request.dom.application.ReflectionStatus;
 import nts.uk.ctx.at.request.dom.application.ReflectionStatusOfDay;
 
 /**
@@ -36,15 +34,15 @@ public class OneDayReflectStatusOutput {
 		this.statusWorkSchedule.setReflectStatus(stateWorkSchedule);
 	}
 
-	public ReflectionStatus createReflectStatus(GeneralDate date) {
-		return new ReflectionStatus(Arrays.asList(new ReflectionStatusOfDay(statusWorkRecord.getReflectStatus(),
-				statusWorkSchedule.getReflectStatus(), date,
+	public ReflectionStatusOfDay createReflectStatus(GeneralDate date) {
+		return new ReflectionStatusOfDay(statusWorkRecord.getReflectStatus(), statusWorkSchedule.getReflectStatus(),
+				date,
 				Optional.of(DailyAttendanceUpdateStatus.createNew(null, null,
 						statusWorkRecord.getReasonNotReflectWorkRecord() == null ? null
 								: statusWorkRecord.getReasonNotReflectWorkRecord().value,
 						statusWorkSchedule.getReasonNotReflectWorkSchedule() == null ? null
 								: statusWorkSchedule.getReasonNotReflectWorkSchedule().value)),
-				Optional.empty())));
+				Optional.empty());
 	}
 	
 	public boolean reflect() {

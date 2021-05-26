@@ -24,7 +24,6 @@ public class BpsdtPsAnniversaryInfo extends UkJpaEntity implements AnniversaryNo
     private static final long serialVersionUID = 1L;
 
     // column 排他バージョン
-    @Version
     @Column(name = "EXCLUS_VER")
     private long version;
 

@@ -2,13 +2,13 @@ package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculatio
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ActualWorkingTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.TimeSpanForDailyCalc;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.MidNightTimeSheetForCalcList;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.TimeSheetOfDeductionItem;
 
 /**
@@ -41,6 +41,6 @@ public class DeclareTimeSheet extends ActualWorkingTimeSheet {
 			List<TimeSheetOfDeductionItem> recordedList,
 			List<TimeSheetOfDeductionItem> deductList){
 		super(timeSheet, rounding, recordedList, deductList,
-				new ArrayList<>(), new ArrayList<>(), Optional.empty());
+				new ArrayList<>(), new ArrayList<>(), MidNightTimeSheetForCalcList.createEmpty());
 	}
 }

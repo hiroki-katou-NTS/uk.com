@@ -48,7 +48,7 @@ public class AgreementOneYear {
 		}
 		
 		/** エラーチェック */
-		val agreementState = this.specConditionLimit.check(agreementTarget);
+		val agreementState = this.basic.check(agreementTarget);
 		
 		if (agreementState == ExcessState.ERROR_OVER) {
 			return AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR;

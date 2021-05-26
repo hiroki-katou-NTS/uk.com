@@ -169,10 +169,10 @@ public class JpaMonthlyAttendanceItemRepository extends JpaRepository implements
 				TypedQueryWrapper<KrcmtMonAttendanceItem> query = this.queryProxy().query(builderString.toString(), KrcmtMonAttendanceItem.class);
 				query.setParameter("companyId", companyId);
 				if (checkAttItems) {
-					query.setParameter("attendanceItemIds", attendanceItemIds);
+					query.setParameter("attendanceItemIds", lstIds);
 				}
 				if (checkItemAtr) {
-					query.setParameter("itemAtrs", itemAtrs);
+					query.setParameter("itemAtrs", lstAtrs);
 				}
 				resultList.addAll(query.getList(f -> toDomain(f)));
 			});

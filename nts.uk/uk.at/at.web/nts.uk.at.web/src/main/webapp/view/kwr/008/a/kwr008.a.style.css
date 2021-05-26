@@ -31,3 +31,24 @@ body .fixed-flex-layout-right {
 html {
 	overflow: hidden;
 }
+.stage-frame {
+	padding: 10px 20px;
+	margin-left:75px;
+	width: 552px;
+	min-width: 552px;
+	margin-bottom: 10px;
+	height: 40px;
+}
+.item-inline {
+	display: inline-block;
+	padding: 5px;
+}
+.pt-7 {
+	padding-top: 7px;
+}
+.switch-btn-custom .nts-switch-button {
+	width: 80px;
+}
+.custom-form-label-w50 {
+	width: 50px !important;
+}

@@ -8,9 +8,9 @@ import nts.uk.shr.com.i18n.TextResource;
  */
 public enum AggregateSetting {
 	/** 時間外は全てフレックス時間として管理する */
-	INCLUDE_ALL_OUTSIDE_TIME_IN_FLEX_TIME(0, TextResource.localize("KMK004_286")),
+	INCLUDE_ALL_OUTSIDE_TIME_IN_FLEX_TIME(0, TextResource.localize("KMK004_350")),
 	/** フレックス時間の内訳を管理する */
-	MANAGE_DETAIL(1, TextResource.localize("KMK004_350"));
+	MANAGE_DETAIL(1, TextResource.localize("KMK004_286"));
 	
 	public int value;
 	public String nameId;

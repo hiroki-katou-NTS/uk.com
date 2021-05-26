@@ -15,6 +15,7 @@ import mockit.Injectable;
 import mockit.Mocked;
 import mockit.integration.junit4.JMockit;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.schedule.dom.schedule.task.taskschedule.TaskSchedule;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.DayOfWeek;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.CalculationState;
@@ -101,6 +102,7 @@ public class GetWorkTogetherEmpOnDayBySpecEmpServiceTest {
 					, workInfo, null
 					, null
 					, Collections.emptyList()
+					, TaskSchedule.createWithEmptyList()
 					, Optional.empty()
 					, Optional.empty()
 					, Optional.empty()
@@ -118,7 +120,7 @@ public class GetWorkTogetherEmpOnDayBySpecEmpServiceTest {
 					, CalculationState.Calculated
 					, NotUseAttribute.Not_use
 					, NotUseAttribute.Not_use
-					, DayOfWeek.FRIDAY, Collections.emptyList());
+					, DayOfWeek.FRIDAY, Collections.emptyList(), Optional.empty());
 		}
 	}
 	

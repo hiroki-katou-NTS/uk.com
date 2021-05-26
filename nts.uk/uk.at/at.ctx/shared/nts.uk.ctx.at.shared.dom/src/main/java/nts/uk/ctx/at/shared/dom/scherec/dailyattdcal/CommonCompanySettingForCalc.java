@@ -1,7 +1,7 @@
 package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal;
 
-import nts.uk.ctx.at.shared.dom.dailyprocess.calc.CalculateOption;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManagePerCompanySet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyprocess.calc.CalculateOption;
 
 /**
  * 計算に必要なパラメータを取得する

@@ -56,9 +56,9 @@ public class JpaFlowRestSetGetMemento implements FlowRestSetGetMemento {
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.at.shared.dom.worktime.common.FlowRestSetGetMemento#getCalculateMethod()
 	 */
-	@Override
-	public FlowRestCalcMethod getCalculateMethod() {
-		return FlowRestCalcMethod.valueOf(this.entity.getFixedCalculateMethod());
-	}
+//	@Override
+//	public FlowRestCalcMethod getCalculateMethod() {
+//		return FlowRestCalcMethod.valueOf(this.entity.getFixedCalculateMethod());
+//	}
 
 }

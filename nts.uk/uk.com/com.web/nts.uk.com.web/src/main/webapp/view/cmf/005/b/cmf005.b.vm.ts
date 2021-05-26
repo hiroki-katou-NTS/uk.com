@@ -739,7 +739,7 @@ module nts.uk.com.view.cmf005.b.viewmodel {
         || (self.selectedTitleAtr() == 0)) {
         return true;
       } else {
-        nts.uk.ui.dialog.error({ messageId: "Msg_498", messageParams: ["X", "Y"] });
+        nts.uk.ui.dialog.error({ messageId: "Msg_498" });
         return false;
       }
     }
@@ -806,7 +806,9 @@ module nts.uk.com.view.cmf005.b.viewmodel {
     public gotoscreenF(): void {
       let self = this;
       let params = {};
-
+      if (!self.validateD()) {
+        return;
+      }
       params.delId = self.delId();
       params.deleteSetName = self.deleteSetName();
       params.dateValue = self.dateValue();
@@ -841,7 +843,7 @@ module nts.uk.com.view.cmf005.b.viewmodel {
               }
             });
           }
-        })
+        }).fail(err => alertError({ messageId: err.messageId }));
       } else {
         setShared("CMF005_E_PARAMS", params);
 

@@ -6,8 +6,10 @@ package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculatio
  *
  */
 public enum TimeSheetRoundingAtr {
-	PerTimeSheet, //時間帯毎に丸める
-	PerTimeFrame, //時間帯枠毎に丸める
-	ALL //全体で丸める
-	;
+	/** 時間帯毎に丸める */
+	PerTimeSheet,
+	/** 時間帯枠毎に丸める */
+	PerTimeFrame,
+	/** 全体で丸める */
+	ALL;
 }

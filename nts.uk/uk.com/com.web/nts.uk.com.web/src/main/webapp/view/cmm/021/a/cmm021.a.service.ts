@@ -30,8 +30,8 @@ module nts.uk.com.view.cmm021.a {
         }
 
         // Screen B
-        export function findListUserInfo(sIds: Array<string>, isScreenC: boolean): JQueryPromise<any> {
-            return nts.uk.request.ajax(servicePath.findListUserInfo, { employeeIds: sIds, isScreenC: isScreenC});
+        export function findListUserInfo(sIds: Array<string>): JQueryPromise<any> {
+            return nts.uk.request.ajax(servicePath.findListUserInfo, { employeeIds: sIds });
         }
 
         export function findListWindowAccByEmployeeId(employeeId: string): JQueryPromise<model.WindownAccountFinderDto[]> {

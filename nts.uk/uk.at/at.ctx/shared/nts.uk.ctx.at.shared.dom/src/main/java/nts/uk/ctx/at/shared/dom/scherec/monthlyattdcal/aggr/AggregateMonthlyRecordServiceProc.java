@@ -3,7 +3,6 @@ package nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
@@ -33,13 +32,12 @@ import nts.uk.ctx.at.shared.dom.common.anyitem.AnyTimeMonth;
 import nts.uk.ctx.at.shared.dom.common.anyitem.AnyTimesMonth;
 import nts.uk.ctx.at.shared.dom.common.days.AttendanceDaysMonth;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecRemainMngOfInPeriod;
-import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsenceReruitmentMngInPeriodQuery;
+import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.NumberCompensatoryLeavePeriodQuery;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.DailyInterimRemainMngData;
-import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainOffPeriodCreateData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.GetDaysForCalcAttdRate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
-import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffMngInPeriodQuery;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffRemainMngOfInPeriod;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.NumberRemainVacationLeaveRangeQuery;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.basicinfo.SpecialLeaveBasicInfo;
 import nts.uk.ctx.at.shared.dom.scherec.closurestatus.ClosureStatusManagement;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.JobTitleId;
@@ -76,6 +74,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.weekly.AttendanceTimeOfWe
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItem;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.applicable.EmpCondition;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.CalcResultOfAnyItem;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.algorithm.monthly.GetPeriodExcluseEntryRetireTime;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHoliday;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
@@ -83,6 +82,7 @@ import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.Err
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
@@ -216,8 +216,14 @@ public class AggregateMonthlyRecordServiceProc {
 		EmployeeImport employee = this.employeeSets.getEmployee();
 
 		// 入社前、退職後を期間から除く → 一か月の集計期間
-		val termInOffice = new DatePeriod(employee.getEntryDate(), employee.getRetiredDate());
-		DatePeriod monthPeriod = this.confirmProcPeriod(datePeriod, termInOffice);
+		DatePeriod monthPeriod = GetPeriodExcluseEntryRetireTime.getPeriodExcluseEntryRetireTime(new GetPeriodExcluseEntryRetireTime.Require() {
+
+			@Override
+			public EmployeeImport employeeInfo(CacheCarrier cacheCarrier, String empId) {
+				return employee;
+			}
+		}, cacheCarrier, this.employeeId, datePeriod).orElse(null);
+
 		if (monthPeriod == null) {
 			// 処理期間全体が、入社前または退職後の時
 			return this.aggregateResult;
@@ -343,7 +349,7 @@ public class AggregateMonthlyRecordServiceProc {
 
 			if (agreementTime.getAgreementTime().isPresent()) {
 
-				this.aggregateResult.getAgreementTimeList().add(agreementTime.getAgreementTime().get());
+				this.aggregateResult.setAgreementTime(agreementTime.getAgreementTime());
 			} else {
 				if (!agreementTime.getError().isEmpty()) {
 					val error = agreementTime.getError().get(0);
@@ -377,7 +383,7 @@ public class AggregateMonthlyRecordServiceProc {
 
 					if (prevAgreTime.getAgreementTime().isPresent()) {
 
-						this.aggregateResult.getAgreementTimeList().add(prevAgreTime.getAgreementTime().get());
+						this.aggregateResult.setPrevAgreementTime(prevAgreTime.getAgreementTime());
 					} else {
 						if (!prevAgreTime.getError().isEmpty()) {
 							val error = prevAgreTime.getError().get(0);
@@ -391,9 +397,16 @@ public class AggregateMonthlyRecordServiceProc {
 		ConcurrentStopwatches.stop("12300:36協定時間：");
 		ConcurrentStopwatches.start("12500:任意項目：");
 
-		// 大塚カスタマイズの集計
-		Map<Integer, Map<Integer, AnyItemAggrResult>> anyItemCustomizeValue = this
-				.aggregateCustomizeForOtsuka(require, cacheCarrier, this.yearMonth, this.closureId, this.companySets);
+		Map<Integer, Map<Integer, AnyItemAggrResult>> anyItemCustomizeValue = new HashMap<>();
+		/** 大塚モードを確認する */
+		if (AppContexts.optionLicense().customize().ootsuka()) {
+			// 大塚カスタマイズの集計
+			anyItemCustomizeValue = this
+					.aggregateCustomizeForOtsuka(require, cacheCarrier, this.yearMonth, this.closureId, this.companySets);
+		} else {
+			// 任意項目カスタマイズ値 ※ 最初のInteger=0（月結果）、1～（各週結果（週No））
+			anyItemCustomizeValue.put(0, new HashMap<>()); // 月結果
+		}
 
 		// 月別実績の任意項目を集計
 		this.aggregateAnyItem(require, monthPeriod, anyItemCustomizeValue);
@@ -405,7 +418,7 @@ public class AggregateMonthlyRecordServiceProc {
 		ConcurrentStopwatches.start("12600:大塚カスタマイズ：");
 
 		// 大塚カスタマイズ
-		this.customizeForOtsuka();
+		//this.customizeForOtsuka();
 
 		ConcurrentStopwatches.stop("12600:大塚カスタマイズ：");
 
@@ -439,7 +452,7 @@ public class AggregateMonthlyRecordServiceProc {
 
 			// 処理期間を計算 （一か月の集計期間と労働条件履歴期間の重複を確認する）
 			val term = this.workingConditions.get(historyId);
-			DatePeriod aggrPeriod = this.confirmProcPeriod(monthPeriod, term);
+			DatePeriod aggrPeriod = GetPeriodExcluseEntryRetireTime.confirmProcPeriod(monthPeriod, term).orElse(null);
 			if (aggrPeriod == null) {
 				// 履歴の期間と重複がない時
 				continue;
@@ -495,7 +508,7 @@ public class AggregateMonthlyRecordServiceProc {
 	 */
 	private void remainingProcess(RequireM8 require,CacheCarrier cacheCarrier, DatePeriod period,
 			String companyId, String employeeId, YearMonth yearMonth, ClosureId closureId,   ClosureDate closureDate,
-			MonAggrCompanySettings companySets, MonAggrEmployeeSettings employeeSets, 
+			MonAggrCompanySettings companySets, MonAggrEmployeeSettings employeeSets,
 			MonthlyCalculatingDailys monthlyCalculatingDailys,
 			DatePeriod datePeriod, Boolean remainingProcAtr) {
 
@@ -506,9 +519,8 @@ public class AggregateMonthlyRecordServiceProc {
 		if (this.companySets.getCurrentMonthPeriodMap().containsKey(this.closureId.value)) {
 			DatePeriod currentPeriod = this.companySets.getCurrentMonthPeriodMap().get(this.closureId.value);
 			// 当月の締め期間と実行期間を比較し、重複した期間を取り出す
-			DatePeriod confPeriod = this.confirmProcPeriod(currentPeriod, datePeriod);
 			// 重複期間があれば、当月
-			if (confPeriod != null)
+			if (GetPeriodExcluseEntryRetireTime.confirmProcPeriod(currentPeriod, datePeriod).isPresent())
 				isCurrentMonth = true;
 		}
 		if (remainingProcAtr == true)
@@ -747,12 +759,9 @@ public class AggregateMonthlyRecordServiceProc {
 	/**
 	 * 大塚カスタマイズ （任意項目集計）
 	 *
-	 * @param yearMonth
-	 *            年月
-	 * @param closureId
-	 *            締めID
-	 * @param companySets
-	 *            月別集計で必要な会社別設定
+	 * @param yearMonth 年月
+	 * @param closureId 締めID
+	 * @param companySets 月別集計で必要な会社別設定
 	 * @return 任意項目カスタマイズ値
 	 */
 	private Map<Integer, Map<Integer, AnyItemAggrResult>> aggregateCustomizeForOtsuka(RequireM11 require, CacheCarrier cacheCarrier,
@@ -817,7 +826,8 @@ public class AggregateMonthlyRecordServiceProc {
 		for (val optionalItem : companySets.getOptionalItemMap().values()) {
 			Integer optionalItemNo = optionalItem.getOptionalItemNo().v();
 
-			if (!isWeek && !isPeriodAggr) {
+			/** 月間集計　＆＆　大塚モードを確認する */
+			if (!isWeek && !isPeriodAggr && AppContexts.optionLicense().customize().ootsuka()) {
 				// 大塚カスタマイズ （月別実績の任意項目←任意項目カスタマイズ値）
 				if (anyItemCustomizeValue != null) {
 					if (anyItemCustomizeValue.containsKey(optionalItemNo)) {
@@ -1168,7 +1178,7 @@ public class AggregateMonthlyRecordServiceProc {
 	private void remainingProcess(
 			RequireM8 require, CacheCarrier cacheCarrier, DatePeriod period,
 			String companyId, String employeeId, YearMonth yearMonth, ClosureId closureId,   ClosureDate closureDate,
-			MonAggrCompanySettings companySets, MonAggrEmployeeSettings employeeSets, 
+			MonAggrCompanySettings companySets, MonAggrEmployeeSettings employeeSets,
 			MonthlyCalculatingDailys monthlyCalculatingDailys,
 			InterimRemainMngMode interimRemainMngMode, boolean isCalcAttendanceRate) {
 
@@ -1197,7 +1207,12 @@ public class AggregateMonthlyRecordServiceProc {
 		this.aggregateResult.getMonthlyDayoffRemainList().addAll(output.getMonthlyDayoffRemainList());
 		// 特別休暇
 		this.aggregateResult.getSpecialLeaveRemainList().addAll(output.getSpecialLeaveRemainList());
-		
+		// 子の看護
+		this.aggregateResult.getChildHdRemainList().addAll(output.getChildHdRemainList());
+		// 介護
+		this.aggregateResult.getCareHdRemainList().addAll(output.getCareHdRemainList());
+
+
 		// エラー一覧
 		this.aggregateResult.getPerErrors().addAll(output.getPerErrors());
 
@@ -1222,8 +1237,8 @@ public class AggregateMonthlyRecordServiceProc {
 //		this.specialLeaveRemain(require, cacheCarrier, period, interimRemainMngMode);
 //
 //		ConcurrentStopwatches.stop("12440:特別休暇：");
-		
-		
+
+
 	}
 
 	/**
@@ -1232,7 +1247,7 @@ public class AggregateMonthlyRecordServiceProc {
 	 * @param period
 	 *            期間
 	 */
-	public Map<GeneralDate, DailyInterimRemainMngData> createDailyInterimRemainMngs(RequireM7 require, CacheCarrier cacheCarrier, DatePeriod period) {
+	public List<DailyInterimRemainMngData> createDailyInterimRemainMngs(RequireM7 require, CacheCarrier cacheCarrier, DatePeriod period) {
 
 //		// 【参考：旧処理】 月次処理用の暫定残数管理データを作成する
 //		// this.dailyInterimRemainMngs =
@@ -1570,41 +1585,6 @@ public class AggregateMonthlyRecordServiceProc {
 	}
 
 	/**
-	 * 処理期間との重複を確認する （重複期間を取り出す）
-	 *
-	 * @param target 処理期間
-	 * @param comparison 比較対象期間
-	 * @return 重複期間 （null = 重複なし）
-	 */
-	private DatePeriod confirmProcPeriod(DatePeriod target, DatePeriod comparison) {
-
-		DatePeriod overlap = null; // 重複期間
-
-		// 開始前
-		if (target.isBefore(comparison))
-			return overlap;
-
-		// 終了後
-		if (target.isAfter(comparison))
-			return overlap;
-
-		// 重複あり
-		overlap = target;
-
-		// 開始日より前を除外
-		if (overlap.contains(comparison.start())) {
-			overlap = overlap.cutOffWithNewStart(comparison.start());
-		}
-
-		// 終了日より後を除外
-		if (overlap.contains(comparison.end())) {
-			overlap = overlap.cutOffWithNewEnd(comparison.end());
-		}
-
-		return overlap;
-	}
-
-	/**
 	 * 所属情報の作成
 	 *
 	 * @param datePeriod
@@ -1621,7 +1601,7 @@ public class AggregateMonthlyRecordServiceProc {
 		val workInfo = this.monthlyCalculatingDailys.getWorkInfoOfDailyMap().entrySet().stream().filter(
 				x -> x.getKey().afterOrEquals(datePeriod.start()) && x.getKey().beforeOrEquals(datePeriod.end()))
 				.collect(Collectors.toList()).stream().sorted((x, y) -> x.getKey().compareTo(y.getKey())).findFirst();
-		
+
 		if (workInfo.isPresent()) {
 			isExistStartWorkInfo = true;
 		}
@@ -1744,7 +1724,7 @@ public class AggregateMonthlyRecordServiceProc {
 
 		AggregateMonthlyRecordValue aggregation(CacheCarrier cacheCarrier, DatePeriod period,
 				String companyId, String employeeId, YearMonth yearMonth, ClosureId closureId,   ClosureDate closureDate,
-				MonAggrCompanySettings companySets, MonAggrEmployeeSettings employeeSets, 
+				MonAggrCompanySettings companySets, MonAggrEmployeeSettings employeeSets,
 				MonthlyCalculatingDailys monthlyCalculatingDailys,
 				InterimRemainMngMode interimRemainMngMode, boolean isCalcAttendanceRate);
 
@@ -1758,14 +1738,10 @@ public class AggregateMonthlyRecordServiceProc {
 		Optional<ClosureStatusManagement> latestClosureStatusManagement(String employeeId);
 	}
 
-	public static interface RequireM7 extends InterimRemainOffPeriodCreateData.RequireM4 {
+	public static interface RequireM7 {
 
-		Map<GeneralDate, DailyInterimRemainMngData> createDailyInterimRemainMngs(CacheCarrier cacheCarrier,
-				String companyId,
-				String employeeId,
-				DatePeriod period,
-				MonAggrCompanySettings comSetting,
-				MonthlyCalculatingDailys dailys);
+		List<DailyInterimRemainMngData> createDailyInterimRemainMngs(CacheCarrier cacheCarrier, String companyId, String employeeId,
+				DatePeriod period, MonAggrCompanySettings comSetting, MonthlyCalculatingDailys dailys);
 	}
 
 	public static interface RequireM6 extends GetDaysForCalcAttdRate.RequireM2
@@ -1774,10 +1750,10 @@ public class AggregateMonthlyRecordServiceProc {
 
 
 
-	public static interface RequireM5 extends AbsenceReruitmentMngInPeriodQuery.RequireM10 {
+	public static interface RequireM5 extends NumberCompensatoryLeavePeriodQuery.Require{
 	}
 
-	public static interface RequireM4 extends BreakDayOffMngInPeriodQuery.RequireM10 {
+	public static interface RequireM4 extends NumberRemainVacationLeaveRangeQuery.Require {
 	}
 
 //	public static interface RequireM3 extends SpecialLeaveManagementService.RequireM5 {

@@ -15,7 +15,6 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Entity 個人連絡先
@@ -29,7 +28,6 @@ public class BpsmtContactAddrPs extends UkJpaEntity implements PersonalContact.M
     private static final long serialVersionUID = 1L;
 
     // column 排他バージョン
-    @Version
     @Column(name = "EXCLUS_VER")
     private long version;
 
@@ -47,30 +45,15 @@ public class BpsmtContactAddrPs extends UkJpaEntity implements PersonalContact.M
     @Column(name = "MAIL_ADDRESS")
     private String mailAddress;
 
-    // column メールアドレスが在席照会に表示するか
-    @Basic(optional = true)
-    @Column(name = "MAIL_ADDRESS_DISP")
-    private Integer isMailAddressDisplay;
-
     // column 携帯メールアドレス
     @Basic(optional = true)
     @Column(name = "PHONE_MAIL_ADDRESS")
     private String mobileEmailAddress;
 
-    // column 携帯メールアドレスが在席照会に表示するか
-    @Basic(optional = true)
-    @Column(name = "PHONE_MAIL_ADDRESS_DISP")
-    private Integer isMobileEmailAddressDisplay;
-
     // column 携帯電話番号
     @Basic(optional = true)
     @Column(name = "PHONE_NUMBER")
     private String phoneNumber;
-
-    // column 携帯電話番号が在席照会に表示するか
-    @Basic(optional = true)
-    @Column(name = "PHONE_NUMBER_DISP")
-    private Integer isPhoneNumberDisplay;
 
     // column 緊急連絡先１.メモ
     @Basic(optional = true)
@@ -87,11 +70,6 @@ public class BpsmtContactAddrPs extends UkJpaEntity implements PersonalContact.M
     @Column(name = "URG_CONTACT1_PHONE_NUMBER")
     private String phoneNumber1;
 
-    // column 緊急連絡先１が在席照会に表示するか
-    @Basic(optional = true)
-    @Column(name = "URG_CONTACT1_DISP")
-    private Integer isEmergencyContact1Display;
-
     // column 緊急連絡先2.メモ
     @Basic(optional = true)
     @Column(name = "URG_CONTACT2_MEMO")
@@ -107,30 +85,15 @@ public class BpsmtContactAddrPs extends UkJpaEntity implements PersonalContact.M
     @Column(name = "URG_CONTACT2_PHONE_NUMBER")
     private String phoneNumber2;
 
-    // column 緊急連絡先2が在席照会に表示するか
-    @Basic(optional = true)
-    @Column(name = "URG_CONTACT2_DISP")
-    private Integer isEmergencyContact2Display;
-
     // column 他の連絡先[0].連絡先のアドレス
     @Basic(optional = false)
     @Column(name = "OTHER_CONTACT1_ADDRESS")
     private String address1;
 
-    // column column 他の連絡先[0].在席照会に表示するか
-    @Basic(optional = true)
-    @Column(name = "OTHER_CONTACT1_DISP")
-    private Integer isDisplay1;
-
     // column 他の連絡先[1].連絡先のアドレス
     @Basic(optional = false)
     @Column(name = "OTHER_CONTACT2_ADDRESS")
     private String address2;
-
-    // column column 他の連絡先[1].在席照会に表示するか
-    @Basic(optional = true)
-    @Column(name = "OTHER_CONTACT2_DISP")
-    private Integer isDisplay2;
 
     // column 他の連絡先[2].連絡先のアドレス
     @Basic(optional = false)
@@ -138,30 +101,15 @@ public class BpsmtContactAddrPs extends UkJpaEntity implements PersonalContact.M
     @Column(name = "OTHER_CONTACT3_ADDRESS")
     private String address3;
 
-    // column column 他の連絡先[2].在席照会に表示するか
-    @Basic(optional = true)
-    @Column(name = "OTHER_CONTACT3_DISP")
-    private Integer isDisplay3;
-
     // column 他の連絡先[3].連絡先のアドレス
     @Basic(optional = false)
     @Column(name = "OTHER_CONTACT4_ADDRESS")
     private String address4;
 
-    // column column 他の連絡先[3].在席照会に表示するか
-    @Basic(optional = true)
-    @Column(name = "OTHER_CONTACT4_DISP")
-    private Integer isDisplay4;
-
     // column 他の連絡先[4].連絡先のアドレス
     @Basic(optional = false)
     @Column(name = "OTHER_CONTACT5_ADDRESS")
     private String address5;
-
-    // column column 他の連絡先[4].在席照会に表示するか
-    @Basic(optional = true)
-    @Column(name = "OTHER_CONTACT5_DISP")
-    private Integer isDisplay5;
 
     @Override
     protected Object getKey() {
@@ -176,31 +124,12 @@ public class BpsmtContactAddrPs extends UkJpaEntity implements PersonalContact.M
         this.bpsmtContactAddrPsPK.setPersonalId(personalId);
 	}
 
-	@Override
-	public void setIsMailAddressDisplay(Boolean isMailAddressDisplay) {
-        this.isMailAddressDisplay = isMailAddressDisplay ? 1 : 0;
-	}
-
-	@Override
-	public void setIsMobileEmailAddressDisplay(Boolean isMobileEmailAddressDisplay) {
-        this.isMobileEmailAddressDisplay = isMobileEmailAddressDisplay ? 1 : 0;
-	}
-
-	@Override
-	public void setIsPhoneNumberDisplay(Boolean isPhoneNumberDisplay) {
-        this.isPhoneNumberDisplay = isPhoneNumberDisplay ? 1 : 0;
-	}
 
 	@Override
 	public void setEmergencyContact1(EmergencyContact emergencyContact1) {
         this.contactName1 = emergencyContact1.getContactName().v();
         this.remark1 = emergencyContact1.getRemark().v();
         this.phoneNumber1 = emergencyContact1.getPhoneNumber().v();
-	}
-
-	@Override
-	public void setIsEmergencyContact1Display(Boolean isEmergencyContact1Display) {
-        this.isEmergencyContact1Display = isEmergencyContact1Display ? 1 : 0;
 	}
 
 	@Override
@@ -211,68 +140,37 @@ public class BpsmtContactAddrPs extends UkJpaEntity implements PersonalContact.M
 	}
 
 	@Override
-	public void setIsEmergencyContact2Display(Boolean isEmergencyContact2Display) {
-        this.isEmergencyContact2Display = isEmergencyContact2Display ? 1 : 0;
-	}
-
-	@Override
 	public void setOtherContacts(List<OtherContact> otherContacts) {
         for (OtherContact otherContact : otherContacts) {
             setOtherContactByNo(otherContact);
         }
 	}
 
-    private boolean setOtherContactByNo(OtherContact otherContact) {
-        Boolean isDisplay = null;
+    private void setOtherContactByNo(OtherContact otherContact) {
         switch (otherContact.getOtherContactNo()) {
             case 1:
                 this.address1 = otherContact.getAddress().v();
-                isDisplay = otherContact.getIsDisplay().orElse(null);
-                this.isDisplay1 = isDisplay == null ? null : (isDisplay ? 1 : 0);
-                return true;
+                break;
             case 2:
                 this.address2 = otherContact.getAddress().v();
-                isDisplay = otherContact.getIsDisplay().orElse(null);
-                this.isDisplay2 = isDisplay == null ? null : (isDisplay ? 1 : 0);
-                return true;
+                break;
             case 3:
                 this.address3 = otherContact.getAddress().v();
-                isDisplay = otherContact.getIsDisplay().orElse(null);
-                this.isDisplay3 = isDisplay == null ? null : (isDisplay ? 1 : 0);
-                return true;
+                break;
             case 4:
                 this.address4 = otherContact.getAddress().v();
-                isDisplay = otherContact.getIsDisplay().orElse(null);
-                this.isDisplay4 = isDisplay == null ? null : (isDisplay ? 1 : 0);
-                return true;
+                break;
             case 5:
                 this.address5 = otherContact.getAddress().v();
-                isDisplay = otherContact.getIsDisplay().orElse(null);
-                this.isDisplay5 = isDisplay == null ? null : (isDisplay ? 1 : 0);
-                return true;
+                break;
             default:
-                return false;
+            	break;
         }
     }
 
 	@Override
 	public String getPersonalId() {
         return this.bpsmtContactAddrPsPK.getPersonalId();
-	}
-
-	@Override
-	public Boolean getIsMailAddressDisplay() {
-		return this.isMailAddressDisplay == null ? false : this.isMailAddressDisplay == 1;
-	}
-
-	@Override
-	public Boolean getIsMobileEmailAddressDisplay() {
-		return this.isMobileEmailAddressDisplay == null ? false : this.isMobileEmailAddressDisplay == 1;
-	}
-
-	@Override
-	public Boolean getIsPhoneNumberDisplay() {
-		return this.isPhoneNumberDisplay == null ? false : this.isPhoneNumberDisplay == 1;
 	}
 
 	@Override
@@ -285,11 +183,6 @@ public class BpsmtContactAddrPs extends UkJpaEntity implements PersonalContact.M
 	}
 
 	@Override
-	public Boolean getIsEmergencyContact1Display() {
-		return this.isEmergencyContact1Display == 1;
-	}
-
-	@Override
 	public EmergencyContact getEmergencyContact2() {
         return EmergencyContact.builder()
                 .contactName(new ContactName(this.contactName2))
@@ -299,46 +192,36 @@ public class BpsmtContactAddrPs extends UkJpaEntity implements PersonalContact.M
 	}
 
 	@Override
-	public Boolean getIsEmergencyContact2Display() {
-		return this.isEmergencyContact2Display == null ? false : this.isEmergencyContact2Display == 1;
-	}
-
-	@Override
 	public List<OtherContact> getOtherContacts() {
         List<OtherContact> otherContacts = new ArrayList<>();
         otherContacts.add(
                 OtherContact.builder()
                         .otherContactNo(1)
                         .address(new OtherContactAddress(this.address1)) 
-                        .isDisplay(Optional.ofNullable(this.isDisplay1).map(data -> data == 1))
                         .build()
         );
         otherContacts.add(
                 OtherContact.builder()
                         .otherContactNo(2)
                         .address(new OtherContactAddress(this.address2))
-                        .isDisplay(Optional.ofNullable(this.isDisplay2).map(data -> data == 1))
                         .build()
         );
         otherContacts.add(
                 OtherContact.builder()
                         .otherContactNo(3)
                         .address(new OtherContactAddress(this.address3))
-                        .isDisplay(Optional.ofNullable(this.isDisplay3).map(data -> data == 1))
                         .build()
         );
         otherContacts.add(
                 OtherContact.builder()
                         .otherContactNo(4)
                         .address(new OtherContactAddress(this.address4))
-                        .isDisplay(Optional.ofNullable(this.isDisplay4).map(data -> data == 1))
                         .build()
         );
         otherContacts.add(
                 OtherContact.builder()
                         .otherContactNo(5)
                         .address(new OtherContactAddress(this.address5))
-                        .isDisplay(Optional.ofNullable(this.isDisplay5).map(data -> data == 1))
                         .build()
         );
         return otherContacts;

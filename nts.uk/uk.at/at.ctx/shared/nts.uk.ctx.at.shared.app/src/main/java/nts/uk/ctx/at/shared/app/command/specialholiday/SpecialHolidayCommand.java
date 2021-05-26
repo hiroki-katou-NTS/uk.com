@@ -1,6 +1,10 @@
 package nts.uk.ctx.at.shared.app.command.specialholiday;
 
+import java.util.Optional;
+
 import lombok.Value;
+import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.app.command.specialholiday.grantcondition.SpecialLeaveRestrictionCommand;
 import nts.uk.ctx.at.shared.app.command.specialholiday.grantinformation.GrantRegularCommand;
 import nts.uk.ctx.at.shared.app.command.specialholiday.periodinformation.GrantPeriodicCommand;
@@ -10,11 +14,17 @@ import nts.uk.ctx.at.shared.dom.specialholiday.grantcondition.AgeRange;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantcondition.AgeStandard;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantcondition.SpecialLeaveRestriction;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.FixGrantDate;
+import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.GrantDate;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.GrantRegular;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.GrantTime;
+import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.PeriodGrantDate;
+import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.RegularGrantDays;
+import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.TypeTime;
 import nts.uk.ctx.at.shared.dom.specialholiday.periodinformation.AvailabilityPeriod;
 import nts.uk.ctx.at.shared.dom.specialholiday.periodinformation.GrantDeadline;
 import nts.uk.ctx.at.shared.dom.specialholiday.periodinformation.SpecialVacationDeadline;
+import nts.uk.ctx.at.shared.dom.specialholiday.periodinformation.SpecialVacationMonths;
+import nts.uk.ctx.at.shared.dom.specialholiday.periodinformation.SpecialVacationYears;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.time.calendar.MonthDay;
 
@@ -32,9 +42,6 @@ public class SpecialHolidayCommand {
 	/** 付与情報 */
 	private GrantRegularCommand regularCommand;
 
-	/** 期限情報 */
-	private GrantPeriodicCommand periodicCommand;
-
 	/** 特別休暇利用条件 */
 	private SpecialLeaveRestrictionCommand leaveResCommand;
 
@@ -43,6 +50,9 @@ public class SpecialHolidayCommand {
 
 	/**自動付与区分 */
 	private int autoGrant;
+	
+	/** 連続で取得する */
+	public Integer continuousAcquisition;
 
 	/** メモ */
 	private String memo;
@@ -52,12 +62,11 @@ public class SpecialHolidayCommand {
 				this.specialHolidayCode,
 				this.specialHolidayName,
 				this.toDomainGrantRegular(companyId),
-				//this.toDomainGrantPeriodic(companyId),
 				this.toDomainSpecLeaveRest(companyId),
 				this.toDomainTargetItem(companyId),
 				this.autoGrant,
 				this.memo,
-				NotUseAtr.NOT_USE);
+				NotUseAtr.valueOf(this.continuousAcquisition));
 	}
 
 	private TargetItem toDomainTargetItem(String companyId2) {
@@ -103,27 +112,6 @@ public class SpecialHolidayCommand {
 		return AgeStandard.createFromJavaType(this.leaveResCommand.getAgeStandard().getAgeCriteriaCls(), ageBaseDate);
 	}
 
-	private GrantDeadline toDomainGrantPeriodic(String companyId) {
-		if(this.periodicCommand == null) {
-			return null;
-		}
-
-		return GrantDeadline.createFromJavaType(
-				this.periodicCommand.getTimeSpecifyMethod(),
-				//new AvailabilityPeriod(this.periodicCommand.getAvailabilityPeriod().getStartDateValue(), this.periodicCommand.getAvailabilityPeriod().getEndDateValue()),
-				//this.toDomainSpecialVacationDeadline(),
-				this.periodicCommand.getExpirationDate().getYears(),
-				this.periodicCommand.getExpirationDate().getMonths(),
-				this.periodicCommand.getLimitCarryoverDays());
-	}
-
-//	private SpecialVacationDeadline toDomainSpecialVacationDeadline() {
-//		if(this.periodicCommand.getExpirationDate() == null) {
-//			return null;
-//		}
-//
-//		return SpecialVacationDeadline.createFromJavaType(this.periodicCommand.getExpirationDate().getMonths(), this.periodicCommand.getExpirationDate().getYears());
-//	}
 
 	private GrantRegular toDomainGrantRegular(String companyId) {
 		if(this.regularCommand == null) {
@@ -131,34 +119,102 @@ public class SpecialHolidayCommand {
 		}
 
 		//KMF004A 特別休暇情報の登録　実装時にこの処理を実装すること
-		return new GrantRegular();
-//		return GrantRegular.createFromJavaType(
-//		companyId,
-//		this.specialHolidayCode,
-//		regularCommand.getTypeTime(),
-//		regularCommand.getGrantDate(),
-//		regularCommand.isAllowDisappear(),
-//		this.toDomainGrantTime());
+		return GrantRegular.of(TypeTime.toEnum(this.regularCommand.getTypeTime()),
+				Optional.ofNullable(GrantDate.toEnum(this.regularCommand.getGrantDate())),
+				toDomainFixGrantDate(),
+				toDomainGrantDeadline(),
+				toDomainPeriodGrantDate());
 	}
-
-	private GrantTime toDomainGrantTime() {
-		if(this.regularCommand.getGrantTime() == null) {
-			return null;
+	
+	private Optional<FixGrantDate> toDomainFixGrantDate() {
+		
+		if (this.regularCommand.getFixGrantDate() == null) {
+			return Optional.empty();
 		}
-
-		return GrantTime.createFromJavaType(this.toDomainFixGrantDate(), null);
-	}
-
-	private FixGrantDate toDomainFixGrantDate() {
-		if(this.regularCommand.getGrantTime().getFixGrantDate() == null) {
-			return null;
+		
+		Integer months = null;
+		Integer years = null;
+		
+		if (this.regularCommand.getFixGrantDate().getGrantPeriodic().getExpirationDate() != null) {
+			months = this.regularCommand.getFixGrantDate().getGrantPeriodic().getExpirationDate().getMonths();
+			years  = this.regularCommand.getFixGrantDate().getGrantPeriodic().getExpirationDate().getYears();
 		}
-
-		//KMF004A 特別休暇情報の登録　実装時にこの処理を実装すること
-//		return new FixGrantDate();
-//		return FixGrantDate.createFromJavaType(
-//				this.regularCommand.getGrantTime().getFixGrantDate().getInterval(),
-//				this.regularCommand.getGrantTime().getFixGrantDate().getGrantDays());
-		return null;
+		
+		GrantDeadline grantPeriodic = GrantDeadline.createFromJavaType(
+				this.regularCommand.getFixGrantDate().getGrantPeriodic().getTimeSpecifyMethod(),
+				Optional.ofNullable(SpecialVacationDeadline.createFromJavaType(months, years)),
+				this.regularCommand.getFixGrantDate().getGrantPeriodic().getLimitAccumulationDays() == null ? null : this.regularCommand.getFixGrantDate().getGrantPeriodic().getLimitAccumulationDays().getLimitCarryoverDays());
+		
+		FixGrantDate fixGrantDate = FixGrantDate.createFromJavaType(companyId,
+				this.specialHolidayCode,
+				this.regularCommand.getFixGrantDate().getGrantDays(),
+				grantPeriodic,
+				this.regularCommand.getFixGrantDate().getGrantMonthDay());
+		
+		return Optional.ofNullable(fixGrantDate);
 	}
+	
+	
+	
+	private Optional<PeriodGrantDate> toDomainPeriodGrantDate() {
+		
+		if (this.regularCommand.getPeriodGrantDate() == null) {
+			return Optional.empty();
+		}
+		
+		String formatDate = "yyyy/MM/dd";
+		String start = this.regularCommand.getPeriodGrantDate().getPeriod().getStart();
+		String end   = this.regularCommand.getPeriodGrantDate().getPeriod().getEnd();
+		if(start == null || end == null)
+			return Optional.empty();
+		DatePeriod period = new DatePeriod(GeneralDate.fromString(start, formatDate), GeneralDate.fromString(end, formatDate));
+		
+		return Optional.ofNullable(PeriodGrantDate.of(period, RegularGrantDays.createFromJavaType(this.regularCommand.getPeriodGrantDate().getGrantDays()))); 
+	}
+	
+	private Optional<GrantDeadline> toDomainGrantDeadline() {
+		
+		if (this.regularCommand.getGrantPeriodic() == null) {
+			return Optional.empty();
+		}
+		
+		int months = this.regularCommand.getGrantPeriodic().getExpirationDate().getMonths();
+		int years  = this.regularCommand.getGrantPeriodic().getExpirationDate().getYears();
+		
+		GrantDeadline grantDeadline = GrantDeadline.createFromJavaType(
+				this.regularCommand.getGrantPeriodic().getTimeSpecifyMethod(),
+				Optional.ofNullable(SpecialVacationDeadline.createFromJavaType(months, years)),
+				this.regularCommand.getGrantPeriodic().getLimitAccumulationDays().getLimitCarryoverDays());
+		
+		return Optional.ofNullable(grantDeadline);
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
+
+
+	
 }

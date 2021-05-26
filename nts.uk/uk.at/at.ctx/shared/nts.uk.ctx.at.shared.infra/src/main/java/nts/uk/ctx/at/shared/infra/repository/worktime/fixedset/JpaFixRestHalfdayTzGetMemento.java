@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
-import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixRestTimezoneSetGetMemento;
+import nts.uk.ctx.at.shared.dom.worktime.common.TimezoneOfFixedRestTimeSetGetMemento;
 import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtWtFixBrWekTs;
 
 /**
@@ -18,7 +18,7 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtWtFixBrWekTs;
  *
  * @param <T> the generic type
  */
-public class JpaFixRestHalfdayTzGetMemento implements FixRestTimezoneSetGetMemento {
+public class JpaFixRestHalfdayTzGetMemento implements TimezoneOfFixedRestTimeSetGetMemento {
 
 	/** The entity sets. */
 	private List<KshmtWtFixBrWekTs> entitySets;
@@ -44,7 +44,7 @@ public class JpaFixRestHalfdayTzGetMemento implements FixRestTimezoneSetGetMemen
 	 * getLstTimezone()
 	 */
 	@Override
-	public List<DeductionTime> getLstTimezone() {
+	public List<DeductionTime> getTimezones() {
 		if (CollectionUtil.isEmpty(this.entitySets)){
 		    return new ArrayList<>();
 		}

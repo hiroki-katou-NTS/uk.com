@@ -31,7 +31,9 @@ module nts.uk.at.view.knr001.a {
                 //select an employment information terminal
                 self.selectedCode.subscribe(function(empInfoTerminalCode){
                     blockUI.invisible();
-                    self.clearErrors();
+                    setTimeout(() => {
+                        self.clearErrors();
+                    }, 7);
                     if(empInfoTerminalCode){
                         self.enableBtnDelete(true);
                         self.loadEmpInfoTerminal(empInfoTerminalCode);
@@ -258,7 +260,8 @@ module nts.uk.at.view.knr001.a {
                 
                 dialog.confirm({messageId:"Msg_18"})
                     .ifYes(() => {
-                        var index = self.empInfoTerminalList().indexOf(self.empInfoTerminalList().find(empInfoTer => delCode == empInfoTer.empInfoTerCode));
+                        //  var index = self.empInfoTerminalList().indexOf(self.empInfoTerminalList().find(empInfoTer => delCode == empInfoTer.empInfoTerCode));
+                        var index = _.indexOf(self.empInfoTerminalList().map(e => e.empInfoTerCode), delCode);
                         let command = {
                             empInfoTerCode: delCode
                         };
@@ -444,9 +447,9 @@ module nts.uk.at.view.knr001.a {
                 this.empInfoTerName =  ko.observable('');
                 this.empInfoTerminalModelList = ko.observableArray([	
                                                 new ItemModel(null, '未選択'),		
-                                                new ItemModel(7, 'NRL_1'),			
-                                                new ItemModel(8, 'NRL_2'),			
-                                                new ItemModel(9, 'NRL_M')				
+                                                new ItemModel(7, 'NRL-1'),			
+                                                new ItemModel(8, 'NRL-2'),			
+                                                new ItemModel(9, 'NRL-m/ms')				
                                             ]); 
                 
                 this.modelEmpInfoTer =  ko.observable(null);

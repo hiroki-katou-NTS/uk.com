@@ -20,6 +20,7 @@ public class LeaveNumberInfo implements Cloneable {
 	/**
 	 * 付与数
 	 */
+	@Setter
 	protected LeaveGrantNumber grantNumber;
 
 	/**
@@ -37,6 +38,7 @@ public class LeaveNumberInfo implements Cloneable {
 	 * 使用率
 	 */
 	protected LeaveUsedPercent usedPercent;
+
 
 	/**
 	 * コンストラクタ
@@ -136,6 +138,26 @@ public class LeaveNumberInfo implements Cloneable {
 		if (grantDays != 0){
 			String usedPer = new DecimalFormat("#.#").format(usedDays/grantDays);
 			this.usedPercent = new LeaveUsedPercent(new BigDecimal(usedPer));
+		}
+	}
+
+	/** 残数不足のときにはtrueを返す */
+	public boolean isShortageRemain() {
+		return this.remainingNumber.isShortageRemain();
+	}
+
+	/** 残数を補正する */ 
+	public void correctRemainNumbers() {
+		
+		/** 残数がマイナスかを確認する */
+		if (this.isShortageRemain()) {
+			
+			/**　使用数を補正する　*/
+			this.remainingNumber = LeaveRemainingNumber.of(new LeaveRemainingDayNumber(0d), Optional.empty());
+			this.usedNumber = LeaveUsedNumber.of(new LeaveUsedDayNumber(this.grantNumber.days.v()), 
+												this.grantNumber.minutes.map(c -> new LeaveUsedTime(c.v())), 
+												Optional.empty(), 
+												Optional.empty());
 		}
 	}
 }

@@ -16,10 +16,10 @@ import nts.uk.ctx.at.shared.dom.worktime.common.RoundingTimeUnit;
 public class InstantRoundingDto implements InstantRoundingGetMemento {
 
 	/** The font rear section. */
-	private Integer fontRearSection;
+	public Integer fontRearSection;
 
 	/** The rounding time unit. */
-	private Integer roundingTimeUnit;
+	public Integer roundingTimeUnit;
 
 	/*
 	 * (non-Javadoc)

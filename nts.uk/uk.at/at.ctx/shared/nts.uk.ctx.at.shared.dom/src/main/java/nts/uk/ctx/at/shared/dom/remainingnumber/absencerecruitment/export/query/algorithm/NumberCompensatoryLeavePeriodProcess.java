@@ -7,23 +7,18 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.Getter;
-import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.EmploymentHistShareImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyAdapter;
-import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyDto;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.param.AbsRecMngInPeriodRefactParamInput;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.param.CompenLeaveAggrResult;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimAbsMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecAbasMngRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.DigestionAtr;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemainRepository;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutManagementData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutManagementDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutSubofHDManaRepository;
@@ -34,8 +29,6 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacation;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacationRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.EmpSubstVacation;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.EmpSubstVacationRepository;
-import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 
@@ -47,9 +40,6 @@ public class NumberCompensatoryLeavePeriodProcess {
 
 	@Inject
 	private PayoutManagementDataRepository payoutManagementDataRepository;
-
-	@Inject
-	private InterimRemainRepository interimRemainRepository;
 
 	@Inject
 	private InterimRecAbasMngRepository interimRecAbasMngRepository;
@@ -76,24 +66,24 @@ public class NumberCompensatoryLeavePeriodProcess {
 	private PayoutSubofHDManaRepository payoutSubofHDManaRepository;
 
 	public CompenLeaveAggrResult process(AbsRecMngInPeriodRefactParamInput inputParam) {
-		RequireImpl impl = new RequireImplBuilder(substitutionOfHDManaDataRepository, payoutManagementDataRepository,
-				interimRemainRepository, interimRecAbasMngRepository, shareEmploymentAdapter)
-						.empSubstVacationRepository(empSubstVacationRepository)
-						.comSubstVacationRepository(comSubstVacationRepository).companyAdapter(companyAdapter)
-						.closureEmploymentRepo(closureEmploymentRepo).closureRepo(closureRepo)
-						.payoutSubofHDManaRepository(payoutSubofHDManaRepository).build();
-
-		return NumberCompensatoryLeavePeriodQuery.process(impl, inputParam);
+		return NumberCompensatoryLeavePeriodQuery.process(createRequire(), inputParam);
 
 	}
 
+	public RequireImpl createRequire() {
+		return new RequireImplBuilder(substitutionOfHDManaDataRepository, payoutManagementDataRepository
+				, interimRecAbasMngRepository, shareEmploymentAdapter)
+				.empSubstVacationRepository(empSubstVacationRepository)
+				.comSubstVacationRepository(comSubstVacationRepository).companyAdapter(companyAdapter)
+				.closureEmploymentRepo(closureEmploymentRepo).closureRepo(closureRepo)
+				.payoutSubofHDManaRepository(payoutSubofHDManaRepository).build();
+	}
+	
 	public class RequireImpl implements NumberCompensatoryLeavePeriodQuery.Require {
 
 		private final SubstitutionOfHDManaDataRepository substitutionOfHDManaDataRepository;
 
 		private final PayoutManagementDataRepository payoutManagementDataRepository;
-
-		private final InterimRemainRepository interimRemainRepository;
 
 		private final InterimRecAbasMngRepository interimRecAbasMngRepository;
 
@@ -115,7 +105,6 @@ public class NumberCompensatoryLeavePeriodProcess {
 		public RequireImpl(RequireImplBuilder builder) {
 			this.substitutionOfHDManaDataRepository = builder.getSubstitutionOfHDManaDataRepository();
 			this.payoutManagementDataRepository = builder.getPayoutManagementDataRepository();
-			this.interimRemainRepository = builder.getInterimRemainRepository();
 			this.interimRecAbasMngRepository = builder.getInterimRecAbasMngRepository();
 			this.shareEmploymentAdapter = builder.getShareEmploymentAdapter();
 			this.empSubstVacationRepository = builder.getEmpSubstVacationRepository();
@@ -137,11 +126,6 @@ public class NumberCompensatoryLeavePeriodProcess {
 		public List<PayoutManagementData> getByUnUseState(String cid, String sid, GeneralDate ymd, double unUse,
 				DigestionAtr state) {
 			return payoutManagementDataRepository.getByUnUseState(cid, sid, ymd, unUse, state);
-		}
-
-		@Override
-		public List<InterimRemain> getRemainBySidPriod(String employeeId, DatePeriod dateData, RemainType remainType) {
-			return interimRemainRepository.getRemainBySidPriod(employeeId, dateData, remainType);
 		}
 
 		@Override
@@ -171,11 +155,6 @@ public class NumberCompensatoryLeavePeriodProcess {
 		}
 
 		@Override
-		public CompanyDto getFirstMonth(String companyId) {
-			return companyAdapter.getFirstMonth(companyId);
-		}
-
-		@Override
 		public List<EmploymentHistShareImport> findByEmployeeIdOrderByStartDate(String employeeId) {
 			return shareEmploymentAdapter.findByEmployeeIdOrderByStartDate(employeeId);
 		}
@@ -189,23 +168,6 @@ public class NumberCompensatoryLeavePeriodProcess {
 		public List<PayoutSubofHDManagement> getByPayoutId(String sid, GeneralDate occDate) {
 			return payoutSubofHDManaRepository.getByPayoutId(sid, occDate);
 		}
-
-		@Override
-		public Optional<BsEmploymentHistoryImport> employmentHistory(CacheCarrier cacheCarrier, String companyId,
-				String employeeId, GeneralDate baseDate) {
-			return shareEmploymentAdapter.findEmploymentHistoryRequire(cacheCarrier, companyId, employeeId, baseDate);
-		}
-
-		@Override
-		public Optional<ClosureEmployment> employmentClosure(String companyID, String employmentCD) {
-			return closureEmploymentRepo.findByEmploymentCD(companyID, employmentCD);
-		}
-
-		@Override
-		public Optional<Closure> closure(String companyId, int closureId) {
-			return closureRepo.findById(companyId, closureId);
-		}
-
 	}
 
 	@Getter
@@ -214,8 +176,6 @@ public class NumberCompensatoryLeavePeriodProcess {
 		private SubstitutionOfHDManaDataRepository substitutionOfHDManaDataRepository;
 
 		private PayoutManagementDataRepository payoutManagementDataRepository;
-
-		private InterimRemainRepository interimRemainRepository;
 
 		private InterimRecAbasMngRepository interimRecAbasMngRepository;
 
@@ -236,12 +196,10 @@ public class NumberCompensatoryLeavePeriodProcess {
 
 		public RequireImplBuilder(SubstitutionOfHDManaDataRepository substitutionOfHDManaDataRepository,
 				PayoutManagementDataRepository payoutManagementDataRepository,
-				InterimRemainRepository interimRemainRepository,
 				InterimRecAbasMngRepository interimRecAbasMngRepository,
 				ShareEmploymentAdapter shareEmploymentAdapter) {
 			this.substitutionOfHDManaDataRepository = substitutionOfHDManaDataRepository;
 			this.payoutManagementDataRepository = payoutManagementDataRepository;
-			this.interimRemainRepository = interimRemainRepository;
 			this.interimRecAbasMngRepository = interimRecAbasMngRepository;
 			this.shareEmploymentAdapter = shareEmploymentAdapter;
 		}

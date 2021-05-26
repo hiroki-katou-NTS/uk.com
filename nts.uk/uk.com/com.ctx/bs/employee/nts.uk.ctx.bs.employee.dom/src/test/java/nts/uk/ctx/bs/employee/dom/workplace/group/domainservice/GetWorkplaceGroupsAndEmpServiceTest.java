@@ -140,7 +140,7 @@ public class GetWorkplaceGroupsAndEmpServiceTest {
 
 		// Assertion
 		assertThat( result.keySet() )
-			.containsExactlyInAnyOrderElementsOf( affWkpGrps.stream().map(t->t.getWKPGRPID()).distinct().collect(Collectors.toList()) );
+			.containsExactlyInAnyOrderElementsOf( affWkpGrps.stream().map(t->t.getWorkplaceGroupId()).distinct().collect(Collectors.toList()) );
 		assertThat( result.values() ).containsOnly( ScopeReferWorkplaceGroup.ALL_EMPLOYEE );
 	}
 
@@ -186,10 +186,10 @@ public class GetWorkplaceGroupsAndEmpServiceTest {
 
 		// 全ての職場グループリスト
 		val workplaceGroups = Arrays.asList(
-				WorkplaceGroup.getWpg("CID", new WorkplaceGroupCode("WGCD#47"), new WorkplaceGroupName("WGNAME#47"), WorkplaceGroupType.NORMAL)
-			,	WorkplaceGroup.getWpg("CID", new WorkplaceGroupCode("WGCD#36"), new WorkplaceGroupName("WGNAME#36"), WorkplaceGroupType.NORMAL)
-			,	WorkplaceGroup.getWpg("CID", new WorkplaceGroupCode("WGCD#19"), new WorkplaceGroupName("WGNAME#19"), WorkplaceGroupType.NORMAL)
-			,	WorkplaceGroup.getWpg("CID", new WorkplaceGroupCode("WGCD#00"), new WorkplaceGroupName("WGNAME#00"), WorkplaceGroupType.NORMAL)
+				WorkplaceGroup.create("CID", new WorkplaceGroupCode("WGCD#47"), new WorkplaceGroupName("WGNAME#47"), WorkplaceGroupType.NORMAL)
+			,	WorkplaceGroup.create("CID", new WorkplaceGroupCode("WGCD#36"), new WorkplaceGroupName("WGNAME#36"), WorkplaceGroupType.NORMAL)
+			,	WorkplaceGroup.create("CID", new WorkplaceGroupCode("WGCD#19"), new WorkplaceGroupName("WGNAME#19"), WorkplaceGroupType.NORMAL)
+			,	WorkplaceGroup.create("CID", new WorkplaceGroupCode("WGCD#00"), new WorkplaceGroupName("WGNAME#00"), WorkplaceGroupType.NORMAL)
 		);
 
 		// Mocking
@@ -209,7 +209,7 @@ public class GetWorkplaceGroupsAndEmpServiceTest {
 
 		// Assertion
 		assertThat( result.keySet() )
-			.containsOnlyElementsOf( workplaceGroups.stream().map(t->t.getWKPGRPID()).collect(Collectors.toList()) );
+			.containsOnlyElementsOf( workplaceGroups.stream().map(t->t.getId()).collect(Collectors.toList()) );
 		assertThat( result.values() ).containsOnly( ScopeReferWorkplaceGroup.ALL_EMPLOYEE );
 	}
 

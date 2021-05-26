@@ -22,6 +22,8 @@ public interface RecordWorkInfoPub {
 	RecordWorkInfoPubExport_New getRecordWorkInfo_New(String employeeId, GeneralDate ymd);
 
 	Optional<InfoCheckNotRegisterPubExport> getInfoCheckNotRegister(String employeeId, GeneralDate ymd);
+	
+	List<InfoCheckNotRegisterPubExport> findByEmpAndPeriod(String employeeId, DatePeriod datePeriod);
 	/**
 	 * 日別実績の勤務情報を取得する
 	 * @param employeeIds

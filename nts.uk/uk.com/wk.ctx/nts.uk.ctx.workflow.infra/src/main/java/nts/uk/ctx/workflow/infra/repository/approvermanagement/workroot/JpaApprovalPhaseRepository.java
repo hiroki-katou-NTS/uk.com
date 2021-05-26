@@ -2,7 +2,6 @@ package nts.uk.ctx.workflow.infra.repository.approvermanagement.workroot;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -15,6 +14,7 @@ import lombok.SneakyThrows;
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalAtr;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalForm;
@@ -81,7 +81,7 @@ public class JpaApprovalPhaseRepository extends JpaRepository implements Approva
 		List<ApprovalPhase> result = new ArrayList<>();
 		Connection con = this.getEntityManager().unwrap(Connection.class);
 		String query = "SELECT phase.APPROVAL_ID, phase.PHASE_ORDER, phase.APPROVAL_FORM, phase.BROWSING_PHASE, phase.APPROVAL_ATR as PHASE_ATR, " +
-						"approver.APPROVER_G_CD, approver.SID, approver.APPROVER_ORDER, approver.APPROVAL_ATR, approver.CONFIRM_PERSON, approver.SPEC_WKP_ID " +
+						"approver.APPROVER_G_CD, approver.SID, approver.APPROVER_ORDER, approver.CONFIRM_PERSON, approver.SPEC_WKP_ID " +
 						"FROM WWFMT_APPROVAL_PHASE phase " +
 						"LEFT JOIN WWFMT_APPROVER approver " +
 						"ON phase.APPROVAL_ID = approver.APPROVAL_ID " +
@@ -89,8 +89,8 @@ public class JpaApprovalPhaseRepository extends JpaRepository implements Approva
 						"WHERE phase.APPROVAL_ID = 'approvalId' " ;
 		query = query.replaceAll("approvalId", approvalId);
 		try (PreparedStatement pstatement = con.prepareStatement(query)) {
-			ResultSet rs = pstatement.executeQuery();
-			List<ApprovalPhase> listResult = toDomain(createFullJoinAppRootInstance(rs));
+			
+			List<ApprovalPhase> listResult = toDomain(createFullJoinAppRootInstance(new NtsResultSet(pstatement.executeQuery())));
 			if(CollectionUtil.isEmpty(listResult)){
 				result = Collections.emptyList();
 			} else {
@@ -200,24 +200,22 @@ public class JpaApprovalPhaseRepository extends JpaRepository implements Approva
 	}	
 	
 	@SneakyThrows
-	private List<FullJoinWwfmtApprovalPhase> createFullJoinAppRootInstance(ResultSet rs){
-		List<FullJoinWwfmtApprovalPhase> listFullData = new ArrayList<>();
+	private List<FullJoinWwfmtApprovalPhase> createFullJoinAppRootInstance(NtsResultSet nrs){
+		
+		List<FullJoinWwfmtApprovalPhase> listFullData =
+				nrs.getList(rs -> new FullJoinWwfmtApprovalPhase(
+						rs.getString("APPROVAL_ID"), 
+						rs.getInt("PHASE_ORDER"),
+						// rs.getString("BRANCH_ID"), 
+						rs.getInt("APPROVAL_FORM"), 
+						rs.getInt("BROWSING_PHASE"),
+						rs.getInt("PHASE_ATR"),
+						rs.getString("APPROVER_G_CD"), 
+						rs.getString("SID"), 
+						rs.getInt("APPROVER_ORDER"), 
+						rs.getInt("CONFIRM_PERSON"),
+						rs.getString("SPEC_WKP_ID")));
 
-		while (rs.next()) {
-			listFullData.add(new FullJoinWwfmtApprovalPhase(
-					rs.getString("APPROVAL_ID"), 
-					rs.getInt("PHASE_ORDER"),
-					// rs.getString("BRANCH_ID"), 
-					rs.getInt("APPROVAL_FORM"), 
-					rs.getInt("BROWSING_PHASE"),
-					rs.getInt("PHASE_ATR"),
-					rs.getString("APPROVER_G_CD"), 
-					rs.getString("SID"), 
-					rs.getInt("APPROVER_ORDER"), 
-					rs.getInt("APPROVAL_ATR"), 
-					rs.getInt("CONFIRM_PERSON"),
-					rs.getString("SPEC_WKP_ID")));
-		}
 
 		return listFullData;
 	}

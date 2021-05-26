@@ -17,6 +17,7 @@ import javax.persistence.Table;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.at.schedule.infra.entity.budget.premium.KscmtPremiumItem;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
@@ -35,27 +36,25 @@ public class KscmtEstAggregate extends ContractUkJpaEntity implements Serializab
 	@Id
     @Column(name = "CID")
     private String cid;
-	
     /** The half day atr. */
     @Column(name = "HALF_DAY_ATR")
     private int halfDayAtr;
-    
     /** The year hd atr. */
     @Column(name = "YEAR_HD_ATR")
     private int yearHdAtr;
-    
     /** The sphd atr. */
     @Column(name = "SPHD_ATR")
     private int sphdAtr;
-    
     /** The havy hd atr. */
     @Column(name = "HAVY_HD_ATR")
     private int havyHdAtr;
-    
+
+//    /** The kscst per cost extra item. */
+//    @OneToMany(cascade = CascadeType.ALL, mappedBy = "kscstEstAggregateSet", orphanRemoval = true, fetch = FetchType.LAZY)
+//	public List<KscmtPerCostExtraItem> kscstPerCostExtraItem;
     /** The kscst per cost extra item. */
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "kscstEstAggregateSet", orphanRemoval = true, fetch = FetchType.LAZY)
-	public List<KscmtPerCostExtraItem> kscstPerCostExtraItem;
-
+	public List<KscmtPremiumItem> kscstPerCostExtraItem;
 	/* (non-Javadoc)
 	 * @see nts.arc.layer.infra.data.entity.JpaEntity#getKey()
 	 */
@@ -95,6 +94,4 @@ public class KscmtEstAggregate extends ContractUkJpaEntity implements Serializab
 		return true;
 	}
 
-	
-	
 }

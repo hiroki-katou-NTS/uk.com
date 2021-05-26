@@ -1,5 +1,4 @@
 module nts.uk.at.view.kmk003.a {
-    import common = nts.uk.at.view.kmk003.a.service.model.common;
     export module service {
         export module model {
             export module flexset {
@@ -14,11 +13,12 @@ module nts.uk.at.view.kmk003.a {
                     coreTimeSheet: TimeSheetDto;
                     timesheet: number;
                     minWorkTime: number;
+                    goOutCalc: OutingCalcDto
                 }
 
-                export interface FlexCalcSettingDto {
+                export interface OutingCalcDto {
                     removeFromWorkTime: number;
-                    calculateSharing: number;
+                    especialCalc: number;
                 }
 
                 export interface FlexHalfDayWorkTimeDto {
@@ -38,10 +38,9 @@ module nts.uk.at.view.kmk003.a {
                     restSetting: common.FlowWorkRestSettingDto;
                     offdayWorkTime: FlexOffdayWorkTimeDto;
                     commonSetting: common.WorkTimezoneCommonSetDto;
-                    useHalfDayShift: boolean;
+                    useHalfDayShift: common.HalfDayWorkSetDto;
                     lstHalfDayWorkTimezone: FlexHalfDayWorkTimeDto[];
                     lstStampReflectTimezone: common.StampReflectTimezoneDto[];
-                    calculateSetting: FlexCalcSettingDto;
                 }
 
             }

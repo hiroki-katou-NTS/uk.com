@@ -6,6 +6,7 @@ module nts.uk.at.view.kaf008_ref.b.viewmodel {
     import BusinessTripOutput = nts.uk.at.view.kaf008_ref.shr.viewmodel.BusinessTripOutput;
     import BusinessTripContent = nts.uk.at.view.kaf008_ref.shr.viewmodel.BusinessTripContent;
     import Mode = nts.uk.at.view.kaf008_ref.shr.viewmodel.Mode;
+	import CommonProcess = nts.uk.at.view.kaf000.shr.viewmodel.CommonProcess;
 
     @component({
         name: 'kaf008-b',
@@ -236,7 +237,9 @@ module nts.uk.at.view.kaf008_ref.b.viewmodel {
                     if (res) {
                         if (res) {
                             vm.printContent.opBusinessTripInfoOutput = dataFetch.businessTripContent;
-                            vm.$dialog.info({messageId: "Msg_15"}).then(() => $(vm.$el).find('#A5_3').focus());
+                            vm.$dialog.info({messageId: "Msg_15"}).then(() => {
+								CommonProcess.handleMailResult(res, vm);
+							});
                         }
                     }
                 }).fail(err => {

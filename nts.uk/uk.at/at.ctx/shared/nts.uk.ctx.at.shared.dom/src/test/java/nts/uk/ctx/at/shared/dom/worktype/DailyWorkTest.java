@@ -1,6 +1,6 @@
 package nts.uk.ctx.at.shared.dom.worktype;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 import java.util.function.Predicate;
@@ -11,6 +11,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import lombok.val;
+import mockit.Expectations;
+import mockit.Mocked;
 import mockit.integration.junit4.JMockit;
 import nts.arc.testing.assertion.NtsAssert;
 
@@ -187,7 +189,47 @@ public class DailyWorkTest {
 		assertThat( result ).isEqualTo( AttendanceDayAttr.HALF_TIME_PM );
 
 	}
-
+	
+	@SuppressWarnings("static-access")
+	public static class TestGetHalfDayWorkTypeClassification {
+		
+		@Test
+		public void oneDayCase(@Mocked HalfDayWorkTypeClassification halfDay) {
+			
+			DailyWork target = Helper.createDailyByWorkTypeUnit(WorkTypeUnit.OneDay);
+		
+			new Expectations() {
+				{
+					halfDay.createByWholeDay((WorkTypeClassification) any);
+					times = 1;
+					
+					halfDay.createByAmAndPm((WorkTypeClassification) any, (WorkTypeClassification) any);
+					times = 0;
+				}
+			};
+			
+			target.getHalfDayWorkTypeClassification();
+		}
+		
+		@Test
+		public void notOneDayCase(@Mocked HalfDayWorkTypeClassification halfDay) {
+			
+			DailyWork target = Helper.createDailyByWorkTypeUnit(WorkTypeUnit.MonringAndAfternoon);
+			
+			new Expectations() {
+				{
+					halfDay.createByWholeDay((WorkTypeClassification) any);
+					times = 0;
+					
+					halfDay.createByAmAndPm((WorkTypeClassification) any, (WorkTypeClassification) any);
+					times = 1;
+				}
+			};
+			
+			target.getHalfDayWorkTypeClassification();
+		}
+		
+	}
 
 	protected static class Helper {
 
@@ -212,6 +254,17 @@ public class DailyWorkTest {
 
 			return new DailyWork( WorkTypeUnit.MonringAndAfternoon, WorkTypeClassification.Holiday, forAm, forPm );
 
+		}
+		/**
+		 * 1日の勤務を作る
+		 * @param workTypeUnit 勤務区分
+		 * @return
+		 */
+		public static DailyWork createDailyByWorkTypeUnit(WorkTypeUnit workTypeUnit) {
+			return new DailyWork( workTypeUnit
+								, WorkTypeClassification.Attendance
+								, WorkTypeClassification.AnnualHoliday
+								, WorkTypeClassification.Absence);
 		}
 
 

@@ -1,13 +1,16 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimMngCommon;
+import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
+import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.OccurrenceDay;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.OccurrenceTime;
+import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UnUsedDay;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UnUsedTime;
 /**
@@ -19,9 +22,8 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UnUsedTi
 @Getter
 @Setter
 @AllArgsConstructor
-public class InterimBreakMng extends AggregateRoot implements InterimMngCommon{	
-	/**	暫定休出管理データID */
-	private String breakMngId;
+@NoArgsConstructor
+public class InterimBreakMng extends InterimRemain implements InterimMngCommon{
 	/**	１日相当時間 */
 	private AttendanceTime onedayTime;
 	/**	使用期限日 */
@@ -36,10 +38,24 @@ public class InterimBreakMng extends AggregateRoot implements InterimMngCommon{
 	private UnUsedTime unUsedTimes;
 	/**	未使用日数 */
 	private UnUsedDay unUsedDays;
-	
+
 	@Override
 	public String getId() {
-		return breakMngId;
+		return this.getRemainManaID();
+	}
+
+	public InterimBreakMng(String remainManaID, String sID, GeneralDate ymd, CreateAtr creatorAtr,
+			RemainType remainType, AttendanceTime onedayTime, GeneralDate expirationDate,
+			OccurrenceTime occurrenceTimes, OccurrenceDay occurrenceDays, AttendanceTime haftDayTime,
+			UnUsedTime unUsedTimes, UnUsedDay unUsedDays) {
+		super(remainManaID, sID, ymd, creatorAtr, remainType);
+		this.onedayTime = onedayTime;
+		this.expirationDate = expirationDate;
+		this.occurrenceTimes = occurrenceTimes;
+		this.occurrenceDays = occurrenceDays;
+		this.haftDayTime = haftDayTime;
+		this.unUsedTimes = unUsedTimes;
+		this.unUsedDays = unUsedDays;
 	}
 
 }

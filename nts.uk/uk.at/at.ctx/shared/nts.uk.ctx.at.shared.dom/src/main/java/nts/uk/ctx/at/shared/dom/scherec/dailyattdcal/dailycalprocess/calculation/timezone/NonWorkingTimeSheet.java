@@ -1,8 +1,7 @@
 package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone;
 
-import java.util.List;
-
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.TimeSpanForDailyCalc;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.TimeSheetOfDeductionItem;
 
 /**
  * 非勤務時間帯
@@ -11,19 +10,23 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation
  */
 public class NonWorkingTimeSheet {
 
-	//所定内休憩時間帯
-	List<TimeSpanForDailyCalc> whithinBreakTimeSheet;
-	//所定外休憩時間帯
-	List<TimeSpanForDailyCalc> excessBreakTimeSheet;
+	/** 勤務間休憩時間帯 */
+	TimeSheetOfDeductionItem betweenBreakTimeSheet;
 	
 	
 	/**
 	 * Constructor 
 	 */
-	public NonWorkingTimeSheet(List<TimeSpanForDailyCalc> whithinBreakTimeSheet,
-			List<TimeSpanForDailyCalc> excessBreakTimeSheet) {
+	public NonWorkingTimeSheet(TimeSheetOfDeductionItem betweenBreakTimeSheet) {
 		super();
-		this.whithinBreakTimeSheet = whithinBreakTimeSheet;
-		this.excessBreakTimeSheet = excessBreakTimeSheet;
+		this.betweenBreakTimeSheet = betweenBreakTimeSheet;
+	}
+
+	/**
+	 * 勤務間休憩時間を計算する
+	 * @return 勤務間休憩時間
+	 */
+	public AttendanceTime calcBetweenBreakTime() {
+		return this.betweenBreakTimeSheet.calcTotalTime();
 	}
 }

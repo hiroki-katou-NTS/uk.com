@@ -418,6 +418,10 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 				vm.$window.modal('/view/kaf/018/f/index.xhtml', fParam);
 			}
 			if(ui.colKey=="displayConfirm") {
+				let currentWkp = _.find(vm.dataSource, o => o.wkpID == ui.rowKey);
+				if(!currentWkp.countEmp) {
+					return;	
+				}
 				let closureItem = vm.closureItem,
 					startDate = vm.startDate,
 					endDate = vm.endDate,

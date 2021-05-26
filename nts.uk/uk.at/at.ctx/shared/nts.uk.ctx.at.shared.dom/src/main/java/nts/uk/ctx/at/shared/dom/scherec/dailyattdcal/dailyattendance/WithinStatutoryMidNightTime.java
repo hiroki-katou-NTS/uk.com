@@ -1,10 +1,22 @@
 package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance;
 
+import java.util.Optional;
+
 import lombok.Getter;
-import lombok.val;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeDivergenceWithCalculation;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.vacationusetime.VacationClass;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workingstyle.flex.SettingOfFlexWork;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.FlexWithinWorkTimeSheet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManageReGetClass;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.PredetermineTimeSetForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.CalculationRangeOfOneDay;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.withinworkinghours.WithinWorkTimeSheet;
+import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.StatutoryDivision;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
+import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
  * 所定内深夜時間
@@ -22,19 +34,64 @@ public class WithinStatutoryMidNightTime {
 	}
 
 	
-	 /**
-	  * 所定内深夜時間の計算指示を出す
-	  * @return　所定内深夜時間
-	  */
-	 public static WithinStatutoryMidNightTime calcPredetermineMidNightTime(CalculationRangeOfOneDay oneDay) {
-		 if(oneDay.getWithinWorkingTimeSheet().isPresent()) {
-			val calcTime = oneDay.getWithinWorkingTimeSheet().get().calcMidNightTime();
-			return new WithinStatutoryMidNightTime(TimeDivergenceWithCalculation.sameTime(calcTime));
-		 }
-		 else {
-			 return new WithinStatutoryMidNightTime(TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0)));
-		 }
-	 }
+	/**
+	 * 所定内深夜時間の計算指示を出す
+	 * @param recordReget 実績
+	 * @param workType 勤務種類
+	 * @param conditionItem 労働条件項目
+	 * @param flexCalcMethod フレックス勤務の設定
+	 * @param vacationClass 休暇クラス
+	 * @param workTimeCode 就業時間帯コード
+	 * @param predetermineTimeSetByPersonInfo 計算用所定時間設定（個人）
+	 * @return　所定内深夜時間
+	 */
+	public static WithinStatutoryMidNightTime calcPredetermineMidNightTime(
+			ManageReGetClass recordReGet,
+			WorkType workType,
+			WorkingConditionItem conditionItem,
+			Optional<SettingOfFlexWork> flexCalcMethod,
+			VacationClass vacationClass,
+			Optional<WorkTimeCode> workTimeCode,
+			Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo) {
+
+		// フレックスかどうか判断
+		boolean isFlex = false;
+		if (recordReGet.getWorkTimeSetting().isPresent()){
+			isFlex = recordReGet.getWorkTimeSetting().get().getWorkTimeDivision().isFlexWorkDay(conditionItem);
+		}
+		
+		CalculationRangeOfOneDay oneDay = recordReGet.getCalculationRangeOfOneDay();
+		AttendanceTime calcTime = new AttendanceTime(0);
+		if(oneDay.getWithinWorkingTimeSheet().isPresent()) {
+			WithinWorkTimeSheet withinWorkTimeSheet = oneDay.getWithinWorkingTimeSheet().get();
+			if (isFlex){
+				calcTime = ((FlexWithinWorkTimeSheet)withinWorkTimeSheet).calcWithinMidnightTime(
+						recordReGet.getHolidayCalcMethodSet(),
+						recordReGet.getIntegrationOfDaily().getCalAttr().getFlexExcessTime().getFlexOtTime().getCalAtr(),
+						workType,
+						flexCalcMethod.map(x-> x).orElse(null),
+						recordReGet.getCalculationRangeOfOneDay().getPredetermineTimeSetForCalc(),
+						vacationClass,
+						withinWorkTimeSheet.getTimeVacationAdditionRemainingTime().get(),
+						StatutoryDivision.Nomal,
+						workTimeCode,
+						recordReGet.getIntegrationOfDaily().getCalAttr().getLeaveEarlySetting(),
+						recordReGet.getAddSetting(),
+						recordReGet.getHolidayAddtionSet().map(x-> x).orElse(null),
+						recordReGet.getDailyUnit(),
+						recordReGet.getWorkTimezoneCommonSet(),
+						recordReGet.getIntegrationOfDaily().getCalAttr().getFlexExcessTime().getFlexOtTime().getUpLimitORtSet(),
+						conditionItem,
+						predetermineTimeSetByPersonInfo,
+						recordReGet.getCoreTimeSetting(),
+						NotUseAtr.NOT_USE);
+			}
+			else{
+				calcTime = withinWorkTimeSheet.calcMidNightTime();
+			}
+		}
+		return new WithinStatutoryMidNightTime(TimeDivergenceWithCalculation.sameTime(calcTime));
+	}
 	 
 	/**
 	 * 実績超過乖離時間の計算

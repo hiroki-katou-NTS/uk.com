@@ -14,14 +14,22 @@ import nts.uk.ctx.at.function.app.find.alarm.checkcondition.AlarmCheckConditionB
 import nts.uk.ctx.at.function.dom.adapter.FixedConWorkRecordAdapter;
 import nts.uk.ctx.at.function.dom.adapter.WorkRecordExtraConAdapter;
 import nts.uk.ctx.at.function.dom.adapter.monthlycheckcondition.FixedExtraMonFunAdapter;
-import nts.uk.ctx.at.function.dom.alarm.AlarmCategory;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategoryRepository;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.IAgreeCondOtRepository;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.IAgreeConditionErrorRepository;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.annualholiday.IAlarmCheckConAgrRepository;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.annualholiday.IAlarmCheckSubConAgrRepository;
+import nts.uk.ctx.at.function.dom.alarm.checkcondition.appapproval.AppApprovalFixedExtractConditionRepository;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.monthly.MonAlarmCheckConEvent;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.multimonth.MulMonAlarmCondEvent;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.MasterCheckFixedExtractConditionRepository;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.annual.ExtractionCondScheduleYearRepository;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.daily.ExtraCondScheDayRepository;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.daily.FixedExtractSDailyConRepository;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.monthly.ExtractionCondScheduleMonthRepository;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.monthly.FixedExtractionSMonConRepository;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.weekly.ExtractionCondScheduleWeeklyRepository;
+import nts.uk.ctx.at.shared.dom.alarmList.AlarmCategory;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -35,6 +43,9 @@ public class DeleteAlarmCheckConditionByCategoryCommandHandler extends CommandHa
 
 	@Inject
 	private AlarmCheckConditionByCategoryRepository conditionRepo;
+	
+	@Inject 
+	private AppApprovalFixedExtractConditionRepository appApprovalFixedExtractConditionRepository;
 	
 	@Inject
 	private WorkRecordExtraConAdapter workRecordExtraConRepo;
@@ -62,6 +73,26 @@ public class DeleteAlarmCheckConditionByCategoryCommandHandler extends CommandHa
 	@Inject
 	private IAlarmCheckConAgrRepository alarmCheckConAgrRepository;
 	
+	@Inject
+	private MasterCheckFixedExtractConditionRepository fixedMasterCheckConditionRepo;
+	
+	@Inject
+	private FixedExtractSDailyConRepository fixedExtractSDailyConRepository;
+	
+	@Inject
+	private ExtraCondScheDayRepository extraCondScheDayRepository;
+	
+	@Inject
+	private FixedExtractionSMonConRepository fixedExtractSMonthConRepository;
+	
+	@Inject
+	private ExtractionCondScheduleMonthRepository extraCondScheMonRepository;
+	
+	@Inject
+	private ExtractionCondScheduleYearRepository extraCondScheYearRepository;
+	
+	@Inject
+	private ExtractionCondScheduleWeeklyRepository extraCondScheWeeklyRepository;
 	
 	@Override
 	protected void handle(CommandHandlerContext<AlarmCheckConditionByCategoryCommand> context) {
@@ -76,6 +107,11 @@ public class DeleteAlarmCheckConditionByCategoryCommandHandler extends CommandHa
 			// delete List Fixed Work Record Extract Condition by list Error Alarm Code
 			String dailyAlarmConID =  command.getDailyAlarmCheckCondition().getListFixedExtractConditionWorkRecord().get(0).getDailyAlarmConID();
 			this.fixedConWorkRecordRepo.deleteFixedConWorkRecordPub(dailyAlarmConID);
+		}
+		
+		if (command.getCategory() == AlarmCategory.APPLICATION_APPROVAL.value) {
+			String appAlarmConId = command.getApprovalAlarmCheckConDto().getListFixedExtractConditionWorkRecord().get(0).getAppAlarmConId();
+			this.appApprovalFixedExtractConditionRepository.delete(appAlarmConId);
 		}
 		
 		if (command.getCategory() == AlarmCategory.MONTHLY.value) {
@@ -126,6 +162,54 @@ public class DeleteAlarmCheckConditionByCategoryCommandHandler extends CommandHa
 			alarmCheckSubConAgrRepository.delete(companyId, command.getCategory(), command.getCode());
 			alarmCheckConAgrRepository.delete(companyId, command.getCategory(), command.getCode());
 		}
+		
+		if (command.getCategory() == AlarmCategory.MASTER_CHECK.value) {
+			String errorAlarmCheckId =  command.getMasterCheckAlarmCheckCondition().getListFixedMasterCheckCondition().get(0).getErrorAlarmCheckId();
+			this.fixedMasterCheckConditionRepo.deleteMasterCheckFixedCondition(errorAlarmCheckId);
+		}
+		
+		if (command.getCategory() == AlarmCategory.SCHEDULE_DAILY.value) {
+			String contractCode = AppContexts.user().contractCode();
+			String checkIds = command.getScheFixCondDay().getErAlCheckLinkId();
+			if (!checkIds.isEmpty()) {
+				this.fixedExtractSDailyConRepository.delete(contractCode, companyId, checkIds);
+			}
+			
+			String checkAnyIds = command.getScheAnyCondDay().getErAlCheckLinkId();
+			if (!checkAnyIds.isEmpty()) {
+				this.extraCondScheDayRepository.delete(contractCode, companyId, checkAnyIds);
+			}
+		}
+		
+		if (command.getCategory() == AlarmCategory.SCHEDULE_MONTHLY.value) {
+			String contractCode = AppContexts.user().contractCode();
+			String checkIds = command.getScheFixCondDay().getErAlCheckLinkId();
+			if (!checkIds.isEmpty()) {
+				this.fixedExtractSMonthConRepository.delete(contractCode, companyId, checkIds);
+			}
+			
+			String checkAnyIds = command.getScheAnyCondDay().getErAlCheckLinkId();
+			if (!checkAnyIds.isEmpty()) {
+				this.extraCondScheMonRepository.delete(contractCode, companyId, checkAnyIds);
+			}
+		}
+		
+		if (command.getCategory() == AlarmCategory.SCHEDULE_YEAR.value) {
+			String contractCode = AppContexts.user().contractCode();
+			String checkAnyIds = command.getScheAnyCondDay().getErAlCheckLinkId();
+			if (!checkAnyIds.isEmpty()) {
+				this.extraCondScheYearRepository.delete(contractCode, companyId, checkAnyIds);
+			}
+		}
+		
+		if (command.getCategory() == AlarmCategory.WEEKLY.value) {
+			String contractCode = AppContexts.user().contractCode();
+			String checkAnyIds = command.getScheAnyCondDay().getErAlCheckLinkId();
+			if (!checkAnyIds.isEmpty()) {
+				this.extraCondScheWeeklyRepository.delete(contractCode, companyId, checkAnyIds);
+			}
+		}
+		
 		conditionRepo.delete(companyId, command.getCategory(), command.getCode());
 	}
 

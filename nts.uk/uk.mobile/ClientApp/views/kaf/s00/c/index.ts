@@ -39,12 +39,16 @@ export class KafS00CComponent extends Vue {
         if (!self.params) {
             return;
         }
-        self.dropdownList = [{
-            appStandardReasonCD: '',
-            displayOrder: 0,
-            defaultValue: false,
-            reasonForFixedForm: self.$i18n('KAFS00_23'),   
-        }];
+        if (self.params.appLimitSetting.standardReasonRequired) {
+            self.dropdownList = [];
+        } else {
+            self.dropdownList = [{
+                appStandardReasonCD: '',
+                displayOrder: 0,
+                defaultValue: false,
+                reasonForFixedForm: self.$i18n('KAFS00_23'),   
+            }];
+        }
         _.forEach(self.params.reasonTypeItemLst, (value) => {
             self.dropdownList.push({
                 appStandardReasonCD: value.appStandardReasonCD,

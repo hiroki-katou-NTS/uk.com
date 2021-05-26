@@ -21,7 +21,6 @@ import lombok.Setter;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.workschedulebreak.KscdtWorkScheduleBreak;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.workscheduletime.KscdtScheTime;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.schedulemaster.KscdtScheMasterInfo;
-import nts.uk.ctx.at.schedule.infra.entity.schedule.workschedulestate.KscdtScheState;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
@@ -64,8 +63,8 @@ public class KscdtBasicSchedule extends ContractUkJpaEntity implements Serializa
 	@OneToOne(cascade = CascadeType.ALL, mappedBy = "kscdtBasicSchedule", orphanRemoval = true, fetch = FetchType.LAZY)
 	public KscdtScheTime kscdtScheTime;
 	
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "kscdtBasicSchedule", orphanRemoval = true, fetch = FetchType.LAZY)
-	public List<KscdtScheState> kscdtScheState;
+//	@OneToMany(cascade = CascadeType.ALL, mappedBy = "kscdtBasicSchedule", orphanRemoval = true, fetch = FetchType.LAZY)
+//	public List<KscdtScheState> kscdtScheState;
 
 	@Override
 	protected Object getKey() {

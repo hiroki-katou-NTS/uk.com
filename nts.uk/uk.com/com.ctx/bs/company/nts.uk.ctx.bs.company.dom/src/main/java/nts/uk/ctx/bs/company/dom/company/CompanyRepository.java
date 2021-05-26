@@ -17,13 +17,19 @@ public interface CompanyRepository {
 	 * Find all company with isAbolition=0
 	 * @return
 	 */
-	List<Company>  getAllCompany();
+	List<Company>  getAllCompany(String contractCd);
 	
 	/** 
 	 * get all company from database
 	 * @author: Hoang Yen
 	 */
-	List<Company> findAll();
+	List<Company> findAll(String contractCd);
+	
+	/** 
+	 * get all company by listCid and contractcode
+	 * @author: tutk
+	 */
+	List<Company> findAllByListCid(String contractCd,List<String> companyIds);
 	
 	/**
 	 * find a company infor item by code 

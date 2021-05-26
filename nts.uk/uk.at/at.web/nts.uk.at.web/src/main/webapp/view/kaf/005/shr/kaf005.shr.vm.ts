@@ -305,9 +305,12 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 		
 		backgroundColor: KnockoutObservable<Boolean> = ko.observable(false);
 		
+		isAgentMode: KnockoutObservable<Boolean> = ko.observable(false);
+		
 		created(params: any) {
 			const self = this;
 			self.visibleModel = params.visibleModel;
+			self.isAgentMode = params.agent;
 			// self.restTime = params.restTime;
 			// self.holidayTime = params.holidayTime;
 			// self.overTime = params.overTime;
@@ -321,7 +324,7 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 			$("#fixed-table").ntsFixedTable({ height: 120 });
 			self.visibleModel.c15_3.subscribe((value: any) => {
 				if (!_.isNil(value)) {
-					if (value) {
+					if (value && !self.isAgentMode()) {
 						
 						$(".overTime2").hide();
 						$(".overTime1").show();

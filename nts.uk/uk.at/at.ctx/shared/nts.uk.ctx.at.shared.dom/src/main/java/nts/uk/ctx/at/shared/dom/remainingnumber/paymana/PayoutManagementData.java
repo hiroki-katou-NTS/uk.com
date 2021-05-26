@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.param.UnbalanceCompensation;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.CompensatoryDayoffDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.DigestionAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.HolidayAtr;
@@ -51,7 +52,7 @@ public class PayoutManagementData extends AggregateRoot {
 	private DigestionAtr stateAtr;
 	
 	// 消滅日
-	public Optional<GeneralDate> disapearDate;
+	public Optional<GeneralDate> disapearDate  = Optional.empty(); //SONNLB sửa đoạn này là lỗi của 3SI, vì làm exception chết màn KAF011 ngày 19/04
 	
 	public PayoutManagementData(String payoutId,String cid, String sid, boolean unknowDate, GeneralDate dayoffDate, GeneralDate expiredDate, int lawId,
 			Double occurredDays, Double unUsedDays, int stateAtr){
@@ -90,5 +91,26 @@ public class PayoutManagementData extends AggregateRoot {
 	
 	public void setStateAtr(int stateAtr){
 		this.stateAtr = EnumAdaptor.valueOf(stateAtr, DigestionAtr.class);
+	}
+	
+	public void update(UnbalanceCompensation data) {
+		this.expiredDate = data.getDeadline();
+		this.lawAtr = data.getLegalInExClassi();
+		this.occurredDays = new ManagementDataDaysAtr(data.getNumberOccurren().getDay().v());
+		this.unUsedDays = new ManagementDataRemainUnit(data.getUnbalanceNumber().getDay().v());
+		this.stateAtr = data.getDigestionCate();
+		this.disapearDate = data.getExtinctionDate();
+	}
+	
+	public static PayoutManagementData create(String cid, UnbalanceCompensation payout) {
+		
+		PayoutManagementData domain = new PayoutManagementData();
+		domain.cID = cid;
+		domain.sID = payout.getEmployeeId();
+		domain.payoutId = payout.getManageId();
+		domain.payoutDate = new CompensatoryDayoffDate(payout.getDateOccur().isUnknownDate(), payout.getDateOccur().getDayoffDate());
+		domain.update(payout);
+		
+		return domain;
 	}
 }

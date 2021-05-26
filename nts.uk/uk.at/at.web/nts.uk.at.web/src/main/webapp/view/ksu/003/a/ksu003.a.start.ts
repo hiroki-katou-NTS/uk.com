@@ -2,17 +2,20 @@ module nts.uk.at.view.ksu003.a {
 	__viewContext.ready(function() {
 		nts.uk.characteristics.restore("USER_KSU003_INFOR").done(function(data : any) {
 			let screenModel = new viewmodel.ScreenModel(data);
+			nts.uk.ui.block.grayout();
 			screenModel.startPage().done(function() {
-				
 				__viewContext.bind(screenModel);
+				$('#ui-area').css('display','');
 				$(window).resize(function() {
 					screenModel.setPositionButonDownAndHeightGrid();
 				});
 			});
 			initEvent();
 			initEvent2();
+			initEvent3();
 		});
 	});
+	
 	function initEvent(): void {
 		//click btnA5
 		$('#A5_1').ntsPopup({
@@ -25,6 +28,21 @@ module nts.uk.at.view.ksu003.a {
 
 		$('#note').click(function() {
 			$('#A5_1').ntsPopup("toggle");
+		});
+	}
+	
+	function initEvent3(): void {
+		//click btnA5
+		$('#A14').ntsPopup({
+			position: {
+				my: 'left top',
+				at: 'left bottom+3',
+				of: $('.settingTimeGrid')
+			}
+		});
+
+		$('.settingTimeGrid').click(function() {
+			$('#A14').ntsPopup("toggle");
 		});
 	}
 

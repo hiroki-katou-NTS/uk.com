@@ -32,7 +32,9 @@ public class PathsNoSession implements PathsToCheckCsrf {
 			"/enums/map",
 			"/sys/portal/webmenu/logout",
 			"/ctx/sys/gateway/kdp/login/.*",
-			"/at/record/stamp/.*"
+			"/at/record/stamp/.*",
+			"/view-context/user",
+			"/nr/process/.*"
 			);
 
 	public static PathsNoSession WEB_SCREENS = PathsNoSession.define(
