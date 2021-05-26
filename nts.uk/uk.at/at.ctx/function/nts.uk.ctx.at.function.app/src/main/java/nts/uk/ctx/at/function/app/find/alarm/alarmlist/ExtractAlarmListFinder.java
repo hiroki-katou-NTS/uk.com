@@ -1,10 +1,6 @@
 package nts.uk.ctx.at.function.app.find.alarm.alarmlist;
 
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-
 import nts.arc.time.GeneralDate;
-import nts.gul.collection.CollectionUtil;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.function.dom.adapter.person.EmployeeInfoFunAdapter;
 import nts.uk.ctx.at.function.dom.adapter.person.EmployeeInfoFunAdapterDto;
@@ -18,9 +14,14 @@ import nts.uk.ctx.at.function.dom.alarm.alarmlist.webmenu.AlarmListWebMenu;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.webmenu.AlarmListWebMenuRepository;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.webmenu.WebMenuInfo;
 import nts.uk.ctx.at.shared.dom.alarmList.AlarmCategory;
-import nts.uk.ctx.at.shared.dom.alarmList.persistenceextractresult.*;
+import nts.uk.ctx.at.shared.dom.alarmList.persistenceextractresult.AlarmCheckConditionCode;
+import nts.uk.ctx.at.shared.dom.alarmList.persistenceextractresult.AlarmEmployeeList;
+import nts.uk.ctx.at.shared.dom.alarmList.persistenceextractresult.PersisAlarmListExtractResultRepository;
+import nts.uk.ctx.at.shared.dom.alarmList.persistenceextractresult.PersistenceAlarmListExtractResult;
 import nts.uk.shr.com.context.AppContexts;
 
+import javax.ejb.Stateless;
+import javax.inject.Inject;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -61,7 +62,6 @@ public class ExtractAlarmListFinder {
 	    List<PersistenceAlarmListExtractResult> listExtractResults = persisAlarmListExtractResultRepo.getAlarmExtractResult(companyId, employeeIds);
 		List<AlarmEmployeeList> alarmListExtractResults = new ArrayList<>();
 		for (PersistenceAlarmListExtractResult extractResult : listExtractResults) {
-			System.out.println("1: " + extractResult.getAlarmListExtractResults().size());
 			alarmListExtractResults.addAll(extractResult.getAlarmListExtractResults());
 		}
 
@@ -92,6 +92,12 @@ public class ExtractAlarmListFinder {
 	    List<AlarmListWebMenu> listWebMenus = alarmListWebMenuRepo.getAll(companyId);
 		List<StandardMenuNameImport> listStandardMenus = standardMenuAdaptor.getMenus(companyId, 4); // システム　＝　勤次郎
 
+        alarmListExtractResults.sort((e1, e2) -> {
+			EmployeeInfoFunAdapterDto emp1 = employeeInfoMap.get(e1.getEmployeeID());
+			EmployeeInfoFunAdapterDto emp2 = employeeInfoMap.get(e2.getEmployeeID());
+			if (emp1 != null && emp2 != null) return emp1.getEmployeeCode().compareTo(emp2.getEmployeeCode());
+			return e1.getEmployeeID().compareTo(e2.getEmployeeID());
+		});
 		alarmListExtractResults.forEach(r2 -> {
 			r2.getAlarmExtractInfoResults().forEach(r3 -> {
 				// 取得したList＜アラームリストのWebメニュー＞を絞り込む
@@ -106,9 +112,9 @@ public class ExtractAlarmListFinder {
 					return webMenuInfos.stream()
 							.anyMatch(j -> j.getSystem().value == i.getSystem()
 									&& j.getMenuClassification().value == i.getMenuClassification()
-									&& j.getMenuClassification().value == i.getMenuClassification());
+									&& j.getWebMenuCode().v().equals(i.getMenuCode()));
 				}).collect(Collectors.toList());
-
+				
 				List<WebMenuInfoDto> menuList = filteredStandardMenus.stream()
 						.map(i -> new WebMenuInfoDto(i.getProgramId(), i.getDisplayName(), i.getUrl(), i.getQueryString()))
 						.collect(Collectors.toList());
@@ -141,14 +147,14 @@ public class ExtractAlarmListFinder {
 
 	private List<WebMenuInfo> getWebMenuInfo(List<AlarmListWebMenu> tmpWebMenus, String alarmCode, AlarmCheckConditionCode alarmCheckConditionCode) {
 		List<AlarmListWebMenu> filteredWebMenus = tmpWebMenus.stream()
-				.filter(w -> w.getAlarmCheckConditionCode().equals(alarmCheckConditionCode)
+				.filter(w -> w.getAlarmCheckConditionCode().v().equals(alarmCheckConditionCode.v())
 						&& w.getAlarmCode().equals(alarmCode))
 				.collect(Collectors.toList());
 		if (filteredWebMenus.isEmpty()) {
 			filteredWebMenus = tmpWebMenus.stream()
 					.filter(w -> ((w.getAlarmCheckConditionCode() == null || w.getAlarmCheckConditionCode().v() == null)
 							&& w.getAlarmCode().equals(alarmCode))
-							|| (w.getAlarmCheckConditionCode().equals(alarmCheckConditionCode)
+							|| (w.getAlarmCheckConditionCode().v().equals(alarmCheckConditionCode.v())
 							&& w.getAlarmCode() == null))
 					.collect(Collectors.toList());
 			if (filteredWebMenus.isEmpty()) {

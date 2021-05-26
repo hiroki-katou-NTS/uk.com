@@ -28,7 +28,7 @@
 				<div class="popup-area1">
 					<ul data-bind="foreach: menuItems">
 						<li>
-							<a data-bind="ntsLinkButton: { jump: $data.url }, text: $data.menuName"/>
+							<a data-bind="ntsLinkButton: { action: $vm.handleClickLinkPopup.bind($data.url) }, text: $data.menuName"/>
 						</li>
 					</ul>
 				</div>

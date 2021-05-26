@@ -184,6 +184,10 @@ module nts.uk.at.view.kal001.b {
                 }
             }
 
+            handleClickLinkPopup() {
+                nts.uk.request.jumpFromDialogOrFrame(this.toString());
+            }
+
             exportExcel(): void {
                 let self = this;
                 block.invisible();

@@ -92,7 +92,7 @@ public class KfndtAlarmExtracResult extends ContractUkJpaEntity implements Seria
         Map<String, List<KfndtAlarmExtracResult>> mapBySid = entities.stream().collect(Collectors.groupingBy(e -> e.pk.sid));
         mapBySid.forEach((sid, entitiesOfSid) -> {
             List<AlarmExtractInfoResult> alarmExtractInfoResults = new ArrayList<>();
-            Map<GroupKey, List<KfndtAlarmExtracResult>> mapByGroupKey = entities.stream().collect(Collectors.groupingBy(e -> new GroupKey(e.pk.conditionNo, e.pk.alarmCheckCode, e.pk.category, e.pk.checkAtr)));
+            Map<GroupKey, List<KfndtAlarmExtracResult>> mapByGroupKey = entitiesOfSid.stream().collect(Collectors.groupingBy(e -> new GroupKey(e.pk.conditionNo, e.pk.alarmCheckCode, e.pk.category, e.pk.checkAtr)));
             mapByGroupKey.forEach((key, value) -> {
                 value.sort(Comparator.comparing(i -> i.pk.startDate));
                 AlarmExtractInfoResult infoResult = new AlarmExtractInfoResult(
