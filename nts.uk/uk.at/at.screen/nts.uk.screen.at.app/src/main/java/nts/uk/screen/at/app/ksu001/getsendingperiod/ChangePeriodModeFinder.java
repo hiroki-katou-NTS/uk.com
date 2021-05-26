@@ -24,6 +24,8 @@ import nts.uk.screen.at.app.ksu001.eventinformationandpersonal.PersonalCondition
 import nts.uk.screen.at.app.ksu001.extracttargetemployees.EmployeeInformationDto;
 import nts.uk.screen.at.app.ksu001.get28dateperiod.ScreenQuery28DayPeriod;
 import nts.uk.screen.at.app.ksu001.getshiftpalette.ShiftMasterDto;
+import nts.uk.screen.at.app.ksu001.start.AggregatePersonalMapDto;
+import nts.uk.screen.at.app.ksu001.start.AggregateWorkplaceMapDto;
 import nts.uk.screen.at.app.ksu001.start.ChangePeriodModeParam;
 import nts.uk.screen.at.app.ksu001.start.DataBasicDto;
 
@@ -203,8 +205,8 @@ public class ChangePeriodModeFinder {
 		}
 		result.setShiftMasterWithWorkStyleLst(shiftMasterWithWorkStyleLst);
 		result.setListWorkScheduleShift(resultShiftMode.listWorkScheduleShift);
-		result.setAggreratePersonal(resultShiftMode.aggreratePersonal);
-		result.setAggrerateWorkplace(resultShiftMode.aggrerateWorkplace);
+		result.setAggreratePersonal(AggregatePersonalMapDto.convertMap(resultShiftMode.aggreratePersonal));
+		result.setAggrerateWorkplace(AggregateWorkplaceMapDto.convertMap(resultShiftMode.aggrerateWorkplace));
 		return result;
 	}
 	
@@ -238,8 +240,8 @@ public class ChangePeriodModeFinder {
 
 		result.setListWorkScheduleWorkInfor(resultOtherMode.listWorkScheduleWorkInfor);
 		
-		result.setAggreratePersonal(resultOtherMode.aggreratePersonal);
-		result.setAggrerateWorkplace(resultOtherMode.aggrerateWorkplace);
+		result.setAggreratePersonal(AggregatePersonalMapDto.convertMap(resultOtherMode.aggreratePersonal));
+		result.setAggrerateWorkplace(AggregateWorkplaceMapDto.convertMap(resultOtherMode.aggrerateWorkplace));
 		
 		return result;
 	}
