@@ -108,7 +108,7 @@ module nts.uk.at.view.ksu003.c {
                         taskList.push(new TaskMaster(item.code, item.taskName));                        
                     });            
                     self.taskMasterList(taskList);         
-                    self.selectedTaskCode(data[1].code);                    
+                    self.selectedTaskCode(data[0].code);                    
                 }   
 
             }).always(() => {
