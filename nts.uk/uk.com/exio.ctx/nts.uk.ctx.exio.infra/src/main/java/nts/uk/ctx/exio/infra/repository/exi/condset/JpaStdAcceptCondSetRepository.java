@@ -14,7 +14,7 @@ import nts.uk.ctx.exio.dom.exi.condset.DeleteExistDataMethod;
 import nts.uk.ctx.exio.dom.exi.condset.StdAcceptCondSet;
 import nts.uk.ctx.exio.dom.exi.condset.StdAcceptCondSetRepository;
 import nts.uk.ctx.exio.dom.exi.condset.SystemType;
-import nts.uk.ctx.exio.dom.exi.csvimport.CsvRecordImpoter;
+import nts.uk.ctx.exio.dom.input.csvimport.CsvRecordImpoter;
 import nts.uk.ctx.exio.infra.entity.exi.condset.OiomtExAcCond;
 import nts.uk.ctx.exio.infra.entity.exi.condset.OiomtStdAcceptCondSetPk;
 import nts.uk.shr.com.context.AppContexts;

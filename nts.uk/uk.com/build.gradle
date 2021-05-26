@@ -1704,6 +1704,8 @@ project (':exio.ctx:nts.uk.ctx.exio.app') {
 
 project (':exio.ctx:nts.uk.ctx.exio.dom') {
 	dependencies {
+		compile (group: 'nemunoki.oruta', name: 'nemunoki.oruta.shr', version: version)
+		compile (group: 'cnv', name: 'nts.uk.cnv.core', version: version)
 		compile project(':shr:nts.uk.shr.com')
 	}
 }

@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.TimeUnit;
 
 import javax.ejb.Stateful;
 import javax.inject.Inject;
@@ -22,10 +21,6 @@ import nts.uk.ctx.exio.dom.exi.codeconvert.AcceptCdConvert;
 import nts.uk.ctx.exio.dom.exi.codeconvert.AcceptCdConvertRepository;
 import nts.uk.ctx.exio.dom.exi.condset.StdAcceptCondSet;
 import nts.uk.ctx.exio.dom.exi.condset.StdAcceptCondSetRepository;
-import nts.uk.ctx.exio.dom.exi.csvimport.CsvItemImport;
-import nts.uk.ctx.exio.dom.exi.csvimport.CsvRecord;
-import nts.uk.ctx.exio.dom.exi.csvimport.CsvRecordImpoter;
-import nts.uk.ctx.exio.dom.exi.csvimport.ItemCheck;
 import nts.uk.ctx.exio.dom.exi.csvimport.RequiredMasterDataNotFoundException;
 import nts.uk.ctx.exio.dom.exi.execlog.ExacErrorLog;
 import nts.uk.ctx.exio.dom.exi.execlog.ExacErrorLogManager;
@@ -34,12 +29,17 @@ import nts.uk.ctx.exio.dom.exi.execlog.ExacExeResultLog;
 import nts.uk.ctx.exio.dom.exi.execlog.ExacExeResultLogRepository;
 import nts.uk.ctx.exio.dom.exi.execlog.ExtResultStatus;
 import nts.uk.ctx.exio.dom.exi.extcategory.ExternalAcceptCategory;
+import nts.uk.ctx.exio.dom.exi.extcategory.ExternalAcceptCategoryItem;
 import nts.uk.ctx.exio.dom.exi.extcategory.ExternalAcceptCategoryRepository;
 import nts.uk.ctx.exio.dom.exi.extcategory.SpecialEditValue;
-import nts.uk.ctx.exio.dom.exi.extcategory.SpecialExternalItem;
-import nts.uk.ctx.exio.dom.exi.extcategory.specialedit.SpecialEdit;
 import nts.uk.ctx.exio.dom.exi.item.StdAcceptItem;
 import nts.uk.ctx.exio.dom.exi.item.StdAcceptItemRepository;
+import nts.uk.ctx.exio.dom.input.canonicalize.SpecialExternalItem;
+import nts.uk.ctx.exio.dom.input.canonicalize.specialedit.SpecialEdit;
+import nts.uk.ctx.exio.dom.input.csvimport.CsvRecord;
+import nts.uk.ctx.exio.dom.input.csvimport.CsvRecordImpoter;
+import nts.uk.ctx.exio.dom.input.editvalue.CsvItemImport;
+import nts.uk.ctx.exio.dom.input.editvalue.ItemCheck;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateful
@@ -125,25 +125,15 @@ public class AsyncCsvCheckImportDataCommandHandler extends AsyncCommandHandler<C
 				}
 							
 				//↓-----------lan truoc
-				//TODO アルゴリズム「外部受入テスト本体」を実行する
 				if (asyncTask.hasBeenRequestedToCancel()) {
 					// 外部受入動作管理の中断するしない区分を更新する
 					setter.updateData(STOP_MODE, 1);
 					asyncTask.finishedAsCancelled();
-//					inputStream.close();
 					resultLog.setResultStatus(Optional.of(ExtResultStatus.BREAK));
 					break;
-				}			
+				}
 				setter.updateData(STATUS, command.getStateBehavior());
 				resultLog.setResultStatus(Optional.of(ExtResultStatus.SUCCESS));
-
-				try {
-					TimeUnit.MILLISECONDS.sleep(1);
-				} catch (InterruptedException e) {
-//					inputStream.close();
-					e.printStackTrace();
-					throw new RuntimeException(e);
-				}
 				//↑---------lan truoc
 			} // line
 
@@ -235,6 +225,18 @@ public class AsyncCsvCheckImportDataCommandHandler extends AsyncCommandHandler<C
 		@Override
 		public ExacErrorLogManager getLogManager() {
 			return logManager;
+		}
+
+		@Override
+		public StdAcceptItem getStdAcceptItem(int csvItemNo) {
+			// TODO 自動生成されたメソッド・スタブ
+			return null;
+		}
+
+		@Override
+		public ExternalAcceptCategoryItem getExternalAcceptCategoryItem(int acceptItemNumber) {
+			// TODO 自動生成されたメソッド・スタブ
+			return null;
 		}
 	}
 }

@@ -13,9 +13,9 @@ import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.exio.dom.exi.dataformat.DateDataFormSet;
-import nts.uk.ctx.exio.dom.exi.dataformat.ItemType;
 import nts.uk.ctx.exio.dom.exi.item.StdAcceptItem;
+import nts.uk.ctx.exio.dom.input.editvalue.dataformat.DateDataFormSet;
+import nts.uk.ctx.exio.dom.input.editvalue.dataformat.ItemType;
 import nts.uk.ctx.exio.infra.entity.exi.item.OiomtExAcItem;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 

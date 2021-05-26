@@ -1,8 +1,8 @@
 package nts.uk.ctx.exio.app.command.exi.dataformat;
 
 import lombok.Value;
-import nts.uk.ctx.exio.dom.exi.dataformat.ItemType;
-import nts.uk.ctx.exio.dom.exi.dataformat.TimeDataFormatSet;
+import nts.uk.ctx.exio.dom.input.editvalue.dataformat.ItemType;
+import nts.uk.ctx.exio.dom.input.editvalue.dataformat.TimeDataFormatSet;
 
 @Value
 public class TimeDatFmSetCommand {

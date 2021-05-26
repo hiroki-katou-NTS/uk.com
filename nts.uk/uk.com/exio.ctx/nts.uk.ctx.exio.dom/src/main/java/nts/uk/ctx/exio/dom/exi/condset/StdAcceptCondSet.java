@@ -7,7 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.exio.dom.exi.csvimport.CsvRecordImpoter;
+import nts.uk.ctx.exio.dom.input.csvimport.CsvRecordImpoter;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
