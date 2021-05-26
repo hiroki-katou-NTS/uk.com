@@ -20,14 +20,14 @@ module nts.uk.at.view.ksu003.c {
         isShowWorkPlaceName: KnockoutObservable<boolean>;
         isShowSelectAllButton: KnockoutObservable<boolean>;
         disableSelection: KnockoutObservable<boolean>;
-        enableTimeZone: KnockoutObservable<boolean> = ko.observable(true);
+        enableTimeZone: KnockoutObservable<boolean> = ko.observable(false);
 
         listEmp: KnockoutObservableArray<EmployeeModel> = ko.observableArray([]);
         date: KnockoutObservable<string> = ko.observable("");
         baseDate: KnockoutObservable<string> = ko.observable("");
-        selectedMode: KnockoutObservable<number> = ko.observable(1);
-        startTime: KnockoutObservable<number> = ko.observable(0);
-        endTime: KnockoutObservable<number> = ko.observable(1000);
+        selectedMode: KnockoutObservable<number> = ko.observable(0);
+        startTime: KnockoutObservable<number> = ko.observable();
+        endTime: KnockoutObservable<number> = ko.observable();
 
         taskMasterList: KnockoutObservableArray<TaskMaster> = ko.observableArray([]);
         selectedTaskCode: KnockoutObservable<string> = ko.observable("");
@@ -72,17 +72,24 @@ module nts.uk.at.view.ksu003.c {
             $('#component-items-list').ntsListComponent(self.listComponentOption);
 
             self.selectedMode.subscribe((mode) => {
-                mode === 1 ? self.enableTimeZone(true) : self.enableTimeZone(false); 
-            });              
-            // self.selectedTaskCode.subscribe((code) => {
-
-            // });          
+                if(mode == 0){
+                    self.clearError();
+                    self.enableTimeZone(false); 
+                } else {
+                    self.enableTimeZone(true);
+                }
+            });
         }
 
+        mounted(){
+            $('#task-list').focus();
+        }
+        
         loadData(): void {
             const self = this;            
             let dataShare = getShared("dataShareKsu003c");
             let empList: any = [], taskList: any = [];
+
             for(let i=0; i< dataShare.employeeCodes.length; i++){
                 empList.push(new EmployeeModel(dataShare.employeeIds[i], dataShare.employeeCodes[i], dataShare.employeeNames[i]));
             }
@@ -101,43 +108,59 @@ module nts.uk.at.view.ksu003.c {
                         taskList.push(new TaskMaster(item.code, item.taskName));                        
                     });            
                     self.taskMasterList(taskList);         
-                    self.selectedTaskCode(data[1].code);                    
+                    self.selectedTaskCode(data[0].code);                    
                 }   
 
             }).always(() => {
                 self.$blockui("hide");
             });
+            $('#task-list').focus();
         }
 
         
         registerOrUpdate(): void {
-            const self = this;
-            self.$blockui("invisible");
-            let listEmpId: Array<string> = []; 
+            const self = this;            
+            let listEmpId: Array<string> = [], command: any = {}; 
+
             _.each(self.selectedCode(), empCode => {
                 _.map(self.listEmp(), emp => {
                     if(emp.code == empCode) {
                         listEmpId.push(emp.id);
                     }
                 });
-            });
+            });            
 
-            let command: any = {
-                "mode": self.selectedMode(),
-                "date": self.baseDate(),
-                "employeeIds": listEmpId,
-                "startTime": self.startTime(),
-                "endTime": self.endTime(),    
-                "taskCode": self.selectedTaskCode()
+            if(_.isEmpty(listEmpId)) {                
+                self.$dialog.error({ messageId: 'Msg_2147' });               
+                return;
+            }            
+
+            if (self.selectedMode() == 1) {
+                if (self.startTime() >= self.endTime()) {
+                    $('#startTime').ntsError('set', { messageId: 'Msg_770', messageParams: getText("KSU003_92") });
+                    $('#endTime').ntsError('set', { messageId: 'Msg_770', messageParams: getText("KSU003_92") });
+                    return;
+                }
+                if (self.validateAll()) {
+                    return;
+                }
+                command.startTime = self.startTime();
+                command.endTime = self.endTime();
             }
 
+            command.mode = self.selectedMode();
+            command.date = self.baseDate();
+            command.employeeIds = listEmpId;
+            command.taskCode = self.selectedTaskCode();
+            
+            self.$blockui("invisible");
             self.$ajax(Paths.REGISTET_TASK_SCHEDULE, command).done(() => {
                 self.$dialog.info({ messageId: 'Msg_15'}).then(() => {
-
+                    self.loadData();
                 });
                 self.endStatus('Update');
             }).fail((res) => {
-
+                self.$dialog.info({ messageId: res.messageId});
             }).always(() => {
                 self.$blockui("hide");
             });
@@ -180,9 +203,12 @@ module nts.uk.at.view.ksu003.c {
         }
 
         private validateAll(): boolean {
-            $('#scheduleTeamCd').ntsEditor('validate');
-            $('#scheduleTeamName').ntsEditor('validate');
-            $('#scheduleTeamRemarks').ntsEditor('validate');
+            const self = this;
+            $('#startTime').ntsEditor('validate');
+            $('#endTime').ntsEditor('validate');
+            // if(self.startTime() >= self.endTime()){
+            //     $('#timezone').ntsError('set',{messageId: 'Msg_770',messageParams:[getText("KSU003_92")]});
+            // }
             if (nts.uk.ui.errors.hasError()) {                    
                 return true;
             }
@@ -190,9 +216,8 @@ module nts.uk.at.view.ksu003.c {
         }
 
         private clearError(): void {
-            $('#scheduleTeamCd').ntsError('clear');
-            $('#scheduleTeamName').ntsError('clear');
-            $('#scheduleTeamRemarks').ntsError('clear');
+            $('#startTime').ntsError('clear');
+            $('#endTime').ntsError('clear');
         }
     }
     

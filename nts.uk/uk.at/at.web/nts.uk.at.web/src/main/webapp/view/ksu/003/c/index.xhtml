@@ -66,14 +66,14 @@
                          <!--C5-4-->
                         <span class="ntsControl" style="margin-left: 100px; margin-top: 4px;" tabindex="4">
                             <label class="ntsRadioBox" >
-                                <input type="radio" name="textRadio"
+                                <input id="timezone" type="radio" name="textRadio"
                                     data-bind="checkedValue: 1, checked: selectedMode, enable: true" />
                                 <span class="box"></span><span class="label"> #{i18n.getText('KSU003_92')}</span>
                             </label>
                         </span>
                         
                         <!--C5-4-1-->                       
-                        <input  tabindex="5" style="margin-left: 26px;" data-bind="ntsTimeWithDayEditor: {
+                        <input id="startTime"  tabindex="5" style="margin-left: 26px;" data-bind="ntsTimeWithDayEditor: {
                             value: startTime,
                             constraint: 'TimeWithDayAttr',
                             option: {width: '60px', timeWithDay: false},
@@ -88,7 +88,7 @@
                         <label style="margin: 5px 10px">#{i18n.getText('KSU003_94')}</label>
 
                         <!--C5-4-3-->                        
-                        <input  tabindex="6"  data-bind="ntsTimeWithDayEditor: {                            
+                        <input id="endTime" tabindex="6"  data-bind="ntsTimeWithDayEditor: {                            
                             value: endTime,
                             constraint: 'TimeWithDayAttr',                           
                             option: {width: '60px', timeWithDay: false},
@@ -104,7 +104,7 @@
                         <div  data-bind="ntsFormLabel: {required: true}">
                             #{i18n.getText('KSU003_96')}</div>
                         <!--C6-2-->
-                        <div id="combo-box" tabindex="7" style="margin-left: 50px;" 
+                        <div id="task-list" tabindex="7" style="margin-left: 50px;" 
                                 data-bind="ntsComboBox: {
                                     options: taskMasterList,
                                     width: 230,

@@ -38,6 +38,7 @@ module nts.uk.at.view.ksu003.b {
 
         taskPaletteOrgnization: KnockoutObservable<TaskPaletteOrgnization> = ko.observable(new TaskPaletteOrgnization());       
         sourceEmpty: any[] = [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}];
+        isClickLink: KnockoutObservable<boolean> = ko.observable(false);
         endStatus: KnockoutObservable<string> = ko.observable("Cancel"); 
 
         constructor() {
@@ -126,10 +127,14 @@ module nts.uk.at.view.ksu003.b {
                                 dataSource.splice(self.taskPaletteOrgnization().keys()[i] - 1, 1, {
                                     text: getText("KSU003_82"), 
                                     tooltip: ''});
+
+                                // $('#task button')[data-idx = "1"].addClass('color-gray');
                             }                            
                         }                        
                     } else {
-                        self.selectedPage(1);
+                        if(!self.isClickLink()){
+                            self.selectedPage(1);
+                        }                        
                         self.enableDelete(false);
                     }                   
                     self.tasks(dataSource);
@@ -215,12 +220,13 @@ module nts.uk.at.view.ksu003.b {
             self.selectedPage(index + 1);
             self.selectedPage.valueHasMutated();
             self.selectedLinkButton(index);
-            self.handleClickLinkButton(index);                  
+            self.handleClickLinkButton(index);     
+            self.isClickLink(true);             
             $('input#pageName').focus();     
         }
 
         handleClickLinkButton(index: number): void {       
-            const self = this;     
+            const self = this;                 
             nts.uk.ui.errors.clearAll();
             _.find($('#group-link-button a.hyperlink.color-gray'), (a) => {
                 $(a).removeClass('color-gray');
@@ -329,7 +335,7 @@ module nts.uk.at.view.ksu003.b {
         }
         closeDialog(): void {
             const self = this;  
-            self.endStatus() === 'Update' ? setShared('dataShareFromKsu003b', self.selectedPage()) :setShared('dataShareSU003B',null);
+            self.endStatus() === 'Update' ? setShared('dataShareFromKsu003b', self.selectedPage()) :setShared('dataShareFromKsu003b',null);
             self.$window.close();
         }
 
