@@ -2828,7 +2828,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				indexBrStart = -1, indexBrEnd = -1, checkCore = 0, checkCore2 = 0, lstBrCoreStart: any = [], lstBrCoreEnd: any = [];
 			if (coreTimes.length > 0) {
 				coreTime = _.filter(coreTimes, (x: any) => { return _.includes(_.isNil(e.target) ? type + i : e.target.id, x.options.parent) });
-				}
+				
 				if (breakTimes.length > 0) {
 					breakT = _.filter(breakTimes, (x: any) => { return _.includes(_.isNil(e.target) ? type + i : e.target.id, x.options.parent) });
 				}
@@ -2837,13 +2837,13 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					lstBrCoreStart = _.filter(breakT, (x: any) => { return (coreTime[0].options.start >= x.options.start && coreTime[0].options.end >= x.options.end) });
 					lstBrCoreEnd = _.filter(breakT, (x: any) => { return (coreTime[0].options.end <= x.options.end && coreTime[0].options.end >= x.options.start) });
 				}
-			
+			}
 			self.checkDragDrop = false;
 			let startMinute = duration.create(param[0] * 5 + self.dispStart * 5).text,
 			endMinute = duration.create(param[1] * 5 + self.dispStart * 5).text,
 			startTime = param[0] * 5,
 			endTime = param[1] * 5;
-			
+			if (coreTimes.length > 0) {
 				if ((type == "lgc" && param[0] > self.dataScreen003A().employeeInfo[i].workScheduleDto.startTime1 / 5) ||
 					(type == "rgc" && param[0] > self.dataScreen003A().employeeInfo[i].workScheduleDto.startTime2 / 5)) {
 					if (coreTime.length > 0 && lstBrCoreStart.length > 0 && param[0] >= lstBrCoreStart[0].options.start) {
@@ -2861,7 +2861,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 						checkCore2 = 2;
 					}
 				}
-
+			}
 			if (param[2]) {
 				if (type == "lgc") {
 					$("#extable-ksu003").exTable("cellValue", "middle", datafilter[0].empId, "startTime1", startMinute);
@@ -2871,6 +2871,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					$("#extable-ksu003").exTable("cellValue", "middle", datafilter[0].empId, "startTime2", startMinute);
 					self.dataScreen003A().employeeInfo[i].workScheduleDto.startTime2 = startTime + self.dispStartHours * 60;
 				}
+				if (coreTimes.length > 0) {
 					if (lstBrCoreStart.length > 0) {
 						indexBrStart = _.findIndex(self.dataScreen003A().employeeInfo[i].workScheduleDto.listBreakTimeZoneDto,
 							(x: any) => { return x.start == lstBrCoreStart[0].options.start * 5 && x.end == lstBrCoreStart[0].options.end * 5 });
@@ -2898,6 +2899,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 						}
 						ruler.extend(i, lstBrCoreStart[0].options.id, Math.floor(pixelBrk - self.dispStart * 12));
 					}
+					}
 			} else {
 				if (type == "lgc") {
 					$("#extable-ksu003").exTable("cellValue", "middle", datafilter[0].empId, "endTime1", endMinute);
@@ -2908,6 +2910,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					$("#extable-ksu003").exTable("cellValue", "middle", datafilter[0].empId, "endTime2", endMinute);
 					self.dataScreen003A().employeeInfo[i].workScheduleDto.endTime2 = endTime + self.dispStartHours * 60;
 				}
+				if (coreTimes.length > 0) {
 					if (lstBrCoreEnd.length > 0) {
 						indexBrEnd = _.findIndex(self.dataScreen003A().employeeInfo[i].workScheduleDto.listBreakTimeZoneDto,
 							(x: any) => { return x.start == lstBrCoreEnd[0].options.start * 5 && x.end == lstBrCoreEnd[0].options.end * 5 });
@@ -2927,6 +2930,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 						self.allTimeBrk[indexAllBrks].options.end = self.breakChangeCore[indexAllBrks].options.end;
 						self.dataScreen003A().employeeInfo[i].workScheduleDto.listBreakTimeZoneDto[indexNew].end = self.breakChangeCore[indexAllBrks].options.end * 5;
 						ruler.extend(i, lstBrCoreEnd[0].options.id, null, Math.floor(self.allTimeBrk[indexAllBrks].options.end - self.dispStart * 12));
+					}
 					}
 			}
 		}
