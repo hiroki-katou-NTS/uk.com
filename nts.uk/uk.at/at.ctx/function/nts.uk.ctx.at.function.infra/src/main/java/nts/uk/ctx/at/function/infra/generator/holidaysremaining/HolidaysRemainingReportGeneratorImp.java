@@ -28,7 +28,12 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveC
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveEmSetRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.EmploymentSettingRepository;
+import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacation;
+import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacationRepository;
+import nts.uk.ctx.at.shared.dom.vacation.setting.subst.EmpSubstVacationRepository;
+import nts.uk.ctx.at.shared.dom.worktype.specialholidayframe.SpecialHolidayFrameRepository;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 
@@ -60,9 +65,14 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
     private CompensLeaveEmSetRepository compensLeaveEmSetRepository;
     @Inject
     private CompensLeaveComSetRepository compensLeaveComSetRepository;
-
+    @Inject
+    private ComSubstVacationRepository comSubstVacationRepository;
+    @Inject
+    private EmpSubstVacationRepository substVacationRepository;
     @Inject
     private AnnLeaRemNumEachMonthRepository annLeaRemNumEachMonthRepository;
+    @Inject
+    private SpecialHolidayFrameRepository specialHolidayFrameRepository;
 
     private static final String TEMPLATE_FILE = "report/KDR001_V5.xlsx";
     private static final String REPORT_FILE_NAME = "休暇残数管理表.xlsx";
@@ -1365,7 +1375,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                                   HolidayRemainingDataSource dataSource) throws Exception {
         // 振休
         NumberFormat df = new DecimalFormat("#0.0");
-        if (!dataSource.getVariousVacationControl().isPauseItemHolidaySetting()) {
+        if (!checkJ1(dataSource,employee)) {
             return firstRow;
         }
         val holiday = dataSource.getHolidaysRemainingManagement().getListItemsOutput().getPause();
@@ -2003,6 +2013,10 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
             if (!specialHolidayOpt.isPresent()) {
                 continue;
             }
+            val listFrameNo = specialHolidayOpt.get().getTargetItem().getFrameNo();
+
+            val itemFrame = specialHolidayFrameRepository.findHolidayFrameByListFrame(AppContexts.user().companyId(),listFrameNo)
+                    .stream().filter(e->e.getTimeMngAtr().value == NotUseAtr.USE.value);
             cells.copyRows(cells, NUMBER_ROW_OF_HEADER + 32, firstRow, 4);
             // M1_1 特別休暇
             cells.get(firstRow, 2).setValue(specialHolidayOpt.get().getSpecialHolidayName().v());
@@ -2060,6 +2074,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 
                     cells.get(firstRow, 4)
                             .setValue(vlm12 == 0 ? "" : df.format(vlm12));
+                    if(specialHolidayOpt.get().)
                     // M 1_6
                     cells.get(firstRow + 1, 4).setValue(vlm16== 0 ? "" :
                             convertToTime((int) vlm16));
@@ -2205,6 +2220,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
     private int printChildNursingVacation(Cells cells, int firstRow, HolidaysRemainingEmployee employee,
                                           HolidayRemainingDataSource dataSource) throws Exception {
         // 子の看護休暇
+        // ※1
         if (!dataSource.getVariousVacationControl().isChildNursingSetting()) {
             return firstRow;
         }
@@ -2212,6 +2228,9 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                 .isChildNursingLeave()) {
             return firstRow;
         }
+        //※2
+        boolean iscareSetting = dataSource.getVariousVacationControl().isNursingCareSetting();
+
         cells.copyRows(cells, NUMBER_ROW_OF_HEADER + 40, firstRow, 4);
         // N1_1
         cells.get(firstRow, 2).setValue(TextResource.localize("KDR001_47"));
@@ -2244,9 +2263,11 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                 // N2_3 子の看護休暇_使用日数 当月
                 cells.get(firstRow, 10 + totalMonth).setValue(currentSituationImported.getNumberOfUse().equals("0") ? "" : currentSituationImported.getNumberOfUse());
 
+                if(iscareSetting)
                 // N2_4 子の看護休暇_残日数
                 cells.get(firstRow + 1, 10 + totalMonth).setValue(currentSituationImported
                         .getRemainingDays().equals("0") ? currentSituationImported.getRemainingDays() : "");
+
                 if (currentSituationImported.getRemainingDays().startsWith("-")) {
                     setForegroundRed(cells.get(firstRow + 1, 10));
                 }
@@ -2396,24 +2417,32 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
     private int publicHolidays(Cells cells, int firstRow, HolidaysRemainingEmployee employee,
                                HolidayRemainingDataSource dataSource) throws Exception {
         // 代休
-        //※1: 出力項目設定[公休]：休暇残数管理表の出力項目設定．出力する項目一覧．公休．公休の項目を出力する
         val hdRemainingInfor = dataSource.getMapEmployees().get(employee.getEmployeeId()).getHolidayRemainingInfor();
         val listItemsOutput = dataSource.getHolidaysRemainingManagement().getListItemsOutput();
+        //※1: 出力項目設定[公休]：休暇残数管理表の出力項目設定．出力する項目一覧．公休．公休の項目を出力する
+        //     公休管理設定：公休設定．管理区分
         if (!checkPublicHolidays(dataSource)) {
             return firstRow;
         }
+        // ※2 : 出力項目設定[公休繰越数]：休暇残数管理表の出力項目設定．出力する項目一覧．公休．公休繰越数を出力する
+        // outputHolidayForward
+        // ※3 : 出力項目設定[公休月度残]：休暇残数管理表の出力項目設定．出力する項目一覧．公休．公休月度残を出力する
+        // monthlyPublic
+
         int totalRows = 4;
         int rowIndexRepresentSubstitute = 0;
         int rowIndexIsRemainingChargeSubstitute = 0;
         cells.copyRows(cells, NUMBER_ROW_OF_HEADER + 24, firstRow, 4);
         // L1_1
         cells.get(firstRow, 2).setValue(TextResource.localize("KDR001_21"));
-        if (listItemsOutput.getHolidays().isOutputHolidayForward()) {
+        if (listItemsOutput.getHolidays().isMonthlyPublic()) {
             // L2_4
             cells.get(firstRow + 3, 9).setValue(TextResource.localize("KDR001_80"));
         }
-        // L2_1
-        cells.get(firstRow, 9).setValue(TextResource.localize("KDR001_23"));
+        if(listItemsOutput.getHolidays().isOutputHolidayForward()){
+            // L2_1
+            cells.get(firstRow, 9).setValue(TextResource.localize("KDR001_23"));
+        }
         // L2_2
         cells.get(firstRow + 1, 9).setValue(TextResource.localize("KDR001_22"));
         // L2_3
@@ -2668,10 +2697,10 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
         pageSetup.setFirstPageNumber(1);
         //pageSetup.setPrintArea("A1:N");
         //ý 1 của bug #102883  事象(1)
-        pageSetup.setHeader(0, "&9&\"MS ゴシック\"" + dataSource.getCompanyName());
-        pageSetup.setHeader(1, "&16&\"MS ゴシック\"" + title);
+        pageSetup.setHeader(0, "&7&\"MS ゴシック\"" + dataSource.getCompanyName());
+        pageSetup.setHeader(1, "&10&\"MS ゴシック\"" + title);
         DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm", Locale.JAPAN);
-        pageSetup.setHeader(2, "&9&\"MS ゴシック\"" + LocalDateTime.now().format(fullDateTimeFormatter) + "\npage &P");
+        pageSetup.setHeader(2, "&7&\"MS ゴシック\"" + LocalDateTime.now().format(fullDateTimeFormatter) + "\npage &P");
     }
 
     //E Case 1:
@@ -2807,6 +2836,20 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                 getHolidays();
         val various = dataSource.getVariousVacationControl();
         return check.isOutputItemsHolidays() && various.isPublicHolidaySetting();
+
+    }
+
+    private boolean checkJ1(HolidayRemainingDataSource dataSource,HolidaysRemainingEmployee employee){
+        val companyId = AppContexts.user().companyId();
+        val checkPause = dataSource.getHolidaysRemainingManagement().getListItemsOutput().
+                getPause().isPauseItem();
+        val substVacation = comSubstVacationRepository.findById(companyId);
+        val empSubstVacation = substVacationRepository.findAll(companyId);
+        if(!checkPause){
+            return false;
+        }else {
+            return substVacation.map(ComSubstVacation::isManaged).orElse(false);
+        }
 
     }
 
