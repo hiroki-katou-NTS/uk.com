@@ -338,8 +338,7 @@ public class WithinStatutoryTimeOfDaily {
 	public static WithinStatutoryTimeOfDaily createWithinStatutoryTimeOfDaily(AttendanceTime workTime,
 																	   AttendanceTime actualWorkTime,
 																	   AttendanceTime withinPrescribedPremiumTime,
-																	   WithinStatutoryMidNightTime withinStatutoryMidNightTime,
-																	   AttendanceTime vacationAddTime) {
+																	   WithinStatutoryMidNightTime withinStatutoryMidNightTime) {
 		WithinStatutoryTimeOfDaily withinStatutoryTimeOfDaily = new WithinStatutoryTimeOfDaily(workTime,actualWorkTime,withinPrescribedPremiumTime,withinStatutoryMidNightTime);
 		withinStatutoryTimeOfDaily.actualWorkTime = actualWorkTime;
 		withinStatutoryTimeOfDaily.withinPrescribedPremiumTime = withinPrescribedPremiumTime;
