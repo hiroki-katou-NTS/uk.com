@@ -105,7 +105,14 @@ module nts.uk.at.view.kal001.b {
                     virtualization: true,
                     virtualizationMode: 'continuous',
                     features: [
-                        {name: 'Paging', type: 'local', pageSize: 20},
+                        {
+                            name: 'Paging',
+                            type: 'local',
+                            pageSize: 20,
+                            pageIndexChanged: () => {
+                                self.bindingHandleClickLink();
+                            }
+                        },
                         {
                             name: "Tooltips",
                             columnSettings: [
@@ -131,6 +138,47 @@ module nts.uk.at.view.kal001.b {
                     ],
                     enableTooltip: true
                 });
+                self.bindingHandleClickLink();
+            }
+
+            bindingHandleClickLink() {
+                const vm = this;
+                $("#grid").on("click", ".link-button", (evt1) => {
+                    if (evt1.target.classList[1].split('_')[0] == "goto") {
+                        const programId = evt1.target.classList[1].split('_')[1];
+                        const rowId = evt1.target.classList[1].split('_')[2];
+                        const selectedRow: model.ValueExtractAlarmDto = _.find(vm.dataSource, r => r.guid == rowId);
+                        $(".popup-area1").ntsPopup("init");
+                        vm.menuItems([]);
+                        if (selectedRow) {
+                            const menu = _.find(selectedRow.menuItems, (i: any) => i.programId == programId);
+                            if (menu) {
+                                const url = _.isNil(menu.queryString) ? menu.url : menu.url + menu.queryString;
+                                if (url) {
+                                    nts.uk.request.jumpFromDialogOrFrame(url);
+                                }
+                            }
+                        }
+                    } else {
+                        const rowId = evt1.target.classList[1].split('_')[1];
+                        const selectedRow: model.ValueExtractAlarmDto = _.find(vm.dataSource, r => r.guid == rowId);
+                        if (selectedRow) {
+                            $(".popup-area1").ntsPopup({
+                                trigger: ".openpopup_" + rowId,
+                                position: {
+                                    my: "left top",
+                                    at: "left bottom",
+                                    of: ".openpopup_" + rowId
+                                },
+                                showOnStart: false,
+                                dismissible: true
+                            });
+
+                            vm.menuItems(selectedRow.menuItems);
+                            $(".popup-area1").ntsPopup("show");
+                        }
+                    }
+                });
             }
 
             convertMenuDisplay() {
@@ -140,15 +188,13 @@ module nts.uk.at.view.kal001.b {
                     row.menuItems.forEach((item, index) => {
                         if (index < 2) {
                             row.menuDisplay += `<li>
-                                <div class="link-button goto-` + item.programId + `" 
-                                    data-bind="click: handleClickLink.bind('` + item.programId + `', '` + (_.isEmpty(item.queryString) ? item.url : item.url + item.queryString) + `')">
+                                <div class="link-button goto_` + item.programId + `_` + row.guid + `">
                                     ` + item.menuName + `
                                 </div>
                             </li>`;
                         } else if (index == 2) {
                             row.menuDisplay += `<li>
-                                <div class="link-button open-popup-` + row.guid + `" 
-                                    data-bind="click: handleClickLink.bind('` + row.guid + `', '')">
+                                <div class="link-button openpopup_` + row.guid + `">
                                     ...
                                 </div>
                             </li>`;
@@ -158,34 +204,9 @@ module nts.uk.at.view.kal001.b {
                 });
             }
 
-            handleClickLink(url: string, vm: any, event?: any) {
-                const programId = this;
-                if (_.isEmpty(url)) {
-                    const selectedRow: model.ValueExtractAlarmDto = _.find(vm.dataSource, r => r.guid == programId.toString());
-                    if (selectedRow) {
-                        $(".popup-area1").ntsPopup({
-                            trigger: ".open-popup-" + programId,
-                            position: {
-                                my: "left top",
-                                at: "left bottom",
-                                of: ".open-popup-" + programId
-                            },
-                            showOnStart: false,
-                            dismissible: true
-                        });
-
-                        vm.menuItems(selectedRow.menuItems);
-                        $(".popup-area1").ntsPopup("show");
-                    }
-                } else {
-                    $(".popup-area1").ntsPopup("init");
-                    vm.menuItems([]);
-                    nts.uk.request.jumpFromDialogOrFrame(url);
-                }
-            }
-
-            handleClickLinkPopup() {
-                nts.uk.request.jumpFromDialogOrFrame(this.toString());
+            handleClickLinkPopup(url: string, queryString?: string) {
+                const placeToGo = _.isNil(queryString) ? url : url + queryString;
+                nts.uk.request.jumpFromDialogOrFrame(placeToGo);
             }
 
             exportExcel(): void {
