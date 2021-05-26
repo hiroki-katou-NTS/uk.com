@@ -22,6 +22,7 @@ import nts.uk.ctx.at.function.dom.adapter.employmentinfoterminal.infoterminal.Se
 /**
  * @author ThanhNX
  *
+ *残業・休日出勤リクエスト
  */
 @RequestScoped
 @Named(Command.OVERTIME_INFO)
@@ -31,16 +32,15 @@ public class OverTimeInfoRequest extends NRLRequest<Frame> {
 	private SendNRDataAdapter sendNRDataAdapter;
 
 	@Override
-	public void sketch(ResourceContext<Frame> context) {
+	public void sketch(String empInfoTerCode, ResourceContext<Frame> context) {
 		// TODO Auto-generated method stub
 		List<MapItem> items = new ArrayList<>();
 		items.add(FrameItemArranger.SOH());
 		items.add(new MapItem(Element.HDR, Command.OVERTIME_INFO.Response));
 		// Get work time info from DB, count records
-		String nrlNo = context.getEntity().pickItem(Element.NRL_NO);
-		// TODO: default ContractCode "000000000000"
-		Optional<SendOvertimeNameImport> info = sendNRDataAdapter.sendOvertime(nrlNo.trim(),
-				"000000000000");
+		String contractCode =  context.getEntity().pickItem(Element.CONTRACT_CODE);
+		Optional<SendOvertimeNameImport> info = sendNRDataAdapter.sendOvertime(empInfoTerCode,
+				contractCode);
 		String payload = info.isPresent() ? toStringObject(info.get()) : "";
 		byte[] payloadBytes = Codryptofy.decode(payload);
 		int length = payloadBytes.length + 32;
@@ -50,6 +50,7 @@ public class OverTimeInfoRequest extends NRLRequest<Frame> {
 		items.add(FrameItemArranger.NoFragment());
 		items.add(new MapItem(Element.NRL_NO, context.getTerminal().getNrlNo()));
 		items.add(new MapItem(Element.MAC_ADDR, context.getTerminal().getMacAddress()));
+		items.add(new MapItem(Element.CONTRACT_CODE, contractCode));
 		items.add(FrameItemArranger.ZeroPadding());
 		// Number of records
 		context.collectEncrypt(items, payload);

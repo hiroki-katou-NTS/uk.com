@@ -1,0 +1,8 @@
+#editMode {
+  margin-top: 7px;
+}
+
+#editMode .ntsRadioBox:first-child {
+  display: block;
+  margin-bottom: 10px;
+}

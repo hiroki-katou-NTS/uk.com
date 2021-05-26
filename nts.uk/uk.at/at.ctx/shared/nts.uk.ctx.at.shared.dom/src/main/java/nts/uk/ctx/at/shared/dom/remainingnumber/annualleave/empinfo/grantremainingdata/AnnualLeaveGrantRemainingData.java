@@ -3,66 +3,25 @@ package nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremain
 import java.math.BigDecimal;
 import java.util.Optional;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.gul.text.IdentifierUtil;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveRemainingNumber;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveUsedNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.GrantRemainRegisterType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
-import nts.uk.ctx.at.shared.dom.remainingnumber.base.YearDayNumber;
-import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.LeaveGrantRemaining;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.LeaveGrantRemainingData;
 
 @Getter
 @NoArgsConstructor
-//@AllArgsConstructor
 // domain name CS00037: 年休付与残数データ
-public class AnnualLeaveGrantRemainingData extends LeaveGrantRemaining {
-
-//	private String annLeavID;
-//
-//	private String cid;
-//	/**
-//	 * 社員ID
-//	 */
-//	private String employeeId;
-//
-//	/**
-//	 * 付与日
-//	 */
-//	private GeneralDate grantDate;
-//
-//	/**
-//	 * 期限日
-//	 */
-//	private GeneralDate deadline;
-//
-//	/**
-//	 * 期限切れ状態
-//	 */
-//	@Setter
-//	private LeaveExpirationStatus expirationStatus;
-//
-//	/**
-//	 * 登録種別
-//	 */
-//	private GrantRemainRegisterType registerType;
-
-//	/**
-//	 * 明細
-//	 */
-//	private AnnualLeaveNumberInfo details;
+public class AnnualLeaveGrantRemainingData extends LeaveGrantRemainingData {
 
 	/**
 	 * 年休付与条件情報
 	 */
-	protected Optional<AnnualLeaveConditionInfo> annualLeaveConditionInfo;
+	protected Optional<AnnualLeaveConditionInfo> annualLeaveConditionInfo = Optional.empty();
 
 	public static AnnualLeaveGrantRemainingData createFromJavaType(String annLeavID, String employeeId,
 			GeneralDate grantDate, GeneralDate deadline, int expirationStatus, int registerType, double grantDays,

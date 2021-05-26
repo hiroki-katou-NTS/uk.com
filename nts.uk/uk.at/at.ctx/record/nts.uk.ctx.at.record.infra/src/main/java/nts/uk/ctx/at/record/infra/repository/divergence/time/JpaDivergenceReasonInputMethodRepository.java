@@ -153,7 +153,7 @@ public class JpaDivergenceReasonInputMethodRepository extends JpaRepository
 		return this.queryProxy().query(FIND_DVGC_TIME, KrcmtDvgcTime.class)
 				.setParameter("cid", companyId)
 				.setParameter("no", divTimeNos)
-				.setParameter("dvgcReasonSelected", BigDecimal.valueOf(useClassification))
+				.setParameter("dvgcReasonSelected", useClassification == 1)
 				.getList(t -> toDomain(t));
 	}
 

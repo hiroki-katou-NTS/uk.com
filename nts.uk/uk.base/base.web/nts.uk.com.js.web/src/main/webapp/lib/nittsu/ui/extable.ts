@@ -1576,7 +1576,7 @@ module nts.uk.ui.exTable {
                             }
                         } else if (cStyle) {
                             if (cStyle.textColor) {
-                                $c.style.color = null;
+                                $c.style.color = (helper.isIE() ? '' : null);
                             }
                             
                             if (cStyle.class) {
@@ -1584,7 +1584,7 @@ module nts.uk.ui.exTable {
                             }
                             
                             if (cStyle.background) {
-                                $c.style.backgroundColor = null;
+                                $c.style.backgroundColor = (helper.isIE() ? '' : null);
                             }
                         }
                         
@@ -3803,9 +3803,9 @@ module nts.uk.ui.exTable {
                 } else if (evt.ctrlKey && helper.isCutKey(evt)) {
 //                    self.cut();   
                 } else if (evt.ctrlKey && helper.isUndoKey(evt)) {
-                    self.undo();
+//                    self.undo();
                 } else if (evt.ctrlKey && helper.isRedoKey(evt)) {
-                    self.redo();
+//                    self.redo();
                 }
             }
             
@@ -3934,22 +3934,26 @@ module nts.uk.ui.exTable {
                 cbData = self.getContents(cbData);
                 if (_.isNil(cbData)) return;
                 cbData = helper.getCellData(cbData);
-                let validate = $.data(self.$grid, internal.PASTE_VALIDATE);
+                let validate = $.data(self.$grid, internal.PASTE_VALIDATE),
+                    afterPaste = $.data(self.$grid, internal.AFTER_PASTE);
                 if (_.isFunction(validate)) {
-                    let result = validate([ cbData ]);
-                    if (_.has(result, "done")) {
-                        result.done(res => {
-                            if (res === true) {
-                                let selectedCells = selection.getSelectedCells(this.$grid);
-                                let txId = util.randomId();
-                                _.forEach(selectedCells, function(cell: any, index: number) {
+                    let selectedCells = selection.getSelectedCells(this.$grid);
+                    let txId = util.randomId();
+                    _.forEach(selectedCells, function(cell: any, index: number) {
+                        let result = validate(cell.rowIndex, cell.columnKey, [ cbData ]);
+                        if (_.has(result, "done")) {
+                            result.done(res => {
+                                if (res === true) {
                                     update.gridCellOw(self.$grid, cell.rowIndex, cell.columnKey, -1, cbData, txId);
-                                });
-                            } else if (_.isFunction(res)) {
-                                res();
-                            }
-                        });
-                    }
+                                    if (_.isFunction(afterPaste)) {
+                                        afterPaste(cell.rowIndex, cell.columnKey, cbData);
+                                    }
+                                } else if (_.isFunction(res)) {
+                                    res();
+                                }
+                            });
+                        }
+                    });
                     
                     return;
                 }
@@ -3958,6 +3962,9 @@ module nts.uk.ui.exTable {
                 let txId = util.randomId();
                 _.forEach(selectedCells, function(cell: any, index: number) {
                     update.gridCellOw(self.$grid, cell.rowIndex, cell.columnKey, -1, cbData, txId);
+                    if (_.isFunction(afterPaste)) {
+                        afterPaste(cell.rowIndex, cell.columnKey, cbData);
+                    }
                 });
             }
                 
@@ -4027,6 +4034,7 @@ module nts.uk.ui.exTable {
                 let txId = util.randomId();
                 let ds = internal.getDataSource(self.$grid);
                 let size = ds ? ds.length : 0;
+                let afterPaste = $.data(self.$grid, internal.AFTER_PASTE);
                 _.forEach(data, function(row: any, idx: number) {
                     let rowData = {};
                     let columnKey = selectedCell.columnKey;
@@ -4041,8 +4049,15 @@ module nts.uk.ui.exTable {
                         columnKey = helper.nextKeyOf(columnIndex++, visibleColumns);
                         if (!columnKey) break;
                     }
+                    
                     if (rowIndex >= size) return false; 
                     update.gridRowOw(self.$grid, rowIndex, rowData, txId);
+                    if (_.isFunction(afterPaste)) {
+                        _.keys(rowData).forEach(k => {
+                            afterPaste(rowIndex, k, rowData[k]);
+                        });
+                    }
+                    
                     rowIndex++;
                 });
             }
@@ -4050,7 +4065,7 @@ module nts.uk.ui.exTable {
             /**
              * Undo.
              */
-            undo() {
+            undo(action?: any) {
                 let self = this;
                 let histories = $.data(self.$grid, internal.COPY_HISTORY);
                 if (!histories || histories.length === 0) return;
@@ -4089,6 +4104,10 @@ module nts.uk.ui.exTable {
                     currentItem.value = data[item.columnKey];
                     currentItems.push(currentItem);
                     update.gridCell(self.$grid, item.rowIndex, item.columnKey, -1, item.value, true);
+                    if (_.isFunction(action)) {
+                        action(item.rowIndex, item.columnKey, item.value);
+                    }
+                    
                     internal.removeChange(self.$grid, item);
                 });
                 
@@ -4104,13 +4123,16 @@ module nts.uk.ui.exTable {
             /**
              * Redo.
              */
-            redo() {
+            redo(action?: any) {
                 let self = this,
                     redoStack = $.data(self.$grid, internal.REDO_STACK);
                 if (!redoStack || redoStack.length === 0) return;
                 let tx = redoStack.pop();
                 _.forEach(tx.items, function(item: any) {
                     update.gridCellOw(self.$grid, item.rowIndex, item.columnKey, -1, item.value, tx.txId);
+                    if (_.isFunction(action)) {
+                        action(item.rowIndex, item.columnKey, item.value);
+                    }
                 });
             }
             
@@ -4351,7 +4373,12 @@ module nts.uk.ui.exTable {
                         let stringValidator = new nts.uk.ui.validation.StringValidator(vtor.columnText, vtor.primitiveValue, {});
                         let res = stringValidator.validate(value);
                         isValid = res.isValid;
-                        formatValue = res.parsedValue;
+                        if (vtor.textFormat) {
+                            formatValue = nts.uk.text.formatCode(value, vtor.textFormat.padSide, vtor.textFormat.padChar, vtor.textFormat.length);
+                        } else {
+                            formatValue = res.parsedValue;
+                        }
+                        
                         message = res.errorMessage;
                     } else {
                         isValid = true;
@@ -4416,7 +4443,7 @@ module nts.uk.ui.exTable {
          */
         export function mandate($grid: HTMLElement, columnKey: any, innerIdx: any) {
             let visibleColumns = helper.getVisibleColumnsOn($grid);
-            let actValid, dataType, max, min, required, columnText, primitiveValue;
+            let actValid, dataType, max, min, required, columnText, primitiveValue, textFormat;
             _.forEach(visibleColumns, function(col: any) {
                 if (col.key === columnKey) {
                     if (!col.dataType) return false;
@@ -4439,6 +4466,7 @@ module nts.uk.ui.exTable {
                     required = col.required;
                     columnText = col.headerText;
                     primitiveValue = col.primitiveValue;
+                    textFormat = col.textFormat;
                     return false; 
                 }
             });
@@ -4450,7 +4478,8 @@ module nts.uk.ui.exTable {
                     min: min,
                     required: required,
                     columnText: columnText,
-                    primitiveValue: primitiveValue
+                    primitiveValue: primitiveValue,
+                    textFormat: textFormat
                 };
         }
         
@@ -7110,16 +7139,16 @@ module nts.uk.ui.exTable {
                     setStickStyler(self, params[0]);
                     break;
                 case "stickUndo":
-                    undoStick(self);
+                    undoStick(self, params[0]);
                     break;
                 case "stickRedo":
-                    redoStick(self);
+                    redoStick(self, params[0]);
                     break;
                 case "copyUndo":
-                    undoCopy(self);
+                    undoCopy(self, params[0]);
                     break;
                 case "copyRedo":
-                    redoCopy(self);
+                    redoCopy(self, params[0]);
                     break;
                 case "editUndo":
                     undoEdit(self);
@@ -7129,6 +7158,9 @@ module nts.uk.ui.exTable {
                     break;
                 case "pasteValidate":
                     setPasteValidate(self, params[0]);
+                    break;
+                case "afterPaste":
+                    setAfterPaste(self, params[0]);
                     break;
                 case "clearHistories":
                     clearHistories(self, params[0]);
@@ -7801,7 +7833,7 @@ module nts.uk.ui.exTable {
         /**
          * Undo stick.
          */
-        function undoStick($container: JQuery) {
+        function undoStick($container: JQuery, action: any) {
             let exTable = $container.data(NAMESPACE);
             if (!exTable || exTable.updateMode !== STICK) return;
             let $grid = $container.find("." + BODY_PRF + DETAIL);
@@ -7824,6 +7856,10 @@ module nts.uk.ui.exTable {
                 }
                 
                 update.gridCell($grid[0], i.rowIndex, i.columnKey, innerIdx, i.value, true);
+                if (_.isFunction(action)) {
+                    action(i.rowIndex, i.columnKey, innerIdx, i.value);
+                }
+                
                 internal.removeChange($grid[0], i);
             });
             
@@ -7838,7 +7874,7 @@ module nts.uk.ui.exTable {
         /**
          * Redo stick.
          */
-        function redoStick($container: JQuery) {
+        function redoStick($container: JQuery, action: any) {
             let exTable = $container.data(NAMESPACE);
             if (!exTable || exTable.updateMode !== STICK) return;
             let $grid = $container.find(`.${BODY_PRF + DETAIL}`);
@@ -7850,6 +7886,9 @@ module nts.uk.ui.exTable {
             if (items.length == 1) {
                 let item = items[0];
                 update.stickGridCellOw($grid[0], item.rowIndex, item.columnKey, item.innerIdx, item.value, sticker.styleMaker, item.stickFields);
+                if (_.isFunction(action)) {
+                    action(item.rowIndex, item.columnKey, item.innerIdx, item.value);
+                }
             } else {
                 let data = {};
                 _.forEach(items, item => {
@@ -7863,25 +7902,25 @@ module nts.uk.ui.exTable {
         /**
          * Undo copy.
          */
-        function undoCopy($container: JQuery) {
+        function undoCopy($container: JQuery, action: any) {
             let exTable = $container.data(NAMESPACE);
             if (!exTable || exTable.updateMode !== COPY_PASTE) return;
             let $grid = $container.find(`.${BODY_PRF + DETAIL}`);
             let printer = $grid.data(internal.PRINTER_INST);
             if (!printer) return;
-            printer.undo();
+            printer.undo(action);
         }
         
         /**
          * Redo copy.
          */
-        function redoCopy($container: JQuery) {
+        function redoCopy($container: JQuery, action: any) {
             let exTable = $container.data(NAMESPACE);
             if (!exTable || exTable.updateMode !== COPY_PASTE) return;
             let $grid = $container.find(`.${BODY_PRF + DETAIL}`);
             let printer = $grid.data(internal.PRINTER_INST);
             if (!printer) return;
-            printer.redo();
+            printer.redo(action);
         }
         
         /**
@@ -7930,6 +7969,14 @@ module nts.uk.ui.exTable {
         function setPasteValidate($container: JQuery, validate: any) {
             let $grid = $container.find(`.${BODY_PRF + DETAIL}`);
             $grid.data(internal.PASTE_VALIDATE, validate);
+        }
+        
+        /**
+         * After paste.
+         */
+        function setAfterPaste($container: JQuery, afterPaste: any) {
+            let $grid = $container.find(`.${BODY_PRF + DETAIL}`);
+            $grid.data(internal.AFTER_PASTE, afterPaste);
         }
         
         /**
@@ -8056,7 +8103,7 @@ module nts.uk.ui.exTable {
             let found = -1;
             if (disables && disables[i] && disables[i].length > 0) { 
                 _.forEach(disables[i], function(c, j) {
-                    if (c.columnKey === columnKey) {
+                    if (c.columnKey === columnKey && c.innerIdx === innerIdx) {
                         found = j;
                         return false;
                     }
@@ -8108,7 +8155,7 @@ module nts.uk.ui.exTable {
             let found = -1;
             if (disables && disables[i] && disables[i].length > 0) {
                 _.forEach(disables[i], function(c, j) {
-                    if (c.columnKey === columnKey) {
+                    if (c.columnKey === columnKey && c.innerIdx === innerIdx) {
                         found = j;
                         return false;
                     }
@@ -8120,6 +8167,18 @@ module nts.uk.ui.exTable {
                 disables[i].splice(found, 1);
                 if (disables[i].length === 0) delete disables[i];
                 helper.stripCellWith(style.SEAL_CLS, $cell, innerIdx);
+            } else {
+                let cellStyles = $.data($table, internal.CELLS_STYLE);
+                let removed = _.remove(cellStyles, s => {
+                    return s.rowId === rowId && s.columnKey === columnKey 
+                        && ((_.isNil(innerIdx) && _.isNil(s.innerIdx)) ? true : innerIdx === s.innerIdx)
+                        && s.clazz === style.SEAL_CLS;
+                });
+                
+                if (removed.length > 0) {
+                    let $cell = selection.cellAt($table, i, columnKey);
+                    helper.stripCellWith(style.SEAL_CLS, $cell, innerIdx);
+                }
             }
         }
         
@@ -8419,6 +8478,7 @@ module nts.uk.ui.exTable {
         export let STICK_HISTORY: string = "stick-history";
         export let STICK_REDO_STACK: string = "stick-redo-stack";
         export let PASTE_VALIDATE: string = "paste-validate";
+        export let AFTER_PASTE: string = "after-paste";
         export let TOOLTIP: string = "tooltip";
         export let CONTEXT_MENU: string = "context-menu";
         export let POPUP: string = "popup";

@@ -25,11 +25,34 @@ public class KshstHolidayAdditionSet  extends ContractUkJpaEntity implements Ser
 	/** 主キー */
 	@EmbeddedId
 	public KshstHolidayAdditionSetPK kshstHolidayAddtimeSetPK;
-	
+
+
+	// Update No 9 delete column
 	/** 会社単位の休暇時間を参照する */
-	@Column(name = "REFER_COM_HOLIDAY_TIME")
-	public int referComHolidayTime;
-	
+
+//	@Column(name = "REFER_COM_HOLIDAY_TIME")
+//	public int referComHolidayTime;
+//
+//	/** 実績の就業時間帯を参照する */
+//	@Column(name = "REFER_ACTUAL_WORK_HOURS")
+//	public int referActualWorkHours;
+//
+//	/** 実績を参照しない場合の参照先*/
+//	@Column(name = "NOT_REFERRING_ACH")
+//	public int notReferringAch;
+
+	// Update ver 9 add column
+
+	// 参照先設定
+	@Column(name = "REFERENCE_ATR_COM")
+	public int refAtrCom;
+
+	// 個人別設定参照先
+	@Column(name = "REFERENCE_ATR_EMP")
+	public Integer refAtrEmp;
+
+	// =========================
+
 	/** 1日 */
 	@Column(name = "ONE_DAY")
 	public BigDecimal oneDay;
@@ -41,14 +64,6 @@ public class KshstHolidayAdditionSet  extends ContractUkJpaEntity implements Ser
 	/** 午後 */
 	@Column(name = "AFTERNOON")
 	public BigDecimal afternoon;
-	
-	/** 実績の就業時間帯を参照する */
-	@Column(name = "REFER_ACTUAL_WORK_HOURS")
-	public int referActualWorkHours;
-	
-	/** 実績を参照しない場合の参照先*/
-	@Column(name = "NOT_REFERRING_ACH")
-	public int notReferringAch;
 	
 	/** 年休 */
 	@Column(name = "ANNUAL_HOLIDAY")

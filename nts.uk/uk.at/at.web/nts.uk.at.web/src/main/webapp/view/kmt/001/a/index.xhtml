@@ -1,0 +1,140 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+	<body>
+		<ui:composition template="../../../../master/base.xhtml">
+			<ui:define name="htmlHead">
+        <com:scriptfile set="IGNITE" />			
+				<com:stylefile path="kmt001.a.css" />
+				<com:scriptfile path="kmt001.a.vm.js" />
+
+				<com:ValidatorScript>
+					nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.TaskCode
+					nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.TaskName
+					nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.TaskAbName
+					nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.TaskNote
+					nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.TaskExternalCode
+				</com:ValidatorScript>
+
+			</ui:define>
+			
+			<ui:define name="content">
+				<div id="functions-area">
+          			<a tabindex="1" class="goback" data-bind="ntsLinkButton: { action: goback }, text: $vm.$i18n('KMT001_11'), visible: displayGoback"></a>
+					<button tabindex="1" data-bind="text: $vm.$i18n('KMT001_12'), click: addNewRegistrationWork" />
+					<button tabindex="2" class="proceed" data-bind="text: $vm.$i18n('KMT001_13'), click: saveRegistrationWork, enable: $root.errors.isEmpty" />
+					<button tabindex="3" class="danger" data-bind="text: $vm.$i18n('KMT001_14'), click: deleteRegistrationWork, enable: isNewMode() == false" />
+				</div>
+				<div id="contents-area" class="fixed-flex-layout">
+					<div class="fixed-flex-layout-left">
+						<div data-bind="ntsPanel:{width: '340px', direction: 'right', showIcon: true, visible: true}">
+							<div class="control-group valign-center" data-bind="visible: displayFrames">
+								<div data-bind="ntsFormLabel: { required: true, text: $vm.$i18n('KMT001_15') }" />
+								<div tabindex="5" style="width: 100px;" data-bind="ntsComboBox: {
+											name: '#[KMT001_15]',
+											options: workList,
+											optionsValue: 'code',
+											visibleItemsCount: 5,
+											value: selectedWorkCode,
+											optionsText: 'name',
+											editable: false,
+											enable: true,
+											required: true,
+											selectFirstIfNull: true
+										}"></div>
+							</div>
+							<div tabindex="6" data-bind="ntsSearchBox: {searchMode: 'filter',targetKey: 'code', comId: 'multi-list',
+									items: registrationWorkList, selected: currentCode, selectedKey: 'code', fields: ['name', 'code'], mode: 'igGrid'}" />
+
+							<table tabindex="6" id="multi-list" data-bind="ntsGridList: {
+										height: 380,
+										options:  registrationWorkList,
+										optionsValue: 'code',
+										columns: ko.observableArray([
+												{ headerText: $i18n('KMT001_18'), key: 'code', width: 190 },
+												{ headerText: $i18n('KMT001_19'), key: 'name', width: 132, columnCssClass: 'limited-label', formatter: _.escape  }
+										]),
+										multiple: false,
+										value: currentCode
+									}"></table>
+						</div>
+					</div>
+					<div class="fixed-flex-layout-right">
+						<div class="control-group valign-center">
+							<div data-bind="ntsFormLabel: { required: true , constraint: 'TaskCode', text: $vm.$i18n('KMT001_20')}" />
+							<input id="A3_2" tabindex="7" data-bind="ntsTextEditor: {
+												value: model().code,
+												required: true,
+												enable: true,
+												constraint: 'TaskCode',
+												name: '#[KMT001_21]',
+												enable: isNewMode
+											}" />
+						</div>
+						<div class="control-group valign-center">
+							<div data-bind="ntsFormLabel: { required: true, constraint: 'TaskName', text: $vm.$i18n('KMT001_22') }" />
+							<input id="A4_2" tabindex="8" data-bind="ntsTextEditor: {
+												value: model().name,
+												required: true,
+												enable: true,
+												constraint: 'TaskName',
+												name: '#[KMT001_23]'
+											}" />
+						</div>
+						<div class="control-group valign-center">
+							<div data-bind="ntsFormLabel: { required: true, constraint: 'TaskAbName', text: $vm.$i18n('KMT001_24') }" />
+							<input tabindex="9" data-bind="ntsTextEditor: {
+												value: model().abbreviatedName,
+												required: true,
+												enable: true,
+												constraint: 'TaskAbName',
+												name: '#[KMT001_25]'
+											}" />
+							<div class="color-label" data-bind="visible: selectedWorkCode() == 1, ntsFormLabel: { required: true, text: $vm.$i18n('KMT001_26') }" />
+							<div tabindex="10" id="colorpicker" data-bind="ntsColorPicker: {
+															value: model().color,
+															enable: true, width: 50
+														}, visible: selectedWorkCode() == 1"/>
+						</div>
+						<div class="control-group valign-center">
+							<div data-bind="ntsFormLabel: { required: true, text: $vm.$i18n('KMT001_28') }" />
+							<div style="display: inline-block;"
+								 tabindex="11"
+								 data-bind="ntsDateRangePicker: {
+												required: true,
+												enable: true,
+												showNextPrevious: false,
+												value: model().period
+											}"/>
+						</div>
+						<div class="control-group valign-top">
+							<div data-bind="ntsFormLabel: { required: false, constraint: 'TaskNote', text: $vm.$i18n('KMT001_34') }" />
+							<textarea tabindex="13" data-bind="ntsMultilineEditor: {
+											value: model().remarks,
+											name: '#[KMT001_35]',
+											constraint: 'TaskNote'
+										}" style="height: 60px; width: 450px" />
+						</div>
+						<hr style="width: 620px; display: inline-block;" />
+						<div data-bind="foreach: externalCodeList">
+							<div class="control-group valign-center">
+								<div data-bind="ntsFormLabel: { required: false, constraint: 'TaskExternalCode', text: $vm.$i18n(code) }"/>
+								<input tabindex="14" data-bind="ntsTextEditor: {
+													value: $parent.model().externalCode()[$index()],
+													required: false,
+													constraint: 'TaskExternalCode',
+													enable: true,
+													name: '#[' + code + ']'
+												}" />
+							</div>
+						</div>
+						<div style="height: 15px;" />
+					</div>
+				</div>
+			</ui:define>
+		</ui:composition>
+  </body>
+</html>

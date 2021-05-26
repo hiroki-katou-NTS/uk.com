@@ -16,6 +16,7 @@ import nts.uk.ctx.sys.shared.dom.user.SearchUser;
 import nts.uk.ctx.sys.shared.dom.user.User;
 import nts.uk.ctx.sys.shared.dom.user.UserRepository;
 import nts.uk.ctx.sys.shared.infra.entity.user.SacmtUser;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class JpaUserRepositoryAuth extends JpaRepository implements UserRepository {
@@ -85,13 +86,16 @@ public class JpaUserRepositoryAuth extends JpaRepository implements UserReposito
 			+ " WHERE (LOWER(c.loginID) LIKE LOWER(CONCAT('%', :userIDName, '%')) ESCAPE '/'"
 			+ " OR LOWER(c.userName) LIKE LOWER(CONCAT('%', :userIDName, '%')) ESCAPE '/'"
 			+ " OR LOWER(p.personName) LIKE LOWER(CONCAT('%', :userIDName, '%')) ESCAPE '/')" 
+			+ " AND c.contractCd=:contractCd "
 			+ " AND c.expirationDate >= :date ";
 
 	@Override
 	public List<SearchUser> searchUser(String userIDName, GeneralDate date) {
 		userIDName = userIDName.replaceAll("_", "/_");
 		List<Object[]> data = this.queryProxy().query(SELECT_BY_ID_OR_NAME, Object[].class)
-				.setParameter("userIDName", userIDName).setParameter("date", date).getList();
+				.setParameter("contractCd", AppContexts.user().contractCode())
+				.setParameter("userIDName", userIDName)
+				.setParameter("date", date).getList();
 
 		List<SearchUser> result = new ArrayList<SearchUser>();
 		for (val object : data) {
@@ -108,11 +112,13 @@ public class JpaUserRepositoryAuth extends JpaRepository implements UserReposito
 		return result;
 	}
 
-	private static final String SELECT_ALL_USER = "SELECT c FROM SacmtUser c ";
+	private static final String SELECT_ALL_USER = "SELECT c FROM SacmtUser c WHERE c.contractCd=:contractCd";
 
 	@Override
 	public List<User> getAllUser() {
-		return this.queryProxy().query(SELECT_ALL_USER, SacmtUser.class).getList(c -> c.toDomain());
+		return this.queryProxy().query(SELECT_ALL_USER, SacmtUser.class)
+				.setParameter("contractCd", AppContexts.user().contractCode())
+				.getList(c -> c.toDomain());
 	}
 
 	@Override
@@ -158,14 +164,18 @@ public class JpaUserRepositoryAuth extends JpaRepository implements UserReposito
 	}
 
 	private static final String SELECT_ALL_USER_LIKE_NAME = "SELECT p.businessName, c From SacmtUser c LEFT JOIN BpsmtPerson p ON c.associatedPersonID = p.bpsmtPersonPk.pId "
-			+ "WHERE c.expirationDate >= :systemDate " + "AND c.specialUser = :specialUser "
+			+ "WHERE c.contractCd = :contractCd "
+			+ "AND c.expirationDate >= :systemDate " + "AND c.specialUser = :specialUser "
 			+ "AND c.multiCompanyConcurrent = :multiCompanyConcurrent " + "AND c.userName LIKE :key "
 			+ "AND c.associatedPersonID IS NOT NULL";
 
 	@Override
 	public List<User> searchByKey(GeneralDate systemDate, int special, int multi, String key) {
-		return this.queryProxy().query(SELECT_ALL_USER_LIKE_NAME, Object[].class).setParameter("systemDate", systemDate)
-				.setParameter("specialUser", special).setParameter("multiCompanyConcurrent", multi)
+		return this.queryProxy().query(SELECT_ALL_USER_LIKE_NAME, Object[].class)
+				.setParameter("contractCd", AppContexts.user().contractCode())
+				.setParameter("systemDate", systemDate)
+				.setParameter("specialUser", special)
+				.setParameter("multiCompanyConcurrent", multi)
 				.setParameter("key", '%' + key + '%').getList(c -> this.joinObjectToDomain(c));
 	}
 

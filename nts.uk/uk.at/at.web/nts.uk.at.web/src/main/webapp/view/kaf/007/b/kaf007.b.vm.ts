@@ -5,6 +5,7 @@ module nts.uk.at.view.kaf007_ref.c.viewmodel {
     import AppType = nts.uk.at.view.kaf000.shr.viewmodel.model.AppType;
     import ModelDto = nts.uk.at.view.kaf007_ref.shr.viewmodel.ModelDto;
     import ReflectWorkChangeApp = nts.uk.at.view.kaf007_ref.shr.viewmodel.ReflectWorkChangeApp;
+	import CommonProcess = nts.uk.at.view.kaf000.shr.viewmodel.CommonProcess;
 
     @component({
         name: 'kaf007-b',
@@ -14,6 +15,7 @@ module nts.uk.at.view.kaf007_ref.c.viewmodel {
 
         appType: KnockoutObservable<number> = ko.observable(AppType.WORK_CHANGE_APPLICATION);
         appDispInfoStartupOutput: any;
+        appWorkChangeDisp: any;
         application: KnockoutObservable<Application>;
         appWorkChange: AppWorkChange;
         approvalReason: KnockoutObservable<string>;
@@ -81,6 +83,7 @@ module nts.uk.at.view.kaf007_ref.c.viewmodel {
 
         fetchData(params: any): any {
             const vm = this;
+            vm.appWorkChangeDisp = params.appWorkChangeDispInfo;
             let appWorkChangeDispInfo = params.appWorkChangeDispInfo;
             let appWorkChangeParam = params.appWorkChange;
             vm.model({
@@ -213,7 +216,8 @@ module nts.uk.at.view.kaf007_ref.c.viewmodel {
                 applicationDto: ko.toJS(vm.appDispInfoStartupOutput().appDetailScreenInfo.application),
                 appWorkChangeDto: ko.toJS(appWorkChangeDto),
                 isError: vm.model().appDispInfoStartupOutput().appDispInfoWithDateOutput.opErrorFlag,
-                appDispInfoStartupDto: ko.toJS(vm.model().appDispInfoStartupOutput)
+                appDispInfoStartupDto: ko.toJS(vm.model().appDispInfoStartupOutput),
+                appWorkChangeDispInfo: vm.appWorkChangeDisp
             }
 
             command.applicationDto.opAppReason = vm.application().opAppReason();
@@ -269,7 +273,11 @@ module nts.uk.at.view.kaf007_ref.c.viewmodel {
                     }
                 }).done(result => {
                     if (result) {
-                        vm.$dialog.info({ messageId: "Msg_15" }).then(() => vm.reload());
+                        vm.$dialog.info({ messageId: "Msg_15" }).then(() => {
+							CommonProcess.handleMailResult(result, vm).then(() => {
+								vm.reload();	
+							});
+						});
                     }
                 })
                 .fail(err => {

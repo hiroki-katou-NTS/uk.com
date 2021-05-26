@@ -1,8 +1,8 @@
 package nts.uk.ctx.at.schedule.infra.repository.workschedules;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -21,8 +21,12 @@ import nts.uk.ctx.at.schedule.infra.entity.schedule.workschedule.KscdtSchBasicIn
 import nts.uk.ctx.at.schedule.infra.entity.schedule.workschedule.KscdtSchBasicInfoPK;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.workschedule.KscdtSchBonusPay;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.workschedule.KscdtSchBreakTs;
+import nts.uk.ctx.at.schedule.infra.entity.schedule.workschedule.KscdtSchComeLate;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.workschedule.KscdtSchEditState;
+import nts.uk.ctx.at.schedule.infra.entity.schedule.workschedule.KscdtSchGoingOut;
+import nts.uk.ctx.at.schedule.infra.entity.schedule.workschedule.KscdtSchGoingOutTs;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.workschedule.KscdtSchHolidayWork;
+import nts.uk.ctx.at.schedule.infra.entity.schedule.workschedule.KscdtSchLeaveEarly;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.workschedule.KscdtSchOvertimeWork;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.workschedule.KscdtSchPremium;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.workschedule.KscdtSchShortTime;
@@ -45,6 +49,12 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 	private static final String WHERE_PK = "WHERE a.pk.sid = :sid AND a.pk.ymd >= :ymdStart AND a.pk.ymd <= :ymdEnd";
 	
 	private static final String DELETE_BY_LIST_DATE = "WHERE a.pk.sid = :sid AND a.pk.ymd IN :ymds";
+	
+//	private static final String SELECT_MAX = "SELECT MAX(c.startDate) FROM KscdtSchBasicInfo c WHERE c.pk.sid IN :employeeIDs";
+	
+//	private static final String GET_MAX_DATE_WORK_SCHE_BY_LIST_EMP = "SELECT c.pk.ymd FROM KscdtSchBasicInfo c "
+//			+ " WHERE c.pk.sid IN :listEmp"
+//			+ " ORDER BY c.pk.ymd desc ";
 
 	private static final List<String> DELETE_TABLES = Arrays.asList(
 			"DELETE FROM KscdtSchTime a ",
@@ -57,7 +67,11 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 			"DELETE FROM KscdtSchEditState a ",
 			"DELETE FROM KscdtSchAtdLvwTime a ",
 			"DELETE FROM KscdtSchShortTimeTs a ",
-			"DELETE FROM KscdtSchBreakTs a ");
+			"DELETE FROM KscdtSchBreakTs a ",
+			"DELETE FROM KscdtSchComeLate a ",
+			"DELETE FROM KscdtSchGoingOut a ",
+			"DELETE FROM KscdtSchLeaveEarly a "
+			);
 
 	@Override
 	public Optional<WorkSchedule> get(String employeeID, GeneralDate ymd) {
@@ -66,6 +80,14 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 				.getSingle(c -> c.toDomain(employeeID, ymd));
 		return workSchedule;
 	}
+	
+//	@Override
+//	public Optional<GeneralDate> getMaxDate(List<String> employeeIDs, GeneralDate ymd) {
+//		GeneralDate date = this.queryProxy().query(SELECT_MAX, GeneralDate.class)
+//				.setParameter("employeeIDs", employeeIDs)
+//				.getSingleOrNull();
+//		return Optional.ofNullable(date);
+//	}
 
 	@Override
 	public List<WorkSchedule> getList(List<String> sids, DatePeriod period) {
@@ -102,10 +124,14 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 	@Override
 	public void update(WorkSchedule workSchedule) {
 		String cID = AppContexts.user().companyId();
-		Optional<KscdtSchBasicInfo> oldData = this.queryProxy().query(SELECT_BY_KEY, KscdtSchBasicInfo.class)
-				.setParameter("employeeID", workSchedule.getEmployeeID()).setParameter("ymd", workSchedule.getYmd())
-				.getSingle(c -> c);
-
+		/*
+		 * Optional<KscdtSchBasicInfo> oldData = this.queryProxy().query(SELECT_BY_KEY,
+		 * KscdtSchBasicInfo.class) .setParameter("employeeID",
+		 * workSchedule.getEmployeeID()).setParameter("ymd", workSchedule.getYmd())
+		 * .getSingle(c -> c);
+		 */
+		KscdtSchBasicInfo entity = KscdtSchBasicInfo.toEntity(workSchedule, cID);
+		Optional<KscdtSchBasicInfo> oldData = this.queryProxy().find(entity.getPk(), KscdtSchBasicInfo.class);
 		if (oldData.isPresent()) {
 			KscdtSchBasicInfo newData = KscdtSchBasicInfo.toEntity(workSchedule, cID);
 			oldData.get().confirmedATR = newData.confirmedATR;
@@ -119,6 +145,8 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 			oldData.get().wktmCd = newData.wktmCd;
 			oldData.get().goStraightAtr = newData.goStraightAtr;
 			oldData.get().backStraightAtr = newData.backStraightAtr;
+			oldData.get().treatAsSubstituteAtr = newData.treatAsSubstituteAtr;
+			oldData.get().treatAsSubstituteDays = newData.treatAsSubstituteDays;
 
 			// kscdtSchTime
 			if (oldData.get().kscdtSchTime != null) {
@@ -231,17 +259,274 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 						});
 					}
 				}
-			}
-			// List<KscdtSchEditState> editStates;
-			if (!oldData.get().editStates.isEmpty()) {
-				for (KscdtSchEditState y : newData.editStates) {
-					oldData.get().editStates.forEach(x -> {
-						if (y.pk.atdItemId == x.pk.atdItemId) {
-							x.cid = y.cid;
-							x.sditState = y.sditState;
+				///
+				
+				//#114431
+				//KSCDT_SCH_COME_LATE
+				if (!oldData.get().kscdtSchTime.kscdtSchComeLate.isEmpty()) {
+					// get list insert and update data exist
+					List<KscdtSchComeLate> listInsert = new ArrayList<>();
+					for (KscdtSchComeLate schComeLate : newData.kscdtSchTime.kscdtSchComeLate) {
+						boolean checkExist = false;
+						for (KscdtSchComeLate schComeLateOld : oldData.get().kscdtSchTime.kscdtSchComeLate) {
+							if(schComeLate.pk.workNo == schComeLateOld.pk.workNo
+									&& schComeLate.pk.sid.equals(schComeLateOld.pk.sid)
+									&& schComeLate.pk.ymd.equals(schComeLateOld.pk.ymd)
+									) {
+								schComeLateOld.useHourlyHdPaid = schComeLate.useHourlyHdPaid;
+								schComeLateOld.useHourlyHdCom = schComeLate.useHourlyHdCom;
+								schComeLateOld.useHourlyHd60h = schComeLate.useHourlyHd60h;
+								schComeLateOld.useHourlyHdSpNO = schComeLate.useHourlyHdSpNO;
+								schComeLateOld.useHourlyHdSpTime = schComeLate.useHourlyHdSpTime;
+								schComeLateOld.useHourlyHdChildCare = schComeLate.useHourlyHdChildCare;
+								schComeLateOld.useHourlyHdNurseCare = schComeLate.useHourlyHdNurseCare;
+								checkExist = true;
+							}
 						}
-					});
+						
+						if(!checkExist) {
+							listInsert.add(schComeLate);
+						}
+					}
+					//get list remove
+					List<KscdtSchComeLate> listRemove = new ArrayList<>();
+					for (KscdtSchComeLate schComeLateOld : oldData.get().kscdtSchTime.kscdtSchComeLate) {
+						boolean checkExist = false;
+						for (KscdtSchComeLate schComeLate : newData.kscdtSchTime.kscdtSchComeLate) {
+							if(schComeLate.pk.workNo == schComeLateOld.pk.workNo
+									&& schComeLate.pk.sid.equals(schComeLateOld.pk.sid)
+									&& schComeLate.pk.ymd.equals(schComeLateOld.pk.ymd)
+									) {
+								checkExist = true;
+								break;
+							}
+						}
+						if(!checkExist) {
+							listRemove.add(schComeLateOld);
+						}
+					}
+					
+					//remove
+					String delete = "delete from KscdtSchComeLate o " + " where o.pk.sid = :sid "
+							+ " and o.pk.ymd = :ymd " + " and o.pk.workNo = :workNo";
+					for(KscdtSchComeLate sle : listRemove) {
+						this.getEntityManager().createQuery(delete).setParameter("sid", sle.pk.sid)
+						.setParameter("ymd", sle.pk.ymd)
+						.setParameter("workNo", sle.pk.workNo).executeUpdate();
+					}
+					//add
+					for(KscdtSchComeLate sle : listInsert) {
+						this.commandProxy().insert(sle);
+					}
+					
+				} else {
+					oldData.get().kscdtSchTime.kscdtSchComeLate = newData.kscdtSchTime.kscdtSchComeLate;
 				}
+				
+				//KSCDT_SCH_GOING_OUT
+				if (!oldData.get().kscdtSchTime.kscdtSchGoingOut.isEmpty()) {
+					// get list insert and update data exist
+					List<KscdtSchGoingOut> listInsert = new ArrayList<>();
+					for (KscdtSchGoingOut schGoingOut : newData.kscdtSchTime.kscdtSchGoingOut) {
+						boolean checkExist = false;
+						for (KscdtSchGoingOut schGoingOutOld : oldData.get().kscdtSchTime.kscdtSchGoingOut) {
+							if(schGoingOut.pk.reasonAtr == schGoingOutOld.pk.reasonAtr
+									&& schGoingOut.pk.sid.equals(schGoingOutOld.pk.sid)
+									&& schGoingOut.pk.ymd.equals(schGoingOutOld.pk.ymd)
+									) {
+								schGoingOutOld.useHourlyHdPaid = schGoingOut.useHourlyHdPaid;
+								schGoingOutOld.useHourlyHdCom = schGoingOut.useHourlyHdCom;
+								schGoingOutOld.useHourlyHd60h = schGoingOut.useHourlyHd60h;
+								schGoingOutOld.useHourlyHdSpNO = schGoingOut.useHourlyHdSpNO;
+								schGoingOutOld.useHourlyHdSpTime = schGoingOut.useHourlyHdSpTime;
+								schGoingOutOld.useHourlyHdChildCare = schGoingOut.useHourlyHdChildCare;
+								schGoingOutOld.useHourlyHdNurseCare = schGoingOut.useHourlyHdNurseCare;
+								checkExist = true;
+							}
+						}
+						
+						if(!checkExist) {
+							listInsert.add(schGoingOut);
+						}
+					}
+					//get list remove
+					List<KscdtSchGoingOut> listRemove = new ArrayList<>();
+					for (KscdtSchGoingOut schGoingOutOld : oldData.get().kscdtSchTime.kscdtSchGoingOut) {
+						boolean checkExist = false;
+						for (KscdtSchGoingOut schGoingOut : newData.kscdtSchTime.kscdtSchGoingOut) {
+							if(schGoingOut.pk.reasonAtr == schGoingOutOld.pk.reasonAtr
+									&& schGoingOut.pk.sid.equals(schGoingOutOld.pk.sid)
+									&& schGoingOut.pk.ymd.equals(schGoingOutOld.pk.ymd)
+									) {
+								checkExist = true;
+								break;
+							}
+						}
+						if(!checkExist) {
+							listRemove.add(schGoingOutOld);
+						}
+					}
+					
+					//remove
+					String delete = "delete from KscdtSchGoingOut o " + " where o.pk.sid = :sid "
+							+ " and o.pk.ymd = :ymd " + " and o.pk.reasonAtr = :reasonAtr";
+					for(KscdtSchGoingOut sgo : listRemove) {
+						this.getEntityManager().createQuery(delete).setParameter("sid", sgo.pk.sid)
+						.setParameter("ymd", sgo.pk.ymd)
+						.setParameter("reasonAtr", sgo.pk.reasonAtr).executeUpdate();
+					}
+					//add
+					for(KscdtSchGoingOut sgo : listInsert) {
+						this.commandProxy().insert(sgo);
+					}
+					
+				} else {
+					oldData.get().kscdtSchTime.kscdtSchGoingOut = newData.kscdtSchTime.kscdtSchGoingOut;
+				}
+				
+				//kscdtSchLeaveEarly
+				if (!oldData.get().kscdtSchTime.kscdtSchLeaveEarly.isEmpty()) {
+					// get list insert and update data exist
+					List<KscdtSchLeaveEarly> listInsert = new ArrayList<>();
+					for (KscdtSchLeaveEarly schLeaveEarly : newData.kscdtSchTime.kscdtSchLeaveEarly) {
+						boolean checkExist = false;
+						for (KscdtSchLeaveEarly schLeaveEarlyOld : oldData.get().kscdtSchTime.kscdtSchLeaveEarly) {
+							if(schLeaveEarly.pk.workNo == schLeaveEarlyOld.pk.workNo
+									&& schLeaveEarly.pk.sid.equals(schLeaveEarlyOld.pk.sid)
+									&& schLeaveEarly.pk.ymd.equals(schLeaveEarlyOld.pk.ymd)
+									) {
+								schLeaveEarlyOld.useHourlyHdPaid = schLeaveEarly.useHourlyHdPaid;
+								schLeaveEarlyOld.useHourlyHdCom = schLeaveEarly.useHourlyHdCom;
+								schLeaveEarlyOld.useHourlyHd60h = schLeaveEarly.useHourlyHd60h;
+								schLeaveEarlyOld.useHourlyHdSpNO = schLeaveEarly.useHourlyHdSpNO;
+								schLeaveEarlyOld.useHourlyHdSpTime = schLeaveEarly.useHourlyHdSpTime;
+								schLeaveEarlyOld.useHourlyHdChildCare = schLeaveEarly.useHourlyHdChildCare;
+								schLeaveEarlyOld.useHourlyHdNurseCare = schLeaveEarly.useHourlyHdNurseCare;
+								checkExist = true;
+							}
+						}
+						
+						if(!checkExist) {
+							listInsert.add(schLeaveEarly);
+						}
+					}
+					//get list remove
+					List<KscdtSchLeaveEarly> listRemove = new ArrayList<>();
+					for (KscdtSchLeaveEarly schLeaveEarlyOld : oldData.get().kscdtSchTime.kscdtSchLeaveEarly) {
+						boolean checkExist = false;
+						for (KscdtSchLeaveEarly schLeaveEarly : newData.kscdtSchTime.kscdtSchLeaveEarly) {
+							if(schLeaveEarly.pk.workNo == schLeaveEarlyOld.pk.workNo
+									&& schLeaveEarly.pk.sid.equals(schLeaveEarlyOld.pk.sid)
+									&& schLeaveEarly.pk.ymd.equals(schLeaveEarlyOld.pk.ymd)
+									) {
+								checkExist = true;
+								break;
+							}
+						}
+						if(!checkExist) {
+							listRemove.add(schLeaveEarlyOld);
+						}
+					}
+					
+					//remove
+					String delete = "delete from KscdtSchLeaveEarly o " + " where o.pk.sid = :sid "
+							+ " and o.pk.ymd = :ymd " + " and o.pk.workNo = :workNo";
+					for(KscdtSchLeaveEarly sle : listRemove) {
+						this.getEntityManager().createQuery(delete).setParameter("sid", sle.pk.sid)
+						.setParameter("ymd", sle.pk.ymd)
+						.setParameter("workNo", sle.pk.workNo).executeUpdate();
+					}
+					//add
+					for(KscdtSchLeaveEarly sle : listInsert) {
+						this.commandProxy().insert(sle);
+					}
+					
+				} else {
+					oldData.get().kscdtSchTime.kscdtSchLeaveEarly = newData.kscdtSchTime.kscdtSchLeaveEarly;
+				}
+			}
+			
+//			if (!oldData.get().kscdtSchTime.kscdtSchTask.isEmpty()) {
+//				// get list insert and update data exist
+//				List<KscdtSchTask> listInsert = new ArrayList<>();
+//				for (KscdtSchTask task : newData.kscdtSchTime.kscdtSchTask) {
+//					List<KscdtSchTask> checkLst = new ArrayList<>();
+//					oldData.get().kscdtSchTime.kscdtSchTask.forEach(x -> {
+//						if(task.pk.sid.equals(x.pk.sid)
+//								&& task.pk.ymd.equals(x.pk.ymd)
+//								&& task.pk.serialNo == x.pk.serialNo) {
+//							x.taskCode = task.taskCode;
+//							x.startClock = task.startClock;
+//							x.endClock = task.endClock;
+//							checkLst.add(x);
+//						} 
+//					});
+//					if(checkLst.isEmpty()) {
+//						listInsert.add(task);
+//					}
+//				}
+				
+//				List<KscdtSchTask> listRemove = new ArrayList<>();
+//				for (KscdtSchTask taskOld : oldData.get().kscdtSchTime.kscdtSchTask) {
+//					boolean checkExist = false;
+//					for (KscdtSchTask task : newData.kscdtSchTime.kscdtSchTask) {
+//						if(task.pk.serialNo == taskOld.pk.serialNo
+//								&& task.pk.sid.equals(taskOld.pk.sid)
+//								&& task.pk.ymd.equals(taskOld.pk.ymd)
+//								) {
+//							checkExist = true;
+//							break;
+//						}
+//					}
+//					if(!checkExist) {
+//						listRemove.add(taskOld);
+//					}
+//				}
+//				
+//				//remove
+//				String delete = "delete from KscdtSchTask o " + " where o.pk.sid = :sid "
+//						+ " and o.pk.ymd = :ymd " + " and o.pk.serialNo = :serialNo";
+//				for(KscdtSchTask sle : listRemove) {
+//					this.getEntityManager().createQuery(delete).setParameter("sid", sle.pk.sid)
+//					.setParameter("ymd", sle.pk.ymd)
+//					.setParameter("serialNo", sle.pk.serialNo).executeUpdate();
+//				}
+//				//add
+//				for(KscdtSchTask sle : listInsert) {
+//					this.commandProxy().insert(sle);
+//				}
+//				
+//			} else {
+//				oldData.get().kscdtSchTime.kscdtSchTask = newData.kscdtSchTime.kscdtSchTask;
+//			}
+//			
+
+			// List<KscdtSchEditState> editStates;			
+			if (!oldData.get().editStates.isEmpty()) {
+				// get list insert and update data exist
+				List<KscdtSchEditState> listInsert = new ArrayList<>();
+				for (KscdtSchEditState schState : newData.editStates) {
+					List<KscdtSchEditState> checkLst = new ArrayList<>();
+					oldData.get().editStates.forEach(x -> {
+						if(schState.pk.sid.equals(x.pk.sid)
+								&& schState.pk.ymd.equals(x.pk.ymd)
+								&& schState.pk.atdItemId == x.pk.atdItemId) {
+							x.sditState = schState.sditState;
+							x.cid = schState.cid;
+							checkLst.add(x);
+						} 
+					});
+					if(checkLst.isEmpty()) {
+						listInsert.add(schState);
+					}
+				}
+				//add
+				for(KscdtSchEditState sle : listInsert) {
+					this.commandProxy().insert(sle);
+				}
+				
+			} else {
+				oldData.get().editStates = newData.editStates;
 			}
 
 			// List<KscdtSchAtdLvwTime> atdLvwTimes;
@@ -262,6 +547,10 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 							x.cid = y.cid;
 							x.atdClock = y.atdClock;
 							x.lwkClock = y.lwkClock;
+							x.atdHourlyHDTSStart = y.atdHourlyHDTSStart;
+							x.atdHourlyHDTSEnd = y.atdHourlyHDTSEnd;
+							x.lvwHourlyHDTSStart = y.lvwHourlyHDTSStart;
+							x.lvwHourlyHDTSEnd = y.lvwHourlyHDTSEnd;
 						}
 						// Insert work no 2 when old data just have work no 1
 						if(y.pk.workNo == 2 && oldData.get().atdLvwTimes.size() < 2) {
@@ -271,7 +560,7 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 							this.insertAtdLvwTimes(leavingWork, workSchedule.getEmployeeID(), workSchedule.getYmd(), cID);
 						}
 						// Delete work no 2 when new data just have work no 1
-						if(workSchedule.getOptTimeLeaving().get().getTimeLeavingWorks().size() < 2 && x.pk.workNo == 2) {
+						if(newData.atdLvwTimes.size() < 2 && x.pk.workNo == 2) {
 							
 							this.getEntityManager().createQuery(delete).setParameter("sid", x.pk.sid)
 									.setParameter("ymd", x.pk.ymd)
@@ -299,75 +588,134 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 				oldData.get().setSchShortTimeTs(newData.schShortTimeTs);
 			} else {
 
-			if (oldDatas.get().getOptSortTimeWork().get().getShortWorkingTimeSheets().isEmpty()
-					&& workSchedule.getOptSortTimeWork().isPresent()) {
-				if (!workSchedule.getOptSortTimeWork().get().getShortWorkingTimeSheets().isEmpty()) {
-					for (ShortWorkingTimeSheet ts : workSchedule.getOptSortTimeWork().get()
-							.getShortWorkingTimeSheets()) {
-						this.insert(ts, workSchedule.getEmployeeID(), workSchedule.getYmd(), cID);
+				if (oldDatas.get().getOptSortTimeWork().get().getShortWorkingTimeSheets().isEmpty()
+						&& workSchedule.getOptSortTimeWork().isPresent()) {
+					if (!workSchedule.getOptSortTimeWork().get().getShortWorkingTimeSheets().isEmpty()) {
+						for (ShortWorkingTimeSheet ts : workSchedule.getOptSortTimeWork().get()
+								.getShortWorkingTimeSheets()) {
+							this.insert(ts, workSchedule.getEmployeeID(), workSchedule.getYmd(), cID);
+						}
 					}
-				}
-			} else {
-				// List<KscdtSchShortTimeTs> schShortTimeTs
-				for (KscdtSchShortTimeTs ts : newData.schShortTimeTs) {
-					oldData.get().schShortTimeTs.forEach(x -> {
-						if (x.pk.frameNo == ts.pk.frameNo && x.pk.childCareAtr == ts.pk.childCareAtr) {
-							x.cid = ts.cid;
-							x.shortTimeTsStart = ts.shortTimeTsStart;
-							x.shortTimeTsEnd = ts.shortTimeTsEnd;
+				} else {
+					// List<KscdtSchShortTimeTs> schShortTimeTs
+					for (KscdtSchShortTimeTs ts : newData.schShortTimeTs) {
+						oldData.get().schShortTimeTs.forEach(x -> {
+							if (x.pk.frameNo == ts.pk.frameNo && x.pk.childCareAtr == ts.pk.childCareAtr) {
+								x.cid = ts.cid;
+								x.shortTimeTsStart = ts.shortTimeTsStart;
+								x.shortTimeTsEnd = ts.shortTimeTsEnd;
+							}
+	
+							if (x.pk.frameNo == 2 && workSchedule.getOptSortTimeWork().get().getShortWorkingTimeSheets().size() < 2) {
+								String delete = "delete from KscdtSchShortTimeTs o " + " where o.pk.sid = :sid "
+										+ " and o.pk.ymd = :ymd " + " and o.pk.childCareAtr = :childCareAtr "
+										+ "  and o.pk.frameNo = :frameNo";
+								this.getEntityManager().createQuery(delete).setParameter("sid", x.pk.sid)
+										.setParameter("ymd", x.pk.ymd).setParameter("childCareAtr", x.pk.childCareAtr)
+										.setParameter("frameNo", x.pk.frameNo).executeUpdate();
+	
+							}
+						});
+						if (ts.pk.frameNo == 2 && oldData.get().schShortTimeTs.size() < 2) {
+							ShortWorkingTimeSheet schShortTimeTs = workSchedule.getOptSortTimeWork().get()
+									.getShortWorkingTimeSheets().stream().filter(x -> x.getShortWorkTimeFrameNo().v() == 2)
+									.findFirst().get();
+							this.insert(schShortTimeTs, workSchedule.getEmployeeID(), workSchedule.getYmd(), cID);
 						}
-
-						if (x.pk.frameNo == 2 && workSchedule.getOptSortTimeWork().get().getShortWorkingTimeSheets().size() < 2) {
-							String delete = "delete from KscdtSchShortTimeTs o " + " where o.pk.sid = :sid "
-									+ " and o.pk.ymd = :ymd " + " and o.pk.childCareAtr = :childCareAtr "
-									+ "  and o.pk.frameNo = :frameNo";
-							this.getEntityManager().createQuery(delete).setParameter("sid", x.pk.sid)
-									.setParameter("ymd", x.pk.ymd).setParameter("childCareAtr", x.pk.childCareAtr)
-									.setParameter("frameNo", x.pk.frameNo).executeUpdate();
-
-						}
-					});
-					if (ts.pk.frameNo == 2 && oldData.get().schShortTimeTs.size() < 2) {
-						ShortWorkingTimeSheet schShortTimeTs = workSchedule.getOptSortTimeWork().get()
-								.getShortWorkingTimeSheets().stream().filter(x -> x.getShortWorkTimeFrameNo().v() == 2)
-								.findFirst().get();
-						this.insert(schShortTimeTs, workSchedule.getEmployeeID(), workSchedule.getYmd(), cID);
 					}
 				}
 			}
-		}
+			// KscdtSchBreakTs
 			if (!oldData.get().breakTs.isEmpty()) {
-				oldData.get().breakTs.sort(Comparator.comparing(KscdtSchBreakTs::getBreakTsStart));
-				newData.breakTs.sort(Comparator.comparing(KscdtSchBreakTs::getBreakTsStart));
-				int sizeOld = oldData.get().breakTs.size();
-				int sizeNew = newData.breakTs.size();
+				// get list insert and update data exist
+				List<KscdtSchBreakTs> listInsert = new ArrayList<>();
+				for (KscdtSchBreakTs schBrk : newData.breakTs) {
+					List<KscdtSchBreakTs> checkLst = new ArrayList<>();
+					oldData.get().breakTs.forEach(x -> {
+						if(schBrk.pk.sid.equals(x.pk.sid)
+								&& schBrk.pk.ymd.equals(x.pk.ymd)
+								&& schBrk.pk.frameNo == x.pk.frameNo) {
+							x.cid = schBrk.cid;
+							x.breakTsStart = schBrk.breakTsStart;
+							x.breakTsEnd = schBrk.breakTsEnd;
+							checkLst.add(x);
+						} 
+					});
+					if(checkLst.isEmpty()) {
+						listInsert.add(schBrk);
+					}
+				}
+				
+				//get list remove
+				List<KscdtSchBreakTs> listRemove = new ArrayList<>();
+				for (KscdtSchBreakTs schBrkTsOld : oldData.get().breakTs) {
+					boolean checkLst = false;
+					for (KscdtSchBreakTs schBrk : newData.breakTs) {
+						if(schBrk.pk.frameNo == schBrkTsOld.pk.frameNo
+								&& schBrk.pk.sid.equals(schBrkTsOld.pk.sid)
+								&& schBrk.pk.ymd.equals(schBrkTsOld.pk.ymd)
+								) {
+							checkLst = true;
+							break;
+						}
+					}
+					if(!checkLst) {
+						listRemove.add(schBrkTsOld);
+					}
+				}
+				
+				//remove
+				String delete = "delete from KscdtSchBreakTs o " + " where o.pk.sid = :sid "
+						+ " and o.pk.ymd = :ymd " + " and o.pk.frameNo = :frameNo";
+				for(KscdtSchBreakTs sle : listRemove) {
+					this.getEntityManager().createQuery(delete).setParameter("sid", sle.pk.sid)
+					.setParameter("ymd", sle.pk.ymd)
+					.setParameter("frameNo", sle.pk.frameNo).executeUpdate();
+				}
+				
+				//add
+				for(KscdtSchBreakTs sle : listInsert) {
+					this.commandProxy().insert(sle);
+				}
+				
+			} else {
+				oldData.get().breakTs = newData.breakTs;
+			}
+			
+			//#114431
+			if (!oldData.get().kscdtSchGoingOutTs.isEmpty()) {
+				oldData.get().kscdtSchGoingOutTs.sort(Comparator.comparing(KscdtSchGoingOutTs::getGoingOutClock));
+				newData.kscdtSchGoingOutTs.sort(Comparator.comparing(KscdtSchGoingOutTs::getGoingOutClock));
+				int sizeOld = oldData.get().kscdtSchGoingOutTs.size();
+				int sizeNew = newData.kscdtSchGoingOutTs.size();
 
 				if (sizeOld > sizeNew) {
 					// remove
 					for (int i = 0; i < sizeNew; i++) {
-						oldData.get().breakTs.get(i).cid = newData.breakTs.get(i).cid;
-						oldData.get().breakTs.get(i).breakTsStart = newData.breakTs.get(i).breakTsStart;
-						oldData.get().breakTs.get(i).breakTsEnd = newData.breakTs.get(i).breakTsEnd;
+						oldData.get().kscdtSchGoingOutTs.get(i).cid = newData.kscdtSchGoingOutTs.get(i).cid;
+						oldData.get().kscdtSchGoingOutTs.get(i).reasonAtr = newData.kscdtSchGoingOutTs.get(i).reasonAtr;
+						oldData.get().kscdtSchGoingOutTs.get(i).goingOutClock = newData.kscdtSchGoingOutTs.get(i).goingOutClock;
+						oldData.get().kscdtSchGoingOutTs.get(i).goingBackClock = newData.kscdtSchGoingOutTs.get(i).goingBackClock;
 					}
 					for (int i = sizeOld - 1; i >= sizeNew; i--) {
-						oldData.get().breakTs.remove(i);
+						oldData.get().kscdtSchGoingOutTs.remove(i);
 					}
 
 				} else {
 					for (int i = 0; i < sizeOld; i++) {
-						oldData.get().breakTs.get(i).cid = newData.breakTs.get(i).cid;
-						oldData.get().breakTs.get(i).breakTsStart = newData.breakTs.get(i).breakTsStart;
-						oldData.get().breakTs.get(i).breakTsEnd = newData.breakTs.get(i).breakTsEnd;
+						oldData.get().kscdtSchGoingOutTs.get(i).cid = newData.kscdtSchGoingOutTs.get(i).cid;
+						oldData.get().kscdtSchGoingOutTs.get(i).reasonAtr = newData.kscdtSchGoingOutTs.get(i).reasonAtr;
+						oldData.get().kscdtSchGoingOutTs.get(i).goingOutClock = newData.kscdtSchGoingOutTs.get(i).goingOutClock;
+						oldData.get().kscdtSchGoingOutTs.get(i).goingBackClock = newData.kscdtSchGoingOutTs.get(i).goingBackClock;
 					}
 					for (int i = sizeOld; i < sizeNew; i++) {
-						oldData.get().breakTs.add(newData.breakTs.get(i));
+						oldData.get().kscdtSchGoingOutTs.add(newData.kscdtSchGoingOutTs.get(i));
 					}
 				}
 			} else {
-				oldData.get().breakTs = newData.breakTs;
+				oldData.get().kscdtSchGoingOutTs = newData.kscdtSchGoingOutTs;
 			}
 			this.commandProxy().update(oldData.get());
-
 		}
 	}
 
@@ -447,5 +795,30 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 	public boolean checkExitsShortTime(String employeeID, GeneralDate ymd) {
 		return this.queryProxy().query(SELECT_ALL_SHORTTIME_TS, Long.class).setParameter("employeeID", employeeID)
 				.setParameter("ymd", ymd).getSingle().get() > 0;
+	}
+	@Override
+	public List<WorkSchedule> getListBySid(String sid, DatePeriod period) {
+		
+		List<WorkSchedule> result = this.queryProxy()
+				.query("SELECT a FROM KscdtSchBasicInfo a " + WHERE_PK, KscdtSchBasicInfo.class)
+				.setParameter("sid", sid)
+				.setParameter("ymdStart", period.start())
+				.setParameter("ymdEnd", period.end())
+				.getList(c -> c.toDomain(c.pk.sid, c.pk.ymd));
+		 
+		 return result;
+	}
+	private static final String GET_MAX_DATE_WORK_SCHE_BY_LIST_EMP = "SELECT c.pk.ymd FROM KscdtSchBasicInfo c "
+			+ " WHERE c.pk.sid IN :listEmp"
+			+ " ORDER BY c.pk.ymd desc ";
+	@Override
+	public Optional<GeneralDate> getMaxDateWorkSche(List<String> listEmp) {
+		List<GeneralDate> data = this.getEntityManager()
+				.createQuery(GET_MAX_DATE_WORK_SCHE_BY_LIST_EMP, GeneralDate.class)
+				.setParameter("listEmp", listEmp)
+				.setMaxResults(1).getResultList();
+		if (data.isEmpty())
+			return Optional.empty();
+		return Optional.of(data.get(0));
 	}
 }

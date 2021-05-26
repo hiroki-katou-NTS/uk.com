@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.request.dom.application.applist.service;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -16,7 +15,7 @@ import javax.inject.Inject;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.util.Strings;
 
-import nts.arc.enums.EnumAdaptor;
+import nts.arc.error.BusinessException;
 import nts.arc.i18n.I18NText;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
@@ -24,23 +23,11 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
-import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.ApprovalDevice;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
-import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
 import nts.uk.ctx.at.request.dom.application.applist.extractcondition.AppListExtractCondition;
 import nts.uk.ctx.at.request.dom.application.applist.extractcondition.ApplicationListAtr;
 import nts.uk.ctx.at.request.dom.application.applist.service.datacreate.AppDataCreation;
-import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppAbsenceFull;
-import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppContentDetailCMM045;
-import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppDetailInfoRepository;
-import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppGoBackInfoFull;
-import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppHolidayWorkFull;
-import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppOverTimeInfoFull;
-import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppWorkChangeFull;
-import nts.uk.ctx.at.request.dom.application.applist.service.detail.ContentApp;
-import nts.uk.ctx.at.request.dom.application.applist.service.detail.ScreenAtr;
-import nts.uk.ctx.at.request.dom.application.applist.service.detail.WkTypeWkTime;
 import nts.uk.ctx.at.request.dom.application.applist.service.param.AppListInfo;
 import nts.uk.ctx.at.request.dom.application.applist.service.param.AppListInitOutput;
 import nts.uk.ctx.at.request.dom.application.applist.service.param.ListOfApplication;
@@ -52,7 +39,6 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.closure.PresentClosi
 import nts.uk.ctx.at.request.dom.application.common.adapter.closure.RqClosureAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.AgentAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootStateAdapter;
-import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.AgentDataRequestPubImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalBehaviorAtrImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalFrameImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseStateImport_New;
@@ -60,37 +46,13 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.Approve
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WkpInfo;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WorkPlaceHistBySIDImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WorkplaceAdapter;
-import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.ActualStatusCheckResult;
-import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.OvertimeColorCheck;
-import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.PreActualColorCheck;
-import nts.uk.ctx.at.request.dom.application.common.service.other.CollectAchievement;
-import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
-//import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementOutput;
-import nts.uk.ctx.at.request.dom.application.common.service.other.output.AppCompltLeaveSyncOutput;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeAppAtr;
-import nts.uk.ctx.at.request.dom.application.stamp.AppStampRepository_Old;
-import nts.uk.ctx.at.request.dom.application.stamp.AppStamp_Old;
 import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode;
-import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode_Old;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationcommonsetting.AppCommonSetRepository;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appovertime.OvertimeAppSet;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appovertime.OvertimeAppSetRepository;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.approvallistsetting.ApprovalListDisplaySetting;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.CalcStampMiss;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.OverrideSet;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.WithdrawalAppSet;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.WithdrawalAppSetRepository;
-import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispName;
-import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispNameRepository;
 import nts.uk.ctx.at.request.dom.setting.workplace.appuseset.ApplicationUseSetting;
 import nts.uk.ctx.at.request.dom.setting.workplace.requestbycompany.RequestByCompany;
 import nts.uk.ctx.at.request.dom.setting.workplace.requestbycompany.RequestByCompanyRepository;
 import nts.uk.ctx.at.request.dom.setting.workplace.requestbyworkplace.RequestByWorkplace;
 import nts.uk.ctx.at.request.dom.setting.workplace.requestbyworkplace.RequestByWorkplaceRepository;
-import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrame;
-import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameRepository;
-import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrame;
-import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
@@ -98,10 +60,6 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 //import nts.uk.ctx.at.shared.dom.workrule.closure.CurrentMonth;
 import nts.uk.ctx.at.shared.dom.workrule.closure.UseClassification;
-import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
-import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
-import nts.uk.ctx.at.shared.dom.worktype.WorkType;
-import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 /**
@@ -114,54 +72,36 @@ public class AppListInitialImpl implements AppListInitialRepository{
 
 	@Inject
 	private ClosureRepository repoClosure;
-	@Inject
-	private CollectAchievement collectAchievement;
-	@Inject
-	private AppStampRepository_Old repoAppStamp;
+	
 	@Inject
 	private RequestByWorkplaceRepository repoRequestWkp;
+	
 	@Inject
 	private RequestByCompanyRepository repoRequestCompany;
+	
 	@Inject
 	private ApplicationRepository repoApp;
+	
 	@Inject
 	private WorkplaceAdapter wkpAdapter;
-	@Inject
-	private AppCommonSetRepository repoAppCommonSet;
-	@Inject
-	private AppDispNameRepository repoAppDispName;
+	
 	@Inject
 	private ApprovalRootStateAdapter approvalRootStateAdapter;
-	@Inject
-	private AppDetailInfoRepository repoAppDetail;
+	
 	@Inject
 	private AgentAdapter agentAdapter;
-	@Inject
-	private OtherCommonAlgorithm otherCommonAlgorithm;
+	
 	@Inject
 	private ClosureEmploymentRepository closureEmpRepo;
+	
 	@Inject
 	private RqClosureAdapter closureAdapter;
+	
 	@Inject
 	private AtEmploymentAdapter employmentAdapter;
+	
 	@Inject
 	private SyEmployeeAdapter syEmpAdapter;
-	@Inject
-	private WorkTypeRepository repoWorkType;
-	@Inject
-	private WorkTimeSettingRepository repoworkTime;
-	@Inject
-	private AppContentDetailCMM045 contentDtail;
-	@Inject
-	private PreActualColorCheck preActualCheck;
-	@Inject
-	private WithdrawalAppSetRepository withdrawalAppSetRepo;
-	@Inject
-	private OvertimeAppSetRepository appOtSetRepo;
-	@Inject
-	private OvertimeWorkFrameRepository repoOverTimeFr;
-	@Inject
-	private WorkdayoffFrameRepository repoWork;
 	
 	@Inject
 	private AppDataCreation appDataCreation;
@@ -847,359 +787,6 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		return appStatus;
 	}
 
-	private boolean checkSync(List<AppCompltLeaveSync> lstSync, String appId) {
-		for (AppCompltLeaveSync appSync : lstSync) {
-			if (appSync.getAppMain().getAppID().equals(appId)) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	/**
-	 * 5 - 申請一覧リスト取得実績
-	 */
-	@Override
-	public AppListAtrOutput getAppListAchievement(List<ApplicationFullOutput> lstAppFull,
-			List<AppOverTimeInfoFull> lstAppOt, List<AppHolidayWorkFull> lstAppHdWork,
-			ApprovalListDisplaySetting displaySet, String companyId, String sIDLogin, List<AppCompltLeaveSync> lstSync,
-			List<WorkType> lstWkType, List<WorkTimeSetting> lstWkTime, int device) {
-		List<CheckColorTime> lstColorTime = new ArrayList<>();
-		List<AppPrePostGroup> lstAppGroup = new ArrayList<>();
-		// アルゴリズム「申請一覧リスト取得承認件数」を実行する(countAppListApproval): 4 - 申請一覧リスト取得承認件数
-		// AppInfoStatus appStatus = this.countAppListApproval(lstAppFull, sIDLogin, lstSync);
-		AppInfoStatus appStatus = null;
-		if (device == ApprovalDevice.MOBILE.value) {
-			return new AppListAtrOutput(appStatus.getLstAppFull(), appStatus.getCount(), lstColorTime, lstAppGroup);
-		}
-
-		List<ApplicationFullOutput> lstOtPost = lstAppFull.stream().filter(c -> c.getApplication().isAppOverTime())
-				.filter(c -> c.getApplication().getPrePostAtr().equals(PrePostAtr.POSTERIOR))
-				.collect(Collectors.toList());
-		List<ApplicationFullOutput> lstHdPost = lstAppFull.stream().filter(c -> c.getApplication().isAppHdWork())
-				.filter(c -> c.getApplication().getPrePostAtr().equals(PrePostAtr.POSTERIOR))
-				.collect(Collectors.toList());
-
-		// 事後申請で且申請種類が「残業申請」または「休出時間申請」の場合 (Xin sau của xin làm thêm hoặc làm ngày nghỉ)
-		// 残業申請の事後の場合
-		for (ApplicationFullOutput appPost : lstOtPost) {
-			// 承認一覧表示設定.残業の事前申請
-			String appID = appPost.getApplication().getAppID();
-			String sID = appPost.getApplication().getEmployeeID();
-			GeneralDate appDate = appPost.getApplication().getAppDate();
-			AppPrePostGroup group = null;
-			AppOverTimeInfoFull appOtPost = repoAppDetail.getAppOverTimeInfo(companyId, appID);
-			CheckColorTime checkColor = null;
-			AppOverTimeInfoFull appPre = null;
-			String reasonAppPre = "";
-//			if (displaySet.getOtAdvanceDisAtr().equals(DisplayAtr.DISPLAY)) {// 表示する
-//				//ドメインモデル「申請」を取得する
-//				//※2018/04/17
-//				//複数存在する場合は、最後に新規登録された内容を対象とする
-//				List<Application_New> lstAppPre = repoApp.getApp(sID, appDate, PrePostAtr.PREDICT.value,
-//						ApplicationType.OVER_TIME_APPLICATION.value);
-//				if (lstAppPre.isEmpty()) {
-//					checkColor = new CheckColorTime(appID, 1);
-//				} else {
-//					appPre = repoAppDetail.getAppOverTimeInfo(companyId, lstAppPre.get(0).getAppID());
-//					reasonAppPre = lstAppPre.get(0).getAppReason().v();
-//					if (lstAppPre.get(0).getReflectionInformation().getStateReflectionReal()
-//							.equals(ReflectedState_New.DENIAL)) {
-//						checkColor = new CheckColorTime(appID, 1);
-//					} else {
-//						boolean checkPrePostColor = this.checkPrePostColor(appPre.getLstFrame(),
-//								appOtPost.getLstFrame());
-//						if (checkPrePostColor) {
-//							checkColor = new CheckColorTime(appID, 1);
-//						}
-//					}
-//				}
-//				if (!lstAppPre.isEmpty()) {
-//					group = new AppPrePostGroup(false, lstAppPre.get(0).getAppID(), appID, null, "", "", "", "", appPre,
-//							reasonAppPre, null, null, null, "", "");
-//				}
-//			}
-//			// 承認一覧表示設定.残業の実績
-//			if (displaySet.getOtActualDisAtr().equals(DisplayAtr.DISPLAY)) {// 表示する
-//				// アルゴリズム「申請一覧リスト取得実績残業申請」を実行する-(5.2)
-//				List<OverTimeFrame> time = appOtPost.getLstFrame();
-//				List<OverTimeFrame> lstFrameRestTime = this.findRestTime(time);
-//				List<Integer> lstRestStart = new ArrayList<>();
-//				List<Integer> lstRestEnd = new ArrayList<>();
-//				for (OverTimeFrame restTime : lstFrameRestTime) {
-//					lstRestStart.add(restTime.getStartTime());
-//					lstRestEnd.add(restTime.getEndTime());
-//				}
-//				WkTypeWkTime wkT = this.findWkTOt(lstAppOt, appID);
-//				TimeResultOutput result = this.getDataActual(sID, appDate, time, ApplicationType.OVER_TIME_APPLICATION,
-//						wkT.getWkTypeCd(), wkT.getWkTimeCd(), lstWkType, lstWkTime);
-//				if (result.isCheckColor()) {
-//					if (this.checkExistColor(lstColorTime, appID)) {
-//						checkColor.setColorAtr(2);
-//					} else {
-//						checkColor = new CheckColorTime(appID, 2);
-//					}
-//				}
-//				if (group != null) {
-//					group.setDisplayRes(true);
-//					group.setTime(result.getLstFrameResult());
-//					group.setStrTime1(result.getStrTime1());
-//					group.setEndTime1(result.getEndTime1());
-//					group.setStrTime2(result.getStrTime2());
-//					group.setEndTime2(result.getEndTime2());
-//					group.setShiftNightTime(result.getShiftNightTime());
-//					group.setFlexTime(result.getFlexTime());
-//					// NOTE
-//				} else {
-//					group = new AppPrePostGroup(true, "", appID, result.getLstFrameResult(), result.getStrTime1(),
-//							result.getEndTime1(), result.getStrTime2(), result.getEndTime2(), appPre, reasonAppPre,
-//							null, result.getShiftNightTime(), result.getFlexTime(), "", "");
-//				}
-//			}
-			if (group != null) {
-				lstAppGroup.add(group);
-			}
-			if (checkColor != null) {
-				lstColorTime.add(checkColor);
-			}
-		}
-		//休出時間申請の事後の場合
-		for (ApplicationFullOutput appPost : lstHdPost) {
-			String appID = appPost.getApplication().getAppID();
-			String sID = appPost.getApplication().getEmployeeID();
-			GeneralDate appDate = appPost.getApplication().getAppDate();
-			AppPrePostGroup group = null;
-			AppHolidayWorkFull appHdPost = repoAppDetail.getAppHolidayWorkInfo(companyId, appID, lstWkType, lstWkTime);
-			CheckColorTime checkColor = null;
-			AppHolidayWorkFull appPre = null;
-			String reasonAppPre = "";
-			//承認一覧表示設定.休出の事前申請
-//			if (displaySet.getHwAdvanceDisAtr().equals(DisplayAtr.DISPLAY)) {// 表示する
-//				//ドメインモデル「申請」を取得する
-//				List<Application_New> lstAppPre = repoApp.getApp(sID, appDate, PrePostAtr.PREDICT.value,
-//						ApplicationType.HOLIDAY_WORK_APPLICATION.value);
-//				if (lstAppPre.isEmpty()) {
-//					checkColor = new CheckColorTime(appID, 1);
-//				} else {
-//					appPre = repoAppDetail.getAppHolidayWorkInfo(companyId, lstAppPre.get(0).getAppID(), lstWkType,
-//							lstWkTime);
-//					reasonAppPre = lstAppPre.get(0).getAppReason().v();
-//					if (lstAppPre.get(0).getReflectionInformation().getStateReflectionReal()
-//							.equals(ReflectedState_New.DENIAL)) {
-//						checkColor = new CheckColorTime(appID, 1);
-//					} else {
-//						boolean checkPrePostColor = this.checkPrePostColor(appPre.getLstFrame(),
-//								appHdPost.getLstFrame());
-//						if (checkPrePostColor) {
-//							checkColor = new CheckColorTime(appID, 1);
-//						}
-//					}
-//				}
-//				if (!lstAppPre.isEmpty()) {
-//					group = new AppPrePostGroup(false, lstAppPre.get(0).getAppID(), appID, null, "", "", "", "", null,
-//							reasonAppPre, appPre, null, null, "", "");
-//				}
-//			}
-//			//承認一覧表示設定.休出の実績
-//			if (displaySet.getHwActualDisAtr().equals(DisplayAtr.DISPLAY)) {//表示する
-//				//アルゴリズム「申請一覧リスト取得実績残業申請」を実行する-(5.2)
-//				List<OverTimeFrame> time = appHdPost.getLstFrame();
-//				WkTypeWkTime wkT = this.findWkTHd(lstAppHdWork, appID);
-//				TimeResultOutput result = this.getDataActual(sID, appDate, time, ApplicationType.HOLIDAY_WORK_APPLICATION,
-//						wkT.getWkTypeCd(), wkT.getWkTimeCd(), lstWkType, lstWkTime);
-//				if (result.isCheckColor()) {
-//					if (this.checkExistColor(lstColorTime, appID)) {
-//						checkColor.setColorAtr(2);
-//					} else {
-//						checkColor = new CheckColorTime(appID, 2);
-//					}
-//				}
-//				if (group != null) {
-//					group.setDisplayRes(true);
-//					group.setTime(result.getLstFrameResult());
-//					group.setStrTime1(result.getStrTime1());
-//					group.setEndTime1(result.getEndTime1());
-//					group.setStrTime2(result.getStrTime2());
-//					group.setEndTime2(result.getEndTime2());
-//					group.setWorkTypeName(result.getWorkTypeName());
-//					group.setWorkTimeName(result.getWorkTimeName());
-//				} else {
-//					group = new AppPrePostGroup(true, "", appID, result.getLstFrameResult(), result.getStrTime1(),
-//							result.getEndTime1(), result.getStrTime2(), result.getEndTime2(), null, reasonAppPre,
-//							appPre, null, null, result.getWorkTypeName(), result.getWorkTimeName());
-//				}
-//			}
-//			if (group != null) {
-//				lstAppGroup.add(group);
-//			}
-//			if (checkColor != null) {
-//				lstColorTime.add(checkColor);
-//			}
-		}
-		return new AppListAtrOutput(appStatus.getLstAppFull(), appStatus.getCount(), lstColorTime, lstAppGroup);
-	}
-
-	private List<OverTimeFrame> findRestTime(List<OverTimeFrame> lstFrame) {
-		List<OverTimeFrame> lstRestTime = new ArrayList<>();
-		for (OverTimeFrame frame : lstFrame) {
-			if (frame.getAttendanceType() == 0) {//休出時間 - RESTTIME
-				lstRestTime.add(frame);
-			}
-		}
-		return lstRestTime;
-	}
-
-	/**
-	 * 申請一覧リスト取得実績
-	 */
-	@Override
-	public TimeResultOutput getDataActual(String sID, GeneralDate date, List<OverTimeFrame> time,
-			ApplicationType appType, String wkTypeCd, String wkTimeCd, List<WorkType> lstWkType,
-			List<WorkTimeSetting> lstWkTime) {
-		OverrideSet overrideSet = OverrideSet.SYSTEM_TIME_PRIORITY;
-		Optional<CalcStampMiss> calStampMiss = Optional.empty();
-		if (appType.equals(ApplicationType.OVER_TIME_APPLICATION)) {
-			Optional<OvertimeAppSet> otSet = appOtSetRepo.findSettingByCompanyId(AppContexts.user().companyId());
-			overrideSet = otSet.isPresent() ? otSet.get().getOvertimeLeaveAppCommonSet().getOverrideSet() : overrideSet;
-		} else {
-			Optional<WithdrawalAppSet> hdSet = withdrawalAppSetRepo.getWithDraw();
-			overrideSet = hdSet.isPresent() ? hdSet.get().getOverrideSet() : overrideSet;
-			calStampMiss = hdSet.isPresent() ? Optional.of(hdSet.get().getCalStampMiss()) : calStampMiss;
-		}
-
-		//07-02_実績取得・状態チェック
-		ActualStatusCheckResult cal = preActualCheck.actualStatusCheck(AppContexts.user().companyId(), sID, date,
-				appType, wkTypeCd, wkTimeCd, overrideSet, calStampMiss, Collections.emptyList());
-
-		boolean checkColor = false;
-		List<OverTimeFrame> lstFrameResult = new ArrayList<>();
-
-		List<OvertimeColorCheck> actualLst = Collections.emptyList();
-		for (OverTimeFrame timeFrame : time) {
-			Integer actTime = this.findTimeRes(actualLst, timeFrame);
-			if (actTime == null || actTime < timeFrame.getApplicationTime()) {
-				checkColor = true;
-			}
-			OverTimeFrame frameRes = timeFrame;
-			frameRes.setApplicationTime(actTime);
-			lstFrameResult.add(frameRes);
-		}
-		if (lstFrameResult.size() < actualLst.size()) {// TH xin sau k co nhung thuc te co
-			for (OvertimeColorCheck act : actualLst) {
-				if (lstFrameResult.stream()
-						.filter(c -> c.getAttendanceType() == act.attendanceID && c.getFrameNo() == act.frameNo)
-						.collect(Collectors.toList()).size() == 0) {
-					String name = "";
-					if (act.frameNo == 11) {
-						name = I18NText.getText("CMM045_270");
-					} else if (act.frameNo == 12) {
-						name = I18NText.getText("CMM045_271");
-					} else {
-						if (act.attendanceID == 1) {//
-							List<OvertimeWorkFrame> lstFramOt = repoOverTimeFr.getOvertimeWorkFrameByFrameNos(
-									AppContexts.user().companyId(), Arrays.asList(act.frameNo));
-							name = !lstFramOt.isEmpty() ? lstFramOt.get(0).getOvertimeWorkFrName().v()
-									: act.frameNo + "マスタ未登録";
-						}
-						if (act.attendanceID == 2) {
-							List<WorkdayoffFrame> lstFramWork = repoWork
-									.getWorkdayoffFrameBy(AppContexts.user().companyId(), Arrays.asList(act.frameNo));
-							name = !lstFramWork.isEmpty() ? lstFramWork.get(0).getWorkdayoffFrName().v()
-									: act.frameNo + "マスタ未登録";
-						}
-					}
-					lstFrameResult.add(
-							new OverTimeFrame(act.attendanceID, act.frameNo, name, null, act.actualTime, null, null));
-				}
-			}
-		}
-		/** 就業時間外深夜 - 計算就業外深夜 */
-		Integer shiftNightTime = this.findTimeRes(actualLst, new OverTimeFrame(1, 11, "", null, null, null, null));
-		/** フレックス超過時間 - 計算フレックス */
-		Integer flexTime = this.findTimeRes(actualLst, new OverTimeFrame(1, 12, "", null, null, null, null));
-		;
-		String workTypeName = "";
-		String workTimeName = "";
-		if (appType.equals(ApplicationType.HOLIDAY_WORK_APPLICATION)) {
-			if (Strings.isNotBlank(cal.workType)) {
-				workTypeName = repoAppDetail.findWorkTypeName(lstWkType, cal.workType);
-			}
-			if (Strings.isNotBlank(cal.workTime)) {
-				workTimeName = repoAppDetail.findWorkTimeName(lstWkTime, cal.workTime);
-			}
-		}
-
-		return new TimeResultOutput(checkColor, lstFrameResult, repoAppDetail.convertTime(cal.startTime),
-				repoAppDetail.convertTime(cal.endTime), repoAppDetail.convertTime(null),
-				repoAppDetail.convertTime(null), shiftNightTime, flexTime, workTypeName, workTimeName);
-	}
-
-	private Integer findTimeRes(List<OvertimeColorCheck> actualLst, OverTimeFrame time) {
-		for (OvertimeColorCheck act : actualLst) {
-			if (act.attendanceID == time.getAttendanceType() && act.frameNo == time.getFrameNo()) {
-				return act.actualTime;
-			}
-		}
-		return null;
-	}
-
-	/**
-	 * 6 - 申請一覧リスト取得振休振出 wait SonLB - kaf011
-	 */
-	@Override
-	public AppCompltLeaveSyncOutput getListAppComplementLeave(Application_New application, String companyId) {
-		// TODO Auto-generated method stub
-		// Check 申請種類 - appType
-		if (!application.isAppCompltLeave()) {
-			return null;
-		}
-		String appId = application.getAppID();
-		AppCompltLeaveSyncOutput sync = otherCommonAlgorithm.getAppComplementLeaveSync(companyId, appId);
-		return sync;
-	}
-
-	/**
-	 * 7 - 申請一覧リスト取得打刻取消
-	 */
-	@Override
-	public Boolean getListAppStampIsCancel(Application_New application, String companyID) {
-		String applicantID = "";
-		// 申請種類-(Check AppType)
-		if (!application.getAppType().equals(ApplicationType.STAMP_APPLICATION)) {
-			return null;
-		}
-		// 打刻申請.打刻申請モード-(Check 打刻申請モード)
-		// get domain 打刻申請
-		AppStamp_Old stamp = repoAppStamp.findByAppID(companyID, application.getAppID());
-		if (!stamp.getStampRequestMode().equals(StampRequestMode_Old.STAMP_CANCEL)) {
-			return null;
-		}
-		// アルゴリズム「実績の取得」を実行する - 13/KAF
-		// AchievementOutput achievement =
-		collectAchievement.getAchievement(companyID, applicantID, application.getAppDate());
-		// アルゴリズム「勤務実績の取得」を実行する
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	/**
-	 * 8 - 申請一覧リスト取得休暇 wait - kaf006
-	 */
-	@Override
-	public List<Application_New> getListAppAbsence(Application_New application, String companyID) {
-		// 申請種類 - check app type
-		if (application.isAppAbsence()) {// 休暇申請以外の場合
-
-		}
-		// 休暇申請の場合
-		// String relationshipCd = "";
-		// TODO Auto-generated method stub
-		// imported(就業.Shared)「続柄」を取得する
-		// Optional<Relationship> relShip =
-		// repoRelationship.findByCode(companyID, relationshipCd);
-		return null;
-	}
-
 	/**
 	 * 9 - 申請一覧リスト取得マスタ情報
 	 */
@@ -1207,7 +794,6 @@ public class AppListInitialImpl implements AppListInitialRepository{
 	public AppInfoMasterOutput getListAppMasterInfo(Application application, DatePeriod period, NotUseAtr displayWorkPlaceName, 
 			Map<String, SyEmployeeImport> mapEmpInfo, Map<Pair<String, DatePeriod>, WkpInfo> mapWkpInfo, int device) {
 		SyEmployeeImport applicant = null;
-		Optional<SyEmployeeImport> opEnteredPerson = Optional.empty();
 		// 社員のキャッシュがあるかチェックする ( Check xem  cash của employee có hay không?
 		if(mapEmpInfo.containsKey(application.getEmployeeID())) {
 			// 申請一覧リスト.申請一覧リスト.社員名をキャッシュからセットする(applicationList. Set employee name from cache)
@@ -1215,15 +801,16 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		} else {
 			// アルゴリズム「社員IDから個人社員基本情報を取得」を実行する ( Thực hiện thuật toán 「社員IDから個人社員基本情報を取得」)
 			applicant = syEmpAdapter.getPersonInfor(application.getEmployeeID());
-			if(!application.getEmployeeID().equals(application.getEnteredPersonID())) {
-				// アルゴリズム「社員IDから個人社員基本情報を取得」を実行する ( Thực hiện thuật toán 「社員IDから個人社員基本情報を取得」
-				SyEmployeeImport enteredPerson = syEmpAdapter.getPersonInfor(application.getEnteredPersonID());
-				opEnteredPerson = Optional.of(enteredPerson);
-			}
 			// 取得したデータをキャッシュに追加 ( Thêm data đã lấy vào cache)
 			mapEmpInfo.put(application.getEmployeeID(), applicant);
-			if(opEnteredPerson.isPresent()) {
-				mapEmpInfo.put(application.getEnteredPersonID(), opEnteredPerson.get());
+		}
+		// 申請者ID　！＝　入力者IDの場合、入力者IDのキャッシュがあるかどうかをチェック
+		if(!application.getEmployeeID().equals(application.getEnteredPersonID())) {
+			if(!mapEmpInfo.containsKey(application.getEnteredPersonID())) {
+				// アルゴリズム「社員IDから個人社員基本情報を取得」を実行する ( Thực hiện thuật toán 「社員IDから個人社員基本情報を取得」
+				SyEmployeeImport enteredPerson = syEmpAdapter.getPersonInfor(application.getEnteredPersonID());
+				// 取得したデータをキャッシュに追加 ( Thêm data đã lấy vào cache)
+				mapEmpInfo.put(application.getEnteredPersonID(), enteredPerson);
 			}
 		}
 		String workplaceName = null;
@@ -1273,7 +860,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		result.setApplicantCD(applicant.getEmployeeCode());
 		// result.setAppReason
 		result.setInputDate(application.getInputDate());
-		result.setOpEntererName(opEnteredPerson.map(x -> x.getBusinessName()));
+		result.setOpEntererName(Optional.of(I18NText.getText("CMM045_230", mapEmpInfo.get(application.getEnteredPersonID()).getBusinessName())));
 		result.setOpAppStartDate(application.getOpAppStartDate().map(x -> x.getApplicationDate()));
 		result.setOpAppEndDate(application.getOpAppEndDate().map(x -> x.getApplicationDate()));
 		result.setAppDate(application.getAppDate().getApplicationDate());
@@ -1377,76 +964,18 @@ public class AppListInitialImpl implements AppListInitialRepository{
 //		return new DataMasterOutput(lstAppMasterInfo, lstSCD, mapAppBySCD);
 	}
 
-	//tim xem da tung di lay thong tin wkp cua nhan vien nay chua
-	private List<WkpInfo> findExitWkp(Map<String, List<WkpInfo>> mapWpkInfo, String sID) {
-		return mapWpkInfo.containsKey(sID) ? mapWpkInfo.get(sID) : null;
-	}
-
-	//tim tai thoi diem lam don nv do thuoc wkp nao
-	private WkpInfo findWpk(List<WkpInfo> lstWpkInfo, GeneralDate appDate) {
-		for (WkpInfo wpkHist : lstWpkInfo) {
-			if (wpkHist.getDatePeriod().start().beforeOrEquals(appDate)
-					&& wpkHist.getDatePeriod().end().afterOrEquals(appDate)) {
-				return wpkHist;
-			}
-		}
-		return null;
-	}
-
-	//tim ten hien thi loai don xin
-	private String findAppName(List<AppDispName> appDispName, ApplicationType appType) {
-		for (AppDispName appName : appDispName) {
-			if (appName.getAppType().value == appType.value) {
-				return appName.getDispName().v();
-			}
-		}
-		return "";
-	}
-
-	//tim ten nhan vien
-	private SyEmployeeImport findNamebySID(Map<String, SyEmployeeImport> mapEmpInfo, String sID) {
-		return mapEmpInfo.containsKey(sID) ? mapEmpInfo.get(sID) : null;
-	}
-
-	//find setting hien thi thoi gian overtime va absense
-	private Integer finSetByWpkIDAppType(Map<String, Integer> mapWpkSet, String wpk) {
-		return mapWpkSet.containsKey(wpk) ? mapWpkSet.get(wpk) : -1;
-	}
-
-	//ver14 + EA1360
-	//Bug #97415 - EA2161、2162
-	@Override
-	public int detailSet(String companyId, String wkpId, Integer appType, GeneralDate date) {
-//		//ドメイン「職場別申請承認設定」を取得する-(lấy dữ liệu domain Application approval setting by workplace)
-//		Optional<ApprovalFunctionSetting> appFuncSet = null;
-//		appFuncSet = repoRequestWkp.getFunctionSetting(companyId, wkpId, appType);
-//		if (appFuncSet.isPresent() && appFuncSet.get().getAppUseSetting().getUseDivision() == UseDivision.TO_USE) {
-//			return appFuncSet.get().getApplicationDetailSetting().get().getTimeCalUse().value;
-//		}
-//		//取得できなかった場合
-//		// <Imported>(就業）職場ID(リスト）を取得する - ※RequestList83-1
-//		List<String> lstWpkIDPr = wkpAdapter.getUpperWorkplaceRQ569(companyId, wkpId, date);
-//		if (lstWpkIDPr.size() > 1) {
-//			for (int i = 1; i < lstWpkIDPr.size(); i++) {
-//				//ドメイン「職場別申請承認設定」を取得する
-//				appFuncSet = repoRequestWkp.getFunctionSetting(companyId, lstWpkIDPr.get(i), appType);
-//				if (appFuncSet.isPresent() && appFuncSet.get().getAppUseSetting().getUseDivision() == UseDivision.TO_USE) {
-//					return appFuncSet.get().getApplicationDetailSetting().get().getTimeCalUse().value;
-//				}
-//			}
-//		}
-//		//ドメイン「会社別申請承認設定」を取得する-(lấy dữ liệu domain Application approval setting by company)
-//		appFuncSet = repoRequestCompany.getFunctionSetting(companyId, appType);
-//		return appFuncSet.isPresent() && appFuncSet.get().getAppUseSetting().getUseDivision() == UseDivision.TO_USE
-//				? appFuncSet.get().getApplicationDetailSetting().get().getTimeCalUse().value : 0;
-		return 0;
-	}
-
 	/**
 	 * 12 - 申請一覧初期日付期間
 	 */
 	@Override
 	public DatePeriod getInitialPeriod(String companyId) {
+		// imported(就業)「所属雇用履歴」より雇用コードを取得する
+		DatePeriod date = new DatePeriod(GeneralDate.today(), GeneralDate.today());
+		List<EmploymentHisImport> lst = employmentAdapter.findByListSidAndPeriod(AppContexts.user().employeeId(), date);
+		if(CollectionUtil.isEmpty(lst)) {
+			// #Msg_426を表示する
+			throw new BusinessException("Msg_426");
+		}
 		//ドメイン「締め」を取得する
 		List<Closure> lstClosure = repoClosure.findAllActive(companyId, UseClassification.UseClass_Use);
 		// list clourse hist 締め開始日
@@ -1477,6 +1006,10 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		//imported(就業)「所属雇用履歴」より雇用コードを取得する - request list 264
 		DatePeriod date = new DatePeriod(GeneralDate.today(), GeneralDate.today());
 		List<EmploymentHisImport> lst = employmentAdapter.findByListSidAndPeriod(AppContexts.user().employeeId(), date);
+		if(CollectionUtil.isEmpty(lst)) {
+			// #Msg_426を表示する
+			throw new BusinessException("Msg_426");
+		}
 		//imported（就業.shared）「雇用に紐づく就業締め」を取得する
 		Optional<ClosureEmployment> closureEmp = closureEmpRepo.findByEmploymentCD(companyId, lst.get(0).getEmploymentCode());
 		//アルゴリズム「処理年月と締め期間を取得する」を実行する
@@ -1522,746 +1055,6 @@ public class AppListInitialImpl implements AppListInitialRepository{
 			mapApprInfo = mapApprInfoByAppLst;
 		}
 		return mapApprInfo;
-	}
-
-	private PhaseFrameStatus check3(AppListExtractCondition param, ApplicationFullOutput appFull) {
-//		String sID = AppContexts.user().employeeId();
-//		ReflectedState_New state = appFull.getApplication().getReflectionInformation().getStateReflectionReal();
-//		List<PhaseFrameStatus> statusApr = this.findPhaseFrameStatus(appFull.getLstPhaseState(), sID);
-//		List<PhaseFrameStatus> statusOK = new ArrayList<>();
-//		for(PhaseFrameStatus status: statusApr) {
-//			boolean check = false;
-//			if (status.getFrameStatus() == null && status.getPhaseStatus() == null) {
-//				continue;
-//			}
-//			int phaseMin = this.phaseNotApprMax(appFull.getLstPhaseState());
-//			if (status.getPhaseOrder().intValue() < phaseMin) continue;
-//			
-//			// 申請一覧共通設定.承認状況＿未承認がチェックあり(True)の場合 - A4_1_1: check
-//			if (param.isUnapprovalStatus() && state.equals(ReflectedState_New.NOTREFLECTED)
-//					|| param.getAppDisplayAtr().equals(ApplicationDisplayAtr.APP_APPROVED)) {
-//				if (status.getPhaseStatus().equals(ApprovalBehaviorAtrImport_New.UNAPPROVED)
-//						&& status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.UNAPPROVED)) {
-//					check = true;
-//				}
-//			}
-//			// 申請一覧共通設定.承認状況＿承認がチェックあり(True)の場合 - A4_1_2: check
-//			if (param.isApprovalStatus()) {
-//				if ((state.equals(ReflectedState_New.NOTREFLECTED) || state.equals(ReflectedState_New.WAITREFLECTION)
-//						|| state.equals(ReflectedState_New.REFLECTED))
-//						&& ((status.getPhaseStatus().equals(ApprovalBehaviorAtrImport_New.UNAPPROVED)
-//								&& status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.APPROVED))
-//								|| (status.getPhaseStatus().equals(ApprovalBehaviorAtrImport_New.APPROVED)))) {
-//					check = true;
-//				}
-//			}
-//			// 申請一覧共通設定.承認状況＿否認がチェックあり(True)の場合 - A4_1_3: check
-//			if (param.isDenialStatus() && state.equals(ReflectedState_New.DENIAL)) {
-//				check = true;
-//			}
-//			// 申請一覧共通設定.承認状況＿代行承認済がチェックあり(True)の場合 - A4_1_4: check
-//			if (param.isAgentApprovalStatus() && (status.getPhaseStatus().equals(ApprovalBehaviorAtrImport_New.APPROVED)
-//					|| status.getPhaseStatus().equals(ApprovalBehaviorAtrImport_New.UNAPPROVED))) {
-//				// 承認フェーズ.承認区分 ＝ 未承認または承認済
-//				if (status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.APPROVED)
-//						&& Strings.isNotBlank(status.getAgentId()) && !status.getAgentId().equals(sID)) {
-//					check = true;
-//				}
-//	
-//			}
-//			// 申請一覧共通設定.承認状況＿差戻がチェックあり(True)の場合 - A4_1_5: check
-//			if (param.isRemandStatus() && state.equals(ReflectedState_New.NOTREFLECTED)) {
-//				if (status.getPhaseStatus().equals(ApprovalBehaviorAtrImport_New.REMAND)) {
-//					check = true;
-//				}
-//			}
-//			// 申請一覧共通設定.承認状況＿取消がチェックあり(True)の場合 - A4_1_6: check
-//			if (param.isCancelStatus()
-//					&& (state.equals(ReflectedState_New.CANCELED) || state.equals(ReflectedState_New.WAITCANCEL))) {// 反映状態.実績反映状態 ＝ 取消または取消待ち
-//				check = true;
-//			}
-//			if (check) {//条件 bo sung: phase truoc do phai duoc approval thi moi hien thi don
-//				statusOK.add(status);
-//			}
-//		}
-//		if(statusOK.isEmpty()) return null;
-//		if(statusOK.size() == 1) return statusOK.get(0);
-//		//TH 1ng nhieu phase
-//		return statusOK.get(statusOK.size() - 1);
-		return null;
-	}
-	/**
-	 * find status phase and frame
-	 * 
-	 * @param lstPhase
-	 * @param sID
-	 * @return
-	 */
-	private List<PhaseFrameStatus> findPhaseFrameStatus(List<ApprovalPhaseStateImport_New> lstPhase, String sID) {
-		List<PhaseFrameStatus> lstStt = new ArrayList<>();
-		Collections.sort(lstPhase, Comparator.comparing(ApprovalPhaseStateImport_New::getPhaseOrder).reversed());
-		for (ApprovalPhaseStateImport_New appPhase : lstPhase) {
-			FrameOutput frame = this.checkPhaseCurrent(appPhase, sID);
-			if (frame.getFrameStatus() != null) {
-				lstStt.add(new PhaseFrameStatus(appPhase.getPhaseOrder(), appPhase.getApprovalAtr(),
-						EnumAdaptor.valueOf(frame.getFrameStatus(), ApprovalBehaviorAtrImport_New.class),
-						frame.getAgentId()));
-			}
-		}
-		return lstStt;
-	}
-
-	/**
-	 * check phase current (login)
-	 * 
-	 * @param phase
-	 * @param sID
-	 * @return null: not phase
-	 * @return not null: phase current and status frame
-	 */
-	private FrameOutput checkPhaseCurrent(ApprovalPhaseStateImport_New phase, String sID) {
-		List<ApprovalFrameImport_New> lstFrame = phase.getListApprovalFrame();
-		FrameOutput statusFrame = new FrameOutput();
-		for (ApprovalFrameImport_New frame : lstFrame) {
-			List<ApproverStateImport_New> listApprover = frame.getListApprover();
-			for(ApproverStateImport_New appr : listApprover) {
-				if (appr.getApproverID().equals(sID)) {
-					statusFrame.setFrameStatus(appr.getApprovalAtr().value);
-					statusFrame.setAgentId(appr.getAgentID());
-					break;
-				}
-				// TH login la agent va da approval
-				if (appr.getAgentID() != null && appr.getAgentID().equals(sID)) {
-					statusFrame.setFrameStatus(appr.getApprovalAtr().value);
-					statusFrame.setAgentId(appr.getAgentID());
-					break;
-				}
-				// TH login la agent va chua approval
-				if (Strings.isNotBlank(appr.getRepresenterID()) 
-						&& appr.getApprovalAtr().equals(ApprovalBehaviorAtrImport_New.UNAPPROVED)) {
-					statusFrame.setFrameStatus(appr.getApprovalAtr().value);
-					statusFrame.setAgentId(appr.getRepresenterID());
-					break;
-				}
-			}
-		}
-		return statusFrame;
-	}
-
-	/**
-	 * calculate status of application
-	 * 
-	 * @param appStatus
-	 * @param status
-	 * @param agentId
-	 * @return
-	 */
-	private int calApplication(ReflectedState_New appStatus, PhaseFrameStatus status, String agentId, String sIdLogin) {
-		if (agentId != null) {// ※ログイン者 ＝代行者の場合
-			if (agentId.equals(sIdLogin)) {
-				return this.calAppAgent(appStatus, status);
-			}
-		}
-		// ※ログイン者 ＝承認者の場合
-		return this.calAppAproval(appStatus, status);
-	}
-
-	/**
-	 * calculate status TH ログイン者 ＝承認者の場合
-	 * 
-	 * @param appStatus
-	 * @param status
-	 * @return
-	 */
-	private int calAppAproval(ReflectedState_New appStatus, PhaseFrameStatus status) {
-		switch (appStatus.value) {
-		case 0:// APP: 未反映 - NOTREFLECTED
-			if (status.getPhaseStatus().equals(ApprovalBehaviorAtrImport_New.UNAPPROVED)) {//Phase: 未承認
-				if (status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.UNAPPROVED)) {//Frame: 未承認
-					return 5;
-				}
-				if (status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.APPROVED)) {//Frame: 承認済
-					return 4;
-				}
-				return 0;
-			}
-			if (status.getPhaseStatus().equals(ApprovalBehaviorAtrImport_New.REMAND)) {// 差し戻し
-				if (status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.UNAPPROVED)) {
-					return 2;
-				}
-				return 0;
-			}
-			if (status.getPhaseStatus().equals(ApprovalBehaviorAtrImport_New.APPROVED)) {//Phase: 承認済
-				if (status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.UNAPPROVED)
-						|| status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.APPROVED)) {//Frame: 未承認/承認済
-					return 4;
-				}
-				return 0;
-			}
-			return 0;
-		case 1:// APP: 反映待ち - WAITREFLECTION
-			if (status.getPhaseStatus().equals(ApprovalBehaviorAtrImport_New.APPROVED)) {//Phase: 承認済
-				if (status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.UNAPPROVED)
-						|| status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.APPROVED)) {//Frame: 未承認/承認済
-					return 4;
-				}
-				return 0;
-			}
-			return 0;
-		case 2:// APP: 反映済 - REFLECTED
-			if (status.getPhaseStatus().equals(ApprovalBehaviorAtrImport_New.APPROVED)) {//Phase: 承認済
-				if (status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.UNAPPROVED)
-						|| status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.APPROVED)) {//Frame: 未承認/承認済
-					return 4;
-				}
-				return 0;
-			}
-			return 0;
-		case 5:// APP: 差し戻し - REMAND
-			return 0;
-		case 6:// APP: 否認 - DENIAL
-			if (status.getPhaseStatus().equals(ApprovalBehaviorAtrImport_New.UNAPPROVED)) {//Phase: 未承認
-				if (status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.UNAPPROVED)
-						|| status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.APPROVED)
-						|| status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.DENIAL)) {//Frame: 未承認/承認済/否認
-					return 1;
-				}
-				return 0;
-			}
-			if (status.getPhaseStatus().equals(ApprovalBehaviorAtrImport_New.APPROVED)) {//Phase: 承認済
-				if (status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.UNAPPROVED)
-						|| status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.APPROVED)
-						|| status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.DENIAL)) {//Frame: 未承認/承認済/否認
-					return 1;
-				}
-				return 0;
-			}
-			if (status.getPhaseStatus().equals(ApprovalBehaviorAtrImport_New.DENIAL)) {//Phase: 否認
-				if (status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.UNAPPROVED)
-						|| status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.APPROVED)
-						|| status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.DENIAL)) {//Frame: 未承認/承認済/否認
-					return 1;
-				}
-				return 0;
-			}
-			return 0;
-		default:// APP: 取消待ち - WAITCANCEL/取消済 - CANCELED
-			if (status.getPhaseStatus().equals(ApprovalBehaviorAtrImport_New.UNAPPROVED)) {//Phase: 未承認
-				if (status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.UNAPPROVED)
-						|| status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.APPROVED)
-						|| status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.DENIAL)) {//Frame: 未承認/承認済/否認
-					return 3;
-				}
-				return 0;
-			}
-			if (status.getPhaseStatus().equals(ApprovalBehaviorAtrImport_New.APPROVED)) {//Phase: 承認済
-				if (status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.UNAPPROVED)
-						|| status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.APPROVED)
-						|| status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.DENIAL)) {//Frame: 未承認/承認済/否認
-					return 3;
-				}
-				return 0;
-			}
-			if (status.getPhaseStatus().equals(ApprovalBehaviorAtrImport_New.DENIAL)) {//Phase: 否認
-				if (status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.UNAPPROVED)
-						|| status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.APPROVED)
-						|| status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.DENIAL)) {//Frame: 未承認/承認済/否認
-					return 3;
-				}
-				return 0;
-			}
-			return 0;
-		}
-	}
-
-	/**
-	 * calculate status TH ログイン者 ＝代行者の場合
-	 * 
-	 * @param appStatus
-	 * @param status
-	 * @return
-	 */
-	private int calAppAgent(ReflectedState_New appStatus, PhaseFrameStatus status) {
-		switch (appStatus.value) {
-		case 0://APP: 未反映 - NOTREFLECTED
-				//Phase: 未承認
-			if (status.getPhaseStatus().equals(ApprovalBehaviorAtrImport_New.UNAPPROVED)) {
-				if (status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.UNAPPROVED)) {//Frame: 未承認
-					return 5;
-				}
-				if (status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.APPROVED)) {//Frame: 承認済
-					return 4;
-				}
-				return 0;
-			}
-			//差し戻し
-			if (status.getPhaseStatus().equals(ApprovalBehaviorAtrImport_New.REMAND)) {
-				if (status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.UNAPPROVED)) {
-					return 2;
-				}
-				return 0;
-			}
-			//Phase: 承認済
-			if (status.getPhaseStatus().equals(ApprovalBehaviorAtrImport_New.APPROVED)) {
-				if (status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.APPROVED)) {//Frame: 承認済
-					return 4;
-				}
-				return 0;
-			}
-			return 0;
-		case 1://APP: 反映待ち - WAITREFLECTION
-				//Phase: 承認済
-			if (status.getPhaseStatus().equals(ApprovalBehaviorAtrImport_New.APPROVED)) {
-				if (status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.APPROVED)) {//Frame: 承認済
-					return 4;
-				}
-				return 0;
-			}
-			return 0;
-		case 2://APP: 反映済 - REFLECTED
-				//Phase: 承認済
-			if (status.getPhaseStatus().equals(ApprovalBehaviorAtrImport_New.APPROVED)) {
-				if (status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.APPROVED)) {// Frame: 承認済
-					return 4;
-				}
-				return 0;
-			}
-			return 0;
-		case 5://APP: 差し戻し - REMAND
-			return 0;
-		case 6://APP: 否認 - DENIAL
-				//Phase: 未承認
-			if (status.getPhaseStatus().equals(ApprovalBehaviorAtrImport_New.UNAPPROVED)) {
-				if (status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.APPROVED)
-						|| status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.DENIAL)) {//Frame: 承認済/否認
-					return 1;
-				}
-				return 0;
-			}
-			//Phase: 承認済
-			if (status.getPhaseStatus().equals(ApprovalBehaviorAtrImport_New.APPROVED)) {
-				if (status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.APPROVED)
-						|| status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.DENIAL)) {//Frame: 承認済/否認
-					return 1;
-				}
-				return 0;
-			}
-			//Phase: 否認
-			if (status.getPhaseStatus().equals(ApprovalBehaviorAtrImport_New.DENIAL)) {
-				if (status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.APPROVED)
-						|| status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.DENIAL)) {//Frame: 承認済/否認
-					return 1;
-				}
-				return 0;
-			}
-			return 0;
-		default://APP: 取消待ち - WAITCANCEL/取消済 - CANCELED
-			//Phase: 未承認
-			if (status.getPhaseStatus().equals(ApprovalBehaviorAtrImport_New.UNAPPROVED)) {
-				if (status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.APPROVED)
-						|| status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.DENIAL)) {//Frame: 承認済/否認
-					return 3;
-				}
-				return 0;
-			}
-			//Phase: 承認済
-			if (status.getPhaseStatus().equals(ApprovalBehaviorAtrImport_New.APPROVED)) {
-				if (status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.APPROVED)
-						|| status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.DENIAL)) {//Frame: 承認済/否認
-					return 3;
-				}
-				return 0;
-			}
-			//Phase: 否認
-			if (status.getPhaseStatus().equals(ApprovalBehaviorAtrImport_New.DENIAL)) {
-				if (status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.APPROVED)
-						|| status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.DENIAL)) {//Frame: 承認済/否認
-					return 3;
-				}
-				return 0;
-			}
-			return 0;
-		}
-	}
-
-	/**
-	 * 条件１： ログイン者の表示対象の基本条件 (filter application by conditions 1)
-	 * 
-	 * @param app
-	 * @return
-	 */
-	private ApproverStt filterConditions1(ApplicationFullOutput app, List<AgentDataRequestPubImport> lstAgent,
-			String sID) {
-		//dk1
-		List<ApprovalPhaseStateImport_New> lstPhase = app.getLstPhaseState();
-		ApproverStt check = new ApproverStt(false, null);
-		for (ApprovalPhaseStateImport_New appPhase : lstPhase) {
-			for (ApprovalFrameImport_New frame : appPhase.getListApprovalFrame()) {
-				List<ApproverStateImport_New> listApprover = frame.getListApprover();
-				int approverCount = frame.getListApprover().size();
-				for(ApproverStateImport_New appr : listApprover) {
-					//承認枠.承認区分!=未承認
-					if (!appr.getApprovalAtr().equals(ApprovalBehaviorAtrImport_New.UNAPPROVED)) {
-						if (this.checkDifNotAppv(appr, sID)) {
-							check = new ApproverStt(true, null);
-							break;
-						}
-					} else {//承認枠.承認区分 = 未承認
-						ApproverStt checkNotAppv = this.checkNotAppv(appr, lstAgent, appPhase.getApprovalAtr(),
-								app.getApplication(), sID, approverCount);
-						if (checkNotAppv.isCheck()) {
-							check = new ApproverStt(true, checkNotAppv.getApprId());
-							;
-							break;
-						}
-					}
-				}
-			}
-
-		}
-		return check;
-	}
-
-	/**
-	 * 承認枠.承認区分!=未承認
-	 * 
-	 * @param frame
-	 * @return
-	 */
-	private boolean checkDifNotAppv(ApproverStateImport_New approver, String sID) {
-		if (approver.getApproverID().equals(sID)) {
-			return true;
-		}
-		if (Strings.isNotBlank(approver.getAgentID()) && approver.getAgentID().equals(sID)) {
-			return true;
-		}
-		return false;
-	}
-
-	/**
-	 * 承認枠.承認区分 = 未承認
-	 * 
-	 * @param frame
-	 * @return
-	 */
-	private ApproverStt checkNotAppv(ApproverStateImport_New appr, List<AgentDataRequestPubImport> lstAgent,
-			ApprovalBehaviorAtrImport_New phaseAtr, Application_New app, String sID, int frameCount) {
-		//※前提条件：「申請.反映情報 ＝ 未反映」且 「自身の承認フェーズ ＝ 未承認/差し戻し」の場合
-//		if (frameCount <= 1
-//				&& (!app.getReflectionInformation().getStateReflectionReal().equals(ReflectedState_New.NOTREFLECTED)
-//						|| (!phaseAtr.equals(ApprovalBehaviorAtrImport_New.UNAPPROVED)
-//								&& !phaseAtr.equals(ApprovalBehaviorAtrImport_New.REMAND)))) {
-//			return new ApproverStt(false, null);
-//		}
-		//１．承認予定者より取得（自身が承認する申請）
-		if (appr.getApproverID().equals(sID)) {//承認枠.承認者リスト(複数ID) ＝ ログイン者社員ID
-			return new ApproverStt(true, null);
-		}
-		//２．取得したドメイン「代行者管理」より代理者指定されている場合は取得
-		//申請.申請日付 ＝ 代行者管理：代行承認.代行依頼期間 &&承認枠.承認者リスト（複数ID）＝ 代行者管理：代行承認.代行依頼者
-		List<String> lstId = new ArrayList<>();
-		String idAppr = null;
-		for (AgentDataRequestPubImport agent : lstAgent) {
-			//2019/05/14 EA修正履歴 No.3436 #107724
-			if (appr.getApproverID().equals(agent.getEmployeeId())) {
-				lstId.add(agent.getAgentSid1());
-				idAppr = agent.getEmployeeId();
-			}
-		}
-		if (lstId.contains(sID)) {//代行承認.承認代行者 ＝ ログイン者社員ID
-			return new ApproverStt(true, idAppr);
-		}
-		return new ApproverStt(false, null);
-	}
-
-	/**
-	 * convert status phase －：承認フェーズ.承認区分 ＝ 未承認 〇：承認フェーズ.承認区分 ＝ 承認済
-	 * ×：承認フェーズ.承認区分 ＝ 否認
-	 * 
-	 * @param appId
-	 * @param lstPhaseState
-	 * @return
-	 */
-	private PhaseStatus convertStatusPhase(String appId, List<ApprovalPhaseStateImport_New> lstPhaseState) {
-		String phaseStatus = "";
-		List<Integer> lstPhaseAtr = new ArrayList<>();
-		for (int i = 1; i <= 5; i++) {
-			String phaseI = "";
-			Integer status = this.findPhaseStatus(lstPhaseState, i);
-			lstPhaseAtr.add(status);
-			if (status != null) {//phase exist
-				phaseI = status == 1 ? "〇" : status == 2 ? "×" : "－";
-			}
-			phaseStatus += phaseI;
-		}
-		return new PhaseStatus(appId, phaseStatus, lstPhaseAtr);
-	}
-
-	/**
-	 * find phase status
-	 * 
-	 * @param lstPhaseState
-	 * @param order
-	 * @return
-	 */
-	private Integer findPhaseStatus(List<ApprovalPhaseStateImport_New> lstPhaseState, int order) {
-		for (ApprovalPhaseStateImport_New phase : lstPhaseState) {
-			if (phase.getPhaseOrder().equals(order)) {
-				return phase.getApprovalAtr().value;
-			}
-		}
-		return null;
-	}
-
-	/**
-	 * check color application exist list check???
-	 * 
-	 * @param lstColor
-	 * @param appId
-	 * @return
-	 */
-	private boolean checkExistColor(List<CheckColorTime> lstColor, String appId) {
-		for (CheckColorTime checkColorTime : lstColor) {
-			if (checkColorTime.getAppID().equals(appId)) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	/**
-	 * check time pr < time post
-	 * 
-	 * @param timePre
-	 * @param timePost
-	 * @return true : error -> fill color
-	 */
-	private boolean checkPrePostColor(List<OverTimeFrame> timePre, List<OverTimeFrame> timePost) {
-		//loop by frame post
-		for (OverTimeFrame overTimeFrame : timePost) {
-			//frame pre
-			Integer checkColor = this.findTimePre(timePre, overTimeFrame.getFrameNo());
-			if (checkColor == null) {
-				return overTimeFrame == null ? false : true;
-			}
-			if (overTimeFrame.getApplicationTime() == null) {
-				return false;
-			}
-			if (overTimeFrame.getApplicationTime() < checkColor) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	/**
-	 * find time application pre
-	 * 
-	 * @param lstFrame
-	 * @param frameNo
-	 * @return
-	 */
-	private Integer findTimePre(List<OverTimeFrame> lstFrame, int frameNo) {
-		for (OverTimeFrame overTimeFrame : lstFrame) {
-			if (overTimeFrame.getFrameNo() == frameNo) {
-				return overTimeFrame.getApplicationTime();
-			}
-		}
-		return null;
-	}
-
-	private CheckExitSync checkExitSync(List<Application_New> lstCompltLeave, String appId) {
-		for (Application_New app : lstCompltLeave) {
-			if (app.getAppID().equals(appId)) {
-				return new CheckExitSync(true, app.getAppDate(), app.getInputDate());
-			}
-		}
-		return new CheckExitSync(false, null, null);
-	}
-
-	private List<ContentApp> crateContentApp(List<Application_New> lstApp, ApplicationListAtr appMode,
-			int appReasonDisAtr, List<AppOverTimeInfoFull> lstAppOt, List<AppAbsenceFull> lstAppAbsebce,
-			List<AppWorkChangeFull> lstAppWkChange, List<AppGoBackInfoFull> lstAppGoBack,
-			List<AppHolidayWorkFull> ldtAppHdWork, List<AppCompltLeaveSync> lstAppComplt,
-			List<AppPrePostGroup> lstSubData, List<AppMasterInfo> lstMaster, List<WorkType> lstWkType,
-			List<WorkTimeSetting> lstWkTime) {
-		String companyID = AppContexts.user().companyId();
-		List<ContentApp> lstContentApp = new ArrayList<>();
-		for (Application_New app : lstApp) {
-			String appID = app.getAppID();
-			String content = "";
-			String appReason = app.getAppReason() != null ? app.getAppReason().v() : "";
-			switch (app.getAppType()) {
-			case OVER_TIME_APPLICATION: {//残業申請
-				int detailSet = this.finddetailSet(lstMaster, appID);
-				AppOverTimeInfoFull overTime = this.find005(lstAppOt, appID);
-				AppPrePostGroup subData = this.findSubData(lstSubData, appID);
-				if (appMode.equals(ApplicationListAtr.APPROVER) && app.getPrePostAtr().equals(PrePostAtr.POSTERIOR)) {//承認モード(事後)
-					content = contentDtail.getContentOverTimeAf(overTime, detailSet, appReasonDisAtr, appReason,
-							subData);
-				} else {
-					content = contentDtail.getContentOverTimeBf(overTime, companyID, appID, detailSet, appReasonDisAtr,
-							appReason, ScreenAtr.CMM045.value);
-				}
-				break;
-			}
-			case ABSENCE_APPLICATION: {//休暇申請
-				Integer day = 0;
-				if (app.getStartDate().isPresent() && app.getEndDate().isPresent()) {
-					day = app.getStartDate().get().daysTo(app.getEndDate().get()) + 1;
-				}
-				AppAbsenceFull absence = this.find006(lstAppAbsebce, appID);
-				content = contentDtail.getContentAbsence(absence, companyID, appID, appReasonDisAtr, appReason, day,
-						ScreenAtr.CMM045.value, lstWkType, lstWkTime);
-				break;
-			}
-			case WORK_CHANGE_APPLICATION: {//勤務変更申請
-				AppWorkChangeFull wkChange = this.find007(lstAppWkChange, appID);
-//				content = contentDtail.getContentWorkChange(wkChange, companyID, appID, appReasonDisAtr, appReason,
-//						ScreenAtr.CMM045.value, lstWkType, lstWkTime);
-				content = "";
-				break;
-			}
-			case GO_RETURN_DIRECTLY_APPLICATION: {//直行直帰申請
-				AppGoBackInfoFull goBack = this.find009(lstAppGoBack, appID);
-//				content = contentDtail.getContentGoBack(goBack, companyID, appID, appReasonDisAtr, appReason,
-//						ScreenAtr.CMM045.value);
-				content = "";
-				break;
-			}
-			case HOLIDAY_WORK_APPLICATION: {//休出時間申請
-				AppHolidayWorkFull hdWork = this.find010(ldtAppHdWork, appID);
-				AppPrePostGroup subData = this.findSubData(lstSubData, appID);
-				if (appMode.equals(ApplicationListAtr.APPROVER) && app.getPrePostAtr().equals(PrePostAtr.POSTERIOR)) {//承認モード(事後)
-					content = contentDtail.getContentHdWorkAf(hdWork, appReasonDisAtr, appReason, subData);
-				} else {
-					content = contentDtail.getContentHdWorkBf(hdWork, companyID, appID, appReasonDisAtr, appReason,
-							ScreenAtr.CMM045.value, lstWkType, lstWkTime);
-				}
-				break;
-			}
-			case COMPLEMENT_LEAVE_APPLICATION: {//振休振出申請
-				AppCompltLeaveSync complt = this.find011(lstAppComplt, appID);
-				content = contentDtail.getContentComplt(complt, companyID, appID, appReasonDisAtr, appReason,
-						ScreenAtr.CMM045.value, lstWkType);
-				break;
-			}
-			default:
-				content = "";
-				break;
-			}
-			lstContentApp.add(new ContentApp(appID, content));
-		}
-		return lstContentApp;
-	}
-
-	private AppOverTimeInfoFull find005(List<AppOverTimeInfoFull> lstAppOt, String appID) {
-		for (AppOverTimeInfoFull app : lstAppOt) {
-			if (app.getAppID().equals(appID)) {
-				return app;
-			}
-		}
-		return null;
-	}
-
-	private AppAbsenceFull find006(List<AppAbsenceFull> lstAppAbsebce, String appID) {
-		for (AppAbsenceFull app : lstAppAbsebce) {
-			if (app.getAppID().equals(appID)) {
-				return app;
-			}
-		}
-		return null;
-	}
-
-	private AppWorkChangeFull find007(List<AppWorkChangeFull> lstAppWkChange, String appID) {
-		for (AppWorkChangeFull app : lstAppWkChange) {
-			if (app.getAppId().equals(appID)) {
-				return app;
-			}
-		}
-		return null;
-	}
-
-	private AppGoBackInfoFull find009(List<AppGoBackInfoFull> lstAppGoBack, String appID) {
-		for (AppGoBackInfoFull app : lstAppGoBack) {
-			if (app.getAppID().equals(appID)) {
-				return app;
-			}
-		}
-		return null;
-	}
-
-	private AppHolidayWorkFull find010(List<AppHolidayWorkFull> ldtAppHdWork, String appID) {
-		for (AppHolidayWorkFull app : ldtAppHdWork) {
-			if (app.getAppId().equals(appID)) {
-				return app;
-			}
-		}
-		return null;
-	}
-
-	private AppCompltLeaveSync find011(List<AppCompltLeaveSync> lstAppComplt, String appID) {
-		for (AppCompltLeaveSync app : lstAppComplt) {
-			if (app.getAppMain().getAppID().equals(appID)) {
-				return app;
-			}
-		}
-		return null;
-	}
-
-	private AppPrePostGroup findSubData(List<AppPrePostGroup> lstSubData, String appID) {
-		for (AppPrePostGroup app : lstSubData) {
-			if (app.getPostAppID().equals(appID)) {
-				return app;
-			}
-		}
-		return null;
-	}
-
-	private int finddetailSet(List<AppMasterInfo> lstMaster, String appID) {
-		for (AppMasterInfo app : lstMaster) {
-			if (app.getAppID() == appID) {
-				return app.getDetailSet().intValue();
-			}
-		}
-		return 0;
-	}
-
-	private int phaseNotApprMax(List<ApprovalPhaseStateImport_New> lstPhase) {
-		//SX: Ph5-4-3-2-1
-		Collections.sort(lstPhase, Comparator.comparing(ApprovalPhaseStateImport_New::getPhaseOrder).reversed());
-		int phaseApprMin = 0;
-		int phaseNotAppr = lstPhase.get(0).getPhaseOrder();//phmax (5)
-		//TH PhMax chua appr
-		if (lstPhase.get(0).getApprovalAtr().equals(ApprovalBehaviorAtrImport_New.UNAPPROVED)) return phaseNotAppr;
-		//check tung ph
-		for (ApprovalPhaseStateImport_New phase : lstPhase) {
-			if (phase.getApprovalAtr().equals(ApprovalBehaviorAtrImport_New.APPROVED)) {
-				phaseApprMin = phase.getPhaseOrder().intValue();
-			} else {
-				if (phaseNotAppr >= phaseApprMin)
-					phaseNotAppr = phase.getPhaseOrder().intValue();
-			}
-		}
-		if (phaseApprMin == lstPhase.get(lstPhase.size() - 1).getPhaseOrder())
-			phaseNotAppr = phaseApprMin;
-		return phaseNotAppr;
-	}
-
-	private WkTypeWkTime findWkTOt(List<AppOverTimeInfoFull> lstApp, String appId) {
-		for (AppOverTimeInfoFull app : lstApp) {
-			if (app.getAppID().equals(appId))
-				return app.getWkT();
-		}
-		return new WkTypeWkTime(null, null);
-	}
-
-	private WkTypeWkTime findWkTHd(List<AppHolidayWorkFull> lstApp, String appId) {
-		for (AppHolidayWorkFull app : lstApp) {
-			if (app.getAppId().equals(appId))
-				return app.getWkT();
-		}
-		return new WkTypeWkTime(null, null);
 	}
 	
 	@Override

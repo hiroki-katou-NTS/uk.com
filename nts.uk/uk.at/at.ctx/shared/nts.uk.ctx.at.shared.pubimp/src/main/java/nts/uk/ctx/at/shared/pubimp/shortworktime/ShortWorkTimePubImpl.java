@@ -15,17 +15,16 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.shortworktime.SWorkTimeHistItemRepository;
 import nts.uk.ctx.at.shared.dom.shortworktime.SWorkTimeHistoryRepository;
 import nts.uk.ctx.at.shared.dom.shortworktime.ShortWorkTimeHistory;
 import nts.uk.ctx.at.shared.dom.shortworktime.ShortWorkTimeHistoryItem;
-import nts.uk.ctx.at.shared.pub.shortworktime.ChildCareAtr;
 import nts.uk.ctx.at.shared.pub.shortworktime.ShShortChildCareFrameExport;
 import nts.uk.ctx.at.shared.pub.shortworktime.ShShortWorkTimeExport;
 import nts.uk.ctx.at.shared.pub.shortworktime.ShShortWorkTimePub;
 import nts.uk.shr.com.history.DateHistoryItem;
-import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * The Class ShortWorkTimePubImpl.
@@ -70,7 +69,7 @@ public class ShortWorkTimePubImpl implements ShShortWorkTimePub {
 		return Optional.of(ShShortWorkTimeExport.builder()
 				.employeeId(workTimeHist.getEmployeeId())
 				.period(workTimeHist.getHistoryItems().get(0).span())
-				.childCareAtr(ChildCareAtr.valueOf(workTimeHistItem.getChildCareAtr().value))
+				.childCareAtr(workTimeHistItem.getChildCareAtr().value)
 				.lstTimeSlot(workTimeHistItem.getLstTimeSlot().stream()
 						.map(item -> {
 							return ShShortChildCareFrameExport.builder()
@@ -126,7 +125,7 @@ public class ShortWorkTimePubImpl implements ShShortWorkTimePub {
 					.get(workTimeHist.getHistoryItems().get(0).identifier());
 			return ShShortWorkTimeExport.builder().employeeId(workTimeHist.getEmployeeId())
 					.period(workTimeHist.getHistoryItems().get(0).span())
-					.childCareAtr(ChildCareAtr.valueOf(workTimeHistItem.getChildCareAtr().value))
+					.childCareAtr(workTimeHistItem.getChildCareAtr().value)
 					.lstTimeSlot(workTimeHistItem.getLstTimeSlot().stream().map(item -> {
 						return ShShortChildCareFrameExport.builder().timeSlot(item.getTimeSlot())
 								.startTime(item.getStartTime()).endTime(item.getEndTime()).build();

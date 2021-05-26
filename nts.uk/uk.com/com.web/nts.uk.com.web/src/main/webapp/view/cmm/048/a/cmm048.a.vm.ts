@@ -35,17 +35,8 @@ module nts.uk.com.view.cmm048.a {
     empContactMobileMailAddr: KnockoutObservable<string> = ko.observable('');
     psContactMailAddr: KnockoutObservable<string> = ko.observable('');
     psContactMobileMailAddr: KnockoutObservable<string> = ko.observable('');
+
     ////A9
-    empContactPhoneDisp: KnockoutObservable<boolean> = ko.observable(true);
-    psContactPhoneDisp: KnockoutObservable<boolean> = ko.observable(true);
-    psContactEmergencyContact1Disp: KnockoutObservable<boolean> = ko.observable(true);
-    psContactEmergencyContact2Disp: KnockoutObservable<boolean> = ko.observable(true);
-    empContactSeatDialInDisp: KnockoutObservable<boolean> = ko.observable(true);
-    empContactSeatExtensionNumDisp: KnockoutObservable<boolean> = ko.observable(true);
-    empContactMailAddrDisp: KnockoutObservable<boolean> = ko.observable(true);
-    empContactMobileMailAddrDisp: KnockoutObservable<boolean> = ko.observable(true);
-    psContactMailAddrDisp: KnockoutObservable<boolean> = ko.observable(true);
-    psContactMobileEmailAddrDisp: KnockoutObservable<boolean> = ko.observable(true);
     ListOtherContact: KnockoutObservableArray<OtherContactViewModel> = ko.observableArray([]);
 
     //B
@@ -74,7 +65,7 @@ module nts.uk.com.view.cmm048.a {
       new ItemCbxModel({ code: REMIND_DATE.BEFORE_SEVEN_DAY, name: this.$i18n('Enum_NoticeDay_BEFORE_SEVEN_DAY') })
     ]);
     listAnniversary: KnockoutObservableArray<AnniversaryNotificationViewModel> = ko.observableArray([]);
-
+    monthDaysName: KnockoutObservable<string> = ko.observable(this.$i18n('CMM048_58'));
     //D
     language: KnockoutObservable<number> = ko.observable(0);
     languageOptions: KnockoutObservableArray<ItemCbxModel> = ko.observableArray([
@@ -105,18 +96,6 @@ module nts.uk.com.view.cmm048.a {
     cMobileEmailAddrUpdateable: KnockoutObservable<boolean> = ko.observable(false);
     psMobileEmailAddrUseable: KnockoutObservable<boolean> = ko.observable(false);
     psMobileEmailAddrUpdateable: KnockoutObservable<boolean> = ko.observable(false);
-    cPhoneCheckable: KnockoutObservable<boolean> = ko.observable(false);
-    psPhoneCheckable: KnockoutObservable<boolean> = ko.observable(false);
-    emergencyNum1Checkable: KnockoutObservable<boolean> = ko.observable(false);
-    emergencyNum2Checkable: KnockoutObservable<boolean> = ko.observable(false);
-    dialInNumCheckable: KnockoutObservable<boolean> = ko.observable(false);
-    extensionNumCheckable: KnockoutObservable<boolean> = ko.observable(false);
-    cEmailAddrCheckable: KnockoutObservable<boolean> = ko.observable(false);
-    psEmailAddrCheckable: KnockoutObservable<boolean> = ko.observable(false);
-    cMobileEmailAddrCheckable: KnockoutObservable<boolean> = ko.observable(false);
-    psMobileEmailAddrCheckable: KnockoutObservable<boolean> = ko.observable(false);
-
-
 
     //general
     tabs: KnockoutObservableArray<any> = ko.observableArray([{
@@ -154,20 +133,20 @@ module nts.uk.com.view.cmm048.a {
     personId: KnockoutObservable<string> = ko.observable('');
 
     //#113902
-     isUseOfProfile: KnockoutObservable<boolean> = ko.observable(false);
-     isUseOfPassword: KnockoutObservable<boolean> = ko.observable(false);
-     isUseOfNotice: KnockoutObservable<boolean> = ko.observable(false);
-     isUseOfLanguage: KnockoutObservable<boolean> = ko.observable(false);
+    isUseOfProfile: KnockoutObservable<boolean> = ko.observable(false);
+    isUseOfPassword: KnockoutObservable<boolean> = ko.observable(false);
+    isUseOfNotice: KnockoutObservable<boolean> = ko.observable(false);
+    isUseOfLanguage: KnockoutObservable<boolean> = ko.observable(false);
 
-     //#113841
-     passwordPolicyVisible: KnockoutObservable<boolean> = ko.observable(false);
-     passPolicyLowestDigitsVisible: KnockoutObservable<boolean> = ko.observable(false);
-     passPolicyDigitVisible: KnockoutObservable<boolean> = ko.observable(false);
-     passPolicyAlphabetDigitVisible: KnockoutObservable<boolean> = ko.observable(false);
-     passPolicyNumberOfDigitsVisible: KnockoutObservable<boolean> = ko.observable(false);
-     passPolicySymbolCharactersVisible: KnockoutObservable<boolean> = ko.observable(true);
-     passPolicyHistoryCountVisible: KnockoutObservable<boolean> = ko.observable(false);
-     passPolicyValidityPeriodVisible: KnockoutObservable<boolean> = ko.observable(false);
+    //#113841
+    passwordPolicyVisible: KnockoutObservable<boolean> = ko.observable(false);
+    passPolicyLowestDigitsVisible: KnockoutObservable<boolean> = ko.observable(false);
+    passPolicyDigitVisible: KnockoutObservable<boolean> = ko.observable(false);
+    passPolicyAlphabetDigitVisible: KnockoutObservable<boolean> = ko.observable(false);
+    passPolicyNumberOfDigitsVisible: KnockoutObservable<boolean> = ko.observable(false);
+    passPolicySymbolCharactersVisible: KnockoutObservable<boolean> = ko.observable(true);
+    passPolicyHistoryCountVisible: KnockoutObservable<boolean> = ko.observable(false);
+    passPolicyValidityPeriodVisible: KnockoutObservable<boolean> = ko.observable(false);
 
     mounted() {
       const vm = this;
@@ -214,17 +193,6 @@ module nts.uk.com.view.cmm048.a {
 
       //set list other contact
       vm.setListOtherContact(data);
-
-      vm.empContactPhoneDisp(data.employeeContact.isCellPhoneNumberDisplay == null ? true : data.employeeContact.isCellPhoneNumberDisplay);
-      vm.psContactPhoneDisp(data.personalContact.isPhoneNumberDisplay == null ? true : data.personalContact.isPhoneNumberDisplay);
-      vm.psContactEmergencyContact1Disp(data.personalContact.isEmergencyContact1Display == null ? true : data.personalContact.isEmergencyContact1Display);
-      vm.psContactEmergencyContact2Disp(data.personalContact.isEmergencyContact2Display == null ? true : data.personalContact.isEmergencyContact2Display);
-      vm.empContactSeatDialInDisp(data.employeeContact.isSeatDialInDisplay == null ? true : data.employeeContact.isSeatDialInDisplay);
-      vm.empContactSeatExtensionNumDisp(data.employeeContact.isSeatExtensionNumberDisplay == null ? true : data.employeeContact.isSeatExtensionNumberDisplay);
-      vm.empContactMailAddrDisp(data.employeeContact.isMailAddressDisplay == null ? true : data.employeeContact.isMailAddressDisplay);
-      vm.empContactMobileMailAddrDisp(data.employeeContact.isMobileMailAddressDisplay == null ? true : data.employeeContact.isMobileMailAddressDisplay);
-      vm.psContactMailAddrDisp(data.personalContact.isMailAddressDisplay == null ? true : data.personalContact.isMailAddressDisplay);
-      vm.psContactMobileEmailAddrDisp(data.personalContact.isMobileEmailAddressDisplay == null ? true : data.personalContact.isMobileEmailAddressDisplay);
     }
 
     private setListOtherContact(data: UserInformationDto) {
@@ -234,29 +202,14 @@ module nts.uk.com.view.cmm048.a {
       for (let i = 1; i < 6; i++) {
         const otherContactSetting: OtherContactDto = _.find(listOtherContactSetting, (contact: OtherContactDto) => contact.no === i);
         const otherContactPs: OtherContactDtoPs = _.find(listOtherContactPs, (contact: OtherContactDtoPs) => contact.otherContactNo === i);
-        if (otherContactPs) {
-          vm.ListOtherContact.push(
-            new OtherContactViewModel(
-              i,
-              vm.$i18n("CMM048_86", [otherContactSetting.contactName]),
-              otherContactPs.address,
-              otherContactSetting.contactUsageSetting === 2,
-              otherContactSetting.contactUsageSetting !== 0,
-              otherContactPs.isDisplay
-            )
-          );
-        } else {
-          vm.ListOtherContact.push(
-            new OtherContactViewModel(
-              i,
-              vm.$i18n("CMM048_86", [otherContactSetting.contactName]),
-              '',
-              otherContactSetting.contactUsageSetting === 2,
-              otherContactSetting.contactUsageSetting !== 0,
-              true
-            )
-          );
-        }
+        vm.ListOtherContact.push(
+          new OtherContactViewModel(
+            i,
+            vm.$i18n("CMM048_86", [otherContactSetting.contactName]),
+            otherContactPs ? otherContactPs.address : '',
+            otherContactSetting.contactUsageSetting === 1,
+          )
+        );
       }
     }
 
@@ -292,15 +245,15 @@ module nts.uk.com.view.cmm048.a {
       vm.passPolicyHistoryCount(vm.$i18n('CMM048_19', [String(historyCount)]));
       vm.passPolicyValidityPeriod(vm.$i18n('CMM048_21', [String(validityPeriod)]));
 
-       //#113841
-       vm.passwordPolicyVisible(data.passwordPolicy.isUse);
-       vm.passPolicyLowestDigitsVisible(lowestDigits > 0);
-       vm.passPolicyDigitVisible((alphabetDigit > 0) || (numberOfDigits > 0) || (symbolCharacters > 0));
-       vm.passPolicyAlphabetDigitVisible(alphabetDigit > 0);
-       vm.passPolicyNumberOfDigitsVisible(numberOfDigits > 0);
-       vm.passPolicySymbolCharactersVisible(symbolCharacters > 0);
-       vm.passPolicyHistoryCountVisible(historyCount > 0);
-       vm.passPolicyValidityPeriodVisible(validityPeriod > 0);
+      //#113841
+      vm.passwordPolicyVisible(data.passwordPolicy.isUse);
+      vm.passPolicyLowestDigitsVisible(lowestDigits > 0);
+      vm.passPolicyDigitVisible((alphabetDigit > 0) || (numberOfDigits > 0) || (symbolCharacters > 0));
+      vm.passPolicyAlphabetDigitVisible(alphabetDigit > 0);
+      vm.passPolicyNumberOfDigitsVisible(numberOfDigits > 0);
+      vm.passPolicySymbolCharactersVisible(symbolCharacters > 0);
+      vm.passPolicyHistoryCountVisible(historyCount > 0);
+      vm.passPolicyValidityPeriodVisible(validityPeriod > 0);
     }
 
     private setDataTabC(data: UserInformationDto) {
@@ -358,17 +311,7 @@ module nts.uk.com.view.cmm048.a {
       vm.cMobileEmailAddrUpdateable(displaySetting.companyMobileEmailAddress.updatable === IS_USE.USE);
       vm.psMobileEmailAddrUseable(displaySetting.personalMobileEmailAddress.contactUsageSetting !== CONTACT_USAGE.DO_NOT_USE);
       vm.psMobileEmailAddrUpdateable(displaySetting.personalMobileEmailAddress.updatable === IS_USE.USE);
-      vm.cPhoneCheckable(displaySetting.companyMobilePhone.contactUsageSetting === CONTACT_USAGE.INDIVIDUAL_SELECT);
-      vm.psPhoneCheckable(displaySetting.personalMobilePhone.contactUsageSetting === CONTACT_USAGE.INDIVIDUAL_SELECT);
-      vm.emergencyNum1Checkable(displaySetting.emergencyNumber1.contactUsageSetting === CONTACT_USAGE.INDIVIDUAL_SELECT);
-      vm.emergencyNum2Checkable(displaySetting.emergencyNumber2.contactUsageSetting === CONTACT_USAGE.INDIVIDUAL_SELECT);
-      vm.dialInNumCheckable(displaySetting.dialInNumber.contactUsageSetting === CONTACT_USAGE.INDIVIDUAL_SELECT);
-      vm.extensionNumCheckable(displaySetting.extensionNumber.contactUsageSetting === CONTACT_USAGE.INDIVIDUAL_SELECT);
-      vm.cEmailAddrCheckable(displaySetting.companyEmailAddress.contactUsageSetting === CONTACT_USAGE.INDIVIDUAL_SELECT);
-      vm.psEmailAddrCheckable(displaySetting.personalEmailAddress.contactUsageSetting === CONTACT_USAGE.INDIVIDUAL_SELECT);
-      vm.cMobileEmailAddrCheckable(displaySetting.companyMobileEmailAddress.contactUsageSetting === CONTACT_USAGE.INDIVIDUAL_SELECT);
-      vm.psMobileEmailAddrCheckable(displaySetting.personalMobileEmailAddress.contactUsageSetting === CONTACT_USAGE.INDIVIDUAL_SELECT);
-
+     
       //Make tab visible
       _.map(vm.tabs(), (tab: any) => {
         switch (tab.id) {
@@ -402,6 +345,9 @@ module nts.uk.com.view.cmm048.a {
       vm.confirmPassword("");
       vm.listAnniversary([]);
       vm.ListOtherContact([]);
+
+      //clear error
+      vm.$errors('clear');
 
       //data binding
       vm.$blockui('grayout');
@@ -483,8 +429,11 @@ module nts.uk.com.view.cmm048.a {
       vm.listAnniversary.push(new AnniversaryNotificationViewModel("", "", "", 0));
     }
 
-    public removeAnniversary(anniversary: AnniversaryNotificationViewModel) {
+    public removeAnniversary(anniversary: AnniversaryNotificationViewModel, index: number) {
       const vm = this;
+      $(`#month-day-${index}`).ntsError('clear');
+      $(`#anniversary-title-${index}`).ntsError('clear');
+      $(`#notification-message-${index}`).ntsError('clear');
       vm.listAnniversary.remove(anniversary);
     }
 
@@ -534,26 +483,20 @@ module nts.uk.com.view.cmm048.a {
       _.map(vm.ListOtherContact(), (contact: OtherContactViewModel) => {
         list.push(new OtherContactCommand({
           otherContactNo: contact.contactNo,
-          isDisplay: contact.isContactDisplayOnOther(),
           address: contact.contactAdress()
         }));
       });
       return new PersonalContactCommand({
         personalId: vm.personId(),
         mailAddress: vm.psContactMailAddr(),
-        isMailAddressDisplay: vm.psContactMailAddrDisp(),
         mobileEmailAddress: vm.psContactMobileMailAddr(),
-        isMobileEmailAddressDisplay: vm.psContactMobileEmailAddrDisp(),
         phoneNumber: vm.psContactPhone(),
-        isPhoneNumberDisplay: vm.psContactPhoneDisp(),
         emergencyContact1: new EmergencyContactCommand({
           phoneNumber: vm.psContactEmergencyContact1Phone()
         }),
-        isEmergencyContact1Display: vm.psContactEmergencyContact1Disp(),
         emergencyContact2: new EmergencyContactCommand({
           phoneNumber: vm.psContactEmergencyContact2Phone()
         }),
-        isEmergencyContact2Display: vm.psContactEmergencyContact2Disp(),
         otherContacts: list,
       });
     }
@@ -563,22 +506,77 @@ module nts.uk.com.view.cmm048.a {
       return new EmployeeContactCommand({
         employeeId: vm.employeeId(),
         mailAddress: vm.empContactMailAddr(),
-        isMailAddressDisplay: vm.empContactMailAddrDisp(),
         seatDialIn: vm.empContactSeatDialIn(),
-        isSeatDialInDisplay: vm.empContactSeatDialInDisp(),
         seatExtensionNumber: vm.empContactSeatExtensionNum(),
-        isSeatExtensionNumberDisplay: vm.empContactSeatExtensionNumDisp(),
         mobileMailAddress: vm.empContactMobileMailAddr(),
-        isMobileMailAddressDisplay: vm.empContactMobileMailAddrDisp(),
         cellPhoneNumber: vm.empContactPhone(),
-        isCellPhoneNumberDisplay: vm.empContactPhoneDisp()
       });
+    }
+
+    private validateAnniversary(item: AnniversaryNotificationViewModel, index: number): boolean {
+      const vm = this;
+
+      let checkEmptyAnniver = false;
+
+      //「月・日・タイトル・内容」は１件以上が入力しました場合、他の件も入力しなければならない
+      if (Number(item.anniversaryDay()) !== 0 || (Number(item.anniversaryDay()) % 100 !== 0) || !(_.isEmpty(item.anniversaryName())) || !(_.isEmpty(item.anniversaryRemark()))) {
+
+        if (Number(item.anniversaryDay()) % 100 === 0) {
+          $(`#month-day-${index}`).trigger('validate');
+          checkEmptyAnniver = true;
+        }
+
+        if (_.isEmpty(item.anniversaryName())) {
+          $(`#anniversary-title-${index}`).ntsError('set', { messageId: "MsgB_1", messageParams: [vm.$i18n('CMM048_59')] });
+          checkEmptyAnniver = true;
+        }
+
+        if (_.isEmpty(item.anniversaryRemark())) {
+          $(`#notification-message-${index}`).ntsError('set', { messageId: "MsgB_1", messageParams: [vm.$i18n('CMM048_74')] });
+          checkEmptyAnniver = true;
+        }
+      }
+      return checkEmptyAnniver;
+    }
+
+    getMonthDayJapanText(monthDay: string): string {
+      const anniverDay = Number(monthDay);
+      const month = Math.floor(anniverDay / 100);
+      const day = anniverDay % 100;
+      return String(month + '月' + day + '日');
     }
 
     public save() {
       const vm = this;
+
       vm.$validate().then((valid: boolean) => {
         if (valid) {
+
+          //fix bug #115144 start
+          const handleDuplicateAnniver = _.groupBy(vm.listAnniversary(), (item) => item.anniversaryDay());
+          const listAnniverError = [];
+          for (const annivers in handleDuplicateAnniver) {
+            if (handleDuplicateAnniver[annivers].length > 1) {
+              listAnniverError.push(vm.getMonthDayJapanText(annivers));
+            }
+          }
+
+          if (!_.isEmpty(listAnniverError)) {
+            return vm.$dialog.error({ messageId: 'Msg_2156', messageParams: [listAnniverError.join('\n')] });
+          }
+          //fix bug #115144 end
+
+          //fix bug #114058 start
+          if (vm.isUseOfNotice()) {
+            let checkEmptyAnniver = false;
+            _.map(vm.listAnniversary(), (item: AnniversaryNotificationViewModel, index: number) => {
+              const check = vm.validateAnniversary(item, index);
+              if (check) checkEmptyAnniver = true;
+            });
+            if (checkEmptyAnniver) return;
+          }
+          //fix bug #114058 end
+
           const userChange = vm.getUserCommand();
           const avatar = vm.getUserAvatarCommand();
           const listAnniversary = vm.getAnniversaryNoticeCommandList();
@@ -618,7 +616,7 @@ module nts.uk.com.view.cmm048.a {
       });
     }
   }
-  
+
   enum LANGUAGE {
     /**
    * 日本語
@@ -668,9 +666,6 @@ module nts.uk.com.view.cmm048.a {
 
     // 利用する
     USE = 1,
-
-    // 個人選択可
-    INDIVIDUAL_SELECT = 2
   }
 
   enum IS_USE {
@@ -796,22 +791,16 @@ module nts.uk.com.view.cmm048.a {
     contactName!: string;
     contactAdress!: KnockoutObservable<string>;
     contactUsage!: boolean;
-    isContactDisplay!: boolean;
-    isContactDisplayOnOther!: KnockoutObservable<boolean>;
     constructor(
       contactNo: number,
       contactName: string,
       contactAdress: string,
       contactUsage: boolean,
-      isContactDisplay: boolean,
-      isContactDisplayOnOther: boolean
     ) {
       this.contactNo = contactNo;
       this.contactName = contactName;
       this.contactAdress = ko.observable(contactAdress);
       this.contactUsage = contactUsage;
-      this.isContactDisplay = isContactDisplay;
-      this.isContactDisplayOnOther = ko.observable(isContactDisplayOnOther);
     }
   }
 
@@ -1343,8 +1332,6 @@ module nts.uk.com.view.cmm048.a {
     functionIds: number[];
   }
 
-
-
   /**
  * Dto 連絡先情報の設定
  */
@@ -1619,19 +1606,9 @@ module nts.uk.com.view.cmm048.a {
     mailAddress: string;
 
     /**
-     * メールアドレスが在席照会に表示するか
-     */
-    isMailAddressDisplay: boolean;
-
-    /**
      * 携帯メールアドレス
      */
     mobileEmailAddress: string;
-
-    /**
-     * 携帯メールアドレスが在席照会に表示するか
-     */
-    isMobileEmailAddressDisplay: boolean;
 
     /**
      * 携帯電話番号
@@ -1639,29 +1616,14 @@ module nts.uk.com.view.cmm048.a {
     phoneNumber: string;
 
     /**
-     * 携帯電話番号が在席照会に表示するか
-     */
-    isPhoneNumberDisplay: boolean;
-
-    /**
      * 緊急連絡先１
      */
     emergencyContact1: EmergencyContactDto;
 
     /**
-     * 緊急連絡先１が在席照会に表示するか
-     */
-    isEmergencyContact1Display: boolean;
-
-    /**
      * 緊急連絡先２
      */
     emergencyContact2: EmergencyContactDto;
-
-    /**
-     * 緊急連絡先２が在席照会に表示するか
-     */
-    isEmergencyContact2Display: boolean;
 
     /**
      * 他の連絡先
@@ -1697,11 +1659,6 @@ module nts.uk.com.view.cmm048.a {
     * NO
     */
     otherContactNo: number;
-
-    /**
-     * 在席照会に表示するか
-     */
-    isDisplay: boolean;
 
     /**
      * 連絡先のアドレス
@@ -1769,19 +1726,9 @@ module nts.uk.com.view.cmm048.a {
     mailAddress: string;
 
     /**
-     * メールアドレスが在席照会に表示するか
-     */
-    isMailAddressDisplay: boolean;
-
-    /**
      * 座席ダイヤルイン
      */
     seatDialIn: string;
-
-    /**
-     * 座席ダイヤルインが在席照会に表示するか
-     */
-    isSeatDialInDisplay: boolean;
 
     /**
      * 座席内線番号
@@ -1789,29 +1736,14 @@ module nts.uk.com.view.cmm048.a {
     seatExtensionNumber: string;
 
     /**
-     * 座席内線番号が在席照会に表示するか
-     */
-    isSeatExtensionNumberDisplay: boolean;
-
-    /**
      * 携帯メールアドレス
      */
     mobileMailAddress: string;
 
     /**
-     * 携帯メールアドレスが在席照会に表示するか
-     */
-    isMobileMailAddressDisplay: boolean;
-
-    /**
      * 携帯電話番号
      */
     cellPhoneNumber: string;
-
-    /**
-     * 携帯電話番号が在席照会に表示するか
-     */
-    isCellPhoneNumberDisplay: boolean;
   }
 
   /**

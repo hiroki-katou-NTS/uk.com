@@ -19,6 +19,7 @@ import mockit.MockUp;
 import mockit.integration.junit4.JMockit;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.schedule.dom.schedule.task.taskschedule.TaskSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ConfirmedATR;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ScheManaStatuTempo;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ScheManaStatus;
@@ -35,7 +36,6 @@ public class WorkScheManaStatusServiceTest {
 	/**
 	 * $社員の予定管理状態.勤務予定が必要か() is false
 	 */
-	@SuppressWarnings("unchecked")
 	@Test
 	public void testGetScheduleManagement() {
 		List<String> lstEmployeeID = Arrays.asList("emp1");
@@ -68,7 +68,6 @@ public class WorkScheManaStatusServiceTest {
 	 * $社員の予定管理状態.勤務予定が必要か() is true
 	 * require.勤務予定を取得する( 社員ID, $ ) is empty
 	 */
-	@SuppressWarnings("unchecked")
 	@Test
 	public void testGetScheduleManagement_1() {
 		List<String> lstEmployeeID = Arrays.asList("emp1");
@@ -106,14 +105,15 @@ public class WorkScheManaStatusServiceTest {
 	 * require.勤務予定を取得する( 社員ID, $ ) not empty
 	 * 
 	 */
-	@SuppressWarnings("unchecked")
 	@Test
 	public void testGetScheduleManagement_2() {
 		List<String> lstEmployeeID = Arrays.asList("emp1");
 		DatePeriod period = new DatePeriod(GeneralDate.today(), GeneralDate.today());
 		WorkSchedule workSchedule = new WorkSchedule("employeeID",
 				GeneralDate.today(), ConfirmedATR.CONFIRMED, null, null, new BreakTimeOfDailyAttd(),
-				new ArrayList<>(), Optional.empty(), Optional.empty(), Optional.empty());
+				new ArrayList<>(),
+				TaskSchedule.createWithEmptyList(),
+				Optional.empty(), Optional.empty(), Optional.empty(),Optional.empty());
 
 		ScheManaStatuTempo scheManaStatuTempo = new ScheManaStatuTempo("emp1", GeneralDate.today(),
 				ScheManaStatus.ON_LEAVE, Optional.empty(), Optional.empty());

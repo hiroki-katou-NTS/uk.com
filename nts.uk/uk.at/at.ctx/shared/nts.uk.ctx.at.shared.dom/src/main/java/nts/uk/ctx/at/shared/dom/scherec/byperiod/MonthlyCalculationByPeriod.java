@@ -5,7 +5,6 @@ import lombok.val;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.roundingset.RoundingSetOfMonthly;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.MonAggrCompanySettings;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.MonthlyCalculatingDailys;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceItemOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.AggregateTotalTimeSpentAtWork;
@@ -82,20 +81,17 @@ public class MonthlyCalculationByPeriod implements Cloneable {
 	 * @param period 期間
 	 * @param workingSystem 労働制
 	 * @param calcDailys 月の計算中の日別実績データ
-	 * @param companySets 月別集計で必要な会社別設定
 	 */
 	public void calculation(RequireM1 require, 
 			DatePeriod period,
 			WorkingSystem workingSystem,
-			MonthlyCalculatingDailys calcDailys,
-			MonAggrCompanySettings companySets){
+			MonthlyCalculatingDailys calcDailys){
 
 		// 総労働時間の集計
-		this.aggregateTime.aggregate(require, period,
+		this.aggregateTime.aggregate(require, period, workingSystem,
 				calcDailys.getAttendanceTimeOfDailyMap(),
 				calcDailys.getWorkInfoOfDailyMap(),
-				calcDailys.getSnapshots(),
-				companySets);
+				calcDailys.getSnapshots());
 
 		// フレックス時間の集計
 		this.flexTime.aggregate(period, calcDailys.getAttendanceTimeOfDailyMap());
@@ -126,7 +122,7 @@ public class MonthlyCalculationByPeriod implements Cloneable {
 		// 就業時間
 		if (attendanceItemId == AttendanceItemOfMonthly.WORK_TIME.value){
 			val workTime = this.aggregateTime.getWorkTime().getWorkTime();
-			if (isExcessOutside) return roundingSet.excessOutsideRound(attendanceItemId, workTime);
+			if (isExcessOutside) return roundingSet.itemRound(attendanceItemId, workTime);
 			return roundingSet.itemRound(attendanceItemId, workTime);
 		}
 		
@@ -137,7 +133,7 @@ public class MonthlyCalculationByPeriod implements Cloneable {
 					attendanceItemId - AttendanceItemOfMonthly.OVER_TIME_01.value + 1);
 			if (!overTimeMap.containsKey(overTimeFrameNo)) return notExistTime;
 			if (isExcessOutside){
-				return roundingSet.excessOutsideRound(attendanceItemId,
+				return roundingSet.itemRound(attendanceItemId,
 						overTimeMap.get(overTimeFrameNo).getOverTime().getTime());
 			}
 			return roundingSet.itemRound(attendanceItemId,
@@ -151,7 +147,7 @@ public class MonthlyCalculationByPeriod implements Cloneable {
 					attendanceItemId - AttendanceItemOfMonthly.CALC_OVER_TIME_01.value + 1);
 			if (!overTimeMap.containsKey(overTimeFrameNo)) return notExistTime;
 			if (isExcessOutside){
-				return roundingSet.excessOutsideRound(attendanceItemId,
+				return roundingSet.itemRound(attendanceItemId,
 						overTimeMap.get(overTimeFrameNo).getOverTime().getCalcTime());
 			}
 			return roundingSet.itemRound(attendanceItemId,
@@ -165,7 +161,7 @@ public class MonthlyCalculationByPeriod implements Cloneable {
 					attendanceItemId - AttendanceItemOfMonthly.TRANSFER_OVER_TIME_01.value + 1);
 			if (!overTimeMap.containsKey(overTimeFrameNo)) return notExistTime;
 			if (isExcessOutside){
-				return roundingSet.excessOutsideRound(attendanceItemId,
+				return roundingSet.itemRound(attendanceItemId,
 						overTimeMap.get(overTimeFrameNo).getTransferOverTime().getTime());
 			}
 			return roundingSet.itemRound(attendanceItemId,
@@ -179,7 +175,7 @@ public class MonthlyCalculationByPeriod implements Cloneable {
 					attendanceItemId - AttendanceItemOfMonthly.CALC_TRANSFER_OVER_TIME_01.value + 1);
 			if (!overTimeMap.containsKey(overTimeFrameNo)) return notExistTime;
 			if (isExcessOutside){
-				return roundingSet.excessOutsideRound(attendanceItemId,
+				return roundingSet.itemRound(attendanceItemId,
 						overTimeMap.get(overTimeFrameNo).getTransferOverTime().getCalcTime());
 			}
 			return roundingSet.itemRound(attendanceItemId,
@@ -193,7 +189,7 @@ public class MonthlyCalculationByPeriod implements Cloneable {
 					attendanceItemId - AttendanceItemOfMonthly.HOLIDAY_WORK_TIME_01.value + 1);
 			if (!hdwkTimeMap.containsKey(holidayWorkTimeFrameNo)) return notExistTime;
 			if (isExcessOutside){
-				return roundingSet.excessOutsideRound(attendanceItemId,
+				return roundingSet.itemRound(attendanceItemId,
 						hdwkTimeMap.get(holidayWorkTimeFrameNo).getHolidayWorkTime().getTime());
 			}
 			return roundingSet.itemRound(attendanceItemId,
@@ -207,7 +203,7 @@ public class MonthlyCalculationByPeriod implements Cloneable {
 					attendanceItemId - AttendanceItemOfMonthly.CALC_HOLIDAY_WORK_TIME_01.value + 1);
 			if (!hdwkTimeMap.containsKey(holidayWorkTimeFrameNo)) return notExistTime;
 			if (isExcessOutside){
-				return roundingSet.excessOutsideRound(attendanceItemId,
+				return roundingSet.itemRound(attendanceItemId,
 						hdwkTimeMap.get(holidayWorkTimeFrameNo).getHolidayWorkTime().getCalcTime());
 			}
 			return roundingSet.itemRound(attendanceItemId,
@@ -221,7 +217,7 @@ public class MonthlyCalculationByPeriod implements Cloneable {
 					attendanceItemId - AttendanceItemOfMonthly.TRANSFER_TIME_01.value + 1);
 			if (!hdwkTimeMap.containsKey(holidayWorkTimeFrameNo)) return notExistTime;
 			if (isExcessOutside){
-				return roundingSet.excessOutsideRound(attendanceItemId,
+				return roundingSet.itemRound(attendanceItemId,
 						hdwkTimeMap.get(holidayWorkTimeFrameNo).getTransferTime().getTime());
 			}
 			return roundingSet.itemRound(attendanceItemId,
@@ -235,7 +231,7 @@ public class MonthlyCalculationByPeriod implements Cloneable {
 					attendanceItemId - AttendanceItemOfMonthly.CALC_TRANSFER_TIME_01.value + 1);
 			if (!hdwkTimeMap.containsKey(holidayWorkTimeFrameNo)) return notExistTime;
 			if (isExcessOutside){
-				return roundingSet.excessOutsideRound(attendanceItemId,
+				return roundingSet.itemRound(attendanceItemId,
 						hdwkTimeMap.get(holidayWorkTimeFrameNo).getTransferTime().getCalcTime());
 			}
 			return roundingSet.itemRound(attendanceItemId,
@@ -246,7 +242,7 @@ public class MonthlyCalculationByPeriod implements Cloneable {
 		if (attendanceItemId == AttendanceItemOfMonthly.FLEX_LEGAL_TIME.value){
 			int flexLegalMinutes = 0;
 			if (isExcessOutside){
-				return roundingSet.excessOutsideRound(attendanceItemId, new AttendanceTimeMonth(flexLegalMinutes));
+				return roundingSet.itemRound(attendanceItemId, new AttendanceTimeMonth(flexLegalMinutes));
 			}
 			return roundingSet.itemRound(attendanceItemId, new AttendanceTimeMonth(flexLegalMinutes));
 		}
@@ -255,7 +251,7 @@ public class MonthlyCalculationByPeriod implements Cloneable {
 		if (attendanceItemId == AttendanceItemOfMonthly.FLEX_ILLEGAL_TIME.value){
 			val flexIllegalMinutes = this.flexTime.getFlexExcessTime().v();
 			if (isExcessOutside){
-				return roundingSet.excessOutsideRound(attendanceItemId, new AttendanceTimeMonth(flexIllegalMinutes));
+				return roundingSet.itemRound(attendanceItemId, new AttendanceTimeMonth(flexIllegalMinutes));
 			}
 			return roundingSet.itemRound(attendanceItemId, new AttendanceTimeMonth(flexIllegalMinutes));
 		}
@@ -265,7 +261,7 @@ public class MonthlyCalculationByPeriod implements Cloneable {
 			val flexExcessMinutes = this.flexTime.getFlexTime().v();
 			if (flexExcessMinutes <= 0) return notExistTime;
 			if (isExcessOutside){
-				return roundingSet.excessOutsideRound(attendanceItemId, new AttendanceTimeMonth(flexExcessMinutes));
+				return roundingSet.itemRound(attendanceItemId, new AttendanceTimeMonth(flexExcessMinutes));
 			}
 			return roundingSet.itemRound(attendanceItemId, new AttendanceTimeMonth(flexExcessMinutes));
 		}
@@ -274,7 +270,7 @@ public class MonthlyCalculationByPeriod implements Cloneable {
 		if (attendanceItemId == AttendanceItemOfMonthly.WITHIN_PRESCRIBED_PREMIUM_TIME.value){
 			val withinPrescribedPremiumTime = this.aggregateTime.getWorkTime().getWithinPrescribedPremiumTime();
 			if (isExcessOutside){
-				return roundingSet.excessOutsideRound(attendanceItemId, withinPrescribedPremiumTime);
+				return roundingSet.itemRound(attendanceItemId, withinPrescribedPremiumTime);
 			}
 			return roundingSet.itemRound(attendanceItemId, withinPrescribedPremiumTime);
 		}

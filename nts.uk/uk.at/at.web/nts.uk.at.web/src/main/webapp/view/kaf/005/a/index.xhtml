@@ -74,7 +74,8 @@
 									params: {
 										appType: appType,
 										application: application,
-										appDispInfoStartupOutput: appDispInfoStartupOutput
+										appDispInfoStartupOutput: appDispInfoStartupOutput,
+										isAgentMode: isAgentMode
 									} }"></div>
 				</div>
 				<div data-bind="component: { name: 'kaf000-a-component3',
@@ -99,7 +100,8 @@
 												restTime: restTime,
 												holidayTime: holidayTime,
 												overTime: overTime,
-												visibleModel: visibleModel
+												visibleModel: visibleModel,
+												agent: agentForTable
 											}
 							
 										}"></div>
@@ -116,7 +118,8 @@
 				<div data-bind="component: { name: 'kaf000-a-component6',
 											params: {
 												appType: appType,
-												appDispInfoStartupOutput: appDispInfoStartupOutput
+												appDispInfoStartupOutput: appDispInfoStartupOutput,
+												isAgentMode: isAgentMode
 											} }"></div>
 			</div>
 		</ui:define>

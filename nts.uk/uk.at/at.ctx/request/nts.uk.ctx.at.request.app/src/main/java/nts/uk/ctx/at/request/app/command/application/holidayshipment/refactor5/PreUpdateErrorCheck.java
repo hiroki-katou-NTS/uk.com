@@ -45,20 +45,22 @@ public class PreUpdateErrorCheck {
 	 */
 	public void errorCheck(String companyId, Optional<AbsenceLeaveApp> abs, Optional<RecruitmentApp> rec, DisplayInforWhenStarting displayInforWhenStarting) {
 		//アルゴリズム「登録前エラーチェック（更新）」を実行する
-		this.preRegistrationErrorCheck.preconditionCheck(abs, rec);
+		this.preRegistrationErrorCheck.preconditionCheck(abs, rec, 
+		        Optional.ofNullable(displayInforWhenStarting.getApplicationForHoliday() == null ? null : displayInforWhenStarting.getApplicationForHoliday().getWorkInformationForApplication()), 
+		        Optional.ofNullable(displayInforWhenStarting.getApplicationForWorkingDay() == null ? null : displayInforWhenStarting.getApplicationForWorkingDay().getWorkInformationForApplication()));
 		
 		//終日半日矛盾チェック
 		this.preRegistrationErrorCheck.allDayAndHalfDayContradictionCheck(companyId, abs, rec);
 		
 		List<GeneralDate> dateLst = new ArrayList<>();
 		List<String> workTypeLst = new ArrayList<>();
-		if(abs.isPresent()) {
-			dateLst.add(abs.get().getAppDate().getApplicationDate());
-			workTypeLst.add(abs.get().getWorkInformation().getWorkTypeCode().v());
-		}
 		if(rec.isPresent()) {
 			dateLst.add(rec.get().getAppDate().getApplicationDate());
 			workTypeLst.add(rec.get().getWorkInformation().getWorkTypeCode().v());
+		}
+		if(abs.isPresent()) {
+			dateLst.add(abs.get().getAppDate().getApplicationDate());
+			workTypeLst.add(abs.get().getWorkInformation().getWorkTypeCode().v());
 		}
 		//申請の矛盾チェック
 		this.commonAlgorithm.appConflictCheck(companyId,

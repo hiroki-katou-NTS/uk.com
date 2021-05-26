@@ -10,6 +10,7 @@ import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.request.app.find.application.WorkInformationForApplicationDto;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeInfoImport;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeUpdate;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ActualContentDisplay;
@@ -72,9 +73,12 @@ public class PreRegistrationErrorCheck {
 	 * @param employeeInfoLst 社員情報
 	 * @param employmentCode 雇用コード
 	 */
-	public void errorCheck(String companyId, Optional<AbsenceLeaveApp> abs, Optional<RecruitmentApp> rec, List<ActualContentDisplay> opActualContentDisplayLst, EmployeeInfoImport employeeInfo, String employmentCode) {
+	public void errorCheck(String companyId, Optional<AbsenceLeaveApp> abs, Optional<RecruitmentApp> rec, 
+	        List<ActualContentDisplay> opActualContentDisplayLst, 
+	        EmployeeInfoImport employeeInfo, String employmentCode, 
+	        Optional<WorkInformationForApplicationDto> absWorkInformationForApp, Optional<WorkInformationForApplicationDto> recWorkInformationForApp) {
 		//アルゴリズム「事前条件チェック」を実行する
-		this.preconditionCheck(abs, rec);
+		this.preconditionCheck(abs, rec, absWorkInformationForApp, recWorkInformationForApp);
 		
 		//アルゴリズム「申請日関連チェック」を実行する
 		this.applicationDateRelatedCheck(companyId, abs, rec, employmentCode);
@@ -102,18 +106,47 @@ public class PreRegistrationErrorCheck {
 	
 	/**
 	 * 事前条件チェック
+	 * @param abs 振休申請
+	 * @param rec 振出申請
+	 * @param absWorkInformationForApp 振休の変更前勤務情報
+	 * @param recWorkInformationForApp 振出の変更前勤務情報
 	 */
-	public void preconditionCheck(Optional<AbsenceLeaveApp> abs, Optional<RecruitmentApp> rec) {
+	public void preconditionCheck(Optional<AbsenceLeaveApp> abs, Optional<RecruitmentApp> rec, 
+	        Optional<WorkInformationForApplicationDto> absWorkInformationForApp, Optional<WorkInformationForApplicationDto> recWorkInformationForApp) {
 		String cId = AppContexts.user().companyId();
 		if (rec.isPresent()) {
+		    String workTypeCD = null;
+		    String workTimeCD = null;
+		    if (!recWorkInformationForApp.isPresent() 
+		            || (rec.get().getWorkInformation().getWorkTimeCode() != null && 
+		            !recWorkInformationForApp.get().getWorkTimeCode().equals(rec.get().getWorkInformation().getWorkTimeCode().v()))) {
+		        workTimeCD = rec.get().getWorkInformation().getWorkTimeCode() == null ? null : rec.get().getWorkInformation().getWorkTimeCode().v();
+		    }
+		    if (!recWorkInformationForApp.isPresent() 
+                    || (rec.get().getWorkInformation().getWorkTypeCode() != null && 
+                    !recWorkInformationForApp.get().getWorkTypeCode().equals(rec.get().getWorkInformation().getWorkTypeCode().v()))) {
+		        workTypeCD = rec.get().getWorkInformation().getWorkTypeCode() == null ? null : rec.get().getWorkInformation().getWorkTypeCode().v();
+            }
 			//勤務種類、就業時間帯チェックのメッセージを表示 (Hiển thị message check Type of work, working hours)
-			this.detailBeforeUpdate.displayWorkingHourCheck(cId, rec.get().getWorkInformation().getWorkTypeCode().v(), rec.get().getWorkInformation().getWorkTimeCode().v());
+			this.detailBeforeUpdate.displayWorkingHourCheck(cId, workTypeCD, workTimeCD);
 			//ドメインモデル「振出申請」の事前条件をチェックする
 			rec.get().validateApp();
 		}
 		if (abs.isPresent()) {
+		    String workTypeCD = null;
+            String workTimeCD = null;
+            if (!absWorkInformationForApp.isPresent() 
+                    || (abs.get().getWorkInformation().getWorkTimeCode() != null && 
+                    !absWorkInformationForApp.get().getWorkTimeCode().equals(abs.get().getWorkInformation().getWorkTimeCode().v()))) {
+                workTimeCD = abs.get().getWorkInformation().getWorkTimeCode() == null ? null : abs.get().getWorkInformation().getWorkTimeCode().v();
+            }
+            if (!absWorkInformationForApp.isPresent() 
+                    || (abs.get().getWorkInformation().getWorkTypeCode() != null &&
+                    !absWorkInformationForApp.get().getWorkTypeCode().equals(abs.get().getWorkInformation().getWorkTypeCode().v()))) {
+                workTypeCD = abs.get().getWorkInformation().getWorkTypeCode() == null ? null : abs.get().getWorkInformation().getWorkTypeCode().v();
+            }
 			//勤務種類、就業時間帯チェックのメッセージを表示 (Hiển thị message check Type of work, working hours)
-			this.detailBeforeUpdate.displayWorkingHourCheck(cId, abs.get().getWorkInformation().getWorkTypeCode().v(), abs.get().getWorkInformation().getWorkTimeCodeNotNull().map(c->c.v()).orElse(null));
+			this.detailBeforeUpdate.displayWorkingHourCheck(cId, workTypeCD, workTimeCD);
 			//ドメインモデル「振休申請」の事前条件をチェックする
 			abs.get().validateApp();
 		}

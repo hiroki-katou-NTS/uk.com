@@ -3,7 +3,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
@@ -17,7 +16,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainTy
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class InterimRemain extends AggregateRoot{
+public abstract class InterimRemain  {
 	/**
 	 * 残数管理データID
 	 */
@@ -38,17 +37,21 @@ public class InterimRemain extends AggregateRoot{
 	 * 残数種類
 	 */
 	private RemainType remainType;
-	
+
 	public InterimRemain(String sID, GeneralDate ymd, String remainManaID) {
 		super();
 		this.sID = sID;
 		this.ymd = ymd;
 		this.remainManaID = remainManaID;
-		
+
 	}
+	
 	public InterimRemain(String employeeId, GeneralDate end) {
 		super();
 		this.sID = employeeId;
 		this.ymd = end;
 	}
+	
+	
+	
 }

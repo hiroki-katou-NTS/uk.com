@@ -22,18 +22,18 @@ public class AnnualLeaveUsedNumber implements Cloneable, SerializableWithOptiona
 	 * Serializable
 	 */
 	private static final long serialVersionUID = 1L;
-	
+
 	/** 使用日数 */
 	private Optional<AnnualLeaveUsedDayNumber> usedDays;
-	
+
 	/** 使用時間 */
 	private Optional<UsedMinutes> usedTime;
-	
+
 	/**
 	 * コンストラクタ
 	 */
 	public AnnualLeaveUsedNumber(){
-		
+
 		this.usedDays = Optional.empty();
 		this.usedTime = Optional.empty();
 	}
@@ -47,13 +47,13 @@ public class AnnualLeaveUsedNumber implements Cloneable, SerializableWithOptiona
 	public static AnnualLeaveUsedNumber of(
 			Optional<AnnualLeaveUsedDayNumber> usedDays,
 			Optional<UsedMinutes> usedTime){
-		
+
 		AnnualLeaveUsedNumber domain = new AnnualLeaveUsedNumber();
 		domain.usedDays = usedDays;
 		domain.usedTime = usedTime;
 		return domain;
 	}
-	
+
 	@Override
 	public AnnualLeaveUsedNumber clone() {
 		AnnualLeaveUsedNumber cloned = new AnnualLeaveUsedNumber();
@@ -66,28 +66,38 @@ public class AnnualLeaveUsedNumber implements Cloneable, SerializableWithOptiona
 		}
 		return cloned;
 	}
-	
+
 	/**
 	 * 日数を使用日数に加算する
 	 */
 	public void addUsedNumber(AnnualLeaveUsedNumber usedNumber) {
 		addDays(usedNumber.getUsedDays().map(x -> x.v()).orElse(0d));
-		
-		this.usedTime = this.usedTime.map(c -> 
-							c.addMinutes(usedNumber.getUsedTime().map(x -> x.v()).orElse(0)));
+		addTime(usedNumber.getUsedTime().map(x -> x.v()).orElse(0));
 	}
-	
+
 	public void addDays(double days) {
+		if ( !this.usedDays.isPresent() ) {
+			this.usedDays = Optional.of(new AnnualLeaveUsedDayNumber(0.0));
+		}
+
 		this.usedDays = this.usedDays.map(c -> new AnnualLeaveUsedDayNumber(c.v() + days));
 	}
-	
-	private void writeObject(ObjectOutputStream stream){		
-		writeObjectWithOptional(stream);	
-	}		
-	private void readObject(ObjectInputStream stream){		
-		readObjectWithOptional(stream);	
-	}		
 
-	
+	public void addTime(int time) {
+		if ( !this.usedTime.isPresent() ) {
+			this.usedTime = Optional.of(new UsedMinutes(0));
+		}
+
+		this.usedTime = this.usedTime.map(c -> new UsedMinutes(c.v() + time));
+	}
+
+	private void writeObject(ObjectOutputStream stream){
+		writeObjectWithOptional(stream);
+	}
+	private void readObject(ObjectInputStream stream){
+		readObjectWithOptional(stream);
+	}
+
+
 }
 

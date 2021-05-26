@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+
 import lombok.AllArgsConstructor;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ScheManaStatuTempo;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
@@ -23,13 +24,15 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomat
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkTypeWorkTimeUseDailyAttendanceRecord;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
-import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingService;
-import nts.uk.ctx.at.shared.dom.worktime.worktimeset.internal.PredetermineTimeSetForCalc;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeInfor;
@@ -77,7 +80,7 @@ public class CreateWorkScheduleWorkInforBase {
 		// step 3
 		List<WorkTimeCode> workTimeCodes   = wTypeWTimeUseDailyAttendRecord.getLstWorkTimeCode().stream().filter(wt -> wt != null).collect(Collectors.toList());
 		List<String> lstWorkTimeCode       = workTimeCodes.stream().map(i -> i.toString()).collect(Collectors.toList());
-		List<WorkTimeSetting> lstWorkTimeSetting = workTimeSettingRepo.getListWorkTimeSetByListCode(companyId, lstWorkTimeCode);
+		List<WorkTimeSetting> lstWorkTimeSetting = workTimeSettingRepo.getListWorkTime(companyId, lstWorkTimeCode);
 
 		// step 4
 		List<WorkScheduleWorkInforDto> listWorkScheduleWorkInfor = new ArrayList<>();
@@ -191,15 +194,18 @@ public class CreateWorkScheduleWorkInforBase {
 
 		@Inject
 		private WorkTypeRepository workTypeRepo;
-
 		@Inject
 		private WorkTimeSettingRepository workTimeSettingRepository;
-
-		@Inject
-		private WorkTimeSettingService workTimeSettingService;
-
 		@Inject
 		private BasicScheduleService basicScheduleService;
+		@Inject
+		private FixedWorkSettingRepository fixedWorkSet;
+		@Inject
+		private FlowWorkSettingRepository flowWorkSet;
+		@Inject
+		private FlexWorkSettingRepository flexWorkSet;
+		@Inject
+		private PredetemineTimeSettingRepository predetemineTimeSet;
 
 		@Override
 		public SetupType checkNeededOfWorkTimeSetting(String workTypeCode) {
@@ -223,26 +229,23 @@ public class CreateWorkScheduleWorkInforBase {
 
 		@Override
 		public FixedWorkSetting getWorkSettingForFixedWork(WorkTimeCode code) {
-			// TODO 自動生成されたメソッド・スタブ
-			return null;
+			Optional<FixedWorkSetting> workSetting = fixedWorkSet.findByKey(companyId, code.v());
+			return workSetting.isPresent() ? workSetting.get() : null;
 		}
-
 		@Override
 		public FlowWorkSetting getWorkSettingForFlowWork(WorkTimeCode code) {
-			// TODO 自動生成されたメソッド・スタブ
-			return null;
+			Optional<FlowWorkSetting> workSetting = flowWorkSet.find(companyId, code.v());
+			return workSetting.isPresent() ? workSetting.get() : null;
 		}
-
 		@Override
 		public FlexWorkSetting getWorkSettingForFlexWork(WorkTimeCode code) {
-			// TODO 自動生成されたメソッド・スタブ
-			return null;
+			Optional<FlexWorkSetting> workSetting = flexWorkSet.find(companyId, code.v());
+			return workSetting.isPresent() ? workSetting.get() : null;
 		}
-
 		@Override
 		public PredetemineTimeSetting getPredetermineTimeSetting(WorkTimeCode wktmCd) {
-			// TODO 自動生成されたメソッド・スタブ
-			return null;
+			Optional<PredetemineTimeSetting> workSetting = predetemineTimeSet.findByWorkTimeCode(companyId, wktmCd.v());
+			return workSetting.isPresent() ? workSetting.get() : null;
 		}
 
 	}

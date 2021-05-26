@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * 終了日の翌日情報WORK（特別休暇で使用）
+ * 終了日の翌日情報WORK）
  */
 @Getter
 @Setter

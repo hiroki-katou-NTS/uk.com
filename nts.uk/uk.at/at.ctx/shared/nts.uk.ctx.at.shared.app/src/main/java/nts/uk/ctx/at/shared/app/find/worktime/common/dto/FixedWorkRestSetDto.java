@@ -7,7 +7,6 @@ package nts.uk.ctx.at.shared.app.find.worktime.common.dto;
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.worktime.common.CommonRestSetting;
-import nts.uk.ctx.at.shared.dom.worktime.common.FixedRestCalculateMethod;
 import nts.uk.ctx.at.shared.dom.worktime.common.FixedWorkRestSetSetMemento;
 
 /**
@@ -54,10 +53,10 @@ public class FixedWorkRestSetDto implements FixedWorkRestSetSetMemento {
 	 * @see nts.uk.ctx.at.shared.dom.worktime.common.FixedWorkRestSetSetMemento#
 	 * setIsPlanActualNotMatchMasterRefer(boolean)
 	 */
-	@Override
-	public void setIsPlanActualNotMatchMasterRefer(boolean isPlanActualNotMatchMasterRefer) {
-		this.isPlanActualNotMatchMasterRefer = isPlanActualNotMatchMasterRefer;
-	}
+//	@Override
+//	public void setIsPlanActualNotMatchMasterRefer(boolean isPlanActualNotMatchMasterRefer) {
+//		this.isPlanActualNotMatchMasterRefer = isPlanActualNotMatchMasterRefer;
+//	}
 
 	/*
 	 * (non-Javadoc)
@@ -66,9 +65,9 @@ public class FixedWorkRestSetDto implements FixedWorkRestSetSetMemento {
 	 * setCalculateMethod(nts.uk.ctx.at.shared.dom.worktime.common.
 	 * FixedRestCalculateMethod)
 	 */
-	@Override
-	public void setCalculateMethod(FixedRestCalculateMethod method) {
-		this.fixedRestCalculateMethod = method.value;
-	}
+//	@Override
+//	public void setCalculateMethod(FixedRestCalculateMethod method) {
+//		this.fixedRestCalculateMethod = method.value;
+//	}
 
 }

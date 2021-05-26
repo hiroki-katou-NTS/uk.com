@@ -10,13 +10,12 @@ import nts.arc.task.tran.AtomTask;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.AggrPeriodEachActualClosure;
-import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecDetailPara;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.OccurrenceDigClass;
-import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.UnOffsetOfAbs;
-import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.UnUseOfRec;
+import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.param.UnbalanceCompensation;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.HolidayAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.ManagementDataDaysAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.ManagementDataRemainUnit;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.AccumulationAbsenceDetail;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutManagementData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SubstitutionOfHDManagementData;
 import nts.uk.shr.com.context.AppContexts;
@@ -30,7 +29,7 @@ import nts.uk.shr.com.context.AppContexts;
 public class RemainSubstitutionHolidayUpdating {
 
 	// 振休残数更新
-	public static AtomTask updateRemainSubstitutionHoliday(RequireM5 require, List<AbsRecDetailPara> lstAbsRecMng,AggrPeriodEachActualClosure period, String empId) {
+	public static AtomTask updateRemainSubstitutionHoliday(RequireM5 require, List<AccumulationAbsenceDetail> lstAbsRecMng,AggrPeriodEachActualClosure period, String empId) {
 		List<AtomTask> atomTasks = new ArrayList<>();
 		
 		String companyId = AppContexts.user().companyId();
@@ -72,7 +71,7 @@ public class RemainSubstitutionHolidayUpdating {
 
 	// 振出管理データの更新
 	private static List<AtomTask> updatePayoutMngData(RequireM2 require, 
-			String companyId, List<AbsRecDetailPara> lstAbsRecMng) {
+			String companyId, List<AccumulationAbsenceDetail> lstAbsRecMng) {
 		List<AtomTask> atomTasks = new ArrayList<>();
 		
 		if (CollectionUtil.isEmpty(lstAbsRecMng))
@@ -85,31 +84,31 @@ public class RemainSubstitutionHolidayUpdating {
 		if (CollectionUtil.isEmpty(lstAbsRecMng))
 			return atomTasks;
 		
-		for (AbsRecDetailPara data : lstAbsRecMng) {
-			Optional<UnUseOfRec> optUnUseOfRec = data.getUnUseOfRec();
-			if (!optUnUseOfRec.isPresent())
-				continue;
-			UnUseOfRec unUseOfRec = optUnUseOfRec.get();
-			Optional<PayoutManagementData> optPayout = require.payoutManagementData(unUseOfRec.getRecMngId());
+		for (AccumulationAbsenceDetail data : lstAbsRecMng) {
+			UnbalanceCompensation unUseOfRec = (UnbalanceCompensation)data;
+			Optional<PayoutManagementData> optPayout = require.payoutManagementData(unUseOfRec.getManageId());
 			if (optPayout.isPresent()) {
 				// update
 				PayoutManagementData payoutDataOld = optPayout.get();
 				PayoutManagementData payoutData = new PayoutManagementData(payoutDataOld.getPayoutId(),
 						payoutDataOld.getCID(), payoutDataOld.getSID(), payoutDataOld.getPayoutDate(),
-						unUseOfRec.getExpirationDate(),
-						EnumAdaptor.valueOf(unUseOfRec.getStatutoryAtr().value, HolidayAtr.class),
-						new ManagementDataDaysAtr(unUseOfRec.getOccurrenceDays()),
-						new ManagementDataRemainUnit(unUseOfRec.getUnUseDays()), unUseOfRec.getDigestionAtr(),
-						unUseOfRec.getDisappearanceDate());
+						unUseOfRec.getDeadline(),
+						EnumAdaptor.valueOf(unUseOfRec.getLegalInExClassi().value, HolidayAtr.class),
+						new ManagementDataDaysAtr(unUseOfRec.getNumberOccurren().getDay().v()),
+						new ManagementDataRemainUnit(unUseOfRec.getUnbalanceNumber().getDay().v()), 
+						unUseOfRec.getDigestionCate(),
+						unUseOfRec.getExtinctionDate());
+				
 				atomTasks.add(AtomTask.of(() -> require.updatePayoutManagementData(payoutData)));
 			} else {
 				// insert
-				PayoutManagementData payoutData = new PayoutManagementData(unUseOfRec.getRecMngId(), companyId,
-						data.getSid(), data.getYmdData(), unUseOfRec.getExpirationDate(),
-						EnumAdaptor.valueOf(unUseOfRec.getStatutoryAtr().value, HolidayAtr.class),
-						new ManagementDataDaysAtr(unUseOfRec.getOccurrenceDays()),
-						new ManagementDataRemainUnit(unUseOfRec.getUnUseDays()), unUseOfRec.getDigestionAtr(),
-						unUseOfRec.getDisappearanceDate());
+				PayoutManagementData payoutData = new PayoutManagementData(unUseOfRec.getManageId(), companyId,
+						data.getEmployeeId(), data.getDateOccur(), unUseOfRec.getDeadline(),
+						EnumAdaptor.valueOf(unUseOfRec.getLegalInExClassi().value, HolidayAtr.class),
+						new ManagementDataDaysAtr(unUseOfRec.getNumberOccurren().getDay().v()),
+						new ManagementDataRemainUnit(unUseOfRec.getUnbalanceNumber().getDay().v()), 
+						unUseOfRec.getDigestionCate(),
+						unUseOfRec.getExtinctionDate());
 				atomTasks.add(AtomTask.of(() -> require.createPayoutManagementData(payoutData)));
 			}
 		}
@@ -119,9 +118,9 @@ public class RemainSubstitutionHolidayUpdating {
 
 	// 振休管理データの更新
 	private static List<AtomTask> updateSubstitutionHolidayMngData(RequireM1 require, 
-			String companyId, List<AbsRecDetailPara> lstAbsRecMng) {
+			String companyId, List<AccumulationAbsenceDetail> lstAbsRecMng) {
 		//大塚カスタマイズ　振休残数がマイナスの場合でも、常にクリアする。
-		boolean isOotsuka = true;
+		boolean isOotsuka = AppContexts.optionLicense().customize().ootsuka();
 		
 		List<AtomTask> atomTasks = new ArrayList<>();
 		
@@ -135,25 +134,22 @@ public class RemainSubstitutionHolidayUpdating {
 		if (CollectionUtil.isEmpty(lstAbsRecMng))
 			return atomTasks;
 		
-		for (AbsRecDetailPara data : lstAbsRecMng) {
-			Optional<UnOffsetOfAbs> optUnOffsetOfAb = data.getUnOffsetOfAb();
-			if (!optUnOffsetOfAb.isPresent())
-				continue;
-			UnOffsetOfAbs unOffsetOfAb = optUnOffsetOfAb.get();
+		for (AccumulationAbsenceDetail data : lstAbsRecMng) {
+			AccumulationAbsenceDetail unOffsetOfAb = data;
 			Optional<SubstitutionOfHDManagementData> optSubData = require
-						.substitutionOfHDManagementData(unOffsetOfAb.getAbsMngId());
+						.substitutionOfHDManagementData(unOffsetOfAb.getManageId());
 			if (optSubData.isPresent()) {
 				// update
 				SubstitutionOfHDManagementData substitutionData = optSubData.get();
-				substitutionData.setRequiredDays(new ManagementDataDaysAtr(unOffsetOfAb.getRequestDays()));
-				substitutionData.setRemainsDay(isOotsuka ? 0 : unOffsetOfAb.getUnOffSetDays());
+				substitutionData.setRequiredDays(new ManagementDataDaysAtr(unOffsetOfAb.getNumberOccurren().getDay().v()));
+				substitutionData.setRemainsDay(isOotsuka ? 0 : unOffsetOfAb.getUnbalanceNumber().getDay().v());
 				atomTasks.add(AtomTask.of(() -> require.updateSubstitutionOfHDManagementData(substitutionData)));
 			} else {
 				// insert
 				SubstitutionOfHDManagementData substitutionData = new SubstitutionOfHDManagementData(
-						unOffsetOfAb.getAbsMngId(), companyId, data.getSid(), data.getYmdData(),
-						new ManagementDataDaysAtr(unOffsetOfAb.getRequestDays()),
-						new ManagementDataRemainUnit(isOotsuka ? 0 : unOffsetOfAb.getUnOffSetDays()));
+						unOffsetOfAb.getManageId(), companyId, data.getEmployeeId(), data.getDateOccur(),
+						new ManagementDataDaysAtr(unOffsetOfAb.getNumberOccurren().getDay().v()),
+						new ManagementDataRemainUnit(isOotsuka ? 0 : unOffsetOfAb.getUnbalanceNumber().getDay().v()));
 				atomTasks.add(AtomTask.of(() -> require.createSubstitutionOfHDManagementData(substitutionData)));
 			}
 		}

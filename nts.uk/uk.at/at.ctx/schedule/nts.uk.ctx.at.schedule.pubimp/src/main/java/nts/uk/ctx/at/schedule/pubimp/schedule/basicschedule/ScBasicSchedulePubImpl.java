@@ -77,6 +77,7 @@ public class ScBasicSchedulePubImpl implements ScBasicSchedulePub {
 						x.getScheduledEndClock()))
 				.collect(Collectors.toList());
 	}
+	
 
 	/**
 	 * Convert export.
@@ -110,11 +111,6 @@ public class ScBasicSchedulePubImpl implements ScBasicSchedulePub {
 		export.setScheduleStartClock(timezone.getScheduleStartClock().valueAsMinutes());
 		export.setScheduleEndClock(timezone.getScheduleEndClock().valueAsMinutes());
 		return export;
-	}
-
-	@Override
-	public GeneralDate acquireMaxDateBasicSchedule(List<String> sIds) {
-		return this.repository.findMaxDateByListSid(sIds);
 	}
 
 	@Override
@@ -219,5 +215,4 @@ public class ScBasicSchedulePubImpl implements ScBasicSchedulePub {
 		
 		return workSchedule.isPresent() ? Optional.of(result) : Optional.empty();
 	}
-
 }

@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.request.dom.application.overtime;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public interface AppOverTimeRepository {
@@ -12,4 +14,7 @@ public interface AppOverTimeRepository {
 	
 	public void remove(String companyID, String appID);
 	
+	public Map<String, Integer> getByAppIdAndOTAttr(String companyId, List<String> appIds);
+	
+	public Map<String, AppOverTime> getHashMapByID(String companyId, List<String> appIds);
 }

@@ -52,7 +52,6 @@ import nts.uk.ctx.at.function.dom.adapter.workrecord.approvalmanagement.Approval
 import nts.uk.ctx.at.function.dom.adapter.workrecord.erroralarm.recordcheck.ErAlWorkRecordCheckAdapter;
 import nts.uk.ctx.at.function.dom.adapter.workrecord.erroralarm.recordcheck.RegulationInfoEmployeeResult;
 import nts.uk.ctx.at.function.dom.adapter.workrecord.identificationstatus.identityconfirmprocess.IdentityConfirmProcessImport;
-import nts.uk.ctx.at.function.dom.alarm.AlarmCategory;
 import nts.uk.ctx.at.function.dom.alarm.alarmdata.ValueExtractAlarm;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.EmployeeSearchDto;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.aggregationprocess.ErAlConstant;
@@ -65,16 +64,18 @@ import nts.uk.ctx.at.function.dom.attendanceitemname.AttendanceItemName;
 import nts.uk.ctx.at.function.dom.attendanceitemname.service.AttendanceItemNameDomainService;
 import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyAdapter;
+import nts.uk.ctx.at.shared.dom.alarmList.AlarmCategory;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.OccurrenceDigClass;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.DigestionAtr;
-import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffDetail;
-import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffMngInPeriodQuery;
-import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffRemainMngOfInPeriod;
-import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffRemainMngParam;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.NumberRemainVacationLeaveRangeProcess;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.AccumulationAbsenceDetail;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.BreakDayOffRemainMngRefactParam;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.SubstituteHolidayAggrResult;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.UnbalanceVacation;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakDayOffMngRepository;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemainRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.ComDayOffManaDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveManaDataRepository;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.breakinfo.FixedManagementDataMonth;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveComSetRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveEmSetRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
@@ -139,8 +140,6 @@ public class MonthlyAggregateProcessService {
 	@Inject
 	private ShareEmploymentAdapter shareEmploymentAdapter;
 	@Inject
-	private InterimRemainRepository interimRemainRepo;
-	@Inject
 	private InterimBreakDayOffMngRepository interimBreakDayOffMngRepo;
 	@Inject
 	private ComDayOffManaDataRepository comDayOffManaDataRepo;
@@ -152,6 +151,8 @@ public class MonthlyAggregateProcessService {
 	private CompensLeaveComSetRepository compensLeaveComSetRepo;
 	@Inject
 	private LeaveManaDataRepository leaveManaDataRepo;
+	@Inject
+	private NumberRemainVacationLeaveRangeProcess numberRemainVacationLeaveRangeProcess;
 	
 	public List<ValueExtractAlarm> monthlyAggregateProcess(String companyID , String  checkConditionCode,DatePeriod period,List<EmployeeSearchDto> employees, ApprovalProcessImport approvalProcessImport, IdentityConfirmProcessImport identityConfirmProcessImport){
 		
@@ -305,10 +306,6 @@ public class MonthlyAggregateProcessService {
 	private List<ValueExtractAlarm> extractErrorAlarmForHoliday(List<FixedExtraMonFunImport> fixedExtraMonFunImport, List<EmployeeSearchDto> employee, String companyID, List<String> empIDs) {
 		List<ValueExtractAlarm> listValueExtractAlarm = Collections.synchronizedList(new ArrayList<>());
 		val cacheCarrier = new CacheCarrier();
-		val breakDayOffMngInPeriodQueryRequire = BreakDayOffMngInPeriodQuery.createRequireM10(closureRepo, interimRemainRepo, 
-				interimBreakDayOffMngRepo, comDayOffManaDataRepo, closureEmploymentRepo, companyAdapter,
-				shareEmploymentAdapter, compensLeaveEmSetRepo, compensLeaveComSetRepo, leaveManaDataRepo);
-		
 		String KAL010_278 = TextResource.localize("KAL010_278");
 		String KAL010_100 = TextResource.localize("KAL010_100");
 
@@ -345,23 +342,35 @@ public class MonthlyAggregateProcessService {
 			//集計終了日
 			DatePeriod newPeriod = new DatePeriod(periodCurrentMonth.start(), periodCurrentMonth.end().addYears(1));
 			
-			BreakDayOffRemainMngParam param = new BreakDayOffRemainMngParam(companyID, emp.getId(),
-					newPeriod, false, periodCurrentMonth.end(), false, Collections.emptyList(),
-					Collections.emptyList(), Collections.emptyList(), Optional.empty(), Optional.empty(), Optional.empty());
-			BreakDayOffRemainMngOfInPeriod breakDayOffRemainMngOfInPeriod = BreakDayOffMngInPeriodQuery
-					.getBreakDayOffMngInPeriod(breakDayOffMngInPeriodQueryRequire, cacheCarrier, param);
-			List<BreakDayOffDetail> lstDetailData = breakDayOffRemainMngOfInPeriod.getLstDetailData();
+			BreakDayOffRemainMngRefactParam inputRefactor = new BreakDayOffRemainMngRefactParam(
+					companyID, emp.getId(),
+					newPeriod, 
+					false, 
+					periodCurrentMonth.end(), 
+					false,
+					Collections.emptyList(), 
+					Optional.empty(), 
+					Optional.empty(), 
+					Collections.emptyList(), 
+					Collections.emptyList(),
+					Optional.empty(), new FixedManagementDataMonth());
+			SubstituteHolidayAggrResult breakDayOffRemainMngOfInPeriod = numberRemainVacationLeaveRangeProcess.getBreakDayOffMngInPeriod(inputRefactor);
+			
+			List<AccumulationAbsenceDetail> lstDetailData = breakDayOffRemainMngOfInPeriod.getVacationDetails().getLstAcctAbsenDetail();
 
-			List<BreakDayOffDetail> lstExtractData = new ArrayList<>();
+			List<UnbalanceVacation> lstExtractData = new ArrayList<>();
 			if (!CollectionUtil.isEmpty(lstDetailData)) {
-				//代休期限アラーム基準日以前に発生した未使用の休出を抽出する
-				lstExtractData = lstDetailData.stream().filter(detail -> {
-					return ((detail.getOccurrentClass() == OccurrenceDigClass.OCCURRENCE)
-							&& (detail.getUnUserOfBreak().isPresent()
-									&& detail.getUnUserOfBreak().get().getDigestionAtr() == DigestionAtr.UNUSED)
-							&& (detail.getYmdData().getDayoffDate().isPresent()
-									&& detail.getYmdData().getDayoffDate().get().beforeOrEquals(periodCheckDealMonth.end())));
-				}).collect(Collectors.toList());
+				// 代休期限アラーム基準日以前に発生した未使用の休出を抽出する
+				lstExtractData = lstDetailData.stream().filter(data -> {
+					if (data.getOccurrentClass() != OccurrenceDigClass.OCCURRENCE) {
+						return false;
+					}
+					UnbalanceVacation detail = (UnbalanceVacation) data;
+					return detail.getDigestionCate() == DigestionAtr.UNUSED
+							&& (detail.getDateOccur().getDayoffDate().isPresent() && detail.getDateOccur()
+									.getDayoffDate().get().beforeOrEquals(periodCheckDealMonth.end()));
+
+				}).map(x -> (UnbalanceVacation) x).collect(Collectors.toList());
 
 				if (!CollectionUtil.isEmpty(lstExtractData)) {
 					//アラームメッセージを生成する
@@ -375,11 +384,11 @@ public class MonthlyAggregateProcessService {
 							valueExractAlarm.setClassification(KAL010_100);
 							valueExractAlarm.setAlarmItem(KAL010_278);
 							String checkedValue = TextResource.localize("KAL010_305",
-									breakDayOffDetail.getYmdData().getDayoffDate().get().toString(),
-									String.valueOf(breakDayOffDetail.getUnUserOfBreak().get().getUnUsedDays()));
+									breakDayOffDetail.getDateOccur().getDayoffDate().get().toString(),
+									String.valueOf(breakDayOffDetail.getUnbalanceNumber().getDay().v()));
 							valueExractAlarm.setAlarmValueMessage(TextResource.localize("KAL010_279",
-									String.valueOf(deadlCheckMonth), breakDayOffDetail.getYmdData().getDayoffDate().get().toString(),
-									String.valueOf(breakDayOffDetail.getUnUserOfBreak().get().getUnUsedDays())));
+									String.valueOf(deadlCheckMonth), breakDayOffDetail.getDateOccur().getDayoffDate().get().toString(),
+									String.valueOf(breakDayOffDetail.getUnbalanceNumber().getDay().v())));
 							valueExractAlarm.setComment(Optional.ofNullable(fix.getMessage()));
 							valueExractAlarm.setCheckedValue(Optional.ofNullable(checkedValue));
 							listValueExtractAlarm.add(valueExractAlarm);

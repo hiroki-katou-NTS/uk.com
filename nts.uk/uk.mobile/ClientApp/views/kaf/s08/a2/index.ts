@@ -150,7 +150,7 @@ export class KafS08A2Component extends KafS00ShrComponent {
 
         return vm.$http.post('at', API.updateBusinessTrip, params).then((res: any) => {
             vm.$mask('hide');
-            vm.$emit('nextToStepThree', res.data.appID);
+            vm.$emit('nextToStepThree', res.data.appIDLst[0]);
         }).catch(() => {
             vm.$mask('hide');
             vm.$modal.error({ messageId: 'Msg_1912' });
@@ -311,7 +311,8 @@ export class KafS08A2Component extends KafS00ShrComponent {
             }).then((res: any) => {
                 //vm.appID = res.data.appID;
                 if (res) {
-                    vm.$emit('nextToStepThree', res.data.appID);
+                    vm.$http.post('at', API.reflectApp, res.data.reflectAppIdLst);
+                    vm.$emit('nextToStepThree', res.data.appIDLst[0]);
                 } else {
                     vm.$modal.error({ messageId: 'Msg_1912' });
                 }
@@ -346,5 +347,6 @@ const API = {
     checkBeforeApply: 'at/request/application/businesstrip/mobile/checkBeforeRegister',
     register: 'at/request/application/businesstrip/mobile/register',
     updateBusinessTrip: 'at/request/application/businesstrip/mobile/updateBusinessTrip',
+    reflectApp: 'at/request/application/reflect-app'
 };
 

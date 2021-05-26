@@ -7,6 +7,8 @@ import javax.inject.Inject;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.YearMonth;
+import nts.arc.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.YearMonthPeriod;
 import nts.uk.ctx.at.record.dom.monthly.TimeOfMonthlyRepository;
 import nts.uk.ctx.at.record.infra.entity.monthly.mergetable.KrcdtMonMergePk;
 import nts.uk.ctx.at.record.infra.entity.monthly.performance.KrcdtEditStateOfMothlyPer;
@@ -35,6 +37,10 @@ public class JpaEditStateOfMonthlyPerRepository extends JpaRepository implements
 			+ "AND a.krcdtEditStateOfMothlyPerPK.closureID = :closureId "
 			+ "AND a.krcdtEditStateOfMothlyPerPK.closeDay = :closureDay "
 			+ "AND a.krcdtEditStateOfMothlyPerPK.isLastDay = :isLastDay ";
+	private static final String FIND_BY_SIDS = "SELECT a FROM KrcdtEditStateOfMothlyPer a "
+			+ "WHERE a.krcdtEditStateOfMothlyPerPK.employeeID IN :lstSid "
+			+ "AND a.krcdtEditStateOfMothlyPerPK.processDate >= :startDate "
+			+ "AND a.krcdtEditStateOfMothlyPerPK.processDate <= :endDate";
 	
 	@Inject
 	private TimeOfMonthlyRepository timeMonthRepo;
@@ -66,5 +72,14 @@ public class JpaEditStateOfMonthlyPerRepository extends JpaRepository implements
 				.executeUpdate();
 		this.timeMonthRepo.dirtying(() -> new KrcdtMonMergePk(employeeId, yearMonth.v(), closureId.value, 
 															closureDate.getClosureDay().v(), closureDate.getLastDayOfMonth() ? 1 : 0));
+	}
+
+	@Override
+	public List<EditStateOfMonthlyPerformance> findBySidsAndYM(List<String> lstSid, YearMonthPeriod mPeriod) {
+		return this.queryProxy().query(FIND_BY_SIDS, KrcdtEditStateOfMothlyPer.class)
+				.setParameter("lstSid", lstSid)
+				.setParameter("startDate", mPeriod.start())
+				.setParameter("endDate", mPeriod.end())
+				.getList(c -> c.toDomain());
 	}
 }

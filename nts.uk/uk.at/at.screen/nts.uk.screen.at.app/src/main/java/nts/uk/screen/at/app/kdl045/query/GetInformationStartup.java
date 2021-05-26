@@ -125,11 +125,11 @@ public class GetInformationStartup {
 		List<UsageTimeAndType> listUsageTimeAndType = new ArrayList<>();
 		// 2 : 合計使用時間()
 		for (TimeVacationAndType timeVacationAndType : listTimeVacationAndType) {
-			int total = 0;
-			for (DailyAttdTimeVacationDto dailyAttdTimeVacationDto : timeVacationAndType.getTimeVacation()
-					.getUsageTime()) {
-				total = total + dailyAttdTimeVacationDto.totalVacationAddTime();
-			}
+			int total = timeVacationAndType.getTimeVacation().getUsageTime().totalVacationAddTime();
+//			for (DailyAttdTimeVacationDto dailyAttdTimeVacationDto : timeVacationAndType.getTimeVacation()
+//					.getUsageTime()) {
+//				total = total + dailyAttdTimeVacationDto.totalVacationAddTime();
+//			}
 			listUsageTimeAndType.add(new UsageTimeAndType(timeVacationAndType.getTypeVacation(), total));
 		}
 		data.setListUsageTimeAndType(listUsageTimeAndType);
@@ -296,8 +296,7 @@ public class GetInformationStartup {
 
 		@Override
 		public boolean shiftMasterIsExist(ShiftMasterCode shiftMasterCode) {
-			// TODO Auto-generated method stub
-			return false;
+			return shiftMasterRepo.checkExistsByCd(companyId, shiftMasterCode.v());
 		}
 	}
 

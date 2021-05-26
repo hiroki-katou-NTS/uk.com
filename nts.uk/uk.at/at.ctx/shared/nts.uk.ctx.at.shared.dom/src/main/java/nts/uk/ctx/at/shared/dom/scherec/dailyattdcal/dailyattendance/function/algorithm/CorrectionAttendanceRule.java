@@ -11,22 +11,27 @@ import javax.inject.Inject;
 
 import lombok.val;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.shared.dom.dailyprocess.calc.FactoryManagePerPersonDailySet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.CommonCompanySettingForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.DailyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.service.AttendanceItemConvertFactory;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateSetting;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.aftercorrectatt.CorrectionAfterTimeChange;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.aftercorrectwork.CorrectionAfterChangeWorkInfo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.breaktime.BreakTimeSheetCorrector;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.breaktime.CreateOneDayRangeCalc;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManagePerCompanySet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManagePerPersonDailySet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.CalculationRangeOfOneDay;
+import nts.uk.ctx.at.shared.dom.scherec.dailyprocess.calc.FactoryManagePerPersonDailySet;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItem;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemRepository;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
+import nts.uk.ctx.at.shared.dom.workingcondition.service.WorkingConditionService;
 import nts.uk.ctx.at.shared.dom.worktime.common.JustCorrectionAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
@@ -63,7 +68,10 @@ public class CorrectionAttendanceRule implements ICorrectionAttendanceRule {
 
 	@Inject
 	private CorrectionAfterChangeWorkInfo correctionAfterChangeWorkInfo;
-
+	
+	@Inject
+	private CommonCompanySettingForCalc companyCommonSettingRepo;
+	
 	@Inject
 	private FactoryManagePerPersonDailySet personDailySetFactory;
 	
@@ -88,6 +96,12 @@ public class CorrectionAttendanceRule implements ICorrectionAttendanceRule {
 	@Inject
 	private FlexWorkSettingRepository flexWorkSettingRepo;
 	
+	@Inject
+	private WorkingConditionItemRepository workingConditionItemRepo;
+	
+	@Inject
+	private WorkingConditionRepository workingConditionRepo;
+	
 	// 勤怠ルールの補正処理
 	@Override
 	public IntegrationOfDaily process(IntegrationOfDaily domainDaily, ChangeDailyAttendance changeAtt) {
@@ -100,22 +114,26 @@ public class CorrectionAttendanceRule implements ICorrectionAttendanceRule {
 
 		DailyRecordToAttendanceItemConverter converter = attendanceItemConvertFactory.createDailyConverter(optionalItems)
 																					.setData(domainDaily).completed();
-		List<Integer> atendanceId = converter.editStates().stream().filter(x -> x.isHandCorrect())
+		List<Integer> atendanceId = converter.editStates().stream()
 				.map(x -> x.getAttendanceItemId()).distinct().collect(Collectors.toList());
 
 		// 補正前の状態を保持
 		// IntegrationOfDaily beforeDomain = converter.toDomain();
 		List<ItemValue> beforeItems = atendanceId.isEmpty() ? new ArrayList<>() : converter.convert(atendanceId);
 
+		// 社員の労働条件を取得する
+		Optional<WorkingConditionItem> workCondOpt = WorkingConditionService.findWorkConditionByEmployee(createImp(),
+				domainDaily.getEmployeeId(), domainDaily.getYmd());
+		
 		// 勤怠変更後の補正
-		/// TODO: 設計中 waiting design map
-		IntegrationOfDaily afterDomain = correctionAfterTimeChange.corection(companyId, domainDaily);
+		IntegrationOfDaily afterDomain = correctionAfterTimeChange
+				.corection(domainDaily, changeAtt, workCondOpt).getRight();
 
-		// TODO: 設計中 waiting design map case 出退勤 .....
 		if (changeAtt.workInfo) {
 			// 変更する勤怠項目を確認
-			/// TODO: processing mock new domain
-			afterDomain = correctionAfterChangeWorkInfo.correction(companyId, afterDomain);
+			//// 勤務情報変更後の補正
+			afterDomain = correctionAfterChangeWorkInfo.correction(companyId, afterDomain, workCondOpt,
+					changeAtt.getClassification());
 
 		}
 		
@@ -128,6 +146,23 @@ public class CorrectionAttendanceRule implements ICorrectionAttendanceRule {
 		if(!beforeItems.isEmpty()) afterConverter.merge(beforeItems);
 
 		return afterConverter.toDomain();
+	}
+
+	private WorkingConditionService.RequireM1 createImp() {
+
+		return new WorkingConditionService.RequireM1() {
+
+			@Override
+			public Optional<WorkingConditionItem> workingConditionItem(String historyId) {
+				return workingConditionItemRepo.getByHistoryId(historyId);
+			}
+
+			@Override
+			public Optional<WorkingCondition> workingCondition(String companyId, String employeeId,
+					GeneralDate baseDate) {
+				return workingConditionRepo.getBySidAndStandardDate(companyId, employeeId, baseDate);
+			}
+		};
 	}
 
 	private BreakTimeSheetCorrector.RequireM1 createBreakRequire(Map<Integer, OptionalItem> optionalItems) {
@@ -164,6 +199,12 @@ public class CorrectionAttendanceRule implements ICorrectionAttendanceRule {
 			public Optional<WorkTimeSetting> workTimeSetting(String companyId, String workTimeCode) {
 
 				return workTimeSettingRepo.findByCode(companyId, workTimeCode);
+			}
+			
+			@Override
+			public ManagePerCompanySet managePerCompanySet() {
+
+				return companyCommonSettingRepo.getCompanySetting();
 			}
 			
 			@Override

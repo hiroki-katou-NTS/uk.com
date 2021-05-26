@@ -4,8 +4,7 @@ import java.util.List;
 
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimAbsMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecMng;
-//import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.DailyInterimRemainMngData;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualHolidayMng;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TempAnnualLeaveMngs;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimDayOffMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
@@ -26,7 +25,7 @@ public interface TimeOffRemainErrorInfor {
 	 * @return
 	 */
 	List<EmployeeMonthlyPerError> annualData(TimeOffRemainErrorInputParam param, List<InterimRemain> annualMng, 
-			List<TmpAnnualHolidayMng> annualHolidayData,
+			List<TempAnnualLeaveMngs> annualHolidayData,
 			List<InterimRemain> resereMng,List<TmpResereLeaveMng> resereLeaveData);
 	/**
 	 * 特休残数のチェック

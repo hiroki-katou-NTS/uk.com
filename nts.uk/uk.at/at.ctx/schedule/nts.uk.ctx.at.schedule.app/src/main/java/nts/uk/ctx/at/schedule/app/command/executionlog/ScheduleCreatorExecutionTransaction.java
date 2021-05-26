@@ -28,12 +28,9 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.schedule.app.command.executionlog.internal.BasicWorkSettingByClassificationGetterCommand;
 import nts.uk.ctx.at.schedule.app.command.executionlog.internal.BasicWorkSettingByWorkplaceGetterCommand;
 import nts.uk.ctx.at.schedule.app.command.executionlog.internal.CalculationCache;
-import nts.uk.ctx.at.schedule.app.command.executionlog.internal.ScheCreExeBasicScheduleHandler;
 import nts.uk.ctx.at.schedule.app.command.executionlog.internal.ScheCreExeBasicWorkSettingHandler;
 import nts.uk.ctx.at.schedule.app.command.executionlog.internal.ScheCreExeErrorLogHandler;
-import nts.uk.ctx.at.schedule.app.command.executionlog.internal.ScheCreExeMonthlyPatternHandler;
 import nts.uk.ctx.at.schedule.app.command.executionlog.internal.ScheCreExeWorkTimeHandler;
-import nts.uk.ctx.at.schedule.app.command.executionlog.internal.ScheCreExeWorkTypeHandler;
 import nts.uk.ctx.at.schedule.app.command.executionlog.internal.ScheduleErrorLogGeterCommand;
 import nts.uk.ctx.at.schedule.app.command.executionlog.internal.WorkTimeConvertCommand;
 import nts.uk.ctx.at.schedule.app.command.executionlog.internal.WorkdayAttrByClassGetterCommand;
@@ -59,6 +56,7 @@ import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.service.DateRegistedEmpSche;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.service.RegistrationListDateSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.createworkschedule.createschedulecommon.correctworkschedule.CorrectWorkSchedule;
+import nts.uk.ctx.at.schedule.dom.schedule.task.taskschedule.TaskSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ConfirmedATR;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ProcessingStatus;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ScheManaStatuTempo;
@@ -103,15 +101,14 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.D
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.DailyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ChildCareAttribute;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortWorkTimFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortWorkingTimeSheet;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.CalculationState;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.NotUseAttribute;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.ScheduleTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
+import nts.uk.ctx.at.shared.dom.shortworktime.ChildCareAtr;
 import nts.uk.ctx.at.shared.dom.workingcondition.ManageAtr;
 import nts.uk.ctx.at.shared.dom.workingcondition.PersonalDayOfWeek;
 import nts.uk.ctx.at.shared.dom.workingcondition.SingleDaySchedule;
@@ -131,6 +128,7 @@ import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
 import nts.uk.ctx.at.shared.dom.worktime.predset.UseSetting;
+import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingService;
@@ -165,17 +163,6 @@ public class ScheduleCreatorExecutionTransaction {
 	/** The schedule error log repository. */
 	@Inject
 	private ScheduleErrorLogRepository scheduleErrorLogRepository;
-
-	/** The sche cre exe work type handler. */
-	@Inject
-	private ScheCreExeWorkTypeHandler scheCreExeWorkTypeHandler;
-
-	/** The sche cre exe basic schedule handler. */
-	@Inject
-	private ScheCreExeBasicScheduleHandler scheCreExeBasicScheduleHandler;
-
-	@Inject
-	private ScheCreExeMonthlyPatternHandler scheCreExeMonthlyPatternHandler;
 
 	@Inject
 	private I18NResourcesForUK internationalization;
@@ -236,9 +223,6 @@ public class ScheduleCreatorExecutionTransaction {
 
 	@Inject
 	private WorkTimeSettingRepository workTimeSettingRepository;
-
-	@Inject
-	private WorkTimeSettingService workTimeSettingService;
 
 	@Inject
 	private BasicScheduleService basicScheduleService;
@@ -337,26 +321,23 @@ public class ScheduleCreatorExecutionTransaction {
 			this.workScheduleRepository.insertAll(companyId, result.getListWorkSchedule());
 			
 			// Outputの勤務種類一覧を繰り返す
-			this.managedParallelWithContext.forEach(ControlOption.custom().millisRandomDelay(MAX_DELAY_PARALLEL),
-					result.getListWorkSchedule(), ws -> {
-						// 暫定データの登録
-						if (ws != null) {
-							this.interimRemainDataMngRegisterDateChange.registerDateChange(companyId, ws.getEmployeeID(),
-									Arrays.asList(ws.getYmd()));
-						}
-					});
-
+			result.getListWorkSchedule().forEach( ws -> {
+				// 暫定データの登録
+				if (ws != null) {
+					this.interimRemainDataMngRegisterDateChange.registerDateChange(companyId, ws.getEmployeeID(),
+							Arrays.asList(ws.getYmd()));
+				}
+			});
+			
 			// エラー一覧を繰り返す
-			this.managedParallelWithContext.forEach(ControlOption.custom().millisRandomDelay(MAX_DELAY_PARALLEL),
-					result.getListError(), error -> {
-						// エラーを登録する
-						if (error != null) {
-							error.setExecutionId(command.getExecutionId());
-							this.scheduleErrorLogRepository.addByTransaction(error);
-						}
-					});
-
-			// }
+			result.getListError().forEach( error -> {
+				// エラーを登録する
+				if (error != null) {
+					error.setExecutionId(command.getExecutionId());
+					this.scheduleErrorLogRepository.addByTransaction(error);
+				}
+			});
+			
 		}
 	}
 
@@ -489,13 +470,22 @@ public class ScheduleCreatorExecutionTransaction {
 		// データ（処理状態付き）を生成して返す
 		return new DataProcessingStatusResult(CID, null,
 				ProcessingStatus.valueOf(ProcessingStatus.NORMAL_PROCESS.value),
-				new WorkSchedule(creator.getEmployeeId(), dateInPeriod, ConfirmedATR.UNSETTLED,
+				new WorkSchedule(
+						creator.getEmployeeId(),
+						dateInPeriod,
+						ConfirmedATR.UNSETTLED,
 						new WorkInfoOfDailyAttendance(new WorkInformation("", ""), 
 								CalculationState.No_Calculated, NotUseAttribute.Not_use, NotUseAttribute.Not_use,
 								nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.DayOfWeek
 										.valueOf(dateInPeriod.dayOfWeek() - 1),
-								new ArrayList<>()),
-						null, new BreakTimeOfDailyAttd(), new ArrayList<>(), Optional.empty(), Optional.empty(),
+								new ArrayList<>(), Optional.empty()),
+						null,
+						new BreakTimeOfDailyAttd(),
+						new ArrayList<>(),
+						TaskSchedule.createWithEmptyList(),
+						Optional.empty(),
+						Optional.empty(),
+						Optional.empty(),
 						Optional.empty()),
 				workingConditionItem, employmentInfo);
 
@@ -662,8 +652,7 @@ public class ScheduleCreatorExecutionTransaction {
 				// 勤務情報が正常な状態かをチェックする
 
 				WorkInformation.Require require = new WorkInformationImpl(workTypeRepo, workTimeSettingRepository,
-						workTimeSettingService, basicScheduleService, fixedWorkSet, flowWorkSet, flexWorkSet,
-						predetemineTimeSet);
+						basicScheduleService, fixedWorkSet, flowWorkSet, flexWorkSet, predetemineTimeSet);
 				ErrorStatusWorkInfo checkErrorCondition = information.checkErrorCondition(require);
 
 				// 正常の場合
@@ -706,7 +695,7 @@ public class ScheduleCreatorExecutionTransaction {
 								ShortWorkingTimeSheet timeSheet = new ShortWorkingTimeSheet(
 										new ShortWorkTimFrameNo(shortChild.getTimeSlot()),
 										EnumAdaptor.valueOf(shortWork.getChildCareAtr().value,
-												ChildCareAttribute.class),
+												ChildCareAtr.class),
 										shortChild.getStartTime(), shortChild.getEndTime());
 								lstSheets.add(timeSheet);
 
@@ -755,13 +744,19 @@ public class ScheduleCreatorExecutionTransaction {
 					if(command.getContent().getConfirm()) {
 						atr = ConfirmedATR.CONFIRMED;
 					}
-					WorkSchedule workSchedule = new WorkSchedule(integrationOfDaily.getEmployeeId(),
-							integrationOfDaily.getYmd(), atr,
-							integrationOfDaily.getWorkInformation(), integrationOfDaily.getAffiliationInfor(),
-							integrationOfDaily.getBreakTime(), integrationOfDaily.getEditState(),
+					WorkSchedule workSchedule = new WorkSchedule(
+							integrationOfDaily.getEmployeeId(),
+							integrationOfDaily.getYmd(),
+							atr,
+							integrationOfDaily.getWorkInformation(),
+							integrationOfDaily.getAffiliationInfor(),
+							integrationOfDaily.getBreakTime(),
+							integrationOfDaily.getEditState(),
+							TaskSchedule.createWithEmptyList(),
 							integrationOfDaily.getAttendanceLeave(),
 							integrationOfDaily.getAttendanceTimeOfDailyPerformance(),
-							integrationOfDaily.getShortTime());
+							integrationOfDaily.getShortTime(),
+							integrationOfDaily.getOutingTime());
 
 					// 「処理状態」、「勤務予定」、「エラー」を返す - TQP
 					// // 編集状態なし
@@ -1699,9 +1694,6 @@ public class ScheduleCreatorExecutionTransaction {
 
 		@Inject
 		private WorkTimeSettingRepository workTimeSettingRepository;
-
-		@Inject
-		private WorkTimeSettingService workTimeSettingService;
 
 		@Inject
 		private BasicScheduleService basicScheduleService;

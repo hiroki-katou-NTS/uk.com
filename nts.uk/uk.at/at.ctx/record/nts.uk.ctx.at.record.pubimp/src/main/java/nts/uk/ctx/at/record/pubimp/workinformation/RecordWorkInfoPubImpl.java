@@ -55,12 +55,12 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.holidaywork
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.holidayworktime.HolidayWorkTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.latetime.LateTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.overtimehours.clearovertime.OverTimeOfDaily;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ChildCareAttribute;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortWorkTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.ScheduleTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.TotalWorkingTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.outsideworktime.OverTimeFrameTime;
+import nts.uk.ctx.at.shared.dom.shortworktime.ChildCareAtr;
 import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.StaturoryAtrOfHolidayWork;
 
@@ -345,6 +345,17 @@ public class RecordWorkInfoPubImpl implements RecordWorkInfoPub {
 	private WorkInfoOfDailyPerExport convertToWorkInfoOfDailyPerformance(WorkInfoOfDailyPerformance domain) {
 		return new WorkInfoOfDailyPerExport(domain.getEmployeeId(), domain.getYmd());
 	}
+
+	@Override
+	public List<InfoCheckNotRegisterPubExport> findByEmpAndPeriod(String employeeId, DatePeriod datePeriod) {
+		List<WorkInfoOfDailyPerformance> result = workInformationRepository.findByPeriodOrderByYmd(employeeId, datePeriod);
+		if (result.isEmpty()) {
+			return Collections.emptyList();
+		}
+		return result.stream()
+					.map(item -> convertToExport(item))
+					.collect(Collectors.toList());
+	}
 	
 	public RecordWorkInfoPubExport_New createInDomain(String employeeId, GeneralDate ymd) {
 		RecordWorkInfoPubExport_New record = new RecordWorkInfoPubExport_New();
@@ -580,9 +591,11 @@ public class RecordWorkInfoPubImpl implements RecordWorkInfoPub {
 		Optional<ShortTimeOfDailyPerformance> opShortTimeOfDailyPerformance = shortTimeOfDailyPerformanceRepo.find(employeeId, ymd);
 		if(opShortTimeOfDailyPerformance.isPresent()) {
 			record.setChildCareShortWorkingTimeList(opShortTimeOfDailyPerformance.get().getTimeZone().getShortWorkingTimeSheets().stream()
-					.filter(x -> x.getChildCareAttr()==ChildCareAttribute.CHILD_CARE).collect(Collectors.toList()));
+					.filter(x -> x.getChildCareAttr() == ChildCareAtr.CHILD_CARE)
+					.collect(Collectors.toList()));
 			record.setCareShortWorkingTimeList(opShortTimeOfDailyPerformance.get().getTimeZone().getShortWorkingTimeSheets().stream()
-					.filter(x -> x.getChildCareAttr()==ChildCareAttribute.CARE).collect(Collectors.toList()));
+					.filter(x -> x.getChildCareAttr() == ChildCareAtr.CARE)
+					.collect(Collectors.toList()));
 		}
 		
 		return record;

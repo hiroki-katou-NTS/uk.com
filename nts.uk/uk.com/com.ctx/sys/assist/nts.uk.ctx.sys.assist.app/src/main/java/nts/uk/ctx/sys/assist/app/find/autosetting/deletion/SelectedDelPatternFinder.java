@@ -1,7 +1,7 @@
 package nts.uk.ctx.sys.assist.app.find.autosetting.deletion;
 
-import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -38,7 +38,8 @@ public class SelectedDelPatternFinder {
 		List<DataDeletionSelectionCategory> selectCategories = dataDeletionSelectionCategoryRepository
 				.findByPatternCdAndPatternAtrAndSystemTypes(command.getPatternCode(),
 						command.getPatternClassification(), command.getCategories().stream()
-								.map(DeleteCategoryDto::getSystemType).collect(Collectors.toList()));
+								.map(DeleteCategoryDto::getSystemType).collect(Collectors.toList()),
+						AppContexts.user().contractCode());
 		// ドメインモデル「カテゴリ」を取得する
 		List<CategoryForDelete> categories = categoryForDeleteRepository.getCategoryByListId(
 				selectCategories.stream().map(c -> c.getCategoryId().v()).collect(Collectors.toList()));
@@ -46,28 +47,24 @@ public class SelectedDelPatternFinder {
 				AppContexts.user().contractCode(), command.getPatternCode(), command.getPatternClassification());
 
 		// List<選択カテゴリ名称＞を作成
-		dto.setSelectedCategories(selectCategories.stream().map(sc -> {
-			SelectionDelCategoryNameDto obj = new SelectionDelCategoryNameDto();
-			obj.setCategoryId(sc.getCategoryId().v());
-			obj.setCategoryName(
-					command.getCategories().stream().filter(u -> u.getCategoryId().equals(sc.getCategoryId().v()))
-							.filter(u -> u.getSystemType() == sc.getSystemType().value).findFirst()
-							.map(DeleteCategoryDto::getCategoryName).orElse(null));
-			obj.setPatternClassification(sc.getPatternClassification().value);
-			obj.setPatternCode(sc.getPatternCode().v());
-			obj.setRetentionPeriod(categories.stream().filter(u -> u.getCategoryId().v().equals(sc.getCategoryId().v()))
-					.findFirst().map(c -> c.getTimeStore().nameId).orElse(null));
-			obj.setSystemType(sc.getSystemType().value);
-			op.ifPresent(pattern -> {
-				DataDeletionPatternSettingDto patternDto = new DataDeletionPatternSettingDto();
-				pattern.setMemento(patternDto);
-				obj.setPattern(patternDto);
-			});
-			return obj;
-		}).sorted(Comparator.comparing(SelectionDelCategoryNameDto::getCategoryId)).collect(Collectors.toList()));
+		if (op.isPresent()) {
+			DataDeletionPatternSetting pattern = op.get();
+			dto.setPattern(DataDeletionPatternSettingDto.createFromDomain(pattern));
+			dto.getPattern().setSelectCategories(selectCategories.stream().map(sc -> 
+				categories.stream().filter(u -> u.getCategoryId().equals(sc.getCategoryId()))
+						.findFirst()
+						.map(category -> SelectionDelCategoryNameDto.builder()
+							.categoryId(sc.getCategoryId().v())
+							.categoryName(category.getCategoryName().v())
+							.retentionPeriod(category.getTimeStore().nameId)
+							.systemType(sc.getSystemType().value)
+							.build())
+						.orElse(null)
+			).filter(Objects::nonNull).collect(Collectors.toList()));
+		}
 
 		// List<選択可能カテゴリ＞を作成
-		dto.setSelectableCategories(getSelectable(dto.getSelectedCategories(), command.getCategories()));
+		dto.setSelectableCategories(getSelectable(dto.getPattern().getSelectCategories(), command.getCategories()));
 		// オブジェクト「選択パターンパラメータ」を返す。
 		return dto;
 	}

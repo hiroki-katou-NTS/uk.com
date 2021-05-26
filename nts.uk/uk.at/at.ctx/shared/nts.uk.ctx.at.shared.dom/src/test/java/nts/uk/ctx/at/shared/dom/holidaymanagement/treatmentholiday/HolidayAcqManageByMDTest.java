@@ -3,15 +3,19 @@ package nts.uk.ctx.at.shared.dom.holidaymanagement.treatmentholiday;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
+import lombok.val;
+import mockit.Expectations;
 import mockit.Injectable;
+import mockit.integration.junit4.JMockit;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.common.days.FourWeekDays;
 import nts.uk.ctx.at.shared.dom.common.days.WeeklyDays;
 import nts.uk.shr.com.time.calendar.MonthDay;
-
+@RunWith(JMockit.class)
 public class HolidayAcqManageByMDTest {
 	
 	@Injectable
@@ -113,6 +117,30 @@ public class HolidayAcqManageByMDTest {
 		StartDateClassification result = holidayAcqManageByMD.getStartDateType();
 		
 		assertThat(result).isEqualTo(StartDateClassification.SPECIFY_MD);
+	}
+	
+	/**
+	 * 月日
+	 * 起算日 = 2021/1/1
+	 */
+	@Test
+	public void test_get28days() {
+		val holidayManaByMD = new HolidayAcqManageByMD(new MonthDay(1, 1), new FourWeekDays(28.0), new WeeklyDays(7.0));
+		val baseDate = GeneralDate.ymd(2021, 1, 1);
+		
+		new Expectations(holidayManaByMD) {
+			{
+				holidayManaByMD.getManagementPeriod(require, baseDate);
+				result = new HolidayAcqManaPeriod(new DatePeriod(GeneralDate.ymd(2021, 1, 1), GeneralDate.ymd(2021, 1, 28)), new FourWeekDays(28.0));
+				times = 1;
+			}
+		};
+		
+		val result = holidayManaByMD.get28Days(require, baseDate);
+
+		assertThat(result.start()).isEqualTo(GeneralDate.ymd(2021, 1, 1));
+		assertThat(result.end()).isEqualTo(GeneralDate.ymd(2021, 1, 28));
+		
 	}
 
 }

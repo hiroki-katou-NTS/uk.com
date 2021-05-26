@@ -151,6 +151,7 @@ public class CreateDailyResultDomainServiceNew {
 	
 	/**
 	 * ③日別実績の作成処理
+	 *  (search : 日別作成Mgrクラス .アルゴリズム)
 	 * 
 	 * @param companyId
 	 *            会社ID
@@ -547,7 +548,7 @@ public class CreateDailyResultDomainServiceNew {
 		// 暫定データの登録
 		this.interimRemainDataMngRegisterDateChange.registerDateChange(companyId, employeeId,
 				periodTime.datesBetween());
-		if(empCalAndSumExeLog.isPresent()) {
+		if(empCalAndSumExeLog.isPresent() && cStatus.getProcessState() == ProcessState.SUCCESS ) {
 			// ログ情報（実行内容の完了状態）を更新する
 			updateExecutionStatusOfDailyCreation(employeeId, executionAttr.value, empCalAndSumExeLog.get().getEmpCalAndSumExecLogID());
 		}
@@ -809,8 +810,9 @@ public class CreateDailyResultDomainServiceNew {
 					// List<String> workPlaceIdList = this.affWorkplaceAdapter
 					// .findParentWpkIdsByWkpId(companyId, workPlaceId, strDate);
 					// [No.569]職場の上位職場を取得する
-					List<String> workPlaceIdList = this.affWorkplaceAdapter.getUpperWorkplace(companyId, workPlaceId,
-							strDate);
+                    // List<String> workPlaceIdList = this.affWorkplaceAdapter.getUpperWorkplace(companyId, workPlaceId,strDate);
+					//[No.571]職場の上位職場を基準職場を含めて取得する
+					List<String> workPlaceIdList = this.affWorkplaceAdapter.getWorkplaceIdAndUpper(companyId,strDate, workPlaceId);
 
 					// 特定日設定を取得する
 					// Reqlist 490

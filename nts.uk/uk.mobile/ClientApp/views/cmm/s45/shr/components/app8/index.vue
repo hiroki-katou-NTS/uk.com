@@ -2,7 +2,13 @@
     <div>
         <div v-for="data in (params.appDetail ? params.appDetail.details : [])"
              v-bind:key="data.appTimeType">
-            <div class="card-label">
+            <div class="card-label"
+                 v-if="(data.appTimeType === 0 && params.appDetail.reflectSetting.destination.firstBeforeWork == 1)
+                        || (data.appTimeType === 1 && params.appDetail.reflectSetting.destination.firstAfterWork == 1)
+                        || (data.appTimeType === 2 && params.appDispInfoStartupOutput.appDispInfoNoDateOutput.managementMultipleWorkCycles && params.appDetail.reflectSetting.destination.secondBeforeWork == 1)
+                        || (data.appTimeType === 3 && params.appDispInfoStartupOutput.appDispInfoNoDateOutput.managementMultipleWorkCycles && params.appDetail.reflectSetting.destination.secondAfterWork == 1)
+                        || (data.appTimeType === 4 && params.appDetail.reflectSetting.destination.privateGoingOut == 1)
+                        || (data.appTimeType === 5 && params.appDetail.reflectSetting.destination.unionGoingOut == 1)">
                 <div class="card-header uk-bg-accordion">
                     <span>{{title(data.appTimeType) | i18n}}</span>
                 </div>
@@ -12,8 +18,8 @@
                             <kafs00subp1 v-bind:params="scheduledTime(data.appTimeType)"/>
                         </div>
                         <div class="col-6">
-                            <span v-if="data.appTimeType == 0 || data.appTimeType == 2">{{'KAFS12_33' | i18n(getTime(data.timeZones[0].startTime))}}</span>
-                            <span v-if="data.appTimeType == 1 || data.appTimeType == 3">{{'KAFS12_37' | i18n(getTime(data.timeZones[0].endTime))}}</span>
+                            <span v-if="data.appTimeType == 0 || data.appTimeType == 2">{{'KAFS12_33' | i18n(getTime(data.timeZones[0].endTime))}}</span>
+                            <span v-if="data.appTimeType == 1 || data.appTimeType == 3">{{'KAFS12_37' | i18n(getTime(data.timeZones[0].startTime))}}</span>
                         </div>
                     </div>
                     <div v-else>

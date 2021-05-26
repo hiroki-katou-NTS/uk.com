@@ -36,6 +36,7 @@ module nts.uk.com.view.ccg015.d {
       vm.topPageCode(params.topPageModel.topPageCode);
       vm.getFlowmenuUpload();
       vm.getFlowmenu();
+      vm.checkDataLayout(vm.params)
       vm.itemList([
         new ItemModel(LayoutType.FLOW_MENU, vm.$i18n('Enum_LayoutType_FLOW_MENU')),
         new ItemModel(LayoutType.FLOW_MENU_UPLOAD, vm.$i18n('Enum_LayoutType_FLOW_MENU_UPLOAD')),
@@ -60,15 +61,22 @@ module nts.uk.com.view.ccg015.d {
               vm.contentUrl(false);
               const flowMenuChoose = _.findIndex(vm.listFlowMenu(), (item: FlowMenuItem) => { return item.flowCode === vm.flowMenuSelectedCode() });
               const fileIdChoose: string = vm.listFlowMenu()[flowMenuChoose].fileId;
-              vm.$blockui('grayout');
-              vm.$ajax('sys/portal/createflowmenu/extract/' + fileIdChoose).then((item: any) => {
-              if (!_.isEmpty(item)) {
-                vm.renderHTML(item.htmlContent, 'frame1');
-                _.each((document.getElementById("frameF1") as any ).contentDocument.getElementsByTagName("a"), link => {
-                  link.addEventListener('click', (event: Event) => event.preventDefault());
-                })
+
+              if (!!fileIdChoose) {
+                vm.$blockui('grayout');
+                vm.$ajax('sys/portal/createflowmenu/extract/' + fileIdChoose).then((item: any) => {
+                if (!_.isEmpty(item)) {
+                  vm.renderHTML(item.htmlContent, 'frame1');
+                  _.each((document.getElementById("frameF1") as any ).contentDocument.getElementsByTagName("a"), link => {
+                    link.addEventListener('click', (event: Event) => event.preventDefault());
+                  })
+                }
+                }).always(() => vm.$blockui('clear'));
+              } else {
+                const ifr = document.getElementById('frameF1');
+                const iframedoc = (ifr as any).contentDocument || (ifr as any).contentWindow.document;
+                iframedoc.body.innerHTML = "";
               }
-              }).always(() => vm.$blockui('clear'));
             } else if (value === LayoutType.FLOW_MENU_UPLOAD) {
               vm.contentFlowMenu(false);
               vm.contentTopPagePart(true);
@@ -99,16 +107,26 @@ module nts.uk.com.view.ccg015.d {
         const flowMenuChoose = _.findIndex(vm.listFlowMenu(), (item: FlowMenuItem) => { return item.flowCode === data });
         vm.flowMenuSelectedCode(vm.listFlowMenu()[flowMenuChoose].flowCode);
         const fileIdChoose: string = vm.listFlowMenu()[flowMenuChoose].fileId;
-        vm.$blockui('grayout');
-        vm.$ajax('sys/portal/createflowmenu/extract/' + fileIdChoose).then((item: any) => {
-          if (!_.isEmpty(item)) {
-            vm.renderHTML(item.htmlContent, 'frame1');
-
-            _.each((document.getElementById("frameF1") as any ).contentDocument.getElementsByTagName("a"), link => {
-              link.addEventListener('click', (event: Event) => event.preventDefault());
-            })
-          }
-        }).always(() => vm.$blockui('clear'));
+        if(!!fileIdChoose) {
+          vm.$blockui('grayout');
+          vm.$ajax('sys/portal/createflowmenu/extract/' + fileIdChoose).then((item: any) => {
+            
+            if (!_.isEmpty(item)) {
+              vm.renderHTML(item.htmlContent, 'frame1');
+              _.each((document.getElementById("frameF1") as any ).contentDocument.getElementsByTagName("a"), link => {
+                link.addEventListener('click', (event: Event) => event.preventDefault());
+              })
+            }
+          }).fail(() => {
+              const ifr = document.getElementById('frameF1');
+              const iframedoc = (ifr as any).contentDocument || (ifr as any).contentWindow.document;
+              iframedoc.body.innerHTML = "";
+          }).always(() => vm.$blockui('clear'));
+        } else {
+          const ifr = document.getElementById('frameF1');
+          const iframedoc = (ifr as any).contentDocument || (ifr as any).contentWindow.document;
+          iframedoc.body.innerHTML = "";
+        }
       })
 
       vm.toppageSelectedCode.subscribe(data => {

@@ -19,10 +19,10 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancet
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.WorkTimes;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeActualStamp;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.TimeSpanForDailyCalc;
 import nts.uk.ctx.at.shared.dom.worktime.TimeLeaveChangeEvent;
 import nts.uk.ctx.at.shared.dom.worktime.common.JustCorrectionAtr;
+import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
 
 /**
  * 
@@ -100,14 +100,6 @@ public class TimeLeavingOfDailyPerformance extends AggregateRoot {
 	 */
 	public Optional<TimeLeavingWork> getAttendanceLeavingWork(int workNo) {
 		return this.attendance.getTimeLeavingWorks().stream().filter(ts -> ts.getWorkNo().v() == workNo).findFirst();
-	}
-	
-	/**
-	 * 退勤を返す　　　（勤務回数が2回目の場合は2回目の退勤を返す）
-	 * @return
-	 */
-	public Optional<TimeActualStamp> getLeavingWork() {
-		return attendance.getLeavingWork();
 	}
 	
 	/**

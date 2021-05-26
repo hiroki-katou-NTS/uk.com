@@ -161,6 +161,7 @@ declare module nts.uk.ui.vm {
 	export interface ViewModelOption {
 		readonly name: string;
 		readonly template: string;
+		readonly alternalBinding?: boolean;
 	}
 
 	interface ModalMethods {
@@ -305,5 +306,9 @@ declare module nts.uk.ui.vm {
 		readonly $nextTick: {
 			(cb: () => void): number;
 		};
+		/**
+		 * Query Object binding search query in URL.
+		 */
+		readonly $query: { readonly [key: string]: string };
 	}
 }

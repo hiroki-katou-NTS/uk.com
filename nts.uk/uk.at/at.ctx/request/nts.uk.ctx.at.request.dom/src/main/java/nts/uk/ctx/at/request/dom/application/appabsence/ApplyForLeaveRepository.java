@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.request.dom.application.appabsence;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -34,4 +35,11 @@ public interface ApplyForLeaveRepository {
      * @param appId
      */
     public void delete(String CID, String appId);
+    
+    /**
+     * @param companyID
+     * @param appId
+     * @return
+     */
+    public List<ApplyForLeave> getAbsenceByIds(String companyID, List<String> appId);
 }

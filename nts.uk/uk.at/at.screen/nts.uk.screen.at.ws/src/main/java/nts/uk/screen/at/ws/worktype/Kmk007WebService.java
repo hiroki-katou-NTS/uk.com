@@ -145,4 +145,15 @@ public class Kmk007WebService {
 	public List<WorkTypeDto> findByDailyWorkTypeDisp(){
 		return workTypeProcessor.findWorkTypeDisp();
 	}
+	
+	/**
+	 * Gets the medical option.
+	 *
+	 * @return the medical option
+	 */
+	@POST
+	@Path("getMedicalOption")
+	public boolean getMedicalOption() {
+		return this.workTypeProcessor.getMedicalOption();
+	}
 }

@@ -31,22 +31,26 @@
 		<ui:define name="content">
 			<div id="functions-area">
 				<div class="container">
-					<a class="goback" data-bind="ntsLinkButton: { jump: '/view/kmf/004/x/index.xhtml' }">#{i18n.getText('KMF004_70')}</a>
+					<a class="goback" data-bind="ntsLinkButton: { jump: '/view/kmf/001/a/index.xhtml' }">#{i18n.getText('KMF004_70')}</a>
+					<!--class="A1_1"-->
 					<button id="NEW_BTN" tabindex="1"
 						data-bind="click : initSpecialHoliday, enable: newModeEnable">#{i18n.getText('KMF004_1')}</button>
+					<!--A1_2-->
 					<button id="REGISTER_BTN" class="proceed" tabindex="2"
 						data-bind="click: saveSpecialHoliday, enable: $root.errors.isEmpty">#{i18n.getText('KMF004_2')}</button>
+					<!--A1_3-->
 					<button id="DELETE_BTN" class="danger" tabindex="3"
-						data-bind="click: deleteSpecialHoliday, enable: isEnable">#{i18n.getText('KMF004_3')}</button>
+						data-bind="click: deleteSpecialHoliday, enable: btnDeleteEnable">#{i18n.getText('KMF004_3')}</button>
 				</div>
 			</div>
 			<div id="contents-area" class="fixed-flex-layout">
 				<div class="fixed-flex-layout-left">
 					<div id="left-content"
 						class="bg-green caret-right caret-background cf"
-						style="width: 340px; height: 535px;"> 
+						style="width: 340px; height: 535px;">
 						<div id="LST_001" style="margin-left: 10px; padding: 16px 10px;">
-							<table id="single-list" tabindex="4"
+							<!--class="A2_2"-->
+							<table id="single-list" tabindex="4" 
 								data-bind="ntsGridList: {	
 									width: 300,
 									height: 500,
@@ -54,7 +58,7 @@
 									primaryKey: 'specialHolidayCode',
 									columns: columns,
 									multiple: false,								
-									value: currentCode
+									value: selectedCode
 							}"></table>
 						</div>
 					</div>
@@ -63,34 +67,41 @@
 					<table class="top-content-tbl">
 						<tr>
 							<td width="180">
-								<div data-bind="ntsFormLabel: {required: true, constraint:['SpecialHolidayCode', 'SpecialHolidayName']}">#{i18n.getText('KMF004_7')}</div>
+								<div
+									data-bind="ntsFormLabel: {required: true, constraint:['SpecialHolidayCode', 'SpecialHolidayName']}">#{i18n.getText('KMF004_7')}</div>
 							</td>
-							<td width="70">
-								<input tabindex="5" id="input-code" class="code" data-bind="ntsNumberEditor: {value: specialHolidayCode, constraint:'SpecialHolidayCode' ,option: {  }, required: true, enable: isDisable, name: '#[KMF004_5]'} " />
+							<!--A3_2-->
+							<td width="70"><input tabindex="5" id="input-code"
+								class="code"
+								data-bind="ntsNumberEditor: {value: specialHolidayCode, constraint:'SpecialHolidayCode' ,option: {  }, required: true, enable: specialHolidayCodeEnable, name: '#[KMF004_5]'} " />
 							</td>
-							<td>
-								 <input tabindex="6" id="input-name" class="name" data-bind="ntsTextEditor: {value: specialHolidayName, constraint:'SpecialHolidayName', required: true, name: '#[KMF004_6]'}" />
+							<!-- A3_3-->
+							<td><input tabindex="6" id="input-name" class="name"
+								data-bind="ntsTextEditor: {value: specialHolidayName, constraint:'SpecialHolidayName', required: true, name: '#[KMF004_6]'}" />
 							</td>
 						</tr>
-						
+
 						<tr>
 							<td>
 								<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMF004_8')}</div>
 							</td>
 							<td>
-								<button tabindex="7" data-bind="click : openJDialog">#{i18n.getText('KMF004_9')}</button>
+								<button id="A5_2" tabindex="7" data-bind="click : openJDialog">#{i18n.getText('KMF004_9')}</button>
 							</td>
-							<td>
-								<input id="target-items" class="workTypes" data-bind="ntsTextEditor: { value: targetItemsName, enable: true, name: '#[KMF004_8]', required: true, readonly: true }" />
+							<!-- A5_3-->
+							<td><input id="target-items" class="workTypes"
+								data-bind="ntsTextEditor: { value: targetItemsName, enable: true, name: '#[KMF004_8]', required: true, readonly: true }" />
 							</td>
 						</tr>
-						
+
 						<tr>
 							<td>
 								<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMF004_164')}</div>
 							</td>
 							<td colspan="2">
-								<div tabindex="8" id="auto_grant" data-bind="ntsSwitchButton: {
+								<!--class="A6_2"-->
+								<div tabindex="8" id="auto_grant"
+									data-bind="ntsSwitchButton: {
 													name: '#[KMF004_164]',
 													options: autoGrants ,
 													optionsValue: 'code',
@@ -100,241 +111,363 @@
 													enable: true }"></div>
 							</td>
 						</tr>
-						
+
 						<tr>
 							<td>
 								<div data-bind="ntsFormLabel: {constraint: 'Memo'}">#{i18n.getText('KMF004_10')}</div>
 							</td>
-							<td colspan="2">
-								<textarea tabindex="9" class="memo" data-bind="ntsMultilineEditor: {value: memo, name: '#[KMF004_10]', constraint: 'Memo'}" />
+							<td id="A7_2" colspan="2"><textarea tabindex="9" class="memo"
+									data-bind="ntsMultilineEditor: {value: memo, name: '#[KMF004_10]', constraint: 'Memo'}" />
 							</td>
 						</tr>
 					</table>
-					
-					<div id="tab-panel" data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab},visible:autoGrant()==1" tabindex="10">
+					<!--class="A8_1"-->
+					<div id="tab-panel" style="height: 700px;" 
+						data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab},visible:autoGrant()==1"
+						tabindex="10">
 						<div class="tab-content-1">
-							<table class="grant-date-tbl">
+							<table class="typeTime-tbl">
 								<tr>
-									<td width="220"><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KMF004_14')}</div></td>
-									<td>
-										<div tabindex="11" class="cf grant-date" data-bind="ntsSwitchButton: {
-											name: 'grantDate',
-											options: grantDateOptions,
-											optionsValue: 'code',
-											optionsText: 'name',
-											value: selectedGrantDate,
-											required: true,
-											enable: true }"></div>
-									</td>
-								</tr>
-							</table>
-							
-							<table class="method-tbl">
-								<tr>
-									<td><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KMF004_18')}</div></td>
+									<td><div id="A10_2"
+											data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KMF004_18')}</div></td>
 								</tr>
 								<tr>
 									<td>
-									<div class="row" style="padding: 10px 0px 20px 30px;">
-										<div data-bind="ntsRadioButton: {
-														option: methods1,
-														checked: selectedMethod,
+										<div class="row" style="padding: 10px 0px 20px 30px;">
+											<div id="A10_3"
+												data-bind="ntsRadioButton: {
+														option: typeTime2,
+														checked: typeTime,
 														enable: true,
 														optionValue: 'id', 
 														optionText: 'name'}"
-										class="cell" style="margin-right: 20px;width: 270px"></div>
-										<div class="year-lbl cell">#{i18n.getText('KMF004_21')}</div>
-										<div class="year-inp cell">
-											<input tabindex="13" id="years" data-bind="ntsNumberEditor: {
-												value: years, 
-												constraint: 'GrantedYears',
-												name: '#[KMF004_21]',
-												option: ko.mapping.fromJS({
-													unitID: 'YEARS',
-													width: '50'
-												}),
-												required: yearReq,
-												enable: yearEnable }" />
+												class="cell" style="margin-right: 20px; width: 270px"></div>
+											<table class="typeTime1-tbl" style="margin-left: 45px">
+												<colgroup>
+													<col width="110" />
+													<col width="310" />
+													<col width="300" />
+												</colgroup>
+												<tr style="height: 5px;" />
+												<tr>
+													<td><div id="A10_17" style="margin-top: -5px;">#{i18n.getText('KMF004_192')}</div></td>
+													<td id="A10_18">
+														<div id="A10_12" tabindex="12" class="radioBtn"
+															data-bind="ntsRadioButton: {
+																	option: tGrantDate0,
+																	checked: tGrantDateSelected,
+																	enable: typeTime2ContentEnable,
+																	optionValue: 'id', 
+																	optionText: 'name'}"></div>
+														<div id="A10_13" tabindex="13"
+															data-bind="ntsMonthDays: {name: nts.uk.resource.getText('KMF004_175'), value: grantMonthDay, enable: grantDate0ContentEnable, required: grantDate0ContentEnable}"></div>
+													</td>
+													<td>
+														<div id="A10_14" class="radioBtn"
+															data-bind="ntsRadioButton: {
+																	option: tGrantDate1,
+																	checked: tGrantDateSelected,
+																	enable: typeTime2ContentEnable,
+																	optionValue: 'id', 
+																	optionText: 'name'}"></div>
+														<div id="A10_15" tabindex="14" style="width: 180px;"
+															data-bind="ntsComboBox: {
+																	name: '{#KMF004_14}',
+																	options: grantDates,
+																	optionsValue: 'code',
+																	visibleItemsCount: 3,
+																	value: fGrantDate,
+																	optionsText: 'name',
+																	enable: grantDate1ContentEnable,
+																	required: grantDate1ContentEnable}">
+														</div>
+													</td>
+												</tr>
+												<tr style="height: 10px;" />
+												<tr>
+													<td><div id="A10_7" class="day-lbl cell">#{i18n.getText('KMF004_22')}</div></td>
+													<td><div id="A10_8" class="day-inp cell">
+															<input tabindex="15" id="days"
+																data-bind="ntsNumberEditor: {
+																		value: fGrantDays, 
+																		constraint: 'GrantedDays',
+																		name: '#[KMF004_22]',
+																		option: ko.mapping.fromJS({
+																			unitID: 'DAYS',
+																			width: '60'
+																		}),
+																		required: typeTime2ContentEnable,
+																		enable: typeTime2ContentEnable}" />
+														</div></td>
+												</tr>
+											</table>
 										</div>
-										<div class="day-lbl cell">#{i18n.getText('KMF004_22')}</div>
-										<div class="day-inp cell">
-											<input tabindex="14" id="days" data-bind="ntsNumberEditor: {
-												value: days, 
-												constraint: 'GrantedDays',
-												name: '#[KMF004_22]',
-												option: ko.mapping.fromJS({
-													unitID: 'DAYS',
-													width: '60'
-												}),
-												required: dayReq,
-												enable: dayEnable }" />
+										<div class="row" style="padding-left: 30px;">
+											<div id="A10_11"
+												data-bind="ntsRadioButton: {
+																option: typeTime3,
+																checked: typeTime,
+																enable: true,
+																optionValue: 'id', 
+																optionText: 'name'}"
+												class="cell" style="width: 270px"></div>
+
+											<table class="typeTime2-tbl" style="margin-left: 45px">
+												<colgroup>
+													<col width="110" />
+													<col width="600" />
+												</colgroup>
+												<tr style="height: 5px;" />
+												<tr>
+													<td><div id="A10_16" style="margin-top: -5px;">#{i18n.getText('KMF004_176')}</div></td>
+													<td>
+														<div id="A12_12">
+															<div id="startDate" tabindex="16" style="float: left;"
+																data-bind="ntsMonthDays: {name:'#[KMF004_44]',value: start , required: typeTime3ContentEnable , enable: typeTime3ContentEnable }" />
+															<div id="A12_13"
+																style="float: left; line-height: 30px; margin-left: 5px;">#{i18n.getText('KMF004_45')}</div>
+															<!--class="A12_14"-->
+																<div id="endDate" tabindex="17" 
+																style="float: left; margin-left: 15px;"
+																data-bind="ntsMonthDays: {name:'#[KMF004_46]',value: end , required: typeTime3ContentEnable , enable: typeTime3ContentEnable }" />
+														</div>
+													</td>
+												</tr>
+												<tr style="height: 10px;" />
+												<tr>
+													<td><div id="A10_20" class="day-lbl cell">#{i18n.getText('KMF004_22')}</div></td>
+													<td><div id="A10_21" class="day-inp cell">
+															<input tabindex="18" id="pGrantDays"
+																data-bind="ntsNumberEditor: {
+																		value: pGrantDays, 
+																		constraint: 'GrantedDays',
+																		name: '#[KMF004_22]',
+																		option: ko.mapping.fromJS({
+																			unitID: 'DAYS',
+																			width: '60'
+																		}),
+																		required: typeTime3ContentEnable,
+																		enable: typeTime3ContentEnable}" />
+														</div></td>
+												</tr>
+											</table>
 										</div>
-										</div>
-									<div class="row" style="padding-left: 30px;">
-									<div data-bind="ntsRadioButton: {
-														option: methods2,
-														checked: selectedMethod,
+
+										<div class="row" style="margin-top: 20px; padding-left: 30px;">
+											<div id="A10_4"
+												data-bind="ntsRadioButton: {
+														option: typeTime1,
+														checked: typeTime,
 														enable: true,
 														optionValue: 'id', 
 														optionText: 'name'}"
-									class="cell" style="width: 270px"></div>
-									<button tabindex="15" class="cell" style="margin-left: 20px"
-										data-bind="click : openDialogD, enable: dialogDEnable">#{i18n.getText('KMF004_23')}</button>
-									<div class="cell" style="padding-left: 300px">#{i18n.getText('KMF004_24')}</div>
+												class="cell" style="width: 270px"></div>
+											<table class="typeTime0-tbl" style="margin-left: 45px">
+												<colgroup>
+													<col width="110" />
+													<col width="185" />
+													<col width="415" />
+												</colgroup>
+												<tr style="height: 5px;" />
+												<tr>
+													<td><div id="A10_22" class="day-lbl cell">#{i18n.getText('KMF004_14')}</div></td>
+													<td><div id="A10_23" tabindex="19"
+															style="width: 170px;"
+															data-bind="ntsComboBox: {
+																	name: '{#KMF004_14}',
+																	options: grantDates,
+																	optionsValue: 'code',
+																	visibleItemsCount: 3,
+																	value: pGrantDate,
+																	optionsText: 'name',
+																	enable: typeTime1ContentEnable,
+																	required: typeTime1ContentEnable}">
+														</div></td>
+													<td>
+														<button id="A10_9" tabindex="20" class="cell"
+															data-bind="click : openDialogD, enable: dialogDEnable">#{i18n.getText('KMF004_23')}</button>
+													</td>
+												</tr>
+												<tr>
+													<td></td>
+													<td></td>
+													<td>
+														<div class="cell">#{i18n.getText('KMF004_177')}</div>
+													</td>
+												</tr>
+											</table>
 										</div>
 									</td>
 								</tr>
 								<tr>
-									<td>
-									<!-- 	<div class="check-allow">
-											<div tabindex="15" data-bind="ntsCheckBox: { checked: allowDisappear }">#{i18n.getText('KMF004_25')}</div>
-											<div class="allow-hint">#{i18n.getText('KMF004_26')}</div>
-										</div> -->
+									<td><div id="A10_24"
+											data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KMF004_178')}</div>
+										<div id="A10_25" tabindex="21" style="margin-left: 35px;"
+											data-bind="ntsCheckBox: { 
+																		checked: continuousAcquisitionCkb,
+																		enable: true,
+																		text: '#{i18n.getText('KMF004_179')}'
+																	}"></div>
 									</td>
 								</tr>
 							</table>
+
 						</div>
-						
+
 						<div class="tab-content-2">
-							<div class="top-lbl">#{i18n.getText('KMF004_27')}</div>
-							
-							<table class="exp-date-tbl">
-								<tr>
-									<td>
-										<div tabindex="16" class="timeMethods" data-bind="ntsRadioBoxGroup: {
-											options: timeMethods,
-											optionsValue: 'id',
-											optionsText: 'name',
-											value: selectedTimeMethod,
-											enable: true }"></div>
-									</td>
-								</tr>
-							</table>
-							
-							<table class="exp-date-options">
-								<tr>
-									<td width="120">#{i18n.getText('KMF004_32')}</td>
-									<td>
-										<div class="limited-days">
-											<input tabindex="17" id="limitedDays" data-bind="ntsNumberEditor: {
-												value: limitedDays, 
-												constraint: 'LimitCarryoverDays',
-												name: '#[KMF004_32]',
-												option: ko.mapping.fromJS({
-													unitID: 'DAYS',
-													width: '70'
-												}),
-												enable: limitedDaysEnable }" />
-										</div>
-									</td>
-								</tr>
-								<tr>
-									<td>#{i18n.getText('KMF004_27')}</td>
-									<td>
-										<div class="exp-years">
-											<input tabindex="18" id="exp-year" data-bind="ntsNumberEditor: {
-												value: expYears, 
-												constraint: 'SpecialVacationYears',
-												name: '#[KMF004_33]',
-												option: ko.mapping.fromJS({
-													unitID: 'YEARS',
-													width: '70'
-												}),
-												enable: expYearEnable }" />
-										</div>
-											
-										<div class="exp-months">
-											<input tabindex="19" id="exp-month" data-bind="ntsNumberEditor: {
-												value: expMonth, 
-												constraint: 'SpecialVacationMonths',
-												name: '#[KMF004_34]',
-												option: ko.mapping.fromJS({
-													unitID: 'MONTHS',
-													width: '70'
-												}),
-												enable: expMonthEnable }" />
-										</div>
-									</td>
-								</tr>
-								<tr>
-									<td></td>
-									<td></td>
-								</tr>
-								<tr>
-									<td colspan="2">
-									<div>
-											<div id="startDate" style="float: left;"
-												data-bind="ntsMonthDays: {name:'#[KMF004_44]',value: startYM , required: startDateEnable , enable: startDateEnable }" />
-											<div
-												style="float: left; line-height: 30px; margin-left: 5px;">#{i18n.getText('KMF004_45')}</div>
-											<div id="endDate" style="float: left; margin-left: 15px;"
-												data-bind="ntsMonthDays: {name:'#[KMF004_46]',value: endYM , required: startDateEnable , enable: startDateEnable }" />
-										</div>
-									</td>
-								</tr>
-							</table>
+							<div class="div_line">
+								<div id="A12_1"
+									data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KMF004_27')}</div>
+							</div>
+							<div class="div_line">
+								<table class="exp-date-tbl">
+									<tr>
+										<td>
+											<div id="A12_2" tabindex="23" class="timeSpecifyMethods"
+												data-bind="ntsRadioBoxGroup: {
+																		options: timeSpecifyMethods,
+																		optionsValue: 'id',
+																		optionsText: 'name',
+																		value: timeSpecifyMethod,
+																		enable: enableTimeMethods }"></div>
+										</td>
+									</tr>
+								</table>
+
+								<table class="exp-date-options">
+									<tr></tr>
+									<tr>
+										<td id="A12_9" style="width: 75px;">#{i18n.getText('KMF004_27')}</td>
+										<td>
+											<div class="exp-years" id="A12_10">
+												<input tabindex="24" id="exp-year"
+													data-bind="ntsNumberEditor: {
+																			value: years, 
+																			constraint: 'SpecialVacationYears',
+																			name: '#[KMF004_33]',
+																			option: ko.mapping.fromJS({
+																				unitID: 'YEARS',
+																				width: '70'
+																			}),
+																			enable: yearsEnable }" />
+											</div>
+
+											<div class="exp-months" id="A12_11">
+												<input tabindex="25" id="exp-month"
+													data-bind="ntsNumberEditor: {
+																			value: months, 
+																			constraint: 'SpecialVacationMonths',
+																			name: '#[KMF004_34]',
+																			option: ko.mapping.fromJS({
+																				unitID: 'MONTHS',
+																				width: '70'
+																			}),
+																			enable: monthsEnable }" />
+											</div>
+										</td>
+									</tr>
+								</table>
+							</div>
+							<div class="div_line"
+								style="display: inline-block;">
+								<div id="A12_15" style="display: inline-block;"
+									data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KMF004_32')}</div>
+
+								<div id="A12_16" tabindex="26"
+									style="margin-left: 35px; display: inline-block; width: 150px;"
+									data-bind="ntsCheckBox: { 
+																checked: limit,
+																enable: limitEnable,
+																text: '#{i18n.getText('KMF004_180')}'
+															}">
+								</div>
+								<div id="A12_7" style="display: inline-block; margin-left: 16px; margin-right: 20px;">#{i18n.getText('KMF004_181')}</div>
+								<!--A12_8-->
+								<input tabindex="27" id="limitCarryoverDays" class="limited-days" style="margin-bottom: -10px;"
+									data-bind="ntsNumberEditor: {
+																			value: limitCarryoverDays, 
+																			constraint: 'LimitCarryoverDays',
+																			name: '#[KMF004_32]',
+																			option: ko.mapping.fromJS({
+																				unitID: 'DAYS',
+																				width: '70'
+																			}),
+																			enable: limitCarryoverDaysEnable,
+																			required: limitCarryoverDaysEnable
+																		}" />
+							</div>
 						</div>
-						
 						<div class="tab-content-3">
 							<div class="top-lbl-hint">#{i18n.getText('KMF004_47')}</div>
-							
+
 							<table class="condition-set-tbl">
 								<tr>
-									<td width="100"><div tabindex="22" data-bind="ntsCheckBox: { checked: genderSelected }">#{i18n.getText('KMF004_53')}</div></td>
-									<td>
-										<div tabindex="23" class="cf genderOptions" data-bind="ntsSwitchButton: {
-											name: 'gender',
-											options: genderOptions,
-											optionsValue: 'code',
-											optionsText: 'name',
-											value: selectedGender,
-											required: true,
-											enable: genderOptionEnable }"></div>
+									<td id="A16_1" width="100"><div tabindex="28"
+											data-bind="ntsCheckBox: { checked: genderSelected }">#{i18n.getText('KMF004_53')}</div></td>
+									<td id="A16_2">
+										<div tabindex="29" class="cf genderOptions"
+											data-bind="ntsSwitchButton: {
+																		name: 'gender',
+																		options: genderOptions,
+																		optionsValue: 'code',
+																		optionsText: 'name',
+																		value: selectedGender,
+																		required: true,
+																		enable: genderOptionEnable }"></div>
 									</td>
 								</tr>
 								<tr>
-									<td><div tabindex="24" data-bind="ntsCheckBox: { checked: empSelected }">#{i18n.getText('Com_Employment')}</div></td>
-									<td>
-										<button tabindex="25" data-bind="click : openCDL002Dialog, enable: empLstEnable">#{i18n.getText('KMF004_9')}</button>
-										<input class="empLst" data-bind="ntsTextEditor: {value: cdl002Name, enable: empLstEnable, name: '#[Com_Employment]', required: true, readonly: true}" />
+									<td id="A17_1"><div tabindex="30"
+											data-bind="ntsCheckBox: { checked: empSelected }">#{i18n.getText('Com_Employment')}</div></td>
+									<td id="A17_2">
+										<button tabindex="31"
+											data-bind="click : openCDL002Dialog, enable: empLstEnable">#{i18n.getText('KMF004_9')}</button>
+										<input class="empLst"
+										data-bind="ntsTextEditor: {value: cdl002Name, enable: empLstEnable, name: '#[Com_Employment]', required: true, readonly: true}" />
 									</td>
 								</tr>
 								<tr>
-									<td><div tabindex="26" data-bind="ntsCheckBox: { checked: clsSelected }">#{i18n.getText('Com_Class')}</div></td>
-									<td>
-										<button tabindex="27" data-bind="click : openCDL003Dialog, enable: clsLstEnable">#{i18n.getText('KMF004_9')}</button>
-										<input class="clsLst" data-bind="ntsTextEditor: {value: cdl003Name, enable: clsLstEnable, name: '#[Com_Class]', required: true, readonly: true}" />
+									<td id="A18_1"><div tabindex="32"
+											data-bind="ntsCheckBox: { checked: clsSelected }">#{i18n.getText('Com_Class')}</div></td>
+									<td id="A18_2">
+										<button tabindex="33"
+											data-bind="click : openCDL003Dialog, enable: clsLstEnable">#{i18n.getText('KMF004_9')}</button>
+										<input class="clsLst"
+										data-bind="ntsTextEditor: {value: cdl003Name, enable: clsLstEnable, name: '#[Com_Class]', required: true, readonly: true}" />
 									</td>
 								</tr>
 								<tr>
-									<td><div tabindex="28" data-bind="ntsCheckBox: { checked: ageSelected }">#{i18n.getText('KMF004_48')}</div></td>
+									<td><div id="A15_1" tabindex="34"
+											data-bind="ntsCheckBox: { checked: ageSelected }">#{i18n.getText('KMF004_48')}</div></td>
 									<td>
-										<div class="start-age">
-											<input tabindex="29" id="startAge" data-bind="ntsNumberEditor: {
-												value: startAge, 
-												constraint: 'AgeLimit',
-												name: '#[KMF004_49]',
-												option: ko.mapping.fromJS({
-													unitID: 'AGE',
-													width: '60'
-												}),
-												required: ageBaseDateReq,
-												enable: startAgeEnable }" />
+										<div class="start-age" id="A15_2">
+											<input tabindex="35" id="startAge"
+												data-bind="ntsNumberEditor: {
+																				value: startAge, 
+																				constraint: 'AgeLimit',
+																				name: '#[KMF004_49]',
+																				option: ko.mapping.fromJS({
+																					unitID: 'AGE',
+																					width: '60'
+																				}),
+																				required: ageBaseDateReq,
+																				enable: startAgeEnable }" />
 										</div>
-												
+
 										<div class="nav-lbl">#{i18n.getText('KMF004_45')}</div>
-										
-										<div class="end-age">
-											<input tabindex="30" id="endAge" data-bind="ntsNumberEditor: {
-												value: endAge, 
-												constraint: 'AgeLimit',
-												name: '#[KMF004_50]',
-												option: ko.mapping.fromJS({
-													unitID: 'AGE',
-													width: '60'
-												}),
-												required: ageBaseDateReq,
-												enable: endAgeEnable }" />
+
+										<div class="end-age" id="A15_4">
+											<input tabindex="36" id="endAge"
+												data-bind="ntsNumberEditor: {
+																				value: endAge, 
+																				constraint: 'AgeLimit',
+																				name: '#[KMF004_50]',
+																				option: ko.mapping.fromJS({
+																					unitID: 'AGE',
+																					width: '60'
+																				}),
+																				required: ageBaseDateReq,
+																				enable: endAgeEnable }" />
 										</div>
 									</td>
 								</tr>
@@ -342,25 +475,27 @@
 									<td colspan="2">
 										<div class="age-standard-setting">
 											<div class="age-standard">年齢基準</div>
-											
-											<div tabindex="31" class="age-criteria" id="combo-box" data-bind="ntsComboBox: {
-												name: '#[KMF004_51]',
-												options: ageCriteriaCls,
-												optionsValue: 'code',
-												value: selectedAgeCriteria,
-												optionsText: 'name',
-												enable: ageCriteriaClsEnable,
-												required: true,
-												columns: [
-													{ prop: 'name', length: 5 }
-												]}"></div>
-											
-											<div tabindex="32" id="ageBaseDate" data-bind="ntsMonthDays: { 
-												value: ageBaseDate, 
-												name: '#[KMF004_52]', 
-												required: ageBaseDateReq,
-												selectFirstIfNull: ageBaseDateDefaultValue,
-												enable: ageBaseDateEnable }"/>
+											<!--A15_10-->
+											<div tabindex="37" class="age-criteria" id="combo-box"
+												data-bind="ntsComboBox: {
+																			name: '#[KMF004_51]',
+																			options: ageCriteriaCls,
+																			optionsValue: 'code',
+																			value: selectedAgeCriteria,
+																			optionsText: 'name',
+																			enable: ageCriteriaClsEnable,
+																			required: true,
+																			columns: [
+																				{ prop: 'name', length: 5 }
+																			]}"></div>
+											<!--class="A15_12"-->
+											<div tabindex="38" id="ageBaseDate" 
+												data-bind="ntsMonthDays: { 
+																				value: ageBaseDate, 
+																				name: '#[KMF004_52]', 
+																				required: ageBaseDateReq,
+																				selectFirstIfNull: ageBaseDateDefaultValue,
+																				enable: ageBaseDateEnable }" />
 										</div>
 									</td>
 								</tr>
