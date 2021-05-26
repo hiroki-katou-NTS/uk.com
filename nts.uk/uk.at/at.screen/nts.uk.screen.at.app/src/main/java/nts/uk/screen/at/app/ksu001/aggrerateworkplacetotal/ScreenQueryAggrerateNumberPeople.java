@@ -138,6 +138,10 @@ public class ScreenQueryAggrerateNumberPeople {
 																				))
 																.findFirst().orElse(null),
 														f -> f.getValue()))
+												.entrySet()
+												.stream()
+												.filter(x -> x.getKey() != null)
+												.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue))
 								
 								));
 			
@@ -174,6 +178,10 @@ public class ScreenQueryAggrerateNumberPeople {
 																		.findFirst()
 																		.orElse(null),
 													f -> f.getValue()))
+											.entrySet()
+											.stream()
+											.filter(x -> x.getKey() != null)
+											.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue))
 								
 								));
 			
@@ -213,12 +221,16 @@ public class ScreenQueryAggrerateNumberPeople {
 										.collect(
 												Collectors.toMap(
 													f -> jobTitleInfos.stream()
-																	  .filter(x -> x.getJobTitleCode().v().equals(f.getKey()))
+																	  .filter(x -> x.getJobTitleId().equals(f.getKey()))
 																	  .map(x -> JobTitleInfoDto.fromDomain(x))
 																	  .findFirst()
 																	  .orElse(null),
 													f -> f.getValue()
 												))
+										.entrySet()
+										.stream()
+										.filter(x -> x.getKey() != null)
+										.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue))
 							
 							));
 			output.jobTitleInfo = jobTitileInfoOutput;
