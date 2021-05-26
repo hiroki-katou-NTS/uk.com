@@ -143,7 +143,7 @@ public class BreakTimeSheetGetter {
 		val attendanceLeaveWorks = integrationOfDaily.getAttendanceLeave().map(c -> c.getTimeLeavingWorks()).orElse(new ArrayList<>());
 		
 		val withinWorkTimeSheet = new WithinWorkTimeSheet(new ArrayList<>(), new ArrayList<>(), Optional.empty(), Optional.empty());
-		/** TODO: error on this */
+		
 		List<TimeLeavingWork> calcLateTimeLeavingWorksWorks = new ArrayList<>();
 		for(TimeLeavingWork timeLeavingWork : attendanceLeaveWorks) {
 			calcLateTimeLeavingWorksWorks.add(
