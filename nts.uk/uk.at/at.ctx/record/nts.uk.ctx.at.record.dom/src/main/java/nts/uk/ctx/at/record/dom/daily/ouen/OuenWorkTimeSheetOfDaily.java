@@ -79,6 +79,6 @@ public class OuenWorkTimeSheetOfDaily extends AggregateRoot {
 				result.addAll(id.stream().map(c -> c.getItemId()).collect(Collectors.toList()));
 			}
 		}
-		return result;
+		return result.stream().distinct().collect(Collectors.toList());
 	}
 }
