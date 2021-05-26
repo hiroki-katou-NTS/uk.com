@@ -1138,6 +1138,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let detailContentDecoModeConfirm = [];
 			let vertSumContentDs: any = [];
 			let vertContentDeco: any = [];
+			let horizontalDetailColumns = [];
             let htmlToolTip       = [];
             let listCellNotEditBg = [];
             let listCellNotEditColor = [];
@@ -1659,6 +1660,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             }
             
             detailColumns.push({ key: "sid", width: "5px", headerText: "ABC", visible: false });
+			horizontalDetailColumns.push({ key: "sid", width: "5px", headerText: "ABC", visible: false });
             objDetailHeaderDs['sid'] = "";
             self.arrDay = [];
             _.each(data.listDateInfo, (dateInfo: IDateInfo) => {
@@ -1666,6 +1668,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 let time = new Time(new Date(dateInfo.ymd));
                 detailColumns.push({
                     key: "_" + time.yearMonthDay, width: widthColumn + "px", handlerType: "input", dataType: "label/label/duration/duration", primitiveValue: "TimeWithDayAttr", headerControl: "link"
+                });
+				horizontalDetailColumns.push({
+                    key: "_" + time.yearMonthDay, width: widthColumn + "px", handlerType: "input", dataType: "label/label/duration/duration", primitiveValue: "TimeWithDayAttr"
                 });
                 let ymd = time.yearMonthDay;
                 let field = '_' + ymd;
@@ -1830,7 +1835,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 htmlToolTip: htmlToolTip,
                 detailContentDs: detailContentDs,
                 detailContentDeco: detailContentDeco,
-                arrListCellLock: arrListCellLock
+                arrListCellLock: arrListCellLock,
+				horizontalDetailColumns: horizontalDetailColumns
             };
             self.detailContentDs = detailContentDs;
             self.detailColumns = detailColumns;
@@ -2356,6 +2362,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let detailContentDs = dataBindGrid.detailContentDs;
             let detailColumns = dataBindGrid.detailColumns;
             let objDetailHeaderDs = dataBindGrid.objDetailHeaderDs;
+			let horizontalDetailColumns = dataBindGrid.horizontalDetailColumns;
             let htmlToolTip = dataBindGrid.htmlToolTip;
             let timeRanges = [];
 
@@ -2473,7 +2480,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 		    };
 			
 			let horizontalSumHeader = {
-		        columns: detailColumns,
+		        columns: horizontalDetailColumns,
 		        dataSource: [new ExItem(undefined, null, null, null, true, self.arrDay)],
 				rowHeight: "40px",
 				features: [{
@@ -2490,8 +2497,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 				});
 			});
 		    let horizontalSumContent = {
-		        columns: detailColumns,
 		        dataSource: horizontalSumContentDs,
+		        columns: horizontalDetailColumns,
                 primaryKey: "employeeId",
 		    };
             
