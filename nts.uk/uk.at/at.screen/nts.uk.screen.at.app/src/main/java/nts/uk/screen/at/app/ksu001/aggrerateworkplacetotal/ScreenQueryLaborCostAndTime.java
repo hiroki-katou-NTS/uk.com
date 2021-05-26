@@ -1,6 +1,7 @@
 package nts.uk.screen.at.app.ksu001.aggrerateworkplacetotal;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -47,7 +48,7 @@ public class ScreenQueryLaborCostAndTime {
 			) {
 		
 		Require require = new Require(laborCostBudgetRepository);
-		Map<GeneralDate, Map<LaborCostAggregationUnitDto, BigDecimal>> output = null;
+		Map<GeneralDate, Map<LaborCostAggregationUnitDto, BigDecimal>> output = new HashMap<GeneralDate, Map<LaborCostAggregationUnitDto, BigDecimal>>();
 		// 1: 取得する(会社ID)
 		Optional<WorkplaceCounterLaborCostAndTime> wkpLaborCostAndTime;
 		List<WkpLaborCostAndTimeDto> wkpLaborCostAndTimes = wkpLaborCostAndTimeFinder.findById();

@@ -2,10 +2,12 @@ package nts.uk.screen.at.app.ksu001.start;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.uk.screen.at.app.ksu001.aggrerateworkplacetotal.AggrerateWorkplaceDto;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -24,4 +26,24 @@ public class AggregateWorkplaceMapDto {
 	// Map<年月日, Map<外部予算実績項目, 外部予算実績値>>
 	public List<ExternalBudgetMapDtoList> externalBudget = Collections.emptyList();
 			
+	
+	public static AggregateWorkplaceMapDto convertMap(AggrerateWorkplaceDto dto) {
+		
+		
+		return new AggregateWorkplaceMapDto(
+				dto.convertLaborCostAndTime(),
+				dto.convertTimeCount(),
+				Optional.ofNullable(dto.getAggrerateNumberPeople())
+					.map(x -> new AggregateNumberPeopleMapDto(
+							x.convertEmployment(),
+							x.convertClassification(),
+							x.convertJobTitleInfo()
+							))
+					.orElse(null)
+				,
+				dto.convertExternalBudget()
+				);
+		
+		
+	}
 }

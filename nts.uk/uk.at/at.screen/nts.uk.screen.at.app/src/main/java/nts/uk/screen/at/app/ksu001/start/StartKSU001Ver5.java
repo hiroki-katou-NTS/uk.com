@@ -204,45 +204,18 @@ public class StartKSU001Ver5 {
 		result.setShiftMasterWithWorkStyleLst(shiftMasterWithWorkStyleLst);
 		if (viewModeSelected == FuncCtrlDisplayFormatDto.Shift.value) {
 			result.setAggreratePersonal(
-					new AggregatePersonalMapDto(
-							resultStep51.aggreratePersonal.convertEstimatedSalary(),
-							resultStep51.aggreratePersonal.convertTimeCount(),
-							resultStep51.aggreratePersonal.convertWorkhours()
-							)
+					AggregatePersonalMapDto.convertMap(resultStep51.aggreratePersonal)
 					
 					);
 			result.setAggrerateWorkplace(
-					new AggregateWorkplaceMapDto(
-							resultStep51.aggrerateWorkplace.convertLaborCostAndTime(),
-							resultStep51.aggrerateWorkplace.convertTimeCount(),
-							new AggregateNumberPeopleMapDto(
-									resultStep51.aggrerateWorkplace.getAggrerateNumberPeople().convertEmployment(),
-									resultStep51.aggrerateWorkplace.getAggrerateNumberPeople().convertClassification(),
-									resultStep51.aggrerateWorkplace.getAggrerateNumberPeople().convertJobTitleInfo()
-									),
-							resultStep51.aggrerateWorkplace.convertExternalBudget()
-							)
-					
+					AggregateWorkplaceMapDto.convertMap(resultStep51.aggrerateWorkplace)
 					);
 		} else {
 			result.setAggreratePersonal(
-					new AggregatePersonalMapDto(
-							resultStep4.aggreratePersonal.convertEstimatedSalary(),
-							resultStep4.aggreratePersonal.convertTimeCount(),
-							resultStep4.aggreratePersonal.convertWorkhours()
-							)
+					AggregatePersonalMapDto.convertMap(resultStep4.aggreratePersonal)
 					);
 			result.setAggrerateWorkplace(
-					new AggregateWorkplaceMapDto(
-							resultStep4.aggrerateWorkplace.convertLaborCostAndTime(),
-							resultStep4.aggrerateWorkplace.convertTimeCount(),
-							new AggregateNumberPeopleMapDto(
-									resultStep4.aggrerateWorkplace.getAggrerateNumberPeople().convertEmployment(),
-									resultStep4.aggrerateWorkplace.getAggrerateNumberPeople().convertClassification(),
-									resultStep4.aggrerateWorkplace.getAggrerateNumberPeople().convertJobTitleInfo()
-									),
-							resultStep4.aggrerateWorkplace.convertExternalBudget()
-							)
+					AggregateWorkplaceMapDto.convertMap(resultStep4.aggrerateWorkplace)
 					);
 		}
 		return result;
