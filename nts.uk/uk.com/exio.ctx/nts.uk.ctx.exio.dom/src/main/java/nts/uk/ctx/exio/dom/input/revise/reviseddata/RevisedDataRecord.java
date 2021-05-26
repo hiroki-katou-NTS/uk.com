@@ -12,7 +12,8 @@ import nts.uk.ctx.exio.dom.input.DataItem;
 @Value
 public class RevisedDataRecord {
 	
-	String categoryId;
+	/** 受入カテゴリID */
+	int categoryId;
 
 	List<DataItem> items;
 	
