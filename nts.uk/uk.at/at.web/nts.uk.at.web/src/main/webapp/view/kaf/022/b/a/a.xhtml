@@ -4,7 +4,7 @@
                 xmlns:h="http://xmlns.jcp.org/jsf/html">
     <div class="panel panel-frame">
         <!--A4 - Deadline Settings Table-->
-        <table id="fixed-table-a4">
+        <table style="display: table" id="fixed-table-a4">
             <colgroup>
                 <col width="200px"/>
                 <col width="420px"/>
@@ -113,7 +113,7 @@
                                                     optionText: 'text',
                                                     group: 'overtime-method'
                                                 }"/>
-                                <span class="label" style="margin-left: 9px; width: 80px; position: relative; top: 2px">#{i18n.getText('KAF022_374')}</span>
+                                <span class="label" style="margin-left: -36px; width: 80px; position: relative; top: 2px">#{i18n.getText('KAF022_374')}</span>
                                 <input class="time-input"
                                     id="a7_23"
                                     data-bind="ntsTimeEditor: {
@@ -508,7 +508,7 @@
             </tbody>
         </table>
         <button style="margin-left: 10px" data-bind="click: openScreenS">#{i18n.getText('KAF022_444')}</button>
-        <span style="padding-left: 10px" class="label">#{i18n.getText('KAF022_742')}</span>
+        <span style="padding-left: 10px; height: 24px" class="label">#{i18n.getText('KAF022_742')}</span>
     </div>
 
     <div class="panel panel-frame">
