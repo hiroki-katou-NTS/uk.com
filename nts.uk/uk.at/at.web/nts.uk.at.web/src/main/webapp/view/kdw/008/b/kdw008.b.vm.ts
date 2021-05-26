@@ -252,7 +252,7 @@ module nts.uk.at.view.kdw008.b {
                     console.log(param, 'param');
                     nts.uk.ui.windows.setShared("CDL023Input", param);
                     nts.uk.ui.windows.sub.modal("com", "/view/cdl/023/a/index.xhtml").onClosed(() => {
-                        let output: Array<string> = nts.uk.ui.windows.getShared("CDL023Output");
+                        let output: Array<string> = nts.uk.ui.windows.getShared("CDL023Output").filter((e: string) => e !== self.selectedCode());
                         let command = {
                             businessTypeCode: self.selectedCode(),
                             listBusinessTypeCode: output

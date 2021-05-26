@@ -15,6 +15,7 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.BusinessTypeFormatDaily;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.repository.BusinessTypeFormatDailyRepository;
 import nts.uk.ctx.at.record.infra.entity.dailyperformanceformat.KrcmtBusinessFormatSheet;
+import nts.uk.ctx.at.record.infra.entity.dailyperformanceformat.KrcmtBusinessFormatSheetPK;
 import nts.uk.ctx.at.record.infra.entity.dailyperformanceformat.KrcmtBusinessTypeDaily;
 import nts.uk.ctx.at.record.infra.entity.dailyperformanceformat.KrcmtBusinessTypeDailyPK;
 import nts.uk.ctx.at.shared.dom.workrule.businesstype.BusinessTypeCode;
@@ -267,8 +268,8 @@ public class JpaBusinessTypeFormatDailyRepository extends JpaRepository implemen
 		
 		if (!listKrcmtBusinessTypeDaily.isEmpty()) {
 			this.commandProxy().removeAll(listKrcmtBusinessTypeDaily);
-			this.getEntityManager().flush();
 			this.commandProxy().removeAll(listKrcmtBusinessFormatSheet);
+			this.getEntityManager().flush();
 		}
 		
 		listBusinessTypeCode.forEach(e -> {
@@ -282,8 +283,14 @@ public class JpaBusinessTypeFormatDailyRepository extends JpaRepository implemen
 			
 			this.commandProxy().insertAll(newListEntity);
 			
-			krcmtBusinessFormatSheetBySelectedCode.krcmtBusinessFormatSheetPK.businessTypeCode = e;
-			this.commandProxy().insert(krcmtBusinessFormatSheetBySelectedCode);
+			KrcmtBusinessFormatSheet newEntity = new KrcmtBusinessFormatSheet();
+			newEntity.krcmtBusinessFormatSheetPK = new KrcmtBusinessFormatSheetPK();
+			newEntity.krcmtBusinessFormatSheetPK.companyId        = krcmtBusinessFormatSheetBySelectedCode.krcmtBusinessFormatSheetPK.companyId;
+			newEntity.krcmtBusinessFormatSheetPK.businessTypeCode = e;
+			newEntity.krcmtBusinessFormatSheetPK.sheetNo          = krcmtBusinessFormatSheetBySelectedCode.krcmtBusinessFormatSheetPK.sheetNo;
+			newEntity.sheetName 								  = krcmtBusinessFormatSheetBySelectedCode.sheetName;
+			
+			this.commandProxy().insert(newEntity);
 		});
 	}	
 }
