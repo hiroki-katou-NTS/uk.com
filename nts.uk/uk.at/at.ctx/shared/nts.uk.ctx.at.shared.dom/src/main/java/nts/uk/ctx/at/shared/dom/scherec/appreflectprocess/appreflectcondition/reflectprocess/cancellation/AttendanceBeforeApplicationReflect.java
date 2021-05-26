@@ -23,7 +23,7 @@ public class AttendanceBeforeApplicationReflect {
 	private int attendanceId;
 
 	// 値
-	private String value;
+	private Optional<String> value;
 
 	// 編集状態
 	private Optional<EditStateOfDailyAttd> editState;
