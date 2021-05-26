@@ -2897,7 +2897,7 @@ module nts.uk.ui.at.kdw013.calendar {
                 <!-- ko foreach: { data: $component.data, as: 'day' } -->
                 <td class="fc-event-note fc-day" data-bind="css: { 'no-data': !day.events.length }, attr: { 'data-date': day.date }, css: { 'fc-day-today': day.date === $component.today }">
                     <div data-bind="foreach: { data: day.events, as: 'note' }">
-                        <div class="text-note limited-label" data-bind="text: note"></div>
+                        <div class="text-note limited-label abc" data-bind="text: note"></div>
                     </div>
                 </td>
                 <!-- /ko -->`
