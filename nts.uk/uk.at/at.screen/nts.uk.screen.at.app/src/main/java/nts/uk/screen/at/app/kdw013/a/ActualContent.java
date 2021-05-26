@@ -25,12 +25,12 @@ public class ActualContent {
 	private Optional<AttendanceTime> breakHours;
 	
 	//終了時刻
-	private Optional<WorkTimeInformation> end;
-	
-	//総労働時間
+	private Optional<WorkTimeInformation> end = Optional.empty();
+
+	// 総労働時間
 	private Optional<AttendanceTime> totalWorkingHours;
-	
-	//開始時刻
-	private Optional<WorkTimeInformation> start;
+
+	// 開始時刻
+	private Optional<WorkTimeInformation> start = Optional.empty();
 	
 }
