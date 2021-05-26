@@ -3,10 +3,8 @@ package nts.uk.ctx.at.function.infra.repository.alarm.persistenceextractresult;
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
-import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.text.IdentifierUtil;
-import nts.uk.ctx.at.function.infra.entity.alarm.persistenceextractresult.KfndtAlarmExtracResult;
 import nts.uk.ctx.at.function.infra.entity.alarm.persistenceextractresult.KfndtAlarmExtracResultPK;
 import nts.uk.ctx.at.function.infra.entity.alarm.persistenceextractresult.KfndtPersisAlarmExt;
 import nts.uk.ctx.at.shared.dom.alarmList.persistenceextractresult.*;
@@ -20,7 +18,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)

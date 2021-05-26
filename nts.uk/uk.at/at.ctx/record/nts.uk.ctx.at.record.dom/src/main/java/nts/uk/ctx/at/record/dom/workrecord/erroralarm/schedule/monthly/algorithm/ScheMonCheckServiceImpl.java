@@ -288,7 +288,7 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 					// 優先使用のアラーム値を作成する
 					OutputCheckResult tab3 = extractConditionTab3(cid, sid, wplId, exMon, prepareData, wplByListSidAndPeriod, integrationOfDailys, workSchedules, attendanceTimeOfMon, alarmCheckConditionCode);
 					if (!tab3.getAlarmExtractInfoResults().isEmpty()) {
-						lstExtractInfoResult.addAll(tab2.getAlarmExtractInfoResults());
+						lstExtractInfoResult.addAll(tab3.getAlarmExtractInfoResults());
 					}
 
 					if (!tab3.getAlarmExtractConditions().isEmpty()) {

@@ -152,7 +152,7 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 				}
 
 				if (!lstExtractInfoResult.isEmpty()) {
-					alarmEmployeeList.add(new AlarmEmployeeList(checkTab3.getAlarmExtractInfoResults(), sid));
+					alarmEmployeeList.add(new AlarmEmployeeList(lstExtractInfoResult, sid));
 				}
 			}
 			

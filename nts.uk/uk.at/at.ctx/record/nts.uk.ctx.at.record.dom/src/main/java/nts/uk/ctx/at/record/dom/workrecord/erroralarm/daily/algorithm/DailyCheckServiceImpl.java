@@ -231,7 +231,9 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 							prepareData.getListWorkType(),
 							lstStatusEmp, prepareData.getListWorktime(),
 							alarmExtractConditions, alarmCheckConditionCode);
-					lstExtractInfoResult.addAll(checkTab3.getAlarmExtractInfoResults());
+					if (!checkTab3.getAlarmExtractInfoResults().isEmpty()) {
+						lstExtractInfoResult.addAll(checkTab3.getAlarmExtractInfoResults());
+					}
 
 				}
 				for(int day = 0; day < listDate.size(); day++) {
@@ -265,7 +267,9 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 								getWplByListSidAndPeriod,
 								alarmExtractConditions,
 								alarmCheckConditionCode);
-						lstExtractInfoResult.addAll(checkTab2.getAlarmExtractInfoResults());
+						if (!checkTab2.getAlarmExtractInfoResults().isEmpty()) {
+							lstExtractInfoResult.addAll(checkTab2.getAlarmExtractInfoResults());
+						}
 							
 					}
 					
@@ -277,7 +281,9 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 							getWplByListSidAndPeriod,
 							alarmExtractConditions,
 							alarmCheckConditionCode);
-					lstExtractInfoResult.addAll(checkTab4.getAlarmExtractInfoResults());
+					if (!checkTab4.getAlarmExtractInfoResults().isEmpty()) {
+						lstExtractInfoResult.addAll(checkTab4.getAlarmExtractInfoResults());
+					}
 				}
 				if (!lstExtractInfoResult.isEmpty()) {
 					alarmEmployeeLists.add(new AlarmEmployeeList(lstExtractInfoResult, sid));
