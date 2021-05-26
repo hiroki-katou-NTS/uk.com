@@ -1925,7 +1925,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 
                 val g22 = convertToTime((int) (valueG22BeforeCurent));
                 cells.get(firstRow, 10 + totalMonth).setValue(g22);
-                if (valueG15 < 0) {
+                if (valueG22BeforeCurent < 0) {
                     setForegroundRed(cells.get(firstRow, 10 + totalMonth));
                 }
             }
@@ -1943,9 +1943,6 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 
                 if (item.getYearMonth().equals(currentMonth)) {
                     // G2_2: 月度残時間:
-                    if (!dataSource.isSameCurrentMonth()) {
-                        setCurrentMonthBackground(cells.get(firstRow, 10 + totalMonth));
-                    }
                     val monthlyRemainingTime = item.getAggrResultOfAnnualLeave().getAsOfPeriodEnd()
                             .getRemainingNumber().getAnnualLeaveWithMinus().getRemainingNumberInfo()
                             .getRemainingNumberBeforeGrant().getTotalRemainingDays().v();
