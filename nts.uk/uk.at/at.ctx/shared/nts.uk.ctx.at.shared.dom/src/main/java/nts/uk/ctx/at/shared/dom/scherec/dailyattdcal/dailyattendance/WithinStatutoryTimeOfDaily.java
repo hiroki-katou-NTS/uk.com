@@ -62,10 +62,9 @@ public class WithinStatutoryTimeOfDaily {
 	//所定内深夜時間
 	@Setter
 	private WithinStatutoryMidNightTime withinStatutoryMidNightTime = new WithinStatutoryMidNightTime(TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0)));
-	//休暇加算時間
-	private AttendanceTime vacationAddTime = new AttendanceTime(0);
 
-	/** 所定内労働時間金額 **/
+
+	/** 就業時間金額 **/
 	private AttendanceAmountDaily withinWorkTimeAmount = new AttendanceAmountDaily(0);
 
 
@@ -212,7 +211,14 @@ public class WithinStatutoryTimeOfDaily {
 				NotUseAtr.USE);
 
 		//所定内深夜時間の計算
-		WithinStatutoryMidNightTime midNightTime = WithinStatutoryMidNightTime.calcPredetermineMidNightTime(recordReget.getCalculationRangeOfOneDay());
+		WithinStatutoryMidNightTime midNightTime = WithinStatutoryMidNightTime.calcPredetermineMidNightTime(
+				recordReget,
+				workType,
+				conditionItem,
+				flexCalcMethod,
+				vacationClass,
+				workTimeCode,
+				predetermineTimeSetByPersonInfo);
 
 		return new WithinStatutoryTimeOfDaily(workTime, actualTime, withinpremiumTime, actualWithinPremiumTime, midNightTime);
 	}
@@ -338,7 +344,6 @@ public class WithinStatutoryTimeOfDaily {
 		withinStatutoryTimeOfDaily.actualWorkTime = actualWorkTime;
 		withinStatutoryTimeOfDaily.withinPrescribedPremiumTime = withinPrescribedPremiumTime;
 		withinStatutoryTimeOfDaily.withinStatutoryMidNightTime = withinStatutoryMidNightTime;
-		withinStatutoryTimeOfDaily.vacationAddTime = vacationAddTime;
 		return withinStatutoryTimeOfDaily;
 	}
 
