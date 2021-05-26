@@ -118,7 +118,7 @@ module nts.uk.ui.kdp001.a {
                             <div class="btn-start-1"
                                 data-bind="attr: { style: btn.style }, text: btn.buttonName"></div>
                         <!-- /ko -->
-                        <!-- ko if: btn.buttonName.length > 10 -->
+                        <!-- ko if: btn.buttonName.length > 8 -->
                             <div class="btn-start-2"
                                 data-bind="attr: { style: btn.style }, text: btn.buttonName"></div>
                         <!-- /ko -->
@@ -129,7 +129,7 @@ module nts.uk.ui.kdp001.a {
                             <div class="btn-start-3"
                                 data-bind="attr: { style: btn.style }, text: btn.buttonName"></div>
                         <!-- /ko -->
-                        <!-- ko if: btn.buttonName.length > 10 -->
+                        <!-- ko if: btn.buttonName.length > 8 -->
                             <div class="btn-start-4"
                                 data-bind="attr: { style: btn.style }, text: btn.buttonName"></div>
                         <!-- /ko -->

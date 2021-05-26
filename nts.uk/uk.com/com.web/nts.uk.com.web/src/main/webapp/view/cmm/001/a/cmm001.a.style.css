@@ -86,7 +86,7 @@
 }
 
 .th-col1 {
-	/* width: 200px; */
+	width: 150px;
 	border: none;
 	height: 30px;
 }
@@ -122,7 +122,6 @@ input.ntsSearchBox {
 }
 
 #companyCode {
-	margin-left: 44px !important; 
 	margin-bottom: 0px !important;
 }
 
