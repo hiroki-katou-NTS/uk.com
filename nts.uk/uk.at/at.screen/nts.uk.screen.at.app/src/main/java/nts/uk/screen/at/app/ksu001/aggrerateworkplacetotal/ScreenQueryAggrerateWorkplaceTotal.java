@@ -11,9 +11,9 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.aggregation.dom.schedulecounter.tally.WorkplaceCounterCategory;
 import nts.uk.ctx.at.schedule.app.find.budget.external.ExternalBudgetDto;
-import nts.uk.ctx.at.shared.app.find.scherec.totaltimes.dto.TotalTimesDetailDto;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
+import nts.uk.screen.at.app.ksu001.aggreratepersonaltotal.TotalTimesDto;
 
 /**
  * 職場計を集計する
@@ -66,7 +66,7 @@ public class ScreenQueryAggrerateWorkplaceTotal {
 		// 職場計カテゴリ == 回数集計
 		else if (workplaceCounterOp == WorkplaceCounterCategory.TIMES_COUNTING) {
 			//2: 集計する(List<日別勤怠(Work)>)
-			Map<GeneralDate, Map<TotalTimesDetailDto, BigDecimal>> timeCount = 
+			Map<GeneralDate, Map<TotalTimesDto, BigDecimal>> timeCount = 
 					screenQueryAggrerateNumberTime.aggrerate(aggrerateintegrationOfDaily);
 			output.setTimeCount(timeCount);
 		

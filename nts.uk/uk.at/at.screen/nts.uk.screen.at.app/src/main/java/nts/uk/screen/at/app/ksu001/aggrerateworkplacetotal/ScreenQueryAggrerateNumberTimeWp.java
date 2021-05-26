@@ -18,7 +18,6 @@ import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.aggregation.dom.schedulecounter.aggregationprocess.TotalTimesCounterService;
 import nts.uk.ctx.at.shared.app.find.scherec.totaltimes.dto.TotalTimesDetailDto;
-import nts.uk.ctx.at.shared.dom.common.EmployeeId;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.DailyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.service.AttendanceItemConvertFactory;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
@@ -31,6 +30,7 @@ import nts.uk.screen.at.app.kml002.screenG.CountInfoDto;
 import nts.uk.screen.at.app.kml002.screenG.CountInfoProcessor;
 import nts.uk.screen.at.app.kml002.screenG.NumberOfTimeTotalDto;
 import nts.uk.screen.at.app.kml002.screenG.RequestPrams;
+import nts.uk.screen.at.app.ksu001.aggreratepersonaltotal.TotalTimesDto;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -54,12 +54,12 @@ public class ScreenQueryAggrerateNumberTimeWp {
 	private AttendanceItemConvertFactory converterFactory;
 	
 	
-	public Map<GeneralDate, Map<TotalTimesDetailDto, BigDecimal>> aggrerate(
+	public Map<GeneralDate, Map<TotalTimesDto, BigDecimal>> aggrerate(
 			List<IntegrationOfDaily> aggrerateintegrationOfDaily
 			) {
 		
 		Require require = new Require(totalTimeRepository, workTypeRepository, converterFactory); 
-		Map<GeneralDate, Map<TotalTimesDetailDto, BigDecimal>> output = new HashMap<GeneralDate, Map<TotalTimesDetailDto, BigDecimal>>();
+		Map<GeneralDate, Map<TotalTimesDto, BigDecimal>> output = new HashMap<GeneralDate, Map<TotalTimesDto, BigDecimal>>();
 		//1: 取得する(回数集計種類)
 		Optional<CountInfoDto> countInfoOp = Optional.ofNullable(countInfoProcessor.getInfo(new RequestPrams(0)));
 		
@@ -106,6 +106,8 @@ public class ScreenQueryAggrerateNumberTimeWp {
 					    		  				   .collect(Collectors.toMap(
 					    		  						   x -> totalTimes.stream()
 					    		  						   				  .filter(y -> y.getTotalCountNo() == x.getKey())
+					    		  						   				  .filter( y -> Optional.ofNullable(y).isPresent())
+					    		  						   				  .map(y -> new TotalTimesDto(y.getTotalCountNo(), y.getTotalTimesName()))
 					    		  						   				  .findFirst().orElse(null),
 					    		  						   x -> x.getValue()
 			    		  						   ))

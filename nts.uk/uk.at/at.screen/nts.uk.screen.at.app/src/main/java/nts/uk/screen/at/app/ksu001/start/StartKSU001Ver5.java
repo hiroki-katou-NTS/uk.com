@@ -206,11 +206,20 @@ public class StartKSU001Ver5 {
 		}
 		result.setShiftMasterWithWorkStyleLst(shiftMasterWithWorkStyleLst);
 		if (viewModeSelected == FuncCtrlDisplayFormatDto.Shift.value) {
-			result.setAggreratePersonal(resultStep51.aggreratePersonal);
-			result.setAggrerateWorkplace(resultStep51.aggrerateWorkplace);
+			result.setAggreratePersonal(
+					AggregatePersonalMapDto.convertMap(resultStep51.aggreratePersonal)
+					
+					);
+			result.setAggrerateWorkplace(
+					AggregateWorkplaceMapDto.convertMap(resultStep51.aggrerateWorkplace)
+					);
 		} else {
-			result.setAggreratePersonal(resultStep4.aggreratePersonal);
-			result.setAggrerateWorkplace(resultStep4.aggrerateWorkplace);
+			result.setAggreratePersonal(
+					AggregatePersonalMapDto.convertMap(resultStep4.aggreratePersonal)
+					);
+			result.setAggrerateWorkplace(
+					AggregateWorkplaceMapDto.convertMap(resultStep4.aggrerateWorkplace)
+					);
 		}
 		// tạo data test map
 		Map<String, Map<TotalTimesDto, BigDecimal>> timeCount = new HashMap<String, Map<TotalTimesDto, BigDecimal>>();

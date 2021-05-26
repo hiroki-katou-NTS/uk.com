@@ -47,7 +47,7 @@ public class JobTitleInfoDto {
 					.jobTitleId(domain.getJobTitleId())
 					.jobTitleCode(domain.getJobTitleCode().v())
 					.jobTitleName(domain.getJobTitleName().v())
-					.sequenceCode(domain.getSequenceCode().v())
+					.sequenceCode(null)
 					.build();
 	}
 }

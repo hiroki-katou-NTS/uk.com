@@ -36,6 +36,9 @@ import nts.uk.screen.at.app.ksu001.extracttargetemployees.ExtractTargetEmployees
 import nts.uk.screen.at.app.ksu001.extracttargetemployees.ScreenQueryExtractTargetEmployees;
 import nts.uk.screen.at.app.ksu001.getinfoofInitstartup.TargetOrgIdenInforDto;
 import nts.uk.screen.at.app.ksu001.getshiftpalette.ShiftMasterDto;
+import nts.uk.screen.at.app.ksu001.start.AggregateNumberPeopleMapDto;
+import nts.uk.screen.at.app.ksu001.start.AggregatePersonalMapDto;
+import nts.uk.screen.at.app.ksu001.start.AggregateWorkplaceMapDto;
 import nts.uk.screen.at.app.ksu001.start.ShiftPaletteWantGet;
 import nts.uk.screen.at.app.ksu001.start.StartKSU001Dto;
 
@@ -171,11 +174,47 @@ public class ChangeWorkPlaceFinder {
 		result.setShiftMasterWithWorkStyleLst(shiftMasterWithWorkStyleLst);
 		
 		if (viewMode.equals("shift")) {
-			result.setAggreratePersonal(resultStep51.aggreratePersonal);
-			result.setAggrerateWorkplace(resultStep51.aggrerateWorkplace);
+			result.setAggreratePersonal(
+					new AggregatePersonalMapDto(
+							resultStep51.aggreratePersonal.convertEstimatedSalary(),
+							resultStep51.aggreratePersonal.convertTimeCount(),
+							resultStep51.aggreratePersonal.convertWorkhours()
+							)
+					
+					);
+			result.setAggrerateWorkplace(
+					new AggregateWorkplaceMapDto(
+							resultStep51.aggrerateWorkplace.convertLaborCostAndTime(),
+							resultStep51.aggrerateWorkplace.convertTimeCount(),
+							new AggregateNumberPeopleMapDto(
+									resultStep51.aggrerateWorkplace.getAggrerateNumberPeople().convertEmployment(),
+									resultStep51.aggrerateWorkplace.getAggrerateNumberPeople().convertClassification(),
+									resultStep51.aggrerateWorkplace.getAggrerateNumberPeople().convertJobTitleInfo()
+									),
+							resultStep51.aggrerateWorkplace.convertExternalBudget()
+							)
+					
+					);
 		} else {
-			result.setAggreratePersonal(resultStep4.aggreratePersonal);
-			result.setAggrerateWorkplace(resultStep4.aggrerateWorkplace);
+			result.setAggreratePersonal(
+					new AggregatePersonalMapDto(
+							resultStep4.aggreratePersonal.convertEstimatedSalary(),
+							resultStep4.aggreratePersonal.convertTimeCount(),
+							resultStep4.aggreratePersonal.convertWorkhours()
+							)
+					);
+			result.setAggrerateWorkplace(
+					new AggregateWorkplaceMapDto(
+							resultStep4.aggrerateWorkplace.convertLaborCostAndTime(),
+							resultStep4.aggrerateWorkplace.convertTimeCount(),
+							new AggregateNumberPeopleMapDto(
+									resultStep4.aggrerateWorkplace.getAggrerateNumberPeople().convertEmployment(),
+									resultStep4.aggrerateWorkplace.getAggrerateNumberPeople().convertClassification(),
+									resultStep4.aggrerateWorkplace.getAggrerateNumberPeople().convertJobTitleInfo()
+									),
+							resultStep4.aggrerateWorkplace.convertExternalBudget()
+							)
+					);
 		}
 		return result;
 	}
