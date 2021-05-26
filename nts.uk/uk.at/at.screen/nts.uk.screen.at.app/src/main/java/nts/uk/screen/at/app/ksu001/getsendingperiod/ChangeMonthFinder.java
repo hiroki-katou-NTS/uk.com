@@ -45,13 +45,12 @@ public class ChangeMonthFinder {
 	public ChangeMonthDto getData(ChangeMonthParam param) {
 		
 		// call <<ScreenQuery>> 送る期間を取得する
-		DatePeriod datePeriod = null;
-		if (param.modePeriod == 1) {
-			DatePeriod currentPeriod = new DatePeriod(GeneralDate.fromString(param.startDate, DATE_FORMAT),
-					GeneralDate.fromString(param.endDate, DATE_FORMAT));
-			datePeriod = getSendingPeriodScreenQuery.getSendingPeriod(currentPeriod, param.isNextMonth, false);
+		DatePeriod datePeriod = new DatePeriod(GeneralDate.fromString(param.startDate, DATE_FORMAT),
+				GeneralDate.fromString(param.endDate, DATE_FORMAT));
+		if (param.modePeriod == ModePeriod.extractionPeriod.value) {
+			datePeriod = getSendingPeriodScreenQuery.getSendingPeriod(datePeriod, param.isNextMonth, false);
 
-		} else if (param.modePeriod == 3) {
+		} else if (param.modePeriod == ModePeriod.from1stToLastDay.value) {
 			GeneralDate startDate = GeneralDate.fromString(param.startDate, DATE_FORMAT);
 			if(param.isNextMonth) {
 				startDate = startDate.addMonths(1);

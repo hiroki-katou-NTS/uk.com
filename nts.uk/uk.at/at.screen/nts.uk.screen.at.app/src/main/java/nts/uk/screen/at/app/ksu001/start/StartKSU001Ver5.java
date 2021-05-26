@@ -3,7 +3,9 @@
  */
 package nts.uk.screen.at.app.ksu001.start;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -18,6 +20,7 @@ import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.function.dom.adapter.annualworkschedule.EmployeeInformationImport;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrganizationUnit;
+import nts.uk.screen.at.app.ksu001.aggreratepersonaltotal.TotalTimesDto;
 import nts.uk.screen.at.app.ksu001.displayinshift.DisplayInShift;
 import nts.uk.screen.at.app.ksu001.displayinshift.DisplayInShiftParam_New;
 import nts.uk.screen.at.app.ksu001.displayinshift.DisplayInShiftResult_New;
@@ -209,6 +212,17 @@ public class StartKSU001Ver5 {
 			result.setAggreratePersonal(resultStep4.aggreratePersonal);
 			result.setAggrerateWorkplace(resultStep4.aggrerateWorkplace);
 		}
+		// tạo data test map
+		Map<String, Map<TotalTimesDto, BigDecimal>> timeCount = new HashMap<String, Map<TotalTimesDto, BigDecimal>>();
+		for (int j = 1; j < 11; j++) {
+			String key = GeneralDate.today().addDays(j).toString(DATE_FORMAT);
+			Map<TotalTimesDto, BigDecimal> value = new HashMap<>();
+			value.put(new TotalTimesDto(j, "totalTimesName"+j), new BigDecimal(j));
+			value.put(new TotalTimesDto(j+1, "totalTimesName"+(j+1)), new BigDecimal(j+1));
+			value.put(new TotalTimesDto(j+2, "totalTimesName"+(j+2)), new BigDecimal(j+2));
+			timeCount.put(key, value);
+		}
+		result.setTimeCount(timeCount);
 		return result;
 	}
 }

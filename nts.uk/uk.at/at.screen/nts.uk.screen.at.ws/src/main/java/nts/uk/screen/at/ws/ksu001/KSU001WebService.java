@@ -83,12 +83,6 @@ public class KSU001WebService extends WebService{
 	private CorrectWorkTimeHalfDay correctWorkTimeHalfDay;
 	@Inject
 	private ChangeConfirmedStateCommandHandler changeConfirmedStateHandler;
-	@POST
-	@Path("start")
-	public StartKSU001Dto getDataStartScreen(StartKSU001Param param){
-		StartKSU001Dto data = startKSU001.getData(param);
-		return data;
-	}
 	
 	@POST
 	@Path("startver")

@@ -197,19 +197,23 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             self.disPeriodSelectionList = ko.observableArray([]);
             
             self.selectedDisplayPeriod.subscribe(function(value) { // value = 1 || 2 || 3
-                if (value == null || value == undefined || value == 2)
+                if (value == null || value == undefined)
                     return;
-                if (value == 3) {
+                if (value == 3) { // 1日～末日で表示する  ：   A3_2_3選択時               
                     let date = new Date(self.dateTimeAfter());
                     let firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
                     let lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0);
-                    
+
                     let startDate = moment(firstDay).format('YYYY/MM/DD');
-                    let endDate   = moment(lastDay).format('YYYY/MM/DD');
-                    
-                    if ((self.dateTimeAfter() != endDate) || (self.dateTimePrev() != startDate)) {
-                        self.getDataWhenChangeModePeriod(startDate, endDate);
-                    }
+                    let endDate = moment(lastDay).format('YYYY/MM/DD');
+
+                    //if ((self.dateTimeAfter() != endDate) || (self.dateTimePrev() != startDate)) {
+                    self.getDataWhenChangeModePeriod();
+                    //}
+                } else if (value == 2) { // 28日周期で表示する  ：   A3_2_2選択時               
+                    self.getDataWhenChangeModePeriod();
+                } else if (value == 1) { // 抽出期間を表示する  ：   A3_2_1選択時           
+                    self.getDataWhenChangeModePeriod();
                 }
             });
 
@@ -455,7 +459,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 workplaceSelected: self.useCategoriesWorkplaceValue() // A12_1
             }
 
-            service.getDataStartScreen(param).done((data: IDataStartScreen) => {
+            service.getDataStartScreen(param).done((data: any) => {
                 // khởi tạo data localStorage khi khởi động lần đầu.
                 self.creatDataLocalStorege(data);
                 
@@ -529,23 +533,26 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             return dfd.promise();
         }
         
-        getDataWhenChangeModePeriod(startDate, endDate) {
+        getDataWhenChangeModePeriod() {
             let self = this;
             let viewMode = self.selectedModeDisplayInBody();
             nts.uk.ui.block.grayout();
 
             let param = {
                 viewMode: self.selectedModeDisplayInBody(), // time | shortName | shift
-                startDate: startDate,
-                endDate: endDate,
+                startDate: self.dateTimePrev(),
+                endDate: self.dateTimeAfter(),
                 workplaceId: self.userInfor.workplaceId,
                 workplaceGroupId: self.userInfor.workplaceGroupId,
                 unit: self.userInfor.unit,
                 getActualData: !_.isNil(self.userInfor) ? self.userInfor.achievementDisplaySelected : false,
                 listShiftMasterNotNeedGetNew: self.userInfor.shiftMasterWithWorkStyleLst,
-                listSid: self.listSid();
+                sids: self.listSid(),
+                day: self.closeDate.day, 
+                isLastDay: self.closeDate.lastDay,
                 personTotalSelected: self.useCategoriesPersonalValue(), // A11_1
-                workplaceSelected: self.useCategoriesWorkplaceValue() // A12_1
+                workplaceSelected: self.useCategoriesWorkplaceValue(), // A12_1
+                modePeriodSelected: self.selectedDisplayPeriod(), // 1 |2|3
             };
 
             service.getDataWhenChangeModePeriod(param).done((data: any) => {
@@ -554,17 +561,18 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 }
                 
                 self.saveDataGrid(data);
+                self.dtPrev(data.dataBasicDto.startDateNew);
+                self.dtAft(data.dataBasicDto.endDateNew);
 
-                self.dtPrev(data.dataBasicDto.startDate);
-                self.dtAft(data.dataBasicDto.endDate);
-                
                 let dataGrid: any = {
                     listDateInfo: data.listDateInfo,
                     listEmpInfo: data.listEmpInfo,
                     displayControlPersonalCond: data.displayControlPersonalCond,
                     listPersonalConditions: data.listPersonalConditions,
                     listWorkScheduleWorkInfor: data.listWorkScheduleWorkInfor,
-                    listWorkScheduleShift: data.listWorkScheduleShift
+                    listWorkScheduleShift: data.listWorkScheduleShift,
+                    aggreratePersonal: data.aggreratePersonal,
+                    aggrerateWorkplace: data.aggrerateWorkplace
                 }
                 let dataBindGrid = self.convertDataToGrid(dataGrid, self.selectedModeDisplayInBody());
 
