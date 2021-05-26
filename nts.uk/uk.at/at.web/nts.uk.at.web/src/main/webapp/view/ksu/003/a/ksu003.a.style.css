@@ -67,7 +67,7 @@
 	vertical-align: text-top;
 }
 
-.settingTimeGrid{
+#settingTimeGrid{
 	height: 22px !important;
     width: 18px !important;
     box-shadow: none !important;
@@ -259,7 +259,6 @@ html {
 	background-color: #F8EFD4 !important;
 	display: none;
 	z-index: 1999 !important;
-	width: 230px;
 }
 
 /** A3_4 */
@@ -271,9 +270,15 @@ html {
 }
 
 #A14 {
-	z-index: 2000 !important;
 	height: 180px !important;
 	width: 330px !important;
+	border: solid 6px #fff !important;
+	border-radius: 3.5px !important;
+	box-shadow: 1px 1px 5px 2px #888 !important;
+	padding: 12px;
+	background-color: #F8EFD4 !important;
+	display: none;
+	z-index: 2000 !important;
 }
 
 #combo-box-start, #combo-box-start-2{
