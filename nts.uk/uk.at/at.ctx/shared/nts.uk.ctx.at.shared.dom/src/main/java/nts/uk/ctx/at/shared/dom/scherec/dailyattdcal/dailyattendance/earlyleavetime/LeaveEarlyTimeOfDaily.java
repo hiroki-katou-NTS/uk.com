@@ -73,6 +73,19 @@ public class LeaveEarlyTimeOfDaily {
 		this.doNotSetAlarm = false;
 	}
 	
+	/** 相殺代休時間を求める */
+	public AttendanceTime getOffsetCompensatoryTime() {
+		
+		/** IF ＠早退控除時間。計算時間　＜　＠休暇使用時間。時間代休使用時間 */
+		if (this.leaveEarlyDeductionTime.getCalcTime().lessThan(this.timePaidUseTime.getTimeCompensatoryLeaveUseTime())) {
+			/** Return　＠早退控除時間。計算時間	*/
+			return this.leaveEarlyDeductionTime.getCalcTime();
+		}
+		
+		/** Return　＠休暇使用時間。時間代休使用時間 */
+		return this.timePaidUseTime.getTimeCompensatoryLeaveUseTime();
+	}
+	
 	/**
 	 * 早退時間のみ更新
 	 * @param leaveEarlyTime
@@ -244,11 +257,9 @@ public class LeaveEarlyTimeOfDaily {
 		return result;
 	}
 	
+	//クリア 早退時間の時間
 	public void  resetData() {
-		this.leaveEarlyTime = TimeWithCalculation.sameTime(new AttendanceTime(0));
-		this.leaveEarlyDeductionTime = TimeWithCalculation.sameTime(new AttendanceTime(0));
-		this. timePaidUseTime =  TimevacationUseTimeOfDaily.defaultValue();
-		this.intervalTime =  IntervalExemptionTime.defaultValue();
+		this.leaveEarlyTime.setTime(new AttendanceTime(0));
 	}
 	
 	public static LeaveEarlyTimeOfDaily createDefaultWithNo(int no) {

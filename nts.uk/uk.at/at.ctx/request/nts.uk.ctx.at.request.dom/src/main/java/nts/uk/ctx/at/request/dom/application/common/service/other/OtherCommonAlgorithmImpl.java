@@ -522,7 +522,7 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 		if(opScBasicScheduleImport != null){
 			String workTypeCd = opScBasicScheduleImport.getWorkTypeCode();
 			// ドメインモデル「勤務種類」を1件取得する
-			Optional<WorkType> opWorkType = workTypeRepository.findByPK(companyID, workTypeCd);
+			Optional<WorkType> opWorkType = workTypeRepository.findNoAbolishByPK(companyID, workTypeCd);
 			if(!opWorkType.isPresent()){
 				return null;
 			}
@@ -577,7 +577,7 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 		if (isWkTimeCDNotEmpty) {
 			// 「就業時間帯名称を取得する」＝＝ NULL をチェック
 			String WkTimeName = null;
-			Optional<WorkTimeSetting> wwktimeOpt = this.workTimeRepository.findByCodeAndAbolishCondition(companyID, wkTimeCode, AbolishAtr.NOT_ABOLISH);
+			Optional<WorkTimeSetting> wwktimeOpt = this.workTimeRepository.findByCode(companyID, wkTimeCode);
 			if (wwktimeOpt.isPresent()) {
 				WkTimeName = wwktimeOpt.get().getWorkTimeDisplayName().getWorkTimeName().v();
 			}

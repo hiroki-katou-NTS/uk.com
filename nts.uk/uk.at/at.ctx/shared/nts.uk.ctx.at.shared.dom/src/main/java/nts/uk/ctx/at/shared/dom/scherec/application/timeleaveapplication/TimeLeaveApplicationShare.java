@@ -8,7 +8,9 @@ import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.scherec.application.common.ApplicationShare;
 
 /**
- * AggregateRoot : 時間休暇申請
+ * @author thanh_nx
+ *
+ *         時間休暇申請(反映用)
  */
 @Getter
 @Setter

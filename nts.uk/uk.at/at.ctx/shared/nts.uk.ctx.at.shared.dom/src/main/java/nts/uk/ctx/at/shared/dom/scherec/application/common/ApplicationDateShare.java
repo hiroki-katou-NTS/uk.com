@@ -6,7 +6,7 @@ import nts.arc.time.GeneralDate;
 /**
  * @author thanh_nx
  *
- *         申請日
+ *         申請日(反映用)
  */
 @Getter
 public class ApplicationDateShare {

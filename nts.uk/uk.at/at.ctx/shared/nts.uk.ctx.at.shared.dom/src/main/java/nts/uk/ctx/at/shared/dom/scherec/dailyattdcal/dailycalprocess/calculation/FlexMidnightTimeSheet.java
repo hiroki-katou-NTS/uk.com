@@ -119,15 +119,19 @@ public class FlexMidnightTimeSheet {
 		// 就業時間内時間枠を取得
 		for (WithinWorkTimeFrame timeFrame : flexWithinWorkTimeSheet.getWithinWorkTimeFrame()){
 			if (!timeFrame.getMidNightTimeSheet().getTimeSheets().isEmpty()) continue;
+			
+			// 自身の控除時間帯の取得
+			DeductionTimeSheet deductTimeSheet = timeFrame.getCloneDeductionTimeSheet();
+			
 			for (MidNightTimeSheetForCalc midnightTimeSheet : timeFrame.getMidNightTimeSheet().getTimeSheets()){
 				// 深夜時間帯.時間帯と所定外開始時刻を比較する
 				TimeSpanForDailyCalc timeSpan = midnightTimeSheet.getTimeSheet();
 				MidNightTimeSheetForCalc newMidnightTimeSheet = new MidNightTimeSheetForCalc(
 						midnightTimeSheet.getTimeSheet(),
 						midnightTimeSheet.getRounding(),
-						new ArrayList<>(timeFrame.getRecordedTimeSheet()),
-						new ArrayList<>(timeFrame.getDeductionTimeSheet()));
-				newMidnightTimeSheet.trimRecordedAndDeductionToSelfRange();
+						new ArrayList<>(),
+						new ArrayList<>());
+				newMidnightTimeSheet.registDeductionList(deductTimeSheet, Optional.empty());
 				if (timeSpan.getEnd().lessThanOrEqualTo(withoutStartTime)){
 					// 深夜時間帯を所定内に追加する
 					domain.within.add(newMidnightTimeSheet);
@@ -141,16 +145,16 @@ public class FlexMidnightTimeSheet {
 					MidNightTimeSheetForCalc withinMidnight = new MidNightTimeSheetForCalc(
 							new TimeSpanForDailyCalc(timeSpan.getStart(), withoutStartTime),
 							midnightTimeSheet.getRounding(),
-							new ArrayList<>(timeFrame.getRecordedTimeSheet()),
-							new ArrayList<>(timeFrame.getDeductionTimeSheet()));
-					withinMidnight.trimRecordedAndDeductionToSelfRange();
+							new ArrayList<>(),
+							new ArrayList<>());
+					withinMidnight.registDeductionList(deductTimeSheet, Optional.empty());
 					// 計算用深夜時間帯（所定外）の作成
 					MidNightTimeSheetForCalc withoutMidnight = new MidNightTimeSheetForCalc(
 							new TimeSpanForDailyCalc(withoutStartTime, timeSpan.getEnd()),
 							midnightTimeSheet.getRounding(),
-							new ArrayList<>(timeFrame.getRecordedTimeSheet()),
-							new ArrayList<>(timeFrame.getDeductionTimeSheet()));
-					withoutMidnight.trimRecordedAndDeductionToSelfRange();
+							new ArrayList<>(),
+							new ArrayList<>());
+					withoutMidnight.registDeductionList(deductTimeSheet, Optional.empty());
 					// 作成した計算用深夜時間帯を所定内、所定外にそれぞれ追加する
 					domain.within.add(withinMidnight);
 					domain.without.add(withoutMidnight);

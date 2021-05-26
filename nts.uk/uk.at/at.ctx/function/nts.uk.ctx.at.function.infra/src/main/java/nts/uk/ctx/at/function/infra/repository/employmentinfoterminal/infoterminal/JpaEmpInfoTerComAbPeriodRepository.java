@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.function.dom.employmentinfoterminal.infoterminal.ContractCode;
 import nts.uk.ctx.at.function.dom.employmentinfoterminal.infoterminal.EmpInfoTerComAbPeriod;
@@ -19,6 +20,8 @@ public class JpaEmpInfoTerComAbPeriodRepository extends JpaRepository implements
 	
 	private final static String FIND_IN_PERIOD = "SELECT a FROM KfndtTrSignalAbNormal a WHERE a.pk.contractCode = :contractCode AND a.pk.timeRecordCode = :code AND a.pk.preTimeSuccDate <= :end AND a.lastestTimeSuccDate >= :start ORDER BY a.pk.preTimeSuccDate DESC";
 
+	private final static String DELETE_PAST = "DELETE  FROM KfndtTrSignalAbNormal a WHERE a.pk.contractCode = :contractCode AND a.pk.timeRecordCode = :code AND a.lastestTimeSuccDate <= :dateDelete";
+	
 	@Override
 	public void insert(EmpInfoTerComAbPeriod empInfoTerComAbPeriod) {
 		this.commandProxy().insert(KfndtTrSignalAbNormal.toEntity(empInfoTerComAbPeriod));
@@ -47,5 +50,12 @@ public class JpaEmpInfoTerComAbPeriodRepository extends JpaRepository implements
 				.setParameter("start", start)
 				.setParameter("end", end)
 				.getList().stream().map(e -> e.toDomain()).collect(Collectors.toList());
+	}
+
+	@Override
+	public void deletePast(ContractCode contractCode, EmpInfoTerminalCode code, GeneralDate dateDelete) {
+		this.queryProxy().query(DELETE_PAST, KfndtTrSignalAbNormal.class).setParameter("contractCode", contractCode.v())
+				.setParameter("code", code.v()).setParameter("dateDelete",
+						GeneralDateTime.ymdhms(dateDelete.year(), dateDelete.month(), dateDelete.day(), 0, 0, 0));
 	}
 }

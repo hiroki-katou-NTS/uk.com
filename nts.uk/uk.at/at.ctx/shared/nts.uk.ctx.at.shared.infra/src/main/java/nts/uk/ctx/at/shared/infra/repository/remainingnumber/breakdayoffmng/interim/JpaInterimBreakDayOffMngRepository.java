@@ -119,8 +119,10 @@ public class JpaInterimBreakDayOffMngRepository extends JpaRepository implements
 				new RequiredDay(x.requiredDays),
 				new UnOffsetTime(x.unOffSetTimes),
 				new UnOffsetDay(x.unOffsetDays),
-				Optional.ofNullable(DigestionHourlyTimeType.of(x.pk.timeDigestiveAtr == 1,
-						Optional.ofNullable(EnumAdaptor.valueOf(x.pk.timeHdType, AppTimeType.class))))
+				Optional.ofNullable(
+						DigestionHourlyTimeType.of(x.pk.timeDigestiveAtr == 1, x.pk.timeHdType == 0 ? Optional.empty()
+								:
+						Optional.ofNullable(EnumAdaptor.valueOf(x.pk.timeHdType -1 , AppTimeType.class))))
 				);
 	}
 	
@@ -162,7 +164,7 @@ public class JpaInterimBreakDayOffMngRepository extends JpaRepository implements
 				+ " AND a1.YMD >= ? and a1.YMD <= ?"
 				+ " AND a1.UNUSED_DAYS > ?"
 				+ " AND a1.EXPIRATION_DAYS >= ? and a1.EXPIRATION_DAYS <= ?"
-				+ " ORDER BY a2.YMD");
+				+ " ORDER BY a1.YMD");
 				)
 		{
 			sql.setString(1, sid);
@@ -242,7 +244,7 @@ public class JpaInterimBreakDayOffMngRepository extends JpaRepository implements
 				domain.getSID(), 
 				domain.getYmd(),
 				domain.getAppTimeType().map(x -> x.isHourlyTimeType() ? 1 : 0).orElse(0),
-				domain.getAppTimeType().map(x -> x.getAppTimeType().map(appTime -> appTime.value).orElse(0)).orElse(0)
+				domain.getAppTimeType().map(x -> x.getAppTimeType().map(appTime -> appTime.value + 1).orElse(0)).orElse(0)
 				);
 		
 		// 登録・更新
@@ -432,8 +434,8 @@ public class JpaInterimBreakDayOffMngRepository extends JpaRepository implements
 				new RequiredDay(x.getDouble("REQUIRED_DAYS")),
 				new UnOffsetTime(x.getInt("UNOFFSET_TIMES")),
 				new UnOffsetDay(x.getDouble("UNOFFSET_DAYS")),
-				Optional.ofNullable(DigestionHourlyTimeType.of(x.getInt("TIME_DIGESTIVE_ATR") == 1,
-						Optional.ofNullable(EnumAdaptor.valueOf(x.getInt("TIME_HD_TYPE"), AppTimeType.class))))
+				Optional.ofNullable(DigestionHourlyTimeType.of(x.getInt("TIME_DIGESTIVE_ATR") == 1,x.getInt("TIME_HD_TYPE") == 0 ?Optional.empty():
+						Optional.ofNullable(EnumAdaptor.valueOf(x.getInt("TIME_HD_TYPE") -1 , AppTimeType.class))))
 				);
 	}
 	@Override

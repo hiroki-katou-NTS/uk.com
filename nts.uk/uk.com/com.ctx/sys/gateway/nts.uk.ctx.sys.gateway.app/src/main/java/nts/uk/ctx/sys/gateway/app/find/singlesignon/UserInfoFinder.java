@@ -22,8 +22,6 @@ import nts.uk.ctx.sys.gateway.dom.adapter.person.PersonInfoAdapter;
 import nts.uk.ctx.sys.gateway.dom.adapter.person.PersonInfoImport;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.UserAdapter;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.UserImport;
-import nts.uk.ctx.sys.gateway.dom.singlesignon.OtherSysAccount;
-import nts.uk.ctx.sys.gateway.dom.singlesignon.OtherSysAccountRepository;
 import nts.uk.ctx.sys.gateway.dom.singlesignon.WindowsAccount;
 import nts.uk.ctx.sys.gateway.dom.singlesignon.WindowsAccountRepository;
 
@@ -45,15 +43,11 @@ public class UserInfoFinder {
 	@Inject
 	private WindowsAccountRepository windowAccountRepository;
 
-	/** The other sys account repository. */
-	@Inject
-	private OtherSysAccountRepository otherSysAccountRepository;
-
 	/** The user adapter. */
 	@Inject
 	private UserAdapter userAdapter;
 	
-	public List<UserDto> findListUserInfo(int closure, List<String> sIds,  Boolean isScreenC) {
+	public List<UserDto> findListUserInfo(int closure, List<String> sIds) {
 
 		// get employee code
 		List<EmployeeInfoDtoImport> listEmployee = this.employeeInfoAdapter
@@ -137,29 +131,12 @@ public class UserInfoFinder {
 		listUserMap
 				.sort((user1, user2) -> user1.getEmployeeCode().compareTo(user2.getEmployeeCode()));
 
-		return loadUserSetting(listUserMap, isScreenC);
+		return loadUserSetting(listUserMap);
 
 	}
 
 	// set isSetting for win acc and other acc
-	public List<UserDto> loadUserSetting(List<UserDto> listUserMap, Boolean isScreenC) {
-		if (isScreenC) {
-			List<String> listEmployeeId = listUserMap.stream().map(UserDto::getEmployeeId).collect(Collectors.toList());
-			List<OtherSysAccount> listOtherSysAccs = otherSysAccountRepository.findAllOtherSysAccount(listEmployeeId);
-
-			Map<String, OtherSysAccount> mapOtherSysAccount = listOtherSysAccs.stream()
-					.collect(Collectors.toMap(OtherSysAccount::getEmployeeId, Function.identity()));
-
-			listUserMap.forEach(w -> {
-				OtherSysAccount otherSysAcc = mapOtherSysAccount.get(w.getEmployeeId());
-				if (otherSysAcc != null) {
-					w.setIsSetting(true);
-				} else {
-					w.setIsSetting(false);
-				}
-			});
-
-		} else {
+	public List<UserDto> loadUserSetting(List<UserDto> listUserMap) {
 			List<String> listEmployeeId = listUserMap.stream().map(UserDto::getEmployeeId).collect(Collectors.toList());
 			List<WindowsAccount> lstWindowAccount = windowAccountRepository.findByListEmployeeId(listEmployeeId);
 
@@ -168,7 +145,6 @@ public class UserInfoFinder {
 				w.setIsSetting(hasSetting);
 
 			});
-		}
 		return listUserMap;
 	}
 

@@ -33,7 +33,7 @@ public class ReflectSupportStartEnd {
 	public static List<Integer> reflect(Require require, DailyRecordOfApplication dailyApp,
 			List<TimeStampAppShare> listTimeStampApp) {
 		List<Integer> lstItemId = new ArrayList<>();
-		Optional<EmployeeWorkDataSetting> empSetOpt = require.getEmpWorkDataSetting(dailyApp.getEmployeeId());
+		//input.応援(List）でループ
 		listTimeStampApp.stream().forEach(data -> {
 
 			Optional<OuenWorkTimeSheetOfDailyAttendance> ouenOpt = dailyApp.getOuenTimeSheet().stream().filter(
@@ -48,8 +48,8 @@ public class ReflectSupportStartEnd {
 				dailyApp.getOuenTimeSheet().add(update);
 				lstItemId.addAll(result.getRight());
 			} else {
-
-				val result = create(require, empSetOpt, data);
+				//処理中の応援枠NOをキーに[日別勤怠の応援作業時間帯]を作成する
+				val result = create(require, dailyApp, data);
 				dailyApp.getOuenTimeSheet().add(result.getLeft());
 				lstItemId.addAll(result.getRight());
 			}
@@ -61,7 +61,7 @@ public class ReflectSupportStartEnd {
 	}
 
 	private static Pair<OuenWorkTimeSheetOfDailyAttendance, List<Integer>> create(Require require,
-			Optional<EmployeeWorkDataSetting> empSetOpt, TimeStampAppShare data) {
+			DailyRecordOfApplication dailyApp, TimeStampAppShare data) {
 
 		List<Integer> lstItemId = new ArrayList<>();
 		TimeSheetOfAttendanceEachOuenSheet sheet = null;
@@ -80,12 +80,10 @@ public class ReflectSupportStartEnd {
 			lstItemId.add(CancelAppStamp.createItemId(930, data.getDestinationTimeApp().getEngraveFrameNo(), 10));
 		}
 
-		WorkplaceOfWorkEachOuen workplace = null;
-		if (empSetOpt.isPresent()) {
-			workplace = WorkplaceOfWorkEachOuen.create(new WorkplaceId(empSetOpt.get().getWorkplaceId()),
-					empSetOpt.get().getWorkLocationCD());
-			lstItemId.add(CancelAppStamp.createItemId(921, data.getDestinationTimeApp().getEngraveFrameNo(), 10));
-		}
+		WorkplaceOfWorkEachOuen workplace = WorkplaceOfWorkEachOuen.create(
+				data.getWorkPlaceId().map(x -> x.v()).orElse(dailyApp.getAffiliationInfor().getWplID()),
+				data.getWorkLocationCd().orElse(null));
+		lstItemId.add(CancelAppStamp.createItemId(921, data.getDestinationTimeApp().getEngraveFrameNo(), 10));
 
 		WorkContent workContent = WorkContent.create(workplace, Optional.empty(), Optional.empty());
 		return Pair.of(
@@ -95,7 +93,7 @@ public class ReflectSupportStartEnd {
 
 	}
 
-	private static Pair<OuenWorkTimeSheetOfDailyAttendance, List<Integer>> update(Require require, 
+	private static Pair<OuenWorkTimeSheetOfDailyAttendance, List<Integer>> update(Require require,
 			OuenWorkTimeSheetOfDailyAttendance old,
 			TimeStampAppShare data) {
 		List<Integer> lstItemId = new ArrayList<>();
@@ -133,13 +131,7 @@ public class ReflectSupportStartEnd {
 	}
 
 	public static interface Require {
-		
+
 		public String getCId();
-		/**
-		 * 
-		 * require{ 社員の作業データ設定を取得する(社員ID） }
-		 * 
-		 */
-		public Optional<EmployeeWorkDataSetting> getEmpWorkDataSetting(String employeeId);
 	}
 }
