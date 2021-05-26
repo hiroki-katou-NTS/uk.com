@@ -1,7 +1,7 @@
 package nts.uk.ctx.exio.app.find.exi.dataformat;
 
 import lombok.Value;
-import nts.uk.ctx.exio.dom.input.editvalue.dataformat.ChrDataFormatSet;
+import nts.uk.ctx.exio.dom.input.revise.dataformat.ChrDataFormatSet;
 
 /**
  * 文字型データ形式設定

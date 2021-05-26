@@ -3,8 +3,8 @@ package nts.uk.ctx.exio.app.command.exi.dataformat;
 import java.math.BigDecimal;
 
 import lombok.Value;
-import nts.uk.ctx.exio.dom.input.editvalue.dataformat.ItemType;
-import nts.uk.ctx.exio.dom.input.editvalue.dataformat.NumDataFormatSet;
+import nts.uk.ctx.exio.dom.input.revise.dataformat.ItemType;
+import nts.uk.ctx.exio.dom.input.revise.dataformat.NumDataFormatSet;
 
 @Value
 public class NumDataFormatSetCommand {

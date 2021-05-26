@@ -13,8 +13,8 @@ import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.exio.dom.exi.item.StdAcceptItem;
-import nts.uk.ctx.exio.dom.input.editvalue.dataformat.ChrDataFormatSet;
-import nts.uk.ctx.exio.dom.input.editvalue.dataformat.ItemType;
+import nts.uk.ctx.exio.dom.input.revise.dataformat.ChrDataFormatSet;
+import nts.uk.ctx.exio.dom.input.revise.dataformat.ItemType;
 import nts.uk.ctx.exio.infra.entity.exi.item.OiomtExAcItem;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 

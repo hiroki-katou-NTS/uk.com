@@ -38,8 +38,8 @@ import nts.uk.ctx.exio.dom.input.canonicalize.SpecialExternalItem;
 import nts.uk.ctx.exio.dom.input.canonicalize.specialedit.SpecialEdit;
 import nts.uk.ctx.exio.dom.input.csvimport.CsvRecord;
 import nts.uk.ctx.exio.dom.input.csvimport.CsvRecordImpoter;
-import nts.uk.ctx.exio.dom.input.editvalue.CsvItemImport;
-import nts.uk.ctx.exio.dom.input.editvalue.ItemCheck;
+import nts.uk.ctx.exio.dom.input.revise.ItemCheck;
+import nts.uk.ctx.exio.dom.input.revise.ReviseService;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateful
@@ -109,7 +109,7 @@ public class AsyncCsvCheckImportDataCommandHandler extends AsyncCommandHandler<C
 			List<Map<Integer, Object>> lstCsvContent = new ArrayList<>();
 			for (CsvRecord csvRecord : csvRecords) { // line
 				//アルゴリズム「受入項目チェック＆編集」を実行する
-				CsvItemImport csvItemImporter = new CsvItemImport(csvRecord, csvRecords.indexOf(csvRecord) + 1,  condSet.getAcceptMode());
+				ReviseService csvItemImporter = new ReviseService(csvRecord, csvRecords.indexOf(csvRecord) + 1,  condSet.getAcceptMode());
 				ItemCheck checkAndEditItemOfLine = csvItemImporter.readLine(require);
 				
 				if(!checkAndEditItemOfLine.isLineError()) {

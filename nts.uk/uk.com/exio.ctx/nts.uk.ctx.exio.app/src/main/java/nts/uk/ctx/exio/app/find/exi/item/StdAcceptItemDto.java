@@ -8,12 +8,12 @@ import nts.uk.ctx.exio.app.find.exi.dataformat.InsTimeDatFmSetDto;
 import nts.uk.ctx.exio.app.find.exi.dataformat.NumDataFormatSetDto;
 import nts.uk.ctx.exio.app.find.exi.dataformat.TimeDataFmSetDto;
 import nts.uk.ctx.exio.dom.exi.item.StdAcceptItem;
-import nts.uk.ctx.exio.dom.input.editvalue.dataformat.ChrDataFormatSet;
-import nts.uk.ctx.exio.dom.input.editvalue.dataformat.DateDataFormSet;
-import nts.uk.ctx.exio.dom.input.editvalue.dataformat.InsTimeDatFmSet;
-import nts.uk.ctx.exio.dom.input.editvalue.dataformat.ItemType;
-import nts.uk.ctx.exio.dom.input.editvalue.dataformat.NumDataFormatSet;
-import nts.uk.ctx.exio.dom.input.editvalue.dataformat.TimeDataFormatSet;
+import nts.uk.ctx.exio.dom.input.revise.dataformat.ChrDataFormatSet;
+import nts.uk.ctx.exio.dom.input.revise.dataformat.DateDataFormSet;
+import nts.uk.ctx.exio.dom.input.revise.dataformat.InsTimeDatFmSet;
+import nts.uk.ctx.exio.dom.input.revise.dataformat.ItemType;
+import nts.uk.ctx.exio.dom.input.revise.dataformat.NumDataFormatSet;
+import nts.uk.ctx.exio.dom.input.revise.dataformat.TimeDataFormatSet;
 
 /**
  * 受入項目（定型）

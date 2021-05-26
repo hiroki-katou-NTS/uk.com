@@ -12,8 +12,8 @@ import nts.uk.ctx.exio.app.command.exi.dataformat.NumDataFormatSetCommand;
 import nts.uk.ctx.exio.app.command.exi.dataformat.TimeDatFmSetCommand;
 import nts.uk.ctx.exio.dom.exi.condset.AcceptanceConditionCode;
 import nts.uk.ctx.exio.dom.exi.item.StdAcceptItem;
-import nts.uk.ctx.exio.dom.input.editvalue.dataformat.DataFormatSetting;
-import nts.uk.ctx.exio.dom.input.editvalue.dataformat.ItemType;
+import nts.uk.ctx.exio.dom.input.revise.dataformat.DataFormatSetting;
+import nts.uk.ctx.exio.dom.input.revise.dataformat.ItemType;
 
 @Value
 public class StdAcceptItemCommand {
