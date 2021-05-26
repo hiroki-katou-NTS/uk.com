@@ -1882,13 +1882,14 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                     setForegroundRed(cells.get(firstRow, 4));
                 }
             }
+            //G1_4
+            val valueG14 = "";
+            //G1_4
+            cells.get(firstRow, 6).setValue(valueG14);
 
         }
 
-        //G1_4
-        val valueG14 = "";
-        //G1_4
-        cells.get(firstRow, 6).setValue(valueG14);
+
         val valueG15 = data363.stream()
                 .map(e -> e.getAggrResultOfAnnualLeave().getAsOfPeriodEnd()
                         .getRemainingNumber().getAnnualLeaveWithMinus().getRemainingNumberInfo()

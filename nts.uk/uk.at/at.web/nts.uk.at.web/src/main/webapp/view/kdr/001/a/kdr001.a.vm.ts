@@ -436,8 +436,19 @@ module nts.uk.at.view.kdr001.a.viewmodel {
                 self.closureId(),
                 objComboxSelected != undefined ? objComboxSelected.name : ""
             );
-
-            let data = new ReportInfor(holidayRemainingOutputCondition, lstSelectedEployee);
+            let lstSelected: Array<EmployeeQuery> = [];
+            for (let i = 0; i < lstSelectedEployee.length; i++){
+                let e  = lstSelectedEployee[i];
+                lstSelected.push(new EmployeeQuery(
+                    e.employeeCode,
+                    e.employeeId,
+                    e.employeeName,
+                    e.affiliationCode,
+                    e.affiliationId,
+                    e.affiliationName
+                ))
+            }
+            let data = new ReportInfor(holidayRemainingOutputCondition, lstSelected);
             if(nts.uk.util.isNullOrUndefined(data.holidayRemainingOutputCondition.layOutId )){
                 nts.uk.ui.dialog.alertError({messageId: 'Msg_880'});
                 nts.uk.ui.block.clear();
@@ -495,7 +506,25 @@ module nts.uk.at.view.kdr001.a.viewmodel {
         }
 
     }
+export class EmployeeQuery {
+    employeeCode :string;
+    employeeId :string;
+    employeeName  :string;
+    workplaceCode: string;
+    workplaceId : string;
+    workplaceName: string;
+    constructor( employeeCode :string,employeeId :string, employeeName  :string,   workplaceCode: string,
+                 workplaceId : string, workplaceName: string){
+        this.employeeCode = employeeCode;
+        this.employeeId = employeeId;
+        this.employeeName = employeeName;
+        this.workplaceCode = workplaceCode;
+        this.workplaceId = workplaceId;
+        this.workplaceName = workplaceName;
+    }
 
+
+}
     export class HolidayRemainingModel {
         cd: string;
         name: string;
