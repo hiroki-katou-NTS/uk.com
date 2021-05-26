@@ -89,10 +89,12 @@
 				<div class="fixed-flex-layout-right"
 					data-bind="with: currentCompany">
 					<div class="line-height flex">
-						<div>
+						<div style="width: 150px">
 							<!-- A3_1 -->
 							<div id="LBLCompanyCode"
-								data-bind="ntsFormLabel: { required: true, constraint: 'CompanyCode'}">#{i18n.getText('CMM001_7')}</div>
+								data-bind="ntsFormLabel: { required: true, constraint: 'CompanyCode'}">
+                <label>#{i18n.getText('CMM001_7')}</label>              
+              </div>
 						</div>
 						<div>
 							<!-- A3_2 -->
