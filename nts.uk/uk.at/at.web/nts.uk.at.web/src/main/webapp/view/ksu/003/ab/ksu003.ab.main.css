@@ -66,3 +66,59 @@
 #listWorkTime{
 	margin-left: 50px;
 }
+.inlineAc {
+    display: inline-block;
+}
+.img-icon {
+    display: inline-block;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+.openDialogJA {
+    width: 25px;
+    height: 25px;
+    vertical-align: top;
+}
+.closeAb{
+    width: 25px;
+    height: 25px;
+}
+.closeAb .icon.icon-close {
+    width: 16px;
+    height: 16px;
+    margin-left: -3px;
+    margin-top: -3px;
+}
+
+#tableButton1 {
+	background-color: rgb(237,250,194);
+}
+
+#tableButton1 button {
+	width: 194px !important;
+	height: 20px;
+	line-height: 18px;
+	box-shadow : 0 1px rgba(0, 0, 0, 0.4);
+	border : 1px solid grey;
+	color : black;
+	padding: 0px;
+}
+
+#tableButton1 table td {
+	padding: 3px 3px !important;
+}
+
+#screen-Ab2 .listLink {
+	width: 990px;
+	margin-bottom: -6px;
+}
+#screen-Ab2 .listLink .hyperlink {
+	color: #0066CC;
+	width: max-content;
+	height: 25px;
+	display: inline-block;
+	padding: 3px;
+}
+#screen-Ab2 .listLink .hyperlink.active {
+	background-color: #edfac2;
+}
