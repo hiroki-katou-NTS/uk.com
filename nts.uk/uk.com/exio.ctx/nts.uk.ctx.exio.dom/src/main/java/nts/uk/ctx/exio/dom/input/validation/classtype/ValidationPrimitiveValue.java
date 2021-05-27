@@ -11,6 +11,7 @@ public class ValidationPrimitiveValue {
 			pv.validate();
 		} catch (Exception ex) {
 			//エラー時処理
+			throw new RuntimeException("PrimitiveValueの検証　仮置きエクスセプションです。");
 		}
 	}
 }
