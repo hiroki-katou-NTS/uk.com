@@ -418,8 +418,7 @@ public class ExtractAlarmForEmployeeService {
 			List<StatusOfEmployeeAdapter> lstStatusEmp, Consumer<Integer> counter,
 			Supplier<Boolean> shouldStop, List<AlarmEmployeeList> alarmEmployeeList,
 			String alarmCheckConditionCode, List<AlarmExtractionCondition> alarmExtractConditions){
-		
-//		List<ExtractResultDetail>  lstDetail = w4D4AlarmService.extractCheck4W4d(cid,
+
 		w4D4AlarmService.extractCheck4W4d(cid,
 				lstSid,
 				dPeriod,
@@ -429,30 +428,8 @@ public class ExtractAlarmForEmployeeService {
 				counter,
 				shouldStop,
 				alarmEmployeeList,
-				alarmCheckConditionCode);
-//		if(lstDetail.isEmpty()) {
-//			return null;
-//		}
-//
-//		ResultOfEachCondition result = new ResultOfEachCondition();
-//		result.setCheckType(AlarmListCheckType.FixCheck);
-//		result.setNo(String.valueOf(w4dCheckCond.value));
-//		result.setLstResultDetail(lstDetail);
-//		return result;
-
-		// 「アラーム抽出条件」を作成してInput．List＜アラーム抽出条件＞に追加
-		List<AlarmExtractionCondition> extractionConditions = alarmExtractConditions.stream()
-				.filter(x -> x.getAlarmListCheckType() == AlarmListCheckType.FixCheck
-						&& x.getAlarmCheckConditionNo().equals(String.valueOf(w4dCheckCond.value)))
-				.collect(Collectors.toList());
-		if (extractionConditions.isEmpty()) {
-			alarmExtractConditions.add(new AlarmExtractionCondition(
-					String.valueOf(w4dCheckCond.value),
-					new AlarmCheckConditionCode(alarmCheckConditionCode),
-					AlarmCategory.SCHEDULE_4WEEK,
-					AlarmListCheckType.FixCheck
-			));
-		}
+				alarmCheckConditionCode,
+				alarmExtractConditions);
 	}
 	
 	

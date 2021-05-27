@@ -286,9 +286,7 @@ public class AggregationProcessService {
 							alarmEmployeeList,
 							x.getCode().v(),
 							alarmExtractConditions);
-//					if(w4d4CondResult != null) {
-//						lstResultCondition.add(w4d4CondResult);
-//					}
+
 					AlarmListCheckInfor w4d4CheckInfor = new AlarmListCheckInfor(String.valueOf(w4d4Cond.value), AlarmListCheckType.FixCheck);
 					valuesDto.getMapCondCdCheckNoType().add(w4d4CheckInfor);
 					break;
