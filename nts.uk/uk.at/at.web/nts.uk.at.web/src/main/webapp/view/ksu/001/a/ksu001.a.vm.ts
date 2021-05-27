@@ -511,6 +511,17 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 				self.useCategoriesWorkplace(data.dataBasicDto.useCategoriesWorkplace);
 				//self.useCategoriesPersonalValue(_.head(self.useCategoriesPersonal()).value);
 				//self.useCategoriesWorkplaceValue(_.head(self.useCategoriesWorkplace()).value);
+				self.useCategoriesPersonalValue.subscribe(value => {
+//					let newVertSumHeader = self.createVertSumHeader();
+//				    let newVertSumContent = self.createVertSumContent(detailContent);
+//					$("#cacheDiv").append($('#vertDiv'));
+//	        		$("#extable").exTable("updateTable", "verticalSummaries", newVertSumHeader, newVertSumContent);
+//					$("#vertDropDown").html(function() { return $('#vertDiv'); });
+				});
+				
+				self.useCategoriesWorkplaceValue.subscribe(value => {
+					// $("#cacheDiv").append($('#horzDiv'));
+				});
 				
                 let dataBindGrid = self.convertDataToGrid(data, viewMode);
                 self.initExTable(dataBindGrid, viewMode, updateMode);
@@ -885,6 +896,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         
         destroyAndCreateGrid(dataBindGrid,viewMode){
             let self = this;
+			$("#cacheDiv").append($('#vertDiv'));
+			$("#cacheDiv").append($('#horzDiv'));
             $("#extable").children().remove();
             $("#extable").removeData();
             let extable = $("#extable")[0];
@@ -2906,14 +2919,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 			
 			$('.ex-body-vert-sum').scroll(() => {
 				$('#vertDiv').css('margin-left', $('.ex-body-vert-sum').scrollLeft().valueOf() + 'px');
-			});
-			
-			self.useCategoriesPersonalValue.subscribe(value => {
-				let newVertSumHeader = self.createVertSumHeader();
-			    let newVertSumContent = self.createVertSumContent(detailContent);
-				$("#cacheDiv").append($('#vertDiv'));
-        		$("#extable").exTable("updateTable", "verticalSummaries", newVertSumHeader, newVertSumContent);
-				$("#vertDropDown").html(function() { return $('#vertDiv'); });
 			});
         }
 		
