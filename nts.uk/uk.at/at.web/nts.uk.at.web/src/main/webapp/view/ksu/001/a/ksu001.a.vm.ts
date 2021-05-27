@@ -3294,7 +3294,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             $('#btnControlLeftRight').width($("#extable").width() + 10);
 
             let marginleftOfbtnToRight: number = 0;
-            let marginleftOfbtnToLeft: number = 190 + self.widthMid;
+            let marginleftOfbtnToLeft: number = self.widthA8 + self.distanceLeftToGrid + self.widthMid;
             if (self.showA9) {
                 $(".toLeft").css("margin-left", marginleftOfbtnToLeft + 'px');
                 marginleftOfbtnToRight = $("#extable").width() - self.widthA8 - self.widthMid - self.widthBtnToLeftToRight*2 - self.distanceLeftToGrid;
