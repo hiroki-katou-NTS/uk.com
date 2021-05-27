@@ -42,7 +42,7 @@ public class GetEmpCanReferByWorkplaceGroupServiceTest {
 				"wpg-id",
 				ScopeReferWorkplaceGroup.ONLY_ME );
 		
-		assertThat( result ).containsOnly( "emp-id" );
+		assertThat( result ).containsExactly( "emp-id" );
 		
 	}
 	
@@ -82,7 +82,6 @@ public class GetEmpCanReferByWorkplaceGroupServiceTest {
 	 * Expect:
 	 * 		参照可能範囲Mapはパラメータの職場グループIDリスで絞り込まれる
 	 */
-	@SuppressWarnings("serial")
 	@Test
 	public void testGet_canReferRangeMap_workplaceGroupIdList_isNotEmpty() {
 		
@@ -92,6 +91,7 @@ public class GetEmpCanReferByWorkplaceGroupServiceTest {
 		List<String> workplaceGroupIdList = Arrays.asList("wpl-group1", "wpl-group2", "wpl-group-4");
 		
 		// 参照可能範囲Map
+		@SuppressWarnings("serial")
 		Map<String, ScopeReferWorkplaceGroup> canReferRangeMap = new HashMap<String, ScopeReferWorkplaceGroup>()
 		{{
 			put( "wpl-group1", ScopeReferWorkplaceGroup.ALL_EMPLOYEE );
@@ -129,7 +129,6 @@ public class GetEmpCanReferByWorkplaceGroupServiceTest {
 	 * Expect:
 	 * 		参照可能範囲Mapにある職場グループIDをすべて使って社員IDリストを取得する
 	 */
-	@SuppressWarnings("serial")
 	@Test
 	public void testGet_canReferRangeMap_workplaceGroupIdList_isEmpty() {
 		
@@ -139,6 +138,7 @@ public class GetEmpCanReferByWorkplaceGroupServiceTest {
 		List<String> workplaceGroupIdList = Collections.emptyList();
 		
 		// 参照可能範囲Map
+		@SuppressWarnings("serial")
 		Map<String, ScopeReferWorkplaceGroup> canReferRangeMap = new HashMap<String, ScopeReferWorkplaceGroup>()
 		{{
 			put( "wpl-group1", ScopeReferWorkplaceGroup.ALL_EMPLOYEE );
@@ -180,7 +180,6 @@ public class GetEmpCanReferByWorkplaceGroupServiceTest {
 	 * Expect:
 	 * 		emptyListを返す
 	 */
-	@SuppressWarnings("serial")
 	@Test
 	public void testGetByWorkplaceGroup_result_isEmpty() {
 		
@@ -189,6 +188,7 @@ public class GetEmpCanReferByWorkplaceGroupServiceTest {
 		String workplaceGroupId = "wpl-group-id";
 		
 		// 参照可能範囲Map
+		@SuppressWarnings("serial")
 		Map<String, ScopeReferWorkplaceGroup> canReferRangeMap = new HashMap<String, ScopeReferWorkplaceGroup>()
 		{{
 			put( "wpl-group1", ScopeReferWorkplaceGroup.ALL_EMPLOYEE );
@@ -212,7 +212,6 @@ public class GetEmpCanReferByWorkplaceGroupServiceTest {
 	 * Expect:
 	 * 		社員リストを返す
 	 */
-	@SuppressWarnings("serial")
 	@Test
 	public void testGetByWorkplaceGroup_result_isNotEmpty() {
 		
@@ -220,7 +219,7 @@ public class GetEmpCanReferByWorkplaceGroupServiceTest {
 		String empId = "emp-id";
 		String workplaceGroupId = "wpl-group-id";
 		
-		
+		@SuppressWarnings("serial")
 		Map<String, ScopeReferWorkplaceGroup> canReferRangeMap = new HashMap<String, ScopeReferWorkplaceGroup>()
 		{{
 			put( "wpl-group1", ScopeReferWorkplaceGroup.ALL_EMPLOYEE );
@@ -246,11 +245,43 @@ public class GetEmpCanReferByWorkplaceGroupServiceTest {
 	@Test
 	public void testGetAll() {
 		
-		/**
-		 * TODO ユニットテストが必要かどうか迷っている
-		 * 実は　getAll()メソッドはget()メソッドを呼ぶだけなんですからget()メソッドはせっかくテストしているから
-		 * getALL()はget()メソッドを呼んでるかどうかテストしたいですけど、どうかけばいいなのかまだ分かってない。
-		 */
+		GeneralDate date = GeneralDate.ymd(2021, 5, 1);
+		String empId = "emp-id";
+		
+		// 参照可能範囲Map
+		@SuppressWarnings("serial")
+		Map<String, ScopeReferWorkplaceGroup> canReferRangeMap = new HashMap<String, ScopeReferWorkplaceGroup>()
+		{{
+			put( "wpl-group1", ScopeReferWorkplaceGroup.ALL_EMPLOYEE );
+			put( "wpl-group2", ScopeReferWorkplaceGroup.ONLY_ME );
+			put( "wpl-group3", ScopeReferWorkplaceGroup.ALL_EMPLOYEE );
+		}};
+		
+		new Expectations(GetWorkplaceGroupsAndEmpService.class, GetAllEmpWhoBelongWorkplaceGroupService.class) {{
+			
+			GetWorkplaceGroupsAndEmpService.getWorkplaceGroup(require, date, empId);
+			result = canReferRangeMap;
+			
+			// "wpl-group1" - ALL_EMPLOYEE
+			GetAllEmpWhoBelongWorkplaceGroupService.getAllEmp(require, date, "wpl-group1");
+			result = EmployeeAffiliationHelper.createListWithEmployeeIds("emp-id1", "emp-id2", "emp-id3");
+			
+			// "wpl-group3" - ALL_EMPLOYEE
+			GetAllEmpWhoBelongWorkplaceGroupService.getAllEmp(require, date, "wpl-group3");
+			result = EmployeeAffiliationHelper.createListWithEmployeeIds("emp-id4", "emp-id5");
+		}};
+		
+		Map<String, List<String>> result = NtsAssert.Invoke.staticMethod(GetEmpCanReferByWorkplaceGroupService.class, 
+				"getAll", 
+				require,
+				date,
+				empId);
+		
+		assertThat( result.keySet() ).containsExactlyInAnyOrder("wpl-group1", "wpl-group2", "wpl-group3");
+		
+		assertThat( result.get("wpl-group1") ).containsExactlyInAnyOrder("emp-id1", "emp-id2", "emp-id3");
+		assertThat( result.get("wpl-group2") ).containsExactlyInAnyOrder(empId);
+		assertThat( result.get("wpl-group3") ).containsExactlyInAnyOrder("emp-id4", "emp-id5");
 	}
 
 }

@@ -34,7 +34,7 @@ public class GetEmpCanReferServiceTest {
 		
 		new Expectations() {{
 			require.sortEmployee(employeeIdList, EmployeeSearchCallSystemType.EMPLOYMENT, null, date, null);
-			result = Arrays.asList("emp1", "emp2", "emp3", "emp4", "emp5");
+			result = Arrays.asList("emp3", "emp2", "emp1", "emp5", "emp4");
 		}};
 		
 		List<String> result = NtsAssert.Invoke.staticMethod(
@@ -44,7 +44,7 @@ public class GetEmpCanReferServiceTest {
 				date, 
 				employeeIdList);
 		
-		assertThat( result ).containsExactly("emp1", "emp2", "emp3", "emp4", "emp5");
+		assertThat( result ).containsExactly("emp3", "emp2", "emp1", "emp5", "emp4");
 		
 	}
 	
@@ -52,6 +52,7 @@ public class GetEmpCanReferServiceTest {
 	 * Expect
 	 * 		require.searchEmployeeの戻り値を返してもらう
 	 */
+	@Test
 	public void testGetByWorkplace() {
 		
 		GeneralDate date = GeneralDate.ymd(2020, 5, 1);
@@ -72,7 +73,8 @@ public class GetEmpCanReferServiceTest {
 				"getByWorkplace", 
 				require,
 				date, 
-				employeeId);
+				employeeId,
+				Optional.empty());
 		
 		assertThat( result ).containsExactly("emp1", "emp2", "emp3", "emp4", "emp5");
 	}
