@@ -10,14 +10,14 @@ import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.exio.dom.exi.condset.AcScreenCondSet;
 import nts.uk.ctx.exio.dom.exi.condset.AcceptanceConditionCode;
-import nts.uk.ctx.exio.dom.exi.csvimport.CsvItem;
-import nts.uk.ctx.exio.dom.exi.dataformat.ChrDataFormatSet;
-import nts.uk.ctx.exio.dom.exi.dataformat.DataFormatSetting;
-import nts.uk.ctx.exio.dom.exi.dataformat.DateDataFormSet;
-import nts.uk.ctx.exio.dom.exi.dataformat.InsTimeDatFmSet;
-import nts.uk.ctx.exio.dom.exi.dataformat.ItemType;
-import nts.uk.ctx.exio.dom.exi.dataformat.NumDataFormatSet;
-import nts.uk.ctx.exio.dom.exi.dataformat.TimeDataFormatSet;
+import nts.uk.ctx.exio.dom.input.csvimport.CsvItem;
+import nts.uk.ctx.exio.dom.input.revise.dataformat.ChrDataFormatSet;
+import nts.uk.ctx.exio.dom.input.revise.dataformat.DataFormatSetting;
+import nts.uk.ctx.exio.dom.input.revise.dataformat.DateDataFormSet;
+import nts.uk.ctx.exio.dom.input.revise.dataformat.InsTimeDatFmSet;
+import nts.uk.ctx.exio.dom.input.revise.dataformat.ItemType;
+import nts.uk.ctx.exio.dom.input.revise.dataformat.NumDataFormatSet;
+import nts.uk.ctx.exio.dom.input.revise.dataformat.TimeDataFormatSet;
 
 /**
  * 受入項目（定型）

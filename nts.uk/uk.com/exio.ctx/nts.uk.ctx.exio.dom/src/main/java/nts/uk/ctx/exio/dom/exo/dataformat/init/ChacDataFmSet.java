@@ -4,6 +4,9 @@ import java.util.Optional;
 
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
+import nts.uk.ctx.exio.dom.dataformat.value.DataFormatCharacterDigit;
+import nts.uk.ctx.exio.dom.dataformat.value.DataTypeFixedValue;
+import nts.uk.ctx.exio.dom.dataformat.value.EditSpace;
 import nts.uk.ctx.exio.dom.exo.base.ItemType;
 import nts.uk.ctx.exio.dom.exo.cdconvert.ConvertCode;
 import nts.uk.shr.com.enumcommon.NotUseAtr;

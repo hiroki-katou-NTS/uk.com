@@ -13,7 +13,7 @@ import nts.arc.error.BusinessException;
 import nts.gul.csv.CSVParsedResult;
 import nts.gul.csv.NtsCsvReader;
 import nts.gul.csv.NtsCsvRecord;
-import nts.uk.ctx.exio.dom.exi.csvimport.ExiCharset;
+import nts.uk.ctx.exio.dom.input.csvimport.ExiCharset;
 
 public class FileUtil {
 	

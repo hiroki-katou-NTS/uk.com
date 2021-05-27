@@ -2,7 +2,7 @@ package nts.uk.ctx.exio.app.find.exi.dataformat;
 
 import lombok.Value;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.exio.dom.exi.dataformat.DateDataFormSet;
+import nts.uk.ctx.exio.dom.input.revise.dataformat.DateDataFormSet;
 
 /**
  * 日付型データ形式設定
