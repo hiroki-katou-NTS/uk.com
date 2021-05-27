@@ -7,7 +7,7 @@ import java.util.Map;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.uk.screen.at.app.ksu001.aggreratepersonaltotal.AggreratePersonalDto;
+import nts.uk.screen.at.app.ksu001.aggreratepersonaltotal.AggregatePersonalDto;
 import nts.uk.screen.at.app.ksu001.aggrerateworkplacetotal.AggregateWorkplaceDto;
 import nts.uk.screen.at.app.ksu001.displayinshift.ShiftMasterMapWithWorkStyle;
 import nts.uk.screen.at.app.ksu001.eventinformationandpersonal.DataSpecDateAndHolidayDto;
@@ -38,7 +38,7 @@ public class ChangeDisplayOrganizationDto {
 	public Map<ShiftMasterDto, Integer> mapShiftMasterWithWorkStyle; 
 	
 	// 個人計集計結果　←集計内容によって情報が異なる
-	public AggreratePersonalDto aggreratePersonal;
+	public AggregatePersonalDto aggreratePersonal;
 	
 	// ・職場計集計結果　←集計内容によって情報が異なる
 	public AggregateWorkplaceDto aggrerateWorkplace;

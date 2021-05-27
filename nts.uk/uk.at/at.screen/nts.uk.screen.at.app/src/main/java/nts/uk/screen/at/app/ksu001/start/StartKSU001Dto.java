@@ -11,7 +11,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.uk.screen.at.app.ksu001.aggreratepersonaltotal.AggreratePersonalDto;
+import nts.uk.screen.at.app.ksu001.aggreratepersonaltotal.AggregatePersonalDto;
 import nts.uk.screen.at.app.ksu001.aggreratepersonaltotal.TotalTimesDto;
 import nts.uk.screen.at.app.ksu001.aggrerateworkplacetotal.AggregateWorkplaceDto;
 import nts.uk.screen.at.app.ksu001.displayinshift.ShiftMasterMapWithWorkStyle;

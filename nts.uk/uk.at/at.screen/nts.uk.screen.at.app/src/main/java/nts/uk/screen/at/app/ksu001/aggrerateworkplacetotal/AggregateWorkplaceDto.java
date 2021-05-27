@@ -33,7 +33,7 @@ public class AggregateWorkplaceDto {
 	public Map<GeneralDate, Map<TotalTimesDto, BigDecimal>> timeCount = new HashMap<GeneralDate, Map<TotalTimesDto, BigDecimal>>();
 	
 	// Map<年月日, Map<(雇用マスタ or 分類マスタ or 職位情報), BigDecimal>>
-	public AggrerateNumberPeopleDto aggrerateNumberPeople = new AggrerateNumberPeopleDto();
+	public AggregateNumberPeopleDto aggrerateNumberPeople = new AggregateNumberPeopleDto();
 	
 	// Map<年月日, Map<外部予算実績項目, 外部予算実績値>>
 	public Map<GeneralDate, Map<ExternalBudgetDto, String>> externalBudget = new HashMap<GeneralDate, Map<ExternalBudgetDto, String>>();

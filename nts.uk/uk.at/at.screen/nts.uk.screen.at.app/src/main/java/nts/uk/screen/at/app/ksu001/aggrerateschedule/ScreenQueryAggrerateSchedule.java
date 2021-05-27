@@ -20,7 +20,7 @@ import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
 import nts.uk.ctx.at.shared.dom.common.EmployeeId;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
-import nts.uk.screen.at.app.ksu001.aggreratepersonaltotal.AggreratePersonalDto;
+import nts.uk.screen.at.app.ksu001.aggreratepersonaltotal.AggregatePersonalDto;
 import nts.uk.screen.at.app.ksu001.aggreratepersonaltotal.ScreenQueryAggreratePersonal;
 import nts.uk.screen.at.app.ksu001.aggrerateworkplacetotal.AggregateWorkplaceDto;
 import nts.uk.screen.at.app.ksu001.aggrerateworkplacetotal.ScreenQueryAggregatePeopleMethod;
@@ -56,7 +56,7 @@ public class ScreenQueryAggrerateSchedule {
 	 * @param isShiftDisplay シフト表示か　　　　　：boolean
 	 * @return
 	 */
-	public AggrerateScheduleDto aggrerateSchedule(
+	public AggregateScheduleDto aggrerateSchedule(
 			List<String> sids,
 			DatePeriod datePeriod,
 			DateInMonth closeDate,
@@ -67,7 +67,7 @@ public class ScreenQueryAggrerateSchedule {
 			Optional<WorkplaceCounterCategory> workplaceCounterOp,
 			boolean isShiftDisplay
 			) {
-		AggrerateScheduleDto output = new AggrerateScheduleDto();
+		AggregateScheduleDto output = new AggregateScheduleDto();
 		// 1: 日別勤怠Workに変換する()
 		List<IntegrationOfDaily> integrationOfDailySchedules = workSchedules.entrySet()
 					 .stream()
@@ -93,7 +93,7 @@ public class ScreenQueryAggrerateSchedule {
 		
 		if (personalCounterOp.isPresent()) {
 			// 3: 集計する(個人計カテゴリ, List<日別勤怠(Work)>, 期間, 日付)
-			AggreratePersonalDto aggreratePersonal = screenQueryAggreratePersonal.aggreratePersonal(
+			AggregatePersonalDto aggreratePersonal = screenQueryAggreratePersonal.aggreratePersonal(
 					personalCounterOp.get(),
 					aggrerateintegrationOfDaily,
 					datePeriod,

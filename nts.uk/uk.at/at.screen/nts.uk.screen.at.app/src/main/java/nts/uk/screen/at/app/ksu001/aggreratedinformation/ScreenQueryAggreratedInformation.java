@@ -14,7 +14,7 @@ import nts.uk.ctx.at.aggregation.dom.schedulecounter.tally.PersonalCounterCatego
 import nts.uk.ctx.at.aggregation.dom.schedulecounter.tally.WorkplaceCounterCategory;
 import nts.uk.ctx.at.schedule.app.find.budget.external.ExternalBudgetDto;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
-import nts.uk.screen.at.app.ksu001.aggrerateschedule.AggrerateScheduleDto;
+import nts.uk.screen.at.app.ksu001.aggrerateschedule.AggregateScheduleDto;
 import nts.uk.screen.at.app.ksu001.aggrerateschedule.ScreenQueryAggrerateSchedule;
 import nts.uk.screen.at.app.ksu001.aggrerateworkplacetotal.ScreenQueryExternalBudgetPerformance;
 import nts.uk.screen.at.app.ksu001.processcommon.nextorderdschedule.PlanAndActual;
@@ -50,7 +50,7 @@ public class ScreenQueryAggreratedInformation {
 	 * @param isShiftDisplay シフト表示か
 	 * @return
 	 */
-	public AggreratedInformationDto get(
+	public AggregatedInformationDto get(
 			List<String> sids,
 			DatePeriod datePeriod,
 			DateInMonth closeDate,
@@ -60,7 +60,7 @@ public class ScreenQueryAggreratedInformation {
 			Optional<WorkplaceCounterCategory> workplaceCounterOp,
 			boolean isShiftDisplay
 			) {
-		AggreratedInformationDto output = new AggreratedInformationDto();
+		AggregatedInformationDto output = new AggregatedInformationDto();
 		// 1: 取得する職場計.isPresent && 取得する職場計 == 外部予算実績
 		if (workplaceCounterOp.map(x -> x == WorkplaceCounterCategory.EXTERNAL_BUDGET).orElse(false)) {
 			
@@ -77,7 +77,7 @@ public class ScreenQueryAggreratedInformation {
 		
 		
 		// 3: 集計する(List<社員ID>, 期間, 日付, , , 対象組織識別情報, Optional<個人計カテゴリ>, Optional<職場計カテゴリ>, boolean)
-		AggrerateScheduleDto aggrerateSchedule = 
+		AggregateScheduleDto aggrerateSchedule = 
 						screenQueryAggrerateSchedule.aggrerateSchedule(
 								sids,
 								datePeriod,

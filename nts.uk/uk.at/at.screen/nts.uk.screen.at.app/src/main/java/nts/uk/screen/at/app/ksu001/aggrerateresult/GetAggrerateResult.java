@@ -12,7 +12,7 @@ import nts.uk.ctx.at.aggregation.dom.schedulecounter.tally.PersonalCounterCatego
 import nts.uk.ctx.at.aggregation.dom.schedulecounter.tally.WorkplaceCounterCategory;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrganizationUnit;
-import nts.uk.screen.at.app.ksu001.aggreratedinformation.AggreratedInformationDto;
+import nts.uk.screen.at.app.ksu001.aggreratedinformation.AggregatedInformationDto;
 import nts.uk.screen.at.app.ksu001.aggreratedinformation.ScreenQueryAggreratedInformation;
 
 /**
@@ -27,7 +27,7 @@ public class GetAggrerateResult {
 	@Inject
 	private ScreenQueryAggreratedInformation screenQueryAggreratedInformation;
 	
-	public AggreratedInformationDto get(AggrerateResultParam param) {
+	public AggregatedInformationDto get(AggregateResultParam param) {
 		TargetOrgIdenInfor targetOrgIdenInfor;
 		if (param.unit == TargetOrganizationUnit.WORKPLACE.value) {
 			targetOrgIdenInfor = new TargetOrgIdenInfor(TargetOrganizationUnit.WORKPLACE,

@@ -107,7 +107,7 @@ public class ScreenQueryAggreratePersonal {
 	private HandlingOfCriterionAmountRepository handlingOfCriterionAmountRepository;
 	
 	
-	public AggreratePersonalDto aggreratePersonal(
+	public AggregatePersonalDto aggreratePersonal(
 			PersonalCounterCategory personalCounter, // 個人計カテゴリ
 			List<IntegrationOfDaily> aggrerateintegrationOfDaily, // 日別勤怠リスト
 			DatePeriod datePeriod, // 期間
@@ -130,7 +130,7 @@ public class ScreenQueryAggreratePersonal {
 		
 		Require2 require2 = new Require2(workTypeRepository);
 		
-		AggreratePersonalDto output = new AggreratePersonalDto();
+		AggregatePersonalDto output = new AggregatePersonalDto();
 		if (personalCounter == PersonalCounterCategory.WORKING_HOURS) {
 			// 1: 集計する(List<日別勤怠(Work)>)
 			Map<EmployeeId, Map<AttendanceTimesForAggregation, BigDecimal>> dailyWorks = 

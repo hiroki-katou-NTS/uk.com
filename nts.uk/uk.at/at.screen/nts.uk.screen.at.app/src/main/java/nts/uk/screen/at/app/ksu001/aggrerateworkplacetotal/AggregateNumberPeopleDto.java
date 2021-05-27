@@ -19,7 +19,7 @@ import nts.uk.screen.at.app.ksu001.start.NumberPeopleMapDtoList;
  */
 @AllArgsConstructor
 @NoArgsConstructor
-public class AggrerateNumberPeopleDto {
+public class AggregateNumberPeopleDto {
 
 	public Map<GeneralDate, Map<EmploymentDto, BigDecimal>> employment = new HashMap<GeneralDate, Map<EmploymentDto, BigDecimal>>();
 	

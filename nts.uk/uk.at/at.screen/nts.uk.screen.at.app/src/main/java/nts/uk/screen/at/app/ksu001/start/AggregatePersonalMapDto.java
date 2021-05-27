@@ -6,7 +6,7 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.uk.screen.at.app.ksu001.aggreratepersonaltotal.AggreratePersonalDto;
+import nts.uk.screen.at.app.ksu001.aggreratepersonaltotal.AggregatePersonalDto;
 
 
 @AllArgsConstructor
@@ -24,7 +24,7 @@ public class AggregatePersonalMapDto {
 	public List<WorkMapDtoList> workHours = Collections.emptyList();
 	
 	
-	public static AggregatePersonalMapDto convertMap(AggreratePersonalDto dto) {
+	public static AggregatePersonalMapDto convertMap(AggregatePersonalDto dto) {
 		return new AggregatePersonalMapDto(
 				dto.convertEstimatedSalary(),
 				dto.convertTimeCount(),

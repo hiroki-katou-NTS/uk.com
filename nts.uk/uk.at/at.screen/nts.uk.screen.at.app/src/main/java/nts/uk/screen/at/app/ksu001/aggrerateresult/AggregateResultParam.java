@@ -10,7 +10,7 @@ import nts.arc.time.GeneralDate;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class AggrerateResultParam {
+public class AggregateResultParam {
 
 	public GeneralDate startDate;            	 
 	public GeneralDate endDate;    	

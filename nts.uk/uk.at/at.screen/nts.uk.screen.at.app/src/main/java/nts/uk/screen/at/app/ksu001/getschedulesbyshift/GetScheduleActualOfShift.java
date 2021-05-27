@@ -19,7 +19,7 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.aggregation.dom.schedulecounter.tally.PersonalCounterCategory;
 import nts.uk.ctx.at.aggregation.dom.schedulecounter.tally.WorkplaceCounterCategory;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
-import nts.uk.screen.at.app.ksu001.aggrerateschedule.AggrerateScheduleDto;
+import nts.uk.screen.at.app.ksu001.aggrerateschedule.AggregateScheduleDto;
 import nts.uk.screen.at.app.ksu001.aggrerateschedule.ScreenQueryAggrerateSchedule;
 import nts.uk.screen.at.app.ksu001.displayinshift.ShiftMasterMapWithWorkStyle;
 import nts.uk.screen.at.app.ksu001.getshiftpalette.ShiftMasterDto;
@@ -129,7 +129,7 @@ public class GetScheduleActualOfShift {
 						isAchievement);
 		
 		// 3 集計する(List<社員ID>, 期間, 日付, , , 対象組織識別情報, Optional<個人計カテゴリ>, Optional<職場計カテゴリ>, boolean)
-		AggrerateScheduleDto aggrerateSchedule =
+		AggregateScheduleDto aggrerateSchedule =
 				screenQueryAggrerateSchedule.aggrerateSchedule(
 						sids,
 						datePeriod,

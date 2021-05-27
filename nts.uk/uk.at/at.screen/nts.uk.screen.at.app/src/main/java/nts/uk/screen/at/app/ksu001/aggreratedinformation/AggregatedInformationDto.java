@@ -7,16 +7,16 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.app.find.budget.external.ExternalBudgetDto;
-import nts.uk.screen.at.app.ksu001.aggrerateschedule.AggrerateScheduleDto;
+import nts.uk.screen.at.app.ksu001.aggrerateschedule.AggregateScheduleDto;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class AggreratedInformationDto {
+public class AggregatedInformationDto {
 
 	public Map<GeneralDate, Map<ExternalBudgetDto, String>> externalBudget;
 	
-	public AggrerateScheduleDto aggrerateSchedule;
+	public AggregateScheduleDto aggrerateSchedule;
 	
 	
 }

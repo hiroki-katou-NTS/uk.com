@@ -76,7 +76,7 @@ public class ScreenQueryAggrerateWorkplaceTotal {
 				|| workplaceCounterOp == WorkplaceCounterCategory.CLASSIFICATION_PEOPLE
 				|| workplaceCounterOp == WorkplaceCounterCategory.POSITION_PEOPLE) {
 			// 3: 集計する(年月日, List<日別勤怠(Work)>, 職場計カテゴリ)
-			AggrerateNumberPeopleDto aggrerateNumberPeople = 
+			AggregateNumberPeopleDto aggrerateNumberPeople = 
 					screenQueryAggrerateNumberPeople.aggrerate(
 							datePeriod.end(),
 							aggrerateintegrationOfDaily,

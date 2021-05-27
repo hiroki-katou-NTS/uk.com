@@ -18,7 +18,7 @@ import nts.uk.screen.at.app.ksu001.start.WorkMapDtoList;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class AggreratePersonalDto {
+public class AggregatePersonalDto {
 	
 	// Map<社員ID, 想定給与額>
 	public Map<String, EstimatedSalaryDto> estimatedSalary = new HashMap<String, EstimatedSalaryDto>();

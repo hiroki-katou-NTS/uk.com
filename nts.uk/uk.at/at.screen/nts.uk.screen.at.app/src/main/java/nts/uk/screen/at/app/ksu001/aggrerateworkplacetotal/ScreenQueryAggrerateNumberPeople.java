@@ -78,7 +78,7 @@ public class ScreenQueryAggrerateNumberPeople {
 	@Inject
 	private PredetemineTimeSettingRepository predetemineTimeSet;
 	
-	public AggrerateNumberPeopleDto aggrerate(
+	public AggregateNumberPeopleDto aggrerate(
 			GeneralDate baseDate,
 			List<IntegrationOfDaily> dailyWorks,
 			WorkplaceCounterCategory workplaceCounterOp
@@ -92,7 +92,7 @@ public class ScreenQueryAggrerateNumberPeople {
 									.flexWorkSet(flexWorkSet)
 									.predetemineTimeSet(predetemineTimeSet)
 									.build();
-		AggrerateNumberPeopleDto output = new AggrerateNumberPeopleDto();
+		AggregateNumberPeopleDto output = new AggregateNumberPeopleDto();
 		String companyId = AppContexts.user().companyId();
 		if (workplaceCounterOp == WorkplaceCounterCategory.EMPLOYMENT_PEOPLE) { // 1: 職場計カテゴリ == 雇用人数
 			// 1.1: 雇用別に集計する(Require, List<日別勤怠(Work)>)
