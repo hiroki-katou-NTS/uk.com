@@ -2681,8 +2681,16 @@ module nts.uk.ui.at.kdw013.calendar {
                 $.Deferred()
                     .resolve(true)
                     .then(() => {
-                        // trigger update from parent view
-                        mutated.valueHasMutated();
+                        if (result === 'yes') {
+                            const event = ko.unwrap(data);
+
+                            if (event) {
+                                event.remove();
+                            }
+                        } else if (result === null) {
+                            // trigger update from parent view
+                            mutated.valueHasMutated();
+                        }
                     })
                     .then(() => data(null))
                     .then(() => position(null))
