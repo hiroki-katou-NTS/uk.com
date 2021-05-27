@@ -66,101 +66,99 @@ public class AlarmTopPageProcessingServiceImpl implements AlarmTopPageProcessing
         val optPersisAlarmExtractResult = alarmExtractResultRepo.getAlarmExtractResult(runCode, pattentCd, lstSid);
         if (!optPersisAlarmExtractResult.isPresent() && CollectionUtil.isEmpty(alarmResult.getAlarmListExtractResults())) {
             return;
+        } else if(optPersisAlarmExtractResult.isPresent() && CollectionUtil.isEmpty(alarmResult.getAlarmListExtractResults())){
+            alarmExtractResultRepo.delete(optPersisAlarmExtractResult.get());
+        } else if (!optPersisAlarmExtractResult.isPresent() && !CollectionUtil.isEmpty(alarmResult.getAlarmListExtractResults())) {
+            alarmExtractResultRepo.insert(alarmResult);
         } else {
-            if (optPersisAlarmExtractResult.isPresent() && CollectionUtil.isEmpty(alarmResult.getAlarmListExtractResults())) {
-                alarmExtractResultRepo.delete(optPersisAlarmExtractResult.get());
-            } else if (!optPersisAlarmExtractResult.isPresent() && !CollectionUtil.isEmpty(alarmResult.getAlarmListExtractResults())) {
-                alarmExtractResultRepo.insert(alarmResult);
-            } else {
-                List<AlarmEmployeeList> lstExResultInsert = new ArrayList<>();
-                List<AlarmEmployeeList> lstExResultDelete = new ArrayList<>();
-                PersistenceAlarmListExtractResult persisAlarmExtract = optPersisAlarmExtractResult.get();
+            List<AlarmEmployeeList> lstExResultInsert = new ArrayList<>();
+            List<AlarmEmployeeList> lstExResultDelete = new ArrayList<>();
+            PersistenceAlarmListExtractResult persisAlarmExtract = optPersisAlarmExtractResult.get();
 
-                if (lstCategoryPeriod.isEmpty()) {
-                    return;
+            if (lstCategoryPeriod.isEmpty()) {
+                return;
+            }
+
+            for (PeriodByAlarmCategory p : lstCategoryPeriod) {//永続化のアラームリスト抽出結果を絞り込む
+                List<AlarmExtractionCondition> extractConds = alarmExtractConds.stream().filter(e -> e.getAlarmCategory().value == p.getCategory()).collect(Collectors.toList());
+                if (extractConds.isEmpty()) {
+                    continue;
                 }
 
-                for (PeriodByAlarmCategory p : lstCategoryPeriod) {//永続化のアラームリスト抽出結果を絞り込む
-                    List<AlarmExtractionCondition> extractConds = alarmExtractConds.stream().filter(e -> e.getAlarmCategory().value == p.getCategory()).collect(Collectors.toList());
-                    if (extractConds.isEmpty()) {
-                        continue;
-                    }
-
-                    List<AlarmEmployeeList> lstExtractResultDB = new ArrayList<>();
-                    for (AlarmExtractionCondition c : extractConds) {
-                        val temp = persisAlarmExtract.getAlarmListExtractResults().stream()
-                                .filter(x -> x.getAlarmExtractInfoResults().stream().anyMatch(y -> c.getAlarmCategory().value == y.getAlarmCategory().value
-                                                && c.getAlarmCheckConditionCode().v().equals(y.getAlarmCheckConditionCode().v())
-                                                && c.getAlarmListCheckType().value == y.getAlarmListCheckType().value
-                                                && c.getAlarmCheckConditionNo().equals(y.getAlarmCheckConditionNo())
-                                                && y.getExtractionResultDetails().stream().anyMatch(z -> {
-                                            if (z.getPeriodDate() == null) {
-                                                return true;
-                                            } else if (!z.getPeriodDate().getEndDate().isPresent()) {
-                                                return z.getPeriodDate().getStartDate().get().afterOrEquals(p.getStartDate()) && z.getPeriodDate().getStartDate().get().beforeOrEquals(p.getEndDate());
-                                            } else {
-                                                return z.getPeriodDate().getStartDate().get().afterOrEquals(p.getStartDate()) && z.getPeriodDate().getEndDate().get().beforeOrEquals(p.getEndDate());
-                                            }
-                                        })
-                                )).collect(Collectors.toList());
-                        if (!temp.isEmpty()) {
-                            lstExtractResultDB.addAll(temp);
-                        }
-                    }
-
-                    List<AlarmEmployeeList> lstExtractResultInput = alarmResult.getAlarmListExtractResults().stream()
-                            .filter(x -> x.getAlarmExtractInfoResults().stream().anyMatch(y -> y.getAlarmCategory().value == p.getCategory()))
-                            .collect(Collectors.toList());
-                    if (lstExtractResultDB.isEmpty()) {
-                        lstExResultInsert.addAll(lstExtractResultInput);
-                    } else {
-                        List<AlarmEmployeeList> lstDelete = new ArrayList<>();
-                        List<AlarmEmployeeList> lstInput = new ArrayList<>();
-
-                        dataProcessingInputOutput(lstExtractResultInput, lstExtractResultDB, lstInput, lstDelete);
-                        lstExResultInsert.addAll(lstInput);
-                        lstExResultDelete.addAll(lstDelete);
+                List<AlarmEmployeeList> lstExtractResultDB = new ArrayList<>();
+                for (AlarmExtractionCondition c : extractConds) {
+                    val temp = persisAlarmExtract.getAlarmListExtractResults().stream()
+                            .filter(x -> x.getAlarmExtractInfoResults().stream().anyMatch(y -> c.getAlarmCategory().value == y.getAlarmCategory().value
+                                            && c.getAlarmCheckConditionCode().v().equals(y.getAlarmCheckConditionCode().v())
+                                            && c.getAlarmListCheckType().value == y.getAlarmListCheckType().value
+                                            && c.getAlarmCheckConditionNo().equals(y.getAlarmCheckConditionNo())
+                                            && y.getExtractionResultDetails().stream().anyMatch(z -> {
+                                        if (z.getPeriodDate() == null) {
+                                            return true;
+                                        } else if (!z.getPeriodDate().getEndDate().isPresent()) {
+                                            return z.getPeriodDate().getStartDate().get().afterOrEquals(p.getStartDate()) && z.getPeriodDate().getStartDate().get().beforeOrEquals(p.getEndDate());
+                                        } else {
+                                            return z.getPeriodDate().getStartDate().get().afterOrEquals(p.getStartDate()) && z.getPeriodDate().getEndDate().get().beforeOrEquals(p.getEndDate());
+                                        }
+                                    })
+                            )).collect(Collectors.toList());
+                    if (!temp.isEmpty()) {
+                        lstExtractResultDB.addAll(temp);
                     }
                 }
 
-                //Delete: 今回のアラーム結果がないがデータベースに存在している場合データベースを削除
-                if (!CollectionUtil.isEmpty(lstExResultDelete)) {
-                    PersistenceAlarmListExtractResult persisExtractResultDelete = new PersistenceAlarmListExtractResult(
-                            persisAlarmExtract.getAlarmPatternCode(),
-                            persisAlarmExtract.getAlarmPatternName(),
-                            lstExResultDelete,
-                            persisAlarmExtract.getCompanyID(),
-                            persisAlarmExtract.getAutoRunCode()
-                    );
-                    alarmExtractResultRepo.delete(persisExtractResultDelete);
-                }
+                List<AlarmEmployeeList> lstExtractResultInput = alarmResult.getAlarmListExtractResults().stream()
+                        .filter(x -> x.getAlarmExtractInfoResults().stream().anyMatch(y -> y.getAlarmCategory().value == p.getCategory()))
+                        .collect(Collectors.toList());
+                if (lstExtractResultDB.isEmpty()) {
+                    lstExResultInsert.addAll(lstExtractResultInput);
+                } else {
+                    List<AlarmEmployeeList> lstDelete = new ArrayList<>();
+                    List<AlarmEmployeeList> lstInput = new ArrayList<>();
 
-                //Insert: 今回のアラーム結果がデータベースに存在してない場合データベースのデータを追加
-                if (!CollectionUtil.isEmpty(lstExResultInsert)) {
-                    PersistenceAlarmListExtractResult persisExtractResultInsert = new PersistenceAlarmListExtractResult(
-                            alarmResult.getAlarmPatternCode(),
-                            alarmResult.getAlarmPatternName(),
-                            lstExResultInsert,
-                            alarmResult.getCompanyID(),
-                            alarmResult.getAutoRunCode()
-                    );
-                    alarmExtractResultRepo.insert(persisExtractResultInsert);
+                    dataProcessingInputOutput(lstExtractResultInput, lstExtractResultDB, lstInput, lstDelete);
+                    lstExResultInsert.addAll(lstInput);
+                    lstExResultDelete.addAll(lstDelete);
                 }
             }
 
-            //アラームリストからトップページアラームデータに変換する
-            RequireImpl require = new RequireImpl(alarmExtractResultRepo, topPageAlarmAdapter, employeeWorkplaceAdapter, employeeAlarmListAdapter);
-            List<AtomTask> atomTasks = ConvertAlarmListToTopPageAlarmDataService.convert(require, AppContexts.user().companyId(), lstSid,
-                    new AlarmPatternCode(pattentCd), new ExecutionCode(runCode), isDisplayByAdmin, isDisplayByPerson);
+            //Delete: 今回のアラーム結果がないがデータベースに存在している場合データベースを削除
+            if (!CollectionUtil.isEmpty(lstExResultDelete)) {
+                PersistenceAlarmListExtractResult persisExtractResultDelete = new PersistenceAlarmListExtractResult(
+                        persisAlarmExtract.getAlarmPatternCode(),
+                        persisAlarmExtract.getAlarmPatternName(),
+                        lstExResultDelete,
+                        persisAlarmExtract.getCompanyID(),
+                        persisAlarmExtract.getAutoRunCode()
+                );
+                alarmExtractResultRepo.delete(persisExtractResultDelete);
+            }
 
-            if (!atomTasks.isEmpty()) {
-                transaction.execute(() -> {
-                    for (AtomTask atomTask : atomTasks) {
-                        atomTask.run();
-                    }
-                });
+            //Insert: 今回のアラーム結果がデータベースに存在してない場合データベースのデータを追加
+            if (!CollectionUtil.isEmpty(lstExResultInsert)) {
+                PersistenceAlarmListExtractResult persisExtractResultInsert = new PersistenceAlarmListExtractResult(
+                        alarmResult.getAlarmPatternCode(),
+                        alarmResult.getAlarmPatternName(),
+                        lstExResultInsert,
+                        alarmResult.getCompanyID(),
+                        alarmResult.getAutoRunCode()
+                );
+                alarmExtractResultRepo.insert(persisExtractResultInsert);
             }
         }
+
+        //アラームリストからトップページアラームデータに変換する
+        RequireImpl require = new RequireImpl(alarmExtractResultRepo, topPageAlarmAdapter, employeeWorkplaceAdapter, employeeAlarmListAdapter);
+        List<AtomTask> atomTasks = ConvertAlarmListToTopPageAlarmDataService.convert(require, AppContexts.user().companyId(), lstSid,
+                new AlarmPatternCode(pattentCd), new ExecutionCode(runCode), isDisplayByAdmin, isDisplayByPerson);
+
+		if(!atomTasks.isEmpty()){
+			transaction.execute(() -> {
+				for (AtomTask atomTask : atomTasks) {
+						atomTask.run();
+				}
+			});
+		}
     }
 
     private void dataProcessingInputOutput(List<AlarmEmployeeList> lstInput, List<AlarmEmployeeList> lstDB, List<AlarmEmployeeList> lstInsert, List<AlarmEmployeeList> lstDelete) {
