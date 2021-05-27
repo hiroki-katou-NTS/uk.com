@@ -38,18 +38,18 @@ public class AddTimeItemIDToTimeBeforeReflectTest {
 
 		List<AttendanceBeforeApplicationReflect> lstAtt = new ArrayList<>();
 		lstAtt.add(new AttendanceBeforeApplicationReflect(1,// 勤怠項目ID
-				"a", //値
+				Optional.of("a"), //値
 				Optional.empty()));
 		DailyRecordOfApplication domaindaily = ReflectApplicationHelper.createDailyRecord(lstAtt);
 
 		AddTimeItemIDToTimeBeforeReflect.addTime(domaindaily, Arrays.asList(1, 2));
 		
 		assertThat(domaindaily.getAttendanceBeforeReflect())
-		.extracting(x -> x.getAttendanceId(), x -> x.getValue(), x -> x.getEditState().orElse(null))
+		.extracting(x -> x.getAttendanceId(), x -> x.getValue().orElse(null), x -> x.getEditState().orElse(null))
 		.containsExactly(Tuple.tuple(1, 
-														"",
+														null,
 														null), 
-									Tuple.tuple(2, "", null));
+									Tuple.tuple(2, null, null));
 	}
 
 }
