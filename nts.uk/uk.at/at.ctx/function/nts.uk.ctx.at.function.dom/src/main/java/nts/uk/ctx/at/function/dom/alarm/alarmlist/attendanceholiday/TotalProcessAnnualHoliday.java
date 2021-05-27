@@ -1,21 +1,7 @@
 package nts.uk.ctx.at.function.dom.alarm.alarmlist.attendanceholiday;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
-import java.util.stream.Collectors;
-
-import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
-import javax.inject.Inject;
-
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
-import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.function.dom.adapter.WorkPlaceHistImport;
 import nts.uk.ctx.at.function.dom.adapter.WorkPlaceIdAndPeriodImport;
 import nts.uk.ctx.at.function.dom.adapter.companyRecord.StatusOfEmployeeAdapter;
@@ -24,15 +10,16 @@ import nts.uk.ctx.at.function.dom.alarm.alarmlist.EmployeeSearchDto;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.aggregationprocess.ErAlConstant;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.attendanceholiday.erroralarmcheck.ErrorAlarmCheck;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.attendanceholiday.whethertocheck.WhetherToCheck;
+import nts.uk.ctx.at.shared.dom.alarmList.persistenceextractresult.*;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategory;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategoryRepository;
+import nts.uk.ctx.at.function.dom.alarm.checkcondition.annualholiday.AlarmCheckSubConAgr;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.annualholiday.AnnualHolidayAlarmCondition;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.annualholiday.YearlyUsageObDay;
 import nts.uk.ctx.at.shared.dom.alarmList.AlarmCategory;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.AlarmListCheckInfor;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.AlarmListCheckType;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.ExtractionAlarmPeriodDate;
-import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.ExtractionResultDetail;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.ResultOfEachCondition;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.ReferenceAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnLeaGrantRemDataRepository;
@@ -44,6 +31,16 @@ import nts.uk.ctx.at.shared.dom.vacation.obligannleause.ObligedAnnLeaUseService;
 import nts.uk.ctx.at.shared.dom.vacation.obligannleause.ObligedAnnualLeaveUse;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
+
+import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
+import javax.inject.Inject;
+import java.util.*;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
+
 /**
  * 年休の集計処理
  * @author tutk
@@ -247,11 +244,42 @@ public class TotalProcessAnnualHoliday {
 	public void checkAnnualHolidayAlarm(String companyID, AnnualHolidayAlarmCondition annualHolidayCond ,List<String> employees, 
 		Consumer<Integer> counter, Supplier<Boolean> shouldStop, 
 		List<WorkPlaceHistImport> getWplByListSidAndPeriod,List<StatusOfEmployeeAdapter> lstStatusEmp,
-		List<ResultOfEachCondition> lstResultCondition, List<AlarmListCheckInfor> lstCheckInfor){		
+		List<ResultOfEachCondition> lstResultCondition, List<AlarmListCheckInfor> lstCheckInfor,
+		List<AlarmEmployeeList> alarmEmployeeList, List<AlarmExtractionCondition> alarmExtractConditions,
+		String alarmCheckConditionCode){
 		lstCheckInfor.add(new AlarmListCheckInfor("1", AlarmListCheckType.FixCheck));	
 		//年休使用義務チェック条件.年休使用義務日数
 		YearlyUsageObDay yearlyUsageObDay = annualHolidayCond.getAlarmCheckConAgr().getUsageObliDay();
-			
+		String checkCondNo = "";
+		AlarmCheckSubConAgr alarmCheckSubConAgr = annualHolidayCond.getAlarmCheckSubConAgr();
+		if (Objects.nonNull(alarmCheckSubConAgr)) {
+			// 「年休アラームチェック対象者条件」．次回年休付与日までの期間の条件で絞り込む　＝　True =>・コード　＝　１
+			if (alarmCheckSubConAgr.isNarrowUntilNext()) {
+				checkCondNo = "1";
+			}
+			//「年休アラームチェック対象者条件」．前回年休付与日数の条件で絞り込む　＝　True =>・コード　＝　２
+			if (alarmCheckSubConAgr.isNarrowLastDay()) {
+				checkCondNo = "2";
+			}
+
+			String finalCheckCondNo = checkCondNo;
+			List<AlarmExtractionCondition> extractionConditions = alarmExtractConditions.stream()
+					.filter(x -> x.getAlarmListCheckType() == AlarmListCheckType.FixCheck && x.getAlarmCheckConditionNo().equals(finalCheckCondNo))
+					.collect(Collectors.toList());
+			if (extractionConditions.isEmpty()) {
+				alarmExtractConditions.add(new AlarmExtractionCondition(
+						String.valueOf(checkCondNo),
+						new AlarmCheckConditionCode(alarmCheckConditionCode),
+						AlarmCategory.ATTENDANCE_RATE_FOR_HOLIDAY,
+						AlarmListCheckType.FixCheck
+				));
+			}
+		}
+
+//		・「年休付与の比率抽出条件」がある場合
+//	　　　　・チェック種類　＝　自由チェック
+//	　　　　・コード　＝　年休付与の比率抽出条件．チェック項目  //TODO: QA #116112
+
 		for(String sid : employees) {
 			if(shouldStop.get()) {
 				return;
@@ -306,7 +334,7 @@ public class TotalProcessAnnualHoliday {
 			}
 			ExtractionAlarmPeriodDate pDate = new ExtractionAlarmPeriodDate(Optional.ofNullable(ligedUseOutput.getPeriod().get().start()),
 					Optional.ofNullable(ligedUseOutput.getPeriod().get().end()));
-			ExtractionResultDetail detail = new ExtractionResultDetail(sid,
+			ExtractResultDetail detail = new ExtractResultDetail(
 					pDate,
 					TextResource.localize("KAL010_401"),
 					TextResource.localize("KAL010_402",
@@ -316,21 +344,31 @@ public class TotalProcessAnnualHoliday {
 					Optional.ofNullable(workplaceId),
 					Optional.ofNullable(annualHolidayCond.getAlarmCheckConAgr().getDisplayMessage().get().v()),
 					Optional.ofNullable(ligedUseOutput.getDays().get().v().toString()));
-			List<ResultOfEachCondition> result = lstResultCondition.stream()
-					.filter(x -> x.getCheckType() == AlarmListCheckType.FreeCheck && x.getNo().equals("1"))
-					.collect(Collectors.toList());
-			if(result.isEmpty()) {
-				ResultOfEachCondition resultCon = new ResultOfEachCondition(AlarmListCheckType.FixCheck,
-						"1",
-						new ArrayList<>());
-				resultCon.getLstResultDetail().add(detail);
-				lstResultCondition.add(resultCon);
-			} else {
-				ResultOfEachCondition ex = result.get(0);
-				lstResultCondition.remove(ex);
-				ex.getLstResultDetail().add(detail);
-				lstResultCondition.add(ex);
-			}
+
+			List<AlarmExtractInfoResult> alarmExtractInfoResults =
+					Collections.singletonList(new AlarmExtractInfoResult(
+							String.valueOf(checkCondNo),
+							new AlarmCheckConditionCode(alarmCheckConditionCode),
+							AlarmCategory.ATTENDANCE_RATE_FOR_HOLIDAY,
+							AlarmListCheckType.FixCheck,
+							Collections.singletonList(detail)));
+			alarmEmployeeList.add(new AlarmEmployeeList(alarmExtractInfoResults, sid));
+
+//			List<ResultOfEachCondition> result = lstResultCondition.stream()
+//					.filter(x -> x.getCheckType() == AlarmListCheckType.FreeCheck && x.getNo().equals("1"))
+//					.collect(Collectors.toList());
+//			if(result.isEmpty()) {
+//				ResultOfEachCondition resultCon = new ResultOfEachCondition(AlarmListCheckType.FixCheck,
+//						"1",
+//						new ArrayList<>());
+//				resultCon.getLstResultDetail().add(detail);
+//				lstResultCondition.add(resultCon);
+//			} else {
+//				ResultOfEachCondition ex = result.get(0);
+//				lstResultCondition.remove(ex);
+//				ex.getLstResultDetail().add(detail);
+//				lstResultCondition.add(ex);
+//			}
 		}
 		counter.accept(employees.size());
 	}

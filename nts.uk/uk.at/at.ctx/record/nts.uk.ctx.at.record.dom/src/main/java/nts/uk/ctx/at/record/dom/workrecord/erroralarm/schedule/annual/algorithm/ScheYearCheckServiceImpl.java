@@ -1,10 +1,6 @@
 package nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.annual.algorithm;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -13,6 +9,8 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.daily.algorithm.OutputCheckResult;
+import nts.uk.ctx.at.shared.dom.alarmList.AlarmCategory;
+import nts.uk.ctx.at.shared.dom.alarmList.persistenceextractresult.*;
 import org.apache.logging.log4j.util.Strings;
 
 import lombok.val;
@@ -111,7 +109,8 @@ public class ScheYearCheckServiceImpl implements ScheYearCheckService {
 	public void extractScheYearCheck(String cid, List<String> lstSid, DatePeriod dPeriod, String errorCheckId,
 			String listOptionalItem, List<WorkPlaceHistImportAl> getWplByListSidAndPeriod,
 			List<StatusOfEmployeeAdapterAl> lstStatusEmp, List<ResultOfEachCondition> lstResultCondition,
-			List<AlarmListCheckInfor> lstCheckType, Consumer<Integer> counter, Supplier<Boolean> shouldStop) {
+			List<AlarmListCheckInfor> lstCheckType, Consumer<Integer> counter, Supplier<Boolean> shouldStop,
+			List<AlarmEmployeeList> alarmEmployeeList, List<AlarmExtractionCondition> alarmExtractConditions, String alarmCheckConditionCode) {
 		String contractCode = AppContexts.user().contractCode();
 		ScheYearPrepareData prepareData = prepareDataBeforeChecking(contractCode, cid, lstSid, dPeriod, errorCheckId, listOptionalItem);
 		
@@ -123,15 +122,16 @@ public class ScheYearCheckServiceImpl implements ScheYearCheckService {
 			}
 									
 			// 特定属性の項目の予定を作成する
-			OutputCheckResult result = extractCondition(
-					cid, lstSid, dPeriod, prepareData, getWplByListSidAndPeriod);;
-			if (!result.getLstResultCondition().isEmpty()) {
-				lstResultCondition.addAll(result.getLstResultCondition());
-			}
-			
-			if (!result.getLstCheckType().isEmpty()) {
-				lstCheckType.addAll(result.getLstCheckType());
-			}
+			this.extractCondition(
+					cid, lstSid, dPeriod, prepareData, getWplByListSidAndPeriod,
+					alarmEmployeeList, alarmExtractConditions, alarmCheckConditionCode);
+//			if (!result.getLstResultCondition().isEmpty()) {
+//				lstResultCondition.addAll(result.getLstResultCondition());
+//			}
+//
+//			if (!result.getLstCheckType().isEmpty()) {
+//				lstCheckType.addAll(result.getLstCheckType());
+//			}
 					
 			synchronized (this) {
 				counter.accept(emps.size());
@@ -247,10 +247,10 @@ public class ScheYearCheckServiceImpl implements ScheYearCheckService {
 	 * Extract condition Tab2
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	private OutputCheckResult extractCondition(
+	private void extractCondition(
 			String cid, List<String> listSid, DatePeriod dPeriod, ScheYearPrepareData prepareData,
-			List<WorkPlaceHistImportAl> getWplByListSidAndPeriod) {
-		OutputCheckResult result = new OutputCheckResult(new ArrayList<>(), new ArrayList<>());
+			List<WorkPlaceHistImportAl> getWplByListSidAndPeriod, List<AlarmEmployeeList> alarmEmployeeList,
+			List<AlarmExtractionCondition> alarmExtractConditions, String alarmCheckConditionCode) {
 		
 		for (ExtractionCondScheduleYear condScheYear: prepareData.getScheCondItems()) {
 			for (String sid: listSid) {
@@ -370,7 +370,7 @@ public class ScheYearCheckServiceImpl implements ScheYearCheckService {
 						: Optional.empty();
 				ExtractionAlarmPeriodDate extractionAlarmPeriodDate = new ExtractionAlarmPeriodDate(Optional.of(dPeriod.start()), Optional.empty());
 				
-				ExtractionResultDetail detail = new ExtractionResultDetail(sid, 
+				ExtractResultDetail detail = new ExtractResultDetail(
 						extractionAlarmPeriodDate, 
 						condScheYear.getName().v(), 
 						alarmContent, 
@@ -383,27 +383,51 @@ public class ScheYearCheckServiceImpl implements ScheYearCheckService {
 				// ・チェック種類　＝　自由チェック
 				// ・コード　＝　ループ中のスケジュール年間の任意抽出条件．並び順
 				// ・抽出結果　＝　作成した抽出結果
-				List<ResultOfEachCondition> lstResultTmp = result.getLstResultCondition().stream()
-						.filter(x -> x.getCheckType() == AlarmListCheckType.FreeCheck && x.getNo().equals(alarmCode)).collect(Collectors.toList());
-				List<ExtractionResultDetail> listDetail = new ArrayList<>();
-				if(lstResultTmp.isEmpty()) {
-					listDetail.add(detail);
-					result.getLstResultCondition().add(new ResultOfEachCondition(EnumAdaptor.valueOf(1, AlarmListCheckType.class), alarmCode, 
-							listDetail));	
-				} else {
-					result.getLstResultCondition().stream().forEach(x -> x.getLstResultDetail().add(detail));
-				}
+//				List<AlarmExtractInfoResult> lstResultTmp = result.getAlarmExtractInfoResults().stream()
+//						.filter(x -> x.getAlarmListCheckType() == AlarmListCheckType.FreeCheck && x.getAlarmCheckConditionNo().equals(alarmCode)).collect(Collectors.toList());
+//				List<ExtractResultDetail> listDetail = new ArrayList<>();
+//				if(lstResultTmp.isEmpty()) {
+//					listDetail.add(detail);
+//					result.getAlarmExtractInfoResults().add(new AlarmExtractInfoResult(
+//							alarmCode,
+//							new AlarmCheckConditionCode(alarmCheckConditionCode),
+//							AlarmCategory.SCHEDULE_YEAR,
+//							AlarmListCheckType.FreeCheck,
+//							listDetail
+//					));
+//				} else {
+//					result.getAlarmExtractInfoResults().stream().forEach(x -> x.getExtractionResultDetails().add(detail));
+//				}
 				
-				Optional<AlarmListCheckInfor> optCheckInfor = result.getLstCheckType().stream()
-						.filter(x -> x.getChekType() == AlarmListCheckType.FreeCheck && x.getNo().equals(String.valueOf(condScheYear.getSortOrder())))
-						.findFirst();
-				if(!optCheckInfor.isPresent()) {
-					result.getLstCheckType().add(new AlarmListCheckInfor(String.valueOf(condScheYear.getSortOrder()), AlarmListCheckType.FreeCheck));
+//				Optional<AlarmListCheckInfor> optCheckInfor = result.getLstCheckType().stream()
+//						.filter(x -> x.getChekType() == AlarmListCheckType.FreeCheck && x.getNo().equals(String.valueOf(condScheYear.getSortOrder())))
+//						.findFirst();
+//				if(!optCheckInfor.isPresent()) {
+//					result.getLstCheckType().add(new AlarmListCheckInfor(String.valueOf(condScheYear.getSortOrder()), AlarmListCheckType.FreeCheck));
+//				}
+
+				List<AlarmExtractInfoResult> lstExtractInfoResult = Collections.singletonList(new AlarmExtractInfoResult(
+						alarmCode,
+						new AlarmCheckConditionCode(alarmCheckConditionCode),
+						AlarmCategory.SCHEDULE_YEAR,
+						AlarmListCheckType.FreeCheck,
+						Collections.singletonList(detail)
+				));
+				alarmEmployeeList.add(new AlarmEmployeeList(lstExtractInfoResult, sid));
+
+				List<AlarmExtractionCondition> lstExtractCondition = alarmExtractConditions.stream()
+						.filter(x -> x.getAlarmListCheckType() == AlarmListCheckType.FreeCheck && x.getAlarmCheckConditionNo().equals(String.valueOf(condScheYear.getSortOrder())))
+						.collect(Collectors.toList());
+				if (lstExtractCondition.isEmpty()) {
+					alarmExtractConditions.add(new AlarmExtractionCondition(
+							String.valueOf(condScheYear.getSortOrder()),
+							new AlarmCheckConditionCode(alarmCheckConditionCode),
+							AlarmCategory.SCHEDULE_YEAR,
+							AlarmListCheckType.FreeCheck
+					));
 				}
 			}
 		}
-		
-		return result;
 	}
 	
 	/**
@@ -460,7 +484,7 @@ public class ScheYearCheckServiceImpl implements ScheYearCheckService {
 		if(compare <= 5) {
 			variable0 = checkCondTypeName + compareOperatorText.getCompareLeft() + startValue;
 		} else {
-			if (compare > 5 && compare <= 7) {
+			if (compare == 6 || compare == 7) {
 				variable0 = startValue + compareOperatorText.getCompareLeft() + checkCondTypeName
 						+ compareOperatorText.getCompareright() + endValue;
 			} else {
@@ -511,11 +535,15 @@ public class ScheYearCheckServiceImpl implements ScheYearCheckService {
 			
 			// 休暇日数を計算
 			if (dayCheckCond.getTypeOfDays() == TypeOfDays.ANNUAL_LEAVE_NUMBER) {
-				// 休暇日数　＝　取得した年休積休の集計結果．年休．年休情報(期間終了日時点)．使用日数
-				totalTime = aggResult.getAnnualLeave().get().getAsOfPeriodEnd().getUsedDays().v().doubleValue();
+				if (aggResult.getAnnualLeave().isPresent()) {
+					// 休暇日数　＝　取得した年休積休の集計結果．年休．年休情報(期間終了日時点)．使用日数
+					totalTime = aggResult.getAnnualLeave().get().getAsOfPeriodEnd().getUsedDays().v().doubleValue();
+				}
 			} else {
-				// 休暇日数　＝　取得した年休積休の集計結果．積立年休．積立年休情報(期間終了日時点)．使用日数
-				totalTime = aggResult.getReserveLeave().get().getAsOfPeriodEnd().getUsedDays().v().doubleValue();
+				if (aggResult.getReserveLeave().isPresent()) {
+					// 休暇日数　＝　取得した年休積休の集計結果．積立年休．積立年休情報(期間終了日時点)．使用日数
+					totalTime = aggResult.getReserveLeave().get().getAsOfPeriodEnd().getUsedDays().v().doubleValue();
+				}
 			}
 			break;
 		default:

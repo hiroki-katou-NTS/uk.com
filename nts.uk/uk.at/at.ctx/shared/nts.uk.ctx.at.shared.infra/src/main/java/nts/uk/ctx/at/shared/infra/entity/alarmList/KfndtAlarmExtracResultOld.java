@@ -24,8 +24,8 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Getter
-@Table(name = "KFNDT_ALARM_EXTRAC_RESULT")
-public class KfndtAlarmExtracResult extends UkJpaEntity implements Serializable {
+@Table(name = "KFNDT_ALARM_EXTRAC_RESULT_OLD")
+public class KfndtAlarmExtracResultOld extends UkJpaEntity implements Serializable {
 	/**主キー	 */
 	@EmbeddedId
 	public KfndtAlarmExtracResultPK pk;

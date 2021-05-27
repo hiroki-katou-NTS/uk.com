@@ -2,7 +2,6 @@ package nts.uk.ctx.at.shared.infra.repository.alarmList;
 
 import java.sql.PreparedStatement;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,7 +21,7 @@ import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.AlarmPatternExtractRe
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.ExtractionAlarmPeriodDate;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.ExtractionResultDetail;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.ResultOfEachCondition;
-import nts.uk.ctx.at.shared.infra.entity.alarmList.KfndtAlarmExtracResult;
+import nts.uk.ctx.at.shared.infra.entity.alarmList.KfndtAlarmExtracResultOld;
 import nts.uk.ctx.at.shared.infra.entity.alarmList.KfndtAlarmExtracResultPK;
 import nts.uk.shr.com.context.AppContexts;
 @Stateless
@@ -40,14 +39,14 @@ public class JpaAlarmPatternExtractResultRepository  extends JpaRepository imple
 			sql.setString(1, cid);
 			sql.setString(2, runCode);
 			sql.setString(3, patternCode);			
-			List<KfndtAlarmExtracResult> lstEntity = new NtsResultSet(sql.executeQuery())
+			List<KfndtAlarmExtracResultOld> lstEntity = new NtsResultSet(sql.executeQuery())
 					.getList(x -> toEntity(x));
 			Optional<AlarmPatternExtractResult> result = this.toObject(lstEntity);
 			return result;
 		}
 		
 	}
-	private KfndtAlarmExtracResult toEntity(NtsResultRecord rec){
+	private KfndtAlarmExtracResultOld toEntity(NtsResultRecord rec){
 		KfndtAlarmExtracResultPK pk = new KfndtAlarmExtracResultPK(rec.getString("CID"),
 				rec.getString("AUTORUN_CODE"),
 				rec.getString("PATTERN_CODE"),
@@ -56,7 +55,7 @@ public class JpaAlarmPatternExtractResultRepository  extends JpaRepository imple
 				rec.getInt("CHECK_ATR"),
 				rec.getString("CONDITION_NO"),
 				rec.getString("SID"));
-		KfndtAlarmExtracResult result = new KfndtAlarmExtracResult(pk,
+		KfndtAlarmExtracResultOld result = new KfndtAlarmExtracResultOld(pk,
 				rec.getString("CONTRACT_CD"),
 				rec.getGeneralDate("START_DATE"),
 				rec.getGeneralDate("END_DATE"),
@@ -69,7 +68,7 @@ public class JpaAlarmPatternExtractResultRepository  extends JpaRepository imple
 				rec.getString("CHECK_VALUE"));
 		return result;
 	}
-	private Optional<AlarmPatternExtractResult> toObject(List<KfndtAlarmExtracResult> lstEntity) {
+	private Optional<AlarmPatternExtractResult> toObject(List<KfndtAlarmExtracResultOld> lstEntity) {
 		if(lstEntity.isEmpty()) {
 			Optional.empty();
 		}
@@ -130,14 +129,14 @@ public class JpaAlarmPatternExtractResultRepository  extends JpaRepository imple
 		if(alarmPattern == null || alarmPattern.getLstExtracResult().isEmpty()) {
 			return;
 		}
-		List<KfndtAlarmExtracResult> lstAlarm = this.toEntity(alarmPattern);
+		List<KfndtAlarmExtracResultOld> lstAlarm = this.toEntity(alarmPattern);
 		lstAlarm.stream().forEach(x -> {
 			this.commandProxy().insert(x);	
 		});
 	}
 	
-	private List<KfndtAlarmExtracResult> toEntity(AlarmPatternExtractResult alarmPattern) {
-		List<KfndtAlarmExtracResult> lstResult = new ArrayList<>();
+	private List<KfndtAlarmExtracResultOld> toEntity(AlarmPatternExtractResult alarmPattern) {
+		List<KfndtAlarmExtracResultOld> lstResult = new ArrayList<>();
 		String cid = alarmPattern.getCID();
 		String patternCd = alarmPattern.getPatternCode();
 		String patternName = alarmPattern.getPatternName();
@@ -154,7 +153,7 @@ public class JpaAlarmPatternExtractResultRepository  extends JpaRepository imple
 							y.getNo(), 
 							z.getSID());
 					
-					lstResult.add(new KfndtAlarmExtracResult(pk, 
+					lstResult.add(new KfndtAlarmExtracResultOld(pk,
 							AppContexts.user().contractCode(),
 							z.getPeriodDate().getStartDate().isPresent() ? z.getPeriodDate().getStartDate().get() : null,
 							z.getPeriodDate().getEndDate().isPresent() ? z.getPeriodDate().getEndDate().get() : null, 

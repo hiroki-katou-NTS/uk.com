@@ -12,4 +12,6 @@ public interface StandardMenuPub {
 	 * @return List<StandardMenuNameExport>
 	 */
 	public List<StandardMenuNameExport> getMenuDisplayName(String companyId, List<StandardMenuNameQuery> query);
+
+	List<StandardMenuNameExport> getMenus(String companyId, int system);
 }

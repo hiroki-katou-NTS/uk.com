@@ -2,10 +2,7 @@ package nts.uk.ctx.at.record.dom.workrecord.erroralarm.multimonth.algorithm;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -30,11 +27,12 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.multimonth.MulMonAlarmChec
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.multimonth.MulMonthAlarmCheckCond;
 import nts.uk.ctx.at.shared.dom.adapter.attendanceitemname.AttendanceItemNameAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.attendanceitemname.MonthlyAttendanceItemNameDto;
+import nts.uk.ctx.at.shared.dom.alarmList.AlarmCategory;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.AlarmListCheckInfor;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.AlarmListCheckType;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.ExtractionAlarmPeriodDate;
-import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.ExtractionResultDetail;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.ResultOfEachCondition;
+import nts.uk.ctx.at.shared.dom.alarmList.persistenceextractresult.*;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.remainmerge.RemainMergeRepository;
 import nts.uk.shr.com.i18n.TextResource;
@@ -58,11 +56,27 @@ public class MultiMonthlyExtractCheckServiceImpl<V> implements MultiMonthlyExtra
 	@Override
 	public void extractMultiMonthlyAlarm(String cid, List<String> lstSid, YearMonthPeriod mPeriod,
 			List<String> lstAnyConID, List<WorkPlaceHistImportAl> getWplByListSidAndPeriod,
-			List<ResultOfEachCondition> lstResultCondition, List<AlarmListCheckInfor> lstCheckType) {
+			List<ResultOfEachCondition> lstResultCondition, List<AlarmListCheckInfor> lstCheckType,
+			List<AlarmEmployeeList> alarmEmployeeList, List<AlarmExtractionCondition> alarmExtractConditions,
+			String alarmCheckConditionCode) {
 		DataCheck data = new DataCheck(cid, lstSid, mPeriod, lstAnyConID);
 		if(data.lstAnyCondCheck.isEmpty()) return;
 		
 		for(MulMonthAlarmCheckCond anyCond : data.lstAnyCondCheck) {
+			// 「アラーム抽出条件」を作成してInput．List＜アラーム抽出条件＞を追加
+			List<AlarmExtractionCondition> extractionConditions = alarmExtractConditions.stream()
+					.filter(x -> x.getAlarmListCheckType() == AlarmListCheckType.FreeCheck
+							&& x.getAlarmCheckConditionNo().equals(String.valueOf(anyCond.getCondNo())))
+					.collect(Collectors.toList());
+			if (extractionConditions.isEmpty()) {
+				alarmExtractConditions.add(new AlarmExtractionCondition(
+						String.valueOf(anyCond.getCondNo()),
+						new AlarmCheckConditionCode(alarmCheckConditionCode),
+						AlarmCategory.MULTIPLE_MONTH,
+						AlarmListCheckType.FreeCheck
+				));
+			}
+
 			lstCheckType.add(new AlarmListCheckInfor(String.valueOf(anyCond.getCondNo()), AlarmListCheckType.FreeCheck));
 			ErAlAttendanceItemCondition<?> erCondition = anyCond.getErAlAttendanceItemCondition();
 			if(erCondition == null) continue;			
@@ -311,29 +325,44 @@ public class MultiMonthlyExtractCheckServiceImpl<V> implements MultiMonthlyExtra
 						}
 					}
 							
-					ExtractionResultDetail detail = new ExtractionResultDetail(sid, 
+					ExtractResultDetail detail = new ExtractResultDetail(
 							pDate,
 							anyCond.getNameAlarmCon().v(),
 							alarmDescription, 
 							GeneralDateTime.now(),
 							Optional.ofNullable(workplaceId),
 							Optional.ofNullable(anyCond.getDisplayMessage().isPresent() ? anyCond.getDisplayMessage().get().v() : null),
-							Optional.ofNullable(checkValue)); 
-					List<ResultOfEachCondition> result = lstResultCondition.stream()
-							.filter(x -> x.getCheckType() == AlarmListCheckType.FreeCheck && x.getNo().equals(String.valueOf(anyCond.getCondNo())))
-							.collect(Collectors.toList());
-					if(result.isEmpty()) {
-						ResultOfEachCondition resultCon = new ResultOfEachCondition(AlarmListCheckType.FixCheck,
-								String.valueOf(anyCond.getCondNo()),
-								new ArrayList<>());
-						resultCon.getLstResultDetail().add(detail);
-						lstResultCondition.add(resultCon);
+							Optional.ofNullable(checkValue));
+					List<AlarmExtractInfoResult> alarmExtractInfoResults =
+							Collections.singletonList(new AlarmExtractInfoResult(
+									String.valueOf(anyCond.getCondNo()),
+									new AlarmCheckConditionCode(alarmCheckConditionCode),
+									AlarmCategory.MULTIPLE_MONTH,
+									AlarmListCheckType.FreeCheck,
+									Collections.singletonList(detail)));
+
+					List<AlarmEmployeeList> alarmEmpExist = alarmEmployeeList.stream().filter(x -> x.getEmployeeID().equals(sid)).collect(Collectors.toList());
+					if (alarmEmpExist.isEmpty()) {
+						alarmEmployeeList.add(new AlarmEmployeeList(alarmExtractInfoResults, sid));
 					} else {
-						ResultOfEachCondition ex = result.get(0);
-						lstResultCondition.remove(ex);
-						ex.getLstResultDetail().add(detail);
-						lstResultCondition.add(ex);
+						List<String> sIDs = alarmEmpExist.stream().map(AlarmEmployeeList::getEmployeeID).collect(Collectors.toList());
+						alarmEmployeeList.stream().filter(e -> sIDs.contains(e)).forEach(z -> z.getAlarmExtractInfoResults().addAll(alarmExtractInfoResults));
 					}
+//					List<ResultOfEachCondition> result = lstResultCondition.stream()
+//							.filter(x -> x.getCheckType() == AlarmListCheckType.FreeCheck && x.getNo().equals(String.valueOf(anyCond.getCondNo())))
+//							.collect(Collectors.toList());
+//					if(result.isEmpty()) {
+//						ResultOfEachCondition resultCon = new ResultOfEachCondition(AlarmListCheckType.FixCheck,
+//								String.valueOf(anyCond.getCondNo()),
+//								new ArrayList<>());
+//						resultCon.getLstResultDetail().add(detail);
+//						lstResultCondition.add(resultCon);
+//					} else {
+//						ResultOfEachCondition ex = result.get(0);
+//						lstResultCondition.remove(ex);
+//						ex.getLstResultDetail().add(detail);
+//						lstResultCondition.add(ex);
+//					}
 				}
 			}
 		}
