@@ -31,3 +31,15 @@
 .ntsSearchArea div{
 	display: inline-block;
 }
+
+#swap-search-icon {
+	background-color: #30cc40;
+	position: absolute;
+	right: 5px;
+	top: 4px;
+	border-radius: 2px;
+}
+
+.ntsSearchTextContainer {
+	position: relative;
+}
