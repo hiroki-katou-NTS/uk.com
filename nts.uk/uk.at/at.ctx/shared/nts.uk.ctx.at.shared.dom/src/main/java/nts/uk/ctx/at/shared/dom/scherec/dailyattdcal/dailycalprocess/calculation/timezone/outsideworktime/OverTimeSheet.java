@@ -130,7 +130,7 @@ public class OverTimeSheet {
 		//残業時間帯の時間枠を取得
 		this.frameTimeSheets.forEach(frameTime ->{
 			//残業時間帯の計算
-			frameTime.correctCalculationTime(Optional.of(false), autoCalcSetting);
+			frameTime.getFrameTime().setOverTimeWork(frameTime.correctCalculationTime(Optional.of(false), autoCalcSetting));
 		});
 		return;
 	}
