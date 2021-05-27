@@ -189,10 +189,10 @@ public class AlarmTopPageProcessingServiceImpl implements AlarmTopPageProcessing
                     val dbKey = detailDb.getKey();
                     if (input.containsKey(dbKey)) { // Nếu trùng SID, No, code, type, cate -> check tiếp điều kiện khác
                         List<ExtractResultDetail> highestInput = mapInput.get(entryDb.getKey()).get(detailDb.getKey());
-                        val dateInputs = highestInput.stream().map(i -> i.getPeriodDate().getStartDate().get()).collect(Collectors.toList());
+                        val dateInputs = highestInput.stream().map(i -> i.getPeriodDate().getStartDate().get().toString()).collect(Collectors.toList());
 
                         // Nếu trùng SID, No, code, type, cate nhưng KHÔNG TRÙNG startDate với trong lstInput => dữ liệu DB đã cũ => add vào lstDelete để xoá đi
-                        List<ExtractResultDetail> lstDiffInput = detailDb.getValue().stream().filter(h -> !dateInputs.contains(h.getPeriodDate().getStartDate().get())).collect(Collectors.toList());
+                        List<ExtractResultDetail> lstDiffInput = detailDb.getValue().stream().filter(h -> !dateInputs.contains(h.getPeriodDate().getStartDate().get().toString())).collect(Collectors.toList());
                         if (!lstDiffInput.isEmpty()) {
                             lstInfoResult.add(new AlarmExtractInfoResult(
                                     detailDb.getKey().getAlarmCheckConditionNo(),
@@ -242,7 +242,7 @@ public class AlarmTopPageProcessingServiceImpl implements AlarmTopPageProcessing
                 if (exist) { // Nếu trùng SID -> check tiếp điều kiện khác
                     if (mapDb.get(entryIp.getKey()).containsKey(detailIp.getKey())) { // Nếu trùng SID, No, code, type, cate
                         List<ExtractResultDetail> highestDb = mapDb.get(entryIp.getKey()).get(detailIp.getKey());
-                        List<GeneralDate> dateDbs = highestDb.stream().map(i -> i.getPeriodDate().getStartDate().get()).collect(Collectors.toList());
+                        val dateDbs = highestDb.stream().map(i -> i.getPeriodDate().getStartDate().get().toString()).collect(Collectors.toList());
                         List<GeneralDate> dateInputs = ip.get(detailIp.getKey()).stream().map(i -> i.getPeriodDate().getStartDate().get()).collect(Collectors.toList());
 
 //                        // Nếu trùng SID, No, code, type, cate nhưng KHÔNG TRÙNG startDate với trong lstInput => dữ liệu DB đã cũ => add vào lstDelete để xoá đi
@@ -261,7 +261,7 @@ public class AlarmTopPageProcessingServiceImpl implements AlarmTopPageProcessing
 //                        List<ExtractResultDetail> lstDiffDetail = ip.get(detailIp.getKey()).stream().filter(h -> dateDbs.contains(h.getPeriodDate().getStartDate())).collect(Collectors.toList());
 
                         // Nếu trùng SID, No, code, type, cate nhưng KHÔNG TRÙNG startDate với trong lstDB => DB chưa có => add vào lstInsert để insert
-                        List<ExtractResultDetail> lstDiffInput = detailIp.getValue().stream().filter(h -> !dateDbs.contains(h.getPeriodDate().getStartDate().get())).collect(Collectors.toList());
+                        List<ExtractResultDetail> lstDiffInput = detailIp.getValue().stream().filter(h -> !dateDbs.contains(h.getPeriodDate().getStartDate().get().toString())).collect(Collectors.toList());
                         if (!lstDiffInput.isEmpty()) {
                             lstInfoResult.add(new AlarmExtractInfoResult(
                                     detailIp.getKey().getAlarmCheckConditionNo(),
