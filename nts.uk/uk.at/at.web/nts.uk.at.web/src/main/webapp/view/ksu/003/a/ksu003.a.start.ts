@@ -5,7 +5,7 @@ module nts.uk.at.view.ksu003.a {
 		nts.uk.characteristics.restore("USER_KSU003_INFOR").done(function(data : any) {
 			let screenModel = {
 			viewmodelA: new viewmodel.ScreenModel(data),
-            viewmodelAb: new nts.uk.at.view.ksu003.ab.viewmodel.ScreenModel()
+            //viewmodelAb: new nts.uk.at.view.ksu003.ab.viewmodel.ScreenModel()
 			}
 			nts.uk.ui.block.grayout();
 			screenModel.viewmodelA.startPage().done(function() {
