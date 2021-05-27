@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.function.infra.repository.alarm.persistenceextractresult;
 
-import lombok.SneakyThrows;
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
@@ -127,7 +126,7 @@ public class JpaPersisAlarmListExtractResultRepository extends JpaRepository imp
                 ps1.executeUpdate();
             } catch (SQLException e) {
                 e.printStackTrace();
-                System.out.println("Ex---------------------------------------------------------"+ e.getMessage());
+                System.out.println("Exception: "+ e.getMessage());
             }
 
 //            this.getEntityManager().createQuery(REMOVE_EXTRACT_RESULT)

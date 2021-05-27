@@ -251,7 +251,6 @@ public class ScheYearCheckServiceImpl implements ScheYearCheckService {
 			String cid, List<String> listSid, DatePeriod dPeriod, ScheYearPrepareData prepareData,
 			List<WorkPlaceHistImportAl> getWplByListSidAndPeriod, List<AlarmEmployeeList> alarmEmployeeList,
 			List<AlarmExtractionCondition> alarmExtractConditions, String alarmCheckConditionCode) {
-//		OutputCheckResult result = new OutputCheckResult(new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
 		
 		for (ExtractionCondScheduleYear condScheYear: prepareData.getScheCondItems()) {
 			for (String sid: listSid) {

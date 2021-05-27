@@ -243,7 +243,7 @@ public class AlarmTopPageProcessingServiceImpl implements AlarmTopPageProcessing
                     if (mapDb.get(entryIp.getKey()).containsKey(detailIp.getKey())) { // Nếu trùng SID, No, code, type, cate
                         List<ExtractResultDetail> highestDb = mapDb.get(entryIp.getKey()).get(detailIp.getKey());
                         val dateDbs = highestDb.stream().map(i -> i.getPeriodDate().getStartDate().get().toString()).collect(Collectors.toList());
-                        List<GeneralDate> dateInputs = ip.get(detailIp.getKey()).stream().map(i -> i.getPeriodDate().getStartDate().get()).collect(Collectors.toList());
+//                        val dateInputs = ip.get(detailIp.getKey()).stream().map(i -> i.getPeriodDate().getStartDate().get().toString()).collect(Collectors.toList());
 
 //                        // Nếu trùng SID, No, code, type, cate nhưng KHÔNG TRÙNG startDate với trong lstInput => dữ liệu DB đã cũ => add vào lstDelete để xoá đi
 //                        List<ExtractResultDetail> lstDiffDb = highestDb.stream().filter(h -> !dateInputs.contains(h.getPeriodDate().getStartDate().get())).collect(Collectors.toList());
@@ -256,9 +256,6 @@ public class AlarmTopPageProcessingServiceImpl implements AlarmTopPageProcessing
 //                                    lstDiffDb
 //                            ));
 //                        }
-
-                        // Nếu trùng SID, No, code, type, cate và TRÙNG cả startDate => có ở DB rồi ko cần insert => không cần add
-//                        List<ExtractResultDetail> lstDiffDetail = ip.get(detailIp.getKey()).stream().filter(h -> dateDbs.contains(h.getPeriodDate().getStartDate())).collect(Collectors.toList());
 
                         // Nếu trùng SID, No, code, type, cate nhưng KHÔNG TRÙNG startDate với trong lstDB => DB chưa có => add vào lstInsert để insert
                         List<ExtractResultDetail> lstDiffInput = detailIp.getValue().stream().filter(h -> !dateDbs.contains(h.getPeriodDate().getStartDate().get().toString())).collect(Collectors.toList());
