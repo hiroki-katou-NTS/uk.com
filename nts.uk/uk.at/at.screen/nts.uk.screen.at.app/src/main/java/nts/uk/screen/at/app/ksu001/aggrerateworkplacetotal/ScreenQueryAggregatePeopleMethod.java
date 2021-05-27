@@ -96,7 +96,7 @@ public class ScreenQueryAggregatePeopleMethod {
 									 e -> e.getValue().stream()
 													 .map(x -> new NumberOfPeopleByEachWorkMethod<String>(
 															 workTimeSetting.stream()
-																	 .filter(y -> y.getWorkTimeCode() == x.getWorkMethod())
+																	 .filter(y -> y.getWorkTimeCode().equals(x.getWorkMethod()))
 																	 .findFirst()
 																	 .map(y -> y.getWorkTimeName())
 																	 .orElse(null),
@@ -143,7 +143,7 @@ public class ScreenQueryAggregatePeopleMethod {
 							e -> e.getValue().stream()
 											 .map(x -> new NumberOfPeopleByEachWorkMethod<String>(
 													 shirftMasters.stream()
-															 .filter(y -> y.shiftMasterCode == x.getWorkMethod().v())
+															 .filter(y -> y.shiftMasterCode.equals(x.getWorkMethod().v()))
 															 .findFirst()
 															 .map(y -> y.getShiftMasterName())
 															 .orElse(null),
