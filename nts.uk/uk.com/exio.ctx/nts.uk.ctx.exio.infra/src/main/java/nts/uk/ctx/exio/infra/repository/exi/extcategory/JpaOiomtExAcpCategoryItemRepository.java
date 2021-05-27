@@ -7,13 +7,13 @@ import javax.ejb.Stateless;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.uk.ctx.exio.dom.exi.canonicalize.ExternalHistoryContiFlg;
+import nts.uk.ctx.exio.dom.exi.canonicalize.SpecialExternalItem;
 import nts.uk.ctx.exio.dom.exi.extcategory.AlphaUseFlg;
 import nts.uk.ctx.exio.dom.exi.extcategory.ExiDecimalUnit;
 import nts.uk.ctx.exio.dom.exi.extcategory.ExternalAcceptCategoryItem;
 import nts.uk.ctx.exio.dom.exi.extcategory.OiomtExAcpCategoryItemRepository;
 import nts.uk.ctx.exio.dom.exo.categoryitemdata.DataType;
-import nts.uk.ctx.exio.dom.input.canonicalize.ExternalHistoryContiFlg;
-import nts.uk.ctx.exio.dom.input.canonicalize.SpecialExternalItem;
 import nts.uk.ctx.exio.infra.entity.exi.extcategory.OiomtExAcpCategoryItem;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 @Stateless

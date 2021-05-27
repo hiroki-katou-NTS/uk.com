@@ -1,10 +1,10 @@
-package nts.uk.ctx.exio.dom.input.canonicalize.specialedit;
+package nts.uk.ctx.exio.dom.exi.canonicalize.specialedit;
 
 import java.util.Optional;
 
+import nts.uk.ctx.exio.dom.exi.canonicalize.specialedit.SpecialEdit;
 import nts.uk.ctx.exio.dom.exi.condset.AcceptMode;
 import nts.uk.ctx.exio.dom.exi.extcategory.SpecialEditValue;
-import nts.uk.ctx.exio.dom.input.canonicalize.specialedit.SpecialEdit;
 
 public class SpecialEditNoEdit extends SpecialEdit{
 	public SpecialEditNoEdit(boolean chkError, String editedItemValue, Optional<AcceptMode> accMode) {

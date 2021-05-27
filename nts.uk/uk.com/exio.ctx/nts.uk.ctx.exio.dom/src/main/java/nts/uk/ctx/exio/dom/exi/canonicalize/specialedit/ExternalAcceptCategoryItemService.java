@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.dom.input.canonicalize.specialedit;
+package nts.uk.ctx.exio.dom.exi.canonicalize.specialedit;
 
 import java.util.Optional;
 

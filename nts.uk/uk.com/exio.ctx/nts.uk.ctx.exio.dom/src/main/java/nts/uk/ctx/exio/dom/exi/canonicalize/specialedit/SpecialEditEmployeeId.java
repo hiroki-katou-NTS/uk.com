@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.dom.input.canonicalize.specialedit;
+package nts.uk.ctx.exio.dom.exi.canonicalize.specialedit;
 
 import java.util.Optional;
 
@@ -6,12 +6,12 @@ import javax.inject.Inject;
 
 import lombok.val;
 import nts.gul.text.IdentifierUtil;
+import nts.uk.ctx.exio.dom.exi.canonicalize.specialedit.SpecialEdit;
+import nts.uk.ctx.exio.dom.exi.canonicalize.specialedit.SpecialEditCompanyID;
 import nts.uk.ctx.exio.dom.exi.condset.AcceptMode;
 import nts.uk.ctx.exio.dom.exi.extcategory.SpecialEditValue;
 import nts.uk.ctx.exio.dom.exo.exoutsummaryservice.EmployeeInforExoImport;
 import nts.uk.ctx.exio.dom.exo.exoutsummaryservice.RegulationInfoEmployeeAdapter;
-import nts.uk.ctx.exio.dom.input.canonicalize.specialedit.SpecialEdit;
-import nts.uk.ctx.exio.dom.input.canonicalize.specialedit.SpecialEditCompanyID;
 
 public class SpecialEditEmployeeId extends SpecialEdit{
 	private String originalValue;
