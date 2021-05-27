@@ -152,7 +152,7 @@ module nts.uk.ui.layout {
             ko.applyBindingsToNode($span, { text }, bindingContext);
 
             vm
-                .$ajax('at', '/sys/portal/webmenu/program')
+                .$ajax('com', '/sys/portal/webmenu/program')
                 .then((response: { name: string }[]) => {
                     const [first] = response;
 
