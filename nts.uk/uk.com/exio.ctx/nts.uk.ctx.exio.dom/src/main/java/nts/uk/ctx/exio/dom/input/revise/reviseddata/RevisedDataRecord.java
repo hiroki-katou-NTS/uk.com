@@ -1,10 +1,10 @@
 package nts.uk.ctx.exio.dom.input.revise.reviseddata;
 
-import java.util.List;
 import java.util.Optional;
 
 import lombok.Value;
 import nts.uk.ctx.exio.dom.input.DataItem;
+import nts.uk.ctx.exio.dom.input.DataItemList;
 
 /**
  * 編集済みの1行分のデータ
@@ -15,11 +15,9 @@ public class RevisedDataRecord {
 	/** 受入カテゴリID */
 	int categoryId;
 
-	List<DataItem> items;
+	DataItemList items;
 	
 	public Optional<DataItem> getItemByNo(int itemNo) {
-		return items.stream()
-				.filter(item -> item.getItemNo() == itemNo)
-				.findFirst();
+		return items.getItemByNo(itemNo);
 	}
 }
