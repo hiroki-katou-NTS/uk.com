@@ -8,9 +8,9 @@ import lombok.Value;
 @Value
 public class ExecutionContext {
 
-	/* 会社ID */
+	/** 会社ID */
 	String companyId;
 	
-	/* カテゴリID */
+	/** カテゴリID */
 	int categoryId;
 }
