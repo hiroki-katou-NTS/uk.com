@@ -271,7 +271,7 @@ public class GetRemainingNumberCareService {
 		}
 
 		// 上書きフラグを確認
-		if (isOverWrite.isPresent() && isOverWrite.get() == Boolean.TRUE) {
+		if (isOverWrite.orElse(false)){
 			// 上書き用暫定残数データで置き換える
 			// 残数共通処理にする：一時対応
 
