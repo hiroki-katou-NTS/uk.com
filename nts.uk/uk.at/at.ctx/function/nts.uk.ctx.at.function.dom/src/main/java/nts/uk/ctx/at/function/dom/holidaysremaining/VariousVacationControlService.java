@@ -54,6 +54,7 @@ public class VariousVacationControlService {
 		boolean publicHolidaySetting = false;
 		boolean halfdayyearlySetting = false;
 		boolean hourlyLeaveSetting = false;
+		boolean pauseItemHolidaySettingCompany = false;
 
 		String companyId = AppContexts.user().companyId();
 		// 年休設定
@@ -78,8 +79,12 @@ public class VariousVacationControlService {
 		// 振休管理区分
 		val substVacation = comSubstVacationRepository.findById(companyId);
 		val empSubstVacation = substVacationRepository.findAll(companyId);
-		if (!empSubstVacation.isEmpty()&& substVacation.isPresent() && substVacation.get().getManageDistinct() == ManageDistinct.YES) {
+		if (empSubstVacation.isEmpty()&& substVacation.isPresent()
+				|| substVacation.get().getManageDistinct() == ManageDistinct.YES) {
 			pauseItemHolidaySetting = true;
+		}
+		if ( substVacation.get().getManageDistinct() == ManageDistinct.YES) {
+			pauseItemHolidaySettingCompany = true;
 		}
 
 		//ドメインモデル「60H超休管理設定」を取得する
@@ -125,6 +130,6 @@ public class VariousVacationControlService {
 
 		return new VariousVacationControl(annualHolidaySetting, yearlyReservedSetting, substituteHolidaySetting,
 				pauseItemHolidaySetting, childNursingSetting, nursingCareSetting,
-				com60HourVacationSetting,publicHolidaySetting, halfdayyearlySetting,hourlyLeaveSetting,listSpecialHoliday);
+				com60HourVacationSetting,publicHolidaySetting, halfdayyearlySetting,hourlyLeaveSetting,pauseItemHolidaySettingCompany,listSpecialHoliday);
 	}
 }

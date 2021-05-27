@@ -18,13 +18,14 @@ public class VariousVacationControl {
     boolean publicHolidaySetting ;
     boolean halfDayYearlySetting;
     boolean hourlyLeaveSetting;
+    boolean pauseItemHolidaySettingCompany;
     private List<SpecialHoliday> listSpecialHoliday;
 
     public VariousVacationControl(boolean annualHolidaySetting, boolean yearlyReservedSetting,
                                   boolean substituteHolidaySetting, boolean pauseItemHolidaySetting,
                                   boolean childNursingSetting, boolean nursingCareSetting,
                                   boolean com60HourVacationSetting, boolean publicHolidaySetting,
-                                  boolean halfDayYearlySetting, boolean hourlyLeaveSetting,
+                                  boolean halfDayYearlySetting, boolean hourlyLeaveSetting,boolean pauseItemHolidaySettingCompany,
                                   List<SpecialHoliday> listSpecialHoliday) {
         super();
         this.annualHolidaySetting = annualHolidaySetting;
@@ -38,5 +39,6 @@ public class VariousVacationControl {
         this.publicHolidaySetting = publicHolidaySetting;
         this.halfDayYearlySetting = halfDayYearlySetting;
         this.hourlyLeaveSetting = hourlyLeaveSetting;
+        this.pauseItemHolidaySettingCompany = pauseItemHolidaySettingCompany;
     }
 }
