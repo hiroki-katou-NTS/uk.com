@@ -270,8 +270,8 @@ html {
 }
 
 #A14 {
-	height: 180px !important;
-	width: 330px !important;
+	height: 158px !important;
+    width: 308px !important;
 	border: solid 6px #fff !important;
 	border-radius: 3.5px !important;
 	box-shadow: 1px 1px 5px 2px #888 !important;
@@ -308,6 +308,5 @@ html {
 }
 
 #A14_11 {
-	margin-top: 7px;
     margin-left: 150px;
 }
