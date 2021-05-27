@@ -154,7 +154,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 		
 		// 個人計カテゴリ
 		useCategoriesPersonal: KnockoutObservableArray<any> = ko.observableArray([]);
-		useCategoriesPersonalValue: KnockoutObservable<number> = ko.observable(9);
+		useCategoriesPersonalValue: KnockoutObservable<number> = ko.observable(6);
 		
 		// 職場計カテゴリ
 		useCategoriesWorkplace: KnockoutObservableArray<any> = ko.observableArray([]);
@@ -1834,8 +1834,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 				// 出勤・休日日数
 				case 6: 
 					group = [
-						{ headerText: getText("KSU001_61"), key: "colum1", width: "100px" },
-	                	{ headerText: getText("KSU001_62"), key: "colum2", width: "100px" },
+						{ headerText: getText("KSU001_62"), key: "colum1", width: "100px" },
+	                	{ headerText: getText("KSU001_63"), key: "colum2", width: "100px" },
 					];
 					_.forEach(detailContentDs, (item: any) => {
 						let object: any = _.find(data.aggreratePersonal.workHours, loopItem => loopItem.sid==item.employeeId);
