@@ -17,6 +17,7 @@ import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportContext;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
+import nts.uk.shr.infra.file.report.masterlist.data.ColumnTextAlign;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -75,7 +76,12 @@ public class AsposeDisplayWorkStatusReportGenerator extends AsposeCellsReportGen
         pageSetup.setHeader(0, "&7&\"ＭＳ フォントサイズ\"" + companyName);
         pageSetup.setHeader(1, "&12&\"ＭＳ フォントサイズ\""
                 + dataSource.getTitle());
-
+        pageSetup.setBottomMarginInch(1.5);
+        pageSetup.setTopMarginInch(1.5);
+        pageSetup.setLeftMarginInch(1.0);
+        pageSetup.setRightMarginInch(1.0);
+        pageSetup.setHeaderMarginInch(0.8);
+        pageSetup.setCenterHorizontally(true);
         DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter
                 .ofPattern("yyyy/MM/dd  H:mm", Locale.JAPAN);
         pageSetup.setHeader(2,
@@ -277,11 +283,20 @@ public class AsposeDisplayWorkStatusReportGenerator extends AsposeCellsReportGen
                         cells.get(countRow, maxColumnData - 2).getStyle()
                                 .setVerticalAlignment(TextAlignmentType.RIGHT);
                         cells.get(countRow, maxColumnData - 2).setValue(formatValue(item.getTotalOfOneLine(), null, item.getDailyValue().getAttributes(), isZeroDisplay));
+                        Cell cell1 = cells.get(countRow, maxColumnData - 2);
+                        Style style1 =   cell1.getStyle();
+                        style1.setHorizontalAlignment(checkText(item.getDailyValue().getAttributes())? ColumnTextAlign.LEFT.value:ColumnTextAlign.RIGHT.value);
+                        cell1.setStyle(style1);
+
                         cells.merge(countRow, maxColumnData - 2, 1, 2, true, true);
                         cells.get(countRow, column).getStyle().setVerticalAlignment(TextAlignmentType.RIGHT);
                         if (item.getDailyValue() == null) continue;
                         cells.get(countRow, column).setValue(formatValue(item.getDailyValue().getActualValue(), item.getDailyValue().getCharacterValue(),
                                 item.getDailyValue().getAttributes(), isZeroDisplay));
+                        Cell cell = cells.get(countRow, column);
+                        Style style =   cell.getStyle();
+                        style.setHorizontalAlignment(checkText(item.getDailyValue().getAttributes())? ColumnTextAlign.LEFT.value:ColumnTextAlign.RIGHT.value);
+                        cell.setStyle(style);
                     }
                     countRow++;
                     countItem++;
@@ -318,11 +333,11 @@ public class AsposeDisplayWorkStatusReportGenerator extends AsposeCellsReportGen
         for (int i = 0; i < maxColumnData; i++) {
             GeneralDate loopDate = startDate.addDays(i);
             if (!loopDate.beforeOrEquals(datePeriod.end())) {
-                cells.setColumnWidth(3 + i, 3);
+                cells.setColumnWidth(3 + i, 2.8);
                 cells.get(countRow + 1, i + 3).setValue("");
                 cells.get(countRow + 2, i + 3).setValue("");
             } else {
-                cells.setColumnWidth(3 + i, 3);
+                cells.setColumnWidth(3 + i, 2.8);
 
                 cells.get(countRow + 1, i + 3).setValue(loopDate.day());
                 cells.get(countRow + 2, i + 3).setValue("("
@@ -406,7 +421,14 @@ public class AsposeDisplayWorkStatusReportGenerator extends AsposeCellsReportGen
         int minutes = minuteAbs % 60;
         return (minute < 0 ? "-" : "") + String.format("%d:%02d", hours, minutes);
     }
+    public boolean checkText(CommonAttributesOfForms attributes){
+        return attributes == CommonAttributesOfForms.WORK_TYPE
+                ||attributes == CommonAttributesOfForms.WORKING_HOURS
+                ||attributes == CommonAttributesOfForms.OTHER_CHARACTER_NUMBER
+                ||attributes == CommonAttributesOfForms.OTHER_CHARACTERS
+                ||attributes == CommonAttributesOfForms.OTHER_NUMERICAL_VALUE;
 
+    }
     @AllArgsConstructor
     @Getter
     @Setter

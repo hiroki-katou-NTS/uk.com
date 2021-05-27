@@ -3703,15 +3703,15 @@ public class ProgramsManager {
 	 */
 	public static final Program KWR005A = new Program(WebAppId.AT,
             ProgramIdConsts.KWR005A,
-            "KWR003_1",
+            "KWR005_1",
             "/view/kwr/005/a/index.xhtml");
 	public static final Program KWR005B = new Program(WebAppId.AT,
             ProgramIdConsts.KWR005B,
-            "KWR003_101",
+            "KWR005_101",
             "/view/kwr/005/b/index.xhtml");
 	public static final Program KWR005C = new Program(WebAppId.AT,
             ProgramIdConsts.KWR005C,
-            "KWR003_201",
+            "KWR005_201",
             "/view/kwr/005/c/index.xhtml");/**
 
 	 * KWR007
