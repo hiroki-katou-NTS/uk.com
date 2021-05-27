@@ -275,10 +275,8 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 					// チェック条件の種類ごとにチェックを行う
 					
 					// 任意の場合
-					OutputCheckResult tab2 = extractConditionTab2(cid, sid, wplId, exMon, prepareData, wplByListSidAndPeriod, integrationOfDailys, workSchedules, attendanceTimeOfMon, alarmCheckConditionCode);
-					if (!tab2.getAlarmExtractInfoResults().isEmpty()) {
-						lstExtractInfoResult.addAll(tab2.getAlarmExtractInfoResults());
-					}
+					OutputCheckResult tab2 = extractConditionTab2(cid, sid, wplId, exMon, prepareData, wplByListSidAndPeriod, integrationOfDailys, workSchedules, attendanceTimeOfMon, alarmCheckConditionCode,
+							lstExtractInfoResult);
 					
 					if (!tab2.getAlarmExtractConditions().isEmpty()) {
 						alarmExtractConditions.addAll(tab2.getAlarmExtractConditions());
@@ -286,10 +284,8 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 					
 					// 固定の場合
 					// 優先使用のアラーム値を作成する
-					OutputCheckResult tab3 = extractConditionTab3(cid, sid, wplId, exMon, prepareData, wplByListSidAndPeriod, integrationOfDailys, workSchedules, attendanceTimeOfMon, alarmCheckConditionCode);
-					if (!tab3.getAlarmExtractInfoResults().isEmpty()) {
-						lstExtractInfoResult.addAll(tab3.getAlarmExtractInfoResults());
-					}
+					OutputCheckResult tab3 = extractConditionTab3(cid, sid, wplId, exMon, prepareData, wplByListSidAndPeriod, integrationOfDailys, workSchedules, attendanceTimeOfMon, alarmCheckConditionCode,
+							lstExtractInfoResult);
 
 					if (!tab3.getAlarmExtractConditions().isEmpty()) {
 						alarmExtractConditions.addAll(tab3.getAlarmExtractConditions());
@@ -534,7 +530,8 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 			List<WorkPlaceHistImportAl> wplByListSidAndPeriod,
 			List<IntegrationOfDaily> integrationOfDailys,
 			List<WorkScheduleWorkInforImport> workSchedules,
-			AttendanceTimeOfMonthly attendanceTimeOfMon, String alarmCheckConditionCode) {
+			AttendanceTimeOfMonthly attendanceTimeOfMon, String alarmCheckConditionCode,
+			List<AlarmExtractInfoResult> alarmExtractInfoResults) {
 		OutputCheckResult result = new OutputCheckResult(new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
 		
 		// 社員に対応する処理締めを取得する
@@ -609,12 +606,12 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 //						AlarmListCheckType.FreeCheck,
 //						String.valueOf(scheCondMon.getSortOrder()),
 //						Arrays.asList(extractDetailItemContrast)));
-				result.getAlarmExtractInfoResults().add(new AlarmExtractInfoResult(
+				addToAlarmExtractInfoList(alarmExtractInfoResults,
 						String.valueOf(scheCondMon.getSortOrder()),
-						new AlarmCheckConditionCode(alarmCheckConditionCode),
+						alarmCheckConditionCode,
 						AlarmCategory.SCHEDULE_MONTHLY,
 						AlarmListCheckType.FreeCheck,
-						Collections.singletonList(extractDetailItemContrast)));
+						extractDetailItemContrast);
 				break;
 			case NUMBER_DAYS:
 				// 日数の場合
@@ -630,17 +627,16 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 				if (extractDetailItemDay == null) {
 					continue;
 				}
-				
 //				result.getLstResultCondition().add(new ResultOfEachCondition(
 //						AlarmListCheckType.FreeCheck,
 //						String.valueOf(scheCondMon.getSortOrder()),
 //						Arrays.asList(extractDetailItemDay)));
-				result.getAlarmExtractInfoResults().add(new AlarmExtractInfoResult(
+				addToAlarmExtractInfoList(alarmExtractInfoResults,
 						String.valueOf(scheCondMon.getSortOrder()),
-						new AlarmCheckConditionCode(alarmCheckConditionCode),
+						alarmCheckConditionCode,
 						AlarmCategory.SCHEDULE_MONTHLY,
 						AlarmListCheckType.FreeCheck,
-						Collections.singletonList(extractDetailItemDay)));
+						extractDetailItemDay);
 				break;
 			case REMAIN_NUMBER:
 				// TODO EA not description
@@ -659,12 +655,12 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 //						AlarmListCheckType.FreeCheck,
 //						String.valueOf(scheCondMon.getSortOrder()),
 //						Arrays.asList(extractDetailItemTime)));
-				result.getAlarmExtractInfoResults().add(new AlarmExtractInfoResult(
+				addToAlarmExtractInfoList(alarmExtractInfoResults,
 						String.valueOf(scheCondMon.getSortOrder()),
-						new AlarmCheckConditionCode(alarmCheckConditionCode),
+						alarmCheckConditionCode,
 						AlarmCategory.SCHEDULE_MONTHLY,
 						AlarmListCheckType.FreeCheck,
-						Collections.singletonList(extractDetailItemTime)));
+						extractDetailItemTime);
 				break;
 				
 			default:
@@ -693,6 +689,29 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 		
 		return result;
 	}
+
+	private void addToAlarmExtractInfoList(List<AlarmExtractInfoResult> alarmExtractInfoResults, String no, String conditionCode,
+										   AlarmCategory category, AlarmListCheckType checkType, ExtractResultDetail detail){
+		List<AlarmExtractInfoResult> lstResultTmp = alarmExtractInfoResults.stream()
+				.filter(x -> x.getAlarmListCheckType().value == checkType.value && x.getAlarmCheckConditionNo().equals(no)
+						&& x.getAlarmCheckConditionCode().v().equals(conditionCode) && x.getAlarmCategory().value == category.value)
+				.collect(Collectors.toList());
+		List<ExtractResultDetail> listDetail = new ArrayList<>();
+		if (lstResultTmp.isEmpty()) {
+			listDetail.add(detail);
+			alarmExtractInfoResults.add(new AlarmExtractInfoResult(
+					no,
+					new AlarmCheckConditionCode(conditionCode),
+					category,
+					checkType,
+					listDetail)
+			);
+		} else {
+			alarmExtractInfoResults.stream().filter(x -> x.getAlarmListCheckType().value == checkType.value && x.getAlarmCheckConditionNo().equals(no)
+					&& x.getAlarmCheckConditionCode().v().equals(conditionCode) && x.getAlarmCategory().value == category.value)
+					.forEach(x -> x.getExtractionResultDetails().add(detail));
+		}
+	}
 	
 	/**
 	 * Extract condition tab 3 (Fix Item)
@@ -704,7 +723,8 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 			List<WorkPlaceHistImportAl> wplByListSidAndPeriod,
 			List<IntegrationOfDaily> integrationOfDailys,
 			List<WorkScheduleWorkInforImport> workSchedules,
-			AttendanceTimeOfMonthly attendanceTimeOfMon, String alarmCheckConditionCode) {
+			AttendanceTimeOfMonthly attendanceTimeOfMon, String alarmCheckConditionCode,
+			List<AlarmExtractInfoResult> alarmExtractInfoResults) {
 		OutputCheckResult result = new OutputCheckResult(new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
 		
 		// 対比の場合
@@ -809,12 +829,12 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 			extractDetailItemTime.setAlarmContent(alarmContent);
 			extractDetailItemTime.setCheckValue(Optional.ofNullable(checkValue));
 
-			result.getAlarmExtractInfoResults().add(new AlarmExtractInfoResult(
+			addToAlarmExtractInfoList(alarmExtractInfoResults,
 					String.valueOf(fixScheMon.getFixedCheckSMonItems().value),
-					new AlarmCheckConditionCode(alarmCheckConditionCode),
+					alarmCheckConditionCode,
 					AlarmCategory.SCHEDULE_MONTHLY,
 					AlarmListCheckType.FixCheck,
-					Arrays.asList(extractDetailItemTime)));
+					extractDetailItemTime);
 
             List<AlarmExtractionCondition> extractionConditions = result.getAlarmExtractConditions().stream()
                     .filter(x -> x.getAlarmListCheckType() == AlarmListCheckType.FixCheck && x.getAlarmCheckConditionNo().equals(String.valueOf(fixScheMon.getFixedCheckSMonItems().value)))
