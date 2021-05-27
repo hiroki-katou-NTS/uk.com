@@ -8,14 +8,20 @@ import nts.uk.ctx.exio.dom.input.validation.classtype.ValidationPrimitiveValue;
 public class ImportableItem {
 	private int itemNo;
 	private String fqn;
-	private ValidationClassType atr;
+	private CheckMethod atr;
 	
 	public void validate(Object value) {
-		if(this.getAtr() == ValidationClassType.PV) {
-			ValidationPrimitiveValue.run(this.fqn, value);
-		}
-		else if(this.getAtr() == ValidationClassType.ENUM) {
-			ValidationEnum.run(this.fqn, value);
+		switch(this.atr) {
+			case PRIMITIVE_VALUE:
+				ValidationPrimitiveValue.run(this.fqn, value);
+				break;
+			case ENUM:
+				ValidationEnum.run(this.fqn, value);
+				break;
+			case NO_CHECK:
+				break;
+			default:
+				throw new RuntimeException("チェック方法が定義されていません。:" + this.atr);
 		}
 	}
 }
