@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.daily.algorithm;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.val;
 import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
@@ -148,7 +149,13 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 				}
 
 				if (!lstExtractInfoResult.isEmpty()) {
-					alarmEmployeeList.add(new AlarmEmployeeList(lstExtractInfoResult, sid));
+                    val empIds = alarmEmployeeList.stream().filter(x -> x.getEmployeeID().equals(sid)).collect(Collectors.toList());
+                    if (empIds.isEmpty()) {
+                        alarmEmployeeList.add(new AlarmEmployeeList(lstExtractInfoResult, sid));
+                    } else {
+                        alarmEmployeeList.stream().filter(x -> x.getEmployeeID().equals(sid))
+                                .forEach(e -> e.getAlarmExtractInfoResults().addAll(lstExtractInfoResult));
+                    }
 				}
 			}
 			

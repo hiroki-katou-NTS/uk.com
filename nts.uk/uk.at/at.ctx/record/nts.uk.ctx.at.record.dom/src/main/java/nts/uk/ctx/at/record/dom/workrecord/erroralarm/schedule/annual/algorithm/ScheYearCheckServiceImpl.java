@@ -125,13 +125,6 @@ public class ScheYearCheckServiceImpl implements ScheYearCheckService {
 			this.extractCondition(
 					cid, lstSid, dPeriod, prepareData, getWplByListSidAndPeriod,
 					alarmEmployeeList, alarmExtractConditions, alarmCheckConditionCode);
-//			if (!result.getLstResultCondition().isEmpty()) {
-//				lstResultCondition.addAll(result.getLstResultCondition());
-//			}
-//
-//			if (!result.getLstCheckType().isEmpty()) {
-//				lstCheckType.addAll(result.getLstCheckType());
-//			}
 					
 			synchronized (this) {
 				counter.accept(emps.size());
@@ -413,7 +406,14 @@ public class ScheYearCheckServiceImpl implements ScheYearCheckService {
 						AlarmListCheckType.FreeCheck,
 						Collections.singletonList(detail)
 				));
-				alarmEmployeeList.add(new AlarmEmployeeList(lstExtractInfoResult, sid));
+
+                val empIds = alarmEmployeeList.stream().filter(x -> x.getEmployeeID().equals(sid)).collect(Collectors.toList());
+                if (empIds.isEmpty()) {
+                    alarmEmployeeList.add(new AlarmEmployeeList(lstExtractInfoResult, sid));
+                } else {
+                    alarmEmployeeList.stream().filter(x -> x.getEmployeeID().equals(sid))
+                            .forEach(e -> e.getAlarmExtractInfoResults().addAll(lstExtractInfoResult));
+                }
 
 				List<AlarmExtractionCondition> lstExtractCondition = alarmExtractConditions.stream()
 						.filter(x -> x.getAlarmListCheckType() == AlarmListCheckType.FreeCheck && x.getAlarmCheckConditionNo().equals(String.valueOf(condScheYear.getSortOrder())))

@@ -274,7 +274,6 @@ public class AggregationProcessService {
 				case SCHEDULE_4WEEK:
 					AlarmCheckCondition4W4D fourW4DCheckCond = (AlarmCheckCondition4W4D) x.getExtractionCondition();
 					FourW4DCheckCond w4d4Cond = fourW4DCheckCond.getFourW4DCheckCond();
-//					ResultOfEachCondition w4d4CondResult = extractService.lstRunW4d4CheckErAl(cid,
 					extractService.lstRunW4d4CheckErAl(cid,
 							lstSidTmp,
 							datePeriod,

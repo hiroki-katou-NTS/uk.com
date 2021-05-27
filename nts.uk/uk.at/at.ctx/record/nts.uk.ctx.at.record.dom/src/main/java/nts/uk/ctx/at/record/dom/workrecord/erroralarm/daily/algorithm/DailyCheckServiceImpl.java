@@ -278,9 +278,15 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 							alarmCheckConditionCode,
 							lstExtractInfoResult);
 				}
-				if (!lstExtractInfoResult.isEmpty()) {
-					alarmEmployeeLists.add(new AlarmEmployeeList(lstExtractInfoResult, sid));
-				}
+                if (!lstExtractInfoResult.isEmpty()) {
+                    val empIds = alarmEmployeeLists.stream().filter(x -> x.getEmployeeID().equals(sid)).collect(Collectors.toList());
+                    if (empIds.isEmpty()) {
+                        alarmEmployeeLists.add(new AlarmEmployeeList(lstExtractInfoResult, sid));
+                    } else {
+                        alarmEmployeeLists.stream().filter(x -> x.getEmployeeID().equals(sid))
+                                .forEach(e -> e.getAlarmExtractInfoResults().addAll(lstExtractInfoResult));
+                    }
+                }
 			}
 			synchronized (this) {
 				counter.accept(emps.size());
