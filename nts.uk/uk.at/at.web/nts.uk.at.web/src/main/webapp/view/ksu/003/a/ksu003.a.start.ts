@@ -1,5 +1,6 @@
 module nts.uk.at.view.ksu003.a {
 	let __viewContexts: any = window["__viewContext"] || {};
+	
 	__viewContext.ready(function() {
 		nts.uk.characteristics.restore("USER_KSU003_INFOR").done(function(data : any) {
 			let screenModel = {
