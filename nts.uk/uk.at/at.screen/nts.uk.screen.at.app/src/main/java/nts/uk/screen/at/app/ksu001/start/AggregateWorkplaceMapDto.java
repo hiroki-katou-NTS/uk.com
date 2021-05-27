@@ -1,13 +1,17 @@
 package nts.uk.screen.at.app.ksu001.start;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.uk.screen.at.app.ksu001.aggrerateworkplacetotal.AggrerateWorkplaceDto;
+import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.aggregation.dom.schedulecounter.aggregationprocess.workplacecounter.NumberOfPeopleByEachWorkMethod;
+import nts.uk.screen.at.app.ksu001.aggrerateworkplacetotal.AggregateWorkplaceDto;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -26,8 +30,10 @@ public class AggregateWorkplaceMapDto {
 	// Map<年月日, Map<外部予算実績項目, 外部予算実績値>>
 	public List<ExternalBudgetMapDtoList> externalBudget = Collections.emptyList();
 			
+	// Map<年月日, List<勤務方法別の人数<T>>>
+	public List<NumberOfPeopleByEachWorkMethodMapDto> peopleMethod = Collections.emptyList();
 	
-	public static AggregateWorkplaceMapDto convertMap(AggrerateWorkplaceDto dto) {
+	public static AggregateWorkplaceMapDto convertMap(AggregateWorkplaceDto dto) {
 		
 		
 		return new AggregateWorkplaceMapDto(
@@ -41,7 +47,8 @@ public class AggregateWorkplaceMapDto {
 							))
 					.orElse(null)
 				,
-				dto.convertExternalBudget()
+				dto.convertExternalBudget(),
+				dto.convertPeopleMethod()
 				);
 		
 		

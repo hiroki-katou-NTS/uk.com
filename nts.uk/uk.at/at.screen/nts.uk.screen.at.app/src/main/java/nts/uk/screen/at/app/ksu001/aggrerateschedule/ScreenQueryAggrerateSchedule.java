@@ -8,9 +8,11 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.DateInMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.aggregation.dom.common.DailyAttendanceMergingService;
+import nts.uk.ctx.at.aggregation.dom.schedulecounter.aggregationprocess.workplacecounter.NumberOfPeopleByEachWorkMethod;
 import nts.uk.ctx.at.aggregation.dom.schedulecounter.tally.PersonalCounterCategory;
 import nts.uk.ctx.at.aggregation.dom.schedulecounter.tally.WorkplaceCounterCategory;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ScheManaStatuTempo;
@@ -20,9 +22,8 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattend
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 import nts.uk.screen.at.app.ksu001.aggreratepersonaltotal.AggreratePersonalDto;
 import nts.uk.screen.at.app.ksu001.aggreratepersonaltotal.ScreenQueryAggreratePersonal;
-import nts.uk.screen.at.app.ksu001.aggrerateworkplacetotal.AggreratePeopleMethodDto;
-import nts.uk.screen.at.app.ksu001.aggrerateworkplacetotal.AggrerateWorkplaceDto;
-import nts.uk.screen.at.app.ksu001.aggrerateworkplacetotal.ScreenQueryAggreratePeopleMethod;
+import nts.uk.screen.at.app.ksu001.aggrerateworkplacetotal.AggregateWorkplaceDto;
+import nts.uk.screen.at.app.ksu001.aggrerateworkplacetotal.ScreenQueryAggregatePeopleMethod;
 import nts.uk.screen.at.app.ksu001.aggrerateworkplacetotal.ScreenQueryAggrerateWorkplaceTotal;
 /**
  * スケジュール集計をする
@@ -40,7 +41,7 @@ public class ScreenQueryAggrerateSchedule {
 	private ScreenQueryAggrerateWorkplaceTotal screenQueryAggrerateWorkplaceTotal;
 	
 	@Inject
-	private ScreenQueryAggreratePeopleMethod screenQueryAggreratePeopleMethod;
+	private ScreenQueryAggregatePeopleMethod screenQueryAggreratePeopleMethod;
 	
 	/**
 	 * 
@@ -105,7 +106,7 @@ public class ScreenQueryAggrerateSchedule {
 		// 4:  集計したい職場計.isPresent
 		if (workplaceCounterOp.isPresent()) {
 			// 4.1: 集計する(対象組織識別情報, 職場計カテゴリ, List<日別勤怠(Work)>, 期間)
-			AggrerateWorkplaceDto aggrerateWorkplace = screenQueryAggrerateWorkplaceTotal.aggrerate(
+			AggregateWorkplaceDto aggrerateWorkplace = screenQueryAggrerateWorkplaceTotal.aggrerate(
 					targetOrg,
 					workplaceCounterOp.get(),
 					aggrerateintegrationOfDaily,
@@ -115,13 +116,14 @@ public class ScreenQueryAggrerateSchedule {
 			// 職場計カテゴリ == 就業時間帯別の利用人数
 			if (workplaceCounterOp.get() == WorkplaceCounterCategory.WORKTIME_PEOPLE) {
 				//4.2:  集計する(対象組織識別情報, 期間, List<日別勤怠(work)>, List<日別勤怠(work)>, boolean)
-				AggreratePeopleMethodDto peopleMethod =
+				Map<GeneralDate, List<NumberOfPeopleByEachWorkMethod<String>>> peopleMethod =
 						screenQueryAggreratePeopleMethod.get(
 									targetOrg,
 									datePeriod,
 									integrationOfDailySchedules,
 									aggrerateintegrationOfDaily,
 									isShiftDisplay);
+				aggrerateWorkplace.setPeopleMethod(peopleMethod);
 				
 			}
 			output.aggrerateWorkplace = aggrerateWorkplace;

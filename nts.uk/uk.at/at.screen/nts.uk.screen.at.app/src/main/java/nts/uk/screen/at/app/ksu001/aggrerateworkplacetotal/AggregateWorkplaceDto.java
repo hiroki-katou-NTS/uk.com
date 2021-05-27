@@ -10,19 +10,21 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.aggregation.dom.schedulecounter.aggregationprocess.workplacecounter.NumberOfPeopleByEachWorkMethod;
 import nts.uk.ctx.at.schedule.app.find.budget.external.ExternalBudgetDto;
 import nts.uk.screen.at.app.ksu001.aggreratepersonaltotal.TotalTimesDto;
 import nts.uk.screen.at.app.ksu001.start.ExternalBudgetMapDto;
 import nts.uk.screen.at.app.ksu001.start.ExternalBudgetMapDtoList;
 import nts.uk.screen.at.app.ksu001.start.LaborCostAggregationUnitMapDto;
 import nts.uk.screen.at.app.ksu001.start.LaborCostAggregationUnitMapDtoList;
+import nts.uk.screen.at.app.ksu001.start.NumberOfPeopleByEachWorkMethodMapDto;
 import nts.uk.screen.at.app.ksu001.start.TotalTimesWpMapDto;
 import nts.uk.screen.at.app.ksu001.start.TotalTimesWpMapDtoList;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class AggrerateWorkplaceDto {
+public class AggregateWorkplaceDto {
 
 	// Map<年月日, Map<職場計の人件費の集計単位, BigDecimal>>
 	public Map<GeneralDate, Map<LaborCostAggregationUnitDto, BigDecimal>> laborCostAndTime = new HashMap<GeneralDate, Map<LaborCostAggregationUnitDto, BigDecimal>>();
@@ -35,6 +37,9 @@ public class AggrerateWorkplaceDto {
 	
 	// Map<年月日, Map<外部予算実績項目, 外部予算実績値>>
 	public Map<GeneralDate, Map<ExternalBudgetDto, String>> externalBudget = new HashMap<GeneralDate, Map<ExternalBudgetDto, String>>();
+	
+	// Map<年月日, List<勤務方法別の人数<T>>>
+	public Map<GeneralDate, List<NumberOfPeopleByEachWorkMethod<String>>> peopleMethod = new HashMap<GeneralDate, List<NumberOfPeopleByEachWorkMethod<String>>>();
 	
 	
 	public List<LaborCostAggregationUnitMapDtoList> convertLaborCostAndTime() {
@@ -106,5 +111,15 @@ public class AggrerateWorkplaceDto {
 				.stream()
 				.map(x -> new ExternalBudgetMapDtoList(x.getKey(), x.getValue()))
 				.collect(Collectors.toList());
+	}
+	
+	public List<NumberOfPeopleByEachWorkMethodMapDto> convertPeopleMethod() {
+		
+		return this.peopleMethod
+					.entrySet()
+					.stream()
+					.map(x -> new NumberOfPeopleByEachWorkMethodMapDto(x.getKey(), x.getValue()))
+					.collect(Collectors.toList());
+					
 	}
 }

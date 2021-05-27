@@ -31,15 +31,24 @@ import nts.uk.shr.com.context.AppContexts;
  *
  */
 @Stateless 
-public class ScreenQueryAggreratePeopleMethod {
+public class ScreenQueryAggregatePeopleMethod {
 	
 	@Inject
 	private GetWorkingHoursInformationQuery getWorkingHoursInformationQuery;
 	
 	@Inject
 	private ShiftMasterRepository shiftMasterRepository;
-	
-	public AggreratePeopleMethodDto get(
+	/**
+	 * 
+	 * @param targetOrg
+	 * @param period
+	 * @param scheduleList
+	 * @param actualList
+	 * @param isShiftDisplay
+	 * @return Map<年月日, List<勤務方法別の人数<T>>>
+			        ※Tはそれぞれコードから取得した名称に置き換える
+	 */
+	public Map<GeneralDate, List<NumberOfPeopleByEachWorkMethod<String>>> get(
 			TargetOrgIdenInfor targetOrg,
 			DatePeriod period,
 			List<IntegrationOfDaily> scheduleList,
@@ -48,7 +57,6 @@ public class ScreenQueryAggreratePeopleMethod {
 			) {
 		Require require = new Require(shiftMasterRepository);
 		
-		AggreratePeopleMethodDto output = new AggreratePeopleMethodDto();
 		String companyId = AppContexts.user().companyId();
 		// 1: シフト表示か == false
 		if (!isShiftDisplay) {
@@ -79,17 +87,18 @@ public class ScreenQueryAggreratePeopleMethod {
 					.collect(Collectors.toList())
 					;
 			
-			Map<GeneralDate, List<NumberOfPeopleByEachWorkMethod<WorkTimeSettingDto>>> countWorkOutput = 
+			Map<GeneralDate, List<NumberOfPeopleByEachWorkMethod<String>>> countWorkOutput = 
 					countWork.entrySet()
 							 .stream()
 							 .collect(Collectors.toMap(
 									 e -> e.getKey(),
 									 
 									 e -> e.getValue().stream()
-													 .map(x -> new NumberOfPeopleByEachWorkMethod<WorkTimeSettingDto>(
+													 .map(x -> new NumberOfPeopleByEachWorkMethod<String>(
 															 workTimeSetting.stream()
 																	 .filter(y -> y.getWorkTimeCode() == x.getWorkMethod())
 																	 .findFirst()
+																	 .map(y -> y.getWorkTimeName())
 																	 .orElse(null),
 															 x.getPlanNumber(),
 															 x.getScheduleNumber(),
@@ -97,7 +106,7 @@ public class ScreenQueryAggreratePeopleMethod {
 													 .collect(Collectors.toList())
 									 
 							 ));
-			output.setCountWork(countWorkOutput);
+			return countWorkOutput;
 			
 		} else { // 2: シフト表示か == true
 			
@@ -126,16 +135,17 @@ public class ScreenQueryAggreratePeopleMethod {
 					.collect(Collectors.toList());
 					
 			
-			Map<GeneralDate, List<NumberOfPeopleByEachWorkMethod<ShiftMasterDto>>> shiftOutput =
+			Map<GeneralDate, List<NumberOfPeopleByEachWorkMethod<String>>> shiftOutput =
 				shift.entrySet()
 					.stream()
 					.collect(Collectors.toMap(
 							e -> e.getKey(),
 							e -> e.getValue().stream()
-											 .map(x -> new NumberOfPeopleByEachWorkMethod<ShiftMasterDto>(
+											 .map(x -> new NumberOfPeopleByEachWorkMethod<String>(
 													 shirftMasters.stream()
 															 .filter(y -> y.shiftMasterCode == x.getWorkMethod().v())
 															 .findFirst()
+															 .map(y -> y.getShiftMasterName())
 															 .orElse(null),
 													 x.getPlanNumber(),
 													 x.getScheduleNumber(),
@@ -144,15 +154,11 @@ public class ScreenQueryAggreratePeopleMethod {
 					 ));
 			
 			
-			output.setShift(shiftOutput);
+			return shiftOutput;
 			
 		}
 		
-		
-		
-		
-		return output;
-		
+				
 		
 	}
 	

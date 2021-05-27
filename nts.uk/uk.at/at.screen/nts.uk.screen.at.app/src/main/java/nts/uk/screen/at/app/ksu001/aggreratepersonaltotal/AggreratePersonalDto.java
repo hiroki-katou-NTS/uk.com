@@ -20,10 +20,14 @@ import nts.uk.screen.at.app.ksu001.start.WorkMapDtoList;
 @Data
 public class AggreratePersonalDto {
 	
+	// Map<社員ID, 想定給与額>
 	public Map<String, EstimatedSalaryDto> estimatedSalary = new HashMap<String, EstimatedSalaryDto>();
 	
+	// Map<社員ID, Map<回数集計, BigDecimal>>
 	public Map<String, Map<TotalTimesDto, BigDecimal>> timeCount = new HashMap<String, Map<TotalTimesDto, BigDecimal>>();
 	
+	
+	// Map<社員ID, Map<集計対象の勤怠時間, BigDecimal>>
 	public Map<String, Map<Integer, BigDecimal>> workHours = new HashMap<String, Map<Integer, BigDecimal>>();
 
 	

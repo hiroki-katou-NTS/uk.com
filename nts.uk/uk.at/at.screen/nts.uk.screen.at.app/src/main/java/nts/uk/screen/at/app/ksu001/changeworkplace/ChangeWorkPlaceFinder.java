@@ -191,7 +191,8 @@ public class ChangeWorkPlaceFinder {
 									resultStep51.aggrerateWorkplace.getAggrerateNumberPeople().convertClassification(),
 									resultStep51.aggrerateWorkplace.getAggrerateNumberPeople().convertJobTitleInfo()
 									),
-							resultStep51.aggrerateWorkplace.convertExternalBudget()
+							resultStep51.aggrerateWorkplace.convertExternalBudget(),
+							resultStep51.aggrerateWorkplace.convertPeopleMethod()
 							)
 					
 					);
@@ -212,7 +213,8 @@ public class ChangeWorkPlaceFinder {
 									resultStep4.aggrerateWorkplace.getAggrerateNumberPeople().convertClassification(),
 									resultStep4.aggrerateWorkplace.getAggrerateNumberPeople().convertJobTitleInfo()
 									),
-							resultStep4.aggrerateWorkplace.convertExternalBudget()
+							resultStep4.aggrerateWorkplace.convertExternalBudget(),
+							resultStep4.aggrerateWorkplace.convertPeopleMethod()
 							)
 					);
 		}

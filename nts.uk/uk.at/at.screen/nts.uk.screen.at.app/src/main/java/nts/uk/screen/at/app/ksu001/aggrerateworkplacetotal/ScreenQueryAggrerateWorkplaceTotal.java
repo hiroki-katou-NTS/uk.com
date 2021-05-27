@@ -43,14 +43,14 @@ public class ScreenQueryAggrerateWorkplaceTotal {
 	 * @param aggrerateintegrationOfDaily List<日別勤怠(Work)>
 	 * @param datePeriod 期間
 	 */
-	public AggrerateWorkplaceDto aggrerate(
+	public AggregateWorkplaceDto aggrerate(
 			TargetOrgIdenInfor targetOrg,
 			WorkplaceCounterCategory workplaceCounterOp,
 			List<IntegrationOfDaily> aggrerateintegrationOfDaily,
 			DatePeriod datePeriod
 			) {
 		
-		AggrerateWorkplaceDto output = new AggrerateWorkplaceDto();
+		AggregateWorkplaceDto output = new AggregateWorkplaceDto();
 		// 職場計カテゴリ == 人件費・時間
 		if (workplaceCounterOp == WorkplaceCounterCategory.LABOR_COSTS_AND_TIME) {
 			// 1: 集計する(対象組織識別情報, 期間, List<日別勤怠(Work)>)

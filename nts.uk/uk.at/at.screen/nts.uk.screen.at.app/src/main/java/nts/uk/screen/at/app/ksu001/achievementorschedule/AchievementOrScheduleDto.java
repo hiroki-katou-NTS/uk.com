@@ -9,7 +9,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.screen.at.app.ksu001.aggreratepersonaltotal.AggreratePersonalDto;
-import nts.uk.screen.at.app.ksu001.aggrerateworkplacetotal.AggrerateWorkplaceDto;
+import nts.uk.screen.at.app.ksu001.aggrerateworkplacetotal.AggregateWorkplaceDto;
 import nts.uk.screen.at.app.ksu001.getshiftpalette.ShiftMasterDto;
 import nts.uk.screen.at.app.ksu001.getworkscheduleshift.ScheduleOfShiftDto;
 import nts.uk.screen.at.app.ksu001.processcommon.WorkScheduleWorkInforDto;
@@ -30,7 +30,7 @@ public class AchievementOrScheduleDto {
 	public AggreratePersonalDto aggreratePersonal;
 	
 	// ・職場計集計結果　←集計内容によって情報が異なる
-	public AggrerateWorkplaceDto aggrerateWorkplace;
+	public AggregateWorkplaceDto aggrerateWorkplace;
 	
 	// List<勤務予定（勤務情報）dto>
 	public List<WorkScheduleWorkInforDto> workScheduleWorkInforDtos = Collections.emptyList();
