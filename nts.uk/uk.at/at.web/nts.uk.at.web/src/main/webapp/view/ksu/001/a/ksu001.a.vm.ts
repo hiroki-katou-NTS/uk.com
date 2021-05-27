@@ -163,6 +163,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         endDateInitStart = null;
         medicalOP = false;
         nursingCareOP = false;
+        widthA8 : number = 200;
+        widthBtnToLeftToRight : number = 32;
+        distanceLeftToGrid : number = 30;
         
         constructor(dataLocalStorage) {
             let self = this;
@@ -2293,7 +2296,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let leftmostDs = dataBindGrid.leftmostDs;
 
             leftmostColumns = [{
-                key: "codeNameOfEmp", headerText: getText("KSU001_205"), width: "200px", icon: { for: "body", class: "icon-leftmost", width: "25px" },
+                key: "codeNameOfEmp", headerText: getText("KSU001_205"), width: self.widthA8 +"px", icon: { for: "body", class: "icon-leftmost", width: "25px" },
                 css: { whiteSpace: "pre" }, control: "link", handler: function(rData, rowIdx, key) { console.log(rowIdx); },
                 headerControl: "link", headerHandler: function() {  }
             }];
@@ -2301,7 +2304,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             leftmostHeader = {
                 columns: leftmostColumns,
                 rowHeight: "60px",
-                width: "200px"
+                width: self.widthA8+"px"
             };
 
             leftmostContent = {
@@ -2888,7 +2891,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             // update phan leftMost
             let leftmostDs = dataBindGrid.leftmostDs;
             let leftmostColumns = [{
-                key: "codeNameOfEmp", headerText: getText("KSU001_205"), width: "200px", icon: { for: "body", class: "icon-leftmost", width: "25px" },
+                key: "codeNameOfEmp", headerText: getText("KSU001_205"), width: self.widthA8+"px", icon: { for: "body", class: "icon-leftmost", width: "25px" },
                 css: { whiteSpace: "pre" }, control: "link", handler: function(rData, rowIdx, key) { console.log(rowIdx); },
                 headerControl: "link", headerHandler: function() { alert("Link!"); }
             }];
@@ -3247,7 +3250,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 
                 $(".toLeft").css("margin-left", "190px");
                 
-                let marginleft = $('#extable').width() - 200 - 32 - 32 -30;
+                let marginleft = $('#extable').width() - self.widthA8 - self.widthBtnToLeftToRight*2 - self.distanceLeftToGrid;
                 $(".toRight").css('margin-left', marginleft + 'px');
             } else {
                 if (self.showA9) {
@@ -3257,7 +3260,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 let marginleftOfbtnToLeft: number = 190 + self.widthMid;
                 $(".toLeft").css("margin-left", marginleftOfbtnToLeft + 'px');
                 
-                let marginleftOfbtnToRight = $("#extable").width() - 200 - self.widthMid - 32 - 32 - 30;
+                let marginleftOfbtnToRight = $("#extable").width() - self.widthA8 - self.widthMid - self.widthBtnToLeftToRight*2 - self.distanceLeftToGrid;
                 $(".toRight").css('margin-left', marginleftOfbtnToRight + 'px');
             }
             $('#btnControlLeftRight').width($("#extable").width() + 10);
@@ -3294,10 +3297,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let marginleftOfbtnToLeft: number = 190 + self.widthMid;
             if (self.showA9) {
                 $(".toLeft").css("margin-left", marginleftOfbtnToLeft + 'px');
-                marginleftOfbtnToRight = $("#extable").width() - 200 - self.widthMid - 32 - 32 - 30;
+                marginleftOfbtnToRight = $("#extable").width() - self.widthA8 - self.widthMid - self.widthBtnToLeftToRight*2 - self.distanceLeftToGrid;
             } else {
                 $(".toLeft").css("display", "none");
-                marginleftOfbtnToRight = $("#extable").width() - 32 - 3;
+                marginleftOfbtnToRight = $("#extable").width() - self.widthBtnToLeftToRight - 3;
             }
             $(".toRight").css('margin-left', marginleftOfbtnToRight + 'px');
         }
@@ -3324,12 +3327,12 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             if (self.showA9) {
                 let displayA9 = $('.ex-body-middle').css('display');
                 if(displayA9 == 'none'){
-                    marginleftOfbtnToRight = $('#extable').width() - 200 - 32 - 32 -30;
+                    marginleftOfbtnToRight = $('#extable').width() - self.widthA8 - self.widthBtnToLeftToRight*2 - self.distanceLeftToGrid;
                 }else{
-                    marginleftOfbtnToRight = $('#extable').width() - 200 - self.widthMid - 32 - 32 - 30;
+                    marginleftOfbtnToRight = $('#extable').width() - self.widthA8 - self.widthMid - self.widthBtnToLeftToRight*2 - self.distanceLeftToGrid;
                 }
             } else {
-                marginleftOfbtnToRight = $('#extable').width() - 32 - 3;
+                marginleftOfbtnToRight = $('#extable').width() - self.distanceLeftToGrid - 3;
             }
             $('.toRight').css('margin-left', marginleftOfbtnToRight <= 101 ? 101 : marginleftOfbtnToRight + 'px');
         }
