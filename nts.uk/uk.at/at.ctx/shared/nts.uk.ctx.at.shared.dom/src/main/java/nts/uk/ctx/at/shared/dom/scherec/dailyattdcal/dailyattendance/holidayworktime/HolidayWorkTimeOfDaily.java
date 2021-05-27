@@ -30,11 +30,9 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.declare.DeclareTimezoneResult;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.CalculationRangeOfOneDay;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.declare.DeclareFrameSet;
-import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryOccurrenceSetting;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalRaisingSalarySetting;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.StaturoryAtrOfHolidayWork;
-import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneOtherSubHolTimeSet;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -87,22 +85,28 @@ public class HolidayWorkTimeOfDaily {
 			HolidayWorkTimeSheet holidayWorkTimeSheet,
 			AutoCalSetting holidayAutoCalcSetting,
 			WorkType workType,
-			Optional<WorkTimezoneOtherSubHolTimeSet> eachWorkTimeSet,
-			Optional<CompensatoryOccurrenceSetting> eachCompanyTimeSet,
+			Optional<String> workTimeCode,
 			IntegrationOfDaily integrationOfDaily,
 			AttendanceTime beforeApplicationTime,
 			AutoCalSetting holidayLateNightAutoCalSetting,
 			DeclareTimezoneResult declareResult) {
 		
 		//休出枠時間帯の作成
-		val holidayWorkFrameTimeSheet = holidayWorkTimeSheet.changeHolidayWorkTimeFrameTimeSheet();
+		val holidayWorkFrameTimeSheet = holidayWorkTimeSheet.changeHolidayWorkTimeFrameTimeSheet(
+				recordReGet.getPersonDailySetting().getOverTimeSheetReq(),
+				workType.getCompanyId(),
+				holidayAutoCalcSetting,
+				workType,
+				workTimeCode,
+				integrationOfDaily,
+				true);
 		//休出時間の計算
 		val holidayWorkFrameTime = holidayWorkTimeSheet.collectHolidayWorkTime(
 				recordReGet.getPersonDailySetting().getOverTimeSheetReq(),
+				workType.getCompanyId(),
 				holidayAutoCalcSetting,
 				workType,
-				eachWorkTimeSet,
-				eachCompanyTimeSet,
+				workTimeCode,
 				integrationOfDaily,
 				declareResult,
 				true);

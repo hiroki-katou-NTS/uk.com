@@ -211,9 +211,9 @@ public class OverTimeFrameTime implements Cloneable{
 				new TimeDivergenceWithCalculation(new AttendanceTime(this.OverTimeWork.getTime().v()),
 						new AttendanceTime(this.OverTimeWork.getCalcTime().v()),
 						new AttendanceTimeOfExistMinus(this.OverTimeWork.getDivergenceTime().v())),
-				new TimeDivergenceWithCalculation(new AttendanceTime(this.OverTimeWork.getTime().v()),
-						new AttendanceTime(this.OverTimeWork.getCalcTime().v()),
-						new AttendanceTimeOfExistMinus(this.OverTimeWork.getDivergenceTime().v())), 
+				new TimeDivergenceWithCalculation(new AttendanceTime(this.TransferTime.getTime().v()),
+						new AttendanceTime(this.TransferTime.getCalcTime().v()),
+						new AttendanceTimeOfExistMinus(this.TransferTime.getDivergenceTime().v())), 
 				new AttendanceTime(this.BeforeApplicationTime.v()), 
 				new AttendanceTime(this.orderTime.v()));
 	}
