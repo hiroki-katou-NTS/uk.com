@@ -505,7 +505,7 @@ module nts.uk.at.view.kdr001.b.viewmodel {
          */
         closeDialog() {
             let self = this;
-            setShared('KDR001B2A_cd', self.currentCode());
+            setShared('KDR001B2A_cd', self.layoutId());
             nts.uk.ui.windows.close()
         }
     }

@@ -478,6 +478,7 @@ module nts.uk.at.view.kdr001.a.viewmodel {
             setShared('KDR001Params', params);
             modal("/view/kdr/001/b/index.xhtml").onClosed(function () {
                 self.freeCode(getShared('KDR001B2A_cd'));
+                self.standardCode(getShared('KDR001B2A_cd'));
                 service.findAll().done(function (data: Array<any>) {
                     self.loadAllHolidayRemaining(data);
                 }).fail(function (res) {
