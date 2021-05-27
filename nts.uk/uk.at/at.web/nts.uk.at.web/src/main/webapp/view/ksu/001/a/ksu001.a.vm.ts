@@ -2293,7 +2293,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let leftmostDs = dataBindGrid.leftmostDs;
 
             leftmostColumns = [{
-                key: "codeNameOfEmp", headerText: getText("KSU001_205"), width: "160px", icon: { for: "body", class: "icon-leftmost", width: "25px" },
+                key: "codeNameOfEmp", headerText: getText("KSU001_205"), width: "200px", icon: { for: "body", class: "icon-leftmost", width: "25px" },
                 css: { whiteSpace: "pre" }, control: "link", handler: function(rData, rowIdx, key) { console.log(rowIdx); },
                 headerControl: "link", headerHandler: function() {  }
             }];
@@ -2301,7 +2301,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             leftmostHeader = {
                 columns: leftmostColumns,
                 rowHeight: "60px",
-                width: "160px"
+                width: "200px"
             };
 
             leftmostContent = {
@@ -2475,7 +2475,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 			}
 			let leftHorzColumns = [
 				// { headerText: , icon: { for: "header", class: "aaaa", width: "0px"}}
-		        { headerText: '<div id="horzDropDown"></div>', key: "itemName", width: "160px", icon: { for: "header", class: "aaaa", width: "0px"}}
+		        { headerText: '<div id="horzDropDown"></div>', key: "itemName", width: "180px", icon: { for: "header", class: "aaaa", width: "0px"}}
 		    ];
 		    let leftHorzSumHeader = {
 		        columns: leftHorzColumns,
@@ -2888,7 +2888,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             // update phan leftMost
             let leftmostDs = dataBindGrid.leftmostDs;
             let leftmostColumns = [{
-                key: "codeNameOfEmp", headerText: getText("KSU001_205"), width: "160px", icon: { for: "body", class: "icon-leftmost", width: "25px" },
+                key: "codeNameOfEmp", headerText: getText("KSU001_205"), width: "200px", icon: { for: "body", class: "icon-leftmost", width: "25px" },
                 css: { whiteSpace: "pre" }, control: "link", handler: function(rData, rowIdx, key) { console.log(rowIdx); },
                 headerControl: "link", headerHandler: function() { alert("Link!"); }
             }];
@@ -3247,7 +3247,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 
                 $(".toLeft").css("margin-left", "190px");
                 
-                let marginleft = $('#extable').width() - 160 - 32 - 32 -30;
+                let marginleft = $('#extable').width() - 200 - 32 - 32 -30;
                 $(".toRight").css('margin-left', marginleft + 'px');
             } else {
                 if (self.showA9) {
@@ -3257,7 +3257,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 let marginleftOfbtnToLeft: number = 190 + self.widthMid;
                 $(".toLeft").css("margin-left", marginleftOfbtnToLeft + 'px');
                 
-                let marginleftOfbtnToRight = $("#extable").width() - 160 - self.widthMid - 32 - 32 - 30;
+                let marginleftOfbtnToRight = $("#extable").width() - 200 - self.widthMid - 32 - 32 - 30;
                 $(".toRight").css('margin-left', marginleftOfbtnToRight + 'px');
             }
             $('#btnControlLeftRight').width($("#extable").width() + 10);
@@ -3294,7 +3294,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let marginleftOfbtnToLeft: number = 190 + self.widthMid;
             if (self.showA9) {
                 $(".toLeft").css("margin-left", marginleftOfbtnToLeft + 'px');
-                marginleftOfbtnToRight = $("#extable").width() - 160 - self.widthMid - 32 - 32 - 30;
+                marginleftOfbtnToRight = $("#extable").width() - 200 - self.widthMid - 32 - 32 - 30;
             } else {
                 $(".toLeft").css("display", "none");
                 marginleftOfbtnToRight = $("#extable").width() - 32 - 3;
@@ -3324,9 +3324,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             if (self.showA9) {
                 let displayA9 = $('.ex-body-middle').css('display');
                 if(displayA9 == 'none'){
-                    marginleftOfbtnToRight = $('#extable').width() - 160 - 32 - 32 -30;
+                    marginleftOfbtnToRight = $('#extable').width() - 200 - 32 - 32 -30;
                 }else{
-                    marginleftOfbtnToRight = $('#extable').width() - 160 - self.widthMid - 32 - 32 - 30;
+                    marginleftOfbtnToRight = $('#extable').width() - 200 - self.widthMid - 32 - 32 - 30;
                 }
             } else {
                 marginleftOfbtnToRight = $('#extable').width() - 32 - 3;
