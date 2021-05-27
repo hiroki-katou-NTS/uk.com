@@ -222,7 +222,7 @@ module nts.uk.ui.layout {
 
                     $(element).prepend($title);
 
-                    if (element.childNodes.length > 1) {
+                    /*if (element.childNodes.length > 1) {
                         const $btnGroup = document.createElement('div');
                         $btnGroup.classList.add('button-group');
                         const $pgName = $(element).find('.pg-name');
@@ -236,14 +236,11 @@ module nts.uk.ui.layout {
                         $($btnGroup).insertAfter($pgName);
 
                         ko.applyBindingsToNode($btnGroup, null, bindingContext);
-                    }
-
-                    // button error in function bar
-                    ko.applyBindingsToNode($('<button>').appendTo($title).get(0), { 'c-error': '' }, bindingContext);
-                } else {
-                    // button error in function bar
-                    ko.applyBindingsToNode($('<button>').appendTo(element).get(0), { 'c-error': '' }, bindingContext);
+                    }*/
                 }
+
+                // button error in function bar
+                ko.applyBindingsToNode($('<button>').appendTo(element).get(0), { 'c-error': '' }, bindingContext);
             } else {
                 if (!element.id) {
                     element.id = "functions-area-bottom";
