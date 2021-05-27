@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.function.infra.repository.alarm.persistenceextractresult;
 
+import lombok.SneakyThrows;
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
@@ -109,17 +110,36 @@ public class JpaPersisAlarmListExtractResultRepository extends JpaRepository imp
             }
         }
 
+        String delete = "DELETE FROM KFNDT_ALARM_EXTRAC_RESULT WHERE CID = ? AND SID = ? "
+                + " AND CATEGORY = ? AND ALARM_CHECK_CODE = ? AND CHECK_ATR = ? "
+                + " AND CONDITION_NO = ? AND START_DATE = ? ";
         for (KfndtAlarmExtracResultPK x : lstDelete) {
-            this.getEntityManager().createQuery(REMOVE_EXTRACT_RESULT)
-                    .setParameter("cid", cid)
-                    .setParameter("sid", x.sid)
-                    .setParameter("category", x.category)
-                    .setParameter("code", x.alarmCheckCode)
-                    .setParameter("checkType", x.checkAtr)
-                    .setParameter("no", x.conditionNo)
-                    .setParameter("startDate", x.startDate)
-                    .executeUpdate();
-            this.getEntityManager().flush();
+            PreparedStatement ps1 = null;
+            try {
+                ps1 = this.connection().prepareStatement(delete);
+                ps1.setString(1, cid);
+                ps1.setString(2, x.sid);
+                ps1.setInt(3, x.category);
+                ps1.setString(4, x.alarmCheckCode);
+                ps1.setInt(5, x.checkAtr);
+                ps1.setString(6, x.conditionNo);
+                ps1.setString(7, x.startDate);
+                ps1.executeUpdate();
+            } catch (SQLException e) {
+                e.printStackTrace();
+                System.out.println("Ex---------------------------------------------------------"+ e.getMessage());
+            }
+
+//            this.getEntityManager().createQuery(REMOVE_EXTRACT_RESULT)
+//                    .setParameter("cid", cid)
+//                    .setParameter("sid", x.sid)
+//                    .setParameter("category", x.category)
+//                    .setParameter("code", x.alarmCheckCode)
+//                    .setParameter("checkType", x.checkAtr)
+//                    .setParameter("no", x.conditionNo)
+//                    .setParameter("startDate", x.startDate)
+//                    .executeUpdate();
+//            this.getEntityManager().flush();
         }
     }
 
