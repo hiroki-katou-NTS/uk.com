@@ -122,10 +122,8 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 						getWplByListSidAndPeriod,
 						prepareData.getListWorkType(),
 						prepareData.getListIntegrationDai(),
-						alarmCheckConditionCode);
-				if (!checkTab2.getAlarmExtractInfoResults().isEmpty()) {
-					lstExtractInfoResult.addAll(checkTab2.getAlarmExtractInfoResults());
-				}
+						alarmCheckConditionCode,
+						lstExtractInfoResult);
 				if (!checkTab2.getAlarmExtractConditions().isEmpty()) {
 					alarmExtractConditions.addAll(checkTab2.getAlarmExtractConditions());
 				}
@@ -143,10 +141,8 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 						prepareData.getWorkScheduleWorkInfos(),
 						lstStatusEmp,
 						prepareData.getListIntegrationDai(),
-						alarmCheckConditionCode);
-				if (!checkTab3.getAlarmExtractInfoResults().isEmpty()) {
-					lstExtractInfoResult.addAll(checkTab3.getAlarmExtractInfoResults());
-				}
+						alarmCheckConditionCode,
+						lstExtractInfoResult);
 				if (!checkTab3.getAlarmExtractConditions().isEmpty()) {
 					alarmExtractConditions.addAll(checkTab3.getAlarmExtractConditions());
 				}
@@ -222,7 +218,8 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 			DatePeriod dPeriod,
 			List<WorkPlaceHistImportAl> getWplByListSidAndPeriod,
 			List<WorkType> listWorkType,
-			List<IntegrationOfDaily> listIntegrationDai, String alarmCheckConditionCode) {
+			List<IntegrationOfDaily> listIntegrationDai, String alarmCheckConditionCode,
+			List<AlarmExtractInfoResult> lstExtractInfoResult) {
 		OutputCheckResult result = new OutputCheckResult(new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
 		
 		// Input．List＜スケジュール日次の任意抽出条件＞をループ
@@ -374,7 +371,7 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 					}
 
 					// スケジュール日次のアラーム抽出値を作成
-					List<AlarmExtractInfoResult> listResultCond = this.createExtractAlarm(sid,
+					this.createExtractAlarm(sid,
 							exDate,
 							scheCondItem.getName().v(),
 							alarmContent,
@@ -385,10 +382,8 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 							getWplByListSidAndPeriod,
 							scheCondItem.getCheckItemType(),
 							optContinuousCount.isPresent() ? optContinuousCount.get().getConsecutiveYears() : 0,
-							alarmCheckConditionCode);
-					if (!listResultCond.isEmpty()) {
-						result.getAlarmExtractInfoResults().addAll(listResultCond);
-					}
+							alarmCheckConditionCode,
+							lstExtractInfoResult);
 				}
 			}
 			
@@ -403,7 +398,7 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 	/**
 	 * create extract alarm
 	 */
-	private List<AlarmExtractInfoResult> createExtractAlarm(String sid,
+	private void createExtractAlarm(String sid,
 			GeneralDate day,
 			String alarmName,
 			String alarmContent,
@@ -412,9 +407,8 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 			String alarmCode, AlarmListCheckType checkType,
 			List<WorkPlaceHistImportAl> getWplByListSidAndPeriod,
 			DaiCheckItemType dailyCheckType,
-			int consecutiveYears, String alarmCheckConditionCode) {
-		List<ResultOfEachCondition> listResultCond = new ArrayList<>();
-		List<AlarmExtractInfoResult> alarmExtractInfoResults = new ArrayList<>();
+			int consecutiveYears, String alarmCheckConditionCode,
+			List<AlarmExtractInfoResult> alarmExtractInfoResults) {
 		// ・職場ID　＝　Input．List＜職場ID＞をループ中の年月日から探す
 		String wplId = "";
 		Optional<WorkPlaceHistImportAl> optWorkPlaceHistImportAl = getWplByListSidAndPeriod.stream().filter(x -> x.getEmployeeId().equals(sid)).findFirst();
@@ -447,7 +441,9 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 				alarmMess, 
 				Optional.ofNullable(checkValue));
 		List<AlarmExtractInfoResult> lstResultTmp = alarmExtractInfoResults.stream()
-				.filter(x -> x.getAlarmListCheckType().value == checkType.value && x.getAlarmCheckConditionNo().equals(alarmCode)).collect(Collectors.toList());
+				.filter(x -> x.getAlarmListCheckType().value == checkType.value && x.getAlarmCheckConditionNo().equals(alarmCode)
+						&& x.getAlarmCheckConditionCode().v().equals(alarmCheckConditionCode) && x.getAlarmCategory().value == AlarmCategory.SCHEDULE_DAILY.value)
+				.collect(Collectors.toList());
 		List<ExtractResultDetail> listDetail = new ArrayList<>();
 		if (lstResultTmp.isEmpty()) {
 			listDetail.add(detail);
@@ -458,12 +454,11 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 					checkType,
 					listDetail)
 			);
+		} else {
+			alarmExtractInfoResults.stream().filter(x -> x.getAlarmListCheckType().value == checkType.value && x.getAlarmCheckConditionNo().equals(alarmCode)
+					&& x.getAlarmCheckConditionCode().v().equals(alarmCheckConditionCode) && x.getAlarmCategory().value == AlarmCategory.SCHEDULE_DAILY.value)
+					.forEach(x -> x.getExtractionResultDetails().add(detail));
 		}
-//		else {
-//			alarmExtractInfoResults.stream().forEach(x -> x.getExtractionResultDetails().add(detail));
-//		}
-		
-		return alarmExtractInfoResults;
 	}
 	
 	/**
@@ -722,7 +717,8 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 			List<WorkScheduleWorkInforImport> workScheduleWorkInfos,
 			List<StatusOfEmployeeAdapterAl> lstStatusEmp,
 			List<IntegrationOfDaily> listIntegrationDai,
-			String alarmCheckConditionCode) {
+			String alarmCheckConditionCode,
+			List<AlarmExtractInfoResult> alarmExtractInfoResults) {
 		OutputCheckResult result = new OutputCheckResult(new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
 
 		List<GeneralDate> listDate = dPeriod.datesBetween();
@@ -880,7 +876,7 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 				String alarmContent = alarmMessage;
 				String comment = fixScheCondItem.getMessageDisp() != null && fixScheCondItem.getMessageDisp().isPresent() 
 						? fixScheCondItem.getMessageDisp().get().v() : Strings.EMPTY;
-				List<AlarmExtractInfoResult> listResultCond = this.createExtractAlarm(sid,
+				this.createExtractAlarm(sid,
 						exDate,
 						fixedAtr.nameId,
 						alarmContent,
@@ -891,10 +887,8 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 						wplByListSidAndPeriod,
 						null,
 						0,
-						alarmCheckConditionCode);
-				if (!listResultCond.isEmpty()) {
-					result.getAlarmExtractInfoResults().addAll(listResultCond);
-				}
+						alarmCheckConditionCode,
+						alarmExtractInfoResults);
 				
 			}
 		}
