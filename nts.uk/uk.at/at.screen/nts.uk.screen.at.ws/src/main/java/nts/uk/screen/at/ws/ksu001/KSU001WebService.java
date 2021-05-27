@@ -85,7 +85,7 @@ public class KSU001WebService extends WebService{
 	private ChangeConfirmedStateCommandHandler changeConfirmedStateHandler;
 	
 	@POST
-	@Path("startver")
+	@Path("start")
 	public StartKSU001Dto getDataStartScreenVer5(StartKSU001Param param){
 		StartKSU001Dto data = startKSU001Ver5.getData(param);
 		return data;
