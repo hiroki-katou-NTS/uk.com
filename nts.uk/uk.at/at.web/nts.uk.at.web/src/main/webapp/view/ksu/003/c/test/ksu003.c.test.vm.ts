@@ -4,16 +4,15 @@ module nts.uk.at.view.ksu003.c.test {
 	import Ccg001ReturnedData = nts.uk.com.view.ccg.share.ccg.service.model.Ccg001ReturnedData;
 	import EmployeeSearchDto = nts.uk.com.view.ccg.share.ccg.service.model.EmployeeSearchDto;
 	// Import
-	export module viewmodel {
-		export class ScreenModel {
+
+	const Paths = {
+        GET_AVAILABLE_WORK_SCHEDULE: "at/schedule/task/taskschedule/getAvailableEmpWorkSchedule"       
+    };
+	@bean()
+	class Ksu003cTestViewModel  extends ko.ViewModel{
 			currentScreen: any = null;
             date: KnockoutObservable<string>;
-			// dateValue: KnockoutObservable<any>;
-			// startDateString: KnockoutObservable<string>;
-			// endDateString: KnockoutObservable<string>;
-			// enable: KnockoutObservable<boolean>;
-			// required: KnockoutObservable<boolean>;
-
+			
 			//Declare kcp005 list properties
 			listComponentOption: any;
 			selectedCode: KnockoutObservable<string>;
@@ -25,6 +24,8 @@ module nts.uk.at.view.ksu003.c.test {
 			isShowWorkPlaceName: KnockoutObservable<boolean>;
 			isShowSelectAllButton: KnockoutObservable<boolean>;
 			employeeList: KnockoutObservableArray<UnitModel>;
+
+			// employeeListAvailable: KnockoutObservableArray<UnitModel> = ko.observableArray<UnitModel>([]);
 			// startDate for validate
 			startDateValidate: KnockoutObservable<string>;
 			alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel>;
@@ -38,6 +39,7 @@ module nts.uk.at.view.ksu003.c.test {
 			baseDate: KnockoutObservable<Date>;
 			selectedEmployee: KnockoutObservableArray<EmployeeSearchDto> = ko.observableArray([]);
 			constructor() {
+				super();
 				var self = this;
 				self.baseDate = ko.observable(new Date());
                 self.date = ko.observable(new Date().toString());
@@ -117,7 +119,7 @@ module nts.uk.at.view.ksu003.c.test {
 					}
 				}
 
-				let listComponentOption: any = {
+				self.listComponentOption = {
 					isShowAlreadySet: self.isShowAlreadySet(),
 					isMultiSelect: true,
 					listType: ListType.EMPLOYEE,
@@ -134,15 +136,17 @@ module nts.uk.at.view.ksu003.c.test {
 				};
 
 				$('#ccgcomponent').ntsGroupComponent(ccg001ComponentOption);
-				$('#component-items-list').ntsListComponent(listComponentOption);
+				$('#component-items-list').ntsListComponent(self.listComponentOption);
 
 			}
 			openDialog(): void {
 				let self = this;
-				let request: any = {};
+				let request: any = {}, request1: any = {};
 				request.date = moment(self.date()).format('YYYY/MM/DD');
-				let lisId: Array<string> = [], listName: Array<string> = [], listCode: Array<string> = []; 
-				let temp: Array<any> = [];
+				let lisId: Array<string> = [], listName: Array<string> = [], listCode: Array<string> = [], lisIdAvai: Array<string> = [],; 
+				let temp: Array<any> = [], temp1: Array<any> = [];
+
+			
 				_.forEach(self.selectedCode(), code => {
 					_.map(self.employeeList(), item =>{
 						if(item.code === code){
@@ -153,16 +157,44 @@ module nts.uk.at.view.ksu003.c.test {
 				let listEmpSort = _.sortBy(temp, x => { return x.id });
 				_.each(listEmpSort, x =>{
 					lisId.push(x.id);
-					listCode.push(x.code);
-					listName.push(x.name);
+					// listCode.push(x.code);
+					// listName.push(x.name);
 				})
-				request.employeeIds = lisId;
-				request.employeeCodes = listCode;
-				request.employeeNames = listName;
-				setShared('dataShareKsu003c', request);
-				self.currentScreen = nts.uk.ui.windows.sub.modal("/view/ksu/003/c/index.xhtml").onClosed(() => {                  
-					self.dataFromKsu003c(getShared('dataShareFromKsu003c'));
-                });
+				request1.empIds = lisId;
+				request1.ymd = moment(self.date()).format('YYYY/MM/DD');
+				self.$blockui("invisible");
+				self.$ajax(Paths.GET_AVAILABLE_WORK_SCHEDULE, request1).done((data: Array<any>) => {
+					if (!_.isNull(data) && !_.isEmpty(data)) {
+						_.each(data, id => {
+							_.each(listEmpSort, x =>{
+								if(x.id == id){
+									lisIdAvai.push(x.id);
+									listCode.push(x.code);
+									listName.push(x.name);
+								}								
+							})
+							// _.map(self.employeeList(), item => {
+							// 	if(item.id === id){
+							// 		temp1.push(item);										
+							// 	}
+							// })
+						});
+						// self.employeeListAvailable(temp1);
+						request.employeeIds = lisIdAvai;
+						// self.employeeListAvailable();
+						request.employeeCodes = listCode;
+						request.employeeNames = listName;
+						setShared('dataShareKsu003c', request);
+						self.currentScreen = nts.uk.ui.windows.sub.modal("/view/ksu/003/c/index.xhtml").onClosed(() => {
+							self.dataFromKsu003c(getShared('dataShareFromKsu003c'));
+						});
+					}
+				}).always(() => {
+					self.$blockui("hide");
+				});
+				
+				// request.employeeIds = lisId;
+				
 			}
 			public startPage(): JQueryPromise<any> {
 				let self = this,
@@ -214,4 +246,3 @@ module nts.uk.at.view.ksu003.c.test {
 			}
 		}
 	}
-}

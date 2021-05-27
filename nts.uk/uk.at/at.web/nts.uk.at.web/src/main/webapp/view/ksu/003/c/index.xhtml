@@ -78,7 +78,8 @@
                             constraint: 'TimeWithDayAttr',
                             option: {width: '60px', timeWithDay: false},
                             name: '#[KSU003_93]',
-                           
+                            mode: 'time',
+                            inputFormat: 'time',
                             required: true,
                             enable: enableTimeZone,
                             readonly: false,
@@ -93,7 +94,8 @@
                             constraint: 'TimeWithDayAttr',                           
                             option: {width: '60px', timeWithDay: false},
                             name: '#[KSU003_95]',
-                           
+                            mode: 'time',
+                            inputFormat: 'time',                           
                             required: true,
                             enable: enableTimeZone,
                             readonly: false,
@@ -109,11 +111,11 @@
                                     options: taskMasterList,
                                     width: 230,
                                     optionsValue: 'code',
-                                    visibleItemsCount: 10,
+                                    visibleItemsCount: 5,
                                     value: selectedTaskCode,
                                     optionsText: 'taskName',                                  
                                     columns: [
-                                        { prop: 'code', length: 6 },
+                                        { prop: 'code', length: 20 },
                                         { prop: 'taskName', length: 16 },
                                     ]}"></div>
                     </div>

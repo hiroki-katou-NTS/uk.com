@@ -79,6 +79,19 @@ module nts.uk.at.view.ksu003.c {
                     self.enableTimeZone(true);
                 }
             });
+            self.startTime.subscribe((start) => {
+                self.clearError();
+                if (start >= self.endTime()) {
+                    $('#startTime').ntsError('set', { messageId: 'Msg_770', messageParams: getText("KSU003_92") }); 
+                }
+            });
+
+            self.endTime.subscribe((end) => {
+                self.clearError();
+                if (end <= self.startTime()) {                    
+                    $('#endTime').ntsError('set', { messageId: 'Msg_770', messageParams: getText("KSU003_92") });
+                }
+            });
         }
 
         mounted(){
@@ -107,7 +120,7 @@ module nts.uk.at.view.ksu003.c {
                     _.each(data, item => {
                         taskList.push(new TaskMaster(item.code, item.taskName));                        
                     });            
-                    self.taskMasterList(taskList);         
+                    self.taskMasterList(_.sortBy(taskList, task => task.code ));         
                     self.selectedTaskCode(data[0].code);                    
                 }   
 
@@ -136,11 +149,6 @@ module nts.uk.at.view.ksu003.c {
             }            
 
             if (self.selectedMode() == 1) {
-                if (self.startTime() >= self.endTime()) {
-                    $('#startTime').ntsError('set', { messageId: 'Msg_770', messageParams: getText("KSU003_92") });
-                    $('#endTime').ntsError('set', { messageId: 'Msg_770', messageParams: getText("KSU003_92") });
-                    return;
-                }
                 if (self.validateAll()) {
                     return;
                 }
@@ -206,9 +214,6 @@ module nts.uk.at.view.ksu003.c {
             const self = this;
             $('#startTime').ntsEditor('validate');
             $('#endTime').ntsEditor('validate');
-            // if(self.startTime() >= self.endTime()){
-            //     $('#timezone').ntsError('set',{messageId: 'Msg_770',messageParams:[getText("KSU003_92")]});
-            // }
             if (nts.uk.ui.errors.hasError()) {                    
                 return true;
             }
