@@ -82,6 +82,11 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 		checkDrop : boolean = false;
 		// ver 4
 		displayRangeSelect : KnockoutObservable<number> = ko.observable(1); // A14
+		rangeList : KnockoutObservableArray<model.RangeModel>;
+		initDispStartChecked : KnockoutObservable<number> = ko.observable(0);
+		dispStartChecked : KnockoutObservable<number> = ko.observable(0);
+		selectedTimeRange: KnockoutObservable<number> = ko.observable(1);
+
 		constructor(data: any) {
 			let self = this;
 			// get data from sc A
@@ -4722,10 +4727,11 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 		public closePopupA14(): void {
 			let self = this;
 			$('#A14').ntsPopup("hide");
-			self.timeRange = self.dataInitStartKsu003Dto().byDateDto.dispRange == 0 ? 24 : 48;// tổng số cột ở phần detail (24 or 48)
-			self.initDispStart = self.dataInitStartKsu003Dto().byDateDto.initDispStart;// thời gian bắt đầu của scroll phần detail
-			self.dispStart = (self.dataInitStartKsu003Dto().byDateDto.dispStart * 60) / 5;// thời gian bắt đầu ở header phần detail
-			self.dispStartHours = self.dataInitStartKsu003Dto().byDateDto.dispStart;
+			self.timeRange = self.selectedTimeRange() == 0 ? 24 : 48;// tổng số cột ở phần detail (24 or 48)
+			self.initDispStart = self.initDispStartChecked();// thời gian bắt đầu của scroll phần detail
+			self.dispStart = (self.dispStartChecked() * 60) / 5;// thời gian bắt đầu ở header phần detail
+			self.dispStartHours = self.dispStartChecked();
+			self.destroyAndCreateGrid(self.lstEmpId, 0);
 		}
 
 		public closeDialog(): void {
