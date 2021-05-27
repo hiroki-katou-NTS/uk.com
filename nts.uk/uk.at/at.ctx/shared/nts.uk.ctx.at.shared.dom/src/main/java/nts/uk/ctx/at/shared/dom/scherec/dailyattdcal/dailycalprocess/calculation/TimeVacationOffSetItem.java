@@ -86,7 +86,7 @@ public abstract class TimeVacationOffSetItem extends CalculationTimeSheet {
 		
 		// 丸め処理
 		if (roundAtr == NotUseAtr.USE) {
-			calcTime = this.rounding.round(calcTime);
+			this.rounding.round(calcTime);
 		}
 		return new AttendanceTime(calcTime);
 	}

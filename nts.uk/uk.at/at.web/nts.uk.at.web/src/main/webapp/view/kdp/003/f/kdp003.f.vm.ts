@@ -31,7 +31,13 @@ module nts.uk.at.kdp003.f {
 		employee?: CodeNameData;
 	}
 
-	export type MODE = null | 'admin' | 'employee' | 'fingerVein';
+	export interface NotiModeParam {
+		mode: 'notification';
+		companyId: string;
+		companyDesignation?: boolean;
+	}
+
+	export type MODE = null | 'admin' | 'employee' | 'fingerVein' | 'notification';
 	export type SCREEN_NAME = 'KDP001' | 'KDP002' | 'KDP003' | 'KDP004' | 'KDP005';
 
 	export const LOGINDATA = 'KDP003F_LOGINDATA';
@@ -41,7 +47,8 @@ module nts.uk.at.kdp003.f {
 		LOGIN_EMPLOYEE: '/ctx/sys/gateway/kdp/login/employeemode',
 		COMPANIES: '/ctx/sys/gateway/kdp/login/getLogginSetting',
 		FINGER_STAMP_SETTING: 'at/record/stamp/finger/get-finger-stamp-setting',
-		CONFIRM_STAMP_INPUT: '/at/record/stamp/employment/system/confirm-use-of-stamp-input'
+		CONFIRM_STAMP_INPUT: '/at/record/stamp/employment/system/confirm-use-of-stamp-input',
+		ROLE: '/ctx/sys/gateway/kdp/login/employeeRoleStamping'
 	};
 
 	@bean()
@@ -55,7 +62,7 @@ module nts.uk.at.kdp003.f {
 
 		parentName: KnockoutObservable<SCREEN_NAME> = ko.observable('KDP003');
 
-		constructor(private params?: AdminModeParam | EmployeeModeParam | FingerVeinModeParam) {
+		constructor(private params?: AdminModeParam | EmployeeModeParam | FingerVeinModeParam | NotiModeParam) {
 			super();
 		}
 
@@ -282,13 +289,11 @@ module nts.uk.at.kdp003.f {
 				});
 
 			$(vm.$el)
-				.on('keyup', '#password-input, #employee-code-inp-2', evt => {					
+				.on('keyup', '#password-input, #employee-code-inp-2', evt => {
 					if (evt.keyCode === 13) {
 						// hook blur for update value from input to model
 						$(evt.target).trigger('blur');
 						const { employeeCode, password } = vm.model;
-
-						console.log(ko.unwrap(employeeCode), ko.unwrap(password));
 
 						if (!!ko.unwrap(employeeCode) && !!ko.unwrap(password)) {
 							vm.submitLogin();
@@ -320,6 +325,13 @@ module nts.uk.at.kdp003.f {
 
 					vm.loginAdmin(LOGIN_EMPLOYEE);
 					break;
+				case 'notification':
+					vm.model.passwordInvalid = false;
+					vm.model.isAdminMode = true;
+					vm.model.runtimeEnvironmentCreate = true;
+
+					vm.loginNoti(LOGIN_ADMIN);
+					break;
 			}
 		}
 
@@ -332,47 +344,28 @@ module nts.uk.at.kdp003.f {
 
 			const message = ko.unwrap(vm.message);
 
+			var dataResultLogin: TimeStampLoginData;
+
+			var roleEmployee: RoleEmployee;
+
 			if (message) {
 				return vm.$dialog.error(message);
 			}
 
-			if (passwordRequired === false) {
-				_.omit(model, ['password']);
-				// note: メニュー別OCD内の記述を移送表に追加する
-				model.passwordInvalid = true;
-			}
+			// Không biết để làm gì ?
+			// if (passwordRequired === false) {
+			// 	_.omit(model, ['password']);
+			// 	// note: メニュー別OCD内の記述を移送表に追加する
+			// 	model.passwordInvalid = true;
+			// }
 
 			vm.$validate()
 				.then((valid: boolean) => {
 					if (!valid) {
 						return;
 					}
-
 					vm.$blockui('show')
 						.then(() => vm.$ajax(api, model))
-						.then((response: TimeStampLoginData) => {
-							const { successMsg } = response;
-
-							if (!!successMsg) {
-								return vm.$dialog
-									.info({ messageId: successMsg })
-									.then(() => response);
-							}
-
-							return response;
-						})
-						.then((response: TimeStampLoginData) => {
-							_.extend(response, {
-								companies
-							});
-
-							_.extend(response.em, {
-								password,
-								companyCode
-							});
-
-							vm.$window.close(response);
-						})
 						.fail((response: any) => {
 							const { message, messageId } = response;
 
@@ -381,6 +374,139 @@ module nts.uk.at.kdp003.f {
 							} else {
 								vm.$dialog.error({ messageId });
 							}
+						})
+						.then((response: TimeStampLoginData) => {
+							dataResultLogin = response;
+						})
+						.then(() => {
+							vm.$ajax(API.ROLE)
+								.done((data: RoleEmployee) => {
+									if (data) {
+										roleEmployee = data;
+										if (roleEmployee.employeeReferenceRange == 3) {
+											vm.$dialog.error({ messageId: 'Msg_1887' });
+										}
+									}
+								})
+						})
+						.then(() => {
+							const { successMsg } = dataResultLogin;
+							if (!!successMsg) {
+								return vm.$dialog
+									.info({ messageId: successMsg })
+									.then(() => dataResultLogin);
+							}
+
+							return dataResultLogin;
+						})
+						.then(() => {
+
+							_.extend(dataResultLogin, {
+								companies
+							});
+
+							_.extend(dataResultLogin.em, {
+								password,
+								companyCode
+							});
+							setTimeout(() => {
+								if (roleEmployee) {
+									if (roleEmployee.employeeReferenceRange != 3) {
+										vm.$window.close(dataResultLogin);
+									}
+								}
+							}, 100);
+						})
+						.always(() => vm.$blockui('clear'));
+
+				});
+		}
+
+		loginNoti(api: string) {
+			const vm = this;
+			const { passwordRequired } = vm.params as EmployeeModeParam;
+			const model: ModelData = ko.toJS(vm.model);
+			const { password, companyCode } = model;
+			const companies: CompanyItem[] = ko.unwrap(vm.listCompany);
+
+			const message = ko.unwrap(vm.message);
+
+			var dataResultLogin: TimeStampLoginData;
+
+			var roleEmployee: RoleEmployee;
+
+			if (message) {
+				if (message.messageId !== 'Msg_1645') {
+					return vm.$dialog.error(message);
+				}
+			}
+
+			// if (passwordRequired === false) {
+			// 	_.omit(model, ['password']);
+			// 	// note: メニュー別OCD内の記述を移送表に追加する
+			// 	model.passwordInvalid = true;
+			// }
+
+			vm.$validate()
+				.then((valid: boolean) => {
+					if (!valid) {
+						return;
+					}
+					if (companyCode === '') {
+						return vm.$dialog.error({ messageId: 'Msg_301' });
+					}
+					vm.$blockui('show')
+						.then(() => vm.$ajax(api, model))
+						.fail((response: any) => {
+
+							const { message, messageId } = response;
+
+							if (!messageId) {
+								vm.$dialog.error(message);
+							} else {
+								vm.$dialog.error({ messageId });
+							}
+						})
+						.then((response: TimeStampLoginData) => {
+							dataResultLogin = response;
+						})
+						.then(() => {
+							vm.$ajax(API.ROLE)
+								.done((data: RoleEmployee) => {
+									if (data) {
+										roleEmployee = data;
+										if (roleEmployee.employeeReferenceRange == 3) {
+											vm.$dialog.error({ messageId: 'Msg_1887' });
+										}
+									}
+								})
+						})
+						.then(() => {
+							const { successMsg } = dataResultLogin;
+							if (!!successMsg) {
+								return vm.$dialog
+									.info({ messageId: successMsg })
+									.then(() => dataResultLogin);
+							}
+
+							return dataResultLogin;
+						})
+						.then(() => {
+							_.extend(dataResultLogin, {
+								companies
+							});
+
+							_.extend(dataResultLogin.em, {
+								password,
+								companyCode
+							});
+							setTimeout(() => {
+								if (roleEmployee) {
+									if (roleEmployee.employeeReferenceRange != 3) {
+										vm.$window.close('loginSuccess');
+									}
+								}
+							}, 100);
 						})
 						.always(() => vm.$blockui('clear'));
 
@@ -478,9 +604,20 @@ module nts.uk.at.kdp003.f {
 		runtimeEnvironmentCreate: boolean;
 	}
 
+	export interface RoleEmployee {
+		roleId: string;
+		roleCode: string;
+		roleType: number;
+		employeeReferenceRange: number;
+		name: string;
+		rolcontractCodeeId: string;
+		assignAtr: number;
+		companyId: string
+	}
+
 	export class Model {
 		// default data;
-		contractCode: string = '000000000000';
+		contractCode: string = '000000000004';
 		passwordInvalid: boolean = false;
 		isAdminMode: boolean = false;
 		runtimeEnvironmentCreate: boolean = true;

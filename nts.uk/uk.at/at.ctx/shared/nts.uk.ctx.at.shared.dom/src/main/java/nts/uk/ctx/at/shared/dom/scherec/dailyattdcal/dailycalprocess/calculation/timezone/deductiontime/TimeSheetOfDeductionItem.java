@@ -16,7 +16,6 @@ import nts.uk.ctx.at.shared.dom.common.timerounding.Unit;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.ActualWorkTimeSheetAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.FluidFixedAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.ConditionAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.TimeSpanForDailyCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.TimeVacationOffSetItem;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.CalculationTimeSheet;
@@ -114,52 +113,43 @@ public class TimeSheetOfDeductionItem extends TimeVacationOffSetItem implements 
 	
 	/**
 	 * 受けとった計算範囲で時間を入れ替える
-	 * @param timeSpan　時間帯
+	 * @param timeSpan 時間帯
 	 * @return　控除項目の時間帯
 	 */
 	public TimeSheetOfDeductionItem cloneWithNewTimeSpan(Optional<TimeSpanForDailyCalc> timeSpan) {
-
-		return copyWithNewSpan(timeSpan, this.deductionAtr);
+		return cloneWithValue(timeSpan, this.deductionAtr);
 	}
 	
 	/**
 	 * 受けとった計算範囲で計上なし時間として入れ替える
-	 * @param timeSpan　時間帯
+	 * @param timeSpan 時間帯
 	 * @return　控除項目の時間帯
 	 */
 	public TimeSheetOfDeductionItem createNoRecord(Optional<TimeSpanForDailyCalc> timeSpan) {
-		return copyWithNewSpan(timeSpan, DeductionClassification.NON_RECORD);
+		return cloneWithValue(timeSpan, DeductionClassification.NON_RECORD);
 	}
 	
-	private TimeSheetOfDeductionItem copyWithNewSpan(Optional<TimeSpanForDailyCalc> timeSpan,
+	/**
+	 * 指定の値でクローンを作成する
+	 * @param timeSpan 時間帯
+	 * @param dedAtr 控除区分
+	 * @return 控除項目の時間帯
+	 */
+	private TimeSheetOfDeductionItem cloneWithValue(
+			Optional<TimeSpanForDailyCalc> timeSpan,
 			DeductionClassification dedAtr) {
 		
-		if(timeSpan.isPresent()) {
-			return new TimeSheetOfDeductionItem(
-											timeSpan.get(),
-											this.rounding,
-											this.recordedTimeSheet,
-											this.deductionTimeSheet,
-											this.workingBreakAtr,
-											this.goOutReason,
-											this.breakAtr,
-											this.shortTimeSheetAtr,
-											dedAtr,
-											this.childCareAtr);
-		}
-		else {
-			return new TimeSheetOfDeductionItem(
-					this.timeSheet,
-					this.rounding,
-					this.recordedTimeSheet,
-					this.deductionTimeSheet,
-					this.workingBreakAtr,
-					this.goOutReason,
-					this.breakAtr,
-					this.shortTimeSheetAtr,
-					dedAtr,
-					this.childCareAtr);
-		}
+		TimeSpanForDailyCalc targetSpan = this.timeSheet;
+		if (timeSpan.isPresent()) targetSpan = timeSpan.get();
+		
+		TimeSheetOfDeductionItem result = this.clone();
+		result.timeSheet = targetSpan;
+		result.deductionAtr = dedAtr;
+		result.recordedTimeSheet = new ArrayList<>();
+		result.deductionTimeSheet = new ArrayList<>();
+		result.addDuplicatedDeductionTimeSheet(this.recordedTimeSheet, DeductionAtr.Appropriate, Optional.empty());
+		result.addDuplicatedDeductionTimeSheet(this.deductionTimeSheet, DeductionAtr.Deduction, Optional.empty());
+		return result;
 	}
 	
 	/**
@@ -193,7 +183,7 @@ public class TimeSheetOfDeductionItem extends TimeVacationOffSetItem implements 
 											this.childCareAtr);
 	}
 	
-	/** ○終了時刻に従って、外出時間帯を分割 */
+	/** 終了時刻に従って、外出時間帯を分割 */
 	public void changeToBreak() {
 		this.breakAtr = Finally.of(BreakClassification.BREAK_STAMP);
 		this.deductionAtr = DeductionClassification.BREAK;
@@ -460,8 +450,6 @@ public class TimeSheetOfDeductionItem extends TimeVacationOffSetItem implements 
 		return map; 
 	}
 	
-	
-	
 	/**
 	 * 休憩と外出時間帯の重複部分を補正する
 	 * @param frontBreakTimeSheet 休憩時間帯
@@ -495,7 +483,6 @@ public class TimeSheetOfDeductionItem extends TimeVacationOffSetItem implements 
 		}
 	}
 	
-	
 	public TimeWithDayAttr start() {
 		return ((CalculationTimeSheet)this).getTimeSheet().getStart();
 	}
@@ -507,7 +494,6 @@ public class TimeSheetOfDeductionItem extends TimeVacationOffSetItem implements 
 	public boolean contains(TimeWithDayAttr baseTime) {
 		return ((CalculationTimeSheet)this).getTimeSheet().contains(baseTime);
 	}
-	
 	
 	/**
 	 * 終了時間と基準時間の早い方の時間を取得する
@@ -620,43 +606,19 @@ public class TimeSheetOfDeductionItem extends TimeVacationOffSetItem implements 
 	}
 	
 	/**
-	 * 控除区分と条件が一致しているかを判定
-	 * @param atr　条件
-	 * @return　一致している。
+	 * 付与する丸めを判断
+	 * @param rounding 元の丸め設定
+	 * @param actualAtr 実働時間帯区分
+	 * @param dedAtr 控除区分
+	 * @param commonSet 就業時間帯の共通設定
+	 * @return 付与する丸め設定
 	 */
-	public boolean checkIncludeCalculation(ConditionAtr atr) {
-		if(this.deductionAtr.isBreak() && atr.isBreak()) {
-			return true;
-		}
-		else if(this.deductionAtr.isGoOut() && this.goOutReason.isPresent() && this.goOutReason.get().equalReason(atr)) {
-			return true;
-		}
-		else if(this.deductionAtr.isChildCare() &&(atr.isCare() || atr.isChild())) {
-			return true;
-		}
-		return false;
-	}
-	
-	/**
-	 * 逆丸めの付与
-	 * @param rounding 基の丸め
-	 * @param actualAtr　実働時間帯区分
-	 * @param dedAtr　控除区分
-	 * @param commonSet　就業時間帯　共通設定
-	 */
-	public void changeReverceRounding(TimeRoundingSetting rounding,ActualWorkTimeSheetAtr actualAtr,DeductionAtr dedAtr,
-									  Optional<WorkTimezoneCommonSet> commonSetting) {
-		if(!commonSetting.isPresent())
-			return;
-		val result = decisionAddRounding(rounding, actualAtr, dedAtr, commonSetting.get());
-		if(result.isPresent()) {
-			this.rounding = rounding;
-		}
-	}
-	
-
-	public Optional<TimeRoundingSetting> decisionAddRounding(TimeRoundingSetting rounding,ActualWorkTimeSheetAtr actualAtr,DeductionAtr dedAtr,
-									WorkTimezoneCommonSet commonSet) {
+	public Optional<TimeRoundingSetting> decisionAddRounding(
+			TimeRoundingSetting rounding,
+			ActualWorkTimeSheetAtr actualAtr,
+			DeductionAtr dedAtr,
+			WorkTimezoneCommonSet commonSet) {
+		
 		switch(this.getDeductionAtr()) {
 		//休憩
 		case BREAK:
@@ -680,7 +642,6 @@ public class TimeSheetOfDeductionItem extends TimeVacationOffSetItem implements 
 			throw new RuntimeException("Unknown DeductionAtr:"+this.getDeductionAtr());
 		}
 	}
-	
 	
 	private Optional<TimeRoundingSetting> getShortTimeRounding(DeductionAtr dedAtr, WorkTimezoneCommonSet commonSet,TimeRoundingSetting rounding) {
 		switch(dedAtr) {
