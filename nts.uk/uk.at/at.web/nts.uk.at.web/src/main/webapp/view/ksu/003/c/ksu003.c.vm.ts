@@ -130,8 +130,8 @@ module nts.uk.at.view.ksu003.c {
                 });
             });            
 
-            if(_.isEmpty(listEmpId)) {                
-                self.$dialog.error({ messageId: 'Msg_2147' });               
+            if(_.isEmpty(listEmpId)) { 
+                self.$dialog.error({ messageId: 'Msg_2147', messageParams: [getText("設定できる社員リスト")]});               
                 return;
             }            
 
