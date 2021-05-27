@@ -2210,7 +2210,7 @@ module nts.uk.com.view.ccg.share.ccg {
                     hasPadding: false,
                     tabindex: self.ccg001Tabindex,
                     isDialog: true,
-                    width: 300
+                    width: 420
                 };
             }
         }
