@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.function.dom.alarm.alarmlist.attendanceholiday;
 
+import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.function.dom.adapter.WorkPlaceHistImport;
@@ -352,7 +353,14 @@ public class TotalProcessAnnualHoliday {
 							AlarmCategory.ATTENDANCE_RATE_FOR_HOLIDAY,
 							AlarmListCheckType.FixCheck,
 							Collections.singletonList(detail)));
-			alarmEmployeeList.add(new AlarmEmployeeList(alarmExtractInfoResults, sid));
+
+			val empIds = alarmEmployeeList.stream().filter(x -> x.getEmployeeID().equals(sid)).collect(Collectors.toList());
+			if (empIds.isEmpty()) {
+				alarmEmployeeList.add(new AlarmEmployeeList(alarmExtractInfoResults, sid));
+			} else {
+				alarmEmployeeList.stream().filter(x -> x.getEmployeeID().equals(sid))
+						.forEach(e -> e.getAlarmExtractInfoResults().addAll(alarmExtractInfoResults));
+			}
 
 //			List<ResultOfEachCondition> result = lstResultCondition.stream()
 //					.filter(x -> x.getCheckType() == AlarmListCheckType.FreeCheck && x.getNo().equals("1"))
