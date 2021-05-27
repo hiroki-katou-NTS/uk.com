@@ -37,13 +37,25 @@ module nts.uk.at.view.ksu003.a {
 			position: {
 				my: 'left top',
 				at: 'left bottom+3',
-				of: $('.settingTimeGrid')
-			}
+				of: $('#settingTimeGrid')
+			},
+			showOnStart: false,
+			dismissible: false
 		});
 
-		$('.settingTimeGrid').click(function() {
+		$('#settingTimeGrid').click(function() {
 			$('#A14').ntsPopup("toggle");
 		});
+		
+		$(".ui-igcombo-list").click(function() {
+			$('#A14').ntsPopup("hide");
+		});
+		
+		//$(window).click(function(e) {
+			//if (e.target.classList[1] != "nts-combo-column-0" && e.target.classList[1] != "nts-combo-column-1" && e.target.id != "settingTimeGrid") {
+			//	$('#A14').ntsPopup("hide");
+			//}
+		//});
 	}
 
 	function initEvent2(): void {
