@@ -1,103 +1,73 @@
+//ScreenQueryGetInforOfInitStartup
 module nts.uk.at.view.ksu003.a {
-	let __viewContexts: any = window["__viewContext"] || {};
-	
-	__viewContext.ready(function() {
-		nts.uk.characteristics.restore("USER_KSU003_INFOR").done(function(data : any) {
-			let screenModel = {
-			viewmodelA: new viewmodel.ScreenModel(data),
-			// ver 4 - comment
-            //viewmodelAb: new nts.uk.at.view.ksu003.ab.viewmodel.ScreenModel()
-			}
-			nts.uk.ui.block.grayout();
-			screenModel.viewmodelA.startPage().done(function() {
-				__viewContext.bind(screenModel);
-				$('#ui-area').css('display','');
-				$(window).resize(function() {
-					screenModel.viewmodelA.setPositionButonDownAndHeightGrid();
-				});
-			});
-			initEvent();
-			initEvent2();
-			initEvent3();
-		});
-	});
-	
-	function initEvent(): void {
-		//click btnA5
-		$('#A5_1').ntsPopup({
-			position: {
-				my: 'left top',
-				at: 'left bottom+3',
-				of: $('#note')
-			}
-		});
-
-		$('#note').click(function() {
-			$('#A5_1').ntsPopup("toggle");
-		});
-	}
-	
-	function initEvent3(): void {
-		//click btnA5
-		$('#A14').ntsPopup({
-			position: {
-				my: 'left top',
-				at: 'left bottom+3',
-				of: $('#settingTimeGrid')
-			},
-			showOnStart: false,
-			dismissible: false
-		});
-
-		$('#settingTimeGrid').click(function() {
-			$('#A14').ntsPopup("toggle");
-		});
+	export module service {
+        /**
+         *  Service paths
+         */
+		var servicePath: any = {
+			getDataStartScreen: "screen/at/schedule/getinfo-initstart",
+			getFixedWorkInformation: "screen/at/schedule/getfixedworkinfo",
+			displayDataKsu003: "screen/at/schedule/displayDataKsu003",
+			sortEmployee: "screen/at/schedule/sortEmployee",
+			getEmpWorkFixedWorkInfo: "screen/at/schedule/getEmpWorkFixedWorkInfo",
+			changeWorkType: "screen/at/schedule/changeWorkType",
+			checkWorkType: "screen/at/schedule/checkWorkType",
+            checkTimeIsIncorrect: "ctx/at/shared/workrule/workinghours/checkTimeIsIncorrect",
+        regWorkSchedule: "screen/at/schedule/registerKSU003",
+		};
 		
-		$(".ui-igcombo-list").click(function() {
-			$('#A14').ntsPopup("hide");
-		});
-		
-		//$(window).click(function(e) {
-			//if (e.target.classList[1] != "nts-combo-column-0" && e.target.classList[1] != "nts-combo-column-1" && e.target.id != "settingTimeGrid") {
-			//	$('#A14').ntsPopup("hide");
-			//}
-		//});
-	}
+		export function checkTimeIsIncorrect(command : any): JQueryPromise<any> {
+            return nts.uk.request.ajax( "at", servicePath.checkTimeIsIncorrect, command);
+        }
 
-	function initEvent2(): void {
-		//click btnA5
-		$('#A3_4').ntsPopup({
-			position: {
-				my: 'left top',
-				at: 'left bottom+3',
-				of: $('#note-sort'),
-			},
-			showOnStart: false,
-			dismissible: false
-		});
-
-		$('#note-sort').click(function() {
-			$('#A3_4').ntsPopup("toggle");
-		});
-
-		$(".ui-igcombo-list").click(function() {
-			$('#A3_4').ntsPopup("hide");
-		});
-
-		$(window).click(function(e) {
-			if (e.target.classList[1] != "nts-combo-column-0" && e.target.classList[1] != "nts-combo-column-1" && e.target.id != "note-sort") {
-				$('#A3_4').ntsPopup("hide");
-			}
-		});
-
-	}
-	$(window).resize(function() {
-		let self = this;
-		if (window.innerHeight < 700) {
-			$(".close").css({ "margin-right": 45 + 'px !important' });
-			$("#note-color").css({ "margin-right": 57 + 'px !important' });
-		} else {
-			$("hr-row2").css({ "width": 1237 + 'px' });
+        /**
+         * ①<<ScreenQuery>> 初期起動の情報取得
+         */
+		export function getDataStartScreen(command: any): JQueryPromise<any> {
+			return nts.uk.request.ajax(servicePath.getDataStartScreen, command);
 		}
-	});
+
+        /**
+         * ①<<ScreenQuery>> 勤務固定情報を取得する
+         */
+		export function getFixedWorkInformation(command: any): JQueryPromise<any> {
+			return nts.uk.request.ajax(servicePath.getFixedWorkInformation, command);
+		}
+
+        /**
+         * ①<<ScreenQuery>> 日付別勤務情報で表示する
+         */
+		export function displayDataKsu003(command: any): JQueryPromise<any> {
+			return nts.uk.request.ajax(servicePath.displayDataKsu003, command);
+		}
+		
+		/**
+         * ①<<ScreenQuery>> 社員を並び替える
+         */
+		export function sortEmployee(command: any): JQueryPromise<any> {
+			return nts.uk.request.ajax(servicePath.sortEmployee, command);
+		}
+		
+		/**
+         * ①<<ScreenQuery>> 社員勤務予定と勤務固定情報を取得する
+         */
+		export function getEmpWorkFixedWorkInfo(command: any): JQueryPromise<any> {
+			return nts.uk.request.ajax(servicePath.getEmpWorkFixedWorkInfo, command);
+		}
+		
+		/**
+         * ①<<ScreenQuery>> 勤務種類を変更する
+         */
+		export function changeWorkType(command: any): JQueryPromise<any> {
+			return nts.uk.request.ajax(servicePath.changeWorkType, command);
+		}
+		
+		export function checkWorkType(command: any): JQueryPromise<any> {
+			return nts.uk.request.ajax(servicePath.checkWorkType, command);
+		}
+		
+		export function regWorkSchedule(command: any): JQueryPromise<any> {
+        	return nts.uk.request.ajax(servicePath.regWorkSchedule, command);
+   		}
+	}
 }
