@@ -157,6 +157,8 @@ public interface DailyRecordAdUpService {
 		adUpRemark(domain.getRemarks().stream()
 				.map(x -> new RemarksOfDailyPerform(domain.getEmployeeId(), domain.getYmd(), x))
 				.collect(Collectors.toList()));
+		// ドメインモデル「日別勤怠の応援作業時間帯」を更新する
+		adUpSupportTime(domain.getEmployeeId(), domain.getYmd(), domain.getOuenTimeSheet());
 
 		adUpEmpError(domain.getEmployeeError(), new ArrayList<>(), false);
 
