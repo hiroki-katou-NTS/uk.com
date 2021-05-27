@@ -28,6 +28,9 @@ module nts.uk.at.view.kdw002.c {
             listAttFullDataClone  : any;
             // ver7
             roleItems: KnockoutObservableArray<EmployeeRoleDto> = ko.observableArray([]);
+            // isNew mode
+            isNewMode:  KnockoutObservable<boolean> = ko.observable(false);
+
             constructor(dataShare:any) {
                 var self = this;
                 self.bussinessCodeItems = ko.observableArray([]);
@@ -78,6 +81,7 @@ module nts.uk.at.view.kdw002.c {
                     if(roleId){
                         if(self.isDaily){
                              dfd = self.getDailyAttdItemByRoleID(roleId);
+
                         }else{
                              dfd = self.getMonthlyAttdItemByRoleID(roleId)
                         }
@@ -306,11 +310,18 @@ module nts.uk.at.view.kdw002.c {
             }
 
             //get Daily Attd Item By Role ID
+            // do something
             getDailyAttdItemByRoleID(roleID: string) {
                 let self = this;
                 let dfd = $.Deferred();
                 let startTime: number = performance.now();
                 service.getDailyAttItemNew(roleID).done(function(data) {
+                    if (nts.uk.util.isNullOrUndefined(data) || data.length <= 0 || data.every((att: any) => att.authority == null)){
+                        self.isNewMode(true);
+                    } else {
+                        self.isNewMode(false);
+                    }
+                    
                     console.log("get setting by role: " + (performance.now() - startTime));
                     let listDefault: Array<DisplayAndInputControl> = [];
                     self.listAttFullDataClone(_.cloneDeep(self.listAttFullData()));
@@ -321,7 +332,6 @@ module nts.uk.at.view.kdw002.c {
                                 break;
                             }    
                         }
-                            
                         listDefault.push(DisplayAndInputControl.fromApp(attFullData));
                     });
                     /*if (nts.uk.util.isNullOrUndefined(data)) {
@@ -374,6 +384,11 @@ module nts.uk.at.view.kdw002.c {
                 let self = this;
                 let dfd = $.Deferred();
                 service.getMontlyAttItemNew(roleID).done(function(data) {
+                    if (nts.uk.util.isNullOrUndefined(data) || data.length <= 0 || data.every((att: any) => att.authority == null)) {
+                        self.isNewMode(true);
+                    } else {
+                        self.isNewMode(false);
+                    }
                     let listDefault: Array<DisplayAndInputControl> = [];
 //                    _.each(data, item => {
 //                        listDefault.push(DisplayAndInputControl.fromApp(item));

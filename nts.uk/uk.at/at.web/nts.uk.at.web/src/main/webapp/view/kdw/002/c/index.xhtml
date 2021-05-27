@@ -25,7 +25,7 @@
 						data-bind="click: submitData">#{i18n.getText('KDW002_2')}</button>
 				<!--A1_5--> 
 				<button tabindex="3" class="copy" style="margin-left: 550px;"
-				  		data-bind="click: copy">#{i18n.getText('KDW002_14')}</button> 
+				  		data-bind="click: copy, enable: !isNewMode()">#{i18n.getText('KDW002_14')}</button> 
 				<!--A1_2-->
 				<!--  <label class="mylabel">#{i18n.getText('KDW002_1')}</label> -->
 			</div>
