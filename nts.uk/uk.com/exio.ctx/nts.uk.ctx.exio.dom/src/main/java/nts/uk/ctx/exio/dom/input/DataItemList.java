@@ -8,6 +8,9 @@ import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 
+/**
+ * DataItemのリストにやらせたいことが色々あるのでクラス化したやつ
+ */
 @SuppressWarnings("serial")
 public class DataItemList extends ArrayList<DataItem> {
 	
