@@ -1,6 +1,7 @@
 .nts-searchbbox-wrapper{
 	margin-bottom: 15px;
 	white-space: nowrap;
+	position: relative;
 	
 	// input.ntsSearchBox {
 	//     box-sizing: border-box;
@@ -26,6 +27,31 @@
 		margin-left: 5px;
 		min-width: 80px;
 		padding: 3px;
+	}
+
+	button.clear-icon {
+		background-image: url("images/icons/numbered/225.png");
+		background-repeat: no-repeat;
+		background-size: contain;
+		margin-left: 5px;
+		width: 31px;
+		height: 31px;
+	}
+
+	.input-wrapper {
+		position: relative;
+	}
+
+	#search-icon {
+		background-color: #30cc40;
+		position: absolute;
+		right: 5px;
+		top: 3px;
+		border-radius: 2px;
+		background-image: url("images/icons/numbered/1.png");
+		background-size: contain;
+		width: 25px;
+		height: 25px;
 	}
 	
 	div.input-wrapper {
