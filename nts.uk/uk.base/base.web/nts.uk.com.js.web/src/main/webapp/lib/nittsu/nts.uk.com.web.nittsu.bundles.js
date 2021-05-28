@@ -1900,8 +1900,6 @@ var __extends = (this && this.__extends) || (function () {
         return extendStatics(d, b);
     };
     return function (d, b) {
-        if (typeof b !== "function" && b !== null)
-            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -17471,10 +17469,12 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-var __spreadArray = (this && this.__spreadArray) || function (to, from) {
-    for (var i = 0, il = from.length, j = to.length; i < il; i++, j++)
-        to[j] = from[i];
-    return to;
+var __spreadArrays = (this && this.__spreadArrays) || function () {
+    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
+    for (var r = Array(s), k = 0, i = 0; i < il; i++)
+        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
+            r[k] = a[j];
+    return r;
 };
 var nts;
 (function (nts) {
@@ -17539,7 +17539,7 @@ var nts;
                                         else {
                                             var exist = _.find(checkeds, function (c) { return _.isEqual(c, ko.toJS(value_1)); });
                                             if (!exist) {
-                                                accessor.checked(__spreadArray(__spreadArray([], checkeds), [value_1]));
+                                                accessor.checked(__spreadArrays(checkeds, [value_1]));
                                             }
                                             else {
                                                 _.remove(checkeds, function (c) { return _.isEqual(c, ko.toJS(value_1)); });
@@ -22331,6 +22331,8 @@ var nts;
                         var tabIndex = _.isEmpty($container.attr("tabindex")) ? "0" : $container.attr("tabindex");
                         $container.addClass("nts-searchbbox-wrapper").removeAttr("tabindex");
                         $container.append("<div class='input-wrapper'><span class='nts-editor-wrapped ntsControl'><input class='ntsSearchBox nts-editor ntsSearchBox_Component' type='text' /></span></div>");
+                        $container.find('.input-wrapper')
+                            .append("<i id='search-icon' class='img-icon'></i>");
                         $container.append("<div class='input-wrapper'><button class='search-btn caret-bottom ntsSearchBox_Component'>" + searchText + "</button></div>");
                         if (!_.isEmpty(label)) {
                             var $formLabel = $("<div>", { text: label });
@@ -22343,8 +22345,8 @@ var nts;
                         var $input = $container.find("input.ntsSearchBox");
                         minusWidth += $button.outerWidth(true);
                         if (searchMode === "filter") {
-                            $container.append("<button class='clear-btn ntsSearchBox_Component'>" + nts.uk.ui.toBeResource.clear + "</button>");
-                            var $clearButton = $container.find("button.clear-btn");
+                            $container.append("<button class='clear-icon ntsSearchBox_Component'>");
+                            var $clearButton = $container.find("button.clear-icon");
                             minusWidth += $clearButton.outerWidth(true);
                             $clearButton.click(function (evt, ui) {
                                 var component = $("#" + ko.unwrap(data.comId));
@@ -22551,7 +22553,7 @@ var nts;
                         var CHECKBOX_WIDTH = 40;
                         var SEARCH_AREA_HEIGHT = 45;
                         var BUTTON_SEARCH_WIDTH = 70;
-                        var INPUT_SEARCH_PADDING = 65;
+                        var INPUT_SEARCH_PADDING = 36;
                         var $swap = $(element);
                         var elementId = $swap.attr('id');
                         if (nts.uk.util.isNullOrUndefined(elementId)) {
@@ -22612,14 +22614,16 @@ var nts;
                             var initSearchArea = function ($SearchArea, searchMode, searchText) {
                                 $SearchArea.append("<div class='ntsSearchTextContainer'/>")
                                     .append("<div class='ntsSearchButtonContainer'/>");
-                                if (searchMode === "filter") {
-                                    $SearchArea.append("<div class='ntsClearButtonContainer'/>");
-                                    $SearchArea.find(".ntsClearButtonContainer")
-                                        .append("<button id = " + searchAreaId + "-clear-btn" + " class='ntsSearchButton clear-btn ntsSwap_Component'/>");
-                                    $SearchArea.find(".clear-btn").text(ui_9.toBeResource.clear);
-                                }
+                                // if(searchMode === "filter"){
+                                //     $SearchArea.append("<div class='ntsClearButtonContainer'/>");
+                                //     $SearchArea.find(".ntsClearButtonContainer")
+                                //         .append("<button id = " + searchAreaId + "-clear-btn" + " class='ntsSearchButton clear-btn ntsSwap_Component'/>");  
+                                //     $SearchArea.find(".clear-btn").text(toBeResource.clear);        
+                                // }
                                 $SearchArea.find(".ntsSearchTextContainer")
                                     .append("<input id = " + searchAreaId + "-input" + " class = 'ntsSearchInput ntsSwap_Component ntsSearchBox nts-editor ntsSearchBox_Component'/>");
+                                $SearchArea.find(".ntsSearchTextContainer")
+                                    .append("<i id='swap-search-icon' class='img-icon'></i>");
                                 $SearchArea.find(".ntsSearchButtonContainer")
                                     .append("<button id = " + searchAreaId + "-btn" + " class='ntsSearchButton search-btn caret-bottom ntsSwap_Component'/>");
                                 $SearchArea.find(".ntsSearchInput").attr("placeholder", searchText).wrap("<span class='nts-editor-wrapped ntsControl'/>");
@@ -22636,7 +22640,8 @@ var nts;
                                 var $searchLeftContainer = $swap.find(".ntsSwapSearchLeft");
                                 $searchLeftContainer.width(searchAreaWidth).css({ position: "absolute", left: 0 });
                                 initSearchArea($searchLeftContainer, data.searchMode, data.leftSearchBoxText || defaultSearchText);
-                                $searchLeftContainer.find(".ntsSearchBox").width(searchAreaWidth - BUTTON_SEARCH_WIDTH - INPUT_SEARCH_PADDING - (data.searchMode === "filter" ? BUTTON_SEARCH_WIDTH : 0));
+                                // $searchLeftContainer.find(".ntsSearchBox").width(searchAreaWidth - BUTTON_SEARCH_WIDTH - INPUT_SEARCH_PADDING - (data.searchMode === "filter" ? BUTTON_SEARCH_WIDTH : 0));
+                                $searchLeftContainer.find(".ntsSearchBox").width(searchAreaWidth - BUTTON_SEARCH_WIDTH - INPUT_SEARCH_PADDING);
                             }
                             if (showSearchBox.showRight) {
                                 var $searchRightContainer = $swap.find(".ntsSwapSearchRight");
@@ -37493,7 +37498,7 @@ var nts;
                 Object.defineProperties($jump, {
                     self: {
                         value: function $to() {
-                            $jump.apply(null, __spreadArray([], Array.prototype.slice.apply(arguments, [])));
+                            $jump.apply(null, __spreadArrays(Array.prototype.slice.apply(arguments, [])));
                         }
                     },
                     blank: {
@@ -52639,7 +52644,7 @@ var nts;
                         });
                         ko.applyBindingsToNode($span, { text: text }, bindingContext);
                         vm
-                            .$ajax('at', '/sys/portal/webmenu/program')
+                            .$ajax('com', '/sys/portal/webmenu/program')
                             .then(function (response) {
                             var first = response[0];
                             if (first) {
@@ -52694,25 +52699,24 @@ var nts;
                                     ko.applyBindingsToNode($title, { 'pg-name': title, back: back }, bindingContext);
                                 }
                                 $(element).prepend($title);
-                                if (element.childNodes.length > 1) {
-                                    var $btnGroup_1 = document.createElement('div');
-                                    $btnGroup_1.classList.add('button-group');
-                                    var $pgName = $(element).find('.pg-name');
-                                    $(element).children().each(function (__, e) {
+                                /*if (element.childNodes.length > 1) {
+                                    const $btnGroup = document.createElement('div');
+                                    $btnGroup.classList.add('button-group');
+                                    const $pgName = $(element).find('.pg-name');
+            
+                                    $(element).children().each((__: null, e: HTMLElement) => {
                                         if (!e.classList.contains('pg-name') && !e.classList.contains('floating-btn')) {
-                                            $($btnGroup_1).append(e);
+                                            $($btnGroup).append(e);
                                         }
                                     });
-                                    $($btnGroup_1).insertAfter($pgName);
-                                    ko.applyBindingsToNode($btnGroup_1, null, bindingContext);
-                                }
-                                // button error in function bar
-                                ko.applyBindingsToNode($('<button>').appendTo($title).get(0), { 'c-error': '' }, bindingContext);
+            
+                                    $($btnGroup).insertAfter($pgName);
+            
+                                    ko.applyBindingsToNode($btnGroup, null, bindingContext);
+                                }*/
                             }
-                            else {
-                                // button error in function bar
-                                ko.applyBindingsToNode($('<button>').appendTo(element).get(0), { 'c-error': '' }, bindingContext);
-                            }
+                            // button error in function bar
+                            ko.applyBindingsToNode($('<button>').appendTo(element).get(0), { 'c-error': '' }, bindingContext);
                         }
                         else {
                             if (!element.id) {
