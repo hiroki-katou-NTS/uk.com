@@ -54,7 +54,7 @@ module nts.uk.ui.at.kdw013.share {
             }
             .nts-dropdown>div.dropdown-container>table+div {
                 overflow-y: auto;
-                max-height: 270px;
+                max-height: 287px;
             }
             .nts-dropdown>div.dropdown-container>table+div>table {
                 width: 200%;
