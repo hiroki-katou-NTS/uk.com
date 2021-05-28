@@ -353,6 +353,7 @@ public class W4D4AlarmService {
 					}
 					
 				}
+				List<ExtractResultDetail> lstDetail = new ArrayList<>();
 				if(mapWorkInfor.isEmpty()) continue;
 				
 				int holidays = holidayNumberMana.countNumberHolidays(require, mapWorkInfor);
@@ -366,7 +367,7 @@ public class W4D4AlarmService {
 							Optional.ofNullable(workplaceId),
 							Optional.ofNullable(""),
 							Optional.ofNullable(TextResource.localize("KAL010_63", String.valueOf(holidays))));
-					lstResult.add(alarmDetail);
+					lstDetail.add(alarmDetail);
 				}
 
 				if (!lstResult.isEmpty()) {
@@ -390,15 +391,18 @@ public class W4D4AlarmService {
 							new AlarmCheckConditionCode(alarmCheckConditionCode),
 							AlarmCategory.SCHEDULE_4WEEK,
 							AlarmListCheckType.FixCheck,
-							lstResult
+							lstDetail
 					));
 
 					val empIds = alarmEmployeeList.stream().filter(x -> x.getEmployeeID().equals(sid)).collect(Collectors.toList());
 					if (empIds.isEmpty()) {
 						alarmEmployeeList.add(new AlarmEmployeeList(alarmExtractInfoResults, sid));
 					} else {
-						alarmEmployeeList.stream().filter(x -> x.getEmployeeID().equals(sid))
-								.forEach(e -> e.getAlarmExtractInfoResults().addAll(alarmExtractInfoResults));
+						for (AlarmEmployeeList emp : alarmEmployeeList) {
+							if(emp.getEmployeeID().equals(sid)){
+								emp.getAlarmExtractInfoResults().addAll(alarmExtractInfoResults);
+							}
+						}
 					}
 				}
 			}
