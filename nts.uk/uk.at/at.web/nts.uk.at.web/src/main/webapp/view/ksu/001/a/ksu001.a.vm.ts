@@ -210,9 +210,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     let startDate = moment(firstDay).format('YYYY/MM/DD');
                     let endDate = moment(lastDay).format('YYYY/MM/DD');
 
-                    //if ((self.dateTimeAfter() != endDate) || (self.dateTimePrev() != startDate)) {
-                    self.getDataWhenChangeModePeriod();
-                    //}
+                    if ((self.dateTimeAfter() != endDate) || (self.dateTimePrev() != startDate)) {
+                        self.getDataWhenChangeModePeriod();
+                    }
                 } else if (value == 2) { // 28日周期で表示する  ：   A3_2_2選択時               
                     self.getDataWhenChangeModePeriod();
                 } else if (value == 1) { // 抽出期間を表示する  ：   A3_2_1選択時           
@@ -220,11 +220,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 }
             });
 
-            self.achievementDisplaySelected.subscribe(function(newValue) {
-                if(newValue == null || newValue == undefined)
-                    return;
-                
-                if(self.flag == true)
+            self.achievementDisplaySelected.subscribe(function(newValue) { // lấy data schedule | thực tế
+                if(newValue == null || newValue == undefined || self.flag == true)
                     return;
                 
                 if (self.userInfor) {
@@ -260,12 +257,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             });
             
             self.modeDisplayList  = ko.observableArray([]);
-            self.selectedModeDisplayInBody.subscribe(function(viewMode) {
-                if (viewMode == null)
+            self.selectedModeDisplayInBody.subscribe(function(viewMode) { // mode hiển thị workTime | Abname | Shift
+                if (viewMode == null || self.flag == true)
                     return;
-                if(self.flag == true)
-                    return;
-                
                 nts.uk.ui.errors.clearAll();
                 self.removeClass();
                 nts.uk.ui.block.grayout();
@@ -690,7 +684,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 workplaceId     : self.userInfor.workplaceId,
                 workplaceGroupId: self.userInfor.workplaceGroupId,
                 personTotalSelected: self.useCategoriesPersonalValue(), // A11_1
-                workplaceSelected: self.useCategoriesWorkplaceValue() // A12_1
+                workplaceSelected: self.useCategoriesWorkplaceValue(), // A12_1
+                day: self.closeDate.day, 
+                isLastDay: self.closeDate.lastDay
             };
             service.getDataOfShiftMode(param).done((data: IDataStartScreen) => {
                 self.saveModeGridToLocalStorege('shift');
@@ -757,7 +753,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 workplaceId     : self.userInfor.workplaceId,
                 workplaceGroupId: self.userInfor.workplaceGroupId,
                 personTotalSelected: self.useCategoriesPersonalValue(), // A11_1
-                workplaceSelected: self.useCategoriesWorkplaceValue() // A12_1
+                workplaceSelected: self.useCategoriesWorkplaceValue(), // A12_1
+                day: self.closeDate.day, 
+                isLastDay: self.closeDate.lastDay,
             };
             
             service.getDataOfShortNameMode(param).done((data: IDataStartScreen) => {
@@ -802,7 +800,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 workplaceId     : self.userInfor.workplaceId,
                 workplaceGroupId: self.userInfor.workplaceGroupId,
                 personTotalSelected: self.useCategoriesPersonalValue(), // A11_1
-                workplaceSelected: self.useCategoriesWorkplaceValue() // A12_1
+                workplaceSelected: self.useCategoriesWorkplaceValue(), // A12_1
+                day: self.closeDate.day, 
+                isLastDay: self.closeDate.lastDay,
             };
 
             service.getDataOfTimeMode(param).done((data: IDataStartScreen) => {
@@ -2006,7 +2006,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     isConfirmed: !cellData.confirmed
                 });
             });
-            debugger;
             service.changeConfirmedState(dataReg).done((rs) => {
                 nts.uk.ui.dialog.info({ messageId: "Msg_1541" }).then(() => {
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" });
@@ -2020,7 +2019,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         }
 
         // dangky data ở mode Edit
-        saveDataInModeEdit(): JQueryPromise<any> {
+        saveDataInModeEdit(isKsu003 ?, ui ?, detailContentDs ?): JQueryPromise<any> {
             let self = this, dfd = $.Deferred();
             nts.uk.ui.block.grayout();
             let updatedCells = $("#extable").exTable("updatedCells");
@@ -2070,15 +2069,23 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     let $grid = $('div.ex-body-detail');
                     self.updateAfterSaveData($grid[0]);
                     self.listCellRetained = [];
+                    if (isKsu003) {
+                        nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
+                            self.openKsu003(ui, detailContentDs);
+                        });
+                    } else {
+                        nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                    }
 
-                    nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                     nts.uk.ui.block.clear();
                 } else {
                     let $grid = $('div.ex-body-detail');
                     self.updateAfterSaveData($grid[0]);
                     self.listCellRetained = [];
-                    if(rs.listErrorInfo.length > 0){
-                        self.openKDL053(rs);    
+                    if (_.isNil(isKsu003)) {
+                        if (rs.listErrorInfo.length > 0) {
+                            self.openKDL053(rs);
+                        }
                     }
                 }
                 self.hasChangeModeBg = false;
@@ -2419,26 +2426,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 detailColumns.forEach((col: any) => {
                     if (col.visible === false) return;
                     col.headerHandler = (ui: any) => {
-                        let detailContentData: any = [];
-                        for (let i = 0; i < detailContentDs.length; i++) {
-                            detailContentData.add({ employeeId: detailContentDs[i].employeeId, datas: detailContentDs[i][ui.columnKey] });
-                        }
-                        let dayEdit = new Date();
-                        let param = {
-                            detailContentDs: detailContentData,
-                            unit: self.userInfor.unit,
-                            workplaceId: self.userInfor.workplaceId,
-                            workplaceGroupId: self.userInfor.workplaceGroupId,
-                            workplaceName: self.userInfor.workPlaceName,
-                            listEmp: self.listEmpData,
-                            daySelect: moment(ui.columnKey.slice(1)).format('YYYY/MM/DD'),
-                            startDate: self.dateTimePrev(),
-                            endDate: self.dateTimeAfter(),
-                            dayEdit: moment(self.scheduleModifyStartDate).format('YYYY/MM/DD')
-                        }
-                        setShared("dataFromA", param);
-                        setShared("dataTooltip", self.tooltipShare);
-                        nts.uk.ui.windows.sub.modeless("/view/ksu/003/a/index.xhtml").onClosed(() => { });
+                        self.checkBefOPenKsu003(ui, detailContentDs);
                         return false;
                     };
                 });
@@ -3577,9 +3565,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         
         confirmMode() {
             let self = this;
-
             let arrCellUpdated = $("#extable").exTable("updatedCells");
-
             if (arrCellUpdated.length > 0) {
                 nts.uk.ui.dialog.confirm({ messageId: "Msg_1732" }).ifYes(() => {
                     self.enableBtnReg(true);
@@ -4907,6 +4893,43 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             nts.uk.ui.windows.sub.modal('/view/ksu/005/a/index.xhtml').onClosed(function(): any {
                 console.log('closed');
             });
+        }
+        
+        openKsu003(ui, detailContentDs) {
+            let self = this;
+            let detailContentData: any = [];
+            for (let i = 0; i < detailContentDs.length; i++) {
+                detailContentData.add({ employeeId: detailContentDs[i].employeeId, datas: detailContentDs[i][ui.columnKey] });
+            }
+            let dayEdit = new Date();
+            let param = {
+                detailContentDs: detailContentData,
+                unit: self.userInfor.unit,
+                workplaceId: self.userInfor.workplaceId,
+                workplaceGroupId: self.userInfor.workplaceGroupId,
+                workplaceName: self.userInfor.workPlaceName,
+                listEmp: self.listEmpData,
+                daySelect: moment(ui.columnKey.slice(1)).format('YYYY/MM/DD'),
+                startDate: self.dateTimePrev(),
+                endDate: self.dateTimeAfter(),
+                dayEdit: moment(self.scheduleModifyStartDate).format('YYYY/MM/DD')
+            }
+            setShared("dataFromA", param);
+            setShared("dataTooltip", self.tooltipShare);
+            nts.uk.ui.windows.sub.modeless("/view/ksu/003/a/index.xhtml").onClosed(() => { });
+        }
+
+        // check cell edit truoc khi open ksu003
+        checkBefOPenKsu003(ui, detailContentDs) {
+            let self = this;
+            let arrCellUpdated = $("#extable").exTable("updatedCells");
+            if (arrCellUpdated.length > 0) {
+                nts.uk.ui.dialog.confirm({ messageId: "Msg_447" }).ifYes(() => {
+                    self.saveDataInModeEdit(true, ui, detailContentDs)
+                }).ifNo(() => { });
+            } else {
+                self.openKsu003(ui, detailContentDs);
+            }
         }
     }
 
