@@ -94,7 +94,7 @@ module nts.uk.ui.at.kdw013.a {
         weekends: KnockoutObservable<boolean> = ko.observable(true);
         editable: KnockoutObservable<boolean> = ko.observable(true);
         firstDay: KnockoutObservable<number> = ko.observable(1);
-        scrollTime: KnockoutObservable<number> = ko.observable(480);
+        scrollTime: KnockoutObservable<number> = ko.observable(420);
         slotDuration: KnockoutObservable<number> = ko.observable(30);
         initialDate: KnockoutObservable<Date> = ko.observable(new Date());
         dateRange: KnockoutObservable<Partial<calendar.DatesSet>> = ko.observable({});

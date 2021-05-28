@@ -535,7 +535,7 @@ module nts.uk.ui.at.kdw013.calendar {
         event: ko.observable(null),
         setting: {
             firstDay: ko.observable(0),
-            scrollTime: ko.observable(480),
+            scrollTime: ko.observable(420),
             slotDuration: ko.observable(30)
         },
         excludeTimes: ko.observableArray([])
