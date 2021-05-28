@@ -86,17 +86,18 @@ module nts.uk.com.view.ccg034.c {
                 .done((taskResult: any) => {
                   if (taskResult.succeeded) {
                     newFlowMenu.fileId = res.taskId;
-                    return vm.$ajax(API.duplicate, { flowMenuCode: vm.flowMenuCode(), createFlowMenu: {
-                      flowMenuCode: vm.flowMenuCode(),
-                      flowMenuName: vm.flowMenuName()
-                    } });
+                    return vm.$ajax(API.duplicate, { flowMenuCode: vm.flowMenuCode(), createFlowMenu: newFlowMenu});
                   }
                 }))
               .while(infor => infor.pending || infor.running)
               .pause(1000))
             );
           } else {
-            return vm.$ajax(API.duplicate, { flowMenuCode: vm.flowMenuCode(), createFlowMenu: newFlowMenu });
+            return vm.$ajax(API.duplicate, { flowMenuCode: vm.flowMenuCode(), createFlowMenu: {
+              flowMenuCode: vm.flowMenuCode(),
+              flowMenuName: vm.flowMenuName(),
+              cid: __viewContext.user.companyId
+            } });
           }
         })
         // Perform save the copied flow menu

@@ -1,6 +1,6 @@
 #contents-area {
 	overflow-x: hidden;
-	height: 545px;
+	height: 580px !important;
 	padding-y: 5px !important;
 }
 .label:FIRST-CHILD {
@@ -60,10 +60,6 @@
 button.nts-switch-button {
 	height: 30px;
 	width: 93px;
-}
-
-#functions-area-bottom {
-	height: 55px !important;
 }
 #switch-language {
 	margin-bottom: 2px;
