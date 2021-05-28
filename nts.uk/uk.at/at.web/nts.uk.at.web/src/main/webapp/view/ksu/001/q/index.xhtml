@@ -8,10 +8,10 @@
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
 			<com:ValidatorScript>
-				nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExtBudgetMoney
-				nts.uk.ctx.at.schedule.dom.budget.external.actualresult.timeunit.ExtBudgetTime
-				nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExtBudgetNumberPerson
-				nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExtBudgetNumericalVal
+				nts.uk.ctx.at.schedule.dom.budget.external.actualresults.ExternalBudgetMoneyValue
+				nts.uk.ctx.at.schedule.dom.budget.external.actualresults.ExternalBudgetTimeValue
+				nts.uk.ctx.at.schedule.dom.budget.external.acceptance.ExtBudgetNumberPerson
+				nts.uk.ctx.at.schedule.dom.budget.external.acceptance.ExtBudgetNumericalVal	
 			</com:ValidatorScript>
 			<script type='text/javascript'>
 				var dialogSize = {
@@ -89,7 +89,7 @@
 												data-bind="ntsTimeEditor: {
 													name: '#[KSU001_3707]',
 													value: $parent.value,
-													constraint: 'ExtBudgetTime',
+													constraint: 'ExternalBudgetTimeValue',
 													option: option,
 													required: false,
 													enable: true,
@@ -102,7 +102,7 @@
 												data-bind="ntsNumberEditor: {
 													name: '#[KSU001_3708]',
 													value: $parent.value,
-													constraint: 'ExtBudgetMoney',
+													constraint: 'ExternalBudgetMoneyValue',
 													option: option,
 													required: false,
 													enable: true,

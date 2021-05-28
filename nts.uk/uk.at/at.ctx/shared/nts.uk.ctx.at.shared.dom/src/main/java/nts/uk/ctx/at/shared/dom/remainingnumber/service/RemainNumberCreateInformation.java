@@ -7,9 +7,10 @@ import java.util.Optional;
 
 import lombok.val;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.RecordRemainCreateInfor;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.AppTimeType;
-import nts.uk.ctx.at.shared.dom.remainingnumber.work.VacationTimeInfor;
+import nts.uk.ctx.at.shared.dom.remainingnumber.work.VacationTimeInforNew;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.holidayworktime.HolidayWorkFrameTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.holidayworktime.HolidayWorkTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.overtimehours.clearovertime.OverTimeOfDaily;
@@ -88,19 +89,19 @@ public class RemainNumberCreateInformation {
 	 * データ移送元不明瞭とりあえず作成するだけ
 	 * @return
 	 */
-	private static List<VacationTimeInfor> getLstVacationTimeInfor(){
-		List<VacationTimeInfor> lstOutput = new ArrayList<>();
-		VacationTimeInfor timeInfor = new VacationTimeInfor(0, AppTimeType.ATWORK, 0, 0);
+	private static List<VacationTimeInforNew> getLstVacationTimeInfor(){
+		List<VacationTimeInforNew> lstOutput = new ArrayList<>();
+		VacationTimeInforNew timeInfor =  new VacationTimeInforNew(AppTimeType.ATWORK, new AttendanceTime(0), new AttendanceTime(0), new AttendanceTime(0), new AttendanceTime(0), new AttendanceTime(0), new AttendanceTime(0), Optional.empty());
 		lstOutput.add(timeInfor);
-		timeInfor = new VacationTimeInfor(0, AppTimeType.ATWORK2, 0, 0);
+		timeInfor = new VacationTimeInforNew(AppTimeType.ATWORK2, new AttendanceTime(0), new AttendanceTime(0), new AttendanceTime(0), new AttendanceTime(0), new AttendanceTime(0), new AttendanceTime(0), Optional.empty()); 
 		lstOutput.add(timeInfor);
-		timeInfor = new VacationTimeInfor(0, AppTimeType.OFFWORK, 0, 0);
+		timeInfor = new VacationTimeInforNew(AppTimeType.OFFWORK, new AttendanceTime(0), new AttendanceTime(0), new AttendanceTime(0), new AttendanceTime(0), new AttendanceTime(0), new AttendanceTime(0), Optional.empty());
 		lstOutput.add(timeInfor);
-		timeInfor = new VacationTimeInfor(0, AppTimeType.OFFWORK2, 0, 0);
+		timeInfor = new VacationTimeInforNew(AppTimeType.OFFWORK2, new AttendanceTime(0), new AttendanceTime(0), new AttendanceTime(0), new AttendanceTime(0), new AttendanceTime(0), new AttendanceTime(0), Optional.empty()); 
 		lstOutput.add(timeInfor);
-		timeInfor = new VacationTimeInfor(0, AppTimeType.PRIVATE, 0, 0);
+		timeInfor =  new VacationTimeInforNew(AppTimeType.PRIVATE, new AttendanceTime(0), new AttendanceTime(0), new AttendanceTime(0), new AttendanceTime(0), new AttendanceTime(0), new AttendanceTime(0), Optional.empty());
 		lstOutput.add(timeInfor);
-		timeInfor = new VacationTimeInfor(0, AppTimeType.UNION, 0, 0);
+		timeInfor =   new VacationTimeInforNew(AppTimeType.UNION, new AttendanceTime(0), new AttendanceTime(0), new AttendanceTime(0), new AttendanceTime(0), new AttendanceTime(0), new AttendanceTime(0), Optional.empty());
 		lstOutput.add(timeInfor);
 		return lstOutput;
 	}

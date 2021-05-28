@@ -20,8 +20,6 @@ import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.arc.task.parallel.ManagedParallelWithContext;
-import nts.arc.task.parallel.ManagedParallelWithContext.ControlOption;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.DayOfWeek;
 import nts.arc.time.calendar.period.DatePeriod;
@@ -169,9 +167,6 @@ public class ScheduleCreatorExecutionTransaction {
 
 	@Inject
 	private InterimRemainDataMngRegisterDateChange interimRemainDataMngRegisterDateChange;
-
-	@Inject
-	private ManagedParallelWithContext managedParallelWithContext;
 
 	public static int MAX_DELAY_PARALLEL = 0;
 
@@ -1221,7 +1216,10 @@ public class ScheduleCreatorExecutionTransaction {
 			if(getMonthlySetting.isPresent()) {
 				return new PrepareWorkOutput(getMonthlySetting.get().getWorkInformation(), null, null, Optional.empty());
 			}
-			return new PrepareWorkOutput(null, null, null, Optional.empty());
+			String errorContent = this.internationalization.localize("Msg_604", "#Msg_604").get();
+			ScheduleErrorLog scheduleErrorLog = new ScheduleErrorLog(errorContent, command.getExecutionId(), dateInPeriod,
+					creator.getEmployeeId());
+			return new PrepareWorkOutput(null, null, null, Optional.ofNullable(scheduleErrorLog));
 		} else {
 			// 「労働条件項目．月間パターン」をチェックする
 			// Nullでない 場合

@@ -34,5 +34,6 @@ public interface TmpResereLeaveMngRepository {
 	 * @param sid
 	 * @param period
 	 */
-	public void deleteSidPriod(String sid, DatePeriod period);
+	public void deleteSidPeriod(String sid, DatePeriod period);
+
 }

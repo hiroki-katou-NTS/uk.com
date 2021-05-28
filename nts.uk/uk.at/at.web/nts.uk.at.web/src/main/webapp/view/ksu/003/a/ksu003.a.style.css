@@ -8,7 +8,7 @@
 	width: auto !important;
 }
 
-.proceed {
+#A1_1 {
 	margin-left: 20px !important;
 }
 
@@ -20,6 +20,7 @@
 	height: 25px;
 	margin-left: 25px;
 }
+
 .ui-igcombo-list{
 	max-height: 130px !important;
 }
@@ -66,6 +67,12 @@
 	vertical-align: text-top;
 }
 
+#settingTimeGrid{
+	height: 22px !important;
+    width: 18px !important;
+    box-shadow: none !important;
+}
+
 .popup-div {
 	width: 152px;
 	display: inline-block;
@@ -95,8 +102,12 @@
 	margin-left: 37px;
 }
 
-#check-time, #check-name {
+#check-time{
 	margin-left: 30px;
+}
+
+ #check-name {
+	margin-left: -5px;
 }
 
 #hr-row2 {
@@ -196,7 +207,6 @@
 	white-space: nowrap;
 } 
 #note-sort {
-	margin-left: 35px;
 	margin-top: 5px !important;
 }
 
@@ -249,8 +259,8 @@ html {
 	background-color: #F8EFD4 !important;
 	display: none;
 	z-index: 1999 !important;
-	width: 230px;
 }
+
 /** A3_4 */
 #combo-box-sort {
 	float: left;
@@ -259,7 +269,44 @@ html {
 	width: 117px;
 }
 
+#A14 {
+	height: 158px !important;
+    width: 308px !important;
+	border: solid 6px #fff !important;
+	border-radius: 3.5px !important;
+	box-shadow: 1px 1px 5px 2px #888 !important;
+	padding: 12px;
+	background-color: #F8EFD4 !important;
+	display: none;
+	z-index: 2000 !important;
+}
+
+#combo-box-start, #combo-box-start-2{
+	width: 60px !important;
+}
+
 #org-name {
 	animation: blinkingText 4.2s infinite;
 }
 
+#contain-view-right-ksu003 {
+	display: inline-block;
+    margin-top: -96px !important;
+    margin-left: 290px;
+    border: 1px solid #cccccc;
+    background: rgb(219, 238, 244);
+    padding: 5px;
+    width: 1000px;
+    height: 87px;
+    border-radius: 5px;
+    font-size: 11.5px !important;
+    margin-bottom: 12px !important;
+}
+
+#display-range, #combo-box-start{
+	margin-left: 39px;
+}
+
+#A14_11 {
+    margin-left: 150px;
+}

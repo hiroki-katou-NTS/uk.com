@@ -18,14 +18,16 @@ import static nts.arc.time.GeneralDate.*;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare.AggregateChildCareNurseWork;
 import nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare.ChildCareCheckOverUsedNumberWork;
-import nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare.ChildCareNurseRemainingNumber;
 import nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare.ChildCareShortageRemainingNumberWork;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.ChildCareNurseUsedNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.interimdata.TempChildCareNurseManagement;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.ChildCareLeaveRemainingInfo;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.UpperLimitSetting;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.remainingnumber.DayNumberOfRemain;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.remainingnumber.TimeOfRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.usenumber.DayNumberOfUse;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.usenumber.TimeOfUse;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.childcarenurse.ChildCareNurseRemainingNumber;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.ChildCareNurseUpperLimit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.ChildCareNurseUpperLimitPeriod;
@@ -88,8 +90,8 @@ public class ChildCareCheckOverUsedNumberWorkTest {
 		val shortRemNum = childCare2.calcShortageRemainingNumber(companyId, employeeId, period, criteriaDate, interimDate, category, require);
 
 		val expect = shortageWork(0, 0, 0, null); //期待値：子の看護介護残数不足数
-		assertThat(shortRemNum.getShortageRemNum().getUsedDays()).isEqualTo(expect.getShortageRemNum().getUsedDays());
-		assertThat(shortRemNum.getShortageRemNum().getUsedTime()).isEqualTo(expect.getShortageRemNum().getUsedTime());
+		assertThat(shortRemNum.getShortageRemNum().getRemainDay()).isEqualTo(expect.getShortageRemNum().getRemainDay());
+		assertThat(shortRemNum.getShortageRemNum().getRemainTimes()).isEqualTo(expect.getShortageRemNum().getRemainTimes());
 		assertThat(shortRemNum.getAvailable().getUsedDay()).isEqualTo(expect.getAvailable().getUsedDay());
 		assertThat(shortRemNum.getAvailable().getUsedTimes()).isEqualTo(expect.getAvailable().getUsedTimes());
 
@@ -124,8 +126,8 @@ public class ChildCareCheckOverUsedNumberWorkTest {
 		val shortRemNum = childCare2.calcShortageRemainingNumber(companyId, employeeId, period, criteriaDate, interimDate, category, require);
 
 		val expect = shortageWork(0, 0, 0, 0); //期待値：子の看護介護残数不足数
-		assertThat(shortRemNum.getShortageRemNum().getUsedDays()).isEqualTo(expect.getShortageRemNum().getUsedDays());
-		assertThat(shortRemNum.getShortageRemNum().getUsedTime()).isEqualTo(expect.getShortageRemNum().getUsedTime());
+		assertThat(shortRemNum.getShortageRemNum().getRemainDay()).isEqualTo(expect.getShortageRemNum().getRemainDay());
+		assertThat(shortRemNum.getShortageRemNum().getRemainTimes()).isEqualTo(expect.getShortageRemNum().getRemainTimes());
 		assertThat(shortRemNum.getAvailable().getUsedDay()).isEqualTo(expect.getAvailable().getUsedDay());
 		assertThat(shortRemNum.getAvailable().getUsedTimes()).isEqualTo(expect.getAvailable().getUsedTimes());
 	}
@@ -133,8 +135,8 @@ public class ChildCareCheckOverUsedNumberWorkTest {
 	// 子の看護介護残数
 	private ChildCareNurseRemainingNumber remainingNumber(double useDay, Integer usedTimes) {
 		return ChildCareNurseRemainingNumber.of(
-						new DayNumberOfUse(useDay),
-						usedTimes == null ? Optional.empty() : Optional.of(new TimeOfUse(usedTimes)));
+						new DayNumberOfRemain(useDay),
+						usedTimes == null ? Optional.empty() : Optional.of(new TimeOfRemain(usedTimes)));
 	}
 
 	// 超過確認用使用数
@@ -236,7 +238,7 @@ public class ChildCareCheckOverUsedNumberWorkTest {
 	}
 	// 子の看護介護残数
 	private ChildCareNurseRemainingNumber remNum(double usedDays, int usedTime) {
-		return ChildCareNurseRemainingNumber.of(new DayNumberOfUse(usedDays), Optional.of(new TimeOfUse(usedTime)));
+		return ChildCareNurseRemainingNumber.of(new DayNumberOfRemain(usedDays), Optional.of(new TimeOfRemain(usedTime)));
 	}
 
 }

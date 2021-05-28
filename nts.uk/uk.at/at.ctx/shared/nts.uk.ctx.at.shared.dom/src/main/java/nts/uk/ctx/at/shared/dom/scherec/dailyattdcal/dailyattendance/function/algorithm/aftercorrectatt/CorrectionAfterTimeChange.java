@@ -29,7 +29,7 @@ public class CorrectionAfterTimeChange {
 //	@Inject
 //	private CorrectRestTime correctRestTime;
 
-	public Pair<ChangeDailyAttendance, IntegrationOfDaily> corection(String companyId, IntegrationOfDaily domainDaily,
+	public Pair<ChangeDailyAttendance, IntegrationOfDaily> corection(IntegrationOfDaily domainDaily,
 			ChangeDailyAttendance changeAtt, Optional<WorkingConditionItem> workCondOpt) {
 
 		if (!workCondOpt.isPresent())

@@ -198,4 +198,8 @@ public class OverTimeFrameTime {
 		return new OverTimeFrameTime(this.getOverWorkFrameNo(),overTimeWork,transferTime,this.BeforeApplicationTime,this.orderTime);
 	}
 	
+	public static OverTimeFrameTime createDefaultWithNo(int no) {
+		return new OverTimeFrameTime(new OverTimeFrameNo(no), TimeDivergenceWithCalculation.defaultValue(),
+				TimeDivergenceWithCalculation.defaultValue(), new AttendanceTime(0), new AttendanceTime(0));
+	}
 }
