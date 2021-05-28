@@ -196,7 +196,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
         <div class="grade-bottom ccg005-flex"
           style="width: 100%; align-items: center; position: relative; margin-top: 5px;">
           <table style="width: 100%;">
-            <tr>
+            <tr style=" background: white;">
               <td class="ccg005-bottom-unset">
                 <div class="ccg005-pagination ccg005-flex">
                   <!-- A5_1 -->
@@ -535,7 +535,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
     personalIdList: KnockoutObservableArray<string> = ko.observableArray([]);
     attendanceInformationDtos: KnockoutObservableArray<object.AttendanceInformationDto> = ko.observableArray([]);
     attendanceInformationDtosDisplay: KnockoutObservableArray<AttendanceInformationViewModel> = ko.observableArray([]);
-    attendanceInformationDtosDisplayClone: KnockoutObservableArray<AttendanceInformationViewModel> = ko.observableArray([]);
+    // attendanceInformationDtosDisplayClone: KnockoutObservableArray<AttendanceInformationViewModel> = ko.observableArray([]);
     listPersonalInfo: KnockoutObservableArray<object.EmployeeBasicImport> = ko.observableArray([]);
 
     //data for screen E
@@ -561,7 +561,6 @@ module nts.uk.at.view.ccg005.a.screenModel {
         $('.legend-item-symbol').first().css('border', '1px groove').height(16).width(16);
         $('.legend-item').css('margin-bottom', '5px');
       });
-      vm.onResizeable(vm);
       vm.selectedDate(moment().format('YYYYMMDD'));
       vm.toStartScreen();
       vm.initResizeable(vm);
@@ -570,9 +569,13 @@ module nts.uk.at.view.ccg005.a.screenModel {
       vm.initChangeFavorite();
       vm.initFocusA1_4();
       vm.initChangeSelectedDate();
-      vm.perPage.subscribe(() => vm.resetPagination());
-      vm.paginationText.subscribe(() => {
-        vm.attendanceInformationDtosDisplay(_.slice(vm.attendanceInformationDtosDisplayClone(), vm.startPage() - 1, vm.endPage()));
+      vm.perPage.subscribe((val: any) => {
+        vm.resetPagination();
+        vm.getAttendanceData();  // #116839
+        // if(val > vm.attendanceInformationDtosDisplayClone().length) {
+        //   vm.getAttendanceData(); 
+        // }
+        // vm.attendanceInformationDtosDisplay(_.slice(vm.attendanceInformationDtosDisplayClone(), vm.startPage() - 1, vm.endPage()));
       });
 
       vm.attendanceInformationDtosDisplay.subscribe(() => {
@@ -1086,7 +1089,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
       //reset attendance information
       vm.attendanceInformationDtos([]);
       vm.attendanceInformationDtosDisplay([]);
-      vm.attendanceInformationDtosDisplayClone([]);
+      // vm.attendanceInformationDtosDisplayClone([]);
 
       //reset search value
       vm.workplaceNameFromCDL008('');
@@ -1268,11 +1271,14 @@ module nts.uk.at.view.ccg005.a.screenModel {
       vm.totalElement(0);
       vm.attendanceInformationDtos([]);
       vm.attendanceInformationDtosDisplay([]);
-      vm.attendanceInformationDtosDisplayClone([]);
+      // vm.attendanceInformationDtosDisplayClone([]);
     }
 
     private dataToDisplay(res?: object.DisplayInformationDto) {
       const vm = this;
+
+      vm.onResizeable(vm);
+
       if (!res) {
         res = { listPersonalInfo: vm.listPersonalInfo() };
       }
@@ -1319,7 +1325,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
           vm.attendanceInformationDtosDisplay(display);
         }
 
-        vm.attendanceInformationDtosDisplayClone(display);
+        // vm.attendanceInformationDtosDisplayClone(display);
   
         //handle application display
         const data = response;
