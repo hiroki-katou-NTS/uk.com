@@ -5,6 +5,6 @@ public enum CheckMethod {
 	ENUM(2),
 	NO_CHECK(3);
 	
-	CheckMethod(int i) {
+	CheckMethod(int value) {
 	}
 }
