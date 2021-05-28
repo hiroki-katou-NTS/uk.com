@@ -16,14 +16,17 @@ public class MakeShiftMasterService {
 
 	public static AtomTask makeShiftMater(WorkInformation.Require requireWorkInfo,
 			Require require, String companyId, String shiftMaterCode, String workTypeCd, Optional<String> workTimeCd,
-			ShiftMasterDisInfor displayInfor) {
+			ShiftMasterDisInfor displayInfor, Optional<ShiftMasterImportCode> importCode) {
 		String workTimeCdNew = workTimeCd.isPresent() ? workTimeCd.get() : null;
 		
 		if(require.checkExistsByCode(companyId, shiftMaterCode)) {
 			throw new BusinessException("Msg_3");
 		}
+		if (importCode.isPresent() && require.checkExistsCaptureCode(companyId, importCode.get())){
+			throw new BusinessException("Msg_2163");
+		}
 		// 1:作る(会社ID, シフトマスタコード, シフトマスタの表示情報, 勤務種類コード, 就業時間帯コード)
-		ShiftMaster shiftMater = new ShiftMaster(companyId, new ShiftMasterCode(shiftMaterCode), displayInfor, workTypeCd,
+		ShiftMaster shiftMater = new ShiftMaster(companyId, new ShiftMasterCode(shiftMaterCode), displayInfor, importCode, workTypeCd,
 				workTimeCdNew);
 		// 2:エラー状態をチェックする
 		shiftMater.checkError(requireWorkInfo);
@@ -40,6 +43,7 @@ public class MakeShiftMasterService {
 	public static interface Require {
 		boolean checkExists(String companyId, String workTypeCd, String workTimeCd);
 		boolean checkExistsByCode(String companyId, String shiftMasterCd);
+		boolean checkExistsCaptureCode(String companyId, ShiftMasterImportCode importCode);
 		void insert(ShiftMaster shiftMater, String workTypeCd, String workTimeCd);
 	}
 	

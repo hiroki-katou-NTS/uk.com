@@ -6,6 +6,8 @@ import nts.arc.layer.dom.objecttype.DomainAggregate;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.workrule.ErrorStatusWorkInfo;
 
+import java.util.Optional;
+
 /**
  * シフトマスタ
  * 
@@ -32,18 +34,26 @@ public class ShiftMaster extends WorkInformation implements DomainAggregate {
 	private ShiftMasterDisInfor displayInfor;
 
 	/**
+	 * 取り込みコード
+	 */
+	@Getter
+	private Optional<ShiftMasterImportCode> importCode;
+
+	/**
 	 * 作る
 	 * 
 	 * @param companyId
 	 * @param shiftMaterCode
 	 * @param displayInfor
+	 * @param importCode
 	 */
 
 	public ShiftMaster(String companyId, ShiftMasterCode shiftMaterCode, ShiftMasterDisInfor displayInfor,
-			String workTypeCode, String workTimeCode) {
+			Optional<ShiftMasterImportCode> importCode, String workTypeCode, String workTimeCode) {
 		super(workTypeCode,workTimeCode);
 		this.companyId = companyId;
 		this.shiftMasterCode = shiftMaterCode;
+		this.importCode = importCode;
 		this.displayInfor = displayInfor;
 
 	}
@@ -70,8 +80,9 @@ public class ShiftMaster extends WorkInformation implements DomainAggregate {
 	 * @param displayInfor
 	 * @param workInformation
 	 */
-	public void change(ShiftMasterDisInfor displayInfor, WorkInformation workInformation) {
+	public void change(ShiftMasterDisInfor displayInfor, WorkInformation workInformation, Optional<ShiftMasterImportCode> importCode) {
 		this.displayInfor = displayInfor;
+		this.importCode = importCode;
 		super.setWorkTimeCode(workInformation.getWorkTimeCode());
 		super.setWorkTypeCode(workInformation.getWorkTypeCode());
 	}

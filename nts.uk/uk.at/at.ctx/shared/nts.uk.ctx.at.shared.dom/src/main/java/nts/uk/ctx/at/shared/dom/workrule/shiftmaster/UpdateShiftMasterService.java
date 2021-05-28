@@ -11,12 +11,17 @@ import nts.uk.ctx.at.shared.dom.WorkInformation;
  *
  */
 public class UpdateShiftMasterService {
-	public static AtomTask updateShiftMater(WorkInformation.Require requireWorkInfo, Require require,
-			String shiftMaterCode, ShiftMasterDisInfor displayInfor, WorkInformation workInformation) {
+	public static AtomTask updateShiftMater(WorkInformation.Require requireWorkInfo, Require require, String companyId,
+			String shiftMaterCode, ShiftMasterDisInfor displayInfor, Optional<ShiftMasterImportCode> importCode , WorkInformation workInformation) {
 		// 1:get(会社ID, コード):Optional<シフトマスタ>
 		Optional<ShiftMaster> shiftMaterOpt = require.getByShiftMaterCd(shiftMaterCode); //truyen cid tư app
+		String presentImportCode = shiftMaterOpt.get().getImportCode().map(ip -> ip.v()).orElse("");
+		String newImportCode = importCode.map(ip -> ip.v()).orElse("");
+		if (importCode.isPresent() && !newImportCode.equals(presentImportCode) && require.checkExistsCaptureCode(companyId, importCode.get())){
+			throw new BusinessException("Msg_2163");
+		}
 		// 2: 変更する(シフトマスタの表示情報, 勤務情報)
-		shiftMaterOpt.get().change(displayInfor, workInformation);
+		shiftMaterOpt.get().change(displayInfor, workInformation, importCode);
 		// エラーチェックする
 		shiftMaterOpt.get().checkError(requireWorkInfo);
 		Optional<ShiftMaster> shiftMaterByWorkTypeAndWorkTime = require.getByWorkTypeAndWorkTime(//truyen cid tư app
@@ -39,5 +44,8 @@ public class UpdateShiftMasterService {
 		public Optional<ShiftMaster> getByShiftMaterCd(String shiftMaterCode);
 
 		public Optional<ShiftMaster> getByWorkTypeAndWorkTime(String workTypeCd, String workTimeCd);
+
+		boolean checkExistsCaptureCode(String companyId, ShiftMasterImportCode importCode);
+
 	}
 }

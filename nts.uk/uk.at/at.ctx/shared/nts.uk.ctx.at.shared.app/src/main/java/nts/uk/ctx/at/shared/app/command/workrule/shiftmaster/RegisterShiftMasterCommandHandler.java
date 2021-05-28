@@ -13,11 +13,7 @@ import nts.arc.task.tran.AtomTask;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
-import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.MakeShiftMasterService;
-import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMaster;
-import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterCode;
-import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterRepository;
-import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.UpdateShiftMasterService;
+import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.*;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSetting;
@@ -75,10 +71,10 @@ public class RegisterShiftMasterCommandHandler extends CommandHandler<RegisterSh
 		if (cmd.getNewMode()) {
 			persist = MakeShiftMasterService.makeShiftMater(workRequired, createRequired, companyId,
 					cmd.getShiftMasterCode(), cmd.getWorkTypeCd(), Optional.ofNullable(cmd.getWorkTimeSetCd()),
-					dom.getDisplayInfor());
+					dom.getDisplayInfor(), dom.getImportCode());
 		} else {
-			persist = UpdateShiftMasterService.updateShiftMater(workRequired, updateRequired, cmd.getShiftMasterCode(),
-					dom.getDisplayInfor(), new WorkInformation(cmd.getWorkTypeCd(), cmd.getWorkTimeSetCd()));
+			persist = UpdateShiftMasterService.updateShiftMater(workRequired, updateRequired, companyId, cmd.getShiftMasterCode(),
+					dom.getDisplayInfor(), dom.getImportCode(), new WorkInformation(cmd.getWorkTypeCd(), cmd.getWorkTimeSetCd()));
 		}
 
 		transaction.execute(() -> {
@@ -165,6 +161,11 @@ public class RegisterShiftMasterCommandHandler extends CommandHandler<RegisterSh
 			return shiftMasterRepo.checkExistsByCd(companyId, shiftMaterCode);
 		}
 
+		@Override
+		public boolean checkExistsCaptureCode(String companyId, ShiftMasterImportCode importCode) {
+			return shiftMasterRepo.checkExistsByCaptureCode(companyId, importCode);
+		}
+
 
 		@Override
 		public void insert(ShiftMaster shiftMater, String workTypeCd, String workTimeCd) {
@@ -194,6 +195,11 @@ public class RegisterShiftMasterCommandHandler extends CommandHandler<RegisterSh
 		@Override
 		public Optional<ShiftMaster> getByWorkTypeAndWorkTime(String workTypeCd, String workTimeCd) {
 			return shiftMasterRepo.getByWorkTypeAndWorkTime(companyId, workTypeCd, workTimeCd);
+		}
+
+		@Override
+		public boolean checkExistsCaptureCode(String companyId, ShiftMasterImportCode importCode) {
+			return shiftMasterRepo.checkExistsByCaptureCode(companyId, importCode);
 		}
 
 	}

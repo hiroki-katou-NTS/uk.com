@@ -35,9 +35,9 @@ public class WorkStyleScreenQuery {
 	public Integer getWorkStyle(WorkStyleDto dto) {
 		String companyId = AppContexts.user().companyId();
 		ShiftMasterDisInfor shiftMasterDisInfor = new ShiftMasterDisInfor(new ShiftMasterName(dto.getShiftMasterName()), new ColorCodeChar6(dto.getColor()),new ColorCodeChar6(dto.getColor()), new Remarks(dto.getRemarks()));
-		ShiftMaster shiftMaster = new ShiftMaster(companyId, new ShiftMasterCode(dto.getShiftMasterCode()), shiftMasterDisInfor, dto.getWorkTypeCode(), dto.getWorkTimeCode());
+		ShiftMaster shiftMaster = new ShiftMaster(companyId, new ShiftMasterCode(dto.getShiftMasterCode()), shiftMasterDisInfor, Optional.empty(), dto.getWorkTypeCode(), dto.getWorkTimeCode());
 		WorkInformation.Require require = new WorkStyleScreenQueryImpl(workTypeRepository);
-		Integer workStyle = shiftMaster.getWorkStyle(require).get().value;
+		Integer workStyle = shiftMaster.getWorkStyle(require).map(ws -> ws.value).orElse(0);
 		return workStyle;
 	}
 

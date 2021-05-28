@@ -15,13 +15,7 @@ import javax.ejb.TransactionAttributeType;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
-import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ColorCodeChar6;
-import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.Remarks;
-import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMaster;
-import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterCode;
-import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterDisInfor;
-import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterName;
-import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterRepository;
+import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.*;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.dto.ShiftMasterDto;
 import nts.uk.ctx.at.shared.infra.entity.workrule.shiftmaster.KshmtShiftMater;
 import nts.uk.ctx.at.shared.infra.entity.workrule.shiftmaster.KshmtShiftMaterPK;
@@ -32,7 +26,7 @@ public class JpaShiftMasterImpl extends JpaRepository implements ShiftMasterRepo
 	private static final String SELECT_ALL = "SELECT c FROM KshmtShiftMater c ";
 
 	private static final String SELECT_ALL_DTO = " SELECT " 
-			+ " new nts.uk.ctx.at.shared.dom.workrule.shiftmaster.dto.ShiftMasterDto(c.kshmtShiftMaterPK.companyId, c.name, c.kshmtShiftMaterPK.shiftMaterCode, c.color, c.remarks, c.workTypeCd, wt.name, wt.kshmtWorkTypePK.companyId, c.workTimeCd, wts.name, wts.kshmtWorkTimeSetPK.cid,c.colorMobile ) "
+			+ " new nts.uk.ctx.at.shared.dom.workrule.shiftmaster.dto.ShiftMasterDto(c.kshmtShiftMaterPK.companyId, c.name, c.kshmtShiftMaterPK.shiftMaterCode, c.color, c.remarks, c.importCode, c.workTypeCd, wt.name, wt.kshmtWorkTypePK.companyId, c.workTimeCd, wts.name, wts.kshmtWorkTimeSetPK.cid,c.colorMobile ) "
 			+ " FROM KshmtShiftMater c "
 			+ " LEFT JOIN KshmtWorkType wt on c.workTypeCd = wt.kshmtWorkTypePK.workTypeCode and c.kshmtShiftMaterPK.companyId = wt.kshmtWorkTypePK.companyId "
 			+ " LEFT JOIN KshmtWt wts on c.workTimeCd = wts.kshmtWorkTimeSetPK.worktimeCd and c.kshmtShiftMaterPK.companyId = wts.kshmtWorkTimeSetPK.cid "
@@ -52,6 +46,8 @@ public class JpaShiftMasterImpl extends JpaRepository implements ShiftMasterRepo
 
 	private static final String SELECT_BY_LIST_CD_AND_CID = SELECT_ALL_DTO
 			+ " AND c.kshmtShiftMaterPK.shiftMaterCode IN :listShiftMaterCode";
+
+	private static final String SELECT_BY_IMPORT_CD_AND_CID = SELECT_BY_CID +" AND c.importCode = :importCode";
 
 	@Override
 	public List<ShiftMasterDto> getAllByCid(String companyId) {
@@ -106,8 +102,9 @@ public class JpaShiftMasterImpl extends JpaRepository implements ShiftMasterRepo
 												new ColorCodeChar6(rec.getString("COLOR")),
 												new ColorCodeChar6(rec.getString("COLOR_MOBILE")),
 													rec.getString("NOTE") == null ? null : new Remarks(rec.getString("NOTE"))),
-													rec.getString("WORKTYPE_CD"),
-													rec.getString("WORKTIME_CD"));
+						Optional.ofNullable(rec.getString("IMPORT_CD") == null ? null : new ShiftMasterImportCode(rec.getString("IMPORT_CD"))),
+						rec.getString("WORKTYPE_CD"),
+						rec.getString("WORKTIME_CD"));
 			});
 
 		} catch (SQLException e) {
@@ -143,7 +140,8 @@ public class JpaShiftMasterImpl extends JpaRepository implements ShiftMasterRepo
 
 	@Override
 	public void insert(ShiftMaster shiftMater) {
-		this.commandProxy().insert(KshmtShiftMater.toEntity(shiftMater));
+		KshmtShiftMater kshmtShiftMater = KshmtShiftMater.toEntity(shiftMater);
+		this.commandProxy().insert(kshmtShiftMater);
 	}
 
 	@Override
@@ -182,6 +180,15 @@ public class JpaShiftMasterImpl extends JpaRepository implements ShiftMasterRepo
 	@Override
 	public boolean checkExistsByCd(String companyId, String shiftMaterCode) {
 		return getByShiftMaterCd(companyId, shiftMaterCode).isPresent();
+	}
+
+	@Override
+	public boolean checkExistsByCaptureCode(String companyId, ShiftMasterImportCode importCode) {
+		return this.queryProxy().query(SELECT_BY_IMPORT_CD_AND_CID, KshmtShiftMater.class)
+				.setParameter("companyId", companyId)
+				.setParameter("importCode", importCode.v())
+				.getSingle(c -> c.toDomain())
+				.isPresent();
 	}
 
 	@Override
