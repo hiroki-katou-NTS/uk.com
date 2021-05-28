@@ -7,25 +7,30 @@ package nts.uk.ctx.exio.dom.input.revise.dataformat;
  */
 public enum ItemType {
 	/**
-	 * 0: 数値型
+	 * 0: 文字型
 	 */
-	NUMERIC(0, "Enum_ItemType_NUMERIC"),
+	CHARACTER(0, "Enum_ItemType_CHARACTER"),
 	/**
-	 * 1: 文字型
+	 * 1: 数値型
 	 */
-	CHARACTER(1, "Enum_ItemType_CHARACTER"),
+	INT(1, "Enum_ItemType_INT"),
 	/**
-	 * 2: 日付型
+	 * 2: 実数型
 	 */
-	DATE(2, "Enum_ItemType_DATE"),
+	REAL(2, "Enum_ItemType_REAL"),
 	/**
-	 * 3: 時刻型
+	 * 3: 日付型
 	 */
-	INS_TIME(3, "Enum_ItemType_INS_TIME"),
+	DATE(3, "Enum_ItemType_DATE"),
 	/**
 	 * 4: 時間
 	 */
-	TIME(4, "Enum_ItemType_TIME");
+	TIME(4, "Enum_ItemType_TIME"),
+	/**
+	 * 5: 時刻型
+	 */
+	INS_TIME(5, "Enum_ItemType_INS_TIME");
+
 	
 	/** The value. */
 	public final int value;
