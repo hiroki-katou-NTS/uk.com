@@ -34,6 +34,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneGoOutSet;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeMethodSet;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -660,10 +661,11 @@ public class TimeSheetOfDeductionItem extends TimeVacationOffSetItem implements 
 		if(!useTimes.containsKey(this.getGoOutReason().get())){
 			return;
 		}
-		this.deductionOffSetTime = Optional.of(this.offsetProcessInPriorityOrder(
+		this.deductionOffSetTime = Optional.of(this.offsetProcess(
 				deductionAtr,
 				priorityOrder,
-				useTimes.get(this.getGoOutReason().get())));
+				useTimes.get(this.getGoOutReason().get()),
+				NotUseAtr.USE));
 	}
 	
 	private Optional<TimeRoundingSetting> getShortTimeRounding(DeductionAtr dedAtr, WorkTimezoneCommonSet commonSet,TimeRoundingSetting rounding) {

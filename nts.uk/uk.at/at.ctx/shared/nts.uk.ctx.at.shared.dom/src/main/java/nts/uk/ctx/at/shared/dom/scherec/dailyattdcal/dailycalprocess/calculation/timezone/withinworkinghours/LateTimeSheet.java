@@ -770,9 +770,10 @@ public class LateTimeSheet {
 		if(!this.getDecitionTimeSheet(deductionAtr).isPresent()) {
 			return;
 		}
-		this.OffsetTime = Optional.of(this.getDecitionTimeSheet(deductionAtr).get().offsetProcessInPriorityOrder(
+		this.OffsetTime = Optional.of(this.getDecitionTimeSheet(deductionAtr).get().offsetProcess(
 				deductionAtr,
 				companyholidayPriorityOrder,
-				timeVacationUseTime));
+				timeVacationUseTime,
+				NotUseAtr.NOT_USE));
 	}
 }

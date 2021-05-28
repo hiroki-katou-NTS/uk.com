@@ -47,21 +47,10 @@ public class DeductionOffSetTime  implements Cloneable {
 	}
 	
 	/**
-	 * 各相殺時間を合計した時間を返す
-	 * @return
-	 */
-	public int getTotalOffSetTime() {
-		int totalTime = this.annualLeave.valueAsMinutes()+this.sixtyHourHoliday.valueAsMinutes()+this.SpecialHoliday.valueAsMinutes()+this.CompensatoryLeave.valueAsMinutes();
-		return totalTime;
-	}
-	
-	/**
-	 * 遅刻 or 早退 or 外出 時間の休暇時間相殺
-	 * 時間休暇使用時間と残時間（遅刻時間とか早退時間とか）から控除相殺時間を作る
-	 * 
-	 * @param companyholidayPriorityOrder	時間休暇相殺優先順位
-	 * @param useTime	日別実績の時間休暇使用時間
-	 * @param remainingTime		時間休暇使用残時間
+	 * 作る
+	 * @param priorityOrder 時間休暇相殺優先順位
+	 * @param useTime 日別実績の時間休暇使用時間
+	 * @param remainingTime	 時間休暇使用残時間
 	 */
 	public static DeductionOffSetTime create(CompanyHolidayPriorityOrder priorityOrder, TimevacationUseTimeOfDaily useTime, AttendanceTime remainingTime) {
 		AttendanceTime annualHoliday = AttendanceTime.ZERO;
@@ -76,17 +65,14 @@ public class DeductionOffSetTime  implements Cloneable {
 				annualHoliday = calcOffsetTime(useTime.getTimeAnnualLeaveUseTime(), remainingTime);
 				remainingTime = remainingTime.minusMinutes(annualHoliday.valueAsMinutes());
 				break;
-
 			case SUB_HOLIDAY:
 				subHoliday = calcOffsetTime(useTime.getTimeCompensatoryLeaveUseTime(), remainingTime);
 				remainingTime = remainingTime.minusMinutes(subHoliday.valueAsMinutes());
 				break;
-
 			case SIXTYHOUR_HOLIDAY:
 				sixtyhourHoliday = calcOffsetTime(useTime.getSixtyHourExcessHolidayUseTime(), remainingTime);
 				remainingTime = remainingTime.minusMinutes(sixtyhourHoliday.valueAsMinutes());
 				break;
-
 			case SPECIAL_HOLIDAY:
 				specialHoliday = calcOffsetTime(useTime.getTimeSpecialHolidayUseTime(), remainingTime);
 				remainingTime = remainingTime.minusMinutes(specialHoliday.valueAsMinutes());
@@ -97,21 +83,12 @@ public class DeductionOffSetTime  implements Cloneable {
 	}
 	
 	/**
-	 * 相殺する時間を計算（比較）する
-	 * 
-	 * @param timeVacationUseTime 時間休暇使用時間
-	 * @param remainingTime       遅刻 or 早退 or 外出 の残時間
-	 * @return 相殺する時間
+	 * 各相殺時間を合計した時間を返す
+	 * @return
 	 */
-	private static AttendanceTime calcOffsetTime(AttendanceTime timeVacationUseTime, AttendanceTime remainingTime) {
-		
-		int offSetTime;
-		if (timeVacationUseTime.lessThanOrEqualTo(remainingTime)) {
-			offSetTime = timeVacationUseTime.valueAsMinutes();
-		} else {
-			offSetTime = remainingTime.valueAsMinutes();
-		}
-		return new AttendanceTime(offSetTime);
+	public int getTotalOffSetTime() {
+		int totalTime = this.annualLeave.valueAsMinutes()+this.sixtyHourHoliday.valueAsMinutes()+this.SpecialHoliday.valueAsMinutes()+this.CompensatoryLeave.valueAsMinutes();
+		return totalTime;
 	}
 	
 	public DeductionOffSetTime clone() {
@@ -126,5 +103,21 @@ public class DeductionOffSetTime  implements Cloneable {
 			throw new RuntimeException("DeductionOffSetTime clone error.");
 		}
 		return clone;
+	}
+	
+	/**
+	 * 相殺する時間を計算（比較）する
+	 * @param timeVacationUseTime 時間休暇使用時間
+	 * @param remainingTime  遅刻 or 早退 or 外出 の残時間
+	 * @return 相殺する時間
+	 */
+	private static AttendanceTime calcOffsetTime(AttendanceTime timeVacationUseTime, AttendanceTime remainingTime) {
+		int offSetTime;
+		if (timeVacationUseTime.lessThanOrEqualTo(remainingTime)) {
+			offSetTime = timeVacationUseTime.valueAsMinutes();
+		} else {
+			offSetTime = remainingTime.valueAsMinutes();
+		}
+		return new AttendanceTime(offSetTime);
 	}
 }

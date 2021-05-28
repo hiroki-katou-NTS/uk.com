@@ -129,11 +129,16 @@ public class TimevacationUseTimeOfDaily {
 	/**
 	 * 引く
 	 * @param offSetTime 控除相殺時間
+	 * @return 時間休暇使用時間
 	 */
-	public void minus(DeductionOffSetTime offSetTime) {
-		this.timeAnnualLeaveUseTime = this.timeAnnualLeaveUseTime.minusMinutes(offSetTime.getAnnualLeave().valueAsMinutes());
-		this.timeCompensatoryLeaveUseTime = this.timeCompensatoryLeaveUseTime.minusMinutes(offSetTime.getCompensatoryLeave().valueAsMinutes());
-		this.sixtyHourExcessHolidayUseTime = this.sixtyHourExcessHolidayUseTime.minusMinutes(offSetTime.getSixtyHourHoliday().valueAsMinutes());
-		this.timeSpecialHolidayUseTime = this.timeSpecialHolidayUseTime.minusMinutes(offSetTime.getSpecialHoliday().valueAsMinutes());
+	public TimevacationUseTimeOfDaily minus(DeductionOffSetTime offSetTime) {
+		return new TimevacationUseTimeOfDaily(
+			this.timeAnnualLeaveUseTime.minusMinutes(offSetTime.getAnnualLeave().valueAsMinutes()),
+			this.timeCompensatoryLeaveUseTime.minusMinutes(offSetTime.getCompensatoryLeave().valueAsMinutes()),
+			this.sixtyHourExcessHolidayUseTime.minusMinutes(offSetTime.getSixtyHourHoliday().valueAsMinutes()),
+			this.timeSpecialHolidayUseTime.minusMinutes(offSetTime.getSpecialHoliday().valueAsMinutes()),
+			this.specialHolidayFrameNo.map(s -> new SpecialHdFrameNo(s.v())),
+			new AttendanceTime(this.timeChildCareHolidayUseTime.valueAsMinutes()),
+			new AttendanceTime(this.timeCareHolidayUseTime.valueAsMinutes()));
 	}
 }

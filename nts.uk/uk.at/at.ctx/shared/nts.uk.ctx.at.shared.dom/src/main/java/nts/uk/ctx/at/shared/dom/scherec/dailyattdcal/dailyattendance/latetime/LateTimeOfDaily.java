@@ -344,20 +344,21 @@ public class LateTimeOfDaily {
 	}
 	/**
 	 * 休暇加算時間の計算
-	 * @return
+	 * @param calcMethodSet 休暇の計算方法の設定
+	 * @param holidayAddtionSet 休暇加算時間設定
+	 * @return 時間休暇加算時間
 	 */
 	public AttendanceTime calcVacationAddTime(HolidayCalcMethodSet calcMethodSet, Optional<HolidayAddtionSet> holidayAddtionSet) {
 		if(calcMethodSet.getNotUseAtr(PremiumAtr.RegularWork).isNotUse()) {
 			return AttendanceTime.ZERO;
 		}
-		//時間休暇加算時間を取得する
 		return holidayAddtionSet.get().getAddTime(this.timePaidUseTime, this.lateTime.getCalcTime());
 	}
 	
 	/**
 	 * 時間休暇加算時間を取得する
 	 * @param calcMethodSet 休暇の計算方法の設定
-	 * @param holidayAddtionSet 休暇加算時間背帝
+	 * @param holidayAddtionSet 休暇加算時間設定
 	 * @param frames 就業時間内時間枠(List)
 	 * @return 時間休暇加算時間
 	 */

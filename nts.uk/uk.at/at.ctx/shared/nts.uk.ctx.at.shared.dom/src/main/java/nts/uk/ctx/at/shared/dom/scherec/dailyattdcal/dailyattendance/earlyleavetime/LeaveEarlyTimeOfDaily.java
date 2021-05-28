@@ -282,7 +282,7 @@ public class LeaveEarlyTimeOfDaily {
 				.filter(f -> f.getWorkingHoursTimeNo().equals(new EmTimeFrameNo(this.workNo.v())))
 				.map(f -> f.getLeaveEarlyTimeSheet())
 				.findFirst().flatMap(l -> l);
-		
+		//計算早退計上時間
 		AttendanceTime leaveEarlyCalcTime = leaveEarly.isPresent() ? leaveEarly.get().calcForRecordTime(true).getCalcTime() : AttendanceTime.ZERO;
 		
 		return holidayAddtionSet.get().getAddTime(this.timePaidUseTime, leaveEarlyCalcTime);

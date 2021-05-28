@@ -35,7 +35,8 @@ public class TimeHolidayAdditionSet extends DomainObject implements Serializable
 	// 勤務区分
 	private WorkClassOfTimeHolidaySet workClass;
 	
-	/**加算する時間を判断する
+	/**
+	 * 加算する時間を判断する
 	 * @param dailyTime 時間休暇使用時間
 	 * @param time 相殺対象時間
 	 * @return 時間休暇加算時間
@@ -43,12 +44,10 @@ public class TimeHolidayAdditionSet extends DomainObject implements Serializable
 	public AttendanceTime getAddTime(AttendanceTime dailyTime, AttendanceTime time) {
 		if(this.addingMethod.isAddAllTimeUsed()) {
 			return dailyTime;
-		} else {
-			if(dailyTime.lessThan(time)) {
-				return dailyTime;
-			} else {
-				return time;
-			}
 		}
+		if(dailyTime.lessThan(time)) {
+			return dailyTime;
+		}
+		return time;
 	}
 }

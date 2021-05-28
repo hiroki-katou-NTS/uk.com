@@ -1342,6 +1342,9 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 						DeductionAtr.Appropriate,
 						priorityOrder,
 						within.getLateVacationUseTime().get());
+				within.setLateVacationUseTime(
+						within.getLateVacationUseTime().map(l -> l.minus(within.getLateTimeSheet().get().getOffsetTime()
+								.orElse(DeductionOffSetTime.createAllZero()))));
 			}
 			//早退相殺時間の計算
 			if(within.getLeaveEarlyTimeSheet().isPresent() && within.getLeaveEarlyVacationUseTime().isPresent()) {
@@ -1349,11 +1352,22 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 						DeductionAtr.Deduction,
 						priorityOrder,
 						within.getLeaveEarlyVacationUseTime().get());
+				within.setLeaveEarlyVacationUseTime(
+						within.getLeaveEarlyVacationUseTime().map(l -> l.minus(within.getLeaveEarlyTimeSheet().get().getOffsetTime()
+								.orElse(DeductionOffSetTime.createAllZero()))));
 			}
 		}
 		//外出相殺時間の計算
 		for(TimeSheetOfDeductionItem item : timeSheetOfDeductionItems) {
 			item.setOutOffsetTime(DeductionAtr.Deduction, priorityOrder, this.outingVacationUseTime);
+			if(!item.getGoOutReason().isPresent()
+					|| !this.outingVacationUseTime.containsKey(item.getGoOutReason().get())
+					|| !item.getDeductionOffSetTime().isPresent()) {
+				continue;
+			}
+			this.outingVacationUseTime.replace(
+					item.getGoOutReason().get(),
+					this.outingVacationUseTime.get(item.getGoOutReason().get()).minus(item.getDeductionOffSetTime().get()));
 		}
 	}
 	

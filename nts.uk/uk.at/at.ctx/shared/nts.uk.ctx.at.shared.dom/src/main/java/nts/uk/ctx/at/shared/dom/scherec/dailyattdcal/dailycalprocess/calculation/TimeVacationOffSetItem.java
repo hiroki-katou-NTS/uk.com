@@ -85,100 +85,19 @@ public abstract class TimeVacationOffSetItem extends CalculationTimeSheet {
 		}
 		return new AttendanceTime(calcTime);
 	}
-
-	/**
-	 * 遅刻 or 早退 or 外出 時間の休暇時間相殺
-	 * 
-	 * @param deductionAtr                計上 or 控除
-	 * @param companyholidayPriorityOrder 時間休暇相殺優先順位
-	 * @param timeVacationUseTime         日別実績の時間休暇使用時間
-	 * @param deductionOffSetTime         控除相殺時間
-	 */
-	public void offsetProcessInPriorityOrder(DeductionAtr deductionAtr,
-			CompanyHolidayPriorityOrder companyholidayPriorityOrder, TimevacationUseTimeOfDaily timeVacationUseTime,
-			DeductionOffSetTime deductionOffSetTime) {
-		// 時間休暇の優先順に処理
-		for (HolidayPriorityOrder holiday : companyholidayPriorityOrder.getHolidayPriorityOrders()) {
-			switch (holiday) {
-			case ANNUAL_HOLIDAY:
-				this.offsetProcess(timeVacationUseTime.getTimeAnnualLeaveUseTime(),
-						this.calcTotalTime(NotUseAtr.USE, NotUseAtr.NOT_USE), // 時間の計算
-						deductionOffSetTime.getAnnualLeave());
-				break;
-
-			case SUB_HOLIDAY:
-				this.offsetProcess(timeVacationUseTime.getTimeCompensatoryLeaveUseTime(),
-						this.calcTotalTime(NotUseAtr.USE, NotUseAtr.NOT_USE), // 時間の計算,
-						deductionOffSetTime.getCompensatoryLeave());
-				break;
-
-			case SIXTYHOUR_HOLIDAY:
-				this.offsetProcess(timeVacationUseTime.getSixtyHourExcessHolidayUseTime(),
-						this.calcTotalTime(NotUseAtr.USE, NotUseAtr.NOT_USE), // 時間の計算,
-						deductionOffSetTime.getSixtyHourHoliday());
-				break;
-
-			case SPECIAL_HOLIDAY:
-				this.offsetProcess(timeVacationUseTime.getTimeSpecialHolidayUseTime(),
-						this.calcTotalTime(NotUseAtr.USE, NotUseAtr.NOT_USE), // 時間の計算
-						deductionOffSetTime.getSpecialHoliday());
-				break;
-			}
-		}
-	}
 	
 	/**
-	 * @param deductionAtr
-	 * @param priorityOrder
-	 * @param useTime
-	 * @return
+	 * 相殺する
+	 * @param deductionAtr 控除区分
+	 * @param priorityOrder 時間休暇相殺優先順位
+	 * @param useTime 日別勤怠の時間休暇使用時間
+	 * @param deductionOffSetTimeAtr 相殺された時間を控除する
+	 * @return 控除相殺時間
 	 */
-	public DeductionOffSetTime offsetProcessInPriorityOrder(DeductionAtr deductionAtr,
-			CompanyHolidayPriorityOrder priorityOrder, TimevacationUseTimeOfDaily useTime) {
+	public DeductionOffSetTime offsetProcess(DeductionAtr deductionAtr, CompanyHolidayPriorityOrder priorityOrder,
+			TimevacationUseTimeOfDaily useTime, NotUseAtr deductionOffSetTimeAtr) {
 		//残時間
-		AttendanceTime remainingTime = this.calcTotalTime(NotUseAtr.NOT_USE, NotUseAtr.NOT_USE);
-		DeductionOffSetTime offsetTime = DeductionOffSetTime.create(priorityOrder, useTime, remainingTime);
-		useTime.minus(offsetTime);
-		return offsetTime;
-	}
-
-	/**
-	 * 相殺処理
-	 * 
-	 * @param timevacationUseTime 時間休暇使用残時間
-	 * @param remainingTime       遅刻 or 早退 or 外出 の残時間
-	 * @param deductionOffSetTime 相殺控除時間
-	 */
-	private void offsetProcess(AttendanceTime timevacationUseTime, AttendanceTime remainingTime,
-			AttendanceTime deductionOffSetTime) {
-		// 相殺時間
-		AttendanceTime offSetTime = AttendanceTime.ZERO;
-
-		// 相殺する時間を計算（比較）する
-		offSetTime = this.calcOffsetTime(timevacationUseTime, remainingTime);
-
-		// 相殺した時間を相殺控除時間に格納する
-		deductionOffSetTime.addMinutes(offSetTime.valueAsMinutes());
-
-		// 相殺した時間を時間休暇使用残時間から減算する
-		timevacationUseTime.minusMinutes(offSetTime.valueAsMinutes());
-	}
-
-	/**
-	 * 相殺する時間を計算（比較）する
-	 * 
-	 * @param timeVacationUseTime 時間休暇使用時間
-	 * @param remainingTime       遅刻 or 早退 or 外出 の残時間
-	 * @return 相殺する時間
-	 */
-	private AttendanceTime calcOffsetTime(AttendanceTime timeVacationUseTime, AttendanceTime remainingTime) {
-		
-		int offSetTime;
-		if (timeVacationUseTime.lessThanOrEqualTo(remainingTime)) {
-			offSetTime = timeVacationUseTime.valueAsMinutes();
-		} else {
-			offSetTime = remainingTime.valueAsMinutes();
-		}
-		return new AttendanceTime(offSetTime);
+		AttendanceTime remainingTime = this.calcTotalTime(deductionOffSetTimeAtr, NotUseAtr.NOT_USE);
+		return DeductionOffSetTime.create(priorityOrder, useTime, remainingTime);
 	}
 }
