@@ -27,7 +27,7 @@
 					data-bind="ntsLinkButton: { action: jumpToHome}">#{i18n.getText('KDW002_21')}</a>
 				<!--A1_2-->
 				<button tabindex="2" data-prevent-click="true" class="proceed"
-					data-bind="click: submitData,enable :isSave">#{i18n.getText('KDW002_2')}</button>
+					data-bind="click: submitData,enable :isSave &amp;&amp; $root.errors.isEmpty">#{i18n.getText('KDW002_2')}</button>
 
 			</div>
 			<div id="contents-area">

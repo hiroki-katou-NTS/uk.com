@@ -329,6 +329,13 @@ module nts.uk.at.view.kdw002.a {
                 //     // nts.uk.ui.block.clear();
                 //     return;
                 // }
+                nts.uk.ui.errors.clearAll();          	
+                if($("#A7_2").ntsError("hasError")){
+                    self.isSave(false);
+                    return;
+                } else {
+                    self.isSave(true);
+                }
                 switch(self.unit()){
                     case 0:
                         if(self.timeUnit() == null && self.frameCategory() === 8){
