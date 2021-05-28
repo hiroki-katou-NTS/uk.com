@@ -276,7 +276,6 @@ module nts.uk.ui.at.kdw013.c {
                         <td><div data-bind="
                                 dropdown: $component.model.workplace,
                                 items: $component.combobox.workLocations,
-                                required: true,
                                 name: 'WORKPLACE',
                                 hasError: $component.errors.workplace
                             "></div></td>

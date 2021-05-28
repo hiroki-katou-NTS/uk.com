@@ -25,7 +25,7 @@ module nts.uk.ui.at.kdw013.share {
                 const primitive = primitiveValueConstraints[constraint];
                 const maxLength = (primitive || { maxLength: 9999 }).maxLength || 9999;
 
-                if (!$value || countHalf($value) > maxLength) {
+                if (countHalf($value) > maxLength) {
                     if (ko.isObservable(hasError)) {
                         hasError(true);
                     }
