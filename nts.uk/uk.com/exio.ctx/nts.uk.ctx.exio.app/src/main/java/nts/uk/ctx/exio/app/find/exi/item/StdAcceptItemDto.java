@@ -67,7 +67,8 @@ public class StdAcceptItemDto {
 				domain.getCsvItemNumber().isPresent() ? domain.getCsvItemNumber().get() : null,
 				domain.getCsvItemName().isPresent() ? domain.getCsvItemName().get() : null, domain.getItemType().value,
 				domain.getCategoryItemNo(),
-				domain.getItemType() == ItemType.NUMERIC && domain.getDataFormatSetting().isPresent()
+				((domain.getItemType() == ItemType.REAL && domain.getDataFormatSetting().isPresent())
+				|| (domain.getItemType() == ItemType.INT && domain.getDataFormatSetting().isPresent()))
 						? NumDataFormatSetDto.fromDomain((NumDataFormatSet) domain.getDataFormatSetting().get()) : null,
 				domain.getItemType() == ItemType.CHARACTER && domain.getDataFormatSetting().isPresent()
 						? ChrDataFormatSetDto.fromDomain((ChrDataFormatSet) domain.getDataFormatSetting().get()) : null,

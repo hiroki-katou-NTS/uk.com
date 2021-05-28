@@ -40,7 +40,8 @@ public class CsvItem {
 		AcceptItemEditValueDto condEditAndCheck = accSetItem.checkCondition(this, value);
 		
 		if ((accSetItem.getItemType() == ItemType.CHARACTER
-				|| accSetItem.getItemType() == ItemType.NUMERIC)
+				|| accSetItem.getItemType() == ItemType.INT
+				|| accSetItem.getItemType() == ItemType.REAL)
 				&& accSetItem.getDataFormatSetting().isPresent()) {
 			Optional<CodeConvertCode> cdConvertSt;
 			if(accSetItem.getItemType() == ItemType.CHARACTER) {

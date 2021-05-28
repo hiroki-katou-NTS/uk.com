@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>CNV002B テーブル定義エクスポート</title>
+<link rel="stylesheet" type="text/css" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+<link rel="stylesheet" type="text/css" href="../../../../lib/nittsu/ui/style/stylesheets/base.css">
+<link rel="stylesheet" type="text/css" href="main.css">
+<script
+  src="https://code.jquery.com/jquery-3.3.1.min.js"
+  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+  crossorigin="anonymous"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+<script type="text/javascript" src="cnv002.b.js"></script>
+</head>
+
+<body>
+	<div id="messageDialog" title="">
+		<label id="lblMessage"></label>
+	</div>
+	<div id="header">
+		<div id="menu-header">
+			<div id="logo-area" class="cf"><div id="logo"><img src="/nts.uk.cnv.web/master/images/kinjirou.png"></div></div>
+			<div id="nav-area" class="cf"></div>
+			<div id="pg-area" class="cf">
+				<div id="pg-name" class="title">CNV002B テーブル定義エクスポート</div>
+			</div>
+		</div>
+	</div>
+	<div id="master-content">
+		<div id="functions-area">
+		</div>
+		<table>
+			<tr>
+				<td>
+					<div class="form-label required">
+						<label>Table Name：</label>
+					</div>
+				<td>
+					<input type="text" id="tablename" style="width:340px;" class="nts-editor nts-input reset-element"/>
+				</td>
+				<td></td>
+			</tr>
+			<tr>
+				<td>
+					<div class="form-label required">
+						<label>RDBMS：</label>
+					</div>
+				</td>
+				<td>
+					<input type="radio" id="uk" name="tabledesign_type" value="uk" checked="checked" style="font-size:80%">UK
+					<input type="radio" id="mssql" name="tabledesign_type" value="sqlserver" style="font-size:80%">SqlServer
+					<input type="radio" id="pg" name="tabledesign_type" value="postgres" style="font-size:80%">Postgres
+				</td>
+				<td></td>
+			</tr>
+			<tr>
+				<td></td>
+				<td>
+					<input type="checkbox" id="withComment" value="true">with comment
+				</td>
+				<td></td>
+			</tr>
+			<tr><td>&nbsp;</td></tr>
+			<tr>
+				<td colspan="2" style="text-align: center">
+					<button id="view" class="large" style="width: 100px">View</button>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2" style="text-align: center">
+					<div class="caret-bottom "></div>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2" style="width:600px">
+					<div class="form-label">
+						<label>Table Design：</label>
+					</div>
+					<textarea id="tabledesign" style="font-size:80%; width:580px; height:500px;" spellcheck="false" disabled></textarea>
+				</td>
+			</tr>
+		</table>
+	</div>
+</body>
+</html>
