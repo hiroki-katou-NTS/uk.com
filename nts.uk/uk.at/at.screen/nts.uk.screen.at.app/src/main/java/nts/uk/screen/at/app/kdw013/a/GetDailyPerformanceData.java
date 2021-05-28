@@ -82,7 +82,7 @@ public class GetDailyPerformanceData {
 				actualContent.setBreakTimeSheets(interDaily.getBreakTime().getBreakTimeSheets());
 				// 休憩時間
 				actualContent.setBreakHours(Optional.ofNullable(interDaily.getAttendanceTimeOfDailyPerformance().map(
-						x -> x.getActualWorkingTimeOfDaily().getTotalWorkingTime().getBreakTimeOfDaily().getWorkTime())
+						x -> x.getActualWorkingTimeOfDaily().getTotalWorkingTime().getBreakTimeOfDaily().getToRecordTotalTime().getTotalTime().getTime())
 						.orElse(null)));
 				// 総労働時間
 				actualContent.setTotalWorkingHours(Optional.ofNullable(interDaily.getAttendanceTimeOfDailyPerformance()
@@ -91,11 +91,11 @@ public class GetDailyPerformanceData {
 				if (time.getWorkNo().v() == 1) {
 					// 開始時刻
 					actualContent.setStart(Optional.ofNullable(time.getAttendanceStamp()
-							.map(x -> x.getActualStamp().map(y -> y.getTimeDay()).orElse(null)).orElse(null)));
+							.map(x -> x.getStamp().map(y -> y.getTimeDay()).orElse(null)).orElse(null)));
 
 					// 終了時刻
 					actualContent.setEnd(Optional.ofNullable(time.getLeaveStamp()
-							.map(x -> x.getActualStamp().map(y -> y.getTimeDay()).orElse(null)).orElse(null)));
+							.map(x -> x.getStamp().map(y -> y.getTimeDay()).orElse(null)).orElse(null)));
 				}
 
 				// 実績内容
