@@ -12,9 +12,12 @@ public class ExecutionContext {
 	/** 会社ID */
 	String companyId;
 	
-	/** カテゴリID */
-	int categoryId;
+	/** 受入設定コード */
+	String settingCode;
+	
+	/** 受入グループID */
+	int groupId;
 	
 	/** 受入モード */
-	ImportingMode importingMode;
+	ImportingMode mode;
 }
