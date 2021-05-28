@@ -370,7 +370,7 @@ public class W4D4AlarmService {
 					lstDetail.add(alarmDetail);
 				}
 
-				if (!lstResult.isEmpty()) {
+				if (!lstDetail.isEmpty()) {
 					// 「アラーム抽出条件」を作成してInput．List＜アラーム抽出条件＞に追加
 					List<AlarmExtractionCondition> extractionConditions = alarmExtractConditions.stream()
 							.filter(x -> x.getAlarmListCheckType() == AlarmListCheckType.FixCheck
