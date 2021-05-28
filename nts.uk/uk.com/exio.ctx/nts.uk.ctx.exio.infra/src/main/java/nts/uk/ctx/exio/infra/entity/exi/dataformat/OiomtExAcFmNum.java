@@ -151,7 +151,7 @@ public class OiomtExAcFmNum extends ContractUkJpaEntity implements Serializable 
 	}
 
 	public NumDataFormatSet toDomain() {
-		return new NumDataFormatSet(ItemType.NUMERIC.value, this.fixedValue, this.decimalDivision,
+		return new NumDataFormatSet(ItemType.REAL.value, this.fixedValue, this.decimalDivision,
 				this.effectiveDigitLength, this.cdConvertCd, this.valueOfFixedValue, this.decimalDigitNum,
 				this.startDigit, this.endDigit, this.decimalPointCls, this.decimalFraction);
 	}

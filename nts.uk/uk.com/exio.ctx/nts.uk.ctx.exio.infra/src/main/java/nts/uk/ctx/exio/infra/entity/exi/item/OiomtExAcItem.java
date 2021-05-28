@@ -109,7 +109,8 @@ public class OiomtExAcItem extends ContractUkJpaEntity implements Serializable {
 		OiomtExAcScreenCond screenConSet = domain.getAcceptScreenConditionSetting().isPresent()
 				? OiomtExAcScreenCond.fromDomain(domain, domain.getAcceptScreenConditionSetting().get())
 				: null;
-		OiomtExAcFmNum numDataFormatSet = domain.getItemType() == ItemType.NUMERIC && domain.getDataFormatSetting().isPresent()
+		OiomtExAcFmNum numDataFormatSet = (domain.getItemType() == ItemType.REAL && domain.getDataFormatSetting().isPresent())
+				||(domain.getItemType() == ItemType.INT && domain.getDataFormatSetting().isPresent())
 				? OiomtExAcFmNum.fromDomain(domain,
 						(NumDataFormatSet) domain.getDataFormatSetting().get())
 				: null;
@@ -145,7 +146,8 @@ public class OiomtExAcItem extends ContractUkJpaEntity implements Serializable {
 		DataFormatSetting dataFormatSet = null;
 		ItemType itemType = ItemType.values()[entity.itemType];
 		switch (itemType) {
-		case NUMERIC:
+		case REAL:
+		case INT:
 			dataFormatSet = entity.numDataFormatSet == null ? null : entity.numDataFormatSet.toDomain();
 			break;
 		case CHARACTER:

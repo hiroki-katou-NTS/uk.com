@@ -109,7 +109,8 @@ public class StdAcceptItem extends AggregateRoot {
 					return result;
 				}
 				break;
-			case NUMERIC:
+			case INT:
+			case REAL:
 				NumDataFormatSet numFormatSet = (NumDataFormatSet) this.getDataFormatSetting().get();
 				toItemValue = numFormatSet.editNumber(itemValue);
 				if(toItemValue == null) {

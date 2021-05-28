@@ -60,7 +60,7 @@ public class NumDataFormatSetCommand {
 	private Integer decimalFraction;
 
 	public NumDataFormatSet toDomain() {
-		return new NumDataFormatSet(ItemType.NUMERIC.value, this.fixedValue, this.decimalDivision,
+		return new NumDataFormatSet(ItemType.REAL.value, this.fixedValue, this.decimalDivision,
 				this.effectiveDigitLength, this.codeConvertCode, this.valueOfFixedValue, this.decimalDigitNumber,
 				this.startDigit, this.endDigit, this.decimalPointClassification, this.decimalFraction);
 	}
