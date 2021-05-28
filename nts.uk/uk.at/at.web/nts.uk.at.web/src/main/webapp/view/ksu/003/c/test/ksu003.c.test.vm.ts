@@ -181,7 +181,7 @@ module nts.uk.at.view.ksu003.c.test {
 							self.dataFromKsu003c(getShared('dataShareFromKsu003c'));
 						});
 					} else {
-						self.$dialog.info("Have no work shedule at " +  moment(self.date()).format('YYYY/MM/DD');
+						self.$dialog.info("Have no work shedule at " +  moment(self.date()).format('YYYY/MM/DD'));
 					}
 				}).always(() => {
 					self.$blockui("hide");
