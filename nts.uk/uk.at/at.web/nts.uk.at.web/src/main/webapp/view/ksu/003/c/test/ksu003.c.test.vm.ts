@@ -25,7 +25,6 @@ module nts.uk.at.view.ksu003.c.test {
 			isShowSelectAllButton: KnockoutObservable<boolean>;
 			employeeList: KnockoutObservableArray<UnitModel>;
 
-			// employeeListAvailable: KnockoutObservableArray<UnitModel> = ko.observableArray<UnitModel>([]);
 			// startDate for validate
 			startDateValidate: KnockoutObservable<string>;
 			alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel>;
@@ -156,9 +155,7 @@ module nts.uk.at.view.ksu003.c.test {
 				})
 				let listEmpSort = _.sortBy(temp, x => { return x.id });
 				_.each(listEmpSort, x =>{
-					lisId.push(x.id);
-					// listCode.push(x.code);
-					// listName.push(x.name);
+					lisId.push(x.id);					
 				})
 				request1.empIds = lisId;
 				request1.ymd = moment(self.date()).format('YYYY/MM/DD');
@@ -173,28 +170,22 @@ module nts.uk.at.view.ksu003.c.test {
 									listName.push(x.name);
 								}								
 							})
-							// _.map(self.employeeList(), item => {
-							// 	if(item.id === id){
-							// 		temp1.push(item);										
-							// 	}
-							// })
+						
 						});
-						// self.employeeListAvailable(temp1);
-						request.employeeIds = lisIdAvai;
-						// self.employeeListAvailable();
+					
+						request.employeeIds = lisIdAvai;						
 						request.employeeCodes = listCode;
 						request.employeeNames = listName;
 						setShared('dataShareKsu003c', request);
 						self.currentScreen = nts.uk.ui.windows.sub.modal("/view/ksu/003/c/index.xhtml").onClosed(() => {
 							self.dataFromKsu003c(getShared('dataShareFromKsu003c'));
 						});
+					} else {
+						self.$dialog.info("Have no work shedule at " +  moment(self.date()).format('YYYY/MM/DD');
 					}
 				}).always(() => {
 					self.$blockui("hide");
 				});
-				
-				// request.employeeIds = lisId;
-				
 			}
 			public startPage(): JQueryPromise<any> {
 				let self = this,
