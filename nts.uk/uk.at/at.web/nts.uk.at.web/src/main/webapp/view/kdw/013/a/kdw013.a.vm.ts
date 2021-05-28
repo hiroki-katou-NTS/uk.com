@@ -242,22 +242,21 @@ module nts.uk.ui.at.kdw013.a {
                     read: () => {
                         const { startManHourInputResultDto } = ko.unwrap(vm.$settings);
 
-                        if (startManHourInputResultDto) {
-                            const { taskFrameUsageSetting } = startManHourInputResultDto;
+                        if (!startManHourInputResultDto) {
+                            return true;
+                        }
 
-                            if (taskFrameUsageSetting) {
-                                const { frameSettingList } = taskFrameUsageSetting;
+                        const { taskFrameUsageSetting } = startManHourInputResultDto;
 
-                                if (frameSettingList && frameSettingList.length) {
-                                    const [setting] = frameSettingList;
+                        if (!taskFrameUsageSetting) {
 
-                                    if (setting) {
-                                        const { useAtr } = setting;
+                            return true;
+                        }
 
-                                        return useAtr === 2;
-                                    }
-                                }
-                            }
+                        const { frameSettingList } = taskFrameUsageSetting;
+
+                        if (frameSettingList && frameSettingList.length) {
+                            return !!_.find(frameSettingList, ({ useAtr, frameNo }) => frameNo === 2 && useAtr === 1);
                         }
 
                         return true;
@@ -440,6 +439,14 @@ module nts.uk.ui.at.kdw013.a {
                     // 作業マスタチェック
                     if (!tasks || tasks.length === 0) {
                         return vm.$dialog.error({ messageId: 'Msg_1961' });
+                    }
+
+                    const $mode = !!_.find(frameSettingList, ({ useAtr, frameNo }) => frameNo === 5 && useAtr === 1);
+
+                    if (mode) {
+                        vm.initialView('oneDay');
+                    } else {
+                        vm.initialView('fullWeek');
                     }
 
                     vm.$settings(response);
