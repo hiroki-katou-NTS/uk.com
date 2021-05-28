@@ -139,6 +139,7 @@ module nts.uk.ui.at.kdw013.share {
             const excludeTimes: KnockoutObservableArray<BussinessTime> = allBindingsAccessor.get('exclude-times');
             const value = valueAccessor();
 
+            const { $i18n } = viewModel;
             const errorId = ko.observable('');
             const errorParams = ko.observableArray(['']);
             const startTime: KnockoutObservable<number | null> = ko.observable(null).extend({ rateLimit: 50 });
@@ -261,7 +262,7 @@ module nts.uk.ui.at.kdw013.share {
                 // validate start required
                 if (start === null) {
                     errorId('MsgB_1');
-                    errorParams(['KDW013_14']);
+                    errorParams([$i18n('KDW013_14')]);
 
                     return;
                 }
@@ -269,7 +270,7 @@ module nts.uk.ui.at.kdw013.share {
                 // validate true value
                 if ([-3, -2, -1, 1441].indexOf(start) > -1) {
                     errorId('MsgB_16');
-                    errorParams(['KDW013_14', number2String(0), number2String(1440)]);
+                    errorParams([$i18n('KDW013_14'), number2String(0), number2String(1440)]);
 
                     return;
                 }
@@ -277,7 +278,7 @@ module nts.uk.ui.at.kdw013.share {
                 // validate end required
                 if (end === null) {
                     errorId('MsgB_1');
-                    errorParams(['KDW013_31']);
+                    errorParams([$i18n('KDW013_31')]);
 
                     return;
                 }
@@ -285,7 +286,7 @@ module nts.uk.ui.at.kdw013.share {
                 // validate true value
                 if ([-3, -2, -1, 1441].indexOf(end) > -1) {
                     errorId('MsgB_16');
-                    errorParams(['KDW013_31', number2String(0), number2String(1440)]);
+                    errorParams([$i18n('KDW013_31'), number2String(0), number2String(1440)]);
 
                     return;
                 }
