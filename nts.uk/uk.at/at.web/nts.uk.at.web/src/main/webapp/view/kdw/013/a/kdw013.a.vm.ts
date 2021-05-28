@@ -240,6 +240,26 @@ module nts.uk.ui.at.kdw013.a {
             vm.$toggle = {
                 save: ko.computed({
                     read: () => {
+                        const { startManHourInputResultDto } = ko.unwrap(vm.$settings);
+
+                        if (startManHourInputResultDto) {
+                            const { taskFrameUsageSetting } = startManHourInputResultDto;
+
+                            if (taskFrameUsageSetting) {
+                                const { frameSettingList } = taskFrameUsageSetting;
+
+                                if (frameSettingList && frameSettingList.length) {
+                                    const [setting] = frameSettingList;
+
+                                    if (setting) {
+                                        const { useAtr } = setting;
+
+                                        return useAtr === 2;
+                                    }
+                                }
+                            }
+                        }
+
                         return true;
                     }
                 }),
