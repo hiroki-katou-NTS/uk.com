@@ -722,6 +722,7 @@ module nts.uk.com.view.cmm040.a.viewmodel {
                 }
                 //view all code of selected item 
                 let output = nts.uk.ui.windows.getShared('workplaceInfor');
+                output = _.sortBy(output, 'code');
                 self.listSelectWorkplaceID = [];
                 self.listWorkPlaceIDs = [];
                 for (let i = 0; i < output.length; i++) {

@@ -302,7 +302,7 @@ public class DeductionTotalTimeForFluidCalc {
 				/** 重複時間帯を置き換え*/
 				Optional<TimeSheetOfDeductionItem> correctedBreak = result.stream().filter(c -> c.getDeductionAtr() == DeductionClassification.BREAK).findFirst();
 				if (correctedBreak.isPresent()){
-					targetDeductSheet.replaceTimeSheet(correctedBreak.get().getTimeSheet());
+					targetDeductSheet.shiftTimeSheet(correctedBreak.get().getTimeSheet());
 					
 					/** ○ループ最初からやり直し */
 					duplicationProcessingOfFluidBreakTime(targetDeductSheet, deductionTimeList, workTime, workType);
@@ -374,7 +374,7 @@ public class DeductionTotalTimeForFluidCalc {
 											dts.getRounding(), new ArrayList<>(), new ArrayList<>(), WorkingBreakTimeAtr.NOTWORKING, Finally.empty(), 
 											Finally.of(BreakClassification.BREAK_STAMP), Optional.empty(), DeductionClassification.BREAK, Optional.empty());
 				deductTimeSheet.add(breakTime);
-				dts.replaceTimeSheet(new TimeSpanForDailyCalc(endTime.get(), dts.getTimeSheet().getEnd()));
+				dts.shiftTimeSheet(new TimeSpanForDailyCalc(endTime.get(), dts.getTimeSheet().getEnd()));
 			} else {
 				dts.changeToBreak();
 			}

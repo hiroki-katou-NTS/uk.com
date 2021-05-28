@@ -10,9 +10,11 @@ import lombok.Data;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.calculationsetting.query.DetermineAutoSetFutureDayStamp;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.DetermineClassifiByWorkInfoCond;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.DetermineClassifiByWorkInfoCond.AutoStampSetClassifi;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
+import nts.uk.ctx.at.shared.dom.workingcondition.NotUseAtr;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.worktype.AttendanceHolidayAttr;
 import nts.uk.ctx.at.shared.dom.worktype.algorithm.JudgeHdSystemOneDayService;
@@ -79,7 +81,8 @@ public class ConfirmSetSpecifiTimeZone {
 
 		public ConfirmSetSpecifiResult() {
 			this.timeSetClassification = false;
-			this.autoStampSetClassifi = Optional.empty();
+			this.autoStampSetClassifi = Optional.of(new AutoStampSetClassifi(NotUseAtr.NOTUSE,
+					TimeChangeMeans.AUTOMATIC_SET, NotUseAtr.NOTUSE, TimeChangeMeans.AUTOMATIC_SET));
 		}
 
 	}

@@ -3,6 +3,7 @@ package nts.uk.ctx.at.function.dom.adapter.toppagealarmpub;
 import java.util.List;
 import java.util.Optional;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
@@ -12,6 +13,7 @@ import lombok.Data;
  */
 @Data
 @Builder
+@AllArgsConstructor
 public class DeleteInfoAlarmImport {
     /**
      * アラーム分類
@@ -28,7 +30,7 @@ public class DeleteInfoAlarmImport {
      */
     private int displayAtr;
     
-    /*
+    /**
      * パターンコード
      */
     private Optional<String> patternCode;

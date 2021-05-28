@@ -11,7 +11,7 @@ import nts.uk.ctx.at.shared.dom.ot.frame.NotUseAtr;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameGetMemento;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameName;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameNo;
-import nts.uk.ctx.at.shared.dom.ot.frame.RoleOvertimeWork;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.roleofovertimework.roleofovertimework.RoleOvertimeWorkEnum;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -80,8 +80,8 @@ public class OvertimeWorkFrameCommandDto implements OvertimeWorkFrameGetMemento 
 	}
 	
 	@Override
-	public RoleOvertimeWork getRole() {
-		return RoleOvertimeWork.valueOf(this.role);
+	public RoleOvertimeWorkEnum getRole() {
+		return RoleOvertimeWorkEnum.valueOf(this.role);
 	}
 	
 	@Override
