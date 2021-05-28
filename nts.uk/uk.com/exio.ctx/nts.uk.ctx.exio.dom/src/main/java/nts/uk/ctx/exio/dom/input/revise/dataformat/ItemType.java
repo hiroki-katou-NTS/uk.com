@@ -11,7 +11,7 @@ public enum ItemType {
 	 */
 	CHARACTER(0, "Enum_ItemType_CHARACTER"),
 	/**
-	 * 1: 数値型
+	 * 1: 整数型
 	 */
 	INT(1, "Enum_ItemType_INT"),
 	/**
