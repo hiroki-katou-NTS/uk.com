@@ -466,11 +466,11 @@ public class AppApprovalAggregationProcessService {
 		if (empIds.isEmpty()) {
 			alarmEmployeeList.add(new AlarmEmployeeList(alarmExtractInfoResults, sid));
 		} else {
-			alarmEmployeeList.forEach(x -> {
+			for (AlarmEmployeeList x : alarmEmployeeList) {
 				if (x.getEmployeeID().equals(sid)) {
 					x.getAlarmExtractInfoResults().addAll(alarmExtractInfoResults);
 				}
-			});
+			}
 		}
 
 //		List<ResultOfEachCondition> result = lstResultCondition.stream()

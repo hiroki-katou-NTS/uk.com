@@ -228,7 +228,11 @@ public class AlarmTopPageProcessingServiceImpl implements AlarmTopPageProcessing
                 if (emps.isEmpty()) {
                     lstDelete.add(new AlarmEmployeeList(lstInfoResult, entryDb.getKey()));
                 } else {
-                    lstDelete.stream().filter(x -> x.getEmployeeID().equals(entryDb.getKey())).forEach(e -> e.getAlarmExtractInfoResults().addAll(lstInfoResult));
+                    lstDelete.forEach(x -> {
+                        if (x.getEmployeeID().equals(entryDb.getKey())) {
+                            x.getAlarmExtractInfoResults().addAll(lstInfoResult);
+                        }
+                    });
                 }
             }
         }
@@ -292,7 +296,11 @@ public class AlarmTopPageProcessingServiceImpl implements AlarmTopPageProcessing
                 if (emps.isEmpty()) {
                     lstInsert.add(new AlarmEmployeeList(lstInfoResult, entryIp.getKey()));
                 } else {
-                    lstInsert.stream().filter(x -> x.getEmployeeID().equals(entryIp.getKey())).forEach(e -> e.getAlarmExtractInfoResults().addAll(lstInfoResult));
+                    lstInsert.forEach(x -> {
+                        if (x.getEmployeeID().equals(entryIp.getKey())) {
+                            x.getAlarmExtractInfoResults().addAll(lstInfoResult);
+                        }
+                    });
                 }
             }
         }
