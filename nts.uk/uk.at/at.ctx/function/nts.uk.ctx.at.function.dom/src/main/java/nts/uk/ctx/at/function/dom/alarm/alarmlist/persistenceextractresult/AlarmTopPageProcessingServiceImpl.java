@@ -211,6 +211,13 @@ public class AlarmTopPageProcessingServiceImpl implements AlarmTopPageProcessing
                         tempInsert.add(inputInfo);
                     }
                 });
+                tempDelete.addAll(alarmEmpDb.getAlarmExtractInfoResults().stream()
+                        .filter(j -> alarmEmpInput.getAlarmExtractInfoResults().stream()
+                                .noneMatch(i -> i.getAlarmCheckConditionNo().equals(j.getAlarmCheckConditionNo())
+                                        && i.getAlarmCheckConditionCode().v().equals(j.getAlarmCheckConditionCode().v())
+                                        && i.getAlarmCategory() == j.getAlarmCategory()
+                                        && i.getAlarmListCheckType() == j.getAlarmListCheckType())
+                        ).collect(Collectors.toList()));
                 if (!tempInsert.isEmpty()) {
                     lstInsert.add(new AlarmEmployeeList(tempInsert, alarmEmpInput.getEmployeeID()));
                 }
@@ -221,6 +228,9 @@ public class AlarmTopPageProcessingServiceImpl implements AlarmTopPageProcessing
                 lstInsert.add(alarmEmpInput);
             }
         }
+        lstDelete.addAll(lstDB.stream()
+                .filter(i -> lstInput.stream().noneMatch(j -> j.getEmployeeID().equals(i.getEmployeeID())))
+                .collect(Collectors.toList()));
     }
 
     @AllArgsConstructor
