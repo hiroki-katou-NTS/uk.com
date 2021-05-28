@@ -33,6 +33,7 @@ module nts.uk.at.view.ksu003.c {
         selectedTaskCode: KnockoutObservable<string> = ko.observable("");
         isEnable: KnockoutObservable<boolean>;
         isEditable: KnockoutObservable<boolean>;
+        isReload: KnockoutObservable<boolean> = ko.observable(false);
         singleSelectedCode: any;
 
         endStatus: KnockoutObservable<string> = ko.observable("Cancel"); 
@@ -120,16 +121,16 @@ module nts.uk.at.view.ksu003.c {
                     _.each(data, item => {
                         taskList.push(new TaskMaster(item.code, item.taskName));                        
                     });            
-                    self.taskMasterList(_.sortBy(taskList, task => task.code ));         
-                    self.selectedTaskCode(data[0].code);                    
-                }   
-
+                    self.taskMasterList(_.sortBy(taskList, task => task.code ));   
+                    if(!self.isReload()) {
+                        self.selectedTaskCode(data[0].code);
+                    }                                        
+                }
             }).always(() => {
                 self.$blockui("hide");
             });
             $('#task-list').focus();
         }
-
         
         registerOrUpdate(): void {
             const self = this;            
@@ -164,6 +165,7 @@ module nts.uk.at.view.ksu003.c {
             self.$blockui("invisible");
             self.$ajax(Paths.REGISTET_TASK_SCHEDULE, command).done(() => {
                 self.$dialog.info({ messageId: 'Msg_15'}).then(() => {
+                    self.isReload(true);
                     self.loadData();
                 });
                 self.endStatus('Update');
