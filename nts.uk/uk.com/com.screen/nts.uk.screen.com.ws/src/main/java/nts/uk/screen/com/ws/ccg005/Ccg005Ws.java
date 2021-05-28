@@ -56,6 +56,9 @@ public class Ccg005Ws {
 	@Inject 
 	private PermissionSettingsScreenQuery permissionSettingsSq;
 	
+	@Inject
+	private AttendanceInformationScreenQuery attendanceSq;
+	
 	@POST
 	@Path("get-display-attendance-data")
 	public DisplayAttendanceDataDto getDisplayAttendanceData() {
@@ -95,6 +98,17 @@ public class Ccg005Ws {
 	 	return searchEmpSq.searchForEmployee(
 	 			params.getKeyWorks(),
 	 			params.getBaseDate(),
+	 			params.isEmojiUsage()
+	 			);
+	}
+	
+	
+	@POST
+	@Path("pagination")
+	public List<AttendanceInformationDto> pagination(AttendanceInformationParam params) {
+	 	return attendanceSq.getAttendanceInformation(
+	 			params.getEmpIds(), 
+	 			params.getBaseDate(), 
 	 			params.isEmojiUsage()
 	 			);
 	}
