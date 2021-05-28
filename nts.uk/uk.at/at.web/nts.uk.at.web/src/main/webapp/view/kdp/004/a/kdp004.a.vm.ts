@@ -76,6 +76,7 @@ module nts.uk.at.view.kdp004.a {
 			public startPage(): JQueryPromise<void> {
 				let self = this;
 				let dfd = $.Deferred<void>();
+				const vm = new ko.ViewModel;
 
 				self.getWorkPlacesInfo();
 				self.basyo().done(() => {
@@ -106,12 +107,15 @@ module nts.uk.at.view.kdp004.a {
 						}
 					})
 				}).always(() => {
-					service.getLogginSetting().done((res) => {
-						self.listCompany(_.filter(res, 'fingerAuthStamp'));
-					});
-
+					vm.$window.storage("contractInfo")
+						.then((data: any) => {
+							if (data) {
+								service.getLogginSetting(data.contractCode).done((res) => {
+									self.listCompany(_.filter(res, 'fingerAuthStamp'));
+								});
+							}
+						});
 					self.modeBasyo(false);
-
 				});
 
 				return dfd.promise();
@@ -197,6 +201,7 @@ module nts.uk.at.view.kdp004.a {
 
 			public setLoginInfo(): JQueryPromise<any> {
 				let dfd = $.Deferred<any>(), self = this;
+				const vm = new ko.ViewModel();
 
 				self.openScreenF({
 					mode: 'admin'
@@ -245,12 +250,17 @@ module nts.uk.at.view.kdp004.a {
 						.done((res: any) => {
 							if (!res.stampSetting || !res.stampResultDisplay) {
 								self.errorMessage(self.getErrorNotUsed(1));
-								service.getLogginSetting().done((res) => {
-									self.listCompany(_.filter(res, 'fingerAuthStamp'));
-									if (self.listCompany.length == 0) {
-										self.errorMessage(getMessage("Msg_1527"));
-									}
-								});
+								vm.$window.storage("contractInfo")
+									.then((data: any) => {
+										if (data) {
+											service.getLogginSetting(data.contractCode).done((res) => {
+												self.listCompany(_.filter(res, 'fingerAuthStamp'));
+												if (self.listCompany.length == 0) {
+													self.errorMessage(getMessage("Msg_1527"));
+												}
+											});
+										}
+									})
 								self.errorMessage(self.getErrorNotUsed(1));
 								self.isUsed(false);
 								return;
@@ -766,8 +776,6 @@ module nts.uk.at.view.kdp004.a {
 					vm = new ko.ViewModel(),
 					locationCd = $.urlParam('basyo');
 
-				console.log(ko.unwrap(self.modeBasyo));
-
 				// URLOption basyoが存在している場合
 				if (locationCd) {
 					const param = {
@@ -775,27 +783,37 @@ module nts.uk.at.view.kdp004.a {
 						workLocationCode: locationCd
 					}
 
-					vm.$ajax(API.GET_LOCATION, param)
-						.done((data: IBasyo) => {
+					vm.$window.storage("contractInfo")
+						.then((data: any) => {
 							if (data) {
-
-								if (data.workLocationName != null || data.workpalceId != null) {
-									self.worklocationCode = locationCd;
-									dfd.resolve();
+								const param = {
+									contractCode: data.contractCode,
+									workLocationCode: locationCd
 								}
 
-								if (data.workpalceId) {
-									if (data.workpalceId.length > 0) {
-										self.modeBasyo(true);
-										self.workplace = data.workpalceId;
-									}
-									if (data.workpalceId.length == 0) {
-										self.modeBasyo(false);
-									}
-									dfd.resolve();
-								}
-							} else {
-								dfd.resolve();
+								vm.$ajax(API.GET_LOCATION, param)
+									.done((data: IBasyo) => {
+										if (data) {
+
+											if (data.workLocationName != null || data.workpalceId != null) {
+												self.worklocationCode = locationCd;
+												dfd.resolve();
+											}
+
+											if (data.workpalceId) {
+												if (data.workpalceId.length > 0) {
+													self.modeBasyo(true);
+													self.workplace = data.workpalceId;
+												}
+												if (data.workpalceId.length == 0) {
+													self.modeBasyo(false);
+												}
+												dfd.resolve();
+											}
+										} else {
+											dfd.resolve();
+										}
+									});
 							}
 						});
 
