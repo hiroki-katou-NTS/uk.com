@@ -14,6 +14,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.gul.serialize.binary.SerializableWithOptional;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.TimevacationUseTimeOfDaily;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
@@ -102,4 +104,25 @@ public class HolidayAddtionSet extends AggregateRoot implements SerializableWith
         this.timeHolidayAddition = timeHolidayAddition;
         this.reference = reference;
     }
+
+	/**
+	 * 時間休暇加算時間を取得する
+	 * @param daily 時間休暇使用時間
+	 * @param time 相殺対象時間
+	 * @return 時間休暇加算時間
+	 */
+	public AttendanceTime getAddTime(TimevacationUseTimeOfDaily daily, AttendanceTime time) {
+		//加算使用時間の計算
+		AttendanceTime dailyTime = new AttendanceTime(daily.calcTotalVacationAddTime(Optional.of(this), AdditionAtr.WorkingHoursOnly));
+		
+		Optional<TimeHolidayAdditionSet> flowSet = this.getTimeHolidayAddition().stream()
+				.filter(t -> t.getWorkClass() == WorkClassOfTimeHolidaySet.WORK_FOR_FLOW)
+				.findFirst();
+		if(!flowSet.isPresent()) {
+			return dailyTime;
+		}
+		
+		//加算する時間を判断する
+		return flowSet.get().getAddTime(dailyTime, time);
+	}
 }

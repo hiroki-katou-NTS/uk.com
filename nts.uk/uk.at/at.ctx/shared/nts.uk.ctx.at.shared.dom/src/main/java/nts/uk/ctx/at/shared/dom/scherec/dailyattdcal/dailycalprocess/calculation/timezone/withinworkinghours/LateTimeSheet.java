@@ -820,15 +820,13 @@ public class LateTimeSheet {
 	 * @param companyholidayPriorityOrder 時間休暇相殺優先順位
 	 * @param timeVacationUseTime 日別実績の時間休暇使用時間
 	 */
-	public void calcLateOffsetTime(
-		DeductionAtr deductionAtr,
-		CompanyHolidayPriorityOrder companyholidayPriorityOrder,
-		TimevacationUseTimeOfDaily timeVacationUseTime) {
-		
-		this.getDecitionTimeSheet(deductionAtr).get().offsetProcessInPriorityOrder(
+	public void setOffsetTime(
+			DeductionAtr deductionAtr,
+			CompanyHolidayPriorityOrder companyholidayPriorityOrder,
+			TimevacationUseTimeOfDaily timeVacationUseTime) {
+		this.OffsetTime = Optional.of(this.getDecitionTimeSheet(deductionAtr).get().offsetProcessInPriorityOrder(
 				deductionAtr,
 				companyholidayPriorityOrder,
-				timeVacationUseTime,
-				this.OffsetTime.isPresent()?this.OffsetTime.get():DeductionOffSetTime.createAllZero());
+				timeVacationUseTime));
 	}
 }

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -15,11 +16,13 @@ import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Unit;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.ActualWorkTimeSheetAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.FluidFixedAtr;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.TimevacationUseTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.ConditionAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.TimeSpanForDailyCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.TimeVacationOffSetItem;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.CalculationTimeSheet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.holidaypriorityorder.CompanyHolidayPriorityOrder;
 import nts.uk.ctx.at.shared.dom.shortworktime.ChildCareAtr;
 import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
 import nts.uk.ctx.at.shared.dom.worktime.common.DeductGoOutRoundingSet;
@@ -681,6 +684,25 @@ public class TimeSheetOfDeductionItem extends TimeVacationOffSetItem implements 
 		}
 	}
 	
+	/**
+	 * 外出の控除相殺時間をセットする
+	 * @param deductionAtr 控除区分
+	 * @param priorityOrder 時間休暇相殺優先順位
+	 * @param useTimes 時間休暇使用時間
+	 */
+	public void setOutOffsetTime(DeductionAtr deductionAtr, CompanyHolidayPriorityOrder priorityOrder,
+			Map<GoingOutReason,TimevacationUseTimeOfDaily> useTimes) {
+		if(!this.getGoOutReason().isPresent() || !this.goOutReason.get().isPrivateOrUnion()) {
+			return;
+		}
+		if(!useTimes.containsKey(this.getGoOutReason().get())){
+			return;
+		}
+		this.deductionOffSetTime = Optional.of(this.offsetProcessInPriorityOrder(
+				deductionAtr,
+				priorityOrder,
+				useTimes.get(this.getGoOutReason().get())));
+	}
 	
 	private Optional<TimeRoundingSetting> getShortTimeRounding(DeductionAtr dedAtr, WorkTimezoneCommonSet commonSet,TimeRoundingSetting rounding) {
 		switch(dedAtr) {

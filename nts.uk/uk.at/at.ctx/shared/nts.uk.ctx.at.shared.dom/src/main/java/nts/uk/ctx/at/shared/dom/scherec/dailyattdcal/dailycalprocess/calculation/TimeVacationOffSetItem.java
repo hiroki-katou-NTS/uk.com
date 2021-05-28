@@ -70,14 +70,9 @@ public abstract class TimeVacationOffSetItem extends CalculationTimeSheet {
 		int calcTime = this.timeSheet.getTimeSpan().lengthAsMinutes();
 		
 		// 全ての控除時間を控除する
-		if (!this.deductionTimeSheet.isEmpty()) {
-			calcTime -= this.deductionTimeSheet.stream()
-					.mapToInt(timeSheet -> timeSheet.calcTotalTime(deductionOffSetTimeAtr, roundAtr).valueAsMinutes())
-					.sum();
-		} else {
-			calcTime -= this.deductionTimeSheet.stream()
-					.mapToInt(timeSheet -> timeSheet.getTimeSheet().getTimeSpan().lengthAsMinutes()).sum();
-		}
+		calcTime -= this.deductionTimeSheet.stream()
+				.mapToInt(d -> d.calcTotalTime(deductionOffSetTimeAtr, roundAtr).valueAsMinutes())
+				.sum();
 		
 		// 相殺時間を控除する
 		if (deductionOffSetTimeAtr == NotUseAtr.USE && this.deductionOffSetTime.isPresent()) {
@@ -130,6 +125,21 @@ public abstract class TimeVacationOffSetItem extends CalculationTimeSheet {
 				break;
 			}
 		}
+	}
+	
+	/**
+	 * @param deductionAtr
+	 * @param priorityOrder
+	 * @param useTime
+	 * @return
+	 */
+	public DeductionOffSetTime offsetProcessInPriorityOrder(DeductionAtr deductionAtr,
+			CompanyHolidayPriorityOrder priorityOrder, TimevacationUseTimeOfDaily useTime) {
+		//残時間
+		AttendanceTime remainingTime = this.calcTotalTime(NotUseAtr.NOT_USE, NotUseAtr.NOT_USE);
+		DeductionOffSetTime offsetTime = DeductionOffSetTime.create(priorityOrder, useTime, remainingTime);
+		useTime.minus(offsetTime);
+		return offsetTime;
 	}
 
 	/**
