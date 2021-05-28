@@ -106,8 +106,8 @@ public class StartKSU001Ver5 {
 			TargetOrgIdenInforDto targetOrgIdenInforDto = new TargetOrgIdenInforDto(targetOrgIdenInfor);
 			DisplayInWorkInfoParam_New param4 = new DisplayInWorkInfoParam_New(listSid, startDate, endDate,
 					param.getActualData, resultStep1.closeDate, targetOrgIdenInforDto,
-					StringUtil.isNullOrEmpty(param.personTotalSelected, true) ? null : Integer.valueOf(param.personTotalSelected),
-					StringUtil.isNullOrEmpty(param.workplaceSelected, true) ? null : Integer.valueOf(param.workplaceSelected));
+					StringUtil.isNullOrEmpty(param.personTotalSelected, true) ? (resultStep1.useCategoriesPersonal.isEmpty() ? null : resultStep1.useCategoriesPersonal.get(0).getValue()) : Integer.valueOf(param.personTotalSelected),
+					StringUtil.isNullOrEmpty(param.workplaceSelected, true) ? (resultStep1.useCategoriesWorkplace.isEmpty() ? null : resultStep1.useCategoriesWorkplace.get(0).getValue()) : Integer.valueOf(param.workplaceSelected));
 			resultStep4 = displayInWorkInfo.getDataWorkInfo_New(param4);
 			
 		} else if (viewModeSelected == FuncCtrlDisplayFormatDto.Shift.value) {
@@ -123,8 +123,8 @@ public class StartKSU001Ver5 {
 			param51.setGetActualData(param.getActualData);
 			param51.setUnit(param.unit);
 			
-			param51.setPersonalCounterOp(StringUtil.isNullOrEmpty(param.personTotalSelected, true) ? null : Integer.valueOf(param.personTotalSelected));
-			param51.setWorkplaceCounterOp(StringUtil.isNullOrEmpty(param.workplaceSelected, true) ? null : Integer.valueOf(param.workplaceSelected));
+			param51.setPersonalCounterOp(StringUtil.isNullOrEmpty(param.personTotalSelected, true) ? (resultStep1.useCategoriesPersonal.isEmpty() ? null : resultStep1.useCategoriesPersonal.get(0).getValue()) : Integer.valueOf(param.personTotalSelected));
+			param51.setWorkplaceCounterOp(StringUtil.isNullOrEmpty(param.workplaceSelected, true) ? (resultStep1.useCategoriesWorkplace.isEmpty() ? null : resultStep1.useCategoriesWorkplace.get(0).getValue()) : Integer.valueOf(param.workplaceSelected));
 			param51.setDay(resultStep1.closeDate);
 
 			resultStep51 = displayInShift.getData_New(param51);
@@ -221,17 +221,6 @@ public class StartKSU001Ver5 {
 					AggregateWorkplaceMapDto.convertMap(resultStep4.aggrerateWorkplace)
 					);
 		}
-		// tạo data test map
-		Map<String, Map<TotalTimesDto, BigDecimal>> timeCount = new HashMap<String, Map<TotalTimesDto, BigDecimal>>();
-		for (int j = 1; j < 11; j++) {
-			String key = GeneralDate.today().addDays(j).toString(DATE_FORMAT);
-			Map<TotalTimesDto, BigDecimal> value = new HashMap<>();
-			value.put(new TotalTimesDto(j, "totalTimesName"+j), new BigDecimal(j));
-			value.put(new TotalTimesDto(j+1, "totalTimesName"+(j+1)), new BigDecimal(j+1));
-			value.put(new TotalTimesDto(j+2, "totalTimesName"+(j+2)), new BigDecimal(j+2));
-			timeCount.put(key, value);
-		}
-		result.setTimeCount(timeCount);
 		return result;
 	}
 }
