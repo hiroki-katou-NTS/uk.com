@@ -169,6 +169,11 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         widthA8 : number = 200;
         widthBtnToLeftToRight : number = 32;
         distanceLeftToGrid : number = 30;
+
+		showA11: KnockoutObservable<boolean>   = ko.observable(false);
+		showA12: KnockoutObservable<boolean>   = ko.observable(false);
+		showA12_2: KnockoutObservable<boolean>   = ko.observable(false);
+		funcNo15_WorkPlace: boolean = false;
         
         constructor(dataLocalStorage) {
             let self = this;
@@ -503,9 +508,29 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 				_.remove(data.dataBasicDto.useCategoriesWorkplace, (item: any) => item.value == 4);
 				self.useCategoriesPersonal(data.dataBasicDto.useCategoriesPersonal);
 				self.useCategoriesWorkplace(data.dataBasicDto.useCategoriesWorkplace);
-				//self.useCategoriesPersonalValue(_.head(self.useCategoriesPersonal()).value);
-				//self.useCategoriesWorkplaceValue(_.head(self.useCategoriesWorkplace()).value);
+				if(_.isEmpty(self.useCategoriesPersonal())) {
+					self.showA11(false);
+				} else {
+					self.showA11(true);
+				}
+				if(_.isEmpty(self.useCategoriesWorkplace())) {
+					self.showA12(false);
+				} else {
+					self.showA12(true);
+				}
+				if(self.userInfor && _.includes(_.map(self.useCategoriesPersonal(), o => o.value), self.userInfor.useCategoriesPersonalValue)) {
+					self.useCategoriesPersonalValue(self.userInfor.useCategoriesPersonalValue);		
+				} else {
+					self.useCategoriesPersonalValue(_.head(self.useCategoriesPersonal()).value);	
+				}
+				if(self.userInfor && _.includes(_.map(self.useCategoriesWorkplace(), o => o.value), self.userInfor.useCategoriesWorkplaceValue)) {
+					self.useCategoriesWorkplaceValue(self.userInfor.useCategoriesWorkplaceValue);		
+				} else {
+					self.useCategoriesWorkplaceValue(_.head(self.useCategoriesWorkplace()).value);	
+				}
 				self.useCategoriesPersonalValue.subscribe(value => {
+					self.userInfor.useCategoriesPersonalValue = value;
+					characteristics.save(self.KEY, self.userInfor);
 //					let newVertSumHeader = self.createVertSumHeader();
 //				    let newVertSumContent = self.createVertSumContent(detailContent);
 //					$("#cacheDiv").append($('#vertDiv'));
@@ -515,6 +540,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 				});
 				
 				self.useCategoriesWorkplaceValue.subscribe(value => {
+					self.userInfor.useCategoriesWorkplaceValue = value;
+					characteristics.save(self.KEY, self.userInfor);
 					// $("#cacheDiv").append($('#horzDiv'));
                     self.getAggregatedInfo(false, true);
 				});
@@ -1770,7 +1797,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 			let group: any = [];
 			switch(self.useCategoriesPersonalValue()) {
 				// 月間想定給与額
-				case 0:	
+				case PersonalCounterCategory.MONTHLY_EXPECTED_SALARY:	
 					group = [
 						{ headerText: getText("KSU001_18"), key: "criterion", width: "100px" },
 	                	{ headerText: getText("KSU001_19"), key: "salary", width: "100px" },
@@ -1789,7 +1816,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 					break;
 					
 				// 年間想定給与額
-				case 1: 
+				case PersonalCounterCategory.CUMULATIVE_ESTIMATED_SALARY: 
 					group = [
 						{ headerText: getText("KSU001_18"), key: "criterion", width: "100px" },
 	                	{ headerText: getText("KSU001_19"), key: "salary", width: "100px" },
@@ -1808,7 +1835,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 					break;
 					
 				// 労働時間
-				case 3: 
+				case PersonalCounterCategory.WORKING_HOURS: 
 					group = [
 						{ headerText: getText("KSU001_20"), key: "colum1", width: "100px" },
 	                	{ headerText: getText("KSU001_50"), key: "colum2", width: "100px" },
@@ -1834,7 +1861,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 					break;
 					
 				// 出勤・休日日数
-				case 6: 
+				case PersonalCounterCategory.ATTENDANCE_HOLIDAY_DAYS: 
 					group = [
 						{ headerText: getText("KSU001_62"), key: "colum1", width: "100px" },
 	                	{ headerText: getText("KSU001_63"), key: "colum2", width: "100px" },
@@ -1857,7 +1884,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 					break;
 					
 				// 回数集計１
-				case 7: 
+				case PersonalCounterCategory.TIMES_COUNTING_1: 
 					let timeCount1: Array<any> = data.aggreratePersonal.timeCount,
 						timeCount1Value = _.filter(timeCount1, item => !_.isEmpty(item.totalTimesMapDto));
 					if(_.isEmpty(timeCount1Value)) {
@@ -1880,7 +1907,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 					break;
 					
 				// 回数集計２
-				case 8: 
+				case PersonalCounterCategory.TIMES_COUNTING_2: 
 					let timeCount2: Array<any> = data.aggreratePersonal.timeCount,
 						timeCount2Value = _.filter(timeCount2, item => !_.isEmpty(item.totalTimesMapDto));
 					if(_.isEmpty(timeCount2Value)) {
@@ -1903,7 +1930,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 					break;
 					
 				// 回数集計３
-				case 9: 
+				case PersonalCounterCategory.TIMES_COUNTING_3: 
 					let timeCount3: Array<any> = data.aggreratePersonal.timeCount,
 						timeCount3Value = _.filter(timeCount3, item => !_.isEmpty(item.totalTimesMapDto));
 					if(_.isEmpty(timeCount3Value)) {
@@ -1937,7 +1964,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 			
 			switch(self.useCategoriesWorkplaceValue()) {
 				// 人件費・時間
-				case 0: 
+				case WorkplaceCounterCategory.LABOR_COSTS_AND_TIME: 
 					let laborCostAndTime: Array<any> = data.aggrerateWorkplace.laborCostAndTime,
 						laborCostAndTimeValue = _.filter(laborCostAndTime, item => !_.isEmpty(item.laborCostAndTime));
 					if(_.isEmpty(laborCostAndTimeValue)) {
@@ -1994,7 +2021,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 					break;
 					
 				// 外部予算実績
-				case 1: 
+				case WorkplaceCounterCategory.EXTERNAL_BUDGET: 
 					let externalBudget: Array<any> = data.aggrerateWorkplace.externalBudget,
 						externalBudgetValue = _.filter(externalBudget, item => !_.isEmpty(item.externalBudget));
 					if(_.isEmpty(externalBudgetValue)) {
@@ -2018,7 +2045,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 					break;
 					
 				// 回数集計
-				case 2: 
+				case WorkplaceCounterCategory.TIMES_COUNTING: 
 					let timeCount: Array<any> = data.aggrerateWorkplace.timeCount,
 						timeCountValue = _.filter(timeCount, item => !_.isEmpty(item.timeCount));
 					if(_.isEmpty(timeCountValue)) {
@@ -2042,7 +2069,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 					break;
 					
 				// 就業時間帯別の利用人数
-				case 3: 
+				case WorkplaceCounterCategory.WORKTIME_PEOPLE: 
 					let peopleMethod: Array<any> = data.aggrerateWorkplace.peopleMethod,
 						peopleMethodValue = _.filter(peopleMethod, item => !_.isEmpty(item.peopleMethod));
 					if(_.isEmpty(peopleMethodValue)) {
@@ -2078,7 +2105,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 					break;
 					
 				// 雇用人数
-				case 5: 
+				case WorkplaceCounterCategory.EMPLOYMENT_PEOPLE: 
 					let employment: Array<any> = data.aggrerateWorkplace.aggrerateNumberPeople.employment,
 						employmentValue = _.filter(employment, item => !_.isEmpty(item.numberPeople));
 					if(_.isEmpty(employmentValue)) {
@@ -2102,7 +2129,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 					break;
 					
 				// 分類人数
-				case 6: 
+				case WorkplaceCounterCategory.CLASSIFICATION_PEOPLE: 
 					let classification: Array<any> = data.aggrerateWorkplace.aggrerateNumberPeople.classification,
 						classificationValue = _.filter(classification, item => !_.isEmpty(item.numberPeople));
 					if(_.isEmpty(classificationValue)) {
@@ -2126,7 +2153,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 					break;
 					
 				// 職位人数
-				case 7: 
+				case WorkplaceCounterCategory.POSITION_PEOPLE: 
 					let jobTitleInfo: Array<any> = data.aggrerateWorkplace.aggrerateNumberPeople.jobTitleInfo,
 						jobTitleInfoValue = _.filter(jobTitleInfo, item => !_.isEmpty(item.numberPeople))
 					if(_.isEmpty(jobTitleInfoValue)) {
@@ -2890,9 +2917,13 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 extbl.MiddleHeader(middleHeader).MiddleContent(middleContent);
             }
             extbl.DetailHeader(detailHeader).DetailContent(detailContent);
-			extbl.VerticalSumHeader(vertSumHeader).VerticalSumContent(vertSumContent);
-			extbl.LeftHorzSumHeader(leftHorzSumHeader).LeftHorzSumContent(leftHorzSumContent);
-        	extbl.HorizontalSumHeader(horizontalSumHeader).HorizontalSumContent(horizontalSumContent);
+			if (self.showA11()) {
+				extbl.VerticalSumHeader(vertSumHeader).VerticalSumContent(vertSumContent);	
+			}
+			if (self.showA12()) {
+				extbl.LeftHorzSumHeader(leftHorzSumHeader).LeftHorzSumContent(leftHorzSumContent);
+        		extbl.HorizontalSumHeader(horizontalSumHeader).HorizontalSumContent(horizontalSumContent);	
+			}
             extbl.create();
 
             // set height grid theo localStorage đã lưu
@@ -2900,18 +2931,25 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             $('#btnControlLeftRight').width($("#extable").width() + 10);
             $("#sub-content-main").width($('#extable').width() + 30);
             console.log(performance.now() - start);
-
-			$("#vertDropDown").html(function() { return $('#vertDiv'); });
-			$('#vertDiv').css('display', '');
 			
-			$("#horzDropDown").html(function() { return $('#horzDiv'); });
-			$('#horzDiv').css('display', '');
+			if (self.showA11()) {
+				$("#vertDropDown").html(function() { return $('#vertDiv'); });
+				$('#vertDiv').css('display', '');	
+				
+				$('.ex-body-vert-sum').scroll(() => {
+					$('#vertDiv').css('margin-left', $('.ex-body-vert-sum').scrollLeft().valueOf() + 'px');
+				});
+			}
 			
-			$('.extable-body-left-horz-sum tbody tr td:first-child()').css('border-right', '1px solid transparent');
+			if (self.showA12()) {
+				$("#horzDropDown").html(function() { return $('#horzDiv'); });
+				$('#horzDiv').css('display', '');
 			
-			$('.ex-body-vert-sum').scroll(() => {
-				$('#vertDiv').css('margin-left', $('.ex-body-vert-sum').scrollLeft().valueOf() + 'px');
-			});
+				$('.extable-body-left-horz-sum tbody tr td:first-child()').css('border-right', '1px solid transparent');	
+				
+				self.showA12_2(_.includes([WorkplaceCounterCategory.WORKTIME_PEOPLE, WorkplaceCounterCategory.LABOR_COSTS_AND_TIME], self.useCategoriesWorkplaceValue()) ||
+							(_.includes([WorkplaceCounterCategory.EXTERNAL_BUDGET], self.useCategoriesWorkplaceValue()) && self.funcNo15_WorkPlace));
+			}
         }
 		
 		createVertSumHeader() {
@@ -5011,6 +5049,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             if (self.userInfor.disPlayFormat != 'shift' && self.visibleA4_234() == false && self.visibleA4_567() == false) {
                 $('#A4').css('visibility', 'hidden');
             }
+
+			self.funcNo15_WorkPlace = funcNo15_WorkPlace;
         }
 
         calculateDisPlayPopupA12(funcNo10_WorkPlace, funcNo11_WorkPlace, funcNo12_WorkPlace, medicalOP) {
@@ -5570,6 +5610,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         shiftMasterWithWorkStyleLst : Array<IShiftMasterMapWithWorkStyle>;
         workTypeCodeSelected: any;
         workTimeCodeSelected: any;
+		useCategoriesPersonalValue: number; // 個人計カテゴリ
+		useCategoriesWorkplaceValue: number; // 職場計カテゴリ
     }
     
     interface IShiftMasterMapWithWorkStyle {
@@ -5605,5 +5647,29 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 	enum WorkClassificationAsAggregationTarget {
 		WORKING = 0, // 出勤
 		HOLIDAY = 1 // 休日
+	}
+	
+	enum PersonalCounterCategory {
+		MONTHLY_EXPECTED_SALARY = 0, // 月間想定給与額 
+		CUMULATIVE_ESTIMATED_SALARY = 1, // 年間想定給与額
+		STANDARD_WORKING_HOURS_COMPARISON = 2, // 基準労働時間比較
+		WORKING_HOURS = 3, // 労働時間
+		NIGHT_SHIFT_HOURS = 4, // 夜勤時間
+		WEEKS_HOLIDAY_DAYS = 5, // 週間休日日数
+		ATTENDANCE_HOLIDAY_DAYS = 6, // 出勤・休日日数
+		TIMES_COUNTING_1 = 7, // 回数集計１
+		TIMES_COUNTING_2 = 8, // 回数集計２
+		TIMES_COUNTING_3 = 9, // 回数集計３
+	}
+	
+	enum WorkplaceCounterCategory {
+		LABOR_COSTS_AND_TIME = 0, // 人件費・時間 
+		EXTERNAL_BUDGET = 1, // 外部予算実績
+		TIMES_COUNTING = 2, // 回数集計
+		WORKTIME_PEOPLE = 3, // 就業時間帯別の利用人数
+		TIMEZONE_PEOPLE = 4, // 時間帯人数
+		EMPLOYMENT_PEOPLE = 5, // 雇用人数
+		CLASSIFICATION_PEOPLE = 6, // 分類人数
+		POSITION_PEOPLE = 7, // 職位人数
 	}
 }
