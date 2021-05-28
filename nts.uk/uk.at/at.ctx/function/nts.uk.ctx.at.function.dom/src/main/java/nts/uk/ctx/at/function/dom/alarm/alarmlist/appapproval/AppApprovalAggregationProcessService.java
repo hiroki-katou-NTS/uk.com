@@ -15,6 +15,7 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
+import lombok.val;
 import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
@@ -461,12 +462,12 @@ public class AppApprovalAggregationProcessService {
 				AlarmListCheckType.FixCheck,
 				Collections.singletonList(detail)));
 
-		List<AlarmEmployeeList> alarmEmpExist = alarmEmployeeList.stream().filter(x -> x.getEmployeeID().equals(sid)).collect(Collectors.toList());
-		if (alarmEmpExist.isEmpty()) {
+		val empIds = alarmEmployeeList.stream().filter(x -> x.getEmployeeID().equals(sid)).collect(Collectors.toList());
+		if (empIds.isEmpty()) {
 			alarmEmployeeList.add(new AlarmEmployeeList(alarmExtractInfoResults, sid));
 		} else {
-			List<String> sIDs = alarmEmpExist.stream().map(AlarmEmployeeList::getEmployeeID).collect(Collectors.toList());
-			alarmEmployeeList.stream().filter(e -> sIDs.contains(e)).forEach(z -> z.getAlarmExtractInfoResults().addAll(alarmExtractInfoResults));
+			alarmEmployeeList.stream().filter(x -> x.getEmployeeID().equals(sid))
+					.forEach(e -> e.getAlarmExtractInfoResults().addAll(alarmExtractInfoResults));
 		}
 
 //		List<ResultOfEachCondition> result = lstResultCondition.stream()

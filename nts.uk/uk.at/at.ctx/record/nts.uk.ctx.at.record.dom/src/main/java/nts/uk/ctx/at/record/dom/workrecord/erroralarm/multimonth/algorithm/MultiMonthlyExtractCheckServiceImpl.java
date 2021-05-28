@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.arc.time.YearMonth;
@@ -63,20 +64,6 @@ public class MultiMonthlyExtractCheckServiceImpl<V> implements MultiMonthlyExtra
 		if(data.lstAnyCondCheck.isEmpty()) return;
 		
 		for(MulMonthAlarmCheckCond anyCond : data.lstAnyCondCheck) {
-			// 「アラーム抽出条件」を作成してInput．List＜アラーム抽出条件＞を追加
-			List<AlarmExtractionCondition> extractionConditions = alarmExtractConditions.stream()
-					.filter(x -> x.getAlarmListCheckType() == AlarmListCheckType.FreeCheck
-							&& x.getAlarmCheckConditionNo().equals(String.valueOf(anyCond.getCondNo())))
-					.collect(Collectors.toList());
-			if (extractionConditions.isEmpty()) {
-				alarmExtractConditions.add(new AlarmExtractionCondition(
-						String.valueOf(anyCond.getCondNo()),
-						new AlarmCheckConditionCode(alarmCheckConditionCode),
-						AlarmCategory.MULTIPLE_MONTH,
-						AlarmListCheckType.FreeCheck
-				));
-			}
-
 			lstCheckType.add(new AlarmListCheckInfor(String.valueOf(anyCond.getCondNo()), AlarmListCheckType.FreeCheck));
 			ErAlAttendanceItemCondition<?> erCondition = anyCond.getErAlAttendanceItemCondition();
 			if(erCondition == null) continue;			
@@ -341,12 +328,26 @@ public class MultiMonthlyExtractCheckServiceImpl<V> implements MultiMonthlyExtra
 									AlarmListCheckType.FreeCheck,
 									Collections.singletonList(detail)));
 
-					List<AlarmEmployeeList> alarmEmpExist = alarmEmployeeList.stream().filter(x -> x.getEmployeeID().equals(sid)).collect(Collectors.toList());
-					if (alarmEmpExist.isEmpty()) {
+					val empIds = alarmEmployeeList.stream().filter(x -> x.getEmployeeID().equals(sid)).collect(Collectors.toList());
+					if (empIds.isEmpty()) {
 						alarmEmployeeList.add(new AlarmEmployeeList(alarmExtractInfoResults, sid));
 					} else {
-						List<String> sIDs = alarmEmpExist.stream().map(AlarmEmployeeList::getEmployeeID).collect(Collectors.toList());
-						alarmEmployeeList.stream().filter(e -> sIDs.contains(e)).forEach(z -> z.getAlarmExtractInfoResults().addAll(alarmExtractInfoResults));
+						alarmEmployeeList.stream().filter(x -> x.getEmployeeID().equals(sid))
+								.forEach(e -> e.getAlarmExtractInfoResults().addAll(alarmExtractInfoResults));
+					}
+
+					// 「アラーム抽出条件」を作成してInput．List＜アラーム抽出条件＞を追加
+					List<AlarmExtractionCondition> extractionConditions = alarmExtractConditions.stream()
+							.filter(x -> x.getAlarmListCheckType() == AlarmListCheckType.FreeCheck
+									&& x.getAlarmCheckConditionNo().equals(String.valueOf(anyCond.getCondNo())))
+							.collect(Collectors.toList());
+					if (extractionConditions.isEmpty()) {
+						alarmExtractConditions.add(new AlarmExtractionCondition(
+								String.valueOf(anyCond.getCondNo()),
+								new AlarmCheckConditionCode(alarmCheckConditionCode),
+								AlarmCategory.MULTIPLE_MONTH,
+								AlarmListCheckType.FreeCheck
+						));
 					}
 //					List<ResultOfEachCondition> result = lstResultCondition.stream()
 //							.filter(x -> x.getCheckType() == AlarmListCheckType.FreeCheck && x.getNo().equals(String.valueOf(anyCond.getCondNo())))
