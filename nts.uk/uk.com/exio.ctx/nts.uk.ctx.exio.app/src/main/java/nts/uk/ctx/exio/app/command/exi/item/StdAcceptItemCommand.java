@@ -67,7 +67,8 @@ public class StdAcceptItemCommand {
 		DataFormatSetting dataFormatSet = null;
 		ItemType itemType = ItemType.values()[this.itemType];
 		switch (itemType) {
-		case NUMERIC:
+		case INT:
+		case REAL:
 			dataFormatSet = this.numberFormatSetting == null ? null : this.numberFormatSetting.toDomain();
 			break;
 		case CHARACTER:

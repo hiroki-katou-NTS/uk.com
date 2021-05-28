@@ -165,6 +165,12 @@ subprojects {
 	}
 }
 
+project (':nts.uk.cnv.core') {
+	dependencies {
+        compile group: 'nemunoki', name: 'nemunoki.oruta.shr', version: version
+	}
+}
+
 project (':nts.uk.cnv.web') {
 	apply plugin: 'war'
 	apply plugin: 'com.moowork.node'
@@ -179,6 +185,7 @@ project (':nts.uk.cnv.web') {
 
 	dependencies {
         compile group: 'nemunoki', name: 'nemunoki.oruta.shr', version: version
+        compile project(':nts.uk.cnv.core')
 	}
 
 	task tsc(type: de.richsource.gradle.plugins.typescript.CompileTypeScript) {
