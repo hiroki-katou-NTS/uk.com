@@ -22,7 +22,7 @@ module nts.uk.ui.koExtentions {
             var CHECKBOX_WIDTH = 40;
             var SEARCH_AREA_HEIGHT = 45;
             var BUTTON_SEARCH_WIDTH = 70;
-            var INPUT_SEARCH_PADDING = 65;
+            var INPUT_SEARCH_PADDING = 36;
 
             var $swap = $(element);
             var elementId = $swap.attr('id');
@@ -92,14 +92,16 @@ module nts.uk.ui.koExtentions {
                 var initSearchArea = function ($SearchArea, searchMode, searchText){
                     $SearchArea.append("<div class='ntsSearchTextContainer'/>")
                         .append("<div class='ntsSearchButtonContainer'/>");
-                    if(searchMode === "filter"){
-                        $SearchArea.append("<div class='ntsClearButtonContainer'/>");
-                        $SearchArea.find(".ntsClearButtonContainer")
-                            .append("<button id = " + searchAreaId + "-clear-btn" + " class='ntsSearchButton clear-btn ntsSwap_Component'/>");  
-                        $SearchArea.find(".clear-btn").text(toBeResource.clear);        
-                    }
+                    // if(searchMode === "filter"){
+                    //     $SearchArea.append("<div class='ntsClearButtonContainer'/>");
+                    //     $SearchArea.find(".ntsClearButtonContainer")
+                    //         .append("<button id = " + searchAreaId + "-clear-btn" + " class='ntsSearchButton clear-btn ntsSwap_Component'/>");  
+                    //     $SearchArea.find(".clear-btn").text(toBeResource.clear);        
+                    // }
                     $SearchArea.find(".ntsSearchTextContainer")
                         .append("<input id = " + searchAreaId + "-input" + " class = 'ntsSearchInput ntsSwap_Component ntsSearchBox nts-editor ntsSearchBox_Component'/>");
+                    $SearchArea.find(".ntsSearchTextContainer")
+                        .append("<i id='swap-search-icon' class='img-icon' style='background-image: url(&quot;http://localhost:8080/nts.uk.com.js.web/lib/nittsu/ui/style/stylesheets/images/icons/numbered/1.png&quot;); background-size: contain; width: 22px; height: 25px;'></i>");
                     $SearchArea.find(".ntsSearchButtonContainer")
                         .append("<button id = " + searchAreaId + "-btn" + " class='ntsSearchButton search-btn caret-bottom ntsSwap_Component'/>");
                     $SearchArea.find(".ntsSearchInput").attr("placeholder", searchText).wrap("<span class='nts-editor-wrapped ntsControl'/>");
@@ -119,7 +121,8 @@ module nts.uk.ui.koExtentions {
                     $searchLeftContainer.width(searchAreaWidth).css({position: "absolute", left: 0});
                     
                     initSearchArea($searchLeftContainer, data.searchMode, data.leftSearchBoxText || defaultSearchText);
-                    $searchLeftContainer.find(".ntsSearchBox").width(searchAreaWidth - BUTTON_SEARCH_WIDTH - INPUT_SEARCH_PADDING - (data.searchMode === "filter" ? BUTTON_SEARCH_WIDTH : 0));
+                    // $searchLeftContainer.find(".ntsSearchBox").width(searchAreaWidth - BUTTON_SEARCH_WIDTH - INPUT_SEARCH_PADDING - (data.searchMode === "filter" ? BUTTON_SEARCH_WIDTH : 0));
+                    $searchLeftContainer.find(".ntsSearchBox").width(searchAreaWidth - BUTTON_SEARCH_WIDTH - INPUT_SEARCH_PADDING);
                 }
                 
                 if(showSearchBox.showRight){

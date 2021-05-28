@@ -1,13 +1,18 @@
 module nts.uk.at.view.ksu003.a {
+	let __viewContexts: any = window["__viewContext"] || {};
+	
 	__viewContext.ready(function() {
 		nts.uk.characteristics.restore("USER_KSU003_INFOR").done(function(data : any) {
-			let screenModel = new viewmodel.ScreenModel(data);
+			let screenModel = {
+			viewmodelA: new viewmodel.ScreenModel(data),
+            //viewmodelAb: new nts.uk.at.view.ksu003.ab.viewmodel.ScreenModel()
+			}
 			nts.uk.ui.block.grayout();
-			screenModel.startPage().done(function() {
+			screenModel.viewmodelA.startPage().done(function() {
 				__viewContext.bind(screenModel);
 				$('#ui-area').css('display','');
 				$(window).resize(function() {
-					screenModel.setPositionButonDownAndHeightGrid();
+					screenModel.viewmodelA.setPositionButonDownAndHeightGrid();
 				});
 			});
 			initEvent();
