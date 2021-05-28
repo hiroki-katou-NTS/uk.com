@@ -56,7 +56,7 @@ public class OuenWorkTimeSheetOfDaily extends AggregateRoot {
 		
 		this.ouenTimeSheet = ouenTimeSheet;
 		
-		return new AttendanceItemToChange(attendanceId, this);
+		return new AttendanceItemToChange(attendanceId.stream().distinct().collect(Collectors.toList()), this);
 	}
 	
 	/**

@@ -84,6 +84,7 @@ public class JpaEditStateOfDailyPerformanceRepository extends JpaRepository
 		.collect(Collectors.toList());
 		
 		this.commandProxy().insertAll(entities);
+		this.getEntityManager().flush();
 		
 	}
 
@@ -114,6 +115,7 @@ public class JpaEditStateOfDailyPerformanceRepository extends JpaRepository
 						.map(c -> new KrcdtDayEditState(new KrcdtDailyRecEditSetPK(c.getEmployeeId(),
 								c.getYmd(), c.getEditState().getAttendanceItemId()), c.getEditState().getEditStateSetting().value))
 						.collect(Collectors.toList()));
+		this.getEntityManager().flush();
 	
 	}
 	
