@@ -16,7 +16,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.D
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.service.AttendanceItemConvertFactory;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateSetting;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.aftercorrectatt.CorrectionAfterTimeChange;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.aftercorrectwork.CorrectionAfterChangeWorkInfo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.breaktime.BreakTimeSheetCorrector;
@@ -129,11 +128,11 @@ public class CorrectionAttendanceRule implements ICorrectionAttendanceRule {
 		IntegrationOfDaily afterDomain = correctionAfterTimeChange
 				.corection(domainDaily, changeAtt, workCondOpt).getRight();
 
-		if (changeAtt.workInfo) {
+		if (changeAtt.workInfo || changeAtt.isDirectBounceClassifi()) {
 			// 変更する勤怠項目を確認
 			//// 勤務情報変更後の補正
 			afterDomain = correctionAfterChangeWorkInfo.correction(companyId, afterDomain, workCondOpt,
-					changeAtt.getClassification());
+					changeAtt);
 
 		}
 		
