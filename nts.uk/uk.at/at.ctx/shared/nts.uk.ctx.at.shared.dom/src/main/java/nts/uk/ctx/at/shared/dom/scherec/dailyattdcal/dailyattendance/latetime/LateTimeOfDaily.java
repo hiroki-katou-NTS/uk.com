@@ -77,6 +77,20 @@ public class LateTimeOfDaily {
 		this.exemptionTime = exemptionTime;
 		this.doNotSetAlarm = false;
 	}	
+	
+	/** 相殺代休時間を求める */
+	public AttendanceTime getOffsetCompensatoryTime() {
+		
+		/** IF ＠遅刻控除時間。計算時間　＜　＠休暇使用時間。時間代休使用時間 */
+		if (this.lateDeductionTime.getCalcTime().lessThan(this.timePaidUseTime.getTimeCompensatoryLeaveUseTime())) {
+			/** Return　＠遅刻控除時間。計算時間	*/
+			return this.lateDeductionTime.getCalcTime();
+		}
+		
+		/** Return　＠休暇使用時間。時間代休使用時間 */
+		return this.timePaidUseTime.getTimeCompensatoryLeaveUseTime();
+	}
+	
 
 	/**
 	 * 遅刻時間のみ更新
@@ -328,7 +342,6 @@ public class LateTimeOfDaily {
 		}
 		return returnErrorList;
 	}
-	
 	/**
 	 * 休暇加算時間の計算
 	 * @return

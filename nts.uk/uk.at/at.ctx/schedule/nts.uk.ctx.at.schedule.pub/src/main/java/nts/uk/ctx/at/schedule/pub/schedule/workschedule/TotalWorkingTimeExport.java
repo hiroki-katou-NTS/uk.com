@@ -8,4 +8,7 @@ import lombok.Data;
 public class TotalWorkingTimeExport {
 	//実働時間
 	private int actualTime;
+	
+	/** 勤務回数 */
+	private int workTimes;
 }

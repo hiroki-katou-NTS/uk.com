@@ -93,7 +93,9 @@ public class KrcdtWekAggrOverTime extends ContractUkJpaEntity implements Seriali
 						new AttendanceTimeMonth(this.transferOverTime),
 						new AttendanceTimeMonth(this.calcTransferOverTime)),
 				new AttendanceTimeMonth(this.legalOverTime),
-				new AttendanceTimeMonth(this.legalTransferOverTime));
+				new AttendanceTimeMonth(this.legalTransferOverTime),
+				new AttendanceTimeMonth(0),
+				new AttendanceTimeMonth(0));
 	}
 	
 	/**

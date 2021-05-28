@@ -8,6 +8,9 @@ import java.util.stream.IntStream;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
+import nts.uk.ctx.at.schedule.dom.schedule.task.taskschedule.TaskSchedule;
+import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ConfirmedATR;
+import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.DayOfWeek;
@@ -375,4 +378,22 @@ public class ReflectApplicationHelper {
 				Optional.of(GoingOutReason.PUBLIC), app);
 	}
 	
+	public static WorkSchedule createWorkSchedule() {
+		List<BreakTimeSheet> breakTimeSheets = new ArrayList<>();
+		breakTimeSheets.add(new BreakTimeSheet(new BreakFrameNo(1), new TimeWithDayAttr(480), new TimeWithDayAttr(1020)));
+		return new WorkSchedule("1", 
+				GeneralDate.ymd(2021, 4, 1), 
+				ConfirmedATR.CONFIRMED, 
+				new WorkInfoOfDailyAttendance(new WorkInformation("001", "001"),
+						CalculationState.No_Calculated, NotUseAttribute.Not_use, NotUseAttribute.Not_use,
+						DayOfWeek.FRIDAY, new ArrayList<>(), Optional.empty()), 
+				null, 
+				new BreakTimeOfDailyAttd(breakTimeSheets), 
+				new ArrayList<>(), 
+				TaskSchedule.createWithEmptyList(),
+				Optional.empty(), 
+				Optional.empty(), 
+				Optional.empty(), 
+				Optional.empty());
+	}
 }

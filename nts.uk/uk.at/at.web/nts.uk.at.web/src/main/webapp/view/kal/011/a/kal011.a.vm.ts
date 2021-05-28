@@ -63,7 +63,7 @@ module nts.uk.at.kal011.a {
 
                     // get alarmPatternName
                     let pattern = _.find(vm.alarmPatterns(), (item: AlarmPattern) => item.code == code);
-                    vm.alarmPatternName = pattern?.name;
+                    vm.alarmPatternName = pattern ? pattern.name : '';
 
                     vm.getCheckCondition().done(() => {
                         // reset check all

@@ -25,8 +25,8 @@ import java.util.stream.Collectors;
 @Stateless
 public class AggregateProcessMasterCheckWorkplaceService {
 
-    @Inject
-    private EmployeeInfoByWorkplaceService employeeInfoByWorkplaceService;
+//    @Inject
+//    private EmployeeInfoByWorkplaceService employeeInfoByWorkplaceService;
     @Inject
     private AlarmFixedExtractionConditionRepository alarmFixedExtractionConditionRepo;
     @Inject
@@ -54,7 +54,7 @@ public class AggregateProcessMasterCheckWorkplaceService {
         DatePeriod period = new DatePeriod(GeneralDate.ymd(ymPeriod.start().year(), ymPeriod.start().month(), 1),
                 GeneralDate.ymd(ymPeriod.end().year(), ymPeriod.end().month(), 1).addMonths(1).addDays(-1));
         // 職場ID一覧から社員情報を取得する。
-        Map<String, List<EmployeeInfoImported>> empInfosByWpMap = employeeInfoByWorkplaceService.get(workplaceIds, period);
+//        Map<String, List<EmployeeInfoImported>> empInfosByWpMap = employeeInfoByWorkplaceService.get(workplaceIds, period);
 
         // 空欄のリスト「アラーム抽出結果（職場別）」を作成する。
         List<AlarmListExtractionInfoWorkplaceDto> alarmListResults = new ArrayList<>();
@@ -62,35 +62,35 @@ public class AggregateProcessMasterCheckWorkplaceService {
         // ドメインオブジェクト「アラームリスト（職場）固定抽出条件」を取得する。
         List<AlarmFixedExtractionCondition> fixedExtractWpConds = alarmFixedExtractionConditionRepo.getBy(alarmCheckWkpId, true);
 
+        List<AlarmFixedExtractionItem> wkpItems = alarmFixedExtractionWpItemRepo.getAll();
+
         for (AlarmFixedExtractionCondition wp : fixedExtractWpConds) {
             List<ExtractResultDto> extractResults = new ArrayList<>();
 
             // ドメインモデル「アラームリスト（職場）固定抽出項目」．職場チェック名称を取得する。
-            Optional<AlarmFixedExtractionItem> wpItemOpt = alarmFixedExtractionWpItemRepo.getBy(wp.getNo());
-            if (!wpItemOpt.isPresent()) continue;
-            AlarmFixedExtractionItem wpItem = wpItemOpt.get();
-
-            // ループ中項目の「アラームリスト（職場）固定抽出条件」．Noをチェックする。
-            switch (wp.getNo()) {
-                case NO_REF_TIME:
-                    // 基準時間の未設定を確認する。
-                    extractResults = noRefTimeCfmService.confirm(cid, wpItem.getWorkplaceCheckName(), wp.getDisplayMessage(), ymPeriod, workplaceIds);
-                    break;
-                case TIME_NOT_SET_FOR_36_ESTIMATED:
-                    // 36協定目安時間の未設定を確認する
-                    extractResults = timeNotSetFor36EstCfmService.confirm(wpItem.getWorkplaceCheckName(), wp.getDisplayMessage(), ymPeriod, workplaceIds);
-                    break;
-                case UNSET_OF_HD:
-                    // 公休日数の未設定を確認する。
-                    extractResults = unsetHdCfmService.confirm(cid, wpItem.getWorkplaceCheckName(), wp.getDisplayMessage(), ymPeriod, workplaceIds);
-                    break;
-                case ESTIMATED_OR_AMOUNT_TIME_NOT_SET:
-                    break;
-                case NOT_REGISTERED:
-                    // 管理者を確認する。
-                    extractResults = unRegisterManagerCfmService.confirm(wpItem.getWorkplaceCheckName(), wp.getDisplayMessage(), ymPeriod, workplaceIds);
-                    break;
-            }
+            wkpItems.stream().filter(i -> i.getNo() == wp.getNo()).findFirst().ifPresent(wkpItem -> {
+                // ループ中項目の「アラームリスト（職場）固定抽出条件」．Noをチェックする。
+                switch (wp.getNo()) {
+                    case NO_REF_TIME:
+                        // 基準時間の未設定を確認する。
+                        extractResults.addAll(noRefTimeCfmService.confirm(cid, wkpItem.getWorkplaceCheckName(), wp.getDisplayMessage(), ymPeriod, workplaceIds));
+                        break;
+                    case TIME_NOT_SET_FOR_36_ESTIMATED:
+                        // 36協定目安時間の未設定を確認する
+                        extractResults.addAll(timeNotSetFor36EstCfmService.confirm(wkpItem.getWorkplaceCheckName(), wp.getDisplayMessage(), ymPeriod, workplaceIds));
+                        break;
+                    case UNSET_OF_HD:
+                        // 公休日数の未設定を確認する。
+                        extractResults.addAll(unsetHdCfmService.confirm(cid, wkpItem.getWorkplaceCheckName(), wp.getDisplayMessage(), ymPeriod, workplaceIds));
+                        break;
+                    case NOT_REGISTERED:
+                        // 管理者を確認する。
+                        extractResults.addAll(unRegisterManagerCfmService.confirm(wkpItem.getWorkplaceCheckName(), wp.getDisplayMessage(), ymPeriod, workplaceIds));
+                        break;
+                    default:
+                        break;
+                }
+            });
 
             // アラームリスト抽出情報（職場）を作成してList＜アラームリスト抽出情報（職場）＞に追加
             List<AlarmListExtractionInfoWorkplaceDto> results = extractResults.stream().map(x ->

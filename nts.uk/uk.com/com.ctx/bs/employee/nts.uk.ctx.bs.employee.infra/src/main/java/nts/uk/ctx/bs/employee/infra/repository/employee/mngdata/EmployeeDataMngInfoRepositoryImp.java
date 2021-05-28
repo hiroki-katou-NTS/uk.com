@@ -9,9 +9,12 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.concurrent.atomic.LongAdder;
 import java.util.stream.Collectors;
 
@@ -164,7 +167,7 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 			"ON mng.SID = awh.SID AND mng.CID = awh.CID AND awh.CID = '{comid}' AND awh.START_DATE <= '{basedate} 23:59:59' AND awh.END_DATE >= '{basedate} 00:00:00'",
 			"LEFT JOIN [dbo].[BSYMT_AFF_WKP_HIST_ITEM] whi", "ON awh.HIST_ID = whi.HIST_ID ",
 			"LEFT JOIN [dbo].[BSYMT_WKP_INFO] wif",
-			"ON wif.CID = '{comid}'",
+			"ON wif.CID = '{comid}' AND wif.WKP_ID = whi.WORKPLACE_ID",
 			"LEFT JOIN [dbo].[BSYMT_AFF_JOB_HIST] ajh",
 			"ON mng.SID = ajh.SID AND mng.CID = ajh.CID AND ajh.CID = '{comid}'  AND ajh.START_DATE <= '{basedate} 23:59:59' AND ajh.END_DATE >= '{basedate} 00:00:00'",
 			"LEFT JOIN [dbo].[BSYMT_AFF_JOB_HIST_ITEM] aji",
@@ -808,7 +811,6 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 					);
 			}).collect(Collectors.toList()));
 		});
-
 		return data;
 	}
 
