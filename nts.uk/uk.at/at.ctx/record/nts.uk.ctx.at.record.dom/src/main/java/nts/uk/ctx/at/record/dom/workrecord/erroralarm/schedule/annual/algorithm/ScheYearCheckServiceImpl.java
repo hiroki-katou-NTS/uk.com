@@ -411,8 +411,11 @@ public class ScheYearCheckServiceImpl implements ScheYearCheckService {
                 if (empIds.isEmpty()) {
                     alarmEmployeeList.add(new AlarmEmployeeList(lstExtractInfoResult, sid));
                 } else {
-                    alarmEmployeeList.stream().filter(x -> x.getEmployeeID().equals(sid))
-                            .forEach(e -> e.getAlarmExtractInfoResults().addAll(lstExtractInfoResult));
+                    alarmEmployeeList.forEach(x -> {
+                        if (x.getEmployeeID().equals(sid)) {
+                            x.getAlarmExtractInfoResults().addAll(lstExtractInfoResult);
+                        }
+                    });
                 }
 
 				List<AlarmExtractionCondition> lstExtractCondition = alarmExtractConditions.stream()

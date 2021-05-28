@@ -283,8 +283,11 @@ public class DailyCheckServiceImpl implements DailyCheckService{
                     if (empIds.isEmpty()) {
                         alarmEmployeeLists.add(new AlarmEmployeeList(lstExtractInfoResult, sid));
                     } else {
-                        alarmEmployeeLists.stream().filter(x -> x.getEmployeeID().equals(sid))
-                                .forEach(e -> e.getAlarmExtractInfoResults().addAll(lstExtractInfoResult));
+                        alarmEmployeeLists.forEach(x -> {
+                            if (x.getEmployeeID().equals(sid)) {
+                                x.getAlarmExtractInfoResults().addAll(lstExtractInfoResult);
+                            }
+                        });
                     }
                 }
 			}
