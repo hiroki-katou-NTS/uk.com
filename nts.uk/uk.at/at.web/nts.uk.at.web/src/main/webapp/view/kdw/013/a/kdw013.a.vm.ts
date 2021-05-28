@@ -240,7 +240,13 @@ module nts.uk.ui.at.kdw013.a {
             vm.$toggle = {
                 save: ko.computed({
                     read: () => {
-                        const { startManHourInputResultDto } = ko.unwrap(vm.$settings);
+                        const $settings = ko.unwrap(vm.$settings);
+
+                        if (!$settings) {
+                            return true;
+                        }
+
+                        const { startManHourInputResultDto } = $settings;
 
                         if (!startManHourInputResultDto) {
                             return true;
