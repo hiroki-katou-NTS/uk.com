@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>CNV002A テーブル定義インポート</title>
+<link rel="stylesheet" type="text/css" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+<link rel="stylesheet" type="text/css" href="../../../../lib/nittsu/ui/style/stylesheets/base.css">
+<link rel="stylesheet" type="text/css" href="main.css">
+<script
+  src="https://code.jquery.com/jquery-3.3.1.min.js"
+  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+  crossorigin="anonymous"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+<script type="text/javascript" src="cnv002.a.js"></script>
+</head>
+
+<body>
+	<div id="messageDialog" title="">
+		<label id="lblMessage"></label>
+	</div>
+	<div id="header">
+		<div id="menu-header">
+			<div id="logo-area" class="cf"><div id="logo"><img src="/nts.uk.cnv.web/master/images/kinjirou.png"></div></div>
+			<div id="nav-area" class="cf"></div>
+			<div id="pg-area" class="cf">
+				<div id="pg-name" class="title">CNV002A テーブル定義インポート</div>
+			</div>
+		</div>
+	</div>
+	<div id="master-content">
+		<div id="functions-area">
+			<button id="import" class="large proceed">Import</button>
+		</div>
+		<table>
+			<tr>
+				<td>
+					<div class="form-label required">
+						<label>RDBMS：</label>
+					</div>
+				</td>
+				<td>
+					<input type="radio" id="uk" name="ddl_type" value="uk" checked="checked" style="font-size:80%">UK
+					<input type="radio" id="mssql" name="ddl_type" value="sqlserver" style="font-size:80%">SqlServer
+					<input type="radio" id="pg" name="ddl_type" value="postgres" style="font-size:80%">Postgres
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<div class="form-label required">
+						<label>Branch：</label>
+					</div>
+				</td>
+				<td>
+					<input type="text" id="branch" style="width: 240px;" class="nts-editor nts-input reset-element">
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<div class="form-label required">
+						<label>Ver date：</label>
+					</div>
+				</td>
+				<td>
+					<input type="text" id="verDate" style="width: 120px;" class="nts-editor nts-input reset-element">
+				</td>
+			</tr>
+			<tr><td>&nbsp;</td></tr>
+			<tr>
+				<td style="width:400px" colspan="2">
+					<div class="form-label required">
+						<label>Create Table SQL：</label>
+					</div>
+					<textarea id="createtablesql" style="font-size:80%; width:100%; height:345px;" spellcheck="false"></textarea>
+				</td>
+				<td style="width:30px"></td>
+				<td style="width:400px;">
+					<div class="form-label">
+						<label>Create Index SQL：</label>
+					</div>
+					<textarea id="createindexsql" style="font-size:80%; width:100%; height:150px;" spellcheck="false"></textarea>
+					<div class="form-label">
+						<label>Create Comment SQL：</label>
+					</div>
+					<textarea id="commentsql" style="font-size:80%; width:100%; height:150px;" spellcheck="false"></textarea>
+				</td>
+			</tr>
+		</table>
+	</div>
+</body>
+</html>
