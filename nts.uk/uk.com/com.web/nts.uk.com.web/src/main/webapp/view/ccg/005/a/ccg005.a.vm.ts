@@ -536,7 +536,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
     attendanceInformationDtos: KnockoutObservableArray<object.AttendanceInformationDto> = ko.observableArray([]);
     attendanceInformationDtosDisplay: KnockoutObservableArray<AttendanceInformationViewModel> = ko.observableArray([]);
     attendanceInformationDtosDisplayClone: KnockoutObservableArray<AttendanceInformationViewModel> = ko.observableArray([]);
-    listPersonalInfo: KnockoutObservableArray<any> = ko.observableArray([]);
+    listPersonalInfo: KnockoutObservableArray<object.EmployeeBasicImport> = ko.observableArray([]);
 
     //data for screen E
     goOutParams: KnockoutObservable<GoOutParam> = ko.observable();
@@ -561,6 +561,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
         $('.legend-item-symbol').first().css('border', '1px groove').height(16).width(16);
         $('.legend-item').css('margin-bottom', '5px');
       });
+      vm.onResizeable(vm);
       vm.selectedDate(moment().format('YYYYMMDD'));
       vm.toStartScreen();
       vm.initResizeable(vm);
@@ -637,29 +638,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
         vm.isBaseDate(selectedDate.isSame(baseDate));
 
         // パラメータ「在席情報を取得」
-        const empIds = _.map(vm.attendanceInformationDtos(), atd => {
-          if (_.find(vm.listPersonalInfo(), item => item.employeeId === atd.sid)) {
-            return {
-              sid: atd.sid,
-              pid: _.find(vm.listPersonalInfo(), item => item.employeeId === atd.sid).personalId
-            };
-          }
-        });
-        const param = {
-          empIds: empIds,
-          baseDate: vm.selectedDate(),
-          emojiUsage: vm.emojiUsage()
-        }
-        vm.$blockui('show');
-        vm.clearDataDisplay();
-        vm.$ajax('com', API.getAttendanceInformation, param).then((res: object.AttendanceInformationDto[]) => {
-          vm.updateLoginData(res);
-          res = _.filter(res, item => item.sid !== vm.loginSid);
-          vm.dataToDisplay({
-            attendanceInformationDtos: res,
-            listPersonalInfo: vm.listPersonalInfo()
-          });
-        }).always(() => vm.$blockui('hide'));
+        vm.dataToDisplay();
       });
     }
 
@@ -890,11 +869,11 @@ module nts.uk.at.view.ccg005.a.screenModel {
     }
 
     //handle attendance data for all employee in loop
-    private getAttendanceInformationDtosDisplay(res: object.DisplayInformationDto): AttendanceInformationViewModel[] {
+    private getAttendanceInformationDtosDisplay(res: object.AttendanceInformationDto[]): AttendanceInformationViewModel[] {
       const vm = this;
-      const listModel = _.map(res.attendanceInformationDtos, (item => {
+      const listModel = _.map(res, (item => {
         let businessName = "";
-        const personalInfo = _.find(res.listPersonalInfo, (emp => emp.employeeId === item.sid));
+        const personalInfo = _.find(vm.listPersonalInfo(), (emp => emp.employeeId === item.sid));
         if (personalInfo) {
           businessName = personalInfo.businessName;
         }
@@ -902,7 +881,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
         return new AttendanceInformationViewModel({
           applicationDtos: item.applicationDtos,
           sid: item.sid,
-          attendanceDetailDto: vm.getAttendanceDetailViewModel(item.sid, item.attendanceDetailDto),
+          attendanceDetailDto: vm.getAttendanceDetailViewModel(item.attendanceDetailDto),
           avatarDto: item.avatarDto,
           activityStatusIconNo: vm.initActivityStatus(item.activityStatusDto),
           status: item.activityStatusDto,
@@ -915,12 +894,11 @@ module nts.uk.at.view.ccg005.a.screenModel {
           backgroundColor: vm.getBackgroundColorClass(item.activityStatusDto)
         });
       }));
-      const sortedByNameList = _.orderBy(listModel, ["businessName"]);
-      return sortedByNameList;
+      return listModel;
     }
 
     //handle check-in check-out display
-    private getAttendanceDetailViewModel(sid: string, attendanceDetailDto: any): AttendanceDetailViewModel {
+    private getAttendanceDetailViewModel(attendanceDetailDto: any): AttendanceDetailViewModel {
       const vm = this;
 
       //set color for text
@@ -1013,8 +991,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
       const vm = this;
       if (vm.currentPage() * vm.perPage() < vm.totalElement()) {
         vm.currentPage(vm.currentPage() + 1);
-        $('.ccg005-pagination-btn').css('cursor', 'wait');
-        setTimeout(() =>  $('.ccg005-pagination-btn').css('cursor', 'pointer'), 300);
+        vm.getAttendanceData(); // #116839
       }
     }
 
@@ -1022,15 +999,14 @@ module nts.uk.at.view.ccg005.a.screenModel {
       const vm = this;
       if (vm.currentPage() > 1) {
         vm.currentPage(vm.currentPage() - 1);
-        $('.ccg005-pagination-btn').css('cursor', 'wait');
-        setTimeout(() =>  $('.ccg005-pagination-btn').css('cursor', 'pointer'), 300);
+        vm.getAttendanceData(); // #116839
       }
     }
 
     private resetPagination() {
       const vm = this;
       vm.currentPage(1);
-      vm.totalElement(vm.attendanceInformationDtosDisplayClone().length);
+      vm.totalElement(vm.listPersonalInfo().length);
     }
 
     public openScreenCCG005B() {
@@ -1295,43 +1271,77 @@ module nts.uk.at.view.ccg005.a.screenModel {
       vm.attendanceInformationDtosDisplayClone([]);
     }
 
-    private dataToDisplay(res: any) {
+    private dataToDisplay(res?: object.DisplayInformationDto) {
       const vm = this;
       if (!res) {
-        return;
+        res = { listPersonalInfo: vm.listPersonalInfo() };
       }
-      vm.attendanceInformationDtos(res.attendanceInformationDtos);
-      vm.listPersonalInfo(res.listPersonalInfo);
+      vm.totalElement(res.listPersonalInfo.length);
+      vm.getAttendanceData(res.listPersonalInfo);
+    }
 
-      //set data view model to set data on screen
-      const display = vm.getAttendanceInformationDtosDisplay(res);
-      if (display.length > vm.perPage()) {
-        vm.attendanceInformationDtosDisplay(_.slice(display, 0, vm.perPage()));
-      } else {
-        vm.attendanceInformationDtosDisplay(display);
+    private getAttendanceData(listPersonalInfo?: object.EmployeeBasicImport[]) {
+
+      const vm = this;
+
+      if (!listPersonalInfo) {
+        listPersonalInfo = vm.listPersonalInfo();
       }
-      vm.attendanceInformationDtosDisplayClone(display);
-      vm.resetPagination();
 
-      //handle application display
-      const data = res.attendanceInformationDtos;
-      const appNames: object.ApplicationNameDto[] = vm.applicationNameInfo();
-      const appModel = _.map(data, ((attendanceInfo: object.AttendanceInformationDto) => {
-        const applicationDtos: object.ApplicationDto[] = attendanceInfo.applicationDtos;
-        const appName1 = _.map(applicationDtos, (appDto => {
-          const app = _.find(appNames, (appName => (appDto.appType === appName.appType && appDto.otherType === appName.otherType)));
-          if (app) {
-            return app.appName;
-          }
-          return undefined;
+      const availEmp = _.slice(listPersonalInfo, vm.startPage() - 1, vm.endPage()); // #116839
+      const empIds = _.map(availEmp, (person: object.EmployeeBasicImport) => {
+        return {
+          sid: person.employeeId,
+          pid: person.personalId
+        };
+      });
+
+      const param = {
+        empIds: empIds,
+        baseDate: vm.selectedDate(),
+        emojiUsage: vm.emojiUsage()
+      }
+
+      vm.$blockui('show');
+      vm.$ajax('com', API.getAttendanceInformation, param).then((response: object.AttendanceInformationDto[]) => {
+
+        vm.updateLoginData(response);
+        response = _.filter(response, item => item.sid !== vm.loginSid);
+        vm.attendanceInformationDtos(response);
+        vm.listPersonalInfo(listPersonalInfo);
+  
+        //set data view model to set data on screen
+        const display = vm.getAttendanceInformationDtosDisplay(response);
+        
+        if (display.length > vm.perPage()) {
+          vm.attendanceInformationDtosDisplay(_.slice(display, 0, vm.perPage()));
+        } else {
+          vm.attendanceInformationDtosDisplay(display);
+        }
+
+        vm.attendanceInformationDtosDisplayClone(display);
+  
+        //handle application display
+        const data = response;
+        const appNames: object.ApplicationNameDto[] = vm.applicationNameInfo();
+        const appModel = _.map(data, ((attendanceInfo: object.AttendanceInformationDto) => {
+          const applicationDtos: object.ApplicationDto[] = attendanceInfo.applicationDtos;
+          const appName1 = _.map(applicationDtos, (appDto => {
+            const app = _.find(appNames, (appName => (appDto.appType === appName.appType && appDto.otherType === appName.otherType)));
+            if (app) {
+              return app.appName;
+            }
+            return undefined;
+          }));
+          return new ApplicationNameViewModel({
+            sid: attendanceInfo.sid,
+            appName: _.filter(appName1, (item => item !== undefined))
+          });
         }));
-        return new ApplicationNameViewModel({
-          sid: attendanceInfo.sid,
-          appName: _.filter(appName1, (item => item !== undefined))
-        });
-      }));
-      vm.applicationNameDisplay(appModel);
-      vm.onResizeable(vm);
+        vm.applicationNameDisplay(appModel);
+        vm.onResizeable(vm);
+      })
+      .always(() => vm.$blockui('hide'));
     }
 
     /**
