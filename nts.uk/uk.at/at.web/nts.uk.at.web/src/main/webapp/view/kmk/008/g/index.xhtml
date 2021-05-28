@@ -11,7 +11,7 @@
         <script>
             var dialogSize = {
                 width: 460,
-                height: 410
+                height: 460
             };
         </script>
         <com:scriptfile set="IGNITE"/>
@@ -24,7 +24,7 @@
             <div data-bind="with: operationSetting">
                 <div class="label">#{i18n.getText('KMK008_5')}</div>
                 <hr/>
-                <table>
+                <table class="mt-10">
                     <tr>
                         <td>
                             <div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK008_32')}</div>
@@ -64,7 +64,7 @@
                     <tr>
                         <td></td>
                         <td>
-                            <div class="label">#{i18n.getText('KMK008_184')}</div>
+                            <span id="G1_7" class="label">#{i18n.getText('KMK008_184')}</span>
                         </td>
                     </tr>
                     <tr>
