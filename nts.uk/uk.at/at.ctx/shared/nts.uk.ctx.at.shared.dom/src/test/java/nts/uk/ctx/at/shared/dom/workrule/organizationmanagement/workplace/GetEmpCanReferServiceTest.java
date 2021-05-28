@@ -11,6 +11,7 @@ import org.junit.runner.RunWith;
 
 import mockit.Expectations;
 import mockit.Injectable;
+import mockit.Mocked;
 import mockit.Verifications;
 import mockit.integration.junit4.JMockit;
 import nts.arc.testing.assertion.NtsAssert;
@@ -49,21 +50,31 @@ public class GetEmpCanReferServiceTest {
 	}
 	
 	/**
+	 * Condition:
+	 * 	parameter's workplaceId is present
 	 * Expect
+	 * 		setFilterByWorkplace 1回呼ばれる
+	 * 		setWorkplaceIds 1回呼ばれる
 	 * 		require.searchEmployeeの戻り値を返してもらう
 	 */
 	@Test
-	public void testGetByWorkplace() {
+	public void testGetByWorkplace_WorkplaceId_isPresent(@Mocked RegulationInfoEmpQuery query) {
 		
 		GeneralDate date = GeneralDate.ymd(2020, 5, 1);
 		String employeeId = "empId";
 		String loginRoleId = "role-id";
+		String workplaceId = "workplace-id";
 		
 		new Expectations() {{
 			require.getRoleID();
 			result = loginRoleId;
 			
-			// どうやってQueryをモックすればいいなのか微妙
+			query.setFilterByWorkplace(true);
+            times = 1;
+             
+            query.setWorkplaceIds( Arrays.asList(workplaceId) );
+            times = 1;
+            
 			require.searchEmployee( (RegulationInfoEmpQuery) any, loginRoleId);
 			result = Arrays.asList("emp1", "emp2", "emp3", "emp4", "emp5");
 		}};
@@ -74,7 +85,50 @@ public class GetEmpCanReferServiceTest {
 				require,
 				date, 
 				employeeId,
-				Optional.empty());
+				Optional.of(workplaceId)
+				);
+		
+		assertThat( result ).containsExactly("emp1", "emp2", "emp3", "emp4", "emp5");
+	}
+	
+	/**
+	 * Condition:
+	 * 	parameter's workplaceId is empty
+	 * Expect
+	 * 		setFilterByWorkplace 0回も呼ばれない
+	 * 		setWorkplaceIds 0回も呼ばれない
+	 * 		require.searchEmployeeの戻り値を返してもらう
+	 */
+	
+	@Test
+	public void testGetByWorkplace_WorkplaceId_isEmpty(@Mocked RegulationInfoEmpQuery query) {
+		
+		GeneralDate date = GeneralDate.ymd(2020, 5, 1);
+		String employeeId = "empId";
+		String loginRoleId = "role-id";
+		
+		new Expectations() {{
+			require.getRoleID();
+			result = loginRoleId;
+			
+			query.setFilterByWorkplace(true);
+            times = 0;
+            
+            query.setWorkplaceIds( (List<String>) any );
+            times = 0;
+            
+			require.searchEmployee( (RegulationInfoEmpQuery) any, loginRoleId);
+			result = Arrays.asList("emp1", "emp2", "emp3", "emp4", "emp5");
+		}};
+		
+		List<String> result = NtsAssert.Invoke.staticMethod(
+				GetEmpCanReferService.class, 
+				"getByWorkplace", 
+				require,
+				date, 
+				employeeId,
+				Optional.empty()
+				);
 		
 		assertThat( result ).containsExactly("emp1", "emp2", "emp3", "emp4", "emp5");
 	}
@@ -172,12 +226,12 @@ public class GetEmpCanReferServiceTest {
 			result = empCanReferByWorkplaceGroup;
 			
 			require.sortEmployee(empCanReferByWorkplaceGroup, EmployeeSearchCallSystemType.EMPLOYMENT, null, date, null);
-			result = Arrays.asList("emp1", "emp2", "emp3");
+			result = Arrays.asList("emp2", "emp3", "emp1");
 		}};
 		
 		List<String> result = GetEmpCanReferService.getByOrg(require, date, employeeId, targetOrg);
 		
-		assertThat( result ).containsExactly("emp1", "emp2", "emp3");
+		assertThat( result ).containsExactly("emp2", "emp3", "emp1");
 		
 	}
 	
@@ -201,7 +255,6 @@ public class GetEmpCanReferServiceTest {
 			require.searchEmployee( (RegulationInfoEmpQuery) any, anyString);
 			result = empCanReferByWorkplace;
 			
-			// どうモックすればいいなのか微妙
 			require.sortEmployee(empCanReferByWorkplace, EmployeeSearchCallSystemType.EMPLOYMENT, null, date, null);
 			result = Arrays.asList("emp1", "emp2", "emp3");
 		}};
@@ -232,7 +285,6 @@ public class GetEmpCanReferServiceTest {
 			require.searchEmployee((RegulationInfoEmpQuery) any, anyString );
 			result = Arrays.asList("emp3", "emp4", "emp5", "emp6");
 			
-			// どうモックすればいいなのか微妙
 			require.sortEmployee( (List<String>) any, EmployeeSearchCallSystemType.EMPLOYMENT, null, date, null);
 			result = Arrays.asList("emp1", "emp2", "emp3", "emp4", "emp5", "emp6");
 		}};
