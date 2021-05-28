@@ -322,7 +322,7 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
         // RequestList265
         AnnLeaveOfThisMonthImported annLeaveOfThisMonth = null;
         // RequestList255
-        List<AnnualLeaveUsageImported> listAnnualLeaveUsage = null;
+        List<AnnualLeaveUsageImported> listAnnualLeaveUsage =  new ArrayList<>();
         // RequestList363
         List<AnnLeaveUsageStatusOfThisMonthImported> listAnnLeaveUsageStatusOfThisMonth = null;
         // RequestList268
