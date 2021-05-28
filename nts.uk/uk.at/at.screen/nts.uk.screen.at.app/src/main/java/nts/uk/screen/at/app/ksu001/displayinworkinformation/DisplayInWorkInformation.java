@@ -11,7 +11,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
-import nts.arc.time.calendar.DateInMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.aggregation.dom.schedulecounter.tally.PersonalCounterCategory;
 import nts.uk.ctx.at.aggregation.dom.schedulecounter.tally.WorkplaceCounterCategory;

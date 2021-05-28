@@ -15,7 +15,8 @@ module nts.uk.at.view.ksu001.a.service {
         regWorkSchedule: "screen/at/schedule/reg-workschedule",
         checkCorrectHalfday: "screen/at/schedule/correct-worktime-halfday",
         checkTimeIsIncorrect: "ctx/at/shared/workrule/workinghours/checkTimeIsIncorrect",
-        changeConfirmedState: "screen/at/schedule/change-confirmed-state"
+        changeConfirmedState: "screen/at/schedule/change-confirmed-state",
+        getAggregatedInfo: "screen/at/schedule/get-aggregated-info" // get data A11, A12
     }
 
     export function getDataStartScreen(param): JQueryPromise<any> {
@@ -77,8 +78,12 @@ module nts.uk.at.view.ksu001.a.service {
     export function checkTimeIsIncorrect(obj: any): JQueryPromise<any> {
         return nts.uk.request.ajax("at", paths.checkTimeIsIncorrect, obj);
     }
-    
-     export function changeConfirmedState(obj): JQueryPromise<any> {
+
+    export function changeConfirmedState(obj): JQueryPromise<any> {
         return nts.uk.request.ajax("at", paths.changeConfirmedState, obj);
+    }
+    
+    export function getAggregatedInfo(obj): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.getAggregatedInfo, obj);
     }
 }

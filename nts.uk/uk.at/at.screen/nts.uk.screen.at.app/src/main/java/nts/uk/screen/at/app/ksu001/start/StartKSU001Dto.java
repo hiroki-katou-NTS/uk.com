@@ -3,17 +3,12 @@
  */
 package nts.uk.screen.at.app.ksu001.start;
 
-import java.math.BigDecimal;
 import java.util.List;
-import java.util.Map;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.uk.screen.at.app.ksu001.aggreratepersonaltotal.AggregatePersonalDto;
-import nts.uk.screen.at.app.ksu001.aggreratepersonaltotal.TotalTimesDto;
-import nts.uk.screen.at.app.ksu001.aggrerateworkplacetotal.AggregateWorkplaceDto;
 import nts.uk.screen.at.app.ksu001.displayinshift.ShiftMasterMapWithWorkStyle;
 import nts.uk.screen.at.app.ksu001.displayinworkinformation.WorkTypeInfomation;
 import nts.uk.screen.at.app.ksu001.eventinformationandpersonal.DateInformationDto;
@@ -57,9 +52,5 @@ public class StartKSU001Dto {
 	public List<ScheduleOfShiftDto> listWorkScheduleShift; // ・List<勤務予定（シフト）dto>
 	public AggregatePersonalMapDto aggreratePersonal; // 個人計集計結果　←集計内容によって情報が異なる (update ver5)
 	public AggregateWorkplaceMapDto aggrerateWorkplace; // ・職場計集計結果　←集計内容によって情報が異なる  (update ver5)
-	
-	public Map<String, Map<TotalTimesDto, BigDecimal>> timeCount;
-	
-	
 	
 }

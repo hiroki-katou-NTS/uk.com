@@ -20,6 +20,9 @@ import nts.uk.screen.at.app.ksu001.changepage.GetShiftPalChangePageResult;
 import nts.uk.screen.at.app.ksu001.changeworkplace.ChangeWorkPlaceFinder;
 import nts.uk.screen.at.app.ksu001.changeworkplace.ChangeWorkPlaceParam;
 import nts.uk.screen.at.app.ksu001.eventinformationandpersonal.DateInformationDto;
+import nts.uk.screen.at.app.ksu001.getaggregatedInfo.AggregatedInfoParam;
+import nts.uk.screen.at.app.ksu001.getaggregatedInfo.AggregatedInformationRs;
+import nts.uk.screen.at.app.ksu001.getaggregatedInfo.GetAggregatedInfoFinder;
 import nts.uk.screen.at.app.ksu001.getevent.EventFinder;
 import nts.uk.screen.at.app.ksu001.getevent.EventFinderParam;
 import nts.uk.screen.at.app.ksu001.getsendingperiod.ChangeMonthDto;
@@ -83,6 +86,8 @@ public class KSU001WebService extends WebService{
 	private CorrectWorkTimeHalfDay correctWorkTimeHalfDay;
 	@Inject
 	private ChangeConfirmedStateCommandHandler changeConfirmedStateHandler;
+	@Inject
+	private GetAggregatedInfoFinder getdataA11A12;
 	
 	@POST
 	@Path("start")
@@ -194,6 +199,13 @@ public class KSU001WebService extends WebService{
 	@Path("change-confirmed-state") 
 	public void changeConfirmedStateHandler(List<ChangeConfirmedStateCommand> param) {
 		changeConfirmedStateHandler.handle(param);;
+	}
+	
+	@POST
+	@Path("get-aggregated-info") // get lai data A11, A12 
+	public AggregatedInformationRs getAggregatedInfo(AggregatedInfoParam param){
+		AggregatedInformationRs data = getdataA11A12.getData(param);
+		return data;
 	}
 	
 }
