@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.val;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalSetting;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.TimeLimitUpperLimitSetting;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.holidayworktime.HolidayWorkFrameTime;
@@ -31,10 +32,10 @@ public class HolidayWorkFrameTimeList {
 
 		return lstHolWFrame.stream().map(x -> {
 			val temp = x.clone();
-			if (temp.getHolidayWorkTime().isPresent() && temp.getBeforeApplicationTime().isPresent()
-					&& temp.getBeforeApplicationTime().get().v() <= temp.getHolidayWorkTime().get().getTime()
+			int beforeValueApp = temp.getBeforeApplicationTime().isPresent() ?  temp.getBeforeApplicationTime().get().v() : 0;
+			if (temp.getHolidayWorkTime().isPresent() && beforeValueApp <= temp.getHolidayWorkTime().get().getTime()
 							.valueAsMinutes()) {
-				temp.getHolidayWorkTime().get().setTime(temp.getBeforeApplicationTime().get());
+				temp.getHolidayWorkTime().get().setTime(new AttendanceTime(beforeValueApp));
 			}
 			return temp;
 		}).collect(Collectors.toList());

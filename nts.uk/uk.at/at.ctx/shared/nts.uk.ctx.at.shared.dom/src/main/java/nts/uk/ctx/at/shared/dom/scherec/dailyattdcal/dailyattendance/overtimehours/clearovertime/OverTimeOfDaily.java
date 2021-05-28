@@ -944,4 +944,13 @@ public class OverTimeOfDaily {
 			}
 		}
 	}
+	
+	// 事前申請時間の前にデフォルトを作成
+	public static OverTimeOfDaily createDefaultBeforeApp(List<Integer> lstNo) {
+		List<OverTimeFrameTime> workFrameTime = lstNo.stream().map(x -> {
+			return new OverTimeFrameTime(new OverTimeFrameNo(x), TimeDivergenceWithCalculation.emptyTime(),
+					TimeDivergenceWithCalculation.emptyTime(), new AttendanceTime(0), new AttendanceTime(0));
+		}).collect(Collectors.toList());
+		return new OverTimeOfDaily(new ArrayList<>(), workFrameTime, Finally.empty());
+	}
 }
