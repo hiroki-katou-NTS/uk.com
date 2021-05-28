@@ -164,136 +164,61 @@ public class AlarmTopPageProcessingServiceImpl implements AlarmTopPageProcessing
     }
 
     private void dataProcessingInputOutput(List<AlarmEmployeeList> lstInput, List<AlarmEmployeeList> lstDB, List<AlarmEmployeeList> lstInsert, List<AlarmEmployeeList> lstDelete) {
-        // Chuyển thành map lồng map
-        Map<String, Map<AlarmExtractInfoKey, List<ExtractResultDetail>>> mapInput = lstInput.stream()
-                .collect(Collectors.toMap(AlarmEmployeeList::getEmployeeID, x -> {
-                    return x.getAlarmExtractInfoResults().stream()
-                            .collect(Collectors.toMap(y ->
-                                    new AlarmExtractInfoKey(y.getAlarmCheckConditionNo(), y.getAlarmCheckConditionCode(), y.getAlarmCategory(), y.getAlarmListCheckType()), y -> y.getExtractionResultDetails()));
-                }));
-        // Chuyển thành map lồng map
-        Map<String, Map<AlarmExtractInfoKey, List<ExtractResultDetail>>> mapDb = lstDB.stream()
-                .collect(Collectors.toMap(AlarmEmployeeList::getEmployeeID, x -> {
-                    return x.getAlarmExtractInfoResults().stream()
-                            .collect(Collectors.toMap(y ->
-                                    new AlarmExtractInfoKey(y.getAlarmCheckConditionNo(), y.getAlarmCheckConditionCode(), y.getAlarmCategory(), y.getAlarmListCheckType()), y -> y.getExtractionResultDetails()));
-                }));
-
-//        mapInput.forEach((key, value) -> mapDb.entrySet().removeIf(d -> !d.getKey().contains(key)));
-        Set<String> setKeyMapDb = new HashSet<>();
-        for (val entryDb : mapDb.entrySet()) {
-            Map<AlarmExtractInfoKey, List<ExtractResultDetail>> db = mapDb.get(entryDb.getKey());
-            List<AlarmExtractInfoResult> lstInfoResult = new ArrayList<>();
-            for (Map.Entry<AlarmExtractInfoKey, List<ExtractResultDetail>> detailDb : db.entrySet()) {
-                boolean exist = mapInput.containsKey(entryDb.getKey());
-                if (exist) { // Nếu trùng SID -> check tiếp điều kiện khác
-                    val input = mapInput.get(entryDb.getKey());
-                    val dbKey = detailDb.getKey();
-                    if (input.containsKey(dbKey)) { // Nếu trùng SID, No, code, type, cate -> check tiếp điều kiện khác
-                        List<ExtractResultDetail> highestInput = mapInput.get(entryDb.getKey()).get(detailDb.getKey());
-                        val dateInputs = highestInput.stream().map(i -> i.getPeriodDate().getStartDate().get().toString()).collect(Collectors.toList());
-
-                        // Nếu trùng SID, No, code, type, cate nhưng KHÔNG TRÙNG startDate với trong lstInput => dữ liệu DB đã cũ => add vào lstDelete để xoá đi
-                        List<ExtractResultDetail> lstDiffInput = detailDb.getValue().stream().filter(h -> !dateInputs.contains(h.getPeriodDate().getStartDate().get().toString())).collect(Collectors.toList());
-                        if (!lstDiffInput.isEmpty()) {
-                            lstInfoResult.add(new AlarmExtractInfoResult(
-                                    detailDb.getKey().getAlarmCheckConditionNo(),
-                                    new AlarmCheckConditionCode(detailDb.getKey().getAlarmCheckConditionCode().v()),
-                                    AlarmCategory.of(detailDb.getKey().getAlarmCategory().value),
-                                    AlarmListCheckType.of(detailDb.getKey().getAlarmListCheckType().value),
-                                    lstDiffInput
+        for (AlarmEmployeeList alarmEmpInput : lstInput) {
+            // tim theo employeeId
+            Optional<AlarmEmployeeList> alarmEmpDbOpt = lstDB.stream()
+                    .filter(i -> i.getEmployeeID().equals(alarmEmpInput.getEmployeeID())).findAny();
+            // neu data theo employee co trong db thi xu ly tiep (ton tai thi them vao listDelete, khong thi them vao listInsert)
+            if (alarmEmpDbOpt.isPresent()) {
+                AlarmEmployeeList alarmEmpDb = alarmEmpDbOpt.get();
+                List<AlarmExtractInfoResult> tempInsert = new ArrayList<>();
+                List<AlarmExtractInfoResult> tempDelete = new ArrayList<>();
+                alarmEmpInput.getAlarmExtractInfoResults().forEach(inputInfo -> {
+                    // tim theo checkNo, checkCode, category, checkType
+                    Optional<AlarmExtractInfoResult> dbInfoOpt = alarmEmpDb.getAlarmExtractInfoResults().stream()
+                            .filter(i -> i.getAlarmCheckConditionNo().equals(inputInfo.getAlarmCheckConditionNo())
+                                    && i.getAlarmCheckConditionCode().v().equals(inputInfo.getAlarmCheckConditionCode().v())
+                                    && i.getAlarmCategory() == inputInfo.getAlarmCategory()
+                                    && i.getAlarmListCheckType() == inputInfo.getAlarmListCheckType()).findAny();
+                    // neu ton tai trong db thi xu ly tiep (ton tai thi them vao listDelete, khong thi them vao listInsert)
+                    if (dbInfoOpt.isPresent()) {
+                        AlarmExtractInfoResult dbInfo = dbInfoOpt.get();
+                        List<ExtractResultDetail> tempInsertDetails = inputInfo.getExtractionResultDetails().stream()
+                                .filter(i -> dbInfo.getExtractionResultDetails().stream().noneMatch(j -> j.getPeriodDate().getStartDate().get().equals(i.getPeriodDate().getStartDate().get())))
+                                .collect(Collectors.toList());
+                        List<ExtractResultDetail> tempDeleteDetails = dbInfo.getExtractionResultDetails().stream()
+                                .filter(i -> inputInfo.getExtractionResultDetails().stream().noneMatch(j -> j.getPeriodDate().getStartDate().get().equals(i.getPeriodDate().getStartDate().get())))
+                                .collect(Collectors.toList());
+                        if (!tempInsertDetails.isEmpty()) {
+                            tempInsert.add(new AlarmExtractInfoResult(
+                                    inputInfo.getAlarmCheckConditionNo(),
+                                    inputInfo.getAlarmCheckConditionCode(),
+                                    inputInfo.getAlarmCategory(),
+                                    inputInfo.getAlarmListCheckType(),
+                                    tempInsertDetails
                             ));
                         }
-                    } else { // Nếu trùng SID nhưng không trùng code, type, cate, No => dữ liệu Db cũ => add to lstDelete
-                        lstInfoResult.add(new AlarmExtractInfoResult(
-                                detailDb.getKey().getAlarmCheckConditionNo(),
-                                new AlarmCheckConditionCode(detailDb.getKey().getAlarmCheckConditionCode().v()),
-                                AlarmCategory.of(detailDb.getKey().getAlarmCategory().value),
-                                AlarmListCheckType.of(detailDb.getKey().getAlarmListCheckType().value),
-                                detailDb.getValue()
-                        ));
-                    }
-
-                } else { // Nếu không trùng SID => DB có nhưng Input ko có => dữ liệu Db cũ => add vào lstDelete
-                    val dataDeletes = lstDB.stream().filter(x -> x.getEmployeeID().equals(entryDb.getKey())).collect(Collectors.toList());
-                    // Add vào lstDelete để xoá khỏi DB
-                    if (!dataDeletes.isEmpty()) {
-                        lstDelete.addAll(dataDeletes);
-                    }
-                    setKeyMapDb.add(entryDb.getKey());
-                }
-            }
-            if (!lstInfoResult.isEmpty()) {
-                val emps = lstDelete.stream().filter(x -> x.getEmployeeID().equals(entryDb.getKey())).collect(Collectors.toList());
-                if (emps.isEmpty()) {
-                    lstDelete.add(new AlarmEmployeeList(lstInfoResult, entryDb.getKey()));
-                } else {
-                    lstDelete.stream().filter(x -> x.getEmployeeID().equals(entryDb.getKey())).forEach(e -> e.getAlarmExtractInfoResults().addAll(lstInfoResult));
-                }
-            }
-        }
-
-        // Check SID: có ở input & có ở db --> không cần insert vào nữa (xoá khỏi list input)
-        mapDb.forEach((key, value) -> mapInput.entrySet().removeIf(i -> i.getKey().contains(key)));
-
-        for (Map.Entry<String, Map<AlarmExtractInfoKey, List<ExtractResultDetail>>> entryIp : mapInput.entrySet()) {
-            Map<AlarmExtractInfoKey, List<ExtractResultDetail>> ip = mapInput.get(entryIp.getKey());
-            List<AlarmExtractInfoResult> lstInfoResult = new ArrayList<>();
-            for (Map.Entry<AlarmExtractInfoKey, List<ExtractResultDetail>> detailIp : ip.entrySet()) {
-                boolean exist = mapDb.containsKey(entryIp.getKey());
-                if (exist) { // Nếu trùng SID -> check tiếp điều kiện khác
-                    if (mapDb.get(entryIp.getKey()).containsKey(detailIp.getKey())) { // Nếu trùng SID, No, code, type, cate
-                        List<ExtractResultDetail> highestDb = mapDb.get(entryIp.getKey()).get(detailIp.getKey());
-                        val dateDbs = highestDb.stream().map(i -> i.getPeriodDate().getStartDate().get().toString()).collect(Collectors.toList());
-//                        val dateInputs = ip.get(detailIp.getKey()).stream().map(i -> i.getPeriodDate().getStartDate().get().toString()).collect(Collectors.toList());
-
-//                        // Nếu trùng SID, No, code, type, cate nhưng KHÔNG TRÙNG startDate với trong lstInput => dữ liệu DB đã cũ => add vào lstDelete để xoá đi
-//                        List<ExtractResultDetail> lstDiffDb = highestDb.stream().filter(h -> !dateInputs.contains(h.getPeriodDate().getStartDate().get())).collect(Collectors.toList());
-//                        if (!lstDiffDb.isEmpty()) {
-//                            lstInfoResult.add(new AlarmExtractInfoResult(
-//                                    detailIp.getKey().getAlarmCheckConditionNo(),
-//                                    new AlarmCheckConditionCode(detailIp.getKey().getAlarmCheckConditionCode().v()),
-//                                    AlarmCategory.of(detailIp.getKey().getAlarmCategory().value),
-//                                    AlarmListCheckType.of(detailIp.getKey().getAlarmListCheckType().value),
-//                                    lstDiffDb
-//                            ));
-//                        }
-
-                        // Nếu trùng SID, No, code, type, cate nhưng KHÔNG TRÙNG startDate với trong lstDB => DB chưa có => add vào lstInsert để insert
-                        List<ExtractResultDetail> lstDiffInput = detailIp.getValue().stream().filter(h -> !dateDbs.contains(h.getPeriodDate().getStartDate().get().toString())).collect(Collectors.toList());
-                        if (!lstDiffInput.isEmpty()) {
-                            lstInfoResult.add(new AlarmExtractInfoResult(
-                                    detailIp.getKey().getAlarmCheckConditionNo(),
-                                    new AlarmCheckConditionCode(detailIp.getKey().getAlarmCheckConditionCode().v()),
-                                    AlarmCategory.of(detailIp.getKey().getAlarmCategory().value),
-                                    AlarmListCheckType.of(detailIp.getKey().getAlarmListCheckType().value),
-                                    lstDiffInput
+                        if (!tempDeleteDetails.isEmpty()) {
+                            tempDelete.add(new AlarmExtractInfoResult(
+                                    dbInfo.getAlarmCheckConditionNo(),
+                                    dbInfo.getAlarmCheckConditionCode(),
+                                    dbInfo.getAlarmCategory(),
+                                    dbInfo.getAlarmListCheckType(),
+                                    tempDeleteDetails
                             ));
                         }
-
-                    } else { // Nếu trùng SID nhưng không trùng code, type, cate, No => Db chưa có => add to lstInsert
-                        lstInfoResult.add(new AlarmExtractInfoResult(
-                                detailIp.getKey().getAlarmCheckConditionNo(),
-                                new AlarmCheckConditionCode(detailIp.getKey().getAlarmCheckConditionCode().v()),
-                                AlarmCategory.of(detailIp.getKey().getAlarmCategory().value),
-                                AlarmListCheckType.of(detailIp.getKey().getAlarmListCheckType().value),
-                                detailIp.getValue()
-                        ));
+                    } else {
+                        tempInsert.add(inputInfo);
                     }
-                } else { // Nếu không trùng SID => có ở Input nhưng ko có ở DB => add vào lstInsert
-                    val dataInputs = lstInput.stream().filter(x -> x.getEmployeeID().equals(entryIp.getKey())).collect(Collectors.toList());
-                    if (!dataInputs.isEmpty()) {
-                        lstInsert.addAll(dataInputs);
-                    }
+                });
+                if (!tempInsert.isEmpty()) {
+                    lstInsert.add(new AlarmEmployeeList(tempInsert, alarmEmpInput.getEmployeeID()));
                 }
-            }
-            if (!lstInfoResult.isEmpty()) {
-                val emps = lstInsert.stream().filter(x -> x.getEmployeeID().equals(entryIp.getKey())).collect(Collectors.toList());
-                if (emps.isEmpty()) {
-                    lstInsert.add(new AlarmEmployeeList(lstInfoResult, entryIp.getKey()));
-                } else {
-                    lstInsert.stream().filter(x -> x.getEmployeeID().equals(entryIp.getKey())).forEach(e -> e.getAlarmExtractInfoResults().addAll(lstInfoResult));
+                if (!tempDelete.isEmpty()) {
+                    lstDelete.add(new AlarmEmployeeList(tempDelete, alarmEmpDb.getEmployeeID()));
                 }
+            } else {
+                lstInsert.add(alarmEmpInput);
             }
         }
     }
