@@ -596,3 +596,6 @@ table th, table td {
 #vertComboBox * {
 	text-align: left;
 }
+#horzComboBox * {
+	text-align: left;
+}
