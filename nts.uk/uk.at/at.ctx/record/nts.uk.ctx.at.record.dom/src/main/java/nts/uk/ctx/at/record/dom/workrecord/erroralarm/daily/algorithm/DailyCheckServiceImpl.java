@@ -502,7 +502,8 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 								errorAlarm.getContinuousPeriod().v(),
 								extCond.getCheckItem(),
 								lstWorkTypeCond, lstWkType, wTypeCom,
-								lstWorkTimeCond, listWorktime, wTimeCom, count);
+								lstWorkTimeCond, listWorktime, wTimeCom);
+						count += 1;
 					}
 					renzoku = 0;
 					continue;	
@@ -541,7 +542,8 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 								AlarmListCheckType.FreeCheck,
 								getWplByListSidAndPeriod,
 								lstExtractInfoResult,
-								alarmCheckConditionCode, count);
+								alarmCheckConditionCode);
+						count += 1;
 					} else {
 						renzoku += 1;
 						renzokuDate = exDate;
@@ -567,7 +569,8 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 								errorAlarm.getContinuousPeriod().v(),
 								extCond.getCheckItem(),
 								lstWorkTypeCond, lstWkType, wTypeCom,
-								lstWorkTimeCond, listWorktime, wTimeCom, count);
+								lstWorkTimeCond, listWorktime, wTimeCom);
+						count += 1;
 					}
 					renzoku = 0;
 				}
@@ -656,7 +659,8 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 								errorAlarm.getContinuousPeriod().v(),									
 								extCond.getCheckItem(),
 								lstWorkTypeCond, lstWkType, wTypeCom,
-								lstWorkTimeCond, listWorktime, wTimeCom, count);
+								lstWorkTimeCond, listWorktime, wTimeCom);
+						count += 1;
 					}
 					renzoku = 0;
 					renzokuDate = exDate;
@@ -708,7 +712,8 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 								errorAlarm.getContinuousPeriod().v(),									
 								extCond.getCheckItem(),
 								lstWorkTypeCond, lstWkType, wTypeCom,
-								lstWorkTimeCond, listWorktime, wTimeCom, count);
+								lstWorkTimeCond, listWorktime, wTimeCom);
+						count += 1;
 					}
 					renzoku = 0;
 					renzokuDate = exDate;
@@ -737,7 +742,8 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 					errorAlarm.getContinuousPeriod().v(),
 					extCond.getCheckItem(),
 					lstWorkTypeCond, lstWkType, wTypeCom,
-					lstWorkTimeCond, listWorktime, wTimeCom, count);
+					lstWorkTimeCond, listWorktime, wTimeCom);
+			count += 1;
 		}
 		if (count > 0) {
 			//「アラーム抽出条件」を作成してInput．List＜アラーム抽出条件＞を追加
@@ -769,7 +775,7 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 			List<WorkPlaceHistImportAl> getWplByListSidAndPeriod,
 			int continuousPeriod, TypeCheckWorkRecord typeCheck, 
 			List<WorkTypeCode> lstWorkTypeCond, List<WorkType> lstWkType, FilterByCompare wTypeCom,
-			List<WorkTimeCode> lstWorkTimeCond, List<WorkTimeSetting> lstWorkTime, FilterByCompare wTimeCom, int count) {
+			List<WorkTimeCode> lstWorkTimeCond, List<WorkTimeSetting> lstWorkTime, FilterByCompare wTimeCom) {
 		String wplId = "";
 		Optional<WorkPlaceHistImportAl> optWorkPlaceHistImportAl = getWplByListSidAndPeriod.stream().filter(x -> x.getEmployeeId().equals(sid)).findFirst();
 		if(optWorkPlaceHistImportAl.isPresent()) {
@@ -849,12 +855,10 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 					checkType,
 					listDetail)
 			);
-			count++;
 		} else {
 			alarmExtractInfoResults.stream().filter(x -> x.getAlarmListCheckType().value == checkType.value && x.getAlarmCheckConditionNo().equals(alarmCode)
 					&& x.getAlarmCheckConditionCode().v().equals(alarmCheckConditionCode) && x.getAlarmCategory().value == AlarmCategory.DAILY.value)
 					.forEach(x -> x.getExtractionResultDetails().add(detail));
-			count++;
 		}
 	}
 
@@ -1012,7 +1016,8 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 					AlarmListCheckType.FreeCheck,
 					getWplByListSidAndPeriod,
 					alarmExtractInfoResults,
-					alarmCheckConditionCode, count);
+					alarmCheckConditionCode);
+			count += 1;
 
 			if (count > 0) {
 				//「アラーム抽出条件」を作成してInput．List＜アラーム抽出条件＞を追加
@@ -1042,7 +1047,7 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 			String alarmCode, AlarmListCheckType checkType,
 			List<WorkPlaceHistImportAl> getWplByListSidAndPeriod,
 			List<AlarmExtractInfoResult> alarmExtractInfoResults,
-			String alarmCheckConditionCode, int count) {
+			String alarmCheckConditionCode) {
 		
 		String wplId = "";
 		Optional<WorkPlaceHistImportAl> optWorkPlaceHistImportAl = getWplByListSidAndPeriod.stream().filter(x -> x.getEmployeeId().equals(sid)).findFirst();
@@ -1080,12 +1085,10 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 					checkType,
 					listDetail)
 			);
-			count++;
 		} else {
 			alarmExtractInfoResults.stream().filter(x -> x.getAlarmListCheckType().value == checkType.value && x.getAlarmCheckConditionNo().equals(alarmCode)
 					&& x.getAlarmCheckConditionCode().v().equals(alarmCheckConditionCode) && x.getAlarmCategory().value == AlarmCategory.DAILY.value)
 					.forEach(x -> x.getExtractionResultDetails().add(detail));
-			count++;
 		}
 	}
 	
@@ -1137,7 +1140,8 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 						AlarmListCheckType.FixCheck,
 						getWplByListSidAndPeriod,
 						alarmExtractInfoResults,
-						alarmCheckConditionCode, count);
+						alarmCheckConditionCode);
+				count += 1;
 				continue;
 			}
 			if(integra == null) continue;
@@ -1310,7 +1314,7 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 					if(!errorFlex.alarmMessage.isEmpty()) {
 						lstErrorInfo.add(errorFlex);
 					}
-					lstErrorInfo.stream().forEach(x -> {
+					for (ErrorInfo x : lstErrorInfo) {
 						this.createExtractAlarm(sid,
 								baseDate,
 								listResultCond,
@@ -1322,9 +1326,9 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 								AlarmListCheckType.FixCheck,
 								getWplByListSidAndPeriod,
 								alarmExtractInfoResults,
-								alarmCheckConditionCode, count);
-					});
-					
+								alarmCheckConditionCode);
+						count += 1;
+					}
 					break;
 					
 				case MULTI_WORK_TIMES:
@@ -1376,7 +1380,8 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 						AlarmListCheckType.FixCheck,
 						getWplByListSidAndPeriod,
 						alarmExtractInfoResults,
-						alarmCheckConditionCode, count);
+						alarmCheckConditionCode);
+				count += 1;
 			}
 
 			if (count > 0) {
