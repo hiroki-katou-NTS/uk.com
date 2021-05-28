@@ -18,7 +18,7 @@
 }
 
 .form-label{
-	width: 65px !important;;
+	width: 33px !important;;
 }
 
 .row-search{
@@ -30,4 +30,7 @@
 
 #nts-component-tree{
 	padding-left: 16px !important;
+}
+.ksm015-label {
+  width: 120px !important;;
 }
