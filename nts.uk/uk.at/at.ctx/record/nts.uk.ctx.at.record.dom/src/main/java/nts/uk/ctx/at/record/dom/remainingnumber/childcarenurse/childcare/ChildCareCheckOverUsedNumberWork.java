@@ -259,25 +259,26 @@ public class ChildCareCheckOverUsedNumberWork {
 		if(employeeInfo.isPresent()) {
 			childCareNurseUpperLimitPeriod =
 					employeeInfo.get().childCareNurseUpperLimitPeriod(companyId,employeeId, period, criteriaDate, require);
-		}
+		
 
-		// 対象日の上限日数を確認
-		// ===上限日数期間．期間．開始日 <=暫定残数管理データ．対象日<= 上限日数期間．期間．終了日
-		ChildCareNurseUpperLimitPeriod upperLimitPeriod =
-				childCareNurseUpperLimitPeriod.stream().filter(x -> x.getPeriod().start().beforeOrEquals(interimDate.getYmd())
-				&&  x.getPeriod().end().afterOrEquals(interimDate.getYmd())).findFirst().get();
-
-		// 子の看護介護残数を使い過ぎていないか
-		boolean checkRemainingNumber = checkRemainingNumber(companyId, employeeId, upperLimitPeriod, criteriaDate, require);
-
-		if (!checkRemainingNumber) {
-			// 上限超過エラーリストに追加
-			// ===年月日←暫定子の看護介護管理データ．対象日
-			// ===上限日数←上限日数期間．上限日数
-			// ===使用数←超過確認用使用数
-			childCareNurseErrors.add(ChildCareNurseErrors.of(usedNumber,
-					upperLimitPeriod.getLimitDays(),
-					interimDate.getYmd()));
+			// 対象日の上限日数を確認
+			// ===上限日数期間．期間．開始日 <=暫定残数管理データ．対象日<= 上限日数期間．期間．終了日
+			ChildCareNurseUpperLimitPeriod upperLimitPeriod =
+					childCareNurseUpperLimitPeriod.stream().filter(x -> x.getPeriod().start().beforeOrEquals(interimDate.getYmd())
+					&&  x.getPeriod().end().afterOrEquals(interimDate.getYmd())).findFirst().get();
+		
+			// 子の看護介護残数を使い過ぎていないか
+			boolean checkRemainingNumber = checkRemainingNumber(companyId, employeeId, upperLimitPeriod, criteriaDate, require);
+		
+			if (!checkRemainingNumber) {
+				// 上限超過エラーリストに追加
+				// ===年月日←暫定子の看護介護管理データ．対象日
+				// ===上限日数←上限日数期間．上限日数
+				// ===使用数←超過確認用使用数
+				childCareNurseErrors.add(ChildCareNurseErrors.of(usedNumber,
+						upperLimitPeriod.getLimitDays(),
+						interimDate.getYmd()));
+			}
 		}
 		// 「子の看護介護エラー情報」を返す
 		return childCareNurseErrors;
