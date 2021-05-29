@@ -209,7 +209,7 @@ public class InterimRemainOffDateCreateData {
 					List<VacationTimeInforNew> appLstVacationTimeInfor = x.getVacationTimes();
 					// 時間休暇使用時間を作成
 					timeInfos.addAll(createVacationUsageTime(require, cid, createAtr, appLstVacationTimeInfor,
-							x.getWorkTypeCode().map(wktype -> wktype).orElse(null)));
+							x.getWorkTypeCode().map(wktype -> wktype).orElse("DMY")));
 				});
 
 		return timeInfos;

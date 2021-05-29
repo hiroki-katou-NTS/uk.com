@@ -65,7 +65,7 @@ public class JpaTempChildCareManagementRepository extends JpaRepository implemen
 				domain.getSID(),
 				domain.getYmd(),
 				domain.getAppTimeType().map(x -> x.isHourlyTimeType() ? 1 : 0).orElse(0),
-				domain.getAppTimeType().map(x -> x.getAppTimeType().map(time -> time.value).orElse(0)).orElse(0));
+				domain.getAppTimeType().map(x -> x.getAppTimeType().map(time -> time.value + 1).orElse(0)).orElse(0));
 
 		// 登録・更新
 		this.queryProxy().find(pk, KshdtInterimChildCare.class).ifPresent(entity -> {
