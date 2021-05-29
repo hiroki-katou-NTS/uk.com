@@ -5,12 +5,12 @@ import java.util.Optional;
 
 import lombok.Getter;
 import nts.uk.cnv.core.dom.constants.Constants;
+import nts.uk.cnv.core.dom.conversionsql.ColumnExpression;
 import nts.uk.cnv.core.dom.conversionsql.ColumnName;
 import nts.uk.cnv.core.dom.conversionsql.ConversionSQL;
 import nts.uk.cnv.core.dom.conversionsql.Join;
 import nts.uk.cnv.core.dom.conversionsql.JoinAtr;
 import nts.uk.cnv.core.dom.conversionsql.OnSentence;
-import nts.uk.cnv.core.dom.conversionsql.SelectSentence;
 import nts.uk.cnv.core.dom.conversionsql.TableFullName;
 import nts.uk.cnv.core.dom.conversiontable.ConversionInfo;
 
@@ -29,8 +29,8 @@ public class PasswordPattern extends ConversionPattern {
 	}
 
 	@Override
-	public ConversionSQL apply(ConversionSQL conversionSql) {
-		conversionSql.getFrom().addJoin(sourceJoin);
+	public ConversionSQL apply(ColumnName column, ConversionSQL conversionSql) {
+		conversionSql.addJoin(sourceJoin);
 
 		Join mappingTableJoin = new Join(
 				new TableFullName(info.getWorkDatabaseName(), info.getWorkSchema(), Constants.EncryptionTableName, Constants.EncryptionTableAlias),
@@ -48,10 +48,13 @@ public class PasswordPattern extends ConversionPattern {
 					))
 			);
 
-		conversionSql.getFrom().addJoin(mappingTableJoin);
+		conversionSql.addJoin(mappingTableJoin);
 
-		conversionSql.getSelect().add(
-				SelectSentence.createNotFormat(Constants.EncryptionTableAlias, Constants.EncryptionColumnName));
+		conversionSql.add(
+				column,
+				new ColumnExpression(
+						Constants.EncryptionTableAlias,
+						Constants.EncryptionColumnName));
 
 		return conversionSql;
 	}

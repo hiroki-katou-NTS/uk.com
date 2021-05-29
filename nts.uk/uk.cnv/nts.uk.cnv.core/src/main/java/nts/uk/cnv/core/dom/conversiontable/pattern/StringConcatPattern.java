@@ -4,9 +4,10 @@ import java.util.Optional;
 
 import lombok.Getter;
 import nemunoki.oruta.shr.tabledefinetype.DatabaseSpec;
+import nts.uk.cnv.core.dom.conversionsql.ColumnExpression;
+import nts.uk.cnv.core.dom.conversionsql.ColumnName;
 import nts.uk.cnv.core.dom.conversionsql.ConversionSQL;
 import nts.uk.cnv.core.dom.conversionsql.Join;
-import nts.uk.cnv.core.dom.conversionsql.SelectSentence;
 
 @Getter
 public class StringConcatPattern extends ConversionPattern {
@@ -30,8 +31,8 @@ public class StringConcatPattern extends ConversionPattern {
 	}
 
 	@Override
-	public ConversionSQL apply(ConversionSQL conversionSql) {
-		conversionSql.getFrom().addJoin(sourceJoin);
+	public ConversionSQL apply(ColumnName column, ConversionSQL conversionSql) {
+		conversionSql.addJoin(sourceJoin);
 
 		String source1 = sourceJoin.tableName.getAlias() + "." + column1;
 		String source2 = sourceJoin.tableName.getAlias() + "." + column2;
@@ -43,7 +44,9 @@ public class StringConcatPattern extends ConversionPattern {
 		String concatString = spec.concat(source1, source2);
 
 
-		conversionSql.getSelect().add(SelectSentence.createNotFormat("", concatString));
+		conversionSql.add(
+				column,
+				new ColumnExpression(concatString));
 
 		return conversionSql;
 	}

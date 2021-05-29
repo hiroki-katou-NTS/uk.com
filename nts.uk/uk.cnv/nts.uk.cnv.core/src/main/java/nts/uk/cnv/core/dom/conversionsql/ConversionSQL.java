@@ -1,9 +1,7 @@
 package nts.uk.cnv.core.dom.conversionsql;
 
-import java.util.List;
+import java.util.TreeMap;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 import nemunoki.oruta.shr.tabledefinetype.DatabaseSpec;
 
 /**
@@ -11,24 +9,14 @@ import nemunoki.oruta.shr.tabledefinetype.DatabaseSpec;
  * @author ai_muto
  *
  */
-@AllArgsConstructor
-@Getter
-public class ConversionSQL {
+public interface ConversionSQL {
 
-	private InsertSentence insert;
+	public void addWhere(WhereSentence where);
+	public void addJoin(Join join);
+	public void add(ColumnName column, ColumnExpression value);
+	public void add(ColumnName column, ColumnExpression value, TreeMap<FormatType, String> formatTable);
 
-	private List<SelectSentence> select;
+	public TableFullName getBaseTable();
 
-	private FromSentence from;
-
-	private List<WhereSentence> where;
-
-	public String build(DatabaseSpec spec) {
-		String whereString = (from.getBaseTable().isPresent() && where.size() > 0) ? WhereSentence.join(where) : "";
-		return insert.sql(
-				SelectSentence.join(select) + "\r\n" +
-				from.sql(spec) +
-				whereString
-			);
-	}
+	public String build(DatabaseSpec spec);
 }

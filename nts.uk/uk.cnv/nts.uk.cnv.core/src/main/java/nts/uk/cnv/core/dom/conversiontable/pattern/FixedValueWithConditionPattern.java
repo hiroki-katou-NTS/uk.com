@@ -1,16 +1,15 @@
 package nts.uk.cnv.core.dom.conversiontable.pattern;
 
-import java.util.Optional;
 import java.util.TreeMap;
 
 import lombok.Getter;
 import nemunoki.oruta.shr.tabledefinetype.DatabaseSpec;
 import nts.uk.cnv.core.dom.conversionsql.ColumnExpression;
+import nts.uk.cnv.core.dom.conversionsql.ColumnName;
 import nts.uk.cnv.core.dom.conversionsql.ConversionSQL;
 import nts.uk.cnv.core.dom.conversionsql.FormatType;
 import nts.uk.cnv.core.dom.conversionsql.Join;
 import nts.uk.cnv.core.dom.conversionsql.RelationalOperator;
-import nts.uk.cnv.core.dom.conversionsql.SelectSentence;
 
 /**
  * 条件付き固定値（条件に一致しない場合はそのまま移送）
@@ -48,8 +47,8 @@ public class FixedValueWithConditionPattern extends ConversionPattern {
 	}
 
 	@Override
-	public ConversionSQL apply(ConversionSQL conversionSql) {
-		conversionSql.getFrom().addJoin(join);
+	public ConversionSQL apply(ColumnName column, ConversionSQL conversionSql) {
+		conversionSql.addJoin(join);
 
 		String newExpression = (isParamater)
 				? spec.param(expression)
@@ -63,12 +62,7 @@ public class FixedValueWithConditionPattern extends ConversionPattern {
 				+ "THEN %s ELSE " + source + " END"
 			);
 
-		SelectSentence selectSentence = new SelectSentence(
-				new ColumnExpression(Optional.empty(), newExpression),
-				formatTable
-			);
-
-		conversionSql.getSelect().add(selectSentence);
+		conversionSql.add(column, new ColumnExpression(newExpression), formatTable);
 
 		return conversionSql;
 	}

@@ -1,12 +1,12 @@
 package nts.uk.cnv.core.dom.conversionsql;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import nemunoki.oruta.shr.tabledefinetype.DatabaseSpec;
 
 /**
@@ -14,7 +14,6 @@ import nemunoki.oruta.shr.tabledefinetype.DatabaseSpec;
  * @author ai_muto
  *
  */
-@NoArgsConstructor
 @AllArgsConstructor
 @Getter
 public class FromSentence {
@@ -22,6 +21,11 @@ public class FromSentence {
 	private Optional<TableFullName> baseTable;
 	/** 結合テーブル **/
 	private List<Join> joinTables;
+
+	public FromSentence() {
+		this.baseTable = Optional.empty();
+		this.joinTables = new ArrayList<>();
+	}
 
 	public void addJoin(Join join) {
 

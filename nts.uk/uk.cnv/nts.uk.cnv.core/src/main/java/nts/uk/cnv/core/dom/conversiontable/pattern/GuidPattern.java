@@ -1,8 +1,9 @@
 package nts.uk.cnv.core.dom.conversiontable.pattern;
 
 import nemunoki.oruta.shr.tabledefinetype.DatabaseSpec;
+import nts.uk.cnv.core.dom.conversionsql.ColumnExpression;
+import nts.uk.cnv.core.dom.conversionsql.ColumnName;
 import nts.uk.cnv.core.dom.conversionsql.ConversionSQL;
-import nts.uk.cnv.core.dom.conversionsql.SelectSentence;
 
 public class GuidPattern extends ConversionPattern {
 	private DatabaseSpec spec;
@@ -12,10 +13,8 @@ public class GuidPattern extends ConversionPattern {
 	}
 
 	@Override
-	public ConversionSQL apply(ConversionSQL conversionSql) {
-		conversionSql.getSelect().add(
-				SelectSentence.createNotFormat("", spec.newUuid())
-			);
+	public ConversionSQL apply(ColumnName column, ConversionSQL conversionSql) {
+		conversionSql.add(column, new ColumnExpression(spec.newUuid()));
 		return conversionSql;
 	}
 

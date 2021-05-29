@@ -53,8 +53,7 @@ public class ConversionTableService {
 	ConversionSourcesRepository conversionSourceRepo;
 
 	public FindConversionTableResult find(FindConversionTableDto dto) {
-		ConversionInfo info = new ConversionInfo();
-		return mappingData(this.find(info, dto));
+		return mappingData(this.find(ConversionInfo.createDummry(), dto));
 	}
 
 	public OneColumnConversion find(ConversionInfo info, FindConversionTableDto dto) {
@@ -79,6 +78,21 @@ public class ConversionTableService {
 	 */
 	public String test(FindConversionTableDto dto) {
 		ConversionInfo info = ConversionInfo.createDummry();
+		ConversionTable conversonTable = createConversionTable(info, dto);
+		ConversionSQL sql = conversonTable.createConversionSql();
+
+		return sql.build(info.getDatebaseType().spec());
+	}
+
+	public String testForUpdate(FindConversionTableDto dto) {
+		ConversionInfo info = ConversionInfo.createDummry();
+		ConversionTable conversonTable = createConversionTable(info, dto);
+		ConversionSQL sql = conversonTable.createUpdateConversionSql();
+
+		return sql.build(info.getDatebaseType().spec());
+	}
+
+	private ConversionTable createConversionTable(ConversionInfo info, FindConversionTableDto dto) {
 		ConversionRecord record = recordRepo.getRecord(dto.getCategory(), dto.getTable(), dto.getRecordNo());
 
 		List<WhereSentence> whereList = new ArrayList<>();
@@ -97,7 +111,7 @@ public class ConversionTableService {
 			whereList = WhereSentence.parse(source.getCondition());
 		}
 
-		ConversionTable conversonTable = new ConversionTable(
+		return  new ConversionTable(
 				info.getDatebaseType().spec(),
 				new TableFullName(info.getTargetDatabaseName(), info.getSourceSchema(), dto.getTable(), ""),
 				source.getDateColumnName(),
@@ -106,10 +120,6 @@ public class ConversionTableService {
 				whereList,
 				conversionMap
 			);
-
-		ConversionSQL sql = conversonTable.createConversionSql();
-
-		return sql.build(info.getDatebaseType().spec());
 	}
 
 	private FindConversionTableResult mappingData(OneColumnConversion domain) {

@@ -1,9 +1,10 @@
 package nts.uk.cnv.core.dom.conversiontable.pattern;
 
 import lombok.Getter;
+import nts.uk.cnv.core.dom.conversionsql.ColumnExpression;
+import nts.uk.cnv.core.dom.conversionsql.ColumnName;
 import nts.uk.cnv.core.dom.conversionsql.ConversionSQL;
 import nts.uk.cnv.core.dom.conversionsql.Join;
-import nts.uk.cnv.core.dom.conversionsql.SelectSentence;
 
 /**
  * そのまま移送するパターン
@@ -22,10 +23,12 @@ public class NotChangePattern extends ConversionPattern {
 	}
 
 	@Override
-	public ConversionSQL apply(ConversionSQL conversionSql) {
-		conversionSql.getFrom().addJoin(join);
+	public ConversionSQL apply(ColumnName column, ConversionSQL conversionSql) {
+		conversionSql.addJoin(join);
 
-		conversionSql.getSelect().add(SelectSentence.createNotFormat(join.tableName.getAlias(), sourceColumn));
+		conversionSql.add(
+				column,
+				new ColumnExpression(join.tableName.getAlias(), sourceColumn));
 		return conversionSql;
 	}
 

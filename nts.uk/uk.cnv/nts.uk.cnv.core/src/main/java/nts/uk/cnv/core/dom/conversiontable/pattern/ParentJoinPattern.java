@@ -1,9 +1,10 @@
 package nts.uk.cnv.core.dom.conversiontable.pattern;
 
 import lombok.Getter;
+import nts.uk.cnv.core.dom.conversionsql.ColumnExpression;
+import nts.uk.cnv.core.dom.conversionsql.ColumnName;
 import nts.uk.cnv.core.dom.conversionsql.ConversionSQL;
 import nts.uk.cnv.core.dom.conversionsql.Join;
-import nts.uk.cnv.core.dom.conversionsql.SelectSentence;
 import nts.uk.cnv.core.dom.conversiontable.pattern.manager.ParentJoinPatternManager;
 
 @Getter
@@ -35,15 +36,16 @@ public class ParentJoinPattern extends ConversionPattern {
 	}
 
 	@Override
-	public ConversionSQL apply(ConversionSQL conversionSql) {
-		conversionSql.getFrom().addJoin(sourceJoin);
-		conversionSql.getFrom().addJoin(mappingJoin);
+	public ConversionSQL apply(ColumnName column, ConversionSQL conversionSql) {
+		conversionSql.addJoin(sourceJoin);
+		conversionSql.addJoin(mappingJoin);
 
-		conversionSql.getSelect().add(
-				SelectSentence.createNotFormat(
+		conversionSql.add(
+				column,
+				new ColumnExpression(
 						mappingJoin.tableName.getAlias(),
-						ParentJoinPatternManager.parentValueColumnName
-				));
+						ParentJoinPatternManager.parentValueColumnName)
+				);
 
 		return conversionSql;
 	}

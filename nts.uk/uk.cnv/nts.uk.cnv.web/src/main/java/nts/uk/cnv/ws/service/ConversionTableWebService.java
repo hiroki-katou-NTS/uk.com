@@ -74,6 +74,12 @@ public class ConversionTableWebService extends WebService {
 	}
 
 	@POST
+	@Path("test_update")
+	public String testForUpdate(FindConversionTableDto dto) {
+		return service.testForUpdate(dto);
+	}
+
+	@POST
 	@Path("category/regist")
 	public void registCategory(RegistConversionCategoryCommand command) {
 		regstCategoryHandler.handle(command);

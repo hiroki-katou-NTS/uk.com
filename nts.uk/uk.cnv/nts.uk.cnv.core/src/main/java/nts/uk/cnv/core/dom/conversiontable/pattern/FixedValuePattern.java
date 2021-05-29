@@ -2,8 +2,9 @@ package nts.uk.cnv.core.dom.conversiontable.pattern;
 
 import lombok.Getter;
 import nemunoki.oruta.shr.tabledefinetype.DatabaseSpec;
+import nts.uk.cnv.core.dom.conversionsql.ColumnExpression;
+import nts.uk.cnv.core.dom.conversionsql.ColumnName;
 import nts.uk.cnv.core.dom.conversionsql.ConversionSQL;
-import nts.uk.cnv.core.dom.conversionsql.SelectSentence;
 
 /**
  * 固定値
@@ -25,11 +26,11 @@ public class FixedValuePattern extends ConversionPattern {
 	}
 
 	@Override
-	public ConversionSQL apply(ConversionSQL conversionSql) {
+	public ConversionSQL apply(ColumnName column, ConversionSQL conversionSql) {
 		String newExpression = (isParamater)
 				? spec.param(expression)
 				: expression;
-		conversionSql.getSelect().add(SelectSentence.createNotFormat("", newExpression));
+		conversionSql.add(column, new ColumnExpression(newExpression));
 		return conversionSql;
 	}
 

@@ -209,7 +209,7 @@ public class ScvmtConversionTable extends JpaEntity implements Serializable  {
 			where.add(new WhereSentence(
 					new ColumnName(Constants.BaseTableAlias, expressions[0]),
 					operator,
-					Optional.of(new ColumnExpression(Optional.empty(), expressions[1]))
+					Optional.of(new ColumnExpression(expressions[1]))
 				));
 		}
 

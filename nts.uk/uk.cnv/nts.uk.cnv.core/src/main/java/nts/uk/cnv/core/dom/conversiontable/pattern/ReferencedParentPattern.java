@@ -6,12 +6,12 @@ import java.util.Optional;
 
 import lombok.Getter;
 import nts.uk.cnv.core.dom.constants.Constants;
+import nts.uk.cnv.core.dom.conversionsql.ColumnExpression;
 import nts.uk.cnv.core.dom.conversionsql.ColumnName;
 import nts.uk.cnv.core.dom.conversionsql.ConversionSQL;
 import nts.uk.cnv.core.dom.conversionsql.Join;
 import nts.uk.cnv.core.dom.conversionsql.JoinAtr;
 import nts.uk.cnv.core.dom.conversionsql.OnSentence;
-import nts.uk.cnv.core.dom.conversionsql.SelectSentence;
 import nts.uk.cnv.core.dom.conversiontable.ConversionInfo;
 import nts.uk.cnv.core.dom.conversiontable.pattern.manager.ParentJoinPatternManager;
 
@@ -37,13 +37,15 @@ public class ReferencedParentPattern extends ConversionPattern {
 	}
 
 	@Override
-	public ConversionSQL apply(ConversionSQL conversionSql) {
+	public ConversionSQL apply(ColumnName column, ConversionSQL conversionSql) {
 		String alias = "parent_" + this.parentColumn;
 		Join mapping = this.getMappingTableJoin(alias);
 
-		conversionSql.getFrom().addJoin(mapping);
+		conversionSql.addJoin(mapping);
 
-		conversionSql.getSelect().add(SelectSentence.createNotFormat(alias, ParentJoinPatternManager.parentValueColumnName));
+		conversionSql.add(
+				column,
+				new ColumnExpression(alias, ParentJoinPatternManager.parentValueColumnName));
 
 		return conversionSql;
 	}

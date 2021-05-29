@@ -4,7 +4,6 @@ import java.util.Arrays;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 /**
  * 列名
@@ -12,7 +11,6 @@ import lombok.NoArgsConstructor;
  *
  */
 @Getter
-@NoArgsConstructor
 @AllArgsConstructor
 public class ColumnName {
 
@@ -20,6 +18,11 @@ public class ColumnName {
 	private String alias;
 	/** 列名 */
 	private String name;
+
+	public ColumnName(String name) {
+		this.alias = "";
+		this.name = name;
+	}
 
 	public String sql() {
 		return (alias.isEmpty())
