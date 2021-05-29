@@ -821,6 +821,8 @@ module nts.uk.at.view.kdp005.a {
 											dfd.resolve();
 										}
 									});
+							}else {
+								dfd.resolve();
 							}
 						});
 				} else {

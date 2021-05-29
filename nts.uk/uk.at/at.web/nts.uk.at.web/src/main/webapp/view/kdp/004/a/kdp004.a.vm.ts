@@ -814,6 +814,8 @@ module nts.uk.at.view.kdp004.a {
 											dfd.resolve();
 										}
 									});
+							}else {
+								dfd.resolve();
 							}
 						});
 
