@@ -78,7 +78,7 @@ public class KfndtPersisAlarmExt extends ContractUkJpaEntity implements Serializ
                                             y.getAlarmCheckConditionCode().v(),
                                             y.getAlarmListCheckType().value,
                                             y.getAlarmCheckConditionNo(),
-                                            String.valueOf(z.getPeriodDate().getStartDate().get())
+                                            z.getPeriodDate().getStartDate().isPresent() ? String.valueOf(z.getPeriodDate().getStartDate().get()) : null
                                     ),
                                     z.getPeriodDate().getEndDate().isPresent() ? String.valueOf(z.getPeriodDate().getEndDate().get()) : null,
                                     domain.getAlarmPatternName().v(),
