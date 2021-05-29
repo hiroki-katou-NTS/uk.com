@@ -22,6 +22,10 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveC
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveEmSetRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveEmSetting;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CheckDateForManageCmpLeaveService.Require;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -41,6 +45,12 @@ public class DailyHolidayWorkPubImpl implements DailyHolidayWorkPub{
 	/** 雇用の代休管理設定 */
 	@Inject
 	private CompensLeaveEmSetRepository compensLeaveEmSetRepo;
+	
+	@Inject
+	private FlowWorkSettingRepository flowWorkSettingRepository;
+
+	@Inject
+	private WorkTypeRepository workTypeRepository;
 	
 	@Override
 	public DailyHolidayWorkPubExport calcHolidayWorkTransTime(DailyHolidayWorkPubImport imp) {
@@ -125,6 +135,21 @@ public class DailyHolidayWorkPubImpl implements DailyHolidayWorkPub{
 		public boolean checkDateForManageCmpLeave(
 				Require require, String companyId, String employeeId, GeneralDate ymd) {
 			return this.checkDateForManageCmpLeaveService.check(require, companyId, employeeId, ymd);
+		}
+
+		@Override
+		public Optional<FlowWorkSetting> findFlowWorkSetting(String companyId, String workTimeCode) {
+			return flowWorkSettingRepository.find(companyId, workTimeCode);
+		}
+
+		@Override
+		public CompensatoryLeaveComSetting findCompensatoryLeaveComSet(String companyId) {
+			return super.compensLeaveComSetRepo.find(companyId);
+		}
+
+		@Override
+		public Optional<WorkType> findByPK(String companyId, String workTypeCd) {
+			return workTypeRepository.findByPK(companyId, workTypeCd);
 		}
 	}
 }
