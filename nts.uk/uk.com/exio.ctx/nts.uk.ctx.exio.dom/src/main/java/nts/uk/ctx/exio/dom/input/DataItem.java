@@ -2,6 +2,8 @@ package nts.uk.ctx.exio.dom.input;
 
 import static nts.uk.ctx.exio.dom.input.DataItem.Type.*;
 
+import java.math.BigDecimal;
+
 import lombok.Value;
 import nts.arc.time.GeneralDate;
 
@@ -24,11 +26,11 @@ public class DataItem {
 		return new DataItem(itemNo, STRING, value);
 	}
 	
-	public static DataItem of(int itemNo, int value) {
+	public static DataItem of(int itemNo, long value) {
 		return new DataItem(itemNo, INT, value);
 	}
 	
-	public static DataItem of(int itemNo, double value) {
+	public static DataItem of(int itemNo, BigDecimal value) {
 		return new DataItem(itemNo, REAL, value);
 	}
 	
@@ -41,14 +43,14 @@ public class DataItem {
 		return value != null ? (String) value : null;
 	}
 	
-	public Integer getInt() {
+	public Long getInt() {
 		checkType(INT);
-		return value != null ? (int) value : null;
+		return value != null ? (long) value : null;
 	}
 	
-	public Double getReal() {
+	public BigDecimal getReal() {
 		checkType(REAL);
-		return value != null ? (double) value : null;
+		return value != null ? (BigDecimal) value : null;
 	}
 	
 	public GeneralDate getDate() {
