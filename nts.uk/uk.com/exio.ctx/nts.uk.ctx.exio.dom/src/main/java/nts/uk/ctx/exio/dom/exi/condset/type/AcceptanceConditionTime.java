@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.dom.exi.condset;
+package nts.uk.ctx.exio.dom.exi.condset.type;
 
 import nts.arc.primitive.TimeDurationPrimitiveValue;
 import nts.arc.primitive.constraint.TimeRange;

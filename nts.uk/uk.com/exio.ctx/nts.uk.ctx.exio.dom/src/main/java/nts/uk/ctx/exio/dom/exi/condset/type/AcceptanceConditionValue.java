@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.dom.exi.condset;
+package nts.uk.ctx.exio.dom.exi.condset.type;
 
 import java.math.BigDecimal;
 

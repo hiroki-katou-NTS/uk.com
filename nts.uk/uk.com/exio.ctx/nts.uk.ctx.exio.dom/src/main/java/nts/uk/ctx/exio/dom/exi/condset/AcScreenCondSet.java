@@ -7,6 +7,10 @@ import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.DomainObject;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.exio.dom.exi.condset.type.AcceptanceConditionString;
+import nts.uk.ctx.exio.dom.exi.condset.type.AcceptanceConditionTime;
+import nts.uk.ctx.exio.dom.exi.condset.type.AcceptanceConditionTimeMoment;
+import nts.uk.ctx.exio.dom.exi.condset.type.AcceptanceConditionValue;
 import nts.uk.ctx.exio.dom.input.revise.dataformat.ItemType;
 
 /**
@@ -31,54 +35,54 @@ public class AcScreenCondSet extends DomainObject {
 	private SelectComparisonCondition selectComparisonCondition;
 
 	/**
+	 * 時間‗条件値1
+	 */
+	private Optional<AcceptanceConditionTime> timeConditionValue1;
+	
+	/**
 	 * 時間‗条件値2
 	 */
 	private Optional<AcceptanceConditionTime> timeConditionValue2;
 
 	/**
-	 * 時間‗条件値1
+	 * 時刻‗条件値1
 	 */
-	private Optional<AcceptanceConditionTime> timeConditionValue1;
-
+	private Optional<AcceptanceConditionTimeMoment> timeMomentConditionValue1;
+	
 	/**
 	 * 時刻‗条件値2
 	 */
 	private Optional<AcceptanceConditionTimeMoment> timeMomentConditionValue2;
 
 	/**
-	 * 時刻‗条件値1
+	 * 日付‗条件値1
 	 */
-	private Optional<AcceptanceConditionTimeMoment> timeMomentConditionValue1;
-
+	private Optional<GeneralDate> dateConditionValue1;
+	
 	/**
 	 * 日付‗条件値2
 	 */
 	private Optional<GeneralDate> dateConditionValue2;
 
 	/**
-	 * 日付‗条件値1
+	 * 文字‗条件値1
 	 */
-	private Optional<GeneralDate> dateConditionValue1;
-
+	private Optional<AcceptanceConditionString> characterConditionValue1;
+	
 	/**
 	 * 文字‗条件値2
 	 */
 	private Optional<AcceptanceConditionString> characterConditionValue2;
 
 	/**
-	 * 文字‗条件値1
+	 * 数値‗条件値1
 	 */
-	private Optional<AcceptanceConditionString> characterConditionValue1;
-
+	private Optional<AcceptanceConditionValue> numberConditionValue1;
+	
 	/**
 	 * 数値‗条件値2
 	 */
 	private Optional<AcceptanceConditionValue> numberConditionValue2;
-
-	/**
-	 * 数値‗条件値1
-	 */
-	private Optional<AcceptanceConditionValue> numberConditionValue1;
 
 	public AcScreenCondSet(String conditionSetCd, int acceptItemNum, int selectComparisonCondition,
 			Integer timeConditionValue1, Integer timeConditionValue2, Integer timeMomentConditionValue1,
@@ -140,7 +144,7 @@ public class AcScreenCondSet extends DomainObject {
 			case CHARACTER:
 				condValue1 = this.characterConditionValue1.isPresent() ? this.characterConditionValue1.get() : null;
 			default:
-				break;
+				throw new RuntimeException("実装が存在しない実装型です。:"+ itemType);
 		}
 		if (condValue1 == null && condValue2 == null) return result;
 		if (condValue1 == null && itemType == ItemType.CHARACTER) return result;
@@ -168,82 +172,60 @@ public class AcScreenCondSet extends DomainObject {
 		switch (this.selectComparisonCondition) {		
 		case COND1_LESS_VAL:
 			if(itemType == ItemType.DATE) {
-				result = condValueD1.before(valueItemD);
-			} else {
-				result = condValueDb1 < itemValueDb;	
+				return condValueD1.before(valueItemD);
 			}
-			break;
+			return condValueDb1 < itemValueDb;	
 		case COND1_LESS_EQUAL_VAL:
 			if(itemType == ItemType.DATE) {
-				result = condValueD1.beforeOrEquals(valueItemD);
-			} else {
-				result = condValueDb1 <= itemValueDb;	
+				return condValueD1.beforeOrEquals(valueItemD);
 			}
-			
-			break;
+			return condValueDb1 <= itemValueDb;	
 		case VAL_LESS_COND1:
 			if(itemType == ItemType.DATE) {
-				result = valueItemD.before(condValueD1);
-			} else {
-				result = itemValueDb < condValueDb1;
+				return valueItemD.before(condValueD1);
 			}
-			break;
+			return itemValueDb < condValueDb1;
 		case VAL_LESS_EQUAL_COND1:
 			if(itemType == ItemType.DATE) {
-				result = valueItemD.beforeOrEquals(condValueD1);
-			} else {
-				result = itemValueDb <= condValueDb1;	
+				return valueItemD.beforeOrEquals(condValueD1);
 			}
-			break;
+			return itemValueDb <= condValueDb1;	
 		case COND1_LESS_VAL_AND_VAL_LESS_COND2://条件値1　＜　値　かつ　　値　＜　条件値2 
 			if(itemType == ItemType.DATE) {
-				result = condValueD1.before(valueItemD) && valueItemD.before(condValueD2);
-			} else {
-				result = condValueDb1 < itemValueDb && itemValueDb < condValueDb2;
+				return condValueD1.before(valueItemD) && valueItemD.before(condValueD2);
 			}
-			break;
+			return condValueDb1 < itemValueDb && itemValueDb < condValueDb2;
 		case COND1_LESS_EQUAL_VAL_AND_VAL_LESS_EQUAL_COND2: //条件値1　≦　値　かつ　　値　≦　条件値2 
 			if(itemType == ItemType.DATE) {
-				result = condValueD1.beforeOrEquals(valueItemD) && valueItemD.beforeOrEquals(condValueD2);
-			} else {
-				result = condValueDb1 <= itemValueDb && itemValueDb <= condValueDb2;
+				return condValueD1.beforeOrEquals(valueItemD) && valueItemD.beforeOrEquals(condValueD2);
 			}
-			break;
+			return condValueDb1 <= itemValueDb && itemValueDb <= condValueDb2;
 		case VAL_LESS_COND1_OR_COND2_LESS_VAL: //値　＜　条件値1　または　　条件値2　＜　値 
 			if(itemType == ItemType.DATE) {
-				result = condValueD1.before(valueItemD) || valueItemD.before(condValueD2);
-			} else {
-				result = condValueDb1 < itemValueDb || itemValueDb < condValueDb2;
+				return condValueD1.before(valueItemD) || valueItemD.before(condValueD2);
 			}
-			break;
+			return condValueDb1 < itemValueDb || itemValueDb < condValueDb2;
 		case VAL_LESS_EQUAL_COND1_OR_COND2_LESS_EQUAL_VAL: //値　≦　条件値1　または　　条件値2　≦　値 
 			if(itemType == ItemType.DATE) {
-				result = condValueD1.beforeOrEquals(valueItemD) || valueItemD.beforeOrEquals(condValueD2);
-			} else {
-				result = condValueDb1 <= itemValueDb || itemValueDb <= condValueDb2;
+				return condValueD1.beforeOrEquals(valueItemD) || valueItemD.beforeOrEquals(condValueD2);
 			}
-			break;
+			return condValueDb1 <= itemValueDb || itemValueDb <= condValueDb2;
 		case COND1_EQUAL_VAL: //条件値1　＝　値
 			if(itemType == ItemType.DATE) {
-				result = valueItemD.equals(condValueD1);
+				return valueItemD.equals(condValueD1);
 			} else if (itemType == ItemType.CHARACTER) {
-				result = valueItemS.equals(condValueS1);
-			} else {
-				result = itemValueDb == condValueDb1;	
+				return valueItemS.equals(condValueS1);
 			}
-			break;
+			return itemValueDb == condValueDb1;	
 		case COND1_NOT_EQUAL_VAL: //条件値1　≠　　値 
 			if(itemType == ItemType.DATE) {
-				result = !valueItemD.equals(condValueD1);
+				return !valueItemD.equals(condValueD1);
 			} else if (itemType == ItemType.CHARACTER) {
-				result = !valueItemS.equals(condValueS1);
-			} else {
-				result = itemValueDb != condValueDb1;	
-			}
-			break;
+				return !valueItemS.equals(condValueS1);
+			} 
+			return itemValueDb != condValueDb1;	
 		default:
-			break;
+			throw new RuntimeException("実装が存在しない比較条件です。:" + this.selectComparisonCondition);
 		}
-		return result;
 	}
 }

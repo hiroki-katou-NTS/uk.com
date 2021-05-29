@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.dom.exi.condset;
+package nts.uk.ctx.exio.dom.exi.condset.type;
 
 import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.StringMaxLength;
