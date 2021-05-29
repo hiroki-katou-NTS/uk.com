@@ -1,5 +1,6 @@
 package nts.uk.ctx.exio.dom.input;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
@@ -32,11 +33,11 @@ public class DataItemList extends ArrayList<DataItem> {
 		return addItem(DataItem.of(itemNo, value));
 	}
 	
-	public DataItemList add(int itemNo, int value) {
+	public DataItemList add(int itemNo, long value) {
 		return addItem(DataItem.of(itemNo, value));
 	}
 	
-	public DataItemList add(int itemNo, double value) {
+	public DataItemList add(int itemNo, BigDecimal value) {
 		return addItem(DataItem.of(itemNo, value));
 	}
 	
