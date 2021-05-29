@@ -1359,7 +1359,7 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 		}
 		//外出相殺時間の計算
 		for(TimeSheetOfDeductionItem item : timeSheetOfDeductionItems) {
-			item.setOutOffsetTime(DeductionAtr.Deduction, priorityOrder, this.outingVacationUseTime);
+			item.setOutOffsetTime(priorityOrder, this.outingVacationUseTime);
 			if(!item.getGoOutReason().isPresent()
 					|| !this.outingVacationUseTime.containsKey(item.getGoOutReason().get())
 					|| !item.getDeductionOffSetTime().isPresent()) {

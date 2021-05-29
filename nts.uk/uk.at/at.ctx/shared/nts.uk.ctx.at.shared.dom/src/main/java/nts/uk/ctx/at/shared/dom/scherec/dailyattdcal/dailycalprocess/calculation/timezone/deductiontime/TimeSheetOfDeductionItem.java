@@ -653,8 +653,7 @@ public class TimeSheetOfDeductionItem extends TimeVacationOffSetItem implements 
 	 * @param priorityOrder 時間休暇相殺優先順位
 	 * @param useTimes 時間休暇使用時間
 	 */
-	public void setOutOffsetTime(DeductionAtr deductionAtr, CompanyHolidayPriorityOrder priorityOrder,
-			Map<GoingOutReason,TimevacationUseTimeOfDaily> useTimes) {
+	public void setOutOffsetTime(CompanyHolidayPriorityOrder priorityOrder, Map<GoingOutReason,TimevacationUseTimeOfDaily> useTimes) {
 		if(!this.getGoOutReason().isPresent() || !this.goOutReason.get().isPrivateOrUnion()) {
 			return;
 		}
