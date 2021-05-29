@@ -662,7 +662,6 @@ public class TimeSheetOfDeductionItem extends TimeVacationOffSetItem implements 
 			return;
 		}
 		this.deductionOffSetTime = Optional.of(this.offsetProcess(
-				deductionAtr,
 				priorityOrder,
 				useTimes.get(this.getGoOutReason().get()),
 				NotUseAtr.USE));

@@ -771,7 +771,6 @@ public class LateTimeSheet {
 			return;
 		}
 		this.OffsetTime = Optional.of(this.getDecitionTimeSheet(deductionAtr).get().offsetProcess(
-				deductionAtr,
 				companyholidayPriorityOrder,
 				timeVacationUseTime,
 				NotUseAtr.NOT_USE));

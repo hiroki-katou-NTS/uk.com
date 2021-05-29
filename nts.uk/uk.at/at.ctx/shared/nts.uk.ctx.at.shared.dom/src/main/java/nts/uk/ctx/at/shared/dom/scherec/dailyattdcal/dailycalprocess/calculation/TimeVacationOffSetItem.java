@@ -88,13 +88,12 @@ public abstract class TimeVacationOffSetItem extends CalculationTimeSheet {
 	
 	/**
 	 * 相殺する
-	 * @param deductionAtr 控除区分
 	 * @param priorityOrder 時間休暇相殺優先順位
 	 * @param useTime 日別勤怠の時間休暇使用時間
 	 * @param deductionOffSetTimeAtr 相殺された時間を控除する
 	 * @return 控除相殺時間
 	 */
-	public DeductionOffSetTime offsetProcess(DeductionAtr deductionAtr, CompanyHolidayPriorityOrder priorityOrder,
+	public DeductionOffSetTime offsetProcess(CompanyHolidayPriorityOrder priorityOrder,
 			TimevacationUseTimeOfDaily useTime, NotUseAtr deductionOffSetTimeAtr) {
 		//残時間
 		AttendanceTime remainingTime = this.calcTotalTime(deductionOffSetTimeAtr, NotUseAtr.NOT_USE);

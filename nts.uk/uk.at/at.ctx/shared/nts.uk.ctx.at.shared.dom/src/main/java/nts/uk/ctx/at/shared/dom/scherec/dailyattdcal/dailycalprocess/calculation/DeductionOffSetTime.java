@@ -60,6 +60,9 @@ public class DeductionOffSetTime  implements Cloneable {
 		
 		// 時間休暇の優先順に処理
 		for (HolidayPriorityOrder holiday : priorityOrder.getHolidayPriorityOrders()) {
+			if(remainingTime.lessThanOrEqualTo(AttendanceTime.ZERO)) {
+				break;
+			}
 			switch (holiday) {
 			case ANNUAL_HOLIDAY:
 				annualHoliday = calcOffsetTime(useTime.getTimeAnnualLeaveUseTime(), remainingTime);
