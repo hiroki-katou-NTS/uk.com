@@ -353,30 +353,7 @@ public class TotalProcessAnnualHoliday {
 							AlarmCategory.ATTENDANCE_RATE_FOR_HOLIDAY,
 							AlarmListCheckType.FixCheck,
 							Collections.singletonList(detail)));
-
-			val empIds = alarmEmployeeList.stream().filter(x -> x.getEmployeeID().equals(sid)).collect(Collectors.toList());
-			if (empIds.isEmpty()) {
-				alarmEmployeeList.add(new AlarmEmployeeList(alarmExtractInfoResults, sid));
-			} else {
-				alarmEmployeeList.stream().filter(x -> x.getEmployeeID().equals(sid))
-						.forEach(e -> e.getAlarmExtractInfoResults().addAll(alarmExtractInfoResults));
-			}
-
-//			List<ResultOfEachCondition> result = lstResultCondition.stream()
-//					.filter(x -> x.getCheckType() == AlarmListCheckType.FreeCheck && x.getNo().equals("1"))
-//					.collect(Collectors.toList());
-//			if(result.isEmpty()) {
-//				ResultOfEachCondition resultCon = new ResultOfEachCondition(AlarmListCheckType.FixCheck,
-//						"1",
-//						new ArrayList<>());
-//				resultCon.getLstResultDetail().add(detail);
-//				lstResultCondition.add(resultCon);
-//			} else {
-//				ResultOfEachCondition ex = result.get(0);
-//				lstResultCondition.remove(ex);
-//				ex.getLstResultDetail().add(detail);
-//				lstResultCondition.add(ex);
-//			}
+			alarmEmployeeList.add(new AlarmEmployeeList(alarmExtractInfoResults, sid));
 		}
 		counter.accept(employees.size());
 	}

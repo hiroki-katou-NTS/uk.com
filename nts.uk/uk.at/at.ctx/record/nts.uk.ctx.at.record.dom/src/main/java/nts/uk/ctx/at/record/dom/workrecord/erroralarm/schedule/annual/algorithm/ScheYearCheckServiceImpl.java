@@ -125,13 +125,6 @@ public class ScheYearCheckServiceImpl implements ScheYearCheckService {
 			this.extractCondition(
 					cid, lstSid, dPeriod, prepareData, getWplByListSidAndPeriod,
 					alarmEmployeeList, alarmExtractConditions, alarmCheckConditionCode);
-
-			val peri = new DatePeriod(GeneralDate.fromString("2021/03/01", "yyyy/MM/dd"), GeneralDate.fromString("2021/03/31", "yyyy/MM/dd"));
-			val sids = Arrays.asList("xxxxxx000000000003-0001-000000000005");
-			List<AlarmEmployeeList> data = new ArrayList<>();
-			this.extractCondition(
-					cid, sids, peri, prepareData, getWplByListSidAndPeriod,
-					data, alarmExtractConditions, alarmCheckConditionCode);
 					
 			synchronized (this) {
 				counter.accept(emps.size());
@@ -378,33 +371,6 @@ public class ScheYearCheckServiceImpl implements ScheYearCheckService {
 						Optional.ofNullable(wplId), 
 						comment, 
 						Optional.ofNullable(getCheckValue(totalTime, condScheYear.getCheckItemType())));
-				
-				// 各チェック条件の結果を作成する
-				// ・チェック種類　＝　自由チェック
-				// ・コード　＝　ループ中のスケジュール年間の任意抽出条件．並び順
-				// ・抽出結果　＝　作成した抽出結果
-//				List<AlarmExtractInfoResult> lstResultTmp = result.getAlarmExtractInfoResults().stream()
-//						.filter(x -> x.getAlarmListCheckType() == AlarmListCheckType.FreeCheck && x.getAlarmCheckConditionNo().equals(alarmCode)).collect(Collectors.toList());
-//				List<ExtractResultDetail> listDetail = new ArrayList<>();
-//				if(lstResultTmp.isEmpty()) {
-//					listDetail.add(detail);
-//					result.getAlarmExtractInfoResults().add(new AlarmExtractInfoResult(
-//							alarmCode,
-//							new AlarmCheckConditionCode(alarmCheckConditionCode),
-//							AlarmCategory.SCHEDULE_YEAR,
-//							AlarmListCheckType.FreeCheck,
-//							listDetail
-//					));
-//				} else {
-//					result.getAlarmExtractInfoResults().stream().forEach(x -> x.getExtractionResultDetails().add(detail));
-//				}
-				
-//				Optional<AlarmListCheckInfor> optCheckInfor = result.getLstCheckType().stream()
-//						.filter(x -> x.getChekType() == AlarmListCheckType.FreeCheck && x.getNo().equals(String.valueOf(condScheYear.getSortOrder())))
-//						.findFirst();
-//				if(!optCheckInfor.isPresent()) {
-//					result.getLstCheckType().add(new AlarmListCheckInfor(String.valueOf(condScheYear.getSortOrder()), AlarmListCheckType.FreeCheck));
-//				}
 
 				List<AlarmExtractInfoResult> lstExtractInfoResult = Collections.singletonList(new AlarmExtractInfoResult(
 						alarmCode,
