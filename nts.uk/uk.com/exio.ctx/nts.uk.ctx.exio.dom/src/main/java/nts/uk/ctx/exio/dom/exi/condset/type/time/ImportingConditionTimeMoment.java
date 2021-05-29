@@ -10,14 +10,9 @@ import nts.arc.primitive.constraint.TimeMinValue;
 @TimeMaxValue("99:59")
 public class ImportingConditionTimeMoment extends TimeDurationPrimitiveValue<ImportingConditionTimeMoment>{
 	
+	private static final long serialVersionUID = 1L;
 
 	public ImportingConditionTimeMoment(int timeAsMinutes) {
 		super(timeAsMinutes);
 	}
-
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-
 }

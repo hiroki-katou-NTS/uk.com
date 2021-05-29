@@ -18,7 +18,7 @@ import nts.uk.ctx.exio.dom.input.DataItem;
 	
 	@Override
 	public ImportingConditionTime getTargetValue(DataItem targetItem) {
-		return new ImportingConditionTime(targetItem.getInt());
+		return new ImportingConditionTime(targetItem.getInt().intValue());
 	}
 
 }

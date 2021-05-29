@@ -19,6 +19,6 @@ public class TimeMomentCondition implements ComparableValidation<ImportingCondit
 
 	@Override
 	public ImportingConditionTimeMoment getTargetValue(DataItem targetItem) {
-		return new ImportingConditionTimeMoment(targetItem.getInt());
+		return new ImportingConditionTimeMoment(targetItem.getInt().intValue());
 	}
 }
