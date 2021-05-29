@@ -14,6 +14,9 @@ public class RevisedDataRecord {
 	
 	/** 受入カテゴリID */
 	int categoryId;
+	
+	/** 受入行番号 */
+	int rowNo;
 
 	DataItemList items;
 	

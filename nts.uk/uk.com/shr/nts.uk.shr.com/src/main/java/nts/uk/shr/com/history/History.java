@@ -18,6 +18,10 @@ public interface History<H extends HistoryItem<S, D>, S extends GeneralPeriod<S,
 	
 	List<H> items();
 	
+	default boolean isEmpty() {
+		return items().isEmpty();
+	}
+	
 	default List<HistoryConstraint<H, S, D>> constraints() {
 		return Collections.emptyList();
 	}
@@ -33,6 +37,14 @@ public interface History<H extends HistoryItem<S, D>, S extends GeneralPeriod<S,
 	
 	default void remove(H itemToBeRemoved) {
 		this.constraints().forEach(c -> c.validateIfCanRemove(this, itemToBeRemoved));
+		this.items().remove(itemToBeRemoved);
+	}
+	
+	/**
+	 * 制約チェックを通さず強制的に削除する
+	 * @param itemToBeRemoved
+	 */
+	default void removeForcively(H itemToBeRemoved) {
 		this.items().remove(itemToBeRemoved);
 	}
 	
