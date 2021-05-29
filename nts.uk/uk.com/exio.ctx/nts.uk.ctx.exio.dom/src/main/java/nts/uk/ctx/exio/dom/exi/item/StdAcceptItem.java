@@ -10,6 +10,7 @@ import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.exio.dom.exi.condset.AcScreenCondSet;
 import nts.uk.ctx.exio.dom.exi.condset.AcceptanceConditionCode;
+import nts.uk.ctx.exio.dom.input.DataItem;
 import nts.uk.ctx.exio.dom.input.csvimport.CsvItem;
 import nts.uk.ctx.exio.dom.input.revise.dataformat.ChrDataFormatSet;
 import nts.uk.ctx.exio.dom.input.revise.dataformat.DataFormatSetting;
@@ -147,7 +148,9 @@ public class StdAcceptItem extends AggregateRoot {
 				}
 				
 			}
-			resultCheck = this.getAcceptScreenConditionSetting().get().checkCondNumber(toItemValue, this.itemType);
+			// コンパイルエラー消しのために仮置き。
+			DataItem DUMMY = null;
+			resultCheck = this.getAcceptScreenConditionSetting().get().checkCondNumber(DUMMY);
 			result.setResultCheck(resultCheck);
 		}
 		return result;

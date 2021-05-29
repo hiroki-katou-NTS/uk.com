@@ -9,9 +9,6 @@ import nts.arc.primitive.constraint.StringMaxLength;
 @StringMaxLength(100)
 public class ImportingConditionString extends StringPrimitiveValue<ImportingConditionString>{
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	public ImportingConditionString(String rawValue) {
