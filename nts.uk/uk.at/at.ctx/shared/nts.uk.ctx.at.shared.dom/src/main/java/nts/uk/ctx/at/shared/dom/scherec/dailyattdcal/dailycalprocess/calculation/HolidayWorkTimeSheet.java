@@ -217,7 +217,7 @@ public class HolidayWorkTimeSheet{
 		if (!workTypeOpt.isPresent())
 			return;
 		AttendanceDayAttr  workStype = workTypeOpt.get().chechAttendanceDay();
-		if(workStype == AttendanceDayAttr.HOLIDAY_WORK){
+		if(workStype != AttendanceDayAttr.HOLIDAY_WORK){
 			return;
 		}
 

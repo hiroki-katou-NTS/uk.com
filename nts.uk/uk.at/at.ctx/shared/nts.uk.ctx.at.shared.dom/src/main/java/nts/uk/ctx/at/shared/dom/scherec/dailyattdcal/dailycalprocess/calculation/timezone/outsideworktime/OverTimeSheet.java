@@ -247,7 +247,7 @@ public class OverTimeSheet {
 		Optional<WorkType> workTypeOpt = require.findByPK(cid, workTypeCode);
 		if(!workTypeOpt.isPresent()) return ;
 		AttendanceDayAttr  workStype = workTypeOpt.get().chechAttendanceDay();
-		if(workStype == AttendanceDayAttr.HOLIDAY_WORK){
+		if(workStype == AttendanceDayAttr.HOLIDAY_WORK  || workStype == AttendanceDayAttr.HOLIDAY){
 			return;
 		}
 
