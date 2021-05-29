@@ -74,7 +74,6 @@ public class ScvmtConversionTypeParent extends JpaEntity implements Serializable
 				))
 			.collect(Collectors.toList());
 		return new ParentJoinPattern(
-				info,
 				sourceJoin,
 				new Join(
 					ParentJoinPatternManager.mappingTableName(info, "parent_" + parentColumnName),

@@ -4,7 +4,6 @@ import lombok.Getter;
 import nts.uk.cnv.core.dom.conversionsql.ConversionSQL;
 import nts.uk.cnv.core.dom.conversionsql.Join;
 import nts.uk.cnv.core.dom.conversionsql.SelectSentence;
-import nts.uk.cnv.core.dom.conversiontable.ConversionInfo;
 import nts.uk.cnv.core.dom.conversiontable.pattern.manager.ParentJoinPatternManager;
 
 @Getter
@@ -19,8 +18,7 @@ public class ParentJoinPattern extends ConversionPattern {
 	private String parentTableName;
 	private String targetTable;
 
-	public ParentJoinPattern(ConversionInfo info, Join sourceJoin, Join mappingJoin, String parentColumn, String parentTableName) {
-		super(info);
+	public ParentJoinPattern(Join sourceJoin, Join mappingJoin, String parentColumn, String parentTableName) {
 		this.sourceJoin = sourceJoin;
 		this.mappingJoin = mappingJoin;
 		this.parentColumn = parentColumn;
@@ -28,8 +26,7 @@ public class ParentJoinPattern extends ConversionPattern {
 		this.targetTable = "";
 	}
 
-	public ParentJoinPattern(ConversionInfo info, Join sourceJoin, Join mappingJoin, String parentColumn, String parentTableName, String targetTable) {
-		super(info);
+	public ParentJoinPattern(Join sourceJoin, Join mappingJoin, String parentColumn, String parentTableName, String targetTable) {
 		this.sourceJoin = sourceJoin;
 		this.mappingJoin = mappingJoin;
 		this.parentColumn = parentColumn;

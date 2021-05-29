@@ -61,7 +61,7 @@ public class ConversionTableService {
 		ConversionRecord record = recordRepo.getRecord(dto.getCategory(), dto.getTable(), dto.getRecordNo());
 
 		ConversionSource source = conversionSourceRepo.get(record.getSourceId()).get();
-		return repo.findColumnConversion(info, dto.getCategory(), dto.getTable(), dto.getRecordNo(), dto.getUkColumn(), source.getJoin(info)).orElse(null);
+		return repo.findColumnConversion(info, dto.getCategory(), dto.getTable(), dto.getRecordNo(), dto.getUkColumn(), source.getJoin()).orElse(null);
 	}
 
 	public List<GetCategoryTablesDto> getCategoryTables(String category) {
@@ -85,7 +85,7 @@ public class ConversionTableService {
 		List<OneColumnConversion> conversionMap = new ArrayList<>();
 
 		ConversionSource source = conversionSourceRepo.get(record.getSourceId()).get();
-		Optional<OneColumnConversion> onColumn = repo.findColumnConversion(info, dto.getCategory(), dto.getTable(), dto.getRecordNo(), dto.getUkColumn(), source.getJoin(info));
+		Optional<OneColumnConversion> onColumn = repo.findColumnConversion(info, dto.getCategory(), dto.getTable(), dto.getRecordNo(), dto.getUkColumn(), source.getJoin());
 
 		if(!onColumn.isPresent()) {
 			throw new BusinessException("コンバート表が登録されていません");

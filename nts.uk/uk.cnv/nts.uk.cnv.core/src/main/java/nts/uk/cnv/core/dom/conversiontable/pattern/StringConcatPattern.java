@@ -3,13 +3,14 @@ package nts.uk.cnv.core.dom.conversiontable.pattern;
 import java.util.Optional;
 
 import lombok.Getter;
+import nemunoki.oruta.shr.tabledefinetype.DatabaseSpec;
 import nts.uk.cnv.core.dom.conversionsql.ConversionSQL;
 import nts.uk.cnv.core.dom.conversionsql.Join;
 import nts.uk.cnv.core.dom.conversionsql.SelectSentence;
-import nts.uk.cnv.core.dom.conversiontable.ConversionInfo;
 
 @Getter
 public class StringConcatPattern extends ConversionPattern {
+	private DatabaseSpec spec;
 
 	private Join sourceJoin;
 
@@ -20,8 +21,8 @@ public class StringConcatPattern extends ConversionPattern {
 	private Optional<String> delimiter;
 
 
-	public StringConcatPattern(ConversionInfo info, Join sourceJoin, String column1, String column2, Optional<String> delimiter) {
-		super(info);
+	public StringConcatPattern(DatabaseSpec spec, Join sourceJoin, String column1, String column2, Optional<String> delimiter) {
+		this.spec = spec;
 		this.sourceJoin = sourceJoin;
 		this.column1 = column1;
 		this.column2 = column2;
@@ -36,10 +37,10 @@ public class StringConcatPattern extends ConversionPattern {
 		String source2 = sourceJoin.tableName.getAlias() + "." + column2;
 
 		if(delimiter.isPresent() && !delimiter.get().isEmpty()) {
-			source1 = info.getDatebaseType().spec().concat(source1, "'" + delimiter.get() + "'");
+			source1 = spec.concat(source1, "'" + delimiter.get() + "'");
 		}
 
-		String concatString = info.getDatebaseType().spec().concat(source1, source2);
+		String concatString = spec.concat(source1, source2);
 
 
 		conversionSql.getSelect().add(SelectSentence.createNotFormat("", concatString));

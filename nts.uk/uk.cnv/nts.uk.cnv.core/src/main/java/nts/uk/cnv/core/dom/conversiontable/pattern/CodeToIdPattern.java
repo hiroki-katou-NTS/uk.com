@@ -26,7 +26,7 @@ import nts.uk.cnv.core.dom.conversiontable.ConversionInfo;
  */
 @Getter
 public class CodeToIdPattern extends ConversionPattern {
-
+	
 	//TODO: 履歴あるテーブルどうしよう...
 	public enum CodeToIdType{
 		TO_CID("SCVMT_MAPPING_CODE_TO_CID", "会社CD", "CID", ""),
@@ -59,6 +59,8 @@ public class CodeToIdPattern extends ConversionPattern {
 		}
 	}
 
+	private ConversionInfo info;
+	
 	/** 変換元 **/
 	private Join sourceJoin;
 
@@ -69,7 +71,7 @@ public class CodeToIdPattern extends ConversionPattern {
 	private Optional<String> sourceCcdColumnName;
 
 	public CodeToIdPattern(ConversionInfo info, Join join, String sourceColumnName, String codeToIdType, String sourceCcdColumnName) {
-		super(info);
+		this.info = info;
 		this.sourceJoin = join;
 		this.sourceColumnName = sourceColumnName;
 		this.codeToIdType = CodeToIdType.valueOf(codeToIdType);

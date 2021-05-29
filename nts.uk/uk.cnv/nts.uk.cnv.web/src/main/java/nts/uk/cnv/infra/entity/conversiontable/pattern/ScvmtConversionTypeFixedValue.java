@@ -13,8 +13,8 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import nemunoki.oruta.shr.tabledefinetype.DatabaseSpec;
 import nts.arc.layer.infra.data.entity.JpaEntity;
-import nts.uk.cnv.core.dom.conversiontable.ConversionInfo;
 import nts.uk.cnv.core.dom.conversiontable.pattern.ConversionPattern;
 import nts.uk.cnv.core.dom.conversiontable.pattern.FixedValuePattern;
 import nts.uk.cnv.infra.entity.conversiontable.ScvmtConversionTable;
@@ -51,9 +51,9 @@ public class ScvmtConversionTypeFixedValue extends JpaEntity implements Serializ
 		return pk;
 	}
 
-	public FixedValuePattern toDomain(ConversionInfo info) {
+	public FixedValuePattern toDomain(DatabaseSpec spec) {
 		return new FixedValuePattern(
-				info,
+				spec,
 				this.isParameter,
 				this.fixedValue
 			);

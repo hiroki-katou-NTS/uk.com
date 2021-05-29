@@ -14,9 +14,9 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import nemunoki.oruta.shr.tabledefinetype.DatabaseSpec;
 import nts.arc.layer.infra.data.entity.JpaEntity;
 import nts.uk.cnv.core.dom.conversionsql.Join;
-import nts.uk.cnv.core.dom.conversiontable.ConversionInfo;
 import nts.uk.cnv.core.dom.conversiontable.pattern.ConversionPattern;
 import nts.uk.cnv.core.dom.conversiontable.pattern.StringConcatPattern;
 import nts.uk.cnv.infra.entity.conversiontable.ScvmtConversionTable;
@@ -56,9 +56,9 @@ public class ScvmtConversionTypeStringConcat extends JpaEntity implements Serial
 		return pk;
 	}
 
-	public StringConcatPattern toDomain(ConversionInfo info, Join sourceJoin) {
+	public StringConcatPattern toDomain(DatabaseSpec spec, Join sourceJoin) {
 		return new StringConcatPattern(
-				info,
+				spec,
 				sourceJoin,
 				sourceColumnName1,
 				sourceColumnName2,

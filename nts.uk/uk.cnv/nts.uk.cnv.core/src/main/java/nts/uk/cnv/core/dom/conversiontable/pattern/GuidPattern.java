@@ -1,19 +1,20 @@
 package nts.uk.cnv.core.dom.conversiontable.pattern;
 
+import nemunoki.oruta.shr.tabledefinetype.DatabaseSpec;
 import nts.uk.cnv.core.dom.conversionsql.ConversionSQL;
 import nts.uk.cnv.core.dom.conversionsql.SelectSentence;
-import nts.uk.cnv.core.dom.conversiontable.ConversionInfo;
 
 public class GuidPattern extends ConversionPattern {
+	private DatabaseSpec spec;
 
-	public GuidPattern(ConversionInfo info) {
-		super(info);
+	public GuidPattern(DatabaseSpec spec) {
+		this.spec = spec;
 	}
 
 	@Override
 	public ConversionSQL apply(ConversionSQL conversionSql) {
 		conversionSql.getSelect().add(
-				SelectSentence.createNotFormat("", info.getDatebaseType().spec().newUuid())
+				SelectSentence.createNotFormat("", spec.newUuid())
 			);
 		return conversionSql;
 	}

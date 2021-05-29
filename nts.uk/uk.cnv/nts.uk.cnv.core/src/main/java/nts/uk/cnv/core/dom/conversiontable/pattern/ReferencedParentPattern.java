@@ -17,6 +17,7 @@ import nts.uk.cnv.core.dom.conversiontable.pattern.manager.ParentJoinPatternMana
 
 @Getter
 public class ReferencedParentPattern extends ConversionPattern {
+	private ConversionInfo info;
 
 	private String category;
 
@@ -28,7 +29,7 @@ public class ReferencedParentPattern extends ConversionPattern {
 
 
 	public ReferencedParentPattern(ConversionInfo info, String category, String parentTable, String parentColumn, List<String> columns) {
-		super(info);
+		this.info = info;
 		this.category = category;
 		this.parentTable = parentTable;
 		this.parentColumn = parentColumn;
@@ -38,7 +39,7 @@ public class ReferencedParentPattern extends ConversionPattern {
 	@Override
 	public ConversionSQL apply(ConversionSQL conversionSql) {
 		String alias = "parent_" + this.parentColumn;
-		Join mapping = this.getMappingTableJoin(info, alias);
+		Join mapping = this.getMappingTableJoin(alias);
 
 		conversionSql.getFrom().addJoin(mapping);
 
@@ -47,7 +48,7 @@ public class ReferencedParentPattern extends ConversionPattern {
 		return conversionSql;
 	}
 
-	private Join getMappingTableJoin(ConversionInfo info, String alias) {
+	private Join getMappingTableJoin(String alias) {
 
 		List<OnSentence> on  = new ArrayList<>();
 		on.add(new OnSentence(new ColumnName(alias, ParentJoinPatternManager.pk[0]), new ColumnName("", "'" + category + "'"), Optional.empty()));

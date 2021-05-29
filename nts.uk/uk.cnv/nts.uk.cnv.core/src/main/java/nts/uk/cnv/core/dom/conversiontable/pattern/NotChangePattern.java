@@ -4,7 +4,6 @@ import lombok.Getter;
 import nts.uk.cnv.core.dom.conversionsql.ConversionSQL;
 import nts.uk.cnv.core.dom.conversionsql.Join;
 import nts.uk.cnv.core.dom.conversionsql.SelectSentence;
-import nts.uk.cnv.core.dom.conversiontable.ConversionInfo;
 
 /**
  * そのまま移送するパターン
@@ -17,8 +16,7 @@ public class NotChangePattern extends ConversionPattern {
 
 	private String sourceColumn;
 
-	public NotChangePattern(ConversionInfo info, Join join, String sourceColumn) {
-		super(info);
+	public NotChangePattern(Join join, String sourceColumn) {
 		this.join = join;
 		this.sourceColumn = sourceColumn;
 	}

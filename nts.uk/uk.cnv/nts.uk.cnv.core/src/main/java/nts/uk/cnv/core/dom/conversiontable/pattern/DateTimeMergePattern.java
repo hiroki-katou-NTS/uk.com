@@ -23,6 +23,7 @@ import nts.uk.cnv.core.dom.conversiontable.ConversionInfo;
 @Getter
 public class DateTimeMergePattern extends ConversionPattern {
 
+	private ConversionInfo info;
 	/** 変換元 **/
 	private Join sourceJoin;
 
@@ -57,7 +58,7 @@ public class DateTimeMergePattern extends ConversionPattern {
 			String minutes,
 			String yyyymmddhhmi,
 			String yyyymmddhhmiss) {
-		super(info);
+		this.info = info;
 		this.sourceJoin = sourceJoin;
 		this.yyyymmdd = yyyymmdd;
 		this.yyyy = yyyy;

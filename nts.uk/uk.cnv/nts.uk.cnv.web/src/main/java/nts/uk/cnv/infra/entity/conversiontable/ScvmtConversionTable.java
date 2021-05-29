@@ -155,25 +155,25 @@ public class ScvmtConversionTable extends JpaEntity implements Serializable  {
 
 		switch(type) {
 			case None:
-				return typeNone.toDomain(info, sourceJoin);
+				return typeNone.toDomain(sourceJoin);
 			case CodeToId:
 				return typeCodeToId.toDomain(info, sourceJoin);
 			case CodeToCode:
 				return typeCodeToCode.toDomain(info, sourceJoin);
 			case FixedValue:
-				return typeFixedValue.toDomain(info);
+				return typeFixedValue.toDomain(info.getDatebaseType().spec());
 			case FixedValueWithCondition:
-				return typeFixedValueWithCondition.toDomain(info, sourceJoin);
+				return typeFixedValueWithCondition.toDomain(info.getDatebaseType().spec(), sourceJoin);
 			case Parent:
 				return typeParent.toDomain(info, sourceJoin);
 			case StringConcat:
-				return typeStringConcat.toDomain(info, sourceJoin);
+				return typeStringConcat.toDomain(info.getDatebaseType().spec(), sourceJoin);
 			case TimeWithDayAttr:
-				return typeTimeWithDayAttr.toDomain(info, sourceJoin);
+				return typeTimeWithDayAttr.toDomain(sourceJoin);
 			case DateTimeMerge:
 				return typeDateTimeMerge.toDomain(info, sourceJoin);
 			case Guid:
-				return typeGuid.toDomain(info);
+				return typeGuid.toDomain(info.getDatebaseType().spec());
 			case Password:
 				return typePassword.toDomain(info, sourceJoin);
 			case FileId:

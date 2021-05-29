@@ -4,13 +4,13 @@ import java.util.Optional;
 import java.util.TreeMap;
 
 import lombok.Getter;
+import nemunoki.oruta.shr.tabledefinetype.DatabaseSpec;
 import nts.uk.cnv.core.dom.conversionsql.ColumnExpression;
 import nts.uk.cnv.core.dom.conversionsql.ConversionSQL;
 import nts.uk.cnv.core.dom.conversionsql.FormatType;
 import nts.uk.cnv.core.dom.conversionsql.Join;
 import nts.uk.cnv.core.dom.conversionsql.RelationalOperator;
 import nts.uk.cnv.core.dom.conversionsql.SelectSentence;
-import nts.uk.cnv.core.dom.conversiontable.ConversionInfo;
 
 /**
  * 条件付き固定値（条件に一致しない場合はそのまま移送）
@@ -20,6 +20,7 @@ import nts.uk.cnv.core.dom.conversiontable.ConversionInfo;
  */
 @Getter
 public class FixedValueWithConditionPattern extends ConversionPattern {
+	private DatabaseSpec spec;
 
 	private Join join;
 
@@ -34,10 +35,10 @@ public class FixedValueWithConditionPattern extends ConversionPattern {
 	private String expression;
 
 	public FixedValueWithConditionPattern(
-			ConversionInfo info, Join join, String sourceColumn,
+			DatabaseSpec spec, Join join, String sourceColumn,
 			RelationalOperator relationalOperator, String conditionValue,
 			boolean isParamater, String expression) {
-		super(info);
+		this.spec = spec;
 		this.join = join;
 		this.sourceColumn = sourceColumn;
 		this.relationalOperator = relationalOperator;
@@ -51,7 +52,7 @@ public class FixedValueWithConditionPattern extends ConversionPattern {
 		conversionSql.getFrom().addJoin(join);
 
 		String newExpression = (isParamater)
-				? info.getDatebaseType().spec().param(expression)
+				? spec.param(expression)
 				: expression;
 
 		String source = join.tableName.getAlias() + "." + sourceColumn;

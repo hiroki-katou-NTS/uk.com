@@ -24,6 +24,7 @@ import nts.uk.cnv.core.dom.conversiontable.ConversionInfo;
  */
 @Getter
 public class CodeToCodePattern extends ConversionPattern  {
+	private ConversionInfo info;
 
 	/** 変換元 **/
 	private Join sourceJoin;
@@ -34,7 +35,7 @@ public class CodeToCodePattern extends ConversionPattern  {
 	private String mappingType;
 
 	public CodeToCodePattern(ConversionInfo info, Join sourceJoin, String sourceColumnName, String mappingType) {
-		super(info);
+		this.info = info;
 		this.sourceJoin = sourceJoin;
 		this.sourceColumnName = sourceColumnName;
 		this.mappingType = mappingType;

@@ -16,13 +16,14 @@ import nts.uk.cnv.core.dom.conversiontable.ConversionInfo;
 
 @Getter
 public class PasswordPattern extends ConversionPattern {
+	private ConversionInfo info;
 
 	private Join sourceJoin;
 
 	private String sourceColumnName;
 
 	public PasswordPattern(ConversionInfo info, Join sourceJoin, String sourceColumnName) {
-		super(info);
+		this.info = info;
 		this.sourceJoin = sourceJoin;
 		this.sourceColumnName = sourceColumnName;
 	}

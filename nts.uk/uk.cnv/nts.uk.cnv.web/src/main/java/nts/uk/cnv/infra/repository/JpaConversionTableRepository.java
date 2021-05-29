@@ -36,7 +36,7 @@ public class JpaConversionTableRepository extends JpaRepository implements Conve
 			.getList();
 
 		List<OneColumnConversion> columns = entities.stream()
-				.map(entity -> entity.toDomain(info, source.getJoin(info)))
+				.map(entity -> entity.toDomain(info, source.getJoin()))
 				.collect(Collectors.toList());
 
 		return entities.stream()

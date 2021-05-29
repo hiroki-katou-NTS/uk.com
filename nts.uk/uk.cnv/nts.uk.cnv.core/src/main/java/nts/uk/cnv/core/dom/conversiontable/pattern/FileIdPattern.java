@@ -25,13 +25,15 @@ public class FileIdPattern extends ConversionPattern  {
 	private static String MAPPING_IN_COLUMN_NAME = "FILE_PATH";
 	private static String MAPPING_OUT_COLUMN_NAME = "FILE_ID";
 
+	private ConversionInfo info;
+	
 	/** 変換元 **/
 	private Join sourceJoin;
 
 	private String sourceColumnName;
 
 	public FileIdPattern(ConversionInfo info, Join sourceJoin, String sourceColumnName) {
-		super(info);
+		this.info = info;
 		this.sourceJoin = sourceJoin;
 		this.sourceColumnName = sourceColumnName;
 	}

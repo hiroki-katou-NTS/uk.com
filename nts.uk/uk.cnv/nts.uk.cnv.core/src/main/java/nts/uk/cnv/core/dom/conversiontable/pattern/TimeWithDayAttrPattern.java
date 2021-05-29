@@ -8,7 +8,6 @@ import nts.uk.cnv.core.dom.conversionsql.ColumnExpression;
 import nts.uk.cnv.core.dom.conversionsql.ConversionSQL;
 import nts.uk.cnv.core.dom.conversionsql.Join;
 import nts.uk.cnv.core.dom.conversionsql.SelectSentence;
-import nts.uk.cnv.core.dom.conversiontable.ConversionInfo;
 
 @Getter
 public class TimeWithDayAttrPattern extends ConversionPattern {
@@ -19,8 +18,7 @@ public class TimeWithDayAttrPattern extends ConversionPattern {
 
 	private String dayAttrColumn;
 
-	public TimeWithDayAttrPattern(ConversionInfo info, Join sourceJoin, String timeColumn, String dayAttrColumn) {
-		super(info);
+	public TimeWithDayAttrPattern(Join sourceJoin, String timeColumn, String dayAttrColumn) {
 		this.sourceJoin = sourceJoin;
 		this.timeColumn = timeColumn;
 		this.dayAttrColumn = dayAttrColumn;
