@@ -12,7 +12,7 @@ import nts.uk.ctx.exio.dom.dataformat.value.DecimalDivision;
 import nts.uk.ctx.exio.dom.dataformat.value.DecimalPointClassification;
 import nts.uk.ctx.exio.dom.dataformat.value.Rounding;
 import nts.uk.ctx.exio.dom.exi.codeconvert.CodeConvertCode;
-import nts.uk.ctx.exio.dom.exi.condset.type.AcceptanceConditionValue;
+import nts.uk.ctx.exio.dom.exi.condset.type.numeric.real.ImportingConditionReal;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
@@ -44,7 +44,7 @@ public class NumDataFormatSet extends DataFormatSetting {
 	/**
 	 * 固定値の値
 	 */
-	private Optional<AcceptanceConditionValue> valueOfFixedValue;
+	private Optional<ImportingConditionReal> valueOfFixedValue;
 
 	/**
 	 * 少数桁数
@@ -79,7 +79,7 @@ public class NumDataFormatSet extends DataFormatSetting {
 		this.decimalDivision = EnumAdaptor.valueOf(decimalDivision, DecimalDivision.class);
 		this.effectiveDigitLength = EnumAdaptor.valueOf(effectiveDigitLength, NotUseAtr.class);
 		this.cdConvertCd = Optional.ofNullable(cdConvertCd == null ? null : new CodeConvertCode(cdConvertCd));
-		this.valueOfFixedValue = Optional.ofNullable(valueOfFixedValue == null ? null : new AcceptanceConditionValue(valueOfFixedValue));
+		this.valueOfFixedValue = Optional.ofNullable(valueOfFixedValue == null ? null : new ImportingConditionReal(valueOfFixedValue));
 		this.decimalDigitNum = Optional.ofNullable(decimalDigitNum == null ? null : new DecimalDigitNumber(decimalDigitNum));
 		this.startDigit = Optional.ofNullable(startDigit == null ? null : new AcceptedDigit(startDigit));
 		this.endDigit = Optional.ofNullable(endDigit == null ? null : new AcceptedDigit(endDigit));

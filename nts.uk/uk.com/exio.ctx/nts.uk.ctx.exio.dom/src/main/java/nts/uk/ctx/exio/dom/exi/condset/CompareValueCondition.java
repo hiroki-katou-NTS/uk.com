@@ -1,10 +1,8 @@
 package nts.uk.ctx.exio.dom.exi.condset;
 /**
- * 
- * @author DatLH 比較条件選択
- *
+ * 値の比較条件
  */
-public enum SelectComparisonCondition {
+public enum CompareValueCondition {
 	/**0: 条件としない	 */
 	NOT_COND(0, "Enum_SelectComparisonCondition_DO_NOT_COND"),
 	/**1: 条件値1　＜　値	 */
@@ -34,7 +32,7 @@ public enum SelectComparisonCondition {
 	/** The name id. */
 	public final String nameId;
 
-	private SelectComparisonCondition(int value, String nameId) {
+	private CompareValueCondition(int value, String nameId) {
 		this.value = value;
 		this.nameId = nameId;
 	}

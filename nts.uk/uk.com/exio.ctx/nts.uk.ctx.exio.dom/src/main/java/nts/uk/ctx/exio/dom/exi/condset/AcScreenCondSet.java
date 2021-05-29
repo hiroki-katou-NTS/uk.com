@@ -7,10 +7,10 @@ import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.DomainObject;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.exio.dom.exi.condset.type.AcceptanceConditionString;
-import nts.uk.ctx.exio.dom.exi.condset.type.AcceptanceConditionTime;
-import nts.uk.ctx.exio.dom.exi.condset.type.AcceptanceConditionTimeMoment;
-import nts.uk.ctx.exio.dom.exi.condset.type.AcceptanceConditionValue;
+import nts.uk.ctx.exio.dom.exi.condset.type.numeric.real.ImportingConditionReal;
+import nts.uk.ctx.exio.dom.exi.condset.type.string.ImportingConditionString;
+import nts.uk.ctx.exio.dom.exi.condset.type.time.ImportingConditionTime;
+import nts.uk.ctx.exio.dom.exi.condset.type.time.ImportingConditionTimeMoment;
 import nts.uk.ctx.exio.dom.input.revise.dataformat.ItemType;
 
 /**
@@ -32,27 +32,27 @@ public class AcScreenCondSet extends DomainObject {
 	/**
 	 * 比較条件選択
 	 */
-	private SelectComparisonCondition selectComparisonCondition;
+	private CompareValueCondition selectComparisonCondition;
 
 	/**
 	 * 時間‗条件値1
 	 */
-	private Optional<AcceptanceConditionTime> timeConditionValue1;
+	private Optional<ImportingConditionTime> timeConditionValue1;
 	
 	/**
 	 * 時間‗条件値2
 	 */
-	private Optional<AcceptanceConditionTime> timeConditionValue2;
+	private Optional<ImportingConditionTime> timeConditionValue2;
 
 	/**
 	 * 時刻‗条件値1
 	 */
-	private Optional<AcceptanceConditionTimeMoment> timeMomentConditionValue1;
+	private Optional<ImportingConditionTimeMoment> timeMomentConditionValue1;
 	
 	/**
 	 * 時刻‗条件値2
 	 */
-	private Optional<AcceptanceConditionTimeMoment> timeMomentConditionValue2;
+	private Optional<ImportingConditionTimeMoment> timeMomentConditionValue2;
 
 	/**
 	 * 日付‗条件値1
@@ -67,22 +67,22 @@ public class AcScreenCondSet extends DomainObject {
 	/**
 	 * 文字‗条件値1
 	 */
-	private Optional<AcceptanceConditionString> characterConditionValue1;
+	private Optional<ImportingConditionString> characterConditionValue1;
 	
 	/**
 	 * 文字‗条件値2
 	 */
-	private Optional<AcceptanceConditionString> characterConditionValue2;
+	private Optional<ImportingConditionString> characterConditionValue2;
 
 	/**
 	 * 数値‗条件値1
 	 */
-	private Optional<AcceptanceConditionValue> numberConditionValue1;
+	private Optional<ImportingConditionReal> numberConditionValue1;
 	
 	/**
 	 * 数値‗条件値2
 	 */
-	private Optional<AcceptanceConditionValue> numberConditionValue2;
+	private Optional<ImportingConditionReal> numberConditionValue2;
 
 	public AcScreenCondSet(String conditionSetCd, int acceptItemNum, int selectComparisonCondition,
 			Integer timeConditionValue1, Integer timeConditionValue2, Integer timeMomentConditionValue1,
@@ -92,25 +92,25 @@ public class AcScreenCondSet extends DomainObject {
 		super();
 		this.conditionSetCd = new AcceptanceConditionCode(conditionSetCd);
 		this.acceptItemNum = new AcceptanceLineNumber(acceptItemNum);
-		this.selectComparisonCondition = EnumAdaptor.valueOf(selectComparisonCondition, SelectComparisonCondition.class);
+		this.selectComparisonCondition = EnumAdaptor.valueOf(selectComparisonCondition, CompareValueCondition.class);
 		this.timeConditionValue2 = Optional.ofNullable(timeConditionValue2 == null ? null
-				: new AcceptanceConditionTime(timeConditionValue2));
+				: new ImportingConditionTime(timeConditionValue2));
 		this.timeConditionValue1 = Optional.ofNullable(timeConditionValue1 == null ? null 
-				: new AcceptanceConditionTime(timeConditionValue1));
+				: new ImportingConditionTime(timeConditionValue1));
 		this.timeMomentConditionValue2 = Optional.ofNullable(timeMomentConditionValue2 == null ? null
-				: new AcceptanceConditionTimeMoment(timeMomentConditionValue2));
+				: new ImportingConditionTimeMoment(timeMomentConditionValue2));
 		this.timeMomentConditionValue1 = Optional.ofNullable(timeMomentConditionValue1 == null ? null 
-				: new AcceptanceConditionTimeMoment(timeMomentConditionValue1));
+				: new ImportingConditionTimeMoment(timeMomentConditionValue1));
 		this.dateConditionValue2 = Optional.ofNullable(dateConditionValue2);
 		this.dateConditionValue1 = Optional.ofNullable(dateConditionValue1);
 		this.characterConditionValue2 = Optional.ofNullable(characterConditionValue2 == null ? null 
-				: new AcceptanceConditionString(characterConditionValue2));
+				: new ImportingConditionString(characterConditionValue2));
 		this.characterConditionValue1 = Optional.ofNullable(characterConditionValue1 == null ? null
-				:new AcceptanceConditionString(characterConditionValue1));
+				:new ImportingConditionString(characterConditionValue1));
 		this.numberConditionValue2 = Optional.ofNullable(numberConditionValue2 == null ? null 
-				: new AcceptanceConditionValue(numberConditionValue2));
+				: new ImportingConditionReal(numberConditionValue2));
 		this.numberConditionValue1 = Optional.ofNullable(numberConditionValue1 == null ? null 
-				: new AcceptanceConditionValue(numberConditionValue1));		
+				: new ImportingConditionReal(numberConditionValue1));		
 	}
 	/**
 	 * 受入条件の判定

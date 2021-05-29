@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.dom.exi.condset.type;
+package nts.uk.ctx.exio.dom.exi.condset.type.time;
 
 import nts.arc.primitive.TimeDurationPrimitiveValue;
 import nts.arc.primitive.constraint.TimeMaxValue;
@@ -8,10 +8,10 @@ import nts.arc.primitive.constraint.TimeMinValue;
  */
 @TimeMinValue("-24:00")
 @TimeMaxValue("99:59")
-public class AcceptanceConditionTimeMoment extends TimeDurationPrimitiveValue<AcceptanceConditionTimeMoment>{
+public class ImportingConditionTimeMoment extends TimeDurationPrimitiveValue<ImportingConditionTimeMoment>{
 	
 
-	public AcceptanceConditionTimeMoment(int timeAsMinutes) {
+	public ImportingConditionTimeMoment(int timeAsMinutes) {
 		super(timeAsMinutes);
 	}
 

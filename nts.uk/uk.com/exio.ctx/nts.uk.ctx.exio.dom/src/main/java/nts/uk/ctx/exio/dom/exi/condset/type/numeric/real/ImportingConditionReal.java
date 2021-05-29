@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.dom.exi.condset.type;
+package nts.uk.ctx.exio.dom.exi.condset.type.numeric.real;
 
 import java.math.BigDecimal;
 
@@ -7,24 +7,16 @@ import nts.arc.primitive.constraint.DecimalMantissaMaxLength;
 import nts.arc.primitive.constraint.DecimalMaxValue;
 import nts.arc.primitive.constraint.DecimalMinValue;
 /**
- * 数値データ設定固定値
- * @author yen_nth
- *
+ * 受入条件実数
  */
 @DecimalMaxValue("9999999999.99")
 @DecimalMinValue("-9999999999.99")
 @DecimalMantissaMaxLength(2)
-public class AcceptanceConditionValue extends DecimalPrimitiveValue<AcceptanceConditionValue>{
+public class ImportingConditionReal extends DecimalPrimitiveValue<ImportingConditionReal>{
 
-	public AcceptanceConditionValue(BigDecimal rawValue) {
-		super(rawValue);
-		// TODO Auto-generated constructor stub
-	}
-
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
-
-
+	
+	public ImportingConditionReal(BigDecimal rawValue) {
+		super(rawValue);
+	}
 }
