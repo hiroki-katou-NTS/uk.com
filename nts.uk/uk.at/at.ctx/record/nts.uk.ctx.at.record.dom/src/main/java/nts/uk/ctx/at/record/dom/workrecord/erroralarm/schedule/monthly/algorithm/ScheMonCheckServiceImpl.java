@@ -601,11 +601,7 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 				if (extractDetailItemContrast == null) {
 					continue;
 				}
-				
-//				result.getLstResultCondition().add(new ResultOfEachCondition(
-//						AlarmListCheckType.FreeCheck,
-//						String.valueOf(scheCondMon.getSortOrder()),
-//						Arrays.asList(extractDetailItemContrast)));
+
 				addToAlarmExtractInfoList(alarmExtractInfoResults,
 						String.valueOf(scheCondMon.getSortOrder()),
 						alarmCheckConditionCode,
@@ -627,10 +623,7 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 				if (extractDetailItemDay == null) {
 					continue;
 				}
-//				result.getLstResultCondition().add(new ResultOfEachCondition(
-//						AlarmListCheckType.FreeCheck,
-//						String.valueOf(scheCondMon.getSortOrder()),
-//						Arrays.asList(extractDetailItemDay)));
+
 				addToAlarmExtractInfoList(alarmExtractInfoResults,
 						String.valueOf(scheCondMon.getSortOrder()),
 						alarmCheckConditionCode,
@@ -650,11 +643,7 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 				if (extractDetailItemTime == null) {
 					continue;
 				}
-				
-//				result.getLstResultCondition().add(new ResultOfEachCondition(
-//						AlarmListCheckType.FreeCheck,
-//						String.valueOf(scheCondMon.getSortOrder()),
-//						Arrays.asList(extractDetailItemTime)));
+
 				addToAlarmExtractInfoList(alarmExtractInfoResults,
 						String.valueOf(scheCondMon.getSortOrder()),
 						alarmCheckConditionCode,
@@ -843,11 +832,7 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
                         AlarmListCheckType.FixCheck
                 ));
             }
-//			result.getLstResultCondition().add(new ResultOfEachCondition(
-//					AlarmListCheckType.FixCheck,
-//					String.valueOf(fixScheMon.getFixedCheckSMonItems().value),
-//					Arrays.asList(extractDetailItemTime)));
-//
+
 			Optional<AlarmListCheckInfor> optCheckInfor = result.getLstCheckType().stream()
 					.filter(x -> x.getChekType() == AlarmListCheckType.FixCheck && x.getNo().equals(String.valueOf(fixScheMon.getFixedCheckSMonItems().value)))
 					.findFirst();

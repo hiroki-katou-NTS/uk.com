@@ -204,25 +204,16 @@ public class MasterCheckServiceImpl implements MasterCheckService {
 										AlarmListCheckType.FixCheck,
 										Collections.singletonList(resultDetail)));
 
-						val empIds = alarmEmployeeList.stream().filter(x -> x.getEmployeeID().equals(sid)).collect(Collectors.toList());
-						if (empIds.isEmpty()) {
-							alarmEmployeeList.add(new AlarmEmployeeList(alarmExtractInfoResults, sid));
-						} else {
 							val checkExist = alarmEmployeeList.stream()
 									.filter(x -> x.getEmployeeID().equals(sid) && x.getAlarmExtractInfoResults().stream().anyMatch(y -> AlarmCategory.MASTER_CHECK.value == y.getAlarmCategory().value
 											&& alarmCheckConditionCode.equals(y.getAlarmCheckConditionCode().v())
 											&& AlarmListCheckType.FixCheck.value == y.getAlarmListCheckType().value
 											&& String.valueOf(exCond.getNo().value).equals(y.getAlarmCheckConditionNo())
 											&& y.getExtractionResultDetails().stream().anyMatch(z -> z.getPeriodDate().getStartDate().get().compareTo(dPeriodR.getStartDate().get()) == 0)))
-									.collect(Collectors.toList());
-							if (checkExist.isEmpty()) {
-								alarmEmployeeList.forEach(x -> {
-									if (x.getEmployeeID().equals(sid)) {
-										x.getAlarmExtractInfoResults().addAll(alarmExtractInfoResults);
-									}
-								});
+									.findFirst();
+							if (!checkExist.isPresent()) {
+								alarmEmployeeList.add(new AlarmEmployeeList(alarmExtractInfoResults, sid));
 							}
-						}
 
 //						List<ResultOfEachCondition> lstResultTmp = lstResultCondition.stream()
 //								.filter(r -> r.getNo().equals(String.valueOf(exCond.getNo().value)) && r.getCheckType() == AlarmListCheckType.FixCheck).collect(Collectors.toList());

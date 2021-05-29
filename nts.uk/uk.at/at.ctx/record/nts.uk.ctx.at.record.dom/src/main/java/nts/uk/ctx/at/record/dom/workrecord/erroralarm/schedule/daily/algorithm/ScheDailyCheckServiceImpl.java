@@ -149,13 +149,7 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 				}
 
 				if (!lstExtractInfoResult.isEmpty()) {
-                    val empIds = alarmEmployeeList.stream().filter(x -> x.getEmployeeID().equals(sid)).collect(Collectors.toList());
-                    if (empIds.isEmpty()) {
-                        alarmEmployeeList.add(new AlarmEmployeeList(lstExtractInfoResult, sid));
-                    } else {
-                        alarmEmployeeList.stream().filter(x -> x.getEmployeeID().equals(sid))
-                                .forEach(e -> e.getAlarmExtractInfoResults().addAll(lstExtractInfoResult));
-                    }
+					alarmEmployeeList.add(new AlarmEmployeeList(lstExtractInfoResult, sid));
 				}
 			}
 			
@@ -461,10 +455,6 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 					checkType,
 					listDetail)
 			);
-		} else {
-			alarmExtractInfoResults.stream().filter(x -> x.getAlarmListCheckType().value == checkType.value && x.getAlarmCheckConditionNo().equals(alarmCode)
-					&& x.getAlarmCheckConditionCode().v().equals(alarmCheckConditionCode) && x.getAlarmCategory().value == AlarmCategory.SCHEDULE_DAILY.value)
-					.forEach(x -> x.getExtractionResultDetails().add(detail));
 		}
 	}
 	

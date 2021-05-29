@@ -125,6 +125,13 @@ public class ScheYearCheckServiceImpl implements ScheYearCheckService {
 			this.extractCondition(
 					cid, lstSid, dPeriod, prepareData, getWplByListSidAndPeriod,
 					alarmEmployeeList, alarmExtractConditions, alarmCheckConditionCode);
+
+			val peri = new DatePeriod(GeneralDate.fromString("2021/03/01", "yyyy/MM/dd"), GeneralDate.fromString("2021/03/31", "yyyy/MM/dd"));
+			val sids = Arrays.asList("xxxxxx000000000003-0001-000000000005");
+			List<AlarmEmployeeList> data = new ArrayList<>();
+			this.extractCondition(
+					cid, sids, peri, prepareData, getWplByListSidAndPeriod,
+					data, alarmExtractConditions, alarmCheckConditionCode);
 					
 			synchronized (this) {
 				counter.accept(emps.size());
@@ -406,17 +413,7 @@ public class ScheYearCheckServiceImpl implements ScheYearCheckService {
 						AlarmListCheckType.FreeCheck,
 						Collections.singletonList(detail)
 				));
-
-                val empIds = alarmEmployeeList.stream().filter(x -> x.getEmployeeID().equals(sid)).collect(Collectors.toList());
-                if (empIds.isEmpty()) {
-                    alarmEmployeeList.add(new AlarmEmployeeList(lstExtractInfoResult, sid));
-                } else {
-                    alarmEmployeeList.forEach(x -> {
-                        if (x.getEmployeeID().equals(sid)) {
-                            x.getAlarmExtractInfoResults().addAll(lstExtractInfoResult);
-                        }
-                    });
-                }
+				alarmEmployeeList.add(new AlarmEmployeeList(lstExtractInfoResult, sid));
 
 				List<AlarmExtractionCondition> lstExtractCondition = alarmExtractConditions.stream()
 						.filter(x -> x.getAlarmListCheckType() == AlarmListCheckType.FreeCheck && x.getAlarmCheckConditionNo().equals(String.valueOf(condScheYear.getSortOrder())))

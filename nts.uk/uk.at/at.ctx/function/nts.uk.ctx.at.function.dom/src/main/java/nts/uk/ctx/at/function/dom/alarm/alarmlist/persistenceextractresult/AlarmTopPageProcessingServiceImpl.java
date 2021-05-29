@@ -146,19 +146,21 @@ public class AlarmTopPageProcessingServiceImpl implements AlarmTopPageProcessing
                     );
                     alarmExtractResultRepo.insert(persisExtractResultInsert);
                 }
-            }
 
-            //アラームリストからトップページアラームデータに変換する
-            RequireImpl require = new RequireImpl(alarmExtractResultRepo, topPageAlarmAdapter, employeeWorkplaceAdapter, employeeAlarmListAdapter);
-            List<AtomTask> atomTasks = ConvertAlarmListToTopPageAlarmDataService.convert(require, AppContexts.user().companyId(), lstSid,
-                    new AlarmPatternCode(pattentCd), new ExecutionCode(runCode), isDisplayByAdmin, isDisplayByPerson);
+                if (!CollectionUtil.isEmpty(lstExResultDelete) || !CollectionUtil.isEmpty(lstExResultInsert)) {
+                    //アラームリストからトップページアラームデータに変換する
+                    RequireImpl require = new RequireImpl(alarmExtractResultRepo, topPageAlarmAdapter, employeeWorkplaceAdapter, employeeAlarmListAdapter);
+                    List<AtomTask> atomTasks = ConvertAlarmListToTopPageAlarmDataService.convert(require, AppContexts.user().companyId(), lstSid,
+                            new AlarmPatternCode(pattentCd), new ExecutionCode(runCode), isDisplayByAdmin, isDisplayByPerson);
 
-            if(!atomTasks.isEmpty()){
-                transaction.execute(() -> {
-                    for (AtomTask atomTask : atomTasks) {
-                        atomTask.run();
+                    if (!atomTasks.isEmpty()) {
+                        transaction.execute(() -> {
+                            for (AtomTask atomTask : atomTasks) {
+                                atomTask.run();
+                            }
+                        });
                     }
-                });
+                }
             }
         }
     }
