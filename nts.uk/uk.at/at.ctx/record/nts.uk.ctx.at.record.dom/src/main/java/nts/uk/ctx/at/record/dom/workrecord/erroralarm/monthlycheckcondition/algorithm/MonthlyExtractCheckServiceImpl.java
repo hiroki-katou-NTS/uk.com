@@ -477,14 +477,7 @@ public class MonthlyExtractCheckServiceImpl implements MonthlyExtractCheckServic
 								AlarmListCheckType.FixCheck
 						));
 					}
-
-					val empIds = alarmEmployeeList.stream().filter(x -> x.getEmployeeID().equals(sid)).collect(Collectors.toList());
-					if (empIds.isEmpty()) {
-						alarmEmployeeList.add(new AlarmEmployeeList(lstExtractInfoResult, sid));
-					} else {
-						alarmEmployeeList.stream().filter(x -> x.getEmployeeID().equals(sid))
-								.forEach(e -> e.getAlarmExtractInfoResults().addAll(lstExtractInfoResult));
-					}
+					alarmEmployeeList.add(new AlarmEmployeeList(lstExtractInfoResult, sid));
 				}
 			}
 			synchronized (this) {
@@ -614,17 +607,7 @@ public class MonthlyExtractCheckServiceImpl implements MonthlyExtractCheckServic
 								AlarmListCheckType.FreeCheck
 						));
 					}
-
-					val empIds = alarmEmployeeList.stream().filter(x -> x.getEmployeeID().equals(sid)).collect(Collectors.toList());
-					if (empIds.isEmpty()) {
-						alarmEmployeeList.add(new AlarmEmployeeList(lstExtractInfoResult, sid));
-					} else {
-                        alarmEmployeeList.forEach(x -> {
-                            if (x.getEmployeeID().equals(sid)) {
-                                x.getAlarmExtractInfoResults().addAll(lstExtractInfoResult);
-                            }
-                        });
-					}
+					alarmEmployeeList.add(new AlarmEmployeeList(lstExtractInfoResult, sid));
 				}
 			}	
 			synchronized (this) {

@@ -1,11 +1,6 @@
 package nts.uk.ctx.at.function.dom.alarm.alarmlist.appapproval;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -455,22 +450,22 @@ public class AppApprovalAggregationProcessService {
 				fixedExtractCond.getMessage().isPresent() ? Optional.ofNullable(fixedExtractCond.getMessage().get().v()) : Optional.empty(),
 				Optional.ofNullable(alarmTaget));
 
-		List<AlarmExtractInfoResult> alarmExtractInfoResults = Collections.singletonList(new AlarmExtractInfoResult(
+		List<AlarmExtractInfoResult> alarmExtractInfoResults = Arrays.asList(new AlarmExtractInfoResult(
 				String.valueOf(fixedExtractCond.getNo().value),
 				new AlarmCheckConditionCode(alarmCheckConditionCode),
 				AlarmCategory.APPLICATION_APPROVAL,
 				AlarmListCheckType.FixCheck,
-				Collections.singletonList(detail)));
+				Arrays.asList(detail)));
 
-		val empIds = alarmEmployeeList.stream().filter(x -> x.getEmployeeID().equals(sid)).collect(Collectors.toList());
-		if (empIds.isEmpty()) {
+		val checkExist = alarmEmployeeList.stream().filter(x -> x.getEmployeeID().equals(sid) && x.getAlarmExtractInfoResults().stream()
+				.anyMatch(y -> y.getAlarmCategory().value == AlarmCategory.APPLICATION_APPROVAL.value
+						&& y.getAlarmCheckConditionCode().v().equals(alarmCheckConditionCode)
+						&& y.getAlarmListCheckType().value == AlarmListCheckType.FixCheck.value
+						&& y.getAlarmCheckConditionNo().equals(String.valueOf(fixedExtractCond.getNo().value))
+				&& y.getExtractionResultDetails().stream().anyMatch(z -> z.getPeriodDate().getStartDate().get().compareTo(pDate.getStartDate().get()) == 0)))
+				.findFirst();
+		if (!checkExist.isPresent()){
 			alarmEmployeeList.add(new AlarmEmployeeList(alarmExtractInfoResults, sid));
-		} else {
-			for (AlarmEmployeeList x : alarmEmployeeList) {
-				if (x.getEmployeeID().equals(sid)) {
-					x.getAlarmExtractInfoResults().addAll(alarmExtractInfoResults);
-				}
-			}
 		}
 
 //		List<ResultOfEachCondition> result = lstResultCondition.stream()

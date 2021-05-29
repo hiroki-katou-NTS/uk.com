@@ -706,10 +706,6 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 					checkType,
 					listDetail)
 			);
-		} else {
-			alarmExtractInfoResults.stream().filter(x -> x.getAlarmListCheckType().value == checkType.value && x.getAlarmCheckConditionNo().equals(no)
-					&& x.getAlarmCheckConditionCode().v().equals(conditionCode) && x.getAlarmCategory().value == category.value)
-					.forEach(x -> x.getExtractionResultDetails().add(detail));
 		}
 	}
 	

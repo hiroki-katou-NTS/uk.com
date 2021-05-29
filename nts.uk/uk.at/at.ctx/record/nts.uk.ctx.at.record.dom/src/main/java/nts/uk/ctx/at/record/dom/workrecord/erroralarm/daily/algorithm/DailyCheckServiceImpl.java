@@ -279,16 +279,7 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 							lstExtractInfoResult);
 				}
                 if (!lstExtractInfoResult.isEmpty()) {
-                    val empIds = alarmEmployeeLists.stream().filter(x -> x.getEmployeeID().equals(sid)).collect(Collectors.toList());
-                    if (empIds.isEmpty()) {
-                        alarmEmployeeLists.add(new AlarmEmployeeList(lstExtractInfoResult, sid));
-                    } else {
-                        alarmEmployeeLists.forEach(x -> {
-                            if (x.getEmployeeID().equals(sid)) {
-                                x.getAlarmExtractInfoResults().addAll(lstExtractInfoResult);
-                            }
-                        });
-                    }
+					alarmEmployeeLists.add(new AlarmEmployeeList(lstExtractInfoResult, sid));
                 }
 			}
 			synchronized (this) {
@@ -1085,10 +1076,6 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 					checkType,
 					listDetail)
 			);
-		} else {
-			alarmExtractInfoResults.stream().filter(x -> x.getAlarmListCheckType().value == checkType.value && x.getAlarmCheckConditionNo().equals(alarmCode)
-					&& x.getAlarmCheckConditionCode().v().equals(alarmCheckConditionCode) && x.getAlarmCategory().value == AlarmCategory.DAILY.value)
-					.forEach(x -> x.getExtractionResultDetails().add(detail));
 		}
 	}
 	
@@ -1116,7 +1103,6 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 		for(FixedConditionWorkRecord item : listFixedConWk) {
 			String alarmMessage = new String();
 			String alarmTarget = new String();
-
 			List<AlarmListCheckInfor> listAlarmChkTmp = listAlarmChk.stream()
 					.filter(x -> x.getChekType() == AlarmListCheckType.FixCheck && x.getNo().equals(String.valueOf(item.getFixConWorkRecordNo().value)))
 					.collect(Collectors.toList());			

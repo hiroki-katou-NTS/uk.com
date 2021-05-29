@@ -328,12 +328,15 @@ public class MultiMonthlyExtractCheckServiceImpl<V> implements MultiMonthlyExtra
 									AlarmListCheckType.FreeCheck,
 									Collections.singletonList(detail)));
 
-					val empIds = alarmEmployeeList.stream().filter(x -> x.getEmployeeID().equals(sid)).collect(Collectors.toList());
-					if (empIds.isEmpty()) {
+					val checkExist = alarmEmployeeList.stream().filter(x -> x.getEmployeeID().equals(sid) && x.getAlarmExtractInfoResults().stream()
+							.anyMatch(y -> y.getAlarmCategory().value == AlarmCategory.MULTIPLE_MONTH.value
+									&& y.getAlarmCheckConditionCode().v().equals(alarmCheckConditionCode)
+									&& y.getAlarmListCheckType().value == AlarmListCheckType.FreeCheck.value
+									&& y.getAlarmCheckConditionNo().equals(String.valueOf(anyCond.getCondNo()))
+									&& y.getExtractionResultDetails().stream().anyMatch(z -> z.getPeriodDate().getStartDate().get().compareTo(pDate.getStartDate().get()) == 0)))
+							.findFirst();
+					if (!checkExist.isPresent()) {
 						alarmEmployeeList.add(new AlarmEmployeeList(alarmExtractInfoResults, sid));
-					} else {
-						alarmEmployeeList.stream().filter(x -> x.getEmployeeID().equals(sid))
-								.forEach(e -> e.getAlarmExtractInfoResults().addAll(alarmExtractInfoResults));
 					}
 
 					// 「アラーム抽出条件」を作成してInput．List＜アラーム抽出条件＞を追加
