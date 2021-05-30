@@ -271,7 +271,7 @@ public class AsposeDisplayWorkStatusReportGenerator extends AsposeCellsReportGen
                     } else {
                         cells.copyRow(cells, 6, countRow);
                     }
-                    cells.clearContents(CellArea.createCellArea(countRow, 0, countRow, maxColumn));
+                     cells.clearContents(CellArea.createCellArea(countRow, 0, countRow, maxColumn));
 
                     for (int j = 0; j < listItem.size(); j++) {
                         val item = listItem.get(j);

@@ -31,7 +31,7 @@ public class AposeWorkLedgerOutputGenerator extends AsposeCellsReportGenerator i
     private static final String TEMPLATE_FILE_ADD = "report/KWR005.xlsx";
     private static final String EXCEL_EXT = ".xlsx";
     private static final String PRINT_AREA = "A1:O";
-    private static final int NUMBER_ROW_OF_PAGE = 50;
+    private static final int NUMBER_ROW_OF_PAGE = 30;
 
     @Override
     public void generate(FileGeneratorContext generatorContext, WorkLedgerExportDataSource dataSource) {
