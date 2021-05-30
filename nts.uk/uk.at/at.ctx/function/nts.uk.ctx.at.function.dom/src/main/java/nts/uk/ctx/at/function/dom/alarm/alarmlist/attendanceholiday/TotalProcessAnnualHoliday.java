@@ -346,37 +346,38 @@ public class TotalProcessAnnualHoliday {
 					Optional.ofNullable(annualHolidayCond.getAlarmCheckConAgr().getDisplayMessage().get().v()),
 					Optional.ofNullable(ligedUseOutput.getDays().get().v().toString()));
 
-			List<AlarmExtractInfoResult> alarmExtractInfoResults =
-					Collections.singletonList(new AlarmExtractInfoResult(
-							String.valueOf(checkCondNo),
-							new AlarmCheckConditionCode(alarmCheckConditionCode),
-							AlarmCategory.ATTENDANCE_RATE_FOR_HOLIDAY,
-							AlarmListCheckType.FixCheck,
-							Collections.singletonList(detail)));
 
-			val empIds = alarmEmployeeList.stream().filter(x -> x.getEmployeeID().equals(sid)).collect(Collectors.toList());
-			if (empIds.isEmpty()) {
-				alarmEmployeeList.add(new AlarmEmployeeList(alarmExtractInfoResults, sid));
+			if (alarmEmployeeList.stream().anyMatch(i -> i.getEmployeeID().equals(sid))) {
+				for (AlarmEmployeeList i : alarmEmployeeList) {
+					if (i.getEmployeeID().equals(sid)) {
+						List<ExtractResultDetail> details = new ArrayList<>(Arrays.asList(detail));
+						List<AlarmExtractInfoResult> alarmExtractInfoResults = new ArrayList<>(i.getAlarmExtractInfoResults());
+						alarmExtractInfoResults.add(
+								new AlarmExtractInfoResult(
+										String.valueOf(checkCondNo),
+										new AlarmCheckConditionCode(alarmCheckConditionCode),
+										AlarmCategory.ATTENDANCE_RATE_FOR_HOLIDAY,
+										AlarmListCheckType.FixCheck,
+										details
+								)
+						);
+						i.setAlarmExtractInfoResults(alarmExtractInfoResults);
+						break;
+					}
+				}
 			} else {
-				alarmEmployeeList.stream().filter(x -> x.getEmployeeID().equals(sid))
-						.forEach(e -> e.getAlarmExtractInfoResults().addAll(alarmExtractInfoResults));
+				List<ExtractResultDetail> details = new ArrayList<>(Arrays.asList(detail));
+				List<AlarmExtractInfoResult> alarmExtractInfoResults = new ArrayList<>(Arrays.asList(
+						new AlarmExtractInfoResult(
+								String.valueOf(checkCondNo),
+								new AlarmCheckConditionCode(alarmCheckConditionCode),
+								AlarmCategory.ATTENDANCE_RATE_FOR_HOLIDAY,
+								AlarmListCheckType.FixCheck,
+								details
+						)
+				));
+				alarmEmployeeList.add(new AlarmEmployeeList(alarmExtractInfoResults, sid));
 			}
-
-//			List<ResultOfEachCondition> result = lstResultCondition.stream()
-//					.filter(x -> x.getCheckType() == AlarmListCheckType.FreeCheck && x.getNo().equals("1"))
-//					.collect(Collectors.toList());
-//			if(result.isEmpty()) {
-//				ResultOfEachCondition resultCon = new ResultOfEachCondition(AlarmListCheckType.FixCheck,
-//						"1",
-//						new ArrayList<>());
-//				resultCon.getLstResultDetail().add(detail);
-//				lstResultCondition.add(resultCon);
-//			} else {
-//				ResultOfEachCondition ex = result.get(0);
-//				lstResultCondition.remove(ex);
-//				ex.getLstResultDetail().add(detail);
-//				lstResultCondition.add(ex);
-//			}
 		}
 		counter.accept(employees.size());
 	}

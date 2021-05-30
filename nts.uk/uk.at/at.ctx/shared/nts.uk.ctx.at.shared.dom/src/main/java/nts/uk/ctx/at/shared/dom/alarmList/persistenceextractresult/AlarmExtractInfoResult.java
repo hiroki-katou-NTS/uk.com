@@ -2,6 +2,7 @@ package nts.uk.ctx.at.shared.dom.alarmList.persistenceextractresult;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.alarmList.AlarmCategory;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.AlarmListCheckType;
 
@@ -27,5 +28,6 @@ public class AlarmExtractInfoResult {
     private AlarmListCheckType alarmListCheckType;
 
     /** 抽出結果 */
+    @Setter
     private List<ExtractResultDetail> extractionResultDetails;
 }

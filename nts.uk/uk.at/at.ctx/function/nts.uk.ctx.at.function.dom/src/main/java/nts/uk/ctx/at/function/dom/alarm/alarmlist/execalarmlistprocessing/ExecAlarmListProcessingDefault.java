@@ -173,6 +173,12 @@ public class ExecAlarmListProcessingDefault implements ExecAlarmListProcessingSe
 								endDate, checkConditionTime.getPeriod36Agreement());
 						listPeriodByCategory.add(periodByAlarmCategory);
 
+					} else if (checkConditionTime.getCategory() == AlarmCategory.MASTER_CHECK.value
+							|| checkConditionTime.getCategory() == AlarmCategory.APPLICATION_APPROVAL.value){
+						PeriodByAlarmCategory periodByAlarmCategory = new PeriodByAlarmCategory(
+								checkConditionTime.getCategory(), checkConditionTime.getCategoryName(), null,
+								null, checkConditionTime.getPeriod36Agreement());
+						listPeriodByCategory.add(periodByAlarmCategory);
 					} else if (checkConditionTime.getCategory() == AlarmCategory.AGREEMENT.value) {
 						if (checkConditionTime.getCategoryName().equals("36協定　1・2・4週間")) {
 							GeneralDate startDate = GeneralDate.fromString(checkConditionTime.getStartDate(),

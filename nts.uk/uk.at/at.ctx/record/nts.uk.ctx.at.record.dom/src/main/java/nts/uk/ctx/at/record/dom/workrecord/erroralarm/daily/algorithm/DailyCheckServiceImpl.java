@@ -279,16 +279,20 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 							lstExtractInfoResult);
 				}
                 if (!lstExtractInfoResult.isEmpty()) {
-                    val empIds = alarmEmployeeLists.stream().filter(x -> x.getEmployeeID().equals(sid)).collect(Collectors.toList());
-                    if (empIds.isEmpty()) {
-                        alarmEmployeeLists.add(new AlarmEmployeeList(lstExtractInfoResult, sid));
-                    } else {
-                        alarmEmployeeLists.forEach(x -> {
-                            if (x.getEmployeeID().equals(sid)) {
-                                x.getAlarmExtractInfoResults().addAll(lstExtractInfoResult);
-                            }
-                        });
-                    }
+					if (alarmEmployeeLists.stream().anyMatch(i -> i.getEmployeeID().equals(sid))) {
+						for (AlarmEmployeeList i : alarmEmployeeLists) {
+							if (i.getEmployeeID().equals(sid)) {
+								List<AlarmExtractInfoResult> temp = new ArrayList<>(i.getAlarmExtractInfoResults());
+								temp.addAll(lstExtractInfoResult);
+
+								i.setAlarmExtractInfoResults(temp);
+								break;
+							}
+						}
+					} else {
+						alarmEmployeeLists.add(new AlarmEmployeeList(lstExtractInfoResult, sid));
+					}
+
                 }
 			}
 			synchronized (this) {
@@ -436,8 +440,18 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 			List<AlarmExtractionCondition> alarmExtractConditions, String alarmCheckConditionCode,
 			List<AlarmExtractInfoResult> lstExtractInfoResult) {
 		OutputCheckResult result = new OutputCheckResult(new ArrayList<>(), new ArrayList<>(),new ArrayList<>(), new ArrayList<>());
-		int count = 0;
-
+		//「アラーム抽出条件」を作成してInput．List＜アラーム抽出条件＞を追加
+		val extractionCond = alarmExtractConditions.stream()
+				.filter(x -> x.getAlarmListCheckType() == AlarmListCheckType.FreeCheck && x.getAlarmCheckConditionNo().equals(String.valueOf(extCond.getSortOrderBy())))
+				.findAny();
+		if (!extractionCond.isPresent()) {
+			alarmExtractConditions.add(new AlarmExtractionCondition(
+					String.valueOf(extCond.getSortOrderBy()),
+					new AlarmCheckConditionCode(alarmCheckConditionCode),
+					AlarmCategory.DAILY,
+					AlarmListCheckType.FreeCheck
+			));
+		}
 		int renzoku = 0;
 		Optional<ErrorAlarmCondition> optErrorAlarm = listErrorAlarmCon.stream()
 				.filter(x -> x.getErrorAlarmCheckID().equals(extCond.getErrorAlarmCheckID()))
@@ -503,7 +517,6 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 								extCond.getCheckItem(),
 								lstWorkTypeCond, lstWkType, wTypeCom,
 								lstWorkTimeCond, listWorktime, wTimeCom);
-						count += 1;
 					}
 					renzoku = 0;
 					continue;	
@@ -543,7 +556,6 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 								getWplByListSidAndPeriod,
 								lstExtractInfoResult,
 								alarmCheckConditionCode);
-						count += 1;
 					} else {
 						renzoku += 1;
 						renzokuDate = exDate;
@@ -570,7 +582,6 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 								extCond.getCheckItem(),
 								lstWorkTypeCond, lstWkType, wTypeCom,
 								lstWorkTimeCond, listWorktime, wTimeCom);
-						count += 1;
 					}
 					renzoku = 0;
 				}
@@ -660,7 +671,6 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 								extCond.getCheckItem(),
 								lstWorkTypeCond, lstWkType, wTypeCom,
 								lstWorkTimeCond, listWorktime, wTimeCom);
-						count += 1;
 					}
 					renzoku = 0;
 					renzokuDate = exDate;
@@ -713,7 +723,6 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 								extCond.getCheckItem(),
 								lstWorkTypeCond, lstWkType, wTypeCom,
 								lstWorkTimeCond, listWorktime, wTimeCom);
-						count += 1;
 					}
 					renzoku = 0;
 					renzokuDate = exDate;
@@ -743,21 +752,6 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 					extCond.getCheckItem(),
 					lstWorkTypeCond, lstWkType, wTypeCom,
 					lstWorkTimeCond, listWorktime, wTimeCom);
-			count += 1;
-		}
-		if (count > 0) {
-			//「アラーム抽出条件」を作成してInput．List＜アラーム抽出条件＞を追加
-			List<AlarmExtractionCondition> extractionConditions = alarmExtractConditions.stream()
-					.filter(x -> x.getAlarmListCheckType() == AlarmListCheckType.FreeCheck && x.getAlarmCheckConditionNo().equals(String.valueOf(extCond.getSortOrderBy())))
-					.collect(Collectors.toList());
-			if (extractionConditions.isEmpty()) {
-				alarmExtractConditions.add(new AlarmExtractionCondition(
-						String.valueOf(extCond.getSortOrderBy()),
-						new AlarmCheckConditionCode(alarmCheckConditionCode),
-						AlarmCategory.DAILY,
-						AlarmListCheckType.FreeCheck
-				));
-			}
 		}
 		return result;
 	}
@@ -821,44 +815,43 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 		}
 
 		ExtractResultDetail detail = new ExtractResultDetail(
-				new ExtractionAlarmPeriodDate(Optional.ofNullable(dateP.start()),
-						Optional.ofNullable(dateP.end())), 
-				alarmName, 
-				alarmContent, 
-				GeneralDateTime.now(), 
-				Optional.ofNullable(wplId), 
-				alarmMess, 
-				Optional.ofNullable(TextResource.localize("KAL010_625", String.valueOf(dayRenzoku))));
-//		List<ResultOfEachCondition> lstResultTmp = listResultCond.stream()
-//				.filter(x -> x.getCheckType().value == checkType.value && x.getNo().equals(alarmCode)).collect(Collectors.toList());
-//		List<ExtractResultDetail> listDetail = new ArrayList<>();
-//		if(lstResultTmp.isEmpty()) {
-//			listDetail.add(detail);
-//			listResultCond.add(new ResultOfEachCondition(EnumAdaptor.valueOf(1, AlarmListCheckType.class), alarmCode,
-//					listDetail));
-//		} else {
-//			listResultCond.stream().forEach(x -> x.getLstResultDetail().add(detail));
-//		}
+				new ExtractionAlarmPeriodDate(
+						Optional.ofNullable(dateP.start()),
+						Optional.ofNullable(dateP.end())
+				),
+				alarmName,
+				alarmContent,
+				GeneralDateTime.now(),
+				Optional.ofNullable(wplId),
+				alarmMess,
+				Optional.ofNullable(TextResource.localize("KAL010_625", String.valueOf(dayRenzoku)))
+		);
 
 		//「アラーム抽出情報結果」を作
-		List<AlarmExtractInfoResult> lstResultTmp = alarmExtractInfoResults.stream()
-				.filter(x -> x.getAlarmListCheckType().value == checkType.value && x.getAlarmCheckConditionNo().equals(alarmCode)
-				&& x.getAlarmCheckConditionCode().v().equals(alarmCheckConditionCode) && x.getAlarmCategory().value == AlarmCategory.DAILY.value)
-				.collect(Collectors.toList());
-		List<ExtractResultDetail> listDetail = new ArrayList<>();
-		if (lstResultTmp.isEmpty()) {
-			listDetail.add(detail);
+		if (alarmExtractInfoResults.stream()
+				.anyMatch(x -> x.getAlarmListCheckType().value == checkType.value
+						&& x.getAlarmCheckConditionNo().equals(alarmCode)
+						&& x.getAlarmCheckConditionCode().v().equals(alarmCheckConditionCode)
+						&& x.getAlarmCategory().value == AlarmCategory.DAILY.value)) {
+			for (AlarmExtractInfoResult x : alarmExtractInfoResults) {
+				if (x.getAlarmListCheckType().value == checkType.value
+						&& x.getAlarmCheckConditionNo().equals(alarmCode)
+						&& x.getAlarmCheckConditionCode().v().equals(alarmCheckConditionCode)
+						&& x.getAlarmCategory().value == AlarmCategory.DAILY.value) {
+					List<ExtractResultDetail> tmp = new ArrayList<>(x.getExtractionResultDetails());
+					tmp.add(detail);
+					x.setExtractionResultDetails(tmp);
+					break;
+				}
+			}
+		} else {
 			alarmExtractInfoResults.add(new AlarmExtractInfoResult(
 					alarmCode,
 					new AlarmCheckConditionCode(alarmCheckConditionCode),
 					AlarmCategory.DAILY,
 					checkType,
-					listDetail)
-			);
-		} else {
-			alarmExtractInfoResults.stream().filter(x -> x.getAlarmListCheckType().value == checkType.value && x.getAlarmCheckConditionNo().equals(alarmCode)
-					&& x.getAlarmCheckConditionCode().v().equals(alarmCheckConditionCode) && x.getAlarmCategory().value == AlarmCategory.DAILY.value)
-					.forEach(x -> x.getExtractionResultDetails().add(detail));
+					new ArrayList<>(Arrays.asList(detail))
+			));
 		}
 	}
 
@@ -974,12 +967,23 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 		List<AlarmListCheckInfor> listAlarmChk = new ArrayList<>();
 		List<ResultOfEachCondition> listResultCond = new ArrayList<>();
 		OutputCheckResult result = new OutputCheckResult(new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
-		int count = 0;
 		// 社員の日別実績エラー一覧
 		List<EmployeeDailyPerError> listErrorEmp = integra.getEmployeeError();
 		if(listError.isEmpty() || listErrorEmp.isEmpty()) return result;
 		for(ErrorAlarmWorkRecord item: listError) {
-			
+
+			//「アラーム抽出条件」を作成してInput．List＜アラーム抽出条件＞を追加
+			val extractionCond = alarmExtractConditions.stream()
+					.filter(x -> x.getAlarmListCheckType() == AlarmListCheckType.FreeCheck && x.getAlarmCheckConditionNo().equals(String.valueOf(item.getCode())))
+					.findAny();
+			if (!extractionCond.isPresent()) {
+				alarmExtractConditions.add(new AlarmExtractionCondition(
+						item.getCode().v(),
+						new AlarmCheckConditionCode(alarmCheckConditionCode),
+						AlarmCategory.DAILY,
+						AlarmListCheckType.FreeCheck
+				));
+			}
 			// Input．日別勤怠のエラー一覧を探す
 			List<EmployeeDailyPerError> afterFilter = listErrorEmp.stream().filter(x -> x.getErrorAlarmWorkRecordCode().equals(item.getCode()))
 																			.collect(Collectors.toList());
@@ -1017,22 +1021,6 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 					getWplByListSidAndPeriod,
 					alarmExtractInfoResults,
 					alarmCheckConditionCode);
-			count += 1;
-
-			if (count > 0) {
-				//「アラーム抽出条件」を作成してInput．List＜アラーム抽出条件＞を追加
-				List<AlarmExtractionCondition> extractionConditions = alarmExtractConditions.stream()
-						.filter(x -> x.getAlarmListCheckType() == AlarmListCheckType.FreeCheck && x.getAlarmCheckConditionNo().equals(String.valueOf(item.getCode())))
-						.collect(Collectors.toList());
-				if (extractionConditions.isEmpty()) {
-					alarmExtractConditions.add(new AlarmExtractionCondition(
-							item.getCode().v(),
-							new AlarmCheckConditionCode(alarmCheckConditionCode),
-							AlarmCategory.DAILY,
-							AlarmListCheckType.FreeCheck
-					));
-				}
-			}
 		}
 		return new OutputCheckResult(listResultCond, listAlarmChk, alarmExtractInfoResults, new ArrayList<>());
 	}
@@ -1062,33 +1050,42 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 			}
 		}
 		ExtractResultDetail detail = new ExtractResultDetail(
-				new ExtractionAlarmPeriodDate(Optional.ofNullable(day),
-						Optional.empty()), 
+				new ExtractionAlarmPeriodDate(
+						Optional.ofNullable(day),
+						Optional.empty()
+				),
 				alarmName, 
 				alarmContent, 
 				GeneralDateTime.now(), 
 				Optional.ofNullable(wplId), 
 				alarmMess, 
-				Optional.ofNullable(checkValue));
+				Optional.ofNullable(checkValue)
+		);
 
-		List<AlarmExtractInfoResult> lstResultTmp = alarmExtractInfoResults.stream()
-				.filter(x -> x.getAlarmListCheckType().value == checkType.value && x.getAlarmCheckConditionNo().equals(alarmCode)
-						&& x.getAlarmCheckConditionCode().v().equals(alarmCheckConditionCode) && x.getAlarmCategory().value == AlarmCategory.DAILY.value)
-				.collect(Collectors.toList());
-		List<ExtractResultDetail> listDetail = new ArrayList<>();
-		if (lstResultTmp.isEmpty()) {
-			listDetail.add(detail);
+		if (alarmExtractInfoResults.stream()
+				.anyMatch(x -> x.getAlarmListCheckType().value == checkType.value
+						&& x.getAlarmCheckConditionNo().equals(alarmCode)
+						&& x.getAlarmCheckConditionCode().v().equals(alarmCheckConditionCode)
+						&& x.getAlarmCategory().value == AlarmCategory.DAILY.value)) {
+			for (AlarmExtractInfoResult x : alarmExtractInfoResults) {
+				if (x.getAlarmCategory() == AlarmCategory.DAILY
+						&& x.getAlarmCheckConditionNo().equals(alarmCode)
+						&& x.getAlarmCheckConditionCode().v().equals(alarmCheckConditionCode)
+						&& x.getAlarmListCheckType().value == checkType.value) {
+					List<ExtractResultDetail> tmp = new ArrayList<>(x.getExtractionResultDetails());
+					tmp.add(detail);
+					x.setExtractionResultDetails(tmp);
+					break;
+				}
+			}
+		} else {
 			alarmExtractInfoResults.add(new AlarmExtractInfoResult(
 					alarmCode,
 					new AlarmCheckConditionCode(alarmCheckConditionCode),
 					AlarmCategory.DAILY,
 					checkType,
-					listDetail)
-			);
-		} else {
-			alarmExtractInfoResults.stream().filter(x -> x.getAlarmListCheckType().value == checkType.value && x.getAlarmCheckConditionNo().equals(alarmCode)
-					&& x.getAlarmCheckConditionCode().v().equals(alarmCheckConditionCode) && x.getAlarmCategory().value == AlarmCategory.DAILY.value)
-					.forEach(x -> x.getExtractionResultDetails().add(detail));
+					new ArrayList<>(Arrays.asList(detail))
+			));
 		}
 	}
 	
@@ -1102,7 +1099,6 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 			List<WorkPlaceHistImportAl> getWplByListSidAndPeriod,
 			List<AlarmExtractionCondition> alarmExtractConditions,
 			String alarmCheckConditionCode, List<AlarmExtractInfoResult> alarmExtractInfoResults) {
-		int count = 0;
 		DataFixExtracCon dataforDailyFix = prepareData.getDataforDailyFix();
 		List<WorkType> listWorkType = prepareData.getListWorkType();
 		List<WorkTimeSetting> listWorktime = prepareData.getListWorktime();
@@ -1116,6 +1112,19 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 		for(FixedConditionWorkRecord item : listFixedConWk) {
 			String alarmMessage = new String();
 			String alarmTarget = new String();
+
+			//「アラーム抽出条件」を作成してInput．List＜アラーム抽出条件＞を追加
+			val extractionCond = alarmExtractConditions.stream()
+					.filter(x -> x.getAlarmListCheckType() == AlarmListCheckType.FixCheck && x.getAlarmCheckConditionNo().equals(String.valueOf(item.getFixConWorkRecordNo().value)))
+					.findAny();
+			if (!extractionCond.isPresent()) {
+				alarmExtractConditions.add(new AlarmExtractionCondition(
+						String.valueOf(item.getFixConWorkRecordNo().value),
+						new AlarmCheckConditionCode(alarmCheckConditionCode),
+						AlarmCategory.DAILY,
+						AlarmListCheckType.FixCheck
+				));
+			}
 
 			List<AlarmListCheckInfor> listAlarmChkTmp = listAlarmChk.stream()
 					.filter(x -> x.getChekType() == AlarmListCheckType.FixCheck && x.getNo().equals(String.valueOf(item.getFixConWorkRecordNo().value)))
@@ -1141,7 +1150,6 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 						getWplByListSidAndPeriod,
 						alarmExtractInfoResults,
 						alarmCheckConditionCode);
-				count += 1;
 				continue;
 			}
 			if(integra == null) continue;
@@ -1327,7 +1335,6 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 								getWplByListSidAndPeriod,
 								alarmExtractInfoResults,
 								alarmCheckConditionCode);
-						count += 1;
 					}
 					break;
 					
@@ -1381,22 +1388,6 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 						getWplByListSidAndPeriod,
 						alarmExtractInfoResults,
 						alarmCheckConditionCode);
-				count += 1;
-			}
-
-			if (count > 0) {
-				//「アラーム抽出条件」を作成してInput．List＜アラーム抽出条件＞を追加
-				List<AlarmExtractionCondition> extractionConditions = alarmExtractConditions.stream()
-						.filter(x -> x.getAlarmListCheckType() == AlarmListCheckType.FixCheck && x.getAlarmCheckConditionNo().equals(String.valueOf(item.getFixConWorkRecordNo().value)))
-						.collect(Collectors.toList());
-				if (extractionConditions.isEmpty()) {
-					alarmExtractConditions.add(new AlarmExtractionCondition(
-							String.valueOf(item.getFixConWorkRecordNo().value),
-							new AlarmCheckConditionCode(alarmCheckConditionCode),
-							AlarmCategory.DAILY,
-							AlarmListCheckType.FixCheck
-					));
-				}
 			}
 		}
 		return new OutputCheckResult(listResultCond, listAlarmChk, alarmExtractInfoResults, new ArrayList<>());

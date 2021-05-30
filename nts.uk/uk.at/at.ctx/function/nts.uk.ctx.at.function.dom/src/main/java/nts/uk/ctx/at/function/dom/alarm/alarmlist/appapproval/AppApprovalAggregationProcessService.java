@@ -1,11 +1,6 @@
 package nts.uk.ctx.at.function.dom.alarm.alarmlist.appapproval;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -235,11 +230,11 @@ public class AppApprovalAggregationProcessService {
 			
 			data.lstExtractCond.stream().forEach(fixedCond -> {
 				//「アラーム抽出条件」を作成してInput．List＜アラーム抽出条件＞を追加
-				List<AlarmExtractionCondition> extractionConditions = alarmExtractConditions.stream()
+				val extractionConditions = alarmExtractConditions.stream()
 						.filter(x -> x.getAlarmListCheckType() == AlarmListCheckType.FixCheck
 								&& x.getAlarmCheckConditionNo().equals(String.valueOf(fixedCond.getNo().value)))
-						.collect(Collectors.toList());
-				if (extractionConditions.isEmpty()) {
+						.findAny();
+				if (!extractionConditions.isPresent()) {
 					alarmExtractConditions.add(new AlarmExtractionCondition(
 							String.valueOf(fixedCond.getNo().value),
 							new AlarmCheckConditionCode(alarmCheckConditionCode),
@@ -455,22 +450,56 @@ public class AppApprovalAggregationProcessService {
 				fixedExtractCond.getMessage().isPresent() ? Optional.ofNullable(fixedExtractCond.getMessage().get().v()) : Optional.empty(),
 				Optional.ofNullable(alarmTaget));
 
-		List<AlarmExtractInfoResult> alarmExtractInfoResults = Collections.singletonList(new AlarmExtractInfoResult(
-				String.valueOf(fixedExtractCond.getNo().value),
-				new AlarmCheckConditionCode(alarmCheckConditionCode),
-				AlarmCategory.APPLICATION_APPROVAL,
-				AlarmListCheckType.FixCheck,
-				Collections.singletonList(detail)));
-
-		val empIds = alarmEmployeeList.stream().filter(x -> x.getEmployeeID().equals(sid)).collect(Collectors.toList());
-		if (empIds.isEmpty()) {
-			alarmEmployeeList.add(new AlarmEmployeeList(alarmExtractInfoResults, sid));
-		} else {
-			for (AlarmEmployeeList x : alarmEmployeeList) {
-				if (x.getEmployeeID().equals(sid)) {
-					x.getAlarmExtractInfoResults().addAll(alarmExtractInfoResults);
+		if (alarmEmployeeList.stream().anyMatch(i -> i.getEmployeeID().equals(sid))) {
+			for (AlarmEmployeeList i : alarmEmployeeList) {
+				if (i.getEmployeeID().equals(sid)) {
+					if (i.getAlarmExtractInfoResults().stream()
+							.anyMatch(y -> y.getAlarmCategory().value == AlarmCategory.APPLICATION_APPROVAL.value
+									&& y.getAlarmCheckConditionCode().v().equals(alarmCheckConditionCode)
+									&& y.getAlarmListCheckType().value == AlarmListCheckType.FixCheck.value
+									&& y.getAlarmCheckConditionNo().equals(String.valueOf(fixedExtractCond.getNo().value)))) {
+						for (AlarmExtractInfoResult y : i.getAlarmExtractInfoResults()) {
+							if (y.getAlarmCategory().value == AlarmCategory.APPLICATION_APPROVAL.value
+									&& y.getAlarmCheckConditionCode().v().equals(alarmCheckConditionCode)
+									&& y.getAlarmListCheckType().value == AlarmListCheckType.FixCheck.value
+									&& y.getAlarmCheckConditionNo().equals(String.valueOf(fixedExtractCond.getNo().value))) {
+								if (y.getExtractionResultDetails().stream().noneMatch(z -> z.getPeriodDate().getStartDate().get().compareTo(pDate.getStartDate().get()) == 0)) {
+									List<ExtractResultDetail> details = new ArrayList<>(y.getExtractionResultDetails());
+									details.add(detail);
+									y.setExtractionResultDetails(details);
+								}
+								break;
+							}
+						}
+					} else {
+						List<ExtractResultDetail> details = new ArrayList<>(Arrays.asList(detail));
+						List<AlarmExtractInfoResult> alarmExtractInfoResults = new ArrayList<>(i.getAlarmExtractInfoResults());
+						alarmExtractInfoResults.add(
+								new AlarmExtractInfoResult(
+										String.valueOf(fixedExtractCond.getNo().value),
+										new AlarmCheckConditionCode(alarmCheckConditionCode),
+										AlarmCategory.APPLICATION_APPROVAL,
+										AlarmListCheckType.FixCheck,
+										details
+								)
+						);
+						i.setAlarmExtractInfoResults(alarmExtractInfoResults);
+					}
+					break;
 				}
 			}
+		} else {
+			List<ExtractResultDetail> details = new ArrayList<>(Arrays.asList(detail));
+			List<AlarmExtractInfoResult> alarmExtractInfoResults = new ArrayList<>(Arrays.asList(
+					new AlarmExtractInfoResult(
+							String.valueOf(fixedExtractCond.getNo().value),
+							new AlarmCheckConditionCode(alarmCheckConditionCode),
+							AlarmCategory.APPLICATION_APPROVAL,
+							AlarmListCheckType.FixCheck,
+							details
+					)
+			));
+			alarmEmployeeList.add(new AlarmEmployeeList(alarmExtractInfoResults, sid));
 		}
 
 //		List<ResultOfEachCondition> result = lstResultCondition.stream()
