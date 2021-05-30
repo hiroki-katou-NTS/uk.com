@@ -279,7 +279,18 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 							lstExtractInfoResult);
 				}
                 if (!lstExtractInfoResult.isEmpty()) {
-					alarmEmployeeLists.add(new AlarmEmployeeList(lstExtractInfoResult, sid));
+					if (alarmEmployeeLists.stream().anyMatch(i -> i.getEmployeeID().equals(sid))) {
+						alarmEmployeeLists.forEach(i -> {
+							if (i.getEmployeeID().equals(sid)) {
+								List<AlarmExtractInfoResult> temp = new ArrayList<>(i.getAlarmExtractInfoResults());
+								temp.addAll(lstExtractInfoResult);
+								i.setAlarmExtractInfoResults(temp);
+							}
+						});
+					} else {
+						alarmEmployeeLists.add(new AlarmEmployeeList(lstExtractInfoResult, sid));
+					}
+
                 }
 			}
 			synchronized (this) {

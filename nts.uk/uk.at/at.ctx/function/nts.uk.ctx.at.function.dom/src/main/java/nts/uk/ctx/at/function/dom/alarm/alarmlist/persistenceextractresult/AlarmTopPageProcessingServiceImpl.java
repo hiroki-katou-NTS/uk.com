@@ -81,15 +81,14 @@ public class AlarmTopPageProcessingServiceImpl implements AlarmTopPageProcessing
                 }
 
                 for (PeriodByAlarmCategory p : lstCategoryPeriod) {//永続化のアラームリスト抽出結果を絞り込む
-                    List<AlarmExtractionCondition> extractConds = alarmExtractConds.stream().filter(e -> e.getAlarmCategory().value == p.getCategory()).collect(Collectors.toList());
-                    if (extractConds.isEmpty()) {
-                        continue;
-                    }
+                    List<AlarmExtractionCondition> extractConds = alarmExtractConds.stream()
+                            .filter(e -> e.getAlarmCategory().value == p.getCategory()).collect(Collectors.toList());
 
                     List<AlarmEmployeeList> lstExtractResultDB = new ArrayList<>();
                     for (AlarmExtractionCondition c : extractConds) {
                         val temp = persisAlarmExtract.getAlarmListExtractResults().stream()
-                                .filter(x -> x.getAlarmExtractInfoResults().stream().anyMatch(y -> c.getAlarmCategory().value == y.getAlarmCategory().value
+                                .filter(x -> x.getAlarmExtractInfoResults().stream()
+                                        .anyMatch(y -> c.getAlarmCategory().value == y.getAlarmCategory().value
                                                 && c.getAlarmCheckConditionCode().v().equals(y.getAlarmCheckConditionCode().v())
                                                 && c.getAlarmListCheckType().value == y.getAlarmListCheckType().value
                                                 && c.getAlarmCheckConditionNo().equals(y.getAlarmCheckConditionNo())
@@ -111,16 +110,8 @@ public class AlarmTopPageProcessingServiceImpl implements AlarmTopPageProcessing
                     List<AlarmEmployeeList> lstExtractResultInput = alarmResult.getAlarmListExtractResults().stream()
                             .filter(x -> x.getAlarmExtractInfoResults().stream().anyMatch(y -> y.getAlarmCategory().value == p.getCategory()))
                             .collect(Collectors.toList());
-                    if (lstExtractResultDB.isEmpty()) {
-                        lstExResultInsert.addAll(lstExtractResultInput);
-                    } else {
-                        List<AlarmEmployeeList> lstDelete = new ArrayList<>();
-                        List<AlarmEmployeeList> lstInput = new ArrayList<>();
 
-                        dataProcessingInputOutput(lstExtractResultInput, lstExtractResultDB, lstInput, lstDelete);
-                        lstExResultInsert.addAll(lstInput);
-                        lstExResultDelete.addAll(lstDelete);
-                    }
+                    dataProcessingInputOutput(p, lstExtractResultInput, lstExtractResultDB, lstExResultInsert, lstExResultDelete);
                 }
 
                 //Delete: 今回のアラーム結果がないがデータベースに存在している場合データベースを削除
@@ -165,7 +156,7 @@ public class AlarmTopPageProcessingServiceImpl implements AlarmTopPageProcessing
         }
     }
 
-    private void dataProcessingInputOutput(List<AlarmEmployeeList> lstInput, List<AlarmEmployeeList> lstDB, List<AlarmEmployeeList> lstInsert, List<AlarmEmployeeList> lstDelete) {
+    private void dataProcessingInputOutput(PeriodByAlarmCategory period, List<AlarmEmployeeList> lstInput, List<AlarmEmployeeList> lstDB, List<AlarmEmployeeList> lstInsert, List<AlarmEmployeeList> lstDelete) {
         for (AlarmEmployeeList alarmEmpInput : lstInput) {
             // tim theo employeeId
             Optional<AlarmEmployeeList> alarmEmpDbOpt = lstDB.stream()
@@ -181,6 +172,7 @@ public class AlarmTopPageProcessingServiceImpl implements AlarmTopPageProcessing
                             .filter(i -> i.getAlarmCheckConditionNo().equals(inputInfo.getAlarmCheckConditionNo())
                                     && i.getAlarmCheckConditionCode().v().equals(inputInfo.getAlarmCheckConditionCode().v())
                                     && i.getAlarmCategory() == inputInfo.getAlarmCategory()
+                                    && i.getAlarmCategory().value == period.getCategory()
                                     && i.getAlarmListCheckType() == inputInfo.getAlarmListCheckType()).findAny();
                     // neu ton tai trong db thi xu ly tiep (ton tai thi them vao listDelete, khong thi them vao listInsert)
                     if (dbInfoOpt.isPresent()) {
@@ -209,12 +201,13 @@ public class AlarmTopPageProcessingServiceImpl implements AlarmTopPageProcessing
                                     tempDeleteDetails
                             ));
                         }
-                    } else {
+                    } else if (inputInfo.getAlarmCategory().value == period.getCategory()) {
                         tempInsert.add(inputInfo);
                     }
                 });
                 tempDelete.addAll(alarmEmpDb.getAlarmExtractInfoResults().stream()
-                        .filter(j -> alarmEmpInput.getAlarmExtractInfoResults().stream()
+                        .filter(j -> j.getAlarmCategory().value == period.getCategory()
+                                && alarmEmpInput.getAlarmExtractInfoResults().stream()
                                 .noneMatch(i -> i.getAlarmCheckConditionNo().equals(j.getAlarmCheckConditionNo())
                                         && i.getAlarmCheckConditionCode().v().equals(j.getAlarmCheckConditionCode().v())
                                         && i.getAlarmCategory() == j.getAlarmCategory()
@@ -227,12 +220,21 @@ public class AlarmTopPageProcessingServiceImpl implements AlarmTopPageProcessing
                     lstDelete.add(new AlarmEmployeeList(tempDelete, alarmEmpDb.getEmployeeID()));
                 }
             } else {
-                lstInsert.add(alarmEmpInput);
+                lstInsert.add(new AlarmEmployeeList(
+                        alarmEmpInput.getAlarmExtractInfoResults().stream().filter(i -> i.getAlarmCategory().value == period.getCategory()).collect(Collectors.toList()),
+                        alarmEmpInput.getEmployeeID()
+                ));
             }
         }
-        lstDelete.addAll(lstDB.stream()
+        List<AlarmEmployeeList> filteredBySid = lstDB.stream()
                 .filter(i -> lstInput.stream().noneMatch(j -> j.getEmployeeID().equals(i.getEmployeeID())))
-                .collect(Collectors.toList()));
+                .collect(Collectors.toList());
+        if (!filteredBySid.isEmpty()) {
+            lstDelete.addAll(filteredBySid.stream().map(i -> new AlarmEmployeeList(
+                    i.getAlarmExtractInfoResults().stream().filter(j -> j.getAlarmCategory().value == period.getCategory()).collect(Collectors.toList()),
+                    i.getEmployeeID()
+            )).collect(Collectors.toList()));
+        }
     }
 
     @AllArgsConstructor

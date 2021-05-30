@@ -296,9 +296,7 @@ public class MultiMonthlyExtractCheckServiceImpl<V> implements MultiMonthlyExtra
 					}
 					
 					GeneralDate startDate = GeneralDate.ymd(mPeriod.start().year() , mPeriod.start().month(), 1);
-					YearMonth endMonthTemp = mPeriod.end().addMonths(1);
-					GeneralDate endDateTemp = GeneralDate.ymd(endMonthTemp.year(), endMonthTemp.month(), 1);
-					GeneralDate enDate = endDateTemp.addDays(-1);
+					GeneralDate enDate = GeneralDate.ymd(mPeriod.start().year() , mPeriod.start().month() + 1, 1).addDays(-1);
 					ExtractionAlarmPeriodDate pDate = new ExtractionAlarmPeriodDate(Optional.ofNullable(startDate), Optional.ofNullable(enDate));
 					
 					String workplaceId = "";
@@ -311,7 +309,7 @@ public class MultiMonthlyExtractCheckServiceImpl<V> implements MultiMonthlyExtra
 							workplaceId = optWorkPlaceIdAndPeriodImportAl.get().getWorkplaceId();
 						}
 					}
-							
+
 					ExtractResultDetail detail = new ExtractResultDetail(
 							pDate,
 							anyCond.getNameAlarmCon().v(),
@@ -319,23 +317,56 @@ public class MultiMonthlyExtractCheckServiceImpl<V> implements MultiMonthlyExtra
 							GeneralDateTime.now(),
 							Optional.ofNullable(workplaceId),
 							Optional.ofNullable(anyCond.getDisplayMessage().isPresent() ? anyCond.getDisplayMessage().get().v() : null),
-							Optional.ofNullable(checkValue));
-					List<AlarmExtractInfoResult> alarmExtractInfoResults =
-							Collections.singletonList(new AlarmExtractInfoResult(
-									String.valueOf(anyCond.getCondNo()),
-									new AlarmCheckConditionCode(alarmCheckConditionCode),
-									AlarmCategory.MULTIPLE_MONTH,
-									AlarmListCheckType.FreeCheck,
-									Collections.singletonList(detail)));
+							Optional.ofNullable(checkValue)
+					);
 
-					val checkExist = alarmEmployeeList.stream().filter(x -> x.getEmployeeID().equals(sid) && x.getAlarmExtractInfoResults().stream()
-							.anyMatch(y -> y.getAlarmCategory().value == AlarmCategory.MULTIPLE_MONTH.value
-									&& y.getAlarmCheckConditionCode().v().equals(alarmCheckConditionCode)
-									&& y.getAlarmListCheckType().value == AlarmListCheckType.FreeCheck.value
-									&& y.getAlarmCheckConditionNo().equals(String.valueOf(anyCond.getCondNo()))
-									&& y.getExtractionResultDetails().stream().anyMatch(z -> z.getPeriodDate().getStartDate().get().compareTo(pDate.getStartDate().get()) == 0)))
-							.findFirst();
-					if (!checkExist.isPresent()) {
+					if (alarmEmployeeList.stream().anyMatch(i -> i.getEmployeeID().equals(sid))) {
+						alarmEmployeeList.forEach(i -> {
+							if (i.getEmployeeID().equals(sid)) {
+								if (i.getAlarmExtractInfoResults().stream()
+										.anyMatch(y -> y.getAlarmCategory().value == AlarmCategory.MULTIPLE_MONTH.value
+												&& y.getAlarmCheckConditionCode().v().equals(alarmCheckConditionCode)
+												&& y.getAlarmListCheckType().value == AlarmListCheckType.FreeCheck.value
+												&& y.getAlarmCheckConditionNo().equals(String.valueOf(anyCond.getCondNo())))) {
+									i.getAlarmExtractInfoResults().forEach(y -> {
+										if (y.getAlarmCategory().value == AlarmCategory.MULTIPLE_MONTH.value
+												&& y.getAlarmCheckConditionCode().v().equals(alarmCheckConditionCode)
+												&& y.getAlarmListCheckType().value == AlarmListCheckType.FreeCheck.value
+												&& y.getAlarmCheckConditionNo().equals(String.valueOf(anyCond.getCondNo()))) {
+											if (y.getExtractionResultDetails().stream().noneMatch(z -> z.getPeriodDate().getStartDate().get().compareTo(pDate.getStartDate().get()) == 0)) {
+												List<ExtractResultDetail> details = new ArrayList<>(y.getExtractionResultDetails());
+												details.add(detail);
+												y.setExtractionResultDetails(details);
+											}
+										}
+									});
+								} else {
+									List<ExtractResultDetail> details = new ArrayList<>(Arrays.asList(detail));
+									List<AlarmExtractInfoResult> alarmExtractInfoResults = new ArrayList<>(i.getAlarmExtractInfoResults());
+									alarmExtractInfoResults.add(
+											new AlarmExtractInfoResult(
+													String.valueOf(anyCond.getCondNo()),
+													new AlarmCheckConditionCode(alarmCheckConditionCode),
+													AlarmCategory.MULTIPLE_MONTH,
+													AlarmListCheckType.FreeCheck,
+													details
+											)
+									);
+									i.setAlarmExtractInfoResults(alarmExtractInfoResults);
+								}
+							}
+						});
+					} else {
+						List<ExtractResultDetail> details = new ArrayList<>(Arrays.asList(detail));
+						List<AlarmExtractInfoResult> alarmExtractInfoResults = new ArrayList<>(Arrays.asList(
+								new AlarmExtractInfoResult(
+										String.valueOf(anyCond.getCondNo()),
+										new AlarmCheckConditionCode(alarmCheckConditionCode),
+										AlarmCategory.MULTIPLE_MONTH,
+										AlarmListCheckType.FreeCheck,
+										details
+								)
+						));
 						alarmEmployeeList.add(new AlarmEmployeeList(alarmExtractInfoResults, sid));
 					}
 

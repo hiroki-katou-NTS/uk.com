@@ -2,6 +2,7 @@ package nts.uk.ctx.at.shared.dom.alarmList.persistenceextractresult;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.util.List;
 import java.util.Optional;
@@ -16,6 +17,7 @@ import java.util.stream.Collectors;
 public class AlarmEmployeeList {
 
     /** アラーム抽出情報結果 */
+    @Setter
     private List<AlarmExtractInfoResult> alarmExtractInfoResults;
 
     /** 社員ID */
