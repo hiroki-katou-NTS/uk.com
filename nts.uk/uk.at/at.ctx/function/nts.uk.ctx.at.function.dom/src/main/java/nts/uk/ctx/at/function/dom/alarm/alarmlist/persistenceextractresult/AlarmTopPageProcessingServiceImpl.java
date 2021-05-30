@@ -93,12 +93,16 @@ public class AlarmTopPageProcessingServiceImpl implements AlarmTopPageProcessing
                                                 && c.getAlarmListCheckType().value == y.getAlarmListCheckType().value
                                                 && c.getAlarmCheckConditionNo().equals(y.getAlarmCheckConditionNo())
                                                 && y.getExtractionResultDetails().stream().anyMatch(z -> {
-                                            if (z.getPeriodDate() == null) {
-                                                return true;
-                                            } else if (!z.getPeriodDate().getEndDate().isPresent()) {
-                                                return z.getPeriodDate().getStartDate().get().afterOrEquals(p.getStartDate()) && z.getPeriodDate().getStartDate().get().beforeOrEquals(p.getEndDate());
+                                            if (c.getAlarmCategory().value == AlarmCategory.MONTHLY.value) {
+                                                return z.getPeriodDate().getStartDate().get().compareTo(p.getStartDate()) == 0;
                                             } else {
-                                                return z.getPeriodDate().getStartDate().get().afterOrEquals(p.getStartDate()) && z.getPeriodDate().getEndDate().get().beforeOrEquals(p.getEndDate());
+                                                if (z.getPeriodDate() == null) {
+                                                    return true;
+                                                } else if (!z.getPeriodDate().getEndDate().isPresent()) {
+                                                    return z.getPeriodDate().getStartDate().get().afterOrEquals(p.getStartDate()) && z.getPeriodDate().getStartDate().get().beforeOrEquals(p.getEndDate());
+                                                } else {
+                                                    return z.getPeriodDate().getStartDate().get().afterOrEquals(p.getStartDate()) && z.getPeriodDate().getEndDate().get().beforeOrEquals(p.getEndDate());
+                                                }
                                             }
                                         })
                                 )).collect(Collectors.toList());
@@ -112,6 +116,14 @@ public class AlarmTopPageProcessingServiceImpl implements AlarmTopPageProcessing
                             .collect(Collectors.toList());
 
                     dataProcessingInputOutput(p, lstExtractResultInput, lstExtractResultDB, lstExResultInsert, lstExResultDelete);
+
+                    for (val exDb : lstExtractResultDB) {
+                        List<AlarmEmployeeList> tempDbRemain = persisAlarmExtract.getAlarmListExtractResults().stream().filter(x ->
+                                !x.getEmployeeID().equals(exDb.getEmployeeID())).collect(Collectors.toList());
+                        if (!tempDbRemain.isEmpty()) {
+                            lstExResultDelete.addAll(tempDbRemain);
+                        }
+                    }
                 }
 
                 //Delete: 今回のアラーム結果がないがデータベースに存在している場合データベースを削除
