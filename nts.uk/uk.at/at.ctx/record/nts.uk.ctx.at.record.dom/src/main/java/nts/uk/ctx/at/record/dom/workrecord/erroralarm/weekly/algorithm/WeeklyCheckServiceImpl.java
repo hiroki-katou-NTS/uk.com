@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import lombok.val;
 import nts.uk.ctx.at.shared.dom.alarmList.AlarmCategory;
 import nts.uk.ctx.at.shared.dom.alarmList.persistenceextractresult.*;
 import org.apache.logging.log4j.util.Strings;
@@ -103,6 +104,17 @@ public class WeeklyCheckServiceImpl implements WeeklyCheckService {
 				// 取得したList＜週別実績の任意抽出条件＞をループする
 				for (ExtractionCondScheduleWeekly weeklyCond: weeklyConds) {
 					String alarmCode = String.valueOf(weeklyCond.getSortOrder());
+					val lstExtractCond = alarmExtractConditions.stream()
+							.filter(x -> x.getAlarmListCheckType() == AlarmListCheckType.FreeCheck && x.getAlarmCheckConditionNo().equals(String.valueOf(alarmCode)))
+							.findAny();
+					if (!lstExtractCond.isPresent()) {
+						alarmExtractConditions.add(new AlarmExtractionCondition(
+								String.valueOf(alarmCode),
+								new AlarmCheckConditionCode(alarmCheckConditionCode),
+								AlarmCategory.WEEKLY,
+								AlarmListCheckType.FreeCheck
+						));
+					}
 					
 					int count = 0;
 					// Input．期間の開始月からループする
@@ -131,7 +143,7 @@ public class WeeklyCheckServiceImpl implements WeeklyCheckService {
 								.collect(Collectors.toList());
 						
 						// 絞り込みしたList＜週別実績の勤怠時間＞をループする
-						for (AttendanceTimeOfWeekly attWeekly: attendanceTimeOfWeeklyYms) {
+						for (AttendanceTimeOfWeekly attWeekly : attendanceTimeOfWeeklyYms) {
 							// 任意抽出条件のアラーム値を作成する
 							ExtractResultDetail extractDetail = createAlarmExtraction(
 									attWeekly, weeklyCond, count, attendanceItemMap, cid, sid, wpkId, ym, attendanceTimeOfWeeklyYms.size());

@@ -275,6 +275,20 @@ public class W4D4AlarmService {
 			List<AlarmEmployeeList> alarmEmployeeList, String alarmCheckConditionCode,
 			List<AlarmExtractionCondition> alarmExtractConditions){
 		List<ExtractResultDetail> lstResult = new ArrayList<>();
+		// 「アラーム抽出条件」を作成してInput．List＜アラーム抽出条件＞に追加
+		val extractionCon = alarmExtractConditions.stream()
+				.filter(x -> x.getAlarmListCheckType() == AlarmListCheckType.FixCheck
+						&& x.getAlarmCheckConditionNo().equals(String.valueOf(w4dCheckCond.value)))
+				.findAny();
+		if (!extractionCon.isPresent()) {
+			alarmExtractConditions.add(new AlarmExtractionCondition(
+					String.valueOf(w4dCheckCond.value),
+					new AlarmCheckConditionCode(alarmCheckConditionCode),
+					AlarmCategory.SCHEDULE_4WEEK,
+					AlarmListCheckType.FixCheck
+			));
+		}
+
 		//ドメインモデル「休日の扱い」を取得
 		Optional<TreatmentHoliday> optTreatHolidaySet = treatHolidayRepos.get(cid);
 		if(!optTreatHolidaySet.isPresent()) return lstResult;
@@ -371,20 +385,6 @@ public class W4D4AlarmService {
 				}
 
 				if (!lstDetail.isEmpty()) {
-					// 「アラーム抽出条件」を作成してInput．List＜アラーム抽出条件＞に追加
-					List<AlarmExtractionCondition> extractionConditions = alarmExtractConditions.stream()
-							.filter(x -> x.getAlarmListCheckType() == AlarmListCheckType.FixCheck
-									&& x.getAlarmCheckConditionNo().equals(String.valueOf(w4dCheckCond.value)))
-							.collect(Collectors.toList());
-					if (extractionConditions.isEmpty()) {
-						alarmExtractConditions.add(new AlarmExtractionCondition(
-								String.valueOf(w4dCheckCond.value),
-								new AlarmCheckConditionCode(alarmCheckConditionCode),
-								AlarmCategory.SCHEDULE_4WEEK,
-								AlarmListCheckType.FixCheck
-						));
-					}
-
 					List<AlarmExtractInfoResult> alarmExtractInfoResults = new ArrayList<>(Arrays.asList(
 							new AlarmExtractInfoResult(
 									String.valueOf(w4dCheckCond.value),

@@ -85,11 +85,11 @@ public class MasterCheckServiceImpl implements MasterCheckService {
 		DataCheck dataCheck = new DataCheck(cid, lstSid, lstItemNo, dPeriod);
 		lstMasterCheck.stream().forEach(exCond -> {
 			//「アラーム抽出条件」を作成してInput．List＜アラーム抽出条件＞を追加
-			List<AlarmExtractionCondition> extractionConditions = alarmExtractConditions.stream()
+			val extractionCond = alarmExtractConditions.stream()
 					.filter(x -> x.getAlarmListCheckType() == AlarmListCheckType.FixCheck
 							&& x.getAlarmCheckConditionNo().equals(String.valueOf(exCond.getNo().value)))
-					.collect(Collectors.toList());
-			if (extractionConditions.isEmpty()) {
+					.findAny();
+			if (!extractionCond.isPresent()) {
 				alarmExtractConditions.add(new AlarmExtractionCondition(
 						String.valueOf(exCond.getNo()),
 						new AlarmCheckConditionCode(alarmCheckConditionCode),

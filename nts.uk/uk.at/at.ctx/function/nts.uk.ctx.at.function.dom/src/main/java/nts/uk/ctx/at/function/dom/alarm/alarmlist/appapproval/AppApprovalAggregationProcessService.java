@@ -230,11 +230,11 @@ public class AppApprovalAggregationProcessService {
 			
 			data.lstExtractCond.stream().forEach(fixedCond -> {
 				//「アラーム抽出条件」を作成してInput．List＜アラーム抽出条件＞を追加
-				List<AlarmExtractionCondition> extractionConditions = alarmExtractConditions.stream()
+				val extractionConditions = alarmExtractConditions.stream()
 						.filter(x -> x.getAlarmListCheckType() == AlarmListCheckType.FixCheck
 								&& x.getAlarmCheckConditionNo().equals(String.valueOf(fixedCond.getNo().value)))
-						.collect(Collectors.toList());
-				if (extractionConditions.isEmpty()) {
+						.findAny();
+				if (!extractionConditions.isPresent()) {
 					alarmExtractConditions.add(new AlarmExtractionCondition(
 							String.valueOf(fixedCond.getNo().value),
 							new AlarmCheckConditionCode(alarmCheckConditionCode),

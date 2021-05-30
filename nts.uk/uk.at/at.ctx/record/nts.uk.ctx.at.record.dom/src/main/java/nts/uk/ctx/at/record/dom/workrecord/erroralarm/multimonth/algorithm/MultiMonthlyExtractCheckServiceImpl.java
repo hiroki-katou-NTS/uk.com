@@ -64,6 +64,20 @@ public class MultiMonthlyExtractCheckServiceImpl<V> implements MultiMonthlyExtra
 		if(data.lstAnyCondCheck.isEmpty()) return;
 		
 		for(MulMonthAlarmCheckCond anyCond : data.lstAnyCondCheck) {
+			// 「アラーム抽出条件」を作成してInput．List＜アラーム抽出条件＞を追加
+			val extractionCond = alarmExtractConditions.stream()
+					.filter(x -> x.getAlarmListCheckType() == AlarmListCheckType.FreeCheck
+							&& x.getAlarmCheckConditionNo().equals(String.valueOf(anyCond.getCondNo())))
+					.findAny();
+			if (!extractionCond.isPresent()) {
+				alarmExtractConditions.add(new AlarmExtractionCondition(
+						String.valueOf(anyCond.getCondNo()),
+						new AlarmCheckConditionCode(alarmCheckConditionCode),
+						AlarmCategory.MULTIPLE_MONTH,
+						AlarmListCheckType.FreeCheck
+				));
+			}
+
 			lstCheckType.add(new AlarmListCheckInfor(String.valueOf(anyCond.getCondNo()), AlarmListCheckType.FreeCheck));
 			ErAlAttendanceItemCondition<?> erCondition = anyCond.getErAlAttendanceItemCondition();
 			if(erCondition == null) continue;			
@@ -349,19 +363,6 @@ public class MultiMonthlyExtractCheckServiceImpl<V> implements MultiMonthlyExtra
 						alarmEmployeeList.add(new AlarmEmployeeList(alarmExtractInfoResults, sid));
 					}
 
-					// 「アラーム抽出条件」を作成してInput．List＜アラーム抽出条件＞を追加
-					List<AlarmExtractionCondition> extractionConditions = alarmExtractConditions.stream()
-							.filter(x -> x.getAlarmListCheckType() == AlarmListCheckType.FreeCheck
-									&& x.getAlarmCheckConditionNo().equals(String.valueOf(anyCond.getCondNo())))
-							.collect(Collectors.toList());
-					if (extractionConditions.isEmpty()) {
-						alarmExtractConditions.add(new AlarmExtractionCondition(
-								String.valueOf(anyCond.getCondNo()),
-								new AlarmCheckConditionCode(alarmCheckConditionCode),
-								AlarmCategory.MULTIPLE_MONTH,
-								AlarmListCheckType.FreeCheck
-						));
-					}
 //					List<ResultOfEachCondition> result = lstResultCondition.stream()
 //							.filter(x -> x.getCheckType() == AlarmListCheckType.FreeCheck && x.getNo().equals(String.valueOf(anyCond.getCondNo())))
 //							.collect(Collectors.toList());

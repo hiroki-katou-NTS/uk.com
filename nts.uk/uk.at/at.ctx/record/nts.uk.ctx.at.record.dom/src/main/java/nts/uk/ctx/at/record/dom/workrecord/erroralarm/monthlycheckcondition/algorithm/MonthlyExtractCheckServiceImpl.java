@@ -246,6 +246,19 @@ public class MonthlyExtractCheckServiceImpl implements MonthlyExtractCheckServic
 			List<ResultOfEachCondition> lstResultCondition, DataCheck data, Consumer<Integer> counter,
 			Supplier<Boolean> shouldStop, List<AlarmExtractionCondition> alarmExtractConditions, String alarmCheckConditionCode,
 			List<AlarmEmployeeList> alarmEmployeeList) {
+		// 「アラーム抽出条件」を作成してInput．List＜アラーム抽出条件＞を追加
+		val extractionCond = alarmExtractConditions.stream()
+				.filter(x -> x.getAlarmListCheckType() == AlarmListCheckType.FixCheck
+						&& x.getAlarmCheckConditionNo().equals(String.valueOf(fixCond.getFixedExtraItemMonNo().value)))
+				.findAny();
+		if (!extractionCond.isPresent()) {
+			alarmExtractConditions.add(new AlarmExtractionCondition(
+					String.valueOf(fixCond.getFixedExtraItemMonNo()),
+					new AlarmCheckConditionCode(alarmCheckConditionCode),
+					AlarmCategory.MONTHLY,
+					AlarmListCheckType.FixCheck
+			));
+		}
 
 		parallelManager.forEach(CollectionUtil.partitionBySize(lstSid, 100), emps -> {
 			synchronized (this) {
@@ -464,20 +477,6 @@ public class MonthlyExtractCheckServiceImpl implements MonthlyExtractCheckServic
 					}
 				}
 				if (!lstExtractInfoResult.isEmpty()) {
-					// 「アラーム抽出条件」を作成してInput．List＜アラーム抽出条件＞を追加
-					List<AlarmExtractionCondition> extractionConditions = alarmExtractConditions.stream()
-							.filter(x -> x.getAlarmListCheckType() == AlarmListCheckType.FixCheck
-									&& x.getAlarmCheckConditionNo().equals(String.valueOf(fixCond.getFixedExtraItemMonNo().value)))
-							.collect(Collectors.toList());
-					if (extractionConditions.isEmpty()) {
-						alarmExtractConditions.add(new AlarmExtractionCondition(
-								String.valueOf(fixCond.getFixedExtraItemMonNo()),
-								new AlarmCheckConditionCode(alarmCheckConditionCode),
-								AlarmCategory.MONTHLY,
-								AlarmListCheckType.FixCheck
-						));
-					}
-
 					if (alarmEmployeeList.stream().anyMatch(i -> i.getEmployeeID().equals(sid))) {
 						for (AlarmEmployeeList i : alarmEmployeeList) {
 							if (i.getEmployeeID().equals(sid)) {
@@ -534,6 +533,19 @@ public class MonthlyExtractCheckServiceImpl implements MonthlyExtractCheckServic
 			List<ResultOfEachCondition> lstResultCondition, DataCheck data, Consumer<Integer> counter,
 			Supplier<Boolean> shouldStop, List<AlarmExtractionCondition> alarmExtractConditions, String alarmCheckConditionCode,
 			List<AlarmEmployeeList> alarmEmployeeList) {
+
+		//「アラーム抽出条件」を作成してInput．List＜アラーム抽出条件＞を追加
+		val extractionCond = alarmExtractConditions.stream()
+				.filter(x -> x.getAlarmListCheckType() == AlarmListCheckType.FreeCheck && x.getAlarmCheckConditionNo().equals(String.valueOf(anyCond.getSortBy())))
+				.findAny();
+		if (!extractionCond.isPresent()) {
+			alarmExtractConditions.add(new AlarmExtractionCondition(
+					String.valueOf(anyCond.getSortBy()),
+					new AlarmCheckConditionCode(alarmCheckConditionCode),
+					AlarmCategory.MONTHLY,
+					AlarmListCheckType.FreeCheck
+			));
+		}
 
 		//残数チェック
 		Optional<CheckRemainNumberMon> optRemainCond = remainNumberRepos.getByEralCheckID(anyCond.getErrorAlarmCheckID());
@@ -607,18 +619,6 @@ public class MonthlyExtractCheckServiceImpl implements MonthlyExtractCheckServic
 					
 				}
 				if (!lstExtractInfoResult.isEmpty()) {
-					//「アラーム抽出条件」を作成してInput．List＜アラーム抽出条件＞を追加
-					List<AlarmExtractionCondition> extractionConditions = alarmExtractConditions.stream()
-							.filter(x -> x.getAlarmListCheckType() == AlarmListCheckType.FreeCheck && x.getAlarmCheckConditionNo().equals(String.valueOf(anyCond.getSortBy())))
-							.collect(Collectors.toList());
-					if (extractionConditions.isEmpty()) {
-						alarmExtractConditions.add(new AlarmExtractionCondition(
-								String.valueOf(anyCond.getSortBy()),
-								new AlarmCheckConditionCode(alarmCheckConditionCode),
-								AlarmCategory.MONTHLY,
-								AlarmListCheckType.FreeCheck
-						));
-					}
 
 					if (alarmEmployeeList.stream().anyMatch(i -> i.getEmployeeID().equals(sid))) {
 						alarmEmployeeList.forEach(i -> {

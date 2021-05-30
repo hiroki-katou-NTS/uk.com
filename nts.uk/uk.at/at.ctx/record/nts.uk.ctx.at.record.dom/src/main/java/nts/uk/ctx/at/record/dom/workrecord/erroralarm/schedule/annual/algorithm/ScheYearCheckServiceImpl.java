@@ -246,6 +246,18 @@ public class ScheYearCheckServiceImpl implements ScheYearCheckService {
 			List<AlarmExtractionCondition> alarmExtractConditions, String alarmCheckConditionCode) {
 		
 		for (ExtractionCondScheduleYear condScheYear: prepareData.getScheCondItems()) {
+			val lstExtractCon = alarmExtractConditions.stream()
+					.filter(x -> x.getAlarmListCheckType() == AlarmListCheckType.FreeCheck && x.getAlarmCheckConditionNo().equals(String.valueOf(condScheYear.getSortOrder())))
+					.findAny();
+			if (!lstExtractCon.isPresent()) {
+				alarmExtractConditions.add(new AlarmExtractionCondition(
+						String.valueOf(condScheYear.getSortOrder()),
+						new AlarmCheckConditionCode(alarmCheckConditionCode),
+						AlarmCategory.SCHEDULE_YEAR,
+						AlarmListCheckType.FreeCheck
+				));
+			}
+
 			for (String sid: listSid) {
 				// 総取得結果＝0
 				Double totalTime = 0.0;
@@ -393,18 +405,6 @@ public class ScheYearCheckServiceImpl implements ScheYearCheckService {
 					}
 				} else {
 					alarmEmployeeList.add(new AlarmEmployeeList(lstExtractInfoResult, sid));
-				}
-
-				List<AlarmExtractionCondition> lstExtractCondition = alarmExtractConditions.stream()
-						.filter(x -> x.getAlarmListCheckType() == AlarmListCheckType.FreeCheck && x.getAlarmCheckConditionNo().equals(String.valueOf(condScheYear.getSortOrder())))
-						.collect(Collectors.toList());
-				if (lstExtractCondition.isEmpty()) {
-					alarmExtractConditions.add(new AlarmExtractionCondition(
-							String.valueOf(condScheYear.getSortOrder()),
-							new AlarmCheckConditionCode(alarmCheckConditionCode),
-							AlarmCategory.SCHEDULE_YEAR,
-							AlarmListCheckType.FreeCheck
-					));
 				}
 			}
 		}
